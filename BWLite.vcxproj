@@ -117,6 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,6 +170,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,6 +195,10 @@
     <ClInclude Include="BWLiteDlg.h" />
     <ClInclude Include="CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
+    <ClInclude Include="commands\ExitCommand.h" />
+    <ClInclude Include="commands\ReloadCommand.h" />
+    <ClInclude Include="commands\ShellExecCommand.h" />
+    <ClInclude Include="commands\VersionCommand.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="pch.h" />
@@ -206,6 +212,10 @@
     <ClCompile Include="BWLite.cpp" />
     <ClCompile Include="BWLiteDlg.cpp" />
     <ClCompile Include="CommandMap.cpp" />
+    <ClCompile Include="commands\ExitCommand.cpp" />
+    <ClCompile Include="commands\ReloadCommand.cpp" />
+    <ClCompile Include="commands\ShellExecCommand.cpp" />
+    <ClCompile Include="commands\VersionCommand.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

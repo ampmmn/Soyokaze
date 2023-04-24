@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="commands">
+      <UniqueIdentifier>{d1b1a3c1-675d-483a-9228-5583b406f49f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BWLite.h">
@@ -51,6 +54,18 @@
     <ClInclude Include="AboutDlg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="commands\ExitCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ReloadCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ShellExecCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\VersionCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -76,6 +91,18 @@
     </ClCompile>
     <ClCompile Include="AboutDlg.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ExitCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ReloadCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ShellExecCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\VersionCommand.cpp">
+      <Filter>commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

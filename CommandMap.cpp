@@ -2,156 +2,16 @@
 #include "framework.h"
 #include "CommandMap.h"
 #include "AboutDlg.h"
+#include "commands/ShellExecCommand.h"
+#include "commands/ReloadCommand.h"
+#include "commands/ExitCommand.h"
+#include "commands/VersionCommand.h"
 #include <map>
 #include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// Builtin Commands
-
-class ExecCommand : public Command
-{
-public:
-	ExecCommand(const CString& name, const CString& path, const CString& param, const CString& dir, const CString& comment) :
-	m_strName(name), m_strPath(path), m_strParam(param), m_strDir(dir), m_strComment(comment)
-	{
-	}
-
-	virtual CString GetDescription()
-	{
-		return m_strComment.IsEmpty() ? m_strName : m_strComment;
-	}
-	virtual BOOL Execute()
-	{
-		SHELLEXECUTEINFO si = SHELLEXECUTEINFO();
-		si.cbSize = sizeof(si);
-		si.nShow = SW_NORMAL;
-		si.fMask = SEE_MASK_NOCLOSEPROCESS;
-		si.lpFile = m_strPath;
-		if (m_strParam.IsEmpty() == FALSE) {
-			si.lpParameters = m_strParam;
-		}
-		if (m_strDir.IsEmpty() == FALSE) {
-			si.lpDirectory = m_strDir;
-		}
-		BOOL bRun = ShellExecuteEx(&si);
-		if (bRun == FALSE) {
-			return FALSE;
-		}
-
-		CloseHandle(si.hProcess);
-
-		return TRUE;
-	}
-	virtual CString GetErrorString()
-	{
-		return _T("");
-	}
-	virtual BOOL Match(const CString& strQueryStr)
-	{
-		// ‘O•ûˆê’vŒŸõ
-		return m_strName.Find(strQueryStr) == 0;
-	}
-
-	CString m_strName;
-	CString m_strPath;
-	CString m_strParam;
-	CString m_strDir;
-	CString m_strComment;
-};
-
-class ReloadCommand : public Command
-{
-public:
-	ReloadCommand(CommandMap* pMap) : m_pCommandMap(pMap)
-	{
-	}
-
-	virtual CString GetDescription()
-	{
-		return _T("Ý’è‚ÌƒŠƒ[ƒh");
-	}
-	virtual BOOL Execute()
-	{
-		return m_pCommandMap->Load();
-	}
-	virtual CString GetErrorString()
-	{
-		return _T("");
-	}
-	virtual BOOL Match(const CString& strQueryStr)
-	{
-		// Š®‘Sˆê’v”äŠr
-		return strQueryStr == _T("reload");
-	}
-
-
-	CommandMap* m_pCommandMap;
-};
-
-class ExitCommand : public Command
-{
-public:
-	ExitCommand()
-	{
-	}
-
-	virtual CString GetDescription()
-	{
-		return _T("yI—¹z");
-	}
-	virtual BOOL Execute()
-	{
-		PostQuitMessage(0);
-		return TRUE;
-	}
-	virtual CString GetErrorString()
-	{
-		return _T("");
-	}
-	virtual BOOL Match(const CString& strQueryStr)
-	{
-		// Š®‘Sˆê’v”äŠr
-		return strQueryStr == _T("exit");
-	}
-
-	CommandMap* m_pCommandMap;
-};
-
-class VersionCommand : public Command
-{
-public:
-	VersionCommand()
-	{
-	}
-
-	virtual CString GetDescription()
-	{
-		return _T("yƒo[ƒWƒ‡ƒ“î•ñz");
-	}
-	virtual BOOL Execute()
-	{
-		CAboutDlg dlg;
-		dlg.DoModal();
-		return TRUE;
-	}
-	virtual CString GetErrorString()
-	{
-		return _T("");
-	}
-	virtual BOOL Match(const CString& strQueryStr)
-	{
-		// Š®‘Sˆê’v”äŠr
-		return strQueryStr == _T("version");
-	}
-
-	CommandMap* m_pCommandMap;
-};
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -222,6 +82,8 @@ BOOL CommandMap::Load()
 	CString strParam;
 	CString strDir;
 	CString strComment;
+	int nShowType = SW_NORMAL;
+
 
 	CString strLine;
 	while(file.ReadString(strLine)) {
@@ -237,7 +99,9 @@ BOOL CommandMap::Load()
 			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
  			if (strCommandName.IsEmpty() == FALSE) {
-				in->commands[strCommandName] = new ExecCommand(strCommandName, strPath, strParam, strDir, strComment);
+				in->commands[strCommandName] =
+				 	new ShellExecCommand(strCommandName, strPath, strParam,
+					                     strDir, strComment, nShowType);
 			}
 
 			// ‰Šú‰»
@@ -246,6 +110,7 @@ BOOL CommandMap::Load()
 			strParam.Empty();
 			strDir.Empty();
 			strComment.Empty();
+			nShowType = SW_NORMAL;
 			continue;
 		}
 
@@ -273,10 +138,13 @@ BOOL CommandMap::Load()
 		else if (strKey.CompareNoCase(_T("parameter")) == 0) {
 			strParam = strValue;
 		}
+		else if (strKey.CompareNoCase(_T("show")) == 0) {
+			_stscanf_s(strValue, _T("%d"), &nShowType);
+		}
 	}
 
 	if (strCommandName.IsEmpty() == FALSE && strPath.IsEmpty() == FALSE) {
-		in->commands[strCommandName] = new ExecCommand(strCommandName, strPath, strParam, strDir, strComment);
+		in->commands[strCommandName] = new ShellExecCommand(strCommandName, strPath, strParam, strDir, strComment, nShowType);
 	}
 
 	return TRUE;

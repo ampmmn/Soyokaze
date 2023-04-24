@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\BWLite.rc2""  // Microsoft Visual C++ 莉･螟悶〒邱ｨ髮・＆繧後◆繝ｪ繧ｽ繝ｼ繧ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 讓呎ｺ悶さ繝ｳ繝昴・繝阪Φ繝・\n"
+    "#include ""res\\BWLite.rc2""  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 繝ｪ繝懊Φ縺翫ｈ縺ｳ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ 繝舌・ 繝ｪ繧ｽ繝ｼ繧ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -114,8 +114,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,1,1
- PRODUCTVERSION 0,0,1,1
+ FILEVERSION 0,0,2,1
+ PRODUCTVERSION 0,0,2,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -132,12 +132,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <会社名>"
             VALUE "FileDescription", "BWLite"
-            VALUE "FileVersion", "0.0.1.1"
+            VALUE "FileVersion", "0.0.2.1"
             VALUE "InternalName", "BWLite.exe"
             VALUE "LegalCopyright", "TODO: (C) <会社名>.  All rights reserved."
             VALUE "OriginalFilename", "BWLite.exe"
             VALUE "ProductName", "TODO: <製品名>"
-            VALUE "ProductVersion", "0.0.1.1"
+            VALUE "ProductVersion", "0.0.2.1"
         END
     END
     BLOCK "VarFileInfo"
