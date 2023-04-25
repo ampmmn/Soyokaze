@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BWLite", "BWLite.vcxproj", "{B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BWLite", "BWLite\BWLite.vcxproj", "{B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
