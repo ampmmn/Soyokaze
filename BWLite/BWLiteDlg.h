@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <vector>
 
 class CommandMap;
 class Command;
@@ -37,6 +38,8 @@ protected:
 	CommandMap* m_pCommandMap;
 	Command* m_pCurCommand;
 	SharedHwnd* m_pSharedHwnd;
+	CListBox mCandidateListBox;
+	std::vector<Command*> mCandidates;
 
 	// 生成された、メッセージ割り当て関数
 	virtual BOOL OnInitDialog();

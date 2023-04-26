@@ -15,6 +15,11 @@ VersionCommand::~VersionCommand()
 {
 }
 
+CString VersionCommand::GetName()
+{
+	return _T("version");
+}
+
 CString VersionCommand::GetDescription()
 {
 	return _T("yƒo[ƒWƒ‡ƒ“î•ñz");

@@ -16,6 +16,11 @@ ReloadCommand::~ReloadCommand()
 {
 }
 
+CString ReloadCommand::GetName()
+{
+	return _T("reload");
+}
+
 CString ReloadCommand::GetDescription()
 {
 	return _T("İ’è‚ÌƒŠƒ[ƒh");

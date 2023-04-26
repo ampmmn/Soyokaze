@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\BWLite.rc2""  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・\n"
+    "#include ""res\\BWLite.rc2""  // Microsoft Visual C++ 髣比ｼ夲ｽｽ・･髯樊ｻ薙§邵ｲ蟶昴％繝ｻ・ｨ鬯ｮ・ｮ郢晢ｽｻ繝ｻ繝ｻ・ｹ・ｧ陟募ｨｯ陞ｺ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 髫ｶ轣倡ｶ懊・・ｺ隰費ｽｶ邵ｺ諷包ｽｹ譎｢・ｽ・ｳ驛｢譎・ｺ｢郢晢ｽｻ驛｢譎樔ｺゑｾ趣ｽｦ驛｢譏ｴ繝ｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 驛｢譎｢・ｽ・ｪ驛｢譎・鯵・趣ｽｦ驍ｵ・ｺ驗呻ｽｫ繝ｻ閧ｲ・ｸ・ｺ繝ｻ・ｳ驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取ｺｽ・ｹ譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ 驛｢譎√・郢晢ｽｻ 驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -95,16 +95,17 @@ BEGIN
     LTEXT           "BWLite",IDC_STATIC_VERSION,42,31,114,8,SS_NOPREFIX
 END
 
-IDD_BWLITE_DIALOG DIALOGEX 0, 0, 83, 35
+IDD_BWLITE_DIALOG DIALOGEX 0, 0, 83, 51
 STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CONTROLPARENT
 CAPTION "BWLite"
 FONT 9, "MS UI Gothic", 0, 0, 0x1
 BEGIN
+    EDITTEXT        IDC_EDIT_COMMAND,1,19,80,14,ES_AUTOHSCROLL
+    LISTBOX         IDC_LIST_CANDIDATE,1,35,80,13,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,1,2,18,14,NOT WS_VISIBLE
     PUSHBUTTON      "キャンセル",IDCANCEL,1,2,14,14,NOT WS_VISIBLE
-    CTEXT           "BWLite",IDC_STATIC_DESCRIPTION,1,2,72,8
-    EDITTEXT        IDC_EDIT_COMMAND,1,18,80,14,ES_AUTOHSCROLL
+    CTEXT           "BWLite",IDC_STATIC_DESCRIPTION,5,5,72,8
 END
 
 
@@ -168,7 +169,7 @@ BEGIN
         LEFTMARGIN, 1
         RIGHTMARGIN, 81
         TOPMARGIN, 2
-        BOTTOMMARGIN, 32
+        BOTTOMMARGIN, 48
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -182,9 +183,10 @@ END
 IDD_BWLITE_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 100, 100,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 100, 0
 END
 
@@ -223,10 +225,10 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\BWLite.rc2"  // Microsoft Visual C++ 莉･螟悶〒邱ｨ髮・＆繧後◆繝ｪ繧ｽ繝ｼ繧ｹ
-#include "l.JPN\afxres.rc"      // 讓呎ｺ悶さ繝ｳ繝昴・繝阪Φ繝・
+#include "res\BWLite.rc2"  // Microsoft Visual C++ 髣比ｼ夲ｽｽ・･髯樊ｻ薙§邵ｲ蟶昴％繝ｻ・ｨ鬯ｮ・ｮ郢晢ｽｻ繝ｻ繝ｻ・ｹ・ｧ陟募ｨｯ陞ｺ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ
+#include "l.JPN\afxres.rc"      // 髫ｶ轣倡ｶ懊・・ｺ隰費ｽｶ邵ｺ諷包ｽｹ譎｢・ｽ・ｳ驛｢譎・ｺ｢郢晢ｽｻ驛｢譎樔ｺゑｾ趣ｽｦ驛｢譏ｴ繝ｻ
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 繝ｪ繝懊Φ縺翫ｈ縺ｳ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ 繝舌・ 繝ｪ繧ｽ繝ｼ繧ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 驛｢譎｢・ｽ・ｪ驛｢譎・鯵・趣ｽｦ驍ｵ・ｺ驗呻ｽｫ繝ｻ閧ｲ・ｸ・ｺ繝ｻ・ｳ驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取ｺｽ・ｹ譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ 驛｢譎√・郢晢ｽｻ 驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ
 #endif
 #endif
 

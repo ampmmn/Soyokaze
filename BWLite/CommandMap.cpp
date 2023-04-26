@@ -81,8 +81,9 @@ BOOL CommandMap::Load()
 	CString strPath;
 	CString strParam;
 	CString strDir;
-	CString strComment;
+	CString strDescription;
 	int nShowType = SW_NORMAL;
+	bool isEnable = true;
 
 
 	CString strLine;
@@ -99,9 +100,16 @@ BOOL CommandMap::Load()
 			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
  			if (strCommandName.IsEmpty() == FALSE) {
-				in->commands[strCommandName] =
-				 	new ShellExecCommand(strCommandName, strPath, strParam,
-					                     strDir, strComment, nShowType);
+				auto command = new ShellExecCommand();
+				command->SetName(strCommandName).
+				         SetPath(strPath).
+				         SetParam(strParam).
+				         SetDirectory(strDir).
+				         SetDescription(strDescription).
+				         SetShowType(nShowType).
+								 SetEnable(isEnable);
+
+				in->commands[strCommandName] = command;
 			}
 
 			// ‰Šú‰»
@@ -109,7 +117,7 @@ BOOL CommandMap::Load()
 			strPath.Empty();
 			strParam.Empty();
 			strDir.Empty();
-			strComment.Empty();
+			strDescription.Empty();
 			nShowType = SW_NORMAL;
 			continue;
 		}
@@ -132,8 +140,8 @@ BOOL CommandMap::Load()
 			strDir = strValue;
 
 		}
-		else if (strKey.CompareNoCase(_T("comment")) == 0) {
-			strComment = strValue;
+		else if (strKey.CompareNoCase(_T("description")) == 0) {
+			strDescription = strValue;
 		}
 		else if (strKey.CompareNoCase(_T("parameter")) == 0) {
 			strParam = strValue;
@@ -141,10 +149,21 @@ BOOL CommandMap::Load()
 		else if (strKey.CompareNoCase(_T("show")) == 0) {
 			_stscanf_s(strValue, _T("%d"), &nShowType);
 		}
+		else if (strKey.CompareNoCase(_T("disable")) == 0) {
+			isEnable = strValue.CompareNoCase(_T("true")) != 0;
+		}
 	}
 
 	if (strCommandName.IsEmpty() == FALSE && strPath.IsEmpty() == FALSE) {
-		in->commands[strCommandName] = new ShellExecCommand(strCommandName, strPath, strParam, strDir, strComment, nShowType);
+			auto command = new ShellExecCommand();
+			command->SetName(strCommandName).
+			         SetPath(strPath).
+			         SetParam(strParam).
+			         SetDirectory(strDir).
+			         SetDescription(strDescription).
+			         SetShowType(nShowType).
+			         SetEnable(isEnable);
+		in->commands[strCommandName] = command;
 	}
 
 	return TRUE;
@@ -160,7 +179,21 @@ Command* CommandMap::Query(const CString& strQueryStr)
 		}
 		return command;
 	}
-	// ToDo: ‘O•ûˆê’vŒŸõ‘Î‰
 	return nullptr;
+}
+
+void
+CommandMap::Query(const CString& strQueryStr, std::vector<Command*>& items)
+{
+	items.clear();
+
+	for (auto& item : in->commands) {
+		const CString& key = item.first;
+		auto& command = item.second;
+		if (command->Match(strQueryStr) == FALSE) {
+			continue;
+		}
+		items.push_back(command);
+	}
 }
 

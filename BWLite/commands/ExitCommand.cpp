@@ -14,6 +14,11 @@ ExitCommand::~ExitCommand()
 {
 }
 
+CString ExitCommand::GetName()
+{
+	return _T("exit");
+}
+
 CString ExitCommand::GetDescription()
 {
 	return _T("ÅyèIóπÅz");

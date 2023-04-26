@@ -271,6 +271,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="AppPreference.h" />
     <ClInclude Include="AppProfile.h" />
     <ClInclude Include="BWLite.h" />
     <ClInclude Include="BWLiteDlg.h" />
@@ -289,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="AppPreference.cpp" />
     <ClCompile Include="AppProfile.cpp" />
     <ClCompile Include="BWLite.cpp" />
     <ClCompile Include="BWLiteDlg.cpp" />

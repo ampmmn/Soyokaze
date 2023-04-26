@@ -8,6 +8,7 @@ public:
 	ExitCommand();
 	virtual ~ExitCommand();
 
+	virtual CString GetName();
 	virtual CString GetDescription();
 	virtual BOOL Execute();
 	virtual CString GetErrorString();

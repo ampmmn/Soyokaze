@@ -10,6 +10,7 @@ public:
 	ReloadCommand(CommandMap* pMap);
 	virtual ~ReloadCommand();
 
+	virtual CString GetName();
 	virtual CString GetDescription();
 
 	virtual BOOL Execute();

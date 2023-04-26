@@ -8,6 +8,7 @@ public:
 	VersionCommand();
 	virtual ~VersionCommand();
 
+	virtual CString GetName();
 	virtual CString GetDescription();
 	virtual BOOL Execute();
 	virtual CString GetErrorString();

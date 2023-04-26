@@ -36,6 +36,7 @@ void CBWLiteDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_COMMAND, m_strCommand);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, m_strDescription);
+	DDX_Control(pDX, IDC_LIST_CANDIDATE, mCandidateListBox);
 }
 
 BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
@@ -143,6 +144,8 @@ void CBWLiteDlg::OnEditCommandChanged()
 {
 	UpdateData();
 
+	mCandidateListBox.ResetContent();
+
 	if (m_strCommand.IsEmpty()) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_DEFAULTDESCRIPTION);
@@ -150,10 +153,16 @@ void CBWLiteDlg::OnEditCommandChanged()
 		return;
 	}
 
-	auto pCmd = GetCommandMap()->Query(m_strCommand);
-	if (pCmd) {
+	GetCommandMap()->Query(m_strCommand, mCandidates);
+	if (mCandidates.size() > 0) {
+		auto pCmd = mCandidates[0];
 		SetDescription(pCmd->GetDescription());
 		m_pCurCommand = pCmd;
+
+		for (auto& item : mCandidates) {
+			mCandidateListBox.AddString(item->GetName());
+		}
+
 	}
 	else {
 		CString strMisMatch;
@@ -182,10 +191,14 @@ void CBWLiteDlg::OnCancel()
 
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	if (bShow==FALSE) {
+	if (bShow) {
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+	}
+	else {
 		m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
 		m_strCommand.Empty();
 		m_pCurCommand = nullptr;
+		mCandidateListBox.ResetContent();
 		UpdateData(FALSE);
 		util::window::SavePlacement(this, _T("LauncherWindowPos"));
 	}

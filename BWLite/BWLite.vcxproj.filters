@@ -66,6 +66,9 @@
     <ClInclude Include="commands\VersionCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="AppPreference.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="commands\VersionCommand.cpp">
       <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="AppPreference.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
