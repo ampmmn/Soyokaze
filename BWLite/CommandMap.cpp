@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CommandMap.h"
 #include "AboutDlg.h"
+#include "AppProfile.h"
 #include "commands/ShellExecCommand.h"
 #include "commands/ReloadCommand.h"
 #include "commands/ExitCommand.h"
@@ -65,8 +66,7 @@ BOOL CommandMap::Load()
 
 	// 設定ファイルを読み、コマンド一覧を登録する
 	TCHAR path[65536];
-	GetModuleFileName(NULL, path, 65536);
-	PathRemoveFileSpec(path);
+	CAppProfile::GetDirPath(path, 65536);
 	PathAppend(path, _T("commands.ini"));
 
 	// ファイルを読む

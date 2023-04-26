@@ -7,6 +7,7 @@
 #include "BWLite.h"
 #include "BWLiteDlg.h"
 #include "SharedHwnd.h"
+#include "AppProfile.h"
 #include <locale.h>
 
 #ifdef _DEBUG
@@ -63,8 +64,17 @@ BOOL CBWLiteApp::InitInstance()
 	// 多重起動検知のための名前付きミューテックスを作っておく
 	m_hMutexRun = CreateMutex(NULL, FALSE, mutexName);
 	if (m_hMutexRun == NULL) {
+		if (GetLastError() == ERROR_ACCESS_DENIED) {
+			AfxMessageBox(_T("起動に失敗しました。\n管理者権限で既に起動されている可能性があります。"));
+			return FALSE;
+		}
 		AfxMessageBox(_T("Failed to init."));
 		return FALSE;
+	}
+
+	// 設定ファイル作成用のフォルダをつくる
+	if (CAppProfile::CreateProfileDirectory() == false) {
+		AfxMessageBox(_T("Warning: Failed to init profile folder."));
 	}
 
 	// アプリケーション マニフェストが visual スタイルを有効にするために、

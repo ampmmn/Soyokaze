@@ -14,17 +14,52 @@
 #define new DEBUG_NEW
 #endif
 
+//! 設定情報作成用のフォルダをつくる
+bool CAppProfile::CreateProfileDirectory()
+{
+	TCHAR path[1024];
+	GetDirPath(path, 1024);
+	if (PathIsDirectory(path)) {
+		return true;
+	}
+	// フォルダなければつくる
+	CString msg;
+	msg.Format(_T("【初回起動】\n設定ファイルは %s 以下に作成されます。"), path);
+	AfxMessageBox(msg);
+
+	return CreateDirectory(path, NULL) != FALSE;
+}
+
+// ディレクトリパスを取得
+const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
+{
+	size_t buflen = 1024;
+	TCHAR buff[1024];
+	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
+
+	_tcscpy_s(path, len, buff);
+
+	PathAppend(path, _T(".bwlite"));
+
+	return path;
+}
+
+// ファイルパスを取得
+const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
+{
+	GetDirPath(path, len);
+	PathAppend(path, _T("BWLite.ini"));
+
+	return path;
+}
+
 /*!
  *	@brief デフォルトコンストラクタ
 */
  CAppProfile::CAppProfile() : m_entity(new CIniFile())
 {
-	// ファイルパスを生成
-	TCHAR exePath[MAX_PATH];
-	GetModuleFileName(NULL, exePath, MAX_PATH);
-	ATL::CPath path(exePath);
-	path.RenameExtension(_T(".ini"));
-	
+	TCHAR path[1024];
+	GetFilePath(path, 1024);
 	m_entity->Open((LPCTSTR)path);
 }
 
