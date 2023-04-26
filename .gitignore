@@ -1,0 +1,9 @@
+.vs
+x64
+*.aps
+*.user
+*.obj
+*.pch
+*.tlog
+*.lastupdate
+
