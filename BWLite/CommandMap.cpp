@@ -119,6 +119,7 @@ BOOL CommandMap::Load()
 			strDir.Empty();
 			strDescription.Empty();
 			nShowType = SW_NORMAL;
+			isEnable = true;
 			continue;
 		}
 

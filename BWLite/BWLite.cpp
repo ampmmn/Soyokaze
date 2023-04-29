@@ -15,6 +15,8 @@
 #endif
 
 
+static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_BWLite_exist");
+
 // CBWLiteApp
 
 BEGIN_MESSAGE_MAP(CBWLiteApp, CWinApp)
@@ -31,9 +33,6 @@ CBWLiteApp::CBWLiteApp() : m_hMutexRun(NULL)
 
 	// 再起動マネージャーをサポートします
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
-
-	// TODO: この位置に構築用コードを追加してください。
-	// ここに InitInstance 中の重要な初期化処理をすべて記述してください。
 }
 
 CBWLiteApp::~CBWLiteApp()
@@ -52,17 +51,13 @@ CBWLiteApp theApp;
 
 BOOL CBWLiteApp::InitInstance()
 {
-	// 既にプロセスが起動している場合はプロセスをアクティブ化する
-	LPCTSTR mutexName = _T("Global\\mutex_BWLite_exist");
-	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, mutexName);
-	if (h) {
-		CloseHandle(h);
-		ActivateExistingProcess();
+	// 既にプロセスが起動している場合はプロセスをアクティブ化し、このプロセスは終了する
+	if (ActivateExistingProcess()) {
 		return FALSE;
- 	}
+	}
 
 	// 多重起動検知のための名前付きミューテックスを作っておく
-	m_hMutexRun = CreateMutex(NULL, FALSE, mutexName);
+	m_hMutexRun = CreateMutex(NULL, FALSE, PROCESS_MUTEX_NAME);
 	if (m_hMutexRun == NULL) {
 		if (GetLastError() == ERROR_ACCESS_DENIED) {
 			AfxMessageBox(_T("起動に失敗しました。\n管理者権限で既に起動されている可能性があります。"));
@@ -142,8 +137,18 @@ static BOOL CALLBACK OnEnumChildWindow(
 }
 
 
-void CBWLiteApp::ActivateExistingProcess()
+/**
+ * @return true: アクティブ化した  false: 先行プロセスはない
+ */
+bool CBWLiteApp::ActivateExistingProcess()
 {
+	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
+	if (h == NULL) {
+		return false;
+	}
+	CloseHandle(h);
+
+	// 先行プロセスを有効化する
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
 	if (hwnd == NULL) {
@@ -152,14 +157,10 @@ void CBWLiteApp::ActivateExistingProcess()
 	}
 
 	if (hwnd == NULL) {
-		return;
+		return false;
 	}
 
-	if (IsWindowVisible(hwnd) == FALSE) {
-		ShowWindow(hwnd, SW_SHOW);
-		SetForegroundWindow(hwnd);
-	}
-	else {
-		ShowWindow(hwnd, SW_HIDE);
-	}
+	CBWLiteDlg::ActivateWindow(hwnd);
+
+	return true;
 }

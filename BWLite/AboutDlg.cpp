@@ -1,4 +1,3 @@
-
 #include "pch.h"
 #include "framework.h"
 #include "AboutDlg.h"

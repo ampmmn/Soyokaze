@@ -27,10 +27,11 @@ protected:
 public:
 	virtual BOOL InitInstance();
 
-	// 既存のプロセスを有効にする
-	void ActivateExistingProcess();
+	// 先行するプロセスがあればそちらを有効化する
+	bool ActivateExistingProcess();
 
 // 実装
+protected:
 
 	DECLARE_MESSAGE_MAP()
 };

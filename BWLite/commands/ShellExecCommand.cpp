@@ -29,7 +29,7 @@ CString ShellExecCommand::GetDescription()
 
 BOOL ShellExecCommand::Execute()
 {
-	// Ctrl$B%-!<$,$*$5$l$F!"$+$D!"%Q%9$,B8:_$9$k>l9g$O%U%!%$%i!<$GI=<((B
+	// CtrlƒL[‚ª‚¨‚³‚ê‚ÄA‚©‚ÂAƒpƒX‚ª‘¶İ‚·‚éê‡‚Íƒtƒ@ƒCƒ‰[‚Å•\¦
 	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
 	                  PathFileExists(m_strPath);
 
@@ -41,7 +41,7 @@ BOOL ShellExecCommand::Execute()
 
 		path = pref.GetFilerPath();
 		param = pref.GetFilerParam();
-		// $B$H$j$"$($:%j%s%/@h$N$_$r%5%]!<%H(B
+		// ‚Æ‚è‚ ‚¦‚¸ƒŠƒ“ƒNæ‚Ì‚İ‚ğƒTƒ|[ƒg
 		param.Replace(_T("$1"), m_strPath);
 
 		AfxMessageBox(param);
@@ -79,13 +79,18 @@ CString ShellExecCommand::GetErrorString()
 
 BOOL ShellExecCommand::Match(const CString& strQueryStr)
 {
-	// ToDo: $BBgJ8;z>.J8;z$N6hJL$r@Z$jBX$($i$l$k$h$&$K(B
-	// ToDo: $BMWAG$NHf3S$N$?$S$K(BstrTmp$B:n$j$?$/$J$$(B
+	// –³Œø‰»‚³‚ê‚½ƒRƒ}ƒ“ƒh‚Íƒ}ƒbƒ`‘ÎÛ‚©‚çœŠO‚·‚é
+	if (m_bEnable == false) {
+		return FALSE;
+	}
 
-	// $BA0J}0lCW8!:w(B
+	// ToDo: ‘å•¶š¬•¶š‚Ì‹æ•Ê‚ğØ‚è‘Ö‚¦‚ç‚ê‚é‚æ‚¤‚É
+	// ToDo: —v‘f‚Ì”äŠr‚Ì‚½‚Ñ‚ÉstrTmpì‚è‚½‚­‚È‚¢
+
+	// ‘O•ûˆê’vŒŸõ
 	//return m_strName.Find(strQueryStr) == 0;
 
-	// $BBgJ8;z>.J8;z$rL5;k$7$?A0J}0lCW8!:w(B
+	// ‘å•¶š¬•¶š‚ğ–³‹‚µ‚½‘O•ûˆê’vŒŸõ
 	CString strTmp = strQueryStr;
 	strTmp.MakeLower();
 	return m_strNameForIgnoreCase.Find(strTmp) == 0;
