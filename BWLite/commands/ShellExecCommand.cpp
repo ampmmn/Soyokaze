@@ -35,7 +35,9 @@ BOOL ShellExecCommand::Execute()
 
 	CString path;
 	CString param;
-	if (isOpenPath) {
+	if (isOpenPath || PathIsDirectory(m_strPath)) {
+
+		// 登録されたファイラーで開く
 		AppPreference pref;
 		pref.Load();
 
@@ -43,8 +45,6 @@ BOOL ShellExecCommand::Execute()
 		param = pref.GetFilerParam();
 		// とりあえずリンク先のみをサポート
 		param.Replace(_T("$1"), m_strPath);
-
-		AfxMessageBox(param);
 	}
 	else {
 		path = m_strPath;
