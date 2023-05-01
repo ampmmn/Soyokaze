@@ -88,32 +88,6 @@ LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 
 void TaskTray::OnContextMenu()
 {
-	CPoint point;
-	::GetCursorPos(&point);
-
-	CMenu menu;
-	menu.CreatePopupMenu();
-
-	const int ID_SHOW = 1;
-	const int ID_APPSETTING = 2;
-	const int ID_VERSIONINFO = 3;
-	const int ID_EXIT = 3;
-
-	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
-	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	//
-	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
-
-	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
-	if (n == ID_EXIT) {
-		// ToDo: BWLiteDlg経由で処理をする
-		PostQuitMessage(0);
-	}
-
+	mBWLiteWindowPtr->OnContextMenu(this);
 }
 

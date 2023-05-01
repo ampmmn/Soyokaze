@@ -75,6 +75,16 @@ void CBWLiteDlg::ActivateWindow()
 	}
 }
 
+bool CBWLiteDlg::ExecuteCommand(const CString& commandStr)
+{
+	// (今のところ)内部用なので、履歴には登録しない
+	auto cmd = GetCommandMap()->QueryAsWholeMatch(commandStr);
+	if (cmd == nullptr) {
+		return false;
+	}
+	return cmd->Execute();
+}
+
 // CBWLiteDlg メッセージ ハンドラー
 
 BOOL CBWLiteDlg::OnInitDialog()
@@ -191,13 +201,20 @@ Command* CBWLiteDlg::GetCurrentCommand()
 	return mCandidates[m_nSelIndex];
 }
 
+/**
+ * テキスト変更通知
+ */
 void CBWLiteDlg::OnEditCommandChanged()
 {
+	DWORD curCaretPos = mKeywordEdit.GetSel();
+
 	UpdateData();
+
 
 	mCandidateListBox.ResetContent();
 	m_nSelIndex = -1;
 
+	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (m_strCommand.IsEmpty()) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_DEFAULTDESCRIPTION);
@@ -205,32 +222,47 @@ void CBWLiteDlg::OnEditCommandChanged()
 		return;
 	}
 
+	// キーワードによる候補の列挙
 	GetCommandMap()->Query(m_strCommand, mCandidates);
-	if (mCandidates.size() > 0) {
 
-		// 履歴に基づきソート
-		std::sort(mCandidates.begin(), mCandidates.end(), 
-			[&](Command* l, Command* r) {
-				size_t ageL = mExecHistory->GetOrder(l->GetName());
-				size_t ageR = mExecHistory->GetOrder(r->GetName());
-				return ageL < ageR;
-		});
-
-		auto pCmd = mCandidates[0];
-		SetDescription(pCmd->GetDescription());
-
-		for (auto& item : mCandidates) {
-			mCandidateListBox.AddString(item->GetName());
-		}
-		m_nSelIndex = 0;
-		mCandidateListBox.SetCurSel(m_nSelIndex);
-
-	}
-	else {
+	// 候補なし
+	if (mCandidates.size() == 0) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		SetDescription(strMisMatch);
+		return;
 	}
+
+	// 履歴に基づきソート
+	std::sort(mCandidates.begin(), mCandidates.end(),
+			[&](Command* l, Command* r) {
+			size_t ageL = mExecHistory->GetOrder(l->GetName());
+			size_t ageR = mExecHistory->GetOrder(r->GetName());
+			return ageL < ageR;
+			});
+
+	auto pCmd = mCandidates[0];
+	SetDescription(pCmd->GetDescription());
+
+	for (auto& item : mCandidates) {
+		mCandidateListBox.AddString(item->GetName());
+	}
+	m_nSelIndex = 0;
+	mCandidateListBox.SetCurSel(m_nSelIndex);
+
+	// 補完
+	bool isCharAdded = (curCaretPos & 0xFFFF) > (mLastCaretPos & 0xFFFF);
+	if (isCharAdded) {
+		CString name = pCmd->GetName();
+		if (name.Find(m_strCommand) == 0) {
+			int start, end;
+			mKeywordEdit.GetSel(start, end);
+			m_strCommand = name;
+			UpdateData(FALSE);
+			mKeywordEdit.SetSel(end,-1);
+		}
+	}
+	mLastCaretPos = mKeywordEdit.GetSel();
 }
 
 void CBWLiteDlg::OnOK()
@@ -268,16 +300,17 @@ LRESULT CBWLiteDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
+	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+	m_strCommand.Empty();
+	mCandidateListBox.ResetContent();
+	m_nSelIndex = -1;
+
+	UpdateData(FALSE);
+
 	if (bShow) {
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
-		m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
-		m_strCommand.Empty();
-		mCandidateListBox.ResetContent();
-		m_nSelIndex = -1;
-
-		UpdateData(FALSE);
 		util::window::SavePlacement(this, _T("LauncherWindowPos"));
 	}
 }
@@ -304,6 +337,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 			}
 
 			m_strCommand = cmd->GetName();
+			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();
@@ -321,6 +355,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 			}
 
 			m_strCommand = cmd->GetName();
+			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();
@@ -333,6 +368,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 			}
 
 			m_strCommand = cmd->GetName();
+			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();
@@ -342,3 +378,45 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 	}
 	return 0;
 }
+
+void CBWLiteDlg::OnContextMenu(
+	CWnd* taskTrayWindow
+)
+{
+	CPoint point;
+	::GetCursorPos(&point);
+
+	CMenu menu;
+	menu.CreatePopupMenu();
+
+	const int ID_SHOW = 1;
+	const int ID_APPSETTING = 2;
+	const int ID_VERSIONINFO = 3;
+	const int ID_EXIT = 4;
+
+	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
+	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
+	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
+	//
+	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
+	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
+
+	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
+
+	if (n == ID_SHOW) {
+		ActivateWindow();
+	}
+	else if (n == ID_APPSETTING) {
+		//ExecuteCommand(_T("setting"));
+	}
+	else if (n == ID_VERSIONINFO) {
+		ExecuteCommand(_T("version"));
+	}
+	else if (n == ID_EXIT) {
+		ExecuteCommand(_T("exit"));
+	}
+}
+

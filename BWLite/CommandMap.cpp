@@ -221,3 +221,18 @@ CommandMap::Query(
 	}
 }
 
+Command* CommandMap::QueryAsWholeMatch(
+	const CString& strQueryStr
+)
+{
+	for (auto& item : in->commands) {
+		const CString& key = item.first;
+		if (strQueryStr != key) {
+			continue;
+		}
+
+		return item.second;
+	}
+
+	return nullptr;
+}

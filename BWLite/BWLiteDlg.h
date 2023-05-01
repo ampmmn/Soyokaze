@@ -31,6 +31,10 @@ public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
 
+	bool ExecuteCommand(const CString& commandStr);
+
+	void OnContextMenu(CWnd* taskTrayWindow);
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV サポート
 
@@ -39,6 +43,7 @@ protected:
 
 	// 現在選択中のコマンドを取得
 	Command* GetCurrentCommand();
+
 
 // 実装
 protected:
@@ -69,6 +74,7 @@ protected:
 	CListBox mCandidateListBox;
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
+	DWORD mLastCaretPos;
 	//
 	HotKey* mHotKeyPtr;
 
@@ -84,4 +90,5 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+
 };
