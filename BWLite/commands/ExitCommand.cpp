@@ -35,8 +35,3 @@ CString ExitCommand::GetErrorString()
 	return _T("");
 }
 
-BOOL ExitCommand::Match(const CString& strQueryStr)
-{
-	// Š®‘Sˆê’v”äŠr
-	return strQueryStr == _T("exit");
-}

@@ -15,8 +15,6 @@ public:
 	virtual BOOL Execute();
 	virtual CString GetErrorString();
 	
-	virtual BOOL Match(const CString& strQueryStr);
-
 public:
 	ShellExecCommand& SetName(LPCTSTR name);
 	ShellExecCommand& SetPath(LPCTSTR path);
@@ -28,7 +26,6 @@ public:
 
 protected:
 	CString m_strName;
-	CString m_strNameForIgnoreCase;
 	CString m_strPath;
 	CString m_strParam;
 	CString m_strDir;

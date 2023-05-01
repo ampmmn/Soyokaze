@@ -37,9 +37,3 @@ CString VersionCommand::GetErrorString()
 	return _T("");
 }
 
-BOOL VersionCommand::Match(const CString& strQueryStr)
-{
-	// Š®‘Sˆê’v”äŠr
-	return strQueryStr == _T("version");
-}
-

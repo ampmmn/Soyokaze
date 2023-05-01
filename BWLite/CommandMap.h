@@ -12,7 +12,6 @@ public:
 public:
 	BOOL Load();
 
-	Command* Query(const CString& strQueryStr);
 	void Query(const CString& strQueryStr, std::vector<Command*>& items);
 
 protected:

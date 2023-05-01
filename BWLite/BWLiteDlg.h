@@ -29,6 +29,7 @@ public:
 
 public:
 	static void ActivateWindow(HWND hwnd);
+	void ActivateWindow();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV サポート

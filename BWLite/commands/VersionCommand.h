@@ -12,6 +12,5 @@ public:
 	virtual CString GetDescription();
 	virtual BOOL Execute();
 	virtual CString GetErrorString();
-	virtual BOOL Match(const CString& strQueryStr);
 };
 

@@ -36,9 +36,3 @@ CString ReloadCommand::GetErrorString()
 	return _T("");
 }
 
-BOOL ReloadCommand::Match(const CString& strQueryStr)
-{
-	// Š®‘Sˆê’v”äŠr
-	return strQueryStr == _T("reload");
-}
-

@@ -77,31 +77,9 @@ CString ShellExecCommand::GetErrorString()
 	return _T("");
 }
 
-BOOL ShellExecCommand::Match(const CString& strQueryStr)
-{
-	// 無効化されたコマンドはマッチ対象から除外する
-	if (m_bEnable == false) {
-		return FALSE;
-	}
-
-	// ToDo: 大文字小文字の区別を切り替えられるように
-	// ToDo: 要素の比較のたびにstrTmp作りたくない
-
-	// 前方一致検索
-	//return m_strName.Find(strQueryStr) == 0;
-
-	// 大文字小文字を無視した前方一致検索
-	CString strTmp = strQueryStr;
-	strTmp.MakeLower();
-	return m_strNameForIgnoreCase.Find(strTmp) == 0;
-}
-
-
 ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
 {
 	m_strName = name;
-	m_strNameForIgnoreCase = name;
-	m_strNameForIgnoreCase.MakeLower();
 	return *this;
 }
 

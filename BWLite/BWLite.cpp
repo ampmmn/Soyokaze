@@ -8,6 +8,7 @@
 #include "BWLiteDlg.h"
 #include "SharedHwnd.h"
 #include "AppProfile.h"
+#include "TaskTray.h"
 #include <locale.h>
 
 #ifdef _DEBUG
@@ -103,6 +104,9 @@ BOOL CBWLiteApp::InitInstance()
 
 	CBWLiteDlg dlg;
 	m_pMainWnd = &dlg;
+
+	TaskTray taskTray(&dlg);
+	taskTray.Create();
 
 	dlg.DoModal();
 

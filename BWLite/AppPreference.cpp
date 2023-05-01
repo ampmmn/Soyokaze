@@ -10,8 +10,7 @@
 /**
  * コンストラクタ
  */
-AppPreference::AppPreference() :
-	mIsMatchCase(false)
+AppPreference::AppPreference()
 {
 }
 
@@ -28,19 +27,10 @@ AppPreference::~AppPreference()
 void AppPreference::Load()
 {
 	CAppProfile* pProfile = CAppProfile::Get();
-	mIsMatchCase = pProfile->Get(_T("BWLite"), _T("IsMatchCase"), 0) != 0;
 	mFilerPath = pProfile->Get(_T("BWLite"), _T("FilerPath"), _T(""));
 	mFilerParam = pProfile->Get(_T("BWLite"), _T("FilerParam"), _T(""));
 }
 
-
-/**
- * 大文字小文字を区別するかどうかの設定値の状態を取得する
- */
-bool AppPreference::IsMatchCase() const
-{
-	return mIsMatchCase;
-}
 
 CString AppPreference::GetFilerPath() const
 {

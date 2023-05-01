@@ -3,6 +3,9 @@
 #include "CommandMap.h"
 #include "AboutDlg.h"
 #include "AppProfile.h"
+#include "ForwardMatchPattern.h"
+#include "PartialMatchPattern.h"
+#include "SkipMatchPattern.h"
 #include "commands/ShellExecCommand.h"
 #include "commands/ReloadCommand.h"
 #include "commands/ExitCommand.h"
@@ -14,12 +17,18 @@
 #define new DEBUG_NEW
 #endif
 
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 struct CommandMap::PImpl
 {
+	PImpl() : pattern(nullptr)
+	{
+	}
+
 	std::map<CString, Command*> commands;
+	Pattern* pattern;
 };
 
 
@@ -32,6 +41,7 @@ CommandMap::~CommandMap()
 	for(auto& item : in->commands) {
 		delete item.second;
 	}
+	delete in->pattern;
 	delete in;
 }
 
@@ -58,6 +68,27 @@ static void TrimComment(CString& s)
 
 BOOL CommandMap::Load()
 {
+	// 既存の内容を破棄
+	for (auto& item : in->commands) {
+		delete item.second;
+	}
+	in->commands.clear();
+
+	// キーワード比較処理の生成
+	delete in->pattern;
+
+	CAppProfile* app = CAppProfile::Get();
+	int matchLevel = app->Get(_T("BWLite"), _T("MatchLevel"), 2);
+	if (matchLevel == 0) {
+		in->pattern = new SkipMatchPattern();
+	}
+	else if (matchLevel == 1) {
+		in->pattern = new PartialMatchPattern();
+	}
+	else {
+		in->pattern = new ForwardMatchPattern();
+	}
+
 	// ビルトインコマンドの登録
 	in->commands[_T("reload")] = new ReloadCommand(this);
 	in->commands[_T("exit")] = new ExitCommand();
@@ -170,30 +201,22 @@ BOOL CommandMap::Load()
 	return TRUE;
 }
 
-Command* CommandMap::Query(const CString& strQueryStr)
-{
-	for (auto& item : in->commands) {
-		const CString& key = item.first;
-		auto& command = item.second;
-		if (command->Match(strQueryStr) == FALSE) {
-			continue;
-		}
-		return command;
-	}
-	return nullptr;
-}
-
 void
-CommandMap::Query(const CString& strQueryStr, std::vector<Command*>& items)
+CommandMap::Query(
+	const CString& strQueryStr,
+	std::vector<Command*>& items
+)
 {
 	items.clear();
 
+	in->pattern->SetPattern(strQueryStr);
+
 	for (auto& item : in->commands) {
 		const CString& key = item.first;
-		auto& command = item.second;
-		if (command->Match(strQueryStr) == FALSE) {
+		if (in->pattern->Match(key) == FALSE) {
 			continue;
 		}
+		auto& command = item.second;
 		items.push_back(command);
 	}
 }

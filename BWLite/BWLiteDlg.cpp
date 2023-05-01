@@ -68,6 +68,13 @@ void CBWLiteDlg::ActivateWindow(HWND hwnd)
 	}
 }
 
+void CBWLiteDlg::ActivateWindow()
+{
+	if (IsWindow(GetSafeHwnd())) {
+		CBWLiteDlg::ActivateWindow(GetSafeHwnd());
+	}
+}
+
 // CBWLiteDlg メッセージ ハンドラー
 
 BOOL CBWLiteDlg::OnInitDialog()
