@@ -10,8 +10,10 @@
 #include "afxdialogex.h"
 #include "WindowPlacementUtil.h"
 #include "SharedHwnd.h"
+#include "AppProfile.h"
 #include "ExecHistory.h"
 #include "HotKey.h"
+#include "commands/ShellExecCommand.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -391,14 +393,16 @@ void CBWLiteDlg::OnContextMenu(
 
 	const int ID_SHOW = 1;
 	const int ID_APPSETTING = 2;
-	const int ID_VERSIONINFO = 3;
-	const int ID_EXIT = 4;
+	const int ID_USERDIR = 3;
+	const int ID_VERSIONINFO = 4;
+	const int ID_EXIT = 5;
 
 	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
 	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	//
 	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu(-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
@@ -411,6 +415,16 @@ void CBWLiteDlg::OnContextMenu(
 	}
 	else if (n == ID_APPSETTING) {
 		//ExecuteCommand(_T("setting"));
+	}
+	else if (n == ID_USERDIR) {
+
+		TCHAR userDirPath[65536];
+		CAppProfile::GetDirPath(userDirPath, 65536);
+		_tcscat_s(userDirPath, _T("\\"));
+
+		ShellExecCommand cmd;
+		cmd.SetPath(userDirPath);
+		cmd.Execute();
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));
