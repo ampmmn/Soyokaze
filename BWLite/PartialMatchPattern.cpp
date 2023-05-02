@@ -26,7 +26,11 @@ void PartialMatchPattern::SetPattern(
 	const CString& pattern
 )
 {
-	std::wstring pat(pattern);
+	// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
+	CString tmp(pattern);
+	tmp.Replace(_T("\\"), _T("\\\\"));
+
+	std::wstring pat(tmp);
 	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
 }
 
