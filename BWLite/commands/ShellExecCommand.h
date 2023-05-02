@@ -32,13 +32,19 @@ public:
 	ShellExecCommand& SetAttribute(const ATTRIBUTE& attr);
 	ShellExecCommand& SetAttributeForParam0(const ATTRIBUTE& attr);
 	ShellExecCommand& SetPath(LPCTSTR path);
+	ShellExecCommand& SetRunAs(int runAs);
 
 protected:
 	ATTRIBUTE& SelectAttribute(const std::vector<CString>& args);
 
+public:
+	static void ExpandArguments(const std::vector<CString>& args, CString& path, CString& param);
+	static void ExpandEnv(CString& texts);
+
 protected:
 	CString mName;
 	CString mDescription;
+	int mRunAs;
 
 	ATTRIBUTE mNormalAttr;
 	ATTRIBUTE mNoParamAttr;

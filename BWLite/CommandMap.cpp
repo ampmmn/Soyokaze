@@ -114,6 +114,7 @@ BOOL CommandMap::Load()
 	CString strDescription;
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	ShellExecCommand::ATTRIBUTE noParamAttr;
+	int runAs = 0;
 
 	CString strLine;
 	while(file.ReadString(strLine)) {
@@ -132,6 +133,7 @@ BOOL CommandMap::Load()
 				auto command = new ShellExecCommand();
 				command->SetName(strCommandName);
 				command->SetDescription(strDescription);
+				command->SetRunAs(runAs);
 
 				if (normalAttr.mPath.IsEmpty() == FALSE) {
 					command->SetAttribute(normalAttr);
@@ -146,6 +148,7 @@ BOOL CommandMap::Load()
 			// ‰Šú‰»
 			strCommandName = strCurSectionName;
 			strDescription.Empty();
+			runAs = 0;
 
 			normalAttr = ShellExecCommand::ATTRIBUTE();
 			noParamAttr = ShellExecCommand::ATTRIBUTE();
@@ -165,6 +168,9 @@ BOOL CommandMap::Load()
 
 		if (strKey.CompareNoCase(_T("description")) == 0) {
 			strDescription = strValue;
+		}
+		else if (strKey.CompareNoCase(_T("runas")) == 0) {
+			_stscanf_s(strValue, _T("%d"), &runAs);
 		}
 		else if (strKey.CompareNoCase(_T("path")) == 0) {
 			normalAttr.mPath = strValue;
@@ -196,6 +202,7 @@ BOOL CommandMap::Load()
 		auto command = new ShellExecCommand();
 		command->SetName(strCommandName);
 		command->SetDescription(strDescription);
+		command->SetRunAs(runAs);
 
 		if (normalAttr.mPath.IsEmpty() == FALSE) {
 			command->SetAttribute(normalAttr);
