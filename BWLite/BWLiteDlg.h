@@ -13,6 +13,7 @@ class Command;
 class SharedHwnd;
 class ExecHistory;
 class HotKey;
+class WindowPosition;
 
 // CBWLiteDlg ダイアログ
 class CBWLiteDlg : public CDialogEx
@@ -77,6 +78,8 @@ protected:
 	DWORD mLastCaretPos;
 	//
 	HotKey* mHotKeyPtr;
+	// ウインドウ位置を保存するためのクラス
+	WindowPosition* mWindowPositionPtr;
 
 	// 生成された、メッセージ割り当て関数
 	virtual BOOL OnInitDialog();

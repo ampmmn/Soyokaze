@@ -13,7 +13,6 @@
 #include "SharedHwnd.h"
 #include "ExecHistory.h"
 #include "HotKey.h"
-#include "commands/ShellExecCommand.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -28,7 +27,8 @@ CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 	m_pCommandMap(new CommandMap()),
 	m_pSharedHwnd(nullptr),
 	mExecHistory(new ExecHistory),
-	mHotKeyPtr(nullptr)
+	mHotKeyPtr(nullptr),
+	mWindowPositionPtr(nullptr)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
 }
@@ -40,6 +40,7 @@ CBWLiteDlg::~CBWLiteDlg()
 	delete m_pCommandMap;
 	delete m_pSharedHwnd;
 	delete mHotKeyPtr;
+	delete mWindowPositionPtr;
 }
 
 void CBWLiteDlg::DoDataExchange(CDataExchange* pDX)
@@ -127,7 +128,8 @@ BOOL CBWLiteDlg::OnInitDialog()
 	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
 
 	// ウインドウ位置の復元
-	util::window::LoadPlacement(this, _T("LauncherWindowPos"));
+	mWindowPositionPtr = new WindowPosition();
+	mWindowPositionPtr->Restore(GetSafeHwnd());
 
 	// 設定値の読み込み
 	m_pCommandMap->Load();
@@ -325,7 +327,7 @@ void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
-		util::window::SavePlacement(this, _T("LauncherWindowPos"));
+		mWindowPositionPtr->Update(GetSafeHwnd());
 	}
 }
 

@@ -7,61 +7,67 @@
 #define new DEBUG_NEW
 #endif
 
-namespace util {
-namespace window {
-
-static LPCTSTR c_pszSection = _T("WindowPlacement");
-
-/*!
- *	@brief ウインドウ位置情報の保存
- *	@return 成功時true
- *	@param[in] wnd 対象ウインドウ
- *	@param[in] key 保存キー
- */
-bool SavePlacement(
-	CWnd* wnd,
-	LPCTSTR key
-)
+WindowPosition::WindowPosition()
 {
-	ASSERT(key);
-	if (wnd == NULL || wnd->GetSafeHwnd() == NULL) {
+}
+
+WindowPosition::~WindowPosition()
+{
+	Save();
+}
+
+bool WindowPosition::Restore(HWND hwnd)
+{
+	if (IsWindow(hwnd) == FALSE) {
+		return false;
+	}
+
+	TCHAR path[32768];
+	WindowPosition::GetFilePath(path, 32768);
+
+
+	CFile file;
+	if (file.Open(path, CFile::modeRead | CFile::shareDenyWrite) == FALSE) {
 		return false;
 	}
 
 	WINDOWPLACEMENT wp;
+	file.Read(&wp, sizeof(wp));
+
+	return SetWindowPlacement(hwnd, &wp) != FALSE;
+}
+
+bool WindowPosition::Update(HWND hwnd)
+{
+	WINDOWPLACEMENT wp;
 	wp.length = sizeof(wp);
-	GetWindowPlacement(wnd->GetSafeHwnd(), &wp);
-	CAppProfile::Get()->WriteBinary(c_pszSection, key, &wp, wp.length);
+	if (GetWindowPlacement(hwnd, &wp) == false) {
+		return false;
+	}
+	mPosition = wp;
 	return true;
 }
 
-/*!
- *	@brief	ウインドウ位置情報の復元
- *	@return 成功時true
- *	@param[in] wnd 対象ウインドウ
- *	@param[in] key 保存キー
- */
-bool LoadPlacement(
-	CWnd* wnd,
-	LPCTSTR key
-)
+bool WindowPosition::Save()
 {
-	ASSERT(key);
-	if (wnd == NULL || wnd->GetSafeHwnd() == NULL) {
+	try {
+		TCHAR path[32768];
+		WindowPosition::GetFilePath(path, 32768);
+
+		UINT nFlags = CFile::modeCreate | CFile::modeWrite | CFile::typeBinary;
+		CFile file(path, nFlags);
+		file.Write(&mPosition, sizeof(mPosition));
+		return true;
+	}
+	catch(...) {
 		return false;
 	}
-
-	int len = (int)CAppProfile::Get()->GetBinary(c_pszSection, key, NULL, 0);
-	if (len == 0) {
-		return false;
-	}
-
-	WINDOWPLACEMENT wp;
-	CAppProfile::Get()->GetBinary(c_pszSection, key, &wp, len);
-
-	return SetWindowPlacement(wnd->GetSafeHwnd(), &wp) != FALSE;
 }
 
-}  // end of namespace window
-}  // end of namespace util
+
+void WindowPosition::GetFilePath(TCHAR* pathBuf, size_t len)
+{
+	CAppProfile::GetDirPath(pathBuf, len);
+	PathAppend(pathBuf, _T("BWLite.position"));
+}
 
