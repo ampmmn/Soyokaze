@@ -7,10 +7,10 @@
 #include "BWLite.h"
 #include "BWLiteDlg.h"
 #include "CommandMap.h"
+#include "CommandString.h"
 #include "afxdialogex.h"
 #include "WindowPlacementUtil.h"
 #include "SharedHwnd.h"
-#include "AppProfile.h"
 #include "ExecHistory.h"
 #include "HotKey.h"
 #include "commands/ShellExecCommand.h"
@@ -45,7 +45,7 @@ CBWLiteDlg::~CBWLiteDlg()
 void CBWLiteDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_COMMAND, m_strCommand);
+	DDX_Text(pDX, IDC_EDIT_COMMAND, mCommandStr);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, m_strDescription);
 	DDX_Control(pDX, IDC_LIST_CANDIDATE, mCandidateListBox);
 }
@@ -217,15 +217,18 @@ void CBWLiteDlg::OnEditCommandChanged()
 	m_nSelIndex = -1;
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (m_strCommand.IsEmpty()) {
+	if (mCommandStr.IsEmpty()) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_DEFAULTDESCRIPTION);
 		SetDescription(strMisMatch);
 		return;
 	}
 
+	//
+	CommandString commandStr(mCommandStr);
+
 	// キーワードによる候補の列挙
-	GetCommandMap()->Query(m_strCommand, mCandidates);
+	GetCommandMap()->Query(commandStr.GetCommandString(), mCandidates);
 
 	// 候補なし
 	if (mCandidates.size() == 0) {
@@ -243,23 +246,25 @@ void CBWLiteDlg::OnEditCommandChanged()
 			return ageL < ageR;
 			});
 
-	auto pCmd = mCandidates[0];
-	SetDescription(pCmd->GetDescription());
-
+	// 候補リストの更新
 	for (auto& item : mCandidates) {
 		mCandidateListBox.AddString(item->GetName());
 	}
 	m_nSelIndex = 0;
 	mCandidateListBox.SetCurSel(m_nSelIndex);
 
+	// 候補先頭を選択状態にする
+	auto pCmd = mCandidates[0];
+	SetDescription(pCmd->GetDescription());
+
 	// 補完
 	bool isCharAdded = (curCaretPos & 0xFFFF) > (mLastCaretPos & 0xFFFF);
 	if (isCharAdded) {
-		CString name = pCmd->GetName();
-		if (name.Find(m_strCommand) == 0) {
-			int start, end;
-			mKeywordEdit.GetSel(start, end);
-			m_strCommand = name;
+
+		int start, end;
+		mKeywordEdit.GetSel(start, end);
+		if (commandStr.ComplementCommand(pCmd->GetName(), mCommandStr)) {
+			// 補完が行われたらDDXにも反映し、入力欄の選択範囲も変える
 			UpdateData(FALSE);
 			mKeywordEdit.SetSel(end,-1);
 		}
@@ -269,16 +274,23 @@ void CBWLiteDlg::OnEditCommandChanged()
 
 void CBWLiteDlg::OnOK()
 {
+	UpdateData();
+
 	// ToDo: コマンドを実行する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		if (cmd->Execute() == FALSE) {
+		CommandString commandStr(mCommandStr);
+
+		std::vector<CString> args;
+		commandStr.GetParameters(args);
+
+		if (cmd->Execute(args) == FALSE) {
 			AfxMessageBox(cmd->GetErrorString());
 		}
 
 		// コマンド実行履歴に追加
-		mExecHistory->Add(m_strCommand);
+		mExecHistory->Add(mCommandStr);
 
 	}
 
@@ -303,7 +315,7 @@ LRESULT CBWLiteDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
-	m_strCommand.Empty();
+	mCommandStr.Empty();
 	mCandidateListBox.ResetContent();
 	m_nSelIndex = -1;
 
@@ -338,7 +350,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 				return 0;
 			}
 
-			m_strCommand = cmd->GetName();
+			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
@@ -356,7 +368,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 				return 0;
 			}
 
-			m_strCommand = cmd->GetName();
+			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
@@ -369,7 +381,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 				return 0;
 			}
 
-			m_strCommand = cmd->GetName();
+			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
 			UpdateData(FALSE);
 
@@ -417,14 +429,7 @@ void CBWLiteDlg::OnContextMenu(
 		//ExecuteCommand(_T("setting"));
 	}
 	else if (n == ID_USERDIR) {
-
-		TCHAR userDirPath[65536];
-		CAppProfile::GetDirPath(userDirPath, 65536);
-		_tcscat_s(userDirPath, _T("\\"));
-
-		ShellExecCommand cmd;
-		cmd.SetPath(userDirPath);
-		cmd.Execute();
+		ExecuteCommand(_T("userdir"));
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));

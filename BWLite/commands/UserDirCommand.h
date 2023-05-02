@@ -2,21 +2,16 @@
 
 #include "CommandIF.h"
 
-class CommandMap;
-
-class ReloadCommand : public Command
+class UserDirCommand : public Command
 {
 public:
-	ReloadCommand(CommandMap* pMap);
-	virtual ~ReloadCommand();
+	UserDirCommand();
+	virtual ~UserDirCommand();
 
 	virtual CString GetName();
 	virtual CString GetDescription();
-
 	virtual BOOL Execute();
 	virtual BOOL Execute(const std::vector<CString>& args);
 	virtual CString GetErrorString();
-
-protected:
-	CommandMap* m_pCommandMap;
 };
+

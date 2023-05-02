@@ -10,6 +10,7 @@
 #include "commands/ReloadCommand.h"
 #include "commands/ExitCommand.h"
 #include "commands/VersionCommand.h"
+#include "commands/UserDirCommand.h"
 #include <map>
 #include <vector>
 
@@ -93,6 +94,7 @@ BOOL CommandMap::Load()
 	in->commands[_T("reload")] = new ReloadCommand(this);
 	in->commands[_T("exit")] = new ExitCommand();
 	in->commands[_T("version")] = new VersionCommand();
+	in->commands[_T("userdir")] = new UserDirCommand();
 
 
 	// 設定ファイルを読み、コマンド一覧を登録する
@@ -109,13 +111,9 @@ BOOL CommandMap::Load()
 	CString strCurSectionName;
 
 	CString strCommandName;
-	CString strPath;
-	CString strParam;
-	CString strDir;
 	CString strDescription;
-	int nShowType = SW_NORMAL;
-	bool isEnable = true;
-
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	ShellExecCommand::ATTRIBUTE noParamAttr;
 
 	CString strLine;
 	while(file.ReadString(strLine)) {
@@ -132,25 +130,25 @@ BOOL CommandMap::Load()
 
  			if (strCommandName.IsEmpty() == FALSE) {
 				auto command = new ShellExecCommand();
-				command->SetName(strCommandName).
-				         SetPath(strPath).
-				         SetParam(strParam).
-				         SetDirectory(strDir).
-				         SetDescription(strDescription).
-				         SetShowType(nShowType).
-								 SetEnable(isEnable);
+				command->SetName(strCommandName);
+				command->SetDescription(strDescription);
+
+				if (normalAttr.mPath.IsEmpty() == FALSE) {
+					command->SetAttribute(normalAttr);
+				}
+				if (noParamAttr.mPath.IsEmpty() == FALSE) {
+					command->SetAttributeForParam0(noParamAttr);
+				}
 
 				in->commands[strCommandName] = command;
 			}
 
 			// 初期化
 			strCommandName = strCurSectionName;
-			strPath.Empty();
-			strParam.Empty();
-			strDir.Empty();
 			strDescription.Empty();
-			nShowType = SW_NORMAL;
-			isEnable = true;
+
+			normalAttr = ShellExecCommand::ATTRIBUTE();
+			noParamAttr = ShellExecCommand::ATTRIBUTE();
 			continue;
 		}
 
@@ -165,36 +163,47 @@ BOOL CommandMap::Load()
 		CString strValue = strLine.Mid(n+1);
 		strValue.Trim();
 
-		if (strKey.CompareNoCase(_T("path")) == 0) {
-			strPath = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("dir")) == 0) {
-			strDir = strValue;
-
-		}
-		else if (strKey.CompareNoCase(_T("description")) == 0) {
+		if (strKey.CompareNoCase(_T("description")) == 0) {
 			strDescription = strValue;
 		}
+		else if (strKey.CompareNoCase(_T("path")) == 0) {
+			normalAttr.mPath = strValue;
+		}
+		else if (strKey.CompareNoCase(_T("dir")) == 0) {
+			normalAttr.mDir = strValue;
+		}
 		else if (strKey.CompareNoCase(_T("parameter")) == 0) {
-			strParam = strValue;
+			normalAttr.mParam = strValue;
 		}
 		else if (strKey.CompareNoCase(_T("show")) == 0) {
-			_stscanf_s(strValue, _T("%d"), &nShowType);
+			_stscanf_s(strValue, _T("%d"), &normalAttr.mShowType);
 		}
-		else if (strKey.CompareNoCase(_T("disable")) == 0) {
-			isEnable = strValue.CompareNoCase(_T("true")) != 0;
+		else if (strKey.CompareNoCase(_T("path0")) == 0) {
+			noParamAttr.mPath = strValue;
+		}
+		else if (strKey.CompareNoCase(_T("dir0")) == 0) {
+			noParamAttr.mDir = strValue;
+		}
+		else if (strKey.CompareNoCase(_T("parameter0")) == 0) {
+			noParamAttr.mParam = strValue;
+		}
+		else if (strKey.CompareNoCase(_T("show0")) == 0) {
+			_stscanf_s(strValue, _T("%d"), &noParamAttr.mShowType);
 		}
 	}
 
-	if (strCommandName.IsEmpty() == FALSE && strPath.IsEmpty() == FALSE) {
-			auto command = new ShellExecCommand();
-			command->SetName(strCommandName).
-			         SetPath(strPath).
-			         SetParam(strParam).
-			         SetDirectory(strDir).
-			         SetDescription(strDescription).
-			         SetShowType(nShowType).
-			         SetEnable(isEnable);
+	if (strCommandName.IsEmpty() == FALSE) {
+		auto command = new ShellExecCommand();
+		command->SetName(strCommandName);
+		command->SetDescription(strDescription);
+
+		if (normalAttr.mPath.IsEmpty() == FALSE) {
+			command->SetAttribute(normalAttr);
+		}
+		if (noParamAttr.mPath.IsEmpty() == FALSE) {
+			command->SetAttributeForParam0(noParamAttr);
+		}
+
 		in->commands[strCommandName] = command;
 	}
 

@@ -7,8 +7,17 @@
 #define new DEBUG_NEW
 #endif
 
-ShellExecCommand::ShellExecCommand() :
-	m_nShowType(SW_NORMAL), m_bEnable(true)
+ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
+	mShowType(SW_NORMAL)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+ShellExecCommand::ShellExecCommand()
 {
 }
 
@@ -18,24 +27,33 @@ ShellExecCommand::~ShellExecCommand()
 
 CString ShellExecCommand::GetName()
 {
-	return m_strName;
+	return mName;
 }
 
 
 CString ShellExecCommand::GetDescription()
 {
-	return m_strDescription.IsEmpty() ? m_strName : m_strDescription;
+	return mDescription.IsEmpty() ? mName : mDescription;
 }
 
 BOOL ShellExecCommand::Execute()
 {
-	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
-	                  PathFileExists(m_strPath);
+	std::vector<CString> argsEmpty;
+	return Execute(argsEmpty);
+}
+
+BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
+{
+	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
+	const ATTRIBUTE& attrPtr = SelectAttribute(args);
 
 	CString path;
 	CString param;
-	if (isOpenPath || PathIsDirectory(m_strPath)) {
+	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
+	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
+	                  PathFileExists(attrPtr.mPath);
+
+	if (isOpenPath || PathIsDirectory(attrPtr.mPath)) {
 
 		// 登録されたファイラーで開く
 		AppPreference pref;
@@ -44,23 +62,34 @@ BOOL ShellExecCommand::Execute()
 		path = pref.GetFilerPath();
 		param = pref.GetFilerParam();
 		// とりあえずリンク先のみをサポート
-		param.Replace(_T("$1"), m_strPath);
+		param.Replace(_T("$target"), attrPtr.mPath);
 	}
 	else {
-		path = m_strPath;
-		param = m_strParam;
+		path = attrPtr.mPath;
+		param = attrPtr.mParam;
 	}
+
+	// argsの値を展開
+	for (int i = 0; i < (int)args.size(); ++i) {
+		CString key;
+		key.Format(_T("$%d"), i+1);
+
+		path.Replace(key, args[i]);
+		param.Replace(key, args[i]);
+	}
+	// ToDo: 環境変数の展開
+
 
 	SHELLEXECUTEINFO si = SHELLEXECUTEINFO();
 	si.cbSize = sizeof(si);
-	si.nShow = m_nShowType;
+	si.nShow = attrPtr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
 	if (param.IsEmpty() == FALSE) {
 		si.lpParameters = param;
 	}
-	if (m_strDir.IsEmpty() == FALSE) {
-		si.lpDirectory = m_strDir;
+	if (attrPtr.mDir.IsEmpty() == FALSE) {
+		si.lpDirectory = attrPtr.mDir;
 	}
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {
@@ -79,43 +108,60 @@ CString ShellExecCommand::GetErrorString()
 
 ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
 {
-	m_strName = name;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
-{
-	m_strPath = path;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetParam(LPCTSTR param)
-{
-	m_strParam = param;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetDirectory(LPCTSTR dir)
-{
-	m_strDir = dir;
+	mName = name;
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
 {
-	m_strDescription = description;
+	mDescription = description;
 	return *this;
 }
 
-ShellExecCommand& ShellExecCommand::SetShowType(int showType)
+
+ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
 {
-	m_nShowType = showType;
+	mNormalAttr = attr;
 	return *this;
 }
 
-ShellExecCommand& ShellExecCommand::SetEnable(bool isEnable)
+ShellExecCommand& ShellExecCommand::SetAttributeForParam0(const ATTRIBUTE& attr)
 {
-	m_bEnable = isEnable;
+	mNoParamAttr = attr;
 	return *this;
 }
 
+ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
+{
+	mNormalAttr.mPath = path;
+	return *this;
+}
+
+ShellExecCommand::ATTRIBUTE&
+ShellExecCommand::SelectAttribute(
+	const std::vector<CString>& args
+)
+{
+	// パラメータの有無などでATTRIBUTEを切り替える
+
+	if (args.size() > 0) {
+		// パラメータあり
+
+		// mNormalAttr優先
+		if (mNormalAttr.mPath.IsEmpty() == FALSE) {
+			return mNormalAttr;
+		}
+
+		return mNoParamAttr;
+	}
+	else {
+		// パラメータなし
+
+		// mNoParamAttr優先
+		if (mNoParamAttr.mPath.IsEmpty() == FALSE) {
+			return mNoParamAttr;
+		}
+
+		return mNormalAttr;
+	}
+}

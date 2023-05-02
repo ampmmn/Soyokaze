@@ -30,6 +30,12 @@ BOOL ExitCommand::Execute()
 	return TRUE;
 }
 
+BOOL ExitCommand::Execute(const std::vector<CString>& args)
+{
+	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	return Execute();
+}
+
 CString ExitCommand::GetErrorString()
 {
 	return _T("");

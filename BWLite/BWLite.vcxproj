@@ -277,9 +277,11 @@
     <ClInclude Include="BWLiteDlg.h" />
     <ClInclude Include="CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
+    <ClInclude Include="CommandString.h" />
     <ClInclude Include="commands\ExitCommand.h" />
     <ClInclude Include="commands\ReloadCommand.h" />
     <ClInclude Include="commands\ShellExecCommand.h" />
+    <ClInclude Include="commands\UserDirCommand.h" />
     <ClInclude Include="commands\VersionCommand.h" />
     <ClInclude Include="ExecHistory.h" />
     <ClInclude Include="ForwardMatchPattern.h" />
@@ -303,9 +305,11 @@
     <ClCompile Include="BWLite.cpp" />
     <ClCompile Include="BWLiteDlg.cpp" />
     <ClCompile Include="CommandMap.cpp" />
+    <ClCompile Include="CommandString.cpp" />
     <ClCompile Include="commands\ExitCommand.cpp" />
     <ClCompile Include="commands\ReloadCommand.cpp" />
     <ClCompile Include="commands\ShellExecCommand.cpp" />
+    <ClCompile Include="commands\UserDirCommand.cpp" />
     <ClCompile Include="commands\VersionCommand.cpp" />
     <ClCompile Include="ExecHistory.cpp" />
     <ClCompile Include="ForwardMatchPattern.cpp" />

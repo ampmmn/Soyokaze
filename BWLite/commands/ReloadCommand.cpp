@@ -31,6 +31,12 @@ BOOL ReloadCommand::Execute()
 	return m_pCommandMap->Load();
 }
 
+BOOL ReloadCommand::Execute(const std::vector<CString>& args)
+{
+	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	return Execute();
+}
+
 CString ReloadCommand::GetErrorString()
 {
 	return _T("");

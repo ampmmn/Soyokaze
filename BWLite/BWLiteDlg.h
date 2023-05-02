@@ -50,7 +50,7 @@ protected:
 	HICON m_hIcon;
 
 	// キーワード入力欄の文字列
-	CString m_strCommand;
+	CString mCommandStr;
 	// 現在選択中のコマンドの説明
 	CString m_strDescription;
 

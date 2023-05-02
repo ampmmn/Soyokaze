@@ -32,6 +32,12 @@ BOOL VersionCommand::Execute()
 	return TRUE;
 }
 
+BOOL VersionCommand::Execute(const std::vector<CString>& args)
+{
+	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	return Execute();
+}
+
 CString VersionCommand::GetErrorString()
 {
 	return _T("");

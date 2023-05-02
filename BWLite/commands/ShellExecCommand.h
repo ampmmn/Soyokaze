@@ -2,9 +2,19 @@
 
 #include "CommandIF.h"
 
-
 class ShellExecCommand : public Command
 {
+public:
+	struct ATTRIBUTE {
+		ATTRIBUTE();
+
+		CString mPath;
+		CString mParam;
+		CString mDir;
+		int mShowType;
+	};
+
+
 public:
 	ShellExecCommand();
 	virtual ~ShellExecCommand();
@@ -13,23 +23,23 @@ public:
 	virtual CString GetDescription();
 
 	virtual BOOL Execute();
+	virtual BOOL Execute(const std::vector<CString>& args);
 	virtual CString GetErrorString();
 	
 public:
 	ShellExecCommand& SetName(LPCTSTR name);
-	ShellExecCommand& SetPath(LPCTSTR path);
-	ShellExecCommand& SetParam(LPCTSTR param);
-	ShellExecCommand& SetDirectory(LPCTSTR dir);
 	ShellExecCommand& SetDescription(LPCTSTR description);
-	ShellExecCommand& SetShowType(int showType);
-	ShellExecCommand& SetEnable(bool isEnable);
+	ShellExecCommand& SetAttribute(const ATTRIBUTE& attr);
+	ShellExecCommand& SetAttributeForParam0(const ATTRIBUTE& attr);
+	ShellExecCommand& SetPath(LPCTSTR path);
 
 protected:
-	CString m_strName;
-	CString m_strPath;
-	CString m_strParam;
-	CString m_strDir;
-	CString m_strDescription;
-	int m_nShowType;
-	bool m_bEnable;
+	ATTRIBUTE& SelectAttribute(const std::vector<CString>& args);
+
+protected:
+	CString mName;
+	CString mDescription;
+
+	ATTRIBUTE mNormalAttr;
+	ATTRIBUTE mNoParamAttr;
 };
