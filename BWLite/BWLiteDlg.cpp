@@ -57,6 +57,8 @@ BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_COMMAND, OnEditCommandChanged)
 	ON_WM_SHOWWINDOW()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
+	ON_LBN_SELCHANGE(IDC_LIST_CANDIDATE, OnLbnSelChange)
+	ON_LBN_DBLCLK(IDC_LIST_CANDIDATE, OnLbnDblClkCandidate)
 END_MESSAGE_MAP()
 
 void CBWLiteDlg::ActivateWindow(HWND hwnd)
@@ -393,6 +395,28 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 	}
 	return 0;
+}
+
+void CBWLiteDlg::OnLbnSelChange()
+{
+	UpdateData();
+
+	int nSel = mCandidateListBox.GetCurSel();
+	if (nSel == -1) {
+		return;
+	}
+	m_nSelIndex = nSel;
+	auto cmd = GetCurrentCommand();
+	if (cmd) {
+		mCommandStr = cmd->GetName();
+		m_strDescription = cmd->GetDescription();
+	}
+	UpdateData(FALSE);
+}
+
+void CBWLiteDlg::OnLbnDblClkCandidate()
+{
+	OnOK();
 }
 
 void CBWLiteDlg::OnContextMenu(
