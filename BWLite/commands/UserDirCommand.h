@@ -16,3 +16,5 @@ public:
 	virtual HICON GetIcon();
 };
 
+
+

@@ -40,8 +40,9 @@ void IconLabel::DrawIcon(HICON iconHandle)
 // デフォルトアイコンの描画
 void IconLabel::DrawDefaultIcon()
 {
-	ASSERT(mIconDefault);
-	DrawIcon(mIconDefault);
+	if (mIconDefault) {
+		DrawIcon(mIconDefault);
+	}
 }
 
 void IconLabel::OnPaint()

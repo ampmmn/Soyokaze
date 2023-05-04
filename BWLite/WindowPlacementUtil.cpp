@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WindowPlacementUtil.h"
 #include "AppProfile.h"
+#include <utility> // for std::pair
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,6 +17,39 @@ WindowPosition::~WindowPosition()
 	Save();
 }
 
+/**
+ * モニタ列挙コールバック関数
+ * ウインドウがモニタに収まるかの判定を行う
+ *
+ * @param hm モニタのハンドル(使わない)
+ * @param hdc デバイスコンテキスト(使わない)
+ * @param rectMonitor モニタ領域
+ * @param lp  ユーザパラメータ(std::pair<RECT,bool>)
+ */
+static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, LPARAM lp)
+{
+	std::pair<RECT,bool>* param = (std::pair<RECT,bool>*)lp;
+
+	const RECT& rectWnd = param->first;
+	bool& isOutOfMonitor = param->second;
+
+	// モニタ領域とウインドウ領域が交差するかどうかで収まっているかを判断する
+	RECT rectIntersect;
+	if (IntersectRect(&rectIntersect, rectMonitor, &rectWnd)) {
+		isOutOfMonitor = false;
+	}
+
+	return TRUE;
+}
+
+/**
+ *  設定ファイル(BWLite.position)の情報からウインドウ位置を復元する
+ *  前回の位置を復元するために使用する
+ *  復元した結果のウインドウ位置がモニター領域に収まっていない場合はfalseを返す
+ *
+ *  @return true:復元した   false:復元しなかった
+ *  @param hwnd 対象ウインドウハンドル
+ */
 bool WindowPosition::Restore(HWND hwnd)
 {
 	if (IsWindow(hwnd) == FALSE) {
@@ -34,7 +68,18 @@ bool WindowPosition::Restore(HWND hwnd)
 	WINDOWPLACEMENT wp;
 	file.Read(&wp, sizeof(wp));
 
-	return SetWindowPlacement(hwnd, &wp) != FALSE;
+	if (SetWindowPlacement(hwnd, &wp) == FALSE) {
+		return FALSE;
+	}
+
+	// 各モニタ領域の中に納まっているかをチェック
+	RECT rectWnd;
+	GetWindowRect(hwnd, &rectWnd);
+
+	std::pair<RECT, bool> param(rectWnd, true);
+	EnumDisplayMonitors(NULL, NULL, MonitorCallback, (LPARAM)&param);
+
+	return param.second == false;
 }
 
 bool WindowPosition::Update(HWND hwnd)

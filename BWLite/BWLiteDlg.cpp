@@ -178,7 +178,10 @@ BOOL CBWLiteDlg::OnInitDialog()
 
 	// ウインドウ位置の復元
 	mWindowPositionPtr = new WindowPosition();
-	mWindowPositionPtr->Restore(GetSafeHwnd());
+	if (mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
+		// 復元に失敗した場合は中央に表示
+		CenterWindow();
+	}
 
 	// 透明度制御
 	mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
