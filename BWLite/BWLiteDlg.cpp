@@ -275,6 +275,7 @@ void CBWLiteDlg::OnEditCommandChanged()
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_DEFAULTDESCRIPTION);
 		SetDescription(strMisMatch);
+		mIconLabel.DrawDefaultIcon();
 		return;
 	}
 
@@ -289,6 +290,7 @@ void CBWLiteDlg::OnEditCommandChanged()
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		SetDescription(strMisMatch);
+		mIconLabel.DrawDefaultIcon();
 		return;
 	}
 
@@ -372,6 +374,7 @@ LRESULT CBWLiteDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+	mIconLabel.DrawDefaultIcon();
 	mCommandStr.Empty();
 	mCandidateListBox.ResetContent();
 	m_nSelIndex = -1;
@@ -410,6 +413,8 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
+			mIconLabel.DrawIcon(cmd->GetIcon());
+
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();
@@ -441,6 +446,7 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
+			mIconLabel.DrawIcon(cmd->GetIcon());
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();

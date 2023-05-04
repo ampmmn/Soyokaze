@@ -37,6 +37,12 @@ void IconLabel::DrawIcon(HICON iconHandle)
 	dc.BitBlt(0,0, rc.Width(), rc.Height(), &mMemDC, 0, 0, SRCCOPY);
 }
 
+// デフォルトアイコンの描画
+void IconLabel::DrawDefaultIcon()
+{
+	ASSERT(mIconDefault);
+	DrawIcon(mIconDefault);
+}
 
 void IconLabel::OnPaint()
 {
@@ -56,7 +62,7 @@ void IconLabel::OnPaint()
 		mMemDC.SelectObject(mBkBrush);
 		mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
-		mIconDefault = AfxGetApp()->LoadIcon(IDI_ICON1);
+		mIconDefault = AfxGetApp()->LoadIcon(IDI_ICON2);
 		mMemDC.DrawIcon(0, 0, mIconDefault);
 	}
 

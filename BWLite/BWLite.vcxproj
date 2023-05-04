@@ -279,6 +279,7 @@
     <ClInclude Include="CommandMap.h" />
     <ClInclude Include="CommandString.h" />
     <ClInclude Include="commands\ExitCommand.h" />
+    <ClInclude Include="commands\MainDirCommand.h" />
     <ClInclude Include="commands\ReloadCommand.h" />
     <ClInclude Include="commands\ShellExecCommand.h" />
     <ClInclude Include="commands\UserDirCommand.h" />
@@ -310,6 +311,7 @@
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandString.cpp" />
     <ClCompile Include="commands\ExitCommand.cpp" />
+    <ClCompile Include="commands\MainDirCommand.cpp" />
     <ClCompile Include="commands\ReloadCommand.cpp" />
     <ClCompile Include="commands\ShellExecCommand.cpp" />
     <ClCompile Include="commands\UserDirCommand.cpp" />

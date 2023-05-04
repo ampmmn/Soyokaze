@@ -7,6 +7,7 @@ public:
 	virtual ~IconLabel();
 
 	void DrawIcon(HICON iconHandle);
+	void DrawDefaultIcon();
 
 protected:
 	CDC mMemDC;
