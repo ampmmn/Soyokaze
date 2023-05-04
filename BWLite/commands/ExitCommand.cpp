@@ -46,3 +46,9 @@ HICON ExitCommand::GetIcon()
 {
 	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+BOOL ExitCommand::Match(Pattern* pattern)
+{
+	return pattern->Match(GetName());
+}
+

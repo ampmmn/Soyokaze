@@ -53,3 +53,9 @@ HICON UserDirCommand::GetIcon()
 {
 	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+BOOL UserDirCommand::Match(Pattern* pattern)
+{
+	return pattern->Match(GetName());
+}
+

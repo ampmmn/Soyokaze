@@ -47,3 +47,9 @@ HICON ReloadCommand::GetIcon()
 {
 	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+BOOL ReloadCommand::Match(Pattern* pattern)
+{
+	return pattern->Match(GetName());
+}
+

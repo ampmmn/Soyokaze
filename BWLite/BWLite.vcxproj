@@ -280,6 +280,7 @@
     <ClInclude Include="CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
     <ClInclude Include="CommandString.h" />
+    <ClInclude Include="commands\ExecutableFileCommand.h" />
     <ClInclude Include="commands\ExitCommand.h" />
     <ClInclude Include="commands\MainDirCommand.h" />
     <ClInclude Include="commands\ReloadCommand.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TaskTray.h" />
+    <ClInclude Include="WholeMatchPattern.h" />
     <ClInclude Include="WindowPlacementUtil.h" />
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
@@ -314,6 +316,7 @@
     <ClCompile Include="CmdReceiveEdit.cpp" />
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandString.cpp" />
+    <ClCompile Include="commands\ExecutableFileCommand.cpp" />
     <ClCompile Include="commands\ExitCommand.cpp" />
     <ClCompile Include="commands\MainDirCommand.cpp" />
     <ClCompile Include="commands\ReloadCommand.cpp" />
@@ -328,6 +331,7 @@
     <ClCompile Include="KeywordEdit.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="PartialMatchPattern.cpp" />
+    <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>
@@ -338,6 +342,7 @@
     </ClCompile>
     <ClCompile Include="SkipMatchPattern.cpp" />
     <ClCompile Include="TaskTray.cpp" />
+    <ClCompile Include="WholeMatchPattern.cpp" />
     <ClCompile Include="WindowPlacementUtil.cpp" />
     <ClCompile Include="WindowTransparency.cpp" />
   </ItemGroup>

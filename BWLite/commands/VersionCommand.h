@@ -14,5 +14,6 @@ public:
 	virtual BOOL Execute(const std::vector<CString>& args);
 	virtual CString GetErrorString();
 	virtual HICON GetIcon();
+	virtual BOOL Match(Pattern* pattern);
 };
 

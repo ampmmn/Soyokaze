@@ -303,3 +303,9 @@ HICON ShellExecCommand::GetIcon()
 	}
 	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+BOOL ShellExecCommand::Match(Pattern* pattern)
+{
+	return pattern->Match(GetName());
+}
+

@@ -6,12 +6,14 @@
 #include "ForwardMatchPattern.h"
 #include "PartialMatchPattern.h"
 #include "SkipMatchPattern.h"
+#include "WholeMatchPattern.h"
 #include "commands/ShellExecCommand.h"
 #include "commands/ReloadCommand.h"
 #include "commands/ExitCommand.h"
 #include "commands/VersionCommand.h"
 #include "commands/UserDirCommand.h"
 #include "commands/MainDirCommand.h"
+#include "commands/ExecutableFileCommand.h"
 #include <map>
 #include <vector>
 
@@ -30,12 +32,14 @@ struct CommandMap::PImpl
 	}
 
 	std::map<CString, Command*> commands;
+	ExecutableFileCommand* exeCommand;
 	Pattern* pattern;
 };
 
 
 CommandMap::CommandMap() : in(new PImpl)
 {
+	in->exeCommand = new ExecutableFileCommand();
 }
 
 CommandMap::~CommandMap()
@@ -230,12 +234,19 @@ CommandMap::Query(
 	in->pattern->SetPattern(strQueryStr);
 
 	for (auto& item : in->commands) {
-		const CString& key = item.first;
-		if (in->pattern->Match(key) == FALSE) {
+
+		auto& command = item.second;
+		if (command->Match(in->pattern) == FALSE) {
 			continue;
 		}
-		auto& command = item.second;
 		items.push_back(command);
+	}
+
+	// 1‚¯‚ñ‚à‚Ü‚Á‚¿‚µ‚È‚¢‚Î‚ ‚¢‚ÍExecutableCommand‚Ì‚Ð‚©‚­
+	if (items.empty()) {
+		if (in->exeCommand->Match(in->pattern)) {
+			items.push_back(in->exeCommand);
+		}
 	}
 }
 
@@ -243,13 +254,21 @@ Command* CommandMap::QueryAsWholeMatch(
 	const CString& strQueryStr
 )
 {
+	WholeMatchPattern pat(strQueryStr);
+
 	for (auto& item : in->commands) {
-		const CString& key = item.first;
-		if (strQueryStr != key) {
+
+		auto& command = item.second;
+		if (command->Match(&pat) == FALSE) {
 			continue;
 		}
 
 		return item.second;
+	}
+
+	// 1‚¯‚ñ‚à‚Ü‚Á‚¿‚µ‚È‚¢‚Î‚ ‚¢‚ÍExecutableCommand‚Ì‚Ð‚©‚­
+	if (in->exeCommand->Match(in->pattern)) {
+		return in->exeCommand;
 	}
 
 	return nullptr;

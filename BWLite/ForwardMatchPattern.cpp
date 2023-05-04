@@ -11,6 +11,7 @@
 struct ForwardMatchPattern::PImpl
 {
 	std::wregex mRegPattern;
+	CString mWord;
 };
 
 ForwardMatchPattern::ForwardMatchPattern() : in(new PImpl)
@@ -26,12 +27,10 @@ void ForwardMatchPattern::SetPattern(
 	const CString& pattern
 )
 {
-	// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
-	std::wstring pat(L"^");
-	CString tmp(pattern);
+	in->mWord = pattern;
 
-	tmp.Replace(_T("\\"), _T("\\\\"));
-	pat += tmp;
+	std::wstring pat(L"^");
+	pat += Pattern::StripEscapeChars(pattern);
 	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
 }
 
@@ -43,3 +42,7 @@ bool ForwardMatchPattern::Match(
 }
 
 
+CString ForwardMatchPattern::GetOriginalPattern()
+{
+	return in->mWord;
+}

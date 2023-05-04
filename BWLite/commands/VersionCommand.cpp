@@ -48,3 +48,10 @@ HICON VersionCommand::GetIcon()
 {
 	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+
+BOOL VersionCommand::Match(Pattern* pattern)
+{
+	return pattern->Match(GetName());
+}
+

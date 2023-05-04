@@ -9,8 +9,9 @@ public:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
-	void SetPattern(const CString& pattern);
-	bool Match(const CString& str);
+	virtual void SetPattern(const CString& pattern);
+	virtual bool Match(const CString& str);
+	virtual CString GetOriginalPattern();
 
 protected:
 	struct PImpl;

@@ -11,6 +11,7 @@
 struct PartialMatchPattern::PImpl
 {
 	std::wregex mRegPattern;
+	CString mWord;
 };
 
 PartialMatchPattern::PartialMatchPattern() : in(new PImpl)
@@ -26,11 +27,8 @@ void PartialMatchPattern::SetPattern(
 	const CString& pattern
 )
 {
-	// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
-	CString tmp(pattern);
-	tmp.Replace(_T("\\"), _T("\\\\"));
-
-	std::wstring pat(tmp);
+	in->mWord = pattern;
+	std::wstring pat(Pattern::StripEscapeChars(pattern));
 	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
 }
 
@@ -41,4 +39,8 @@ bool PartialMatchPattern::Match(
 	return std::regex_search((const wchar_t*)str, in->mRegPattern);
 }
 
+CString PartialMatchPattern::GetOriginalPattern()
+{
+	return in->mWord;
+}
 
