@@ -53,3 +53,4 @@ UINT KeywordEdit::OnGetDlgCode()
 
 	return ret;
 }
+

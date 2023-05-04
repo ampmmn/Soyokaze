@@ -16,6 +16,7 @@
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
+#define IDC_EDIT_COMMAND2               1002
 #define IDC_LIST_CANDIDATE              1004
 #define IDC_STATIC_ICON                 1005
 #define ID_A                            32771

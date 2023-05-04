@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "KeywordEdit.h"
+#include "CmdReceiveEdit.h"
 #include "IconLabel.h"
 
 class CommandMap;
@@ -43,6 +44,7 @@ protected:
 
 	CommandMap* GetCommandMap();
 	void SetDescription(const CString& msg);
+	void ClearContent();
 
 	// 現在選択中のコマンドを取得
 	Command* GetCurrentCommand();
@@ -79,6 +81,9 @@ protected:
 	KeywordEdit mKeywordEdit;
 	DWORD mLastCaretPos;
 
+	// 外部からのコマンド受付用エディットボックス
+	CmdReceiveEdit mCmdReceiveEdit;
+
 	// アイコン描画用ラベル
 	IconLabel mIconLabel;
 	//
@@ -104,6 +109,7 @@ protected:
 	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 };

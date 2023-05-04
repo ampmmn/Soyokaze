@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "BWLite.h"
+#include "Arguments.h"
 #include "BWLiteDlg.h"
 #include "SharedHwnd.h"
 #include "AppProfile.h"
@@ -52,8 +53,20 @@ CBWLiteApp theApp;
 
 BOOL CBWLiteApp::InitInstance()
 {
-	// 既にプロセスが起動している場合はプロセスをアクティブ化し、このプロセスは終了する
-	if (ActivateExistingProcess()) {
+	Arguments args(__argc, __targv);
+
+	// 既にプロセスが起動している場合は起動しない
+	if (BWLiteProcessExists()) {
+
+		CString value;
+		if (args.GetValue(_T("-c"), value)) {
+			// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
+			SendCommandString(value);
+		}
+		else {
+			// プロセスをアクティブ化し、このプロセスは終了する
+			ActivateExistingProcess();
+		}
 		return FALSE;
 	}
 
@@ -140,18 +153,25 @@ static BOOL CALLBACK OnEnumChildWindow(
 	return FALSE;
 }
 
-
 /**
- * @return true: アクティブ化した  false: 先行プロセスはない
+ * 先行するBWLiteプロセスが存在するか?
+ * @return true: 存在する  false: 存在しない
  */
-bool CBWLiteApp::ActivateExistingProcess()
+bool CBWLiteApp::BWLiteProcessExists()
 {
 	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
 	if (h == NULL) {
 		return false;
 	}
 	CloseHandle(h);
+	return true;
+}
 
+/**
+ * @return true: アクティブ化した  false: 先行プロセスはない
+ */
+bool CBWLiteApp::ActivateExistingProcess()
+{
 	// 先行プロセスを有効化する
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
@@ -168,3 +188,30 @@ bool CBWLiteApp::ActivateExistingProcess()
 
 	return true;
 }
+
+/**
+ *  先行プロセスに対しコマンド文字列を送る
+ *  (先行プロセス側でコマンドを実行する)
+ */
+bool CBWLiteApp::SendCommandString(const CString& commandStr)
+{
+	SharedHwnd sharedHwnd;
+	HWND hwnd = sharedHwnd.GetHwnd();
+	if (hwnd == NULL) {
+		// 共有メモリ経由で拾えなかった場合は、念のためウインドウを探す
+		EnumChildWindows(HWND_DESKTOP, OnEnumChildWindow, (LPARAM)&hwnd);
+	}
+
+	if (hwnd == NULL) {
+		return false;
+	}
+
+	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
+	if (hwndCommand == NULL) {
+		return false;
+	}
+
+	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)commandStr);
+	return true;
+}
+

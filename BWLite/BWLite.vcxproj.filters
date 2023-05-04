@@ -111,6 +111,12 @@
     <ClInclude Include="commands\MainDirCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="Arguments.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdReceiveEdit.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -190,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="commands\MainDirCommand.cpp">
       <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdReceiveEdit.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

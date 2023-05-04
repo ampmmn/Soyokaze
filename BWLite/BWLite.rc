@@ -106,6 +106,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,3,24,6,14,NOT WS_VISIBLE
     PUSHBUTTON      "キャンセル",IDCANCEL,5,24,6,14,NOT WS_VISIBLE
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,1,0,18,21
+    EDITTEXT        IDC_EDIT_COMMAND2,0,24,6,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
 END
 
 
@@ -115,8 +116,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,2,1
- PRODUCTVERSION 0,0,2,1
+ FILEVERSION 0,0,3,1
+ PRODUCTVERSION 0,0,3,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -131,14 +132,14 @@ BEGIN
     BEGIN
         BLOCK "041104b0"
         BEGIN
-            VALUE "CompanyName", "TODO: <会社名>"
+            VALUE "CompanyName", "ymgw"
             VALUE "FileDescription", "BWLite"
-            VALUE "FileVersion", "0.0.2.1"
+            VALUE "FileVersion", "0.0.3.1"
             VALUE "InternalName", "BWLite.exe"
-            VALUE "LegalCopyright", "TODO: (C) <会社名>.  All rights reserved."
+            VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "BWLite.exe"
-            VALUE "ProductName", "TODO: <製品名>"
-            VALUE "ProductVersion", "0.0.2.1"
+            VALUE "ProductName", "BWLite"
+            VALUE "ProductVersion", "0.0.3.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -187,7 +188,8 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0
+    0, 0, 0, 0,
+    0, 0, 100, 0
 END
 
 IDD_ABOUTBOX AFX_DIALOG_LAYOUT

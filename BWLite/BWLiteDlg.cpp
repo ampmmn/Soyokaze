@@ -72,6 +72,7 @@ BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
+	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
 END_MESSAGE_MAP()
 
 void CBWLiteDlg::ActivateWindow(HWND hwnd)
@@ -105,6 +106,7 @@ LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 	// 表示状態のトグル
 	HWND hwnd = GetSafeHwnd();
 	if (::IsWindowVisible(hwnd) == FALSE) {
+
 		ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
@@ -125,6 +127,20 @@ LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+/**
+ * 後続プロセスから "-c <文字列>" 経由でコマンド実行指示を受け取ったときの処理
+ */
+LRESULT CBWLiteDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
+{
+	LPCTSTR text = (LPCTSTR)lParam;
+	if (text == nullptr) {
+		return 0;
+	}
+
+	ExecuteCommand(text);
+	return 0;
+}
+
 bool CBWLiteDlg::ExecuteCommand(const CString& commandStr)
 {
 	// (今のところ)内部用なので、履歴には登録しない
@@ -142,6 +158,7 @@ BOOL CBWLiteDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
+	mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
 	mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
 
 
@@ -247,6 +264,18 @@ void CBWLiteDlg::SetDescription(const CString& msg)
 	UpdateData(FALSE);
 }
 
+void CBWLiteDlg::ClearContent()
+{
+	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+	mIconLabel.DrawDefaultIcon();
+	mCommandStr.Empty();
+	mCandidateListBox.ResetContent();
+	m_nSelIndex = -1;
+
+	UpdateData(FALSE);
+}
+
+
 // 現在選択中のコマンドを取得
 Command* CBWLiteDlg::GetCurrentCommand()
 {
@@ -338,7 +367,7 @@ void CBWLiteDlg::OnOK()
 {
 	UpdateData();
 
-	// ToDo: コマンドを実行する
+	// コマンドを実行する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
@@ -376,13 +405,7 @@ LRESULT CBWLiteDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	m_strDescription.LoadString(ID_STRING_DEFAULTDESCRIPTION);
-	mIconLabel.DrawDefaultIcon();
-	mCommandStr.Empty();
-	mCandidateListBox.ResetContent();
-	m_nSelIndex = -1;
-
-	UpdateData(FALSE);
+	ClearContent();
 
 	if (bShow) {
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
