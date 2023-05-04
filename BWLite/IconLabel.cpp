@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "IconLabel.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -63,7 +64,7 @@ void IconLabel::OnPaint()
 		mMemDC.SelectObject(mBkBrush);
 		mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
-		mIconDefault = AfxGetApp()->LoadIcon(IDI_ICON2);
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 		mMemDC.DrawIcon(0, 0, mIconDefault);
 	}
 

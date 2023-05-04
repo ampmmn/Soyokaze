@@ -13,12 +13,16 @@
 #define IDI_ICON2                       131
 #define IDR_MENU_TASKTRAY               133
 #define IDI_ICON1                       136
+#define IDD_SETTING                     137
+#define IDI_ICON3                       139
+#define IDI_SETTING                     139
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
 #define IDC_EDIT_COMMAND2               1002
 #define IDC_LIST_CANDIDATE              1004
 #define IDC_STATIC_ICON                 1005
+#define IDC_HOTKEY                      1006
 #define ID_A                            32771
 #define ID_A_KON                        32772
 
@@ -26,9 +30,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -13,6 +13,7 @@
 #include "commands/VersionCommand.h"
 #include "commands/UserDirCommand.h"
 #include "commands/MainDirCommand.h"
+#include "commands/SettingCommand.h"
 #include "commands/ExecutableFileCommand.h"
 #include <map>
 #include <vector>
@@ -101,6 +102,7 @@ BOOL CommandMap::Load()
 	in->commands[_T("version")] = new VersionCommand();
 	in->commands[_T("userdir")] = new UserDirCommand();
 	in->commands[_T("maindir")] = new MainDirCommand();
+	in->commands[_T("setting")] = new SettingCommand();
 
 
 	// 設定ファイルを読み、コマンド一覧を登録する

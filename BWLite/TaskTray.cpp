@@ -3,6 +3,7 @@
 #include "TaskTray.h"
 #include "resource.h"
 #include "BWLiteDlg.h"
+#include "IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,7 +15,7 @@ IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 
 TaskTray::TaskTray(CBWLiteDlg* window) : mBWLiteWindowPtr(window)
 {
-	mIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICON2));
+	mIcon = IconLoader::Get()->LoadTasktrayIcon();
 }
 
 TaskTray::~TaskTray()

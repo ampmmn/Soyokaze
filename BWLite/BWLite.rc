@@ -77,6 +77,8 @@ IDR_MAINFRAME           ICON                    "res\\BWLite.ico"
 
 IDI_ICON2               ICON                    "res\\icon.ico"
 
+IDI_SETTING             ICON                    "res\\gear.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -107,6 +109,16 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,5,24,6,14,NOT WS_VISIBLE
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,1,0,18,21
     EDITTEXT        IDC_EDIT_COMMAND2,0,24,6,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
+END
+
+IDD_SETTING DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "BWLiteの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,252,155,50,14
+    CONTROL         "",IDC_HOTKEY,"msctls_hotkey32",WS_BORDER | WS_TABSTOP,122,65,80,14
 END
 
 
@@ -171,6 +183,14 @@ BEGIN
         RIGHTMARGIN, 84
         BOTTOMMARGIN, 39
     END
+
+    IDD_SETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -193,6 +213,11 @@ BEGIN
 END
 
 IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SETTING AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

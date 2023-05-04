@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ReloadCommand.h"
 #include "CommandMap.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -45,7 +46,7 @@ CString ReloadCommand::GetErrorString()
 
 HICON ReloadCommand::GetIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return IconLoader::Get()->LoadReloadIcon();
 }
 
 BOOL ReloadCommand::Match(Pattern* pattern)

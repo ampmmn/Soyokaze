@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "VersionCommand.h"
 #include "AboutDlg.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -46,7 +47,7 @@ CString VersionCommand::GetErrorString()
 
 HICON VersionCommand::GetIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return IconLoader::Get()->LoadVersionIcon();
 }
 
 

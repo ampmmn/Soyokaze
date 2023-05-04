@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "AppPreference.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -294,6 +295,9 @@ void ShellExecCommand::ExpandEnv(CString& text)
 HICON ShellExecCommand::GetIcon()
 {
 	const CString& path = mNormalAttr.mPath;
+	if (PathIsDirectory(path)) {
+		return IconLoader::Get()->LoadFolderIcon();
+	}
 	if (PathFileExists(path)) {
 		SHFILEINFO sfi = {};
 		HIMAGELIST hImgList =
@@ -301,7 +305,10 @@ HICON ShellExecCommand::GetIcon()
 		HICON hIcon = sfi.hIcon;
 		return hIcon;
 	}
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	if (path.Find(_T("http")) == 0) {
+		return IconLoader::Get()->LoadWebIcon();
+	}
+	return IconLoader::Get()->LoadDefaultIcon();
 }
 
 BOOL ShellExecCommand::Match(Pattern* pattern)

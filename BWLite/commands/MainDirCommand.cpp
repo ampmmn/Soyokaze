@@ -3,6 +3,7 @@
 #include "commands/MainDirCommand.h"
 #include "commands/ShellExecCommand.h"
 #include "AppProfile.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -52,7 +53,7 @@ CString MainDirCommand::GetErrorString()
 
 HICON MainDirCommand::GetIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return IconLoader::Get()->LoadMainDirIcon();
 }
 
 BOOL MainDirCommand::Match(Pattern* pattern)

@@ -123,6 +123,15 @@
     <ClInclude Include="commands\ExecutableFileCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="commands\SettingCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="IconLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -218,6 +227,15 @@
     <ClCompile Include="Pattern.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="commands\SettingCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="IconLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BWLite.rc">
@@ -237,6 +255,9 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="res\icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\gear.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

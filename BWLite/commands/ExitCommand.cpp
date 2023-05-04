@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExitCommand.h"
+#include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -44,7 +45,7 @@ CString ExitCommand::GetErrorString()
 
 HICON ExitCommand::GetIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return IconLoader::Get()->LoadExitIcon();
 }
 
 BOOL ExitCommand::Match(Pattern* pattern)

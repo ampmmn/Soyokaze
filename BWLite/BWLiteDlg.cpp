@@ -14,6 +14,7 @@
 #include "ExecHistory.h"
 #include "HotKey.h"
 #include "WindowTransparency.h"
+#include "IconLoader.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -32,7 +33,7 @@ CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 	mWindowPositionPtr(nullptr),
 	mWindowTransparencyPtr(new WindowTransparency)
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
+	m_hIcon = IconLoader::Get()->LoadDefaultIcon();
 }
 
 CBWLiteDlg::~CBWLiteDlg()
@@ -322,7 +323,7 @@ void CBWLiteDlg::OnEditCommandChanged()
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		SetDescription(strMisMatch);
-		mIconLabel.DrawDefaultIcon();
+		mIconLabel.DrawIcon(IconLoader::Get()->LoadUnknownIcon());
 		return;
 	}
 
@@ -524,6 +525,9 @@ LRESULT CBWLiteDlg::OnNcHitTest(
 	return __super::OnNcHitTest(point);
 }
 
+/**
+ * コンテキストメニューの表示
+ */
 void CBWLiteDlg::OnContextMenu(
 	CWnd* taskTrayWindow
 )
@@ -557,7 +561,7 @@ void CBWLiteDlg::OnContextMenu(
 		ActivateWindow();
 	}
 	else if (n == ID_APPSETTING) {
-		//ExecuteCommand(_T("setting"));
+		ExecuteCommand(_T("setting"));
 	}
 	else if (n == ID_USERDIR) {
 		ExecuteCommand(_T("userdir"));
