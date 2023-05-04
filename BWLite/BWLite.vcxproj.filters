@@ -99,6 +99,15 @@
     <ClInclude Include="commands\UserDirCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="IconLabel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowTransparency.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -166,6 +175,15 @@
     </ClCompile>
     <ClCompile Include="commands\UserDirCommand.cpp">
       <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="IconLabel.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowTransparency.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

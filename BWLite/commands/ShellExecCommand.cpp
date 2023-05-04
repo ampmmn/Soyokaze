@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "AppPreference.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -288,4 +289,17 @@ void ShellExecCommand::ExpandEnv(CString& text)
 	}
 
 	text = workBuf;
+}
+
+HICON ShellExecCommand::GetIcon()
+{
+	const CString& path = mNormalAttr.mPath;
+	if (PathFileExists(path)) {
+		SHFILEINFO sfi = {};
+		HIMAGELIST hImgList =
+			(HIMAGELIST)::SHGetFileInfo(path, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+		HICON hIcon = sfi.hIcon;
+		return hIcon;
+	}
+	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }

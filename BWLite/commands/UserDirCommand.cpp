@@ -3,6 +3,7 @@
 #include "commands/UserDirCommand.h"
 #include "commands/ShellExecCommand.h"
 #include "AppProfile.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,3 +49,7 @@ CString UserDirCommand::GetErrorString()
 	return _T("");
 }
 
+HICON UserDirCommand::GetIcon()
+{
+	return AfxGetApp()->LoadIcon(IDI_ICON2);
+}

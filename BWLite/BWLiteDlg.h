@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "KeywordEdit.h"
+#include "IconLabel.h"
 
 class CommandMap;
 class Command;
@@ -14,6 +15,7 @@ class SharedHwnd;
 class ExecHistory;
 class HotKey;
 class WindowPosition;
+class WindowTransparency;
 
 // CBWLiteDlg ダイアログ
 class CBWLiteDlg : public CDialogEx
@@ -76,10 +78,15 @@ protected:
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
 	DWORD mLastCaretPos;
+
+	// アイコン描画用ラベル
+	IconLabel mIconLabel;
 	//
 	HotKey* mHotKeyPtr;
 	// ウインドウ位置を保存するためのクラス
 	WindowPosition* mWindowPositionPtr;
+	// ウインドウの透明度を制御するためのクラス
+	WindowTransparency* mWindowTransparencyPtr;
 
 	// 生成された、メッセージ割り当て関数
 	virtual BOOL OnInitDialog();
@@ -93,7 +100,10 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnLbnSelChange();
 	afx_msg void OnLbnDblClkCandidate();
+	afx_msg LRESULT OnNcHitTest(CPoint point);
+	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 };

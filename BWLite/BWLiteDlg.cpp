@@ -13,6 +13,7 @@
 #include "SharedHwnd.h"
 #include "ExecHistory.h"
 #include "HotKey.h"
+#include "WindowTransparency.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -28,7 +29,8 @@ CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 	m_pSharedHwnd(nullptr),
 	mExecHistory(new ExecHistory),
 	mHotKeyPtr(nullptr),
-	mWindowPositionPtr(nullptr)
+	mWindowPositionPtr(nullptr),
+	mWindowTransparencyPtr(new WindowTransparency)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
 }
@@ -36,11 +38,19 @@ CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 CBWLiteDlg::~CBWLiteDlg()
 {
 	mExecHistory->Save();
-	delete mExecHistory;
-	delete m_pCommandMap;
-	delete m_pSharedHwnd;
-	delete mHotKeyPtr;
+
+	delete mWindowTransparencyPtr;
+
+	// 位置情報を設定ファイルに保存する
 	delete mWindowPositionPtr;
+
+	delete mHotKeyPtr;
+
+	delete m_pSharedHwnd;
+
+	delete mExecHistory;
+
+	delete m_pCommandMap;
 }
 
 void CBWLiteDlg::DoDataExchange(CDataExchange* pDX)
@@ -56,21 +66,17 @@ BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_EN_CHANGE(IDC_EDIT_COMMAND, OnEditCommandChanged)
 	ON_WM_SHOWWINDOW()
-	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_LBN_SELCHANGE(IDC_LIST_CANDIDATE, OnLbnSelChange)
 	ON_LBN_DBLCLK(IDC_LIST_CANDIDATE, OnLbnDblClkCandidate)
+	ON_WM_NCHITTEST()
+	ON_WM_ACTIVATE()
+	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
+	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 END_MESSAGE_MAP()
 
 void CBWLiteDlg::ActivateWindow(HWND hwnd)
 {
-	// 表示状態のトグル
-	if (::IsWindowVisible(hwnd) == FALSE) {
-		::ShowWindow(hwnd, SW_SHOW);
-		::SetForegroundWindow(hwnd);
-	}
-	else {
-		::ShowWindow(hwnd, SW_HIDE);
-	}
+	::PostMessage(hwnd, WM_APP+2, 0, 0);
 }
 
 void CBWLiteDlg::ActivateWindow()
@@ -78,6 +84,45 @@ void CBWLiteDlg::ActivateWindow()
 	if (IsWindow(GetSafeHwnd())) {
 		CBWLiteDlg::ActivateWindow(GetSafeHwnd());
 	}
+}
+
+
+class ScopeAttachThreadInput
+{
+public:
+	ScopeAttachThreadInput(DWORD target) : target(target) {
+		AttachThreadInput(GetCurrentThreadId(), target, TRUE);
+	}
+	~ScopeAttachThreadInput()
+	{
+		AttachThreadInput(GetCurrentThreadId(), target, FALSE);
+	}
+	DWORD target;
+};
+
+LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
+{
+	// 表示状態のトグル
+	HWND hwnd = GetSafeHwnd();
+	if (::IsWindowVisible(hwnd) == FALSE) {
+		ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
+		::ShowWindow(hwnd, SW_SHOW);
+		::SetForegroundWindow(hwnd);
+		::BringWindowToTop(hwnd);
+	}
+	else {
+		// 非アクティブならアクティブにする
+		if (hwnd != ::GetActiveWindow()) {
+			ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
+			::ShowWindow(hwnd, SW_SHOW);
+			::SetForegroundWindow(hwnd);
+			::BringWindowToTop(hwnd);
+		}
+		else {
+			::ShowWindow(hwnd, SW_HIDE);
+		}
+	}
+	return 0;
 }
 
 bool CBWLiteDlg::ExecuteCommand(const CString& commandStr)
@@ -97,6 +142,8 @@ BOOL CBWLiteDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
+	mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+
 
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 
@@ -132,6 +179,9 @@ BOOL CBWLiteDlg::OnInitDialog()
 	// ウインドウ位置の復元
 	mWindowPositionPtr = new WindowPosition();
 	mWindowPositionPtr->Restore(GetSafeHwnd());
+
+	// 透明度制御
+	mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
 
 	// 設定値の読み込み
 	m_pCommandMap->Load();
@@ -261,6 +311,9 @@ void CBWLiteDlg::OnEditCommandChanged()
 	auto pCmd = mCandidates[0];
 	SetDescription(pCmd->GetDescription());
 
+	// サムネイルの更新
+	mIconLabel.DrawIcon(pCmd->GetIcon());
+
 	// 補完
 	bool isCharAdded = (curCaretPos & 0xFFFF) > (mLastCaretPos & 0xFFFF);
 	if (isCharAdded) {
@@ -329,6 +382,7 @@ void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
+		// 位置情報を更新する
 		mWindowPositionPtr->Update(GetSafeHwnd());
 	}
 }
@@ -419,6 +473,25 @@ void CBWLiteDlg::OnLbnDblClkCandidate()
 	OnOK();
 }
 
+// クライアント領域をドラッグしてウインドウを移動させるための処理
+LRESULT CBWLiteDlg::OnNcHitTest(
+	CPoint point
+)
+{
+
+	RECT rect;
+	GetClientRect (&rect);
+
+	CPoint ptClient(point);
+	ScreenToClient(&ptClient);
+
+	if (PtInRect(&rect, ptClient) && (GetAsyncKeyState( VK_LBUTTON ) & 0x8000) )
+	{
+		return HTCAPTION;
+	}
+	return __super::OnNcHitTest(point);
+}
+
 void CBWLiteDlg::OnContextMenu(
 	CWnd* taskTrayWindow
 )
@@ -465,3 +538,8 @@ void CBWLiteDlg::OnContextMenu(
 	}
 }
 
+void CBWLiteDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
+{
+	mWindowTransparencyPtr->UpdateActiveState(nState);
+	__super::OnActivate(nState, wnd, bMinimized);
+}

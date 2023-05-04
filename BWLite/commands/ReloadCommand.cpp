@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ReloadCommand.h"
 #include "CommandMap.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,3 +43,7 @@ CString ReloadCommand::GetErrorString()
 	return _T("");
 }
 
+HICON ReloadCommand::GetIcon()
+{
+	return AfxGetApp()->LoadIcon(IDI_ICON2);
+}

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExitCommand.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,3 +42,7 @@ CString ExitCommand::GetErrorString()
 	return _T("");
 }
 
+HICON ExitCommand::GetIcon()
+{
+	return AfxGetApp()->LoadIcon(IDI_ICON2);
+}

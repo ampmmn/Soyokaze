@@ -13,5 +13,6 @@ public:
 	virtual BOOL Execute();
 	virtual BOOL Execute(const std::vector<CString>& args);
 	virtual CString GetErrorString();
+	virtual HICON GetIcon();
 };
 
