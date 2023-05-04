@@ -12,17 +12,20 @@ public:
 
 	bool UpdateActiveState(UINT nState);
 protected:
-	// �ΏۃE�C���h�E�n���h��
+	// 対象ウインドウハンドル
 	HWND mWindowHandle;
 
-	// ���ߓx(0:���� 255:�s����)
+	// 透過度(0:透明 255:不透明)
 	uint8_t mAlpha;
 
-	// ���ߕ\���@�\�𗘗p���邩?
+	// 透過表示機能を利用するか?
 	bool mIsEnable;
 
-	// ��A�N�e�B�u�̂Ƃ����������ɂ���
+	// 非アクティブのときだけ透明にする
 	bool mIsInactiveOnly;
 
+	// 最上位で表示する
+	bool mIsTopmost;
+	   // ToDo: 別の位置に移動するかクラス名を変更する
 };
 

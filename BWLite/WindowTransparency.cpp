@@ -7,13 +7,16 @@ WindowTransparency::WindowTransparency() :
 	mWindowHandle(nullptr),
 	mAlpha(255),
 	mIsEnable(true),
-	mIsInactiveOnly(true)
+	mIsInactiveOnly(true),
+	mIsTopmost(true)
 {
 	CAppProfile* app = CAppProfile::Get();
 	mIsEnable = (app->Get(_T("WindowTransparency"), _T("Enable"), 1) != 0);
 
 	mAlpha = app->Get(_T("WindowTransparency"), _T("Alpha"), 200);
 	mIsInactiveOnly =(app->Get(_T("WindowTransparency"), _T("InactiveOnly"), 1) != 0);
+
+	mIsTopmost =(app->Get(_T("BWLite"), _T("Topmost"), 1) != 0);
 }
 
 WindowTransparency::~WindowTransparency()
@@ -24,16 +27,29 @@ void WindowTransparency::SetWindowHandle(HWND hwnd)
 {
 	mWindowHandle = hwnd;
 
+	// 最上位に表示する場合
+	if (mIsTopmost) {
+		SetWindowPos(mWindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	}
+	else {
+		SetWindowPos(mWindowHandle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	}
+
+	long exStyle = GetWindowLong(mWindowHandle, GWL_EXSTYLE);
 	if (mIsEnable) {
-		// WS_EX_LAYERED$B$rIUM?$9$k(B
-		// ($B%@%$%"%m%0%(%G%#%?>e$G$3$N%9%?%$%k$r@_Dj$9$k$H%(%G%#%?>e$N%@%$%"%m%0$,9uEI$j$K$J$k$N$G(B)
-		long exStyle = GetWindowLong(mWindowHandle, GWL_EXSTYLE);
-		SetWindowLong(mWindowHandle, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);
+		// WS_EX_LAYEREDを付与する
+		// (ダイアログエディタ上でこのスタイルを設定するとエディタ上のダイアログが黒塗りになるので)
+		exStyle |= WS_EX_LAYERED;
+	}
+	else {
+		exStyle &= (~WS_EX_LAYERED);
+	}
 
-		if (mIsInactiveOnly == false) {
-			SetLayeredWindowAttributes(mWindowHandle, 0, mAlpha, LWA_ALPHA);
-		}
+	SetWindowLong(mWindowHandle, GWL_EXSTYLE, exStyle);
 
+	if (mIsEnable && mIsInactiveOnly == false) {
+		// 常に透明にする設定の場合は、この時点で透過率を設定しておく
+		SetLayeredWindowAttributes(mWindowHandle, 0, mAlpha, LWA_ALPHA);
 	}
 }
 
