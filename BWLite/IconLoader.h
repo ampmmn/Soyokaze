@@ -5,8 +5,11 @@ class IconLoader
 public:
 	static IconLoader* Get();
 
+	HICON LoadIconFromPath(const CString& path);
+
 	HICON LoadFolderIcon();
 	HICON LoadWebIcon();
+	HICON LoadNewIcon();
 	HICON LoadSettingIcon();
 	HICON LoadExitIcon();
 	HICON LoadEditIcon();

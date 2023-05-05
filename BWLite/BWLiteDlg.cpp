@@ -539,18 +539,24 @@ void CBWLiteDlg::OnContextMenu(
 	menu.CreatePopupMenu();
 
 	const int ID_SHOW = 1;
-	const int ID_APPSETTING = 2;
-	const int ID_USERDIR = 3;
-	const int ID_VERSIONINFO = 4;
-	const int ID_EXIT = 5;
+	const int ID_NEW = 2;
+	const int ID_MANAGER = 3;
+	const int ID_APPSETTING = 4;
+	const int ID_USERDIR = 5;
+	const int ID_MANUAL = 6;
+	const int ID_VERSIONINFO = 7;
+	const int ID_EXIT = 8;
 
 	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
 	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	//
-	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	// menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu(-1, 0, ID_NEW, _T("新規作成(&N)"));
+	menu.InsertMenu(-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
+	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu(-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
 	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
@@ -560,11 +566,21 @@ void CBWLiteDlg::OnContextMenu(
 	if (n == ID_SHOW) {
 		ActivateWindow();
 	}
+	else if (n == ID_NEW) {
+		ExecuteCommand(_T("new"));
+	}
+	else if (n == ID_MANAGER) {
+		ExecuteCommand(_T("manager"));
+	}
 	else if (n == ID_APPSETTING) {
 		ExecuteCommand(_T("setting"));
 	}
 	else if (n == ID_USERDIR) {
 		ExecuteCommand(_T("userdir"));
+	}
+	else if (n == ID_MANUAL) {
+		// ヘルプコマンド
+		//ExecuteCommand(_T("manager"));
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));

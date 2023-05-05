@@ -12,6 +12,7 @@ struct IconLoader::PImpl
 	PImpl() : 
 		mFolderIcon(nullptr),
 		mWebIcon(nullptr),
+		mNewIcon(nullptr),
 		mExitIcon(nullptr),
 		mEditIcon(nullptr),
 		mSettingIcon(nullptr),
@@ -40,6 +41,7 @@ struct IconLoader::PImpl
 	TCHAR mImgResDll[32768];
 	HICON mFolderIcon;
 	HICON mWebIcon;
+	HICON mNewIcon;
 	HICON mExitIcon;
 	HICON mEditIcon;
 	HICON mSettingIcon;
@@ -65,6 +67,24 @@ IconLoader* IconLoader::Get()
 	return &instance;
 }
 
+HICON IconLoader::LoadIconFromPath(const CString& path)
+{
+	if (PathIsDirectory(path)) {
+		return LoadFolderIcon();
+	}
+	if (PathFileExists(path)) {
+		SHFILEINFO sfi = {};
+		HIMAGELIST hImgList =
+			(HIMAGELIST)::SHGetFileInfo(path, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+		HICON hIcon = sfi.hIcon;
+		return hIcon;
+	}
+	if (path.Find(_T("http")) == 0) {
+		return LoadWebIcon();
+	}
+	return LoadUnknownIcon();
+}
+
 HICON IconLoader::LoadFolderIcon()
 {
 	if (in->mFolderIcon) {
@@ -81,6 +101,12 @@ HICON IconLoader::LoadWebIcon()
 	}
 	in->mWebIcon = in->GetImageResIcon(20);
 	return in->mWebIcon;
+}
+
+HICON IconLoader::LoadNewIcon()
+{
+	// ToDo: 実装
+	return AfxGetApp()->LoadIcon(IDI_ICON2);
 }
 
 HICON IconLoader::LoadSettingIcon()

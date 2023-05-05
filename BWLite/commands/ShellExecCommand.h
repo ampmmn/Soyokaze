@@ -36,6 +36,10 @@ public:
 	ShellExecCommand& SetPath(LPCTSTR path);
 	ShellExecCommand& SetRunAs(int runAs);
 
+	void GetAttribute(ATTRIBUTE& attr);
+	void GetAttributeForParam0(ATTRIBUTE& attr);
+	int GetRunAs();
+
 protected:
 	ATTRIBUTE& SelectAttribute(const std::vector<CString>& args);
 

@@ -121,6 +121,43 @@ BEGIN
     CONTROL         "",IDC_HOTKEY,"msctls_hotkey32",WS_BORDER | WS_TABSTOP,122,65,80,14
 END
 
+IDD_NEWCOMMAND DIALOGEX 0, 0, 337, 283
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "コマンドの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,34,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,125,24,154,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,34,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,125,44,154,14,ES_AUTOHSCROLL
+    LTEXT           "実行ファイル・URLなど(&P):",IDC_STATIC_PATH,34,65,87,8
+    EDITTEXT        IDC_EDIT_PATH,125,64,154,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE1,279,64,21,17
+    PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR1,302,64,21,17
+    LTEXT           "パラメータ(&A):",IDC_STATIC_PARAM,34,84,65,8
+    EDITTEXT        IDC_EDIT_PARAM,125,84,154,14,ES_AUTOHSCROLL
+    CONTROL         "実行時引数あり／なしで起動するファイルを分ける",IDC_CHECK_USE0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,133,173,10
+    LTEXT           "実行ファイル・URLなど(&P):",IDC_STATIC_PATH0,34,160,87,8
+    EDITTEXT        IDC_EDIT_PATH0,125,160,154,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "F2",IDC_BUTTON_BROWSEFILE2,279,159,21,17
+    PUSHBUTTON      "D2",IDC_BUTTON_BROWSEDIR2,302,159,21,17
+    LTEXT           "パラメータ(&A):",IDC_STATIC_PARAM00,34,179,65,8
+    EDITTEXT        IDC_EDIT_PARAM0,125,180,154,14,ES_AUTOHSCROLL
+    LTEXT           "作業フォルダ(&W):",IDC_STATIC,34,208,65,8
+    EDITTEXT        IDC_EDIT_DIR,125,208,154,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "お",IDC_BUTTON_BROWSEDIR3,281,207,21,17
+    LTEXT           "表示方法(&S):",IDC_STATIC,34,229,65,8
+    COMBOBOX        IDC_COMBO_SHOWTYPE,125,229,79,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "管理者権限で実行(&R)",IDC_CHECK_RUNASADMIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,248,89,10
+    DEFPUSHBUTTON   "OK",IDOK,226,262,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,262,50,14
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
+    LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,99,172,25
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,126,8,204,8
+    LTEXT           "【実行時引数なし】",IDC_STATIC_PARAM0,30,147,65,8
+    LTEXT           "※.exe/.batのみ",IDC_STATIC,34,258,103,9
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -191,6 +228,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
     END
+
+    IDD_NEWCOMMAND, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 276
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -222,6 +267,41 @@ BEGIN
     0
 END
 
+IDD_NEWCOMMAND AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -240,6 +320,23 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Dialog Info
+//
+
+IDD_NEWCOMMAND DLGINIT
+BEGIN
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xca92, 0xed8f, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xc58d, 0xe591, 0x5c95, 0xa68e, "\000" 
+    IDC_COMBO_SHOWTYPE, 0x403, 9, 0
+0xc58d, 0xac8f, 0x5c95, 0xa68e, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -249,6 +346,11 @@ BEGIN
     ID_STRING_MISMATCH      "(一致候補なし)"
     ID_STRING_DEFAULTDESCRIPTION "BWLite"
     IDS_MENUTEXT_SHOW       "表示(&U)"
+    IDS_ERR_NAMEISEMPTY     "名前を入力してください"
+    IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
+    IDS_ERR_NAMEALREADYEXISTS "すでに使用されています"
+    IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
+    IDS_ERR_PATH0ISEMPTY    "【実行時引数なし】実行ファイルまたはURLを入力してください"
 END
 
 #endif    // 日本語 (日本) resources

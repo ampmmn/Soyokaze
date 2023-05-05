@@ -29,12 +29,28 @@ void IconLabel::DrawIcon(HICON iconHandle)
 	CRect rc;
 	GetClientRect(rc);
 
+	CClientDC dc(this);
+	if (mMemDC.GetSafeHdc() == NULL) {
+		mMemDC.CreateCompatibleDC(&dc);
+		mMemBmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
+		mMemDC.SelectObject(mMemBmp);
+
+		COLORREF cr = GetSysColor(COLOR_3DFACE);
+		mBkBrush.CreateSolidBrush(cr);
+
+		mMemDC.SelectObject(mBkBrush);
+		mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
+
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
+		mMemDC.DrawIcon(0, 0, mIconDefault);
+	}
+
+
 	mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
 	ASSERT(mMemDC.GetSafeHdc() != NULL);
 	mMemDC.DrawIcon(0, 0, iconHandle);
 
-	CClientDC dc(this);
 	dc.BitBlt(0,0, rc.Width(), rc.Height(), &mMemDC, 0, 0, SRCCOPY);
 }
 

@@ -35,7 +35,7 @@ CString ShellExecCommand::GetName()
 
 CString ShellExecCommand::GetDescription()
 {
-	return mDescription.IsEmpty() ? mName : mDescription;
+	return mDescription;
 }
 
 BOOL ShellExecCommand::Execute()
@@ -295,24 +295,26 @@ void ShellExecCommand::ExpandEnv(CString& text)
 HICON ShellExecCommand::GetIcon()
 {
 	const CString& path = mNormalAttr.mPath;
-	if (PathIsDirectory(path)) {
-		return IconLoader::Get()->LoadFolderIcon();
-	}
-	if (PathFileExists(path)) {
-		SHFILEINFO sfi = {};
-		HIMAGELIST hImgList =
-			(HIMAGELIST)::SHGetFileInfo(path, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
-		HICON hIcon = sfi.hIcon;
-		return hIcon;
-	}
-	if (path.Find(_T("http")) == 0) {
-		return IconLoader::Get()->LoadWebIcon();
-	}
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
 BOOL ShellExecCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
+}
+
+void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
+{
+	attr = mNormalAttr;
+}
+
+void ShellExecCommand::GetAttributeForParam0(ATTRIBUTE& attr)
+{
+	attr = mNoParamAttr;
+}
+
+int ShellExecCommand::GetRunAs()
+{
+	return mRunAs;
 }
 

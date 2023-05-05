@@ -7,14 +7,17 @@
 #include "PartialMatchPattern.h"
 #include "SkipMatchPattern.h"
 #include "WholeMatchPattern.h"
+#include "commands/NewCommand.h"
 #include "commands/ShellExecCommand.h"
 #include "commands/ReloadCommand.h"
+#include "commands/EditCommand.h"
 #include "commands/ExitCommand.h"
 #include "commands/VersionCommand.h"
 #include "commands/UserDirCommand.h"
 #include "commands/MainDirCommand.h"
 #include "commands/SettingCommand.h"
 #include "commands/ExecutableFileCommand.h"
+#include "CommandEditDialog.h"
 #include <map>
 #include <vector>
 
@@ -32,6 +35,7 @@ struct CommandMap::PImpl
 	{
 	}
 
+	std::map<CString, Command*> builtinCommands;
 	std::map<CString, Command*> commands;
 	ExecutableFileCommand* exeCommand;
 	Pattern* pattern;
@@ -80,6 +84,10 @@ BOOL CommandMap::Load()
 		delete item.second;
 	}
 	in->commands.clear();
+	for (auto& item : in->builtinCommands) {
+		delete item.second;
+	}
+	in->builtinCommands.clear();
 
 	// キーワード比較処理の生成
 	delete in->pattern;
@@ -97,17 +105,19 @@ BOOL CommandMap::Load()
 	}
 
 	// ビルトインコマンドの登録
-	in->commands[_T("reload")] = new ReloadCommand(this);
-	in->commands[_T("exit")] = new ExitCommand();
-	in->commands[_T("version")] = new VersionCommand();
-	in->commands[_T("userdir")] = new UserDirCommand();
-	in->commands[_T("maindir")] = new MainDirCommand();
-	in->commands[_T("setting")] = new SettingCommand();
+	in->builtinCommands[_T("new")] = new NewCommand(this);
+	in->builtinCommands[_T("edit")] = new EditCommand(this);
+	in->builtinCommands[_T("reload")] = new ReloadCommand(this);
+	in->builtinCommands[_T("exit")] = new ExitCommand();
+	in->builtinCommands[_T("version")] = new VersionCommand();
+	in->builtinCommands[_T("userdir")] = new UserDirCommand();
+	in->builtinCommands[_T("maindir")] = new MainDirCommand();
+	in->builtinCommands[_T("setting")] = new SettingCommand();
 
 
 	// 設定ファイルを読み、コマンド一覧を登録する
-	TCHAR path[65536];
-	CAppProfile::GetDirPath(path, 65536);
+	TCHAR path[32768];
+	CAppProfile::GetDirPath(path, 32768);
 	PathAppend(path, _T("commands.ini"));
 
 	// ファイルを読む
@@ -225,6 +235,121 @@ BOOL CommandMap::Load()
 	return TRUE;
 }
 
+int CommandMap::NewCommandDialog(const CString* cmdNamePtr)
+{
+	CommandEditDialog dlg(this);
+
+	if (cmdNamePtr) {
+		dlg.SetName(*cmdNamePtr);
+	}
+
+	if (dlg.DoModal() != IDOK) {
+		return 0;
+	}
+
+	// 追加する処理
+	auto* newCmd = new ShellExecCommand();
+	newCmd->SetName(dlg.mName);
+	newCmd->SetDescription(dlg.mDescription);
+	newCmd->SetRunAs(dlg.mIsRunAsAdmin);
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath = dlg.mPath;
+	normalAttr.mParam = dlg.mParameter;
+	normalAttr.mDir = dlg.mDir;
+	normalAttr.mShowType = dlg.GetShowType();
+	newCmd->SetAttribute(normalAttr);
+
+	if (dlg.mIsUse0) {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		param0Attr.mPath = dlg.mPath0;
+		param0Attr.mParam = dlg.mParameter0;
+		param0Attr.mDir = dlg.mDir;
+		param0Attr.mShowType = dlg.GetShowType();
+		newCmd->SetAttributeForParam0(param0Attr);
+	}
+	else {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		newCmd->SetAttributeForParam0(param0Attr);
+	}
+
+	in->commands[dlg.mName] = newCmd;
+
+	return 0;
+}
+
+int CommandMap::EditCommandDialog(const CString& cmdName)
+{
+	auto itFind = in->commands.find(cmdName);
+	if (itFind == in->commands.end()) {
+		return 1;
+	}
+
+	// ToDo: 後でクラス設計を見直す
+	auto cmd = (ShellExecCommand*)itFind->second;
+
+	CommandEditDialog dlg(this);
+	dlg.SetOrgName(cmdName);
+
+	dlg.mName = cmd->GetName();
+	dlg.mDescription = cmd->GetDescription();
+	dlg.mIsRunAsAdmin = cmd->GetRunAs();
+
+	ShellExecCommand::ATTRIBUTE attr;
+	cmd->GetAttribute(attr);
+
+	dlg.mPath = attr.mPath;
+	dlg.mParameter = attr.mParam;
+	dlg.mDir = attr.mDir;
+	dlg.SetShowType(attr.mShowType);
+
+	cmd->GetAttributeForParam0(attr);
+	dlg.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
+	dlg.mPath0 = attr.mPath;
+	dlg.mParameter0 = attr.mParam;
+
+	if (dlg.DoModal() != IDOK) {
+		return TRUE;
+	}
+
+	// 追加する処理
+	cmd->SetName(dlg.mName);
+	cmd->SetDescription(dlg.mDescription);
+	cmd->SetRunAs(dlg.mIsRunAsAdmin);
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath = dlg.mPath;
+	normalAttr.mParam = dlg.mParameter;
+	normalAttr.mDir = dlg.mDir;
+	normalAttr.mShowType = dlg.GetShowType();
+	cmd->SetAttribute(normalAttr);
+
+	if (dlg.mIsUse0) {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		param0Attr.mPath = dlg.mPath0;
+		param0Attr.mParam = dlg.mParameter0;
+		param0Attr.mDir = dlg.mDir;
+		param0Attr.mShowType = dlg.GetShowType();
+		cmd->SetAttributeForParam0(param0Attr);
+	}
+	else {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		cmd->SetAttributeForParam0(param0Attr);
+	}
+
+	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	in->commands.erase(itFind);
+	in->commands[cmd->GetName()] = cmd;
+
+	return 0;
+}
+
+int CommandMap::ManagerDialog()
+{
+	// ToDo: 実装
+	return 0;
+}
+
 void
 CommandMap::Query(
 	const CString& strQueryStr,
@@ -236,6 +361,14 @@ CommandMap::Query(
 	in->pattern->SetPattern(strQueryStr);
 
 	for (auto& item : in->commands) {
+
+		auto& command = item.second;
+		if (command->Match(in->pattern) == FALSE) {
+			continue;
+		}
+		items.push_back(command);
+	}
+	for (auto& item : in->builtinCommands) {
 
 		auto& command = item.second;
 		if (command->Match(in->pattern) == FALSE) {
@@ -267,11 +400,25 @@ Command* CommandMap::QueryAsWholeMatch(
 
 		return item.second;
 	}
+	for (auto& item : in->builtinCommands) {
 
-	// 1けんもまっちしないばあいはExecutableCommandのひかく
+		auto& command = item.second;
+		if (command->Match(&pat) == FALSE) {
+			continue;
+		}
+
+		return item.second;
+	}
+
+	// 1件もマッチしないばあいはExecutableCommandのひかく
 	if (in->exeCommand->Match(in->pattern)) {
 		return in->exeCommand;
 	}
 
 	return nullptr;
+}
+
+bool CommandMap::IsValidAsName(const CString& strQueryStr)
+{
+	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,.")) == -1;
 }
