@@ -22,7 +22,6 @@
 #define IDR_MENU_TASKTRAY               133
 #define IDI_ICON1                       136
 #define IDD_SETTING                     137
-#define IDI_SETTING                     139
 #define IDD_NEWCOMMAND                  140
 #define IDD_KEYWORDMANAGER              143
 #define IDC_EDIT_COMMAND                1000

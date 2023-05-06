@@ -26,7 +26,7 @@
 
 CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_BWLITE_DIALOG, pParent),
-	m_pCommandMap(new CommandMap()),
+	m_pCommandRepository(new CommandRepository()),
 	m_pSharedHwnd(nullptr),
 	mExecHistory(new ExecHistory),
 	mHotKeyPtr(nullptr),
@@ -51,7 +51,7 @@ CBWLiteDlg::~CBWLiteDlg()
 
 	delete mExecHistory;
 
-	delete m_pCommandMap;
+	delete m_pCommandRepository;
 }
 
 void CBWLiteDlg::DoDataExchange(CDataExchange* pDX)
@@ -145,7 +145,7 @@ LRESULT CBWLiteDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 bool CBWLiteDlg::ExecuteCommand(const CString& commandStr)
 {
 	// (今のところ)内部用なので、履歴には登録しない
-	auto cmd = GetCommandMap()->QueryAsWholeMatch(commandStr);
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandStr);
 	if (cmd == nullptr) {
 		return false;
 	}
@@ -205,7 +205,7 @@ BOOL CBWLiteDlg::OnInitDialog()
 	mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
 
 	// 設定値の読み込み
-	m_pCommandMap->Load();
+	m_pCommandRepository->Load();
 
 	// ホットキー登録
 	mHotKeyPtr = new HotKey(GetSafeHwnd());
@@ -254,9 +254,9 @@ HCURSOR CBWLiteDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-CommandMap* CBWLiteDlg::GetCommandMap()
+CommandRepository* CBWLiteDlg::GetCommandRepository()
 {
-	return m_pCommandMap;
+	return m_pCommandRepository;
 }
 
 void CBWLiteDlg::SetDescription(const CString& msg)
@@ -316,7 +316,7 @@ void CBWLiteDlg::OnEditCommandChanged()
 	CommandString commandStr(mCommandStr);
 
 	// キーワードによる候補の列挙
-	GetCommandMap()->Query(commandStr.GetCommandString(), mCandidates);
+	GetCommandRepository()->Query(commandStr.GetCommandString(), mCandidates);
 
 	// 候補なし
 	if (mCandidates.size() == 0) {

@@ -77,8 +77,6 @@ IDR_MAINFRAME           ICON                    "res\\BWLite.ico"
 
 IDI_ICON2               ICON                    "res\\icon.ico"
 
-IDI_SETTING             ICON                    "res\\gear.ico"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //

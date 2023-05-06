@@ -1,6 +1,6 @@
 #pragma once
 
-class CommandMap;
+class CommandRepository;
 
 #include <vector>
 
@@ -10,11 +10,11 @@ class IconLabel;
 class KeywordManagerDialog : public CDialogEx
 {
 public:
-	KeywordManagerDialog(CommandMap* cmdMapPtr);
+	KeywordManagerDialog(CommandRepository* cmdMapPtr);
 	virtual ~KeywordManagerDialog();
 
 protected:
-	CommandMap* mCmdMapPtr;
+	CommandRepository* mCmdMapPtr;
 
 	CString mName;
 	CString mDescription;

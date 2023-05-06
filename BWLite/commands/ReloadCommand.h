@@ -2,12 +2,12 @@
 
 #include "CommandIF.h"
 
-class CommandMap;
+class CommandRepository;
 
 class ReloadCommand : public Command
 {
 public:
-	ReloadCommand(CommandMap* pMap);
+	ReloadCommand(CommandRepository* pMap);
 	virtual ~ReloadCommand();
 
 	virtual CString GetName();
@@ -21,5 +21,5 @@ public:
 	virtual Command* Clone();
 
 protected:
-	CommandMap* mCmdMapPtr;
+	CommandRepository* mCmdMapPtr;
 };

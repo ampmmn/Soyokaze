@@ -9,7 +9,7 @@
 #include "CmdReceiveEdit.h"
 #include "IconLabel.h"
 
-class CommandMap;
+class CommandRepository;
 class Command;
 
 class SharedHwnd;
@@ -42,7 +42,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV サポート
 
-	CommandMap* GetCommandMap();
+	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
 	void ClearContent();
 
@@ -64,7 +64,7 @@ protected:
 
 
 	// コマンド管理マップ
-	CommandMap* m_pCommandMap;
+	CommandRepository* m_pCommandRepository;
 	// 選択中の候補
 	int m_nSelIndex;
 

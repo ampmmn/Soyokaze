@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-ManagerCommand::ManagerCommand(CommandMap* cmdMapPtr) :
+ManagerCommand::ManagerCommand(CommandRepository* cmdMapPtr) :
 	mCmdMapPtr(cmdMapPtr)
 {
 }

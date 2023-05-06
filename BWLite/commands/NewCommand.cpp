@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-NewCommand::NewCommand(CommandMap* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
+NewCommand::NewCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
 {
 }
 

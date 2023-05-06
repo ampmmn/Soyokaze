@@ -368,6 +368,7 @@
     <ClInclude Include="BWLite.h" />
     <ClInclude Include="BWLiteDlg.h" />
     <ClInclude Include="CmdReceiveEdit.h" />
+    <ClInclude Include="CommandFile.h" />
     <ClInclude Include="CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
     <ClInclude Include="CommandString.h" />
@@ -415,6 +416,7 @@
     <ClCompile Include="BWLite.cpp" />
     <ClCompile Include="BWLiteDlg.cpp" />
     <ClCompile Include="CmdReceiveEdit.cpp" />
+    <ClCompile Include="CommandFile.cpp" />
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandString.cpp" />
     <ClCompile Include="commands\EditCommand.cpp" />

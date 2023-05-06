@@ -13,7 +13,7 @@
 #endif
 
 
-KeywordManagerDialog::KeywordManagerDialog(CommandMap* cmdMapPtr) : 
+KeywordManagerDialog::KeywordManagerDialog(CommandRepository* cmdMapPtr) : 
 	CDialogEx(IDD_KEYWORDMANAGER),
 	mCmdMapPtr(cmdMapPtr),
 	mListCtrlPtr(new KeywordManagerListCtrl()),

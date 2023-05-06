@@ -7,6 +7,7 @@
 #include "PartialMatchPattern.h"
 #include "SkipMatchPattern.h"
 #include "WholeMatchPattern.h"
+#include "CommandFile.h"
 #include "commands/NewCommand.h"
 #include "commands/ShellExecCommand.h"
 #include "commands/ReloadCommand.h"
@@ -27,74 +28,146 @@
 #define new DEBUG_NEW
 #endif
 
+class CommandMap
+{
+public:
+	CommandMap()
+	{
+	}
+	CommandMap(const CommandMap& rhs)
+	{
+		for (auto item : rhs.mMap) {
+			mMap[item.first] = item.second->Clone();
+		}
+	}
+	~CommandMap()
+	{
+		Clear();
+	}
+
+	void Clear()
+	{
+		for (auto item : mMap) {
+			delete item.second;
+		}
+	}
+
+	bool Has(const CString& name) const
+	{
+		return mMap.find(name) != mMap.end();
+	}
+	Command* Get(const CString& name)
+	{
+		auto itFind = mMap.find(name);
+		if (itFind == mMap.end()) {
+			return nullptr;
+		}
+		return itFind->second;
+	}
+
+	void Register(Command* cmd)
+	{
+		mMap[cmd->GetName()] = cmd;
+	}
+
+	bool Unregister(Command* cmd)
+	{
+		return Unregister(cmd->GetName());
+	}
+
+	bool Unregister(const CString& name)
+	{
+		auto itFind = mMap.find(name);
+		if (itFind == mMap.end()) {
+			return false;
+		}
+
+		delete itFind->second;
+		mMap.erase(itFind);
+		return true;
+	}
+
+	void Swap(CommandMap& rhs)
+	{
+		mMap.swap(rhs.mMap);
+	}
+
+	void Query(Pattern* pattern, std::vector<Command*>& commands)
+	{
+		for (auto& item : mMap) {
+
+			auto& command = item.second;
+			if (command->Match(pattern) == FALSE) {
+				continue;
+			}
+			commands.push_back(command);
+		}
+	}
+
+	// 最初に見つけた要素を返す
+	Command* FindOne(Pattern* pattern)
+	{
+		for (auto& item : mMap) {
+
+			auto& command = item.second;
+			if (command->Match(pattern) == FALSE) {
+				continue;
+			}
+			return item.second;
+		}
+		return nullptr;
+	}
+
+	std::vector<Command*>& Enumerate(std::vector<Command*>& commands)
+	{
+		commands.reserve(commands.size() + mMap.size());
+		for (auto item : mMap) {
+			commands.push_back(item.second);
+		}
+		return commands;
+	}
+
+protected:
+	std::map<CString, Command*> mMap;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-struct CommandMap::PImpl
+struct CommandRepository::PImpl
 {
 	PImpl() : pattern(nullptr)
 	{
 	}
 
-	void RegisterBuiltinCommand(Command* cmd)
-	{
-		builtinCommands[cmd->GetName()] = cmd;
-	}
+	CommandFile commandLoader;
 
-	std::map<CString, Command*> builtinCommands;
-	std::map<CString, Command*> commands;
+	CommandMap builtinCommands;
+	CommandMap commands;
 	ExecutableFileCommand* exeCommand;
 	Pattern* pattern;
 };
 
 
-CommandMap::CommandMap() : in(new PImpl)
+CommandRepository::CommandRepository() : in(new PImpl)
 {
 	in->exeCommand = new ExecutableFileCommand();
 }
 
-CommandMap::~CommandMap()
+CommandRepository::~CommandRepository()
 {
-	for(auto& item : in->commands) {
-		delete item.second;
-	}
 	delete in->pattern;
 	delete in;
 }
 
 
-static void TrimComment(CString& s)
-{
-	bool inDQ = false;
 
-	int n = s.GetLength();
-	for (int i = 0; i < n; ++i) {
-		if (inDQ == false && s[i] == _T('#')) {
-			s = s.Left(i);
-			return;
-		}
-
-		if (inDQ == false && s[i] == _T('"')) {
-			inDQ = true;
-		}
-		if (inDQ != true && s[i] == _T('"')) {
-			inDQ = false;
-		}
-	}
-}
-
-BOOL CommandMap::Load()
+BOOL CommandRepository::Load()
 {
 	// 既存の内容を破棄
-	for (auto& item : in->commands) {
-		delete item.second;
-	}
-	in->commands.clear();
-	for (auto& item : in->builtinCommands) {
-		delete item.second;
-	}
-	in->builtinCommands.clear();
+	in->commands.Clear();
+	in->builtinCommands.Clear();
 
 	// キーワード比較処理の生成
 	delete in->pattern;
@@ -112,139 +185,42 @@ BOOL CommandMap::Load()
 	}
 
 	// ビルトインコマンドの登録
-	in->RegisterBuiltinCommand(new NewCommand(this));
-	in->RegisterBuiltinCommand(new EditCommand(this));
-	in->RegisterBuiltinCommand(new ReloadCommand(this));
-	in->RegisterBuiltinCommand(new ManagerCommand(this));
-	in->RegisterBuiltinCommand(new ExitCommand());
-	in->RegisterBuiltinCommand(new VersionCommand());
-	in->RegisterBuiltinCommand(new UserDirCommand());
-	in->RegisterBuiltinCommand(new MainDirCommand());
-	in->RegisterBuiltinCommand(new SettingCommand());
-
+	in->builtinCommands.Register(new NewCommand(this));
+	in->builtinCommands.Register(new EditCommand(this));
+	in->builtinCommands.Register(new ReloadCommand(this));
+	in->builtinCommands.Register(new ManagerCommand(this));
+	in->builtinCommands.Register(new ExitCommand());
+	in->builtinCommands.Register(new VersionCommand());
+	in->builtinCommands.Register(new UserDirCommand());
+	in->builtinCommands.Register(new MainDirCommand());
+	in->builtinCommands.Register(new SettingCommand());
 
 	// 設定ファイルを読み、コマンド一覧を登録する
 	TCHAR path[32768];
 	CAppProfile::GetDirPath(path, 32768);
 	PathAppend(path, _T("commands.ini"));
+	in->commandLoader.SetFilePath(path);
 
-	// ファイルを読む
-	CStdioFile file;
-	if (file.Open(path, CFile::modeRead | CFile::shareDenyWrite) == FALSE) {
-		return FALSE;
-	}
+	std::vector<Command*> commands;
+	in->commandLoader.Load(commands);
 
-	CString strCurSectionName;
-
-	CString strCommandName;
-	CString strDescription;
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	ShellExecCommand::ATTRIBUTE noParamAttr;
-	int runAs = 0;
-
-	CString strLine;
-	while(file.ReadString(strLine)) {
-
-		TrimComment(strLine);
-		strLine.Trim();
-
-		if (strLine.IsEmpty()) {
-			continue;
-		}
-
-		if (strLine[0] == _T('[')) {
-			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
-
- 			if (strCommandName.IsEmpty() == FALSE) {
-				auto command = new ShellExecCommand();
-				command->SetName(strCommandName);
-				command->SetDescription(strDescription);
-				command->SetRunAs(runAs);
-
-				if (normalAttr.mPath.IsEmpty() == FALSE) {
-					command->SetAttribute(normalAttr);
-				}
-				if (noParamAttr.mPath.IsEmpty() == FALSE) {
-					command->SetAttributeForParam0(noParamAttr);
-				}
-
-				in->commands[strCommandName] = command;
-			}
-
-			// 初期化
-			strCommandName = strCurSectionName;
-			strDescription.Empty();
-			runAs = 0;
-
-			normalAttr = ShellExecCommand::ATTRIBUTE();
-			noParamAttr = ShellExecCommand::ATTRIBUTE();
-			continue;
-		}
-
-		int n = strLine.Find(_T('='));
-		if (n == -1) {
-			continue;
-		}
-
-		CString strKey = strLine.Left(n);
-		strKey.Trim();
-
-		CString strValue = strLine.Mid(n+1);
-		strValue.Trim();
-
-		if (strKey.CompareNoCase(_T("description")) == 0) {
-			strDescription = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("runas")) == 0) {
-			_stscanf_s(strValue, _T("%d"), &runAs);
-		}
-		else if (strKey.CompareNoCase(_T("path")) == 0) {
-			normalAttr.mPath = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("dir")) == 0) {
-			normalAttr.mDir = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("parameter")) == 0) {
-			normalAttr.mParam = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("show")) == 0) {
-			_stscanf_s(strValue, _T("%d"), &normalAttr.mShowType);
-		}
-		else if (strKey.CompareNoCase(_T("path0")) == 0) {
-			noParamAttr.mPath = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("dir0")) == 0) {
-			noParamAttr.mDir = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("parameter0")) == 0) {
-			noParamAttr.mParam = strValue;
-		}
-		else if (strKey.CompareNoCase(_T("show0")) == 0) {
-			_stscanf_s(strValue, _T("%d"), &noParamAttr.mShowType);
-		}
-	}
-
-	if (strCommandName.IsEmpty() == FALSE) {
-		auto command = new ShellExecCommand();
-		command->SetName(strCommandName);
-		command->SetDescription(strDescription);
-		command->SetRunAs(runAs);
-
-		if (normalAttr.mPath.IsEmpty() == FALSE) {
-			command->SetAttribute(normalAttr);
-		}
-		if (noParamAttr.mPath.IsEmpty() == FALSE) {
-			command->SetAttributeForParam0(noParamAttr);
-		}
-
-		in->commands[strCommandName] = command;
+	for (auto cmd : commands) {
+		in->commands.Register(cmd);
 	}
 
 	return TRUE;
 }
 
-int CommandMap::NewCommandDialog(const CString* cmdNamePtr)
+
+/**
+ *  新規キーワード作成
+ *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
+ */
+int CommandRepository::NewCommandDialog(
+	const CString* cmdNamePtr
+)
 {
+	// 新規作成ダイアログを表示
 	CommandEditDialog dlg(this);
 
 	if (cmdNamePtr) {
@@ -255,7 +231,7 @@ int CommandMap::NewCommandDialog(const CString* cmdNamePtr)
 		return 0;
 	}
 
-	// 追加する処理
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto* newCmd = new ShellExecCommand();
 	newCmd->SetName(dlg.mName);
 	newCmd->SetDescription(dlg.mDescription);
@@ -281,20 +257,27 @@ int CommandMap::NewCommandDialog(const CString* cmdNamePtr)
 		newCmd->SetAttributeForParam0(param0Attr);
 	}
 
-	in->commands[dlg.mName] = newCmd;
+	in->commands.Register(newCmd);
 
+	// 設定ファイルに保存
+	std::vector<Command*> cmdsTmp;
+	in->commandLoader.Save(in->commands.Enumerate(cmdsTmp));
 	return 0;
 }
 
-int CommandMap::EditCommandDialog(const CString& cmdName)
+
+/**
+ *  既存キーワードの編集
+ */
+int CommandRepository::EditCommandDialog(const CString& cmdName)
 {
-	auto itFind = in->commands.find(cmdName);
-	if (itFind == in->commands.end()) {
+	auto cmdAbs = in->commands.Get(cmdName);
+	if (cmdAbs == nullptr) {
 		return 1;
 	}
 
 	// ToDo: 後でクラス設計を見直す
-	auto cmd = (ShellExecCommand*)itFind->second;
+	ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
 
 	CommandEditDialog dlg(this);
 	dlg.SetOrgName(cmdName);
@@ -320,17 +303,19 @@ int CommandMap::EditCommandDialog(const CString& cmdName)
 		return TRUE;
 	}
 
+	ShellExecCommand* cmdNew = new ShellExecCommand();
+
 	// 追加する処理
-	cmd->SetName(dlg.mName);
-	cmd->SetDescription(dlg.mDescription);
-	cmd->SetRunAs(dlg.mIsRunAsAdmin);
+	cmdNew->SetName(dlg.mName);
+	cmdNew->SetDescription(dlg.mDescription);
+	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = dlg.mPath;
 	normalAttr.mParam = dlg.mParameter;
 	normalAttr.mDir = dlg.mDir;
 	normalAttr.mShowType = dlg.GetShowType();
-	cmd->SetAttribute(normalAttr);
+	cmdNew->SetAttribute(normalAttr);
 
 	if (dlg.mIsUse0) {
 		ShellExecCommand::ATTRIBUTE param0Attr;
@@ -338,16 +323,20 @@ int CommandMap::EditCommandDialog(const CString& cmdName)
 		param0Attr.mParam = dlg.mParameter0;
 		param0Attr.mDir = dlg.mDir;
 		param0Attr.mShowType = dlg.GetShowType();
-		cmd->SetAttributeForParam0(param0Attr);
+		cmdNew->SetAttributeForParam0(param0Attr);
 	}
 	else {
 		ShellExecCommand::ATTRIBUTE param0Attr;
-		cmd->SetAttributeForParam0(param0Attr);
+		cmdNew->SetAttributeForParam0(param0Attr);
 	}
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	in->commands.erase(itFind);
-	in->commands[cmd->GetName()] = cmd;
+	in->commands.Unregister(cmd);
+	in->commands.Register(cmdNew);
+
+	// ファイルに保存
+	std::vector<Command*> cmdsTmp;
+	in->commandLoader.Save(in->commands.Enumerate(cmdsTmp));
 
 	return 0;
 }
@@ -355,73 +344,53 @@ int CommandMap::EditCommandDialog(const CString& cmdName)
 /**
  * 指定したコマンド名は組み込みコマンドか?
  */
-bool CommandMap::IsBuiltinName(const CString& cmdName)
+bool CommandRepository::IsBuiltinName(const CString& cmdName)
 {
-	return in->builtinCommands.find(cmdName) != in->builtinCommands.end();
+	return in->builtinCommands.Has(cmdName);
 }
 
-int CommandMap::ManagerDialog()
+/**
+ *  キーワードマネージャーの表示
+ */
+int CommandRepository::ManagerDialog()
 {
 	// キャンセル時用のバックアップ
-	std::map<CString, Command*> builtinBkup;
-	for (auto item : in->builtinCommands) {
-		builtinBkup[item.first] = item.second->Clone();
-	}
-	std::map<CString, Command*> commandsBkup;
-	for (auto item : in->commands) {
-		commandsBkup[item.first] = item.second->Clone();
-	}
+	CommandMap builtinBkup(in->builtinCommands);
+	CommandMap commandsBkup(in->commands);
 
 	KeywordManagerDialog dlg(this);
 
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
-		in->builtinCommands.swap(builtinBkup);
-		in->commands.swap(commandsBkup);
+		in->builtinCommands.Swap(builtinBkup);
+		in->commands.Swap(commandsBkup);
 	}
-
-	// バックアップを消す
-	for (auto item : builtinBkup) {
-		delete item.second;
+	else {
+		// ファイルに保存
+		std::vector<Command*> cmdsTmp;
+		in->commandLoader.Save(in->commands.Enumerate(cmdsTmp));
 	}
-	for (auto item : commandsBkup) {
-		delete item.second;
-	}
-
 	return 0;
 }
 
 /**
- *  こまんどのさくじょ
+ *  コマンドの削除
  */
-bool CommandMap::DeleteCommand(const CString& cmdName)
+bool CommandRepository::DeleteCommand(const CString& cmdName)
 {
-	auto itFind = in->commands.find(cmdName);
-	if (itFind == in->commands.end()) {
-		return false;
-	}
-
-	auto cmd = itFind->second;
-	delete cmd;
-	in->commands.erase(itFind);
-	return true;
+	return in->commands.Unregister(cmdName);
 }
 
-void CommandMap::EnumCommands(std::vector<Command*>& commands)
+void CommandRepository::EnumCommands(std::vector<Command*>& enumCommands)
 {
-	commands.clear();
-	commands.reserve(in->commands.size() + in->builtinCommands.size());
-	for (auto item : in->commands) {
-		commands.push_back(item.second);
-	}
-	for (auto item : in->builtinCommands) {
-		commands.push_back(item.second);
-	}
+	enumCommands.clear();
+	in->commands.Enumerate(enumCommands);
+	in->builtinCommands.Enumerate(enumCommands);
 }
 
 void
-CommandMap::Query(
+CommandRepository::Query(
 	const CString& strQueryStr,
 	std::vector<Command*>& items
 )
@@ -430,24 +399,10 @@ CommandMap::Query(
 
 	in->pattern->SetPattern(strQueryStr);
 
-	for (auto& item : in->commands) {
+	in->commands.Query(in->pattern, items);
+	in->builtinCommands.Query(in->pattern, items);
 
-		auto& command = item.second;
-		if (command->Match(in->pattern) == FALSE) {
-			continue;
-		}
-		items.push_back(command);
-	}
-	for (auto& item : in->builtinCommands) {
-
-		auto& command = item.second;
-		if (command->Match(in->pattern) == FALSE) {
-			continue;
-		}
-		items.push_back(command);
-	}
-
-	// 1けんもまっちしないばあいはExecutableCommandのひかく
+	// 1件もマッチしない場合はExecutableCommandのひかく
 	if (items.empty()) {
 		if (in->exeCommand->Match(in->pattern)) {
 			items.push_back(in->exeCommand);
@@ -455,32 +410,23 @@ CommandMap::Query(
 	}
 }
 
-Command* CommandMap::QueryAsWholeMatch(
+Command* CommandRepository::QueryAsWholeMatch(
 	const CString& strQueryStr
 )
 {
 	WholeMatchPattern pat(strQueryStr);
 
-	for (auto& item : in->commands) {
-
-		auto& command = item.second;
-		if (command->Match(&pat) == FALSE) {
-			continue;
-		}
-
-		return item.second;
-	}
-	for (auto& item : in->builtinCommands) {
-
-		auto& command = item.second;
-		if (command->Match(&pat) == FALSE) {
-			continue;
-		}
-
-		return item.second;
+	auto command = in->commands.FindOne(&pat);
+	if (command != nullptr) {
+		return command;
 	}
 
-	// 1件もマッチしないばあいはExecutableCommandのひかく
+	command = in->builtinCommands.FindOne(&pat);
+	if (command != nullptr) {
+		return command;
+	}
+
+	// 1件もマッチしない場合はExecutableCommandのひかく
 	if (in->exeCommand->Match(in->pattern)) {
 		return in->exeCommand;
 	}
@@ -488,7 +434,7 @@ Command* CommandMap::QueryAsWholeMatch(
 	return nullptr;
 }
 
-bool CommandMap::IsValidAsName(const CString& strQueryStr)
+bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,.")) == -1;
 }

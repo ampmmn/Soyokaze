@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-EditCommand::EditCommand(CommandMap* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
+EditCommand::EditCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
 {
 }
 

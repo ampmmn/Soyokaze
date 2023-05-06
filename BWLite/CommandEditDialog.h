@@ -1,12 +1,12 @@
 #pragma once
 
 class IconLabel;
-class CommandMap;
+class CommandRepository;
 
 class CommandEditDialog : public CDialogEx
 {
 public:
-	CommandEditDialog(CommandMap* cmdMapPtr);
+	CommandEditDialog(CommandRepository* cmdMapPtr);
 	virtual ~CommandEditDialog();
 
 	void SetOrgName(const CString& name);
@@ -21,7 +21,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
-	CommandMap* mCmdMapPtr;
+	CommandRepository* mCmdMapPtr;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

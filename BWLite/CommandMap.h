@@ -3,11 +3,11 @@
 #include "CommandIF.h"
 #include <vector>
 
-class CommandMap
+class CommandRepository
 {
 public:
-	CommandMap();
-	~CommandMap();
+	CommandRepository();
+	~CommandRepository();
 
 public:
 	BOOL Load();

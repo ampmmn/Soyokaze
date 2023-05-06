@@ -13,7 +13,7 @@
 #endif
 
 
-CommandEditDialog::CommandEditDialog(CommandMap* cmdMapPtr) : 
+CommandEditDialog::CommandEditDialog(CommandRepository* cmdMapPtr) : 
 	CDialogEx(IDD_NEWCOMMAND),
 	mCmdMapPtr(cmdMapPtr),
 	mIconLabelPtr(new IconLabel)

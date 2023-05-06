@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-ReloadCommand::ReloadCommand(CommandMap* pMap) :
+ReloadCommand::ReloadCommand(CommandRepository* pMap) :
 	mCmdMapPtr(pMap)
 {
 }
@@ -25,7 +25,7 @@ CString ReloadCommand::GetName()
 
 CString ReloadCommand::GetDescription()
 {
-	return _T("設定のリロード");
+	return _T("【設定のリロード】");
 }
 
 BOOL ReloadCommand::Execute()

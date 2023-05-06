@@ -2,12 +2,12 @@
 
 #include "CommandIF.h"
 
-class CommandMap;
+class CommandRepository;
 
 class ManagerCommand : public Command
 {
 public:
-	ManagerCommand(CommandMap* cmdMapPtr);
+	ManagerCommand(CommandRepository* cmdMapPtr);
 	virtual ~ManagerCommand();
 
 	virtual CString GetName();
@@ -20,6 +20,6 @@ public:
 	virtual Command* Clone();
 
 protected:
-	CommandMap* mCmdMapPtr;
+	CommandRepository* mCmdMapPtr;
 };
 
