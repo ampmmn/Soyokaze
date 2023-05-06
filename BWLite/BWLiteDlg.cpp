@@ -102,6 +102,10 @@ public:
 	DWORD target;
 };
 
+/**
+ * ActiveWindow経由の処理
+ * (後続プロセスから処理できるようにするためウインドウメッセージ経由で処理している)
+ */
 LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
 	// 表示状態のトグル
@@ -281,6 +285,7 @@ void CBWLiteDlg::ClearContent()
 Command* CBWLiteDlg::GetCurrentCommand()
 {
 	if (mCandidates.empty()) {
+
 		return nullptr;
 	}
 
@@ -385,6 +390,12 @@ void CBWLiteDlg::OnOK()
 		mExecHistory->Add(mCommandStr);
 
 	}
+	else {
+		// 空文字状態でEnterキーから実行したときはキーワードマネージャを表示
+		if (mCommandStr.IsEmpty()) {
+			ExecuteCommand(_T("manager"));
+		}
+	}
 
 	ShowWindow(SW_HIDE);
 }
@@ -460,6 +471,8 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
+			mIconLabel.DrawIcon(cmd->GetIcon());
+
 			UpdateData(FALSE);
 
 			mKeywordEdit.SetCaretToEnd();
@@ -472,6 +485,8 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 			}
 
 			mCommandStr = cmd->GetName();
+			mCommandStr += _T(" ");
+
 			m_strDescription = cmd->GetDescription();
 			mIconLabel.DrawIcon(cmd->GetIcon());
 			UpdateData(FALSE);
@@ -503,7 +518,27 @@ void CBWLiteDlg::OnLbnSelChange()
 
 void CBWLiteDlg::OnLbnDblClkCandidate()
 {
-	OnOK();
+	UpdateData();
+
+	// コマンドを実行する
+	auto cmd = GetCurrentCommand();
+	if (cmd) {
+
+		CommandString commandStr(mCommandStr);
+
+		std::vector<CString> args;
+		commandStr.GetParameters(args);
+
+		if (cmd->Execute(args) == FALSE) {
+			AfxMessageBox(cmd->GetErrorString());
+		}
+
+		// コマンド実行履歴に追加
+		mExecHistory->Add(mCommandStr);
+
+	}
+
+	ShowWindow(SW_HIDE);
 }
 
 // クライアント領域をドラッグしてウインドウを移動させるための処理

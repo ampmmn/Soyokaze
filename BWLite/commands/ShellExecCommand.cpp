@@ -306,7 +306,8 @@ void ShellExecCommand::ExpandEnv(CString& text)
 
 HICON ShellExecCommand::GetIcon()
 {
-	const CString& path = mNormalAttr.mPath;
+	CString path = mNormalAttr.mPath;
+	ExpandEnv(path);
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
