@@ -16,7 +16,13 @@ public:
 	int EditCommandDialog(const CString& cmdName);
 	int ManagerDialog();
 
-	void Query(const CString& strQueryStr, std::vector<Command*>& items);
+	bool DeleteCommand(const CString& cmdName);
+
+	void EnumCommands(std::vector<Command*>& commands);
+
+	bool IsBuiltinName(const CString& cmdName);
+
+	void Query(const CString& strQueryStr, std::vector<Command*>& commands);
 	Command* QueryAsWholeMatch(const CString& strQueryStr);
 
 	bool IsValidAsName(const CString& strQueryStr);

@@ -144,6 +144,15 @@
     <ClInclude Include="commands\EditCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="KeywordManagerDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="KeywordManagerListCtrl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ManagerCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -258,6 +267,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\EditCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="KeywordManagerDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="KeywordManagerListCtrl.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ManagerCommand.cpp">
       <Filter>commands</Filter>
     </ClCompile>
   </ItemGroup>

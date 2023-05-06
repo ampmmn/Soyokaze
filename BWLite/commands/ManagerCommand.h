@@ -2,11 +2,13 @@
 
 #include "CommandIF.h"
 
-class UserDirCommand : public Command
+class CommandMap;
+
+class ManagerCommand : public Command
 {
 public:
-	UserDirCommand();
-	virtual ~UserDirCommand();
+	ManagerCommand(CommandMap* cmdMapPtr);
+	virtual ~ManagerCommand();
 
 	virtual CString GetName();
 	virtual CString GetDescription();
@@ -16,7 +18,8 @@ public:
 	virtual HICON GetIcon();
 	virtual BOOL Match(Pattern* pattern);
 	virtual Command* Clone();
+
+protected:
+	CommandMap* mCmdMapPtr;
 };
-
-
 

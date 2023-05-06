@@ -580,7 +580,7 @@ void CBWLiteDlg::OnContextMenu(
 	}
 	else if (n == ID_MANUAL) {
 		// ヘルプコマンド
-		//ExecuteCommand(_T("manager"));
+		//ExecuteCommand(_T("manual"));
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));

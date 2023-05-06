@@ -46,3 +46,4 @@ CString ForwardMatchPattern::GetOriginalPattern()
 {
 	return in->mWord;
 }
+

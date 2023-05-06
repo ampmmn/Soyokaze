@@ -56,3 +56,8 @@ BOOL VersionCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* VersionCommand::Clone()
+{
+	return new VersionCommand();
+}
+

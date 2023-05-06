@@ -94,6 +94,9 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
+
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	CString caption;

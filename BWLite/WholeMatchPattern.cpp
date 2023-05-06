@@ -41,3 +41,4 @@ CString WholeMatchPattern::GetOriginalPattern()
 {
 	return in->mWord;
 }
+

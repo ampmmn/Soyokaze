@@ -318,3 +318,16 @@ int ShellExecCommand::GetRunAs()
 	return mRunAs;
 }
 
+Command* ShellExecCommand::Clone()
+{
+	auto clonedObj = new ShellExecCommand();
+
+	clonedObj->mName = mName;
+	clonedObj->mDescription = mDescription;
+	clonedObj->mRunAs = mRunAs;
+	clonedObj->mNormalAttr = mNormalAttr;
+	clonedObj->mNoParamAttr = mNoParamAttr;
+
+	return clonedObj;
+}
+

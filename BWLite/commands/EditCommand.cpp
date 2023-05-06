@@ -62,3 +62,8 @@ BOOL EditCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* EditCommand::Clone()
+{
+	return new EditCommand(mCmdMapPtr);
+}
+

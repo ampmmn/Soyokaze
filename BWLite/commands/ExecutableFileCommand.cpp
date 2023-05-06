@@ -134,3 +134,15 @@ BOOL ExecutableFileCommand::Match(Pattern* pattern)
 	return FALSE;
 }
 
+Command* ExecutableFileCommand::Clone()
+{
+	auto clonedObj = new ExecutableFileCommand();
+
+	clonedObj->in->targetDirs = in->targetDirs;
+	clonedObj->in->mFullPath = in->mFullPath;
+	clonedObj->in->mDescription = in->mDescription;
+	clonedObj->in->mExeExtension = in->mExeExtension;
+
+	return clonedObj;
+}
+

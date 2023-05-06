@@ -60,3 +60,8 @@ BOOL UserDirCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* UserDirCommand::Clone()
+{
+	return new UserDirCommand();
+}
+

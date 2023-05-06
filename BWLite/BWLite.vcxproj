@@ -375,6 +375,7 @@
     <ClInclude Include="commands\ExecutableFileCommand.h" />
     <ClInclude Include="commands\ExitCommand.h" />
     <ClInclude Include="commands\MainDirCommand.h" />
+    <ClInclude Include="commands\ManagerCommand.h" />
     <ClInclude Include="commands\NewCommand.h" />
     <ClInclude Include="commands\ReloadCommand.h" />
     <ClInclude Include="commands\SettingCommand.h" />
@@ -390,6 +391,8 @@
     <ClInclude Include="IconLoader.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="KeywordEdit.h" />
+    <ClInclude Include="KeywordManagerDialog.h" />
+    <ClInclude Include="KeywordManagerListCtrl.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="CommandEditDialog.h" />
     <ClInclude Include="PartialMatchPattern.h" />
@@ -418,6 +421,7 @@
     <ClCompile Include="commands\ExecutableFileCommand.cpp" />
     <ClCompile Include="commands\ExitCommand.cpp" />
     <ClCompile Include="commands\MainDirCommand.cpp" />
+    <ClCompile Include="commands\ManagerCommand.cpp" />
     <ClCompile Include="commands\NewCommand.cpp" />
     <ClCompile Include="commands\ReloadCommand.cpp" />
     <ClCompile Include="commands\SettingCommand.cpp" />
@@ -432,6 +436,8 @@
     <ClCompile Include="IconLoader.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="KeywordEdit.cpp" />
+    <ClCompile Include="KeywordManagerDialog.cpp" />
+    <ClCompile Include="KeywordManagerListCtrl.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="CommandEditDialog.cpp" />
     <ClCompile Include="PartialMatchPattern.cpp" />

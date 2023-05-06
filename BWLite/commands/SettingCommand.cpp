@@ -62,3 +62,8 @@ BOOL SettingCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* SettingCommand::Clone()
+{
+	return new SettingCommand();
+}
+

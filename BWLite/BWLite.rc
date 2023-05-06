@@ -158,6 +158,25 @@ BEGIN
     LTEXT           "※.exe/.batのみ",IDC_STATIC,34,258,103,9
 END
 
+IDD_KEYWORDMANAGER DIALOGEX 0, 0, 285, 260
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "キーワードマネージャ"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "リスト(&L):",IDC_STATIC,7,35,28,8
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,47,213,185
+    PUSHBUTTON      "新規作成(&N)",IDC_BUTTON_NEW,227,47,50,14
+    PUSHBUTTON      "編集(&E)",IDC_BUTTON_EDIT,227,65,50,14
+    PUSHBUTTON      "削除(&D)",IDC_BUTTON_DELETE,227,84,50,14
+    DEFPUSHBUTTON   "OK",IDOK,168,239,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,227,239,50,14
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
+    LTEXT           "名前:",IDC_STATIC,37,7,20,8
+    LTEXT           "説明:",IDC_STATIC,37,21,20,8
+    LTEXT           "(名前)",IDC_STATIC_NAME,69,7,209,8
+    LTEXT           "(説明)",IDC_STATIC_DESCRIPTION,69,21,211,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -236,6 +255,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 276
     END
+
+    IDD_KEYWORDMANAGER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 278
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 253
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -302,6 +329,23 @@ BEGIN
     0, 0, 0, 0
 END
 
+IDD_KEYWORDMANAGER AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 100,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -351,6 +395,13 @@ BEGIN
     IDS_ERR_NAMEALREADYEXISTS "すでに使用されています"
     IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
     IDS_ERR_PATH0ISEMPTY    "【実行時引数なし】実行ファイルまたはURLを入力してください"
+    IDS_NAME                "名前"
+    IDS_DESCRIPTION         "説明"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_CONFIRM_DELETE      "以下のコマンドを削除します。"
 END
 
 #endif    // 日本語 (日本) resources

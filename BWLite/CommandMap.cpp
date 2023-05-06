@@ -16,8 +16,10 @@
 #include "commands/UserDirCommand.h"
 #include "commands/MainDirCommand.h"
 #include "commands/SettingCommand.h"
+#include "commands/ManagerCommand.h"
 #include "commands/ExecutableFileCommand.h"
 #include "CommandEditDialog.h"
+#include "KeywordManagerDialog.h"
 #include <map>
 #include <vector>
 
@@ -33,6 +35,11 @@ struct CommandMap::PImpl
 {
 	PImpl() : pattern(nullptr)
 	{
+	}
+
+	void RegisterBuiltinCommand(Command* cmd)
+	{
+		builtinCommands[cmd->GetName()] = cmd;
 	}
 
 	std::map<CString, Command*> builtinCommands;
@@ -105,14 +112,15 @@ BOOL CommandMap::Load()
 	}
 
 	// ビルトインコマンドの登録
-	in->builtinCommands[_T("new")] = new NewCommand(this);
-	in->builtinCommands[_T("edit")] = new EditCommand(this);
-	in->builtinCommands[_T("reload")] = new ReloadCommand(this);
-	in->builtinCommands[_T("exit")] = new ExitCommand();
-	in->builtinCommands[_T("version")] = new VersionCommand();
-	in->builtinCommands[_T("userdir")] = new UserDirCommand();
-	in->builtinCommands[_T("maindir")] = new MainDirCommand();
-	in->builtinCommands[_T("setting")] = new SettingCommand();
+	in->RegisterBuiltinCommand(new NewCommand(this));
+	in->RegisterBuiltinCommand(new EditCommand(this));
+	in->RegisterBuiltinCommand(new ReloadCommand(this));
+	in->RegisterBuiltinCommand(new ManagerCommand(this));
+	in->RegisterBuiltinCommand(new ExitCommand());
+	in->RegisterBuiltinCommand(new VersionCommand());
+	in->RegisterBuiltinCommand(new UserDirCommand());
+	in->RegisterBuiltinCommand(new MainDirCommand());
+	in->RegisterBuiltinCommand(new SettingCommand());
 
 
 	// 設定ファイルを読み、コマンド一覧を登録する
@@ -344,10 +352,72 @@ int CommandMap::EditCommandDialog(const CString& cmdName)
 	return 0;
 }
 
+/**
+ * 指定したコマンド名は組み込みコマンドか?
+ */
+bool CommandMap::IsBuiltinName(const CString& cmdName)
+{
+	return in->builtinCommands.find(cmdName) != in->builtinCommands.end();
+}
+
 int CommandMap::ManagerDialog()
 {
-	// ToDo: 実装
+	// キャンセル時用のバックアップ
+	std::map<CString, Command*> builtinBkup;
+	for (auto item : in->builtinCommands) {
+		builtinBkup[item.first] = item.second->Clone();
+	}
+	std::map<CString, Command*> commandsBkup;
+	for (auto item : in->commands) {
+		commandsBkup[item.first] = item.second->Clone();
+	}
+
+	KeywordManagerDialog dlg(this);
+
+	if (dlg.DoModal() != IDOK) {
+
+		// OKではないので結果を反映しない(バックアップした内容に戻す)
+		in->builtinCommands.swap(builtinBkup);
+		in->commands.swap(commandsBkup);
+	}
+
+	// バックアップを消す
+	for (auto item : builtinBkup) {
+		delete item.second;
+	}
+	for (auto item : commandsBkup) {
+		delete item.second;
+	}
+
 	return 0;
+}
+
+/**
+ *  こまんどのさくじょ
+ */
+bool CommandMap::DeleteCommand(const CString& cmdName)
+{
+	auto itFind = in->commands.find(cmdName);
+	if (itFind == in->commands.end()) {
+		return false;
+	}
+
+	auto cmd = itFind->second;
+	delete cmd;
+	in->commands.erase(itFind);
+	return true;
+}
+
+void CommandMap::EnumCommands(std::vector<Command*>& commands)
+{
+	commands.clear();
+	commands.reserve(in->commands.size() + in->builtinCommands.size());
+	for (auto item : in->commands) {
+		commands.push_back(item.second);
+	}
+	for (auto item : in->builtinCommands) {
+		commands.push_back(item.second);
+	}
 }
 
 void
@@ -422,3 +492,4 @@ bool CommandMap::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,.")) == -1;
 }
+

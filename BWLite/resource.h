@@ -14,6 +14,9 @@
 #define IDS_ERR_NAMEALREADYEXISTS       107
 #define IDS_ERR_PATHISEMPTY             108
 #define IDS_ERR_PATH0ISEMPTY            109
+#define IDS_NAME                        110
+#define IDS_DESCRIPTION                 111
+#define IDS_CONFIRM_DELETE              112
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDR_MENU_TASKTRAY               133
@@ -21,6 +24,7 @@
 #define IDD_SETTING                     137
 #define IDI_SETTING                     139
 #define IDD_NEWCOMMAND                  140
+#define IDD_KEYWORDMANAGER              143
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -49,6 +53,11 @@
 #define IDC_COMBO_SHOWTYPE              1025
 #define IDC_STATIC_STATUSMSG            1026
 #define IDC_STATIC_PARAM0               1027
+#define IDC_STATIC_NAME                 1028
+#define IDC_LIST_COMMANDS               1029
+#define IDC_BUTTON_NEW                  1030
+#define IDC_BUTTON_EDIT                 1031
+#define IDC_BUTTON_DELETE               1032
 #define ID_A                            32771
 #define ID_A_KON                        32772
 
@@ -56,9 +65,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_RESOURCE_VALUE        145
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1031
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

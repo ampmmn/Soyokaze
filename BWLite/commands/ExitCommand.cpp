@@ -53,3 +53,8 @@ BOOL ExitCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* ExitCommand::Clone()
+{
+	return new ExitCommand();
+}
+

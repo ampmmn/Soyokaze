@@ -61,3 +61,8 @@ BOOL MainDirCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* MainDirCommand::Clone()
+{
+	return new MainDirCommand();
+}
+

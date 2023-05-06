@@ -15,5 +15,6 @@ public:
 	virtual CString GetErrorString();
 	virtual HICON GetIcon();
 	virtual BOOL Match(Pattern* pattern);
+	virtual Command* Clone();
 };
 

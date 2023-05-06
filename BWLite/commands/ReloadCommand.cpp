@@ -10,7 +10,7 @@
 #endif
 
 ReloadCommand::ReloadCommand(CommandMap* pMap) :
-	m_pCommandMap(pMap)
+	mCmdMapPtr(pMap)
 {
 }
 
@@ -30,7 +30,7 @@ CString ReloadCommand::GetDescription()
 
 BOOL ReloadCommand::Execute()
 {
-	return m_pCommandMap->Load();
+	return mCmdMapPtr->Load();
 }
 
 BOOL ReloadCommand::Execute(const std::vector<CString>& args)
@@ -52,5 +52,10 @@ HICON ReloadCommand::GetIcon()
 BOOL ReloadCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
+}
+
+Command* ReloadCommand::Clone()
+{
+	return new ReloadCommand(mCmdMapPtr);
 }
 

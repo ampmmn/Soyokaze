@@ -60,3 +60,8 @@ BOOL NewCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+Command* NewCommand::Clone()
+{
+	return new NewCommand(mCmdMapPtr);
+}
+
