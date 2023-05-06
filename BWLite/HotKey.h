@@ -16,7 +16,6 @@ public:
 	// 再登録(登録解除→登録)
 	bool Reload();
 
-	static bool SaveKeyConfig(UINT modifiers, UINT vk);
 	static bool LoadKeyConfig(UINT& modifiers, UINT& vk);
 
 protected:

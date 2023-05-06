@@ -61,13 +61,24 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
-		AppPreference pref;
-		pref.Load();
+		auto pref = AppPreference::Get();
 
-		path = pref.GetFilerPath();
-		param = pref.GetFilerParam();
-		// とりあえずリンク先のみをサポート
-		param.Replace(_T("$target"), attr.mPath);
+		if (pref->mIsUseExternalFiler) {
+			path = pref->GetFilerPath();
+			param = pref->GetFilerParam();
+			// とりあえずリンク先のみをサポート
+			param.Replace(_T("$target"), attr.mPath);
+		}
+		else {
+			path = _T("explorer.exe");
+
+			CString pathToDir(attr.mPath);
+			PathRemoveFileSpec(pathToDir.GetBuffer(32768));
+			pathToDir.ReleaseBuffer();
+
+			param = _T("\"$target\"");
+			param.Replace(_T("$target"), pathToDir);
+		}
 	}
 	else {
 		path = attr.mPath;

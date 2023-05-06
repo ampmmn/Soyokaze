@@ -159,6 +159,12 @@
     <ClInclude Include="CommandRepository.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="HotKeyDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HotKeyAttribute.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -288,6 +294,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CommandRepository.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HotKeyDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HotKeyAttribute.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

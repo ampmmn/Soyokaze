@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "HotKey.h"
-#include "AppProfile.h"
+#include "AppPreference.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,26 +55,12 @@ bool HotKey::Reload()
 	return Register();
 }
 
-bool HotKey::SaveKeyConfig(UINT modifiers, UINT vk)
-{
-	CAppProfile* pProfile = CAppProfile::Get();
-	pProfile->Write(_T("HotKey"), _T("Modifiers"), (int)modifiers);
-	pProfile->Write(_T("HotKey"), _T("VirtualKeyCode"), (int)vk);
-
-	return true;
-}
-
 bool HotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 {
-	CAppProfile* pProfile = CAppProfile::Get();
+	auto pref = AppPreference::Get();
 
-	bool isEnable = pProfile->Get(_T("HotKey"), _T("Enable"), 1) != 0;
-	if (isEnable == false) {
-		return false;
-	}
-
-	modifiers = (UINT)pProfile->Get(_T("HotKey"), _T("Modifiers"), MOD_ALT);
-	vk = (UINT)pProfile->Get(_T("HotKey"), _T("VirtualKeyCode"), VK_RETURN);
+	modifiers = pref->mModifiers;
+	vk = pref->mHotKeyVK;
 
 	return true;
 }

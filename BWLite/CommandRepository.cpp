@@ -4,6 +4,7 @@
 #include "CommandMap.h"
 #include "AboutDlg.h"
 #include "AppProfile.h"
+#include "AppPreference.h"
 #include "ForwardMatchPattern.h"
 #include "PartialMatchPattern.h"
 #include "SkipMatchPattern.h"
@@ -73,8 +74,7 @@ BOOL CommandRepository::Load()
 	// キーワード比較処理の生成
 	delete in->mPattern;
 
-	CAppProfile* app = CAppProfile::Get();
-	int matchLevel = app->Get(_T("BWLite"), _T("MatchLevel"), 2);
+	int matchLevel = AppPreference::Get()->mMatchLevel;
 	if (matchLevel == 0) {
 		// スキップマッチング比較用
 		in->mPattern = new SkipMatchPattern();

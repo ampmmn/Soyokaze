@@ -389,6 +389,8 @@
     <ClInclude Include="ForwardMatchPattern.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HotKey.h" />
+    <ClInclude Include="HotKeyAttribute.h" />
+    <ClInclude Include="HotKeyDialog.h" />
     <ClInclude Include="IconLabel.h" />
     <ClInclude Include="IconLoader.h" />
     <ClInclude Include="IniFile.h" />
@@ -436,6 +438,8 @@
     <ClCompile Include="FolderDialog.cpp" />
     <ClCompile Include="ForwardMatchPattern.cpp" />
     <ClCompile Include="HotKey.cpp" />
+    <ClCompile Include="HotKeyAttribute.cpp" />
+    <ClCompile Include="HotKeyDialog.cpp" />
     <ClCompile Include="IconLabel.cpp" />
     <ClCompile Include="IconLoader.cpp" />
     <ClCompile Include="IniFile.cpp" />

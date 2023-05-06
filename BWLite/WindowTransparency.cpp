@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WindowTransparency.h"
-#include "AppProfile.h"
+#include "AppPreference.h"
 
 WindowTransparency::WindowTransparency() : 
 	mWindowHandle(nullptr),
@@ -10,13 +10,6 @@ WindowTransparency::WindowTransparency() :
 	mIsInactiveOnly(true),
 	mIsTopmost(true)
 {
-	CAppProfile* app = CAppProfile::Get();
-	mIsEnable = (app->Get(_T("WindowTransparency"), _T("Enable"), 1) != 0);
-
-	mAlpha = app->Get(_T("WindowTransparency"), _T("Alpha"), 200);
-	mIsInactiveOnly =(app->Get(_T("WindowTransparency"), _T("InactiveOnly"), 1) != 0);
-
-	mIsTopmost =(app->Get(_T("BWLite"), _T("Topmost"), 1) != 0);
 }
 
 WindowTransparency::~WindowTransparency()
@@ -26,6 +19,12 @@ WindowTransparency::~WindowTransparency()
 void WindowTransparency::SetWindowHandle(HWND hwnd)
 {
 	mWindowHandle = hwnd;
+
+	auto* pref = AppPreference::Get();
+	mIsEnable = pref->mIsTransparencyEnable;
+	mAlpha = pref->mAlpha;
+	mIsInactiveOnly = pref->mIsTransparencyInactiveOnly;
+	mIsTopmost = pref->mIsTopmost;
 
 	// 最上位に表示する場合
 	if (mIsTopmost) {

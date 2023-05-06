@@ -18,6 +18,8 @@
 #define IDS_DESCRIPTION                 111
 #define IDS_CONFIRM_DELETE              112
 #define IDS_ERR_NAMEDOESNOTEXIST        113
+#define IDS_FILTER_EXE                  114
+#define IDS_ERR_HOTKEYALREADYUSE        115
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDR_MENU_TASKTRAY               133
@@ -25,13 +27,13 @@
 #define IDD_SETTING                     137
 #define IDD_NEWCOMMAND                  140
 #define IDD_KEYWORDMANAGER              143
+#define IDD_HOTKEY                      146
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
 #define IDC_EDIT_COMMAND2               1002
 #define IDC_LIST_CANDIDATE              1004
 #define IDC_STATIC_ICON                 1005
-#define IDC_HOTKEY                      1006
 #define IDC_EDIT_NAME                   1007
 #define IDC_EDIT_DESCRIPTION            1008
 #define IDC_CHECK_RUNASADMIN            1009
@@ -46,6 +48,7 @@
 #define IDC_STATIC_PARAM00              1018
 #define IDC_EDIT_PATH                   1019
 #define IDC_EDIT_PARAM                  1020
+#define IDC_EDIT_HOTKEY                 1020
 #define IDC_EDIT_PATH0                  1021
 #define IDC_EDIT_PARAM0                 1022
 #define IDC_EDIT_DIR                    1023
@@ -57,7 +60,21 @@
 #define IDC_LIST_COMMANDS               1029
 #define IDC_BUTTON_NEW                  1030
 #define IDC_BUTTON_EDIT                 1031
+#define IDC_COMBO_MATCHLEVEL            1031
 #define IDC_BUTTON_DELETE               1032
+#define IDC_CHECK_USEFILER              1032
+#define IDC_CHECK_TOPMOST               1033
+#define IDC_COMBO_TRANSPARENCY          1034
+#define IDC_EDIT_ALPHA                  1035
+#define IDC_BUTTON_BROWSEFILE           1036
+#define IDC_EDIT_FILERPARAM             1037
+#define IDC_BUTTON_HOTKEY               1038
+#define IDC_EDIT_FILERPATH              1039
+#define IDC_CHECK_SHIFT                 1040
+#define IDC_CHECK_ALT                   1041
+#define IDC_CHECK_CTRL                  1042
+#define IDC_CHECK_WIN                   1043
+#define IDC_COMBO_VK                    1044
 #define ID_A                            32771
 #define ID_A_KON                        32772
 
@@ -65,9 +82,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_RESOURCE_VALUE        149
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         1045
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
