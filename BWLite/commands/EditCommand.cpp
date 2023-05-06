@@ -41,7 +41,16 @@ BOOL EditCommand::Execute(const std::vector<CString>& args)
 		return TRUE;
 	}
 
-	mCmdMapPtr->EditCommandDialog(args[0]);
+	CString editName = args[0];
+	if (mCmdMapPtr->QueryAsWholeMatch(editName) == nullptr) {
+		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
+		msgStr += _T("\n\n");
+		msgStr += editName;
+		AfxMessageBox(msgStr);
+		return TRUE;
+	}
+
+	mCmdMapPtr->EditCommandDialog(editName);
 	return TRUE;
 
 	return TRUE;

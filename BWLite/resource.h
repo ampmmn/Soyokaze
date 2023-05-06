@@ -17,6 +17,7 @@
 #define IDS_NAME                        110
 #define IDS_DESCRIPTION                 111
 #define IDS_CONFIRM_DELETE              112
+#define IDS_ERR_NAMEDOESNOTEXIST        113
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDR_MENU_TASKTRAY               133

@@ -42,7 +42,7 @@ public:
 	int GetRunAs();
 
 protected:
-	ATTRIBUTE& SelectAttribute(const std::vector<CString>& args);
+	void SelectAttribute(const std::vector<CString>& args,ATTRIBUTE& attr);
 
 public:
 	static void ExpandArguments(const std::vector<CString>& args, CString& path, CString& param);
@@ -55,4 +55,6 @@ protected:
 
 	ATTRIBUTE mNormalAttr;
 	ATTRIBUTE mNoParamAttr;
+
+	CString mErrMsg;
 };

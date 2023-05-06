@@ -400,6 +400,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_CONFIRM_DELETE      "以下のコマンドを削除します。"
+    IDS_ERR_NAMEDOESNOTEXIST "該当するコマンドはありません。"
 END
 
 #endif    // 日本語 (日本) resources

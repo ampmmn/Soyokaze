@@ -46,16 +46,19 @@ BOOL ShellExecCommand::Execute()
 
 BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 {
+	mErrMsg.Empty();
+
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
-	const ATTRIBUTE& attrPtr = SelectAttribute(args);
+	ATTRIBUTE attr;
+	SelectAttribute(args, attr);
 
 	CString path;
 	CString param;
 	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
 	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
-	                  PathFileExists(attrPtr.mPath);
+	                  PathFileExists(attr.mPath);
 
-	if (isOpenPath || PathIsDirectory(attrPtr.mPath)) {
+	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
 		AppPreference pref;
@@ -64,11 +67,11 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		path = pref.GetFilerPath();
 		param = pref.GetFilerParam();
 		// とりあえずリンク先のみをサポート
-		param.Replace(_T("$target"), attrPtr.mPath);
+		param.Replace(_T("$target"), attr.mPath);
 	}
 	else {
-		path = attrPtr.mPath;
-		param = attrPtr.mParam;
+		path = attr.mPath;
+		param = attr.mParam;
 	}
 
 	// argsの値を展開
@@ -76,7 +79,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 
 	SHELLEXECUTEINFO si = SHELLEXECUTEINFO();
 	si.cbSize = sizeof(si);
-	si.nShow = attrPtr.mShowType;
+	si.nShow = attr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
 	if (mRunAs == 1) {
@@ -86,11 +89,18 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 	if (param.IsEmpty() == FALSE) {
 		si.lpParameters = param;
 	}
-	if (attrPtr.mDir.IsEmpty() == FALSE) {
-		si.lpDirectory = attrPtr.mDir;
+	if (attr.mDir.IsEmpty() == FALSE) {
+		si.lpDirectory = attr.mDir;
 	}
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {
+
+		DWORD er = GetLastError();
+		DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
+		void* msgBuf;
+		FormatMessage(flags, NULL, er, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msgBuf, 0, NULL);
+		mErrMsg = (LPCTSTR)msgBuf;
+		LocalFree(msgBuf);
 		return FALSE;
 	}
 
@@ -101,7 +111,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 
 CString ShellExecCommand::GetErrorString()
 {
-	return _T("");
+	return mErrMsg;
 }
 
 ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
@@ -120,8 +130,6 @@ ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
 ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
 {
 	mNormalAttr = attr;
-	ExpandEnv(mNormalAttr.mPath);
-	ExpandEnv(mNormalAttr.mParam);
 
 	return *this;
 }
@@ -129,15 +137,12 @@ ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
 ShellExecCommand& ShellExecCommand::SetAttributeForParam0(const ATTRIBUTE& attr)
 {
 	mNoParamAttr = attr;
-	ExpandEnv(mNoParamAttr.mPath);
-	ExpandEnv(mNoParamAttr.mParam);
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
 {
 	mNormalAttr.mPath = path;
-	ExpandEnv(mNormalAttr.mPath);
 	return *this;
 }
 
@@ -147,9 +152,10 @@ ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
 	return *this;
 }
 
-ShellExecCommand::ATTRIBUTE&
+void
 ShellExecCommand::SelectAttribute(
-	const std::vector<CString>& args
+	const std::vector<CString>& args,
+	ATTRIBUTE& attr
 )
 {
 	// パラメータの有無などでATTRIBUTEを切り替える
@@ -159,21 +165,27 @@ ShellExecCommand::SelectAttribute(
 
 		// mNormalAttr優先
 		if (mNormalAttr.mPath.IsEmpty() == FALSE) {
-			return mNormalAttr;
+			attr = mNormalAttr;
 		}
-
-		return mNoParamAttr;
+		else {
+			attr = mNoParamAttr;
+		}
 	}
 	else {
 		// パラメータなし
 
 		// mNoParamAttr優先
 		if (mNoParamAttr.mPath.IsEmpty() == FALSE) {
-			return mNoParamAttr;
+			attr = mNoParamAttr;
 		}
-
-		return mNormalAttr;
+		else {
+			attr = mNormalAttr;
+		}
 	}
+
+	// 変数を解決
+	ExpandEnv(attr.mPath);
+	ExpandEnv(attr.mParam);
 }
 
 void ShellExecCommand::ExpandArguments(
