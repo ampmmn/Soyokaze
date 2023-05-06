@@ -1,16 +1,24 @@
 #pragma once
 
+#include "AppPreferenceListenerIF.h"
 #include <stdint.h>
 
-class WindowTransparency
+class WindowTransparency : public AppPreferenceListenerIF
 {
 public:
 	WindowTransparency();
-	~WindowTransparency();
+	virtual ~WindowTransparency();
 
 	void SetWindowHandle(HWND hwnd);
 
 	bool UpdateActiveState(UINT nState);
+
+protected:
+	void UpdateStyle();
+
+
+	virtual void OnAppPreferenceUpdated();
+
 protected:
 	// 対象ウインドウハンドル
 	HWND mWindowHandle;

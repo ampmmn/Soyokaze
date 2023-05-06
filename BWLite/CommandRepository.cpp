@@ -34,6 +34,29 @@ struct CommandRepository::PImpl
 	PImpl() : mPattern(nullptr), mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false)
 	{
 	}
+	~PImpl()
+	{
+		delete mPattern;
+	}
+
+	void ReloadPatternObject()
+	{
+		delete mPattern;
+
+		int matchLevel = AppPreference::Get()->mMatchLevel;
+		if (matchLevel == 0) {
+			// スキップマッチング比較用
+			mPattern = new SkipMatchPattern();
+		}
+		else if (matchLevel == 1) {
+			// 部分一致比較用
+			mPattern = new PartialMatchPattern();
+		}
+		else {
+			// 前方一致比較用
+			mPattern = new ForwardMatchPattern();
+		}
+	}
 
 	// 設定ファイル(commands.ini)からの読み書きを行う
 	CommandFile mCommandLoader;
@@ -55,11 +78,12 @@ struct CommandRepository::PImpl
 
 CommandRepository::CommandRepository() : in(new PImpl)
 {
+	AppPreference::Get()->RegisterListener(this);
 }
 
 CommandRepository::~CommandRepository()
 {
-	delete in->mPattern;
+	AppPreference::Get()->UnregisterListener(this);
 	delete in;
 }
 
@@ -72,21 +96,7 @@ BOOL CommandRepository::Load()
 	in->mBuiltinCommands.Clear();
 
 	// キーワード比較処理の生成
-	delete in->mPattern;
-
-	int matchLevel = AppPreference::Get()->mMatchLevel;
-	if (matchLevel == 0) {
-		// スキップマッチング比較用
-		in->mPattern = new SkipMatchPattern();
-	}
-	else if (matchLevel == 1) {
-		// 部分一致比較用
-		in->mPattern = new PartialMatchPattern();
-	}
-	else {
-		// 前方一致比較用
-		in->mPattern = new ForwardMatchPattern();
-	}
+	in->ReloadPatternObject();
 
 	// ビルトインコマンドの登録
 	in->mBuiltinCommands.Register(new NewCommand(this));
@@ -377,3 +387,8 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,.")) == -1;
 }
 
+void CommandRepository::OnAppPreferenceUpdated()
+{
+	// アプリ設定変更の影響を受ける項目の再登録
+	in->ReloadPatternObject();
+}

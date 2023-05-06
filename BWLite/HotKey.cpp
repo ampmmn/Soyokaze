@@ -18,10 +18,12 @@ static const int ID_BWLITE_HOTKEY = 0xB31E;
 
 HotKey::HotKey(HWND targetWnd) : mTargetWnd(targetWnd)
 {
+	AppPreference::Get()->RegisterListener(this);
 }
 
 HotKey::~HotKey()
 {
+	AppPreference::Get()->UnregisterListener(this);
 	Unregister();
 }
 
@@ -65,4 +67,10 @@ bool HotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 	return true;
 }
 
+
+void HotKey::OnAppPreferenceUpdated()
+{
+	// アプリ設定変更の影響を受ける項目の再登録
+	Reload();
+}
 

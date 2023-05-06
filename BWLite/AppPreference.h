@@ -1,5 +1,8 @@
 #pragma once
 
+#include "AppPreferenceListenerIF.h"
+#include <set>
+
 class AppPreference
 {
 public:
@@ -10,6 +13,9 @@ public:
 
 	CString GetFilerPath() const;
 	CString GetFilerParam() const;
+
+	void RegisterListener(AppPreferenceListenerIF* listener);
+	void UnregisterListener(AppPreferenceListenerIF* listener);
 
 protected:
 	AppPreference();
@@ -37,5 +43,9 @@ public:
 	bool mIsTopmost;
 	// 候補絞り込み方法
 	int mMatchLevel;
+
+protected:
+	// 設定変更時(正確にはSave時)に通知を受け取る
+	std::set<AppPreferenceListenerIF*> mListeners;
 };
 

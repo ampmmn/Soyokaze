@@ -1,13 +1,14 @@
 #pragma once
 
 #include "CommandIF.h"
+#include "AppPreferenceListenerIF.h"
 #include <vector>
 
-class CommandRepository
+class CommandRepository : public AppPreferenceListenerIF
 {
 public:
 	CommandRepository();
-	~CommandRepository();
+	virtual ~CommandRepository();
 
 public:
 	BOOL Load();
@@ -26,6 +27,9 @@ public:
 	Command* QueryAsWholeMatch(const CString& strQueryStr);
 
 	bool IsValidAsName(const CString& strQueryStr);
+
+protected:
+	virtual void OnAppPreferenceUpdated();
 
 protected:
 	struct PImpl;

@@ -64,6 +64,11 @@ void AppPreference::Save()
 	pProfile->Write(_T("WindowTransparency"), _T("Alpha"), (int)mAlpha);
 	pProfile->Write(_T("BWLite"), _T("Topmost"), (int)mIsTopmost);
 	pProfile->Write(_T("BWLite"), _T("MatchLevel"), (int)mMatchLevel);
+
+	// リスナーへ通知
+	for (auto listener : mListeners) {
+		listener->OnAppPreferenceUpdated();
+	}
 }
 
 
@@ -76,3 +81,14 @@ CString AppPreference::GetFilerParam() const
 {
 	return mFilerParam;
 }
+
+void AppPreference::RegisterListener(AppPreferenceListenerIF* listener)
+{
+	mListeners.insert(listener);
+}
+
+void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
+{
+	mListeners.erase(listener);
+}
+

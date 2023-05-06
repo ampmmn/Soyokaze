@@ -10,16 +10,44 @@ WindowTransparency::WindowTransparency() :
 	mIsInactiveOnly(true),
 	mIsTopmost(true)
 {
+	AppPreference::Get()->RegisterListener(this);
 }
 
 WindowTransparency::~WindowTransparency()
 {
+	AppPreference::Get()->UnregisterListener(this);
 }
 
 void WindowTransparency::SetWindowHandle(HWND hwnd)
 {
 	mWindowHandle = hwnd;
 
+	UpdateStyle();
+
+}
+
+bool WindowTransparency::UpdateActiveState(UINT nState)
+{
+	if (IsWindow(mWindowHandle) == FALSE) {
+		return false;
+	}
+	if (mIsEnable == false) {
+		return false;
+	}
+
+	BYTE alpha = mAlpha;
+
+	if (mIsInactiveOnly && nState != WA_INACTIVE) {
+		alpha = 0xff;
+	}
+
+	SetLayeredWindowAttributes(mWindowHandle, 0, alpha, LWA_ALPHA);
+
+	return true;
+}
+
+void WindowTransparency::UpdateStyle()
+{
 	auto* pref = AppPreference::Get();
 	mIsEnable = pref->mIsTransparencyEnable;
 	mAlpha = pref->mAlpha;
@@ -52,23 +80,8 @@ void WindowTransparency::SetWindowHandle(HWND hwnd)
 	}
 }
 
-bool WindowTransparency::UpdateActiveState(UINT nState)
+void WindowTransparency::OnAppPreferenceUpdated()
 {
-	if (IsWindow(mWindowHandle) == FALSE) {
-		return false;
-	}
-	if (mIsEnable == false) {
-		return false;
-	}
-
-	BYTE alpha = mAlpha;
-
-	if (mIsInactiveOnly && nState != WA_INACTIVE) {
-		alpha = 0xff;
-	}
-
-	SetLayeredWindowAttributes(mWindowHandle, 0, alpha, LWA_ALPHA);
-
-	return true;
+	UpdateStyle();
 }
 
