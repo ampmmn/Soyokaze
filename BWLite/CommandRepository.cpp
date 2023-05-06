@@ -44,7 +44,7 @@ struct CommandRepository::PImpl
 		delete mPattern;
 
 		int matchLevel = AppPreference::Get()->mMatchLevel;
-		if (matchLevel == 0) {
+		if (matchLevel == 2) {
 			// スキップマッチング比較用
 			mPattern = new SkipMatchPattern();
 		}
