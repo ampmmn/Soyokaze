@@ -30,7 +30,7 @@
 
 struct CommandRepository::PImpl
 {
-	PImpl() : mPattern(nullptr)
+	PImpl() : mPattern(nullptr), mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false)
 	{
 	}
 
@@ -44,6 +44,11 @@ struct CommandRepository::PImpl
 	ExecutableFileCommand mExeCommand;
 	// キーワード比較用のクラス
 	Pattern* mPattern;
+
+	// 編集中フラグ
+	bool mIsNewDialog;
+	bool mIsEditDialog;
+	bool mIsManagerDialog;
 };
 
 
@@ -111,6 +116,21 @@ BOOL CommandRepository::Load()
 }
 
 
+class ScopeEdit
+{
+public:
+	ScopeEdit(bool& flag) : mFlagPtr(&flag)
+ 	{
+		*mFlagPtr = true;
+	}
+	~ScopeEdit()
+	{
+		*mFlagPtr = false;
+	}
+	bool* mFlagPtr;
+};
+
+
 /**
  *  新規キーワード作成
  *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
@@ -119,6 +139,12 @@ int CommandRepository::NewCommandDialog(
 	const CString* cmdNamePtr
 )
 {
+	if (in->mIsNewDialog) {
+		// 編集操作中の再入はしない
+		return 0;
+	}
+	ScopeEdit scopeEdit(in->mIsNewDialog);
+
 	// 新規作成ダイアログを表示
 	CommandEditDialog dlg(this);
 
@@ -170,10 +196,17 @@ int CommandRepository::NewCommandDialog(
  */
 int CommandRepository::EditCommandDialog(const CString& cmdName)
 {
+	if (in->mIsEditDialog) {
+		// 編集操作中の再入はしない
+		return 0;
+	}
+	ScopeEdit scopeEdit(in->mIsEditDialog);
+
 	auto cmdAbs = in->mCommands.Get(cmdName);
 	if (cmdAbs == nullptr) {
 		return 1;
 	}
+
 
 	// ToDo: 後でクラス設計を見直す
 	ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
@@ -253,6 +286,12 @@ bool CommandRepository::IsBuiltinName(const CString& cmdName)
  */
 int CommandRepository::ManagerDialog()
 {
+	if (in->mIsManagerDialog) {
+		// 編集操作中の再入はしない
+		return 0;
+	}
+	ScopeEdit scopeEdit(in->mIsManagerDialog);
+
 	// キャンセル時用のバックアップ
 	CommandMap builtinBkup(in->mBuiltinCommands);
 	CommandMap commandsBkup(in->mCommands);
