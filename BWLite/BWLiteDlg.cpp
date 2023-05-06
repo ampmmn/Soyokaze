@@ -6,7 +6,7 @@
 #include "framework.h"
 #include "BWLite.h"
 #include "BWLiteDlg.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "CommandString.h"
 #include "afxdialogex.h"
 #include "WindowPlacementUtil.h"

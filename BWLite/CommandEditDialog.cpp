@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "CommandEditDialog.h"
 #include "FolderDialog.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "IconLabel.h"
 #include "IconLoader.h"
 #include "resource.h"

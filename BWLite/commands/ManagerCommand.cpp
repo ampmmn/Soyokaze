@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/ManagerCommand.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "IconLoader.h"
 
 #ifdef _DEBUG

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordManagerDialog.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "KeywordManagerListCtrl.h"
 #include "IconLabel.h"
 #include "IconLoader.h"

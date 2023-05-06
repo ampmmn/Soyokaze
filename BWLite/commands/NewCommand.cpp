@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/NewCommand.h"
 #include "commands/ShellExecCommand.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "IconLoader.h"
 #include "CommandEditDialog.h"
 #include "resource.h"

@@ -1,34 +1,36 @@
 #pragma once
 
 #include "CommandIF.h"
+#include <map>
 #include <vector>
 
-class CommandRepository
+class CommandMap
 {
 public:
-	CommandRepository();
-	~CommandRepository();
+	CommandMap();
+	CommandMap(const CommandMap& rhs);
+	~CommandMap();
 
-public:
-	BOOL Load();
+	void Clear();
 
-	int NewCommandDialog(const CString* cmdNamePtr);
-	int EditCommandDialog(const CString& cmdName);
-	int ManagerDialog();
+	bool Has(const CString& name) const;
+	Command* Get(const CString& name);
 
-	bool DeleteCommand(const CString& cmdName);
+	// 登録/解除
+	void Register(Command* cmd);
+	bool Unregister(Command* cmd);
+	bool Unregister(const CString& name);
 
-	void EnumCommands(std::vector<Command*>& commands);
+	void Swap(CommandMap& rhs);
 
-	bool IsBuiltinName(const CString& cmdName);
+	void Query(Pattern* pattern, std::vector<Command*>& commands);
 
-	void Query(const CString& strQueryStr, std::vector<Command*>& commands);
-	Command* QueryAsWholeMatch(const CString& strQueryStr);
+	// 最初に見つけた要素を返す
+	Command* FindOne(Pattern* pattern);
 
-	bool IsValidAsName(const CString& strQueryStr);
+	// 配列化する
+	std::vector<Command*>& Enumerate(std::vector<Command*>& commands);
 
 protected:
-	struct PImpl;
-	PImpl* in;
+	std::map<CString, Command*> mMap;
 };
-

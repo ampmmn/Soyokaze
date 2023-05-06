@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ReloadCommand.h"
-#include "CommandMap.h"
+#include "CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
 
