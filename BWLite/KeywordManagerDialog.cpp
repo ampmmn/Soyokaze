@@ -164,7 +164,7 @@ bool KeywordManagerDialog::UpdateStatus()
 
 void KeywordManagerDialog::OnButtonNew()
 {
-	mCmdMapPtr->NewCommandDialog(nullptr);
+	mCmdMapPtr->NewCommandDialog(nullptr, nullptr);
 	ResetContents();
 }
 

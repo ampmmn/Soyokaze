@@ -146,14 +146,20 @@ LRESULT CBWLiteDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-bool CBWLiteDlg::ExecuteCommand(const CString& commandStr)
+bool CBWLiteDlg::ExecuteCommand(const CString& str)
 {
+	CommandString commandStr(str);
+
 	// (今のところ)内部用なので、履歴には登録しない
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandStr);
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandStr.GetCommandString());
 	if (cmd == nullptr) {
 		return false;
 	}
-	return cmd->Execute();
+
+	std::vector<CString> args;
+	commandStr.GetParameters(args);
+
+	return cmd->Execute(args);
 }
 
 // CBWLiteDlg メッセージ ハンドラー

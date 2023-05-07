@@ -35,6 +35,11 @@ void CommandEditDialog::SetName(const CString& name)
 	mName = name;
 }
 
+void CommandEditDialog::SetPath(const CString& path)
+{
+	mPath = path;
+}
+
 int CommandEditDialog::GetShowType()
 {
 	if (mShowType == 1) {

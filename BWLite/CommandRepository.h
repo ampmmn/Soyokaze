@@ -13,7 +13,7 @@ public:
 public:
 	BOOL Load();
 
-	int NewCommandDialog(const CString* cmdNamePtr);
+	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr);
 	int EditCommandDialog(const CString& cmdName);
 	int ManagerDialog();
 

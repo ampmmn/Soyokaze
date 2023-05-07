@@ -33,6 +33,7 @@ public:
 	bool ActivateExistingProcess();
 
 	bool SendCommandString(const CString& commandStr);
+	bool RegisterPath(const CString& pathStr);
 
 // 実装
 protected:

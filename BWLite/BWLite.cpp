@@ -59,9 +59,15 @@ BOOL CBWLiteApp::InitInstance()
 	if (BWLiteProcessExists()) {
 
 		CString value;
-		if (args.GetValue(_T("-c"), value)) {
+		if (args.GetBWOptValue(_T("/Runcommand="), value) || args.GetValue(_T("-c"), value)) {
 			// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
 			SendCommandString(value);
+			return FALSE;
+		}
+		if (args.GetCount() > 1 && PathFileExists(args.Get(1))) {
+			// 第一引数で存在するパスが指定された場合は登録画面を表示する
+			RegisterPath(args.Get(1));
+			return FALSE;
 		}
 		else {
 			// プロセスをアクティブ化し、このプロセスは終了する
@@ -213,5 +219,16 @@ bool CBWLiteApp::SendCommandString(const CString& commandStr)
 
 	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)commandStr);
 	return true;
+}
+
+bool CBWLiteApp::RegisterPath(const CString& pathStr)
+{
+	CString name = PathFindFileName(pathStr);
+	PathRemoveExtension(name.GetBuffer(name.GetLength()));
+	name.ReleaseBuffer();
+
+	CString commandStr(_T("new "));
+	commandStr += name + _T(" \"") + pathStr + _T("\"");
+	return SendCommandString(commandStr);
 }
 

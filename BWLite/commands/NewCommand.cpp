@@ -31,7 +31,7 @@ CString NewCommand::GetDescription()
 
 BOOL NewCommand::Execute()
 {
-	mCmdMapPtr->NewCommandDialog(nullptr);
+	mCmdMapPtr->NewCommandDialog(nullptr, nullptr);
 	return TRUE;
 }
 
@@ -41,7 +41,11 @@ BOOL NewCommand::Execute(const std::vector<CString>& args)
 	if (args.size() > 0) {
 		namePtr = &args[0];
 	}
-	mCmdMapPtr->NewCommandDialog(namePtr);
+	const CString* pathPtr = nullptr;
+	if (args.size() > 1) {
+		pathPtr = &args[1];
+	}
+	mCmdMapPtr->NewCommandDialog(namePtr, pathPtr);
 	return TRUE;
 }
 

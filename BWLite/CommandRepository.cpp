@@ -144,9 +144,11 @@ public:
 /**
  *  新規キーワード作成
  *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
+ *  @param cmdNamePtr コマンドに紐づけるパス(nullの場合はパスを空欄にする)
  */
 int CommandRepository::NewCommandDialog(
-	const CString* cmdNamePtr
+	const CString* cmdNamePtr,
+	const CString* pathPtr
 )
 {
 	if (in->mIsNewDialog) {
@@ -160,6 +162,9 @@ int CommandRepository::NewCommandDialog(
 
 	if (cmdNamePtr) {
 		dlg.SetName(*cmdNamePtr);
+	}
+	if (pathPtr) {
+		dlg.SetPath(*pathPtr);
 	}
 
 	if (dlg.DoModal() != IDOK) {
