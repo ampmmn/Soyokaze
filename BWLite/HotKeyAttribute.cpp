@@ -174,7 +174,7 @@ bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 	}
 
 	// 登録できるか実際に試す(すぐに解除)
-	if (RegisterHotKey(targetWnd, ID_BWLITE_TRY_HOTKEY, GetVKCode(), GetModifiers()) == FALSE) {
+	if (RegisterHotKey(targetWnd, ID_BWLITE_TRY_HOTKEY, GetModifiers(), GetVKCode()) == FALSE) {
 		return false;
 	}
 	UnregisterHotKey(targetWnd, ID_BWLITE_TRY_HOTKEY);
