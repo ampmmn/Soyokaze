@@ -83,7 +83,7 @@ IDI_ICON2               ICON                    "res\\icon.ico"
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 170, 110
+IDD_ABOUTBOX DIALOGEX 0, 0, 213, 110
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "BWLite について"
 FONT 9, "MS UI Gothic", 0, 0, 0x1
@@ -91,8 +91,11 @@ BEGIN
     ICON            IDI_ICON2,IDC_STATIC,14,14,18,21
     LTEXT           "BWLite",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2023 ymgw",IDC_STATIC,37,76,114,8
-    DEFPUSHBUTTON   "OK",IDOK,54,88,50,14,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,81,88,50,14,WS_GROUP
     LTEXT           "BWLite",IDC_STATIC_VERSION,42,31,114,8,SS_NOPREFIX
+    LTEXT           "リポジトリ:",IDC_STATIC,41,49,34,8,SS_NOPREFIX
+    CONTROL         "<A HREF=""https://github.com/ampmmn/BWLite"">https://github.com/ampmmn/BWLite</A>",IDC_SYSLINK1,
+                    "SysLink",WS_TABSTOP,73,49,133,14
 END
 
 IDD_BWLITE_DIALOG DIALOGEX 0, 0, 118, 40
@@ -221,8 +224,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,3,1
- PRODUCTVERSION 0,0,3,1
+ FILEVERSION 0,0,4,1
+ PRODUCTVERSION 0,0,4,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -237,14 +240,13 @@ BEGIN
     BEGIN
         BLOCK "041104b0"
         BEGIN
-            VALUE "CompanyName", "ymgw"
             VALUE "FileDescription", "BWLite"
-            VALUE "FileVersion", "0.0.3.1"
+            VALUE "FileVersion", "0.0.4.1"
             VALUE "InternalName", "BWLite.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "BWLite.exe"
             VALUE "ProductName", "BWLite"
-            VALUE "ProductVersion", "0.0.3.1"
+            VALUE "ProductVersion", "0.0.4.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -265,7 +267,7 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 163
+        RIGHTMARGIN, 206
         TOPMARGIN, 7
         BOTTOMMARGIN, 102
     END
@@ -394,21 +396,6 @@ END
 IDD_HOTKEY AFX_DIALOG_LAYOUT
 BEGIN
     0
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MENU_TASKTRAY MENU
-BEGIN
-    POPUP "a"
-    BEGIN
-        MENUITEM "kon",                         ID_A_KON
-        MENUITEM SEPARATOR
-    END
 END
 
 

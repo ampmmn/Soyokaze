@@ -22,6 +22,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK1, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -49,4 +51,15 @@ BOOL CAboutDlg::OnInitDialog()
 	UpdateData(FALSE);
 
 	return TRUE;
+}
+
+void CAboutDlg::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	NMLINK* linkPtr = (NMLINK*)pNMHDR;
+
+	ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);
+	*pResult = 0;
 }

@@ -22,7 +22,6 @@
 #define IDS_ERR_HOTKEYALREADYUSE        115
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
-#define IDR_MENU_TASKTRAY               133
 #define IDI_ICON1                       136
 #define IDD_SETTING                     137
 #define IDD_NEWCOMMAND                  140
@@ -75,8 +74,8 @@
 #define IDC_CHECK_CTRL                  1042
 #define IDC_CHECK_WIN                   1043
 #define IDC_COMBO_VK                    1044
+#define IDC_SYSLINK1                    1045
 #define ID_A                            32771
-#define ID_A_KON                        32772
 
 // Next default values for new objects
 // 
@@ -84,7 +83,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        149
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1045
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

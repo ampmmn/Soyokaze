@@ -20,5 +20,6 @@ protected:
 // ŽÀ‘•
 protected:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
