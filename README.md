@@ -47,7 +47,8 @@ bluewindのReadMeから抜粋
 ## ファイル構成
 
 - BWLite.exe
-- doc/
+- help.html
+- LICENSE
 
 ## 主な特徴
 
@@ -121,8 +122,8 @@ bluewindのReadMeから抜粋
 ## ToDo
 
 - 「送る」から登録
-- マニュアル整備
-- 設計資料を整備する
+- マニュアル拡充
+- 設計資料を残す
 - ユニットテスト拡充
 
 ## ChangeLog
