@@ -81,6 +81,26 @@ BOOL ExecutableFileCommand::Execute()
 
 BOOL ExecutableFileCommand::Execute(const std::vector<CString>& args)
 {
+	if (PathFileExists(in->mFullPath) == FALSE) {
+		return FALSE;
+	}
+
+	ShellExecCommand::ATTRIBUTE attr;
+	attr.mPath = in->mFullPath;
+
+	for (int i = 0; i < args.size(); ++i) {
+		if (i != 0) {
+			attr.mParam += _T(" ");
+		}
+		attr.mParam += _T("\"");
+		attr.mParam += args[i];
+		attr.mParam += _T("\"");
+	}
+
+	ShellExecCommand cmd;
+	cmd.SetAttribute(attr);
+	return cmd.Execute();
+
 	// ‚Ï‚ç‚ß[‚½‚µ‚Ä‚¢‚Í‚³‚Û[‚Æ‚µ‚È‚¢
 	return Execute();
 }
