@@ -34,6 +34,7 @@ public:
 public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
+	void ShowHelp();
 
 	bool ExecuteCommand(const CString& commandStr);
 

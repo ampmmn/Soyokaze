@@ -88,6 +88,29 @@ void CBWLiteDlg::ActivateWindow()
 	}
 }
 
+void CBWLiteDlg::ShowHelp()
+{
+	TCHAR path[32768];
+	GetModuleFileName(NULL, path, 32768);
+	PathRemoveFileSpec(path);
+	PathAppend(path, _T("help.html"));
+	if (PathFileExists(path) == FALSE) {
+		CString msg((LPCTSTR)IDS_ERR_HELPDOESNOTEXIST);
+		msg += _T("\n");
+		msg += path;
+		AfxMessageBox(msg);
+		return ;
+	}
+
+	SHELLEXECUTEINFO si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = SW_NORMAL;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = path;
+
+	ShellExecuteEx(&si);
+	CloseHandle(si.hProcess);
+}
 
 class ScopeAttachThreadInput
 {
@@ -591,7 +614,7 @@ void CBWLiteDlg::OnContextMenu(
 	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
 	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	// menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
 	menu.InsertMenu(-1, 0, ID_NEW, _T("新規作成(&N)"));
 	menu.InsertMenu(-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
@@ -620,8 +643,8 @@ void CBWLiteDlg::OnContextMenu(
 		ExecuteCommand(_T("userdir"));
 	}
 	else if (n == ID_MANUAL) {
-		// ヘルプコマンド
-		//ExecuteCommand(_T("manual"));
+		// ヘルプ表示
+		ShowHelp();
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));

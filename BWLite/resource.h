@@ -20,6 +20,7 @@
 #define IDS_ERR_NAMEDOESNOTEXIST        113
 #define IDS_FILTER_EXE                  114
 #define IDS_ERR_HOTKEYALREADYUSE        115
+#define IDS_ERR_HELPDOESNOTEXIST        116
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDI_ICON1                       136

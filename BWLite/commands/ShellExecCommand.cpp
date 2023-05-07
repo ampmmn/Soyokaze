@@ -88,7 +88,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 	// args‚Ì’l‚ð“WŠJ
 	ExpandArguments(args, path, param);
 
-	SHELLEXECUTEINFO si = SHELLEXECUTEINFO();
+	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
 	si.nShow = attr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
@@ -114,6 +114,8 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		LocalFree(msgBuf);
 		return FALSE;
 	}
+
+	// ‚à‚µwait‚·‚é‚æ‚¤‚É‚·‚é‚Ì‚Å‚ ‚ê‚Î‚±‚±‚Å‘Ò‚Â
 
 	CloseHandle(si.hProcess);
 
