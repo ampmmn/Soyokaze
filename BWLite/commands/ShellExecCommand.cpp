@@ -70,14 +70,13 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 			param.Replace(_T("$target"), attr.mPath);
 		}
 		else {
-			path = _T("explorer.exe");
-
-			CString pathToDir(attr.mPath);
-			PathRemoveFileSpec(pathToDir.GetBuffer(32768));
-			pathToDir.ReleaseBuffer();
-
-			param = _T("\"$target\"");
-			param.Replace(_T("$target"), pathToDir);
+			// 登録されたファイラーがない場合はエクスプローラで開く
+			path = attr.mPath;
+			if (PathIsDirectory(path) == FALSE) {
+				PathRemoveFileSpec(path.GetBuffer(32768));
+				path.ReleaseBuffer();
+			}
+			param = _T("open");
 		}
 	}
 	else {

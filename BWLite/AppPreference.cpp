@@ -41,12 +41,12 @@ void AppPreference::Load()
 	mModifiers = (UINT)pProfile->Get(_T("HotKey"), _T("Modifiers"), MOD_ALT);
 	mHotKeyVK = (UINT)pProfile->Get(_T("HotKey"), _T("VirtualKeyCode"), VK_RETURN);
 
-	mIsTransparencyEnable = (pProfile->Get(_T("WindowTransparency"), _T("Enable"), 1) != 0);
+	mIsTransparencyEnable = (pProfile->Get(_T("WindowTransparency"), _T("Enable"), 0) != 0);
 
 	mIsTransparencyInactiveOnly =(pProfile->Get(_T("WindowTransparency"), _T("InactiveOnly"), 1) != 0);
-	mAlpha = pProfile->Get(_T("WindowTransparency"), _T("Alpha"), 200);
+	mAlpha = pProfile->Get(_T("WindowTransparency"), _T("Alpha"), 255);
 
-	mIsTopmost =(pProfile->Get(_T("BWLite"), _T("Topmost"), 1) != 0);
+	mIsTopmost =(pProfile->Get(_T("BWLite"), _T("Topmost"), 0) != 0);
 
 	mMatchLevel = pProfile->Get(_T("BWLite"), _T("MatchLevel"), 2);
 }

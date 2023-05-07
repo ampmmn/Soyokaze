@@ -200,7 +200,7 @@ void CommandEditDialog::OnEditPath0Changed()
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"));
+	CFileDialog dlg(TRUE, NULL, mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
@@ -213,7 +213,7 @@ void CommandEditDialog::OnButtonBrowseFile1Clicked()
 void CommandEditDialog::OnButtonBrowseDir1Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mPath);
+	CFolderDialog dlg(_T(""), mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
@@ -227,7 +227,7 @@ void CommandEditDialog::OnButtonBrowseDir1Clicked()
 void CommandEditDialog::OnButtonBrowseFile2Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath0, OFN_FILEMUSTEXIST, _T("All files|*.*||"));
+	CFileDialog dlg(TRUE, NULL, mPath0, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
@@ -240,7 +240,7 @@ void CommandEditDialog::OnButtonBrowseFile2Clicked()
 void CommandEditDialog::OnButtonBrowseDir2Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mPath0);
+	CFolderDialog dlg(_T(""), mPath0, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
@@ -254,7 +254,7 @@ void CommandEditDialog::OnButtonBrowseDir2Clicked()
 void CommandEditDialog::OnButtonBrowseDir3Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mDir);
+	CFolderDialog dlg(_T(""), mDir, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;

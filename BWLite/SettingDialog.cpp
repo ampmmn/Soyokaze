@@ -85,7 +85,7 @@ void SettingDialog::OnButtonBrowseFile()
 	UpdateData();
 
 	CString filterStr((LPCTSTR)IDS_FILTER_EXE);
-	CFileDialog dlg(TRUE, NULL, mFilerPath, OFN_FILEMUSTEXIST, filterStr);
+	CFileDialog dlg(TRUE, NULL, mFilerPath, OFN_FILEMUSTEXIST, filterStr, this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
