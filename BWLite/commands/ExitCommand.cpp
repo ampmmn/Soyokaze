@@ -23,7 +23,7 @@ CString ExitCommand::GetName()
 
 CString ExitCommand::GetDescription()
 {
-	return _T("yI—¹z");
+	return _T("ã€çµ‚äº†ã€‘");
 }
 
 BOOL ExitCommand::Execute()
@@ -34,7 +34,7 @@ BOOL ExitCommand::Execute()
 
 BOOL ExitCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

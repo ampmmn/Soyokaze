@@ -22,30 +22,30 @@ protected:
 	~AppPreference();
 
 public:
-	// $B%U%!%$%i!<$r;XDj$9$k$+(B?
+	// ファイラーを指定するか?
 	bool mIsUseExternalFiler;
-	// $B%U%!%$%i!<(B
+	// ファイラー
 	CString mFilerPath;
-	// $B%U%!%$%i!<<B9T;~$N0z?t(B
+	// ファイラー実行時の引数
 	CString mFilerParam;
-	// $B%i%s%A%c!<I=<(MQ%[%C%H%-!<$N=$>~%-!<(B
+	// ランチャー表示用ホットキーの修飾キー
 	UINT mModifiers;
-	// $B%i%s%A%c!<I=<(MQ%[%C%H%-!<(B
+	// ランチャー表示用ホットキー
 	UINT mHotKeyVK;
 
-	// $BF)2aI=<($NF)L@EY(B(0-255)
+	// 透過表示の透明度(0-255)
 	int mAlpha;
-	// $BF)2aI=<($r$9$k$+(B
+	// 透過表示をするか
 	bool mIsTransparencyEnable;
-	// $BHs%"%/%F%#%V$N$H$-$@$1F)2aI=<((B(false$B"*>o$KF)2a(B)
+	// 非アクティブのときだけ透過表示(false→常に透過)
 	bool mIsTransparencyInactiveOnly;
-	// $B%&%$%s%I%&$r:G>e0LI=<($9$k$+(B
+	// ウインドウを最上位表示するか
 	bool mIsTopmost;
-	// $B8uJd9J$j9~$_J}K!(B
+	// 候補絞り込み方法
 	int mMatchLevel;
 
 protected:
-	// $B@_DjJQ99;~(B($B@53N$K$O(BSave$B;~(B)$B$KDLCN$r<u$1<h$k(B
+	// 設定変更時(正確にはSave時)に通知を受け取る
 	std::set<AppPreferenceListenerIF*> mListeners;
 };
 

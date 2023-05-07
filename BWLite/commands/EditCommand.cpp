@@ -24,7 +24,7 @@ CString EditCommand::GetName()
 
 CString EditCommand::GetDescription()
 {
-	return _T("y•ÒWz");
+	return _T("ã€ç·¨é›†ã€‘");
 }
 
 BOOL EditCommand::Execute()
@@ -36,7 +36,7 @@ BOOL EditCommand::Execute()
 BOOL EditCommand::Execute(const std::vector<CString>& args)
 {
 	if (args.empty()) {
-		// ƒL[ƒ[ƒhƒ}ƒl[ƒWƒƒ‚ğÀs‚·‚é
+		// ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ãƒãƒãƒ¼ã‚¸ãƒ£ã‚’å®Ÿè¡Œã™ã‚‹
 		mCmdMapPtr->ManagerDialog();
 		return TRUE;
 	}

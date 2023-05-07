@@ -1,5 +1,5 @@
 #pragma once
-// ÉçÉOÉNÉâÉX
+// „É≠„Ç∞„ÇØ„É©„Çπ
 
 void BWLiteInfo(LPCTSTR fmt, ...);
 void BWLiteLog(LPCTSTR fmt, ...);

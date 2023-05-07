@@ -15,7 +15,7 @@ protected:
 	CBrush mBkBrush;
 	HICON mIconDefault;
 
-// ŽÀ‘•
+// å®Ÿè£…
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnPaint();

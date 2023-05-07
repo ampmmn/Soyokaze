@@ -26,7 +26,7 @@ CString NewCommand::GetName()
 
 CString NewCommand::GetDescription()
 {
-	return _T("yV‹Kì¬z");
+	return _T("ã€æ–°è¦ä½œæˆã€‘");
 }
 
 BOOL NewCommand::Execute()

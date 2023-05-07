@@ -13,7 +13,7 @@ struct ExecHistory::PImpl
 
 ExecHistory::ExecHistory() : in(new PImpl)
 {
-	// ãŒÀ
+	// ä¸Šé™
 	in->limit = 256;
 }
 
@@ -22,7 +22,7 @@ ExecHistory::~ExecHistory()
 	delete in;
 }
 
-// Às‚µ‚½ƒRƒ}ƒ“ƒh•¶š—ñ‚ğ’Ç‰Á
+// å®Ÿè¡Œã—ãŸã‚³ãƒãƒ³ãƒ‰æ–‡å­—åˆ—ã‚’è¿½åŠ 
 void ExecHistory::Add(const CString& commandStr)
 {
 	auto itFind = 
@@ -43,7 +43,7 @@ void ExecHistory::Add(const CString& commandStr)
 	}
 }
 
-// w’è‚µ‚½ƒRƒ}ƒ“ƒh•¶š—ñ‚ª‘O‰ñÀs‚³‚ê‚½‚©‚ğ•\‚·”’l‚ğæ“¾‚·‚é
+// æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰æ–‡å­—åˆ—ãŒå‰å›å®Ÿè¡Œã•ã‚ŒãŸã‹ã‚’è¡¨ã™æ•°å€¤ã‚’å–å¾—ã™ã‚‹
 size_t ExecHistory::GetOrder(const CString& commandStr)
 {
 	auto itFind = 

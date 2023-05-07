@@ -1,6 +1,6 @@
 #pragma once
 
-// ƒRƒ}ƒ“ƒhŽÀs—š—ð
+// ã‚³ãƒžãƒ³ãƒ‰å®Ÿè¡Œå±¥æ­´
 class ExecHistory
 {
 public:
@@ -8,10 +8,10 @@ public:
 	~ExecHistory();
 
 public:
-	// ŽÀs‚µ‚½ƒRƒ}ƒ“ƒh•¶Žš—ñ‚ð’Ç‰Á
+	// å®Ÿè¡Œã—ãŸã‚³ãƒžãƒ³ãƒ‰æ–‡å­—åˆ—ã‚’è¿½åŠ 
 	void Add(const CString& commandStr);
 
-	// Žw’è‚µ‚½ƒRƒ}ƒ“ƒh•¶Žš—ñ‚ª‘O‰ñŽÀs‚³‚ê‚½‚©‚ð•\‚·”’l‚ðŽæ“¾‚·‚é
+	// æŒ‡å®šã—ãŸã‚³ãƒžãƒ³ãƒ‰æ–‡å­—åˆ—ãŒå‰å›žå®Ÿè¡Œã•ã‚ŒãŸã‹ã‚’è¡¨ã™æ•°å€¤ã‚’å–å¾—ã™ã‚‹
 	size_t GetOrder(const CString& commandStr);
 
 	// 

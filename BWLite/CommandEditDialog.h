@@ -19,41 +19,41 @@ public:
 	bool UpdateStatus();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ƒTƒ|[ƒg
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ã‚µãƒãƒ¼ãƒˆ
 	virtual BOOL OnInitDialog();
 
 	CommandRepository* mCmdMapPtr;
 
-	// •ÒWŠJn‚ÌƒRƒ}ƒ“ƒh–¼
+	// ç·¨é›†é–‹å§‹æ™‚ã®ã‚³ãƒãƒ³ãƒ‰å
 	CString mOrgName;
 
-	// ƒƒbƒZ[ƒW—“
+	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ¬„
 	CString mMessage;
 
 public:
-	// ƒRƒ}ƒ“ƒh–¼
+	// ã‚³ãƒãƒ³ãƒ‰å
 	CString mName;
-	// à–¾
+	// èª¬æ˜
 	CString mDescription;
-	// ŠÇ—ÒŒ ŒÀ‚ÅÀs
+	// ç®¡ç†è€…æ¨©é™ã§å®Ÿè¡Œ
 	BOOL mIsRunAsAdmin;
-	// •\¦•û–@
+	// è¡¨ç¤ºæ–¹æ³•
 	int mShowType;
-	// ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ
+	// ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 	CString mDir;
-	// ƒpƒX
+	// ãƒ‘ã‚¹
 	CString mPath;
-	// ƒpƒ‰ƒ[ƒ^
+	// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	CString mParameter;
-	// ƒpƒX(ˆø”‚È‚µ”Å)
+	// ãƒ‘ã‚¹(å¼•æ•°ãªã—ç‰ˆ)
 	CString mPath0;
-	// ƒpƒ‰ƒ[ƒ^(ˆø”‚È‚µ”Å)
+	// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿(å¼•æ•°ãªã—ç‰ˆ)
 	CString mParameter0;
-	// ˆø”‚È‚µ”Å‚ğg‚¤‚©?
+	// å¼•æ•°ãªã—ç‰ˆã‚’ä½¿ã†ã‹?
 	BOOL mIsUse0;
 
 	IconLabel* mIconLabelPtr;
-// À‘•
+// å®Ÿè£…
 protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()

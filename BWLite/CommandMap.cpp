@@ -82,7 +82,7 @@ void CommandMap::Query(Pattern* pattern, std::vector<Command*>& commands)
 	}
 }
 
-// Å‰‚ÉŒ©‚Â‚¯‚½—v‘f‚ğ•Ô‚·
+// æœ€åˆã«è¦‹ã¤ã‘ãŸè¦ç´ ã‚’è¿”ã™
 Command* CommandMap::FindOne(Pattern* pattern)
 {
 	for (auto& item : mMap) {

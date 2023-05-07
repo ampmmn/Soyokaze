@@ -24,7 +24,7 @@ CString ManagerCommand::GetName()
 
 CString ManagerCommand::GetDescription()
 {
-	return _T("yƒL[ƒ[ƒhƒ}ƒl[ƒWƒƒz");
+	return _T("ã€ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ãƒãƒãƒ¼ã‚¸ãƒ£ã€‘");
 }
 
 BOOL ManagerCommand::Execute()
@@ -35,7 +35,7 @@ BOOL ManagerCommand::Execute()
 
 BOOL ManagerCommand::Execute(const std::vector<CString>& args)
 {
-	// ‚±‚ÌƒRƒ}ƒ“ƒh‚Íˆø”‚ğg‚í‚È‚¢
+	// ã“ã®ã‚³ãƒãƒ³ãƒ‰ã¯å¼•æ•°ã‚’ä½¿ã‚ãªã„
 	return Execute();
 }
 

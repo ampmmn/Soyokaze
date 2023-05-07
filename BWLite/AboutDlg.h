@@ -1,23 +1,23 @@
 #pragma once
 
-// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ìƒo[ƒWƒ‡ƒ“î•ñ‚Ég‚í‚ê‚é CAboutDlg ƒ_ƒCƒAƒƒO
+// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±ã«ä½¿ã‚ã‚Œã‚‹ CAboutDlg ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ƒ_ƒCƒAƒƒO ƒf[ƒ^
+// ãƒ€ã‚¤ã‚¢ãƒ­ã‚° ãƒ‡ãƒ¼ã‚¿
 #ifdef AFX_DESIGN_TIME
 #endif
 
 	CString m_strVersion;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ƒTƒ|[ƒg
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ã‚µãƒãƒ¼ãƒˆ
 	virtual BOOL OnInitDialog();
 
-// À‘•
+// å®Ÿè£…
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);

@@ -26,7 +26,7 @@ ExecutableFileCommand::ExecutableFileCommand() : in(new PImpl)
 
 	LPCTSTR PATH = _T("PATH");
 
-	// Ç©ÇÒÇ´ÇÂÇ§Ç÷ÇÒÇ∑Ç§PATH
+	// „Åã„Çì„Åç„Çá„ÅÜ„Å∏„Çì„Åô„ÅÜPATH
 	size_t reqLen = 0;
 	if (_tgetenv_s(&reqLen, NULL, 0, PATH) != 0 || reqLen == 0) {
 		return;
@@ -101,7 +101,7 @@ BOOL ExecutableFileCommand::Execute(const std::vector<CString>& args)
 	cmd.SetAttribute(attr);
 	return cmd.Execute();
 
-	// ÇœÇÁÇﬂÅ[ÇΩÇµÇƒÇ¢ÇÕÇ≥Ç€Å[Ç∆ÇµÇ»Ç¢
+	// „Å±„Çâ„ÇÅ„Éº„Åü„Åó„Å¶„ÅÑ„ÅØ„Åï„ÅΩ„Éº„Å®„Åó„Å™„ÅÑ
 	return Execute();
 }
 
@@ -139,7 +139,7 @@ BOOL ExecutableFileCommand::Match(Pattern* pattern)
 		word += _T(".exe");
 	}
 
-	// targetDirsÇ…Ç™Ç¢Ç∆Ç§Ç∑ÇÈexeÇ™Ç»Ç¢Ç©ÇÇ≥Ç™Ç∑
+	// targetDirs„Å´„Åå„ÅÑ„Å®„ÅÜ„Åô„Çãexe„Åå„Å™„ÅÑ„Åã„Çí„Åï„Åå„Åô
 	TCHAR path[32768];
 	for (const auto& dir : in->targetDirs) {
 		_tcscpy_s(path, dir);

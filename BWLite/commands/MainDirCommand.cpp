@@ -25,7 +25,7 @@ CString MainDirCommand::GetName()
 
 CString MainDirCommand::GetDescription()
 {
-	return _T("yƒƒCƒ“ƒtƒHƒ‹ƒ_z");
+	return _T("ã€ãƒ¡ã‚¤ãƒ³ãƒ•ã‚©ãƒ«ãƒ€ã€‘");
 }
 
 BOOL MainDirCommand::Execute()
@@ -42,7 +42,7 @@ BOOL MainDirCommand::Execute()
 
 BOOL MainDirCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

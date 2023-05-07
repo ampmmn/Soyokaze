@@ -2,7 +2,7 @@
 
 struct CFolderDialogData;
 
-// Class: フォルダ選択ダイアログ
+// Class: 繝輔か繝ｫ繝驕ｸ謚槭ム繧､繧｢繝ｭ繧ｰ
 class CFolderDialog
 {
 public:

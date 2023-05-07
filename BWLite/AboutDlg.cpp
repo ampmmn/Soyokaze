@@ -31,7 +31,7 @@ BOOL CAboutDlg::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	// $B%P!<%8%g%s>pJs$r<hF@(B
+	// バージョン情報を取得
 	TCHAR szModulePath[65536];
 	GetModuleFileName( NULL, szModulePath, 65536);
 

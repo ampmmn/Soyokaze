@@ -3,9 +3,9 @@
 #include <vector>
 
 /**
- * @brief  INIƒtƒH[ƒ}ƒbƒgƒtƒ@ƒCƒ‹ƒNƒ‰ƒX
+ * @brief  INIãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚¯ãƒ©ã‚¹
  * 
- * Windows‚ÌIniƒtƒ@ƒCƒ‹Œ`®‚Ì“üo—Í‚ğs‚¢‚Ü‚·
+ * Windowsã®Iniãƒ•ã‚¡ã‚¤ãƒ«å½¢å¼ã®å…¥å‡ºåŠ›ã‚’è¡Œã„ã¾ã™
  */
 class CIniFile
 {
@@ -21,31 +21,31 @@ public:
 	//! 
 	bool IsOpen() const;
 
-	//! ‚·‚×‚Ä‚Ìƒf[ƒ^‚ğíœ
+	//! ã™ã¹ã¦ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
 	void RemoveAll();
-	//! w’è‚µ‚½ƒZƒNƒVƒ‡ƒ“‚ğ‹ó‚É‚·‚é
+	//! æŒ‡å®šã—ãŸã‚»ã‚¯ã‚·ãƒ§ãƒ³ã‚’ç©ºã«ã™ã‚‹
 	void RemoveSection(LPCTSTR section);
-	//! w’è‚µ‚½ƒL[‚ğíœ‚·‚é
+	//! æŒ‡å®šã—ãŸã‚­ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹
 	void RemoveKey(LPCTSTR section, LPCTSTR key);
 
-	//! ƒL[‚ª‘¶İ‚·‚é‚©H
+	//! ã‚­ãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã‹ï¼Ÿ
 	bool HasKey(LPCTSTR section, LPCTSTR key) const;
 
-	//! ’l‚Ìo—Í
+	//! å€¤ã®å‡ºåŠ›
 	void Write(LPCTSTR section, LPCTSTR key, LPCTSTR value);
-	//! ’l‚Ìo—Í
+	//! å€¤ã®å‡ºåŠ›
 	void Write(LPCTSTR section, LPCTSTR key, int value);
-	//! ’l‚Ì“ü—Í
+	//! å€¤ã®å…¥åŠ›
 	void Read(LPCTSTR section, LPCTSTR key, CString& value, LPCTSTR defval) const;
 
-	//! ƒZƒNƒVƒ‡ƒ“‚ÌƒŠƒXƒg‚ğæ“¾
+	//! ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆã‚’å–å¾—
 	void GetSectionList(std::vector<CString>& sections) const;
 
-	//! ’l‚Ì“ü—Í
+	//! å€¤ã®å…¥åŠ›
 	int     GetInt(LPCTSTR section, LPCTSTR key, int defval=0) const;
-	//! ’l‚Ì“ü—Í
+	//! å€¤ã®å…¥åŠ›
 	CString GetString(LPCTSTR section, LPCTSTR key, LPCTSTR defval=_T("")) const;
 
 public:
-	CString	m_pathName;	//!< Iniƒtƒ@ƒCƒ‹ƒpƒX
+	CString	m_pathName;	//!< Iniãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
 };

@@ -48,25 +48,25 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 {
 	mErrMsg.Empty();
 
-	// ƒpƒ‰ƒ[ƒ^‚ ‚è/‚È‚µ‚ÅAmNormalAttr/mNoParamAttr‚ğØ‚è‘Ö‚¦‚é
+	// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚ã‚Š/ãªã—ã§ã€mNormalAttr/mNoParamAttrã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 	ATTRIBUTE attr;
 	SelectAttribute(args, attr);
 
 	CString path;
 	CString param;
-	// CtrlƒL[‚ª‚¨‚³‚ê‚ÄA‚©‚ÂAƒpƒX‚ª‘¶İ‚·‚éê‡‚Íƒtƒ@ƒCƒ‰[‚Å•\¦
+	// Ctrlã‚­ãƒ¼ãŒãŠã•ã‚Œã¦ã€ã‹ã¤ã€ãƒ‘ã‚¹ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯ãƒ•ã‚¡ã‚¤ãƒ©ãƒ¼ã§è¡¨ç¤º
 	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
 	                  PathFileExists(attr.mPath);
 
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
-		// “o˜^‚³‚ê‚½ƒtƒ@ƒCƒ‰[‚ÅŠJ‚­
+		// ç™»éŒ²ã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ©ãƒ¼ã§é–‹ã
 		auto pref = AppPreference::Get();
 
 		if (pref->mIsUseExternalFiler) {
 			path = pref->GetFilerPath();
 			param = pref->GetFilerParam();
-			// ‚Æ‚è‚ ‚¦‚¸ƒŠƒ“ƒNæ‚Ì‚İ‚ğƒTƒ|[ƒg
+			// ã¨ã‚Šã‚ãˆãšãƒªãƒ³ã‚¯å…ˆã®ã¿ã‚’ã‚µãƒãƒ¼ãƒˆ
 			param.Replace(_T("$target"), attr.mPath);
 		}
 		else {
@@ -85,7 +85,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		param = attr.mParam;
 	}
 
-	// args‚Ì’l‚ğ“WŠJ
+	// argsã®å€¤ã‚’å±•é–‹
 	ExpandArguments(args, path, param);
 
 	SHELLEXECUTEINFO si = {};
@@ -115,7 +115,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		return FALSE;
 	}
 
-	// ‚à‚µwait‚·‚é‚æ‚¤‚É‚·‚é‚Ì‚Å‚ ‚ê‚Î‚±‚±‚Å‘Ò‚Â
+	// ã‚‚ã—waitã™ã‚‹ã‚ˆã†ã«ã™ã‚‹ã®ã§ã‚ã‚Œã°ã“ã“ã§å¾…ã¤
 
 	CloseHandle(si.hProcess);
 
@@ -171,12 +171,12 @@ ShellExecCommand::SelectAttribute(
 	ATTRIBUTE& attr
 )
 {
-	// ƒpƒ‰ƒ[ƒ^‚Ì—L–³‚È‚Ç‚ÅATTRIBUTE‚ğØ‚è‘Ö‚¦‚é
+	// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®æœ‰ç„¡ãªã©ã§ATTRIBUTEã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 
 	if (args.size() > 0) {
-		// ƒpƒ‰ƒ[ƒ^‚ ‚è
+		// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚ã‚Š
 
-		// mNormalAttr—Dæ
+		// mNormalAttrå„ªå…ˆ
 		if (mNormalAttr.mPath.IsEmpty() == FALSE) {
 			attr = mNormalAttr;
 		}
@@ -185,9 +185,9 @@ ShellExecCommand::SelectAttribute(
 		}
 	}
 	else {
-		// ƒpƒ‰ƒ[ƒ^‚È‚µ
+		// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãªã—
 
-		// mNoParamAttr—Dæ
+		// mNoParamAttrå„ªå…ˆ
 		if (mNoParamAttr.mPath.IsEmpty() == FALSE) {
 			attr = mNoParamAttr;
 		}
@@ -196,7 +196,7 @@ ShellExecCommand::SelectAttribute(
 		}
 	}
 
-	// •Ï”‚ğ‰ğŒˆ
+	// å¤‰æ•°ã‚’è§£æ±º
 	ExpandEnv(attr.mPath);
 	ExpandEnv(attr.mParam);
 }

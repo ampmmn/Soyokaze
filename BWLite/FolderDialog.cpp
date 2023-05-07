@@ -17,10 +17,10 @@ struct CFolderDialogData
 
 
 /*=*************************************************************************//*!
-	ƒRƒ“ƒXƒgƒ‰ƒNƒ^B‰Šú’l‚ğİ’èB
-	\param pszTitle			(I) ƒ_ƒCƒAƒƒO‚Ìƒ^ƒCƒgƒ‹
-	\param pszInitialPath	(I) ‰ŠúƒtƒHƒ‹ƒ_
-	\param pwndParent		(I) eƒEƒBƒ“ƒhƒE
+	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚åˆæœŸå€¤ã‚’è¨­å®šã€‚
+	\param pszTitle			(I) ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¿ã‚¤ãƒˆãƒ«
+	\param pszInitialPath	(I) åˆæœŸãƒ•ã‚©ãƒ«ãƒ€
+	\param pwndParent		(I) è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 *//*=**************************************************************************/
 CFolderDialog::CFolderDialog(
 	LPCTSTR pszTitle,
@@ -33,10 +33,10 @@ CFolderDialog::CFolderDialog(
 
 
 /*=*************************************************************************//*!
-	ƒRƒ“ƒXƒgƒ‰ƒNƒ^B‰Šú’l‚ğİ’èB
-	\param uTitleID			(I) ƒ_ƒCƒAƒƒO‚Ìƒ^ƒCƒgƒ‹‚Ì•¶š—ñID
-	\param pszInitialPath	(I) ‰ŠúƒtƒHƒ‹ƒ_
-	\param pwndParent		(I) eƒEƒBƒ“ƒhƒE
+	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚åˆæœŸå€¤ã‚’è¨­å®šã€‚
+	\param uTitleID			(I) ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¿ã‚¤ãƒˆãƒ«ã®æ–‡å­—åˆ—ID
+	\param pszInitialPath	(I) åˆæœŸãƒ•ã‚©ãƒ«ãƒ€
+	\param pwndParent		(I) è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 *//*=**************************************************************************/
 CFolderDialog::CFolderDialog(
 	UINT uTitleID,
@@ -52,7 +52,7 @@ CFolderDialog::CFolderDialog(
 }
 
 /*=*************************************************************************//*!
-	ƒfƒXƒgƒ‰ƒNƒ^Bƒƒ‚ƒŠ‚Ì‰ğ•ú
+	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚ãƒ¡ãƒ¢ãƒªã®è§£æ”¾
 *//*=**************************************************************************/
 CFolderDialog::~CFolderDialog()
 {
@@ -60,12 +60,12 @@ CFolderDialog::~CFolderDialog()
 }
 
 /********************************************************
-// ‰Šú‰»
+// åˆæœŸåŒ–
  ********************************************************/
 void CFolderDialog::Init(
-	LPCTSTR pszTitle,			// (I) ƒ_ƒCƒAƒƒO‚Ìƒ^ƒCƒgƒ‹
-	LPCTSTR pszInitialPath,		// (I) ‰ŠúƒtƒHƒ‹ƒ_
-	CWnd *pwndParent			// (I) eƒEƒBƒ“ƒhƒE
+	LPCTSTR pszTitle,			// (I) ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¿ã‚¤ãƒˆãƒ«
+	LPCTSTR pszInitialPath,		// (I) åˆæœŸãƒ•ã‚©ãƒ«ãƒ€
+	CWnd *pwndParent			// (I) è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 )
 {
 	m_pData = new CFolderDialogData;
@@ -81,7 +81,7 @@ void CFolderDialog::Init(
 }
 
 /*=*************************************************************************//*!
-	ƒ_ƒCƒAƒƒO‚Ì•\¦
+	ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®è¡¨ç¤º
 	\return 
 *//*=**************************************************************************/
 int CFolderDialog::DoModal()
@@ -137,8 +137,8 @@ int CFolderDialog::DoModal()
 }
 
 /*=*************************************************************************//*!
-	ƒpƒX–¼‚Ìæ“¾
-	\return ƒpƒX•¶š—ñ
+	ãƒ‘ã‚¹åã®å–å¾—
+	\return ãƒ‘ã‚¹æ–‡å­—åˆ—
 *//*=**************************************************************************/
 CString CFolderDialog::GetPathName() const
 {

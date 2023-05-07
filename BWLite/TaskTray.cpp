@@ -46,7 +46,7 @@ BOOL TaskTray::Create()
 
 	mTaskTrayWindow = GetSafeHwnd();
 
-	// タスクトレイ登録
+	// 繧ｿ繧ｹ繧ｯ繝医Ξ繧､逋ｻ骭ｲ
 
 	NOTIFYICONDATA nid;
 	nid.cbSize           = sizeof(NOTIFYICONDATA);

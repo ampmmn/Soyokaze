@@ -51,10 +51,10 @@ static const std::pair<UINT, CString> VK_DEFINED_DATA[] = {
 	{ 0x0D, _T("Enter") },
 	{ 0x2E, _T("Delete") },
 	{ 0x09, _T("Tab") },
-	{ 0x26, _T("ª") },
-	{ 0x28, _T("«") },
-	{ 0x25, _T("©") },
-	{ 0x27, _T("¨") },
+	{ 0x26, _T("â†‘") },
+	{ 0x28, _T("â†“") },
+	{ 0x25, _T("â†") },
+	{ 0x27, _T("â†’") },
 	{ 0x6C, _T(",") },
 	{ 0x6E, _T(".") },
 	{ 0x6F, _T("/") },
@@ -81,9 +81,9 @@ static const std::pair<UINT, CString> VK_DEFINED_DATA[] = {
 	{ 0x69, _T("Num 9") },
 	{ 0x60, _T("Num 0") },
 	{ 0x14, _T("CapLock") },
-	{ VK_KANA, _T("‚©‚È") },
-	{ 0x1C, _T("•ÏŠ·") },
-	{ 0x1D, _T("–³•ÏŠ·") },
+	{ VK_KANA, _T("ã‹ãª") },
+	{ 0x1C, _T("å¤‰æ›") },
+	{ 0x1D, _T("ç„¡å¤‰æ›") },
 	{ 0x90, _T("NumLock") },
 	{ 0x70, _T("F1") },
 	{ 0x71, _T("F2") },
@@ -111,7 +111,7 @@ static const std::pair<UINT, CString> VK_DEFINED_DATA[] = {
 	{ 0x87, _T("F24") },
 };
 
-// CüƒL[
+// ä¿®é£¾ã‚­ãƒ¼
 // MOD_ALT     (0x0001)
 // MOD_CONTROL (0x0002)
 // MOD_SHIFT   (0x0004)
@@ -142,7 +142,7 @@ HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) :
 		}
 	}
 
-	// modifiers‚Ìƒrƒbƒg‚ğŒ©‚Ä‚í‚¯‚é
+	// modifiersã®ãƒ“ãƒƒãƒˆã‚’è¦‹ã¦ã‚ã‘ã‚‹
 	mUseShift = (modifiers & MOD_SHIFT) != 0;
 	mUseCtrl = (modifiers & MOD_CONTROL) != 0;
 	mUseAlt = (modifiers & MOD_ALT) != 0;
@@ -163,17 +163,17 @@ HOTKEY_ATTR& HOTKEY_ATTR::operator = (const HOTKEY_ATTR& rhs)
 
 
 /**
- *  ƒzƒbƒgƒL[‚ª“o˜^‰Â”\‚©‚Ç‚¤‚©’²‚×‚é
+ *  ãƒ›ãƒƒãƒˆã‚­ãƒ¼ãŒç™»éŒ²å¯èƒ½ã‹ã©ã†ã‹èª¿ã¹ã‚‹
  */
 bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 {
-	// Œ»İBWLite‚ªg—p’†‚ÌƒL[‚Ìê‡‚Ítrue‚ğ•Ô‚·
+	// ç¾åœ¨BWLiteãŒä½¿ç”¨ä¸­ã®ã‚­ãƒ¼ã®å ´åˆã¯trueã‚’è¿”ã™
 	auto pref = AppPreference::Get();
 	if (pref->mHotKeyVK == GetVKCode() && pref->mModifiers == GetModifiers()) {
 		return true;
 	}
 
-	// “o˜^‚Å‚«‚é‚©ÀÛ‚É‚·(‚·‚®‚É‰ğœ)
+	// ç™»éŒ²ã§ãã‚‹ã‹å®Ÿéš›ã«è©¦ã™(ã™ãã«è§£é™¤)
 	if (RegisterHotKey(targetWnd, ID_BWLITE_TRY_HOTKEY, GetVKCode(), GetModifiers()) == FALSE) {
 		return false;
 	}

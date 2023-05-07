@@ -22,13 +22,13 @@ protected:
 	KeywordManagerListCtrl* mListCtrlPtr;
 	IconLabel* mIconLabelPtr;
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ÉTÉ|Å[Ég
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV „Çµ„Éù„Éº„Éà
 	virtual BOOL OnInitDialog();
 
 	void ResetContents();
 
 	bool UpdateStatus();
-// é¿ëï
+// ÂÆüË£Ö
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnButtonNew();

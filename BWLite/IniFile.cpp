@@ -3,7 +3,7 @@
 #include "IniFile.h"
 
 /**
- * @brief  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ * @brief  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  * 
  */
 CIniFile::CIniFile()
@@ -12,7 +12,7 @@ CIniFile::CIniFile()
 
 
 /**
- * @brief  ƒfƒXƒgƒ‰ƒNƒ^
+ * @brief  ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  * 
  */
 CIniFile::~CIniFile()
@@ -21,9 +21,9 @@ CIniFile::~CIniFile()
 
 
 /**
- * @brief  INIƒtƒ@ƒCƒ‹‚ğg—p‰Â”\‚Èó‘Ô‚É‚·‚é
+ * @brief  INIãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½¿ç”¨å¯èƒ½ãªçŠ¶æ…‹ã«ã™ã‚‹
  * 
- * @param  pathname ƒtƒ@ƒCƒ‹ƒpƒX
+ * @param  pathname ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
  */
 void CIniFile::Open(LPCTSTR pathname)
 {
@@ -34,7 +34,7 @@ void CIniFile::Open(LPCTSTR pathname)
 
 
 /**
- * @brief  ƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
+ * @brief  ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
  */
 void CIniFile::Close()
 {
@@ -44,7 +44,7 @@ void CIniFile::Close()
 
 
 /**
- * @brief  Open‚µ‚Ä‚¢‚é‚©H
+ * @brief  Openã—ã¦ã„ã‚‹ã‹ï¼Ÿ
  * 
  * @return 
  */
@@ -55,7 +55,7 @@ bool CIniFile::IsOpen() const
 
 
 /**
- * @brief  ‚·‚×‚Ä‚Ìƒf[ƒ^‚ğíœ
+ * @brief  ã™ã¹ã¦ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
  */
 void CIniFile::RemoveAll()
 {
@@ -71,9 +71,9 @@ void CIniFile::RemoveAll()
 
 
 /**
- * @brief  w’è‚µ‚½ƒZƒNƒVƒ‡ƒ“‚Ìƒf[ƒ^‚ğ‹ó‚É‚·‚é
+ * @brief  æŒ‡å®šã—ãŸã‚»ã‚¯ã‚·ãƒ§ãƒ³ã®ãƒ‡ãƒ¼ã‚¿ã‚’ç©ºã«ã™ã‚‹
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
  */
 void CIniFile::RemoveSection(LPCTSTR section)
 {
@@ -84,10 +84,10 @@ void CIniFile::RemoveSection(LPCTSTR section)
 
 
 /**
- * @brief  w’è‚µ‚½ƒL[‚ğíœ‚·‚é
+ * @brief  æŒ‡å®šã—ãŸã‚­ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
  */
 void CIniFile::RemoveKey(LPCTSTR section, LPCTSTR key)
 {
@@ -98,14 +98,14 @@ void CIniFile::RemoveKey(LPCTSTR section, LPCTSTR key)
 
 
 /**
- * @brief  w’è‚µ‚½ƒL[‚ª‘¶İ‚·‚é‚©‚ğŠm”F‚·‚é
+ * @brief  æŒ‡å®šã—ãŸã‚­ãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã‹ã‚’ç¢ºèªã™ã‚‹
  * 
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
  * 
- * @retval true  ‘¶İ‚·‚é
- * @retval false ‘¶İ‚µ‚È‚¢
+ * @retval true  å­˜åœ¨ã™ã‚‹
+ * @retval false å­˜åœ¨ã—ãªã„
  */
 bool CIniFile::HasKey(LPCTSTR section, LPCTSTR key) const
 {
@@ -121,11 +121,11 @@ bool CIniFile::HasKey(LPCTSTR section, LPCTSTR key) const
 
 
 /**
- * @brief  ’l‚ğo—Í‚·‚é
+ * @brief  å€¤ã‚’å‡ºåŠ›ã™ã‚‹
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
- * @param  value   ’l
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
+ * @param  value   å€¤
  */
 void CIniFile::Write(LPCTSTR section, LPCTSTR key, LPCTSTR value)
 {
@@ -136,11 +136,11 @@ void CIniFile::Write(LPCTSTR section, LPCTSTR key, LPCTSTR value)
 
 
 /**
- * @brief  ’l‚ğo—Í‚·‚é
+ * @brief  å€¤ã‚’å‡ºåŠ›ã™ã‚‹
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
- * @param  value   ’l
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
+ * @param  value   å€¤
  */
 void CIniFile::Write(LPCTSTR section, LPCTSTR key, int value)
 {
@@ -153,12 +153,12 @@ void CIniFile::Write(LPCTSTR section, LPCTSTR key, int value)
 
 
 /**
- * @brief  ’l‚ğ“Ç‚İ‚Ş
+ * @brief  å€¤ã‚’èª­ã¿è¾¼ã‚€
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
- * @param  value   “Ç‚İ‚İƒoƒbƒtƒ@
- * @param  defval  ƒfƒtƒHƒ‹ƒg’l
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
+ * @param  value   èª­ã¿è¾¼ã¿ãƒãƒƒãƒ•ã‚¡
+ * @param  defval  ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
  */
 void CIniFile::Read(LPCTSTR section, LPCTSTR key, CString& value, LPCTSTR defval) const
 {
@@ -178,13 +178,13 @@ void CIniFile::Read(LPCTSTR section, LPCTSTR key, CString& value, LPCTSTR defval
 
 
 /**
- * @brief  ’l‚ğ”’l‚Æ‚µ‚Äæ“¾
+ * @brief  å€¤ã‚’æ•°å€¤ã¨ã—ã¦å–å¾—
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
- * @param  defval  ƒfƒtƒHƒ‹ƒg’l
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
+ * @param  defval  ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
  * 
- * @return ’l
+ * @return å€¤
  */
 int CIniFile::GetInt(LPCTSTR section, LPCTSTR key, int defval) const
 {
@@ -197,13 +197,13 @@ int CIniFile::GetInt(LPCTSTR section, LPCTSTR key, int defval) const
 
 
 /**
- * @brief  ’l‚ğ•¶š—ñ‚Æ‚µ‚Äæ“¾
+ * @brief  å€¤ã‚’æ–‡å­—åˆ—ã¨ã—ã¦å–å¾—
  * 
- * @param  section ƒZƒNƒVƒ‡ƒ“–¼
- * @param  key     ƒL[–¼
- * @param  defval  ƒfƒtƒHƒ‹ƒg’l
+ * @param  section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ * @param  key     ã‚­ãƒ¼å
+ * @param  defval  ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
  * 
- * @return ’l
+ * @return å€¤
  */
 CString CIniFile::GetString(LPCTSTR section, LPCTSTR key, LPCTSTR defval) const
 {
@@ -214,9 +214,9 @@ CString CIniFile::GetString(LPCTSTR section, LPCTSTR key, LPCTSTR defval) const
 
 
 /**
- * @brief  ƒZƒNƒVƒ‡ƒ“‚ğ—ñ‹“‚·‚é
+ * @brief  ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã‚’åˆ—æŒ™ã™ã‚‹
  * 
- * @param  sections ƒZƒNƒVƒ‡ƒ“ƒŠƒXƒg
+ * @param  sections ã‚»ã‚¯ã‚·ãƒ§ãƒ³ãƒªã‚¹ãƒˆ
  */
 void CIniFile::GetSectionList(std::vector<CString>& sections) const
 {

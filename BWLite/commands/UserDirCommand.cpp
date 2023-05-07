@@ -25,7 +25,7 @@ CString UserDirCommand::GetName()
 
 CString UserDirCommand::GetDescription()
 {
-	return _T("yƒ†[ƒU[ƒtƒHƒ‹ƒ_z");
+	return _T("ã€ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ•ã‚©ãƒ«ãƒ€ã€‘");
 }
 
 BOOL UserDirCommand::Execute()
@@ -41,7 +41,7 @@ BOOL UserDirCommand::Execute()
 
 BOOL UserDirCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

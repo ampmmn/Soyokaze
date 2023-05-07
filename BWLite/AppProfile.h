@@ -2,51 +2,51 @@
 
 class CIniFile;
 
-// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ìƒvƒƒtƒ@ƒCƒ‹î•ñ‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX
-// ƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒX
+// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®ã‚¯ãƒ©ã‚¹
+// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹
 class CAppProfile
 {
 	CAppProfile();
 	~CAppProfile();
 	
-	// ƒRƒs[‹Ö~
+	// ã‚³ãƒ”ãƒ¼ç¦æ­¢
 	CAppProfile(const CAppProfile&);
 	CAppProfile& operator = (const CAppProfile& );
 public:
 
-	//! İ’èî•ñì¬—p‚ÌƒtƒHƒ‹ƒ_‚ğ‚Â‚­‚é
+	//! è¨­å®šæƒ…å ±ä½œæˆç”¨ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã¤ãã‚‹
 	static bool CreateProfileDirectory();
 
-	//! ƒfƒBƒŒƒNƒgƒŠƒpƒX‚ğæ“¾
+	//! ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ‘ã‚¹ã‚’å–å¾—
 	static const TCHAR* GetDirPath(TCHAR* path, size_t len);
-	//! ƒtƒ@ƒCƒ‹ƒpƒX‚ğæ“¾
+	//! ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’å–å¾—
 	static const TCHAR* GetFilePath(TCHAR* path, size_t len);
 
-	//! ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬Eæ“¾
+	//! ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆãƒ»å–å¾—
 	static CAppProfile* Get();
 
-	//! ®”’l‚ğæ“¾
+	//! æ•´æ•°å€¤ã‚’å–å¾—
 	int Get(LPCTSTR section, LPCTSTR key, int def);
-	//! ®”’l‚ğİ’è
+	//! æ•´æ•°å€¤ã‚’è¨­å®š
 	CAppProfile& Write(LPCTSTR section, LPCTSTR key, int value);
 
-	//! À”’l‚ğæ“¾
+	//! å®Ÿæ•°å€¤ã‚’å–å¾—
 	double Get(LPCTSTR section, LPCTSTR key, double def);
-	//! À”’l‚ğİ’è
+	//! å®Ÿæ•°å€¤ã‚’è¨­å®š
 	CAppProfile& Write(LPCTSTR section, LPCTSTR key, double value);
 
-	//! •¶š—ñ‚ğæ“¾
+	//! æ–‡å­—åˆ—ã‚’å–å¾—
 	CString Get(LPCTSTR section, LPCTSTR key, LPCTSTR def = _T(""));
 	CString GetString(LPCTSTR section, LPCTSTR key, LPCTSTR def = _T(""));
-	//! •¶š—ñ‚ğİ’è
+	//! æ–‡å­—åˆ—ã‚’è¨­å®š
 	CAppProfile& Write(LPCTSTR section, LPCTSTR key, LPCTSTR value);
 	CAppProfile& WriteString(LPCTSTR section, LPCTSTR key, LPCTSTR value);
 
-	//! ƒoƒCƒg—ñ‚ğæ“¾
+	//! ãƒã‚¤ãƒˆåˆ—ã‚’å–å¾—
 	size_t Get(LPCTSTR section, LPCTSTR key, void* out, size_t len);
 	size_t GetBinary(LPCTSTR section, LPCTSTR key, void* out, size_t len);
 
-	//! ƒoƒCƒg—ñ‚ğæ“¾
+	//! ãƒã‚¤ãƒˆåˆ—ã‚’å–å¾—
 	template <typename CONTAINER>
 	size_t Get(LPCTSTR section, LPCTSTR key, CONTAINER& out) {
 		size_t n = Get(section, key, NULL, 0);
@@ -57,22 +57,22 @@ public:
 		out.resize(out);
 		return Get(section, key, (void*)&out.front(), n);
 	}
-	//I ƒoƒCƒg—ñ‚ğİ’è
+	//ï¼ ãƒã‚¤ãƒˆåˆ—ã‚’è¨­å®š
 	CAppProfile& Write(LPCTSTR section, LPCTSTR key, const void* data, size_t len);
 	CAppProfile& WriteBinary(LPCTSTR section, LPCTSTR key, const void* data, size_t len);
-	//! ƒoƒCƒg—ñ‚ğİ’è
+	//! ãƒã‚¤ãƒˆåˆ—ã‚’è¨­å®š
 	template <typename CONTAINER>
 	CAppProfile& Write(LPCTSTR section, LPCTSTR key, const CONTAINER& data) {
 		size_t n_bytes = data.size() * sizeof(typename CONTAINER::value_type);
 		return Write(section, key, &data.front(), n_bytes);
 	}
 
-	//! •¶š—ñ‚ğƒoƒCƒg—ñ‚Æ‚µ‚Ä•Û‘¶
+	//! æ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆåˆ—ã¨ã—ã¦ä¿å­˜
 	CAppProfile& WriteStringAsBinary(LPCTSTR section, LPCTSTR key, LPCTSTR value);
-	//! ƒoƒCƒg—ñ‚ğ•¶š—ñ‚Æ‚µ‚Äæ“¾
+	//! ãƒã‚¤ãƒˆåˆ—ã‚’æ–‡å­—åˆ—ã¨ã—ã¦å–å¾—
 	CString GetBinaryAsString(LPCTSTR section, LPCTSTR key, LPCTSTR def = _T(""));
 
 private:
-	CIniFile* m_entity;  //!< ÀÛ‚Ì•Û‘¶æƒIƒuƒWƒFƒNƒg
+	CIniFile* m_entity;  //!< å®Ÿéš›ã®ä¿å­˜å…ˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 };
 

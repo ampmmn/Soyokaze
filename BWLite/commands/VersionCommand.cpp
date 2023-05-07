@@ -24,7 +24,7 @@ CString VersionCommand::GetName()
 
 CString VersionCommand::GetDescription()
 {
-	return _T("yƒo[ƒWƒ‡ƒ“î•ñz");
+	return _T("ã€ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±ã€‘");
 }
 
 BOOL VersionCommand::Execute()
@@ -36,7 +36,7 @@ BOOL VersionCommand::Execute()
 
 BOOL VersionCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

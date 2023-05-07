@@ -45,31 +45,31 @@ struct CommandRepository::PImpl
 
 		int matchLevel = AppPreference::Get()->mMatchLevel;
 		if (matchLevel == 2) {
-			// ƒXƒLƒbƒvƒ}ƒbƒ`ƒ“ƒO”äŠr—p
+			// ã‚¹ã‚­ãƒƒãƒ—ãƒãƒƒãƒãƒ³ã‚°æ¯”è¼ƒç”¨
 			mPattern = new SkipMatchPattern();
 		}
 		else if (matchLevel == 1) {
-			// •”•ªˆê’v”äŠr—p
+			// éƒ¨åˆ†ä¸€è‡´æ¯”è¼ƒç”¨
 			mPattern = new PartialMatchPattern();
 		}
 		else {
-			// ‘O•ûˆê’v”äŠr—p
+			// å‰æ–¹ä¸€è‡´æ¯”è¼ƒç”¨
 			mPattern = new ForwardMatchPattern();
 		}
 	}
 
-	// İ’èƒtƒ@ƒCƒ‹(commands.ini)‚©‚ç‚Ì“Ç‚İ‘‚«‚ğs‚¤
+	// è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«(commands.ini)ã‹ã‚‰ã®èª­ã¿æ›¸ãã‚’è¡Œã†
 	CommandFile mCommandLoader;
-	// ‘g‚İ‚İƒRƒ}ƒ“ƒhˆê——
+	// çµ„ã¿è¾¼ã¿ã‚³ãƒãƒ³ãƒ‰ä¸€è¦§
 	CommandMap mBuiltinCommands;
-	// ˆê”ÊƒRƒ}ƒ“ƒhˆê——
+	// ä¸€èˆ¬ã‚³ãƒãƒ³ãƒ‰ä¸€è¦§
 	CommandMap mCommands;
-	// ŠÂ‹«•Ï”PATH‚É‚ ‚éexe‚ğÀs‚·‚é‚½‚ß‚ÌƒRƒ}ƒ“ƒh
+	// ç’°å¢ƒå¤‰æ•°PATHã«ã‚ã‚‹exeã‚’å®Ÿè¡Œã™ã‚‹ãŸã‚ã®ã‚³ãƒãƒ³ãƒ‰
 	ExecutableFileCommand mExeCommand;
-	// ƒL[ƒ[ƒh”äŠr—p‚ÌƒNƒ‰ƒX
+	// ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰æ¯”è¼ƒç”¨ã®ã‚¯ãƒ©ã‚¹
 	Pattern* mPattern;
 
-	// •ÒW’†ƒtƒ‰ƒO
+	// ç·¨é›†ä¸­ãƒ•ãƒ©ã‚°
 	bool mIsNewDialog;
 	bool mIsEditDialog;
 	bool mIsManagerDialog;
@@ -91,14 +91,14 @@ CommandRepository::~CommandRepository()
 
 BOOL CommandRepository::Load()
 {
-	// Šù‘¶‚Ì“à—e‚ğ”jŠü
+	// æ—¢å­˜ã®å†…å®¹ã‚’ç ´æ£„
 	in->mCommands.Clear();
 	in->mBuiltinCommands.Clear();
 
-	// ƒL[ƒ[ƒh”äŠrˆ—‚Ì¶¬
+	// ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰æ¯”è¼ƒå‡¦ç†ã®ç”Ÿæˆ
 	in->ReloadPatternObject();
 
-	// ƒrƒ‹ƒgƒCƒ“ƒRƒ}ƒ“ƒh‚Ì“o˜^
+	// ãƒ“ãƒ«ãƒˆã‚¤ãƒ³ã‚³ãƒãƒ³ãƒ‰ã®ç™»éŒ²
 	in->mBuiltinCommands.Register(new NewCommand(this));
 	in->mBuiltinCommands.Register(new EditCommand(this));
 	in->mBuiltinCommands.Register(new ReloadCommand(this));
@@ -109,7 +109,7 @@ BOOL CommandRepository::Load()
 	in->mBuiltinCommands.Register(new MainDirCommand());
 	in->mBuiltinCommands.Register(new SettingCommand());
 
-	// İ’èƒtƒ@ƒCƒ‹‚ğ“Ç‚İAƒRƒ}ƒ“ƒhˆê——‚ğ“o˜^‚·‚é
+	// è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿ã€ã‚³ãƒãƒ³ãƒ‰ä¸€è¦§ã‚’ç™»éŒ²ã™ã‚‹
 	TCHAR path[32768];
 	CAppProfile::GetDirPath(path, 32768);
 	PathAppend(path, _T("commands.ini"));
@@ -142,9 +142,9 @@ public:
 
 
 /**
- *  V‹KƒL[ƒ[ƒhì¬
- *  @param cmdNamePtr ì¬‚·‚éƒRƒ}ƒ“ƒh–¼(null‚Ìê‡‚ÍƒRƒ}ƒ“ƒh–¼‚ğ‹ó—“‚É‚·‚é)
- *  @param cmdNamePtr ƒRƒ}ƒ“ƒh‚É•R‚Ã‚¯‚éƒpƒX(null‚Ìê‡‚ÍƒpƒX‚ğ‹ó—“‚É‚·‚é)
+ *  æ–°è¦ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ä½œæˆ
+ *  @param cmdNamePtr ä½œæˆã™ã‚‹ã‚³ãƒãƒ³ãƒ‰å(nullã®å ´åˆã¯ã‚³ãƒãƒ³ãƒ‰åã‚’ç©ºæ¬„ã«ã™ã‚‹)
+ *  @param cmdNamePtr ã‚³ãƒãƒ³ãƒ‰ã«ç´ã¥ã‘ã‚‹ãƒ‘ã‚¹(nullã®å ´åˆã¯ãƒ‘ã‚¹ã‚’ç©ºæ¬„ã«ã™ã‚‹)
  */
 int CommandRepository::NewCommandDialog(
 	const CString* cmdNamePtr,
@@ -152,12 +152,12 @@ int CommandRepository::NewCommandDialog(
 )
 {
 	if (in->mIsNewDialog) {
-		// •ÒW‘€ì’†‚ÌÄ“ü‚Í‚µ‚È‚¢
+		// ç·¨é›†æ“ä½œä¸­ã®å†å…¥ã¯ã—ãªã„
 		return 0;
 	}
 	ScopeEdit scopeEdit(in->mIsNewDialog);
 
-	// V‹Kì¬ƒ_ƒCƒAƒƒO‚ğ•\¦
+	// æ–°è¦ä½œæˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤º
 	CommandEditDialog dlg(this);
 
 	if (cmdNamePtr) {
@@ -171,7 +171,7 @@ int CommandRepository::NewCommandDialog(
 		return 0;
 	}
 
-	// ƒ_ƒCƒAƒƒO‚Å“ü—Í‚³‚ê‚½“à—e‚ÉŠî‚Ã‚«AƒRƒ}ƒ“ƒh‚ğV‹Kì¬‚·‚é
+	// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã§å…¥åŠ›ã•ã‚ŒãŸå†…å®¹ã«åŸºã¥ãã€ã‚³ãƒãƒ³ãƒ‰ã‚’æ–°è¦ä½œæˆã™ã‚‹
 	auto* newCmd = new ShellExecCommand();
 	newCmd->SetName(dlg.mName);
 	newCmd->SetDescription(dlg.mDescription);
@@ -199,7 +199,7 @@ int CommandRepository::NewCommandDialog(
 
 	in->mCommands.Register(newCmd);
 
-	// İ’èƒtƒ@ƒCƒ‹‚É•Û‘¶
+	// è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜
 	std::vector<Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 	return 0;
@@ -207,12 +207,12 @@ int CommandRepository::NewCommandDialog(
 
 
 /**
- *  Šù‘¶ƒL[ƒ[ƒh‚Ì•ÒW
+ *  æ—¢å­˜ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã®ç·¨é›†
  */
 int CommandRepository::EditCommandDialog(const CString& cmdName)
 {
 	if (in->mIsEditDialog) {
-		// •ÒW‘€ì’†‚ÌÄ“ü‚Í‚µ‚È‚¢
+		// ç·¨é›†æ“ä½œä¸­ã®å†å…¥ã¯ã—ãªã„
 		return 0;
 	}
 	ScopeEdit scopeEdit(in->mIsEditDialog);
@@ -223,7 +223,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 	}
 
 
-	// ToDo: Œã‚ÅƒNƒ‰ƒXİŒv‚ğŒ©’¼‚·
+	// ToDo: å¾Œã§ã‚¯ãƒ©ã‚¹è¨­è¨ˆã‚’è¦‹ç›´ã™
 	ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
 
 	CommandEditDialog dlg(this);
@@ -252,7 +252,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 
 	ShellExecCommand* cmdNew = new ShellExecCommand();
 
-	// ’Ç‰Á‚·‚éˆ—
+	// è¿½åŠ ã™ã‚‹å‡¦ç†
 	cmdNew->SetName(dlg.mName);
 	cmdNew->SetDescription(dlg.mDescription);
 	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
@@ -277,11 +277,11 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 		cmdNew->SetAttributeForParam0(param0Attr);
 	}
 
-	// –¼‘O‚ª•Ï‚í‚Á‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚½‚ßA‚¢‚Á‚½‚ñíœ‚µ‚ÄÄ“o˜^‚·‚é
+	// åå‰ãŒå¤‰ã‚ã£ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ãŸã‚ã€ã„ã£ãŸã‚“å‰Šé™¤ã—ã¦å†ç™»éŒ²ã™ã‚‹
 	in->mCommands.Unregister(cmd);
 	in->mCommands.Register(cmdNew);
 
-	// ƒtƒ@ƒCƒ‹‚É•Û‘¶
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜
 	std::vector<Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 
@@ -289,7 +289,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 }
 
 /**
- * w’è‚µ‚½ƒRƒ}ƒ“ƒh–¼‚Í‘g‚İ‚İƒRƒ}ƒ“ƒh‚©?
+ * æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰åã¯çµ„ã¿è¾¼ã¿ã‚³ãƒãƒ³ãƒ‰ã‹?
  */
 bool CommandRepository::IsBuiltinName(const CString& cmdName)
 {
@@ -297,17 +297,17 @@ bool CommandRepository::IsBuiltinName(const CString& cmdName)
 }
 
 /**
- *  ƒL[ƒ[ƒhƒ}ƒl[ƒWƒƒ[‚Ì•\¦
+ *  ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®è¡¨ç¤º
  */
 int CommandRepository::ManagerDialog()
 {
 	if (in->mIsManagerDialog) {
-		// •ÒW‘€ì’†‚ÌÄ“ü‚Í‚µ‚È‚¢
+		// ç·¨é›†æ“ä½œä¸­ã®å†å…¥ã¯ã—ãªã„
 		return 0;
 	}
 	ScopeEdit scopeEdit(in->mIsManagerDialog);
 
-	// ƒLƒƒƒ“ƒZƒ‹—p‚ÌƒoƒbƒNƒAƒbƒv
+	// ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ™‚ç”¨ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
 	CommandMap builtinBkup(in->mBuiltinCommands);
 	CommandMap commandsBkup(in->mCommands);
 
@@ -315,12 +315,12 @@ int CommandRepository::ManagerDialog()
 
 	if (dlg.DoModal() != IDOK) {
 
-		// OK‚Å‚Í‚È‚¢‚Ì‚ÅŒ‹‰Ê‚ğ”½‰f‚µ‚È‚¢(ƒoƒbƒNƒAƒbƒv‚µ‚½“à—e‚É–ß‚·)
+		// OKã§ã¯ãªã„ã®ã§çµæœã‚’åæ˜ ã—ãªã„(ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã—ãŸå†…å®¹ã«æˆ»ã™)
 		in->mBuiltinCommands.Swap(builtinBkup);
 		in->mCommands.Swap(commandsBkup);
 	}
 	else {
-		// ƒtƒ@ƒCƒ‹‚É•Û‘¶
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜
 		std::vector<Command*> cmdsTmp;
 		in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 	}
@@ -328,7 +328,7 @@ int CommandRepository::ManagerDialog()
 }
 
 /**
- *  ƒRƒ}ƒ“ƒh‚Ìíœ
+ *  ã‚³ãƒãƒ³ãƒ‰ã®å‰Šé™¤
  */
 bool CommandRepository::DeleteCommand(const CString& cmdName)
 {
@@ -355,7 +355,7 @@ CommandRepository::Query(
 	in->mCommands.Query(in->mPattern, items);
 	in->mBuiltinCommands.Query(in->mPattern, items);
 
-	// 1Œ‚àƒ}ƒbƒ`‚µ‚È‚¢ê‡‚ÍExecutableCommand‚Ì‚Ğ‚©‚­
+	// 1ä»¶ã‚‚ãƒãƒƒãƒã—ãªã„å ´åˆã¯ExecutableCommandã®ã²ã‹ã
 	if (items.empty()) {
 		if (in->mExeCommand.Match(in->mPattern)) {
 			items.push_back(&in->mExeCommand);
@@ -379,7 +379,7 @@ Command* CommandRepository::QueryAsWholeMatch(
 		return command;
 	}
 
-	// 1Œ‚àƒ}ƒbƒ`‚µ‚È‚¢ê‡‚ÍExecutableCommand‚Ì‚Ğ‚©‚­
+	// 1ä»¶ã‚‚ãƒãƒƒãƒã—ãªã„å ´åˆã¯ExecutableCommandã®ã²ã‹ã
 	if (in->mExeCommand.Match(in->mPattern)) {
 		return &in->mExeCommand;
 	}
@@ -394,6 +394,6 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 
 void CommandRepository::OnAppPreferenceUpdated()
 {
-	// ƒAƒvƒŠİ’è•ÏX‚Ì‰e‹¿‚ğó‚¯‚é€–Ú‚ÌÄ“o˜^
+	// ã‚¢ãƒ—ãƒªè¨­å®šå¤‰æ›´ã®å½±éŸ¿ã‚’å—ã‘ã‚‹é …ç›®ã®å†ç™»éŒ²
 	in->ReloadPatternObject();
 }

@@ -108,7 +108,7 @@ BOOL CommandEditDialog::OnInitDialog()
   GetWindowText(caption);
 
 	CString suffix;
-	suffix.Format(_T("y%sz"), mOrgName.IsEmpty() ? _T("V‹Kì¬") : (LPCTSTR)mOrgName);
+	suffix.Format(_T("ã€%sã€‘"), mOrgName.IsEmpty() ? _T("æ–°è¦ä½œæˆ") : (LPCTSTR)mOrgName);
 
 	caption += suffix;
 	SetWindowText(caption);
@@ -142,7 +142,7 @@ bool CommandEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	// d•¡ƒ`ƒFƒbƒN
+	// é‡è¤‡ãƒã‚§ãƒƒã‚¯
 	if (mName.CompareNoCase(mOrgName) != 0 && 
 	    mCmdMapPtr->QueryAsWholeMatch(mName) != nullptr) {
 		mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
@@ -150,7 +150,7 @@ bool CommandEditDialog::UpdateStatus()
 		return false;
 	}
 
-	// Žg‚¦‚È‚¢•¶Žšƒ`ƒFƒbƒN
+	// ä½¿ãˆãªã„æ–‡å­—ãƒã‚§ãƒƒã‚¯
 	if (mCmdMapPtr->IsValidAsName(mName) == false) {
 		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);

@@ -25,7 +25,7 @@ CString ReloadCommand::GetName()
 
 CString ReloadCommand::GetDescription()
 {
-	return _T("yİ’è‚ÌƒŠƒ[ƒhz");
+	return _T("ã€è¨­å®šã®ãƒªãƒ­ãƒ¼ãƒ‰ã€‘");
 }
 
 BOOL ReloadCommand::Execute()
@@ -35,7 +35,7 @@ BOOL ReloadCommand::Execute()
 
 BOOL ReloadCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

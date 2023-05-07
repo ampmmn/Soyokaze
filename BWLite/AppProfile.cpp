@@ -14,7 +14,7 @@
 #define new DEBUG_NEW
 #endif
 
-//! İ’èî•ñì¬—p‚ÌƒtƒHƒ‹ƒ_‚ğ‚Â‚­‚é
+//! è¨­å®šæƒ…å ±ä½œæˆç”¨ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã¤ãã‚‹
 bool CAppProfile::CreateProfileDirectory()
 {
 	TCHAR path[1024];
@@ -22,15 +22,15 @@ bool CAppProfile::CreateProfileDirectory()
 	if (PathIsDirectory(path)) {
 		return true;
 	}
-	// ƒtƒHƒ‹ƒ_‚È‚¯‚ê‚Î‚Â‚­‚é
+	// ãƒ•ã‚©ãƒ«ãƒ€ãªã‘ã‚Œã°ã¤ãã‚‹
 	CString msg;
-	msg.Format(_T("y‰‰ñ‹N“®z\nİ’èƒtƒ@ƒCƒ‹‚Í %s ˆÈ‰º‚Éì¬‚³‚ê‚Ü‚·B"), path);
+	msg.Format(_T("ã€åˆå›èµ·å‹•ã€‘\nè¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã¯ %s ä»¥ä¸‹ã«ä½œæˆã•ã‚Œã¾ã™ã€‚"), path);
 	AfxMessageBox(msg);
 
 	return CreateDirectory(path, NULL) != FALSE;
 }
 
-// ƒfƒBƒŒƒNƒgƒŠƒpƒX‚ğæ“¾
+// ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ‘ã‚¹ã‚’å–å¾—
 const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 {
 	size_t buflen = 1024;
@@ -44,7 +44,7 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 	return path;
 }
 
-// ƒtƒ@ƒCƒ‹ƒpƒX‚ğæ“¾
+// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’å–å¾—
 const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 {
 	GetDirPath(path, len);
@@ -54,7 +54,7 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 }
 
 /*!
- *	@brief ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ *	@brief ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 */
  CAppProfile::CAppProfile() : m_entity(new CIniFile())
 {
@@ -64,7 +64,7 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 }
 
 /*!
- *	@brief ƒfƒXƒgƒ‰ƒNƒ^
+ *	@brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 */
  CAppProfile::~CAppProfile()
 {
@@ -72,8 +72,8 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 }
 
 /*!
- *	@brief ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬Eæ“¾
- *	@return ¶¬‚³‚ê‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
+ *	@brief ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆãƒ»å–å¾—
+ *	@return ç”Ÿæˆã•ã‚ŒãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 */
 CAppProfile* CAppProfile::Get()
 {
@@ -82,11 +82,11 @@ CAppProfile* CAppProfile::Get()
 }
 
 /*!
- *	@brief ®”’l‚ğæ“¾‚µ‚Ü‚·B
- *	@return æ“¾‚µ‚½®”’l
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key   ƒL[–¼
- *	@param[in] def     ‘Î‰‚·‚é’l‚ª‘¶İ‚µ‚È‚¢ê‡‚É•Ô‚·’l
+ *	@brief æ•´æ•°å€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
+ *	@return å–å¾—ã—ãŸæ•´æ•°å€¤
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key   ã‚­ãƒ¼å
+ *	@param[in] def     å¯¾å¿œã™ã‚‹å€¤ãŒå­˜åœ¨ã—ãªã„å ´åˆã«è¿”ã™å€¤
 */
 int CAppProfile::Get(
 	LPCTSTR section,
@@ -99,11 +99,11 @@ int CAppProfile::Get(
 }
 
 /*!
- *	@brief ®”’l‚ğİ’è
- *	@return thisƒIƒuƒWƒFƒNƒg‚Ö‚ÌQÆ‚ğ•Ô‚µ‚Ü‚·
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key     ƒL[–¼
- *	@param[in] value   o—Í‚·‚é’l
+ *	@brief æ•´æ•°å€¤ã‚’è¨­å®š
+ *	@return thisã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¸ã®å‚ç…§ã‚’è¿”ã—ã¾ã™
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key     ã‚­ãƒ¼å
+ *	@param[in] value   å‡ºåŠ›ã™ã‚‹å€¤
 */
 CAppProfile& CAppProfile::Write(
 	LPCTSTR section,
@@ -118,11 +118,11 @@ CAppProfile& CAppProfile::Write(
 
 
 /*!
- *	@brief À”’l‚ğæ“¾‚µ‚Ü‚·B
- *	@return æ“¾‚µ‚½À”’l
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key     ƒL[–¼
- *	@param[in] def     ‘Î‰‚·‚é’l‚ª‘¶İ‚µ‚È‚¢ê‡‚É•Ô‚·’l
+ *	@brief å®Ÿæ•°å€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
+ *	@return å–å¾—ã—ãŸå®Ÿæ•°å€¤
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key     ã‚­ãƒ¼å
+ *	@param[in] def     å¯¾å¿œã™ã‚‹å€¤ãŒå­˜åœ¨ã—ãªã„å ´åˆã«è¿”ã™å€¤
 */
 double CAppProfile::Get(
 	LPCTSTR section,
@@ -145,11 +145,11 @@ double CAppProfile::Get(
 }
 
 /*!
- *	@brief À”’l‚ğİ’è
- *	@return thisƒIƒuƒWƒFƒNƒg‚Ö‚ÌQÆ‚ğ•Ô‚µ‚Ü‚·
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key     ƒL[–¼
- *	@param[in] value     o—Í‚·‚é’l
+ *	@brief å®Ÿæ•°å€¤ã‚’è¨­å®š
+ *	@return thisã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¸ã®å‚ç…§ã‚’è¿”ã—ã¾ã™
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key     ã‚­ãƒ¼å
+ *	@param[in] value     å‡ºåŠ›ã™ã‚‹å€¤
 */
 CAppProfile& CAppProfile::Write(
 	LPCTSTR section,
@@ -168,11 +168,11 @@ CAppProfile& CAppProfile::Write(
 
 
 /*!
- *	@brief •¶š—ñ’l‚ğæ“¾‚µ‚Ü‚·B
- *	@return æ“¾‚µ‚½•¶š—ñ’l
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key     ƒL[–¼
- *	@param[in] def     ‘Î‰‚·‚é’l‚ª‘¶İ‚µ‚È‚¢ê‡‚É•Ô‚·’l
+ *	@brief æ–‡å­—åˆ—å€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
+ *	@return å–å¾—ã—ãŸæ–‡å­—åˆ—å€¤
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key     ã‚­ãƒ¼å
+ *	@param[in] def     å¯¾å¿œã™ã‚‹å€¤ãŒå­˜åœ¨ã—ãªã„å ´åˆã«è¿”ã™å€¤
 */
 CString CAppProfile::Get(
 	LPCTSTR section,
@@ -194,11 +194,11 @@ CString CAppProfile::GetString(
 }
 
 /*!
- *	@brief •¶š—ñ‚ğİ’è‚µ‚Ü‚·B
- *	@return thisƒIƒuƒWƒFƒNƒg‚Ö‚ÌQÆ‚ğ•Ô‚µ‚Ü‚·
- *	@param[in] section ƒZƒNƒVƒ‡ƒ“–¼
- *	@param[in] key     ƒL[–¼
- *	@param[in] value   o—Í‚·‚é’l
+ *	@brief æ–‡å­—åˆ—ã‚’è¨­å®šã—ã¾ã™ã€‚
+ *	@return thisã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¸ã®å‚ç…§ã‚’è¿”ã—ã¾ã™
+ *	@param[in] section ã‚»ã‚¯ã‚·ãƒ§ãƒ³å
+ *	@param[in] key     ã‚­ãƒ¼å
+ *	@param[in] value   å‡ºåŠ›ã™ã‚‹å€¤
 */
 CAppProfile& CAppProfile::Write(
 	LPCTSTR section,
@@ -221,13 +221,13 @@ CAppProfile& CAppProfile::WriteString(
 }
 
 
-//! ƒoƒCƒg—ñ‚ğæ“¾
+//! ãƒã‚¤ãƒˆåˆ—ã‚’å–å¾—
 size_t CAppProfile::Get(LPCTSTR section, LPCTSTR key, void* out, size_t len)
 {
 	return GetBinary(section, key, out, len);
 }
 
-//! ƒoƒCƒg—ñ‚ğæ“¾
+//! ãƒã‚¤ãƒˆåˆ—ã‚’å–å¾—
 size_t CAppProfile::GetBinary(LPCTSTR section, LPCTSTR key, void* out, size_t len)
 {
 	CString str = Get(section, key, _T(""));
@@ -252,13 +252,13 @@ size_t CAppProfile::GetBinary(LPCTSTR section, LPCTSTR key, void* out, size_t le
 	return nBinLen;
 }
 
-//I ƒoƒCƒg—ñ‚ğİ’è
+//ï¼ ãƒã‚¤ãƒˆåˆ—ã‚’è¨­å®š
 CAppProfile& CAppProfile::Write(LPCTSTR section, LPCTSTR key, const void* data, size_t len)
 {
 	return WriteBinary(section, key, data, len);
 }
 
-//I ƒoƒCƒg—ñ‚ğİ’è
+//ï¼ ãƒã‚¤ãƒˆåˆ—ã‚’è¨­å®š
 CAppProfile& CAppProfile::WriteBinary(LPCTSTR section, LPCTSTR key, const void* data, size_t len)
 {
 	DWORD nStrLen = 0;
@@ -271,7 +271,7 @@ CAppProfile& CAppProfile::WriteBinary(LPCTSTR section, LPCTSTR key, const void* 
 }
 
 /*!
- *	@brief •¶š—ñ‚ğƒoƒCƒg—ñ‚Æ‚µ‚Ä•Û‘¶
+ *	@brief æ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆåˆ—ã¨ã—ã¦ä¿å­˜
  *	@return 
  *	@param[in] section 
  *	@param[in] key     
@@ -283,13 +283,13 @@ CAppProfile& CAppProfile::WriteStringAsBinary(
 	LPCTSTR value
 )
 {
-	size_t n_strings = _tcslen(value) + 1;   // + 1 NULI’[‚İ
+	size_t n_strings = _tcslen(value) + 1;   // + 1 NULçµ‚ç«¯è¾¼ã¿
 	size_t n_bytes = n_strings * sizeof(TCHAR);
 	return WriteBinary(section, key, value, n_bytes);
 }
 
 /*!
- *	@brief ƒoƒCƒg—ñ‚ğ•¶š—ñ‚Æ‚µ‚Äæ“¾
+ *	@brief ãƒã‚¤ãƒˆåˆ—ã‚’æ–‡å­—åˆ—ã¨ã—ã¦å–å¾—
  *	@return 
  *	@param[in] section 
  *	@param[in] key     

@@ -26,7 +26,7 @@ CString SettingCommand::GetName()
 
 CString SettingCommand::GetDescription()
 {
-	return _T("yİ’èz");
+	return _T("ã€è¨­å®šã€‘");
 }
 
 BOOL SettingCommand::Execute()
@@ -35,7 +35,7 @@ BOOL SettingCommand::Execute()
 
 	auto pref = AppPreference::Get();
 
-	// Œ»İ‚Ìİ’è‚ğƒZƒbƒg
+	// ç¾åœ¨ã®è¨­å®šã‚’ã‚»ãƒƒãƒˆ
 	dlg.mMatchLevel = pref->mMatchLevel;
 	dlg.mIsUseExternalFiler = pref->mIsUseExternalFiler;
 	dlg.mFilerPath = pref->mFilerPath;
@@ -58,7 +58,7 @@ BOOL SettingCommand::Execute()
 		return TRUE;
 	}
 
-	// İ’è•ÏX‚ğ”½‰f‚·‚é
+	// è¨­å®šå¤‰æ›´ã‚’åæ˜ ã™ã‚‹
 	pref->mMatchLevel = dlg.mMatchLevel;
 	pref->mIsUseExternalFiler = dlg.mIsUseExternalFiler;
 	pref->mFilerPath = dlg.mFilerPath;
@@ -88,7 +88,7 @@ BOOL SettingCommand::Execute()
 
 BOOL SettingCommand::Execute(const std::vector<CString>& args)
 {
-	// ˆø”w’è‚µ‚Ä‚à“®ì‚Í‚©‚í‚ç‚È‚¢
+	// å¼•æ•°æŒ‡å®šã—ã¦ã‚‚å‹•ä½œã¯ã‹ã‚ã‚‰ãªã„
 	return Execute();
 }
 

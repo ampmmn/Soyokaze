@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-// ToDo: ƒAƒCƒRƒ“•\Ž¦—p‚ÌƒRƒ“ƒgƒ[ƒ‹ì¬
+// ToDo: ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºç”¨ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ä½œæˆ
 
 IconLabel::IconLabel()
 {
@@ -54,7 +54,7 @@ void IconLabel::DrawIcon(HICON iconHandle)
 	dc.BitBlt(0,0, rc.Width(), rc.Height(), &mMemDC, 0, 0, SRCCOPY);
 }
 
-// ƒfƒtƒHƒ‹ƒgƒAƒCƒRƒ“‚Ì•`‰æ
+// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚¢ã‚¤ã‚³ãƒ³ã®æç”»
 void IconLabel::DrawDefaultIcon()
 {
 	if (mIconDefault) {

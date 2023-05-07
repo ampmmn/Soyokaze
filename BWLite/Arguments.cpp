@@ -37,7 +37,7 @@ bool Arguments::GetValue(LPCTSTR optName, CString& value)
 	return false;
 }
 
-// bluewind$B$H8_49@-$,$"$k%*%W%7%g%s7A<0(B(/xxx=)$B$G;XDj$5$l$?CM$r<hF@(B
+// bluewindと互換性があるオプション形式(/xxx=)で指定された値を取得
 bool Arguments::GetBWOptValue(LPCTSTR optName, CString& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {

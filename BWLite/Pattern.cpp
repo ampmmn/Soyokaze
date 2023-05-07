@@ -4,7 +4,7 @@
 
 CString Pattern::StripEscapeChars(const CString& pattern)
 {
-	// Œã’i‚Ìwregex‚É’l‚ğ“n‚µ‚½‚Æ‚«‚ÉƒGƒXƒP[ƒv‹L†‚Æ‚µ‚Ä‰ğß‚³‚ê‚é‚Ì‚ğ–h‚®‚½‚ß
+	// å¾Œæ®µã®wregexã«å€¤ã‚’æ¸¡ã—ãŸã¨ãã«ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—è¨˜å·ã¨ã—ã¦è§£é‡ˆã•ã‚Œã‚‹ã®ã‚’é˜²ããŸã‚
 
 	CString tmp(pattern);
 	tmp.Replace(_T("\\"), _T(""));
