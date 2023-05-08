@@ -378,7 +378,11 @@ void CBWLiteDlg::OnEditCommandChanged()
 
 	// 候補先頭を選択状態にする
 	auto pCmd = mCandidates[0];
-	SetDescription(pCmd->GetDescription());
+	CString descriptionStr = pCmd->GetDescription();
+	if (descriptionStr.IsEmpty()) {
+		descriptionStr = pCmd->GetName();
+	}
+	SetDescription(descriptionStr);
 
 	// サムネイルの更新
 	mIconLabel.DrawIcon(pCmd->GetIcon());
@@ -480,6 +484,9 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
+			if (m_strDescription.IsEmpty()) {
+				m_strDescription = cmd->GetName();
+			}
 			mIconLabel.DrawIcon(cmd->GetIcon());
 
 			UpdateData(FALSE);
@@ -500,6 +507,9 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 
 			mCommandStr = cmd->GetName();
 			m_strDescription = cmd->GetDescription();
+			if (m_strDescription.IsEmpty()) {
+				m_strDescription = cmd->GetName();
+			}
 			mIconLabel.DrawIcon(cmd->GetIcon());
 
 			UpdateData(FALSE);
@@ -517,6 +527,9 @@ LRESULT CBWLiteDlg::OnKeywordEditNotify(
 			mCommandStr += _T(" ");
 
 			m_strDescription = cmd->GetDescription();
+			if (m_strDescription.IsEmpty()) {
+				m_strDescription = cmd->GetName();
+			}
 			mIconLabel.DrawIcon(cmd->GetIcon());
 			UpdateData(FALSE);
 
