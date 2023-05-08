@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingDialog.h"
+#include "ShortcutDialog.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -33,6 +34,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE, OnButtonBrowseFile)
+	ON_COMMAND(IDC_BUTTON_SHORTCUT, OnButtonShortcut)
 	ON_COMMAND(IDC_CHECK_USEFILER, OnCheckUseFilter)
 	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnCbnTransparencyChanged)
 END_MESSAGE_MAP()
@@ -105,5 +107,11 @@ void SettingDialog::OnCbnTransparencyChanged()
 {
 	UpdateData();
 	UpdateStatus();
+}
+
+void SettingDialog::OnButtonShortcut()
+{
+	ShortcutDialog dlg;
+	dlg.DoModal();
 }
 

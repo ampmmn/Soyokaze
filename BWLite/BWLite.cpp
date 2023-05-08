@@ -32,6 +32,7 @@ CBWLiteApp::CBWLiteApp() : m_hMutexRun(NULL)
 #ifdef UNICODE
 	_tsetlocale(LC_ALL, _T(""));
 #endif
+	CoInitialize(NULL);
 
 	// 再起動マネージャーをサポートします
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -42,6 +43,7 @@ CBWLiteApp::~CBWLiteApp()
 	if (m_hMutexRun != NULL) {
 		CloseHandle(m_hMutexRun);
 	}
+	CoUninitialize();
 }
 
 // 唯一の CBWLiteApp オブジェクト

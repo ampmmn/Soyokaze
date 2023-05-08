@@ -21,6 +21,7 @@
 #define IDS_FILTER_EXE                  114
 #define IDS_ERR_HOTKEYALREADYUSE        115
 #define IDS_ERR_HELPDOESNOTEXIST        116
+#define IDS_CONFIRM_DELETESHORTCUT      117
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDI_ICON1                       136
@@ -28,6 +29,7 @@
 #define IDD_NEWCOMMAND                  140
 #define IDD_KEYWORDMANAGER              143
 #define IDD_HOTKEY                      146
+#define IDD_SHORTCUT                    149
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -76,15 +78,21 @@
 #define IDC_CHECK_WIN                   1043
 #define IDC_COMBO_VK                    1044
 #define IDC_SYSLINK1                    1045
+#define IDC_BUTTON_SHORTCUT             1046
+#define IDC_CHECK_SENDTO                1047
+#define IDC_STATIC_REMARK               1048
+#define IDC_CHECK_STARTMENU             1049
+#define IDC_CHECK_DESKTOP               1050
+#define IDC_CHECK_STARTUP               1051
 #define ID_A                            32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        149
+#define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1046
+#define _APS_NEXT_CONTROL_VALUE         1053
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

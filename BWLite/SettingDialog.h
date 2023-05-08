@@ -44,5 +44,6 @@ protected:
 	afx_msg void OnButtonBrowseFile();
 	afx_msg void OnCheckUseFilter();
 	afx_msg void OnCbnTransparencyChanged();
+	afx_msg void OnButtonShortcut();
 };
 

@@ -412,9 +412,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SettingDialog.h" />
+    <ClInclude Include="ShortcutDialog.h" />
     <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TaskTray.h" />
+    <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="WholeMatchPattern.h" />
     <ClInclude Include="WindowPlacementUtil.h" />
     <ClInclude Include="WindowTransparency.h" />
@@ -469,8 +471,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SettingDialog.cpp" />
+    <ClCompile Include="ShortcutDialog.cpp" />
     <ClCompile Include="SkipMatchPattern.cpp" />
     <ClCompile Include="TaskTray.cpp" />
+    <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />
     <ClCompile Include="WindowPlacementUtil.cpp" />
     <ClCompile Include="WindowTransparency.cpp" />
