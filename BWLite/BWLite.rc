@@ -645,7 +645,7 @@ STRINGTABLE
 BEGIN
     IDS_ABOUTBOX            "BWLiteについて(&A)..."
     ID_STRING_MISMATCH      "(一致候補なし)"
-    ID_STRING_DEFAULTDESCRIPTION "BWLite"
+    ID_STRING_DEFAULTDESCRIPTION "コマンドを入力"
     IDS_MENUTEXT_SHOW       "表示(&U)"
     IDS_ERR_NAMEISEMPTY     "名前を入力してください"
     IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
