@@ -115,6 +115,28 @@ bluewindのReadMeから抜粋
 [MIT License](./LICENSE)
 
 
+## 画面など
+
+画面のつくりはbluewindにある程度似せて作っている
+
+### 入力画面
+
+![](image/bwlite-window.png)
+
+### キーワードマネージャ
+
+![](image/keywordmanager.png)
+
+### コマンド登録・編集画面
+
+![](image/edit.png)
+
+### 設定画面
+
+![](image/setting.png)
+
+![](image/shortcut_setting.png)
+
 ## ToDo
 
 - マニュアル拡充
@@ -125,10 +147,11 @@ bluewindのReadMeから抜粋
 
 ### 0.0.8
 
-2023/05/xx
+2023/05/09
 
 - ショートカット登録機能を実装
   - 送る/スタートメニュー/デスクトップ/スタートアップ
+- ウインドウのトグル表示機能を実装
 - 細かいバグ修正
 
 ### 0.0.7
