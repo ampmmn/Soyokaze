@@ -19,7 +19,7 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 
 
-ShellExecCommand::ShellExecCommand()
+ShellExecCommand::ShellExecCommand() : mRunAs(0)
 {
 }
 
