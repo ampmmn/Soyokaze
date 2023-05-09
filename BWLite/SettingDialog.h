@@ -12,6 +12,7 @@ public:
 	// ランチャー呼び出しキー（表示用)
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
+	BOOL mIsShowToggle;
 
 	// 絞込方法(0:前方一致 1:部分一致 2:スキップマッチング)
 	int mMatchLevel;

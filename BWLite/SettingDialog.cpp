@@ -21,6 +21,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_SHOWTOGGLE, mIsShowToggle);
 	DDX_CBIndex(pDX, IDC_COMBO_MATCHLEVEL, mMatchLevel);
 	DDX_Check(pDX, IDC_CHECK_USEFILER, mIsUseExternalFiler);
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);

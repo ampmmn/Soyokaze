@@ -32,6 +32,8 @@ public:
 	UINT mModifiers;
 	// ランチャー表示用ホットキー
 	UINT mHotKeyVK;
+	// トグル表示
+	BOOL mIsShowToggle;
 
 	// 透過表示の透明度(0-255)
 	int mAlpha;

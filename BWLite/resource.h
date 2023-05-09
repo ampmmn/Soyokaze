@@ -73,6 +73,8 @@
 #define IDC_BUTTON_HOTKEY               1038
 #define IDC_EDIT_FILERPATH              1039
 #define IDC_CHECK_SHIFT                 1040
+#define IDC_CHECK_USEFILER2             1040
+#define IDC_CHECK_SHOWTOGGLE            1040
 #define IDC_CHECK_ALT                   1041
 #define IDC_CHECK_CTRL                  1042
 #define IDC_CHECK_WIN                   1043

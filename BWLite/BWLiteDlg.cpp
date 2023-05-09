@@ -15,6 +15,7 @@
 #include "HotKey.h"
 #include "WindowTransparency.h"
 #include "IconLoader.h"
+#include "AppPreference.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -131,24 +132,30 @@ public:
  */
 LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
-	// 表示状態のトグル
 	HWND hwnd = GetSafeHwnd();
 	if (::IsWindowVisible(hwnd) == FALSE) {
 
+		// 非表示状態なら表示
 		ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
 	}
 	else {
-		// 非アクティブならアクティブにする
+		// 表示状態ではあるが、非アクティブならアクティブにする
 		if (hwnd != ::GetActiveWindow()) {
 			ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
 			::ShowWindow(hwnd, SW_SHOW);
 			::SetForegroundWindow(hwnd);
 			::BringWindowToTop(hwnd);
+			return 0;
 		}
-		else {
+
+		// 表示状態の場合はアプリ設定に応じて動作を変える
+
+		AppPreference* pref= AppPreference::Get();
+		if (pref->mIsShowToggle) {
+			// トグル表示設定にしている場合は非表示にする
 			::ShowWindow(hwnd, SW_HIDE);
 		}
 	}

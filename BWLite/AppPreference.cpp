@@ -40,6 +40,7 @@ void AppPreference::Load()
 	mFilerParam = pProfile->Get(_T("BWLite"), _T("FilerParam"), _T(""));
 	mModifiers = (UINT)pProfile->Get(_T("HotKey"), _T("Modifiers"), MOD_ALT);
 	mHotKeyVK = (UINT)pProfile->Get(_T("HotKey"), _T("VirtualKeyCode"), VK_RETURN);
+	mIsShowToggle = pProfile->Get(_T("BWLite"), _T("ShowToggle"), FALSE);
 
 	mIsTransparencyEnable = (pProfile->Get(_T("WindowTransparency"), _T("Enable"), 0) != 0);
 
@@ -60,6 +61,7 @@ void AppPreference::Save()
 	pProfile->Write(_T("HotKey"), _T("Modifiers"), (int)mModifiers);
 	pProfile->Write(_T("HotKey"), _T("VirtualKeyCode"), (int)mHotKeyVK);
 	pProfile->Write(_T("WindowTransparency"), _T("Enable"), (int)mIsTransparencyEnable);
+	pProfile->Write(_T("BWLite"), _T("ShowToggle"), (int)mIsShowToggle);
 	pProfile->Write(_T("WindowTransparency"), _T("InactiveOnly"), (int)mIsTransparencyInactiveOnly);
 	pProfile->Write(_T("WindowTransparency"), _T("Alpha"), (int)mAlpha);
 	pProfile->Write(_T("BWLite"), _T("Topmost"), (int)mIsTopmost);

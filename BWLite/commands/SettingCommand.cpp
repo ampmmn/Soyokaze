@@ -42,6 +42,7 @@ BOOL SettingCommand::Execute()
 	dlg.mFilerParam = pref->mFilerParam;
 	dlg.mIsTopMost = pref->mIsTopmost;
 	dlg.mHotKeyAttr = HOTKEY_ATTR(pref->mModifiers, pref->mHotKeyVK);
+	dlg.mIsShowToggle = pref->mIsShowToggle;
 	dlg.mAlpha = pref->mAlpha;
 
 	if (pref->mIsTransparencyEnable == false) {
@@ -66,6 +67,7 @@ BOOL SettingCommand::Execute()
 	pref->mIsTopmost = dlg.mIsTopMost;
 	pref->mModifiers = dlg.mHotKeyAttr.GetModifiers();
 	pref->mHotKeyVK = dlg.mHotKeyAttr.GetVKCode();
+	pref->mIsShowToggle = dlg.mIsShowToggle;
 	pref->mAlpha = dlg.mAlpha;
 
 	if (dlg.mTransparencyType == 0) {
