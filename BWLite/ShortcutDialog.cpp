@@ -142,6 +142,8 @@ void ShortcutDialog::OnButtonDelete()
 
 	CString msg((LPCTSTR)IDS_CONFIRM_DELETESHORTCUT);
 	msg.Replace(_T("$APPNAME"), exeName);
+	msg += _T("\n\n");
+	msg += _T("※この変更は今すぐ反映されます(キャンセルできません)");
 
 	int n = AfxMessageBox(msg,
 	                      MB_YESNO | MB_ICONQUESTION| MB_DEFBUTTON2);

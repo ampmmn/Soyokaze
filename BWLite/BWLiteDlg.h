@@ -34,11 +34,10 @@ public:
 public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
+	void HideWindow();
 	void ShowHelp();
 
 	bool ExecuteCommand(const CString& commandStr);
-
-	void OnContextMenu(CWnd* taskTrayWindow);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV サポート
@@ -108,9 +107,12 @@ protected:
 	afx_msg void OnLbnDblClkCandidate();
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
+	// コンテキストメニューの表示
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
+public:
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 };

@@ -75,6 +75,7 @@ BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 void CBWLiteDlg::ActivateWindow(HWND hwnd)
@@ -88,6 +89,12 @@ void CBWLiteDlg::ActivateWindow()
 		CBWLiteDlg::ActivateWindow(GetSafeHwnd());
 	}
 }
+
+void CBWLiteDlg::HideWindow()
+{
+	::ShowWindow(GetSafeHwnd(), SW_HIDE);
+}
+
 
 void CBWLiteDlg::ShowHelp()
 {
@@ -613,26 +620,27 @@ LRESULT CBWLiteDlg::OnNcHitTest(
  * コンテキストメニューの表示
  */
 void CBWLiteDlg::OnContextMenu(
-	CWnd* taskTrayWindow
+	CWnd* pWnd,
+	CPoint point
 )
 {
-	CPoint point;
-	::GetCursorPos(&point);
-
 	CMenu menu;
 	menu.CreatePopupMenu();
 
 	const int ID_SHOW = 1;
-	const int ID_NEW = 2;
-	const int ID_MANAGER = 3;
-	const int ID_APPSETTING = 4;
-	const int ID_USERDIR = 5;
-	const int ID_MANUAL = 6;
-	const int ID_VERSIONINFO = 7;
-	const int ID_EXIT = 8;
+	const int ID_HIDE = 2;
+	const int ID_NEW = 3;
+	const int ID_MANAGER = 4;
+	const int ID_APPSETTING = 5;
+	const int ID_USERDIR = 6;
+	const int ID_MANUAL = 7;
+	const int ID_VERSIONINFO = 8;
+	const int ID_EXIT = 9;
 
-	CString textShow((LPCTSTR)IDS_MENUTEXT_SHOW);
-	menu.InsertMenu(-1, 0, ID_SHOW, textShow);
+	BOOL isVisible = IsWindowVisible();
+	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
+
+	menu.InsertMenu(-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
 	menu.InsertMenu(-1, 0, ID_NEW, _T("新規作成(&N)"));
@@ -649,6 +657,9 @@ void CBWLiteDlg::OnContextMenu(
 
 	if (n == ID_SHOW) {
 		ActivateWindow();
+	}
+	else if (n == ID_HIDE) {
+		HideWindow();
 	}
 	else if (n == ID_NEW) {
 		ExecuteCommand(_T("new"));
@@ -679,3 +690,4 @@ void CBWLiteDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 	mWindowTransparencyPtr->UpdateActiveState(nState);
 	__super::OnActivate(nState, wnd, bMinimized);
 }
+

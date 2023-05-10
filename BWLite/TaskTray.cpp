@@ -89,6 +89,8 @@ LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 
 void TaskTray::OnContextMenu()
 {
-	mBWLiteWindowPtr->OnContextMenu(this);
+	CPoint pos;
+	GetCursorPos(&pos);
+	mBWLiteWindowPtr->OnContextMenu(this, pos);
 }
 

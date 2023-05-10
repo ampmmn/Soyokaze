@@ -22,6 +22,8 @@
 #define IDS_ERR_HOTKEYALREADYUSE        115
 #define IDS_ERR_HELPDOESNOTEXIST        116
 #define IDS_CONFIRM_DELETESHORTCUT      117
+#define IDS_MENUTEXT_HIDE               118
+#define IDS_CONFIRM_DELETESHORTCUT2     119
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDI_ICON1                       136

@@ -695,8 +695,8 @@ BEGIN
     IDS_FILTER_EXE          "実行ファイル(*.exe)|*.exe|全てのファイル(*.*)|*.*||"
     IDS_ERR_HOTKEYALREADYUSE "指定したホットキーはすでに使用されています"
     IDS_ERR_HELPDOESNOTEXIST "ヘルプファイル(help.html)がありません"
-    IDS_CONFIRM_DELETESHORTCUT 
-                            " すべての $APPNAME へのショートカットを削除します。\nよろしいですか?\n\n※この変更は今すぐ反映されます(キャンセルできません)"
+    IDS_CONFIRM_DELETESHORTCUT " すべての $APPNAME へのショートカットを削除します。\nよろしいですか?"
+    IDS_MENUTEXT_HIDE       "隠す"
 END
 
 #endif    // 日本語 (日本) resources
