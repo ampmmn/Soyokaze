@@ -21,6 +21,7 @@ public:
 	HICON LoadTasktrayIcon();
 	HICON LoadUnknownIcon();
 	HICON LoadReloadIcon();
+	HICON LoadRegisterWindowIcon();
 
 private:
 	IconLoader();

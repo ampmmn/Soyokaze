@@ -12,6 +12,7 @@ public:
 	void SetOrgName(const CString& name);
 	void SetName(const CString& name);
 	void SetPath(const CString& path);
+	void SetDescription(const CString& desc);
 
 	int GetShowType();
 	void SetShowType(int type);

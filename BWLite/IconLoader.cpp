@@ -20,6 +20,7 @@ struct IconLoader::PImpl
 		mDefaultIcon(nullptr),
 		mReloadIcon(nullptr),
 		mUserDirIcon(nullptr),
+		mRegisterWindowIcon(nullptr),
 		mUnknownIcon(nullptr)
 	{
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
@@ -49,6 +50,7 @@ struct IconLoader::PImpl
 	HICON mDefaultIcon;
 	HICON mReloadIcon;
 	HICON mUserDirIcon;
+	HICON mRegisterWindowIcon;
 	HICON mUnknownIcon;
 };
 
@@ -190,3 +192,13 @@ HICON IconLoader::LoadReloadIcon()
 	in->mReloadIcon = in->GetImageResIcon(228);
 	return in->mReloadIcon;
 }
+
+HICON IconLoader::LoadRegisterWindowIcon()
+{
+	if (in->mRegisterWindowIcon) {
+		return in->mRegisterWindowIcon;
+	}
+	in->mRegisterWindowIcon = in->GetImageResIcon(19);
+	return in->mRegisterWindowIcon;
+}
+

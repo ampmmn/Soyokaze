@@ -20,6 +20,7 @@
 #include "commands/MainDirCommand.h"
 #include "commands/SettingCommand.h"
 #include "commands/ManagerCommand.h"
+#include "commands/RegistWinCommand.h"
 #include "commands/ExecutableFileCommand.h"
 #include "CommandEditDialog.h"
 #include "KeywordManagerDialog.h"
@@ -108,6 +109,7 @@ BOOL CommandRepository::Load()
 	in->mBuiltinCommands.Register(new UserDirCommand());
 	in->mBuiltinCommands.Register(new MainDirCommand());
 	in->mBuiltinCommands.Register(new SettingCommand());
+	in->mBuiltinCommands.Register(new RegistWinCommand(this));
 
 	// 設定ファイルを読み、コマンド一覧を登録する
 	TCHAR path[32768];
@@ -144,11 +146,13 @@ public:
 /**
  *  新規キーワード作成
  *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
- *  @param cmdNamePtr コマンドに紐づけるパス(nullの場合はパスを空欄にする)
+ *  @param pathPtr コマンドに紐づけるパス(nullの場合はパスを空欄にする)
+ *  @param descPtr コマンドの説明(nullの場合は空欄にする)
  */
 int CommandRepository::NewCommandDialog(
 	const CString* cmdNamePtr,
-	const CString* pathPtr
+	const CString* pathPtr,
+	const CString* descPtr
 )
 {
 	if (in->mIsNewDialog) {
@@ -165,6 +169,9 @@ int CommandRepository::NewCommandDialog(
 	}
 	if (pathPtr) {
 		dlg.SetPath(*pathPtr);
+	}
+	if (descPtr) {
+		dlg.SetDescription(*descPtr);
 	}
 
 	if (dlg.DoModal() != IDOK) {
@@ -364,7 +371,8 @@ CommandRepository::Query(
 }
 
 Command* CommandRepository::QueryAsWholeMatch(
-	const CString& strQueryStr
+	const CString& strQueryStr,
+	bool isSearchPath
 )
 {
 	WholeMatchPattern pat(strQueryStr);
@@ -380,7 +388,7 @@ Command* CommandRepository::QueryAsWholeMatch(
 	}
 
 	// 1件もマッチしない場合はExecutableCommandのひかく
-	if (in->mExeCommand.Match(in->mPattern)) {
+	if (isSearchPath && in->mExeCommand.Match(in->mPattern)) {
 		return &in->mExeCommand;
 	}
 

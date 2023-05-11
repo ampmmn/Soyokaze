@@ -13,7 +13,7 @@ public:
 public:
 	BOOL Load();
 
-	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr);
+	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr, const CString* descStr = nullptr);
 	int EditCommandDialog(const CString& cmdName);
 	int ManagerDialog();
 
@@ -24,7 +24,7 @@ public:
 	bool IsBuiltinName(const CString& cmdName);
 
 	void Query(const CString& strQueryStr, std::vector<Command*>& commands);
-	Command* QueryAsWholeMatch(const CString& strQueryStr);
+	Command* QueryAsWholeMatch(const CString& strQueryStr, bool isSearchPath = true);
 
 	bool IsValidAsName(const CString& strQueryStr);
 

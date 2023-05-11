@@ -40,6 +40,11 @@ void CommandEditDialog::SetPath(const CString& path)
 	mPath = path;
 }
 
+void CommandEditDialog::SetDescription(const CString& desc)
+{
+	mDescription = desc;
+}
+
 int CommandEditDialog::GetShowType()
 {
 	if (mShowType == 1) {
@@ -144,7 +149,7 @@ bool CommandEditDialog::UpdateStatus()
 	}
 	// 重複チェック
 	if (mName.CompareNoCase(mOrgName) != 0 && 
-	    mCmdMapPtr->QueryAsWholeMatch(mName) != nullptr) {
+	    mCmdMapPtr->QueryAsWholeMatch(mName, false) != nullptr) {
 		mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
