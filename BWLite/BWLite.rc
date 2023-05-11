@@ -243,8 +243,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,8,1
- PRODUCTVERSION 0,0,8,1
+ FILEVERSION 0,0,9,1
+ PRODUCTVERSION 0,0,9,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -260,12 +260,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "BWLite"
-            VALUE "FileVersion", "0.0.8.1"
+            VALUE "FileVersion", "0.0.9.1"
             VALUE "InternalName", "BWLite.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "BWLite.exe"
             VALUE "ProductName", "BWLite"
-            VALUE "ProductVersion", "0.0.8.1"
+            VALUE "ProductVersion", "0.0.9.1"
         END
     END
     BLOCK "VarFileInfo"
