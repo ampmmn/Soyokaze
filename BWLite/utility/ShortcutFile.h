@@ -14,6 +14,8 @@ public:
 
 	bool Save(LPCTSTR pathToSave);
 
+	static CString ResolvePath(const CString& linkPath);
+
 protected:
 	CString mLinkPath;
 	CString mArguments;

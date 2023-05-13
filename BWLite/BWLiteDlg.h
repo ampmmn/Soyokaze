@@ -8,6 +8,7 @@
 #include "KeywordEdit.h"
 #include "CmdReceiveEdit.h"
 #include "IconLabel.h"
+#include "BWLiteDropTarget.h"
 
 class CommandRepository;
 class Command;
@@ -93,11 +94,15 @@ protected:
 	// ウインドウの透明度を制御するためのクラス
 	WindowTransparency* mWindowTransparencyPtr;
 
+	// ドロップターゲット
+	BWLiteDropTarget mDropTargetDialog;
+	BWLiteDropTarget mDropTargetEdit;
+
 	// 生成された、メッセージ割り当て関数
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	virtual void OnCancel();
-	virtual LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp);
+	BOOL OnInitDialog() override;
+	void OnOK() override;
+	void OnCancel() override;
+	LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp) override;
 
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
@@ -111,6 +116,8 @@ protected:
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 public:

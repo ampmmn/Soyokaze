@@ -11,11 +11,17 @@ public:
 	virtual ~CommandRepository();
 
 public:
+	// コマンドデータのロード
 	BOOL Load();
 
+	// 新規登録ダイアログの表示
 	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr, const CString* descStr = nullptr);
+	// コマンド編集ダイアログの表示
 	int EditCommandDialog(const CString& cmdName);
+	// キーワードマネージャダイアログの表示
 	int ManagerDialog();
+	// まとめて登録ダイアログの表示
+	int RegisterCommandFromFiles(const std::vector<CString>& files);
 
 	bool DeleteCommand(const CString& cmdName);
 

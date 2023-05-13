@@ -356,3 +356,14 @@ Command* ShellExecCommand::Clone()
 	return clonedObj;
 }
 
+// ShellExecCommandのコマンド名として許可しない文字を置換する
+CString& ShellExecCommand::SanitizeName(
+	CString& str
+)
+{
+	str.Replace(_T(' '), _T('_'));
+	str.Replace(_T('!'), _T('_'));
+	str.Replace(_T('['), _T('_'));
+	str.Replace(_T(']'), _T('_'));
+	return str;
+}

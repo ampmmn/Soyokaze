@@ -236,6 +236,19 @@ BEGIN
     LTEXT           "※チェックを外すと作成したショートカットは削除されます",IDC_STATIC_REMARK,7,87,253,8
 END
 
+IDD_REGISTER_ITEMS DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "まとめて登録"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "登録するファイルを選択してください(&L)",IDC_STATIC,38,10,264,8
+    LISTBOX         IDC_LIST_FILES,36,19,266,117,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "ショートカットのとき、リンク先を登録する(&R)",IDC_CHECK_RESOLVELINKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,36,139,157,10
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,252,155,50,14
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,19,21,20
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -336,6 +349,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 150
     END
+
+    IDD_REGISTER_ITEMS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -427,6 +448,17 @@ END
 IDD_SHORTCUT AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_REGISTER_ITEMS AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 100, 100,
+    0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 0, 0
 END
 
 
@@ -699,6 +731,8 @@ BEGIN
     IDS_ERR_GETNEXTWINDOW   "アクティブウインドウを取得できませんでした"
     IDS_ERR_QUERYPROCESSINFO 
                             "アクティブウインドウの情報を取得できません\n(管理者権限で実行されているプロセスかもしれません)"
+    IDS_NEWREGISTER         "新規作成"
+    IDS_PASTE               "貼り付け"
 END
 
 #endif    // 日本語 (日本) resources

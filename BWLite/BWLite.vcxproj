@@ -375,6 +375,7 @@
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="BWLite.h" />
     <ClInclude Include="BWLiteDlg.h" />
+    <ClInclude Include="BWLiteDropTarget.h" />
     <ClInclude Include="CmdReceiveEdit.h" />
     <ClInclude Include="CommandFile.h" />
     <ClInclude Include="CommandIF.h" />
@@ -412,6 +413,7 @@
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SelectFilesDialog.h" />
     <ClInclude Include="SettingDialog.h" />
     <ClInclude Include="ShortcutDialog.h" />
     <ClInclude Include="SkipMatchPattern.h" />
@@ -429,6 +431,7 @@
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="BWLite.cpp" />
     <ClCompile Include="BWLiteDlg.cpp" />
+    <ClCompile Include="BWLiteDropTarget.cpp" />
     <ClCompile Include="CmdReceiveEdit.cpp" />
     <ClCompile Include="CommandFile.cpp" />
     <ClCompile Include="CommandMap.cpp" />
@@ -472,6 +475,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SelectFilesDialog.cpp" />
     <ClCompile Include="SettingDialog.cpp" />
     <ClCompile Include="ShortcutDialog.cpp" />
     <ClCompile Include="SkipMatchPattern.cpp" />

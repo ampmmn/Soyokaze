@@ -28,6 +28,9 @@ public:
 	virtual HICON GetIcon();
 	virtual BOOL Match(Pattern* pattern);
 	virtual Command* Clone();
+
+	// ShellExecCommandのコマンド名として許可しない文字を置換する
+	static CString& SanitizeName(CString& str);
 	
 public:
 	ShellExecCommand& SetName(LPCTSTR name);

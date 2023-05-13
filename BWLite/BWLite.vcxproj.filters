@@ -177,6 +177,12 @@
     <ClInclude Include="commands\RegistWinCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
+    <ClInclude Include="BWLiteDropTarget.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectFilesDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -322,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="commands\RegistWinCommand.cpp">
       <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="BWLiteDropTarget.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectFilesDialog.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

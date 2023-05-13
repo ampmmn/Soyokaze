@@ -32,7 +32,9 @@ CBWLiteDlg::CBWLiteDlg(CWnd* pParent /*=nullptr*/)
 	mExecHistory(new ExecHistory),
 	mHotKeyPtr(nullptr),
 	mWindowPositionPtr(nullptr),
-	mWindowTransparencyPtr(new WindowTransparency)
+	mWindowTransparencyPtr(new WindowTransparency),
+	mDropTargetDialog(this),
+	mDropTargetEdit(this)
 {
 	m_hIcon = IconLoader::Get()->LoadDefaultIcon();
 }
@@ -75,6 +77,8 @@ BEGIN_MESSAGE_MAP(CBWLiteDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
+	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
+	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -183,6 +187,92 @@ LRESULT CBWLiteDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+
+LRESULT 
+CBWLiteDlg::OnUserMessageDragOverObject(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	CWnd* wnd = (CWnd*)lParam;
+	if (wnd == this) {
+		SetDescription(CString((LPCTSTR)IDS_NEWREGISTER));
+	}
+	else if (wnd == &mKeywordEdit) {
+		SetDescription(CString((LPCTSTR)IDS_PASTE));
+	}
+	return 0;
+}
+
+LRESULT 
+CBWLiteDlg::OnUserMessageDropObject(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	COleDataObject* dataObj = (COleDataObject*)wParam;
+	CWnd* wnd = (CWnd*)lParam;
+
+	if (dataObj->IsDataAvailable(CF_HDROP)) {
+		std::vector<CString> files;
+
+		STGMEDIUM st;
+		if (dataObj->GetData(CF_HDROP, &st) ) {
+			HDROP dropInfo = static_cast<HDROP>(st.hGlobal);
+
+			int fileCount = (int)DragQueryFile( dropInfo, (UINT)-1, NULL, 0 );
+			files.reserve(fileCount);
+
+			TCHAR filePath[32768];
+			for (int i = 0; i < fileCount; ++i) {
+				DragQueryFile(dropInfo, i, filePath, 32768);
+				files.push_back(filePath);
+			}
+		}
+
+		ASSERT(files.size() > 0);
+
+		if (wnd == this) {
+			// ファイル登録
+			GetCommandRepository()->RegisterCommandFromFiles(files);
+		}
+		else if (wnd == &mKeywordEdit) {
+
+			for (auto& str : files) {
+				if (mCommandStr.IsEmpty() == FALSE) {
+					mCommandStr += _T(" ");
+				}
+				mCommandStr += str;
+			}
+			UpdateData(FALSE);
+		}
+		return 0;
+	}
+
+	UINT urlFormatId = RegisterClipboardFormat(CFSTR_INETURL);
+	if (dataObj->IsDataAvailable(urlFormatId)) {
+
+		STGMEDIUM st;
+		if (dataObj->GetData(urlFormatId, &st) ) {
+			CString urlString((LPCTSTR)GlobalLock(st.hGlobal));
+			GlobalUnlock(st.hGlobal);
+
+			if (wnd == this) {
+				// URL登録
+				GetCommandRepository()->NewCommandDialog(nullptr, &urlString);
+			}
+			else if (wnd == &mKeywordEdit) {
+				mCommandStr += urlString;
+				UpdateData(FALSE);
+			}
+
+			return 0;
+		}
+	}
+	return 0;
+}
+
+
 bool CBWLiteDlg::ExecuteCommand(const CString& str)
 {
 	CommandString commandStr(str);
@@ -261,6 +351,9 @@ BOOL CBWLiteDlg::OnInitDialog()
 	}
 	
 	UpdateData(FALSE);
+
+	mDropTargetDialog.Register(this);
+	mDropTargetEdit.Register(&mKeywordEdit);
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
@@ -461,6 +554,7 @@ LRESULT CBWLiteDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 	}
 	return CDialogEx::WindowProc(msg, wp, lp);
 }
+
 
 void CBWLiteDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {

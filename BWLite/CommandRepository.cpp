@@ -24,6 +24,7 @@
 #include "commands/ExecutableFileCommand.h"
 #include "CommandEditDialog.h"
 #include "KeywordManagerDialog.h"
+#include "SelectFilesDialog.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -334,6 +335,80 @@ int CommandRepository::ManagerDialog()
 	return 0;
 }
 
+
+// まとめて登録ダイアログの表示
+int CommandRepository::RegisterCommandFromFiles(
+	const std::vector<CString>& files
+)
+{
+	if (files.empty()) {
+		// ファイルパスの要素数が0の場合はなにもしない
+		return 0;
+	}
+
+	if (files.size() > 1) {
+		// 複数の場合はまとめて選択ダイアログ
+		SelectFilesDialog dlg;
+		dlg.SetFiles(files);
+
+		if (dlg.DoModal() != IDOK) {
+			return 0;
+		}
+
+		std::vector<CString> filesToRegister;
+		dlg.GetCheckedFiles(filesToRegister);
+
+		if (filesToRegister.empty()) {
+			return 0;
+		}
+
+		// ダイアログで選択されたファイルを一括登録
+		for (const auto& filePath : filesToRegister) {
+
+			CString name(PathFindFileName(filePath));
+			PathRemoveExtension(name.GetBuffer(name.GetLength()));
+			name.ReleaseBuffer();
+			
+			if (name.IsEmpty()) {
+				// .xxx というファイル名の場合にnameが空文字になるのを回避する
+				name = PathFindFileName(filePath);
+			}
+
+			// パスとして使えるが、ShellExecCommandのコマンド名として許可しない文字をカットする
+			ShellExecCommand::SanitizeName(name);
+
+			CString suffix;
+			for (int i = 1; QueryAsWholeMatch(name + suffix, false) != nullptr; ++i) {
+				suffix.Format(_T("(%d)"), i);
+			}
+
+			if (suffix.IsEmpty() == FALSE) {
+				name = name + suffix;
+			}
+
+			// ダイアログで入力された内容に基づき、コマンドを新規作成する
+			auto* newCmd = new ShellExecCommand();
+			newCmd->SetName(name);
+
+			ShellExecCommand::ATTRIBUTE normalAttr;
+			normalAttr.mPath = filePath;
+			newCmd->SetAttribute(normalAttr);
+			in->mCommands.Register(newCmd);
+		}
+
+		AfxMessageBox(_T("登録しました"));
+	}
+	else {
+		// 登録ダイアログを表示
+		CString filePath = files[0];
+		CString name(PathFindFileName(filePath));
+		PathRemoveExtension(name.GetBuffer(name.GetLength()));
+		name.ReleaseBuffer();
+		return NewCommandDialog(&name, &filePath);
+	}
+	return 0;
+}
+
 /**
  *  コマンドの削除
  */
@@ -397,7 +472,7 @@ Command* CommandRepository::QueryAsWholeMatch(
 
 bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
-	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,.")) == -1;
+	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,")) == -1;
 }
 
 void CommandRepository::OnAppPreferenceUpdated()

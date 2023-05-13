@@ -89,6 +89,11 @@ BOOL CBWLiteApp::InitInstance()
 		return FALSE;
 	}
 
+	if (!AfxOleInit()) {
+		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
+		return FALSE;
+	}
+
 	// 設定ファイル作成用のフォルダをつくる
 	if (CAppProfile::CreateProfileDirectory() == false) {
 		AfxMessageBox(_T("Warning: Failed to init profile folder."));
