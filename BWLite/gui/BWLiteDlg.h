@@ -5,10 +5,10 @@
 #pragma once
 
 #include <vector>
-#include "KeywordEdit.h"
-#include "CmdReceiveEdit.h"
-#include "IconLabel.h"
-#include "BWLiteDropTarget.h"
+#include "gui/KeywordEdit.h"
+#include "gui/CmdReceiveEdit.h"
+#include "gui/IconLabel.h"
+#include "gui/BWLiteDropTarget.h"
 
 class CommandRepository;
 class Command;

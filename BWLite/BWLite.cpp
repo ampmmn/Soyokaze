@@ -5,11 +5,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "BWLite.h"
+#include "gui/BWLiteDlg.h"
+#include "gui/TaskTray.h"
+#include "utility/AppProfile.h"
 #include "Arguments.h"
-#include "BWLiteDlg.h"
 #include "SharedHwnd.h"
-#include "AppProfile.h"
-#include "TaskTray.h"
 #include <locale.h>
 
 #ifdef _DEBUG

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "AboutDlg.h"
+#include "gui/AboutDlg.h"
 #include "resource.h"
 #include <vector>
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "HotKeyDialog.h"
+#include "gui/HotKeyDialog.h"
 #include "resource.h"
 #include <utility>
 

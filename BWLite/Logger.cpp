@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "AppProfile.h"
+#include "utility/AppProfile.h"
 
 static const CString& getLogFilePath()
 {

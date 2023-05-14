@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExecHistory.h"
-#include "AppProfile.h"
+#include "utility/AppProfile.h"
 #include <deque>
 
 struct ExecHistory::PImpl

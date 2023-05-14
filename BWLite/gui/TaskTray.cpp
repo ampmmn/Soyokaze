@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "TaskTray.h"
 #include "resource.h"
-#include "BWLiteDlg.h"
+#include "gui/BWLiteDlg.h"
 #include "IconLoader.h"
 
 #ifdef _DEBUG

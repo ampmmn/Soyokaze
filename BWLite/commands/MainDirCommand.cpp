@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/MainDirCommand.h"
 #include "commands/ShellExecCommand.h"
-#include "AppProfile.h"
+#include "utility/AppProfile.h"
 #include "IconLoader.h"
 #include "resource.h"
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "VersionCommand.h"
-#include "AboutDlg.h"
+#include "gui/AboutDlg.h"
 #include "IconLoader.h"
 #include "resource.h"
 

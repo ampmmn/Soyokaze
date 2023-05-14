@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingDialog.h"
-#include "ShortcutDialog.h"
+#include "gui/ShortcutDialog.h"
 #include "resource.h"
 
 #ifdef _DEBUG

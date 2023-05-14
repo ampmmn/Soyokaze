@@ -2,8 +2,8 @@
 #include "framework.h"
 #include "CommandRepository.h"
 #include "CommandMap.h"
-#include "AboutDlg.h"
-#include "AppProfile.h"
+#include "gui/AboutDlg.h"
+#include "utility/AppProfile.h"
 #include "AppPreference.h"
 #include "ForwardMatchPattern.h"
 #include "PartialMatchPattern.h"
@@ -22,9 +22,9 @@
 #include "commands/ManagerCommand.h"
 #include "commands/RegistWinCommand.h"
 #include "commands/ExecutableFileCommand.h"
-#include "CommandEditDialog.h"
-#include "KeywordManagerDialog.h"
-#include "SelectFilesDialog.h"
+#include "gui/CommandEditDialog.h"
+#include "gui/KeywordManagerDialog.h"
+#include "gui/SelectFilesDialog.h"
 #include <vector>
 
 #ifdef _DEBUG

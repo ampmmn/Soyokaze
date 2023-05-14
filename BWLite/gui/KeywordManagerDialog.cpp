@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "framework.h"
-#include "KeywordManagerDialog.h"
+#include "gui/KeywordManagerDialog.h"
 #include "CommandRepository.h"
-#include "KeywordManagerListCtrl.h"
-#include "IconLabel.h"
+#include "gui/KeywordManagerListCtrl.h"
+#include "gui/IconLabel.h"
 #include "IconLoader.h"
 #include "resource.h"
 

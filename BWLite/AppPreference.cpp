@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppPreference.h"
-#include "AppProfile.h"
+#include "utility/AppProfile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

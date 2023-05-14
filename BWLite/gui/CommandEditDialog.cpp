@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "CommandEditDialog.h"
-#include "FolderDialog.h"
+#include "gui/FolderDialog.h"
+#include "gui/IconLabel.h"
 #include "CommandRepository.h"
-#include "IconLabel.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>

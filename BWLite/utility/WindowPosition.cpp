@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
-#include "WindowPlacementUtil.h"
-#include "AppProfile.h"
+#include "WindowPosition.h"
+#include "utility/AppProfile.h"
 #include <utility> // for std::pair
 
 #ifdef _DEBUG

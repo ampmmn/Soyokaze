@@ -369,14 +369,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
-    <ClInclude Include="AppProfile.h" />
+    <ClInclude Include="utility/AppProfile.h" />
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="BWLite.h" />
-    <ClInclude Include="BWLiteDlg.h" />
-    <ClInclude Include="BWLiteDropTarget.h" />
-    <ClInclude Include="CmdReceiveEdit.h" />
+    <ClInclude Include="gui/BWLiteDlg.h" />
+    <ClInclude Include="gui/BWLiteDropTarget.h" />
+    <ClInclude Include="gui/CmdReceiveEdit.h" />
     <ClInclude Include="CommandFile.h" />
     <ClInclude Include="CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
@@ -395,44 +395,44 @@
     <ClInclude Include="commands\UserDirCommand.h" />
     <ClInclude Include="commands\VersionCommand.h" />
     <ClInclude Include="ExecHistory.h" />
-    <ClInclude Include="FolderDialog.h" />
+    <ClInclude Include="gui/FolderDialog.h" />
     <ClInclude Include="ForwardMatchPattern.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HotKey.h" />
     <ClInclude Include="HotKeyAttribute.h" />
-    <ClInclude Include="HotKeyDialog.h" />
-    <ClInclude Include="IconLabel.h" />
+    <ClInclude Include="gui/HotKeyDialog.h" />
+    <ClInclude Include="gui/IconLabel.h" />
     <ClInclude Include="IconLoader.h" />
-    <ClInclude Include="IniFile.h" />
-    <ClInclude Include="KeywordEdit.h" />
-    <ClInclude Include="KeywordManagerDialog.h" />
-    <ClInclude Include="KeywordManagerListCtrl.h" />
+    <ClInclude Include="utility/IniFile.h" />
+    <ClInclude Include="gui/KeywordEdit.h" />
+    <ClInclude Include="gui/KeywordManagerDialog.h" />
+    <ClInclude Include="gui/KeywordManagerListCtrl.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="CommandEditDialog.h" />
+    <ClInclude Include="gui/CommandEditDialog.h" />
     <ClInclude Include="PartialMatchPattern.h" />
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SelectFilesDialog.h" />
-    <ClInclude Include="SettingDialog.h" />
-    <ClInclude Include="ShortcutDialog.h" />
+    <ClInclude Include="gui/SelectFilesDialog.h" />
+    <ClInclude Include="gui/SettingDialog.h" />
+    <ClInclude Include="gui/ShortcutDialog.h" />
     <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TaskTray.h" />
+    <ClInclude Include="gui/TaskTray.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="WholeMatchPattern.h" />
-    <ClInclude Include="WindowPlacementUtil.h" />
+    <ClInclude Include="utility/WindowPosition.h" />
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />
-    <ClCompile Include="AppProfile.cpp" />
+    <ClCompile Include="utility/AppProfile.cpp" />
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="BWLite.cpp" />
-    <ClCompile Include="BWLiteDlg.cpp" />
-    <ClCompile Include="BWLiteDropTarget.cpp" />
-    <ClCompile Include="CmdReceiveEdit.cpp" />
+    <ClCompile Include="gui/BWLiteDlg.cpp" />
+    <ClCompile Include="gui/BWLiteDropTarget.cpp" />
+    <ClCompile Include="gui/CmdReceiveEdit.cpp" />
     <ClCompile Include="CommandFile.cpp" />
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandRepository.cpp" />
@@ -450,19 +450,19 @@
     <ClCompile Include="commands\UserDirCommand.cpp" />
     <ClCompile Include="commands\VersionCommand.cpp" />
     <ClCompile Include="ExecHistory.cpp" />
-    <ClCompile Include="FolderDialog.cpp" />
+    <ClCompile Include="gui/FolderDialog.cpp" />
     <ClCompile Include="ForwardMatchPattern.cpp" />
     <ClCompile Include="HotKey.cpp" />
     <ClCompile Include="HotKeyAttribute.cpp" />
-    <ClCompile Include="HotKeyDialog.cpp" />
-    <ClCompile Include="IconLabel.cpp" />
+    <ClCompile Include="gui/HotKeyDialog.cpp" />
+    <ClCompile Include="gui/IconLabel.cpp" />
     <ClCompile Include="IconLoader.cpp" />
-    <ClCompile Include="IniFile.cpp" />
-    <ClCompile Include="KeywordEdit.cpp" />
-    <ClCompile Include="KeywordManagerDialog.cpp" />
-    <ClCompile Include="KeywordManagerListCtrl.cpp" />
+    <ClCompile Include="utility/IniFile.cpp" />
+    <ClCompile Include="gui/KeywordEdit.cpp" />
+    <ClCompile Include="gui/KeywordManagerDialog.cpp" />
+    <ClCompile Include="gui/KeywordManagerListCtrl.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="CommandEditDialog.cpp" />
+    <ClCompile Include="gui/CommandEditDialog.cpp" />
     <ClCompile Include="PartialMatchPattern.cpp" />
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="pch.cpp">
@@ -475,14 +475,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SelectFilesDialog.cpp" />
-    <ClCompile Include="SettingDialog.cpp" />
-    <ClCompile Include="ShortcutDialog.cpp" />
+    <ClCompile Include="gui/SelectFilesDialog.cpp" />
+    <ClCompile Include="gui/SettingDialog.cpp" />
+    <ClCompile Include="gui/ShortcutDialog.cpp" />
     <ClCompile Include="SkipMatchPattern.cpp" />
-    <ClCompile Include="TaskTray.cpp" />
+    <ClCompile Include="gui/TaskTray.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />
-    <ClCompile Include="WindowPlacementUtil.cpp" />
+    <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="WindowTransparency.cpp" />
   </ItemGroup>
   <ItemGroup>

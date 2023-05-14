@@ -19,12 +19,12 @@
     <Filter Include="utility">
       <UniqueIdentifier>{b929759c-ac3e-431c-8e00-292b3dbf5119}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gui">
+      <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BWLite.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="BWLiteDlg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -45,18 +45,6 @@
     <ClInclude Include="CommandMap.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppProfile.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowPlacementUtil.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="IniFile.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="AboutDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="commands\ExitCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
@@ -72,16 +60,10 @@
     <ClInclude Include="AppPreference.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="KeywordEdit.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ExecHistory.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="HotKey.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskTray.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ForwardMatchPattern.h">
@@ -102,12 +84,6 @@
     <ClInclude Include="commands\UserDirCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
-    <ClInclude Include="IconLabel.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowTransparency.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -115,9 +91,6 @@
       <Filter>commands</Filter>
     </ClInclude>
     <ClInclude Include="Arguments.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdReceiveEdit.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="WholeMatchPattern.h">
@@ -129,29 +102,14 @@
     <ClInclude Include="commands\SettingCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
-    <ClInclude Include="SettingDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="IconLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="commands\NewCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
-    <ClInclude Include="CommandEditDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FolderDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="commands\EditCommand.h">
       <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="KeywordManagerDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="KeywordManagerListCtrl.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="commands\ManagerCommand.h">
       <Filter>commands</Filter>
@@ -162,51 +120,81 @@
     <ClInclude Include="CommandRepository.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="HotKeyDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="HotKeyAttribute.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="utility\ShortcutFile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="ShortcutDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="commands\RegistWinCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
-    <ClInclude Include="BWLiteDropTarget.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="gui/AboutDlg.h">
+      <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="SelectFilesDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="utility/WindowPosition.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility/AppProfile.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/CmdReceiveEdit.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/CommandEditDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/BWLiteDropTarget.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/BWLiteDlg.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/FolderDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/HotKeyDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/IconLabel.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordEdit.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordManagerDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordManagerListCtrl.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SelectFilesDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SettingDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/ShortcutDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/TaskTray.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowTransparency.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility/IniFile.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="BWLiteDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CommandMap.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AppProfile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowPlacementUtil.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="IniFile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AboutDlg.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\ExitCommand.cpp">
@@ -224,16 +212,10 @@
     <ClCompile Include="AppPreference.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="KeywordEdit.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ExecHistory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="HotKey.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TaskTray.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ForwardMatchPattern.cpp">
@@ -251,9 +233,6 @@
     <ClCompile Include="commands\UserDirCommand.cpp">
       <Filter>commands</Filter>
     </ClCompile>
-    <ClCompile Include="IconLabel.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="WindowTransparency.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -264,9 +243,6 @@
       <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="Arguments.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CmdReceiveEdit.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="WholeMatchPattern.cpp">
@@ -281,29 +257,14 @@
     <ClCompile Include="commands\SettingCommand.cpp">
       <Filter>commands</Filter>
     </ClCompile>
-    <ClCompile Include="SettingDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="IconLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\NewCommand.cpp">
       <Filter>commands</Filter>
     </ClCompile>
-    <ClCompile Include="CommandEditDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FolderDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="commands\EditCommand.cpp">
       <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="KeywordManagerDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="KeywordManagerListCtrl.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\ManagerCommand.cpp">
       <Filter>commands</Filter>
@@ -314,26 +275,68 @@
     <ClCompile Include="CommandRepository.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="HotKeyDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="HotKeyAttribute.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="utility\ShortcutFile.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="ShortcutDialog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="commands\RegistWinCommand.cpp">
       <Filter>commands</Filter>
     </ClCompile>
-    <ClCompile Include="BWLiteDropTarget.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="gui/AboutDlg.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
-    <ClCompile Include="SelectFilesDialog.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="gui/BWLiteDlg.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/CmdReceiveEdit.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/CommandEditDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/BWLiteDropTarget.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/FolderDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/HotKeyDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SelectFilesDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SettingDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/ShortcutDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/TaskTray.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/AppProfile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/IconLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/IniFile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/WindowPosition.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordEdit.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordManagerDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordManagerListCtrl.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

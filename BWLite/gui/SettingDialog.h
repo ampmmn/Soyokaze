@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HotKeyDialog.h"
+#include "gui/HotKeyDialog.h"
 
 // 
 class SettingDialog : public CDialogEx

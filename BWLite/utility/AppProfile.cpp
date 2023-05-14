@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppProfile.h"
-#include "IniFile.h"
+#include "utility/IniFile.h"
 
 #include <shlwapi.h>
 #include <atlpath.h>

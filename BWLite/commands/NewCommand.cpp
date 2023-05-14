@@ -4,7 +4,7 @@
 #include "commands/ShellExecCommand.h"
 #include "CommandRepository.h"
 #include "IconLoader.h"
-#include "CommandEditDialog.h"
+#include "gui/CommandEditDialog.h"
 #include "resource.h"
 
 #ifdef _DEBUG
