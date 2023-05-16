@@ -165,7 +165,7 @@ LRESULT CBWLiteDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 		// 表示状態の場合はアプリ設定に応じて動作を変える
 
 		AppPreference* pref= AppPreference::Get();
-		if (pref->mIsShowToggle) {
+		if (pref->IsShowToggle()) {
 			// トグル表示設定にしている場合は非表示にする
 			::ShowWindow(hwnd, SW_HIDE);
 		}

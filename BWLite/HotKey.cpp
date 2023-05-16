@@ -61,8 +61,8 @@ bool HotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 {
 	auto pref = AppPreference::Get();
 
-	modifiers = pref->mModifiers;
-	vk = pref->mHotKeyVK;
+	modifiers = pref->GetModifiers();
+	vk = pref->GetVirtualKeyCode();
 
 	return true;
 }

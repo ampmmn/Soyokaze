@@ -36,53 +36,14 @@ BOOL SettingCommand::Execute()
 	auto pref = AppPreference::Get();
 
 	// 現在の設定をセット
-	dlg.mMatchLevel = pref->mMatchLevel;
-	dlg.mIsUseExternalFiler = pref->mIsUseExternalFiler;
-	dlg.mFilerPath = pref->mFilerPath;
-	dlg.mFilerParam = pref->mFilerParam;
-	dlg.mIsTopMost = pref->mIsTopmost;
-	dlg.mHotKeyAttr = HOTKEY_ATTR(pref->mModifiers, pref->mHotKeyVK);
-	dlg.mIsShowToggle = pref->mIsShowToggle;
-	dlg.mAlpha = pref->mAlpha;
-
-	if (pref->mIsTransparencyEnable == false) {
-		dlg.mTransparencyType = 2;
-	}
-	else if (pref->mIsTransparencyInactiveOnly) {
-		dlg.mTransparencyType = 0;
-	}
-	else {
-		dlg.mTransparencyType = 1;
-	}
+	dlg.SetSettings(pref->GetSettings());
 
 	if (dlg.DoModal() != IDOK) {
 		return TRUE;
 	}
 
 	// 設定変更を反映する
-	pref->mMatchLevel = dlg.mMatchLevel;
-	pref->mIsUseExternalFiler = dlg.mIsUseExternalFiler;
-	pref->mFilerPath = dlg.mFilerPath;
-	pref->mFilerParam = dlg.mFilerParam;
-	pref->mIsTopmost = dlg.mIsTopMost;
-	pref->mModifiers = dlg.mHotKeyAttr.GetModifiers();
-	pref->mHotKeyVK = dlg.mHotKeyAttr.GetVKCode();
-	pref->mIsShowToggle = dlg.mIsShowToggle;
-	pref->mAlpha = dlg.mAlpha;
-
-	if (dlg.mTransparencyType == 0) {
-		pref->mIsTransparencyEnable = true;
-		pref->mIsTransparencyInactiveOnly = true;
-	}
-	else if (dlg.mTransparencyType == 1) {
-		pref->mIsTransparencyEnable = true;
-		pref->mIsTransparencyInactiveOnly = false;
-	}
-	else {
-		pref->mIsTransparencyEnable = false;
-		pref->mIsTransparencyInactiveOnly = true;
-	}
-
+	pref->SetSettings(dlg.GetSettings());
 	pref->Save();
 
 	return TRUE;

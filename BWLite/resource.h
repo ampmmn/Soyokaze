@@ -37,6 +37,9 @@
 #define IDD_HOTKEY                      146
 #define IDD_SHORTCUT                    149
 #define IDD_REGISTER_ITEMS              151
+#define IDD_BASICSETTING                153
+#define IDD_EXTENSIONSETTING            156
+#define IDD_SHORTCUTSETTING             158
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -94,17 +97,19 @@
 #define IDC_CHECK_DESKTOP               1050
 #define IDC_CHECK_STARTUP               1051
 #define IDC_LIST_FILES                  1054
-#define IDC_CHECK_RESOVELINK            1055
 #define IDC_CHECK_RESOLVELINKS          1055
+#define IDC_TREE_PAGES                  1056
+#define IDC_STATIC_BREADCRUMBS          1057
+#define IDC_STATIC_PAGEAREA             1058
 #define ID_A                            32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        153
+#define _APS_NEXT_RESOURCE_VALUE        160
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1056
+#define _APS_NEXT_CONTROL_VALUE         1059
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

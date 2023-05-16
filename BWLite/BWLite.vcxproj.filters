@@ -186,6 +186,21 @@
     <ClInclude Include="utility/IniFile.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="gui\BasicSettingDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ExtensionSettingDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ShortcutSettingPage.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\SettingPage.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BWLite.cpp">
@@ -337,6 +352,21 @@
     </ClCompile>
     <ClCompile Include="gui/KeywordManagerListCtrl.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\BasicSettingDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ExtensionSettingDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ShortcutSettingPage.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SettingPage.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -63,7 +63,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		// 登録されたファイラーで開く
 		auto pref = AppPreference::Get();
 
-		if (pref->mIsUseExternalFiler) {
+		if (pref->IsUseFiler()) {
 			path = pref->GetFilerPath();
 			param = pref->GetFilerParam();
 			// とりあえずリンク先のみをサポート

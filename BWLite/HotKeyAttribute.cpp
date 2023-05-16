@@ -169,7 +169,7 @@ bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 {
 	// 現在BWLiteが使用中のキーの場合はtrueを返す
 	auto pref = AppPreference::Get();
-	if (pref->mHotKeyVK == GetVKCode() && pref->mModifiers == GetModifiers()) {
+	if (pref->GetVirtualKeyCode() == GetVKCode() && pref->GetModifiers() == GetModifiers()) {
 		return true;
 	}
 

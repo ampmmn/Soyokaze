@@ -49,10 +49,10 @@ bool WindowTransparency::UpdateActiveState(UINT nState)
 void WindowTransparency::UpdateStyle()
 {
 	auto* pref = AppPreference::Get();
-	mIsEnable = pref->mIsTransparencyEnable;
-	mAlpha = pref->mAlpha;
-	mIsInactiveOnly = pref->mIsTransparencyInactiveOnly;
-	mIsTopmost = pref->mIsTopmost;
+	mIsEnable = pref->IsWindowTransparencyEnable();
+	mAlpha = pref->GetAlpha();
+	mIsInactiveOnly = pref->IsTransparencyInactiveOnly();
+	mIsTopmost = pref->IsTopMost();
 
 	// 最上位に表示する場合
 	if (mIsTopmost) {
