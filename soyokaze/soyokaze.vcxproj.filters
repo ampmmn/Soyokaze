@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="commands">
+      <UniqueIdentifier>{d1b1a3c1-675d-483a-9228-5583b406f49f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{b929759c-ac3e-431c-8e00-292b3dbf5119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gui">
+      <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Soyokaze.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandIF.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandMap.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ExitCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ReloadCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ShellExecCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\VersionCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AppPreference.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecHistory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HotKey.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardMatchPattern.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Pattern.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PartialMatchPattern.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SkipMatchPattern.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandString.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\UserDirCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\MainDirCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Arguments.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WholeMatchPattern.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ExecutableFileCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\SettingCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="IconLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\NewCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\EditCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ManagerCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandFile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandRepository.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HotKeyAttribute.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\ShortcutFile.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\RegistWinCommand.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/AboutDlg.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="utility/WindowPosition.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility/AppProfile.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/CmdReceiveEdit.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/CommandEditDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SoyokazeDropTarget.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SoyokazeDlg.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/FolderDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/HotKeyDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/IconLabel.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordEdit.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordManagerDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/KeywordManagerListCtrl.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SelectFilesDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/SettingDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/ShortcutDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui/TaskTray.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowTransparency.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility/IniFile.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\BasicSettingDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ExtensionSettingDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ShortcutSettingPage.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\SettingPage.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Soyokaze.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandMap.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ExitCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ReloadCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ShellExecCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\VersionCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="AppPreference.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ExecHistory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HotKey.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardMatchPattern.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PartialMatchPattern.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SkipMatchPattern.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandString.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\UserDirCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowTransparency.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\MainDirCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WholeMatchPattern.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ExecutableFileCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Pattern.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\SettingCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="IconLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\NewCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\EditCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ManagerCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandFile.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandRepository.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HotKeyAttribute.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\ShortcutFile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\RegistWinCommand.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/AboutDlg.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SoyokazeDlg.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/CmdReceiveEdit.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/CommandEditDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SoyokazeDropTarget.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/FolderDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/HotKeyDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SelectFilesDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/SettingDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/ShortcutDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/TaskTray.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/AppProfile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/IconLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/IniFile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility/WindowPosition.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordEdit.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordManagerDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui/KeywordManagerListCtrl.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\BasicSettingDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ExtensionSettingDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ShortcutSettingPage.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SettingPage.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Soyokaze.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Soyokaze.rc2">
+      <Filter>リソース ファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Soyokaze.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\gear.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

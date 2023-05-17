@@ -1,12 +1,10 @@
-# BWLite
+# Soyokaze
 
 bluewind風のランチャーソフト。
 
-![画面](image/bwlite-window.png)
+![画面](image/soyokaze-window.png)
 
 細かいところは省いているものの、bluewindの主要な機能は実装している(つもり)
-
-**B**lue**W**indの簡易版(**Lite**)的な意味で`BWLite`としている
 
 ## bluewindとは
 
@@ -32,9 +30,9 @@ bluewindのReadMeから抜粋
 ## インストール手順
 
 1. zipをファイルを展開して任意のフォルダに展開する
-1. 展開先フォルダにある`BWLite.exe`を実行する
-1. 設定はユーザフォルダ(たいていは C:/Users/(ユーザ名))直下の`.bwlite`フォルダに保存される  
-初回実行時に`.bwlite`フォルダを作成する
+1. 展開先フォルダにある`soyokaze.exe`を実行する
+1. 設定はユーザフォルダ(たいていは C:/Users/(ユーザ名))直下の`.soyokaze`フォルダに保存される  
+初回実行時に`.soyokaze`フォルダを作成する
   * レジストリを一切変更しない
 
 ## アンインストール手順
@@ -42,13 +40,13 @@ bluewindのReadMeから抜粋
 アンインストーラはないため、以下すべてを手動で行う。
 
 1. アプリケーションの設定-ショートカット設定を表示し、すべてのショートカットを削除する
-1. `BWLite.exe`を終了する
-1. インストール時に`BWLite.exe`を置いたフォルダごと削除する
-1. 設定フォルダ(C:/Users/(ユーザ名)/.bwlite)を削除する
+1. `soyokaze.exe`を終了する
+1. インストール時に`soyokaze.exe`を置いたフォルダごと削除する
+1. 設定フォルダ(C:/Users/(ユーザ名)/.soyokaze)を削除する
 
 ## ファイル構成
 
-- BWLite.exe
+- soyokaze.exe
 - help.html
 - LICENSE
 
@@ -74,13 +72,13 @@ bluewindのReadMeから抜粋
 - setting
   - アプリケーション設定画面を表示する
 - exit
-  - `BWLite`を終了
+  - `soyokaze`を終了
 - registwin
   - 直前にアクティブなウインドウをコマンドとして登録する
 - maindir
-  - `BWLite.exe`のあるフォルダを表示する
+  - `soyokaze.exe`のあるフォルダを表示する
 - userdir
-  - 設定ファイルの保存先フォルダ(C:/Users/(ユーザ名)/.bwlite)を表示する
+  - 設定ファイルの保存先フォルダ(C:/Users/(ユーザ名)/.soyokaze)を表示する
 - reload
   - 設定ファイルの再読み込みを行う  
 (テキストエディタで直接キーワード編集を行ったときにリロードするためもの)
@@ -123,7 +121,7 @@ bluewindのReadMeから抜粋
 
 ### 入力画面
 
-![](image/bwlite-window.png)
+![](image/soyokaze-window.png)
 
 ### キーワードマネージャ
 
@@ -153,7 +151,7 @@ bluewindのReadMeから抜粋
 
 ### ビルド方法
 
-- VisualStudioでソリューションファイル`BWLite.sln`を開く
+- VisualStudioでソリューションファイル`Soyokaze.sln`を開く
   - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
 
 - プロジェクト設定の下記項目を変更する必要があるのでビルド環境にあわせて設定する
@@ -173,7 +171,7 @@ bluewindのReadMeから抜粋
 - Release → デバッグ情報なし、最適化してる、共有DLLでMFCを使う
 - ReleaseStatic → デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う
 - UnitTest → ユニットテストのビルド用
-  - 本体のexe(BWLite.exe)を.libとしてビルドし、ユニットテスト側の.exeにリンクする構成
+  - 本体のexe(soyokaze.exe)を.libとしてビルドし、ユニットテスト側の.exeにリンクする構成
 
 ## ToDo
 
