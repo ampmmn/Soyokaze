@@ -109,7 +109,7 @@ void AppPreference::Load()
 			settings.Set(key, true);
 		}
 		else if (strValue == _T("false")) {
-			settings.Set(key, true);
+			settings.Set(key, false);
 		}
 		else if (std::regex_match(pat, regDouble)) {
 			double value;
