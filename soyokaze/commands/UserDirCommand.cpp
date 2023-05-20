@@ -55,7 +55,7 @@ HICON UserDirCommand::GetIcon()
 	return IconLoader::Get()->LoadUserDirIcon();
 }
 
-BOOL UserDirCommand::Match(Pattern* pattern)
+int UserDirCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

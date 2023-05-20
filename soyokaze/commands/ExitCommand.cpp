@@ -48,7 +48,7 @@ HICON ExitCommand::GetIcon()
 	return IconLoader::Get()->LoadExitIcon();
 }
 
-BOOL ExitCommand::Match(Pattern* pattern)
+int ExitCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

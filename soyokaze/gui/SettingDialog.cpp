@@ -139,6 +139,8 @@ BOOL SettingDialog::OnInitDialog()
 
 	SelectPage(hItem);
 
+//	in->mTreeCtrl->SetFocus();
+
 	UpdateData(FALSE);
 
 	return TRUE;
@@ -163,7 +165,7 @@ bool SettingDialog::SelectPage(HTREEITEM hTreeItem)
 		return true;
 	}
 
-	CTreeCtrl* tree = (CTreeCtrl*)GetDlgItem(IDC_TREE_PAGES);
+	CTreeCtrl* tree = in->mTreeCtrl;
 	ASSERT(tree);
 
 	CPropertyPage* newPagePtr = (CPropertyPage*)tree->GetItemData(hTreeItem);
@@ -187,6 +189,7 @@ bool SettingDialog::SelectPage(HTREEITEM hTreeItem)
 	newPagePtr->ShowWindow(SW_SHOW);
 	newPagePtr->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
+	tree->SelectItem(hTreeItem);
 	in->mLastTreeItem = hTreeItem;
 
 	// パンくずリスト更新

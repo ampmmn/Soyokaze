@@ -66,7 +66,7 @@ HICON EditCommand::GetIcon()
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-BOOL EditCommand::Match(Pattern* pattern)
+int EditCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

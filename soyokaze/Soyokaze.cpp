@@ -121,13 +121,6 @@ BOOL CSoyokazeApp::InitInstance()
 	// MFC コントロールでテーマを有効にするために、"Windows ネイティブ" のビジュアル マネージャーをアクティブ化
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	// 標準初期化
-	// これらの機能を使わずに最終的な実行可能ファイルの
-	// サイズを縮小したい場合は、以下から不要な初期化
-	// ルーチンを削除してください。
-	// 設定が格納されているレジストリ キーを変更します。
-	SetRegistryKey(_T("YMGW"));
-
 	CSoyokazeDlg dlg;
 	m_pMainWnd = &dlg;
 

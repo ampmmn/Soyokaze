@@ -67,7 +67,7 @@ HICON SettingCommand::GetIcon()
 }
 
 
-BOOL SettingCommand::Match(Pattern* pattern)
+int SettingCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

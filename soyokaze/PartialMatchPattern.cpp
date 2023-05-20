@@ -10,7 +10,8 @@
 
 struct PartialMatchPattern::PImpl
 {
-	std::wregex mRegPattern;
+	std::wregex mRegPatternFront;
+	std::wregex mRegPatternPartial;
 	CString mWord;
 };
 
@@ -28,15 +29,31 @@ void PartialMatchPattern::SetPattern(
 )
 {
 	in->mWord = pattern;
-	std::wstring pat(Pattern::StripEscapeChars(pattern));
-	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
+
+	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
+
+	std::wstring patFront(L"^");
+	patFront += escapedPat;
+	in->mRegPatternFront = std::wregex(patFront, std::regex_constants::icase);
+
+	in->mRegPatternPartial = std::wregex(escapedPat, std::regex_constants::icase);
 }
 
-bool PartialMatchPattern::Match(
+int PartialMatchPattern::Match(
 	const CString& str
 )
 {
-	return std::regex_search((const wchar_t*)str, in->mRegPattern);
+	if (str.CompareNoCase(in->mWord) == 0) {
+		return WholeMatch;
+	}
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternFront)) {
+		return FrontMatch;
+	}
+
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternPartial) == false) {
+		return Mismatch;
+	}
+	return PartialMatch;
 }
 
 CString PartialMatchPattern::GetOriginalPattern()

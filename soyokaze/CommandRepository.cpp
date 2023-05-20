@@ -26,6 +26,7 @@
 #include "gui/KeywordManagerDialog.h"
 #include "gui/SelectFilesDialog.h"
 #include <vector>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -33,7 +34,9 @@
 
 struct CommandRepository::PImpl
 {
-	PImpl() : mPattern(nullptr), mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false)
+	PImpl() : 
+		mPattern(nullptr), mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false),
+		mIsRegisteFromFileDialog(false)
 	{
 	}
 	~PImpl()
@@ -75,6 +78,7 @@ struct CommandRepository::PImpl
 	bool mIsNewDialog;
 	bool mIsEditDialog;
 	bool mIsManagerDialog;
+	bool mIsRegisteFromFileDialog;
 };
 
 
@@ -341,6 +345,13 @@ int CommandRepository::RegisterCommandFromFiles(
 	const std::vector<CString>& files
 )
 {
+	if (in->mIsRegisteFromFileDialog) {
+		// 編集操作中の再入はしない
+		return 0;
+	}
+
+	ScopeEdit scopeEdit(in->mIsRegisteFromFileDialog);
+
 	if (files.empty()) {
 		// ファイルパスの要素数が0の場合はなにもしない
 		return 0;
@@ -432,16 +443,31 @@ CommandRepository::Query(
 {
 	items.clear();
 
+	// 絞込みの文言を設定
 	in->mPattern->SetPattern(strQueryStr);
 
-	in->mCommands.Query(in->mPattern, items);
-	in->mBuiltinCommands.Query(in->mPattern, items);
+	std::vector<CommandMap::QueryItem> matchedItems;
+
+	in->mCommands.Query(in->mPattern, matchedItems);
+	in->mBuiltinCommands.Query(in->mPattern, matchedItems);
 
 	// 1件もマッチしない場合はExecutableCommandのひかく
 	if (items.empty()) {
-		if (in->mExeCommand.Match(in->mPattern)) {
-			items.push_back(&in->mExeCommand);
+		int level = in->mExeCommand.Match(in->mPattern);
+		if (level != Pattern::Mismatch) {
+			matchedItems.push_back(CommandMap::QueryItem(level, &in->mExeCommand));
 		}
+	}
+
+	// 履歴に基づきソート
+	std::sort(matchedItems.begin(), matchedItems.end(),
+		[](const CommandMap::QueryItem& l, const CommandMap::QueryItem& r) {
+			return r.mMatchLevel < l.mMatchLevel;
+	});
+
+	items.reserve(matchedItems.size());
+	for (auto& item : matchedItems) {
+		items.push_back(item.mCommand);
 	}
 }
 
@@ -463,7 +489,7 @@ Command* CommandRepository::QueryAsWholeMatch(
 	}
 
 	// 1件もマッチしない場合はExecutableCommandのひかく
-	if (isSearchPath && in->mExeCommand.Match(in->mPattern)) {
+	if (isSearchPath && in->mExeCommand.Match(in->mPattern) != Pattern::Mismatch) {
 		return &in->mExeCommand;
 	}
 

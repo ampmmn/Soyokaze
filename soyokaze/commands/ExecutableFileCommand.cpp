@@ -125,14 +125,14 @@ HICON ExecutableFileCommand::GetIcon()
 	return hIcon;
 }
 
-BOOL ExecutableFileCommand::Match(Pattern* pattern)
+int ExecutableFileCommand::Match(Pattern* pattern)
 {
 	CString word = pattern->GetOriginalPattern();
 
 	if (PathIsRelative(word) == FALSE && PathFileExists(word)) {
 		in->mFullPath = word;
 		in->mDescription = word;
-		return TRUE;
+		return Pattern::WholeMatch;
 	}
 
 	if (in->mExeExtension.CompareNoCase(PathFindExtension(word)) != 0) {
@@ -148,10 +148,10 @@ BOOL ExecutableFileCommand::Match(Pattern* pattern)
 		if (PathFileExists(path)) {
 			in->mFullPath = path;
 			in->mDescription = path;
-			return TRUE;
+			return Pattern::WholeMatch;
 		}
 	}
-	return FALSE;
+	return Pattern::Mismatch;
 }
 
 Command* ExecutableFileCommand::Clone()

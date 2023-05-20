@@ -49,7 +49,7 @@ HICON ManagerCommand::GetIcon()
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-BOOL ManagerCommand::Match(Pattern* pattern)
+int ManagerCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

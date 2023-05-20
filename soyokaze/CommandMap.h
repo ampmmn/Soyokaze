@@ -7,6 +7,18 @@
 class CommandMap
 {
 public:
+	class QueryItem
+	{
+	public:
+		QueryItem(int level, Command* cmd);
+		QueryItem(const QueryItem&) = default;
+
+		int mMatchLevel;
+		Command* mCommand;
+	};
+
+
+public:
 	CommandMap();
 	CommandMap(const CommandMap& rhs);
 	~CommandMap();
@@ -16,19 +28,19 @@ public:
 	bool Has(const CString& name) const;
 	Command* Get(const CString& name);
 
-	// $BEPO?(B/$B2r=|(B
+	// 登録/解除
 	void Register(Command* cmd);
 	bool Unregister(Command* cmd);
 	bool Unregister(const CString& name);
 
 	void Swap(CommandMap& rhs);
 
-	void Query(Pattern* pattern, std::vector<Command*>& commands);
+	void Query(Pattern* pattern, std::vector<QueryItem>& commands);
 
-	// $B:G=i$K8+$D$1$?MWAG$rJV$9(B
+	// 最初に見つけた要素を返す
 	Command* FindOne(Pattern* pattern);
 
-	// $BG[Ns2=$9$k(B
+	// 配列化する
 	std::vector<Command*>& Enumerate(std::vector<Command*>& commands);
 
 protected:

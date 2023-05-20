@@ -49,7 +49,7 @@ HICON ReloadCommand::GetIcon()
 	return IconLoader::Get()->LoadReloadIcon();
 }
 
-BOOL ReloadCommand::Match(Pattern* pattern)
+int ReloadCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

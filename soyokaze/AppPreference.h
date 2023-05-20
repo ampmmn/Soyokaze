@@ -19,6 +19,8 @@ public:
 	CString GetFilerParam();
 	bool IsUseFiler();
 
+	bool IsHideOnStartup();
+
 	int GetMatchLevel();
 	bool IsTopMost();
 	bool IsShowToggle();

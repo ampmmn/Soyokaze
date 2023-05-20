@@ -246,6 +246,11 @@ bool AppPreference::IsUseFiler()
 	return mSettings.Get(_T("Soyokaze:UseFiler"), false);
 }
 
+bool AppPreference::IsHideOnStartup()
+{
+	return mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);
+}
+
 int AppPreference::GetMatchLevel()
 {
 	return mSettings.Get(_T("Soyokaze:MatchLevel"), 1);

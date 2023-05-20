@@ -155,7 +155,7 @@ HICON RegistWinCommand::GetIcon()
 	return IconLoader::Get()->LoadRegisterWindowIcon();
 }
 
-BOOL RegistWinCommand::Match(Pattern* pattern)
+int RegistWinCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

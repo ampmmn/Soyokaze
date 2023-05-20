@@ -323,7 +323,7 @@ HICON ShellExecCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
-BOOL ShellExecCommand::Match(Pattern* pattern)
+int ShellExecCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

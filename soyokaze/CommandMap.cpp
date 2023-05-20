@@ -6,6 +6,12 @@
 #define new DEBUG_NEW
 #endif
 
+
+CommandMap::QueryItem::QueryItem(int level, Command* cmd) : 
+	mMatchLevel(level), mCommand(cmd)
+{
+}
+
 CommandMap::CommandMap()
 {
 }
@@ -70,15 +76,21 @@ void CommandMap::Swap(CommandMap& rhs)
 	mMap.swap(rhs.mMap);
 }
 
-void CommandMap::Query(Pattern* pattern, std::vector<Command*>& commands)
+void CommandMap::Query(
+	Pattern* pattern,
+	std::vector<QueryItem>& commands
+)
 {
 	for (auto& item : mMap) {
 
 		auto& command = item.second;
-		if (command->Match(pattern) == FALSE) {
+
+		int matchLevel = command->Match(pattern);
+		if (matchLevel == Pattern::Mismatch) {
 			continue;
 		}
-		commands.push_back(command);
+		
+		commands.push_back(QueryItem(matchLevel, command));
 	}
 }
 
@@ -88,7 +100,7 @@ Command* CommandMap::FindOne(Pattern* pattern)
 	for (auto& item : mMap) {
 
 		auto& command = item.second;
-		if (command->Match(pattern) == FALSE) {
+		if (command->Match(pattern) == Pattern::Mismatch) {
 			continue;
 		}
 		return item.second;

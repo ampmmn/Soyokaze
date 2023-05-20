@@ -56,7 +56,7 @@ HICON MainDirCommand::GetIcon()
 	return IconLoader::Get()->LoadMainDirIcon();
 }
 
-BOOL MainDirCommand::Match(Pattern* pattern)
+int MainDirCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

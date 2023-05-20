@@ -29,11 +29,11 @@ void WholeMatchPattern::SetPattern(
 	in->mWord = pattern;
 }
 
-bool WholeMatchPattern::Match(
+int WholeMatchPattern::Match(
 	const CString& str
 )
 {
-	return str.CompareNoCase(in->mWord) == 0;
+	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
 }
 
 

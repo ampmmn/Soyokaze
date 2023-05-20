@@ -10,7 +10,9 @@
 
 struct SkipMatchPattern::PImpl
 {
-	std::wregex mRegPattern;
+	std::wregex mRegPatternFront;
+	std::wregex mRegPatternPartial;
+	std::wregex mRegPatternSkip;
 	CString mWord;
 };
 
@@ -29,13 +31,21 @@ void SkipMatchPattern::SetPattern(
 {
 	in->mWord = pattern;
 
+	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
+
+	std::wstring patFront(L"^");
+	patFront += escapedPat;
+	in->mRegPatternFront = std::wregex(patFront, std::regex_constants::icase);
+
+	in->mRegPatternPartial = std::wregex(escapedPat, std::regex_constants::icase);
+
 	// 1文字ごとに".*"を付けたうえで正規表現マッチングをすることにより、
 	// スキップマッチング的動作を実現する
 	CString stripped = Pattern::StripEscapeChars(pattern);
 
 	std::wstring pat;
-	for (int i = 0; i < stripped.GetLength(); ++i) {
-		pat += stripped[i];
+	for (int i = 0; i < escapedPat.size(); ++i) {
+		pat += escapedPat[i];
 
 		if (stripped[i] == _T('\\')) {
 			// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
@@ -52,14 +62,27 @@ void SkipMatchPattern::SetPattern(
 
 		pat += _T(".*");
 	}
-	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
+	in->mRegPatternSkip = std::wregex(pat, std::regex_constants::icase);
 }
 
-bool SkipMatchPattern::Match(
+int SkipMatchPattern::Match(
 	const CString& str
 )
 {
-	return std::regex_search((const wchar_t*)str, in->mRegPattern);
+	if (str.CompareNoCase(in->mWord) == 0) {
+		return WholeMatch;
+	}
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternFront)) {
+		return FrontMatch;
+	}
+
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternPartial)) {
+		return PartialMatch;
+	}
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternSkip)) {
+		return SkipMatch;
+	}
+	return Mismatch;
 }
 
 CString SkipMatchPattern::GetOriginalPattern()

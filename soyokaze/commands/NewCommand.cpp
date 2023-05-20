@@ -59,7 +59,7 @@ HICON NewCommand::GetIcon()
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-BOOL NewCommand::Match(Pattern* pattern)
+int NewCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }

@@ -468,14 +468,6 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		return;
 	}
 
-	// 履歴に基づきソート
-	std::sort(mCandidates.begin(), mCandidates.end(),
-			[&](Command* l, Command* r) {
-			size_t ageL = mExecHistory->GetOrder(l->GetName());
-			size_t ageR = mExecHistory->GetOrder(r->GetName());
-			return ageL < ageR;
-			});
-
 	// 候補リストの更新
 	for (auto& item : mCandidates) {
 		mCandidateListBox.AddString(item->GetName());

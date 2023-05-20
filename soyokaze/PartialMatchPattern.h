@@ -3,6 +3,9 @@
 #include "Pattern.h"
 
 
+/**
+ * 部分一致比較を行うためのクラス
+ */
 class PartialMatchPattern : public Pattern
 {
 public:
@@ -10,7 +13,7 @@ public:
 	virtual ~PartialMatchPattern();
 
 	virtual void SetPattern(const CString& pattern);
-	virtual bool Match(const CString& str);
+	virtual int Match(const CString& str);
 	virtual CString GetOriginalPattern();
 
 protected:

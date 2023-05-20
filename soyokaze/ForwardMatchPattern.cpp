@@ -34,11 +34,19 @@ void ForwardMatchPattern::SetPattern(
 	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
 }
 
-bool ForwardMatchPattern::Match(
+int ForwardMatchPattern::Match(
 	const CString& str
 )
 {
-	return std::regex_search((const wchar_t*)str, in->mRegPattern);
+	if (str.CompareNoCase(in->mWord) == 0) {
+		return WholeMatch;
+	}
+
+	if (std::regex_search((const wchar_t*)str, in->mRegPattern) == false) {
+		return Mismatch;
+	}
+
+	return FrontMatch;
 }
 
 

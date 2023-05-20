@@ -51,7 +51,7 @@ HICON VersionCommand::GetIcon()
 }
 
 
-BOOL VersionCommand::Match(Pattern* pattern)
+int VersionCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
 }
