@@ -15,7 +15,7 @@ public:
 	BOOL Load();
 
 	// 新規登録ダイアログの表示
-	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr, const CString* descStr = nullptr);
+	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr, const CString* descStr = nullptr, const CString* paramStr = nullptr);
 	// コマンド編集ダイアログの表示
 	int EditCommandDialog(const CString& cmdName);
 	// キーワードマネージャダイアログの表示

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utility/TopMostMask.h"
+
 class IconLabel;
 class CommandRepository;
 
@@ -13,6 +15,7 @@ public:
 	void SetName(const CString& name);
 	void SetPath(const CString& path);
 	void SetDescription(const CString& desc);
+	void SetParam(const CString& param);
 
 	int GetShowType();
 	void SetShowType(int type);
@@ -54,6 +57,9 @@ public:
 	BOOL mIsUse0;
 
 	IconLabel* mIconLabelPtr;
+
+private:
+	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

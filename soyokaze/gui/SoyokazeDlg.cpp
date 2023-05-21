@@ -16,6 +16,7 @@
 #include "WindowTransparency.h"
 #include "IconLoader.h"
 #include "AppPreference.h"
+#include "utility/ProcessPath.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -79,6 +80,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
+	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -272,6 +274,41 @@ CSoyokazeDlg::OnUserMessageDropObject(
 	return 0;
 }
 
+LRESULT
+CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
+{
+	HWND hTargetWnd = (HWND)lParam;
+	if (IsWindow(hTargetWnd) == FALSE) {
+		return 0;
+	}
+
+	ProcessPath processPath(hTargetWnd);
+
+	// 自プロセスのウインドウなら何もしない
+	if (GetCurrentProcessId() == processPath.GetProcessId()) {
+		return 0;
+	}
+
+	// 
+	try {
+		CString name = processPath.GetProcessName();
+		CString path = processPath.GetProcessPath();
+		CString description = processPath.GetCaption();
+		CString param = processPath.GetCommandLine();
+
+		GetCommandRepository()->NewCommandDialog(&name, &path, &description, &param);
+		return 0;
+	}
+	catch(ProcessPath::Exception& e) {
+		CString errMsg((LPCTSTR)IDS_ERR_QUERYPROCESSINFO);
+		CString pid;
+		pid.Format(_T(" (PID:%d)"), e.GetPID());
+		errMsg += pid;
+
+		AfxMessageBox(errMsg);
+		return 0;
+	}
+}
 
 bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {

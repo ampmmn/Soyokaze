@@ -45,6 +45,11 @@ void CommandEditDialog::SetDescription(const CString& desc)
 	mDescription = desc;
 }
 
+void CommandEditDialog::SetParam(const CString& param)
+{
+	mParameter = param;
+}
+
 int CommandEditDialog::GetShowType()
 {
 	if (mShowType == 1) {

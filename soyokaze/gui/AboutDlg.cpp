@@ -15,6 +15,10 @@ CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
 {
 }
 
+CAboutDlg::~CAboutDlg()
+{
+}
+
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);

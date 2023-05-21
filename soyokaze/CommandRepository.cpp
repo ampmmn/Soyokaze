@@ -153,11 +153,13 @@ public:
  *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
  *  @param pathPtr コマンドに紐づけるパス(nullの場合はパスを空欄にする)
  *  @param descPtr コマンドの説明(nullの場合は空欄にする)
+ *  @param paramPtr パラメータ(nullの場合は空欄にする)
  */
 int CommandRepository::NewCommandDialog(
 	const CString* cmdNamePtr,
 	const CString* pathPtr,
-	const CString* descPtr
+	const CString* descPtr,
+	const CString* paramPtr
 )
 {
 	if (in->mIsNewDialog) {
@@ -177,6 +179,9 @@ int CommandRepository::NewCommandDialog(
 	}
 	if (descPtr) {
 		dlg.SetDescription(*descPtr);
+	}
+	if (paramPtr) {
+		dlg.SetParam(*paramPtr);
 	}
 
 	if (dlg.DoModal() != IDOK) {

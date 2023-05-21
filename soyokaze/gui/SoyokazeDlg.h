@@ -7,7 +7,7 @@
 #include <vector>
 #include "gui/KeywordEdit.h"
 #include "gui/CmdReceiveEdit.h"
-#include "gui/IconLabel.h"
+#include "gui/CaptureIconLabel.h"
 #include "gui/SoyokazeDropTarget.h"
 
 class CommandRepository;
@@ -86,7 +86,7 @@ protected:
 	CmdReceiveEdit mCmdReceiveEdit;
 
 	// アイコン描画用ラベル
-	IconLabel mIconLabel;
+	CaptureIconLabel mIconLabel;
 	//
 	HotKey* mHotKeyPtr;
 	// ウインドウ位置を保存するためのクラス
@@ -118,6 +118,7 @@ protected:
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 public:

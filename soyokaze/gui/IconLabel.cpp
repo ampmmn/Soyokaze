@@ -19,8 +19,6 @@ IconLabel::~IconLabel()
 }
 
 BEGIN_MESSAGE_MAP(IconLabel, CStatic)
-	ON_WM_KEYDOWN()
-	ON_WM_GETDLGCODE()
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 

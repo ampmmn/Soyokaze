@@ -201,6 +201,15 @@
     <ClInclude Include="Settings.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="gui\CaptureIconLabel.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\ProcessPath.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\TopMostMask.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -368,6 +377,12 @@
     <ClCompile Include="Settings.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="gui\CaptureIconLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\ProcessPath.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -376,6 +391,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Soyokaze.rc2">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="CAPTURE.cur">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

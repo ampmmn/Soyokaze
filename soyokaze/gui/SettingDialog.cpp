@@ -5,6 +5,7 @@
 #include "gui/BasicSettingDialog.h"
 #include "gui/ExtensionSettingDialog.h"
 #include "gui/ShortcutSettingPage.h"
+#include "utility/TopMostMask.h"
 #include "resource.h"
 #include <algorithm>
 #include <vector>
@@ -39,6 +40,8 @@ struct SettingDialog::PImpl
 	CString mBreadCrumbs;
 
 	std::vector<SettingPage*> mPages;
+
+	TopMostMask mTopMostMask;
 
 };
 

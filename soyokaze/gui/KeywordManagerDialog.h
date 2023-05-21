@@ -1,8 +1,10 @@
 #pragma once
 
+#include "utility/TopMostMask.h"
+#include <vector>
+
 class CommandRepository;
 
-#include <vector>
 
 class KeywordManagerListCtrl;
 class IconLabel;
@@ -21,6 +23,10 @@ protected:
 
 	KeywordManagerListCtrl* mListCtrlPtr;
 	IconLabel* mIconLabelPtr;
+
+private:
+	TopMostMask mTopMostMask;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();

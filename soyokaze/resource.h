@@ -9,8 +9,10 @@
 #define ID_STRING_MISMATCH              102
 #define ID_STRING_DEFAULTDESCRIPTION    103
 #define IDS_MENUTEXT_SHOW               104
+#define IDC_POINTER                     104
 #define IDS_ERR_NAMEISEMPTY             105
 #define IDS_ERR_ILLEGALCHARCONTAINS     106
+#define IDC_CAPTUREWINDOW               106
 #define IDS_ERR_NAMEALREADYEXISTS       107
 #define IDS_ERR_PATHISEMPTY             108
 #define IDS_ERR_PATH0ISEMPTY            109

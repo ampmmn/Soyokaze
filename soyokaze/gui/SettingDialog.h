@@ -2,6 +2,7 @@
 
 #include "gui/HotKeyDialog.h"
 #include "Settings.h"
+#include "utility/TopMostMask.h"
 
 // 
 class SettingDialog : public CDialogEx
