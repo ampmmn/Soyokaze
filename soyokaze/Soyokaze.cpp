@@ -8,7 +8,7 @@
 #include "gui/SoyokazeDlg.h"
 #include "gui/TaskTray.h"
 #include "utility/AppProfile.h"
-#include "Arguments.h"
+#include "StartupParam.h"
 #include "SharedHwnd.h"
 #include <locale.h>
 
@@ -55,29 +55,21 @@ CSoyokazeApp theApp;
 
 BOOL CSoyokazeApp::InitInstance()
 {
-	Arguments args(__argc, __targv);
-
-	// 既にプロセスが起動している場合は起動しない
-	if (SoyokazeProcessExists()) {
-
-		CString value;
-		if (args.GetBWOptValue(_T("/Runcommand="), value) || args.GetValue(_T("-c"), value)) {
-			// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
-			SendCommandString(value);
-			return FALSE;
-		}
-		if (args.GetCount() > 1 && PathFileExists(args.Get(1))) {
-			// 第一引数で存在するパスが指定された場合は登録画面を表示する
-			RegisterPath(args.Get(1));
-			return FALSE;
-		}
-		else {
-			// プロセスをアクティブ化し、このプロセスは終了する
-			ActivateExistingProcess();
-		}
-		return FALSE;
+	if (SoyokazeProcessExists() == false) {
+		// 通常の起動
+		return InitFirstInstance();
 	}
+	else {
+		// 既にプロセスが起動している場合は起動しない(先行プロセスを有効化したりなどする)
+		return InitSecondInstance();
+	}
+}
 
+/**
+ * 既存のsoyokazeプロセスが存在しない場合の初期化処理
+ */
+BOOL CSoyokazeApp::InitFirstInstance()
+{
 	// 多重起動検知のための名前付きミューテックスを作っておく
 	m_hMutexRun = CreateMutex(NULL, FALSE, PROCESS_MUTEX_NAME);
 	if (m_hMutexRun == NULL) {
@@ -132,6 +124,31 @@ BOOL CSoyokazeApp::InitInstance()
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();
 #endif
+	return FALSE;
+}
+
+/**
+ * 既存のsoyokazeプロセスが存在する場合の初期化処理
+ */
+BOOL CSoyokazeApp::InitSecondInstance()
+{
+	StartupParam startupParam(__argc, __targv);
+
+	CString value;
+	if (startupParam.HasRunCommand(value)) {
+		// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
+		SendCommandString(value);
+		return FALSE;
+	}
+
+	if (startupParam.HasPathToRegister(value)) {
+		// 第一引数で存在するパスが指定された場合は登録画面を表示する
+		RegisterPath(value);
+		return FALSE;
+	}
+
+	// プロセスをアクティブ化し、このプロセスは終了する
+	ActivateExistingProcess();
 	return FALSE;
 }
 

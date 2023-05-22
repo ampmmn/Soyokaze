@@ -27,6 +27,9 @@ protected:
 public:
 	virtual BOOL InitInstance();
 
+	BOOL InitFirstInstance();
+	BOOL InitSecondInstance();
+
 	// 先行するSoyokazeプロセスが存在するか?
 	bool SoyokazeProcessExists();
 	// 先行するプロセスがあればそちらを有効化する

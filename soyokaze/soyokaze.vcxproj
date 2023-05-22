@@ -377,6 +377,7 @@
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="StartupParam.h" />
     <ClInclude Include="utility/AppProfile.h" />
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="Soyokaze.h" />
@@ -441,6 +442,7 @@
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="StartupParam.cpp" />
     <ClCompile Include="utility/AppProfile.cpp" />
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="Soyokaze.cpp" />

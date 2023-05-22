@@ -210,6 +210,9 @@
     <ClInclude Include="utility\TopMostMask.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="StartupParam.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -382,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="utility\ProcessPath.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="StartupParam.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
