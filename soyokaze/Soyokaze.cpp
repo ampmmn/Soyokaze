@@ -147,6 +147,15 @@ BOOL CSoyokazeApp::InitSecondInstance()
 		return FALSE;
 	}
 
+	if (startupParam.HasHideOption()) {
+		SharedHwnd sharedHwnd;
+		HWND hwnd = sharedHwnd.GetHwnd();
+		if (IsWindow(hwnd)) {
+			PostMessage(hwnd, WM_APP+7, 0, 0);
+		}
+		return FALSE;
+	}
+
 	// プロセスをアクティブ化し、このプロセスは終了する
 	ActivateExistingProcess();
 	return FALSE;

@@ -11,6 +11,8 @@ public:
 	int GetCount();
 	CString Get(int index);
 
+	bool Has(LPCTSTR optName);
+
 	bool GetValue(LPCTSTR optName, CString& value);
 	bool GetBWOptValue(LPCTSTR optName, CString& value);
 

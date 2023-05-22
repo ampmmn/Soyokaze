@@ -30,6 +30,7 @@ BOOL BasicSettingDialog::OnSetActive()
 	mHotKey = mHotKeyAttr.ToString();
 
 	mIsShowToggle = mSettingsPtr->Get(_T("Soyokaze:ShowToggle"), false);
+	mIsHideOnRun = mSettingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 	mMatchLevel = mSettingsPtr->Get(_T("Soyokaze:MatchLevel"), 1);
 	mIsUseExternalFiler = mSettingsPtr->Get(_T("Soyokaze:UseFiler"), false);
 	mFilerPath = mSettingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
@@ -60,6 +61,7 @@ void BasicSettingDialog::OnOK()
 	mSettingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
 	mSettingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
 	mSettingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
+	mSettingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
 	mSettingsPtr->Set(_T("Soyokaze:MatchLevel"), mMatchLevel);
 	mSettingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
 	mSettingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
@@ -90,6 +92,7 @@ void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_SHOWTOGGLE, mIsShowToggle);
+	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, mIsHideOnRun);
 	DDX_CBIndex(pDX, IDC_COMBO_MATCHLEVEL, mMatchLevel);
 	DDX_Check(pDX, IDC_CHECK_USEFILER, mIsUseExternalFiler);
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);

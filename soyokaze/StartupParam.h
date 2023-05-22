@@ -13,6 +13,8 @@ public:
 	bool HasRunCommand(CString& commands);
 	// 登録するパスが指定されたか?
 	bool HasPathToRegister(CString& pathToRegister);
+	//
+	bool HasHideOption();
 
 private:
 	struct PImpl;

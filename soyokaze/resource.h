@@ -91,6 +91,8 @@
 #define IDC_CHECK_USEFILER2             1040
 #define IDC_CHECK_SHOWTOGGLE            1040
 #define IDC_CHECK_ALT                   1041
+#define IDC_CHECK_SHOWTOGGLE2           1041
+#define IDC_CHECK_HIDEONRUN             1041
 #define IDC_CHECK_CTRL                  1042
 #define IDC_CHECK_WIN                   1043
 #define IDC_COMBO_VK                    1044

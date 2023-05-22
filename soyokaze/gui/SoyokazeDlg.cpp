@@ -81,6 +81,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
+	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -310,6 +311,16 @@ CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 	}
 }
 
+
+LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
+	WPARAM wParam,
+	LPARAM lParam
+)
+{
+	HideWindow();
+	return 0;
+}
+
 bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
 	CommandString commandStr(str);
@@ -391,6 +402,11 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	mDropTargetDialog.Register(this);
 	mDropTargetEdit.Register(&mKeywordEdit);
+
+	AppPreference* pref= AppPreference::Get();
+	if (pref->IsHideOnStartup()) {
+		PostMessage(WM_APP+7, 0, 0);
+	}
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }

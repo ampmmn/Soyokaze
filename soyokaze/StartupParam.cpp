@@ -41,3 +41,8 @@ bool StartupParam::HasPathToRegister(CString& pathToRegister)
 	}
 	return false;
 }
+
+bool StartupParam::HasHideOption()
+{
+	return in->mArgs.Has(_T("/Hide"));
+}

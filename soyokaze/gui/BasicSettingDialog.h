@@ -15,6 +15,9 @@ public:
 	HOTKEY_ATTR mHotKeyAttr;
 	BOOL mIsShowToggle;
 
+	// 起動直後は入力画面を非表示にする
+	BOOL mIsHideOnRun;
+
 	// 絞込方法(0:前方一致 1:部分一致 2:スキップマッチング)
 	int mMatchLevel;
 

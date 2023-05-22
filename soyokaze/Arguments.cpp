@@ -26,6 +26,16 @@ CString Arguments::Get(int index)
 	return mArgV[index];
 }
 
+bool Arguments::Has(LPCTSTR optName)
+{
+	for (size_t i = 0; i < mArgV.size(); ++i) {
+		if (mArgV[i] == optName) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Arguments::GetValue(LPCTSTR optName, CString& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {

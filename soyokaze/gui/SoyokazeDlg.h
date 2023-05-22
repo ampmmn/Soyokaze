@@ -119,6 +119,7 @@ protected:
 	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageHideAtFirst(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 public:
