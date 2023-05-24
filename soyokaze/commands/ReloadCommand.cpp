@@ -10,7 +10,8 @@
 #endif
 
 ReloadCommand::ReloadCommand(CommandRepository* pMap) :
-	mCmdMapPtr(pMap)
+	mCmdMapPtr(pMap),
+	mRefCount(1)
 {
 }
 
@@ -54,8 +55,21 @@ int ReloadCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* ReloadCommand::Clone()
+soyokaze::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand(mCmdMapPtr);
 }
 
+uint32_t ReloadCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t ReloadCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

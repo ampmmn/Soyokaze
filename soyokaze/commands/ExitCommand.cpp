@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-ExitCommand::ExitCommand()
+ExitCommand::ExitCommand() : mRefCount(1)
 {
 }
 
@@ -53,8 +53,21 @@ int ExitCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* ExitCommand::Clone()
+soyokaze::core::Command* ExitCommand::Clone()
 {
 	return new ExitCommand();
 }
 
+uint32_t ExitCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t ExitCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

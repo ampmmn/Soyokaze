@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommandIF.h"
+#include "core/CommandIF.h"
 #include <map>
 #include <vector>
 
@@ -10,11 +10,11 @@ public:
 	class QueryItem
 	{
 	public:
-		QueryItem(int level, Command* cmd);
+		QueryItem(int level, soyokaze::core::Command* cmd);
 		QueryItem(const QueryItem&) = default;
 
 		int mMatchLevel;
-		Command* mCommand;
+		soyokaze::core::Command* mCommand;
 	};
 
 
@@ -26,11 +26,11 @@ public:
 	void Clear();
 
 	bool Has(const CString& name) const;
-	Command* Get(const CString& name);
+	soyokaze::core::Command* Get(const CString& name);
 
 	// 登録/解除
-	void Register(Command* cmd);
-	bool Unregister(Command* cmd);
+	void Register(soyokaze::core::Command* cmd);
+	bool Unregister(soyokaze::core::Command* cmd);
 	bool Unregister(const CString& name);
 
 	void Swap(CommandMap& rhs);
@@ -38,11 +38,11 @@ public:
 	void Query(Pattern* pattern, std::vector<QueryItem>& commands);
 
 	// 最初に見つけた要素を返す
-	Command* FindOne(Pattern* pattern);
+	soyokaze::core::Command* FindOne(Pattern* pattern);
 
 	// 配列化する
-	std::vector<Command*>& Enumerate(std::vector<Command*>& commands);
+	std::vector<soyokaze::core::Command*>& Enumerate(std::vector<soyokaze::core::Command*>& commands);
 
 protected:
-	std::map<CString, Command*> mMap;
+	std::map<CString, soyokaze::core::Command*> mMap;
 };

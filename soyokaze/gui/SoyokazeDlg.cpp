@@ -471,7 +471,8 @@ void CSoyokazeDlg::ClearContent()
 
 
 // 現在選択中のコマンドを取得
-Command* CSoyokazeDlg::GetCurrentCommand()
+soyokaze::core::Command*
+CSoyokazeDlg::GetCurrentCommand()
 {
 	if (mCandidates.empty()) {
 

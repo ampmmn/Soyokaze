@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-EditCommand::EditCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
+EditCommand::EditCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr), mRefCount(1)
 {
 }
 
@@ -71,8 +71,22 @@ int EditCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* EditCommand::Clone()
+soyokaze::core::Command* EditCommand::Clone()
 {
 	return new EditCommand(mCmdMapPtr);
+}
+
+uint32_t EditCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t EditCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
 }
 

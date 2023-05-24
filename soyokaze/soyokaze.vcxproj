@@ -385,7 +385,7 @@
     <ClInclude Include="gui/SoyokazeDropTarget.h" />
     <ClInclude Include="gui/CmdReceiveEdit.h" />
     <ClInclude Include="CommandFile.h" />
-    <ClInclude Include="CommandIF.h" />
+    <ClInclude Include="core/CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
     <ClInclude Include="CommandRepository.h" />
     <ClInclude Include="CommandString.h" />

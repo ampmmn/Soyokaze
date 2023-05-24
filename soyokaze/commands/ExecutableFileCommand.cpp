@@ -17,11 +17,13 @@ struct ExecutableFileCommand::PImpl
 	CString mFullPath;
 	CString mDescription;
 	CString mExeExtension;
+	uint32_t mRefCount;
 };
 
 
 ExecutableFileCommand::ExecutableFileCommand() : in(new PImpl)
 {
+	in->mRefCount = 1;
 	in->mExeExtension = _T(".exe");
 
 	LPCTSTR PATH = _T("PATH");
@@ -154,7 +156,8 @@ int ExecutableFileCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-Command* ExecutableFileCommand::Clone()
+soyokaze::core::Command*
+ExecutableFileCommand::Clone()
 {
 	auto clonedObj = new ExecutableFileCommand();
 
@@ -166,3 +169,16 @@ Command* ExecutableFileCommand::Clone()
 	return clonedObj;
 }
 
+uint32_t ExecutableFileCommand::AddRef()
+{
+	return ++(in->mRefCount);
+}
+
+uint32_t ExecutableFileCommand::Release()
+{
+	auto n = --(in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

@@ -92,7 +92,7 @@ void KeywordManagerDialog::ResetContents()
 	}
 
 	// コマンド一覧を取得する
-	std::vector<Command*> commands;
+	std::vector<soyokaze::core::Command*> commands;
 	mCmdMapPtr->EnumCommands(commands);
 
 	int cmdCount = (int)commands.size();

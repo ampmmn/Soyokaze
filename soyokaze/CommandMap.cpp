@@ -7,7 +7,10 @@
 #endif
 
 
-CommandMap::QueryItem::QueryItem(int level, Command* cmd) : 
+CommandMap::QueryItem::QueryItem(
+	int level,
+	soyokaze::core::Command* cmd
+) : 
 	mMatchLevel(level), mCommand(cmd)
 {
 }
@@ -31,7 +34,7 @@ CommandMap::~CommandMap()
 void CommandMap::Clear()
 {
 	for (auto item : mMap) {
-		delete item.second;
+		item.second->Release();
 	}
 }
 
@@ -40,7 +43,8 @@ bool CommandMap::Has(const CString& name) const
 	return mMap.find(name) != mMap.end();
 }
 
-Command* CommandMap::Get(const CString& name)
+soyokaze::core::Command*
+CommandMap::Get(const CString& name)
 {
 	auto itFind = mMap.find(name);
 	if (itFind == mMap.end()) {
@@ -49,12 +53,12 @@ Command* CommandMap::Get(const CString& name)
 	return itFind->second;
 }
 
-void CommandMap::Register(Command* cmd)
+void CommandMap::Register(soyokaze::core::Command* cmd)
 {
 	mMap[cmd->GetName()] = cmd;
 }
 
-bool CommandMap::Unregister(Command* cmd)
+bool CommandMap::Unregister(soyokaze::core::Command* cmd)
 {
 	return Unregister(cmd->GetName());
 }
@@ -66,7 +70,7 @@ bool CommandMap::Unregister(const CString& name)
 		return false;
 	}
 
-	delete itFind->second;
+	itFind->second->Release();
 	mMap.erase(itFind);
 	return true;
 }
@@ -95,7 +99,8 @@ void CommandMap::Query(
 }
 
 // 最初に見つけた要素を返す
-Command* CommandMap::FindOne(Pattern* pattern)
+soyokaze::core::Command*
+CommandMap::FindOne(Pattern* pattern)
 {
 	for (auto& item : mMap) {
 
@@ -108,7 +113,8 @@ Command* CommandMap::FindOne(Pattern* pattern)
 	return nullptr;
 }
 
-std::vector<Command*>& CommandMap::Enumerate(std::vector<Command*>& commands)
+std::vector<soyokaze::core::Command*>&
+CommandMap::Enumerate(std::vector<soyokaze::core::Command*>& commands)
 {
 	commands.reserve(commands.size() + mMap.size());
 	for (auto item : mMap) {

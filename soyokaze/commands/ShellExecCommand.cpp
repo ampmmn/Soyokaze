@@ -19,7 +19,9 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 
 
-ShellExecCommand::ShellExecCommand() : mRunAs(0)
+ShellExecCommand::ShellExecCommand() :
+	mRunAs(0),
+	mRefCount(1)
 {
 }
 
@@ -343,7 +345,8 @@ int ShellExecCommand::GetRunAs()
 	return mRunAs;
 }
 
-Command* ShellExecCommand::Clone()
+soyokaze::core::Command*
+ShellExecCommand::Clone()
 {
 	auto clonedObj = new ShellExecCommand();
 
@@ -366,4 +369,18 @@ CString& ShellExecCommand::SanitizeName(
 	str.Replace(_T('['), _T('_'));
 	str.Replace(_T(']'), _T('_'));
 	return str;
+}
+
+uint32_t ShellExecCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t ShellExecCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
 }

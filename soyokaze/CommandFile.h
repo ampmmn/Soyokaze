@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommandIF.h"
+#include "core/CommandIF.h"
 #include <vector>
 
 /**
@@ -15,8 +15,8 @@ public:
 	void SetFilePath(const CString& filePath);
 
 public:
-	bool Load(std::vector<Command*>& commands);
-	bool Save(const std::vector<Command*>& commands);
+	bool Load(std::vector<soyokaze::core::Command*>& commands);
+	bool Save(const std::vector<soyokaze::core::Command*>& commands);
 
 
 	static void TrimComment(CString& s);

@@ -11,7 +11,9 @@
 #define new DEBUG_NEW
 #endif
 
-NewCommand::NewCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr)
+NewCommand::NewCommand(CommandRepository* cmdMapPtr) :
+	mCmdMapPtr(cmdMapPtr),
+	mRefCount(1)
 {
 }
 
@@ -64,8 +66,21 @@ int NewCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* NewCommand::Clone()
+soyokaze::core::Command* NewCommand::Clone()
 {
 	return new NewCommand(mCmdMapPtr);
 }
 
+uint32_t NewCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t NewCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

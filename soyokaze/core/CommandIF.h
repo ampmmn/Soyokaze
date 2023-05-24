@@ -3,6 +3,10 @@
 #include <vector>
 #include "Pattern.h"
 
+namespace soyokaze {
+namespace core {
+
+
 class Command
 {
 public:
@@ -16,5 +20,12 @@ public:
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
 	virtual Command* Clone() = 0;
+
+	virtual uint32_t AddRef() = 0;
+	virtual uint32_t Release() = 0;
+
 };
 
+
+} // end of namespace core
+} // end of namespace soyokaze

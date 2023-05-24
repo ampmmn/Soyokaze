@@ -1,8 +1,9 @@
 #pragma once
 
-#include "CommandIF.h"
+#include "core/CommandIF.h"
 #include "AppPreferenceListenerIF.h"
 #include <vector>
+#include <memory>
 
 class CommandRepository : public AppPreferenceListenerIF
 {
@@ -25,12 +26,12 @@ public:
 
 	bool DeleteCommand(const CString& cmdName);
 
-	void EnumCommands(std::vector<Command*>& commands);
+	void EnumCommands(std::vector<soyokaze::core::Command*>& commands);
 
 	bool IsBuiltinName(const CString& cmdName);
 
-	void Query(const CString& strQueryStr, std::vector<Command*>& commands);
-	Command* QueryAsWholeMatch(const CString& strQueryStr, bool isSearchPath = true);
+	void Query(const CString& strQueryStr, std::vector<soyokaze::core::Command*>& commands);
+	soyokaze::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isSearchPath = true);
 
 	bool IsValidAsName(const CString& strQueryStr);
 
@@ -39,6 +40,6 @@ protected:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 

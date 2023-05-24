@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CommandIF.h"
+#include "core/CommandIF.h"
 
-class ShellExecCommand : public Command
+class ShellExecCommand : public soyokaze::core::Command
 {
 public:
 	struct ATTRIBUTE {
@@ -19,15 +19,17 @@ public:
 	ShellExecCommand();
 	virtual ~ShellExecCommand();
 
-	virtual CString GetName();
-	virtual CString GetDescription();
+	CString GetName() override;
+	CString GetDescription() override;
 
-	virtual BOOL Execute();
-	virtual BOOL Execute(const std::vector<CString>& args);
-	virtual CString GetErrorString();
-	virtual HICON GetIcon();
-	virtual int Match(Pattern* pattern);
-	virtual Command* Clone();
+	BOOL Execute() override;
+	BOOL Execute(const std::vector<CString>& args) override;
+	CString GetErrorString() override;
+	HICON GetIcon() override;
+	int Match(Pattern* pattern) override;
+	soyokaze::core::Command* Clone() override;
+	uint32_t AddRef() override;
+	uint32_t Release() override;
 
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);
@@ -60,4 +62,6 @@ protected:
 	ATTRIBUTE mNoParamAttr;
 
 	CString mErrMsg;
+
+	uint32_t mRefCount;
 };

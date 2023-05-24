@@ -1,22 +1,25 @@
 #pragma once
 
-#include "CommandIF.h"
+#include "core/CommandIF.h"
 
-class SettingCommand : public Command
+class SettingCommand : public soyokaze::core::Command
 {
 public:
 	SettingCommand();
 	virtual ~SettingCommand();
 
-	virtual CString GetName();
-	virtual CString GetDescription();
+	CString GetName() override;
+	CString GetDescription() override;
 
-	virtual BOOL Execute();
-	virtual BOOL Execute(const std::vector<CString>& args);
-	virtual CString GetErrorString();
-	virtual HICON GetIcon();
-	virtual int Match(Pattern* pattern);
-	virtual Command* Clone();
+	BOOL Execute() override;
+	BOOL Execute(const std::vector<CString>& args) override;
+	CString GetErrorString() override;
+	HICON GetIcon() override;
+	int Match(Pattern* pattern) override;
+	soyokaze::core::Command* Clone() override;
+	uint32_t AddRef() override;
+	uint32_t Release() override;
 
 protected:
+	uint32_t mRefCount;
 };

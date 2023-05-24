@@ -9,7 +9,8 @@
 #endif
 
 ManagerCommand::ManagerCommand(CommandRepository* cmdMapPtr) :
-	mCmdMapPtr(cmdMapPtr)
+	mCmdMapPtr(cmdMapPtr),
+	mRefCount(1)
 {
 }
 
@@ -54,8 +55,21 @@ int ManagerCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* ManagerCommand::Clone()
+soyokaze::core::Command* ManagerCommand::Clone()
 {
 	return new ManagerCommand(mCmdMapPtr);
 }
 
+uint32_t ManagerCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t ManagerCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

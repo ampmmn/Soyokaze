@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-MainDirCommand::MainDirCommand()
+MainDirCommand::MainDirCommand() : mRefCount(1)
 {
 }
 
@@ -61,8 +61,21 @@ int MainDirCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* MainDirCommand::Clone()
+soyokaze::core::Command* MainDirCommand::Clone()
 {
 	return new MainDirCommand();
 }
 
+uint32_t MainDirCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t MainDirCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

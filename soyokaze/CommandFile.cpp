@@ -41,7 +41,7 @@ void CommandFile::TrimComment(CString& s)
 	}
 }
 
-bool CommandFile::Load(std::vector<Command*>& commands)
+bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 {
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, mFilePath, _T("r,ccs=UTF-8")) != 0) {
@@ -181,7 +181,7 @@ static void WriteLine(CStdioFile& file, LPTSTR name, int value)
 	file.WriteString(_T("\n"));
 }
 
-bool CommandFile::Save(const std::vector<Command*>& commands)
+bool CommandFile::Save(const std::vector<soyokaze::core::Command*>& commands)
 {
 	FILE* fpOut = nullptr;
 	try {

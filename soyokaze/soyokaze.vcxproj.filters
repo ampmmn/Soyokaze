@@ -22,6 +22,9 @@
     <Filter Include="gui">
       <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{d32d2dfa-ffaf-4137-9f65-a42504cb6cdd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -38,9 +41,6 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandIF.h">
-      <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CommandMap.h">
       <Filter>ソース ファイル</Filter>
@@ -212,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="StartupParam.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="core/CommandIF.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

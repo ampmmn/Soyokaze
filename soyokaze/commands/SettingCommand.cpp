@@ -11,7 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
-SettingCommand::SettingCommand()
+SettingCommand::SettingCommand() :
+	mRefCount(1)
 {
 }
 
@@ -72,8 +73,21 @@ int SettingCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* SettingCommand::Clone()
+soyokaze::core::Command* SettingCommand::Clone()
 {
 	return new SettingCommand();
 }
 
+uint32_t SettingCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t SettingCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

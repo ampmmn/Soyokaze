@@ -35,10 +35,12 @@ struct RegistWinCommand::PImpl
 	}
 	CommandRepository* mCmdMapPtr;
 	CString mErrorMsg;
+	uint32_t mRefCount;
 };
 
 RegistWinCommand::RegistWinCommand(CommandRepository* cmdMapPtr) : in(new PImpl)
 {
+	in->mRefCount = 1;
 	in->mCmdMapPtr = cmdMapPtr;
 }
 
@@ -112,8 +114,21 @@ int RegistWinCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* RegistWinCommand::Clone()
+soyokaze::core::Command* RegistWinCommand::Clone()
 {
 	return new RegistWinCommand(in->mCmdMapPtr);
 }
 
+uint32_t RegistWinCommand::AddRef()
+{
+	return ++(in->mRefCount);
+}
+
+uint32_t RegistWinCommand::Release()
+{
+	auto n = --(in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

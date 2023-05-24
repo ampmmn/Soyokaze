@@ -9,7 +9,8 @@
 #define new DEBUG_NEW
 #endif
 
-VersionCommand::VersionCommand()
+VersionCommand::VersionCommand() : 
+	mRefCount(1)
 {
 }
 
@@ -56,8 +57,22 @@ int VersionCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-Command* VersionCommand::Clone()
+soyokaze::core::Command*
+VersionCommand::Clone()
 {
 	return new VersionCommand();
 }
 
+uint32_t VersionCommand::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t VersionCommand::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}

@@ -11,7 +11,12 @@
 #include "gui/SoyokazeDropTarget.h"
 
 class CommandRepository;
-class Command;
+
+namespace soyokaze {
+namespace core {
+	class Command;
+}
+}
 
 class SharedHwnd;
 class ExecHistory;
@@ -48,7 +53,7 @@ protected:
 	void ClearContent();
 
 	// 現在選択中のコマンドを取得
-	Command* GetCurrentCommand();
+	soyokaze::core::Command* GetCurrentCommand();
 
 
 // 実装
@@ -61,7 +66,7 @@ protected:
 	CString m_strDescription;
 
 	// 現在の候補
-	std::vector<Command*> mCandidates;
+	std::vector<soyokaze::core::Command*> mCandidates;
 
 
 	// コマンド管理マップ

@@ -90,7 +90,6 @@ CommandRepository::CommandRepository() : in(new PImpl)
 CommandRepository::~CommandRepository()
 {
 	AppPreference::Get()->UnregisterListener(this);
-	delete in;
 }
 
 
@@ -122,7 +121,7 @@ BOOL CommandRepository::Load()
 	PathAppend(path, _T("commands.ini"));
 	in->mCommandLoader.SetFilePath(path);
 
-	std::vector<Command*> commands;
+	std::vector<soyokaze::core::Command*> commands;
 	in->mCommandLoader.Load(commands);
 
 	for (auto cmd : commands) {
@@ -217,7 +216,7 @@ int CommandRepository::NewCommandDialog(
 	in->mCommands.Register(newCmd);
 
 	// 設定ファイルに保存
-	std::vector<Command*> cmdsTmp;
+	std::vector<soyokaze::core::Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 	return 0;
 }
@@ -299,7 +298,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 	in->mCommands.Register(cmdNew);
 
 	// ファイルに保存
-	std::vector<Command*> cmdsTmp;
+	std::vector<soyokaze::core::Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 
 	return 0;
@@ -338,7 +337,7 @@ int CommandRepository::ManagerDialog()
 	}
 	else {
 		// ファイルに保存
-		std::vector<Command*> cmdsTmp;
+		std::vector<soyokaze::core::Command*> cmdsTmp;
 		in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
 	}
 	return 0;
@@ -433,7 +432,7 @@ bool CommandRepository::DeleteCommand(const CString& cmdName)
 	return in->mCommands.Unregister(cmdName);
 }
 
-void CommandRepository::EnumCommands(std::vector<Command*>& enumCommands)
+void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enumCommands)
 {
 	enumCommands.clear();
 	in->mCommands.Enumerate(enumCommands);
@@ -443,7 +442,7 @@ void CommandRepository::EnumCommands(std::vector<Command*>& enumCommands)
 void
 CommandRepository::Query(
 	const CString& strQueryStr,
-	std::vector<Command*>& items
+	std::vector<soyokaze::core::Command*>& items
 )
 {
 	items.clear();
@@ -476,7 +475,8 @@ CommandRepository::Query(
 	}
 }
 
-Command* CommandRepository::QueryAsWholeMatch(
+soyokaze::core::Command*
+CommandRepository::QueryAsWholeMatch(
 	const CString& strQueryStr,
 	bool isSearchPath
 )
