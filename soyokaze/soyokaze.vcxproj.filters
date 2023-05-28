@@ -75,9 +75,6 @@
     <ClInclude Include="SkipMatchPattern.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CommandString.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="commands\UserDirCommand.h">
       <Filter>commands</Filter>
     </ClInclude>
@@ -234,6 +231,9 @@
     <ClInclude Include="core\GlobalHotKey.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core/CommandParameter.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -270,9 +270,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SkipMatchPattern.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandString.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\UserDirCommand.cpp">
@@ -423,6 +420,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="core\GlobalHotKey.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core/CommandParameter.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>

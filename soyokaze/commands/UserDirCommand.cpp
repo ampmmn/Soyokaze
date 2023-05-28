@@ -40,7 +40,7 @@ BOOL UserDirCommand::Execute()
 	return cmd.Execute();
 }
 
-BOOL UserDirCommand::Execute(const std::vector<CString>& args)
+BOOL UserDirCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

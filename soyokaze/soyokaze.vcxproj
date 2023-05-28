@@ -395,7 +395,7 @@
     <ClInclude Include="core/CommandIF.h" />
     <ClInclude Include="CommandMap.h" />
     <ClInclude Include="CommandRepository.h" />
-    <ClInclude Include="CommandString.h" />
+    <ClInclude Include="core/CommandParameter.h" />
     <ClInclude Include="commands\EditCommand.h" />
     <ClInclude Include="commands\ExecutableFileCommand.h" />
     <ClInclude Include="commands\ExitCommand.h" />
@@ -464,7 +464,7 @@
     <ClCompile Include="CommandFile.cpp" />
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandRepository.cpp" />
-    <ClCompile Include="CommandString.cpp" />
+    <ClCompile Include="core/CommandParameter.cpp" />
     <ClCompile Include="commands\EditCommand.cpp" />
     <ClCompile Include="commands\ExecutableFileCommand.cpp" />
     <ClCompile Include="commands\ExitCommand.cpp" />

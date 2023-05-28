@@ -69,12 +69,15 @@ CString ShellExecCommand::GetDescription()
 
 BOOL ShellExecCommand::Execute()
 {
-	std::vector<CString> argsEmpty;
-	return Execute(argsEmpty);
+	Parameter param;
+	return Execute(param);
 }
 
-BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
+BOOL ShellExecCommand::Execute(const Parameter& param)
 {
+	std::vector<CString> args;
+	param.GetParameters(args);
+
 	in->mErrMsg.Empty();
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
@@ -82,11 +85,10 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 	SelectAttribute(args, attr);
 
 	CString path;
-	CString param;
-	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = (GetAsyncKeyState(VK_CONTROL) & 0x8000) &&
-	                  PathFileExists(attr.mPath);
+	CString paramStr;
 
+	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
+	bool isOpenPath = (param.GetExtraBoolParam(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
@@ -94,9 +96,9 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 
 		if (pref->IsUseFiler()) {
 			path = pref->GetFilerPath();
-			param = pref->GetFilerParam();
+			paramStr = pref->GetFilerParam();
 			// とりあえずリンク先のみをサポート
-			param.Replace(_T("$target"), attr.mPath);
+			paramStr.Replace(_T("$target"), attr.mPath);
 		}
 		else {
 			// 登録されたファイラーがない場合はエクスプローラで開く
@@ -105,16 +107,16 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 				PathRemoveFileSpec(path.GetBuffer(32768));
 				path.ReleaseBuffer();
 			}
-			param = _T("open");
+			paramStr = _T("open");
 		}
 	}
 	else {
 		path = attr.mPath;
-		param = attr.mParam;
+		paramStr = attr.mParam;
 	}
 
 	// argsの値を展開
-	ExpandArguments(args, path, param);
+	ExpandArguments(args, path, paramStr);
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
@@ -125,8 +127,8 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		si.lpVerb = _T("runas");
 	}
 
-	if (param.IsEmpty() == FALSE) {
-		si.lpParameters = param;
+	if (paramStr.IsEmpty() == FALSE) {
+		si.lpParameters = paramStr;
 	}
 	if (attr.mDir.IsEmpty() == FALSE) {
 		si.lpDirectory = attr.mDir;

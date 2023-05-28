@@ -7,7 +7,7 @@
 #include "Soyokaze.h"
 #include "gui/SoyokazeDlg.h"
 #include "CommandRepository.h"
-#include "CommandString.h"
+#include "core/CommandParameter.h"
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
 #include "SharedHwnd.h"
@@ -327,18 +327,14 @@ LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
 
 bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
-	CommandString commandStr(str);
+	soyokaze::core::CommandParameter commandParam(str);
 
 	// (今のところ)内部用なので、履歴には登録しない
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandStr.GetCommandString());
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString());
 	if (cmd == nullptr) {
 		return false;
 	}
-
-	std::vector<CString> args;
-	commandStr.GetParameters(args);
-
-	return cmd->Execute(args);
+	return cmd->Execute(commandParam);
 }
 
 // CSoyokazeDlg メッセージ ハンドラー
@@ -512,10 +508,10 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	}
 
 	//
-	CommandString commandStr(mCommandStr);
+	soyokaze::core::CommandParameter commandParam(mCommandStr);
 
 	// キーワードによる候補の列挙
-	GetCommandRepository()->Query(commandStr.GetCommandString(), mCandidates);
+	GetCommandRepository()->Query(commandParam.GetCommandString(), mCandidates);
 
 	// 候補なし
 	if (mCandidates.size() == 0) {
@@ -550,7 +546,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 
 		int start, end;
 		mKeywordEdit.GetSel(start, end);
-		if (commandStr.ComplementCommand(pCmd->GetName(), mCommandStr)) {
+		if (commandParam.ComplementCommand(pCmd->GetName(), mCommandStr)) {
 			// 補完が行われたらDDXにも反映し、入力欄の選択範囲も変える
 			UpdateData(FALSE);
 			mKeywordEdit.SetSel(end,-1);
@@ -567,12 +563,14 @@ void CSoyokazeDlg::OnOK()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		CommandString commandStr(mCommandStr);
+		soyokaze::core::CommandParameter commandParam(mCommandStr);
 
-		std::vector<CString> args;
-		commandStr.GetParameters(args);
+		// Ctrlキーが押されているかを設定
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+			commandParam.SetExtraBoolParam(_T("CtrlKeyPressed"), true);
+		}
 
-		if (cmd->Execute(args) == FALSE) {
+		if (cmd->Execute(commandParam) == FALSE) {
 			AfxMessageBox(cmd->GetErrorString());
 		}
 
@@ -740,12 +738,8 @@ void CSoyokazeDlg::OnLbnDblClkCandidate()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		CommandString commandStr(mCommandStr);
-
-		std::vector<CString> args;
-		commandStr.GetParameters(args);
-
-		if (cmd->Execute(args) == FALSE) {
+		soyokaze::core::CommandParameter commandParam(mCommandStr);
+		if (cmd->Execute(commandParam) == FALSE) {
 			AfxMessageBox(cmd->GetErrorString());
 		}
 

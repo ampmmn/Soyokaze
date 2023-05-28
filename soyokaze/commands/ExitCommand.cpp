@@ -32,7 +32,7 @@ BOOL ExitCommand::Execute()
 	return TRUE;
 }
 
-BOOL ExitCommand::Execute(const std::vector<CString>& args)
+BOOL ExitCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

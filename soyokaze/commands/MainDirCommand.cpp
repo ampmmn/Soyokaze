@@ -40,7 +40,7 @@ BOOL MainDirCommand::Execute()
 	return cmd.Execute();
 }
 
-BOOL MainDirCommand::Execute(const std::vector<CString>& args)
+BOOL MainDirCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

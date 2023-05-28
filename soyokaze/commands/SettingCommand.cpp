@@ -50,7 +50,7 @@ BOOL SettingCommand::Execute()
 	return TRUE;
 }
 
-BOOL SettingCommand::Execute(const std::vector<CString>& args)
+BOOL SettingCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

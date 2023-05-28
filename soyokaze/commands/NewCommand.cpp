@@ -37,8 +37,11 @@ BOOL NewCommand::Execute()
 	return TRUE;
 }
 
-BOOL NewCommand::Execute(const std::vector<CString>& args)
+BOOL NewCommand::Execute(const Parameter& param)
 {
+	std::vector<CString> args;
+	param.GetParameters(args);
+
 	const CString* namePtr = nullptr;
 	if (args.size() > 0) {
 		namePtr = &args[0];

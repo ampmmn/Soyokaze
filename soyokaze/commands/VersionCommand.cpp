@@ -35,7 +35,7 @@ BOOL VersionCommand::Execute()
 	return TRUE;
 }
 
-BOOL VersionCommand::Execute(const std::vector<CString>& args)
+BOOL VersionCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

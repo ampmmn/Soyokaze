@@ -34,7 +34,7 @@ BOOL ReloadCommand::Execute()
 	return mCmdMapPtr->Load();
 }
 
-BOOL ReloadCommand::Execute(const std::vector<CString>& args)
+BOOL ReloadCommand::Execute(const Parameter& param)
 {
 	// 引数指定しても動作はかわらない
 	return Execute();

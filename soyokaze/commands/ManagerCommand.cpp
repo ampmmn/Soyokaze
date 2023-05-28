@@ -34,7 +34,7 @@ BOOL ManagerCommand::Execute()
 	return TRUE;
 }
 
-BOOL ManagerCommand::Execute(const std::vector<CString>& args)
+BOOL ManagerCommand::Execute(const Parameter& param)
 {
 	// このコマンドは引数を使わない
 	return Execute();

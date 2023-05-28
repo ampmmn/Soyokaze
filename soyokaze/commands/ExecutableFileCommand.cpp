@@ -81,8 +81,11 @@ BOOL ExecutableFileCommand::Execute()
 	return cmd.Execute();
 }
 
-BOOL ExecutableFileCommand::Execute(const std::vector<CString>& args)
+BOOL ExecutableFileCommand::Execute(const Parameter& param)
 {
+	std::vector<CString> args;
+	param.GetParameters(args);
+
 	if (PathFileExists(in->mFullPath) == FALSE) {
 		return FALSE;
 	}

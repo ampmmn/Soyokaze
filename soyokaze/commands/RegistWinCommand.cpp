@@ -94,7 +94,7 @@ BOOL RegistWinCommand::Execute()
 
 }
 
-BOOL RegistWinCommand::Execute(const std::vector<CString>& args)
+BOOL RegistWinCommand::Execute(const Parameter& param)
 {
 	return Execute();
 }

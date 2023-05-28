@@ -29,12 +29,15 @@ CString EditCommand::GetDescription()
 
 BOOL EditCommand::Execute()
 {
-	std::vector<CString> argEmpty;
-	return Execute(argEmpty);
+	Parameter param;
+	return Execute(param);
 }
 
-BOOL EditCommand::Execute(const std::vector<CString>& args)
+BOOL EditCommand::Execute(const Parameter& param)
 {
+	std::vector<CString> args;
+	param.GetParameters(args);
+
 	if (args.empty()) {
 		// キーワードマネージャを実行する
 		mCmdMapPtr->ManagerDialog();

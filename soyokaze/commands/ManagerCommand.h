@@ -13,7 +13,7 @@ public:
 	CString GetName() override;
 	CString GetDescription() override;
 	BOOL Execute() override;
-	BOOL Execute(const std::vector<CString>& args) override;
+	BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
