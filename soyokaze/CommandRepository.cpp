@@ -25,6 +25,9 @@
 #include "gui/CommandEditDialog.h"
 #include "gui/KeywordManagerDialog.h"
 #include "gui/SelectFilesDialog.h"
+#include "core/CommandHotKeyManager.h"
+#include "CommandHotKeyMappings.h"
+#include "NamedCommandHotKeyHandler.h"
 #include <vector>
 #include <algorithm>
 
@@ -44,11 +47,12 @@ struct CommandRepository::PImpl
 		delete mPattern;
 	}
 
-	void ReloadPatternObject()
+	void ReloadPatternObject(CommandRepository* thisPtr)
 	{
 		delete mPattern;
 
-		int matchLevel = AppPreference::Get()->GetMatchLevel();
+		auto pref = AppPreference::Get();
+		int matchLevel = pref->GetMatchLevel();
 		if (matchLevel == 2) {
 			// スキップマッチング比較用
 			mPattern = new SkipMatchPattern();
@@ -60,6 +64,25 @@ struct CommandRepository::PImpl
 		else {
 			// 前方一致比較用
 			mPattern = new ForwardMatchPattern();
+		}
+
+		// コマンドのホットキー設定のリロード
+		CommandHotKeyMappings hotKeyMap;
+		pref->GetCommandKeyMappings(hotKeyMap);
+
+		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		hotKeyManager->Clear();
+
+		int count = hotKeyMap.GetItemCount();
+		for (int i = 0; i < count; ++i) {
+			auto name = hotKeyMap.GetName(i);
+			HOTKEY_ATTR attr;
+			hotKeyMap.GetHotKeyAttr(i, attr);
+
+			auto handler = new NamedCommandHotKeyHandler(thisPtr, name);
+			bool isGlobal = hotKeyMap.IsGlobal(i);
+
+			hotKeyManager->Register(handler, attr, isGlobal);
 		}
 	}
 
@@ -101,7 +124,7 @@ BOOL CommandRepository::Load()
 	in->mBuiltinCommands.Clear();
 
 	// キーワード比較処理の生成
-	in->ReloadPatternObject();
+	in->ReloadPatternObject(this);
 
 	// ビルトインコマンドの登録
 	in->mBuiltinCommands.Register(new NewCommand(this));
@@ -218,6 +241,22 @@ int CommandRepository::NewCommandDialog(
 	// 設定ファイルに保存
 	std::vector<soyokaze::core::Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
+
+
+	// ホットキー設定を更新
+	if (dlg.mHotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		pref->Save();
+	}
 	return 0;
 }
 
@@ -262,6 +301,14 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 	dlg.mPath0 = attr.mPath;
 	dlg.mParameter0 = attr.mParam;
 
+	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	HOTKEY_ATTR hotKeyAttr;
+	bool isGlobal = false;
+	if (hotKeyManager->HasKeyBinding(dlg.mName, &hotKeyAttr, &isGlobal)) {
+		dlg.mHotKeyAttr = hotKeyAttr;
+		dlg.mIsGlobal = isGlobal;
+	}
+
 	if (dlg.DoModal() != IDOK) {
 		return TRUE;
 	}
@@ -300,6 +347,21 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 	// ファイルに保存
 	std::vector<soyokaze::core::Command*> cmdsTmp;
 	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
+
+
+	// ホットキー設定を更新
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
+
+	hotKeyMap.RemoveItem(hotKeyAttr);
+	if (dlg.mHotKeyAttr.IsValid()) {
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+	}
+
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(hotKeyMap);
+
+	pref->Save();
 
 	return 0;
 }
@@ -509,5 +571,6 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 void CommandRepository::OnAppPreferenceUpdated()
 {
 	// アプリ設定変更の影響を受ける項目の再登録
-	in->ReloadPatternObject();
+	in->ReloadPatternObject(this);
 }
+

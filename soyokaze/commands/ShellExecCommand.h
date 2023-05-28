@@ -1,6 +1,10 @@
 #pragma once
 
 #include "core/CommandIF.h"
+#include <memory>
+
+class HOTKEY_ATTR;
+
 
 class ShellExecCommand : public soyokaze::core::Command
 {
@@ -54,14 +58,6 @@ public:
 	static void ExpandEnv(CString& texts);
 
 protected:
-	CString mName;
-	CString mDescription;
-	int mRunAs;
-
-	ATTRIBUTE mNormalAttr;
-	ATTRIBUTE mNoParamAttr;
-
-	CString mErrMsg;
-
-	uint32_t mRefCount;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };

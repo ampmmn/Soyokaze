@@ -369,13 +369,20 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommandHotKeyMappings.h" />
+    <ClInclude Include="core\AppHotKey.h" />
+    <ClInclude Include="core\CommandHotKeyHandlerIF.h" />
+    <ClInclude Include="core\CommandHotKeyManager.h" />
+    <ClInclude Include="core\GlobalHotKey.h" />
     <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
     <ClInclude Include="gui\BasicSettingDialog.h" />
     <ClInclude Include="gui\CaptureIconLabel.h" />
+    <ClInclude Include="gui\CommandHotKeyDialog.h" />
     <ClInclude Include="gui\ExtensionSettingDialog.h" />
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
+    <ClInclude Include="NamedCommandHotKeyHandler.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="StartupParam.h" />
     <ClInclude Include="utility/AppProfile.h" />
@@ -405,7 +412,6 @@
     <ClInclude Include="gui/FolderDialog.h" />
     <ClInclude Include="ForwardMatchPattern.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="HotKey.h" />
     <ClInclude Include="HotKeyAttribute.h" />
     <ClInclude Include="gui/HotKeyDialog.h" />
     <ClInclude Include="gui/IconLabel.h" />
@@ -434,13 +440,19 @@
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CommandHotKeyMappings.cpp" />
+    <ClCompile Include="core\AppHotKey.cpp" />
+    <ClCompile Include="core\CommandHotKeyManager.cpp" />
+    <ClCompile Include="core\GlobalHotKey.cpp" />
     <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />
     <ClCompile Include="gui\BasicSettingDialog.cpp" />
     <ClCompile Include="gui\CaptureIconLabel.cpp" />
+    <ClCompile Include="gui\CommandHotKeyDialog.cpp" />
     <ClCompile Include="gui\ExtensionSettingDialog.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
+    <ClCompile Include="NamedCommandHotKeyHandler.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="StartupParam.cpp" />
     <ClCompile Include="utility/AppProfile.cpp" />
@@ -468,7 +480,6 @@
     <ClCompile Include="ExecHistory.cpp" />
     <ClCompile Include="gui/FolderDialog.cpp" />
     <ClCompile Include="ForwardMatchPattern.cpp" />
-    <ClCompile Include="HotKey.cpp" />
     <ClCompile Include="HotKeyAttribute.cpp" />
     <ClCompile Include="gui/HotKeyDialog.cpp" />
     <ClCompile Include="gui/IconLabel.cpp" />

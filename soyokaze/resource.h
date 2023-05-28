@@ -32,6 +32,7 @@
 #define IDS_PASTE                       122
 #define IDS_BUILDDATE                   123
 #define IDS_VERSION                     124
+#define IDS_NOHOTKEY                    125
 #define IDR_MAINFRAME                   128
 #define IDI_ICON2                       131
 #define IDI_ICON1                       136
@@ -74,6 +75,7 @@
 #define IDC_STATIC_STATUSMSG            1026
 #define IDC_STATIC_PARAM0               1027
 #define IDC_STATIC_NAME                 1028
+#define IDC_EDIT_HOTKEY2                1028
 #define IDC_LIST_COMMANDS               1029
 #define IDC_BUTTON_NEW                  1030
 #define IDC_BUTTON_EDIT                 1031
@@ -91,7 +93,6 @@
 #define IDC_CHECK_USEFILER2             1040
 #define IDC_CHECK_SHOWTOGGLE            1040
 #define IDC_CHECK_ALT                   1041
-#define IDC_CHECK_SHOWTOGGLE2           1041
 #define IDC_CHECK_HIDEONRUN             1041
 #define IDC_CHECK_CTRL                  1042
 #define IDC_CHECK_WIN                   1043
@@ -110,15 +111,17 @@
 #define IDC_TREE_PAGES                  1056
 #define IDC_STATIC_BREADCRUMBS          1057
 #define IDC_STATIC_PAGEAREA             1058
+#define IDC_COMBO1                      1059
+#define IDC_COMBO_TYPE                  1059
 #define ID_A                            32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        160
-#define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1059
+#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

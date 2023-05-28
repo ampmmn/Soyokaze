@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "AppPreference.h"
 #include "utility/AppProfile.h"
+#include "CommandHotKeyMappings.h"
+#include "HotKeyAttribute.h"
 #include <regex>
 #include <map>
 
@@ -302,6 +304,66 @@ void AppPreference::SetSettings(const Settings& settings)
 const Settings& AppPreference::GetSettings()
 {
 	return mSettings;
+}
+
+void AppPreference::SetCommandKeyMappings(
+	const CommandHotKeyMappings& keyMap
+)
+{
+	int count = keyMap.GetItemCount();
+	mSettings.Set(_T("CommandHotKey:ItemCount"), count);
+
+	CString key;
+	for (int i = 0; i < count; ++i) {
+
+		int keyIdx = i + 1;
+
+		key.Format(_T("CommandHotKey:Command%d"), keyIdx);
+		mSettings.Set(key, keyMap.GetName(i));
+
+		HOTKEY_ATTR hotKeyAttr;
+		keyMap.GetHotKeyAttr(i, hotKeyAttr);
+		key.Format(_T("CommandHotKey:Modifiers%d"), keyIdx);
+		mSettings.Set(key, (int)hotKeyAttr.GetModifiers());
+
+		key.Format(_T("CommandHotKey:VirtualKeyCode%d"), keyIdx);
+		mSettings.Set(key, (int)hotKeyAttr.GetVKCode());
+
+		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
+		mSettings.Set(key, keyMap.IsGlobal(i));
+	}
+}
+
+void AppPreference::GetCommandKeyMappings(
+	CommandHotKeyMappings& keyMap
+)
+{
+	CommandHotKeyMappings tmp;
+
+	int count = mSettings.Get(_T("CommandHotKey:ItemCount"), 0);
+
+	CString key;
+	for (int i = 0; i < count; ++i) {
+
+		int keyIdx = i + 1;
+
+		key.Format(_T("CommandHotKey:Command%d"), keyIdx);
+		CString commandStr = mSettings.Get(key, _T(""));
+
+		key.Format(_T("CommandHotKey:Modifiers%d"), keyIdx);
+		UINT modifiers = (UINT)mSettings.Get(key, -1);
+
+		key.Format(_T("CommandHotKey:VirtualKeyCode%d"), keyIdx);
+		UINT vk = (UINT)mSettings.Get(key, -1);
+
+		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
+		bool isGlobal = mSettings.Get(key, false);
+
+		HOTKEY_ATTR attr(modifiers, vk);
+		tmp.AddItem(commandStr, attr, isGlobal);
+	}
+
+	keyMap.Swap(tmp);
 }
 
 void AppPreference::RegisterListener(AppPreferenceListenerIF* listener)

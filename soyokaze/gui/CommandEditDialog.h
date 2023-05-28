@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utility/TopMostMask.h"
+#include "HotKeyAttribute.h"
 
 class IconLabel;
 class CommandRepository;
@@ -58,6 +59,11 @@ public:
 
 	IconLabel* mIconLabelPtr;
 
+	// ほっときー(ひょうじよう)
+	CString mHotKey;
+	HOTKEY_ATTR mHotKeyAttr;
+	bool mIsGlobal;
+
 private:
 	TopMostMask mTopMostMask;
 // 実装
@@ -74,5 +80,6 @@ protected:
 	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg void OnCheckUse0();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnButtonHotKey();
 };
 

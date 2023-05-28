@@ -18,10 +18,37 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+struct ShellExecCommand::PImpl
+{
+	PImpl() :
+		mRunAs(0),
+		mRefCount(1)
+	{
+	}
+	~PImpl()
+	{
+	}
 
-ShellExecCommand::ShellExecCommand() :
-	mRunAs(0),
-	mRefCount(1)
+	CString mName;
+	CString mDescription;
+	int mRunAs;
+
+	ATTRIBUTE mNormalAttr;
+	ATTRIBUTE mNoParamAttr;
+
+	CString mErrMsg;
+
+	// 参照カウント
+	uint32_t mRefCount;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+ShellExecCommand::ShellExecCommand() : in(new PImpl)
 {
 }
 
@@ -31,13 +58,13 @@ ShellExecCommand::~ShellExecCommand()
 
 CString ShellExecCommand::GetName()
 {
-	return mName;
+	return in->mName;
 }
 
 
 CString ShellExecCommand::GetDescription()
 {
-	return mDescription;
+	return in->mDescription;
 }
 
 BOOL ShellExecCommand::Execute()
@@ -48,7 +75,7 @@ BOOL ShellExecCommand::Execute()
 
 BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 {
-	mErrMsg.Empty();
+	in->mErrMsg.Empty();
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
 	ATTRIBUTE attr;
@@ -94,7 +121,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 	si.nShow = attr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
-	if (mRunAs == 1) {
+	if (in->mRunAs == 1) {
 		si.lpVerb = _T("runas");
 	}
 
@@ -111,7 +138,7 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 		DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
 		void* msgBuf;
 		FormatMessage(flags, NULL, er, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msgBuf, 0, NULL);
-		mErrMsg = (LPCTSTR)msgBuf;
+		in->mErrMsg = (LPCTSTR)msgBuf;
 		LocalFree(msgBuf);
 		return FALSE;
 	}
@@ -125,44 +152,44 @@ BOOL ShellExecCommand::Execute(const std::vector<CString>& args)
 
 CString ShellExecCommand::GetErrorString()
 {
-	return mErrMsg;
+	return in->mErrMsg;
 }
 
 ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
 {
-	mName = name;
+	in->mName = name;
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
 {
-	mDescription = description;
+	in->mDescription = description;
 	return *this;
 }
 
 
 ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
 {
-	mNormalAttr = attr;
+	in->mNormalAttr = attr;
 
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetAttributeForParam0(const ATTRIBUTE& attr)
 {
-	mNoParamAttr = attr;
+	in->mNoParamAttr = attr;
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
 {
-	mNormalAttr.mPath = path;
+	in->mNormalAttr.mPath = path;
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
 {
-	mRunAs = runAs;
+	in->mRunAs = runAs;
 	return *this;
 }
 
@@ -178,22 +205,22 @@ ShellExecCommand::SelectAttribute(
 		// パラメータあり
 
 		// mNormalAttr優先
-		if (mNormalAttr.mPath.IsEmpty() == FALSE) {
-			attr = mNormalAttr;
+		if (in->mNormalAttr.mPath.IsEmpty() == FALSE) {
+			attr = in->mNormalAttr;
 		}
 		else {
-			attr = mNoParamAttr;
+			attr = in->mNoParamAttr;
 		}
 	}
 	else {
 		// パラメータなし
 
 		// mNoParamAttr優先
-		if (mNoParamAttr.mPath.IsEmpty() == FALSE) {
-			attr = mNoParamAttr;
+		if (in->mNoParamAttr.mPath.IsEmpty() == FALSE) {
+			attr = in->mNoParamAttr;
 		}
 		else {
-			attr = mNormalAttr;
+			attr = in->mNormalAttr;
 		}
 	}
 
@@ -320,7 +347,7 @@ void ShellExecCommand::ExpandEnv(CString& text)
 
 HICON ShellExecCommand::GetIcon()
 {
-	CString path = mNormalAttr.mPath;
+	CString path = in->mNormalAttr.mPath;
 	ExpandEnv(path);
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
@@ -332,17 +359,17 @@ int ShellExecCommand::Match(Pattern* pattern)
 
 void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
 {
-	attr = mNormalAttr;
+	attr = in->mNormalAttr;
 }
 
 void ShellExecCommand::GetAttributeForParam0(ATTRIBUTE& attr)
 {
-	attr = mNoParamAttr;
+	attr = in->mNoParamAttr;
 }
 
 int ShellExecCommand::GetRunAs()
 {
-	return mRunAs;
+	return in->mRunAs;
 }
 
 soyokaze::core::Command*
@@ -350,11 +377,11 @@ ShellExecCommand::Clone()
 {
 	auto clonedObj = new ShellExecCommand();
 
-	clonedObj->mName = mName;
-	clonedObj->mDescription = mDescription;
-	clonedObj->mRunAs = mRunAs;
-	clonedObj->mNormalAttr = mNormalAttr;
-	clonedObj->mNoParamAttr = mNoParamAttr;
+	clonedObj->in->mName = in->mName;
+	clonedObj->in->mDescription = in->mDescription;
+	clonedObj->in->mRunAs = in->mRunAs;
+	clonedObj->in->mNormalAttr = in->mNormalAttr;
+	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
 
 	return clonedObj;
 }
@@ -373,12 +400,12 @@ CString& ShellExecCommand::SanitizeName(
 
 uint32_t ShellExecCommand::AddRef()
 {
-	return ++mRefCount;
+	return ++in->mRefCount;
 }
 
 uint32_t ShellExecCommand::Release()
 {
-	auto n = --mRefCount;
+	auto n = --in->mRefCount;
 	if (n == 0) {
 		delete this;
 	}

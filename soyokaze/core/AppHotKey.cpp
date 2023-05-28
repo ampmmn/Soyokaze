@@ -1,11 +1,14 @@
 #include "pch.h"
-#include "framework.h"
-#include "HotKey.h"
+#include "AppHotKey.h"
 #include "AppPreference.h"
+#include "core/GlobalHotKey.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+namespace soyokaze {
+namespace core {
 
 // 修飾キー
 // MOD_ALT     (0x0001)
@@ -16,38 +19,42 @@
 
 static const int ID_SOYOKAZE_HOTKEY = 0xB31E;
 
-HotKey::HotKey(HWND targetWnd) : mTargetWnd(targetWnd)
+AppHotKey::AppHotKey(HWND targetWnd) : 
+	mHotKey(new GlobalHotKey(targetWnd))
 {
 	AppPreference::Get()->RegisterListener(this);
 }
 
-HotKey::~HotKey()
+AppHotKey::~AppHotKey()
 {
 	AppPreference::Get()->UnregisterListener(this);
-	Unregister();
 }
 
 // 設定ファイルから設定値を取得してホットキー登録
-bool HotKey::Register()
+bool AppHotKey::Register()
 {
-	UINT modifier;
+	UINT mod;
 	UINT vk;
-	if (LoadKeyConfig(modifier, vk) == false) {
+	if (LoadKeyConfig(mod, vk) == false) {
 		// キー設定がない、あるいは無効化されている
 		return false;
 	}
-
-	return RegisterHotKey(mTargetWnd, ID_SOYOKAZE_HOTKEY, modifier, vk);
+	return mHotKey->Register(ID_SOYOKAZE_HOTKEY, mod, vk);
 }
 
 // 登録解除する
-void HotKey::Unregister()
+void AppHotKey::Unregister()
 {
-	UnregisterHotKey(mTargetWnd, ID_SOYOKAZE_HOTKEY);
+	mHotKey->Unregister();
+}
+
+bool AppHotKey::IsSameKey(LPARAM lParam)
+{
+	return mHotKey->IsSameKey(lParam);
 }
 
 // 再登録(登録解除→登録)
-bool HotKey::Reload()
+bool AppHotKey::Reload()
 {
 	// 下記URLの説明によると、IDが同じなら上書きされるそうなので
 	// Unregisterしなくてもよさそうだけど一応しておく
@@ -57,7 +64,7 @@ bool HotKey::Reload()
 	return Register();
 }
 
-bool HotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
+bool AppHotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 {
 	auto pref = AppPreference::Get();
 
@@ -68,9 +75,12 @@ bool HotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 }
 
 
-void HotKey::OnAppPreferenceUpdated()
+void AppHotKey::OnAppPreferenceUpdated()
 {
 	// アプリ設定変更の影響を受ける項目の再登録
 	Reload();
+}
+
+}
 }
 

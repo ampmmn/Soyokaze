@@ -14,19 +14,22 @@ class CommandRepository;
 
 namespace soyokaze {
 namespace core {
+	class AppHotKey;
 	class Command;
+	class CommandHotKeyManager;
 }
 }
 
 class SharedHwnd;
 class ExecHistory;
-class HotKey;
 class WindowPosition;
 class WindowTransparency;
 
 // CSoyokazeDlg ダイアログ
 class CSoyokazeDlg : public CDialogEx
 {
+	using AppHotKey = soyokaze::core::AppHotKey;
+
 // コンストラクション
 public:
 	CSoyokazeDlg(CWnd* pParent = nullptr);	// 標準コンストラクター
@@ -54,7 +57,6 @@ protected:
 
 	// 現在選択中のコマンドを取得
 	soyokaze::core::Command* GetCurrentCommand();
-
 
 // 実装
 protected:
@@ -92,8 +94,10 @@ protected:
 
 	// アイコン描画用ラベル
 	CaptureIconLabel mIconLabel;
-	//
-	HotKey* mHotKeyPtr;
+
+	// 入力画面を呼び出すホットキー関連の処理をする
+	AppHotKey* mHotKeyPtr;
+
 	// ウインドウ位置を保存するためのクラス
 	WindowPosition* mWindowPositionPtr;
 	// ウインドウの透明度を制御するためのクラス
@@ -108,6 +112,7 @@ protected:
 	void OnOK() override;
 	void OnCancel() override;
 	LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp) override;
+	BOOL PreTranslateMessage(MSG* pMsg) override;
 
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
@@ -129,4 +134,5 @@ protected:
 
 public:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
+	afx_msg void OnCommandHotKey(UINT id);
 };

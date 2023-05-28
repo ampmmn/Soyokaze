@@ -3,6 +3,7 @@
 #include "CommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "gui/IconLabel.h"
+#include "gui/CommandHotKeyDialog.h"
 #include "CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
@@ -16,7 +17,8 @@
 CommandEditDialog::CommandEditDialog(CommandRepository* cmdMapPtr) : 
 	CDialogEx(IDD_NEWCOMMAND),
 	mCmdMapPtr(cmdMapPtr),
-	mIconLabelPtr(new IconLabel)
+	mIconLabelPtr(new IconLabel),
+	mIsGlobal(false)
 {
 }
 
@@ -90,6 +92,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USE0, mIsUse0);
 	DDX_Text(pDX, IDC_EDIT_PARAM0, mParameter0);
 	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
@@ -102,6 +105,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR2, OnButtonBrowseDir2Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_CHECK_USE0, OnCheckUse0)
+	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -138,6 +142,11 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
+	mHotKey = mHotKeyAttr.ToString();
+	if (mHotKey.IsEmpty()) {
+		mHotKey.LoadString(IDS_NOHOTKEY);
+	}
+
 	GetDlgItem(IDC_STATIC_PATH0)->EnableWindow(mIsUse0);
 	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mIsUse0);
 	GetDlgItem(IDC_EDIT_PATH0)->EnableWindow(mIsUse0);
@@ -303,3 +312,22 @@ void CommandEditDialog::OnOK()
 
 	__super::OnOK();
 }
+
+
+void CommandEditDialog::OnButtonHotKey()
+{
+	UpdateData();
+
+	CommandHotKeyDialog dlg(mHotKeyAttr);
+	dlg.mIsGlobal = mIsGlobal;
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	dlg.GetAttribute(mHotKeyAttr);
+	mIsGlobal = dlg.IsGlobal();
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+

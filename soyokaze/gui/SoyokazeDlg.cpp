@@ -12,17 +12,19 @@
 #include "utility/WindowPosition.h"
 #include "SharedHwnd.h"
 #include "ExecHistory.h"
-#include "HotKey.h"
+#include "core/AppHotKey.h"
 #include "WindowTransparency.h"
 #include "IconLoader.h"
 #include "AppPreference.h"
 #include "utility/ProcessPath.h"
+#include "core/CommandHotKeyManager.h"
 #include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using namespace soyokaze;
 
 // CSoyokazeDlg ダイアログ
 
@@ -83,6 +85,8 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
 	ON_WM_CONTEXTMENU()
+	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
+	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
 
 void CSoyokazeDlg::ActivateWindow(HWND hwnd)
@@ -393,7 +397,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	m_pCommandRepository->Load();
 
 	// ホットキー登録
-	mHotKeyPtr = new HotKey(GetSafeHwnd());
+	mHotKeyPtr = new AppHotKey(GetSafeHwnd());
 	if (mHotKeyPtr->Register() == false) {
 		AfxMessageBox(_T("ホットキー登録できませんでした"));
 	}
@@ -471,7 +475,7 @@ void CSoyokazeDlg::ClearContent()
 
 
 // 現在選択中のコマンドを取得
-soyokaze::core::Command*
+core::Command*
 CSoyokazeDlg::GetCurrentCommand()
 {
 	if (mCandidates.empty()) {
@@ -595,12 +599,28 @@ LRESULT CSoyokazeDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 {
 	if (msg == WM_HOTKEY) {
 		// ホットキー押下からの表示状態変更
-		ActivateWindow(GetSafeHwnd());
+		if (mHotKeyPtr->IsSameKey(lp)) {
+			// アプリ呼び出しホットキー
+			ActivateWindow(GetSafeHwnd());
+		}
+		else {
+			// コマンド実行ホットキー
+			auto manager = core::CommandHotKeyManager::GetInstance();
+			manager->InvokeGlobalHandler(lp);
+		}
 		return 0;
 	}
 	return CDialogEx::WindowProc(msg, wp, lp);
 }
 
+BOOL CSoyokazeDlg::PreTranslateMessage(MSG* pMsg)
+{
+	HACCEL accel = core::CommandHotKeyManager::GetInstance()->GetAccelerator();
+	if (accel && TranslateAccelerator(GetSafeHwnd(), accel, pMsg)) {
+		return TRUE;
+	}
+	return __super::PreTranslateMessage(pMsg);
+}
 
 void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
@@ -831,3 +851,7 @@ void CSoyokazeDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 	__super::OnActivate(nState, wnd, bMinimized);
 }
 
+void CSoyokazeDlg::OnCommandHotKey(UINT id)
+{
+	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
+}

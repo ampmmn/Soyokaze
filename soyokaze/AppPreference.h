@@ -4,6 +4,8 @@
 #include "Settings.h"
 #include <set>
 
+class CommandHotKeyMappings;
+
 class AppPreference
 {
 public:
@@ -31,6 +33,9 @@ public:
 
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
+
+	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
+	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);
 
 	void RegisterListener(AppPreferenceListenerIF* listener);
 	void UnregisterListener(AppPreferenceListenerIF* listener);

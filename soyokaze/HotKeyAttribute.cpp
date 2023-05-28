@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "framework.h"
 #include "HotKeyAttribute.h"
 #include "AppPreference.h"
 #include <utility>
@@ -119,7 +118,7 @@ static const std::pair<UINT, CString> VK_DEFINED_DATA[] = {
 // MOD_NOREPEAT(0x4000)
 
 HOTKEY_ATTR::HOTKEY_ATTR() : 
-	mVirtualKeyIdx(0), 
+	mVirtualKeyIdx(-1), 
 	mUseShift(false), mUseCtrl(false), mUseAlt(false), mUseWin(false)
 {
 }
@@ -132,7 +131,7 @@ HOTKEY_ATTR::HOTKEY_ATTR(const HOTKEY_ATTR& rhs) :
 
 
 HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) : 
-	mVirtualKeyIdx(0)
+	mVirtualKeyIdx(-1)
 {
 
 	for (int i = 0; i < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]); ++i) {
@@ -149,8 +148,66 @@ HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) :
 	mUseWin = (modifiers & MOD_WIN) != 0;
 }
 
+bool HOTKEY_ATTR::operator == (const HOTKEY_ATTR& rhs) const
+{
+	if (mUseShift != rhs.mUseShift) {
+		return false;
+	}
+	if (mUseCtrl != rhs.mUseCtrl) {
+		return false;
+	}
+	if (mUseAlt != rhs.mUseAlt) {
+		return false;
+	}
+	if (mUseWin != rhs.mUseWin) {
+		return false;
+	}
+	if (mVirtualKeyIdx != rhs.mVirtualKeyIdx) {
+		return false;
+	}
+	return true;
+}
 
-HOTKEY_ATTR& HOTKEY_ATTR::operator = (const HOTKEY_ATTR& rhs)
+bool HOTKEY_ATTR::operator != (const HOTKEY_ATTR& rhs) const
+{
+	return !(*this == rhs);
+}
+
+bool HOTKEY_ATTR::operator < (const HOTKEY_ATTR& rhs) const
+{
+	if (mUseShift < rhs.mUseShift) {
+		return true;
+	}
+	if (mUseShift > rhs.mUseShift) {
+		return false;
+	}
+	if (mUseCtrl < rhs.mUseCtrl) {
+		return true;
+	}
+	if (mUseCtrl > rhs.mUseCtrl) {
+		return false;
+	}
+	if (mUseAlt < rhs.mUseAlt) {
+		return true;
+	}
+	if (mUseAlt > rhs.mUseAlt) {
+		return false;
+	}
+	if (mUseWin < rhs.mUseWin) {
+		return true;
+	}
+	if (mUseWin > rhs.mUseWin) {
+		return false;
+	}
+	if (mVirtualKeyIdx < rhs.mVirtualKeyIdx) {
+		return true;
+	}
+	return false;
+}
+
+HOTKEY_ATTR& HOTKEY_ATTR::operator = (
+	const HOTKEY_ATTR& rhs
+)
 {
 	mUseShift = rhs.mUseShift;
 	mUseCtrl = rhs.mUseCtrl;
@@ -161,6 +218,32 @@ HOTKEY_ATTR& HOTKEY_ATTR::operator = (const HOTKEY_ATTR& rhs)
 	return *this;
 }
 
+bool HOTKEY_ATTR::IsValid() const
+{
+	return 0 <= mVirtualKeyIdx && mVirtualKeyIdx < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]);
+}
+
+bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
+{
+	if (IsValid() == false) {
+		return false;
+	}
+
+	accel.cmd = 0;
+	accel.fVirt = FVIRTKEY;
+	if (mUseShift) {
+		accel.fVirt |= FSHIFT;
+	}
+	if (mUseCtrl) {
+		accel.fVirt |= FCONTROL;
+	}
+	if (mUseAlt) {
+		accel.fVirt |= FALT;
+	}
+	accel.key = VK_DEFINED_DATA[mVirtualKeyIdx].first;
+
+	return true;
+}
 
 /**
  *  ホットキーが登録可能かどうか調べる
@@ -183,7 +266,7 @@ bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 
 CString HOTKEY_ATTR::ToString() const
 {
-	if (mVirtualKeyIdx >= sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0])) {
+	if (IsValid() == false) {
 		return _T("");
 	}
 
@@ -237,7 +320,7 @@ UINT HOTKEY_ATTR::GetModifiers() const
 
 UINT HOTKEY_ATTR::GetVKCode() const
 {
-	if (mVirtualKeyIdx >= sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0])) {
+	if (IsValid() == false) {
 		return 0;
 	}
 

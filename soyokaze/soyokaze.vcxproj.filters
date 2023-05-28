@@ -63,9 +63,6 @@
     <ClInclude Include="ExecHistory.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="HotKey.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ForwardMatchPattern.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -216,6 +213,27 @@
     <ClInclude Include="core/CommandIF.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core\AppHotKey.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\CommandHotKeyHandlerIF.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\CommandHotKeyManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\CommandHotKeyDialog.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="NamedCommandHotKeyHandler.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHotKeyMappings.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="core\GlobalHotKey.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -243,9 +261,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ExecHistory.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="HotKey.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ForwardMatchPattern.cpp">
@@ -391,6 +406,24 @@
     </ClCompile>
     <ClCompile Include="StartupParam.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="core\AppHotKey.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\CommandHotKeyManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\CommandHotKeyDialog.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="NamedCommandHotKeyHandler.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHotKeyMappings.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="core\GlobalHotKey.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
