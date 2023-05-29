@@ -2,12 +2,10 @@
 
 #include "core/CommandIF.h"
 
-class CommandRepository;
-
 class ReloadCommand : public soyokaze::core::Command
 {
 public:
-	ReloadCommand(CommandRepository* pMap);
+	ReloadCommand();
 	virtual ~ReloadCommand();
 
 	CString GetName() override;
@@ -23,6 +21,5 @@ public:
 	uint32_t Release() override;
 
 protected:
-	CommandRepository* mCmdMapPtr;
 	uint32_t mRefCount;
 };

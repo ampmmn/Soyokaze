@@ -3,21 +3,16 @@
 #include "utility/TopMostMask.h"
 #include <vector>
 
-class CommandRepository;
-
-
 class KeywordManagerListCtrl;
 class IconLabel;
 
 class KeywordManagerDialog : public CDialogEx
 {
 public:
-	KeywordManagerDialog(CommandRepository* cmdMapPtr);
+	KeywordManagerDialog();
 	virtual ~KeywordManagerDialog();
 
 protected:
-	CommandRepository* mCmdMapPtr;
-
 	CString mName;
 	CString mDescription;
 

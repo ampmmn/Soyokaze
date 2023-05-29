@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/RegistWinCommand.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "utility/ProcessPath.h"
 #include "resource.h"
@@ -33,15 +33,13 @@ struct RegistWinCommand::PImpl
 			return hwnd;
 		}
 	}
-	CommandRepository* mCmdMapPtr;
 	CString mErrorMsg;
 	uint32_t mRefCount;
 };
 
-RegistWinCommand::RegistWinCommand(CommandRepository* cmdMapPtr) : in(new PImpl)
+RegistWinCommand::RegistWinCommand() : in(new PImpl)
 {
 	in->mRefCount = 1;
-	in->mCmdMapPtr = cmdMapPtr;
 }
 
 RegistWinCommand::~RegistWinCommand()
@@ -78,7 +76,9 @@ BOOL RegistWinCommand::Execute()
 		// ウインドウタイトルを説明として使う
 		CString description = processPath.GetCaption();
 		CString param = processPath.GetCommandLine();
-		in->mCmdMapPtr->NewCommandDialog(&moduleName, &modulePath, &description, &param);
+
+		auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+		cmdRepoPtr->NewCommandDialog(&moduleName, &modulePath, &description, &param);
 		return TRUE;
 	}
 	catch(ProcessPath::Exception& e) {
@@ -116,7 +116,7 @@ int RegistWinCommand::Match(Pattern* pattern)
 
 soyokaze::core::Command* RegistWinCommand::Clone()
 {
-	return new RegistWinCommand(in->mCmdMapPtr);
+	return new RegistWinCommand();
 }
 
 uint32_t RegistWinCommand::AddRef()

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ReloadCommand.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -9,8 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-ReloadCommand::ReloadCommand(CommandRepository* pMap) :
-	mCmdMapPtr(pMap),
+ReloadCommand::ReloadCommand() :
 	mRefCount(1)
 {
 }
@@ -31,7 +30,7 @@ CString ReloadCommand::GetDescription()
 
 BOOL ReloadCommand::Execute()
 {
-	return mCmdMapPtr->Load();
+	return soyokaze::core::CommandRepository::GetInstance()->Load();
 }
 
 BOOL ReloadCommand::Execute(const Parameter& param)
@@ -57,7 +56,7 @@ int ReloadCommand::Match(Pattern* pattern)
 
 soyokaze::core::Command* ReloadCommand::Clone()
 {
-	return new ReloadCommand(mCmdMapPtr);
+	return new ReloadCommand();
 }
 
 uint32_t ReloadCommand::AddRef()

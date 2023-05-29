@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "gui/KeywordManagerDialog.h"
-#include "CommandRepository.h"
 #include "gui/KeywordManagerListCtrl.h"
 #include "gui/IconLabel.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -13,9 +13,8 @@
 #endif
 
 
-KeywordManagerDialog::KeywordManagerDialog(CommandRepository* cmdMapPtr) : 
+KeywordManagerDialog::KeywordManagerDialog() : 
 	CDialogEx(IDD_KEYWORDMANAGER),
-	mCmdMapPtr(cmdMapPtr),
 	mListCtrlPtr(new KeywordManagerListCtrl()),
 	mIconLabelPtr(new IconLabel())
 {
@@ -93,7 +92,8 @@ void KeywordManagerDialog::ResetContents()
 
 	// コマンド一覧を取得する
 	std::vector<soyokaze::core::Command*> commands;
-	mCmdMapPtr->EnumCommands(commands);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepoPtr->EnumCommands(commands);
 
 	int cmdCount = (int)commands.size();
 	int listItemCount = mListCtrlPtr->GetItemCount();
@@ -142,14 +142,15 @@ bool KeywordManagerDialog::UpdateStatus()
 
 	CString name = mListCtrlPtr->GetSelectedCommandName();
 
-	auto cmd = mCmdMapPtr->QueryAsWholeMatch(name);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmd = cmdRepoPtr->QueryAsWholeMatch(name);
 	if (cmd) {
 		mIconLabelPtr->DrawIcon(cmd->GetIcon());
 		mName = name;
 		mDescription = cmd->GetDescription();
 	}
 
-	bool isBuiltin = mCmdMapPtr->IsBuiltinName(name);
+	bool isBuiltin = cmdRepoPtr->IsBuiltinName(name);
 	if (isBuiltin) {
 		btnEdit->EnableWindow(FALSE);
 		btnDel->EnableWindow(FALSE);
@@ -164,18 +165,20 @@ bool KeywordManagerDialog::UpdateStatus()
 
 void KeywordManagerDialog::OnButtonNew()
 {
-	mCmdMapPtr->NewCommandDialog(nullptr, nullptr);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepoPtr->NewCommandDialog(nullptr, nullptr);
 	ResetContents();
 }
 
 void KeywordManagerDialog::OnButtonEdit()
 {
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 	CString name = mListCtrlPtr->GetSelectedCommandName();
-	if (mCmdMapPtr->IsBuiltinName(name)) {
+	if (cmdRepoPtr->IsBuiltinName(name)) {
 		return;
 	}
 
-	mCmdMapPtr->EditCommandDialog(name);
+	cmdRepoPtr->EditCommandDialog(name);
 
 	ResetContents();
 }
@@ -194,7 +197,8 @@ void KeywordManagerDialog::OnButtonDelete()
 		return ;
 	}
 
-	if (mCmdMapPtr->DeleteCommand(name) == false) {
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	if (cmdRepoPtr->DeleteCommand(name) == false) {
 		return ;
 	}
 

@@ -2,12 +2,10 @@
 
 #include "core/CommandIF.h"
 
-class CommandRepository;
-
 class ManagerCommand : public soyokaze::core::Command
 {
 public:
-	ManagerCommand(CommandRepository* cmdMapPtr);
+	ManagerCommand();
 	virtual ~ManagerCommand();
 
 	CString GetName() override;
@@ -22,7 +20,6 @@ public:
 	uint32_t Release() override;
 
 protected:
-	CommandRepository* mCmdMapPtr;
 	uint32_t mRefCount;
 };
 

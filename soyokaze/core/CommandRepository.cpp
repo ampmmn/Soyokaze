@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "framework.h"
 #include "CommandRepository.h"
 #include "CommandMap.h"
 #include "gui/AboutDlg.h"
@@ -35,6 +34,9 @@
 #define new DEBUG_NEW
 #endif
 
+namespace soyokaze {
+namespace core {
+
 struct CommandRepository::PImpl
 {
 	PImpl() : 
@@ -47,7 +49,7 @@ struct CommandRepository::PImpl
 		delete mPattern;
 	}
 
-	void ReloadPatternObject(CommandRepository* thisPtr)
+	void ReloadPatternObject()
 	{
 		delete mPattern;
 
@@ -79,7 +81,7 @@ struct CommandRepository::PImpl
 			HOTKEY_ATTR attr;
 			hotKeyMap.GetHotKeyAttr(i, attr);
 
-			auto handler = new NamedCommandHotKeyHandler(thisPtr, name);
+			auto handler = new NamedCommandHotKeyHandler(name);
 			bool isGlobal = hotKeyMap.IsGlobal(i);
 
 			hotKeyManager->Register(handler, attr, isGlobal);
@@ -116,6 +118,11 @@ CommandRepository::~CommandRepository()
 }
 
 
+CommandRepository* CommandRepository::GetInstance()
+{
+	static CommandRepository inst;
+	return &inst;
+}
 
 BOOL CommandRepository::Load()
 {
@@ -124,19 +131,19 @@ BOOL CommandRepository::Load()
 	in->mBuiltinCommands.Clear();
 
 	// キーワード比較処理の生成
-	in->ReloadPatternObject(this);
+	in->ReloadPatternObject();
 
 	// ビルトインコマンドの登録
-	in->mBuiltinCommands.Register(new NewCommand(this));
-	in->mBuiltinCommands.Register(new EditCommand(this));
-	in->mBuiltinCommands.Register(new ReloadCommand(this));
-	in->mBuiltinCommands.Register(new ManagerCommand(this));
+	in->mBuiltinCommands.Register(new NewCommand());
+	in->mBuiltinCommands.Register(new EditCommand());
+	in->mBuiltinCommands.Register(new ReloadCommand());
+	in->mBuiltinCommands.Register(new ManagerCommand());
 	in->mBuiltinCommands.Register(new ExitCommand());
 	in->mBuiltinCommands.Register(new VersionCommand());
 	in->mBuiltinCommands.Register(new UserDirCommand());
 	in->mBuiltinCommands.Register(new MainDirCommand());
 	in->mBuiltinCommands.Register(new SettingCommand());
-	in->mBuiltinCommands.Register(new RegistWinCommand(this));
+	in->mBuiltinCommands.Register(new RegistWinCommand());
 
 	// 設定ファイルを読み、コマンド一覧を登録する
 	TCHAR path[32768];
@@ -191,8 +198,7 @@ int CommandRepository::NewCommandDialog(
 	ScopeEdit scopeEdit(in->mIsNewDialog);
 
 	// 新規作成ダイアログを表示
-	CommandEditDialog dlg(this);
-
+	CommandEditDialog dlg;
 	if (cmdNamePtr) {
 		dlg.SetName(*cmdNamePtr);
 	}
@@ -281,7 +287,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 	// ToDo: 後でクラス設計を見直す
 	ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
 
-	CommandEditDialog dlg(this);
+	CommandEditDialog dlg;
 	dlg.SetOrgName(cmdName);
 
 	dlg.mName = cmd->GetName();
@@ -389,8 +395,7 @@ int CommandRepository::ManagerDialog()
 	CommandMap builtinBkup(in->mBuiltinCommands);
 	CommandMap commandsBkup(in->mCommands);
 
-	KeywordManagerDialog dlg(this);
-
+	KeywordManagerDialog dlg;
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
@@ -571,6 +576,9 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 void CommandRepository::OnAppPreferenceUpdated()
 {
 	// アプリ設定変更の影響を受ける項目の再登録
-	in->ReloadPatternObject(this);
+	in->ReloadPatternObject();
+}
+
+}
 }
 

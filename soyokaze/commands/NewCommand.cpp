@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/NewCommand.h"
 #include "commands/ShellExecCommand.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "gui/CommandEditDialog.h"
 #include "resource.h"
@@ -11,8 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-NewCommand::NewCommand(CommandRepository* cmdMapPtr) :
-	mCmdMapPtr(cmdMapPtr),
+NewCommand::NewCommand() :
 	mRefCount(1)
 {
 }
@@ -33,7 +32,8 @@ CString NewCommand::GetDescription()
 
 BOOL NewCommand::Execute()
 {
-	mCmdMapPtr->NewCommandDialog(nullptr, nullptr);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepoPtr->NewCommandDialog(nullptr, nullptr);
 	return TRUE;
 }
 
@@ -50,7 +50,8 @@ BOOL NewCommand::Execute(const Parameter& param)
 	if (args.size() > 1) {
 		pathPtr = &args[1];
 	}
-	mCmdMapPtr->NewCommandDialog(namePtr, pathPtr);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepoPtr->NewCommandDialog(namePtr, pathPtr);
 	return TRUE;
 }
 
@@ -71,7 +72,7 @@ int NewCommand::Match(Pattern* pattern)
 
 soyokaze::core::Command* NewCommand::Clone()
 {
-	return new NewCommand(mCmdMapPtr);
+	return new NewCommand();
 }
 
 uint32_t NewCommand::AddRef()

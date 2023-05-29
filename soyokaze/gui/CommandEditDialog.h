@@ -4,12 +4,11 @@
 #include "HotKeyAttribute.h"
 
 class IconLabel;
-class CommandRepository;
 
 class CommandEditDialog : public CDialogEx
 {
 public:
-	CommandEditDialog(CommandRepository* cmdMapPtr);
+	CommandEditDialog();
 	virtual ~CommandEditDialog();
 
 	void SetOrgName(const CString& name);
@@ -26,8 +25,6 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
-
-	CommandRepository* mCmdMapPtr;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

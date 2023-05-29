@@ -1,15 +1,14 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/ManagerCommand.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-ManagerCommand::ManagerCommand(CommandRepository* cmdMapPtr) :
-	mCmdMapPtr(cmdMapPtr),
+ManagerCommand::ManagerCommand() :
 	mRefCount(1)
 {
 }
@@ -30,7 +29,7 @@ CString ManagerCommand::GetDescription()
 
 BOOL ManagerCommand::Execute()
 {
-	mCmdMapPtr->ManagerDialog();
+	soyokaze::core::CommandRepository::GetInstance()->ManagerDialog();
 	return TRUE;
 }
 
@@ -57,7 +56,7 @@ int ManagerCommand::Match(Pattern* pattern)
 
 soyokaze::core::Command* ManagerCommand::Clone()
 {
-	return new ManagerCommand(mCmdMapPtr);
+	return new ManagerCommand();
 }
 
 uint32_t ManagerCommand::AddRef()

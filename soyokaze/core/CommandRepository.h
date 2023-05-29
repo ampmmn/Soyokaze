@@ -5,13 +5,18 @@
 #include <vector>
 #include <memory>
 
+namespace soyokaze {
+namespace core {
+
 class CommandRepository : public AppPreferenceListenerIF
 {
-public:
+private:
 	CommandRepository();
 	virtual ~CommandRepository();
 
 public:
+	static CommandRepository* GetInstance();
+
 	// コマンドデータのロード
 	BOOL Load();
 
@@ -42,4 +47,8 @@ protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
+
+
+}
+}
 

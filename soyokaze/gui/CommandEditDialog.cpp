@@ -4,7 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "gui/IconLabel.h"
 #include "gui/CommandHotKeyDialog.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -14,9 +14,8 @@
 #endif
 
 
-CommandEditDialog::CommandEditDialog(CommandRepository* cmdMapPtr) : 
+CommandEditDialog::CommandEditDialog() : 
 	CDialogEx(IDD_NEWCOMMAND),
-	mCmdMapPtr(cmdMapPtr),
 	mIconLabelPtr(new IconLabel),
 	mIsGlobal(false)
 {
@@ -161,16 +160,19 @@ bool CommandEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
+
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+
 	// 重複チェック
 	if (mName.CompareNoCase(mOrgName) != 0 && 
-	    mCmdMapPtr->QueryAsWholeMatch(mName, false) != nullptr) {
+	    cmdRepoPtr->QueryAsWholeMatch(mName, false) != nullptr) {
 		mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
 	// 使えない文字チェック
-	if (mCmdMapPtr->IsValidAsName(mName) == false) {
+	if (cmdRepoPtr->IsValidAsName(mName) == false) {
 		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/EditCommand.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-EditCommand::EditCommand(CommandRepository* cmdMapPtr) : mCmdMapPtr(cmdMapPtr), mRefCount(1)
+EditCommand::EditCommand() : mRefCount(1)
 {
 }
 
@@ -38,14 +38,17 @@ BOOL EditCommand::Execute(const Parameter& param)
 	std::vector<CString> args;
 	param.GetParameters(args);
 
+	auto cmdRepoPtr =
+	 	soyokaze::core::CommandRepository::GetInstance();
+
 	if (args.empty()) {
 		// キーワードマネージャを実行する
-		mCmdMapPtr->ManagerDialog();
+		cmdRepoPtr->ManagerDialog();
 		return TRUE;
 	}
 
 	CString editName = args[0];
-	if (mCmdMapPtr->QueryAsWholeMatch(editName) == nullptr) {
+	if (cmdRepoPtr->QueryAsWholeMatch(editName) == nullptr) {
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
 		msgStr += _T("\n\n");
 		msgStr += editName;
@@ -53,7 +56,7 @@ BOOL EditCommand::Execute(const Parameter& param)
 		return TRUE;
 	}
 
-	mCmdMapPtr->EditCommandDialog(editName);
+	cmdRepoPtr->EditCommandDialog(editName);
 	return TRUE;
 
 	return TRUE;
@@ -76,7 +79,7 @@ int EditCommand::Match(Pattern* pattern)
 
 soyokaze::core::Command* EditCommand::Clone()
 {
-	return new EditCommand(mCmdMapPtr);
+	return new EditCommand();
 }
 
 uint32_t EditCommand::AddRef()

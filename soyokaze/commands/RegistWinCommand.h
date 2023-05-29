@@ -2,12 +2,10 @@
 
 #include "core/CommandIF.h"
 
-class CommandRepository;
-
 class RegistWinCommand : public soyokaze::core::Command
 {
 public:
-	RegistWinCommand(CommandRepository* cmdMapPtr);
+	RegistWinCommand();
 	virtual ~RegistWinCommand();
 
 	CString GetName() override;

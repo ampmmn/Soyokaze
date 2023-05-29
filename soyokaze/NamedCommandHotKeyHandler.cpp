@@ -1,15 +1,14 @@
 #include "pch.h"
 #include "NamedCommandHotKeyHandler.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 NamedCommandHotKeyHandler::NamedCommandHotKeyHandler(
-	CommandRepository* cmdReposPtr,
 	CString name
-) : mCmdReposPtr(cmdReposPtr), mName(name)
+) : mName(name)
 {
 }
 
@@ -25,7 +24,8 @@ CString NamedCommandHotKeyHandler::GetDisplayName()
 
 bool NamedCommandHotKeyHandler::Invoke()
 {
-	auto cmd = mCmdReposPtr->QueryAsWholeMatch(mName, false);
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmd = cmdRepoPtr->QueryAsWholeMatch(mName, false);
 	if (cmd == nullptr) {
 		return false;
 	}

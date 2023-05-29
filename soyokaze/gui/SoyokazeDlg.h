@@ -10,13 +10,13 @@
 #include "gui/CaptureIconLabel.h"
 #include "gui/SoyokazeDropTarget.h"
 
-class CommandRepository;
 
 namespace soyokaze {
 namespace core {
 	class AppHotKey;
 	class Command;
 	class CommandHotKeyManager;
+	class CommandRepository;
 }
 }
 
@@ -28,6 +28,7 @@ class WindowTransparency;
 // CSoyokazeDlg ダイアログ
 class CSoyokazeDlg : public CDialogEx
 {
+	using CommandRepository = soyokaze::core::CommandRepository;
 	using AppHotKey = soyokaze::core::AppHotKey;
 
 // コンストラクション
@@ -70,9 +71,6 @@ protected:
 	// 現在の候補
 	std::vector<soyokaze::core::Command*> mCandidates;
 
-
-	// コマンド管理マップ
-	CommandRepository* m_pCommandRepository;
 	// 選択中の候補
 	int m_nSelIndex;
 

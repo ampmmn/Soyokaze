@@ -111,9 +111,6 @@
     <ClInclude Include="CommandFile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CommandRepository.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="HotKeyAttribute.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -234,6 +231,9 @@
     <ClInclude Include="core/CommandParameter.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core/CommandRepository.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -312,9 +312,6 @@
       <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="CommandFile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandRepository.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="HotKeyAttribute.cpp">
@@ -423,6 +420,9 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="core/CommandParameter.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core/CommandRepository.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>

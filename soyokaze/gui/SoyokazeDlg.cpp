@@ -6,7 +6,7 @@
 #include "framework.h"
 #include "Soyokaze.h"
 #include "gui/SoyokazeDlg.h"
-#include "CommandRepository.h"
+#include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
@@ -30,7 +30,6 @@ using namespace soyokaze;
 
 CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SOYOKAZE_DIALOG, pParent),
-	m_pCommandRepository(new CommandRepository()),
 	m_pSharedHwnd(nullptr),
 	mExecHistory(new ExecHistory),
 	mHotKeyPtr(nullptr),
@@ -56,8 +55,6 @@ CSoyokazeDlg::~CSoyokazeDlg()
 	delete m_pSharedHwnd;
 
 	delete mExecHistory;
-
-	delete m_pCommandRepository;
 }
 
 void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
@@ -390,7 +387,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
 
 	// 設定値の読み込み
-	m_pCommandRepository->Load();
+	GetCommandRepository()->Load();
 
 	// ホットキー登録
 	mHotKeyPtr = new AppHotKey(GetSafeHwnd());
@@ -447,9 +444,10 @@ HCURSOR CSoyokazeDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-CommandRepository* CSoyokazeDlg::GetCommandRepository()
+CSoyokazeDlg::CommandRepository*
+CSoyokazeDlg::GetCommandRepository()
 {
-	return m_pCommandRepository;
+	return CommandRepository::GetInstance();
 }
 
 void CSoyokazeDlg::SetDescription(const CString& msg)
