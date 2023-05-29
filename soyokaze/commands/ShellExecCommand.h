@@ -35,8 +35,11 @@ public:
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	// ShellExecCommand$B$N%3%^%s%IL>$H$7$F5v2D$7$J$$J8;z$rCV49$9$k(B
+	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);
+
+	// 管理者権限で実行しているか
+	static bool IsRunAsAdmin();
 	
 public:
 	ShellExecCommand& SetName(LPCTSTR name);

@@ -123,7 +123,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	si.nShow = attr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
-	if (in->mRunAs == 1) {
+	if (in->mRunAs == 1 && IsRunAsAdmin() == false) {
 		si.lpVerb = _T("runas");
 	}
 
@@ -413,3 +413,21 @@ uint32_t ShellExecCommand::Release()
 	}
 	return n;
 }
+
+
+bool ShellExecCommand::IsRunAsAdmin()
+{
+	PSID grp;
+	SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+	BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
+	if (result == FALSE) {
+		return false;
+	}
+
+	BOOL isMember = FALSE;
+	result = CheckTokenMembership(nullptr, grp, &isMember);
+	FreeSid(grp);
+
+	return result && isMember;
+}
+
