@@ -8,22 +8,12 @@
 #include "PartialMatchPattern.h"
 #include "SkipMatchPattern.h"
 #include "WholeMatchPattern.h"
+#include "core/CommandProviderIF.h"
 #include "CommandFile.h"
-#include "commands/NewCommand.h"
 #include "commands/ShellExecCommand.h"
-#include "commands/ReloadCommand.h"
-#include "commands/EditCommand.h"
-#include "commands/ExitCommand.h"
-#include "commands/VersionCommand.h"
-#include "commands/UserDirCommand.h"
-#include "commands/MainDirCommand.h"
-#include "commands/SettingCommand.h"
-#include "commands/ManagerCommand.h"
-#include "commands/RegistWinCommand.h"
-#include "commands/ExecutableFileCommand.h"
-#include "gui/CommandEditDialog.h"
 #include "gui/KeywordManagerDialog.h"
 #include "gui/SelectFilesDialog.h"
+#include "gui/SelectCommandTypeDialog.h"
 #include "core/CommandHotKeyManager.h"
 #include "CommandHotKeyMappings.h"
 #include "NamedCommandHotKeyHandler.h"
@@ -88,14 +78,24 @@ struct CommandRepository::PImpl
 		}
 	}
 
+	void SaveCommands()
+	{
+		mCommandFile.ClearEntries();
+
+		std::vector<soyokaze::core::Command*> commands;
+		for (auto command : mCommands.Enumerate(commands)) {
+			command->Save(&mCommandFile);
+			command->Release();
+		}
+		mCommandFile.Save();
+	}
+
+	std::vector<CommandProvider*> mProviders;
+
 	// 設定ファイル(commands.ini)からの読み書きを行う
-	CommandFile mCommandLoader;
-	// 組み込みコマンド一覧
-	CommandMap mBuiltinCommands;
+	CommandFile mCommandFile;
 	// 一般コマンド一覧
 	CommandMap mCommands;
-	// 環境変数PATHにあるexeを実行するためのコマンド
-	ExecutableFileCommand mExeCommand;
 	// キーワード比較用のクラス
 	Pattern* mPattern;
 
@@ -110,13 +110,47 @@ struct CommandRepository::PImpl
 CommandRepository::CommandRepository() : in(new PImpl)
 {
 	AppPreference::Get()->RegisterListener(this);
+
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
+	PathAppend(path, _T("commands.ini"));
+	in->mCommandFile.SetFilePath(path);
+
 }
 
 CommandRepository::~CommandRepository()
 {
+	for (auto provider : in->mProviders) {
+		provider->Release();
+	}
+
 	AppPreference::Get()->UnregisterListener(this);
 }
 
+// コマンドプロバイダ登録
+void CommandRepository::RegisterProvider(
+	CommandProvider* provider
+)
+{
+	provider->AddRef();
+	in->mProviders.push_back(provider);
+	std::sort(in->mProviders.begin(), in->mProviders.end(),
+	          [](const CommandProvider* l, const CommandProvider* r) { return l->GetOrder() < r->GetOrder(); });
+}
+
+// コマンドを登録
+int CommandRepository::RegisterCommand(Command* command)
+{
+	in->mCommands.Register(command);
+	return 0;
+}
+
+// コマンドの登録を解除
+int CommandRepository::UnregisterCommand(Command* command)
+{
+	in->mCommands.Unregister(command);
+	return 0;
+}
 
 CommandRepository* CommandRepository::GetInstance()
 {
@@ -128,34 +162,15 @@ BOOL CommandRepository::Load()
 {
 	// 既存の内容を破棄
 	in->mCommands.Clear();
-	in->mBuiltinCommands.Clear();
 
 	// キーワード比較処理の生成
 	in->ReloadPatternObject();
 
-	// ビルトインコマンドの登録
-	in->mBuiltinCommands.Register(new NewCommand());
-	in->mBuiltinCommands.Register(new EditCommand());
-	in->mBuiltinCommands.Register(new ReloadCommand());
-	in->mBuiltinCommands.Register(new ManagerCommand());
-	in->mBuiltinCommands.Register(new ExitCommand());
-	in->mBuiltinCommands.Register(new VersionCommand());
-	in->mBuiltinCommands.Register(new UserDirCommand());
-	in->mBuiltinCommands.Register(new MainDirCommand());
-	in->mBuiltinCommands.Register(new SettingCommand());
-	in->mBuiltinCommands.Register(new RegistWinCommand());
-
 	// 設定ファイルを読み、コマンド一覧を登録する
-	TCHAR path[32768];
-	CAppProfile::GetDirPath(path, 32768);
-	PathAppend(path, _T("commands.ini"));
-	in->mCommandLoader.SetFilePath(path);
+	in->mCommandFile.Load();
 
-	std::vector<soyokaze::core::Command*> commands;
-	in->mCommandLoader.Load(commands);
-
-	for (auto cmd : commands) {
-		in->mCommands.Register(cmd);
+	for (auto provider : in->mProviders) {
+		provider->LoadCommands(&in->mCommandFile);
 	}
 
 	return TRUE;
@@ -179,93 +194,61 @@ public:
 
 /**
  *  新規キーワード作成
- *  @param cmdNamePtr 作成するコマンド名(nullの場合はコマンド名を空欄にする)
- *  @param pathPtr コマンドに紐づけるパス(nullの場合はパスを空欄にする)
- *  @param descPtr コマンドの説明(nullの場合は空欄にする)
- *  @param paramPtr パラメータ(nullの場合は空欄にする)
+ *  @param paramr パラメータ
  */
-int CommandRepository::NewCommandDialog(
-	const CString* cmdNamePtr,
-	const CString* pathPtr,
-	const CString* descPtr,
-	const CString* paramPtr
-)
+int CommandRepository::NewCommandDialog(const CommandParameter* param)
 {
 	if (in->mIsNewDialog) {
 		// 編集操作中の再入はしない
-		return 0;
+		return -1;
 	}
 	ScopeEdit scopeEdit(in->mIsNewDialog);
 
-	// 新規作成ダイアログを表示
-	CommandEditDialog dlg;
-	if (cmdNamePtr) {
-		dlg.SetName(*cmdNamePtr);
+	CommandProvider* selectedProvider = nullptr;
+
+	// 種類選択ダイアログを表示
+	CString typeStr;
+	if (param == nullptr || param->GetNamedParam(_T("TYPE"), &typeStr) == false) {
+		SelectCommandTypeDialog dlgSelect;
+
+		for (auto& provider : in->mProviders) {
+			if (provider->IsPrivate()) {
+				continue;
+			}
+
+			dlgSelect.AddType(provider->GetDisplayName(), provider->GetDescription(), (LPARAM)provider);
+		}
+
+		if (dlgSelect.DoModal() != IDOK) {
+			return 0;
+		}
+		selectedProvider = (CommandProvider*)dlgSelect.GetSelectedItem();
 	}
-	if (pathPtr) {
-		dlg.SetPath(*pathPtr);
-	}
-	if (descPtr) {
-		dlg.SetDescription(*descPtr);
-	}
-	if (paramPtr) {
-		dlg.SetParam(*paramPtr);
+	else {
+		for (auto& provider : in->mProviders) {
+			if (typeStr != provider->GetName()) {
+				continue;
+			}
+			selectedProvider = provider;
+			break;
+		}
 	}
 
-	if (dlg.DoModal() != IDOK) {
+	if (selectedProvider == nullptr) {
 		return 0;
 	}
 
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto* newCmd = new ShellExecCommand();
-	newCmd->SetName(dlg.mName);
-	newCmd->SetDescription(dlg.mDescription);
-	newCmd->SetRunAs(dlg.mIsRunAsAdmin);
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = dlg.mPath;
-	normalAttr.mParam = dlg.mParameter;
-	normalAttr.mDir = dlg.mDir;
-	normalAttr.mShowType = dlg.GetShowType();
-	newCmd->SetAttribute(normalAttr);
-
-	if (dlg.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = dlg.mPath0;
-		param0Attr.mParam = dlg.mParameter0;
-		param0Attr.mDir = dlg.mDir;
-		param0Attr.mShowType = dlg.GetShowType();
-		newCmd->SetAttributeForParam0(param0Attr);
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		newCmd->SetAttributeForParam0(param0Attr);
+	if (selectedProvider->NewDialog(param) == false) {
+		return 1;
 	}
 
-	in->mCommands.Register(newCmd);
+	// コマンド設定ファイルに保存
+	in->SaveCommands();
 
-	// 設定ファイルに保存
-	std::vector<soyokaze::core::Command*> cmdsTmp;
-	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
-
-
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
 	return 0;
-}
 
+	
+}
 
 /**
  *  既存キーワードの編集
@@ -283,91 +266,15 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 		return 1;
 	}
 
+	int ret =cmdAbs->EditDialog();
+	cmdAbs->Release();
 
-	// ToDo: 後でクラス設計を見直す
-	ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
-
-	CommandEditDialog dlg;
-	dlg.SetOrgName(cmdName);
-
-	dlg.mName = cmd->GetName();
-	dlg.mDescription = cmd->GetDescription();
-	dlg.mIsRunAsAdmin = cmd->GetRunAs();
-
-	ShellExecCommand::ATTRIBUTE attr;
-	cmd->GetAttribute(attr);
-
-	dlg.mPath = attr.mPath;
-	dlg.mParameter = attr.mParam;
-	dlg.mDir = attr.mDir;
-	dlg.SetShowType(attr.mShowType);
-
-	cmd->GetAttributeForParam0(attr);
-	dlg.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
-	dlg.mPath0 = attr.mPath;
-	dlg.mParameter0 = attr.mParam;
-
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-	HOTKEY_ATTR hotKeyAttr;
-	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(dlg.mName, &hotKeyAttr, &isGlobal)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-		dlg.mIsGlobal = isGlobal;
+	if (ret != 0) {
+		return 2;
 	}
 
-	if (dlg.DoModal() != IDOK) {
-		return TRUE;
-	}
-
-	ShellExecCommand* cmdNew = new ShellExecCommand();
-
-	// 追加する処理
-	cmdNew->SetName(dlg.mName);
-	cmdNew->SetDescription(dlg.mDescription);
-	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = dlg.mPath;
-	normalAttr.mParam = dlg.mParameter;
-	normalAttr.mDir = dlg.mDir;
-	normalAttr.mShowType = dlg.GetShowType();
-	cmdNew->SetAttribute(normalAttr);
-
-	if (dlg.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = dlg.mPath0;
-		param0Attr.mParam = dlg.mParameter0;
-		param0Attr.mDir = dlg.mDir;
-		param0Attr.mShowType = dlg.GetShowType();
-		cmdNew->SetAttributeForParam0(param0Attr);
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		cmdNew->SetAttributeForParam0(param0Attr);
-	}
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	in->mCommands.Unregister(cmd);
-	in->mCommands.Register(cmdNew);
-
-	// ファイルに保存
-	std::vector<soyokaze::core::Command*> cmdsTmp;
-	in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
-
-
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
+	// コマンドファイルに保存
+	in->SaveCommands();
 
 	return 0;
 }
@@ -377,7 +284,15 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
  */
 bool CommandRepository::IsBuiltinName(const CString& cmdName)
 {
-	return in->mBuiltinCommands.Has(cmdName);
+	auto* cmd = in->mCommands.Get(cmdName);
+	if (cmd == nullptr) {
+		return false;
+	}
+	bool isEditable = cmd->IsEditable();
+
+	cmd->Release();
+
+	return isEditable == false;
 }
 
 /**
@@ -392,20 +307,17 @@ int CommandRepository::ManagerDialog()
 	ScopeEdit scopeEdit(in->mIsManagerDialog);
 
 	// キャンセル時用のバックアップ
-	CommandMap builtinBkup(in->mBuiltinCommands);
 	CommandMap commandsBkup(in->mCommands);
 
 	KeywordManagerDialog dlg;
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
-		in->mBuiltinCommands.Swap(builtinBkup);
 		in->mCommands.Swap(commandsBkup);
 	}
 	else {
 		// ファイルに保存
-		std::vector<soyokaze::core::Command*> cmdsTmp;
-		in->mCommandLoader.Save(in->mCommands.Enumerate(cmdsTmp));
+	in->SaveCommands();
 	}
 	return 0;
 }
@@ -460,7 +372,13 @@ int CommandRepository::RegisterCommandFromFiles(
 			ShellExecCommand::SanitizeName(name);
 
 			CString suffix;
-			for (int i = 1; QueryAsWholeMatch(name + suffix, false) != nullptr; ++i) {
+			
+			for (int i = 1;; ++i) {
+				auto cmd = QueryAsWholeMatch(name + suffix, false);
+				if (cmd == nullptr) {
+					break;
+				}
+				cmd->Release();
 				suffix.Format(_T("(%d)"), i);
 			}
 
@@ -482,11 +400,19 @@ int CommandRepository::RegisterCommandFromFiles(
 	}
 	else {
 		// 登録ダイアログを表示
+
 		CString filePath = files[0];
+
 		CString name(PathFindFileName(filePath));
 		PathRemoveExtension(name.GetBuffer(name.GetLength()));
 		name.ReleaseBuffer();
-		return NewCommandDialog(&name, &filePath);
+
+		CommandParameter param;
+		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param.SetNamedParamString(_T("COMMAND"), name);
+		param.SetNamedParamString(_T("PATH"), filePath);
+
+		return NewCommandDialog(&param);
 	}
 	return 0;
 }
@@ -501,9 +427,7 @@ bool CommandRepository::DeleteCommand(const CString& cmdName)
 
 void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enumCommands)
 {
-	enumCommands.clear();
 	in->mCommands.Enumerate(enumCommands);
-	in->mBuiltinCommands.Enumerate(enumCommands);
 }
 
 void
@@ -512,6 +436,9 @@ CommandRepository::Query(
 	std::vector<soyokaze::core::Command*>& items
 )
 {
+	for (auto command : items) {
+		command->Release();
+	}
 	items.clear();
 
 	// 絞込みの文言を設定
@@ -520,14 +447,11 @@ CommandRepository::Query(
 	std::vector<CommandMap::QueryItem> matchedItems;
 
 	in->mCommands.Query(in->mPattern, matchedItems);
-	in->mBuiltinCommands.Query(in->mPattern, matchedItems);
+	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
 
-	// 1件もマッチしない場合はExecutableCommandのひかく
-	if (items.empty()) {
-		int level = in->mExeCommand.Match(in->mPattern);
-		if (level != Pattern::Mismatch) {
-			matchedItems.push_back(CommandMap::QueryItem(level, &in->mExeCommand));
-		}
+	// コマンドプロバイダーから一時的なコマンドを取得する
+	for (auto provider : in->mProviders) {
+		provider->QueryAdhocCommands(in->mPattern, matchedItems);
 	}
 
 	// 履歴に基づきソート
@@ -555,22 +479,24 @@ CommandRepository::QueryAsWholeMatch(
 		return command;
 	}
 
-	command = in->mBuiltinCommands.FindOne(&pat);
-	if (command != nullptr) {
-		return command;
-	}
-
-	// 1件もマッチしない場合はExecutableCommandのひかく
-	if (isSearchPath && in->mExeCommand.Match(in->mPattern) != Pattern::Mismatch) {
-		return &in->mExeCommand;
-	}
-
 	return nullptr;
 }
 
 bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,")) == -1;
+}
+
+void CommandRepository::OnAppFirstBoot()
+{
+	// 初回起動であることをコマンドプロバイダに通知
+	for (auto provider : in->mProviders) {
+		provider->OnFirstBoot();
+	}
+
+	// コマンド設定ファイルを保存
+	in->SaveCommands();
+
 }
 
 void CommandRepository::OnAppPreferenceUpdated()

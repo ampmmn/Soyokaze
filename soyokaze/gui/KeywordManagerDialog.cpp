@@ -122,6 +122,10 @@ void KeywordManagerDialog::ResetContents()
 		mListCtrlPtr->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
 	}
 
+	// 使い終わったらrelease
+	for (auto command : commands) {
+		command->Release();
+	}
 
 }
 
@@ -148,6 +152,7 @@ bool KeywordManagerDialog::UpdateStatus()
 		mIconLabelPtr->DrawIcon(cmd->GetIcon());
 		mName = name;
 		mDescription = cmd->GetDescription();
+		cmd->Release();
 	}
 
 	bool isBuiltin = cmdRepoPtr->IsBuiltinName(name);
@@ -166,7 +171,7 @@ bool KeywordManagerDialog::UpdateStatus()
 void KeywordManagerDialog::OnButtonNew()
 {
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog(nullptr, nullptr);
+	cmdRepoPtr->NewCommandDialog();
 	ResetContents();
 }
 

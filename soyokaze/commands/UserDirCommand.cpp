@@ -3,6 +3,7 @@
 #include "commands/UserDirCommand.h"
 #include "commands/ShellExecCommand.h"
 #include "utility/AppProfile.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -10,9 +11,12 @@
 #define new DEBUG_NEW
 #endif
 
-UserDirCommand::UserDirCommand() :
+CString UserDirCommand::GetType() { return _T("Builtin-UserDir"); }
+
+UserDirCommand::UserDirCommand(LPCTSTR name) :
 	mRefCount(1)
 {
+	mName = name ? name : _T("userdir");
 }
 
 UserDirCommand::~UserDirCommand()
@@ -21,7 +25,7 @@ UserDirCommand::~UserDirCommand()
 
 CString UserDirCommand::GetName()
 {
-	return _T("userdir");
+	return mName;
 }
 
 CString UserDirCommand::GetDescription()
@@ -61,9 +65,29 @@ int UserDirCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool UserDirCommand::IsEditable()
+{
+	return false;
+}
+
+
+int UserDirCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* UserDirCommand::Clone()
 {
 	return new UserDirCommand();
+}
+
+bool UserDirCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t UserDirCommand::AddRef()

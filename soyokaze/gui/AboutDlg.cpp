@@ -79,8 +79,8 @@ void CAboutDlg::OnNotifyLinkOpen(
 
 bool CAboutDlg::GetBuildDateTime(CTime& tmBuildDate)
 {
-	TCHAR path[32768];
-	GetModuleFileName(NULL, path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
 
 	FILE* fp = nullptr;
  	if(_tfopen_s(&fp, path, _T("rb"))!= 0) {

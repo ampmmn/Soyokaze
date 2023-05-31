@@ -8,6 +8,8 @@
 namespace soyokaze {
 namespace core {
 
+class CommandProvider;
+
 class CommandRepository : public AppPreferenceListenerIF
 {
 private:
@@ -17,16 +19,26 @@ private:
 public:
 	static CommandRepository* GetInstance();
 
-	// $B%3%^%s%I%G!<%?$N%m!<%I(B
+	// コマンドプロバイダ登録
+	void RegisterProvider(CommandProvider* provider);
+
+	// コマンドを登録
+	int RegisterCommand(Command* command);
+	// コマンドの登録を解除
+	int UnregisterCommand(Command* command);
+
+
+	// コマンドデータのロード
 	BOOL Load();
 
-	// $B?75,EPO?%@%$%"%m%0$NI=<((B
-	int NewCommandDialog(const CString* cmdNamePtr, const CString* pathPtr, const CString* descStr = nullptr, const CString* paramStr = nullptr);
-	// $B%3%^%s%IJT=8%@%$%"%m%0$NI=<((B
+	// 新規登録ダイアログの表示
+	int NewCommandDialog(const CommandParameter* param = nullptr);
+
+	// コマンド編集ダイアログの表示
 	int EditCommandDialog(const CString& cmdName);
-	// $B%-!<%o!<%I%^%M!<%8%c%@%$%"%m%0$NI=<((B
+	// キーワードマネージャダイアログの表示
 	int ManagerDialog();
-	// $B$^$H$a$FEPO?%@%$%"%m%0$NI=<((B
+	// まとめて登録ダイアログの表示
 	int RegisterCommandFromFiles(const std::vector<CString>& files);
 
 	bool DeleteCommand(const CString& cmdName);
@@ -41,7 +53,8 @@ public:
 	bool IsValidAsName(const CString& strQueryStr);
 
 protected:
-	virtual void OnAppPreferenceUpdated();
+	void OnAppFirstBoot() override;
+	void OnAppPreferenceUpdated() override;
 
 protected:
 	struct PImpl;

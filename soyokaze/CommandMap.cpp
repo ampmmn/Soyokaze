@@ -7,14 +7,6 @@
 #endif
 
 
-CommandMap::QueryItem::QueryItem(
-	int level,
-	soyokaze::core::Command* cmd
-) : 
-	mMatchLevel(level), mCommand(cmd)
-{
-}
-
 CommandMap::CommandMap()
 {
 }
@@ -50,6 +42,8 @@ CommandMap::Get(const CString& name)
 	if (itFind == mMap.end()) {
 		return nullptr;
 	}
+
+	itFind->second->AddRef();
 	return itFind->second;
 }
 
@@ -93,7 +87,7 @@ void CommandMap::Query(
 		if (matchLevel == Pattern::Mismatch) {
 			continue;
 		}
-		
+		command->AddRef();
 		commands.push_back(QueryItem(matchLevel, command));
 	}
 }
@@ -108,6 +102,7 @@ CommandMap::FindOne(Pattern* pattern)
 		if (command->Match(pattern) == Pattern::Mismatch) {
 			continue;
 		}
+		item.second->AddRef();
 		return item.second;
 	}
 	return nullptr;
@@ -118,6 +113,7 @@ CommandMap::Enumerate(std::vector<soyokaze::core::Command*>& commands)
 {
 	commands.reserve(commands.size() + mMap.size());
 	for (auto item : mMap) {
+		item.second->AddRef();
 		commands.push_back(item.second);
 	}
 	return commands;

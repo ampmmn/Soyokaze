@@ -164,11 +164,14 @@ bool CommandEditDialog::UpdateStatus()
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 
 	// 重複チェック
-	if (mName.CompareNoCase(mOrgName) != 0 && 
-	    cmdRepoPtr->QueryAsWholeMatch(mName, false) != nullptr) {
-		mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
+	if (mName.CompareNoCase(mOrgName) != 0) {
+		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mName, false);
+		if (cmd != nullptr) {
+			cmd->Release();
+			mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
+			GetDlgItem(IDOK)->EnableWindow(FALSE);
+			return false;
+		}
 	}
 
 	// 使えない文字チェック

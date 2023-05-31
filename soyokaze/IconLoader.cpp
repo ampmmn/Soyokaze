@@ -26,7 +26,7 @@ struct IconLoader::PImpl
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
 
 		size_t reqLen = 0;
-		_tgetenv_s(&reqLen, mImgResDll, 32768, SYSTEMROOT);
+		_tgetenv_s(&reqLen, mImgResDll, MAX_PATH_NTFS, SYSTEMROOT);
 		PathAppend(mImgResDll, _T("System32"));
 		PathAppend(mImgResDll, _T("imageres.dll"));
 
@@ -39,7 +39,7 @@ struct IconLoader::PImpl
 		return (n == 1) ? icon[0]: NULL;
 	}
 
-	TCHAR mImgResDll[32768];
+	TCHAR mImgResDll[MAX_PATH_NTFS];
 	HICON mFolderIcon;
 	HICON mWebIcon;
 	HICON mNewIcon;

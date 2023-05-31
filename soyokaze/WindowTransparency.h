@@ -17,7 +17,8 @@ protected:
 	void UpdateStyle();
 
 
-	virtual void OnAppPreferenceUpdated();
+	void OnAppFirstBoot() override;
+	void OnAppPreferenceUpdated() override;
 
 protected:
 	// 対象ウインドウハンドル

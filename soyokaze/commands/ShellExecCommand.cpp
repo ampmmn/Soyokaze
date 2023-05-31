@@ -1,7 +1,12 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecCommand.h"
+#include "gui/CommandEditDialog.h"
+#include "core/CommandRepository.h"
+#include "core/CommandHotKeyManager.h"
+#include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -47,6 +52,7 @@ struct ShellExecCommand::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+CString ShellExecCommand::GetType() { return _T("ShellExec"); }
 
 ShellExecCommand::ShellExecCommand() : in(new PImpl)
 {
@@ -88,7 +94,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	CString paramStr;
 
 	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = (param.GetExtraBoolParam(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
+	bool isOpenPath = (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
@@ -104,7 +110,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 			// 登録されたファイラーがない場合はエクスプローラで開く
 			path = attr.mPath;
 			if (PathIsDirectory(path) == FALSE) {
-				PathRemoveFileSpec(path.GetBuffer(32768));
+				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
 				path.ReleaseBuffer();
 			}
 			paramStr = _T("open");
@@ -359,6 +365,94 @@ int ShellExecCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool ShellExecCommand::IsEditable()
+{
+	return true;
+}
+
+int ShellExecCommand::EditDialog(const Parameter* param)
+{
+	CommandEditDialog dlg;
+	dlg.SetOrgName(in->mName);
+
+	dlg.mName = in->mName;
+	dlg.mDescription = in->mDescription;
+	dlg.mIsRunAsAdmin = in->mRunAs;
+
+	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
+
+	dlg.mPath = attr.mPath;
+	dlg.mParameter = attr.mParam;
+	dlg.mDir = attr.mDir;
+	dlg.SetShowType(attr.mShowType);
+
+	attr = in->mNoParamAttr;
+	dlg.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
+	dlg.mPath0 = attr.mPath;
+	dlg.mParameter0 = attr.mParam;
+
+	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	HOTKEY_ATTR hotKeyAttr;
+	bool isGlobal = false;
+	if (hotKeyManager->HasKeyBinding(dlg.mName, &hotKeyAttr, &isGlobal)) {
+		dlg.mHotKeyAttr = hotKeyAttr;
+		dlg.mIsGlobal = isGlobal;
+	}
+
+	if (dlg.DoModal() != IDOK) {
+		return 1;
+	}
+
+	ShellExecCommand* cmdNew = new ShellExecCommand();
+
+	// 追加する処理
+	cmdNew->SetName(dlg.mName);
+	cmdNew->SetDescription(dlg.mDescription);
+	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath = dlg.mPath;
+	normalAttr.mParam = dlg.mParameter;
+	normalAttr.mDir = dlg.mDir;
+	normalAttr.mShowType = dlg.GetShowType();
+	cmdNew->SetAttribute(normalAttr);
+
+	if (dlg.mIsUse0) {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		param0Attr.mPath = dlg.mPath0;
+		param0Attr.mParam = dlg.mParameter0;
+		param0Attr.mDir = dlg.mDir;
+		param0Attr.mShowType = dlg.GetShowType();
+		cmdNew->SetAttributeForParam0(param0Attr);
+	}
+	else {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		cmdNew->SetAttributeForParam0(param0Attr);
+	}
+
+	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepo->UnregisterCommand(this);
+	cmdRepo->RegisterCommand(cmdNew);
+
+	// ホットキー設定を更新
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
+
+	hotKeyMap.RemoveItem(hotKeyAttr);
+	if (dlg.mHotKeyAttr.IsValid()) {
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+	}
+
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(hotKeyMap);
+
+	pref->Save();
+
+
+	return 0;
+}
+
 void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
 {
 	attr = in->mNormalAttr;
@@ -398,6 +492,17 @@ CString& ShellExecCommand::SanitizeName(
 	str.Replace(_T('['), _T('_'));
 	str.Replace(_T(']'), _T('_'));
 	return str;
+}
+
+bool ShellExecCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+
+	// ToDo: 実装
+
+	return true;
 }
 
 uint32_t ShellExecCommand::AddRef()

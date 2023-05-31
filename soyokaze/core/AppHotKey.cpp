@@ -74,6 +74,9 @@ bool AppHotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 	return true;
 }
 
+void AppHotKey::OnAppFirstBoot()
+{
+}
 
 void AppHotKey::OnAppPreferenceUpdated()
 {

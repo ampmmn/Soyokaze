@@ -31,9 +31,16 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
+	bool IsEditable() override;
+	int EditDialog(const Parameter* param) override;
 	soyokaze::core::Command* Clone() override;
+
+	bool Save(CommandFile* cmdFile) override;
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
+
+	static CString ShellExecCommand::GetType();
 
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);

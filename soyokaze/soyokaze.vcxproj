@@ -370,9 +370,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandHotKeyMappings.h" />
+    <ClInclude Include="commands\BuiltinCommandProvider.h" />
+    <ClInclude Include="commands\PathExeAdhocCommandProvider.h" />
+    <ClInclude Include="commands\ShellExecCommandProvider.h" />
     <ClInclude Include="core\AppHotKey.h" />
     <ClInclude Include="core\CommandHotKeyHandlerIF.h" />
     <ClInclude Include="core\CommandHotKeyManager.h" />
+    <ClInclude Include="core\CommandQueryItem.h" />
     <ClInclude Include="core\GlobalHotKey.h" />
     <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
@@ -380,6 +384,7 @@
     <ClInclude Include="gui\CaptureIconLabel.h" />
     <ClInclude Include="gui\CommandHotKeyDialog.h" />
     <ClInclude Include="gui\ExtensionSettingDialog.h" />
+    <ClInclude Include="gui\SelectCommandTypeDialog.h" />
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
     <ClInclude Include="NamedCommandHotKeyHandler.h" />
@@ -441,8 +446,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandHotKeyMappings.cpp" />
+    <ClCompile Include="commands\BuiltinCommandProvider.cpp" />
+    <ClCompile Include="commands\PathExeAdhocCommandProvider.cpp" />
+    <ClCompile Include="commands\ShellExecCommandProvider.cpp" />
     <ClCompile Include="core\AppHotKey.cpp" />
     <ClCompile Include="core\CommandHotKeyManager.cpp" />
+    <ClCompile Include="core\CommandQueryItem.cpp" />
     <ClCompile Include="core\GlobalHotKey.cpp" />
     <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />
@@ -450,6 +459,7 @@
     <ClCompile Include="gui\CaptureIconLabel.cpp" />
     <ClCompile Include="gui\CommandHotKeyDialog.cpp" />
     <ClCompile Include="gui\ExtensionSettingDialog.cpp" />
+    <ClCompile Include="gui\SelectCommandTypeDialog.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
     <ClCompile Include="NamedCommandHotKeyHandler.cpp" />

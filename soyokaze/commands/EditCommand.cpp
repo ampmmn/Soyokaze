@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "commands/EditCommand.h"
 #include "core/CommandRepository.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -9,8 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
-EditCommand::EditCommand() : mRefCount(1)
+CString EditCommand::GetType() { return _T("Builtin-Edit"); }
+
+EditCommand::EditCommand(LPCTSTR name) : mRefCount(1)
 {
+	mName = name ? name : _T("edit");
 }
 
 EditCommand::~EditCommand()
@@ -19,7 +23,7 @@ EditCommand::~EditCommand()
 
 CString EditCommand::GetName()
 {
-	return _T("edit");
+	return mName;
 }
 
 CString EditCommand::GetDescription()
@@ -48,13 +52,16 @@ BOOL EditCommand::Execute(const Parameter& param)
 	}
 
 	CString editName = args[0];
-	if (cmdRepoPtr->QueryAsWholeMatch(editName) == nullptr) {
+	auto cmd = cmdRepoPtr->QueryAsWholeMatch(editName);
+
+	if (cmd == nullptr) {
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
 		msgStr += _T("\n\n");
 		msgStr += editName;
 		AfxMessageBox(msgStr);
 		return TRUE;
 	}
+	cmd->Release();
 
 	cmdRepoPtr->EditCommandDialog(editName);
 	return TRUE;
@@ -77,9 +84,28 @@ int EditCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool EditCommand::IsEditable()
+{
+	return false;
+}
+
+int EditCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* EditCommand::Clone()
 {
 	return new EditCommand();
+}
+
+bool EditCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t EditCommand::AddRef()

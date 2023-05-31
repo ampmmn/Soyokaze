@@ -234,6 +234,21 @@
     <ClInclude Include="core/CommandRepository.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="commands\ShellExecCommandProvider.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\SelectCommandTypeDialog.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\BuiltinCommandProvider.h">
+      <Filter>commands</Filter>
+    </ClInclude>
+    <ClInclude Include="core\CommandQueryItem.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\PathExeAdhocCommandProvider.h">
+      <Filter>commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -424,6 +439,21 @@
     </ClCompile>
     <ClCompile Include="core/CommandRepository.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ShellExecCommandProvider.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SelectCommandTypeDialog.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\BuiltinCommandProvider.cpp">
+      <Filter>commands</Filter>
+    </ClCompile>
+    <ClCompile Include="core\CommandQueryItem.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\PathExeAdhocCommandProvider.cpp">
+      <Filter>commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

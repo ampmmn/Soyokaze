@@ -30,7 +30,8 @@ public:
 private:
 	static bool LoadKeyConfig(UINT& modifiers, UINT& vk);
 
-	virtual void OnAppPreferenceUpdated();
+	void OnAppFirstBoot() override;
+	void OnAppPreferenceUpdated() override;
 protected:
 	std::unique_ptr<GlobalHotKey> mHotKey;
 };

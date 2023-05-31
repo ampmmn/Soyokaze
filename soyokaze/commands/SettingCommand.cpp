@@ -4,6 +4,7 @@
 #include "gui/SettingDialog.h"
 #include "AppPreference.h"
 #include "HotKeyAttribute.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -11,9 +12,12 @@
 #define new DEBUG_NEW
 #endif
 
-SettingCommand::SettingCommand() :
+CString SettingCommand::GetType() { return _T("Builtin-Setting"); }
+
+SettingCommand::SettingCommand(LPCTSTR name) :
 	mRefCount(1)
 {
+	mName = name ? name : _T("setting");
 }
 
 SettingCommand::~SettingCommand()
@@ -22,7 +26,7 @@ SettingCommand::~SettingCommand()
 
 CString SettingCommand::GetName()
 {
-	return _T("setting");
+	return mName;
 }
 
 CString SettingCommand::GetDescription()
@@ -73,9 +77,29 @@ int SettingCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool SettingCommand::IsEditable()
+{
+	return false;
+}
+
+
+int SettingCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* SettingCommand::Clone()
 {
 	return new SettingCommand();
+}
+
+bool SettingCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t SettingCommand::AddRef()

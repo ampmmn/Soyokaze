@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ReloadCommand.h"
 #include "core/CommandRepository.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -9,9 +10,12 @@
 #define new DEBUG_NEW
 #endif
 
-ReloadCommand::ReloadCommand() :
+CString ReloadCommand::GetType() { return _T("Builtin-Reload"); }
+
+ReloadCommand::ReloadCommand(LPCTSTR name) :
 	mRefCount(1)
 {
+	mName = name ? name : _T("reload");
 }
 
 ReloadCommand::~ReloadCommand()
@@ -20,7 +24,7 @@ ReloadCommand::~ReloadCommand()
 
 CString ReloadCommand::GetName()
 {
-	return _T("reload");
+	return mName;
 }
 
 CString ReloadCommand::GetDescription()
@@ -54,9 +58,28 @@ int ReloadCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool ReloadCommand::IsEditable()
+{
+	return false;
+}
+
+int ReloadCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand();
+}
+
+bool ReloadCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t ReloadCommand::AddRef()

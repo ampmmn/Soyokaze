@@ -40,6 +40,8 @@ public:
 	void RegisterListener(AppPreferenceListenerIF* listener);
 	void UnregisterListener(AppPreferenceListenerIF* listener);
 
+	bool CreateUserDirectory();
+
 protected:
 	AppPreference();
 	~AppPreference();

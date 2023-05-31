@@ -56,8 +56,8 @@ bool WindowPosition::Restore(HWND hwnd)
 		return false;
 	}
 
-	TCHAR path[32768];
-	WindowPosition::GetFilePath(path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	WindowPosition::GetFilePath(path, MAX_PATH_NTFS);
 
 
 	CFile file;
@@ -96,8 +96,8 @@ bool WindowPosition::Update(HWND hwnd)
 bool WindowPosition::Save()
 {
 	try {
-		TCHAR path[32768];
-		WindowPosition::GetFilePath(path, 32768);
+		TCHAR path[MAX_PATH_NTFS];
+		WindowPosition::GetFilePath(path, MAX_PATH_NTFS);
 
 		UINT nFlags = CFile::modeCreate | CFile::modeWrite | CFile::typeBinary;
 		CFile file(path, nFlags);

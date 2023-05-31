@@ -145,7 +145,7 @@ int ExecutableFileCommand::Match(Pattern* pattern)
 	}
 
 	// targetDirsにがいとうするexeがないかをさがす
-	TCHAR path[32768];
+	TCHAR path[MAX_PATH_NTFS];
 	for (const auto& dir : in->targetDirs) {
 		_tcscpy_s(path, dir);
 		PathAppend(path, word);
@@ -159,6 +159,17 @@ int ExecutableFileCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
+bool ExecutableFileCommand::IsEditable()
+{
+	return false;
+}
+
+int ExecutableFileCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command*
 ExecutableFileCommand::Clone()
 {
@@ -170,6 +181,12 @@ ExecutableFileCommand::Clone()
 	clonedObj->in->mExeExtension = in->mExeExtension;
 
 	return clonedObj;
+}
+
+bool ExecutableFileCommand::Save(CommandFile* cmdFile)
+{
+	// 非サポート
+	return false;
 }
 
 uint32_t ExecutableFileCommand::AddRef()

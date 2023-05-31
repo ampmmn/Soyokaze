@@ -43,6 +43,11 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 
 CSoyokazeDlg::~CSoyokazeDlg()
 {
+	for (auto command : mCandidates) {
+		command->Release();
+	}
+	mCandidates.clear();
+
 	mExecHistory->Save();
 
 	delete mWindowTransparencyPtr;
@@ -106,8 +111,8 @@ void CSoyokazeDlg::HideWindow()
 
 void CSoyokazeDlg::ShowHelp()
 {
-	TCHAR path[32768];
-	GetModuleFileName(NULL, path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("help.html"));
 	if (PathFileExists(path) == FALSE) {
@@ -227,9 +232,9 @@ CSoyokazeDlg::OnUserMessageDropObject(
 			int fileCount = (int)DragQueryFile( dropInfo, (UINT)-1, NULL, 0 );
 			files.reserve(fileCount);
 
-			TCHAR filePath[32768];
+			TCHAR filePath[MAX_PATH_NTFS];
 			for (int i = 0; i < fileCount; ++i) {
-				DragQueryFile(dropInfo, i, filePath, 32768);
+				DragQueryFile(dropInfo, i, filePath, MAX_PATH_NTFS);
 				files.push_back(filePath);
 			}
 		}
@@ -241,6 +246,7 @@ CSoyokazeDlg::OnUserMessageDropObject(
 			GetCommandRepository()->RegisterCommandFromFiles(files);
 		}
 		else if (wnd == &mKeywordEdit) {
+			// キーワードのEdit欄にドロップされた場合はパスをコピー
 
 			for (auto& str : files) {
 				if (mCommandStr.IsEmpty() == FALSE) {
@@ -263,7 +269,11 @@ CSoyokazeDlg::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				GetCommandRepository()->NewCommandDialog(nullptr, &urlString);
+				soyokaze::core::CommandParameter param;
+				param.SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
+				param.SetNamedParamString(_T("PATH"), urlString);
+
+				GetCommandRepository()->NewCommandDialog(&param);
 			}
 			else if (wnd == &mKeywordEdit) {
 				mCommandStr += urlString;
@@ -293,12 +303,14 @@ CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 
 	// 
 	try {
-		CString name = processPath.GetProcessName();
-		CString path = processPath.GetProcessPath();
-		CString description = processPath.GetCaption();
-		CString param = processPath.GetCommandLine();
+		soyokaze::core::CommandParameter param;
+		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
+		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
+		param.SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
+		param.SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
 
-		GetCommandRepository()->NewCommandDialog(&name, &path, &description, &param);
+		GetCommandRepository()->NewCommandDialog(&param);
 		return 0;
 	}
 	catch(ProcessPath::Exception& e) {
@@ -331,7 +343,10 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 	if (cmd == nullptr) {
 		return false;
 	}
-	return cmd->Execute(commandParam);
+	bool result = cmd->Execute(commandParam);
+	cmd->Release();
+
+	return result;
 }
 
 // CSoyokazeDlg メッセージ ハンドラー
@@ -565,7 +580,7 @@ void CSoyokazeDlg::OnOK()
 
 		// Ctrlキーが押されているかを設定
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			commandParam.SetExtraBoolParam(_T("CtrlKeyPressed"), true);
+			commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
 		}
 
 		if (cmd->Execute(commandParam) == FALSE) {

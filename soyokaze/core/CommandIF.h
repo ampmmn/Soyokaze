@@ -3,6 +3,8 @@
 #include "core/CommandParameter.h"
 #include "Pattern.h"
 
+class CommandFile;
+
 namespace soyokaze {
 namespace core {
 
@@ -22,7 +24,11 @@ public:
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
+	virtual bool IsEditable() = 0;
+	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
 	virtual Command* Clone() = 0;
+
+	virtual bool Save(CommandFile* cmdFile) = 0;
 
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;

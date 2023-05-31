@@ -47,3 +47,6 @@
 #endif
 
 #include "Logger.h"
+
+#define MAX_PATH_NTFS (32767+1)
+

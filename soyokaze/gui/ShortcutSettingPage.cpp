@@ -78,7 +78,7 @@ END_MESSAGE_MAP()
 
 static void MakeShortcutPath(CString& out, int type, LPCTSTR linkName)
 {
-	LPTSTR path = out.GetBuffer(32768);
+	LPTSTR path = out.GetBuffer(MAX_PATH_NTFS);
 	SHGetSpecialFolderPath(NULL, path, type, 0);
 	PathAppend(path, linkName);
 	out.ReleaseBuffer();
@@ -89,22 +89,22 @@ BOOL ShortcutSettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	GetModuleFileName(NULL, mSoyokazePath.GetBuffer(32768), 32768);
+	GetModuleFileName(NULL, mSoyokazePath.GetBuffer(MAX_PATH_NTFS), MAX_PATH_NTFS);
 	mSoyokazePath.ReleaseBuffer();
 
 	LPCTSTR exeName = PathFindFileName(mSoyokazePath);
 
-	TCHAR linkName[32768];
+	TCHAR linkName[MAX_PATH_NTFS];
 	_tcscpy_s(linkName, exeName);
 	PathRenameExtension(linkName, _T(".lnk"));
 
-	TCHAR linkNameForSendTo[32768];
+	TCHAR linkNameForSendTo[MAX_PATH_NTFS];
 	_tcscpy_s(linkNameForSendTo, exeName);
 	PathRemoveExtension(linkNameForSendTo);
 	_tcscat_s(linkNameForSendTo, _T("に登録"));
 	PathAddExtension(linkNameForSendTo, _T(".lnk"));
 
-	TCHAR linkNameForStartMenu[32768];
+	TCHAR linkNameForStartMenu[MAX_PATH_NTFS];
 	_tcscpy_s(linkNameForStartMenu, exeName);
 	PathRemoveExtension(linkNameForStartMenu);
 	PathAppend(linkNameForStartMenu, exeName);
@@ -114,7 +114,7 @@ BOOL ShortcutSettingPage::OnInitDialog()
 	MakeShortcutPath(mStartMenuPath, CSIDL_PROGRAMS, linkNameForStartMenu);
 
 	mStartMenuDir = mStartMenuPath;
-	PathRemoveFileSpec(mStartMenuDir.GetBuffer(32768));
+	PathRemoveFileSpec(mStartMenuDir.GetBuffer(MAX_PATH_NTFS));
 	mStartMenuDir.ReleaseBuffer();
 
 

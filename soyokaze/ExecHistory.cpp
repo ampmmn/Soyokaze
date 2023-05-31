@@ -63,8 +63,8 @@ void ExecHistory::SetLimit(int limit)
 
 void ExecHistory::Load()
 {
-	TCHAR path[32768];
-	CAppProfile::GetDirPath(path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
 	PathAppend(path, _T("history.txt"));
 
 	CStdioFile file;
@@ -90,8 +90,8 @@ void ExecHistory::Load()
 
 void ExecHistory::Save()
 {
-	TCHAR path[32768];
-	CAppProfile::GetDirPath(path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
 	PathAppend(path, _T("history.txt"));
 
 	CStdioFile file;

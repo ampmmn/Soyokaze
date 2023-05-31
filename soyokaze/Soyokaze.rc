@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 莉･螟悶〒邱ｨ髮・＆繧後◆繝ｪ繧ｽ繝ｼ繧ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 讓呎ｺ悶さ繝ｳ繝昴・繝阪Φ繝・\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 繝ｪ繝懊Φ縺翫ｈ縺ｳ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ 繝舌・ 繝ｪ繧ｽ繝ｼ繧ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -289,6 +289,18 @@ BEGIN
     LTEXT           "※チェックを外すと作成したショートカットは削除されます",IDC_STATIC_REMARK,7,87,253,8
 END
 
+IDD_SELECTCOMMANDTYPE DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "新規作成 - 種類を選択"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "種類の一覧(&L)",IDC_STATIC,7,7,48,8
+    CONTROL         "",IDC_LIST_TYPES,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,20,295,87
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,252,155,50,14
+    CONTROL         "スタティック",IDC_STATIC_DESCRIPTION,"Static",SS_LEFTNOWORDWRAP | WS_BORDER | WS_GROUP,7,112,295,39
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -422,6 +434,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 133
     END
+
+    IDD_SELECTCOMMANDTYPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -540,6 +560,11 @@ BEGIN
 END
 
 IDD_SHORTCUTSETTING AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SELECTCOMMANDTYPE AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -833,6 +858,14 @@ BEGIN
     IDS_BUILDDATE           "ビルド日時"
     IDS_VERSION             "バージョン"
     IDS_NOHOTKEY            "なし"
+    IDS_NORMALCOMMAND       "通常コマンド"
+    IDS_DESCRIPTION_NORMALCOMMAND "ファイルやURLを開くことのできる普通のコマンドです"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_BUILTINCOMMAND      "システムコマンド"
+    IDS_DESCRIPTION_BUILTINCOMMAND "コマンドの登録・整理などSoyokaze自体にかかわるコマンドを登録できます"
 END
 
 #endif    // 日本語 (日本) resources
@@ -852,10 +885,10 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 莉･螟悶〒邱ｨ髮・＆繧後◆繝ｪ繧ｽ繝ｼ繧ｹ
-#include "l.JPN\afxres.rc"      // 讓呎ｺ悶さ繝ｳ繝昴・繝阪Φ繝・
+#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
+#include "l.JPN\afxres.rc"      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 繝ｪ繝懊Φ縺翫ｈ縺ｳ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ 繝舌・ 繝ｪ繧ｽ繝ｼ繧ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
 #endif
 #endif
 

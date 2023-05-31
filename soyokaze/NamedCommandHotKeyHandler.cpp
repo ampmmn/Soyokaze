@@ -33,6 +33,9 @@ bool NamedCommandHotKeyHandler::Invoke()
 	// 入力欄を非表示にして、コマンドを実行する。
 	ShowWindow(AfxGetMainWnd()->GetSafeHwnd(), SW_HIDE);
 
-	return cmd->Execute();
+	bool result = cmd->Execute();
+	cmd->Release();
+
+	return result;
 }
 

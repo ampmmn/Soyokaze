@@ -7,7 +7,7 @@
 #include "Soyokaze.h"
 #include "gui/SoyokazeDlg.h"
 #include "gui/TaskTray.h"
-#include "utility/AppProfile.h"
+#include "AppPreference.h"
 #include "StartupParam.h"
 #include "SharedHwnd.h"
 #include <locale.h>
@@ -87,7 +87,7 @@ BOOL CSoyokazeApp::InitFirstInstance()
 	}
 
 	// 設定ファイル作成用のフォルダをつくる
-	if (CAppProfile::CreateProfileDirectory() == false) {
+	if (AppPreference::Get()->CreateUserDirectory() == false) {
 		AfxMessageBox(_T("Warning: Failed to init profile folder."));
 	}
 

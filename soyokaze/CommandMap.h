@@ -1,27 +1,21 @@
 #pragma once
 
 #include "core/CommandIF.h"
+#include "core/CommandQueryItem.h"
 #include <map>
 #include <vector>
 
 class CommandMap
 {
 public:
-	class QueryItem
-	{
-	public:
-		QueryItem(int level, soyokaze::core::Command* cmd);
-		QueryItem(const QueryItem&) = default;
-
-		int mMatchLevel;
-		soyokaze::core::Command* mCommand;
-	};
-
+	using QueryItem = CommandQueryItem;
 
 public:
 	CommandMap();
 	CommandMap(const CommandMap& rhs);
 	~CommandMap();
+
+	bool Serialize(CommandFile* file);
 
 	void Clear();
 

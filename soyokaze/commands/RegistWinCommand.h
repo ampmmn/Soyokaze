@@ -5,7 +5,7 @@
 class RegistWinCommand : public soyokaze::core::Command
 {
 public:
-	RegistWinCommand();
+	RegistWinCommand(LPCTSTR name = nullptr);
 	virtual ~RegistWinCommand();
 
 	CString GetName() override;
@@ -15,9 +15,16 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
+	bool IsEditable() override;
+	int EditDialog(const Parameter* param) override;
 	soyokaze::core::Command* Clone() override;
+
+	bool Save(CommandFile* cmdFile) override;
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
+
+	static CString GetType();
 
 protected:
 	struct PImpl;

@@ -80,6 +80,10 @@ void WindowTransparency::UpdateStyle()
 	}
 }
 
+void WindowTransparency::OnAppFirstBoot()
+{
+}
+
 void WindowTransparency::OnAppPreferenceUpdated()
 {
 	UpdateStyle();

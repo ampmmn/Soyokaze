@@ -58,8 +58,8 @@ static void TrimComment(CString& s)
  */
 void AppPreference::Load()
 {
-	TCHAR path[32768];
-	CAppProfile::GetFilePath(path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
 
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0) {
@@ -141,8 +141,8 @@ void AppPreference::Load()
 
 void AppPreference::Save()
 {
-	TCHAR path[32768];
-	CAppProfile::GetFilePath(path, 32768);
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
 
 	FILE* fpOut = nullptr;
 	try {
@@ -376,3 +376,28 @@ void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 	mListeners.erase(listener);
 }
 
+bool AppPreference::CreateUserDirectory()
+{
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
+
+	if (PathIsDirectory(path)) {
+		return true;
+	}
+	// フォルダがなければつくる(初回起動とみなす)
+	CString msg;
+	msg.Format(_T("【初回起動】\n設定ファイルは %s 以下に作成されます。"), path);
+	AfxMessageBox(msg);
+
+	if (CreateDirectory(path, NULL) == FALSE) {
+		return false;
+	}
+
+	// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
+	for (auto listener : mListeners) {
+		listener->OnAppFirstBoot();
+	}
+
+	return true;
+
+}

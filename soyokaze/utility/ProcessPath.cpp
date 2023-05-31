@@ -53,8 +53,8 @@ CString ProcessPath::GetProcessPath()
 	}
 
 	CString modulePath;
-	TCHAR* p = modulePath.GetBuffer(32768);
-	DWORD copiedLen = GetProcessImageFileName(hProcess, p, 32768);
+	TCHAR* p = modulePath.GetBuffer(MAX_PATH_NTFS);
+	DWORD copiedLen = GetProcessImageFileName(hProcess, p, MAX_PATH_NTFS);
 	modulePath.ReleaseBuffer();
 	CloseHandle(hProcess);
 	if (copiedLen == 0) {
@@ -108,7 +108,7 @@ CString ProcessPath::GetProcessName()
 	}
 
 	CString moduleName = PathFindFileName(modulePath);
-	PathRemoveExtension(moduleName.GetBuffer(32768));
+	PathRemoveExtension(moduleName.GetBuffer(MAX_PATH_NTFS));
 	moduleName.ReleaseBuffer();
 	return moduleName;
 }

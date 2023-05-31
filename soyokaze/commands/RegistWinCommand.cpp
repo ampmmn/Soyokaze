@@ -3,6 +3,7 @@
 #include "commands/RegistWinCommand.h"
 #include "core/CommandRepository.h"
 #include "IconLoader.h"
+#include "CommandFile.h"
 #include "utility/ProcessPath.h"
 #include "resource.h"
 #include <map>
@@ -34,11 +35,20 @@ struct RegistWinCommand::PImpl
 		}
 	}
 	CString mErrorMsg;
+	CString mName;
 	uint32_t mRefCount;
 };
 
-RegistWinCommand::RegistWinCommand() : in(new PImpl)
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+CString RegistWinCommand::GetType() { return _T("Builtin-RegisterWindow"); }
+
+
+RegistWinCommand::RegistWinCommand(LPCTSTR name) : in(new PImpl)
 {
+	in->mName = name ? name : _T("registwin");
 	in->mRefCount = 1;
 }
 
@@ -49,7 +59,7 @@ RegistWinCommand::~RegistWinCommand()
 
 CString RegistWinCommand::GetName()
 {
-	return _T("registwin");
+	return in->mName;
 }
 
 CString RegistWinCommand::GetDescription()
@@ -71,14 +81,17 @@ BOOL RegistWinCommand::Execute()
 	ProcessPath processPath(hNextWindow);
 
 	try {
-		CString modulePath = processPath.GetProcessPath();
-		CString moduleName = processPath.GetProcessName();
+		soyokaze::core::CommandParameter param;
+		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
+		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
+
 		// ウインドウタイトルを説明として使う
-		CString description = processPath.GetCaption();
-		CString param = processPath.GetCommandLine();
+		param.SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
+		param.SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
 
 		auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-		cmdRepoPtr->NewCommandDialog(&moduleName, &modulePath, &description, &param);
+		cmdRepoPtr->NewCommandDialog(&param);
 		return TRUE;
 	}
 	catch(ProcessPath::Exception& e) {
@@ -114,9 +127,28 @@ int RegistWinCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool RegistWinCommand::IsEditable()
+{
+	return false;
+}
+
+int RegistWinCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* RegistWinCommand::Clone()
 {
 	return new RegistWinCommand();
+}
+
+bool RegistWinCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t RegistWinCommand::AddRef()

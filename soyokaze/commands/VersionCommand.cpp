@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "VersionCommand.h"
 #include "gui/AboutDlg.h"
+#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -9,9 +10,12 @@
 #define new DEBUG_NEW
 #endif
 
-VersionCommand::VersionCommand() : 
+CString VersionCommand::GetType() { return _T("Builtin-Version"); }
+
+VersionCommand::VersionCommand(LPCTSTR name) : 
 	mRefCount(1)
 {
+	mName = name ? name : _T("version");
 }
 
 VersionCommand::~VersionCommand()
@@ -20,7 +24,7 @@ VersionCommand::~VersionCommand()
 
 CString VersionCommand::GetName()
 {
-	return _T("version");
+	return mName;
 }
 
 CString VersionCommand::GetDescription()
@@ -57,10 +61,29 @@ int VersionCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool VersionCommand::IsEditable()
+{
+	return false;
+}
+
+int VersionCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command*
 VersionCommand::Clone()
 {
 	return new VersionCommand();
+}
+
+bool VersionCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t VersionCommand::AddRef()

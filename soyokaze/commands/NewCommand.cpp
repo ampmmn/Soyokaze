@@ -4,6 +4,7 @@
 #include "commands/ShellExecCommand.h"
 #include "core/CommandRepository.h"
 #include "IconLoader.h"
+#include "CommandFile.h"
 #include "gui/CommandEditDialog.h"
 #include "resource.h"
 
@@ -11,9 +12,12 @@
 #define new DEBUG_NEW
 #endif
 
-NewCommand::NewCommand() :
+CString NewCommand::GetType() { return _T("Builtin-New"); }
+
+NewCommand::NewCommand(LPCTSTR name) :
 	mRefCount(1)
 {
+	mName = name ? name : _T("new");
 }
 
 NewCommand::~NewCommand()
@@ -22,7 +26,7 @@ NewCommand::~NewCommand()
 
 CString NewCommand::GetName()
 {
-	return _T("new");
+	return mName;
 }
 
 CString NewCommand::GetDescription()
@@ -33,25 +37,34 @@ CString NewCommand::GetDescription()
 BOOL NewCommand::Execute()
 {
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog(nullptr, nullptr);
+	cmdRepoPtr->NewCommandDialog();
 	return TRUE;
 }
 
 BOOL NewCommand::Execute(const Parameter& param)
 {
+	Parameter inParam;
+
+	bool hasParam = false;
+
 	std::vector<CString> args;
 	param.GetParameters(args);
-
-	const CString* namePtr = nullptr;
 	if (args.size() > 0) {
-		namePtr = &args[0];
+		inParam.SetNamedParamString(_T("COMMAND"), args[0]);
+		hasParam = true;
 	}
 	const CString* pathPtr = nullptr;
 	if (args.size() > 1) {
-		pathPtr = &args[1];
+		inParam.SetNamedParamString(_T("PATH"), args[1]);
+		hasParam = true;
 	}
+	if (hasParam) {
+		inParam.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+	}
+
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog(namePtr, pathPtr);
+	cmdRepoPtr->NewCommandDialog(&inParam);
+
 	return TRUE;
 }
 
@@ -70,9 +83,29 @@ int NewCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool NewCommand::IsEditable()
+{
+	return false;
+}
+
+
+int NewCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* NewCommand::Clone()
 {
 	return new NewCommand();
+}
+
+bool NewCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t NewCommand::AddRef()

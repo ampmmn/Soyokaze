@@ -4,14 +4,18 @@
 #include "commands/ShellExecCommand.h"
 #include "utility/AppProfile.h"
 #include "IconLoader.h"
+#include "CommandFile.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-MainDirCommand::MainDirCommand() : mRefCount(1)
+CString MainDirCommand::GetType() { return _T("Builtin-MainDir"); }
+
+MainDirCommand::MainDirCommand(LPCTSTR name) : mRefCount(1)
 {
+	mName = name ? name : _T("maindir");
 }
 
 MainDirCommand::~MainDirCommand()
@@ -20,7 +24,7 @@ MainDirCommand::~MainDirCommand()
 
 CString MainDirCommand::GetName()
 {
-	return _T("maindir");
+	return mName;
 }
 
 CString MainDirCommand::GetDescription()
@@ -61,9 +65,29 @@ int MainDirCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool MainDirCommand::IsEditable()
+{
+	return false;
+}
+
+
+int MainDirCommand::EditDialog(const Parameter* param)
+{
+	// 実装なし
+	return -1;
+}
+
 soyokaze::core::Command* MainDirCommand::Clone()
 {
 	return new MainDirCommand();
+}
+
+bool MainDirCommand::Save(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+	auto entry = cmdFile->NewEntry(GetName());
+	cmdFile->Set(entry, _T("Type"), GetType());
+	return true;
 }
 
 uint32_t MainDirCommand::AddRef()

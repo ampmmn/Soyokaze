@@ -19,8 +19,13 @@ public:
 
 	void GetParameters(std::vector<CString>& args) const;
 
-	bool GetExtraBoolParam(LPCTSTR name) const;
-	void SetExtraBoolParam(LPCTSTR name, bool value);
+	bool GetNamedParam(LPCTSTR name, CString* value) const;
+
+	CString GetNamedParamString(LPCTSTR name) const;
+	void SetNamedParamString(LPCTSTR name, LPCTSTR value);
+
+	bool GetNamedParamBool(LPCTSTR name) const;
+	void SetNamedParamBool(LPCTSTR name, bool value);
 
 	void AppendParameterPart(CString& str);
 

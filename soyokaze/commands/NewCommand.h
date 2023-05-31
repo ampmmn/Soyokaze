@@ -5,7 +5,7 @@
 class NewCommand : public soyokaze::core::Command
 {
 public:
-	NewCommand();
+	NewCommand(LPCTSTR name = nullptr);
 	virtual ~NewCommand();
 
 	CString GetName() override;
@@ -15,11 +15,19 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
+	bool IsEditable() override;
+	int EditDialog(const Parameter* param) override;
 	soyokaze::core::Command* Clone() override;
+
+	bool Save(CommandFile* cmdFile) override;
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
+	static CString GetType();
+
 protected:
+	CString mName;
 	uint32_t mRefCount;
 };
 

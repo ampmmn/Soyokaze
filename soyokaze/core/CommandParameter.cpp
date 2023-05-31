@@ -31,6 +31,7 @@ struct CommandParameter::PImpl
 	CString mParamPart;
 	bool mHasSpace;
 
+	std::map<CString, CString> mStrParamMap;
 	std::map<CString, bool> mBoolParamMap;
 };
 
@@ -142,6 +143,22 @@ void CommandParameter::GetParameters(std::vector<CString>& args) const
 	args.swap(argsTmp);
 }
 
+
+bool CommandParameter::GetNamedParam(
+	LPCTSTR name,
+	CString* value
+) const
+{
+	auto& it = in->mStrParamMap.find(name);
+	if (it == in->mStrParamMap.end()) {
+		return false;
+	}
+	if (value) {
+		*value = it->second;
+	}
+	return true;
+}
+
 void CommandParameter::AppendParameterPart(CString& str)
 {
 	if (in->mHasSpace) {
@@ -174,7 +191,21 @@ bool CommandParameter::ComplementCommand(
 	return true;
 }
 
-bool CommandParameter::GetExtraBoolParam(LPCTSTR name) const
+CString CommandParameter::GetNamedParamString(LPCTSTR name) const
+{
+	auto itFind = in->mStrParamMap.find(name);
+	if (itFind == in->mStrParamMap.end()) {
+		return _T("");
+	}
+	return itFind->second;
+}
+
+void CommandParameter::SetNamedParamString(LPCTSTR name, LPCTSTR value)
+{
+	in->mStrParamMap[name] = value;
+}
+
+bool CommandParameter::GetNamedParamBool(LPCTSTR name) const
 {
 	auto itFind = in->mBoolParamMap.find(name);
 	if (itFind == in->mBoolParamMap.end()) {
@@ -183,7 +214,7 @@ bool CommandParameter::GetExtraBoolParam(LPCTSTR name) const
 	return itFind->second;
 }
 
-void CommandParameter::SetExtraBoolParam(
+void CommandParameter::SetNamedParamBool(
 	LPCTSTR name,
 	bool value
 )
