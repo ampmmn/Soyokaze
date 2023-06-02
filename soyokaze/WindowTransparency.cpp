@@ -89,3 +89,8 @@ void WindowTransparency::OnAppPreferenceUpdated()
 	UpdateStyle();
 }
 
+void WindowTransparency::OnAppExit()
+{
+	AppPreference::Get()->UnregisterListener(this);
+}
+

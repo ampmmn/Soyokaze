@@ -10,7 +10,7 @@
 #include "WholeMatchPattern.h"
 #include "core/CommandProviderIF.h"
 #include "CommandFile.h"
-#include "commands/ShellExecCommand.h"
+#include "commands/shellexecute/ShellExecCommand.h"
 #include "gui/KeywordManagerDialog.h"
 #include "gui/SelectFilesDialog.h"
 #include "gui/SelectCommandTypeDialog.h"
@@ -23,6 +23,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 namespace soyokaze {
 namespace core {
@@ -120,11 +122,6 @@ CommandRepository::CommandRepository() : in(new PImpl)
 
 CommandRepository::~CommandRepository()
 {
-	for (auto provider : in->mProviders) {
-		provider->Release();
-	}
-
-	AppPreference::Get()->UnregisterListener(this);
 }
 
 // コマンドプロバイダ登録
@@ -503,6 +500,16 @@ void CommandRepository::OnAppPreferenceUpdated()
 {
 	// アプリ設定変更の影響を受ける項目の再登録
 	in->ReloadPatternObject();
+}
+
+void CommandRepository::OnAppExit()
+{
+	for (auto provider : in->mProviders) {
+		provider->Release();
+	}
+	in->mProviders.clear();
+
+	AppPreference::Get()->UnregisterListener(this);
 }
 
 }

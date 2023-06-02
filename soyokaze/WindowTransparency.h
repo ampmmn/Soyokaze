@@ -19,6 +19,7 @@ protected:
 
 	void OnAppFirstBoot() override;
 	void OnAppPreferenceUpdated() override;
+	void OnAppExit() override;
 
 protected:
 	// 対象ウインドウハンドル

@@ -84,6 +84,12 @@ void AppHotKey::OnAppPreferenceUpdated()
 	Reload();
 }
 
+void AppHotKey::OnAppExit()
+{
+	AppPreference::Get()->UnregisterListener(this);
+}
+
+
 }
 }
 

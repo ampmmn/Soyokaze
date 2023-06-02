@@ -7,5 +7,6 @@ public:
 
 	virtual void OnAppFirstBoot() = 0;
 	virtual void OnAppPreferenceUpdated() = 0;
+	virtual void OnAppExit() = 0;
 };
 

@@ -124,6 +124,9 @@ BOOL CSoyokazeApp::InitFirstInstance()
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();
 #endif
+
+	AppPreference::Get()->OnExit();
+
 	return FALSE;
 }
 

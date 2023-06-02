@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CommandFile.h"
-#include "commands/ShellExecCommand.h"
+#include "commands/shellexecute/ShellExecCommand.h"
 #include <map>
 #include <set>
 #include <regex>
@@ -9,6 +9,9 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+
 
 class CommandFile::Entry
 {

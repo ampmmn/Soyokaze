@@ -32,6 +32,7 @@ private:
 
 	void OnAppFirstBoot() override;
 	void OnAppPreferenceUpdated() override;
+	void OnAppExit() override;
 protected:
 	std::unique_ptr<GlobalHotKey> mHotKey;
 };

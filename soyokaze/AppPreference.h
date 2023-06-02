@@ -13,6 +13,7 @@ public:
 
 	void Load();
 	void Save();
+	void OnExit();
 
 	void SetSettings(const Settings& settings);
 	const Settings& GetSettings();

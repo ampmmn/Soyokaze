@@ -25,6 +25,15 @@
     <Filter Include="core">
       <UniqueIdentifier>{d32d2dfa-ffaf-4137-9f65-a42504cb6cdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\shellexecute">
+      <UniqueIdentifier>{b6de4d04-4dc2-46af-aa21-fa35db0ffc15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\builtin">
+      <UniqueIdentifier>{e4d76de7-2d37-4fc7-b06e-c9e317a4e398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\pathfind">
+      <UniqueIdentifier>{a23e7e1b-61db-4f55-89e3-ccc0b6590dcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -45,18 +54,6 @@
     <ClInclude Include="CommandMap.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="commands\ExitCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\ReloadCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\ShellExecCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\VersionCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
     <ClInclude Include="AppPreference.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -75,14 +72,8 @@
     <ClInclude Include="SkipMatchPattern.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="commands\UserDirCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\MainDirCommand.h">
-      <Filter>commands</Filter>
     </ClInclude>
     <ClInclude Include="Arguments.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -90,23 +81,8 @@
     <ClInclude Include="WholeMatchPattern.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="commands\ExecutableFileCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\SettingCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
     <ClInclude Include="IconLoader.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\NewCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\EditCommand.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\ManagerCommand.h">
-      <Filter>commands</Filter>
     </ClInclude>
     <ClInclude Include="CommandFile.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -116,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="utility\ShortcutFile.h">
       <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\RegistWinCommand.h">
-      <Filter>commands</Filter>
     </ClInclude>
     <ClInclude Include="gui/AboutDlg.h">
       <Filter>gui</Filter>
@@ -234,20 +207,59 @@
     <ClInclude Include="core/CommandRepository.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="commands\ShellExecCommandProvider.h">
-      <Filter>commands</Filter>
-    </ClInclude>
     <ClInclude Include="gui\SelectCommandTypeDialog.h">
-      <Filter>commands</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\BuiltinCommandProvider.h">
       <Filter>commands</Filter>
     </ClInclude>
     <ClInclude Include="core\CommandQueryItem.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="commands\PathExeAdhocCommandProvider.h">
-      <Filter>commands</Filter>
+    <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecCommand.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinCommandProvider.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\EditCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\ExitCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\MainDirCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\ManagerCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\NewCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\ReloadCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\RegistWinCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\SettingCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\UserDirCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\VersionCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathfind\PathExecuteCommand.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathfind\ExecuteHistory.h">
+      <Filter>commands\pathfind</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -259,18 +271,6 @@
     </ClCompile>
     <ClCompile Include="CommandMap.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\ExitCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\ReloadCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\ShellExecCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\VersionCommand.cpp">
-      <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="AppPreference.cpp">
       <Filter>ソース ファイル</Filter>
@@ -287,17 +287,11 @@
     <ClCompile Include="SkipMatchPattern.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="commands\UserDirCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
     <ClCompile Include="WindowTransparency.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\MainDirCommand.cpp">
-      <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="Arguments.cpp">
       <Filter>ソース ファイル</Filter>
@@ -305,26 +299,11 @@
     <ClCompile Include="WholeMatchPattern.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="commands\ExecutableFileCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
     <ClCompile Include="Pattern.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="commands\SettingCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
     <ClCompile Include="IconLoader.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\NewCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\EditCommand.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\ManagerCommand.cpp">
-      <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="CommandFile.cpp">
       <Filter>ソース ファイル</Filter>
@@ -334,9 +313,6 @@
     </ClCompile>
     <ClCompile Include="utility\ShortcutFile.cpp">
       <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\RegistWinCommand.cpp">
-      <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="gui/AboutDlg.cpp">
       <Filter>gui</Filter>
@@ -440,20 +416,59 @@
     <ClCompile Include="core/CommandRepository.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="commands\ShellExecCommandProvider.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
     <ClCompile Include="gui\SelectCommandTypeDialog.cpp">
-      <Filter>commands</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\BuiltinCommandProvider.cpp">
       <Filter>commands</Filter>
     </ClCompile>
     <ClCompile Include="core\CommandQueryItem.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="commands\PathExeAdhocCommandProvider.cpp">
-      <Filter>commands</Filter>
+    <ClCompile Include="commands\shellexecute\ShellExecCommand.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\EditCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\ExitCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\MainDirCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\ManagerCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\NewCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\RegistWinCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\ReloadCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\SettingCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\UserDirCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\VersionCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp">
+      <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\PathExecuteCommand.cpp">
+      <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\ExecuteHistory.cpp">
+      <Filter>commands\pathfind</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

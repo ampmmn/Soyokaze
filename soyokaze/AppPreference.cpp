@@ -232,6 +232,15 @@ void AppPreference::Save()
 	}
 }
 
+void AppPreference::OnExit()
+{
+	// リスナーへ終了を通知
+	auto cloned = mListeners;
+	for (auto listener : cloned) {
+		listener->OnAppExit();
+	}
+}
+
 
 CString AppPreference::GetFilerPath()
 {
