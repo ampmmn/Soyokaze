@@ -21,21 +21,29 @@ struct RegistWinCommand::PImpl
 {
 	HWND GetTargetWindow(HWND startHwnd)
 	{
-		HWND currentHwnd = startHwnd;
+		// 自分自身を非表示にした後に最前面になるウインドウのハンドルを取得
+		ShowWindow(startHwnd, SW_HIDE);
+		// Note: 表示状態を変えてしまうが、現状はこの後の処理で
+		//       startHwndのウインドウを非表示にしているのでよしとする
+		HWND currentHwnd = GetForegroundWindow();
+
 		DWORD currentPid = GetCurrentProcessId();
-		for(;;) {
-			HWND hwnd = GetWindow(currentHwnd, GW_HWNDNEXT);
+		for(HWND hwnd = currentHwnd;;hwnd = GetWindow(hwnd, GW_HWNDNEXT)) {
 			if (hwnd == NULL) {
 				return NULL;
 			}
 
+			// 自プロセスのウインドウは除外
 			DWORD pid;
 			GetWindowThreadProcessId(hwnd, &pid);
-			if (pid == currentPid || IsWindowVisible(hwnd) == FALSE) {
-				currentHwnd = hwnd;
+			if (pid == currentPid) {
+				continue;
+			 
+			}
+			// 非表示のウインドウも除外
+			if (IsWindowVisible(hwnd) == FALSE) {
 				continue;
 			}
-
 			return hwnd;
 		}
 	}
