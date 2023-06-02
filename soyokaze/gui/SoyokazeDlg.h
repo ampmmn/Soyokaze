@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include "gui/KeywordEdit.h"
 #include "gui/CmdReceiveEdit.h"
 #include "gui/CaptureIconLabel.h"
@@ -61,49 +62,8 @@ protected:
 
 // 実装
 protected:
-	HICON m_hIcon;
-
-	// キーワード入力欄の文字列
-	CString mCommandStr;
-	// 現在選択中のコマンドの説明
-	CString m_strDescription;
-
-	// 現在の候補
-	std::vector<soyokaze::core::Command*> mCandidates;
-
-	// 選択中の候補
-	int m_nSelIndex;
-
-	// コマンド実行履歴
-	ExecHistory* mExecHistory;
-
-	// ウインドウハンドル(共有メモリに保存する用)
-	SharedHwnd* m_pSharedHwnd;
-	   // 後で起動したプロセスから有効化するために共有メモリに保存している
-
-	// 候補一覧表示用リストボックス
-	CListBox mCandidateListBox;
-	// キーワード入力エディットボックス
-	KeywordEdit mKeywordEdit;
-	DWORD mLastCaretPos;
-
-	// 外部からのコマンド受付用エディットボックス
-	CmdReceiveEdit mCmdReceiveEdit;
-
-	// アイコン描画用ラベル
-	CaptureIconLabel mIconLabel;
-
-	// 入力画面を呼び出すホットキー関連の処理をする
-	AppHotKey* mHotKeyPtr;
-
-	// ウインドウ位置を保存するためのクラス
-	WindowPosition* mWindowPositionPtr;
-	// ウインドウの透明度を制御するためのクラス
-	WindowTransparency* mWindowTransparencyPtr;
-
-	// ドロップターゲット
-	SoyokazeDropTarget mDropTargetDialog;
-	SoyokazeDropTarget mDropTargetEdit;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;
