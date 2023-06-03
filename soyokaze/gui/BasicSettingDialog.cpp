@@ -25,8 +25,8 @@ BOOL BasicSettingDialog::OnKillActive()
 
 BOOL BasicSettingDialog::OnSetActive()
 {
-	mHotKeyAttr = HOTKEY_ATTR(mSettingsPtr->Get(_T("HotKey:Modifiers"), 5),
-		                        mSettingsPtr->Get(_T("HotKey:VirtualKeyCode"), 112));
+	mHotKeyAttr = HOTKEY_ATTR(mSettingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
+		                        mSettingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
 	mHotKey = mHotKeyAttr.ToString();
 
 	mIsShowToggle = mSettingsPtr->Get(_T("Soyokaze:ShowToggle"), false);
