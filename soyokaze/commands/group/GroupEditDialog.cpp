@@ -371,6 +371,7 @@ void GroupEditDialog::OnButtonDelete()
 	}
 
 	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 void GroupEditDialog::OnButtonUp()
@@ -387,6 +388,7 @@ void GroupEditDialog::OnButtonUp()
 	SwapItem(itemIndex, itemIndex-1);
 
 	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 void GroupEditDialog::OnButtonDown()
@@ -403,11 +405,13 @@ void GroupEditDialog::OnButtonDown()
 	SwapItem(itemIndex, itemIndex+1);
 
 	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 void GroupEditDialog::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	UpdateStatus();
+	UpdateData(FALSE);
 	*pResult = 0;
 }
 
@@ -455,6 +459,8 @@ void GroupEditDialog::OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult)
 		if (SelectCommand(index) == false) {
 			return;
 		}
+		UpdateStatus();
+		UpdateData(FALSE);
 	}
 	else {
 		return;
