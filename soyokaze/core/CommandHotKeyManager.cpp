@@ -140,6 +140,7 @@ HACCEL CommandHotKeyManager::GetAccelerator()
 	}
 
 	in->mAccel = CreateAcceleratorTable(&accels.front(), (int)accels.size());
+	in->mIsChanged = false;
 	return in->mAccel;
 }
 

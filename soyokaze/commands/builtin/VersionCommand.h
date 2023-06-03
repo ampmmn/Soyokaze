@@ -32,6 +32,7 @@ public:
 
 protected:
 	CString mName;
+	bool mIsExecuting;
 	uint32_t mRefCount;
 };
 

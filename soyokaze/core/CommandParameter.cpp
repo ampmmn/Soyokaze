@@ -72,6 +72,16 @@ const CString& CommandParameter::GetParameterString() const
 	return in->mParamPart;
 }
 
+void CommandParameter::CopyParamTo(CommandParameter& rhs) const
+{
+	rhs.in->mParamPart = in->mParamPart;
+	rhs.in->mHasSpace = in->mHasSpace;
+
+	// 内部用のパラメータ↓はコピーしない
+	//rhs.in->mStrParamMap = in->mStrParamMap;
+	//rhs.in->mBoolParamMap = in->mBoolParamMap;
+}
+
 void CommandParameter::GetParameters(std::vector<CString>& args) const
 {
 	CString s = in->mParamPart;

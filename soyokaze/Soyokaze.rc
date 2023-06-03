@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 髣比ｼ夲ｽｽ・･髯樊ｻ薙§邵ｲ蟶昴％繝ｻ・ｨ鬯ｮ・ｮ郢晢ｽｻ繝ｻ繝ｻ・ｹ・ｧ陟募ｨｯ陞ｺ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 髫ｶ轣倡ｶ懊・・ｺ隰費ｽｶ邵ｺ諷包ｽｹ譎｢・ｽ・ｳ驛｢譎・ｺ｢郢晢ｽｻ驛｢譎樔ｺゑｾ趣ｽｦ驛｢譏ｴ繝ｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 驛｢譎｢・ｽ・ｪ驛｢譎・鯵・趣ｽｦ驍ｵ・ｺ驗呻ｽｫ繝ｻ閧ｲ・ｸ・ｺ繝ｻ・ｳ驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取ｺｽ・ｹ譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ 驛｢譎√・郢晢ｽｻ 驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -301,6 +301,35 @@ BEGIN
     CONTROL         "スタティック",IDC_STATIC_DESCRIPTION,"Static",SS_LEFTNOWORDWRAP | WS_BORDER | WS_GROUP,7,112,295,39
 END
 
+IDD_GROUP DIALOGEX 0, 0, 337, 334
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "グループの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "グループの名前(&N):",IDC_STATIC,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,154,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",IDC_STATIC,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,154,14,ES_AUTOHSCROLL
+    LTEXT           "グループとして実行するコマンド(&L):",IDC_STATIC,9,67,122,8
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,20,82,226,120
+    PUSHBUTTON      "追加(&A)",IDC_BUTTON_ADD,255,83,50,14
+    PUSHBUTTON      "削除(&R)",IDC_BUTTON_DELETE,254,103,50,14
+    PUSHBUTTON      "上へ移動(&U)",IDC_BUTTON_UP,254,121,50,14
+    PUSHBUTTON      "下へ移動(&O)",IDC_BUTTON_DOWN,254,139,50,14
+    CONTROL         "全てのコマンドに同じパラメータを渡す(&P)",IDC_CHECK_PARAM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,212,139,10
+    CONTROL         "繰り返し実行する(&E)",IDC_CHECK_REPEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,241,81,10
+    LTEXT           "実行回数(&M):",IDC_STATIC,42,259,79,8
+    EDITTEXT        IDC_EDIT_REPEATS,106,255,56,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "実行前に確認ダイアログを出す(&C)",IDC_CHECK_CONFIRM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,275,123,10
+    LTEXT           "ホットキー(K):",IDC_STATIC,20,294,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY2,111,291,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,291,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,313,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,313,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+    LTEXT           "(意味が分からない場合はチェックなし)",IDC_STATIC,32,226,147,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -442,6 +471,15 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
     END
+
+    IDD_GROUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 327
+        HORZGUIDE, 327
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -567,6 +605,33 @@ END
 IDD_SELECTCOMMANDTYPE AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_GROUP AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0
 END
 
 
@@ -829,20 +894,23 @@ IDC_CAPTUREWINDOW       CURSOR                  "CAPTURE.cur"
 STRINGTABLE
 BEGIN
     IDS_ABOUTBOX            "Soyokazeについて(&A)..."
+    IDS_ERR_GROUPITEMEMPTY  "グループとして実行するコマンドを追加してください"
     ID_STRING_MISMATCH      "(一致候補なし)"
     ID_STRING_DEFAULTDESCRIPTION "コマンドを入力"
     IDS_MENUTEXT_SHOW       "表示(&U)"
+    IDS_TITLE_CONFIRMRUNGROUP "グループ実行の確認"
     IDS_ERR_NAMEISEMPTY     "名前を入力してください"
     IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
+    IDS_CONFIRMRUNGROUP     "グループ: %s を実行します。よろしいですか?"
     IDS_ERR_NAMEALREADYEXISTS "すでに使用されています"
     IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
-    IDS_ERR_PATH0ISEMPTY    "【実行時引数なし】実行ファイルまたはURLを入力してください"
-    IDS_NAME                "名前"
-    IDS_DESCRIPTION         "説明"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_ERR_PATH0ISEMPTY    "【実行時引数なし】実行ファイルまたはURLを入力してください"
+    IDS_NAME                "名前"
+    IDS_DESCRIPTION         "説明"
     IDS_CONFIRM_DELETE      "以下のコマンドを削除します。"
     IDS_ERR_NAMEDOESNOTEXIST "該当するコマンドはありません。"
     IDS_FILTER_EXE          "実行ファイル(*.exe)|*.exe|全てのファイル(*.*)|*.*||"
@@ -856,16 +924,19 @@ BEGIN
     IDS_NEWREGISTER         "新規作成"
     IDS_PASTE               "貼り付け"
     IDS_BUILDDATE           "ビルド日時"
-    IDS_VERSION             "バージョン"
-    IDS_NOHOTKEY            "なし"
-    IDS_NORMALCOMMAND       "通常コマンド"
-    IDS_DESCRIPTION_NORMALCOMMAND "ファイルやURLを開くことのできる普通のコマンドです"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_VERSION             "バージョン"
+    IDS_NOHOTKEY            "なし"
+    IDS_NORMALCOMMAND       "通常コマンド"
+    IDS_DESCRIPTION_NORMALCOMMAND "ファイルやURLを開くことのできる普通のコマンドです"
     IDS_BUILTINCOMMAND      "システムコマンド"
     IDS_DESCRIPTION_BUILTINCOMMAND "コマンドの登録・整理などSoyokaze自体にかかわるコマンドを登録できます"
+    IDS_GROUPCOMMAND        "グループ"
+    IDS_DESCRIPTION_GROUPCOMMAND "キーワードの分類・連続起動を可能にするグループを作ります"
+    IDS_ISWAIT              "完了するまで待つ"
 END
 
 #endif    // 日本語 (日本) resources

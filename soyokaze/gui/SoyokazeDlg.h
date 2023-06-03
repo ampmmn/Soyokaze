@@ -88,6 +88,7 @@ protected:
 	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageHideAtFirst(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 public:

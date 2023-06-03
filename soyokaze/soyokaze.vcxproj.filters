@@ -34,6 +34,9 @@
     <Filter Include="commands\pathfind">
       <UniqueIdentifier>{a23e7e1b-61db-4f55-89e3-ccc0b6590dcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\group">
+      <UniqueIdentifier>{81f4aa39-12c6-479a-b890-e6970fd7919c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -261,6 +264,21 @@
     <ClInclude Include="commands\pathfind\ExecuteHistory.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
+    <ClInclude Include="commands\group\GroupCommand.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\GroupCommandProvider.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\GroupEditDialog.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\CommandParam.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ModalComboBox.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -469,6 +487,21 @@
     </ClCompile>
     <ClCompile Include="commands\pathfind\ExecuteHistory.cpp">
       <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupCommand.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupCommandProvider.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupEditDialog.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\CommandParam.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ModalComboBox.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -506,10 +506,24 @@ CString& ShellExecCommand::SanitizeName(
 bool ShellExecCommand::Save(CommandFile* cmdFile)
 {
 	ASSERT(cmdFile);
+
 	auto entry = cmdFile->NewEntry(GetName());
 	cmdFile->Set(entry, _T("Type"), GetType());
 
-	// ToDo: 実装
+	cmdFile->Set(entry, _T("description"), GetDescription());
+	cmdFile->Set(entry, _T("runas"), GetRunAs());
+
+	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
+	cmdFile->Set(entry, _T("path"), normalAttr.mPath);
+	cmdFile->Set(entry, _T("dir"), normalAttr.mDir);
+	cmdFile->Set(entry, _T("parameter"), normalAttr.mParam);
+	cmdFile->Set(entry, _T("show"), normalAttr.mShowType);
+
+	ShellExecCommand::ATTRIBUTE& param0Attr = in->mNoParamAttr;
+	cmdFile->Set(entry, _T("path0"), param0Attr.mPath);
+	cmdFile->Set(entry, _T("dir0"), param0Attr.mDir);
+	cmdFile->Set(entry, _T("parameter0"), param0Attr.mParam);
+	cmdFile->Set(entry, _T("show0"), param0Attr.mShowType);
 
 	return true;
 }

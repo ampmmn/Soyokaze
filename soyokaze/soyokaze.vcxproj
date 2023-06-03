@@ -371,6 +371,10 @@
   <ItemGroup>
     <ClInclude Include="CommandHotKeyMappings.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
+    <ClInclude Include="commands\group\CommandParam.h" />
+    <ClInclude Include="commands\group\GroupCommand.h" />
+    <ClInclude Include="commands\group\GroupCommandProvider.h" />
+    <ClInclude Include="commands\group\GroupEditDialog.h" />
     <ClInclude Include="commands\pathfind\ExecuteHistory.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
@@ -385,6 +389,7 @@
     <ClInclude Include="gui\CaptureIconLabel.h" />
     <ClInclude Include="gui\CommandHotKeyDialog.h" />
     <ClInclude Include="gui\ExtensionSettingDialog.h" />
+    <ClInclude Include="gui\ModalComboBox.h" />
     <ClInclude Include="gui\SelectCommandTypeDialog.h" />
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
@@ -448,6 +453,10 @@
   <ItemGroup>
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
+    <ClCompile Include="commands\group\CommandParam.cpp" />
+    <ClCompile Include="commands\group\GroupCommand.cpp" />
+    <ClCompile Include="commands\group\GroupCommandProvider.cpp" />
+    <ClCompile Include="commands\group\GroupEditDialog.cpp" />
     <ClCompile Include="commands\pathfind\ExecuteHistory.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommand.cpp" />
@@ -462,6 +471,7 @@
     <ClCompile Include="gui\CaptureIconLabel.cpp" />
     <ClCompile Include="gui\CommandHotKeyDialog.cpp" />
     <ClCompile Include="gui\ExtensionSettingDialog.cpp" />
+    <ClCompile Include="gui\ModalComboBox.cpp" />
     <ClCompile Include="gui\SelectCommandTypeDialog.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />

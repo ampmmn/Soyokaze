@@ -92,6 +92,8 @@ BOOL SelectCommandTypeDialog::OnInitDialog()
 
 	UpdateStatus();
 
+	listTypes->SetFocus();
+
 	return TRUE;
 }
 

@@ -22,6 +22,7 @@ public:
 	HICON LoadUnknownIcon();
 	HICON LoadReloadIcon();
 	HICON LoadRegisterWindowIcon();
+	HICON LoadGroupIcon();
 
 private:
 	IconLoader();

@@ -573,12 +573,13 @@ bool CommandFile::Save()
 				file.WriteString(kv.first);
 				file.WriteString(_T("=\""));
 				file.WriteString(kv.second);
-				file.WriteString(_T("\""));
+				file.WriteString(_T("\"\n"));
 			}
 			for (auto kv : entry->mBoolMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
 				file.WriteString(kv.second ? _T("true") : _T("second"));
+				file.WriteString(_T("\n"));
 			}
 
 			file.WriteString(_T("\n"));

@@ -57,12 +57,15 @@ BOOL CSoyokazeApp::InitInstance()
 {
 	if (SoyokazeProcessExists() == false) {
 		// 通常の起動
-		return InitFirstInstance();
+		InitFirstInstance();
 	}
 	else {
 		// 既にプロセスが起動している場合は起動しない(先行プロセスを有効化したりなどする)
-		return InitSecondInstance();
+		InitSecondInstance();
 	}
+
+	AppPreference::Get()->OnExit();
+	return FALSE;
 }
 
 /**
@@ -125,8 +128,6 @@ BOOL CSoyokazeApp::InitFirstInstance()
 	ControlBarCleanUp();
 #endif
 
-	AppPreference::Get()->OnExit();
-
 	return FALSE;
 }
 
@@ -164,30 +165,6 @@ BOOL CSoyokazeApp::InitSecondInstance()
 	return FALSE;
 }
 
-static BOOL CALLBACK OnEnumChildWindow(
-	HWND hwnd,
-	LPARAM lp
-)
-{
-	lp;
-
-	// Hint表示対象ウインドウかどうかを判定
-	TCHAR title[256] = {};
-	GetWindowText(hwnd, title, 256);
-
-	// とりあえずウインドウタイトルだけで探す(手抜き)
-	if (_tcscmp(title, _T("Soyokaze")) != 0) {
-		return TRUE;
-	}
-
-	// 手抜きなのでその場でアクティブ化する
-
-	ShowWindow(hwnd, SW_SHOW);
-	SetForegroundWindow(hwnd);
-
-	return FALSE;
-}
-
 /**
  * 先行するSoyokazeプロセスが存在するか?
  * @return true: 存在する  false: 存在しない
@@ -211,11 +188,6 @@ bool CSoyokazeApp::ActivateExistingProcess()
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
 	if (hwnd == NULL) {
-		// 共有メモリ経由で拾えなかった場合は、念のためウインドウを探す
-		EnumChildWindows(HWND_DESKTOP, OnEnumChildWindow, (LPARAM)&hwnd);
-	}
-
-	if (hwnd == NULL) {
 		return false;
 	}
 
@@ -232,11 +204,6 @@ bool CSoyokazeApp::SendCommandString(const CString& commandStr)
 {
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		// 共有メモリ経由で拾えなかった場合は、念のためウインドウを探す
-		EnumChildWindows(HWND_DESKTOP, OnEnumChildWindow, (LPARAM)&hwnd);
-	}
-
 	if (hwnd == NULL) {
 		return false;
 	}

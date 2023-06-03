@@ -1,16 +1,23 @@
 #pragma once
 
 #include "core/CommandIF.h"
+#include <memory>
+
+class HOTKEY_ATTR;
 
 namespace soyokaze {
 namespace commands {
-namespace builtin {
+namespace group {
 
-class SettingCommand : public soyokaze::core::Command
+class CommandParam;
+
+// グループコマンド
+class GroupCommand : public soyokaze::core::Command
 {
+	class Exception;
 public:
-	SettingCommand(LPCTSTR name = nullptr);
-	virtual ~SettingCommand();
+	GroupCommand();
+	virtual ~GroupCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -29,15 +36,19 @@ public:
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	static CString GetType();
+	static CString GroupCommand::GetType();
+
+public:
+	void SetParam(const CommandParam& param);
+
+	void AddItem(LPCTSTR itemName, bool isWait);
 
 protected:
-	CString mName;
-	bool mIsExecuting;
-	uint32_t mRefCount;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
-} // end of namespace builtin
+} // end of namespace group
 } // end of namespace commands
 } // end of namespace soyokaze
 

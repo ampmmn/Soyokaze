@@ -21,6 +21,7 @@ struct IconLoader::PImpl
 		mReloadIcon(nullptr),
 		mUserDirIcon(nullptr),
 		mRegisterWindowIcon(nullptr),
+		mGroupIcon(nullptr),
 		mUnknownIcon(nullptr)
 	{
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
@@ -30,6 +31,10 @@ struct IconLoader::PImpl
 		PathAppend(mImgResDll, _T("System32"));
 		PathAppend(mImgResDll, _T("imageres.dll"));
 
+		_tgetenv_s(&reqLen, mShell32Dll, MAX_PATH_NTFS, SYSTEMROOT);
+		PathAppend(mShell32Dll, _T("System32"));
+		PathAppend(mShell32Dll, _T("shell32.dll"));
+
 	}
 
 	HICON GetImageResIcon(int index)
@@ -38,8 +43,16 @@ struct IconLoader::PImpl
 		UINT n = ExtractIconEx(mImgResDll, index, icon, NULL, 1);
 		return (n == 1) ? icon[0]: NULL;
 	}
+	HICON GetShell32Icon(int index)
+	{
+		HICON icon[1];
+		UINT n = ExtractIconEx(mShell32Dll, index, icon, NULL, 1);
+		return (n == 1) ? icon[0]: NULL;
+	}
+
 
 	TCHAR mImgResDll[MAX_PATH_NTFS];
+	TCHAR mShell32Dll[MAX_PATH_NTFS];
 	HICON mFolderIcon;
 	HICON mWebIcon;
 	HICON mNewIcon;
@@ -51,6 +64,7 @@ struct IconLoader::PImpl
 	HICON mReloadIcon;
 	HICON mUserDirIcon;
 	HICON mRegisterWindowIcon;
+	HICON mGroupIcon;
 	HICON mUnknownIcon;
 };
 
@@ -200,5 +214,14 @@ HICON IconLoader::LoadRegisterWindowIcon()
 	}
 	in->mRegisterWindowIcon = in->GetImageResIcon(19);
 	return in->mRegisterWindowIcon;
+}
+
+HICON IconLoader::LoadGroupIcon()
+{
+	if (in->mGroupIcon) {
+		return in->mGroupIcon;
+	}
+	in->mGroupIcon = in->GetShell32Icon(250);
+	return in->mGroupIcon;
 }
 

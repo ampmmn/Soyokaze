@@ -43,7 +43,7 @@ public:
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	static CString ShellExecCommand::GetType();
+	static CString GetType();
 
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);

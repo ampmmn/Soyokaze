@@ -17,7 +17,8 @@ namespace builtin {
 CString VersionCommand::GetType() { return _T("Builtin-Version"); }
 
 VersionCommand::VersionCommand(LPCTSTR name) : 
-	mRefCount(1)
+	mRefCount(1),
+	mIsExecuting(false)
 {
 	mName = name ? name : _T("version");
 }
@@ -38,8 +39,15 @@ CString VersionCommand::GetDescription()
 
 BOOL VersionCommand::Execute()
 {
+	if (mIsExecuting) {
+		return TRUE;
+	}
+
 	CAboutDlg dlg;
+
+	mIsExecuting = true;
 	dlg.DoModal();
+	mIsExecuting = false;
 	return TRUE;
 }
 

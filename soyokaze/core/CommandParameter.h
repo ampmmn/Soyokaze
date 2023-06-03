@@ -17,6 +17,9 @@ public:
 	const CString& GetCommandString() const;
 	const CString& GetParameterString() const;
 
+
+	void CopyParamTo(CommandParameter& rhs) const;
+
 	void GetParameters(std::vector<CString>& args) const;
 
 	bool GetNamedParam(LPCTSTR name, CString* value) const;

@@ -19,6 +19,7 @@
 #include "utility/ProcessPath.h"
 #include "core/CommandHotKeyManager.h"
 #include <algorithm>
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,9 +50,6 @@ struct CSoyokazeDlg::PImpl
 
 	// 選択中の候補
 	int mSelIndex;
-
-	// コマンド実行履歴
-	ExecHistory* mExecHistory;
 
 	// ウインドウハンドル(共有メモリに保存する用)
 	SharedHwnd* mSharedHwnd;
@@ -106,7 +104,6 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SOYOKAZE_DIALOG, pParent),
 	in(new PImpl(this))
 {
-	in->mExecHistory = new ExecHistory;
 	in->mHotKeyPtr = nullptr;
 	in->mWindowPositionPtr= nullptr;
 	in->mSharedHwnd = nullptr;
@@ -117,7 +114,6 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 CSoyokazeDlg::~CSoyokazeDlg()
 {
 	in->ClearCandidates();
-	in->mExecHistory->Save();
 
 	delete in->mWindowTransparencyPtr;
 
@@ -128,7 +124,6 @@ CSoyokazeDlg::~CSoyokazeDlg()
 
 	delete in->mSharedHwnd;
 
-	delete in->mExecHistory;
 }
 
 void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
@@ -155,6 +150,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
+	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
@@ -403,6 +399,12 @@ LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
 	return 0;
 }
 
+LRESULT CSoyokazeDlg::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
+{
+	PostQuitMessage(0);
+	return 0;
+}
+
 bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
 	soyokaze::core::CommandParameter commandParam(str);
@@ -412,10 +414,15 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 	if (cmd == nullptr) {
 		return false;
 	}
-	bool result = cmd->Execute(commandParam);
-	cmd->Release();
 
-	return result;
+	std::thread th([cmd, str]() {
+		soyokaze::core::CommandParameter param(str);
+		cmd->Execute(param);
+		cmd->Release();
+	});
+	th.detach();
+
+	return true;
 }
 
 // CSoyokazeDlg メッセージ ハンドラー
@@ -455,7 +462,6 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	SetIcon(in->mIconHandle, TRUE);			// 大きいアイコンの設定
 	SetIcon(in->mIconHandle, FALSE);		// 小さいアイコンの設定
 
-	in->mExecHistory->Load();
 	in->mSharedHwnd = new SharedHwnd(GetSafeHwnd());
 
 	in->mDescriptionStr.LoadString(ID_STRING_DEFAULTDESCRIPTION);
@@ -546,7 +552,6 @@ void CSoyokazeDlg::ClearContent()
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
 	in->mCandidateListBox.ResetContent();
-	in->ClearCandidates();
 	in->mSelIndex = -1;
 
 	UpdateData(FALSE);
@@ -646,20 +651,21 @@ void CSoyokazeDlg::OnOK()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		soyokaze::core::CommandParameter commandParam(in->mCommandStr);
+		CString str = in->mCommandStr;
 
-		// Ctrlキーが押されているかを設定
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		}
+		std::thread th([cmd, str]() {
+			soyokaze::core::CommandParameter commandParam(str);
 
-		if (cmd->Execute(commandParam) == FALSE) {
-			AfxMessageBox(cmd->GetErrorString());
-		}
+			// Ctrlキーが押されているかを設定
+			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+				commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
+			}
 
-		// コマンド実行履歴に追加
-		in->mExecHistory->Add(in->mCommandStr);
-
+			if (cmd->Execute(commandParam) == FALSE) {
+				AfxMessageBox(cmd->GetErrorString());
+			}
+		});
+		th.detach();
 	}
 	else {
 		// 空文字状態でEnterキーから実行したときはキーワードマネージャを表示
@@ -821,14 +827,15 @@ void CSoyokazeDlg::OnLbnDblClkCandidate()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		soyokaze::core::CommandParameter commandParam(in->mCommandStr);
-		if (cmd->Execute(commandParam) == FALSE) {
-			AfxMessageBox(cmd->GetErrorString());
-		}
+		CString str = in->mCommandStr;
 
-		// コマンド実行履歴に追加
-		in->mExecHistory->Add(in->mCommandStr);
-
+		std::thread th([cmd,str]() {
+			soyokaze::core::CommandParameter commandParam(str);
+			if (cmd->Execute(commandParam) == FALSE) {
+				AfxMessageBox(cmd->GetErrorString());
+			}
+		});
+		th.detach();
 	}
 
 	ShowWindow(SW_HIDE);

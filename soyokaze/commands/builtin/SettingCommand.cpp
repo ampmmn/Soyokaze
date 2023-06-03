@@ -22,6 +22,7 @@ SettingCommand::SettingCommand(LPCTSTR name) :
 	mRefCount(1)
 {
 	mName = name ? name : _T("setting");
+	mIsExecuting = false;
 }
 
 SettingCommand::~SettingCommand()
@@ -40,6 +41,17 @@ CString SettingCommand::GetDescription()
 
 BOOL SettingCommand::Execute()
 {
+	if (mIsExecuting) {
+		// 既に実行中
+		return TRUE;
+	}
+
+	struct scope_flag {
+		scope_flag(bool& f) : mf(f) { mf= true; }
+		~scope_flag() { mf = false; }
+		bool& mf;
+	} _local(mIsExecuting);
+
 	SettingDialog dlg;
 
 	auto pref = AppPreference::Get();
