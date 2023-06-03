@@ -6,15 +6,105 @@
 #include "HotKeyAttribute.h"
 #include <regex>
 #include <map>
+#include <set>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+
+struct AppPreference::PImpl
+{
+	PImpl();
+	~PImpl();
+
+	void OnAppPreferenceUpdated();
+
+	std::unique_ptr<NotifyWindow> mNotifyWindow;
+
+	Settings mSettings;
+
+	// 設定変更時(正確にはSave時)に通知を受け取る
+	std::set<AppPreferenceListenerIF*> mListeners;
+};
+
+class AppPreference::NotifyWindow
+{
+public:
+	NotifyWindow() : mHwnd(nullptr)
+	{
+	}
+	~NotifyWindow()
+	{
+		if (mHwnd) {
+			DestroyWindow(mHwnd);
+			mHwnd = nullptr;
+		}
+	}
+
+	HWND GetHwnd() {
+		return mHwnd;
+	}
+
+	bool Create() {
+
+		CRect rc(0, 0, 0, 0);
+		HINSTANCE hInst = AfxGetInstanceHandle();
+
+		// 内部のmessage処理用の不可視のウインドウを作っておく
+		HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("NotifyWindow"), 0, 
+		                           rc.left, rc.top, rc.Width(), rc.Height(),
+		                           NULL, NULL, hInst, NULL);
+		ASSERT(hwnd);
+
+		SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
+
+		mHwnd = hwnd;
+		return true;
+	}
+
+	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+
+		if (msg == WM_APP+1) {
+			// 設定が更新されたことをリスナーに通知する
+			AppPreference::PImpl* in = (AppPreference::PImpl*)lp;
+			in->OnAppPreferenceUpdated();
+			return 0;
+		}
+
+		return DefWindowProc(hwnd, msg, wp, lp);
+	}
+
+private:
+	HWND mHwnd;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+AppPreference::PImpl::PImpl() : mNotifyWindow(new NotifyWindow)
+{
+}
+
+AppPreference::PImpl::~PImpl()
+{ 
+}
+
+void AppPreference::PImpl::OnAppPreferenceUpdated()
+{
+	for (auto listener : mListeners) {
+		listener->OnAppPreferenceUpdated();
+	}
+}
+
+
 /**
  * コンストラクタ
  */
-AppPreference::AppPreference()
+AppPreference::AppPreference() : in(new PImpl)
 {
 	Load();
 }
@@ -51,6 +141,11 @@ static void TrimComment(CString& s)
 			inDQ = false;
 		}
 	}
+}
+
+void AppPreference::Init()
+{
+	in->mNotifyWindow->Create();
 }
 
 /**
@@ -134,7 +229,7 @@ void AppPreference::Load()
 	file.Close();
 	fclose(fpIn);
 
-	mSettings.Swap(settings);
+	in->mSettings.Swap(settings);
 
 	return ;
 }
@@ -156,7 +251,7 @@ void AppPreference::Save()
 		CStdioFile file(fpOut);
 
 		std::set<CString> keys;
-		mSettings.EnumKeys(keys);
+		in->mSettings.EnumKeys(keys);
 
 		std::map<CString, std::vector<CString> > sectionMap;
 
@@ -191,21 +286,21 @@ void AppPreference::Save()
 
 				CString fullKey(section + _T(":") + key);
 
-				int type = mSettings.GetType(fullKey);
+				int type = in->mSettings.GetType(fullKey);
 				if (type == Settings::TYPE_INT) {
-					int value = mSettings.Get(fullKey, 0);
+					int value = in->mSettings.Get(fullKey, 0);
 					line.Format(_T("%s=%d\n"), key, value);
 				}
 				else if (type == Settings::TYPE_DOUBLE) {
-					double value = mSettings.Get(fullKey, 0.0);
+					double value = in->mSettings.Get(fullKey, 0.0);
 					line.Format(_T("%s=%g\n"), key, value);
 				}
 				else if (type == Settings::TYPE_BOOLEAN) {
-					bool value = mSettings.Get(fullKey, false);
+					bool value = in->mSettings.Get(fullKey, false);
 					line.Format(_T("%s=%s\n"), key, value ? _T("true") : _T("false"));
 				}
 				else if (type == Settings::TYPE_STRING) {
-					auto value = mSettings.Get(fullKey, _T(""));
+					auto value = in->mSettings.Get(fullKey, _T(""));
 					line.Format(_T("%s=\"%s\"\n"), key, value);
 				}
 				file.WriteString(line);
@@ -222,9 +317,10 @@ void AppPreference::Save()
 		}
 
 		// リスナーへ通知
-		for (auto listener : mListeners) {
-			listener->OnAppPreferenceUpdated();
-		}
+		ASSERT(in->mNotifyWindow->GetHwnd());
+		PostMessage(in->mNotifyWindow->GetHwnd(), WM_APP+1, 0 ,(LPARAM)in.get());
+		// Saveは異なるスレッドが呼ばれうるが、通知先の処理の都合上、メインスレッドで通知をしたいので、
+		// イベント投げる用のウインドウ経由でイベント通知する
 	}
 	catch(CFileException* e) {
 		e->Delete();
@@ -235,7 +331,7 @@ void AppPreference::Save()
 void AppPreference::OnExit()
 {
 	// リスナーへ終了を通知
-	auto cloned = mListeners;
+	auto cloned = in->mListeners;
 	for (auto listener : cloned) {
 		listener->OnAppExit();
 	}
@@ -244,75 +340,75 @@ void AppPreference::OnExit()
 
 CString AppPreference::GetFilerPath()
 {
-	return mSettings.Get(_T("Soyokaze:FilerPath"), _T(""));
+	return in->mSettings.Get(_T("Soyokaze:FilerPath"), _T(""));
 }
 
 CString AppPreference::GetFilerParam()
 {
-	return mSettings.Get(_T("Soyokaze:FilerParam"), _T(""));
+	return in->mSettings.Get(_T("Soyokaze:FilerParam"), _T(""));
 }
 
 bool AppPreference::IsUseFiler()
 {
-	return mSettings.Get(_T("Soyokaze:UseFiler"), false);
+	return in->mSettings.Get(_T("Soyokaze:UseFiler"), false);
 }
 
 bool AppPreference::IsHideOnStartup()
 {
-	return mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);
+	return in->mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);
 }
 
 int AppPreference::GetMatchLevel()
 {
-	return mSettings.Get(_T("Soyokaze:MatchLevel"), 1);
+	return in->mSettings.Get(_T("Soyokaze:MatchLevel"), 1);
 }
 
 bool AppPreference::IsTopMost()
 {
-	return mSettings.Get(_T("Soyokaze:TopMost"), false);
+	return in->mSettings.Get(_T("Soyokaze:TopMost"), false);
 }
 
 bool AppPreference::IsShowToggle()
 {
-	return mSettings.Get(_T("Soyokaze:ShowToggle"), true);
+	return in->mSettings.Get(_T("Soyokaze:ShowToggle"), true);
 }
 
 bool AppPreference::IsWindowTransparencyEnable()
 {
-	return mSettings.Get(_T("WindowTransparency:Enable"), false);
+	return in->mSettings.Get(_T("WindowTransparency:Enable"), false);
 }
 
 int AppPreference::GetAlpha()
 {
-	return mSettings.Get(_T("WindowTransparency:Alpha"), 128);
+	return in->mSettings.Get(_T("WindowTransparency:Alpha"), 128);
 }
 
 bool AppPreference::IsTransparencyInactiveOnly()
 {
-	return mSettings.Get(_T("WindowTransparency:InactiveOnly"), true);
+	return in->mSettings.Get(_T("WindowTransparency:InactiveOnly"), true);
 }
 
 UINT AppPreference::GetModifiers()
 {
-	return mSettings.Get(_T("HotKey:Modifiers"), 1);  // ALT
+	return in->mSettings.Get(_T("HotKey:Modifiers"), 1);  // ALT
 }
 
 UINT AppPreference::GetVirtualKeyCode()
 {
-	return mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
+	return in->mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
 
 void AppPreference::SetSettings(const Settings& settings)
 {
 	std::unique_ptr<Settings> tmp(settings.Clone());
-	tmp->Swap(mSettings);
+	tmp->Swap(in->mSettings);
 
 }
 
 const Settings& AppPreference::GetSettings()
 {
-	return mSettings;
+	return in->mSettings;
 }
 
 void AppPreference::SetCommandKeyMappings(
@@ -320,7 +416,7 @@ void AppPreference::SetCommandKeyMappings(
 )
 {
 	int count = keyMap.GetItemCount();
-	mSettings.Set(_T("CommandHotKey:ItemCount"), count);
+	in->mSettings.Set(_T("CommandHotKey:ItemCount"), count);
 
 	CString key;
 	for (int i = 0; i < count; ++i) {
@@ -328,18 +424,18 @@ void AppPreference::SetCommandKeyMappings(
 		int keyIdx = i + 1;
 
 		key.Format(_T("CommandHotKey:Command%d"), keyIdx);
-		mSettings.Set(key, keyMap.GetName(i));
+		in->mSettings.Set(key, keyMap.GetName(i));
 
 		HOTKEY_ATTR hotKeyAttr;
 		keyMap.GetHotKeyAttr(i, hotKeyAttr);
 		key.Format(_T("CommandHotKey:Modifiers%d"), keyIdx);
-		mSettings.Set(key, (int)hotKeyAttr.GetModifiers());
+		in->mSettings.Set(key, (int)hotKeyAttr.GetModifiers());
 
 		key.Format(_T("CommandHotKey:VirtualKeyCode%d"), keyIdx);
-		mSettings.Set(key, (int)hotKeyAttr.GetVKCode());
+		in->mSettings.Set(key, (int)hotKeyAttr.GetVKCode());
 
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
-		mSettings.Set(key, keyMap.IsGlobal(i));
+		in->mSettings.Set(key, keyMap.IsGlobal(i));
 	}
 }
 
@@ -349,7 +445,7 @@ void AppPreference::GetCommandKeyMappings(
 {
 	CommandHotKeyMappings tmp;
 
-	int count = mSettings.Get(_T("CommandHotKey:ItemCount"), 0);
+	int count = in->mSettings.Get(_T("CommandHotKey:ItemCount"), 0);
 
 	CString key;
 	for (int i = 0; i < count; ++i) {
@@ -357,16 +453,16 @@ void AppPreference::GetCommandKeyMappings(
 		int keyIdx = i + 1;
 
 		key.Format(_T("CommandHotKey:Command%d"), keyIdx);
-		CString commandStr = mSettings.Get(key, _T(""));
+		CString commandStr = in->mSettings.Get(key, _T(""));
 
 		key.Format(_T("CommandHotKey:Modifiers%d"), keyIdx);
-		UINT modifiers = (UINT)mSettings.Get(key, -1);
+		UINT modifiers = (UINT)in->mSettings.Get(key, -1);
 
 		key.Format(_T("CommandHotKey:VirtualKeyCode%d"), keyIdx);
-		UINT vk = (UINT)mSettings.Get(key, -1);
+		UINT vk = (UINT)in->mSettings.Get(key, -1);
 
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
-		bool isGlobal = mSettings.Get(key, false);
+		bool isGlobal = in->mSettings.Get(key, false);
 
 		HOTKEY_ATTR attr(modifiers, vk);
 		tmp.AddItem(commandStr, attr, isGlobal);
@@ -377,12 +473,12 @@ void AppPreference::GetCommandKeyMappings(
 
 void AppPreference::RegisterListener(AppPreferenceListenerIF* listener)
 {
-	mListeners.insert(listener);
+	in->mListeners.insert(listener);
 }
 
 void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 {
-	mListeners.erase(listener);
+	in->mListeners.erase(listener);
 }
 
 bool AppPreference::CreateUserDirectory()
@@ -403,7 +499,7 @@ bool AppPreference::CreateUserDirectory()
 	}
 
 	// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
-	for (auto listener : mListeners) {
+	for (auto listener : in->mListeners) {
 		listener->OnAppFirstBoot();
 	}
 

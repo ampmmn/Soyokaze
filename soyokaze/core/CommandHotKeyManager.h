@@ -27,6 +27,9 @@ public:
 	// インスタンスを取得する
 	static CommandHotKeyManager* GetInstance();
 
+	// グローバルホットキーのイベント受け取り先となるウインドウを設定する
+	HWND SetReceiverWindow(HWND hwnd);
+
 	// アクセラレータ取得
 	HACCEL GetAccelerator();
 	// 実行

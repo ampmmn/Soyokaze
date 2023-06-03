@@ -82,20 +82,24 @@ struct CommandRepository::PImpl
 
 	void SaveCommands()
 	{
-		mCommandFile.ClearEntries();
+		CommandFile commandFile;
+		commandFile.SetFilePath(mCommandFilePath);
 
 		std::vector<soyokaze::core::Command*> commands;
 		for (auto command : mCommands.Enumerate(commands)) {
-			command->Save(&mCommandFile);
+			command->Save(&commandFile);
 			command->Release();
 		}
-		mCommandFile.Save();
+		commandFile.Save();
 	}
+
+	CCriticalSection mCS;
 
 	std::vector<CommandProvider*> mProviders;
 
-	// 設定ファイル(commands.ini)からの読み書きを行う
-	CommandFile mCommandFile;
+	// 設定ファイル(commands.ini)のパス
+	CString mCommandFilePath;
+
 	// 一般コマンド一覧
 	CommandMap mCommands;
 	// キーワード比較用のクラス
@@ -116,7 +120,7 @@ CommandRepository::CommandRepository() : in(new PImpl)
 	TCHAR path[MAX_PATH_NTFS];
 	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
 	PathAppend(path, _T("commands.ini"));
-	in->mCommandFile.SetFilePath(path);
+	in->mCommandFilePath = path;
 
 }
 
@@ -129,6 +133,8 @@ void CommandRepository::RegisterProvider(
 	CommandProvider* provider
 )
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	provider->AddRef();
 	in->mProviders.push_back(provider);
 	std::sort(in->mProviders.begin(), in->mProviders.end(),
@@ -138,6 +144,7 @@ void CommandRepository::RegisterProvider(
 // コマンドを登録
 int CommandRepository::RegisterCommand(Command* command)
 {
+	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Register(command);
 	return 0;
 }
@@ -145,6 +152,7 @@ int CommandRepository::RegisterCommand(Command* command)
 // コマンドの登録を解除
 int CommandRepository::UnregisterCommand(Command* command)
 {
+	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Unregister(command);
 	return 0;
 }
@@ -157,17 +165,23 @@ CommandRepository* CommandRepository::GetInstance()
 
 BOOL CommandRepository::Load()
 {
+	CSingleLock sl(&in->mCS, TRUE);
 	// 既存の内容を破棄
 	in->mCommands.Clear();
 
 	// キーワード比較処理の生成
 	in->ReloadPatternObject();
 
-	// 設定ファイルを読み、コマンド一覧を登録する
-	in->mCommandFile.Load();
+	auto tmpProviders = in->mProviders;
+	sl.Unlock();
 
-	for (auto provider : in->mProviders) {
-		provider->LoadCommands(&in->mCommandFile);
+	// 設定ファイルを読み、コマンド一覧を登録する
+	CommandFile commandFile;
+	commandFile.SetFilePath(in->mCommandFilePath);
+	commandFile.Load();
+
+	for (auto provider : tmpProviders) {
+		provider->LoadCommands(&commandFile);
 	}
 
 	return TRUE;
@@ -281,6 +295,8 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
  */
 bool CommandRepository::IsBuiltinName(const CString& cmdName)
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	auto* cmd = in->mCommands.Get(cmdName);
 	if (cmd == nullptr) {
 		return false;
@@ -419,11 +435,13 @@ int CommandRepository::RegisterCommandFromFiles(
  */
 bool CommandRepository::DeleteCommand(const CString& cmdName)
 {
+	CSingleLock sl(&in->mCS, TRUE);
 	return in->mCommands.Unregister(cmdName);
 }
 
 void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enumCommands)
 {
+	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Enumerate(enumCommands);
 }
 
@@ -437,6 +455,8 @@ CommandRepository::Query(
 		command->Release();
 	}
 	items.clear();
+
+	CSingleLock sl(&in->mCS, TRUE);
 
 	// 絞込みの文言を設定
 	in->mPattern->SetPattern(strQueryStr);
@@ -469,6 +489,8 @@ CommandRepository::QueryAsWholeMatch(
 	bool isSearchPath
 )
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	WholeMatchPattern pat(strQueryStr);
 
 	auto command = in->mCommands.FindOne(&pat);

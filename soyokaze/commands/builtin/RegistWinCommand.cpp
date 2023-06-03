@@ -5,6 +5,7 @@
 #include "IconLoader.h"
 #include "CommandFile.h"
 #include "utility/ProcessPath.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
 
@@ -84,8 +85,10 @@ BOOL RegistWinCommand::Execute()
 {
 	in->mErrorMsg.Empty();
 
+	SharedHwnd sharedHwnd;
+
 	HWND hNextWindow =
-	 	in->GetTargetWindow(AfxGetMainWnd()->GetSafeHwnd());
+	 	in->GetTargetWindow(sharedHwnd.GetHwnd());
 	if (hNextWindow == NULL) {
 		in->mErrorMsg.LoadString(IDS_ERR_GETNEXTWINDOW);
 		return FALSE;

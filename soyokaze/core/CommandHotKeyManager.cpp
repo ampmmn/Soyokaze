@@ -33,6 +33,10 @@ struct CommandHotKeyManager::PImpl
 
 	UINT GetHotKeyID();
 
+	CCriticalSection mCS;
+
+	HWND mReceiverWindow;
+
 	HACCEL mAccel;
 	bool mIsChanged;
 
@@ -74,6 +78,7 @@ UINT CommandHotKeyManager::PImpl::GetHotKeyID()
 
 CommandHotKeyManager::CommandHotKeyManager() : in(new PImpl)
 {
+	in->mReceiverWindow = nullptr;
 	in->mAccel = nullptr;
 	in->mIsChanged = false;
 }
@@ -90,10 +95,22 @@ CommandHotKeyManager::GetInstance()
 	return &inst;
 }
 
+// グローバルホットキーのイベント受け取り先となるウインドウを設定する
+HWND CommandHotKeyManager::SetReceiverWindow(HWND hwnd)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+
+	HWND orgWindow = in->mReceiverWindow;
+	in->mReceiverWindow = hwnd;
+
+	return orgWindow;
+}
 
 // アクセラレータ取得
 HACCEL CommandHotKeyManager::GetAccelerator()
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	// すでにアクセラレータテーブル作成済で、かつ、設定に変更がなければ再利用する
 	if (in->mIsChanged == false) {
 		return in->mAccel;
@@ -146,17 +163,23 @@ HACCEL CommandHotKeyManager::GetAccelerator()
 
 void CommandHotKeyManager::InvokeLocalHandler(UINT id)
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	auto itFind = in->mLocalHandlerMap.find(id);
 	if (itFind == in->mLocalHandlerMap.end()) {
 		return ;
 	}
 	auto handlerPtr = itFind->second;
+
+	sl.Unlock();
 	ASSERT(handlerPtr);
 	handlerPtr->Invoke();
 }
 
 void CommandHotKeyManager::InvokeGlobalHandler(LPARAM lp)
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	HOTKEY_ATTR attr(LOWORD(lp), HIWORD(lp));
 	auto itFind = in->mKeyItemMap.find(attr);
 	if (itFind == in->mKeyItemMap.end()) {
@@ -164,6 +187,8 @@ void CommandHotKeyManager::InvokeGlobalHandler(LPARAM lp)
 	}
 
 	PImpl::ITEM& item = itFind->second;
+	sl.Unlock();
+
 	ASSERT(item.mIsGlobal);
 	item.mHandlerPtr->Invoke();
 }
@@ -175,6 +200,8 @@ bool CommandHotKeyManager::HasKeyBinding(
 	bool* isGlobalPtr
 )
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	auto itFind = in->mNameKeyMap.find(name);
 	if (itFind == in->mNameKeyMap.end()) {
 		return false;
@@ -198,6 +225,8 @@ bool CommandHotKeyManager::HasKeyBinding(
 	bool* isGlobalPtr
 )
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	auto itFind = in->mKeyItemMap.find(key);
 	if (itFind == in->mKeyItemMap.end()) {
 		return false;
@@ -217,6 +246,8 @@ bool CommandHotKeyManager::Register(
 	bool isGlobal
 )
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	ASSERT(handler);
 
 	auto itFind = in->mKeyItemMap.find(key);
@@ -230,7 +261,9 @@ bool CommandHotKeyManager::Register(
 
 	// グローバルホットキーの処理(使えないキー場合はエラーを返す)
 	if (isGlobal) {
-		std::unique_ptr<GlobalHotKey> hotKey(new GlobalHotKey(AfxGetMainWnd()->GetSafeHwnd()));
+		HWND hwnd = in->mReceiverWindow;
+		ASSERT(hwnd);
+		std::unique_ptr<GlobalHotKey> hotKey(new GlobalHotKey(hwnd));
 		if (hotKey->Register(in->GetHotKeyID(), key.GetModifiers(), key.GetVKCode()) == false) {
 			// 登録失敗
 			return false;
@@ -260,6 +293,8 @@ int CommandHotKeyManager::GetItemCount()
 
 bool CommandHotKeyManager::GetItem(int index, CommandHotKeyHandler** handler, HOTKEY_ATTR* keyPtr, bool * isGlobalPtr)
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	if (index >= in->mKeyItemMap.size()) {
 		return false;
 	}
@@ -281,6 +316,8 @@ bool CommandHotKeyManager::GetItem(int index, CommandHotKeyHandler** handler, HO
 
 void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	CommandHotKeyMappings tmp;
 	for (auto elem : in->mNameKeyMap) {
 
@@ -297,10 +334,12 @@ void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 // 登録された要素を全削除
 void CommandHotKeyManager::Clear()
 {
+	CSingleLock sl(&in->mCS, TRUE);
+
 	in->mNameKeyMap.clear();
 
-	CWnd* wnd = AfxGetMainWnd();
-	HWND hwnd = wnd ? wnd->GetSafeHwnd() : NULL;
+	HWND hwnd = in->mReceiverWindow;
+	ASSERT(hwnd);
 
 	for (auto& elem : in->mKeyItemMap) {
 		auto& item = elem.second;

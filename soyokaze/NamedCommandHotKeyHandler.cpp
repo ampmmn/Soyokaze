@@ -30,8 +30,10 @@ bool NamedCommandHotKeyHandler::Invoke()
 		return false;
 	}
 
-	// $BF~NOMs$rHsI=<($K$7$F!"%3%^%s%I$r<B9T$9$k!#(B
-	ShowWindow(AfxGetMainWnd()->GetSafeHwnd(), SW_HIDE);
+	// 入力欄を非表示にして、コマンドを実行する。
+	CWnd* wnd = AfxGetMainWnd();
+	ASSERT(wnd);
+	ShowWindow(wnd->GetSafeHwnd(), SW_HIDE);
 
 	bool result = cmd->Execute();
 	cmd->Release();

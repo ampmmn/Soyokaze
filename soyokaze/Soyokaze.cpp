@@ -55,6 +55,8 @@ CSoyokazeApp theApp;
 
 BOOL CSoyokazeApp::InitInstance()
 {
+	AppPreference::Get()->Init();
+
 	if (SoyokazeProcessExists() == false) {
 		// 通常の起動
 		InitFirstInstance();

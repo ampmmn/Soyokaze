@@ -8,6 +8,7 @@
 #include "AppPreference.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -70,8 +71,10 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 			CString msg;
 			msg.Format(IDS_CONFIRMRUNGROUP, cmdName);
 
+			SharedHwnd sharedHwnd;
+
 			CString caption((LPCTSTR)IDS_TITLE_CONFIRMRUNGROUP);
-			int n = MessageBox(AfxGetMainWnd()->GetSafeHwnd(), msg, caption, MB_YESNO);
+			int n = MessageBox(sharedHwnd.GetHwnd(), msg, caption, MB_YESNO);
 			if (n != IDYES) {
 				throw Exception();
 			}

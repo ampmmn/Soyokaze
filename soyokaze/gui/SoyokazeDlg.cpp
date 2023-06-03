@@ -431,6 +431,11 @@ BOOL CSoyokazeDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+
+	// グローバルホットキーのイベント受け取り先として登録する
+	auto manager = core::CommandHotKeyManager::GetInstance();
+	manager->SetReceiverWindow(GetSafeHwnd());
+
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
 	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
 	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);

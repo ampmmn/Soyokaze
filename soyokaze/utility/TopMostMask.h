@@ -6,35 +6,32 @@
 class TopMostMask
 {
 public:
-	TopMostMask() : mIsMasked(false)
+	TopMostMask() : mIsMasked(false), mWindow(nullptr)
 	{
 		CWnd* wnd = AfxGetMainWnd();
 		if (wnd == nullptr) {
 			return ;
 		}
-		long exStyle = ::GetWindowLong(wnd->GetSafeHwnd(), GWL_EXSTYLE);
+		mWindow = wnd->GetSafeHwnd();
+		long exStyle = ::GetWindowLong(mWindow, GWL_EXSTYLE);
 		if ((exStyle & WS_EX_TOPMOST) == 0) {
 			return ;
 		}
 
-		SetWindowPos(wnd->GetSafeHwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		SetWindowPos(mWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		mIsMasked = true;
 	}
 	~TopMostMask() {
 
-		if (mIsMasked == false) {
+		if (mIsMasked == false || mWindow == nullptr) {
 			return ;
 		}
-
-		CWnd* wnd = AfxGetMainWnd();
-		if (wnd == nullptr) {
-			return ;
-		}
-		SetWindowPos(wnd->GetSafeHwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		SetWindowPos(mWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	}
 
 protected:
 	bool mIsMasked;
+	HWND mWindow;
 
 };
 

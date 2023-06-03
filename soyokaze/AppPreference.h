@@ -2,14 +2,18 @@
 
 #include "AppPreferenceListenerIF.h"
 #include "Settings.h"
-#include <set>
+#include <memory>
 
 class CommandHotKeyMappings;
 
 class AppPreference
 {
+	class NotifyWindow;
+
 public:
 	static AppPreference* Get();
+
+	void Init();
 
 	void Load();
 	void Save();
@@ -48,10 +52,8 @@ protected:
 	~AppPreference();
 
 public:
-	Settings mSettings;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
-protected:
-	// 設定変更時(正確にはSave時)に通知を受け取る
-	std::set<AppPreferenceListenerIF*> mListeners;
 };
 
