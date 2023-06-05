@@ -14,6 +14,8 @@ public:
 	~CommandParameter();
 
 public:
+	void AddArgument(const CString& arg);
+
 	const CString& GetCommandString() const;
 	const CString& GetParameterString() const;
 

@@ -29,6 +29,7 @@
 #define IDS_CONFIRM_DELETESHORTCUT      120
 #define IDS_MENUTEXT_HIDE               121
 #define IDS_CONFIRM_DELETESHORTCUT2     122
+#define IDS_FILTERCOMMAND               122
 #define IDS_ERR_GETNEXTWINDOW           123
 #define IDS_ERR_QUERYPROCESSINFO        124
 #define IDS_NEWREGISTER                 125
@@ -39,6 +40,7 @@
 #define IDS_NORMALCOMMAND               130
 #define IDS_DESCRIPTION_NORMALCOMMAND   131
 #define IDR_MAINFRAME                   132
+#define IDS_DESCRIPTION_FILTERCOMMAND   132
 #define IDS_BUILTINCOMMAND              133
 #define IDS_DESCRIPTION_BUILTINCOMMAND  134
 #define IDS_GROUPCOMMAND                135
@@ -57,6 +59,9 @@
 #define IDD_SHORTCUTSETTING             148
 #define IDD_SELECTCOMMANDTYPE           149
 #define IDD_GROUP                       150
+#define IDD_FILTEREDIT                  151
+#define IDD_SOYOKAZE_DIALOG1            152
+#define IDD_FILTER                      152
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -80,6 +85,7 @@
 #define IDC_EDIT_PATH                   1020
 #define IDC_EDIT_PARAM                  1021
 #define IDC_EDIT_HOTKEY                 1022
+#define IDC_EDIT_PARAM2                 1022
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_DIR                    1025
@@ -87,6 +93,7 @@
 #define IDC_COMBO_SHOWTYPE              1027
 #define IDC_STATIC_STATUSMSG            1028
 #define IDC_STATIC_PARAM0               1029
+#define IDC_COMBO_AFTERCOMMAND          1029
 #define IDC_STATIC_NAME                 1030
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
@@ -130,6 +137,7 @@
 #define IDC_CHECK_RESOLVELINKS          1066
 #define IDC_BUTTON_ADD                  1066
 #define IDC_TREE_PAGES                  1067
+#define IDC_LIST1                       1067
 #define IDC_STATIC_BREADCRUMBS          1068
 #define IDC_STATIC_PAGEAREA             1069
 #define IDC_COMBO1                      1070
@@ -141,7 +149,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        163
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1067
+#define _APS_NEXT_CONTROL_VALUE         1068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

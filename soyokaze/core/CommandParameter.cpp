@@ -62,6 +62,14 @@ CommandParameter::~CommandParameter()
 {
 }
 
+void CommandParameter::AddArgument(const CString& arg)
+{
+	if (in->mParamPart.IsEmpty() == FALSE) {
+		in->mParamPart += _T(" ");
+	}
+	in->mParamPart += arg;
+}
+
 const CString& CommandParameter::GetCommandString() const
 {
 	return in->mCommandPart;

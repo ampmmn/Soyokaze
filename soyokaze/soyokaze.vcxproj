@@ -371,6 +371,13 @@
   <ItemGroup>
     <ClInclude Include="CommandHotKeyMappings.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
+    <ClInclude Include="commands\common\ExpandFunctions.h" />
+    <ClInclude Include="commands\filter\CharConverter.h" />
+    <ClInclude Include="commands\filter\FilterCommand.h" />
+    <ClInclude Include="commands\filter\FilterCommandParam.h" />
+    <ClInclude Include="commands\filter\FilterCommandProvider.h" />
+    <ClInclude Include="commands\filter\FilterDialog.h" />
+    <ClInclude Include="commands\filter\FilterEditDialog.h" />
     <ClInclude Include="commands\group\CommandParam.h" />
     <ClInclude Include="commands\group\GroupCommand.h" />
     <ClInclude Include="commands\group\GroupCommandProvider.h" />
@@ -443,6 +450,7 @@
     <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
+    <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="utility\TopMostMask.h" />
@@ -453,6 +461,13 @@
   <ItemGroup>
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
+    <ClCompile Include="commands\common\ExpandFunctions.cpp" />
+    <ClCompile Include="commands\filter\CharConverter.cpp" />
+    <ClCompile Include="commands\filter\FilterCommand.cpp" />
+    <ClCompile Include="commands\filter\FilterCommandParam.cpp" />
+    <ClCompile Include="commands\filter\FilterCommandProvider.cpp" />
+    <ClCompile Include="commands\filter\FilterDialog.cpp" />
+    <ClCompile Include="commands\filter\FilterEditDialog.cpp" />
     <ClCompile Include="commands\group\CommandParam.cpp" />
     <ClCompile Include="commands\group\GroupCommand.cpp" />
     <ClCompile Include="commands\group\GroupCommandProvider.cpp" />
@@ -529,6 +544,7 @@
     <ClCompile Include="gui/ShortcutDialog.cpp" />
     <ClCompile Include="SkipMatchPattern.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
+    <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />

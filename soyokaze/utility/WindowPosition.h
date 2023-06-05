@@ -4,6 +4,7 @@ class WindowPosition
 {
 public:
 	WindowPosition();
+	WindowPosition(LPCTSTR name);
 	~WindowPosition();
 
 public:
@@ -12,9 +13,11 @@ public:
 	bool Save();
 
 protected:
-	static void GetFilePath(TCHAR* buf, size_t len);
+	void GetFilePath(TCHAR* buf, size_t len);
+	static void GetFilePath(LPCTSTR baseName, TCHAR* buf, size_t len);
 
 protected:
+	CString mName;
 	WINDOWPLACEMENT mPosition;
 };
 

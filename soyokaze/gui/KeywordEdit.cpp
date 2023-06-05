@@ -28,7 +28,7 @@ void KeywordEdit::SetCaretToEnd()
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 {
 
-	if (nChar == VK_DOWN || nChar == VK_UP || nChar == VK_TAB) {
+	if (nChar == VK_DOWN || nChar == VK_UP || nChar == VK_TAB || nChar == VK_NEXT || nChar == VK_PRIOR) {
 
 		// 親ウインドウ(CSoyokazeDlg)にキー入力を通知
 		GetParent()->SendMessage(WM_APP + 1, nChar, 0);

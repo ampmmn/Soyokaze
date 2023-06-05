@@ -66,10 +66,6 @@ public:
 protected:
 	void SelectAttribute(const std::vector<CString>& args,ATTRIBUTE& attr);
 
-public:
-	static void ExpandArguments(const std::vector<CString>& args, CString& path, CString& param);
-	static void ExpandEnv(CString& texts);
-
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

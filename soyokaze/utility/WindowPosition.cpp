@@ -8,7 +8,11 @@
 #define new DEBUG_NEW
 #endif
 
-WindowPosition::WindowPosition()
+WindowPosition::WindowPosition() : mName(_T("Soyokaze"))
+{
+}
+
+WindowPosition::WindowPosition(LPCTSTR name) : mName(name)
 {
 }
 
@@ -57,8 +61,13 @@ bool WindowPosition::Restore(HWND hwnd)
 	}
 
 	TCHAR path[MAX_PATH_NTFS];
-	WindowPosition::GetFilePath(path, MAX_PATH_NTFS);
+	GetFilePath(path, MAX_PATH_NTFS);
 
+
+	if (PathFileExists(path) == FALSE) {
+		// 設定ファイルが存在しない場合は気休めにデフォルトの設定ファイルを流用する
+		WindowPosition::GetFilePath(_T("Soyokaze"), path, MAX_PATH_NTFS);
+	}
 
 	CFile file;
 	if (file.Open(path, CFile::modeRead | CFile::shareDenyWrite) == FALSE) {
@@ -97,7 +106,7 @@ bool WindowPosition::Save()
 {
 	try {
 		TCHAR path[MAX_PATH_NTFS];
-		WindowPosition::GetFilePath(path, MAX_PATH_NTFS);
+		GetFilePath(path, MAX_PATH_NTFS);
 
 		UINT nFlags = CFile::modeCreate | CFile::modeWrite | CFile::typeBinary;
 		CFile file(path, nFlags);
@@ -112,7 +121,13 @@ bool WindowPosition::Save()
 
 void WindowPosition::GetFilePath(TCHAR* pathBuf, size_t len)
 {
+	WindowPosition::GetFilePath(mName, pathBuf, len);
+}
+
+void WindowPosition::GetFilePath(LPCTSTR baseName, TCHAR* pathBuf, size_t len)
+{
 	CAppProfile::GetDirPath(pathBuf, len);
-	PathAppend(pathBuf, _T("Soyokaze.position"));
+	PathAppend(pathBuf, baseName);
+	PathAddExtension(pathBuf, _T(".position"));
 }
 

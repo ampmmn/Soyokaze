@@ -802,6 +802,9 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mKeywordEdit.SetCaretToEnd();
 			return 0;
 		}
+		else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
+			in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
+		}
 
 	}
 	return 0;

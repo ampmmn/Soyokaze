@@ -37,6 +37,12 @@
     <Filter Include="commands\group">
       <UniqueIdentifier>{81f4aa39-12c6-479a-b890-e6970fd7919c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\common">
+      <UniqueIdentifier>{c85fc57e-50cc-4f8c-8842-c64d13e9df26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\filter">
+      <UniqueIdentifier>{7933974b-e180-4a4d-bc20-84c7f981992e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -279,6 +285,30 @@
     <ClInclude Include="gui\ModalComboBox.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\ExpandFunctions.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterCommand.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterCommandProvider.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\Pipe.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterEditDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\CharConverter.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterCommandParam.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -502,6 +532,30 @@
     </ClCompile>
     <ClCompile Include="gui\ModalComboBox.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\ExpandFunctions.cpp">
+      <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterCommand.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterCommandProvider.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\Pipe.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterEditDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\CharConverter.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterCommandParam.cpp">
+      <Filter>commands\filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
