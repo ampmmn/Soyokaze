@@ -309,6 +309,9 @@
     <ClInclude Include="commands\filter\FilterCommandParam.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="commands\filter\FilterCommandParam.cpp">
       <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -371,6 +371,7 @@
   <ItemGroup>
     <ClInclude Include="CommandHotKeyMappings.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
+    <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
     <ClInclude Include="commands\filter\CharConverter.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
@@ -461,6 +462,7 @@
   <ItemGroup>
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
+    <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
     <ClCompile Include="commands\filter\CharConverter.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />

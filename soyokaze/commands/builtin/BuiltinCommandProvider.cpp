@@ -10,6 +10,7 @@
 #include "commands/builtin/SettingCommand.h"
 #include "commands/builtin/ManagerCommand.h"
 #include "commands/builtin/RegistWinCommand.h"
+#include "commands/builtin/ChangeDirectoryCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "core/CommandHotKeyManager.h"
@@ -59,6 +60,7 @@ BuiltinCommandProvider::BuiltinCommandProvider() : in(new PImpl)
 	in->mFactoryMap[MainDirCommand::GetType()] = [](LPCTSTR name) { return new MainDirCommand(name); };
 	in->mFactoryMap[SettingCommand::GetType()] = [](LPCTSTR name) { return new SettingCommand(name); };
 	in->mFactoryMap[RegistWinCommand::GetType()] = [](LPCTSTR name) { return new RegistWinCommand(name); };
+	in->mFactoryMap[ChangeDirectoryCommand::GetType()] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
 
 }
 
