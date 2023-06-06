@@ -21,7 +21,7 @@ CString ChangeDirectoryCommand::GetType() { return _T("Builtin-CD"); }
 
 ChangeDirectoryCommand::ChangeDirectoryCommand(LPCTSTR name) : mRefCount(1)
 {
-	mName = name ? name : _T("CD");
+	mName = name ? name : _T("cd");
 }
 
 ChangeDirectoryCommand::~ChangeDirectoryCommand()
