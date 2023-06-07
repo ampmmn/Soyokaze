@@ -80,6 +80,7 @@ protected:
 	afx_msg void OnLbnDblClkCandidate();
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
+	afx_msg void OnEndSession(BOOL isEnding);
 	// コンテキストメニューの表示
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);

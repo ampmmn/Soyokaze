@@ -152,6 +152,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
 	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
 	ON_WM_CONTEXTMENU()
+	ON_WM_ENDSESSION()
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -941,6 +942,14 @@ void CSoyokazeDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
 	in->mWindowTransparencyPtr->UpdateActiveState(nState);
 	__super::OnActivate(nState, wnd, bMinimized);
+}
+
+// Windowsの終了(ログオフ)通知
+void CSoyokazeDlg::OnEndSession(BOOL isEnding)
+{
+	if (isEnding) {
+		PostQuitMessage(0);
+	}
 }
 
 void CSoyokazeDlg::OnCommandHotKey(UINT id)
