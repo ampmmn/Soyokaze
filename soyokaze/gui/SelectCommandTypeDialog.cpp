@@ -86,7 +86,7 @@ BOOL SelectCommandTypeDialog::OnInitDialog()
 	}
 
 	if (mItems.size() > 0) {
-		listTypes->SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+		listTypes->SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 		mSelIndex = 0;
 	}
 
