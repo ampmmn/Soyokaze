@@ -119,7 +119,7 @@ void KeywordManagerDialog::ResetContents()
 
 	// 更新前に選択していた項目があれば再選択する
 	if(itemIndex != -1) {
-		mListCtrlPtr->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
+		mListCtrlPtr->SetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 	}
 
 	// 使い終わったらrelease
@@ -186,6 +186,9 @@ void KeywordManagerDialog::OnButtonEdit()
 	cmdRepoPtr->EditCommandDialog(name);
 
 	ResetContents();
+
+	// 編集画面を閉じた後はキーワードマネージャー画面を操作できる状態にする
+	SetForegroundWindow();
 }
 
 void KeywordManagerDialog::OnButtonDelete()
