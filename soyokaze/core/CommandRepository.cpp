@@ -501,6 +501,12 @@ CommandRepository::QueryAsWholeMatch(
 	return nullptr;
 }
 
+bool CommandRepository::HasCommand(const CString& strQueryStr)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+	return  in->mCommands.Has(strQueryStr);
+}
+
 bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,")) == -1;

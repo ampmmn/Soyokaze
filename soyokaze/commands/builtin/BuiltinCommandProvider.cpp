@@ -116,6 +116,17 @@ void BuiltinCommandProvider::LoadCommands(
 		// 登録
 		cmdRepo->RegisterCommand(command);
 	}
+
+	// システムコマンドがなければ作成しておく
+	for (auto& elem : in->mFactoryMap) {
+		auto cmd = elem.second(nullptr);
+
+		if (cmdRepo->HasCommand(cmd->GetName())) {
+			cmd->Release();
+			continue;
+		}
+		cmdRepo->RegisterCommand(cmd);
+	}
 }
 
 CString BuiltinCommandProvider::GetName()

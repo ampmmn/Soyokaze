@@ -49,6 +49,7 @@ public:
 
 	void Query(const CString& strQueryStr, std::vector<soyokaze::core::Command*>& commands);
 	soyokaze::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isSearchPath = true);
+	bool HasCommand(const CString& strQueryStr);
 
 	bool IsValidAsName(const CString& strQueryStr);
 
