@@ -15,6 +15,7 @@
 #include "gui/SelectFilesDialog.h"
 #include "gui/SelectCommandTypeDialog.h"
 #include "core/CommandHotKeyManager.h"
+#include "core/CommandRanking.h"
 #include "CommandHotKeyMappings.h"
 #include "NamedCommandHotKeyHandler.h"
 #include <vector>
@@ -104,6 +105,9 @@ struct CommandRepository::PImpl
 	CommandMap mCommands;
 	// キーワード比較用のクラス
 	Pattern* mPattern;
+	
+	// 優先順位
+	CommandRanking mRanking;
 
 	// 編集中フラグ
 	bool mIsNewDialog;
@@ -157,6 +161,13 @@ int CommandRepository::UnregisterCommand(Command* command)
 	return 0;
 }
 
+// 順位の更新
+void CommandRepository::AddRank(Command* command, int number)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+	in->mRanking.Add(command->GetName(), number);
+}
+
 CommandRepository* CommandRepository::GetInstance()
 {
 	static CommandRepository inst;
@@ -183,6 +194,8 @@ BOOL CommandRepository::Load()
 	for (auto provider : tmpProviders) {
 		provider->LoadCommands(&commandFile);
 	}
+
+	in->mRanking.Load();
 
 	return TRUE;
 }
@@ -436,6 +449,9 @@ int CommandRepository::RegisterCommandFromFiles(
 bool CommandRepository::DeleteCommand(const CString& cmdName)
 {
 	CSingleLock sl(&in->mCS, TRUE);
+
+	in->mRanking.Delete(cmdName);
+
 	return in->mCommands.Unregister(cmdName);
 }
 
@@ -471,10 +487,18 @@ CommandRepository::Query(
 		provider->QueryAdhocCommands(in->mPattern, matchedItems);
 	}
 
-	// 履歴に基づきソート
+	// 一致レベルに基づきソート
+	const CommandRanking* rankPtr = &in->mRanking;
+
 	std::sort(matchedItems.begin(), matchedItems.end(),
-		[](const CommandMap::QueryItem& l, const CommandMap::QueryItem& r) {
-			return r.mMatchLevel < l.mMatchLevel;
+		[rankPtr](const CommandMap::QueryItem& l, const CommandMap::QueryItem& r) {
+			if (r.mMatchLevel < l.mMatchLevel) { return true; }
+			if (r.mMatchLevel > l.mMatchLevel) { return false; }
+
+			// 一致レベルが同じ場合は優先順位による判断を行う
+			int priorityL = rankPtr->Get(l.mCommand->GetName());
+			int priorityR = rankPtr->Get(r.mCommand->GetName());
+			return priorityR < priorityL;
 	});
 
 	items.reserve(matchedItems.size());
@@ -532,6 +556,9 @@ void CommandRepository::OnAppPreferenceUpdated()
 
 void CommandRepository::OnAppExit()
 {
+	// 優先度情報をファイルに保存する
+	in->mRanking.Save();
+
 	for (auto provider : in->mProviders) {
 		provider->Release();
 	}

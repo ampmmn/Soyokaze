@@ -391,6 +391,7 @@
     <ClInclude Include="core\CommandHotKeyHandlerIF.h" />
     <ClInclude Include="core\CommandHotKeyManager.h" />
     <ClInclude Include="core\CommandQueryItem.h" />
+    <ClInclude Include="core\CommandRanking.h" />
     <ClInclude Include="core\GlobalHotKey.h" />
     <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
@@ -483,6 +484,7 @@
     <ClCompile Include="core\AppHotKey.cpp" />
     <ClCompile Include="core\CommandHotKeyManager.cpp" />
     <ClCompile Include="core\CommandQueryItem.cpp" />
+    <ClCompile Include="core\CommandRanking.cpp" />
     <ClCompile Include="core\GlobalHotKey.cpp" />
     <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />

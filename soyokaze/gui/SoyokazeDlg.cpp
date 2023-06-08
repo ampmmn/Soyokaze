@@ -657,6 +657,9 @@ void CSoyokazeDlg::OnOK()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
+		// 優先度を上げる
+		GetCommandRepository()->AddRank(cmd, 10);
+
 		CString str = in->mCommandStr;
 
 		std::thread th([cmd, str]() {

@@ -27,6 +27,8 @@ public:
 	// コマンドの登録を解除
 	int UnregisterCommand(Command* command);
 
+	// 優先度の更新
+	void AddRank(Command* command, int number);
 
 	// コマンドデータのロード
 	BOOL Load();
