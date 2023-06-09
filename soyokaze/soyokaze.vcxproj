@@ -384,6 +384,8 @@
     <ClInclude Include="commands\group\GroupCommand.h" />
     <ClInclude Include="commands\group\GroupCommandProvider.h" />
     <ClInclude Include="commands\group\GroupEditDialog.h" />
+    <ClInclude Include="commands\mailto\MailToCommand.h" />
+    <ClInclude Include="commands\mailto\MailToCommandProvider.h" />
     <ClInclude Include="commands\pathfind\ExecuteHistory.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
@@ -477,6 +479,8 @@
     <ClCompile Include="commands\group\GroupCommand.cpp" />
     <ClCompile Include="commands\group\GroupCommandProvider.cpp" />
     <ClCompile Include="commands\group\GroupEditDialog.cpp" />
+    <ClCompile Include="commands\mailto\MailToCommand.cpp" />
+    <ClCompile Include="commands\mailto\MailToCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExecuteHistory.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommand.cpp" />

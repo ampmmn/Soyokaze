@@ -43,6 +43,9 @@
     <Filter Include="commands\filter">
       <UniqueIdentifier>{7933974b-e180-4a4d-bc20-84c7f981992e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\mailto">
+      <UniqueIdentifier>{d4b52afc-e65b-4ee9-8542-d07d6f0f750a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -318,6 +321,12 @@
     <ClInclude Include="core\CommandRanking.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="commands\mailto\MailToCommand.h">
+      <Filter>commands\mailto</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\mailto\MailToCommandProvider.h">
+      <Filter>commands\mailto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -574,6 +583,12 @@
     </ClCompile>
     <ClCompile Include="core\CommandRanking.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mailto\MailToCommand.cpp">
+      <Filter>commands\mailto</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mailto\MailToCommandProvider.cpp">
+      <Filter>commands\mailto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

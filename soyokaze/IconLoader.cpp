@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "IconLoader.h"
 #include "resource.h"
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -10,19 +11,8 @@
 struct IconLoader::PImpl
 {
 	PImpl() : 
-		mFolderIcon(nullptr),
-		mWebIcon(nullptr),
-		mNewIcon(nullptr),
-		mExitIcon(nullptr),
 		mEditIcon(nullptr),
-		mSettingIcon(nullptr),
-		mKeywordManagerIcon(nullptr),
-		mDefaultIcon(nullptr),
-		mReloadIcon(nullptr),
-		mUserDirIcon(nullptr),
-		mRegisterWindowIcon(nullptr),
-		mGroupIcon(nullptr),
-		mUnknownIcon(nullptr)
+		mKeywordManagerIcon(nullptr)
 	{
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
 
@@ -53,19 +43,10 @@ struct IconLoader::PImpl
 
 	TCHAR mImgResDll[MAX_PATH_NTFS];
 	TCHAR mShell32Dll[MAX_PATH_NTFS];
-	HICON mFolderIcon;
-	HICON mWebIcon;
-	HICON mNewIcon;
-	HICON mExitIcon;
+	std::map<int, HICON> mShell32IconCache;
+	std::map<int, HICON> mImageResIconCache;
 	HICON mEditIcon;
-	HICON mSettingIcon;
 	HICON mKeywordManagerIcon;
-	HICON mDefaultIcon;
-	HICON mReloadIcon;
-	HICON mUserDirIcon;
-	HICON mRegisterWindowIcon;
-	HICON mGroupIcon;
-	HICON mUnknownIcon;
 };
 
 IconLoader::IconLoader() : in(new PImpl)
@@ -101,22 +82,47 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	return LoadUnknownIcon();
 }
 
+HICON IconLoader::GetShell32Icon(int index)
+{
+	auto it = in->mShell32IconCache.find(index);
+	if (it != in->mShell32IconCache.end()) {
+		return it->second;
+	}
+
+	HICON h =in->GetShell32Icon(index);
+	if (h == NULL) {
+		return nullptr;
+	}
+
+	in->mShell32IconCache[index] = h;
+	return h;
+}
+
+HICON IconLoader::GetImageResIcon(int index)
+{
+	auto it = in->mImageResIconCache.find(index);
+	if (it != in->mImageResIconCache.end()) {
+		return it->second;
+	}
+
+	HICON h =in->GetImageResIcon(index);
+	if (h == NULL) {
+		return nullptr;
+	}
+
+	in->mImageResIconCache[index] = h;
+	return h;
+}
+
+
 HICON IconLoader::LoadFolderIcon()
 {
-	if (in->mFolderIcon) {
-		return in->mFolderIcon;
-	}
-	in->mFolderIcon = in->GetImageResIcon(3);
-	return in->mFolderIcon;
+	return GetImageResIcon(3);
 }
 
 HICON IconLoader::LoadWebIcon()
 {
-	if (in->mWebIcon) {
-		return in->mWebIcon;
-	}
-	in->mWebIcon = in->GetImageResIcon(20);
-	return in->mWebIcon;
+	return GetImageResIcon(20);
 }
 
 HICON IconLoader::LoadNewIcon()
@@ -127,18 +133,12 @@ HICON IconLoader::LoadNewIcon()
 
 HICON IconLoader::LoadSettingIcon()
 {
-	if (in->mSettingIcon) {
-		return in->mSettingIcon;
-	}
-
-	in->mSettingIcon = in->GetImageResIcon(109);
-	return in->mSettingIcon;
+	return GetImageResIcon(109);
 }
 
 HICON IconLoader::LoadExitIcon()
 {
-	in->mExitIcon = in->GetImageResIcon(235);
-	return in->mExitIcon;
+	return GetImageResIcon(235);
 }
 
 HICON IconLoader::LoadEditIcon()
@@ -160,22 +160,12 @@ HICON IconLoader::LoadDefaultIcon()
 
 HICON IconLoader::LoadUserDirIcon()
 {
-	if (in->mUserDirIcon) {
-		return in->mUserDirIcon;
-	}
-
-	in->mUserDirIcon = in->GetImageResIcon(157);
-	return in->mUserDirIcon;
+	return GetImageResIcon(157);
 }
 
 HICON IconLoader::LoadMainDirIcon()
 {
-	if (in->mUserDirIcon) {
-		return in->mUserDirIcon;
-	}
-
-	in->mUserDirIcon = in->GetImageResIcon(157);
-	return in->mUserDirIcon;
+	return GetImageResIcon(157);
 }
 
 HICON IconLoader::LoadVersionIcon()
@@ -190,38 +180,21 @@ HICON IconLoader::LoadTasktrayIcon()
 
 HICON IconLoader::LoadUnknownIcon()
 {
-	if (in->mUnknownIcon) {
-		return in->mUnknownIcon;
-	}
-
-	in->mUnknownIcon = in->GetImageResIcon(2);
-	return in->mUnknownIcon;
+	return GetImageResIcon(2);
 }
 
 HICON IconLoader::LoadReloadIcon()
 {
-	if (in->mReloadIcon) {
-		return in->mReloadIcon;
-	}
-	in->mReloadIcon = in->GetImageResIcon(228);
-	return in->mReloadIcon;
+	return GetImageResIcon(228);
 }
 
 HICON IconLoader::LoadRegisterWindowIcon()
 {
-	if (in->mRegisterWindowIcon) {
-		return in->mRegisterWindowIcon;
-	}
-	in->mRegisterWindowIcon = in->GetImageResIcon(19);
-	return in->mRegisterWindowIcon;
+	return GetImageResIcon(19);
 }
 
 HICON IconLoader::LoadGroupIcon()
 {
-	if (in->mGroupIcon) {
-		return in->mGroupIcon;
-	}
-	in->mGroupIcon = in->GetShell32Icon(250);
-	return in->mGroupIcon;
+	return GetShell32Icon(250);
 }
 
