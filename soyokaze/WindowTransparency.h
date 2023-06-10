@@ -34,6 +34,9 @@ protected:
 	// 非アクティブのときだけ透明にする
 	bool mIsInactiveOnly;
 
+	// 非アクティブになったらウインドウを隠す
+	bool mIsHideOnInactive;
+
 	// 最上位で表示する
 	bool mIsTopmost;
 	   // ToDo: 別の位置に移動するかクラス名を変更する

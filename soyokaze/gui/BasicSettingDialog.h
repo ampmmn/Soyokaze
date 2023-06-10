@@ -34,6 +34,9 @@ public:
 	// 入力画面を表示するときにIMEをオフにする
 	BOOL mIsIMEOff;
 
+	// アクティブ状態でなくなったらウインドウを隠す
+	BOOL mIsHideOnInactive;
+
 	// 半透明の表示方法
 	int mTransparencyType;
 	// 半透明表示の透明度

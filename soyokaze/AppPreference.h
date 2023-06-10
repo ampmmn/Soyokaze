@@ -27,6 +27,7 @@ public:
 	bool IsUseFiler();
 
 	bool IsHideOnStartup();
+	bool IsHideOnInactive();
 
 	int GetMatchLevel();
 	bool IsTopMost();

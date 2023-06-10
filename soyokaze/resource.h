@@ -116,6 +116,7 @@
 #define IDC_BUTTON_UP                   1039
 #define IDC_CHECK_TOPMOST               1040
 #define IDC_BUTTON_NEW4                 1041
+#define IDC_CHECK_HIDEONINACTIVE        1041
 #define IDC_COMBO_TRANSPARENCY          1042
 #define IDC_EDIT_ALPHA                  1043
 #define IDC_BUTTON_BROWSEFILE           1044

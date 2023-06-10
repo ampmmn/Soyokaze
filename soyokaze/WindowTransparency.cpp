@@ -8,7 +8,8 @@ WindowTransparency::WindowTransparency() :
 	mAlpha(255),
 	mIsEnable(true),
 	mIsInactiveOnly(true),
-	mIsTopmost(true)
+	mIsTopmost(true),
+	mIsHideOnInactive(false)
 {
 	AppPreference::Get()->RegisterListener(this);
 }
@@ -31,6 +32,11 @@ bool WindowTransparency::UpdateActiveState(UINT nState)
 	if (IsWindow(mWindowHandle) == FALSE) {
 		return false;
 	}
+
+	if (mIsHideOnInactive && nState == WA_INACTIVE) {
+		ShowWindow(mWindowHandle, SW_HIDE);
+	}
+
 	if (mIsEnable == false) {
 		return false;
 	}
@@ -53,6 +59,7 @@ void WindowTransparency::UpdateStyle()
 	mAlpha = pref->GetAlpha();
 	mIsInactiveOnly = pref->IsTransparencyInactiveOnly();
 	mIsTopmost = pref->IsTopMost();
+	mIsHideOnInactive = pref->IsHideOnInactive();
 
 	// 最上位に表示する場合
 	if (mIsTopmost) {

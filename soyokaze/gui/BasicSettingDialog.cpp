@@ -37,6 +37,7 @@ BOOL BasicSettingDialog::OnSetActive()
 	mFilerParam = mSettingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	mIsTopMost = mSettingsPtr->Get(_T("Soyokaze:TopMost"), false);
 	mIsIMEOff = mSettingsPtr->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
+	mIsHideOnInactive = mSettingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
 
 	if (mSettingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
 		mTransparencyType = 2;
@@ -69,6 +70,7 @@ void BasicSettingDialog::OnOK()
 	mSettingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
 	mSettingsPtr->Set(_T("Soyokaze:TopMost"), (bool)mIsTopMost);
 	mSettingsPtr->Set(_T("Soyokaze:IsIMEOffOnActive"), (bool)mIsIMEOff);
+	mSettingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)mIsHideOnInactive);
 
 	if (mTransparencyType == 0) {
 		mSettingsPtr->Set(_T("WindowTransparency:Enable"), true);
@@ -101,6 +103,7 @@ void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
 	DDX_Check(pDX, IDC_CHECK_TOPMOST, mIsTopMost);
 	DDX_Check(pDX, IDC_CHECK_IMEOFF, mIsIMEOff);
+	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, mIsHideOnInactive);
 	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, mTransparencyType);
 	DDX_Text(pDX, IDC_EDIT_ALPHA, mAlpha);
 	DDV_MinMaxInt(pDX, mAlpha, 0, 255);

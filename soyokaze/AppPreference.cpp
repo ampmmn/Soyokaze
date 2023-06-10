@@ -358,6 +358,11 @@ bool AppPreference::IsHideOnStartup()
 	return in->mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);
 }
 
+bool AppPreference::IsHideOnInactive()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsHideOnInactive"), false);
+}
+
 int AppPreference::GetMatchLevel()
 {
 	return in->mSettings.Get(_T("Soyokaze:MatchLevel"), 1);
