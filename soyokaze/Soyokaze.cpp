@@ -219,14 +219,22 @@ bool CSoyokazeApp::SendCommandString(const CString& commandStr)
 	return true;
 }
 
+/**
+ *  指定されたパスをコマンドとして登録する
+ *  @return true: 成功 false:失敗
+ *  @param pathStr  登録対象のファイルパス
+ */
 bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 {
 	CString name = PathFindFileName(pathStr);
 	PathRemoveExtension(name.GetBuffer(name.GetLength()));
 	name.ReleaseBuffer();
 
+	// 空白を置換
+	name.Replace(_T(' '), _T('_'));
+
 	CString commandStr(_T("new "));
-	commandStr += name + _T(" \"") + pathStr + _T("\"");
+	commandStr += _T("\"") + name + _T("\" \"") + pathStr + _T("\"");
 	return SendCommandString(commandStr);
 }
 
