@@ -457,6 +457,7 @@
     <ClInclude Include="gui/TaskTray.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
+    <ClInclude Include="utility\ScopeAttachThreadInput.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="WholeMatchPattern.h" />

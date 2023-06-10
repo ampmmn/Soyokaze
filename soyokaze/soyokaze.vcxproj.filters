@@ -327,6 +327,9 @@
     <ClInclude Include="commands\mailto\MailToCommandProvider.h">
       <Filter>commands\mailto</Filter>
     </ClInclude>
+    <ClInclude Include="utility\ScopeAttachThreadInput.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">

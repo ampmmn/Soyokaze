@@ -6,6 +6,7 @@
 #include "gui/CommandHotKeyDialog.h"
 #include "core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
+#include "utility/ScopeAttachThreadInput.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -138,6 +139,9 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	UpdateStatus();
 	UpdateData(FALSE);
+
+	ScopeAttachThreadInput scope;
+	SetForegroundWindow();
 
 	return TRUE;
 }

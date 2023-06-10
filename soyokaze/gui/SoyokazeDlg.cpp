@@ -17,6 +17,7 @@
 #include "IconLoader.h"
 #include "AppPreference.h"
 #include "utility/ProcessPath.h"
+#include "utility/ScopeAttachThreadInput.h"
 #include "core/CommandHotKeyManager.h"
 #include <algorithm>
 #include <thread>
@@ -199,18 +200,6 @@ void CSoyokazeDlg::ShowHelp()
 	CloseHandle(si.hProcess);
 }
 
-class ScopeAttachThreadInput
-{
-public:
-	ScopeAttachThreadInput(DWORD target) : target(target) {
-		AttachThreadInput(GetCurrentThreadId(), target, TRUE);
-	}
-	~ScopeAttachThreadInput()
-	{
-		AttachThreadInput(GetCurrentThreadId(), target, FALSE);
-	}
-	DWORD target;
-};
 
 /**
  * ActiveWindow経由の処理
@@ -222,7 +211,7 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 	if (::IsWindowVisible(hwnd) == FALSE) {
 
 		// 非表示状態なら表示
-		ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
+		ScopeAttachThreadInput scope;
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
@@ -230,7 +219,7 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 	else {
 		// 表示状態ではあるが、非アクティブならアクティブにする
 		if (hwnd != ::GetActiveWindow()) {
-			ScopeAttachThreadInput scope(GetWindowThreadProcessId(::GetForegroundWindow(),NULL));
+			ScopeAttachThreadInput scope;
 			::ShowWindow(hwnd, SW_SHOW);
 			::SetForegroundWindow(hwnd);
 			::BringWindowToTop(hwnd);
