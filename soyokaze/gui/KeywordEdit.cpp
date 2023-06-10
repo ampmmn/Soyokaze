@@ -135,6 +135,11 @@ void KeywordEdit::SetCaretToEnd()
 	SetSel(n, n, FALSE);
 }
 
+void KeywordEdit::SetIMEOff()
+{
+		ImmSetOpenStatus(in->GetImmContext(this), FALSE);
+}
+
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 {
 

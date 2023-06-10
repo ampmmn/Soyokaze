@@ -215,6 +215,11 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
+
+		AppPreference* pref= AppPreference::Get();
+		if (pref->IsIMEOffOnActive()) {
+			in->mKeywordEdit.SetIMEOff();
+		}
 	}
 	else {
 		// 表示状態ではあるが、非アクティブならアクティブにする

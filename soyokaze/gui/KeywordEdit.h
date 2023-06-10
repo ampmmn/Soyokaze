@@ -10,6 +10,8 @@ public:
 
 	void SetCaretToEnd();
 
+	void SetIMEOff();
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

@@ -31,6 +31,9 @@ public:
 	// 入力画面を常に最前面に表示
 	BOOL mIsTopMost;
 
+	// 入力画面を表示するときにIMEをオフにする
+	BOOL mIsIMEOff;
+
 	// 半透明の表示方法
 	int mTransparencyType;
 	// 半透明表示の透明度

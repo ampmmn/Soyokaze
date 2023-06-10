@@ -123,6 +123,7 @@
 #define IDC_CHECK_ALT                   1051
 #define IDC_CHECK_HIDEONRUN             1052
 #define IDC_CHECK_CTRL                  1053
+#define IDC_CHECK_IMEOFF                1053
 #define IDC_CHECK_WIN                   1054
 #define IDC_COMBO_VK                    1055
 #define IDC_SYSLINK1                    1056

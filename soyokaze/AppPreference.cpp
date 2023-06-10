@@ -398,6 +398,12 @@ UINT AppPreference::GetVirtualKeyCode()
 	return in->mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
+// 入力画面表示時にIMEをオフにするか?
+bool AppPreference::IsIMEOffOnActive()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsIMEOffOnActive"), false);
+}
+
 
 void AppPreference::SetSettings(const Settings& settings)
 {

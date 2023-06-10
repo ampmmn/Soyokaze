@@ -39,6 +39,9 @@ public:
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
 
+	// 入力画面表示時にIMEをオフにするか?
+	bool IsIMEOffOnActive();
+
 	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
 	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);
 
