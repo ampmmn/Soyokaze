@@ -1,10 +1,6 @@
 #pragma once
 
-#include "utility/TopMostMask.h"
-#include <vector>
-
-class KeywordManagerListCtrl;
-class IconLabel;
+#include <memory>
 
 class KeywordManagerDialog : public CDialogEx
 {
@@ -13,14 +9,8 @@ public:
 	virtual ~KeywordManagerDialog();
 
 protected:
-	CString mName;
-	CString mDescription;
-
-	KeywordManagerListCtrl* mListCtrlPtr;
-	IconLabel* mIconLabelPtr;
-
-private:
-	TopMostMask mTopMostMask;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
@@ -36,7 +26,9 @@ protected:
 	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnLbnDblClkCommands();
-	afx_msg LRESULT OnUserMsgListItemChanged(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUserMsgListItemDblClk(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

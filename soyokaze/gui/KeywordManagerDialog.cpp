@@ -1,44 +1,110 @@
 #include "pch.h"
 #include "framework.h"
 #include "gui/KeywordManagerDialog.h"
-#include "gui/KeywordManagerListCtrl.h"
 #include "gui/IconLabel.h"
 #include "core/CommandRepository.h"
+#include "utility/TopMostMask.h"
 #include "IconLoader.h"
 #include "resource.h"
+#include <algorithm>
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using Command = soyokaze::core::Command;
+
+// リストの列情報
+enum {
+	COL_CMDNAME,      // コマンド名
+	COL_DESCRIPTION,  // 説明
+};
+
+// ソート状態
+enum {
+	SORT_ASCEND_NAME,          // コマンド名-昇順
+	SORT_DESCEND_NAME,         // コマンド名-降順
+	SORT_ASCEND_DESCRIPTION,   // 説明-昇順
+	SORT_DESCEND_DESCRIPTION,  // 説明-降順
+};
+
+
+struct KeywordManagerDialog::PImpl
+{
+	void SortCommands();
+
+	CString mName;
+	CString mDescription;
+
+	std::vector<Command*> mCommands;
+	Command* mSelCommand;
+
+	CListCtrl mListCtrl;
+	IconLabel* mIconLabelPtr;
+
+	TopMostMask mTopMostMask;
+	int mSortType;
+};
+
+void KeywordManagerDialog::PImpl::SortCommands()
+{
+	if (mSortType == SORT_ASCEND_NAME) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return l->GetName() < r->GetName();
+		});
+	}
+	else if (mSortType == SORT_DESCEND_NAME) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return r->GetName() < l->GetName();
+		});
+	}
+	else if (mSortType == SORT_ASCEND_DESCRIPTION) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return l->GetDescription() < r->GetDescription();
+		});
+	}
+	else if (mSortType == SORT_DESCEND_DESCRIPTION) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return r->GetDescription() < l->GetDescription();
+		});
+	}
+}
+
 
 KeywordManagerDialog::KeywordManagerDialog() : 
 	CDialogEx(IDD_KEYWORDMANAGER),
-	mListCtrlPtr(new KeywordManagerListCtrl()),
-	mIconLabelPtr(new IconLabel())
+	in(new PImpl)
 {
+	in->mIconLabelPtr = new IconLabel();
+	in->mSortType = SORT_ASCEND_NAME;
+	in->mSelCommand = nullptr;
 }
 
 KeywordManagerDialog::~KeywordManagerDialog()
 {
-	delete mIconLabelPtr;
-	delete mListCtrlPtr;
+	for (auto cmd : in->mCommands) {
+		cmd->Release();
+	}
+
+	delete in->mIconLabelPtr;
 }
 
 void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_STATIC_NAME, mName);
-	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, mDescription);
+	DDX_Text(pDX, IDC_STATIC_NAME, in->mName);
+	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescription);
 }
 
 BEGIN_MESSAGE_MAP(KeywordManagerDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
-	ON_MESSAGE(WM_APP+1, OnUserMsgListItemChanged)
-	ON_MESSAGE(WM_APP+2, OnUserMsgListItemDblClk)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnLvnItemChange)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNMDblclk)
+	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST_COMMANDS, OnHeaderClicked)
+	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_COMMANDS, OnGetDispInfo)
 END_MESSAGE_MAP()
 
 
@@ -48,12 +114,11 @@ BOOL KeywordManagerDialog::OnInitDialog()
 
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
-
-	mListCtrlPtr->SubclassDlgItem(IDC_LIST_COMMANDS, this);
-	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
+	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	// リスト　スタイル変更
-	mListCtrlPtr->SetExtendedStyle(mListCtrlPtr->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+	in->mListCtrl.SetExtendedStyle(in->mListCtrl.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 
 	// ヘッダー追加
 	LVCOLUMN lvc;
@@ -65,13 +130,13 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 120;
 	lvc.fmt = LVCFMT_LEFT;
-	mListCtrlPtr->InsertColumn(0,&lvc);
+	in->mListCtrl.InsertColumn(0,&lvc);
 
 	strHeader.LoadString(IDS_DESCRIPTION);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 200;
 	lvc.fmt = LVCFMT_LEFT;
-	mListCtrlPtr->InsertColumn(1,&lvc);
+	in->mListCtrl.InsertColumn(1,&lvc);
 
 	ResetContents();
 
@@ -85,73 +150,73 @@ void KeywordManagerDialog::ResetContents()
 {
 	// 更新前の選択位置を覚えておく
 	int itemIndex = -1;
-	POSITION pos = mListCtrlPtr->GetFirstSelectedItemPosition();
+	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
 	if (pos) {
-		itemIndex = mListCtrlPtr->GetNextSelectedItem(pos);
+		itemIndex = in->mListCtrl.GetNextSelectedItem(pos);
 	}
+
+	// 以前のアイテムを解放
+	for (auto cmd : in->mCommands) {
+		cmd->Release();
+	}
+	in->mCommands.clear();
 
 	// コマンド一覧を取得する
-	std::vector<soyokaze::core::Command*> commands;
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepoPtr->EnumCommands(commands);
+	cmdRepoPtr->EnumCommands(in->mCommands);
+	
+	// 現在のソート方法に従って要素をソート
+	in->SortCommands();
 
-	int cmdCount = (int)commands.size();
-	int listItemCount = mListCtrlPtr->GetItemCount();
 
-	// 実際のコマンド数とリスト上の項目数の差を埋める
-	while (cmdCount > listItemCount) {
-		mListCtrlPtr->InsertItem(listItemCount++, _T(""), 0);
+	// アイテム数を設定
+	in->mListCtrl.SetItemCountEx((int)in->mCommands.size());
+
+	// 選択状態の更新
+	for (auto cmd : in->mCommands) {
+			bool isSelItem = cmd == in->mSelCommand;
+			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 	}
-	while (cmdCount < listItemCount) {
-		mListCtrlPtr->DeleteItem(--listItemCount);
-	}
-
-	// リスト項目の表示内容をコマンド内容で上書きする
-	int index = 0;
-	for (auto command : commands) {
-		const CString& name = command->GetName();
-		const CString& description = command->GetDescription();
-
-		mListCtrlPtr->SetItemText(index, 0, name);
-		mListCtrlPtr->SetItemText(index, 1, description);
-		index++;
-	}
-
-	// 更新前に選択していた項目があれば再選択する
-	if(itemIndex != -1) {
-		mListCtrlPtr->SetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-	}
-
-	// 使い終わったらrelease
-	for (auto command : commands) {
-		command->Release();
-	}
-
+	in->mListCtrl.Invalidate();
 }
 
 bool KeywordManagerDialog::UpdateStatus()
 {
-	mName.Empty();
-	mDescription.Empty();
+	in->mName.Empty();
+	in->mDescription.Empty();
 
 	CWnd* btnEdit = GetDlgItem(IDC_BUTTON_EDIT);
 	CWnd* btnDel = GetDlgItem(IDC_BUTTON_DELETE);
 	ASSERT(btnEdit && btnDel);
 
-	if (mListCtrlPtr->GetSelectedCount() == 0) {
+	// 選択状態を見て選択中のコマンドを決定
+	int itemIndex = 0;
+	for (auto cmd : in->mCommands) {
+		UINT mask = in->mListCtrl.GetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED);
+		bool isSelItem = mask != 0;
+
+		if (isSelItem) {
+			in->mSelCommand = in->mCommands[itemIndex];
+		}
+
+		itemIndex++;
+	}
+
+	if (in->mSelCommand == nullptr) {
 		btnEdit->EnableWindow(FALSE);
 		btnDel->EnableWindow(FALSE);
 		return false;
 	}
 
-	CString name = mListCtrlPtr->GetSelectedCommandName();
+
+	CString name = in->mSelCommand->GetName();
 
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 	auto cmd = cmdRepoPtr->QueryAsWholeMatch(name);
 	if (cmd) {
-		mIconLabelPtr->DrawIcon(cmd->GetIcon());
-		mName = name;
-		mDescription = cmd->GetDescription();
+		in->mIconLabelPtr->DrawIcon(cmd->GetIcon());
+		in->mName = name;
+		in->mDescription = cmd->GetDescription();
 		cmd->Release();
 	}
 
@@ -178,7 +243,10 @@ void KeywordManagerDialog::OnButtonNew()
 void KeywordManagerDialog::OnButtonEdit()
 {
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	CString name = mListCtrlPtr->GetSelectedCommandName();
+	if (in->mSelCommand == nullptr) {
+		return;
+	}
+	CString name = in->mSelCommand->GetName();
 	if (cmdRepoPtr->IsBuiltinName(name)) {
 		return;
 	}
@@ -193,7 +261,11 @@ void KeywordManagerDialog::OnButtonEdit()
 
 void KeywordManagerDialog::OnButtonDelete()
 {
-	CString name = mListCtrlPtr->GetSelectedCommandName();
+	if (in->mSelCommand == nullptr) {
+		return ;
+	}
+
+	CString name = in->mSelCommand->GetName();
 
 	CString confirmMsg((LPCTSTR)IDS_CONFIRM_DELETE);
 	confirmMsg += _T("\n");
@@ -216,22 +288,89 @@ void KeywordManagerDialog::OnButtonDelete()
 	UpdateData(FALSE);
 }
 
-LRESULT KeywordManagerDialog::OnUserMsgListItemChanged(
-	WPARAM wParam,
-	LPARAM lParam
-)
+/**
+ *  リスト欄の要素の状態変更時の処理
+ */
+void KeywordManagerDialog::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	*pResult = 0;
 	UpdateStatus();
 	UpdateData(FALSE);
-	return 0;
 }
 
-LRESULT KeywordManagerDialog::OnUserMsgListItemDblClk(
-	WPARAM wParam,
-	LPARAM lParam
+void KeywordManagerDialog::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = 0;
+	NM_LISTVIEW* pNMLV = (NM_LISTVIEW*)pNMHDR;
+	OnButtonEdit();
+}
+
+/**
+ *  リスト欄のヘッダクリック時の処理
+ */
+void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = 0;
+	NM_LISTVIEW* pNMLV = (NM_LISTVIEW*)pNMHDR;
+
+	// クリックされた列で昇順/降順ソートをする
+
+	int clickedCol = pNMLV->iSubItem;
+
+	if(clickedCol == COL_CMDNAME) {
+		// ソート方法の変更(コマンド名でソート)
+		in->mSortType = in->mSortType == SORT_ASCEND_NAME ? SORT_DESCEND_NAME : SORT_ASCEND_NAME;
+	}
+	else if (clickedCol == COL_DESCRIPTION) {
+		// ソート方法の変更(説明でソート)
+		in->mSortType = in->mSortType == SORT_ASCEND_DESCRIPTION ? SORT_DESCEND_DESCRIPTION : SORT_ASCEND_DESCRIPTION;
+	}
+
+	// ソート実施
+	in->SortCommands();
+
+	// 選択状態の更新
+	int itemIndex = 0;
+	for (auto cmd : in->mCommands) {
+			bool isSelItem = cmd == in->mSelCommand;
+			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+			itemIndex++;
+	}
+
+	in->mListCtrl.Invalidate();
+}
+
+/**
+ *  リスト欄のオーナーデータ周りの処理
+ */
+void KeywordManagerDialog::OnGetDispInfo(
+	NMHDR *pNMHDR,
+	LRESULT *pResult
 )
 {
-	OnButtonEdit();
-	return 0;
+	*pResult = 0;
+
+	NMLVDISPINFO* pDispInfo = (NMLVDISPINFO*)pNMHDR;
+	LVITEM* pItem = &(pDispInfo)->item;
+
+	if (pItem->mask & LVIF_TEXT) {
+
+		int itemIndex = pDispInfo->item.iItem;
+		if (pDispInfo->item.iSubItem == COL_CMDNAME) {
+			// 1列目(コマンド名)のデータをコピー
+			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
+				auto cmd = in->mCommands[itemIndex];
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
+			}
+		}
+		else if (pDispInfo->item.iSubItem == COL_DESCRIPTION) {
+			// 2列目(説明)のデータをコピー
+			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
+				auto cmd = in->mCommands[itemIndex];
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetDescription(), _TRUNCATE);
+			}
+		}
+	}
 }
+
 

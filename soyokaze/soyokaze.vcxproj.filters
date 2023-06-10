@@ -138,9 +138,6 @@
     <ClInclude Include="gui/KeywordManagerDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="gui/KeywordManagerListCtrl.h">
-      <Filter>gui</Filter>
-    </ClInclude>
     <ClInclude Include="gui/SelectFilesDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
@@ -429,9 +426,6 @@
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui/KeywordManagerDialog.cpp">
-      <Filter>gui</Filter>
-    </ClCompile>
-    <ClCompile Include="gui/KeywordManagerListCtrl.cpp">
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui\BasicSettingDialog.cpp">

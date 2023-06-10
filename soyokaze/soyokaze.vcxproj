@@ -443,7 +443,6 @@
     <ClInclude Include="utility/IniFile.h" />
     <ClInclude Include="gui/KeywordEdit.h" />
     <ClInclude Include="gui/KeywordManagerDialog.h" />
-    <ClInclude Include="gui/KeywordManagerListCtrl.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="PartialMatchPattern.h" />
     <ClInclude Include="Pattern.h" />
@@ -536,7 +535,6 @@
     <ClCompile Include="utility/IniFile.cpp" />
     <ClCompile Include="gui/KeywordEdit.cpp" />
     <ClCompile Include="gui/KeywordManagerDialog.cpp" />
-    <ClCompile Include="gui/KeywordManagerListCtrl.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="PartialMatchPattern.cpp" />
     <ClCompile Include="Pattern.cpp" />
