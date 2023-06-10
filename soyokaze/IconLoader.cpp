@@ -55,6 +55,17 @@ IconLoader::IconLoader() : in(new PImpl)
 
 IconLoader::~IconLoader()
 {
+	for (auto elem : in->mShell32IconCache) {
+		if (elem.second) {
+			DestroyIcon(elem.second);
+		}
+	}
+	for (auto elem : in->mImageResIconCache) {
+		if (elem.second) {
+			DestroyIcon(elem.second);
+		}
+	}
+
 	delete in;
 }
 
