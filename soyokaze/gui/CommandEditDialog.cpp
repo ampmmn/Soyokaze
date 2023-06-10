@@ -5,6 +5,7 @@
 #include "gui/IconLabel.h"
 #include "gui/CommandHotKeyDialog.h"
 #include "core/CommandRepository.h"
+#include "utility/ShortcutFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -105,6 +106,8 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_CHECK_USE0, OnCheckUse0)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
+	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -152,6 +155,12 @@ bool CommandEditDialog::UpdateStatus()
 	GetDlgItem(IDC_EDIT_PARAM0)->EnableWindow(mIsUse0);
 	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->EnableWindow(mIsUse0);
 	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->EnableWindow(mIsUse0);
+
+	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
+	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
+
+	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath0)) == 0;
+	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
 
 	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mPath));
 
@@ -335,4 +344,31 @@ void CommandEditDialog::OnButtonHotKey()
 	UpdateStatus();
 	UpdateData(FALSE);
 }
+
+void CommandEditDialog::ResolveShortcut(CString& path)
+{
+	UpdateData();
+	auto resolvedPath = ShortcutFile::ResolvePath(path);
+	if (resolvedPath.IsEmpty()) {
+		CString msg((LPCTSTR)IDS_ERR_INVALIDSHORTCUT);
+		msg += _T("\n");
+		msg += path;
+		AfxMessageBox(msg);
+		return;
+	}
+	path = resolvedPath;
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void CommandEditDialog::OnButtonResolveShortcut()
+{
+	ResolveShortcut(mPath);
+}
+
+void CommandEditDialog::OnButtonResolveShortcut0()
+{
+	ResolveShortcut(mPath0);
+}
+
 

@@ -26,6 +26,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
+	void ResolveShortcut(CString& path);
+
 	// 編集開始時のコマンド名
 	CString mOrgName;
 
@@ -78,5 +80,7 @@ protected:
 	afx_msg void OnCheckUse0();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
+	afx_msg void OnButtonResolveShortcut();
+	afx_msg void OnButtonResolveShortcut0();
 };
 

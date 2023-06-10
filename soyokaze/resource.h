@@ -51,6 +51,7 @@
 #define IDI_ICON1                       139
 #define IDS_ERR_COMMANDDOESNOTEXIST     139
 #define IDD_SETTING                     140
+#define IDS_ERR_INVALIDSHORTCUT         140
 #define IDD_NEWCOMMAND                  141
 #define IDD_KEYWORDMANAGER              142
 #define IDD_HOTKEY                      143
@@ -88,6 +89,7 @@
 #define IDC_EDIT_PARAM                  1021
 #define IDC_EDIT_HOTKEY                 1022
 #define IDC_EDIT_PARAM2                 1022
+#define IDC_BUTTON_RESOLVESHORTCUT      1022
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_DIR                    1025
@@ -97,6 +99,7 @@
 #define IDC_STATIC_PARAM0               1029
 #define IDC_COMBO_AFTERCOMMAND          1029
 #define IDC_STATIC_NAME                 1030
+#define IDC_BUTTON_RESOLVESHORTCUT2     1030
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
 #define IDC_BUTTON_NEW                  1033
