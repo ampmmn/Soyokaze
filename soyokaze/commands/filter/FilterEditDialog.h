@@ -28,6 +28,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
+	bool Overlap(CWnd* dstWnd, CWnd* srcWnd);
+
 	// 編集開始時のコマンド名
 	CString mOrgName;
 
@@ -59,7 +61,10 @@ protected:
 	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
+	afx_msg void OnCbnAfterTypeChanged();
 	afx_msg void OnCbnAfterCommandChanged();
+	afx_msg void OnButtonBrowseAfterCommandFile();
+	afx_msg void OnButtonBrowseAfterCommandDir();
 };
 
 } // end of namespace filter

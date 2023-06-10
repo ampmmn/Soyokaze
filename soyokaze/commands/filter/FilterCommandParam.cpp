@@ -17,7 +17,9 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mDir(rhs.mDir),
 	mPath(rhs.mPath),
 	mParameter(rhs.mParameter),
+	mAfterType(rhs.mAfterType),
 	mAfterCommandName(rhs.mAfterCommandName),
+	mAfterFilePath(rhs.mAfterFilePath),
 	mAfterCommandParam(rhs.mAfterCommandParam)
 {
 }
@@ -35,7 +37,9 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mDir = rhs.mDir;
 		mPath = rhs.mPath;
 		mParameter = rhs.mParameter;
+		mAfterType = rhs.mAfterType;
 		mAfterCommandName = rhs.mAfterCommandName;
+		mAfterFilePath = rhs.mAfterFilePath;
 		mAfterCommandParam = rhs.mAfterCommandParam;
 	}
 	return *this;

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "FilterCommand.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/CharConverter.h"
 #include "commands/filter/FilterEditDialog.h"
@@ -12,6 +13,7 @@
 #include "AppPreference.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include "utility/Pipe.h"
 
@@ -20,6 +22,7 @@
 #endif
 
 using namespace soyokaze::commands::common;
+using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
@@ -198,11 +201,45 @@ BOOL FilterCommand::Execute(const Parameter& param)
 		paramSub.SetNamedParamBool(_T("CtrlKeyPressed"), true);
 	}
 
-	auto cmdRepo = CommandRepository::GetInstance();
-	auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
-	if (command) {
-		command->Execute(paramSub);
-		command->Release();
+	if (in->mParam.mAfterType == 0) {
+		// 他のコマンドを実行
+		auto cmdRepo = CommandRepository::GetInstance();
+		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
+		if (command) {
+			command->Execute(paramSub);
+			command->Release();
+		}
+	}
+	else if (in->mParam.mAfterType == 1) {
+		// 他のファイルを実行/URLを開く
+		ShellExecCommand::ATTRIBUTE attr;
+		attr.mPath = in->mParam.mAfterFilePath;
+		attr.mParam = argSub;
+
+		ShellExecCommand cmd;
+		cmd.SetAttribute(attr);
+		return cmd.Execute();
+
+	}
+	else if (in->mParam.mAfterType == 2) {
+		// クリップボードにコピー
+
+		SharedHwnd sharedWnd;
+		if (OpenClipboard(sharedWnd.GetHwnd()) == FALSE) {
+			return FALSE;
+		}
+
+		EmptyClipboard();
+
+		size_t bufLen = sizeof(TCHAR) * (argSub.GetLength() + 1);
+		HGLOBAL hMem = GlobalAlloc(GHND | GMEM_SHARE , bufLen);
+		LPTSTR p = (LPTSTR)GlobalLock(hMem);
+		_tcscpy_s(p, bufLen, argSub);
+		GlobalUnlock(hMem);
+
+		UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
+		SetClipboardData(type , hMem);
+		CloseClipboard();
 	}
 
 	return TRUE;
@@ -313,7 +350,9 @@ bool FilterCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("dir"), in->mParam.mDir);
 	cmdFile->Set(entry, _T("parameter"), in->mParam.mParameter);
 	cmdFile->Set(entry, _T("show"), in->mParam.mShowType);
+	cmdFile->Set(entry, _T("aftertype"), in->mParam.mAfterType);
 	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
+	cmdFile->Set(entry, _T("afterfilepath"), in->mParam.mAfterFilePath);
 	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
 
 	return true;

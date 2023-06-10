@@ -79,18 +79,22 @@
 #define IDC_CHECK_USE0                  1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_BUTTON_BROWSEDIR1           1013
+#define IDC_BUTTON_BROWSEFILE3          1013
 #define IDC_BUTTON_BROWSEFILE2          1014
+#define IDC_BUTTON_BROWSEDIR4           1014
 #define IDC_BUTTON_BROWSEDIR2           1015
 #define IDC_STATIC_PATH                 1016
 #define IDC_STATIC_PARAM                1017
 #define IDC_STATIC_PATH0                1018
 #define IDC_STATIC_PARAM00              1019
+#define IDC_STATIC_PATH2                1019
 #define IDC_EDIT_PATH                   1020
 #define IDC_EDIT_PARAM                  1021
 #define IDC_EDIT_HOTKEY                 1022
 #define IDC_EDIT_PARAM2                 1022
 #define IDC_BUTTON_RESOLVESHORTCUT      1022
 #define IDC_EDIT_PATH0                  1023
+#define IDC_EDIT_PATH2                  1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_DIR                    1025
 #define IDC_BUTTON_BROWSEDIR3           1026
@@ -100,6 +104,7 @@
 #define IDC_COMBO_AFTERCOMMAND          1029
 #define IDC_STATIC_NAME                 1030
 #define IDC_BUTTON_RESOLVESHORTCUT2     1030
+#define IDC_COMBO_AFTERTYPE             1030
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
 #define IDC_BUTTON_NEW                  1033
@@ -145,7 +150,9 @@
 #define IDC_TREE_PAGES                  1067
 #define IDC_LIST1                       1067
 #define IDC_STATIC_BREADCRUMBS          1068
+#define IDC_STATIC_AFTERCOMMMAND        1068
 #define IDC_STATIC_PAGEAREA             1069
+#define IDC_STATIC_AFTERCOMMAND         1069
 #define IDC_COMBO1                      1070
 #define IDC_COMBO_TYPE                  1071
 
@@ -155,7 +162,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        163
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1068
+#define _APS_NEXT_CONTROL_VALUE         1070
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

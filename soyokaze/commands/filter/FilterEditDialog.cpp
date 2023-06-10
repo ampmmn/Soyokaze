@@ -89,6 +89,8 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, mCommandSelIndex);
 	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
+	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mAfterType);
+	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
 }
 
 BEGIN_MESSAGE_MAP(FilterEditDialog, CDialogEx)
@@ -97,8 +99,11 @@ BEGIN_MESSAGE_MAP(FilterEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnCbnAfterTypeChanged)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnCbnAfterCommandChanged)
 	ON_WM_CTLCOLOR()
+	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
+	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
 END_MESSAGE_MAP()
 
 
@@ -109,6 +114,12 @@ BOOL FilterEditDialog::OnInitDialog()
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+
+	// 後段のコマンド設定 排他の項目の位置を調整する
+	Overlap(GetDlgItem(IDC_STATIC_AFTERCOMMAND), GetDlgItem(IDC_STATIC_PATH2));
+	Overlap(GetDlgItem(IDC_COMBO_AFTERCOMMAND), GetDlgItem(IDC_EDIT_PATH2));
+	GetDlgItem(IDC_BUTTON_BROWSEFILE3)->SetWindowTextW(L"\U0001F4C4");
+	GetDlgItem(IDC_BUTTON_BROWSEDIR4)->SetWindowTextW(L"\U0001F4C2");
 
 	CString caption;
   GetWindowText(caption);
@@ -154,6 +165,35 @@ bool FilterEditDialog::UpdateStatus()
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
+
+	if (mParam.mAfterType == 0) {
+		// 他のコマンドを実行する
+		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+	}
+	else if (mParam.mAfterType == 1) {
+		// 他のプログラムを実行する
+		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_SHOW);
+	}
+	else {
+		// クリップボードコピー
+		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+	}
+
 
 	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
 
@@ -286,11 +326,66 @@ void FilterEditDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
+void FilterEditDialog::OnCbnAfterTypeChanged()
+{
+	UpdateData();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 void FilterEditDialog::OnCbnAfterCommandChanged()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+void FilterEditDialog::OnButtonBrowseAfterCommandFile()
+{
+	UpdateData();
+	CFileDialog dlg(TRUE, NULL, mParam.mAfterFilePath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	mParam.mAfterFilePath = dlg.GetPathName();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void FilterEditDialog::OnButtonBrowseAfterCommandDir()
+{
+	UpdateData();
+	CFolderDialog dlg(_T(""), mParam.mAfterFilePath, this);
+
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	mParam.mAfterFilePath = dlg.GetPathName();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+bool FilterEditDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
+{
+	ASSERT(dstWnd && srcWnd);
+
+	if (dstWnd->GetParent() != srcWnd->GetParent()) {
+		return false;
+	}
+
+	CWnd* parentWnd = srcWnd->GetParent();
+
+	CRect rcDst;
+	dstWnd->GetClientRect(&rcDst);
+	CPoint ptDst = rcDst.TopLeft();
+	dstWnd->MapWindowPoints(parentWnd, &ptDst, 1);
+
+
+	srcWnd->SetWindowPos(NULL, ptDst.x, ptDst.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+
+	return true;
 }
 
 } // end of namespace filter

@@ -25,8 +25,12 @@ public:
 	CString mPath;
 	// パラメータ
 	CString mParameter;
-	// 後段のコマンド
+	// 後段の処理の種類
+	int mAfterType;
+	// 後段のコマンド(mAfterType=0の場合)
 	CString mAfterCommandName;
+	// 後段のファイルorURL(mAfterType=1の場合)
+	CString mAfterFilePath;
 	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
 
