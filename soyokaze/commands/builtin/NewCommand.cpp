@@ -5,7 +5,6 @@
 #include "core/CommandRepository.h"
 #include "IconLoader.h"
 #include "CommandFile.h"
-#include "gui/CommandEditDialog.h"
 #include "resource.h"
 
 #ifdef _DEBUG

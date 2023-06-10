@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
-#include "gui/CommandEditDialog.h"
+#include "commands/shellexecute/CommandEditDialog.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "CommandHotKeyMappings.h"

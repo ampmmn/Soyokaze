@@ -117,9 +117,6 @@
     <ClInclude Include="gui/CmdReceiveEdit.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="gui/CommandEditDialog.h">
-      <Filter>gui</Filter>
-    </ClInclude>
     <ClInclude Include="gui/SoyokazeDropTarget.h">
       <Filter>gui</Filter>
     </ClInclude>
@@ -330,6 +327,9 @@
     <ClInclude Include="utility\ScopeAttachThreadInput.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\shellexecute\CommandEditDialog.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -390,9 +390,6 @@
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui/CmdReceiveEdit.cpp">
-      <Filter>gui</Filter>
-    </ClCompile>
-    <ClCompile Include="gui/CommandEditDialog.cpp">
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui/SoyokazeDropTarget.cpp">
@@ -592,6 +589,9 @@
     </ClCompile>
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp">
       <Filter>commands\mailto</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\CommandEditDialog.cpp">
+      <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
