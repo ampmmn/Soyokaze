@@ -150,10 +150,10 @@ BOOL KeywordManagerDialog::OnInitDialog()
 void KeywordManagerDialog::ResetContents()
 {
 	// 更新前の選択位置を覚えておく
-	int itemIndex = -1;
+	int selItemIndex = -1;
 	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
 	if (pos) {
-		itemIndex = in->mListCtrl.GetNextSelectedItem(pos);
+		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
 	}
 
 	// 以前のアイテムを解放
@@ -174,9 +174,14 @@ void KeywordManagerDialog::ResetContents()
 	in->mListCtrl.SetItemCountEx((int)in->mCommands.size());
 
 	// 選択状態の更新
+	int itemIndex = 0;
 	for (auto cmd : in->mCommands) {
-			bool isSelItem = cmd == in->mSelCommand;
-			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+		bool isSelItem = itemIndex== selItemIndex;
+		if (isSelItem) {
+			in->mSelCommand = cmd;
+		}
+		in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+		itemIndex++;
 	}
 	in->mListCtrl.Invalidate();
 }
@@ -282,7 +287,6 @@ void KeywordManagerDialog::OnButtonDelete()
 	if (cmdRepoPtr->DeleteCommand(name) == false) {
 		return ;
 	}
-
 
 	ResetContents();
 	UpdateStatus();
