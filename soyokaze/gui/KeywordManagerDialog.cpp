@@ -105,6 +105,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNMDblclk)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST_COMMANDS, OnHeaderClicked)
 	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_COMMANDS, OnGetDispInfo)
+	ON_NOTIFY(LVN_ODFINDITEM , IDC_LIST_COMMANDS, OnFindCommand)
 END_MESSAGE_MAP()
 
 
@@ -373,4 +374,53 @@ void KeywordManagerDialog::OnGetDispInfo(
 	}
 }
 
+/**
+ *  オーナーデータリストの検索処理
+ */
+void KeywordManagerDialog::OnFindCommand(
+	NMHDR* pNMHDR,
+	LRESULT* pResult
+)
+{
+	NMLVFINDITEM* pFindInfo = (NMLVFINDITEM*)pNMHDR;
 
+	if ((pFindInfo->lvfi.flags & LVFI_STRING) == 0) {
+		*pResult = -1;
+		return;
+	}
+
+	CString searchStr = pFindInfo->lvfi.psz;
+	// 検索ワードを小文字に変換しておく
+	searchStr.MakeLower();
+
+	int startPos = pFindInfo->iStart;
+	if (startPos >= in->mCommands.size()) {
+		startPos = 0;
+	}
+
+	int currentPos=startPos;
+
+	// 検索開始位置からリスト末尾までを探す
+	int commandCount = (int)in->mCommands.size();
+	for (int i = startPos; i < commandCount; ++i) {
+
+		// コマンド名を小文字に変換したうえで前方一致比較をする
+		CString item = in->mCommands[i]->GetName();
+		item.MakeLower();
+		if (item.Find(searchStr) == 0) {
+			*pResult = i;
+			return;
+		}
+	}
+	// 末尾まで行ってヒットしなかった場合は先頭から検索開始位置までを探す
+	for (int i = 0; i < startPos; ++i) {
+
+		CString item = in->mCommands[i]->GetName();
+		item.MakeLower();
+
+		if (item.Find(searchStr) == 0) {
+			*pResult = i;
+			return;
+		}
+	}
+}

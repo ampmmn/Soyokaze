@@ -30,5 +30,6 @@ protected:
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
