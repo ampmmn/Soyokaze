@@ -68,6 +68,7 @@ protected:
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnGetDispInfo(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnCandidatesCustomDraw(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnSize(UINT type, int cx, int cy);

@@ -582,6 +582,15 @@ void CSoyokazeDlg::OnEditCommandChanged()
 
 	UpdateData();
 
+	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
+	// (Editコントロールの通常の挙動)
+	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
+	// 入力文字列をクリアした後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
+	if (in->mCommandStr.Find((TCHAR)0x7F) != -1) {
+		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
+		in->mCommandStr.Replace(bsStr, _T(""));
+		in->mKeywordEdit.Clear();
+	}
 
 	in->mCandidateListBox.ResetContent();
 	in->mSelIndex = -1;
@@ -734,6 +743,14 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 	LPARAM lParam
 )
 {
+	if (wParam == VK_BACK) {
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+			ClearContent();
+			in->mKeywordEdit.Clear();
+			return 1;
+		}
+	}
+
 	if (in->mCandidates.size() > 0) {
 		if (wParam == VK_UP) {
 			in->mSelIndex--;
@@ -743,7 +760,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mCandidateListBox.SetCurSel(in->mSelIndex);
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
-				return 0;
+				return 1;
 			}
 
 			in->mCommandStr = cmd->GetName();
@@ -756,7 +773,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			UpdateData(FALSE);
 
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam ==VK_DOWN) {
 			in->mSelIndex++;
@@ -766,7 +783,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mCandidateListBox.SetCurSel(in->mSelIndex);
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
-				return 0;
+				return 1;
 			}
 
 			in->mCommandStr = cmd->GetName();
@@ -779,12 +796,12 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			UpdateData(FALSE);
 
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam == VK_TAB) {
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
-				return 0;
+				return 1;
 			}
 
 			in->mCommandStr = cmd->GetName();
@@ -798,13 +815,14 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			UpdateData(FALSE);
 
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
 			in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
+			return 1;
 		}
-
 	}
+
 	return 0;
 }
 

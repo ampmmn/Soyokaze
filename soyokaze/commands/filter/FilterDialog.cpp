@@ -171,6 +171,7 @@ BEGIN_MESSAGE_MAP(FilterDialog, CDialogEx)
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_CANDIDATE, OnGetDispInfo)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST_CANDIDATE, OnCandidatesCustomDraw)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZE()
@@ -188,6 +189,7 @@ BOOL FilterDialog::OnInitDialog()
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
 
 	in->mCandidateListBox.ModifyStyle(0, LVS_OWNERDATA);
+	in->mCandidateListBox.SetExtendedStyle(in->mCandidateListBox.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 
 	// ヘッダー追加
 	LVCOLUMN lvc;
@@ -295,6 +297,14 @@ void FilterDialog::OnEditCommandChanged()
 
 	UpdateData();
 
+	// Ctrl-Backspace対応(※CSoyokazeDlg::OnEditCommandChangedのコメント参照)
+	if (in->mInputStr.Find((TCHAR)0x7F) != -1) {
+		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
+		in->mInputStr.Replace(bsStr, _T(""));
+		in->mKeywordEdit.Clear();
+	}
+
+
 	in->mCandidateListBox.DeleteAllItems();
 
 	std::vector<CString> candidates;
@@ -384,6 +394,16 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 	LPARAM lParam
 )
 {
+	if (wParam == VK_BACK) {
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+			in->mKeywordEdit.Clear();
+			in->mInputStr.Empty();
+			UpdateStatus();
+			UpdateData(FALSE);
+			return 1;
+		}
+	}
+
 	if (in->mCandidates.size() > 0) {
 		if (wParam == VK_UP) {
 			in->mSelIndex--;
@@ -401,7 +421,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 			UpdateData(FALSE);
 
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam ==VK_DOWN) {
 			in->mSelIndex++;
@@ -418,7 +438,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 			UpdateStatus();
 			UpdateData(FALSE);
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam == VK_TAB) {
 			in->mInputStr = in->mCandidates[in->mSelIndex];
@@ -426,7 +446,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 			UpdateStatus();
 			UpdateData(FALSE);
 			in->mKeywordEdit.SetCaretToEnd();
-			return 0;
+			return 1;
 		}
 		else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
 			in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
@@ -498,6 +518,29 @@ void FilterDialog::OnGetDispInfo(
 			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, in->mCandidates[itemIndex], _TRUNCATE);
 			}
+		}
+	}
+}
+
+void FilterDialog::OnCandidatesCustomDraw(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	auto lpLvCd = (LPNMLVCUSTOMDRAW)pNMHDR;
+
+	int drawStage = lpLvCd->nmcd.dwDrawStage;
+	if (drawStage == CDDS_PREPAINT) {
+		*pResult = CDRF_NOTIFYITEMDRAW;
+		 ::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NOTIFYITEMDRAW);
+	}
+	else if (drawStage == CDDS_ITEMPREPAINT) {
+		*pResult = CDRF_NEWFONT;
+		int row = (int)lpLvCd->nmcd.dwItemSpec;
+		int state = in->mCandidateListBox.GetItemState(row, LVIS_SELECTED);
+
+		if (state != 0) {
+			// 選択状態のアイテムの背景色を変える
+			lpLvCd->clrTextBk = GetSysColor(COLOR_HIGHLIGHT);
+			lpLvCd->clrText = RGB(0, 0, 0);
+			::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
 		}
 	}
 }
