@@ -266,9 +266,7 @@ FilterCommand& FilterCommand::GetParam(CommandParam& param)
 
 HICON FilterCommand::GetIcon()
 {
-	CString path = in->mParam.mPath;
-	ExpandEnv(path);
-	return IconLoader::Get()->LoadIconFromPath(path);
+	return IconLoader::Get()->GetImageResIcon(311);
 }
 
 int FilterCommand::Match(Pattern* pattern)
