@@ -65,6 +65,9 @@
 #define IDD_FILTEREDIT                  151
 #define IDD_SOYOKAZE_DIALOG1            152
 #define IDD_FILTER                      152
+#define IDD_EXECSETTING                 153
+#define IDD_INPUTSETTING                154
+#define IDD_VIEWSETTING                 155
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -131,6 +134,8 @@
 #define IDC_CHECK_CTRL                  1053
 #define IDC_CHECK_IMEOFF                1053
 #define IDC_CHECK_WIN                   1054
+#define IDC_CHECK_IMEOFF2               1054
+#define IDC_CHECK_IGNOREUNC             1054
 #define IDC_COMBO_VK                    1055
 #define IDC_SYSLINK1                    1056
 #define IDC_BUTTON_SHORTCUT             1057

@@ -15,6 +15,7 @@ protected:
 	BOOL OnInitDialog() override;
 	BOOL OnKillActive() override;
 	BOOL OnSetActive() override;
+	void OnEnterSettings() override;
 
 // 実装
 protected:

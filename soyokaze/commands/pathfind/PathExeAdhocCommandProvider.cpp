@@ -4,6 +4,7 @@
 #include "commands/pathfind/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
+#include "AppPreferenceListenerIF.h"
 #include "AppPreference.h"
 #include "resource.h"
 #include <list>
@@ -20,15 +21,33 @@ namespace pathfind {
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
-struct PathExeAdhocCommandProvider::PImpl
+struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
+	void OnAppFirstBoot() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		auto pref = AppPreference::Get();
+		mIsIgnoreUNC = pref->IsIgnoreUNC();
+	}
+	void OnAppExit() override {}
+
 	uint32_t mRefCount;
 	// 環境変数PATHにあるexeを実行するためのコマンド
 	PathExecuteCommand* mExeCommandPtr;
 	// 実行履歴を保持する
 	ExecuteHistory mHistory;
-
-	// 初回呼び出しフラグ(初回呼び出し時に履歴をロードするため)
+	//
+	bool mIsIgnoreUNC;
+	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall;
 
 };
@@ -45,6 +64,7 @@ PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(new PImpl)
 	in->mRefCount = 1;
 	in->mExeCommandPtr = new PathExecuteCommand();
 	in->mExeCommandPtr->SetHistoryList(&in->mHistory);
+	in->mIsIgnoreUNC = false;
 	in->mIsFirstCall = true;
 }
 
@@ -69,7 +89,8 @@ void PathExeAdhocCommandProvider::LoadCommands(
 	CommandFile* cmdFile
 )
 {
-	// サポートしない
+	// 内部でもつ履歴データを読み込む
+	in->mHistory.Load();
 }
 
 CString PathExeAdhocCommandProvider::GetName()
@@ -110,16 +131,26 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
  	std::vector<CommandQueryItem>& commands
 )
 {
+	if (in->mIsFirstCall) {
+		// 初回呼び出し時に設定よみこみ
+		auto pref = AppPreference::Get();
+		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
+		in->mIsFirstCall = false;
+	}
+
+	if (in->mIsIgnoreUNC) {
+		CString word = pattern->GetOriginalPattern();
+		if (PathIsUNC(word)) {
+			// ネットワークパスを無視する
+			return ;
+		}
+	}
+
+
 	int level = in->mExeCommandPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mExeCommandPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mExeCommandPtr));
-	}
-
-	// 初回問い合わせ時に実行履歴情報をロードする
-	if (in->mIsFirstCall) {
-		in->mIsFirstCall = false;
-		in->mHistory.Load();
 	}
 
 	std::vector<HISTORY_ITEM> items;

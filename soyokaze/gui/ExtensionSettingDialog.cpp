@@ -41,10 +41,17 @@ BOOL ExtensionSettingDialog::OnInitDialog()
 
 BOOL ExtensionSettingDialog::OnKillActive()
 {
+	if (UpdateData() == FALSE) {
+		return FALSE;
+	}
 	return TRUE;
 }
 
 BOOL ExtensionSettingDialog::OnSetActive()
 {
 	return TRUE;
+}
+
+void ExtensionSettingDialog::OnEnterSettings()
+{
 }

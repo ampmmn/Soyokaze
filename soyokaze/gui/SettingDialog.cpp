@@ -3,6 +3,9 @@
 #include "SettingDialog.h"
 #include "gui/ShortcutDialog.h"
 #include "gui/BasicSettingDialog.h"
+#include "gui/InputSettingDialog.h"
+#include "gui/ExecSettingDialog.h"
+#include "gui/ViewSettingDialog.h"
 #include "gui/ExtensionSettingDialog.h"
 #include "gui/ShortcutSettingPage.h"
 #include "utility/TopMostMask.h"
@@ -137,8 +140,18 @@ BOOL SettingDialog::OnInitDialog()
 	HTREEITEM hItem = in->AddPage(TVI_ROOT, new BasicSettingDialog(this));
 	in->AddPage(hItem, new ShortcutSettingPage(this));
 
+	in->AddPage(TVI_ROOT, new InputSettingDialog(this));
+	in->AddPage(TVI_ROOT, new ExecSettingDialog(this));
+	in->AddPage(TVI_ROOT, new ViewSettingDialog(this));
+
 	// ToDo: 拡張機能を実装するときに有効化する
 	//in->AddPage(TVI_ROOT, new ExtensionSettingDialog(this));
+
+	// 各ページの設定をロードする
+	for (auto page : in->mPages) {
+		page->OnEnterSettings();
+		page->OnSetActive();
+	}
 
 	SelectPage(hItem);
 
@@ -151,10 +164,15 @@ BOOL SettingDialog::OnInitDialog()
 
 void SettingDialog::OnOK()
 {
+	for (auto page : in->mPages) {
+		if (page->OnKillActive() == FALSE) {
+			return;
+		}
+	}
 
 	// 各プロパティページのOnOKをよぶ
 	for (auto page : in->mPages) {
-		page->OnOK();;
+		page->OnOK();
 	}
 
 	__super::OnOK();

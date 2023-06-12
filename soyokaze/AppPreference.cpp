@@ -409,6 +409,12 @@ bool AppPreference::IsIMEOffOnActive()
 	return in->mSettings.Get(_T("Soyokaze:IsIMEOffOnActive"), false);
 }
 
+// ネットワークパスを無視する
+bool AppPreference::IsIgnoreUNC()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsIgnoreUNC"), false);
+}
+
 
 void AppPreference::SetSettings(const Settings& settings)
 {

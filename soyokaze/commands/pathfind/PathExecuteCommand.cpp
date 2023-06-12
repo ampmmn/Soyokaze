@@ -179,6 +179,10 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		word += _T(".exe");
 	}
 
+	if (PathIsRelative(word) == FALSE) {
+		return Pattern::Mismatch;
+	}
+
 	// targetDirsにがいとうするexeがないかをさがす
 	TCHAR path[MAX_PATH_NTFS];
 	for (const auto& dir : in->targetDirs) {

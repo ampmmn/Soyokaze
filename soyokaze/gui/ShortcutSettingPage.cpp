@@ -20,8 +20,6 @@ ShortcutSettingPage::~ShortcutSettingPage()
 
 void ShortcutSettingPage::OnOK()
 {
-	UpdateData();
-
 	if (mSendTo == FALSE && PathFileExists(mSendToPath)) {
 		DeleteFile(mSendToPath);
 	}
@@ -128,6 +126,9 @@ BOOL ShortcutSettingPage::OnInitDialog()
 
 BOOL ShortcutSettingPage::OnKillActive()
 {
+	if (UpdateData() == FALSE) {
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -168,4 +169,8 @@ void ShortcutSettingPage::OnButtonDelete()
 	DeleteFile(mStartupPath);
 
 	UpdateStatus();
+}
+
+void ShortcutSettingPage::OnEnterSettings()
+{
 }

@@ -40,8 +40,11 @@ public:
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
 
-	// $BF~NO2hLLI=<(;~$K(BIME$B$r%*%U$K$9$k$+(B?
+	// 入力画面表示時にIMEをオフにするか?
 	bool IsIMEOffOnActive();
+
+	// ネットワークパスを無視する
+	bool IsIgnoreUNC();
 
 	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
 	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);

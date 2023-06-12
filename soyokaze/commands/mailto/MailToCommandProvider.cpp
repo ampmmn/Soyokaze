@@ -3,7 +3,6 @@
 #include "commands/mailto/MailToCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
-#include "AppPreference.h"
 #include "resource.h"
 #include <list>
 

@@ -16,6 +16,8 @@ public:
 
 	void SetSettings(Settings* settingsPtr);
 
+	virtual void OnEnterSettings() = 0;
+
 protected:
 	CWnd* mParentWnd;
 	CString mName;
