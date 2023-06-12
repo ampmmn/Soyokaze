@@ -214,6 +214,7 @@ BOOL FilterCommand::Execute(const Parameter& param)
 		// 他のファイルを実行/URLを開く
 		ShellExecCommand::ATTRIBUTE attr;
 		attr.mPath = in->mParam.mAfterFilePath;
+		attr.mPath.Replace(_T("$select"), resultText);
 		attr.mParam = argSub;
 
 		ShellExecCommand cmd;
