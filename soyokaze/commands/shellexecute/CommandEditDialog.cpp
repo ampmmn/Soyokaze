@@ -94,6 +94,8 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PARAM0, mParameter0);
 	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
+	DDX_Check(pDX,IDC_CHECK_USEREGEXP, mIsUseRegExp);
+	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
@@ -105,7 +107,8 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE2, OnButtonBrowseFile2Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR2, OnButtonBrowseDir2Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
-	ON_COMMAND(IDC_CHECK_USE0, OnCheckUse0)
+	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_USEREGEXP, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
@@ -152,6 +155,8 @@ bool CommandEditDialog::UpdateStatus()
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
+
+	GetDlgItem(IDC_EDIT_PATTERNSTR)->EnableWindow(mIsUseRegExp);
 
 	GetDlgItem(IDC_STATIC_PATH0)->EnableWindow(mIsUse0);
 	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mIsUse0);
@@ -302,12 +307,13 @@ void CommandEditDialog::OnButtonBrowseDir3Clicked()
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::OnCheckUse0()
+void CommandEditDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
+
 
 HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -326,6 +332,24 @@ void CommandEditDialog::OnOK()
 	UpdateData();
 	if (UpdateStatus() == false) {
 		return ;
+	}
+
+	if (mIsUseRegExp) {
+		try {
+			tregex regTmp(mPatternStr);
+		}
+		catch(std::regex_error& e) {
+			CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
+			msg += _T("\n");
+
+			CStringA what(e.what());
+			msg += _T("\n");
+			msg += (CString)what;
+			msg += _T("\n");
+			msg += mPatternStr;
+			AfxMessageBox(msg);
+			return;
+		}
 	}
 
 	__super::OnOK();

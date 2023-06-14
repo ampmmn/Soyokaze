@@ -53,8 +53,11 @@
 #define IDD_SETTING                     140
 #define IDS_ERR_INVALIDSHORTCUT         140
 #define IDD_NEWCOMMAND                  141
+#define IDS_ERR_INVALIDREGEXP           141
 #define IDD_KEYWORDMANAGER              142
+#define IDS_ERR_FAILTOSHELLEXECUTE      142
 #define IDD_HOTKEY                      143
+#define IDS_PATH                        143
 #define IDD_SHORTCUT                    144
 #define IDD_REGISTER_ITEMS              145
 #define IDD_BASICSETTING                146
@@ -79,6 +82,7 @@
 #define IDC_EDIT_DESCRIPTION            1008
 #define IDC_CHECK_RUNASADMIN            1009
 #define IDC_EDIT_REPEATS                1010
+#define IDC_EDIT_PATTERNSTR             1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_BUTTON_BROWSEDIR1           1013
@@ -110,6 +114,7 @@
 #define IDC_COMBO_AFTERTYPE             1030
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
+#define IDC_CHECK_USEREGEXP             1032
 #define IDC_BUTTON_NEW                  1033
 #define IDC_BUTTON_EDIT                 1034
 #define IDC_COMBO_MATCHLEVEL            1035

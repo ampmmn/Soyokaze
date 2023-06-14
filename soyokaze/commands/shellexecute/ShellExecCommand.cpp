@@ -35,6 +35,7 @@ struct ShellExecCommand::PImpl
 {
 	PImpl() :
 		mRunAs(0),
+		mIsUseRegExp(false),
 		mRefCount(1)
 	{
 	}
@@ -44,6 +45,9 @@ struct ShellExecCommand::PImpl
 
 	CString mName;
 	CString mDescription;
+	bool mIsUseRegExp;
+	CString mPatternStr;
+	tregex mRegex;
 	int mRunAs;
 
 	ATTRIBUTE mNormalAttr;
@@ -92,6 +96,9 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	std::vector<CString> args;
 	param.GetParameters(args);
 
+	// マッチしたコマンド名
+	CString matchStr = param.GetCommandString();
+
 	in->mErrMsg.Empty();
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
@@ -111,8 +118,10 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 		if (pref->IsUseFiler()) {
 			path = pref->GetFilerPath();
 			paramStr = pref->GetFilerParam();
+
 			// とりあえずリンク先のみをサポート
 			paramStr.Replace(_T("$target"), attr.mPath);
+			//
 		}
 		else {
 			// 登録されたファイラーがない場合はエクスプローラで開く
@@ -131,7 +140,23 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 
 	// argsの値を展開
 	ExpandArguments(path, args);
+	ExpandVariable(path, _T("matchstr"), matchStr);
+
+	if (PathIsURL(path) == FALSE && PathFileExists(path) == FALSE) {
+		// ファイルがURLでなく、かつ、パスが存在しない場合はエラーにする
+		CString msg((LPCTSTR)IDS_ERR_FAILTOSHELLEXECUTE);
+		msg +=_T("\n\n");
+		msg += CString((LPCTSTR)IDS_PATH);
+		msg +=_T(":");
+		msg += path;
+
+		AfxMessageBox(msg);
+
+		return TRUE;
+	}
+
 	ExpandArguments(paramStr, args);
+	ExpandVariable(paramStr, _T("matchstr"), matchStr);
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
@@ -214,6 +239,30 @@ ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
 	return *this;
 }
 
+ShellExecCommand& ShellExecCommand::SetMatchPattern(LPCTSTR pattern)
+{
+	if (pattern == nullptr || _tcslen(pattern) == 0) {
+		in->mPatternStr.Empty();
+		in->mRegex = tregex();
+		in->mIsUseRegExp = false;
+		return *this;
+	}
+
+	try {
+		tregex regex(pattern);
+
+		in->mPatternStr = pattern;
+		in->mRegex.swap(regex);
+		in->mIsUseRegExp = true;
+
+		return *this;
+	}
+	catch(std::regex_error&) {
+		in->mIsUseRegExp = false;
+		return *this;
+	}
+}
+
 void
 ShellExecCommand::SelectAttribute(
 	const std::vector<CString>& args,
@@ -259,6 +308,13 @@ HICON ShellExecCommand::GetIcon()
 
 int ShellExecCommand::Match(Pattern* pattern)
 {
+	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
+	if (in->mIsUseRegExp) {
+		if (std::regex_match((tstring)pattern->GetOriginalPattern(), in->mRegex)) {
+			return Pattern::WholeMatch;
+		}
+	}
+
 	return pattern->Match(GetName());
 }
 
@@ -275,6 +331,8 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	dlg.mName = in->mName;
 	dlg.mDescription = in->mDescription;
 	dlg.mIsRunAsAdmin = in->mRunAs;
+	dlg.mIsUseRegExp = in->mIsUseRegExp;
+	dlg.mPatternStr = in->mPatternStr;
 
 	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
 
@@ -306,6 +364,7 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	cmdNew->SetName(dlg.mName);
 	cmdNew->SetDescription(dlg.mDescription);
 	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
+	cmdNew->SetMatchPattern(dlg.mIsUseRegExp ? dlg.mPatternStr : nullptr);
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = dlg.mPath;
@@ -400,6 +459,9 @@ bool ShellExecCommand::Save(CommandFile* cmdFile)
 
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("runas"), GetRunAs());
+	cmdFile->Set(entry, _T("useregexp"), in->mIsUseRegExp);
+	cmdFile->Set(entry, _T("matchpattern"), in->mPatternStr);
+
 
 	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
 	cmdFile->Set(entry, _T("path"), normalAttr.mPath);

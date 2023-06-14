@@ -443,8 +443,8 @@ bool CommandFile::Load()
 
 	std::vector<Entry*> entries;
 
-	std::wregex regInt(L"^ *-?[0-9]+ *$");
-	std::wregex regDouble(L"^ *-?[0-9]+\\.[0-9]+ *$");
+	tregex regInt(_T("^ *-?[0-9]+ *$"));
+	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
 
 	CString strLine;
 	while(file.ReadString(strLine)) {
@@ -483,7 +483,7 @@ bool CommandFile::Load()
 
 		CString strValue = strLine.Mid(n+1);
 		strValue.Trim();
-		std::wstring pat(strValue);
+		tstring pat(strValue);
 
 		if (strValue== _T("true")) {
 			curEntry->mBoolMap[strKey] = true;

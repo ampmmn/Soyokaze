@@ -41,6 +41,12 @@ public:
 	CString mDescription;
 	// 管理者権限で実行
 	BOOL mIsRunAsAdmin;
+	//! パターンでマッチするか?
+	BOOL mIsUseRegExp;
+	//! パターン(正規表現)
+	CString mPatternStr;
+
+
 	// 表示方法
 	int mShowType;
 	// カレントディレクトリ
@@ -77,7 +83,7 @@ protected:
 	afx_msg void OnButtonBrowseFile2Clicked();
 	afx_msg void OnButtonBrowseDir2Clicked();
 	afx_msg void OnButtonBrowseDir3Clicked();
-	afx_msg void OnCheckUse0();
+	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveShortcut();

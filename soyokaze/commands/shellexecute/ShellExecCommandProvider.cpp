@@ -96,6 +96,13 @@ void ShellExecCommandProvider::LoadCommands(
 		command->SetName(name);
 		command->SetDescription(descriptionStr);
 		command->SetRunAs(runAs);
+
+		bool isUseRegExp = cmdFile->Get(entry, _T("useregexp"), false);
+		CString patternStr = cmdFile->Get(entry, _T("matchpattern"), _T("")); 
+		if (isUseRegExp) {
+			command->SetMatchPattern(patternStr);
+		}
+
 		if (normalAttr.mPath.IsEmpty() == FALSE) {
 			command->SetAttribute(normalAttr);
 		}
@@ -154,6 +161,7 @@ bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
 	newCmd->SetName(dlg.mName);
 	newCmd->SetDescription(dlg.mDescription);
 	newCmd->SetRunAs(dlg.mIsRunAsAdmin);
+	newCmd->SetMatchPattern(dlg.mIsUseRegExp ? dlg.mPatternStr : nullptr);
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = dlg.mPath;

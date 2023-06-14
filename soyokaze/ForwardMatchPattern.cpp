@@ -10,7 +10,7 @@
 
 struct ForwardMatchPattern::PImpl
 {
-	std::wregex mRegPattern;
+	tregex mRegPattern;
 	CString mWord;
 };
 
@@ -29,9 +29,9 @@ void ForwardMatchPattern::SetPattern(
 {
 	in->mWord = pattern;
 
-	std::wstring pat(L"^");
+	tstring pat(_T("^"));
 	pat += Pattern::StripEscapeChars(pattern);
-	in->mRegPattern = std::wregex(pat, std::regex_constants::icase);
+	in->mRegPattern = tregex(pat, std::regex_constants::icase);
 }
 
 int ForwardMatchPattern::Match(

@@ -50,3 +50,16 @@
 
 #define MAX_PATH_NTFS (32767+1)
 
+
+#include <regex>
+#include <string>
+
+#ifdef _UNICODE
+#define tregex std::wregex
+#define tstring std::wstring
+#else
+#define tregex std::regex
+#define tstring std::string
+#endif
+
+

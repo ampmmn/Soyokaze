@@ -122,6 +122,21 @@ void ExpandEnv(CString& target)
 	target = workBuf;
 }
 
+void ExpandVariable(
+	CString& target,
+ 	const CString& name,
+ 	const CString& value
+)
+{
+	CString pat(_T("$"));
+	pat += name;
+
+	// ${name}を置換する
+	if (target.Find(pat) != -1) {
+		target.Replace(pat, value);
+	}
+}
+
 bool ResolaveRelativeExePath(CString& text)
 {
 	if (PathIsRelative(text) == FALSE) {

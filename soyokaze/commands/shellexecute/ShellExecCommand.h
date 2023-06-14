@@ -59,6 +59,9 @@ public:
 	ShellExecCommand& SetPath(LPCTSTR path);
 	ShellExecCommand& SetRunAs(int runAs);
 
+	ShellExecCommand& SetMatchPattern(LPCTSTR pattern);
+
+
 	void GetAttribute(ATTRIBUTE& attr);
 	void GetAttributeForParam0(ATTRIBUTE& attr);
 	int GetRunAs();
