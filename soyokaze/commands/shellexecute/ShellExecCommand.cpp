@@ -418,6 +418,9 @@ ShellExecCommand::Clone()
 	clonedObj->in->mName = in->mName;
 	clonedObj->in->mDescription = in->mDescription;
 	clonedObj->in->mRunAs = in->mRunAs;
+	clonedObj->in->mIsUseRegExp = in->mIsUseRegExp;
+	clonedObj->in->mPatternStr = in->mPatternStr;
+	clonedObj->in->mRegex = in->mRegex;
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
 	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
 
