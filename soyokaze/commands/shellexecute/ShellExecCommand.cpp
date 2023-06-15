@@ -141,20 +141,6 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	// argsの値を展開
 	ExpandArguments(path, args);
 	ExpandVariable(path, _T("matchstr"), matchStr);
-
-	if (PathIsURL(path) == FALSE && PathFileExists(path) == FALSE) {
-		// ファイルがURLでなく、かつ、パスが存在しない場合はエラーにする
-		CString msg((LPCTSTR)IDS_ERR_FAILTOSHELLEXECUTE);
-		msg +=_T("\n\n");
-		msg += CString((LPCTSTR)IDS_PATH);
-		msg +=_T(":");
-		msg += path;
-
-		AfxMessageBox(msg);
-
-		return TRUE;
-	}
-
 	ExpandArguments(paramStr, args);
 	ExpandVariable(paramStr, _T("matchstr"), matchStr);
 
