@@ -7,9 +7,9 @@ class HOTKEY_ATTR;
 
 namespace soyokaze {
 namespace commands {
-namespace shellexecute {
+namespace regexp {
 
-class ShellExecCommand : public soyokaze::core::Command
+class RegExpCommand : public soyokaze::core::Command
 {
 public:
 	struct ATTRIBUTE {
@@ -23,8 +23,8 @@ public:
 
 
 public:
-	ShellExecCommand();
-	virtual ~ShellExecCommand();
+	RegExpCommand();
+	virtual ~RegExpCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -40,31 +40,30 @@ public:
 
 	bool Save(CommandFile* cmdFile) override;
 
+	bool Load(CommandFile* cmdFile, void* entry_);
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
 	static CString GetType();
 
-	// ShellExecCommandのコマンド名として許可しない文字を置換する
-	static CString& SanitizeName(CString& str);
+	static bool NewDialog(const Parameter* param);
 
 	// 管理者権限で実行しているか
 	static bool IsRunAsAdmin();
 	
 public:
-	ShellExecCommand& SetName(LPCTSTR name);
-	ShellExecCommand& SetDescription(LPCTSTR description);
-	ShellExecCommand& SetAttribute(const ATTRIBUTE& attr);
-	ShellExecCommand& SetAttributeForParam0(const ATTRIBUTE& attr);
-	ShellExecCommand& SetPath(LPCTSTR path);
-	ShellExecCommand& SetRunAs(int runAs);
+	RegExpCommand& SetName(LPCTSTR name);
+	RegExpCommand& SetDescription(LPCTSTR description);
+	RegExpCommand& SetAttribute(const ATTRIBUTE& attr);
+	RegExpCommand& SetAttributeForParam0(const ATTRIBUTE& attr);
+	RegExpCommand& SetPath(LPCTSTR path);
+	RegExpCommand& SetRunAs(int runAs);
+
+	RegExpCommand& SetMatchPattern(LPCTSTR pattern);
 
 	void GetAttribute(ATTRIBUTE& attr);
-	void GetAttributeForParam0(ATTRIBUTE& attr);
 	int GetRunAs();
-
-protected:
-	void SelectAttribute(const std::vector<CString>& args,ATTRIBUTE& attr);
 
 protected:
 	struct PImpl;

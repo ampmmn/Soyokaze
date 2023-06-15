@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "CommandEditDialog.h"
+#include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "gui/IconLabel.h"
 #include "gui/CommandHotKeyDialog.h"
@@ -15,9 +15,13 @@
 #define new DEBUG_NEW
 #endif
 
+namespace soyokaze {
+namespace commands {
+namespace regexp {
+
 
 CommandEditDialog::CommandEditDialog() : 
-	CDialogEx(IDD_NEWCOMMAND),
+	CDialogEx(IDD_REGEXPCOMMAND),
 	mIconLabelPtr(new IconLabel),
 	mIsGlobal(false)
 {
@@ -89,26 +93,20 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mShowType);
 	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, mParameter);
-	DDX_Text(pDX, IDC_EDIT_PATH0, mPath0);
-	DDX_Check(pDX, IDC_CHECK_USE0, mIsUse0);
-	DDX_Text(pDX, IDC_EDIT_PARAM0, mParameter0);
 	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
+	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH0, OnEditPath0Changed)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE2, OnButtonBrowseFile2Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR2, OnButtonBrowseDir2Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
-	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -132,9 +130,7 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	// File&Folder Select Button
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->SetWindowTextW(L"\U0001F4C4");
 	GetDlgItem(IDC_BUTTON_BROWSEDIR1)->SetWindowTextW(L"\U0001F4C2");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->SetWindowTextW(L"\U0001F4C2");
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
 	UpdateStatus();
@@ -153,18 +149,8 @@ bool CommandEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	GetDlgItem(IDC_STATIC_PATH0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_EDIT_PATH0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_EDIT_PARAM0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->EnableWindow(mIsUse0);
-
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
-
-	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath0)) == 0;
-	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
 
 	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mPath));
 
@@ -197,12 +183,6 @@ bool CommandEditDialog::UpdateStatus()
 	//
 	if (mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	if (mIsUse0 && mPath0.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_PATH0ISEMPTY);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
@@ -261,33 +241,6 @@ void CommandEditDialog::OnButtonBrowseDir1Clicked()
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::OnButtonBrowseFile2Clicked()
-{
-	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath0, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mPath0 = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnButtonBrowseDir2Clicked()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), mPath0, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mPath0 = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
 void CommandEditDialog::OnButtonBrowseDir3Clicked()
 {
 	UpdateData();
@@ -328,6 +281,23 @@ void CommandEditDialog::OnOK()
 	if (UpdateStatus() == false) {
 		return ;
 	}
+
+	try {
+		tregex regTmp(mPatternStr);
+	}
+	catch(std::regex_error& e) {
+		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
+		msg += _T("\n");
+
+		CStringA what(e.what());
+		msg += _T("\n");
+		msg += (CString)what;
+		msg += _T("\n");
+		msg += mPatternStr;
+		AfxMessageBox(msg);
+		return;
+	}
+
 	__super::OnOK();
 }
 
@@ -370,9 +340,7 @@ void CommandEditDialog::OnButtonResolveShortcut()
 	ResolveShortcut(mPath);
 }
 
-void CommandEditDialog::OnButtonResolveShortcut0()
-{
-	ResolveShortcut(mPath0);
 }
-
+}
+}
 

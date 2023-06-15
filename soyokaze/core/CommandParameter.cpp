@@ -70,6 +70,11 @@ void CommandParameter::AddArgument(const CString& arg)
 	in->mParamPart += arg;
 }
 
+const CString& CommandParameter::GetWholeString() const
+{
+	return in->mWholeText;
+}
+
 const CString& CommandParameter::GetCommandString() const
 {
 	return in->mCommandPart;

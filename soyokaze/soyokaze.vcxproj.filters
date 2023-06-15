@@ -46,6 +46,9 @@
     <Filter Include="commands\mailto">
       <UniqueIdentifier>{d4b52afc-e65b-4ee9-8542-d07d6f0f750a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\regexp">
+      <UniqueIdentifier>{084cd9a5-4f68-4642-b7bb-679c7495c4ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -336,6 +339,15 @@
     <ClInclude Include="gui\ViewSettingDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpCommand.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpCommandProvider.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -604,6 +616,15 @@
     </ClCompile>
     <ClCompile Include="gui\ViewSettingDialog.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpCommand.cpp">
+      <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp">
+      <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp">
+      <Filter>commands\regexp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

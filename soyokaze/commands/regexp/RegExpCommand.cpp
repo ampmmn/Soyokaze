@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
-#include "ShellExecCommand.h"
+#include "RegExpCommand.h"
 #include "commands/common/ExpandFunctions.h"
-#include "commands/shellexecute/CommandEditDialog.h"
+#include "commands/regexp/RegExpCommandEditDialog.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "CommandHotKeyMappings.h"
@@ -19,10 +19,11 @@ using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
-namespace shellexecute {
+namespace regexp {
 
+using CommandRepository = soyokaze::core::CommandRepository;
 
-ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
+RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
 	mShowType(SW_NORMAL)
 {
 }
@@ -31,7 +32,7 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ShellExecCommand::PImpl
+struct RegExpCommand::PImpl
 {
 	PImpl() :
 		mRunAs(0),
@@ -44,10 +45,11 @@ struct ShellExecCommand::PImpl
 
 	CString mName;
 	CString mDescription;
+	CString mPatternStr;
+	tregex mRegex;
 	int mRunAs;
 
 	ATTRIBUTE mNormalAttr;
-	ATTRIBUTE mNoParamAttr;
 
 	CString mErrMsg;
 
@@ -60,43 +62,39 @@ struct ShellExecCommand::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CString ShellExecCommand::GetType() { return _T("ShellExec"); }
+CString RegExpCommand::GetType() { return _T("RegExp"); }
 
-ShellExecCommand::ShellExecCommand() : in(new PImpl)
+RegExpCommand::RegExpCommand() : in(new PImpl)
 {
 }
 
-ShellExecCommand::~ShellExecCommand()
+RegExpCommand::~RegExpCommand()
 {
 }
 
-CString ShellExecCommand::GetName()
+CString RegExpCommand::GetName()
 {
 	return in->mName;
 }
 
 
-CString ShellExecCommand::GetDescription()
+CString RegExpCommand::GetDescription()
 {
 	return in->mDescription;
 }
 
-BOOL ShellExecCommand::Execute()
+BOOL RegExpCommand::Execute()
 {
 	Parameter param;
 	return Execute(param);
 }
 
-BOOL ShellExecCommand::Execute(const Parameter& param)
+BOOL RegExpCommand::Execute(const Parameter& param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
 
 	in->mErrMsg.Empty();
 
-	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
-	ATTRIBUTE attr;
-	SelectAttribute(args, attr);
+	ATTRIBUTE attr = in->mNormalAttr;
 
 	CString path;
 	CString paramStr;
@@ -127,13 +125,23 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 		}
 	}
 	else {
-		path = attr.mPath;
-		paramStr = attr.mParam;
-	}
+		try {
+			const CString& wholeText = param.GetWholeString();
 
-	// argsの値を展開
-	ExpandArguments(path, args);
-	ExpandArguments(paramStr, args);
+			auto paramOrg = attr.mParam;
+			ExpandEnv(paramOrg);
+			tstring paramStr_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)paramOrg);
+			paramStr = paramStr_.c_str();
+
+			auto pathOrg = attr.mPath;
+			ExpandEnv(pathOrg);
+			tstring path_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)pathOrg);
+			path = path_.c_str();
+		}
+		catch(std::regex_error&) {
+			return FALSE;
+		}
+	}
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
@@ -173,103 +181,88 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString ShellExecCommand::GetErrorString()
+CString RegExpCommand::GetErrorString()
 {
 	return in->mErrMsg;
 }
 
-ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
+RegExpCommand& RegExpCommand::SetName(LPCTSTR name)
 {
 	in->mName = name;
 	return *this;
 }
 
-ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
+RegExpCommand& RegExpCommand::SetDescription(LPCTSTR description)
 {
 	in->mDescription = description;
 	return *this;
 }
 
 
-ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
+RegExpCommand& RegExpCommand::SetAttribute(const ATTRIBUTE& attr)
 {
 	in->mNormalAttr = attr;
 
 	return *this;
 }
 
-ShellExecCommand& ShellExecCommand::SetAttributeForParam0(const ATTRIBUTE& attr)
-{
-	in->mNoParamAttr = attr;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
+RegExpCommand& RegExpCommand::SetPath(LPCTSTR path)
 {
 	in->mNormalAttr.mPath = path;
 	return *this;
 }
 
-ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
+RegExpCommand& RegExpCommand::SetRunAs(int runAs)
 {
 	in->mRunAs = runAs;
 	return *this;
 }
 
-void
-ShellExecCommand::SelectAttribute(
-	const std::vector<CString>& args,
-	ATTRIBUTE& attr
-)
+RegExpCommand& RegExpCommand::SetMatchPattern(LPCTSTR pattern)
 {
-	// パラメータの有無などでATTRIBUTEを切り替える
-
-	if (args.size() > 0) {
-		// パラメータあり
-
-		// mNormalAttr優先
-		if (in->mNormalAttr.mPath.IsEmpty() == FALSE) {
-			attr = in->mNormalAttr;
-		}
-		else {
-			attr = in->mNoParamAttr;
-		}
-	}
-	else {
-		// パラメータなし
-
-		// mNoParamAttr優先
-		if (in->mNoParamAttr.mPath.IsEmpty() == FALSE) {
-			attr = in->mNoParamAttr;
-		}
-		else {
-			attr = in->mNormalAttr;
-		}
+	if (pattern == nullptr || _tcslen(pattern) == 0) {
+		in->mPatternStr.Empty();
+		in->mRegex = tregex();
+		return *this;
 	}
 
-	// 変数を解決
-	ExpandEnv(attr.mPath);
-	ExpandEnv(attr.mParam);
+	try {
+		tregex regex(pattern);
+
+		in->mPatternStr = pattern;
+		in->mRegex.swap(regex);
+
+		return *this;
+	}
+	catch(std::regex_error&) {
+		return *this;
+	}
 }
 
-HICON ShellExecCommand::GetIcon()
+HICON RegExpCommand::GetIcon()
 {
 	CString path = in->mNormalAttr.mPath;
 	ExpandEnv(path);
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
-int ShellExecCommand::Match(Pattern* pattern)
+int RegExpCommand::Match(Pattern* pattern)
 {
-	return pattern->Match(GetName());
+	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
+	if (in->mPatternStr.IsEmpty() == FALSE) {
+		if (std::regex_match((tstring)pattern->GetOriginalPattern(), in->mRegex)) {
+			return Pattern::WholeMatch;
+		}
+	}
+	return Pattern::Mismatch;
 }
 
-bool ShellExecCommand::IsEditable()
+bool RegExpCommand::IsEditable()
 {
 	return true;
 }
 
-int ShellExecCommand::EditDialog(const Parameter* param)
+int RegExpCommand::EditDialog(const Parameter* param)
 {
 	CommandEditDialog dlg;
 	dlg.SetOrgName(in->mName);
@@ -277,18 +270,14 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	dlg.mName = in->mName;
 	dlg.mDescription = in->mDescription;
 	dlg.mIsRunAsAdmin = in->mRunAs;
+	dlg.mPatternStr = in->mPatternStr;
 
-	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
+	RegExpCommand::ATTRIBUTE attr = in->mNormalAttr;
 
 	dlg.mPath = attr.mPath;
 	dlg.mParameter = attr.mParam;
 	dlg.mDir = attr.mDir;
 	dlg.SetShowType(attr.mShowType);
-
-	attr = in->mNoParamAttr;
-	dlg.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
-	dlg.mPath0 = attr.mPath;
-	dlg.mParameter0 = attr.mParam;
 
 	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
@@ -302,35 +291,23 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	ShellExecCommand* cmdNew = new ShellExecCommand();
+	RegExpCommand* cmdNew = new RegExpCommand();
 
 	// 追加する処理
 	cmdNew->SetName(dlg.mName);
 	cmdNew->SetDescription(dlg.mDescription);
 	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
+	cmdNew->SetMatchPattern(dlg.mPatternStr);
 
-	ShellExecCommand::ATTRIBUTE normalAttr;
+	RegExpCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = dlg.mPath;
 	normalAttr.mParam = dlg.mParameter;
 	normalAttr.mDir = dlg.mDir;
 	normalAttr.mShowType = dlg.GetShowType();
 	cmdNew->SetAttribute(normalAttr);
 
-	if (dlg.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = dlg.mPath0;
-		param0Attr.mParam = dlg.mParameter0;
-		param0Attr.mDir = dlg.mDir;
-		param0Attr.mShowType = dlg.GetShowType();
-		cmdNew->SetAttributeForParam0(param0Attr);
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		cmdNew->SetAttributeForParam0(param0Attr);
-	}
-
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew);
 
@@ -352,48 +329,32 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	return 0;
 }
 
-void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
+void RegExpCommand::GetAttribute(ATTRIBUTE& attr)
 {
 	attr = in->mNormalAttr;
 }
 
-void ShellExecCommand::GetAttributeForParam0(ATTRIBUTE& attr)
-{
-	attr = in->mNoParamAttr;
-}
-
-int ShellExecCommand::GetRunAs()
+int RegExpCommand::GetRunAs()
 {
 	return in->mRunAs;
 }
 
 soyokaze::core::Command*
-ShellExecCommand::Clone()
+RegExpCommand::Clone()
 {
-	auto clonedObj = new ShellExecCommand();
+	auto clonedObj = new RegExpCommand();
 
 	clonedObj->in->mName = in->mName;
 	clonedObj->in->mDescription = in->mDescription;
 	clonedObj->in->mRunAs = in->mRunAs;
+	clonedObj->in->mPatternStr = in->mPatternStr;
+	clonedObj->in->mRegex = in->mRegex;
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
-	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
 
 	return clonedObj;
 }
 
-// ShellExecCommandのコマンド名として許可しない文字を置換する
-CString& ShellExecCommand::SanitizeName(
-	CString& str
-)
-{
-	str.Replace(_T(' '), _T('_'));
-	str.Replace(_T('!'), _T('_'));
-	str.Replace(_T('['), _T('_'));
-	str.Replace(_T(']'), _T('_'));
-	return str;
-}
-
-bool ShellExecCommand::Save(CommandFile* cmdFile)
+bool RegExpCommand::Save(CommandFile* cmdFile)
 {
 	ASSERT(cmdFile);
 
@@ -402,28 +363,43 @@ bool ShellExecCommand::Save(CommandFile* cmdFile)
 
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("runas"), GetRunAs());
+	cmdFile->Set(entry, _T("matchpattern"), in->mPatternStr);
 
-	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
+	RegExpCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
 	cmdFile->Set(entry, _T("path"), normalAttr.mPath);
 	cmdFile->Set(entry, _T("dir"), normalAttr.mDir);
 	cmdFile->Set(entry, _T("parameter"), normalAttr.mParam);
 	cmdFile->Set(entry, _T("show"), normalAttr.mShowType);
 
-	ShellExecCommand::ATTRIBUTE& param0Attr = in->mNoParamAttr;
-	cmdFile->Set(entry, _T("path0"), param0Attr.mPath);
-	cmdFile->Set(entry, _T("dir0"), param0Attr.mDir);
-	cmdFile->Set(entry, _T("parameter0"), param0Attr.mParam);
-	cmdFile->Set(entry, _T("show0"), param0Attr.mShowType);
+	return true;
+}
+
+bool RegExpCommand::Load(CommandFile* cmdFile, void* entry_)
+{
+	auto entry = (CommandFile::Entry*)entry_;
+
+	in->mName = cmdFile->GetName(entry);
+	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
+	in->mRunAs = cmdFile->Get(entry, _T("runas"), 0);
+
+	RegExpCommand::ATTRIBUTE& attr = in->mNormalAttr;
+	attr.mPath = cmdFile->Get(entry, _T("path"), _T(""));
+	attr.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
+	attr.mParam = cmdFile->Get(entry, _T("parameter"), _T(""));
+	attr.mShowType = cmdFile->Get(entry, _T("show"), attr.mShowType);
+
+	auto patternStr = cmdFile->Get(entry, _T("matchpattern"), _T("")); 
+	SetMatchPattern(patternStr);
 
 	return true;
 }
 
-uint32_t ShellExecCommand::AddRef()
+uint32_t RegExpCommand::AddRef()
 {
 	return ++in->mRefCount;
 }
 
-uint32_t ShellExecCommand::Release()
+uint32_t RegExpCommand::Release()
 {
 	auto n = --in->mRefCount;
 	if (n == 0) {
@@ -433,7 +409,7 @@ uint32_t ShellExecCommand::Release()
 }
 
 
-bool ShellExecCommand::IsRunAsAdmin()
+bool RegExpCommand::IsRunAsAdmin()
 {
 	PSID grp;
 	SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
@@ -449,6 +425,63 @@ bool ShellExecCommand::IsRunAsAdmin()
 	return result && isMember;
 }
 
+bool RegExpCommand::NewDialog(const Parameter* param)
+{
+	// 新規作成ダイアログを表示
+	CString value;
+
+	CommandEditDialog dlg;
+	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+		dlg.SetName(value);
+	}
+	if (param && param->GetNamedParam(_T("PATH"), &value)) {
+		dlg.SetPath(value);
+	}
+	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+		dlg.SetDescription(value);
+	}
+	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
+		dlg.SetParam(value);
+	}
+
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = new RegExpCommand();
+	newCmd->in->mName = dlg.mName;
+	newCmd->in->mDescription = dlg.mDescription;
+	newCmd->in->mRunAs = dlg.mIsRunAsAdmin;
+	newCmd->SetMatchPattern(dlg.mPatternStr);
+
+	RegExpCommand::ATTRIBUTE attr;
+	attr.mPath = dlg.mPath;
+	attr.mParam = dlg.mParameter;
+	attr.mDir = dlg.mDir;
+	attr.mShowType = dlg.GetShowType();
+	newCmd->SetAttribute(attr);
+
+	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+
+	// ホットキー設定を更新
+	if (dlg.mHotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		pref->Save();
+	}
+
+	return true;
+
+}
 
 }
 }

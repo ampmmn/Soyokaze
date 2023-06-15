@@ -5,6 +5,11 @@
 
 class IconLabel;
 
+namespace soyokaze {
+namespace commands {
+namespace regexp {
+
+
 class CommandEditDialog : public CDialogEx
 {
 public:
@@ -41,6 +46,8 @@ public:
 	CString mDescription;
 	// 管理者権限で実行
 	BOOL mIsRunAsAdmin;
+	//! パターン(正規表現)
+	CString mPatternStr;
 
 	// 表示方法
 	int mShowType;
@@ -50,12 +57,6 @@ public:
 	CString mPath;
 	// パラメータ
 	CString mParameter;
-	// パス(引数なし版)
-	CString mPath0;
-	// パラメータ(引数なし版)
-	CString mParameter0;
-	// 引数なし版を使うか?
-	BOOL mIsUse0;
 
 	IconLabel* mIconLabelPtr;
 
@@ -75,13 +76,15 @@ protected:
 	afx_msg void OnEditPath0Changed();
 	afx_msg void OnButtonBrowseFile1Clicked();
 	afx_msg void OnButtonBrowseDir1Clicked();
-	afx_msg void OnButtonBrowseFile2Clicked();
-	afx_msg void OnButtonBrowseDir2Clicked();
 	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveShortcut();
-	afx_msg void OnButtonResolveShortcut0();
 };
+
+
+}
+}
+}
 

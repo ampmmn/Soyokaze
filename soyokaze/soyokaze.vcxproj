@@ -388,6 +388,9 @@
     <ClInclude Include="commands\mailto\MailToCommandProvider.h" />
     <ClInclude Include="commands\pathfind\ExecuteHistory.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
+    <ClInclude Include="commands\regexp\RegExpCommand.h" />
+    <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
+    <ClInclude Include="commands\regexp\RegExpCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\CommandEditDialog.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
     <ClInclude Include="core\AppHotKey.h" />
@@ -486,6 +489,9 @@
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExecuteHistory.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
+    <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
+    <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />
+    <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\CommandEditDialog.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommand.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp" />

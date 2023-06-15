@@ -16,6 +16,7 @@ public:
 public:
 	void AddArgument(const CString& arg);
 
+	const CString& GetWholeString() const;
 	const CString& GetCommandString() const;
 	const CString& GetParameterString() const;
 

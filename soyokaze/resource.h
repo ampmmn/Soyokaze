@@ -59,7 +59,9 @@
 #define IDD_HOTKEY                      143
 #define IDS_PATH                        143
 #define IDD_SHORTCUT                    144
+#define IDS_REGEXPCOMMAND               144
 #define IDD_REGISTER_ITEMS              145
+#define IDS_DESCRIPTION_REGEXPCOMMAND   145
 #define IDD_BASICSETTING                146
 #define IDD_EXTENSIONSETTING            147
 #define IDD_SHORTCUTSETTING             148
@@ -71,6 +73,7 @@
 #define IDD_EXECSETTING                 153
 #define IDD_INPUTSETTING                154
 #define IDD_VIEWSETTING                 155
+#define IDD_REGEXPCOMMAND               156
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
