@@ -48,8 +48,8 @@ BOOL HotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	// $B%@%$%"%m%0%j%=!<%9(B(IDD_HOTKEY)$B$r%3%^%s%IMQ%[%C%H%-!<$H6&M-$9$k$,!"(B
-	// $B%"%W%j$N%[%C%H%-!<@_Dj$G$O;H$o$J$$9`L\$rHsI=<($K$9$k(B
+	// ダイアログリソース(IDD_HOTKEY)をコマンド用ホットキーと共有するが、
+	// アプリのホットキー設定では使わない項目を非表示にする
 	GetDlgItem(IDC_COMBO_TYPE)->ShowWindow(SW_HIDE);
 
 	UpdateStatus();
@@ -61,19 +61,25 @@ void HotKeyDialog::UpdateStatus()
 {
 	UpdateData();
 
-	bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
-	GetDlgItem(IDOK)->EnableWindow(canRegister);
+	if (IsReservedKey(mHotKeyAttr)) {
+		GetDlgItem(IDOK)->EnableWindow(false);
+		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
+	}
+	else {
+		bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
+		GetDlgItem(IDOK)->EnableWindow(canRegister);
 
-	mMessage.Empty();
-	if (canRegister == false) {
-		mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+		mMessage.Empty();
+		if (canRegister == false) {
+			mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+		}
 	}
 
 	UpdateData(FALSE);
 }
 
 /**
- *  $B%(%i!<$N;~$K0lIt%3%s%H%m!<%k$N?'$rJQ$($k(B
+ *  エラーの時に一部コントロールの色を変える
  */
 HBRUSH HotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -86,3 +92,30 @@ HBRUSH HotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	return br;
 }
+
+// 利用できないキーか?
+bool HotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
+{
+	if (attr.IsValid() == false) {
+		return false;
+	}
+
+	if (attr.GetModifiers() == 0) {
+
+		// 無修飾、かつ、Num0-9キーとFunctionキー以外のキーは割り当てを許可しない
+		// (横取りすると通常の入力に差し支えあるので)
+		if (attr.IsNumKey() == false && attr.IsFunctionKey() == false) {
+			return true;
+		}
+	}
+	if (attr.GetModifiers() == MOD_SHIFT) {
+		// Shift+英字キーも許可しない
+		// (横取りすると通常の入力に差し支えあるので)
+		if (attr.IsAlphabetKey()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+

@@ -16,6 +16,9 @@ public:
 	CString mMessage;
 
 protected:
+	static bool IsReservedKey(const HOTKEY_ATTR& attr);
+
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 

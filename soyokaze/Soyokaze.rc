@@ -1246,6 +1246,7 @@ STRINGTABLE
 BEGIN
     IDS_REGEXPCOMMAND       "正規表現コマンド"
     IDS_DESCRIPTION_REGEXPCOMMAND "正規表現によるコマンド名のマッチングを行うことができます。"
+    IDS_ERR_HOTKEYRESERVED  "文字入力に使うキーを割り当てることはできません。"
 END
 
 #endif    // 日本語 (日本) resources

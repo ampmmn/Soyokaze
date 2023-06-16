@@ -9,105 +9,127 @@
 
 static const int ID_SOYOKAZE_TRY_HOTKEY = 0xB31D;
 
-static const std::pair<UINT, CString> VK_DEFINED_DATA[] = {
-	{ 0x41, _T("A") },
-	{ 0x42, _T("B") },
-	{ 0x43, _T("C") },
-	{ 0x44, _T("D") },
-	{ 0x45, _T("E") },
-	{ 0x46, _T("F") },
-	{ 0x47, _T("G") },
-	{ 0x48, _T("H") },
-	{ 0x49, _T("I") },
-	{ 0x4A, _T("J") },
-	{ 0x4B, _T("K") },
-	{ 0x4C, _T("L") },
-	{ 0x4D, _T("M") },
-	{ 0x4E, _T("N") },
-	{ 0x4F, _T("O") },
-	{ 0x50, _T("P") },
-	{ 0x51, _T("Q") },
-	{ 0x52, _T("R") },
-	{ 0x53, _T("S") },
-	{ 0x54, _T("T") },
-	{ 0x55, _T("U") },
-	{ 0x56, _T("V") },
-	{ 0x57, _T("W") },
-	{ 0x58, _T("X") },
-	{ 0x59, _T("Y") },
-	{ 0x5A, _T("Z") },
-	{ 0x31, _T("1") },
-	{ 0x32, _T("2") },
-	{ 0x33, _T("3") },
-	{ 0x34, _T("4") },
-	{ 0x35, _T("5") },
-	{ 0x36, _T("6") },
-	{ 0x37, _T("7") },
-	{ 0x38, _T("8") },
-	{ 0x39, _T("9") },
-	{ 0x30, _T("0") },
-	{ 0x20, _T("Space") },
-	{ 0x0D, _T("Enter") },
-	{ 0x2E, _T("Delete") },
-	{ 0x09, _T("Tab") },
-	{ 0x26, _T("↑") },
-	{ 0x28, _T("↓") },
-	{ 0x25, _T("←") },
-	{ 0x27, _T("→") },
-	{ 0x6C, _T(",") },
-	{ 0x6E, _T(".") },
-	{ 0x6F, _T("/") },
-	{ 0xBA, _T(":") },
-	{ 0xBB, _T(";") },
-	{ 0xC0, _T("@") },
-	{ 0xDB, _T("[") },
-	{ 0xDD, _T("]") },
-	{ 0xBD, _T("^") },
-	{ 0x6D, _T("-") },
-	{ 0x22, _T("PageDown") },
-	{ 0x21, _T("PageUp") },
-	{ 0x24, _T("Home") },
-	{ 0x23, _T("End") },
-	{ 0x2D, _T("Insert") },
-	{ 0x61, _T("Num 1") },
-	{ 0x62, _T("Num 2") },
-	{ 0x63, _T("Num 3") },
-	{ 0x64, _T("Num 4") },
-	{ 0x65, _T("Num 5") },
-	{ 0x66, _T("Num 6") },
-	{ 0x67, _T("Num 7") },
-	{ 0x68, _T("Num 8") },
-	{ 0x69, _T("Num 9") },
-	{ 0x60, _T("Num 0") },
-	{ 0x14, _T("CapLock") },
-	{ VK_KANA, _T("かな") },
-	{ 0x1C, _T("変換") },
-	{ 0x1D, _T("無変換") },
-	{ 0x90, _T("NumLock") },
-	{ 0x70, _T("F1") },
-	{ 0x71, _T("F2") },
-	{ 0x72, _T("F3") },
-	{ 0x73, _T("F4") },
-	{ 0x74, _T("F5") },
-	{ 0x75, _T("F6") },
-	{ 0x76, _T("F7") },
-	{ 0x77, _T("F8") },
-	{ 0x78, _T("F9") },
-	{ 0x79, _T("F10") },
-	{ 0x7A, _T("F11") },
-	{ 0x7B, _T("F12") },
-	{ 0x7C, _T("F13") },
-	{ 0x7D, _T("F14") },
-	{ 0x7E, _T("F15") },
-	{ 0x7F, _T("F16") },
-	{ 0x80, _T("F17") },
-	{ 0x81, _T("F18") },
-	{ 0x82, _T("F19") },
-	{ 0x83, _T("F20") },
-	{ 0x84, _T("F21") },
-	{ 0x85, _T("F22") },
-	{ 0x86, _T("F23") },
-	{ 0x87, _T("F24") },
+enum {
+	KIND_ALPHA,
+	KIND_NUMBER,
+	KIND_NUMKEY,
+	KIND_FUNCTION,
+	KIND_OTHER,
+};
+
+struct HOTKEY_ATTR::VK_ITEM
+{
+	VK_ITEM(UINT vk, LPCTSTR chr, int kind) : 
+		mVKCode(vk), mChar(chr), mKind(kind)
+	{
+	}
+	VK_ITEM(const VK_ITEM&) = default;
+	VK_ITEM& operator = (const VK_ITEM&) = default;
+
+	UINT mVKCode;
+	CString mChar;
+	int mKind;
+};
+
+const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
+	{ 0x41, _T("A"), KIND_ALPHA },
+	{ 0x42, _T("B"), KIND_ALPHA },
+	{ 0x43, _T("C"), KIND_ALPHA },
+	{ 0x44, _T("D"), KIND_ALPHA },
+	{ 0x45, _T("E"), KIND_ALPHA },
+	{ 0x46, _T("F"), KIND_ALPHA },
+	{ 0x47, _T("G"), KIND_ALPHA },
+	{ 0x48, _T("H"), KIND_ALPHA },
+	{ 0x49, _T("I"), KIND_ALPHA },
+	{ 0x4A, _T("J"), KIND_ALPHA },
+	{ 0x4B, _T("K"), KIND_ALPHA },
+	{ 0x4C, _T("L"), KIND_ALPHA },
+	{ 0x4D, _T("M"), KIND_ALPHA },
+	{ 0x4E, _T("N"), KIND_ALPHA },
+	{ 0x4F, _T("O"), KIND_ALPHA },
+	{ 0x50, _T("P"), KIND_ALPHA },
+	{ 0x51, _T("Q"), KIND_ALPHA },
+	{ 0x52, _T("R"), KIND_ALPHA },
+	{ 0x53, _T("S"), KIND_ALPHA },
+	{ 0x54, _T("T"), KIND_ALPHA },
+	{ 0x55, _T("U"), KIND_ALPHA },
+	{ 0x56, _T("V"), KIND_ALPHA },
+	{ 0x57, _T("W"), KIND_ALPHA },
+	{ 0x58, _T("X"), KIND_ALPHA },
+	{ 0x59, _T("Y"), KIND_ALPHA },
+	{ 0x5A, _T("Z"), KIND_ALPHA },
+	{ 0x31, _T("1"), KIND_NUMBER },
+	{ 0x32, _T("2"), KIND_NUMBER },
+	{ 0x33, _T("3"), KIND_NUMBER },
+	{ 0x34, _T("4"), KIND_NUMBER },
+	{ 0x35, _T("5"), KIND_NUMBER },
+	{ 0x36, _T("6"), KIND_NUMBER },
+	{ 0x37, _T("7"), KIND_NUMBER },
+	{ 0x38, _T("8"), KIND_NUMBER },
+	{ 0x39, _T("9"), KIND_NUMBER },
+	{ 0x30, _T("0"), KIND_NUMBER },
+	{ 0x20, _T("Space"), KIND_OTHER },
+	{ 0x0D, _T("Enter"), KIND_OTHER },
+	{ 0x2E, _T("Delete"), KIND_OTHER },
+	{ 0x09, _T("Tab"), KIND_OTHER },
+	{ 0x26, _T("↑"), KIND_OTHER },
+	{ 0x28, _T("↓"), KIND_OTHER },
+	{ 0x25, _T("←"), KIND_OTHER },
+	{ 0x27, _T("→"), KIND_OTHER },
+	{ 0x6C, _T(","), KIND_OTHER },
+	{ 0x6E, _T("."), KIND_OTHER },
+	{ 0x6F, _T("/"), KIND_OTHER },
+	{ 0xBA, _T(":"), KIND_OTHER },
+	{ 0xBB, _T(";"), KIND_OTHER },
+	{ 0xC0, _T("@"), KIND_OTHER },
+	{ 0xDB, _T("["), KIND_OTHER },
+	{ 0xDD, _T("]"), KIND_OTHER },
+	{ 0xBD, _T("^"), KIND_OTHER },
+	{ 0x6D, _T("-"), KIND_OTHER },
+	{ 0x22, _T("PageDown"), KIND_OTHER },
+	{ 0x21, _T("PageUp"), KIND_OTHER },
+	{ 0x24, _T("Home"), KIND_OTHER },
+	{ 0x23, _T("End"), KIND_OTHER },
+	{ 0x2D, _T("Insert"), KIND_OTHER },
+	{ 0x61, _T("Num 1"), KIND_NUMKEY },
+	{ 0x62, _T("Num 2"), KIND_NUMKEY },
+	{ 0x63, _T("Num 3"), KIND_NUMKEY },
+	{ 0x64, _T("Num 4"), KIND_NUMKEY },
+	{ 0x65, _T("Num 5"), KIND_NUMKEY },
+	{ 0x66, _T("Num 6"), KIND_NUMKEY },
+	{ 0x67, _T("Num 7"), KIND_NUMKEY },
+	{ 0x68, _T("Num 8"), KIND_NUMKEY },
+	{ 0x69, _T("Num 9"), KIND_NUMKEY },
+	{ 0x60, _T("Num 0"), KIND_NUMKEY },
+	{ 0x14, _T("CapLock"), KIND_OTHER },
+	{ VK_KANA, _T("かな"), KIND_OTHER },
+	{ 0x1C, _T("変換"), KIND_OTHER },
+	{ 0x1D, _T("無変換"), KIND_OTHER },
+	{ 0x90, _T("NumLock"), KIND_OTHER },
+	{ 0x70, _T("F1"), KIND_FUNCTION },
+	{ 0x71, _T("F2"), KIND_FUNCTION },
+	{ 0x72, _T("F3"), KIND_FUNCTION },
+	{ 0x73, _T("F4"), KIND_FUNCTION },
+	{ 0x74, _T("F5"), KIND_FUNCTION },
+	{ 0x75, _T("F6"), KIND_FUNCTION },
+	{ 0x76, _T("F7"), KIND_FUNCTION },
+	{ 0x77, _T("F8"), KIND_FUNCTION },
+	{ 0x78, _T("F9"), KIND_FUNCTION },
+	{ 0x79, _T("F10"), KIND_FUNCTION },
+	{ 0x7A, _T("F11"), KIND_FUNCTION },
+	{ 0x7B, _T("F12"), KIND_FUNCTION },
+	{ 0x7C, _T("F13"), KIND_FUNCTION },
+	{ 0x7D, _T("F14"), KIND_FUNCTION },
+	{ 0x7E, _T("F15"), KIND_FUNCTION },
+	{ 0x7F, _T("F16"), KIND_FUNCTION },
+	{ 0x80, _T("F17"), KIND_FUNCTION },
+	{ 0x81, _T("F18"), KIND_FUNCTION },
+	{ 0x82, _T("F19"), KIND_FUNCTION },
+	{ 0x83, _T("F20"), KIND_FUNCTION },
+	{ 0x84, _T("F21"), KIND_FUNCTION },
+	{ 0x85, _T("F22"), KIND_FUNCTION },
+	{ 0x86, _T("F23"), KIND_FUNCTION },
+	{ 0x87, _T("F24"), KIND_FUNCTION },
 };
 
 // 修飾キー
@@ -135,7 +157,7 @@ HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) :
 {
 
 	for (int i = 0; i < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]); ++i) {
-		if (VK_DEFINED_DATA[i].first == hotkey) {
+		if (VK_DEFINED_DATA[i].mVKCode == hotkey) {
 			mVirtualKeyIdx = i;
 			break;
 		}
@@ -240,7 +262,7 @@ bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
 	if (mUseAlt) {
 		accel.fVirt |= FALT;
 	}
-	accel.key = VK_DEFINED_DATA[mVirtualKeyIdx].first;
+	accel.key = VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
 
 	return true;
 }
@@ -296,7 +318,7 @@ CString HOTKEY_ATTR::ToString() const
 	if (str.IsEmpty() == FALSE) {
 		str += _T("-");
 	}
-	str += VK_DEFINED_DATA[mVirtualKeyIdx].second;
+	str += VK_DEFINED_DATA[mVirtualKeyIdx].mChar;
 	return str;
 }
 
@@ -324,6 +346,23 @@ UINT HOTKEY_ATTR::GetVKCode() const
 		return 0;
 	}
 
-	return VK_DEFINED_DATA[mVirtualKeyIdx].first;
+	return VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
 }
 
+// Num0～Num9キーかどうか
+bool HOTKEY_ATTR::IsNumKey() const
+{
+	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_NUMKEY;
+}
+
+// Functionキーかどうか
+bool HOTKEY_ATTR::IsFunctionKey() const
+{
+	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_FUNCTION;
+}
+
+// 英字キー(A-Z)かどうか
+bool HOTKEY_ATTR::IsAlphabetKey() const
+{
+	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_ALPHA;
+}

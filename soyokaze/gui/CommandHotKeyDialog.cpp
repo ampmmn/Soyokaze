@@ -57,7 +57,7 @@ BOOL CommandHotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	// $B=i4|CM$r3P$($F$*$/(B
+	// 初期値を覚えておく
 	mHotKeyAttrInit = mHotKeyAttr;
 
 	UpdateStatus();
@@ -71,28 +71,34 @@ void CommandHotKeyDialog::UpdateStatus()
 
 	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsGlobal);
 	if (mIsGlobal == FALSE) {
-		// $B%m!<%+%k%[%C%H%-!<(B($B"*%-!<%"%/%;%i%l!<%?(B)$B$N>l9g$O!"(BWIN$B%-!<$,;H$($J$$$N$G%A%'%C%/$r30$9(B
+		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
 		mHotKeyAttr.mUseWin = 0;
 	}
 
-	mMessage.Empty();
-	if (mHotKeyAttr != mHotKeyAttrInit) {
+	if (IsReservedKey(mHotKeyAttr)) {
+		GetDlgItem(IDOK)->EnableWindow(false);
+		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
+	}
+	else {
+		mMessage.Empty();
+		if (mHotKeyAttr != mHotKeyAttrInit) {
 
-		// $B@_Dj$,=i4|CM$H0[$J$k>l9g$O!"$=$N%-!<$,;H$($k$+$I$&$+$r%A%'%C%/$9$k(B
+			// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
 
-		if (mIsGlobal) {
-			bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
-			GetDlgItem(IDOK)->EnableWindow(canRegister);
+			if (mIsGlobal) {
+				bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
+				GetDlgItem(IDOK)->EnableWindow(canRegister);
 
-			if (canRegister == false) {
-				mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+				if (canRegister == false) {
+					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+				}
 			}
-		}
-		else {
-			auto manager = soyokaze::core::CommandHotKeyManager::GetInstance();
-			bool alreadUsed = manager->HasKeyBinding(mHotKeyAttr);
-			if (alreadUsed) {
-				mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+			else {
+				auto manager = soyokaze::core::CommandHotKeyManager::GetInstance();
+				bool alreadUsed = manager->HasKeyBinding(mHotKeyAttr);
+				if (alreadUsed) {
+					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+				}
 			}
 		}
 	}
@@ -101,7 +107,7 @@ void CommandHotKeyDialog::UpdateStatus()
 }
 
 /**
- *  $B%(%i!<$N;~$K0lIt%3%s%H%m!<%k$N?'$rJQ$($k(B
+ *  エラーの時に一部コントロールの色を変える
  */
 HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -114,3 +120,30 @@ HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	return br;
 }
+
+// 利用できないキーか?
+bool CommandHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
+{
+	if (attr.IsValid() == false) {
+		return false;
+	}
+
+	if (attr.GetModifiers() == 0) {
+
+		// 無修飾、かつ、Num0-9キーとFunctionキー以外のキーは割り当てを許可しない
+		// (横取りすると通常の入力に差し支えあるので)
+		if (attr.IsNumKey() == false && attr.IsFunctionKey() == false) {
+			return true;
+		}
+	}
+	if (attr.GetModifiers() == MOD_SHIFT) {
+		// Shift+英字キーも許可しない
+		// (横取りすると通常の入力に差し支えあるので)
+		if (attr.IsAlphabetKey()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+

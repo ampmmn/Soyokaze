@@ -63,6 +63,7 @@
 #define IDD_REGISTER_ITEMS              145
 #define IDS_DESCRIPTION_REGEXPCOMMAND   145
 #define IDD_BASICSETTING                146
+#define IDS_ERR_HOTKEYRESERVED          146
 #define IDD_EXTENSIONSETTING            147
 #define IDD_SHORTCUTSETTING             148
 #define IDD_SELECTCOMMANDTYPE           149

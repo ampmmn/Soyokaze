@@ -2,6 +2,7 @@
 
 class HOTKEY_ATTR
 {
+	struct VK_ITEM;
 public:
 	HOTKEY_ATTR();
 	HOTKEY_ATTR(const HOTKEY_ATTR& rhs);
@@ -19,6 +20,10 @@ public:
 
 	bool TryRegister(HWND targetWnd) const;
 
+	bool IsNumKey() const;
+	bool IsFunctionKey() const;
+	bool IsAlphabetKey() const;
+
 	CString ToString() const;
 
 	UINT GetModifiers() const;
@@ -29,5 +34,8 @@ public:
 	BOOL mUseAlt;
 	BOOL mUseWin;
 	int mVirtualKeyIdx;
+
+	static const VK_ITEM VK_DEFINED_DATA[];
+
 };
 
