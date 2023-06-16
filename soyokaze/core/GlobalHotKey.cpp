@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GlobalHotKey.h"
+#include "HotKeyAttribute.h"
 
 
 #ifdef _DEBUG
@@ -61,6 +62,12 @@ UINT GlobalHotKey::GetID() const
 {
 	return mID;
 }
+
+CString GlobalHotKey::ToString() const
+{
+	return HOTKEY_ATTR(mModifiers, mVirtualKey).ToString();
+}
+
 
 }
 }

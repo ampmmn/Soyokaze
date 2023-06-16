@@ -482,7 +482,9 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	// ホットキー登録
 	in->mHotKeyPtr = new AppHotKey(GetSafeHwnd());
 	if (in->mHotKeyPtr->Register() == false) {
-		AfxMessageBox(_T("ホットキー登録できませんでした"));
+		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
+		msg += in->mHotKeyPtr->ToString();
+		AfxMessageBox(msg);
 	}
 	
 	UpdateData(FALSE);

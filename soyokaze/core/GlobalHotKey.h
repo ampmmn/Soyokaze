@@ -19,6 +19,8 @@ public:
 
 	UINT GetID() const;
 
+	CString ToString() const;
+
 protected:
 	HWND mTargetWnd;
 	UINT mModifiers;

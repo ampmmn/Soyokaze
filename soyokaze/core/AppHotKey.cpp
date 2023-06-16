@@ -64,6 +64,12 @@ bool AppHotKey::Reload()
 	return Register();
 }
 
+CString AppHotKey::ToString() const
+{
+	return mHotKey->ToString();
+}
+
+
 bool AppHotKey::LoadKeyConfig(UINT& modifiers, UINT& vk)
 {
 	auto pref = AppPreference::Get();

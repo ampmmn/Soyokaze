@@ -27,6 +27,8 @@ public:
 	// 再登録(登録解除→登録)
 	bool Reload();
 
+	CString ToString() const;
+
 private:
 	static bool LoadKeyConfig(UINT& modifiers, UINT& vk);
 
