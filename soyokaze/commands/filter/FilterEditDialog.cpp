@@ -96,6 +96,7 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(FilterEditDialog, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
+	ON_EN_CHANGE(IDC_EDIT_PATH2, OnEditPathChanged)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
@@ -230,8 +231,13 @@ bool FilterEditDialog::UpdateStatus()
 		return false;
 	}
 
-	if (mCommandSelIndex == -1) {
+	if (mParam.mAfterType == 0 && mCommandSelIndex == -1) {
 		mMessage = _T("絞込み後に実行するコマンドを選んでください");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+	if (mParam.mAfterType == 1 && mParam.mAfterFilePath.IsEmpty()) {
+		mMessage = _T("絞込み後に実行するファイルまたはURLを入力してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

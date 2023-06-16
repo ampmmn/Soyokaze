@@ -6,7 +6,8 @@ namespace commands {
 namespace filter {
 
 CommandParam::CommandParam() : mShowType(SW_NORMAL),
-	mAfterCommandParam(_T("$select"))
+	mAfterCommandParam(_T("$select")),
+	mAfterType(0)
 {
 }
 
