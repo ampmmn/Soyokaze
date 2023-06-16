@@ -58,8 +58,12 @@ BOOL TaskTray::Create()
 	nid.uFlags |= NIF_ICON;
 	nid.hIcon   = mIcon;
 
+	TCHAR moduleName[MAX_PATH_NTFS];
+	GetModuleFileName(NULL, moduleName, MAX_PATH_NTFS);
+	PathRemoveExtension(moduleName);
+
 	CString tipsStr;
-	tipsStr = _T("Soyokaze");
+	tipsStr = PathFindFileName(moduleName);
 
 	nid.uFlags |= NIF_TIP;
 	_tcsncpy_s(nid.szTip, sizeof(nid.szTip), tipsStr, _TRUNCATE);
