@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "framework.h"
 #include "IconLoader.h"
+#include "utility/LocalPathResolver.h"
 #include "resource.h"
 #include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using LocalPathResolver = soyokaze::utility::LocalPathResolver;
 
 struct IconLoader::PImpl
 {
@@ -47,6 +50,8 @@ struct IconLoader::PImpl
 	std::map<int, HICON> mImageResIconCache;
 	HICON mEditIcon;
 	HICON mKeywordManagerIcon;
+
+	LocalPathResolver mResolver;
 };
 
 IconLoader::IconLoader() : in(new PImpl)
@@ -77,20 +82,34 @@ IconLoader* IconLoader::Get()
 
 HICON IconLoader::LoadIconFromPath(const CString& path)
 {
-	if (PathIsDirectory(path)) {
-		return LoadFolderIcon();
-	}
-	if (PathFileExists(path)) {
-		SHFILEINFO sfi = {};
-		HIMAGELIST hImgList =
-			(HIMAGELIST)::SHGetFileInfo(path, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
-		HICON hIcon = sfi.hIcon;
-		return hIcon;
-	}
 	if (path.Find(_T("http")) == 0) {
 		return LoadWebIcon();
 	}
-	return LoadUnknownIcon();
+
+	// 絶対パス指定でファイルが見つからなかった場合は不明アイコン
+	if (PathIsRelative(path) == FALSE) {
+		if (PathFileExists(path) == FALSE) {
+			return LoadUnknownIcon();
+		}
+	}
+
+	// 相対パス指定の場合はパス解決する
+	CString fullPath(path);
+	if (PathIsRelative(path)) {
+		if (in->mResolver.Resolve(path, fullPath) == false) {
+			return LoadUnknownIcon();
+		}
+	}
+
+	if (PathIsDirectory(fullPath)) {
+		return LoadFolderIcon();
+	}
+
+	SHFILEINFO sfi = {};
+	HIMAGELIST hImgList =
+		(HIMAGELIST)::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+	HICON hIcon = sfi.hIcon;
+	return hIcon;
 }
 
 HICON IconLoader::GetShell32Icon(int index)

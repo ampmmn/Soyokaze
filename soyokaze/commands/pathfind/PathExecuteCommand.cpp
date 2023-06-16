@@ -3,6 +3,7 @@
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/pathfind/ExecuteHistory.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "utility/LocalPathResolver.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
+using LocalPathResolver = soyokaze::utility::LocalPathResolver;
 
 namespace soyokaze {
 namespace commands {
@@ -22,7 +24,7 @@ using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 struct PathExecuteCommand::PImpl
 {
-	std::vector<CString> targetDirs;
+	LocalPathResolver mResolver;
 	ExecuteHistory* mHistoryPtr;
 	CString mWord;
 	CString mFullPath;
@@ -37,31 +39,6 @@ PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
 	in->mRefCount = 1;
 	in->mExeExtension = _T(".exe");
 	in->mHistoryPtr = nullptr;
-
-	LPCTSTR PATH = _T("PATH");
-
-	// かんきょうへんすうPATH
-	size_t reqLen = 0;
-	if (_tgetenv_s(&reqLen, NULL, 0, PATH) != 0 || reqLen == 0) {
-		return;
-	}
-	
-	CString val;
-	TCHAR* p = val.GetBuffer((int)reqLen);
-	_tgetenv_s(&reqLen, p, reqLen, PATH);
-	val.ReleaseBuffer();
-
-
-	int n = 0;
-	CString item = val.Tokenize(_T(";"), n);
-	while(item.IsEmpty() == FALSE) {
-
-		if (PathIsDirectory(item)) {
-			in->targetDirs.push_back(item);
-		}
-
-		item = val.Tokenize(_T(";"), n);
-	}
 }
 
 PathExecuteCommand::~PathExecuteCommand()
@@ -183,19 +160,15 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		return Pattern::Mismatch;
 	}
 
-	// targetDirsにがいとうするexeがないかをさがす
-	TCHAR path[MAX_PATH_NTFS];
-	for (const auto& dir : in->targetDirs) {
-		_tcscpy_s(path, dir);
-		PathAppend(path, word);
-
-		if (PathFileExists(path)) {
-			in->mWord = word;
-			in->mFullPath = path;
-			in->mDescription = path;
-			return Pattern::WholeMatch;
-		}
+	// 相対パスを解決する
+	CString resolvedPath;
+	if (in->mResolver.Resolve(word, resolvedPath)) {
+		in->mWord = word;
+		in->mFullPath = resolvedPath;
+		in->mDescription = resolvedPath;
+		return Pattern::WholeMatch;
 	}
+
 	return Pattern::Mismatch;
 }
 
@@ -215,7 +188,7 @@ PathExecuteCommand::Clone()
 {
 	auto clonedObj = new PathExecuteCommand();
 
-	clonedObj->in->targetDirs = in->targetDirs;
+	clonedObj->in->mResolver = in->mResolver;
 	clonedObj->in->mFullPath = in->mFullPath;
 	clonedObj->in->mDescription = in->mDescription;
 	clonedObj->in->mExeExtension = in->mExeExtension;

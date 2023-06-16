@@ -348,6 +348,9 @@
     <ClInclude Include="commands\regexp\RegExpCommandProvider.h">
       <Filter>commands\regexp</Filter>
     </ClInclude>
+    <ClInclude Include="utility\LocalPathResolver.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -625,6 +628,9 @@
     </ClCompile>
     <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp">
       <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\LocalPathResolver.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

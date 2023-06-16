@@ -196,6 +196,7 @@ bool ResolaveRelativeExePath(CString& text)
 }
 
 
+
 } // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze

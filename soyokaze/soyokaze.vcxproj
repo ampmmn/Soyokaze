@@ -460,6 +460,7 @@
     <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
+    <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
@@ -565,6 +566,7 @@
     <ClCompile Include="gui/ShortcutDialog.cpp" />
     <ClCompile Include="SkipMatchPattern.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
+    <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
