@@ -137,66 +137,6 @@ void ExpandVariable(
 	}
 }
 
-bool ResolaveRelativeExePath(CString& text)
-{
-	if (PathIsRelative(text) == FALSE) {
-		// 相対パスでないなら処理しない
-		return true;
-	}
-
-	// 拡張子が.exeでなければ末尾に付与
-	CString ext(_T(".exe"));
-	if (ext != PathFindExtension(text)) {
-		text += _T(".exe");
-	}
-	
-
-	// 環境変数PATH
-	LPCTSTR PATH = _T("PATH");
-	size_t reqLen = 0;
-	if (_tgetenv_s(&reqLen, NULL, 0, PATH) != 0 || reqLen == 0) {
-		return false;
-	}
-
-	// 個々の要素に分ける
-	CString val;
-	TCHAR* p = val.GetBuffer((int)reqLen);
-	_tgetenv_s(&reqLen, p, reqLen, PATH);
-	val.ReleaseBuffer();
-
-
-	std::vector<CString> targetDirs;
-
-	int n = 0;
-	CString item = val.Tokenize(_T(";"), n);
-	while(item.IsEmpty() == FALSE) {
-
-		if (PathIsDirectory(item)) {
-			targetDirs.push_back(item);
-		}
-
-		item = val.Tokenize(_T(";"), n);
-	}
-
-	// 個々の分けた要素が示すパス下に同名のexeがあるかを探す
-	TCHAR path[MAX_PATH_NTFS];
-	for (const auto& dir : targetDirs) {
-		_tcscpy_s(path, dir);
-		PathAppend(path, text);
-
-		if (PathFileExists(path) == FALSE) {
-			continue;
-		}
-		text = path;
-		return true;
-	}
-
-	// ない
-	return false;
-}
-
-
-
 } // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze

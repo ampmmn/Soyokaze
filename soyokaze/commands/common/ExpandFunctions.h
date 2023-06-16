@@ -13,10 +13,6 @@ void ExpandEnv(CString& target);
 // その他の変数を展開する
 void ExpandVariable(CString& target, const CString& name, const CString& value);
 
-//
-bool ResolaveRelativeExePath(CString& text);
-
-
 } // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze

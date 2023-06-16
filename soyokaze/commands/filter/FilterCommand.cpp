@@ -9,6 +9,7 @@
 #include "commands/filter/FilterDialog.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
+#include "utility/LocalPathResolver.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -25,6 +26,7 @@ using namespace soyokaze::commands::common;
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = soyokaze::core::CommandRepository;
+using LocalPathResolver = soyokaze::utility::LocalPathResolver;
 
 namespace soyokaze {
 namespace commands {
@@ -105,8 +107,12 @@ BOOL FilterCommand::Execute(const Parameter& param)
 	si.wShowWindow = in->mParam.mShowType;
 
 	CString path = in->mParam.mPath;
+
+	ExpandEnv(path);
 	ExpandArguments(path, args);
-	ResolaveRelativeExePath(path);
+
+	LocalPathResolver resolver;
+	resolver.Resolve(path);
 
 	CString commandLine = _T(" ") + in->mParam.mParameter;
 	ExpandArguments(commandLine, args);
