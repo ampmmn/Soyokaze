@@ -94,7 +94,7 @@ void BasicSettingDialog::OnEnterSettings()
 		                        mSettingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
 	mHotKey = mHotKeyAttr.ToString();
 
-	mIsShowToggle = mSettingsPtr->Get(_T("Soyokaze:ShowToggle"), false);
+	mIsShowToggle = mSettingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
 	mIsHideOnRun = mSettingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 
 }
