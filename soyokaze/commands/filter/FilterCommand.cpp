@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "FilterCommand.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecuteHistory.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/CharConverter.h"
@@ -88,8 +89,13 @@ BOOL FilterCommand::Execute()
 
 BOOL FilterCommand::Execute(const Parameter& param)
 {
+
 	std::vector<CString> args;
 	param.GetParameters(args);
+
+	if (args.size() > 0) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	}
 
 	in->mErrMsg.Empty();
 

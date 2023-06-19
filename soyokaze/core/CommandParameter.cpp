@@ -70,6 +70,24 @@ void CommandParameter::AddArgument(const CString& arg)
 	in->mParamPart += arg;
 }
 
+void CommandParameter::SetWholeString(const CString& str)
+{
+	in->mWholeText = str;
+
+	CString tmpStr = str;
+	int n = tmpStr.Find(_T(" "));
+	if (n > -1) {
+		in->mCommandPart = tmpStr.Left(n);
+		in->mParamPart = tmpStr.Mid(n + 1);
+		in->mHasSpace = true;
+	}
+	else {
+		in->mCommandPart = str;
+		in->mParamPart.Empty();
+		in->mHasSpace = false;
+	}
+}
+
 const CString& CommandParameter::GetWholeString() const
 {
 	return in->mWholeText;

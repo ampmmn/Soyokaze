@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "ExpandFunctions.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
 namespace soyokaze {
 namespace commands {
 namespace common {

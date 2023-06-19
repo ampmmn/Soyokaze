@@ -2,6 +2,7 @@
 #include "GroupCommand.h"
 #include "commands/group/CommandParam.h"
 #include "commands/group/GroupEditDialog.h"
+#include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "CommandHotKeyMappings.h"
@@ -21,7 +22,7 @@ namespace group {
 
 
 using CommandRepository = soyokaze::core::CommandRepository;
-
+using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
 
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
@@ -173,6 +174,10 @@ BOOL GroupCommand::Execute()
 
 BOOL GroupCommand::Execute(const Parameter& param)
 {
+	if (param.GetParameterString().IsEmpty() == FALSE) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	}
+
 	try {
 		int nRepeats = in->mParam.mIsRepeat ? in->mParam.mRepeats : 1;
 		for (int round = 0; round < nRepeats; ++round) {

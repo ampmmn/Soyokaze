@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/pathfind/PathExecuteCommand.h"
-#include "commands/pathfind/ExecuteHistory.h"
+#include "commands/common/ExecuteHistory.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
 #include "IconLoader.h"
@@ -13,6 +13,7 @@
 #endif
 
 using LocalPathResolver = soyokaze::utility::LocalPathResolver;
+using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
 
 namespace soyokaze {
 namespace commands {
@@ -25,7 +26,6 @@ using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 struct PathExecuteCommand::PImpl
 {
 	LocalPathResolver mResolver;
-	ExecuteHistory* mHistoryPtr;
 	CString mWord;
 	CString mFullPath;
 	CString mDescription;
@@ -38,19 +38,11 @@ PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
 {
 	in->mRefCount = 1;
 	in->mExeExtension = _T(".exe");
-	in->mHistoryPtr = nullptr;
 }
 
 PathExecuteCommand::~PathExecuteCommand()
 {
 	delete in;
-}
-
-void PathExecuteCommand::SetHistoryList(
-	ExecuteHistory* historyPtr
-)
-{
-	in->mHistoryPtr = historyPtr;
 }
 
 void PathExecuteCommand::SetFullPath(const CString& path)
@@ -79,9 +71,7 @@ BOOL PathExecuteCommand::Execute()
 		return FALSE;
 	}
 
-	if (in->mHistoryPtr) {
-		in->mHistoryPtr->Add(in->mWord, in->mFullPath);
-	}
+	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
 
 	ShellExecCommand cmd;
 	cmd.SetPath(in->mFullPath);
@@ -109,9 +99,7 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 		attr.mParam += _T("\"");
 	}
 
-	if (in->mHistoryPtr) {
-		in->mHistoryPtr->Add(in->mWord, in->mFullPath);
-	}
+	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
 
 	ShellExecCommand cmd;
 	cmd.SetAttribute(attr);

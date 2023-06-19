@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "RegExpCommand.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecuteHistory.h"
 #include "commands/regexp/RegExpCommandEditDialog.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
@@ -93,6 +94,8 @@ BOOL RegExpCommand::Execute(const Parameter& param)
 {
 
 	in->mErrMsg.Empty();
+
+	ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
 
 	ATTRIBUTE attr = in->mNormalAttr;
 

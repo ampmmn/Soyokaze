@@ -404,15 +404,14 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
 	soyokaze::core::CommandParameter commandParam(str);
 
-	// (今のところ)内部用なので、履歴には登録しない
 	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString());
 	if (cmd == nullptr) {
 		return false;
 	}
 
 	std::thread th([cmd, str]() {
-		soyokaze::core::CommandParameter param(str);
-		cmd->Execute(param);
+		soyokaze::core::CommandParameter commandParam(str);
+		cmd->Execute(commandParam);
 		cmd->Release();
 	});
 	th.detach();
@@ -668,7 +667,11 @@ void CSoyokazeDlg::OnOK()
 		CString str = in->mCommandStr;
 
 		std::thread th([cmd, str]() {
+
 			soyokaze::core::CommandParameter commandParam(str);
+			if (commandParam.GetParameterString().IsEmpty()) {
+				commandParam.SetWholeString(cmd->GetName());
+			}
 
 			// Ctrlキーが押されているかを設定
 			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
@@ -853,7 +856,7 @@ void CSoyokazeDlg::OnLbnDblClkCandidate()
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 
-		CString str = in->mCommandStr;
+		CString str = cmd->GetName();
 
 		std::thread th([cmd,str]() {
 			soyokaze::core::CommandParameter commandParam(str);

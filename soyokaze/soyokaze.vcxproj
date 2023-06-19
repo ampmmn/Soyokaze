@@ -373,6 +373,7 @@
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\DeleteCommand.h" />
+    <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
     <ClInclude Include="commands\filter\CharConverter.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
@@ -384,9 +385,10 @@
     <ClInclude Include="commands\group\GroupCommand.h" />
     <ClInclude Include="commands\group\GroupCommandProvider.h" />
     <ClInclude Include="commands\group\GroupEditDialog.h" />
+    <ClInclude Include="commands\history\HistoryCommand.h" />
+    <ClInclude Include="commands\history\HistoryCommandProvider.h" />
     <ClInclude Include="commands\mailto\MailToCommand.h" />
     <ClInclude Include="commands\mailto\MailToCommandProvider.h" />
-    <ClInclude Include="commands\pathfind\ExecuteHistory.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
@@ -475,6 +477,7 @@
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\DeleteCommand.cpp" />
+    <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
     <ClCompile Include="commands\filter\CharConverter.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />
@@ -486,9 +489,10 @@
     <ClCompile Include="commands\group\GroupCommand.cpp" />
     <ClCompile Include="commands\group\GroupCommandProvider.cpp" />
     <ClCompile Include="commands\group\GroupEditDialog.cpp" />
+    <ClCompile Include="commands\history\HistoryCommand.cpp" />
+    <ClCompile Include="commands\history\HistoryCommandProvider.cpp" />
     <ClCompile Include="commands\mailto\MailToCommand.cpp" />
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp" />
-    <ClCompile Include="commands\pathfind\ExecuteHistory.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />

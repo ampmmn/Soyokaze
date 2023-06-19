@@ -4,17 +4,13 @@
 
 namespace soyokaze {
 namespace commands {
-namespace pathfind {
+namespace history {
 
-
-
-class PathExecuteCommand : public soyokaze::core::Command
+class HistoryCommand : public soyokaze::core::Command
 {
 public:
-	PathExecuteCommand();
-	virtual ~PathExecuteCommand();
-
-	void SetFullPath(const CString& path);
+	HistoryCommand(const CString& keyword);
+	virtual ~HistoryCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -38,7 +34,7 @@ protected:
 };
 
 
-} // end of namespace pathfind
+} // end of namespace history
 } // end of namespace commands
 } // end of namespace soyokaze
 

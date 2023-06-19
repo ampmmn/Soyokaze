@@ -3,6 +3,7 @@
 #include "ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/shellexecute/CommandEditDialog.h"
+#include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "CommandHotKeyMappings.h"
@@ -16,6 +17,7 @@
 #endif
 
 using namespace soyokaze::commands::common;
+using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
 
 namespace soyokaze {
 namespace commands {
@@ -91,6 +93,10 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 {
 	std::vector<CString> args;
 	param.GetParameters(args);
+
+	if (args.size() > 0) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	}
 
 	in->mErrMsg.Empty();
 

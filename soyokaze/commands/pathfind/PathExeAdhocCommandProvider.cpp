@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PathExeAdhocCommandProvider.h"
 #include "commands/pathfind/PathExecuteCommand.h"
-#include "commands/pathfind/ExecuteHistory.h"
+#include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -13,6 +13,7 @@
 #define new DEBUG_NEW
 #endif
 
+using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
 
 namespace soyokaze {
 namespace commands {
@@ -43,8 +44,6 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	uint32_t mRefCount;
 	// 環境変数PATHにあるexeを実行するためのコマンド
 	PathExecuteCommand* mExeCommandPtr;
-	// 実行履歴を保持する
-	ExecuteHistory mHistory;
 	//
 	bool mIsIgnoreUNC;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
@@ -63,7 +62,6 @@ PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(new PImpl)
 {
 	in->mRefCount = 1;
 	in->mExeCommandPtr = new PathExecuteCommand();
-	in->mExeCommandPtr->SetHistoryList(&in->mHistory);
 	in->mIsIgnoreUNC = false;
 	in->mIsFirstCall = true;
 }
@@ -74,7 +72,7 @@ PathExeAdhocCommandProvider::~PathExeAdhocCommandProvider()
 		in->mExeCommandPtr->Release();
 	}
 
-	in->mHistory.Save();
+	ExecuteHistory::GetInstance()->Save();
 }
 
 // 初回起動の初期化を行う
@@ -90,7 +88,7 @@ void PathExeAdhocCommandProvider::LoadCommands(
 )
 {
 	// 内部でもつ履歴データを読み込む
-	in->mHistory.Load();
+	ExecuteHistory::GetInstance()->Load();
 }
 
 CString PathExeAdhocCommandProvider::GetName()
@@ -146,15 +144,15 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		}
 	}
 
-
 	int level = in->mExeCommandPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mExeCommandPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mExeCommandPtr));
 	}
 
-	std::vector<HISTORY_ITEM> items;
-	in->mHistory.GetItems(items);
+	// ToDo: HistoryCommandに責務を移動
+	ExecuteHistory::ItemList items;
+	ExecuteHistory::GetInstance()->GetItems(_T("pathfind"), items);
 	for (auto& item : items) {
 		level = pattern->Match(item.mWord);
 		if (level == Pattern::Mismatch) {
@@ -162,7 +160,6 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		}
 		auto cmdHist = new PathExecuteCommand();
 		cmdHist->SetFullPath(item.mFullPath);
-		cmdHist->SetHistoryList(&in->mHistory);
 		commands.push_back(CommandQueryItem(level, cmdHist));
 	}
 
