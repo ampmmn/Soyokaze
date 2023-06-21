@@ -669,9 +669,6 @@ void CSoyokazeDlg::OnOK()
 		std::thread th([cmd, str]() {
 
 			soyokaze::core::CommandParameter commandParam(str);
-			if (commandParam.GetParameterString().IsEmpty()) {
-				commandParam.SetWholeString(cmd->GetName());
-			}
 
 			// Ctrlキーが押されているかを設定
 			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
