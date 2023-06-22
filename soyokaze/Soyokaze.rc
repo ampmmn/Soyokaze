@@ -379,6 +379,8 @@ BEGIN
     LTEXT           "パラメータ(&P):",-1,25,54,42,8
     EDITTEXT        IDC_EDIT_FILERPARAM,91,54,183,14,ES_AUTOHSCROLL
     LTEXT           "$target と指定するとリンク先に置き換えます",-1,91,71,183,11
+    CONTROL         "同一のフィルタコマンドの同時実行を許可する(&F)",IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,92,167,10
 END
 
 IDD_INPUTSETTING DIALOGEX 0, 0, 344, 291

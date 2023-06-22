@@ -126,6 +126,7 @@
 #define IDC_BUTTON_DELETE               1037
 #define IDC_CHECK_USEFILER              1038
 #define IDC_BUTTON_UP                   1039
+#define IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER 1039
 #define IDC_CHECK_TOPMOST               1040
 #define IDC_BUTTON_NEW4                 1041
 #define IDC_CHECK_HIDEONINACTIVE        1041
@@ -177,7 +178,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        163
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1070
+#define _APS_NEXT_CONTROL_VALUE         1071
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

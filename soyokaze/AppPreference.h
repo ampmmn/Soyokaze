@@ -46,6 +46,9 @@ public:
 	// ネットワークパスを無視する
 	bool IsIgnoreUNC();
 
+	// フィルタコマンドの同時実行を許可する
+	bool IsArrowFilterCommandConcurrentRun();
+
 	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
 	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);
 

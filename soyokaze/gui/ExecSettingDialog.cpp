@@ -37,6 +37,7 @@ void ExecSettingDialog::OnOK()
 	mSettingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
 	mSettingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
 	mSettingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
+	mSettingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
 
 	__super::OnOK();
 }
@@ -48,6 +49,7 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USEFILER, mIsUseExternalFiler);
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
+	DDX_Check(pDX, IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER, mIsArrowFilterConcurrentRun);
 }
 
 BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
@@ -104,5 +106,6 @@ void ExecSettingDialog::OnEnterSettings()
 	mIsUseExternalFiler = mSettingsPtr->Get(_T("Soyokaze:UseFiler"), false);
 	mFilerPath = mSettingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
 	mFilerParam = mSettingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
+	mIsArrowFilterConcurrentRun = mSettingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
 
 }

@@ -11,6 +11,7 @@
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/ScopeAttachThreadInput.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -38,7 +39,8 @@ struct FilterCommand::PImpl
 {
 	PImpl() :
 		mRefCount(1),
-		mIsSilent(true)
+		mIsSilent(true),
+		mExecutingCount(0)
 	{
 	}
 	~PImpl()
@@ -50,6 +52,12 @@ struct FilterCommand::PImpl
 
 	// エラーがあったときにメッセージを表示する
 	bool mIsSilent;
+
+	// 並列実行を許可しない場合の判定用のカウント
+	int mExecutingCount;
+
+	//
+	FilterDialog mDialog;
 
 	// 参照カウント
 	uint32_t mRefCount;
@@ -89,6 +97,25 @@ BOOL FilterCommand::Execute()
 
 BOOL FilterCommand::Execute(const Parameter& param)
 {
+	auto pref = AppPreference::Get();
+	if (pref->IsArrowFilterCommandConcurrentRun() == false &&
+	    in->mExecutingCount > 0) {
+		// 同一コマンドの並列実行を許可しない
+
+		HWND hwnd = in->mDialog.GetSafeHwnd();
+		if (IsWindow(hwnd)) {
+			ScopeAttachThreadInput scope;
+			SetForegroundWindow(hwnd);
+		}
+
+		return TRUE;
+	}
+
+	struct scope_count {
+		scope_count(int& c) : count(c) { ++count; }
+		~scope_count() { --count; }
+		int& count;
+	} count_(in->mExecutingCount);
 
 	std::vector<CString> args;
 	param.GetParameters(args);
@@ -182,7 +209,7 @@ BOOL FilterCommand::Execute(const Parameter& param)
 	CloseHandle(pi.hProcess);
 
 	// 絞込みを行う
-	FilterDialog dlg;
+	FilterDialog& dlg = in->mDialog;
 	dlg.SetCommandName(GetName());
 	dlg.SetText(outputStr);
 

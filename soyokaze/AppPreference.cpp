@@ -415,6 +415,11 @@ bool AppPreference::IsIgnoreUNC()
 	return in->mSettings.Get(_T("Soyokaze:IsIgnoreUNC"), false);
 }
 
+// フィルタコマンドの同時実行を許可する
+bool AppPreference::IsArrowFilterCommandConcurrentRun()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
+}
 
 void AppPreference::SetSettings(const Settings& settings)
 {
