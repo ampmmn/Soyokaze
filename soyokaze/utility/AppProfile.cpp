@@ -33,6 +33,9 @@ bool CAppProfile::CreateProfileDirectory()
 // ディレクトリパスを取得
 const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 {
+#ifndef SOYOKAZE_PORTABLE
+	// 非ポータブル版は ~/.soyokaze に設定を保存する
+
 	size_t buflen = 1024;
 	TCHAR buff[1024];
 	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
@@ -42,6 +45,15 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 	PathAppend(path, _T(".soyokaze"));
 
 	return path;
+#else
+	// ポータブル版は soyokaze.exeと同じフォルダのprofileディレクトリに設定を保存する
+
+	GetModuleFileName(NULL, path, (DWORD)len);
+	PathRemoveFileSpec(path);
+	PathAppend(path, _T("profile"));
+
+	return path;
+#endif
 }
 
 // ファイルパスを取得
