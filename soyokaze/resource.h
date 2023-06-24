@@ -133,6 +133,7 @@
 #define IDC_COMBO_TRANSPARENCY          1042
 #define IDC_EDIT_ALPHA                  1043
 #define IDC_BUTTON_BROWSEFILE           1044
+#define IDC_EDIT_DEFAULTCOMMENT         1044
 #define IDC_EDIT_FILERPARAM             1045
 #define IDC_BUTTON_HOTKEY               1046
 #define IDC_EDIT_FILERPATH              1047

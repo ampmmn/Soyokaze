@@ -4,6 +4,7 @@
 #include "utility/AppProfile.h"
 #include "CommandHotKeyMappings.h"
 #include "HotKeyAttribute.h"
+#include "resource.h"
 #include <regex>
 #include <map>
 #include <set>
@@ -419,6 +420,13 @@ bool AppPreference::IsIgnoreUNC()
 bool AppPreference::IsArrowFilterCommandConcurrentRun()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
+}
+
+// コメント表示欄の初期表示文字列を取得
+CString AppPreference::GetDefaultComment()
+{
+	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
+	return in->mSettings.Get(_T("Soyokaze:DefaultComment"), defStr);
 }
 
 void AppPreference::SetSettings(const Settings& settings)

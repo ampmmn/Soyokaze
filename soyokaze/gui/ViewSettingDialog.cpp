@@ -8,10 +8,28 @@
 #endif
 
 
+struct ViewSettingDialog::PImpl
+{
+	// 入力画面を常に最前面に表示
+	BOOL mIsTopMost;
+
+	// アクティブ状態でなくなったらウインドウを隠す
+	BOOL mIsHideOnInactive;
+
+	// 半透明の表示方法
+	int mTransparencyType;
+	// 半透明表示の透明度
+	UINT mAlpha;
+
+	// 入力画面の初期状態時にコメント表示欄に表示する文字列
+	CString mDefaultComment;
+};
+
 ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("表示"), IDD_VIEWSETTING, parentWnd),
-	mAlpha(128)
+	in(new PImpl)
 {
+	in->mAlpha = 128;
 }
 
 ViewSettingDialog::~ViewSettingDialog()
@@ -35,14 +53,14 @@ BOOL ViewSettingDialog::OnSetActive()
 
 void ViewSettingDialog::OnOK()
 {
-	mSettingsPtr->Set(_T("Soyokaze:TopMost"), (bool)mIsTopMost);
-	mSettingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)mIsHideOnInactive);
+	mSettingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
+	mSettingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
 
-	if (mTransparencyType == 0) {
+	if (in->mTransparencyType == 0) {
 		mSettingsPtr->Set(_T("WindowTransparency:Enable"), true);
 		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
-	else if (mTransparencyType == 1) {
+	else if (in->mTransparencyType == 1) {
 		mSettingsPtr->Set(_T("WindowTransparency:Enable"), true);
 		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), false);
 	}
@@ -51,7 +69,9 @@ void ViewSettingDialog::OnOK()
 		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
 
-	mSettingsPtr->Set(_T("WindowTransparency:Alpha"), (int)mAlpha);
+	mSettingsPtr->Set(_T("WindowTransparency:Alpha"), (int)in->mAlpha);
+
+	mSettingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
 
 	__super::OnOK();
 }
@@ -60,11 +80,12 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_TOPMOST, mIsTopMost);
-	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, mIsHideOnInactive);
-	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, mTransparencyType);
-	DDX_Text(pDX, IDC_EDIT_ALPHA, mAlpha);
-	DDV_MinMaxInt(pDX, mAlpha, 0, 255);
+	DDX_Check(pDX, IDC_CHECK_TOPMOST, in->mIsTopMost);
+	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, in->mIsHideOnInactive);
+	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, in->mTransparencyType);
+	DDX_Text(pDX, IDC_EDIT_ALPHA, in->mAlpha);
+	DDV_MinMaxInt(pDX, in->mAlpha, 0, 255);
+	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
 }
 
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
@@ -84,7 +105,7 @@ BOOL ViewSettingDialog::OnInitDialog()
 
 bool ViewSettingDialog::UpdateStatus()
 {
-	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(mTransparencyType != 2);
+	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(in->mTransparencyType != 2);
 
 	return true;
 }
@@ -98,21 +119,23 @@ void ViewSettingDialog::OnCbnTransparencyChanged()
 
 void ViewSettingDialog::OnEnterSettings()
 {
-	mIsTopMost = mSettingsPtr->Get(_T("Soyokaze:TopMost"), false);
-	mIsHideOnInactive = mSettingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
+	in->mIsTopMost = mSettingsPtr->Get(_T("Soyokaze:TopMost"), false);
+	in->mIsHideOnInactive = mSettingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
 
 	if (mSettingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
-		mTransparencyType = 2;
+		in->mTransparencyType = 2;
 	}
 	else if (mSettingsPtr->Get(_T("WindowTransparency:InactiveOnly"), true)) {
-		mTransparencyType = 0;
+		in->mTransparencyType = 0;
 	}
 	else {
-		mTransparencyType = 1;
+		in->mTransparencyType = 1;
 	}
 
-	mAlpha = mSettingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
-	if (mAlpha < 0) { mAlpha = 0; }
-	if (mAlpha > 255) { mAlpha = 255; }
+	in->mAlpha = mSettingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
+	if (in->mAlpha < 0) { in->mAlpha = 0; }
+	if (in->mAlpha > 255) { in->mAlpha = 255; }
 
+	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
+	in->mDefaultComment = mSettingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
 }

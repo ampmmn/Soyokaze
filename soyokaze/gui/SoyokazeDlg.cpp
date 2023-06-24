@@ -463,7 +463,8 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mSharedHwnd = new SharedHwnd(GetSafeHwnd());
 
-	in->mDescriptionStr.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+	AppPreference* pref= AppPreference::Get();
+	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
 	in->mWindowPositionPtr = new WindowPosition();
@@ -491,7 +492,6 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mDropTargetDialog.Register(this);
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
 
-	AppPreference* pref= AppPreference::Get();
 	if (pref->IsHideOnStartup()) {
 		PostMessage(WM_APP+7, 0, 0);
 	}
@@ -549,7 +549,8 @@ void CSoyokazeDlg::SetDescription(const CString& msg)
 
 void CSoyokazeDlg::ClearContent()
 {
-	in->mDescriptionStr.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+	AppPreference* pref= AppPreference::Get();
+	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
 	in->mCandidateListBox.ResetContent();

@@ -49,6 +49,9 @@ public:
 	// フィルタコマンドの同時実行を許可する
 	bool IsArrowFilterCommandConcurrentRun();
 
+	// コメント表示欄の初期表示文字列を取得
+	CString GetDefaultComment();
+
 	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
 	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);
 
