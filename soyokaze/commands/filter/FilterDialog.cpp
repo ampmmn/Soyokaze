@@ -522,14 +522,22 @@ void FilterDialog::OnGetDispInfo(
 	}
 }
 
-void FilterDialog::OnCandidatesCustomDraw(NMHDR* pNMHDR, LRESULT* pResult)
+/**
+ 	リストコントロールのカスタムドロー処理
+ 	@param[in] pNMHDR  
+ 	@param[in] pResult 
+*/
+void FilterDialog::OnCandidatesCustomDraw(
+	NMHDR* pNMHDR,
+	LRESULT* pResult
+)
 {
 	auto lpLvCd = (LPNMLVCUSTOMDRAW)pNMHDR;
 
 	int drawStage = lpLvCd->nmcd.dwDrawStage;
 	if (drawStage == CDDS_PREPAINT) {
 		*pResult = CDRF_NOTIFYITEMDRAW;
-		 ::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NOTIFYITEMDRAW);
+		::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NOTIFYITEMDRAW);
 	}
 	else if (drawStage == CDDS_ITEMPREPAINT) {
 		*pResult = CDRF_NEWFONT;
@@ -541,6 +549,14 @@ void FilterDialog::OnCandidatesCustomDraw(NMHDR* pNMHDR, LRESULT* pResult)
 			lpLvCd->clrTextBk = GetSysColor(COLOR_HIGHLIGHT);
 			lpLvCd->clrText = RGB(0, 0, 0);
 			::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
+		}
+		else {
+			// 非選択状態のアイテムについては、交互に背景色を変える
+			if (row % 2) {
+				lpLvCd->clrTextBk = RGB(240, 240, 240);
+				lpLvCd->clrText = RGB(0, 0, 0);
+				::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
+			}
 		}
 	}
 }
