@@ -1,11 +1,10 @@
 #pragma once
 
-#include "gui/HotKeyDialog.h"
+#include "gui/SettingDialogBase.h"
 #include "Settings.h"
-#include "utility/TopMostMask.h"
 
 // 
-class SettingDialog : public CDialogEx
+class SettingDialog : public SettingDialogBase
 {
 public:
 	SettingDialog();
@@ -14,18 +13,15 @@ public:
 	void SetSettings(const Settings& settings);
 	const Settings& GetSettings();
 
-protected:
-	bool SelectPage(HTREEITEM hTreeCtrl);
-
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
-	virtual void OnOK();
+	//virtual void OnOK();
 
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnTvnSelChangingPage(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
+	HTREEITEM OnSetupPages() override;
 
 protected:
 	struct PImpl;

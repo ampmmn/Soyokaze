@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ViewSettingDialog.h"
+#include "Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -53,25 +54,26 @@ BOOL ViewSettingDialog::OnSetActive()
 
 void ViewSettingDialog::OnOK()
 {
-	mSettingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
-	mSettingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
+	auto settingsPtr = (Settings*)GetParam();
+	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
+	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
 
 	if (in->mTransparencyType == 0) {
-		mSettingsPtr->Set(_T("WindowTransparency:Enable"), true);
-		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
+		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
+		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
 	else if (in->mTransparencyType == 1) {
-		mSettingsPtr->Set(_T("WindowTransparency:Enable"), true);
-		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), false);
+		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
+		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), false);
 	}
 	else {
-		mSettingsPtr->Set(_T("WindowTransparency:Enable"), false);
-		mSettingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
+		settingsPtr->Set(_T("WindowTransparency:Enable"), false);
+		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
 
-	mSettingsPtr->Set(_T("WindowTransparency:Alpha"), (int)in->mAlpha);
+	settingsPtr->Set(_T("WindowTransparency:Alpha"), (int)in->mAlpha);
 
-	mSettingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
+	settingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
 
 	__super::OnOK();
 }
@@ -119,23 +121,24 @@ void ViewSettingDialog::OnCbnTransparencyChanged()
 
 void ViewSettingDialog::OnEnterSettings()
 {
-	in->mIsTopMost = mSettingsPtr->Get(_T("Soyokaze:TopMost"), false);
-	in->mIsHideOnInactive = mSettingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
+	auto settingsPtr = (Settings*)GetParam();
+	in->mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
+	in->mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
 
-	if (mSettingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
+	if (settingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
 		in->mTransparencyType = 2;
 	}
-	else if (mSettingsPtr->Get(_T("WindowTransparency:InactiveOnly"), true)) {
+	else if (settingsPtr->Get(_T("WindowTransparency:InactiveOnly"), true)) {
 		in->mTransparencyType = 0;
 	}
 	else {
 		in->mTransparencyType = 1;
 	}
 
-	in->mAlpha = mSettingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
+	in->mAlpha = settingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
 	if (in->mAlpha < 0) { in->mAlpha = 0; }
 	if (in->mAlpha > 255) { in->mAlpha = 255; }
 
 	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
-	in->mDefaultComment = mSettingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
+	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
 }

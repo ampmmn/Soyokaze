@@ -8,12 +8,12 @@
 #endif
 
 SettingPage::SettingPage(LPCTSTR nameStr, UINT resourceId, CWnd* parent) :
- 	mName(nameStr), mResourceId(resourceId), mParentWnd(parent)
+ 	mName(nameStr), mResourceId(resourceId), mParentWnd(parent), mParamPtr(nullptr)
 {
 }
 
 SettingPage::SettingPage(UINT nameId, UINT resourceId, CWnd* parent) :
- 	mResourceId(resourceId), mParentWnd(parent)
+ 	mResourceId(resourceId), mParentWnd(parent), mParamPtr(nullptr)
 {
 	mName.LoadStringW(nameId);
 }
@@ -37,9 +37,14 @@ const CString& SettingPage::GetName()
 	return mName;
 }
 
-void SettingPage::SetSettings(Settings* settingsPtr)
+void SettingPage::SetParam(void* param)
 {
-	mSettingsPtr = settingsPtr;
+	mParamPtr = param;
+}
+
+void* SettingPage::GetParam()
+{
+	return mParamPtr;
 }
 
 void SettingPage::DoDataExchange(CDataExchange* pDX)

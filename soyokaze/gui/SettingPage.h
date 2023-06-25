@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Settings.h"
-
 class SettingPage : public CPropertyPage
 {
 public:
@@ -14,7 +12,8 @@ public:
 	void SetName(const CString& name);
 	const CString& GetName();
 
-	void SetSettings(Settings* settingsPtr);
+	void SetParam(void* param);
+	void* GetParam();
 
 	virtual void OnEnterSettings() = 0;
 
@@ -23,7 +22,7 @@ protected:
 	CString mName;
 	UINT mResourceId;
 
-	Settings* mSettingsPtr;
+	void* mParamPtr;
 
 
 protected:

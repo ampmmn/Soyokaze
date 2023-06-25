@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "BasicSettingDialog.h"
+#include "Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -34,10 +35,12 @@ BOOL BasicSettingDialog::OnSetActive()
 
 void BasicSettingDialog::OnOK()
 {
-	mSettingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
-	mSettingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
-	mSettingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
-	mSettingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
+	auto settingsPtr = (Settings*)GetParam();
+
+	settingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
+	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
+	settingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
+	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
 
 	__super::OnOK();
 }
@@ -90,11 +93,13 @@ void BasicSettingDialog::OnButtonHotKey()
 
 void BasicSettingDialog::OnEnterSettings()
 {
-	mHotKeyAttr = HOTKEY_ATTR(mSettingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
-		                        mSettingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
+	auto settingsPtr = (Settings*)GetParam();
+
+	mHotKeyAttr = HOTKEY_ATTR(settingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
+		                        settingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
 	mHotKey = mHotKeyAttr.ToString();
 
-	mIsShowToggle = mSettingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
-	mIsHideOnRun = mSettingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
+	mIsShowToggle = settingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
+	mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 
 }

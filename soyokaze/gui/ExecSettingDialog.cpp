@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExecSettingDialog.h"
+#include "Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -34,10 +35,11 @@ BOOL ExecSettingDialog::OnSetActive()
 
 void ExecSettingDialog::OnOK()
 {
-	mSettingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
-	mSettingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
-	mSettingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
-	mSettingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
+	auto settingsPtr = (Settings*)GetParam();
+	settingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
+	settingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
+	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
+	settingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
 
 	__super::OnOK();
 }
@@ -103,9 +105,10 @@ void ExecSettingDialog::OnCheckUseFilter()
 
 void ExecSettingDialog::OnEnterSettings()
 {
-	mIsUseExternalFiler = mSettingsPtr->Get(_T("Soyokaze:UseFiler"), false);
-	mFilerPath = mSettingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
-	mFilerParam = mSettingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
-	mIsArrowFilterConcurrentRun = mSettingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
+	auto settingsPtr = (Settings*)GetParam();
+	mIsUseExternalFiler = settingsPtr->Get(_T("Soyokaze:UseFiler"), false);
+	mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
+	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
+	mIsArrowFilterConcurrentRun = settingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
 
 }

@@ -360,6 +360,9 @@
     <ClInclude Include="commands\history\HistoryCommandProvider.h">
       <Filter>commands\history</Filter>
     </ClInclude>
+    <ClInclude Include="gui\SettingDialogBase.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -646,6 +649,9 @@
     </ClCompile>
     <ClCompile Include="commands\history\HistoryCommandProvider.cpp">
       <Filter>commands\history</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SettingDialogBase.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

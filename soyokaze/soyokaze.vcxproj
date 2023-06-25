@@ -598,6 +598,7 @@
     <ClInclude Include="gui\InputSettingDialog.h" />
     <ClInclude Include="gui\ModalComboBox.h" />
     <ClInclude Include="gui\SelectCommandTypeDialog.h" />
+    <ClInclude Include="gui\SettingDialogBase.h" />
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
     <ClInclude Include="gui\ViewSettingDialog.h" />
@@ -702,6 +703,7 @@
     <ClCompile Include="gui\InputSettingDialog.cpp" />
     <ClCompile Include="gui\ModalComboBox.cpp" />
     <ClCompile Include="gui\SelectCommandTypeDialog.cpp" />
+    <ClCompile Include="gui\SettingDialogBase.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
     <ClCompile Include="gui\ViewSettingDialog.cpp" />

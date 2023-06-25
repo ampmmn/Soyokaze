@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "InputSettingDialog.h"
+#include "Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -34,9 +35,10 @@ BOOL InputSettingDialog::OnSetActive()
 
 void InputSettingDialog::OnOK()
 {
-	mSettingsPtr->Set(_T("Soyokaze:MatchLevel"), mMatchLevel);
-	mSettingsPtr->Set(_T("Soyokaze:IsIMEOffOnActive"), (bool)mIsIMEOff);
-	mSettingsPtr->Set(_T("Soyokaze:IsIgnoreUNC"), (bool)mIsIgnoreUNC);
+	auto settingsPtr = (Settings*)GetParam();
+	settingsPtr->Set(_T("Soyokaze:MatchLevel"), mMatchLevel);
+	settingsPtr->Set(_T("Soyokaze:IsIMEOffOnActive"), (bool)mIsIMEOff);
+	settingsPtr->Set(_T("Soyokaze:IsIgnoreUNC"), (bool)mIsIgnoreUNC);
 
 	__super::OnOK();
 }
@@ -71,8 +73,9 @@ bool InputSettingDialog::UpdateStatus()
 
 void InputSettingDialog::OnEnterSettings()
 {
-	mMatchLevel = mSettingsPtr->Get(_T("Soyokaze:MatchLevel"), 1);
-	mIsIMEOff = mSettingsPtr->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
-	mIsIgnoreUNC = mSettingsPtr->Get(_T("Soyokaze:IsIgnoreUNC"), false);
+	auto settingsPtr = (Settings*)GetParam();
+	mMatchLevel = settingsPtr->Get(_T("Soyokaze:MatchLevel"), 1);
+	mIsIMEOff = settingsPtr->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
+	mIsIgnoreUNC = settingsPtr->Get(_T("Soyokaze:IsIgnoreUNC"), false);
 
 }
