@@ -4,7 +4,7 @@
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "core/CommandHotKeyManager.h"
-#include "commands/shellexecute/CommandEditDialog.h"
+#include "commands/shellexecute/ShellExecSettingDialog.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
 #include "CommandHotKeyMappings.h"
@@ -132,43 +132,47 @@ bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
 	// 新規作成ダイアログを表示
 	CString value;
 
-	CommandEditDialog dlg;
+	CommandParam commandParam;
+	SettingDialog dlg;
 	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		dlg.SetName(value);
+		commandParam.mName = value;
 	}
 	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		dlg.SetPath(value);
+		commandParam.mPath = value;
 	}
 	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		dlg.SetDescription(value);
+		commandParam.mDescription = value;
 	}
 	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
-		dlg.SetParam(value);
+		commandParam.mParameter = value;
 	}
 
+	dlg.SetParam(commandParam);
 	if (dlg.DoModal() != IDOK) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	commandParam = dlg.GetParam();
+
 	auto newCmd = new ShellExecCommand();
-	newCmd->SetName(dlg.mName);
-	newCmd->SetDescription(dlg.mDescription);
-	newCmd->SetRunAs(dlg.mIsRunAsAdmin);
+	newCmd->SetName(commandParam.mName);
+	newCmd->SetDescription(commandParam.mDescription);
+	newCmd->SetRunAs(commandParam.mIsRunAsAdmin);
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = dlg.mPath;
-	normalAttr.mParam = dlg.mParameter;
-	normalAttr.mDir = dlg.mDir;
-	normalAttr.mShowType = dlg.GetShowType();
+	normalAttr.mPath =commandParam.mPath;
+	normalAttr.mParam = commandParam.mParameter;
+	normalAttr.mDir = commandParam.mDir;
+	normalAttr.mShowType = commandParam.GetShowType();
 	newCmd->SetAttribute(normalAttr);
 
-	if (dlg.mIsUse0) {
+	if (commandParam.mIsUse0) {
 		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = dlg.mPath0;
-		param0Attr.mParam = dlg.mParameter0;
-		param0Attr.mDir = dlg.mDir;
-		param0Attr.mShowType = dlg.GetShowType();
+		param0Attr.mPath = commandParam.mPath0;
+		param0Attr.mParam = commandParam.mParameter0;
+		param0Attr.mDir = commandParam.mDir;
+		param0Attr.mShowType = commandParam.GetShowType();
 		newCmd->SetAttributeForParam0(param0Attr);
 	}
 	else {
@@ -179,13 +183,13 @@ bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
 	CommandRepository::GetInstance()->RegisterCommand(newCmd);
 
 	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
+	if (commandParam.mHotKeyAttr.IsValid()) {
 
 		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
-#include "commands/shellexecute/CommandEditDialog.h"
+#include "commands/shellexecute/ShellExecSettingDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
@@ -36,7 +36,6 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 struct ShellExecCommand::PImpl
 {
 	PImpl() :
-		mRunAs(0),
 		mRefCount(1)
 	{
 	}
@@ -44,9 +43,7 @@ struct ShellExecCommand::PImpl
 	{
 	}
 
-	CString mName;
-	CString mDescription;
-	int mRunAs;
+	CommandParam mParam;
 
 	ATTRIBUTE mNormalAttr;
 	ATTRIBUTE mNoParamAttr;
@@ -74,13 +71,13 @@ ShellExecCommand::~ShellExecCommand()
 
 CString ShellExecCommand::GetName()
 {
-	return in->mName;
+	return in->mParam.mName;
 }
 
 
 CString ShellExecCommand::GetDescription()
 {
-	return in->mDescription;
+	return in->mParam.mDescription;
 }
 
 BOOL ShellExecCommand::Execute()
@@ -146,7 +143,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	si.nShow = attr.mShowType;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
-	if (in->mRunAs == 1 && IsRunAsAdmin() == false) {
+	if (in->mParam.mIsRunAsAdmin && IsRunAsAdmin() == false) {
 		si.lpVerb = _T("runas");
 	}
 
@@ -186,13 +183,13 @@ CString ShellExecCommand::GetErrorString()
 
 ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
 {
-	in->mName = name;
+	in->mParam.mName = name;
 	return *this;
 }
 
 ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
 {
-	in->mDescription = description;
+	in->mParam.mDescription = description;
 	return *this;
 }
 
@@ -218,7 +215,7 @@ ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
 
 ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
 {
-	in->mRunAs = runAs;
+	in->mParam.mIsRunAsAdmin = runAs != 0;
 	return *this;
 }
 
@@ -275,34 +272,33 @@ bool ShellExecCommand::IsEditable()
 	return true;
 }
 
-int ShellExecCommand::EditDialog(const Parameter* param)
+int ShellExecCommand::EditDialog(const Parameter* args)
 {
-	CommandEditDialog dlg;
-	dlg.SetOrgName(in->mName);
+	SettingDialog dlg;
 
-	dlg.mName = in->mName;
-	dlg.mDescription = in->mDescription;
-	dlg.mIsRunAsAdmin = in->mRunAs;
+	auto& param = in->mParam;
 
 	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
 
-	dlg.mPath = attr.mPath;
-	dlg.mParameter = attr.mParam;
-	dlg.mDir = attr.mDir;
-	dlg.SetShowType(attr.mShowType);
+	param.mPath = attr.mPath;
+	param.mParameter = attr.mParam;
+	param.mDir = attr.mDir;
+	param.SetShowType(attr.mShowType);
 
 	attr = in->mNoParamAttr;
-	dlg.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
-	dlg.mPath0 = attr.mPath;
-	dlg.mParameter0 = attr.mParam;
+	param.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
+	param.mPath0 = attr.mPath;
+	param.mParameter0 = attr.mParam;
 
 	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(dlg.mName, &hotKeyAttr, &isGlobal)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-		dlg.mIsGlobal = isGlobal;
+	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr, &isGlobal)) {
+		param.mHotKeyAttr = hotKeyAttr;
+		param.mIsGlobal = isGlobal;
 	}
+
+	dlg.SetParam(param);
 
 	if (dlg.DoModal() != IDOK) {
 		return 1;
@@ -311,23 +307,25 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	ShellExecCommand* cmdNew = new ShellExecCommand();
 
 	// 追加する処理
-	cmdNew->SetName(dlg.mName);
-	cmdNew->SetDescription(dlg.mDescription);
-	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
+	param = dlg.GetParam();
+
+	cmdNew->SetName(param.mName);
+	cmdNew->SetDescription(param.mDescription);
+	cmdNew->SetRunAs(param.mIsRunAsAdmin);
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = dlg.mPath;
-	normalAttr.mParam = dlg.mParameter;
-	normalAttr.mDir = dlg.mDir;
-	normalAttr.mShowType = dlg.GetShowType();
+	normalAttr.mPath = param.mPath;
+	normalAttr.mParam = param.mParameter;
+	normalAttr.mDir = param.mDir;
+	normalAttr.mShowType = param.GetShowType();
 	cmdNew->SetAttribute(normalAttr);
 
-	if (dlg.mIsUse0) {
+	if (param.mIsUse0) {
 		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = dlg.mPath0;
-		param0Attr.mParam = dlg.mParameter0;
-		param0Attr.mDir = dlg.mDir;
-		param0Attr.mShowType = dlg.GetShowType();
+		param0Attr.mPath = param.mPath0;
+		param0Attr.mParam = param.mParameter0;
+		param0Attr.mDir = param.mDir;
+		param0Attr.mShowType = param.GetShowType();
 		cmdNew->SetAttributeForParam0(param0Attr);
 	}
 	else {
@@ -345,8 +343,8 @@ int ShellExecCommand::EditDialog(const Parameter* param)
 	hotKeyManager->GetMappings(hotKeyMap);
 
 	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+	if (param.mHotKeyAttr.IsValid()) {
+		hotKeyMap.AddItem(param.mName, param.mHotKeyAttr, param.mIsGlobal);
 	}
 
 	auto pref = AppPreference::Get();
@@ -370,7 +368,7 @@ void ShellExecCommand::GetAttributeForParam0(ATTRIBUTE& attr)
 
 int ShellExecCommand::GetRunAs()
 {
-	return in->mRunAs;
+	return in->mParam.mIsRunAsAdmin ? 1 : 0;
 }
 
 soyokaze::core::Command*
@@ -378,11 +376,10 @@ ShellExecCommand::Clone()
 {
 	auto clonedObj = new ShellExecCommand();
 
-	clonedObj->in->mName = in->mName;
-	clonedObj->in->mDescription = in->mDescription;
-	clonedObj->in->mRunAs = in->mRunAs;
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
 	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
+	clonedObj->in->mParam = in->mParam;
+
 
 	return clonedObj;
 }

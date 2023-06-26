@@ -363,6 +363,15 @@
     <ClInclude Include="gui\SettingDialogBase.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecCommandParam.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecSettingDialog.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecEditDetailPage.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -652,6 +661,15 @@
     </ClCompile>
     <ClCompile Include="gui\SettingDialogBase.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecCommandParam.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp">
+      <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

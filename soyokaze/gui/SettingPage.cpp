@@ -47,6 +47,16 @@ void* SettingPage::GetParam()
 	return mParamPtr;
 }
 
+void SettingPage::EnalbleOKButton()
+{
+	::PostMessage(GetParent()->GetSafeHwnd(), WM_APP+1, 1, (LPARAM)this);
+}
+
+void SettingPage::DisalbleOKButton()
+{
+	::PostMessage(GetParent()->GetSafeHwnd(), WM_APP+2, 0, (LPARAM)this);
+}
+
 void SettingPage::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);

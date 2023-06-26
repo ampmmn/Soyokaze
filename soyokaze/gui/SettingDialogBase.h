@@ -28,6 +28,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnTvnSelChangingPage(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg LRESULT OnUserEnableOKButton(WPARAM wp, LPARAM lp);
+	afx_msg LRESULT OnUserDisableOKButton(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

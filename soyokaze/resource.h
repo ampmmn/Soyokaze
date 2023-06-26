@@ -75,6 +75,8 @@
 #define IDD_INPUTSETTING                154
 #define IDD_VIEWSETTING                 155
 #define IDD_REGEXPCOMMAND               156
+#define IDD_SHELLEXECUTECOMMAND2        157
+#define IDD_NEWCOMMAND1                 158
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002

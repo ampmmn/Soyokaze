@@ -6,6 +6,7 @@
 #include "resource.h"
 #include <algorithm>
 #include <vector>
+#include <set>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,7 +33,11 @@ struct SettingDialogBase::PImpl
 
 	std::vector<SettingPage*> mPages;
 
+	// OKできない状態のページの一覧
+	std::set<SettingPage*> mInvalidPages;
+
 	TopMostMask mTopMostMask;
+
 
 };
 
@@ -72,8 +77,9 @@ void SettingDialogBase::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SettingDialogBase, CDialogEx)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_PAGES, OnTvnSelChangingPage)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP+1, OnUserEnableOKButton)
+	ON_MESSAGE(WM_APP+2, OnUserDisableOKButton)
 END_MESSAGE_MAP()
-
 
 // ダイアログ初期化
 BOOL SettingDialogBase::OnInitDialog()
@@ -257,3 +263,48 @@ HTREEITEM SettingDialogBase::AddPage(
 
 }
 
+/**
+ 	OKボタンを有効化する
+ 	@return 0
+ 	@param[in] wp 0
+ 	@param[in] lp 通知元のページのポインタ
+*/
+LRESULT SettingDialogBase::OnUserEnableOKButton(
+	WPARAM wp,
+	LPARAM lp
+)
+{
+	SettingPage* page = (SettingPage*)lp;
+
+	auto it = in->mInvalidPages.find(page);
+	if (it == in->mInvalidPages.end()) {
+		return 0;
+	}
+
+	in->mInvalidPages.erase(it);
+
+	if (in->mInvalidPages.empty()) {
+		GetDlgItem(IDOK)->EnableWindow(TRUE);
+	}
+
+	return 0;
+}
+
+/**
+ 	OKボタンを無効化する
+ 	@return 0
+ 	@param[in] wp 0
+ 	@param[in] lp 通知元のページのポインタ
+*/
+LRESULT SettingDialogBase::OnUserDisableOKButton(
+	WPARAM wp,
+	LPARAM lp
+)
+{
+	SettingPage* page = (SettingPage*)lp;
+	in->mInvalidPages.insert(page);
+
+	GetDlgItem(IDOK)->EnableWindow(FALSE);
+
+	return 0;
+}

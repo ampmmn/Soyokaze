@@ -15,6 +15,9 @@ public:
 	void SetParam(void* param);
 	void* GetParam();
 
+	void EnalbleOKButton();
+	void DisalbleOKButton();
+
 	virtual void OnEnterSettings() = 0;
 
 protected:

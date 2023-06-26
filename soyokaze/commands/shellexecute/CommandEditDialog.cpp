@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "framework.h"
 #include "CommandEditDialog.h"
+#include "commands/shellexecute/ShellExecCommandParam.h"
 #include "gui/FolderDialog.h"
 #include "gui/IconLabel.h"
 #include "gui/CommandHotKeyDialog.h"
 #include "core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
-#include "utility/ScopeAttachThreadInput.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -16,10 +16,9 @@
 #endif
 
 
-CommandEditDialog::CommandEditDialog() : 
-	CDialogEx(IDD_NEWCOMMAND),
-	mIconLabelPtr(new IconLabel),
-	mIsGlobal(false)
+CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
+	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
+	mIconLabelPtr(new IconLabel)
 {
 }
 
@@ -28,87 +27,25 @@ CommandEditDialog::~CommandEditDialog()
 	delete mIconLabelPtr;
 }
 
-void CommandEditDialog::SetOrgName(const CString& name)
-{
-	mOrgName = name;
-}
-
-void CommandEditDialog::SetName(const CString& name)
-{
-	mName = name;
-}
-
-void CommandEditDialog::SetPath(const CString& path)
-{
-	mPath = path;
-}
-
-void CommandEditDialog::SetDescription(const CString& desc)
-{
-	mDescription = desc;
-}
-
-void CommandEditDialog::SetParam(const CString& param)
-{
-	mParameter = param;
-}
-
-int CommandEditDialog::GetShowType()
-{
-	if (mShowType == 1) {
-		return SW_MAXIMIZE;
-	}
-	else if (mShowType == 2) {
-		return SW_SHOWMINIMIZED;
-	}
-	else {
-		return SW_NORMAL;
-	}
-}
-
-void CommandEditDialog::SetShowType(int type)
-{
-	if (type == SW_SHOWMINIMIZED) {
-		mShowType = 2;
-	}
-	else if (type == SW_MAXIMIZE) {
-		mShowType = 1;
-	}
-	else {
-		mShowType = 0;
-	}
-}
-
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_NAME, mName);
-	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
-	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mIsRunAsAdmin);
-	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mShowType);
-	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
-	DDX_Text(pDX, IDC_EDIT_PARAM, mParameter);
-	DDX_Text(pDX, IDC_EDIT_PATH0, mPath0);
-	DDX_Check(pDX, IDC_CHECK_USE0, mIsUse0);
-	DDX_Text(pDX, IDC_EDIT_PARAM0, mParameter0);
-	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
+	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
+	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mParam.mIsRunAsAdmin);
+	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
+	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH0, OnEditPath0Changed)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE2, OnButtonBrowseFile2Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR2, OnButtonBrowseDir2Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
-	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
-	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -121,94 +58,73 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
-	CString caption;
-  GetWindowText(caption);
-
-	CString suffix;
-	suffix.Format(_T("【%s】"), mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)mOrgName);
-
-	caption += suffix;
-	SetWindowText(caption);
-
 	// File&Folder Select Button
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->SetWindowTextW(L"\U0001F4C4");
 	GetDlgItem(IDC_BUTTON_BROWSEDIR1)->SetWindowTextW(L"\U0001F4C2");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->SetWindowTextW(L"\U0001F4C2");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
 	UpdateStatus();
 	UpdateData(FALSE);
-
-	ScopeAttachThreadInput scope;
-	SetForegroundWindow();
 
 	return TRUE;
 }
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
+	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	GetDlgItem(IDC_STATIC_PATH0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_EDIT_PATH0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_EDIT_PARAM0)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->EnableWindow(mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->EnableWindow(mIsUse0);
+	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0;
 
-	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
+	// .lnkだったらショートカット解決ボタンを表示する
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
-	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath0)) == 0;
-	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
+	// .exe/.batでなければ、管理者権限実行を無効化する
+	BOOL isExecutable = CString(_T(".exe")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0 ||
+	                    CString(_T(".bat")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0;
+	GetDlgItem(IDC_CHECK_RUNASADMIN)->EnableWindow(isExecutable);
+	if (isExecutable == FALSE) {
+		mParam.mIsRunAsAdmin = FALSE;
+	}
 
-	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mPath));
+	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
 
-	if (mName.IsEmpty()) {
+	if (mParam.mName.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		DisalbleOKButton();
 		return false;
 	}
 
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 
 	// 重複チェック
-	if (mName.CompareNoCase(mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mName, false);
+	if (mParam.mName.CompareNoCase(mOrgName) != 0) {
+		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mParam.mName, false);
 		if (cmd != nullptr) {
 			cmd->Release();
 			mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
+			DisalbleOKButton();
 			return false;
 		}
 	}
 
 	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(mName) == false) {
+	if (cmdRepoPtr->IsValidAsName(mParam.mName) == false) {
 		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		DisalbleOKButton();
 		return false;
 	}
 
 	//
-	if (mPath.IsEmpty()) {
+	if (mParam.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	if (mIsUse0 && mPath0.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_PATH0ISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		DisalbleOKButton();
 		return false;
 	}
 
 	mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
+	EnalbleOKButton();
 
 	return true;
 }
@@ -227,22 +143,15 @@ void CommandEditDialog::OnEditPathChanged()
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::OnEditPath0Changed()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, mParam.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
+	mParam.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -250,61 +159,13 @@ void CommandEditDialog::OnButtonBrowseFile1Clicked()
 void CommandEditDialog::OnButtonBrowseDir1Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mPath, this);
+	CFolderDialog dlg(_T(""), mParam.mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnButtonBrowseFile2Clicked()
-{
-	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath0, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mPath0 = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnButtonBrowseDir2Clicked()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), mPath0, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mPath0 = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnButtonBrowseDir3Clicked()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), mDir, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mDir = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnUpdateStatus()
-{
-	UpdateData();
+	mParam.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -322,12 +183,56 @@ HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
+BOOL CommandEditDialog::OnKillActive()
+{
+	if (UpdateData() == FALSE) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
+BOOL CommandEditDialog::OnSetActive()
+{
+	UpdateStatus();
+	UpdateData(FALSE);
+	return TRUE;
+}
+
+void CommandEditDialog::OnEnterSettings()
+{
+	auto param = (CommandParam*)GetParam();
+
+	mOrgName = param->mName;
+	mParam = *param;
+
+	CString caption;
+  GetWindowText(caption);
+
+	CString suffix;
+	suffix.Format(_T("【%s】"), mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)mOrgName);
+
+	caption += suffix;
+	SetWindowText(caption);
+
+}
+
+
 void CommandEditDialog::OnOK()
 {
 	UpdateData();
 	if (UpdateStatus() == false) {
 		return ;
 	}
+
+	auto param = (CommandParam*)GetParam();
+
+	param->mName = mParam.mName;
+	param->mDescription = mParam.mDescription;
+	param->mIsRunAsAdmin = mParam.mIsRunAsAdmin;
+	param->mShowType = mParam.mShowType;
+	param->mPath = mParam.mPath;
+	param->mParameter = mParam.mParameter;
+
 	__super::OnOK();
 }
 
@@ -336,14 +241,14 @@ void CommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr);
-	dlg.mIsGlobal = mIsGlobal;
+	CommandHotKeyDialog dlg(mParam.mHotKeyAttr);
+	dlg.mIsGlobal = mParam.mIsGlobal;
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
-	dlg.GetAttribute(mHotKeyAttr);
-	mIsGlobal = dlg.IsGlobal();
+	dlg.GetAttribute(mParam.mHotKeyAttr);
+	mParam.mIsGlobal = dlg.IsGlobal();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -367,12 +272,7 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 
 void CommandEditDialog::OnButtonResolveShortcut()
 {
-	ResolveShortcut(mPath);
-}
-
-void CommandEditDialog::OnButtonResolveShortcut0()
-{
-	ResolveShortcut(mPath0);
+	ResolveShortcut(mParam.mPath);
 }
 
 

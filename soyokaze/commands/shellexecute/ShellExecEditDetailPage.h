@@ -5,13 +5,13 @@
 
 class IconLabel;
 
-class CommandEditDialog : public SettingPage
+class ShellExecEditDetailPage : public SettingPage
 {
 	using CommandParam = soyokaze::commands::shellexecute::CommandParam;
 
 public:
-	CommandEditDialog(CWnd* parentWnd);
-	virtual ~CommandEditDialog();
+	ShellExecEditDetailPage(CWnd* parentWnd);
+	virtual ~ShellExecEditDetailPage();
 
 	bool UpdateStatus();
 
@@ -21,19 +21,11 @@ protected:
 
 	void ResolveShortcut(CString& path);
 
-	// 編集開始時のコマンド名
-	CString mOrgName;
-
 	// メッセージ欄
 	CString mMessage;
 
 public:
 	CommandParam mParam;
-
-	IconLabel* mIconLabelPtr;
-
-	// ホットキー(表示用)
-	CString mHotKey;
 
 // 実装
 protected:
@@ -43,12 +35,12 @@ protected:
 
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnEditNameChanged();
-	afx_msg void OnEditPathChanged();
-	afx_msg void OnButtonBrowseFile1Clicked();
-	afx_msg void OnButtonBrowseDir1Clicked();
+	afx_msg void OnEditPath0Changed();
+	afx_msg void OnButtonBrowseFile2Clicked();
+	afx_msg void OnButtonBrowseDir2Clicked();
+	afx_msg void OnButtonBrowseDir3Clicked();
+	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
-	afx_msg void OnButtonResolveShortcut();
+	afx_msg void OnButtonResolveShortcut0();
 };
 
