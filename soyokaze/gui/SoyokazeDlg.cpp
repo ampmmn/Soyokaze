@@ -57,7 +57,7 @@ struct CSoyokazeDlg::PImpl
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
 	// 候補一覧表示用リストボックス
-	CListBox mCandidateListBox;
+	CListCtrl mCandidateListBox;
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
 	DWORD mLastCaretPos;
@@ -145,6 +145,11 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_WM_NCHITTEST()
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
+	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_CANDIDATE, OnGetDispInfo)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST_CANDIDATE, OnCandidatesCustomDraw)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
+	ON_WM_SIZE()
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
@@ -434,6 +439,20 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
 	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
 
+	in->mCandidateListBox.ModifyStyle(0, LVS_OWNERDATA);
+	in->mCandidateListBox.SetExtendedStyle(in->mCandidateListBox.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+
+	// ヘッダー追加
+	LVCOLUMN lvc;
+	memset(&lvc,0,sizeof(LV_COLUMN));
+	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
+
+	CString strHeader;
+	strHeader.LoadString(IDS_NAME);
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 300;
+	lvc.fmt = LVCFMT_LEFT;
+	in->mCandidateListBox.InsertColumn(0,&lvc);
 
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 
@@ -553,7 +572,7 @@ void CSoyokazeDlg::ClearContent()
 	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
-	in->mCandidateListBox.ResetContent();
+	in->mCandidateListBox.DeleteAllItems();
 	in->mSelIndex = -1;
 
 	UpdateData(FALSE);
@@ -594,7 +613,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		in->mKeywordEdit.Clear();
 	}
 
-	in->mCandidateListBox.ResetContent();
+	in->mCandidateListBox.DeleteAllItems();
 	in->mSelIndex = -1;
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
@@ -622,11 +641,14 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	}
 
 	// 候補リストの更新
-	for (auto& item : in->mCandidates) {
-		in->mCandidateListBox.AddString(item->GetName());
-	}
+	in->mCandidateListBox.SetItemCountEx((int)in->mCandidates.size());
 	in->mSelIndex = 0;
-	in->mCandidateListBox.SetCurSel(in->mSelIndex);
+	if (in->mSelIndex < in->mCandidates.size()) {
+		in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+	}
+	else {
+		in->mSelIndex = -1;
+	}
 
 	// 候補先頭を選択状態にする
 	auto pCmd = in->mCandidates[0];
@@ -652,6 +674,8 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		}
 	}
 	in->mLastCaretPos = in->mKeywordEdit.GetSel();
+
+	in->mCandidateListBox.Invalidate();
 }
 
 void CSoyokazeDlg::OnOK()
@@ -759,8 +783,15 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mSelIndex--;
 			if (in->mSelIndex < 0) {
 				in->mSelIndex = (int)(in->mCandidates.size()-1);
+
+				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_END, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_END, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
 			}
-			in->mCandidateListBox.SetCurSel(in->mSelIndex);
+			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
 				return 1;
@@ -782,8 +813,14 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mSelIndex++;
 			if (in->mSelIndex >= (int)in->mCandidates.size()) {
 				in->mSelIndex = 0;
+				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_HOME, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_HOME, 0);
+				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
 			}
-			in->mCandidateListBox.SetCurSel(in->mSelIndex);
+			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
 				return 1;
@@ -833,11 +870,13 @@ void CSoyokazeDlg::OnLbnSelChange()
 {
 	UpdateData();
 
-	int nSel = in->mCandidateListBox.GetCurSel();
-	if (nSel == -1) {
+	POSITION pos = in->mCandidateListBox.GetFirstSelectedItemPosition();
+	if (pos == NULL) {
 		return;
 	}
-	in->mSelIndex = nSel;
+
+	in->mSelIndex = in->mCandidateListBox.GetNextSelectedItem(pos);
+
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 		in->mCommandStr = cmd->GetName();
@@ -885,6 +924,85 @@ LRESULT CSoyokazeDlg::OnNcHitTest(
 		return HTCAPTION;
 	}
 	return __super::OnNcHitTest(point);
+}
+
+void CSoyokazeDlg::OnGetDispInfo(
+	NMHDR* pNMHDR,
+	LRESULT* pResult
+)
+{
+	*pResult = 0;
+
+	NMLVDISPINFO* pDispInfo = (NMLVDISPINFO*)pNMHDR;
+	LVITEM* pItem = &(pDispInfo)->item;
+
+	if (pItem->mask & LVIF_TEXT) {
+
+		int itemIndex = pDispInfo->item.iItem;
+		if (pDispInfo->item.iSubItem == 0) {
+			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
+				auto cmd = in->mCandidates[itemIndex];
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
+			}
+		}
+	}
+}
+
+/**
+ 	リストコントロールのカスタムドロー処理
+ 	@param[in] pNMHDR  
+ 	@param[in] pResult 
+*/
+void CSoyokazeDlg::OnCandidatesCustomDraw(
+	NMHDR* pNMHDR,
+	LRESULT* pResult
+)
+{
+	auto lpLvCd = (LPNMLVCUSTOMDRAW)pNMHDR;
+
+	int drawStage = lpLvCd->nmcd.dwDrawStage;
+	if (drawStage == CDDS_PREPAINT) {
+		*pResult = CDRF_NOTIFYITEMDRAW;
+		::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NOTIFYITEMDRAW);
+	}
+	else if (drawStage == CDDS_ITEMPREPAINT) {
+		*pResult = CDRF_NEWFONT;
+		int row = (int)lpLvCd->nmcd.dwItemSpec;
+		int state = in->mCandidateListBox.GetItemState(row, LVIS_SELECTED);
+
+		if (state != 0) {
+			// 選択状態のアイテムの背景色を変える
+			lpLvCd->clrTextBk = GetSysColor(COLOR_HIGHLIGHT);
+			lpLvCd->clrText = RGB(0, 0, 0);
+			::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
+		}
+	}
+}
+
+void CSoyokazeDlg::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	*pResult = 0;
+	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	in->mSelIndex = nm->iItem;
+	UpdateData(FALSE);
+
+}
+
+void CSoyokazeDlg::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	*pResult = 0;
+	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	// ダブルクリックで確定
+	OnOK();
+}
+
+void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
+{
+	__super::OnSize(type, cx, cy);
+
+	if (in->mCandidateListBox.GetSafeHwnd()) {
+		in->mCandidateListBox.SetColumnWidth(0, cx-70);
+	}
 }
 
 /**

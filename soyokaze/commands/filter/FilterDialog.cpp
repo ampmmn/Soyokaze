@@ -331,7 +331,7 @@ void FilterDialog::OnEditCommandChanged()
 		in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
 	}
 	else {
-	in->mSelIndex = -1;
+		in->mSelIndex = -1;
 	}
 
 	// 補完
@@ -416,6 +416,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
 			}
 			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
 			in->mInputStr = in->mCandidates[in->mSelIndex];
 			UpdateStatus();
 			UpdateData(FALSE);
@@ -433,6 +434,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
 			}
 			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
 			in->mInputStr = in->mCandidates[in->mSelIndex];
 
 			UpdateStatus();

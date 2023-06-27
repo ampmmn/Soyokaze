@@ -83,6 +83,11 @@ protected:
 	afx_msg void OnEndSession(BOOL isEnding);
 	// コンテキストメニューの表示
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnGetDispInfo(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnCandidatesCustomDraw(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnSize(UINT type, int cx, int cy);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
