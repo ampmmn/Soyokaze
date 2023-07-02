@@ -28,10 +28,13 @@ struct CommandRanking::PImpl
 
 	// 設定ファイル保存先パス
 	CString mFilePath;
+
+	bool mIsLoaded;
 };
 
 CommandRanking::CommandRanking() : in(new PImpl)
 {
+	in->mIsLoaded = false;
 }
 
 CommandRanking::~CommandRanking()
@@ -40,6 +43,8 @@ CommandRanking::~CommandRanking()
 
 bool CommandRanking::Load()
 {
+	in->mIsLoaded = true;
+
 	const CString& filePath = in->GetFilePath();
 
 	FILE* fpIn = nullptr;
@@ -82,6 +87,10 @@ bool CommandRanking::Load()
 
 bool CommandRanking::Save()
 {
+	if (in->mIsLoaded == false) {
+		return false;
+	}
+
 	const CString& filePath = in->GetFilePath();
 	FILE* fpOut = nullptr;
 	try {
