@@ -12,10 +12,12 @@ struct ForwardMatchPattern::PImpl
 {
 	tregex mRegPattern;
 	CString mWord;
+	bool mHasError;
 };
 
 ForwardMatchPattern::ForwardMatchPattern() : in(new PImpl)
 {
+	in->mHasError = false;
 }
 
 ForwardMatchPattern::~ForwardMatchPattern()
@@ -27,17 +29,29 @@ void ForwardMatchPattern::SetPattern(
 	const CString& pattern
 )
 {
+	in->mHasError = false;
 	in->mWord = pattern;
 
 	tstring pat(_T("^"));
 	pat += Pattern::StripEscapeChars(pattern);
-	in->mRegPattern = tregex(pat, std::regex_constants::icase);
+
+	try {
+		in->mRegPattern = tregex(pat, std::regex_constants::icase);
+	}
+	catch (std::regex_error&) {
+		in->mHasError = true;
+	}
 }
 
 int ForwardMatchPattern::Match(
 	const CString& str
 )
 {
+	if (in->mHasError) {
+		// エラー時は無効化
+		return Mismatch;
+	}
+
 	if (str.CompareNoCase(in->mWord) == 0) {
 		return WholeMatch;
 	}

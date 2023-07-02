@@ -14,10 +14,12 @@ struct SkipMatchPattern::PImpl
 	std::wregex mRegPatternPartial;
 	std::wregex mRegPatternSkip;
 	CString mWord;
+	bool mHasError;
 };
 
 SkipMatchPattern::SkipMatchPattern() : in(new PImpl)
 {
+	in->mHasError = false;
 }
 
 SkipMatchPattern::~SkipMatchPattern()
@@ -29,46 +31,58 @@ void SkipMatchPattern::SetPattern(
 	const CString& pattern
 )
 {
+	in->mHasError = false;
 	in->mWord = pattern;
 
 	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
 
 	std::wstring patFront(L"^");
 	patFront += escapedPat;
-	in->mRegPatternFront = std::wregex(patFront, std::regex_constants::icase);
 
-	in->mRegPatternPartial = std::wregex(escapedPat, std::regex_constants::icase);
+	try {
+		in->mRegPatternFront = std::wregex(patFront, std::regex_constants::icase);
 
-	// 1文字ごとに".*"を付けたうえで正規表現マッチングをすることにより、
-	// スキップマッチング的動作を実現する
-	CString stripped = Pattern::StripEscapeChars(pattern);
+		in->mRegPatternPartial = std::wregex(escapedPat, std::regex_constants::icase);
 
-	std::wstring pat;
-	for (int i = 0; i < escapedPat.size(); ++i) {
-		pat += escapedPat[i];
+		// 1文字ごとに".*"を付けたうえで正規表現マッチングをすることにより、
+		// スキップマッチング的動作を実現する
+		CString stripped = Pattern::StripEscapeChars(pattern);
 
-		if (stripped[i] == _T('\\')) {
-			// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
-			pat += stripped[i];
-			continue;
+		std::wstring pat;
+		for (int i = 0; i < escapedPat.size(); ++i) {
+			pat += escapedPat[i];
+
+			if (stripped[i] == _T('\\')) {
+				// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため'\'を付与する
+				pat += stripped[i];
+				continue;
+			}
+
+
+			if (0xD800 <= stripped[i] && stripped[i] <= 0xDBFF) {
+				// サロゲートペアの先頭1byteは後続の2バイト目と不可分のため、
+				// 「.*」をつけない
+				continue;
+			}
+
+			pat += _T(".*");
 		}
-
-
-		if (0xD800 <= stripped[i] && stripped[i] <= 0xDBFF) {
-			// サロゲートペアの先頭1byteは後続の2バイト目と不可分のため、
-			// 「.*」をつけない
-			continue;
-		}
-
-		pat += _T(".*");
+		in->mRegPatternSkip = std::wregex(pat, std::regex_constants::icase);
 	}
-	in->mRegPatternSkip = std::wregex(pat, std::regex_constants::icase);
+	catch (std::regex_error&) {
+		in->mHasError = true;
+	}
 }
 
 int SkipMatchPattern::Match(
 	const CString& str
 )
 {
+	if (in->mHasError) {
+		// エラー時は無効化
+		return Mismatch;
+	}
+
 	if (str.CompareNoCase(in->mWord) == 0) {
 		return WholeMatch;
 	}

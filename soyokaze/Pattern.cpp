@@ -10,6 +10,7 @@ CString Pattern::StripEscapeChars(const CString& pattern)
 	tmp.Replace(_T("\\"), _T("\\\\"));
 	tmp.Replace(_T("?"), _T("\\?"));
 	tmp.Replace(_T("."), _T("\\."));
+	tmp.Replace(_T("*"), _T("\\*"));
 	tmp.Replace(_T("+"), _T("\\+"));
 	tmp.Replace(_T("^"), _T("\\^"));
 	tmp.Replace(_T("$"), _T("\\$"));
