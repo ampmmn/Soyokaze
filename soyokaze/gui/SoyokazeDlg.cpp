@@ -618,8 +618,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
-		CString strMisMatch;
-		strMisMatch.LoadString(ID_STRING_DEFAULTDESCRIPTION);
+		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
 		return;
