@@ -22,6 +22,11 @@ namespace pathfind {
 
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
+static const tregex& GetURLRegex()
+{
+	static tregex reg(_T("https?://.+"));
+	return reg;
+}
 
 struct PathExecuteCommand::PImpl
 {
@@ -30,6 +35,7 @@ struct PathExecuteCommand::PImpl
 	CString mFullPath;
 	CString mDescription;
 	CString mExeExtension;
+	bool mIsURL;
 	uint32_t mRefCount;
 };
 
@@ -49,6 +55,9 @@ void PathExecuteCommand::SetFullPath(const CString& path)
 {
 	in->mFullPath = path;
 	in->mDescription = path;
+
+	const tregex& regURL = GetURLRegex();
+	in->mIsURL = (std::regex_search((LPCTSTR)path, regURL));
 }
 
 
@@ -57,6 +66,11 @@ CString PathExecuteCommand::GetName()
 	if (in->mFullPath.IsEmpty()) {
 		return _T("");
 	}
+
+	if (in->mIsURL) {
+		return in->mFullPath;
+	}
+
 	return PathFindFileName(in->mFullPath);
 }
 
@@ -67,7 +81,7 @@ CString PathExecuteCommand::GetDescription()
 
 BOOL PathExecuteCommand::Execute()
 {
-	if (PathFileExists(in->mFullPath) == FALSE) {
+	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
 		return FALSE;
 	}
 
@@ -83,7 +97,7 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 	std::vector<CString> args;
 	param.GetParameters(args);
 
-	if (PathFileExists(in->mFullPath) == FALSE) {
+	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
 		return FALSE;
 	}
 
@@ -132,6 +146,18 @@ HICON PathExecuteCommand::GetIcon()
 int PathExecuteCommand::Match(Pattern* pattern)
 {
 	CString word = pattern->GetOriginalPattern();
+
+	// URLパターンマッチするかを判定
+	const tregex& regURL = GetURLRegex();
+	if (std::regex_search((LPCTSTR)word, regURL)) {
+		in->mWord = word;
+		in->mFullPath = word;
+		in->mDescription = word;
+		in->mIsURL = true;
+		return Pattern::WholeMatch;
+	}
+
+	in->mIsURL = false;
 
 	if (PathIsRelative(word) == FALSE && PathFileExists(word)) {
 		in->mWord = word;
