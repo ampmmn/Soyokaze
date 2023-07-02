@@ -12,6 +12,7 @@
 #include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
+#include <assert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
