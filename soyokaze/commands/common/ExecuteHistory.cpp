@@ -32,10 +32,14 @@ struct ExecuteHistory::PImpl
 	CString mFilePath;
 
 	std::map<CString, std::list<HISTORY_ITEM> > mItemMap;
+
+	// 読み込み済か?
+	bool mIsLoaded;
 };
 
 ExecuteHistory::ExecuteHistory() : in(new PImpl)
 {
+	in->mIsLoaded = false;
 }
 
 ExecuteHistory::~ExecuteHistory()
@@ -50,6 +54,9 @@ ExecuteHistory* ExecuteHistory::GetInstance()
 
 /**
  * 履歴情報の追加
+ * @param[in] type     種別
+ * @param[in] word     コマンド実行時に入力された文字列
+ * @param[in] fullPath コマンド実行時に実際に実行するフルパス
  */
 void ExecuteHistory::Add(
 	const CString& type,
@@ -63,6 +70,7 @@ void ExecuteHistory::Add(
 
 	auto& items = in->mItemMap[type];
 	for (auto it = items.begin(); it != items.end(); ++it) {
+
 		if (it->mFullPath != fullPath) {
 			continue;
 		}
@@ -134,6 +142,9 @@ void ExecuteHistory::GetItems(
 
 void ExecuteHistory::Save()
 {
+	if (in->mIsLoaded == false) {
+		return;
+	}
 
 	FILE* fpOut = nullptr;
 	try {
@@ -180,6 +191,8 @@ void ExecuteHistory::Save()
 
 void ExecuteHistory::Load()
 {
+	in->mIsLoaded = true;
+
 	auto& path = in->GetFilePath();
 
 	FILE* fpIn = nullptr;
