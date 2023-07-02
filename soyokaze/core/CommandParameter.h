@@ -25,6 +25,7 @@ public:
 	void CopyParamTo(CommandParameter& rhs) const;
 
 	void GetParameters(std::vector<CString>& args) const;
+	static void GetParameters(const CString& paramStr, std::vector<CString>& args);
 
 	bool GetNamedParam(LPCTSTR name, CString* value) const;
 

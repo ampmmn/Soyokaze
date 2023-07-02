@@ -77,6 +77,7 @@
 #define IDD_REGEXPCOMMAND               156
 #define IDD_SHELLEXECUTECOMMAND2        157
 #define IDD_NEWCOMMAND1                 158
+#define IDD_ARGUMENTS                   163
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -90,6 +91,7 @@
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_CHECK_USE0                  1011
+#define IDC_CHECK_SHOWARGINPUT          1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_BUTTON_BROWSEDIR1           1013
 #define IDC_BUTTON_BROWSEFILE3          1013
@@ -174,14 +176,16 @@
 #define IDC_STATIC_AFTERCOMMAND         1069
 #define IDC_COMBO1                      1070
 #define IDC_COMBO_TYPE                  1071
+#define IDC_EDIT1                       1071
+#define IDC_EDIT_ARGUMENTS              1071
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        163
+#define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1071
+#define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -15,6 +15,12 @@
 #define new DEBUG_NEW
 #endif
 
+static const tregex& GetRegexForArgument()
+{
+	static tregex reg(_T("\\$[1-9*]"));
+	return reg;
+}
+
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
@@ -37,11 +43,13 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
-	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
+	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PARAM, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
@@ -76,6 +84,14 @@ bool CommandEditDialog::UpdateStatus()
 	}
 
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0;
+
+	// $1,2,3... または $*の指定がある場合は、引数必須を選択するチェックを表示
+	const tregex& regArg = GetRegexForArgument();
+
+	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
+		            std::regex_search((LPCTSTR)mParam.mParameter, regArg);
+
+	GetDlgItem(IDC_CHECK_SHOWARGINPUT)->ShowWindow(hasArg? SW_SHOW : SW_HIDE);
 
 	// .lnkだったらショートカット解決ボタンを表示する
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
@@ -129,19 +145,13 @@ bool CommandEditDialog::UpdateStatus()
 	return true;
 }
 
-void CommandEditDialog::OnEditNameChanged()
+void CommandEditDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::OnEditPathChanged()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
 
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
@@ -232,6 +242,14 @@ void CommandEditDialog::OnOK()
 	param->mShowType = mParam.mShowType;
 	param->mPath = mParam.mPath;
 	param->mParameter = mParam.mParameter;
+	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
+
+	const tregex& regArg = GetRegexForArgument();
+	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
+		            std::regex_search((LPCTSTR)mParam.mParameter, regArg);
+	if (hasArg == false) {
+		param->mIsShowArgDialog = false;
+	}
 
 	__super::OnOK();
 }

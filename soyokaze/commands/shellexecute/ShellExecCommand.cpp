@@ -3,6 +3,7 @@
 #include "ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/shellexecute/ShellExecSettingDialog.h"
+#include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
@@ -91,6 +92,15 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	std::vector<CString> args;
 	param.GetParameters(args);
 
+	if (args.empty() && in->mParam.mIsShowArgDialog) {
+		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
+		ArgumentDialog dlg(GetName());
+		if (dlg.DoModal() != IDOK) {
+			return TRUE;
+		}
+		Parameter::GetParameters(dlg.GetArguments(), args);
+	}
+
 	if (args.size() > 0) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
 	}
@@ -137,6 +147,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	// argsの値を展開
 	ExpandArguments(path, args);
 	ExpandArguments(paramStr, args);
+	//ExpandClipboard(paramStr);
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
@@ -274,8 +285,6 @@ bool ShellExecCommand::IsEditable()
 
 int ShellExecCommand::EditDialog(const Parameter* args)
 {
-	SettingDialog dlg;
-
 	auto& param = in->mParam;
 
 	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
@@ -298,6 +307,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 		param.mIsGlobal = isGlobal;
 	}
 
+	SettingDialog dlg;
 	dlg.SetParam(param);
 
 	if (dlg.DoModal() != IDOK) {
@@ -312,6 +322,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	cmdNew->SetName(param.mName);
 	cmdNew->SetDescription(param.mDescription);
 	cmdNew->SetRunAs(param.mIsRunAsAdmin);
+	cmdNew->in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = param.mPath;
@@ -384,6 +395,139 @@ ShellExecCommand::Clone()
 	return clonedObj;
 }
 
+bool ShellExecCommand::NewDialog(
+	const Parameter* param,
+	ShellExecCommand** newCmdPtr
+)
+{
+	// 新規作成ダイアログを表示
+	CString value;
+
+	CommandParam commandParam;
+	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+		commandParam.mName = value;
+	}
+	if (param && param->GetNamedParam(_T("PATH"), &value)) {
+		commandParam.mPath = value;
+	}
+	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+		commandParam.mDescription = value;
+	}
+	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
+		commandParam.mParameter = value;
+	}
+
+	SettingDialog dlg;
+	dlg.SetParam(commandParam);
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	commandParam = dlg.GetParam();
+
+	auto newCmd = new ShellExecCommand();
+	newCmd->in->mParam.mName = commandParam.mName;
+	newCmd->in->mParam.mDescription = commandParam.mDescription;
+	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
+	newCmd->in->mParam.mIsShowArgDialog =  commandParam.mIsShowArgDialog;
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath =commandParam.mPath;
+	normalAttr.mParam = commandParam.mParameter;
+	normalAttr.mDir = commandParam.mDir;
+	normalAttr.mShowType = commandParam.GetShowType();
+	newCmd->in->mNormalAttr = normalAttr;
+
+	if (commandParam.mIsUse0) {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		param0Attr.mPath = commandParam.mPath0;
+		param0Attr.mParam = commandParam.mParameter0;
+		param0Attr.mDir = commandParam.mDir;
+		param0Attr.mShowType = commandParam.GetShowType();
+		newCmd->in->mNoParamAttr = param0Attr;
+	}
+	else {
+		ShellExecCommand::ATTRIBUTE param0Attr;
+		newCmd->in->mNoParamAttr = param0Attr;
+	}
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd;
+	}
+
+	// ホットキー設定を更新
+	if (commandParam.mHotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		pref->Save();
+	}
+
+	return true;
+}
+
+bool ShellExecCommand::LoadFrom(
+	CommandFile* cmdFile,
+	void* e,
+	ShellExecCommand** newCmdPtr
+)
+{
+	assert(newCmdPtr);
+
+	CommandFile::Entry* entry = (CommandFile::Entry*)e;
+
+	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
+		return false;
+	}
+
+
+	CString name = cmdFile->GetName(entry);
+	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
+	int runAs = cmdFile->Get(entry, _T("runas"), 0);
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath = cmdFile->Get(entry, _T("path"), _T(""));
+	normalAttr.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
+	normalAttr.mParam = cmdFile->Get(entry, _T("parameter"), _T(""));
+	normalAttr.mShowType = cmdFile->Get(entry, _T("show"), normalAttr.mShowType);
+
+	ShellExecCommand::ATTRIBUTE noParamAttr;
+	noParamAttr.mPath = cmdFile->Get(entry, _T("path0"), _T(""));
+	noParamAttr.mDir = cmdFile->Get(entry, _T("dir0"), _T(""));
+	noParamAttr.mParam = cmdFile->Get(entry, _T("parameter0"), _T(""));
+	noParamAttr.mShowType = cmdFile->Get(entry, _T("show0"), noParamAttr.mShowType);
+
+	auto command = new ShellExecCommand();
+	command->in->mParam.mName = name;
+	command->in->mParam.mDescription = descriptionStr;
+	command->in->mParam.mIsRunAsAdmin = (runAs != 0);
+
+	command->in->mParam.mIsShowArgDialog = cmdFile->Get(entry, _T("isShowArgInput"), 0);
+
+
+	if (normalAttr.mPath.IsEmpty() == FALSE) {
+		command->in->mNormalAttr = normalAttr;
+	}
+	if (noParamAttr.mPath.IsEmpty() == FALSE) {
+		command->in->mNoParamAttr = noParamAttr;
+	}
+
+	if (newCmdPtr) {
+		*newCmdPtr = command;
+	}
+
+	return true;
+}
+
 // ShellExecCommandのコマンド名として許可しない文字を置換する
 CString& ShellExecCommand::SanitizeName(
 	CString& str
@@ -405,6 +549,7 @@ bool ShellExecCommand::Save(CommandFile* cmdFile)
 
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("runas"), GetRunAs());
+	cmdFile->Set(entry, _T("isShowArgInput"), in->mParam.mIsShowArgDialog);
 
 	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
 	cmdFile->Set(entry, _T("path"), normalAttr.mPath);

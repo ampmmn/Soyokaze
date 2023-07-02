@@ -67,45 +67,17 @@ void ShellExecCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
+		ShellExecCommand* command = nullptr;
+		if (ShellExecCommand::LoadFrom(cmdFile, entry, &command) == false) {
 			continue;
-		}
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-
-		ShellExecCommand::ATTRIBUTE normalAttr;
-		ShellExecCommand::ATTRIBUTE noParamAttr;
-
-		CString name = cmdFile->GetName(entry);
-		CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-		int runAs = cmdFile->Get(entry, _T("runas"), 0);
-
-		normalAttr.mPath = cmdFile->Get(entry, _T("path"), _T(""));
-		normalAttr.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
-		normalAttr.mParam = cmdFile->Get(entry, _T("parameter"), _T(""));
-		normalAttr.mShowType = cmdFile->Get(entry, _T("show"), normalAttr.mShowType);
-
-		noParamAttr.mPath = cmdFile->Get(entry, _T("path0"), _T(""));
-		noParamAttr.mDir = cmdFile->Get(entry, _T("dir0"), _T(""));
-		noParamAttr.mParam = cmdFile->Get(entry, _T("parameter0"), _T(""));
-		noParamAttr.mShowType = cmdFile->Get(entry, _T("show0"), noParamAttr.mShowType);
-
-		auto command = new ShellExecCommand();
-		command->SetName(name);
-		command->SetDescription(descriptionStr);
-		command->SetRunAs(runAs);
-
-		if (normalAttr.mPath.IsEmpty() == FALSE) {
-			command->SetAttribute(normalAttr);
-		}
-		if (noParamAttr.mPath.IsEmpty() == FALSE) {
-			command->SetAttributeForParam0(noParamAttr);
 		}
 
 		// 登録
 		cmdRepo->RegisterCommand(command);
+
+		// 使用済みとしてマークする
+		cmdFile->MarkAsUsed(entry);
+
 	}
 }
 
@@ -129,74 +101,11 @@ CString ShellExecCommandProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
 {
-	// 新規作成ダイアログを表示
-	CString value;
-
-	CommandParam commandParam;
-	SettingDialog dlg;
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		commandParam.mName = value;
-	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		commandParam.mPath = value;
-	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		commandParam.mDescription = value;
-	}
-	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
-		commandParam.mParameter = value;
-	}
-
-	dlg.SetParam(commandParam);
-	if (dlg.DoModal() != IDOK) {
+	ShellExecCommand* newCmd = nullptr;
+	if (ShellExecCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	commandParam = dlg.GetParam();
-
-	auto newCmd = new ShellExecCommand();
-	newCmd->SetName(commandParam.mName);
-	newCmd->SetDescription(commandParam.mDescription);
-	newCmd->SetRunAs(commandParam.mIsRunAsAdmin);
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath =commandParam.mPath;
-	normalAttr.mParam = commandParam.mParameter;
-	normalAttr.mDir = commandParam.mDir;
-	normalAttr.mShowType = commandParam.GetShowType();
-	newCmd->SetAttribute(normalAttr);
-
-	if (commandParam.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = commandParam.mPath0;
-		param0Attr.mParam = commandParam.mParameter0;
-		param0Attr.mDir = commandParam.mDir;
-		param0Attr.mShowType = commandParam.GetShowType();
-		newCmd->SetAttributeForParam0(param0Attr);
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		newCmd->SetAttributeForParam0(param0Attr);
-	}
-
 	CommandRepository::GetInstance()->RegisterCommand(newCmd);
-
-	// ホットキー設定を更新
-	if (commandParam.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
-
 	return true;
 }
 

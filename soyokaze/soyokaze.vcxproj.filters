@@ -372,6 +372,9 @@
     <ClInclude Include="commands\shellexecute\ShellExecEditDetailPage.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
+    <ClInclude Include="commands\shellexecute\ArgumentDialog.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -669,6 +672,9 @@
       <Filter>commands\shellexecute</Filter>
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ArgumentDialog.cpp">
       <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>

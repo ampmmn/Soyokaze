@@ -115,7 +115,15 @@ void CommandParameter::CopyParamTo(CommandParameter& rhs) const
 
 void CommandParameter::GetParameters(std::vector<CString>& args) const
 {
-	CString s = in->mParamPart;
+	CommandParameter::GetParameters(in->mParamPart, args);
+}
+
+void CommandParameter::GetParameters(
+	const CString& paramStr,
+ 	std::vector<CString>& args
+)
+{
+	CString s = paramStr;
 	s.Trim();
 	if (s.IsEmpty()) {
 		// 引数なし

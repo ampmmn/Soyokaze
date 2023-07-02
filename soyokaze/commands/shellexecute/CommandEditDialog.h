@@ -43,8 +43,7 @@ protected:
 
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnEditNameChanged();
-	afx_msg void OnEditPathChanged();
+	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonBrowseFile1Clicked();
 	afx_msg void OnButtonBrowseDir1Clicked();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);

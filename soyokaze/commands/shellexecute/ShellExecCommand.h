@@ -45,6 +45,9 @@ public:
 
 	static CString GetType();
 
+	static bool NewDialog(const Parameter* param, ShellExecCommand** newCmd);
+	static bool LoadFrom(CommandFile* cmdFile, void* entry,ShellExecCommand** newCmdPtr);
+
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);
 

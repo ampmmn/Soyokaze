@@ -580,6 +580,7 @@
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
     <ClInclude Include="commands\regexp\RegExpCommandProvider.h" />
+    <ClInclude Include="commands\shellexecute\ArgumentDialog.h" />
     <ClInclude Include="commands\shellexecute\CommandEditDialog.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandParam.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
@@ -688,6 +689,7 @@
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp" />
+    <ClCompile Include="commands\shellexecute\ArgumentDialog.cpp" />
     <ClCompile Include="commands\shellexecute\CommandEditDialog.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommand.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandParam.cpp" />

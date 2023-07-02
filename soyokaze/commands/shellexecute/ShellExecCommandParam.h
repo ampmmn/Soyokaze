@@ -22,6 +22,7 @@ public:
 	CString mName;
 	// 説明
 	CString mDescription;
+
 	// 管理者権限で実行
 	BOOL mIsRunAsAdmin;
 
@@ -39,6 +40,9 @@ public:
 	CString mParameter0;
 	// 引数なし版を使うか?
 	BOOL mIsUse0;
+
+	// 引数が与えられなかった場合に引数入力用のダイアログを追加で表示する
+	BOOL mIsShowArgDialog;
 
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;

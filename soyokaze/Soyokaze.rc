@@ -141,21 +141,23 @@ BEGIN
     EDITTEXT        IDC_EDIT_NAME,125,24,154,14,ES_AUTOHSCROLL
     LTEXT           "コマンドの説明(&D):",IDC_STATIC,34,44,65,8
     EDITTEXT        IDC_EDIT_DESCRIPTION,125,44,154,14,ES_AUTOHSCROLL
-    LTEXT           "実行ファイル・URLなど(&P):",IDC_STATIC_PATH,34,65,87,8
+    LTEXT           "実行ファイル・URLなど(&F):",IDC_STATIC_PATH,34,65,87,8
     EDITTEXT        IDC_EDIT_PATH,125,64,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE1,279,64,21,17
     PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR1,302,64,21,17
-    PUSHBUTTON      "リンク先に置換(&E)",IDC_BUTTON_RESOLVESHORTCUT,279,83,64,17
-    LTEXT           "パラメータ(&A):",IDC_STATIC_PARAM,34,84,65,8
+    LTEXT           "パラメータ(&P):",IDC_STATIC_PARAM,34,84,65,8
     EDITTEXT        IDC_EDIT_PARAM,125,84,154,14,ES_AUTOHSCROLL
-    CONTROL         "管理者権限で実行(&R)",IDC_CHECK_RUNASADMIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,131,89,10
-    LTEXT           "ホットキー(K):",IDC_STATIC,32,159,43,8
-    EDITTEXT        IDC_EDIT_HOTKEY2,123,156,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,248,156,21,14
+    PUSHBUTTON      "リンク先に置換(&R)",IDC_BUTTON_RESOLVESHORTCUT,279,83,64,17
+    CONTROL         "引数が指定されなかった場合に入力欄を続けて表示する(&I)",IDC_CHECK_SHOWARGINPUT,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,34,103,201,10
+    CONTROL         "管理者権限で実行(&A)",IDC_CHECK_RUNASADMIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,149,89,10
+    LTEXT           "ホットキー(K):",IDC_STATIC,32,177,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY2,123,174,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,248,174,21,14
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
-    LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,99,205,32
+    LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,117,205,32
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,34,7,304,8
-    LTEXT           "※.exe/.batのみ",IDC_STATIC,32,141,103,9
+    LTEXT           "※.exe/.batのみ",IDC_STATIC,32,159,103,9
 END
 
 IDD_KEYWORDMANAGER DIALOGEX 0, 0, 285, 260
@@ -493,6 +495,17 @@ BEGIN
     LTEXT           "※.exe/.batのみ",IDC_STATIC,34,258,103,9
 END
 
+IDD_ARGUMENTS DIALOGEX 0, 0, 209, 57
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "お"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "引数を入力してください(&A):",IDC_STATIC,7,7,86,8
+    EDITTEXT        IDC_EDIT_ARGUMENTS,7,18,194,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,96,36,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,152,36,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -706,6 +719,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 315
     END
+
+    IDD_ARGUMENTS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 202
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 50
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -748,9 +769,10 @@ BEGIN
     0, 0, 100, 0,
     100, 0, 0, 0,
     100, 0, 0, 0,
-    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
@@ -1002,6 +1024,15 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 0, 0
+END
+
+IDD_ARGUMENTS AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0
 END
 
 
