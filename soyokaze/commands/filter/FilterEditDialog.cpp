@@ -89,7 +89,8 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, mCommandSelIndex);
 	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
-	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mAfterType);
+	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERTYPE, mParam.mPreFilterType);
+	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mPostFilterType);
 	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
 }
 
@@ -100,6 +101,7 @@ BEGIN_MESSAGE_MAP(FilterEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_CBN_SELCHANGE(IDC_COMBO_PREFILTERTYPE, OnCbnAfterTypeChanged)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnCbnAfterTypeChanged)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnCbnAfterCommandChanged)
 	ON_WM_CTLCOLOR()
@@ -167,7 +169,20 @@ bool FilterEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	if (mParam.mAfterType == 0) {
+	int showTypePreFilter = mParam.mPreFilterType == 0 ? SW_SHOW : SW_HIDE;
+	GetDlgItem(IDC_STATIC_PATH)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_EDIT_PATH)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_STATIC_PARAM)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_EDIT_PARAM)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_STATIC_PARAMHELP)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_STATIC_WORKDIR)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_EDIT_DIR)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_STATIC_SHOWTYPE)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_COMBO_SHOWTYPE)->ShowWindow(showTypePreFilter);
+
+	if (mParam.mPostFilterType == 0) {
 		// 他のコマンドを実行する
 		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_SHOW);
@@ -176,7 +191,7 @@ bool FilterEditDialog::UpdateStatus()
 		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
 	}
-	else if (mParam.mAfterType == 1) {
+	else if (mParam.mPostFilterType == 1) {
 		// 他のプログラムを実行する
 		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
@@ -196,7 +211,12 @@ bool FilterEditDialog::UpdateStatus()
 	}
 
 
-	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
+	if (mParam.mPreFilterType == 0) {
+		mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
+	}
+	else {
+		mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadDefaultIcon());
+	}
 
 	if (mParam.mName.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
@@ -225,18 +245,18 @@ bool FilterEditDialog::UpdateStatus()
 	}
 
 	//
-	if (mParam.mPath.IsEmpty()) {
+	if (mParam.mPreFilterType == 0 && mParam.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
-	if (mParam.mAfterType == 0 && mCommandSelIndex == -1) {
+	if (mParam.mPostFilterType == 0 && mCommandSelIndex == -1) {
 		mMessage = _T("絞込み後に実行するコマンドを選んでください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (mParam.mAfterType == 1 && mParam.mAfterFilePath.IsEmpty()) {
+	if (mParam.mPostFilterType == 1 && mParam.mAfterFilePath.IsEmpty()) {
 		mMessage = _T("絞込み後に実行するファイルまたはURLを入力してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;

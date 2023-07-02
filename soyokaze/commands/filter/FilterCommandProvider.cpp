@@ -84,7 +84,8 @@ void FilterCommandProvider::LoadCommands(
 		newParam.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
 		newParam.mParameter = cmdFile->Get(entry, _T("parameter"), _T(""));
 		newParam.mShowType = cmdFile->Get(entry, _T("show"), SW_HIDE);
-		newParam.mAfterType = cmdFile->Get(entry, _T("aftertype"), 0);
+		newParam.mPreFilterType = cmdFile->Get(entry, _T("prefiltertype"), 0);
+		newParam.mPostFilterType = cmdFile->Get(entry, _T("aftertype"), 0);
 		newParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
 		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
 		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));

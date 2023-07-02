@@ -101,6 +101,7 @@
 #define IDC_STATIC_PATH                 1016
 #define IDC_STATIC_PARAM                1017
 #define IDC_STATIC_PATH0                1018
+#define IDC_STATIC_PATH3                1018
 #define IDC_STATIC_PARAM00              1019
 #define IDC_STATIC_PATH2                1019
 #define IDC_EDIT_PATH                   1020
@@ -123,6 +124,8 @@
 #define IDC_EDIT_HOTKEY2                1031
 #define IDC_LIST_COMMANDS               1032
 #define IDC_CHECK_USEREGEXP             1032
+#define IDC_COMBO_AFTERTYPE2            1032
+#define IDC_COMBO_PREFILTERTYPE         1032
 #define IDC_BUTTON_NEW                  1033
 #define IDC_BUTTON_EDIT                 1034
 #define IDC_COMBO_MATCHLEVEL            1035
@@ -178,6 +181,9 @@
 #define IDC_COMBO_TYPE                  1071
 #define IDC_EDIT1                       1071
 #define IDC_EDIT_ARGUMENTS              1071
+#define IDC_STATIC_WORKDIR              1072
+#define IDC_STATIC_SHOWTYPE             1073
+#define IDC_STATIC_PARAMHELP            1074
 
 // Next default values for new objects
 // 
@@ -185,7 +191,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1072
+#define _APS_NEXT_CONTROL_VALUE         1075
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

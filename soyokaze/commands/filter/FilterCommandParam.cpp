@@ -7,7 +7,8 @@ namespace filter {
 
 CommandParam::CommandParam() : mShowType(SW_NORMAL),
 	mAfterCommandParam(_T("$select")),
-	mAfterType(0)
+	mPreFilterType(0),
+	mPostFilterType(0)
 {
 }
 
@@ -18,7 +19,8 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mDir(rhs.mDir),
 	mPath(rhs.mPath),
 	mParameter(rhs.mParameter),
-	mAfterType(rhs.mAfterType),
+	mPreFilterType(rhs.mPreFilterType),
+	mPostFilterType(rhs.mPostFilterType),
 	mAfterCommandName(rhs.mAfterCommandName),
 	mAfterFilePath(rhs.mAfterFilePath),
 	mAfterCommandParam(rhs.mAfterCommandParam)
@@ -38,7 +40,8 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mDir = rhs.mDir;
 		mPath = rhs.mPath;
 		mParameter = rhs.mParameter;
-		mAfterType = rhs.mAfterType;
+		mPreFilterType = rhs.mPreFilterType;
+		mPostFilterType = rhs.mPostFilterType;
 		mAfterCommandName = rhs.mAfterCommandName;
 		mAfterFilePath = rhs.mAfterFilePath;
 		mAfterCommandParam = rhs.mAfterCommandParam;
