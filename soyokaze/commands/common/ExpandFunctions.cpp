@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ExpandFunctions.h"
+#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -140,6 +141,29 @@ void ExpandVariable(
 	if (target.Find(pat) != -1) {
 		target.Replace(pat, value);
 	}
+}
+
+void ExpandClipboard(CString& target)
+{
+	SharedHwnd sharedHwnd;
+	HWND hwnd = sharedHwnd.GetHwnd();
+
+	if (OpenClipboard(hwnd) == FALSE) {
+		return ;
+	}
+
+	if (IsClipboardFormatAvailable(CF_UNICODETEXT) == FALSE) {
+		CloseClipboard();
+		return ;
+	}
+
+	HANDLE h = GetClipboardData(CF_UNICODETEXT);
+	LPCTSTR p = (LPCTSTR)GlobalLock(h);
+
+	target.Replace(_T("$clipboard"), p);
+
+	GlobalUnlock(h);
+	CloseClipboard();
 }
 
 } // end of namespace common

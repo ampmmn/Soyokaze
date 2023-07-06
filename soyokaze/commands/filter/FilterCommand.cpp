@@ -116,7 +116,7 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 
 	CString commandLine = _T(" ") + mParam.mParameter;
 	ExpandArguments(commandLine, args);
-	//ExpandClipboard(commandLine);
+	ExpandClipboard(commandLine);
 
 	LPCTSTR workDir = NULL;
 	if (mParam.mDir.GetLength() > 0) {

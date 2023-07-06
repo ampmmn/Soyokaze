@@ -148,7 +148,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	// argsの値を展開
 	ExpandArguments(path, args);
 	ExpandArguments(paramStr, args);
-	//ExpandClipboard(paramStr);
+	ExpandClipboard(paramStr);
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);

@@ -12,6 +12,8 @@ void ExpandArguments(CString& target, const std::vector<CString>& args);
 void ExpandEnv(CString& target);
 // その他の変数を展開する
 void ExpandVariable(CString& target, const CString& name, const CString& value);
+// クリップボードの文字列で展開する
+void ExpandClipboard(CString& target);
 
 } // end of namespace common
 } // end of namespace commands
