@@ -328,14 +328,16 @@ void FilterEditDialog::OnOK()
 		return ;
 	}
 
-	CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-	cmbBox->GetLBText(mCommandSelIndex, mParam.mAfterCommandName);
+	if (mParam.mPostFilterType == 0) {
+		CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
+		cmbBox->GetLBText(mCommandSelIndex, mParam.mAfterCommandName);
+	}
 
 	__super::OnOK();
 }
 
 
-void FilterEditDialog::OnButtonHotKey()
+void FilterEditDialog::OnButtonHotKey()	
 {
 	UpdateData();
 

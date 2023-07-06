@@ -65,7 +65,8 @@ struct FilterCommand::PImpl
 	int mExecutingCount;
 
 	//
-	FilterDialog mDialog;
+	bool mIsRunning;
+	std::unique_ptr<FilterDialog> mDialog;
 
 	// 参照カウント
 	uint32_t mRefCount;
@@ -186,22 +187,7 @@ bool FilterCommand::PImpl::ExecutePreFilterDefinedValue(const std::vector<CStrin
 bool FilterCommand::PImpl::ExecutePreFilterClipboard(const std::vector<CString>& args, CString& src)
 {
 	SharedHwnd sharedWnd;
-	if (OpenClipboard(sharedWnd.GetHwnd()) == FALSE) {
-		return false;
-	}
-
-	UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
-	HANDLE hMem = GetClipboardData(type);
-	if (hMem == NULL) {
-		CloseClipboard();
-		return false;
-	}
-
-	LPTSTR p = (LPTSTR)GlobalLock(hMem);
-	src = p;
-	GlobalUnlock(hMem);
-
-	CloseClipboard();
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&src);
 
 	if (src.IsEmpty()) {
 		mErrMsg = _T("クリップボードが空です");
@@ -217,7 +203,7 @@ bool FilterCommand::PImpl::ExecuteFilter(
 	CString& dst
 )
 {
-	FilterDialog& dlg = mDialog;
+	FilterDialog& dlg = *mDialog.get();
 	dlg.SetCommandName(mParam.mName);
 	dlg.SetText(src);
 
@@ -280,23 +266,19 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 	}
 	else if (mParam.mPostFilterType == 2) {
 		// クリップボードにコピー
-
-		SharedHwnd sharedWnd;
-		if (OpenClipboard(sharedWnd.GetHwnd()) == FALSE) {
-			return false;
-		}
-
-		EmptyClipboard();
-
 		size_t bufLen = sizeof(TCHAR) * (argSub.GetLength() + 1);
 		HGLOBAL hMem = GlobalAlloc(GHND | GMEM_SHARE , bufLen);
 		LPTSTR p = (LPTSTR)GlobalLock(hMem);
 		_tcscpy_s(p, bufLen, argSub);
 		GlobalUnlock(hMem);
 
-		UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
-		SetClipboardData(type , hMem);
-		CloseClipboard();
+		BOOL isSet=FALSE;
+		SharedHwnd sharedWnd;
+		SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)hMem);
+
+		if (isSet == FALSE) {
+			GlobalFree(hMem);
+		}
 	}
 
 	return true;
@@ -342,7 +324,7 @@ BOOL FilterCommand::Execute(const Parameter& param)
 		// 同一コマンドの並列実行を許可しない
 
 		// 先行して実行しているダイアログをアクティブにする
-		HWND hwnd = in->mDialog.GetSafeHwnd();
+		HWND hwnd = in->mDialog ? in->mDialog->GetSafeHwnd() : nullptr;
 		if (IsWindow(hwnd)) {
 			ScopeAttachThreadInput scope;
 			SetForegroundWindow(hwnd);
@@ -356,6 +338,8 @@ BOOL FilterCommand::Execute(const Parameter& param)
 		~scope_count() { --count; }
 		int& count;
 	} count_(in->mExecutingCount);
+
+	in->mDialog.reset(new FilterDialog);
 
 	std::vector<CString> args;
 	param.GetParameters(args);

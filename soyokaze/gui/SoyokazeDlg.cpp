@@ -157,6 +157,8 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
 	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
+	ON_MESSAGE(WM_APP+9, OnUserMessageSetClipboardString)
+	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
@@ -402,6 +404,56 @@ LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
 LRESULT CSoyokazeDlg::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
 {
 	PostQuitMessage(0);
+	return 0;
+}
+
+LRESULT CSoyokazeDlg::OnUserMessageSetClipboardString(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	BOOL* isSetPtr = (BOOL*)wParam;
+	HGLOBAL hMem = (HGLOBAL)lParam;
+
+	::OpenClipboard(GetSafeHwnd());
+
+	EmptyClipboard();
+
+	UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
+	SetClipboardData(type, hMem);
+	CloseClipboard();
+
+	if (isSetPtr) {
+		*isSetPtr = TRUE;
+	}
+
+	return 0;
+}
+
+LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	CString* strPtr = (CString*)lParam;
+
+	if (::OpenClipboard(GetSafeHwnd()) == FALSE) {
+		return 0;
+	}
+
+	UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
+	HANDLE hMem = GetClipboardData(type);
+	if (hMem == NULL) {
+		CloseClipboard();
+		return 0;
+	}
+
+	LPTSTR p = (LPTSTR)GlobalLock(hMem);
+	*strPtr = p;
+	GlobalUnlock(hMem);
+
+	CloseClipboard();
+
 	return 0;
 }
 
