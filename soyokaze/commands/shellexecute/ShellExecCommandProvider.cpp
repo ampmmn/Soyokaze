@@ -69,6 +69,9 @@ void ShellExecCommandProvider::LoadCommands(
 
 		ShellExecCommand* command = nullptr;
 		if (ShellExecCommand::LoadFrom(cmdFile, entry, &command) == false) {
+			if (command) {
+				command->Release();
+			}
 			continue;
 		}
 

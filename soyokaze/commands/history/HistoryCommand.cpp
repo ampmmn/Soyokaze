@@ -28,6 +28,7 @@ struct HistoryCommand::PImpl
 
 HistoryCommand::HistoryCommand(const CString& keyword) : in(new PImpl)
 {
+	in->mRefCount = 1;
 	in->mKeyword = keyword;
 	in->mParam.SetWholeString(keyword);
 	in->mCmd = nullptr;
@@ -39,8 +40,6 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(new PImpl)
 	}
 
 	in->mCmd = cmd;
-	cmd->AddRef();
-	in->mRefCount = 1;
 }
 
 HistoryCommand::~HistoryCommand()

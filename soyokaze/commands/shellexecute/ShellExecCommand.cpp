@@ -315,7 +315,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 		return 1;
 	}
 
-	ShellExecCommand* cmdNew = new ShellExecCommand();
+	std::unique_ptr<ShellExecCommand> cmdNew(new ShellExecCommand());
 
 	// 追加する処理
 	param = dlg.GetParam();
@@ -348,7 +348,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew);
+	cmdRepo->RegisterCommand(cmdNew.release());
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -386,14 +386,14 @@ int ShellExecCommand::GetRunAs()
 soyokaze::core::Command*
 ShellExecCommand::Clone()
 {
-	auto clonedObj = new ShellExecCommand();
+	auto clonedObj = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
 	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
 	clonedObj->in->mParam = in->mParam;
 
 
-	return clonedObj;
+	return clonedObj.release();
 }
 
 bool ShellExecCommand::NewDialog(
@@ -427,7 +427,7 @@ bool ShellExecCommand::NewDialog(
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	commandParam = dlg.GetParam();
 
-	auto newCmd = new ShellExecCommand();
+	auto newCmd = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 	newCmd->in->mParam.mName = commandParam.mName;
 	newCmd->in->mParam.mDescription = commandParam.mDescription;
 	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
@@ -454,7 +454,7 @@ bool ShellExecCommand::NewDialog(
 	}
 
 	if (newCmdPtr) {
-		*newCmdPtr = newCmd;
+		*newCmdPtr = newCmd.release();
 	}
 
 	// ホットキー設定を更新
@@ -507,7 +507,7 @@ bool ShellExecCommand::LoadFrom(
 	noParamAttr.mParam = cmdFile->Get(entry, _T("parameter0"), _T(""));
 	noParamAttr.mShowType = cmdFile->Get(entry, _T("show0"), noParamAttr.mShowType);
 
-	auto command = new ShellExecCommand();
+	auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 	command->in->mParam.mName = name;
 	command->in->mParam.mDescription = descriptionStr;
 	command->in->mParam.mIsRunAsAdmin = (runAs != 0);
@@ -523,7 +523,7 @@ bool ShellExecCommand::LoadFrom(
 	}
 
 	if (newCmdPtr) {
-		*newCmdPtr = command;
+		*newCmdPtr = command.release();
 	}
 
 	return true;
@@ -575,6 +575,7 @@ uint32_t ShellExecCommand::AddRef()
 uint32_t ShellExecCommand::Release()
 {
 	auto n = --in->mRefCount;
+
 	if (n == 0) {
 		delete this;
 	}
