@@ -149,6 +149,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	ExpandArguments(path, args);
 	ExpandArguments(paramStr, args);
 	ExpandClipboard(paramStr);
+	ExpandAfxCurrentDir(paramStr);
 
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
@@ -162,8 +163,11 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	if (paramStr.IsEmpty() == FALSE) {
 		si.lpParameters = paramStr;
 	}
-	if (attr.mDir.IsEmpty() == FALSE) {
-		si.lpDirectory = attr.mDir;
+
+	CString workDir = attr.mDir;
+	if (workDir.IsEmpty() == FALSE) {
+		ExpandAfxCurrentDir(workDir);
+		si.lpDirectory = workDir;
 	}
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {

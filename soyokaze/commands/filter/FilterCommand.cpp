@@ -118,9 +118,10 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 	ExpandArguments(commandLine, args);
 	ExpandClipboard(commandLine);
 
-	LPCTSTR workDir = NULL;
+	CString workDir;
 	if (mParam.mDir.GetLength() > 0) {
 		workDir = mParam.mDir;
+		ExpandAfxCurrentDir(workDir);
 	}
 
 	BOOL isOK = CreateProcess(path, commandLine.GetBuffer(commandLine.GetLength()), NULL, NULL, TRUE, 0, NULL, workDir, &si, &pi);
@@ -224,6 +225,7 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 {
 	CString argSub = mParam.mAfterCommandParam;
 	argSub.Replace(_T("$select"), dst);
+	ExpandAfxCurrentDir(argSub);
 
 	CString parents;
 	param.GetNamedParam(_T("PARENTS"), &parents);
@@ -255,8 +257,11 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 	else if (mParam.mPostFilterType == 1) {
 		// 他のファイルを実行/URLを開く
 		ShellExecCommand::ATTRIBUTE attr;
+
 		attr.mPath = mParam.mAfterFilePath;
 		attr.mPath.Replace(_T("$select"), dst);
+		ExpandAfxCurrentDir(attr.mPath);
+
 		attr.mParam = argSub;
 
 		ShellExecCommand cmd;

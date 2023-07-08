@@ -158,8 +158,12 @@ BOOL RegExpCommand::Execute(const Parameter& param)
 	if (paramStr.IsEmpty() == FALSE) {
 		si.lpParameters = paramStr;
 	}
+
+	CString workDir;
 	if (attr.mDir.IsEmpty() == FALSE) {
-		si.lpDirectory = attr.mDir;
+		workDir = attr.mDir;
+		ExpandAfxCurrentDir(workDir);
+		si.lpDirectory = workDir;
 	}
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {

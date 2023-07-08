@@ -375,6 +375,9 @@
     <ClInclude Include="commands\shellexecute\ArgumentDialog.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\AfxWWrapper.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -676,6 +679,9 @@
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ArgumentDialog.cpp">
       <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\AfxWWrapper.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

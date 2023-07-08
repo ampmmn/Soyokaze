@@ -15,6 +15,10 @@ void ExpandVariable(CString& target, const CString& name, const CString& value);
 // クリップボードの文字列で展開する
 void ExpandClipboard(CString& target);
 
+// あふwで現在表示しているディレクトリを表示する
+bool ExpandAfxCurrentDir(CString& target);
+
+
 } // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze

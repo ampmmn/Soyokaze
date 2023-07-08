@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ExpandFunctions.h"
 #include "SharedHwnd.h"
+#include "AfxWWrapper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -165,6 +166,22 @@ void ExpandClipboard(CString& target)
 	GlobalUnlock(h);
 	CloseClipboard();
 }
+
+// あふwで現在表示しているディレクトリを表示する
+bool ExpandAfxCurrentDir(CString& target)
+{
+	if (target.Find(_T("$afxcurrentdir")) == -1) {
+		// キーワード無し
+		return true;
+	}
+
+	AfxWWrapper afxw;
+	CString curDir = afxw.GetCurrentDir();
+	target.Replace(_T("$afxcurrentdir"), curDir);
+
+	return true;
+}
+
 
 } // end of namespace common
 } // end of namespace commands
