@@ -71,14 +71,13 @@ void RegExpCommandProvider::LoadCommands(
 			continue;
 		}
 
-		auto command = new RegExpCommand();
+		auto command = std::unique_ptr<RegExpCommand>(new RegExpCommand());
 		if (command->Load(cmdFile, entry) == false) {
-			delete command;
 			continue;
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command);
+		cmdRepo->RegisterCommand(command.release());
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

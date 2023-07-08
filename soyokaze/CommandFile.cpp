@@ -113,7 +113,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
  			if (strCommandName.IsEmpty() == FALSE) {
-				auto command = new ShellExecCommand();
+				auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 				command->SetName(strCommandName);
 				command->SetDescription(strDescription);
 				command->SetRunAs(runAs);
@@ -125,7 +125,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 					command->SetAttributeForParam0(noParamAttr);
 				}
 
-				commands.push_back(command);
+				commands.push_back(command.release());
 			}
 
 			// 初期化
@@ -182,7 +182,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 	}
 
 	if (strCommandName.IsEmpty() == FALSE) {
-		auto command = new ShellExecCommand();
+		auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 		command->SetName(strCommandName);
 		command->SetDescription(strDescription);
 		command->SetRunAs(runAs);
@@ -194,7 +194,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 			command->SetAttributeForParam0(noParamAttr);
 		}
 
-		commands.push_back(command);
+		commands.push_back(command.release());
 	}
 
 	file.Close();

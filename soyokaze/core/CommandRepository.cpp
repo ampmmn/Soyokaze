@@ -413,13 +413,13 @@ int CommandRepository::RegisterCommandFromFiles(
 			}
 
 			// ダイアログで入力された内容に基づき、コマンドを新規作成する
-			auto* newCmd = new ShellExecCommand();
+			auto newCmd = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
 			newCmd->SetName(name);
 
 			ShellExecCommand::ATTRIBUTE normalAttr;
 			normalAttr.mPath = filePath;
 			newCmd->SetAttribute(normalAttr);
-			in->mCommands.Register(newCmd);
+			in->mCommands.Register(newCmd.release());
 		}
 
 		AfxMessageBox(_T("登録しました"));

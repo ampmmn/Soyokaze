@@ -87,7 +87,7 @@ void GroupCommandProvider::LoadCommands(
 		param.mRepeats = cmdFile->Get(entry, _T("Repeats"), 1);
 		param.mIsConfirm = cmdFile->Get(entry, _T("IsConfirm"), true);
 
-		auto command = new GroupCommand;
+		auto command = std::unique_ptr<GroupCommand>(new GroupCommand);
 
 		int count = cmdFile->Get(entry, _T("CommandCount"), 0);
 		if (count > 32) {  // 32を上限とする
@@ -113,7 +113,7 @@ void GroupCommandProvider::LoadCommands(
 		command->SetParam(param);
 
 		// 登録
-		cmdRepo->RegisterCommand(command);
+		cmdRepo->RegisterCommand(command.release());
 	}
 }
 
@@ -147,10 +147,10 @@ bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 	auto& paramNew = dlg.GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = new GroupCommand();
+	auto newCmd = std::unique_ptr<GroupCommand>(new GroupCommand());
 	newCmd->SetParam(paramNew);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	// ホットキー設定を更新
 	if (dlg.mHotKeyAttr.IsValid()) {

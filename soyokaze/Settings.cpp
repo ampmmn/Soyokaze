@@ -162,14 +162,14 @@ void Settings::Set(LPCTSTR key, bool value)
 
 Settings* Settings::Clone() const
 {
-	auto newObj = new Settings();
+	auto newObj = std::unique_ptr<Settings>(new Settings());
 	newObj->in->mKeys = in->mKeys;
 	newObj->in->mIntMap = in->mIntMap;
 	newObj->in->mStrMap = in->mStrMap;
 	newObj->in->mBoolMap = in->mBoolMap;
 	newObj->in->mDoubleMap = in->mDoubleMap;
 
-	return newObj;
+	return newObj.release();
 }
 
 void Settings::Swap(Settings& rhs)

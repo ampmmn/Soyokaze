@@ -90,10 +90,10 @@ void FilterCommandProvider::LoadCommands(
 		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
 		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));
 
-		auto command = new FilterCommand();
+		auto command = std::unique_ptr<FilterCommand>(new FilterCommand());
 		command->SetParam(newParam);
 		// 登録
-		cmdRepo->RegisterCommand(command);
+		cmdRepo->RegisterCommand(command.release());
 	}
 }
 
@@ -143,12 +143,12 @@ bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = new FilterCommand();
+	auto newCmd = std::unique_ptr<FilterCommand>(new FilterCommand());
 
 	dlg.GetParam(tmpParam);
 	newCmd->SetParam(tmpParam);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	// ホットキー設定を更新
 	if (dlg.mHotKeyAttr.IsValid()) {

@@ -456,7 +456,7 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = new RegExpCommand();
+	auto newCmd = std::unique_ptr<RegExpCommand>(new RegExpCommand());
 	newCmd->in->mName = dlg.mName;
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mRunAs = dlg.mIsRunAsAdmin;
@@ -469,7 +469,7 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	attr.mShowType = dlg.GetShowType();
 	newCmd->SetAttribute(attr);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	// ホットキー設定を更新
 	if (dlg.mHotKeyAttr.IsValid()) {
