@@ -2,6 +2,7 @@
 
 #include "gui/SettingDialogBase.h"
 #include "Settings.h"
+#include <memory>
 
 // 
 class SettingDialog : public SettingDialogBase
@@ -25,6 +26,6 @@ protected:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 

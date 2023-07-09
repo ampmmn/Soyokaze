@@ -65,6 +65,7 @@
 #define IDD_BASICSETTING                146
 #define IDS_ERR_HOTKEYRESERVED          146
 #define IDD_EXTENSIONSETTING            147
+#define IDS_FILTER_DLL                  147
 #define IDD_SHORTCUTSETTING             148
 #define IDD_SELECTCOMMANDTYPE           149
 #define IDD_GROUP                       150
@@ -181,9 +182,12 @@
 #define IDC_COMBO_TYPE                  1071
 #define IDC_EDIT1                       1071
 #define IDC_EDIT_ARGUMENTS              1071
+#define IDC_EDIT_PYTHONDLLPATH          1071
 #define IDC_STATIC_WORKDIR              1072
 #define IDC_STATIC_SHOWTYPE             1073
 #define IDC_STATIC_PARAMHELP            1074
+#define IDC_CHECK_ENABLECALCULATOR      1075
+#define IDC_BUTTON_BROWSE               1076
 
 // Next default values for new objects
 // 
@@ -191,7 +195,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1075
+#define _APS_NEXT_CONTROL_VALUE         1077
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

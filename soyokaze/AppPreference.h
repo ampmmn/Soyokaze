@@ -60,6 +60,9 @@ public:
 
 	bool CreateUserDirectory();
 
+	bool IsEnableCalculator();
+	CString GetPythonDLLPath();
+
 protected:
 	AppPreference();
 	~AppPreference();

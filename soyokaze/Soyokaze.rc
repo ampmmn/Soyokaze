@@ -243,6 +243,12 @@ IDD_EXTENSIONSETTING DIALOGEX 0, 0, 309, 176
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    GROUPBOX        "簡易電卓機能",IDC_STATIC,11,7,265,78
+    CONTROL         "有効にする(&C)",IDC_CHECK_ENABLECALCULATOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,22,61,10
+    LTEXT           "Python DLLのパス(&D):",IDC_STATIC,22,40,69,8
+    EDITTEXT        IDC_EDIT_PYTHONDLLPATH,95,36,143,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照(&B)",IDC_BUTTON_BROWSE,241,36,31,14
+    LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,59,180,19
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -1413,6 +1419,7 @@ BEGIN
     IDS_REGEXPCOMMAND       "正規表現コマンド"
     IDS_DESCRIPTION_REGEXPCOMMAND "正規表現によるコマンド名のマッチングを行うことができます。"
     IDS_ERR_HOTKEYRESERVED  "文字入力に使うキーを割り当てることはできません。"
+    IDS_FILTER_DLL          "DLLファイル(*.dll)|*.dll|全てのファイル(*.*)|*.*||"
 END
 
 #endif    // 日本語 (日本) resources

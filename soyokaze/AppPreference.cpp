@@ -536,3 +536,13 @@ bool AppPreference::CreateUserDirectory()
 	return true;
 
 }
+
+bool AppPreference::IsEnableCalculator()
+{
+	return in->mSettings.Get(_T("Calculator:Enable"), false);
+}
+
+CString AppPreference::GetPythonDLLPath()
+{
+	return in->mSettings.Get(_T("Soyokaze:PythonDLLPath"), _T(""));
+}

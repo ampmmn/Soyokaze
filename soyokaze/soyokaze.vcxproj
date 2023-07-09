@@ -560,6 +560,9 @@
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\DeleteCommand.h" />
+    <ClInclude Include="commands\calculator\Calculator.h" />
+    <ClInclude Include="commands\calculator\CalculatorAdhocCommandProvider.h" />
+    <ClInclude Include="commands\calculator\CalculatorCommand.h" />
     <ClInclude Include="commands\common\AfxWWrapper.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
@@ -670,6 +673,9 @@
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\DeleteCommand.cpp" />
+    <ClCompile Include="commands\calculator\Calculator.cpp" />
+    <ClCompile Include="commands\calculator\CalculatorAdhocCommandProvider.cpp" />
+    <ClCompile Include="commands\calculator\CalculatorCommand.cpp" />
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />

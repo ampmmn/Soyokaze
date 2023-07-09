@@ -84,8 +84,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(TVI_ROOT, new ExecSettingDialog(this), param);
 	AddPage(TVI_ROOT, new ViewSettingDialog(this), param);
 
-	// ToDo: 拡張機能を実装するときに有効化する
-	// AddPage(TVI_ROOT, new ExtensionSettingDialog(this), param);
+	AddPage(TVI_ROOT, new ExtensionSettingDialog(this), param);
 
 	return hItem;
 }
