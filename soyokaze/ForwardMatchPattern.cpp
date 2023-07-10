@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ForwardMatchPattern.h"
+#include "core/CommandParameter.h"
 #include <vector>
 #include <regex>
 
@@ -12,6 +13,7 @@ struct ForwardMatchPattern::PImpl
 {
 	tregex mRegPattern;
 	CString mWord;
+	CString mWholeText;
 	bool mHasError;
 };
 
@@ -25,12 +27,13 @@ ForwardMatchPattern::~ForwardMatchPattern()
 	delete in;
 }
 
-void ForwardMatchPattern::SetPattern(
-	const CString& pattern
-)
+void ForwardMatchPattern::SetParam(const soyokaze::core::CommandParameter& param)
 {
+	const CString& pattern = param.GetCommandString();
+
 	in->mHasError = false;
 	in->mWord = pattern;
+	in->mWholeText = param.GetWholeString();
 
 	tstring pat(_T("^"));
 	pat += Pattern::StripEscapeChars(pattern);
@@ -42,6 +45,7 @@ void ForwardMatchPattern::SetPattern(
 		in->mHasError = true;
 	}
 }
+
 
 int ForwardMatchPattern::Match(
 	const CString& str
@@ -66,6 +70,6 @@ int ForwardMatchPattern::Match(
 
 CString ForwardMatchPattern::GetOriginalPattern()
 {
-	return in->mWord;
+	return in->mWholeText;
 }
 

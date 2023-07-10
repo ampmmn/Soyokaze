@@ -1,5 +1,13 @@
 #pragma once
 
+namespace soyokaze {
+namespace core {
+
+	class CommandParameter;
+}
+}
+
+
 // キーワード比較処理のためのインタフェース
 class Pattern
 {
@@ -15,7 +23,7 @@ public:
 public:
 	virtual ~Pattern() {}
 
-	virtual void SetPattern(const CString& pattern) = 0;
+	virtual void SetParam(const soyokaze::core::CommandParameter& param) = 0;
 	virtual int Match(const CString& str) = 0;
 	virtual CString GetOriginalPattern() = 0;
 

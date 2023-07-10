@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "PartialMatchPattern.h"
+#include "core/CommandParameter.h"
 #include <vector>
 #include <regex>
 
@@ -13,6 +14,7 @@ struct PartialMatchPattern::PImpl
 	std::wregex mRegPatternFront;
 	std::wregex mRegPatternPartial;
 	CString mWord;
+	CString mWholeText;
 	bool mHasError;
 };
 
@@ -26,12 +28,15 @@ PartialMatchPattern::~PartialMatchPattern()
 	delete in;
 }
 
-void PartialMatchPattern::SetPattern(
-	const CString& pattern
+void PartialMatchPattern::SetParam(
+	const soyokaze::core::CommandParameter& param
 )
 {
+	const CString& pattern = param.GetCommandString();
+
 	in->mHasError = false;
 	in->mWord = pattern;
+	in->mWholeText = param.GetWholeString();
 
 	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
 
@@ -73,6 +78,6 @@ int PartialMatchPattern::Match(
 
 CString PartialMatchPattern::GetOriginalPattern()
 {
-	return in->mWord;
+	return in->mWholeText;
 }
 

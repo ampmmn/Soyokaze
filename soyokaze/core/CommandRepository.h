@@ -49,7 +49,7 @@ public:
 
 	bool IsBuiltinName(const CString& cmdName);
 
-	void Query(const CString& strQueryStr, std::vector<soyokaze::core::Command*>& commands);
+	void Query(const CommandParameter& param, std::vector<soyokaze::core::Command*>& commands);
 	soyokaze::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isSearchPath = true);
 	bool HasCommand(const CString& strQueryStr);
 

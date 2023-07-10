@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WholeMatchPattern.h"
+#include "core/CommandParameter.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -10,6 +11,7 @@
 struct WholeMatchPattern::PImpl
 {
 	CString mWord;
+	CString mWholeText;
 };
 
 WholeMatchPattern::WholeMatchPattern(const CString& word) : in(new PImpl)
@@ -22,11 +24,12 @@ WholeMatchPattern::~WholeMatchPattern()
 	delete in;
 }
 
-void WholeMatchPattern::SetPattern(
-	const CString& pattern
+void WholeMatchPattern::SetParam(
+	const soyokaze::core::CommandParameter& param
 )
 {
-	in->mWord = pattern;
+	in->mWord = param.GetCommandString();
+	in->mWholeText = param.GetWholeString();
 }
 
 int WholeMatchPattern::Match(
@@ -39,6 +42,6 @@ int WholeMatchPattern::Match(
 
 CString WholeMatchPattern::GetOriginalPattern()
 {
-	return in->mWord;
+	return in->mWholeText;
 }
 

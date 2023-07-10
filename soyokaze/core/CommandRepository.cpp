@@ -463,7 +463,7 @@ void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enum
 
 void
 CommandRepository::Query(
-	const CString& strQueryStr,
+	const CommandParameter& param,
 	std::vector<soyokaze::core::Command*>& items
 )
 {
@@ -474,8 +474,8 @@ CommandRepository::Query(
 
 	CSingleLock sl(&in->mCS, TRUE);
 
-	// 絞込みの文言を設定
-	in->mPattern->SetPattern(strQueryStr);
+	// 入力文字列をを設定
+	in->mPattern->SetParam(param);
 
 	std::vector<CommandMap::QueryItem> matchedItems;
 

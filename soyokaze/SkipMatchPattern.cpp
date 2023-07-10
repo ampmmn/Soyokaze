@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SkipMatchPattern.h"
+#include "core/CommandParameter.h"
 #include <vector>
 #include <regex>
 
@@ -14,6 +15,7 @@ struct SkipMatchPattern::PImpl
 	std::wregex mRegPatternPartial;
 	std::wregex mRegPatternSkip;
 	CString mWord;
+	CString mWholeText;
 	bool mHasError;
 };
 
@@ -27,12 +29,15 @@ SkipMatchPattern::~SkipMatchPattern()
 	delete in;
 }
 
-void SkipMatchPattern::SetPattern(
-	const CString& pattern
+void SkipMatchPattern::SetParam(
+	const soyokaze::core::CommandParameter& param
 )
 {
+	const CString& pattern = param.GetCommandString();
+
 	in->mHasError = false;
 	in->mWord = pattern;
+	in->mWholeText = param.GetWholeString();
 
 	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
 
@@ -101,6 +106,6 @@ int SkipMatchPattern::Match(
 
 CString SkipMatchPattern::GetOriginalPattern()
 {
-	return in->mWord;
+	return in->mWholeText;
 }
 

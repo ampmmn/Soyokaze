@@ -680,7 +680,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	soyokaze::core::CommandParameter commandParam(in->mCommandStr);
 
 	// キーワードによる候補の列挙
-	GetCommandRepository()->Query(commandParam.GetCommandString(), in->mCandidates);
+	GetCommandRepository()->Query(commandParam, in->mCandidates);
 
 	// 候補なし
 	if (in->mCandidates.size() == 0) {

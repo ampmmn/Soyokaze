@@ -12,7 +12,7 @@ public:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
-	virtual void SetPattern(const CString& pattern);
+	virtual void SetParam(const soyokaze::core::CommandParameter& param);
 	virtual int Match(const CString& str);
 	virtual CString GetOriginalPattern();
 

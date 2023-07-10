@@ -315,7 +315,9 @@ void FilterDialog::OnEditCommandChanged()
 	}
 	else {
 		Pattern* pattern = in->GetPatternObject();
-		pattern->SetPattern(in->mInputStr);
+
+		soyokaze::core::CommandParameter commandParam(in->mInputStr);
+		pattern->SetParam(commandParam);
 
 		for (auto& candidate : in->mAllCandidates) {
 			if (pattern->Match(candidate) != Pattern::Mismatch) {
