@@ -21,6 +21,8 @@ struct CalculatorCommand::PImpl
 	CString mResult;
 	CString mDescription;
 
+	TCHAR mCalcPath[MAX_PATH_NTFS];
+
 	uint32_t mRefCount;
 };
 
@@ -28,6 +30,7 @@ struct CalculatorCommand::PImpl
 CalculatorCommand::CalculatorCommand() : in(new PImpl)
 {
 	in->mRefCount = 1;
+	in->mCalcPath[0] = _T('\0');
 }
 
 CalculatorCommand::~CalculatorCommand()
@@ -89,8 +92,13 @@ CString CalculatorCommand::GetErrorString()
 
 HICON CalculatorCommand::GetIcon()
 {
-	// ToDo: アイコン設定
-	return IconLoader::Get()->LoadUnknownIcon();
+	if (in->mCalcPath[0] == _T('\0')) {
+		size_t reqLen = 0;
+		_tgetenv_s(&reqLen, in->mCalcPath, MAX_PATH_NTFS, _T("SystemRoot"));
+		PathAppend(in->mCalcPath, _T("System32"));
+		PathAppend(in->mCalcPath, _T("calc.exe"));
+	}
+	return IconLoader::Get()->LoadIconFromPath(in->mCalcPath);
 }
 
 int CalculatorCommand::Match(Pattern* pattern)

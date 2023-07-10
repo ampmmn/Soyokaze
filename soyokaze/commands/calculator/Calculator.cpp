@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Calculator.h"
+#include <regex>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,6 +37,8 @@ struct Calculator::PImpl
 	HMODULE mDll;
 	void* mModule;
 	void* mDict;
+
+	tregex mRegSysFuncs;
 
 	PY_INITIALIZE mPy_Initialize;
 	PY_FINALIZEEX mPy_FinalizeEx;
@@ -104,6 +107,40 @@ bool Calculator::PImpl::Initialize()
 	void* pyMathModule = mPyImport_ImportModule("math");
 	mPyMapping_SetItemString(mDict, "math", pyMathModule);
 	mPy_DecRef(pyMathModule);
+
+	// 実行を許可しない組み込み関数群
+	std::vector<tstring> buildinFuncsions {
+		_T("aiter"), _T("all"), _T("any"), _T("anext"),
+		_T("breakpoint"), _T("bytearray"), _T("bytes"), _T("callable"),
+		_T("classmethod"), _T("compile"), _T("complex"), _T("delattr"),
+		_T("dict"), _T("dir"), _T("divmod"),
+		_T("enumerate"), _T("eval"), _T("exec"),
+		_T("filter"), _T("frozenset"),
+		_T("getattr"), _T("globals"),
+		_T("hasattr"), _T("hash"), _T("help"),
+		_T("id"), _T("input"), _T("isinstance"), _T("issubclass"), _T("iter"),
+		_T("list"), _T("locals"),
+		_T("map"), _T("memoryview"),
+		_T("next"),
+		_T("object"), _T("open"),
+		_T("print"), _T("property"),
+		_T("range"), _T("repr"), _T("reversed"),
+		_T("set"), _T("setattr"), _T("slice"), _T("sorted"), _T("staticmethod"), _T("str"), _T("sum"), _T("super"),
+		_T("tuple"), _T("type"),
+		_T("vars"),
+		_T("zip"),
+		_T("__import__"),
+	};
+
+	tstring pattern;
+	for (auto name : buildinFuncsions) {
+		if(pattern.empty() == false) {
+			pattern += _T("|");
+		}
+		pattern += name;
+	}
+
+	mRegSysFuncs = tregex(pattern);
 
 	return true;
 }
@@ -198,6 +235,11 @@ static void DECCNT(void* p)
 bool Calculator::Evaluate(const CString& src, CString& result)
 {
 	if (in->Initialize() == false) {
+		return false;
+	}
+
+	// 実行を許可しない組み込み関数を含む場合は評価しない
+	if (std::regex_search((LPCTSTR)src, in->mRegSysFuncs)) {
 		return false;
 	}
 
