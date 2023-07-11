@@ -3,7 +3,6 @@
 #include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "gui/IconLabel.h"
-#include "gui/CommandHotKeyDialog.h"
 #include "core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -22,8 +21,7 @@ namespace regexp {
 
 CommandEditDialog::CommandEditDialog() : 
 	CDialogEx(IDD_REGEXPCOMMAND),
-	mIconLabelPtr(new IconLabel),
-	mIsGlobal(false)
+	mIconLabelPtr(new IconLabel)
 {
 }
 
@@ -94,7 +92,6 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, mParameter);
 	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
 }
 
@@ -105,7 +102,6 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
@@ -144,11 +140,6 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
-
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
@@ -302,22 +293,6 @@ void CommandEditDialog::OnOK()
 }
 
 
-void CommandEditDialog::OnButtonHotKey()
-{
-	UpdateData();
-
-	CommandHotKeyDialog dlg(mHotKeyAttr);
-	dlg.mIsGlobal = mIsGlobal;
-	if (dlg.DoModal() != IDOK) {
-		return ;
-	}
-
-	dlg.GetAttribute(mHotKeyAttr);
-	mIsGlobal = dlg.IsGlobal();
-
-	UpdateStatus();
-	UpdateData(FALSE);
-}
 
 void CommandEditDialog::ResolveShortcut(CString& path)
 {

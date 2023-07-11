@@ -60,11 +60,6 @@ public:
 
 	IconLabel* mIconLabelPtr;
 
-	// ほっときー(ひょうじよう)
-	CString mHotKey;
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
-
 private:
 	TopMostMask mTopMostMask;
 // 実装
@@ -79,7 +74,6 @@ protected:
 	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveShortcut();
 };
 

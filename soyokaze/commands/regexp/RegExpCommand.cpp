@@ -5,8 +5,6 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/regexp/RegExpCommandEditDialog.h"
 #include "core/CommandRepository.h"
-#include "core/CommandHotKeyManager.h"
-#include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
@@ -286,14 +284,6 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	dlg.mDir = attr.mDir;
 	dlg.SetShowType(attr.mShowType);
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-	HOTKEY_ATTR hotKeyAttr;
-	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(dlg.mName, &hotKeyAttr, &isGlobal)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-		dlg.mIsGlobal = isGlobal;
-	}
-
 	if (dlg.DoModal() != IDOK) {
 		return 1;
 	}
@@ -317,21 +307,6 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew);
-
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
-
 
 	return 0;
 }
@@ -470,21 +445,6 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	newCmd->SetAttribute(attr);
 
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
 
 	return true;
 

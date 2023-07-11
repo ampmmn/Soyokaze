@@ -3,10 +3,8 @@
 #include "commands/regexp/RegExpCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
-#include "core/CommandHotKeyManager.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
-#include "CommandHotKeyMappings.h"
 #include "resource.h"
 
 #ifdef _DEBUG
