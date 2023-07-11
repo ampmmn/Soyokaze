@@ -243,6 +243,7 @@ void CommandEditDialog::OnOK()
 	param->mPath = mParam.mPath;
 	param->mParameter = mParam.mParameter;
 	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
+	param->mHotKeyAttr = mParam.mHotKeyAttr;
 
 	const tregex& regArg = GetRegexForArgument();
 	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
