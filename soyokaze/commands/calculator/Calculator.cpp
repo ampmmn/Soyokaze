@@ -149,9 +149,11 @@ void Calculator::PImpl::Finalize()
 {
 	if (mDict) {
 		mPy_DecRef(mDict);
+		mDict = nullptr;
 	}
 	if (mModule) {
 		mPy_DecRef(mModule);
+		mModule = nullptr;
 	}
 	if (mPy_FinalizeEx) {
 		mPy_FinalizeEx();
@@ -258,20 +260,19 @@ bool Calculator::Evaluate(const CString& src, CString& result)
 		srcA = srcA.Left(sep);
 	}
 
-	// インタープリタ側で拾ってしまうキーワードを無効化する(quit/exit/help/print)
+	// インタープリタ側で拾ってしまうキーワードを無効化する(quit/exit/help)
 	srcA.Replace("quit", "");
 	srcA.Replace("exit", "");
-	srcA.Replace("help", "");
 	srcA.Replace("copyright", "");
 	srcA.Replace("credits", "");
 	srcA.Replace("license", "");
-	srcA.Replace("print", "");
 
 	const int Py_single_input = 256;    // defined in compile.h
 	const int Py_eval_input = 258;    // defined in compile.h
 	void* pyObject = in->mPyRun_String((LPCSTR)srcA, Py_eval_input, in->mDict, in->mDict);
 
-	if (in->mPyErr_Occurred() != nullptr) {
+	void* errObj = in->mPyErr_Occurred();
+	if (errObj != nullptr) {
 
 		// for debug
 		in->mPyErr_Print();
@@ -279,6 +280,7 @@ bool Calculator::Evaluate(const CString& src, CString& result)
 		if (pyObject) {
 			in->mPy_DecRef(pyObject);
 		}
+
 		in->mPyGILState_Release(gstate);
 		return false;
 	}
