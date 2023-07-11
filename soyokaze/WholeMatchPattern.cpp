@@ -17,6 +17,7 @@ struct WholeMatchPattern::PImpl
 WholeMatchPattern::WholeMatchPattern(const CString& word) : in(new PImpl)
 {
 	in->mWord = word;
+	in->mWholeText = word;
 }
 
 WholeMatchPattern::~WholeMatchPattern()
