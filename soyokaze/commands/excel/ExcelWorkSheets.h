@@ -32,9 +32,10 @@ private:
 class Worksheet
 {
 public:
-	Worksheet(const CString& workbookName, const CString& sheetName);
+	Worksheet(const CString& appPath, const CString& workbookName, const CString& sheetName);
 	~Worksheet();
 
+	const CString& GetAppPath();
 	const CString& GetWorkbookName();
 	const CString& GetSheetName();
 

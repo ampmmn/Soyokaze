@@ -76,8 +76,8 @@ CString WorksheetCommand::GetErrorString()
 
 HICON WorksheetCommand::GetIcon()
 {
-	// ToDo: Excelのアイコンを取得できればする
-	return IconLoader::Get()->LoadUnknownIcon();
+	const auto& path = in->mWorksheet->GetAppPath();
+	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
 int WorksheetCommand::Match(Pattern* pattern)

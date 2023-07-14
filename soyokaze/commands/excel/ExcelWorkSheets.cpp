@@ -34,6 +34,23 @@ WorkSheets::~WorkSheets()
 	CoUninitialize();
 }
 
+// 
+/**
+ 	IDispatchのプロパティ/メソッドにアクセスする
+ 	
+ 	このメソッドは可変長引数をうけとる。
+ 	メソッドに渡す引数がある場合は、cArgsの後ろに、cArgsで指定した数ぶんのVARIANTを指定する。
+
+ 	下記URLに掲載されているコードをベースにしている。
+ 	https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/automate-excel-from-c
+
+ 	@return 処理結果HRESULT
+ 	@param[in]     autoType 種別(DISPATCH_PROPERTYGET or DISPATCH_PROPERTYPUT)
+ 	@param[out]    pvResult 呼び出し結果
+ 	@param[in,out] pDisp    IDispatchオブジェクト
+ 	@param[in]     ptName   プロパティ/メソッドの名前
+ 	@param[in]     cArgs    引数の数
+*/
 static HRESULT AutoWrap(
 	int autoType,
 	VARIANT* pvResult,
@@ -43,13 +60,12 @@ static HRESULT AutoWrap(
 )
 {
 	if (!pDisp) {
-		return S_OK;
+		return E_FAIL;
 	}
 
 	va_list marker;
 	va_start(marker, cArgs);
 
-	// Get DISPID for name passed...
 	DISPID dispID;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &ptName, 1, LOCALE_USER_DEFAULT, &dispID);
 	if (FAILED(hr)) {
@@ -75,6 +91,7 @@ static HRESULT AutoWrap(
 	return pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, &dp, pvResult, NULL, NULL);
 }
 
+// この時間以内に再実行されたら、前回の結果を再利用する
 #define INTERVAL_REUSE 5000
 
 bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
@@ -96,18 +113,20 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 	in->mCache.clear();
 
 
+	// ExcelのCLSIDを得る
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
 
 	if (FAILED(hr)) {
-		// 初期化できなかった
+		// 取得できなかった(インストールされていないとか)
 		return false;
 	}
 
-	// 既存のExcel.Applicationインスタンスを取得
+	// 既存のExcel.Applicationインスタンスを取得する
 	CComPtr<IUnknown> unkPtr;
 	hr = GetActiveObject(clsid, NULL, &unkPtr);
 	if(FAILED(hr)) {
+		// 起動してない
 		return false;
 	}
 
@@ -123,6 +142,14 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 		AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Workbooks", 0);
 		workbooks = result.pdispVal;
 	}
+
+	CComBSTR name;
+	{
+		VariantInit(&result);
+		AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Path", 0);
+		name = result.bstrVal;
+	}
+	CString appPath = name;
 
 	int wbCount = 0;
 	{
@@ -147,11 +174,10 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 			wb = result.pdispVal;
 		}
 
-		CComBSTR name;
-
 		{
 			VariantInit(&result);
 			AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Name", 0);
+
 			name = result.bstrVal;
 		}
 
@@ -194,7 +220,7 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 
 			CString sheetName = name;
 
-			tmpList.push_back(new Worksheet(workbookName, sheetName));
+			tmpList.push_back(new Worksheet(appPath, workbookName, sheetName));
 		}
 	}
 
@@ -223,22 +249,47 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 
 struct Worksheet::PImpl
 {
+	// EXCEL.EXEのフルパス
+	CString mAppPath;
+	// ブック名
 	CString mBookName;
+	// シート名
 	CString mSheetName;
+	// 参照カウント
 	uint32_t mRefCount;
 	
 };
 
-Worksheet::Worksheet(const CString& workbookName, const CString& sheetName) : 
+/**
+ 	コンストラクタ
+ 	@param[in] appPath      excel.exeが置かれるフォルダのフルパス
+ 	@param[in] workbookName ワークブック名
+ 	@param[in] sheetName    シート名
+*/
+ Worksheet::Worksheet(
+	const CString& appPath,
+	const CString& workbookName,
+	const CString& sheetName
+) : 
 	in(new PImpl)
 {
 	in->mRefCount = 1;
+
+	// 引数で与えられる文字列はフォルダパスなので、ファイル名を補う
+	in->mAppPath = appPath;
+	in->mAppPath += _T("\\EXCEL.EXE");
+
 	in->mBookName = workbookName;
 	in->mSheetName = sheetName;
 }
 
 Worksheet::~Worksheet()
 {
+}
+
+const CString& Worksheet::GetAppPath()
+{
+	return in->mAppPath;
 }
 
 const CString& Worksheet::GetWorkbookName()
@@ -251,21 +302,25 @@ const CString& Worksheet::GetSheetName()
 	return in->mSheetName;
 }
 
+/**
+ 	オブジェクトに紐づけられたワークシートを有効にする
+ 	@return 処理の成否
+*/
 BOOL Worksheet::Activate()
 {
-	// ここでWorkSheetを取得
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
 
 	if (FAILED(hr)) {
-		// 初期化できなかった
+		// 初期化できなかった(たぶん起こらない。このオブジェクト作れてる時点でEXCELは入ってるはずなので)
 		return FALSE;
 	}
 
-	// 既存のExcel.Applicationインスタンスを取得
+	// 既存のExcel.Applicationインスタンスを取得する
 	CComPtr<IUnknown> unkPtr;
 	hr = GetActiveObject(clsid, NULL, &unkPtr);
 	if(FAILED(hr)) {
+		// インスタンス生成後にEXCELが終了されたとか?
 		return FALSE;
 	}
 
@@ -274,7 +329,8 @@ BOOL Worksheet::Activate()
 
 	VARIANT result;
 
-	// Get Workbooks collection
+	// Excel.ApplicationからたどってWorksheetを得る
+
 	CComPtr<IDispatch> workbooks;
 	{
 		VariantInit(&result);
@@ -282,6 +338,8 @@ BOOL Worksheet::Activate()
 		workbooks = result.pdispVal;
 	}
 
+	// 最後にウインドウを全面に持っていきたいので、
+	// アプリケーションのウインドウハンドルも得ておく
 	HWND hwndApp;
 	{
 		VariantInit(&result);
@@ -376,10 +434,9 @@ BOOL Worksheet::Activate()
 				return FALSE;
 			}
 
-			// アプリを全面に出す
+			// アプリのウインドウを全面に出す
 			if (IsWindow(hwndApp)) {
 				ScopeAttachThreadInput scope;
-				BringWindowToTop(hwndApp);
 				SetForegroundWindow(hwndApp);
 				ShowWindow(hwndApp, SW_SHOWNORMAL);
 			}
