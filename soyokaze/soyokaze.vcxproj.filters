@@ -55,6 +55,9 @@
     <Filter Include="commands\calculator">
       <UniqueIdentifier>{2fbf06ef-bc8b-4f4e-9afa-050c791778af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\excel">
+      <UniqueIdentifier>{0ac1b988-6a43-45ba-b864-5ffa754935d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -390,6 +393,15 @@
     <ClInclude Include="gui\ExtensionSettingDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\excel\ExcelCommandProvider.h">
+      <Filter>commands\excel</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\excel\WorksheetCommand.h">
+      <Filter>commands\excel</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\excel\ExcelWorkSheets.h">
+      <Filter>commands\excel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -703,6 +715,15 @@
     </ClCompile>
     <ClCompile Include="gui\ExtensionSettingDialog.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\excel\ExcelCommandProvider.cpp">
+      <Filter>commands\excel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\excel\WorksheetCommand.cpp">
+      <Filter>commands\excel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\excel\ExcelWorkSheets.cpp">
+      <Filter>commands\excel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

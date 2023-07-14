@@ -11,7 +11,8 @@
 
 ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("拡張機能"), IDD_EXTENSIONSETTING, parentWnd),
-	mIsEnableCalc(FALSE)
+	mIsEnableCalc(FALSE),
+	mIsEnableWorksheet(FALSE)
 
 {
 }
@@ -29,6 +30,7 @@ void ExtensionSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Calculator:Enable"), (bool)mIsEnableCalc);
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
+	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
 
 	__super::OnOK();
 }
@@ -38,6 +40,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_ENABLECALCULATOR, mIsEnableCalc);
 	DDX_Text(pDX, IDC_EDIT_PYTHONDLLPATH, mPythonDLLPath);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, SettingPage)
@@ -82,6 +85,8 @@ void ExtensionSettingDialog::OnEnterSettings()
 
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
+
+	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), false);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

@@ -12,6 +12,8 @@ public:
 	BOOL mIsEnableCalc;
 	CString mPythonDLLPath;
 
+	BOOL mIsEnableWorksheet;
+
 protected:
 	bool UpdateStatus();
 

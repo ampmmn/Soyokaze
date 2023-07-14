@@ -566,6 +566,9 @@
     <ClInclude Include="commands\common\AfxWWrapper.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
+    <ClInclude Include="commands\excel\ExcelCommandProvider.h" />
+    <ClInclude Include="commands\excel\ExcelWorkSheets.h" />
+    <ClInclude Include="commands\excel\WorksheetCommand.h" />
     <ClInclude Include="commands\filter\CharConverter.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandParam.h" />
@@ -679,6 +682,9 @@
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
+    <ClCompile Include="commands\excel\ExcelCommandProvider.cpp" />
+    <ClCompile Include="commands\excel\ExcelWorkSheets.cpp" />
+    <ClCompile Include="commands\excel\WorksheetCommand.cpp" />
     <ClCompile Include="commands\filter\CharConverter.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandParam.cpp" />

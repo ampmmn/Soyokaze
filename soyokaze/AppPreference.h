@@ -63,6 +63,8 @@ public:
 	bool IsEnableCalculator();
 	CString GetPythonDLLPath();
 
+	bool IsEnableExcelWorksheet();
+
 protected:
 	AppPreference();
 	~AppPreference();

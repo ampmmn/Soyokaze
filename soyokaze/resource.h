@@ -188,6 +188,8 @@
 #define IDC_STATIC_PARAMHELP            1074
 #define IDC_CHECK_ENABLECALCULATOR      1075
 #define IDC_BUTTON_BROWSE               1076
+#define IDC_CHECK_ENABLECALCULATOR2     1077
+#define IDC_CHECK_ENABLE_WORKSHEET      1077
 
 // Next default values for new objects
 // 

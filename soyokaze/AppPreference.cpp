@@ -546,3 +546,8 @@ CString AppPreference::GetPythonDLLPath()
 {
 	return in->mSettings.Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 }
+
+bool AppPreference::IsEnableExcelWorksheet()
+{
+	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), false);
+}
