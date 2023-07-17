@@ -551,7 +551,7 @@ void FilterDialog::OnCandidatesCustomDraw(
 		if (state != 0) {
 			// 選択状態のアイテムの背景色を変える
 			lpLvCd->clrTextBk = GetSysColor(COLOR_HIGHLIGHT);
-			lpLvCd->clrText = RGB(0, 0, 0);
+			lpLvCd->clrText = RGB(255, 255, 255);
 			::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
 		}
 		else {
