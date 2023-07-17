@@ -190,6 +190,8 @@
 #define IDC_BUTTON_BROWSE               1076
 #define IDC_CHECK_ENABLECALCULATOR2     1077
 #define IDC_CHECK_ENABLE_WORKSHEET      1077
+#define IDC_BUTTON1                     1077
+#define IDC_BUTTON_CLEAR                1077
 
 // Next default values for new objects
 // 
@@ -197,7 +199,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1077
+#define _APS_NEXT_CONTROL_VALUE         1078
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

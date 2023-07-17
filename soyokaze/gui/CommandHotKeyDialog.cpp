@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CommandHotKeyDialog, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
 	ON_WM_CTLCOLOR()
+	ON_COMMAND(IDC_BUTTON_CLEAR, OnButtonClear)
 END_MESSAGE_MAP()
 
 void CommandHotKeyDialog::GetAttribute(HOTKEY_ATTR& attr)
@@ -59,6 +60,9 @@ BOOL CommandHotKeyDialog::OnInitDialog()
 
 	// 初期値を覚えておく
 	mHotKeyAttrInit = mHotKeyAttr;
+
+	// 割り当て解除ボタンを有効にする
+	GetDlgItem(IDC_BUTTON_CLEAR)->ShowWindow(SW_SHOW);
 
 	UpdateStatus();
 
@@ -99,6 +103,7 @@ void CommandHotKeyDialog::UpdateStatus()
 				if (alreadUsed) {
 					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
 				}
+				GetDlgItem(IDOK)->EnableWindow(alreadUsed == false);
 			}
 		}
 	}
@@ -145,5 +150,14 @@ bool CommandHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
 	}
 
 	return false;
+}
+
+void CommandHotKeyDialog::OnButtonClear()
+{
+	UpdateData();
+	mHotKeyAttr = HOTKEY_ATTR();
+	UpdateData(FALSE);
+
+	UpdateStatus();
 }
 
