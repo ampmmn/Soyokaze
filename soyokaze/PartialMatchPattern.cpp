@@ -11,7 +11,7 @@
 
 struct PartialMatchPattern::PImpl
 {
-	std::vector<CString> mPatterns;
+	std::vector<std::wregex> mRegPatterns;
 	CString mWord;
 	CString mWholeText;
 	bool mHasError;
@@ -96,7 +96,19 @@ void PartialMatchPattern::SetParam(
 
 	std::vector<std::wregex> patterns;
 	patterns.reserve(words.size());
-	in->mPatterns.swap(words);
+
+	for (auto& word : words) {
+
+		try {
+			std::wstring escapedPat = Pattern::StripEscapeChars(word);
+			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+		}
+		catch (std::regex_error&) {
+			in->mHasError = true;
+			break;
+		}
+	}
+	in->mRegPatterns.swap(patterns);
 
 	if (words.empty() == false) {
 		in->mWord = words[0];
@@ -116,10 +128,10 @@ int PartialMatchPattern::Match(
 		return WholeMatch;
 	}
 
-	for (auto& pat : in->mPatterns) {
+	for (auto& pat : in->mRegPatterns) {
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
-		if (str.Find(pat) == -1) {
+		if (std::regex_search((const wchar_t*)str, pat) == false) {
 			return Mismatch;
 		}
 
