@@ -713,17 +713,17 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	in->mIconLabel.DrawIcon(pCmd->GetIcon());
 
 	// 補完
-	bool isCharAdded = (curCaretPos & 0xFFFF) > (in->mLastCaretPos & 0xFFFF);
-	if (isCharAdded) {
-
-		int start, end;
-		in->mKeywordEdit.GetSel(start, end);
-		if (commandParam.ComplementCommand(pCmd->GetName(), in->mCommandStr)) {
-			// 補完が行われたらDDXにも反映し、入力欄の選択範囲も変える
-			UpdateData(FALSE);
-			in->mKeywordEdit.SetSel(end,-1);
-		}
-	}
+//	bool isCharAdded = (curCaretPos & 0xFFFF) > (in->mLastCaretPos & 0xFFFF);
+//	if (isCharAdded) {
+//
+//		int start, end;
+//		in->mKeywordEdit.GetSel(start, end);
+//		if (commandParam.ComplementCommand(pCmd->GetName(), in->mCommandStr)) {
+//			// 補完が行われたらDDXにも反映し、入力欄の選択範囲も変える
+//			UpdateData(FALSE);
+//			in->mKeywordEdit.SetSel(end,-1);
+//		}
+//	}
 	in->mLastCaretPos = in->mKeywordEdit.GetSel();
 
 	in->mCandidateListBox.Invalidate();

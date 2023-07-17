@@ -11,8 +11,7 @@
 
 struct PartialMatchPattern::PImpl
 {
-	std::wregex mRegPatternFront;
-	std::wregex mRegPatternPartial;
+	std::vector<CString> mPatterns;
 	CString mWord;
 	CString mWholeText;
 	bool mHasError;
@@ -32,25 +31,75 @@ void PartialMatchPattern::SetParam(
 	const soyokaze::core::CommandParameter& param
 )
 {
-	const CString& pattern = param.GetCommandString();
+	const CString& wholeText = param.GetWholeString();
 
 	in->mHasError = false;
-	in->mWord = pattern;
-	in->mWholeText = param.GetWholeString();
+	in->mWholeText = wholeText;
 
-	std::wstring escapedPat = Pattern::StripEscapeChars(pattern);
 
-	std::wstring patFront(L"^");
-	patFront += escapedPat;
+	std::vector<CString> words;
 
-	try {
-		in->mRegPatternFront = std::wregex(patFront, std::regex_constants::icase);
+	int start = 0;
 
-		in->mRegPatternPartial = std::wregex(escapedPat, std::regex_constants::icase);
+	int len = wholeText.GetLength();
 
+	bool isQuate = false;
+	for (int i = 0; i < len; ++i) {
+
+		TCHAR c = wholeText[i];
+
+		if (isQuate == false && c == _T('"')) {
+			isQuate = true;
+			start = i+1;
+			continue;
+		}
+		if (isQuate != false && c == _T('"')) {
+			isQuate = false;
+
+			int count = i - start;
+			CString part = wholeText.Mid(start, count);
+			if (part.IsEmpty()) {
+				start=i+1;
+				continue;
+			}
+
+			words.push_back(part);
+			start = i + 1;
+			continue;
+		}
+
+		if (isQuate == false && c == _T(' ')) {
+
+			int count = i-start;
+
+			CString part = wholeText.Mid(start, count);
+			part.Trim();
+			if (part.IsEmpty()) {
+				start=i+1;
+				continue;
+			}
+
+			words.push_back(part);
+
+			start=i+1;
+			continue;
+		}
 	}
-	catch (std::regex_error&) {
-		in->mHasError = true;
+
+	int count = len-start;
+	CString part = wholeText.Mid(start, count);
+	part.Trim();
+	if (part.IsEmpty() == FALSE) {
+		words.push_back(part);
+	}
+
+
+	std::vector<std::wregex> patterns;
+	patterns.reserve(words.size());
+	in->mPatterns.swap(words);
+
+	if (words.empty() == false) {
+		in->mWord = words[0];
 	}
 }
 
@@ -59,19 +108,21 @@ int PartialMatchPattern::Match(
 )
 {
 	if (in->mHasError) {
-		// $B%(%i!<;~$OL58z2=(B
+		// エラー時は無効化
 		return Mismatch;
 	}
 
 	if (str.CompareNoCase(in->mWord) == 0) {
 		return WholeMatch;
 	}
-	if (std::regex_search((const wchar_t*)str, in->mRegPatternFront)) {
-		return FrontMatch;
-	}
 
-	if (std::regex_search((const wchar_t*)str, in->mRegPatternPartial) == false) {
-		return Mismatch;
+	for (auto& pat : in->mPatterns) {
+
+		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
+		if (str.Find(pat) == -1) {
+			return Mismatch;
+		}
+
 	}
 	return PartialMatch;
 }

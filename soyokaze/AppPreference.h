@@ -29,7 +29,6 @@ public:
 	bool IsHideOnStartup();
 	bool IsHideOnInactive();
 
-	int GetMatchLevel();
 	bool IsTopMost();
 	bool IsShowToggle();
 

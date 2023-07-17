@@ -641,7 +641,6 @@
     <ClInclude Include="commands\builtin\VersionCommand.h" />
     <ClInclude Include="ExecHistory.h" />
     <ClInclude Include="gui/FolderDialog.h" />
-    <ClInclude Include="ForwardMatchPattern.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HotKeyAttribute.h" />
     <ClInclude Include="gui/HotKeyDialog.h" />
@@ -658,7 +657,6 @@
     <ClInclude Include="gui/SelectFilesDialog.h" />
     <ClInclude Include="gui/SettingDialog.h" />
     <ClInclude Include="gui/ShortcutDialog.h" />
-    <ClInclude Include="SkipMatchPattern.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
@@ -755,7 +753,6 @@
     <ClCompile Include="commands\builtin\VersionCommand.cpp" />
     <ClCompile Include="ExecHistory.cpp" />
     <ClCompile Include="gui/FolderDialog.cpp" />
-    <ClCompile Include="ForwardMatchPattern.cpp" />
     <ClCompile Include="HotKeyAttribute.cpp" />
     <ClCompile Include="gui/HotKeyDialog.cpp" />
     <ClCompile Include="gui/IconLabel.cpp" />
@@ -783,7 +780,6 @@
     <ClCompile Include="gui/SelectFilesDialog.cpp" />
     <ClCompile Include="gui/SettingDialog.cpp" />
     <ClCompile Include="gui/ShortcutDialog.cpp" />
-    <ClCompile Include="SkipMatchPattern.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />

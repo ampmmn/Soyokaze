@@ -129,7 +129,6 @@
 #define IDC_COMBO_PREFILTERTYPE         1032
 #define IDC_BUTTON_NEW                  1033
 #define IDC_BUTTON_EDIT                 1034
-#define IDC_COMBO_MATCHLEVEL            1035
 #define IDC_BUTTON_DOWN                 1036
 #define IDC_BUTTON_DELETE               1037
 #define IDC_CHECK_USEFILER              1038

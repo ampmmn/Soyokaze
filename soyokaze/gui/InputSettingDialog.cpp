@@ -36,7 +36,6 @@ BOOL InputSettingDialog::OnSetActive()
 void InputSettingDialog::OnOK()
 {
 	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("Soyokaze:MatchLevel"), mMatchLevel);
 	settingsPtr->Set(_T("Soyokaze:IsIMEOffOnActive"), (bool)mIsIMEOff);
 	settingsPtr->Set(_T("Soyokaze:IsIgnoreUNC"), (bool)mIsIgnoreUNC);
 
@@ -47,7 +46,6 @@ void InputSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_CBIndex(pDX, IDC_COMBO_MATCHLEVEL, mMatchLevel);
 	DDX_Check(pDX, IDC_CHECK_IMEOFF, mIsIMEOff);
 	DDX_Check(pDX, IDC_CHECK_IGNOREUNC, mIsIgnoreUNC);
 }
@@ -74,7 +72,6 @@ bool InputSettingDialog::UpdateStatus()
 void InputSettingDialog::OnEnterSettings()
 {
 	auto settingsPtr = (Settings*)GetParam();
-	mMatchLevel = settingsPtr->Get(_T("Soyokaze:MatchLevel"), 1);
 	mIsIMEOff = settingsPtr->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
 	mIsIgnoreUNC = settingsPtr->Get(_T("Soyokaze:IsIgnoreUNC"), false);
 

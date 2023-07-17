@@ -364,11 +364,6 @@ bool AppPreference::IsHideOnInactive()
 	return in->mSettings.Get(_T("Soyokaze:IsHideOnInactive"), false);
 }
 
-int AppPreference::GetMatchLevel()
-{
-	return in->mSettings.Get(_T("Soyokaze:MatchLevel"), 1);
-}
-
 bool AppPreference::IsTopMost()
 {
 	return in->mSettings.Get(_T("Soyokaze:TopMost"), false);

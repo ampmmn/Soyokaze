@@ -4,9 +4,7 @@
 #include "gui/AboutDlg.h"
 #include "utility/AppProfile.h"
 #include "AppPreference.h"
-#include "ForwardMatchPattern.h"
 #include "PartialMatchPattern.h"
-#include "SkipMatchPattern.h"
 #include "WholeMatchPattern.h"
 #include "core/CommandProviderIF.h"
 #include "CommandFile.h"
@@ -45,24 +43,12 @@ struct CommandRepository::PImpl
 	void ReloadPatternObject()
 	{
 		delete mPattern;
-
-		auto pref = AppPreference::Get();
-		int matchLevel = pref->GetMatchLevel();
-		if (matchLevel == 2) {
-			// スキップマッチング比較用
-			mPattern = new SkipMatchPattern();
-		}
-		else if (matchLevel == 1) {
-			// 部分一致比較用
-			mPattern = new PartialMatchPattern();
-		}
-		else {
-			// 前方一致比較用
-			mPattern = new ForwardMatchPattern();
-		}
+		mPattern = new PartialMatchPattern();
 
 		// コマンドのホットキー設定のリロード
 		CommandHotKeyMappings hotKeyMap;
+
+		auto pref = AppPreference::Get();
 		pref->GetCommandKeyMappings(hotKeyMap);
 
 		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();

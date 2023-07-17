@@ -15,9 +15,7 @@
 #include "WindowTransparency.h"
 #include "AppPreference.h"
 #include "core/CommandHotKeyManager.h"
-#include "SkipMatchPattern.h"
 #include "PartialMatchPattern.h"
-#include "ForwardMatchPattern.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <algorithm>
@@ -71,23 +69,11 @@ struct FilterDialog::PImpl
 
 Pattern* FilterDialog::PImpl::GetPatternObject()
 {
-	delete mPattern;
-
-	auto pref = AppPreference::Get();
-	int matchLevel = pref->GetMatchLevel();
-	if (matchLevel == 2) {
-		// スキップマッチング比較用
-		mPattern = new SkipMatchPattern();
-	}
-	else if (matchLevel == 1) {
-		// 部分一致比較用
-		mPattern = new PartialMatchPattern();
-	}
-	else {
-		// 前方一致比較用
-		mPattern = new ForwardMatchPattern();
+	if (mPattern) {
+		return mPattern;
 	}
 
+	mPattern = new PartialMatchPattern();
 	return mPattern;
 }
 

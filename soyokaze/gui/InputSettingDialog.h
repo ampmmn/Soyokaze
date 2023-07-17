@@ -8,9 +8,6 @@ public:
 	InputSettingDialog(CWnd* parentWnd);
 	virtual ~InputSettingDialog();
 
-	// 絞込方法(0:前方一致 1:部分一致 2:スキップマッチング)
-	int mMatchLevel;
-
 	// 入力画面を表示するときにIMEをオフにする
 	BOOL mIsIMEOff;
 
