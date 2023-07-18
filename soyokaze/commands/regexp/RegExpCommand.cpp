@@ -101,11 +101,13 @@ BOOL RegExpCommand::Execute(const Parameter& param)
 	CString paramStr;
 
 	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
+		auto pref = AppPreference::Get();
+
+	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
+	                  (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
-		auto pref = AppPreference::Get();
 
 		if (pref->IsUseFiler()) {
 			path = pref->GetFilerPath();

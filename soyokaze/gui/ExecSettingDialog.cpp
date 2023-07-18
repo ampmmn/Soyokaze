@@ -40,6 +40,7 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
 	settingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
+	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
 
 	__super::OnOK();
 }
@@ -52,6 +53,7 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
 	DDX_Check(pDX, IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER, mIsArrowFilterConcurrentRun);
+	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
 }
 
 BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
@@ -75,6 +77,7 @@ BOOL ExecSettingDialog::OnInitDialog()
 
 bool ExecSettingDialog::UpdateStatus()
 {
+	// 外部ファイラーを使わない場合は関連する設定をグレーアウトする
 	GetDlgItem(IDC_EDIT_FILERPATH)->EnableWindow(mIsUseExternalFiler);
 	GetDlgItem(IDC_EDIT_FILERPARAM)->EnableWindow(mIsUseExternalFiler);
 	GetDlgItem(IDC_BUTTON_BROWSEFILE)->EnableWindow(mIsUseExternalFiler);
@@ -110,5 +113,6 @@ void ExecSettingDialog::OnEnterSettings()
 	mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
 	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	mIsArrowFilterConcurrentRun = settingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
+	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 
 }

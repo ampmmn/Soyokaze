@@ -115,12 +115,14 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	CString path;
 	CString paramStr;
 
+	auto pref = AppPreference::Get();
+
 	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
+	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
+	                  (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
 	if (isOpenPath || PathIsDirectory(attr.mPath)) {
 
 		// 登録されたファイラーで開く
-		auto pref = AppPreference::Get();
 
 		if (pref->IsUseFiler()) {
 			path = pref->GetFilerPath();

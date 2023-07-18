@@ -64,6 +64,8 @@ public:
 
 	bool IsEnableExcelWorksheet();
 
+	bool IsShowFolderIfCtrlKeyIsPressed();
+
 protected:
 	AppPreference();
 	~AppPreference();

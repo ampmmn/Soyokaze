@@ -3,6 +3,7 @@
 #include "commands/builtin/ChangeDirectoryCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "core/CommandRepository.h"
+#include "AppPreference.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
@@ -46,8 +47,11 @@ BOOL ChangeDirectoryCommand::Execute()
 
 BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 {
+	auto pref = AppPreference::Get();
+
 	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示
-	bool isOpenPath = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
+	                  param.GetNamedParamBool(_T("CtrlKeyPressed"));
 	if (isOpenPath) {
 		TCHAR currentDir[MAX_PATH_NTFS];
 		GetCurrentDirectory(MAX_PATH_NTFS, currentDir);

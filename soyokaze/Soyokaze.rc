@@ -369,15 +369,17 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "フォルダを開くファイラーを指定(&I)",IDC_CHECK_USEFILER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,23,115,10
-    LTEXT           "ファイラーのパス(&N):",-1,25,40,61,8
-    EDITTEXT        IDC_EDIT_FILERPATH,91,36,183,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Button1",IDC_BUTTON_BROWSEFILE,275,36,21,14
-    LTEXT           "パラメータ(&P):",-1,25,54,42,8
-    EDITTEXT        IDC_EDIT_FILERPARAM,91,54,183,14,ES_AUTOHSCROLL
-    LTEXT           "$target と指定するとリンク先に置き換えます",-1,91,71,183,11
+    CONTROL         "&Ctrl-Enterキーで実行した場合にフォルダを表示する",IDC_CHECK_SHOWDIR,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,13,175,10
+    CONTROL         "フォルダを開くファイラーを指定(&I)",IDC_CHECK_USEFILER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,33,115,10
+    LTEXT           "ファイラーのパス(&N):",-1,25,50,61,8
+    EDITTEXT        IDC_EDIT_FILERPATH,91,46,183,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Button1",IDC_BUTTON_BROWSEFILE,275,46,21,14
+    LTEXT           "パラメータ(&P):",-1,25,64,42,8
+    EDITTEXT        IDC_EDIT_FILERPARAM,91,64,183,14,ES_AUTOHSCROLL
+    LTEXT           "$target と指定するとリンク先に置き換えます",-1,91,81,183,11
     CONTROL         "同一のフィルタコマンドの同時実行を許可する(&F)",IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,92,167,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,102,167,10
 END
 
 IDD_INPUTSETTING DIALOGEX 0, 0, 344, 291

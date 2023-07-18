@@ -28,7 +28,6 @@
 #define IDS_ERR_HELPDOESNOTEXIST        119
 #define IDS_CONFIRM_DELETESHORTCUT      120
 #define IDS_MENUTEXT_HIDE               121
-#define IDS_CONFIRM_DELETESHORTCUT2     122
 #define IDS_FILTERCOMMAND               122
 #define IDS_ERR_GETNEXTWINDOW           123
 #define IDS_ERR_QUERYPROCESSINFO        124
@@ -135,6 +134,7 @@
 #define IDC_BUTTON_UP                   1039
 #define IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER 1039
 #define IDC_CHECK_TOPMOST               1040
+#define IDC_CHECK_SHOWDIR               1040
 #define IDC_BUTTON_NEW4                 1041
 #define IDC_CHECK_HIDEONINACTIVE        1041
 #define IDC_COMBO_TRANSPARENCY          1042
@@ -159,7 +159,6 @@
 #define IDC_BUTTON_SHORTCUT             1057
 #define IDC_SYSLINK2                    1058
 #define IDC_CHECK_SENDTO                1059
-#define IDC_SYSLINK3                    1060
 #define IDC_STATIC_REMARK               1061
 #define IDC_CHECK_STARTMENU             1062
 #define IDC_LIST_TYPES                  1062
@@ -172,14 +171,11 @@
 #define IDC_CHECK_RESOLVELINKS          1066
 #define IDC_BUTTON_ADD                  1066
 #define IDC_TREE_PAGES                  1067
-#define IDC_LIST1                       1067
 #define IDC_STATIC_BREADCRUMBS          1068
 #define IDC_STATIC_AFTERCOMMMAND        1068
 #define IDC_STATIC_PAGEAREA             1069
 #define IDC_STATIC_AFTERCOMMAND         1069
-#define IDC_COMBO1                      1070
 #define IDC_COMBO_TYPE                  1071
-#define IDC_EDIT1                       1071
 #define IDC_EDIT_ARGUMENTS              1071
 #define IDC_EDIT_PYTHONDLLPATH          1071
 #define IDC_STATIC_WORKDIR              1072
@@ -187,9 +183,7 @@
 #define IDC_STATIC_PARAMHELP            1074
 #define IDC_CHECK_ENABLECALCULATOR      1075
 #define IDC_BUTTON_BROWSE               1076
-#define IDC_CHECK_ENABLECALCULATOR2     1077
 #define IDC_CHECK_ENABLE_WORKSHEET      1077
-#define IDC_BUTTON1                     1077
 #define IDC_BUTTON_CLEAR                1077
 
 // Next default values for new objects

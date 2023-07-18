@@ -10,6 +10,8 @@ public:
 	virtual ~ExecSettingDialog();
 
 
+	// Ctrl+Enterキー実行でフォルダ表示する
+	BOOL mIsShowFolderIfCtrlPressed;
 	// フォルダを開くファイラーを指定
 	BOOL mIsUseExternalFiler;
 	// ファイラーのパス
