@@ -30,12 +30,18 @@ struct IconLoader::PImpl
 
 	}
 
+	int GetImageResIconCount()
+	{
+		return (int)ExtractIconEx(mImgResDll, 0, nullptr, nullptr, 0);
+	}
+
 	HICON GetImageResIcon(int index)
 	{
 		HICON icon[1];
 		UINT n = ExtractIconEx(mImgResDll, index, icon, NULL, 1);
 		return (n == 1) ? icon[0]: NULL;
 	}
+
 	HICON GetShell32Icon(int index)
 	{
 		HICON icon[1];
@@ -168,7 +174,15 @@ HICON IconLoader::LoadSettingIcon()
 
 HICON IconLoader::LoadExitIcon()
 {
-	return GetImageResIcon(235);
+	int n = in->GetImageResIconCount();
+	if (n == 334) {
+		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
+		return GetImageResIcon(235);
+	}
+	else {
+		// Win11
+		return GetImageResIcon(236);
+	}
 }
 
 HICON IconLoader::LoadEditIcon()
@@ -215,7 +229,16 @@ HICON IconLoader::LoadUnknownIcon()
 
 HICON IconLoader::LoadReloadIcon()
 {
-	return GetImageResIcon(228);
+	int n = in->GetImageResIconCount();
+	if (n == 334) {
+		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
+		return GetImageResIcon(228);
+	}
+	else {
+		// Win11
+		return GetImageResIcon(229);
+	}
+
 }
 
 HICON IconLoader::LoadRegisterWindowIcon()

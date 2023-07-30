@@ -58,6 +58,9 @@
     <Filter Include="commands\excel">
       <UniqueIdentifier>{0ac1b988-6a43-45ba-b864-5ffa754935d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\bookmarks">
+      <UniqueIdentifier>{4c65bc41-4606-44d6-a1af-f371b5f81325}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -297,9 +300,6 @@
     <ClInclude Include="commands\filter\FilterEditDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
-    <ClInclude Include="commands\filter\CharConverter.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
     <ClInclude Include="commands\filter\FilterDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
@@ -395,6 +395,18 @@
     </ClInclude>
     <ClInclude Include="commands\excel\ExcelWorkSheets.h">
       <Filter>commands\excel</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkCommand.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\Bookmarks.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\CharConverter.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -617,9 +629,6 @@
     <ClCompile Include="commands\filter\FilterEditDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
-    <ClCompile Include="commands\filter\CharConverter.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
     <ClCompile Include="commands\filter\FilterDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
@@ -712,6 +721,18 @@
     </ClCompile>
     <ClCompile Include="commands\excel\ExcelWorkSheets.cpp">
       <Filter>commands\excel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\Bookmarks.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\CharConverter.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

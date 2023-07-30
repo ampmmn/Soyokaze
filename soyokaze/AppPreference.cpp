@@ -547,6 +547,11 @@ bool AppPreference::IsEnableExcelWorksheet()
 	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), false);
 }
 
+bool AppPreference::IsEnableBookmark()
+{
+	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), false);
+}
+
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);

@@ -64,6 +64,8 @@ public:
 
 	bool IsEnableExcelWorksheet();
 
+	bool IsEnableBookmark();
+
 	bool IsShowFolderIfCtrlKeyIsPressed();
 
 protected:

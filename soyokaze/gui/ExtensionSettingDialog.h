@@ -13,6 +13,7 @@ public:
 	CString mPythonDLLPath;
 
 	BOOL mIsEnableWorksheet;
+	BOOL mIsEnableBookmarks;
 
 protected:
 	bool UpdateStatus();

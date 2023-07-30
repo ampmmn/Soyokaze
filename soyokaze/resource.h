@@ -185,6 +185,7 @@
 #define IDC_BUTTON_BROWSE               1076
 #define IDC_CHECK_ENABLE_WORKSHEET      1077
 #define IDC_BUTTON_CLEAR                1077
+#define IDC_CHECK_ENABLE_BOOKMARKS      1078
 
 // Next default values for new objects
 // 

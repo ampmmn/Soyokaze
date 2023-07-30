@@ -2,7 +2,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace filter {
+namespace common {
 
 class CharConverter
 {
@@ -19,7 +19,7 @@ protected:
 };
 
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze
 

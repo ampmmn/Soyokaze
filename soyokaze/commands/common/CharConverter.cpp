@@ -8,7 +8,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace filter {
+namespace common {
 
 
 CharConverter::CharConverter()
@@ -35,7 +35,7 @@ CString& CharConverter::Convert(const char* src, CString& dst)
 }
 
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace soyokaze
 

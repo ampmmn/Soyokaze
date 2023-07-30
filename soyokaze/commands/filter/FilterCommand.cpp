@@ -5,7 +5,7 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
-#include "commands/filter/CharConverter.h"
+#include "commands/common/CharConverter.h"
 #include "commands/filter/FilterEditDialog.h"
 #include "commands/filter/FilterDialog.h"
 #include "core/CommandRepository.h"
@@ -29,6 +29,7 @@ using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 using LocalPathResolver = soyokaze::utility::LocalPathResolver;
+using CharConverter = soyokaze::commands::common::CharConverter;
 
 namespace soyokaze {
 namespace commands {
