@@ -252,8 +252,9 @@ BEGIN
     LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,59,180,19
     GROUPBOX        "Excelワークシート選択機能",IDC_STATIC,7,91,265,31
     CONTROL         "有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,104,60,10
-    GROUPBOX        "ブックマーク選択機能",IDC_STATIC,7,127,265,31
+    GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,7,127,265,42
     CONTROL         "有効にする(&B)",IDC_CHECK_ENABLE_BOOKMARKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,141,60,10
+    LTEXT           "Edge/Chromeのブックマークを候補として表示します",IDC_STATIC,25,153,164,9
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -523,8 +524,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,2,0,1
- PRODUCTVERSION 0,2,0,1
+ FILEVERSION 0,3,0,1
+ PRODUCTVERSION 0,3,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -540,12 +541,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.2.0.1"
+            VALUE "FileVersion", "0.3.0.1"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.2.0.1"
+            VALUE "ProductVersion", "0.3.0.1"
         END
     END
     BLOCK "VarFileInfo"
