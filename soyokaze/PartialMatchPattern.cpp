@@ -12,6 +12,8 @@
 struct PartialMatchPattern::PImpl
 {
 	std::vector<std::wregex> mRegPatterns;
+	std::wregex mRegPatternFront;
+
 	CString mWord;
 	CString mWholeText;
 	bool mHasError;
@@ -112,6 +114,9 @@ void PartialMatchPattern::SetParam(
 
 	if (words.empty() == false) {
 		in->mWord = words[0];
+
+		std::wstring escapedPat = Pattern::StripEscapeChars(words[0]);
+		in->mRegPatternFront = std::wregex(L"^" + escapedPat);
 	}
 }
 
@@ -134,8 +139,14 @@ int PartialMatchPattern::Match(
 		if (std::regex_search((const wchar_t*)str, pat) == false) {
 			return Mismatch;
 		}
-
 	}
+
+	// 先頭のキーワードに前方一致する場合は前方一致とみなす
+	if (std::regex_search((const wchar_t*)str, in->mRegPatternFront)) {
+		return FrontMatch;
+	}
+
+	// そうでなければ部分一致
 	return PartialMatch;
 }
 
