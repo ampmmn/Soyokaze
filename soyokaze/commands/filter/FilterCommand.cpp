@@ -118,12 +118,13 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 	ExpandArguments(commandLine, args);
 	ExpandClipboard(commandLine);
 
-	CString workDir;
+	CString workDirStr;
 	if (mParam.mDir.GetLength() > 0) {
-		workDir = mParam.mDir;
-		ExpandAfxCurrentDir(workDir);
+		workDirStr = mParam.mDir;
+		ExpandAfxCurrentDir(workDirStr);
 	}
 
+	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;
 	BOOL isOK = CreateProcess(path, commandLine.GetBuffer(commandLine.GetLength()), NULL, NULL, TRUE, 0, NULL, workDir, &si, &pi);
 	commandLine.ReleaseBuffer();
 
