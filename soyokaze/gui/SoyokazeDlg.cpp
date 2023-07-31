@@ -217,13 +217,23 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 	HWND hwnd = GetSafeHwnd();
 	if (::IsWindowVisible(hwnd) == FALSE) {
 
+		AppPreference* pref= AppPreference::Get();
+
 		// 非表示状態なら表示
 		ScopeAttachThreadInput scope;
+
+		if (pref->IsShowMainWindowOnCurorPos()) {
+			// マウスカーソル位置に入力欄ウインドウを表示する
+			POINT cursorPos;
+			::GetCursorPos(&cursorPos);
+			::SetWindowPos(hwnd, nullptr, cursorPos.x, cursorPos.y, 0, 0, 
+			               SWP_NOZORDER | SWP_NOSIZE);
+		}
+
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
 
-		AppPreference* pref= AppPreference::Get();
 		if (pref->IsIMEOffOnActive()) {
 			in->mKeywordEdit.SetIMEOff();
 		}

@@ -142,6 +142,7 @@
 #define IDC_BUTTON_BROWSEFILE           1044
 #define IDC_EDIT_DEFAULTCOMMENT         1044
 #define IDC_EDIT_FILERPARAM             1045
+#define IDC_CHECK_MOVETOCURSOR          1045
 #define IDC_BUTTON_HOTKEY               1046
 #define IDC_EDIT_FILERPATH              1047
 #define IDC_CHECK_SHIFT                 1048

@@ -22,6 +22,10 @@ struct ViewSettingDialog::PImpl
 	// 半透明表示の透明度
 	UINT mAlpha;
 
+	// マウスカーソル位置に入力欄を表示する
+	BOOL mIsShowMainWindowOnCursor;
+
+
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
 };
@@ -75,6 +79,8 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
 
+	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), (bool)in->mIsShowMainWindowOnCursor);
+
 	__super::OnOK();
 }
 
@@ -88,6 +94,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_ALPHA, in->mAlpha);
 	DDV_MinMaxInt(pDX, in->mAlpha, 0, 255);
 	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
+	DDX_Check(pDX, IDC_CHECK_MOVETOCURSOR, in->mIsShowMainWindowOnCursor);
 }
 
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
@@ -141,4 +148,5 @@ void ViewSettingDialog::OnEnterSettings()
 
 	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
 	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
+	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 }

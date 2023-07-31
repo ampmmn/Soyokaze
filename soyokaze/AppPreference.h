@@ -68,6 +68,9 @@ public:
 
 	bool IsShowFolderIfCtrlKeyIsPressed();
 
+	// 入力欄ウインドウをマウスカーソル位置に表示するか
+	bool IsShowMainWindowOnCurorPos();
+
 protected:
 	AppPreference();
 	~AppPreference();

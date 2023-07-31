@@ -557,3 +557,9 @@ bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 }
 
+// 入力欄ウインドウをマウスカーソル位置に表示するか
+bool AppPreference::IsShowMainWindowOnCurorPos()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
+}
+
