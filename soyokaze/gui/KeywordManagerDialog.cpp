@@ -18,6 +18,7 @@ using Command = soyokaze::core::Command;
 // リストの列情報
 enum {
 	COL_CMDNAME,      // コマンド名
+	COL_CMDTYPE,      // 種別
 	COL_DESCRIPTION,  // 説明
 };
 
@@ -27,6 +28,8 @@ enum {
 	SORT_DESCEND_NAME,         // コマンド名-降順
 	SORT_ASCEND_DESCRIPTION,   // 説明-昇順
 	SORT_DESCEND_DESCRIPTION,  // 説明-降順
+	SORT_ASCEND_CMDTYPE,   // 種別-昇順
+	SORT_DESCEND_CMDTYPE,  // 種別-降順
 };
 
 
@@ -51,12 +54,12 @@ void KeywordManagerDialog::PImpl::SortCommands()
 {
 	if (mSortType == SORT_ASCEND_NAME) {
 		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
-			return l->GetName() < r->GetName();
+			return l->GetName().CompareNoCase(r->GetName()) < 0;
 		});
 	}
 	else if (mSortType == SORT_DESCEND_NAME) {
 		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
-			return r->GetName() < l->GetName();
+			return r->GetName().CompareNoCase(l->GetName()) < 0;
 		});
 	}
 	else if (mSortType == SORT_ASCEND_DESCRIPTION) {
@@ -67,6 +70,16 @@ void KeywordManagerDialog::PImpl::SortCommands()
 	else if (mSortType == SORT_DESCEND_DESCRIPTION) {
 		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
 			return r->GetDescription() < l->GetDescription();
+		});
+	}
+	else if (mSortType == SORT_ASCEND_CMDTYPE) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return l->GetTypeDisplayName() < r->GetTypeDisplayName();
+		});
+	}
+	else if (mSortType == SORT_DESCEND_CMDTYPE) {
+		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
+			return r->GetTypeDisplayName() < l->GetTypeDisplayName();
 		});
 	}
 }
@@ -129,15 +142,22 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 120;
+	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mListCtrl.InsertColumn(0,&lvc);
+
+	strHeader.LoadString(IDS_COMMANDTYPE);
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 100;
+	lvc.fmt = LVCFMT_LEFT;
+	in->mListCtrl.InsertColumn(1,&lvc);
+
 
 	strHeader.LoadString(IDS_DESCRIPTION);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 200;
 	lvc.fmt = LVCFMT_LEFT;
-	in->mListCtrl.InsertColumn(1,&lvc);
+	in->mListCtrl.InsertColumn(2,&lvc);
 
 	ResetContents();
 
@@ -326,6 +346,10 @@ void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 		// ソート方法の変更(コマンド名でソート)
 		in->mSortType = in->mSortType == SORT_ASCEND_NAME ? SORT_DESCEND_NAME : SORT_ASCEND_NAME;
 	}
+	else if (clickedCol == COL_CMDTYPE) {
+		// ソート方法の変更(説明でソート)
+		in->mSortType = in->mSortType == SORT_ASCEND_CMDTYPE ? SORT_DESCEND_CMDTYPE : SORT_ASCEND_CMDTYPE;
+	}
 	else if (clickedCol == COL_DESCRIPTION) {
 		// ソート方法の変更(説明でソート)
 		in->mSortType = in->mSortType == SORT_ASCEND_DESCRIPTION ? SORT_DESCEND_DESCRIPTION : SORT_ASCEND_DESCRIPTION;
@@ -368,8 +392,15 @@ void KeywordManagerDialog::OnGetDispInfo(
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
 			}
 		}
+		else if (pDispInfo->item.iSubItem == COL_CMDTYPE) {
+			// 説明列のデータをコピー
+			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
+				auto cmd = in->mCommands[itemIndex];
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetTypeDisplayName(), _TRUNCATE);
+			}
+		}
 		else if (pDispInfo->item.iSubItem == COL_DESCRIPTION) {
-			// 2列目(説明)のデータをコピー
+			// 説明列のデータをコピー
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
 				auto cmd = in->mCommands[itemIndex];
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetDescription(), _TRUNCATE);
