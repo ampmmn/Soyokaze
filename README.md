@@ -2,7 +2,7 @@
 
 bluewind風のランチャーソフト。
 
-![画面](image/soyokaze-window.png)
+![画面](image/soyokaze-window.gif)
 
 ## bluewindとは
 
