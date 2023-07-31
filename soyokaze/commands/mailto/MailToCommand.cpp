@@ -44,6 +44,12 @@ CString MailToCommand::GetDescription()
 	return _T("あて先を指定してメール");
 }
 
+CString MailToCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_MAILTO);
+	return TEXT_TYPE;
+}
+
 BOOL MailToCommand::Execute()
 {
 	ShellExecCommand::ATTRIBUTE attr;

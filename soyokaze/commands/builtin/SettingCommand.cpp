@@ -39,6 +39,12 @@ CString SettingCommand::GetDescription()
 	return _T("【設定】");
 }
 
+CString SettingCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL SettingCommand::Execute()
 {
 	if (mIsExecuting) {

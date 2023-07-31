@@ -4,6 +4,7 @@
 #include "core/CommandRepository.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +30,12 @@ ManagerCommand::~ManagerCommand()
 CString ManagerCommand::GetName()
 {
 	return mName;
+}
+
+CString ManagerCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
 }
 
 CString ManagerCommand::GetDescription()

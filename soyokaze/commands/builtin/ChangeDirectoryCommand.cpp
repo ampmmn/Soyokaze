@@ -39,6 +39,12 @@ CString ChangeDirectoryCommand::GetDescription()
 	return _T("【カレントディレクトリ変更】");
 }
 
+CString ChangeDirectoryCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL ChangeDirectoryCommand::Execute()
 {
 	Parameter param;

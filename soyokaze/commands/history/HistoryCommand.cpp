@@ -63,6 +63,12 @@ CString HistoryCommand::GetDescription()
 	return _T("");
 }
 
+CString HistoryCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_HISTORY);
+	return TEXT_TYPE;
+}
+
 BOOL HistoryCommand::Execute()
 {
 	return Execute(in->mParam);

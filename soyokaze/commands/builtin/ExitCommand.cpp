@@ -35,6 +35,12 @@ CString ExitCommand::GetDescription()
 	return _T("【終了】");
 }
 
+CString ExitCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL ExitCommand::Execute()
 {
 	if (AfxGetMainWnd() != nullptr) {

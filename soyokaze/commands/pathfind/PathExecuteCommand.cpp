@@ -79,6 +79,12 @@ CString PathExecuteCommand::GetDescription()
 	return in->mDescription;
 }
 
+CString PathExecuteCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_PATHEXEC);
+	return TEXT_TYPE;
+}
+
 BOOL PathExecuteCommand::Execute()
 {
 	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {

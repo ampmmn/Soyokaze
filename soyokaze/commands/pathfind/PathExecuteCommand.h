@@ -18,6 +18,7 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
+	CString GetTypeDisplayName() override;
 	BOOL Execute() override;
 	BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;

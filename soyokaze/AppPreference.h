@@ -74,6 +74,9 @@ public:
 	// 入力欄ウインドウをマウスカーソル位置に表示するか
 	bool IsShowMainWindowOnCurorPos();
 
+	// 入力欄ウインドウにコマンド種別を表示するか
+	bool IsShowCommandType();
+
 protected:
 	AppPreference();
 	~AppPreference();

@@ -82,6 +82,12 @@ CString RegExpCommand::GetDescription()
 	return in->mDescription;
 }
 
+CString RegExpCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);
+	return TEXT_TYPE;
+}
+
 BOOL RegExpCommand::Execute()
 {
 	Parameter param;

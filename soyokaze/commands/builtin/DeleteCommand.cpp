@@ -38,6 +38,12 @@ CString DeleteCommand::GetDescription()
 	return _T("【削除】");
 }
 
+CString DeleteCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL DeleteCommand::Execute()
 {
 	Parameter param;

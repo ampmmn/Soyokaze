@@ -39,6 +39,12 @@ CString MainDirCommand::GetDescription()
 	return _T("【メインフォルダ】");
 }
 
+CString MainDirCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL MainDirCommand::Execute()
 {
 	TCHAR mainDirPath[65536];

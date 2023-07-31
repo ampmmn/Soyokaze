@@ -58,6 +58,12 @@ CString WorksheetCommand::GetDescription()
 	return in->mDescription;
 }
 
+CString WorksheetCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
+	return TEXT_TYPE;
+}
+
 BOOL WorksheetCommand::Execute()
 {
 	Parameter param;

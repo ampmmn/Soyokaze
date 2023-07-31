@@ -56,6 +56,12 @@ CString CalculatorCommand::GetDescription()
 	return in->mDescription;
 }
 
+CString CalculatorCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CALCULATOR);
+	return TEXT_TYPE;
+}
+
 BOOL CalculatorCommand::Execute()
 {
 	Parameter emptyParams;

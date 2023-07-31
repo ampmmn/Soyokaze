@@ -39,6 +39,12 @@ CString NewCommand::GetDescription()
 	return _T("【新規作成】");
 }
 
+CString NewCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL NewCommand::Execute()
 {
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();

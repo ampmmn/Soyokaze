@@ -36,6 +36,12 @@ CString EditCommand::GetDescription()
 	return _T("【編集】");
 }
 
+CString EditCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL EditCommand::Execute()
 {
 	Parameter param;

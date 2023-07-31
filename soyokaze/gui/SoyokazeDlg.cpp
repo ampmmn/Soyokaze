@@ -58,6 +58,10 @@ struct CSoyokazeDlg::PImpl
 
 	// 候補一覧表示用リストボックス
 	CListCtrl mCandidateListBox;
+
+	// コマンド種別を表示する列を表示するか?
+	bool mHasCommandTypeColumn;
+
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
 	DWORD mLastCaretPos;
@@ -110,6 +114,7 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	in->mSharedHwnd = nullptr;
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
 	in->mWindowTransparencyPtr = new WindowTransparency;
+	in->mHasCommandTypeColumn = false;
 }
 
 CSoyokazeDlg::~CSoyokazeDlg()
@@ -224,9 +229,10 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 
 		if (pref->IsShowMainWindowOnCurorPos()) {
 			// マウスカーソル位置に入力欄ウインドウを表示する
+			CPoint offset(-60, -50);
 			POINT cursorPos;
 			::GetCursorPos(&cursorPos);
-			::SetWindowPos(hwnd, nullptr, cursorPos.x, cursorPos.y, 0, 0, 
+			::SetWindowPos(hwnd, nullptr, cursorPos.x + offset.x, cursorPos.y + offset.y, 0, 0, 
 			               SWP_NOZORDER | SWP_NOSIZE);
 		}
 
@@ -516,6 +522,17 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	lvc.fmt = LVCFMT_LEFT;
 	in->mCandidateListBox.InsertColumn(0,&lvc);
 
+	AppPreference* pref= AppPreference::Get();
+	in->mHasCommandTypeColumn = false;
+	if (pref->IsShowCommandType()) {
+		strHeader.LoadString(IDS_COMMANDTYPE);
+		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+		lvc.cx = 300;
+		lvc.fmt = LVCFMT_LEFT;
+		in->mCandidateListBox.InsertColumn(1,&lvc);
+		in->mHasCommandTypeColumn = true;
+	}
+
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 
 	// IDM_ABOUTBOX は、システム コマンドの範囲内になければなりません。
@@ -544,7 +561,6 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mSharedHwnd = new SharedHwnd(GetSafeHwnd());
 
-	AppPreference* pref= AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
@@ -1001,9 +1017,17 @@ void CSoyokazeDlg::OnGetDispInfo(
 
 		int itemIndex = pDispInfo->item.iItem;
 		if (pDispInfo->item.iSubItem == 0) {
+			// コマンド名の描画
 			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
 				auto cmd = in->mCandidates[itemIndex];
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
+			}
+		}
+		else if (pDispInfo->item.iSubItem == 1) {
+			// コマンドの種別の描画
+			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
+				auto cmd = in->mCandidates[itemIndex];
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetTypeDisplayName(), _TRUNCATE);
 			}
 		}
 	}
@@ -1062,7 +1086,13 @@ void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
 	__super::OnSize(type, cx, cy);
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
-		in->mCandidateListBox.SetColumnWidth(0, cx-70);
+		if (in->mHasCommandTypeColumn) {
+			in->mCandidateListBox.SetColumnWidth(0, cx-200);
+			in->mCandidateListBox.SetColumnWidth(1, 130);
+		}
+		else {
+			in->mCandidateListBox.SetColumnWidth(0, cx-70);
+		}
 	}
 }
 

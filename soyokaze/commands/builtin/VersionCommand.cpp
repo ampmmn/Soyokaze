@@ -37,6 +37,12 @@ CString VersionCommand::GetDescription()
 	return _T("【バージョン情報】");
 }
 
+CString VersionCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL VersionCommand::Execute()
 {
 	if (mIsExecuting) {

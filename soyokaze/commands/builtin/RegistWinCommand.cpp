@@ -81,6 +81,12 @@ CString RegistWinCommand::GetDescription()
 	return _T("【アクティブウインドウ登録】");
 }
 
+CString RegistWinCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL RegistWinCommand::Execute()
 {
 	in->mErrorMsg.Empty();

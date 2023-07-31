@@ -317,6 +317,12 @@ CString FilterCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString FilterCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
+	return TEXT_TYPE;
+}
+
 BOOL FilterCommand::Execute()
 {
 	Parameter param;

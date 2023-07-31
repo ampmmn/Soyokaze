@@ -569,3 +569,9 @@ bool AppPreference::IsShowMainWindowOnCurorPos()
 	return in->mSettings.Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 }
 
+// 入力欄ウインドウにコマンド種別を表示するか
+bool AppPreference::IsShowCommandType()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsShowCommandType"), true);
+}
+

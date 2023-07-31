@@ -166,6 +166,12 @@ CString GroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString GroupCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_GROUPCOMMAND);
+	return TEXT_TYPE;
+}
+
 BOOL GroupCommand::Execute()
 {
 	Parameter param;

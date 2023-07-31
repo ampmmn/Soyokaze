@@ -39,6 +39,12 @@ CString UserDirCommand::GetDescription()
 	return _T("【ユーザーフォルダ】");
 }
 
+CString UserDirCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL UserDirCommand::Execute()
 {
 	TCHAR userDirPath[65536];

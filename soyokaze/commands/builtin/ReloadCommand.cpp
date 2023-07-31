@@ -36,6 +36,12 @@ CString ReloadCommand::GetDescription()
 	return _T("【設定のリロード】");
 }
 
+CString ReloadCommand::GetTypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
+}
+
 BOOL ReloadCommand::Execute()
 {
 	return soyokaze::core::CommandRepository::GetInstance()->Load();

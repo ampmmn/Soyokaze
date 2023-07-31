@@ -190,8 +190,10 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(Pattern* pattern, std:
 		static BOOL CALLBACK OnEnumWindows(HWND hwnd, LPARAM lParam) {
 
 			LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
-			if ((style & WS_VISIBLE) == 0) {
-				// 非表示のウインドウは対象外
+			LONG_PTR styleRequired = (WS_CAPTION | WS_VISIBLE);
+
+			if ((style & styleRequired) != styleRequired) {
+				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
 				return TRUE;
 			}
 			auto param = (local_param*)lParam;

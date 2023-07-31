@@ -89,6 +89,18 @@ CString BookmarkCommand::GetDescription()
 	return in->mType + " - " + in->mName;
 }
 
+CString BookmarkCommand::GetTypeDisplayName()
+{
+	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
+
+	if (in->mType == _T("Chrome") || in->mType == _T("Edge")) {
+		return in->mType + _T(" ") + TEXT_BOOKMARK;
+	}
+	else {
+		return TEXT_BOOKMARK;
+	}
+}
+
 BOOL BookmarkCommand::Execute()
 {
 	Parameter param;

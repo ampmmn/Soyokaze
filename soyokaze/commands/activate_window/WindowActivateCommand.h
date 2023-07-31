@@ -4,13 +4,13 @@
 
 namespace soyokaze {
 namespace commands {
-namespace builtin {
+namespace activate_window {
 
-class VersionCommand : public soyokaze::core::Command
+class WindowActivateCommand : public soyokaze::core::Command
 {
 public:
-	VersionCommand(LPCTSTR name = nullptr);
-	virtual ~VersionCommand();
+	WindowActivateCommand(HWND hwnd);
+	virtual ~WindowActivateCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -29,15 +29,13 @@ public:
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	static CString GetType();
-
 protected:
-	CString mName;
-	bool mIsExecuting;
-	uint32_t mRefCount;
+	struct PImpl;
+	PImpl* in;
 };
 
-} // end of namespace builtin
+
+} // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace soyokaze
 
