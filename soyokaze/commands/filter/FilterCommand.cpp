@@ -397,7 +397,7 @@ FilterCommand& FilterCommand::GetParam(CommandParam& param)
 
 HICON FilterCommand::GetIcon()
 {
-	return IconLoader::Get()->GetImageResIcon(311);
+	return IconLoader::Get()->LoadPromptIcon();
 }
 
 int FilterCommand::Match(Pattern* pattern)

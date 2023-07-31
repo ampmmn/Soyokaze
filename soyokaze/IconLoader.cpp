@@ -251,3 +251,16 @@ HICON IconLoader::LoadGroupIcon()
 	return GetShell32Icon(250);
 }
 
+HICON IconLoader::LoadPromptIcon()
+{
+	int n = in->GetImageResIconCount();
+	if (n == 334) {
+		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
+		return GetImageResIcon(311);
+	}
+	else {
+		// Win11
+		return GetImageResIcon(312);
+	}
+}
+
