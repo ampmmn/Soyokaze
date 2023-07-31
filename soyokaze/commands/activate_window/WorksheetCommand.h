@@ -4,7 +4,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace excel {
+namespace activate_window {
 
 class Worksheet;
 
@@ -36,7 +36,7 @@ protected:
 };
 
 
-} // end of namespace excel
+} // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace soyokaze
 

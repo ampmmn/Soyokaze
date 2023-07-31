@@ -12,6 +12,7 @@
 ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("拡張機能"), IDD_EXTENSIONSETTING, parentWnd),
 	mIsEnableCalc(FALSE),
+	mIsEnableWindowTitle(FALSE),
 	mIsEnableWorksheet(FALSE),
 	mIsEnableBookmarks(FALSE)
 
@@ -31,6 +32,7 @@ void ExtensionSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Calculator:Enable"), (bool)mIsEnableCalc);
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
+	settingsPtr->Set(_T("WindowSwitch:EnableWindowSwitch"), (bool)mIsEnableWindowTitle);
 	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
 	settingsPtr->Set(_T("Bookmarks:EnableBookmarks"), (bool)mIsEnableBookmarks);
 	__super::OnOK();
@@ -41,6 +43,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_ENABLECALCULATOR, mIsEnableCalc);
 	DDX_Text(pDX, IDC_EDIT_PYTHONDLLPATH, mPythonDLLPath);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_WINDOWTITLE, mIsEnableWindowTitle);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_BOOKMARKS, mIsEnableBookmarks);
 }
@@ -88,6 +91,7 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 
+	mIsEnableWindowTitle = settingsPtr->Get(_T("WindowSwitch:EnableWindowSwitch"), false);
 	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), false);
 	mIsEnableBookmarks = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), false);
 }

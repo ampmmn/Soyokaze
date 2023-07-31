@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WorksheetCommand.h"
-#include "commands/excel/ExcelWorksheets.h"
+#include "commands/activate_window/ExcelWorksheets.h"
 #include "IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -13,7 +13,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace excel {
+namespace activate_window {
 
 
 struct WorksheetCommand::PImpl
@@ -123,7 +123,7 @@ uint32_t WorksheetCommand::Release()
 }
 
 
-} // end of namespace excel
+} // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace soyokaze
 

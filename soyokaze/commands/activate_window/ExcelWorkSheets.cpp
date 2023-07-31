@@ -8,7 +8,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace excel {
+namespace activate_window {
 
 struct WorkSheets::PImpl
 {
@@ -462,7 +462,7 @@ uint32_t Worksheet::Release()
 	return n;
 }
 
-} // end of namespace excel
+} // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace soyokaze
 

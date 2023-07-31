@@ -5,18 +5,18 @@
 
 namespace soyokaze {
 namespace commands {
-namespace excel {
+namespace activate_window {
 
 
-class ExcelCommandProvider :
+class ActivateWindowProvider :
 	public soyokaze::core::CommandProvider
 {
 	using Command = soyokaze::core::Command;
 	using CommandParameter = soyokaze::core::CommandParameter;
 
 private:
-	ExcelCommandProvider();
-	virtual ~ExcelCommandProvider();
+	ActivateWindowProvider();
+	virtual ~ActivateWindowProvider();
 
 public:
 	// 初回起動の初期化を行う
@@ -48,7 +48,13 @@ public:
 	virtual uint32_t AddRef();
 	virtual uint32_t Release();
 
-	DECLARE_COMMANDPROVIDER(ExcelCommandProvider)
+	DECLARE_COMMANDPROVIDER(ActivateWindowProvider)
+
+protected:
+	// Excelシート切り替え用コマンド生成
+	void QueryAdhocCommandsForWorksheets(Pattern* pattern, std::vector<CommandQueryItem>& commands);
+	// ウインドウ切り替え用コマンド生成
+	void QueryAdhocCommandsForWindows(Pattern* pattern, std::vector<CommandQueryItem>& commands);
 
 private:
 	struct PImpl;
@@ -56,7 +62,7 @@ private:
 };
 
 
-} // end of namespace excel
+} // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace soyokaze
 

@@ -55,11 +55,11 @@
     <Filter Include="commands\calculator">
       <UniqueIdentifier>{2fbf06ef-bc8b-4f4e-9afa-050c791778af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands\excel">
-      <UniqueIdentifier>{0ac1b988-6a43-45ba-b864-5ffa754935d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="commands\bookmarks">
       <UniqueIdentifier>{4c65bc41-4606-44d6-a1af-f371b5f81325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\activate_window">
+      <UniqueIdentifier>{0ac1b988-6a43-45ba-b864-5ffa754935d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,15 +387,6 @@
     <ClInclude Include="gui\ExtensionSettingDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="commands\excel\ExcelCommandProvider.h">
-      <Filter>commands\excel</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\excel\WorksheetCommand.h">
-      <Filter>commands\excel</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\excel\ExcelWorkSheets.h">
-      <Filter>commands\excel</Filter>
-    </ClInclude>
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
@@ -407,6 +398,18 @@
     </ClInclude>
     <ClInclude Include="commands\common\CharConverter.h">
       <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\ActivateWindowProvider.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\ExcelWorkSheets.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\WindowActivateCommand.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\WorksheetCommand.h">
+      <Filter>commands\activate_window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -713,15 +716,6 @@
     <ClCompile Include="gui\ExtensionSettingDialog.cpp">
       <Filter>gui</Filter>
     </ClCompile>
-    <ClCompile Include="commands\excel\ExcelCommandProvider.cpp">
-      <Filter>commands\excel</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\excel\WorksheetCommand.cpp">
-      <Filter>commands\excel</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\excel\ExcelWorkSheets.cpp">
-      <Filter>commands\excel</Filter>
-    </ClCompile>
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp">
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
@@ -733,6 +727,18 @@
     </ClCompile>
     <ClCompile Include="commands\common\CharConverter.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\ExcelWorkSheets.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\WindowActivateCommand.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\WorksheetCommand.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

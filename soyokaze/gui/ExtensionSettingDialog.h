@@ -12,7 +12,11 @@ public:
 	BOOL mIsEnableCalc;
 	CString mPythonDLLPath;
 
+	// ウインドウタイトルによるウインドウ切り替え機能
+	BOOL mIsEnableWindowTitle;
+	// Excelワークシート名によるウインドウ切り替え機能
 	BOOL mIsEnableWorksheet;
+	// ブックマーク選択機能
 	BOOL mIsEnableBookmarks;
 
 protected:

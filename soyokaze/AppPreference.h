@@ -64,6 +64,9 @@ public:
 
 	bool IsEnableExcelWorksheet();
 
+	// ウインドウの切り替え機能を有効にするか?
+	bool IsEnableWindowSwitch();
+
 	bool IsEnableBookmark();
 
 	bool IsShowFolderIfCtrlKeyIsPressed();

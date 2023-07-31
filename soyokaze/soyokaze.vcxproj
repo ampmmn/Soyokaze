@@ -563,6 +563,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandHotKeyMappings.h" />
+    <ClInclude Include="commands\activate_window\ActivateWindowProvider.h" />
+    <ClInclude Include="commands\activate_window\ExcelWorkSheets.h" />
+    <ClInclude Include="commands\activate_window\WindowActivateCommand.h" />
+    <ClInclude Include="commands\activate_window\WorksheetCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h" />
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
@@ -576,9 +580,6 @@
     <ClInclude Include="commands\common\CharConverter.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
-    <ClInclude Include="commands\excel\ExcelCommandProvider.h" />
-    <ClInclude Include="commands\excel\ExcelWorkSheets.h" />
-    <ClInclude Include="commands\excel\WorksheetCommand.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandParam.h" />
     <ClInclude Include="commands\filter\FilterCommandProvider.h" />
@@ -680,6 +681,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandHotKeyMappings.cpp" />
+    <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp" />
+    <ClCompile Include="commands\activate_window\ExcelWorkSheets.cpp" />
+    <ClCompile Include="commands\activate_window\WindowActivateCommand.cpp" />
+    <ClCompile Include="commands\activate_window\WorksheetCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp" />
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />
@@ -693,9 +698,6 @@
     <ClCompile Include="commands\common\CharConverter.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
-    <ClCompile Include="commands\excel\ExcelCommandProvider.cpp" />
-    <ClCompile Include="commands\excel\ExcelWorkSheets.cpp" />
-    <ClCompile Include="commands\excel\WorksheetCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandParam.cpp" />
     <ClCompile Include="commands\filter\FilterCommandProvider.cpp" />

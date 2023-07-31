@@ -187,6 +187,7 @@
 #define IDC_CHECK_ENABLE_WORKSHEET      1077
 #define IDC_BUTTON_CLEAR                1077
 #define IDC_CHECK_ENABLE_BOOKMARKS      1078
+#define IDC_CHECK_ENABLE_WINDOWTITLE    1079
 
 // Next default values for new objects
 // 

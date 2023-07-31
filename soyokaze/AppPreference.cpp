@@ -547,6 +547,12 @@ bool AppPreference::IsEnableExcelWorksheet()
 	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), false);
 }
 
+// ウインドウの切り替え機能を有効にするか?
+bool AppPreference::IsEnableWindowSwitch()
+{
+	return in->mSettings.Get(_T("WindowSwitch:EnableWindowSwitch"), false);
+}
+
 bool AppPreference::IsEnableBookmark()
 {
 	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), false);
