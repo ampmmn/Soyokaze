@@ -69,6 +69,12 @@ BOOL WindowActivateCommand::Execute()
 BOOL WindowActivateCommand::Execute(const Parameter& param)
 {
 	ScopeAttachThreadInput scope;
+
+	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
+	if (style & WS_MINIMIZE) {
+		// 最小化されていたら元に戻す
+		ShowWindow(in->mHwnd, SW_SHOWNORMAL);
+	}
 	SetForegroundWindow(in->mHwnd);
 
 	return TRUE;
