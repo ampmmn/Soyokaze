@@ -584,5 +584,5 @@ bool AppPreference::IsEnableMigemo()
 // コントロールパネルのアイテム検索を使用するか
 bool AppPreference::IsEnableControlPanel()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), true);
+	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), false);
 }
