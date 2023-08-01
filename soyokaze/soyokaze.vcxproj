@@ -577,7 +577,6 @@
     <ClInclude Include="commands\calculator\CalculatorAdhocCommandProvider.h" />
     <ClInclude Include="commands\calculator\CalculatorCommand.h" />
     <ClInclude Include="commands\common\AfxWWrapper.h" />
-    <ClInclude Include="commands\common\CharConverter.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
@@ -623,6 +622,7 @@
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
     <ClInclude Include="gui\ViewSettingDialog.h" />
+    <ClInclude Include="Migemo.h" />
     <ClInclude Include="NamedCommandHotKeyHandler.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="StartupParam.h" />
@@ -669,6 +669,7 @@
     <ClInclude Include="gui/ShortcutDialog.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
+    <ClInclude Include="utility\CharConverter.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
@@ -695,7 +696,6 @@
     <ClCompile Include="commands\calculator\CalculatorAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\calculator\CalculatorCommand.cpp" />
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
-    <ClCompile Include="commands\common\CharConverter.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />
@@ -741,6 +741,7 @@
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
     <ClCompile Include="gui\ViewSettingDialog.cpp" />
+    <ClCompile Include="Migemo.cpp" />
     <ClCompile Include="NamedCommandHotKeyHandler.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="StartupParam.cpp" />
@@ -795,6 +796,7 @@
     <ClCompile Include="gui/SettingDialog.cpp" />
     <ClCompile Include="gui/ShortcutDialog.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
+    <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />

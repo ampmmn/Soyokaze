@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "PartialMatchPattern.h"
+#include "AppPreference.h"
+#include "Migemo.h"
 #include "core/CommandParameter.h"
 #include <vector>
 #include <regex>
@@ -17,11 +19,26 @@ struct PartialMatchPattern::PImpl
 	CString mWord;
 	CString mWholeText;
 	bool mHasError;
+
+	Migemo mMigemo;
 };
 
 PartialMatchPattern::PartialMatchPattern() : in(new PImpl)
 {
 	in->mHasError = false;
+
+	auto pref = AppPreference::Get();
+
+	if (pref->IsEnableMigemo()) {
+		// Migemoの辞書設定
+		TCHAR dictPath[MAX_PATH_NTFS];
+		GetModuleFileName(nullptr, dictPath, MAX_PATH_NTFS);
+		PathRemoveFileSpec(dictPath);
+		PathAppend(dictPath, _T("dict\\utf-8\\migemo-dict"));
+		if (PathFileExists(dictPath)) {
+			in->mMigemo.Open(dictPath);
+		}
+	}
 }
 
 PartialMatchPattern::~PartialMatchPattern()
@@ -99,11 +116,22 @@ void PartialMatchPattern::SetParam(
 	std::vector<std::wregex> patterns;
 	patterns.reserve(words.size());
 
+	bool is1stWord = true;
 	for (auto& word : words) {
 
 		try {
-			std::wstring escapedPat = Pattern::StripEscapeChars(word);
-			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+
+			if (is1stWord && in->mMigemo.IsInitialized()) {
+				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
+				CString migemoExpr;
+				in->mMigemo.Query(word, migemoExpr);
+				patterns.push_back(std::wregex(std::wstring((const wchar_t*)migemoExpr), std::regex_constants::icase));
+			}
+			else {
+				std::wstring escapedPat = Pattern::StripEscapeChars(word);
+				patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+			}
+			is1stWord = false;
 		}
 		catch (std::regex_error&) {
 			in->mHasError = true;
@@ -129,9 +157,12 @@ int PartialMatchPattern::Match(
 		return Mismatch;
 	}
 
+	// 入力されたキーワードに完全一致するかどうかの判断
 	if (str.CompareNoCase(in->mWord) == 0) {
 		return WholeMatch;
 	}
+
+
 
 	for (auto& pat : in->mRegPatterns) {
 

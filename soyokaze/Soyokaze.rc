@@ -395,6 +395,13 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "入力画面を表示するときにIMEをオフにする(&M)",IDC_CHECK_IMEOFF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,19,159,10
     CONTROL         "ネットワークパスを無視する(&N)",IDC_CHECK_IGNOREUNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,38,108,10
+    CONTROL         "&C/Migemoによるローマ字検索を有効にする",IDC_CHECK_ENABLEMIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,56,149,10
+    GROUPBOX        "Migemo検索の利用方法",IDC_STATIC,29,76,279,80
+    LTEXT           "1. 下記URLからC/Migemo for Windows 64bit を入手する",IDC_STATIC,43,89,178,8
+    LTEXT           "2. 入手したzipに含まれるmigemo.dllをsoyokaze.exeと同じフォルダに置く",IDC_STATIC,44,122,224,8
+    LTEXT           "3. 入手したzipに含まれるdictフォルダをsoyokaze.exeと同じフォルダに置く",IDC_STATIC,44,140,226,8
+    CONTROL         "<A HREF=""https://www.kaoriya.net/software/cmigemo/"">https://www.kaoriya.net/software/cmigemo/</A>",IDC_SYSLINK1,
+                    "SysLink",WS_TABSTOP,53,103,147,15
 END
 
 IDD_VIEWSETTING DIALOGEX 0, 0, 344, 291

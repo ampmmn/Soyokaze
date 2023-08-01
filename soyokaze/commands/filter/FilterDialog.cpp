@@ -93,10 +93,14 @@ FilterDialog::FilterDialog(CWnd* pParent /*=nullptr*/)
 	in->mPattern = nullptr;
 	in->mWindowPositionPtr= nullptr;
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
+
+	AppPreference::Get()->RegisterListener(this);
 }
 
 FilterDialog::~FilterDialog()
 {
+	AppPreference::Get()->UnregisterListener(this);
+
 	delete in->mPattern;
 	// 位置情報を設定ファイルに保存する
 	delete in->mWindowPositionPtr;
@@ -577,6 +581,21 @@ void FilterDialog::OnSize(UINT type, int cx, int cy)
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.SetColumnWidth(0, cx-30);
 	}
+}
+
+void FilterDialog::OnAppFirstBoot()
+{
+}
+
+void FilterDialog::OnAppPreferenceUpdated()
+{
+	delete in->mPattern;
+	in->mPattern = nullptr;
+}
+
+void FilterDialog::OnAppExit()
+{
+	AppPreference::Get()->UnregisterListener(this);
 }
 
 } // end of namespace filter

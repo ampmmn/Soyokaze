@@ -575,3 +575,8 @@ bool AppPreference::IsShowCommandType()
 	return in->mSettings.Get(_T("Soyokaze:IsShowCommandType"), true);
 }
 
+// C/Migemo検索を利用するか
+bool AppPreference::IsEnableMigemo()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnableMigemo"), true);
+}

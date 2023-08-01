@@ -1,25 +1,23 @@
 #pragma once
 
 namespace soyokaze {
-namespace commands {
-namespace common {
+namespace utility {
 
 class CharConverter
 {
 public:
-	CharConverter();
+	CharConverter(int codePage = CP_UTF8);
 	~CharConverter();
 
 	CString& Convert(const char* src, CString& dst);
+	CStringA& Convert(const CString& src, CStringA& dst);
 
 
 protected:
-	CStringW mBuff;
-
+	int mCodePage;
 };
 
 
-} // end of namespace common
-} // end of namespace commands
+} // end of namespace utility
 } // end of namespace soyokaze
 

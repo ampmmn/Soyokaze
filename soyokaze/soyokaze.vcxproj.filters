@@ -396,9 +396,6 @@
     <ClInclude Include="commands\bookmarks\Bookmarks.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
-    <ClInclude Include="commands\common\CharConverter.h">
-      <Filter>commands\common</Filter>
-    </ClInclude>
     <ClInclude Include="commands\activate_window\ActivateWindowProvider.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
@@ -410,6 +407,12 @@
     </ClInclude>
     <ClInclude Include="commands\activate_window\WorksheetCommand.h">
       <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\CharConverter.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Migemo.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -725,9 +728,6 @@
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp">
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\CharConverter.cpp">
-      <Filter>commands\common</Filter>
-    </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
@@ -739,6 +739,12 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\WorksheetCommand.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\CharConverter.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Migemo.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

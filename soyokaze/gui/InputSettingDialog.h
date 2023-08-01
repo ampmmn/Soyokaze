@@ -14,6 +14,9 @@ public:
 	// ネットワークパスを無視する
 	BOOL mIsIgnoreUNC;
 
+	// C/Migemo検索を有効にする
+	BOOL mIsEnableMigemo;
+
 protected:
 	bool UpdateStatus();
 
@@ -26,5 +29,6 @@ protected:
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

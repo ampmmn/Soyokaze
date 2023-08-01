@@ -77,6 +77,9 @@ public:
 	// 入力欄ウインドウにコマンド種別を表示するか
 	bool IsShowCommandType();
 
+	// C/Migemo検索を利用するか
+	bool IsEnableMigemo();
+
 protected:
 	AppPreference();
 	~AppPreference();

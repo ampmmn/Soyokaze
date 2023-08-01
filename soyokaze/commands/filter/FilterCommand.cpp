@@ -5,13 +5,13 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
-#include "commands/common/CharConverter.h"
 #include "commands/filter/FilterEditDialog.h"
 #include "commands/filter/FilterDialog.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "utility/CharConverter.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -29,7 +29,7 @@ using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 using LocalPathResolver = soyokaze::utility::LocalPathResolver;
-using CharConverter = soyokaze::commands::common::CharConverter;
+using CharConverter = soyokaze::utility::CharConverter;
 
 namespace soyokaze {
 namespace commands {

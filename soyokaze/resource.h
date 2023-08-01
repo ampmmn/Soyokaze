@@ -166,6 +166,7 @@
 #define IDC_CHECK_IMEOFF2               1054
 #define IDC_CHECK_IGNOREUNC             1054
 #define IDC_COMBO_VK                    1055
+#define IDC_CHECK_ENABLEMIGEMO          1055
 #define IDC_SYSLINK1                    1056
 #define IDC_BUTTON_SHORTCUT             1057
 #define IDC_SYSLINK2                    1058

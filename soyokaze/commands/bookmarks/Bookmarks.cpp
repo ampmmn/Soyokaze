@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Bookmarks.h"
-#include "commands/common/CharConverter.h" 
+#include "utility/CharConverter.h" 
 #include <fstream>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -10,7 +10,7 @@
 #endif
 
 using json = nlohmann::json;
-using CharConverter = soyokaze::commands::common::CharConverter;
+using CharConverter = soyokaze::utility::CharConverter;
 
 
 namespace soyokaze {
