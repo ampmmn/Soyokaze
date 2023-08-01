@@ -579,6 +579,9 @@
     <ClInclude Include="commands\common\AfxWWrapper.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
+    <ClInclude Include="commands\controlpanel\ControllPanel.h" />
+    <ClInclude Include="commands\controlpanel\ControlPanelCommand.h" />
+    <ClInclude Include="commands\controlpanel\RegistryKey.h" />
     <ClInclude Include="commands\filter\FilterCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandParam.h" />
     <ClInclude Include="commands\filter\FilterCommandProvider.h" />
@@ -698,6 +701,9 @@
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
+    <ClCompile Include="commands\controlpanel\ControllPanel.cpp" />
+    <ClCompile Include="commands\controlpanel\ControlPanelCommand.cpp" />
+    <ClCompile Include="commands\controlpanel\RegistryKey.cpp" />
     <ClCompile Include="commands\filter\FilterCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandParam.cpp" />
     <ClCompile Include="commands\filter\FilterCommandProvider.cpp" />

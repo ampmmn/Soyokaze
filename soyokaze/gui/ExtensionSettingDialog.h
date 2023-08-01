@@ -18,6 +18,8 @@ public:
 	BOOL mIsEnableWorksheet;
 	// ブックマーク選択機能
 	BOOL mIsEnableBookmarks;
+	// コントロールパネル選択機能
+	BOOL mIsEnableControlPanel;
 
 protected:
 	bool UpdateStatus();

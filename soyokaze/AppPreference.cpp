@@ -580,3 +580,9 @@ bool AppPreference::IsEnableMigemo()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsEnableMigemo"), true);
 }
+
+// コントロールパネルのアイテム検索を使用するか
+bool AppPreference::IsEnableControlPanel()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), true);
+}

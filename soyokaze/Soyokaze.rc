@@ -258,6 +258,8 @@ BEGIN
     GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,7,145,269,42
     CONTROL         "有効にする(&B)",IDC_CHECK_ENABLE_BOOKMARKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,159,60,10
     LTEXT           "Edge/Chromeのブックマークを候補として表示します",IDC_STATIC,25,171,164,9
+    GROUPBOX        "コントロールパネル選択機能",IDC_STATIC,7,193,269,33
+    CONTROL         "有効にする(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,207,60,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -1430,6 +1432,7 @@ BEGIN
     IDS_COMMAND_HISTORY     "履歴"
     IDS_COMMAND_MAILTO      "メール"
     IDS_COMMAND_PATHEXEC    "パスを実行"
+    IDS_COMMAND_CONTROLPANEL "コントロールパネル"
 END
 
 #endif    // 日本語 (日本) resources

@@ -61,6 +61,9 @@
     <Filter Include="commands\activate_window">
       <UniqueIdentifier>{0ac1b988-6a43-45ba-b864-5ffa754935d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\controllpanel">
+      <UniqueIdentifier>{18d63481-0ef5-40b7-bfbf-c6836f6277b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -414,6 +417,15 @@
     <ClInclude Include="Migemo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="commands\controlpanel\RegistryKey.h">
+      <Filter>commands\controllpanel</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\controlpanel\ControllPanel.h">
+      <Filter>commands\controllpanel</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\controlpanel\ControlPanelCommand.h">
+      <Filter>commands\controllpanel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -745,6 +757,15 @@
     </ClCompile>
     <ClCompile Include="Migemo.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\controlpanel\RegistryKey.cpp">
+      <Filter>commands\controllpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\controlpanel\ControllPanel.cpp">
+      <Filter>commands\controllpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\controlpanel\ControlPanelCommand.cpp">
+      <Filter>commands\controllpanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

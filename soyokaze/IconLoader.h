@@ -7,6 +7,8 @@ public:
 
 	HICON LoadIconFromPath(const CString& path);
 
+	HICON GetDefaultIcon(const CString& path);
+
 	HICON GetShell32Icon(int index);
 	HICON GetImageResIcon(int index);
 

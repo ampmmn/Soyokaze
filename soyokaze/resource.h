@@ -85,6 +85,7 @@
 #define IDD_REGEXPCOMMAND               156
 #define IDS_COMMAND_PATHEXEC            156
 #define IDD_SHELLEXECUTECOMMAND2        157
+#define IDS_COMMAND_CONTROLPANEL        157
 #define IDD_NEWCOMMAND1                 158
 #define IDD_ARGUMENTS                   163
 #define IDC_EDIT_COMMAND                1000
@@ -199,6 +200,7 @@
 #define IDC_BUTTON_CLEAR                1077
 #define IDC_CHECK_ENABLE_BOOKMARKS      1078
 #define IDC_CHECK_ENABLE_WINDOWTITLE    1079
+#define IDC_CHECK_ENABLE_CONTROLPANEL   1080
 
 // Next default values for new objects
 // 

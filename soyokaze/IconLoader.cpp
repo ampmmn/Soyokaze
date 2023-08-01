@@ -54,6 +54,7 @@ struct IconLoader::PImpl
 	TCHAR mShell32Dll[MAX_PATH_NTFS];
 	std::map<int, HICON> mShell32IconCache;
 	std::map<int, HICON> mImageResIconCache;
+	std::map<CString, HICON> mDefaultIconCache;
 	HICON mEditIcon;
 	HICON mKeywordManagerIcon;
 
@@ -72,6 +73,11 @@ IconLoader::~IconLoader()
 		}
 	}
 	for (auto elem : in->mImageResIconCache) {
+		if (elem.second) {
+			DestroyIcon(elem.second);
+		}
+	}
+	for (auto elem : in->mDefaultIconCache) {
 		if (elem.second) {
 			DestroyIcon(elem.second);
 		}
@@ -117,6 +123,59 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	HICON hIcon = sfi.hIcon;
 	return hIcon;
 }
+
+static HICON LoadIconForID1(LPCTSTR dllPath)
+{
+	HMODULE dll = LoadLibraryEx(dllPath, nullptr, LOAD_LIBRARY_AS_DATAFILE | LOAD_WITH_ALTERED_SEARCH_PATH);
+	if (dll == nullptr) {
+		return nullptr;
+	}
+
+	HRSRC hRes2 = FindResource(dll, MAKEINTRESOURCE(1), RT_ICON);
+	HGLOBAL hMem2 = LoadResource(dll, hRes2);
+	void* lpv2 = LockResource(hMem2);
+	HICON icon = CreateIconFromResource((PBYTE) lpv2, SizeofResource(dll, hRes2), TRUE, 0x00030000);
+
+	FreeLibrary(dll);
+	return icon;
+}
+
+HICON IconLoader::GetDefaultIcon(const CString& path)
+{
+	auto it = in->mDefaultIconCache.find(path);
+	if (it != in->mDefaultIconCache.end()) {
+		return it->second;
+	}
+
+	int n = 0;
+	CString dllPath = path.Tokenize(_T(","), n);
+	CString indexStr =  path.Tokenize(_T(","), n);
+
+	int index;
+	if (_stscanf_s(indexStr, _T("%d"), &index) != 1) {
+		return LoadUnknownIcon();
+	}
+
+
+	HICON icon[1] = {};
+	if (index == -1) {
+		// -1のときアイコン総数が返ってきてそうなので別系統の処理をする
+		icon[0] = LoadIconForID1(dllPath);
+	}
+	else {
+		UINT loadedCount = ExtractIconEx(dllPath, index, icon, nullptr, 1);
+	}
+
+	if (icon[0] == 0)  {
+		return LoadUnknownIcon();
+	}
+
+	in->mDefaultIconCache[path] = icon[0];
+
+	return icon[0];
+}
+
+
 
 HICON IconLoader::GetShell32Icon(int index)
 {

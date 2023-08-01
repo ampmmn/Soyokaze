@@ -140,12 +140,12 @@ void ActivateWindowProvider::QueryAdhocCommands(
 }
 
 // Provider間の優先順位を表す値を返す。小さいほど優先
-uint32_t ActivateWindowProvider::ActivateWindowProvider::GetOrder() const
+uint32_t ActivateWindowProvider::GetOrder() const
 {
 	return 2000;
 }
 
-uint32_t ActivateWindowProvider::ActivateWindowProvider::AddRef()
+uint32_t ActivateWindowProvider::AddRef()
 {
 	return ++in->mRefCount;
 }

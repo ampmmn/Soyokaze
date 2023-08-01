@@ -80,6 +80,9 @@ public:
 	// C/Migemo検索を利用するか
 	bool IsEnableMigemo();
 
+	// コントロールパネルのアイテム検索を使用するか
+	bool IsEnableControlPanel();
+
 protected:
 	AppPreference();
 	~AppPreference();
