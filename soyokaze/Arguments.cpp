@@ -63,7 +63,6 @@ bool Arguments::GetBWOptValue(LPCTSTR optName, CString& value)
 		}
 
 		value = arg.Mid(sepPos+1);
-		AfxMessageBox(value);
 		return true;
 	}
 	return false;
