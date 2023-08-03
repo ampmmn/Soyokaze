@@ -691,11 +691,11 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		in->mKeywordEdit.Clear();
 	}
 
-	in->mCandidateListBox.DeleteAllItems();
-	in->mSelIndex = -1;
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
+		in->mCandidateListBox.DeleteAllItems();
+		in->mSelIndex = -1;
 		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
@@ -751,8 +751,6 @@ void CSoyokazeDlg::OnEditCommandChanged()
 //		}
 //	}
 	in->mLastCaretPos = in->mKeywordEdit.GetSel();
-
-	in->mCandidateListBox.Invalidate();
 }
 
 void CSoyokazeDlg::OnOK()
