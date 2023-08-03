@@ -518,7 +518,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 300;
+	lvc.cx = 300;   // 実際はOnSizeでウインドウ幅に応じてリサイズするのでここの数値はダミー #dummy-col-width
 	lvc.fmt = LVCFMT_LEFT;
 	in->mCandidateListBox.InsertColumn(0,&lvc);
 
@@ -527,7 +527,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	if (pref->IsShowCommandType()) {
 		strHeader.LoadString(IDS_COMMANDTYPE);
 		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-		lvc.cx = 300;
+		lvc.cx = 300;  //  #dummy-col-width
 		lvc.fmt = LVCFMT_LEFT;
 		in->mCandidateListBox.InsertColumn(1,&lvc);
 		in->mHasCommandTypeColumn = true;
@@ -1085,11 +1085,11 @@ void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		if (in->mHasCommandTypeColumn) {
-			in->mCandidateListBox.SetColumnWidth(0, cx-200);
+			in->mCandidateListBox.SetColumnWidth(0, cx-155);
 			in->mCandidateListBox.SetColumnWidth(1, 130);
 		}
 		else {
-			in->mCandidateListBox.SetColumnWidth(0, cx-70);
+			in->mCandidateListBox.SetColumnWidth(0, cx-25);
 		}
 	}
 }
