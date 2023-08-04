@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ExcelWorkSheets.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include <mutex>
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -9,30 +11,6 @@
 namespace soyokaze {
 namespace commands {
 namespace activate_window {
-
-struct WorkSheets::PImpl
-{
-	// 前回の取得時のタイムスタンプ
-	DWORD mLastUpdate;
-	std::vector<Worksheet*> mCache;
-};
-
-WorkSheets::WorkSheets() : in(new PImpl)
-{
-	CoInitialize(NULL);
-
-	in->mLastUpdate = 0;
-}
-
-WorkSheets::~WorkSheets()
-{
-	for (auto elem : in->mCache) {
-		elem->Release();
-	}
-	in->mCache.clear();
-
-	CoUninitialize();
-}
 
 // 
 /**
@@ -91,6 +69,193 @@ static HRESULT AutoWrap(
 	return pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, &dp, pvResult, NULL, NULL);
 }
 
+
+enum {
+	STATUS_READY,   // 待機状態
+	STATUS_BUSY,   //  更新中
+};
+
+struct WorkSheets::PImpl
+{
+	void Update();
+
+	bool IsBusy() {
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mStatus == STATUS_BUSY;
+	}
+
+	// 前回の取得時のタイムスタンプ
+	DWORD mLastUpdate;
+	std::vector<Worksheet*> mCache;
+
+	// 生成処理の排他制御
+	std::mutex mMutex;
+
+	int mStatus;
+};
+
+void WorkSheets::PImpl::Update()
+{
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mStatus = STATUS_BUSY;
+	}
+
+	std::thread th([&]() {
+		// ExcelのCLSIDを得る
+		CLSID clsid;
+		HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
+
+		if (FAILED(hr)) {
+			// 取得できなかった(インストールされていないとか)
+			std::lock_guard<std::mutex> lock(mMutex);
+			mLastUpdate = GetTickCount();
+			mStatus = STATUS_READY;
+			return ;
+		}
+
+		// 既存のExcel.Applicationインスタンスを取得する
+		CComPtr<IUnknown> unkPtr;
+		hr = GetActiveObject(clsid, NULL, &unkPtr);
+		if(FAILED(hr)) {
+			// 起動してない
+			std::lock_guard<std::mutex> lock(mMutex);
+
+			for (auto item : mCache) {
+				item->Release();
+			}
+			mCache.clear();
+
+			mLastUpdate = GetTickCount();
+			mStatus = STATUS_READY;
+			return ;
+		}
+
+		CComPtr<IDispatch> excelApp;
+		unkPtr->QueryInterface(&excelApp);
+
+		VARIANT result;
+
+		// Get Workbooks collection
+		CComPtr<IDispatch> workbooks;
+		{
+			VariantInit(&result);
+			AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Workbooks", 0);
+			workbooks = result.pdispVal;
+		}
+
+		CComBSTR name;
+		{
+			VariantInit(&result);
+			AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Path", 0);
+			name = result.bstrVal;
+		}
+		CString appPath = name;
+
+		int wbCount = 0;
+		{
+			VariantInit(&result);
+			AutoWrap(DISPATCH_PROPERTYGET, &result, workbooks, L"Count", 0);
+			wbCount = result.intVal;
+		}
+
+		std::vector<Worksheet*> tmpList;
+
+		for (int i = 0; i < wbCount; ++i) {
+
+			CComPtr<IDispatch> wb;
+			{
+				VARIANT arg1;
+				VariantInit(&arg1);
+				arg1.vt = VT_INT;
+				arg1.intVal = i + 1;
+
+				VariantInit(&result);
+				AutoWrap(DISPATCH_PROPERTYGET, &result, workbooks, L"Item", 1, &arg1);
+				wb = result.pdispVal;
+			}
+
+			{
+				VariantInit(&result);
+				AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Name", 0);
+
+				name = result.bstrVal;
+			}
+
+			CString workbookName = name;
+
+			CComPtr<IDispatch> sheets;
+			{
+				VariantInit(&result);
+				AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Worksheets", 0);
+				sheets = result.pdispVal;
+			}
+
+			int sheetCount = 0;
+			{
+				VariantInit(&result);
+				AutoWrap(DISPATCH_PROPERTYGET, &result, sheets, L"Count", 0);
+				sheetCount = result.intVal;
+			}
+
+			for (int j = 0; j < sheetCount; ++j) {
+
+				CComPtr<IDispatch> sheet;
+				{
+					VARIANT arg1;
+					VariantInit(&arg1);
+					arg1.vt = VT_INT;
+					arg1.intVal = j + 1;
+
+					VariantInit(&result);
+					AutoWrap(DISPATCH_PROPERTYGET, &result, sheets, L"Item", 1, &arg1);
+					sheet = result.pdispVal;
+				}
+
+
+				{
+					VariantInit(&result);
+					AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"Name", 0);
+					name = result.bstrVal;
+				}
+
+				CString sheetName = name;
+
+				tmpList.push_back(new Worksheet(appPath, workbookName, sheetName));
+			}
+		}
+
+		std::lock_guard<std::mutex> lock(mMutex);
+		mCache.swap(tmpList);
+		mLastUpdate = GetTickCount();
+		mStatus = STATUS_READY;
+
+		for (auto item : tmpList) {
+			item->Release();
+		}
+	});
+	th.detach();
+}
+
+WorkSheets::WorkSheets() : in(new PImpl)
+{
+	CoInitialize(NULL);
+
+	in->mLastUpdate = 0;
+	in->mStatus = STATUS_READY;
+}
+
+WorkSheets::~WorkSheets()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	for (auto elem : in->mCache) {
+		elem->Release();
+	}
+	in->mCache.clear();
+
+	CoUninitialize();
+}
+
 // この時間以内に再実行されたら、前回の結果を再利用する
 #define INTERVAL_REUSE 5000
 
@@ -99,6 +264,9 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
 	DWORD elapsed = GetTickCount() - in->mLastUpdate;
 	if (elapsed < INTERVAL_REUSE) {
+
+		std::lock_guard<std::mutex> lock(in->mMutex);
+
 		worksheets = in->mCache;
 		for (auto elem : worksheets) {
 			elem->AddRef();
@@ -106,140 +274,13 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 		return true;
 	}
 
-	// キャッシュクリア
-	for (auto elem : in->mCache) {
-		elem->Release();
-	}
-	in->mCache.clear();
-
-
-	// ExcelのCLSIDを得る
-	CLSID clsid;
-	HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
-
-	if (FAILED(hr)) {
-		// 取得できなかった(インストールされていないとか)
+	if (in->IsBusy()) {
 		return false;
 	}
 
-	// 既存のExcel.Applicationインスタンスを取得する
-	CComPtr<IUnknown> unkPtr;
-	hr = GetActiveObject(clsid, NULL, &unkPtr);
-	if(FAILED(hr)) {
-		// 起動してない
-		return false;
-	}
-
-	CComPtr<IDispatch> excelApp;
-	unkPtr->QueryInterface(&excelApp);
-
-	VARIANT result;
-
-	// Get Workbooks collection
-	CComPtr<IDispatch> workbooks;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Workbooks", 0);
-		workbooks = result.pdispVal;
-	}
-
-	CComBSTR name;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Path", 0);
-		name = result.bstrVal;
-	}
-	CString appPath = name;
-
-	int wbCount = 0;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, workbooks, L"Count", 0);
-		wbCount = result.intVal;
-	}
-
-	std::vector<Worksheet*> tmpList;
-
-	for (int i = 0; i < wbCount; ++i) {
-
-		CComPtr<IDispatch> wb;
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = i + 1;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, workbooks, L"Item", 1, &arg1);
-			wb = result.pdispVal;
-		}
-
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Name", 0);
-
-			name = result.bstrVal;
-		}
-
-		CString workbookName = name;
-
-		CComPtr<IDispatch> sheets;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Worksheets", 0);
-			sheets = result.pdispVal;
-		}
-
-		int sheetCount = 0;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, sheets, L"Count", 0);
-			sheetCount = result.intVal;
-		}
-
-		for (int j = 0; j < sheetCount; ++j) {
-
-			CComPtr<IDispatch> sheet;
-			{
-				VARIANT arg1;
-				VariantInit(&arg1);
-				arg1.vt = VT_INT;
-				arg1.intVal = j + 1;
-
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, sheets, L"Item", 1, &arg1);
-				sheet = result.pdispVal;
-			}
-
-
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"Name", 0);
-				name = result.bstrVal;
-			}
-
-			CString sheetName = name;
-
-			tmpList.push_back(new Worksheet(appPath, workbookName, sheetName));
-		}
-	}
-
-
-	for (auto item : worksheets) {
-		item->Release();
-	}
-	worksheets.clear();
-
-	worksheets.swap(tmpList);
-
-	// キャッシュに保持しておく
-	in->mCache = worksheets;
-	for (auto elem : in->mCache) {
-		elem->AddRef();
-	}
-	in->mLastUpdate = GetTickCount();
-
-	return true;
+	// Excelのシート一覧を更新する
+	in->Update();
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
