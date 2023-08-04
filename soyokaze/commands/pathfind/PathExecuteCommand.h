@@ -14,7 +14,7 @@ public:
 	PathExecuteCommand();
 	virtual ~PathExecuteCommand();
 
-	void SetFullPath(const CString& path);
+	void SetFullPath(const CString& path, bool isFromHistory);
 
 	CString GetName() override;
 	CString GetDescription() override;

@@ -159,7 +159,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 			continue;
 		}
 		auto cmdHist = new PathExecuteCommand();
-		cmdHist->SetFullPath(item.mFullPath);
+		cmdHist->SetFullPath(item.mFullPath, true);
 		commands.push_back(CommandQueryItem(level, cmdHist));
 	}
 

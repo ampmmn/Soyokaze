@@ -108,6 +108,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 		Parameter::GetParameters(dlg.GetArguments(), args);
 	}
 
+	// 実行時引数が与えられた場合は履歴に登録しておく
 	if (args.size() > 0) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
 	}

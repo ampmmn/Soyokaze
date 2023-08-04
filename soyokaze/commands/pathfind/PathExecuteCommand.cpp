@@ -36,6 +36,7 @@ struct PathExecuteCommand::PImpl
 	CString mDescription;
 	CString mExeExtension;
 	bool mIsURL;
+	bool mIsFromHistory;
 	uint32_t mRefCount;
 };
 
@@ -44,6 +45,8 @@ PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
 {
 	in->mRefCount = 1;
 	in->mExeExtension = _T(".exe");
+	in->mIsURL = false;
+	in->mIsFromHistory = false;
 }
 
 PathExecuteCommand::~PathExecuteCommand()
@@ -51,13 +54,14 @@ PathExecuteCommand::~PathExecuteCommand()
 	delete in;
 }
 
-void PathExecuteCommand::SetFullPath(const CString& path)
+void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
 {
 	in->mFullPath = path;
 	in->mDescription = path;
 
 	const tregex& regURL = GetURLRegex();
 	in->mIsURL = (std::regex_search((LPCTSTR)path, regURL));
+	in->mIsFromHistory = isFromHistory;
 }
 
 
@@ -81,8 +85,10 @@ CString PathExecuteCommand::GetDescription()
 
 CString PathExecuteCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_PATHEXEC);
-	return TEXT_TYPE;
+	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
+	static CString TEXT_TYPE_HISTORY((LPCTSTR)IDS_COMMAND_PATHEXEC_HISTORY);
+
+	return in->mIsFromHistory ? TEXT_TYPE_HISTORY : TEXT_TYPE_ADHOC;
 }
 
 BOOL PathExecuteCommand::Execute()
@@ -91,6 +97,7 @@ BOOL PathExecuteCommand::Execute()
 		return FALSE;
 	}
 
+	// 履歴に追加
 	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
 
 	ShellExecCommand cmd;
@@ -119,14 +126,12 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 		attr.mParam += _T("\"");
 	}
 
+	// 履歴に追加
 	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
 
 	ShellExecCommand cmd;
 	cmd.SetAttribute(attr);
 	return cmd.Execute();
-
-	// ぱらめーたしていはさぽーとしない
-	return Execute();
 }
 
 CString PathExecuteCommand::GetErrorString()
@@ -160,6 +165,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		in->mFullPath = word;
 		in->mDescription = word;
 		in->mIsURL = true;
+		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
@@ -169,6 +175,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		in->mWord = word;
 		in->mFullPath = word;
 		in->mDescription = word;
+		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
@@ -186,6 +193,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		in->mWord = word;
 		in->mFullPath = resolvedPath;
 		in->mDescription = resolvedPath;
+		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
