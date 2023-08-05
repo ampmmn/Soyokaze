@@ -699,6 +699,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
+		in->mCandidateListBox.Invalidate(TRUE);
 		return;
 	}
 
@@ -714,6 +715,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawIcon(IconLoader::Get()->LoadUnknownIcon());
+		in->mCandidateListBox.Invalidate(TRUE);
 		return;
 	}
 
