@@ -1437,6 +1437,11 @@ BEGIN
     IDS_COMMAND_ENVIRON     "環境変数"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_COMMAND_RECENTFILES "最近使ったファイル"
+END
+
 #endif    // 日本語 (日本) resources
 /////////////////////////////////////////////////////////////////////////////
 

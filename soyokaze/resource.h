@@ -89,6 +89,7 @@
 #define IDD_NEWCOMMAND1                 158
 #define IDS_COMMAND_PATHEXEC_HISTORY    158
 #define IDS_COMMAND_ENVIRON             159
+#define IDS_COMMAND_RECENTFILES         160
 #define IDD_ARGUMENTS                   163
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001

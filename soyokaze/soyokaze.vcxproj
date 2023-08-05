@@ -599,6 +599,8 @@
     <ClInclude Include="commands\mailto\MailToCommand.h" />
     <ClInclude Include="commands\mailto\MailToCommandProvider.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
+    <ClInclude Include="commands\recentfiles\RecentFileCommand.h" />
+    <ClInclude Include="commands\recentfiles\RecentFilesCommandProvider.h" />
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
     <ClInclude Include="commands\regexp\RegExpCommandProvider.h" />
@@ -724,6 +726,8 @@
     <ClCompile Include="commands\mailto\MailToCommand.cpp" />
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
+    <ClCompile Include="commands\recentfiles\RecentFileCommand.cpp" />
+    <ClCompile Include="commands\recentfiles\RecentFilesCommandProvider.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp" />
