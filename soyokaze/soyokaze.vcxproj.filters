@@ -64,6 +64,9 @@
     <Filter Include="commands\controllpanel">
       <UniqueIdentifier>{18d63481-0ef5-40b7-bfbf-c6836f6277b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\env">
+      <UniqueIdentifier>{6b091184-744b-4a48-b402-3715cfb1e6c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -429,6 +432,12 @@
     <ClInclude Include="commands\common\AdhocCommandProviderBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\env\EnvCommand.h">
+      <Filter>commands\env</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\env\EnvCommandProvider.h">
+      <Filter>commands\env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -772,6 +781,12 @@
     </ClCompile>
     <ClCompile Include="commands\common\AdhocCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\env\EnvCommand.cpp">
+      <Filter>commands\env</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\env\EnvCommandProvider.cpp">
+      <Filter>commands\env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

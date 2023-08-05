@@ -1434,6 +1434,7 @@ BEGIN
     IDS_COMMAND_PATHEXEC    "パスを実行"
     IDS_COMMAND_CONTROLPANEL "コントロールパネル"
     IDS_COMMAND_PATHEXEC_HISTORY "履歴"
+    IDS_COMMAND_ENVIRON     "環境変数"
 END
 
 #endif    // 日本語 (日本) resources

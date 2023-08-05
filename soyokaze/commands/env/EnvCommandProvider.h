@@ -1,25 +1,29 @@
 #pragma once
 
 #include "commands/common/AdhocCommandProviderBase.h"
+#include "core/CommandProviderIF.h"
+
 
 namespace soyokaze {
 namespace commands {
-namespace bookmarks {
+namespace env {
 
-class BookmarkCommandProvider :
+
+class EnvCommandProvider :
 	public soyokaze::commands::common::AdhocCommandProviderBase
 {
 private:
-	BookmarkCommandProvider();
-	virtual ~BookmarkCommandProvider();
+	EnvCommandProvider();
+	virtual ~EnvCommandProvider();
 
 public:
 	virtual CString GetName();
 
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
+	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands);
 
-	DECLARE_COMMANDPROVIDER(BookmarkCommandProvider)
+
+	DECLARE_COMMANDPROVIDER(EnvCommandProvider)
 
 private:
 	struct PImpl;
@@ -27,7 +31,7 @@ private:
 };
 
 
-} // end of namespace bookmarks
+} // end of namespace env
 } // end of namespace commands
 } // end of namespace soyokaze
 
