@@ -478,8 +478,12 @@ BOOL Worksheet::Activate()
 			// アプリのウインドウを全面に出す
 			if (IsWindow(hwndApp)) {
 				ScopeAttachThreadInput scope;
+				LONG_PTR style = GetWindowLongPtr(hwndApp, GWL_STYLE);
+				if (style & WS_MINIMIZE) {
+					// 最小化されていたら元に戻す
+					PostMessage(hwndApp, WM_SYSCOMMAND, SC_RESTORE, 0);
+				}
 				SetForegroundWindow(hwndApp);
-				ShowWindow(hwndApp, SW_SHOWNORMAL);
 			}
 			return TRUE;
 		}
