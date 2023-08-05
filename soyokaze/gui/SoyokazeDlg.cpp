@@ -752,7 +752,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 //	}
 	in->mLastCaretPos = in->mKeywordEdit.GetSel();
 
-	in->mCandidateListBox.Invalidate(FALSE);
+	in->mCandidateListBox.Invalidate(TRUE);
 }
 
 void CSoyokazeDlg::OnOK()
