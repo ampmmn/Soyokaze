@@ -16,19 +16,34 @@
     <Filter Include="soyokaze">
       <UniqueIdentifier>{a5d488d7-cffd-48d7-9d31-4f84dc14f3e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands">
+    <Filter Include="soyokaze\commands">
       <UniqueIdentifier>{4a4aaa7f-a8f0-46e4-8d7d-c6a9e246ea7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\common">
+      <UniqueIdentifier>{75afd043-9710-4557-8b71-f3b76a1ccc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\shellexecute">
+      <UniqueIdentifier>{548c770a-4503-4831-b7f4-ca6c0be7ce9a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\soyokaze\AppProfileTest.cpp">
+    <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp">
+      <Filter>soyokaze\commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
+      <Filter>soyokaze\commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\AppProfileTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\soyokaze\commands\ShellExecCommandTest.cpp">
-      <Filter>commands</Filter>
+    <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp">
+      <Filter>soyokaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp">
+      <Filter>soyokaze\commands</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -51,8 +51,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\soyokaze\AppProfileTest.cpp" />
-    <ClCompile Include="..\soyokaze\commands\ShellExecCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\AppProfileTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">Create</PrecompiledHeader>
