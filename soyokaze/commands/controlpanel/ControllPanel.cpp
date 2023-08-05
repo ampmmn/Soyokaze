@@ -55,7 +55,6 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 
 	bool mIsEnable = false;
 	bool mIsFirstCall = true;
-	uint32_t mRefCount = 1;
 
 	std::vector<ControlPanelCommand*> mPanelItems;
 };
@@ -123,51 +122,9 @@ ControlPanelProvider::~ControlPanelProvider()
 {
 }
 
-// 初回起動の初期化を行う
-void ControlPanelProvider::OnFirstBoot()
-{
-	// 何もしない
-}
-
-
-// コマンドの読み込み
-void ControlPanelProvider::LoadCommands(
-	CommandFile* cmdFile
-)
-{
-	// 何もしない
-}
-
 CString ControlPanelProvider::GetName()
 {
 	return _T("ControlPanelCommand");
-}
-
-// 作成できるコマンドの種類を表す文字列を取得
-CString ControlPanelProvider::GetDisplayName()
-{
-	// サポートしない
-	return _T("");
-}
-
-// コマンドの種類の説明を示す文字列を取得
-CString ControlPanelProvider::GetDescription()
-{
-	// サポートしない
-	return _T("");
-}
-
-// コマンド新規作成ダイアログ
-bool ControlPanelProvider::NewDialog(const CommandParameter* param)
-{
-	// サポートしない
-	return false;
-}
-
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool ControlPanelProvider::IsPrivate() const
-{
-	return true;
 }
 
 // 一時的なコマンドを必要に応じて提供する
@@ -197,26 +154,6 @@ void ControlPanelProvider::QueryAdhocCommands(
 		commands.push_back(CommandQueryItem(level, command));
 	}
 
-}
-
-// Provider間の優先順位を表す値を返す。小さいほど優先
-uint32_t ControlPanelProvider::GetOrder() const
-{
-	return 2000;
-}
-
-uint32_t ControlPanelProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t ControlPanelProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 

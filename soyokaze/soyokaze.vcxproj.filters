@@ -426,6 +426,9 @@
     <ClInclude Include="commands\controlpanel\ControlPanelCommand.h">
       <Filter>commands\controllpanel</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\AdhocCommandProviderBase.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -766,6 +769,9 @@
     </ClCompile>
     <ClCompile Include="commands\controlpanel\ControlPanelCommand.cpp">
       <Filter>commands\controllpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\AdhocCommandProviderBase.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
