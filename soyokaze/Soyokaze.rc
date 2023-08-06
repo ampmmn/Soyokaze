@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 髣比ｼ夲ｽｽ・･髯樊ｻ薙§邵ｲ蟶昴％繝ｻ・ｨ鬯ｮ・ｮ郢晢ｽｻ繝ｻ繝ｻ・ｹ・ｧ陟募ｨｯ陞ｺ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 髫ｶ轣倡ｶ懊・・ｺ隰費ｽｶ邵ｺ諷包ｽｹ譎｢・ｽ・ｳ驛｢譎・ｺ｢郢晢ｽｻ驛｢譎樔ｺゑｾ趣ｽｦ驛｢譏ｴ繝ｻ\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 驛｢譎｢・ｽ・ｪ驛｢譎・鯵・趣ｽｦ驍ｵ・ｺ驗呻ｽｫ繝ｻ閧ｲ・ｸ・ｺ繝ｻ・ｳ驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取ｺｽ・ｹ譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ 驛｢譎√・郢晢ｽｻ 驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -539,8 +539,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,5,1,1
- PRODUCTVERSION 0,5,1,1
+ FILEVERSION 0,6,0,1
+ PRODUCTVERSION 0,6,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -556,12 +556,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.5.1.1"
+            VALUE "FileVersion", "0.6.0.1"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.5.1.1"
+            VALUE "ProductVersion", "0.6.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -1460,10 +1460,10 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
-#include "l.JPN\afxres.rc"      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・
+#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
+#include "l.JPN\afxres.rc"      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
 #endif
 #endif
 
