@@ -1089,8 +1089,8 @@ void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		if (in->mHasCommandTypeColumn) {
-			in->mCandidateListBox.SetColumnWidth(0, cx-155);
-			in->mCandidateListBox.SetColumnWidth(1, 130);
+			in->mCandidateListBox.SetColumnWidth(0, cx-165);
+			in->mCandidateListBox.SetColumnWidth(1, 140);
 		}
 		else {
 			in->mCandidateListBox.SetColumnWidth(0, cx-25);

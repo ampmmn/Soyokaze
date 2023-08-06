@@ -70,6 +70,9 @@
     <Filter Include="commands\recentfiles">
       <UniqueIdentifier>{42bbfb15-e16b-4c9d-8184-662826a96899}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\color">
+      <UniqueIdentifier>{5bd0bf79-de52-4609-bd3c-03256118a8d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -447,6 +450,12 @@
     <ClInclude Include="commands\recentfiles\RecentFilesCommandProvider.h">
       <Filter>commands\recentfiles</Filter>
     </ClInclude>
+    <ClInclude Include="commands\color\ColorCommand.h">
+      <Filter>commands\color</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\color\ColorCommandProvider.h">
+      <Filter>commands\color</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -802,6 +811,12 @@
     </ClCompile>
     <ClCompile Include="commands\recentfiles\RecentFilesCommandProvider.cpp">
       <Filter>commands\recentfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\color\ColorCommand.cpp">
+      <Filter>commands\color</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\color\ColorCommandProvider.cpp">
+      <Filter>commands\color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

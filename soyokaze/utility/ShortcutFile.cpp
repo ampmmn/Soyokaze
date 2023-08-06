@@ -99,7 +99,7 @@ CString ShortcutFile::ResolvePath(
 	wchar_t pathWideChar[MAX_PATH_NTFS];
 
 	WIN32_FIND_DATA wfd;
-	shellLinkPtr->GetPath(pathWideChar, MAX_PATH_NTFS, &wfd, SLGP_UNCPRIORITY | SLGP_RAWPATH);
+	shellLinkPtr->GetPath(pathWideChar, MAX_PATH_NTFS, &wfd, 0);
 
 	CString path((CStringW)pathWideChar);
 
