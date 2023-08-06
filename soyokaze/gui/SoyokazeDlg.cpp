@@ -515,19 +515,24 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	memset(&lvc,0,sizeof(LV_COLUMN));
 	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
 
+	CRect rect;
+	GetClientRect(rect);
+	int cx = rect.Width();
+
+	AppPreference* pref= AppPreference::Get();
+
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 300;   // 実際はOnSizeでウインドウ幅に応じてリサイズするのでここの数値はダミー #dummy-col-width
+	lvc.cx = pref->IsShowCommandType() ? cx - 165 : cx - 25;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mCandidateListBox.InsertColumn(0,&lvc);
 
-	AppPreference* pref= AppPreference::Get();
 	in->mHasCommandTypeColumn = false;
 	if (pref->IsShowCommandType()) {
 		strHeader.LoadString(IDS_COMMANDTYPE);
 		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-		lvc.cx = 300;  //  #dummy-col-width
+		lvc.cx = 140;  //  #dummy-col-width
 		lvc.fmt = LVCFMT_LEFT;
 		in->mCandidateListBox.InsertColumn(1,&lvc);
 		in->mHasCommandTypeColumn = true;
