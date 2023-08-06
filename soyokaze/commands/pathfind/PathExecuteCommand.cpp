@@ -93,16 +93,8 @@ CString PathExecuteCommand::GetTypeDisplayName()
 
 BOOL PathExecuteCommand::Execute()
 {
-	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
-		return FALSE;
-	}
-
-	// 履歴に追加
-	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
-
-	ShellExecCommand cmd;
-	cmd.SetPath(in->mFullPath);
-	return cmd.Execute();
+	Parameter param;
+	return Execute(param);
 }
 
 BOOL PathExecuteCommand::Execute(const Parameter& param)
@@ -131,7 +123,7 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 
 	ShellExecCommand cmd;
 	cmd.SetAttribute(attr);
-	return cmd.Execute();
+	return cmd.Execute(param);
 }
 
 CString PathExecuteCommand::GetErrorString()
