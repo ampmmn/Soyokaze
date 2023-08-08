@@ -40,8 +40,13 @@ int WholeMatchPattern::Match(
 	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
 }
 
+CString WholeMatchPattern::GetFirstWord()
+{
+	return in->mWord;
+}
 
-CString WholeMatchPattern::GetOriginalPattern()
+
+CString WholeMatchPattern::GetWholeString()
 {
 	return in->mWholeText;
 }

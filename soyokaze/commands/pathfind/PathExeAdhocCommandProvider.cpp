@@ -101,7 +101,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	}
 
 	if (in->mIsIgnoreUNC) {
-		CString word = pattern->GetOriginalPattern();
+		CString word = pattern->GetWholeString();
 		if (PathIsUNC(word)) {
 			// ネットワークパスを無視する
 			return ;

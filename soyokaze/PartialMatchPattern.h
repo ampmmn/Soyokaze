@@ -12,9 +12,10 @@ public:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
-	virtual void SetParam(const soyokaze::core::CommandParameter& param);
-	virtual int Match(const CString& str);
-	virtual CString GetOriginalPattern();
+	void SetParam(const soyokaze::core::CommandParameter& param) override;
+	int Match(const CString& str) override;
+	CString GetFirstWord() override;
+	CString GetWholeString() override;
 
 protected:
 	struct PImpl;

@@ -64,7 +64,7 @@ void RecentFilesCommandProvider::QueryAdhocCommands(
  	std::vector<CommandQueryItem>& commands
 )
 {
-	CString cmdline = pattern->GetOriginalPattern();
+	CString cmdline = pattern->GetWholeString();
 
 	DWORD elapsed = GetTickCount() - in->mElapsed;
 	if (elapsed > INTERVAL) {

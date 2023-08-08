@@ -100,7 +100,7 @@ int MailToCommand::Match(Pattern* pattern)
 
 	// mailto:～ 以降に入力があった場合でも完全一致扱いと扱うため、
 	// 別途比較する
-	CString word = pattern->GetOriginalPattern();
+	CString word = pattern->GetWholeString();
 	if (word.Find(keyword) == 0) {
 		return Pattern::WholeMatch;
 	}

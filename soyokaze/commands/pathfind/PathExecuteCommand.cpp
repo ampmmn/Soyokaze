@@ -148,14 +148,14 @@ HICON PathExecuteCommand::GetIcon()
 
 int PathExecuteCommand::Match(Pattern* pattern)
 {
-	CString word = pattern->GetOriginalPattern();
+	CString wholeWord = pattern->GetWholeString();
 
 	// URLパターンマッチするかを判定
 	const tregex& regURL = GetURLRegex();
-	if (std::regex_search((LPCTSTR)word, regURL)) {
-		in->mWord = word;
-		in->mFullPath = word;
-		in->mDescription = word;
+	if (std::regex_search((LPCTSTR)wholeWord, regURL)) {
+		in->mWord = wholeWord;
+		in->mFullPath = wholeWord;
+		in->mDescription = wholeWord;
 		in->mIsURL = true;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
@@ -163,14 +163,15 @@ int PathExecuteCommand::Match(Pattern* pattern)
 
 	in->mIsURL = false;
 
-	if (PathIsRelative(word) == FALSE && PathFileExists(word)) {
-		in->mWord = word;
-		in->mFullPath = word;
-		in->mDescription = word;
+	if (PathIsRelative(wholeWord) == FALSE && PathFileExists(wholeWord)) {
+		in->mWord = wholeWord;
+		in->mFullPath = wholeWord;
+		in->mDescription = wholeWord;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
+	CString word = pattern->GetFirstWord();
 	if (in->mExeExtension.CompareNoCase(PathFindExtension(word)) != 0) {
 		word += _T(".exe");
 	}

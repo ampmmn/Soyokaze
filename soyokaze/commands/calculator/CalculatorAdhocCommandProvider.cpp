@@ -87,7 +87,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		in->mIsEnable = pref->IsEnableCalculator();
 		in->mIsFirstCall = false;
 	}
-	CString cmdline = pattern->GetOriginalPattern();
+	CString cmdline = pattern->GetWholeString();
 
 
 	// 機能が無効なら評価実施しない

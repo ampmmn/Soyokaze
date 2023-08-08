@@ -51,7 +51,7 @@ void ColorCommandProvider::QueryAdhocCommands(
  	std::vector<CommandQueryItem>& commands
 )
 {
-	CString cmdline = pattern->GetOriginalPattern();
+	CString cmdline = pattern->GetWholeString();
 
 	cmdline = cmdline.Trim();
 	ASSERT(cmdline.IsEmpty() == FALSE);

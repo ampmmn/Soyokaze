@@ -24,7 +24,8 @@ public:
 
 	virtual void SetParam(const soyokaze::core::CommandParameter& param) = 0;
 	virtual int Match(const CString& str) = 0;
-	virtual CString GetOriginalPattern() = 0;
+	virtual CString GetFirstWord() = 0;
+	virtual CString GetWholeString() = 0;
 
 	static CString StripEscapeChars(const CString& pat);
 };

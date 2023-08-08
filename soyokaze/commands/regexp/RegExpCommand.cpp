@@ -263,7 +263,7 @@ int RegExpCommand::Match(Pattern* pattern)
 {
 	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
 	if (in->mPatternStr.IsEmpty() == FALSE) {
-		if (std::regex_match((tstring)pattern->GetOriginalPattern(), in->mRegex)) {
+		if (std::regex_match((tstring)pattern->GetWholeString(), in->mRegex)) {
 			return Pattern::WholeMatch;
 		}
 	}
