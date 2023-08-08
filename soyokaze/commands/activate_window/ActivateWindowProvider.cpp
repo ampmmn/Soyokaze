@@ -18,6 +18,8 @@ namespace soyokaze {
 namespace commands {
 namespace activate_window {
 
+// 切り替え候補ウインドウの一覧を再利用する間隔
+static const int HWNDUPDATE_INTERVAL = 5000;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
@@ -52,6 +54,8 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 
 	WorkSheets mWorksheets;
 
+	DWORD mLastHwndUpdate;
+	std::vector<HWND> mHwndCandidates;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +70,7 @@ ActivateWindowProvider::ActivateWindowProvider() : in(new PImpl)
 	in->mIsEnableWorksheet = false;
 	in->mIsEnableWindowSwitch = false;
 	in->mIsFirstCall = true;
+	in->mLastHwndUpdate = 0;
 }
 
 ActivateWindowProvider::~ActivateWindowProvider()
@@ -142,10 +147,15 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(Pattern* pattern, std:
 		std::vector<HWND> mCandidates;
 	} param;
 
-	EnumWindows(local_param::OnEnumWindows, (LPARAM)&param);
+	// 一定時間内の再実行の場合は過去の結果を再利用する
+	if (GetTickCount() - in->mLastHwndUpdate > HWNDUPDATE_INTERVAL) {
+		EnumWindows(local_param::OnEnumWindows, (LPARAM)&param);
+		in->mHwndCandidates.swap(param.mCandidates);
+		in->mLastHwndUpdate = GetTickCount();
+	}
 
 	TCHAR caption[256];
-	for (auto hwnd : param.mCandidates) {
+	for (auto hwnd : in->mHwndCandidates) {
 		GetWindowText(hwnd, caption, 256);
 
 		int level = pattern->Match(caption);
