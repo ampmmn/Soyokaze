@@ -456,6 +456,9 @@
     <ClInclude Include="commands\color\ColorCommandProvider.h">
       <Filter>commands\color</Filter>
     </ClInclude>
+    <ClInclude Include="commands\recentfiles\RecentFiles.h">
+      <Filter>commands\recentfiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -817,6 +820,9 @@
     </ClCompile>
     <ClCompile Include="commands\color\ColorCommandProvider.cpp">
       <Filter>commands\color</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\recentfiles\RecentFiles.cpp">
+      <Filter>commands\recentfiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

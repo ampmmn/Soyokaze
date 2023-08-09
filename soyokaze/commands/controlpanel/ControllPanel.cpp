@@ -139,6 +139,7 @@ void ControlPanelProvider::QueryAdhocCommands(
 		in->mIsEnable = pref->IsEnableControlPanel();
 		in->mIsFirstCall = false;
 
+		// 初回呼び出し時(と有効/無効切り替え時)に一覧生成を行う
 		if (in->mIsEnable) {
 			in->EnumItems(in->mPanelItems);
 		}
