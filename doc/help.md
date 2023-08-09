@@ -615,6 +615,11 @@ Soyokaze配置ディレクトリ/
 
 ![](../image/colorcommand.png)
 
+#### VMware PlayerのMRU
+
+VMware Playerの起動直後の画面の一覧に表示される仮想マシンの表示名を候補として表示する。
+実行すると、`.vmx`に関連付けれたアプリケーションでファイルを実行する。  
+(VMwareが仮想マシンを起動するはず)
 
 ### 拡張機能について
 

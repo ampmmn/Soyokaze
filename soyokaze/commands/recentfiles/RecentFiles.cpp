@@ -74,6 +74,10 @@ bool RecentFiles::GetRecentFiles(std::vector<ITEM>& items)
 			if (item.mFullPath.IsEmpty()) {
 				continue;
 			}
+			if (PathFileExists(item.mFullPath) == FALSE) {
+				// 存在しないパスを除外する
+				continue;
+			}
 
 			tmp.push_back(item);
 		}

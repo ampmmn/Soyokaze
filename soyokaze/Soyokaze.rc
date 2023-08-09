@@ -1442,6 +1442,7 @@ BEGIN
     IDS_COMMAND_RECENTFILES "最近使ったファイル"
     IDS_COMMAND_COLOR       "カラー"
     IDS_COMMAND_VMXFILE     "最近使ったVM"
+    IDS_ERR_VMXLOCKED       "%sはロックされています。"
 END
 
 #endif    // 日本語 (日本) resources

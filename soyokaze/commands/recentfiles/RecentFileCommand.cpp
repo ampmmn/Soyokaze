@@ -78,7 +78,7 @@ CString RecentFileCommand::GetErrorString()
 
 HICON RecentFileCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadIconFromPath(in->mFullPath);
 }
 
 int RecentFileCommand::Match(Pattern* pattern)

@@ -36,6 +36,9 @@ struct VMXFileCommandProvider::PImpl
 	std::vector<VMXFileCommand*> mCommands;
 };
 
+/**
+	preference.iniを読み、.vmxファイルのMRU一覧を生成する
+*/
 void VMXFileCommandProvider::PImpl::Reload()
 {
 	for (auto cmd : mCommands) {
@@ -83,8 +86,16 @@ void VMXFileCommandProvider::PImpl::Reload()
 
 	for (auto entry : items) {
 		auto item = entry.second;
+		if (PathFileExists(item.filePath) == FALSE) {
+			// 存在しない.vmxファイルは除外する
+			continue;
+		}
 		mCommands.push_back(new VMXFileCommand(item.displayName, item.filePath));
 	}
+
+	file.Close();
+	fclose(fpIn);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
