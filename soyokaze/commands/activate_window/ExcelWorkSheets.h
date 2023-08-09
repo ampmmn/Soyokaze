@@ -39,7 +39,7 @@ public:
 	const CString& GetWorkbookName();
 	const CString& GetSheetName();
 
-	BOOL Activate();
+	BOOL Activate(bool isShowMaximize = false);
 
 	uint32_t AddRef();
 	uint32_t Release();

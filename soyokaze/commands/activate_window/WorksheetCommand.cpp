@@ -72,7 +72,10 @@ BOOL WorksheetCommand::Execute()
 
 BOOL WorksheetCommand::Execute(const Parameter& param)
 {
-	return in->mWorksheet->Activate();
+	// Ctrlキーが押されていたら最大化表示する
+	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+
+	return in->mWorksheet->Activate(isShowMaximize);
 }
 
 CString WorksheetCommand::GetErrorString()

@@ -347,7 +347,7 @@ const CString& Worksheet::GetSheetName()
  	オブジェクトに紐づけられたワークシートを有効にする
  	@return 処理の成否
 */
-BOOL Worksheet::Activate()
+BOOL Worksheet::Activate(bool isShowMaximize)
 {
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
@@ -479,6 +479,11 @@ BOOL Worksheet::Activate()
 			if (IsWindow(hwndApp)) {
 				ScopeAttachThreadInput scope;
 				LONG_PTR style = GetWindowLongPtr(hwndApp, GWL_STYLE);
+
+				if (isShowMaximize && (style & WS_MAXIMIZE) == 0) {
+					// 最大化表示する
+					PostMessage(hwndApp, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+				}
 				if (style & WS_MINIMIZE) {
 					// 最小化されていたら元に戻す
 					PostMessage(hwndApp, WM_SYSCOMMAND, SC_RESTORE, 0);

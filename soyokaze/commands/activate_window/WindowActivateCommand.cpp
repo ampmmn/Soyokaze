@@ -71,12 +71,16 @@ BOOL WindowActivateCommand::Execute(const Parameter& param)
 	ScopeAttachThreadInput scope;
 
 	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
-	if (style & WS_MINIMIZE) {
+	if (param.GetNamedParamBool(_T("CtrlKeyPressed")) && (style & WS_MAXIMIZE) == 0) {
+		// Ctrlキーが押されていたら最大化表示する
+		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+	}
+	else if (style & WS_MINIMIZE) {
 		// 最小化されていたら元に戻す
 		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
-	SetForegroundWindow(in->mHwnd);
 
+	SetForegroundWindow(in->mHwnd);
 	return TRUE;
 }
 
