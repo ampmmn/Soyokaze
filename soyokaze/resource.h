@@ -91,6 +91,7 @@
 #define IDS_COMMAND_ENVIRON             159
 #define IDS_COMMAND_RECENTFILES         160
 #define IDS_COMMAND_COLOR               161
+#define IDS_COMMAND_VMXFILE             162
 #define IDD_ARGUMENTS                   163
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001

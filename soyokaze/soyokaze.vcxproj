@@ -613,6 +613,8 @@
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditDetailPage.h" />
     <ClInclude Include="commands\shellexecute\ShellExecSettingDialog.h" />
+    <ClInclude Include="commands\vmware\VMXFileCommand.h" />
+    <ClInclude Include="commands\vmware\VMXFileCommandProvider.h" />
     <ClInclude Include="core\AppHotKey.h" />
     <ClInclude Include="core\CommandHotKeyHandlerIF.h" />
     <ClInclude Include="core\CommandHotKeyManager.h" />
@@ -744,6 +746,8 @@
     <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp" />
+    <ClCompile Include="commands\vmware\VMXFileCommand.cpp" />
+    <ClCompile Include="commands\vmware\VMXFileCommandProvider.cpp" />
     <ClCompile Include="core\AppHotKey.cpp" />
     <ClCompile Include="core\CommandHotKeyManager.cpp" />
     <ClCompile Include="core\CommandQueryItem.cpp" />

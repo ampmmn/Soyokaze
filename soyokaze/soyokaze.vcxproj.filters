@@ -73,6 +73,9 @@
     <Filter Include="commands\color">
       <UniqueIdentifier>{5bd0bf79-de52-4609-bd3c-03256118a8d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\vmware">
+      <UniqueIdentifier>{33f49eb7-459c-45ba-9416-93848aa2be04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -459,6 +462,12 @@
     <ClInclude Include="commands\recentfiles\RecentFiles.h">
       <Filter>commands\recentfiles</Filter>
     </ClInclude>
+    <ClInclude Include="commands\vmware\VMXFileCommand.h">
+      <Filter>commands\vmware</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vmware\VMXFileCommandProvider.h">
+      <Filter>commands\vmware</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -823,6 +832,12 @@
     </ClCompile>
     <ClCompile Include="commands\recentfiles\RecentFiles.cpp">
       <Filter>commands\recentfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vmware\VMXFileCommand.cpp">
+      <Filter>commands\vmware</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vmware\VMXFileCommandProvider.cpp">
+      <Filter>commands\vmware</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
