@@ -110,7 +110,7 @@ VMXFileCommandProvider::VMXFileCommandProvider() : in(new PImpl)
 	size_t reqLen = 0;
 	LPTSTR p = in->mPrefFilePath.GetBuffer(MAX_PATH_NTFS);
 	_tgetenv_s(&reqLen, p, MAX_PATH_NTFS, _T("APPDATA"));
-	PathAppend(p, _T("VMWare/preference.ini"));
+	PathAppend(p, _T("VMWare/preferences.ini"));
 	memset(&in->mPrefUpdateTime,0 , sizeof(in->mPrefUpdateTime));
 	in->mPrefFilePath.ReleaseBuffer();
 }
