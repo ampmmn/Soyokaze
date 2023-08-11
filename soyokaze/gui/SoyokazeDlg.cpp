@@ -508,7 +508,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	in->mCandidateListBox.ModifyStyle(0, LVS_OWNERDATA);
-	in->mCandidateListBox.SetExtendedStyle(in->mCandidateListBox.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+	in->mCandidateListBox.SetExtendedStyle(in->mCandidateListBox.GetExtendedStyle()|LVS_EX_FULLROWSELECT| LVS_EX_DOUBLEBUFFER);
 
 	// ヘッダー追加
 	LVCOLUMN lvc;
