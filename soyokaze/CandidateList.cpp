@@ -53,19 +53,25 @@ int CandidateList::GetCurrentSelect()
 	return in->mSelIndex;
 }
 
-void CandidateList::SetCurrentSelect(int index)
+bool CandidateList::SetCurrentSelect(int index)
 {
+	if (in->mSelIndex == index) {
+		return true;
+	}
+
 	in->mSelIndex = index;
 
 	for (auto listener : in->mListeners) {
 		listener->OnUpdateSelect((void*)this);
 	}
+
+	return true;
 }
 
-void CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
+bool CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
 {
 	if (offset == 0) {
-		return;
+		return true;
 	}
 
 	in->mSelIndex += offset;
@@ -80,6 +86,7 @@ void CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
 		listener->OnUpdateSelect((void*)this);
 	}
 
+	return true;
 }
 
 bool CandidateList::IsEmpty()
@@ -90,11 +97,6 @@ bool CandidateList::IsEmpty()
 int CandidateList::GetSize()
 {
 	return (int)in->mCandidates.size();
-}
-
-int CandidateList::GetSelectIndex()
-{
-	return in->mSelIndex;
 }
 
 Command* CandidateList::GetCommand(int index)

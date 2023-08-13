@@ -15,12 +15,11 @@ public:
 
 	int GetCurrentSelect();
 
-	void SetCurrentSelect(int index);
-	void OffsetCurrentSelect(int index, bool isLoop = true);
+	bool SetCurrentSelect(int index);
+	bool OffsetCurrentSelect(int index, bool isLoop = true);
 
 	bool IsEmpty();
 	int GetSize();
-	int GetSelectIndex();
 	soyokaze::core::Command* GetCommand(int index);
 	soyokaze::core::Command* GetCurrentCommand();
 
