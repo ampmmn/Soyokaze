@@ -28,36 +28,36 @@ void IconLabel::DrawIcon(HICON iconHandle)
 	GetClientRect(rc);
 
 	CClientDC dc(this);
-	if (mMemDC.GetSafeHdc() == NULL) {
-		mMemDC.CreateCompatibleDC(&dc);
-		mMemBmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
-		mMemDC.SelectObject(mMemBmp);
 
-		COLORREF cr = GetSysColor(COLOR_3DFACE);
-		mBkBrush.CreateSolidBrush(cr);
+	CDC dcMem;
+	dcMem.CreateCompatibleDC(&dc);
+	ASSERT(dcMem.GetSafeHdc() != NULL);
 
-		mMemDC.SelectObject(mBkBrush);
-		mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
+	CBitmap memBmp;
+	memBmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
+	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
 
-		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
-		mMemDC.DrawIcon(0, 0, mIconDefault);
-	}
+	CBrush br;
+	br.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+	CBrush* orgBr = dcMem.SelectObject(&br);
+	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
+	dcMem.DrawIcon(0, 0, iconHandle);
 
-	mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
+	dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
 
-	ASSERT(mMemDC.GetSafeHdc() != NULL);
-	mMemDC.DrawIcon(0, 0, iconHandle);
-
-	dc.BitBlt(0,0, rc.Width(), rc.Height(), &mMemDC, 0, 0, SRCCOPY);
+	dcMem.SelectObject(orgBr);
+	dcMem.SelectObject(orgBmp);
 }
 
 // デフォルトアイコンの描画
 void IconLabel::DrawDefaultIcon()
 {
-	if (mIconDefault) {
-		DrawIcon(mIconDefault);
+	if (mIconDefault == nullptr) {
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 	}
+
+	DrawIcon(mIconDefault);
 }
 
 void IconLabel::OnPaint()
@@ -67,21 +67,24 @@ void IconLabel::OnPaint()
 
 	CPaintDC dc(this); // device context for painting
 
-	if (mMemDC.GetSafeHdc() == NULL) {
-		mMemDC.CreateCompatibleDC(&dc);
-		mMemBmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
-		mMemDC.SelectObject(mMemBmp);
+	CDC dcMem;
+	dcMem.CreateCompatibleDC(&dc);
+	CBitmap bmp;
+	bmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
+	CBitmap* orgBmp = dcMem.SelectObject(&bmp);
 
-		COLORREF cr = GetSysColor(COLOR_3DFACE);
-		mBkBrush.CreateSolidBrush(cr);
+	CBrush br;
+	br.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
 
-		mMemDC.SelectObject(mBkBrush);
-		mMemDC.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
+	CBrush* orgBr = dcMem.SelectObject(&br);
+	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
-		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
-		mMemDC.DrawIcon(0, 0, mIconDefault);
-	}
+	mIconDefault = IconLoader::Get()->LoadDefaultIcon();
+	dcMem.DrawIcon(0, 0, mIconDefault);
 
-	dc.BitBlt(0,0, rc.Width(), rc.Height(), &mMemDC, 0, 0, SRCCOPY);
+	dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
+
+	dcMem.SelectObject(orgBr);
+	dcMem.SelectObject(orgBmp);
 }
 

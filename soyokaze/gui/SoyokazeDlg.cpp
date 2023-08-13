@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "Soyokaze.h"
 #include "gui/SoyokazeDlg.h"
+#include "gui/CandidateListCtrl.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "afxdialogex.h"
@@ -19,6 +20,7 @@
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "core/CommandHotKeyManager.h"
+#include "CandidateList.h"
 #include <algorithm>
 #include <thread>
 
@@ -36,9 +38,6 @@ struct CSoyokazeDlg::PImpl
 	{
 	}
 
-
-	void ClearCandidates();
-
 	HICON mIconHandle;
 
 	// キーワード入力欄の文字列
@@ -46,25 +45,18 @@ struct CSoyokazeDlg::PImpl
 	// 現在選択中のコマンドの説明
 	CString mDescriptionStr;
 
-	// 現在の候補
-	std::vector<soyokaze::core::Command*> mCandidates;
-
-	// 選択中の候補
-	int mSelIndex;
+	// 現在の候補一覧(選択中の項目もここが管理する)
+	CandidateList mCandidates;
+	// 候補一覧表示用リストボックス
+	CandidateListCtrl mCandidateListBox;
 
 	// ウインドウハンドル(共有メモリに保存する用)
 	SharedHwnd* mSharedHwnd;
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
-	// 候補一覧表示用リストボックス
-	CListCtrl mCandidateListBox;
-
-	// コマンド種別を表示する列を表示するか?
-	bool mHasCommandTypeColumn;
-
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
-	DWORD mLastCaretPos;
+	//DWORD mLastCaretPos;
 
 	// 外部からのコマンド受付用エディットボックス
 	CmdReceiveEdit mCmdReceiveEdit;
@@ -86,17 +78,6 @@ struct CSoyokazeDlg::PImpl
 
 };
 
-
-// 候補リストをクリアする
-void CSoyokazeDlg::PImpl::ClearCandidates()
-{
-	for (auto command : mCandidates) {
-		command->Release();
-	}
-	mCandidates.clear();
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,12 +95,13 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	in->mSharedHwnd = nullptr;
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
 	in->mWindowTransparencyPtr = new WindowTransparency;
-	in->mHasCommandTypeColumn = false;
+
+	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 }
 
 CSoyokazeDlg::~CSoyokazeDlg()
 {
-	in->ClearCandidates();
+	in->mCandidates.RemoveListener(&in->mCandidateListBox);
 
 	delete in->mWindowTransparencyPtr;
 
@@ -150,8 +132,6 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_WM_NCHITTEST()
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
-	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_CANDIDATE, OnGetDispInfo)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST_CANDIDATE, OnCandidatesCustomDraw)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZE()
@@ -506,37 +486,9 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
 	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
 	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 
-	in->mCandidateListBox.ModifyStyle(0, LVS_OWNERDATA);
-	in->mCandidateListBox.SetExtendedStyle(in->mCandidateListBox.GetExtendedStyle()|LVS_EX_FULLROWSELECT| LVS_EX_DOUBLEBUFFER);
-
-	// ヘッダー追加
-	LVCOLUMN lvc;
-	memset(&lvc,0,sizeof(LV_COLUMN));
-	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
-
-	CRect rect;
-	GetClientRect(rect);
-	int cx = rect.Width();
-
-	AppPreference* pref= AppPreference::Get();
-
-	CString strHeader;
-	strHeader.LoadString(IDS_NAME);
-	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = pref->IsShowCommandType() ? cx - 165 : cx - 25;
-	lvc.fmt = LVCFMT_LEFT;
-	in->mCandidateListBox.InsertColumn(0,&lvc);
-
-	in->mHasCommandTypeColumn = false;
-	if (pref->IsShowCommandType()) {
-		strHeader.LoadString(IDS_COMMANDTYPE);
-		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-		lvc.cx = 140;  //  #dummy-col-width
-		lvc.fmt = LVCFMT_LEFT;
-		in->mCandidateListBox.InsertColumn(1,&lvc);
-		in->mHasCommandTypeColumn = true;
-	}
+	in->mCandidateListBox.InitColumns();
 
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 
@@ -566,6 +518,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mSharedHwnd = new SharedHwnd(GetSafeHwnd());
 
+	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
@@ -655,8 +608,7 @@ void CSoyokazeDlg::ClearContent()
 	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
-	in->mCandidateListBox.DeleteAllItems();
-	in->mSelIndex = -1;
+	in->mCandidates.Clear();
 
 	UpdateData(FALSE);
 }
@@ -666,15 +618,7 @@ void CSoyokazeDlg::ClearContent()
 core::Command*
 CSoyokazeDlg::GetCurrentCommand()
 {
-	if (in->mCandidates.empty()) {
-
-		return nullptr;
-	}
-
-	if (in->mSelIndex < 0 || in->mCandidates.size() <= (size_t)in->mSelIndex) {
-		return nullptr;
-	}
-	return in->mCandidates[in->mSelIndex];
+	return in->mCandidates.GetCurrentCommand();
 }
 
 /**
@@ -699,8 +643,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
-		in->mCandidateListBox.DeleteAllItems();
-		in->mSelIndex = -1;
+		in->mCandidates.Clear();
 		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
@@ -712,10 +655,12 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	soyokaze::core::CommandParameter commandParam(in->mCommandStr);
 
 	// キーワードによる候補の列挙
-	GetCommandRepository()->Query(commandParam, in->mCandidates);
+	std::vector<soyokaze::core::Command*> commands;
+	GetCommandRepository()->Query(commandParam, commands);
+	in->mCandidates.SetItems(commands);
 
 	// 候補なし
-	if (in->mCandidates.size() == 0) {
+	if (in->mCandidates.IsEmpty()) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		SetDescription(strMisMatch);
@@ -723,27 +668,14 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		in->mCandidateListBox.Invalidate(TRUE);
 		return;
 	}
-
-	// 候補リストの更新
-	in->mCandidateListBox.SetItemCountEx((int)in->mCandidates.size());
-	in->mSelIndex = 0;
-	if (in->mSelIndex < in->mCandidates.size()) {
-		in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
-	}
 	else {
-		in->mSelIndex = -1;
+		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
+		SetDescription(descriptionStr);
+		// サムネイルの更新
+		auto pCmd = GetCurrentCommand();
+		ASSERT(pCmd);
+		in->mIconLabel.DrawIcon(pCmd->GetIcon());
 	}
-
-	// 候補先頭を選択状態にする
-	auto pCmd = in->mCandidates[0];
-	CString descriptionStr = pCmd->GetDescription();
-	if (descriptionStr.IsEmpty()) {
-		descriptionStr = pCmd->GetName();
-	}
-	SetDescription(descriptionStr);
-
-	// サムネイルの更新
-	in->mIconLabel.DrawIcon(pCmd->GetIcon());
 
 	// 補完
 //	bool isCharAdded = (curCaretPos & 0xFFFF) > (in->mLastCaretPos & 0xFFFF);
@@ -757,7 +689,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 //			in->mKeywordEdit.SetSel(end,-1);
 //		}
 //	}
-	in->mLastCaretPos = in->mKeywordEdit.GetSel();
+//	in->mLastCaretPos = in->mKeywordEdit.GetSel();
 
 	in->mCandidateListBox.Invalidate(TRUE);
 }
@@ -775,6 +707,8 @@ void CSoyokazeDlg::OnOK()
 
 		CString str = in->mCommandStr;
 
+		cmd->AddRef();
+
 		std::thread th([cmd, str]() {
 
 			soyokaze::core::CommandParameter commandParam(str);
@@ -787,6 +721,7 @@ void CSoyokazeDlg::OnOK()
 			if (cmd->Execute(commandParam) == FALSE) {
 				AfxMessageBox(cmd->GetErrorString());
 			}
+			cmd->Release();
 		});
 		th.detach();
 	}
@@ -862,19 +797,9 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 		}
 	}
 
-	if (in->mCandidates.size() > 0) {
+	if (in->mCandidates.IsEmpty() == false) {
 		if (wParam == VK_UP) {
-			in->mSelIndex--;
-			if (in->mSelIndex < 0) {
-				in->mSelIndex = (int)(in->mCandidates.size()-1);
-
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_END, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_END, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
-			}
-			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
-			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+			in->mCandidates.OffsetCurrentSelect(-1, true);
 
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
@@ -894,16 +819,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			return 1;
 		}
 		else if (wParam ==VK_DOWN) {
-			in->mSelIndex++;
-			if (in->mSelIndex >= (int)in->mCandidates.size()) {
-				in->mSelIndex = 0;
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_HOME, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_HOME, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
-			}
-			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
-			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+			in->mCandidates.OffsetCurrentSelect(1, true);
 
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
@@ -941,8 +857,14 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			in->mKeywordEdit.SetCaretToEnd();
 			return 1;
 		}
-		else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
-			in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
+		else if (wParam == VK_NEXT) {
+			int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
+			in->mCandidates.OffsetCurrentSelect(itemsInPage, false);
+			return 1;
+		}
+		else if (wParam == VK_PRIOR) {
+			int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
+			in->mCandidates.OffsetCurrentSelect(-itemsInPage , false);
 			return 1;
 		}
 	}
@@ -953,13 +875,6 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 void CSoyokazeDlg::OnLbnSelChange()
 {
 	UpdateData();
-
-	POSITION pos = in->mCandidateListBox.GetFirstSelectedItemPosition();
-	if (pos == NULL) {
-		return;
-	}
-
-	in->mSelIndex = in->mCandidateListBox.GetNextSelectedItem(pos);
 
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
@@ -1010,72 +925,11 @@ LRESULT CSoyokazeDlg::OnNcHitTest(
 	return __super::OnNcHitTest(point);
 }
 
-void CSoyokazeDlg::OnGetDispInfo(
-	NMHDR* pNMHDR,
-	LRESULT* pResult
-)
-{
-	*pResult = 0;
-
-	NMLVDISPINFO* pDispInfo = (NMLVDISPINFO*)pNMHDR;
-	LVITEM* pItem = &(pDispInfo)->item;
-
-	if (pItem->mask & LVIF_TEXT) {
-
-		int itemIndex = pDispInfo->item.iItem;
-		if (pDispInfo->item.iSubItem == 0) {
-			// コマンド名の描画
-			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
-				auto cmd = in->mCandidates[itemIndex];
-				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
-			}
-		}
-		else if (pDispInfo->item.iSubItem == 1) {
-			// コマンドの種別の描画
-			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
-				auto cmd = in->mCandidates[itemIndex];
-				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetTypeDisplayName(), _TRUNCATE);
-			}
-		}
-	}
-}
-
-/**
- 	リストコントロールのカスタムドロー処理
- 	@param[in] pNMHDR  
- 	@param[in] pResult 
-*/
-void CSoyokazeDlg::OnCandidatesCustomDraw(
-	NMHDR* pNMHDR,
-	LRESULT* pResult
-)
-{
-	auto lpLvCd = (LPNMLVCUSTOMDRAW)pNMHDR;
-
-	int drawStage = lpLvCd->nmcd.dwDrawStage;
-	if (drawStage == CDDS_PREPAINT) {
-		*pResult = CDRF_NOTIFYITEMDRAW;
-		::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NOTIFYITEMDRAW);
-	}
-	else if (drawStage == CDDS_ITEMPREPAINT) {
-		*pResult = CDRF_NEWFONT;
-		int row = (int)lpLvCd->nmcd.dwItemSpec;
-		int state = in->mCandidateListBox.GetItemState(row, LVIS_SELECTED);
-
-		if (state != 0) {
-			// 選択状態のアイテムの背景色を変える
-			lpLvCd->clrTextBk = GetSysColor(COLOR_HIGHLIGHT);
-			lpLvCd->clrText = RGB(255, 255, 255);
-			::SetWindowLong(GetSafeHwnd(), DWLP_MSGRESULT, (long)CDRF_NEWFONT);
-		}
-	}
-}
-
 void CSoyokazeDlg::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
-	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
-	in->mSelIndex = nm->iItem;
+	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	in->mCandidates.SetCurrentSelect(nm->iItem);
 	UpdateData(FALSE);
 
 }
@@ -1093,13 +947,7 @@ void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
 	__super::OnSize(type, cx, cy);
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
-		if (in->mHasCommandTypeColumn) {
-			in->mCandidateListBox.SetColumnWidth(0, cx-165);
-			in->mCandidateListBox.SetColumnWidth(1, 140);
-		}
-		else {
-			in->mCandidateListBox.SetColumnWidth(0, cx-25);
-		}
+		in->mCandidateListBox.UpdateSize(cx, cy);
 	}
 }
 

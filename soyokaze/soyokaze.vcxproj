@@ -562,6 +562,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CandidateList.h" />
+    <ClInclude Include="CandidateListListenerIF.h" />
     <ClInclude Include="CommandHotKeyMappings.h" />
     <ClInclude Include="commands\activate_window\ActivateWindowProvider.h" />
     <ClInclude Include="commands\activate_window\ExcelWorkSheets.h" />
@@ -624,6 +626,7 @@
     <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
     <ClInclude Include="gui\BasicSettingDialog.h" />
+    <ClInclude Include="gui\CandidateListCtrl.h" />
     <ClInclude Include="gui\CaptureIconLabel.h" />
     <ClInclude Include="gui\CommandHotKeyDialog.h" />
     <ClInclude Include="gui\ExecSettingDialog.h" />
@@ -694,6 +697,7 @@
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CandidateList.cpp" />
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp" />
     <ClCompile Include="commands\activate_window\ExcelWorkSheets.cpp" />
@@ -756,6 +760,7 @@
     <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />
     <ClCompile Include="gui\BasicSettingDialog.cpp" />
+    <ClCompile Include="gui\CandidateListCtrl.cpp" />
     <ClCompile Include="gui\CaptureIconLabel.cpp" />
     <ClCompile Include="gui\CommandHotKeyDialog.cpp" />
     <ClCompile Include="gui\ExecSettingDialog.cpp" />

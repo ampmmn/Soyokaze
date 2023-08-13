@@ -10,9 +10,6 @@ public:
 	void DrawDefaultIcon();
 
 protected:
-	CDC mMemDC;
-	CBitmap mMemBmp;
-	CBrush mBkBrush;
 	HICON mIconDefault;
 
 // 実装
