@@ -24,6 +24,8 @@ struct CandidateListCtrl::PImpl
 
 	bool mHasCommandTypeColumn = false;
 
+	bool mIsEmpty = false;
+
 	int mItemsInPage;
 };
 
@@ -76,11 +78,10 @@ CandidateListCtrl::CandidateListCtrl() : in(new PImpl)
 
 CandidateListCtrl::~CandidateListCtrl()
 {
+	AppPreference::Get()->UnregisterListener(this);
 }
 
 BEGIN_MESSAGE_MAP(CandidateListCtrl, CListCtrl)
-
-
 END_MESSAGE_MAP()
 
 void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
@@ -166,8 +167,12 @@ void CandidateListCtrl::OnUpdateItems(void* sender)
 {
 	CandidateList* candidates = (CandidateList*)sender;
 
-	SetItemCountEx(candidates->GetSize());
-	if (candidates->GetSize() > 0) {
+	int count = candidates->GetSize();
+
+	// アイテム数が0のときでも背景を交互で描画できるようにするため、ダミーの項目数を1つだけ挟む
+	in->mIsEmpty = count == 0;
+	SetItemCountEx(in->mIsEmpty ? 1 : count);
+	if (count > 0) {
 		SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
 	}
 
@@ -191,6 +196,7 @@ void CandidateListCtrl::DrawItem(
 	CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL isSelect = (lpDrawItemStruct->itemState & ODS_SELECTED);
 
+
 	// 色の定義
 	COLORREF crText = GetSysColor(COLOR_WINDOWTEXT);
 	COLORREF crBk = GetSysColor(COLOR_WINDOW);
@@ -211,6 +217,24 @@ void CandidateListCtrl::DrawItem(
 		rgb[2] = BYTE(rgb[2] + BYTE((255 - rgb[2]) * 0.06));
 	}
 	COLORREF crBk2 = RGB(rgb[0], rgb[1], rgb[2]);
+
+	if (in->mIsEmpty) {
+		// ToDo: 末尾の塗りつぶしとここの塗りつぶしの処理を関数化する
+
+		// 要素数が空の場合の塗りつぶし処理
+		CBrush brBk;
+		brBk.CreateSolidBrush(crBk);
+		CBrush brBk2;
+		brBk2.CreateSolidBrush(crBk2);
+
+		CBrush* p = &brBk2;
+		while (rcItem.top < rcCtrl.Height()) {
+			p = (p == &brBk)? &brBk2 : &brBk;
+			pDC->FillRect(rcItem, p);
+			rcItem.OffsetRect(0, rcItem.Height());
+		}
+		return;
+	}
 
 	// 背景の消去
 	CBrush brBk;
@@ -240,6 +264,23 @@ void CandidateListCtrl::DrawItem(
 	in->DrawItemName(this, pDC, itemID);
 	in->DrawItemCategory(this, pDC, itemID);
 
+	if (itemID == in->mCandidates->GetSize()-1) {
+		// 末尾の要素に達したら、リストの最後まで背景を交互にぬる
+		rcItem.OffsetRect(0, rcItem.Height());
+
+		CBrush brBk;
+		brBk.CreateSolidBrush(crBk);
+		CBrush brBk2;
+		brBk2.CreateSolidBrush(crBk2);
+
+		CBrush* p = (itemID % 2) ? &brBk2 : &brBk;
+		while (rcItem.top < rcCtrl.Height()) {
+			p = (p == &brBk)? &brBk2 : &brBk;
+			pDC->FillRect(rcItem, p);
+			rcItem.OffsetRect(0, rcItem.Height());
+		}
+	}
+
 	pDC->SetTextColor(orgTextColor);
 }
 
@@ -256,5 +297,5 @@ void CandidateListCtrl::OnAppPreferenceUpdated()
 
 void CandidateListCtrl::OnAppExit()
 {
-	AppPreference::Get()->UnregisterListener(this);
 }
+

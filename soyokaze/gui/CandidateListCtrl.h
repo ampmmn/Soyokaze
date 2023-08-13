@@ -30,8 +30,9 @@ public:
 	void OnAppPreferenceUpdated() override;
 	void OnAppExit() override;
 public:
-	DECLARE_MESSAGE_MAP()
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+
+	DECLARE_MESSAGE_MAP()
 
 private:
 	struct PImpl;
