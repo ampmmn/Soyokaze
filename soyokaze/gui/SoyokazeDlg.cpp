@@ -119,7 +119,6 @@ void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_COMMAND, in->mCommandStr);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
-	DDX_Control(pDX, IDC_LIST_CANDIDATE, in->mCandidateListBox);
 }
 
 BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
