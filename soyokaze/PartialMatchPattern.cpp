@@ -45,6 +45,12 @@ PartialMatchPattern::~PartialMatchPattern()
 {
 }
 
+static bool IsVowel(TCHAR c)
+{
+	static CString vowelChars(_T("aiueoAIUEO"));
+	return vowelChars.Find(c) != -1;
+}
+
 void PartialMatchPattern::SetParam(
 	const soyokaze::core::CommandParameter& param
 )
@@ -117,10 +123,12 @@ void PartialMatchPattern::SetParam(
 
 	bool is1stWord = true;
 	for (auto& word : words) {
+		ASSERT(word.GetLength() > 0);
 
 		try {
-
-			if (is1stWord && in->mMigemo.IsInitialized()) {
+			// 入力文字が1文字で子音の場合はC/Migemoを使わない
+			// (子音によっては何もヒットしないことがあるので)
+			if (is1stWord && in->mMigemo.IsInitialized() && (word.GetLength() > 1 || IsVowel(word[0])) ) {
 				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
 				CString migemoExpr;
 				in->mMigemo.Query(word, migemoExpr);
