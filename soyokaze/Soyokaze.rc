@@ -175,7 +175,7 @@ BEGIN
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
     LTEXT           "名前:",IDC_STATIC,37,7,20,8
     LTEXT           "説明:",IDC_STATIC,37,21,20,8
-    LTEXT           "(名前)",IDC_STATIC_NAME,147,7,209,8
+    LTEXT           "(名前)",IDC_STATIC_NAME,69,7,209,8
     LTEXT           "(説明)",IDC_STATIC_DESCRIPTION,69,21,211,8
 END
 

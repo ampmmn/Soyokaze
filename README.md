@@ -129,7 +129,7 @@ bluewindのReadMeから抜粋
 
 ### 開発環境
 
-- VisualStudio2019
+- VisualStudio2022
 - C++のプロジェクト
 - MFCを使っている
 
