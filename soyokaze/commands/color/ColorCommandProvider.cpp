@@ -32,7 +32,7 @@ struct ColorCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(ColorCommandProvider)
 
 
-ColorCommandProvider::ColorCommandProvider() : in(new PImpl)
+ColorCommandProvider::ColorCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 

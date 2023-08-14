@@ -14,7 +14,7 @@ struct WholeMatchPattern::PImpl
 	CString mWholeText;
 };
 
-WholeMatchPattern::WholeMatchPattern(const CString& word) : in(new PImpl)
+WholeMatchPattern::WholeMatchPattern(const CString& word) : in(std::make_unique<PImpl>())
 {
 	in->mWord = word;
 	in->mWholeText = word;

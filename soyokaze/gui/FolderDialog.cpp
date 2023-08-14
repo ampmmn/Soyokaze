@@ -67,7 +67,7 @@ void CFolderDialog::Init(
 	CWnd *pwndParent			// (I) 親ウィンドウ
 )
 {
-	m_pData.reset(new CFolderDialogData);
+	m_pData = std::make_unique<CFolderDialogData>();
 
 	if (pszTitle != NULL)
 		m_pData->strTitle = pszTitle;

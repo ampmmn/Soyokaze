@@ -34,7 +34,7 @@ struct ViewSettingDialog::PImpl
 
 ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("表示"), IDD_VIEWSETTING, parentWnd),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mAlpha = 128;
 }

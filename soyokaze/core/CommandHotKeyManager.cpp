@@ -76,7 +76,7 @@ UINT CommandHotKeyManager::PImpl::GetHotKeyID()
 
 
 
-CommandHotKeyManager::CommandHotKeyManager() : in(new PImpl)
+CommandHotKeyManager::CommandHotKeyManager() : in(std::make_unique<PImpl>())
 {
 	in->mReceiverWindow = nullptr;
 	in->mAccel = nullptr;
@@ -263,7 +263,7 @@ bool CommandHotKeyManager::Register(
 	if (isGlobal) {
 		HWND hwnd = in->mReceiverWindow;
 		ASSERT(hwnd);
-		std::unique_ptr<GlobalHotKey> hotKey(new GlobalHotKey(hwnd));
+		auto hotKey = std::make_unique<GlobalHotKey>(hwnd);
 		if (hotKey->Register(in->GetHotKeyID(), key.GetModifiers(), key.GetVKCode()) == false) {
 			// 登録失敗
 			return false;

@@ -86,7 +86,7 @@ Pattern* FilterDialog::PImpl::GetPatternObject()
 
 FilterDialog::FilterDialog(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_FILTER, pParent),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
 
@@ -219,7 +219,7 @@ BOOL FilterDialog::OnInitDialog()
 	in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
 
 	// ウインドウ位置の復元
-	in->mWindowPositionPtr.reset(new WindowPosition(_T("filter")));
+	in->mWindowPositionPtr = std::make_unique<WindowPosition>(_T("filter"));
 	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
 		// 復元に失敗した場合は中央に表示
 		CenterWindow();

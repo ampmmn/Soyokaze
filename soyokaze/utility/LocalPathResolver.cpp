@@ -16,7 +16,7 @@ struct LocalPathResolver::PImpl
 	std::vector<CString> targetDirs;
 };
 
-LocalPathResolver::LocalPathResolver() : in(new PImpl)
+LocalPathResolver::LocalPathResolver() : in(std::make_unique<PImpl>())
 {
 	LPCTSTR PATH = _T("PATH");
 
@@ -51,7 +51,7 @@ LocalPathResolver::LocalPathResolver() : in(new PImpl)
 }
 
 LocalPathResolver::LocalPathResolver(const LocalPathResolver& rhs) 
-	: in(new PImpl)
+	: in(std::make_unique<PImpl>())
 {
 	in->targetDirs = rhs.in->targetDirs;
 }

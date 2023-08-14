@@ -147,7 +147,7 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 
 CString GroupCommand::GetType() { return _T("Group"); }
 
-GroupCommand::GroupCommand() : in(new PImpl)
+GroupCommand::GroupCommand() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -248,13 +248,13 @@ int GroupCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	GroupCommand* cmdNew = new GroupCommand();
+	auto cmdNew = std::make_unique<GroupCommand>();
 	cmdNew->SetParam(dlg.GetParam());
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew);
+	cmdRepo->RegisterCommand(cmdNew.release());
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -276,12 +276,12 @@ int GroupCommand::EditDialog(const Parameter* param)
 soyokaze::core::Command*
 GroupCommand::Clone()
 {
-	auto clonedObj = new GroupCommand();
+	auto clonedObj = std::make_unique<GroupCommand>();
 
 	clonedObj->in->mParam = in->mParam;
 	clonedObj->in->mErrMsg = in->mErrMsg;
 
-	return clonedObj;
+	return clonedObj.release();
 }
 
 bool GroupCommand::Save(CommandFile* cmdFile)

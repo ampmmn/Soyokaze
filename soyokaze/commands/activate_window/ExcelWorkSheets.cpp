@@ -237,7 +237,7 @@ void WorkSheets::PImpl::Update()
 	th.detach();
 }
 
-WorkSheets::WorkSheets() : in(new PImpl)
+WorkSheets::WorkSheets() : in(std::make_unique<PImpl>())
 {
 	CoInitialize(NULL);
 
@@ -312,7 +312,7 @@ struct Worksheet::PImpl
 	const CString& workbookName,
 	const CString& sheetName
 ) : 
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 

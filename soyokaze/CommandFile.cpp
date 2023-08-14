@@ -48,7 +48,7 @@ struct CommandFile::PImpl
 
 
 
-CommandFile::CommandFile() : in(new PImpl)
+CommandFile::CommandFile() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -113,7 +113,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
  			if (strCommandName.IsEmpty() == FALSE) {
-				auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+				auto command = std::make_unique<ShellExecCommand>();
 				command->SetName(strCommandName);
 				command->SetDescription(strDescription);
 				command->SetRunAs(runAs);
@@ -182,7 +182,7 @@ bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
 	}
 
 	if (strCommandName.IsEmpty() == FALSE) {
-		auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+		auto command = std::make_unique<ShellExecCommand>();
 		command->SetName(strCommandName);
 		command->SetDescription(strDescription);
 		command->SetRunAs(runAs);
@@ -303,7 +303,7 @@ CommandFile::Entry* CommandFile::NewEntry(
 	const CString& name
 )
 {
-	std::unique_ptr<Entry> entry(new Entry());
+	auto entry = std::make_unique<Entry>();
 	entry->mName = name;
 	in->mEntries.push_back(std::move(entry));
 	return entry.get();
@@ -461,7 +461,7 @@ bool CommandFile::Load()
 
 			CString strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
-			curEntry.reset(new Entry);
+			curEntry = std::make_unique<Entry>();
 			curEntry->mName =strCurSectionName;
 			continue;
 		}

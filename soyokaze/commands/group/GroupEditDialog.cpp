@@ -21,7 +21,7 @@ namespace group {
 GroupEditDialog::GroupEditDialog() : 
 	CDialogEx(IDD_GROUP),
 	mCommandListPtr(nullptr),
-	mCommandSelectBox(new ModalComboBox)
+	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {
 }
 

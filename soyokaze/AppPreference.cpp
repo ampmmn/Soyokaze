@@ -86,7 +86,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-AppPreference::PImpl::PImpl() : mNotifyWindow(new NotifyWindow)
+AppPreference::PImpl::PImpl() : mNotifyWindow(std::make_unique<NotifyWindow>())
 {
 }
 
@@ -105,7 +105,7 @@ void AppPreference::PImpl::OnAppPreferenceUpdated()
 /**
  * コンストラクタ
  */
-AppPreference::AppPreference() : in(new PImpl)
+AppPreference::AppPreference() : in(std::make_unique<PImpl>())
 {
 	Load();
 }

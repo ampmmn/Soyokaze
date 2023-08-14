@@ -80,7 +80,7 @@ struct KeywordEdit::PImpl
 
 };
 
-KeywordEdit::KeywordEdit(CWnd* pParent) : in(new PImpl)
+KeywordEdit::KeywordEdit(CWnd* pParent) : in(std::make_unique<PImpl>())
 {
 	in->mIsFirst = true;
 	in->mIsFocus = false;

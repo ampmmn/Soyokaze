@@ -18,7 +18,7 @@ public:
 
 
 StartupParam::StartupParam(int argc, TCHAR* argv[]) : 
-	in(new PImpl(argc, argv))
+	in(std::make_unique<PImpl>(argc, argv))
 {
 }
 

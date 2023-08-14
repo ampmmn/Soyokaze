@@ -23,7 +23,7 @@ struct RecentFileCommand::PImpl
 
 RecentFileCommand::RecentFileCommand(const CString& name, const CString& fullPath) : 
 	AdhocCommandBase(name, fullPath),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mFullPath = fullPath;
 }
@@ -62,8 +62,7 @@ HICON RecentFileCommand::GetIcon()
 soyokaze::core::Command*
 RecentFileCommand::Clone()
 {
-	auto clonedObj = new RecentFileCommand(this->mName, in->mFullPath);
-	return clonedObj;
+	return new RecentFileCommand(this->mName, in->mFullPath);
 }
 
 } // end of namespace recentfiles

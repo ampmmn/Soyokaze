@@ -30,7 +30,7 @@ struct RegExpCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(RegExpCommandProvider)
 
 
-RegExpCommandProvider::RegExpCommandProvider() : in(new PImpl)
+RegExpCommandProvider::RegExpCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 }
@@ -69,7 +69,7 @@ void RegExpCommandProvider::LoadCommands(
 			continue;
 		}
 
-		auto command = std::unique_ptr<RegExpCommand>(new RegExpCommand());
+		auto command = std::make_unique<RegExpCommand>();
 		if (command->Load(cmdFile, entry) == false) {
 			continue;
 		}

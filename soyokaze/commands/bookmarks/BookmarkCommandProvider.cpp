@@ -53,7 +53,7 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 REGISTER_COMMANDPROVIDER(BookmarkCommandProvider)
 
 
-BookmarkCommandProvider::BookmarkCommandProvider() : in(new PImpl)
+BookmarkCommandProvider::BookmarkCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mIsEnableBookmark = false;
 	in->mIsFirstCall = true;

@@ -24,7 +24,7 @@ static const tregex& GetRegexForArgument()
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
-	mIconLabelPtr(new IconLabel)
+	mIconLabelPtr(std::make_unique<IconLabel>())
 {
 }
 

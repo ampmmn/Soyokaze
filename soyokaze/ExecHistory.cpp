@@ -11,7 +11,7 @@ struct ExecHistory::PImpl
 };
 
 
-ExecHistory::ExecHistory() : in(new PImpl)
+ExecHistory::ExecHistory() : in(std::make_unique<PImpl>())
 {
 	// 上限
 	in->limit = 256;

@@ -63,7 +63,7 @@ struct ShellExecCommand::PImpl
 
 CString ShellExecCommand::GetType() { return _T("ShellExec"); }
 
-ShellExecCommand::ShellExecCommand() : in(new PImpl)
+ShellExecCommand::ShellExecCommand() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -328,7 +328,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 		return 1;
 	}
 
-	std::unique_ptr<ShellExecCommand> cmdNew(new ShellExecCommand());
+	auto cmdNew = std::make_unique<ShellExecCommand>();
 
 	// 追加する処理
 	param = dlg.GetParam();
@@ -399,7 +399,7 @@ int ShellExecCommand::GetRunAs()
 soyokaze::core::Command*
 ShellExecCommand::Clone()
 {
-	auto clonedObj = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+	auto clonedObj = std::make_unique<ShellExecCommand>();
 
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
 	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
@@ -440,7 +440,7 @@ bool ShellExecCommand::NewDialog(
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	commandParam = dlg.GetParam();
 
-	auto newCmd = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+	auto newCmd = std::make_unique<ShellExecCommand>();
 	newCmd->in->mParam.mName = commandParam.mName;
 	newCmd->in->mParam.mDescription = commandParam.mDescription;
 	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
@@ -520,7 +520,7 @@ bool ShellExecCommand::LoadFrom(
 	noParamAttr.mParam = cmdFile->Get(entry, _T("parameter0"), _T(""));
 	noParamAttr.mShowType = cmdFile->Get(entry, _T("show0"), noParamAttr.mShowType);
 
-	auto command = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+	auto command = std::make_unique<ShellExecCommand>();
 	command->in->mParam.mName = name;
 	command->in->mParam.mDescription = descriptionStr;
 	command->in->mParam.mIsRunAsAdmin = (runAs != 0);

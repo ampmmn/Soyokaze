@@ -32,7 +32,7 @@ struct Migemo::PImpl
 
 };
 
-Migemo::Migemo() : in(new PImpl)
+Migemo::Migemo() : in(std::make_unique<PImpl>())
 {
 	TCHAR path[MAX_PATH_NTFS];
 	GetModuleFileName(nullptr, path, MAX_PATH_NTFS);

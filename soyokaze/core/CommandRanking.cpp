@@ -32,7 +32,7 @@ struct CommandRanking::PImpl
 	bool mIsLoaded;
 };
 
-CommandRanking::CommandRanking() : in(new PImpl)
+CommandRanking::CommandRanking() : in(std::make_unique<PImpl>())
 {
 	in->mIsLoaded = false;
 }

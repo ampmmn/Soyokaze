@@ -24,7 +24,7 @@ struct RecentFiles::PImpl
 };
 
 
-RecentFiles::RecentFiles() : in(new PImpl)
+RecentFiles::RecentFiles() : in(std::make_unique<PImpl>())
 {
 }
 

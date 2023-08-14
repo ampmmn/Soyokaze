@@ -23,7 +23,7 @@ struct PartialMatchPattern::PImpl
 	Migemo mMigemo;
 };
 
-PartialMatchPattern::PartialMatchPattern() : in(new PImpl)
+PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 {
 	in->mHasError = false;
 

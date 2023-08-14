@@ -24,7 +24,7 @@ struct EnvCommand::PImpl
 
 EnvCommand::EnvCommand(const CString& name, const CString& value) : 
 	AdhocCommandBase(name, value),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mValue = value;
 }
@@ -66,8 +66,7 @@ HICON EnvCommand::GetIcon()
 soyokaze::core::Command*
 EnvCommand::Clone()
 {
-	auto clonedObj = new EnvCommand(this->mName, in->mValue);
-	return clonedObj;
+	return new EnvCommand(this->mName, in->mValue);
 }
 
 } // end of namespace env

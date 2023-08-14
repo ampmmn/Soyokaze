@@ -28,7 +28,7 @@ struct CandidateList::PImpl
 	std::set<CandidateListListenerIF*> mListeners;
 };
 
-CandidateList::CandidateList() : in(new PImpl)
+CandidateList::CandidateList() : in(std::make_unique<PImpl>())
 {
 }
 

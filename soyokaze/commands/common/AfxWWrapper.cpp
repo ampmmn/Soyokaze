@@ -68,7 +68,7 @@ int AfxWWrapper::PImpl::GetCurrentWinNo()
 
 
 // コンストラクタ
-AfxWWrapper::AfxWWrapper() : in(new PImpl)
+AfxWWrapper::AfxWWrapper() : in(std::make_unique<PImpl>())
 {
 	CoInitialize(NULL);
 

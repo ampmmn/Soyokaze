@@ -39,7 +39,7 @@ struct PathExecuteCommand::PImpl
 };
 
 
-PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
+PathExecuteCommand::PathExecuteCommand() : in(std::make_unique<PImpl>())
 {
 	in->mExeExtension = _T(".exe");
 	in->mIsURL = false;
@@ -180,7 +180,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 soyokaze::core::Command*
 PathExecuteCommand::Clone()
 {
-	auto clonedObj = new PathExecuteCommand();
+	auto clonedObj = std::make_unique<PathExecuteCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 
@@ -188,7 +188,7 @@ PathExecuteCommand::Clone()
 	clonedObj->in->mFullPath = in->mFullPath;
 	clonedObj->in->mExeExtension = in->mExeExtension;
 
-	return clonedObj;
+	return clonedObj.release();
 }
 
 

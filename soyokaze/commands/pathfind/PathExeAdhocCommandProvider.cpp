@@ -57,7 +57,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 REGISTER_COMMANDPROVIDER(PathExeAdhocCommandProvider)
 
 
-PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(new PImpl)
+PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mExeCommandPtr = new PathExecuteCommand();
 	in->mIsIgnoreUNC = false;
@@ -122,9 +122,9 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		auto cmdHist = new PathExecuteCommand();
+		auto cmdHist = std::make_unique<PathExecuteCommand>();
 		cmdHist->SetFullPath(item.mFullPath, true);
-		commands.push_back(CommandQueryItem(level, cmdHist));
+		commands.push_back(CommandQueryItem(level, cmdHist.release()));
 	}
 
 }

@@ -26,7 +26,7 @@ struct CommandHotKeyMappings::PImpl
 
 
 
-CommandHotKeyMappings::CommandHotKeyMappings() : in(new PImpl)
+CommandHotKeyMappings::CommandHotKeyMappings() : in(std::make_unique<PImpl>())
 {
 }
 

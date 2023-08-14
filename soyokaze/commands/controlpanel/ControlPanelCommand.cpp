@@ -27,7 +27,7 @@ ControlPanelCommand::ControlPanelCommand(
 	const CString& appName,
 	const CString& description
 ) : AdhocCommandBase(name, description),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mIconPath = iconPath;
 	in->mAppName = appName;

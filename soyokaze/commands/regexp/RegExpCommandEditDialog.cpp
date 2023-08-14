@@ -21,7 +21,7 @@ namespace regexp {
 
 CommandEditDialog::CommandEditDialog() : 
 	CDialogEx(IDD_REGEXPCOMMAND),
-	mIconLabelPtr(new IconLabel)
+	mIconLabelPtr(std::make_unique<IconLabel>())
 {
 }
 

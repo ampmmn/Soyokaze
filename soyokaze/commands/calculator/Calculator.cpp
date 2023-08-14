@@ -185,7 +185,7 @@ void Calculator::PImpl::Finalize()
 
 
 
-Calculator::Calculator() : in(new PImpl)
+Calculator::Calculator() : in(std::make_unique<PImpl>())
 {
 	in->mDll = nullptr;
 	in->mModule = nullptr;

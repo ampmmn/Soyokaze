@@ -65,7 +65,7 @@ BookmarkCommand::BookmarkCommand(
 	const CString& url
 ) : 
 	AdhocCommandBase(name, type + _T(" - ") + name),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
 	in->mType = type;
 	in->mUrl = url;

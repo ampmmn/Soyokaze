@@ -65,7 +65,7 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 REGISTER_COMMANDPROVIDER(ActivateWindowProvider)
 
 
-ActivateWindowProvider::ActivateWindowProvider() : in(new PImpl)
+ActivateWindowProvider::ActivateWindowProvider() : in(std::make_unique<PImpl>())
 {
 	in->mIsEnableWorksheet = false;
 	in->mIsEnableWindowSwitch = false;

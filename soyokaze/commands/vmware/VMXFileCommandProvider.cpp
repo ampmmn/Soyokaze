@@ -105,7 +105,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 REGISTER_COMMANDPROVIDER(VMXFileCommandProvider)
 
 
-VMXFileCommandProvider::VMXFileCommandProvider() : in(new PImpl)
+VMXFileCommandProvider::VMXFileCommandProvider() : in(std::make_unique<PImpl>())
 {
 	size_t reqLen = 0;
 	LPTSTR p = in->mPrefFilePath.GetBuffer(MAX_PATH_NTFS);

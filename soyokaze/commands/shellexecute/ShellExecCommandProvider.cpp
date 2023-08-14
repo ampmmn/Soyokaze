@@ -33,7 +33,7 @@ struct ShellExecCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(ShellExecCommandProvider)
 
 
-ShellExecCommandProvider::ShellExecCommandProvider() : in(new PImpl)
+ShellExecCommandProvider::ShellExecCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 }

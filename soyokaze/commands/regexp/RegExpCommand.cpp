@@ -63,7 +63,7 @@ struct RegExpCommand::PImpl
 
 CString RegExpCommand::GetType() { return _T("RegExp"); }
 
-RegExpCommand::RegExpCommand() : in(new PImpl)
+RegExpCommand::RegExpCommand() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -296,7 +296,7 @@ int RegExpCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	RegExpCommand* cmdNew = new RegExpCommand();
+	auto cmdNew = std::make_unique<RegExpCommand>();
 
 	// 追加する処理
 	cmdNew->SetName(dlg.mName);
@@ -314,7 +314,7 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew);
+	cmdRepo->RegisterCommand(cmdNew.release());
 
 	return 0;
 }
@@ -332,7 +332,7 @@ int RegExpCommand::GetRunAs()
 soyokaze::core::Command*
 RegExpCommand::Clone()
 {
-	auto clonedObj = new RegExpCommand();
+	auto clonedObj = std::make_unique<RegExpCommand>();
 
 	clonedObj->in->mName = in->mName;
 	clonedObj->in->mDescription = in->mDescription;
@@ -341,7 +341,7 @@ RegExpCommand::Clone()
 	clonedObj->in->mRegex = in->mRegex;
 	clonedObj->in->mNormalAttr = in->mNormalAttr;
 
-	return clonedObj;
+	return clonedObj.release();
 }
 
 bool RegExpCommand::Save(CommandFile* cmdFile)
@@ -439,7 +439,7 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::unique_ptr<RegExpCommand>(new RegExpCommand());
+	auto newCmd = std::make_unique<RegExpCommand>();
 	newCmd->in->mName = dlg.mName;
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mRunAs = dlg.mIsRunAsAdmin;

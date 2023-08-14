@@ -36,7 +36,7 @@ struct RecentFilesCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(RecentFilesCommandProvider)
 
 
-RecentFilesCommandProvider::RecentFilesCommandProvider() : in(new PImpl)
+RecentFilesCommandProvider::RecentFilesCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 

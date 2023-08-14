@@ -22,7 +22,7 @@ struct ColorCommand::PImpl
 };
 
 
-ColorCommand::ColorCommand(COLORREF cr) : in(new PImpl)
+ColorCommand::ColorCommand(COLORREF cr) : in(std::make_unique<PImpl>())
 {
 	in->mColor = cr;
 
@@ -90,8 +90,7 @@ HICON ColorCommand::GetIcon()
 soyokaze::core::Command*
 ColorCommand::Clone()
 {
-	auto clonedObj = new ColorCommand(in->mColor);
-	return clonedObj;
+	return new ColorCommand(in->mColor);
 }
 
 } // end of namespace color

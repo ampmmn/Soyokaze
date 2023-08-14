@@ -32,7 +32,7 @@ struct EnvCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(EnvCommandProvider)
 
 
-EnvCommandProvider::EnvCommandProvider() : in(new PImpl)
+EnvCommandProvider::EnvCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -77,8 +77,7 @@ void EnvCommandProvider::QueryAdhocCommands(
 	_tgetenv_s(&reqLen, value.GetBuffer((int)reqLen), reqLen, valName);
 	value.ReleaseBuffer();
 
-	auto cmd = new EnvCommand(valName, value);
-	commands.push_back(CommandQueryItem(Pattern::WholeMatch, cmd));
+	commands.push_back(CommandQueryItem(Pattern::WholeMatch, new EnvCommand(valName, value)));
 }
 
 

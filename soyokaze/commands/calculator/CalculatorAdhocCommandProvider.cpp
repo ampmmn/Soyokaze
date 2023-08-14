@@ -56,7 +56,7 @@ struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 REGISTER_COMMANDPROVIDER(CalculatorAdhocCommandProvider)
 
 
-CalculatorAdhocCommandProvider::CalculatorAdhocCommandProvider() : in(new PImpl)
+CalculatorAdhocCommandProvider::CalculatorAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mIsFirstCall = true;
 	in->mIsEnable = false;

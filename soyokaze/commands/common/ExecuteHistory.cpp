@@ -37,7 +37,7 @@ struct ExecuteHistory::PImpl
 	bool mIsLoaded;
 };
 
-ExecuteHistory::ExecuteHistory() : in(new PImpl)
+ExecuteHistory::ExecuteHistory() : in(std::make_unique<PImpl>())
 {
 	in->mIsLoaded = false;
 }

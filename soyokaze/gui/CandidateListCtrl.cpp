@@ -71,7 +71,7 @@ void CandidateListCtrl::PImpl::DrawItemCategory(
 
 
 
-CandidateListCtrl::CandidateListCtrl() : in(new PImpl)
+CandidateListCtrl::CandidateListCtrl() : in(std::make_unique<PImpl>())
 {
 	AppPreference::Get()->RegisterListener(this);
 }

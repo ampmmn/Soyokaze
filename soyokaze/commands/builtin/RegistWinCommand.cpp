@@ -60,7 +60,7 @@ struct RegistWinCommand::PImpl
 CString RegistWinCommand::GetType() { return _T("Builtin-RegisterWindow"); }
 
 
-RegistWinCommand::RegistWinCommand(LPCTSTR name) : in(new PImpl)
+RegistWinCommand::RegistWinCommand(LPCTSTR name) : in(std::make_unique<PImpl>())
 {
 	in->mName = name ? name : _T("registwin");
 	in->mRefCount = 1;

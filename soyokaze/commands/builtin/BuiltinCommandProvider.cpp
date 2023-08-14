@@ -46,7 +46,7 @@ struct BuiltinCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(BuiltinCommandProvider)
 
 
-BuiltinCommandProvider::BuiltinCommandProvider() : in(new PImpl)
+BuiltinCommandProvider::BuiltinCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 

@@ -34,7 +34,7 @@ struct GroupCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(GroupCommandProvider)
 
 
-GroupCommandProvider::GroupCommandProvider() : in(new PImpl)
+GroupCommandProvider::GroupCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 }
@@ -87,7 +87,7 @@ void GroupCommandProvider::LoadCommands(
 		param.mRepeats = cmdFile->Get(entry, _T("Repeats"), 1);
 		param.mIsConfirm = cmdFile->Get(entry, _T("IsConfirm"), true);
 
-		auto command = std::unique_ptr<GroupCommand>(new GroupCommand);
+		auto command = std::make_unique<GroupCommand>();
 
 		int count = cmdFile->Get(entry, _T("CommandCount"), 0);
 		if (count > 32) {  // 32を上限とする
@@ -147,7 +147,7 @@ bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 	auto& paramNew = dlg.GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::unique_ptr<GroupCommand>(new GroupCommand());
+	auto newCmd = std::make_unique<GroupCommand>();
 	newCmd->SetParam(paramNew);
 
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());

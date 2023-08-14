@@ -17,7 +17,7 @@ struct Settings::PImpl
 };
 
 
-Settings::Settings() : in(new PImpl)
+Settings::Settings() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -162,7 +162,7 @@ void Settings::Set(LPCTSTR key, bool value)
 
 Settings* Settings::Clone() const
 {
-	auto newObj = std::unique_ptr<Settings>(new Settings());
+	auto newObj = std::make_unique<Settings>();
 	newObj->in->mKeys = in->mKeys;
 	newObj->in->mIntMap = in->mIntMap;
 	newObj->in->mStrMap = in->mStrMap;

@@ -24,7 +24,7 @@ struct CalculatorCommand::PImpl
 };
 
 
-CalculatorCommand::CalculatorCommand() : in(new PImpl)
+CalculatorCommand::CalculatorCommand() : in(std::make_unique<PImpl>())
 {
 	in->mCalcPath[0] = _T('\0');
 }
@@ -87,9 +87,9 @@ HICON CalculatorCommand::GetIcon()
 soyokaze::core::Command*
 CalculatorCommand::Clone()
 {
-	auto clonedObj = new CalculatorCommand();
+	auto clonedObj = std::make_unique<CalculatorCommand>();
 	clonedObj->SetResult(in->mResult);
-	return clonedObj;
+	return clonedObj.release();
 }
 
 bool CalculatorCommand::GetCalcExePath(LPTSTR path, size_t len)

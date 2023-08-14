@@ -23,7 +23,7 @@ struct WindowActivateCommand::PImpl
 
 WindowActivateCommand::WindowActivateCommand(
 	HWND hwnd
-) : in(new PImpl)
+) : in(std::make_unique<PImpl>())
 {
 	in->mHwnd = hwnd;
 

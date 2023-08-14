@@ -68,7 +68,7 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 /*!
  *	@brief デフォルトコンストラクタ
 */
- CAppProfile::CAppProfile() : m_entity(new CIniFile())
+ CAppProfile::CAppProfile() : m_entity(std::make_unique<CIniFile>())
 {
 	TCHAR path[1024];
 	GetFilePath(path, 1024);

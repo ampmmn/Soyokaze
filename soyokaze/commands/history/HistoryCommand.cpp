@@ -25,7 +25,7 @@ struct HistoryCommand::PImpl
 };
 
 
-HistoryCommand::HistoryCommand(const CString& keyword) : in(new PImpl)
+HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PImpl>())
 {
 	this->mName = keyword;
 

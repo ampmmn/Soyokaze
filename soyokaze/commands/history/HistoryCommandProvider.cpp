@@ -31,7 +31,7 @@ struct HistoryCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(HistoryCommandProvider)
 
 
-HistoryCommandProvider::HistoryCommandProvider() : in(new PImpl)
+HistoryCommandProvider::HistoryCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -57,8 +57,7 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 		int level = pattern->Match(item.mWord);
 		if (level != Pattern::Mismatch) {
-			auto command = new HistoryCommand(item.mWord);
-			commands.push_back(CommandQueryItem(level, command));
+			commands.push_back(CommandQueryItem(level, new HistoryCommand(item.mWord)));
 		}
 	}
 }

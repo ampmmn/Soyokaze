@@ -298,7 +298,7 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 
 CString FilterCommand::GetType() { return _T("Filter"); }
 
-FilterCommand::FilterCommand() : in(new PImpl)
+FilterCommand::FilterCommand() : in(std::make_unique<PImpl>())
 {
 }
 
@@ -352,7 +352,7 @@ BOOL FilterCommand::Execute(const Parameter& param)
 		int& count;
 	} count_(in->mExecutingCount);
 
-	in->mDialog.reset(new FilterDialog);
+	in->mDialog = std::make_unique<FilterDialog>();
 
 	std::vector<CString> args;
 	param.GetParameters(args);
@@ -434,7 +434,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	FilterCommand* cmdNew = new FilterCommand();
+	auto cmdNew = std::make_unique<FilterCommand>();
 
 	// 追加する処理
 	CommandParam paramTmp;
@@ -444,7 +444,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew);
+	cmdRepo->RegisterCommand(cmdNew.release());
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -468,9 +468,9 @@ int FilterCommand::EditDialog(const Parameter* param)
 soyokaze::core::Command*
 FilterCommand::Clone()
 {
-	auto clonedObj = new FilterCommand();
+	auto clonedObj = std::make_unique<FilterCommand>();
 	clonedObj->in->mParam = in->mParam;
-	return clonedObj;
+	return clonedObj.release();
 }
 
 bool FilterCommand::Save(CommandFile* cmdFile)

@@ -58,10 +58,10 @@ struct CommandRepository::PImpl
 			HOTKEY_ATTR attr;
 			hotKeyMap.GetHotKeyAttr(i, attr);
 
-			auto handler = new NamedCommandHotKeyHandler(name);
+			auto handler = std::make_unique<NamedCommandHotKeyHandler>(name);
 			bool isGlobal = hotKeyMap.IsGlobal(i);
 
-			hotKeyManager->Register(handler, attr, isGlobal);
+			hotKeyManager->Register(handler.release(), attr, isGlobal);
 		}
 	}
 
@@ -101,7 +101,7 @@ struct CommandRepository::PImpl
 };
 
 
-CommandRepository::CommandRepository() : in(new PImpl)
+CommandRepository::CommandRepository() : in(std::make_unique<PImpl>())
 {
 	AppPreference::Get()->RegisterListener(this);
 
@@ -397,7 +397,7 @@ int CommandRepository::RegisterCommandFromFiles(
 			}
 
 			// ダイアログで入力された内容に基づき、コマンドを新規作成する
-			auto newCmd = std::unique_ptr<ShellExecCommand>(new ShellExecCommand());
+			auto newCmd = std::make_unique<ShellExecCommand>();
 			newCmd->SetName(name);
 
 			ShellExecCommand::ATTRIBUTE normalAttr;

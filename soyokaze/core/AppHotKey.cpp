@@ -20,7 +20,7 @@ namespace core {
 static const int ID_SOYOKAZE_HOTKEY = 0xB31E;
 
 AppHotKey::AppHotKey(HWND targetWnd) : 
-	mHotKey(new GlobalHotKey(targetWnd))
+	mHotKey(std::make_unique<GlobalHotKey>(targetWnd))
 {
 	AppPreference::Get()->RegisterListener(this);
 }

@@ -24,7 +24,7 @@ struct WorksheetCommand::PImpl
 
 WorksheetCommand::WorksheetCommand(
 	Worksheet* sheet
-) : in(new PImpl)
+) : in(std::make_unique<PImpl>())
 {
 	in->mWorksheet = sheet;
 	sheet->AddRef();

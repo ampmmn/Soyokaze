@@ -24,7 +24,7 @@ namespace filter {
 
 FilterEditDialog::FilterEditDialog() : 
 	CDialogEx(IDD_FILTEREDIT),
-	mIconLabelPtr(new IconLabel),
+	mIconLabelPtr(std::make_unique<IconLabel>()),
 	mIsGlobal(false),
 	mCommandSelIndex(-1)
 {

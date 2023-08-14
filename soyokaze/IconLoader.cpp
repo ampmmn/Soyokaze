@@ -61,7 +61,7 @@ struct IconLoader::PImpl
 	LocalPathResolver mResolver;
 };
 
-IconLoader::IconLoader() : in(new PImpl)
+IconLoader::IconLoader() : in(std::make_unique<PImpl>())
 {
 }
 

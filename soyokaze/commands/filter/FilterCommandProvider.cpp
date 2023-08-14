@@ -34,7 +34,7 @@ struct FilterCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(FilterCommandProvider)
 
 
-FilterCommandProvider::FilterCommandProvider() : in(new PImpl)
+FilterCommandProvider::FilterCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
 }
@@ -90,7 +90,7 @@ void FilterCommandProvider::LoadCommands(
 		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
 		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));
 
-		auto command = std::unique_ptr<FilterCommand>(new FilterCommand());
+		auto command = std::make_unique<FilterCommand>();
 		command->SetParam(newParam);
 		// 登録
 		cmdRepo->RegisterCommand(command.release());
@@ -143,7 +143,7 @@ bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::unique_ptr<FilterCommand>(new FilterCommand());
+	auto newCmd = std::make_unique<FilterCommand>();
 
 	dlg.GetParam(tmpParam);
 	newCmd->SetParam(tmpParam);

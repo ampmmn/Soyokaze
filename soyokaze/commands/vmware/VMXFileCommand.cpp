@@ -61,7 +61,7 @@ bool VMXFileCommand::PImpl::IsLocked()
 
 
 
-VMXFileCommand::VMXFileCommand(const CString& name, const CString& fullPath) : in(new PImpl)
+VMXFileCommand::VMXFileCommand(const CString& name, const CString& fullPath) : in(std::make_unique<PImpl>())
 {
 	this->mName = name;
 	this->mDescription = fullPath;
@@ -114,8 +114,7 @@ HICON VMXFileCommand::GetIcon()
 soyokaze::core::Command*
 VMXFileCommand::Clone()
 {
-	auto clonedObj = new VMXFileCommand(this->mName, in->mFullPath);
-	return clonedObj;
+	return new VMXFileCommand(this->mName, in->mFullPath);
 }
 
 } // end of namespace vmware

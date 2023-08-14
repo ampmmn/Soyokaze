@@ -40,14 +40,14 @@ struct CommandParameter::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CommandParameter::CommandParameter(): in(new PImpl)
+CommandParameter::CommandParameter(): in(std::make_unique<PImpl>())
 {
 }
 
 
 CommandParameter::CommandParameter(
 	const CString& str
-) : in(new PImpl(str))
+) : in(std::make_unique<PImpl>(str))
 {
 	CString tmpStr = str;
 	int n = tmpStr.Find(_T(" "));

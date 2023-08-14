@@ -99,9 +99,7 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 		if (HKCR.GetValue(subKey, _T("System.ApplicationName"), appName) == false) {
 			continue;
 		}
-
-		auto command = new ControlPanelCommand(resolvedName, defaultIcon, appName, description);
-		tmp.push_back(command);
+		tmp.push_back(new ControlPanelCommand(resolvedName, defaultIcon, appName, description));
 	}
 
 	out.swap(tmp);
@@ -114,7 +112,7 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 
 REGISTER_COMMANDPROVIDER(ControlPanelProvider)
 
-ControlPanelProvider::ControlPanelProvider() : in(new PImpl)
+ControlPanelProvider::ControlPanelProvider() : in(std::make_unique<PImpl>())
 {
 }
 

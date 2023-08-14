@@ -31,7 +31,7 @@ struct MailToCommandProvider::PImpl
 REGISTER_COMMANDPROVIDER(MailToCommandProvider)
 
 
-MailToCommandProvider::MailToCommandProvider() : in(new PImpl)
+MailToCommandProvider::MailToCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mCommandPtr = new MailToCommand();
 }

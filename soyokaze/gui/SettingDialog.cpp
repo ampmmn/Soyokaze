@@ -36,7 +36,7 @@ struct SettingDialog::PImpl
 
 
 
-SettingDialog::SettingDialog() : in(new PImpl)
+SettingDialog::SettingDialog() : in(std::make_unique<PImpl>())
 {
 }
 

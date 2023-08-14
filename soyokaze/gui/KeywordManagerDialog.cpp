@@ -87,9 +87,9 @@ void KeywordManagerDialog::PImpl::SortCommands()
 
 KeywordManagerDialog::KeywordManagerDialog() : 
 	CDialogEx(IDD_KEYWORDMANAGER),
-	in(new PImpl)
+	in(std::make_unique<PImpl>())
 {
-	in->mIconLabelPtr.reset(new IconLabel());
+	in->mIconLabelPtr = std::make_unique<IconLabel>();
 	in->mSortType = SORT_ASCEND_NAME;
 	in->mSelCommand = nullptr;
 }

@@ -88,10 +88,10 @@ struct CSoyokazeDlg::PImpl
 
 CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SOYOKAZE_DIALOG, pParent),
-	in(new PImpl(this))
+	in(std::make_unique<PImpl>(this))
 {
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
-	in->mWindowTransparencyPtr.reset(new WindowTransparency);
+	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 }
@@ -504,13 +504,13 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	SetIcon(in->mIconHandle, TRUE);			// 大きいアイコンの設定
 	SetIcon(in->mIconHandle, FALSE);		// 小さいアイコンの設定
 
-	in->mSharedHwnd.reset(new SharedHwnd(GetSafeHwnd()));
+	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
 
 	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
-	in->mWindowPositionPtr.reset(new WindowPosition());
+	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
 	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
 		// 復元に失敗した場合は中央に表示
 		CenterWindow();
@@ -523,7 +523,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	GetCommandRepository()->Load();
 
 	// ホットキー登録
-	in->mHotKeyPtr.reset(new AppHotKey(GetSafeHwnd()));
+	in->mHotKeyPtr = std::make_unique<AppHotKey>(GetSafeHwnd());
 	if (in->mHotKeyPtr->Register() == false) {
 		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
 		msg += in->mHotKeyPtr->ToString();

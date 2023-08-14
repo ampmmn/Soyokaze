@@ -31,7 +31,7 @@ struct Bookmarks::PImpl
 	std::vector<ITEM> mEdgeItems;
 };
 
-Bookmarks::Bookmarks() : in(new PImpl)
+Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
 {
 	size_t reqLen = 0;
 
