@@ -257,7 +257,7 @@ WorkSheets::~WorkSheets()
 }
 
 // この時間以内に再実行されたら、前回の結果を再利用する
-#define INTERVAL_REUSE 5000
+constexpr int INTERVAL_REUSE = 5000;
 
 bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 {

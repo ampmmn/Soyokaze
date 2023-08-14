@@ -48,18 +48,17 @@
 
 #include "Logger.h"
 
-#define MAX_PATH_NTFS (32767+1)
-
+constexpr int MAX_PATH_NTFS = (32767+1);
 
 #include <regex>
 #include <string>
 
 #ifdef _UNICODE
-#define tregex std::wregex
-#define tstring std::wstring
+using tregex = std::wregex;
+using tstring = std::wstring;
 #else
-#define tregex std::regex
-#define tstring std::string
+using tregex = std::regex;
+using tstring = std::string;
 #endif
 
 
