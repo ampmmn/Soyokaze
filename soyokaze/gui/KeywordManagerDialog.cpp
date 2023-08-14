@@ -44,7 +44,7 @@ struct KeywordManagerDialog::PImpl
 	Command* mSelCommand;
 
 	CListCtrl mListCtrl;
-	IconLabel* mIconLabelPtr;
+	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	TopMostMask mTopMostMask;
 	int mSortType;
@@ -89,7 +89,7 @@ KeywordManagerDialog::KeywordManagerDialog() :
 	CDialogEx(IDD_KEYWORDMANAGER),
 	in(new PImpl)
 {
-	in->mIconLabelPtr = new IconLabel();
+	in->mIconLabelPtr.reset(new IconLabel());
 	in->mSortType = SORT_ASCEND_NAME;
 	in->mSelCommand = nullptr;
 }
@@ -99,8 +99,6 @@ KeywordManagerDialog::~KeywordManagerDialog()
 	for (auto cmd : in->mCommands) {
 		cmd->Release();
 	}
-
-	delete in->mIconLabelPtr;
 }
 
 void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)

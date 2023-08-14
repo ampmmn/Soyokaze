@@ -27,7 +27,6 @@ CommandEditDialog::CommandEditDialog() :
 
 CommandEditDialog::~CommandEditDialog()
 {
-	delete mIconLabelPtr;
 }
 
 void CommandEditDialog::SetOrgName(const CString& name)

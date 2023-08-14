@@ -31,19 +31,17 @@ namespace core {
 struct CommandRepository::PImpl
 {
 	PImpl() : 
-		mPattern(nullptr), mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false),
+		mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false),
 		mIsRegisteFromFileDialog(false)
 	{
 	}
 	~PImpl()
 	{
-		delete mPattern;
 	}
 
 	void ReloadPatternObject()
 	{
-		delete mPattern;
-		mPattern = new PartialMatchPattern();
+		mPattern.reset(new PartialMatchPattern());
 
 		// コマンドのホットキー設定のリロード
 		CommandHotKeyMappings hotKeyMap;
@@ -90,7 +88,7 @@ struct CommandRepository::PImpl
 	// 一般コマンド一覧
 	CommandMap mCommands;
 	// キーワード比較用のクラス
-	Pattern* mPattern;
+	std::unique_ptr<Pattern> mPattern;
 	
 	// 優先順位
 	CommandRanking mRanking;
@@ -465,12 +463,12 @@ CommandRepository::Query(
 
 	std::vector<CommandMap::QueryItem> matchedItems;
 
-	in->mCommands.Query(in->mPattern, matchedItems);
+	in->mCommands.Query(in->mPattern.get(), matchedItems);
 	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	for (auto provider : in->mProviders) {
-		provider->QueryAdhocCommands(in->mPattern, matchedItems);
+		provider->QueryAdhocCommands(in->mPattern.get(), matchedItems);
 	}
 
 	// 一致レベルに基づきソート

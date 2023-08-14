@@ -27,7 +27,6 @@ GroupEditDialog::GroupEditDialog() :
 
 GroupEditDialog::~GroupEditDialog()
 {
-	delete mCommandSelectBox;
 }
 
 void GroupEditDialog::SetParam(const CommandParam& param)
@@ -293,7 +292,7 @@ void GroupEditDialog::OnButtonHotKey()
 bool GroupEditDialog::SelectCommand(int index)
 {
 	// コンボボックスを表示
-	ModalComboBox* cmbBox = mCommandSelectBox;
+	ModalComboBox* cmbBox = mCommandSelectBox.get();
 	if (cmbBox->DoModalOverListItem(mCommandListPtr, index) != IDOK) {
 		return false;
 	}

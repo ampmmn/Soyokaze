@@ -56,7 +56,6 @@ CFolderDialog::CFolderDialog(
 *//*=**************************************************************************/
 CFolderDialog::~CFolderDialog()
 {
-	delete m_pData;
 }
 
 /********************************************************
@@ -68,7 +67,7 @@ void CFolderDialog::Init(
 	CWnd *pwndParent			// (I) 親ウィンドウ
 )
 {
-	m_pData = new CFolderDialogData;
+	m_pData.reset(new CFolderDialogData);
 
 	if (pszTitle != NULL)
 		m_pData->strTitle = pszTitle;

@@ -51,7 +51,7 @@ struct CSoyokazeDlg::PImpl
 	CandidateListCtrl mCandidateListBox;
 
 	// ウインドウハンドル(共有メモリに保存する用)
-	SharedHwnd* mSharedHwnd;
+	std::unique_ptr<SharedHwnd> mSharedHwnd;
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
 	// キーワード入力エディットボックス
@@ -65,12 +65,12 @@ struct CSoyokazeDlg::PImpl
 	CaptureIconLabel mIconLabel;
 
 	// 入力画面を呼び出すホットキー関連の処理をする
-	AppHotKey* mHotKeyPtr;
+	std::unique_ptr<AppHotKey> mHotKeyPtr;
 
 	// ウインドウ位置を保存するためのクラス
-	WindowPosition* mWindowPositionPtr;
+	std::unique_ptr<WindowPosition> mWindowPositionPtr;
 	// ウインドウの透明度を制御するためのクラス
-	WindowTransparency* mWindowTransparencyPtr;
+	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 
 	// ドロップターゲット
 	SoyokazeDropTarget mDropTargetDialog;
@@ -90,11 +90,8 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SOYOKAZE_DIALOG, pParent),
 	in(new PImpl(this))
 {
-	in->mHotKeyPtr = nullptr;
-	in->mWindowPositionPtr= nullptr;
-	in->mSharedHwnd = nullptr;
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
-	in->mWindowTransparencyPtr = new WindowTransparency;
+	in->mWindowTransparencyPtr.reset(new WindowTransparency);
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 }
@@ -103,15 +100,7 @@ CSoyokazeDlg::~CSoyokazeDlg()
 {
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
 
-	delete in->mWindowTransparencyPtr;
-
-	// 位置情報を設定ファイルに保存する
-	delete in->mWindowPositionPtr;
-
-	delete in->mHotKeyPtr;
-
-	delete in->mSharedHwnd;
-
+	// mWindowPositionPtrのインスタンス破棄時に位置情報を設定ファイルに保存する
 }
 
 void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
@@ -515,13 +504,13 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	SetIcon(in->mIconHandle, TRUE);			// 大きいアイコンの設定
 	SetIcon(in->mIconHandle, FALSE);		// 小さいアイコンの設定
 
-	in->mSharedHwnd = new SharedHwnd(GetSafeHwnd());
+	in->mSharedHwnd.reset(new SharedHwnd(GetSafeHwnd()));
 
 	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
-	in->mWindowPositionPtr = new WindowPosition();
+	in->mWindowPositionPtr.reset(new WindowPosition());
 	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
 		// 復元に失敗した場合は中央に表示
 		CenterWindow();
@@ -534,7 +523,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	GetCommandRepository()->Load();
 
 	// ホットキー登録
-	in->mHotKeyPtr = new AppHotKey(GetSafeHwnd());
+	in->mHotKeyPtr.reset(new AppHotKey(GetSafeHwnd()));
 	if (in->mHotKeyPtr->Register() == false) {
 		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
 		msg += in->mHotKeyPtr->ToString();

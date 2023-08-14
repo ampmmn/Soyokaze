@@ -17,12 +17,12 @@ struct CommandHotKeyManager::PImpl
 {
 	struct ITEM
 	{
-		ITEM() : mHandlerPtr(nullptr), mIsGlobal(false), mGlobalHotKey(nullptr)
+		ITEM() : mIsGlobal(false), mGlobalHotKey(nullptr)
 		{
 		}
 
 		// ホットキーから呼び出すハンドラオブジェクト
-		CommandHotKeyHandler* mHandlerPtr;
+		std::unique_ptr<CommandHotKeyHandler> mHandlerPtr;
 
 		// グローバルなホットキーか
 		bool mIsGlobal;
@@ -148,7 +148,7 @@ HACCEL CommandHotKeyManager::GetAccelerator()
 		accel.cmd = id;
 
 		accels.push_back(accel);
-		in->mLocalHandlerMap[id] = item.mHandlerPtr;
+		in->mLocalHandlerMap[id] = item.mHandlerPtr.get();
 		id++;
 	}
 
@@ -275,9 +275,8 @@ bool CommandHotKeyManager::Register(
 	}
 
 	// Delete older one.
-	delete item.mHandlerPtr;
 	item.mIsGlobal = isGlobal;
-	item.mHandlerPtr = handler;
+	item.mHandlerPtr.reset(handler);
 
 	in->mIsChanged = true;
 
@@ -302,7 +301,7 @@ bool CommandHotKeyManager::GetItem(int index, CommandHotKeyHandler** handler, HO
 	std::advance(it, index);
 
 	if (handler) {
-		*handler = it->second.mHandlerPtr;
+		*handler = it->second.mHandlerPtr.get();
 	}
 	if (keyPtr) {
 		*keyPtr = (it->first);
@@ -343,7 +342,7 @@ void CommandHotKeyManager::Clear()
 
 	for (auto& elem : in->mKeyItemMap) {
 		auto& item = elem.second;
-		delete item.mHandlerPtr;
+		item.mHandlerPtr.reset();
 
 		if (IsWindow(hwnd) && item.mIsGlobal && item.mGlobalHotKey.get() != nullptr) {
 			item.mGlobalHotKey.reset();

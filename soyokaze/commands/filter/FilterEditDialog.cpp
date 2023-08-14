@@ -32,7 +32,6 @@ FilterEditDialog::FilterEditDialog() :
 
 FilterEditDialog::~FilterEditDialog()
 {
-	delete mIconLabelPtr;
 }
 
 void FilterEditDialog::SetOrgName(const CString& name)

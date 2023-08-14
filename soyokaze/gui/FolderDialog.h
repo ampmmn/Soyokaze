@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 struct CFolderDialogData;
 
 // Class: フォルダ選択ダイアログ
@@ -14,7 +16,7 @@ public:
 	CString GetPathName() const;
 
 protected:
-	CFolderDialogData *m_pData;
+	std::unique_ptr<CFolderDialogData> m_pData;
 
 private:
 	void Init(LPCTSTR pszTitle, LPCTSTR pszInitialPath, CWnd *pwndParent);

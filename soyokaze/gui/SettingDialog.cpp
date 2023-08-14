@@ -82,14 +82,14 @@ HTREEITEM SettingDialog::OnSetupPages()
 	void* param = &(in->mSettings);
 
 	// 各ページ作成
-	HTREEITEM hItem = AddPage(TVI_ROOT, new BasicSettingDialog(this), param);
-	AddPage(hItem, new ShortcutSettingPage(this), param);
+	HTREEITEM hItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new BasicSettingDialog(this)), param);
+	AddPage(hItem, std::unique_ptr<SettingPage>(new ShortcutSettingPage(this)), param);
 
-	AddPage(TVI_ROOT, new InputSettingDialog(this), param);
-	AddPage(TVI_ROOT, new ExecSettingDialog(this), param);
-	AddPage(TVI_ROOT, new ViewSettingDialog(this), param);
+	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
+	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
+	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
 
-	AddPage(TVI_ROOT, new ExtensionSettingDialog(this), param);
+	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);
 
 	return hItem;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "utility/TopMostMask.h"
 #include "HotKeyAttribute.h"
 
@@ -58,7 +59,7 @@ public:
 	// パラメータ
 	CString mParameter;
 
-	IconLabel* mIconLabelPtr;
+	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 private:
 	TopMostMask mTopMostMask;

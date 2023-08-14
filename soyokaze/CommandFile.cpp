@@ -39,7 +39,7 @@ struct CommandFile::PImpl
 	CString mFilePath;
 
 	// エントリのリスト
-	std::vector<CommandFile::Entry*> mEntries;
+	std::vector<std::unique_ptr<CommandFile::Entry> > mEntries;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,10 +303,10 @@ CommandFile::Entry* CommandFile::NewEntry(
 	const CString& name
 )
 {
-	auto entry = new Entry();
+	std::unique_ptr<Entry> entry(new Entry());
 	entry->mName = name;
-	in->mEntries.push_back(entry);
-	return entry;
+	in->mEntries.push_back(std::move(entry));
+	return entry.get();
 }
 
 
@@ -314,7 +314,7 @@ CommandFile::Entry*
 CommandFile::GetEntry(int index) const
 {
 	ASSERT(0 <= index && index < (int)in->mEntries.size());
-	return in->mEntries[index];
+	return in->mEntries[index].get();
 }
 
 CString CommandFile::GetName(Entry* entry) const
@@ -424,9 +424,6 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, bool value)
 
 void CommandFile::ClearEntries()
 {
-	for (auto entry : in->mEntries) {
-		delete entry;
-	}
 	in->mEntries.clear();
 }
 
@@ -441,7 +438,7 @@ bool CommandFile::Load()
 
 	std::unique_ptr<Entry> curEntry;
 
-	std::vector<Entry*> entries;
+	std::vector<std::unique_ptr<Entry> > entries;
 
 	tregex regInt(_T("^ *-?[0-9]+ *$"));
 	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
@@ -459,7 +456,7 @@ bool CommandFile::Load()
 		if (strLine[0] == _T('[')) {
 
 			if (curEntry != nullptr) {
-				entries.push_back(curEntry.release());
+				entries.push_back(std::move(curEntry));
 			}
 
 			CString strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
@@ -518,18 +515,13 @@ bool CommandFile::Load()
 	}
 
 	if (curEntry) {
-		entries.push_back(curEntry.release());
+		entries.push_back(std::move(curEntry));
 	}
 
 	file.Close();
 	fclose(fpIn);
 
 	in->mEntries.swap(entries);
-
-	for (auto entry : entries) {
-		delete entry;
-	}
-
 	return true;
 }
 
@@ -545,7 +537,7 @@ bool CommandFile::Save()
 		}
 		CStdioFile file(fpOut);
 
-		for (auto entry : in->mEntries) {
+		for (auto& entry :  in->mEntries) {
 
 			file.WriteString(_T("["));
 			file.WriteString(entry->mName);

@@ -73,6 +73,6 @@ public:
 	CString GetBinaryAsString(LPCTSTR section, LPCTSTR key, LPCTSTR def = _T(""));
 
 private:
-	CIniFile* m_entity;  //!< 実際の保存先オブジェクト
+	std::unique_ptr<CIniFile> m_entity;  //!< 実際の保存先オブジェクト
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "commands/filter/FilterCommandParam.h"
 #include "utility/TopMostMask.h"
 #include "HotKeyAttribute.h"
@@ -42,7 +43,7 @@ public:
 	int mShowTypeIdx;
 	int mCommandSelIndex;
 
-	IconLabel* mIconLabelPtr;
+	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	// ホットキー(表示用)
 	CString mHotKey;

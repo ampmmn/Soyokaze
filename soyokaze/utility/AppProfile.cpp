@@ -80,7 +80,6 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 */
  CAppProfile::~CAppProfile()
 {
-	delete m_entity;
 }
 
 /*!
@@ -106,7 +105,7 @@ int CAppProfile::Get(
 	int def
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 	return m_entity->GetInt(section, key, def);
 }
 
@@ -123,7 +122,7 @@ CAppProfile& CAppProfile::Write(
 	int value
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 	m_entity->Write(section, key, value);
 	return *this;
 }
@@ -142,7 +141,7 @@ double CAppProfile::Get(
 	double def
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 
 	CString str;
 	str.Format(_T("%g"), def);
@@ -169,7 +168,7 @@ CAppProfile& CAppProfile::Write(
 	double value
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 
 	CString str;
 	str.Format(_T("%f"), value);
@@ -201,7 +200,7 @@ CString CAppProfile::GetString(
 	LPCTSTR def
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 	return m_entity->GetString(section, key, def);
 }
 
@@ -227,7 +226,7 @@ CAppProfile& CAppProfile::WriteString(
 	LPCTSTR value
 )
 {
-	ASSERT(m_entity);
+	ASSERT(m_entity.get());
 	m_entity->Write(section, key, value);
 	return *this;
 }

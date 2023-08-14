@@ -60,21 +60,19 @@ struct FilterDialog::PImpl
 	DWORD mLastCaretPos;
 
 	// ウインドウ位置を保存するためのクラス
-	WindowPosition* mWindowPositionPtr;
+	std::unique_ptr<WindowPosition> mWindowPositionPtr;
 
 	//
-	Pattern* mPattern;
+	std::unique_ptr<Pattern> mPattern;
 };
 
 
 Pattern* FilterDialog::PImpl::GetPatternObject()
 {
-	if (mPattern) {
-		return mPattern;
+	if (!mPattern) {
+		mPattern.reset(new PartialMatchPattern());
 	}
-
-	mPattern = new PartialMatchPattern();
-	return mPattern;
+	return mPattern.get();
 }
 
 
@@ -90,8 +88,6 @@ FilterDialog::FilterDialog(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_FILTER, pParent),
 	in(new PImpl)
 {
-	in->mPattern = nullptr;
-	in->mWindowPositionPtr= nullptr;
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
 
 	AppPreference::Get()->RegisterListener(this);
@@ -101,9 +97,7 @@ FilterDialog::~FilterDialog()
 {
 	AppPreference::Get()->UnregisterListener(this);
 
-	delete in->mPattern;
-	// 位置情報を設定ファイルに保存する
-	delete in->mWindowPositionPtr;
+	// mWindowPositionPtrを破棄するときに位置情報を設定ファイルに保存する
 }
 
 void FilterDialog::SetCommandName(const CString& name)
@@ -225,7 +219,7 @@ BOOL FilterDialog::OnInitDialog()
 	in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
 
 	// ウインドウ位置の復元
-	in->mWindowPositionPtr = new WindowPosition(_T("filter"));
+	in->mWindowPositionPtr.reset(new WindowPosition(_T("filter")));
 	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
 		// 復元に失敗した場合は中央に表示
 		CenterWindow();
@@ -352,8 +346,7 @@ void FilterDialog::OnOK()
 	UpdateData();
 	// 何かあればここで処理
 	in->mWindowPositionPtr->Update(GetSafeHwnd());
-	delete in->mWindowPositionPtr;
-	in->mWindowPositionPtr = nullptr;
+	in->mWindowPositionPtr.reset();
 
 	__super::OnOK();
 }
@@ -363,8 +356,7 @@ void FilterDialog::OnCancel()
 	UpdateData();
 
 	in->mWindowPositionPtr->Update(GetSafeHwnd());
-	delete in->mWindowPositionPtr;
-	in->mWindowPositionPtr = nullptr;
+	in->mWindowPositionPtr.reset();
 
 	__super::OnCancel();
 }
@@ -589,8 +581,7 @@ void FilterDialog::OnAppFirstBoot()
 
 void FilterDialog::OnAppPreferenceUpdated()
 {
-	delete in->mPattern;
-	in->mPattern = nullptr;
+	in->mPattern.reset();
 }
 
 void FilterDialog::OnAppExit()

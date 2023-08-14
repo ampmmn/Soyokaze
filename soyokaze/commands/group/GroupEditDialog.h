@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "commands/group/CommandParam.h"
 #include "utility/TopMostMask.h"
 #include "HotKeyAttribute.h"
@@ -34,7 +35,7 @@ protected:
 	//
 	CListCtrl* mCommandListPtr;
 
-	ModalComboBox* mCommandSelectBox;
+	std::unique_ptr<ModalComboBox> mCommandSelectBox;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

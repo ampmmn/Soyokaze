@@ -31,7 +31,7 @@ struct SettingDialogBase::PImpl
 	// ページ階層を示す文字列
 	CString mBreadCrumbs;
 
-	std::vector<SettingPage*> mPages;
+	std::vector<std::unique_ptr<SettingPage> > mPages;
 
 	// OKできない状態のページの一覧
 	std::set<SettingPage*> mInvalidPages;
@@ -62,9 +62,6 @@ struct SettingDialogBase::PImpl
 */
  SettingDialogBase::~SettingDialogBase()
 {
-	for (auto page : in->mPages) {
-		delete page;
-	}
 }
 
 void SettingDialogBase::DoDataExchange(CDataExchange* pDX)
@@ -101,7 +98,7 @@ BOOL SettingDialogBase::OnInitDialog()
 	HTREEITEM hItem = OnSetupPages();
 
 	// 各ページの設定をロードする
-	for (auto page : in->mPages) {
+	for (auto& page : in->mPages) {
 		page->OnEnterSettings();
 		page->OnSetActive();
 	}
@@ -117,14 +114,14 @@ BOOL SettingDialogBase::OnInitDialog()
 
 void SettingDialogBase::OnOK()
 {
-	for (auto page : in->mPages) {
+	for (auto& page : in->mPages) {
 		if (page->OnKillActive() == FALSE) {
 			return;
 		}
 	}
 
 	// 各プロパティページのOnOKをよぶ
-	for (auto page : in->mPages) {
+	for (auto& page : in->mPages) {
 		page->OnOK();
 	}
 
@@ -235,11 +232,11 @@ HBRUSH SettingDialogBase::OnCtlColor(
 
 HTREEITEM SettingDialogBase::AddPage(
 	HTREEITEM parent,
- 	SettingPage* page,
+ 	std::unique_ptr<SettingPage>& page,
 	void* param
 )
 {
-	ASSERT(page);
+	ASSERT(page.get());
 
 	if (page->GetSafeHwnd() == NULL) {
 		page->Create();
@@ -254,9 +251,9 @@ HTREEITEM SettingDialogBase::AddPage(
 
 	CRect& rcPage = in->mPageRect;
 	page->MoveWindow(rcPage.left, rcPage.top, rcPage.Width(), rcPage.Height());
-	in->mTreeCtrl->SetItemData(hItem, (DWORD_PTR)page);
+	in->mTreeCtrl->SetItemData(hItem, (DWORD_PTR)page.get());
 
-	in->mPages.push_back(page);
+	in->mPages.push_back(std::move(page));
 
 	return hItem;
 

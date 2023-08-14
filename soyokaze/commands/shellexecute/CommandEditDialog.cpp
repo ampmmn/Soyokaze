@@ -30,7 +30,6 @@ CommandEditDialog::CommandEditDialog(CWnd* parentWnd) :
 
 CommandEditDialog::~CommandEditDialog()
 {
-	delete mIconLabelPtr;
 }
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)

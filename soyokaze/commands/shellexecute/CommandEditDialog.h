@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "gui/SettingPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 
@@ -30,7 +31,7 @@ protected:
 public:
 	CommandParam mParam;
 
-	IconLabel* mIconLabelPtr;
+	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	// ホットキー(表示用)
 	CString mHotKey;
