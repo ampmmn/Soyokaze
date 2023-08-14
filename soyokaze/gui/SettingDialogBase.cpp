@@ -65,7 +65,6 @@ struct SettingDialogBase::PImpl
 	for (auto page : in->mPages) {
 		delete page;
 	}
-	delete in;
 }
 
 void SettingDialogBase::DoDataExchange(CDataExchange* pDX)

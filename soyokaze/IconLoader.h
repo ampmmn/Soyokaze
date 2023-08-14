@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class IconLoader
 {
 public:
@@ -35,6 +37,6 @@ private:
 	~IconLoader();
 
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 

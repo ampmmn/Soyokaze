@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "core/CommandIF.h"
 
 namespace soyokaze {
@@ -31,7 +32,7 @@ public:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 
 

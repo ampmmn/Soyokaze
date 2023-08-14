@@ -22,7 +22,6 @@ WholeMatchPattern::WholeMatchPattern(const CString& word) : in(new PImpl)
 
 WholeMatchPattern::~WholeMatchPattern()
 {
-	delete in;
 }
 
 void WholeMatchPattern::SetParam(

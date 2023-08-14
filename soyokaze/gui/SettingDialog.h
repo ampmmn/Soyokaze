@@ -16,7 +16,7 @@ public:
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
-	//virtual void OnOK();
+	virtual void OnOK();
 
 // 実装
 protected:

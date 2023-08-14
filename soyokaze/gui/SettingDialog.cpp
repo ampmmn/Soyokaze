@@ -71,6 +71,11 @@ BOOL SettingDialog::OnInitDialog()
 	return TRUE;
 }
 
+void SettingDialog::OnOK()
+{
+	__super::OnOK();
+}
+
 HTREEITEM SettingDialog::OnSetupPages()
 {
 

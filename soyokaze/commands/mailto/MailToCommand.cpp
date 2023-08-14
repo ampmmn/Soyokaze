@@ -31,7 +31,6 @@ MailToCommand::MailToCommand() : in(new PImpl)
 
 MailToCommand::~MailToCommand()
 {
-	delete in;
 }
 
 CString MailToCommand::GetName()

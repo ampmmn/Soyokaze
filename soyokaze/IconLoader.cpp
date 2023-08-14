@@ -82,8 +82,6 @@ IconLoader::~IconLoader()
 			DestroyIcon(elem.second);
 		}
 	}
-
-	delete in;
 }
 
 IconLoader* IconLoader::Get()

@@ -19,7 +19,6 @@ ExecHistory::ExecHistory() : in(new PImpl)
 
 ExecHistory::~ExecHistory()
 {
-	delete in;
 }
 
 // 実行したコマンド文字列を追加

@@ -76,7 +76,6 @@ BookmarkCommand::BookmarkCommand(
 
 BookmarkCommand::~BookmarkCommand()
 {
-	delete in;
 }
 
 CString BookmarkCommand::GetName()

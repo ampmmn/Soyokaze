@@ -41,7 +41,6 @@ WindowActivateCommand::WindowActivateCommand(
 
 WindowActivateCommand::~WindowActivateCommand()
 {
-	delete in;
 }
 
 CString WindowActivateCommand::GetName()

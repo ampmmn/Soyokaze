@@ -35,7 +35,6 @@ CalculatorCommand::CalculatorCommand() : in(new PImpl)
 
 CalculatorCommand::~CalculatorCommand()
 {
-	delete in;
 }
 
 void CalculatorCommand::SetResult(const CString& result)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "gui/SettingDialogBase.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 
@@ -31,7 +32,7 @@ protected:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 
 }

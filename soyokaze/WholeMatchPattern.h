@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Pattern.h"
 
 
@@ -16,6 +17,6 @@ public:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 

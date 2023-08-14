@@ -42,7 +42,6 @@ ControlPanelCommand::ControlPanelCommand(
 
 ControlPanelCommand::~ControlPanelCommand()
 {
-	delete in;
 }
 
 CString ControlPanelCommand::GetName()

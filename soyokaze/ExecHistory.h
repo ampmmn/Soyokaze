@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 // コマンド実行履歴
 class ExecHistory
 {
@@ -22,6 +24,6 @@ public:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 

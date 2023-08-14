@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class SettingPage;
 
 
@@ -33,7 +35,7 @@ protected:
 
 protected:
 	struct PImpl;
-	PImpl* in;
+	std::unique_ptr<PImpl> in;
 };
 
 

@@ -43,7 +43,6 @@ PartialMatchPattern::PartialMatchPattern() : in(new PImpl)
 
 PartialMatchPattern::~PartialMatchPattern()
 {
-	delete in;
 }
 
 void PartialMatchPattern::SetParam(

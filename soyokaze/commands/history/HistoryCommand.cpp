@@ -47,7 +47,6 @@ HistoryCommand::~HistoryCommand()
 	if (in->mCmd) {
 		in->mCmd->Release();
 	}
-	delete in;
 }
 
 CString HistoryCommand::GetName()

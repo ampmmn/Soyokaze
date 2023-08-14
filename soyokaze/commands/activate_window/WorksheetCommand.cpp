@@ -44,8 +44,6 @@ WorksheetCommand::~WorksheetCommand()
 	if (in->mWorksheet) {
 		in->mWorksheet->Release();
 	}
-
-	delete in;
 }
 
 CString WorksheetCommand::GetName()

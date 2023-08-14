@@ -68,7 +68,6 @@ RegistWinCommand::RegistWinCommand(LPCTSTR name) : in(new PImpl)
 
 RegistWinCommand::~RegistWinCommand()
 {
-	delete in;
 }
 
 CString RegistWinCommand::GetName()

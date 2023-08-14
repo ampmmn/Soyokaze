@@ -51,7 +51,6 @@ PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
 
 PathExecuteCommand::~PathExecuteCommand()
 {
-	delete in;
 }
 
 void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
