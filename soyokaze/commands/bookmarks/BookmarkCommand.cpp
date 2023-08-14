@@ -42,10 +42,7 @@ struct BookmarkCommand::PImpl
 	bool GetExecutablePath(LPTSTR path, size_t len);
 
 	CString mType;    // ブラウザ種類を表す文字列
-	CString mName;
 	CString mUrl;
-
-	uint32_t mRefCount;
 };
 
 bool BookmarkCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
@@ -66,26 +63,16 @@ BookmarkCommand::BookmarkCommand(
 	const CString& type,
 	const CString& name,
 	const CString& url
-) : in(new PImpl)
+) : 
+	AdhocCommandBase(name, type + _T(" - ") + name),
+	in(new PImpl)
 {
-	in->mRefCount = 1;
 	in->mType = type;
-	in->mName = name;
 	in->mUrl = url;
 }
 
 BookmarkCommand::~BookmarkCommand()
 {
-}
-
-CString BookmarkCommand::GetName()
-{
-	return in->mName;
-}
-
-CString BookmarkCommand::GetDescription()
-{
-	return in->mType + " - " + in->mName;
 }
 
 CString BookmarkCommand::GetTypeDisplayName()
@@ -98,12 +85,6 @@ CString BookmarkCommand::GetTypeDisplayName()
 	else {
 		return TEXT_BOOKMARK;
 	}
-}
-
-BOOL BookmarkCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
 }
 
 BOOL BookmarkCommand::Execute(const Parameter& param)
@@ -134,11 +115,6 @@ BOOL BookmarkCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString BookmarkCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON BookmarkCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
@@ -147,48 +123,11 @@ HICON BookmarkCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
-int BookmarkCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool BookmarkCommand::IsEditable()
-{
-	return false;
-}
-
-int BookmarkCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command*
 BookmarkCommand::Clone()
 {
-	return new BookmarkCommand(in->mType, in->mName, in->mUrl);
+	return new BookmarkCommand(in->mType, this->mName, in->mUrl);
 }
-
-bool BookmarkCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t BookmarkCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t BookmarkCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace bookmarks
 } // end of namespace commands

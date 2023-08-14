@@ -14,33 +14,16 @@ namespace soyokaze {
 namespace commands {
 namespace mailto {
 
-
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
 
-struct MailToCommand::PImpl
+MailToCommand::MailToCommand() : 
+	AdhocCommandBase(_T("mailto:"), _T("あて先を指定してメール"))
 {
-	uint32_t mRefCount;
-};
-
-
-MailToCommand::MailToCommand() : in(new PImpl)
-{
-	in->mRefCount = 1;
 }
 
 MailToCommand::~MailToCommand()
 {
-}
-
-CString MailToCommand::GetName()
-{
-	return _T("mailto:");
-}
-
-CString MailToCommand::GetDescription()
-{
-	return _T("あて先を指定してメール");
 }
 
 CString MailToCommand::GetTypeDisplayName()
@@ -82,11 +65,6 @@ BOOL MailToCommand::Execute(const Parameter& param)
 	return cmd.Execute();
 }
 
-CString MailToCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON MailToCommand::GetIcon()
 {
 	HICON h =IconLoader::Get()->GetImageResIcon(15);
@@ -107,43 +85,11 @@ int MailToCommand::Match(Pattern* pattern)
 	return pattern->Match(keyword);
 }
 
-bool MailToCommand::IsEditable()
-{
-	return false;
-}
-
-int MailToCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command*
 MailToCommand::Clone()
 {
 	return new MailToCommand();
 }
-
-bool MailToCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t MailToCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t MailToCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace mailto
 } // end of namespace commands

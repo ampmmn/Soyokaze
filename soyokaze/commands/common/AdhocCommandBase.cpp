@@ -1,0 +1,101 @@
+#include "pch.h"
+#include "framework.h"
+#include "AdhocCommandBase.h"
+#include "IconLoader.h"
+#include "resource.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+namespace soyokaze {
+namespace commands {
+namespace common {
+
+
+AdhocCommandBase::AdhocCommandBase(LPCTSTR name, LPCTSTR description) : 
+	mName(name),
+	mDescription(description),
+	mRefCount(1)
+{
+}
+
+AdhocCommandBase::~AdhocCommandBase()
+{
+}
+
+CString AdhocCommandBase::GetName()
+{
+	return mName;
+}
+
+CString AdhocCommandBase::GetDescription()
+{
+	return mDescription;
+}
+
+
+BOOL AdhocCommandBase::Execute()
+{
+	Parameter emptyParams;
+	return Execute(emptyParams);
+}
+
+BOOL AdhocCommandBase::Execute(const Parameter& param)
+{
+	// 派生側で実装する
+	ASSERT(0);
+	return TRUE;
+}
+
+CString AdhocCommandBase::GetErrorString()
+{
+	return _T("");
+}
+
+HICON AdhocCommandBase::GetIcon()
+{
+	return IconLoader::Get()->LoadUnknownIcon();
+}
+
+int AdhocCommandBase::Match(Pattern* pattern)
+{
+	// 必要に応じて派生側で実装する
+	return pattern->Match(this->mName);
+}
+
+bool AdhocCommandBase::IsEditable()
+{
+	return false;
+}
+
+int AdhocCommandBase::EditDialog(const Parameter* param)
+{
+	return -1;
+}
+
+bool AdhocCommandBase::Save(CommandFile* cmdFile)
+{
+	// 非サポート
+	return false;
+}
+
+uint32_t AdhocCommandBase::AddRef()
+{
+	return ++mRefCount;
+}
+
+uint32_t AdhocCommandBase::Release()
+{
+	auto n = --mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
+}
+
+
+} // end of namespace common
+} // end of namespace commands
+} // end of namespace soyokaze
+

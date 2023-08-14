@@ -33,17 +33,14 @@ struct PathExecuteCommand::PImpl
 	LocalPathResolver mResolver;
 	CString mWord;
 	CString mFullPath;
-	CString mDescription;
 	CString mExeExtension;
 	bool mIsURL;
 	bool mIsFromHistory;
-	uint32_t mRefCount;
 };
 
 
 PathExecuteCommand::PathExecuteCommand() : in(new PImpl)
 {
-	in->mRefCount = 1;
 	in->mExeExtension = _T(".exe");
 	in->mIsURL = false;
 	in->mIsFromHistory = false;
@@ -55,8 +52,9 @@ PathExecuteCommand::~PathExecuteCommand()
 
 void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
 {
+	this->mDescription = path;
+
 	in->mFullPath = path;
-	in->mDescription = path;
 
 	const tregex& regURL = GetURLRegex();
 	in->mIsURL = (std::regex_search((LPCTSTR)path, regURL));
@@ -77,23 +75,12 @@ CString PathExecuteCommand::GetName()
 	return PathFindFileName(in->mFullPath);
 }
 
-CString PathExecuteCommand::GetDescription()
-{
-	return in->mDescription;
-}
-
 CString PathExecuteCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
 	static CString TEXT_TYPE_HISTORY((LPCTSTR)IDS_COMMAND_PATHEXEC_HISTORY);
 
 	return in->mIsFromHistory ? TEXT_TYPE_HISTORY : TEXT_TYPE_ADHOC;
-}
-
-BOOL PathExecuteCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
 }
 
 BOOL PathExecuteCommand::Execute(const Parameter& param)
@@ -125,11 +112,6 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 	return cmd.Execute(param);
 }
 
-CString PathExecuteCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON PathExecuteCommand::GetIcon()
 {
 	if (PathFileExists(in->mFullPath) == FALSE) {
@@ -152,9 +134,10 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	// URLパターンマッチするかを判定
 	const tregex& regURL = GetURLRegex();
 	if (std::regex_search((LPCTSTR)wholeWord, regURL)) {
+		this->mDescription = wholeWord;
+
 		in->mWord = wholeWord;
 		in->mFullPath = wholeWord;
-		in->mDescription = wholeWord;
 		in->mIsURL = true;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
@@ -163,9 +146,10 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	in->mIsURL = false;
 
 	if (PathIsRelative(wholeWord) == FALSE && PathFileExists(wholeWord)) {
+		this->mDescription = wholeWord;
+
 		in->mWord = wholeWord;
 		in->mFullPath = wholeWord;
-		in->mDescription = wholeWord;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
@@ -182,9 +166,10 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	// 相対パスを解決する
 	CString resolvedPath;
 	if (in->mResolver.Resolve(word, resolvedPath)) {
+		this->mDescription = resolvedPath;
+
 		in->mWord = word;
 		in->mFullPath = resolvedPath;
-		in->mDescription = resolvedPath;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
@@ -192,48 +177,18 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-bool PathExecuteCommand::IsEditable()
-{
-	return false;
-}
-
-int PathExecuteCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command*
 PathExecuteCommand::Clone()
 {
 	auto clonedObj = new PathExecuteCommand();
 
+	clonedObj->mDescription = this->mDescription;
+
 	clonedObj->in->mResolver = in->mResolver;
 	clonedObj->in->mFullPath = in->mFullPath;
-	clonedObj->in->mDescription = in->mDescription;
 	clonedObj->in->mExeExtension = in->mExeExtension;
 
 	return clonedObj;
-}
-
-bool PathExecuteCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t PathExecuteCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t PathExecuteCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 

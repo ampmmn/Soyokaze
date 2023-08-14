@@ -12,6 +12,7 @@
 #include "utility/LocalPathResolver.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/CharConverter.h"
+#include "utility/GlobalAllocMemory.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -274,17 +275,16 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 	else if (mParam.mPostFilterType == 2) {
 		// クリップボードにコピー
 		size_t bufLen = sizeof(TCHAR) * (argSub.GetLength() + 1);
-		HGLOBAL hMem = GlobalAlloc(GHND | GMEM_SHARE , bufLen);
-		LPTSTR p = (LPTSTR)GlobalLock(hMem);
-		_tcscpy_s(p, bufLen, argSub);
-		GlobalUnlock(hMem);
+		GlobalAllocMemory mem(bufLen);
+		_tcscpy_s((LPTSTR)mem.Lock(), bufLen, argSub);
+		mem.Unlock();
 
 		BOOL isSet=FALSE;
 		SharedHwnd sharedWnd;
-		SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)hMem);
+		SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)(HGLOBAL)mem);
 
-		if (isSet == FALSE) {
-			GlobalFree(hMem);
+		if (isSet) {
+			mem.Release();
 		}
 	}
 

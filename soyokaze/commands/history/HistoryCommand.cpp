@@ -21,17 +21,16 @@ struct HistoryCommand::PImpl
 {
 	CString mKeyword;
 	Parameter mParam;
-	Command* mCmd;
-	uint32_t mRefCount;
+	Command* mCmd = nullptr;
 };
 
 
 HistoryCommand::HistoryCommand(const CString& keyword) : in(new PImpl)
 {
-	in->mRefCount = 1;
+	this->mName = keyword;
+
 	in->mKeyword = keyword;
 	in->mParam.SetWholeString(keyword);
-	in->mCmd = nullptr;
 
 	auto cmdRepo = CommandRepository::GetInstance();
 	auto cmd = cmdRepo->QueryAsWholeMatch(in->mParam.GetCommandString(), false);
@@ -40,6 +39,8 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(new PImpl)
 	}
 
 	in->mCmd = cmd;
+
+	this->mDescription = cmd->GetDescription();
 }
 
 HistoryCommand::~HistoryCommand()
@@ -47,19 +48,6 @@ HistoryCommand::~HistoryCommand()
 	if (in->mCmd) {
 		in->mCmd->Release();
 	}
-}
-
-CString HistoryCommand::GetName()
-{
-	return in->mKeyword;
-}
-
-CString HistoryCommand::GetDescription()
-{
-	if (in->mCmd) {
-		return in->mCmd->GetDescription();
-	}
-	return _T("");
 }
 
 CString HistoryCommand::GetTypeDisplayName()
@@ -83,11 +71,6 @@ BOOL HistoryCommand::Execute(const Parameter& param)
 	return in->mCmd->Execute(in->mParam);
 }
 
-CString HistoryCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON HistoryCommand::GetIcon()
 {
 	if (in->mCmd) {
@@ -97,50 +80,13 @@ HICON HistoryCommand::GetIcon()
 	return h;
 }
 
-int HistoryCommand::Match(Pattern* pattern)
-{
-	return Pattern::Mismatch;
-}
-
-bool HistoryCommand::IsEditable()
-{
-	return false;
-}
-
-int HistoryCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command*
 HistoryCommand::Clone()
 {
 	return new HistoryCommand(in->mKeyword);
 }
 
-bool HistoryCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t HistoryCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t HistoryCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
-
-} // end of namespace mailto
+} // end of namespace history
 } // end of namespace commands
 } // end of namespace soyokaze
 

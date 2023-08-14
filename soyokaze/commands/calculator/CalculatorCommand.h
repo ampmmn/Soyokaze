@@ -1,7 +1,7 @@
 #pragma once
 
+#include "commands/common/AdhocCommandBase.h"
 #include <memory>
-#include "core/CommandIF.h"
 
 namespace soyokaze {
 namespace commands {
@@ -9,7 +9,7 @@ namespace calculator {
 
 
 
-class CalculatorCommand : public soyokaze::core::Command
+class CalculatorCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 	CalculatorCommand();
@@ -17,23 +17,12 @@ public:
 
 	void SetResult(const CString& result);
 
-	CString GetName() override;
-	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute() override;
 	BOOL Execute(const Parameter& param) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
-	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
-	int EditDialog(const Parameter* param) override;
 	soyokaze::core::Command* Clone() override;
 
-	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
-
+	static bool GetCalcExePath(LPTSTR path, size_t len);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

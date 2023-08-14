@@ -19,10 +19,8 @@ struct VMXFileCommand::PImpl
 {
 	bool IsLocked();
 
-	CString mName;
 	CString mFullPath;
 	CString mErrorMsg;
-	uint32_t mRefCount;
 };
 
 bool VMXFileCommand::PImpl::IsLocked()
@@ -65,23 +63,13 @@ bool VMXFileCommand::PImpl::IsLocked()
 
 VMXFileCommand::VMXFileCommand(const CString& name, const CString& fullPath) : in(new PImpl)
 {
-	in->mName = name;
+	this->mName = name;
+	this->mDescription = fullPath;
 	in->mFullPath = fullPath;
-	in->mRefCount = 1;
 }
 
 VMXFileCommand::~VMXFileCommand()
 {
-}
-
-CString VMXFileCommand::GetName()
-{
-	return in->mName;
-}
-
-CString VMXFileCommand::GetDescription()
-{
-	return in->mFullPath;
 }
 
 CString VMXFileCommand::GetTypeDisplayName()
@@ -90,19 +78,13 @@ CString VMXFileCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL VMXFileCommand::Execute()
-{
-	Parameter emptyParams;
-	return Execute(emptyParams);
-}
-
 BOOL VMXFileCommand::Execute(const Parameter& param)
 {
 	in->mErrorMsg.Empty();
 
 	// .lckファイルの確認
 	if (in->IsLocked()) {
-		in->mErrorMsg.Format(IDS_ERR_VMXLOCKED, (LPCTSTR)in->mName);
+		in->mErrorMsg.Format(IDS_ERR_VMXLOCKED, (LPCTSTR)this->mName);
 		return FALSE;
 	}
 
@@ -129,49 +111,12 @@ HICON VMXFileCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(in->mFullPath);
 }
 
-int VMXFileCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(in->mName);
-}
-
-bool VMXFileCommand::IsEditable()
-{
-	return false;
-}
-
-int VMXFileCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command*
 VMXFileCommand::Clone()
 {
-	auto clonedObj = new VMXFileCommand(in->mName, in->mFullPath);
+	auto clonedObj = new VMXFileCommand(this->mName, in->mFullPath);
 	return clonedObj;
 }
-
-bool VMXFileCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t VMXFileCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t VMXFileCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace vmware
 } // end of namespace commands

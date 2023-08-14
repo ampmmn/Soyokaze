@@ -1,34 +1,22 @@
 #pragma once
 
+#include "commands/common/AdhocCommandBase.h"
 #include <memory>
-#include "core/CommandIF.h"
 
 namespace soyokaze {
 namespace commands {
 namespace bookmarks {
 
-class BookmarkCommand : public soyokaze::core::Command
+class BookmarkCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 	BookmarkCommand(const CString& type, const CString& name, const CString& url);
 	virtual ~BookmarkCommand();
 
-	CString GetName() override;
-	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute() override;
 	BOOL Execute(const Parameter& param) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
-	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
-	int EditDialog(const Parameter* param) override;
 	soyokaze::core::Command* Clone() override;
-
-	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 protected:
 	struct PImpl;

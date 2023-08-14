@@ -18,10 +18,7 @@ namespace color {
 struct ColorCommand::PImpl
 {
 	HICON mColorIcon;
-	CString mName;
-	CString mDescription;
 	COLORREF mColor;
-	uint32_t mRefCount;
 };
 
 
@@ -33,8 +30,8 @@ ColorCommand::ColorCommand(COLORREF cr) : in(new PImpl)
 	BYTE g = GetGValue(cr);
 	BYTE b = GetBValue(cr);
 
-	in->mName.Format(_T("#%02X%02X%02X"), r, g, b);
-	in->mDescription = in->mName;
+	this->mName.Format(_T("#%02X%02X%02X"), r, g, b);
+	this->mDescription = this->mName;
 
 	// カラーアイコンの作成
 	SharedHwnd sharedWnd;
@@ -70,8 +67,6 @@ ColorCommand::ColorCommand(COLORREF cr) : in(new PImpl)
 
 	DeleteObject(maskBmp);
 	DeleteObject(colorBmp);
-
-	in->mRefCount = 1;
 }
 
 ColorCommand::~ColorCommand()
@@ -81,60 +76,15 @@ ColorCommand::~ColorCommand()
 	}
 }
 
-CString ColorCommand::GetName()
-{
-	return in->mName;
-}
-
-CString ColorCommand::GetDescription()
-{
-	return in->mDescription;
-}
-
 CString ColorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_COLOR);
 	return TEXT_TYPE;
 }
 
-BOOL ColorCommand::Execute()
-{
-	Parameter emptyParams;
-	return Execute(emptyParams);
-}
-
-BOOL ColorCommand::Execute(const Parameter& param)
-{
-	// することない...
-
-	return TRUE;
-}
-
-CString ColorCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON ColorCommand::GetIcon()
 {
 	return in->mColorIcon;
-}
-
-int ColorCommand::Match(Pattern* pattern)
-{
-	// サポートしない
-	return Pattern::WholeMatch;
-}
-
-bool ColorCommand::IsEditable()
-{
-	return false;
-}
-
-int ColorCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
 }
 
 soyokaze::core::Command*
@@ -143,27 +93,6 @@ ColorCommand::Clone()
 	auto clonedObj = new ColorCommand(in->mColor);
 	return clonedObj;
 }
-
-bool ColorCommand::Save(CommandFile* cmdFile)
-{
-	// 非サポート
-	return false;
-}
-
-uint32_t ColorCommand::AddRef()
-{
-	return ++(in->mRefCount);
-}
-
-uint32_t ColorCommand::Release()
-{
-	auto n = --(in->mRefCount);
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace color
 } // end of namespace commands
