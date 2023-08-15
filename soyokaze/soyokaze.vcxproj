@@ -562,6 +562,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AppSound.h" />
     <ClInclude Include="BreadCrumbs.h" />
     <ClInclude Include="CandidateList.h" />
     <ClInclude Include="CandidateListListenerIF.h" />
@@ -639,6 +640,7 @@
     <ClInclude Include="gui\SettingDialogBase.h" />
     <ClInclude Include="gui\SettingPage.h" />
     <ClInclude Include="gui\ShortcutSettingPage.h" />
+    <ClInclude Include="gui\SoundSettingDialog.h" />
     <ClInclude Include="gui\ViewSettingDialog.h" />
     <ClInclude Include="Migemo.h" />
     <ClInclude Include="NamedCommandHotKeyHandler.h" />
@@ -693,12 +695,14 @@
     <ClInclude Include="utility\ProcessPath.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
+    <ClInclude Include="utility\Sound.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="WholeMatchPattern.h" />
     <ClInclude Include="utility/WindowPosition.h" />
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppSound.cpp" />
     <ClCompile Include="BreadCrumbs.cpp" />
     <ClCompile Include="CandidateList.cpp" />
     <ClCompile Include="CommandHotKeyMappings.cpp" />
@@ -775,6 +779,7 @@
     <ClCompile Include="gui\SettingDialogBase.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
     <ClCompile Include="gui\ShortcutSettingPage.cpp" />
+    <ClCompile Include="gui\SoundSettingDialog.cpp" />
     <ClCompile Include="gui\ViewSettingDialog.cpp" />
     <ClCompile Include="Migemo.cpp" />
     <ClCompile Include="NamedCommandHotKeyHandler.cpp" />
@@ -836,6 +841,7 @@
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
+    <ClCompile Include="utility\Sound.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />
     <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="WindowTransparency.cpp" />

@@ -94,6 +94,8 @@
 #define IDS_COMMAND_VMXFILE             162
 #define IDD_ARGUMENTS                   163
 #define IDS_ERR_VMXLOCKED               163
+#define IDD_SOUNDSETTING                164
+#define IDS_FILTER_SOUND                164
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -128,6 +130,7 @@
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PATH2                  1023
 #define IDC_EDIT_PARAM0                 1024
+#define IDC_EDIT_SOUNDEXECUTE           1024
 #define IDC_EDIT_DIR                    1025
 #define IDC_BUTTON_BROWSEDIR3           1026
 #define IDC_COMBO_SHOWTYPE              1027
@@ -162,7 +165,9 @@
 #define IDC_BUTTON_HOTKEY               1046
 #define IDC_CHECK_SHOWCOMMANDTYPE       1046
 #define IDC_EDIT_FILERPATH              1047
+#define IDC_BUTTON_SOUNDSELECT          1047
 #define IDC_CHECK_SHIFT                 1048
+#define IDC_BUTTON_SOUNDEXECUTE         1048
 #define IDC_CHECK_USEFILER2             1049
 #define IDC_CHECK_SHOWTOGGLE            1050
 #define IDC_CHECK_ALT                   1051
@@ -205,8 +210,11 @@
 #define IDC_CHECK_ENABLE_WORKSHEET      1077
 #define IDC_BUTTON_CLEAR                1077
 #define IDC_CHECK_ENABLE_BOOKMARKS      1078
+#define IDC_EDIT_SOUNDINPUT             1078
 #define IDC_CHECK_ENABLE_WINDOWTITLE    1079
+#define IDC_EDIT_SOUNDSELECT            1079
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1080
+#define IDC_BUTTON_SOUNDINPUT           1080
 
 // Next default values for new objects
 // 
@@ -214,7 +222,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1078
+#define _APS_NEXT_CONTROL_VALUE         1081
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

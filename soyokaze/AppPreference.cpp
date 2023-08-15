@@ -586,3 +586,22 @@ bool AppPreference::IsEnableControlPanel()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), false);
 }
+
+// 効果音ファイルパスを取得(文字入力)
+CString AppPreference::GetInputSoundFile()
+{
+	return in->mSettings.Get(_T("Sound:FilePathInput"), _T(""));
+}
+
+// 効果音ファイルパスを取得(候補選択)
+CString AppPreference::GetSelectSoundFile()
+{
+	return in->mSettings.Get(_T("Sound:FilePathSelect"), _T(""));
+}
+
+// 効果音ファイルパスを取得(コマンド実行)
+CString AppPreference::GetExecuteSoundFile()
+{
+	return in->mSettings.Get(_T("Sound:FilePathExecute"), _T(""));
+}
+

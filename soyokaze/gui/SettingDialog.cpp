@@ -6,6 +6,7 @@
 #include "gui/InputSettingDialog.h"
 #include "gui/ExecSettingDialog.h"
 #include "gui/ViewSettingDialog.h"
+#include "gui/SoundSettingDialog.h"
 #include "gui/ExtensionSettingDialog.h"
 #include "gui/ShortcutSettingPage.h"
 #include "utility/TopMostMask.h"
@@ -84,6 +85,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 	// 各ページ作成
 	HTREEITEM hItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new BasicSettingDialog(this)), param);
 	AddPage(hItem, std::unique_ptr<SettingPage>(new ShortcutSettingPage(this)), param);
+	AddPage(hItem, std::unique_ptr<SettingPage>(new SoundSettingDialog(this)), param);
 
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);

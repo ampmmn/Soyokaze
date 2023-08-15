@@ -76,8 +76,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnEditCommandChanged();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnLbnSelChange();
-	afx_msg void OnLbnDblClkCandidate();
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
 	afx_msg void OnEndSession(BOOL isEnding);

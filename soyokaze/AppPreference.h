@@ -83,6 +83,13 @@ public:
 	// コントロールパネルのアイテム検索を使用するか
 	bool IsEnableControlPanel();
 
+	// 効果音ファイルパスを取得(文字入力)
+	CString GetInputSoundFile();
+	// 効果音ファイルパスを取得(候補選択)
+	CString GetSelectSoundFile();
+	// 効果音ファイルパスを取得(コマンド実行)
+	CString GetExecuteSoundFile();
+
 protected:
 	AppPreference();
 	~AppPreference();

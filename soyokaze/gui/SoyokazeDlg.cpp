@@ -17,6 +17,7 @@
 #include "WindowTransparency.h"
 #include "IconLoader.h"
 #include "AppPreference.h"
+#include "AppSound.h"
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "core/CommandHotKeyManager.h"
@@ -115,8 +116,6 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_EN_CHANGE(IDC_EDIT_COMMAND, OnEditCommandChanged)
 	ON_WM_SHOWWINDOW()
-	ON_LBN_SELCHANGE(IDC_LIST_CANDIDATE, OnLbnSelChange)
-	ON_LBN_DBLCLK(IDC_LIST_CANDIDATE, OnLbnDblClkCandidate)
 	ON_WM_NCHITTEST()
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
@@ -618,6 +617,9 @@ void CSoyokazeDlg::OnEditCommandChanged()
 
 	UpdateData();
 
+	// 
+	AppSound::Get()->PlayInputSound();
+
 	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
 	// (Editコントロールの通常の挙動)
 	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
@@ -689,6 +691,9 @@ void CSoyokazeDlg::OnOK()
 	// コマンドを実行する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
+
+		// 再生
+		AppSound::Get()->PlayExecuteSound();
 
 		// 優先度を上げる
 		GetCommandRepository()->AddRank(cmd, 10);
@@ -779,6 +784,9 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 {
 	if (wParam == VK_BACK) {
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+
+			AppSound::Get()->PlayInputSound();
+
 			ClearContent();
 			in->mKeywordEdit.Clear();
 			return 1;
@@ -793,6 +801,8 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			if (cmd == nullptr) {
 				return 1;
 			}
+
+			AppSound::Get()->PlaySelectSound();
 
 			in->mCommandStr = cmd->GetName();
 			in->mDescriptionStr = cmd->GetDescription();
@@ -813,6 +823,8 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			if (cmd == nullptr) {
 				return 1;
 			}
+
+			AppSound::Get()->PlaySelectSound();
 
 			in->mCommandStr = cmd->GetName();
 			in->mDescriptionStr = cmd->GetDescription();
@@ -860,40 +872,6 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 	return 0;
 }
 
-void CSoyokazeDlg::OnLbnSelChange()
-{
-	UpdateData();
-
-	auto cmd = GetCurrentCommand();
-	if (cmd) {
-		in->mCommandStr = cmd->GetName();
-		in->mDescriptionStr = cmd->GetDescription();
-	}
-	UpdateData(FALSE);
-}
-
-void CSoyokazeDlg::OnLbnDblClkCandidate()
-{
-	UpdateData();
-
-	// コマンドを実行する
-	auto cmd = GetCurrentCommand();
-	if (cmd) {
-
-		CString str = cmd->GetName();
-
-		std::thread th([cmd,str]() {
-			soyokaze::core::CommandParameter commandParam(str);
-			if (cmd->Execute(commandParam) == FALSE) {
-				AfxMessageBox(cmd->GetErrorString());
-			}
-		});
-		th.detach();
-	}
-
-	ShowWindow(SW_HIDE);
-}
-
 // クライアント領域をドラッグしてウインドウを移動させるための処理
 LRESULT CSoyokazeDlg::OnNcHitTest(
 	CPoint point
@@ -917,6 +895,9 @@ void CSoyokazeDlg::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
 	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+
+	AppSound::Get()->PlaySelectSound();
+
 	in->mCandidates.SetCurrentSelect(nm->iItem);
 	UpdateData(FALSE);
 
