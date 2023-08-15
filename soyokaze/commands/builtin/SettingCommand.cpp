@@ -60,18 +60,27 @@ BOOL SettingCommand::Execute()
 
 	SettingDialog dlg;
 
+	// 前回表示していたページを復元する
+	dlg.SetBreadCrumbsString(mLastBreakCrumbs);
+
 	auto pref = AppPreference::Get();
 
 	// 現在の設定をセット
 	dlg.SetSettings(pref->GetSettings());
 
-	if (dlg.DoModal() != IDOK) {
+	INT_PTR response = dlg.DoModal();
+
+	// パンくずリストを取得(次回表示時にページを復元するため)
+	mLastBreakCrumbs = dlg.GetBreadCrumbsString();
+
+	if (response != IDOK) {
 		return TRUE;
 	}
 
 	// 設定変更を反映する
 	pref->SetSettings(dlg.GetSettings());
 	pref->Save();
+
 
 	return TRUE;
 }

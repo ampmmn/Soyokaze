@@ -36,6 +36,8 @@ protected:
 	CString mName;
 	bool mIsExecuting;
 	uint32_t mRefCount;
+	// 前回表示時のページ階層を表すパンくずリスト
+	CString mLastBreakCrumbs;
 };
 
 } // end of namespace builtin

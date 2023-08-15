@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\testcode\soyokaze\AppProfileTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp" />

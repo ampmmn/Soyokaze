@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "SettingDialogBase.h"
 #include "SettingPage.h"
+#include "BreadCrumbs.h"
 #include "utility/TopMostMask.h"
 #include "resource.h"
 #include <algorithm>
@@ -60,8 +61,18 @@ struct SettingDialogBase::PImpl
 /**
  	デストラクタ
 */
- SettingDialogBase::~SettingDialogBase()
+SettingDialogBase::~SettingDialogBase()
 {
+}
+
+CString SettingDialogBase::GetBreadCrumbsString()
+{
+	return in->mBreadCrumbs;
+}
+
+void SettingDialogBase::SetBreadCrumbsString(const CString& crumbs)
+{
+	in->mBreadCrumbs = crumbs;
 }
 
 void SettingDialogBase::DoDataExchange(CDataExchange* pDX)
@@ -101,6 +112,15 @@ BOOL SettingDialogBase::OnInitDialog()
 	for (auto& page : in->mPages) {
 		page->OnEnterSettings();
 		page->OnSetActive();
+	}
+
+	// もしパンくずリストが設定済なら、その状態を優先して表示する
+	if (in->mBreadCrumbs.IsEmpty() == FALSE) {
+		BreadCrumbs crumbs(in->mBreadCrumbs);
+		HTREEITEM h = crumbs.FindTreeItem(in->mTreeCtrl);
+		if (h) {
+			hItem = h;
+		}
 	}
 
 	SelectPage(hItem);
@@ -164,27 +184,8 @@ bool SettingDialogBase::SelectPage(HTREEITEM hTreeItem)
 	in->mLastTreeItem = hTreeItem;
 
 	// パンくずリスト更新
-	std::vector<CString> pageNames;
-	HTREEITEM h = hTreeItem;
-	while(h) {
-		SettingPage* newPagePtr = (SettingPage*)tree->GetItemData(h);
-
-		const CString& str = newPagePtr->GetName();
-		pageNames.push_back(str);
-
-		h = tree->GetParentItem(h);
-	}
-
-	in->mBreadCrumbs.Empty();
-	std::reverse(pageNames.begin(), pageNames.end());
-	for (auto& name : pageNames) {
-		if (in->mBreadCrumbs.IsEmpty() == FALSE) {
-			in->mBreadCrumbs += _T(">");
-		}
-		in->mBreadCrumbs += _T(" ");
-		in->mBreadCrumbs += name;
-		in->mBreadCrumbs += _T(" ");
-	}
+	BreadCrumbs crumbs(tree, hTreeItem);
+	in->mBreadCrumbs = crumbs.ToString();
 
 	UpdateData(FALSE);
 

@@ -48,5 +48,8 @@
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp">
+      <Filter>soyokaze</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

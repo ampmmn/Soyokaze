@@ -562,6 +562,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BreadCrumbs.h" />
     <ClInclude Include="CandidateList.h" />
     <ClInclude Include="CandidateListListenerIF.h" />
     <ClInclude Include="CommandHotKeyMappings.h" />
@@ -698,6 +699,7 @@
     <ClInclude Include="WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BreadCrumbs.cpp" />
     <ClCompile Include="CandidateList.cpp" />
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp" />

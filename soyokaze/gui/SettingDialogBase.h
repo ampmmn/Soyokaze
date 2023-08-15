@@ -13,6 +13,10 @@ public:
 	// デストラクタ
 	virtual ~SettingDialogBase();
 
+	CString GetBreadCrumbsString();
+	void SetBreadCrumbsString(const CString& crumbs);
+
+
 protected:
 	virtual HTREEITEM OnSetupPages() = 0;
 
