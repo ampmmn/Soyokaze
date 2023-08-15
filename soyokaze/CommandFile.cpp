@@ -305,8 +305,10 @@ CommandFile::Entry* CommandFile::NewEntry(
 {
 	auto entry = std::make_unique<Entry>();
 	entry->mName = name;
+
+	auto retPtr = entry.get();
 	in->mEntries.push_back(std::move(entry));
-	return entry.get();
+	return retPtr;
 }
 
 
