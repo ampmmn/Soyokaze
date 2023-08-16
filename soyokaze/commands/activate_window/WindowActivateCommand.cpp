@@ -102,7 +102,7 @@ CString WindowActivateCommand::GetDescription()
 
 CString WindowActivateCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WINDOWACTIVATE);
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);
 	return TEXT_TYPE;
 }
 
