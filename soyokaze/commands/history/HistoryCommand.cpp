@@ -33,7 +33,7 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PIm
 	in->mParam.SetWholeString(keyword);
 
 	auto cmdRepo = CommandRepository::GetInstance();
-	auto cmd = cmdRepo->QueryAsWholeMatch(in->mParam.GetCommandString(), false);
+	auto cmd = cmdRepo->QueryAsWholeMatch(in->mParam.GetCommandString(), true);
 	if (cmd == nullptr) {
 		return;
 	}

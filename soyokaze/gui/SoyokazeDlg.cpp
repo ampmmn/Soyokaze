@@ -444,7 +444,7 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
 	soyokaze::core::CommandParameter commandParam(str);
 
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString());
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString(), true);
 	if (cmd == nullptr) {
 		return false;
 	}

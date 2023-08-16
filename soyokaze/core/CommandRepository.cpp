@@ -494,7 +494,7 @@ CommandRepository::Query(
 soyokaze::core::Command*
 CommandRepository::QueryAsWholeMatch(
 	const CString& strQueryStr,
-	bool isSearchPath
+	bool isIncludeAdhocCommand
 )
 {
 	CSingleLock sl(&in->mCS, TRUE);
@@ -503,6 +503,29 @@ CommandRepository::QueryAsWholeMatch(
 
 	auto command = in->mCommands.FindOne(&pat);
 	if (command != nullptr) {
+		return command;
+	}
+
+	if (isIncludeAdhocCommand == false) {
+		return nullptr;
+	}
+
+	// コマンドプロバイダーから一時的なコマンドを取得する
+	std::vector<CommandMap::QueryItem> matchedItems;
+	for (auto provider : in->mProviders) {
+		provider->QueryAdhocCommands(&pat, matchedItems);
+
+		if (matchedItems.empty()) {
+			continue;
+		}
+
+		command = matchedItems[0].mCommand;
+		command->AddRef();
+
+		for (auto& item : matchedItems) {
+			item.mCommand->Release();
+		}
+
 		return command;
 	}
 
