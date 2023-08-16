@@ -122,6 +122,10 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
+		if (PathFileExists(item.mFullPath) == FALSE) {
+			// 存在しないファイルは除外
+			continue;
+		}
 		auto cmdHist = std::make_unique<PathExecuteCommand>();
 		cmdHist->SetFullPath(item.mFullPath, true);
 		commands.push_back(CommandQueryItem(level, cmdHist.release()));
