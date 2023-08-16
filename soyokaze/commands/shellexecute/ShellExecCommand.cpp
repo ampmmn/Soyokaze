@@ -477,7 +477,7 @@ bool ShellExecCommand::NewDialog(
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr, commandParam.mIsGlobal);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

@@ -96,6 +96,9 @@
 #define IDS_ERR_VMXLOCKED               163
 #define IDD_SOUNDSETTING                164
 #define IDS_FILTER_SOUND                164
+#define IDS_COMMANDNAME_WINDOWACTIVATE  165
+#define IDD_WINDOWACTIVATEEDIT          165
+#define IDS_DESCRIPTION_WINDOWACTIVATE  166
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -215,6 +218,9 @@
 #define IDC_EDIT_SOUNDSELECT            1079
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1080
 #define IDC_BUTTON_SOUNDINPUT           1080
+#define IDC_EDIT_CAPTION                1081
+#define IDC_EDIT_CLASS                  1082
+#define IDC_CHECK_REGEXP                1083
 
 // Next default values for new objects
 // 
@@ -222,7 +228,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1081
+#define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -125,12 +125,12 @@ void ShellExecCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<
 }
 
 // Provider間の優先順位を表す値を返す。小さいほど優先
-uint32_t ShellExecCommandProvider::ShellExecCommandProvider::GetOrder() const
+uint32_t ShellExecCommandProvider::GetOrder() const
 {
 	return 100;
 }
 
-uint32_t ShellExecCommandProvider::ShellExecCommandProvider::AddRef()
+uint32_t ShellExecCommandProvider::AddRef()
 {
 	return ++in->mRefCount;
 }

@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "ActivateWindowProvider.h"
 #include "commands/activate_window/WorksheetCommand.h"
+#include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
 #include "AppPreference.h"
+#include "CommandFile.h"
 #include "resource.h"
 #include <list>
 
@@ -56,6 +58,8 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 
 	DWORD mLastHwndUpdate;
 	std::vector<HWND> mHwndCandidates;
+
+	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,11 +81,81 @@ ActivateWindowProvider::~ActivateWindowProvider()
 {
 }
 
-CString ActivateWindowProvider::GetName()
+// 初回起動の初期化を行う
+void ActivateWindowProvider::OnFirstBoot()
 {
-	return _T("ExcelCommand");
 }
 
+// コマンドの読み込み
+void ActivateWindowProvider::LoadCommands(CommandFile* cmdFile)
+{
+	ASSERT(cmdFile);
+
+	auto cmdRepo = CommandRepository::GetInstance();
+
+	int entries = cmdFile->GetEntryCount();
+	for (int i = 0; i < entries; ++i) {
+
+		auto entry = cmdFile->GetEntry(i);
+		if (cmdFile->IsUsedEntry(entry)) {
+			// 既にロード済(使用済)のエントリ
+			continue;
+		}
+
+		WindowActivateCommand* command = nullptr;
+		if (WindowActivateCommand::LoadFrom(cmdFile, entry, &command) == false) {
+			if (command) {
+				command->Release();
+			}
+			continue;
+		}
+
+		// 登録
+		cmdRepo->RegisterCommand(command);
+
+		// 使用済みとしてマークする
+		cmdFile->MarkAsUsed(entry);
+	}
+}
+
+
+CString ActivateWindowProvider::GetName()
+{
+	return _T("ActiveWindowCommand");
+}
+
+// 作成できるコマンドの種類を表す文字列を取得
+CString ActivateWindowProvider::GetDisplayName()
+{
+	return CString((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);
+}
+
+// コマンドの種類の説明を示す文字列を取得
+CString ActivateWindowProvider::GetDescription()
+{
+	CString description((LPCTSTR)IDS_DESCRIPTION_WINDOWACTIVATE);
+	description += _T("\n");
+	description += _T("ウインドウ切り替え処理に対して、任意のキーワードを設定したり、\n");
+	description += _T("ホットキーを設定することができます。\n");
+	return description;
+}
+
+// コマンド新規作成ダイアログ
+bool ActivateWindowProvider::NewDialog(const CommandParameter* param)
+{
+	WindowActivateCommand* newCmd = nullptr;
+	if (WindowActivateCommand::NewDialog(param, &newCmd) == false) {
+		return false;
+	}
+	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+	return true;
+}
+
+// 非公開コマンドかどうか(新規作成対象にしない)
+bool ActivateWindowProvider::IsPrivate() const
+{
+	return false;
+}
 
 // 一時的なコマンドを必要に応じて提供する
 void ActivateWindowProvider::QueryAdhocCommands(
@@ -99,6 +173,26 @@ void ActivateWindowProvider::QueryAdhocCommands(
 
 	QueryAdhocCommandsForWorksheets(pattern, commands);
 	QueryAdhocCommandsForWindows(pattern, commands);
+}
+
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t ActivateWindowProvider::GetOrder() const
+{
+	return 500;
+}
+
+uint32_t ActivateWindowProvider::AddRef()
+{
+	return ++in->mRefCount;
+}
+
+uint32_t ActivateWindowProvider::Release()
+{
+	uint32_t n = --in->mRefCount;
+	if (n == 0) {
+		delete this;
+	}
+	return n;
 }
 
 void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(Pattern* pattern, std::vector<CommandQueryItem>& commands)
@@ -158,11 +252,16 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(Pattern* pattern, std:
 	for (auto hwnd : in->mHwndCandidates) {
 		GetWindowText(hwnd, caption, 256);
 
+		// ウインドウテキストを持たないものを除外する
+		if (caption[0] == _T('\0')) {
+			continue;
+		}
+
 		int level = pattern->Match(caption);
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		commands.push_back(CommandQueryItem(level, new WindowActivateCommand(hwnd)));
+		commands.push_back(CommandQueryItem(level, new WindowActivateAdhocCommand(hwnd)));
 	}
 }
 

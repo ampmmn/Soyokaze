@@ -19,12 +19,6 @@ struct CommandParameter::PImpl
 	{
 	}
 
-	PImpl(const CString& str) : 
-		mWholeText(str),
-		mCommandPart(str),
-		mHasSpace(false)
-	{
-	}
 
 	CString mWholeText;
 	CString mCommandPart;
@@ -47,9 +41,14 @@ CommandParameter::CommandParameter(): in(std::make_unique<PImpl>())
 
 CommandParameter::CommandParameter(
 	const CString& str
-) : in(std::make_unique<PImpl>(str))
+) : in(std::make_unique<PImpl>())
 {
-	CString tmpStr = str;
+	auto tmpStr = str;
+	tmpStr.TrimLeft();
+
+	in->mWholeText = tmpStr;
+	in->mCommandPart = tmpStr;
+
 	int n = tmpStr.Find(_T(" "));
 	if (n > -1) {
 		in->mCommandPart = tmpStr.Left(n);
@@ -60,6 +59,11 @@ CommandParameter::CommandParameter(
 
 CommandParameter::~CommandParameter()
 {
+}
+
+bool CommandParameter::IsEmpty() const
+{
+	return in->mWholeText.IsEmpty() != FALSE;
 }
 
 void CommandParameter::AddArgument(const CString& arg)

@@ -54,7 +54,9 @@ void ColorCommandProvider::QueryAdhocCommands(
 	CString cmdline = pattern->GetWholeString();
 
 	cmdline = cmdline.Trim();
-	ASSERT(cmdline.IsEmpty() == FALSE);
+	if (cmdline.IsEmpty()) {
+		return;
+	}
 
 	if (cmdline[0] == _T('#') && cmdline.GetLength() == 7) {   // #rrggbb
 		CString rrggbb = cmdline.Mid(1);

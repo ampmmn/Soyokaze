@@ -14,6 +14,8 @@ public:
 	~CommandParameter();
 
 public:
+	bool IsEmpty() const;
+
 	void AddArgument(const CString& arg);
 
 	void SetWholeString(const CString& str);

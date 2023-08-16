@@ -157,7 +157,7 @@ bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(tmpParam.mName, dlg.mHotKeyAttr);
+		hotKeyMap.AddItem(tmpParam.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

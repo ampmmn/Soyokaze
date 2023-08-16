@@ -457,6 +457,11 @@ CommandRepository::Query(
 	}
 	items.clear();
 
+	// パラメータが空の場合は検索しない
+	if (param.IsEmpty()) {
+		return;
+	}
+
 	CSingleLock sl(&in->mCS, TRUE);
 
 	// 入力文字列をを設定

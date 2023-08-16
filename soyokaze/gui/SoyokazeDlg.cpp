@@ -614,7 +614,7 @@ CSoyokazeDlg::GetCurrentCommand()
  */
 void CSoyokazeDlg::OnEditCommandChanged()
 {
-	DWORD curCaretPos = in->mKeywordEdit.GetSel();
+	//DWORD curCaretPos = in->mKeywordEdit.GetSel();
 
 	UpdateData();
 
@@ -630,7 +630,6 @@ void CSoyokazeDlg::OnEditCommandChanged()
 		in->mCommandStr.Replace(bsStr, _T(""));
 		in->mKeywordEdit.Clear();
 	}
-
 
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {

@@ -54,7 +54,9 @@ void EnvCommandProvider::QueryAdhocCommands(
 	CString cmdline = pattern->GetWholeString();
 
 	cmdline = cmdline.Trim();
-	ASSERT(cmdline.IsEmpty() == FALSE);
+	if (cmdline.IsEmpty()) {
+		return;
+	}
 
 	if (cmdline.GetLength() < 3) {
 		return;
