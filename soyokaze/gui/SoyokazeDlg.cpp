@@ -512,6 +512,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
 	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
 		// 復元に失敗した場合は中央に表示
+		SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
 		CenterWindow();
 	}
 
