@@ -30,15 +30,6 @@ namespace core {
 
 struct CommandRepository::PImpl
 {
-	PImpl() : 
-		mIsNewDialog(false), mIsEditDialog(false), mIsManagerDialog(false),
-		mIsRegisteFromFileDialog(false)
-	{
-	}
-	~PImpl()
-	{
-	}
-
 	void ReloadPatternObject()
 	{
 		mPattern.reset(new PartialMatchPattern());
@@ -94,10 +85,13 @@ struct CommandRepository::PImpl
 	CommandRanking mRanking;
 
 	// 編集中フラグ
-	bool mIsNewDialog;
-	bool mIsEditDialog;
-	bool mIsManagerDialog;
-	bool mIsRegisteFromFileDialog;
+	bool mIsNewDialog = false;
+	bool mIsEditDialog = false;
+	bool mIsManagerDialog = false;
+	bool mIsRegisteFromFileDialog = false;
+
+	// 再入防止フラグ
+	bool mIsQuering = false;
 };
 
 
@@ -451,6 +445,13 @@ CommandRepository::Query(
 	std::vector<soyokaze::core::Command*>& items
 )
 {
+	if (in->mIsQuering) {
+		// 再入はしない
+		return ;
+	}
+
+	ScopeEdit scopeQuery(in->mIsQuering);
+
 	for (auto command : items) {
 		command->Release();
 	}
@@ -498,6 +499,14 @@ CommandRepository::QueryAsWholeMatch(
 )
 {
 	CSingleLock sl(&in->mCS, TRUE);
+
+	if (in->mIsQuering) {
+		// 再入はしない
+		return nullptr;
+	}
+
+	ScopeEdit scopeQuery(in->mIsQuering);
+
 
 	WholeMatchPattern pat(strQueryStr);
 
