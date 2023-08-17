@@ -4,6 +4,7 @@
 #include "commands/websearch/WebSearchSettingDialog.h"
 #include "commands/common/ExpandFunctions.h"
 #include "core/CommandRepository.h"
+#include "utility/LastErrorString.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
@@ -90,13 +91,8 @@ BOOL WebSearchCommand::Execute(const Parameter& param)
 
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {
-
-		DWORD er = GetLastError();
-		DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-		void* msgBuf;
-		FormatMessage(flags, NULL, er, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msgBuf, 0, NULL);
-		in->mErrorMsg = (LPCTSTR)msgBuf;
-		LocalFree(msgBuf);
+		LastErrorString errStr(GetLastError());
+		in->mErrorMsg = (LPCTSTR)errStr;
 		return FALSE;
 	}
 

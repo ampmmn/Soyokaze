@@ -7,6 +7,7 @@
 #include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
+#include "utility/LastErrorString.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -180,13 +181,8 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	}
 	BOOL bRun = ShellExecuteEx(&si);
 	if (bRun == FALSE) {
-
-		DWORD er = GetLastError();
-		DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-		void* msgBuf;
-		FormatMessage(flags, NULL, er, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msgBuf, 0, NULL);
-		in->mErrMsg = (LPCTSTR)msgBuf;
-		LocalFree(msgBuf);
+		LastErrorString errStr(GetLastError());
+		in->mErrMsg = (LPCTSTR)errStr;
 		return FALSE;
 	}
 

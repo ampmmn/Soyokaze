@@ -13,6 +13,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/CharConverter.h"
 #include "utility/GlobalAllocMemory.h"
+#include "utility/LastErrorString.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -132,12 +133,8 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 
 
 	if (isOK == FALSE) {
-		DWORD er = GetLastError();
-		DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-		void* msgBuf;
-		FormatMessage(flags, NULL, er, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msgBuf, 0, NULL);
-		mErrMsg = (LPCTSTR)msgBuf;
-		LocalFree(msgBuf);
+		LastErrorString errStr(GetLastError());
+		mErrMsg = (LPCTSTR)errStr;
 		return false;
 	}
 
