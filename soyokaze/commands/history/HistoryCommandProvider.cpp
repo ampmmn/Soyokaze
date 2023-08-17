@@ -47,7 +47,7 @@ CString HistoryCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void HistoryCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	ExecuteHistory::ItemList items;

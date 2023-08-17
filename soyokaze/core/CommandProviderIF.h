@@ -3,7 +3,6 @@
 #include "core/CommandIF.h"
 #include "core/CommandQueryItem.h"
 #include "Pattern.h"
-#include <vector>
 #include <stdint.h>
 
 class CommandFile;
@@ -15,6 +14,9 @@ class CommandParameter;
 
 class CommandProvider
 {
+public:
+	using CommandQueryItemList = soyokaze::CommandQueryItemList;
+
 public:
 	virtual ~CommandProvider() {}
 
@@ -40,7 +42,7 @@ public:
 	virtual bool IsPrivate() const = 0;
 
 	// 一時的なコマンドを必要に応じて提供する
-	virtual void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands) = 0;
+	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) = 0;
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const = 0;

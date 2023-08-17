@@ -244,7 +244,7 @@ bool CommandFile::Save(const std::vector<soyokaze::core::Command*>& commands)
 		}
 		CStdioFile file(fpOut);
 
-		for (auto cmdAbs : commands) {
+		for (auto& cmdAbs : commands) {
 
 			// ToDo: 設計見直し
 			ShellExecCommand* cmd = (ShellExecCommand*)cmdAbs;
@@ -545,7 +545,7 @@ bool CommandFile::Save()
 			file.WriteString(entry->mName);
 			file.WriteString(_T("]\n"));
 
-			for (auto kv : entry->mIntMap) {
+			for (auto& kv : entry->mIntMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
 
@@ -554,7 +554,7 @@ bool CommandFile::Save()
 				file.WriteString(val);
 				file.WriteString(_T("\n"));
 			}
-			for (auto kv : entry->mDoubleMap) {
+			for (auto& kv : entry->mDoubleMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
 
@@ -563,13 +563,13 @@ bool CommandFile::Save()
 				file.WriteString(val);
 				file.WriteString(_T("\n"));
 			}
-			for (auto kv : entry->mStrMap) {
+			for (auto& kv : entry->mStrMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("=\""));
 				file.WriteString(kv.second);
 				file.WriteString(_T("\"\n"));
 			}
-			for (auto kv : entry->mBoolMap) {
+			for (auto& kv : entry->mBoolMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
 				file.WriteString(kv.second ? _T("true") : _T("second"));

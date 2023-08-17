@@ -112,7 +112,7 @@ bool RegExpCommandProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void RegExpCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands)
+void RegExpCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	// このCommandProviderは一時的なコマンドを持たない
 }

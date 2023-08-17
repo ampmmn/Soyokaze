@@ -84,7 +84,7 @@ BOOL GroupEditDialog::OnInitDialog()
 	mCommandSelectBox->SetMinVisibleItems(10);
 	std::vector<Command*> commands;
 	soyokaze::core::CommandRepository::GetInstance()->EnumCommands(commands);
-	for (auto cmd : commands) {
+	for (auto& cmd : commands) {
 		mCommandSelectBox->AddString(cmd->GetName());
 	}
 

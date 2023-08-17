@@ -133,7 +133,7 @@ bool Calculator::PImpl::Initialize()
 	};
 
 	tstring pattern;
-	for (auto name : buildinFuncsions) {
+	for (auto& name : buildinFuncsions) {
 		if(pattern.empty() == false) {
 			pattern += _T("|");
 		}

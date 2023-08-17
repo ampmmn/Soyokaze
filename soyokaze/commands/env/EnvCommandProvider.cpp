@@ -48,7 +48,7 @@ CString EnvCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void EnvCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	CString cmdline = pattern->GetWholeString();

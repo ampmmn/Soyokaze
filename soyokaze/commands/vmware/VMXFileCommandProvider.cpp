@@ -23,7 +23,7 @@ struct VMXFileCommandProvider::PImpl
 	}
 	virtual ~PImpl()
 	{
-		for (auto cmd : mCommands) {
+		for (auto& cmd : mCommands) {
 			cmd->Release();
 		}
 	}
@@ -41,7 +41,7 @@ struct VMXFileCommandProvider::PImpl
 */
 void VMXFileCommandProvider::PImpl::Reload()
 {
-	for (auto cmd : mCommands) {
+	for (auto& cmd : mCommands) {
 		cmd->Release();
 	}
 	mCommands.clear();
@@ -84,7 +84,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 		}
 	}
 
-	for (auto entry : items) {
+	for (auto& entry : items) {
 		auto item = entry.second;
 		if (PathFileExists(item.filePath) == FALSE) {
 			// 存在しない.vmxファイルは除外する
@@ -139,7 +139,7 @@ static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 // 一時的なコマンドを必要に応じて提供する
 void VMXFileCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	FILETIME lastUpdate;
@@ -153,7 +153,7 @@ void VMXFileCommandProvider::QueryAdhocCommands(
 	}
 	in->mPrefUpdateTime = lastUpdate;
 
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 
 		int level = cmd->Match(pattern);
 		if (level == Pattern::Mismatch) {

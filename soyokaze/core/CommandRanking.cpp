@@ -102,7 +102,7 @@ bool CommandRanking::Save()
 		CStdioFile file(fpOut);
 
 		CString lineBuff;
-		for (auto elem : in->mRank) {
+		for (auto& elem : in->mRank) {
 
 			const CString& name = elem.first;
 			int rank = elem.second;

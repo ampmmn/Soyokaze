@@ -20,7 +20,7 @@ public:
 	virtual CString GetName();
 
 	// 一時的なコマンドを必要に応じて提供する
-	virtual void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands);
+	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 
 
 	DECLARE_COMMANDPROVIDER(ColorCommandProvider)

@@ -119,7 +119,7 @@ bool ShellExecCommandProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void ShellExecCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands)
+void ShellExecCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	// このCommandProviderは一時的なコマンドを持たない
 }

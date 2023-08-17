@@ -67,17 +67,17 @@ IconLoader::IconLoader() : in(std::make_unique<PImpl>())
 
 IconLoader::~IconLoader()
 {
-	for (auto elem : in->mShell32IconCache) {
+	for (auto& elem : in->mShell32IconCache) {
 		if (elem.second) {
 			DestroyIcon(elem.second);
 		}
 	}
-	for (auto elem : in->mImageResIconCache) {
+	for (auto& elem : in->mImageResIconCache) {
 		if (elem.second) {
 			DestroyIcon(elem.second);
 		}
 	}
-	for (auto elem : in->mDefaultIconCache) {
+	for (auto& elem : in->mDefaultIconCache) {
 		if (elem.second) {
 			DestroyIcon(elem.second);
 		}

@@ -52,12 +52,12 @@ CString RecentFilesCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void RecentFilesCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	in->mFiles.GetRecentFiles(in->mRecentFileItems);
 
-	for (auto item : in->mRecentFileItems) {
+	for (auto& item : in->mRecentFileItems) {
 
 		const auto& name = item.mName;
 

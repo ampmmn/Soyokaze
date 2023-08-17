@@ -96,7 +96,7 @@ KeywordManagerDialog::KeywordManagerDialog() :
 
 KeywordManagerDialog::~KeywordManagerDialog()
 {
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 		cmd->Release();
 	}
 }
@@ -175,7 +175,7 @@ void KeywordManagerDialog::ResetContents()
 	}
 
 	// 以前のアイテムを解放
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 		cmd->Release();
 	}
 	in->mCommands.clear();
@@ -193,7 +193,7 @@ void KeywordManagerDialog::ResetContents()
 
 	// 選択状態の更新
 	int itemIndex = 0;
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 		bool isSelItem = itemIndex== selItemIndex;
 		if (isSelItem) {
 			in->mSelCommand = cmd;
@@ -215,7 +215,7 @@ bool KeywordManagerDialog::UpdateStatus()
 
 	// 選択状態を見て選択中のコマンドを決定
 	int itemIndex = 0;
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 		UINT mask = in->mListCtrl.GetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED);
 		bool isSelItem = mask != 0;
 
@@ -358,7 +358,7 @@ void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 
 	// 選択状態の更新
 	int itemIndex = 0;
-	for (auto cmd : in->mCommands) {
+	for (auto& cmd : in->mCommands) {
 			bool isSelItem = cmd == in->mSelCommand;
 			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 			itemIndex++;

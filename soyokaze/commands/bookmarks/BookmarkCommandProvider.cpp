@@ -71,7 +71,7 @@ CString BookmarkCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void BookmarkCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {
@@ -87,7 +87,7 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 
 	std::vector<ITEM> items;
 	if (in->mBookmarks.LoadChromeBookmarks(items)) {
-		for (auto item : items) {
+		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
 				continue;
@@ -96,7 +96,7 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		}
 	}
 	if (in->mBookmarks.LoadEdgeBookmarks(items)) {
-		for (auto item : items) {
+		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
 				continue;

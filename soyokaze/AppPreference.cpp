@@ -96,7 +96,7 @@ AppPreference::PImpl::~PImpl()
 
 void AppPreference::PImpl::OnAppPreferenceUpdated()
 {
-	for (auto listener : mListeners) {
+	for (auto& listener : mListeners) {
 		listener->OnAppPreferenceUpdated();
 	}
 }
@@ -257,7 +257,7 @@ void AppPreference::Save()
 		std::map<CString, std::vector<CString> > sectionMap;
 
 		// セクションごとにキー名をまとめる
-		for (auto key : keys) {
+		for (auto& key : keys) {
 
 			CString strSection;
 			CString strKey;
@@ -333,7 +333,7 @@ void AppPreference::OnExit()
 {
 	// リスナーへ終了を通知
 	auto cloned = in->mListeners;
-	for (auto listener : cloned) {
+	for (auto& listener : cloned) {
 		listener->OnAppExit();
 	}
 }
@@ -524,7 +524,7 @@ bool AppPreference::CreateUserDirectory()
 	}
 
 	// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
-	for (auto listener : in->mListeners) {
+	for (auto& listener : in->mListeners) {
 		listener->OnAppFirstBoot();
 	}
 

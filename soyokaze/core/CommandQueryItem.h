@@ -1,13 +1,27 @@
 #pragma once
 
 #include "CommandIF.h"
+#include <memory>
+#include <vector>
+#include <functional>
+
+namespace soyokaze {
 
 class CommandQueryItem
 {
+	using Command = soyokaze::core::Command;
 public:
-	CommandQueryItem(int level, soyokaze::core::Command* cmd);
-	CommandQueryItem(const CommandQueryItem&) = default;
+	CommandQueryItem(int level, Command* cmd);
+	CommandQueryItem(const CommandQueryItem&);
+	~CommandQueryItem();
+
+	CommandQueryItem& operator = (const CommandQueryItem&);
 
 	int mMatchLevel;
-	soyokaze::core::Command* mCommand;
+	std::unique_ptr<Command, std::function<void(void*)> > mCommand;
 };
+
+using CommandQueryItemList = std::vector<CommandQueryItem>;
+
+}
+

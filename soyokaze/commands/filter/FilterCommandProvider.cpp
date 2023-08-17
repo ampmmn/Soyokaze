@@ -175,7 +175,7 @@ bool FilterCommandProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands)
+void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	// このCommandProviderは一時的なコマンドを持たない
 }

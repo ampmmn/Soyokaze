@@ -318,7 +318,7 @@ void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 	CSingleLock sl(&in->mCS, TRUE);
 
 	CommandHotKeyMappings tmp;
-	for (auto elem : in->mNameKeyMap) {
+	for (auto& elem : in->mNameKeyMap) {
 
 		const HOTKEY_ATTR& attr = elem.second;
 

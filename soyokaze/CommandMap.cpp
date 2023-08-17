@@ -13,7 +13,7 @@ CommandMap::CommandMap()
 
 CommandMap::CommandMap(const CommandMap& rhs)
 {
-	for (auto item : rhs.mMap) {
+	for (auto& item : rhs.mMap) {
 		mMap[item.first] = item.second->Clone();
 	}
 }
@@ -25,7 +25,7 @@ CommandMap::~CommandMap()
 
 void CommandMap::Clear()
 {
-	for (auto item : mMap) {
+	for (auto& item : mMap) {
 		item.second->Release();
 	}
 }
@@ -76,7 +76,7 @@ void CommandMap::Swap(CommandMap& rhs)
 
 void CommandMap::Query(
 	Pattern* pattern,
-	std::vector<QueryItem>& commands
+	CommandQueryItemList& commands
 )
 {
 	for (auto& item : mMap) {
@@ -88,7 +88,7 @@ void CommandMap::Query(
 			continue;
 		}
 		command->AddRef();
-		commands.push_back(QueryItem(matchLevel, command));
+		commands.push_back(CommandQueryItem(matchLevel, command));
 	}
 }
 
@@ -112,7 +112,7 @@ std::vector<soyokaze::core::Command*>&
 CommandMap::Enumerate(std::vector<soyokaze::core::Command*>& commands)
 {
 	commands.reserve(commands.size() + mMap.size());
-	for (auto item : mMap) {
+	for (auto& item : mMap) {
 		item.second->AddRef();
 		commands.push_back(item.second);
 	}

@@ -8,7 +8,8 @@
 class CommandMap
 {
 public:
-	using QueryItem = CommandQueryItem;
+	using CommandQueryItem = soyokaze::CommandQueryItem;
+	using CommandQueryItemList = soyokaze::CommandQueryItemList;
 
 public:
 	CommandMap();
@@ -29,7 +30,7 @@ public:
 
 	void Swap(CommandMap& rhs);
 
-	void Query(Pattern* pattern, std::vector<QueryItem>& commands);
+	void Query(Pattern* pattern, CommandQueryItemList& commands);
 
 	// 最初に見つけた要素を返す
 	soyokaze::core::Command* FindOne(Pattern* pattern);

@@ -39,7 +39,7 @@ public:
 	virtual bool IsPrivate() const;
 
 	// 一時的なコマンドを必要に応じて提供する
-	virtual void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands);
+	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;

@@ -121,7 +121,7 @@ void WorkSheets::PImpl::Update()
 			// 起動してない
 			std::lock_guard<std::mutex> lock(mMutex);
 
-			for (auto item : mCache) {
+			for (auto& item : mCache) {
 				item->Release();
 			}
 			mCache.clear();
@@ -230,7 +230,7 @@ void WorkSheets::PImpl::Update()
 		mLastUpdate = GetTickCount();
 		mStatus = STATUS_READY;
 
-		for (auto item : tmpList) {
+		for (auto& item : tmpList) {
 			item->Release();
 		}
 	});
@@ -248,7 +248,7 @@ WorkSheets::WorkSheets() : in(std::make_unique<PImpl>())
 WorkSheets::~WorkSheets()
 {
 	std::lock_guard<std::mutex> lock(in->mMutex);
-	for (auto elem : in->mCache) {
+	for (auto& elem : in->mCache) {
 		elem->Release();
 	}
 	in->mCache.clear();
@@ -268,7 +268,7 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 		std::lock_guard<std::mutex> lock(in->mMutex);
 
 		worksheets = in->mCache;
-		for (auto elem : worksheets) {
+		for (auto& elem : worksheets) {
 			elem->AddRef();
 		}
 		return true;

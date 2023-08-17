@@ -51,7 +51,7 @@ CString MailToCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void MailToCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	int level = in->mCommandPtr->Match(pattern);

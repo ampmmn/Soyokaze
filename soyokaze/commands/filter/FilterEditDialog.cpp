@@ -145,7 +145,7 @@ BOOL FilterEditDialog::OnInitDialog()
 	 	(CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
 	ASSERT(commandComboBox);
 
-	for (auto cmd : commands) {
+	for (auto& cmd : commands) {
 		CString name = cmd->GetName();
 		int idx = commandComboBox->AddString(name);
 		cmd->Release();

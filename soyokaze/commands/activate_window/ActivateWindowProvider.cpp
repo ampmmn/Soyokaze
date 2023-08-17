@@ -160,7 +160,7 @@ bool ActivateWindowProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void ActivateWindowProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	soyokaze::CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {
@@ -195,7 +195,10 @@ uint32_t ActivateWindowProvider::Release()
 	return n;
 }
 
-void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(Pattern* pattern, std::vector<CommandQueryItem>& commands)
+void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
+	Pattern* pattern,
+	soyokaze::CommandQueryItemList& commands
+)
 {
 	if (in->mIsEnableWorksheet == false) {
 		return ;
@@ -204,7 +207,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(Pattern* pattern, s
 	std::vector<Worksheet*> sheets;
 	in->mWorksheets.GetWorksheets(sheets);
 
-	for (auto sheet : sheets) {
+	for (auto& sheet : sheets) {
 		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
 		int level = pattern->Match(str);
 		if (level != Pattern::Mismatch) {
@@ -216,7 +219,10 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(Pattern* pattern, s
 }
 
 // ウインドウ切り替え用コマンド生成
-void ActivateWindowProvider::QueryAdhocCommandsForWindows(Pattern* pattern, std::vector<CommandQueryItem>& commands)
+void ActivateWindowProvider::QueryAdhocCommandsForWindows(
+	Pattern* pattern,
+	soyokaze::CommandQueryItemList& commands
+)
 {
 	if (in->mIsEnableWindowSwitch == false) {
 		return ;

@@ -13,7 +13,7 @@ struct CandidateList::PImpl
 {
 	void ClearItems()
 	{
-		for (auto command : mCandidates) {
+		for (auto& command : mCandidates) {
 			command->Release();
 		}
 		mCandidates.clear();
@@ -43,7 +43,7 @@ void CandidateList::SetItems(std::vector<soyokaze::core::Command*>& items)
 	in->mCandidates.swap(items);
 	in->mSelIndex = 0;
 
-	for (auto listener : in->mListeners) {
+	for (auto& listener : in->mListeners) {
 		listener->OnUpdateItems((void*)this);
 	}
 }
@@ -61,7 +61,7 @@ bool CandidateList::SetCurrentSelect(int index)
 
 	in->mSelIndex = index;
 
-	for (auto listener : in->mListeners) {
+	for (auto& listener : in->mListeners) {
 		listener->OnUpdateSelect((void*)this);
 	}
 
@@ -82,7 +82,7 @@ bool CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
 		in->mSelIndex = isLoop ? (int)(in->mCandidates.size()-1) : 0;
 	}
 
-	for (auto listener : in->mListeners) {
+	for (auto& listener : in->mListeners) {
 		listener->OnUpdateSelect((void*)this);
 	}
 
@@ -116,7 +116,7 @@ Command* CandidateList::GetCurrentCommand()
 void CandidateList::Clear()
 {
 	in->ClearItems();
-	for (auto listener : in->mListeners) {
+	for (auto& listener : in->mListeners) {
 		listener->OnUpdateItems((void*)this);
 	}
 }

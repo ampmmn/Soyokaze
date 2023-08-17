@@ -90,7 +90,7 @@ CString PathExeAdhocCommandProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {

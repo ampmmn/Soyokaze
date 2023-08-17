@@ -75,7 +75,7 @@ void BuiltinCommandProvider::OnFirstBoot()
 	// コマンド登録
 	auto cmdRepo = CommandRepository::GetInstance();
 
-	for (auto entry : in->mFactoryMap) {
+	for (auto& entry : in->mFactoryMap) {
 		cmdRepo->RegisterCommand(entry.second(nullptr));
 	}
 }

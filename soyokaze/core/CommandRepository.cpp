@@ -62,7 +62,7 @@ struct CommandRepository::PImpl
 		commandFile.SetFilePath(mCommandFilePath);
 
 		std::vector<soyokaze::core::Command*> commands;
-		for (auto command : mCommands.Enumerate(commands)) {
+		for (auto& command : mCommands.Enumerate(commands)) {
 			command->Save(&commandFile);
 			command->Release();
 		}
@@ -169,7 +169,7 @@ BOOL CommandRepository::Load()
 	commandFile.SetFilePath(in->mCommandFilePath);
 	commandFile.Load();
 
-	for (auto provider : tmpProviders) {
+	for (auto& provider : tmpProviders) {
 		provider->LoadCommands(&commandFile);
 	}
 
@@ -452,7 +452,7 @@ CommandRepository::Query(
 
 	ScopeEdit scopeQuery(in->mIsQuering);
 
-	for (auto command : items) {
+	for (auto& command : items) {
 		command->Release();
 	}
 	items.clear();
@@ -467,13 +467,13 @@ CommandRepository::Query(
 	// 入力文字列をを設定
 	in->mPattern->SetParam(param);
 
-	std::vector<CommandMap::QueryItem> matchedItems;
+	CommandMap::CommandQueryItemList matchedItems;
 
 	in->mCommands.Query(in->mPattern.get(), matchedItems);
 	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
-	for (auto provider : in->mProviders) {
+	for (auto& provider : in->mProviders) {
 		provider->QueryAdhocCommands(in->mPattern.get(), matchedItems);
 	}
 
@@ -481,7 +481,7 @@ CommandRepository::Query(
 	const CommandRanking* rankPtr = &in->mRanking;
 
 	std::sort(matchedItems.begin(), matchedItems.end(),
-		[rankPtr](const CommandMap::QueryItem& l, const CommandMap::QueryItem& r) {
+		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
 			if (r.mMatchLevel < l.mMatchLevel) { return true; }
 			if (r.mMatchLevel > l.mMatchLevel) { return false; }
 
@@ -493,7 +493,8 @@ CommandRepository::Query(
 
 	items.reserve(matchedItems.size());
 	for (auto& item : matchedItems) {
-		items.push_back(item.mCommand);
+		item.mCommand->AddRef();
+		items.push_back(item.mCommand.get());
 	}
 }
 
@@ -525,20 +526,16 @@ CommandRepository::QueryAsWholeMatch(
 	}
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
-	std::vector<CommandMap::QueryItem> matchedItems;
-	for (auto provider : in->mProviders) {
+	soyokaze::CommandQueryItemList matchedItems;
+	for (auto& provider : in->mProviders) {
 		provider->QueryAdhocCommands(&pat, matchedItems);
 
 		if (matchedItems.empty()) {
 			continue;
 		}
 
-		command = matchedItems[0].mCommand;
+		command = matchedItems[0].mCommand.get();
 		command->AddRef();
-
-		for (auto& item : matchedItems) {
-			item.mCommand->Release();
-		}
 
 		return command;
 	}
@@ -560,7 +557,7 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 void CommandRepository::OnAppFirstBoot()
 {
 	// 初回起動であることをコマンドプロバイダに通知
-	for (auto provider : in->mProviders) {
+	for (auto& provider : in->mProviders) {
 		provider->OnFirstBoot();
 	}
 
@@ -580,7 +577,7 @@ void CommandRepository::OnAppExit()
 	// 優先度情報をファイルに保存する
 	in->mRanking.Save();
 
-	for (auto provider : in->mProviders) {
+	for (auto& provider : in->mProviders) {
 		provider->Release();
 	}
 	in->mProviders.clear();
