@@ -50,3 +50,9 @@ CString WholeMatchPattern::GetWholeString()
 	return in->mWholeText;
 }
 
+bool WholeMatchPattern::shouldWholeMatch()
+{
+	return true;
+}
+
+

@@ -623,6 +623,10 @@
     <ClInclude Include="commands\shellexecute\ShellExecSettingDialog.h" />
     <ClInclude Include="commands\vmware\VMXFileCommand.h" />
     <ClInclude Include="commands\vmware\VMXFileCommandProvider.h" />
+    <ClInclude Include="commands\websearch\WebSearchCommand.h" />
+    <ClInclude Include="commands\websearch\WebSearchCommandParam.h" />
+    <ClInclude Include="commands\websearch\WebSearchProvider.h" />
+    <ClInclude Include="commands\websearch\WebSearchSettingDialog.h" />
     <ClInclude Include="core\AppHotKey.h" />
     <ClInclude Include="core\CommandHotKeyHandlerIF.h" />
     <ClInclude Include="core\CommandHotKeyManager.h" />
@@ -766,6 +770,10 @@
     <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommand.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommandProvider.cpp" />
+    <ClCompile Include="commands\websearch\WebSearchCommand.cpp" />
+    <ClCompile Include="commands\websearch\WebSearchCommandParam.cpp" />
+    <ClCompile Include="commands\websearch\WebSearchProvider.cpp" />
+    <ClCompile Include="commands\websearch\WebSearchSettingDialog.cpp" />
     <ClCompile Include="core\AppHotKey.cpp" />
     <ClCompile Include="core\CommandHotKeyManager.cpp" />
     <ClCompile Include="core\CommandQueryItem.cpp" />

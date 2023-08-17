@@ -14,6 +14,7 @@ public:
 	int Match(const CString& str) override;
 	CString GetFirstWord() override;
 	CString GetWholeString() override;
+	bool shouldWholeMatch() override;
 
 protected:
 	struct PImpl;
