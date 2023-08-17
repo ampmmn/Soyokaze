@@ -1,15 +1,17 @@
 #include "pch.h"
 #include "framework.h"
 #include "EnvCommand.h"
-#include "utility/GlobalAllocMemory.h"
 #include "IconLoader.h"
-#include "SharedHwnd.h"
+#include "commands/common/Clipboard.h"
 #include "resource.h"
 #include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -42,19 +44,7 @@ CString EnvCommand::GetTypeDisplayName()
 BOOL EnvCommand::Execute(const Parameter& param)
 {
 	// クリップボードにコピー
-	size_t bufLen = sizeof(TCHAR) * (in->mValue.GetLength() + 1);
-	GlobalAllocMemory mem(bufLen);
-	_tcscpy_s((LPTSTR)mem.Lock(), bufLen, in->mValue);
-	mem.Unlock();
-
-	BOOL isSet=FALSE;
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)(HGLOBAL)mem);
-
-	if (isSet) {
-		mem.Release();
-	}
-
+	Clipboard::Copy(in->mValue);
 	return TRUE;
 }
 

@@ -3,6 +3,7 @@
 #include "FilterCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/common/Clipboard.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterEditDialog.h"
@@ -12,7 +13,6 @@
 #include "utility/LocalPathResolver.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/CharConverter.h"
-#include "utility/GlobalAllocMemory.h"
 #include "utility/LastErrorString.h"
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
@@ -271,18 +271,7 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 	}
 	else if (mParam.mPostFilterType == 2) {
 		// クリップボードにコピー
-		size_t bufLen = sizeof(TCHAR) * (argSub.GetLength() + 1);
-		GlobalAllocMemory mem(bufLen);
-		_tcscpy_s((LPTSTR)mem.Lock(), bufLen, argSub);
-		mem.Unlock();
-
-		BOOL isSet=FALSE;
-		SharedHwnd sharedWnd;
-		SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)(HGLOBAL)mem);
-
-		if (isSet) {
-			mem.Release();
-		}
+		Clipboard::Copy(argSub);
 	}
 
 	return true;

@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CalculatorCommand.h"
-#include "commands/common/ExecuteHistory.h"
-#include "utility/GlobalAllocMemory.h"
-#include "SharedHwnd.h"
+#include "commands/common/Clipboard.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +9,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -55,20 +55,7 @@ BOOL CalculatorCommand::Execute(const Parameter& param)
 	// ここでは単にクリップボードに結果をコピーするのみ
 
 	// クリップボードにコピー
-	size_t bufLen = sizeof(TCHAR) * (in->mResult.GetLength() + 1);
-	GlobalAllocMemory mem(bufLen);
-	_tcscpy_s((LPTSTR)mem.Lock(), bufLen, in->mResult);
-	mem.Unlock();
-
-	BOOL isSet=FALSE;
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, 
-	            (WPARAM)&isSet, (LPARAM)(HGLOBAL)mem);
-
-	if (isSet) {
-		// コピーが実施されたら、GlobalAllocの所有権を放棄する
-		mem.Release();
-	}
+	Clipboard::Copy(in->mResult);
 
 	return TRUE;
 }

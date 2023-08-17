@@ -516,6 +516,12 @@
     <ClInclude Include="utility\RegistryKey.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="utility\LastErrorString.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\Clipboard.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -928,6 +934,9 @@
     </ClCompile>
     <ClCompile Include="utility\RegistryKey.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\Clipboard.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

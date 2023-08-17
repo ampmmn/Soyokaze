@@ -588,6 +588,7 @@
     <ClInclude Include="commands\common\AdhocCommandBase.h" />
     <ClInclude Include="commands\common\AdhocCommandProviderBase.h" />
     <ClInclude Include="commands\common\AfxWWrapper.h" />
+    <ClInclude Include="commands\common\Clipboard.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
     <ClInclude Include="commands\controlpanel\ControllPanel.h" />
@@ -696,6 +697,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
     <ClInclude Include="utility\CharConverter.h" />
+    <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
@@ -734,6 +736,7 @@
     <ClCompile Include="commands\common\AdhocCommandBase.cpp" />
     <ClCompile Include="commands\common\AdhocCommandProviderBase.cpp" />
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
+    <ClCompile Include="commands\common\Clipboard.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
     <ClCompile Include="commands\controlpanel\ControllPanel.cpp" />
