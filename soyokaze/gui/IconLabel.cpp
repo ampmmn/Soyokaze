@@ -24,17 +24,29 @@ END_MESSAGE_MAP()
 
 void IconLabel::DrawIcon(HICON iconHandle)
 {
+	CClientDC dc(this);
+	DrawIcon(&dc, iconHandle);
+}
+
+void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
+{
 	CRect rc;
 	GetClientRect(rc);
 
-	CClientDC dc(this);
-
 	CDC dcMem;
-	dcMem.CreateCompatibleDC(&dc);
+	dcMem.CreateCompatibleDC(pDC);
 	ASSERT(dcMem.GetSafeHdc() != NULL);
 
-	CBitmap memBmp;
-	memBmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
+	// 初回またはサイズが変わってたらビットマップ作り直し
+	CBitmap& memBmp = mBuffer;
+	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
+
+		if (memBmp != (HBITMAP)nullptr) {
+			memBmp.DeleteObject();
+		}
+
+		memBmp.CreateCompatibleBitmap(pDC, rc.Width(), rc.Height());
+	}
 	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
 
 	CBrush br;
@@ -44,7 +56,7 @@ void IconLabel::DrawIcon(HICON iconHandle)
 
 	dcMem.DrawIcon(0, 0, iconHandle);
 
-	dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
+	pDC->BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
 
 	dcMem.SelectObject(orgBr);
 	dcMem.SelectObject(orgBmp);
@@ -56,35 +68,31 @@ void IconLabel::DrawDefaultIcon()
 	if (mIconDefault == nullptr) {
 		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 	}
-
 	DrawIcon(mIconDefault);
 }
 
 void IconLabel::OnPaint()
 {
-	CRect rc;
-	GetClientRect(rc);
-
 	CPaintDC dc(this); // device context for painting
 
-	CDC dcMem;
-	dcMem.CreateCompatibleDC(&dc);
-	CBitmap bmp;
-	bmp.CreateCompatibleBitmap(&dc, rc.Width(), rc.Height());
-	CBitmap* orgBmp = dcMem.SelectObject(&bmp);
+	CBitmap& bmp = mBuffer;
+	if  (bmp == (HBITMAP)nullptr) {
+		// 初回はデフォルトアイコンを描画
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
+		DrawIcon(&dc, mIconDefault);
+	}
+	else {
+		// 2回目以降は前回のバッファを使って描画
+		CRect rc;
+		GetClientRect(rc);
 
-	CBrush br;
-	br.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+		CDC dcMem;
+		dcMem.CreateCompatibleDC(&dc);
+		ASSERT(dcMem.GetSafeHdc() != NULL);
 
-	CBrush* orgBr = dcMem.SelectObject(&br);
-	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
-
-	mIconDefault = IconLoader::Get()->LoadDefaultIcon();
-	dcMem.DrawIcon(0, 0, mIconDefault);
-
-	dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
-
-	dcMem.SelectObject(orgBr);
-	dcMem.SelectObject(orgBmp);
+		CBitmap* orgBmp = dcMem.SelectObject(&bmp);
+		dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
+		dcMem.SelectObject(orgBmp);
+	}
 }
 

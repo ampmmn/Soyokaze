@@ -9,8 +9,12 @@ public:
 	void DrawIcon(HICON iconHandle);
 	void DrawDefaultIcon();
 
+private:
+	void DrawIcon(CDC* pDC, HICON iconHandle);
+
 protected:
 	HICON mIconDefault;
+	CBitmap mBuffer;
 
 // 実装
 protected:
