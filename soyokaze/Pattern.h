@@ -26,6 +26,7 @@ public:
 	virtual int Match(const CString& str) = 0;
 	virtual CString GetFirstWord() = 0;
 	virtual CString GetWholeString() = 0;
+	virtual bool shouldWholeMatch() = 0;
 
 	static CString StripEscapeChars(const CString& pat);
 };

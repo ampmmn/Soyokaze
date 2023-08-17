@@ -198,3 +198,8 @@ CString PartialMatchPattern::GetWholeString()
 	return in->mWholeText;
 }
 
+bool PartialMatchPattern::shouldWholeMatch()
+{
+	return false;
+}
+

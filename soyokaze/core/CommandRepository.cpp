@@ -511,6 +511,11 @@ CommandRepository::QueryAsWholeMatch(
 		return nullptr;
 	}
 
+	// パラメータが空の場合は検索しない
+	if (strQueryStr.IsEmpty()) {
+		return nullptr;
+	}
+
 	ScopeEdit scopeQuery(in->mIsQuering);
 
 
@@ -534,10 +539,16 @@ CommandRepository::QueryAsWholeMatch(
 			continue;
 		}
 
-		command = matchedItems[0].mCommand.get();
-		command->AddRef();
+		// 完全一致のものを探す
+		for (auto& item : matchedItems) {
+			if (item.mMatchLevel != Pattern::WholeMatch) {
+				continue;
+			}
+			command = item.mCommand.get();
+			command->AddRef();
 
-		return command;
+			return command;
+		}
 	}
 
 	return nullptr;

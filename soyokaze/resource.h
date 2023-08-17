@@ -99,6 +99,9 @@
 #define IDS_COMMANDNAME_WINDOWACTIVATE  165
 #define IDD_WINDOWACTIVATEEDIT          165
 #define IDS_DESCRIPTION_WINDOWACTIVATE  166
+#define IDD_WEBSEARCHEDIT               166
+#define IDS_COMMANDNAME_WEBSEARCH       167
+#define IDS_DESCRIPTION_WEBSEARCH       168
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -221,6 +224,8 @@
 #define IDC_EDIT_CAPTION                1081
 #define IDC_EDIT_CLASS                  1082
 #define IDC_CHECK_REGEXP                1083
+#define IDC_EDIT_URL                    1084
+#define IDC_CHECK_ENABLESHORTCUT        1085
 
 // Next default values for new objects
 // 
@@ -228,7 +233,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1084
+#define _APS_NEXT_CONTROL_VALUE         1086
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -76,6 +76,9 @@
     <Filter Include="commands\vmware">
       <UniqueIdentifier>{33f49eb7-459c-45ba-9416-93848aa2be04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\websearch">
+      <UniqueIdentifier>{1a72f536-bec9-4e63-9ebe-c81aff2d08be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -501,6 +504,18 @@
     <ClInclude Include="commands\activate_window\WindowActivateSettingDialog.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchCommand.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchCommandParam.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchProvider.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchSettingDialog.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -901,6 +916,18 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateSettingDialog.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchCommand.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchCommandParam.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchProvider.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchSettingDialog.cpp">
+      <Filter>commands\websearch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
