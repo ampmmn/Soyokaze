@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ControllPanel.h"
 #include "commands/controlpanel/ControlPanelCommand.h"
-#include "RegistryKey.h"
+#include "utility/RegistryKey.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"

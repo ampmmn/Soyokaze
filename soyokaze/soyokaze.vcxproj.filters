@@ -432,9 +432,6 @@
     <ClInclude Include="Migemo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="commands\controlpanel\RegistryKey.h">
-      <Filter>commands\controllpanel</Filter>
-    </ClInclude>
     <ClInclude Include="commands\controlpanel\ControllPanel.h">
       <Filter>commands\controllpanel</Filter>
     </ClInclude>
@@ -515,6 +512,9 @@
     </ClInclude>
     <ClInclude Include="commands\websearch\WebSearchSettingDialog.h">
       <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\RegistryKey.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -848,9 +848,6 @@
     <ClCompile Include="Migemo.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="commands\controlpanel\RegistryKey.cpp">
-      <Filter>commands\controllpanel</Filter>
-    </ClCompile>
     <ClCompile Include="commands\controlpanel\ControllPanel.cpp">
       <Filter>commands\controllpanel</Filter>
     </ClCompile>
@@ -928,6 +925,9 @@
     </ClCompile>
     <ClCompile Include="commands\websearch\WebSearchSettingDialog.cpp">
       <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\RegistryKey.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

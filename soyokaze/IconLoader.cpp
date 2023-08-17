@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "IconLoader.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/RegistryKey.h"
 #include "resource.h"
 #include <map>
 
@@ -213,9 +214,27 @@ HICON IconLoader::LoadFolderIcon()
 	return GetImageResIcon(3);
 }
 
+static CString GetIconPathFromRegistry()
+{
+	CString progName;
+	RegistryKey HKCU(HKEY_CURRENT_USER);
+	if (HKCU.GetValue(_T("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice"), _T("ProgId"), progName) == false) {
+		return _T("");
+	}
+
+	CString iconPath;
+	CString subKey = progName;
+	subKey += _T("\\DefaultIcon");
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+		return _T("");
+	}
+	return iconPath;
+}
+
 HICON IconLoader::LoadWebIcon()
 {
-	return GetImageResIcon(20);
+	return GetDefaultIcon(GetIconPathFromRegistry());
 }
 
 HICON IconLoader::LoadNewIcon()

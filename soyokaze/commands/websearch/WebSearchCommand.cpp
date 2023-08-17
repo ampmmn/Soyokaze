@@ -3,7 +3,6 @@
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchSettingDialog.h"
 #include "commands/common/ExpandFunctions.h"
-#include "commands/controlpanel/RegistryKey.h"
 #include "core/CommandRepository.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -17,47 +16,16 @@ namespace soyokaze {
 namespace commands {
 namespace websearch {
 
-static CString GetIconPathFromRegistry()
-{
-	CString progName;
-	RegistryKey HKCU(HKEY_CURRENT_USER);
-	if (HKCU.GetValue(_T("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice"), _T("ProgId"), progName) == false) {
-		return _T("");
-	}
-
-	CString iconPath;
-	CString subKey = progName;
-	subKey += _T("\\DefaultIcon");
-	RegistryKey HKCR(HKEY_CLASSES_ROOT);
-	if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
-		return _T("");
-	}
-	return iconPath;
-}
-
 struct WebSearchCommand::PImpl
 {
-	CString GetIconPath();
 	CommandParam mParam;
 
 	bool mIsShortcut = false;
 	CString mSearchWord;
 
-	CString mIconPath;
-
 	CString mErrorMsg;
 	uint32_t mRefCount = 1;
 };
-
-CString WebSearchCommand::PImpl::GetIconPath()
-{
-	if (mIconPath.IsEmpty() == FALSE) {
-		return mIconPath;
-	}
-	mIconPath = GetIconPathFromRegistry();
-	return mIconPath;
-
-}
 
 CString WebSearchCommand::GetType() { return _T("WebSearch"); }
 
@@ -144,7 +112,7 @@ CString WebSearchCommand::GetErrorString()
 
 HICON WebSearchCommand::GetIcon()
 {
-	return IconLoader::Get()->GetDefaultIcon(in->GetIconPath());
+	return IconLoader::Get()->LoadWebIcon();
 }
 
 int WebSearchCommand::Match(Pattern* pattern)
@@ -253,7 +221,7 @@ bool WebSearchCommand::NewDialog(
 
 	// 新規作成ダイアログを表示
 	SettingDialog dlg;
-	dlg.SetIcon(IconLoader::Get()->GetDefaultIcon(GetIconPathFromRegistry()));
+	dlg.SetIcon(IconLoader::Get()->LoadWebIcon());
 	if (dlg.DoModal() != IDOK) {
 		return false;
 	}
