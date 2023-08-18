@@ -89,9 +89,6 @@ struct CommandRepository::PImpl
 	bool mIsEditDialog = false;
 	bool mIsManagerDialog = false;
 	bool mIsRegisteFromFileDialog = false;
-
-	// 再入防止フラグ
-	bool mIsQuering = false;
 };
 
 
@@ -445,13 +442,6 @@ CommandRepository::Query(
 	std::vector<soyokaze::core::Command*>& items
 )
 {
-	if (in->mIsQuering) {
-		// 再入はしない
-		return ;
-	}
-
-	ScopeEdit scopeQuery(in->mIsQuering);
-
 	for (auto& command : items) {
 		command->Release();
 	}
@@ -506,18 +496,10 @@ CommandRepository::QueryAsWholeMatch(
 {
 	CSingleLock sl(&in->mCS, TRUE);
 
-	if (in->mIsQuering) {
-		// 再入はしない
-		return nullptr;
-	}
-
 	// パラメータが空の場合は検索しない
 	if (strQueryStr.IsEmpty()) {
 		return nullptr;
 	}
-
-	ScopeEdit scopeQuery(in->mIsQuering);
-
 
 	WholeMatchPattern pat(strQueryStr);
 

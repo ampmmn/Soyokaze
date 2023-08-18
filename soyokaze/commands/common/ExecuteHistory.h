@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 
 namespace soyokaze {
 namespace commands {
@@ -27,6 +28,7 @@ public:
 	void Add(const CString& type, const CString& word, const CString& fullPath);
 	void Add(const CString& type, const CString& word);
 	void GetItems(const CString& type, ItemList& items) const;
+	int EraseItems(const CString& type, const std::set<CString>& words);
 
 	void Save();
 	void Load();

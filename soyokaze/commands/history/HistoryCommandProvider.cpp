@@ -17,11 +17,14 @@ namespace soyokaze {
 namespace commands {
 namespace history {
 
+constexpr DWORD CHECK_INTERVAL = 1000;  // 10秒
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
 struct HistoryCommandProvider::PImpl
 {
+	bool mQuering = false;
+	DWORD mLastCheck = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +53,55 @@ void HistoryCommandProvider::QueryAdhocCommands(
  	CommandQueryItemList& commands
 )
 {
+	// 再入しない
+	if (in->mQuering) {
+		return;
+	}
+	struct scope_quering {
+		scope_quering(bool& f) : mFlag(f) { mFlag = true; }
+		~scope_quering() { mFlag = false; }
+		bool& mFlag;
+	} scope(in->mQuering);
+
 	ExecuteHistory::ItemList items;
-	ExecuteHistory::GetInstance()->GetItems(_T("history"), items);
+	auto history = ExecuteHistory::GetInstance();
+	history->GetItems(_T("history"), items);
+
+	if (GetTickCount() - in->mLastCheck > CHECK_INTERVAL) {
+		// 一定間隔でコマンドが存在するかどうかをチェックする
+
+		std::set<CString> missingWords;
+		std::set<CString> existingCmds;
+
+		auto repos = CommandRepository::GetInstance();
+		for (auto it = items.begin(); it != items.end(); ) {
+
+			auto& item = *it;
+
+			CommandParameter param(item.mWord);
+			auto cmdName = param.GetCommandString();
+
+			if (existingCmds.find(item.mWord) != existingCmds.end()) {
+				++it;
+				continue;
+			}
+
+			auto cmd = repos->QueryAsWholeMatch(cmdName, true);
+			if (cmd != nullptr) {
+				cmd->Release();
+				existingCmds.insert(cmdName);
+				it++;
+				continue;
+			}
+
+			missingWords.insert(item.mWord);
+			it = items.erase(it);
+		}
+
+		history->EraseItems(_T("history"), missingWords);
+
+		in->mLastCheck = GetTickCount();
+	}
 
 	for (const auto& item : items) {
 

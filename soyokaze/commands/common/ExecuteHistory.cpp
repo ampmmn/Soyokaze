@@ -139,6 +139,30 @@ void ExecuteHistory::GetItems(
 	}
 }
 
+int ExecuteHistory::EraseItems(const CString& type, const std::set<CString>& words)
+{
+	auto itFind = in->mItemMap.find(type);
+	if (itFind == in->mItemMap.end()) {
+		return 0;
+	}
+
+	int n = 0;
+
+	auto& itemList = itFind->second;
+	for (auto& word : words) {
+
+		for (auto it = itemList.begin(); it != itemList.end(); ) {
+			if (word != it->mWord) {
+				it++;
+				continue;
+			}
+
+			it = itemList.erase(it);
+		}
+	}
+	return n;
+}
+
 
 void ExecuteHistory::Save()
 {
