@@ -226,6 +226,8 @@
 #define IDC_CHECK_REGEXP                1083
 #define IDC_EDIT_URL                    1084
 #define IDC_CHECK_ENABLESHORTCUT        1085
+#define IDC_BUTTON1                     1086
+#define IDC_BUTTON_TEST                 1086
 
 // Next default values for new objects
 // 
@@ -233,7 +235,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1086
+#define _APS_NEXT_CONTROL_VALUE         1087
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

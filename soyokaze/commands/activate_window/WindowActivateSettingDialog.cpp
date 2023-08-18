@@ -72,6 +72,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 END_MESSAGE_MAP()
 
 
@@ -99,7 +100,7 @@ BOOL SettingDialog::OnInitDialog()
 	return TRUE;
 }
 
-void SettingDialog::OnButtonHotKey()	
+void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
@@ -116,30 +117,61 @@ void SettingDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
+void SettingDialog::OnButtonTest()
+{
+	UpdateData();
+
+	if (UpdateStatus() == false) {
+		return ;
+	}
+
+	HWND hwnd = in->mParam.FindHwnd();
+	if (IsWindow(hwnd) == FALSE) {
+		AfxMessageBox(_T("ウインドウは見つかりませんでした"));
+		return;
+	}
+
+	FLASHWINFO fi;
+	fi.cbSize = sizeof(fi);
+	fi.hwnd = hwnd;
+	fi.dwFlags = FLASHW_ALL;
+	fi.uCount = 2;
+	fi.dwTimeout = 500;
+	::FlashWindowEx(&fi);
+}
+
 void SettingDialog::OnOK()
 {
 	UpdateData();
 
+	if (UpdateStatus() == false) {
+		return ;
+	}
+
+	__super::OnOK();
+}
+
+bool SettingDialog::UpdateStatus()
+{
 	if (in->mParam.mCaptionStr.IsEmpty() &&
 			in->mParam.mClassStr.IsEmpty()) {
 		AfxMessageBox(_T("ウインドウタイトルかウインドウクラスを入力してください"));
-		return;
+		return false;
 	}
 
 	CString msg;
 	if (in->mParam.BuildCaptionRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CAPTION)->SetFocus();
-		return;
+		return false;
 	}
 
 	if (in->mParam.BuildClassRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
-		return;
+		return false;
 	}
-
-	__super::OnOK();
+	return true;
 }
 
 

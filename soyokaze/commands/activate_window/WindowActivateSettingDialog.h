@@ -26,9 +26,12 @@ public:
 
 // 実装
 protected:
+	bool UpdateStatus();
+
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnButtonHotKey();
+	afx_msg void OnButtonTest();
 
 protected:
 	struct PImpl;

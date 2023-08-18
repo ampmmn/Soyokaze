@@ -13,6 +13,8 @@ public:
 	CommandParam();
 	~CommandParam();
 
+	HWND FindHwnd();
+
 	bool BuildRegExp(CString* errMsg = nullptr);
 	bool BuildCaptionRegExp(CString* errMsg = nullptr);
 	bool BuildClassRegExp(CString* errMsg = nullptr);

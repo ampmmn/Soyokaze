@@ -16,6 +16,46 @@ CommandParam::~CommandParam()
 {
 }
 
+HWND CommandParam::FindHwnd()
+{
+	struct local_param {
+		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
+			auto thisPtr = (local_param*)lp;
+
+			LONG_PTR style = GetWindowLongPtr(h, GWL_STYLE);
+			LONG_PTR styleRequired = (WS_VISIBLE);
+			if ((style & styleRequired) != styleRequired) {
+				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
+				return TRUE;
+			}
+
+			if (thisPtr->mParam->mCaptionStr.IsEmpty() == FALSE) {
+				TCHAR caption[256];
+				::GetWindowText(h, caption, 256);
+				if (thisPtr->mParam->IsMatchCaption(caption) == FALSE) {
+					return TRUE;
+				}
+			}
+			if (thisPtr->mParam->HasClassRegExpr()) {
+				TCHAR clsName[256];
+				::GetClassName(h, clsName, 256);
+				if (thisPtr->mParam->IsMatchClass(clsName) == FALSE) {
+					return TRUE;
+				}
+			}
+
+			thisPtr->mHwnd = h;
+			return FALSE;
+		}
+		CommandParam* mParam;
+		HWND mHwnd = nullptr;
+	} param;
+	param.mParam = this;
+	EnumWindows(local_param::callback, (LPARAM)&param);
+
+	return param.mHwnd;
+}
+
 bool CommandParam::BuildRegExp(CString* errMsg)
 {
 	if (BuildCaptionRegExp(errMsg) == false) {
