@@ -5,6 +5,7 @@
 #include "commands/activate_window/WindowActivateCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
 #include "commands/activate_window/CalcWorksheets.h"
+#include "commands/activate_window/CalcWorksheetCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -227,7 +228,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 		int level = pattern->Match(str);
 		if (level != Pattern::Mismatch) {
 
-			commands.push_back(CommandQueryItem(level, new WorksheetCommand(sheet)));
+			commands.push_back(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}

@@ -253,8 +253,8 @@ BEGIN
     GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,7,91,269,50
     CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,104,154,10
-    CONTROL         "Excelワークシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,121,161,10
+    CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,121,207,10
     GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,7,145,269,42
     CONTROL         "有効にする(&B)",IDC_CHECK_ENABLE_BOOKMARKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,159,60,10
     LTEXT           "Edge/Chromeのブックマークを候補として表示します",IDC_STATIC,25,171,164,9

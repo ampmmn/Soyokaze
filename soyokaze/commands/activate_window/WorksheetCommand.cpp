@@ -2,7 +2,6 @@
 #include "framework.h"
 #include "WorksheetCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
-#include "commands/activate_window/CalcWorksheets.h"
 #include "IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -20,7 +19,6 @@ namespace activate_window {
 struct WorksheetCommand::PImpl
 {
 	Worksheet* mWorksheet = nullptr;
-	CalcWorksheet* mCalcWorksheet = nullptr;
 };
 
 
@@ -36,38 +34,17 @@ WorksheetCommand::WorksheetCommand(
 
 }
 
-WorksheetCommand::WorksheetCommand(
-	CalcWorksheet* sheet
-) : in(std::make_unique<PImpl>())
-{
-	in->mCalcWorksheet = sheet;
-	sheet->AddRef();
-
-	this->mName = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-	this->mDescription = sheet->GetSheetName();
-
-}
-
-
 WorksheetCommand::~WorksheetCommand()
 {
 	if (in->mWorksheet) {
 		in->mWorksheet->Release();
 	}
-	if (in->mCalcWorksheet) {
-		in->mCalcWorksheet->Release();
-	}
 }
 
 CString WorksheetCommand::GetTypeDisplayName()
 {
-	if (in->mWorksheet) {
-		static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
-		return TEXT_TYPE;
-	}
-	else {
-		return _T("Calcワークシート");
-	}
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
+	return TEXT_TYPE;
 }
 
 BOOL WorksheetCommand::Execute(const Parameter& param)
@@ -78,32 +55,23 @@ BOOL WorksheetCommand::Execute(const Parameter& param)
 	if (in->mWorksheet) {
 		return in->mWorksheet->Activate(isShowMaximize);
 	}
-	else if (in->mCalcWorksheet) {
-		return in->mCalcWorksheet->Activate(isShowMaximize);
-	}
 	return FALSE;
 }
 
 HICON WorksheetCommand::GetIcon()
 {
-	if (in->mWorksheet) {
-		const auto& path = in->mWorksheet->GetAppPath();
-		return IconLoader::Get()->LoadIconFromPath(path);
+	// 拡張子に関連付けられたアイコンを取得
+	LPCTSTR fileExt = PathFindExtension(in->mWorksheet->GetWorkbookName());
+	if (_tcslen(fileExt) == 0) {
+		return IconLoader::Get()->LoadUnknownIcon();
 	}
-	else {
-		return IconLoader::Get()->LoadDefaultIcon();
-	}
+	return IconLoader::Get()->LoadExtensionIcon(fileExt);
 }
 
 soyokaze::core::Command*
 WorksheetCommand::Clone()
 {
-	if (in->mWorksheet) {
-		return new WorksheetCommand(in->mWorksheet);
-	}
-	else {
-		return new WorksheetCommand(in->mCalcWorksheet);
-	}
+	return new WorksheetCommand(in->mWorksheet);
 }
 
 } // end of namespace activate_window

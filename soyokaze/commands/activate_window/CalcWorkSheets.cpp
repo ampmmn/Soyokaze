@@ -2,6 +2,7 @@
 #include "CalcWorkSheets.h"
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "utility/CharConverter.h"
 #include <mutex>
 #include <thread>
 
@@ -46,6 +47,14 @@ void CalcWorkSheets::PImpl::Update()
 	}
 
 	std::thread th([&]() {
+		CoInitialize(nullptr);
+
+		struct scope_uninit {
+			~scope_uninit() {
+				CoUninitialize();
+			}
+		};
+
 		// ExcelのCLSIDを得る
 		CLSID clsid;
 		HRESULT hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
@@ -248,14 +257,95 @@ bool CalcWorkSheets::GetWorksheets(std::vector<CalcWorksheet*>& worksheets)
 
 struct CalcWorksheet::PImpl
 {
+	HWND FindWindowHandle();
 	// ブック名
 	CString mBookName;
+	CString mBookLocalName;
 	// シート名
 	CString mSheetName;
 	// 参照カウント
 	uint32_t mRefCount;
 	
 };
+
+HWND CalcWorksheet::PImpl::FindWindowHandle()
+{
+	struct local_param {
+		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
+			auto param = (local_param*)lp;
+
+			CString buf;
+			GetWindowText(h, buf.GetBuffer(256), 256);
+			buf.ReleaseBuffer();
+
+			if  (buf.Find(param->mFileName) != -1) {
+				param->mHwnd = h;
+				return FALSE;
+			}
+			return TRUE;
+		}
+
+		HWND mHwnd = nullptr;
+		CString mFileName;
+	} param;
+	param.mFileName = PathFindFileName(mBookLocalName);
+
+	EnumWindows(local_param::callback, (LPARAM)&param);
+
+	return param.mHwnd;
+}
+
+
+static CString DecodeURI(const CString& src)
+{
+	static tregex reg(_T("^.*%[0-9a-fA-F][0-9a-fA-F].*$"));
+	if (std::regex_match(tstring(src), reg) == false) {
+		// エンコード表現を含まない場合は何もしない
+		return src;
+	}
+
+	CStringA srcA(src);
+
+	std::string buf;
+
+	int len = srcA.GetLength();
+	for (int i = 0; i < len; ++i) {
+		char c = srcA[i];
+
+		if (c != '%') {
+			buf.push_back(c);
+			continue;
+		}
+
+		if (i +2 >= len) {
+			buf.push_back(c);
+			continue;
+		}
+
+		char num[3] = { srcA[i+1], srcA[i+2], 0x00 };
+		char& c2 = num[0];
+		char& c3 = num[1];
+
+		if ((c2 < '0' || '9' < c2) && (c2 < 'a' || 'f' < c2) && (c2 < 'A' || 'F' < c2)) {
+			continue;
+		}
+		if ((c3 < '0' || '9' < c3) && (c3 < 'a' || 'f' < c3) && (c3 < 'A' || 'F' < c3)) {
+			continue;
+		}
+
+		uint32_t n;
+		sscanf_s(num, "%02x", &n);
+		buf.push_back((char)n);
+
+		i+=2;
+	}
+
+	CString out;
+	soyokaze::utility::CharConverter conv;
+	conv.Convert(buf.c_str(), out);
+
+	return out;
+}
 
 /**
  	コンストラクタ
@@ -269,8 +359,14 @@ struct CalcWorksheet::PImpl
 	in(std::make_unique<PImpl>())
 {
 	in->mRefCount = 1;
-
 	in->mBookName = workbookName;
+
+	CString decoded = DecodeURI(workbookName);
+	TCHAR localPath[MAX_PATH_NTFS];
+	DWORD len = MAX_PATH_NTFS;
+	PathCreateFromUrl(decoded, localPath, &len, NULL);
+	in->mBookLocalName = localPath;
+
 	in->mSheetName = sheetName;
 }
 
@@ -278,10 +374,11 @@ CalcWorksheet::~CalcWorksheet()
 {
 }
 
+
+
 const CString& CalcWorksheet::GetWorkbookName()
 {
-	// ToDo: URLをファイルパスに変換する
-	return in->mBookName;
+	return in->mBookLocalName;
 }
 
 const CString& CalcWorksheet::GetSheetName()
@@ -440,26 +537,29 @@ BOOL CalcWorksheet::Activate(bool isShowMaximize)
 	VARIANT arg1;
 	VariantInit(&arg1);
 	arg1.vt = VT_DISPATCH;
-	arg1.pdispVal = (IDispatch*)controller;
+	arg1.pdispVal = (IDispatch*)sheet;
 
 	VariantInit(&result);
 	AutoWrap(DISPATCH_METHOD, &result, controller, L"setActiveSheet", 1, &arg1);
 
-	// アプリのウインドウを全面に出す
-	//if (IsWindow(hwndApp)) {
-	//	ScopeAttachThreadInput scope;
-	//	LONG_PTR style = GetWindowLongPtr(hwndApp, GWL_STYLE);
+	HWND hwndApp = in->FindWindowHandle();
 
-	//	if (isShowMaximize && (style & WS_MAXIMIZE) == 0) {
-	//		// 最大化表示する
-	//		PostMessage(hwndApp, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-	//	}
-	//	if (style & WS_MINIMIZE) {
-	//		// 最小化されていたら元に戻す
-	//		PostMessage(hwndApp, WM_SYSCOMMAND, SC_RESTORE, 0);
-	//	}
-	//	SetForegroundWindow(hwndApp);
-	//}
+	// アプリのウインドウを全面に出す
+	if (IsWindow(hwndApp)) {
+		ScopeAttachThreadInput scope;
+		LONG_PTR style = GetWindowLongPtr(hwndApp, GWL_STYLE);
+
+		if (isShowMaximize && (style & WS_MAXIMIZE) == 0) {
+			// 最大化表示する
+			PostMessage(hwndApp, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		}
+		if (style & WS_MINIMIZE) {
+			// 最小化されていたら元に戻す
+			PostMessage(hwndApp, WM_SYSCOMMAND, SC_RESTORE, 0);
+		}
+		SetForegroundWindow(hwndApp);
+	}
+
 	return TRUE;
 }
 

@@ -569,6 +569,7 @@
     <ClInclude Include="CommandHotKeyMappings.h" />
     <ClInclude Include="commands\activate_window\ActivateWindowProvider.h" />
     <ClInclude Include="commands\activate_window\AutoWrap.h" />
+    <ClInclude Include="commands\activate_window\CalcWorksheetCommand.h" />
     <ClInclude Include="commands\activate_window\CalcWorkSheets.h" />
     <ClInclude Include="commands\activate_window\ExcelWorkSheets.h" />
     <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h" />
@@ -719,6 +720,7 @@
     <ClCompile Include="CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp" />
     <ClCompile Include="commands\activate_window\AutoWrap.cpp" />
+    <ClCompile Include="commands\activate_window\CalcWorksheetCommand.cpp" />
     <ClCompile Include="commands\activate_window\CalcWorkSheets.cpp" />
     <ClCompile Include="commands\activate_window\ExcelWorkSheets.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp" />

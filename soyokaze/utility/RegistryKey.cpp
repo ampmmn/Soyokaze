@@ -57,6 +57,39 @@ bool RegistryKey::EnumSubKeyNames(std::vector<CString>& subKeyNames)
 	return true;
 }
 
+bool RegistryKey::EnumValueNames(LPCTSTR subKey, std::vector<CString>& valueNames)
+{
+	if (mKey == nullptr) {
+		return false;
+	}
+
+	RegistryKey subKeyObj;
+	if (RegOpenKey(mKey, subKey, &(subKeyObj.mKey)) != ERROR_SUCCESS) {
+		return false;
+	}
+	return subKeyObj.EnumValueNames(valueNames);
+}
+
+bool RegistryKey::EnumValueNames(std::vector<CString>& valueNames)
+{
+	if (mKey == nullptr) {
+		return false;
+	}
+
+	std::vector<CString> tmp;
+	for (int index = 0; ; ++index) {
+		TCHAR buf[1024] = { _T('\0') };
+		DWORD len = 1024;
+		if (RegEnumValue(mKey, index, buf, &len, NULL, NULL, NULL, NULL) != ERROR_SUCCESS) {
+			break;
+		}
+		tmp.push_back(buf);
+	}
+
+	tmp.swap(valueNames);
+	return true;
+}
+
 bool RegistryKey::OpenSubKey(LPCTSTR subKeyName, RegistryKey& subKey)
 {
 	if (mKey == nullptr) {

@@ -705,10 +705,12 @@ Pythonを使っているので、演算子もPythonのものを使うことが�
 
 ![](../image/calculator2.png)
 
-#### Excelワークシート表示
+#### Excel/Libre Office Calcシート表示
 
-入力画面を表示した時点で開いているExcelワークシート名の一覧を候補に表示する。  
+入力画面を表示した時点で開いているExcelとLibreOffice Caclのシート名一覧を候補に表示する。  
 該当する項目を入力画面から実行すると、対応するワークシートのウインドウをアクティブにする。
+
+![](../image/calc-sheet.gif)
 
 `Ctrl-Enter`キーを押して実行すると、最大化表示する。
 

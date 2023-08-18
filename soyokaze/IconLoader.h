@@ -8,6 +8,7 @@ public:
 	static IconLoader* Get();
 
 	HICON LoadIconFromPath(const CString& path);
+	HICON LoadExtensionIcon(const CString& fileExt);
 
 	HICON GetDefaultIcon(const CString& path);
 

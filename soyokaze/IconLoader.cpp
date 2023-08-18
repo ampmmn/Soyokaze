@@ -56,6 +56,7 @@ struct IconLoader::PImpl
 	std::map<int, HICON> mShell32IconCache;
 	std::map<int, HICON> mImageResIconCache;
 	std::map<CString, HICON> mDefaultIconCache;
+	std::map<CString, HICON> mFileExtIconCache;
 	HICON mEditIcon;
 	HICON mKeywordManagerIcon;
 
@@ -83,6 +84,12 @@ IconLoader::~IconLoader()
 			DestroyIcon(elem.second);
 		}
 	}
+	// mFileExtIconCacheに格納されているアイコンハンドルはmDefaultIconCacheにも含まれるのでDestroyIconは不要。
+	//for (auto& elem : in->mFileExtIconCache) {
+	//	if (elem.second) {
+	//		DestroyIcon(elem.second);
+	//	}
+	//}
 }
 
 IconLoader* IconLoader::Get()
@@ -121,6 +128,42 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 		(HIMAGELIST)::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
 	HICON hIcon = sfi.hIcon;
 	return hIcon;
+}
+
+HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
+{
+	auto it = in->mFileExtIconCache.find(fileExt);
+	if (it != in->mFileExtIconCache.end()) {
+		return it->second;
+	}
+
+	CString iconPath;
+	CString subKey = fileExt;
+	subKey += _T("\\OpenWithProgIDs");
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	std::vector<CString> valueNames;
+	if (HKCR.EnumValueNames(subKey, valueNames) == false) {
+		return nullptr;
+	}
+
+	for (auto& valueName : valueNames) {
+		if (valueName.IsEmpty()) {
+			continue;
+		}
+
+		subKey = valueName + _T("\\DefaultIcon");
+		CString iconPath;
+		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+			return nullptr;
+		}
+
+		// 次回以降は再利用
+		HICON icon = GetDefaultIcon(iconPath);
+		in->mFileExtIconCache[fileExt] = icon;
+		return icon;
+	}
+
+	return nullptr;
 }
 
 static HICON LoadIconForID1(LPCTSTR dllPath)
@@ -214,7 +257,7 @@ HICON IconLoader::LoadFolderIcon()
 	return GetImageResIcon(3);
 }
 
-static CString GetIconPathFromRegistry()
+static CString GetHttpsIconPathFromRegistry()
 {
 	CString progName;
 	RegistryKey HKCU(HKEY_CURRENT_USER);
@@ -234,7 +277,7 @@ static CString GetIconPathFromRegistry()
 
 HICON IconLoader::LoadWebIcon()
 {
-	return GetDefaultIcon(GetIconPathFromRegistry());
+	return GetDefaultIcon(GetHttpsIconPathFromRegistry());
 }
 
 HICON IconLoader::LoadNewIcon()

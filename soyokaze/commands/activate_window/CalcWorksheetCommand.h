@@ -7,13 +7,13 @@ namespace soyokaze {
 namespace commands {
 namespace activate_window {
 
-class Worksheet;
+class CalcWorksheet;
 
-class WorksheetCommand : public soyokaze::commands::common::AdhocCommandBase
+class CalcWorksheetCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	WorksheetCommand(Worksheet* sheet);
-	virtual ~WorksheetCommand();
+	CalcWorksheetCommand(CalcWorksheet* sheet);
+	virtual ~CalcWorksheetCommand();
 
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
