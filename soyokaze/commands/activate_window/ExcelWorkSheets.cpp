@@ -144,6 +144,8 @@ void WorkSheets::PImpl::Update()
 
 			for (int j = 0; j < sheetCount; ++j) {
 
+				Sleep(0);
+
 				CComPtr<IDispatch> sheet;
 				{
 					VARIANT arg1;

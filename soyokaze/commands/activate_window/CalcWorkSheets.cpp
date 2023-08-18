@@ -122,6 +122,7 @@ void CalcWorkSheets::PImpl::Update()
 
 		bool isLoop = true;
 		while(isLoop) {
+
 			{
 				VariantInit(&result);
 				AutoWrap(DISPATCH_METHOD, &result, enumulation, L"hasMoreElements", 0);
@@ -170,6 +171,8 @@ void CalcWorkSheets::PImpl::Update()
 
 			// シート名を列挙する
 			for (int i = 0; i < sheetCount; ++i) {
+
+				Sleep(0);
 
 				VARIANT arg1;
 				VariantInit(&arg1);
