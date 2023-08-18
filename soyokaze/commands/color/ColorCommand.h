@@ -1,19 +1,30 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/common/Clipboard.h"
 #include <memory>
 
 namespace soyokaze {
 namespace commands {
 namespace color {
 
+enum {
+	TYPE_HEX6,
+	TYPE_HEX3,
+	TYPE_RGB,
+	TYPE_HSL,
+};
+
 class ColorCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	ColorCommand(COLORREF cr);
+
+public:
+	ColorCommand(COLORREF cr, int formatType);
 	virtual ~ColorCommand();
 
 	CString GetTypeDisplayName() override;
+	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	soyokaze::core::Command* Clone() override;
 

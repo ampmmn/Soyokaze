@@ -531,6 +531,9 @@
     <ClInclude Include="commands\activate_window\CalcWorksheetCommand.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="commands\color\HSL.h">
+      <Filter>commands\color</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -955,6 +958,9 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\CalcWorksheetCommand.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\color\HSL.cpp">
+      <Filter>commands\color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

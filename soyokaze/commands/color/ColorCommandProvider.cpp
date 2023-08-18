@@ -58,6 +58,9 @@ void ColorCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
+	static tregex regRGB(_T("^ *rgb *\\( *\\d+ *, *\\d+ *, *\\d+ *\\) *$"));
+	static tregex regHSL(_T("^ *hsl *\\( *\\d+ *, *\\d+%? *, *\\d+%? *\\) *$"));
+
 	if (cmdline[0] == _T('#') && cmdline.GetLength() == 7) {   // #rrggbb
 		CString rrggbb = cmdline.Mid(1);
 
@@ -70,10 +73,12 @@ void ColorCommandProvider::QueryAdhocCommands(
 		BYTE g = (value >>  8) & 0xFF;
 		BYTE b = (value >>  0) & 0xFF;
 
-		auto cmd = new ColorCommand(RGB(r, g, b));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, cmd));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		return;
 	}
-	else if (cmdline[0] == _T('#') && cmdline.GetLength() == 4) {   // #rgb
+	if (cmdline[0] == _T('#') && cmdline.GetLength() == 4) {   // #rgb
 		CString rgb = cmdline.Mid(1);
 
 		uint32_t value;
@@ -85,8 +90,34 @@ void ColorCommandProvider::QueryAdhocCommands(
 		BYTE g = ((value >> 4) & 0x0F) | ((value >> 0) & 0xF0);
 		BYTE b = ((value >> 0) & 0x0F) | ((value << 4) & 0xF0);
 
-		auto cmd = new ColorCommand(RGB(r, g, b));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, cmd));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX3)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		return;
+	}
+
+	tstring cmdline_(cmdline);
+	if (std::regex_match(cmdline_, regRGB)) {
+
+		static tregex regParse(_T("^ *rgb *\\( *(\\d+) *, *(\\d+) *, *(\\d+) *\\) *$"));
+
+		tstring rstr = std::regex_replace(cmdline_, regParse, _T("$1"));
+		tstring gstr = std::regex_replace(cmdline_, regParse, _T("$2"));
+		tstring bstr = std::regex_replace(cmdline_, regParse, _T("$3"));
+		
+		if (rstr.size() > 3 || gstr.size() > 3 || bstr.size() > 3) {
+			return;
+		}
+
+		BYTE r = (BYTE)std::stoi(rstr);
+		BYTE g = (BYTE)std::stoi(gstr);
+		BYTE b = (BYTE)std::stoi(bstr);
+
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		return;
 	}
 }
 

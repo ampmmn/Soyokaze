@@ -588,6 +588,7 @@
     <ClInclude Include="commands\calculator\CalculatorCommand.h" />
     <ClInclude Include="commands\color\ColorCommand.h" />
     <ClInclude Include="commands\color\ColorCommandProvider.h" />
+    <ClInclude Include="commands\color\HSL.h" />
     <ClInclude Include="commands\common\AdhocCommandBase.h" />
     <ClInclude Include="commands\common\AdhocCommandProviderBase.h" />
     <ClInclude Include="commands\common\AfxWWrapper.h" />
@@ -739,6 +740,7 @@
     <ClCompile Include="commands\calculator\CalculatorCommand.cpp" />
     <ClCompile Include="commands\color\ColorCommand.cpp" />
     <ClCompile Include="commands\color\ColorCommandProvider.cpp" />
+    <ClCompile Include="commands\color\HSL.cpp" />
     <ClCompile Include="commands\common\AdhocCommandBase.cpp" />
     <ClCompile Include="commands\common\AdhocCommandProviderBase.cpp" />
     <ClCompile Include="commands\common\AfxWWrapper.cpp" />
