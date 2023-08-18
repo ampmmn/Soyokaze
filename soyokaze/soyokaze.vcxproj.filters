@@ -522,6 +522,12 @@
     <ClInclude Include="commands\common\Clipboard.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_window\AutoWrap.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\CalcWorkSheets.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -937,6 +943,12 @@
     </ClCompile>
     <ClCompile Include="commands\common\Clipboard.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\AutoWrap.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\CalcWorkSheets.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

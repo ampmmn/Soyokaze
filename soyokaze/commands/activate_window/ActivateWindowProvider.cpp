@@ -4,6 +4,7 @@
 #include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
+#include "commands/activate_window/CalcWorksheets.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -55,6 +56,7 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 	bool mIsFirstCall;
 
 	WorkSheets mWorksheets;
+	CalcWorkSheets mCalcWorksheets;
 
 	DWORD mLastHwndUpdate;
 	std::vector<HWND> mHwndCandidates;
@@ -208,6 +210,19 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 	in->mWorksheets.GetWorksheets(sheets);
 
 	for (auto& sheet : sheets) {
+		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
+		int level = pattern->Match(str);
+		if (level != Pattern::Mismatch) {
+
+			commands.push_back(CommandQueryItem(level, new WorksheetCommand(sheet)));
+		}
+		sheet->Release();
+	}
+
+	std::vector<CalcWorksheet*> calcSheets;
+	in->mCalcWorksheets.GetWorksheets(calcSheets);
+
+	for (auto& sheet : calcSheets) {
 		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
 		int level = pattern->Match(str);
 		if (level != Pattern::Mismatch) {

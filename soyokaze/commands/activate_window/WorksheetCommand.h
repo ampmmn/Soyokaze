@@ -8,11 +8,13 @@ namespace commands {
 namespace activate_window {
 
 class Worksheet;
+class CalcWorksheet;
 
 class WorksheetCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 	WorksheetCommand(Worksheet* sheet);
+	WorksheetCommand(CalcWorksheet* sheet);
 	virtual ~WorksheetCommand();
 
 	CString GetTypeDisplayName() override;
