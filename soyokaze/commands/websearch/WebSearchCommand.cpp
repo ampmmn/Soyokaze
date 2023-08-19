@@ -113,12 +113,11 @@ HICON WebSearchCommand::GetIcon()
 
 int WebSearchCommand::Match(Pattern* pattern)
 {
-	in->mIsShortcut = false;
-	in->mSearchWord.Empty();
-
 	// キーワード名にマッチする場合
-	int matchLevel = pattern->Match(GetName());
+	int matchLevel = pattern->Match(in->mParam.mName);
 	if (matchLevel != Pattern::Mismatch) {
+		in->mIsShortcut = false;
+		in->mSearchWord.Empty();
 		return matchLevel;
 	}
 
