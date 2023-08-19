@@ -102,6 +102,7 @@
 #define IDD_WEBSEARCHEDIT               166
 #define IDS_COMMANDNAME_WEBSEARCH       167
 #define IDS_DESCRIPTION_WEBSEARCH       168
+#define IDS_COMMAND_STARTMENU           169
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002

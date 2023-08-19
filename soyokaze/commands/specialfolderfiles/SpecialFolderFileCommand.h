@@ -1,18 +1,19 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/specialfolderfiles/SpecialFolderFile.h"
 #include <memory>
 
 namespace soyokaze {
 namespace commands {
-namespace recentfiles {
+namespace specialfolderfiles {
 
 
-class RecentFileCommand : public soyokaze::commands::common::AdhocCommandBase
+class SpecialFolderFileCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	RecentFileCommand(const CString& name, const CString& fullPath);
-	virtual ~RecentFileCommand();
+	SpecialFolderFileCommand(const ITEM& item);
+	virtual ~SpecialFolderFileCommand();
 
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
@@ -25,7 +26,7 @@ protected:
 };
 
 
-} // end of namespace recentfiles
+} // end of namespace specialfolderfiles
 } // end of namespace commands
 } // end of namespace soyokaze
 

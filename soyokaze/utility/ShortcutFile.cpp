@@ -68,9 +68,12 @@ bool ShortcutFile::Save(LPCTSTR pathToSave)
  *  ショートカットのリンク先パス文字列を得る
  *  @return ショートカットが示す実際のファイルへのパス
  *  @param linkPath  ショートカットファイルのパス
+ *  @param description 説明(任意)
  */
 CString ShortcutFile::ResolvePath(
-	const CString& linkPath
+	const CString& linkPath,
+	CString* description
+
 )
 {
 	IShellLink *shellLinkPtr = nullptr;
@@ -100,6 +103,11 @@ CString ShortcutFile::ResolvePath(
 
 	WIN32_FIND_DATA wfd;
 	shellLinkPtr->GetPath(pathWideChar, MAX_PATH_NTFS, &wfd, 0);
+
+	if (description) {
+		shellLinkPtr->GetDescription(description->GetBuffer(INFOTIPSIZE), INFOTIPSIZE);
+		description->ReleaseBuffer();
+	}
 
 	CString path((CStringW)pathWideChar);
 

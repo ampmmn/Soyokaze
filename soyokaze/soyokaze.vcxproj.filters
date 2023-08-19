@@ -67,9 +67,6 @@
     <Filter Include="commands\env">
       <UniqueIdentifier>{6b091184-744b-4a48-b402-3715cfb1e6c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands\recentfiles">
-      <UniqueIdentifier>{42bbfb15-e16b-4c9d-8184-662826a96899}</UniqueIdentifier>
-    </Filter>
     <Filter Include="commands\color">
       <UniqueIdentifier>{5bd0bf79-de52-4609-bd3c-03256118a8d3}</UniqueIdentifier>
     </Filter>
@@ -78,6 +75,9 @@
     </Filter>
     <Filter Include="commands\websearch">
       <UniqueIdentifier>{1a72f536-bec9-4e63-9ebe-c81aff2d08be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\specialfolderfiles">
+      <UniqueIdentifier>{42bbfb15-e16b-4c9d-8184-662826a96899}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -447,20 +447,11 @@
     <ClInclude Include="commands\env\EnvCommandProvider.h">
       <Filter>commands\env</Filter>
     </ClInclude>
-    <ClInclude Include="commands\recentfiles\RecentFileCommand.h">
-      <Filter>commands\recentfiles</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\recentfiles\RecentFilesCommandProvider.h">
-      <Filter>commands\recentfiles</Filter>
-    </ClInclude>
     <ClInclude Include="commands\color\ColorCommand.h">
       <Filter>commands\color</Filter>
     </ClInclude>
     <ClInclude Include="commands\color\ColorCommandProvider.h">
       <Filter>commands\color</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\recentfiles\RecentFiles.h">
-      <Filter>commands\recentfiles</Filter>
     </ClInclude>
     <ClInclude Include="commands\vmware\VMXFileCommand.h">
       <Filter>commands\vmware</Filter>
@@ -533,6 +524,15 @@
     </ClInclude>
     <ClInclude Include="commands\color\HSL.h">
       <Filter>commands\color</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileCommand.h">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFiles.h">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h">
+      <Filter>commands\specialfolderfiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -881,20 +881,11 @@
     <ClCompile Include="commands\env\EnvCommandProvider.cpp">
       <Filter>commands\env</Filter>
     </ClCompile>
-    <ClCompile Include="commands\recentfiles\RecentFileCommand.cpp">
-      <Filter>commands\recentfiles</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\recentfiles\RecentFilesCommandProvider.cpp">
-      <Filter>commands\recentfiles</Filter>
-    </ClCompile>
     <ClCompile Include="commands\color\ColorCommand.cpp">
       <Filter>commands\color</Filter>
     </ClCompile>
     <ClCompile Include="commands\color\ColorCommandProvider.cpp">
       <Filter>commands\color</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\recentfiles\RecentFiles.cpp">
-      <Filter>commands\recentfiles</Filter>
     </ClCompile>
     <ClCompile Include="commands\vmware\VMXFileCommand.cpp">
       <Filter>commands\vmware</Filter>
@@ -961,6 +952,15 @@
     </ClCompile>
     <ClCompile Include="commands\color\HSL.cpp">
       <Filter>commands\color</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp">
+      <Filter>commands\specialfolderfiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

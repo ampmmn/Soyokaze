@@ -6,15 +6,15 @@
 
 namespace soyokaze {
 namespace commands {
-namespace recentfiles {
+namespace specialfolderfiles {
 
 
-class RecentFilesCommandProvider :
+class SpecialFolderFilesCommandProvider :
 	public soyokaze::commands::common::AdhocCommandProviderBase
 {
 private:
-	RecentFilesCommandProvider();
-	virtual ~RecentFilesCommandProvider();
+	SpecialFolderFilesCommandProvider();
+	virtual ~SpecialFolderFilesCommandProvider();
 
 public:
 	CString GetName() override;
@@ -23,7 +23,7 @@ public:
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 
-	DECLARE_COMMANDPROVIDER(RecentFilesCommandProvider)
+	DECLARE_COMMANDPROVIDER(SpecialFolderFilesCommandProvider)
 
 private:
 	struct PImpl;
@@ -31,7 +31,7 @@ private:
 };
 
 
-} // end of namespace recentfiles
+} // end of namespace specialfolderfiles
 } // end of namespace commands
 } // end of namespace soyokaze
 

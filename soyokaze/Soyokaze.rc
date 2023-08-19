@@ -1582,6 +1582,7 @@ BEGIN
                             "指定したウインドウテキストに合致するウインドウをアクティブにするコマンドを作成します。"
     IDS_COMMANDNAME_WEBSEARCH "Web検索コマンド"
     IDS_DESCRIPTION_WEBSEARCH "Web検索を定義します。"
+    IDS_COMMAND_STARTMENU   "スタートメニュー"
 END
 
 #endif    // 日本語 (日本) resources
