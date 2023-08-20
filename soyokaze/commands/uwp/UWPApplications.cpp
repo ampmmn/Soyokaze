@@ -97,6 +97,8 @@ void UWPApplications::EnumApplications(std::vector<ITEM>& items)
 	std::vector<ITEM> tmp;
 	for (auto& scheme : schemeNames) {
 
+		Sleep(0);
+
 		_tcscpy_s(p, 16383, scheme);
 
 		RegistryKey subKey;
@@ -136,6 +138,8 @@ void UWPApplications::EnumApplications(std::vector<ITEM>& items)
 		item.mDescription = appName;
 		item.mIconPath = iconPath;
 		item.mScheme = scheme;
+
+		//TRACE(_T("Name:%s Scheme:%s\n"), appName, scheme);
 
 		tmp.push_back(item);
 	}

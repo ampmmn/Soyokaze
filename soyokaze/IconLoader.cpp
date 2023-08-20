@@ -322,8 +322,6 @@ static int GetPitch(int w, int bpp)
 
 HICON IconLoader::LoadIconFromPNG(const CString& path)
 {
-	TRACE(_T("%s\n"), path);
-
 	ATL::CImage image;
 	HRESULT hr = image.Load(path);
 	if (FAILED(hr)) {
@@ -337,80 +335,15 @@ HICON IconLoader::LoadIconFromPNG(const CString& path)
 		return nullptr;
 	}
 
-	auto srcBits = (LPBYTE)image.GetBits();
-	int srcPitch = image.GetPitch();
-
-	std::map<int,int> count;
-
-	struct ABGR {
-		BYTE a;
-		BYTE g;
-		BYTE b;
-		BYTE a;
-	};
-	struct BGR {
-		BYTE b;
-		BYTE g;
-		BYTE r;
-	};
-
-	int andPitch = GetPitch(size.cx, 1);
-	std::vector<BYTE> andBits(andPitch * size.cy, 0x00);
-
-	int xorPitch =  GetPitch(size.cx, 24);
-	std::vector<BYTE> xorBits(xorPitch * size.cy);
-
-	for (int _y = 0; _y < size.cy; ++_y) {
-
-		int y = size.cy - _y - 1;
-
-		auto lineSrc = (ABGR*)(srcBits + (srcPitch * _y));
-		auto lineDstXOR = (BGR*)&(xorBits[y * xorPitch]);
-		auto lineDstAND = (BYTE*)&(andBits[y * andPitch]);
-
-		for (int x = 0; x < size.cx; ++x) {
-
-			int bit = 7 - (x % 8);
-
-			//if (lineSrc[x].a != 0) {
-			//	lineDstAND[x/8] |= (1u << bit);
-			//}
-			count[lineSrc[x].a]++;
-
-			lineDstXOR[x].b = lineSrc[x].b;
-			lineDstXOR[x].g = lineSrc[x].g;
-			lineDstXOR[x].r = lineSrc[x].r;
-		}
-	}
-
-	for (auto it = count.begin(); it != count.end(); ++it) {
-		TRACE(_T("count %d : %d\n"), it->first, it->second);
-	}
-
 	ATL::CImage imgMask;
 	imgMask.Create(size.cx, size.cy, 1);
-	int n = imgMask.GetPitch() * (imgMask.GetHeight()-1);
-	BYTE* head = (BYTE*)imgMask.GetBits();
-	if (n < 0) {
-		head += n;
-	}
-	memcpy(head, &andBits.front(), andBits.size());
 
-	ATL::CImage imgColor;
-	imgColor.Create(size.cx, size.cy, 24);
-	n = imgColor.GetPitch()* (imgColor.GetHeight()-1);
-	head = (BYTE*)imgColor.GetBits();
-	if (n < 0) {
-		head += n;
-	}
-	memcpy(head, &xorBits.front(), xorBits.size());
-	
 	ICONINFO ii;
 	ii.fIcon = TRUE;
 	ii.xHotspot = 0;
 	ii.yHotspot = 0;
 	ii.hbmMask = (HBITMAP)imgMask;
-	ii.hbmColor = (HBITMAP)imgColor;
+	ii.hbmColor = (HBITMAP)image;
 
 
 	HICON icon = CreateIconIndirect(&ii);

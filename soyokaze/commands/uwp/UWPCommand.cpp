@@ -20,7 +20,7 @@ struct UWPCommand::PImpl
 
 
 UWPCommand::UWPCommand(const ITEM& item) : 
-	AdhocCommandBase(item.mName, item.mDescription),
+	AdhocCommandBase(item.mName, item.mDescription + _T("(") + item.mScheme + _T(")")),
 	in(std::make_unique<PImpl>())
 {
 	in->mItem = item;
