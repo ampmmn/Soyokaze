@@ -15,6 +15,10 @@
 namespace soyokaze {
 namespace commands {
 namespace websearch {
+//std::unique_ptr<Command, std::function<void(void*)> > mCommand;
+
+using WebSearchCommandPtr = std::unique_ptr<WebSearchCommand, std::function<void(void*)> >;
+using WebSearchCommandList = std::vector<WebSearchCommandPtr>;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
@@ -26,6 +30,8 @@ struct WebSearchProvider::PImpl
 	virtual ~PImpl()
 	{
 	}
+
+	WebSearchCommandList mCommands;
 
 	uint32_t mRefCount = 1;
 };
@@ -50,12 +56,22 @@ void WebSearchProvider::OnFirstBoot()
 {
 }
 
+static void releaseCmd(void* p)
+{
+	auto ptr = (WebSearchCommand*)p;
+	if (ptr) {
+		ptr->Release();
+	}
+}
+
 // コマンドの読み込み
 void WebSearchProvider::LoadCommands(CommandFile* cmdFile)
 {
 	ASSERT(cmdFile);
 
 	auto cmdRepo = CommandRepository::GetInstance();
+
+	WebSearchCommandList tmp;
 
 	int entries = cmdFile->GetEntryCount();
 	for (int i = 0; i < entries; ++i) {
@@ -72,11 +88,16 @@ void WebSearchProvider::LoadCommands(CommandFile* cmdFile)
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command.release());
+		cmdRepo->RegisterCommand(command.get());
+
+		command->AddRef();  // mCommandsで保持する分の参照カウント+1
+		tmp.push_back(WebSearchCommandPtr(command.release(), releaseCmd));
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
 	}
+
+	in->mCommands.swap(tmp);
 }
 
 
@@ -121,7 +142,18 @@ void WebSearchProvider::QueryAdhocCommands(
  	std::vector<CommandQueryItem>& commands
 )
 {
-	// サポートしない
+	// 完全一致検索の場合は検索ワード補完をしない
+	if (pattern->shouldWholeMatch()) {
+		return;
+	}
+
+	for (auto& cmd : in->mCommands) {
+		if (cmd->IsEnableShortcut() == false) {
+			continue;
+		}
+
+		commands.push_back(CommandQueryItem(Pattern::PartialMatch, cmd->CloneAsAdhocCommand(pattern->GetWholeString())));
+	}
 }
 
 // Provider間の優先順位を表す値を返す。小さいほど優先

@@ -38,6 +38,21 @@ WebSearchCommand::~WebSearchCommand()
 {
 }
 
+bool WebSearchCommand::IsEnableShortcut() const
+{
+	return in->mParam.IsEnableShortcutSearch();
+}
+
+WebSearchCommand* WebSearchCommand::CloneAsAdhocCommand(CString& searchWord)
+{
+	auto newCmd = new WebSearchCommand();
+	newCmd->in->mParam = in->mParam;
+	newCmd->in->mIsShortcut = true;
+	newCmd->in->mSearchWord = searchWord;
+
+	return newCmd;
+}
+
 CString WebSearchCommand::GetName()
 {
 	if (in->mIsShortcut == false) {
@@ -113,37 +128,38 @@ HICON WebSearchCommand::GetIcon()
 
 int WebSearchCommand::Match(Pattern* pattern)
 {
-	// キーワード名にマッチする場合
-	int matchLevel = pattern->Match(in->mParam.mName);
-	if (matchLevel != Pattern::Mismatch) {
-		in->mIsShortcut = false;
-		in->mSearchWord.Empty();
-		return matchLevel;
-	}
-
-	// 完全一致検索の場合は検索ワード補完をしない
-	if (pattern->shouldWholeMatch()) {
+	if (in->mIsShortcut == false) {
+		// キーワード名にマッチする場合
+		int matchLevel = pattern->Match(in->mParam.mName);
+		if (matchLevel != Pattern::Mismatch) {
+			in->mIsShortcut = false;
+			in->mSearchWord.Empty();
+			return matchLevel;
+		}
 		return Pattern::Mismatch;
 	}
-
-	// 入力欄に入力された文字列を検索ワードとみなし候補に表示するか?
-	if (in->mParam.IsEnableShortcutSearch() == false) {
-		return Pattern::Mismatch;
+	else {
+		// キーワード補完による一時的なコマンドとしてふるまう場合
+		return Pattern::PartialMatch;
 	}
-
-	in->mIsShortcut = true;
-	in->mSearchWord = pattern->GetWholeString();
-
-	return Pattern::PartialMatch;
 }
 
 bool WebSearchCommand::IsEditable()
 {
-	return true;
+	if (in->mIsShortcut == false) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 int WebSearchCommand::EditDialog(const Parameter*)
 {
+	if (in->mIsShortcut) {
+		return 0;
+	}
+
 	SettingDialog dlg;
 	dlg.SetIcon(GetIcon());
 
@@ -154,15 +170,19 @@ int WebSearchCommand::EditDialog(const Parameter*)
 		return 0;
 	}
 
-	auto cmdNew = std::make_unique<WebSearchCommand>();
-
 	param = dlg.GetParam();
-	cmdNew->in->mParam = param;
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
+
+	AddRef();
+	// UnregisterCommandのときに参照カウント-1されるので、削除を防ぐために+1しておく
+	// RegisterCommandの際は呼び出し側が参照カウントを上げる
+
 	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+
+	in->mParam = param;
+	cmdRepo->RegisterCommand(this);
 
 	return 0;
 }

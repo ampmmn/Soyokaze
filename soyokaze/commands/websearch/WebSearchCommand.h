@@ -13,6 +13,11 @@ public:
 	WebSearchCommand();
 	virtual ~WebSearchCommand();
 
+	// 
+	bool IsEnableShortcut() const;
+	WebSearchCommand* CloneAsAdhocCommand(CString& searchWord);
+
+// Comand
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
