@@ -96,11 +96,7 @@ BOOL ShortcutSettingPage::OnInitDialog()
 	_tcscpy_s(linkName, exeName);
 	PathRenameExtension(linkName, _T(".lnk"));
 
-	TCHAR linkNameForSendTo[MAX_PATH_NTFS];
-	_tcscpy_s(linkNameForSendTo, exeName);
-	PathRemoveExtension(linkNameForSendTo);
-	_tcscat_s(linkNameForSendTo, _T("に登録"));
-	PathAddExtension(linkNameForSendTo, _T(".lnk"));
+	CString linkNameForSendTo((LPCTSTR)IDS_SENDTO);
 
 	TCHAR linkNameForStartMenu[MAX_PATH_NTFS];
 	_tcscpy_s(linkNameForStartMenu, exeName);

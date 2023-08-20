@@ -1588,6 +1588,7 @@ BEGIN
     IDS_DESCRIPTION_WEBSEARCH "Web検索を定義します。"
     IDS_COMMAND_STARTMENU   "スタートメニュー"
     IDS_COMMAND_UWP         "UWPアプリ"
+    IDS_SENDTO              "コマンドとして登録する.lnk"
 END
 
 #endif    // 日本語 (日本) resources
