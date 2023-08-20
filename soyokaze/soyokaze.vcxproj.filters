@@ -79,6 +79,9 @@
     <Filter Include="commands\specialfolderfiles">
       <UniqueIdentifier>{42bbfb15-e16b-4c9d-8184-662826a96899}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\uwp">
+      <UniqueIdentifier>{c363a251-f52b-4690-8e0e-bfed0db7cd08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -534,6 +537,18 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h">
       <Filter>commands\specialfolderfiles</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uwp\UWPApplicationItem.h">
+      <Filter>commands\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uwp\UWPApplications.h">
+      <Filter>commands\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uwp\UWPCommand.h">
+      <Filter>commands\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uwp\UWPCommandProvider.h">
+      <Filter>commands\uwp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -961,6 +976,15 @@
     </ClCompile>
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp">
       <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uwp\UWPApplications.cpp">
+      <Filter>commands\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uwp\UWPCommand.cpp">
+      <Filter>commands\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uwp\UWPCommandProvider.cpp">
+      <Filter>commands\uwp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

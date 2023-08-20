@@ -625,6 +625,10 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileCommand.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFiles.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h" />
+    <ClInclude Include="commands\uwp\UWPApplicationItem.h" />
+    <ClInclude Include="commands\uwp\UWPApplications.h" />
+    <ClInclude Include="commands\uwp\UWPCommand.h" />
+    <ClInclude Include="commands\uwp\UWPCommandProvider.h" />
     <ClInclude Include="commands\vmware\VMXFileCommand.h" />
     <ClInclude Include="commands\vmware\VMXFileCommandProvider.h" />
     <ClInclude Include="commands\websearch\WebSearchCommand.h" />
@@ -778,6 +782,9 @@
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp" />
+    <ClCompile Include="commands\uwp\UWPApplications.cpp" />
+    <ClCompile Include="commands\uwp\UWPCommand.cpp" />
+    <ClCompile Include="commands\uwp\UWPCommandProvider.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommand.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommandProvider.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommand.cpp" />

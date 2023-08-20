@@ -83,6 +83,12 @@ public:
 	// コントロールパネルのアイテム検索を使用するか
 	bool IsEnableControlPanel();
 
+	// スタートメニュー/最近使ったファイルのアイテム検索を使用するか
+	bool IsEnableSpecialFolder();
+
+	// UWPアプリの検索を使用するか
+	bool IsEnableUWP();
+
 	// 効果音ファイルパスを取得(文字入力)
 	CString GetInputSoundFile();
 	// 効果音ファイルパスを取得(候補選択)

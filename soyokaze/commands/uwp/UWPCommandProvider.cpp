@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "SpecialFolderFilesCommandProvider.h"
-#include "commands/specialfolderfiles/SpecialFolderFileCommand.h"
-#include "commands/specialfolderfiles/SpecialFolderFiles.h"
+#include "UWPCommandProvider.h"
+#include "commands/uwp/UWPApplicationItem.h"
+#include "commands/uwp/UWPCommand.h"
+#include "commands/uwp/UWPApplications.h"
 #include "core/CommandRepository.h"
 #include "AppPreferenceListenerIF.h"
 #include "AppPreference.h"
@@ -13,11 +14,11 @@
 
 namespace soyokaze {
 namespace commands {
-namespace specialfolderfiles {
+namespace uwp {
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
-struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
+struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
@@ -32,14 +33,15 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableSpecialFolder();
+		mIsEnable = pref->IsEnableUWP();
 	}
 	void OnAppExit() override {}
 
+
 	bool mIsEnable = true;
-	bool mIsFirstCall = true;
-	std::vector<ITEM> mRecentFileItems;
-	SpecialFolderFiles mFiles;
+	bool mIsFirstCall;
+	std::vector<ITEM> mItems;
+	UWPApplications mUWPApps;
 
 };
 
@@ -47,55 +49,56 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-REGISTER_COMMANDPROVIDER(SpecialFolderFilesCommandProvider)
+REGISTER_COMMANDPROVIDER(UWPCommandProvider)
 
 
-SpecialFolderFilesCommandProvider::SpecialFolderFilesCommandProvider() : in(std::make_unique<PImpl>())
+UWPCommandProvider::UWPCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
+	in->mUWPApps.GetApplications(in->mItems);
 }
 
-SpecialFolderFilesCommandProvider::~SpecialFolderFilesCommandProvider()
+UWPCommandProvider::~UWPCommandProvider()
 {
 }
 
-CString SpecialFolderFilesCommandProvider::GetName()
+CString UWPCommandProvider::GetName()
 {
-	return _T("SpecialFolderFiles");
+	return _T("UWPApps");
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
+void UWPCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {
+		// 初回呼び出し時に設定よみこみ
 		auto pref = AppPreference::Get();
-		in->mIsEnable = pref->IsEnableSpecialFolder();
+		in->mIsEnable = pref->IsEnableUWP();
 		in->mIsFirstCall = false;
 	}
 
 	if (in->mIsEnable == false) {
-		return ;
+		return;
 	}
 
-	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
+	in->mUWPApps.GetApplications(in->mItems);
 
-	for (auto& item : in->mRecentFileItems) {
+	for (auto& item : in->mItems) {
 
 		int level = pattern->Match(item.mName);
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		auto cmd = std::make_unique<SpecialFolderFileCommand>(item);
+		auto cmd = std::make_unique<UWPCommand>(item);
 
 		commands.push_back(CommandQueryItem(level, cmd.release()));
 	}
 }
 
 
-} // end of namespace specialfolderfiles
+} // end of namespace uwp
 } // end of namespace commands
 } // end of namespace soyokaze
 

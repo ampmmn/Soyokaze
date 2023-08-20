@@ -103,6 +103,7 @@
 #define IDS_COMMANDNAME_WEBSEARCH       167
 #define IDS_DESCRIPTION_WEBSEARCH       168
 #define IDS_COMMAND_STARTMENU           169
+#define IDS_COMMAND_UWP                 170
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -223,7 +224,10 @@
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1080
 #define IDC_BUTTON_SOUNDINPUT           1080
 #define IDC_EDIT_CAPTION                1081
+#define IDC_CHECK_ENABLE_SPECIALFOLDER  1081
 #define IDC_EDIT_CLASS                  1082
+#define IDC_CHECK_ENABLE_SPECIALFOLDER2 1082
+#define IDC_CHECK_ENABLE_UWPAPPS        1082
 #define IDC_CHECK_REGEXP                1083
 #define IDC_EDIT_URL                    1084
 #define IDC_CHECK_ENABLESHORTCUT        1085

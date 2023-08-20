@@ -3,8 +3,10 @@
 #include "IconLoader.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/RegistryKey.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
+#include <atlimage.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,22 +192,31 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 	}
 
 	int n = 0;
-	CString dllPath = path.Tokenize(_T(","), n);
+	CString modulePath = path.Tokenize(_T(","), n);
+	if (modulePath.IsEmpty()) {
+		return LoadUnknownIcon();
+	}
 	CString indexStr =  path.Tokenize(_T(","), n);
 
 	int index;
 	if (_stscanf_s(indexStr, _T("%d"), &index) != 1) {
-		return LoadUnknownIcon();
+		index = 0;
 	}
-
 
 	HICON icon[1] = {};
-	if (index == -1) {
+
+	// UWPの場合、アイコンが.icoではなく.PNGなので
+	// PNGからアイコンに変換する
+	static CString extPNG(_T(".png"));
+	if (index == 0 && extPNG == PathFindExtension(modulePath)) {
+		icon[0] = LoadIconFromPNG(modulePath);
+	}
+	else if (index == -1) {
 		// -1のときアイコン総数が返ってきてそうなので別系統の処理をする
-		icon[0] = LoadIconForID1(dllPath);
+		icon[0] = LoadIconForID1(modulePath);
 	}
 	else {
-		UINT loadedCount = ExtractIconEx(dllPath, index, icon, nullptr, 1);
+		ExtractIconEx(modulePath, index, icon, nullptr, 1);
 	}
 
 	if (icon[0] == 0)  {
@@ -302,6 +313,42 @@ HICON IconLoader::LoadExitIcon()
 		// Win11
 		return GetImageResIcon(236);
 	}
+}
+
+static int GetPitch(int w, int bpp)
+{
+	return (((w * bpp) + 31) / 32) * 4;
+}
+
+HICON IconLoader::LoadIconFromPNG(const CString& path)
+{
+	ATL::CImage image;
+	HRESULT hr = image.Load(path);
+	if (FAILED(hr)) {
+		return nullptr;
+	}
+
+	CSize size(image.GetWidth(), image.GetHeight());
+
+	if (image.GetBPP() != 32) {
+		// 透過情報を持たないものは非対応
+		return nullptr;
+	}
+
+	ATL::CImage imgMask;
+	imgMask.Create(size.cx, size.cy, 1);
+
+	ICONINFO ii;
+	ii.fIcon = TRUE;
+	ii.xHotspot = 0;
+	ii.yHotspot = 0;
+	ii.hbmMask = (HBITMAP)imgMask;
+	ii.hbmColor = (HBITMAP)image;
+
+
+	HICON icon = CreateIconIndirect(&ii);
+
+	return icon;
 }
 
 HICON IconLoader::LoadEditIcon()

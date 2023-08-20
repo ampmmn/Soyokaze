@@ -15,7 +15,9 @@ ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) :
 	mIsEnableWindowTitle(FALSE),
 	mIsEnableWorksheet(FALSE),
 	mIsEnableBookmarks(FALSE),
-	mIsEnableControlPanel(FALSE)
+	mIsEnableControlPanel(FALSE),
+	mIsEnableSpecialFolder(FALSE),
+	mIsEnableUWP(FALSE)
 {
 }
 
@@ -36,6 +38,8 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
 	settingsPtr->Set(_T("Bookmarks:EnableBookmarks"), (bool)mIsEnableBookmarks);
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
+	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
+	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	__super::OnOK();
 }
 
@@ -48,6 +52,8 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_BOOKMARKS, mIsEnableBookmarks);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, SettingPage)
@@ -93,10 +99,12 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 
-	mIsEnableWindowTitle = settingsPtr->Get(_T("WindowSwitch:EnableWindowSwitch"), false);
-	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), false);
-	mIsEnableBookmarks = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), false);
-	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), false);
+	mIsEnableWindowTitle = settingsPtr->Get(_T("WindowSwitch:EnableWindowSwitch"), true);
+	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), true);
+	mIsEnableBookmarks = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), true);
+	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
+	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
+	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

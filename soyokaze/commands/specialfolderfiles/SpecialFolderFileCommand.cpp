@@ -2,9 +2,7 @@
 #include "framework.h"
 #include "SpecialFolderFileCommand.h"
 #include "IconLoader.h"
-#include "SharedHwnd.h"
 #include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
