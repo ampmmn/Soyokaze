@@ -8,9 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-// ToDo: アイコン表示用のコントロール作成
-
-IconLabel::IconLabel()
+IconLabel::IconLabel() : mIconDefault(nullptr)
 {
 }
 
