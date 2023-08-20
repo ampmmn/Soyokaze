@@ -20,6 +20,10 @@ public:
 	BOOL mIsEnableBookmarks;
 	// コントロールパネル選択機能
 	BOOL mIsEnableControlPanel;
+	// スタートメニュー/最近使ったファイル選択機能
+	BOOL mIsEnableSpecialFolder;
+	// UWPアプリ選択機能
+	BOOL mIsEnableUWP;
 
 protected:
 	bool UpdateStatus();

@@ -3,6 +3,8 @@
 #include "commands/specialfolderfiles/SpecialFolderFileCommand.h"
 #include "commands/specialfolderfiles/SpecialFolderFiles.h"
 #include "core/CommandRepository.h"
+#include "AppPreferenceListenerIF.h"
+#include "AppPreference.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -15,15 +17,27 @@ namespace specialfolderfiles {
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
-struct SpecialFolderFilesCommandProvider::PImpl
+struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
+		AppPreference::Get()->RegisterListener(this);
 	}
 	virtual ~PImpl()
 	{
+		AppPreference::Get()->UnregisterListener(this);
 	}
 
+	void OnAppFirstBoot() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		auto pref = AppPreference::Get();
+		mIsEnable = pref->IsEnableSpecialFolder();
+	}
+	void OnAppExit() override {}
+
+	bool mIsEnable = true;
+	bool mIsFirstCall = true;
 	std::vector<ITEM> mRecentFileItems;
 	SpecialFolderFiles mFiles;
 
@@ -56,6 +70,16 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
  	CommandQueryItemList& commands
 )
 {
+	if (in->mIsFirstCall) {
+		auto pref = AppPreference::Get();
+		in->mIsEnable = pref->IsEnableSpecialFolder();
+		in->mIsFirstCall = false;
+	}
+
+	if (in->mIsEnable == false) {
+		return ;
+	}
+
 	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
 
 	for (auto& item : in->mRecentFileItems) {

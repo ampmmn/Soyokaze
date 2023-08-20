@@ -55,8 +55,11 @@ REGISTER_COMMANDPROVIDER(BookmarkCommandProvider)
 
 BookmarkCommandProvider::BookmarkCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mIsEnableBookmark = false;
+	in->mIsEnableBookmark = true;
 	in->mIsFirstCall = true;
+
+	std::vector<ITEM> items;
+	in->mBookmarks.LoadChromeBookmarks(items);
 }
 
 BookmarkCommandProvider::~BookmarkCommandProvider()

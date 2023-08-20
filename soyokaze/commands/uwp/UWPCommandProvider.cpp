@@ -4,6 +4,8 @@
 #include "commands/uwp/UWPCommand.h"
 #include "commands/uwp/UWPApplications.h"
 #include "core/CommandRepository.h"
+#include "AppPreferenceListenerIF.h"
+#include "AppPreference.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -16,15 +18,28 @@ namespace uwp {
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
-struct UWPCommandProvider::PImpl
+struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
+		AppPreference::Get()->RegisterListener(this);
 	}
 	virtual ~PImpl()
 	{
+		AppPreference::Get()->UnregisterListener(this);
 	}
 
+	void OnAppFirstBoot() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		auto pref = AppPreference::Get();
+		mIsEnable = pref->IsEnableUWP();
+	}
+	void OnAppExit() override {}
+
+
+	bool mIsEnable = true;
+	bool mIsFirstCall;
 	std::vector<ITEM> mItems;
 	UWPApplications mUWPApps;
 
@@ -57,6 +72,17 @@ void UWPCommandProvider::QueryAdhocCommands(
  	CommandQueryItemList& commands
 )
 {
+	if (in->mIsFirstCall) {
+		// 初回呼び出し時に設定よみこみ
+		auto pref = AppPreference::Get();
+		in->mIsEnable = pref->IsEnableUWP();
+		in->mIsFirstCall = false;
+	}
+
+	if (in->mIsEnable == false) {
+		return;
+	}
+
 	in->mUWPApps.GetApplications(in->mItems);
 
 	for (auto& item : in->mItems) {

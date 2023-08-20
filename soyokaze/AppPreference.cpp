@@ -544,18 +544,18 @@ CString AppPreference::GetPythonDLLPath()
 
 bool AppPreference::IsEnableExcelWorksheet()
 {
-	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), false);
+	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), true);
 }
 
 // ウインドウの切り替え機能を有効にするか?
 bool AppPreference::IsEnableWindowSwitch()
 {
-	return in->mSettings.Get(_T("WindowSwitch:EnableWindowSwitch"), false);
+	return in->mSettings.Get(_T("WindowSwitch:EnableWindowSwitch"), true);
 }
 
 bool AppPreference::IsEnableBookmark()
 {
-	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), false);
+	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), true);
 }
 
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
@@ -584,7 +584,19 @@ bool AppPreference::IsEnableMigemo()
 // コントロールパネルのアイテム検索を使用するか
 bool AppPreference::IsEnableControlPanel()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), false);
+	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), true);
+}
+
+// スタートメニュー/最近使ったファイルのアイテム検索を使用するか
+bool AppPreference::IsEnableSpecialFolder()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
+}
+
+// UWPアプリの検索を使用するか
+bool AppPreference::IsEnableUWP()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnableUWP"), true);
 }
 
 // 効果音ファイルパスを取得(文字入力)
