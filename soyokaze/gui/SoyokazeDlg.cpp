@@ -133,6 +133,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
+	ON_COMMAND(ID_HELP, OnCommandHelp)
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -1001,6 +1002,12 @@ void CSoyokazeDlg::OnEndSession(BOOL isEnding)
 	if (isEnding) {
 		PostQuitMessage(0);
 	}
+}
+
+void CSoyokazeDlg::OnCommandHelp()
+{
+	// ヘルプ表示
+	ShowHelp();
 }
 
 void CSoyokazeDlg::OnCommandHotKey(UINT id)
