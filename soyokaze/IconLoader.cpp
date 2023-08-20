@@ -3,8 +3,10 @@
 #include "IconLoader.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/RegistryKey.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
+#include <atlimage.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,22 +192,31 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 	}
 
 	int n = 0;
-	CString dllPath = path.Tokenize(_T(","), n);
+	CString modulePath = path.Tokenize(_T(","), n);
+	if (modulePath.IsEmpty()) {
+		return LoadUnknownIcon();
+	}
 	CString indexStr =  path.Tokenize(_T(","), n);
 
 	int index;
 	if (_stscanf_s(indexStr, _T("%d"), &index) != 1) {
-		return LoadUnknownIcon();
+		index = 0;
 	}
-
 
 	HICON icon[1] = {};
-	if (index == -1) {
+
+	// UWPの場合、アイコンが.icoではなく.PNGなので
+	// PNGからアイコンに変換する
+	static CString extPNG(_T(".png"));
+	if (index == 0 && extPNG == PathFindExtension(modulePath)) {
+		icon[0] = LoadIconFromPNG(modulePath);
+	}
+	else if (index == -1) {
 		// -1のときアイコン総数が返ってきてそうなので別系統の処理をする
-		icon[0] = LoadIconForID1(dllPath);
+		icon[0] = LoadIconForID1(modulePath);
 	}
 	else {
-		UINT loadedCount = ExtractIconEx(dllPath, index, icon, nullptr, 1);
+		ExtractIconEx(modulePath, index, icon, nullptr, 1);
 	}
 
 	if (icon[0] == 0)  {
@@ -302,6 +313,109 @@ HICON IconLoader::LoadExitIcon()
 		// Win11
 		return GetImageResIcon(236);
 	}
+}
+
+static int GetPitch(int w, int bpp)
+{
+	return (((w * bpp) + 31) / 32) * 4;
+}
+
+HICON IconLoader::LoadIconFromPNG(const CString& path)
+{
+	TRACE(_T("%s\n"), path);
+
+	ATL::CImage image;
+	HRESULT hr = image.Load(path);
+	if (FAILED(hr)) {
+		return nullptr;
+	}
+
+	CSize size(image.GetWidth(), image.GetHeight());
+
+	if (image.GetBPP() != 32) {
+		// 透過情報を持たないものは非対応
+		return nullptr;
+	}
+
+	auto srcBits = (LPBYTE)image.GetBits();
+	int srcPitch = image.GetPitch();
+
+	std::map<int,int> count;
+
+	struct ABGR {
+		BYTE a;
+		BYTE g;
+		BYTE b;
+		BYTE a;
+	};
+	struct BGR {
+		BYTE b;
+		BYTE g;
+		BYTE r;
+	};
+
+	int andPitch = GetPitch(size.cx, 1);
+	std::vector<BYTE> andBits(andPitch * size.cy, 0x00);
+
+	int xorPitch =  GetPitch(size.cx, 24);
+	std::vector<BYTE> xorBits(xorPitch * size.cy);
+
+	for (int _y = 0; _y < size.cy; ++_y) {
+
+		int y = size.cy - _y - 1;
+
+		auto lineSrc = (ABGR*)(srcBits + (srcPitch * _y));
+		auto lineDstXOR = (BGR*)&(xorBits[y * xorPitch]);
+		auto lineDstAND = (BYTE*)&(andBits[y * andPitch]);
+
+		for (int x = 0; x < size.cx; ++x) {
+
+			int bit = 7 - (x % 8);
+
+			//if (lineSrc[x].a != 0) {
+			//	lineDstAND[x/8] |= (1u << bit);
+			//}
+			count[lineSrc[x].a]++;
+
+			lineDstXOR[x].b = lineSrc[x].b;
+			lineDstXOR[x].g = lineSrc[x].g;
+			lineDstXOR[x].r = lineSrc[x].r;
+		}
+	}
+
+	for (auto it = count.begin(); it != count.end(); ++it) {
+		TRACE(_T("count %d : %d\n"), it->first, it->second);
+	}
+
+	ATL::CImage imgMask;
+	imgMask.Create(size.cx, size.cy, 1);
+	int n = imgMask.GetPitch() * (imgMask.GetHeight()-1);
+	BYTE* head = (BYTE*)imgMask.GetBits();
+	if (n < 0) {
+		head += n;
+	}
+	memcpy(head, &andBits.front(), andBits.size());
+
+	ATL::CImage imgColor;
+	imgColor.Create(size.cx, size.cy, 24);
+	n = imgColor.GetPitch()* (imgColor.GetHeight()-1);
+	head = (BYTE*)imgColor.GetBits();
+	if (n < 0) {
+		head += n;
+	}
+	memcpy(head, &xorBits.front(), xorBits.size());
+	
+	ICONINFO ii;
+	ii.fIcon = TRUE;
+	ii.xHotspot = 0;
+	ii.yHotspot = 0;
+	ii.hbmMask = (HBITMAP)imgMask;
+	ii.hbmColor = (HBITMAP)imgColor;
+
+
+	HICON icon = CreateIconIndirect(&ii);
+
+	return icon;
 }
 
 HICON IconLoader::LoadEditIcon()

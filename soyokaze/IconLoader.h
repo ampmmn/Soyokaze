@@ -9,6 +9,7 @@ public:
 
 	HICON LoadIconFromPath(const CString& path);
 	HICON LoadExtensionIcon(const CString& fileExt);
+	HICON LoadIconFromPNG(const CString& path);
 
 	HICON GetDefaultIcon(const CString& path);
 
@@ -32,6 +33,7 @@ public:
 	HICON LoadRegisterWindowIcon();
 	HICON LoadGroupIcon();
 	HICON LoadPromptIcon();
+
 
 private:
 	IconLoader();
