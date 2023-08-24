@@ -126,6 +126,10 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 	if (WebSearchCommand::NewDialog(param, newCmd) == false) {
 		return false;
 	}
+
+	newCmd->AddRef();  // mCommandsで保持する分の参照カウント+1
+	in->mCommands.push_back(WebSearchCommandPtr(newCmd.get(), releaseCmd));
+
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 	return true;
 }
