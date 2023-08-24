@@ -35,6 +35,7 @@ protected:
 	uint32_t mRefCount;
 	CString mName;
 	CString mDescription;
+	CString mErrMsg;
 };
 
 

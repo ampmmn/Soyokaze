@@ -50,7 +50,7 @@ BOOL AdhocCommandBase::Execute(const Parameter& param)
 
 CString AdhocCommandBase::GetErrorString()
 {
-	return _T("");
+	return mErrMsg;
 }
 
 HICON AdhocCommandBase::GetIcon()
