@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingDialog.h"
-#include "gui/ShortcutDialog.h"
 #include "gui/BasicSettingDialog.h"
 #include "gui/InputSettingDialog.h"
 #include "gui/ExecSettingDialog.h"

@@ -174,9 +174,6 @@
     <ClInclude Include="gui/SettingDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="gui/ShortcutDialog.h">
-      <Filter>gui</Filter>
-    </ClInclude>
     <ClInclude Include="gui/TaskTray.h">
       <Filter>gui</Filter>
     </ClInclude>
@@ -618,9 +615,6 @@
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui/SettingDialog.cpp">
-      <Filter>gui</Filter>
-    </ClCompile>
-    <ClCompile Include="gui/ShortcutDialog.cpp">
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="gui/TaskTray.cpp">

@@ -701,7 +701,6 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="gui/SelectFilesDialog.h" />
     <ClInclude Include="gui/SettingDialog.h" />
-    <ClInclude Include="gui/ShortcutDialog.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
     <ClInclude Include="utility\CharConverter.h" />
@@ -865,7 +864,6 @@
     </ClCompile>
     <ClCompile Include="gui/SelectFilesDialog.cpp" />
     <ClCompile Include="gui/SettingDialog.cpp" />
-    <ClCompile Include="gui/ShortcutDialog.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
