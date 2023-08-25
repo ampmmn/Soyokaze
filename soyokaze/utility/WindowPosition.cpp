@@ -8,12 +8,28 @@
 #define new DEBUG_NEW
 #endif
 
-WindowPosition::WindowPosition() : mName(_T("Soyokaze"))
+WindowPosition::WindowPosition()
 {
+	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
+	if (GetComputerName(mName.GetBuffer(bufLen), &bufLen) == FALSE) {
+		mName = _T("Window");
+	}
 }
 
-WindowPosition::WindowPosition(LPCTSTR name) : mName(name)
+WindowPosition::WindowPosition(LPCTSTR name)
 {
+	ASSERT(name);
+
+	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
+	TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
+	if (GetComputerName(computerName, &bufLen)) {
+		mName = computerName;
+		mName += _T(".");
+		mName += name;
+	}
+	else {
+		mName = name;
+	}
 }
 
 WindowPosition::~WindowPosition()
@@ -128,6 +144,6 @@ void WindowPosition::GetFilePath(LPCTSTR baseName, TCHAR* pathBuf, size_t len)
 {
 	CAppProfile::GetDirPath(pathBuf, len);
 	PathAppend(pathBuf, baseName);
-	PathAddExtension(pathBuf, _T(".position"));
+	_tcscat_s(pathBuf, len, _T(".position"));
 }
 
