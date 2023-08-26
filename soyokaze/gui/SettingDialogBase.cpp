@@ -4,6 +4,7 @@
 #include "SettingPage.h"
 #include "BreadCrumbs.h"
 #include "utility/TopMostMask.h"
+#include "utility/Accessibility.h"
 #include "resource.h"
 #include <algorithm>
 #include <vector>
@@ -219,6 +220,10 @@ HBRUSH SettingDialogBase::OnCtlColor(
 	UINT nCtlColor
 )
 {
+	if (utility::IsHighContrastMode()) {
+		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+		return br;
+	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_BREADCRUMBS) {
 		COLORREF crBk = RGB(0xBC, 0xE1, 0xDF);

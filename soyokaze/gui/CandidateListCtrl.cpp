@@ -9,13 +9,6 @@
 #define new DEBUG_NEW
 #endif
 
-static bool IsHighContrastMode()
-{
-	HIGHCONTRAST hc;
-	hc.cbSize = sizeof(HIGHCONTRAST);
-	SystemParametersInfo(SPI_GETHIGHCONTRAST, sizeof(HIGHCONTRAST), &hc, 0);
-	return (hc.dwFlags & HCF_HIGHCONTRASTON) != 0;
-}
 struct CandidateListCtrl::PImpl
 {
 	void DrawItemName(CListCtrl* thisPtr, CDC* pDC, int itemId);

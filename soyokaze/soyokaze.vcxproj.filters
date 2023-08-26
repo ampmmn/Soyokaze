@@ -546,6 +546,9 @@
     <ClInclude Include="commands\uwp\UWPCommandProvider.h">
       <Filter>commands\uwp</Filter>
     </ClInclude>
+    <ClInclude Include="utility\Accessibility.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -979,6 +982,9 @@
     </ClCompile>
     <ClCompile Include="commands\uwp\UWPCommandProvider.cpp">
       <Filter>commands\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\Accessibility.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

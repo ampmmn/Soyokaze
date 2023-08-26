@@ -703,6 +703,7 @@
     <ClInclude Include="gui/SettingDialog.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="gui/TaskTray.h" />
+    <ClInclude Include="utility\Accessibility.h" />
     <ClInclude Include="utility\CharConverter.h" />
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
@@ -865,6 +866,7 @@
     <ClCompile Include="gui/SelectFilesDialog.cpp" />
     <ClCompile Include="gui/SettingDialog.cpp" />
     <ClCompile Include="gui/TaskTray.cpp" />
+    <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />

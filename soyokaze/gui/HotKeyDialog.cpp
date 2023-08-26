@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "gui/HotKeyDialog.h"
+#include "utility/Accessibility.h"
 #include "resource.h"
 #include <utility>
 
@@ -83,6 +84,11 @@ void HotKeyDialog::UpdateStatus()
  */
 HBRUSH HotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	if (utility::IsHighContrastMode()) {
+		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+		return br;
+	}
+
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {

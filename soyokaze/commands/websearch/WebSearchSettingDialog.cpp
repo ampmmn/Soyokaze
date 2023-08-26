@@ -5,6 +5,7 @@
 #include "core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
+#include "utility/Accessibility.h"
 #include "resource.h"
 
 namespace soyokaze {
@@ -191,14 +192,15 @@ void SettingDialog::OnUpdateStatus()
 
 HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (utility::IsHighContrastMode()) {
+		return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
 		COLORREF crTxt = in->mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
 		pDC->SetTextColor(crTxt);
 	}
-
-	return br;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
 }
 
 }

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "gui/CommandHotKeyDialog.h"
 #include "core/CommandHotKeyManager.h"
+#include "utility/Accessibility.h"
 #include "resource.h"
 #include <utility>
 
@@ -116,14 +117,17 @@ void CommandHotKeyDialog::UpdateStatus()
  */
 HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (utility::IsHighContrastMode()) {
+		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+		return br;
+	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
 		COLORREF crTxt = mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
 		pDC->SetTextColor(crTxt);
 	}
 
-	return br;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
 }
 
 // 利用できないキーか?
