@@ -78,6 +78,18 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 	return false;
 }
 
+static bool GetLastWriteTime(const CString& path, FILETIME& tm)
+{
+	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+	BOOL isOK = GetFileTime(h, nullptr, nullptr, &tm);
+	CloseHandle(h);
+
+	return isOK != FALSE;
+}
+
 void SpecialFolderFiles::GetFiles(std::vector<ITEM>& items, int csidl)
 {
 	TCHAR path[MAX_PATH_NTFS];
@@ -122,6 +134,7 @@ void SpecialFolderFiles::GetFiles(std::vector<ITEM>& items, int csidl)
 			ITEM item;
 			item.mType = csidl == CSIDL_RECENT ? TYPE_RECENT : TYPE_STARTMENU;
 			item.mName = PathFindFileName(fileName);
+
 			PathRemoveExtension(item.mName.GetBuffer(item.mName.GetLength()));   // .lnkを抜く
 			item.mName.ReleaseBuffer();
 			item.mFullPath = ShortcutFile::ResolvePath(f.GetFilePath(), &item.mDescription);
@@ -137,6 +150,19 @@ void SpecialFolderFiles::GetFiles(std::vector<ITEM>& items, int csidl)
 			tmp.push_back(item);
 		}
 	}
+	for (auto& item : tmp) {
+		GetLastWriteTime(item.mFullPath, item.mWriteTime);
+	}
+
+	// 更新日時降順でソート
+	std::sort(tmp.begin(), tmp.end(), [](const ITEM& l_, const ITEM& r_) {
+		auto& l = l_.mWriteTime;
+		auto& r = r_.mWriteTime;
+		if (r.dwHighDateTime < l.dwHighDateTime) { return true; }
+		if (r.dwHighDateTime > l.dwHighDateTime) { return false; }
+		return r.dwLowDateTime < l.dwLowDateTime;
+	});
+
 	items.insert(items.end(), tmp.begin(), tmp.end());
 }
 
