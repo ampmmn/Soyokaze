@@ -20,6 +20,7 @@ public:
 
 private:
 	void GetFiles(std::vector<ITEM>& items, int csidl);
+	void GetLnkFiles(std::vector<ITEM>& items, int csidl);
 
 private:
 	struct PImpl;

@@ -986,6 +986,9 @@
     <ClCompile Include="utility\Accessibility.cpp">
       <Filter>utility</Filter>
     </ClCompile>
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFile.cpp">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">

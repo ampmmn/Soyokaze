@@ -7,10 +7,13 @@ namespace specialfolderfiles {
 enum {
 	TYPE_RECENT,
 	TYPE_STARTMENU,
+	TYPE_DESKTOP,
 };
 
 struct ITEM
 {
+	static int GetTypeFromCSIDL(int csidl);
+
 	CString mName;
 	CString mFullPath;
 	CString mDescription;

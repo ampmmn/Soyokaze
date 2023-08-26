@@ -1589,6 +1589,7 @@ BEGIN
     IDS_COMMAND_STARTMENU   "スタートメニュー"
     IDS_COMMAND_UWP         "UWPアプリ"
     IDS_SENDTO              "コマンドとして登録する.lnk"
+    IDS_COMMAND_DESKTOP     "デスクトップのファイル"
 END
 
 #endif    // 日本語 (日本) resources

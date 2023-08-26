@@ -779,6 +779,7 @@
     <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp" />
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFile.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp" />

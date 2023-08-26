@@ -105,6 +105,7 @@
 #define IDS_COMMAND_STARTMENU           169
 #define IDS_COMMAND_UWP                 170
 #define IDS_SENDTO                      171
+#define IDS_COMMAND_DESKTOP             172
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
