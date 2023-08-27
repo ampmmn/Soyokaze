@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "BookmarkCommand.h"
+#include "commands/common/SubProcess.h"
 #include "IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -9,6 +10,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -95,22 +98,16 @@ BOOL BookmarkCommand::Execute(const Parameter& param)
 	}
 
 	if (PathFileExists(path) == FALSE) {
-		CString msg(_T("Browser executable does not found."));
+		CString msg(_T("Browser executable not found."));
 		msg += _T("\n");
 		msg += path;
 		AfxMessageBox(msg);
 		return TRUE;
 	}
 
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_NORMAL;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-	si.lpParameters = in->mUrl;
-
-	ShellExecuteEx(&si);
-	CloseHandle(si.hProcess);
+	SubProcess::ProcessPtr process;
+	SubProcess exec(param);
+	exec.Run(path, in->mUrl, process);
 
 	return TRUE;
 }

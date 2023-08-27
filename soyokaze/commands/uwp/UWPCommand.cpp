@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "framework.h"
 #include "UWPCommand.h"
+#include "commands/common/SubProcess.h"
 #include "IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -39,18 +42,17 @@ CString UWPCommand::GetTypeDisplayName()
 
 BOOL UWPCommand::Execute(const Parameter& param)
 {
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_HIDE;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = _T("cmd.exe");
+	CString paramStr;
+	paramStr.Format(_T("/c start %s:"), in->mItem.mScheme);
 
-	CString cmdline;
-	cmdline.Format(_T("/c start %s:"), in->mItem.mScheme);
-	si.lpParameters = cmdline;
+	SubProcess::ProcessPtr process;
 
-	ShellExecuteEx(&si);
-	CloseHandle(si.hProcess);
+	SubProcess exec(param);
+	exec.SetShowType(SW_HIDE);
+	if (exec.Run(_T("cmd.exe"), paramStr, process) == false) {
+		mErrMsg = process->GetErrorMessage();
+		return FALSE;
+	}
 
 	return TRUE;
 }

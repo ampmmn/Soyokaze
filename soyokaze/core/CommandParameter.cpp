@@ -34,10 +34,20 @@ struct CommandParameter::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CommandParameter::CommandParameter(): in(std::make_unique<PImpl>())
+CommandParameter::CommandParameter() : in(std::make_unique<PImpl>())
 {
 }
 
+CommandParameter::CommandParameter(const CommandParameter& rhs) :
+	in(std::make_unique<PImpl>())
+{
+	in->mWholeText = rhs.in->mWholeText;
+	in->mCommandPart = rhs.in->mCommandPart;
+	in->mParamPart = rhs.in->mParamPart;
+	in->mHasSpace = rhs.in->mHasSpace;
+	in->mStrParamMap = rhs.in->mStrParamMap;
+	in->mBoolParamMap = rhs.in->mBoolParamMap;
+}
 
 CommandParameter::CommandParameter(
 	const CString& str
@@ -66,6 +76,11 @@ bool CommandParameter::IsEmpty() const
 	return in->mWholeText.IsEmpty() != FALSE;
 }
 
+bool CommandParameter::HasParameter() const
+{
+	return in->mParamPart.IsEmpty() == FALSE;
+}
+
 void CommandParameter::AddArgument(const CString& arg)
 {
 	if (in->mParamPart.IsEmpty() == FALSE) {
@@ -90,6 +105,13 @@ void CommandParameter::SetWholeString(const CString& str)
 		in->mParamPart.Empty();
 		in->mHasSpace = false;
 	}
+}
+
+void CommandParameter::SetParamString(const CString& paramStr)
+{
+	in->mParamPart = paramStr;
+	in->mWholeText = in->mCommandPart + _T(" ") + paramStr;
+	in->mHasSpace = (paramStr.IsEmpty() == FALSE);
 }
 
 const CString& CommandParameter::GetWholeString() const

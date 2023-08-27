@@ -1,14 +1,16 @@
 #include "pch.h"
 #include "framework.h"
 #include "SpecialFolderFileCommand.h"
+#include "commands/common/SubProcess.h"
 #include "IconLoader.h"
 #include "AppPreference.h"
-#include "utility/LastErrorString.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -55,51 +57,13 @@ CString SpecialFolderFileCommand::GetTypeDisplayName()
 
 BOOL SpecialFolderFileCommand::Execute(const Parameter& param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
+	SubProcess::ProcessPtr process;
 
-	CString path = in->mItem.mFullPath;
-	CString paramStr;
-
-	auto pref = AppPreference::Get();
-
-	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
-	                  (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(path));
-	if (isOpenPath) {
-		// 登録されたファイラーで開く
-		if (pref->IsUseFiler()) {
-			path = pref->GetFilerPath();
-			paramStr = pref->GetFilerParam();
-
-			// とりあえずリンク先のみをサポート
-			paramStr.Replace(_T("$target"), in->mItem.mFullPath);
-			//
-		}
-		else {
-			// 登録されたファイラーがない場合はエクスプローラで開く
-			if (PathIsDirectory(path) == FALSE) {
-				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
-				path.ReleaseBuffer();
-			}
-			paramStr = _T("open");
-		}
-	}
-
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_NORMAL;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-	if (paramStr.IsEmpty() == FALSE) {
-		si.lpParameters = paramStr;
-	}
-
-	if (ShellExecuteEx(&si) == FALSE) {
-		LastErrorString errStr(GetLastError());
-		this->mErrMsg = (LPCTSTR)errStr;
+	SubProcess exec(param);
+	if (exec.Run(in->mItem.mFullPath, process) == false) {
+		this->mErrMsg = process->GetErrorMessage();
 		return FALSE;
 	}
-	CloseHandle(si.hProcess);
 
 	return TRUE;
 }

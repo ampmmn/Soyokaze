@@ -549,6 +549,9 @@
     <ClInclude Include="utility\Accessibility.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\SubProcess.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -988,6 +991,9 @@
     </ClCompile>
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFile.cpp">
       <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\SubProcess.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

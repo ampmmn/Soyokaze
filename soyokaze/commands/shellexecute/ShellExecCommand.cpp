@@ -5,6 +5,7 @@
 #include "commands/shellexecute/ShellExecSettingDialog.h"
 #include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/common/SubProcess.h"
 #include "core/CommandRepository.h"
 #include "core/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
@@ -95,22 +96,32 @@ BOOL ShellExecCommand::Execute()
 	return Execute(param);
 }
 
-BOOL ShellExecCommand::Execute(const Parameter& param)
+// Ctrl-Shift-Enterキー押下で実行した場合は管理者権限で実行する。
+// CtrlとShiftが押されているかを判断する。
+static bool IsRunAsKeyPressed(const soyokaze::core::CommandParameter& param)
 {
+	return param.GetNamedParamBool(_T("CtrlKeyPressed")) && param.GetNamedParamBool(_T("ShiftKeyPressed"));
+}
+
+BOOL ShellExecCommand::Execute(const Parameter& param_)
+{
+	Parameter param(param_);
+
 	std::vector<CString> args;
 	param.GetParameters(args);
 
-	if (args.empty() && in->mParam.mIsShowArgDialog) {
+	if (param.HasParameter() == false && in->mParam.mIsShowArgDialog) {
 		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
 		ArgumentDialog dlg(GetName());
 		if (dlg.DoModal() != IDOK) {
 			return TRUE;
 		}
-		Parameter::GetParameters(dlg.GetArguments(), args);
+		param.SetParamString(dlg.GetArguments());
 	}
 
+
 	// 実行時引数が与えられた場合は履歴に登録しておく
-	if (args.size() > 0) {
+	if (param.HasParameter()) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
 	}
 
@@ -120,79 +131,24 @@ BOOL ShellExecCommand::Execute(const Parameter& param)
 	ATTRIBUTE attr;
 	SelectAttribute(args, attr);
 
-	CString path;
-	CString paramStr;
-
-	auto pref = AppPreference::Get();
-
-	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
-	                  (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
-	if (isOpenPath || PathIsDirectory(attr.mPath)) {
-
-		// 登録されたファイラーで開く
-
-		if (pref->IsUseFiler()) {
-			path = pref->GetFilerPath();
-			paramStr = pref->GetFilerParam();
-
-			// とりあえずリンク先のみをサポート
-			paramStr.Replace(_T("$target"), attr.mPath);
-			//
-		}
-		else {
-			// 登録されたファイラーがない場合はエクスプローラで開く
-			path = attr.mPath;
-			if (PathIsDirectory(path) == FALSE) {
-				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
-				path.ReleaseBuffer();
-			}
-			paramStr = _T("open");
-		}
-	}
-	else {
-		path = attr.mPath;
-		paramStr = attr.mParam;
+	SubProcess exec(param);
+	exec.SetShowType(attr.mShowType);
+	exec.SetWorkDirectory(attr.mDir);
+	if (in->mParam.mIsRunAsAdmin) {
+		exec.SetRunAsAdmin();
 	}
 
-	// argsの値を展開
-	ExpandArguments(path, args);
-	ExpandArguments(paramStr, args);
-	ExpandClipboard(paramStr);
-	ExpandAfxCurrentDir(paramStr);
-
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = attr.mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-	if (in->mParam.mIsRunAsAdmin && IsRunAsAdmin() == false) {
-		si.lpVerb = _T("runas");
-	}
-
-	if (paramStr.IsEmpty() == FALSE) {
-		si.lpParameters = paramStr;
-	}
-
-	CString workDir = attr.mDir;
-	if (workDir.IsEmpty() == FALSE) {
-		ExpandAfxCurrentDir(workDir);
-		si.lpDirectory = workDir;
-	}
-	BOOL bRun = ShellExecuteEx(&si);
-	if (bRun == FALSE) {
-		LastErrorString errStr(GetLastError());
-		in->mErrMsg = (LPCTSTR)errStr;
+	SubProcess::ProcessPtr process;
+	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
+		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
 		return FALSE;
 	}
 
 	// もしwaitするようにするのであればここで待つ
 	if (param.GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		WaitForSingleObject(si.hProcess, WAIT_LIMIT);
+		process->Wait(WAIT_LIMIT);
 	}
-
-	CloseHandle(si.hProcess);
 
 	return TRUE;
 }
@@ -592,6 +548,7 @@ uint32_t ShellExecCommand::Release()
 }
 
 
+// 管理者権限で実行しているか?
 bool ShellExecCommand::IsRunAsAdmin()
 {
 	PSID grp;

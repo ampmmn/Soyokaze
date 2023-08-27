@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "VMXFileCommand.h"
+#include "commands/common/SubProcess.h"
 #include "IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -9,6 +10,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -88,16 +91,12 @@ BOOL VMXFileCommand::Execute(const Parameter& param)
 		return FALSE;
 	}
 
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_NORMAL;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = in->mFullPath;
-	si.lpParameters = nullptr;
-
-	ShellExecuteEx(&si);
-	CloseHandle(si.hProcess);
-
+	SubProcess::ProcessPtr process;
+	SubProcess exec(param);
+	if (exec.Run(in->mFullPath, process) == false) {
+		in->mErrorMsg = process->GetErrorMessage();
+		return FALSE;
+	}
 	return TRUE;
 }
 

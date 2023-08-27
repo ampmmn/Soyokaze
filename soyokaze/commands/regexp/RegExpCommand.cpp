@@ -3,6 +3,7 @@
 #include "RegExpCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/common/SubProcess.h"
 #include "commands/regexp/RegExpCommandEditDialog.h"
 #include "core/CommandRepository.h"
 #include "utility/LastErrorString.h"
@@ -97,7 +98,6 @@ BOOL RegExpCommand::Execute()
 
 BOOL RegExpCommand::Execute(const Parameter& param)
 {
-
 	in->mErrMsg.Empty();
 
 	ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
@@ -106,87 +106,38 @@ BOOL RegExpCommand::Execute(const Parameter& param)
 
 	CString path;
 	CString paramStr;
+	try {
+		const CString& wholeText = param.GetWholeString();
 
-	// Ctrlキーがおされて、かつ、パスが存在する場合はファイラーで表示
-		auto pref = AppPreference::Get();
+		tstring paramStr_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)attr.mParam);
+		paramStr = paramStr_.c_str();
 
-	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
-	                  (param.GetNamedParamBool(_T("CtrlKeyPressed")) && PathFileExists(attr.mPath));
-	if (isOpenPath || PathIsDirectory(attr.mPath)) {
-
-		// 登録されたファイラーで開く
-
-		if (pref->IsUseFiler()) {
-			path = pref->GetFilerPath();
-			paramStr = pref->GetFilerParam();
-
-			// とりあえずリンク先のみをサポート
-			paramStr.Replace(_T("$target"), attr.mPath);
-			//
-		}
-		else {
-			// 登録されたファイラーがない場合はエクスプローラで開く
-			path = attr.mPath;
-			if (PathIsDirectory(path) == FALSE) {
-				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
-				path.ReleaseBuffer();
-			}
-			paramStr = _T("open");
-		}
+		tstring path_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)attr.mPath);
+		path = path_.c_str();
 	}
-	else {
-		try {
-			const CString& wholeText = param.GetWholeString();
-
-			auto paramOrg = attr.mParam;
-			ExpandEnv(paramOrg);
-			tstring paramStr_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)paramOrg);
-			paramStr = paramStr_.c_str();
-
-			auto pathOrg = attr.mPath;
-			ExpandEnv(pathOrg);
-			tstring path_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)pathOrg);
-			path = path_.c_str();
-		}
-		catch(std::regex_error&) {
-			return FALSE;
-		}
+	catch(std::regex_error&) {
+		return FALSE;
 	}
 
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = attr.mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-	if (in->mRunAs == 1 && IsRunAsAdmin() == false) {
-		si.lpVerb = _T("runas");
-	}
+	SubProcess::ProcessPtr process;
 
-	if (paramStr.IsEmpty() == FALSE) {
-		si.lpParameters = paramStr;
+	SubProcess exec(param);
+	if (in->mRunAs) {
+		exec.SetRunAsAdmin();
 	}
+	exec.SetShowType(attr.mShowType);
+	exec.SetWorkDirectory(attr.mDir);
 
-	CString workDir;
-	if (attr.mDir.IsEmpty() == FALSE) {
-		workDir = attr.mDir;
-		ExpandAfxCurrentDir(workDir);
-		si.lpDirectory = workDir;
-	}
-	BOOL bRun = ShellExecuteEx(&si);
-	if (bRun == FALSE) {
-
-		LastErrorString errStr(GetLastError());
-		in->mErrMsg = (LPCTSTR)errStr;
+	if (exec.Run(path, paramStr, process) == false) {
+		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
 		return FALSE;
 	}
 
 	// もしwaitするようにするのであればここで待つ
 	if (param.GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		WaitForSingleObject(si.hProcess, WAIT_LIMIT);
+		process->Wait(WAIT_LIMIT);
 	}
-
-	CloseHandle(si.hProcess);
 
 	return TRUE;
 }

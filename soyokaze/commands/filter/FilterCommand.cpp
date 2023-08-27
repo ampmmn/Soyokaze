@@ -244,6 +244,15 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 		paramSub.SetNamedParamBool(_T("CtrlKeyPressed"), true);
 	}
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+		paramSub.SetNamedParamBool(_T("ShiftKeyPressed"), true);
+	}
+	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+		paramSub.SetNamedParamBool(_T("WinKeyPressed"), true);
+	}
+	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+		paramSub.SetNamedParamBool(_T("AltKeyPressed"), true);
+	}
 
 	if (mParam.mPostFilterType == 0) {
 		// 他のコマンドを実行

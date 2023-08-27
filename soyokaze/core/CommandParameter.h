@@ -10,15 +10,18 @@ class CommandParameter
 {
 public:
 	CommandParameter();
+	CommandParameter(const CommandParameter& rhs);
 	CommandParameter(const CString& str);
 	~CommandParameter();
 
 public:
 	bool IsEmpty() const;
+	bool HasParameter() const;
 
 	void AddArgument(const CString& arg);
 
 	void SetWholeString(const CString& str);
+	void SetParamString(const CString& paramStr);
 	const CString& GetWholeString() const;
 	const CString& GetCommandString() const;
 	const CString& GetParameterString() const;

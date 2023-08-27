@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ControlPanelCommand.h"
+#include "commands/common/SubProcess.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -8,6 +9,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -45,20 +48,9 @@ CString ControlPanelCommand::GetTypeDisplayName()
 
 BOOL ControlPanelCommand::Execute(const Parameter& param)
 {
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_NORMAL;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = _T("control.exe");
-
-	CString paramStr(_T("/name ") + in->mAppName);
-	
-	si.lpParameters = paramStr;
-
-	ShellExecuteEx(&si);
-	CloseHandle(si.hProcess);
-
-	return TRUE;
+	SubProcess exec(param);
+	SubProcess::ProcessPtr process;
+	return exec.Run(_T("control.exe"), _T("/name ") + in->mAppName, process);
 }
 
 HICON ControlPanelCommand::GetIcon()

@@ -711,6 +711,15 @@ void CSoyokazeDlg::OnOK()
 			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 				commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
 			}
+			if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+				commandParam.SetNamedParamBool(_T("ShiftKeyPressed"), true);
+			}
+			if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+				commandParam.SetNamedParamBool(_T("WinKeyPressed"), true);
+			}
+			if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+				commandParam.SetNamedParamBool(_T("AltKeyPressed"), true);
+			}
 
 			if (cmd->Execute(commandParam) == FALSE) {
 				AfxMessageBox(cmd->GetErrorString());

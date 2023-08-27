@@ -2,6 +2,7 @@
 #include "WebSearchCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchSettingDialog.h"
+#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "core/CommandRepository.h"
 #include "utility/LastErrorString.h"
@@ -80,39 +81,25 @@ BOOL WebSearchCommand::Execute()
 	return Execute(param);
 }
 
-BOOL WebSearchCommand::Execute(const Parameter& param)
+BOOL WebSearchCommand::Execute(const Parameter& param_)
 {
-	CString path = in->mParam.mURL;
+	in->mErrorMsg.Empty();
+
+	Parameter param(param_);
 
 	std::vector<CString> args;
 	if (in->mIsShortcut) {
 		// 先頭のキーワード(本来はコマンド名)も含める
-		Parameter::GetParameters(param.GetWholeString(), args);
-	}
-	else {
-		param.GetParameters(args);
+		param.SetParamString(param_.GetWholeString());
 	}
 
-	ExpandArguments(path, args);
-	ExpandClipboard(path);
+	SubProcess exec(param);
 
-	in->mErrorMsg.Empty();
-
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_SHOW;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-
-	BOOL bRun = ShellExecuteEx(&si);
-	if (bRun == FALSE) {
-		LastErrorString errStr(GetLastError());
-		in->mErrorMsg = (LPCTSTR)errStr;
+	SubProcess::ProcessPtr process;
+	if (exec.Run(in->mParam.mURL, process) == FALSE) {
+		in->mErrorMsg = process->GetErrorMessage();
 		return FALSE;
 	}
-
-	CloseHandle(si.hProcess);
-
 	return TRUE;
 }
 
