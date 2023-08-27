@@ -302,9 +302,7 @@ void KeywordManagerDialog::OnButtonDelete()
 	}
 
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	if (cmdRepoPtr->DeleteCommand(name) == false) {
-		return ;
-	}
+	cmdRepoPtr->UnregisterCommand(in->mSelCommand);
 
 	ResetContents();
 	UpdateStatus();

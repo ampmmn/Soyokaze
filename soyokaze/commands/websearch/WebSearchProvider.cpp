@@ -2,6 +2,7 @@
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
 #include "core/CommandRepository.h"
+#include "core/CommandRepositoryListenerIF.h"
 #include "core/CommandParameter.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -15,20 +16,36 @@
 namespace soyokaze {
 namespace commands {
 namespace websearch {
-//std::unique_ptr<Command, std::function<void(void*)> > mCommand;
 
 using WebSearchCommandPtr = std::unique_ptr<WebSearchCommand, std::function<void(void*)> >;
 using WebSearchCommandList = std::vector<WebSearchCommandPtr>;
 
 using CommandRepository = soyokaze::core::CommandRepository;
 
-struct WebSearchProvider::PImpl
+struct WebSearchProvider::PImpl : public soyokaze::core::CommandRepositoryListenerIF
 {
 	PImpl()
 	{
+		auto cmdRepo = CommandRepository::GetInstance();
+		cmdRepo->RegisterListener(this);
+
 	}
 	virtual ~PImpl()
 	{
+		auto cmdRepo = CommandRepository::GetInstance();
+		cmdRepo->UnregisterListener(this);
+	}
+
+	void OnDeleteCommand(soyokaze::core::Command* cmd) override
+ 	{
+		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
+			if ((*it).get() != cmd) {
+				continue;
+			}
+
+			mCommands.erase(it);
+			break;
+		}
 	}
 
 	WebSearchCommandList mCommands;

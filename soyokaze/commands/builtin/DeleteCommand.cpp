@@ -93,7 +93,7 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 		return TRUE;
 	}
 
-	cmdRepoPtr->DeleteCommand(delName);
+	cmdRepoPtr->UnregisterCommand(cmd);
 	return TRUE;
 }
 

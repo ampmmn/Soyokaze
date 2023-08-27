@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandRepository.h"
+#include "core/CommandRepositoryListenerIF.h"
 #include "CommandMap.h"
 #include "gui/AboutDlg.h"
 #include "utility/AppProfile.h"
@@ -73,6 +74,9 @@ struct CommandRepository::PImpl
 
 	std::vector<CommandProvider*> mProviders;
 
+	// リスナー
+	std::vector<CommandRepositoryListenerIF*> mListeners;
+
 	// 設定ファイル(commands.ini)のパス
 	CString mCommandFilePath;
 
@@ -132,6 +136,13 @@ int CommandRepository::RegisterCommand(Command* command)
 int CommandRepository::UnregisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
+
+	// コマンドが削除されようとしていることをリスナーに通知
+	for (auto& listener : in->mListeners) {
+		listener->OnDeleteCommand(command);
+	}
+
+	in->mRanking.Delete(command->GetName());
 	in->mCommands.Unregister(command);
 	return 0;
 }
@@ -418,18 +429,6 @@ int CommandRepository::RegisterCommandFromFiles(
 	return 0;
 }
 
-/**
- *  コマンドの削除
- */
-bool CommandRepository::DeleteCommand(const CString& cmdName)
-{
-	CSingleLock sl(&in->mCS, TRUE);
-
-	in->mRanking.Delete(cmdName);
-
-	return in->mCommands.Unregister(cmdName);
-}
-
 void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enumCommands)
 {
 	CSingleLock sl(&in->mCS, TRUE);
@@ -545,6 +544,19 @@ bool CommandRepository::HasCommand(const CString& strQueryStr)
 bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,")) == -1;
+}
+
+void CommandRepository::RegisterListener(CommandRepositoryListenerIF* listener)
+{
+	in->mListeners.push_back(listener);
+}
+
+void CommandRepository::UnregisterListener(CommandRepositoryListenerIF* listener)
+{
+	auto it = std::find(in->mListeners.begin(), in->mListeners.end(), listener);
+	if (it != in->mListeners.end()) {
+		in->mListeners.erase(it);
+	}
 }
 
 void CommandRepository::OnAppFirstBoot()

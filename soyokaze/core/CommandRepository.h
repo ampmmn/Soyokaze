@@ -10,6 +10,8 @@ namespace core {
 
 class CommandProvider;
 
+class CommandRepositoryListenerIF;
+
 class CommandRepository : public AppPreferenceListenerIF
 {
 private:
@@ -43,8 +45,6 @@ public:
 	// まとめて登録ダイアログの表示
 	int RegisterCommandFromFiles(const std::vector<CString>& files);
 
-	bool DeleteCommand(const CString& cmdName);
-
 	void EnumCommands(std::vector<soyokaze::core::Command*>& commands);
 
 	bool IsBuiltinName(const CString& cmdName);
@@ -54,6 +54,10 @@ public:
 	bool HasCommand(const CString& strQueryStr);
 
 	bool IsValidAsName(const CString& strQueryStr);
+
+	// リスナー登録
+	void RegisterListener(CommandRepositoryListenerIF* listener);
+	void UnregisterListener(CommandRepositoryListenerIF* listener);
 
 protected:
 	void OnAppFirstBoot() override;
