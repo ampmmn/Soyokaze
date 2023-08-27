@@ -123,18 +123,19 @@ bool SubProcess::Run(
 	ExpandClipboard(path);
 	ExpandAfxCurrentDir(path);
 
-	if (in->IsOpenPathKeyPressed() && PathFileExists(path)) {
+	if ((in->IsOpenPathKeyPressed() && PathFileExists(path)) || PathIsDirectory(path)) {
 		auto pref = AppPreference::Get();
 		if (pref->IsUseFiler()) {
 			// ファイラ経由でパスを表示する形に差し替える
+			paramStr = pref->GetFilerParam();
+			paramStr.Replace(_T("$target"), path);
+
 			path = pref->GetFilerPath();
 			ExpandArguments(path, args);
 			ExpandEnv(path);
 			ExpandClipboard(path);
 			ExpandAfxCurrentDir(path);
 
-			paramStr = pref->GetFilerParam();
-			paramStr.Replace(_T("$target"), path);
 		}
 		else {
 			// 登録されたファイラーがない場合はエクスプローラで開く
