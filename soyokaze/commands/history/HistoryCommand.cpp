@@ -56,11 +56,6 @@ CString HistoryCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL HistoryCommand::Execute()
-{
-	return Execute(in->mParam);
-}
-
 BOOL HistoryCommand::Execute(const Parameter& param)
 {
 	param;

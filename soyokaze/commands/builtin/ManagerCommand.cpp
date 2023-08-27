@@ -43,16 +43,10 @@ CString ManagerCommand::GetDescription()
 	return _T("【キーワードマネージャ】");
 }
 
-BOOL ManagerCommand::Execute()
+BOOL ManagerCommand::Execute(const Parameter& param)
 {
 	soyokaze::core::CommandRepository::GetInstance()->ManagerDialog();
 	return TRUE;
-}
-
-BOOL ManagerCommand::Execute(const Parameter& param)
-{
-	// このコマンドは引数を使わない
-	return Execute();
 }
 
 CString ManagerCommand::GetErrorString()

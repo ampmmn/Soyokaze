@@ -20,7 +20,6 @@ public:
 	virtual CString GetName() = 0;
 	virtual CString GetDescription() = 0;
 	virtual CString GetTypeDisplayName() = 0;
-	virtual BOOL Execute() = 0;
 	virtual BOOL Execute(const Parameter& param) = 0;
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;

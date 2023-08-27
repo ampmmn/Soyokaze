@@ -16,7 +16,6 @@ public:
 	virtual ~MailToCommand();
 
 	CString GetTypeDisplayName() override;
-	BOOL Execute() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;

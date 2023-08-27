@@ -34,13 +34,6 @@ CString AdhocCommandBase::GetDescription()
 	return mDescription;
 }
 
-
-BOOL AdhocCommandBase::Execute()
-{
-	Parameter emptyParams;
-	return Execute(emptyParams);
-}
-
 BOOL AdhocCommandBase::Execute(const Parameter& param)
 {
 	// 派生側で実装する

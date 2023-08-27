@@ -86,7 +86,7 @@ CString RegistWinCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL RegistWinCommand::Execute()
+BOOL RegistWinCommand::Execute(const Parameter& param)
 {
 	in->mErrorMsg.Empty();
 
@@ -124,13 +124,6 @@ BOOL RegistWinCommand::Execute()
 
 		return FALSE;
 	}
-
-
-}
-
-BOOL RegistWinCommand::Execute(const Parameter& param)
-{
-	return Execute();
 }
 
 CString RegistWinCommand::GetErrorString()

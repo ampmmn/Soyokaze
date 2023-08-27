@@ -75,12 +75,6 @@ CString WebSearchCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL WebSearchCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL WebSearchCommand::Execute(const Parameter& param_)
 {
 	in->mErrorMsg.Empty();

@@ -45,12 +45,6 @@ CString ChangeDirectoryCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL ChangeDirectoryCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 {
 	auto pref = AppPreference::Get();
@@ -65,7 +59,9 @@ BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 
 		ShellExecCommand cmd;
 		cmd.SetPath(currentDir);
-		return cmd.Execute();
+
+		Parameter paramEmpty;
+		return cmd.Execute(paramEmpty);
 	}
 
 	std::vector<CString> args;

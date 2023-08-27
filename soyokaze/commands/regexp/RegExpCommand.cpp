@@ -90,12 +90,6 @@ CString RegExpCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL RegExpCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL RegExpCommand::Execute(const Parameter& param)
 {
 	in->mErrMsg.Empty();

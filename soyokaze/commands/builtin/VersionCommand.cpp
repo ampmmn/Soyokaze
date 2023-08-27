@@ -43,7 +43,7 @@ CString VersionCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL VersionCommand::Execute()
+BOOL VersionCommand::Execute(const Parameter& param)
 {
 	if (mIsExecuting) {
 		return TRUE;
@@ -55,12 +55,6 @@ BOOL VersionCommand::Execute()
 	dlg.DoModal();
 	mIsExecuting = false;
 	return TRUE;
-}
-
-BOOL VersionCommand::Execute(const Parameter& param)
-{
-	// 引数指定しても動作はかわらない
-	return Execute();
 }
 
 CString VersionCommand::GetErrorString()

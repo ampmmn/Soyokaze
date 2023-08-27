@@ -45,7 +45,7 @@ CString SettingCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL SettingCommand::Execute()
+BOOL SettingCommand::Execute(const Parameter& param)
 {
 	if (mIsExecuting) {
 		// 既に実行中
@@ -83,12 +83,6 @@ BOOL SettingCommand::Execute()
 
 
 	return TRUE;
-}
-
-BOOL SettingCommand::Execute(const Parameter& param)
-{
-	// 引数指定しても動作はかわらない
-	return Execute();
 }
 
 CString SettingCommand::GetErrorString()

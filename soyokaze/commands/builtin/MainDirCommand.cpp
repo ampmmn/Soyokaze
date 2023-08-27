@@ -45,7 +45,7 @@ CString MainDirCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL MainDirCommand::Execute()
+BOOL MainDirCommand::Execute(const Parameter& param)
 {
 	TCHAR mainDirPath[65536];
 	GetModuleFileName(NULL, mainDirPath, 65536);
@@ -54,13 +54,9 @@ BOOL MainDirCommand::Execute()
 
 	ShellExecCommand cmd;
 	cmd.SetPath(mainDirPath);
-	return cmd.Execute();
-}
 
-BOOL MainDirCommand::Execute(const Parameter& param)
-{
-	// 引数指定しても動作はかわらない
-	return Execute();
+	Parameter paramEmpty;
+	return cmd.Execute(paramEmpty);
 }
 
 CString MainDirCommand::GetErrorString()

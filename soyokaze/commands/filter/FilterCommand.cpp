@@ -275,7 +275,9 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 
 		ShellExecCommand cmd;
 		cmd.SetAttribute(attr);
-		return cmd.Execute();
+
+		Parameter paramEmpty;
+		return cmd.Execute(paramEmpty);
 
 	}
 	else if (mParam.mPostFilterType == 2) {
@@ -316,12 +318,6 @@ CString FilterCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
 	return TEXT_TYPE;
-}
-
-BOOL FilterCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
 }
 
 BOOL FilterCommand::Execute(const Parameter& param)

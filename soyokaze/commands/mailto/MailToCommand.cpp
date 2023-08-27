@@ -32,18 +32,6 @@ CString MailToCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL MailToCommand::Execute()
-{
-	ShellExecCommand::ATTRIBUTE attr;
-	attr.mPath = _T("cmd.exe");
-	attr.mParam = _T("/c start \"\" mailto:");
-	attr.mShowType = SW_HIDE;
-
-	ShellExecCommand cmd;
-	cmd.SetAttribute(attr);
-	return cmd.Execute();
-}
-
 BOOL MailToCommand::Execute(const Parameter& param)
 {
 	CString recipient;
@@ -62,7 +50,9 @@ BOOL MailToCommand::Execute(const Parameter& param)
 
 	ShellExecCommand cmd;
 	cmd.SetAttribute(attr);
-	return cmd.Execute();
+
+	Parameter paramEmpty;
+	return cmd.Execute(paramEmpty);
 }
 
 HICON MailToCommand::GetIcon()

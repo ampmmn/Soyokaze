@@ -90,12 +90,6 @@ CString ShellExecCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL ShellExecCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 // Ctrl-Shift-Enterキー押下で実行した場合は管理者権限で実行する。
 // CtrlとShiftが押されているかを判断する。
 static bool IsRunAsKeyPressed(const soyokaze::core::CommandParameter& param)

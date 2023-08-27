@@ -42,15 +42,9 @@ CString ReloadCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL ReloadCommand::Execute()
-{
-	return soyokaze::core::CommandRepository::GetInstance()->Load();
-}
-
 BOOL ReloadCommand::Execute(const Parameter& param)
 {
-	// 引数指定しても動作はかわらない
-	return Execute();
+	return soyokaze::core::CommandRepository::GetInstance()->Load();
 }
 
 CString ReloadCommand::GetErrorString()

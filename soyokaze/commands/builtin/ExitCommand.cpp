@@ -41,7 +41,7 @@ CString ExitCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL ExitCommand::Execute()
+BOOL ExitCommand::Execute(const Parameter& param)
 {
 	if (AfxGetMainWnd() != nullptr) {
 		// AfxGetGetMainWnd()でウインドウがとれる==メインスレッドなので、
@@ -60,12 +60,6 @@ BOOL ExitCommand::Execute()
 		}
 		return TRUE;
 	}
-}
-
-BOOL ExitCommand::Execute(const Parameter& param)
-{
-	// 引数指定しても動作はかわらない
-	return Execute();
 }
 
 CString ExitCommand::GetErrorString()

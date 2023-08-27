@@ -45,7 +45,7 @@ CString UserDirCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL UserDirCommand::Execute()
+BOOL UserDirCommand::Execute(const Parameter& param)
 {
 	TCHAR userDirPath[65536];
 	CAppProfile::GetDirPath(userDirPath, 65536);
@@ -53,13 +53,9 @@ BOOL UserDirCommand::Execute()
 
 	ShellExecCommand cmd;
 	cmd.SetPath(userDirPath);
-	return cmd.Execute();
-}
 
-BOOL UserDirCommand::Execute(const Parameter& param)
-{
-	// 引数指定しても動作はかわらない
-	return Execute();
+	Parameter paramEmpty;
+	return cmd.Execute(paramEmpty);
 }
 
 CString UserDirCommand::GetErrorString()

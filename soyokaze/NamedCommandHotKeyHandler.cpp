@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "NamedCommandHotKeyHandler.h"
 #include "core/CommandRepository.h"
+#include "core/CommandParameter.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,7 +36,8 @@ bool NamedCommandHotKeyHandler::Invoke()
 	ASSERT(wnd);
 	ShowWindow(wnd->GetSafeHwnd(), SW_HIDE);
 
-	bool result = cmd->Execute();
+	soyokaze::core::CommandParameter param;
+	bool result = cmd->Execute(param);
 	cmd->Release();
 
 	return result;

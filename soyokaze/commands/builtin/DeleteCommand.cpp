@@ -44,12 +44,6 @@ CString DeleteCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL DeleteCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL DeleteCommand::Execute(const Parameter& param)
 {
 	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示

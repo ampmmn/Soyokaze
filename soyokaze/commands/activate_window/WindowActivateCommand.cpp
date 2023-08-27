@@ -72,12 +72,6 @@ CString WindowActivateCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL WindowActivateCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL WindowActivateCommand::Execute(const Parameter& param)
 {
 	// ここで該当するウインドウを探す

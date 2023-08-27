@@ -14,7 +14,6 @@ public:
 	virtual ~HistoryCommand();
 
 	CString GetTypeDisplayName() override;
-	BOOL Execute() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	soyokaze::core::Command* Clone() override;

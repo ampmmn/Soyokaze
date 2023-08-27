@@ -42,12 +42,6 @@ CString EditCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL EditCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL EditCommand::Execute(const Parameter& param)
 {
 	std::vector<CString> args;

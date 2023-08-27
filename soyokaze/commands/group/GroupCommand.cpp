@@ -172,12 +172,6 @@ CString GroupCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL GroupCommand::Execute()
-{
-	Parameter param;
-	return Execute(param);
-}
-
 BOOL GroupCommand::Execute(const Parameter& param)
 {
 	if (param.GetParameterString().IsEmpty() == FALSE) {

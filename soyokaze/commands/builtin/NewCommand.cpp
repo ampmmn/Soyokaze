@@ -45,13 +45,6 @@ CString NewCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL NewCommand::Execute()
-{
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog();
-	return TRUE;
-}
-
 BOOL NewCommand::Execute(const Parameter& param)
 {
 	Parameter inParam;
