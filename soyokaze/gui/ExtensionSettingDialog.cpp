@@ -17,7 +17,8 @@ ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) :
 	mIsEnableBookmarks(FALSE),
 	mIsEnableControlPanel(FALSE),
 	mIsEnableSpecialFolder(FALSE),
-	mIsEnableUWP(FALSE)
+	mIsEnableUWP(FALSE),
+	mIsEnableOutlookMail(FALSE)
 {
 }
 
@@ -40,6 +41,7 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
+	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
 	__super::OnOK();
 }
 
@@ -54,6 +56,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, SettingPage)
@@ -105,6 +108,7 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
+	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), true);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

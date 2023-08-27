@@ -240,30 +240,32 @@ BEGIN
     CONTROL         "入力画面を非表示にして起動する(&E)",IDC_CHECK_HIDEONRUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,52,134,10
 END
 
-IDD_EXTENSIONSETTING DIALOGEX 0, 0, 309, 242
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+IDD_EXTENSIONSETTING DIALOGEX 0, 0, 309, 260
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "簡易電卓機能",IDC_STATIC,11,7,282,69
     CONTROL         "有効にする(&C)",IDC_CHECK_ENABLECALCULATOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,22,61,10
     LTEXT           "Python DLLのパス(&D):",IDC_STATIC,22,37,69,8
     EDITTEXT        IDC_EDIT_PYTHONDLLPATH,95,33,143,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "参照(&B)",IDC_BUTTON_BROWSE,241,33,31,14
+    PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,241,33,31,14
     LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,53,180,19
-    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,79,282,42
+    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,79,282,58
     CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,92,154,10
     CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,106,207,10
-    GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,11,124,282,31
+    CONTROL         "Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,120,185,10
+    GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,11,140,282,31
     CONTROL         "Edge/Chromeのブックマークを候補として表示する(&B)",IDC_CHECK_ENABLE_BOOKMARKS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,138,177,10
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,160,282,69
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,154,177,10
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,176,282,69
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,174,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,190,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,190,206,10
-    CONTROL         "UWPアプリを候補として表示する(&F)",IDC_CHECK_ENABLE_UWPAPPS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,207,125,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,206,206,10
+    CONTROL         "UWPアプリを候補として表示する(&F)",IDC_CHECK_ENABLE_UWPAPPS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,223,125,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -721,7 +723,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 235
+        BOTTOMMARGIN, 253
     END
 
     IDD_SHORTCUTSETTING, DIALOG

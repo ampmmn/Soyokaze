@@ -89,6 +89,9 @@ public:
 	// UWPアプリの検索を使用するか
 	bool IsEnableUWP();
 
+	// Outlookのメール(受信トレイ)の検索を使用するか
+	bool IsEnableOutlookMailItem();
+
 	// 効果音ファイルパスを取得(文字入力)
 	CString GetInputSoundFile();
 	// 効果音ファイルパスを取得(候補選択)
