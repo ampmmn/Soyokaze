@@ -22,6 +22,10 @@ struct SpecialFolderFiles::PImpl
 	std::vector<ITEM> mItems;
 	DWORD mElapsed = 0;
 	bool mIsUpdated = false;
+
+	bool mIsEnableRecent = true;
+	bool mIsEnableStartMenu = true;
+	bool mIsEnableDesktop = true;
 };
 
 
@@ -31,6 +35,21 @@ SpecialFolderFiles::SpecialFolderFiles() : in(std::make_unique<PImpl>())
 
 SpecialFolderFiles::~SpecialFolderFiles()
 {
+}
+
+void SpecialFolderFiles::EnableStartMenu(bool isEnable)
+{
+	in->mIsEnableStartMenu = isEnable;
+}
+
+void SpecialFolderFiles::EnableRecent(bool isEnable)
+{
+	in->mIsEnableRecent = isEnable;
+}
+
+void SpecialFolderFiles::EnableDesktopFiles(bool isEnable)
+{
+	in->mIsEnableDesktop = isEnable;
 }
 
 bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
@@ -53,16 +72,23 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 		CoInitialize(NULL);
 
 		std::vector<ITEM> tmp;
-		// 最近使ったファイルを得る
-		GetLnkFiles(tmp, CSIDL_RECENT);
-		// ユーザのスタートメニュー
-		GetLnkFiles(tmp, CSIDL_STARTMENU);
-		// ユーザのデスクトップ
-		GetFiles(tmp, CSIDL_DESKTOP);
-		// すべてのユーザのスタートメニュー
-		GetLnkFiles(tmp, CSIDL_COMMON_STARTMENU);
-		// すべてのユーザのデスクトップ
-		GetFiles(tmp, CSIDL_COMMON_DESKTOPDIRECTORY);
+
+		if (in->mIsEnableRecent) {
+			// 最近使ったファイルを得る
+			GetLnkFiles(tmp, CSIDL_RECENT);
+		}
+		if (in->mIsEnableStartMenu) {
+			// ユーザのスタートメニュー
+			GetLnkFiles(tmp, CSIDL_STARTMENU);
+			// すべてのユーザのスタートメニュー
+			GetLnkFiles(tmp, CSIDL_COMMON_STARTMENU);
+		}
+		if (in->mIsEnableDesktop) {
+			// ユーザのデスクトップ
+			GetFiles(tmp, CSIDL_DESKTOP);
+			// すべてのユーザのデスクトップ
+			GetFiles(tmp, CSIDL_COMMON_DESKTOPDIRECTORY);
+		}
 
 		CoUninitialize();
 
@@ -122,6 +148,11 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 			 continue;
 			}
 	 
+			if (f.IsHidden()) {
+				// 隠しファイル属性があるものは対象外にする
+				continue;
+			}
+
 			if (f.IsDirectory()) {
 				auto subDir = f.GetFilePath();
 				PathAppend(subDir.GetBuffer(MAX_PATH_NTFS), _T("*.*"));
@@ -129,6 +160,7 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 				stk.push_back(subDir);
 				continue;
 			}
+
 
 			CString fileName = f.GetFileName();
 			if (_tcsicmp(PathFindExtension(fileName), _T(".lnk")) != 0) {
@@ -196,6 +228,11 @@ void SpecialFolderFiles::GetFiles(std::vector<ITEM>& items, int csidl)
 
 			if (f.IsDots()) {
 			 continue;
+			}
+
+			if (f.IsHidden()) {
+				// 隠しファイル属性があるものは対象外にする
+				continue;
 			}
 	 
 			if (f.IsDirectory()) {

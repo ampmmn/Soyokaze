@@ -85,6 +85,8 @@ public:
 
 	// スタートメニュー/最近使ったファイルのアイテム検索を使用するか
 	bool IsEnableSpecialFolder();
+	// デスクトップ上のファイルのアイテム検索を使用するか
+	bool IsEnableDesktop();
 
 	// UWPアプリの検索を使用するか
 	bool IsEnableUWP();

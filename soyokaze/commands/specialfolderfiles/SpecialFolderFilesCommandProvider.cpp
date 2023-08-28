@@ -32,11 +32,13 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableSpecialFolder();
+		mIsEnableSpecialFolder = pref->IsEnableSpecialFolder();
+		mIsEnableDesktop = pref->IsEnableDesktop();
 	}
 	void OnAppExit() override {}
 
-	bool mIsEnable = true;
+	bool mIsEnableSpecialFolder = true;
+	bool mIsEnableDesktop = true;
 	bool mIsFirstCall = true;
 	std::vector<ITEM> mRecentFileItems;
 	SpecialFolderFiles mFiles;
@@ -72,14 +74,18 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 {
 	if (in->mIsFirstCall) {
 		auto pref = AppPreference::Get();
-		in->mIsEnable = pref->IsEnableSpecialFolder();
+		in->mIsEnableSpecialFolder = pref->IsEnableSpecialFolder();
+		in->mIsEnableDesktop = pref->IsEnableDesktop();
 		in->mIsFirstCall = false;
 	}
 
-	if (in->mIsEnable == false) {
+	if (in->mIsEnableSpecialFolder == false && in->mIsEnableDesktop == false) {
 		return ;
 	}
 
+	in->mFiles.EnableStartMenu(in->mIsEnableSpecialFolder);
+	in->mFiles.EnableRecent(in->mIsEnableSpecialFolder);
+	in->mFiles.EnableDesktopFiles(in->mIsEnableDesktop);
 	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
 
 	for (auto& item : in->mRecentFileItems) {

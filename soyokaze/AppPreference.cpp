@@ -593,6 +593,11 @@ bool AppPreference::IsEnableSpecialFolder()
 	return in->mSettings.Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 }
 
+bool AppPreference::IsEnableDesktop()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnableDesktop"), true);
+}
+
 // UWPアプリの検索を使用するか
 bool AppPreference::IsEnableUWP()
 {
