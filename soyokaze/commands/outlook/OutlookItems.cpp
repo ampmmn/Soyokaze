@@ -395,24 +395,6 @@ BOOL MailItem::Activate(bool isShowMaximize)
 			continue;
 		}
 
-		// 現在の表示フォルダを変更するため、ActiveExplorerのCurrentFolderを得る
-		CComPtr<IDispatch> activeExplorer;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, outlookApp, L"ActiveExplorer", 0);
-			activeExplorer = result.pdispVal;
-		}
-		// 現在の表示フォルダをInboxに変更する
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_DISPATCH;
-			arg1.pdispVal = inboxFolder;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYPUTREF, &result, activeExplorer, L"CurrentFolder", 1, &arg1);
-		}
-
 		// GetConversationでConversation取得
 		CComPtr<IDispatch> conversation;
 		{
@@ -421,43 +403,68 @@ BOOL MailItem::Activate(bool isShowMaximize)
 			conversation = result.pdispVal;
 		}
 
-		// Conversationからルートアイテムを取得
-		CComPtr<IDispatch> rootItems;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, conversation, L"GetRootItems", 0);
-			rootItems = result.pdispVal;
-		}
-		CComPtr<IDispatch> rootItem;
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = i;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, rootItems, L"Item", 1, &arg1);
-			rootItem = result.pdispVal;
-		}
-
-		// 現在の選択を解除
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, activeExplorer, L"ClearSelection", 0);
-		}
-
-		// 見つけたrootItemを選択状態にする
+		// Conversationオブジェクトからスレッド内メール項目の一覧を取得
+		CComPtr<IDispatch> itemCollection;
 		{
 			VARIANT arg1;
 			VariantInit(&arg1);
 			arg1.vt = VT_DISPATCH;
-			arg1.pdispVal = rootItem;
+			arg1.pdispVal = item;
 
 			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, activeExplorer, L"AddToSelection", 1, &arg1);
+			AutoWrap(DISPATCH_METHOD, &result, conversation, L"GetChildren", 1, &arg1);
+			itemCollection = result.pdispVal;
 		}
 
-		// ToDo: ウインドウアクティブにしたい
+		// スレッド内メール数を取得
+		int threadItemCount;
+		{
+			VariantInit(&result);
+			AutoWrap(DISPATCH_PROPERTYGET, &result, itemCollection, L"Count", 0);
+			threadItemCount = result.intVal;
+		}
+
+		// 個々のメールの受信日時を見て、直近のものを選択
+		CComPtr<IDispatch> latestItem;
+		CString lastReceivedTime;
+		for (int j = 1; j <= threadItemCount; ++j) {
+			CComPtr<IDispatch> childItem;
+			{
+				VARIANT arg1;
+				VariantInit(&arg1);
+				arg1.vt = VT_INT;
+				arg1.intVal = j;
+
+				VariantInit(&result);
+				AutoWrap(DISPATCH_METHOD, &result, itemCollection, L"Item", 1, &arg1);
+				childItem = result.pdispVal;
+			}
+
+			// 受信日時が最も最近のもの
+			CString receivedTime;
+			{
+				VariantInit(&result);
+				AutoWrap(DISPATCH_PROPERTYGET, &result, childItem, L"ReceivedTime", 0);
+				receivedTime = result.bstrVal;
+			}
+
+			if (lastReceivedTime.IsEmpty() == FALSE && receivedTime < lastReceivedTime) {
+				continue;
+			}
+
+			lastReceivedTime = receivedTime;
+			latestItem = childItem;
+		}
+
+		if (lastReceivedTime.IsEmpty()) {
+			break;
+		}
+
+		// スレッドの最新のメールをポップアップで表示
+		{
+			VariantInit(&result);
+			AutoWrap(DISPATCH_METHOD, &result, latestItem, L"Display", 0);
+		}
 		break;
 	}
 	return TRUE;
