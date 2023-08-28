@@ -8,8 +8,8 @@ struct ITEM
 {
 	CString mName;
 	CString mDescription;
-	CString mIconPath;
-	CString mScheme;
+	CString mAppID;
+	HICON mIcon;
 };
 
 } // end of namespace uwp

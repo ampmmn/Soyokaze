@@ -1,9 +1,14 @@
 #include "pch.h"
 #include "UWPApplications.h"
 #include "utility/RegistryKey.h"
+#include <atlbase.h>
+#include <propvarutil.h>
 #include <mutex>
 #include <thread>
 #include <deque>
+
+#pragma comment(lib, "shlwapi.lib")
+#pragma comment(lib, "propsys.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,75 +80,90 @@ bool UWPApplications::GetApplications(std::vector<ITEM>& items)
 
 void UWPApplications::EnumApplications(std::vector<ITEM>& items)
 {
-	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	HRESULT hr;
 
-	TCHAR path[MAX_PATH_NTFS];
-	_tcscpy_s(path, _T("Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppModel\\PackageRepository\\Extensions\\windows.protocol"));
+	PROPERTYKEY modelIdKey;
+	hr = PSGetPropertyKeyFromName(_T("System.AppUserModel.ID"), &modelIdKey);
+	PROPERTYKEY tppKey;
+	hr = PSGetPropertyKeyFromName(_T("System.Link.TargetParsingPath"), &tppKey);
 
-	std::vector<CString> schemeNames;
-	HKCR.EnumSubKeyNames(path, schemeNames);
+	CComPtr<IKnownFolderManager> pManager;
+	hr = CoCreateInstance(CLSID_KnownFolderManager, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pManager));
+	if (FAILED(hr)) {
+		return ;
+	}
 
-	LPTSTR p = path + _tcslen(path);
-	p[0] = _T('\\');
-	p++;
+	CComPtr<IKnownFolder> pKnownFolder;
+	hr = pManager->GetFolder(FOLDERID_AppsFolder, &pKnownFolder);
+	if (FAILED(hr)) {
+		return ;
+	}
 
+	CComPtr<IShellItem> appsFolder;
+	hr = pKnownFolder->GetShellItem(0, IID_IShellItem, (void**)&appsFolder);
+	if (FAILED(hr)) {
+		return ;
+	}
 
-	CString appNamePath;
-	CString defaultIconPath;
-	CString appName;
-	CString iconPath;
-	std::vector<CString> subKeys;
+	CComPtr<IEnumShellItems> appItems;
+	hr = appsFolder->BindToHandler(nullptr, BHID_StorageEnum, IID_IEnumShellItems, (void**)&appItems);
 
-	std::vector<ITEM> tmp;
-	for (auto& scheme : schemeNames) {
+	std::vector<ITEM> tmpList;
 
-		Sleep(0);
+	for(;;) {
 
-		_tcscpy_s(p, 16383, scheme);
+		CComPtr<IShellItem> item;
+		hr = appItems->Next(1, &item, nullptr);
+		if (FAILED(hr) || hr == S_FALSE) {
+			break;
+		}
 
-		RegistryKey subKey;
-		HKCR.OpenSubKey(path, subKey);
-
-		subKey.EnumSubKeyNames(subKeys);
-		if (subKeys.empty()) {
+		CComPtr<IPropertyStore> propStore;
+		hr = item->BindToHandler(nullptr, BHID_PropertyStore, IID_IPropertyStore, (void**)&propStore);
+		if (FAILED(hr)) {
 			continue;
 		}
 
-		const CString& appIdentifier = subKeys[0];
-
-		appNamePath.Format(_T("%s\\Application"),
-		                   appIdentifier);
-
-		defaultIconPath.Format(_T("%s\\DefaultIcon"), 
-		                   appIdentifier);
-
-		HKCR.GetValue(appNamePath, _T("ApplicationName"), appName);
-		HKCR.GetValue(defaultIconPath, _T(""), iconPath);
-
-		// 文字列を解決する
-		if (appName.Find(_T("@{")) == 0)  {
-			TCHAR buff[MAX_PATH_NTFS];
-			SHLoadIndirectString(appName, buff, MAX_PATH_NTFS, nullptr);
-			appName = buff;
-		}
-		if (iconPath.Find(_T("@{")) == 0)  {
-			TCHAR buff[MAX_PATH_NTFS];
-			SHLoadIndirectString(iconPath, buff, MAX_PATH_NTFS, nullptr);
- 			iconPath = buff;
+		PROPVARIANT value;
+		hr = propStore->GetValue(tppKey, &value);
+		if (SUCCEEDED(hr) && value.vt != VT_EMPTY) {
+			continue;
 		}
 
-		// アプリ名/アイコンパス/scheme名からITEMを生成する
-		ITEM item;
-		item.mName = appName;
-		item.mDescription = appName;
-		item.mIconPath = iconPath;
-		item.mScheme = scheme;
+		LPWSTR strVal = nullptr;
+		hr = item->GetDisplayName(SIGDN_NORMALDISPLAY, &strVal);
 
-		//TRACE(_T("Name:%s Scheme:%s\n"), appName, scheme);
+		CString dispName(strVal);
+		CoTaskMemFree(strVal);
 
-		tmp.push_back(item);
+		hr = propStore->GetValue(modelIdKey, &value);
+		if (FAILED(hr)) {
+			continue;
+		}
+		CString appId;
+		hr = PropVariantToString(value, appId.GetBuffer(1024), 1024);
+		appId.ReleaseBuffer();
+
+		PIDLIST_ABSOLUTE pidl;
+		SHFILEINFO sfi = {};
+
+		hr = SHGetIDListFromObject((IUnknown*)item, &pidl);
+    if (FAILED(hr)) {
+			continue;
+		}
+
+		SHGetFileInfo(reinterpret_cast<LPCTSTR>(pidl), 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_ICON);
+		CoTaskMemFree(pidl);
+
+		ITEM newItem;
+		newItem.mName = dispName;
+		newItem.mDescription = dispName;
+		newItem.mAppID = appId;
+		newItem.mIcon = sfi.hIcon;
+
+		tmpList.push_back(newItem);
 	}
-	items.swap(tmp);
+	items.swap(tmpList);
 }
 
 } // end of namespace uwp

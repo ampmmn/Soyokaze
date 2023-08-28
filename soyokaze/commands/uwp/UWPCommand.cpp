@@ -23,7 +23,7 @@ struct UWPCommand::PImpl
 
 
 UWPCommand::UWPCommand(const ITEM& item) : 
-	AdhocCommandBase(item.mName, item.mDescription + _T("(") + item.mScheme + _T(")")),
+	AdhocCommandBase(item.mName, item.mDescription),
 	in(std::make_unique<PImpl>())
 {
 	in->mItem = item;
@@ -43,7 +43,7 @@ CString UWPCommand::GetTypeDisplayName()
 BOOL UWPCommand::Execute(const Parameter& param)
 {
 	CString paramStr;
-	paramStr.Format(_T("/c start %s:"), in->mItem.mScheme);
+	paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem.mAppID);
 
 	SubProcess::ProcessPtr process;
 
@@ -59,7 +59,7 @@ BOOL UWPCommand::Execute(const Parameter& param)
 
 HICON UWPCommand::GetIcon()
 {
-	return IconLoader::Get()->GetDefaultIcon(in->mItem.mIconPath);
+	return in->mItem.mIcon;
 }
 
 soyokaze::core::Command*
