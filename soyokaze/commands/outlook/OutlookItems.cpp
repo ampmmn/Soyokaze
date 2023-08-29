@@ -2,6 +2,7 @@
 #include "OutlookItems.h"
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include <propvarutil.h>
 #include <mutex>
 #include <set>
 #include <thread>
@@ -424,9 +425,14 @@ BOOL MailItem::Activate(bool isShowMaximize)
 			threadItemCount = result.intVal;
 		}
 
-		// 個々のメールの受信日時を見て、直近のものを選択
 		CComPtr<IDispatch> latestItem;
-		CString lastReceivedTime;
+		if (threadItemCount == 0) {
+			latestItem = item;
+		}
+
+		// 個々のメールの受信日時を見て、直近のものを選択
+		WORD lastReceivedDate = 0;
+		WORD lastReceivedTime = 0;
 		for (int j = 1; j <= threadItemCount; ++j) {
 			CComPtr<IDispatch> childItem;
 			{
@@ -441,22 +447,28 @@ BOOL MailItem::Activate(bool isShowMaximize)
 			}
 
 			// 受信日時が最も最近のもの
-			CString receivedTime;
+			WORD receivedDate;
+			WORD receivedTime;
 			{
 				VariantInit(&result);
 				AutoWrap(DISPATCH_PROPERTYGET, &result, childItem, L"ReceivedTime", 0);
-				receivedTime = result.bstrVal;
+				VariantToDosDateTime(result, &receivedDate, &receivedTime);
 			}
 
-			if (lastReceivedTime.IsEmpty() == FALSE && receivedTime < lastReceivedTime) {
+			if (receivedDate < lastReceivedDate) {
+				continue;
+			}
+			if (receivedDate == lastReceivedDate && receivedTime < lastReceivedTime) {
 				continue;
 			}
 
 			lastReceivedTime = receivedTime;
+			lastReceivedDate = receivedDate;
+
 			latestItem = childItem;
 		}
 
-		if (lastReceivedTime.IsEmpty()) {
+		if (!latestItem) {
 			break;
 		}
 
