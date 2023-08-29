@@ -11,6 +11,8 @@ public:
 	HICON LoadExtensionIcon(const CString& fileExt);
 	HICON LoadIconFromPNG(const CString& path);
 
+	void RegisterIcon(const CString& path, HICON icon);
+
 	HICON GetDefaultIcon(const CString& path);
 
 	HICON GetShell32Icon(int index);

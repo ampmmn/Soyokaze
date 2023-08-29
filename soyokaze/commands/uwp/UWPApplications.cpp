@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UWPApplications.h"
 #include "utility/RegistryKey.h"
+#include "IconLoader.h"
 #include <atlbase.h>
 #include <propvarutil.h>
 #include <mutex>
@@ -24,7 +25,7 @@ static const int INTERVAL = 10000;
 struct UWPApplications::PImpl
 {
 	std::mutex mMutex;
-	std::vector<ITEM> mItems;
+	std::vector<ItemPtr> mItems;
 	DWORD mElapsed = 0;
 	bool mIsUpdated = false;
 };
@@ -38,7 +39,7 @@ UWPApplications::~UWPApplications()
 {
 }
 
-bool UWPApplications::GetApplications(std::vector<ITEM>& items)
+bool UWPApplications::GetApplications(std::vector<ItemPtr>& items)
 {
 	{
 		std::lock_guard<std::mutex> lock(in->mMutex);
@@ -57,7 +58,7 @@ bool UWPApplications::GetApplications(std::vector<ITEM>& items)
 		
 		CoInitialize(NULL);
 
-		std::vector<ITEM> tmp;
+		std::vector<ItemPtr> tmp;
 		EnumApplications(tmp);
 
 		CoUninitialize();
@@ -78,7 +79,7 @@ bool UWPApplications::GetApplications(std::vector<ITEM>& items)
 	return false;
 }
 
-void UWPApplications::EnumApplications(std::vector<ITEM>& items)
+void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
 {
 	HRESULT hr;
 
@@ -108,7 +109,7 @@ void UWPApplications::EnumApplications(std::vector<ITEM>& items)
 	CComPtr<IEnumShellItems> appItems;
 	hr = appsFolder->BindToHandler(nullptr, BHID_StorageEnum, IID_IEnumShellItems, (void**)&appItems);
 
-	std::vector<ITEM> tmpList;
+	std::vector<ItemPtr> tmpList;
 
 	for(;;) {
 
@@ -155,12 +156,7 @@ void UWPApplications::EnumApplications(std::vector<ITEM>& items)
 		SHGetFileInfo(reinterpret_cast<LPCTSTR>(pidl), 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_ICON);
 		CoTaskMemFree(pidl);
 
-		ITEM newItem;
-		newItem.mName = dispName;
-		newItem.mDescription = dispName;
-		newItem.mAppID = appId;
-		newItem.mIcon = sfi.hIcon;
-
+		auto newItem = std::make_shared<ITEM>(dispName, appId, sfi.hIcon);
 		tmpList.push_back(newItem);
 	}
 	items.swap(tmpList);

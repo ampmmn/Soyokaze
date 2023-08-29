@@ -59,6 +59,7 @@ struct IconLoader::PImpl
 	std::map<int, HICON> mImageResIconCache;
 	std::map<CString, HICON> mDefaultIconCache;
 	std::map<CString, HICON> mFileExtIconCache;
+	std::map<CString, HICON> mAppIconMap;
 	HICON mEditIcon;
 	HICON mKeywordManagerIcon;
 
@@ -82,6 +83,11 @@ IconLoader::~IconLoader()
 		}
 	}
 	for (auto& elem : in->mDefaultIconCache) {
+		if (elem.second) {
+			DestroyIcon(elem.second);
+		}
+	}
+	for (auto& elem : in->mAppIconMap) {
 		if (elem.second) {
 			DestroyIcon(elem.second);
 		}
@@ -129,6 +135,9 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	HIMAGELIST hImgList =
 		(HIMAGELIST)::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
 	HICON hIcon = sfi.hIcon;
+
+	RegisterIcon(fullPath, hIcon);
+
 	return hIcon;
 }
 
@@ -349,6 +358,16 @@ HICON IconLoader::LoadIconFromPNG(const CString& path)
 	HICON icon = CreateIconIndirect(&ii);
 
 	return icon;
+}
+
+void IconLoader::RegisterIcon(const CString& appId, HICON icon)
+{
+	auto it = in->mAppIconMap.find(appId);
+	if (it != in->mAppIconMap.end()) {
+		DestroyIcon(it->second);
+		in->mAppIconMap.erase(it);
+	}
+	in->mAppIconMap[appId] = icon;
 }
 
 HICON IconLoader::LoadEditIcon()

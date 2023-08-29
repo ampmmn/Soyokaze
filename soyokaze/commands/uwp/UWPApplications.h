@@ -16,10 +16,10 @@ public:
 	~UWPApplications();
 
 public:
-	bool GetApplications(std::vector<ITEM>& items);
+	bool GetApplications(std::vector<ItemPtr>& items);
 
 private:
-	void EnumApplications(std::vector<ITEM>& items);
+	void EnumApplications(std::vector<ItemPtr>& items);
 
 private:
 	struct PImpl;

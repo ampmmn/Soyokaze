@@ -12,7 +12,7 @@ namespace uwp {
 class UWPCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	UWPCommand(const ITEM& item);
+	UWPCommand(ItemPtr& item);
 	virtual ~UWPCommand();
 
 	CString GetTypeDisplayName() override;

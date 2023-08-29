@@ -18,12 +18,12 @@ namespace uwp {
 
 struct UWPCommand::PImpl
 {
-	ITEM mItem;
+	ItemPtr mItem;
 };
 
 
-UWPCommand::UWPCommand(const ITEM& item) : 
-	AdhocCommandBase(item.mName, item.mDescription),
+UWPCommand::UWPCommand(ItemPtr& item) : 
+	AdhocCommandBase(item->mName, item->mName),
 	in(std::make_unique<PImpl>())
 {
 	in->mItem = item;
@@ -43,7 +43,7 @@ CString UWPCommand::GetTypeDisplayName()
 BOOL UWPCommand::Execute(const Parameter& param)
 {
 	CString paramStr;
-	paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem.mAppID);
+	paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem->mAppID);
 
 	SubProcess::ProcessPtr process;
 
@@ -59,7 +59,7 @@ BOOL UWPCommand::Execute(const Parameter& param)
 
 HICON UWPCommand::GetIcon()
 {
-	return in->mItem.mIcon;
+	return in->mItem->mIcon;
 }
 
 soyokaze::core::Command*

@@ -40,7 +40,7 @@ struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 
 	bool mIsEnable = true;
 	bool mIsFirstCall;
-	std::vector<ITEM> mItems;
+	std::vector<ItemPtr> mItems;
 	UWPApplications mUWPApps;
 
 };
@@ -87,7 +87,7 @@ void UWPCommandProvider::QueryAdhocCommands(
 
 	for (auto& item : in->mItems) {
 
-		int level = pattern->Match(item.mName);
+		int level = pattern->Match(item->mName);
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
