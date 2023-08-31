@@ -20,10 +20,8 @@ public:
 
 	void EnableStartMenu(bool isEnable);
 	void EnableRecent(bool isEnable);
-	void EnableDesktopFiles(bool isEnable);
 
 private:
-	void GetFiles(std::vector<ITEM>& items, int csidl);
 	void GetLnkFiles(std::vector<ITEM>& items, int csidl);
 
 private:

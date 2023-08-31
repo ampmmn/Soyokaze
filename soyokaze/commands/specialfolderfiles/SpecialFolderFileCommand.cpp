@@ -44,15 +44,10 @@ CString SpecialFolderFileCommand::GetTypeDisplayName()
 		static CString TEXT_TYPE_RECENT((LPCTSTR)IDS_COMMAND_RECENTFILES);
 		return TEXT_TYPE_RECENT;
 	}
-	else if (in->mItem.mType == TYPE_STARTMENU) {
+	//else if (in->mItem.mType == TYPE_STARTMENU) {
 		static CString TEXT_TYPE_STARTMENU((LPCTSTR)IDS_COMMAND_STARTMENU);
 		return TEXT_TYPE_STARTMENU;
-	}
-	//else if (in->mItem.mType == TYPE_DESKTOP) {
-	else  {
-		static CString TEXT_TYPE_DESKTOP((LPCTSTR)IDS_COMMAND_DESKTOP);
-		return TEXT_TYPE_DESKTOP;
-	}
+	//}
 }
 
 BOOL SpecialFolderFileCommand::Execute(const Parameter& param)

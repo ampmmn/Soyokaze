@@ -25,7 +25,6 @@ struct SpecialFolderFiles::PImpl
 
 	bool mIsEnableRecent = true;
 	bool mIsEnableStartMenu = true;
-	bool mIsEnableDesktop = true;
 };
 
 
@@ -45,11 +44,6 @@ void SpecialFolderFiles::EnableStartMenu(bool isEnable)
 void SpecialFolderFiles::EnableRecent(bool isEnable)
 {
 	in->mIsEnableRecent = isEnable;
-}
-
-void SpecialFolderFiles::EnableDesktopFiles(bool isEnable)
-{
-	in->mIsEnableDesktop = isEnable;
 }
 
 bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
@@ -82,12 +76,6 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 			GetLnkFiles(tmp, CSIDL_STARTMENU);
 			// すべてのユーザのスタートメニュー
 			GetLnkFiles(tmp, CSIDL_COMMON_STARTMENU);
-		}
-		if (in->mIsEnableDesktop) {
-			// ユーザのデスクトップ
-			GetFiles(tmp, CSIDL_DESKTOP);
-			// すべてのユーザのデスクトップ
-			GetFiles(tmp, CSIDL_COMMON_DESKTOPDIRECTORY);
 		}
 
 		CoUninitialize();
@@ -174,89 +162,6 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 			PathRemoveExtension(item.mName.GetBuffer(item.mName.GetLength()));   // .lnkを抜く
 			item.mName.ReleaseBuffer();
 			item.mFullPath = ShortcutFile::ResolvePath(f.GetFilePath(), &item.mDescription);
-
-			if (item.mFullPath.IsEmpty()) {
-				continue;
-			}
-			if (PathFileExists(item.mFullPath) == FALSE) {
-				// 存在しないパスを除外する
-				continue;
-			}
-
-			tmp.push_back(item);
-		}
-	}
-	for (auto& item : tmp) {
-		GetLastWriteTime(item.mFullPath, item.mWriteTime);
-	}
-
-	// 更新日時降順でソート
-	std::sort(tmp.begin(), tmp.end(), [](const ITEM& l_, const ITEM& r_) {
-		auto& l = l_.mWriteTime;
-		auto& r = r_.mWriteTime;
-		if (r.dwHighDateTime < l.dwHighDateTime) { return true; }
-		if (r.dwHighDateTime > l.dwHighDateTime) { return false; }
-		return r.dwLowDateTime < l.dwLowDateTime;
-	});
-
-	items.insert(items.end(), tmp.begin(), tmp.end());
-}
-
-void SpecialFolderFiles::GetFiles(std::vector<ITEM>& items, int csidl)
-{
-	TCHAR path[MAX_PATH_NTFS];
-	SHGetSpecialFolderPath(NULL, path, csidl, 0);
-	PathAppend(path, _T("*.*"));
-
-	// フォルダ内のファイル列挙
-	std::deque<CString> stk;
-	stk.push_back(path);
-
-	std::vector<ITEM> tmp;
-	while(stk.empty() == false) {
-
-		CString curDir = stk.front();
-		stk.pop_front();
-
-		CFileFind f;
-		BOOL isLoop = f.FindFile(curDir, 0);
-		while (isLoop) {
-
-			Sleep(0);
-
-			isLoop = f.FindNextFile();
-
-			if (f.IsDots()) {
-			 continue;
-			}
-
-			if (f.IsHidden()) {
-				// 隠しファイル属性があるものは対象外にする
-				continue;
-			}
-	 
-			if (f.IsDirectory()) {
-				auto subDir = f.GetFilePath();
-				PathAppend(subDir.GetBuffer(MAX_PATH_NTFS), _T("*.*"));
-				subDir.ReleaseBuffer();
-				stk.push_back(subDir);
-				continue;
-			}
-
-			CString fileName = f.GetFileName();
-			bool isShortcut = (_tcsicmp(PathFindExtension(fileName), _T(".lnk")) == 0);
-
-			ITEM item;
-			item.mType = ITEM::GetTypeFromCSIDL(csidl);
-			item.mName = PathFindFileName(fileName);
-
-			if (isShortcut) {
-				item.mFullPath = ShortcutFile::ResolvePath(f.GetFilePath(), &item.mDescription);
-			}
-			else {
-				item.mFullPath = f.GetFilePath();
-				item.mDescription = f.GetFilePath();
-			}
 
 			if (item.mFullPath.IsEmpty()) {
 				continue;

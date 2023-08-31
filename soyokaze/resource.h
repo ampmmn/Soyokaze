@@ -105,7 +105,6 @@
 #define IDS_COMMAND_STARTMENU           169
 #define IDS_COMMAND_UWP                 170
 #define IDS_SENDTO                      171
-#define IDS_COMMAND_DESKTOP             172
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -233,7 +232,6 @@
 #define IDC_CHECK_REGEXP                1083
 #define IDC_CHECK_ENABLE_OUTLOOKMAIL    1083
 #define IDC_EDIT_URL                    1084
-#define IDC_CHECK_ENABLE_DESKTOP        1084
 #define IDC_CHECK_ENABLESHORTCUT        1085
 #define IDC_BUTTON1                     1086
 #define IDC_BUTTON_TEST                 1086

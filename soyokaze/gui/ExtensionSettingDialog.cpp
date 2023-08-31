@@ -17,7 +17,6 @@ ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) :
 	mIsEnableBookmarks(FALSE),
 	mIsEnableControlPanel(FALSE),
 	mIsEnableSpecialFolder(FALSE),
-	mIsEnableDesktop(FALSE),
 	mIsEnableUWP(FALSE),
 	mIsEnableOutlookMail(FALSE)
 {
@@ -41,7 +40,6 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Bookmarks:EnableBookmarks"), (bool)mIsEnableBookmarks);
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
-	settingsPtr->Set(_T("Soyokaze:IsEnableDesktop"), (bool)mIsEnableDesktop);
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
 	__super::OnOK();
@@ -57,7 +55,6 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_BOOKMARKS, mIsEnableBookmarks);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_DESKTOP, mIsEnableDesktop);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
 }
@@ -110,7 +107,6 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableBookmarks = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), true);
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
-	mIsEnableDesktop = settingsPtr->Get(_T("Soyokaze:IsEnableDesktop"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), true);
 }

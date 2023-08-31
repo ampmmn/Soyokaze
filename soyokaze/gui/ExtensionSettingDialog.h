@@ -22,8 +22,6 @@ public:
 	BOOL mIsEnableControlPanel;
 	// スタートメニュー/最近使ったファイル選択機能
 	BOOL mIsEnableSpecialFolder;
-	// デスクトップ上のファイル
-	BOOL mIsEnableDesktop;
 	// UWPアプリ選択機能
 	BOOL mIsEnableUWP;
 	// Outlookメール選択機能(Inboxのみ)
