@@ -871,8 +871,9 @@ Edge/Chromeのブックマークに対応している。
 なお、上記のコマンドラインオプションによる実行は、事前に`Soyokaze`が起動している状態で行う必要がある  
 (`Soyokaze`が起動していない状態で実行した場合、単に`Soyokaze`が起動するだけ)
 
+## 取り扱い種別、ライセンス
 
-## ライセンス
+フリーソフト
 
 [MIT License](./LICENSE)
 
@@ -881,6 +882,13 @@ Edge/Chromeのブックマークに対応している。
 
 [https://github.com/ampmmn/Soyokaze](https://github.com/ampmmn/Soyokaze/)
 
+## 利用ライブラリ
+
+- [nlohmann-json](https://github.com/nlohmann/json)
+
+## 連絡先
+
+htmnymgw@gmail.com
 
 </div>
 
