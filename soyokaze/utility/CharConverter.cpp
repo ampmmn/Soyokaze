@@ -45,6 +45,20 @@ CStringA& CharConverter::Convert(const CString& src, CStringA& dst)
 	return dst;
 }
 
+std::string& CharConverter::Convert(const CString& src, std::string& dst)
+{
+	int cp = mCodePage;
+
+	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
+
+	dst.resize(requiredLen);
+	char* p = &dst.front();
+	WideCharToMultiByte(cp, 0, src, -1, p, requiredLen, 0, 0);
+	dst.pop_back();
+
+	return dst;
+}
+
 
 
 } // end of namespace utility

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace soyokaze {
 namespace utility {
 
@@ -11,6 +13,7 @@ public:
 
 	CString& Convert(const char* src, CString& dst);
 	CStringA& Convert(const CString& src, CStringA& dst);
+	std::string& Convert(const CString& src, std::string& dst);
 
 
 protected:

@@ -85,6 +85,9 @@
     <Filter Include="commands\outlook">
       <UniqueIdentifier>{7dcc6232-f4d4-4547-87f2-e6e0c65c1d55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\decodestring">
+      <UniqueIdentifier>{bdfa4983-1c39-4ead-8acb-70825c844131}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -564,6 +567,12 @@
     <ClInclude Include="commands\outlook\OutlookItems.h">
       <Filter>commands\outlook</Filter>
     </ClInclude>
+    <ClInclude Include="commands\decodestring\DecodeStringCommandProvider.h">
+      <Filter>commands\decodestring</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\decodestring\DecodeUriCommand.h">
+      <Filter>commands\decodestring</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1015,6 +1024,12 @@
     </ClCompile>
     <ClCompile Include="commands\outlook\OutlookItems.cpp">
       <Filter>commands\outlook</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\decodestring\DecodeStringCommandProvider.cpp">
+      <Filter>commands\decodestring</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\decodestring\DecodeUriCommand.cpp">
+      <Filter>commands\decodestring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
