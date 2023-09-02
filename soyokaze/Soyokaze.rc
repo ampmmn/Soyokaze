@@ -262,7 +262,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,190,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,206,206,10
-    CONTROL         "UWPアプリを候補として表示する(&W)",IDC_CHECK_ENABLE_UWPAPPS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,222,128,10
+    CONTROL         "アプリケーション(UWPアプリなど)を候補として表示する(&W)",IDC_CHECK_ENABLE_UWPAPPS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,222,192,10
     GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,79,282,58
     GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,11,140,282,31
     GROUPBOX        "システム関連の機能",IDC_STATIC,11,176,282,65
@@ -1589,7 +1590,7 @@ BEGIN
     IDS_COMMANDNAME_WEBSEARCH "Web検索コマンド"
     IDS_DESCRIPTION_WEBSEARCH "Web検索を定義します。"
     IDS_COMMAND_STARTMENU   "スタートメニュー"
-    IDS_COMMAND_UWP         "UWPアプリ"
+    IDS_COMMAND_APP         "アプリ"
     IDS_SENDTO              "コマンドとして登録する.lnk"
 END
 

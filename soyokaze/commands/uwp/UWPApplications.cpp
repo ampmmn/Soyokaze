@@ -127,23 +127,40 @@ void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
 
 		PROPVARIANT value;
 		hr = propStore->GetValue(tppKey, &value);
-		if (SUCCEEDED(hr) && value.vt != VT_EMPTY) {
+		if (FAILED(hr)) {
 			continue;
 		}
 
+		// System.Link.TargetParsingPathがないものはUWPアプリ、そうでないものは非UWPアプリとして扱う
+		bool isUWP = false;
+		CString appId;
+		if (value.vt != VT_EMPTY) {
+			// 非UWPアプリ
+			appId = value.bstrVal;
+		}
+		else {
+			// UWPアプリ
+			isUWP = true;
+			hr = propStore->GetValue(modelIdKey, &value);
+			if (FAILED(hr)) {
+				continue;
+			}
+			hr = PropVariantToString(value, appId.GetBuffer(1024), 1024);
+			appId.ReleaseBuffer();
+
+			if (appId.Find(_T("::{"))==0) {
+				// GUIDで始まるものは除外(PC/コントロールパネル/ファイル名を指定して実行)
+				continue;
+			}
+		}
+
+		// 表示名を取得
 		LPWSTR strVal = nullptr;
 		hr = item->GetDisplayName(SIGDN_NORMALDISPLAY, &strVal);
 
 		CString dispName(strVal);
 		CoTaskMemFree(strVal);
 
-		hr = propStore->GetValue(modelIdKey, &value);
-		if (FAILED(hr)) {
-			continue;
-		}
-		CString appId;
-		hr = PropVariantToString(value, appId.GetBuffer(1024), 1024);
-		appId.ReleaseBuffer();
 
 		PIDLIST_ABSOLUTE pidl;
 		SHFILEINFO sfi = {};
@@ -156,7 +173,7 @@ void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
 		SHGetFileInfo(reinterpret_cast<LPCTSTR>(pidl), 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_ICON);
 		CoTaskMemFree(pidl);
 
-		auto newItem = std::make_shared<ITEM>(dispName, appId, sfi.hIcon);
+		auto newItem = std::make_shared<ITEM>(isUWP, dispName, appId, sfi.hIcon);
 		tmpList.push_back(newItem);
 	}
 	items.swap(tmpList);

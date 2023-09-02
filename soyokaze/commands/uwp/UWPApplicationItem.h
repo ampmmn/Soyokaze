@@ -8,8 +8,8 @@ namespace uwp {
 
 struct ITEM
 {
-	ITEM(const CString& name, const CString& appId, HICON icon) :
-		mName(name), mAppID(appId), mIcon(icon)
+	ITEM(bool isUWP, const CString& name, const CString& appId, HICON icon) :
+		mName(name), mAppID(appId), mIcon(icon), mIsUWP(isUWP)
 	{
 	}
 	ITEM(const ITEM&) = delete;
@@ -17,7 +17,6 @@ struct ITEM
 	~ITEM() {
 		if (mIcon) {
 			DestroyIcon(mIcon);
-			TRACE(_T("Icon destroyed!\n"));
 		}
 	}
 
@@ -26,6 +25,7 @@ struct ITEM
 	CString mName;
 	CString mAppID;
 	HICON mIcon;
+	bool mIsUWP;
 };
 
 using ItemPtr = std::shared_ptr<ITEM>;

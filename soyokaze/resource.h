@@ -103,7 +103,7 @@
 #define IDS_COMMANDNAME_WEBSEARCH       167
 #define IDS_DESCRIPTION_WEBSEARCH       168
 #define IDS_COMMAND_STARTMENU           169
-#define IDS_COMMAND_UWP                 170
+#define IDS_COMMAND_APP                 170
 #define IDS_SENDTO                      171
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001

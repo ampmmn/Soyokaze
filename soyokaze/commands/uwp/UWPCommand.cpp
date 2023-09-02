@@ -36,14 +36,19 @@ UWPCommand::~UWPCommand()
 
 CString UWPCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_UWP);
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_APP);
 	return TEXT_TYPE;
 }
 
 BOOL UWPCommand::Execute(const Parameter& param)
 {
 	CString paramStr;
-	paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem->mAppID);
+	if (in->mItem->mIsUWP) {
+		paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem->mAppID);
+	}
+	else {
+		paramStr.Format(_T("/c start \"\" %s"), in->mItem->mAppID);
+	}
 
 	SubProcess::ProcessPtr process;
 
