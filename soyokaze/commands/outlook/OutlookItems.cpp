@@ -4,6 +4,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include <propvarutil.h>
 #include <mutex>
+#include <map>
 #include <set>
 #include <thread>
 
@@ -17,6 +18,8 @@ namespace soyokaze {
 namespace commands {
 namespace outlook {
 
+// メール(スレッド)数上限
+constexpr int ITEM_LIMIT = 1024;
 
 enum {
 	STATUS_READY,   // 待機状態
@@ -34,13 +37,58 @@ struct OutlookItems::PImpl
 
 	// 前回の取得時のタイムスタンプ
 	DWORD mLastUpdate;
-	std::vector<MailItem*> mCache;
+	int mLastItemCount;
+	std::map<CString, MailItem*> mMailItemMap;
+
+	// 最新の受信日時(これ以前の日付のメールは処理済みとする)
+	DWORD mLastReceivedTime = 0;
 
 	// 生成処理の排他制御
 	std::mutex mMutex;
 
 	int mStatus;
 };
+
+static bool GetMailItem(
+	CComPtr<IDispatch>& items,
+	int index,
+	CComPtr<IDispatch>& item
+)
+{
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_INT;
+	arg1.intVal = index;
+
+	VARIANT result;
+	VariantInit(&result);
+
+	HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Item", 1, &arg1);
+	item = result.pdispVal;
+
+	return SUCCEEDED(hr);
+}
+
+static DWORD GetReceivedTime(
+	CComPtr<IDispatch>& item
+)
+{
+	union timeunion {
+		struct {
+			WORD receivedDate;
+			WORD receivedTime;
+		} st;
+		DWORD dwTime;
+	} t;
+
+	VARIANT result;
+	VariantInit(&result);
+	AutoWrap(DISPATCH_PROPERTYGET, &result, item, L"ReceivedTime", 0);
+
+	VariantToDosDateTime(result, &t.st.receivedDate, &t.st.receivedTime);
+
+	return t.dwTime;
+}
 
 void OutlookItems::PImpl::Update()
 {
@@ -69,10 +117,11 @@ void OutlookItems::PImpl::Update()
 			// 起動してない
 			std::lock_guard<std::mutex> lock(mMutex);
 
-			for (auto& item : mCache) {
-				item->Release();
+			for (auto& elem : mMailItemMap) {
+				auto& mailItemPtr = elem.second;
+				mailItemPtr->Release();
 			}
-			mCache.clear();
+			mMailItemMap.clear();
 
 			mLastUpdate = GetTickCount();
 			mStatus = STATUS_READY;
@@ -119,6 +168,23 @@ void OutlookItems::PImpl::Update()
 			items = result.pdispVal;
 		}
 
+		// 受信日時降順でソート
+		{
+			CComBSTR argVal(L"[ReceivedTime]");
+			VARIANT arg1;
+			VariantInit(&arg1);
+			arg1.vt = VT_BSTR;
+			arg1.bstrVal = argVal;
+
+			VARIANT arg2;
+			VariantInit(&arg2);
+			arg2.vt = VT_BOOL;
+			arg2.boolVal = VARIANT_TRUE;
+
+			VariantInit(&result);
+			AutoWrap(DISPATCH_METHOD, &result, items, L"Sort", 2, &arg1, &arg2);
+		}
+
 		// メール数を取得
 		int itemCount = 0;
 		{
@@ -127,13 +193,14 @@ void OutlookItems::PImpl::Update()
 			itemCount = result.intVal;
 		}
 
-		if (itemCount == (int)mCache.size()) {
+		if (itemCount == mLastItemCount) {
 			// 前回とメール件数が同じだったら変化がないものとみなす
 			// (操作次第で、新着メールの取りこぼしの可能性はあるが..)
 			mLastUpdate = GetTickCount();
 			mStatus = STATUS_READY;
 			return ;
 		}
+		mLastItemCount = itemCount;
 
 		std::set<CString> conversationSet;
 
@@ -144,21 +211,23 @@ void OutlookItems::PImpl::Update()
 
 			Sleep(0);
 
+			// 上限を超えたら処理を止める
+			if (tmpList.size() + mMailItemMap.size() >= ITEM_LIMIT) {
+				break;
+			}
+
 			// 要素(MailItem)を取得
 			CComPtr<IDispatch> item;
-			{
-				VARIANT arg1;
-				VariantInit(&arg1);
-				arg1.vt = VT_INT;
-				arg1.intVal = i;
+			GetMailItem(items, i, item);
 
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Item", 1, &arg1);
-				item = result.pdispVal;
+			// 受信日時を見る
+			// 前回処理時に、最新だったメールの受信日時に達したら処理終了
+			DWORD dwReceived = GetReceivedTime(item);
+			if (dwReceived <= mLastReceivedTime) {
+				break;
 			}
 
 			CComBSTR strVal;
-
 			// ConversationIDを得る
 			{
 				VariantInit(&result);
@@ -187,14 +256,26 @@ void OutlookItems::PImpl::Update()
 			tmpList.push_back(new MailItem(conversationID, subject));
 		}
 
+		// 直近のメール受信日時を覚えておく
+		CComPtr<IDispatch> item;
+		GetMailItem(items, 1, item);
+		mLastReceivedTime = GetReceivedTime(item);
+
 		std::lock_guard<std::mutex> lock(mMutex);
-		mCache.swap(tmpList);
+		for (auto& newItem : tmpList) {
+
+			auto& key = newItem->GetConversationID();
+
+			auto it = mMailItemMap.find(key);
+			if (it != mMailItemMap.end()) {
+				(it->second)->Release();
+			}
+
+			mMailItemMap[key] = newItem;
+		}
+
 		mLastUpdate = GetTickCount();
 		mStatus = STATUS_READY;
-
-		for (auto& item : tmpList) {
-			item->Release();
-		}
 	});
 	th.detach();
 }
@@ -204,16 +285,17 @@ OutlookItems::OutlookItems() : in(std::make_unique<PImpl>())
 	CoInitialize(NULL);
 
 	in->mLastUpdate = 0;
+	in->mLastItemCount = 0;
 	in->mStatus = STATUS_READY;
 }
 
 OutlookItems::~OutlookItems()
 {
 	std::lock_guard<std::mutex> lock(in->mMutex);
-	for (auto& elem : in->mCache) {
-		elem->Release();
+	for (auto& elem : in->mMailItemMap) {
+		elem.second->Release();
 	}
-	in->mCache.clear();
+	in->mMailItemMap.clear();
 
 	CoUninitialize();
 }
@@ -223,26 +305,30 @@ constexpr int INTERVAL_REUSE = 5000;
 
 bool OutlookItems::GetInboxMailItems(std::vector<MailItem*>& mailItems)
 {
+	ASSERT(mailItems.empty());
+
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
 	DWORD elapsed = GetTickCount() - in->mLastUpdate;
-	if (elapsed < INTERVAL_REUSE) {
 
-		std::lock_guard<std::mutex> lock(in->mMutex);
-
-		mailItems = in->mCache;
-		for (auto& elem : mailItems) {
-			elem->AddRef();
+	if (elapsed >= INTERVAL_REUSE) {
+		if (in->IsBusy() == false) {
+			// メール一覧を再取得する
+			in->Update();
 		}
-		return true;
 	}
 
-	if (in->IsBusy()) {
-		return false;
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	mailItems.reserve(in->mMailItemMap.size());
+	for (auto& elem : in->mMailItemMap) {
+
+		auto& mailItemPtr = elem.second;
+
+		mailItems.push_back(mailItemPtr);
+		mailItemPtr->AddRef();
 	}
 
-	// メール一覧を再取得する
-	in->Update();
-	return false;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +441,23 @@ BOOL MailItem::Activate(bool isShowMaximize)
 		items = result.pdispVal;
 	}
 
+	// 受信日時降順でソート
+	{
+		CComBSTR argVal(L"[ReceivedTime]");
+		VARIANT arg1;
+		VariantInit(&arg1);
+		arg1.vt = VT_BSTR;
+		arg1.bstrVal = argVal;
+
+		VARIANT arg2;
+		VariantInit(&arg2);
+		arg2.vt = VT_BOOL;
+		arg2.boolVal = VARIANT_TRUE;
+
+		VariantInit(&result);
+		AutoWrap(DISPATCH_METHOD, &result, items, L"Sort", 2, &arg1, &arg2);
+	}
+
 	// メール数を取得
 	int itemCount = 0;
 	{
@@ -370,16 +473,7 @@ BOOL MailItem::Activate(bool isShowMaximize)
 
 		// 要素(MailItem)を取得
 		CComPtr<IDispatch> item;
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = i;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Item", 1, &arg1);
-			item = result.pdispVal;
-		}
+		GetMailItem(items, i, item);
 
 		CComBSTR strVal;
 

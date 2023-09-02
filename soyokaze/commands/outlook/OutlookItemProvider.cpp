@@ -98,11 +98,9 @@ void OutlookItemProvider::QueryAdhocCommands(
 		Sleep(0);
 
 		int level = pattern->Match(item->GetSubject());
-		if (level == Pattern::Mismatch) {
-			continue;
+		if (level != Pattern::Mismatch) {
+			commands.push_back(CommandQueryItem(level, new MailCommand(item)));
 		}
-
-		commands.push_back(CommandQueryItem(level, new MailCommand(item)));
 		item->Release();
 	}
 }

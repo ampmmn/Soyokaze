@@ -15,6 +15,8 @@ public:
 	MailCommand(MailItem* itemPtr);
 	virtual ~MailCommand();
 
+	CString GetName() override;
+	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

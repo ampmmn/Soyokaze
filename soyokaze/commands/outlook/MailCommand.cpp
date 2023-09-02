@@ -27,9 +27,6 @@ MailCommand::MailCommand(
 {
 	in->mMailItem = itemPtr;
 	itemPtr->AddRef();
-
-	this->mName = itemPtr->GetSubject();
-	this->mDescription = itemPtr->GetSubject();
 }
 
 
@@ -38,6 +35,16 @@ MailCommand::~MailCommand()
 	if (in->mMailItem) {
 		in->mMailItem->Release();
 	}
+}
+
+CString MailCommand::GetName()
+{
+	return in->mMailItem->GetSubject();
+}
+
+CString MailCommand::GetDescription()
+{
+	return in->mMailItem->GetSubject();
 }
 
 CString MailCommand::GetTypeDisplayName()

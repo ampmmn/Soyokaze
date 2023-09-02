@@ -251,11 +251,11 @@ BEGIN
     PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,241,33,31,14
     LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,53,180,19
     CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,92,154,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,92,243,10
     CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,106,207,10
-    CONTROL         "Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,120,185,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,106,253,10
+    CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,120,253,10
     CONTROL         "Edge/Chromeのブックマークを候補として表示する(&B)",IDC_CHECK_ENABLE_BOOKMARKS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,154,177,10
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
