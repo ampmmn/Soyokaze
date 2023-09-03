@@ -581,6 +581,12 @@ bool AppPreference::IsAlternateColor()
 	return in->mSettings.Get(_T("Soyokaze:IsAlternateColor"), false);
 }
 
+// 候補欄の各項目にアイコンを描画するか
+bool AppPreference::IsDrawIconOnCandidate()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
+}
+
 // C/Migemo検索を利用するか
 bool AppPreference::IsEnableMigemo()
 {

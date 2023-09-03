@@ -390,6 +390,15 @@ Soyokaze配置ディレクトリ/
   - チェックすると、コマンドの種別を候補リストに表示する  
 ![](../image/showcmdtype.png)
 
+- `候補欄の背景色を交互に変える`
+  - チェックすると、候補欄の奇数行と偶数行の背景色を変えて表示を行う
+![](../image/alternatecolor.png)
+
+- `候補欄の各項目のアイコンを表示する`
+  - チェックすると、候補欄の項目ごとにアイコンを表示する
+  - 左: アイコンを表示する場合  →:表示しない場合
+![](../image/showicon.png)
+
 #### 拡張機能
 
 ![](../image/setting6.png)
@@ -676,7 +685,7 @@ Soyokaze配置ディレクトリ/
 - ファイル名を指定して実行
 - 履歴
 - 16進カラーコード
-- VMware PlayerのMRU
+- VMware Workstation PlayerのMRU
 
 #### URLを開く
 
@@ -717,11 +726,11 @@ Soyokaze配置ディレクトリ/
 
 ![](../image/colorcommand.png)
 
-#### VMware PlayerのMRU
+#### VMware Workstation PlayerのMRU
 
-VMware Playerの起動直後の画面の一覧に表示される仮想マシンの表示名を候補として表示する。
-実行すると、拡張子`.vmx`に関連付けれたアプリケーションでファイルを実行する。  
-(VMware Playerが仮想マシンを起動するはず)
+VMware Workstation Playerの起動直後の画面の一覧に表示される仮想マシンの表示名を候補として表示する。
+実行すると、拡張子`.vmx`に関連付けられたアプリケーションでファイルを実行する。  
+(VMware Workstation Playerが仮想マシンを起動するはず)
 
 #### URIエンコード
 

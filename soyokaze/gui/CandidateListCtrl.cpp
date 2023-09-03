@@ -4,13 +4,17 @@
 #include "AppPreference.h"
 #include "resource.h"
 #include <algorithm>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+constexpr int ICON_SIZE = 16;
+
 struct CandidateListCtrl::PImpl
 {
+	void DrawItemIcon(CListCtrl* thisPtr, CDC* pDC, int itemId);
 	void DrawItemName(CListCtrl* thisPtr, CDC* pDC, int itemId);
 	void DrawItemCategory(CListCtrl* thisPtr, CDC* pDC, int itemId);
 	CandidateList* mCandidates = nullptr;
@@ -23,7 +27,54 @@ struct CandidateListCtrl::PImpl
 	bool mIsAlternateColor = false;
 
 	int mItemsInPage;
+
+	// アイコンを保持するためのイメージリスト
+	CImageList mIconList;
+	// アイコンを表示しない場合のイメージリスト
+	CImageList mIconListDummy;
+	bool mIsDrawIcon = true;
+	//
+	std::map<HICON,int> mIconIndexMap;
 };
+
+/**
+	アイコンの描画
+	@param[in,out] thisPtr 
+	@param[in,out] pDC     
+	@param[in]     itemId  
+*/
+void CandidateListCtrl::PImpl::DrawItemIcon(
+	CListCtrl* thisPtr,
+	CDC* pDC,
+	int itemId
+)
+{
+	if (mIsDrawIcon == false) {
+		return;
+	}
+
+	CRect rcIcon;
+	thisPtr->GetSubItemRect(itemId, 0, LVIR_ICON, rcIcon);
+
+	auto cmd = mCandidates->GetCommand(itemId);
+
+	int index = -1;
+
+	HICON h = cmd->GetIcon();
+	auto it = mIconIndexMap.find(h);
+	if (it == mIconIndexMap.end()) {
+		index = mIconList.Add(h);
+		mIconIndexMap[h] = index;
+	}
+	else {
+		index = it->second;
+	}
+
+	if (index != -1) {
+		mIconList.DrawEx(pDC, index, rcIcon.TopLeft(), CSize(ICON_SIZE, ICON_SIZE),
+		                 CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
+	}
+}
 
 /**
 	名前列の描画
@@ -133,6 +184,19 @@ void CandidateListCtrl::InitColumns()
 		InsertColumn(1,&lvc);
 		in->mHasCommandTypeColumn = true;
 	}
+
+	// イメージリストの初期化
+	if (in->mIconList.m_hImageList == NULL) {
+		in->mIconList.Create(ICON_SIZE, ICON_SIZE, ILC_COLOR24 | ILC_MASK, 0, 0);
+		in->mIconListDummy.Create(1, 1, ILC_COLOR, 0, 0);
+	}
+	ASSERT(in->mIconList.m_hImageList);
+
+	in->mIsDrawIcon = pref->IsDrawIconOnCandidate();
+	SetImageList(in->mIsDrawIcon ? &in->mIconList : &in->mIconListDummy, LVSIL_SMALL);
+	// Note: ひとたび、SetImageListでイメージリストを設定すると、
+	// そのリストウインドウが生きている間はイメージリスト非設定状態に戻せない(イメージリストの幅のぶんだけラベルがずれる)ため、
+	// 幅1pixelの別のイメージリストを設定することでごまかす
 }
 
 void CandidateListCtrl::UpdateSize(int cx, int cy)
@@ -265,6 +329,7 @@ void CandidateListCtrl::DrawItem(
 
 	int orgTextColor = pDC->SetTextColor(crText);
 
+	in->DrawItemIcon(this, pDC, itemID);
 	in->DrawItemName(this, pDC, itemID);
 	in->DrawItemCategory(this, pDC, itemID);
 

@@ -39,6 +39,8 @@ struct CSoyokazeDlg::PImpl
 	{
 	}
 
+	void RestoreWindowPosition(CWnd* thisPtr);
+
 	HICON mIconHandle;
 
 	// キーワード入力欄の文字列
@@ -70,6 +72,9 @@ struct CSoyokazeDlg::PImpl
 
 	// ウインドウ位置を保存するためのクラス
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
+
+	// 「入力画面を非表示にして起動する」場合に、ウインドウ位置を復元するためのフラグ
+	bool mIsFirstActivate = true;
 	// ウインドウの透明度を制御するためのクラス
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 
@@ -78,6 +83,16 @@ struct CSoyokazeDlg::PImpl
 	SoyokazeDropTarget mDropTargetEdit;
 
 };
+
+void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr)
+{
+	mWindowPositionPtr = std::make_unique<WindowPosition>();
+	if (mWindowPositionPtr->Restore(thisPtr->GetSafeHwnd()) == false) {
+		// 復元に失敗した場合は中央に表示
+		thisPtr->SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
+		thisPtr->CenterWindow();
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +222,13 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
+
+		// 「入力画面を非表示にして起動する」場合、
+		// 初回にウインドウを表示した直後のこのタイミングで、前回のウインドウ位置を復元する
+		if (in->mIsFirstActivate) {
+			in->RestoreWindowPosition(this);
+			in->mIsFirstActivate = false;
+		}
 
 		if (pref->IsIMEOffOnActive()) {
 			in->mKeywordEdit.SetIMEOff();
@@ -510,11 +532,18 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	in->mDescriptionStr = pref->GetDefaultComment();
 
 	// ウインドウ位置の復元
-	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
-	if (in->mWindowPositionPtr->Restore(GetSafeHwnd()) == false) {
-		// 復元に失敗した場合は中央に表示
-		SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
-		CenterWindow();
+	// 起動直後に非表示にしない場合はここて復元
+	if (pref->IsHideOnStartup() == false) {
+		in->RestoreWindowPosition(this);
+	}
+	else {
+		// 起動直後に非表示にする場合の処理
+		// MFCのモーダルダイアログは非表示状態でDoModal()することができないため、
+		// 幅高さ(0,0)で作成したうえですぐに隠す。そのうえで初回表示時にウインドウサイズの復元を行う。
+		// 参考:https://rarara.org/community/programming/%E3%83%80%E3%82%A4%E3%82%A2%E3%83%AD%E3%82%B0%E3%82%92%E6%9C%80%E5%88%9D%E3%81%8B%E3%82%89%E9%9D%9E%E8%A1%A8%E7%A4%BA%E3%81%AB%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF%EF%BC%9F/
+		SetWindowPos(nullptr,0,0,0,0,SWP_NOZORDER);
+		in->mIsFirstActivate = true;
+		PostMessage(WM_APP+7, 0, 0);
 	}
 
 	// 透明度制御
@@ -535,10 +564,6 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mDropTargetDialog.Register(this);
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
-
-	if (pref->IsHideOnStartup()) {
-		PostMessage(WM_APP+7, 0, 0);
-	}
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
@@ -779,7 +804,9 @@ void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	}
 	else {
 		// 位置情報を更新する
-		in->mWindowPositionPtr->Update(GetSafeHwnd());
+		if (in->mWindowPositionPtr.get()) {
+			in->mWindowPositionPtr->Update(GetSafeHwnd());
+		}
 	}
 }
 

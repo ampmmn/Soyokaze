@@ -80,6 +80,9 @@ public:
 	// 候補欄の背景色を交互に変えるか
 	bool IsAlternateColor();
 
+	// 候補欄の各項目にアイコンを描画するか
+	bool IsDrawIconOnCandidate();
+
 	// C/Migemo検索を利用するか
 	bool IsEnableMigemo();
 

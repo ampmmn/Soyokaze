@@ -179,6 +179,7 @@
 #define IDC_CHECK_ALTERNATELISTCOLOR    1047
 #define IDC_CHECK_SHIFT                 1048
 #define IDC_BUTTON_SOUNDEXECUTE         1048
+#define IDC_CHECK_DRAWICONONCANDIDATE   1048
 #define IDC_CHECK_USEFILER2             1049
 #define IDC_CHECK_SHOWTOGGLE            1050
 #define IDC_CHECK_ALT                   1051
