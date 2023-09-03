@@ -108,7 +108,7 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
-	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), true);
+	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

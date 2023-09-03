@@ -608,7 +608,7 @@ bool AppPreference::IsEnableUWP()
 // Outlookのメール(受信トレイ)の検索を使用するか
 bool AppPreference::IsEnableOutlookMailItem()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableOutlookMailItem"), true);
+	return in->mSettings.Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 // 効果音ファイルパスを取得(文字入力)
 CString AppPreference::GetInputSoundFile()
