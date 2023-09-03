@@ -19,9 +19,6 @@ namespace decodestring {
 
 struct DecodeUriCommand::PImpl
 {
-	HICON mColorIcon;
-	COLORREF mColor;
-	int mFormatType;
 };
 
 
@@ -78,10 +75,12 @@ int DecodeUriCommand::Match(Pattern* pattern)
 	std::string s;
 	conv.Convert(cmdline, s);
 
-	static std::regex reg("^.*%[0-9a-fA-F][0-9a-fA-F].*$");
-	if (std::regex_match(s, reg) == false) {
-		return Pattern::Mismatch;
-	}
+	// static std::regex reg("^.*%[0-9a-fA-F][0-9a-fA-F].*$");
+	// if (std::regex_match(s, reg) == false) {
+	// 	return Pattern::Mismatch;
+	// }
+
+	bool isMatched = false;
 
 	std::string dst;
 	for (auto it = s.begin(); it != s.end(); ++it) {
@@ -119,6 +118,12 @@ int DecodeUriCommand::Match(Pattern* pattern)
 
 		dst.append(1, (char)hex);
 		it += 2;
+
+		isMatched = true;
+	}
+
+	if (isMatched == false) {
+		return Pattern::Mismatch;
 	}
 
 	conv.Convert(dst.c_str(), mName);

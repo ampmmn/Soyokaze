@@ -8,13 +8,13 @@ namespace soyokaze {
 namespace commands {
 namespace decodestring {
 
-class DecodeUriCommand : public soyokaze::commands::common::AdhocCommandBase
+class EscapedCharCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 
 public:
-	DecodeUriCommand();
-	virtual ~DecodeUriCommand();
+	EscapedCharCommand();
+	virtual ~EscapedCharCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;

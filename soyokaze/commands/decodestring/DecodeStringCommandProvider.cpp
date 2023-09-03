@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DecodeStringCommandProvider.h"
 #include "commands/decodestring/DecodeUriCommand.h"
+#include "commands/decodestring/EscapedCharCommand.h"
 #include "core/CommandRepository.h"
 
 #ifdef _DEBUG
@@ -24,6 +25,7 @@ struct DecodeStringCommandProvider::PImpl
 	}
 
 	std::unique_ptr<DecodeUriCommand> mDecodeUriCommand;
+	std::unique_ptr<EscapedCharCommand> mEscapedCharCommand;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +38,7 @@ REGISTER_COMMANDPROVIDER(DecodeStringCommandProvider)
 DecodeStringCommandProvider::DecodeStringCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mDecodeUriCommand = std::make_unique<DecodeUriCommand>();
+	in->mEscapedCharCommand = std::make_unique<EscapedCharCommand>();
 }
 
 DecodeStringCommandProvider::~DecodeStringCommandProvider()
@@ -57,6 +60,12 @@ void DecodeStringCommandProvider::QueryAdhocCommands(
 	if (level != Pattern::Mismatch) {
 		commands.push_back(CommandQueryItem(level, in->mDecodeUriCommand.get()));
 		in->mDecodeUriCommand->AddRef();
+	}
+
+	level = in->mEscapedCharCommand->Match(pattern);
+	if (level != Pattern::Mismatch) {
+		commands.push_back(CommandQueryItem(level, in->mEscapedCharCommand.get()));
+		in->mEscapedCharCommand->AddRef();
 	}
 }
 

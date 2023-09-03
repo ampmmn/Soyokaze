@@ -15,6 +15,8 @@ public:
 	CStringA& Convert(const CString& src, CStringA& dst);
 	std::string& Convert(const CString& src, std::string& dst);
 
+	static int ScalarToUTF8(uint32_t scalar, char* dst);
+
 
 protected:
 	int mCodePage;
