@@ -575,6 +575,12 @@ bool AppPreference::IsShowCommandType()
 	return in->mSettings.Get(_T("Soyokaze:IsShowCommandType"), true);
 }
 
+// 候補欄の背景色を交互に変えるか
+bool AppPreference::IsAlternateColor()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsAlternateColor"), false);
+}
+
 // C/Migemo検索を利用するか
 bool AppPreference::IsEnableMigemo()
 {

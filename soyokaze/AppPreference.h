@@ -77,6 +77,9 @@ public:
 	// 入力欄ウインドウにコマンド種別を表示するか
 	bool IsShowCommandType();
 
+	// 候補欄の背景色を交互に変えるか
+	bool IsAlternateColor();
+
 	// C/Migemo検索を利用するか
 	bool IsEnableMigemo();
 

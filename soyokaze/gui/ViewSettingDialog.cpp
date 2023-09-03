@@ -28,6 +28,9 @@ struct ViewSettingDialog::PImpl
 	// コマンド種別を表示するか?
 	BOOL mIsShowCommandType;
 
+	// 候補欄の背景色を交互に変える
+	BOOL mIsAlternateColor;
+
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
 };
@@ -83,6 +86,7 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), (bool)in->mIsShowMainWindowOnCursor);
 	settingsPtr->Set(_T("Soyokaze:IsShowCommandType"), (bool)in->mIsShowCommandType);
+	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)in->mIsAlternateColor);
 
 	__super::OnOK();
 }
@@ -99,6 +103,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
 	DDX_Check(pDX, IDC_CHECK_MOVETOCURSOR, in->mIsShowMainWindowOnCursor);
 	DDX_Check(pDX, IDC_CHECK_SHOWCOMMANDTYPE, in->mIsShowCommandType);
+	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, in->mIsAlternateColor);
 }
 
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
@@ -154,4 +159,5 @@ void ViewSettingDialog::OnEnterSettings()
 	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
 	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 	in->mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
+	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), false);
 }

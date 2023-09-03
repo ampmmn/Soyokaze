@@ -19,6 +19,9 @@ struct CandidateListCtrl::PImpl
 
 	bool mIsEmpty = false;
 
+	// 背景色を交互に色を変える
+	bool mIsAlternateColor = false;
+
 	int mItemsInPage;
 };
 
@@ -110,6 +113,9 @@ void CandidateListCtrl::InitColumns()
 	int cx = rect.Width();
 
 	AppPreference* pref= AppPreference::Get();
+
+	// 交互別色表示設定
+	in->mIsAlternateColor = pref->IsAlternateColor();
 
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
@@ -210,6 +216,11 @@ void CandidateListCtrl::DrawItem(
 		rgb[2] = BYTE(rgb[2] + BYTE((255 - rgb[2]) * 0.06));
 	}
 	COLORREF crBk2 = RGB(rgb[0], rgb[1], rgb[2]);
+
+	// 背景色を交互に色を変えない場合
+	if (in->mIsAlternateColor == false) {
+		crBk2 = crBk;
+	}
 
 	if (in->mIsEmpty) {
 		// ToDo: 末尾の塗りつぶしとここの塗りつぶしの処理を関数化する
