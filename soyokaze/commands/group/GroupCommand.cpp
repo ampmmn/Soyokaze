@@ -166,6 +166,11 @@ CString GroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString GroupCommand::GetGuideString()
+{
+	return _T("");
+}
+
 CString GroupCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_GROUPCOMMAND);

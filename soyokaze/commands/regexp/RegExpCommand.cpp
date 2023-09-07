@@ -84,6 +84,11 @@ CString RegExpCommand::GetDescription()
 	return in->mDescription;
 }
 
+CString RegExpCommand::GetGuideString()
+{
+	return _T("");
+}
+
 CString RegExpCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);

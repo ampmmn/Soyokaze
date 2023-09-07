@@ -1,9 +1,7 @@
 #include "pch.h"
-#include "framework.h"
-#include "commands/builtin/UserDirCommand.h"
+#include "UserDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/AppProfile.h"
-#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -17,32 +15,21 @@ namespace builtin {
 
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
-CString UserDirCommand::GetType() { return _T("Builtin-UserDir"); }
+CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
+
+CString UserDirCommand::GetType()
+{
+	return TYPE;
+}
 
 UserDirCommand::UserDirCommand(LPCTSTR name) :
-	mRefCount(1)
+	BuiltinCommandBase(name ? name : _T("userdir"))
 {
-	mName = name ? name : _T("userdir");
+	mDescription = _T("【ユーザーフォルダ】");
 }
 
 UserDirCommand::~UserDirCommand()
 {
-}
-
-CString UserDirCommand::GetName()
-{
-	return mName;
-}
-
-CString UserDirCommand::GetDescription()
-{
-	return _T("【ユーザーフォルダ】");
-}
-
-CString UserDirCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL UserDirCommand::Execute(const Parameter& param)
@@ -58,58 +45,14 @@ BOOL UserDirCommand::Execute(const Parameter& param)
 	return cmd.Execute(paramEmpty);
 }
 
-CString UserDirCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON UserDirCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadUserDirIcon();
 }
 
-int UserDirCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool UserDirCommand::IsEditable()
-{
-	return false;
-}
-
-
-int UserDirCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command* UserDirCommand::Clone()
 {
 	return new UserDirCommand();
-}
-
-bool UserDirCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t UserDirCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t UserDirCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 } // end of namespace builtin

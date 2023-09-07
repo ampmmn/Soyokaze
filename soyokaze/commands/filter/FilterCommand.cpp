@@ -314,6 +314,11 @@ CString FilterCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString FilterCommand::GetGuideString()
+{
+	return _T("");
+}
+
 CString FilterCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);

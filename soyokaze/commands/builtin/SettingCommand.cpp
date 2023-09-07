@@ -3,8 +3,6 @@
 #include "SettingCommand.h"
 #include "gui/SettingDialog.h"
 #include "AppPreference.h"
-#include "HotKeyAttribute.h"
-#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -16,33 +14,22 @@ namespace soyokaze {
 namespace commands {
 namespace builtin {
 
-CString SettingCommand::GetType() { return _T("Builtin-Setting"); }
+CString SettingCommand::TYPE(_T("Builtin-Setting"));
+
+CString SettingCommand::GetType()
+{
+	return TYPE;
+}
 
 SettingCommand::SettingCommand(LPCTSTR name) :
-	mRefCount(1)
+	BuiltinCommandBase(name ? name : _T("setting"))
 {
-	mName = name ? name : _T("setting");
+	mDescription = _T("【設定】");
 	mIsExecuting = false;
 }
 
 SettingCommand::~SettingCommand()
 {
-}
-
-CString SettingCommand::GetName()
-{
-	return mName;
-}
-
-CString SettingCommand::GetDescription()
-{
-	return _T("【設定】");
-}
-
-CString SettingCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL SettingCommand::Execute(const Parameter& param)
@@ -85,11 +72,6 @@ BOOL SettingCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString SettingCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON SettingCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadSettingIcon();
@@ -97,48 +79,9 @@ HICON SettingCommand::GetIcon()
 }
 
 
-int SettingCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool SettingCommand::IsEditable()
-{
-	return false;
-}
-
-
-int SettingCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command* SettingCommand::Clone()
 {
 	return new SettingCommand();
-}
-
-bool SettingCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t SettingCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t SettingCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 } // end of namespace builtin

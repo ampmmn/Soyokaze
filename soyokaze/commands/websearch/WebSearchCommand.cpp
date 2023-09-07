@@ -69,6 +69,11 @@ CString WebSearchCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString WebSearchCommand::GetGuideString()
+{
+	return _T("");
+}
+
 CString WebSearchCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);

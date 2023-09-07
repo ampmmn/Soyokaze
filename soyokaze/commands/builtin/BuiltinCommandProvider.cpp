@@ -35,7 +35,30 @@ namespace builtin {
 
 struct BuiltinCommandProvider::PImpl
 {
-	uint32_t mRefCount;
+	void InitMap()
+	{
+		if (mIsFirstCall == false) {
+			return;
+		}
+
+		mFactoryMap[NewCommand::TYPE] = [](LPCTSTR name) { return new NewCommand(name); };
+		mFactoryMap[EditCommand::TYPE] = [](LPCTSTR name) { return new EditCommand(name); };
+		mFactoryMap[ReloadCommand::TYPE] = [](LPCTSTR name) { return new ReloadCommand(name); };
+		mFactoryMap[ManagerCommand::TYPE] = [](LPCTSTR name) { return new ManagerCommand(name); };
+		mFactoryMap[ExitCommand::TYPE] = [](LPCTSTR name) { return new ExitCommand(name); };
+		mFactoryMap[VersionCommand::TYPE] = [](LPCTSTR name) { return new VersionCommand(name); };
+		mFactoryMap[UserDirCommand::TYPE] = [](LPCTSTR name) { return new UserDirCommand(name); };
+		mFactoryMap[MainDirCommand::TYPE] = [](LPCTSTR name) { return new MainDirCommand(name); };
+		mFactoryMap[SettingCommand::TYPE] = [](LPCTSTR name) { return new SettingCommand(name); };
+		mFactoryMap[RegistWinCommand::TYPE] = [](LPCTSTR name) { return new RegistWinCommand(name); };
+		mFactoryMap[ChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
+		mFactoryMap[DeleteCommand::TYPE] = [](LPCTSTR name) { return new DeleteCommand(name); };
+
+		mIsFirstCall = false;
+	}
+
+	uint32_t mRefCount = 1;
+	bool mIsFirstCall = true;
 	std::map<CString, std::function<soyokaze::core::Command*(LPCTSTR)> > mFactoryMap;
 };
 
@@ -48,21 +71,6 @@ REGISTER_COMMANDPROVIDER(BuiltinCommandProvider)
 
 BuiltinCommandProvider::BuiltinCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mRefCount = 1;
-
-	in->mFactoryMap[NewCommand::GetType()] = [](LPCTSTR name) { return new NewCommand(name); };
-	in->mFactoryMap[EditCommand::GetType()] = [](LPCTSTR name) { return new EditCommand(name); };
-	in->mFactoryMap[ReloadCommand::GetType()] = [](LPCTSTR name) { return new ReloadCommand(name); };
-	in->mFactoryMap[ManagerCommand::GetType()] = [](LPCTSTR name) { return new ManagerCommand(name); };
-	in->mFactoryMap[ExitCommand::GetType()] = [](LPCTSTR name) { return new ExitCommand(name); };
-	in->mFactoryMap[VersionCommand::GetType()] = [](LPCTSTR name) { return new VersionCommand(name); };
-	in->mFactoryMap[UserDirCommand::GetType()] = [](LPCTSTR name) { return new UserDirCommand(name); };
-	in->mFactoryMap[MainDirCommand::GetType()] = [](LPCTSTR name) { return new MainDirCommand(name); };
-	in->mFactoryMap[SettingCommand::GetType()] = [](LPCTSTR name) { return new SettingCommand(name); };
-	in->mFactoryMap[RegistWinCommand::GetType()] = [](LPCTSTR name) { return new RegistWinCommand(name); };
-	in->mFactoryMap[ChangeDirectoryCommand::GetType()] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
-	in->mFactoryMap[DeleteCommand::GetType()] = [](LPCTSTR name) { return new DeleteCommand(name); };
-
 }
 
 BuiltinCommandProvider::~BuiltinCommandProvider()
@@ -72,6 +80,8 @@ BuiltinCommandProvider::~BuiltinCommandProvider()
 // 初回起動の初期化を行う
 void BuiltinCommandProvider::OnFirstBoot()
 {
+	in->InitMap();
+
 	// コマンド登録
 	auto cmdRepo = CommandRepository::GetInstance();
 
@@ -87,6 +97,8 @@ void BuiltinCommandProvider::LoadCommands(
 )
 {
 	ASSERT(cmdFile);
+
+	in->InitMap();
 
 	auto cmdRepo = CommandRepository::GetInstance();
 

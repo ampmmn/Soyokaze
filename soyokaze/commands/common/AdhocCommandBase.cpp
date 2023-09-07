@@ -34,6 +34,11 @@ CString AdhocCommandBase::GetDescription()
 	return mDescription;
 }
 
+CString AdhocCommandBase::GetGuideString()
+{
+	return _T("");
+}
+
 BOOL AdhocCommandBase::Execute(const Parameter& param)
 {
 	// 派生側で実装する

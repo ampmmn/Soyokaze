@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/DeleteCommand.h"
-#include "commands/shellexecute/ShellExecCommand.h"
 #include "core/CommandRepository.h"
 #include "CommandFile.h"
 #include "IconLoader.h"
@@ -15,33 +14,21 @@ namespace soyokaze {
 namespace commands {
 namespace builtin {
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+CString DeleteCommand::TYPE(_T("Builtin-Delete"));
 
-CString DeleteCommand::GetType() { return _T("Builtin-Delete"); }
-
-DeleteCommand::DeleteCommand(LPCTSTR name) : mRefCount(1)
+CString DeleteCommand::GetType()
 {
-	mName = name ? name : _T("delete");
+	return TYPE;
+}
+
+DeleteCommand::DeleteCommand(LPCTSTR name) : 
+	BuiltinCommandBase(name ? name : _T("delete"))
+{
+	mDescription = _T("【削除】");
 }
 
 DeleteCommand::~DeleteCommand()
 {
-}
-
-CString DeleteCommand::GetName()
-{
-	return mName;
-}
-
-CString DeleteCommand::GetDescription()
-{
-	return _T("【削除】");
-}
-
-CString DeleteCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL DeleteCommand::Execute(const Parameter& param)
@@ -91,57 +78,9 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString DeleteCommand::GetErrorString()
-{
-	return _T("");
-}
-
-HICON DeleteCommand::GetIcon()
-{
-	return IconLoader::Get()->LoadDefaultIcon();
-}
-
-int DeleteCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool DeleteCommand::IsEditable()
-{
-	return false;
-}
-
-int DeleteCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command* DeleteCommand::Clone()
 {
 	return new DeleteCommand();
-}
-
-bool DeleteCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t DeleteCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t DeleteCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 }

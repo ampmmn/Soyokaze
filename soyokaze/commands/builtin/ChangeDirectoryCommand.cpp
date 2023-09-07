@@ -18,31 +18,22 @@ namespace builtin {
 
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
-CString ChangeDirectoryCommand::GetType() { return _T("Builtin-CD"); }
 
-ChangeDirectoryCommand::ChangeDirectoryCommand(LPCTSTR name) : mRefCount(1)
+CString ChangeDirectoryCommand::TYPE(_T("Builtin-CD"));
+
+CString ChangeDirectoryCommand::GetType()
 {
-	mName = name ? name : _T("cd");
+	return TYPE;
+}
+
+ChangeDirectoryCommand::ChangeDirectoryCommand(LPCTSTR name) :
+	BuiltinCommandBase(name ? name : _T("cd"))
+{
+	mDescription = _T("【カレントディレクトリ変更】");
 }
 
 ChangeDirectoryCommand::~ChangeDirectoryCommand()
 {
-}
-
-CString ChangeDirectoryCommand::GetName()
-{
-	return mName;
-}
-
-CString ChangeDirectoryCommand::GetDescription()
-{
-	return _T("【カレントディレクトリ変更】");
-}
-
-CString ChangeDirectoryCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
@@ -81,57 +72,9 @@ BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString ChangeDirectoryCommand::GetErrorString()
-{
-	return _T("");
-}
-
-HICON ChangeDirectoryCommand::GetIcon()
-{
-	return IconLoader::Get()->LoadDefaultIcon();
-}
-
-int ChangeDirectoryCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool ChangeDirectoryCommand::IsEditable()
-{
-	return false;
-}
-
-int ChangeDirectoryCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command* ChangeDirectoryCommand::Clone()
 {
 	return new ChangeDirectoryCommand();
-}
-
-bool ChangeDirectoryCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t ChangeDirectoryCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t ChangeDirectoryCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 }

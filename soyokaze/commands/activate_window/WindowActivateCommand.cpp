@@ -66,6 +66,12 @@ CString WindowActivateCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString WindowActivateCommand::GetGuideString()
+{
+	return _T("");
+}
+
+
 CString WindowActivateCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);

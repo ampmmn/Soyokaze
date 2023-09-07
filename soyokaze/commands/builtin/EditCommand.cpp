@@ -2,7 +2,6 @@
 #include "framework.h"
 #include "commands/builtin/EditCommand.h"
 #include "core/CommandRepository.h"
-#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -15,31 +14,21 @@ namespace commands {
 namespace builtin {
 
 
-CString EditCommand::GetType() { return _T("Builtin-Edit"); }
+CString EditCommand::TYPE(_T("Builtin"));
 
-EditCommand::EditCommand(LPCTSTR name) : mRefCount(1)
+CString EditCommand::GetType()
 {
-	mName = name ? name : _T("edit");
+	return TYPE;
+}
+
+EditCommand::EditCommand(LPCTSTR name) : 
+	BuiltinCommandBase(name ? name : _T("edit"))
+{
+	mDescription = _T("【編集】");
 }
 
 EditCommand::~EditCommand()
 {
-}
-
-CString EditCommand::GetName()
-{
-	return mName;
-}
-
-CString EditCommand::GetDescription()
-{
-	return _T("【編集】");
-}
-
-CString EditCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL EditCommand::Execute(const Parameter& param)
@@ -74,57 +63,14 @@ BOOL EditCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-CString EditCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON EditCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-int EditCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool EditCommand::IsEditable()
-{
-	return false;
-}
-
-int EditCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
-
 soyokaze::core::Command* EditCommand::Clone()
 {
 	return new EditCommand();
-}
-
-bool EditCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t EditCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t EditCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 }

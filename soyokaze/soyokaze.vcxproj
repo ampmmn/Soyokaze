@@ -580,6 +580,7 @@
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h" />
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
+    <ClInclude Include="commands\builtin\BuiltinCommandBase.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\DeleteCommand.h" />
@@ -743,6 +744,7 @@
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp" />
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />
+    <ClCompile Include="commands\builtin\BuiltinCommandBase.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\DeleteCommand.cpp" />

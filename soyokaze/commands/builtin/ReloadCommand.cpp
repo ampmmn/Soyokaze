@@ -2,7 +2,6 @@
 #include "framework.h"
 #include "ReloadCommand.h"
 #include "core/CommandRepository.h"
-#include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -14,32 +13,21 @@ namespace soyokaze {
 namespace commands {
 namespace builtin {
 
-CString ReloadCommand::GetType() { return _T("Builtin-Reload"); }
+CString ReloadCommand::TYPE(_T("Builtin-Reload"));
+
+CString ReloadCommand::GetType()
+{
+	return TYPE;
+}
 
 ReloadCommand::ReloadCommand(LPCTSTR name) :
-	mRefCount(1)
+	BuiltinCommandBase(name ? name : _T("reload"))
 {
-	mName = name ? name : _T("reload");
+	mDescription = _T("【設定のリロード】");
 }
 
 ReloadCommand::~ReloadCommand()
 {
-}
-
-CString ReloadCommand::GetName()
-{
-	return mName;
-}
-
-CString ReloadCommand::GetDescription()
-{
-	return _T("【設定のリロード】");
-}
-
-CString ReloadCommand::GetTypeDisplayName()
-{
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
 }
 
 BOOL ReloadCommand::Execute(const Parameter& param)
@@ -47,57 +35,15 @@ BOOL ReloadCommand::Execute(const Parameter& param)
 	return soyokaze::core::CommandRepository::GetInstance()->Load();
 }
 
-CString ReloadCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON ReloadCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadReloadIcon();
 }
 
-int ReloadCommand::Match(Pattern* pattern)
-{
-	return pattern->Match(GetName());
-}
-
-bool ReloadCommand::IsEditable()
-{
-	return false;
-}
-
-int ReloadCommand::EditDialog(const Parameter* param)
-{
-	// 実装なし
-	return -1;
-}
 
 soyokaze::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand();
-}
-
-bool ReloadCommand::Save(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	return true;
-}
-
-uint32_t ReloadCommand::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t ReloadCommand::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 } // end of namespace builtin

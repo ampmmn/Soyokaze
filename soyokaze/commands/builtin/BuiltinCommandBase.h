@@ -1,53 +1,44 @@
 #pragma once
 
 #include "core/CommandIF.h"
-#include <memory>
-
-class HOTKEY_ATTR;
 
 namespace soyokaze {
 namespace commands {
-namespace filter {
+namespace builtin {
 
-class CommandParam;
-
-class FilterCommand : public soyokaze::core::Command
+class BuiltinCommandBase : public soyokaze::core::Command
 {
 public:
-	FilterCommand();
-	virtual ~FilterCommand();
+	BuiltinCommandBase(LPCTSTR name = nullptr);
+	virtual ~BuiltinCommandBase();
 
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-
-	BOOL Execute(const Parameter& param) override;
+	//BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
-	soyokaze::core::Command* Clone() override;
+	//soyokaze::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	static CString GetType();
-	
-public:
-	FilterCommand& SetParam(const CommandParam& param);
-	FilterCommand& GetParam(CommandParam& param);
-
+	virtual CString GetType() = 0;
 
 protected:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
+	CString mName;
+	CString mDescription;
+	CString mError;
+	uint32_t mRefCount;
 };
 
-} // end of namespace filter
-} // end of namespace commands
-} // end of namespace soyokaze
+}
+}
+}
 

@@ -576,6 +576,9 @@
     <ClInclude Include="commands\decodestring\EscapedCharCommand.h">
       <Filter>commands\decodestring</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinCommandBase.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1036,6 +1039,9 @@
     </ClCompile>
     <ClCompile Include="commands\decodestring\EscapedCharCommand.cpp">
       <Filter>commands\decodestring</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\BuiltinCommandBase.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -84,6 +84,11 @@ CString ShellExecCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
+CString ShellExecCommand::GetGuideString()
+{
+	return _T("");
+}
+
 CString ShellExecCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_NORMALCOMMAND);
