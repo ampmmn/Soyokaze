@@ -92,8 +92,12 @@ BOOL VMXFileCommand::Execute(const Parameter& param)
 
 	// .lckファイルの確認
 	if (in->IsLocked()) {
-		in->mErrorMsg.Format(IDS_ERR_VMXLOCKED, (LPCTSTR)this->mName);
-		return FALSE;
+		CString msg;
+		msg.Format(IDS_CONFIRM_VMXLOCKED, (LPCTSTR)this->mName);
+		int sel = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+		if (sel != IDYES) {
+			return TRUE;
+		}
 	}
 
 	SubProcess::ProcessPtr process;

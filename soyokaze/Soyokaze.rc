@@ -1634,6 +1634,7 @@ BEGIN
     IDS_COMMAND_STARTMENU   "スタートメニュー"
     IDS_COMMAND_APP         "アプリ"
     IDS_SENDTO              "コマンドとして登録する.lnk"
+    IDS_CONFIRM_VMXLOCKED   "%sはロックされているようですが、実行しますか?"
 END
 
 #endif    // 日本語 (日本) resources
