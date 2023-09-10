@@ -38,9 +38,9 @@ public:
 	virtual ~CSoyokazeDlg();
 
 // ダイアログ データ
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SOYOKAZE_DIALOG };
-#endif
+//#ifdef AFX_DESIGN_TIME
+//	enum { IDD = IDD_MAIN };
+//#endif
 
 public:
 	static void ActivateWindow(HWND hwnd);

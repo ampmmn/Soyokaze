@@ -13,6 +13,7 @@ public:
 	ControlPanelCommand(const CString& name, const CString& iconPath, const CString& command, const CString& description);
 	virtual ~ControlPanelCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

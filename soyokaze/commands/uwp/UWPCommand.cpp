@@ -33,6 +33,10 @@ UWPCommand::~UWPCommand()
 {
 }
 
+CString UWPCommand::GetGuideString()
+{
+	return _T("Enter:実行");
+}
 
 CString UWPCommand::GetTypeDisplayName()
 {

@@ -14,6 +14,7 @@ public:
 	VMXFileCommand(const CString& name, const CString& fullPath);
 	virtual ~VMXFileCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;

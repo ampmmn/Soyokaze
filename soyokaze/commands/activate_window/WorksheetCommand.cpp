@@ -41,6 +41,12 @@ WorksheetCommand::~WorksheetCommand()
 	}
 }
 
+CString WorksheetCommand::GetGuideString()
+{
+	return _T("Enter:シートをアクティブにする");
+}
+
+
 CString WorksheetCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);

@@ -35,7 +35,7 @@ CString BuiltinCommandBase::GetDescription()
 
 CString BuiltinCommandBase::GetGuideString()
 {
-	return _T("Enterキーで実行");
+	return _T("Enter:実行");
 }
 
 CString BuiltinCommandBase::GetTypeDisplayName()

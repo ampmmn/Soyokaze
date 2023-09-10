@@ -78,6 +78,11 @@ BookmarkCommand::~BookmarkCommand()
 {
 }
 
+CString BookmarkCommand::GetGuideString()
+{
+	return _T("Enter:ブラウザで開く");
+}
+
 CString BookmarkCommand::GetTypeDisplayName()
 {
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "HistoryCommand.h"
 #include "core/CommandRepository.h"
+#include "core/CommandParameter.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -50,6 +51,16 @@ HistoryCommand::~HistoryCommand()
 	}
 }
 
+CString HistoryCommand::GetGuideString()
+{
+	if (in->mCmd == nullptr) {
+		return _T("Enter:開く");
+	}
+
+	return in->mCmd->GetGuideString();
+}
+
+
 CString HistoryCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_HISTORY);
@@ -58,12 +69,14 @@ CString HistoryCommand::GetTypeDisplayName()
 
 BOOL HistoryCommand::Execute(const Parameter& param)
 {
-	param;
-
 	if (in->mCmd == nullptr) {
 		return FALSE;
 	}
-	return in->mCmd->Execute(in->mParam);
+
+	Parameter paramTmp(in->mParam);
+	param.CopyNamedParamTo(paramTmp);
+
+	return in->mCmd->Execute(paramTmp);
 }
 
 HICON HistoryCommand::GetIcon()

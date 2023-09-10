@@ -35,6 +35,11 @@ EnvCommand::~EnvCommand()
 {
 }
 
+CString EnvCommand::GetGuideString()
+{
+	return _T("Enter:クリップボードにコピー");
+}
+
 CString EnvCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_ENVIRON);

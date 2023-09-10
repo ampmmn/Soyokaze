@@ -75,6 +75,11 @@ VMXFileCommand::~VMXFileCommand()
 {
 }
 
+CString VMXFileCommand::GetGuideString()
+{
+	return _T("Enter:ファイルを開く Ctrl-Enter:パスを開く");
+}
+
 CString VMXFileCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_VMXFILE);

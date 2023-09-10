@@ -40,6 +40,12 @@ CalcWorksheetCommand::~CalcWorksheetCommand()
 	}
 }
 
+CString CalcWorksheetCommand::GetGuideString()
+{
+	return _T("Enter:シートをアクティブにする");
+}
+
+
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {
 	return _T("Calcワークシート");

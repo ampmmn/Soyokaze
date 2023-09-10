@@ -26,6 +26,11 @@ MailToCommand::~MailToCommand()
 {
 }
 
+CString MailToCommand::GetGuideString()
+{
+	return _T("Enter:開く");
+}
+
 CString MailToCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_MAILTO);

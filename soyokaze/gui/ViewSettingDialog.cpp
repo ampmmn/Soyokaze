@@ -28,6 +28,9 @@ struct ViewSettingDialog::PImpl
 	// コマンド種別を表示するか?
 	BOOL mIsShowCommandType;
 
+	// 操作ガイドを表示するか?
+	BOOL mIsShowGuide;
+
 	// 候補欄の背景色を交互に変える
 	BOOL mIsAlternateColor;
 
@@ -89,6 +92,7 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), (bool)in->mIsShowMainWindowOnCursor);
 	settingsPtr->Set(_T("Soyokaze:IsShowCommandType"), (bool)in->mIsShowCommandType);
+	settingsPtr->Set(_T("Soyokaze:IsShowGuide"), (bool)in->mIsShowGuide);
 	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)in->mIsAlternateColor);
 	settingsPtr->Set(_T("Soyokaze:IsDrawIconOnCandidate"), (bool)in->mIsDrawIconOnCandidate);
 
@@ -107,6 +111,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
 	DDX_Check(pDX, IDC_CHECK_MOVETOCURSOR, in->mIsShowMainWindowOnCursor);
 	DDX_Check(pDX, IDC_CHECK_SHOWCOMMANDTYPE, in->mIsShowCommandType);
+	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, in->mIsShowGuide);
 	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, in->mIsAlternateColor);
 	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, in->mIsDrawIconOnCandidate);
 }
@@ -164,6 +169,7 @@ void ViewSettingDialog::OnEnterSettings()
 	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
 	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 	in->mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
+	in->mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
 	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), false);
 	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
 }

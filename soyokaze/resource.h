@@ -5,8 +5,8 @@
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
-#define IDD_SOYOKAZE_DIALOG             102
 #define IDS_ERR_GROUPITEMEMPTY          102
+#define IDD_MAIN                        102
 #define ID_STRING_MISMATCH              103
 #define ID_STRING_DEFAULTDESCRIPTION    104
 #define IDS_MENUTEXT_SHOW               105
@@ -73,7 +73,6 @@
 #define IDS_COMMAND_WORKSHEET           150
 #define IDD_FILTEREDIT                  151
 #define IDS_COMMAND_BOOKMARK            151
-#define IDD_SOYOKAZE_DIALOG1            152
 #define IDD_FILTER                      152
 #define IDS_COMMAND_BUILTIN             152
 #define IDD_EXECSETTING                 153
@@ -101,6 +100,7 @@
 #define IDS_DESCRIPTION_WINDOWACTIVATE  166
 #define IDD_WEBSEARCHEDIT               166
 #define IDS_COMMANDNAME_WEBSEARCH       167
+#define IDD_MAIN_GUIDE                  167
 #define IDS_DESCRIPTION_WEBSEARCH       168
 #define IDS_COMMAND_STARTMENU           169
 #define IDS_COMMAND_APP                 170
@@ -108,6 +108,7 @@
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
+#define IDC_STATIC_GUIDE                1002
 #define IDC_EDIT_COMMAND2               1003
 #define IDC_STATIC_BUILDDATE            1004
 #define IDC_LIST_CANDIDATE              1005
@@ -181,6 +182,7 @@
 #define IDC_BUTTON_SOUNDEXECUTE         1048
 #define IDC_CHECK_DRAWICONONCANDIDATE   1048
 #define IDC_CHECK_USEFILER2             1049
+#define IDC_CHECK_SHOWGUIDE             1049
 #define IDC_CHECK_SHOWTOGGLE            1050
 #define IDC_CHECK_ALT                   1051
 #define IDC_CHECK_HIDEONRUN             1052

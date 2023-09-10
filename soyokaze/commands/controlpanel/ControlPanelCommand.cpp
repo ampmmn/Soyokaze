@@ -40,6 +40,11 @@ ControlPanelCommand::~ControlPanelCommand()
 {
 }
 
+CString ControlPanelCommand::GetGuideString()
+{
+	return _T("Enter:開く");
+}
+
 CString ControlPanelCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CONTROLPANEL);

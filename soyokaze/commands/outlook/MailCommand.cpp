@@ -47,6 +47,12 @@ CString MailCommand::GetDescription()
 	return in->mMailItem->GetSubject();
 }
 
+CString MailCommand::GetGuideString()
+{
+	return _T("Enter:開く");
+}
+
+
 CString MailCommand::GetTypeDisplayName()
 {
 	return _T("Outlookメール");

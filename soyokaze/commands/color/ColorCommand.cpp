@@ -107,6 +107,11 @@ ColorCommand::~ColorCommand()
 	}
 }
 
+CString ColorCommand::GetGuideString()
+{
+	return _T("Enter:クリップボードにコピー");
+}
+
 CString ColorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_COLOR);

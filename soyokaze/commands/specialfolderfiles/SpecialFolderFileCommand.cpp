@@ -37,6 +37,11 @@ SpecialFolderFileCommand::~SpecialFolderFileCommand()
 {
 }
 
+CString SpecialFolderFileCommand::GetGuideString()
+{
+	return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+}
+
 
 CString SpecialFolderFileCommand::GetTypeDisplayName()
 {

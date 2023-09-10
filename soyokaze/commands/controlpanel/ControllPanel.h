@@ -17,7 +17,7 @@ public:
 	virtual ~ControlPanelProvider();
 
 public:
-	virtual CString GetName();
+	CString GetName() override;
 
 	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);

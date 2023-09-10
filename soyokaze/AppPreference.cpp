@@ -575,6 +575,12 @@ bool AppPreference::IsShowCommandType()
 	return in->mSettings.Get(_T("Soyokaze:IsShowCommandType"), true);
 }
 
+// 操作ガイド欄を表示するか
+bool AppPreference::IsShowGuide()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsShowGuide"), true);
+}
+
 // 候補欄の背景色を交互に変えるか
 bool AppPreference::IsAlternateColor()
 {

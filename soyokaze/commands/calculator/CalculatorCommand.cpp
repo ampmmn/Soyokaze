@@ -40,7 +40,11 @@ void CalculatorCommand::SetResult(const CString& result)
 	// 基底クラスのメンバー変数で持つ名前と説明を設定する
 	this->mName = result;
 	this->mDescription = result;
-	this->mDescription += _T("\t(Enterでコピー)");
+}
+
+CString CalculatorCommand::GetGuideString()
+{
+	return _T("Enter:クリップボードにコピー");
 }
 
 CString CalculatorCommand::GetTypeDisplayName()

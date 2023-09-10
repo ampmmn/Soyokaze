@@ -13,6 +13,7 @@ public:
 	BookmarkCommand(const CString& type, const CString& name, const CString& url);
 	virtual ~BookmarkCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

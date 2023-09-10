@@ -14,6 +14,7 @@ public:
 	EnvCommand(const CString& name, const CString& value);
 	virtual ~EnvCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

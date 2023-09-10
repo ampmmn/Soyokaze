@@ -40,11 +40,13 @@ struct CSoyokazeDlg::PImpl
 	}
 
 	void RestoreWindowPosition(CWnd* thisPtr);
+	void UpdateGuide(CWnd* thisPtr, bool isShow);
 
 	HICON mIconHandle;
 
 	// キーワード入力欄の文字列
 	CString mCommandStr;
+	CString mGuideStr;
 	// 現在選択中のコマンドの説明
 	CString mDescriptionStr;
 
@@ -94,16 +96,50 @@ void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr)
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+//void CSoyokazeDlg::PImpl::UpdateGuide(CWnd* thisPtr, bool isShow)
+//{
+//	thisPtr->GetDlgItem(IDC_STATIC_GUIDE)->ShowWindow(isShow ? SW_SHOW : SW_HIDE);
+//
+//	CWnd* edit = thisPtr->GetDlgItem(IDC_EDIT_COMMAND);
+//	CWnd* list = thisPtr->GetDlgItem(IDC_LIST_CANDIDATE);
+//
+//	CRect rcEdit;
+//	edit->GetClientRect(rcEdit);
+//	edit->MapWindowPoints(thisPtr, &rcEdit);
+//
+//	CRect rcList;
+//	list->GetClientRect(rcList);
+//	list->MapWindowPoints(thisPtr, &rcList);
+//
+//
+//	CPoint pt = rcEdit.TopLeft();
+//	CSize size = rcEdit.Size();
+//
+//	if (isShow == false) {
+//		int offsetX = 35;
+//		edit->SetWindowPos(nullptr, pt.x + offsetX, pt.y - 23, size.cx - offsetX, size.cy, SWP_NOZORDER);
+//
+//		pt = rcList.TopLeft();
+//		size= rcList.Size();
+//		int offsetY = 27;
+//		list->SetWindowPos(nullptr, pt.x, pt.y - offsetY, size.cx, size.cy + offsetY, SWP_NOZORDER);
+//	}
+//
+//	auto layout = thisPtr->GetDynamicLayout();
+//	layout->AddItem(edit->GetSafeHwnd(), CMFCDynamicLayout::MoveNone(), CMFCDynamicLayout::SizeHorizontal(100));
+//	layout->AddItem(list->GetSafeHwnd(), CMFCDynamicLayout::MoveNone(), CMFCDynamicLayout::SizeHorizontalAndVertical(100, 100));
+//	layout->Adjust();
+//}
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 
 // CSoyokazeDlg ダイアログ
 
 CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_SOYOKAZE_DIALOG, pParent),
+	: CDialogEx(AppPreference::Get()->IsShowGuide() ? IDD_MAIN_GUIDE : IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
@@ -123,6 +159,7 @@ void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_COMMAND, in->mCommandStr);
+	DDX_Text(pDX, IDC_STATIC_GUIDE, in->mGuideStr);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
 }
 
@@ -530,6 +567,9 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
+	in->mGuideStr.Empty();
+
+	// in->UpdateGuide(this, pref->IsShowGuide());
 
 	// ウインドウ位置の復元
 	// 起動直後に非表示にしない場合はここて復元
@@ -620,6 +660,8 @@ void CSoyokazeDlg::ClearContent()
 {
 	AppPreference* pref= AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
+	in->mGuideStr.Empty();
+
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
 	in->mCandidates.Clear();
@@ -660,6 +702,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
 		in->mCandidates.Clear();
+		in->mGuideStr.Empty();
 		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
@@ -679,6 +722,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	if (in->mCandidates.IsEmpty()) {
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
+		in->mGuideStr.Empty();
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawIcon(IconLoader::Get()->LoadUnknownIcon());
 		in->mCandidateListBox.Invalidate(TRUE);
@@ -686,11 +730,13 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	}
 	else {
 		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
-		SetDescription(descriptionStr);
 		// サムネイルの更新
 		auto pCmd = GetCurrentCommand();
 		ASSERT(pCmd);
 		in->mIconLabel.DrawIcon(pCmd->GetIcon());
+		in->mGuideStr = pCmd->GetGuideString();
+
+		SetDescription(descriptionStr);
 	}
 
 	// 補完
@@ -846,6 +892,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			if (in->mDescriptionStr.IsEmpty()) {
 				in->mDescriptionStr = cmd->GetName();
 			}
+			in->mGuideStr = cmd->GetGuideString();
 			in->mIconLabel.DrawIcon(cmd->GetIcon());
 
 			UpdateData(FALSE);
@@ -868,6 +915,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			if (in->mDescriptionStr.IsEmpty()) {
 				in->mDescriptionStr = cmd->GetName();
 			}
+			in->mGuideStr = cmd->GetGuideString();
 			in->mIconLabel.DrawIcon(cmd->GetIcon());
 
 			UpdateData(FALSE);
@@ -888,6 +936,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			if (in->mDescriptionStr.IsEmpty()) {
 				in->mDescriptionStr = cmd->GetName();
 			}
+			in->mGuideStr = cmd->GetGuideString();
 			in->mIconLabel.DrawIcon(cmd->GetIcon());
 			UpdateData(FALSE);
 

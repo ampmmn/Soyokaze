@@ -23,6 +23,7 @@ public:
 	ColorCommand(COLORREF cr, int formatType);
 	virtual ~ColorCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

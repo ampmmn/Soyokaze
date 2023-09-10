@@ -15,6 +15,7 @@ public:
 	CalcWorksheetCommand(CalcWorksheet* sheet);
 	virtual ~CalcWorksheetCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

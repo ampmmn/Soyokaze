@@ -316,7 +316,7 @@ CString FilterCommand::GetDescription()
 
 CString FilterCommand::GetGuideString()
 {
-	return _T("");
+	return _T("Enter:開く");
 }
 
 CString FilterCommand::GetTypeDisplayName()

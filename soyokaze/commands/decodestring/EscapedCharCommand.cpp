@@ -48,6 +48,12 @@ CString EscapedCharCommand::GetDescription()
 	return name;
 }
 
+CString EscapedCharCommand::GetGuideString()
+{
+	return _T("Enter:クリップボードにコピー");
+}
+
+
 CString EscapedCharCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("EscapedChar"));

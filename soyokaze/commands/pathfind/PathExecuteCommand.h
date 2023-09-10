@@ -18,6 +18,7 @@ public:
 	void SetFullPath(const CString& path, bool isFromHistory);
 
 	CString GetName() override;
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

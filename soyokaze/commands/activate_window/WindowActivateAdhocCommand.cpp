@@ -30,12 +30,18 @@ WindowActivateAdhocCommand::WindowActivateAdhocCommand(
 	TCHAR caption[256];
 	GetWindowText(hwnd, caption, 256);
 	this->mName = caption;
-	this->mDescription = CString("[Window]") + caption;
+	this->mDescription = caption;
 }
 
 WindowActivateAdhocCommand::~WindowActivateAdhocCommand()
 {
 }
+
+CString WindowActivateAdhocCommand::GetGuideString()
+{
+	return _T("Enter:ウインドウをアクティブにする");
+}
+
 
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {

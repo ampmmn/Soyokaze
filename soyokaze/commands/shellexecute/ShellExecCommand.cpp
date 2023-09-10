@@ -86,7 +86,23 @@ CString ShellExecCommand::GetDescription()
 
 CString ShellExecCommand::GetGuideString()
 {
-	return _T("");
+	if (in->mNormalAttr.mPath.Find(_T("http"))==0) {
+		return _T("Enter:ブラウザで開く");
+	}
+	else {
+		CString guideStr(_T("Enter:実行"));
+
+		if (PathFileExists(in->mNormalAttr.mPath)) {
+			guideStr += _T(" Ctrl-Enter:フォルダを開く");
+
+			CString ext(PathFindExtension(in->mNormalAttr.mPath));
+			if (ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0) {
+				guideStr += _T(" Ctrl-Shift-Enter:管理者権限で実行");
+			}
+		}
+
+		return guideStr;
+	}
 }
 
 CString ShellExecCommand::GetTypeDisplayName()

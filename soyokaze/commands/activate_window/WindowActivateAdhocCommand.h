@@ -13,6 +13,7 @@ public:
 	WindowActivateAdhocCommand(HWND hwnd);
 	virtual ~WindowActivateAdhocCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

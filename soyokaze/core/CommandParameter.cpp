@@ -139,6 +139,12 @@ void CommandParameter::CopyParamTo(CommandParameter& rhs) const
 	//rhs.in->mBoolParamMap = in->mBoolParamMap;
 }
 
+void CommandParameter::CopyNamedParamTo(CommandParameter& rhs) const
+{
+	// 内部用のパラメータのみコピー
+	rhs.in->mStrParamMap = in->mStrParamMap;
+	rhs.in->mBoolParamMap = in->mBoolParamMap;
+}
 void CommandParameter::GetParameters(std::vector<CString>& args) const
 {
 	CommandParameter::GetParameters(in->mParamPart, args);

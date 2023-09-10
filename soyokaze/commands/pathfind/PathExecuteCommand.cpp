@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/common/SubProcess.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
 #include "IconLoader.h"
@@ -14,11 +15,13 @@
 
 using LocalPathResolver = soyokaze::utility::LocalPathResolver;
 using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
+using SubProcess = soyokaze::commands::common::SubProcess;
 
 namespace soyokaze {
 namespace commands {
 namespace pathfind {
 
+static CString EXE_EXT = _T(".exe");
 
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
@@ -33,17 +36,17 @@ struct PathExecuteCommand::PImpl
 	LocalPathResolver mResolver;
 	CString mWord;
 	CString mFullPath;
-	CString mExeExtension;
 	bool mIsURL;
 	bool mIsFromHistory;
+	bool mIsExe;
 };
 
 
 PathExecuteCommand::PathExecuteCommand() : in(std::make_unique<PImpl>())
 {
-	in->mExeExtension = _T(".exe");
 	in->mIsURL = false;
 	in->mIsFromHistory = false;
+	in->mIsExe = false;
 }
 
 PathExecuteCommand::~PathExecuteCommand()
@@ -59,6 +62,9 @@ void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
 	const tregex& regURL = GetURLRegex();
 	in->mIsURL = (std::regex_search((LPCTSTR)path, regURL));
 	in->mIsFromHistory = isFromHistory;
+	if (in->mIsURL == false) {
+		in->mIsExe = EXE_EXT.CompareNoCase(PathFindExtension(path)) == 0;
+	}
 }
 
 
@@ -75,6 +81,19 @@ CString PathExecuteCommand::GetName()
 	return PathFindFileName(in->mFullPath);
 }
 
+CString PathExecuteCommand::GetGuideString()
+{
+	if (in->mIsURL) {
+		return _T("Enter:ブラウザで開く");
+	}
+	else if (in->mIsExe) {
+		return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+	}
+	else {
+		return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+	}
+}
+
 CString PathExecuteCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
@@ -85,31 +104,21 @@ CString PathExecuteCommand::GetTypeDisplayName()
 
 BOOL PathExecuteCommand::Execute(const Parameter& param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
-
 	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
 		return FALSE;
-	}
-
-	ShellExecCommand::ATTRIBUTE attr;
-	attr.mPath = in->mFullPath;
-
-	for (int i = 0; i < args.size(); ++i) {
-		if (i != 0) {
-			attr.mParam += _T(" ");
-		}
-		attr.mParam += _T("\"");
-		attr.mParam += args[i];
-		attr.mParam += _T("\"");
 	}
 
 	// 履歴に追加
 	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
 
-	ShellExecCommand cmd;
-	cmd.SetAttribute(attr);
-	return cmd.Execute(param);
+	SubProcess exec(param);
+	SubProcess::ProcessPtr process;
+	if (exec.Run(in->mFullPath, param.GetParameterString(), process) == FALSE) {
+		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 HICON PathExecuteCommand::GetIcon()
@@ -155,7 +164,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	}
 
 	CString word = pattern->GetFirstWord();
-	if (in->mExeExtension.CompareNoCase(PathFindExtension(word)) != 0) {
+	if (EXE_EXT.CompareNoCase(PathFindExtension(word)) != 0) {
 		word += _T(".exe");
 	}
 
@@ -186,7 +195,6 @@ PathExecuteCommand::Clone()
 
 	clonedObj->in->mResolver = in->mResolver;
 	clonedObj->in->mFullPath = in->mFullPath;
-	clonedObj->in->mExeExtension = in->mExeExtension;
 
 	return clonedObj.release();
 }

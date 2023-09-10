@@ -15,6 +15,7 @@ public:
 	SpecialFolderFileCommand(const ITEM& item);
 	virtual ~SpecialFolderFileCommand();
 
+	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

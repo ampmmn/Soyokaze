@@ -22,6 +22,7 @@ struct SubProcess::PImpl
 	bool IsRunAsKeyPressed();
 	bool IsOpenPathKeyPressed();
 	bool IsRunningAsAdmin();
+	bool CanRunAsAdmin(const CString& path);
 
 	const CommandParameter& mParam;
 	int mShowType = SW_SHOW;
@@ -69,6 +70,13 @@ bool SubProcess::PImpl::IsRunningAsAdmin()
 		return result && isMember;
 	}();
 	return isRunAsAdmin;
+}
+
+// 管理者権限で実行可能なファイルタイプか?
+bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
+{
+	CString ext = PathFindExtension(path);
+	return ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +168,7 @@ bool SubProcess::Run(
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
 
-	bool isRunAsAdminSpecified = (in->mIsRunAdAdmin || in->IsRunAsKeyPressed() );
+	bool isRunAsAdminSpecified = in->mIsRunAdAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path) );
 	if (isRunAsAdminSpecified && in->IsRunningAsAdmin() == false) {
 		si.lpVerb = _T("runas");
 	}

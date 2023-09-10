@@ -71,7 +71,7 @@ CString WebSearchCommand::GetDescription()
 
 CString WebSearchCommand::GetGuideString()
 {
-	return _T("");
+	return _T("Enter:検索を実行");
 }
 
 CString WebSearchCommand::GetTypeDisplayName()

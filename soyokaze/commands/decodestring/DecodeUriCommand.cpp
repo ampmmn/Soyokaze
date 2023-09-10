@@ -46,6 +46,12 @@ CString DecodeUriCommand::GetDescription()
 	return name;
 }
 
+CString DecodeUriCommand::GetGuideString()
+{
+	return _T("Enter:クリップボードにコピー");
+}
+
+
 CString DecodeUriCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("DecodeURI"));
