@@ -609,6 +609,8 @@
     <ClInclude Include="commands\filter\FilterCommandProvider.h" />
     <ClInclude Include="commands\filter\FilterDialog.h" />
     <ClInclude Include="commands\filter\FilterEditDialog.h" />
+    <ClInclude Include="commands\getip\GetIPCommand.h" />
+    <ClInclude Include="commands\getip\GetIPCommandProvider.h" />
     <ClInclude Include="commands\group\CommandParam.h" />
     <ClInclude Include="commands\group\GroupCommand.h" />
     <ClInclude Include="commands\group\GroupCommandProvider.h" />
@@ -773,6 +775,8 @@
     <ClCompile Include="commands\filter\FilterCommandProvider.cpp" />
     <ClCompile Include="commands\filter\FilterDialog.cpp" />
     <ClCompile Include="commands\filter\FilterEditDialog.cpp" />
+    <ClCompile Include="commands\getip\GetIPCommand.cpp" />
+    <ClCompile Include="commands\getip\GetIPCommandProvider.cpp" />
     <ClCompile Include="commands\group\CommandParam.cpp" />
     <ClCompile Include="commands\group\GroupCommand.cpp" />
     <ClCompile Include="commands\group\GroupCommandProvider.cpp" />

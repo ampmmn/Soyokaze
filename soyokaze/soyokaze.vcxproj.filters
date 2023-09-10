@@ -88,6 +88,9 @@
     <Filter Include="commands\decodestring">
       <UniqueIdentifier>{bdfa4983-1c39-4ead-8acb-70825c844131}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\getip">
+      <UniqueIdentifier>{5f53e1f6-5589-4607-8614-4518ab10497e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -579,6 +582,12 @@
     <ClInclude Include="commands\builtin\BuiltinCommandBase.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\getip\GetIPCommandProvider.h">
+      <Filter>commands\getip</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\getip\GetIPCommand.h">
+      <Filter>commands\getip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1042,6 +1051,12 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\BuiltinCommandBase.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\getip\GetIPCommandProvider.cpp">
+      <Filter>commands\getip</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\getip\GetIPCommand.cpp">
+      <Filter>commands\getip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
