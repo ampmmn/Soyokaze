@@ -50,7 +50,7 @@ CString EscapedCharCommand::GetDescription()
 
 CString EscapedCharCommand::GetGuideString()
 {
-	return _T("Enter:クリップボードにコピー");
+	return _T("Enter:デコード後の文字列をコピー");
 }
 
 
