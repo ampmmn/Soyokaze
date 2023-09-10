@@ -46,7 +46,7 @@ BOOL VersionCommand::Execute(const Parameter& param)
 
 HICON VersionCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadVersionIcon();
+	return IconLoader::Get()->GetImageResIcon(76);
 }
 
 soyokaze::core::Command*
