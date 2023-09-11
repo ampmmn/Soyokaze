@@ -109,6 +109,7 @@ IconLoader* IconLoader::Get()
 HICON IconLoader::LoadIconFromPath(const CString& path)
 {
 	if (path.Find(_T("http")) == 0) {
+		// URLの場合は固定のWebアイコンにする
 		return LoadWebIcon();
 	}
 
@@ -127,6 +128,7 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 		}
 	}
 
+	// パスがフォルダだった場合はフォルダアイコン
 	if (PathIsDirectory(fullPath)) {
 		return LoadFolderIcon();
 	}
@@ -218,7 +220,7 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 	// PNGからアイコンに変換する
 	static CString extPNG(_T(".png"));
 	if (index == 0 && extPNG == PathFindExtension(modulePath)) {
-		icon[0] = LoadIconFromPNG(modulePath);
+		icon[0] = LoadIconFromImage(modulePath);
 	}
 	else if (index == -1) {
 		// -1のときアイコン総数が返ってきてそうなので別系統の処理をする
@@ -329,7 +331,7 @@ static int GetPitch(int w, int bpp)
 	return (((w * bpp) + 31) / 32) * 4;
 }
 
-HICON IconLoader::LoadIconFromPNG(const CString& path)
+HICON IconLoader::LoadIconFromImage(const CString& path)
 {
 	ATL::CImage image;
 	HRESULT hr = image.Load(path);
@@ -338,11 +340,6 @@ HICON IconLoader::LoadIconFromPNG(const CString& path)
 	}
 
 	CSize size(image.GetWidth(), image.GetHeight());
-
-	if (image.GetBPP() != 32) {
-		// 透過情報を持たないものは非対応
-		return nullptr;
-	}
 
 	ATL::CImage imgMask;
 	imgMask.Create(size.cx, size.cy, 1);

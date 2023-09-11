@@ -8,8 +8,10 @@ public:
 	static IconLoader* Get();
 
 	HICON LoadIconFromPath(const CString& path);
+	// ファイル拡張子に関連付けられたアイコンを取得
 	HICON LoadExtensionIcon(const CString& fileExt);
-	HICON LoadIconFromPNG(const CString& path);
+	// 画像ファイルからアイコンを生成
+	HICON LoadIconFromImage(const CString& path);
 
 	void RegisterIcon(const CString& path, HICON icon);
 
