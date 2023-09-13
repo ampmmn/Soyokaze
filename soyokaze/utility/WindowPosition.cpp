@@ -11,7 +11,10 @@
 WindowPosition::WindowPosition()
 {
 	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
-	if (GetComputerName(mName.GetBuffer(bufLen), &bufLen) == FALSE) {
+	BOOL ret = GetComputerName(mName.GetBuffer(bufLen), &bufLen);
+	mName.ReleaseBuffer();
+
+	if (ret == FALSE) {
 		mName = _T("Window");
 	}
 }

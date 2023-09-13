@@ -173,6 +173,7 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 
 			tmp.push_back(item);
 		}
+		f.Close();
 	}
 	for (auto& item : tmp) {
 		GetLastWriteTime(item.mFullPath, item.mWriteTime);

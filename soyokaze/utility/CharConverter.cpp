@@ -40,7 +40,7 @@ CStringA& CharConverter::Convert(const CString& src, CStringA& dst)
 
 	char* p = dst.GetBuffer(requiredLen);
 	WideCharToMultiByte(cp, 0, src, -1, p, requiredLen, 0, 0);
-	dst.GetBuffer();
+	dst.ReleaseBuffer();
 
 	return dst;
 }
