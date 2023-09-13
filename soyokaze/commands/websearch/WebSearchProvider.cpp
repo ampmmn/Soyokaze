@@ -8,6 +8,7 @@
 #include "CommandFile.h"
 #include "resource.h"
 #include <list>
+#include <functional>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
