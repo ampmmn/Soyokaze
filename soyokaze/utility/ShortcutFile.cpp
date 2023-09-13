@@ -65,10 +65,10 @@ bool ShortcutFile::Save(LPCTSTR pathToSave)
 }
 
 /**
- *  $B%7%g!<%H%+%C%H$N%j%s%/@h%Q%9J8;zNs$rF@$k(B
- *  @return $B%7%g!<%H%+%C%H$,<($9<B:]$N%U%!%$%k$X$N%Q%9(B
- *  @param linkPath  $B%7%g!<%H%+%C%H%U%!%$%k$N%Q%9(B
- *  @param description $B@bL@(B($BG$0U(B)
+ *  ショートカットのリンク先パス文字列を得る
+ *  @return ショートカットが示す実際のファイルへのパス
+ *  @param linkPath  ショートカットファイルのパス
+ *  @param description 説明(任意)
  */
 CString ShortcutFile::ResolvePath(
 	const CString& linkPath,
@@ -76,7 +76,7 @@ CString ShortcutFile::ResolvePath(
 
 )
 {
-	IShellLink *shellLinkPtr = nullptr;
+	CComPtr<IShellLink> shellLinkPtr;
 
 	HRESULT hr =
 		CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
@@ -86,16 +86,14 @@ CString ShortcutFile::ResolvePath(
 		return _T("");
 	}
 
-	IPersistFile* persistFilePtr = nullptr;
+	CComPtr<IPersistFile> persistFilePtr;
 	hr = shellLinkPtr->QueryInterface(IID_IPersistFile, (void**)&persistFilePtr);
 	if (FAILED(hr)) {
-		shellLinkPtr->Release();
 		return _T("");
 	}
 
 	hr = persistFilePtr->Load(linkPath, STGM_READ);
 	if (FAILED(hr)) {
-		shellLinkPtr->Release();
 		return _T("");
 	}
 
@@ -110,10 +108,6 @@ CString ShortcutFile::ResolvePath(
 	}
 
 	CString path((CStringW)pathWideChar);
-
-	persistFilePtr->Release();
-	shellLinkPtr->Release();
-
 	return path;
 }
 
