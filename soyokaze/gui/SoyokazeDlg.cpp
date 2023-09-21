@@ -75,8 +75,6 @@ struct CSoyokazeDlg::PImpl
 	// ウインドウ位置を保存するためのクラス
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
 
-	// 「入力画面を非表示にして起動する」場合に、ウインドウ位置を復元するためのフラグ
-	bool mIsFirstActivate = true;
 	// ウインドウの透明度を制御するためのクラス
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 
@@ -259,13 +257,6 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
-
-		// 「入力画面を非表示にして起動する」場合、
-		// 初回にウインドウを表示した直後のこのタイミングで、前回のウインドウ位置を復元する
-		if (in->mIsFirstActivate) {
-			in->RestoreWindowPosition(this);
-			in->mIsFirstActivate = false;
-		}
 
 		if (pref->IsIMEOffOnActive()) {
 			in->mKeywordEdit.SetIMEOff();
@@ -572,19 +563,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	// in->UpdateGuide(this, pref->IsShowGuide());
 
 	// ウインドウ位置の復元
-	// 起動直後に非表示にしない場合はここて復元
-	if (pref->IsHideOnStartup() == false) {
-		in->RestoreWindowPosition(this);
-	}
-	else {
-		// 起動直後に非表示にする場合の処理
-		// MFCのモーダルダイアログは非表示状態でDoModal()することができないため、
-		// 幅高さ(0,0)で作成したうえですぐに隠す。そのうえで初回表示時にウインドウサイズの復元を行う。
-		// 参考:https://rarara.org/community/programming/%E3%83%80%E3%82%A4%E3%82%A2%E3%83%AD%E3%82%B0%E3%82%92%E6%9C%80%E5%88%9D%E3%81%8B%E3%82%89%E9%9D%9E%E8%A1%A8%E7%A4%BA%E3%81%AB%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF%EF%BC%9F/
-		SetWindowPos(nullptr,0,0,0,0,SWP_NOZORDER);
-		in->mIsFirstActivate = true;
-		PostMessage(WM_APP+7, 0, 0);
-	}
+	in->RestoreWindowPosition(this);
 
 	// 透明度制御
 	in->mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
