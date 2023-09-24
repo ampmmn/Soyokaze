@@ -11,3 +11,4 @@ coverage_report
 *.lastupdate
 *.bak
 doc/help.html
+json/

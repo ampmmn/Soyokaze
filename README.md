@@ -144,16 +144,16 @@ bluewindのReadMeから抜粋
 - https://github.com/nlohmann/json からソース一式を取得する
 - `Soyokaze`のソースファイル一式と同じ階層に`nlohmann-json`を配置する
 
-- `Soyokaze`のプロジェクト設定にて、ソースのルートフォルダと同じ階層に`json`というフォルダがあることを想定している  
+- `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json`というフォルダがあることを想定している  
 以下のように置く  
 ↓
 ```
 soyokaze-src/
   Soyokaze.sln
-json/
-  include/
-    nlohmann/
-      json.hpp
+  json/
+    include/
+      nlohmann/
+        json.hpp
 ```
 
 ### ビルド方法
