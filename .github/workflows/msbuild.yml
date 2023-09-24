@@ -39,6 +39,7 @@ jobs:
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Checkout json
+      uses: actions/checkout@v3
       with:
         repository: nlohmann/json
         path: nlohmann-json
