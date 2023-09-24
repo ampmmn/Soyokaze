@@ -33,9 +33,9 @@ struct DummyCommand : public soyokaze::core::Command
 		return _T("");
 	}
 
-	BOOL Execute() override
+	CString GetGuideString() override
 	{
-		return TRUE;
+		return _T("");
 	}
 
 	BOOL Execute(const Parameter& param) override
