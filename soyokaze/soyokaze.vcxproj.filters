@@ -91,6 +91,9 @@
     <Filter Include="commands\getip">
       <UniqueIdentifier>{5f53e1f6-5589-4607-8614-4518ab10497e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\snippet">
+      <UniqueIdentifier>{8dbb3a70-89ba-43d3-b4cc-98faf416f960}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -588,6 +591,18 @@
     <ClInclude Include="commands\getip\GetIPCommand.h">
       <Filter>commands\getip</Filter>
     </ClInclude>
+    <ClInclude Include="commands\snippet\SnippetCommand.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippet\SnippetCommandEditDialog.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippet\SnippetCommandProvider.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippet\RegisterSnippetCommand.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1057,6 +1072,18 @@
     </ClCompile>
     <ClCompile Include="commands\getip\GetIPCommand.cpp">
       <Filter>commands\getip</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\SnippetCommand.cpp">
+      <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\SnippetCommandEditDialog.cpp">
+      <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\SnippetCommandProvider.cpp">
+      <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\RegisterSnippetCommand.cpp">
+      <Filter>commands\snippet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

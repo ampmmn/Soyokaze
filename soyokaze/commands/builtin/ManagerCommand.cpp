@@ -38,7 +38,7 @@ BOOL ManagerCommand::Execute(const Parameter& param)
 
 HICON ManagerCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadNewIcon();
+	return IconLoader::Get()->LoadDefaultIcon();
 }
 
 soyokaze::core::Command* ManagerCommand::Clone()

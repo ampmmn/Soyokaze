@@ -304,8 +304,7 @@ HICON IconLoader::LoadWebIcon()
 
 HICON IconLoader::LoadNewIcon()
 {
-	// ToDo: 実装
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return GetImageResIcon(204);
 }
 
 HICON IconLoader::LoadSettingIcon()

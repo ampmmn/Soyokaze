@@ -511,7 +511,7 @@ bool CommandFile::Load()
 			else if (strValue.Left(1) == _T('\'') && strValue.Right(1) == _T('\'')) {
 				strValue = strValue.Mid(1, strValue.GetLength()-2);
 			}
-			curEntry->mStrMap[strKey] = strValue;
+			curEntry->mStrMap[strKey] = UnescapeString(strValue);
 			curEntry->mTypeMap[strKey] = TYPE_STRING;
 		}
 	}
@@ -566,7 +566,7 @@ bool CommandFile::Save()
 			for (auto& kv : entry->mStrMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("=\""));
-				file.WriteString(kv.second);
+				file.WriteString(EscapeString(kv.second));
 				file.WriteString(_T("\"\n"));
 			}
 			for (auto& kv : entry->mBoolMap) {
@@ -597,5 +597,22 @@ bool CommandFile::Save()
 		fclose(fpOut);
 		return false;
 	}
+}
+
+CString CommandFile::EscapeString(const CString& s)
+{
+	CString ret(s);
+	ret.Replace(_T("\r"), _T("%0D"));
+	ret.Replace(_T("\n"), _T("%0A"));
+	return ret;
+}
+
+
+CString CommandFile::UnescapeString(const CString& s)
+{
+	CString ret(s);
+	ret.Replace(_T("%0D"), _T("\r"));
+	ret.Replace(_T("%0A"), _T("\n"));
+	return ret;
 }
 

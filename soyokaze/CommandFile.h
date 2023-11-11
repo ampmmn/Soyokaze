@@ -66,6 +66,9 @@ public:
 
 	static void TrimComment(CString& s);
 
+	static CString EscapeString(const CString& s);
+	static CString UnescapeString(const CString& s);
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

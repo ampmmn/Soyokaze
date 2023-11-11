@@ -632,6 +632,10 @@
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditDetailPage.h" />
     <ClInclude Include="commands\shellexecute\ShellExecSettingDialog.h" />
+    <ClInclude Include="commands\snippet\RegisterSnippetCommand.h" />
+    <ClInclude Include="commands\snippet\SnippetCommand.h" />
+    <ClInclude Include="commands\snippet\SnippetCommandEditDialog.h" />
+    <ClInclude Include="commands\snippet\SnippetCommandProvider.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileCommand.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFiles.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h" />
@@ -799,6 +803,10 @@
     <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp" />
+    <ClCompile Include="commands\snippet\RegisterSnippetCommand.cpp" />
+    <ClCompile Include="commands\snippet\SnippetCommand.cpp" />
+    <ClCompile Include="commands\snippet\SnippetCommandEditDialog.cpp" />
+    <ClCompile Include="commands\snippet\SnippetCommandProvider.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFile.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp" />

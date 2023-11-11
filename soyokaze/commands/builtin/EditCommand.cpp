@@ -65,7 +65,7 @@ BOOL EditCommand::Execute(const Parameter& param)
 
 HICON EditCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadNewIcon();
+	return IconLoader::Get()->LoadDefaultIcon();
 }
 
 soyokaze::core::Command* EditCommand::Clone()
