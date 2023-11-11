@@ -622,22 +622,22 @@ BEGIN
     CTEXT           "__ (Guide) __",IDC_STATIC_GUIDE,26,12,92,8
 END
 
-IDD_SNIPPET_EDIT DIALOGEX 0, 0, 337, 334
+IDD_SNIPPET_EDIT DIALOGEX 0, 0, 337, 230
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "スニペットの編集"
+CAPTION "定型文の編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "名前(&N):",IDC_STATIC,13,24,65,8
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,13,24,65,8
     EDITTEXT        IDC_EDIT_NAME,104,24,215,14,ES_AUTOHSCROLL
     LTEXT           "説明(&D):",IDC_STATIC,13,44,65,8
     EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,215,14,ES_AUTOHSCROLL
     LTEXT           "テキスト(&T):",IDC_STATIC,13,66,65,8
-    EDITTEXT        IDC_EDIT_TEXT,21,78,301,206,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
-    LTEXT           "ホットキー(K):",IDC_STATIC,20,294,43,8
-    EDITTEXT        IDC_EDIT_HOTKEY,111,291,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,291,21,14
-    DEFPUSHBUTTON   "OK",IDOK,226,313,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,313,50,14
+    EDITTEXT        IDC_EDIT_TEXT,21,78,301,101,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "ホットキー(K):",IDC_STATIC,20,188,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,111,185,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,185,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,207,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,207,50,14
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
@@ -648,8 +648,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,11,0,0
- PRODUCTVERSION 0,11,0,1
+ FILEVERSION 0,12,0,0
+ PRODUCTVERSION 0,12,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -665,12 +665,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.11.0.0"
+            VALUE "FileVersion", "0.12.0.0"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.11.0.1"
+            VALUE "ProductVersion", "0.12.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -899,8 +899,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 327
-        HORZGUIDE, 327
+        BOTTOMMARGIN, 223
     END
 END
 #endif    // APSTUDIO_INVOKED

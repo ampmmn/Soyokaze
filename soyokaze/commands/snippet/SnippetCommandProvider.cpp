@@ -124,7 +124,7 @@ void SnippetCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIt
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t SnippetCommandProvider::SnippetCommandProvider::GetOrder() const
 {
-	return 150;
+	return 120;
 }
 
 uint32_t SnippetCommandProvider::SnippetCommandProvider::AddRef()
