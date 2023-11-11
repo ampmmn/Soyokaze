@@ -37,11 +37,6 @@ public:
 	CSoyokazeDlg(CWnd* pParent = nullptr);	// 標準コンストラクター
 	virtual ~CSoyokazeDlg();
 
-// ダイアログ データ
-//#ifdef AFX_DESIGN_TIME
-//	enum { IDD = IDD_MAIN };
-//#endif
-
 public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
