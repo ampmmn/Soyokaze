@@ -20,11 +20,7 @@ TaskTray::TaskTray(CSoyokazeDlg* window) : mSoyokazeWindowPtr(window)
 
 TaskTray::~TaskTray()
 {
-	NOTIFYICONDATA nid;
-	nid.cbSize           = sizeof(NOTIFYICONDATA);
-	nid.hWnd             = mTaskTrayWindow;
-	nid.uID              = ID_SOYOKAZE_TASKTRAY;
-	Shell_NotifyIcon(NIM_DELETE, &nid);
+	Shell_NotifyIcon(NIM_DELETE, &mNotifyIconData);
 }
 
 
@@ -68,8 +64,18 @@ BOOL TaskTray::Create()
 	nid.uFlags |= NIF_TIP;
 	_tcsncpy_s(nid.szTip, sizeof(nid.szTip), tipsStr, _TRUNCATE);
 
-	return Shell_NotifyIcon(NIM_ADD, &nid);
+	mNotifyIconData = nid;
 
+	return Shell_NotifyIcon(NIM_ADD, &mNotifyIconData);
+
+}
+
+void TaskTray::ShowMessage(const CString& msg)
+{
+	mNotifyIconData.uFlags |= NIF_INFO;
+	_tcsncpy_s(mNotifyIconData.szInfo, sizeof(mNotifyIconData.szInfo) / sizeof(TCHAR), msg, _TRUNCATE);
+
+	Shell_NotifyIcon(NIM_MODIFY, &mNotifyIconData);
 }
 
 LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)

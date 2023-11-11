@@ -121,10 +121,15 @@ BOOL CSoyokazeApp::InitFirstInstance()
 	CSoyokazeDlg dlg;
 	m_pMainWnd = &dlg;
 
-	TaskTray taskTray(&dlg);
-	taskTray.Create();
+	try {
+		mTaskTray.reset(new TaskTray(&dlg));
+		mTaskTray->Create();
 
-	dlg.DoModal();
+		dlg.DoModal();
+	}
+	catch(...) {
+		mTaskTray.reset();
+	}
 
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();
@@ -236,5 +241,16 @@ bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 	CString commandStr(_T("new "));
 	commandStr += _T("\"") + name + _T("\" \"") + pathStr + _T("\"");
 	return SendCommandString(commandStr);
+}
+
+// バルーンメッセージを表示
+bool CSoyokazeApp::PopupMessage(const CString& message)
+{
+	if (!mTaskTray) {
+		return false;
+	}
+
+	mTaskTray->ShowMessage(message);
+	return true;
 }
 

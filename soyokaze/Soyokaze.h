@@ -15,6 +15,8 @@
 // このクラスの実装については、Soyokaze.cpp を参照してください
 //
 
+class TaskTray;
+
 class CSoyokazeApp : public CWinApp
 {
 public:
@@ -23,6 +25,9 @@ public:
 
 protected:
 	HANDLE m_hMutexRun;
+
+	std::unique_ptr<TaskTray> mTaskTray;
+
 // オーバーライド
 public:
 	virtual BOOL InitInstance();
@@ -38,6 +43,9 @@ public:
 	bool SendCommandString(const CString& commandStr);
 	bool RegisterPath(const CString& pathStr);
 
+	// バルーンメッセージを表示
+	bool PopupMessage(const CString& message);
+
 // 実装
 protected:
 
@@ -45,3 +53,4 @@ protected:
 };
 
 extern CSoyokazeApp theApp;
+

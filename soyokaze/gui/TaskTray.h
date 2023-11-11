@@ -10,10 +10,14 @@ public:
 
 	DECLARE_DYNAMIC(TaskTray)
 
+	void ShowMessage(const CString& msg);
+
 protected:
 	HICON mIcon;
 	HWND mTaskTrayWindow;
 	CSoyokazeDlg* mSoyokazeWindowPtr;
+
+	NOTIFYICONDATA mNotifyIconData;
 
 public:
 	BOOL Create();
