@@ -25,6 +25,8 @@ public:
 	bool IsUseRegExp() const;
 	bool HasCaptionRegExpr() const;
 	bool HasClassRegExpr() const;
+
+	bool IsNotifyIfWindowNotFound() const;
 public:
 	CString mName;
 	CString mDescription;
@@ -38,6 +40,9 @@ public:
 	CString mCaptionStr;
 	CString mClassStr;
 	BOOL mIsUseRegExp;
+
+	// ウインドウが見つからなかった場合に通知
+	BOOL mIsNotifyIfWindowNotFound;
 };
 
 

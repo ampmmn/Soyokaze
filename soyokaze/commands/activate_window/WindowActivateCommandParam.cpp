@@ -8,7 +8,8 @@ namespace activate_window {
 
 CommandParam::CommandParam() :
 	mIsGlobal(false),
-	mIsUseRegExp(FALSE)
+	mIsUseRegExp(FALSE),
+	mIsNotifyIfWindowNotFound(FALSE)
 {
 }
 
@@ -25,7 +26,7 @@ HWND CommandParam::FindHwnd()
 			LONG_PTR style = GetWindowLongPtr(h, GWL_STYLE);
 			LONG_PTR styleRequired = (WS_VISIBLE);
 			if ((style & styleRequired) != styleRequired) {
-				// $BHsI=<($N%&%$%s%I%&$H!"%?%$%H%k$r;}$?$J$$%&%$%s%I%&$OBP>]30(B
+				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
 				return TRUE;
 			}
 
@@ -150,6 +151,11 @@ bool CommandParam::HasCaptionRegExpr() const
 bool CommandParam::HasClassRegExpr() const
 {
 	return mClassStr.IsEmpty() == FALSE;
+}
+
+bool CommandParam::IsNotifyIfWindowNotFound() const
+{
+	return mIsUseRegExp != FALSE;
 }
 
 }

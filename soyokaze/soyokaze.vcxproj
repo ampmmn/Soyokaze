@@ -596,6 +596,7 @@
     <ClInclude Include="commands\common\Clipboard.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
+    <ClInclude Include="commands\common\Message.h" />
     <ClInclude Include="commands\common\SubProcess.h" />
     <ClInclude Include="commands\controlpanel\ControllPanel.h" />
     <ClInclude Include="commands\controlpanel\ControlPanelCommand.h" />
@@ -766,6 +767,7 @@
     <ClCompile Include="commands\common\Clipboard.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />
+    <ClCompile Include="commands\common\Message.cpp" />
     <ClCompile Include="commands\common\SubProcess.cpp" />
     <ClCompile Include="commands\controlpanel\ControllPanel.cpp" />
     <ClCompile Include="commands\controlpanel\ControlPanelCommand.cpp" />

@@ -242,6 +242,8 @@
 #define IDC_CHECK_REGEXP                1083
 #define IDC_CHECK_ENABLE_OUTLOOKMAIL    1083
 #define IDC_EDIT_URL                    1084
+#define IDC_CHECK_REGEXP2               1084
+#define IDC_CHECK_NOTIFYIFNOTEXIST      1084
 #define IDC_CHECK_ENABLESHORTCUT        1085
 #define IDC_BUTTON1                     1086
 #define IDC_BUTTON_TEST                 1086

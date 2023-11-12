@@ -9,6 +9,7 @@
 #include "CommandFile.h"
 #include "IconLoader.h"
 #include "resource.h"
+#include "commands/common/Message.h"
 #include <assert.h>
 #include <regex>
 
@@ -84,8 +85,10 @@ BOOL WindowActivateCommand::Execute(const Parameter& param)
 	HWND hwndTarget = in->FindHwnd();
 
 	if (IsWindow(hwndTarget) == FALSE) {
-		in->mErrorMsg = _T("指定されたウインドウが見つかりません");
-		return FALSE;
+		if (in->mParam.IsNotifyIfWindowNotFound()) {
+			soyokaze::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
+		}
+		return TRUE;
 	}
 	in->mErrorMsg.Empty();
 
@@ -202,6 +205,7 @@ bool WindowActivateCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("CaptionStr"), in->mParam.mCaptionStr);
 	cmdFile->Set(entry, _T("ClassStr"), in->mParam.mClassStr);
 	cmdFile->Set(entry, _T("IsUseRegExp"), in->mParam.mIsUseRegExp != FALSE);
+	cmdFile->Set(entry, _T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
 
 	return true;
 }
@@ -277,6 +281,7 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 	CString captionStr = cmdFile->Get(entry, _T("CaptionStr"), _T(""));
 	CString classStr = cmdFile->Get(entry, _T("ClassStr"), _T(""));
 	BOOL isUseRegExp = cmdFile->Get(entry, _T("IsUseRegExp"), false) ? TRUE : FALSE;
+	BOOL isNotify = cmdFile->Get(entry, _T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
 
 
 	auto command = std::make_unique<WindowActivateCommand>();
@@ -286,6 +291,7 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 	command->in->mParam.mCaptionStr = captionStr;
 	command->in->mParam.mClassStr = classStr;
 	command->in->mParam.mIsUseRegExp = isUseRegExp;
+	command->in->mParam.mIsNotifyIfWindowNotFound = isNotify;
 
 	if (command->in->mParam.BuildRegExp() == false) {
 		return false;

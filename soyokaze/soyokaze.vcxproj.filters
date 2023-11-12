@@ -603,6 +603,9 @@
     <ClInclude Include="commands\snippet\RegisterSnippetCommand.h">
       <Filter>commands\snippet</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\Message.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1084,6 +1087,9 @@
     </ClCompile>
     <ClCompile Include="commands\snippet\RegisterSnippetCommand.cpp">
       <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\Message.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
