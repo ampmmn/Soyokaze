@@ -315,14 +315,7 @@ HICON IconLoader::LoadSettingIcon()
 HICON IconLoader::LoadExitIcon()
 {
 	int n = in->GetImageResIconCount();
-	if (n == 334) {
-		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
-		return GetImageResIcon(235);
-	}
-	else {
-		// Win11
-		return GetImageResIcon(236);
-	}
+	return GetImageResIcon(235);
 }
 
 static int GetPitch(int w, int bpp)
