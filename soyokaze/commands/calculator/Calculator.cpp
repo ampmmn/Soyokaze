@@ -271,6 +271,7 @@ bool Calculator::Evaluate(const CString& src, CString& result)
 	const int Py_eval_input = 258;    // defined in compile.h
 	void* pyObject = in->mPyRun_String((LPCSTR)srcA, Py_eval_input, in->mDict, in->mDict);
 
+	// 文をインタープリタ側で評価した結果エラーだった場合
 	void* errObj = in->mPyErr_Occurred();
 	if (errObj != nullptr) {
 

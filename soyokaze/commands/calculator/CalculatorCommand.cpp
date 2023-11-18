@@ -19,13 +19,27 @@ namespace calculator {
 
 struct CalculatorCommand::PImpl
 {
+	// 基数(0以外の値が指定されたら基数を表示する)
+	int mBase;
+	// 基数込みで表示する場合の種別名
+	CString mTypeDisplayName;
+	// 計算結果
 	CString mResult;
+	// アイコン取得用のファイルパス(calc.exeのアイコンを使う)
 	TCHAR mCalcPath[MAX_PATH_NTFS];
 };
 
 
 CalculatorCommand::CalculatorCommand() : in(std::make_unique<PImpl>())
 {
+	in->mBase = 0;
+	in->mCalcPath[0] = _T('\0');
+}
+
+CalculatorCommand::CalculatorCommand(int base) : in(std::make_unique<PImpl>())
+{
+	ASSERT(base == 2 || base == 8 || base == 10 || base == 16);
+	in->mBase = base;
 	in->mCalcPath[0] = _T('\0');
 }
 
@@ -50,7 +64,16 @@ CString CalculatorCommand::GetGuideString()
 CString CalculatorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CALCULATOR);
-	return TEXT_TYPE;
+
+	if (in->mBase == 0) {
+		return TEXT_TYPE;
+	}
+	else {
+		if (in->mTypeDisplayName.IsEmpty()) {
+			in->mTypeDisplayName.Format(_T("%s (%d進数)"), TEXT_TYPE, in->mBase);
+		}
+		return in->mTypeDisplayName;
+	}
 }
 
 BOOL CalculatorCommand::Execute(const Parameter& param)

@@ -13,6 +13,7 @@ class CalculatorCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 	CalculatorCommand();
+	CalculatorCommand(int base);
 	virtual ~CalculatorCommand();
 
 	void SetResult(const CString& result);
