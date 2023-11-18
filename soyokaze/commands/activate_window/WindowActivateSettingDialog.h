@@ -32,6 +32,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonTest();
+	afx_msg void OnUpdateStatus();
+	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
 
 protected:
 	struct PImpl;

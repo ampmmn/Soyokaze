@@ -1,3 +1,4 @@
+// あ
 #include "pch.h"
 #include "CaptureIconLabel.h"
 #include "resource.h"

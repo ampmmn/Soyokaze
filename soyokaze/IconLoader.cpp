@@ -415,6 +415,12 @@ HICON IconLoader::LoadReloadIcon()
 
 }
 
+HICON IconLoader::LoadWindowIcon()
+{
+	return GetImageResIcon(11);
+}
+
+
 HICON IconLoader::LoadRegisterWindowIcon()
 {
 	return GetImageResIcon(19);

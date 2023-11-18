@@ -34,6 +34,7 @@ public:
 	HICON LoadTasktrayIcon();
 	HICON LoadUnknownIcon();
 	HICON LoadReloadIcon();
+	HICON LoadWindowIcon();
 	HICON LoadRegisterWindowIcon();
 	HICON LoadGroupIcon();
 	HICON LoadPromptIcon();

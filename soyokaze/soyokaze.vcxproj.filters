@@ -96,7 +96,7 @@
     </Filter>
     <Filter Include="commands\timespan">
       <UniqueIdentifier>{4f0e7da9-2870-403c-afab-c7d502a15d22}</UniqueIdentifier>
-    </Filter>   
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
