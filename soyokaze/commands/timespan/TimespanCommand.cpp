@@ -22,6 +22,8 @@ struct TimespanCommand::PImpl
 {
 	CTimeSpan mTimeSpan;
 	int mUnitType;
+	CString mNum;
+	CString mUnit;
 };
 
 
@@ -31,14 +33,18 @@ TimespanCommand::TimespanCommand(CTimeSpan ts, int unitType) : in(std::make_uniq
 	in->mUnitType = unitType;
 
 	if (unitType == TYPE_HOUR) {
-		this->mName.Format(_T("%d時間"), ts.GetTotalHours());
+		in->mNum.Format(_T("%.2f"), ts.GetTotalMinutes() / 60.0);
+		in->mUnit = _T("時間");
 	}
 	else if (unitType == TYPE_MINUTE) {
-		this->mName.Format(_T("%d分"), ts.GetTotalMinutes());
+		in->mNum.Format(_T("%d"), ts.GetTotalMinutes());
+		in->mUnit = _T("分");
 	}
 	else if (unitType == TYPE_SECOND) {
-		this->mName.Format(_T("%d秒"), ts.GetTotalSeconds());
+		in->mNum.Format(_T("%d"), ts.GetTotalSeconds());
+		in->mUnit = _T("秒");
 	}
+	this->mName = in->mNum + _T(" ") + in->mUnit;
 	this->mDescription = this->mName;
 }
 
@@ -48,7 +54,7 @@ TimespanCommand::~TimespanCommand()
 
 CString TimespanCommand::GetGuideString()
 {
-	return _T("Enter:クリップボードにコピー");
+	return _T("Enter:数値のみコピー Ctrl-Enter:単位含めてコピー");
 }
 
 CString TimespanCommand::GetTypeDisplayName()
@@ -60,7 +66,12 @@ CString TimespanCommand::GetTypeDisplayName()
 BOOL TimespanCommand::Execute(const Parameter& param)
 {
 	// クリップボードにコピー
-	Clipboard::Copy(mName);
+	if (param.GetNamedParamBool(_T("CtrlKeyPressed"))) {
+		Clipboard::Copy(mName);
+	}
+	else {
+		Clipboard::Copy(in->mNum);
+	}
 	return TRUE;
 }
 
