@@ -51,7 +51,6 @@ void CalculatorCommand::SetResult(const CString& result)
 {
 	in->mResult = result;
 
-	// 基底クラスのメンバー変数で持つ名前と説明を設定する
 	this->mName = result;
 	this->mDescription = result;
 }

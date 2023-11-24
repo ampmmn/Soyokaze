@@ -118,7 +118,7 @@ HICON WindowActivateCommand::GetIcon()
 	HWND hwndTarget = in->FindHwnd();
 
 	if (IsWindow(hwndTarget) == FALSE) {
-		return IconLoader::Get()->LoadUnknownIcon();
+		return IconLoader::Get()->LoadWindowIcon();
 	}
 
 	HICON icon = (HICON)GetClassLongPtr(hwndTarget, GCLP_HICON);

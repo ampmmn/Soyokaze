@@ -1,10 +1,17 @@
 #include "pch.h"
 #include "WindowActivateSettingDialog.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
+#include "commands/common/Message.h"
 #include "gui/CommandHotKeyDialog.h"
+#include "gui/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
+#include "utility/ProcessPath.h"
+#include "utility/Icon.h"
+#include "IconLoader.h"
 #include "resource.h"
+
+using namespace soyokaze::commands::common;
 
 namespace soyokaze {
 namespace commands {
@@ -27,6 +34,9 @@ struct SettingDialog::PImpl
 
 	// ホットキー(表示用)
 	CString mHotKey;
+
+	// ウインドウキャプチャ用アイコン
+	CaptureIconLabel mIconLabel;
 
 	TopMostMask mTopMostMask;
 };
@@ -73,12 +83,19 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
+	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
+	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_CLASS, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mIconLabel.DrawIcon(IconLoader::Get()->LoadWindowIcon());
 
 	in->mOrgName = in->mParam.mName;
 
@@ -94,6 +111,8 @@ BOOL SettingDialog::OnInitDialog()
 
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
+
+	UpdateStatus();
 
 	UpdateData(FALSE);
 
@@ -127,7 +146,7 @@ void SettingDialog::OnButtonTest()
 
 	HWND hwnd = in->mParam.FindHwnd();
 	if (IsWindow(hwnd) == FALSE) {
-		AfxMessageBox(_T("ウインドウは見つかりませんでした"));
+		PopupMessage(_T("ウインドウは見つかりませんでした"));
 		return;
 	}
 
@@ -143,19 +162,22 @@ void SettingDialog::OnButtonTest()
 void SettingDialog::OnOK()
 {
 	UpdateData();
-
-	if (UpdateStatus() == false) {
-		return ;
-	}
-
 	__super::OnOK();
 }
 
 bool SettingDialog::UpdateStatus()
 {
-	if (in->mParam.mCaptionStr.IsEmpty() &&
-			in->mParam.mClassStr.IsEmpty()) {
-		AfxMessageBox(_T("ウインドウタイトルかウインドウクラスを入力してください"));
+	bool canTest = in->mParam.mCaptionStr.IsEmpty() == FALSE || in->mParam.mClassStr.IsEmpty() == FALSE;
+	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
+
+	if (in->mParam.mName.IsEmpty()) {
+		in->mMessage = _T("コマンド名を入力してください");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+	if (canTest == false) {
+		in->mMessage = _T("ウインドウタイトルかウインドウクラスを入力してください");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
@@ -163,17 +185,70 @@ bool SettingDialog::UpdateStatus()
 	if (in->mParam.BuildCaptionRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CAPTION)->SetFocus();
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
 	if (in->mParam.BuildClassRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
+
+	in->mMessage.Empty();
+	GetDlgItem(IDOK)->EnableWindow(TRUE);
 	return true;
 }
 
+LRESULT
+SettingDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
+{
+	HWND hTargetWnd = (HWND)lParam;
+	if (IsWindow(hTargetWnd) == FALSE) {
+		return 0;
+	}
+	ProcessPath processPath(hTargetWnd);
+
+	// 自プロセスのウインドウなら何もしない
+	if (GetCurrentProcessId() == processPath.GetProcessId()) {
+		return 0;
+	}
+
+	HWND hwndRoot = ::GetAncestor(hTargetWnd, GA_ROOT);
+
+	TCHAR caption[256];
+	::GetWindowText(hwndRoot, caption, 256);
+	TCHAR clsName[256];
+	::GetClassName(hwndRoot, clsName, 256);
+
+	in->mParam.mCaptionStr = caption;
+	in->mParam.mClassStr = clsName;
+	in->mParam.mIsUseRegExp = FALSE;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+
+	CString path = processPath.GetProcessPath();
+	HICON hIconLarge;
+	HICON hIconSmall;
+	if ( ExtractIconEx(path, 0, &hIconLarge, &hIconSmall, 1)) {
+		in->mIconLabel.DrawIcon(hIconLarge);
+
+		DestroyIcon(hIconSmall);
+		DestroyIcon(hIconLarge);
+	}
+
+
+	return 0;
+}
+
+void SettingDialog::OnUpdateStatus()
+{
+	UpdateData();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
 
 }
 }

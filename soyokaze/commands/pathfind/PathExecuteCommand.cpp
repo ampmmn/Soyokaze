@@ -154,6 +154,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 
 	in->mIsURL = false;
 
+	// 絶対パス指定、かつ、存在するパスの場合は候補として表示
 	if (PathIsRelative(wholeWord) == FALSE && PathFileExists(wholeWord)) {
 		this->mDescription = wholeWord;
 

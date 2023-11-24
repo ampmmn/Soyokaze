@@ -726,6 +726,7 @@
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
+    <ClInclude Include="utility\PythonDLL.h" />
     <ClInclude Include="utility\RegistryKey.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
@@ -906,6 +907,7 @@
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />
+    <ClCompile Include="utility\PythonDLL.cpp" />
     <ClCompile Include="utility\RegistryKey.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="utility\Sound.cpp" />

@@ -615,6 +615,9 @@
     <ClInclude Include="commands\timespan\TimespanCommandProvider.h">
       <Filter>commands\timespan</Filter>
     </ClInclude>
+    <ClInclude Include="utility\PythonDLL.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1105,6 +1108,9 @@
     </ClCompile>
     <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp">
       <Filter>commands\timespan</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\PythonDLL.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

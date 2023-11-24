@@ -125,27 +125,31 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	// もし、評価結果が整数値なら16/8/2進数の結果も表示する
 	static tregex regexInt(_T("^-?[0-9]+$"));
 	if (std::regex_match(tstring(result), regexInt)) {
-		int64_t n = _ttoi64(result);
-		CString buf;
+		CString numStr(result);
+
+		CString fmtStr;
 
 		// 16進数
-		buf.Format(_T("0x%x"), n);
-		in->mHexResultPtr->SetResult(buf);
-		in->mHexResultPtr->AddRef();
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mHexResultPtr));
+		fmtStr.Format(_T("hex(%s)"), numStr);
+		if (in->mCalc.Evaluate(fmtStr, result)) {
+			result.Replace(_T("'"), _T(""));
+			in->mHexResultPtr->SetResult(result);
+			in->mHexResultPtr->AddRef();
+			commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mHexResultPtr));
+		}
 
 		// 8
-		buf.Format(_T("0o%o"), n);
-		in->mOctResultPtr->SetResult(buf);
-		in->mOctResultPtr->AddRef();
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mOctResultPtr));
+		fmtStr.Format(_T("oct(%s)"), numStr);
+		if (in->mCalc.Evaluate(fmtStr, result)) {
+			result.Replace(_T("'"), _T(""));
+			in->mOctResultPtr->SetResult(result);
+			in->mOctResultPtr->AddRef();
+			commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mOctResultPtr));
+		}
 
 		// 2進数
-		CString tmp;
-		tmp.Format(_T("bin(%I64d)"), n);
-		// printfで変換できないので、Pythonでやってもらう
-		if (in->mCalc.Evaluate(tmp, result)) {
-			// binの結果はStringなので、表示用に引用符を外す
+		fmtStr.Format(_T("bin(%s)"), numStr);
+		if (in->mCalc.Evaluate(fmtStr, result)) {
 			result.Replace(_T("'"), _T(""));
 			in->mBinResultPtr->SetResult(result);
 			in->mBinResultPtr->AddRef();

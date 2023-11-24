@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PathExeAdhocCommandProvider.h"
 #include "commands/pathfind/PathExecuteCommand.h"
+#include "commands/pathfind/CygdriveAdhocCommand.h"
 #include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
@@ -108,11 +109,15 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		}
 	}
 
+	// ToDo: パス変換(Cygdrive->通常パス)
+	if (CygdriveAdhocCommand::Execute
+
 	int level = in->mExeCommandPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mExeCommandPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mExeCommandPtr));
 	}
+
 
 	// ToDo: HistoryCommandに責務を移動
 	ExecuteHistory::ItemList items;
