@@ -7,7 +7,6 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
-#include "utility/Icon.h"
 #include "IconLoader.h"
 #include "resource.h"
 

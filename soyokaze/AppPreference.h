@@ -101,6 +101,9 @@ public:
 	// Outlookのメール(受信トレイ)の検索を使用するか
 	bool IsEnableOutlookMailItem();
 
+	// Cygwinパス変換機能を使用するか
+	bool IsEnableCygwinPath();
+
 	// 効果音ファイルパスを取得(文字入力)
 	CString GetInputSoundFile();
 	// 効果音ファイルパスを取得(候補選択)

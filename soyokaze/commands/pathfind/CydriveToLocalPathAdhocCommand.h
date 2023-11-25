@@ -9,11 +9,11 @@ namespace pathfind {
 
 
 
-class CydriveAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class CydriveToLocalPathAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	CydriveAdhocCommand();
-	virtual ~CydriveAdhocCommand();
+	CydriveToLocalPathAdhocCommand();
+	virtual ~CydriveToLocalPathAdhocCommand();
 
 	CString GetName() override;
 	CString GetGuideString() override;
@@ -26,6 +26,8 @@ public:
 	static bool IsCygdrivePath(const CString& path);
 
 protected:
+	static bool ShouldCopy(const Parameter& param);
+
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };

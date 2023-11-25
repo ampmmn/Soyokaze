@@ -26,6 +26,8 @@ public:
 	BOOL mIsEnableUWP;
 	// Outlookメール選択機能(Inboxのみ)
 	BOOL mIsEnableOutlookMail;
+	// Cygwinパス変換(/cygdrive/c/... ←→ c:\...)
+	BOOL mIsEnableCygdrivePath;
 
 protected:
 	bool UpdateStatus();

@@ -618,6 +618,12 @@
     <ClInclude Include="utility\PythonDLL.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\pathfind\CydriveToLocalPathAdhocCommand.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1111,6 +1117,12 @@
     </ClCompile>
     <ClCompile Include="utility\PythonDLL.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\CydriveToLocalPathAdhocCommand.cpp">
+      <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.cpp">
+      <Filter>commands\pathfind</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
