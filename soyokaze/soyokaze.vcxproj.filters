@@ -618,10 +618,10 @@
     <ClInclude Include="utility\PythonDLL.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="commands\pathfind\CydriveToLocalPathAdhocCommand.h">
+    <ClInclude Include="commands\pathfind\GitBashToLocalPathAdhocCommand.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
-    <ClInclude Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.h">
+    <ClInclude Include="commands\pathfind\LocalToGitBashPathAdhocCommand.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1118,10 +1118,10 @@
     <ClCompile Include="utility\PythonDLL.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="commands\pathfind\CydriveToLocalPathAdhocCommand.cpp">
+    <ClCompile Include="commands\pathfind\GitBashToLocalPathAdhocCommand.cpp">
       <Filter>commands\pathfind</Filter>
     </ClCompile>
-    <ClCompile Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.cpp">
+    <ClCompile Include="commands\pathfind\LocalToGitBashPathAdhocCommand.cpp">
       <Filter>commands\pathfind</Filter>
     </ClCompile>
   </ItemGroup>

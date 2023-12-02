@@ -623,8 +623,8 @@
     <ClInclude Include="commands\outlook\MailCommand.h" />
     <ClInclude Include="commands\outlook\OutlookItemProvider.h" />
     <ClInclude Include="commands\outlook\OutlookItems.h" />
-    <ClInclude Include="commands\pathfind\CydriveToLocalPathAdhocCommand.h" />
-    <ClInclude Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.h" />
+    <ClInclude Include="commands\pathfind\GitBashToLocalPathAdhocCommand.h" />
+    <ClInclude Include="commands\pathfind\LocalToGitBashPathAdhocCommand.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
@@ -799,8 +799,8 @@
     <ClCompile Include="commands\outlook\MailCommand.cpp" />
     <ClCompile Include="commands\outlook\OutlookItemProvider.cpp" />
     <ClCompile Include="commands\outlook\OutlookItems.cpp" />
-    <ClCompile Include="commands\pathfind\CydriveToLocalPathAdhocCommand.cpp" />
-    <ClCompile Include="commands\pathfind\LocalToCygdrivePathAdhocCommand.cpp" />
+    <ClCompile Include="commands\pathfind\GitBashToLocalPathAdhocCommand.cpp" />
+    <ClCompile Include="commands\pathfind\LocalToGitBashPathAdhocCommand.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />

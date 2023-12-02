@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "commands/pathfind/LocalToCygdrivePathAdhocCommand.h"
+#include "commands/pathfind/LocalToGitBashPathAdhocCommand.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "AppPreference.h"
@@ -19,7 +19,7 @@ namespace soyokaze {
 namespace commands {
 namespace pathfind {
 
-struct LocalToCygdrivePathAdhocCommand::PImpl
+struct LocalToGitBashPathAdhocCommand::PImpl
 {
 	bool IsEnable();
 
@@ -27,44 +27,44 @@ struct LocalToCygdrivePathAdhocCommand::PImpl
 };
 
 
-bool LocalToCygdrivePathAdhocCommand::PImpl::IsEnable()
+bool LocalToGitBashPathAdhocCommand::PImpl::IsEnable()
 {
 	auto pref = AppPreference::Get();
-	return pref->IsEnableCygwinPath();
+	return pref->IsEnableGitBashPath();
 }
 
-LocalToCygdrivePathAdhocCommand::LocalToCygdrivePathAdhocCommand() : in(std::make_unique<PImpl>())
+LocalToGitBashPathAdhocCommand::LocalToGitBashPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
 }
 
-LocalToCygdrivePathAdhocCommand::~LocalToCygdrivePathAdhocCommand()
+LocalToGitBashPathAdhocCommand::~LocalToGitBashPathAdhocCommand()
 {
 }
 
 
-CString LocalToCygdrivePathAdhocCommand::GetName()
+CString LocalToGitBashPathAdhocCommand::GetName()
 {
 	return in->mFullPath;
 }
 
-CString LocalToCygdrivePathAdhocCommand::GetGuideString()
+CString LocalToGitBashPathAdhocCommand::GetGuideString()
 {
 	return _T("Enter:パスをコピー");
 }
 
-CString LocalToCygdrivePathAdhocCommand::GetTypeDisplayName()
+CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()
 {
-	return _T("Local To Cygwin Path");
+	return _T("Local To git-bash Path");
 }
 
-BOOL LocalToCygdrivePathAdhocCommand::Execute(const Parameter& param)
+BOOL LocalToGitBashPathAdhocCommand::Execute(const Parameter& param)
 {
 	// クリップボードにコピー
 	Clipboard::Copy(in->mFullPath);
 	return TRUE;
 }
 
-HICON LocalToCygdrivePathAdhocCommand::GetIcon()
+HICON LocalToGitBashPathAdhocCommand::GetIcon()
 {
 	if (PathFileExists(in->mFullPath) == FALSE) {
 		// dummy
@@ -78,7 +78,7 @@ HICON LocalToCygdrivePathAdhocCommand::GetIcon()
 	return hIcon;
 }
 
-int LocalToCygdrivePathAdhocCommand::Match(Pattern* pattern)
+int LocalToGitBashPathAdhocCommand::Match(Pattern* pattern)
 {
 	if (in->IsEnable() == false) {
 		return Pattern::Mismatch;
@@ -86,7 +86,6 @@ int LocalToCygdrivePathAdhocCommand::Match(Pattern* pattern)
 
 	CString wholeWord = pattern->GetWholeString();
 
-	// /cygdrive/...に合致するか
 	if (IsLocalPath(wholeWord) == false) {
 		return Pattern::Mismatch;
 	}
@@ -95,16 +94,16 @@ int LocalToCygdrivePathAdhocCommand::Match(Pattern* pattern)
 	auto driveLetter = std::regex_replace(tstring(wholeWord), patReplace, _T("$1"));
 	auto path = std::regex_replace(tstring(wholeWord), patReplace, _T("$2"));
 
-	in->mFullPath.Format(_T("/cygdrive/%s/%s"), driveLetter.c_str(), path.c_str());
+	in->mFullPath.Format(_T("/%s/%s"), driveLetter.c_str(), path.c_str());
 	in->mFullPath.Replace(_T('\\'), _T('/'));
 
 	return Pattern::WholeMatch;
 }
 
 soyokaze::core::Command*
-LocalToCygdrivePathAdhocCommand::Clone()
+LocalToGitBashPathAdhocCommand::Clone()
 {
-	auto clonedObj = std::make_unique<LocalToCygdrivePathAdhocCommand>();
+	auto clonedObj = std::make_unique<LocalToGitBashPathAdhocCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 	clonedObj->in->mFullPath = in->mFullPath;
@@ -112,7 +111,7 @@ LocalToCygdrivePathAdhocCommand::Clone()
 	return clonedObj.release();
 }
 
-bool LocalToCygdrivePathAdhocCommand::IsLocalPath(const CString& path)
+bool LocalToGitBashPathAdhocCommand::IsLocalPath(const CString& path)
 {
 	static tregex pat(_T("^ *[a-zA-Z]:\\\\.*$"));
 	return std::regex_match(tstring(path), pat);

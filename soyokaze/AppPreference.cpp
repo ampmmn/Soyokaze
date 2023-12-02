@@ -623,10 +623,10 @@ bool AppPreference::IsEnableOutlookMailItem()
 	return in->mSettings.Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
-// Cygwinパス変換機能を使用するか
-bool AppPreference::IsEnableCygwinPath()
+// GitBashパス変換機能を使用するか
+bool AppPreference::IsEnableGitBashPath()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableCygwinPath"), false);
+	return in->mSettings.Get(_T("Soyokaze:IsEnableGitBashPath"), false);
 }
 
 // 効果音ファイルパスを取得(文字入力)

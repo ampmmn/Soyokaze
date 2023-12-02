@@ -9,11 +9,11 @@ namespace pathfind {
 
 
 
-class LocalToCygdrivePathAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class GitBashToLocalPathAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	LocalToCygdrivePathAdhocCommand();
-	virtual ~LocalToCygdrivePathAdhocCommand();
+	GitBashToLocalPathAdhocCommand();
+	virtual ~GitBashToLocalPathAdhocCommand();
 
 	CString GetName() override;
 	CString GetGuideString() override;
@@ -23,9 +23,11 @@ public:
 	int Match(Pattern* pattern) override;
 	soyokaze::core::Command* Clone() override;
 
-	static bool IsLocalPath(const CString& path);
+	static bool IsGitBashPath(const CString& path);
 
 protected:
+	static bool ShouldCopy(const Parameter& param);
+
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };

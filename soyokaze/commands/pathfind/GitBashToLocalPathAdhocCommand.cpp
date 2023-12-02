@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "commands/pathfind/CydriveToLocalPathAdhocCommand.h"
+#include "commands/pathfind/GitBashToLocalPathAdhocCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
@@ -22,7 +22,7 @@ namespace soyokaze {
 namespace commands {
 namespace pathfind {
 
-struct CydriveToLocalPathAdhocCommand::PImpl
+struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	bool IsEnable();
 
@@ -31,38 +31,38 @@ struct CydriveToLocalPathAdhocCommand::PImpl
 };
 
 
-bool CydriveToLocalPathAdhocCommand::PImpl::IsEnable()
+bool GitBashToLocalPathAdhocCommand::PImpl::IsEnable()
 {
 	auto pref = AppPreference::Get();
-	return pref->IsEnableCygwinPath();
+	return pref->IsEnableGitBashPath();
 }
 
-CydriveToLocalPathAdhocCommand::CydriveToLocalPathAdhocCommand() : in(std::make_unique<PImpl>())
+GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
 	in->mIsExe = false;
 }
 
-CydriveToLocalPathAdhocCommand::~CydriveToLocalPathAdhocCommand()
+GitBashToLocalPathAdhocCommand::~GitBashToLocalPathAdhocCommand()
 {
 }
 
 
-CString CydriveToLocalPathAdhocCommand::GetName()
+CString GitBashToLocalPathAdhocCommand::GetName()
 {
 	return in->mFullPath;
 }
 
-CString CydriveToLocalPathAdhocCommand::GetGuideString()
+CString GitBashToLocalPathAdhocCommand::GetGuideString()
 {
 	return _T("Enter:パスをコピー Ctrl-Enter:フォルダを開く Shift-Enter:開く");
 }
 
-CString CydriveToLocalPathAdhocCommand::GetTypeDisplayName()
+CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 {
-	return _T("Cygwin To Local Path");
+	return _T("git-bash To Local Path");
 }
 
-bool CydriveToLocalPathAdhocCommand::ShouldCopy(const Parameter& param)
+bool GitBashToLocalPathAdhocCommand::ShouldCopy(const Parameter& param)
 {
 	// 何も修飾キーがおされてないならコピー操作をする
 	return param.GetNamedParamBool(_T("CtrlKeyPressed")) == false &&
@@ -71,7 +71,7 @@ bool CydriveToLocalPathAdhocCommand::ShouldCopy(const Parameter& param)
 	       param.GetNamedParamBool(_T("WinKeyPressed")) == false;
 }
 
-BOOL CydriveToLocalPathAdhocCommand::Execute(const Parameter& param)
+BOOL GitBashToLocalPathAdhocCommand::Execute(const Parameter& param)
 {
 	if (ShouldCopy(param)) {
 		// クリップボードにコピー
@@ -95,7 +95,7 @@ BOOL CydriveToLocalPathAdhocCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-HICON CydriveToLocalPathAdhocCommand::GetIcon()
+HICON GitBashToLocalPathAdhocCommand::GetIcon()
 {
 	if (PathFileExists(in->mFullPath) == FALSE) {
 		// dummy
@@ -109,7 +109,7 @@ HICON CydriveToLocalPathAdhocCommand::GetIcon()
 	return hIcon;
 }
 
-int CydriveToLocalPathAdhocCommand::Match(Pattern* pattern)
+int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
 {
 	if (in->IsEnable() == false) {
 		return Pattern::Mismatch;
@@ -117,10 +117,10 @@ int CydriveToLocalPathAdhocCommand::Match(Pattern* pattern)
 
 	CString wholeWord = pattern->GetWholeString();
 
-	// /cygdrive/...に合致するか
-	if (IsCygdrivePath(wholeWord)) {
+	// /driveletter/...に合致するか
+	if (IsGitBashPath(wholeWord)) {
 
-		tregex patReplace(_T("^ */cygdrive/([a-zA-Z])/(.*)$"));
+		static tregex patReplace(_T("^ */([a-zA-Z])/(.*)$"));
 		auto driveLetter = std::regex_replace(tstring(wholeWord), patReplace, _T("$1"));
 		auto path = std::regex_replace(tstring(wholeWord), patReplace, _T("$2"));
 
@@ -133,9 +133,9 @@ int CydriveToLocalPathAdhocCommand::Match(Pattern* pattern)
 }
 
 soyokaze::core::Command*
-CydriveToLocalPathAdhocCommand::Clone()
+GitBashToLocalPathAdhocCommand::Clone()
 {
-	auto clonedObj = std::make_unique<CydriveToLocalPathAdhocCommand>();
+	auto clonedObj = std::make_unique<GitBashToLocalPathAdhocCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 	clonedObj->in->mFullPath = in->mFullPath;
@@ -143,9 +143,9 @@ CydriveToLocalPathAdhocCommand::Clone()
 	return clonedObj.release();
 }
 
-bool CydriveToLocalPathAdhocCommand::IsCygdrivePath(const CString& path)
+bool GitBashToLocalPathAdhocCommand::IsGitBashPath(const CString& path)
 {
-	static tregex pat(_T("^ */cygdrive/[a-zA-Z]/.*$"));
+	static tregex pat(_T("^ */[a-zA-Z]/.*$"));
 	return std::regex_match(tstring(path), pat);
 }
 
