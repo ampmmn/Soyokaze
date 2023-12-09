@@ -200,6 +200,7 @@
 #define IDC_CHECK_ENABLEMIGEMO          1055
 #define IDC_SYSLINK1                    1056
 #define IDC_BUTTON_SHORTCUT             1057
+#define IDC_CHECK_KEEPTEXTWHENDLGHIDE   1057
 #define IDC_SYSLINK2                    1058
 #define IDC_CHECK_SENDTO                1059
 #define IDC_STATIC_REMARK               1061
@@ -245,7 +246,7 @@
 #define IDC_CHECK_REGEXP2               1084
 #define IDC_CHECK_NOTIFYIFNOTEXIST      1084
 #define IDC_CHECK_ENABLE_CONTROLPANEL2  1084
-#define IDC_CHECK_ENABLE_GITBASH       1084
+#define IDC_CHECK_ENABLE_GITBASH        1084
 #define IDC_CHECK_ENABLESHORTCUT        1085
 #define IDC_BUTTON1                     1086
 #define IDC_BUTTON_TEST                 1086

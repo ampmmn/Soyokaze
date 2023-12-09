@@ -785,6 +785,8 @@ void CSoyokazeDlg::OnOK()
 		}
 	}
 
+	// 実行したら、入力文字列を消す
+	ClearContent();
 	ShowWindow(SW_HIDE);
 }
 
@@ -822,9 +824,13 @@ BOOL CSoyokazeDlg::PreTranslateMessage(MSG* pMsg)
 
 void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	ClearContent();
-
 	if (bShow) {
+		// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
+		// (実際には表示直前に消去する)
+		AppPreference* pref = AppPreference::Get();
+		if (pref->IsKeepTextWhenDlgHide() == false) {
+			ClearContent();
+		}
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {

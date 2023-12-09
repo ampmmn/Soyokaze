@@ -629,6 +629,12 @@ bool AppPreference::IsEnableGitBashPath()
 	return in->mSettings.Get(_T("Soyokaze:IsEnableGitBashPath"), false);
 }
 
+// 入力窓が消えるときにテキストを消去しない(コマンドを実行したときだけ入力欄をクリアする)
+bool AppPreference::IsKeepTextWhenDlgHide()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
+}
+
 // 効果音ファイルパスを取得(文字入力)
 CString AppPreference::GetInputSoundFile()
 {

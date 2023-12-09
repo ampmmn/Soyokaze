@@ -1,3 +1,4 @@
+// あ
 #include "pch.h"
 #include "framework.h"
 #include "BasicSettingDialog.h"
@@ -40,6 +41,7 @@ void BasicSettingDialog::OnOK()
 	settingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
 	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
 	settingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
+	settingsPtr->Set(_T("Soyokaze:IsIKeepTextWhenDlgHide"), (bool)mIsKeepTextWhenDlgHide);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
 
 	__super::OnOK();
@@ -51,6 +53,7 @@ void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_SHOWTOGGLE, mIsShowToggle);
+	DDX_Check(pDX, IDC_CHECK_KEEPTEXTWHENDLGHIDE, mIsKeepTextWhenDlgHide);
 	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, mIsHideOnRun);
 }
 
@@ -100,6 +103,7 @@ void BasicSettingDialog::OnEnterSettings()
 	mHotKey = mHotKeyAttr.ToString();
 
 	mIsShowToggle = settingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
+	mIsKeepTextWhenDlgHide = settingsPtr->Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
 	mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 
 }

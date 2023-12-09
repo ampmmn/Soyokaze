@@ -104,6 +104,9 @@ public:
 	// GitBashパス変換機能を使用するか
 	bool IsEnableGitBashPath();
 
+	// 入力窓が消えるときにテキストを消去しない(コマンドを実行したときだけ入力欄をクリアする)
+	bool IsKeepTextWhenDlgHide();
+
 	// 効果音ファイルパスを取得(文字入力)
 	CString GetInputSoundFile();
 	// 効果音ファイルパスを取得(候補選択)

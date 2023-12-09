@@ -14,7 +14,12 @@ public:
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
 
+	// 表示中にホットキーを押したら隠れる
 	BOOL mIsShowToggle;
+
+	// 入力画面を非表示にするときに入力文字列を消去しない
+	BOOL mIsKeepTextWhenDlgHide;
+
 
 	// 起動直後は入力画面を非表示にする
 	BOOL mIsHideOnRun;
