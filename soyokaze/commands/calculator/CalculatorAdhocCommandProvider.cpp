@@ -118,9 +118,14 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	in->mCommandPtr->SetResult(result);
-	in->mCommandPtr->AddRef();
-	commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mCommandPtr));
+	// 10進数としての結果を追加
+	// ただし、入力文字列と結果が全く同じ場合は表示しない
+	// 例: 1 -> 1 のようなケース
+	if (cmdline != result) {
+		in->mCommandPtr->SetResult(result);
+		in->mCommandPtr->AddRef();
+		commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mCommandPtr));
+	}
 
 	// もし、評価結果が整数値なら16/8/2進数の結果も表示する
 	static tregex regexInt(_T("^-?[0-9]+$"));
