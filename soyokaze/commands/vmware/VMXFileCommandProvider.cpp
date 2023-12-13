@@ -47,7 +47,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 	mCommands.clear();
 
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r,ccs=UTF-8")) != 0) {
+	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0) {
 		return;
 	}
 
