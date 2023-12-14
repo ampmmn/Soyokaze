@@ -94,4 +94,5 @@ public:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 	afx_msg void OnCommandHotKey(UINT id);
 	afx_msg void OnCommandHelp();
+	afx_msg void OnTimer(UINT_PTR timerId);
 };

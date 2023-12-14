@@ -31,6 +31,8 @@
 
 using namespace soyokaze;
 
+static UINT TIMERID_KEYSTATE = 1;
+
 struct CSoyokazeDlg::PImpl
 {
 	PImpl(CSoyokazeDlg* thisPtr) : 
@@ -77,6 +79,9 @@ struct CSoyokazeDlg::PImpl
 
 	// ウインドウの透明度を制御するためのクラス
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
+	//
+	bool mIsPrevTransparentState = false;
+
 
 	// ドロップターゲット
 	SoyokazeDropTarget mDropTargetDialog;
@@ -183,6 +188,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
+	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP, OnCommandHelp)
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
@@ -832,12 +838,16 @@ void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			ClearContent();
 		}
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+
+		SetTimer(TIMERID_KEYSTATE, 100, nullptr);
 	}
 	else {
 		// 位置情報を更新する
 		if (in->mWindowPositionPtr.get()) {
 			in->mWindowPositionPtr->Update(GetSafeHwnd());
 		}
+
+		KillTimer(TIMERID_KEYSTATE);
 	}
 }
 
@@ -1083,4 +1093,15 @@ void CSoyokazeDlg::OnCommandHelp()
 void CSoyokazeDlg::OnCommandHotKey(UINT id)
 {
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
+}
+
+void CSoyokazeDlg::OnTimer(UINT_PTR timerId)
+{
+	if (timerId == TIMERID_KEYSTATE) {
+		bool shouldBeTransparent = GetAsyncKeyState(VK_CONTROL) & 0x8000;
+		if (in->mIsPrevTransparentState != shouldBeTransparent) {
+			in->mWindowTransparencyPtr->ToggleAlphaState(shouldBeTransparent);
+			in->mIsPrevTransparentState = shouldBeTransparent;
+		}
+	}
 }

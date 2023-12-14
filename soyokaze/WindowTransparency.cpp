@@ -29,21 +29,49 @@ void WindowTransparency::SetWindowHandle(HWND hwnd)
 
 bool WindowTransparency::UpdateActiveState(UINT nState)
 {
+	// ウインドウが無効なら何もしない
 	if (IsWindow(mWindowHandle) == FALSE) {
 		return false;
 	}
 
+	// フォーカスをうしなったらウインドウを隠す
 	if (mIsHideOnInactive && nState == WA_INACTIVE) {
 		ShowWindow(mWindowHandle, SW_HIDE);
 	}
 
+	// 透過表示機能が無効なら何もしない
 	if (mIsEnable == false) {
 		return false;
 	}
 
+	// 透過度を設定する
 	BYTE alpha = mAlpha;
 
 	if (mIsInactiveOnly && nState != WA_INACTIVE) {
+		alpha = 0xff;
+	}
+
+	SetLayeredWindowAttributes(mWindowHandle, 0, alpha, LWA_ALPHA);
+
+	return true;
+}
+
+bool WindowTransparency::ToggleAlphaState(bool isTransparency)
+{
+	// ウインドウが無効なら何もしない
+	if (IsWindow(mWindowHandle) == FALSE) {
+		return false;
+	}
+
+	// 透過表示機能が無効なら何もしない
+	if (mIsEnable == false) {
+		return false;
+	}
+
+	// 透過度を設定する
+	BYTE alpha = mAlpha;
+
+	if (mIsInactiveOnly && isTransparency == false) {
 		alpha = 0xff;
 	}
 

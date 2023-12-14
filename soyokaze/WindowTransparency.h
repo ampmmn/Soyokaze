@@ -11,7 +11,11 @@ public:
 
 	void SetWindowHandle(HWND hwnd);
 
+	// ウインドウのアクティブ状態を更新して状態に応じた制御を行う
 	bool UpdateActiveState(UINT nState);
+
+	// 透過状態を(一時的に)変更する
+	bool ToggleAlphaState(bool isTransparency);
 
 protected:
 	void UpdateStyle();
