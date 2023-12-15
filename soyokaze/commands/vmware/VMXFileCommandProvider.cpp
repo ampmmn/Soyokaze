@@ -59,7 +59,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 		CString displayName;
 	};
 
-	std::map<tstring, ITEM> items;
+	std::map<int, ITEM> items;
 
 	// ファイルを読む
 	CStdioFile file(fpIn);
@@ -75,12 +75,12 @@ void VMXFileCommandProvider::PImpl::Reload()
 		if (std::regex_match(pat, regFileName)) {
 			tstring indexStr = std::regex_replace(pat, regFileName,  _T("$1"));
 			tstring filePath = std::regex_replace(pat, regFileName,  _T("$2"));
-			items[indexStr].filePath = filePath.c_str();
+			items[_ttoi(indexStr.c_str())].filePath = filePath.c_str();
 		}
 		else if (std::regex_match(pat, regDisplayName)) {
 			tstring indexStr = std::regex_replace(pat, regDisplayName,  _T("$1"));
 			tstring displayName = std::regex_replace(pat, regDisplayName,  _T("$2"));
-			items[indexStr].displayName = displayName.c_str();
+			items[_ttoi(indexStr.c_str())].displayName = displayName.c_str();
 		}
 	}
 

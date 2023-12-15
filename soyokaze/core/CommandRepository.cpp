@@ -475,8 +475,10 @@ CommandRepository::Query(
 			if (r.mMatchLevel > l.mMatchLevel) { return false; }
 
 			// 一致レベルが同じ場合は優先順位による判断を行う
-			int priorityL = rankPtr->Get(l.mCommand->GetName());
-			int priorityR = rankPtr->Get(r.mCommand->GetName());
+			auto& cmdL = l.mCommand;
+			auto& cmdR = r.mCommand;
+			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(cmdL->GetName()) : 0;
+			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(cmdR->GetName()) : 0;
 			return priorityR < priorityL;
 	});
 

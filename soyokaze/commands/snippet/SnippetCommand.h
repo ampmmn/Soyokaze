@@ -26,6 +26,7 @@ public:
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
+	bool IsPriorityRankEnabled() override;
 	soyokaze::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;

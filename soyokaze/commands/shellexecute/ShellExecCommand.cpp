@@ -348,6 +348,15 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	return 0;
 }
 
+/**
+ *  @brief 優先順位の重みづけを使用するか?
+ *  @true true:優先順位の重みづけを使用する false:使用しない
+ */
+bool ShellExecCommand::IsPriorityRankEnabled()
+{
+	return true;
+}
+
 void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
 {
 	attr = in->mNormalAttr;

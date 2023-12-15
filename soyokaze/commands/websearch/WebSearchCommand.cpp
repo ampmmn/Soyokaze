@@ -173,6 +173,15 @@ int WebSearchCommand::EditDialog(const Parameter*)
 	return 0;
 }
 
+/**
+ *  @brief 優先順位の重みづけを使用するか?
+ *  @true true:優先順位の重みづけを使用する false:使用しない
+ */
+bool WebSearchCommand::IsPriorityRankEnabled()
+{
+	return true;
+}
+
 soyokaze::core::Command*
 WebSearchCommand::Clone()
 {

@@ -19,7 +19,9 @@ public:
 	BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
+	bool IsPriorityRankEnabled() override;
 	soyokaze::core::Command* Clone() override;
+
 
 protected:
 	struct PImpl;

@@ -68,6 +68,11 @@ struct DummyCommand : public soyokaze::core::Command
 		return 0;
 	}
 
+	bool IsPriorityRankEnabled() override
+	{
+		return true;
+	}
+
 	Command* Clone() override
 	{
 		return new DummyCommand();

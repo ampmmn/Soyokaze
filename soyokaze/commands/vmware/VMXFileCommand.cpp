@@ -119,6 +119,16 @@ HICON VMXFileCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(in->mFullPath);
 }
 
+/**
+ *  @brief 優先順位の重みづけを使用するか?
+ *  @true true:優先順位の重みづけを使用する false:使用しない
+ */
+bool VMXFileCommand::IsPriorityRankEnabled()
+{
+	// コマンド登録順序と候補表示の順序を維持するため、重みづけを無効化する
+	return false;
+}
+
 soyokaze::core::Command*
 VMXFileCommand::Clone()
 {

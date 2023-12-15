@@ -70,6 +70,17 @@ int BuiltinCommandBase::EditDialog(const Parameter* param)
 	return -1;
 }
 
+/**
+ *  @brief 優先順位の重みづけを使用するか?
+ *  @remark 同一のコマンド種別の間で表示順序を維持したいようなケースで重みづけを使わないようにできる
+ *  @true true:優先順位の重みづけを使用する false:使用しない
+ */
+bool BuiltinCommandBase::IsPriorityRankEnabled()
+{
+	// 基本は重みづけをする
+	return true;
+}
+
 bool BuiltinCommandBase::Save(CommandFile* cmdFile)
 {
 	ASSERT(cmdFile);

@@ -27,6 +27,13 @@ public:
 	virtual int Match(Pattern* pattern) = 0;
 	virtual bool IsEditable() = 0;
 	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
+
+	/**
+	 *  @brief 優先順位の重みづけを使用するか?
+	 *  @true true:優先順位の重みづけを使用する false:使用しない
+	 */
+	virtual bool IsPriorityRankEnabled() = 0;
+
 	virtual Command* Clone() = 0;
 
 	virtual bool Save(CommandFile* cmdFile) = 0;

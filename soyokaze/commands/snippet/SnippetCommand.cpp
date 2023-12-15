@@ -171,6 +171,15 @@ int SnippetCommand::EditDialog(const Parameter* param)
 	return 0;
 }
 
+/**
+ *  @brief 優先順位の重みづけを使用するか?
+ *  @true true:優先順位の重みづけを使用する false:使用しない
+ */
+bool SnippetCommand::IsPriorityRankEnabled()
+{
+	return true;
+}
+
 soyokaze::core::Command*
 SnippetCommand::Clone()
 {
