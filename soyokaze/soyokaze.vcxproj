@@ -577,6 +577,11 @@
     <ClInclude Include="commands\activate_window\WindowActivateCommandParam.h" />
     <ClInclude Include="commands\activate_window\WindowActivateSettingDialog.h" />
     <ClInclude Include="commands\activate_window\WorksheetCommand.h" />
+    <ClInclude Include="commands\align_window\AlignWindowCommand.h" />
+    <ClInclude Include="commands\align_window\AlignWindowCommandParam.h" />
+    <ClInclude Include="commands\align_window\AlignWindowItemSettingDialog.h" />
+    <ClInclude Include="commands\align_window\AlignWindowProvider.h" />
+    <ClInclude Include="commands\align_window\AlignWindowSettingDialog.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h" />
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
@@ -753,6 +758,11 @@
     <ClCompile Include="commands\activate_window\WindowActivateCommandParam.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateSettingDialog.cpp" />
     <ClCompile Include="commands\activate_window\WorksheetCommand.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowCommand.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowCommandParam.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowItemSettingDialog.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowProvider.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowSettingDialog.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp" />
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />

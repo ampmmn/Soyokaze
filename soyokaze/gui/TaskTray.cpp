@@ -15,6 +15,7 @@ IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 
 TaskTray::TaskTray(CSoyokazeDlg* window) : mSoyokazeWindowPtr(window)
 {
+	memset(&mNotifyIconData, 0, sizeof(mNotifyIconData));
 	mIcon = IconLoader::Get()->LoadTasktrayIcon();
 }
 
@@ -73,10 +74,21 @@ BOOL TaskTray::Create()
 void TaskTray::ShowMessage(const CString& msg)
 {
 	mNotifyIconData.uFlags |= NIF_INFO;
-	_tcsncpy_s(mNotifyIconData.szInfo, sizeof(mNotifyIconData.szInfo) / sizeof(TCHAR), msg, _TRUNCATE);
+	_tcsncpy_s(mNotifyIconData.szInfoTitle, _T(""), _TRUNCATE);
+	_tcsncpy_s(mNotifyIconData.szInfo, msg, _TRUNCATE);
 
 	Shell_NotifyIcon(NIM_MODIFY, &mNotifyIconData);
 }
+
+void TaskTray::ShowMessage(const CString& msg, const CString& title)
+{
+	mNotifyIconData.uFlags |= NIF_INFO;
+	_tcsncpy_s(mNotifyIconData.szInfoTitle, title, _TRUNCATE);
+	_tcsncpy_s(mNotifyIconData.szInfo, msg, _TRUNCATE);
+
+	Shell_NotifyIcon(NIM_MODIFY, &mNotifyIconData);
+}
+
 
 LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 {

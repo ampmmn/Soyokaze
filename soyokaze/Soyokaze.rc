@@ -648,6 +648,63 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
+IDD_ALIGNWINDOWEDIT DIALOGEX 0, 0, 387, 281
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "ウインドウ整列コマンド"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",-1,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,216,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",-1,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,216,14,ES_AUTOHSCROLL
+    LTEXT           "整列するウインドウの一覧(&L):",-1,9,67,122,8
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,20,82,299,120
+    PUSHBUTTON      "追加(&A)",IDC_BUTTON_ADD,328,83,50,14
+    PUSHBUTTON      "編集(&E)",IDC_BUTTON_EDIT,328,104,50,14
+    PUSHBUTTON      "削除(&R)",IDC_BUTTON_DELETE,328,125,50,14
+    PUSHBUTTON      "上へ(&U)",IDC_BUTTON_UP,328,145,50,14
+    PUSHBUTTON      "下へ(&D)",IDC_BUTTON_DOWN,328,164,50,14
+    CONTROL         "条件に合致するウインドウが見つからなかった場合に通知する(&N)",IDC_CHECK_NOTIFYIFNOTEXIST,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,209,215,10
+    CONTROL         "アクティブなウインドウを変更しない(&K)",IDC_CHECK_KEEPACTIVEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,223,131,10
+    LTEXT           "ホットキー(K):",-1,20,241,74,8
+    EDITTEXT        IDC_EDIT_HOTKEY,111,238,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,238,21,14
+    DEFPUSHBUTTON   "OK",IDOK,275,257,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,330,257,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+END
+
+IDD_ALIGNWINDOWITEMEDIT DIALOGEX 0, 0, 347, 255
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "ウインドウ切替コマンドの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
+    GROUPBOX        "検索条件",IDC_STATIC,13,40,322,78
+    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,22,57,80,8
+    EDITTEXT        IDC_EDIT_CAPTION,101,56,206,14,ES_AUTOHSCROLL
+    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,22,76,65,8
+    EDITTEXT        IDC_EDIT_CLASS,101,77,206,14,ES_AUTOHSCROLL
+    CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,97,71,10
+    GROUPBOX        "位置・サイズ",IDC_STATIC,12,125,322,52
+    LTEXT           "位置(&X,Y):",IDC_STATIC,22,141,50,8
+    EDITTEXT        IDC_EDIT_X,89,137,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_Y,161,137,58,14,ES_AUTOHSCROLL
+    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,158,64,8
+    EDITTEXT        IDC_EDIT_WIDTH,89,155,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HEIGHT,161,155,58,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "位置・サイズを取得(&U)",IDC_BUTTON_UPDATE,253,137,76,14
+    LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,14,184,311,27
+    DEFPUSHBUTTON   "OK",IDOK,237,234,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,290,234,50,14
+    LTEXT           "左のアイコンをドラッグしてウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,27,299,12
+    LTEXT           ",",IDC_STATIC,151,142,8,8
+    LTEXT           ",",IDC_STATIC,151,160,8,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -655,8 +712,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,12,0,0
- PRODUCTVERSION 0,12,0,1
+ FILEVERSION 0,13,0,0
+ PRODUCTVERSION 0,13,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -672,12 +729,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.12.0.0"
+            VALUE "FileVersion", "0.13.0.0"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.12.0.1"
+            VALUE "ProductVersion", "0.13.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -907,6 +964,22 @@ BEGIN
         RIGHTMARGIN, 330
         TOPMARGIN, 7
         BOTTOMMARGIN, 223
+    END
+
+    IDD_ALIGNWINDOWEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 380
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 274
+    END
+
+    IDD_ALIGNWINDOWITEMEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 340
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1293,6 +1366,57 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_ALIGNWINDOWEDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 100,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
+END
+
+IDD_ALIGNWINDOWITEMEDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 
@@ -1691,6 +1815,16 @@ BEGIN
     IDS_SNIPPETCOMMAND      "スニペットコマンド"
     IDS_DESCRIPTION_SNIPPETCOMMAND "定型文をクリップボードにコピーするコマンドを作成します。"
     IDS_ERR_TEXTISEMPTY     "テキストを入力してください。"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_WINDOWTITLE         "ウインドウタイトル"
+    IDS_WINDOWCLASS         "ウインドウクラス"
+    IDS_X                   "X座標値"
+    IDS_Y                   "Y座標値"
+    IDS_WIDTH               "幅"
+    IDS_HEIGHT              "高さ"
 END
 
 #endif    // 日本語 (日本) resources

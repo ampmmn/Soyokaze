@@ -104,12 +104,20 @@
 #define IDS_DESCRIPTION_WEBSEARCH       168
 #define IDD_SNIPPET_EDIT                168
 #define IDS_COMMAND_STARTMENU           169
+#define IDD_ALIGNWINDOWEDIT             169
 #define IDS_COMMAND_APP                 170
+#define IDD_ALIGNWINDOWITEMEDIT         170
 #define IDS_SENDTO                      171
 #define IDS_CONFIRM_VMXLOCKED           172
 #define IDS_SNIPPETCOMMAND              173
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  174
 #define IDS_ERR_TEXTISEMPTY             175
+#define IDS_WINDOWTITLE                 176
+#define IDS_WINDOWCLASS                 177
+#define IDS_X                           178
+#define IDS_Y                           179
+#define IDS_WIDTH                       180
+#define IDS_HEIGHT                      181
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -248,9 +256,15 @@
 #define IDC_CHECK_ENABLE_CONTROLPANEL2  1084
 #define IDC_CHECK_ENABLE_GITBASH        1084
 #define IDC_CHECK_ENABLESHORTCUT        1085
+#define IDC_CHECK_KEEPACTIVEWINDOW      1085
 #define IDC_BUTTON1                     1086
 #define IDC_BUTTON_TEST                 1086
 #define IDC_EDIT_TEXT                   1087
+#define IDC_BUTTON_UPDATE               1088
+#define IDC_EDIT_X                      1089
+#define IDC_EDIT_Y                      1090
+#define IDC_EDIT_WIDTH                  1091
+#define IDC_EDIT_HEIGHT                 1092
 
 // Next default values for new objects
 // 
@@ -258,7 +272,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1088
+#define _APS_NEXT_CONTROL_VALUE         1090
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

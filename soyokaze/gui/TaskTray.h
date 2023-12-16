@@ -11,6 +11,7 @@ public:
 	DECLARE_DYNAMIC(TaskTray)
 
 	void ShowMessage(const CString& msg);
+	void ShowMessage(const CString& msg, const CString& title);
 
 protected:
 	HICON mIcon;

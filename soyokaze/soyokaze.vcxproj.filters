@@ -97,6 +97,9 @@
     <Filter Include="commands\timespan">
       <UniqueIdentifier>{4f0e7da9-2870-403c-afab-c7d502a15d22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\align_window">
+      <UniqueIdentifier>{6134530a-48d6-45c8-88bf-a094eabbfe66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -624,6 +627,21 @@
     <ClInclude Include="commands\pathfind\LocalToGitBashPathAdhocCommand.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowCommand.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowCommandParam.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowItemSettingDialog.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowSettingDialog.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowProvider.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1123,6 +1141,21 @@
     </ClCompile>
     <ClCompile Include="commands\pathfind\LocalToGitBashPathAdhocCommand.cpp">
       <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowCommand.cpp">
+      <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowCommandParam.cpp">
+      <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowItemSettingDialog.cpp">
+      <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowSettingDialog.cpp">
+      <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowProvider.cpp">
+      <Filter>commands\align_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
