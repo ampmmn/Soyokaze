@@ -157,8 +157,8 @@ CString AlignWindowCommand::GetErrorString()
 
 HICON AlignWindowCommand::GetIcon()
 {
-	// ToDo: 実装
-	return IconLoader::Get()->GetShell32Icon(324);
+	//return IconLoader::Get()->GetImageResIcon(-5310);
+	return IconLoader::Get()->GetImageResIcon(-5357);
 }
 
 int AlignWindowCommand::Match(Pattern* pattern)

@@ -65,7 +65,7 @@ BOOL GetIPCommand::Execute(const Parameter& param)
 
 HICON GetIPCommand::GetIcon()
 {
-	return IconLoader::Get()->GetImageResIcon(68);
+	return IconLoader::Get()->GetImageResIcon(-74);
 }
 
 soyokaze::core::Command*

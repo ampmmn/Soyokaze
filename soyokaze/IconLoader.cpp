@@ -276,7 +276,7 @@ HICON IconLoader::GetImageResIcon(int index)
 
 HICON IconLoader::LoadFolderIcon()
 {
-	return GetImageResIcon(3);
+	return GetImageResIcon(-3);
 }
 
 static CString GetHttpsIconPathFromRegistry()
@@ -304,18 +304,18 @@ HICON IconLoader::LoadWebIcon()
 
 HICON IconLoader::LoadNewIcon()
 {
-	return GetImageResIcon(204);
+	return GetImageResIcon(-1024);
 }
 
 HICON IconLoader::LoadSettingIcon()
 {
-	return GetImageResIcon(109);
+	return GetImageResIcon(-114);
 }
 
 HICON IconLoader::LoadExitIcon()
 {
 	int n = in->GetImageResIconCount();
-	return GetImageResIcon(235);
+	return GetImageResIcon(-5102);
 }
 
 static int GetPitch(int w, int bpp)
@@ -378,12 +378,12 @@ HICON IconLoader::LoadDefaultIcon()
 
 HICON IconLoader::LoadUserDirIcon()
 {
-	return GetImageResIcon(157);
+	return GetImageResIcon(-166);
 }
 
 HICON IconLoader::LoadMainDirIcon()
 {
-	return GetImageResIcon(157);
+	return GetImageResIcon(-166);
 }
 
 HICON IconLoader::LoadVersionIcon()
@@ -398,49 +398,32 @@ HICON IconLoader::LoadTasktrayIcon()
 
 HICON IconLoader::LoadUnknownIcon()
 {
-	return GetImageResIcon(2);
+	return GetImageResIcon(-2);
 }
 
 HICON IconLoader::LoadReloadIcon()
 {
-	int n = in->GetImageResIconCount();
-	if (n == 334) {
-		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
-		return GetImageResIcon(228);
-	}
-	else {
-		// Win11
-		return GetImageResIcon(229);
-	}
-
+	return GetImageResIcon(-1401);
 }
 
 HICON IconLoader::LoadWindowIcon()
 {
-	return GetImageResIcon(11);
+	return GetImageResIcon(-15);
 }
 
 
 HICON IconLoader::LoadRegisterWindowIcon()
 {
-	return GetImageResIcon(19);
+	return GetImageResIcon(-24);
 }
 
 HICON IconLoader::LoadGroupIcon()
 {
-	return GetShell32Icon(250);
+	return GetShell32Icon(-133);
 }
 
 HICON IconLoader::LoadPromptIcon()
 {
-	int n = in->GetImageResIconCount();
-	if (n == 334) {
-		// 暫定: imageres.dllに含まれるiconの数でインデックスを判断する(こっちはWin10)
-		return GetImageResIcon(311);
-	}
-	else {
-		// Win11
-		return GetImageResIcon(312);
-	}
+	return GetImageResIcon(-5372);
 }
 

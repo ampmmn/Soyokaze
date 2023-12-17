@@ -62,7 +62,7 @@ BOOL MailToCommand::Execute(const Parameter& param)
 
 HICON MailToCommand::GetIcon()
 {
-	HICON h =IconLoader::Get()->GetImageResIcon(15);
+	HICON h =IconLoader::Get()->GetImageResIcon(-20);
 	return h;
 }
 
