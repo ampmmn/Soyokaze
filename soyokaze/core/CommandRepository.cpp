@@ -469,7 +469,7 @@ CommandRepository::Query(
 	// 一致レベルに基づきソート
 	const CommandRanking* rankPtr = &in->mRanking;
 
-	std::sort(matchedItems.begin(), matchedItems.end(),
+	std::stable_sort(matchedItems.begin(), matchedItems.end(),
 		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
 			if (r.mMatchLevel < l.mMatchLevel) { return true; }
 			if (r.mMatchLevel > l.mMatchLevel) { return false; }
