@@ -129,8 +129,17 @@ BOOL AlignWindowCommand::Execute(
 		const POINT& pos = item.mPos;
 		const SIZE& size = item.mSize;
 
-		ShowWindow(hwnd, SW_RESTORE);
-		SetWindowPos(hwnd, nullptr, pos.x, pos.y, size.cx, size.cy, SWP_SHOWWINDOW);
+		int flag = SW_RESTORE;
+		if (item.mAction == CommandParam::AT_MAXIMIZE) {
+			flag = SW_MAXIMIZE;
+		}
+		else if (item.mAction == CommandParam::AT_MINIMIZE) {
+			flag = SW_MINIMIZE;
+		}
+		ShowWindow(hwnd, flag);
+		if (item.mAction == CommandParam::AT_SETPOS) {
+			SetWindowPos(hwnd, nullptr, pos.x, pos.y, size.cx, size.cy, SWP_SHOWWINDOW);
+		}
 
 		if (in->mParam.mIsKeepActiveWindow == FALSE) {
 			::SetForegroundWindow(hwnd);
@@ -270,6 +279,9 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 		key.Format(_T("Height%d"), index);
 		cmdFile->Set(entry, key, item.mSize.cy);
 
+		key.Format(_T("Action%d"), index);
+		cmdFile->Set(entry, key, item.mAction);
+
 		index++;
 	}
 
@@ -372,6 +384,9 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 		item.mSize.cx = cmdFile->Get(entry, key, 0);
 		key.Format(_T("Height%d"), i);
 		item.mSize.cy = cmdFile->Get(entry, key, 0);
+
+		key.Format(_T("Action%d"), i);
+		item.mAction = cmdFile->Get(entry, key, 0);
 
 		item.BuildRegExp();
 

@@ -11,6 +11,12 @@ namespace align_window {
 class CommandParam
 {
 public:
+	enum ACTION {
+		AT_SETPOS,    // サイズ変更
+		AT_MAXIMIZE,  // 最大化
+		AT_MINIMIZE,  // 最小化
+	};
+
 	struct ITEM {
 
 		HWND FindHwnd();
@@ -30,6 +36,7 @@ public:
 
 		POINT mPos;
 		SIZE mSize;
+		int mAction;
 
 		tregex mRegClass;
 		tregex mRegCaption;

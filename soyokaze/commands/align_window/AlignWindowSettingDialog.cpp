@@ -414,14 +414,28 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 	}
 	listWndPtr->SetItemText(index, 0, item.mCaptionStr);
 	listWndPtr->SetItemText(index, 1, item.mClassStr);
-	text.Format(_T("%d"), item.mPos.x);
-	listWndPtr->SetItemText(index, 2, text);
-	text.Format(_T("%d"), item.mPos.y);
-	listWndPtr->SetItemText(index, 3, text);
-	text.Format(_T("%d"), item.mSize.cx);
-	listWndPtr->SetItemText(index, 4, text);
-	text.Format(_T("%d"), item.mSize.cy);
-	listWndPtr->SetItemText(index, 5, text);
+
+	if (item.mAction == Param::AT_SETPOS) {
+		text.Format(_T("%d"), item.mPos.x);
+		listWndPtr->SetItemText(index, 2, text);
+		text.Format(_T("%d"), item.mPos.y);
+		listWndPtr->SetItemText(index, 3, text);
+		text.Format(_T("%d"), item.mSize.cx);
+		listWndPtr->SetItemText(index, 4, text);
+		text.Format(_T("%d"), item.mSize.cy);
+		listWndPtr->SetItemText(index, 5, text);
+	}
+	else {
+		if (item.mAction == Param::AT_MAXIMIZE) {
+			listWndPtr->SetItemText(index, 2, _T("(最大化)"));
+		}
+		else if (item.mAction == Param::AT_MINIMIZE){
+			listWndPtr->SetItemText(index, 2, _T("(最小化)"));
+		}
+		listWndPtr->SetItemText(index, 3, _T(""));
+		listWndPtr->SetItemText(index, 4, _T(""));
+		listWndPtr->SetItemText(index, 5, _T(""));
+	}
 }
 
 }

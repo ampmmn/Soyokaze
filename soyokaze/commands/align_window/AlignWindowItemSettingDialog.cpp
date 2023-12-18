@@ -68,6 +68,7 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_WIDTH, in->mParam.mSize.cx);
 	DDX_Text(pDX, IDC_EDIT_HEIGHT, in->mParam.mSize.cy);
 	DDX_Check(pDX, IDC_CHECK_REGEXP, in->mParam.mIsUseRegExp);
+	DDX_CBIndex(pDX, IDC_COMBO_ACTION, in->mParam.mAction);
 }
 
 BEGIN_MESSAGE_MAP(ItemDialog, CDialogEx)
@@ -75,6 +76,7 @@ BEGIN_MESSAGE_MAP(ItemDialog, CDialogEx)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_CLASS, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_ACTION, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 BOOL ItemDialog::OnInitDialog()
@@ -104,17 +106,27 @@ void ItemDialog::OnButtonUpdate()
 
 	HWND hwnd = in->mParam.FindHwnd();
 	if (IsWindow(hwnd) == FALSE) {
-		PopupMessage(_T("ウインドウは見つかりませんでした"));
+		AfxMessageBox(_T("ウインドウは見つかりませんでした"));
 		return;
 	}
 
-	// サイズを取得
-	CRect rcWindow;
-	::GetWindowRect(hwnd, &rcWindow);
-	in->mParam.mPos.x = rcWindow.left;
-	in->mParam.mPos.y = rcWindow.top;
-	in->mParam.mSize.cx = rcWindow.Width();
-	in->mParam.mSize.cy = rcWindow.Height();
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	if (style & WS_MAXIMIZE) {
+		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
+	}
+	else if (style & WS_MINIMIZE) {
+		in->mParam.mAction = CommandParam::AT_MINIMIZE;
+	}
+	else {
+		// サイズを取得
+		CRect rcWindow;
+		::GetWindowRect(hwnd, &rcWindow);
+		in->mParam.mPos.x = rcWindow.left;
+		in->mParam.mPos.y = rcWindow.top;
+		in->mParam.mSize.cx = rcWindow.Width();
+		in->mParam.mSize.cy = rcWindow.Height();
+		in->mParam.mAction = CommandParam::AT_SETPOS;
+	}
 
 	UpdateData(FALSE);
 }
@@ -148,11 +160,24 @@ bool ItemDialog::UpdateStatus()
 	if (canTest == false) {
 		in->mMessage = _T("ウインドウタイトルかウインドウクラスを入力してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		GetDlgItem(IDC_COMBO_ACTION)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_X)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_Y)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_WIDTH)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_HEIGHT)->EnableWindow(FALSE);
 		return false;
 	}
 
 	in->mMessage.Empty();
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
+	GetDlgItem(IDC_COMBO_ACTION)->EnableWindow(TRUE);
+
+	bool isSetPos = in->mParam.mAction != CommandParam::AT_MAXIMIZE && in->mParam.mAction != CommandParam::AT_MINIMIZE;
+	GetDlgItem(IDC_EDIT_X)->EnableWindow(isSetPos);
+	GetDlgItem(IDC_EDIT_Y)->EnableWindow(isSetPos);
+	GetDlgItem(IDC_EDIT_WIDTH)->EnableWindow(isSetPos);
+	GetDlgItem(IDC_EDIT_HEIGHT)->EnableWindow(isSetPos);
+
 	return true;
 }
 
@@ -181,13 +206,22 @@ ItemDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 	in->mParam.mClassStr = clsName;
 	in->mParam.mIsUseRegExp = FALSE;
 
-	// サイズを取得
-	CRect rcWindow;
-	::GetWindowRect(hwndRoot, &rcWindow);
-	in->mParam.mPos.x = rcWindow.left;
-	in->mParam.mPos.y = rcWindow.top;
-	in->mParam.mSize.cx = rcWindow.Width();
-	in->mParam.mSize.cy = rcWindow.Height();
+	LONG_PTR style = GetWindowLongPtr(hwndRoot, GWL_STYLE);
+	if (style & WS_MAXIMIZE) {
+		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
+	}
+	else if (style & WS_MINIMIZE) {
+		in->mParam.mAction = CommandParam::AT_MINIMIZE;
+	}
+	else {
+		// サイズを取得
+		CRect rcWindow;
+		::GetWindowRect(hwndRoot, &rcWindow);
+		in->mParam.mPos.x = rcWindow.left;
+		in->mParam.mPos.y = rcWindow.top;
+		in->mParam.mSize.cx = rcWindow.Width();
+		in->mParam.mSize.cy = rcWindow.Height();
+	}
 
 	UpdateStatus();
 	UpdateData(FALSE);

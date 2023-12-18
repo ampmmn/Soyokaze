@@ -689,20 +689,22 @@ BEGIN
     LTEXT           "ウインドウクラス(&L):",IDC_STATIC,22,76,65,8
     EDITTEXT        IDC_EDIT_CLASS,101,77,206,14,ES_AUTOHSCROLL
     CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,97,71,10
-    GROUPBOX        "位置・サイズ",IDC_STATIC,12,125,322,52
-    LTEXT           "位置(&X,Y):",IDC_STATIC,22,141,50,8
-    EDITTEXT        IDC_EDIT_X,89,137,58,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_Y,161,137,58,14,ES_AUTOHSCROLL
-    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,158,64,8
-    EDITTEXT        IDC_EDIT_WIDTH,89,155,58,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_HEIGHT,161,155,58,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "位置・サイズを取得(&U)",IDC_BUTTON_UPDATE,253,137,76,14
-    LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,14,184,311,27
+    GROUPBOX        "動作",IDC_STATIC,12,125,322,67
+    LTEXT           "動作(&A):",IDC_STATIC,22,140,50,8
+    COMBOBOX        IDC_COMBO_ACTION,90,138,128,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "位置(&X,Y):",IDC_STATIC,22,159,50,8
+    EDITTEXT        IDC_EDIT_X,89,155,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_Y,161,155,58,14,ES_AUTOHSCROLL
+    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,176,64,8
+    EDITTEXT        IDC_EDIT_WIDTH,89,173,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HEIGHT,161,173,58,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "現在の状態を取得(&U)",IDC_BUTTON_UPDATE,247,137,84,14
+    LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,14,198,311,27
     DEFPUSHBUTTON   "OK",IDOK,237,234,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,290,234,50,14
     LTEXT           "左のアイコンをドラッグしてウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,27,299,12
-    LTEXT           ",",IDC_STATIC,151,142,8,8
     LTEXT           ",",IDC_STATIC,151,160,8,8
+    LTEXT           ",",IDC_STATIC,151,178,8,8
 END
 
 
@@ -712,8 +714,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,13,0,0
- PRODUCTVERSION 0,13,0,1
+ FILEVERSION 0,14,0,0
+ PRODUCTVERSION 0,14,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -729,12 +731,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.13.0.0"
+            VALUE "FileVersion", "0.14.0.0"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.13.0.1"
+            VALUE "ProductVersion", "0.14.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -1412,6 +1414,8 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     100, 0, 0, 0,
     100, 0, 0, 0,
     0, 0, 100, 0,
@@ -1702,6 +1706,18 @@ BEGIN
     IDC_COMBO_AFTERTYPE, 0x403, 27, 0
 0x4e83, 0x8a83, 0x6283, 0x7683, 0x7b83, 0x5b81, 0x6883, 0xc982, 0x5283, 
 0x7383, 0x5b81, 0xb782, 0xe982, "\000" 
+    0
+END
+
+IDD_ALIGNWINDOWITEMEDIT DLGINIT
+BEGIN
+    IDC_COMBO_ACTION, 0x403, 19, 0
+0xca88, 0x7592, 0x4581, 0x5483, 0x4383, 0x5983, 0xf082, 0xcf95, 0x588d, 
+"\000" 
+    IDC_COMBO_ACTION, 0x403, 7, 0
+0xc58d, 0xe591, 0xbb89, "\000" 
+    IDC_COMBO_ACTION, 0x403, 7, 0
+0xc58d, 0xac8f, 0xbb89, "\000" 
     0
 END
 
