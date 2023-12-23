@@ -1098,7 +1098,7 @@ void CSoyokazeDlg::OnCommandHotKey(UINT id)
 void CSoyokazeDlg::OnTimer(UINT_PTR timerId)
 {
 	if (timerId == TIMERID_KEYSTATE) {
-		bool shouldBeTransparent = GetAsyncKeyState(VK_CONTROL) & 0x8000;
+		bool shouldBeTransparent = (GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_MENU) & 0x8000);
 		if (in->mIsPrevTransparentState != shouldBeTransparent) {
 			in->mWindowTransparencyPtr->ToggleAlphaState(shouldBeTransparent);
 			in->mIsPrevTransparentState = shouldBeTransparent;
