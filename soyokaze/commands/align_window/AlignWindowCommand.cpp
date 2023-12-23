@@ -126,24 +126,8 @@ BOOL AlignWindowCommand::Execute(
 			continue;
 		}
 
-		const POINT& pos = item.mPos;
-		const SIZE& size = item.mSize;
-
-		int flag = SW_RESTORE;
-		if (item.mAction == CommandParam::AT_MAXIMIZE) {
-			flag = SW_MAXIMIZE;
-		}
-		else if (item.mAction == CommandParam::AT_MINIMIZE) {
-			flag = SW_MINIMIZE;
-		}
-		ShowWindow(hwnd, flag);
-		if (item.mAction == CommandParam::AT_SETPOS) {
-			SetWindowPos(hwnd, nullptr, pos.x, pos.y, size.cx, size.cy, SWP_SHOWWINDOW);
-		}
-
-		if (in->mParam.mIsKeepActiveWindow == FALSE) {
-			::SetForegroundWindow(hwnd);
-		}
+		const WINDOWPLACEMENT& placement = item.mPlacement;
+		SetWindowPlacement(hwnd, &placement);
 	}
 
 	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.IsEmpty() == FALSE) {
@@ -152,8 +136,14 @@ BOOL AlignWindowCommand::Execute(
 		soyokaze::commands::common::PopupMessage(msg);
 	}
 
-	if (in->mParam.mIsKeepActiveWindow && IsWindow(hwndForeground)) {
+	if (in->mParam.mIsKeepActiveWindow) {
 		SetForegroundWindow(hwndForeground);
+	}
+	else {
+		if (in->mParam.mItems.size() > 0) {
+			HWND hwnd = in->mParam.mItems.back().FindHwnd();
+			SetForegroundWindow(hwnd);
+		}
 	}
 
 	return TRUE;
@@ -270,17 +260,13 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 		key.Format(_T("IsUseRegExp%d"), index);
 		cmdFile->Set(entry, key, item.mIsUseRegExp != FALSE);
 
-		key.Format(_T("PostionX%d"), index);
-		cmdFile->Set(entry, key, item.mPos.x);
-		key.Format(_T("PostionY%d"), index);
-		cmdFile->Set(entry, key, item.mPos.y);
-		key.Format(_T("Width%d"), index);
-		cmdFile->Set(entry, key, item.mSize.cx);
-		key.Format(_T("Height%d"), index);
-		cmdFile->Set(entry, key, item.mSize.cy);
-
 		key.Format(_T("Action%d"), index);
 		cmdFile->Set(entry, key, item.mAction);
+
+		key.Format(_T("Placement%d"), index);
+		std::vector<uint8_t> data(sizeof(item.mPlacement));
+		memcpy(&data.front(), &item.mPlacement, sizeof(item.mPlacement));
+		cmdFile->Set(entry, key, data);
 
 		index++;
 	}
@@ -363,6 +349,8 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 
 	std::vector<CommandParam::ITEM> items;
 
+	std::vector<uint8_t> placement;
+
 	int itemCount = cmdFile->Get(entry, _T("ItemCount"), 0);
 	for (int i = 1; i <= itemCount; ++i) {
 
@@ -375,18 +363,17 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 		key.Format(_T("IsUseRegExp%d"), i);
 		item.mIsUseRegExp = cmdFile->Get(entry, key, false) ? TRUE : FALSE;
 
-		key.Format(_T("PostionX%d"), i);
-		item.mPos.x = cmdFile->Get(entry, key, 0);
-		key.Format(_T("PostionY%d"), i);
-		item.mPos.y = cmdFile->Get(entry, key, 0);
-
-		key.Format(_T("Width%d"), i);
-		item.mSize.cx = cmdFile->Get(entry, key, 0);
-		key.Format(_T("Height%d"), i);
-		item.mSize.cy = cmdFile->Get(entry, key, 0);
-
 		key.Format(_T("Action%d"), i);
 		item.mAction = cmdFile->Get(entry, key, 0);
+
+		key.Format(_T("Placement%d"), i);
+		if (cmdFile->Get(entry, key, placement) == false) {
+			continue;
+		}
+		if (placement.size() != sizeof(WINDOWPLACEMENT)) {
+			continue;
+		}
+		memcpy(&item.mPlacement, &placement.front(), placement.size());
 
 		item.BuildRegExp();
 

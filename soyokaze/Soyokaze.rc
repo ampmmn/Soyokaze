@@ -683,28 +683,28 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
-    GROUPBOX        "検索条件",IDC_STATIC,13,40,322,78
-    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,22,57,80,8
-    EDITTEXT        IDC_EDIT_CAPTION,101,56,206,14,ES_AUTOHSCROLL
-    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,22,76,65,8
-    EDITTEXT        IDC_EDIT_CLASS,101,77,206,14,ES_AUTOHSCROLL
-    CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,97,71,10
-    GROUPBOX        "動作",IDC_STATIC,12,125,322,67
-    LTEXT           "動作(&A):",IDC_STATIC,22,140,50,8
-    COMBOBOX        IDC_COMBO_ACTION,90,138,128,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "位置(&X,Y):",IDC_STATIC,22,159,50,8
-    EDITTEXT        IDC_EDIT_X,89,155,58,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_Y,161,155,58,14,ES_AUTOHSCROLL
-    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,176,64,8
-    EDITTEXT        IDC_EDIT_WIDTH,89,173,58,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_HEIGHT,161,173,58,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "現在の状態を取得(&U)",IDC_BUTTON_UPDATE,247,137,84,14
-    LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,14,198,311,27
+    GROUPBOX        "検索条件",IDC_STATIC,13,40,322,115
+    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,22,92,80,8
+    EDITTEXT        IDC_EDIT_CAPTION,101,91,206,14,ES_AUTOHSCROLL
+    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,22,111,65,8
+    EDITTEXT        IDC_EDIT_CLASS,101,112,206,14,ES_AUTOHSCROLL
+    CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,131,71,10
+    GROUPBOX        "動作",IDC_STATIC,12,161,322,67
+    LTEXT           "動作(&A):",IDC_STATIC,22,176,50,8
+    COMBOBOX        IDC_COMBO_ACTION,90,174,128,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "位置(&X,Y):",IDC_STATIC,22,195,50,8
+    EDITTEXT        IDC_EDIT_X,89,191,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_Y,161,191,58,14,ES_AUTOHSCROLL
+    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,212,64,8
+    EDITTEXT        IDC_EDIT_WIDTH,89,209,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HEIGHT,161,209,58,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "現在の状態を取得(&U)",IDC_BUTTON_UPDATE,247,173,84,14
+    LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,21,54,311,27
     DEFPUSHBUTTON   "OK",IDOK,237,234,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,290,234,50,14
     LTEXT           "左のアイコンをドラッグしてウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,27,299,12
-    LTEXT           ",",IDC_STATIC,151,160,8,8
-    LTEXT           ",",IDC_STATIC,151,178,8,8
+    LTEXT           ",",IDC_STATIC,151,196,8,8
+    LTEXT           ",",IDC_STATIC,151,214,8,8
 END
 
 
@@ -1718,6 +1718,8 @@ BEGIN
 0xc58d, 0xe591, 0xbb89, "\000" 
     IDC_COMBO_ACTION, 0x403, 7, 0
 0xc58d, 0xac8f, 0xbb89, "\000" 
+    IDC_COMBO_ACTION, 0x403, 7, 0
+0xf194, 0x5c95, 0xa68e, "\000" 
     0
 END
 

@@ -13,7 +13,7 @@ HWND CommandParam::ITEM::FindHwnd()
 			auto thisPtr = (local_param*)lp;
 
 			LONG_PTR style = GetWindowLongPtr(h, GWL_STYLE);
-			LONG_PTR styleRequired = (WS_VISIBLE);
+			LONG_PTR styleRequired = 0;
 			if ((style & styleRequired) != styleRequired) {
 				// 非表示のウインドウは対象外
 				return TRUE;
@@ -109,6 +109,10 @@ bool CommandParam::ITEM::BuildClassRegExp(CString* errMsg)
 
 bool CommandParam::ITEM::IsMatchCaption(LPCTSTR caption)
 {
+	if (mCaptionStr.IsEmpty()) {
+		// 設定値がない場合は無条件で許可
+		return true;
+	}
 	if (mIsUseRegExp) {
 		return std::regex_match(tstring(caption), mRegCaption);
 	}
@@ -119,6 +123,10 @@ bool CommandParam::ITEM::IsMatchCaption(LPCTSTR caption)
 
 bool CommandParam::ITEM::IsMatchClass(LPCTSTR className)
 {
+	if (mClassStr.IsEmpty()) {
+		// 設定値がない場合は無条件で許可
+		return true;
+	}
 	if (mIsUseRegExp) {
 		return std::regex_match(tstring(className), mRegClass);
 	}

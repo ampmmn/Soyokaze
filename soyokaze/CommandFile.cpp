@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CommandFile.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include <wincrypt.h>
 #include <map>
 #include <set>
 #include <regex>
@@ -12,6 +13,32 @@
 
 using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
 
+static CString EncodeBase64(const std::vector<uint8_t>& stm)
+{
+	// 長さを調べる
+	DWORD dstLen = 0;
+	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64, nullptr, &dstLen);
+
+	// 変換する
+	CString dstStr;
+	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64, dstStr.GetBuffer(dstLen+1), &dstLen );
+	dstStr.ReleaseBuffer();
+
+	return dstStr;
+}
+
+static std::vector<uint8_t> DecodeBase64(const CString& src)
+{
+	DWORD dstLen = 0;
+	if (CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, nullptr, &dstLen, nullptr, nullptr ) == FALSE) {
+		return std::vector<uint8_t>();
+	}
+
+	std::vector<uint8_t> dst(dstLen);
+	CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, &dst.front(), &dstLen, nullptr, nullptr);
+
+	return dst;
+}
 
 class CommandFile::Entry
 {
@@ -30,6 +57,7 @@ public:
 	std::map<CString, CString> mStrMap;
 	std::map<CString, bool> mBoolMap;
 	std::map<CString, double> mDoubleMap;
+	std::map<CString, std::vector<uint8_t> > mStreamMap;
 };
 
 
@@ -424,6 +452,25 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, bool value)
 	entry->mTypeMap[key] = TYPE_BOOLEAN;
 }
 
+bool CommandFile::Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value) const
+{
+	ASSERT(entry);
+	auto itFind = entry->mStreamMap.find(key);
+	if (itFind == entry->mStreamMap.end()) {
+		return false;
+	}
+
+	value = itFind->second;
+	return true;
+}
+
+void CommandFile::Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value)
+{
+	ASSERT(entry);
+	entry->mStreamMap[key] = value;
+	entry->mTypeMap[key] = TYPE_STREAM;
+}
+
 void CommandFile::ClearEntries()
 {
 	in->mEntries.clear();
@@ -491,6 +538,10 @@ bool CommandFile::Load()
 		else if (strValue== _T("false")) {
 			curEntry->mBoolMap[strKey] = false;
 			curEntry->mTypeMap[strKey] = TYPE_BOOLEAN;
+		}
+		else if (strValue.Left(7) == _T("stream:")) {
+			curEntry->mStreamMap[strKey] = DecodeBase64(strValue.Mid(7));
+			curEntry->mTypeMap[strKey] = TYPE_STREAM;
 		}
 		else if (std::regex_match(pat, regDouble)) {
 			double value;
@@ -573,6 +624,12 @@ bool CommandFile::Save()
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
 				file.WriteString(kv.second ? _T("true") : _T("second"));
+				file.WriteString(_T("\n"));
+			}
+			for (auto& kv : entry->mStreamMap) {
+				file.WriteString(kv.first);
+				file.WriteString(_T("=stream:"));
+				file.WriteString(EncodeBase64(kv.second));
 				file.WriteString(_T("\n"));
 			}
 

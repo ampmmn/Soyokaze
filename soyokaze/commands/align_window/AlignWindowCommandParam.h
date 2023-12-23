@@ -15,6 +15,7 @@ public:
 		AT_SETPOS,    // サイズ変更
 		AT_MAXIMIZE,  // 最大化
 		AT_MINIMIZE,  // 最小化
+		AT_HIDE,      // 非表示
 	};
 
 	struct ITEM {
@@ -34,8 +35,7 @@ public:
 		CString mClassStr;
 		BOOL mIsUseRegExp;
 
-		POINT mPos;
-		SIZE mSize;
+		WINDOWPLACEMENT mPlacement;
 		int mAction;
 
 		tregex mRegClass;

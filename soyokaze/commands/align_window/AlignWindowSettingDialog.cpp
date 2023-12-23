@@ -415,14 +415,16 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 	listWndPtr->SetItemText(index, 0, item.mCaptionStr);
 	listWndPtr->SetItemText(index, 1, item.mClassStr);
 
+	const WINDOWPLACEMENT& wp = item.mPlacement;
+
 	if (item.mAction == Param::AT_SETPOS) {
-		text.Format(_T("%d"), item.mPos.x);
+		text.Format(_T("%d"), wp.rcNormalPosition.left);
 		listWndPtr->SetItemText(index, 2, text);
-		text.Format(_T("%d"), item.mPos.y);
+		text.Format(_T("%d"), wp.rcNormalPosition.top);
 		listWndPtr->SetItemText(index, 3, text);
-		text.Format(_T("%d"), item.mSize.cx);
+		text.Format(_T("%d"), wp.rcNormalPosition.right - wp.rcNormalPosition.left);
 		listWndPtr->SetItemText(index, 4, text);
-		text.Format(_T("%d"), item.mSize.cy);
+		text.Format(_T("%d"), wp.rcNormalPosition.bottom - wp.rcNormalPosition.top);
 		listWndPtr->SetItemText(index, 5, text);
 	}
 	else {
@@ -432,6 +434,10 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 		else if (item.mAction == Param::AT_MINIMIZE){
 			listWndPtr->SetItemText(index, 2, _T("(最小化)"));
 		}
+		else if (item.mAction == Param::AT_HIDE){
+			listWndPtr->SetItemText(index, 2, _T("(非表示)"));
+		}
+
 		listWndPtr->SetItemText(index, 3, _T(""));
 		listWndPtr->SetItemText(index, 4, _T(""));
 		listWndPtr->SetItemText(index, 5, _T(""));

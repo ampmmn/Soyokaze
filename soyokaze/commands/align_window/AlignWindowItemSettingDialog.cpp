@@ -30,6 +30,9 @@ struct ItemDialog::PImpl
 	CaptureIconLabel mIconLabel;
 
 	TopMostMask mTopMostMask;
+
+	int mWidth;
+	int mHeight;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,10 +66,10 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
 	DDX_Text(pDX, IDC_EDIT_CAPTION, in->mParam.mCaptionStr);
 	DDX_Text(pDX, IDC_EDIT_CLASS, in->mParam.mClassStr);
-	DDX_Text(pDX, IDC_EDIT_X, in->mParam.mPos.x);
-	DDX_Text(pDX, IDC_EDIT_Y, in->mParam.mPos.y);
-	DDX_Text(pDX, IDC_EDIT_WIDTH, in->mParam.mSize.cx);
-	DDX_Text(pDX, IDC_EDIT_HEIGHT, in->mParam.mSize.cy);
+	DDX_Text(pDX, IDC_EDIT_X, in->mParam.mPlacement.rcNormalPosition.left);
+	DDX_Text(pDX, IDC_EDIT_Y, in->mParam.mPlacement.rcNormalPosition.top);
+	DDX_Text(pDX, IDC_EDIT_WIDTH, in->mWidth);
+	DDX_Text(pDX, IDC_EDIT_HEIGHT, in->mHeight);
 	DDX_Check(pDX, IDC_CHECK_REGEXP, in->mParam.mIsUseRegExp);
 	DDX_CBIndex(pDX, IDC_COMBO_ACTION, in->mParam.mAction);
 }
@@ -110,6 +113,8 @@ void ItemDialog::OnButtonUpdate()
 		return;
 	}
 
+	::GetWindowPlacement(hwnd, &in->mParam.mPlacement);
+
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 	if (style & WS_MAXIMIZE) {
 		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
@@ -118,15 +123,11 @@ void ItemDialog::OnButtonUpdate()
 		in->mParam.mAction = CommandParam::AT_MINIMIZE;
 	}
 	else {
-		// サイズを取得
-		CRect rcWindow;
-		::GetWindowRect(hwnd, &rcWindow);
-		in->mParam.mPos.x = rcWindow.left;
-		in->mParam.mPos.y = rcWindow.top;
-		in->mParam.mSize.cx = rcWindow.Width();
-		in->mParam.mSize.cy = rcWindow.Height();
 		in->mParam.mAction = CommandParam::AT_SETPOS;
 	}
+
+
+	UpdateStatus();
 
 	UpdateData(FALSE);
 }
@@ -149,6 +150,19 @@ void ItemDialog::OnOK()
 		return ;
 	}
 
+	// ダイアログを閉じるタイミングでmActionの値に応じてWINDOWPLACEMENT.showCmdを書き換える
+	if (in->mParam.mAction == CommandParam::AT_MAXIMIZE) {
+		in->mParam.mPlacement.showCmd = SW_MAXIMIZE;
+	}
+	else if (in->mParam.mAction == CommandParam::AT_MINIMIZE) {
+		in->mParam.mPlacement.showCmd = SW_MINIMIZE;
+	}
+	else if (in->mParam.mAction == CommandParam::AT_SETPOS) {
+		in->mParam.mPlacement.showCmd = SW_RESTORE;
+	}
+	else if (in->mParam.mAction == CommandParam::AT_HIDE) {
+		in->mParam.mPlacement.showCmd = SW_HIDE;
+	}
 	__super::OnOK();
 }
 
@@ -168,15 +182,33 @@ bool ItemDialog::UpdateStatus()
 		return false;
 	}
 
+	CString msg;
+	if (in->mParam.BuildCaptionRegExp(&msg)  == false) {
+		AfxMessageBox(msg);
+		GetDlgItem(IDC_EDIT_CAPTION)->SetFocus();
+		return false;
+	}
+
+	if (in->mParam.BuildClassRegExp(&msg)  == false) {
+		AfxMessageBox(msg);
+		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
+		return false;
+	}
+
 	in->mMessage.Empty();
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 	GetDlgItem(IDC_COMBO_ACTION)->EnableWindow(TRUE);
 
-	bool isSetPos = in->mParam.mAction != CommandParam::AT_MAXIMIZE && in->mParam.mAction != CommandParam::AT_MINIMIZE;
+	bool isSetPos = in->mParam.mAction != CommandParam::AT_MAXIMIZE && in->mParam.mAction != CommandParam::AT_MINIMIZE && 
+	                in->mParam.mAction != CommandParam::AT_HIDE;
 	GetDlgItem(IDC_EDIT_X)->EnableWindow(isSetPos);
 	GetDlgItem(IDC_EDIT_Y)->EnableWindow(isSetPos);
 	GetDlgItem(IDC_EDIT_WIDTH)->EnableWindow(isSetPos);
 	GetDlgItem(IDC_EDIT_HEIGHT)->EnableWindow(isSetPos);
+
+	auto& rc = in->mParam.mPlacement.rcNormalPosition;
+	in->mWidth = rc.right - rc.left;
+	in->mHeight = rc.bottom - rc.top;
 
 	return true;
 }
@@ -206,6 +238,8 @@ ItemDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 	in->mParam.mClassStr = clsName;
 	in->mParam.mIsUseRegExp = FALSE;
 
+	::GetWindowPlacement(hwndRoot, &in->mParam.mPlacement);
+
 	LONG_PTR style = GetWindowLongPtr(hwndRoot, GWL_STYLE);
 	if (style & WS_MAXIMIZE) {
 		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
@@ -214,13 +248,7 @@ ItemDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 		in->mParam.mAction = CommandParam::AT_MINIMIZE;
 	}
 	else {
-		// サイズを取得
-		CRect rcWindow;
-		::GetWindowRect(hwndRoot, &rcWindow);
-		in->mParam.mPos.x = rcWindow.left;
-		in->mParam.mPos.y = rcWindow.top;
-		in->mParam.mSize.cx = rcWindow.Width();
-		in->mParam.mSize.cy = rcWindow.Height();
+		in->mParam.mAction = CommandParam::AT_SETPOS;
 	}
 
 	UpdateStatus();

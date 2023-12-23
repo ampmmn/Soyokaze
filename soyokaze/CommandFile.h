@@ -19,6 +19,7 @@ public:
 		TYPE_DOUBLE,
 		TYPE_STRING,
 		TYPE_BOOLEAN,
+		TYPE_STREAM,
 		TYPE_UNKNOWN,
 	};
 
@@ -55,6 +56,9 @@ public:
 
 	bool Get(Entry* entry, LPCTSTR key, bool defValue) const;
 	void Set(Entry* entry, LPCTSTR key, bool value);
+
+	bool Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value) const;
+	void Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value);
 
 	void ClearEntries();
 	bool Load();
