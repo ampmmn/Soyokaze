@@ -256,7 +256,16 @@ HICON ShellExecCommand::GetIcon()
 
 int ShellExecCommand::Match(Pattern* pattern)
 {
-	return pattern->Match(GetName());
+	int level = pattern->Match(GetName());
+	if (level != Pattern::Mismatch) {
+		return level;
+	}
+
+	// 名前でヒットしなかった場合、必要に応じて説明欄の文字列でもマッチングを行う
+	if (in->mParam.mIsUseDescriptionForMatching == FALSE) {
+		return level;
+	}
+	return pattern->Match(GetDescription());
 }
 
 bool ShellExecCommand::IsEditable()
@@ -304,6 +313,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	cmdNew->SetDescription(param.mDescription);
 	cmdNew->SetRunAs(param.mIsRunAsAdmin);
 	cmdNew->in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
+	cmdNew->in->mParam.mIsUseDescriptionForMatching = param.mIsUseDescriptionForMatching;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = param.mPath;
@@ -421,6 +431,7 @@ bool ShellExecCommand::NewDialog(
 	newCmd->in->mParam.mDescription = commandParam.mDescription;
 	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
 	newCmd->in->mParam.mIsShowArgDialog =  commandParam.mIsShowArgDialog;
+	newCmd->in->mParam.mIsUseDescriptionForMatching = commandParam.mIsUseDescriptionForMatching;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath =commandParam.mPath;

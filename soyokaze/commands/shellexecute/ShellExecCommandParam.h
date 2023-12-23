@@ -44,6 +44,9 @@ public:
 	// 引数が与えられなかった場合に引数入力用のダイアログを追加で表示する
 	BOOL mIsShowArgDialog;
 
+	// 説明欄の文字列をマッチングに利用するか?
+	BOOL mIsUseDescriptionForMatching;
+
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
 };

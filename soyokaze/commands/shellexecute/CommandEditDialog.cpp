@@ -44,6 +44,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
+	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
@@ -245,6 +246,7 @@ void CommandEditDialog::OnOK()
 	param->mPath = mParam.mPath;
 	param->mParameter = mParam.mParameter;
 	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
+	param->mIsUseDescriptionForMatching = mParam.mIsUseDescriptionForMatching;
 	param->mHotKeyAttr = mParam.mHotKeyAttr;
 
 	const tregex& regArg = GetRegexForArgument();
