@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "PathExeAdhocCommandProvider.h"
 #include "commands/pathfind/PathExecuteCommand.h"
-#include "commands/pathfind/GitBashToLocalPathAdhocCommand.h"
-#include "commands/pathfind/LocalToGitBashPathAdhocCommand.h"
 #include "commands/common/ExecuteHistory.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
@@ -46,9 +44,6 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	// 環境変数PATHにあるexeを実行するためのコマンド
 	PathExecuteCommand* mExeCommandPtr;
 	//
-	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr;
-	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr;
-	//
 	bool mIsIgnoreUNC;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall;
@@ -65,20 +60,12 @@ REGISTER_COMMANDPROVIDER(PathExeAdhocCommandProvider)
 PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mExeCommandPtr = new PathExecuteCommand();
-	in->mGitBashToLocalPathCmdPtr = new GitBashToLocalPathAdhocCommand();
-	in->mLocalToGitBashPathCmdPtr = new LocalToGitBashPathAdhocCommand();
 	in->mIsIgnoreUNC = false;
 	in->mIsFirstCall = true;
 }
 
 PathExeAdhocCommandProvider::~PathExeAdhocCommandProvider()
 {
-	if (in->mGitBashToLocalPathCmdPtr) {
-		in->mGitBashToLocalPathCmdPtr->Release();
-	}
-	if (in->mLocalToGitBashPathCmdPtr) {
-		in->mLocalToGitBashPathCmdPtr->Release();
-	}
 	if (in->mExeCommandPtr) {
 		in->mExeCommandPtr->Release();
 	}
@@ -126,19 +113,6 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	if (level != Pattern::Mismatch) {
 		in->mExeCommandPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mExeCommandPtr));
-	}
-
-	// git-bashのパス表記をローカルパス表記を変換するコマンド
-	level = in->mGitBashToLocalPathCmdPtr->Match(pattern);
-	if (level != Pattern::Mismatch) {
-		in->mGitBashToLocalPathCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mGitBashToLocalPathCmdPtr));
-	}
-	// ローカルパス表記をgit-bashのパス表記に変換するコマンド
-	level = in->mLocalToGitBashPathCmdPtr->Match(pattern);
-	if (level != Pattern::Mismatch) {
-		in->mLocalToGitBashPathCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mLocalToGitBashPathCmdPtr));
 	}
 
 	// ToDo: HistoryCommandに責務を移動

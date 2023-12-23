@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "framework.h"
-#include "commands/pathfind/LocalToGitBashPathAdhocCommand.h"
+#include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
-#include "AppPreference.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -17,21 +16,13 @@ using Clipboard = soyokaze::commands::common::Clipboard;
 
 namespace soyokaze {
 namespace commands {
-namespace pathfind {
+namespace pathconvert {
 
 struct LocalToGitBashPathAdhocCommand::PImpl
 {
-	bool IsEnable();
-
 	CString mFullPath;
 };
 
-
-bool LocalToGitBashPathAdhocCommand::PImpl::IsEnable()
-{
-	auto pref = AppPreference::Get();
-	return pref->IsEnableGitBashPath();
-}
 
 LocalToGitBashPathAdhocCommand::LocalToGitBashPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
@@ -80,10 +71,6 @@ HICON LocalToGitBashPathAdhocCommand::GetIcon()
 
 int LocalToGitBashPathAdhocCommand::Match(Pattern* pattern)
 {
-	if (in->IsEnable() == false) {
-		return Pattern::Mismatch;
-	}
-
 	CString wholeWord = pattern->GetWholeString();
 
 	if (IsLocalPath(wholeWord) == false) {
@@ -118,7 +105,7 @@ bool LocalToGitBashPathAdhocCommand::IsLocalPath(const CString& path)
 }
 
 
-} // end of namespace pathfind
+} // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace soyokaze
 

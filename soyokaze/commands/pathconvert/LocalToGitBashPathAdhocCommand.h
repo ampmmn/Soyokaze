@@ -5,7 +5,7 @@
 
 namespace soyokaze {
 namespace commands {
-namespace pathfind {
+namespace pathconvert {
 
 
 
@@ -31,7 +31,7 @@ protected:
 };
 
 
-} // end of namespace pathfind
+} // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace soyokaze
 

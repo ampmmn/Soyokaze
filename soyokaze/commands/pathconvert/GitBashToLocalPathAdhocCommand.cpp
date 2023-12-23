@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "framework.h"
-#include "commands/pathfind/GitBashToLocalPathAdhocCommand.h"
+#include "commands/pathconvert/GitBashToLocalPathAdhocCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
-#include "AppPreference.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -13,29 +12,20 @@
 #define new DEBUG_NEW
 #endif
 
-
 using SubProcess = soyokaze::commands::common::SubProcess;
 using Clipboard = soyokaze::commands::common::Clipboard;
 
 
 namespace soyokaze {
 namespace commands {
-namespace pathfind {
+namespace pathconvert {
 
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
-	bool IsEnable();
-
 	CString mFullPath;
 	bool mIsExe;
 };
 
-
-bool GitBashToLocalPathAdhocCommand::PImpl::IsEnable()
-{
-	auto pref = AppPreference::Get();
-	return pref->IsEnableGitBashPath();
-}
 
 GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
@@ -111,10 +101,6 @@ HICON GitBashToLocalPathAdhocCommand::GetIcon()
 
 int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
 {
-	if (in->IsEnable() == false) {
-		return Pattern::Mismatch;
-	}
-
 	CString wholeWord = pattern->GetWholeString();
 
 	// /driveletter/...に合致するか
@@ -150,7 +136,7 @@ bool GitBashToLocalPathAdhocCommand::IsGitBashPath(const CString& path)
 }
 
 
-} // end of namespace pathfind
+} // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace soyokaze
 

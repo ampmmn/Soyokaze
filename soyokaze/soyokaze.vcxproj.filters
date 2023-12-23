@@ -100,6 +100,9 @@
     <Filter Include="commands\align_window">
       <UniqueIdentifier>{6134530a-48d6-45c8-88bf-a094eabbfe66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\pathconvert">
+      <UniqueIdentifier>{599cba8c-77d6-4632-b489-4276f1947bd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -621,12 +624,6 @@
     <ClInclude Include="utility\PythonDLL.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="commands\pathfind\GitBashToLocalPathAdhocCommand.h">
-      <Filter>commands\pathfind</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\pathfind\LocalToGitBashPathAdhocCommand.h">
-      <Filter>commands\pathfind</Filter>
-    </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowCommand.h">
       <Filter>commands\align_window</Filter>
     </ClInclude>
@@ -641,6 +638,15 @@
     </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowProvider.h">
       <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.h">
+      <Filter>commands\pathconvert</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathconvert\LocalToGitBashPathAdhocCommand.h">
+      <Filter>commands\pathconvert</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathconvert\PathConvertProvider.h">
+      <Filter>commands\pathconvert</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1136,12 +1142,6 @@
     <ClCompile Include="utility\PythonDLL.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="commands\pathfind\GitBashToLocalPathAdhocCommand.cpp">
-      <Filter>commands\pathfind</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\pathfind\LocalToGitBashPathAdhocCommand.cpp">
-      <Filter>commands\pathfind</Filter>
-    </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommand.cpp">
       <Filter>commands\align_window</Filter>
     </ClCompile>
@@ -1156,6 +1156,15 @@
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowProvider.cpp">
       <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.cpp">
+      <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathconvert\LocalToGitBashPathAdhocCommand.cpp">
+      <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathconvert\PathConvertProvider.cpp">
+      <Filter>commands\pathconvert</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
