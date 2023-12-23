@@ -648,6 +648,9 @@
     <ClInclude Include="commands\pathconvert\PathConvertProvider.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
+    <ClInclude Include="commands\pathconvert\FileProtocolConvertAdhocCommand.h">
+      <Filter>commands\pathconvert</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1164,6 +1167,9 @@
       <Filter>commands\pathconvert</Filter>
     </ClCompile>
     <ClCompile Include="commands\pathconvert\PathConvertProvider.cpp">
+      <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathconvert\FileProtocolConvertAdhocCommand.cpp">
       <Filter>commands\pathconvert</Filter>
     </ClCompile>
   </ItemGroup>

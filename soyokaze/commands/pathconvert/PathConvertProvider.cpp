@@ -2,6 +2,7 @@
 #include "PathConvertProvider.h"
 #include "commands/pathconvert/GitBashToLocalPathAdhocCommand.h"
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
+#include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -41,6 +42,7 @@ struct PathConvertProvider::PImpl : public AppPreferenceListenerIF
 
 	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr;
 	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr;
+	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall;
 
@@ -59,6 +61,7 @@ PathConvertProvider::PathConvertProvider() : in(std::make_unique<PImpl>())
 {
 	in->mGitBashToLocalPathCmdPtr = new GitBashToLocalPathAdhocCommand();
 	in->mLocalToGitBashPathCmdPtr = new LocalToGitBashPathAdhocCommand();
+	in->mFileProtocolCmdPtr = new FileProtocolConvertAdhocCommand();
 	in->mIsFirstCall = true;
 	in->mIsEnableGitBash = false;
 }
@@ -70,6 +73,9 @@ PathConvertProvider::~PathConvertProvider()
 	}
 	if (in->mLocalToGitBashPathCmdPtr) {
 		in->mLocalToGitBashPathCmdPtr->Release();
+	}
+	if (in->mFileProtocolCmdPtr) {
+		in->mFileProtocolCmdPtr->Release();
 	}
 }
 
@@ -98,16 +104,25 @@ void PathConvertProvider::QueryAdhocCommands(
 		in->mIsEnableGitBash = pref->IsEnableGitBashPath();
 	}
 
+	int level = in->mFileProtocolCmdPtr->Match(pattern);
+	if (level != Pattern::Mismatch) {
+		in->mFileProtocolCmdPtr->AddRef();
+		commands.push_back(CommandQueryItem(level, in->mFileProtocolCmdPtr));
+		return;
+	}
+
 	if (in->mIsEnableGitBash == false) {
 		return;
 	}
 
 	// git-bashのパス表記をローカルパス表記を変換するコマンド
-	int level = in->mGitBashToLocalPathCmdPtr->Match(pattern);
+	level = in->mGitBashToLocalPathCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mGitBashToLocalPathCmdPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mGitBashToLocalPathCmdPtr));
+		return;
 	}
+
 	// ローカルパス表記をgit-bashのパス表記に変換するコマンド
 	level = in->mLocalToGitBashPathCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
