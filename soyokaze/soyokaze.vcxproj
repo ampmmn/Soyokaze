@@ -738,6 +738,7 @@
     <ClInclude Include="utility\PythonDLL.h" />
     <ClInclude Include="utility\RegistryKey.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
+    <ClInclude Include="utility\SHA1.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="utility\Sound.h" />
     <ClInclude Include="utility\TopMostMask.h" />
@@ -927,6 +928,7 @@
     <ClCompile Include="utility\ProcessPath.cpp" />
     <ClCompile Include="utility\PythonDLL.cpp" />
     <ClCompile Include="utility\RegistryKey.cpp" />
+    <ClCompile Include="utility\SHA1.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="utility\Sound.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />

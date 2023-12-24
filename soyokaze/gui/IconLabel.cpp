@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-IconLabel::IconLabel() : mIconDefault(nullptr)
+IconLabel::IconLabel() : mIconDefault(nullptr), mCanIconChange(false)
 {
 }
 
@@ -18,7 +18,13 @@ IconLabel::~IconLabel()
 
 BEGIN_MESSAGE_MAP(IconLabel, CStatic)
 	ON_WM_PAINT()
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
+
+void IconLabel::EnableIconChange()
+{
+	mCanIconChange = true;
+}
 
 void IconLabel::DrawIcon(HICON iconHandle)
 {
@@ -92,5 +98,64 @@ void IconLabel::OnPaint()
 		dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
 		dcMem.SelectObject(orgBmp);
 	}
+}
+
+void IconLabel::OnMenuChangeIcon()
+{
+	CString filterStr(_T("PNG file(*.png)|*.png||"));
+	CString iconPath;
+	LPTSTR p = iconPath.GetBuffer(MAX_PATH_NTFS);
+	PathRemoveFileSpec(p);
+	iconPath.ReleaseBuffer();
+	GetModuleFileName(NULL, p, MAX_PATH_NTFS);
+
+	CFileDialog dlg(TRUE, NULL, iconPath, OFN_FILEMUSTEXIST, filterStr, this);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	iconPath = dlg.GetPathName();
+
+	// 親ウインドウに変更後のアイコントとする画像ファイルパスを通知する
+	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)iconPath);
+
+	// IconLabelに対してアイコンを設定するのはクラス利用者側の責務
+
+}
+
+void IconLabel::OnMenuDefaultIcon()
+{
+	// wparam=0でリセット
+	GetParent()->SendMessage(WM_APP + 11, 0, 0);
+}
+
+/**
+ * コンテキストメニューの表示
+ */
+void IconLabel::OnContextMenu(
+	CWnd* pWnd,
+	CPoint point
+)
+{
+	if (mCanIconChange == false) {
+		return;
+	}
+
+	const int ID_CHANGEICON = 1;
+	const int ID_DEFAULTICON = 2;
+
+	CMenu menu;
+	menu.CreatePopupMenu();
+	menu.InsertMenu(-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
+	menu.InsertMenu(-1, 0, ID_DEFAULTICON, _T("アイコンを初期状態に戻す"));
+
+	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
+	if (n == ID_CHANGEICON) {
+		OnMenuChangeIcon();
+	}
+	else if (n == ID_DEFAULTICON) {
+		OnMenuDefaultIcon();
+	}
+
 }
 

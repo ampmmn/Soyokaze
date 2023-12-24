@@ -33,6 +33,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnUpdateStatus();
+	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

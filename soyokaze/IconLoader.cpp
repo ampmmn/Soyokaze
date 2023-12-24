@@ -3,6 +3,8 @@
 #include "IconLoader.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/RegistryKey.h"
+#include "utility/AppProfile.h"
+#include "utility/SHA1.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
@@ -335,6 +337,12 @@ HICON IconLoader::LoadIconFromImage(const CString& path)
 
 	ATL::CImage imgMask;
 	imgMask.Create(size.cx, size.cy, 1);
+	BYTE* head = (BYTE*)imgMask.GetBits();
+	int pitchAbs = abs(imgMask.GetPitch());
+	for (int y = 0; y < size.cy; ++y) {
+		BYTE* p = head + (imgMask.GetPitch() * y);
+		memset(p, 0xff, pitchAbs);
+	}
 
 	ICONINFO ii;
 	ii.fIcon = TRUE;
@@ -426,4 +434,79 @@ HICON IconLoader::LoadPromptIcon()
 {
 	return GetImageResIcon(-5372);
 }
+
+/**
+ 	データ列からアイコンオブジェクトを生成する
+ 	@return アイコンハンドル
+ 	@param[in] strm データ列
+*/
+HICON IconLoader::LoadIconFromStream(
+	const std::vector<uint8_t>& strm
+)
+{
+	SHA1 sha;
+	sha.Add(strm);
+	auto str = sha.Finish();
+
+	auto it = in->mAppIconMap.find(str);
+	if (it != in->mAppIconMap.end()) {
+		// すでに作成済
+		return it->second;
+	}
+
+	// アイコンを一時ファイルに書き出す
+	TCHAR userDataPath[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(userDataPath, MAX_PATH_NTFS);
+
+	PathAppend(userDataPath, _T("tmp"));
+	if (PathIsDirectory(userDataPath) == FALSE) {
+		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
+			return nullptr;
+		}
+	}
+	PathAppend(userDataPath, _T("icondata.tmp"));
+
+	HANDLE h = CreateFile(userDataPath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (h == INVALID_HANDLE_VALUE) {
+		return nullptr;
+	}
+	DWORD writtenBytes = 0;
+	WriteFile(h, &strm.front(), (DWORD)strm.size(), &writtenBytes, nullptr);
+	CloseHandle(h);
+
+	HICON hIcon = LoadIconFromImage(userDataPath);
+	RegisterIcon(str, hIcon);
+
+	return hIcon;
+}
+
+/**
+ 	Enter description here.
+ 	@return 
+ 	@param[in]  path データファイルのパス
+ 	@param[out] strm データ列
+*/
+bool IconLoader::GetStreamFromPath(
+	const CString& path,
+	std::vector<uint8_t>& strm
+)
+{
+	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+
+	// アイコンファイルなので大きいファイルサイズは想定しない
+	DWORD size = GetFileSize(h, nullptr);
+
+	strm.resize(size);
+
+	DWORD readBytes = 0;
+	ReadFile(h, &strm.front(), size, &readBytes, nullptr);
+
+	CloseHandle(h);
+
+	return true;
+}
+
 

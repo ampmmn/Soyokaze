@@ -22,6 +22,9 @@ public:
 	CString mURL;
 
 	bool mIsEnableShortcut;
+
+	// アイコンデータ(空の場合はデフォルトアイコンを使用)
+	std::vector<uint8_t> mIconData;
 };
 
 

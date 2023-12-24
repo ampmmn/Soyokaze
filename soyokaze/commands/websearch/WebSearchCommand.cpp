@@ -25,6 +25,8 @@ struct WebSearchCommand::PImpl
 	bool mIsShortcut = false;
 	CString mSearchWord;
 
+	HICON mIcon = nullptr;
+
 	CString mErrorMsg;
 	uint32_t mRefCount = 1;
 };
@@ -109,7 +111,16 @@ CString WebSearchCommand::GetErrorString()
 
 HICON WebSearchCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadWebIcon();
+	if (in->mParam.mIconData.empty()) {
+		return IconLoader::Get()->LoadWebIcon();
+	}
+	else {
+		if (in->mIcon == nullptr) {
+			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
+			// mIconの解放はIconLoaderが行うので、ここでは行わない
+		}
+		return in->mIcon;
+	}
 }
 
 int WebSearchCommand::Match(Pattern* pattern)
@@ -168,6 +179,8 @@ int WebSearchCommand::EditDialog(const Parameter*)
 	cmdRepo->UnregisterCommand(this);
 
 	in->mParam = param;
+	in->mIcon = nullptr;
+
 	cmdRepo->RegisterCommand(this);
 
 	return 0;
@@ -203,6 +216,7 @@ bool WebSearchCommand::Save(CommandFile* cmdFile)
 
 	cmdFile->Set(entry, _T("URL"), in->mParam.mURL);
 	cmdFile->Set(entry, _T("IsEnableShortcut"), in->mParam.mIsEnableShortcut);
+	cmdFile->Set(entry, _T("IconData"), in->mParam.mIconData);
 
 	return true;
 }
@@ -263,6 +277,8 @@ bool WebSearchCommand::LoadFrom(
 	CString url = cmdFile->Get(entry, _T("URL"), _T(""));
 	bool isEnableShortcut = cmdFile->Get(entry, _T("IsEnableShortcut"), false);
 
+	std::vector<uint8_t> iconData;
+	cmdFile->Get(entry, _T("IconData"), iconData);
 
 	auto command = std::make_unique<WebSearchCommand>();
 
@@ -270,6 +286,7 @@ bool WebSearchCommand::LoadFrom(
 	command->in->mParam.mDescription = descriptionStr;
 	command->in->mParam.mURL = url;
 	command->in->mParam.mIsEnableShortcut = isEnableShortcut;
+	command->in->mParam.mIconData = iconData;
 
 	newCmd = std::move(command);
 

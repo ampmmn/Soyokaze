@@ -100,6 +100,9 @@
     <Filter Include="commands\align_window">
       <UniqueIdentifier>{6134530a-48d6-45c8-88bf-a094eabbfe66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\simple_dict">
+      <UniqueIdentifier>{fe1b9bed-c65b-41b1-af44-68715b74c2fa}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\pathconvert">
       <UniqueIdentifier>{599cba8c-77d6-4632-b489-4276f1947bd5}</UniqueIdentifier>
     </Filter>
@@ -651,6 +654,9 @@
     <ClInclude Include="commands\pathconvert\FileProtocolConvertAdhocCommand.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
+    <ClInclude Include="utility\SHA1.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1171,6 +1177,9 @@
     </ClCompile>
     <ClCompile Include="commands\pathconvert\FileProtocolConvertAdhocCommand.cpp">
       <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\SHA1.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

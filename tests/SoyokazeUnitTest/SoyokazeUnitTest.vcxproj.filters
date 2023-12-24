@@ -25,6 +25,9 @@
     <Filter Include="soyokaze\commands\shellexecute">
       <UniqueIdentifier>{548c770a-4503-4831-b7f4-ca6c0be7ce9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\utility">
+      <UniqueIdentifier>{0b80e0d7-4fc7-41e3-b7ca-2706bc2e6415}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp">
       <Filter>soyokaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp">
+      <Filter>soyokaze\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

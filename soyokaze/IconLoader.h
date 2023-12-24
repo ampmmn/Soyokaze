@@ -39,6 +39,8 @@ public:
 	HICON LoadGroupIcon();
 	HICON LoadPromptIcon();
 
+	HICON LoadIconFromStream(const std::vector<uint8_t>& strm);
+	static bool GetStreamFromPath(const CString& path, std::vector<uint8_t>& strm);
 
 private:
 	IconLoader();

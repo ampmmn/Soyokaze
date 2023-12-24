@@ -17,11 +17,14 @@ static CString EncodeBase64(const std::vector<uint8_t>& stm)
 {
 	// 長さを調べる
 	DWORD dstLen = 0;
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64, nullptr, &dstLen);
+	if (stm.size() == 0) {
+		return CString();
+	}
+	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &dstLen);
 
 	// 変換する
 	CString dstStr;
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64, dstStr.GetBuffer(dstLen+1), &dstLen );
+	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, dstStr.GetBuffer(dstLen+1), &dstLen );
 	dstStr.ReleaseBuffer();
 
 	return dstStr;

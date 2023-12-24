@@ -2,6 +2,7 @@
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "gui/IconLabel.h"
+#include "IconLoader.h"
 #include "core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
@@ -20,6 +21,12 @@ namespace websearch {
 
 struct SettingDialog::PImpl
 {
+
+	void SetIcon(HICON hIcon)
+	{
+		mIcon = hIcon;
+	}
+
 	// 設定情報
 	CommandParam mParam;
 	CString mOrgName;
@@ -65,7 +72,7 @@ SettingDialog::GetParam()
 
 void SettingDialog::SetIcon(HICON icon)
 {
-	in->mIcon = icon;
+	in->SetIcon(icon);
 }
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
@@ -82,6 +89,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 END_MESSAGE_MAP()
 
 
@@ -90,6 +98,7 @@ BOOL SettingDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mIconLabelPtr->EnableIconChange();
 
 	in->mOrgName = in->mParam.mName;
 
@@ -201,6 +210,30 @@ HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SetTextColor(crTxt);
 	}
 	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+
+LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
+{
+	if (wp != 0) {
+		// 変更
+		LPCTSTR iconPath = (LPCTSTR)lp;
+		IconLoader::GetStreamFromPath(iconPath, in->mParam.mIconData);
+
+
+		SetIcon(IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData));
+	}
+	else {
+		// デフォルトに戻す
+		SetIcon(IconLoader::Get()->LoadWebIcon());
+		in->mParam.mIconData.clear();
+	}
+
+	// 再描画
+	if (in->mIcon) {
+		in->mIconLabelPtr->DrawIcon(in->mIcon);
+	}
+
+	return 0;
 }
 
 }
