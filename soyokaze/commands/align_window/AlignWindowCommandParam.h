@@ -20,7 +20,9 @@ public:
 
 	struct ITEM {
 
-		HWND FindHwnd();
+		ITEM();
+
+		bool FindHwnd(std::vector<HWND>& windows);
 		bool BuildRegExp(CString* errMsg = nullptr);
 		bool BuildCaptionRegExp(CString* errMsg = nullptr);
 		bool BuildClassRegExp(CString* errMsg = nullptr);
@@ -34,6 +36,7 @@ public:
 		CString mCaptionStr;
 		CString mClassStr;
 		BOOL mIsUseRegExp;
+		BOOL mIsApplyAll;
 
 		WINDOWPLACEMENT mPlacement;
 		int mAction;

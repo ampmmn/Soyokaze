@@ -6,7 +6,11 @@ namespace soyokaze {
 namespace commands {
 namespace align_window {
 
-HWND CommandParam::ITEM::FindHwnd()
+CommandParam::ITEM::ITEM() : mIsUseRegExp(FALSE), mIsApplyAll(FALSE), mAction(AT_SETPOS)
+{
+}
+
+bool CommandParam::ITEM::FindHwnd(std::vector<HWND>& windows)
 {
 	struct local_param {
 		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
@@ -15,7 +19,6 @@ HWND CommandParam::ITEM::FindHwnd()
 			LONG_PTR style = GetWindowLongPtr(h, GWL_STYLE);
 			LONG_PTR styleRequired = 0;
 			if ((style & styleRequired) != styleRequired) {
-				// 非表示のウインドウは対象外
 				return TRUE;
 			}
 
@@ -34,16 +37,22 @@ HWND CommandParam::ITEM::FindHwnd()
 				}
 			}
 
-			thisPtr->mHwnd = h;
+			thisPtr->mHwnd.push_back(h);
+
+			if (thisPtr->mItem->mIsApplyAll) {
+				// 「複数該当する場合はすべて適用」の場合は検索を継続する
+				return TRUE;
+			}
 			return FALSE;
 		}
 		CommandParam::ITEM* mItem;
-		HWND mHwnd = nullptr;
+		std::vector<HWND> mHwnd;
 	} param;
 	param.mItem = this;
 	EnumWindows(local_param::callback, (LPARAM)&param);
 
-	return param.mHwnd;
+	windows.swap(param.mHwnd);
+	return windows.size() > 0;
 }
 
 bool CommandParam::ITEM::BuildRegExp(CString* errMsg)

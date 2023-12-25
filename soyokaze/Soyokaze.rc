@@ -678,32 +678,33 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
 END
 
-IDD_ALIGNWINDOWITEMEDIT DIALOGEX 0, 0, 347, 255
+IDD_ALIGNWINDOWITEMEDIT DIALOGEX 0, 0, 347, 268
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "ウインドウ切替コマンドの設定"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
-    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
-    GROUPBOX        "検索条件",IDC_STATIC,13,40,322,115
     LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,22,92,80,8
     EDITTEXT        IDC_EDIT_CAPTION,101,91,206,14,ES_AUTOHSCROLL
     LTEXT           "ウインドウクラス(&L):",IDC_STATIC,22,111,65,8
     EDITTEXT        IDC_EDIT_CLASS,101,112,206,14,ES_AUTOHSCROLL
     CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,131,71,10
-    GROUPBOX        "動作",IDC_STATIC,12,161,322,67
     LTEXT           "動作(&A):",IDC_STATIC,22,176,50,8
     COMBOBOX        IDC_COMBO_ACTION,90,174,128,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "現在の状態を取得(&U)",IDC_BUTTON_UPDATE,247,173,84,14
     LTEXT           "位置(&X,Y):",IDC_STATIC,22,195,50,8
     EDITTEXT        IDC_EDIT_X,89,191,58,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_Y,161,191,58,14,ES_AUTOHSCROLL
     LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,212,64,8
     EDITTEXT        IDC_EDIT_WIDTH,89,209,58,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_HEIGHT,161,209,58,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "現在の状態を取得(&U)",IDC_BUTTON_UPDATE,247,173,84,14
+    CONTROL         "複数に該当するときはすべてに対して適用する(&M)",IDC_CHECK_APPLYALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,228,198,10
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
+    GROUPBOX        "検索条件",IDC_STATIC,13,40,322,115
+    GROUPBOX        "動作",IDC_STATIC,12,161,322,81
     LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,21,54,311,27
-    DEFPUSHBUTTON   "OK",IDOK,237,234,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,290,234,50,14
+    DEFPUSHBUTTON   "OK",IDOK,237,247,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,290,247,50,14
     LTEXT           "左のアイコンをドラッグしてウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,27,299,12
     LTEXT           ",",IDC_STATIC,151,196,8,8
     LTEXT           ",",IDC_STATIC,151,214,8,8
@@ -983,7 +984,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 340
         TOPMARGIN, 7
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 261
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1402,11 +1403,6 @@ BEGIN
     0,
     0, 0, 0, 0,
     0, 0, 100, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -1418,6 +1414,12 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
     0, 0, 0, 0,
     100, 0, 0, 0,
     100, 0, 0, 0,
@@ -1751,7 +1753,7 @@ BEGIN
     IDS_ERR_NAMEISEMPTY     "名前を入力してください"
     IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
     IDS_CONFIRMRUNGROUP     "グループ: %s を実行します。よろしいですか?"
-    IDS_ERR_NAMEALREADYEXISTS "すでに使用されています"
+    IDS_ERR_NAMEALREADYEXISTS "コマンド名はすでに使用されています"
     IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
 END
 

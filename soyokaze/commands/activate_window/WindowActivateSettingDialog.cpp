@@ -8,6 +8,7 @@
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "IconLoader.h"
+#include "core/CommandRepository.h"
 #include "resource.h"
 
 using namespace soyokaze::commands::common;
@@ -169,7 +170,8 @@ bool SettingDialog::UpdateStatus()
 	bool canTest = in->mParam.mCaptionStr.IsEmpty() == FALSE || in->mParam.mClassStr.IsEmpty() == FALSE;
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
 
-	if (in->mParam.mName.IsEmpty()) {
+	const CString& name = in->mParam.mName;
+	if (name.IsEmpty()) {
 		in->mMessage = _T("コマンド名を入力してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -191,6 +193,25 @@ bool SettingDialog::UpdateStatus()
 	if (in->mParam.BuildClassRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+
+	// 重複チェック
+	if (name.CompareNoCase(in->mOrgName) != 0) {
+		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
+		if (cmd != nullptr) {
+			cmd->Release();
+			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
+			GetDlgItem(IDOK)->EnableWindow(FALSE);
+			return false;
+		}
+	}
+	// 使えない文字チェック
+	if (cmdRepoPtr->IsValidAsName(name) == false) {
+		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

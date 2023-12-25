@@ -72,6 +72,7 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HEIGHT, in->mHeight);
 	DDX_Check(pDX, IDC_CHECK_REGEXP, in->mParam.mIsUseRegExp);
 	DDX_CBIndex(pDX, IDC_COMBO_ACTION, in->mParam.mAction);
+	DDX_Check(pDX, IDC_CHECK_APPLYALL, in->mParam.mIsApplyAll);
 }
 
 BEGIN_MESSAGE_MAP(ItemDialog, CDialogEx)
@@ -107,12 +108,14 @@ void ItemDialog::OnButtonUpdate()
 		return ;
 	}
 
-	HWND hwnd = in->mParam.FindHwnd();
-	if (IsWindow(hwnd) == FALSE) {
+	std::vector<HWND> targets;
+	in->mParam.FindHwnd(targets);
+	if (targets.empty()) {
 		AfxMessageBox(_T("ウインドウは見つかりませんでした"));
 		return;
 	}
 
+	HWND hwnd = targets[0];
 	::GetWindowPlacement(hwnd, &in->mParam.mPlacement);
 
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);

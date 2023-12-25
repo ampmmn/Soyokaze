@@ -116,9 +116,13 @@ BOOL AlignWindowCommand::Execute(
 
 	HWND hwndForeground = GetNextHwnd();
 
+	std::vector<HWND> targets;
 	for (auto& item : in->mParam.mItems) {
-		HWND hwnd = item.FindHwnd();
-		if (IsWindow(hwnd) == FALSE) {
+
+		targets.clear();
+		item.FindHwnd(targets);
+
+		if (targets.empty()) {
 			if (missingTitles.IsEmpty() == FALSE) {
 				missingTitles += _T(" / ");
 			}
@@ -126,8 +130,10 @@ BOOL AlignWindowCommand::Execute(
 			continue;
 		}
 
-		const WINDOWPLACEMENT& placement = item.mPlacement;
-		SetWindowPlacement(hwnd, &placement);
+		for (auto& hwnd : targets) {
+			const WINDOWPLACEMENT& placement = item.mPlacement;
+			SetWindowPlacement(hwnd, &placement);
+		}
 	}
 
 	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.IsEmpty() == FALSE) {
@@ -141,8 +147,11 @@ BOOL AlignWindowCommand::Execute(
 	}
 	else {
 		if (in->mParam.mItems.size() > 0) {
-			HWND hwnd = in->mParam.mItems.back().FindHwnd();
-			SetForegroundWindow(hwnd);
+			std::vector<HWND> targets;
+			in->mParam.mItems.back().FindHwnd(targets);
+			if (targets.size() > 0) {
+				SetForegroundWindow(targets[0]);
+			}
 		}
 	}
 
@@ -259,6 +268,8 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 		cmdFile->Set(entry, key, item.mClassStr);
 		key.Format(_T("IsUseRegExp%d"), index);
 		cmdFile->Set(entry, key, item.mIsUseRegExp != FALSE);
+		key.Format(_T("IsApplyAll%d"), index);
+		cmdFile->Set(entry, key, item.mIsApplyAll != FALSE);
 
 		key.Format(_T("Action%d"), index);
 		cmdFile->Set(entry, key, item.mAction);
@@ -362,6 +373,8 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 		item.mClassStr = cmdFile->Get(entry, key, _T(""));
 		key.Format(_T("IsUseRegExp%d"), i);
 		item.mIsUseRegExp = cmdFile->Get(entry, key, false) ? TRUE : FALSE;
+		key.Format(_T("IsApplyAll%d"), i);
+		item.mIsApplyAll = cmdFile->Get(entry, key, false) ? TRUE : FALSE;
 
 		key.Format(_T("Action%d"), i);
 		item.mAction = cmdFile->Get(entry, key, 0);
