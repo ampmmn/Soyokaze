@@ -3,6 +3,8 @@
 #include "commands/pathconvert/GitBashToLocalPathAdhocCommand.h"
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
+#include "commands/pathconvert/P4PathConvertAdhocCommand.h"
+#include "commands/pathconvert/P4AppSettings.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -43,6 +45,7 @@ struct PathConvertProvider::PImpl : public AppPreferenceListenerIF
 	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr;
 	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr;
 	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr;
+	std::vector<P4PathConvertAdhocCommand*> mP4PathCommands;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall;
 
@@ -77,6 +80,9 @@ PathConvertProvider::~PathConvertProvider()
 	if (in->mFileProtocolCmdPtr) {
 		in->mFileProtocolCmdPtr->Release();
 	}
+	for (auto& p4cmd : in->mP4PathCommands) {
+		p4cmd->Release();
+	}
 }
 
 // コマンドの読み込み
@@ -102,6 +108,15 @@ void PathConvertProvider::QueryAdhocCommands(
 		auto pref = AppPreference::Get();
 		in->mIsFirstCall = false;
 		in->mIsEnableGitBash = pref->IsEnableGitBashPath();
+
+		// p4設定の読み込み
+		// ToDo: ON/OFFを切り替えられるようにする
+		P4AppSettings p4AppSettings;
+		std::vector<P4AppSettings::ITEM> items;
+		p4AppSettings.GetItems(items);
+		for (auto& item : items) {
+			in->mP4PathCommands.push_back(new P4PathConvertAdhocCommand(item));
+		}
 	}
 
 	int level = in->mFileProtocolCmdPtr->Match(pattern);
@@ -128,6 +143,15 @@ void PathConvertProvider::QueryAdhocCommands(
 	if (level != Pattern::Mismatch) {
 		in->mLocalToGitBashPathCmdPtr->AddRef();
 		commands.push_back(CommandQueryItem(level, in->mLocalToGitBashPathCmdPtr));
+	}
+
+	for (auto& p4cmd : in->mP4PathCommands) {
+		level = p4cmd->Match(pattern);
+		if (level != Pattern::Mismatch) {
+			p4cmd->AddRef();
+			commands.push_back(CommandQueryItem(level, p4cmd));
+			return;
+		}
 	}
 }
 

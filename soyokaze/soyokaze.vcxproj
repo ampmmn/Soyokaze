@@ -631,6 +631,8 @@
     <ClInclude Include="commands\pathconvert\FileProtocolConvertAdhocCommand.h" />
     <ClInclude Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.h" />
     <ClInclude Include="commands\pathconvert\LocalToGitBashPathAdhocCommand.h" />
+    <ClInclude Include="commands\pathconvert\P4AppSettings.h" />
+    <ClInclude Include="commands\pathconvert\P4PathConvertAdhocCommand.h" />
     <ClInclude Include="commands\pathconvert\PathConvertProvider.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
@@ -815,6 +817,15 @@
     <ClCompile Include="commands\pathconvert\FileProtocolConvertAdhocCommand.cpp" />
     <ClCompile Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.cpp" />
     <ClCompile Include="commands\pathconvert\LocalToGitBashPathAdhocCommand.cpp" />
+    <ClCompile Include="commands\pathconvert\P4AppSettings.cpp">
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic-Portable|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release-Portable|x64'">false</MultiProcessorCompilation>
+    </ClCompile>
+    <ClCompile Include="commands\pathconvert\P4PathConvertAdhocCommand.cpp" />
     <ClCompile Include="commands\pathconvert\PathConvertProvider.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
