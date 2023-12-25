@@ -84,12 +84,10 @@ void HotKeyDialog::UpdateStatus()
  */
 HBRUSH HotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
-		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 		return br;
 	}
-
-	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
 		COLORREF crTxt = mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);

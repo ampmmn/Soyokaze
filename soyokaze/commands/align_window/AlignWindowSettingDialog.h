@@ -33,6 +33,7 @@ protected:
 
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonAdd();

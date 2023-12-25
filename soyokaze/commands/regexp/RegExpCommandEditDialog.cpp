@@ -256,15 +256,16 @@ void CommandEditDialog::OnUpdateStatus()
 
 HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
-		return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+		return br;
 	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
 		COLORREF crTxt = mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
 		pDC->SetTextColor(crTxt);
 	}
-	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	return br;
 }
 
 void CommandEditDialog::OnOK()

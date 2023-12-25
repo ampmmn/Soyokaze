@@ -7,6 +7,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
+#include "utility/Accessibility.h"
 #include "IconLoader.h"
 #include "core/CommandRepository.h"
 #include "resource.h"
@@ -80,6 +81,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
+	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
@@ -463,6 +465,20 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 		listWndPtr->SetItemText(index, 4, _T(""));
 		listWndPtr->SetItemText(index, 5, _T(""));
 	}
+}
+
+HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (utility::IsHighContrastMode()) {
+		return br;
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
+		COLORREF crTxt = in->mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
+		pDC->SetTextColor(crTxt);
+	}
+	return br;
 }
 
 }

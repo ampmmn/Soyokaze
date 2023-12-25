@@ -5,6 +5,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
+#include "utility/Accessibility.h"
 #include "IconLoader.h"
 #include "resource.h"
 
@@ -76,6 +77,7 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(ItemDialog, CDialogEx)
+	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_UPDATE, OnButtonUpdate)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
@@ -265,6 +267,20 @@ void ItemDialog::OnUpdateStatus()
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+HBRUSH ItemDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (utility::IsHighContrastMode()) {
+		return br;
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
+		COLORREF crTxt = in->mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
+		pDC->SetTextColor(crTxt);
+	}
+	return br;
 }
 
 }

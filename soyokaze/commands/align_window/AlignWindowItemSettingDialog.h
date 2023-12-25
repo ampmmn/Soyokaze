@@ -30,6 +30,7 @@ protected:
 
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonUpdate();
 	afx_msg void OnUpdateStatus();
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);

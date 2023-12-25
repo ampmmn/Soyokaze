@@ -117,8 +117,8 @@ void CommandHotKeyDialog::UpdateStatus()
  */
 HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
-		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 		return br;
 	}
 
@@ -127,7 +127,7 @@ HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SetTextColor(crTxt);
 	}
 
-	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	return br;
 }
 
 // 利用できないキーか?
