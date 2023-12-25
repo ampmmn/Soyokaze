@@ -327,6 +327,7 @@ static int GetPitch(int w, int bpp)
 
 HICON IconLoader::LoadIconFromImage(const CString& path)
 {
+	// 画像ファイルをロードする
 	ATL::CImage image;
 	HRESULT hr = image.Load(path);
 	if (FAILED(hr)) {
@@ -335,6 +336,30 @@ HICON IconLoader::LoadIconFromImage(const CString& path)
 
 	CSize size(image.GetWidth(), image.GetHeight());
 
+	ATL::CImage imageResize;
+	
+	HBITMAP imgHandle = (HBITMAP)image;
+
+	// サイズが大きすぎる場合はリサイズする
+	if (size.cx >= 64 || size.cy >= 64) {
+
+		// 縦横比を保持したまま縮小サイズを計算する
+		int cx = size.cx > size.cy ? 64 : (int)(64 * (size.cx / (double)size.cy));
+		int cy = size.cx < size.cy ? 64 : (int)(64 * (size.cy / (double)size.cx));
+		if (cx < 0) { cx = 1; }
+		if (cy < 0) { cy = 1; }
+
+		// 縮小画像の生成
+		imageResize.Create(cx, cy, image.GetBPP());
+
+		image.Draw(imageResize.GetDC(), 0, 0, cx, cy);
+		imageResize.ReleaseDC();
+
+		imgHandle = (HBITMAP)imageResize;
+		size = CSize(cx, cy);
+	}
+
+	// マスク画像の初期化
 	ATL::CImage imgMask;
 	imgMask.Create(size.cx, size.cy, 1);
 	BYTE* head = (BYTE*)imgMask.GetBits();
@@ -344,12 +369,13 @@ HICON IconLoader::LoadIconFromImage(const CString& path)
 		memset(p, 0xff, pitchAbs);
 	}
 
+	// アイコンの作成
 	ICONINFO ii;
 	ii.fIcon = TRUE;
 	ii.xHotspot = 0;
 	ii.yHotspot = 0;
 	ii.hbmMask = (HBITMAP)imgMask;
-	ii.hbmColor = (HBITMAP)image;
+	ii.hbmColor = imgHandle;
 
 
 	HICON icon = CreateIconIndirect(&ii);
@@ -435,6 +461,20 @@ HICON IconLoader::LoadPromptIcon()
 	return GetImageResIcon(-5372);
 }
 
+static bool GetTempFilePath(LPTSTR userDataPath, size_t len)
+{
+	CAppProfile::GetDirPath(userDataPath, len);
+
+	PathAppend(userDataPath, _T("tmp"));
+	if (PathIsDirectory(userDataPath) == FALSE) {
+		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
+			return false;
+		}
+	}
+	PathAppend(userDataPath, _T("icondata.png"));
+	return true;
+}
+
 /**
  	データ列からアイコンオブジェクトを生成する
  	@return アイコンハンドル
@@ -456,15 +496,9 @@ HICON IconLoader::LoadIconFromStream(
 
 	// アイコンを一時ファイルに書き出す
 	TCHAR userDataPath[MAX_PATH_NTFS];
-	CAppProfile::GetDirPath(userDataPath, MAX_PATH_NTFS);
-
-	PathAppend(userDataPath, _T("tmp"));
-	if (PathIsDirectory(userDataPath) == FALSE) {
-		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
-			return nullptr;
-		}
+	if (GetTempFilePath(userDataPath, MAX_PATH_NTFS) == false) {
+		return nullptr;
 	}
-	PathAppend(userDataPath, _T("icondata.tmp"));
 
 	HANDLE h = CreateFile(userDataPath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (h == INVALID_HANDLE_VALUE) {
@@ -491,18 +525,54 @@ bool IconLoader::GetStreamFromPath(
 	std::vector<uint8_t>& strm
 )
 {
-	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	// 画像ファイルをロードする
+	ATL::CImage image;
+	HRESULT hr = image.Load(path);
+	if (FAILED(hr)) {
+		return false;
+	}
+
+	CSize size(image.GetWidth(), image.GetHeight());
+
+	ATL::CImage imageResize;
+
+	TCHAR tmpFilePath[MAX_PATH_NTFS];
+	GetTempFilePath(tmpFilePath, MAX_PATH_NTFS);
+	
+	// サイズが大きすぎる場合はリサイズする
+	// (アイコン表示用の画像なので大きいサイズは想定しない)
+	LPCTSTR p = path;
+	if (size.cx >= 64 || size.cy >= 64) {
+
+		// 縦横比を保持したまま縮小サイズを計算する
+		int cx = size.cx > size.cy ? 64 : (int)(64 * (size.cx / (double)size.cy));
+		int cy = size.cx < size.cy ? 64 : (int)(64 * (size.cy / (double)size.cx));
+		if (cx < 0) { cx = 1; }
+		if (cy < 0) { cy = 1; }
+
+		// 縮小画像の生成
+		imageResize.Create(cx, cy, image.GetBPP());
+
+		image.Draw(imageResize.GetDC(), 0, 0, cx, cy);
+		imageResize.ReleaseDC();
+
+		imageResize.Save(tmpFilePath);
+
+		p = tmpFilePath;
+	}
+
+	HANDLE h = CreateFile(p, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (h == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 
 	// アイコンファイルなので大きいファイルサイズは想定しない
-	DWORD size = GetFileSize(h, nullptr);
+	DWORD fileSize = GetFileSize(h, nullptr);
 
-	strm.resize(size);
+	strm.resize(fileSize);
 
 	DWORD readBytes = 0;
-	ReadFile(h, &strm.front(), size, &readBytes, nullptr);
+	ReadFile(h, &strm.front(), fileSize, &readBytes, nullptr);
 
 	CloseHandle(h);
 

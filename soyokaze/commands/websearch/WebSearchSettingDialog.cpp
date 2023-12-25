@@ -217,8 +217,10 @@ LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	if (wp != 0) {
 		// 変更
 		LPCTSTR iconPath = (LPCTSTR)lp;
-		IconLoader::GetStreamFromPath(iconPath, in->mParam.mIconData);
-
+		if (IconLoader::GetStreamFromPath(iconPath, in->mParam.mIconData) == false) {
+			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
+			return 0;
+		}
 
 		SetIcon(IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData));
 	}
