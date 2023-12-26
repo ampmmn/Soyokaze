@@ -126,17 +126,17 @@ bool P4AppSettings::PImpl::ParseConnectionString(const CString& str)
 	ITEM item;
 
 	item.mPort = str.Tokenize(_T(","), n);
-	if (item.mPort.IsEmpty() == FALSE) {
+	if (item.mPort.IsEmpty()) {
 		return false;
 	}
 
 	item.mUser = str.Tokenize(_T(","), n);
-	if (item.mUser.IsEmpty() == FALSE) {
+	if (item.mUser.IsEmpty()) {
 		return false;
 	}
 
 	item.mClient = str.Tokenize(_T(","), n);
-	if (item.mClient.IsEmpty() == FALSE) {
+	if (item.mClient.IsEmpty()) {
 		return false;
 	}
 
@@ -184,7 +184,7 @@ P4AppSettings::P4AppSettings() : in(new PImpl)
 
 		// RecentConnectionsの子ノードにある各種要素を取得する
 		CComPtr<IXMLDOMNodeList> stringList;
-		domElem->get_childNodes(&stringList);
+		recentConnectionsNode->get_childNodes(&stringList);
 
 		long stringCount;
 		hr = stringList->get_length(&stringCount);
