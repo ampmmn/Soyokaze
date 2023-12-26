@@ -4,6 +4,9 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "utility/CharConverter.h"
+#include "AppPreferenceListenerIF.h"
+#include "AppPreference.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -19,14 +22,37 @@ namespace soyokaze {
 namespace commands {
 namespace pathconvert {
 
-struct FileProtocolConvertAdhocCommand::PImpl
+struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
+	void OnAppFirstBoot() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		auto pref = AppPreference::Get();
+		mIsIgnoreUNC = pref->IsIgnoreUNC();
+	}
+	void OnAppExit() override {}
+
 	CString mFullPath;
+	//
+	bool mIsIgnoreUNC;
+	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
+	bool mIsFirstCall;
 };
 
 
 FileProtocolConvertAdhocCommand::FileProtocolConvertAdhocCommand() : in(std::make_unique<PImpl>())
 {
+	in->mIsIgnoreUNC = false;
+	in->mIsFirstCall = true;
 }
 
 FileProtocolConvertAdhocCommand::~FileProtocolConvertAdhocCommand()
@@ -68,7 +94,7 @@ BOOL FileProtocolConvertAdhocCommand::Execute(const Parameter& param)
 
 HICON FileProtocolConvertAdhocCommand::GetIcon()
 {
-	if (PathFileExists(in->mFullPath) == FALSE) {
+	if (in->mIsIgnoreUNC || PathFileExists(in->mFullPath) == FALSE) {
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
@@ -80,12 +106,68 @@ HICON FileProtocolConvertAdhocCommand::GetIcon()
 	return hIcon;
 }
 
+static void DecodeUri(CString& str)
+{
+	soyokaze::utility::CharConverter conv;
+
+	std::string s;
+	conv.Convert(str, s);
+
+	std::string dst;
+	for (auto it = s.begin(); it != s.end(); ++it) {
+
+		if (*it != '%') {
+			dst.append(1, *it);
+			continue;
+	 	}
+
+		if (it+1 == s.end()) {
+			dst.append(1, *it);
+			break;
+		}
+		if (_istxdigit(*(it+1)) == 0) {
+			dst.append(it, it + 2);
+			it++;
+			continue;
+		}
+
+		if (it+2 == s.end()) {
+			dst.append(it, it + 2);
+			break;
+		}
+		if (_istxdigit(*(it+2)) == 0) {
+			dst.append(it, it + 3);
+			it+=2;
+			continue;
+		}
+
+		uint32_t hex;
+
+		char tmp[] = { *(it+1), *(it+2), '\0' };
+		int n = sscanf_s(tmp, "%02x", &hex);
+		ASSERT(n == 1);
+
+		dst.append(1, (char)hex);
+		it += 2;
+	}
+
+	conv.Convert(dst.c_str(), str);
+
+}
+
 int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 {
+	if (in->mIsFirstCall) {
+		// 初回呼び出し時に設定よみこみ
+		auto pref = AppPreference::Get();
+		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
+		in->mIsFirstCall = false;
+	}
+
 	CString wholeWord = pattern->GetWholeString();
 
 	// file://ではじまるものか判断する
-	static tregex patProtocol(_T("^ *file://.*"));
+	static tregex patProtocol(_T("^ *file://.+"));
 	if (std::regex_match(tstring(wholeWord), patProtocol) == false) {
 		return Pattern::Mismatch;
 	}
@@ -113,6 +195,8 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 
 	// 区切り文字をバックスラッシュに変換する
 	in->mFullPath.Replace(_T('/'), _T('\\'));
+
+	DecodeUri(in->mFullPath);
 
 	return Pattern::WholeMatch;
 }
