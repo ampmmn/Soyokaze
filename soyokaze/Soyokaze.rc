@@ -1848,6 +1848,8 @@ BEGIN
     IDS_Y                   "Y座標値"
     IDS_WIDTH               "幅"
     IDS_HEIGHT              "高さ"
+    IDS_FILTER_ICONIMAGEFILES 
+                            "画像ファイル(*.png,*.jpg,*.bmp,*.gif,*.tiff)|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tif;*.tiff||"
 END
 
 #endif    // 日本語 (日本) resources

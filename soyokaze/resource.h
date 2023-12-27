@@ -118,6 +118,7 @@
 #define IDS_Y                           179
 #define IDS_WIDTH                       180
 #define IDS_HEIGHT                      181
+#define IDS_FILTER_ICONIMAGEFILES       182
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002

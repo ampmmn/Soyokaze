@@ -102,7 +102,7 @@ void IconLabel::OnPaint()
 
 void IconLabel::OnMenuChangeIcon()
 {
-	CString filterStr(_T("PNG file(*.png)|*.png||"));
+	CString filterStr((LPCTSTR)IDS_FILTER_ICONIMAGEFILES);
 	CString iconPath;
 	LPTSTR p = iconPath.GetBuffer(MAX_PATH_NTFS);
 	PathRemoveFileSpec(p);
