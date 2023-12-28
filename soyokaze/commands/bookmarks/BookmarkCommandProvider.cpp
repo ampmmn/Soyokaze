@@ -93,7 +93,10 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
-				continue;
+				level = pattern->Match(item.mUrl);
+				if (level == Pattern::Mismatch) {
+					continue;
+				}
 			}
 			commands.push_back(CommandQueryItem(level, new BookmarkCommand(_T("Chrome"), item.mName, item.mUrl)));
 		}
@@ -102,7 +105,10 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
-				continue;
+				level = pattern->Match(item.mUrl);
+				if (level == Pattern::Mismatch) {
+					continue;
+				}
 			}
 			commands.push_back(CommandQueryItem(level, new BookmarkCommand(_T("Edge"), item.mName, item.mUrl)));
 		}
