@@ -41,13 +41,13 @@ WindowPosition::~WindowPosition()
 }
 
 /**
- * $B%b%K%?Ns5s%3!<%k%P%C%/4X?t(B
- * $B%&%$%s%I%&$,%b%K%?$K<}$^$k$+$NH=Dj$r9T$&(B
+ * モニタ列挙コールバック関数
+ * ウインドウがモニタに収まるかの判定を行う
  *
- * @param hm $B%b%K%?$N%O%s%I%k(B($B;H$o$J$$(B)
- * @param hdc $B%G%P%$%9%3%s%F%-%9%H(B($B;H$o$J$$(B)
- * @param rectMonitor $B%b%K%?NN0h(B
- * @param lp  $B%f!<%6%Q%i%a!<%?(B(std::pair<RECT,bool>)
+ * @param hm モニタのハンドル(使わない)
+ * @param hdc デバイスコンテキスト(使わない)
+ * @param rectMonitor モニタ領域
+ * @param lp  ユーザパラメータ(std::pair<RECT,bool>)
  */
 static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, LPARAM lp)
 {
@@ -56,7 +56,7 @@ static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, L
 	const RECT& rectWnd = param->first;
 	bool& isOutOfMonitor = param->second;
 
-	// $B%b%K%?NN0h$H%&%$%s%I%&NN0h$,8r:9$9$k$+$I$&$+$G<}$^$C$F$$$k$+$rH=CG$9$k(B
+	// モニタ領域とウインドウ領域が交差するかどうかで収まっているかを判断する
 	RECT rectIntersect;
 	if (IntersectRect(&rectIntersect, rectMonitor, &rectWnd)) {
 		isOutOfMonitor = false;
@@ -66,12 +66,12 @@ static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, L
 }
 
 /**
- *  $B@_Dj%U%!%$%k(B(Soyokaze.position)$B$N>pJs$+$i%&%$%s%I%&0LCV$rI|85$9$k(B
- *  $BA02s$N0LCV$rI|85$9$k$?$a$K;HMQ$9$k(B
- *  $BI|85$7$?7k2L$N%&%$%s%I%&0LCV$,%b%K%?!<NN0h$K<}$^$C$F$$$J$$>l9g$O(Bfalse$B$rJV$9(B
+ *  設定ファイル(Soyokaze.position)の情報からウインドウ位置を復元する
+ *  前回の位置を復元するために使用する
+ *  復元した結果のウインドウ位置がモニター領域に収まっていない場合はfalseを返す
  *
- *  @return true:$BI|85$7$?(B   false:$BI|85$7$J$+$C$?(B
- *  @param hwnd $BBP>]%&%$%s%I%&%O%s%I%k(B
+ *  @return true:復元した   false:復元しなかった
+ *  @param hwnd 対象ウインドウハンドル
  */
 bool WindowPosition::Restore(HWND hwnd)
 {
@@ -84,7 +84,7 @@ bool WindowPosition::Restore(HWND hwnd)
 
 
 	if (PathFileExists(path) == FALSE) {
-		// $B@_Dj%U%!%$%k$,B8:_$7$J$$>l9g$O5$5Y$a$K%G%U%)%k%H$N@_Dj%U%!%$%k$rN.MQ$9$k(B
+		// 設定ファイルが存在しない場合は気休めにデフォルトの設定ファイルを流用する
 		WindowPosition::GetFilePath(_T("Soyokaze"), path, MAX_PATH_NTFS);
 	}
 
@@ -100,7 +100,7 @@ bool WindowPosition::Restore(HWND hwnd)
 		return FALSE;
 	}
 
-	// $B3F%b%K%?NN0h$NCf$KG<$^$C$F$$$k$+$r%A%'%C%/(B
+	// 各モニタ領域の中に納まっているかをチェック
 	RECT rectWnd;
 	GetWindowRect(hwnd, &rectWnd);
 

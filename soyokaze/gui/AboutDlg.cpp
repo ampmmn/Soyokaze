@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "framework.h"
+#include "AppName.h"
 #include "gui/AboutDlg.h"
 #include "resource.h"
 #include <vector>
@@ -37,6 +38,25 @@ END_MESSAGE_MAP()
 BOOL CAboutDlg::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	// 文字を置換
+	CString str;
+	GetWindowText(str);
+	str.Replace(_T("$APPNAME"), APPNAME);
+	SetWindowText(str);
+
+	CWnd* parts = GetDlgItem(IDC_STATIC_HEADER);
+	ASSERT(parts);
+	parts->GetWindowText(str);
+	str.Replace(_T("$APPNAME"), APPNAME);
+	parts->SetWindowText(str);
+
+	parts = GetDlgItem(IDC_STATIC_APPNAME);
+	ASSERT(parts);
+	parts->GetWindowText(str);
+	str.Replace(_T("$APPNAME"), APPNAME);
+	parts->SetWindowText(str);
+
 
 	// バージョン情報を取得
 	TCHAR szModulePath[65536];

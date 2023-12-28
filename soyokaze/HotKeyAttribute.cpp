@@ -272,7 +272,7 @@ bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
  */
 bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 {
-	// 現在Soyokazeが使用中のキーの場合はtrueを返す
+	// アプリが使用中のキーの場合はtrueを返す
 	auto pref = AppPreference::Get();
 	if (pref->GetVirtualKeyCode() == GetVKCode() && pref->GetModifiers() == GetModifiers()) {
 		return true;

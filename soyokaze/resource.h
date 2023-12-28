@@ -212,6 +212,8 @@
 #define IDC_SYSLINK1                    1056
 #define IDC_BUTTON_SHORTCUT             1057
 #define IDC_CHECK_KEEPTEXTWHENDLGHIDE   1057
+#define IDC_SYSLINK3                    1057
+#define IDC_SYSLINK_APPDIR              1057
 #define IDC_SYSLINK2                    1058
 #define IDC_CHECK_SENDTO                1059
 #define IDC_STATIC_REMARK               1061
@@ -270,6 +272,8 @@
 #define IDC_EDIT_WIDTH                  1091
 #define IDC_EDIT_HEIGHT                 1092
 #define IDC_COMBO_ACTION                1093
+#define IDC_STATIC_HEADER               1094
+#define IDC_STATIC_APPNAME              1095
 
 // Next default values for new objects
 // 
@@ -277,7 +281,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1094
+#define _APS_NEXT_CONTROL_VALUE         1097
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

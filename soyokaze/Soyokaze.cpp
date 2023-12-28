@@ -173,7 +173,7 @@ BOOL CSoyokazeApp::InitSecondInstance()
 }
 
 /**
- * 先行するSoyokazeプロセスが存在するか?
+ * 先行するアプリのプロセスが存在するか?
  * @return true: 存在する  false: 存在しない
  */
 bool CSoyokazeApp::SoyokazeProcessExists()

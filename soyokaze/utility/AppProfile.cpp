@@ -17,8 +17,8 @@
 //! 設定情報作成用のフォルダをつくる
 bool CAppProfile::CreateProfileDirectory()
 {
-	TCHAR path[1024];
-	GetDirPath(path, 1024);
+	TCHAR path[MAX_PATH_NTFS];
+	GetDirPath(path, MAX_PATH_NTFS);
 	if (PathIsDirectory(path)) {
 		return true;
 	}
@@ -36,8 +36,8 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 #ifndef SOYOKAZE_PORTABLE
 	// 非ポータブル版は ~/.soyokaze に設定を保存する
 
-	size_t buflen = 1024;
-	TCHAR buff[1024];
+	size_t buflen = MAX_PATH_NTFS;
+	TCHAR buff[MAX_PATH_NTFS];
 	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
 
 	_tcscpy_s(path, len, buff);

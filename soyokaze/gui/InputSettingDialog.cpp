@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "InputSettingDialog.h"
+#include "commands/builtin/MainDirCommand.h"
 #include "Settings.h"
 #include "resource.h"
 
@@ -8,6 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
+using MainDirCommand = soyokaze::commands::builtin::MainDirCommand;
 
 InputSettingDialog::InputSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("入力"), IDD_INPUTSETTING, parentWnd)
@@ -54,12 +56,24 @@ void InputSettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(InputSettingDialog, SettingPage)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_APPDIR, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
 BOOL InputSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	CWnd* link2 = GetDlgItem(IDC_SYSLINK_APPDIR);
+	ASSERT(link2);
+	CString str;
+	 link2->GetWindowText(str);
+
+	TCHAR appDir[MAX_PATH];
+	GetModuleFileName(nullptr, appDir, MAX_PATH_NTFS);
+	PathRemoveFileSpec(appDir);
+	str.Replace(_T("$APPDIR"), appDir);
+	link2->SetWindowText(str);
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -87,7 +101,14 @@ void InputSettingDialog::OnNotifyLinkOpen(
 {
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
-	ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);
+	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
+		soyokaze::core::CommandParameter param;
+		MainDirCommand cmd(_T("tmp"));
+		cmd.Execute(param);
+	}
+	else {
+		ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);
+	}
 	*pResult = 0;
 }
 

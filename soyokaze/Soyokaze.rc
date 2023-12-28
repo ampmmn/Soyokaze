@@ -84,12 +84,12 @@ IDI_ICON2               ICON                    "res\\icon.ico"
 //
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 213, 160
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Soyokaze について"
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "$APPNAMEのバージョン情報"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_ICON2,IDC_STATIC,14,14,20,20
-    LTEXT           "Soyokaze",IDC_STATIC,42,29,114,8,SS_NOPREFIX
+    LTEXT           "$APPNAME",IDC_STATIC_APPNAME,42,29,114,8,SS_NOPREFIX
     CTEXT           "Copyright (C) 2023 ymgw",IDC_STATIC,50,124,114,8
     DEFPUSHBUTTON   "OK",IDOK,81,138,50,14,WS_GROUP
     LTEXT           "(version)",IDC_STATIC_VERSION,80,48,79,8,SS_NOPREFIX
@@ -97,7 +97,7 @@ BEGIN
     CONTROL         "<A HREF=""https://github.com/ampmmn/Soyokaze"">https://github.com/ampmmn/Soyokaze</A>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,80,86,126,14
     LTEXT           "(build date)",IDC_STATIC_BUILDDATE,80,67,79,8,SS_NOPREFIX
-    LTEXT           "Soyokazeはbluewindを参考にして作成しています。",IDC_STATIC,42,10,150,8,SS_NOPREFIX
+    LTEXT           "$APPNAMEはbluewindを参考にして作成しています。",IDC_STATIC_HEADER,42,10,150,8,SS_NOPREFIX
     LTEXT           "ライセンス: ",IDC_STATIC,42,105,34,8,SS_NOPREFIX
     CONTROL         "<A HREF=""https://github.com/ampmmn/Soyokaze/blob/main/LICENSE"">MITライセンス</A>",IDC_SYSLINK2,
                     "SysLink",WS_TABSTOP,80,105,126,14
@@ -397,12 +397,13 @@ BEGIN
     CONTROL         "入力画面を表示するときにIMEをオフにする(&M)",IDC_CHECK_IMEOFF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,19,159,10
     CONTROL         "ネットワークパスを無視する(&N)",IDC_CHECK_IGNOREUNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,38,108,10
     CONTROL         "&C/Migemoによるローマ字検索を有効にする",IDC_CHECK_ENABLEMIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,56,149,10
-    GROUPBOX        "Migemo検索の利用方法",IDC_STATIC,29,76,279,80
+    GROUPBOX        "Migemo検索の利用方法",IDC_STATIC,29,76,279,141
     LTEXT           "1. 下記URLからC/Migemo for Windows 64bit を入手する",IDC_STATIC,43,89,178,8
-    LTEXT           "2. 入手したzipに含まれるmigemo.dllをsoyokaze.exeと同じフォルダに置く",IDC_STATIC,44,122,224,8
-    LTEXT           "3. 入手したzipに含まれるdictフォルダをsoyokaze.exeと同じフォルダに置く",IDC_STATIC,44,140,226,8
+    LTEXT           "2. 入手したzipに含まれるmigemo.dllを本アプリのexeと同じフォルダに置く",IDC_STATIC,44,122,223,8
+    LTEXT           "3. 入手したzipに含まれるdictフォルダを本アプリのexeと同じフォルダに置く",IDC_STATIC,44,140,224,8
     CONTROL         "<A HREF=""https://www.kaoriya.net/software/cmigemo/"">https://www.kaoriya.net/software/cmigemo/</A>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,53,103,147,15
+    CONTROL         "<A HREF="""">$APPDIR</A>",IDC_SYSLINK_APPDIR,"SysLink",WS_TABSTOP,51,153,249,29
 END
 
 IDD_VIEWSETTING DIALOGEX 0, 0, 344, 291
