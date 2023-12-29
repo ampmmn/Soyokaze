@@ -40,7 +40,7 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 struct ShellExecCommand::PImpl
 {
 	PImpl() :
-		mRefCount(1)
+		mIcon(nullptr), mRefCount(1)
 	{
 	}
 	~PImpl()
@@ -53,6 +53,7 @@ struct ShellExecCommand::PImpl
 	ATTRIBUTE mNoParamAttr;
 
 	CString mErrMsg;
+	HICON mIcon;
 
 	// 参照カウント
 	uint32_t mRefCount;
@@ -249,9 +250,19 @@ ShellExecCommand::SelectAttribute(
 
 HICON ShellExecCommand::GetIcon()
 {
-	CString path = in->mNormalAttr.mPath;
-	ExpandEnv(path);
-	return IconLoader::Get()->LoadIconFromPath(path);
+	if (in->mParam.mIconData.empty()) {
+		CString path = in->mNormalAttr.mPath;
+		ExpandEnv(path);
+
+		return IconLoader::Get()->LoadIconFromPath(path);
+	}
+	else {
+		if (in->mIcon == nullptr) {
+			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
+			// mIconの解放はIconLoaderが行うので、ここでは行わない
+		}
+		return in->mIcon;
+	}
 }
 
 int ShellExecCommand::Match(Pattern* pattern)
@@ -314,6 +325,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	cmdNew->SetRunAs(param.mIsRunAsAdmin);
 	cmdNew->in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
 	cmdNew->in->mParam.mIsUseDescriptionForMatching = param.mIsUseDescriptionForMatching;
+	cmdNew->in->mParam.mIconData = param.mIconData;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = param.mPath;
@@ -432,6 +444,7 @@ bool ShellExecCommand::NewDialog(
 	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
 	newCmd->in->mParam.mIsShowArgDialog =  commandParam.mIsShowArgDialog;
 	newCmd->in->mParam.mIsUseDescriptionForMatching = commandParam.mIsUseDescriptionForMatching;
+	newCmd->in->mParam.mIconData = commandParam.mIconData;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath =commandParam.mPath;
@@ -514,6 +527,8 @@ bool ShellExecCommand::LoadFrom(
 
 	command->in->mParam.mIsShowArgDialog = cmdFile->Get(entry, _T("isShowArgInput"), 0);
 
+	cmdFile->Get(entry, _T("IconData"), command->in->mParam.mIconData);
+
 
 	if (normalAttr.mPath.IsEmpty() == FALSE) {
 		command->in->mNormalAttr = normalAttr;
@@ -563,6 +578,8 @@ bool ShellExecCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("dir0"), param0Attr.mDir);
 	cmdFile->Set(entry, _T("parameter0"), param0Attr.mParam);
 	cmdFile->Set(entry, _T("show0"), param0Attr.mShowType);
+
+	cmdFile->Set(entry, _T("IconData"), in->mParam.mIconData);
 
 	return true;
 }

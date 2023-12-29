@@ -157,7 +157,7 @@ BEGIN
     LTEXT           "ホットキー(K):",IDC_STATIC,32,190,43,8
     EDITTEXT        IDC_EDIT_HOTKEY2,123,187,124,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,248,187,21,14
-    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,130,205,32
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,34,7,304,8
     LTEXT           "※.exe/.batのみ",IDC_STATIC,32,172,103,9
@@ -518,7 +518,7 @@ BEGIN
     PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,250,273,21,14
     DEFPUSHBUTTON   "OK",IDOK,245,299,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,298,299,50,14
-    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,99,205,32
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,144,8,204,8
     LTEXT           "【実行時引数なし】",IDC_STATIC_PARAM0,30,147,65,8

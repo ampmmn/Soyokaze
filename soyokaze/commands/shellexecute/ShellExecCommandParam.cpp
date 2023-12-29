@@ -38,6 +38,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mHotKeyAttr = rhs.mHotKeyAttr;
 	mIsGlobal = rhs.mIsGlobal;
 	mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
+	mIconData = rhs.mIconData;
 }
 
 CommandParam::~CommandParam()
@@ -61,6 +62,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mHotKeyAttr = rhs.mHotKeyAttr;
 		mIsGlobal = rhs.mIsGlobal;
 		mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
+		mIconData = rhs.mIconData;
 	}
 	return *this;
 }

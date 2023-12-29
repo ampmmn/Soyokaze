@@ -25,7 +25,7 @@ static const tregex& GetRegexForArgument()
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
-	mIconLabelPtr(std::make_unique<IconLabel>())
+	mIconLabelPtr(std::make_unique<IconLabel>()), mIcon(nullptr)
 {
 }
 
@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 END_MESSAGE_MAP()
 
 
@@ -63,9 +64,8 @@ BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
-
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	mIconLabelPtr->EnableIconChange();
 
 	// File&Folder Select Button
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
@@ -105,7 +105,13 @@ bool CommandEditDialog::UpdateStatus()
 		mParam.mIsRunAsAdmin = FALSE;
 	}
 
-	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
+	if (mParam.mIconData.empty()) {
+		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+	}
+
+	if (mIcon) {
+		mIconLabelPtr->DrawIcon(mIcon);
+	}
 
 	if (mParam.mName.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
@@ -228,6 +234,13 @@ void CommandEditDialog::OnEnterSettings()
 	caption += suffix;
 	SetWindowText(caption);
 
+	if (mParam.mIconData.empty()) {
+		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+	}
+	else {
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+	}
+
 }
 
 
@@ -249,6 +262,7 @@ void CommandEditDialog::OnOK()
 	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
 	param->mIsUseDescriptionForMatching = mParam.mIsUseDescriptionForMatching;
 	param->mHotKeyAttr = mParam.mHotKeyAttr;
+	param->mIconData = mParam.mIconData;
 
 	const tregex& regArg = GetRegexForArgument();
 	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
@@ -297,6 +311,32 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 void CommandEditDialog::OnButtonResolveShortcut()
 {
 	ResolveShortcut(mParam.mPath);
+}
+
+LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
+{
+	if (wp != 0) {
+		// 変更
+		LPCTSTR iconPath = (LPCTSTR)lp;
+		if (IconLoader::GetStreamFromPath(iconPath, mParam.mIconData) == false) {
+			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
+			return 0;
+		}
+
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+	}
+	else {
+		// デフォルトに戻す
+		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+		mParam.mIconData.clear();
+	}
+
+	// 再描画
+	if (mIcon) {
+		mIconLabelPtr->DrawIcon(mIcon);
+	}
+
+	return 0;
 }
 
 

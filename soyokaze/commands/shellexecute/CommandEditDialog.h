@@ -36,6 +36,9 @@ public:
 	// ホットキー(表示用)
 	CString mHotKey;
 
+	// アイコン(表示用)
+	HICON mIcon;
+
 // 実装
 protected:
 	BOOL OnKillActive() override;
@@ -50,5 +53,6 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveShortcut();
+	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 };
 

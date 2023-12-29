@@ -47,6 +47,9 @@ public:
 	// 説明欄の文字列をマッチングに利用するか?
 	BOOL mIsUseDescriptionForMatching;
 
+	// アイコンデータ(空の場合はデフォルトアイコンを使用)
+	std::vector<uint8_t> mIconData;
+
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
 };
