@@ -40,6 +40,8 @@ protected:
 	// メッセージ欄
 	CString mMessage;
 
+	// アイコン(表示用)
+	HICON mIcon;
 public:
 	// コマンド名
 	CString mName;
@@ -59,6 +61,9 @@ public:
 	// パラメータ
 	CString mParameter;
 
+	// アイコンデータ
+	std::vector<uint8_t> mIconData;
+
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 private:
@@ -76,6 +81,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonResolveShortcut();
+	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 };
 
 

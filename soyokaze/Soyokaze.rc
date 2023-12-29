@@ -453,7 +453,7 @@ BEGIN
     CONTROL         "管理者権限で実行(&R)",IDC_CHECK_RUNASADMIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,192,89,10
     DEFPUSHBUTTON   "OK",IDOK,245,243,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,298,243,50,14
-    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME,7,7,21,20
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "$val : 環境変数valを展開する\n$1, $2, $3... : 1,2,3番目の括弧でキャプチャされた文字列に置換する",IDC_STATIC,122,121,223,24
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,144,8,204,8
     LTEXT           "※.exe/.batのみ",IDC_STATIC,34,202,103,9

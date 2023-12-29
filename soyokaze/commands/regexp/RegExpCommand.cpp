@@ -37,6 +37,7 @@ struct RegExpCommand::PImpl
 {
 	PImpl() :
 		mRunAs(0),
+		mIcon(nullptr),
 		mRefCount(1)
 	{
 	}
@@ -51,6 +52,10 @@ struct RegExpCommand::PImpl
 	int mRunAs;
 
 	ATTRIBUTE mNormalAttr;
+
+	std::vector<uint8_t> mIconData;
+
+	HICON mIcon;
 
 	CString mErrMsg;
 
@@ -201,9 +206,19 @@ RegExpCommand& RegExpCommand::SetMatchPattern(LPCTSTR pattern)
 
 HICON RegExpCommand::GetIcon()
 {
-	CString path = in->mNormalAttr.mPath;
-	ExpandEnv(path);
-	return IconLoader::Get()->LoadIconFromPath(path);
+	if (in->mIconData.empty()) {
+		CString path = in->mNormalAttr.mPath;
+		ExpandEnv(path);
+
+		return IconLoader::Get()->LoadIconFromPath(path);
+	}
+	else {
+		if (in->mIcon == nullptr) {
+			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mIconData);
+			// mIconの解放はIconLoaderが行うので、ここでは行わない
+		}
+		return in->mIcon;
+	}
 }
 
 int RegExpCommand::Match(Pattern* pattern)
@@ -238,6 +253,7 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	dlg.mParameter = attr.mParam;
 	dlg.mDir = attr.mDir;
 	dlg.SetShowType(attr.mShowType);
+	dlg.mIconData = in->mIconData;
 
 	if (dlg.DoModal() != IDOK) {
 		return 1;
@@ -257,6 +273,7 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	normalAttr.mDir = dlg.mDir;
 	normalAttr.mShowType = dlg.GetShowType();
 	cmdNew->SetAttribute(normalAttr);
+	cmdNew->in->mIconData = dlg.mIconData;
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
@@ -317,6 +334,8 @@ bool RegExpCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("parameter"), normalAttr.mParam);
 	cmdFile->Set(entry, _T("show"), normalAttr.mShowType);
 
+	cmdFile->Set(entry, _T("IconData"), in->mIconData);
+
 	return true;
 }
 
@@ -336,6 +355,8 @@ bool RegExpCommand::Load(CommandFile* cmdFile, void* entry_)
 
 	auto patternStr = cmdFile->Get(entry, _T("matchpattern"), _T("")); 
 	SetMatchPattern(patternStr);
+
+	cmdFile->Get(entry, _T("IconData"), in->mIconData);
 
 	return true;
 }
@@ -399,6 +420,7 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	newCmd->in->mName = dlg.mName;
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mRunAs = dlg.mIsRunAsAdmin;
+	newCmd->in->mIconData = dlg.mIconData;
 	newCmd->SetMatchPattern(dlg.mPatternStr);
 
 	RegExpCommand::ATTRIBUTE attr;

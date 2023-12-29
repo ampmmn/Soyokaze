@@ -232,18 +232,13 @@ bool KeywordManagerDialog::UpdateStatus()
 		return false;
 	}
 
-
 	CString name = in->mSelCommand->GetName();
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
-	auto cmd = cmdRepoPtr->QueryAsWholeMatch(name);
-	if (cmd) {
-		in->mIconLabelPtr->DrawIcon(cmd->GetIcon());
-		in->mName = name;
-		in->mDescription = cmd->GetDescription();
-		cmd->Release();
-	}
+	in->mIconLabelPtr->DrawIcon(in->mSelCommand->GetIcon());
+	in->mName = name;
+	in->mDescription = in->mSelCommand->GetDescription();
 
+	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 	bool isBuiltin = cmdRepoPtr->IsBuiltinName(name);
 	if (isBuiltin) {
 		btnEdit->EnableWindow(FALSE);

@@ -22,7 +22,8 @@ namespace regexp {
 
 CommandEditDialog::CommandEditDialog() : 
 	CDialogEx(IDD_REGEXPCOMMAND),
-	mIconLabelPtr(std::make_unique<IconLabel>())
+	mIconLabelPtr(std::make_unique<IconLabel>()),
+	mIcon(nullptr)
 {
 }
 
@@ -104,6 +105,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
 	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 END_MESSAGE_MAP()
 
 
@@ -114,6 +116,14 @@ BOOL CommandEditDialog::OnInitDialog()
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	mIconLabelPtr->EnableIconChange();
+
+	if (mIconData.empty()) {
+		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+	}
+	else {
+		mIcon = IconLoader::Get()->LoadIconFromStream(mIconData);
+	}
 
 	CString caption;
   GetWindowText(caption);
@@ -143,7 +153,13 @@ bool CommandEditDialog::UpdateStatus()
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
-	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mPath));
+	if (mIconData.empty()) {
+		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+	}
+
+	if (mIcon) {
+		mIconLabelPtr->DrawIcon(mIcon);
+	}
 
 	if (mName.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
@@ -315,6 +331,32 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 void CommandEditDialog::OnButtonResolveShortcut()
 {
 	ResolveShortcut(mPath);
+}
+
+LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
+{
+	if (wp != 0) {
+		// 変更
+		LPCTSTR iconPath = (LPCTSTR)lp;
+		if (IconLoader::GetStreamFromPath(iconPath, mIconData) == false) {
+			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
+			return 0;
+		}
+
+		mIcon = IconLoader::Get()->LoadIconFromStream(mIconData);
+	}
+	else {
+		// デフォルトに戻す
+		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+		mIconData.clear();
+	}
+
+	// 再描画
+	if (mIcon) {
+		mIconLabelPtr->DrawIcon(mIcon);
+	}
+
+	return 0;
 }
 
 }
