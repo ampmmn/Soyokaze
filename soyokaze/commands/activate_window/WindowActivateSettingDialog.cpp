@@ -252,16 +252,7 @@ SettingDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 	UpdateData(FALSE);
 
 	CString path = processPath.GetProcessPath();
-	HICON hIconLarge;
-	HICON hIconSmall;
-	if ( ExtractIconEx(path, 0, &hIconLarge, &hIconSmall, 1)) {
-		in->mIconLabel.DrawIcon(hIconLarge);
-
-		DestroyIcon(hIconSmall);
-		DestroyIcon(hIconLarge);
-	}
-
-
+	in->mIconLabel.DrawIcon(IconLoader::Get()->GetDefaultIcon(path));
 	return 0;
 }
 

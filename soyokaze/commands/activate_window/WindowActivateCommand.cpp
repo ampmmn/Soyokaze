@@ -115,17 +115,7 @@ CString WindowActivateCommand::GetErrorString()
 
 HICON WindowActivateCommand::GetIcon()
 {
-	HWND hwndTarget = in->FindHwnd();
-
-	if (IsWindow(hwndTarget) == FALSE) {
-		return IconLoader::Get()->LoadWindowIcon();
-	}
-
-	HICON icon = (HICON)GetClassLongPtr(hwndTarget, GCLP_HICON);
-	if (icon) {
-		return icon;
-	}
-	return (HICON)GetClassLongPtr(hwndTarget, GCLP_HICONSM);
+	return IconLoader::Get()->LoadIconFromHwnd(in->FindHwnd());
 }
 
 int WindowActivateCommand::Match(Pattern* pattern)

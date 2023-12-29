@@ -12,6 +12,8 @@ public:
 	HICON LoadExtensionIcon(const CString& fileExt);
 	// 画像ファイルからアイコンを生成
 	HICON LoadIconFromImage(const CString& path);
+	// ウインドウハンドルからアプリアイコンを取得
+	HICON LoadIconFromHwnd(HWND hwnd);
 
 	void RegisterIcon(const CString& path, HICON icon);
 

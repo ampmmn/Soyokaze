@@ -69,11 +69,7 @@ BOOL WindowActivateAdhocCommand::Execute(const Parameter& param)
 
 HICON WindowActivateAdhocCommand::GetIcon()
 {
-	HICON icon = (HICON)GetClassLongPtr(in->mHwnd, GCLP_HICON);
-	if (icon) {
-		return icon;
-	}
-	return (HICON)GetClassLongPtr(in->mHwnd, GCLP_HICONSM);
+	return IconLoader::Get()->LoadIconFromHwnd(in->mHwnd);
 }
 
 soyokaze::core::Command*

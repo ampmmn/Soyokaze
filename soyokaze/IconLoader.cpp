@@ -5,6 +5,7 @@
 #include "utility/RegistryKey.h"
 #include "utility/AppProfile.h"
 #include "utility/SHA1.h"
+#include "utility/ProcessPath.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
@@ -381,6 +382,24 @@ HICON IconLoader::LoadIconFromImage(const CString& path)
 	HICON icon = CreateIconIndirect(&ii);
 
 	return icon;
+}
+
+// ウインドウハンドルからアプリアイコンを取得
+HICON IconLoader::LoadIconFromHwnd(HWND hwnd)
+{
+	if (IsWindow(hwnd) == FALSE) {
+		return LoadWindowIcon();
+	}
+
+	ProcessPath processPath(hwnd);
+
+	// 自プロセスのウインドウなら何もしない
+	if (GetCurrentProcessId() == processPath.GetProcessId()) {
+		return LoadWindowIcon();
+	}
+
+	CString path = processPath.GetProcessPath();
+	return GetDefaultIcon(path);
 }
 
 void IconLoader::RegisterIcon(const CString& appId, HICON icon)
