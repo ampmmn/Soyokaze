@@ -110,7 +110,7 @@ SnippetCommand& SnippetCommand::SetText(const CString& text)
 
 HICON SnippetCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->GetImageResIcon(-5301);
 }
 
 int SnippetCommand::Match(Pattern* pattern)
