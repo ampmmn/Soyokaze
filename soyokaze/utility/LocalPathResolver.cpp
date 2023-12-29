@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "LocalPathResolver.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,36 +17,7 @@ struct LocalPathResolver::PImpl
 
 LocalPathResolver::LocalPathResolver() : in(std::make_unique<PImpl>())
 {
-	LPCTSTR PATH = _T("PATH");
-
-	size_t reqLen = 0;
-	if (_tgetenv_s(&reqLen, NULL, 0, PATH) != 0 || reqLen == 0) {
-		return;
-	}
-	
-	CString val;
-	TCHAR* p = val.GetBuffer((int)reqLen);
-	_tgetenv_s(&reqLen, p, reqLen, PATH);
-	val.ReleaseBuffer();
-
-	int n = 0;
-	CString item = val.Tokenize(_T(";"), n);
-	while(item.IsEmpty() == FALSE) {
-
-		// UNCや相対パスは許可しない
-		if (PathIsUNC(item)) {
-			continue;
-		}
-		if (PathIsRelative(item)) {
-			continue;
-		}
-
-		if (PathIsDirectory(item)) {
-			in->targetDirs.push_back(item);
-		}
-
-		item = val.Tokenize(_T(";"), n);
-	}
+	ResetPath();
 }
 
 LocalPathResolver::LocalPathResolver(const LocalPathResolver& rhs) 
@@ -68,6 +38,12 @@ LocalPathResolver& LocalPathResolver::operator = (
 		in->targetDirs = rhs.in->targetDirs;
 	}
 	return *this;
+}
+
+void LocalPathResolver::ResetPath()
+{
+	in->targetDirs.clear();
+	GetSystemPath(in->targetDirs);
 }
 
 bool LocalPathResolver::AddPath(LPCTSTR path)
@@ -132,6 +108,42 @@ bool LocalPathResolver::Resolve(
 	return false;
 }
 
+void LocalPathResolver::GetSystemPath(std::vector<CString>& paths)
+{
+	LPCTSTR PATH = _T("PATH");
+
+	size_t reqLen = 0;
+	if (_tgetenv_s(&reqLen, NULL, 0, PATH) != 0 || reqLen == 0) {
+		return;
+	}
+
+	std::vector<CString> pathsWork;
+	
+	CString val;
+	TCHAR* p = val.GetBuffer((int)reqLen);
+	_tgetenv_s(&reqLen, p, reqLen, PATH);
+	val.ReleaseBuffer();
+
+	int n = 0;
+	CString item = val.Tokenize(_T(";"), n);
+	while(item.IsEmpty() == FALSE) {
+
+		// UNCや相対パスは許可しない
+		if (PathIsUNC(item)) {
+			continue;
+		}
+		if (PathIsRelative(item)) {
+			continue;
+		}
+
+		if (PathIsDirectory(item)) {
+			pathsWork.push_back(item);
+		}
+
+		item = val.Tokenize(_T(";"), n);
+	}
+	paths.swap(pathsWork);
+}
 
 }
 }

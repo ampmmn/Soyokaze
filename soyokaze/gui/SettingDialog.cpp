@@ -4,6 +4,7 @@
 #include "gui/BasicSettingDialog.h"
 #include "gui/InputSettingDialog.h"
 #include "gui/ExecSettingDialog.h"
+#include "gui/AppSettingPathPage.h"
 #include "gui/ViewSettingDialog.h"
 #include "gui/SoundSettingDialog.h"
 #include "gui/ExtensionSettingDialog.h"
@@ -87,7 +88,8 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(hItem, std::unique_ptr<SettingPage>(new SoundSettingDialog(this)), param);
 
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
-	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
+	auto hExecItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
+	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
 
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);

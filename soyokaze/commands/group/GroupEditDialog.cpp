@@ -217,7 +217,7 @@ void GroupEditDialog::SwapItem(int srcIndex, int dstIndex)
 	}
 
 	// 選択
-	mCommandListPtr->SetItemState(dstIndex, 0, LVIS_SELECTED);
+	mCommandListPtr->SetItemState(srcIndex, 0, LVIS_SELECTED);
 	mCommandListPtr->SetItemState(dstIndex, LVIS_SELECTED, LVIS_SELECTED);
 
 	std::swap(mParam.mItems[srcIndex],mParam.mItems[dstIndex]);

@@ -38,6 +38,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsIgnoreUNC = pref->IsIgnoreUNC();
+		mExeCommandPtr->Reload();
 	}
 	void OnAppExit() override {}
 
@@ -98,6 +99,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		auto pref = AppPreference::Get();
 		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
 		in->mIsFirstCall = false;
+		in->mExeCommandPtr->Reload();
 	}
 
 	if (in->mIsIgnoreUNC) {

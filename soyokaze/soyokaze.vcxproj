@@ -671,6 +671,7 @@
     <ClInclude Include="core\GlobalHotKey.h" />
     <ClInclude Include="gui/AboutDlg.h" />
     <ClInclude Include="AppPreference.h" />
+    <ClInclude Include="gui\AppSettingPathPage.h" />
     <ClInclude Include="gui\BasicSettingDialog.h" />
     <ClInclude Include="gui\CandidateListCtrl.h" />
     <ClInclude Include="gui\CaptureIconLabel.h" />
@@ -864,6 +865,7 @@
     <ClCompile Include="core\GlobalHotKey.cpp" />
     <ClCompile Include="gui/AboutDlg.cpp" />
     <ClCompile Include="AppPreference.cpp" />
+    <ClCompile Include="gui\AppSettingPathPage.cpp" />
     <ClCompile Include="gui\BasicSettingDialog.cpp" />
     <ClCompile Include="gui\CandidateListCtrl.cpp" />
     <ClCompile Include="gui\CaptureIconLabel.cpp" />

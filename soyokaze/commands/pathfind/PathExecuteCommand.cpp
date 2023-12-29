@@ -5,6 +5,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
+#include "AppPreference.h"
 #include "IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -33,6 +34,20 @@ static const tregex& GetURLRegex()
 
 struct PathExecuteCommand::PImpl
 {
+	void Reload()
+	{
+		mResolver.ResetPath();
+
+		// 追加パスを登録
+		auto pref = AppPreference::Get();
+		std::vector<CString> paths;
+		pref->GetAdditionalPaths(paths);
+
+		for (auto& path : paths) {
+			mResolver.AddPath(path);
+		}
+	}
+
 	LocalPathResolver mResolver;
 	CString mWord;
 	CString mFullPath;
@@ -67,6 +82,10 @@ void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
 	}
 }
 
+void PathExecuteCommand::Reload()
+{
+	in->Reload();
+}
 
 CString PathExecuteCommand::GetName()
 {

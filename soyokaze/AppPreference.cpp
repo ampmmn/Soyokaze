@@ -411,6 +411,19 @@ bool AppPreference::IsIgnoreUNC()
 	return in->mSettings.Get(_T("Soyokaze:IsIgnoreUNC"), false);
 }
 
+void AppPreference::GetAdditionalPaths(std::vector<CString>& paths)
+{
+	std::vector<CString> pathsWork;
+
+	TCHAR key[64];
+	int n = in->mSettings.Get(_T("Soyokaze:AdditionalPathCount"), 0);
+	for (int i = 0; i < n; ++i) {
+		_stprintf_s(key, _T("Soyokaze:AdditionalPath%d"), i + 1);
+		pathsWork.push_back(in->mSettings.Get(key, _T("")));
+	}
+	paths.swap(pathsWork);
+}
+
 // フィルタコマンドの同時実行を許可する
 bool AppPreference::IsArrowFilterCommandConcurrentRun()
 {

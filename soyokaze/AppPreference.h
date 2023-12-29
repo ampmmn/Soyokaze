@@ -45,6 +45,9 @@ public:
 	// ネットワークパスを無視する
 	bool IsIgnoreUNC();
 
+	// 追加パスを取得
+	void GetAdditionalPaths(std::vector<CString>& paths);
+
 	// フィルタコマンドの同時実行を許可する
 	bool IsArrowFilterCommandConcurrentRun();
 

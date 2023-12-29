@@ -663,6 +663,9 @@
     <ClInclude Include="commands\pathconvert\P4AppSettings.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
+    <ClInclude Include="gui\AppSettingPathPage.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1192,6 +1195,9 @@
     </ClCompile>
     <ClCompile Include="commands\pathconvert\P4AppSettings.cpp">
       <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\AppSettingPathPage.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
