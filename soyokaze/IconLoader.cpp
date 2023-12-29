@@ -398,8 +398,13 @@ HICON IconLoader::LoadIconFromHwnd(HWND hwnd)
 		return LoadWindowIcon();
 	}
 
-	CString path = processPath.GetProcessPath();
-	return GetDefaultIcon(path);
+	try {
+		CString path = processPath.GetProcessPath();
+		return GetDefaultIcon(path);
+	}
+	catch (ProcessPath::Exception&) {
+		return LoadWindowIcon();
+	}
 }
 
 void IconLoader::RegisterIcon(const CString& appId, HICON icon)
