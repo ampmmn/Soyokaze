@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+class SettingPage;
+
 namespace soyokaze {
 namespace core {
 
@@ -23,6 +25,9 @@ public:
 
 	// コマンドプロバイダ登録
 	void RegisterProvider(CommandProvider* provider);
+
+	// コマンドプロバイダの設定ページを列挙する
+	void EnumProviderSettingDialogs(CWnd* parent, std::vector<SettingPage*>& pages);
 
 	// コマンドを登録
 	int RegisterCommand(Command* command);

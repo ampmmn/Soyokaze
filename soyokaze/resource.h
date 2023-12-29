@@ -110,6 +110,7 @@
 #define IDS_SENDTO                      171
 #define IDD_APPSETTING_PATH             171
 #define IDS_CONFIRM_VMXLOCKED           172
+#define IDD_APPSETTING_BOOKMARK         172
 #define IDS_SNIPPETCOMMAND              173
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  174
 #define IDS_ERR_TEXTISEMPTY             175
@@ -248,6 +249,8 @@
 #define IDC_BUTTON_CLEAR                1104
 #define IDC_CHECK_ENABLE_BOOKMARKS      1105
 #define IDC_EDIT_SOUNDINPUT             1106
+#define IDC_CHECK_ENABLE_BOOKMARKS2     1106
+#define IDC_CHECK_USEURL                1106
 #define IDC_CHECK_ENABLE_WINDOWTITLE    1107
 #define IDC_EDIT_SOUNDSELECT            1108
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1109

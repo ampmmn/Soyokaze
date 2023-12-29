@@ -16,8 +16,6 @@ public:
 	BOOL mIsEnableWindowTitle;
 	// Excelワークシート名によるウインドウ切り替え機能
 	BOOL mIsEnableWorksheet;
-	// ブックマーク選択機能
-	BOOL mIsEnableBookmarks;
 	// コントロールパネル選択機能
 	BOOL mIsEnableControlPanel;
 	// スタートメニュー/最近使ったファイル選択機能

@@ -182,6 +182,21 @@ uint32_t BuiltinCommandProvider::BuiltinCommandProvider::GetOrder() const
 	return 200;
 }
 
+/**
+ 	設定ページを取得する
+ 	@return true 成功  false失敗
+ 	@param[in]  parent 親ウインドウ
+ 	@param[out] pages  設定ページリスト
+*/
+bool BuiltinCommandProvider::CreateSettingPages(
+	CWnd* parent,
+	std::vector<SettingPage*>& pages
+)
+{
+	// 必要に応じて実装する
+	return true;
+}
+
 uint32_t BuiltinCommandProvider::BuiltinCommandProvider::AddRef()
 {
 	return ++in->mRefCount;

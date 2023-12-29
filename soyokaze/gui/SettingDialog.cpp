@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingDialog.h"
+#include "core/CommandRepository.h"
 #include "gui/BasicSettingDialog.h"
 #include "gui/InputSettingDialog.h"
 #include "gui/ExecSettingDialog.h"
@@ -18,6 +19,7 @@
 #define new DEBUG_NEW
 #endif
 
+using CommandRepository = soyokaze::core::CommandRepository;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +94,14 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
 
-	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);
+	auto hExtensionItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);
+
+	std::vector<SettingPage*> pages;
+	CommandRepository::GetInstance()->EnumProviderSettingDialogs(this, pages);
+		// EnumProviderSettingDialogsで取得した各ページの解放は呼び出し側で行う
+	for (auto page : pages) {
+		AddPage(hExtensionItem, std::unique_ptr<SettingPage>(page), param);
+	}
 
 	return hItem;
 }

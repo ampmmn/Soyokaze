@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 class CommandFile;
+class SettingPage;
 
 namespace soyokaze {
 namespace core {
@@ -46,6 +47,9 @@ public:
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const = 0;
+
+	// 設定ページを取得する
+	virtual bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) = 0;
 
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;

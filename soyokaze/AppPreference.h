@@ -71,6 +71,7 @@ public:
 	bool IsEnableWindowSwitch();
 
 	bool IsEnableBookmark();
+	bool IsUseURLForBookmarkSearch();
 
 	bool IsShowFolderIfCtrlKeyIsPressed();
 

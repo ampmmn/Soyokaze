@@ -184,6 +184,21 @@ uint32_t WebSearchProvider::GetOrder() const
 	return 140;
 }
 
+/**
+ 	設定ページを取得する
+ 	@return true 成功  false失敗
+ 	@param[in]  parent 親ウインドウ
+ 	@param[out] pages  設定ページリスト
+*/
+bool WebSearchProvider::CreateSettingPages(
+	CWnd* parent,
+	std::vector<SettingPage*>& pages
+)
+{
+	// 必要に応じて実装する
+	return true;
+}
+
 uint32_t WebSearchProvider::AddRef()
 {
 	return ++in->mRefCount;

@@ -44,6 +44,9 @@ public:
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;
 
+	// 設定ページを取得する
+	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
+
 	virtual uint32_t AddRef();
 	virtual uint32_t Release();
 

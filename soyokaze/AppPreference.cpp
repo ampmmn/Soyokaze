@@ -571,6 +571,11 @@ bool AppPreference::IsEnableBookmark()
 	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), true);
 }
 
+bool AppPreference::IsUseURLForBookmarkSearch()
+{
+	return in->mSettings.Get(_T("Bookmarks:UseURL"), true);
+}
+
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);

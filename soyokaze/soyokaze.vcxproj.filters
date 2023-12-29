@@ -666,6 +666,9 @@
     <ClInclude Include="gui\AppSettingPathPage.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\bookmarks\AppSettingBookmarkPage.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1198,6 +1201,9 @@
     </ClCompile>
     <ClCompile Include="gui\AppSettingPathPage.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\AppSettingBookmarkPage.cpp">
+      <Filter>commands\bookmarks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

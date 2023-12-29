@@ -45,6 +45,9 @@ public:
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
 
+	// 設定ページを取得する
+	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

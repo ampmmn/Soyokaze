@@ -2,6 +2,7 @@
 #include "BookmarkCommandProvider.h"
 #include "commands/bookmarks/BookmarkCommand.h"
 #include "commands/bookmarks/Bookmarks.h"
+#include "commands/bookmarks/AppSettingBookmarkPage.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "AppPreferenceListenerIF.h"
@@ -34,12 +35,14 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsEnableBookmark = pref->IsEnableBookmark();
+		mIsUseURL = pref->IsUseURLForBookmarkSearch();
 	}
 	void OnAppExit() override {}
 
 	Bookmarks mBookmarks;
 	//
 	bool mIsEnableBookmark;
+	bool mIsUseURL;
 
 	bool mIsFirstCall;
 
@@ -56,6 +59,7 @@ REGISTER_COMMANDPROVIDER(BookmarkCommandProvider)
 BookmarkCommandProvider::BookmarkCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mIsEnableBookmark = true;
+	in->mIsUseURL = true;
 	in->mIsFirstCall = true;
 
 	std::vector<ITEM> items;
@@ -81,6 +85,7 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		// 初回呼び出し時に設定よみこみ
 		auto pref = AppPreference::Get();
 		in->mIsEnableBookmark = pref->IsEnableBookmark();
+		in->mIsUseURL = pref->IsUseURLForBookmarkSearch();
 		in->mIsFirstCall = false;
 	}
 
@@ -93,6 +98,12 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
+
+				if (in->mIsUseURL == false) {
+					// URLを絞り込みに使わない場合はここではじく
+					continue;
+				}
+
 				level = pattern->Match(item.mUrl);
 				if (level == Pattern::Mismatch) {
 					continue;
@@ -105,6 +116,12 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 		for (auto& item : items) {
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
+
+				if (in->mIsUseURL == false) {
+					// URLを絞り込みに使わない場合はここではじく
+					continue;
+				}
+
 				level = pattern->Match(item.mUrl);
 				if (level == Pattern::Mismatch) {
 					continue;
@@ -115,6 +132,21 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 	}
 }
 
+/**
+ 	設定ページを取得する
+ 	@return true 成功  false失敗
+ 	@param[in]  parent 親ウインドウ
+ 	@param[out] pages  設定ページリスト
+*/
+bool BookmarkCommandProvider::CreateSettingPages(
+	CWnd* parent,
+	std::vector<SettingPage*>& pages
+)
+{
+	// 必要に応じて実装する
+	pages.push_back(new AppSettingBookmarkPage(parent));
+	return true;
+}
 
 } // end of namespace bookmarks
 } // end of namespace commands
