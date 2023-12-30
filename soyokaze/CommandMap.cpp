@@ -28,6 +28,7 @@ void CommandMap::Clear()
 	for (auto& item : mMap) {
 		item.second->Release();
 	}
+	mMap.clear();
 }
 
 bool CommandMap::Has(const CString& name) const
