@@ -107,6 +107,8 @@ public:
 
 	// GitBashパス変換機能を使用するか
 	bool IsEnableGitBashPath();
+// fileプロトコルパス変換機能を使用するか
+	bool IsEnableFileProtocolPathConvert();
 
 	// 入力窓が消えるときにテキストを消去しない(コマンドを実行したときだけ入力欄をクリアする)
 	bool IsKeepTextWhenDlgHide();

@@ -24,8 +24,6 @@ public:
 	BOOL mIsEnableUWP;
 	// Outlookメール選択機能(Inboxのみ)
 	BOOL mIsEnableOutlookMail;
-	// GitBashパス変換(/c/... ←→ c:\...)
-	BOOL mIsEnableGitBashPath;
 
 protected:
 	bool UpdateStatus();

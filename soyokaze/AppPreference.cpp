@@ -644,7 +644,14 @@ bool AppPreference::IsEnableOutlookMailItem()
 // GitBashパス変換機能を使用するか
 bool AppPreference::IsEnableGitBashPath()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableGitBashPath"), false);
+	return in->mSettings.Get(_T("PathConvert:IsEnableGitBashPath"), false);
+
+}
+
+// fileプロトコルパス変換機能を使用するか
+bool AppPreference::IsEnableFileProtocolPathConvert()
+{
+	return in->mSettings.Get(_T("PathConvert:IsEnableFileProtol"), false);
 }
 
 // 入力窓が消えるときにテキストを消去しない(コマンドを実行したときだけ入力欄をクリアする)

@@ -17,8 +17,7 @@ ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) :
 	mIsEnableControlPanel(FALSE),
 	mIsEnableSpecialFolder(FALSE),
 	mIsEnableUWP(FALSE),
-	mIsEnableOutlookMail(FALSE),
-	mIsEnableGitBashPath(FALSE)
+	mIsEnableOutlookMail(FALSE)
 {
 }
 
@@ -41,7 +40,6 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
-	settingsPtr->Set(_T("Soyokaze:IsEnableGitBashPath"), (bool)mIsEnableGitBashPath);
 	__super::OnOK();
 }
 
@@ -56,7 +54,6 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_GITBASH, mIsEnableGitBashPath);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, SettingPage)
@@ -108,7 +105,6 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
-	mIsEnableGitBashPath = settingsPtr->Get(_T("Soyokaze:IsEnableGitBashPath"), false);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

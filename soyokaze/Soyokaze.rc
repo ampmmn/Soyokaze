@@ -269,8 +269,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,187,192,10
     GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,79,282,58
     GROUPBOX        "システム関連の機能",IDC_STATIC,11,141,282,65
-    GROUPBOX        "未分類",IDC_STATIC,12,208,282,30
-    CONTROL         "git-bashパス変換(&Y)",IDC_CHECK_ENABLE_GITBASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,223,77,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -735,6 +733,18 @@ BEGIN
     LTEXT           "※使わない場合、ブックマーク名のみで絞り込みを行う",IDC_STATIC,33,51,168,8
 END
 
+IDD_APPSETTING_PATHCONVERT DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "git-bashパスをローカルパス表記に変換する(&G)",IDC_CHECK_ENABLE_GITBASH,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,12,244,10
+    CONTROL         "file://... をローカルパス表記に変換する(&F)",IDC_CHECK_ENABLE_FILEPROTOCOL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,42,240,10
+    LTEXT           "/c/path/to/... <-> c:\\path\\to\\...",IDC_STATIC,32,25,261,8
+    LTEXT           "file:///c:/path/to/... -> c:\\path\\to\\...",IDC_STATIC,31,56,263,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1021,6 +1031,14 @@ BEGIN
     END
 
     IDD_APPSETTING_BOOKMARK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+
+    IDD_APPSETTING_PATHCONVERT, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
@@ -1475,6 +1493,11 @@ BEGIN
 END
 
 IDD_APPSETTING_BOOKMARK AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_APPSETTING_PATHCONVERT AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

@@ -36,12 +36,20 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-		mIsIgnoreUNC = pref->IsIgnoreUNC();
+		reload();
 	}
 	void OnAppExit() override {}
 
+	void reload()
+	{
+		auto pref = AppPreference::Get();
+		mIsEnable = pref->IsEnableFileProtocolPathConvert();
+		mIsIgnoreUNC = pref->IsIgnoreUNC();
+	}
+
 	CString mFullPath;
+
+	bool mIsEnable;
 	//
 	bool mIsIgnoreUNC;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
@@ -51,6 +59,7 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 
 FileProtocolConvertAdhocCommand::FileProtocolConvertAdhocCommand() : in(std::make_unique<PImpl>())
 {
+	in->mIsEnable = true;
 	in->mIsIgnoreUNC = false;
 	in->mIsFirstCall = true;
 }
@@ -159,9 +168,12 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 {
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
+		in->reload();
 		in->mIsFirstCall = false;
+	}
+
+	if (in->mIsEnable == false) {
+		return Pattern::Mismatch;
 	}
 
 	CString wholeWord = pattern->GetWholeString();
