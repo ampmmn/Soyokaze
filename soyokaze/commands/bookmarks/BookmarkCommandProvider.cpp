@@ -167,7 +167,7 @@ void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemL
 {
 	if (in->mChromeHistory.get()) {
 		std::vector<ChromiumBrowseHistory::ITEM> items;
-		in->mChromeHistory->Query(pattern, items, 20);
+		in->mChromeHistory->Query(pattern, items, 8);
 
 		for (auto& item : items) {
 			if (item.mTitle.IsEmpty()) {
@@ -179,7 +179,7 @@ void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemL
 
 	if (in->mEdgeHistory.get()) {
 		std::vector<ChromiumBrowseHistory::ITEM> items;
-		in->mEdgeHistory->Query(pattern, items, 20);
+		in->mEdgeHistory->Query(pattern, items, 8);
 
 		for (auto& item : items) {
 			if (item.mTitle.IsEmpty()) {

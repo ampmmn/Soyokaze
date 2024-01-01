@@ -104,6 +104,7 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			}
 		}
 
+		std::lock_guard<std::mutex> lock(mMutex);
 		if (!mHistoryDB) {
 			try {
 				mHistoryDB = std::make_unique<SQLite3Database>(dbDstPath);
