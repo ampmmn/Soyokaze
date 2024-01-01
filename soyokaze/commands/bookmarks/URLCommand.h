@@ -7,11 +7,16 @@ namespace soyokaze {
 namespace commands {
 namespace bookmarks {
 
-class BookmarkCommand : public soyokaze::commands::common::AdhocCommandBase
+class URLCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	BookmarkCommand(const CString& type, const CString& name, const CString& url);
-	virtual ~BookmarkCommand();
+	enum Type {
+		BOOKMARK,
+		HISTORY,
+	};
+public:
+	URLCommand(const CString& browserName, int type, const CString& name, const CString& url);
+	virtual ~URLCommand();
 
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;

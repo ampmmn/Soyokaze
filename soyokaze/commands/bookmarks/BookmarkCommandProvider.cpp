@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "BookmarkCommandProvider.h"
-#include "commands/bookmarks/BookmarkCommand.h"
+#include "commands/bookmarks/URLCommand.h"
 #include "commands/bookmarks/Bookmarks.h"
+#include "commands/bookmarks/ChromiumBrowseHistory.h"
 #include "commands/bookmarks/AppSettingBookmarkPage.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
@@ -33,13 +34,39 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-		mIsEnableBookmark = pref->IsEnableBookmark();
-		mIsUseURL = pref->IsUseURLForBookmarkSearch();
+		Reload();
 	}
 	void OnAppExit() override {}
 
+	void Reload()
+	{
+		auto pref = AppPreference::Get();
+		mIsEnableBookmark = pref->IsEnableBookmark();
+		mIsUseURL = pref->IsUseURLForBookmarkSearch();
+		if (pref->IsEnableHistoryChrome()) {
+			TCHAR profilePath[MAX_PATH_NTFS];
+			size_t reqLen = 0;
+			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
+			PathAppend(profilePath, _T("Google\\Chrome\\User Data\\Default"));
+			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), profilePath));
+		}
+		else {
+			mChromeHistory.reset();
+		}
+		if (pref->IsEnableHistoryEdge()) {
+			TCHAR profilePath[MAX_PATH_NTFS];
+			size_t reqLen = 0;
+			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
+			PathAppend(profilePath, _T("Microsoft\\Edge\\User Data\\Default"));
+			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), profilePath));
+		}
+		else {
+			mEdgeHistory.reset();
+		}
+	}
 	Bookmarks mBookmarks;
+	std::unique_ptr<ChromiumBrowseHistory> mChromeHistory;
+	std::unique_ptr<ChromiumBrowseHistory> mEdgeHistory;
 	//
 	bool mIsEnableBookmark;
 	bool mIsUseURL;
@@ -83,12 +110,16 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 {
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnableBookmark = pref->IsEnableBookmark();
-		in->mIsUseURL = pref->IsUseURLForBookmarkSearch();
+		in->Reload();
 		in->mIsFirstCall = false;
 	}
 
+	QueryBookmarks(pattern, commands);
+	QueryHistories(pattern, commands);
+}
+
+void BookmarkCommandProvider::QueryBookmarks(Pattern* pattern, CommandQueryItemList& commands)
+{
 	if (in->mIsEnableBookmark == false) {
 		return ;
 	}
@@ -104,12 +135,12 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 					continue;
 				}
 
-				level = pattern->Match(item.mUrl);
+				int level = pattern->Match(item.mUrl);
 				if (level == Pattern::Mismatch) {
 					continue;
 				}
 			}
-			commands.push_back(CommandQueryItem(level, new BookmarkCommand(_T("Chrome"), item.mName, item.mUrl)));
+			commands.push_back(CommandQueryItem(level, new URLCommand(_T("Chrome"), URLCommand::BOOKMARK, item.mName, item.mUrl)));
 		}
 	}
 	if (in->mBookmarks.LoadEdgeBookmarks(items)) {
@@ -127,10 +158,39 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 					continue;
 				}
 			}
-			commands.push_back(CommandQueryItem(level, new BookmarkCommand(_T("Edge"), item.mName, item.mUrl)));
+			commands.push_back(CommandQueryItem(level, new URLCommand(_T("Edge"), URLCommand::BOOKMARK, item.mName, item.mUrl)));
 		}
 	}
 }
+
+void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemList& commands)
+{
+	if (in->mChromeHistory.get()) {
+		std::vector<ChromiumBrowseHistory::ITEM> items;
+		in->mChromeHistory->Query(pattern, items, 20);
+
+		for (auto& item : items) {
+			if (item.mTitle.IsEmpty()) {
+				continue;
+			}
+			commands.push_back(CommandQueryItem(Pattern::PartialMatch, new URLCommand(_T("Chrome"), URLCommand::HISTORY, item.mTitle, item.mUrl)));
+		}
+	}
+
+	if (in->mEdgeHistory.get()) {
+		std::vector<ChromiumBrowseHistory::ITEM> items;
+		in->mEdgeHistory->Query(pattern, items, 20);
+
+		for (auto& item : items) {
+			if (item.mTitle.IsEmpty()) {
+				continue;
+			}
+			commands.push_back(CommandQueryItem(Pattern::PartialMatch, new URLCommand(_T("Edge"), URLCommand::HISTORY, item.mTitle, item.mUrl)));
+		}
+	}
+
+}
+
 
 /**
  	設定ページを取得する

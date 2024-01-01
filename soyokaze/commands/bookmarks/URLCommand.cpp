@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
-#include "BookmarkCommand.h"
+#include "URLCommand.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/Clipboard.h"
 #include "IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -40,20 +41,21 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 }
 
 
-struct BookmarkCommand::PImpl
+struct URLCommand::PImpl
 {
 	bool GetExecutablePath(LPTSTR path, size_t len);
 
-	CString mType;    // ブラウザ種類を表す文字列
+	CString mBrowserName;    // ブラウザ種類を表す文字列
+	int mType;               // 種別(ブックマーク or 履歴)
 	CString mUrl;
 };
 
-bool BookmarkCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
+bool URLCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 {
-	if (mType == _T("Chrome")) {
+	if (mBrowserName == _T("Chrome")) {
 		return GetChromeExecutablePath(path, len);
 	}
-	else if (mType == _T("Edge")) {
+	else if (mBrowserName == _T("Edge")) {
 		return GetEdgeExecutablePath(path, len);
 	}
 	else {
@@ -62,41 +64,49 @@ bool BookmarkCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 }
 
 
-BookmarkCommand::BookmarkCommand(
-	const CString& type,
+URLCommand::URLCommand(
+	const CString& browserName,
+	int type,
 	const CString& name,
 	const CString& url
 ) : 
-	AdhocCommandBase(name, type + _T(" - ") + name),
+	AdhocCommandBase(name, name),
 	in(std::make_unique<PImpl>())
 {
+	in->mBrowserName = browserName;
 	in->mType = type;
 	in->mUrl = url;
 }
 
-BookmarkCommand::~BookmarkCommand()
+URLCommand::~URLCommand()
 {
 }
 
-CString BookmarkCommand::GetGuideString()
+CString URLCommand::GetGuideString()
 {
-	return _T("Enter:ブラウザで開く");
+	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
 }
 
-CString BookmarkCommand::GetTypeDisplayName()
+CString URLCommand::GetTypeDisplayName()
 {
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
+	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
 
-	if (in->mType == _T("Chrome") || in->mType == _T("Edge")) {
-		return in->mType + _T(" ") + TEXT_BOOKMARK;
-	}
-	else {
-		return TEXT_BOOKMARK;
-	}
+	CString str;
+	str.Format(_T("%s %s"), in->mBrowserName, in->mType == BOOKMARK ? TEXT_BOOKMARK : TEXT_HISTORY);
+
+	return str;
 }
 
-BOOL BookmarkCommand::Execute(const Parameter& param)
+BOOL URLCommand::Execute(const Parameter& param)
 {
+	if (param.GetNamedParamBool(_T("ShiftKeyPressed"))) {
+		// URLをクリップボードにコピー
+		Clipboard::Copy(in->mUrl);
+		return TRUE;
+	}
+
+	// URLをブラウザで開く
 	TCHAR path[MAX_PATH_NTFS];
 	if (in->GetExecutablePath(path, MAX_PATH_NTFS) == false) {
 		return FALSE;
@@ -117,7 +127,7 @@ BOOL BookmarkCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-HICON BookmarkCommand::GetIcon()
+HICON URLCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
 	TCHAR path[MAX_PATH_NTFS];
@@ -126,9 +136,9 @@ HICON BookmarkCommand::GetIcon()
 }
 
 soyokaze::core::Command*
-BookmarkCommand::Clone()
+URLCommand::Clone()
 {
-	return new BookmarkCommand(in->mType, this->mName, in->mUrl);
+	return new URLCommand(in->mBrowserName, in->mType, this->mName, in->mUrl);
 }
 
 } // end of namespace bookmarks

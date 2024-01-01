@@ -15,6 +15,7 @@ public:
 	CString GetFirstWord() override;
 	CString GetWholeString() override;
 	bool shouldWholeMatch() override;
+	void GetWords(std::vector<WORD>& words) override;
 
 protected:
 	struct PImpl;

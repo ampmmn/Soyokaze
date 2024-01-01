@@ -583,9 +583,10 @@
     <ClInclude Include="commands\align_window\AlignWindowProvider.h" />
     <ClInclude Include="commands\align_window\AlignWindowSettingDialog.h" />
     <ClInclude Include="commands\bookmarks\AppSettingBookmarkPage.h" />
-    <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h" />
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
+    <ClInclude Include="commands\bookmarks\ChromiumBrowseHistory.h" />
+    <ClInclude Include="commands\bookmarks\URLCommand.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandBase.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
@@ -746,6 +747,8 @@
     <ClInclude Include="utility\SHA1.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="utility\Sound.h" />
+    <ClInclude Include="utility\SQLite3Database.h" />
+    <ClInclude Include="utility\SQLite3Wrapper.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="WholeMatchPattern.h" />
     <ClInclude Include="utility/WindowPosition.h" />
@@ -772,9 +775,10 @@
     <ClCompile Include="commands\align_window\AlignWindowProvider.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowSettingDialog.cpp" />
     <ClCompile Include="commands\bookmarks\AppSettingBookmarkPage.cpp" />
-    <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp" />
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />
+    <ClCompile Include="commands\bookmarks\ChromiumBrowseHistory.cpp" />
+    <ClCompile Include="commands\bookmarks\URLCommand.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandBase.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
@@ -948,6 +952,8 @@
     <ClCompile Include="utility\SHA1.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />
     <ClCompile Include="utility\Sound.cpp" />
+    <ClCompile Include="utility\SQLite3Database.cpp" />
+    <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="WholeMatchPattern.cpp" />
     <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="WindowTransparency.cpp" />

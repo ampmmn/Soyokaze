@@ -19,6 +19,18 @@ public:
 		Mismatch = -1,     // 不一致
 	};
 
+	enum MatchMethod {
+		RegExp,           // 正規表現比較
+		FixString,        // 文字列比較
+	};
+
+	struct WORD {
+		WORD(const CString& word, MatchMethod method);
+
+		CString mWord;    // パターン
+		MatchMethod mMethod; // 比較方法
+	};
+
 public:
 	virtual ~Pattern() {}
 
@@ -27,6 +39,7 @@ public:
 	virtual CString GetFirstWord() = 0;
 	virtual CString GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;
+	virtual void GetWords(std::vector<WORD>& words) = 0;
 
 	static CString StripEscapeChars(const CString& pat);
 };

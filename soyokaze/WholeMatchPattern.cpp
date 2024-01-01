@@ -56,3 +56,10 @@ bool WholeMatchPattern::shouldWholeMatch()
 }
 
 
+void WholeMatchPattern::GetWords(std::vector<WORD>& words)
+{
+	words.push_back(WORD(in->mWholeText, Pattern::FixString));
+}
+
+
+

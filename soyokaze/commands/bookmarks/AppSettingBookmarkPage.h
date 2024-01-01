@@ -13,10 +13,15 @@ public:
 	virtual ~AppSettingBookmarkPage();
 
 	// 機能を利用するか
-	BOOL mIsEnable;
+	BOOL mIsEnableBookmarks;
 
 	// URLを検索対象とするか?
 	BOOL mIsUseURL;
+
+	// Chromeの履歴検索を有効にする
+	BOOL mIsEnableHistoryChrome;
+	// Edgeの履歴検索を有効にする
+	BOOL mIsEnableHistoryEdge;
 
 protected:
 	bool UpdateStatus();

@@ -731,6 +731,10 @@ BEGIN
     CONTROL         "URL文字列を候補の絞り込みに使う(&U)",IDC_CHECK_USEURL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,39,139,10
     GROUPBOX        "Webブラウザのブックマーク選択機能",IDC_STATIC,11,8,282,68
     LTEXT           "※使わない場合、ブックマーク名のみで絞り込みを行う",IDC_STATIC,33,51,168,8
+    CONTROL         "Chromeの履歴を候補として表示する(&C)",IDC_CHECK_ENABLE_HISTORY_CHROME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,84,141,10
+    CONTROL         "Edgeの履歴を候補として表示する(&E)",IDC_CHECK_ENABLE_HISTORY_EDGE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,100,132,10
 END
 
 IDD_APPSETTING_PATHCONVERT DIALOGEX 0, 0, 309, 285

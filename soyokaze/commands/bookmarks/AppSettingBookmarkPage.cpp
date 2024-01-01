@@ -13,7 +13,7 @@ namespace commands {
 namespace bookmarks {
 
 AppSettingBookmarkPage::AppSettingBookmarkPage(CWnd* parentWnd) : 
-	SettingPage(_T("ブックマーク"), IDD_APPSETTING_BOOKMARK, parentWnd)
+	SettingPage(_T("ブラウザ関連"), IDD_APPSETTING_BOOKMARK, parentWnd)
 {
 }
 
@@ -39,8 +39,10 @@ BOOL AppSettingBookmarkPage::OnSetActive()
 void AppSettingBookmarkPage::OnOK()
 {
 	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("Bookmarks:EnableBookmarks"), (bool)mIsEnable);
+	settingsPtr->Set(_T("Bookmarks:EnableBookmarks"), (bool)mIsEnableBookmarks);
 	settingsPtr->Set(_T("Bookmarks:UseURL"), (bool)mIsUseURL);
+	settingsPtr->Set(_T("Browser::EnableHistoryChrome"), (bool)mIsEnableHistoryChrome);
+	settingsPtr->Set(_T("Browser::EnableHistoryEdge"), (bool)mIsEnableHistoryEdge);
 
 	__super::OnOK();
 }
@@ -49,8 +51,10 @@ void AppSettingBookmarkPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_ENABLE_BOOKMARKS, mIsEnable);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_BOOKMARKS, mIsEnableBookmarks);
 	DDX_Check(pDX, IDC_CHECK_USEURL, mIsUseURL);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_CHROME, mIsEnableHistoryChrome);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_EDGE, mIsEnableHistoryEdge);
 }
 
 BEGIN_MESSAGE_MAP(AppSettingBookmarkPage, SettingPage)
@@ -69,7 +73,7 @@ BOOL AppSettingBookmarkPage::OnInitDialog()
 
 bool AppSettingBookmarkPage::UpdateStatus()
 {
-	GetDlgItem(IDC_CHECK_USEURL)->EnableWindow(mIsEnable);
+	GetDlgItem(IDC_CHECK_USEURL)->EnableWindow(mIsEnableBookmarks);
 	return true;
 }
 
@@ -77,8 +81,10 @@ void AppSettingBookmarkPage::OnEnterSettings()
 {
 	auto settingsPtr = (Settings*)GetParam();
 
-	mIsEnable = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), true);
+	mIsEnableBookmarks = settingsPtr->Get(_T("Bookmarks:EnableBookmarks"), true);
 	mIsUseURL = settingsPtr->Get(_T("Bookmarks:UseURL"), true);
+	mIsEnableHistoryChrome = settingsPtr->Get(_T("Browser::EnableHistoryChrome"), false);
+	mIsEnableHistoryEdge = settingsPtr->Get(_T("Browser::EnableHistoryEdge"), false);
 }
 
 void AppSettingBookmarkPage::OnCheckEnable()

@@ -576,6 +576,18 @@ bool AppPreference::IsUseURLForBookmarkSearch()
 	return in->mSettings.Get(_T("Bookmarks:UseURL"), true);
 }
 
+// Chromeの履歴を検索するか
+bool AppPreference::IsEnableHistoryChrome()
+{
+	return in->mSettings.Get(_T("Browser::EnableHistoryChrome"), false);
+}
+
+// Edgeの履歴を検索するか
+bool AppPreference::IsEnableHistoryEdge()
+{
+	return in->mSettings.Get(_T("Browser::EnableHistoryEdge"), false);
+}
+
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);

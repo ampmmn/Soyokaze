@@ -14,6 +14,7 @@
 struct PartialMatchPattern::PImpl
 {
 	std::vector<std::wregex> mRegPatterns;
+	std::vector<WORD> mWords;
 	std::wregex mRegPatternFront;
 
 	CString mFirstWord;
@@ -61,7 +62,7 @@ void PartialMatchPattern::SetParam(
 	in->mWholeText = wholeText;
 
 
-	std::vector<CString> words;
+	std::vector<CString> tokens;
 
 	int start = 0;
 
@@ -87,7 +88,7 @@ void PartialMatchPattern::SetParam(
 				continue;
 			}
 
-			words.push_back(part);
+			tokens.push_back(part);
 			start = i + 1;
 			continue;
 		}
@@ -103,7 +104,7 @@ void PartialMatchPattern::SetParam(
 				continue;
 			}
 
-			words.push_back(part);
+			tokens.push_back(part);
 
 			start=i+1;
 			continue;
@@ -114,29 +115,36 @@ void PartialMatchPattern::SetParam(
 	CString part = wholeText.Mid(start, count);
 	part.Trim();
 	if (part.IsEmpty() == FALSE) {
-		words.push_back(part);
+		tokens.push_back(part);
 	}
 
 
+	std::vector<WORD> words;
 	std::vector<std::wregex> patterns;
-	patterns.reserve(words.size());
+	patterns.reserve(tokens.size());
 
 	bool is1stWord = true;
-	for (auto& word : words) {
-		ASSERT(word.GetLength() > 0);
+	for (auto& token : tokens) {
+		ASSERT(token.GetLength() > 0);
 
 		try {
 			// 入力文字が1文字で子音の場合はC/Migemoを使わない
 			// (子音によっては何もヒットしないことがあるので)
-			if (is1stWord && in->mMigemo.IsInitialized() && (word.GetLength() > 1 || IsVowel(word[0])) ) {
+			if (is1stWord && in->mMigemo.IsInitialized() && (token.GetLength() > 1 || IsVowel(token[0])) ) {
 				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
 				CString migemoExpr;
-				in->mMigemo.Query(word, migemoExpr);
+				in->mMigemo.Query(token, migemoExpr);
 				patterns.push_back(std::wregex(std::wstring((const wchar_t*)migemoExpr), std::regex_constants::icase));
+
+				// ↓ChromiumBrowseHistory用のデータ。重くなるのでいったん無効化する。非同期絞り込みをサポートしたら有効化する
+				//words.push_back(WORD(migemoExpr, Pattern::RegExp));
+				words.push_back(WORD(token, Pattern::FixString));
 			}
 			else {
-				std::wstring escapedPat = Pattern::StripEscapeChars(word);
+				std::wstring escapedPat = Pattern::StripEscapeChars(token);
 				patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+
+				words.push_back(WORD(token, Pattern::FixString));
 			}
 			is1stWord = false;
 		}
@@ -146,11 +154,12 @@ void PartialMatchPattern::SetParam(
 		}
 	}
 	in->mRegPatterns.swap(patterns);
+	in->mWords.swap(words);
 
 	if (words.empty() == false) {
-		in->mFirstWord = words[0];
+		in->mFirstWord = tokens[0];
 
-		std::wstring escapedPat = Pattern::StripEscapeChars(words[0]);
+		std::wstring escapedPat = Pattern::StripEscapeChars(tokens[0]);
 		in->mRegPatternFront = std::wregex(L"^" + escapedPat);
 	}
 }
@@ -202,4 +211,10 @@ bool PartialMatchPattern::shouldWholeMatch()
 {
 	return false;
 }
+
+void PartialMatchPattern::GetWords(std::vector<WORD>& words)
+{
+	words = in->mWords;
+}
+
 

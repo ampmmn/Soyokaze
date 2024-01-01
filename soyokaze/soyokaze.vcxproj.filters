@@ -432,9 +432,6 @@
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
-    <ClInclude Include="commands\bookmarks\BookmarkCommand.h">
-      <Filter>commands\bookmarks</Filter>
-    </ClInclude>
     <ClInclude Include="commands\bookmarks\Bookmarks.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
@@ -671,6 +668,18 @@
     </ClInclude>
     <ClInclude Include="commands\pathconvert\AppSettingPathConvertPage.h">
       <Filter>commands\pathconvert</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\SQLite3Wrapper.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\SQLite3Database.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\ChromiumBrowseHistory.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\URLCommand.h">
+      <Filter>commands\bookmarks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -977,9 +986,6 @@
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp">
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
-    <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp">
-      <Filter>commands\bookmarks</Filter>
-    </ClCompile>
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp">
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
@@ -1210,6 +1216,18 @@
     </ClCompile>
     <ClCompile Include="commands\pathconvert\AppSettingPathConvertPage.cpp">
       <Filter>commands\pathconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\SQLite3Wrapper.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\SQLite3Database.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\ChromiumBrowseHistory.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\URLCommand.cpp">
+      <Filter>commands\bookmarks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -72,6 +72,8 @@ public:
 
 	bool IsEnableBookmark();
 	bool IsUseURLForBookmarkSearch();
+	bool IsEnableHistoryChrome();
+	bool IsEnableHistoryEdge();
 
 	bool IsShowFolderIfCtrlKeyIsPressed();
 

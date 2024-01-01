@@ -25,6 +25,10 @@ public:
 	DECLARE_COMMANDPROVIDER(BookmarkCommandProvider)
 
 private:
+	void QueryBookmarks(Pattern* pattern, CommandQueryItemList& comands);
+	void QueryHistories(Pattern* pattern, CommandQueryItemList& comands);
+
+private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
