@@ -170,9 +170,6 @@ void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemL
 		in->mChromeHistory->Query(pattern, items, 8);
 
 		for (auto& item : items) {
-			if (item.mTitle.IsEmpty()) {
-				continue;
-			}
 			commands.push_back(CommandQueryItem(Pattern::PartialMatch, new URLCommand(_T("Chrome"), URLCommand::HISTORY, item.mTitle, item.mUrl)));
 		}
 	}

@@ -92,7 +92,7 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			shouldCopy = (memcmp(&ftOrg, &ftDst, sizeof(FILETIME)) != 0);
 		}
 
-		if (IsAbort() == false && shouldCopy) {
+		if (mHistoryDB.get() == nullptr && IsAbort() == false && shouldCopy) {
 			std::lock_guard<std::mutex> lock(mMutex);
 
 			mHistoryDB.reset();
@@ -107,7 +107,13 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 		std::lock_guard<std::mutex> lock(mMutex);
 		if (!mHistoryDB) {
 			try {
-				mHistoryDB = std::make_unique<SQLite3Database>(dbDstPath);
+				auto db = std::make_unique<SQLite3Database>(dbDstPath);
+				db->Query(_T("create view hoge (url, title) as select distinct urls.url,urls.title from visits inner join urls on visits.url = urls.id where urls.title is not null and urls.title is not '' and urls.url not like '%google.com/search%' order by visits.visit_time desc ;"), nullptr, nullptr);
+				db->Query(_T("create table hoge2(url, title); insert into hoge2(url,title) select * from hoge;"), nullptr, nullptr);
+				db->Query(_T("PRAGMA synchronous = NORMAL;vacuum;reindex;"), nullptr, nullptr);
+
+				std::lock_guard<std::mutex> lock(mMutex);
+				mHistoryDB.reset(db.release());
 			}
 			catch(...) {
 				break;
@@ -161,24 +167,25 @@ void ChromiumBrowseHistory::Query(
 		std::reverse(words.begin(), words.end());
 
 		// 得た検索ワードからsqlite3のクエリ文字列を生成する
-		static LPCTSTR basePart = _T("select distinct urls.url,urls.title from visits left join urls on visits.url = urls.id where urls.title is not null ");
-
+		static LPCTSTR basePart = _T("select url,title from hoge2 where ");
 		CString queryStr(basePart);
 
+		bool isFirst = true;
 		CString token;
 		for(auto& word : words) {
 			if (word.mMethod == Pattern::RegExp) {
-				token.Format(_T("and (urls.title regexp '%s') "), word.mWord);
+				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), word.mWord);
 			}
 			else {
-				token.Format(_T("and (urls.title like '%%%s%%' or urls.url like '%%%s%%') "), word.mWord, word.mWord);
+				token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), word.mWord, word.mWord);
 			}
 			queryStr += token;
+			isFirst = false;
 		}
 
 		// 履歴が新しい順に20件を上限に検索
 		CString footer;
-		footer.Format(_T(" order by visits.visit_time desc limit %d ;"), limit);
+		footer.Format(_T(" limit %d ;"), limit);
 		queryStr += footer;
 
 		struct local_param {
