@@ -74,6 +74,10 @@ public:
 	bool IsUseURLForBookmarkSearch();
 	bool IsEnableHistoryChrome();
 	bool IsEnableHistoryEdge();
+	int GetBrowserHistoryTimeout();
+	int GetBrowserHistoryCandidates();
+	bool IsUseMigemoForBrowserHistory();
+	bool IsUseURLForBrowserHistory();
 
 	bool IsShowFolderIfCtrlKeyIsPressed();
 

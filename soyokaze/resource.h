@@ -258,7 +258,10 @@
 #define IDC_CHECK_ENABLE_HISTORY_CHROME2 1108
 #define IDC_CHECK_ENABLE_HISTORY_EDGE   1108
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1109
+#define USE_MIGEMO                      1109
+#define IDC_CHECK_USE_MIGEMO            1109
 #define IDC_BUTTON_SOUNDINPUT           1110
+#define IDC_CHECK_USEURL2               1110
 #define IDC_EDIT_CAPTION                1111
 #define IDC_CHECK_ENABLE_SPECIALFOLDER  1112
 #define IDC_EDIT_CLASS                  1113
@@ -290,6 +293,9 @@
 #define IDC_LIST_ENVPATH                1137
 #define IDC_LIST_PATH                   1138
 #define IDC_LIST_ENVPATH2               1138
+#define IDC_EDIT_TIMEOUT                1140
+#define IDC_EDIT2                       1141
+#define IDC_EDIT_CANDIDATES             1141
 
 // Next default values for new objects
 // 
@@ -297,7 +303,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1140
+#define _APS_NEXT_CONTROL_VALUE         1141
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

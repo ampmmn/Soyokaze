@@ -35,6 +35,8 @@ struct ChromiumBrowseHistory::PImpl
 	bool mIsAbort;
 	CString mId;
 	CString mProfileDir;
+	bool mIsUseURL;
+	bool mIsUseMigemo;
 
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };
@@ -68,9 +70,16 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			return;
 		}
 	}
+
+	// 退避先のファイル名にPC名を含める(UserDirをOneDrive共有フォルダで運用している環境向けの処理)
+	TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
+	BOOL ret = GetComputerName(computerName, &bufLen);
+
 	CString fileName;
-	fileName.Format(_T("history-%s"), mId);
+	fileName.Format(_T("%s-history-%s"), computerName, mId);
 	PathAppend(p, fileName);
+
 	dbDstPath.ReleaseBuffer();
 
 	while(IsAbort() == false) {
@@ -104,13 +113,12 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			}
 		}
 
-		std::lock_guard<std::mutex> lock(mMutex);
 		if (!mHistoryDB) {
 			try {
 				auto db = std::make_unique<SQLite3Database>(dbDstPath);
 				db->Query(_T("create view hoge (url, title) as select distinct urls.url,urls.title from visits inner join urls on visits.url = urls.id where urls.title is not null and urls.title is not '' and urls.url not like '%google.com/search%' order by visits.visit_time desc ;"), nullptr, nullptr);
 				db->Query(_T("create table hoge2(url, title); insert into hoge2(url,title) select * from hoge;"), nullptr, nullptr);
-				db->Query(_T("PRAGMA synchronous = NORMAL;vacuum;reindex;"), nullptr, nullptr);
+				db->Query(_T("PRAGMA synchronous = OFF;vacuum;reindex;"), nullptr, nullptr);
 
 				std::lock_guard<std::mutex> lock(mMutex);
 				mHistoryDB.reset(db.release());
@@ -124,13 +132,17 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 
 ChromiumBrowseHistory::ChromiumBrowseHistory(
 		const CString& id,
-	 	const CString& profileDir
+	 	const CString& profileDir,
+		bool isUseURL,
+	 	bool isUseMigemo
 ) : 
 	in(new PImpl)
 {
 	in->mIsAbort = false;
 	in->mId = id;
 	in->mProfileDir = profileDir;
+	in->mIsUseURL = isUseURL;
+	in->mIsUseMigemo = isUseMigemo;
 
 	std::thread th([&]() {
 			in->WatchHistoryDB();
@@ -140,6 +152,8 @@ ChromiumBrowseHistory::ChromiumBrowseHistory(
 
 ChromiumBrowseHistory::~ChromiumBrowseHistory()
 {
+	Abort();
+
 }
 
 void ChromiumBrowseHistory::Abort()
@@ -150,7 +164,8 @@ void ChromiumBrowseHistory::Abort()
 void ChromiumBrowseHistory::Query(
 		Pattern* pattern,
 	 	std::vector<ITEM>& items,
-	 	int limit
+	 	int limit,
+		DWORD timeout
 )
 {
 		std::lock_guard<std::mutex> lock(in->mMutex);
@@ -177,13 +192,18 @@ void ChromiumBrowseHistory::Query(
 				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), word.mWord);
 			}
 			else {
-				token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), word.mWord, word.mWord);
+				if (in->mIsUseURL) {
+					token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), word.mWord, word.mWord);
+				}
+				else {
+					token.Format(_T("%s title like '%%%s%%' "), isFirst ? _T(""): _T("and"), word.mWord);
+				}
 			}
 			queryStr += token;
 			isFirst = false;
 		}
 
-		// 履歴が新しい順に20件を上限に検索
+		// 検索件数の上限を設定
 		CString footer;
 		footer.Format(_T(" limit %d ;"), limit);
 		queryStr += footer;
@@ -191,6 +211,10 @@ void ChromiumBrowseHistory::Query(
 		struct local_param {
 			static int Callback(void* p, int argc, char** argv, char**colName) {
 				auto param = (local_param*)p;
+
+				if (GetTickCount() - param->mStart > param->mTimeout) {
+					return 1;
+				}
 
 				ITEM item;
 				param->conv.Convert(argv[0], item.mUrl);
@@ -201,10 +225,13 @@ void ChromiumBrowseHistory::Query(
 
 			std::vector<ITEM> mItems;
 			CharConverter conv;
+			DWORD mStart = GetTickCount();
+			DWORD mTimeout = 150;
 		};
 
 		// mHistoryDBに対し、問い合わせを行う
 		local_param param;
+		param.mTimeout = timeout;
 		int n = in->mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
 
 		items.swap(param.mItems);

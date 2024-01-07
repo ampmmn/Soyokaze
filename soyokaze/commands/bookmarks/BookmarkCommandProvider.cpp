@@ -43,12 +43,16 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 		auto pref = AppPreference::Get();
 		mIsEnableBookmark = pref->IsEnableBookmark();
 		mIsUseURL = pref->IsUseURLForBookmarkSearch();
+		mTimeout = (DWORD)pref->GetBrowserHistoryTimeout();
+		mCandidates = pref->GetBrowserHistoryCandidates();
+		bool isUseMigemo = pref->IsUseMigemoForBrowserHistory();
+		bool isUseURLHistory = pref->IsUseURLForBrowserHistory();
 		if (pref->IsEnableHistoryChrome()) {
 			TCHAR profilePath[MAX_PATH_NTFS];
 			size_t reqLen = 0;
 			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
 			PathAppend(profilePath, _T("Google\\Chrome\\User Data\\Default"));
-			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), profilePath));
+			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), profilePath, isUseURLHistory, isUseMigemo));
 		}
 		else {
 			mChromeHistory.reset();
@@ -58,7 +62,7 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 			size_t reqLen = 0;
 			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
 			PathAppend(profilePath, _T("Microsoft\\Edge\\User Data\\Default"));
-			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), profilePath));
+			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), profilePath, isUseURLHistory, isUseMigemo));
 		}
 		else {
 			mEdgeHistory.reset();
@@ -70,6 +74,9 @@ struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 	//
 	bool mIsEnableBookmark;
 	bool mIsUseURL;
+
+	DWORD mTimeout;
+	int mCandidates;
 
 	bool mIsFirstCall;
 
@@ -167,7 +174,7 @@ void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemL
 {
 	if (in->mChromeHistory.get()) {
 		std::vector<ChromiumBrowseHistory::ITEM> items;
-		in->mChromeHistory->Query(pattern, items, 8);
+		in->mChromeHistory->Query(pattern, items, in->mCandidates, in->mTimeout);
 
 		for (auto& item : items) {
 			commands.push_back(CommandQueryItem(Pattern::PartialMatch, new URLCommand(_T("Chrome"), URLCommand::HISTORY, item.mTitle, item.mUrl)));
@@ -176,7 +183,7 @@ void BookmarkCommandProvider::QueryHistories(Pattern* pattern, CommandQueryItemL
 
 	if (in->mEdgeHistory.get()) {
 		std::vector<ChromiumBrowseHistory::ITEM> items;
-		in->mEdgeHistory->Query(pattern, items, 8);
+		in->mEdgeHistory->Query(pattern, items, in->mCandidates, in->mTimeout);
 
 		for (auto& item : items) {
 			if (item.mTitle.IsEmpty()) {

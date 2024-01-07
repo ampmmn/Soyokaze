@@ -1,3 +1,4 @@
+//あ
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingBookmarkPage.h"
@@ -43,6 +44,10 @@ void AppSettingBookmarkPage::OnOK()
 	settingsPtr->Set(_T("Bookmarks:UseURL"), (bool)mIsUseURL);
 	settingsPtr->Set(_T("Browser::EnableHistoryChrome"), (bool)mIsEnableHistoryChrome);
 	settingsPtr->Set(_T("Browser::EnableHistoryEdge"), (bool)mIsEnableHistoryEdge);
+	settingsPtr->Set(_T("Browser::Timeout"), mTimeout);
+	settingsPtr->Set(_T("Browser::Candidates"), mCandidates);
+	settingsPtr->Set(_T("Browser::UseMigemo"), (bool)mIsUseMigemo);
+	settingsPtr->Set(_T("Browser::UseURL"), (bool)mIsUseURLForHistory);
 
 	__super::OnOK();
 }
@@ -55,10 +60,18 @@ void AppSettingBookmarkPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USEURL, mIsUseURL);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_CHROME, mIsEnableHistoryChrome);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_EDGE, mIsEnableHistoryEdge);
+	DDX_Text(pDX, IDC_EDIT_TIMEOUT, mTimeout);
+	DDV_MinMaxInt(pDX, mTimeout, 0, 1000);
+	DDX_Text(pDX, IDC_EDIT_CANDIDATES, mCandidates);
+	DDV_MinMaxInt(pDX, mCandidates, 0, 32);
+	DDX_Check(pDX, IDC_CHECK_USE_MIGEMO, mIsUseMigemo);
+	DDX_Check(pDX, IDC_CHECK_USEURL2, mIsUseURLForHistory);
 }
 
 BEGIN_MESSAGE_MAP(AppSettingBookmarkPage, SettingPage)
 	ON_COMMAND(IDC_CHECK_ENABLE_BOOKMARKS, OnCheckEnable)
+	ON_COMMAND(IDC_CHECK_ENABLE_HISTORY_CHROME, OnCheckEnable)
+	ON_COMMAND(IDC_CHECK_ENABLE_HISTORY_EDGE, OnCheckEnable)
 END_MESSAGE_MAP()
 
 
@@ -74,6 +87,14 @@ BOOL AppSettingBookmarkPage::OnInitDialog()
 bool AppSettingBookmarkPage::UpdateStatus()
 {
 	GetDlgItem(IDC_CHECK_USEURL)->EnableWindow(mIsEnableBookmarks);
+
+	BOOL isUseHistory = mIsEnableHistoryChrome || mIsEnableHistoryEdge;
+
+	GetDlgItem(IDC_EDIT_TIMEOUT)->EnableWindow(isUseHistory);
+	GetDlgItem(IDC_EDIT_CANDIDATES)->EnableWindow(isUseHistory);
+	GetDlgItem(IDC_CHECK_USE_MIGEMO)->EnableWindow(isUseHistory);
+	GetDlgItem(IDC_CHECK_USEURL2)->EnableWindow(isUseHistory);
+
 	return true;
 }
 
@@ -85,6 +106,10 @@ void AppSettingBookmarkPage::OnEnterSettings()
 	mIsUseURL = settingsPtr->Get(_T("Bookmarks:UseURL"), true);
 	mIsEnableHistoryChrome = settingsPtr->Get(_T("Browser::EnableHistoryChrome"), false);
 	mIsEnableHistoryEdge = settingsPtr->Get(_T("Browser::EnableHistoryEdge"), false);
+	mTimeout = settingsPtr->Get(_T("Browser::Timeout"), 150);
+	mCandidates = settingsPtr->Get(_T("Browser::Candidates"), 8);
+	mIsUseMigemo = settingsPtr->Get(_T("Browser::UseMigemo"), false);
+	mIsUseURLForHistory = settingsPtr->Get(_T("Browser::UseURL"), true);
 }
 
 void AppSettingBookmarkPage::OnCheckEnable()

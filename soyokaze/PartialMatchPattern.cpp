@@ -20,6 +20,7 @@ struct PartialMatchPattern::PImpl
 	CString mFirstWord;
 	CString mWholeText;
 	bool mHasError;
+	bool mIsUseMigemoForHistory;
 
 	Migemo mMigemo;
 };
@@ -40,6 +41,7 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 			in->mMigemo.Open(dictPath);
 		}
 	}
+	in->mIsUseMigemoForHistory = pref->IsUseMigemoForBrowserHistory();
 }
 
 PartialMatchPattern::~PartialMatchPattern()
@@ -136,9 +138,13 @@ void PartialMatchPattern::SetParam(
 				in->mMigemo.Query(token, migemoExpr);
 				patterns.push_back(std::wregex(std::wstring((const wchar_t*)migemoExpr), std::regex_constants::icase));
 
-				// ↓ChromiumBrowseHistory用のデータ。重くなるのでいったん無効化する。非同期絞り込みをサポートしたら有効化する
-				//words.push_back(WORD(migemoExpr, Pattern::RegExp));
-				words.push_back(WORD(token, Pattern::FixString));
+				// ↓ChromiumBrowseHistory用のデータ。
+				if (in->mIsUseMigemoForHistory) {
+					words.push_back(WORD(migemoExpr, Pattern::RegExp));
+				}
+				else {
+					words.push_back(WORD(token, Pattern::FixString));
+				}
 			}
 			else {
 				std::wstring escapedPat = Pattern::StripEscapeChars(token);

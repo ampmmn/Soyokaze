@@ -588,6 +588,26 @@ bool AppPreference::IsEnableHistoryEdge()
 	return in->mSettings.Get(_T("Browser::EnableHistoryEdge"), false);
 }
 
+int AppPreference::GetBrowserHistoryTimeout()
+{
+	return in->mSettings.Get(_T("Browser::Timeout"), 150);
+}
+
+int AppPreference::GetBrowserHistoryCandidates()
+{
+	return in->mSettings.Get(_T("Browser::Candidates"), 8);
+}
+
+bool AppPreference::IsUseMigemoForBrowserHistory()
+{
+	return in->mSettings.Get(_T("Browser::UseMigemo"), false);
+}
+
+bool AppPreference::IsUseURLForBrowserHistory()
+{
+	return in->mSettings.Get(_T("Browser::UseURL"), true);
+}
+
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);

@@ -18,12 +18,12 @@ public:
 	};
 
 public:
-	ChromiumBrowseHistory(const CString& id, const CString& profileDir);
+	ChromiumBrowseHistory(const CString& id, const CString& profileDir, bool isUseURL, bool isUseMigemo);
 	~ChromiumBrowseHistory();
 
 public:
 	void Abort();
-	void Query(Pattern* pattern, std::vector<ITEM>& items, int limit);
+	void Query(Pattern* pattern, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 private:
 	struct PImpl;

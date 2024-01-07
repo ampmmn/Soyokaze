@@ -15,13 +15,23 @@ public:
 	// 機能を利用するか
 	BOOL mIsEnableBookmarks;
 
-	// URLを検索対象とするか?
+	// URLを絞り込み対象とするか?
 	BOOL mIsUseURL;
 
 	// Chromeの履歴検索を有効にする
 	BOOL mIsEnableHistoryChrome;
 	// Edgeの履歴検索を有効にする
 	BOOL mIsEnableHistoryEdge;
+
+	// クエリのタイムアウト(msec)
+	int mTimeout;
+	// 候補の件数上限
+	int mCandidates;
+	// Migemo検索を使用するか?
+	BOOL mIsUseMigemo;
+	// 履歴のURLを絞り込み対象にするか?
+	BOOL mIsUseURLForHistory;
+
 
 protected:
 	bool UpdateStatus();
