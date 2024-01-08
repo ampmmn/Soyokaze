@@ -114,6 +114,8 @@
 #define IDS_SNIPPETCOMMAND              173
 #define IDD_APPSETTING_PATHCONVERT      173
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  174
+#define IDD_GROUP1                      174
+#define IDD_SIMPLEDICT                  174
 #define IDS_ERR_TEXTISEMPTY             175
 #define IDS_WINDOWTITLE                 176
 #define IDS_WINDOWCLASS                 177
@@ -133,11 +135,15 @@
 #define IDC_EDIT_NAME                   1007
 #define IDC_EDIT_DESCRIPTION            1008
 #define IDC_CHECK_RUNASADMIN            1009
+#define IDC_EDIT_FILEPATH               1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
+#define IDC_EDIT_FRONT                  1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_CHECK_SHOWARGINPUT          1011
+#define IDC_EDIT_BACK                   1011
 #define IDC_BUTTON_BROWSEFILE1          1012
+#define IDC_EDIT_SHEETNAME              1012
 #define IDC_BUTTON_BROWSEDIR1           1013
 #define IDC_BUTTON_BROWSEFILE3          1013
 #define IDC_BUTTON_BROWSEFILE2          1014
@@ -296,6 +302,12 @@
 #define IDC_EDIT_TIMEOUT                1140
 #define IDC_EDIT2                       1141
 #define IDC_EDIT_CANDIDATES             1141
+#define IDC_BUTTON_IMPORTFRONT          1141
+#define IDC_BUTTON_IMPORTBACK           1142
+#define IDC_LIST_PREVIEW                1143
+#define IDC_CHECK_FIRSTLINEISHEADER     1144
+#define IDC_CHECK_FIRSTROWISHEADER      1144
+#define IDC_STATIC_RECORDS              1145
 
 // Next default values for new objects
 // 
@@ -303,7 +315,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1141
+#define _APS_NEXT_CONTROL_VALUE         1146
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -759,6 +759,33 @@ BEGIN
     LTEXT           "file:///c:/path/to/... -> c:\\path\\to\\...",IDC_STATIC,31,56,263,8
 END
 
+IDD_SIMPLEDICT DIALOGEX 0, 0, 337, 320
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "簡易辞書コマンドの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,154,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,154,14,ES_AUTOHSCROLL
+    LTEXT           "Excelファイル内の任意の範囲のデータを簡易的な辞書として利用することができるコマンドです",IDC_STATIC,13,64,302,12
+    LTEXT           "Excelファイル(&F):",IDC_STATIC,13,119,87,8
+    EDITTEXT        IDC_EDIT_FILEPATH,104,117,152,14,ES_AUTOHSCROLL
+    LTEXT           "【設定の手引き】\n1.Excelで辞書として利用したいデータを開く\n2.辞書データとして使いたいセル範囲を選択する\n3.取得ボタンを押すと、Excel上で選択しているファイル／セル範囲が取得されます",IDC_STATIC,13,79,302,35
+    LTEXT           "シート名(&F):",IDC_STATIC,14,139,40,8
+    EDITTEXT        IDC_EDIT_SHEETNAME,104,137,151,14,ES_AUTOHSCROLL
+    LTEXT           "データ範囲(&R):",IDC_STATIC,13,156,48,8
+    EDITTEXT        IDC_EDIT_FRONT,104,155,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "取得(&I)",IDC_BUTTON_IMPORTFRONT,257,116,50,14
+    CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,180,111,10
+    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,258,179,50,14
+    CONTROL         "",IDC_LIST_PREVIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,199,302,92
+    DEFPUSHBUTTON   "OK",IDOK,226,299,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,299,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+    LTEXT           " ",IDC_STATIC_RECORDS,15,300,193,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1058,6 +1085,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 278
+    END
+
+    IDD_SIMPLEDICT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 313
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1514,6 +1549,31 @@ END
 IDD_APPSETTING_PATHCONVERT AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_SIMPLEDICT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 100,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0
 END
 
 

@@ -681,6 +681,30 @@
     <ClInclude Include="commands\bookmarks\URLCommand.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
+    <ClInclude Include="commands\simple_dict\ExcelWrapper.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictCommand.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictEditDialog.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictParam.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictProvider.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictCommandUpdateListenerIF.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictDatabase.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictAdhocCommand.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1228,6 +1252,24 @@
     </ClCompile>
     <ClCompile Include="commands\bookmarks\URLCommand.cpp">
       <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\ExcelWrapper.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictCommand.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictEditDialog.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictProvider.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictDatabase.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictAdhocCommand.cpp">
+      <Filter>commands\simple_dict</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

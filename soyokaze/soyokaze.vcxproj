@@ -647,6 +647,14 @@
     <ClInclude Include="commands\shellexecute\ShellExecCommandProvider.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditDetailPage.h" />
     <ClInclude Include="commands\shellexecute\ShellExecSettingDialog.h" />
+    <ClInclude Include="commands\simple_dict\ExcelWrapper.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictAdhocCommand.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictCommand.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictCommandUpdateListenerIF.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictDatabase.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictEditDialog.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictParam.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictProvider.h" />
     <ClInclude Include="commands\snippet\RegisterSnippetCommand.h" />
     <ClInclude Include="commands\snippet\SnippetCommand.h" />
     <ClInclude Include="commands\snippet\SnippetCommandEditDialog.h" />
@@ -847,6 +855,12 @@
     <ClCompile Include="commands\shellexecute\ShellExecCommandProvider.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditDetailPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecSettingDialog.cpp" />
+    <ClCompile Include="commands\simple_dict\ExcelWrapper.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictAdhocCommand.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictCommand.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictDatabase.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictEditDialog.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictProvider.cpp" />
     <ClCompile Include="commands\snippet\RegisterSnippetCommand.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommand.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditDialog.cpp" />
