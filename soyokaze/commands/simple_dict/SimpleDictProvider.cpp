@@ -49,6 +49,7 @@ SimpleDictProvider::SimpleDictProvider() : in(std::make_unique<PImpl>())
 SimpleDictProvider::~SimpleDictProvider()
 {
 	for (auto command : in->mCommands) {
+		command->RemoveListener(in->mDatabase.get());
 		command->Release();
 	}
 }
@@ -86,7 +87,7 @@ void SimpleDictProvider::LoadCommands(CommandFile* cmdFile)
 		cmdRepo->RegisterCommand(command);
 
 		in->mCommands.push_back(command);
-		//command->AddRef();
+		command->AddRef();
 
 		command->AddListener(in->mDatabase.get());
 
