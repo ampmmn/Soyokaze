@@ -5,7 +5,6 @@
 #include "core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
-#include "utility/PythonDLL.h"
 #include "AppPreference.h"
 #include "IconLoader.h"
 #include "resource.h"
@@ -159,17 +158,7 @@ void CommandEditDialog::OnOK()
 		return ;
 	}
 
-	PythonDLL python;
-	python.SetDLLPath(AppPreference::Get()->GetPythonDLLPath());
-
-	CString result;
-	if (python.SingleInput(mText, result) == false) {
-		AfxMessageBox(_T("err"));
-		return;
-	}
-	AfxMessageBox(result);
-
-	//__super::OnOK();
+	__super::OnOK();
 }
 
 void CommandEditDialog::OnButtonHotKey()
