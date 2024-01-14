@@ -4,6 +4,7 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/simple_dict/SimpleDictCommandUpdateListenerIF.h"
 #include "core/CommandRepository.h"
+#include "core/CommandRepositoryListenerIF.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
@@ -18,8 +19,21 @@ namespace soyokaze {
 namespace commands {
 namespace simple_dict {
 
-struct SimpleDictCommand::PImpl
+using CommandRepositoryListenerIF = soyokaze::core::CommandRepositoryListenerIF;
+
+struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 {
+	void OnDeleteCommand(Command* command) override
+	{
+		if (command != mThisPtr) {
+			return;
+		}
+		for (auto listener : mListeners) {
+			listener->OnDeleteCommand(mThisPtr);
+		}
+	}
+
+	SimpleDictCommand* mThisPtr;
 	SimpleDictParam mParam;
 	uint32_t mRefCount = 1;
 
@@ -31,13 +45,15 @@ CString SimpleDictCommand::GetType() { return _T("SimpleDict"); }
 
 SimpleDictCommand::SimpleDictCommand() : in(std::make_unique<PImpl>())
 {
+	in->mThisPtr = this;
+	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepo->RegisterListener(in.get());
 }
 
 SimpleDictCommand::~SimpleDictCommand()
 {
-	for (auto listener : in->mListeners) {
-		listener->OnDeleteCommand(this);
-	}
+	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	cmdRepo->UnregisterListener(in.get());
 }
 
 void SimpleDictCommand::AddListener(CommandUpdateListenerIF* listener)
@@ -150,6 +166,7 @@ SimpleDictCommand::Clone()
 	auto clonedCmd = std::make_unique<SimpleDictCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
+	clonedCmd->in->mListeners = in->mListeners;
 
 	return clonedCmd.release();
 }
