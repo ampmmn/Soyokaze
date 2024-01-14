@@ -664,6 +664,8 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h" />
     <ClInclude Include="commands\timespan\TimespanCommand.h" />
     <ClInclude Include="commands\timespan\TimespanCommandProvider.h" />
+    <ClInclude Include="commands\unitconvert\InchAdhocCommand.h" />
+    <ClInclude Include="commands\unitconvert\UnitConvertProvider.h" />
     <ClInclude Include="commands\uwp\UWPApplicationItem.h" />
     <ClInclude Include="commands\uwp\UWPApplications.h" />
     <ClInclude Include="commands\uwp\UWPCommand.h" />
@@ -871,6 +873,8 @@
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommand.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp" />
+    <ClCompile Include="commands\unitconvert\InchAdhocCommand.cpp" />
+    <ClCompile Include="commands\unitconvert\UnitConvertProvider.cpp" />
     <ClCompile Include="commands\uwp\UWPApplications.cpp" />
     <ClCompile Include="commands\uwp\UWPCommand.cpp" />
     <ClCompile Include="commands\uwp\UWPCommandProvider.cpp" />

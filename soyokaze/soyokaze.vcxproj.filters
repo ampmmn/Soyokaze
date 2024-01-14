@@ -106,6 +106,9 @@
     <Filter Include="commands\pathconvert">
       <UniqueIdentifier>{599cba8c-77d6-4632-b489-4276f1947bd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\unitconvert">
+      <UniqueIdentifier>{284c33ba-8f10-451d-b44d-045dc401ea03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -705,6 +708,12 @@
     <ClInclude Include="commands\simple_dict\SimpleDictAdhocCommand.h">
       <Filter>commands\simple_dict</Filter>
     </ClInclude>
+    <ClInclude Include="commands\unitconvert\InchAdhocCommand.h">
+      <Filter>commands\unitconvert</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\unitconvert\UnitConvertProvider.h">
+      <Filter>commands\unitconvert</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1270,6 +1279,12 @@
     </ClCompile>
     <ClCompile Include="commands\simple_dict\SimpleDictAdhocCommand.cpp">
       <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\unitconvert\InchAdhocCommand.cpp">
+      <Filter>commands\unitconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\unitconvert\UnitConvertProvider.cpp">
+      <Filter>commands\unitconvert</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
