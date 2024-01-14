@@ -51,7 +51,7 @@ BOOL UWPCommand::Execute(const Parameter& param)
 		paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem->mAppID);
 	}
 	else {
-		paramStr.Format(_T("/c start \"\" %s"), in->mItem->mAppID);
+		paramStr.Format(_T("/c start \"\" \"%s\""), in->mItem->mAppID);
 	}
 
 	SubProcess::ProcessPtr process;
