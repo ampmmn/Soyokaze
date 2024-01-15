@@ -12,6 +12,7 @@
 #include "commands/builtin/RegistWinCommand.h"
 #include "commands/builtin/ChangeDirectoryCommand.h"
 #include "commands/builtin/DeleteCommand.h"
+#include "commands/builtin/EmptyRecycleBinCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "core/CommandHotKeyManager.h"
@@ -53,6 +54,7 @@ struct BuiltinCommandProvider::PImpl
 		mFactoryMap[RegistWinCommand::TYPE] = [](LPCTSTR name) { return new RegistWinCommand(name); };
 		mFactoryMap[ChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
 		mFactoryMap[DeleteCommand::TYPE] = [](LPCTSTR name) { return new DeleteCommand(name); };
+		mFactoryMap[EmptyRecycleBinCommand::TYPE] = [](LPCTSTR name) { return new EmptyRecycleBinCommand(name); };
 
 		mIsFirstCall = false;
 	}

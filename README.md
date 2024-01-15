@@ -62,16 +62,18 @@ bluewindのReadMeから抜粋
   - 新規コマンド登録画面を表示する
 - edit
   - 既存コマンド編集画面を表示する
+- emptyrecyclebin
+  - ごみ箱を空にする
 - manager
   - キーワードマネージャ画面を表示する
 - setting
   - アプリケーション設定画面を表示する
 - exit
-  - `soyokaze`を終了
+  - アプリケーションを終了する
 - registwin
   - 直前にアクティブなウインドウをコマンドとして登録する
 - maindir
-  - `soyokaze.exe`のあるフォルダを表示する
+  - アプリの実行ファイルがあるフォルダを表示する
 - userdir
   - 設定ファイルの保存先フォルダ(C:/Users/(ユーザ名)/.soyokaze)を表示する
 - reload
@@ -189,6 +191,12 @@ soyokaze-src/
 - ユニットテスト拡充
 
 ## ChangeLog
+
+### 0.17.0
+
+2024/01/xx
+
+- `emptyrecyclebin`(ごみ箱を空にするコマンド)を追加
 
 ### 0.16.0
 

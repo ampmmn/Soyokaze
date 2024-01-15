@@ -714,6 +714,9 @@
     <ClInclude Include="commands\unitconvert\UnitConvertProvider.h">
       <Filter>commands\unitconvert</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\EmptyRecycleBinCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1285,6 +1288,9 @@
     </ClCompile>
     <ClCompile Include="commands\unitconvert\UnitConvertProvider.cpp">
       <Filter>commands\unitconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\EmptyRecycleBinCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

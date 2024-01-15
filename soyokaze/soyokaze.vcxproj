@@ -591,6 +591,7 @@
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\DeleteCommand.h" />
+    <ClInclude Include="commands\builtin\EmptyRecycleBinCommand.h" />
     <ClInclude Include="commands\calculator\Calculator.h" />
     <ClInclude Include="commands\calculator\CalculatorAdhocCommandProvider.h" />
     <ClInclude Include="commands\calculator\CalculatorCommand.h" />
@@ -793,6 +794,7 @@
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\DeleteCommand.cpp" />
+    <ClCompile Include="commands\builtin\EmptyRecycleBinCommand.cpp" />
     <ClCompile Include="commands\calculator\Calculator.cpp" />
     <ClCompile Include="commands\calculator\CalculatorAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\calculator\CalculatorCommand.cpp" />
