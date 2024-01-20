@@ -13,6 +13,12 @@
 #include "commands/builtin/ChangeDirectoryCommand.h"
 #include "commands/builtin/DeleteCommand.h"
 #include "commands/builtin/EmptyRecycleBinCommand.h"
+#include "commands/builtin/LogOffCommand.h"
+#include "commands/builtin/ShutdownCommand.h"
+#include "commands/builtin/RebootCommand.h"
+#include "commands/builtin/LockScreenCommand.h"
+#include "commands/builtin/StandbyCommand.h"
+#include "commands/builtin/SuspendCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "core/CommandHotKeyManager.h"
@@ -55,6 +61,12 @@ struct BuiltinCommandProvider::PImpl
 		mFactoryMap[ChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
 		mFactoryMap[DeleteCommand::TYPE] = [](LPCTSTR name) { return new DeleteCommand(name); };
 		mFactoryMap[EmptyRecycleBinCommand::TYPE] = [](LPCTSTR name) { return new EmptyRecycleBinCommand(name); };
+		mFactoryMap[LogOffCommand::TYPE] = [](LPCTSTR name) { return new LogOffCommand(name); };
+		mFactoryMap[ShutdownCommand::TYPE] = [](LPCTSTR name) { return new ShutdownCommand(name); };
+		mFactoryMap[RebootCommand::TYPE] = [](LPCTSTR name) { return new RebootCommand(name); };
+		mFactoryMap[LockScreenCommand::TYPE] = [](LPCTSTR name) { return new LockScreenCommand(name); };
+		mFactoryMap[StandbyCommand::TYPE] = [](LPCTSTR name) { return new StandbyCommand(name); };
+		mFactoryMap[SuspendCommand::TYPE] = [](LPCTSTR name) { return new SuspendCommand(name); };
 
 		mIsFirstCall = false;
 	}

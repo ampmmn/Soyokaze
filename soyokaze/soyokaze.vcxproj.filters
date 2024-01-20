@@ -717,6 +717,24 @@
     <ClInclude Include="commands\builtin\EmptyRecycleBinCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\LogOffCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\ShutdownCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\RebootCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\LockScreenCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\StandbyCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\SuspendCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1290,6 +1308,24 @@
       <Filter>commands\unitconvert</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\EmptyRecycleBinCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\LogOffCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\ShutdownCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\RebootCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\LockScreenCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\StandbyCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\SuspendCommand.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
