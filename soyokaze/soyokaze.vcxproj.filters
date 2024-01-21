@@ -109,6 +109,9 @@
     <Filter Include="commands\unitconvert">
       <UniqueIdentifier>{284c33ba-8f10-451d-b44d-045dc401ea03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\watchpath">
+      <UniqueIdentifier>{f77af849-8b29-49a1-bd4c-d923e73442ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -735,6 +738,18 @@
     <ClInclude Include="commands\builtin\SuspendCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\watchpath\PathWatcher.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathCommand.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathCommandEditDialog.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathCommandProvider.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1327,6 +1342,18 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\SuspendCommand.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\PathWatcher.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathCommand.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathCommandEditDialog.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathCommandProvider.cpp">
+      <Filter>commands\watchpath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

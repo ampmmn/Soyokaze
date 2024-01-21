@@ -117,6 +117,7 @@
 #define IDD_GROUP1                      174
 #define IDD_SIMPLEDICT                  174
 #define IDS_ERR_TEXTISEMPTY             175
+#define IDD_WATCHPATH                   175
 #define IDS_WINDOWTITLE                 176
 #define IDS_WINDOWCLASS                 177
 #define IDS_X                           178

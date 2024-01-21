@@ -786,6 +786,23 @@ BEGIN
     LTEXT           " ",IDC_STATIC_RECORDS,15,300,193,8
 END
 
+IDD_WATCHPATH DIALOGEX 0, 0, 337, 113
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "フォルダ更新検知コマンドの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",-1,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,198,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",-1,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,198,14,ES_AUTOHSCROLL
+    LTEXT           "フォルダのパス(&P):",-1,13,66,65,8
+    EDITTEXT        IDC_EDIT_PATH,104,63,198,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&...",IDC_BUTTON_BROWSEDIR1,302,62,28,14
+    DEFPUSHBUTTON   "OK",IDOK,226,89,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,89,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1093,6 +1110,14 @@ BEGIN
         RIGHTMARGIN, 330
         TOPMARGIN, 7
         BOTTOMMARGIN, 313
+    END
+
+    IDD_WATCHPATH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 106
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1573,6 +1598,21 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0,
+    0, 0, 100, 0
+END
+
+IDD_WATCHPATH AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
     0, 0, 100, 0
 END
 

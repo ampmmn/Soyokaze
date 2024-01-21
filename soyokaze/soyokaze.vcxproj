@@ -679,6 +679,10 @@
     <ClInclude Include="commands\uwp\UWPCommandProvider.h" />
     <ClInclude Include="commands\vmware\VMXFileCommand.h" />
     <ClInclude Include="commands\vmware\VMXFileCommandProvider.h" />
+    <ClInclude Include="commands\watchpath\PathWatcher.h" />
+    <ClInclude Include="commands\watchpath\WatchPathCommand.h" />
+    <ClInclude Include="commands\watchpath\WatchPathCommandEditDialog.h" />
+    <ClInclude Include="commands\watchpath\WatchPathCommandProvider.h" />
     <ClInclude Include="commands\websearch\WebSearchCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandParam.h" />
     <ClInclude Include="commands\websearch\WebSearchProvider.h" />
@@ -894,6 +898,10 @@
     <ClCompile Include="commands\uwp\UWPCommandProvider.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommand.cpp" />
     <ClCompile Include="commands\vmware\VMXFileCommandProvider.cpp" />
+    <ClCompile Include="commands\watchpath\PathWatcher.cpp" />
+    <ClCompile Include="commands\watchpath\WatchPathCommand.cpp" />
+    <ClCompile Include="commands\watchpath\WatchPathCommandEditDialog.cpp" />
+    <ClCompile Include="commands\watchpath\WatchPathCommandProvider.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommand.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommandParam.cpp" />
     <ClCompile Include="commands\websearch\WebSearchProvider.cpp" />
