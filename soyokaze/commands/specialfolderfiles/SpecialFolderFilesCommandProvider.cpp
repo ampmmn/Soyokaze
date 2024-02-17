@@ -52,7 +52,6 @@ REGISTER_COMMANDPROVIDER(SpecialFolderFilesCommandProvider)
 
 SpecialFolderFilesCommandProvider::SpecialFolderFilesCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
 }
 
 SpecialFolderFilesCommandProvider::~SpecialFolderFilesCommandProvider()

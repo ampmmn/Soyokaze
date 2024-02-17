@@ -839,7 +839,7 @@ void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		}
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 
-		SetTimer(TIMERID_KEYSTATE, 100, nullptr);
+		SetTimer(TIMERID_KEYSTATE, 375, nullptr);
 	}
 	else {
 		// 位置情報を更新する
