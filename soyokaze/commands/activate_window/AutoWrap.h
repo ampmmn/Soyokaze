@@ -6,6 +6,41 @@ namespace activate_window {
 
 HRESULT AutoWrap(int autoType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptName, int cArgs...);
 
+
+class DispWrapper
+{
+public:
+	DispWrapper();
+	DispWrapper(IDispatch* disp);
+	~DispWrapper();
+
+	IDispatch** operator &();
+	operator IDispatch*();
+
+	int GetPropertyInt(LPOLESTR name);
+	CString GetPropertyString(LPOLESTR name);
+	CString GetPropertyString(LPOLESTR name, int index);
+	bool GetPropertyObject(LPOLESTR name, DispWrapper& object);
+	bool GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& object);
+	bool GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& object);
+	bool GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper& object);
+
+	int CallIntMethod(LPOLESTR methodName, int defValue);
+
+	bool CallBooleanMethod(LPOLESTR methodName, bool defValue);
+
+	CString CallStringMethod(LPOLESTR methodName, const CString& defValue);
+
+	bool CallObjectMethod(LPOLESTR methodName, DispWrapper& object);
+	bool CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object);
+	bool CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrapper& object);
+
+	void CallVoidMethod(LPOLESTR methodName, IDispatch* param1);
+
+private:
+	CComPtr<IDispatch> mDispPtr;
+};
+
 }
 }
 }

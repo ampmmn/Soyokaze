@@ -62,7 +62,267 @@ HRESULT AutoWrap(
 	return pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, &dp, pvResult, NULL, NULL);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
+DispWrapper::DispWrapper()
+{
+}
+
+DispWrapper::DispWrapper(IDispatch* disp) : mDispPtr(disp)
+{
+	if (disp) {
+		disp->AddRef();
+	}
+}
+
+DispWrapper::~DispWrapper()
+{
+}
+
+IDispatch** DispWrapper::operator &()
+{
+	return &mDispPtr;
+}
+
+DispWrapper::operator IDispatch*()
+{
+	return mDispPtr;
+}
+
+int DispWrapper::GetPropertyInt(
+		LPOLESTR name
+)
+{
+	ASSERT(mDispPtr);
+
+	int val = 0;
+
+	VARIANT result;
+	VariantInit(&result);
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
+	return result.intVal;
+}
+
+CString DispWrapper::GetPropertyString(LPOLESTR name)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
+	return CString(result.bstrVal);
+}
+
+CString DispWrapper::GetPropertyString(LPOLESTR name, int index)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_INT;
+	arg1.intVal = index;
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 1, &arg1);
+	return CString(result.bstrVal);
+}
+
+
+bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
+	object = result.pdispVal;
+
+	return true;
+}
+
+bool DispWrapper::GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_I2;
+	arg1.intVal = index;
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 1, &arg1);
+	object = result.pdispVal;
+
+	return true;
+}
+
+bool DispWrapper::GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_INT;
+	arg1.intVal = index;
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 1, &arg1);
+	object = result.pdispVal;
+
+	return true;
+}
+
+bool DispWrapper::GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	CComBSTR nameStr(argName);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_BSTR;
+	arg1.bstrVal = nameStr;
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 1, &arg1);
+	object = result.pdispVal;
+
+	return true;
+}
+
+
+int DispWrapper::CallIntMethod(LPOLESTR methodName, int defValue)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VariantInit(&result);
+	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
+
+	if (FAILED(hr)) {
+		return defValue;
+	}
+	return result.intVal;
+}
+
+bool DispWrapper::CallBooleanMethod(LPOLESTR methodName, bool defValue)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VariantInit(&result);
+	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
+
+	if (FAILED(hr)) {
+		return defValue;
+	}
+	return result.boolVal;
+}
+
+CString DispWrapper::CallStringMethod(LPOLESTR methodName, const CString& defValue)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VariantInit(&result);
+	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
+
+	if (FAILED(hr)) {
+		return defValue;
+	}
+
+	CComBSTR bstrVal;
+	bstrVal = result.bstrVal;
+	return CString(bstrVal);
+}
+
+bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
+	object = result.pdispVal;
+
+	return  (result.pdispVal != nullptr);
+}
+
+bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	CComBSTR argVal(param1);
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_BSTR;
+	arg1.bstrVal = argVal;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+	object = result.pdispVal;
+
+	return  (result.pdispVal != nullptr);
+}
+
+bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_INT;
+	arg1.intVal = param1;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+	object = result.pdispVal;
+
+	return  (result.pdispVal != nullptr);
+}
+
+void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_DISPATCH;
+	arg1.pdispVal = param1;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+}
 
 }
 }

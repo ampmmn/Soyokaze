@@ -84,68 +84,36 @@ void CalcWorkSheets::PImpl::Update()
 			return ;
 		}
 
-		CComPtr<IDispatch> serviceManager;
+		DispWrapper serviceManager;
 		unkPtr->QueryInterface(&serviceManager);
 
-		VARIANT result;
 		// Desktopを生成する
-		CComPtr<IDispatch> desktop;
-		{
-			CComBSTR argVal(L"com.sun.star.frame.Desktop");
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_BSTR;
-			arg1.bstrVal = argVal;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, serviceManager, L"createInstance", 1, &arg1);
-			desktop = result.pdispVal;
-		}
+		DispWrapper desktop;
+		serviceManager.CallObjectMethod(L"createInstance", L"com.sun.star.frame.Desktop", desktop);
 
 		// ドキュメントのリスト取得
-		CComPtr<IDispatch> components;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, desktop, L"getComponents", 0);
-			components = result.pdispVal;
-		}
+		DispWrapper components;
+		desktop.CallObjectMethod(L"getComponents", components);
 
 		// Enum取得
-		CComPtr<IDispatch> enumulation;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, components, L"createEnumeration", 0);
-			enumulation = result.pdispVal;
-		}
+		DispWrapper enumelation;
+		components.CallObjectMethod(L"createEnumeration", enumelation);
 
 		std::vector<CalcWorksheet*> tmpList;
 
 		bool isLoop = true;
 		while(isLoop) {
 
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, enumulation, L"hasMoreElements", 0);
-				if (!result.boolVal) {
-					break;
-				}
+			// 要素がなければ終了
+			if (enumelation.CallBooleanMethod(L"hasMoreElements", false) == false) {
+				break;
 			}
 
-			CComPtr<IDispatch> doc;
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, enumulation, L"nextElement", 0);
-				doc = result.pdispVal;
-			}
+			DispWrapper doc;
+			enumelation.CallObjectMethod(L"nextElement", doc);
 
 			// ドキュメントのパスを取得
-			CComBSTR bstrVal;
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, doc, L"getURL", 0);
-				bstrVal = result.bstrVal;
-			}
-			CString url = bstrVal;
+			CString url = doc.CallStringMethod(L"getURL", _T(""));
 
 			// 拡張子でファイル種別を判別する
 			CString fileExt = PathFindExtension(url);
@@ -154,42 +122,25 @@ void CalcWorkSheets::PImpl::Update()
 			}
 
 			// シートオブジェクトを取得
-			CComPtr<IDispatch> sheets;
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, doc, L"getSheets", 0);
-				sheets = result.pdispVal;
-			}
+			DispWrapper sheets;
+			doc.CallObjectMethod(L"getSheets", sheets);
 
 			// シート数を得る
-			int sheetCount = 0;
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, sheets, L"getCount", 0);
-				sheetCount = result.intVal;
-			}
+			int sheetCount = sheets.CallIntMethod(L"getCount", 0);
+
+			CComBSTR bstrVal;
 
 			// シート名を列挙する
 			for (int i = 0; i < sheetCount; ++i) {
 
 				Sleep(0);
 
-				VARIANT arg1;
-				VariantInit(&arg1);
-				arg1.vt = VT_INT;
-				arg1.intVal = i;
-
-				CComPtr<IDispatch> sheet;
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, sheets, L"getByIndex", 1, &arg1);
-				sheet = result.pdispVal;
+				// シートオブジェクトを得る
+				DispWrapper sheet;
+				sheets.CallObjectMethod(L"getByIndex", i, sheet);
 
 				// シート名を得る
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"name", 0);
-				bstrVal = result.bstrVal;
-
-				CString sheetName = bstrVal;
+				CString sheetName = sheet.GetPropertyString(L"name");
 
 				tmpList.push_back(new CalcWorksheet(url, sheetName));
 			}
@@ -410,120 +361,67 @@ BOOL CalcWorksheet::Activate(bool isShowMaximize)
 		return FALSE;
 	}
 
-	CComPtr<IDispatch> serviceManager;
+	DispWrapper serviceManager;
 	unkPtr->QueryInterface(&serviceManager);
 
-	VARIANT result;
-
 	// Desktopを生成する
-	CComPtr<IDispatch> desktop;
-	{
-		CComBSTR argVal(_T("com.sun.star.frame.Desktop"));
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
-
-		VariantInit(&result);
-		AutoWrap(DISPATCH_METHOD, &result, serviceManager, L"createInstance", 1, &arg1);
-		desktop = result.pdispVal;
-	}
+	DispWrapper desktop;
+	serviceManager.CallObjectMethod(L"createInstance", L"com.sun.star.frame.Desktop", desktop);
 
 	// ドキュメントのリスト取得
-	CComPtr<IDispatch> components;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_METHOD, &result, desktop, L"getComponents", 0);
-		components = result.pdispVal;
-	}
+	DispWrapper components;
+	desktop.CallObjectMethod(L"getComponents", components);
 
 	// Enum取得
-	CComPtr<IDispatch> enumulation;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_METHOD, &result, components, L"createEnumeration", 0);
-		enumulation = result.pdispVal;
-	}
+	DispWrapper enumeration;
+	components.CallObjectMethod(L"createEnumeration",enumeration); 
 
 	std::vector<CalcWorksheet*> tmpList;
 
-	CComPtr<IDispatch> sheet;
-	CComPtr<IDispatch> controller;
+	DispWrapper sheet;
+	DispWrapper controller;
 
 	// 該当するシートを探す
 	bool isFoundSheet = false;
 
 	bool isLoop = true;
 	while(isLoop) {
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, enumulation, L"hasMoreElements", 0);
-			if (!result.boolVal) {
-				break;
-			}
+		if (enumeration.CallBooleanMethod(L"hasMoreElements", false) == false) {
+			break;
 		}
 
-		CComPtr<IDispatch> doc;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, enumulation, L"nextElement", 0);
-			doc = result.pdispVal;
-		}
+		// 次の要素を取得
+		DispWrapper doc;
+		enumeration.CallObjectMethod(L"nextElement", doc);
 
 		// ドキュメントのパスを取得
-		CComBSTR bstrVal;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, doc, L"getURL", 0);
-			bstrVal = result.bstrVal;
-		}
-		CString url = bstrVal;
+		CString url = doc.CallStringMethod(L"getURL", _T(""));
+
+		// 探しているブックかどうか
 		if (url != in->mBookName) {
 			continue;
 		}
 
 		// シートオブジェクトを取得
-		CComPtr<IDispatch> sheets;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, doc, L"getSheets", 0);
-			sheets = result.pdispVal;
-		}
+		DispWrapper sheets;
+		doc.CallObjectMethod(L"getSheets", sheets);
 
 		// シート数を得る
-		int sheetCount = 0;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, sheets, L"getCount", 0);
-			sheetCount = result.intVal;
-		}
+		int sheetCount = sheets.CallIntMethod(L"getCount", 0);
 
 		// シート名を列挙する
 		for (int i = 0; i < sheetCount; ++i) {
 
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = i;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, sheets, L"getByIndex", 1, &arg1);
-			sheet = result.pdispVal;
+			sheets.CallObjectMethod(L"getByIndex", i, sheet);
 
 			// シート名を得る
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"name", 0);
-			bstrVal = result.bstrVal;
-
-			CString sheetName = bstrVal;
+			CString sheetName = sheet.GetPropertyString(L"name");
 			if (sheetName != in->mSheetName) {
 				continue;
 			}
 
 			// コントローラを得る
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, doc, L"getCurrentController", 0);
-			controller = result.pdispVal;
+			doc.CallObjectMethod(L"getCurrentController", controller);
 
 			isFoundSheet = true;
 			isLoop = false;
@@ -536,14 +434,7 @@ BOOL CalcWorksheet::Activate(bool isShowMaximize)
 	}
 
 	// アクティブなワークシートを変える
-
-	VARIANT arg1;
-	VariantInit(&arg1);
-	arg1.vt = VT_DISPATCH;
-	arg1.pdispVal = (IDispatch*)sheet;
-
-	VariantInit(&result);
-	AutoWrap(DISPATCH_METHOD, &result, controller, L"setActiveSheet", 1, &arg1);
+	controller.CallVoidMethod(L"setActiveSheet", sheet);
 
 	HWND hwndApp = in->FindWindowHandle();
 
