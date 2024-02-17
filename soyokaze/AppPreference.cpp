@@ -560,6 +560,11 @@ bool AppPreference::IsEnableExcelWorksheet()
 	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), true);
 }
 
+bool AppPreference::IsEnablePowerPointSlide()
+{
+	return in->mSettings.Get(_T("PowerPoint:EnableSlide"), false);
+}
+
 // ウインドウの切り替え機能を有効にするか?
 bool AppPreference::IsEnableWindowSwitch()
 {

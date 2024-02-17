@@ -49,28 +49,8 @@ struct OutlookItems::PImpl
 	int mStatus;
 };
 
-static bool GetMailItem(
-	CComPtr<IDispatch>& items,
-	int index,
-	CComPtr<IDispatch>& item
-)
-{
-	VARIANT arg1;
-	VariantInit(&arg1);
-	arg1.vt = VT_INT;
-	arg1.intVal = index;
-
-	VARIANT result;
-	VariantInit(&result);
-
-	HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Item", 1, &arg1);
-	item = result.pdispVal;
-
-	return SUCCEEDED(hr);
-}
-
 static DWORD GetReceivedTime(
-	CComPtr<IDispatch>& item
+	DispWrapper& item
 )
 {
 	union timeunion {
@@ -82,9 +62,7 @@ static DWORD GetReceivedTime(
 	} t;
 
 	VARIANT result;
-	VariantInit(&result);
-	AutoWrap(DISPATCH_PROPERTYGET, &result, item, L"ReceivedTime", 0);
-
+	item.GetPropertyVariant(L"ReceivedTime", result);
 	VariantToDosDateTime(result, &t.st.receivedDate, &t.st.receivedTime);
 
 	return t.dwTime;
@@ -128,45 +106,22 @@ void OutlookItems::PImpl::Update()
 			return ;
 		}
 
-		CComPtr<IDispatch> outlookApp;
+		DispWrapper outlookApp;
 		unkPtr->QueryInterface(&outlookApp);
 
 		VARIANT result;
 
 		// Get MAPI object
-		CComPtr<IDispatch> mapi;
-		{
-			CComBSTR argVal(L"MAPI");
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_BSTR;
-			arg1.bstrVal = argVal;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, outlookApp, L"GetNameSpace", 1, &arg1);
-			mapi = result.pdispVal;
-		}
+		DispWrapper mapi;
+		outlookApp.CallObjectMethod(L"GetNameSpace", L"MAPI", mapi);
 
 		// 受信トレイ(Inbox)のフォルダを取得
-		CComPtr<IDispatch> inboxFolder;
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = 6;   // 6 means olFolderInbox
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, mapi, L"GetDefaultFolder", 1, &arg1);
-			inboxFolder = result.pdispVal;
-		}
+		DispWrapper inboxFolder;
+		mapi.CallObjectMethod(L"GetDefaultFolder", (int32_t)6, inboxFolder);  // 6 means olFolderInbox
 
 		// フォルダのItemsを取得
-		CComPtr<IDispatch> items;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, inboxFolder, L"Items", 0);
-			items = result.pdispVal;
-		}
+		DispWrapper items;
+		inboxFolder.GetPropertyObject(L"Items", items);
 
 		// 受信日時降順でソート
 		{
@@ -186,12 +141,7 @@ void OutlookItems::PImpl::Update()
 		}
 
 		// メール数を取得
-		int itemCount = 0;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Count", 0);
-			itemCount = result.intVal;
-		}
+		int itemCount = items.GetPropertyInt(L"Count");
 
 		if (itemCount == mLastItemCount) {
 			// 前回とメール件数が同じだったら変化がないものとみなす
@@ -217,8 +167,8 @@ void OutlookItems::PImpl::Update()
 			}
 
 			// 要素(MailItem)を取得
-			CComPtr<IDispatch> item;
-			GetMailItem(items, i, item);
+			DispWrapper item;
+			items.GetPropertyObject(L"Item", (int32_t)i, item);
 
 			// 受信日時を見る
 			// 前回処理時に、最新だったメールの受信日時に達したら処理終了
@@ -227,15 +177,8 @@ void OutlookItems::PImpl::Update()
 				break;
 			}
 
-			CComBSTR strVal;
 			// ConversationIDを得る
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, item, L"ConversationID", 0);
-
-				strVal = result.bstrVal;
-			}
-			CString conversationID = strVal;
+			CString conversationID = item.GetPropertyString(L"ConversationID");
 
 			auto it = conversationSet.find(conversationID);
 			if (it != conversationSet.end()) {
@@ -245,20 +188,13 @@ void OutlookItems::PImpl::Update()
 			conversationSet.insert(conversationID);
 
 			// Subjectを得る
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, item, L"Subject", 0);
-
-				strVal = result.bstrVal;
-			}
-
-			CString subject = strVal;
+			CString subject = item.GetPropertyString(L"Subject");
 			tmpList.push_back(new MailItem(conversationID, subject));
 		}
 
 		// 直近のメール受信日時を覚えておく
-		CComPtr<IDispatch> item;
-		GetMailItem(items, 1, item);
+		DispWrapper item;
+		items.GetPropertyObject(L"Item", (int32_t)1, item);
 		mLastReceivedTime = GetReceivedTime(item);
 
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -400,46 +336,23 @@ BOOL MailItem::Activate(bool isShowMaximize)
 		return FALSE;
 	}
 
-	CComPtr<IDispatch> outlookApp;
+	DispWrapper outlookApp;
 	unkPtr->QueryInterface(&outlookApp);
 
 	VARIANT result;
 
 	// Outlook.ApplicationからたどってMailItemを得る
 
-	CComPtr<IDispatch> mapi;
-	{
-		CComBSTR argVal(L"MAPI");
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
-
-		VariantInit(&result);
-		AutoWrap(DISPATCH_METHOD, &result, outlookApp, L"GetNameSpace", 1, &arg1);
-		mapi = result.pdispVal;
-	}
+	DispWrapper mapi;
+	outlookApp.CallObjectMethod(L"GetNameSpace", L"MAPI", mapi);
 
 	// 受信トレイ(Inbox)のフォルダを取得
-	CComPtr<IDispatch> inboxFolder;
-	{
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_INT;
-		arg1.intVal = 6;   // 6 means olFolderInbox
-
-		VariantInit(&result);
-		AutoWrap(DISPATCH_METHOD, &result, mapi, L"GetDefaultFolder", 1, &arg1);
-		inboxFolder = result.pdispVal;
-	}
+	DispWrapper inboxFolder;
+	mapi.CallObjectMethod(L"GetDefaultFolder", (int32_t)6, inboxFolder);   // 6 means olFolderInbox
 
 	// フォルダのItemsを取得
-	CComPtr<IDispatch> items;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, inboxFolder, L"Items", 0);
-		items = result.pdispVal;
-	}
+	DispWrapper items;
+	inboxFolder.GetPropertyObject(L"Items", items);
 
 	// 受信日時降順でソート
 	{
@@ -459,12 +372,7 @@ BOOL MailItem::Activate(bool isShowMaximize)
 	}
 
 	// メール数を取得
-	int itemCount = 0;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, items, L"Count", 0);
-		itemCount = result.intVal;
-	}
+	int itemCount = items.GetPropertyInt(L"Count");
 
 	// メール一つひとつづつみて、ConversationIDが一致するメール要素を探す
 	for (int i = 1; i <= itemCount; ++i) {
@@ -472,54 +380,28 @@ BOOL MailItem::Activate(bool isShowMaximize)
 		Sleep(0);
 
 		// 要素(MailItem)を取得
-		CComPtr<IDispatch> item;
-		GetMailItem(items, i, item);
+		DispWrapper item;
+		items.GetPropertyObject(L"Item", (int32_t)i, item);
 
-		CComBSTR strVal;
 
 		// ConversationIDを得る
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, item, L"ConversationID", 0);
-
-			strVal = result.bstrVal;
-		}
-		CString conversationID = strVal;
-
+		CString conversationID = item.GetPropertyString(L"ConversationID");
 		if (conversationID != in->mConversationID) {
 			continue;
 		}
 
 		// GetConversationでConversation取得
-		CComPtr<IDispatch> conversation;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, item, L"GetConversation", 0);
-			conversation = result.pdispVal;
-		}
+		DispWrapper conversation;
+		item.CallObjectMethod(L"GetConversation", conversation);
 
 		// Conversationオブジェクトからスレッド内メール項目の一覧を取得
-		CComPtr<IDispatch> itemCollection;
-		{
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_DISPATCH;
-			arg1.pdispVal = item;
-
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, conversation, L"GetChildren", 1, &arg1);
-			itemCollection = result.pdispVal;
-		}
+		DispWrapper itemCollection;
+		conversation.CallObjectMethod(L"GetChildren", item, itemCollection);
 
 		// スレッド内メール数を取得
-		int threadItemCount;
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_PROPERTYGET, &result, itemCollection, L"Count", 0);
-			threadItemCount = result.intVal;
-		}
+		int threadItemCount = itemCollection.GetPropertyInt(L"Count");
 
-		CComPtr<IDispatch> latestItem;
+		DispWrapper latestItem;
 		if (threadItemCount == 0) {
 			latestItem = item;
 		}
@@ -528,26 +410,14 @@ BOOL MailItem::Activate(bool isShowMaximize)
 		WORD lastReceivedDate = 0;
 		WORD lastReceivedTime = 0;
 		for (int j = 1; j <= threadItemCount; ++j) {
-			CComPtr<IDispatch> childItem;
-			{
-				VARIANT arg1;
-				VariantInit(&arg1);
-				arg1.vt = VT_INT;
-				arg1.intVal = j;
-
-				VariantInit(&result);
-				AutoWrap(DISPATCH_METHOD, &result, itemCollection, L"Item", 1, &arg1);
-				childItem = result.pdispVal;
-			}
+			DispWrapper childItem;
+			itemCollection.CallObjectMethod(L"Item", (int32_t)j, childItem);
 
 			// 受信日時が最も最近のもの
 			WORD receivedDate;
 			WORD receivedTime;
-			{
-				VariantInit(&result);
-				AutoWrap(DISPATCH_PROPERTYGET, &result, childItem, L"ReceivedTime", 0);
-				VariantToDosDateTime(result, &receivedDate, &receivedTime);
-			}
+			childItem.GetPropertyVariant(L"ReceivedTime", result);
+			VariantToDosDateTime(result, &receivedDate, &receivedTime);
 
 			if (receivedDate < lastReceivedDate) {
 				continue;
@@ -567,10 +437,7 @@ BOOL MailItem::Activate(bool isShowMaximize)
 		}
 
 		// スレッドの最新のメールをポップアップで表示
-		{
-			VariantInit(&result);
-			AutoWrap(DISPATCH_METHOD, &result, latestItem, L"Display", 0);
-		}
+		latestItem.CallVoidMethod(L"Display");
 		break;
 	}
 	return TRUE;

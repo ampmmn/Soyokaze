@@ -17,6 +17,8 @@ public:
 	IDispatch** operator &();
 	operator IDispatch*();
 
+	void GetPropertyVariant(LPOLESTR name, VARIANT& value);
+
 	int GetPropertyInt(LPOLESTR name);
 	CString GetPropertyString(LPOLESTR name);
 	CString GetPropertyString(LPOLESTR name, int index);
@@ -32,10 +34,15 @@ public:
 	CString CallStringMethod(LPOLESTR methodName, const CString& defValue);
 
 	bool CallObjectMethod(LPOLESTR methodName, DispWrapper& object);
+	bool CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, DispWrapper& object);
 	bool CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object);
 	bool CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrapper& object);
+	bool CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrapper& object);
 
+	void CallVoidMethod(LPOLESTR methodName);
 	void CallVoidMethod(LPOLESTR methodName, IDispatch* param1);
+	void CallVoidMethod(LPOLESTR methodName, int16_t param1);
+	void CallVoidMethod(LPOLESTR methodName, bool param1);
 
 private:
 	CComPtr<IDispatch> mDispPtr;

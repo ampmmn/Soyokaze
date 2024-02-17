@@ -645,6 +645,10 @@
     <ClInclude Include="commands\pathconvert\P4PathConvertAdhocCommand.h" />
     <ClInclude Include="commands\pathconvert\PathConvertProvider.h" />
     <ClInclude Include="commands\pathfind\PathExeAdhocCommandProvider.h" />
+    <ClInclude Include="commands\presentation\PowerPointWindow.h" />
+    <ClInclude Include="commands\presentation\PptJumpCommand.h" />
+    <ClInclude Include="commands\presentation\PresentationProvider.h" />
+    <ClInclude Include="commands\presentation\Presentations.h" />
     <ClInclude Include="commands\regexp\RegExpCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditDialog.h" />
     <ClInclude Include="commands\regexp\RegExpCommandProvider.h" />
@@ -865,6 +869,10 @@
     <ClCompile Include="commands\pathconvert\P4PathConvertAdhocCommand.cpp" />
     <ClCompile Include="commands\pathconvert\PathConvertProvider.cpp" />
     <ClCompile Include="commands\pathfind\PathExeAdhocCommandProvider.cpp" />
+    <ClCompile Include="commands\presentation\PowerPointWindow.cpp" />
+    <ClCompile Include="commands\presentation\PptJumpCommand.cpp" />
+    <ClCompile Include="commands\presentation\PresentationProvider.cpp" />
+    <ClCompile Include="commands\presentation\Presentations.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditDialog.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandProvider.cpp" />

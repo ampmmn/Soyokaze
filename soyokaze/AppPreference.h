@@ -66,6 +66,7 @@ public:
 	CString GetPythonDLLPath();
 
 	bool IsEnableExcelWorksheet();
+	bool IsEnablePowerPointSlide();
 
 	// ウインドウの切り替え機能を有効にするか?
 	bool IsEnableWindowSwitch();

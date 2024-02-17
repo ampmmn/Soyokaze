@@ -55,7 +55,7 @@ static bool GetExcelApplication(CComPtr<IDispatch>& excelApp)
 		return true;
 }
 
-static bool CreateExcelApplication(CComPtr<IDispatch>& excelApp)
+static bool CreateExcelApplication(DispWrapper& excelApp)
 {
 		// ExcelのCLSIDを得る
 		CLSID clsid;
@@ -271,14 +271,14 @@ int ExcelApplication::GetCellText(
 	std::vector<CString>& texts
 )
 {
-	CComPtr<IDispatch> excelApp;
+	DispWrapper excelApp;
 	if (CreateExcelApplication(excelApp) == false) {
 		return -1;
 	}
 
 	// 関数を抜けるときにExcelを終了する
 	struct local_quit {
-		local_quit(CComPtr<IDispatch>& dispPtr) : mDisp(dispPtr) {}
+		local_quit(DispWrapper& dispPtr) : mDisp(dispPtr) {}
 		~local_quit() {
 			VARIANT result;
 			VariantInit(&result);
@@ -290,22 +290,18 @@ int ExcelApplication::GetCellText(
 
 			hr = AutoWrap(DISPATCH_METHOD, &result, mDisp, L"Quit", 0);
 		}
-		CComPtr<IDispatch> mDisp;
+		DispWrapper mDisp;
 	} _quit_(excelApp);
+
+
+	DispWrapper workBooks;
+	if (excelApp.GetPropertyObject(L"WorkBooks", workBooks) == false) {
+		return -2;
+	}
 
 	VARIANT result;
 
-	CComPtr<IDispatch> workBooks;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"WorkBooks", 0);
-		if (FAILED(hr)) {
-			return -2;
-		}
-	}
-	workBooks = result.pdispVal;
-
-	CComPtr<IDispatch> workBook;
+	DispWrapper workBook;
 	{
 		VariantInit(&result);
 
@@ -333,108 +329,46 @@ int ExcelApplication::GetCellText(
 	workBook = result.pdispVal;
 
 	struct local_close {
-		local_close(CComPtr<IDispatch>& dispPtr) : mDisp(dispPtr) {}
+		local_close(DispWrapper& dispPtr) : mDisp(dispPtr) {}
 		~local_close() {
-			VARIANT result;
-			VariantInit(&result);
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_BOOL;
-			arg1.boolVal = VARIANT_FALSE;
-			HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, mDisp, L"Close", 1, &arg1);
+			mDisp.CallVoidMethod(L"Close", false);
 		}
-		CComPtr<IDispatch> mDisp;
+		DispWrapper mDisp;
 	} _close_(workBook);
 
-	CComPtr<IDispatch> workSheets;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, workBook, L"WorkSheets", 0);
-		if (FAILED(hr)) {
-			return -4;
-		}
+	DispWrapper workSheets;
+	if (workBook.GetPropertyObject(L"WorkSheets", workSheets) == false)  {
+		return -4;
 	}
-	workSheets = result.pdispVal;
 
-	CComPtr<IDispatch> workSheet;
-	{
-		VariantInit(&result);
-
-		CComBSTR argVal(sheetName);
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
-
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, workSheets, L"Item", 1, &arg1);
-		if (FAILED(hr)) {
-			return -5;
-		}
+	DispWrapper workSheet;
+	if (workSheets.GetPropertyObject(L"Item", (LPOLESTR)(LPCOLESTR)sheetName, workSheet) == false) {
+		return -5;
 	}
-	workSheet = result.pdispVal;
 
-	CComPtr<IDispatch> range;
-	{
-		VariantInit(&result);
-
-		CComBSTR argVal(address);
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
-
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, workSheet, L"Range", 1, &arg1);
-		if (FAILED(hr)) {
-			return -6;
-		}
+	DispWrapper range;
+	if (workSheet.GetPropertyObject(L"Range", (LPOLESTR)(LPCOLESTR)address, range) == false) {
+		return -6;
 	}
-	range = result.pdispVal;
 
-	CComPtr<IDispatch> rows;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, range, L"Rows", 0);
-		if (FAILED(hr)) {
-			return -7;
-		}
+	DispWrapper rows;
+	if (range.GetPropertyObject(L"Rows", rows) == false) {
+		return -7;
 	}
-	rows = result.pdispVal;
 
-	CComPtr<IDispatch> cols;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, range, L"Columns", 0);
-		if (FAILED(hr)) {
-			return -8;
-		}
+	DispWrapper cols;
+	if (range.GetPropertyObject(L"Columns", cols) == false) {
+		return -8;
 	}
-	cols = result.pdispVal;
 
-	int row_count = 0;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, rows, L"Count", 0);
-		if (FAILED(hr)) {
-			return -9;
-		}
-	}
-	row_count = result.intVal;
-
-	int col_count = 0;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, cols, L"Count", 0);
-		if (FAILED(hr)) {
-			return -10;
-		}
-	}
-	col_count = result.intVal;
+	int row_count = rows.GetPropertyInt(L"Count");
+	int col_count = cols.GetPropertyInt(L"Count");
 
 	CString line;
 
 	int emptyCount = 0;
 
-	CComPtr<IDispatch> cell;
+	DispWrapper cell;
 	for (int row = 1; row <= row_count; ++row) {
 		if (emptyCount >= 5) {
 			break;
@@ -459,14 +393,7 @@ int ExcelApplication::GetCellText(
 			}
 			cell = result.pdispVal;
 
-			VariantInit(&result);
-			hr = AutoWrap(DISPATCH_PROPERTYGET, &result, cell, L"Text", 0);
-			if (FAILED(hr)) {
-				return -12;
-			}
-
-			CComBSTR text_ = result.bstrVal;
-			CString text = text_;
+			CString text = cell.GetPropertyString(L"Text");
 
 			if (line.IsEmpty() == FALSE) {
 				line += _T(" ");

@@ -112,6 +112,9 @@
     <Filter Include="commands\watchpath">
       <UniqueIdentifier>{f77af849-8b29-49a1-bd4c-d923e73442ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\presentation">
+      <UniqueIdentifier>{8f298638-3ce8-424a-8a6c-d997ce6bd4a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -750,6 +753,18 @@
     <ClInclude Include="commands\watchpath\WatchPathCommandProvider.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
+    <ClInclude Include="commands\presentation\PresentationProvider.h">
+      <Filter>commands\presentation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\presentation\Presentations.h">
+      <Filter>commands\presentation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\presentation\PptJumpCommand.h">
+      <Filter>commands\presentation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\presentation\PowerPointWindow.h">
+      <Filter>commands\presentation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1354,6 +1369,18 @@
     </ClCompile>
     <ClCompile Include="commands\watchpath\WatchPathCommandProvider.cpp">
       <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\presentation\PresentationProvider.cpp">
+      <Filter>commands\presentation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\presentation\Presentations.cpp">
+      <Filter>commands\presentation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\presentation\PptJumpCommand.cpp">
+      <Filter>commands\presentation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\presentation\PowerPointWindow.cpp">
+      <Filter>commands\presentation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

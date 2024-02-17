@@ -91,6 +91,15 @@ DispWrapper::operator IDispatch*()
 	return mDispPtr;
 }
 
+
+void DispWrapper::GetPropertyVariant(LPOLESTR name, VARIANT& value)
+{
+	ASSERT(mDispPtr);
+
+	VariantInit(&value);
+	AutoWrap(DISPATCH_PROPERTYGET, &value, mDispPtr, name, 0);
+}
+
 int DispWrapper::GetPropertyInt(
 		LPOLESTR name
 )
@@ -141,8 +150,11 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
 	VARIANT result;
 	VariantInit(&result);
 
-	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
-	object = result.pdispVal;
+	HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
+	if (FAILED(hr)) {
+		return false;
+	}
+	object = result.pdispVal;	
 
 	return true;
 }
@@ -269,6 +281,25 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
 	return  (result.pdispVal != nullptr);
 }
 
+bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_DISPATCH;
+	arg1.pdispVal = param1;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+	object = result.pdispVal;
+
+	return  (result.pdispVal != nullptr);
+}
+
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object)
 {
 	ASSERT(mDispPtr);
@@ -308,6 +339,34 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrap
 	return  (result.pdispVal != nullptr);
 }
 
+bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrapper& object)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_I2;
+	arg1.intVal = param1;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+	object = result.pdispVal;
+
+	return  (result.pdispVal != nullptr);
+}
+
+void DispWrapper::CallVoidMethod(LPOLESTR methodName)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
+}
+
 void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
 {
 	ASSERT(mDispPtr);
@@ -323,6 +382,39 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
 	VariantInit(&result);
 	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
 }
+
+void DispWrapper::CallVoidMethod(LPOLESTR methodName, int16_t param1)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_I2;
+	arg1.intVal = param1;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+}
+
+void DispWrapper::CallVoidMethod(LPOLESTR methodName, bool param1)
+{
+	ASSERT(mDispPtr);
+
+	VARIANT result;
+	VariantInit(&result);
+
+	VARIANT arg1;
+	VariantInit(&arg1);
+	arg1.vt = VT_BOOL;
+	arg1.boolVal = param1 ? VARIANT_TRUE : VARIANT_FALSE;
+
+	VariantInit(&result);
+	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
+}
+
 
 }
 }
