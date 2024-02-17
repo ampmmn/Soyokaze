@@ -81,6 +81,18 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		std::lock_guard<std::mutex> lock(mMutex);
 		return path != mFilePath || name != mFileName;
 	}
+	bool IsSlideCountChanged(DispWrapper& presentation)
+	{
+		// Slidesを取得
+		DispWrapper slides;
+		presentation.GetPropertyObject(L"Slides", slides);
+
+		// Count
+		int slideCount = slides.GetPropertyInt(L"Count");
+
+		std::lock_guard<std::mutex> lock(mMutex);
+		return slideCount != (int)mItems.size();
+	}
 
 	void OnAppFirstBoot() override {}
 	void OnAppPreferenceUpdated() override
@@ -152,7 +164,7 @@ void Presentations::PImpl::WatchPresentations()
 	CString fileDir = activePresentation.GetPropertyString(L"Path");
 	CString fileName = activePresentation.GetPropertyString(L"Name");
 
-	if (IsPathChanged(fileDir, fileName)) {
+	if (IsPathChanged(fileDir, fileName) || IsSlideCountChanged(activePresentation)) {
 		// 別のスライドに代わっていたら前回の内容を破棄する
 		UpdateAllSlides(activePresentation);
 	}
