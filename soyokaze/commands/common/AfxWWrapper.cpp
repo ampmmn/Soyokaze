@@ -128,3 +128,49 @@ CString AfxWWrapper::GetCurrentDir()
 	return CString(CStringW((LPWSTR)vResult.bstrVal));
 }
 
+// 自窓のカレントディレクトリを移動
+bool AfxWWrapper::SetCurrentDir(const CString& path)
+{
+	IDispatch* pDisp = in->GetDispatch();
+	if (pDisp == nullptr) {
+		return false;
+	}
+
+	CComBSTR execStr(L"Exec");
+	OLECHAR* p = execStr;
+
+	DISPID methodId;
+	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
+	if (FAILED(hr)) {
+		return false;
+	}
+
+	CStringW cmdline;
+#ifdef UNICODE
+	cmdline.Format(L"&EXCD -P\"%s\"", (LPCWSTR)path);
+#else
+	cmdline.Format(L"&EXCD -P\"%s\"", (LPCWSTR)(CStringW)path);
+#endif
+
+	CComBSTR cmdlineBstr(cmdline);
+
+	DISPPARAMS params = {};
+	params.cArgs = 1;
+
+	VARIANT args[1];
+	params.rgvarg = args;
+	args[0].vt = VT_BSTR;
+	args[0].bstrVal = cmdlineBstr;
+
+	CComVariant vResult;
+	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
+	                   &params, &vResult, NULL, NULL);
+	if (FAILED(hr)) {
+		return false;
+	}
+	pDisp->Release();
+
+	return true;
+}
+
+
