@@ -587,6 +587,7 @@
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
     <ClInclude Include="commands\bookmarks\ChromiumBrowseHistory.h" />
     <ClInclude Include="commands\bookmarks\URLCommand.h" />
+    <ClInclude Include="commands\builtin\AfxChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandBase.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h" />
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
@@ -804,6 +805,7 @@
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />
     <ClCompile Include="commands\bookmarks\ChromiumBrowseHistory.cpp" />
     <ClCompile Include="commands\bookmarks\URLCommand.cpp" />
+    <ClCompile Include="commands\builtin\AfxChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandBase.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandProvider.cpp" />
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />

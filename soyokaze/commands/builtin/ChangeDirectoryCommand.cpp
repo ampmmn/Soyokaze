@@ -72,6 +72,11 @@ BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
+HICON ChangeDirectoryCommand::GetIcon()
+{
+	return IconLoader::Get()->GetImageResIcon(-185);
+}
+
 soyokaze::core::Command* ChangeDirectoryCommand::Clone()
 {
 	return new ChangeDirectoryCommand();

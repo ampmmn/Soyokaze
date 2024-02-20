@@ -7,11 +7,11 @@ namespace commands {
 namespace builtin {
 
 
-class ChangeDirectoryCommand : public BuiltinCommandBase
+class AfxChangeDirectoryCommand : public BuiltinCommandBase
 {
 public:
-	ChangeDirectoryCommand(LPCTSTR name = nullptr);
-	virtual ~ChangeDirectoryCommand();
+	AfxChangeDirectoryCommand(LPCTSTR name = nullptr);
+	virtual ~AfxChangeDirectoryCommand();
 
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
@@ -20,7 +20,7 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 };
-
+	
 }
 }
 }

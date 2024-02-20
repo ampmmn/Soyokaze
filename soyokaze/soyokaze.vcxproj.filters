@@ -765,6 +765,9 @@
     <ClInclude Include="commands\presentation\PowerPointWindow.h">
       <Filter>commands\presentation</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\AfxChangeDirectoryCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1381,6 +1384,9 @@
     </ClCompile>
     <ClCompile Include="commands\presentation\PowerPointWindow.cpp">
       <Filter>commands\presentation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\AfxChangeDirectoryCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

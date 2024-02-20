@@ -19,6 +19,7 @@
 #include "commands/builtin/LockScreenCommand.h"
 #include "commands/builtin/StandbyCommand.h"
 #include "commands/builtin/SuspendCommand.h"
+#include "commands/builtin/AfxChangeDirectoryCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
 #include "core/CommandHotKeyManager.h"
@@ -67,7 +68,7 @@ struct BuiltinCommandProvider::PImpl
 		mFactoryMap[LockScreenCommand::TYPE] = [](LPCTSTR name) { return new LockScreenCommand(name); };
 		mFactoryMap[StandbyCommand::TYPE] = [](LPCTSTR name) { return new StandbyCommand(name); };
 		mFactoryMap[SuspendCommand::TYPE] = [](LPCTSTR name) { return new SuspendCommand(name); };
-
+		mFactoryMap[AfxChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new AfxChangeDirectoryCommand(name); };
 		mIsFirstCall = false;
 	}
 
