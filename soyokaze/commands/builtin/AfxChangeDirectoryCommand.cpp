@@ -36,16 +36,14 @@ AfxChangeDirectoryCommand::~AfxChangeDirectoryCommand()
 
 BOOL AfxChangeDirectoryCommand::Execute(const Parameter& param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
-
-	if (PathFileExists(args[0]) == FALSE) {
+	CString path = param.GetWholeString();
+	if (PathFileExists(path) == FALSE) {
 		return TRUE;
 	}
 
 	// あふw上のカレントディレクトリ変更
 	AfxWWrapper afxw;
-	afxw.SetCurrentDir(args[0]);
+	afxw.SetCurrentDir(path);
 
 	// あふwをアクティブにする
 	HWND hwndApp = FindWindow(_T("TAfxWForm"), nullptr);

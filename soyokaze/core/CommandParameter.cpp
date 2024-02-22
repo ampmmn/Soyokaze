@@ -85,8 +85,10 @@ void CommandParameter::AddArgument(const CString& arg)
 {
 	if (in->mParamPart.IsEmpty() == FALSE) {
 		in->mParamPart += _T(" ");
+		in->mWholeText += _T(" ");
 	}
 	in->mParamPart += arg;
+	in->mWholeText += arg;
 }
 
 void CommandParameter::SetWholeString(const CString& str)
