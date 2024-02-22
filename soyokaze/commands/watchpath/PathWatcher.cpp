@@ -30,6 +30,17 @@ struct PathWatcher::PImpl
 		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
 	}
+	// 監視スレッドの完了を待機する(最大3秒)
+	void WaitExit() {
+		DWORD start = GetTickCount();
+		while (GetTickCount() - start < 3000) {
+			if (mIsExited) {
+				break;
+			}
+			Sleep(50);
+		}
+	}
+
 	bool IsAbort() {
 		std::lock_guard<std::mutex> lock(mMutex);
 		return mIsAbort;
@@ -40,6 +51,7 @@ struct PathWatcher::PImpl
 	std::mutex mMutex;
 	std::map<CString, WATCH_TARGET> mTargets;
 	bool mIsAbort;
+	bool mIsExited;
 	std::unique_ptr<std::thread> mTask;
 };
 
@@ -81,6 +93,8 @@ void PathWatcher::PImpl::StartWatch()
 				WaitForSingleObject(target.mOverlapped.hEvent, INFINITE);
 			}
 		}
+
+		mIsExited = true;
 
 	}));
 	mTask->detach();
@@ -190,12 +204,13 @@ void PathWatcher::PImpl::NotifyTarget(HANDLE event)
 PathWatcher::PathWatcher() : in(new PImpl)
 {
 	in->mIsAbort = false;
+	in->mIsExited = false;
 }
 
 PathWatcher::~PathWatcher()
 {
 	in->Abort();
-	Sleep(300);
+	in->WaitExit();
 }
 
 PathWatcher* PathWatcher::Get()

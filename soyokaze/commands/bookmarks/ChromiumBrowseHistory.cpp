@@ -31,8 +31,20 @@ struct ChromiumBrowseHistory::PImpl
 		mIsAbort = true;
 	}
 
+	// 監視スレッドの完了を待機する(最大3秒)
+	void WaitExit() {
+		DWORD start = GetTickCount();
+		while (GetTickCount() - start < 3000) {
+			if (mIsExited) {
+				break;
+			}
+			Sleep(50);
+		}
+	}
+
 	std::mutex mMutex;
 	bool mIsAbort;
+	bool mIsExited;
 	CString mId;
 	CString mProfileDir;
 	bool mIsUseURL;
@@ -84,7 +96,7 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 
 	while(IsAbort() == false) {
 
-		Sleep(250);
+		Sleep(1000);
 
 		// ファイルがなければコピー
 		bool shouldCopy = false;
@@ -128,6 +140,7 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			}
 		}
 	}
+	mIsExited = true;
 }
 
 ChromiumBrowseHistory::ChromiumBrowseHistory(
@@ -139,6 +152,7 @@ ChromiumBrowseHistory::ChromiumBrowseHistory(
 	in(new PImpl)
 {
 	in->mIsAbort = false;
+	in->mIsExited = false;
 	in->mId = id;
 	in->mProfileDir = profileDir;
 	in->mIsUseURL = isUseURL;
@@ -159,6 +173,7 @@ ChromiumBrowseHistory::~ChromiumBrowseHistory()
 void ChromiumBrowseHistory::Abort()
 {
 	in->Abort();
+	in->WaitExit();
 }
 
 void ChromiumBrowseHistory::Query(

@@ -114,6 +114,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	bool mIsAbort;
+	bool mIsExited;
 	bool mIsAvailable;
 
 	// pptxファイルのパス(ディレクトリまで)
@@ -286,6 +287,7 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 
 Presentations::Presentations() : in(new PImpl)
 {
+	in->mIsExited = false;
 	in->mIsAbort = false;
 	in->mIsAvailable = in->IsAvailable();
 	if (in->mIsAvailable == false) {
@@ -293,6 +295,7 @@ Presentations::Presentations() : in(new PImpl)
 		return ;
 	}
 
+	// 監視スレッドを実行する
 	std::thread th([&]() {
 		while(in->IsAbort() == false) {
 			try {
@@ -302,6 +305,7 @@ Presentations::Presentations() : in(new PImpl)
 			catch(...) {
 			}
 		}
+		in->mIsExited = true;
 	});
 	th.detach();
 }
@@ -314,6 +318,15 @@ Presentations::~Presentations()
 void Presentations::Abort()
 {
 	in->Abort();
+
+	// 監視スレッドの終了を待つ(最大3秒)
+	DWORD start = GetTickCount();
+	while(GetTickCount() - start < 3000) {
+		if (in->mIsExited) {
+			break;
+		}
+		Sleep(50);
+	}
 }
 
 void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int limit)

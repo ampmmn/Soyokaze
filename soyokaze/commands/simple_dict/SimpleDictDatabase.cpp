@@ -37,6 +37,7 @@ struct SimpleDictDatabase::PImpl
 					}
 					UpdateDictData(param, records);
 				}
+				mIsExited = true;
 		});
 		th.detach();
 	}
@@ -45,6 +46,17 @@ struct SimpleDictDatabase::PImpl
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
+	}
+
+	// 監視スレッドの完了を待機する(最大3秒)
+	void WaitExit() {
+		DWORD start = GetTickCount();
+		while (GetTickCount() - start < 3000) {
+			if (mIsExited) {
+				break;
+			}
+			Sleep(50);
+		}
 	}
 	bool IsAbort()
 	{
@@ -91,19 +103,21 @@ struct SimpleDictDatabase::PImpl
 
 	std::mutex mMutex;
 	bool mIsAbort;
+	bool mIsExited;
 };
 
 
 SimpleDictDatabase::SimpleDictDatabase() : in(new PImpl)
 {
 	in->mIsAbort = false;
+	in->mIsExited = false;
 	in->StartWatch();
 }
 
 SimpleDictDatabase::~SimpleDictDatabase()
 {
 	in->Abort();
-	Sleep(250);
+	in->WaitExit();
 }
 
 void SimpleDictDatabase::Query(Pattern* pattern, std::vector<ITEM>& items, int limit, DWORD timeout)
