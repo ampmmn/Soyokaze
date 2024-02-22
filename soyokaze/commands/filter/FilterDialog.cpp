@@ -494,14 +494,39 @@ void FilterDialog::OnGetDispInfo(
 	NMLVDISPINFO* pDispInfo = (NMLVDISPINFO*)pNMHDR;
 	LVITEM* pItem = &(pDispInfo)->item;
 
-	if (pItem->mask & LVIF_TEXT) {
+	bool isText = pItem->mask & LVIF_TEXT;
+	if (isText == false) {
+		return;
+	}
 
-		int itemIndex = pDispInfo->item.iItem;
-		if (pDispInfo->item.iSubItem == 0) {
-			if (0 <= itemIndex && itemIndex < in->mCandidates.size()) {
-				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, in->mCandidates[itemIndex], _TRUNCATE);
-			}
-		}
+	if (pDispInfo->item.iSubItem != 0) {
+		return;
+	}
+
+	size_t itemIndex = (size_t)pDispInfo->item.iItem;
+	if (in->mCandidates.size() <= itemIndex) {
+		return;
+	}
+
+	CListCtrl& listWnd = in->mCandidateListBox;
+
+	int colWidth = listWnd.GetColumnWidth(0);
+
+	int stringWidth = listWnd.GetStringWidth(in->mCandidates[itemIndex]);
+	if (stringWidth > colWidth && stringWidth > 0) {
+		// 部分文字列を表示
+		CString str = in->mCandidates[itemIndex];
+
+		double s = colWidth / (double)stringWidth;
+		int n = (int)(str.GetLength() * s) - 2;
+		if (n == 0) { n = 1; }
+
+		str = str.Right(n);
+		_tcsncpy_s(pItem->pszText, pItem->cchTextMax, str, _TRUNCATE);
+	}
+	else {
+		// 全体を表示
+		_tcsncpy_s(pItem->pszText, pItem->cchTextMax, in->mCandidates[itemIndex], _TRUNCATE);
 	}
 }
 
