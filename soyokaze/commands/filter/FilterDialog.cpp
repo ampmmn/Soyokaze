@@ -89,14 +89,10 @@ FilterDialog::FilterDialog(CWnd* pParent /*=nullptr*/)
 	in(std::make_unique<PImpl>())
 {
 	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
-
-	AppPreference::Get()->RegisterListener(this);
 }
 
 FilterDialog::~FilterDialog()
 {
-	AppPreference::Get()->UnregisterListener(this);
-
 	// mWindowPositionPtrを破棄するときに位置情報を設定ファイルに保存する
 }
 
@@ -574,20 +570,6 @@ void FilterDialog::OnSize(UINT type, int cx, int cy)
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.SetColumnWidth(0, cx-30);
 	}
-}
-
-void FilterDialog::OnAppFirstBoot()
-{
-}
-
-void FilterDialog::OnAppPreferenceUpdated()
-{
-	in->mPattern.reset();
-}
-
-void FilterDialog::OnAppExit()
-{
-	AppPreference::Get()->UnregisterListener(this);
 }
 
 } // end of namespace filter

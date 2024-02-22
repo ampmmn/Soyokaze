@@ -33,7 +33,7 @@ namespace commands {
 namespace filter {
 
 
-class FilterDialog : public CDialogEx, public AppPreferenceListenerIF
+class FilterDialog : public CDialogEx
 {
 	using CommandRepository = soyokaze::core::CommandRepository;
 	using AppHotKey = soyokaze::core::AppHotKey;
@@ -55,11 +55,6 @@ protected:
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
-
-	// AppPreferenceListenerIF
-	void OnAppFirstBoot() override;
-	void OnAppPreferenceUpdated() override;
-	void OnAppExit() override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;
