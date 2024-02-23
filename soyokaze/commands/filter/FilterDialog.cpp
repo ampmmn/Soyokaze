@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "FilterDialog.h"
+#include "commands/filter/FilterExecutor.h"
 #include "gui/SoyokazeDlg.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
@@ -33,8 +34,6 @@ using namespace soyokaze;
 
 struct FilterDialog::PImpl
 {
-	Pattern* GetPatternObject();
-
 	HICON mIconHandle;
 
 	CString mCommandName;
@@ -44,8 +43,7 @@ struct FilterDialog::PImpl
 	// 説明欄
 	CString mInformationStr;
 
-	// すべての候補
-	std::vector<CString> mAllCandidates;
+	FilterExecutor mExecutor;
 
 	// 現在の候補
 	std::vector<CString> mCandidates;
@@ -61,20 +59,7 @@ struct FilterDialog::PImpl
 
 	// ウインドウ位置を保存するためのクラス
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
-
-	//
-	std::unique_ptr<Pattern> mPattern;
 };
-
-
-Pattern* FilterDialog::PImpl::GetPatternObject()
-{
-	if (!mPattern) {
-		mPattern.reset(new PartialMatchPattern());
-	}
-	return mPattern.get();
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,16 +90,14 @@ void FilterDialog::SetText(const CString& text)
 {
 	int n = 0;
 
-	std::vector<CString> allCandidates;
+	in->mExecutor.ClearCandidates();
 
 	CString token = text.Tokenize(_T("\n"), n);
 	while(token.IsEmpty() == FALSE) {
 		token.Trim(_T(" \t\r"));
-		allCandidates.push_back(token);
+		in->mExecutor.AddCandidates(token);
 		token = text.Tokenize(_T("\n"), n);
 	}
-
-	in->mAllCandidates.swap(allCandidates);
 }
 
 CString FilterDialog::GetFilteredText()
@@ -209,7 +192,7 @@ BOOL FilterDialog::OnInitDialog()
 	SetIcon(in->mIconHandle, TRUE);			// 大きいアイコンの設定
 	SetIcon(in->mIconHandle, FALSE);		// 小さいアイコンの設定
 
-	in->mCandidates = in->mAllCandidates;
+	in->mExecutor.Execute(_T(""), in->mCandidates);
 	in->mCandidateListBox.SetItemCountEx((int)in->mCandidates.size());
 	in->mSelIndex = 0;
 	in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
@@ -285,27 +268,12 @@ void FilterDialog::OnEditCommandChanged()
 		in->mKeywordEdit.Clear();
 	}
 
-
+	// 候補を消す
 	in->mCandidateListBox.DeleteAllItems();
 
+	// 絞り込みの実施
 	std::vector<CString> candidates;
-	candidates.reserve(in->mAllCandidates.size());
-
-	if (in->mInputStr.IsEmpty()) {
-		candidates.insert(candidates.end(), in->mAllCandidates.begin(), in->mAllCandidates.end());
-	}
-	else {
-		Pattern* pattern = in->GetPatternObject();
-
-		soyokaze::core::CommandParameter commandParam(in->mInputStr);
-		pattern->SetParam(commandParam);
-
-		for (auto& candidate : in->mAllCandidates) {
-			if (pattern->Match(candidate) != Pattern::Mismatch) {
-				candidates.push_back(candidate);
-			}
-		}
-	}
+	in->mExecutor.Execute(in->mInputStr, candidates);
 
 	// 候補リストの更新
 	in->mCandidateListBox.SetItemCountEx((int)candidates.size());
@@ -375,6 +343,7 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 	LPARAM lParam
 )
 {
+	// Ctrl-Backで全消去
 	if (wParam == VK_BACK) {
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 			in->mKeywordEdit.Clear();
@@ -385,56 +354,64 @@ LRESULT FilterDialog::OnKeywordEditNotify(
 		}
 	}
 
-	if (in->mCandidates.size() > 0) {
-		if (wParam == VK_UP) {
-			in->mSelIndex--;
-			if (in->mSelIndex < 0) {
-				in->mSelIndex = (int)(in->mCandidates.size()-1);
-
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_END, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_END, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
-			}
-			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
-			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
-			in->mInputStr = in->mCandidates[in->mSelIndex];
-			UpdateStatus();
-			UpdateData(FALSE);
-
-			in->mKeywordEdit.SetCaretToEnd();
-			return 1;
-		}
-		else if (wParam ==VK_DOWN) {
-			in->mSelIndex++;
-			if (in->mSelIndex >= (int)in->mCandidates.size()) {
-				in->mSelIndex = 0;
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_HOME, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_HOME, 0);
-				in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
-			}
-			in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
-			in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
-			in->mInputStr = in->mCandidates[in->mSelIndex];
-
-			UpdateStatus();
-			UpdateData(FALSE);
-			in->mKeywordEdit.SetCaretToEnd();
-			return 1;
-		}
-		else if (wParam == VK_TAB) {
-			in->mInputStr = in->mCandidates[in->mSelIndex];
-
-			UpdateStatus();
-			UpdateData(FALSE);
-			in->mKeywordEdit.SetCaretToEnd();
-			return 1;
-		}
-		else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
-			in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
-		}
+	// 候補がなければ何もしない
+	if (in->mCandidates.empty()) {
+		return 0;
 	}
+
+	// 上キー押下時は選択項目を一つ上に移動する
+	if (wParam == VK_UP) {
+		in->mSelIndex--;
+		if (in->mSelIndex < 0) {
+			in->mSelIndex = (int)(in->mCandidates.size()-1);
+
+			in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_END, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYUP, VK_END, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
+		}
+		in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+		in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+		in->mInputStr = in->mCandidates[in->mSelIndex];
+		UpdateStatus();
+		UpdateData(FALSE);
+
+		in->mKeywordEdit.SetCaretToEnd();
+		return 1;
+	}
+	// 下キー押下時は選択項目を一つ下に移動する
+	else if (wParam ==VK_DOWN) {
+		in->mSelIndex++;
+		if (in->mSelIndex >= (int)in->mCandidates.size()) {
+			in->mSelIndex = 0;
+			in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_CONTROL, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYDOWN, VK_HOME, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYUP, VK_HOME, 0);
+			in->mCandidateListBox.PostMessage(WM_KEYUP, VK_CONTROL, 0);
+		}
+		in->mCandidateListBox.SetItemState(in->mSelIndex, LVIS_SELECTED, LVIS_SELECTED);
+		in->mCandidateListBox.EnsureVisible(in->mSelIndex, FALSE);
+		in->mInputStr = in->mCandidates[in->mSelIndex];
+
+		UpdateStatus();
+		UpdateData(FALSE);
+		in->mKeywordEdit.SetCaretToEnd();
+		return 1;
+	}
+	// タブを押したら補完
+	else if (wParam == VK_TAB) {
+		in->mInputStr = in->mCandidates[in->mSelIndex];
+
+		UpdateStatus();
+		UpdateData(FALSE);
+		in->mKeywordEdit.SetCaretToEnd();
+		return 1;
+	}
+	// PageUp/PageDownでページ送り
+	else if (wParam == VK_NEXT || wParam == VK_PRIOR) {
+		in->mCandidateListBox.PostMessage(WM_KEYDOWN, wParam, 0);
+	}
+
 	return 0;
 }
 

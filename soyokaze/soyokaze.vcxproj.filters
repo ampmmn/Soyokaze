@@ -768,6 +768,9 @@
     <ClInclude Include="commands\builtin\AfxChangeDirectoryCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\filter\FilterExecutor.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -1387,6 +1390,9 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\AfxChangeDirectoryCommand.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterExecutor.cpp">
+      <Filter>commands\filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
