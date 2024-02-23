@@ -256,7 +256,7 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 
 		// Type
 		int type = shape.GetPropertyInt(L"Type");
-		if (type != 14) {
+		if (type != 14 && type != 17) {  // 14:PlaceHolder 17:TextBox
 			continue;
 		}
 
@@ -264,8 +264,10 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 		CString shapeName = shape.GetPropertyString(L"Name");
 
 		// shape名がTitleでなければスキップ
-		static tregex pat(_T("^ *Title.*$"));
-		if (std::regex_match(tstring(shapeName), pat) == false) {
+		static tregex pat(_T("^ *Title.*$"));      // 英語版向け
+		static tregex pat2(_T("^ *タイトル.*$"));  // 日本語版向け
+		if (std::regex_match(tstring(shapeName), pat) == false && 
+				std::regex_match(tstring(shapeName), pat2) == false) {
 			continue;
 		}
 
