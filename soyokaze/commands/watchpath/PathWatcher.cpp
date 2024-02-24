@@ -1,31 +1,153 @@
 #include "pch.h"
 #include "PathWatcher.h"
+#include "utility/SHA1.h"
 #include <map>
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <deque>
 #include "commands/common/Message.h"
 
 namespace soyokaze {
 namespace commands {
 namespace watchpath {
 
+// 監視対象パスについての管理情報
 struct WATCH_TARGET
 {
 	WATCH_TARGET() : mDirHandle(nullptr)
 	{
+		// 初期化
 		OVERLAPPED olp = {};
 		mOverlapped = olp;
 	}
-	HANDLE mDirHandle;
-	OVERLAPPED mOverlapped;
+
+	// 監視対象パス
 	CString mPath;
+	// ReadDirectoryChangesWに渡すためのファイルハンドル
+	HANDLE mDirHandle;
+	// 更新検知を受け取るためのイベントを含むOVERLAPPED構造体
+	OVERLAPPED mOverlapped;
+	// 変更通知受信用のバッファ
 	std::vector<BYTE> mBuffer;
+};
+
+using TimeStampList = std::vector<std::pair<CString, FILETIME> >;
+
+static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
+{
+	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+	GetFileTime(h, nullptr, nullptr, &ftime);
+	CloseHandle(h);
+	return true;
+}
+
+// 監視対象パスについての管理情報(ネットワークパス用)
+struct WATCH_TARGET_UNC
+{
+	WATCH_TARGET_UNC()
+	{
+	}
+
+	bool CreateTimeStamp(TimeStampList& fileList) const {
+
+		fileList.clear();
+
+		if (PathIsDirectory(mPath) == FALSE) {
+			return false;
+		}
+
+		// フォルダ内のファイル列挙
+		std::deque<CString> stk;
+		stk.push_back(mPath);
+
+		while(stk.empty() == false) {
+
+			CString curDir = stk.front();
+			stk.pop_front();
+
+			CFileFind f;
+			BOOL isLoop = f.FindFile(curDir, 0);
+			while (isLoop) {
+
+				Sleep(0);
+
+				isLoop = f.FindNextFile();
+
+				if (f.IsDots()) {
+					continue;
+				}
+				if (f.IsDirectory()) {
+					auto subDir = f.GetFilePath();
+					PathAppend(subDir.GetBuffer(MAX_PATH_NTFS), _T("*.*"));
+					subDir.ReleaseBuffer();
+					stk.push_back(subDir);
+					continue;
+				}
+				CString filePath = f.GetFilePath();
+
+				SHA1 sha;
+				sha.Add(filePath);
+
+				std::pair<CString, FILETIME> item;
+				item.first = sha.Finish();
+				GetLastUpdateTime(filePath, item.second);
+
+				fileList.push_back(item);
+			}
+			f.Close();
+		}
+
+		std::sort(fileList.begin(), fileList.end(), [](const std::pair<CString, FILETIME>& l, const std::pair<CString, FILETIME>& r) {
+				return l.first.CompareNoCase(r.first) < 0;
+		});
+		return true;
+	}
+	bool IsDiffer(const TimeStampList& fileList) const {
+
+		// 要素数が異なる==差異がある
+		if (mTimestamps.size() != fileList.size()) {
+			return true;
+		}
+
+		size_t itemCount = fileList.size();
+		for (size_t i = 0; i < itemCount; ++i) {
+
+			const auto& itemL = fileList[i];
+			const auto& itemR = mTimestamps[i];
+
+			if (itemL.first != itemR.first) {
+				// 含まれる要素に差異あり
+				return true;
+			}
+
+			if (memcmp(&itemL.second, &itemR.second, sizeof(FILETIME)) != 0) {
+				// 更新日時に差異あり
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 監視対象パス
+	CString mPath;
+	// 監視対象パス以下にある要素の更新日時情報
+	TimeStampList mTimestamps;
+	// 初回実施フラグ
+	bool mIsFirst = true;
+	// 最後にチェックした時刻
+	DWORD mLastChecked = 0;
 };
 
 struct PathWatcher::PImpl
 {
+	// 監視を開始
 	void StartWatch();
+
+	// 監視を中止する
 	void Abort() {
 		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
@@ -45,47 +167,53 @@ struct PathWatcher::PImpl
 		std::lock_guard<std::mutex> lock(mMutex);
 		return mIsAbort;
 	}
-	void GetTagetObjects(std::vector<HANDLE>& objects);
+	bool GetTagetObjects(std::vector<HANDLE>& objects);
 	void NotifyTarget(HANDLE event);
 
+	bool WatchForLocalPath();
+	bool WatchForUNCPath();
+
+	// 排他制御用
 	std::mutex mMutex;
+
+	// 監視対象
 	std::map<CString, WATCH_TARGET> mTargets;
+	std::map<CString, WATCH_TARGET_UNC> mUncTargets;
+
+	// 監視終了フラグ
 	bool mIsAbort;
+	// 監視スレッド終了済を表すフラグ
 	bool mIsExited;
+	// 監視スレッド
 	std::unique_ptr<std::thread> mTask;
 };
 
+// 監視を開始
 void PathWatcher::PImpl::StartWatch()
 {
 	std::lock_guard<std::mutex> lock(mMutex);
+
+	// タスクが作成済なら何もしない
 	if (mTask.get()) {
 		return;
 	}
 
+	// 初回にタスクを生成する
 	mTask.reset(new std::thread([&]() {
 
-		std::vector<HANDLE> objects;
 		while(IsAbort() == false) {
-			GetTagetObjects(objects);	
-			if (objects.empty()) {
-				Sleep(250);
+
+			bool hasLocalItem = WatchForLocalPath();
+			bool hasUNCItem = WatchForUNCPath();
+			if (hasLocalItem == false && hasUNCItem == false) {
+				// 監視対象がなければ5秒待機
+				Sleep(5000);
 				continue;
 			}
 
-			DWORD count = (DWORD)objects.size();
-			DWORD n = WaitForMultipleObjects(count, &objects.front(), FALSE, 250);
-			if (n == WAIT_TIMEOUT || n == WAIT_FAILED) {
-				continue;
-			}
-			if (WAIT_ABANDONED_0 <= n && n < WAIT_ABANDONED_0 + count) {
-				continue;
-			}
-			
-			// 変更を通知する
-			int index = (int)(n - WAIT_OBJECT_0);
-			NotifyTarget(objects[index]);
 		}
 
+		// 終了処理
 		for (auto& item : mTargets) {
 			auto& target = item.second;
 			if (target.mDirHandle) {
@@ -93,15 +221,95 @@ void PathWatcher::PImpl::StartWatch()
 				WaitForSingleObject(target.mOverlapped.hEvent, INFINITE);
 			}
 		}
-
 		mIsExited = true;
 
 	}));
 	mTask->detach();
 }
 
+// ローカルパス向けの更新検知処理
+bool PathWatcher::PImpl::WatchForLocalPath()
+{
+	std::vector<HANDLE> objects;
+	if (GetTagetObjects(objects) == false) {
+		return false;
+	}
 
-void PathWatcher::PImpl::GetTagetObjects(std::vector<HANDLE>& objects)
+	// (ReadDirectoryChangesWの)更新通知があったかどうかを待つ
+	DWORD count = (DWORD)objects.size();
+	DWORD n = WaitForMultipleObjects(count, &objects.front(), FALSE, 1000);
+	if (n == WAIT_TIMEOUT || n == WAIT_FAILED) {
+		// 更新なし
+		return true;
+	}
+	if (WAIT_ABANDONED_0 <= n && n < WAIT_ABANDONED_0 + count) {
+		// 範囲外(ここに来ることは通常ないが..)
+		return true;
+	}
+
+	// 変更を通知する
+	int index = (int)(n - WAIT_OBJECT_0);
+	NotifyTarget(objects[index]);
+	return true;
+}
+
+// UNCパス向けの更新検知処理
+bool PathWatcher::PImpl::WatchForUNCPath()
+{
+	Sleep(50);
+
+	if (mUncTargets.empty()) {
+		return false;
+	}
+
+	bool hasItem = false;
+
+	DWORD curTime = GetTickCount();
+
+	for (auto& pa : mUncTargets) {
+		auto& cmdName = pa.first;
+		auto& item = pa.second;
+
+		// 前回に比較したときから一定時間経過してない場合はチェックしない
+		// (負荷対策)
+		if (item.mLastChecked != 0 && curTime - item.mLastChecked  < 60 * 1000) { // 1分に1回
+			continue;
+		}
+
+		// 現在の情報を取得
+		TimeStampList current;
+		if (item.CreateTimeStamp(current) == false) {
+			continue;
+		}
+		hasItem = true;
+
+		// 初回は新規作成なので通知しない
+		if (item.mIsFirst)  {
+			item.mTimestamps.swap(current);
+			item.mIsFirst = false;
+			item.mLastChecked = curTime;
+			continue;
+		}
+
+		// 前回と比較
+		bool isUpdated = item.IsDiffer(current); 
+		if (isUpdated == false) {
+			continue;
+		}
+
+		// 通知
+		CString notifyMsg;
+		notifyMsg.Format(_T("【%s】更新を検知 : %s"), cmdName, item.mPath);
+		soyokaze::commands::common::PopupMessage(notifyMsg);
+
+		item.mTimestamps.swap(current);
+		item.mLastChecked = curTime;
+	}
+
+	return hasItem;
+}
+
+bool PathWatcher::PImpl::GetTagetObjects(std::vector<HANDLE>& objects)
 {
 	objects.clear();
 
@@ -145,6 +353,8 @@ void PathWatcher::PImpl::GetTagetObjects(std::vector<HANDLE>& objects)
 
 		objects.push_back(target.mOverlapped.hEvent);
 	}
+
+	return objects.size() > 0;
 }
 
 void PathWatcher::PImpl::NotifyTarget(HANDLE event)
@@ -226,12 +436,20 @@ void PathWatcher::RegisterPath(const CString& cmdName, const CString& path)
 
 		auto it = in->mTargets.find(cmdName);
 		if (it != in->mTargets.end()) {
+			// 同じコマンドですでに登録済
 			return;
 		}
 
-		WATCH_TARGET item;
-		item.mPath = path;
-		in->mTargets[cmdName] = item;
+		if (PathIsUNC(path) == FALSE) {
+			WATCH_TARGET item;
+			item.mPath = path;
+			in->mTargets[cmdName] = item;
+		}
+		else {
+			WATCH_TARGET_UNC item;
+			item.mPath = path;
+			in->mUncTargets[cmdName] = item;
+		}
 	}
 	in->StartWatch();
 }
