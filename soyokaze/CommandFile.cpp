@@ -538,7 +538,7 @@ bool CommandFile::Load()
 			curEntry->mBoolMap[strKey] = true;
 			curEntry->mTypeMap[strKey] = TYPE_BOOLEAN;
 		}
-		else if (strValue== _T("false")) {
+		else if (strValue== _T("false") || strValue== _T("second")) {  // second:初期実装時のバグのリカバーのための処理
 			curEntry->mBoolMap[strKey] = false;
 			curEntry->mTypeMap[strKey] = TYPE_BOOLEAN;
 		}
@@ -626,7 +626,7 @@ bool CommandFile::Save()
 			for (auto& kv : entry->mBoolMap) {
 				file.WriteString(kv.first);
 				file.WriteString(_T("="));
-				file.WriteString(kv.second ? _T("true") : _T("second"));
+				file.WriteString(kv.second ? _T("true") : _T("false"));
 				file.WriteString(_T("\n"));
 			}
 			for (auto& kv : entry->mStreamMap) {
