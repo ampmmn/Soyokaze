@@ -12,3 +12,4 @@ coverage_report
 *.bak
 doc/help.html
 json/
+plantuml-images/
