@@ -128,7 +128,7 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	// 名前が変わっている可能性があるため、いったん削除して再登録する #addref
 	auto cmdRepo = CommandRepository::GetInstance();
 
 	AddRef();  // UnregisterCommandで削除されるのを防ぐため+1しておく
@@ -140,8 +140,8 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	in->mDescription = dlg.mDescription;
 	in->mPath = dlg.mPath;
 
+	// RegisterCommandはrefCountを+1しないので、#addrefで上げたカウントをさげる必要はない
 	cmdRepo->RegisterCommand(this);
-	Release();  // ここで参照カウントを戻す(-1)
 
 	// パスが変わったら登録しなおす
 	if (orgName != in->mName) {

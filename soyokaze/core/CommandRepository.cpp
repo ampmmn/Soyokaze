@@ -144,6 +144,7 @@ void CommandRepository::EnumProviderSettingDialogs(
 
 
 // コマンドを登録
+// このコマンドは参照カウントを+1しない
 int CommandRepository::RegisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
