@@ -131,8 +131,13 @@ BOOL AlignWindowCommand::Execute(
 		}
 
 		for (auto& hwnd : targets) {
+			// ウインドウ位置・表示状態(最大/最小/表示/非表示)を復元する
 			const WINDOWPLACEMENT& placement = item.mPlacement;
 			SetWindowPlacement(hwnd, &placement);
+			// Zオーダーを前面に移動
+			if (in->mParam.mIsKeepActiveWindow == FALSE) {
+				SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE | SWP_NOSENDCHANGING);
+			}
 		}
 	}
 
@@ -254,7 +259,7 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("description"), GetDescription());
 
 	cmdFile->Set(entry, _T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
-	cmdFile->Set(entry, _T("IsKeepActiveWindow"), in->mParam.mIsKeepActiveWindow != FALSE);
+	cmdFile->Set(entry, _T("IsKeepActiveWindow"), (bool)(in->mParam.mIsKeepActiveWindow != FALSE));
 	cmdFile->Set(entry, _T("ItemCount"), (int)in->mParam.mItems.size());
 
 	CString key;
