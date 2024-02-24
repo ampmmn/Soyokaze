@@ -49,6 +49,14 @@ void SHA1::Add(const std::vector<uint8_t>& data)
 	}
 }
 
+void SHA1::Add(const CString& data)
+{
+	if (data.GetLength() > 0) {
+		BCryptHashData((BCRYPT_HASH_HANDLE)&in->mHashObj.front(), (BYTE*)(LPCTSTR)data, (ULONG)(data.GetLength() * sizeof(TCHAR)), 0);
+	}
+}
+
+
 CString SHA1::Finish()
 {
 	DWORD data = 0;

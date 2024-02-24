@@ -9,6 +9,7 @@ public:
 	~SHA1();
 
 	void Add(const std::vector<uint8_t>& data);
+	void Add(const CString& data);
 	CString Finish();
 
 private:
