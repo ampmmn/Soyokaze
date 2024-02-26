@@ -78,6 +78,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CAPTION, in->mParam.mCaptionStr);
 	DDX_Text(pDX, IDC_EDIT_CLASS, in->mParam.mClassStr);
 	DDX_Check(pDX, IDC_CHECK_REGEXP, in->mParam.mIsUseRegExp);
+	DDX_Check(pDX, IDC_CHECK_NOTIFYIFNOTEXIST, in->mParam.mIsNotifyIfWindowNotFound);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
