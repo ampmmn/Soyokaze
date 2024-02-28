@@ -1,3 +1,4 @@
+// あ
 #include "pch.h"
 #include "framework.h"
 #include "TaskTray.h"
@@ -73,20 +74,34 @@ BOOL TaskTray::Create()
 
 void TaskTray::ShowMessage(const CString& msg)
 {
-	mNotifyIconData.uFlags |= NIF_INFO;
-	_tcsncpy_s(mNotifyIconData.szInfoTitle, _T(""), _TRUNCATE);
-	_tcsncpy_s(mNotifyIconData.szInfo, msg, _TRUNCATE);
+	NOTIFYICONDATA nid = mNotifyIconData;
 
-	Shell_NotifyIcon(NIM_MODIFY, &mNotifyIconData);
+	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
+	nid.uFlags |= NIF_INFO;
+	_tcsncpy_s(nid.szInfoTitle, _T(""), _TRUNCATE);
+	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
+	nid.uFlags |= NIF_ICON;
+	nid.hIcon  = mIcon;
+	nid.dwInfoFlags = NIIF_INFO;
+	// Note: 任意のアイコンを表示する場合は下記
+	// nid.dwInfoFlags = NIIF_USER;
+	// nid.hBalloonIcon = mIcon;   // ここで任意のアイコン
+
+	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
 void TaskTray::ShowMessage(const CString& msg, const CString& title)
 {
-	mNotifyIconData.uFlags |= NIF_INFO;
-	_tcsncpy_s(mNotifyIconData.szInfoTitle, title, _TRUNCATE);
-	_tcsncpy_s(mNotifyIconData.szInfo, msg, _TRUNCATE);
+	NOTIFYICONDATA nid = mNotifyIconData;
+	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
+	nid.uFlags |= NIF_INFO;
+	_tcsncpy_s(nid.szInfoTitle, title, _TRUNCATE);
+	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
+	nid.uFlags |= NIF_ICON;
+	nid.hIcon  = mIcon;
+	nid.dwInfoFlags = NIIF_INFO;
 
-	Shell_NotifyIcon(NIM_MODIFY, &mNotifyIconData);
+	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
 
