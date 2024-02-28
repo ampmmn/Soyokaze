@@ -14,6 +14,7 @@ namespace commands {
 namespace filter {
 
 
+constexpr int MINIMUM_QUOTA = 64;
 
 struct FilterExecutor::PImpl
 {
@@ -74,11 +75,14 @@ struct FilterExecutor::PImpl
 		if (threads == 0) { threads = 1; }
 
 		// 担当分の数を決める(均等にスレッド数で分ける)
-		size_t unit = (size_t)ceil(mAllCandidates.size() / (double)threads);
+		size_t quota = (size_t)ceil(mAllCandidates.size() / (double)threads);
+		if (quota < MINIMUM_QUOTA) {
+			quota = MINIMUM_QUOTA;
+		}
 		size_t remaining = mAllCandidates.size() - mCurIndex;
 
 		// n:担当数
-		size_t n = remaining >= unit ? unit : remaining;
+		size_t n = remaining >= quota ? quota : remaining;
 
 		// スレッドが担当する分の要素一覧をわたす
 		candidates.clear();
@@ -206,11 +210,13 @@ FilterExecutor::~FilterExecutor()
 
 void FilterExecutor::ClearCandidates()
 {
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	in->mAllCandidates.clear();
 }
 
 void FilterExecutor::AddCandidates(const CString& item)
 {
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	in->mAllCandidates.push_back(item);
 }
 
