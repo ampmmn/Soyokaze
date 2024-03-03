@@ -1,6 +1,6 @@
 # Soyokaze
 
-bluewind風のランチャーソフト。
+bluewind代替とすべく作成しているランチャーソフト。
 
 ![画面](image/soyokaze-window.gif)
 
@@ -52,70 +52,26 @@ bluewindのReadMeから抜粋
 - ホットキーでウインドウの呼び出しができる。初期値はAlt-Space
 - 任意のファイルやフォルダを登録してキーワードで呼び出すことができる
 - 登録したキーワード(コマンド)に対してショートカットキーを設定することができる
-- レジストリをいじらない
+- レジストリを変更しない
 - ファイル名やURLを直接指定しての実行が可能
 - パラメータにキーワードを使用することができる
 
-## 最初から入っているキーワード
+## マニュアル
 
-- new
-  - 新規コマンド登録画面を表示する
-- edit
-  - 既存コマンド編集画面を表示する
-- emptyrecyclebin
-  - ごみ箱を空にする
-- manager
-  - キーワードマネージャ画面を表示する
-- setting
-  - アプリケーション設定画面を表示する
-- exit
-  - アプリケーションを終了する
-- registwin
-  - 直前にアクティブなウインドウをコマンドとして登録する
-- maindir
-  - アプリの実行ファイルがあるフォルダを表示する
-- userdir
-  - 設定ファイルの保存先フォルダ(C:/Users/(ユーザ名)/.soyokaze)を表示する
-- reload
-  - 設定ファイルの再読み込みを行う  
-(テキストエディタで直接キーワード編集を行ったときにリロードするためもの)
-- cd
-  - カレントディレクトリを変更する
-- delete
-  - コマンドを削除する
-- version
-  - バージョン情報ダイアログを表示する
-- newsnippet
-  - 現在クリップボードにあるテキストを定型文として登録するための登録画面を表示する
-- logoff
-  - ログオフする
-- shutdown
-  - PCをシャットダウンする
-- reboot
-  - PCを再起動する
-- standby
-  - PCをスタンバイ状態にする
-- suspend
-  - PCをサスペンド状態にする
-- lockscreen
-  - スクリーンロックする
+[マニュアル](doc/help.md) を参照
 
-
-## ライセンス
-
-[MIT License](./LICENSE)
-
+- `Pandoc`からHTMLを生成するためのMarkdownファイルのため、そのための記述がファイル冒頭と末尾にある
 
 ## 実行時に必要なライブラリ
 
-- [Python3](https://www.python.org/) (任意)
-  - 電卓機能を利用するために必要
-  - なくても電卓機能が使えないだけで、アプリ自体は使える。
+以下のライブラリがあると、追加の機能を利用することができるが、なくても動作する。
 
-- [C/Migemo](https://www.kaoriya.net/software/cmigemo/) (任意)
+- [Python3](https://www.python.org/) 
+  - 電卓機能を利用するために必要
+
+- [C/Migemo](https://www.kaoriya.net/software/cmigemo/) 
   - ローマ字による日本語文字列検索を利用するために必要
     - 例えば、`jikoku`で`時刻`や`自国`にヒットするようになる
-  - なくても、アプリ自体は使える。
 
 ## 画面など
 
@@ -139,64 +95,10 @@ bluewindのReadMeから抜粋
 
 ![](image/shortcut_setting.png)
 
-## ビルド
+## ビルド方法
 
-### 開発環境
+[HowToBuild.md](./HowToBuild.md) を参照
 
-- VisualStudio2022
-- C++のプロジェクト
-- MFCを使っている
-
-ユニットテストフレームワークとしてgoogletest(1.13.0)を用いている。
-
-### ビルド時に必要な外部ライブラリ
-
-- [nlohmann-json](https://github.com/nlohmann/json)
-  - JSONを読むために利用している。  
-ヘッダファイルベースのライブラリなので、このライブラリをビルドする必要はなく、配置するだけでよい。
-
-### nlohmann-jsonの配置
-
-- https://github.com/nlohmann/json からソース一式を取得する
-- `Soyokaze`のソースファイル一式と同じ階層に`nlohmann-json`を配置する
-
-- `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json`というフォルダがあることを想定している  
-以下のように置く  
-↓
-```
-soyokaze-src/
-  Soyokaze.sln
-  json/
-    include/
-      nlohmann/
-        json.hpp
-```
-
-### ビルド方法
-
-- VisualStudioでソリューションファイル`Soyokaze.sln`を開く
-  - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
-
-- プロジェクト設定の下記項目を変更する必要があるのでビルド環境にあわせて設定する
-  - `構成プロパティ`→`全般`→`Windows SDKバージョン`
-  - `構成プロパティ`→`全般`→`プラットフォームツールセット`
-
-- ビルドを実行する
-  - メニューの `ビルド`→`ソリューションのビルド`
-
-- ビルドが完了すると下記の場所にモジュールがてきる
-  - `x64`/(`Debug` or `Release` or `ReleaseStatic`)
-    - 64bit版モジュールの場合
-
-### ソリューション構成について
-
-- Debug → デバッグ情報あり
-- Release → デバッグ情報なし、最適化してる、共有DLLでMFCを使う
-- ReleaseStatic → デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。
-- Release-Portable→ デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。設定情報を`soyokaze.exe`と同じフォルダ以下に保存する
-- ReleaseStatic-Portable → デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。設定情報を`soyokaze.exe`と同じフォルダ以下に保存する
-- UnitTest → ユニットテストのビルド用
-  - 本体のexe(soyokaze.exe)を.libとしてビルドし、ユニットテスト側の.exeにリンクする構成
 
 ### キーワード絞込みの仕様
 
@@ -217,4 +119,9 @@ soyokaze-src/
 ## ChangeLog
 
 [CHANGELOG.md](./CHANGELOG.md)
+
+
+## ライセンス
+
+[MIT License](./LICENSE)
 
