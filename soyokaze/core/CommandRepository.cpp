@@ -167,6 +167,14 @@ int CommandRepository::UnregisterCommand(Command* command)
 	return 0;
 }
 
+// 名前変更による登録しなおし
+int CommandRepository::ReregisterCommand(Command* command)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+	in->mCommands.Reregister(command);
+	return 0;
+}
+
 // 順位の更新
 void CommandRepository::AddRank(Command* command, int number)
 {

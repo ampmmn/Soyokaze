@@ -124,30 +124,24 @@ bool SimpleDictCommand::IsEditable()
 
 int SimpleDictCommand::EditDialog(const Parameter*)
 {
-	auto param = in->mParam;
-
+	// 設定変更画面を表示する
 	SettingDialog dlg;
-	dlg.SetParam(param);
+	dlg.SetParam(in->mParam);
 	if (dlg.DoModal() != IDOK) {
 		return 0;
 	}
 
-	auto cmdNew = std::make_unique<SimpleDictCommand>();
+	// 変更後の設定値で上書き
+	in->mParam = dlg.GetParam();
 
-	param = dlg.GetParam();
-	cmdNew->in->mParam = param;
-	cmdNew->in->mListeners = in->mListeners;
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	// 名前の変更を登録しなおす
 	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
+	cmdRepo->ReregisterCommand(this);
 
-	for (auto listener : cmdNew->in->mListeners) {
-		listener->OnUpdateCommand(cmdNew.get());
+	// コマンドの設定情報の変更を通知
+	for (auto listener : in->mListeners) {
+		listener->OnUpdateCommand(this);
 	}
-
-	cmdRepo->RegisterCommand(cmdNew.release());
-
 	return 0;
 }
 
@@ -180,8 +174,16 @@ bool SimpleDictCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("FilePath"), in->mParam.mFilePath);
 	cmdFile->Set(entry, _T("SheetName"), in->mParam.mSheetName);
-	cmdFile->Set(entry, _T("Range"), in->mParam.mRange);
+	cmdFile->Set(entry, _T("Range"), in->mParam.mRangeFront);
+	cmdFile->Set(entry, _T("RangeBack"), in->mParam.mRangeBack);
 	cmdFile->Set(entry, _T("IsFirstRowHeader"), (bool)in->mParam.mIsFirstRowHeader);
+	cmdFile->Set(entry, _T("IsMatchWithoutKeyword"), (bool)in->mParam.mIsMatchWithoutKeyword);
+	cmdFile->Set(entry, _T("IsEnableReverse"), (bool)in->mParam.mIsEnableReverse);
+
+	cmdFile->Set(entry, _T("aftertype"), in->mParam.mActionType);
+	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
+	cmdFile->Set(entry, _T("afterfilepath"), in->mParam.mAfterFilePath);
+	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
 
 	return true;
 }
@@ -251,8 +253,16 @@ bool SimpleDictCommand::LoadFrom(CommandFile* cmdFile, void* e, SimpleDictComman
 
 	command->in->mParam.mFilePath = cmdFile->Get(entry, _T("FilePath"), _T(""));
 	command->in->mParam.mSheetName = cmdFile->Get(entry, _T("SheetName"), _T(""));
-	command->in->mParam.mRange = cmdFile->Get(entry, _T("Range"), _T(""));
+	command->in->mParam.mRangeFront = cmdFile->Get(entry, _T("Range"), _T(""));
+	command->in->mParam.mRangeBack = cmdFile->Get(entry, _T("RangeBack"), _T(""));
 	command->in->mParam.mIsFirstRowHeader = cmdFile->Get(entry, _T("IsFirstRowHeader"), false);
+	command->in->mParam.mIsMatchWithoutKeyword = cmdFile->Get(entry, _T("IsMatchWithoutKeyword"), true);
+	command->in->mParam.mIsEnableReverse = cmdFile->Get(entry, _T("IsEnableReverse"), false);
+
+	command->in->mParam.mActionType = cmdFile->Get(entry, _T("aftertype"), 2);
+	command->in->mParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
+	command->in->mParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
+	command->in->mParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$value"));
 
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();

@@ -39,6 +39,13 @@ int WholeMatchPattern::Match(
 	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
 }
 
+int WholeMatchPattern::Match(const CString& str, int offset)
+{
+	// offsetをサポートしない
+	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
+}
+
+
 CString WholeMatchPattern::GetFirstWord()
 {
 	return in->mWord;
@@ -61,5 +68,9 @@ void WholeMatchPattern::GetWords(std::vector<WORD>& words)
 	words.push_back(WORD(in->mWholeText, Pattern::FixString));
 }
 
+int WholeMatchPattern::GetWordCount()
+{
+	return 1;
+}
 
 

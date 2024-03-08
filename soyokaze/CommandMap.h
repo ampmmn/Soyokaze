@@ -27,6 +27,8 @@ public:
 	void Register(soyokaze::core::Command* cmd);
 	bool Unregister(soyokaze::core::Command* cmd);
 	bool Unregister(const CString& name);
+	// リネーム
+	bool Reregister(soyokaze::core::Command* cmd);
 
 	void Swap(CommandMap& rhs);
 

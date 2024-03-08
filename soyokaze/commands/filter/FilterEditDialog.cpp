@@ -137,7 +137,7 @@ BOOL FilterEditDialog::OnInitDialog()
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
-	// 
+	// コマンド一覧のコンボボックス
 	std::vector<Command*> commands;
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->EnumCommands(commands);

@@ -16,7 +16,14 @@ class SimpleDictDatabase : public CommandUpdateListenerIF
 public:
 	struct ITEM
 	{
-		CString mRecord;
+		ITEM(int level, const CString& name, const CString& key, const CString& value) :
+		 	mName(name), mMatchLevel(level), mKey(key), mValue(value) {}
+		ITEM(const ITEM&) = default;
+
+		int mMatchLevel;
+		CString mName;
+		CString mKey;
+		CString mValue;
 	};
 
 public:

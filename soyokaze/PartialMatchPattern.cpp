@@ -13,11 +13,26 @@
 
 struct PartialMatchPattern::PImpl
 {
+	bool GetKeyword(int index, CString& word)
+	{
+		if (index < 0 || mTokens.size() <= (size_t)index) {
+			return false;
+		}
+		word = mTokens[index];
+		return true;
+	}
+
+	// 入力文字列をばらした配列
+	std::vector<CString> mTokens;
+
 	std::vector<std::wregex> mRegPatterns;
+
+	// 比較用のデータ(WORDには文字列or正規表現のどちらかが入る)
 	std::vector<WORD> mWords;
+	// 前方一致用のパターン
+	std::vector<std::wregex> mRegPatternsForFM;
 	std::wregex mRegPatternFront;
 
-	CString mFirstWord;
 	CString mWholeText;
 	bool mHasError;
 	bool mIsUseMigemoForHistory;
@@ -68,10 +83,11 @@ void PartialMatchPattern::SetParam(
 
 	int start = 0;
 
-	int len = wholeText.GetLength();
+	int wholeLen = wholeText.GetLength();
 
+	// tokensの構築
 	bool isQuate = false;
-	for (int i = 0; i < len; ++i) {
+	for (int i = 0; i < wholeLen; ++i) {
 
 		TCHAR c = wholeText[i];
 
@@ -113,26 +129,30 @@ void PartialMatchPattern::SetParam(
 		}
 	}
 
-	int count = len-start;
+	int count = wholeLen-start;
 	CString part = wholeText.Mid(start, count);
 	part.Trim();
 	if (part.IsEmpty() == FALSE) {
 		tokens.push_back(part);
 	}
 
+	in->mTokens.swap(tokens);
 
 	std::vector<WORD> words;
 	std::vector<std::wregex> patterns;
-	patterns.reserve(tokens.size());
+	std::vector<std::wregex> patternsForFM;
+	patterns.reserve(in->mTokens.size());
 
-	bool is1stWord = true;
-	for (auto& token : tokens) {
+	bool is1stWord = true;  // 先頭のワードか?
+
+	for (auto& token : in->mTokens) {
 		ASSERT(token.GetLength() > 0);
 
 		try {
 			// 入力文字が1文字で子音の場合はC/Migemoを使わない
 			// (子音によっては何もヒットしないことがあるので)
 			if (is1stWord && in->mMigemo.IsInitialized() && (token.GetLength() > 1 || IsVowel(token[0])) ) {
+
 				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
 				CString migemoExpr;
 				in->mMigemo.Query(token, migemoExpr);
@@ -158,20 +178,26 @@ void PartialMatchPattern::SetParam(
 			in->mHasError = true;
 			break;
 		}
+
+		// 前方一致比較用にパターンを生成しておく
+		std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[0]);
+		patternsForFM.push_back(std::wregex(L"^" + escapedPat));
 	}
 	in->mRegPatterns.swap(patterns);
+	in->mRegPatternsForFM.swap(patternsForFM);
 	in->mWords.swap(words);
-
-	if (words.empty() == false) {
-		in->mFirstWord = tokens[0];
-
-		std::wstring escapedPat = Pattern::StripEscapeChars(tokens[0]);
-		in->mRegPatternFront = std::wregex(L"^" + escapedPat);
-	}
 }
 
 int PartialMatchPattern::Match(
 	const CString& str
+)
+{
+	return Match(str, 0);
+}
+
+int PartialMatchPattern::Match(
+	const CString& str,
+	int offset
 )
 {
 	if (in->mHasError) {
@@ -180,13 +206,15 @@ int PartialMatchPattern::Match(
 	}
 
 	// 入力されたキーワードに完全一致するかどうかの判断
-	if (str.CompareNoCase(in->mFirstWord) == 0) {
+	CString keyword;
+	if (in->GetKeyword(offset, keyword) &&
+	    str.CompareNoCase(keyword) == 0) {
 		return WholeMatch;
 	}
 
-
-
-	for (auto& pat : in->mRegPatterns) {
+	size_t regPatCount = in->mRegPatterns.size();
+	for (size_t i = offset; i < regPatCount; ++i) {
+		auto& pat = in->mRegPatterns[i];
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
 		if (std::regex_search((const wchar_t*)str, pat) == false) {
@@ -195,8 +223,11 @@ int PartialMatchPattern::Match(
 	}
 
 	// 先頭のキーワードに前方一致する場合は前方一致とみなす
-	if (std::regex_search((const wchar_t*)str, in->mRegPatternFront)) {
-		return FrontMatch;
+	if (offset < in->mRegPatternsForFM.size()) {
+		auto& patForFM = in->mRegPatternsForFM[offset];
+		if (std::regex_search((const wchar_t*)str, patForFM)) {
+			return FrontMatch;
+		}
 	}
 
 	// そうでなければ部分一致
@@ -205,7 +236,7 @@ int PartialMatchPattern::Match(
 
 CString PartialMatchPattern::GetFirstWord()
 {
-	return in->mFirstWord;
+	return in->mTokens.empty() ? _T("") : in->mTokens[0];
 }
 
 CString PartialMatchPattern::GetWholeString()
@@ -221,6 +252,11 @@ bool PartialMatchPattern::shouldWholeMatch()
 void PartialMatchPattern::GetWords(std::vector<WORD>& words)
 {
 	words = in->mWords;
+}
+
+int PartialMatchPattern::GetWordCount()
+{
+	return (int)in->mWords.size();
 }
 
 

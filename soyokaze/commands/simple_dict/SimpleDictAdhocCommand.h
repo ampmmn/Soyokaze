@@ -7,12 +7,16 @@ namespace soyokaze {
 namespace commands {
 namespace simple_dict {
 
+class SimpleDictParam;
+
 class SimpleDictAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
 public:
-	SimpleDictAdhocCommand(const CString& record);
+	SimpleDictAdhocCommand(const CString& key, const CString& value);
 	virtual ~SimpleDictAdhocCommand();
+
+	void SetParam(const SimpleDictParam& param);
 
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;

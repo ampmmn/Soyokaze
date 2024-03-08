@@ -28,11 +28,26 @@ struct SimpleDictProvider::PImpl
 	{
 	}
 
+	bool GetParam(const CString& name, SimpleDictParam& param);
+
 	std::vector<SimpleDictCommand*> mCommands;
 	std::unique_ptr<SimpleDictDatabase> mDatabase;
 
 	uint32_t mRefCount = 1;
 };
+
+bool SimpleDictProvider::PImpl::GetParam(const CString& name, SimpleDictParam& param)
+{
+	for (auto& cmd : mCommands) {
+		if (name != cmd->GetName()) {
+			continue;
+		}
+		param = cmd->GetParam();
+		return true;
+	}
+	return false;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +160,15 @@ void SimpleDictProvider::QueryAdhocCommands(
 	std::vector<SimpleDictDatabase::ITEM> items;
 	in->mDatabase->Query(pattern, items, 20, 100);
 	for (auto& item : items) {
-			commands.push_back(CommandQueryItem(Pattern::PartialMatch, new SimpleDictAdhocCommand(item.mRecord)));
+		SimpleDictParam param;
+		if (in->GetParam(item.mName, param) == false) {
+			continue;
+		}
+
+		auto cmd = new SimpleDictAdhocCommand(item.mKey, item.mValue);
+		cmd->SetParam(param);
+
+		commands.push_back(CommandQueryItem(item.mMatchLevel, cmd));
 	}
 }
 

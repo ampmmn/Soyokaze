@@ -143,6 +143,7 @@
 #define IDC_CHECK_USE0                  1011
 #define IDC_CHECK_SHOWARGINPUT          1011
 #define IDC_EDIT_BACK                   1011
+#define IDC_EDIT_FRONT2                 1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_EDIT_SHEETNAME              1012
 #define IDC_BUTTON_BROWSEDIR1           1013
@@ -310,6 +311,9 @@
 #define IDC_CHECK_FIRSTLINEISHEADER     1144
 #define IDC_CHECK_FIRSTROWISHEADER      1144
 #define IDC_STATIC_RECORDS              1145
+#define IDC_CHECK_MATCHWITHOUTKEYWORD   1146
+#define IDC_CHECK_MATCHWITHOUTKEYWORD2  1147
+#define IDC_CHECK_REVERSE               1147
 
 // Next default values for new objects
 // 

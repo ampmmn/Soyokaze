@@ -761,31 +761,49 @@ BEGIN
     LTEXT           "file:///c:/path/to/... -> c:\\path\\to\\...",IDC_STATIC,31,56,263,8
 END
 
-IDD_SIMPLEDICT DIALOGEX 0, 0, 337, 320
+IDD_SIMPLEDICT DIALOGEX 0, 0, 337, 393
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "簡易辞書コマンドの編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "コマンドの名前(&N):",IDC_STATIC,13,24,65,8
-    EDITTEXT        IDC_EDIT_NAME,104,24,154,14,ES_AUTOHSCROLL
-    LTEXT           "コマンドの説明(&D):",IDC_STATIC,13,44,65,8
-    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,154,14,ES_AUTOHSCROLL
-    LTEXT           "Excelファイル内の任意の範囲のデータを簡易的な辞書として利用することができるコマンドです",IDC_STATIC,13,64,302,12
-    LTEXT           "Excelファイル(&F):",IDC_STATIC,13,119,87,8
-    EDITTEXT        IDC_EDIT_FILEPATH,104,117,152,14,ES_AUTOHSCROLL
-    LTEXT           "【設定の手引き】\n1.Excelで辞書として利用したいデータを開く\n2.辞書データとして使いたいセル範囲を選択する\n3.取得ボタンを押すと、Excel上で選択しているファイル／セル範囲が取得されます",IDC_STATIC,13,79,302,35
-    LTEXT           "シート名(&F):",IDC_STATIC,14,139,40,8
-    EDITTEXT        IDC_EDIT_SHEETNAME,104,137,151,14,ES_AUTOHSCROLL
-    LTEXT           "データ範囲(&R):",IDC_STATIC,13,156,48,8
-    EDITTEXT        IDC_EDIT_FRONT,104,155,151,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "取得(&I)",IDC_BUTTON_IMPORTFRONT,257,116,50,14
-    CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,180,111,10
-    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,258,179,50,14
-    CONTROL         "",IDC_LIST_PREVIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,199,302,92
-    DEFPUSHBUTTON   "OK",IDOK,226,299,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,299,50,14
+    LTEXT           "コマンド名(&N):",IDC_STATIC,13,21,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,21,154,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,13,38,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,38,154,14,ES_AUTOHSCROLL
+    LTEXT           "Excelファイル内の任意の範囲のデータを簡易的な辞書として利用することができるコマンドです",IDC_STATIC,13,57,302,12
+    LTEXT           "【設定の手引き】\n1.Excelで辞書として利用したいシートを表示する\n2.キーとして使うセル範囲を選択し、キー範囲取得ボタンを押す\n3.値として使うデータのセル範囲を選択し、値範囲取得ボタンを押す",IDC_STATIC,13,70,302,35
+    LTEXT           "Excelファイル(&F):",IDC_STATIC,13,110,87,8
+    EDITTEXT        IDC_EDIT_FILEPATH,104,108,152,14,ES_AUTOHSCROLL
+    LTEXT           "シート名(&F):",IDC_STATIC,14,127,40,8
+    EDITTEXT        IDC_EDIT_SHEETNAME,104,125,151,14,ES_AUTOHSCROLL
+    LTEXT           "キーのデータ範囲(&K):",IDC_STATIC,13,144,68,8
+    EDITTEXT        IDC_EDIT_FRONT,104,143,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "キー範囲取得(&I)",IDC_BUTTON_IMPORTFRONT,255,143,66,14
+    LTEXT           "値のデータ範囲(&V):",IDC_STATIC,14,161,62,8
+    EDITTEXT        IDC_EDIT_BACK,104,160,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "値範囲取得(&M)",IDC_BUTTON_IMPORTBACK,255,160,66,14
+    CONTROL         "コマンド名を入力しなくても候補を表示する(&M)",IDC_CHECK_MATCHWITHOUTKEYWORD,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,179,172,10
+    CONTROL         "逆引きを有効にする(&E)",IDC_CHECK_REVERSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,206,179,114,10
+    CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,192,111,10
+    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,258,196,50,14
+    CONTROL         "",IDC_LIST_PREVIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,216,302,53
+    LTEXT           "実行する処理(&T):",IDC_STATIC,26,291,63,8
+    COMBOBOX        IDC_COMBO_AFTERTYPE,115,291,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "コマンド(&C):",IDC_STATIC_AFTERCOMMAND,27,311,63,8
+    COMBOBOX        IDC_COMBO_AFTERCOMMAND,115,309,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "実行ファイル(&U):",IDC_STATIC_PATH2,18,321,87,8
+    EDITTEXT        IDC_EDIT_PATH2,109,319,154,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE3,268,308,21,17
+    PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR4,291,308,21,17
+    LTEXT           "パラメータ(&R):",IDC_STATIC,27,330,63,8
+    EDITTEXT        IDC_EDIT_PARAM2,115,327,154,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,226,372,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,372,50,14
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
-    LTEXT           " ",IDC_STATIC_RECORDS,15,300,193,8
+    LTEXT           " ",IDC_STATIC_RECORDS,14,204,193,8
+    LTEXT           "$value : 選択された値  $key : 値に対応するキー値",IDC_STATIC,116,347,172,11
+    GROUPBOX        "選択後の処理",IDC_STATIC,8,277,313,90
 END
 
 IDD_WATCHPATH DIALOGEX 0, 0, 337, 113
@@ -1111,7 +1129,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 313
+        BOTTOMMARGIN, 386
     END
 
     IDD_WATCHPATH, DIALOG
@@ -1587,19 +1605,36 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 100, 100,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 100, 0
 END
 
@@ -1915,6 +1950,20 @@ BEGIN
 0xc58d, 0xac8f, 0xbb89, "\000" 
     IDC_COMBO_ACTION, 0x403, 7, 0
 0xf194, 0x5c95, 0xa68e, "\000" 
+    0
+END
+
+IDD_SIMPLEDICT DLGINIT
+BEGIN
+    IDC_COMBO_AFTERTYPE, 0x403, 23, 0
+0xbc91, 0xcc82, 0x5283, 0x7d83, 0x9383, 0x6883, 0xf082, 0xc08e, 0x738d, 
+0xb782, 0xe982, "\000" 
+    IDC_COMBO_AFTERTYPE, 0x403, 21, 0
+0x7683, 0x8d83, 0x4f83, 0x8983, 0x8083, 0xf082, 0xc08e, 0x738d, 0xb782, 
+0xe982, "\000" 
+    IDC_COMBO_AFTERTYPE, 0x403, 27, 0
+0x4e83, 0x8a83, 0x6283, 0x7683, 0x7b83, 0x5b81, 0x6883, 0xc982, 0x5283, 
+0x7383, 0x5b81, 0xb782, 0xe982, "\000" 
     0
 END
 

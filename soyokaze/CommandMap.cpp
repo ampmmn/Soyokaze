@@ -70,6 +70,37 @@ bool CommandMap::Unregister(const CString& name)
 	return true;
 }
 
+// リネームによる登録しなおし
+bool CommandMap::Reregister(soyokaze::core::Command* targetCmd)
+{
+	// 変更後の名前
+	CString newName = targetCmd->GetName();
+
+	auto it = mMap.begin();
+	for (;it != mMap.end(); ++it) {
+		auto& name = it->first;
+		auto& cmd = it->second;
+
+		// 変更対象のオブジェクトを探す
+		if (targetCmd != cmd) {
+			continue;
+		}
+
+		if (name == newName) {
+			// 名前の変更なし
+			return true;
+		}
+		
+		// 変更処理
+		mMap.erase(it);
+		mMap[newName] = targetCmd;
+		return true;
+	}
+
+	// 該当なし
+	return false;
+}
+
 void CommandMap::Swap(CommandMap& rhs)
 {
 	mMap.swap(rhs.mMap);

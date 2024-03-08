@@ -33,6 +33,8 @@ public:
 	int RegisterCommand(Command* command);
 	// コマンドの登録を解除
 	int UnregisterCommand(Command* command);
+	// 名前変更による登録しなおし
+	int ReregisterCommand(Command* command);
 
 	// 優先度の更新
 	void AddRank(Command* command, int number);
