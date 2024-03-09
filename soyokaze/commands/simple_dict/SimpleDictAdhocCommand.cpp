@@ -36,7 +36,7 @@ SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	const CString& key,
 	const CString& value
 ) : 
-	AdhocCommandBase(value, value),
+	AdhocCommandBase(key, value),
 	in(std::make_unique<PImpl>())
 {
 	in->mKey = key;
@@ -52,11 +52,20 @@ void SimpleDictAdhocCommand::SetParam(const SimpleDictParam& param)
 	in->mParam = param;
 }
 
+CString SimpleDictAdhocCommand::GetDescription()
+{
+	CString str;
+	str.Format(_T("%s → %s"), in->mKey, in->mValue);
+	return str;
+
+}
+
 CString SimpleDictAdhocCommand::GetGuideString()
 {
+	CString guideStr;
+
 	int actionType = in->mParam.mActionType;
 	if (actionType == 0) {
-		CString guideStr;
 		guideStr.Format(_T("Enter:%sコマンドを実行"), in->mParam.mAfterCommandName);
 		return guideStr;
 	}
@@ -64,14 +73,15 @@ CString SimpleDictAdhocCommand::GetGuideString()
 		return _T("Enter:プログラムを実行");
 	}
 	else {
-		return _T("Enter:クリップボードにコピー");
+		guideStr.Format(_T("Enter:クリップボードに文字列をコピー→ \"%s\""), in->mValue);
+		return guideStr;
 	}
 }
 
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
 {
 	CString dispName;
-	dispName.Format(_T("簡易辞書(%s)"), in->mKey);
+	dispName.Format(_T("簡易辞書(%s)"), in->mParam.mName);
 	return dispName;
 }
 
