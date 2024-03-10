@@ -367,15 +367,21 @@ void SettingDialog::OnButtonTest()
 	// 一行目をヘッダとして扱う場合は2行目からカウントする
 	size_t startIdx = in->mParam.mIsFirstRowHeader ? 1 : 0;
 
+	int emptyCount = 0;
+
 	in->mPreviewListPtr->DeleteAllItems();
 	int listIndex = 0;
 	for (size_t i = startIdx; i < recordCount; ++i) {
+		if (frontTexts[i].IsEmpty() && backTexts[i].IsEmpty()) {
+			emptyCount++;
+			continue;
+		}
 		int n = in->mPreviewListPtr->InsertItem(listIndex++, frontTexts[i]);
 		in->mPreviewListPtr->SetItemText(n, 1, backTexts[i]);
 	}
 
 	in->mIsTestPassed = true;
-	in->mRecordMsg.Format(_T("%d件のレコードが見つかりました"), recordCount - startIdx);
+	in->mRecordMsg.Format(_T("%d件のレコードが見つかりました"), recordCount - startIdx - emptyCount);
 	UpdateStatus();
 
 	UpdateData(FALSE);
@@ -383,6 +389,8 @@ void SettingDialog::OnButtonTest()
 
 void SettingDialog::OnButtonFrontRange()
 {
+	UpdateData();
+
 	ExcelApplication app;
 	CString sheetName = app.GetActiveSheetName();
 	if (sheetName.IsEmpty()) {
@@ -411,6 +419,8 @@ void SettingDialog::OnButtonFrontRange()
 
 void SettingDialog::OnButtonBackRange()
 {
+	UpdateData();
+
 	ExcelApplication app;
 	CString sheetName = app.GetActiveSheetName();
 	if (sheetName.IsEmpty()) {

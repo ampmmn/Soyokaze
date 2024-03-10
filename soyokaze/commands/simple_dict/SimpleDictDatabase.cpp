@@ -118,6 +118,9 @@ struct SimpleDictDatabase::PImpl
 		auto& data = dictionary.mRecords;
 		data.clear();
 		for (size_t i = startIdx; i < count; ++i) {
+			if (keys[i].IsEmpty() && values[i].IsEmpty()) {
+				continue;
+			}
 			data.push_back(RECORD(keys[i], values[i]));
 		}
 	}
@@ -148,8 +151,8 @@ void SimpleDictDatabase::PImpl::MatchKeyValue(
 	Pattern* pattern,
 	std::vector<ITEM>& items,
 	const CString& cmdName,
-	const CString& keyStr,	
-	const CString& valueStr,	
+	const CString& keyStr,
+	const CString& valueStr,
 	bool isMatchWithoutKeyword
 )
 {

@@ -7,29 +7,35 @@ namespace simple_dict {
 class SimpleDictParam
 {
 public:
+	SimpleDictParam() : mActionType(2), mAfterCommandParam(_T("$value"))
+	{}
+
+	SimpleDictParam(const SimpleDictParam&) = default;
+
+public:
 	CString mName;
 	CString mDescription;
 
-	// $B%U%!%$%k$N%Q%9(B
+	// ファイルのパス
 	CString mFilePath;
-	// $B%7!<%HL>(B
+	// シート名
 	CString mSheetName;
-	// $BHO0O(B
+	// 範囲
 	CString mRangeFront;
 	CString mRangeBack;
-	// $B@hF,9T$O%X%C%@$+(B?
+	// 先頭行はヘッダか?
 	BOOL mIsFirstRowHeader; 
-	// $B%3%^%s%IL>$rF~NO$7$J$/$F$b8uJd$rI=<($9$k(B
+	// コマンド名を入力しなくても候補を表示する
 	BOOL mIsMatchWithoutKeyword;
-	// $B5U0z$-$rM-8z$K$9$k(B
+	// 逆引きを有効にする
 	BOOL mIsEnableReverse;
-	// $B8eCJ$N=hM}$N<oN`(B
+	// 後段の処理の種類
 	int mActionType;
-	// $B8eCJ$N%3%^%s%I(B(mPostFilterType=0$B$N>l9g(B)
+	// 後段のコマンド(mPostFilterType=0の場合)
 	CString mAfterCommandName;
-	// $B8eCJ$N%U%!%$%k(BorURL(mPostFilterType=1$B$N>l9g(B)
+	// 後段のファイルorURL(mPostFilterType=1の場合)
 	CString mAfterFilePath;
-	// $B8eCJ$N%3%^%s%I$KEO$9%Q%i%a!<%?(B
+	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
 };
 

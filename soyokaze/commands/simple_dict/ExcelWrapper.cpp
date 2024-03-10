@@ -13,6 +13,8 @@ namespace soyokaze {
 namespace commands {
 namespace simple_dict {
 
+constexpr int EMPTY_LIMIT = 20;   // この数だけ空白が連続で続いたら検索を打ち切る
+
 using namespace soyokaze::commands::activate_window;
 
 struct ExcelApplication::PImpl
@@ -370,7 +372,7 @@ int ExcelApplication::GetCellText(
 
 	DispWrapper cell;
 	for (int row = 1; row <= row_count; ++row) {
-		if (emptyCount >= 5) {
+		if (emptyCount >= EMPTY_LIMIT) {
 			break;
 		}
 		line.Empty();
@@ -400,8 +402,8 @@ int ExcelApplication::GetCellText(
 			}
 			line += text;
 		}
+		texts.push_back(line);
 		if (line.IsEmpty() == FALSE) {
-			texts.push_back(line);
 			emptyCount = 0;
 		}
 		else {

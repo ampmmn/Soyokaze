@@ -141,7 +141,11 @@ bool SimpleDictProvider::NewDialog(const CommandParameter* param)
 	}
 	CommandRepository::GetInstance()->RegisterCommand(newCmd);
 
+	in->mCommands.push_back(newCmd);
+	newCmd->AddRef();
+
 	newCmd->AddListener(in->mDatabase.get());
+
 	return true;
 }
 
