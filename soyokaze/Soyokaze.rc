@@ -792,8 +792,8 @@ BEGIN
     COMBOBOX        IDC_COMBO_AFTERTYPE,115,291,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "コマンド(&C):",IDC_STATIC_AFTERCOMMAND,27,311,63,8
     COMBOBOX        IDC_COMBO_AFTERCOMMAND,115,309,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "実行ファイル(&U):",IDC_STATIC_PATH2,18,321,87,8
-    EDITTEXT        IDC_EDIT_PATH2,109,319,154,14,ES_AUTOHSCROLL
+    LTEXT           "実行ファイル(&U):",IDC_STATIC_PATH2,27,311,87,8
+    EDITTEXT        IDC_EDIT_PATH2,115,309,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE3,268,308,21,17
     PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR4,291,308,21,17
     LTEXT           "パラメータ(&R):",IDC_STATIC,27,330,63,8
@@ -1611,31 +1611,31 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
-    0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
-    0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 100, 100,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
+    0, 100, 0, 0,
+    0, 100, 100, 0,
+    0, 100, 0, 0,
+    0, 100, 100, 0,
+    0, 100, 0, 0,
+    0, 100, 100, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 100, 0,
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0
+    0, 100, 0, 0,
+    0, 100, 100, 0
 END
 
 IDD_WATCHPATH AFX_DIALOG_LAYOUT
