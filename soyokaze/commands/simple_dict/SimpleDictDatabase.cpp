@@ -134,7 +134,7 @@ struct SimpleDictDatabase::PImpl
 		mDictData.erase(it);
 	}
 
-	void MatchKeyValue(Pattern* pattern, std::vector<ITEM>& items, const CString& cmdName, const CString& keyStr,	const CString& valueStr,	bool isMatchWithoutKeyword);
+	void MatchKeyValue(Pattern* pattern, std::vector<ITEM>& items, const CString& cmdName, const CString& keyStr,	const CString& valueStr,bool isMatchWithoutKeyword, bool isEnableReverse);
 	void MatchDict(Pattern* pattern, std::vector<ITEM>& items, int limit, utility::TimeoutChecker& tm, const CString& cmdName, const DICTIONARY& dictionary);
 
 	// key:コマンド名, value: DICTIONARY
@@ -153,21 +153,33 @@ void SimpleDictDatabase::PImpl::MatchKeyValue(
 	const CString& cmdName,
 	const CString& keyStr,
 	const CString& valueStr,
-	bool isMatchWithoutKeyword
+	bool isMatchWithoutKeyword,
+	bool isEnableReverse
 )
 {
-	if (isMatchWithoutKeyword) {
-		//コマンド名の一致がなくても候補を表示する
-		int level = pattern->Match(keyStr);
-		if (level != Pattern::Mismatch) {
-			return;
-		}
-		items.push_back(ITEM(level, cmdName, keyStr, valueStr));
-		return ;
-	}
 
 	// コマンド名が一致しなければ候補を表示しない
 	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+
+		if (isMatchWithoutKeyword == false) {
+			return;
+		}
+
+		//コマンド名の一致がなくても候補を検索する
+		int level = pattern->Match(keyStr);
+		if (level != Pattern::Mismatch) {
+			items.push_back(ITEM(level, cmdName, keyStr, valueStr));
+			return;
+		}
+		if (isEnableReverse == false) {
+			return;
+		}
+		// 逆引きが有効なら値でのマッチングも行う
+		level = pattern->Match(valueStr);
+		if (level != Pattern::Mismatch) {
+			items.push_back(ITEM(level, cmdName, keyStr, valueStr));
+			return;
+		}
 		return;
 	}
 
@@ -181,7 +193,15 @@ void SimpleDictDatabase::PImpl::MatchKeyValue(
 	// ただし、先頭のコマンド名を除外するためoffset=1
 	int level = pattern->Match(keyStr, 1);
 	if (level == Pattern::Mismatch) {  
-		return;
+		if (isEnableReverse == false) {
+			return;
+		}
+
+		// 逆引きが有効なら値でのマッチングも行う
+		level = pattern->Match(valueStr, 1);
+		if (level == Pattern::Mismatch) {  
+			return;
+		}
 	}
 
 	// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
@@ -208,16 +228,7 @@ void SimpleDictDatabase::PImpl::MatchDict(
 			return;
 		}
 
-		MatchKeyValue(pattern, items, cmdName, record.mKey, record.mValue, dictionary.mIsMatchWithoutKeyword);
-		if (items.size() >= (size_t)limit) {
-			return;
-		}
-
-		// 逆引きが有効ならキーと値を入れ替えてのマッチングも行う
-		if (dictionary.mIsEnableReverse == false) {
-			continue;
-		}
-		MatchKeyValue(pattern, items, cmdName, record.mValue, record.mKey, dictionary.mIsMatchWithoutKeyword);
+		MatchKeyValue(pattern, items, cmdName, record.mKey, record.mValue, dictionary.mIsMatchWithoutKeyword, dictionary.mIsEnableReverse);
 		if (items.size() >= (size_t)limit) {
 			return;
 		}

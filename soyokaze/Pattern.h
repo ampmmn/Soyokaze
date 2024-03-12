@@ -16,6 +16,7 @@ public:
 		WholeMatch = 4,    // 完全一致
 		FrontMatch = 3,    // 前方一致
 		PartialMatch = 2,  // 部分一致
+		WeakMatch = 1,     // 弱い一致
 		Mismatch = -1,     // 不一致
 	};
 

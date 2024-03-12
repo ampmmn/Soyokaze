@@ -174,7 +174,14 @@ void WebSearchProvider::QueryAdhocCommands(
 			continue;
 		}
 
-		commands.push_back(CommandQueryItem(Pattern::PartialMatch, cmd->CloneAsAdhocCommand(pattern->GetWholeString())));
+		// コマンド名に一致する場合は表示しない
+		// (一時的なcommandてはなく、通常のWeb検索コマンドとして候補に表示されるため)
+		int matchLevel = pattern->Match(cmd->GetName());
+		if (matchLevel == Pattern::WholeMatch) {
+			continue;
+		}
+
+		commands.push_back(CommandQueryItem(Pattern::WeakMatch, cmd->CloneAsAdhocCommand(pattern->GetWholeString())));
 	}
 }
 

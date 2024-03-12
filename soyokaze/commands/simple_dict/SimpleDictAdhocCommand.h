@@ -18,6 +18,7 @@ public:
 
 	void SetParam(const SimpleDictParam& param);
 
+	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;

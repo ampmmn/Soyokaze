@@ -36,7 +36,7 @@ SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	const CString& key,
 	const CString& value
 ) : 
-	AdhocCommandBase(key, value),
+	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
 {
 	in->mKey = key;
@@ -50,6 +50,11 @@ SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 void SimpleDictAdhocCommand::SetParam(const SimpleDictParam& param)
 {
 	in->mParam = param;
+}
+
+CString SimpleDictAdhocCommand::GetName()
+{
+	return in->mParam.mName + _T(" ") + in->mKey + _T(" : ") + in->mValue;
 }
 
 CString SimpleDictAdhocCommand::GetDescription()
@@ -80,9 +85,7 @@ CString SimpleDictAdhocCommand::GetGuideString()
 
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
 {
-	CString dispName;
-	dispName.Format(_T("簡易辞書(%s)"), in->mParam.mName);
-	return dispName;
+	return _T("簡易辞書");
 }
 
 BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
