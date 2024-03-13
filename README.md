@@ -1,127 +1,130 @@
 # Soyokaze
 
-bluewind��ւƂ��ׂ��쐬���Ă��郉���`���[�\�t�g�B
+bluewind代替とすべく作成しているランチャーソフト。
 
-![���](image/soyokaze-window.gif)
+![画面](image/soyokaze-window.gif)
 
-## bluewind�Ƃ�
+## bluewindとは
 
-bluewind��ReadMe���甲��
+bluewindのReadMeから抜粋
 ```
-���S�҂���㋉�҂܂ŕ��L���g����R�}���h���C�������`���[�ł��B
-�ȒP�ȃL�[���[�h���t�@�C����URL�Ɋ֘A�t���A
-�L�[�{�[�h���炻�̃L�[���[�h��ł����ނ��Ƃ�
-�A�v���P�[�V�������N����������AWeb�T�C�g���J������ł��܂��B
+初心者から上級者まで幅広く使えるコマンドラインランチャーです。
+簡単なキーワードをファイルやURLに関連付け、
+キーボードからそのキーワードを打ち込むことで
+アプリケーションを起動させたり、Webサイトを開いたりできます。
 ```
 
-�l�I�ɂƂĂ��C�ɓ����Ē��N�g���Ă����c�[���ŁA
-���ł����ʂɎg���邯�ǁA�ꎟ�z�z���T�C�g������(&�X�V��~)���ċv�����B
+個人的にとても気に入って長年使ってきたツールで、
+今でも普通に使えるけど、一次配布元サイトが消滅(&更新停止)して久しい。
 
-## �����
+## 動作環境
 
-���L���ł̓�����m�F��
+下記環境での動作を確認済
 
 - Windows 11(64bit)
 - Windows 10(64bit)
 
-## �C���X�g�[���菇
+## インストール手順
 
-1. zip���t�@�C����W�J���ĔC�ӂ̃t�H���_�ɓW�J����
-1. �W�J��t�H���_�ɂ���`soyokaze.exe`�����s����
-1. �ݒ�̓��[�U�t�H���_(�����Ă��� C:/Users/(���[�U��))������`.soyokaze`�t�H���_�ɕۑ������  
-������s����`.soyokaze`�t�H���_���쐬����
-  * ���W�X�g������ؕύX���Ȃ�
+1. zipをファイルを展開して任意のフォルダに展開する
+1. 展開先フォルダにある`soyokaze.exe`を実行する
+1. 設定はユーザフォルダ(たいていは C:/Users/(ユーザ名))直下の`.soyokaze`フォルダに保存される  
+初回実行時に`.soyokaze`フォルダを作成する
+  * レジストリを一切変更しない
 
-## �A���C���X�g�[���菇
+## アンインストール手順
 
-�A���C���X�g�[���͂Ȃ����߁A�ȉ����ׂĂ��蓮�ōs���B
+アンインストーラはないため、以下すべてを手動で行う。
 
-1. �A�v���P�[�V�����̐ݒ�-�V���[�g�J�b�g�ݒ��\�����A���ׂẴV���[�g�J�b�g���폜����
-1. `soyokaze.exe`���I������
-1. �C���X�g�[������`soyokaze.exe`��u�����t�H���_���ƍ폜����
-1. �ݒ�t�H���_(C:/Users/(���[�U��)/.soyokaze)���폜����
+1. アプリケーションの設定-ショートカット設定を表示し、すべてのショートカットを削除する
+1. `soyokaze.exe`を終了する
+1. インストール時に`soyokaze.exe`を置いたフォルダごと削除する
+1. 設定フォルダ(C:/Users/(ユーザ名)/.soyokaze)を削除する
 
-## �t�@�C���\��
+## ファイル構成
 
 - soyokaze.exe
 - help.html
 - LICENSE
 
-## ��ȓ���
+## 主な特徴
 
-- �z�b�g�L�[�ŃE�C���h�E�̌Ăяo�����ł���B�����l��Alt-Space
-- �C�ӂ̃t�@�C����t�H���_��o�^���ăL�[���[�h�ŌĂяo�����Ƃ��ł���
-- �o�^�����L�[���[�h(�R�}���h)�ɑ΂��ăV���[�g�J�b�g�L�[��ݒ肷�邱�Ƃ��ł���
-- ���W�X�g����ύX���Ȃ�
-- �t�@�C������URL�𒼐ڎw�肵�Ă̎��s���\
-- �p�����[�^�ɃL�[���[�h���g�p���邱�Ƃ��ł���
+- ホットキーでウインドウの呼び出しができる。初期値はAlt-Space
+- 任意のファイルやフォルダを登録してキーワードで呼び出すことができる
+- 登録したキーワード(コマンド)に対してショートカットキーを設定することができる
+- レジストリを変更しない
+- ファイル名やURLを直接指定しての実行が可能
+- パラメータにキーワードを使用することができる
 
-## �}�j���A��
+## マニュアル
 
-[�}�j���A��](doc/help.md) ���Q��
+[マニュアル](doc/help.md) を参照
 
-- `Pandoc`����HTML�𐶐����邽�߂�Markdown�t�@�C���̂��߁A���̂��߂̋L�q���t�@�C���`���Ɩ����ɂ���
+- `Pandoc`からHTMLを生成するためのMarkdownファイルのため、そのための記述がファイル冒頭と末尾にある
 
-## ���s���ɕK�v�ȃ��C�u����
+## 実行時に必要なライブラリ
 
-�ȉ��̃��C�u����������ƁA�ǉ��̋@�\�𗘗p���邱�Ƃ��ł��邪�A�Ȃ��Ă����삷��B
+以下のライブラリがあると、追加の機能を利用することができるが、なくても動作する。
 
 - [Python3](https://www.python.org/) 
-  - �d��@�\�𗘗p���邽�߂ɕK�v
+  - 電卓機能を利用するために必要
 
 - [C/Migemo](https://www.kaoriya.net/software/cmigemo/) 
-  - ���[�}���ɂ����{�ꕶ���񌟍��𗘗p���邽�߂ɕK�v
-    - �Ⴆ�΁A`jikoku`��`����`��`����`�Ƀq�b�g����悤�ɂȂ�
+  - ローマ字による日本語文字列検索を利用するために必要
+    - 例えば、`jikoku`で`時刻`や`自国`にヒットするようになる
 
-## ��ʂȂ�
+## 画面など
 
-��ʂ̂����bluewind�ɂ�����x�����č���Ă���
+画面のつくりはbluewindにある程度似せて作っている
 
-### ���͉��
+### 入力画面
 
 ![](image/soyokaze-window.png)
 
-### �L�[���[�h�}�l�[�W��
+### キーワードマネージャ
 
 ![](image/keywordmanager.png)
 
-### �R�}���h�o�^�E�ҏW���
+### コマンド登録・編集画面
 
 ![](image/edit.png)
 
-### �ݒ���
+### 設定画面
 
 ![](image/setting.png)
 
-![](image/shortcut_setting.png)
+## ビルド方法
 
-## �r���h���@
-
-[HowToBuild.md](./HowToBuild.md) ���Q��
+[HowToBuild.md](./HowToBuild.md) を参照
 
 
-### �L�[���[�h�i���݂̎d�l
+### キーワード絞込みの仕様
 
-- �w�肵���L�[���[�h�����̖��O�ɕ�����v���邩�ǂ����Ŕ��f���s��
-- �X�y�[�X��؂�ŕ����L�[���[�h�w�肳�ꂽ�ꍇ�A�X�̃L�[���[�h���ƂɌ��̖��O�ƕ�����v��r���s���A���ׂă}�b�`������̂�ΏۂƂ���
-- ���̕\���D�揇�ʂ� ���S��v���ł��D��A���ɑO����v�A�Ō�ɕ�����v �̏�
-  - �L�[���[�h�̂����ꂩ���A���Ɗ��S��v����ꍇ�A���S��v�Ƃ݂Ȃ�
-  - �擪�̃L�[���[�h�ƌ�₪�O����v����ꍇ�A�O����v�Ƃ݂Ȃ�
-  - �^����ꂽ�L�[���[�h�����ɕ����I�Ɉ�v����ꍇ�A������v�Ƃ݂Ȃ�
-- �_�u���N�H�[�e�[�V�����ň͂����ꍇ�̓L�[���[�h�ɋ󔒂��܂߂邱�Ƃ��ł���
-- �����̃L�[���[�h���^����ꂽ�ꍇ�ɐ擪�L�[���[�h�ƌ�₪���S��v����ꍇ�A�㑱�̃L�[���[�h���p�����[�^�w��Ƃ݂Ȃ�
+- 指定したキーワードが候補の名前に部分一致するかどうかで判断を行う
+- スペース区切りで複数キーワード指定された場合、個々のキーワードごとに候補の名前と部分一致比較を行い、すべてマッチするものを対象とする
+
+- 一致の度合いに応じて、候補の表示順序を変えている。一致度の区分として以下の3種類がある。  
+先に挙げたほうが優先順位が高い(先に表示する)
+  - 完全一致
+    - キーワードのいずれかが、候補と完全一致する場合、完全一致とみなす
+  - 前方一致
+    - 先頭のキーワードと候補が前方一致する場合、前方一致とみなす
+  - 部分一致
+    - 与えられたキーワードが候補に部分的に一致する場合、部分一致とみなす
+
+- ダブルクォーテーションで囲った場合はキーワードに空白を含めることができる
+- 複数のキーワードが与えられた場合に先頭キーワードと候補が完全一致する場合、後続のキーワードをパラメータ指定とみなす
 
 ## ToDo
 
-- �݌v�������c��
-- ���j�b�g�e�X�g�g�[
+- 設計資料を残す
+- ユニットテスト拡充
 
 ## ChangeLog
 
 [CHANGELOG.md](./CHANGELOG.md)
 
-
-## ���C�Z���X
+## ライセンス
 
 [MIT License](./LICENSE)
 
