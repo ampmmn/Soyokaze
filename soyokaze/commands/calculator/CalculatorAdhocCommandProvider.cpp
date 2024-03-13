@@ -124,7 +124,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	if (cmdline != result) {
 		in->mCommandPtr->SetResult(result);
 		in->mCommandPtr->AddRef();
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mCommandPtr));
+		commands.push_back(CommandQueryItem(Pattern::PartialMatch, in->mCommandPtr));
 	}
 
 	// もし、評価結果が整数値なら16/8/2進数の結果も表示する
@@ -140,7 +140,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 			result.Replace(_T("'"), _T(""));
 			in->mHexResultPtr->SetResult(result);
 			in->mHexResultPtr->AddRef();
-			commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mHexResultPtr));
+			commands.push_back(CommandQueryItem(Pattern::PartialMatch, in->mHexResultPtr));
 		}
 
 		// 8
@@ -149,7 +149,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 			result.Replace(_T("'"), _T(""));
 			in->mOctResultPtr->SetResult(result);
 			in->mOctResultPtr->AddRef();
-			commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mOctResultPtr));
+			commands.push_back(CommandQueryItem(Pattern::PartialMatch, in->mOctResultPtr));
 		}
 
 		// 2進数
@@ -158,7 +158,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 			result.Replace(_T("'"), _T(""));
 			in->mBinResultPtr->SetResult(result);
 			in->mBinResultPtr->AddRef();
-			commands.push_back(CommandQueryItem(Pattern::WholeMatch, in->mBinResultPtr));
+			commands.push_back(CommandQueryItem(Pattern::PartialMatch, in->mBinResultPtr));
 		}
 	}
 }
