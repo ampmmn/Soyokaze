@@ -41,7 +41,7 @@ struct CSoyokazeDlg::PImpl
 	{
 	}
 
-	void RestoreWindowPosition(CWnd* thisPtr);
+	void RestoreWindowPosition(CWnd* thisPtr, bool isForceReset);
 	void UpdateGuide(CWnd* thisPtr, bool isShow);
 
 	HICON mIconHandle;
@@ -89,10 +89,12 @@ struct CSoyokazeDlg::PImpl
 
 };
 
-void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr)
+void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
 {
 	mWindowPositionPtr = std::make_unique<WindowPosition>();
-	if (mWindowPositionPtr->Restore(thisPtr->GetSafeHwnd()) == false) {
+
+	bool isSucceededToRestore = mWindowPositionPtr->Restore(thisPtr->GetSafeHwnd());
+	if (isForceReset || isSucceededToRestore == false) {
 		// 復元に失敗した場合は中央に表示
 		thisPtr->SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
 		thisPtr->CenterWindow();
@@ -235,7 +237,6 @@ void CSoyokazeDlg::ShowHelp()
 	ShellExecuteEx(&si);
 	CloseHandle(si.hProcess);
 }
-
 
 /**
  * ActiveWindow経由の処理
@@ -569,7 +570,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	// in->UpdateGuide(this, pref->IsShowGuide());
 
 	// ウインドウ位置の復元
-	in->RestoreWindowPosition(this);
+	in->RestoreWindowPosition(this, false);
 
 	// 透明度制御
 	in->mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
@@ -1018,9 +1019,10 @@ void CSoyokazeDlg::OnContextMenu(
 	const int ID_MANAGER = 4;
 	const int ID_APPSETTING = 5;
 	const int ID_USERDIR = 6;
-	const int ID_MANUAL = 7;
-	const int ID_VERSIONINFO = 8;
-	const int ID_EXIT = 9;
+	const int ID_RESETPOS = 7;
+	const int ID_MANUAL = 8;
+	const int ID_VERSIONINFO = 9;
+	const int ID_EXIT = 19;
 
 	BOOL isVisible = IsWindowVisible();
 	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
@@ -1032,6 +1034,7 @@ void CSoyokazeDlg::OnContextMenu(
 	menu.InsertMenu(-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
+	menu.InsertMenu(-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
 	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
@@ -1057,6 +1060,10 @@ void CSoyokazeDlg::OnContextMenu(
 	}
 	else if (n == ID_USERDIR) {
 		ExecuteCommand(_T("userdir"));
+	}
+	else if (n == ID_RESETPOS) {
+		// ウインドウ位置をリセット
+		in->RestoreWindowPosition(this, true);
 	}
 	else if (n == ID_MANUAL) {
 		// ヘルプ表示
