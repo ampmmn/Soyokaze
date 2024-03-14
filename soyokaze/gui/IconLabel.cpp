@@ -70,7 +70,7 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 void IconLabel::DrawDefaultIcon()
 {
 	if (mIconDefault == nullptr) {
-		mIconDefault = IconLoader::Get()->GetImageResIcon(-5308);
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 	}
 	DrawIcon(mIconDefault);
 }

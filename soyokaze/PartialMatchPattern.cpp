@@ -22,6 +22,31 @@ struct PartialMatchPattern::PImpl
 		return true;
 	}
 
+	// Migemoを使うかどうか
+	bool shouldUseMigemo(size_t index, const CString& token)
+ 	{
+		// Migemoが初期化されていないなら使わない(使えない)
+		if (mMigemo.IsInitialized() == false) {
+			return false;
+		}
+
+		// 入力文字が1文字で子音の場合はC/Migemoを使わない
+		// (子音によっては何もヒットしないことがあるので)
+		static CString vowelChars(_T("aiueoAIUEO"));
+		bool isVowel = (vowelChars.Find(token[0]) != -1);
+		if (token.GetLength() == 1 && isVowel == false) {
+			return false;
+		}
+
+		// 先頭2ワードまではMigemoを使う
+		bool is1stOr2ndWord = (index == 0 || index == 1);
+		if (is1stOr2ndWord == false) {
+		 return false;
+		}
+
+		return true;
+	};
+
 	// 入力文字列をばらした配列
 	std::vector<CString> mTokens;
 
@@ -61,12 +86,6 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 
 PartialMatchPattern::~PartialMatchPattern()
 {
-}
-
-static bool IsVowel(TCHAR c)
-{
-	static CString vowelChars(_T("aiueoAIUEO"));
-	return vowelChars.Find(c) != -1;
 }
 
 void PartialMatchPattern::SetParam(
@@ -143,15 +162,12 @@ void PartialMatchPattern::SetParam(
 	std::vector<std::wregex> patternsForFM;
 	patterns.reserve(in->mTokens.size());
 
-	bool is1stWord = true;  // 先頭のワードか?
-
-	for (auto& token : in->mTokens) {
+	for (size_t i = 0; i < in->mTokens.size(); ++i) {
+		auto& token = in->mTokens[i];
 		ASSERT(token.GetLength() > 0);
 
 		try {
-			// 入力文字が1文字で子音の場合はC/Migemoを使わない
-			// (子音によっては何もヒットしないことがあるので)
-			if (is1stWord && in->mMigemo.IsInitialized() && (token.GetLength() > 1 || IsVowel(token[0])) ) {
+			if (in->shouldUseMigemo(i, token)) {
 
 				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
 				CString migemoExpr;
@@ -172,7 +188,6 @@ void PartialMatchPattern::SetParam(
 
 				words.push_back(WORD(token, Pattern::FixString));
 			}
-			is1stWord = false;
 		}
 		catch (std::regex_error&) {
 			in->mHasError = true;
