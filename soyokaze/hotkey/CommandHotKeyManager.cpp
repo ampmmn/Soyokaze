@@ -132,6 +132,8 @@ HACCEL CommandHotKeyManager::GetAccelerator()
 	std::vector<ACCEL> accels;
 	accels.reserve(in->mKeyItemMap.size());
 
+	// ローカルホットキー用を実行できるようにするため、
+	// キーアクセラレータに登録するテーブル生成
 	UINT id = ID_LOCAL_START;
 	for (auto& elem : in->mKeyItemMap) {
 

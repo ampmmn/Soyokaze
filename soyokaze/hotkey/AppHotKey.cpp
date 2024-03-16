@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "hotkey/AppHotKey.h"
+#include "AppHotKey.h"
 #include "setting/AppPreference.h"
 #include "hotkey/GlobalHotKey.h"
 
