@@ -8,7 +8,7 @@
 #include <memory>
 #include "gui/KeywordEdit.h"
 #include "gui/CmdReceiveEdit.h"
-#include "gui/CaptureIconLabel.h"
+#include "icon/CaptureIconLabel.h"
 #include "gui/SoyokazeDropTarget.h"
 
 

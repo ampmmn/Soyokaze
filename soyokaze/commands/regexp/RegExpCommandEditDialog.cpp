@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
-#include "gui/IconLabel.h"
+#include "icon/IconLabel.h"
 #include "core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"

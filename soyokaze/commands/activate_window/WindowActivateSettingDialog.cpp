@@ -3,7 +3,7 @@
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/common/Message.h"
 #include "gui/CommandHotKeyDialog.h"
-#include "gui/CaptureIconLabel.h"
+#include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"

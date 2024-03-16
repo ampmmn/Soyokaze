@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "AlignWindowItemSettingDialog.h"
 #include "commands/common/Message.h"
-#include "gui/CaptureIconLabel.h"
+#include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"

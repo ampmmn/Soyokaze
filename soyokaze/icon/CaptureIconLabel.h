@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IconLabel.h"
+#include "icon/IconLabel.h"
 
 class CaptureIconLabel : public IconLabel
 {

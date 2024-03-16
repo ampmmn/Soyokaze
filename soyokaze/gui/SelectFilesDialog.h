@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/IconLabel.h"
+#include "icon/IconLabel.h"
 #include <vector>
 
 class SelectFilesDialog : public CDialogEx

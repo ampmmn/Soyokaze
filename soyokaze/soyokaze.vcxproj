@@ -704,7 +704,7 @@
     <ClInclude Include="gui\AppSettingPathPage.h" />
     <ClInclude Include="gui\BasicSettingDialog.h" />
     <ClInclude Include="gui\CandidateListCtrl.h" />
-    <ClInclude Include="gui\CaptureIconLabel.h" />
+    <ClInclude Include="icon\CaptureIconLabel.h" />
     <ClInclude Include="gui\CommandHotKeyDialog.h" />
     <ClInclude Include="gui\ExecSettingDialog.h" />
     <ClInclude Include="gui\ExtensionSettingDialog.h" />
@@ -748,7 +748,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="HotKeyAttribute.h" />
     <ClInclude Include="gui/HotKeyDialog.h" />
-    <ClInclude Include="gui/IconLabel.h" />
+    <ClInclude Include="icon/IconLabel.h" />
 		<ClInclude Include="icon/IconLoader.h" />
     <ClInclude Include="utility/IniFile.h" />
     <ClInclude Include="gui/KeywordEdit.h" />
@@ -928,7 +928,7 @@
     <ClCompile Include="gui\AppSettingPathPage.cpp" />
     <ClCompile Include="gui\BasicSettingDialog.cpp" />
     <ClCompile Include="gui\CandidateListCtrl.cpp" />
-    <ClCompile Include="gui\CaptureIconLabel.cpp" />
+    <ClCompile Include="icon\CaptureIconLabel.cpp" />
     <ClCompile Include="gui\CommandHotKeyDialog.cpp" />
     <ClCompile Include="gui\ExecSettingDialog.cpp" />
     <ClCompile Include="gui\ExtensionSettingDialog.cpp" />
@@ -969,7 +969,7 @@
     <ClCompile Include="gui/FolderDialog.cpp" />
     <ClCompile Include="HotKeyAttribute.cpp" />
     <ClCompile Include="gui/HotKeyDialog.cpp" />
-    <ClCompile Include="gui/IconLabel.cpp" />
+    <ClCompile Include="icon/IconLabel.cpp" />
 		<ClCompile Include="icon/IconLoader.cpp" />
     <ClCompile Include="utility/IniFile.cpp" />
     <ClCompile Include="gui/KeywordEdit.cpp" />

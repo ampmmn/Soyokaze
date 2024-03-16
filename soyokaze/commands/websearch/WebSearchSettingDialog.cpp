@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "gui/IconLabel.h"
+#include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"

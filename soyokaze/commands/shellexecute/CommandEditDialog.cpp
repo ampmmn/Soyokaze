@@ -3,7 +3,7 @@
 #include "CommandEditDialog.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "gui/FolderDialog.h"
-#include "gui/IconLabel.h"
+#include "icon/IconLabel.h"
 #include "gui/CommandHotKeyDialog.h"
 #include "core/CommandRepository.h"
 #include "utility/ShortcutFile.h"

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "gui/KeywordManagerDialog.h"
-#include "gui/IconLabel.h"
+#include "icon/IconLabel.h"
 #include "core/CommandRepository.h"
 #include "utility/TopMostMask.h"
 #include "icon/IconLoader.h"
