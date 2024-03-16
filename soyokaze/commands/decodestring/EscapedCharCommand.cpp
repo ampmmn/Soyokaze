@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "EscapedCharCommand.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "utility/CharConverter.h"
 #include "resource.h"

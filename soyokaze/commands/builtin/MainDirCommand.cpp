@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "MainDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

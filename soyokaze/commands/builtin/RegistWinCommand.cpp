@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/builtin/RegistWinCommand.h"
 #include "core/CommandRepository.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "utility/ProcessPath.h"
 #include "SharedHwnd.h"
 #include "resource.h"

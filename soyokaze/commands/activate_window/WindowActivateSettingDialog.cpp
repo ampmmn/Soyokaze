@@ -8,7 +8,7 @@
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "core/CommandRepository.h"
 #include "resource.h"
 

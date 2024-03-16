@@ -6,7 +6,7 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "core/CommandRepository.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

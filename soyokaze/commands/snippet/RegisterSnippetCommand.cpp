@@ -4,7 +4,7 @@
 #include "commands/snippet/SnippetCommand.h"
 #include "core/CommandRepository.h"
 #include "SharedHwnd.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

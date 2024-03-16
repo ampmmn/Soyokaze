@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/builtin/EditCommand.h"
 #include "core/CommandRepository.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

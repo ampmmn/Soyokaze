@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "WorksheetCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>

@@ -2,7 +2,7 @@
 #include "UserDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/AppProfile.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

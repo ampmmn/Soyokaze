@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ControlPanelCommand.h"
 #include "commands/common/SubProcess.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

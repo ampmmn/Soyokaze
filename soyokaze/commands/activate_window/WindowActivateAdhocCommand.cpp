@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "WindowActivateAdhocCommand.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

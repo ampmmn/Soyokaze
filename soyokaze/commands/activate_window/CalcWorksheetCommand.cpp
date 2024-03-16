@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "CalcWorksheetCommand.h"
 #include "commands/activate_window/CalcWorksheets.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>

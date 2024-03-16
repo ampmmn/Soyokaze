@@ -3,7 +3,7 @@
 #include "commands/builtin/EmptyRecycleBinCommand.h"
 #include "core/CommandRepository.h"
 #include "CommandFile.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

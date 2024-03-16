@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "SpecialFolderFileCommand.h"
 #include "commands/common/SubProcess.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "AppPreference.h"
 #include "resource.h"
 

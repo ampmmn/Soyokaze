@@ -749,7 +749,7 @@
     <ClInclude Include="HotKeyAttribute.h" />
     <ClInclude Include="gui/HotKeyDialog.h" />
     <ClInclude Include="gui/IconLabel.h" />
-    <ClInclude Include="IconLoader.h" />
+		<ClInclude Include="icon/IconLoader.h" />
     <ClInclude Include="utility/IniFile.h" />
     <ClInclude Include="gui/KeywordEdit.h" />
     <ClInclude Include="gui/KeywordManagerDialog.h" />
@@ -970,7 +970,7 @@
     <ClCompile Include="HotKeyAttribute.cpp" />
     <ClCompile Include="gui/HotKeyDialog.cpp" />
     <ClCompile Include="gui/IconLabel.cpp" />
-    <ClCompile Include="IconLoader.cpp" />
+		<ClCompile Include="icon/IconLoader.cpp" />
     <ClCompile Include="utility/IniFile.cpp" />
     <ClCompile Include="gui/KeywordEdit.cpp" />
     <ClCompile Include="gui/KeywordManagerDialog.cpp" />

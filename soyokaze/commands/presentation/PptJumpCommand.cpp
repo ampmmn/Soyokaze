@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "PptJumpCommand.h"
 #include "commands/presentation/PowerPointWindow.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

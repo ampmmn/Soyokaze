@@ -3,7 +3,7 @@
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MailToCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

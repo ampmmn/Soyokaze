@@ -6,7 +6,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "AppPreference.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

@@ -8,7 +8,7 @@
 #include "CommandHotKeyMappings.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 

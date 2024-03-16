@@ -3,7 +3,7 @@
 #include "SettingCommand.h"
 #include "gui/SettingDialog.h"
 #include "AppPreference.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

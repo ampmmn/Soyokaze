@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "VMXFileCommand.h"
 #include "commands/common/SubProcess.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>

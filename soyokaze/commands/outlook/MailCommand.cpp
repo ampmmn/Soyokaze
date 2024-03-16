@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "MailCommand.h"
 #include "commands/outlook/OutlookItems.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>

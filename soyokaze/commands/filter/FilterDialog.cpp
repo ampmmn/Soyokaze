@@ -17,7 +17,7 @@
 #include "AppPreference.h"
 #include "core/CommandHotKeyManager.h"
 #include "PartialMatchPattern.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <algorithm>
 

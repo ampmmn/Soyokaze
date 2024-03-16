@@ -4,7 +4,7 @@
 #include "TaskTray.h"
 #include "resource.h"
 #include "gui/SoyokazeDlg.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -115,6 +115,9 @@
     <Filter Include="commands\presentation">
       <UniqueIdentifier>{8f298638-3ce8-424a-8a6c-d997ce6bd4a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="icon">
+      <UniqueIdentifier>{db647421-9865-4392-9071-53fc2ab5a7b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Soyokaze.h">
@@ -154,9 +157,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="WholeMatchPattern.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="IconLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CommandFile.h">
@@ -771,6 +771,9 @@
     <ClInclude Include="commands\filter\FilterExecutor.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
+    <ClInclude Include="icon/IconLoader.h">
+      <Filter>icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Soyokaze.cpp">
@@ -804,9 +807,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Pattern.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="IconLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CommandFile.cpp">
@@ -1393,6 +1393,9 @@
     </ClCompile>
     <ClCompile Include="commands\filter\FilterExecutor.cpp">
       <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="icon/IconLoader.cpp">
+      <Filter>icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

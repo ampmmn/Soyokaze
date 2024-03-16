@@ -4,7 +4,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

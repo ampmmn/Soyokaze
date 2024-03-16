@@ -2,7 +2,7 @@
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "gui/IconLabel.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"

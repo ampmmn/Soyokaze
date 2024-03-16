@@ -6,7 +6,7 @@
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 using namespace soyokaze::commands::common;

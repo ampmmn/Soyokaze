@@ -2,7 +2,7 @@
 #include "PowerPointWindow.h"
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

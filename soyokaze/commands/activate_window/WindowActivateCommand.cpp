@@ -7,7 +7,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "AppPreference.h"
 #include "CommandFile.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include "commands/common/Message.h"
 #include <assert.h>

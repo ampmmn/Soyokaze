@@ -4,7 +4,7 @@
 #include "commands/builtin/SuspendCommand.h"
 #include "core/CommandRepository.h"
 #include "CommandFile.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <powrprof.h>
 #pragma comment(lib, "powrprof.lib")

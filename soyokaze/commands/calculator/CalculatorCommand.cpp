@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "CalculatorCommand.h"
 #include "commands/common/Clipboard.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

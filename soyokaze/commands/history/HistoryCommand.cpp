@@ -2,7 +2,7 @@
 #include "HistoryCommand.h"
 #include "core/CommandRepository.h"
 #include "core/CommandParameter.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AdhocCommandBase.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG

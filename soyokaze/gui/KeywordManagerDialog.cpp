@@ -4,7 +4,7 @@
 #include "gui/IconLabel.h"
 #include "core/CommandRepository.h"
 #include "utility/TopMostMask.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <algorithm>
 

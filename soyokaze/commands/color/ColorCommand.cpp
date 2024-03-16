@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ColorCommand.h"
 #include "commands/color/HSL.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "SharedHwnd.h"
 #include "resource.h"

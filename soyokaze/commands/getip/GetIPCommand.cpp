@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "GetIPCommand.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "resource.h"
 #include <vector>

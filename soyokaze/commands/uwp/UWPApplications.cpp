@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UWPApplications.h"
 #include "utility/RegistryKey.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include <atlbase.h>
 #include <propvarutil.h>
 #include <mutex>

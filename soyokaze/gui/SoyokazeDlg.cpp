@@ -15,7 +15,7 @@
 #include "ExecHistory.h"
 #include "core/AppHotKey.h"
 #include "WindowTransparency.h"
-#include "IconLoader.h"
+#include "icon/IconLoader.h"
 #include "AppPreference.h"
 #include "AppSound.h"
 #include "utility/ProcessPath.h"
