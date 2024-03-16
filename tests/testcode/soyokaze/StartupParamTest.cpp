@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "StartupParam.h"
+#include "app/StartupParam.h"
 
 TEST(StartupParam, canInit)
 {

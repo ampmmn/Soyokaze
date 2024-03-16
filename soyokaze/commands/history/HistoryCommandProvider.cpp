@@ -2,8 +2,8 @@
 #include "HistoryCommandProvider.h"
 #include "commands/history/HistoryCommand.h"
 #include "commands/common/ExecuteHistory.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
 #include "resource.h"
 #include <list>
 

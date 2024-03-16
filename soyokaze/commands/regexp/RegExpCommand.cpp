@@ -5,10 +5,10 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/regexp/RegExpCommandEditDialog.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/LastErrorString.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

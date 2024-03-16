@@ -6,11 +6,11 @@
 #include "commands/activate_window/ExcelWorksheets.h"
 #include "commands/activate_window/CalcWorksheets.h"
 #include "commands/activate_window/CalcWorksheetCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
 

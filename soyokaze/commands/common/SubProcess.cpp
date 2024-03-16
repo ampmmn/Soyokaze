@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
-#include "core/CommandParameter.h"
+#include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
-#include "AppPreference.h"
+#include "setting/AppPreference.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

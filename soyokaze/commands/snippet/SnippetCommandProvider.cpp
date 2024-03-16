@@ -2,10 +2,10 @@
 #include "SnippetCommandProvider.h"
 #include "commands/snippet/SnippetCommand.h"
 #include "commands/snippet/RegisterSnippetCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "resource.h"
 
 #ifdef _DEBUG

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FilterExecutor.h"
-#include "PartialMatchPattern.h"
-#include "core/CommandParameter.h"
+#include "matcher/PartialMatchPattern.h"
+#include "commands/core/CommandParameter.h"
 #include <thread>
 #include <mutex>
 

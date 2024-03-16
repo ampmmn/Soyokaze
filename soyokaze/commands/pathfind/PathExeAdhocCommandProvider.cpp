@@ -2,10 +2,10 @@
 #include "PathExeAdhocCommandProvider.h"
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/common/ExecuteHistory.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <list>
 

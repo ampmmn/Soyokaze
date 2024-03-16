@@ -3,7 +3,7 @@
 #include <memory>
 #include "commands/group/CommandParam.h"
 #include "utility/TopMostMask.h"
-#include "HotKeyAttribute.h"
+#include "hotkey/HotKeyAttribute.h"
 
 class ModalComboBox;
 

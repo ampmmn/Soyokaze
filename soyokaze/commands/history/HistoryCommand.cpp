@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "HistoryCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

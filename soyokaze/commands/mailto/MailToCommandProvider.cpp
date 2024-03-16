@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "MailToCommandProvider.h"
 #include "commands/mailto/MailToCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
 #include "resource.h"
 #include <list>
 

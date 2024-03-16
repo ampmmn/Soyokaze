@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ColorCommandProvider.h"
 #include "commands/color/ColorCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

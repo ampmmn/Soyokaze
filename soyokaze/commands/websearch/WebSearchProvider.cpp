@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandRepositoryListenerIF.h"
-#include "core/CommandParameter.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandRepositoryListenerIF.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
 #include <functional>

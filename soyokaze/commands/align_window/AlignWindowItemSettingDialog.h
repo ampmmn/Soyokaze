@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "commands/align_window/AlignWindowCommandParam.h"
-#include "HotKeyAttribute.h"
+#include "hotkey/HotKeyAttribute.h"
 
 namespace soyokaze {
 namespace commands {

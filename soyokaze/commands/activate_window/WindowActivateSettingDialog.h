@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "commands/activate_window/WindowActivateCommandParam.h"
-#include "HotKeyAttribute.h"
+#include "hotkey/HotKeyAttribute.h"
 
 namespace soyokaze {
 namespace commands {

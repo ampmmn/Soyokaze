@@ -4,7 +4,7 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "gui/FolderDialog.h"
 #include "utility/TopMostMask.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>

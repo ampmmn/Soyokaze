@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "WatchPathCommandEditDialog.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "gui/FolderDialog.h"
-#include "AppPreference.h"
+#include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

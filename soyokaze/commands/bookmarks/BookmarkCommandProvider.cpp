@@ -4,10 +4,10 @@
 #include "commands/bookmarks/Bookmarks.h"
 #include "commands/bookmarks/ChromiumBrowseHistory.h"
 #include "commands/bookmarks/AppSettingBookmarkPage.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 
 #ifdef _DEBUG

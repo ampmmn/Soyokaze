@@ -1,7 +1,7 @@
 #pragma once
 
-#include "core/CommandIF.h"
-#include "core/CommandQueryItem.h"	
+#include "commands/core/CommandIF.h"
+#include "commands/core/CommandQueryItem.h"	
 #include "commands/simple_dict/SimpleDictParam.h"
 #include <memory>
 

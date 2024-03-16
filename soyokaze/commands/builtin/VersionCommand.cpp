@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "VersionCommand.h"
-#include "gui/AboutDlg.h"
+#include "commands/builtin/AboutDlg.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

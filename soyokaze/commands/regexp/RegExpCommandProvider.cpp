@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "RegExpCommandProvider.h"
 #include "commands/regexp/RegExpCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "resource.h"
 
 #ifdef _DEBUG

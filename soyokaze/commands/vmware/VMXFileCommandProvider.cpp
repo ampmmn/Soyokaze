@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "VMXFileCommandProvider.h"
 #include "commands/vmware/VMXFileCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include <vector>
 #include <regex>
 #include <map>

@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "HotKeyAttribute.h"
+#include "hotkey/HotKeyAttribute.h"
 
 namespace soyokaze {
 namespace commands {

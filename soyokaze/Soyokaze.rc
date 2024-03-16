@@ -1973,7 +1973,7 @@ END
 // Cursor
 //
 
-IDC_CAPTUREWINDOW       CURSOR                  "CAPTURE.cur"
+IDC_CAPTUREWINDOW       CURSOR                  "res/CAPTURE.cur"
 
 
 /////////////////////////////////////////////////////////////////////////////

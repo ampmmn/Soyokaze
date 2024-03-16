@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HotKeyAttribute.h"
+#include "hotkey/HotKeyAttribute.h"
 #include <regex>
 
 namespace soyokaze {

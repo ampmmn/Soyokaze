@@ -5,7 +5,7 @@
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

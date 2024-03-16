@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Message.h"
-#include "Soyokaze.h"
+#include "app/Soyokaze.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

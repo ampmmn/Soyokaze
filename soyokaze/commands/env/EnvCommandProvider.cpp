@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "EnvCommandProvider.h"
 #include "commands/env/EnvCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

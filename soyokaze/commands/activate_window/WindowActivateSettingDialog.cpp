@@ -2,14 +2,14 @@
 #include "WindowActivateSettingDialog.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/common/Message.h"
-#include "gui/CommandHotKeyDialog.h"
+#include "hotkey/CommandHotKeyDialog.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "resource.h"
 
 using namespace soyokaze::commands::common;

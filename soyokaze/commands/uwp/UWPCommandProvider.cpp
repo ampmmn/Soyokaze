@@ -3,9 +3,9 @@
 #include "commands/uwp/UWPApplicationItem.h"
 #include "commands/uwp/UWPCommand.h"
 #include "commands/uwp/UWPApplications.h"
-#include "core/CommandRepository.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include <vector>
 
 #ifdef _DEBUG

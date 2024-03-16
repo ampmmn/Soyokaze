@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Presentations.h"
 #include "commands/activate_window/AutoWrap.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include <thread>
 #include <mutex>
 

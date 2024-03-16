@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GetIPCommandProvider.h"
 #include "commands/getip/GetIPCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 
 #include <ws2tcpip.h>
 #pragma comment(lib, "iphlpapi.lib")

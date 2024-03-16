@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandProviderBase.h"
-#include "core/CommandProviderIF.h"
+#include "commands/core/CommandProviderIF.h"
 
 
 namespace soyokaze {

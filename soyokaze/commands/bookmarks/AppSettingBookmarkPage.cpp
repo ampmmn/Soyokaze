@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingBookmarkPage.h"
-#include "Settings.h"
+#include "setting/Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG

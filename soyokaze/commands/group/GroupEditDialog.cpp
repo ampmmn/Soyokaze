@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "GroupEditDialog.h"
-#include "gui/CommandHotKeyDialog.h"
+#include "hotkey/CommandHotKeyDialog.h"
 #include "gui/ModalComboBox.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>

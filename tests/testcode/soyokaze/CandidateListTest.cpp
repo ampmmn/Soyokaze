@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "CandidateList.h"
+#include "mainwindow/CandidateList.h"
 #include <regex>
 
 #ifdef _DEBUG

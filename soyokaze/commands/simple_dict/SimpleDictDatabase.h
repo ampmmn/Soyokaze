@@ -3,7 +3,7 @@
 #include "commands/simple_dict/SimpleDictCommandUpdateListenerIF.h"
 #include <memory>
 #include <vector>
-#include "Pattern.h"
+#include "matcher/Pattern.h"
 
 namespace soyokaze {
 namespace commands {

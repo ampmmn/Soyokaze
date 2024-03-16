@@ -2,10 +2,10 @@
 #include "framework.h"
 #include "commands/builtin/AfxChangeDirectoryCommand.h"
 #include "commands/common/AfxWWrapper.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

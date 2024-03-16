@@ -3,9 +3,9 @@
 #include "commands/simple_dict/SimpleDictCommand.h"
 #include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/SimpleDictDatabase.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
 

@@ -3,7 +3,7 @@
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"

@@ -3,7 +3,7 @@
 #include "SpecialFolderFileCommand.h"
 #include "commands/common/SubProcess.h"
 #include "icon/IconLoader.h"
-#include "AppPreference.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 
 #ifdef _DEBUG

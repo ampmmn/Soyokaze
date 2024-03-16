@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "SettingDialogBase.h"
 #include "SettingPage.h"
-#include "BreadCrumbs.h"
+#include "gui/BreadCrumbs.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
 #include "resource.h"

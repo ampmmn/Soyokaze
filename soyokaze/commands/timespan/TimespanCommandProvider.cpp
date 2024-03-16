@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TimespanCommandProvider.h"
 #include "commands/timespan/TimespanCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

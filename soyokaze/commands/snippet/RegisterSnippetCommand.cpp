@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "RegisterSnippetCommand.h"
 #include "commands/snippet/SnippetCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "SharedHwnd.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

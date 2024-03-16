@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/LogOffCommand.h"
-#include "core/CommandRepository.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

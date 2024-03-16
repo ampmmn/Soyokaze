@@ -11,7 +11,16 @@
 - 入力文字列のうち、2ワード目もMigemoを使うよう変更
   - 従来は先頭ワードのみMigemoを使っていた
 - ソースコードの構成を見直し
-  - iconディレクトリ
+  - `app`ディレクトリ
+  - `hotkey`ディレクトリ
+  - `icon`ディレクトリ
+  - `logger`ディレクトリ
+  - `mainwindow`ディレクトリ
+  - `matcher`ディレクトリ
+  - `setting`ディレクトリ
+  - `settingwindow`ディレクトリ
+  - `tasktray`ディレクトリ
+  - `gui/AboutDlg`を`commands/builtin`に移動
 
 ## [0.17.3] - 2024-03-12
 

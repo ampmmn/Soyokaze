@@ -2,10 +2,10 @@
 #include "PresentationProvider.h"
 #include "commands/presentation/Presentations.h"
 #include "commands/presentation/PptJumpCommand.h"
-#include "core/CommandRepository.h"
-#include "core/CommandParameter.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandParameter.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <list>
 

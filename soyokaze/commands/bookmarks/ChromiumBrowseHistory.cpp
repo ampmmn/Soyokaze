@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ChromiumBrowseHistory.h"
-#include "Pattern.h"
+#include "matcher/Pattern.h"
 #include "utility/AppProfile.h"
 #include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"

@@ -2,9 +2,9 @@
 #include "OutlookItemProvider.h"
 #include "commands/outlook/MailCommand.h"
 #include "commands/outlook/OutlookItems.h"
-#include "core/CommandRepository.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <list>
 

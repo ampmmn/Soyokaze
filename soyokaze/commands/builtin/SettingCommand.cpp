@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingCommand.h"
-#include "gui/SettingDialog.h"
-#include "AppPreference.h"
+#include "settingwindow/SettingDialog.h"
+#include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

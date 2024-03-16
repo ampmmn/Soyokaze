@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/BuiltinCommandBase.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

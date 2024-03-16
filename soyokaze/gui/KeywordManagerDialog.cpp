@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "gui/KeywordManagerDialog.h"
 #include "icon/IconLabel.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/TopMostMask.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

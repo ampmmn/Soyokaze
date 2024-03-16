@@ -2,8 +2,8 @@
 #include "framework.h"
 #include "commands/builtin/StandbyCommand.h"
 #include "commands/builtin/SuspendCommand.h"
-#include "core/CommandRepository.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <powrprof.h>

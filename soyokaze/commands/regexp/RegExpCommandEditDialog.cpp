@@ -3,7 +3,7 @@
 #include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"

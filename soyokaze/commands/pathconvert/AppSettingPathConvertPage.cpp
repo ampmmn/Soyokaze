@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingPathConvertPage.h"
-#include "Settings.h"
+#include "setting/Settings.h"
 #include "resource.h"
 
 #ifdef _DEBUG

@@ -2,7 +2,7 @@
 #include "DecodeStringCommandProvider.h"
 #include "commands/decodestring/DecodeUriCommand.h"
 #include "commands/decodestring/EscapedCharCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -5,7 +5,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
-#include "AppPreference.h"
+#include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

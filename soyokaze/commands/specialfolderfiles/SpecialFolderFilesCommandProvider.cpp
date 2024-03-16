@@ -2,9 +2,9 @@
 #include "SpecialFolderFilesCommandProvider.h"
 #include "commands/specialfolderfiles/SpecialFolderFileCommand.h"
 #include "commands/specialfolderfiles/SpecialFolderFiles.h"
-#include "core/CommandRepository.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "commands/core/CommandRepository.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include <vector>
 
 #ifdef _DEBUG

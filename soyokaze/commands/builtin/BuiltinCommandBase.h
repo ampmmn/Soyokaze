@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/CommandIF.h"
+#include "commands/core/CommandIF.h"
 
 namespace soyokaze {
 namespace commands {

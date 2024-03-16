@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/EditCommand.h"
-#include "core/CommandRepository.h"
+#include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

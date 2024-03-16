@@ -4,14 +4,12 @@
 
 #pragma once
 
-#include "AppPreferenceListenerIF.h"
+#include "setting/AppPreferenceListenerIF.h"
 
 #include <vector>
 #include <memory>
 #include "gui/KeywordEdit.h"
-#include "gui/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"
-#include "gui/SoyokazeDropTarget.h"
 
 namespace soyokaze {
 namespace core {

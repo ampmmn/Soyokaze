@@ -5,9 +5,9 @@
 #include "commands/watchpath/PathWatcher.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
-#include "core/CommandRepository.h"
-#include "AppPreference.h"
-#include "CommandFile.h"
+#include "commands/core/CommandRepository.h"
+#include "setting/AppPreference.h"
+#include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

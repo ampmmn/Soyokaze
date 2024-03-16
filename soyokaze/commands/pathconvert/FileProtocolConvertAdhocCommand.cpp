@@ -5,8 +5,8 @@
 #include "commands/common/Message.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/CharConverter.h"
-#include "AppPreferenceListenerIF.h"
-#include "AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
