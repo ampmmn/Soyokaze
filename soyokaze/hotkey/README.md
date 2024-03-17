@@ -86,7 +86,7 @@ GlobalHotKey ..> HOTKEY_ATTR : ToStringを利用するため
 実行するコマンドの名前をコンストラクタの引数で保持し、
 `Invoke`（ホットキーが押されたときに実行されるメソッド)で、登録されたコマンド名を実行する。  
 コマンドの実行は`CommandRepository`から完全一致比較で`Command`オブジェクトを取得し、`Execute()`を呼ぶ。
-
+a
 
 ```plantuml
 

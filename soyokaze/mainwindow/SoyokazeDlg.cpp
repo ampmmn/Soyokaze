@@ -20,6 +20,7 @@
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "hotkey/CommandHotKeyManager.h"
+#include "mainwindow/MainWindowHotKey.h"
 #include "CandidateList.h"
 #include <algorithm>
 #include <thread>
@@ -72,6 +73,7 @@ struct CSoyokazeDlg::PImpl
 
 	// 入力画面を呼び出すホットキー関連の処理をする
 	std::unique_ptr<AppHotKey> mHotKeyPtr;
+	std::unique_ptr<MainWindowHotKey> mMainWindowHotKeyPtr;
 
 	// ウインドウ位置を保存するためのクラス
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
@@ -598,6 +600,8 @@ BOOL CSoyokazeDlg::OnInitDialog()
 		msg += in->mHotKeyPtr->ToString();
 		AfxMessageBox(msg);
 	}
+	in->mMainWindowHotKeyPtr = std::make_unique<MainWindowHotKey>();
+	in->mMainWindowHotKeyPtr->Register();
 	
 	UpdateData(FALSE);
 
@@ -950,6 +954,10 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 			UpdateData(FALSE);
 
 			in->mKeywordEdit.SetCaretToEnd();
+			return 1;
+		}
+		else if (wParam == VK_RETURN) {
+			OnOK();
 			return 1;
 		}
 		else if (wParam == VK_NEXT) {

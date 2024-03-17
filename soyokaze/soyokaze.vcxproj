@@ -562,7 +562,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-		<ClInclude Include="mainwindow/AppSound.h" />
+    <ClInclude Include="mainwindow/AppSound.h" />
     <ClInclude Include="commands\core\CommandProviderIF.h" />
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h" />
     <ClInclude Include="gui/BreadCrumbs.h" />
@@ -702,7 +702,8 @@
     <ClInclude Include="commands/core\CommandRanking.h" />
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
-		<ClInclude Include="setting/AppPreference.h" />
+    <ClInclude Include="mainwindow\MainWindowHotKey.h" />
+    <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
     <ClInclude Include="settingwindow\BasicSettingDialog.h" />
     <ClInclude Include="mainwindow\CandidateListCtrl.h" />
@@ -715,12 +716,13 @@
     <ClInclude Include="gui\SelectCommandTypeDialog.h" />
     <ClInclude Include="gui\SettingDialogBase.h" />
     <ClInclude Include="gui\SettingPage.h" />
+    <ClInclude Include="settingwindow\InputWindowKeySettingPage.h" />
     <ClInclude Include="settingwindow\ShortcutSettingPage.h" />
     <ClInclude Include="settingwindow\SoundSettingDialog.h" />
     <ClInclude Include="settingwindow\ViewSettingDialog.h" />
     <ClInclude Include="matcher/Migemo.h" />
     <ClInclude Include="hotkey/NamedCommandHotKeyHandler.h" />
-		<ClInclude Include="setting/Settings.h" />
+    <ClInclude Include="setting/Settings.h" />
     <ClInclude Include="app/StartupParam.h" />
     <ClInclude Include="utility/AppProfile.h" />
     <ClInclude Include="app/Arguments.h" />
@@ -728,9 +730,9 @@
     <ClInclude Include="mainwindow/SoyokazeDlg.h" />
     <ClInclude Include="mainwindow/SoyokazeDropTarget.h" />
     <ClInclude Include="mainwindow/CmdReceiveEdit.h" />
-		<ClInclude Include="commands/core/CommandFile.h" />
+    <ClInclude Include="commands/core/CommandFile.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
-		<ClInclude Include="commands/core/CommandMap.h" />
+    <ClInclude Include="commands/core/CommandMap.h" />
     <ClInclude Include="commands/core/CommandRepository.h" />
     <ClInclude Include="commands/core/CommandParameter.h" />
     <ClInclude Include="commands\builtin\EditCommand.h" />
@@ -754,7 +756,7 @@
     <ClInclude Include="utility/IniFile.h" />
     <ClInclude Include="gui/KeywordEdit.h" />
     <ClInclude Include="gui/KeywordManagerDialog.h" />
-		<ClInclude Include="logger/Logger.h" />
+    <ClInclude Include="logger/Logger.h" />
     <ClInclude Include="matcher/PartialMatchPattern.h" />
     <ClInclude Include="matcher/Pattern.h" />
     <ClInclude Include="pch.h" />
@@ -780,10 +782,10 @@
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
     <ClInclude Include="utility/WindowPosition.h" />
-		<ClInclude Include="mainwindow/WindowTransparency.h" />
+    <ClInclude Include="mainwindow/WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
-		<ClCompile Include="mainwindow/AppSound.cpp" />
+    <ClCompile Include="mainwindow/AppSound.cpp" />
     <ClCompile Include="gui/BreadCrumbs.cpp" />
     <ClCompile Include="mainwindow/CandidateList.cpp" />
     <ClCompile Include="hotkey/CommandHotKeyMappings.cpp" />
@@ -925,7 +927,8 @@
     <ClCompile Include="commands/core\CommandRanking.cpp" />
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
-		<ClCompile Include="setting/AppPreference.cpp" />
+    <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
+    <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />
@@ -938,12 +941,13 @@
     <ClCompile Include="gui\SelectCommandTypeDialog.cpp" />
     <ClCompile Include="gui\SettingDialogBase.cpp" />
     <ClCompile Include="gui\SettingPage.cpp" />
+    <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp" />
     <ClCompile Include="settingwindow\ShortcutSettingPage.cpp" />
     <ClCompile Include="settingwindow\SoundSettingDialog.cpp" />
     <ClCompile Include="settingwindow\ViewSettingDialog.cpp" />
     <ClCompile Include="matcher/Migemo.cpp" />
     <ClCompile Include="hotkey/NamedCommandHotKeyHandler.cpp" />
-		<ClCompile Include="setting/Settings.cpp" />
+    <ClCompile Include="setting/Settings.cpp" />
     <ClCompile Include="app/StartupParam.cpp" />
     <ClCompile Include="utility/AppProfile.cpp" />
     <ClCompile Include="app/Arguments.cpp" />
@@ -951,8 +955,8 @@
     <ClCompile Include="mainwindow/SoyokazeDlg.cpp" />
     <ClCompile Include="mainwindow/SoyokazeDropTarget.cpp" />
     <ClCompile Include="mainwindow/CmdReceiveEdit.cpp" />
-		<ClCompile Include="commands/core/CommandFile.cpp" />
-		<ClCompile Include="commands/core/CommandMap.cpp" />
+    <ClCompile Include="commands/core/CommandFile.cpp" />
+    <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
     <ClCompile Include="commands/core/CommandParameter.cpp" />
     <ClCompile Include="commands\builtin\EditCommand.cpp" />
@@ -974,7 +978,7 @@
     <ClCompile Include="utility/IniFile.cpp" />
     <ClCompile Include="gui/KeywordEdit.cpp" />
     <ClCompile Include="gui/KeywordManagerDialog.cpp" />
-		<ClCompile Include="logger/Logger.cpp" />
+    <ClCompile Include="logger/Logger.cpp" />
     <ClCompile Include="matcher/PartialMatchPattern.cpp" />
     <ClCompile Include="matcher/Pattern.cpp" />
     <ClCompile Include="pch.cpp">
@@ -1008,7 +1012,7 @@
     <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
     <ClCompile Include="utility/WindowPosition.cpp" />
-		<ClCompile Include="mainwindow/WindowTransparency.cpp" />
+    <ClCompile Include="mainwindow/WindowTransparency.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc" />

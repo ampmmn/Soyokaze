@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GlobalHotKey.h"
+#include "hotkey/HotKeyAttribute.h"
 
 
 #ifdef _DEBUG

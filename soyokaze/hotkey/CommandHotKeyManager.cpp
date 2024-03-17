@@ -11,6 +11,20 @@
 namespace soyokaze {
 namespace core {
 
+struct NameMapValue {
+	NameMapValue() = default;
+
+	NameMapValue(void* owner, const HOTKEY_ATTR& attr) : mOwner(owner), mAttr(attr)
+	{
+	}
+
+	NameMapValue(const NameMapValue&) = default;
+	HOTKEY_ATTR mAttr;
+	void* mOwner;
+};
+
+using NameMap = std::map<CString, NameMapValue>;
+
 static const int ID_SOYOKAZE_COMMAND_HOTKEY = 0xB31E + 1;
 
 struct CommandHotKeyManager::PImpl
@@ -41,7 +55,7 @@ struct CommandHotKeyManager::PImpl
 	bool mIsChanged;
 
 	// 関連付けられた名前からキー割り当てを引くためのmap
-	std::map<CString, HOTKEY_ATTR> mNameKeyMap;
+	NameMap mNameKeyMap;
 	// キー割り当てから要素を引くためのmap
 	std::map<HOTKEY_ATTR, ITEM> mKeyItemMap;
 	std::map<UINT, CommandHotKeyHandler*> mLocalHandlerMap;
@@ -85,7 +99,6 @@ CommandHotKeyManager::CommandHotKeyManager() : in(std::make_unique<PImpl>())
 
 CommandHotKeyManager::~CommandHotKeyManager()
 {
-	Clear();
 }
 
 CommandHotKeyManager*
@@ -209,7 +222,7 @@ bool CommandHotKeyManager::HasKeyBinding(
 		return false;
 	}
 
-	HOTKEY_ATTR attr = itFind->second;
+	HOTKEY_ATTR attr = itFind->second.mAttr;
 	if (keyPtr) {
 		*keyPtr = attr;
 	}
@@ -243,6 +256,7 @@ bool CommandHotKeyManager::HasKeyBinding(
 }
 
 bool CommandHotKeyManager::Register(
+	void* owner,
 	CommandHotKeyHandler* handler,
 	const HOTKEY_ATTR& key,
 	bool isGlobal
@@ -282,9 +296,35 @@ bool CommandHotKeyManager::Register(
 
 	in->mIsChanged = true;
 
-	in->mNameKeyMap[handler->GetDisplayName()] = key;
+	in->mNameKeyMap[handler->GetDisplayName()] = NameMapValue(owner, key);
 
 	return true;
+}
+
+// 登録解除(ハンドラオブジェクトがわかっている場合利用可能)
+bool CommandHotKeyManager::Unregister(CommandHotKeyHandler* handler)
+{
+	for (auto it = in->mKeyItemMap.begin(); it != in->mKeyItemMap.end(); ++it) {
+		const auto& item = it->second;
+		if (handler != item.mHandlerPtr.get()) {
+			continue;
+		}
+
+		// eraseするとhandlerも削除されるのでここで名前を保持しておく
+		auto name = handler->GetDisplayName();
+
+		in->mKeyItemMap.erase(it);
+
+
+		auto it2 = in->mNameKeyMap.find(name);
+		if (it2 != in->mNameKeyMap.end()) {
+			in->mNameKeyMap.erase(it2);
+		}
+		in->mIsChanged = true;
+		return true;
+	}
+
+	return false;
 }
 
 int CommandHotKeyManager::GetItemCount()
@@ -322,7 +362,7 @@ void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 	CommandHotKeyMappings tmp;
 	for (auto& elem : in->mNameKeyMap) {
 
-		const HOTKEY_ATTR& attr = elem.second;
+		const HOTKEY_ATTR& attr = elem.second.mAttr;
 
 		auto& itKeyItem = in->mKeyItemMap.find(attr);
 		PImpl::ITEM& item = itKeyItem->second;
@@ -332,26 +372,29 @@ void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 	keyMap.Swap(tmp);
 }
 
-// 登録された要素を全削除
-void CommandHotKeyManager::Clear()
+void CommandHotKeyManager::Clear(void* owner)
 {
 	CSingleLock sl(&in->mCS, TRUE);
-
-	in->mNameKeyMap.clear();
 
 	HWND hwnd = in->mReceiverWindow;
 	ASSERT(hwnd);
 
-	for (auto& elem : in->mKeyItemMap) {
-		auto& item = elem.second;
-		item.mHandlerPtr.reset();
-
-		if (IsWindow(hwnd) && item.mIsGlobal && item.mGlobalHotKey.get() != nullptr) {
-			item.mGlobalHotKey.reset();
+	for (auto it = in->mNameKeyMap.begin(); it != in->mNameKeyMap.end();) {
+		if (owner != it->second.mOwner) {
+			it++;
+			continue;
 		}
+
+		auto owner = it->second.mOwner;
+		auto& attr = it->second.mAttr;
+
+		auto it2 = in->mKeyItemMap.find(attr);
+		in->mKeyItemMap.erase(it2);
+
+		it =in->mNameKeyMap.erase(it);
+
+		in->mIsChanged = true;
 	}
-	in->mKeyItemMap.clear();
-	in->mLocalHandlerMap.clear();
 }
 
 } // end of namespace core

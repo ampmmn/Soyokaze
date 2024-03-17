@@ -10,8 +10,8 @@
 #endif
 
 
-HotKeyDialog::HotKeyDialog(const HOTKEY_ATTR& attr) : 
-	CDialogEx(IDD_HOTKEY),
+HotKeyDialog::HotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) : 
+	CDialogEx(IDD_HOTKEY, parent),
 	mHotKeyAttr(attr)
 {
 }

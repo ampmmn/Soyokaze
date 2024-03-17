@@ -83,7 +83,7 @@ void BasicSettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	HotKeyDialog dlg(mHotKeyAttr);
+	HotKeyDialog dlg(mHotKeyAttr, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

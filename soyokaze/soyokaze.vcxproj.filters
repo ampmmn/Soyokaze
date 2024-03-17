@@ -804,6 +804,12 @@
     <ClInclude Include="mainwindow/WindowTransparency.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\InputWindowKeySettingPage.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowHotKey.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1422,6 +1428,12 @@
       <Filter>setting</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow/WindowTransparency.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MainWindowHotKey.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
   </ItemGroup>

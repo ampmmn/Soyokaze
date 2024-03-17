@@ -41,7 +41,7 @@ struct CommandRepository::PImpl
 		pref->GetCommandKeyMappings(hotKeyMap);
 
 		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
-		hotKeyManager->Clear();
+		hotKeyManager->Clear(this);
 
 		int count = hotKeyMap.GetItemCount();
 		for (int i = 0; i < count; ++i) {
@@ -52,7 +52,7 @@ struct CommandRepository::PImpl
 			auto handler = std::make_unique<NamedCommandHotKeyHandler>(name);
 			bool isGlobal = hotKeyMap.IsGlobal(i);
 
-			hotKeyManager->Register(handler.release(), attr, isGlobal);
+			hotKeyManager->Register(this, handler.release(), attr, isGlobal);
 		}
 	}
 

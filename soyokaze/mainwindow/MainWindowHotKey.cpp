@@ -1,0 +1,154 @@
+#include "pch.h"
+#include "MainWindowHotKey.h"
+#include "setting/AppPreference.h"
+#include "hotkey/CommandHotKeyManager.h"
+#include "hotkey/CommandHotKeyHandlerIF.h"
+#include "SharedHwnd.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+class MainWindowHotKey::UpHandler : public soyokaze::core::CommandHotKeyHandler
+{
+public:
+	virtual ~UpHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_up"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_APP+1, VK_UP, 0);
+		return true;
+	}
+};
+
+
+class MainWindowHotKey::DownHandler : public soyokaze::core::CommandHotKeyHandler
+{
+public:
+	virtual ~DownHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_down"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_APP+1, VK_DOWN, 0);
+		return true;
+	}
+};
+
+class MainWindowHotKey::EnterHandler : public soyokaze::core::CommandHotKeyHandler
+{
+public:
+	virtual ~EnterHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_enter"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_APP+1, VK_RETURN, 0);
+		return true;
+	}
+};
+
+class MainWindowHotKey::ComplHandler : public soyokaze::core::CommandHotKeyHandler
+{
+public:
+	virtual ~ComplHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_compl"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_APP+1, VK_TAB, 0);
+		return true;
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+using CommandHotKeyManager = soyokaze::core::CommandHotKeyManager;
+
+struct MainWindowHotKey::PImpl
+{
+};
+
+// 修飾キー
+// MOD_ALT     (0x0001)
+// MOD_CONTROL (0x0002)
+// MOD_SHIFT   (0x0004)
+// MOD_WIN     (0x0008)
+// MOD_NOREPEAT(0x4000)
+
+MainWindowHotKey::MainWindowHotKey() : in(new PImpl)
+{
+	AppPreference::Get()->RegisterListener(this);
+}
+
+MainWindowHotKey::~MainWindowHotKey()
+{
+	AppPreference::Get()->UnregisterListener(this);
+}
+
+// 設定ファイルから設定値を取得してホットキー登録
+bool MainWindowHotKey::Register()
+{
+	auto manager = CommandHotKeyManager::GetInstance();
+	auto pref = AppPreference::Get();
+	auto settingsPtr = (Settings*)&pref->GetSettings();
+
+	auto hotKeyAttrUp = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
+	                                settingsPtr->Get(_T("MainWindowKey:Up-VirtualKeyCode"), -1));
+	if (hotKeyAttrUp.GetVKCode() != -1) {
+		manager->Register(this, new UpHandler, hotKeyAttrUp, false);
+	}
+
+	auto hotKeyAttrDown = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Down-Modifiers"), 0),
+	                                 settingsPtr->Get(_T("MainWindowKey:Down-VirtualKeyCode"), -1));
+	if (hotKeyAttrDown.GetVKCode() != -1) {
+		manager->Register(this, new DownHandler, hotKeyAttrDown, false);
+	}
+
+	auto hotKeyAttrEnter = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Enter-Modifiers"), 0),
+	                            settingsPtr->Get(_T("MainWindowKey:Enter-VirtualKeyCode"), -1));
+	if (hotKeyAttrEnter.GetVKCode() != -1) {
+		manager->Register(this, new EnterHandler, hotKeyAttrEnter, false);
+	}
+
+	auto hotKeyAttrCompl = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
+	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
+	if (hotKeyAttrCompl.GetVKCode() != -1) {
+		manager->Register(this, new ComplHandler, hotKeyAttrCompl, false);
+	}
+	return true;
+}
+
+// 登録解除する
+void MainWindowHotKey::Unregister()
+{
+	auto manager = CommandHotKeyManager::GetInstance();
+	manager->Clear(this);
+}
+
+// 再登録(登録解除→登録)
+bool MainWindowHotKey::Reload()
+{
+	Unregister();
+	return Register();
+}
+
+void MainWindowHotKey::OnAppFirstBoot()
+{
+}
+
+void MainWindowHotKey::OnAppPreferenceUpdated()
+{
+	// アプリ設定変更の影響を受ける項目の再登録
+	Reload();
+}
+
+void MainWindowHotKey::OnAppExit()
+{
+	AppPreference::Get()->UnregisterListener(this);
+}
+
+
+

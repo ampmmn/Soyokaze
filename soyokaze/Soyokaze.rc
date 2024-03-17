@@ -823,6 +823,28 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
+IDD_APPSETTING_KEY DIALOGEX 0, 0, 344, 291
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "上へ(&U):",IDC_STATIC,25,22,28,8
+    EDITTEXT        IDC_EDIT_HOTKEY_UP,109,19,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_UP,235,19,21,14
+    LTEXT           "下へ(&D):",IDC_STATIC,25,40,28,8
+    EDITTEXT        IDC_EDIT_HOTKEY_DOWN,109,37,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_DOWN,235,37,21,14
+    LTEXT           "決定(&E):",IDC_STATIC,25,57,29,8
+    EDITTEXT        IDC_EDIT_HOTKEY_ENTER,109,54,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_ENTER,235,54,21,14
+    LTEXT           "補完(&C):",IDC_STATIC,25,75,30,8
+    EDITTEXT        IDC_EDIT_HOTKEY_COMPL,109,72,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_COMPL,235,72,21,14
+    GROUPBOX        "入力画面のキー割り当て",IDC_STATIC,7,7,322,121
+    LTEXT           "標準キー設定に加えて、追加のキーを設定できます。\n(標準キー設定 上へ:↑ 下へ:↓ 決定:Enter 補完:Tab)\n※標準キーを無効化することはできません。",IDC_STATIC,25,94,208,26
+    PUSHBUTTON      "リセット(&R)",IDC_BUTTON_RESET,235,92,45,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1138,6 +1160,14 @@ BEGIN
         RIGHTMARGIN, 330
         TOPMARGIN, 7
         BOTTOMMARGIN, 106
+    END
+
+    IDD_APPSETTING_KEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 337
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 284
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1651,6 +1681,26 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_APPSETTING_KEY AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 

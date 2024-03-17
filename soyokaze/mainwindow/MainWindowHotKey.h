@@ -4,17 +4,16 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include <memory>
 
-namespace soyokaze {
-namespace core {
-
-class GlobalHotKey;
-
-// ランチャー呼び出しキー(ホットキー)の登録・解除を行うクラス
-class AppHotKey : public AppPreferenceListenerIF
+// 入力画面上の基本操作用ホットキーの登録・解除を行うクラス
+class MainWindowHotKey : public AppPreferenceListenerIF
 {
+	class UpHandler;
+	class DownHandler;
+	class EnterHandler;
+	class ComplHandler;
 public:
-	AppHotKey(HWND targetWnd);
-	virtual ~AppHotKey();
+	MainWindowHotKey();
+	virtual ~MainWindowHotKey();
 
 public:
 	// 設定ファイルから設定値を取得してホットキー登録
@@ -22,23 +21,19 @@ public:
 	// 登録解除する
 	void Unregister();
 
-	bool IsSameKey(LPARAM lParam);
-
 	// 再登録(登録解除→登録)
 	bool Reload();
 
 	CString ToString() const;
 
 private:
-	static bool LoadKeyConfig(UINT& modifiers, UINT& vk);
-
 	void OnAppFirstBoot() override;
 	void OnAppPreferenceUpdated() override;
 	void OnAppExit() override;
-protected:
-	std::unique_ptr<GlobalHotKey> mHotKey;
+
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
-}
-}
 

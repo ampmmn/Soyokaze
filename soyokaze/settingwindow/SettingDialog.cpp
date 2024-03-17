@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "settingwindow/BasicSettingDialog.h"
 #include "settingwindow/InputSettingDialog.h"
+#include "settingwindow/InputWindowKeySettingPage.h"
 #include "settingwindow/ExecSettingDialog.h"
 #include "settingwindow/AppSettingPathPage.h"
 #include "settingwindow/ViewSettingDialog.h"
@@ -89,7 +90,8 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(hItem, std::unique_ptr<SettingPage>(new ShortcutSettingPage(this)), param);
 	AddPage(hItem, std::unique_ptr<SettingPage>(new SoundSettingDialog(this)), param);
 
-	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
+	auto hInputItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
+	AddPage(hInputItem, std::unique_ptr<SettingPage>(new InputWindowKeySettingPage(this)), param);
 	auto hExecItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);

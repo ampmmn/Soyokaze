@@ -1,3 +1,4 @@
+// あ
 #pragma once
 
 #include "hotkey/HotKeyAttribute.h"
@@ -13,22 +14,22 @@ public:
 	bool IsGlobal();
 
 	HOTKEY_ATTR mHotKeyAttr;
-	// $B=i4|CM(B
+	// 初期値
 	HOTKEY_ATTR mHotKeyAttrInit;
 
 	BOOL mIsGlobal;
 
-	// $B%a%C%;!<%8Ms(B
+	// メッセージ欄
 	CString mMessage;
 
 protected:
 	static bool IsReservedKey(const HOTKEY_ATTR& attr);
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV $B%5%]!<%H(B
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
-// $B<BAu(B
+// 実装
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void UpdateStatus();

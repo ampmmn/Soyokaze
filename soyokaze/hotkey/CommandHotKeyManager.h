@@ -43,7 +43,9 @@ public:
 	bool HasKeyBinding(const HOTKEY_ATTR& key, bool* isGlobalPtr = nullptr);
 
 	// 登録
-	bool Register(CommandHotKeyHandler* handler, const HOTKEY_ATTR& key, bool isGlobal);
+	bool Register(void* owner, CommandHotKeyHandler* handler, const HOTKEY_ATTR& key, bool isGlobal);
+	// 登録解除(ハンドラオブジェクトがわかっている場合利用可能)
+	bool Unregister(CommandHotKeyHandler* handler);
 	// 登録された要素数を取得
 	int GetItemCount();
 	// 登録された要素の情報を取得する
@@ -52,7 +54,7 @@ public:
 	void GetMappings(CommandHotKeyMappings& keyMap);
 
 	// 登録された要素を全削除
-	void Clear();
+	void Clear(void* owner);
 
 private:
 	struct PImpl;

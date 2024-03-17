@@ -119,6 +119,7 @@
 #define IDS_ERR_TEXTISEMPTY             175
 #define IDD_WATCHPATH                   175
 #define IDS_WINDOWTITLE                 176
+#define IDD_APPSETTING_KEY              176
 #define IDS_WINDOWCLASS                 177
 #define IDS_X                           178
 #define IDS_Y                           179
@@ -166,9 +167,12 @@
 #define IDC_BUTTON_RESOLVESHORTCUT      1022
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PATH2                  1023
+#define IDC_EDIT_HOTKEY_DOWN            1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_SOUNDEXECUTE           1024
+#define IDC_EDIT_HOTKEY_ENTER           1024
 #define IDC_EDIT_DIR                    1025
+#define IDC_EDIT_HOTKEY_COMPL           1025
 #define IDC_BUTTON_BROWSEDIR3           1026
 #define IDC_COMBO_SHOWTYPE              1027
 #define IDC_STATIC_STATUSMSG            1028
@@ -204,9 +208,14 @@
 #define IDC_CHECK_MOVETOCURSOR          1052
 #define IDC_BUTTON_HOTKEY               1053
 #define IDC_CHECK_SHOWCOMMANDTYPE       1054
+#define IDC_BUTTON_HOTKEY_DOWN          1054
 #define IDC_EDIT_FILERPATH              1055
+#define IDC_BUTTON_HOTKEY_ENTER         1055
 #define IDC_BUTTON_SOUNDSELECT          1056
+#define IDC_BUTTON_HOTKEY_COMPL         1056
 #define IDC_CHECK_SHOWCOMMANDTYPE2      1057
+#define IDC_BUTTON_HOTKEY_COMPL2        1057
+#define IDC_BUTTON_RESET                1057
 #define IDC_CHECK_ALTERNATELISTCOLOR    1058
 #define IDC_CHECK_SHIFT                 1059
 #define IDC_BUTTON_SOUNDEXECUTE         1060
@@ -312,8 +321,10 @@
 #define IDC_CHECK_FIRSTROWISHEADER      1144
 #define IDC_STATIC_RECORDS              1145
 #define IDC_CHECK_MATCHWITHOUTKEYWORD   1146
+#define IDC_EDIT_HOTKEY_UP              1146
 #define IDC_CHECK_MATCHWITHOUTKEYWORD2  1147
 #define IDC_CHECK_REVERSE               1147
+#define IDC_BUTTON_HOTKEY_UP            1147
 
 // Next default values for new objects
 // 
@@ -321,7 +332,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1146
+#define _APS_NEXT_CONTROL_VALUE         1148
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
