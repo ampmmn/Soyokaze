@@ -389,7 +389,9 @@ void CommandHotKeyManager::Clear(void* owner)
 		auto& attr = it->second.mAttr;
 
 		auto it2 = in->mKeyItemMap.find(attr);
-		in->mKeyItemMap.erase(it2);
+		if (it2 != in->mKeyItemMap.end()) {
+			in->mKeyItemMap.erase(it2);
+		}
 
 		it =in->mNameKeyMap.erase(it);
 

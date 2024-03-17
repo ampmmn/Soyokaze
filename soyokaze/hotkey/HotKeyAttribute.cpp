@@ -366,3 +366,10 @@ bool HOTKEY_ATTR::IsAlphabetKey() const
 {
 	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_ALPHA;
 }
+
+// 何にも割り当てられていないか
+bool HOTKEY_ATTR::IsUnmapped() const
+{
+	return mUseShift == FALSE && mUseCtrl == FALSE && mUseAlt == FALSE && mUseWin == FALSE && 
+	       mVirtualKeyIdx == -1;
+}

@@ -24,6 +24,8 @@ public:
 	bool IsFunctionKey() const;
 	bool IsAlphabetKey() const;
 
+	bool IsUnmapped() const;
+
 	CString ToString() const;
 
 	UINT GetModifiers() const;

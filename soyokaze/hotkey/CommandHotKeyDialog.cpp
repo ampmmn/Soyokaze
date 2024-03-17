@@ -90,6 +90,14 @@ void CommandHotKeyDialog::UpdateStatus()
 
 			// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
 
+			if (mHotKeyAttr.IsUnmapped()) {
+				// キー割り当てなし
+				GetDlgItem(IDOK)->EnableWindow(TRUE);
+				UpdateData(FALSE);
+				return;
+			}
+
+
 			if (mIsGlobal) {
 				bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
 				GetDlgItem(IDOK)->EnableWindow(canRegister);
