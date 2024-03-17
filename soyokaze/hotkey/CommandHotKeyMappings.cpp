@@ -89,6 +89,18 @@ void CommandHotKeyMappings::RemoveItem(const HOTKEY_ATTR& hotKeyAttr)
 	}
 }
 
+// コマンド名から割り当てキーの表示用文字列を取得する
+CString CommandHotKeyMappings::FindKeyMappingString(const CString& name) const
+{
+	for(const auto& item : in->mItems) {
+		if (name != item.mName) {
+			continue;
+		}
+		return item.mAttr.ToString();
+	}
+	return _T("");
+}
+
 void CommandHotKeyMappings::Swap(CommandHotKeyMappings& rhs)
 {
 	in->mItems.swap(rhs.in->mItems);

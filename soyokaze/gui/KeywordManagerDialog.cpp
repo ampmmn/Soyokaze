@@ -4,6 +4,7 @@
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/TopMostMask.h"
+#include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <algorithm>
@@ -14,12 +15,14 @@
 #endif
 
 using Command = soyokaze::core::Command;
+using CommandHotKeyManager = soyokaze::core::CommandHotKeyManager;
 
 // リストの列情報
 enum {
 	COL_CMDNAME,      // コマンド名
 	COL_CMDTYPE,      // 種別
 	COL_DESCRIPTION,  // 説明
+	COL_HOTKEY,       // ホットキー
 };
 
 // ソート状態
@@ -30,6 +33,8 @@ enum {
 	SORT_DESCEND_DESCRIPTION,  // 説明-降順
 	SORT_ASCEND_CMDTYPE,   // 種別-昇順
 	SORT_DESCEND_CMDTYPE,  // 種別-降順
+	SORT_ASCEND_HOTKEY,   // ホットキー-昇順
+	SORT_DESCEND_HOTKEY,  // ホットキー-降順
 };
 
 
@@ -45,6 +50,8 @@ struct KeywordManagerDialog::PImpl
 
 	CListCtrl mListCtrl;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
+
+	CommandHotKeyMappings mKeyMapping;
 
 	TopMostMask mTopMostMask;
 	int mSortType;
@@ -80,6 +87,20 @@ void KeywordManagerDialog::PImpl::SortCommands()
 	else if (mSortType == SORT_DESCEND_CMDTYPE) {
 		std::sort(mCommands.begin(), mCommands.end(), [](Command* l, Command* r) {
 			return r->GetTypeDisplayName() < l->GetTypeDisplayName();
+		});
+	}
+	else if (mSortType == SORT_ASCEND_HOTKEY) {
+		std::sort(mCommands.begin(), mCommands.end(), [&](Command* l, Command* r) {
+		auto strL = mKeyMapping.FindKeyMappingString(l->GetName());
+		auto strR = mKeyMapping.FindKeyMappingString(r->GetName());
+			return strL < strR;
+		});
+	}
+	else if (mSortType == SORT_DESCEND_HOTKEY) {
+		std::sort(mCommands.begin(), mCommands.end(), [&](Command* l, Command* r) {
+		auto strL = mKeyMapping.FindKeyMappingString(l->GetName());
+		auto strR = mKeyMapping.FindKeyMappingString(r->GetName());
+			return strR < strL;
 		});
 	}
 }
@@ -153,9 +174,15 @@ BOOL KeywordManagerDialog::OnInitDialog()
 
 	strHeader.LoadString(IDS_DESCRIPTION);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 200;
+	lvc.cx = 150;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mListCtrl.InsertColumn(2,&lvc);
+
+	strHeader = _T("ホットキー");
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 100;
+	lvc.fmt = LVCFMT_LEFT;
+	in->mListCtrl.InsertColumn(3,&lvc);
 
 	ResetContents();
 
@@ -183,10 +210,12 @@ void KeywordManagerDialog::ResetContents()
 	// コマンド一覧を取得する
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 	cmdRepoPtr->EnumCommands(in->mCommands);
+
+	// ホットキー一覧を取得
+	CommandHotKeyManager::GetInstance()->GetMappings(in->mKeyMapping);
 	
 	// 現在のソート方法に従って要素をソート
 	in->SortCommands();
-
 
 	// アイテム数を設定
 	in->mListCtrl.SetItemCountEx((int)in->mCommands.size());
@@ -345,6 +374,10 @@ void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 		// ソート方法の変更(説明でソート)
 		in->mSortType = in->mSortType == SORT_ASCEND_DESCRIPTION ? SORT_DESCEND_DESCRIPTION : SORT_ASCEND_DESCRIPTION;
 	}
+	else if (clickedCol == COL_HOTKEY) {
+		// ソート方法の変更(ホットキーでソート)
+		in->mSortType = in->mSortType == SORT_ASCEND_HOTKEY ? SORT_DESCEND_HOTKEY : SORT_ASCEND_HOTKEY;
+	}
 
 	// ソート実施
 	in->SortCommands();
@@ -395,6 +428,14 @@ void KeywordManagerDialog::OnGetDispInfo(
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
 				auto cmd = in->mCommands[itemIndex];
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetDescription(), _TRUNCATE);
+			}
+		}
+		else if (pDispInfo->item.iSubItem == COL_HOTKEY) {
+			// ホットキーの文字列
+			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
+				auto cmd = in->mCommands[itemIndex];
+				auto mappingStr = in->mKeyMapping.FindKeyMappingString(cmd->GetName());
+				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, mappingStr, _TRUNCATE);
 			}
 		}
 	}
