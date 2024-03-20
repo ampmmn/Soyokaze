@@ -145,6 +145,8 @@ BOOL KeywordManagerDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	_LANG_WINDOW(GetSafeHwnd());
+
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
@@ -159,26 +161,26 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
 
 	CString strHeader;
-	strHeader.LoadString(IDS_NAME);
+	strHeader = _LANG_T("Command Name");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mListCtrl.InsertColumn(0,&lvc);
 
-	strHeader.LoadString(IDS_COMMANDTYPE);
+	strHeader = _LANG_T("Command Type");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mListCtrl.InsertColumn(1,&lvc);
 
 
-	strHeader.LoadString(IDS_DESCRIPTION);
+	strHeader = _LANG_T("Description");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 150;
 	lvc.fmt = LVCFMT_LEFT;
 	in->mListCtrl.InsertColumn(2,&lvc);
 
-	strHeader = _T("ホットキー");
+	strHeader = _LANG_T("Hotkey");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;

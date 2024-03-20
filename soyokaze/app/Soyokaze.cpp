@@ -79,7 +79,7 @@ BOOL CSoyokazeApp::InitFirstInstance()
 	m_hMutexRun = CreateMutex(NULL, FALSE, PROCESS_MUTEX_NAME);
 	if (m_hMutexRun == NULL) {
 		if (GetLastError() == ERROR_ACCESS_DENIED) {
-			AfxMessageBox(_T("起動に失敗しました。\n管理者権限で既に起動されている可能性があります。"));
+			AfxMessageBox(_LANG_T("Failed to run application.\nIt may have already been started with administrative privileges."));
 			return FALSE;
 		}
 		AfxMessageBox(_T("Failed to init."));

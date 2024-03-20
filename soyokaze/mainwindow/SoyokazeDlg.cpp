@@ -575,6 +575,9 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mOpWatcher.StartWatch(this);
 
+	std::vector<soyokaze::core::Honyaku::LangCode> codes;
+	soyokaze::core::Honyaku::Get()->EnumLangCodes(codes);
+
 	// グローバルホットキーのイベント受け取り先として登録する
 	auto manager = core::CommandHotKeyManager::GetInstance();
 	manager->SetReceiverWindow(GetSafeHwnd());
@@ -632,7 +635,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 	// ホットキー登録
 	in->mHotKeyPtr = std::make_unique<AppHotKey>(GetSafeHwnd());
 	if (in->mHotKeyPtr->Register() == false) {
-		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
+		CString msg(_LANG_T("Failed to register hot key. It may be used by other applications."));
 		msg += in->mHotKeyPtr->ToString();
 		AfxMessageBox(msg);
 	}
@@ -1082,21 +1085,21 @@ void CSoyokazeDlg::OnContextMenu(
 	const int ID_EXIT = 19;
 
 	BOOL isVisible = IsWindowVisible();
-	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
+	CString textToggleVisible(isVisible ? _LANG_T("&Hide") : _LANG_T("&Show"));
 
 	menu.InsertMenu(-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
-	menu.InsertMenu(-1, 0, ID_NEW, _T("新規作成(&N)"));
-	menu.InsertMenu(-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
+	menu.InsertMenu(-1, 0, ID_APPSETTING, _LANG_T("&Settings"));
+	menu.InsertMenu(-1, 0, ID_NEW, _LANG_T("&New command"));
+	menu.InsertMenu(-1, 0, ID_MANAGER, _LANG_T("&Keyword manager"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
+	menu.InsertMenu(-1, 0, ID_USERDIR, _LANG_T("Open &Profile folder"));
 	menu.InsertMenu(-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
-	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
+	menu.InsertMenu(-1, 0, ID_MANUAL, _LANG_T("&Help"));
+	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _LANG_T("&Version"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
+	menu.InsertMenu(-1, 0, ID_EXIT, _LANG_T("&Exit"));
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 

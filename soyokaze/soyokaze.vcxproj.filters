@@ -145,6 +145,9 @@
     <Filter Include="setting">
       <UniqueIdentifier>{227e2a02-e98b-43c0-964d-ae7d5290d478}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lang">
+      <UniqueIdentifier>{cc694f74-6c74-4229-a2fb-b465d1cedb07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -831,6 +834,9 @@
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="lang\Honyaku.h">
+      <Filter>lang</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1477,6 +1483,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="lang\Honyaku.cpp">
+      <Filter>lang</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

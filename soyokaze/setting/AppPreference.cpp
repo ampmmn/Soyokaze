@@ -761,4 +761,7 @@ int AppPreference::GetTimeToWarnLongOperation()
 	return in->mSettings.Get(_T("Health:TimeToWarn"), 90);
 }
 
-
+CString AppPreference::GetLangCode()
+{
+	return in->mSettings.Get(_T("Soyokaze:Language"), GetACP() == 932 ? _T("ja") : _T("en"));
+}
