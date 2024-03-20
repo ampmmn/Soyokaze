@@ -53,6 +53,7 @@ END_MESSAGE_MAP()
 BOOL SelectCommandTypeDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+	_LANG_WINDOW(GetSafeHwnd());
 
 	CListCtrl* listTypes = (CListCtrl*)GetDlgItem(IDC_LIST_TYPES);
 	ASSERT(listTypes);
@@ -66,13 +67,13 @@ BOOL SelectCommandTypeDialog::OnInitDialog()
 	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
 
 	CString strHeader;
-	strHeader.LoadString(IDS_NAME);
+	strHeader = _LANG_T("Type Name");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 120;
 	lvc.fmt = LVCFMT_LEFT;
 	listTypes->InsertColumn(0,&lvc);
 
-	strHeader.LoadString(IDS_DESCRIPTION);
+	strHeader = _LANG_T("Description");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 300;
 	lvc.fmt = LVCFMT_LEFT;
