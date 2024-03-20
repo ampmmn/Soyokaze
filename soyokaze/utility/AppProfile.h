@@ -14,9 +14,6 @@ class CAppProfile
 	CAppProfile& operator = (const CAppProfile& );
 public:
 
-	//! 設定情報作成用のフォルダをつくる
-	static bool CreateProfileDirectory();
-
 	//! ディレクトリパスを取得
 	static const TCHAR* GetDirPath(TCHAR* path, size_t len);
 	//! ファイルパスを取得

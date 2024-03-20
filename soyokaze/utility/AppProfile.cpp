@@ -14,28 +14,17 @@
 #define new DEBUG_NEW
 #endif
 
-//! 設定情報作成用のフォルダをつくる
-bool CAppProfile::CreateProfileDirectory()
-{
-	TCHAR path[MAX_PATH_NTFS];
-	GetDirPath(path, MAX_PATH_NTFS);
-	if (PathIsDirectory(path)) {
-		return true;
-	}
-	// フォルダなければつくる
-	CString msg;
-	msg.Format(_T("【初回起動】\n設定ファイルは %s 以下に作成されます。"), path);
-	AfxMessageBox(msg);
-
-	return CreateDirectory(path, NULL) != FALSE;
-}
-
-// ディレクトリパスを取得
 const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 {
-#ifndef SOYOKAZE_PORTABLE
-	// 非ポータブル版は ~/.soyokaze に設定を保存する
+	// exeと同じディレクトリにprofileフォルダがあったらポータブル版として動作する
+	GetModuleFileName(NULL, path, (DWORD)len);
+	PathRemoveFileSpec(path);
+	PathAppend(path, _T("profile"));
+	if (PathIsDirectory(path)) {
+		return path;
+	}
 
+	// profileフォルダがなければ非ポータブル版として動作する
 	size_t buflen = MAX_PATH_NTFS;
 	TCHAR buff[MAX_PATH_NTFS];
 	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
@@ -45,15 +34,6 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 	PathAppend(path, _T(".soyokaze"));
 
 	return path;
-#else
-	// ポータブル版は soyokaze.exeと同じフォルダのprofileディレクトリに設定を保存する
-
-	GetModuleFileName(NULL, path, (DWORD)len);
-	PathRemoveFileSpec(path);
-	PathAppend(path, _T("profile"));
-
-	return path;
-#endif
 }
 
 // ファイルパスを取得

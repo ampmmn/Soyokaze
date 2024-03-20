@@ -52,8 +52,6 @@ soyokaze-src/
 - Debug → デバッグ情報あり
 - Release → デバッグ情報なし、最適化してる、共有DLLでMFCを使う
 - ReleaseStatic → デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。
-- Release-Portable→ デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。設定情報を`soyokaze.exe`と同じフォルダ以下に保存する
-- ReleaseStatic-Portable → デバッグ情報なし、最適化してる、スタティックライブラリでMFCを使う。設定情報を`soyokaze.exe`と同じフォルダ以下に保存する
 - UnitTest → ユニットテストのビルド用
   - 本体のexe(soyokaze.exe)を.libとしてビルドし、ユニットテスト側の.exeにリンクする構成
 

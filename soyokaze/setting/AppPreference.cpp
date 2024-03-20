@@ -519,26 +519,55 @@ void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 	in->mListeners.erase(listener);
 }
 
+static bool IsDirectoryEmpty(const CString& path)
+{
+	bool hasContent = false;
+
+	CString pattern(path);
+	pattern += _T("\\*.*");
+
+	CFileFind ff;
+	BOOL b = ff.FindFile(pattern);
+
+	while(b) {
+		b = ff.FindNextFile();
+
+		if (ff.IsDots()) {
+			continue;
+		}
+		hasContent = true;
+		break;
+	}
+
+	ff.Close();
+
+	return hasContent == false;
+}
+
+
 bool AppPreference::CreateUserDirectory()
 {
 	TCHAR path[MAX_PATH_NTFS];
 	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
 
-	if (PathIsDirectory(path)) {
-		return true;
-	}
-	// フォルダがなければつくる(初回起動とみなす)
-	CString msg;
-	msg.Format(_T("【初回起動】\n設定ファイルは %s 以下に作成されます。"), path);
-	AfxMessageBox(msg);
-
-	if (CreateDirectory(path, NULL) == FALSE) {
-		return false;
+	// ディレクトリがなければ作成する
+	if (PathIsDirectory(path) == FALSE) {
+		if (CreateDirectory(path, NULL) == FALSE) {
+			return false;
+		}
 	}
 
-	// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
-	for (auto& listener : in->mListeners) {
-		listener->OnAppFirstBoot();
+
+	if (IsDirectoryEmpty(path)) {
+		// ディレクトリが空の場合は初回起動とみなす
+		CString msg;
+		msg.Format(_T("【初回起動】\n設定ファイルは以下の場所に保存されます。\n%s"), path);
+		AfxMessageBox(msg, MB_ICONINFORMATION);
+
+		// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
+		for (auto& listener : in->mListeners) {
+			listener->OnAppFirstBoot();
+		}
 	}
 
 	return true;
