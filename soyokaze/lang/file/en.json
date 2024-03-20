@@ -40,6 +40,7 @@
 	"&List:":"&List:",
 	"Keyword Manager":"Keyword Manager",
 	"General":"General",
+	"Type Name" : "Type",
 	"Command Name" : "Name",
 	"Name:" : "Name:",
 	"(Name)" : "(Name)",
@@ -47,6 +48,10 @@
 	"Description:" : "Description:",
 	"Command Type":"Type",
 	"Hotkey":"Hotkey",
+	"New - Type selection":"New - Type selection",
+	"&List of command type":"&List of command type",
+	"Shell Command":"Shell",
+	"This type allows you to open file and URL.":"This type allows you to open file and URL.",
 	"OK":"OK",
 	"Cancel":"Cancel"
 }
