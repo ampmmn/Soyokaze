@@ -92,13 +92,13 @@ CString ShellExecCommandProvider::GetName()
 // 作成できるコマンドの種類を表す文字列を取得
 CString ShellExecCommandProvider::GetDisplayName()
 {
-	return CString((LPCTSTR)IDS_NORMALCOMMAND);
+	return _LANG_T("Shell Command");
 }
 
 // コマンドの種類の説明を示す文字列を取得
 CString ShellExecCommandProvider::GetDescription()
 {
-	return CString((LPCTSTR)IDS_DESCRIPTION_NORMALCOMMAND);
+	return _LANG_T("This type allows you to open file and URL.");
 }
 
 // コマンド新規作成ダイアログ
