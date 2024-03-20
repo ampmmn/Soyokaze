@@ -41,7 +41,6 @@
 #define IDR_MAINFRAME                   132
 #define IDS_DESCRIPTION_FILTERCOMMAND   132
 #define IDS_BUILTINCOMMAND              133
-#define IDS_DESCRIPTION_BUILTINCOMMAND  134
 #define IDS_GROUPCOMMAND                135
 #define IDI_ICON2                       136
 #define IDS_ERR_NODELETECOMMAND         136
@@ -329,6 +328,7 @@
 #define IDC_CHECK_MATCHWITHOUTKEYWORD2  1147
 #define IDC_CHECK_REVERSE               1147
 #define IDC_BUTTON_HOTKEY_UP            1147
+#define IDC_COMBO_LANGUAGE              1148
 
 // Next default values for new objects
 // 
@@ -336,7 +336,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1148
+#define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

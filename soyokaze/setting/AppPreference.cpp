@@ -749,3 +749,7 @@ CString AppPreference::GetExecuteSoundFile()
 	return in->mSettings.Get(_T("Sound:FilePathExecute"), _T(""));
 }
 
+CString AppPreference::GetLangCode()
+{
+	return in->mSettings.Get(_T("Soyokaze:Language"), GetACP() == 932 ? _T("ja") : _T("en"));
+}

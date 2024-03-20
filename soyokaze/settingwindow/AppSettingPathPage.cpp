@@ -22,7 +22,7 @@ struct AppSettingPathPage::PImpl
 };
 
 AppSettingPathPage::AppSettingPathPage(CWnd* parentWnd) : 
-	SettingPage(_T("パス"), IDD_APPSETTING_PATH, parentWnd),
+	SettingPage(_LANG_T("Path"), IDD_APPSETTING_PATH, parentWnd),
 	in(new PImpl)
 {
 }
@@ -184,7 +184,7 @@ void AppSettingPathPage::OnButtonAdd()
 {
 	TCHAR path[MAX_PATH_NTFS];
 	GetModuleFileName(nullptr, path, MAX_PATH_NTFS);
-	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
+	CFolderDialog dlg(_LANG_T("Select Directory"), path, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
@@ -204,7 +204,7 @@ void AppSettingPathPage::OnButtonEdit()
 	int itemIndex = listPath->GetNextSelectedItem(pos);
 	auto& path = in->mAdditionalPaths[itemIndex];
 
-	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
+	CFolderDialog dlg(_LANG_T("Select Directory"), path, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
@@ -299,7 +299,7 @@ void AppSettingPathPage::OnNotifyItemDblClk(
 
 	auto& path = in->mAdditionalPaths[index];
 
-	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
+	CFolderDialog dlg(_LANG_T("Select Directory"), path, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return ;

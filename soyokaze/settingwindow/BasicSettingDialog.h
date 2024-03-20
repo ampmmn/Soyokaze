@@ -6,9 +6,14 @@
 // 
 class BasicSettingDialog : public SettingPage
 {
+	using LangCode = soyokaze::core::Honyaku::LangCode;
 public:
 	BasicSettingDialog(CWnd* parentWnd);
 	virtual ~BasicSettingDialog();
+
+	// 言語
+	int mLanguage;
+	std::vector<LangCode> mLangCodes;
 
 	// ランチャー呼び出しキー（表示用)
 	CString mHotKey;

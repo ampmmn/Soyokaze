@@ -169,7 +169,8 @@ CString BuiltinCommandProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString BuiltinCommandProvider::GetDescription()
 {
-	return CString((LPCTSTR)IDS_DESCRIPTION_BUILTINCOMMAND);
+	// 新規作成対象でないため不要
+	return _T("");
 }
 
 // コマンド新規作成ダイアログ

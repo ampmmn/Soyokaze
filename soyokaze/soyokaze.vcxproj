@@ -374,6 +374,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
+    <ClInclude Include="lang\Honyaku.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
     <ClInclude Include="commands\core\CommandProviderIF.h" />
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h" />
@@ -599,6 +600,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
+    <ClCompile Include="lang\Honyaku.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />
     <ClCompile Include="gui/BreadCrumbs.cpp" />
     <ClCompile Include="mainwindow/CandidateList.cpp" />

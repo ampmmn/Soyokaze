@@ -128,6 +128,8 @@ public:
 	// 効果音ファイルパスを取得(コマンド実行)
 	CString GetExecuteSoundFile();
 
+	CString GetLangCode();
+
 protected:
 	AppPreference();
 	~AppPreference();
