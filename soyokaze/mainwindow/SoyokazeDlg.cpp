@@ -1094,7 +1094,7 @@ void CSoyokazeDlg::OnContextMenu(
 	menu.InsertMenu(-1, 0, ID_MANAGER, _LANG_T("&Keyword manager"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_USERDIR, _LANG_T("Open &Profile folder"));
-	menu.InsertMenu(-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
+	menu.InsertMenu(-1, 0, ID_RESETPOS, _LANG_T("&Reset Window position"));
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_MANUAL, _LANG_T("&Help"));
 	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _LANG_T("&Version"));
