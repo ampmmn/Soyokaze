@@ -25,6 +25,7 @@ public:
 	CString GetFilerPath();
 	CString GetFilerParam();
 	bool IsUseFiler();
+	bool IsEnablePathFind();
 
 	bool IsHideOnStartup();
 	bool IsHideOnInactive();

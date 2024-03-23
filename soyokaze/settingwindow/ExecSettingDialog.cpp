@@ -41,7 +41,7 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
 	settingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
 	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
-
+	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
 	__super::OnOK();
 }
 
@@ -53,7 +53,9 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
 	DDX_Check(pDX, IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER, mIsArrowFilterConcurrentRun);
+	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, mIsEnablePathFind);
 	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
+	
 }
 
 BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
@@ -114,5 +116,6 @@ void ExecSettingDialog::OnEnterSettings()
 	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	mIsArrowFilterConcurrentRun = settingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
 	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
+	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 
 }

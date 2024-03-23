@@ -39,6 +39,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsIgnoreUNC = pref->IsIgnoreUNC();
+		mIsEnable = pref->IsEnablePathFind();
 		mExcludeFiles.Load();
 		mExeCommandPtr->Reload();
 	}
@@ -50,6 +51,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	ExcludePathList mExcludeFiles;
 	//
 	bool mIsIgnoreUNC;
+	bool mIsEnable;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall;
 
@@ -103,8 +105,14 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		auto pref = AppPreference::Get();
 		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
 		in->mIsFirstCall = false;
+		in->mIsEnable = pref->IsEnablePathFind();
 		in->mExcludeFiles.Load();
 		in->mExeCommandPtr->Reload();
+	}
+
+	if (in->mIsEnable == false) {
+		// 機能は無効化されている
+		return ;
 	}
 
 	if (in->mIsIgnoreUNC) {

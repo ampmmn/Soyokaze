@@ -354,6 +354,11 @@ bool AppPreference::IsUseFiler()
 	return in->mSettings.Get(_T("Soyokaze:UseFiler"), false);
 }
 
+bool AppPreference::IsEnablePathFind()
+{
+	return in->mSettings.Get(_T("Soyokaze:IsEnablePathFind"), true);
+}
+
 bool AppPreference::IsHideOnStartup()
 {
 	return in->mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);

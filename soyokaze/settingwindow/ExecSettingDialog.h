@@ -14,6 +14,8 @@ public:
 	BOOL mIsShowFolderIfCtrlPressed;
 	// フォルダを開くファイラーを指定
 	BOOL mIsUseExternalFiler;
+	// ファイル名を指定して実行を使用する
+	BOOL mIsEnablePathFind;
 	// ファイラーのパス
 	CString mFilerPath;
 	// ファイラーのパラメータ
