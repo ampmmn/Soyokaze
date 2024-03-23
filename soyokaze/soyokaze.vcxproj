@@ -373,6 +373,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
     <ClInclude Include="commands\core\CommandProviderIF.h" />
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h" />
@@ -520,6 +521,7 @@
     <ClInclude Include="mainwindow\CandidateListCtrl.h" />
     <ClInclude Include="icon\CaptureIconLabel.h" />
     <ClInclude Include="hotkey\CommandHotKeyDialog.h" />
+    <ClInclude Include="settingwindow\ExcludePathPage.h" />
     <ClInclude Include="settingwindow\ExecSettingDialog.h" />
     <ClInclude Include="settingwindow\ExtensionSettingDialog.h" />
     <ClInclude Include="settingwindow\InputSettingDialog.h" />
@@ -596,6 +598,7 @@
     <ClInclude Include="mainwindow/WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />
     <ClCompile Include="gui/BreadCrumbs.cpp" />
     <ClCompile Include="mainwindow/CandidateList.cpp" />
@@ -743,6 +746,7 @@
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />
     <ClCompile Include="icon\CaptureIconLabel.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyDialog.cpp" />
+    <ClCompile Include="settingwindow\ExcludePathPage.cpp" />
     <ClCompile Include="settingwindow\ExecSettingDialog.cpp" />
     <ClCompile Include="settingwindow\ExtensionSettingDialog.cpp" />
     <ClCompile Include="settingwindow\InputSettingDialog.cpp" />

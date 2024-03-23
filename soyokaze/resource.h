@@ -121,6 +121,8 @@
 #define IDS_WINDOWTITLE                 176
 #define IDD_APPSETTING_KEY              176
 #define IDS_WINDOWCLASS                 177
+#define IDD_APPSETTING_PATH1            177
+#define IDD_APPSETTING_EXCLUDEFILE      177
 #define IDS_X                           178
 #define IDS_Y                           179
 #define IDS_WIDTH                       180

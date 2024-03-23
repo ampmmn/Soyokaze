@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
-#include "commands/pathfind/PathExecuteCommand.h"
+#include "PathExecuteCommand.h"
+#include "commands/pathfind/ExcludePathList.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/shellexecute/ShellExecCommand.h"
@@ -49,6 +50,7 @@ struct PathExecuteCommand::PImpl
 	}
 
 	LocalPathResolver mResolver;
+	ExcludePathList* mExcludeFiles;
 	CString mWord;
 	CString mFullPath;
 	bool mIsURL;
@@ -57,11 +59,14 @@ struct PathExecuteCommand::PImpl
 };
 
 
-PathExecuteCommand::PathExecuteCommand() : in(std::make_unique<PImpl>())
+PathExecuteCommand::PathExecuteCommand(
+	ExcludePathList* excludeList
+) : in(std::make_unique<PImpl>())
 {
 	in->mIsURL = false;
 	in->mIsFromHistory = false;
 	in->mIsExe = false;
+	in->mExcludeFiles = excludeList;
 }
 
 PathExecuteCommand::~PathExecuteCommand()
@@ -195,12 +200,17 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	// 相対パスを解決する
 	CString resolvedPath;
 	if (in->mResolver.Resolve(word, resolvedPath)) {
-		this->mDescription = resolvedPath;
 
-		in->mWord = word;
-		in->mFullPath = resolvedPath;
-		in->mIsFromHistory = false;
-		return Pattern::WholeMatch;
+		// 除外対象に含まれなければ
+		if (in->mExcludeFiles &&
+		    in->mExcludeFiles->Contains(resolvedPath) == false) {
+			this->mDescription = resolvedPath;
+
+			in->mWord = word;
+			in->mFullPath = resolvedPath;
+			in->mIsFromHistory = false;
+			return Pattern::WholeMatch;
+		}
 	}
 
 	return Pattern::Mismatch;

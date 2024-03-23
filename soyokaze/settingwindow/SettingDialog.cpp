@@ -6,6 +6,7 @@
 #include "settingwindow/InputSettingDialog.h"
 #include "settingwindow/InputWindowKeySettingPage.h"
 #include "settingwindow/ExecSettingDialog.h"
+#include "settingwindow/ExcludePathPage.h"
 #include "settingwindow/AppSettingPathPage.h"
 #include "settingwindow/ViewSettingDialog.h"
 #include "settingwindow/SoundSettingDialog.h"
@@ -94,6 +95,8 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(hInputItem, std::unique_ptr<SettingPage>(new InputWindowKeySettingPage(this)), param);
 	auto hExecItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
+	AddPage(hExecItem, std::unique_ptr<SettingPage>(new ExcludePathPage(this)), param);
+
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
 
 	auto hExtensionItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);

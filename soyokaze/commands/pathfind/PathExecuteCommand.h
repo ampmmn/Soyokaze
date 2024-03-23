@@ -7,12 +7,13 @@ namespace soyokaze {
 namespace commands {
 namespace pathfind {
 
+class ExcludePathList;
 
 
 class PathExecuteCommand : public soyokaze::commands::common::AdhocCommandBase
 {
 public:
-	PathExecuteCommand();
+	PathExecuteCommand(ExcludePathList* excludeList = nullptr);
 	virtual ~PathExecuteCommand();
 
 	void SetFullPath(const CString& path, bool isFromHistory);

@@ -810,6 +810,12 @@
     <ClInclude Include="mainwindow\MainWindowHotKey.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\ExcludePathPage.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathfind\ExcludePathList.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1435,6 +1441,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\ExcludePathPage.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\ExcludePathList.cpp">
+      <Filter>commands\pathfind</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
