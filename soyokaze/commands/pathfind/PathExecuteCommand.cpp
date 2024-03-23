@@ -147,17 +147,7 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 
 HICON PathExecuteCommand::GetIcon()
 {
-	if (PathFileExists(in->mFullPath) == FALSE) {
-		// dummy
-		return IconLoader::Get()->LoadUnknownIcon();
-	}
-
-
-	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
-	HICON hIcon = sfi.hIcon;
-	return hIcon;
+	return IconLoader::Get()->LoadIconFromPath(in->mFullPath);
 }
 
 int PathExecuteCommand::Match(Pattern* pattern)
