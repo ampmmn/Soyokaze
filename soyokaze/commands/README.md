@@ -14,6 +14,7 @@
 |[calculator](./calculator)|簡易電卓機能|
 |[color](./color)|色を表示する機能|
 |[common](./common)|commands以下の共通ソース|
+|[core](./core)|コマンド回りのデータ管理|
 |[controlpanel](./controlpanel)|コントロールパネル項目のコマンド|
 |[decodestring](./decodestring)|文字列をデコードする系コマンド(DecodeURIなど)|
 |[env](./env)|環境変数を表示するコマンド|
@@ -24,7 +25,7 @@
 |[mailto](./mailto)|メール送信コマンド|
 |[outlook](./outlook)|OutlookのInboxにあるメールを候補として表示するコマンド|
 |[pathconvert](./pathconvert)|パス変換系コマンド<br>(file:///...や/c/path/to/file... とローカルパスの相互変換)|
-|[pathfind](./pathfind)|環境変数PATH以下にある`exe`をランチャーから実行するコマンド|
+|[pathfind](./pathfind)|アプリ内の`ファイル名を指定して実行`コマンド。<br>環境変数PATH以下にある`exe`ファイル、またはURLをランチャーから実行するコマンド|
 |[presentation](./presentation)|PowerPointプレゼンテーション上のスライドタイトルでジャンプするコマンド|
 |[regexp](./regexp)|正規表現コマンド|
 |[shellexecute](./shellexecute)|通常コマンド|
