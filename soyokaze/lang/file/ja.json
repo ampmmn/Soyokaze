@@ -94,6 +94,13 @@
 	"(Maximize)":"(最大化)",
 	"(Minimize)":"(最小化)",
 	"(Hide)":"(非表示)",
+	"Arrange Window Command":"ウインドウ整列コマンド",
+	"Description of aligncommand":"1つ以上のウインドウを整列するコマンドを作成します。\n条件に合致するウインドウの位置やサイズを整えることができます。\n",
+	"Local HotKey":"アクティブ時のみ有効",
+	"Global HotKey":"常駐時いつでも有効",
+	"Keys used for text input are not available.":"文字入力に使うキーを割り当てることはできません。",
+	"The key is already in use.":"指定したホットキーはすでに使用されています",
+	"&Reset Window position":"ウインドウ位置をリセット(&R)",
 	"OK":"OK",
 	"Cancel":"キャンセル"
 }

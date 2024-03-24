@@ -95,6 +95,13 @@
 	"(Maximize)":"(Maximize)",
 	"(Minimize)":"(Minimize)",
 	"(Hide)":"(Hide)",
+	"Arrange Window Command":"Arrange Window",
+	"Description of aligncommand":"This command allows you to adjust the position and size of windows that match your criteria.",
+	"Local HotKey":"Local HotKey",
+	"Global HotKey":"Global HotKey",
+	"Keys used for text input are not available.":"Keys used for text input are not available.",
+	"The key is already in use.":"The key is already in use.",
+	"&Reset Window position":"&Reset Window position",
 	"OK":"OK",
 	"Cancel":"Cancel"
 }
