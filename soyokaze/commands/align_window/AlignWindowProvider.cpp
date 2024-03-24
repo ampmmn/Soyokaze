@@ -91,16 +91,13 @@ CString AlignWindowProvider::GetName()
 // 作成できるコマンドの種類を表す文字列を取得
 CString AlignWindowProvider::GetDisplayName()
 {
-	return CString(_T("ウインドウ整列コマンド"));
+	return _LANG_T("Arrange Window Command");
 }
 
 // コマンドの種類の説明を示す文字列を取得
 CString AlignWindowProvider::GetDescription()
 {
-	CString description;
-	description += _T("1つ以上のウインドウを整列するコマンドを作成します。\n");
-	description += _T("条件に合致するウインドウの位置やサイズを整えることができます。\n");
-	return description;
+	return _LANG_T("Description of aligncommand");
 }
 
 // コマンド新規作成ダイアログ
