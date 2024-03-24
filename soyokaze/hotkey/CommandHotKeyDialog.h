@@ -29,10 +29,12 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
+	void UpdateStatus();
+
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg void UpdateStatus();
+	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonClear();
 };

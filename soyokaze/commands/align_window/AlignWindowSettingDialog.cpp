@@ -183,7 +183,7 @@ void SettingDialog::OnButtonHotKey()
 	UpdateData();
 
 	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr);
-	dlg.mIsGlobal = in->mParam.mIsGlobal;
+	dlg.mIsGlobal = in->mParam.mIsGlobal ? 1 : 0;
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
