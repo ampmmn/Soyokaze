@@ -36,12 +36,12 @@ void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CommandHotKeyDialog, CDialogEx)
-	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_WIN, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
+	ON_COMMAND(IDC_CHECK_SHIFT, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ALT, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_CTRL, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_WIN, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_VK, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_CLEAR, OnButtonClear)
 END_MESSAGE_MAP()
@@ -59,6 +59,7 @@ bool CommandHotKeyDialog::IsGlobal()
 BOOL CommandHotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+	_LANG_WINDOW(GetSafeHwnd());
 
 	// 初期値を覚えておく
 	mHotKeyAttrInit = mHotKeyAttr;
@@ -67,14 +68,13 @@ BOOL CommandHotKeyDialog::OnInitDialog()
 	GetDlgItem(IDC_BUTTON_CLEAR)->ShowWindow(SW_SHOW);
 
 	UpdateStatus();
+	UpdateData(FALSE);
 
 	return TRUE;
 }
 
 void CommandHotKeyDialog::UpdateStatus()
 {
-	UpdateData();
-
 	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsGlobal);
 	if (mIsGlobal == FALSE) {
 		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
@@ -83,7 +83,7 @@ void CommandHotKeyDialog::UpdateStatus()
 
 	if (IsReservedKey(mHotKeyAttr)) {
 		GetDlgItem(IDOK)->EnableWindow(false);
-		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
+		mMessage = _LANG_T("Keys used for text input are not available.");
 	}
 	else {
 		mMessage.Empty();
@@ -94,7 +94,6 @@ void CommandHotKeyDialog::UpdateStatus()
 			if (mHotKeyAttr.IsUnmapped()) {
 				// キー割り当てなし
 				GetDlgItem(IDOK)->EnableWindow(TRUE);
-				UpdateData(FALSE);
 				return;
 			}
 
@@ -104,21 +103,19 @@ void CommandHotKeyDialog::UpdateStatus()
 				GetDlgItem(IDOK)->EnableWindow(canRegister);
 
 				if (canRegister == false) {
-					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+					mMessage = _T("The key is already in use.");
 				}
 			}
 			else {
 				auto manager = soyokaze::core::CommandHotKeyManager::GetInstance();
 				bool alreadUsed = manager->HasKeyBinding(mHotKeyAttr);
 				if (alreadUsed) {
-					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+					mMessage = _T("The key is already in use.");
 				}
 				GetDlgItem(IDOK)->EnableWindow(alreadUsed == false);
 			}
 		}
 	}
-
-	UpdateData(FALSE);
 }
 
 /**
@@ -165,12 +162,18 @@ bool CommandHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
 	return false;
 }
 
+void CommandHotKeyDialog::OnUpdateStatus()
+{
+	UpdateData();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 void CommandHotKeyDialog::OnButtonClear()
 {
 	UpdateData();
 	mHotKeyAttr = HOTKEY_ATTR();
-	UpdateData(FALSE);
-
 	UpdateStatus();
+	UpdateData(FALSE);
 }
 
