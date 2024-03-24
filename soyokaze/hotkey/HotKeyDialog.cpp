@@ -49,6 +49,8 @@ BOOL HotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	_LANG_WINDOW(GetSafeHwnd());
+
 	// ダイアログリソース(IDD_HOTKEY)をコマンド用ホットキーと共有するが、
 	// アプリのホットキー設定では使わない項目を非表示にする
 	GetDlgItem(IDC_COMBO_TYPE)->ShowWindow(SW_HIDE);

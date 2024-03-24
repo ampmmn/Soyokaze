@@ -52,6 +52,18 @@
 	"&List of command type":"&List of command type",
 	"Shell Command":"Shell",
 	"This type allows you to open file and URL.":"This type allows you to open file and URL.",
+	"General" : "General",
+	"Hot Key Settings" : "Hot Key",
+	"&Key:":"&Key:",
+	"Not Assign":"&Empty",
+	"Modifier Key":"Modifier",
+	"Up":"Up",
+	"Down":"Down",
+	"Left":"Left",
+	"Right":"Right",
+	"Kana":"Kana",
+	"Convert":"Convert",
+	"NonConvert":"NonConvert",
 	"OK":"OK",
 	"Cancel":"Cancel"
 }
