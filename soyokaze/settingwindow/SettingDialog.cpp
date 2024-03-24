@@ -74,6 +74,8 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+	_LANG_WINDOW(GetSafeHwnd());
+
 	return TRUE;
 }
 
