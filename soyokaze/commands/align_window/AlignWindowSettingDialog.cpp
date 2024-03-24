@@ -97,6 +97,7 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+	_LANG_WINDOW(GetSafeHwnd());
 
 	in->mListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_COMMANDS);
 	CListCtrl* listWndPtr = in->mListPtr;
@@ -109,37 +110,37 @@ BOOL SettingDialog::OnInitDialog()
 	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
 
 	CString strHeader;
-	strHeader.LoadString(IDS_WINDOWTITLE);
+	strHeader = _LANG_T("Window Title");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 110;
 	lvc.fmt = LVCFMT_LEFT;
 	listWndPtr->InsertColumn(0,&lvc);
 
-	strHeader.LoadString(IDS_WINDOWCLASS);
+	strHeader = _LANG_T("Window Class");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 110;
 	lvc.fmt = LVCFMT_LEFT;
 	listWndPtr->InsertColumn(1,&lvc);
 
-	strHeader.LoadString(IDS_X);
+	strHeader = _LANG_T("XPos");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 60;
 	lvc.fmt = LVCFMT_LEFT;
 	listWndPtr->InsertColumn(2,&lvc);
 
-	strHeader.LoadString(IDS_Y);
+	strHeader = _LANG_T("YPos");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 60;
 	lvc.fmt = LVCFMT_LEFT;
 	listWndPtr->InsertColumn(3,&lvc);
 
-	strHeader.LoadString(IDS_WIDTH);
+	strHeader = _LANG_T("Width");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 50;
 	lvc.fmt = LVCFMT_LEFT;
 	listWndPtr->InsertColumn(4,&lvc);
 
-	strHeader.LoadString(IDS_HEIGHT);
+	strHeader = _LANG_T("Height");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 50;
 	lvc.fmt = LVCFMT_LEFT;
@@ -157,7 +158,10 @@ BOOL SettingDialog::OnInitDialog()
 	GetWindowText(caption);
 
 	CString suffix;
-	suffix.Format(_T("【%s】"), in->mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)in->mOrgName);
+	suffix.Format(_T("%s%s%s"),
+	              _LANG_T("("),
+	              in->mOrgName.IsEmpty() ? _LANG_T("New") : (LPCTSTR)in->mOrgName,
+								_LANG_T(")"));
 
 	caption += suffix;
 	SetWindowText(caption);
@@ -215,18 +219,10 @@ bool SettingDialog::UpdateStatus()
 
 	const CString& name = in->mParam.mName;
 	if (name.IsEmpty()) {
-		in->mMessage = _T("コマンド名を入力してください");
+		in->mMessage = _LANG_T("Enter command name.");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (in->mParam.mItems.size() == 0) {
-		in->mMessage = _T("整列するウインドウを追加してください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	in->mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
 
@@ -235,17 +231,27 @@ bool SettingDialog::UpdateStatus()
 		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
 		if (cmd != nullptr) {
 			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
+			in->mMessage = _LANG_T("The name already exists.");
 			GetDlgItem(IDOK)->EnableWindow(FALSE);
 			return false;
 		}
 	}
 	// 使えない文字チェック
 	if (cmdRepoPtr->IsValidAsName(name) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
+		in->mMessage = _LANG_T("Invalid char used");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
+
+	// ウインドウが未登録
+	if (in->mParam.mItems.size() == 0) {
+		in->mMessage = _LANG_T("Add window to arrange.");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+
+	in->mMessage.Empty();
+	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	return true;
 }
@@ -451,13 +457,13 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 	}
 	else {
 		if (item.mAction == Param::AT_MAXIMIZE) {
-			listWndPtr->SetItemText(index, 2, _T("(最大化)"));
+			listWndPtr->SetItemText(index, 2, _LANG_T("(Maximize)"));
 		}
 		else if (item.mAction == Param::AT_MINIMIZE){
-			listWndPtr->SetItemText(index, 2, _T("(最小化)"));
+			listWndPtr->SetItemText(index, 2, _LANG_T("(Minimize)"));
 		}
 		else if (item.mAction == Param::AT_HIDE){
-			listWndPtr->SetItemText(index, 2, _T("(非表示)"));
+			listWndPtr->SetItemText(index, 2, _LANG_T("(Hide)"));
 		}
 
 		listWndPtr->SetItemText(index, 3, _T(""));
