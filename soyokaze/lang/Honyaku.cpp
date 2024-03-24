@@ -41,6 +41,7 @@ struct Honyaku::PImpl : public AppPreferenceListenerIF
 	}
 
 	static BOOL CALLBACK OnEnumChildWindows(HWND h, LPARAM lp);
+	BOOL Apply(HWND h);
 
 	std::map<CString, CString> mCurrentLangMap;
 	bool mShouldReload;
@@ -124,17 +125,45 @@ bool Honyaku::PImpl::Reload()
 	return false;
 }
 
-BOOL Honyaku::PImpl::OnEnumChildWindows(HWND h, LPARAM lp)
+BOOL Honyaku::PImpl::Apply(HWND h)
 {
-	PImpl* in = (PImpl*)lp;
-
 	TCHAR caption[65535];
 	GetWindowText(h, caption, 65535);
 
-	auto it = in->mCurrentLangMap.find(caption);
-	if (it !=  in->mCurrentLangMap.end()) {
+	TCHAR clsName[256];
+	GetClassName(h, clsName, 256);
+
+	// ComBoBox用の処理
+	if (_tcscmp(clsName, _T("ComboBox")) == 0) {
+		CComboBox* p = (CComboBox*)CComboBox::FromHandle(h);
+		ASSERT(p);
+
+		int n = p->GetCount();
+		for (int i = 0; i < n; ++i) {
+			CString str;
+			p->GetLBText(i, str);
+
+			auto it = mCurrentLangMap.find(str);
+			if (it !=  mCurrentLangMap.end()) {
+				p->DeleteString(i);
+				p->InsertString(i, it->second);
+			}
+		}
+
+	}
+
+	auto it = mCurrentLangMap.find(caption);
+	if (it !=  mCurrentLangMap.end()) {
 		SetWindowText(h, it->second);
 	}
+	return TRUE;
+}
+
+BOOL Honyaku::PImpl::OnEnumChildWindows(HWND h, LPARAM lp)
+{
+	PImpl* in = (PImpl*)lp;
+	in->Apply(h);
+
 	return TRUE;
 }
 
@@ -199,13 +228,7 @@ void Honyaku::Hwnd(HWND hwnd, bool isIncludeChildren)
 		in->mShouldReload = false;
 	}
 
-	TCHAR caption[65535];
-	GetWindowText(hwnd, caption, 65535);
-	auto it = in->mCurrentLangMap.find(caption);
-
-	if (it !=  in->mCurrentLangMap.end()) {
-		SetWindowText(hwnd, it->second);
-	}
+	in->Apply(hwnd);
 
 	EnumChildWindows(hwnd, PImpl::OnEnumChildWindows, (LPARAM)in.get());
 

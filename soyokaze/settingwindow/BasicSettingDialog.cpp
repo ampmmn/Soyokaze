@@ -123,6 +123,7 @@ void BasicSettingDialog::OnEnterSettings()
 		auto comboLang = (CComboBox*)GetDlgItem(IDC_COMBO_LANGUAGE);
 		if (comboLang) {
 			comboLang->SetCurSel((int)i);
+			mLanguage = (int)i;
 		}
 		break;
 	}

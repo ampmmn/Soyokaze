@@ -51,6 +51,18 @@
 	"&List of command type":"種類の一覧(&L)",
 	"Shell Command":"通常コマンド",
 	"This type allows you to open file and URL.":"ファイルやURLを開くことのできる普通のコマンドです",
+	"General" : "基本",
+	"Hot Key Settings" : "ホットキーの設定",
+	"&Key:":"キー(&K):",
+	"Not Assign":"割り当てなし(&E)",
+	"Modifier Key":"修飾キー",
+	"Up":"↑",
+	"Down":"↓",
+	"Left":"←",
+	"Right":"→",
+	"Kana":"かな",
+	"Convert":"変換",
+	"NonConvert":"無変換",
 	"OK":"OK",
 	"Cancel":"キャンセル"
 }

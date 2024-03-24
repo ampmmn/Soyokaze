@@ -72,10 +72,10 @@ const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
 	{ 0x0D, _T("Enter"), KIND_OTHER },
 	{ 0x2E, _T("Delete"), KIND_OTHER },
 	{ 0x09, _T("Tab"), KIND_OTHER },
-	{ 0x26, _T("↑"), KIND_OTHER },
-	{ 0x28, _T("↓"), KIND_OTHER },
-	{ 0x25, _T("←"), KIND_OTHER },
-	{ 0x27, _T("→"), KIND_OTHER },
+	{ 0x26, _T("Up"), KIND_OTHER },
+	{ 0x28, _T("Down"), KIND_OTHER },
+	{ 0x25, _T("Left"), KIND_OTHER },
+	{ 0x27, _T("Right"), KIND_OTHER },
 	{ 0x6C, _T(","), KIND_OTHER },
 	{ 0x6E, _T("."), KIND_OTHER },
 	{ 0x6F, _T("/"), KIND_OTHER },
@@ -102,9 +102,9 @@ const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
 	{ 0x69, _T("Num 9"), KIND_NUMKEY },
 	{ 0x60, _T("Num 0"), KIND_NUMKEY },
 	{ 0x14, _T("CapLock"), KIND_OTHER },
-	{ VK_KANA, _T("かな"), KIND_OTHER },
-	{ 0x1C, _T("変換"), KIND_OTHER },
-	{ 0x1D, _T("無変換"), KIND_OTHER },
+	{ VK_KANA, _T("Kana"), KIND_OTHER },
+	{ 0x1C, _T("Convert"), KIND_OTHER },
+	{ 0x1D, _T("NonConvert"), KIND_OTHER },
 	{ 0x90, _T("NumLock"), KIND_OTHER },
 	{ 0x70, _T("F1"), KIND_FUNCTION },
 	{ 0x71, _T("F2"), KIND_FUNCTION },
@@ -318,7 +318,7 @@ CString HOTKEY_ATTR::ToString() const
 	if (str.IsEmpty() == FALSE) {
 		str += _T("-");
 	}
-	str += VK_DEFINED_DATA[mVirtualKeyIdx].mChar;
+	str += soyokaze::core::Honyaku::Get()->Literal(VK_DEFINED_DATA[mVirtualKeyIdx].mChar);
 	return str;
 }
 
