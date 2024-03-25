@@ -134,6 +134,12 @@ void BookmarkCommandProvider::QueryBookmarks(Pattern* pattern, CommandQueryItemL
 	std::vector<ITEM> items;
 	if (in->mBookmarks.LoadChromeBookmarks(items)) {
 		for (auto& item : items) {
+
+			if (item.mUrl.Find(_T("javascript:")) == 0) {
+				// ブックマークレットは対象外
+				continue;
+			}
+
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
 
@@ -141,7 +147,6 @@ void BookmarkCommandProvider::QueryBookmarks(Pattern* pattern, CommandQueryItemL
 					// URLを絞り込みに使わない場合はここではじく
 					continue;
 				}
-
 				int level = pattern->Match(item.mUrl);
 				if (level == Pattern::Mismatch) {
 					continue;
@@ -152,6 +157,12 @@ void BookmarkCommandProvider::QueryBookmarks(Pattern* pattern, CommandQueryItemL
 	}
 	if (in->mBookmarks.LoadEdgeBookmarks(items)) {
 		for (auto& item : items) {
+
+			if (item.mUrl.Find(_T("javascript:")) == 0) {
+				// ブックマークレットは対象外
+				continue;
+			}
+
 			int level = pattern->Match(item.mName);
 			if (level == Pattern::Mismatch) {
 
