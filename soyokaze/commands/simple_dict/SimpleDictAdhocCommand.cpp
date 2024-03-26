@@ -67,20 +67,11 @@ CString SimpleDictAdhocCommand::GetDescription()
 
 CString SimpleDictAdhocCommand::GetGuideString()
 {
-	CString guideStr;
+	CString guideStr(_T("Enter:実行"));
+	guideStr += _T(" Shift-Enter:キーをコピー");
+	guideStr += _T(" Ctrl-Enter:値をコピー");
 
-	int actionType = in->mParam.mActionType;
-	if (actionType == 0) {
-		guideStr.Format(_T("Enter:%sコマンドを実行"), in->mParam.mAfterCommandName);
-		return guideStr;
-	}
-	else if (actionType == 1) {
-		return _T("Enter:プログラムを実行");
-	}
-	else {
-		guideStr.Format(_T("Enter:クリップボードに文字列をコピー→ \"%s\""), in->mValue);
-		return guideStr;
-	}
+	return guideStr;
 }
 
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
@@ -90,6 +81,21 @@ CString SimpleDictAdhocCommand::GetTypeDisplayName()
 
 BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 {
+	// Shift-Enterでキーをコピー、Ctrl-Enterで値をコピー
+	// Enterキーのみ押下の場合は設定したアクションを実行
+	bool isCtrlKeyPressed = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isShiftKeyPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
+	if (isCtrlKeyPressed && isShiftKeyPressed == false) {
+		// 値をコピー
+		Clipboard::Copy(in->mValue);
+		return true;
+	}
+	if (isCtrlKeyPressed == false && isShiftKeyPressed) {
+		// キーをコピー
+		Clipboard::Copy(in->mKey);
+		return true;
+	}
+
 	CString argSub = in->mParam.mAfterCommandParam;
 	argSub.Replace(_T("$key"), in->mKey);
 	argSub.Replace(_T("$value"), in->mValue);
