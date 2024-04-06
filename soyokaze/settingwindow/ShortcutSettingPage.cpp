@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShortcutSettingPage.h"
 #include "utility/ShortcutFile.h"
+#include "app/AppName.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -34,10 +35,7 @@ void ShortcutSettingPage::OnOK()
 		RemoveDirectory(mStartMenuDir);
 	}
 	else if (mStartMenu && PathFileExists(mStartMenuPath) == FALSE) {
-		CreateDirectory(mStartMenuDir, NULL);
-		ShortcutFile link;
-		link.SetLinkPath(mSoyokazePath);
-		link.Save(mStartMenuPath);
+		CreateStartMenu();
 	}
 
 	if (mDesktop == FALSE && PathFileExists(mDesktopPath)) {
@@ -74,15 +72,6 @@ BEGIN_MESSAGE_MAP(ShortcutSettingPage, SettingPage)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
 END_MESSAGE_MAP()
 
-static void MakeShortcutPath(CString& out, int type, LPCTSTR linkName)
-{
-	LPTSTR path = out.GetBuffer(MAX_PATH_NTFS);
-	SHGetSpecialFolderPath(NULL, path, type, 0);
-	PathAppend(path, linkName);
-	out.ReleaseBuffer();
-}
-
-
 BOOL ShortcutSettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
@@ -96,24 +85,19 @@ BOOL ShortcutSettingPage::OnInitDialog()
 	_tcscpy_s(linkName, exeName);
 	PathRenameExtension(linkName, _T(".lnk"));
 
+	// 「送る」のパス生成
 	CString linkNameForSendTo((LPCTSTR)IDS_SENDTO);
+	ShortcutFile::MakeSpecialFolderPath(mSendToPath, CSIDL_SENDTO, linkNameForSendTo);
 
-	TCHAR linkNameForStartMenu[MAX_PATH_NTFS];
-	_tcscpy_s(linkNameForStartMenu, exeName);
-	PathRemoveExtension(linkNameForStartMenu);
-	PathAppend(linkNameForStartMenu, exeName);
-	PathRenameExtension(linkNameForStartMenu, _T(".lnk"));
-
-	MakeShortcutPath(mSendToPath, CSIDL_SENDTO, linkNameForSendTo);
-	MakeShortcutPath(mStartMenuPath, CSIDL_PROGRAMS, linkNameForStartMenu);
-
+	// スタートメニューのパス生成
+	CreateStartMenuPath(mStartMenuPath);
 	mStartMenuDir = mStartMenuPath;
 	PathRemoveFileSpec(mStartMenuDir.GetBuffer(MAX_PATH_NTFS));
 	mStartMenuDir.ReleaseBuffer();
 
 
-	MakeShortcutPath(mDesktopPath, CSIDL_DESKTOP, linkName);
-	MakeShortcutPath(mStartupPath, CSIDL_STARTUP, linkName);
+	ShortcutFile::MakeSpecialFolderPath(mDesktopPath, CSIDL_DESKTOP, linkName);
+	ShortcutFile::MakeSpecialFolderPath(mStartupPath, CSIDL_STARTUP, linkName);
 
 	UpdateStatus();
 
@@ -170,3 +154,53 @@ void ShortcutSettingPage::OnButtonDelete()
 void ShortcutSettingPage::OnEnterSettings()
 {
 }
+
+// スタートメニューのパス生成
+void ShortcutSettingPage::CreateStartMenuPath(CString& pathToMenu)
+{
+	TCHAR appPath[MAX_PATH_NTFS];
+	GetModuleFileName(NULL, appPath, MAX_PATH_NTFS);
+
+	LPCTSTR exeName = PathFindFileName(appPath);
+
+	TCHAR linkNameForStartMenu[MAX_PATH_NTFS];
+	_tcscpy_s(linkNameForStartMenu, exeName);
+	PathRemoveExtension(linkNameForStartMenu);
+	// フォルダ作成
+	PathAppend(linkNameForStartMenu, exeName);
+	PathRenameExtension(linkNameForStartMenu, _T(".lnk"));
+	// ショートカットファイルのパス作成
+	ShortcutFile::MakeSpecialFolderPath(pathToMenu, CSIDL_PROGRAMS, linkNameForStartMenu);
+}
+
+// スタートメニューは登録済か?
+bool ShortcutSettingPage::IsStartMenuExists()
+{
+	CString path;
+	CreateStartMenuPath(path);
+	return PathFileExists(path) != FALSE;
+}
+
+bool ShortcutSettingPage::CreateStartMenu()
+{
+	CString pathToStartMenu;
+	CreateStartMenuPath(pathToStartMenu);
+
+	CString pathToDir(pathToStartMenu);
+	PathRemoveFileSpec(pathToDir.GetBuffer(MAX_PATH_NTFS));
+	pathToDir.ReleaseBuffer();
+
+	TCHAR appPath[MAX_PATH_NTFS];
+	GetModuleFileName(NULL, appPath, MAX_PATH_NTFS);
+	CreateDirectory(pathToDir, NULL);
+
+	ShortcutFile link;
+
+	link.SetLinkPath(appPath);
+	link.SetAppId(LAUNCHER_APPID);
+	link.SetToastCallbackGUID(LAUNCHER_TOAST_CALLBACK_GUID);
+	link.Save(pathToStartMenu);
+
+	return true;
+}
+

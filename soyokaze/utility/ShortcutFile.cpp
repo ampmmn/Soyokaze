@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShortcutFile.h"
+#include <propkey.h>
+#include <propvarutil.h>
 
 ShortcutFile::ShortcutFile()
 {
@@ -30,9 +32,20 @@ void ShortcutFile::SetWorkingDirectory(LPCTSTR dir)
 	mDir = dir;
 }
 
+void ShortcutFile::SetAppId(LPCTSTR appId)
+{
+	mAppId = appId;
+}
+
+void ShortcutFile::SetToastCallbackGUID(GUID guid)
+{
+	mToastCallbackGuid.reset(new GUID);
+	memcpy(mToastCallbackGuid.get(), &guid, sizeof(guid));
+}
+
 bool ShortcutFile::Save(LPCTSTR pathToSave)
 {
-	IShellLink *shellLinkPtr = nullptr;
+	CComPtr<IShellLink> shellLinkPtr;
 
 	HRESULT hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,IID_IShellLink,(void**)&shellLinkPtr);
 	if (FAILED(hr)){
@@ -43,24 +56,37 @@ bool ShortcutFile::Save(LPCTSTR pathToSave)
 	shellLinkPtr->SetArguments(mArguments);
 	shellLinkPtr->SetWorkingDirectory(mDir);
 
-	IPersistFile *persistFilePtr = nullptr;
-	hr = shellLinkPtr->QueryInterface(IID_IPersistFile,(void**)&persistFilePtr);
+	if (mAppId.IsEmpty() == FALSE) {
+		CComPtr<IPropertyStore> propStore;
+		shellLinkPtr->QueryInterface(IID_IPropertyStore, (void**)&propStore);
+
+		// AppIdをappIdPropVarに設定
+		PROPVARIANT appIdPropVar;
+		InitPropVariantFromString(mAppId, &appIdPropVar);
+		propStore->SetValue(PKEY_AppUserModel_ID, appIdPropVar);
+
+		// ToastのコールバックIDを設定
+		PROPVARIANT callbackIdPropVar;
+		if (mToastCallbackGuid.get()) {
+			InitPropVariantFromCLSID(*(mToastCallbackGuid.get()), &callbackIdPropVar);
+			propStore->SetValue(PKEY_AppUserModel_ToastActivatorCLSID, callbackIdPropVar);
+		}
+
+		propStore->Commit();
+
+		PropVariantClear(&callbackIdPropVar);
+		PropVariantClear(&appIdPropVar);
+	}
+
+	CComPtr<IPersistFile> persistFilePtr;
+	hr = shellLinkPtr->QueryInterface(IID_IPersistFile, (void**)&persistFilePtr);
 	if(FAILED(hr)){
-		shellLinkPtr->Release();
-		shellLinkPtr = nullptr;
 		return false;
 	}
 
 	CStringW pathToSaveW((CString)pathToSave);
 
 	hr = persistFilePtr->Save(pathToSaveW, TRUE);
-
-	persistFilePtr->Release();
-	persistFilePtr = nullptr;
-
-	shellLinkPtr->Release();
-	shellLinkPtr = nullptr;
-
 	return true;
 }
 
@@ -109,5 +135,13 @@ CString ShortcutFile::ResolvePath(
 
 	CString path((CStringW)pathWideChar);
 	return path;
+}
+
+void ShortcutFile::MakeSpecialFolderPath(CString& out, int type, LPCTSTR linkName)
+{
+	LPTSTR path = out.GetBuffer(MAX_PATH_NTFS);
+	SHGetSpecialFolderPath(NULL, path, type, 0);
+	PathAppend(path, linkName);
+	out.ReleaseBuffer();
 }
 

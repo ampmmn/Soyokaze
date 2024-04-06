@@ -7,6 +7,8 @@
 #include <vector>
 #include <deque>
 #include "commands/common/Message.h"
+#include "commands/watchpath/WatchPathToast.h"
+#include "settingwindow/ShortcutSettingPage.h"
 
 namespace soyokaze {
 namespace commands {
@@ -173,6 +175,8 @@ struct PathWatcher::PImpl
 	bool WatchForLocalPath();
 	bool WatchForUNCPath();
 
+	void NotifyPath(const CString& cmdName, const CString& path);
+
 	// 排他制御用
 	std::mutex mMutex;
 
@@ -298,15 +302,30 @@ bool PathWatcher::PImpl::WatchForUNCPath()
 		}
 
 		// 通知
-		CString notifyMsg;
-		notifyMsg.Format(_T("【%s】更新を検知 : %s"), cmdName, item.mPath);
-		soyokaze::commands::common::PopupMessage(notifyMsg);
+		NotifyPath(cmdName, item.mPath);
 
 		item.mTimestamps.swap(current);
 		item.mLastChecked = curTime;
 	}
 
 	return hasItem;
+}
+
+void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const CString& path)
+{
+	if (ShortcutSettingPage::IsStartMenuExists()) {
+		// スタートメニューにショートカットが登録されている場合はトーストを使う
+		Toast toast;
+		toast.SetCommandName(cmdName);
+		toast.SetPath(path);
+		toast.Show();
+	}
+	else {
+		// 登録されていない場合はShell_NotifyIconのメッセージで代替する
+		CString notifyMsg;
+		notifyMsg.Format(_T("【%s】更新を検知 : %s"), cmdName, path);
+		soyokaze::commands::common::PopupMessage(notifyMsg);
+	}
 }
 
 bool PathWatcher::PImpl::GetTagetObjects(std::vector<HANDLE>& objects)
@@ -373,9 +392,6 @@ void PathWatcher::PImpl::NotifyTarget(HANDLE event)
 		// 変更通知情報を受け取り、通知する
 			FILE_NOTIFY_INFORMATION* data = (FILE_NOTIFY_INFORMATION*)&target.mBuffer.front();
 
-			CString notifyMsg;
-			notifyMsg.Format(_T("【%s】更新を検知 : %s"), item.first, target.mPath);
-
 			for (;;) {
 
 				int action = data->Action;
@@ -392,7 +408,7 @@ void PathWatcher::PImpl::NotifyTarget(HANDLE event)
 			}
 
 			// 通知
-			soyokaze::commands::common::PopupMessage(notifyMsg);
+			NotifyPath(item.first, target.mPath);
 
 			// フォルダがなくなっていたら終了
 			if (PathIsDirectory(target.mPath) == FALSE) {

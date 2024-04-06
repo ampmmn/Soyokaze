@@ -8,6 +8,12 @@ public:
 	ShortcutSettingPage(CWnd* parentWnd);
 	virtual ~ShortcutSettingPage();
 
+
+	static void CreateStartMenuPath(CString& pathToMenu);
+	static bool IsStartMenuExists();
+	static bool CreateStartMenu();
+
+public:
 	CString mSoyokazePath;
 
 	// 各種ショートカットのパス
@@ -21,6 +27,7 @@ public:
 	BOOL mStartMenu;
 	BOOL mDesktop;
 	BOOL mStartup;
+
 
 protected:
 	void OnOK() override;

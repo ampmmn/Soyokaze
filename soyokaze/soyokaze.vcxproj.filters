@@ -816,6 +816,9 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathToast.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1447,6 +1450,9 @@
     </ClCompile>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp">
       <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathToast.cpp">
+      <Filter>commands\watchpath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
