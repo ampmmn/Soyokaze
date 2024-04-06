@@ -22,6 +22,7 @@ namespace watchpath {
 CommandEditDialog::CommandEditDialog() : 
 	CDialogEx(IDD_WATCHPATH)
 {
+	mNotifyMessage = _T("更新を検知");
 }
 
 CommandEditDialog::~CommandEditDialog()
@@ -43,6 +44,11 @@ void CommandEditDialog::SetDescription(const CString& desc)
 	mDescription = desc;
 }
 
+void CommandEditDialog::SetNotifyMessage(const CString& msg)
+{
+	mNotifyMessage = msg;
+}
+
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -50,6 +56,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
 	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
+	DDX_Text(pDX, IDC_EDIT_MESSAGE, mNotifyMessage);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)

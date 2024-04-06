@@ -37,6 +37,7 @@ struct WatchPathCommand::PImpl
 	CString mName;
 	CString mDescription;
 	CString mPath;
+	CString mMessage;
 
 	// 参照カウント
 	uint32_t mRefCount;
@@ -123,6 +124,7 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	dlg.mName = in->mName;
 	dlg.mDescription = in->mDescription;
 	dlg.mPath = in->mPath;
+	dlg.mNotifyMessage = in->mMessage;
 
 	if (dlg.DoModal() != IDOK) {
 		return 1;
@@ -139,6 +141,7 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	in->mName = dlg.mName;
 	in->mDescription = dlg.mDescription;
 	in->mPath = dlg.mPath;
+	in->mMessage = dlg.mNotifyMessage;
 
 	// RegisterCommandはrefCountを+1しないので、#addrefで上げたカウントをさげる必要はない
 	cmdRepo->RegisterCommand(this);
@@ -147,7 +150,11 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	if (orgName != in->mName) {
 		auto watcher = PathWatcher::Get();
 		watcher->UnregisterPath(orgName);
-		watcher->RegisterPath(in->mName, dlg.mPath);
+
+		PathWatcher::ITEM item;
+		item.mPath = dlg.mPath;
+		item.mMessage = dlg.mNotifyMessage;
+		watcher->RegisterPath(in->mName, item);
 	}
 
 	return 0;
@@ -183,6 +190,7 @@ bool WatchPathCommand::Save(CommandFile* cmdFile)
 
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("path"), in->mPath);
+	cmdFile->Set(entry, _T("message"), in->mMessage);
 
 	return true;
 }
@@ -194,9 +202,13 @@ bool WatchPathCommand::Load(CommandFile* cmdFile, void* entry_)
 	in->mName = cmdFile->GetName(entry);
 	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
 	in->mPath = cmdFile->Get(entry, _T("path"), _T(""));
+	in->mMessage = cmdFile->Get(entry, _T("message"), _T(""));
 
 	// 監視対象に登録
-	PathWatcher::Get()->RegisterPath(in->mName, in->mPath);
+	PathWatcher::ITEM item;
+	item.mPath = in->mPath;
+	item.mMessage = in->mMessage;
+	PathWatcher::Get()->RegisterPath(in->mName, item);
 
 	return true;
 }
@@ -236,11 +248,15 @@ bool WatchPathCommand::NewDialog(const Parameter* param)
 	newCmd->in->mName = dlg.mName;
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mPath = dlg.mPath;
+	newCmd->in->mMessage = dlg.mNotifyMessage;
 
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	// 監視対象に登録
-	PathWatcher::Get()->RegisterPath(dlg.mName, dlg.mPath);
+	PathWatcher::ITEM item;
+	item.mPath = dlg.mPath;
+	item.mMessage = dlg.mNotifyMessage;
+	PathWatcher::Get()->RegisterPath(dlg.mName, item);
 
 	return true;
 

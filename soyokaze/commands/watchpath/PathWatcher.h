@@ -6,6 +6,11 @@ namespace watchpath {
 
 class PathWatcher
 {
+public:
+	struct ITEM {
+		CString mPath;
+		CString mMessage;
+	};
 private:
 	PathWatcher();
 	~PathWatcher();
@@ -13,7 +18,7 @@ private:
 public:
 	static PathWatcher* Get();
 
-	void RegisterPath(const CString& cmdName, const CString& path);
+	void RegisterPath(const CString& cmdName, const ITEM& item);
 	void UnregisterPath(const CString& cmdName);
 	
 protected:

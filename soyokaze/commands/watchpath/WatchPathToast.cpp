@@ -120,7 +120,7 @@ static bool isRegistered = false;
 
 Toast::Toast() : in(new PImpl)
 {
-	in->mMessage = _T("フォルダ内の更新を検知しました");
+	in->mMessage = _T("更新を検知");
 	// コールバックを登録
 	registerCallback();
 }

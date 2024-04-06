@@ -164,6 +164,7 @@
 #define IDC_STATIC_PATH2                1019
 #define IDC_EDIT_PATH                   1020
 #define IDC_EDIT_PARAM                  1021
+#define IDC_EDIT_MESSAGE                1021
 #define IDC_EDIT_HOTKEY                 1022
 #define IDC_EDIT_PARAM2                 1022
 #define IDC_BUTTON_RESOLVESHORTCUT      1022

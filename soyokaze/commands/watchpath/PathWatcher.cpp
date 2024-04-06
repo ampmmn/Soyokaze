@@ -14,6 +14,8 @@ namespace soyokaze {
 namespace commands {
 namespace watchpath {
 
+	using ITEM = PathWatcher::ITEM;
+
 // 監視対象パスについての管理情報
 struct WATCH_TARGET
 {
@@ -25,7 +27,7 @@ struct WATCH_TARGET
 	}
 
 	// 監視対象パス
-	CString mPath;
+	ITEM mItem;
 	// ReadDirectoryChangesWに渡すためのファイルハンドル
 	HANDLE mDirHandle;
 	// 更新検知を受け取るためのイベントを含むOVERLAPPED構造体
@@ -58,13 +60,13 @@ struct WATCH_TARGET_UNC
 
 		fileList.clear();
 
-		if (PathIsDirectory(mPath) == FALSE) {
+		if (PathIsDirectory(mItem.mPath) == FALSE) {
 			return false;
 		}
 
 		// フォルダ内のファイル列挙
 		std::deque<CString> stk;
-		stk.push_back(mPath);
+		stk.push_back(mItem.mPath);
 
 		while(stk.empty() == false) {
 
@@ -135,7 +137,7 @@ struct WATCH_TARGET_UNC
 	}
 
 	// 監視対象パス
-	CString mPath;
+	ITEM mItem;
 	// 監視対象パス以下にある要素の更新日時情報
 	TimeStampList mTimestamps;
 	// 初回実施フラグ
@@ -175,7 +177,7 @@ struct PathWatcher::PImpl
 	bool WatchForLocalPath();
 	bool WatchForUNCPath();
 
-	void NotifyPath(const CString& cmdName, const CString& path);
+	void NotifyPath(const CString& cmdName, const ITEM& item);
 
 	// 排他制御用
 	std::mutex mMutex;
@@ -272,58 +274,64 @@ bool PathWatcher::PImpl::WatchForUNCPath()
 
 	for (auto& pa : mUncTargets) {
 		auto& cmdName = pa.first;
-		auto& item = pa.second;
+		auto& target = pa.second;
 
 		// 前回に比較したときから一定時間経過してない場合はチェックしない
 		// (負荷対策)
-		if (item.mLastChecked != 0 && curTime - item.mLastChecked  < 60 * 1000) { // 1分に1回
+		if (target.mLastChecked != 0 && curTime - target.mLastChecked  < 60 * 1000) { // 1分に1回
 			continue;
 		}
 
 		// 現在の情報を取得
 		TimeStampList current;
-		if (item.CreateTimeStamp(current) == false) {
+		if (target.CreateTimeStamp(current) == false) {
 			continue;
 		}
 		hasItem = true;
 
 		// 初回は新規作成なので通知しない
-		if (item.mIsFirst)  {
-			item.mTimestamps.swap(current);
-			item.mIsFirst = false;
-			item.mLastChecked = curTime;
+		if (target.mIsFirst)  {
+			target.mTimestamps.swap(current);
+			target.mIsFirst = false;
+			target.mLastChecked = curTime;
 			continue;
 		}
 
 		// 前回と比較
-		bool isUpdated = item.IsDiffer(current); 
+		bool isUpdated = target.IsDiffer(current); 
 		if (isUpdated == false) {
 			continue;
 		}
 
 		// 通知
-		NotifyPath(cmdName, item.mPath);
+		NotifyPath(cmdName, target.mItem);
 
-		item.mTimestamps.swap(current);
-		item.mLastChecked = curTime;
+		target.mTimestamps.swap(current);
+		target.mLastChecked = curTime;
 	}
 
 	return hasItem;
 }
 
-void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const CString& path)
+void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const ITEM& item)
 {
+	CString message = item.mMessage;
+	if (message.IsEmpty()) {
+		message = _T("更新を検知");
+	}
+
 	if (ShortcutSettingPage::IsStartMenuExists()) {
 		// スタートメニューにショートカットが登録されている場合はトーストを使う
 		Toast toast;
 		toast.SetCommandName(cmdName);
-		toast.SetPath(path);
+		toast.SetPath(item.mPath);
+		toast.SetMessage(message);
 		toast.Show();
 	}
 	else {
 		// 登録されていない場合はShell_NotifyIconのメッセージで代替する
 		CString notifyMsg;
-		notifyMsg.Format(_T("【%s】更新を検知 : %s"), cmdName, path);
+		notifyMsg.Format(_T("【%s】%s : %s"), cmdName, message, item.mPath);
 		soyokaze::commands::common::PopupMessage(notifyMsg);
 	}
 }
@@ -340,12 +348,12 @@ bool PathWatcher::PImpl::GetTagetObjects(std::vector<HANDLE>& objects)
 			continue;
 		}
 
-		if (PathIsDirectory(target.mPath) == FALSE) {
+		if (PathIsDirectory(target.mItem.mPath) == FALSE) {
 			continue;
 		}
 
 		// CreateFileで監視対象(フォルダ)のhandleを生成する
-		HANDLE h = CreateFile(target.mPath, FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+		HANDLE h = CreateFile(target.mItem.mPath, FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 		           NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
 		if (h == INVALID_HANDLE_VALUE) {
 			continue;
@@ -388,42 +396,44 @@ void PathWatcher::PImpl::NotifyTarget(HANDLE event)
 		DWORD size = 0;
 		BOOL isOK = GetOverlappedResult(target.mDirHandle, &target.mOverlapped, &size, FALSE);
 		ResetEvent(target.mOverlapped.hEvent);
-		if (isOK) {
-		// 変更通知情報を受け取り、通知する
-			FILE_NOTIFY_INFORMATION* data = (FILE_NOTIFY_INFORMATION*)&target.mBuffer.front();
-
-			for (;;) {
-
-				int action = data->Action;
-				// FILE_ACTION_ADDED or FILE_ACTION_REMOVED or FILE_ACTION_MODIFIED or FILE_ACTION_RENAMED_OLD_NAME or FILE_ACTION_RENAMED_NEW_NAME
-
-				DWORD lenInByte = data->FileNameLength;
-				std::vector<TCHAR> fileName(lenInByte / sizeof(TCHAR) + 1);
-				memcpy(&fileName.front(), data->FileName, lenInByte);
-
-				if (data->NextEntryOffset == 0) {
-					break;
-				}
-				data = (FILE_NOTIFY_INFORMATION*)((LPBYTE)(data) + data->NextEntryOffset);
-			}
-
-			// 通知
-			NotifyPath(item.first, target.mPath);
-
-			// フォルダがなくなっていたら終了
-			if (PathIsDirectory(target.mPath) == FALSE) {
-				CloseHandle(target.mDirHandle);
-				target.mDirHandle = nullptr;
-				CloseHandle(target.mOverlapped.hEvent);
-				target.mOverlapped.hEvent = nullptr;
-				return;
-			}
-
-			// 再度ReadDirectoryChanges
-			DWORD flags = FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE;
-			ResetEvent(target.mOverlapped.hEvent);
-			BOOL isOK = ReadDirectoryChangesW(target.mDirHandle, &target.mBuffer.front(), (DWORD)target.mBuffer.size(), TRUE, flags, nullptr, &target.mOverlapped, nullptr);
+		if (isOK == FALSE) {
+			continue;
 		}
+
+		// 変更通知情報を受け取り、通知する
+		FILE_NOTIFY_INFORMATION* data = (FILE_NOTIFY_INFORMATION*)&target.mBuffer.front();
+
+		for (;;) {
+
+			int action = data->Action;
+			// FILE_ACTION_ADDED or FILE_ACTION_REMOVED or FILE_ACTION_MODIFIED or FILE_ACTION_RENAMED_OLD_NAME or FILE_ACTION_RENAMED_NEW_NAME
+
+			DWORD lenInByte = data->FileNameLength;
+			std::vector<TCHAR> fileName(lenInByte / sizeof(TCHAR) + 1);
+			memcpy(&fileName.front(), data->FileName, lenInByte);
+
+			if (data->NextEntryOffset == 0) {
+				break;
+			}
+			data = (FILE_NOTIFY_INFORMATION*)((LPBYTE)(data) + data->NextEntryOffset);
+		}
+
+		// 通知
+		NotifyPath(item.first, target.mItem);
+
+		// フォルダがなくなっていたら終了
+		if (PathIsDirectory(target.mItem.mPath) == FALSE) {
+			CloseHandle(target.mDirHandle);
+			target.mDirHandle = nullptr;
+			CloseHandle(target.mOverlapped.hEvent);
+			target.mOverlapped.hEvent = nullptr;
+			return;
+		}
+
+		// 再度ReadDirectoryChanges
+		DWORD flags = FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE;
+		ResetEvent(target.mOverlapped.hEvent);
+		isOK = ReadDirectoryChangesW(target.mDirHandle, &target.mBuffer.front(), (DWORD)target.mBuffer.size(), TRUE, flags, nullptr, &target.mOverlapped, nullptr);
 	}
 }
 
@@ -445,7 +455,7 @@ PathWatcher* PathWatcher::Get()
 	return &inst;
 }
 
-void PathWatcher::RegisterPath(const CString& cmdName, const CString& path)
+void PathWatcher::RegisterPath(const CString& cmdName, const ITEM& item)
 {
 	{
 		std::lock_guard<std::mutex> lock(in->mMutex);
@@ -456,15 +466,15 @@ void PathWatcher::RegisterPath(const CString& cmdName, const CString& path)
 			return;
 		}
 
-		if (PathIsUNC(path) == FALSE) {
-			WATCH_TARGET item;
-			item.mPath = path;
-			in->mTargets[cmdName] = item;
+		if (PathIsUNC(item.mPath) == FALSE) {
+			WATCH_TARGET target;
+			target.mItem = item;
+			in->mTargets[cmdName] = target;
 		}
 		else {
-			WATCH_TARGET_UNC item;
-			item.mPath = path;
-			in->mUncTargets[cmdName] = item;
+			WATCH_TARGET_UNC target;
+			target.mItem = item;
+			in->mUncTargets[cmdName] = target;
 		}
 	}
 	in->StartWatch();

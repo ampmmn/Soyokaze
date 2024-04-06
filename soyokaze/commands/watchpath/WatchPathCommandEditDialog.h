@@ -18,7 +18,7 @@ public:
 	void SetOrgName(const CString& name);
 	void SetName(const CString& name);
 	void SetDescription(const CString& desc);
-	void SetParam(const CString& param);
+	void SetNotifyMessage(const CString& msg);
 
 	int GetShowType();
 	void SetShowType(int type);
@@ -44,6 +44,8 @@ public:
 	CString mDescription;
 	// パス
 	CString mPath;
+	// メッセージ
+	CString mNotifyMessage;
 
 private:
 	TopMostMask mTopMostMask;
