@@ -128,6 +128,11 @@ public:
 	// 効果音ファイルパスを取得(コマンド実行)
 	CString GetExecuteSoundFile();
 
+	// 長時間の連続稼働を警告する
+	bool IsWarnLongOperation();
+	// 長時間連続稼働警告までの時間を取得する(分単位)
+	int GetTimeToWarnLongOperation();
+
 protected:
 	AppPreference();
 	~AppPreference();

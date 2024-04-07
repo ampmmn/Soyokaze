@@ -175,8 +175,16 @@ void Toast::Show()
 	winrt::Windows::UI::Notifications::ToastNotification notif(doc);
 	winrt::Windows::UI::Notifications::ToastNotificationManager toastManager{};
 	ToastNotifier toastNotifier(toastManager.CreateToastNotifier(LAUNCHER_APPID));
-
+	//notif.Group(L"grp");
 	toastNotifier.Show(notif);
+
+	// 特定の通知を消す
+	//try {
+	//	toastManager.History().RemoveGroup(L"grp", LAUNCHER_APPID);
+	//}
+	//catch (...) {
+	//		int a = 0;
+	//	}
 }
 
 }

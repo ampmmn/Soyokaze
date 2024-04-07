@@ -12,6 +12,7 @@
 #include "settingwindow/SoundSettingDialog.h"
 #include "settingwindow/ExtensionSettingDialog.h"
 #include "settingwindow/ShortcutSettingPage.h"
+#include "settingwindow/AppSettingPageOther.h"
 #include "utility/TopMostMask.h"
 #include "resource.h"
 #include <algorithm>
@@ -108,6 +109,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 		AddPage(hExtensionItem, std::unique_ptr<SettingPage>(page), param);
 	}
 
+	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new AppSettingPageOther(this)), param);
 	return hItem;
 }
 

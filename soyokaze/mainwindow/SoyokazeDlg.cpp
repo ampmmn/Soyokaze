@@ -17,13 +17,18 @@
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/AppSound.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "mainwindow/MainWindowHotKey.h"
+#include "mainwindow/OperationWatcher.h"
 #include "CandidateList.h"
 #include <algorithm>
 #include <thread>
+#include <wtsapi32.h>
+
+#pragma comment(lib, "Wtsapi32.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,6 +37,7 @@
 using namespace soyokaze;
 
 static UINT TIMERID_KEYSTATE = 1;
+static UINT TIMERID_OPERATION = 2;
 
 struct CSoyokazeDlg::PImpl
 {
@@ -87,6 +93,10 @@ struct CSoyokazeDlg::PImpl
 	// ドロップターゲット
 	SoyokazeDropTarget mDropTargetDialog;
 	SoyokazeDropTarget mDropTargetEdit;
+
+	// 稼働状況を監視する(長時間連続稼働を警告する目的)
+	OperationWatcher mOpWatcher;
+
 
 };
 
@@ -193,6 +203,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP, OnCommandHelp)
+	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -538,6 +549,10 @@ BOOL CSoyokazeDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
+	SetTimer(TIMERID_OPERATION, 1000, nullptr);
+
+	in->mOpWatcher.StartWatch(this);
 
 	// グローバルホットキーのイベント受け取り先として登録する
 	auto manager = core::CommandHotKeyManager::GetInstance();
@@ -1132,4 +1147,25 @@ void CSoyokazeDlg::OnTimer(UINT_PTR timerId)
 			in->mIsPrevTransparentState = shouldBeTransparent;
 		}
 	}
+	else if (timerId == TIMERID_OPERATION) {
+		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+				listener->OnTimer();
+		});
+	}
+}
+
+LRESULT CSoyokazeDlg::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
+{
+	// ロックされたとき、wpにWTS_SESSION_LOCK(7)、解除されたときは WTS_SESSION_UNLOCK(8)が通知される
+	if (wParam == WTS_SESSION_LOCK) {
+		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+				listener->OnLockScreenOccurred();
+		});
+	}
+	else if (wParam == WTS_SESSION_UNLOCK) {
+		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+				listener->OnUnlockScreenOccurred();
+		});
+	}
+	return 0;
 }

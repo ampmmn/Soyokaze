@@ -749,3 +749,16 @@ CString AppPreference::GetExecuteSoundFile()
 	return in->mSettings.Get(_T("Sound:FilePathExecute"), _T(""));
 }
 
+// 長時間の連続稼働を警告する
+bool AppPreference::IsWarnLongOperation()
+{
+	return in->mSettings.Get(_T("Health:IsWarnLongOperation"), false);
+}
+
+// 長時間連続稼働警告までの時間を取得する(分単位)
+int AppPreference::GetTimeToWarnLongOperation()
+{
+	return in->mSettings.Get(_T("Health:TimeToWarn"), 90);
+}
+
+

@@ -124,6 +124,7 @@
 #define IDD_APPSETTING_PATH1            177
 #define IDD_APPSETTING_EXCLUDEFILE      177
 #define IDS_X                           178
+#define IDD_APPSETTING_OTHER            178
 #define IDS_Y                           179
 #define IDS_WIDTH                       180
 #define IDS_HEIGHT                      181
@@ -330,6 +331,8 @@
 #define IDC_CHECK_MATCHWITHOUTKEYWORD2  1147
 #define IDC_CHECK_REVERSE               1147
 #define IDC_BUTTON_HOTKEY_UP            1147
+#define IDC_CHECK_WARNLONGWORKING       1148
+#define IDC_EDIT_TIME                   1149
 
 // Next default values for new objects
 // 
@@ -337,7 +340,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1148
+#define _APS_NEXT_CONTROL_VALUE         1150
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

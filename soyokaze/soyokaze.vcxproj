@@ -519,8 +519,12 @@
     <ClInclude Include="commands/core\CommandRanking.h" />
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
+    <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
+    <ClInclude Include="mainwindow\OperationWatcher.h" />
+    <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
     <ClInclude Include="setting/AppPreference.h" />
+    <ClInclude Include="settingwindow\AppSettingPageOther.h" />
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
     <ClInclude Include="settingwindow\BasicSettingDialog.h" />
     <ClInclude Include="mainwindow\CandidateListCtrl.h" />
@@ -745,8 +749,12 @@
     <ClCompile Include="commands/core\CommandRanking.cpp" />
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
+    <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
+    <ClCompile Include="mainwindow\OperationWatcher.cpp" />
+    <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />

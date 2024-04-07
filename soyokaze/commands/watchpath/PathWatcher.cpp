@@ -14,7 +14,7 @@ namespace soyokaze {
 namespace commands {
 namespace watchpath {
 
-	using ITEM = PathWatcher::ITEM;
+using ITEM = PathWatcher::ITEM;
 
 // 監視対象パスについての管理情報
 struct WATCH_TARGET

@@ -91,6 +91,7 @@ protected:
 	LRESULT OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageGetClipboardString(WPARAM wParam, LPARAM lParam);
+	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 public:

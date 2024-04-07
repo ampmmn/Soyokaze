@@ -819,6 +819,18 @@
     <ClInclude Include="commands\watchpath\WatchPathToast.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageOther.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\OperationWatcher.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\WarnWorkTimeToast.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1453,6 +1465,18 @@
     </ClCompile>
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp">
       <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageOther.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\OperationWatcher.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp">
+      <Filter>mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
