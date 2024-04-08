@@ -37,6 +37,7 @@ bool NamedCommandHotKeyHandler::Invoke()
 	ShowWindow(wnd->GetSafeHwnd(), SW_HIDE);
 
 	soyokaze::core::CommandParameter param;
+	param.SetNamedParamBool(_T("OnHotKey"), _T("true"));
 	bool result = cmd->Execute(param);
 	cmd->Release();
 

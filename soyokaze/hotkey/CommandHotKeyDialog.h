@@ -7,7 +7,7 @@
 class CommandHotKeyDialog : public CDialogEx
 {
 public:
-	CommandHotKeyDialog(const HOTKEY_ATTR& attr);
+	CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal);
 	virtual ~CommandHotKeyDialog();
 
 	void GetAttribute(HOTKEY_ATTR& attr);

@@ -11,12 +11,13 @@
 #endif
 
 
-CommandHotKeyDialog::CommandHotKeyDialog(const HOTKEY_ATTR& attr) : 
+CommandHotKeyDialog::CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal) : 
 	CDialogEx(IDD_HOTKEY),
 	mHotKeyAttr(attr),
-	mIsGlobal(FALSE)
+	mIsGlobal(isGlobal ? TRUE : FALSE)
 {
 }
+
 
 CommandHotKeyDialog::~CommandHotKeyDialog()
 {

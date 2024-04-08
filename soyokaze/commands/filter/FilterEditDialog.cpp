@@ -343,8 +343,7 @@ void FilterEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr);
-	dlg.mIsGlobal = mIsGlobal;
+	CommandHotKeyDialog dlg(mHotKeyAttr, mIsGlobal);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

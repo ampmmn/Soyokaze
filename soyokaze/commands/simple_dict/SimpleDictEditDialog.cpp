@@ -6,6 +6,7 @@
 #include "utility/TopMostMask.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
+#include "hotkey/CommandHotKeyDialog.h"
 #include "resource.h"
 #include <vector>
 
@@ -38,6 +39,12 @@ struct SettingDialog::PImpl
 	TopMostMask mTopMostMask;
 
 	bool mIsTestPassed;
+
+	// ホットキー(表示用)
+	CString mHotKey;
+	HOTKEY_ATTR mHotKeyAttr;
+	bool mIsGlobal = false;
+
 };
 
 
@@ -67,6 +74,18 @@ const SimpleDictParam& SettingDialog::GetParam() const
 	return in->mParam;
 }
 
+void SettingDialog::SetHotKeyAttribute(const HOTKEY_ATTR& attr, bool isGlobal)
+{
+	in->mHotKeyAttr = attr;
+	in->mIsGlobal = isGlobal;
+}
+
+void SettingDialog::GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal)
+{
+	attr = in->mHotKeyAttr;
+	isGlobal = in->mIsGlobal;
+}
+
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -86,6 +105,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, in->mParam.mActionType);
 	DDX_Text(pDX, IDC_EDIT_PARAM2, in->mParam.mAfterCommandParam);
 	DDX_Text(pDX, IDC_EDIT_PATH2, in->mParam.mAfterFilePath);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
@@ -104,6 +124,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
+	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 
 END_MESSAGE_MAP()
 
@@ -158,6 +179,11 @@ BOOL SettingDialog::OnInitDialog()
 
 bool SettingDialog::UpdateStatus()
 {
+	in->mHotKey = in->mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
+
 	int actionType = in->mParam.mActionType;
 	if (actionType== 0) {
 		// 他のコマンドを実行する
@@ -501,6 +527,23 @@ bool SettingDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
 
 	return true;
 }
+
+void SettingDialog::OnButtonHotKey()	
+{
+	UpdateData();
+
+	CommandHotKeyDialog dlg(in->mHotKeyAttr, in->mIsGlobal);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	dlg.GetAttribute(in->mHotKeyAttr);
+	in->mIsGlobal = dlg.IsGlobal();
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 
 
 } // end of namespace simple_dict

@@ -191,7 +191,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
-	ON_MESSAGE(WM_APP+3, OnUserMessageSetText)
+	ON_MESSAGE(WM_APP+3, OnUserMessageRunCommand)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
@@ -199,6 +199,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
 	ON_MESSAGE(WM_APP+9, OnUserMessageSetClipboardString)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
+	ON_MESSAGE(WM_APP+11, OnUserMessageSetText)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -256,8 +257,10 @@ void CSoyokazeDlg::ShowHelp()
  */
 LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
+	bool isShowForce = ((wParam & 0x1) != 0);
+
 	HWND hwnd = GetSafeHwnd();
-	if (::IsWindowVisible(hwnd) == FALSE) {
+	if (isShowForce || ::IsWindowVisible(hwnd) == FALSE) {
 
 		AppPreference* pref= AppPreference::Get();
 
@@ -305,7 +308,7 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 /**
  * 後続プロセスから "-c <文字列>" 経由でコマンド実行指示を受け取ったときの処理
  */
-LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
+LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
 {
 	LPCTSTR text = (LPCTSTR)lParam;
 	if (text == nullptr) {
@@ -315,6 +318,24 @@ LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	ExecuteCommand(text);
 	return 0;
 }
+
+/**
+ * 入力欄にテキストをセットする処理
+ */
+LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
+{
+	LPCTSTR text = (LPCTSTR)lParam;
+	if (text == nullptr) {
+		return 0;
+	}
+
+	in->mKeywordEdit.SetWindowText(text);
+	in->mKeywordEdit.SetCaretToEnd();
+	OnEditCommandChanged();
+
+	return 0;
+}
+
 
 
 LRESULT 

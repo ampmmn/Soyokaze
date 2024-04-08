@@ -11,6 +11,9 @@
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "commands/common/Message.h"
+#include "hotkey/CommandHotKeyManager.h"
+#include "hotkey/CommandHotKeyMappings.h"
+#include "SharedHwnd.h"
 #include <assert.h>
 #include <regex>
 #include <set>
@@ -97,7 +100,17 @@ CString SimpleDictCommand::GetTypeDisplayName()
 
 BOOL SimpleDictCommand::Execute(const Parameter& param)
 {
-	// このコマンドは直接実行しない
+	// ホットキーで入力したときだけここに到達できる
+	// (入力画面上の短縮入力として作用する)
+	bool isHotKeyRun = param.GetNamedParamBool(_T("OnHotKey"));
+	if (isHotKeyRun) {
+		SharedHwnd sharedWnd;
+		SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+
+		auto cmdline = GetName();
+		cmdline += _T(" ");
+		SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+	}
 	return TRUE;
 }
 
@@ -113,7 +126,12 @@ HICON SimpleDictCommand::GetIcon()
 
 int SimpleDictCommand::Match(Pattern* pattern)
 {
-	// このコマンドは直接実行させないのでつねにMismatchとする
+	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
+		// このコマンドは入力欄からの入力では直接実行させないが、内部のコマンド名マッチングの時だけヒットさせる
+		return Pattern::WholeMatch;
+	}
+
+	// 通常はこちら
 	return Pattern::Mismatch;
 }
 
@@ -127,6 +145,14 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 	// 設定変更画面を表示する
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
+
+	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	HOTKEY_ATTR hotKeyAttr;
+	bool isGlobal = false;
+	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr, &isGlobal)) {
+		dlg.SetHotKeyAttribute(hotKeyAttr, isGlobal);
+	}
+
 	if (dlg.DoModal() != IDOK) {
 		return 0;
 	}
@@ -137,6 +163,21 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 	// 名前の変更を登録しなおす
 	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
+
+	// ホットキー設定を更新
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
+
+	hotKeyMap.RemoveItem(hotKeyAttr);
+
+	dlg.GetHotKeyAttribute(hotKeyAttr, isGlobal);
+	if (hotKeyAttr.IsValid()) {
+		hotKeyMap.AddItem(GetName(), hotKeyAttr, isGlobal);
+	}
+
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(hotKeyMap);
+	pref->Save();
 
 	// コマンドの設定情報の変更を通知
 	for (auto listener : in->mListeners) {

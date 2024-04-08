@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "commands/simple_dict/SimpleDictParam.h"
+#include "hotkey/HotKeyAttribute.h"
 
 class ModalComboBox;
 
@@ -17,6 +18,9 @@ public:
 
 	void SetParam(const SimpleDictParam& param);
 	const SimpleDictParam& GetParam() const;
+
+	void SetHotKeyAttribute(const HOTKEY_ATTR& attr, bool isGlobal);
+	void GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal);
 
 	bool UpdateStatus();
 
@@ -43,6 +47,7 @@ protected:
 	afx_msg void OnButtonBackRange();
 	afx_msg void OnButtonBrowseAfterCommandFile();
 	afx_msg void OnButtonBrowseAfterCommandDir();
+	afx_msg void OnButtonHotKey();
 };
 
 } // end of namespace simple_dict

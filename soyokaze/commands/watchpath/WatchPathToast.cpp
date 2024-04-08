@@ -154,7 +154,7 @@ void Toast::Show()
 			<visual>\
 			<binding template=\"ToastGeneric\">\
 			<text></text>\
-			<text></text>\
+			text></text>\
 			<text></text>\
 			</binding>\
 			</visual>\
