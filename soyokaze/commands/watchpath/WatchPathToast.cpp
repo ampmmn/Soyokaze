@@ -4,7 +4,6 @@
 #include "commands/common/SubProcess.h"
 #include "commands/core/CommandParameter.h"
 
-#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.UI.Notifications.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
 #include <notificationactivationcallback.h>
@@ -154,7 +153,7 @@ void Toast::Show()
 			<visual>\
 			<binding template=\"ToastGeneric\">\
 			<text></text>\
-			text></text>\
+			<text></text>\
 			<text></text>\
 			</binding>\
 			</visual>\
