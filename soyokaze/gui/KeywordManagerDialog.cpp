@@ -42,11 +42,19 @@ struct KeywordManagerDialog::PImpl
 {
 	void SortCommands();
 
+	Command* GetItem(int index) {
+		ASSERT(0 <= index && index < mShowCommands.size()); 
+		return mShowCommands[index];
+	}
+
 	CString mName;
 	CString mDescription;
 
+	CString mFilterStr;
+
 	std::vector<Command*> mCommands;
 	Command* mSelCommand;
+	std::vector<Command*> mShowCommands;
 
 	CListCtrl mListCtrl;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
@@ -127,9 +135,11 @@ void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_NAME, in->mName);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescription);
+	DDX_Text(pDX, IDC_EDIT_FILTER, in->mFilterStr);
 }
 
 BEGIN_MESSAGE_MAP(KeywordManagerDialog, CDialogEx)
+	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -194,18 +204,12 @@ BOOL KeywordManagerDialog::OnInitDialog()
 
 void KeywordManagerDialog::ResetContents()
 {
-	// 更新前の選択位置を覚えておく
-	int selItemIndex = -1;
-	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
-	if (pos) {
-		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
-	}
-
 	// 以前のアイテムを解放
 	for (auto& cmd : in->mCommands) {
 		cmd->Release();
 	}
 	in->mCommands.clear();
+	in->mShowCommands.clear();
 
 	// コマンド一覧を取得する
 	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
@@ -217,20 +221,7 @@ void KeywordManagerDialog::ResetContents()
 	// 現在のソート方法に従って要素をソート
 	in->SortCommands();
 
-	// アイテム数を設定
-	in->mListCtrl.SetItemCountEx((int)in->mCommands.size());
-
-	// 選択状態の更新
-	int itemIndex = 0;
-	for (auto& cmd : in->mCommands) {
-		bool isSelItem = itemIndex== selItemIndex;
-		if (isSelItem) {
-			in->mSelCommand = cmd;
-		}
-		in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
-		itemIndex++;
-	}
-	in->mListCtrl.Invalidate();
+	UpdateListItems();
 }
 
 bool KeywordManagerDialog::UpdateStatus()
@@ -244,12 +235,12 @@ bool KeywordManagerDialog::UpdateStatus()
 
 	// 選択状態を見て選択中のコマンドを決定
 	int itemIndex = 0;
-	for (auto& cmd : in->mCommands) {
+	for (auto& cmd : in->mShowCommands) {
 		UINT mask = in->mListCtrl.GetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED);
 		bool isSelItem = mask != 0;
 
 		if (isSelItem) {
-			in->mSelCommand = in->mCommands[itemIndex];
+			in->mSelCommand = in->mShowCommands[itemIndex];
 		}
 
 		itemIndex++;
@@ -279,6 +270,76 @@ bool KeywordManagerDialog::UpdateStatus()
 	btnDel->EnableWindow(TRUE);
 
 	return true;
+}
+
+void KeywordManagerDialog::UpdateListItems()
+{
+	// 更新前の選択位置を覚えておく
+	int selItemIndex = -1;
+	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
+	if (pos) {
+		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
+	}
+
+	// 空白でばらす
+	std::vector<CString> tokens;
+	int n = 0;
+	CString tok = in->mFilterStr.Tokenize(_T(" "), n);
+	while(tok.IsEmpty() == FALSE) {
+		tokens.push_back(tok);
+		tok = in->mFilterStr.Tokenize(_T(" "), n);
+	}
+
+	if (tokens.size() > 0) {
+		in->mShowCommands.clear();
+		for (auto& cmd : in->mCommands) {
+			auto name = cmd->GetName();
+			auto desc = cmd->GetDescription();
+			auto typeName = cmd->GetTypeDisplayName();
+
+			bool shouldShow = false;
+			for (auto& tok : tokens) {
+				if (name.Find(tok) == -1 && desc.Find(tok) == -1 && typeName.Find(tok) == -1) {
+					continue;
+				}
+				shouldShow = true;
+				break;
+			}
+
+			if (shouldShow == false) {
+				continue;
+			}
+			in->mShowCommands.push_back(cmd);
+		}
+	}
+	else {
+		in->mShowCommands = in->mCommands;
+	}
+
+	ASSERT(in->mShowCommands.size() <= in->mCommands.size());
+
+	// アイテム数を設定
+	int visibleItems = (int)(in->mShowCommands.size());
+	in->mListCtrl.SetItemCountEx(visibleItems);
+
+	// 選択状態の更新
+	int itemIndex = 0;
+	for (auto& cmd : in->mShowCommands) {
+
+		bool isSelItem = itemIndex== selItemIndex;
+		if (isSelItem) {
+			in->mSelCommand = cmd;
+		}
+		in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+		itemIndex++;
+	}
+	in->mListCtrl.Invalidate();
+}
+
+void KeywordManagerDialog::OnEditFilterChanged()
+{
+	UpdateData();
+	UpdateListItems();
 }
 
 void KeywordManagerDialog::OnButtonNew()
@@ -384,7 +445,7 @@ void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 
 	// 選択状態の更新
 	int itemIndex = 0;
-	for (auto& cmd : in->mCommands) {
+	for (auto& cmd : in->mShowCommands) {
 			bool isSelItem = cmd == in->mSelCommand;
 			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 			itemIndex++;
@@ -412,28 +473,28 @@ void KeywordManagerDialog::OnGetDispInfo(
 		if (pDispInfo->item.iSubItem == COL_CMDNAME) {
 			// 1列目(コマンド名)のデータをコピー
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
-				auto cmd = in->mCommands[itemIndex];
+				auto cmd = in->GetItem(itemIndex);
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
 			}
 		}
 		else if (pDispInfo->item.iSubItem == COL_CMDTYPE) {
 			// 説明列のデータをコピー
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
-				auto cmd = in->mCommands[itemIndex];
+				auto cmd = in->GetItem(itemIndex);
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetTypeDisplayName(), _TRUNCATE);
 			}
 		}
 		else if (pDispInfo->item.iSubItem == COL_DESCRIPTION) {
 			// 説明列のデータをコピー
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
-				auto cmd = in->mCommands[itemIndex];
+				auto cmd = in->GetItem(itemIndex);
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetDescription(), _TRUNCATE);
 			}
 		}
 		else if (pDispInfo->item.iSubItem == COL_HOTKEY) {
 			// ホットキーの文字列
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
-				auto cmd = in->mCommands[itemIndex];
+				auto cmd = in->GetItem(itemIndex);
 				auto mappingStr = in->mKeyMapping.FindKeyMappingString(cmd->GetName());
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, mappingStr, _TRUNCATE);
 			}
@@ -461,18 +522,18 @@ void KeywordManagerDialog::OnFindCommand(
 	searchStr.MakeLower();
 
 	int startPos = pFindInfo->iStart;
-	if (startPos >= in->mCommands.size()) {
+	if (startPos >= in->mShowCommands.size()) {
 		startPos = 0;
 	}
 
 	int currentPos=startPos;
 
 	// 検索開始位置からリスト末尾までを探す
-	int commandCount = (int)in->mCommands.size();
+	int commandCount = (int)in->mShowCommands.size();
 	for (int i = startPos; i < commandCount; ++i) {
 
 		// コマンド名を小文字に変換したうえで前方一致比較をする
-		CString item = in->mCommands[i]->GetName();
+		CString item = in->mShowCommands[i]->GetName();
 		item.MakeLower();
 		if (item.Find(searchStr) == 0) {
 			*pResult = i;
@@ -482,7 +543,7 @@ void KeywordManagerDialog::OnFindCommand(
 	// 末尾まで行ってヒットしなかった場合は先頭から検索開始位置までを探す
 	for (int i = 0; i < startPos; ++i) {
 
-		CString item = in->mCommands[i]->GetName();
+		CString item = in->mShowCommands[i]->GetName();
 		item.MakeLower();
 
 		if (item.Find(searchStr) == 0) {

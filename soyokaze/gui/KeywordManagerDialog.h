@@ -17,11 +17,13 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	void ResetContents();
+	void UpdateListItems();
 
 	bool UpdateStatus();
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnEditFilterChanged();
 	afx_msg void OnButtonNew();
 	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonDelete();

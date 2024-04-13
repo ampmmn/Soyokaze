@@ -333,6 +333,7 @@
 #define IDC_BUTTON_HOTKEY_UP            1147
 #define IDC_CHECK_WARNLONGWORKING       1148
 #define IDC_EDIT_TIME                   1149
+#define IDC_EDIT_FILTER                 1150
 
 // Next default values for new objects
 // 
@@ -340,7 +341,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1150
+#define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
