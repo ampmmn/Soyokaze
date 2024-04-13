@@ -322,6 +322,11 @@ void KeywordManagerDialog::UpdateListItems()
 	int visibleItems = (int)(in->mShowCommands.size());
 	in->mListCtrl.SetItemCountEx(visibleItems);
 
+	// 更新前の選択項目のインデックスが更新後の範囲外になる場合は非選択状態に戻す
+	if (selItemIndex >= visibleItems) {
+		in->mSelCommand = nullptr;
+	}
+
 	// 選択状態の更新
 	int itemIndex = 0;
 	for (auto& cmd : in->mShowCommands) {
@@ -340,6 +345,7 @@ void KeywordManagerDialog::OnEditFilterChanged()
 {
 	UpdateData();
 	UpdateListItems();
+	UpdateStatus();
 }
 
 void KeywordManagerDialog::OnButtonNew()
@@ -444,14 +450,7 @@ void KeywordManagerDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 	in->SortCommands();
 
 	// 選択状態の更新
-	int itemIndex = 0;
-	for (auto& cmd : in->mShowCommands) {
-			bool isSelItem = cmd == in->mSelCommand;
-			in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
-			itemIndex++;
-	}
-
-	in->mListCtrl.Invalidate();
+	UpdateListItems();
 }
 
 /**
