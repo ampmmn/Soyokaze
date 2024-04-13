@@ -32,7 +32,7 @@ public:
 
 	void Query(Pattern* pattern, std::vector<ITEM>& items, int limit, DWORD timeout);
 
-	void OnUpdateCommand(SimpleDictCommand* cmd) override;
+	void OnUpdateCommand(SimpleDictCommand* cmd, const CString& oldName) override;
 	void OnDeleteCommand(SimpleDictCommand* cmd) override;
 private:
 	struct PImpl;

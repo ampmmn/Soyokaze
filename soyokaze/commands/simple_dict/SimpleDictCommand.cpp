@@ -62,7 +62,7 @@ SimpleDictCommand::~SimpleDictCommand()
 void SimpleDictCommand::AddListener(CommandUpdateListenerIF* listener)
 {
 	in->mListeners.insert(listener);
-	listener->OnUpdateCommand(this);
+	listener->OnUpdateCommand(this, in->mParam.mName);
 }
 
 void SimpleDictCommand::RemoveListener(CommandUpdateListenerIF* listener)
@@ -157,6 +157,9 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 		return 0;
 	}
 
+	// 元の名前
+	CString orgName = in->mParam.mName;
+
 	// 変更後の設定値で上書き
 	in->mParam = dlg.GetParam();
 
@@ -181,7 +184,7 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 
 	// コマンドの設定情報の変更を通知
 	for (auto listener : in->mListeners) {
-		listener->OnUpdateCommand(this);
+		listener->OnUpdateCommand(this, orgName);
 	}
 	return 0;
 }

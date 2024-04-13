@@ -11,7 +11,7 @@ class CommandUpdateListenerIF
 public:
 	virtual ~CommandUpdateListenerIF() {}
 
-	virtual void OnUpdateCommand(SimpleDictCommand* cmd) = 0;
+	virtual void OnUpdateCommand(SimpleDictCommand* cmd, const CString& oldName) = 0;
 	virtual void OnDeleteCommand(SimpleDictCommand* cmd) = 0;
 };
 

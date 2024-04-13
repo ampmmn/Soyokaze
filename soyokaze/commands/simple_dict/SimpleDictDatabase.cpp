@@ -28,38 +28,56 @@ struct DICTIONARY
 	std::vector<RECORD> mRecords;
 };
 
+struct UPDATESTATE
+{
+	SimpleDictParam mParam;
+	FILETIME mFtLastUpdated; 
+};
+
+static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
+{
+	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+	GetFileTime(h, nullptr, nullptr, &ftime);
+	CloseHandle(h);
+	return true;
+}
+
+
 struct SimpleDictDatabase::PImpl
 {
 	void StartWatch()
 	{
 		std::thread th([&]() {
 
-				std::vector<CString> keys;
-				std::vector<CString> values;
-				while(IsAbort() == false) {
+			std::vector<CString> keys;
+			std::vector<CString> values;
+			while(IsAbort() == false) {
 
-					Sleep(50);
+				Sleep(50);
 
-					// 更新されたアイテムがあるまで待機
-					SimpleDictParam param;
-					if (NextUpdatedItem(param) == false) {
-						continue;
-					}
-					// ToDo: ファイルの更新を監視できるようにする
-
-					ExcelApplication app;
-
-					keys.clear();
-					values.clear();
-					if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
-						continue;
-					}
-					if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
-						continue;
-					}
-					UpdateDictData(param, keys, values);
+				// 更新されたアイテムがあるまで待機
+				SimpleDictParam param;
+				if (NextUpdatedItem(param) == false) {
+					continue;
 				}
-				mIsExited = true;
+				// ToDo: ファイルの更新を監視できるようにする
+
+				ExcelApplication app;
+
+				keys.clear();
+				values.clear();
+				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
+					continue;
+				}
+				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
+					continue;
+				}
+				UpdateDictData(param, keys, values);
+			}
+			mIsExited = true;
 		});
 		th.detach();
 	}
@@ -87,18 +105,51 @@ struct SimpleDictDatabase::PImpl
 	void AddUpdateQueue(const SimpleDictParam& param)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
-		mUpdatedParam.push_back(param);
+		mUpdatedParamQueue.push_back(param);
+
+		// 更新チェック用に登録しておく
+		UPDATESTATE updateState;
+		updateState.mParam = param;
+		if (GetLastUpdateTime(param.mFilePath, updateState.mFtLastUpdated)) {
+			mParamMap[param.mName] = updateState;
+		}
 	}
 	bool NextUpdatedItem(SimpleDictParam& param)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
-		if (mUpdatedParam.empty()) {
+
+		// キューに更新待ちのデータがあったらそれを処理する
+		if (mUpdatedParamQueue.size() > 0) {
+			auto it = mUpdatedParamQueue.begin();
+			param = *it;
+			mUpdatedParamQueue.erase(it);
+			return true;
+		}
+
+		// 更新されたデータソースがあったら再読み込みする
+		auto elapsed = GetTickCount() - mLastUpdateCheckTime;
+		if (elapsed <= 1000) {
+			// ある程度間隔をあけてチェックする
 			return false;
 		}
-		auto it = mUpdatedParam.begin();
-		param = *it;
-		mUpdatedParam.erase(it);
-		return true;
+
+		bool isUpdatedItemExist = false;
+		for (auto& item : mParamMap) {
+			auto& updateState = item.second;
+			FILETIME ftUpdated;
+			if (GetLastUpdateTime(updateState.mParam.mFilePath, ftUpdated) == false ||
+					memcmp(&ftUpdated, &updateState.mFtLastUpdated, sizeof(FILETIME)) == 0) {
+				continue;
+			}
+
+			param = updateState.mParam;
+			updateState.mFtLastUpdated = ftUpdated;
+			isUpdatedItemExist = true;
+			break;
+		}
+		mLastUpdateCheckTime = GetTickCount();
+
+		return isUpdatedItemExist;
 	}
 
 	void UpdateDictData(const SimpleDictParam& param, const std::vector<CString>& keys, const std::vector<CString>& values)
@@ -124,14 +175,21 @@ struct SimpleDictDatabase::PImpl
 			data.push_back(RECORD(keys[i], values[i]));
 		}
 	}
-	void DeleteDictData(const SimpleDictParam& param)
+	void DeleteDictData(const CString& name)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
-		auto it = mDictData.find(param.mName);
-		if (it == mDictData.end()) {
-			return;
+
+		// コマンド名に対応する辞書データを削除する
+		auto it = mDictData.find(name);
+		if (it != mDictData.end()) {
+			mDictData.erase(it);
 		}
-		mDictData.erase(it);
+
+		// 更新チェック用のmapからも削除する
+		auto it2 = mParamMap.find(name);
+		if (it2 != mParamMap.end()) {
+			mParamMap.erase(it2);
+		}
 	}
 
 	void MatchKeyValue(Pattern* pattern, std::vector<ITEM>& items, const CString& cmdName, const CString& keyStr,	const CString& valueStr,bool isMatchWithoutKeyword, bool isEnableReverse);
@@ -139,11 +197,17 @@ struct SimpleDictDatabase::PImpl
 
 	// key:コマンド名, value: DICTIONARY
 	std::map<CString, DICTIONARY> mDictData;  // ToDo: 自前でなくsqlite経由にしたい
-	std::list<SimpleDictParam> mUpdatedParam;
+
+	// 名前別のコマンドパラメータ(更新チェック用)
+	std::map<CString, UPDATESTATE> mParamMap;
+
+	// 更新まちキュー
+	std::list<SimpleDictParam> mUpdatedParamQueue;
 
 	std::mutex mMutex;
-	bool mIsAbort;
-	bool mIsExited;
+	bool mIsAbort = false;
+	bool mIsExited = false;
+	DWORD mLastUpdateCheckTime = 0;
 };
 
 
@@ -240,8 +304,6 @@ void SimpleDictDatabase::PImpl::MatchDict(
 
 SimpleDictDatabase::SimpleDictDatabase() : in(new PImpl)
 {
-	in->mIsAbort = false;
-	in->mIsExited = false;
 	in->StartWatch();
 }
 
@@ -273,16 +335,20 @@ void SimpleDictDatabase::Query(Pattern* pattern, std::vector<ITEM>& items, int l
 	}
 }
 
-void SimpleDictDatabase::OnUpdateCommand(SimpleDictCommand* cmd)
+void SimpleDictDatabase::OnUpdateCommand(SimpleDictCommand* cmd, const CString& oldName)
 {
 	auto& param = cmd->GetParam();
+
+	if (param.mName != oldName) {
+		in->DeleteDictData(oldName);
+	}
 	in->AddUpdateQueue(param);
 }
 
 void SimpleDictDatabase::OnDeleteCommand(SimpleDictCommand* cmd)
 {
 	auto& param = cmd->GetParam();
-	in->DeleteDictData(param);
+	in->DeleteDictData(param.mName);
 }
 
 }
