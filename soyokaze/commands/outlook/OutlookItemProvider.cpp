@@ -82,7 +82,7 @@ void OutlookItemProvider::QueryAdhocCommands(
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
 		auto pref = AppPreference::Get();
-		in->mIsEnableMailItem = pref->IsEnableExcelWorksheet();
+		in->mIsEnableMailItem = pref->IsEnableOutlookMailItem();
 		in->mIsFirstCall = false;
 	}
 
