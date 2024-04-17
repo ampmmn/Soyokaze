@@ -53,8 +53,8 @@ jobs:
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}/spdlog
       run: |
-      mkdir -p {{env.GITHUB_WORKSPACE}}/spdlog/build
-      cd {{env.GITHUB_WORKSPACE}}/spdlog/build
+      mkdir -p ${{env.GITHUB_WORKSPACE}}/spdlog/build
+      cd ${{env.GITHUB_WORKSPACE}}/spdlog/build
       cmake ..
       msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=x64 spdlog.sln
 
