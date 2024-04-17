@@ -50,6 +50,7 @@ jobs:
         repository: gabime/spdlog
         path: spdlog
 
+
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}/spdlog
       run: |
