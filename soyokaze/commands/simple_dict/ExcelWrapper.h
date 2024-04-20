@@ -10,6 +10,7 @@ class ExcelApplication
 {
 public:
 	ExcelApplication();
+	ExcelApplication(bool isGetObject);
 	~ExcelApplication();
 
 public:

@@ -19,19 +19,16 @@ using namespace soyokaze::commands::activate_window;
 
 struct ExcelApplication::PImpl
 {
+	DispWrapper mApp;
+	bool mIsGetObject = false;
+
 };
 
-ExcelApplication::ExcelApplication() : in(new PImpl)
-{
-	CoInitialize(NULL);
-}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-ExcelApplication::~ExcelApplication()
-{
-	CoUninitialize();
-}
-
-static bool GetExcelApplication(CComPtr<IDispatch>& excelApp)
+static bool GetExcelApplication(DispWrapper& excelApp)
 {
 		// ExcelのCLSIDを得る
 		CLSID clsid;
@@ -39,6 +36,7 @@ static bool GetExcelApplication(CComPtr<IDispatch>& excelApp)
 
 		if (FAILED(hr)) {
 			// 取得できなかった(インストールされていないとか)
+			spdlog::warn(_T("Excel is not installed."));
 			return false;
 		}
 
@@ -47,11 +45,13 @@ static bool GetExcelApplication(CComPtr<IDispatch>& excelApp)
 		hr = GetActiveObject(clsid, NULL, &unkPtr);
 		if(FAILED(hr)) {
 			// 起動してない
+			spdlog::warn(_T("Excel is not running."));
 			return false;
 		}
 
 		hr = unkPtr->QueryInterface(&excelApp);
 		if (FAILED(hr)) {
+			spdlog::error(_T("Excel is not running."));
 			return false;
 		}
 		return true;
@@ -75,24 +75,47 @@ static bool CreateExcelApplication(DispWrapper& excelApp)
 			return false;
 		}
 
+		// 警告ダイアログをださない
+		excelApp.CallVoidMethod(L"DisplayAlerts", false);
+
 		return true;
 }
 
-static bool GetActiveSheet(
-		CComPtr<IDispatch>& excelApp,
-	 	CComPtr<IDispatch>& activeSheet
-)
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+ExcelApplication::ExcelApplication() : in(new PImpl)
 {
-	VARIANT result;
-	VariantInit(&result);
-	HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"ActiveSheet", 0);
-	if (FAILED(hr)) {
-		return false;
+	CoInitialize(NULL);
+}
+
+ExcelApplication::ExcelApplication(bool isGetObject) : in(new PImpl)
+{
+	CoInitialize(NULL);
+
+	if (isGetObject) {
+		GetExcelApplication(in->mApp);
+		in->mIsGetObject = true;
+	}
+}
+
+
+ExcelApplication::~ExcelApplication()
+{
+	bool isExist = !(in->mApp);
+
+	// GetObjectで確保したインスタンスでない(→自分でCreateInstanceした)場合はQuitで終了する
+	if (isExist && in->mIsGetObject == false) {
+			in->mApp.CallVoidMethod(L"Quit");
+	}
+	if (isExist) {
+		in->mApp.Release();
 	}
 
-	activeSheet = result.pdispVal;
-	return true;
+	CoUninitialize();
 }
+
 
 bool ExcelApplication::IsInstalled()
 {
@@ -100,158 +123,88 @@ bool ExcelApplication::IsInstalled()
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
 
-	if (FAILED(hr)) {
-		// 取得できなかった(インストールされていないとか)
-		return false;
-	}
-	return true;
+	bool isInstalled = SUCCEEDED(hr);
+	spdlog::info(_T("Excel isInstalled:{}"), isInstalled);
+
+	return isInstalled;
 }
 
 bool ExcelApplication::IsAvailable()
 {
-	CComPtr<IDispatch> excelApp;
+	SPDLOG_DEBUG(_T("start"));
+
+	DispWrapper excelApp;
 	if (GetExcelApplication(excelApp) == false) {
+		SPDLOG_DEBUG(_T("unavailable"));
 		return false;
 	}
 
-	CComPtr<IDispatch> activeSheet;
-	return GetActiveSheet(excelApp, activeSheet);
+	DispWrapper activeSheet; 
+	return excelApp.GetPropertyObject(L"ActiveSheet", activeSheet);
 }
 
 bool ExcelApplication::GetFilePath(CString& filePath)
 {
-	CComPtr<IDispatch> excelApp;
-	if (GetExcelApplication(excelApp) == false) {
+	DispWrapper& excelApp = in->mApp;
+
+	DispWrapper activeSheet;
+	if (excelApp.GetPropertyObject(L"ActiveSheet", activeSheet) == false) {
+		SPDLOG_ERROR(_T("Failed to get Active sheet"));
 		return false;
 	}
 
-	CComPtr<IDispatch> activeSheet;
-	if (GetActiveSheet(excelApp, activeSheet) == false) {
+	DispWrapper wb;
+	if (activeSheet.GetPropertyObject(L"Parent", wb) == false) {
+		SPDLOG_ERROR(_T("Failed to get Parent"));
 		return false;
 	}
 
-
-	VARIANT result;
-	VariantInit(&result);
-	HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, activeSheet, L"Parent", 0);
-	if (FAILED(hr)) {
-		return false;
-	}
-
-	CComPtr<IDispatch> wb;
-	wb = result.pdispVal;
-
-	CComBSTR pathStr;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Path", 0);
-		pathStr = result.bstrVal;
-	}
-	filePath = pathStr;
-
-	CComBSTR nameStr;
-	{
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, wb, L"Name", 0);
-		nameStr = result.bstrVal;
-	}
-	CString name = nameStr;
-
+	filePath = wb.GetPropertyString(L"Path");
 	filePath += _T("\\");
-	filePath += name;
+	filePath += wb.GetPropertyString(L"Name");
 
 	return true;
 }
 
 CString ExcelApplication::GetActiveSheetName()
 {
-	CComPtr<IDispatch> excelApp;
-	if (GetExcelApplication(excelApp) == false) {
+	DispWrapper& excelApp = in->mApp;
+
+	DispWrapper activeSheet;
+	if (excelApp.GetPropertyObject(L"ActiveSheet", activeSheet) == false) {
+		SPDLOG_ERROR(_T("Failed to get active sheet"));
 		return false;
 	}
 
-	CComPtr<IDispatch> activeSheet;
-	if (GetActiveSheet(excelApp, activeSheet) == false) {
-		return false;
-	}
-
-	CComBSTR sheetName;
-	{
-		VARIANT result;
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, activeSheet, L"Name", 0);
-		sheetName = result.bstrVal;
-	}
-	CString name = sheetName;
-	return name;
+	return activeSheet.GetPropertyString(L"Name");
 }
 
 CString ExcelApplication::GetSelectionAddress(int& cols, int& rows)
 {
-	CComPtr<IDispatch> excelApp;
-	if (GetExcelApplication(excelApp) == false) {
+	DispWrapper& excelApp = in->mApp;
+
+	DispWrapper selection;
+	if (excelApp.GetPropertyObject(L"Selection", selection) == false) {
 		return _T("");
 	}
 
-	VARIANT result;
-
-	CComPtr<IDispatch> selection;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, excelApp, L"Selection", 0);
-		if (FAILED(hr)) {
-			return _T("");
-		}
-		selection = result.pdispVal;
-	}
-
 	// 選択範囲を表すテキストを取得
-	CComBSTR adressBStr;
-	{
-		VARIANT result;
-		VariantInit(&result);
-		AutoWrap(DISPATCH_PROPERTYGET, &result, selection, L"Address", 0);
-		adressBStr = result.bstrVal;
-	}
-
-	CString addressStr = adressBStr;
+	CString addressStr = selection.GetPropertyString(L"Address");
 
 	// 選択範囲の行数・列数を取得する
-	CComPtr<IDispatch> rowsObj;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, selection, L"Rows", 0);
-		if (FAILED(hr)) {
-			return _T("");
-		}
-		rowsObj = result.pdispVal;
-	}
-	CComPtr<IDispatch> columnsObj;
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, selection, L"Columns", 0);
-		if (FAILED(hr)) {
-			return _T("");
-		}
-		columnsObj = result.pdispVal;
+	DispWrapper rowsObj;
+	if (selection.GetPropertyObject(L"Rows", rowsObj) == false) {
+		return _T("");
 	}
 
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, rowsObj, L"Count", 0);
-		if (FAILED(hr)) {
-			return _T("");
-		}
-		rows = result.intVal;
+	DispWrapper columnsObj;
+	if (selection.GetPropertyObject(L"Columns", columnsObj) == false) {
+		return _T("");
 	}
-	{
-		VariantInit(&result);
-		HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, columnsObj, L"Count", 0);
-		if (FAILED(hr)) {
-			return _T("");
-		}
-		cols = result.intVal;
-	}
+
+	rows = rowsObj.GetPropertyInt(L"Count");
+	cols = columnsObj.GetPropertyInt(L"Count");
+
 
 	addressStr.Replace(_T("$"), _T(""));
 
@@ -273,31 +226,21 @@ int ExcelApplication::GetCellText(
 	std::vector<CString>& texts
 )
 {
-	DispWrapper excelApp;
-	if (CreateExcelApplication(excelApp) == false) {
-		return -1;
-	}
+	SPDLOG_DEBUG(_T("args path:{0} sheet:{1} address:{2}"),
+	             (LPCTSTR)wbPath, (LPCTSTR)sheetName, (LPCTSTR)address);
 
-	// 関数を抜けるときにExcelを終了する
-	struct local_quit {
-		local_quit(DispWrapper& dispPtr) : mDisp(dispPtr) {}
-		~local_quit() {
-			VARIANT result;
-			VariantInit(&result);
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_BOOL;
-			arg1.boolVal = VARIANT_FALSE;
-			HRESULT hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, mDisp, L"DisplayAlerts", 1, &arg1);
-
-			hr = AutoWrap(DISPATCH_METHOD, &result, mDisp, L"Quit", 0);
+	DispWrapper& excelApp = in->mApp;
+	if (!excelApp) {
+		if (CreateExcelApplication(excelApp) == false) {
+			SPDLOG_ERROR(_T("Failed to create app instance"));
+			return -1;
 		}
-		DispWrapper mDisp;
-	} _quit_(excelApp);
+	}
 
 
 	DispWrapper workBooks;
 	if (excelApp.GetPropertyObject(L"WorkBooks", workBooks) == false) {
+		SPDLOG_ERROR(_T("Failed to get WorkBooks"));
 		return -2;
 	}
 
@@ -325,6 +268,7 @@ int ExcelApplication::GetCellText(
 
 		HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, workBooks, L"Open", 3, &arg3, &arg2, &arg1);
 		if (FAILED(hr)) {
+			SPDLOG_ERROR(_T("Failed to create open"));
 			return -3;
 		}
 	}
@@ -340,26 +284,31 @@ int ExcelApplication::GetCellText(
 
 	DispWrapper workSheets;
 	if (workBook.GetPropertyObject(L"WorkSheets", workSheets) == false)  {
+		SPDLOG_ERROR(_T("Failed to get WorkSheets"));
 		return -4;
 	}
 
 	DispWrapper workSheet;
 	if (workSheets.GetPropertyObject(L"Item", (LPOLESTR)(LPCOLESTR)sheetName, workSheet) == false) {
+		SPDLOG_ERROR(_T("Failed to get Item"));
 		return -5;
 	}
 
 	DispWrapper range;
 	if (workSheet.GetPropertyObject(L"Range", (LPOLESTR)(LPCOLESTR)address, range) == false) {
+		SPDLOG_ERROR(_T("Failed to get Range"));
 		return -6;
 	}
 
 	DispWrapper rows;
 	if (range.GetPropertyObject(L"Rows", rows) == false) {
+		SPDLOG_ERROR(_T("Failed to get Rows"));
 		return -7;
 	}
 
 	DispWrapper cols;
 	if (range.GetPropertyObject(L"Columns", cols) == false) {
+		SPDLOG_ERROR(_T("Failed to get Columns"));
 		return -8;
 	}
 
@@ -391,6 +340,7 @@ int ExcelApplication::GetCellText(
 
 			HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, range, L"Item", 2, &arg2, &arg1);
 			if (FAILED(hr)) {
+				SPDLOG_ERROR(_T("Failed to get Item row,col:({0},{1})"), row, col);
 				return -11;
 			}
 			cell = result.pdispVal;
@@ -410,7 +360,8 @@ int ExcelApplication::GetCellText(
 			emptyCount++;
 		}
 	}
-
+	SPDLOG_DEBUG(_T("Completed. path:{0} sheet:{1} address:{2}"),
+	             (LPCTSTR)wbPath, (LPCTSTR)sheetName, (LPCTSTR)address);
 	return 0;
 }
 

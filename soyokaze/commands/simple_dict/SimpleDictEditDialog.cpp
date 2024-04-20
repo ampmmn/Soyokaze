@@ -417,7 +417,7 @@ void SettingDialog::OnButtonFrontRange()
 {
 	UpdateData();
 
-	ExcelApplication app;
+	ExcelApplication app(true);
 	CString sheetName = app.GetActiveSheetName();
 	if (sheetName.IsEmpty()) {
 		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));
@@ -447,7 +447,7 @@ void SettingDialog::OnButtonBackRange()
 {
 	UpdateData();
 
-	ExcelApplication app;
+	ExcelApplication app(true);
 	CString sheetName = app.GetActiveSheetName();
 	if (sheetName.IsEmpty()) {
 		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));

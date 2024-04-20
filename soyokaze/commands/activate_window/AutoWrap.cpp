@@ -81,6 +81,11 @@ DispWrapper::~DispWrapper()
 {
 }
 
+void DispWrapper::Release()
+{
+	mDispPtr.Release();
+}
+
 IDispatch** DispWrapper::operator &()
 {
 	return &mDispPtr;

@@ -14,6 +14,8 @@ public:
 	DispWrapper(IDispatch* disp);
 	~DispWrapper();
 
+	void Release();
+
 	IDispatch** operator &();
 	operator IDispatch*();
 

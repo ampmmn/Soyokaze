@@ -52,6 +52,8 @@ struct SimpleDictDatabase::PImpl
 	{
 		std::thread th([&]() {
 
+			spdlog::info(_T("[SimpleDict] Start Watch Thread"));
+
 			std::vector<CString> keys;
 			std::vector<CString> values;
 			while(IsAbort() == false) {
@@ -63,21 +65,26 @@ struct SimpleDictDatabase::PImpl
 				if (NextUpdatedItem(param) == false) {
 					continue;
 				}
-				// ToDo: ファイルの更新を監視できるようにする
 
+				spdlog::debug(_T("[SimpleDict]Start loading dict data. name:{}"), (LPCTSTR)param.mName); 
 				ExcelApplication app;
 
 				keys.clear();
 				values.clear();
 				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
+					spdlog::warn(_T("[SimpleDict]Failed to get key text. name:{}"), (LPCTSTR)param.mName);
 					continue;
 				}
 				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
+					spdlog::warn(_T("[SimpleDict]Failed to get value text. name:{}"), (LPCTSTR)param.mName);
 					continue;
 				}
 				UpdateDictData(param, keys, values);
+
+				spdlog::debug(_T("[SimpleDict]Completed loading dict data. name:{}"), (LPCTSTR)param.mName); 
 			}
 			mIsExited = true;
+			spdlog::info(_T("[SimpleDict] Exit Watch Thread"));
 		});
 		th.detach();
 	}
@@ -123,6 +130,8 @@ struct SimpleDictDatabase::PImpl
 			auto it = mUpdatedParamQueue.begin();
 			param = *it;
 			mUpdatedParamQueue.erase(it);
+
+			SPDLOG_DEBUG(_T("Update dict(edit command). name:{0}"), (LPCTSTR)param.mName);
 			return true;
 		}
 
@@ -145,6 +154,8 @@ struct SimpleDictDatabase::PImpl
 			param = updateState.mParam;
 			updateState.mFtLastUpdated = ftUpdated;
 			isUpdatedItemExist = true;
+
+			SPDLOG_DEBUG(_T("Update dict(timestamp). name:{0}"), (LPCTSTR)param.mName);
 			break;
 		}
 		mLastUpdateCheckTime = GetTickCount();
@@ -152,8 +163,15 @@ struct SimpleDictDatabase::PImpl
 		return isUpdatedItemExist;
 	}
 
-	void UpdateDictData(const SimpleDictParam& param, const std::vector<CString>& keys, const std::vector<CString>& values)
+	// 辞書データの読み込み
+	void UpdateDictData(
+			const SimpleDictParam& param,
+		 	const std::vector<CString>& keys,
+		 	const std::vector<CString>& values
+	)
 	{
+		SPDLOG_DEBUG(_T("args name:{}"), (LPCTSTR)param.mName);
+
 		size_t startIdx = param.mIsFirstRowHeader ? 1 : 0;
 
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -175,6 +193,7 @@ struct SimpleDictDatabase::PImpl
 			data.push_back(RECORD(keys[i], values[i]));
 		}
 	}
+
 	void DeleteDictData(const CString& name)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
