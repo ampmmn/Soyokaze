@@ -229,6 +229,8 @@ void CSoyokazeDlg::HideWindow()
 
 void CSoyokazeDlg::ShowHelp()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	TCHAR path[MAX_PATH_NTFS];
 	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
 	PathRemoveFileSpec(path);
@@ -238,6 +240,8 @@ void CSoyokazeDlg::ShowHelp()
 		msg += _T("\n");
 		msg += path;
 		AfxMessageBox(msg);
+
+		SPDLOG_WARN(_T("help file does not exist path:{}"), (LPCTSTR)path);
 		return ;
 	}
 
@@ -248,6 +252,9 @@ void CSoyokazeDlg::ShowHelp()
 	si.lpFile = path;
 
 	ShellExecuteEx(&si);
+
+	SPDLOG_DEBUG(_T("launch help PID:{}"), GetProcessId(si.hProcess));
+
 	CloseHandle(si.hProcess);
 }
 
@@ -310,8 +317,11 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
  */
 LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	LPCTSTR text = (LPCTSTR)lParam;
 	if (text == nullptr) {
+		SPDLOG_WARN(_T("text is null"));
 		return 0;
 	}
 
@@ -324,8 +334,11 @@ LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
  */
 LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	LPCTSTR text = (LPCTSTR)lParam;
 	if (text == nullptr) {
+		SPDLOG_WARN(_T("text is null"));
 		return 0;
 	}
 
@@ -344,6 +357,8 @@ CSoyokazeDlg::OnUserMessageDragOverObject(
  	LPARAM lParam
 )
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	CWnd* wnd = (CWnd*)lParam;
 	if (wnd == this) {
 		SetDescription(CString((LPCTSTR)IDS_NEWREGISTER));
@@ -360,6 +375,8 @@ CSoyokazeDlg::OnUserMessageDropObject(
  	LPARAM lParam
 )
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	COleDataObject* dataObj = (COleDataObject*)wParam;
 	CWnd* wnd = (CWnd*)lParam;
 
@@ -430,6 +447,8 @@ CSoyokazeDlg::OnUserMessageDropObject(
 LRESULT
 CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	HWND hTargetWnd = (HWND)lParam;
 	if (IsWindow(hTargetWnd) == FALSE) {
 		return 0;
@@ -461,6 +480,7 @@ CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 		errMsg += pid;
 
 		AfxMessageBox(errMsg);
+		SPDLOG_ERROR((LPCTSTR)errMsg);
 		return 0;
 	}
 }
@@ -471,12 +491,16 @@ LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
 	LPARAM lParam
 )
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	HideWindow();
 	return 0;
 }
 
 LRESULT CSoyokazeDlg::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	PostQuitMessage(0);
 	return 0;
 }
@@ -486,6 +510,8 @@ LRESULT CSoyokazeDlg::OnUserMessageSetClipboardString(
  	LPARAM lParam
 )
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	BOOL* isSetPtr = (BOOL*)wParam;
 	HGLOBAL hMem = (HGLOBAL)lParam;
 
@@ -509,9 +535,12 @@ LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
  	LPARAM lParam
 )
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	CString* strPtr = (CString*)lParam;
 
 	if (::OpenClipboard(GetSafeHwnd()) == FALSE) {
+		SPDLOG_ERROR(_T("Failed to open clipboard."));
 		return 0;
 	}
 
@@ -519,6 +548,7 @@ LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
 	HANDLE hMem = GetClipboardData(type);
 	if (hMem == NULL) {
 		CloseClipboard();
+		SPDLOG_WARN(_T("Clipboard is empty."));
 		return 0;
 	}
 
@@ -533,10 +563,13 @@ LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
 
 bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 {
+	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
+
 	soyokaze::core::CommandParameter commandParam(str);
 
 	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString(), true);
 	if (cmd == nullptr) {
+		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam.GetCommandString());
 		return false;
 	}
 
@@ -553,6 +586,8 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 // タスクトレイのダブルクリック時通知
 LRESULT CSoyokazeDlg::OnTaskTrayLButtonDblclk()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	ActivateWindow();
 	return 0;
 }
@@ -560,6 +595,8 @@ LRESULT CSoyokazeDlg::OnTaskTrayLButtonDblclk()
 // タスクトレイからのコンテキストメニュー表示依頼
 LRESULT CSoyokazeDlg::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	OnContextMenu(wnd, point);
 	return 0;
 }
@@ -568,6 +605,8 @@ LRESULT CSoyokazeDlg::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 
 BOOL CSoyokazeDlg::OnInitDialog()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	CDialogEx::OnInitDialog();
 
 	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
@@ -635,6 +674,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
 		msg += in->mHotKeyPtr->ToString();
 		AfxMessageBox(msg);
+		SPDLOG_ERROR(_T("Failed to restiser app hot key!"));
 	}
 	in->mMainWindowHotKeyPtr = std::make_unique<MainWindowHotKey>();
 	in->mMainWindowHotKeyPtr->Register();
@@ -643,6 +683,8 @@ BOOL CSoyokazeDlg::OnInitDialog()
 
 	in->mDropTargetDialog.Register(this);
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
+
+	spdlog::info(_T("MainWindow initialized."));
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
@@ -697,6 +739,8 @@ void CSoyokazeDlg::SetDescription(const CString& msg)
 
 void CSoyokazeDlg::ClearContent()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	AppPreference* pref= AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mGuideStr.Empty();
@@ -931,6 +975,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
+				spdlog::debug(_T("command is null vk:{}"), wParam);
 				return 1;
 			}
 
@@ -954,6 +999,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
+				spdlog::debug(_T("command is null vk:{}"), wParam);
 				return 1;
 			}
 
@@ -975,6 +1021,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 		else if (wParam == VK_TAB) {
 			auto cmd = GetCurrentCommand();
 			if (cmd == nullptr) {
+				spdlog::debug(_T("command is null vk:{}"), wParam);
 				return 1;
 			}
 
@@ -1067,6 +1114,8 @@ void CSoyokazeDlg::OnContextMenu(
 	CPoint point
 )
 {
+	SPDLOG_DEBUG(_T("args point:({0},{1})"), point.x, point.y);
+
 	CMenu menu;
 	menu.CreatePopupMenu();
 
@@ -1098,7 +1147,9 @@ void CSoyokazeDlg::OnContextMenu(
 	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
 
+	spdlog::info(_T("Show context menu."));
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
+	spdlog::debug(_T("selected menu id:{}"), n);
 
 	if (n == ID_SHOW) {
 		ActivateWindow();
@@ -1143,6 +1194,8 @@ void CSoyokazeDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 // Windowsの終了(ログオフ)通知
 void CSoyokazeDlg::OnEndSession(BOOL isEnding)
 {
+	SPDLOG_INFO(_T("args isEnding:{}"), (bool)isEnding);
+
 	if (isEnding) {
 		PostQuitMessage(0);
 	}
@@ -1156,6 +1209,8 @@ void CSoyokazeDlg::OnCommandHelp()
 
 void CSoyokazeDlg::OnCommandHotKey(UINT id)
 {
+	// ローカルホットキーに対応されたコマンドを実行する
+	SPDLOG_DEBUG(_T("args id:{}"), id);
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
 }
 
@@ -1179,11 +1234,13 @@ LRESULT CSoyokazeDlg::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
 {
 	// ロックされたとき、wpにWTS_SESSION_LOCK(7)、解除されたときは WTS_SESSION_UNLOCK(8)が通知される
 	if (wParam == WTS_SESSION_LOCK) {
+		SPDLOG_INFO(_T("WTS_SESSION_LOCK"));
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
 				listener->OnLockScreenOccurred();
 		});
 	}
 	else if (wParam == WTS_SESSION_UNLOCK) {
+		SPDLOG_INFO(_T("WTS_SESSION_UNLOCK"));
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
 				listener->OnUnlockScreenOccurred();
 		});

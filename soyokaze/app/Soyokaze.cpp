@@ -9,6 +9,7 @@
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
 #include "app/StartupParam.h"
+#include "logger/Logger.h"
 #include "SharedHwnd.h"
 #include <locale.h>
 
@@ -57,6 +58,10 @@ BOOL CSoyokazeApp::InitInstance()
 {
 	AppPreference::Get()->Init();
 
+	// ログ初期化
+	Logger::Get()->Initialize();
+	spdlog::info(_T("==== Start App ===="));
+
 	if (SoyokazeProcessExists() == false) {
 		// 通常の起動
 		InitFirstInstance();
@@ -67,6 +72,7 @@ BOOL CSoyokazeApp::InitInstance()
 	}
 
 	AppPreference::Get()->OnExit();
+	spdlog::info(_T("==== Exit App ===="));
 	return FALSE;
 }
 
@@ -75,26 +81,34 @@ BOOL CSoyokazeApp::InitInstance()
  */
 BOOL CSoyokazeApp::InitFirstInstance()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	// 多重起動検知のための名前付きミューテックスを作っておく
 	m_hMutexRun = CreateMutex(NULL, FALSE, PROCESS_MUTEX_NAME);
 	if (m_hMutexRun == NULL) {
-		if (GetLastError() == ERROR_ACCESS_DENIED) {
+		DWORD lastErr = GetLastError(); 
+		if (lastErr == ERROR_ACCESS_DENIED) {
 			AfxMessageBox(_T("起動に失敗しました。\n管理者権限で既に起動されている可能性があります。"));
-			return FALSE;
 		}
-		AfxMessageBox(_T("Failed to init."));
+		else {
+			AfxMessageBox(_T("Failed to init."));
+		}
+		spdlog::error(_T("Failed to create mutex. err:{0:x}"), lastErr);
 		return FALSE;
 	}
 
 	if (!AfxOleInit()) {
 		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
+		spdlog::error(_T("Failed to init(AfxOleInit)."));
 		return FALSE;
 	}
 
 	// 設定ファイル作成用のフォルダをつくる
 	if (AppPreference::Get()->CreateUserDirectory() == false) {
 		AfxMessageBox(_T("Warning: Failed to init profile folder."));
+		spdlog::error(_T("Warning: Failed to init profile folder."));
 	}
+
 
 	// アプリケーション マニフェストが visual スタイルを有効にするために、
 	// ComCtl32.dll Version 6 以降の使用を指定する場合は、
@@ -143,6 +157,8 @@ BOOL CSoyokazeApp::InitFirstInstance()
  */
 BOOL CSoyokazeApp::InitSecondInstance()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	StartupParam startupParam(__argc, __targv);
 
 	CString value;
@@ -179,11 +195,13 @@ BOOL CSoyokazeApp::InitSecondInstance()
 bool CSoyokazeApp::SoyokazeProcessExists()
 {
 	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
-	if (h == NULL) {
-		return false;
+	bool isExists = (h != nullptr);
+	if (h != nullptr) {
+		CloseHandle(h);
 	}
-	CloseHandle(h);
-	return true;
+
+	SPDLOG_DEBUG(_T("isExists={}"), isExists);
+	return isExists;
 }
 
 /**
@@ -191,6 +209,8 @@ bool CSoyokazeApp::SoyokazeProcessExists()
  */
 bool CSoyokazeApp::ActivateExistingProcess()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	// 先行プロセスを有効化する
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
@@ -209,6 +229,8 @@ bool CSoyokazeApp::ActivateExistingProcess()
  */
 bool CSoyokazeApp::SendCommandString(const CString& commandStr)
 {
+	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
+
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
 	if (hwnd == NULL) {
@@ -231,6 +253,8 @@ bool CSoyokazeApp::SendCommandString(const CString& commandStr)
  */
 bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 {
+	SPDLOG_DEBUG(_T("args path:{0}"), (LPCTSTR)pathStr);
+
 	CString name = PathFindFileName(pathStr);
 	PathRemoveExtension(name.GetBuffer(name.GetLength()));
 	name.ReleaseBuffer();
@@ -246,6 +270,7 @@ bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 // バルーンメッセージを表示
 bool CSoyokazeApp::PopupMessage(const CString& message)
 {
+	SPDLOG_DEBUG(_T("args msg:{0}"), (LPCTSTR)message);
 	if (!mTaskTray) {
 		return false;
 	}

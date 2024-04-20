@@ -2,7 +2,7 @@
 
 
 #define APPNAME _T("Soyokaze")
-#define APPNAME_LOWERCASE _T("soyokaze")
+# define APPNAME_LOWERCASE _T("soyokaze")
 #define LAUNCHER_APPID _T("{A04DA194-3C5E-454C-9C74-E9E740F85A4F}")
 
 // {B8D984A3-84C3-43E7-92D6-B09298F88A42}

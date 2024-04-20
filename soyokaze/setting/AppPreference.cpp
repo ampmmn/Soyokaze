@@ -761,4 +761,18 @@ int AppPreference::GetTimeToWarnLongOperation()
 	return in->mSettings.Get(_T("Health:TimeToWarn"), 90);
 }
 
+// ログレベル
+int AppPreference::GetLogLevel()
+{
+// #define SPDLOG_LEVEL_TRACE 0
+// #define SPDLOG_LEVEL_DEBUG 1
+// #define SPDLOG_LEVEL_INFO 2
+// #define SPDLOG_LEVEL_WARN 3
+// #define SPDLOG_LEVEL_ERROR 4
+// #define SPDLOG_LEVEL_CRITICAL 5
+// #define SPDLOG_LEVEL_OFF 6
+
+	return in->mSettings.Get(_T("Logging:Level"), 6);
+}
+
 

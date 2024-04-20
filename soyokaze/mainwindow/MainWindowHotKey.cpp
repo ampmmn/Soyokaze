@@ -91,6 +91,8 @@ MainWindowHotKey::~MainWindowHotKey()
 // 設定ファイルから設定値を取得してホットキー登録
 bool MainWindowHotKey::Register()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	auto manager = CommandHotKeyManager::GetInstance();
 	auto pref = AppPreference::Get();
 	auto settingsPtr = (Settings*)&pref->GetSettings();

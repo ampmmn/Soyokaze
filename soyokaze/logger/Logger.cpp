@@ -1,52 +1,72 @@
 #include "pch.h"
 #include "framework.h"
 #include "utility/AppProfile.h"
+#include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "app/AppName.h"
+#include "spdlog/sinks/rotating_file_sink.h"
+#include <chrono>
 
-static const CString& getLogFilePath()
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+struct Logger::PImpl : public AppPreferenceListenerIF
 {
-	static CString filePath;
-	if (filePath.IsEmpty() == FALSE) {
-		return filePath;
+	PImpl() 
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl() 
+	{
 	}
 
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-	PathAppend(path, _T("soyokaze.log"));
-
-	filePath = path;
-	return filePath;
-}
-
-void SoyokazeInfo(LPCTSTR fmt, ...)
-{
-}
-
-void SoyokazeLog(LPCTSTR fmt, ...)
-{
-	auto& path= getLogFilePath();
-	FILE* fp = nullptr;
-	if (_tfopen_s(&fp, path, _T("a")) != 0) {
-		return ;
+	void OnAppFirstBoot() override
+	{
 	}
+	void OnAppPreferenceUpdated() override
+	{
+		// ログレベルを取得
+		auto pref = AppPreference::Get();
+		int level = pref->GetLogLevel();
+		spdlog::set_level((spdlog::level::level_enum)level);
+	}
+	void OnAppExit() override
+	{
+	}
+};
 
-    
-	va_list args;
-	va_start (args, fmt);
-   
-	_vftprintf(fp, fmt, args);
-
-	va_end(args);
-
-	fwrite("\n", 1, 1, fp); 
-
-	fclose(fp);
-}
-
-void SoyokazeWarning(LPCTSTR fmt, ...)
+Logger::Logger() : in(new PImpl)
 {
 }
 
-void SoyokazeError(LPCTSTR fmt, ...)
+Logger::~Logger()
 {
 }
+
+Logger* Logger::Get()
+{
+	static Logger logger;
+	return &logger;
+}
+
+void Logger::Initialize()
+{
+	TCHAR logPath[MAX_PATH_NTFS];
+	CAppProfile::GetDirPath(logPath, MAX_PATH_NTFS); 
+	PathAppend(logPath, APPNAME_LOWERCASE _T(".log"));
+
+	auto max_size = 1048576 * 8;
+	auto max_files = 3;
+	auto logger = spdlog::rotating_logger_mt("lancuher_logger", logPath, max_size, max_files);
+	logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%5t] [%L]:%!:%v");
+
+	auto pref = AppPreference::Get();
+	int level = pref->GetLogLevel();
+	spdlog::set_level((spdlog::level::level_enum)level);
+	spdlog::flush_every(std::chrono::seconds(3));
+
+	spdlog::set_default_logger(logger);
+}
+
 

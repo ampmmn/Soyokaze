@@ -14,12 +14,21 @@
   - JSONを読むために利用している。  
 ヘッダファイルベースのライブラリなので、このライブラリをビルドする必要はなく、配置するだけでよい。
 
-### nlohmann-jsonの配置
+- [spdlog](https://github.com/gabime/spdlog)
+  - ログ出力ライブラリ  
+要ビルド
 
-- https://github.com/nlohmann/json からソース一式を取得する
-- `Soyokaze`のソースファイル一式と同じ階層に`nlohmann-json`を配置する
 
-- `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json`というフォルダがあることを想定している  
+### 外部ライブラリの配置
+
+- nlohmann-json
+  - https://github.com/nlohmann/json からソース一式を取得する
+    - `Soyokaze`のソースファイル一式と同じ階層に`nlohmann-json`を配置する
+- spdlog
+  - https://github.com/gabime/spdlog からソース一式を取得する
+    - `Soyokaze`のソースファイル一式と同じ階層に`spdlog`を配置する
+
+- `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
 ↓
 ```
@@ -29,6 +38,20 @@ soyokaze-src/
     include/
       nlohmann/
         json.hpp
+  spdlog/
+```
+
+### spdlogのビルド
+
+配置した`spdlog`を下記コマンドでビルドする。  
+cmakeやmsbuildは`vcvars64.bat`を実行すればパスが通る想定
+
+```
+cd spdlog
+mkdir build
+cd build
+cmake ..
+msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln 
 ```
 
 ## ビルド方法

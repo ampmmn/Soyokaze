@@ -133,6 +133,9 @@ public:
 	// 長時間連続稼働警告までの時間を取得する(分単位)
 	int GetTimeToWarnLongOperation();
 
+	// ログレベル
+	int GetLogLevel();
+
 protected:
 	AppPreference();
 	~AppPreference();

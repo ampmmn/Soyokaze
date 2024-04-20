@@ -334,14 +334,15 @@
 #define IDC_CHECK_WARNLONGWORKING       1148
 #define IDC_EDIT_TIME                   1149
 #define IDC_EDIT_FILTER                 1150
+#define IDC_COMBO_LEVEL                 1151
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        165
+#define _APS_NEXT_RESOURCE_VALUE        166
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1151
+#define _APS_NEXT_CONTROL_VALUE         1152
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

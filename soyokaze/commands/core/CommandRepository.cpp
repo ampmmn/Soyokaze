@@ -32,6 +32,8 @@ struct CommandRepository::PImpl
 {
 	void ReloadPatternObject()
 	{
+		SPDLOG_DEBUG(_T("start"));
+
 		mPattern.reset(new PartialMatchPattern());
 
 		// コマンドのホットキー設定のリロード
@@ -44,6 +46,7 @@ struct CommandRepository::PImpl
 		hotKeyManager->Clear(this);
 
 		int count = hotKeyMap.GetItemCount();
+		SPDLOG_DEBUG(_T("hotKeyMap number of items:{}"), count);
 		for (int i = 0; i < count; ++i) {
 			auto name = hotKeyMap.GetName(i);
 			HOTKEY_ATTR attr;
@@ -54,10 +57,13 @@ struct CommandRepository::PImpl
 
 			hotKeyManager->Register(this, handler.release(), attr, isGlobal);
 		}
+		SPDLOG_DEBUG(_T("end"));
 	}
 
 	void SaveCommands()
 	{
+		SPDLOG_DEBUG(_T("start"));
+
 		CommandFile commandFile;
 		commandFile.SetFilePath(mCommandFilePath);
 
@@ -189,6 +195,8 @@ CommandRepository* CommandRepository::GetInstance()
 
 BOOL CommandRepository::Load()
 {
+	SPDLOG_DEBUG(_T("start"));
+
 	CSingleLock sl(&in->mCS, TRUE);
 	// 既存の内容を破棄
 	in->mCommands.Clear();

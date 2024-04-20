@@ -9,12 +9,22 @@
 #endif
 
 
+static int SPDLOGLEVEL[] = { 
+	6,   // Off
+	4,   // Error
+	3,   // Warn
+	2,   // Info
+	1,   // Debug
+};
+
 struct AppSettingPageOther::PImpl
 {
 	// 長時間の連続稼働を警告する
 	BOOL mIsWarnLongOperation;
 	// 警告までの時間(分単位)
 	int mTimeToWarnLongOperation;
+	// ログレベル
+	int mLogLevel = 0;
 };
 
 AppSettingPageOther::AppSettingPageOther(CWnd* parentWnd) : 
@@ -47,6 +57,14 @@ void AppSettingPageOther::OnOK()
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("Health:IsWarnLongOperation"), (bool)in->mIsWarnLongOperation);
 	settingsPtr->Set(_T("Health:TimeToWarn"), in->mTimeToWarnLongOperation);
+
+	// ログレベルを変換
+	int spdLogLevel = 0;
+	if (0 <= in->mLogLevel && in->mLogLevel < sizeof(SPDLOGLEVEL) / sizeof(*SPDLOGLEVEL)) {
+		spdLogLevel = SPDLOGLEVEL[in->mLogLevel];
+	}
+	settingsPtr->Set(_T("Logging:Level"), spdLogLevel);
+
 	__super::OnOK();
 }
 
@@ -57,6 +75,7 @@ void AppSettingPageOther::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WARNLONGWORKING, in->mIsWarnLongOperation);
 	DDX_Text(pDX, IDC_EDIT_TIME, in->mTimeToWarnLongOperation);
 	DDV_MinMaxInt(pDX, in->mTimeToWarnLongOperation, 1, 1440);
+	DDX_CBIndex(pDX, IDC_COMBO_LEVEL, in->mLogLevel);
 }
 
 BEGIN_MESSAGE_MAP(AppSettingPageOther, SettingPage)
@@ -93,6 +112,15 @@ void AppSettingPageOther::OnEnterSettings()
 	auto settingsPtr = (Settings*)GetParam();
 	in->mIsWarnLongOperation = (BOOL)settingsPtr->Get(_T("Health:IsWarnLongOperation"), false);
 	in->mTimeToWarnLongOperation = settingsPtr->Get(_T("Health:TimeToWarn"), 90);
+
+	int spdLogLevel = settingsPtr->Get(_T("Logging:Level"), 6);
+	for (int i = 0; i < sizeof(SPDLOGLEVEL) / sizeof(*SPDLOGLEVEL); ++i) {
+		if (spdLogLevel != SPDLOGLEVEL[i]) {
+			continue;
+		}
+		in->mLogLevel = i;
+		break;
+	}
 }
 
 void AppSettingPageOther::OnCheckWarnLongTime()
