@@ -2,13 +2,13 @@
 
 #include "commands/common/AdhocCommandProviderBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
 
 class PathExeAdhocCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	PathExeAdhocCommandProvider();
@@ -35,5 +35,5 @@ private:
 
 } // end of namespace pathfind
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

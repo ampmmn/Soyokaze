@@ -2,7 +2,7 @@
 
 #include "hotkey/HotKeyAttribute.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace shellexecute {
 

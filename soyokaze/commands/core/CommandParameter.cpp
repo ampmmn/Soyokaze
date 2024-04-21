@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 struct CommandParameter::PImpl

@@ -11,12 +11,12 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace history {
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using Command = soyokaze::core::Command;
+using CommandRepository = launcherapp::core::CommandRepository;
+using Command = launcherapp::core::Command;
 
 struct HistoryCommand::PImpl
 {
@@ -88,7 +88,7 @@ HICON HistoryCommand::GetIcon()
 	return h;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 HistoryCommand::Clone()
 {
 	return new HistoryCommand(in->mKeyword);
@@ -96,5 +96,5 @@ HistoryCommand::Clone()
 
 } // end of namespace history
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

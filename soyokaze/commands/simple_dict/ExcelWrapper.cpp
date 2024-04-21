@@ -9,13 +9,13 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
 constexpr int EMPTY_LIMIT = 20;   // この数だけ空白が連続で続いたら検索を打ち切る
 
-using namespace soyokaze::commands::activate_window;
+using namespace launcherapp::commands::activate_window;
 
 struct ExcelApplication::PImpl
 {
@@ -367,5 +367,5 @@ int ExcelApplication::GetCellText(
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

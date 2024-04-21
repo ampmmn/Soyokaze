@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -44,7 +44,7 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 
 
 	auto cmdRepoPtr =
-	 	soyokaze::core::CommandRepository::GetInstance();
+	 	launcherapp::core::CommandRepository::GetInstance();
 
 	auto delName = args[0];
 
@@ -78,7 +78,7 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-soyokaze::core::Command* DeleteCommand::Clone()
+launcherapp::core::Command* DeleteCommand::Clone()
 {
 	return new DeleteCommand();
 }

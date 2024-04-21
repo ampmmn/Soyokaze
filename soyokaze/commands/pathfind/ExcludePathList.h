@@ -2,7 +2,7 @@
 
 #include <set>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathfind {
 

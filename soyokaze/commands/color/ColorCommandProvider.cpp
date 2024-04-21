@@ -7,12 +7,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace color {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct ColorCommandProvider::PImpl
 {
@@ -124,5 +124,5 @@ void ColorCommandProvider::QueryAdhocCommands(
 
 } // end of namespace color
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

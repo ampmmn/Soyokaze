@@ -25,7 +25,7 @@ CString NamedCommandHotKeyHandler::GetDisplayName()
 
 bool NamedCommandHotKeyHandler::Invoke()
 {
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	auto cmd = cmdRepoPtr->QueryAsWholeMatch(mName, false);
 	if (cmd == nullptr) {
 		return false;
@@ -36,7 +36,7 @@ bool NamedCommandHotKeyHandler::Invoke()
 	ASSERT(wnd);
 	ShowWindow(wnd->GetSafeHwnd(), SW_HIDE);
 
-	soyokaze::core::CommandParameter param;
+	launcherapp::core::CommandParameter param;
 	param.SetNamedParamBool(_T("OnHotKey"), _T("true"));
 	bool result = cmd->Execute(param);
 	cmd->Release();

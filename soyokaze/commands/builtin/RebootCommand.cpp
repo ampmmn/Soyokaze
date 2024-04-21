@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -43,7 +43,7 @@ BOOL RebootCommand::Execute(const Parameter& param)
 	return ShutdownCommand::DoExit(EWX_REBOOT | EWX_FORCEIFHUNG);
 }
 
-soyokaze::core::Command* RebootCommand::Clone()
+launcherapp::core::Command* RebootCommand::Clone()
 {
 	return new RebootCommand();
 }

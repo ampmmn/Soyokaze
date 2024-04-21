@@ -2,7 +2,7 @@
 #include "SQLite3Database.h"
 #include "utility/SQLite3Wrapper.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 
@@ -35,5 +35,5 @@ int SQLite3Database::Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* par
 }
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

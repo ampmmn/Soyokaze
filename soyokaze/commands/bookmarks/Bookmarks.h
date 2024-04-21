@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
@@ -28,5 +28,5 @@ private:
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -12,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -100,5 +100,5 @@ void UWPCommandProvider::QueryAdhocCommands(
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

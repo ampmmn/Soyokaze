@@ -8,7 +8,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace calculator {
 

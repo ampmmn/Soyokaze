@@ -12,9 +12,9 @@
 #include "resource.h"
 #include <assert.h>
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 
@@ -175,7 +175,7 @@ int WebSearchCommand::EditDialog(const Parameter*)
 	// UnregisterCommandのときに参照カウント-1されるので、削除を防ぐために+1しておく
 	// RegisterCommandの際は呼び出し側が参照カウントを上げる
 
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 
 	in->mParam = param;
@@ -195,7 +195,7 @@ bool WebSearchCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 WebSearchCommand::Clone()
 {
 	auto clonedCmd = std::make_unique<WebSearchCommand>();
@@ -295,5 +295,5 @@ bool WebSearchCommand::LoadFrom(
 
 } // end of namespace websearch
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

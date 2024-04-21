@@ -10,9 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace calculator {
 
@@ -97,7 +97,7 @@ HICON CalculatorCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(in->mCalcPath);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 CalculatorCommand::Clone()
 {
 	auto clonedObj = std::make_unique<CalculatorCommand>();
@@ -120,5 +120,5 @@ bool CalculatorCommand::GetCalcExePath(LPTSTR path, size_t len)
 
 } // end of namespace calculator
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

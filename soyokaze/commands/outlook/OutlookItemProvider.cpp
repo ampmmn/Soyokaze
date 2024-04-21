@@ -12,14 +12,14 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
 // 切り替え候補ウインドウの一覧を再利用する間隔
 static const int HWNDUPDATE_INTERVAL = 5000;
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct OutlookItemProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -76,7 +76,7 @@ CString OutlookItemProvider::GetName()
 // 一時的なコマンドを必要に応じて提供する
 void OutlookItemProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	soyokaze::CommandQueryItemList& commands
+ 	launcherapp::CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {
@@ -107,5 +107,5 @@ void OutlookItemProvider::QueryAdhocCommands(
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

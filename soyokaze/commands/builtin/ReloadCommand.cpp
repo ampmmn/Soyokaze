@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -32,7 +32,7 @@ ReloadCommand::~ReloadCommand()
 
 BOOL ReloadCommand::Execute(const Parameter& param)
 {
-	return soyokaze::core::CommandRepository::GetInstance()->Load();
+	return launcherapp::core::CommandRepository::GetInstance()->Load();
 }
 
 HICON ReloadCommand::GetIcon()
@@ -41,12 +41,12 @@ HICON ReloadCommand::GetIcon()
 }
 
 
-soyokaze::core::Command* ReloadCommand::Clone()
+launcherapp::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

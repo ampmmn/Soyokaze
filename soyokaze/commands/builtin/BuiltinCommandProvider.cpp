@@ -34,9 +34,9 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -74,7 +74,7 @@ struct BuiltinCommandProvider::PImpl
 
 	uint32_t mRefCount = 1;
 	bool mIsFirstCall = true;
-	std::map<CString, std::function<soyokaze::core::Command*(LPCTSTR)> > mFactoryMap;
+	std::map<CString, std::function<launcherapp::core::Command*(LPCTSTR)> > mFactoryMap;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

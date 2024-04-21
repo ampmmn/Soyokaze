@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -56,7 +56,7 @@ HICON ExitCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadExitIcon();
 }
-soyokaze::core::Command* ExitCommand::Clone()
+launcherapp::core::Command* ExitCommand::Clone()
 {
 	return new ExitCommand();
 }

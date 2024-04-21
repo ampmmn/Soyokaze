@@ -15,9 +15,9 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -153,7 +153,7 @@ bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 	// ホットキー設定を更新
 	if (dlg.mHotKeyAttr.IsValid()) {
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
@@ -217,5 +217,5 @@ uint32_t FilterCommandProvider::Release()
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

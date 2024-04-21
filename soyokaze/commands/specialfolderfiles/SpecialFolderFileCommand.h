@@ -4,12 +4,12 @@
 #include "commands/specialfolderfiles/SpecialFolderFile.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
 
-class SpecialFolderFileCommand : public soyokaze::commands::common::AdhocCommandBase
+class SpecialFolderFileCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	SpecialFolderFileCommand(const ITEM& item);
@@ -19,7 +19,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -29,5 +29,5 @@ protected:
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

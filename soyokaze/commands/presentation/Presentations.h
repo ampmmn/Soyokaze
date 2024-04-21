@@ -3,7 +3,7 @@
 #include "matcher/Pattern.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 

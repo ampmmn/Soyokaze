@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
 class SimpleDictParam;
 
-class SimpleDictAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class SimpleDictAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 public:
@@ -24,7 +24,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -34,5 +34,5 @@ protected:
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

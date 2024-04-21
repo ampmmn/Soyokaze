@@ -8,7 +8,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
@@ -185,6 +185,6 @@ bool ExpandAfxCurrentDir(CString& target)
 
 } // end of namespace common
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

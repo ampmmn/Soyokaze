@@ -10,7 +10,7 @@
 #endif
 
 
-class MainWindowHotKey::UpHandler : public soyokaze::core::CommandHotKeyHandler
+class MainWindowHotKey::UpHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	virtual ~UpHandler() {}
@@ -23,7 +23,7 @@ public:
 };
 
 
-class MainWindowHotKey::DownHandler : public soyokaze::core::CommandHotKeyHandler
+class MainWindowHotKey::DownHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	virtual ~DownHandler() {}
@@ -35,7 +35,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::EnterHandler : public soyokaze::core::CommandHotKeyHandler
+class MainWindowHotKey::EnterHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	virtual ~EnterHandler() {}
@@ -47,7 +47,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::ComplHandler : public soyokaze::core::CommandHotKeyHandler
+class MainWindowHotKey::ComplHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	virtual ~ComplHandler() {}
@@ -65,7 +65,7 @@ public:
 
 
 
-using CommandHotKeyManager = soyokaze::core::CommandHotKeyManager;
+using CommandHotKeyManager = launcherapp::core::CommandHotKeyManager;
 
 struct MainWindowHotKey::PImpl
 {

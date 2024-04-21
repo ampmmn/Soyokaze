@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace snippet {
 
@@ -53,12 +53,12 @@ HICON RegisterSnippetCommand::GetIcon()
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-soyokaze::core::Command* RegisterSnippetCommand::Clone()
+launcherapp::core::Command* RegisterSnippetCommand::Clone()
 {
 	return new RegisterSnippetCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

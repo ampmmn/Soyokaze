@@ -20,10 +20,10 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
-using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
+using namespace launcherapp::commands::common;
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace shellexecute {
 
@@ -114,7 +114,7 @@ CString ShellExecCommand::GetTypeDisplayName()
 
 // Ctrl-Shift-Enterキー押下で実行した場合は管理者権限で実行する。
 // CtrlとShiftが押されているかを判断する。
-static bool IsRunAsKeyPressed(const soyokaze::core::CommandParameter& param)
+static bool IsRunAsKeyPressed(const launcherapp::core::CommandParameter& param)
 {
 	return param.GetNamedParamBool(_T("CtrlKeyPressed")) && param.GetNamedParamBool(_T("ShiftKeyPressed"));
 }
@@ -300,7 +300,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	param.mPath0 = attr.mPath;
 	param.mParameter0 = attr.mParam;
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
 	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr, &isGlobal)) {
@@ -348,7 +348,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	}
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew.release());
 
@@ -394,7 +394,7 @@ int ShellExecCommand::GetRunAs()
 	return in->mParam.mIsRunAsAdmin ? 1 : 0;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 ShellExecCommand::Clone()
 {
 	auto clonedObj = std::make_unique<ShellExecCommand>();
@@ -473,7 +473,7 @@ bool ShellExecCommand::NewDialog(
 	// ホットキー設定を更新
 	if (commandParam.mHotKeyAttr.IsValid()) {
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 

@@ -4,7 +4,7 @@
 #include <regex>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 

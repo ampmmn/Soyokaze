@@ -3,17 +3,17 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
 
 // グループコマンドを生成するためのクラス
 class GroupCommandProvider :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	GroupCommandProvider();
@@ -61,5 +61,5 @@ private:
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

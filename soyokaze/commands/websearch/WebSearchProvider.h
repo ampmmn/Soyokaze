@@ -3,16 +3,16 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 
 
 class WebSearchProvider :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	WebSearchProvider();
@@ -62,5 +62,5 @@ private:
 
 } // end of namespace websearch
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -10,10 +10,10 @@
 #endif
 
 using json = nlohmann::json;
-using CharConverter = soyokaze::utility::CharConverter;
+using CharConverter = launcherapp::utility::CharConverter;
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
@@ -158,5 +158,5 @@ bool Bookmarks::LoadEdgeBookmarks(std::vector<ITEM>& items)
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

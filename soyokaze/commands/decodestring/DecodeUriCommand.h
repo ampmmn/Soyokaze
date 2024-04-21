@@ -4,11 +4,11 @@
 #include "commands/common/Clipboard.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
-class DecodeUriCommand : public soyokaze::commands::common::AdhocCommandBase
+class DecodeUriCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 
@@ -24,7 +24,7 @@ public:
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -34,5 +34,5 @@ protected:
 
 } // end of namespace decodestring
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

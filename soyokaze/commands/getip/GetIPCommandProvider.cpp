@@ -12,12 +12,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace getip {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,5 +101,5 @@ void GetIPCommandProvider::QueryAdhocCommands(
 
 } // end of namespace getip
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

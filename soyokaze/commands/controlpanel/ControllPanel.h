@@ -5,12 +5,12 @@
 #include <memory>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace controlpanel {
 
 class ControlPanelProvider : 
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 public:
 	ControlPanelProvider();

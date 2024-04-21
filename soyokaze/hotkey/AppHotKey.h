@@ -4,7 +4,7 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class GlobalHotKey;

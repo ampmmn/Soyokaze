@@ -7,7 +7,7 @@ class IconLabel;
 
 class ShellExecEditDetailPage : public SettingPage
 {
-	using CommandParam = soyokaze::commands::shellexecute::CommandParam;
+	using CommandParam = launcherapp::commands::shellexecute::CommandParam;
 
 public:
 	ShellExecEditDetailPage(CWnd* parentWnd);

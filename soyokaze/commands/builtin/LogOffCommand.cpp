@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -43,7 +43,7 @@ BOOL LogOffCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
-soyokaze::core::Command* LogOffCommand::Clone()
+launcherapp::core::Command* LogOffCommand::Clone()
 {
 	return new LogOffCommand();
 }

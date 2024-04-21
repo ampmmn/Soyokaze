@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
@@ -43,5 +43,5 @@ public:
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

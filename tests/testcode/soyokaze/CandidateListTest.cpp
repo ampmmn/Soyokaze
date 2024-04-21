@@ -9,7 +9,7 @@
 
 namespace CandidateListTest_local {
 
-struct DummyCommand : public soyokaze::core::Command
+struct DummyCommand : public launcherapp::core::Command
 {
 	DummyCommand() : mDesc(_T("dummy description"))
 	{
@@ -63,7 +63,7 @@ struct DummyCommand : public soyokaze::core::Command
 		return false;
 	}
 
-	int EditDialog(const soyokaze::core::CommandParameter* param) override
+	int EditDialog(const launcherapp::core::CommandParameter* param) override
 	{
 		return 0;
 	}
@@ -128,7 +128,7 @@ TEST(CandidateList, CanConstructAndDestruct)
 
 TEST(CandidateList, CanSetItems)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -148,7 +148,7 @@ TEST(CandidateList, CanSetItems)
 
 TEST(CandidateList, GetCommandTest)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -163,7 +163,7 @@ TEST(CandidateList, GetCommandTest)
 
 TEST(CandidateList, CanClear)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -175,7 +175,7 @@ TEST(CandidateList, CanClear)
 
 TEST(CandidateList, GetCurrentCommandDescritpionTest)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand(_T("")));
 
@@ -200,7 +200,7 @@ TEST(CandidateList, GetCurrentCommandDescritpionTest2)
 
 TEST(CandidateList, OffsetCurrentSelect)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -218,7 +218,7 @@ TEST(CandidateList, OffsetCurrentSelect)
 
 TEST(CandidateList, AddListenerTest1)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -235,7 +235,7 @@ TEST(CandidateList, AddListenerTest1)
 
 TEST(CandidateList, AddListenerTest2)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -255,7 +255,7 @@ TEST(CandidateList, AddListenerTest2)
 
 TEST(CandidateList, AddListenerTest3)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -276,7 +276,7 @@ TEST(CandidateList, AddListenerTest3)
 
 TEST(CandidateList, AddListenerTest4)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -298,7 +298,7 @@ TEST(CandidateList, AddListenerTest4)
 
 TEST(CandidateList, AddListenerTest5)
 {
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 

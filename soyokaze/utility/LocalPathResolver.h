@@ -4,7 +4,7 @@
 #include <vector>
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 class LocalPathResolver

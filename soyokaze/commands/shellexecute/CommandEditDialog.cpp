@@ -119,7 +119,7 @@ bool CommandEditDialog::UpdateStatus()
 		return false;
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (mParam.mName.CompareNoCase(mOrgName) != 0) {

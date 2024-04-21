@@ -2,13 +2,13 @@
 
 #include "commands/common/AdhocCommandProviderBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace unitconvert {
 
 
 class UnitConvertProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	UnitConvertProvider();
@@ -33,5 +33,5 @@ private:
 
 } // end of namespace unitconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

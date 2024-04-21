@@ -10,7 +10,7 @@ public:
 	WholeMatchPattern(const CString& word);
 	virtual ~WholeMatchPattern();
 
-	void SetParam(const soyokaze::core::CommandParameter& param) override;
+	void SetParam(const launcherapp::core::CommandParameter& param) override;
 	int Match(const CString& str) override;
 	virtual int Match(const CString& str, int offset) override;
 	CString GetFirstWord() override;

@@ -6,7 +6,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 

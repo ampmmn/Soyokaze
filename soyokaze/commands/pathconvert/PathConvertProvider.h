@@ -2,13 +2,13 @@
 
 #include "commands/common/AdhocCommandProviderBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
 
 class PathConvertProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	PathConvertProvider();
@@ -38,5 +38,5 @@ private:
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

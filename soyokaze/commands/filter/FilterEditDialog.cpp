@@ -14,10 +14,10 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using Command = soyokaze::core::Command;
+using CommandRepository = launcherapp::core::CommandRepository;
+using Command = launcherapp::core::Command;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -224,7 +224,7 @@ bool FilterEditDialog::UpdateStatus()
 		return false;
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (mParam.mName.CompareNoCase(mOrgName) != 0) {
@@ -419,5 +419,5 @@ bool FilterEditDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

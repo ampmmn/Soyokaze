@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandProviderBase.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace mailto {
 
 
 class MailToCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	MailToCommandProvider();
@@ -33,5 +33,5 @@ private:
 
 } // end of namespace mailto
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

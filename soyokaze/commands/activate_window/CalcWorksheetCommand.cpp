@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -72,7 +72,7 @@ HICON CalcWorksheetCommand::GetIcon()
 	return IconLoader::Get()->LoadExtensionIcon(fileExt);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 CalcWorksheetCommand::Clone()
 {
 	return new CalcWorksheetCommand(in->mCalcWorksheet);
@@ -80,5 +80,5 @@ CalcWorksheetCommand::Clone()
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

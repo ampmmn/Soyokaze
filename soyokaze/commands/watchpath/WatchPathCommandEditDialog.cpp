@@ -14,7 +14,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
@@ -99,7 +99,7 @@ bool CommandEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (mName.CompareNoCase(mOrgName) != 0) {

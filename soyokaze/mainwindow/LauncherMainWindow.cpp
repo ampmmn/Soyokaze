@@ -34,7 +34,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze;
+using namespace launcherapp;
 
 static UINT TIMERID_KEYSTATE = 1;
 static UINT TIMERID_OPERATION = 2;
@@ -472,7 +472,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				soyokaze::core::CommandParameter param;
+				launcherapp::core::CommandParameter param;
 				param.SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
 				param.SetNamedParamString(_T("PATH"), urlString);
 
@@ -508,7 +508,7 @@ LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 
 	// 
 	try {
-		soyokaze::core::CommandParameter param;
+		launcherapp::core::CommandParameter param;
 		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
@@ -610,7 +610,7 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
 	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
 
-	soyokaze::core::CommandParameter commandParam(str);
+	launcherapp::core::CommandParameter commandParam(str);
 
 	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString(), true);
 	if (cmd == nullptr) {
@@ -619,7 +619,7 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 	}
 
 	std::thread th([cmd, str]() {
-		soyokaze::core::CommandParameter commandParam(str);
+		launcherapp::core::CommandParameter commandParam(str);
 		cmd->Execute(commandParam);
 		cmd->Release();
 	});
@@ -839,10 +839,10 @@ void LauncherMainWindow::OnEditCommandChanged()
 	}
 
 	//
-	soyokaze::core::CommandParameter commandParam(in->mCommandStr);
+	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
 
 	// キーワードによる候補の列挙
-	std::vector<soyokaze::core::Command*> commands;
+	std::vector<launcherapp::core::Command*> commands;
 	GetCommandRepository()->Query(commandParam, commands);
 	in->mCandidates.SetItems(commands);
 
@@ -904,7 +904,7 @@ void LauncherMainWindow::OnOK()
 
 		std::thread th([cmd, str]() {
 
-			soyokaze::core::CommandParameter commandParam(str);
+			launcherapp::core::CommandParameter commandParam(str);
 
 			// Ctrlキーが押されているかを設定
 			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {

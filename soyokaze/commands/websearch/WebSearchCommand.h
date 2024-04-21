@@ -3,11 +3,11 @@
 #include "commands/core/CommandIF.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 
-class WebSearchCommand : public soyokaze::core::Command
+class WebSearchCommand : public launcherapp::core::Command
 {
 public:
 	WebSearchCommand();
@@ -30,7 +30,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
@@ -50,5 +50,5 @@ protected:
 
 } // end of namespace websearch
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 

@@ -8,12 +8,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct DecodeStringCommandProvider::PImpl
 {
@@ -72,5 +72,5 @@ void DecodeStringCommandProvider::QueryAdhocCommands(
 
 } // end of namespace decodestring
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

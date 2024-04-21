@@ -2,7 +2,7 @@
 #include "WebSearchCommandParam.h"
 #include "resource.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 

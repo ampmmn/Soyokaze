@@ -2,16 +2,16 @@
 
 #include "commands/core/CommandProviderIF.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
 
 class BuiltinCommandProvider :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	BuiltinCommandProvider();

@@ -10,9 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
@@ -76,7 +76,7 @@ int DecodeUriCommand::Match(Pattern* pattern)
 {
 	CString cmdline = pattern->GetWholeString();
 
-	soyokaze::utility::CharConverter conv;
+	launcherapp::utility::CharConverter conv;
 
 	std::string s;
 	conv.Convert(cmdline, s);
@@ -137,7 +137,7 @@ int DecodeUriCommand::Match(Pattern* pattern)
 	return Pattern::PartialMatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 DecodeUriCommand::Clone()
 {
 	return new DecodeUriCommand();
@@ -145,5 +145,5 @@ DecodeUriCommand::Clone()
 
 } // end of namespace decodestring
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

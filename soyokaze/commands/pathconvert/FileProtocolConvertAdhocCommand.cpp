@@ -15,10 +15,10 @@
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = soyokaze::commands::common::Clipboard;
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using Clipboard = launcherapp::commands::common::Clipboard;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -117,7 +117,7 @@ HICON FileProtocolConvertAdhocCommand::GetIcon()
 
 static void DecodeUri(CString& str)
 {
-	soyokaze::utility::CharConverter conv;
+	launcherapp::utility::CharConverter conv;
 
 	std::string s;
 	conv.Convert(str, s);
@@ -213,7 +213,7 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 	return Pattern::WholeMatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 FileProtocolConvertAdhocCommand::Clone()
 {
 	auto clonedObj = std::make_unique<FileProtocolConvertAdhocCommand>();
@@ -224,6 +224,6 @@ FileProtocolConvertAdhocCommand::Clone()
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

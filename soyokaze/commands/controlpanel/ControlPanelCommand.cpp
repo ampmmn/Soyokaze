@@ -10,9 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace controlpanel {
 
@@ -66,7 +66,7 @@ HICON ControlPanelCommand::GetIcon()
 	return IconLoader::Get()->GetDefaultIcon(in->mIconPath);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 ControlPanelCommand::Clone()
 {
 	return new ControlPanelCommand(this->mName, in->mIconPath, in->mAppName, this->mDescription);
@@ -74,5 +74,5 @@ ControlPanelCommand::Clone()
 
 } // end of namespace controlpanel
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

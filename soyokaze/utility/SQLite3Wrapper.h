@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 class SQLite3Wrapper
@@ -28,5 +28,5 @@ private:
 
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

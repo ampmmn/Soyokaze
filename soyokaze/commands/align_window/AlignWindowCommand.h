@@ -3,11 +3,11 @@
 #include "commands/core/CommandIF.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 
-class AlignWindowCommand : public soyokaze::core::Command
+class AlignWindowCommand : public launcherapp::core::Command
 {
 public:
 	AlignWindowCommand();
@@ -25,7 +25,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
@@ -45,5 +45,5 @@ protected:
 
 } // end of namespace align_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

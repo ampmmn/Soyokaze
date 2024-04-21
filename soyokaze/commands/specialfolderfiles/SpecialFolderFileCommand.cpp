@@ -10,9 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
@@ -73,7 +73,7 @@ HICON SpecialFolderFileCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(in->mItem.mFullPath);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 SpecialFolderFileCommand::Clone()
 {
 	return new SpecialFolderFileCommand(in->mItem);
@@ -81,5 +81,5 @@ SpecialFolderFileCommand::Clone()
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

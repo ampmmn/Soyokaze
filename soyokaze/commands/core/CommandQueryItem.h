@@ -5,11 +5,11 @@
 #include <vector>
 #include <functional>
 
-namespace soyokaze {
+namespace launcherapp {
 
 class CommandQueryItem
 {
-	using Command = soyokaze::core::Command;
+	using Command = launcherapp::core::Command;
 public:
 	CommandQueryItem(int level, Command* cmd);
 	CommandQueryItem(const CommandQueryItem&);

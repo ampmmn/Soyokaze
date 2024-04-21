@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FilterCommandParam.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -53,5 +53,5 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

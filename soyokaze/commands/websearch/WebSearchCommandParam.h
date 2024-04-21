@@ -3,7 +3,7 @@
 #include "hotkey/HotKeyAttribute.h"
 #include <regex>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 

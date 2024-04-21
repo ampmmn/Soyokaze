@@ -10,11 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-using CharConverter = soyokaze::utility::CharConverter;
+using CharConverter = launcherapp::utility::CharConverter;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
@@ -312,7 +312,7 @@ int EscapedCharCommand::Match(Pattern* pattern)
 	return Pattern::PartialMatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 EscapedCharCommand::Clone()
 {
 	return new EscapedCharCommand();
@@ -320,5 +320,5 @@ EscapedCharCommand::Clone()
 
 } // end of namespace decodestring
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -4,13 +4,13 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
 
 class UWPCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	UWPCommandProvider();
@@ -33,5 +33,5 @@ private:
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -10,11 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 
-using DispWrapper = soyokaze::commands::activate_window::DispWrapper;
+using DispWrapper = launcherapp::commands::activate_window::DispWrapper;
 
 struct Presentations::PImpl : public AppPreferenceListenerIF
 {

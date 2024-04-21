@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -460,5 +460,5 @@ uint32_t Worksheet::Release()
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

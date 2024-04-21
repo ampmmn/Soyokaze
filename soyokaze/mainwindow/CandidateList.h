@@ -11,7 +11,7 @@ public:
 	CandidateList();
 	~CandidateList();
 
-	void SetItems(std::vector<soyokaze::core::Command*>& items);
+	void SetItems(std::vector<launcherapp::core::Command*>& items);
 
 	int GetCurrentSelect();
 
@@ -20,8 +20,8 @@ public:
 
 	bool IsEmpty();
 	int GetSize();
-	soyokaze::core::Command* GetCommand(int index);
-	soyokaze::core::Command* GetCurrentCommand();
+	launcherapp::core::Command* GetCommand(int index);
+	launcherapp::core::Command* GetCurrentCommand();
 
 	// 現在選択している項目の説明を取得する
 	CString GetCurrentCommandDescription();

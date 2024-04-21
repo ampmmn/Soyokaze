@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 CharConverter::CharConverter(int codePage) : mCodePage(codePage)
@@ -89,5 +89,5 @@ int CharConverter::ScalarToUTF8(uint32_t scalar, char* dst)
 
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

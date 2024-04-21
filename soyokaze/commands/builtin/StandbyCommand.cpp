@@ -13,7 +13,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -45,7 +45,7 @@ BOOL StandbyCommand::Execute(const Parameter& param)
 	return SuspendCommand::DoSuspend(FALSE);
 }
 
-soyokaze::core::Command* StandbyCommand::Clone()
+launcherapp::core::Command* StandbyCommand::Clone()
 {
 	return new StandbyCommand();
 }

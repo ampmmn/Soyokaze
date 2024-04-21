@@ -9,9 +9,9 @@
 #include "icon/IconLoader.h"
 #include "resource.h"
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 

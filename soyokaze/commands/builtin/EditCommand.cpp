@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -37,7 +37,7 @@ BOOL EditCommand::Execute(const Parameter& param)
 	param.GetParameters(args);
 
 	auto cmdRepoPtr =
-	 	soyokaze::core::CommandRepository::GetInstance();
+	 	launcherapp::core::CommandRepository::GetInstance();
 
 	if (args.empty()) {
 		// キーワードマネージャを実行する
@@ -68,7 +68,7 @@ HICON EditCommand::GetIcon()
 	return IconLoader::Get()->LoadDefaultIcon();
 }
 
-soyokaze::core::Command* EditCommand::Clone()
+launcherapp::core::Command* EditCommand::Clone()
 {
 	return new EditCommand();
 }

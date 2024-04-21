@@ -9,11 +9,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
 
@@ -50,12 +50,12 @@ HICON UserDirCommand::GetIcon()
 	return IconLoader::Get()->LoadUserDirIcon();
 }
 
-soyokaze::core::Command* UserDirCommand::Clone()
+launcherapp::core::Command* UserDirCommand::Clone()
 {
 	return new UserDirCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-using Command = soyokaze::core::Command;
+using Command = launcherapp::core::Command;
 
 struct CandidateList::PImpl
 {
@@ -20,7 +20,7 @@ struct CandidateList::PImpl
 	}
 
 	// 一覧
-	std::vector<soyokaze::core::Command*> mCandidates;
+	std::vector<launcherapp::core::Command*> mCandidates;
 	// 選択中のもの
 	int mSelIndex = -1;
 
@@ -37,7 +37,7 @@ CandidateList::~CandidateList()
 	in->ClearItems();
 }
 
-void CandidateList::SetItems(std::vector<soyokaze::core::Command*>& items)
+void CandidateList::SetItems(std::vector<launcherapp::core::Command*>& items)
 {
 	in->ClearItems();
 	in->mCandidates.swap(items);

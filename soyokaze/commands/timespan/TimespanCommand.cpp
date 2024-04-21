@@ -11,9 +11,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace timespan {
 
@@ -81,7 +81,7 @@ HICON TimespanCommand::GetIcon()
 	return IconLoader::Get()->LoadDefaultIcon();
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 TimespanCommand::Clone()
 {
 	return new TimespanCommand(in->mTimeSpan, in->mUnitType);
@@ -89,5 +89,5 @@ TimespanCommand::Clone()
 
 } // end of namespace timespan
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

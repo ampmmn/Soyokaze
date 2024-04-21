@@ -14,7 +14,7 @@ public:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
-	void SetParam(const soyokaze::core::CommandParameter& param) override;
+	void SetParam(const launcherapp::core::CommandParameter& param) override;
 	int Match(const CString& str) override;
 	int Match(const CString& str, int offset) override;
 	CString GetFirstWord() override;

@@ -11,12 +11,12 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace mailto {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct MailToCommandProvider::PImpl
 {
@@ -63,5 +63,5 @@ void MailToCommandProvider::QueryAdhocCommands(
 
 } // end of namespace mailto
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

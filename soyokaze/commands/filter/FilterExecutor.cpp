@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -167,7 +167,7 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				}
 
 				// 検索条件
-				soyokaze::core::CommandParameter commandParam(in->mKeyword);
+				launcherapp::core::CommandParameter commandParam(in->mKeyword);
 				pattern.SetParam(commandParam);
 
 				// 担当ぶんの要素を処理する
@@ -245,6 +245,6 @@ void FilterExecutor::Execute(const CString& keyword, std::vector<CString>& resul
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

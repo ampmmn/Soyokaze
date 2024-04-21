@@ -10,11 +10,11 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace mailto {
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 
 MailToCommand::MailToCommand() : 
@@ -80,7 +80,7 @@ int MailToCommand::Match(Pattern* pattern)
 	return pattern->Match(keyword);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 MailToCommand::Clone()
 {
 	return new MailToCommand();
@@ -88,5 +88,5 @@ MailToCommand::Clone()
 
 } // end of namespace mailto
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

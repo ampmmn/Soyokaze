@@ -5,7 +5,7 @@
 
 class CommandFile;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class CommandParameter;
@@ -13,7 +13,7 @@ class CommandParameter;
 class Command
 {
 protected:
-	using Parameter = soyokaze::core::CommandParameter;
+	using Parameter = launcherapp::core::CommandParameter;
 public:
 	virtual ~Command() {}
 
@@ -45,4 +45,4 @@ public:
 
 
 } // end of namespace core
-} // end of namespace soyokaze
+} // end of namespace launcherapp

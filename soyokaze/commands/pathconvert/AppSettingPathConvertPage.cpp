@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -81,5 +81,5 @@ void AppSettingPathConvertPage::OnEnterSettings()
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

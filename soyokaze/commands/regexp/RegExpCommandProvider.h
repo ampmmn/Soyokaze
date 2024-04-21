@@ -2,16 +2,16 @@
 
 #include "commands/core/CommandProviderIF.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace regexp {
 
 
 class RegExpCommandProvider :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	RegExpCommandProvider();

@@ -4,7 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace color {
 
@@ -15,7 +15,7 @@ enum {
 	TYPE_HSL,
 };
 
-class ColorCommand : public soyokaze::commands::common::AdhocCommandBase
+class ColorCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 
@@ -27,7 +27,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -37,5 +37,5 @@ protected:
 
 } // end of namespace color
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

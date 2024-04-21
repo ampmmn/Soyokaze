@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
@@ -52,5 +52,5 @@ private:
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

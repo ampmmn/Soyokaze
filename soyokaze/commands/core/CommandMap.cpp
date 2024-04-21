@@ -36,7 +36,7 @@ bool CommandMap::Has(const CString& name) const
 	return mMap.find(name) != mMap.end();
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 CommandMap::Get(const CString& name)
 {
 	auto itFind = mMap.find(name);
@@ -48,12 +48,12 @@ CommandMap::Get(const CString& name)
 	return itFind->second;
 }
 
-void CommandMap::Register(soyokaze::core::Command* cmd)
+void CommandMap::Register(launcherapp::core::Command* cmd)
 {
 	mMap[cmd->GetName()] = cmd;
 }
 
-bool CommandMap::Unregister(soyokaze::core::Command* cmd)
+bool CommandMap::Unregister(launcherapp::core::Command* cmd)
 {
 	return Unregister(cmd->GetName());
 }
@@ -71,7 +71,7 @@ bool CommandMap::Unregister(const CString& name)
 }
 
 // リネームによる登録しなおし
-bool CommandMap::Reregister(soyokaze::core::Command* targetCmd)
+bool CommandMap::Reregister(launcherapp::core::Command* targetCmd)
 {
 	// 変更後の名前
 	CString newName = targetCmd->GetName();
@@ -125,7 +125,7 @@ void CommandMap::Query(
 }
 
 // 最初に見つけた要素を返す
-soyokaze::core::Command*
+launcherapp::core::Command*
 CommandMap::FindOne(Pattern* pattern)
 {
 	for (auto& item : mMap) {
@@ -140,8 +140,8 @@ CommandMap::FindOne(Pattern* pattern)
 	return nullptr;
 }
 
-std::vector<soyokaze::core::Command*>&
-CommandMap::Enumerate(std::vector<soyokaze::core::Command*>& commands)
+std::vector<launcherapp::core::Command*>&
+CommandMap::Enumerate(std::vector<launcherapp::core::Command*>& commands)
 {
 	commands.reserve(commands.size() + mMap.size());
 	for (auto& item : mMap) {

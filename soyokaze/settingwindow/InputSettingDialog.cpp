@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-using MainDirCommand = soyokaze::commands::builtin::MainDirCommand;
+using MainDirCommand = launcherapp::commands::builtin::MainDirCommand;
 
 InputSettingDialog::InputSettingDialog(CWnd* parentWnd) : 
 	SettingPage(_T("入力"), IDD_INPUTSETTING, parentWnd)
@@ -102,7 +102,7 @@ void InputSettingDialog::OnNotifyLinkOpen(
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
 	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
-		soyokaze::core::CommandParameter param;
+		launcherapp::core::CommandParameter param;
 		MainDirCommand cmd(_T("tmp"));
 		cmd.Execute(param);
 	}

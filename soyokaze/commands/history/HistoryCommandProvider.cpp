@@ -11,15 +11,15 @@
 #define new DEBUG_NEW
 #endif
 
-using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace history {
 
 constexpr DWORD CHECK_INTERVAL = 1000;  // 10秒
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct HistoryCommandProvider::PImpl
 {
@@ -115,5 +115,5 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 } // end of namespace history
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

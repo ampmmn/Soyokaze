@@ -6,7 +6,7 @@
 #include "hotkey/HotKeyAttribute.h"
 #include "hotkey/CommandHotKeyMappings.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 
@@ -62,5 +62,5 @@ private:
 };
 
 } // end of namespace core
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

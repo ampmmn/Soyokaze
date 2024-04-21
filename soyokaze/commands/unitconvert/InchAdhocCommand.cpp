@@ -11,10 +11,10 @@
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = soyokaze::commands::common::Clipboard;
+using Clipboard = launcherapp::commands::common::Clipboard;
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace unitconvert {
 
@@ -93,7 +93,7 @@ int InchAdhocCommand::Match(Pattern* pattern)
 	}
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 InchAdhocCommand::Clone()
 {
 	auto clonedObj = std::make_unique<InchAdhocCommand>();
@@ -107,6 +107,6 @@ InchAdhocCommand::Clone()
 
 } // end of namespace unitconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

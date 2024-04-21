@@ -7,7 +7,7 @@
 
 class SettingPage;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class CommandProvider;
@@ -52,12 +52,12 @@ public:
 	// まとめて登録ダイアログの表示
 	int RegisterCommandFromFiles(const std::vector<CString>& files);
 
-	void EnumCommands(std::vector<soyokaze::core::Command*>& commands);
+	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
 
 	bool IsBuiltinName(const CString& cmdName);
 
-	void Query(const CommandParameter& param, std::vector<soyokaze::core::Command*>& commands);
-	soyokaze::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);
+	void Query(const CommandParameter& param, std::vector<launcherapp::core::Command*>& commands);
+	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);
 	bool HasCommand(const CString& strQueryStr);
 
 	bool IsValidAsName(const CString& strQueryStr);

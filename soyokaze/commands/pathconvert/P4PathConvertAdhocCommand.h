@@ -4,12 +4,12 @@
 #include "commands/pathconvert/P4AppSettings.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
 
-class P4PathConvertAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class P4PathConvertAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 	using ITEM = P4AppSettings::ITEM;
 public:
@@ -23,7 +23,7 @@ public:
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -33,6 +33,6 @@ protected:
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

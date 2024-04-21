@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -44,7 +44,7 @@ BOOL SuspendCommand::Execute(const Parameter& param)
 	return SuspendCommand::DoSuspend(TRUE);
 }
 
-soyokaze::core::Command* SuspendCommand::Clone()
+launcherapp::core::Command* SuspendCommand::Clone()
 {
 	return new SuspendCommand();
 }

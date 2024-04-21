@@ -15,7 +15,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace regexp {
 
@@ -167,7 +167,7 @@ bool CommandEditDialog::UpdateStatus()
 		return false;
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (mName.CompareNoCase(mOrgName) != 0) {

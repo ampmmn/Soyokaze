@@ -14,13 +14,13 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace snippet {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct SnippetCommand::PImpl
 {
@@ -132,7 +132,7 @@ int SnippetCommand::EditDialog(const Parameter* param)
 	dlg.mDescription = in->mDescription;
 	dlg.mText = in->mText;
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
 	if (hotKeyManager->HasKeyBinding(in->mName, &hotKeyAttr, &isGlobal)) {
@@ -180,7 +180,7 @@ bool SnippetCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 SnippetCommand::Clone()
 {
 	auto clonedObj = std::make_unique<SnippetCommand>();
@@ -258,7 +258,7 @@ bool SnippetCommand::NewDialog(const Parameter* param)
 	// ホットキー設定を更新
 	if (dlg.mHotKeyAttr.IsValid()) {
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 

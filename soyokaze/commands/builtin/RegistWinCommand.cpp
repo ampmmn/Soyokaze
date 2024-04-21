@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -83,7 +83,7 @@ BOOL RegistWinCommand::Execute(const Parameter& param)
 	ProcessPath processPath(hNextWindow);
 
 	try {
-		soyokaze::core::CommandParameter param;
+		launcherapp::core::CommandParameter param;
 		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
@@ -92,7 +92,7 @@ BOOL RegistWinCommand::Execute(const Parameter& param)
 		param.SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
 		param.SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
 
-		auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 		cmdRepoPtr->NewCommandDialog(&param);
 		return TRUE;
 	}
@@ -112,12 +112,12 @@ HICON RegistWinCommand::GetIcon()
 	return IconLoader::Get()->LoadRegisterWindowIcon();
 }
 
-soyokaze::core::Command* RegistWinCommand::Clone()
+launcherapp::core::Command* RegistWinCommand::Clone()
 {
 	return new RegistWinCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

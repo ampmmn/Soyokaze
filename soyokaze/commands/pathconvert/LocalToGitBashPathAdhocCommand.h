@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
 
 
-class LocalToGitBashPathAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class LocalToGitBashPathAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	LocalToGitBashPathAdhocCommand();
@@ -21,7 +21,7 @@ public:
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	static bool IsLocalPath(const CString& path);
 
@@ -33,6 +33,6 @@ protected:
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

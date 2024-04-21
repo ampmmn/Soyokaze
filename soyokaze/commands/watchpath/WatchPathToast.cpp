@@ -16,9 +16,9 @@ using namespace winrt::Windows::Data::Xml::Dom;
 #define new DEBUG_NEW
 #endif
 
-using SubProcess = soyokaze::commands::common::SubProcess;
+using SubProcess = launcherapp::commands::common::SubProcess;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
@@ -48,7 +48,7 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 			}
 
 			// フォルダを開く
-			soyokaze::core::CommandParameter param;
+			launcherapp::core::CommandParameter param;
 			SubProcess exec(param);
 			SubProcess::ProcessPtr process;
 			exec.Run(path, param.GetParameterString(), process);

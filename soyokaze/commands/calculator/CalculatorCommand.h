@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace calculator {
 
 
 
-class CalculatorCommand : public soyokaze::commands::common::AdhocCommandBase
+class CalculatorCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	CalculatorCommand();
@@ -22,7 +22,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	static bool GetCalcExePath(LPTSTR path, size_t len);
 protected:
@@ -33,5 +33,5 @@ protected:
 
 } // end of namespace calculator
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -9,7 +9,7 @@
 #include "utility/Accessibility.h"
 #include "resource.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 
@@ -149,7 +149,7 @@ void SettingDialog::UpdateStatus()
 		in->mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
 		canPressOK = false;
 	}
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (name.CompareNoCase(in->mOrgName) != 0) {

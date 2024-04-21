@@ -4,7 +4,7 @@
 
 #import <msxml6.dll> raw_interfaces_only
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -229,6 +229,6 @@ void P4AppSettings::GetItems(std::vector<ITEM>& items)
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

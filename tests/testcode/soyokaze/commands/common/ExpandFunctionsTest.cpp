@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "commands/common/ExpandFunctions.h"
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
 TEST(ExpandFunctions, ExpandEnv1)
 {

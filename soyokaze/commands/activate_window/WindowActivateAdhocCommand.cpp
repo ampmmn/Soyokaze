@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -72,7 +72,7 @@ HICON WindowActivateAdhocCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromHwnd(in->mHwnd);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 WindowActivateAdhocCommand::Clone()
 {
 	return new WindowActivateAdhocCommand(in->mHwnd);
@@ -80,5 +80,5 @@ WindowActivateAdhocCommand::Clone()
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

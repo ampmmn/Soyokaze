@@ -4,13 +4,13 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
 
 class SpecialFolderFilesCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	SpecialFolderFilesCommandProvider();
@@ -33,5 +33,5 @@ private:
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

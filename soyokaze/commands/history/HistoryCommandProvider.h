@@ -2,7 +2,7 @@
 
 #include "commands/common/AdhocCommandProviderBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace history {
 
@@ -11,7 +11,7 @@ namespace history {
  *  履歴表示のためのコマンドオブジェクト生成クラス
  */
 class HistoryCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	HistoryCommandProvider();
@@ -35,5 +35,5 @@ private:
 
 } // end of namespace history
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

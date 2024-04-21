@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -51,7 +51,7 @@ BOOL NewCommand::Execute(const Parameter& param)
 		inParam.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->NewCommandDialog(&inParam);
 
 	return TRUE;
@@ -62,12 +62,12 @@ HICON NewCommand::GetIcon()
 	return IconLoader::Get()->LoadNewIcon();
 }
 
-soyokaze::core::Command* NewCommand::Clone()
+launcherapp::core::Command* NewCommand::Clone()
 {
 	return new NewCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

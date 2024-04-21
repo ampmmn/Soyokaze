@@ -11,7 +11,7 @@
 #include "gui/KeywordEdit.h"
 #include "icon/CaptureIconLabel.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 	class AppHotKey;
 	class Command;
@@ -26,15 +26,15 @@ class WindowPosition;
 class WindowTransparency;
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
 
 class FilterDialog : public CDialogEx
 {
-	using CommandRepository = soyokaze::core::CommandRepository;
-	using AppHotKey = soyokaze::core::AppHotKey;
+	using CommandRepository = launcherapp::core::CommandRepository;
+	using AppHotKey = launcherapp::core::AppHotKey;
 
 // コンストラクション
 public:
@@ -78,5 +78,5 @@ protected:
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

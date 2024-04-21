@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 class CharConverter
@@ -24,5 +24,5 @@ protected:
 
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

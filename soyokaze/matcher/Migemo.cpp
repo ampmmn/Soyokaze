@@ -6,7 +6,7 @@
 #define new DEBUG_NEW
 #endif
 
-using CharConverter = soyokaze::utility::CharConverter;
+using CharConverter = launcherapp::utility::CharConverter;
 
 // C/MigemoのAPI
 typedef void* (*MIGEMO_OPEN)(const char*);

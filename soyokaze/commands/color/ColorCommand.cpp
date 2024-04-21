@@ -12,9 +12,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace color {
 
@@ -131,7 +131,7 @@ HICON ColorCommand::GetIcon()
 	return in->mColorIcon;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 ColorCommand::Clone()
 {
 	return new ColorCommand(in->mColor, in->mFormatType);
@@ -139,5 +139,5 @@ ColorCommand::Clone()
 
 } // end of namespace color
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

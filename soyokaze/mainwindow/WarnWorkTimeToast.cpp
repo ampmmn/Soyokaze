@@ -17,7 +17,7 @@ using namespace winrt::Windows::Data::Xml::Dom;
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace mainwindow {
 
 struct Toast::PImpl

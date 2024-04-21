@@ -11,9 +11,9 @@
 #define new DEBUG_NEW
 #endif
 
-using Command =  soyokaze::core::Command;
+using Command =  launcherapp::core::Command;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
@@ -84,7 +84,7 @@ BOOL GroupEditDialog::OnInitDialog()
 	mCommandSelectBox->Create(mCommandListPtr, WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL | CBS_NOINTEGRALHEIGHT);
 	mCommandSelectBox->SetMinVisibleItems(10);
 	std::vector<Command*> commands;
-	soyokaze::core::CommandRepository::GetInstance()->EnumCommands(commands);
+	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commands);
 	for (auto& cmd : commands) {
 		mCommandSelectBox->AddString(cmd->GetName());
 	}
@@ -177,7 +177,7 @@ bool GroupEditDialog::UpdateStatus()
 	}
 
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// ToDo: 存在しないコマンドがあったら警告
 
@@ -470,5 +470,5 @@ void GroupEditDialog::OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult)
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

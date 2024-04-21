@@ -25,7 +25,7 @@ WholeMatchPattern::~WholeMatchPattern()
 }
 
 void WholeMatchPattern::SetParam(
-	const soyokaze::core::CommandParameter& param
+	const launcherapp::core::CommandParameter& param
 )
 {
 	in->mWord = param.GetCommandString();

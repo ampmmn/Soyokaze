@@ -12,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct AlignWindowProvider::PImpl
 {
@@ -123,7 +123,7 @@ bool AlignWindowProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void AlignWindowProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	soyokaze::CommandQueryItemList& commands
+ 	launcherapp::CommandQueryItemList& commands
 )
 {
 	// サポートしない
@@ -167,5 +167,5 @@ uint32_t AlignWindowProvider::Release()
 
 } // end of namespace align_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

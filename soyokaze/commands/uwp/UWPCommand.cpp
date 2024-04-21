@@ -9,9 +9,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
@@ -71,7 +71,7 @@ HICON UWPCommand::GetIcon()
 	return in->mItem->mIcon;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 UWPCommand::Clone()
 {
 	return new UWPCommand(in->mItem);
@@ -79,5 +79,5 @@ UWPCommand::Clone()
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

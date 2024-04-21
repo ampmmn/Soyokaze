@@ -14,14 +14,14 @@
 #define new DEBUG_NEW
 #endif
 
-using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -155,5 +155,5 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 
 } // end of namespace pathfind
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

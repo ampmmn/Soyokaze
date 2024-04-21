@@ -2,7 +2,7 @@
 #include "CommandParam.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
@@ -48,7 +48,7 @@ CommandParam& CommandParam::operator = (
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 
 

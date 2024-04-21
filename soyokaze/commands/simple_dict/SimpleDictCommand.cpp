@@ -18,11 +18,11 @@
 #include <regex>
 #include <set>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-using CommandRepositoryListenerIF = soyokaze::core::CommandRepositoryListenerIF;
+using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
 struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 {
@@ -49,13 +49,13 @@ CString SimpleDictCommand::GetType() { return _T("SimpleDict"); }
 SimpleDictCommand::SimpleDictCommand() : in(std::make_unique<PImpl>())
 {
 	in->mThisPtr = this;
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->RegisterListener(in.get());
 }
 
 SimpleDictCommand::~SimpleDictCommand()
 {
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterListener(in.get());
 }
 
@@ -146,7 +146,7 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
 	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr, &isGlobal)) {
@@ -164,7 +164,7 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 	in->mParam = dlg.GetParam();
 
 	// 名前の変更を登録しなおす
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
@@ -198,7 +198,7 @@ bool SimpleDictCommand::IsPriorityRankEnabled()
 	return false;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 SimpleDictCommand::Clone()
 {
 	auto clonedCmd = std::make_unique<SimpleDictCommand>();
@@ -316,5 +316,5 @@ bool SimpleDictCommand::LoadFrom(CommandFile* cmdFile, void* e, SimpleDictComman
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

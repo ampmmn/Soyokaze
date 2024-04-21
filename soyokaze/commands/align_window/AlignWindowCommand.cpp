@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <regex>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 
@@ -144,7 +144,7 @@ BOOL AlignWindowCommand::Execute(
 	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.IsEmpty() == FALSE) {
 		CString msg;
 		msg.Format(_T("以下のウインドウは見つかりませんでした。\n%s"), missingTitles);
-		soyokaze::commands::common::PopupMessage(msg);
+		launcherapp::commands::common::PopupMessage(msg);
 	}
 
 	if (in->mParam.mIsKeepActiveWindow) {
@@ -188,7 +188,7 @@ int AlignWindowCommand::EditDialog(const Parameter*)
 {
 	SettingDialog dlg;
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	auto param = in->mParam;
 
 	HOTKEY_ATTR hotKeyAttr;
@@ -209,7 +209,7 @@ int AlignWindowCommand::EditDialog(const Parameter*)
 	cmdNew->in->mParam = param;
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew.release());
 
@@ -239,7 +239,7 @@ bool AlignWindowCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 AlignWindowCommand::Clone()
 {
 	auto clonedCmd = std::make_unique<AlignWindowCommand>();
@@ -330,7 +330,7 @@ bool AlignWindowCommand::NewDialog(
 	// ホットキー設定を更新
 	if (commandParam.mHotKeyAttr.IsValid()) {
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
@@ -414,5 +414,5 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 
 } // end of namespace align_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

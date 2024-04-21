@@ -3,12 +3,12 @@
 #include "commands/core/CommandIF.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
 
-class AdhocCommandBase : public soyokaze::core::Command
+class AdhocCommandBase : public launcherapp::core::Command
 {
 public:
 	AdhocCommandBase(LPCTSTR name = _T(""), LPCTSTR description = _T(""));
@@ -25,7 +25,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	//soyokaze::core::Command* Clone() override;
+	//launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
@@ -42,5 +42,5 @@ protected:
 
 } // end of namespace common
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -4,15 +4,15 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
 class OutlookItemProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	OutlookItemProvider();
@@ -34,5 +34,5 @@ private:
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

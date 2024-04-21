@@ -12,9 +12,9 @@
 #include "commands/core/CommandRepository.h"
 #include "resource.h"
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -199,7 +199,7 @@ bool SettingDialog::UpdateStatus()
 		return false;
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	// 重複チェック
 	if (name.CompareNoCase(in->mOrgName) != 0) {

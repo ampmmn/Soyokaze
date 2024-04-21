@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
@@ -34,5 +34,5 @@ private:
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

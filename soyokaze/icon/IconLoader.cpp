@@ -15,7 +15,7 @@
 #define new DEBUG_NEW
 #endif
 
-using LocalPathResolver = soyokaze::utility::LocalPathResolver;
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
 struct IconLoader::PImpl
 {

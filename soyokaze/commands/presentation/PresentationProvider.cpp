@@ -13,11 +13,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct PresentationProvider::PImpl
 {
@@ -62,5 +62,5 @@ void PresentationProvider::QueryAdhocCommands(
 
 } // end of namespace presentation
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

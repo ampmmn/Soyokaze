@@ -13,10 +13,10 @@
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = soyokaze::commands::common::Clipboard;
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using Clipboard = launcherapp::commands::common::Clipboard;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -92,7 +92,7 @@ int P4PathConvertAdhocCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 P4PathConvertAdhocCommand::Clone()
 {
 	auto clonedObj = std::make_unique<P4PathConvertAdhocCommand>();
@@ -106,6 +106,6 @@ P4PathConvertAdhocCommand::Clone()
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

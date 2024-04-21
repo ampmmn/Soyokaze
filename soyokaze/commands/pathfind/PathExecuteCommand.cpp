@@ -15,17 +15,17 @@
 #define new DEBUG_NEW
 #endif
 
-using LocalPathResolver = soyokaze::utility::LocalPathResolver;
-using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
-using SubProcess = soyokaze::commands::common::SubProcess;
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
+using SubProcess = launcherapp::commands::common::SubProcess;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
 static CString EXE_EXT = _T(".exe");
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 static const tregex& GetURLRegex()
 {
@@ -206,7 +206,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 PathExecuteCommand::Clone()
 {
 	auto clonedObj = std::make_unique<PathExecuteCommand>();
@@ -222,5 +222,5 @@ PathExecuteCommand::Clone()
 
 } // end of namespace pathfind
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

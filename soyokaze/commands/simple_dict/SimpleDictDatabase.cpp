@@ -8,7 +8,7 @@
 #include <map>
 #include <list>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 

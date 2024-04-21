@@ -2,11 +2,11 @@
 
 #include "commands/core/CommandIF.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-class BuiltinCommandBase : public soyokaze::core::Command
+class BuiltinCommandBase : public launcherapp::core::Command
 {
 public:
 	BuiltinCommandBase(LPCTSTR name = nullptr);
@@ -23,7 +23,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	//soyokaze::core::Command* Clone() override;
+	//launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 

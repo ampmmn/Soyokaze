@@ -11,9 +11,9 @@
 #endif
 
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace env {
 
@@ -58,7 +58,7 @@ HICON EnvCommand::GetIcon()
 	return IconLoader::Get()->LoadDefaultIcon();
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 EnvCommand::Clone()
 {
 	return new EnvCommand(this->mName, in->mValue);
@@ -66,5 +66,5 @@ EnvCommand::Clone()
 
 } // end of namespace env
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

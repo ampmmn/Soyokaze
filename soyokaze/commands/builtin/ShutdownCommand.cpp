@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -42,7 +42,7 @@ BOOL ShutdownCommand::Execute(const Parameter& param)
 	return DoExit(EWX_SHUTDOWN | EWX_FORCEIFHUNG);
 }
 
-soyokaze::core::Command* ShutdownCommand::Clone()
+launcherapp::core::Command* ShutdownCommand::Clone()
 {
 	return new ShutdownCommand();
 }

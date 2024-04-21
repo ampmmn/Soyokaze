@@ -2,7 +2,7 @@
 
 #include "gui/SettingPage.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -34,5 +34,5 @@ protected:
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

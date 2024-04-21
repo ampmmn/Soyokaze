@@ -8,7 +8,7 @@ class IconLabel;
 
 class CommandEditDialog : public SettingPage
 {
-	using CommandParam = soyokaze::commands::shellexecute::CommandParam;
+	using CommandParam = launcherapp::commands::shellexecute::CommandParam;
 
 public:
 	CommandEditDialog(CWnd* parentWnd);

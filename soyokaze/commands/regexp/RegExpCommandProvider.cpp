@@ -11,9 +11,9 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace regexp {
 

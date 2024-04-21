@@ -16,13 +16,13 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using ExecuteHistory = soyokaze::commands::common::ExecuteHistory;
+using CommandRepository = launcherapp::core::CommandRepository;
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
@@ -235,7 +235,7 @@ int GroupCommand::EditDialog(const Parameter* param)
 	GroupEditDialog dlg;
 	dlg.SetParam(in->mParam);
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
 	if (hotKeyManager->HasKeyBinding(in->mParam.mName, &hotKeyAttr, &isGlobal)) {
@@ -281,7 +281,7 @@ bool GroupCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 GroupCommand::Clone()
 {
 	auto clonedObj = std::make_unique<GroupCommand>();
@@ -339,5 +339,5 @@ uint32_t GroupCommand::Release()
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

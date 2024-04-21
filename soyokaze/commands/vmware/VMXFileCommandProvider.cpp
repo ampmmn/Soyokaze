@@ -10,11 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace vmware {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct VMXFileCommandProvider::PImpl
 {
@@ -168,5 +168,5 @@ void VMXFileCommandProvider::QueryAdhocCommands(
 
 } // end of namespace vmware
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

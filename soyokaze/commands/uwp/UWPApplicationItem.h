@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
@@ -32,5 +32,5 @@ using ItemPtr = std::shared_ptr<ITEM>;
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

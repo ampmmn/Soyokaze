@@ -1,6 +1,6 @@
 #pragma once
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class CommandHotKeyHandler

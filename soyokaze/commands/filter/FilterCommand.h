@@ -5,13 +5,13 @@
 
 class HOTKEY_ATTR;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
 class CommandParam;
 
-class FilterCommand : public soyokaze::core::Command
+class FilterCommand : public launcherapp::core::Command
 {
 public:
 	FilterCommand();
@@ -29,7 +29,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
@@ -50,5 +50,5 @@ protected:
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

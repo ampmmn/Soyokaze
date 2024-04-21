@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -41,12 +41,12 @@ HICON LockScreenCommand::GetIcon()
 }
 
 
-soyokaze::core::Command* LockScreenCommand::Clone()
+launcherapp::core::Command* LockScreenCommand::Clone()
 {
 	return new LockScreenCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

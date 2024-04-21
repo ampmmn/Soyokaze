@@ -7,7 +7,7 @@
 
 class ModalComboBox;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
@@ -72,5 +72,5 @@ protected:
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

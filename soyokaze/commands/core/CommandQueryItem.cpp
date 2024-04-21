@@ -5,11 +5,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 
 static void ReleaseObject(void* ptr)
 {
-	auto cmd = (soyokaze::core::Command*)ptr;
+	auto cmd = (launcherapp::core::Command*)ptr;
 	if (cmd) {
 		cmd->Release();
 	}
@@ -17,7 +17,7 @@ static void ReleaseObject(void* ptr)
 
 CommandQueryItem::CommandQueryItem(
 	int level,
-	soyokaze::core::Command* cmd
+	launcherapp::core::Command* cmd
 ) : 
 	mMatchLevel(level), mCommand(cmd, ReleaseObject)
 {

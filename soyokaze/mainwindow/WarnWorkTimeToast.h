@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace mainwindow {
 
 // 連続稼働時間を警告するトースト

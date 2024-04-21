@@ -4,12 +4,12 @@
 #include "commands/uwp/UWPApplicationItem.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
 
-class UWPCommand : public soyokaze::commands::common::AdhocCommandBase
+class UWPCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	UWPCommand(ItemPtr& item);
@@ -19,7 +19,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -29,5 +29,5 @@ protected:
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

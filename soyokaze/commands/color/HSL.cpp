@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace color {
 

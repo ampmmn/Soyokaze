@@ -4,13 +4,13 @@
 #include "commands/core/CommandProviderIF.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace vmware {
 
 
 class VMXFileCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	VMXFileCommandProvider();
@@ -33,5 +33,5 @@ private:
 
 } // end of namespace vmware
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

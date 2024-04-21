@@ -6,7 +6,7 @@
 
 using Sound = utility::Sound;
 
-namespace soyokaze {
+namespace launcherapp {
 
 
 struct AppSound::PImpl : public AppPreferenceListenerIF
@@ -72,4 +72,4 @@ void AppSound::PlayExecuteSound()
 }
 
 
-} // end of namespace soyokaze
+} // end of namespace launcherapp

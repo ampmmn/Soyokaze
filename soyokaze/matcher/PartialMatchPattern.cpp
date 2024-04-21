@@ -89,7 +89,7 @@ PartialMatchPattern::~PartialMatchPattern()
 }
 
 void PartialMatchPattern::SetParam(
-	const soyokaze::core::CommandParameter& param
+	const launcherapp::core::CommandParameter& param
 )
 {
 	const CString& wholeText = param.GetWholeString();

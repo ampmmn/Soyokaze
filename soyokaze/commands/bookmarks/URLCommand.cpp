@@ -12,9 +12,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
@@ -135,7 +135,7 @@ HICON URLCommand::GetIcon()
 	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 URLCommand::Clone()
 {
 	return new URLCommand(in->mBrowserName, in->mType, this->mName, in->mUrl);
@@ -143,5 +143,5 @@ URLCommand::Clone()
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SpecialFolderFile.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
@@ -18,5 +18,5 @@ int ITEM::GetTypeFromCSIDL(int csidl)
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

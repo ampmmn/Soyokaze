@@ -2,7 +2,7 @@
 #include "WindowActivateCommandParam.h"
 #include "resource.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 

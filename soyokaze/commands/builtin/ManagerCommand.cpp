@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -32,7 +32,7 @@ ManagerCommand::~ManagerCommand()
 
 BOOL ManagerCommand::Execute(const Parameter& param)
 {
-	soyokaze::core::CommandRepository::GetInstance()->ManagerDialog();
+	launcherapp::core::CommandRepository::GetInstance()->ManagerDialog();
 	return TRUE;
 }
 
@@ -41,12 +41,12 @@ HICON ManagerCommand::GetIcon()
 	return IconLoader::Get()->LoadDefaultIcon();
 }
 
-soyokaze::core::Command* ManagerCommand::Clone()
+launcherapp::core::Command* ManagerCommand::Clone()
 {
 	return new ManagerCommand();
 }
 
 } // end of namespace builtin
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

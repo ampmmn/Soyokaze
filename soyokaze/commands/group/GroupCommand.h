@@ -5,14 +5,14 @@
 
 class HOTKEY_ATTR;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace group {
 
 class CommandParam;
 
 // グループコマンド
-class GroupCommand : public soyokaze::core::Command
+class GroupCommand : public launcherapp::core::Command
 {
 	class Exception;
 public:
@@ -31,7 +31,7 @@ public:
 	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
 
@@ -52,5 +52,5 @@ protected:
 
 } // end of namespace group
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

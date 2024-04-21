@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-using Toast = soyokaze::mainwindow::Toast;
+using Toast = launcherapp::mainwindow::Toast;
 
 struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public AppPreferenceListenerIF
 {

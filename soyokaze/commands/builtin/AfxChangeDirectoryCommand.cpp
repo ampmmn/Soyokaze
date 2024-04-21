@@ -13,7 +13,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -65,7 +65,7 @@ HICON AfxChangeDirectoryCommand::GetIcon()
 	return IconLoader::Get()->GetImageResIcon(-185);
 }
 
-soyokaze::core::Command* AfxChangeDirectoryCommand::Clone()
+launcherapp::core::Command* AfxChangeDirectoryCommand::Clone()
 {
 	return new AfxChangeDirectoryCommand();
 }

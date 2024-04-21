@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -52,5 +52,5 @@ private:
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -14,12 +14,12 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using namespace launcherapp::commands::common;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
@@ -143,7 +143,7 @@ HICON SimpleDictAdhocCommand::GetIcon()
 	return IconLoader::Get()->GetImageResIcon(-5301);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 SimpleDictAdhocCommand::Clone()
 {
 	return new SimpleDictAdhocCommand(in->mKey, in->mValue);
@@ -151,5 +151,5 @@ SimpleDictAdhocCommand::Clone()
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

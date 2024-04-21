@@ -10,7 +10,7 @@
 #include "commands/watchpath/WatchPathToast.h"
 #include "settingwindow/ShortcutSettingPage.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
@@ -332,7 +332,7 @@ void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const ITEM& item)
 		// 登録されていない場合はShell_NotifyIconのメッセージで代替する
 		CString notifyMsg;
 		notifyMsg.Format(_T("【%s】%s : %s"), cmdName, message, item.mPath);
-		soyokaze::commands::common::PopupMessage(notifyMsg);
+		launcherapp::commands::common::PopupMessage(notifyMsg);
 	}
 }
 

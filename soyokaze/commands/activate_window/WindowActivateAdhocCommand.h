@@ -3,11 +3,11 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-class WindowActivateAdhocCommand : public soyokaze::commands::common::AdhocCommandBase
+class WindowActivateAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	WindowActivateAdhocCommand(HWND hwnd);
@@ -17,7 +17,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -27,5 +27,5 @@ protected:
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

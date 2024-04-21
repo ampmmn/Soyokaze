@@ -10,7 +10,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
@@ -292,5 +292,5 @@ void ExecuteHistory::Load()
 
 } // end of namespace common
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

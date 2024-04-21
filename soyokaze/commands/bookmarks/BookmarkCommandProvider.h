@@ -2,12 +2,12 @@
 
 #include "commands/common/AdhocCommandProviderBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
 class BookmarkCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	BookmarkCommandProvider();
@@ -36,5 +36,5 @@ private:
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

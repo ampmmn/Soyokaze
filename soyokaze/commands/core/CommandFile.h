@@ -65,8 +65,8 @@ public:
 	bool Save();
 
 	// 廃止予定
-	bool Load(std::vector<soyokaze::core::Command*>& commands);
-	bool Save(const std::vector<soyokaze::core::Command*>& commands);
+	bool Load(std::vector<launcherapp::core::Command*>& commands);
+	bool Save(const std::vector<launcherapp::core::Command*>& commands);
 
 	static void TrimComment(CString& s);
 

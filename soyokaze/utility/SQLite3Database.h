@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 class SQLite3Database
@@ -25,5 +25,5 @@ private:
 
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

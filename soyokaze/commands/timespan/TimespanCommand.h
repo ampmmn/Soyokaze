@@ -4,7 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace timespan {
 
@@ -14,7 +14,7 @@ enum {
 	TYPE_SECOND,
 };
 
-class TimespanCommand : public soyokaze::commands::common::AdhocCommandBase
+class TimespanCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 
@@ -26,7 +26,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -36,5 +36,5 @@ protected:
 
 } // end of namespace timespan
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

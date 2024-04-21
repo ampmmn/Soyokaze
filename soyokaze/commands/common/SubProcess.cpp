@@ -9,13 +9,13 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
 struct SubProcess::PImpl
 {
-	PImpl(const soyokaze::core::CommandParameter& param) : mParam(param)
+	PImpl(const launcherapp::core::CommandParameter& param) : mParam(param)
 	{
 	}
 

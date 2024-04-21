@@ -3,7 +3,7 @@
 #include "utility/CharConverter.h"
 #include <regex>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace utility {
 
 typedef int (__stdcall * LPSQLITE3_OPEN)(const char *, void **);
@@ -133,5 +133,5 @@ SQLite3Wrapper* SQLite3Wrapper::Get()
 }
 
 } // end of namespace utility
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

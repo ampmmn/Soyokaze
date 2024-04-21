@@ -12,9 +12,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::activate_window;
+using namespace launcherapp::commands::activate_window;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
@@ -460,5 +460,5 @@ uint32_t MailItem::Release()
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

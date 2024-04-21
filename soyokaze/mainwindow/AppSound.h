@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 
 // アプリケーションの効果音再生クラス
 class AppSound
@@ -27,5 +27,5 @@ private:
 };
 
 
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

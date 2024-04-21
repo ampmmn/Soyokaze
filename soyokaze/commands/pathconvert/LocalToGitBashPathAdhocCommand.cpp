@@ -12,9 +12,9 @@
 #endif
 
 
-using Clipboard = soyokaze::commands::common::Clipboard;
+using Clipboard = launcherapp::commands::common::Clipboard;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -87,7 +87,7 @@ int LocalToGitBashPathAdhocCommand::Match(Pattern* pattern)
 	return Pattern::WholeMatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 LocalToGitBashPathAdhocCommand::Clone()
 {
 	auto clonedObj = std::make_unique<LocalToGitBashPathAdhocCommand>();
@@ -107,6 +107,6 @@ bool LocalToGitBashPathAdhocCommand::IsLocalPath(const CString& path)
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
@@ -120,5 +120,5 @@ void AppSettingBookmarkPage::OnCheckEnable()
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

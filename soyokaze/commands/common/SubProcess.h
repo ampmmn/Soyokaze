@@ -1,18 +1,18 @@
 #pragma once
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 	class CommandParameter;
 }
 }
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
 class SubProcess
 {
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 public:
 	class Instance;

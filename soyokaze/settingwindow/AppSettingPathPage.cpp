@@ -123,7 +123,7 @@ BOOL AppSettingPathPage::OnInitDialog()
 	// システムパスを取得
 	int index = 0;
 	std::vector<CString> systemPaths;
-	soyokaze::utility::LocalPathResolver::GetSystemPath(systemPaths);
+	launcherapp::utility::LocalPathResolver::GetSystemPath(systemPaths);
 	for (auto& path : systemPaths) {
 		listSysPath->InsertItem(index, path);
 	}

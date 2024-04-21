@@ -8,11 +8,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 
-using DispWrapper = soyokaze::commands::activate_window::DispWrapper;
+using DispWrapper = launcherapp::commands::activate_window::DispWrapper;
 
 struct PowerPointWindow::PImpl
 {
@@ -192,5 +192,5 @@ HICON PowerPointWindow::ResolveIcon()
 
 } // end of namespace presentation
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

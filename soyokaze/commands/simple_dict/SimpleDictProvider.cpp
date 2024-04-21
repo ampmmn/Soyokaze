@@ -13,11 +13,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct SimpleDictProvider::PImpl
 {
@@ -158,7 +158,7 @@ bool SimpleDictProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void SimpleDictProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	soyokaze::CommandQueryItemList& commands
+ 	launcherapp::CommandQueryItemList& commands
 )
 {
 	std::vector<SimpleDictDatabase::ITEM> items;
@@ -206,5 +206,5 @@ uint32_t SimpleDictProvider::Release()
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

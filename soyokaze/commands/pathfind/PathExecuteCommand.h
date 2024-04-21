@@ -3,14 +3,14 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
 class ExcludePathList;
 
 
-class PathExecuteCommand : public soyokaze::commands::common::AdhocCommandBase
+class PathExecuteCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	PathExecuteCommand(ExcludePathList* excludeList = nullptr);
@@ -25,7 +25,7 @@ public:
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -35,5 +35,5 @@ protected:
 
 } // end of namespace pathfind
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

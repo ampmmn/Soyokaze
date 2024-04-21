@@ -11,12 +11,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-using CharConverter = soyokaze::utility::CharConverter;
-using SQLite3Database = soyokaze::utility::SQLite3Database; 
+using CharConverter = launcherapp::utility::CharConverter;
+using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
 struct ChromiumBrowseHistory::PImpl
 {

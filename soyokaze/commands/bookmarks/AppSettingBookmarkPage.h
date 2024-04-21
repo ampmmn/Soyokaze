@@ -2,7 +2,7 @@
 
 #include "gui/SettingPage.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
@@ -51,5 +51,5 @@ protected:
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

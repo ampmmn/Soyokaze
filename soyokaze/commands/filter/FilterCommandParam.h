@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -40,5 +40,5 @@ public:
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
@@ -81,7 +81,7 @@ HICON MailCommand::GetIcon()
 	//return IconLoader::Get()->LoadExtensionIcon(fileExt);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 MailCommand::Clone()
 {
 	return new MailCommand(in->mMailItem);
@@ -89,5 +89,5 @@ MailCommand::Clone()
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 
@@ -70,7 +70,7 @@ HICON PptJumpCommand::GetIcon()
 	return PowerPointWindow::ResolveIcon();
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 PptJumpCommand::Clone()
 {
 	return new PptJumpCommand(in->mPage, in->mTitle);
@@ -78,5 +78,5 @@ PptJumpCommand::Clone()
 
 } // end of namespace presentation
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

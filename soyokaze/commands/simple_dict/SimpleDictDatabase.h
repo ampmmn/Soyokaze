@@ -5,7 +5,7 @@
 #include <vector>
 #include "matcher/Pattern.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 

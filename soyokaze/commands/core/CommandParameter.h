@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class CommandParameter

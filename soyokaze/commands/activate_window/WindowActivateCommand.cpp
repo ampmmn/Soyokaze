@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <regex>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -86,7 +86,7 @@ BOOL WindowActivateCommand::Execute(const Parameter& param)
 
 	if (IsWindow(hwndTarget) == FALSE) {
 		if (in->mParam.IsNotifyIfWindowNotFound()) {
-			soyokaze::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
+			launcherapp::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
 		}
 		return TRUE;
 	}
@@ -132,7 +132,7 @@ int WindowActivateCommand::EditDialog(const Parameter*)
 {
 	SettingDialog dlg;
 
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	auto param = in->mParam;
 
 	HOTKEY_ATTR hotKeyAttr;
@@ -153,7 +153,7 @@ int WindowActivateCommand::EditDialog(const Parameter*)
 	cmdNew->in->mParam = param;
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew.release());
 
@@ -183,7 +183,7 @@ bool WindowActivateCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 WindowActivateCommand::Clone()
 {
 	auto clonedCmd = std::make_unique<WindowActivateCommand>();
@@ -250,7 +250,7 @@ bool WindowActivateCommand::NewDialog(
 	// ホットキー設定を更新
 	if (commandParam.mHotKeyAttr.IsValid()) {
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
@@ -304,5 +304,5 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -3,17 +3,17 @@
 #include "commands/core/CommandProviderIF.h"
 #include <stdint.h>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
 
 class AdhocCommandProviderBase :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
 protected:
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 protected:
 	AdhocCommandProviderBase();
@@ -56,5 +56,5 @@ private:
 
 } // end of namespace calculator
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -18,14 +18,14 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
 // 切り替え候補ウインドウの一覧を再利用する間隔
 static const int HWNDUPDATE_INTERVAL = 5000;
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -163,7 +163,7 @@ bool ActivateWindowProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void ActivateWindowProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	soyokaze::CommandQueryItemList& commands
+ 	launcherapp::CommandQueryItemList& commands
 )
 {
 	if (in->mIsFirstCall) {
@@ -215,7 +215,7 @@ uint32_t ActivateWindowProvider::Release()
 
 void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 	Pattern* pattern,
-	soyokaze::CommandQueryItemList& commands
+	launcherapp::CommandQueryItemList& commands
 )
 {
 	if (in->mIsEnableWorksheet == false) {
@@ -252,7 +252,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 // ウインドウ切り替え用コマンド生成
 void ActivateWindowProvider::QueryAdhocCommandsForWindows(
 	Pattern* pattern,
-	soyokaze::CommandQueryItemList& commands
+	launcherapp::CommandQueryItemList& commands
 )
 {
 	if (in->mIsEnableWindowSwitch == false) {
@@ -304,5 +304,5 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

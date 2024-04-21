@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
@@ -105,5 +105,5 @@ uint32_t AdhocCommandBase::Release()
 
 } // end of namespace common
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

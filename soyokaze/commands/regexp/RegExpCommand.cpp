@@ -16,13 +16,13 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace regexp {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
 	mShowType(SW_NORMAL)
@@ -302,7 +302,7 @@ int RegExpCommand::GetRunAs()
 	return in->mRunAs;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 RegExpCommand::Clone()
 {
 	auto clonedObj = std::make_unique<RegExpCommand>();

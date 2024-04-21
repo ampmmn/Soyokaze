@@ -16,7 +16,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
@@ -181,5 +181,5 @@ void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

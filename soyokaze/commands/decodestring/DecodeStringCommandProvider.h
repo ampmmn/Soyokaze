@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandProviderBase.h"
 #include "commands/core/CommandProviderIF.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
 
 class DecodeStringCommandProvider :
-	public soyokaze::commands::common::AdhocCommandProviderBase
+	public launcherapp::commands::common::AdhocCommandProviderBase
 {
 private:
 	DecodeStringCommandProvider();
@@ -32,5 +32,5 @@ private:
 
 } // end of namespace decodestring
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

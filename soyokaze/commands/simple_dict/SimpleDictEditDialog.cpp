@@ -14,10 +14,10 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using Command =  soyokaze::core::Command;
+using CommandRepository = launcherapp::core::CommandRepository;
+using Command =  launcherapp::core::Command;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
@@ -284,7 +284,7 @@ bool SettingDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
 
 	// 重複チェック
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	if (in->mParam.mName.CompareNoCase(in->mOrgName) != 0) {
 		auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mParam.mName, false);
 		if (cmd != nullptr) {
@@ -548,5 +548,5 @@ void SettingDialog::OnButtonHotKey()
 
 } // end of namespace simple_dict
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

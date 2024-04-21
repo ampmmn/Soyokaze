@@ -4,7 +4,7 @@
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "hotkey/HotKeyAttribute.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 

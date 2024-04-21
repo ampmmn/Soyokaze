@@ -108,7 +108,7 @@ void CommandHotKeyDialog::UpdateStatus()
 				}
 			}
 			else {
-				auto manager = soyokaze::core::CommandHotKeyManager::GetInstance();
+				auto manager = launcherapp::core::CommandHotKeyManager::GetInstance();
 				bool alreadUsed = manager->HasKeyBinding(mHotKeyAttr);
 				if (alreadUsed) {
 					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);

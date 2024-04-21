@@ -23,9 +23,9 @@
 #define new DEBUG_NEW
 #endif
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 struct CommandRepository::PImpl
@@ -42,7 +42,7 @@ struct CommandRepository::PImpl
 		auto pref = AppPreference::Get();
 		pref->GetCommandKeyMappings(hotKeyMap);
 
-		auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		hotKeyManager->Clear(this);
 
 		int count = hotKeyMap.GetItemCount();
@@ -67,7 +67,7 @@ struct CommandRepository::PImpl
 		CommandFile commandFile;
 		commandFile.SetFilePath(mCommandFilePath);
 
-		std::vector<soyokaze::core::Command*> commands;
+		std::vector<launcherapp::core::Command*> commands;
 		for (auto& command : mCommands.Enumerate(commands)) {
 			command->Save(&commandFile);
 			command->Release();
@@ -464,7 +464,7 @@ int CommandRepository::RegisterCommandFromFiles(
 	return 0;
 }
 
-void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enumCommands)
+void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& enumCommands)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Enumerate(enumCommands);
@@ -473,7 +473,7 @@ void CommandRepository::EnumCommands(std::vector<soyokaze::core::Command*>& enum
 void
 CommandRepository::Query(
 	const CommandParameter& param,
-	std::vector<soyokaze::core::Command*>& items
+	std::vector<launcherapp::core::Command*>& items
 )
 {
 	for (auto& command : items) {
@@ -524,7 +524,7 @@ CommandRepository::Query(
 	}
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 CommandRepository::QueryAsWholeMatch(
 	const CString& strQueryStr,
 	bool isIncludeAdhocCommand
@@ -549,7 +549,7 @@ CommandRepository::QueryAsWholeMatch(
 	}
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
-	soyokaze::CommandQueryItemList matchedItems;
+	launcherapp::CommandQueryItemList matchedItems;
 	for (auto& provider : in->mProviders) {
 		provider->QueryAdhocCommands(&pat, matchedItems);
 

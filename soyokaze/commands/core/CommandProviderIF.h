@@ -8,7 +8,7 @@
 class CommandFile;
 class SettingPage;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 class CommandParameter;
@@ -16,7 +16,7 @@ class CommandParameter;
 class CommandProvider
 {
 public:
-	using CommandQueryItemList = soyokaze::CommandQueryItemList;
+	using CommandQueryItemList = launcherapp::CommandQueryItemList;
 
 public:
 	virtual ~CommandProvider() {}
@@ -57,7 +57,7 @@ public:
 };
 
 }
-} // end of namespace soyokaze::core
+} // end of namespace launcherapp::core
 
 // 派生クラス側で下記のマクロを通じてCommandProviderとして登録する
 
@@ -71,7 +71,7 @@ public:
 	bool clsName::RegisterCommandProvider() { \
 		try { \
 			clsName* inst = new clsName(); \
-			soyokaze::core::CommandRepository::GetInstance()->RegisterProvider(inst); \
+			launcherapp::core::CommandRepository::GetInstance()->RegisterProvider(inst); \
 			inst->Release(); \
 			return true; \
 		} catch(...) { return false; } \

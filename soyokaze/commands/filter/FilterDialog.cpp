@@ -23,12 +23,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
 
-using namespace soyokaze;
+using namespace launcherapp;
 
 struct FilterDialog::PImpl
 {
@@ -574,6 +574,6 @@ void FilterDialog::OnSize(UINT type, int cx, int cy)
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

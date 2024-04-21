@@ -11,7 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 static CString EncodeBase64(const std::vector<uint8_t>& stm)
 {
@@ -113,7 +113,7 @@ void CommandFile::TrimComment(CString& s)
 	}
 }
 
-bool CommandFile::Load(std::vector<soyokaze::core::Command*>& commands)
+bool CommandFile::Load(std::vector<launcherapp::core::Command*>& commands)
 {
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, in->mFilePath, _T("r,ccs=UTF-8")) != 0) {
@@ -264,7 +264,7 @@ static void WriteLine(CStdioFile& file, LPTSTR name, double value)
 	file.WriteString(_T("\n"));
 }
 
-bool CommandFile::Save(const std::vector<soyokaze::core::Command*>& commands)
+bool CommandFile::Save(const std::vector<launcherapp::core::Command*>& commands)
 {
 	FILE* fpOut = nullptr;
 	try {

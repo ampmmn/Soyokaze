@@ -11,12 +11,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace calculator {
 
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -166,5 +166,5 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 
 } // end of namespace calculator
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

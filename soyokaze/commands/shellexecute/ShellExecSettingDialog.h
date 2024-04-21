@@ -4,7 +4,7 @@
 #include "gui/SettingDialogBase.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace shellexecute {
 

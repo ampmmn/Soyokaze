@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace presentation {
 
@@ -30,5 +30,5 @@ private:
 
 } // end of namespace presentation
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -9,12 +9,12 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 CString MainDirCommand::TYPE(_T("Builtin-MainDir"));
 
@@ -52,7 +52,7 @@ HICON MainDirCommand::GetIcon()
 	return IconLoader::Get()->LoadMainDirIcon();
 }
 
-soyokaze::core::Command* MainDirCommand::Clone()
+launcherapp::core::Command* MainDirCommand::Clone()
 {
 	return new MainDirCommand();
 }

@@ -14,11 +14,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct BookmarkCommandProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -225,5 +225,5 @@ bool BookmarkCommandProvider::CreateSettingPages(
 
 } // end of namespace bookmarks
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

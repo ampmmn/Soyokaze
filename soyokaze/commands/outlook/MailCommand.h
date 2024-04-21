@@ -3,13 +3,13 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace outlook {
 
 class MailItem;
 
-class MailCommand : public soyokaze::commands::common::AdhocCommandBase
+class MailCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	MailCommand(MailItem* itemPtr);
@@ -21,7 +21,7 @@ public:
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 protected:
 	struct PImpl;
@@ -31,5 +31,5 @@ protected:
 
 } // end of namespace outlook
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

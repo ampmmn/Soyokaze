@@ -13,7 +13,7 @@
 #include "mainwindow/LauncherDropTarget.h"
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 	class AppHotKey;
 	class Command;
@@ -29,8 +29,8 @@ class WindowTransparency;
 // LauncherMainWindow ダイアログ
 class LauncherMainWindow : public CDialogEx, public TaskTrayEventListenerIF
 {
-	using CommandRepository = soyokaze::core::CommandRepository;
-	using AppHotKey = soyokaze::core::AppHotKey;
+	using CommandRepository = launcherapp::core::CommandRepository;
+	using AppHotKey = launcherapp::core::AppHotKey;
 
 // コンストラクション
 public:
@@ -53,7 +53,7 @@ protected:
 	void ClearContent();
 
 	// 現在選択中のコマンドを取得
-	soyokaze::core::Command* GetCurrentCommand();
+	launcherapp::core::Command* GetCurrentCommand();
 
 // 実装
 protected:

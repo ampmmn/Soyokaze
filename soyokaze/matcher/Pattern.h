@@ -1,6 +1,6 @@
 #pragma once
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 	class CommandParameter;
@@ -35,7 +35,7 @@ public:
 public:
 	virtual ~Pattern() {}
 
-	virtual void SetParam(const soyokaze::core::CommandParameter& param) = 0;
+	virtual void SetParam(const launcherapp::core::CommandParameter& param) = 0;
 	virtual int Match(const CString& str) = 0;
 	virtual int Match(const CString& str, int offset) = 0;
 	virtual CString GetFirstWord() = 0;

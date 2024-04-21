@@ -14,8 +14,8 @@
 #define new DEBUG_NEW
 #endif
 
-using Command = soyokaze::core::Command;
-using CommandHotKeyManager = soyokaze::core::CommandHotKeyManager;
+using Command = launcherapp::core::Command;
+using CommandHotKeyManager = launcherapp::core::CommandHotKeyManager;
 
 // リストの列情報
 enum {
@@ -212,7 +212,7 @@ void KeywordManagerDialog::ResetContents()
 	in->mShowCommands.clear();
 
 	// コマンド一覧を取得する
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->EnumCommands(in->mCommands);
 
 	// ホットキー一覧を取得
@@ -258,7 +258,7 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mName = name;
 	in->mDescription = in->mSelCommand->GetDescription();
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	bool isBuiltin = cmdRepoPtr->IsBuiltinName(name);
 	if (isBuiltin) {
 		btnEdit->EnableWindow(FALSE);
@@ -350,14 +350,14 @@ void KeywordManagerDialog::OnEditFilterChanged()
 
 void KeywordManagerDialog::OnButtonNew()
 {
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->NewCommandDialog();
 	ResetContents();
 }
 
 void KeywordManagerDialog::OnButtonEdit()
 {
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	if (in->mSelCommand == nullptr) {
 		return;
 	}
@@ -392,7 +392,7 @@ void KeywordManagerDialog::OnButtonDelete()
 		return ;
 	}
 
-	auto cmdRepoPtr = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->UnregisterCommand(in->mSelCommand);
 
 	ResetContents();

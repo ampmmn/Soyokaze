@@ -12,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 
 CString ChangeDirectoryCommand::TYPE(_T("Builtin-CD"));
@@ -77,7 +77,7 @@ HICON ChangeDirectoryCommand::GetIcon()
 	return IconLoader::Get()->GetImageResIcon(-185);
 }
 
-soyokaze::core::Command* ChangeDirectoryCommand::Clone()
+launcherapp::core::Command* ChangeDirectoryCommand::Clone()
 {
 	return new ChangeDirectoryCommand();
 }

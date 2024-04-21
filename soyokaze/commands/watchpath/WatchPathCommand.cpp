@@ -16,14 +16,14 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using CommandRepository = launcherapp::core::CommandRepository;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 struct WatchPathCommand::PImpl
 {
@@ -169,7 +169,7 @@ bool WatchPathCommand::IsPriorityRankEnabled()
 	return false;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 WatchPathCommand::Clone()
 {
 	auto clonedObj = std::make_unique<WatchPathCommand>();

@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace core {
 
 struct NameMapValue {
@@ -455,5 +455,5 @@ void CommandHotKeyManager::Clear(void* owner)
 }
 
 } // end of namespace core
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

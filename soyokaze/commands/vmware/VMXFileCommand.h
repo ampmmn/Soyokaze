@@ -3,12 +3,12 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace vmware {
 
 
-class VMXFileCommand : public soyokaze::commands::common::AdhocCommandBase
+class VMXFileCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	VMXFileCommand(const CString& name, const CString& fullPath);
@@ -20,7 +20,7 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	bool IsPriorityRankEnabled() override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 
 protected:
@@ -31,5 +31,5 @@ protected:
 
 } // end of namespace vmware
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -10,7 +10,7 @@
 #endif
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
@@ -193,5 +193,5 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -2,15 +2,15 @@
 
 #include "commands/core/CommandProviderIF.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace align_window {
 
 class AlignWindowProvider :
-	public soyokaze::core::CommandProvider
+	public launcherapp::core::CommandProvider
 {
-	using Command = soyokaze::core::Command;
-	using CommandParameter = soyokaze::core::CommandParameter;
+	using Command = launcherapp::core::Command;
+	using CommandParameter = launcherapp::core::CommandParameter;
 
 private:
 	AlignWindowProvider();
@@ -59,5 +59,5 @@ private:
 
 } // end of namespace align_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

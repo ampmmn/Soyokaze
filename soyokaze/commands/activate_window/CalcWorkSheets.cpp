@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
@@ -295,7 +295,7 @@ static CString DecodeURI(const CString& src)
 	}
 
 	CString out;
-	soyokaze::utility::CharConverter conv;
+	launcherapp::utility::CharConverter conv;
 	conv.Convert(buf.c_str(), out);
 
 	return out;
@@ -473,5 +473,5 @@ uint32_t CalcWorksheet::Release()
 
 } // end of namespace activate_window
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

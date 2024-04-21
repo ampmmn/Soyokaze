@@ -12,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
-using SubProcess = soyokaze::commands::common::SubProcess;
-using Clipboard = soyokaze::commands::common::Clipboard;
+using SubProcess = launcherapp::commands::common::SubProcess;
+using Clipboard = launcherapp::commands::common::Clipboard;
 
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
@@ -71,7 +71,7 @@ BOOL GitBashToLocalPathAdhocCommand::Execute(const Parameter& param)
 	else {
 		// フォルダを開く or 開く
 		if (PathFileExists(in->mFullPath) == FALSE) {
-			soyokaze::commands::common::PopupMessage(_T("パスは存在しません"));
+			launcherapp::commands::common::PopupMessage(_T("パスは存在しません"));
 			return TRUE;
 		}
 
@@ -118,7 +118,7 @@ int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 GitBashToLocalPathAdhocCommand::Clone()
 {
 	auto clonedObj = std::make_unique<GitBashToLocalPathAdhocCommand>();
@@ -138,6 +138,6 @@ bool GitBashToLocalPathAdhocCommand::IsGitBashPath(const CString& path)
 
 } // end of namespace pathconvert
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 

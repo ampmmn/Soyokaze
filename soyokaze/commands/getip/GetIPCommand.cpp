@@ -10,9 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace getip {
 
@@ -68,7 +68,7 @@ HICON GetIPCommand::GetIcon()
 	return IconLoader::Get()->GetImageResIcon(-74);
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 GetIPCommand::Clone()
 {
 	return new GetIPCommand(in->mDisplayName, in->mAddress);
@@ -76,5 +76,5 @@ GetIPCommand::Clone()
 
 } // end of namespace getip
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

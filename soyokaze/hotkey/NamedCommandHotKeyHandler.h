@@ -2,7 +2,7 @@
 
 #include "hotkey/CommandHotKeyHandlerIF.h"
 
-class NamedCommandHotKeyHandler : public soyokaze::core::CommandHotKeyHandler
+class NamedCommandHotKeyHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	NamedCommandHotKeyHandler(CString name);

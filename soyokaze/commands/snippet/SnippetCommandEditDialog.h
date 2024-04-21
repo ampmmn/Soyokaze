@@ -6,7 +6,7 @@
 
 class IconLabel;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace snippet {
 

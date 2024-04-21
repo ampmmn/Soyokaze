@@ -3,7 +3,7 @@
 #include <vector>
 #include <set>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace common {
 
@@ -41,7 +41,7 @@ private:
 
 } // end of namespace common
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
 
 

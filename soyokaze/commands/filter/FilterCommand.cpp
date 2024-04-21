@@ -26,14 +26,14 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
-using ShellExecCommand = soyokaze::commands::shellexecute::ShellExecCommand;
+using namespace launcherapp::commands::common;
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-using CommandRepository = soyokaze::core::CommandRepository;
-using LocalPathResolver = soyokaze::utility::LocalPathResolver;
-using CharConverter = soyokaze::utility::CharConverter;
+using CommandRepository = launcherapp::core::CommandRepository;
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+using CharConverter = launcherapp::utility::CharConverter;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace filter {
 
@@ -418,7 +418,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 	dlg.SetOrgName(GetName());
 
 	dlg.SetParam(in->mParam);
-	auto hotKeyManager = soyokaze::core::CommandHotKeyManager::GetInstance();
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	HOTKEY_ATTR hotKeyAttr;
 	bool isGlobal = false;
 	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr, &isGlobal)) {
@@ -438,7 +438,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 	cmdNew->SetParam(paramTmp);
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = soyokaze::core::CommandRepository::GetInstance();
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->UnregisterCommand(this);
 	cmdRepo->RegisterCommand(cmdNew.release());
 
@@ -469,7 +469,7 @@ bool FilterCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 FilterCommand::Clone()
 {
 	auto clonedObj = std::make_unique<FilterCommand>();
@@ -516,5 +516,5 @@ uint32_t FilterCommand::Release()
 
 } // end of namespace filter
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace uwp {
 
@@ -31,5 +31,5 @@ private:
 
 } // end of namespace uwp
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

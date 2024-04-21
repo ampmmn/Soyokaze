@@ -14,16 +14,16 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace websearch {
 
 using WebSearchCommandPtr = std::unique_ptr<WebSearchCommand, std::function<void(void*)> >;
 using WebSearchCommandList = std::vector<WebSearchCommandPtr>;
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
-struct WebSearchProvider::PImpl : public soyokaze::core::CommandRepositoryListenerIF
+struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
 {
 	PImpl()
 	{
@@ -37,7 +37,7 @@ struct WebSearchProvider::PImpl : public soyokaze::core::CommandRepositoryListen
 		cmdRepo->UnregisterListener(this);
 	}
 
-	void OnDeleteCommand(soyokaze::core::Command* cmd) override
+	void OnDeleteCommand(launcherapp::core::Command* cmd) override
  	{
 		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
 			if ((*it).get() != cmd) {
@@ -222,5 +222,5 @@ uint32_t WebSearchProvider::Release()
 
 } // end of namespace websearch
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

@@ -2,7 +2,7 @@
 
 #include "commands/builtin/BuiltinCommandBase.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace builtin {
 
@@ -14,7 +14,7 @@ public:
 	virtual ~DeleteCommand();
 
 	BOOL Execute(const Parameter& param) override;
-	soyokaze::core::Command* Clone() override;
+	launcherapp::core::Command* Clone() override;
 
 	CString GetType() override;
 	static CString TYPE;

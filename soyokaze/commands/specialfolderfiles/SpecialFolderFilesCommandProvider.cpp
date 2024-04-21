@@ -11,11 +11,11 @@
 #define new DEBUG_NEW
 #endif
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
-using CommandRepository = soyokaze::core::CommandRepository;
+using CommandRepository = launcherapp::core::CommandRepository;
 
 struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -98,5 +98,5 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 

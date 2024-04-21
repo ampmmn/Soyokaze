@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "AutoWrap.h"
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace activate_window {
 

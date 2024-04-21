@@ -11,9 +11,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace soyokaze::commands::common;
+using namespace launcherapp::commands::common;
 
-namespace soyokaze {
+namespace launcherapp {
 namespace commands {
 namespace vmware {
 
@@ -129,7 +129,7 @@ bool VMXFileCommand::IsPriorityRankEnabled()
 	return false;
 }
 
-soyokaze::core::Command*
+launcherapp::core::Command*
 VMXFileCommand::Clone()
 {
 	return new VMXFileCommand(this->mName, in->mFullPath);
@@ -137,5 +137,5 @@ VMXFileCommand::Clone()
 
 } // end of namespace vmware
 } // end of namespace commands
-} // end of namespace soyokaze
+} // end of namespace launcherapp
 
