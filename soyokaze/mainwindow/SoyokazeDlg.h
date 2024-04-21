@@ -85,6 +85,7 @@ protected:
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageSetSel(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);

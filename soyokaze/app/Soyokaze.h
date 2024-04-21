@@ -40,7 +40,8 @@ public:
 	// 先行するプロセスがあればそちらを有効化する
 	bool ActivateExistingProcess();
 
-	bool SendCommandString(const CString& commandStr);
+	bool SendCommandString(const CString& commandStr, bool isPasteOnly);
+	bool SendCaretRange(int startPos, int length);
 	bool RegisterPath(const CString& pathStr);
 
 	// バルーンメッセージを表示

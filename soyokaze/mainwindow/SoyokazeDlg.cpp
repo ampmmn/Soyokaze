@@ -200,6 +200,7 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	ON_MESSAGE(WM_APP+9, OnUserMessageSetClipboardString)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
 	ON_MESSAGE(WM_APP+11, OnUserMessageSetText)
+	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -325,7 +326,14 @@ LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
-	ExecuteCommand(text);
+	bool isPasteOnly = (wParam == 1);
+
+	if(isPasteOnly) {
+		ExecuteCommand(text);
+	}
+	else {
+		ExecuteCommand(text);
+	}
 	return 0;
 }
 
@@ -341,11 +349,48 @@ LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 		SPDLOG_WARN(_T("text is null"));
 		return 0;
 	}
+	SPDLOG_DEBUG(_T("text:{}"), text);
 
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
 	OnEditCommandChanged();
 
+	return 0;
+}
+
+/**
+ * 入力欄の選択範囲を設定する
+ */
+LRESULT CSoyokazeDlg::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
+{
+	SPDLOG_DEBUG(_T("args wp:{0} lp:{1}"), wParam, lParam);
+
+	int startChar = (int)wParam;
+
+	int endChar = startChar;
+	int lp = (int)lParam;
+	if(startChar == -1) {
+		// startChar=-1は選択解除として扱う
+	}
+	else if (lp >= 0) {
+		endChar = startChar + lp;
+	}
+	else {
+		// lParamが負の値の場合、逆方向からの選択として扱う(bluewindの挙動に合わせる)
+		CString str;
+		in->mKeywordEdit.GetWindowText(str);
+
+		if (startChar == 0) {
+			startChar = str.GetLength();
+		}
+
+		startChar = startChar + lp;
+		endChar = startChar - lp;
+		SPDLOG_DEBUG(_T("text:{0} length:{1} startChar:{2} endChar:{3}"), 
+		             (LPCTSTR)str, str.GetLength(), startChar, endChar);
+	}
+
+	in->mKeywordEdit.SetSel(startChar, endChar);
 	return 0;
 }
 

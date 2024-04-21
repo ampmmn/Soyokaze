@@ -46,3 +46,38 @@ bool StartupParam::HasHideOption()
 {
 	return in->mArgs.Has(_T("/Hide"));
 }
+
+//
+bool StartupParam::HasPasteOption(CString& value)
+{
+	return in->mArgs.GetValue(_T("/Paste"), value) ||
+	       in->mArgs.GetBWOptValue(_T("/Paste="), value);
+}
+
+bool StartupParam::GetSelectRange(int& startPos, int& selLength)
+{
+	if (in->mArgs.Has(_T("/SelStart")) == false && in->mArgs.Has(_T("/SelLength")) == false) {
+		SPDLOG_DEBUG(_T("range is not specified."));
+		return false;
+	}
+
+	startPos = 0;
+
+	CString value;
+	if (in->mArgs.GetBWOptValue(_T("/SelStart="), value)) {
+		startPos = _ttoi(value);
+	}
+
+	if (startPos < -1) {
+		// startPos=-1を選択解除として扱う
+		spdlog::warn(_T("startPos is out of bounds. {}"), startPos);
+		startPos = -1;
+	}
+
+	selLength = 0;
+	if (in->mArgs.GetBWOptValue(_T("/SelLength="), value)) {
+		selLength = _ttoi(value);
+	}
+	return true;
+}
+

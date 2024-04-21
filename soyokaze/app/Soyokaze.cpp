@@ -164,7 +164,7 @@ BOOL CSoyokazeApp::InitSecondInstance()
 	CString value;
 	if (startupParam.HasRunCommand(value)) {
 		// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
-		SendCommandString(value);
+		SendCommandString(value, false);
 		return FALSE;
 	}
 
@@ -185,6 +185,22 @@ BOOL CSoyokazeApp::InitSecondInstance()
 
 	// プロセスをアクティブ化し、このプロセスは終了する
 	ActivateExistingProcess();
+
+	if (startupParam.HasPasteOption(value)) {
+		// /pasteオプションでコマンドが与えられた場合、既存プロセス側にテキストを送る
+		// 直前で実行したActivateExistingProcessにより、入力欄のクリアが走るため、テキストを送る処理をあとに行っている
+		spdlog::debug(_T("HasPaste value:{}"), (LPCTSTR)value);
+
+		bool isPasteOnly = true;
+		SendCommandString(value, isPasteOnly);
+	}
+
+	// 選択範囲を指定するオプションが指定されていたら範囲を送信する
+	int startPos = -1, selLength = 0;
+	if (startupParam.GetSelectRange(startPos, selLength)) {
+		SendCaretRange(startPos, selLength);
+	}
+
 	return FALSE;
 }
 
@@ -227,7 +243,7 @@ bool CSoyokazeApp::ActivateExistingProcess()
  *  先行プロセスに対しコマンド文字列を送る
  *  (先行プロセス側でコマンドを実行する)
  */
-bool CSoyokazeApp::SendCommandString(const CString& commandStr)
+bool CSoyokazeApp::SendCommandString(const CString& commandStr, bool isPasteOnly)
 {
 	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
 
@@ -239,10 +255,34 @@ bool CSoyokazeApp::SendCommandString(const CString& commandStr)
 
 	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
 	if (hwndCommand == NULL) {
+		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
 		return false;
 	}
 
+	if (isPasteOnly) {
+		SendMessage(hwndCommand, WM_APP+1, 0, 0);
+	}
 	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)commandStr);
+	return true;
+}
+
+bool CSoyokazeApp::SendCaretRange(int startPos, int length)
+{
+	SPDLOG_DEBUG(_T("args startPos:{0} length:{1}"), startPos, length);
+
+	SharedHwnd sharedHwnd;
+	HWND hwnd = sharedHwnd.GetHwnd();
+	if (hwnd == NULL) {
+		return false;
+	}
+
+	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
+	if (hwndCommand == NULL) {
+		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
+		return false;
+	}
+
+	SendMessage(hwndCommand, WM_APP+2, startPos, length);
 	return true;
 }
 
@@ -264,7 +304,7 @@ bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 
 	CString commandStr(_T("new "));
 	commandStr += _T("\"") + name + _T("\" \"") + pathStr + _T("\"");
-	return SendCommandString(commandStr);
+	return SendCommandString(commandStr, false);
 }
 
 // バルーンメッセージを表示

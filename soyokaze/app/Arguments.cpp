@@ -28,8 +28,14 @@ CString Arguments::Get(int index)
 
 bool Arguments::Has(LPCTSTR optName)
 {
+	CString optLower(optName);
+	optLower.MakeLower();
+
 	for (size_t i = 0; i < mArgV.size(); ++i) {
-		if (mArgV[i] == optName) {
+		auto arg = mArgV[i]; 
+		arg.TrimLeft();
+		arg.MakeLower();
+		if (arg.Find(optLower) == 0) {
 			return true;
 		}
 	}
@@ -39,7 +45,7 @@ bool Arguments::Has(LPCTSTR optName)
 bool Arguments::GetValue(LPCTSTR optName, CString& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {
-		if (mArgV[i] == optName && i+1 < mArgV.size()) {
+		if (mArgV[i].CompareNoCase(optName)== 0 && i+1 < mArgV.size()) {
 			value = mArgV[i+1];
 			return true;
 		}
@@ -52,11 +58,12 @@ bool Arguments::GetBWOptValue(LPCTSTR optName, CString& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {
 
-		auto arg = mArgV[i];
-		if (_tcsncmp(optName, arg, _tcslen(optName)) != 0) {
+		auto argPart = mArgV[i].Left((int)_tcslen(optName));
+		if (_tcsicmp(optName, argPart) != 0) {
 			continue;
 		}
 
+		auto arg = mArgV[i];
 		int sepPos = arg.Find(_T("="));
 		if (sepPos == -1) {
 			continue;

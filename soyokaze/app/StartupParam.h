@@ -15,6 +15,10 @@ public:
 	bool HasPathToRegister(CString& pathToRegister);
 	//
 	bool HasHideOption();
+	//
+	bool HasPasteOption(CString& value);
+	//
+	bool GetSelectRange(int& startPos, int& selLength);
 
 private:
 	struct PImpl;
