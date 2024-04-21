@@ -4,6 +4,8 @@
 
 ## Added
 
+- コマンドラインオプション`/Paste` `/SelStart` `/SelLength` を実装
+  - bluewind互換オプション
 - アプリ設定画面からログ出力レベルを選択できる機能を追加
 - ログ出力ライブラリとして[spdlog](https://github.com/gabime/spdlog)を導入
   - 自前のログをやめてspdlogでログ出力を行うようにした
