@@ -941,7 +941,13 @@ void CSoyokazeDlg::OnOK()
 
 void CSoyokazeDlg::OnCancel()
 {
-	ShowWindow(SW_HIDE);
+	// 入力欄に入力中のテキストがあったらクリア、何もなければメインウインドウを非表示にする
+	if (in->mCommandStr.IsEmpty() == FALSE) {
+		ClearContent();
+	}
+	else {
+		ShowWindow(SW_HIDE);
+	}
 }
 
 LRESULT CSoyokazeDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
