@@ -660,7 +660,7 @@
     <ClInclude Include="mainwindow/CmdReceiveEdit.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/SoyokazeDropTarget.h">
+    <ClInclude Include="mainwindow/LauncherDropTarget.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands/builtin/AboutDlg.h">
@@ -1322,7 +1322,7 @@
     <ClCompile Include="mainwindow/CmdReceiveEdit.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/SoyokazeDropTarget.cpp">
+    <ClCompile Include="mainwindow/LauncherDropTarget.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands/builtin/AboutDlg.cpp">

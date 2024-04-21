@@ -10,7 +10,7 @@
 #include "gui/KeywordEdit.h"
 #include "mainwindow/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"
-#include "mainwindow/SoyokazeDropTarget.h"
+#include "mainwindow/LauncherDropTarget.h"
 
 
 namespace soyokaze {

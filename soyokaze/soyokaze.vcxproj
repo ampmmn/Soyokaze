@@ -560,7 +560,7 @@
     <ClInclude Include="app/Arguments.h" />
     <ClInclude Include="app/LauncherApp.h" />
     <ClInclude Include="mainwindow/LauncherMainWindow.h" />
-    <ClInclude Include="mainwindow/SoyokazeDropTarget.h" />
+    <ClInclude Include="mainwindow/LauncherDropTarget.h" />
     <ClInclude Include="mainwindow/CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
@@ -790,7 +790,7 @@
     <ClCompile Include="app/Arguments.cpp" />
     <ClCompile Include="app/LauncherApp.cpp" />
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
-    <ClCompile Include="mainwindow/SoyokazeDropTarget.cpp" />
+    <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />
     <ClCompile Include="mainwindow/CmdReceiveEdit.cpp" />
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />

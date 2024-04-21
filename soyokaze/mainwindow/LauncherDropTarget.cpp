@@ -1,21 +1,21 @@
 #include "pch.h"
-#include "SoyokazeDropTarget.h"
+#include "LauncherDropTarget.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-SoyokazeDropTarget::SoyokazeDropTarget(CWnd* parent) : mParent(parent)
+LauncherDropTarget::LauncherDropTarget(CWnd* parent) : mParent(parent)
 {
 	mUrlFomatId = RegisterClipboardFormat(CFSTR_INETURL);
 }
 
-SoyokazeDropTarget::~SoyokazeDropTarget()
+LauncherDropTarget::~LauncherDropTarget()
 {
 }
 
 
-DROPEFFECT SoyokazeDropTarget::OnDragEnter(
+DROPEFFECT LauncherDropTarget::OnDragEnter(
 	CWnd* wnd, COleDataObject* dataObj, DWORD dwKeyState, CPoint point)
 {
 	mParent->SendMessage(WM_APP+4, 0, (LPARAM)wnd);
@@ -30,7 +30,7 @@ DROPEFFECT SoyokazeDropTarget::OnDragEnter(
 	return DROPEFFECT_NONE;
 }
 
-DROPEFFECT SoyokazeDropTarget::OnDragOver(
+DROPEFFECT LauncherDropTarget::OnDragOver(
 	CWnd* wnd,
  	COleDataObject* dataObj,
  	DWORD keyState,
@@ -52,7 +52,7 @@ DROPEFFECT SoyokazeDropTarget::OnDragOver(
 /**
  *
  */
-BOOL SoyokazeDropTarget::OnDrop(
+BOOL LauncherDropTarget::OnDrop(
 	CWnd* wnd,
 	COleDataObject* dataObj,
 	DROPEFFECT dropEffect,
@@ -64,7 +64,7 @@ BOOL SoyokazeDropTarget::OnDrop(
 	return TRUE;
 }
 
-void SoyokazeDropTarget::OnDragLeave(CWnd* pWnd)
+void LauncherDropTarget::OnDragLeave(CWnd* pWnd)
 {
 	__super::OnDragLeave(pWnd);
 }

@@ -91,8 +91,8 @@ struct LauncherMainWindow::PImpl
 
 
 	// ドロップターゲット
-	SoyokazeDropTarget mDropTargetDialog;
-	SoyokazeDropTarget mDropTargetEdit;
+	LauncherDropTarget mDropTargetDialog;
+	LauncherDropTarget mDropTargetEdit;
 
 	// 稼働状況を監視する(長時間連続稼働を警告する目的)
 	OperationWatcher mOpWatcher;

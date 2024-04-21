@@ -1,10 +1,10 @@
 #pragma once
 
-class SoyokazeDropTarget : public COleDropTarget
+class LauncherDropTarget : public COleDropTarget
 {
 public:
-	SoyokazeDropTarget(CWnd* parent);
-	virtual ~SoyokazeDropTarget();
+	LauncherDropTarget(CWnd* parent);
+	virtual ~LauncherDropTarget();
 
 	CWnd* mParent;
 	UINT mUrlFomatId;
