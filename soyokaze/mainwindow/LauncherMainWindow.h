@@ -1,5 +1,5 @@
 ﻿
-// SoyokazeDlg.h : ヘッダー ファイル
+// LauncherMainWindow.h : ヘッダー ファイル
 //
 
 #pragma once
@@ -26,16 +26,16 @@ class SharedHwnd;
 class WindowPosition;
 class WindowTransparency;
 
-// CSoyokazeDlg ダイアログ
-class CSoyokazeDlg : public CDialogEx, public TaskTrayEventListenerIF
+// LauncherMainWindow ダイアログ
+class LauncherMainWindow : public CDialogEx, public TaskTrayEventListenerIF
 {
 	using CommandRepository = soyokaze::core::CommandRepository;
 	using AppHotKey = soyokaze::core::AppHotKey;
 
 // コンストラクション
 public:
-	CSoyokazeDlg(CWnd* pParent = nullptr);	// 標準コンストラクター
-	virtual ~CSoyokazeDlg();
+	LauncherMainWindow(CWnd* pParent = nullptr);	// 標準コンストラクター
+	virtual ~LauncherMainWindow();
 
 public:
 	static void ActivateWindow(HWND hwnd);

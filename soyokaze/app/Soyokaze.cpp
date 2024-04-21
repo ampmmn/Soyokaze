@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "app/Soyokaze.h"
-#include "mainwindow/SoyokazeDlg.h"
+#include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
 #include "app/StartupParam.h"
@@ -132,7 +132,7 @@ BOOL CSoyokazeApp::InitFirstInstance()
 	// MFC コントロールでテーマを有効にするために、"Windows ネイティブ" のビジュアル マネージャーをアクティブ化
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	CSoyokazeDlg dlg;
+	LauncherMainWindow dlg;
 	m_pMainWnd = &dlg;
 
 	try {
@@ -234,7 +234,7 @@ bool CSoyokazeApp::ActivateExistingProcess()
 		return false;
 	}
 
-	CSoyokazeDlg::ActivateWindow(hwnd);
+	LauncherMainWindow::ActivateWindow(hwnd);
 
 	return true;
 }

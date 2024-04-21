@@ -1,11 +1,11 @@
 ﻿
-// SoyokazeDlg.cpp : 実装ファイル
+// LauncherMainWindow.cpp : 実装ファイル
 //
 
 #include "pch.h"
 #include "framework.h"
 #include "app/Soyokaze.h"
-#include "mainwindow/SoyokazeDlg.h"
+#include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
@@ -39,9 +39,9 @@ using namespace soyokaze;
 static UINT TIMERID_KEYSTATE = 1;
 static UINT TIMERID_OPERATION = 2;
 
-struct CSoyokazeDlg::PImpl
+struct LauncherMainWindow::PImpl
 {
-	PImpl(CSoyokazeDlg* thisPtr) : 
+	PImpl(LauncherMainWindow* thisPtr) : 
 		mDropTargetDialog(thisPtr),
 		mDropTargetEdit(thisPtr)
 	{
@@ -100,7 +100,7 @@ struct CSoyokazeDlg::PImpl
 
 };
 
-void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
+void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
 {
 	mWindowPositionPtr = std::make_unique<WindowPosition>();
 
@@ -112,7 +112,7 @@ void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset
 	}
 }
 
-//void CSoyokazeDlg::PImpl::UpdateGuide(CWnd* thisPtr, bool isShow)
+//void LauncherMainWindow::PImpl::UpdateGuide(CWnd* thisPtr, bool isShow)
 //{
 //	thisPtr->GetDlgItem(IDC_STATIC_GUIDE)->ShowWindow(isShow ? SW_SHOW : SW_HIDE);
 //
@@ -152,9 +152,9 @@ void CSoyokazeDlg::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// CSoyokazeDlg ダイアログ
+// LauncherMainWindow ダイアログ
 
-CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
+LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(AppPreference::Get()->IsShowGuide() ? IDD_MAIN_GUIDE : IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
@@ -164,14 +164,14 @@ CSoyokazeDlg::CSoyokazeDlg(CWnd* pParent /*=nullptr*/)
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 }
 
-CSoyokazeDlg::~CSoyokazeDlg()
+LauncherMainWindow::~LauncherMainWindow()
 {
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
 
 	// mWindowPositionPtrのインスタンス破棄時に位置情報を設定ファイルに保存する
 }
 
-void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
+void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_COMMAND, in->mCommandStr);
@@ -179,7 +179,7 @@ void CSoyokazeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
 }
 
-BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_EN_CHANGE(IDC_EDIT_COMMAND, OnEditCommandChanged)
@@ -210,25 +210,25 @@ BEGIN_MESSAGE_MAP(CSoyokazeDlg, CDialogEx)
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
 
-void CSoyokazeDlg::ActivateWindow(HWND hwnd)
+void LauncherMainWindow::ActivateWindow(HWND hwnd)
 {
 	::PostMessage(hwnd, WM_APP+2, 0, 0);
 }
 
-void CSoyokazeDlg::ActivateWindow()
+void LauncherMainWindow::ActivateWindow()
 {
 	if (IsWindow(GetSafeHwnd())) {
-		CSoyokazeDlg::ActivateWindow(GetSafeHwnd());
+		LauncherMainWindow::ActivateWindow(GetSafeHwnd());
 	}
 }
 
-void CSoyokazeDlg::HideWindow()
+void LauncherMainWindow::HideWindow()
 {
 	::ShowWindow(GetSafeHwnd(), SW_HIDE);
 }
 
 
-void CSoyokazeDlg::ShowHelp()
+void LauncherMainWindow::ShowHelp()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -263,7 +263,7 @@ void CSoyokazeDlg::ShowHelp()
  * ActiveWindow経由の処理
  * (後続プロセスから処理できるようにするためウインドウメッセージ経由で処理している)
  */
-LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
 	bool isShowForce = ((wParam & 0x1) != 0);
 
@@ -316,7 +316,7 @@ LRESULT CSoyokazeDlg::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 /**
  * 後続プロセスから "-c <文字列>" 経由でコマンド実行指示を受け取ったときの処理
  */
-LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -340,7 +340,7 @@ LRESULT CSoyokazeDlg::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
 /**
  * 入力欄にテキストをセットする処理
  */
-LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -361,7 +361,7 @@ LRESULT CSoyokazeDlg::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 /**
  * 入力欄の選択範囲を設定する
  */
-LRESULT CSoyokazeDlg::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 {
 	SPDLOG_DEBUG(_T("args wp:{0} lp:{1}"), wParam, lParam);
 
@@ -397,7 +397,7 @@ LRESULT CSoyokazeDlg::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 
 
 LRESULT 
-CSoyokazeDlg::OnUserMessageDragOverObject(
+LauncherMainWindow::OnUserMessageDragOverObject(
 	WPARAM wParam,
  	LPARAM lParam
 )
@@ -415,7 +415,7 @@ CSoyokazeDlg::OnUserMessageDragOverObject(
 }
 
 LRESULT 
-CSoyokazeDlg::OnUserMessageDropObject(
+LauncherMainWindow::OnUserMessageDropObject(
 	WPARAM wParam,
  	LPARAM lParam
 )
@@ -490,7 +490,7 @@ CSoyokazeDlg::OnUserMessageDropObject(
 }
 
 LRESULT
-CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
+LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -531,7 +531,7 @@ CSoyokazeDlg::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 }
 
 
-LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
+LRESULT LauncherMainWindow::OnUserMessageHideAtFirst(
 	WPARAM wParam,
 	LPARAM lParam
 )
@@ -542,7 +542,7 @@ LRESULT CSoyokazeDlg::OnUserMessageHideAtFirst(
 	return 0;
 }
 
-LRESULT CSoyokazeDlg::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -550,7 +550,7 @@ LRESULT CSoyokazeDlg::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CSoyokazeDlg::OnUserMessageSetClipboardString(
+LRESULT LauncherMainWindow::OnUserMessageSetClipboardString(
 	WPARAM wParam,
  	LPARAM lParam
 )
@@ -575,7 +575,7 @@ LRESULT CSoyokazeDlg::OnUserMessageSetClipboardString(
 	return 0;
 }
 
-LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
+LRESULT LauncherMainWindow::OnUserMessageGetClipboardString(
 	WPARAM wParam,
  	LPARAM lParam
 )
@@ -606,7 +606,7 @@ LRESULT CSoyokazeDlg::OnUserMessageGetClipboardString(
 	return 0;
 }
 
-bool CSoyokazeDlg::ExecuteCommand(const CString& str)
+bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
 	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
 
@@ -629,7 +629,7 @@ bool CSoyokazeDlg::ExecuteCommand(const CString& str)
 }
 
 // タスクトレイのダブルクリック時通知
-LRESULT CSoyokazeDlg::OnTaskTrayLButtonDblclk()
+LRESULT LauncherMainWindow::OnTaskTrayLButtonDblclk()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -638,7 +638,7 @@ LRESULT CSoyokazeDlg::OnTaskTrayLButtonDblclk()
 }
 
 // タスクトレイからのコンテキストメニュー表示依頼
-LRESULT CSoyokazeDlg::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
+LRESULT LauncherMainWindow::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -646,9 +646,9 @@ LRESULT CSoyokazeDlg::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 	return 0;
 }
 
-// CSoyokazeDlg メッセージ ハンドラー
+// LauncherMainWindow メッセージ ハンドラー
 
-BOOL CSoyokazeDlg::OnInitDialog()
+BOOL LauncherMainWindow::OnInitDialog()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -738,7 +738,7 @@ BOOL CSoyokazeDlg::OnInitDialog()
 //  下のコードが必要です。ドキュメント/ビュー モデルを使う MFC アプリケーションの場合、
 //  これは、Framework によって自動的に設定されます。
 
-void CSoyokazeDlg::OnPaint()
+void LauncherMainWindow::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -765,24 +765,24 @@ void CSoyokazeDlg::OnPaint()
 
 // ユーザーが最小化したウィンドウをドラッグしているときに表示するカーソルを取得するために、
 //  システムがこの関数を呼び出します。
-HCURSOR CSoyokazeDlg::OnQueryDragIcon()
+HCURSOR LauncherMainWindow::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(in->mIconHandle);
 }
 
-CSoyokazeDlg::CommandRepository*
-CSoyokazeDlg::GetCommandRepository()
+LauncherMainWindow::CommandRepository*
+LauncherMainWindow::GetCommandRepository()
 {
 	return CommandRepository::GetInstance();
 }
 
-void CSoyokazeDlg::SetDescription(const CString& msg)
+void LauncherMainWindow::SetDescription(const CString& msg)
 {
 	in->mDescriptionStr = msg;
 	UpdateData(FALSE);
 }
 
-void CSoyokazeDlg::ClearContent()
+void LauncherMainWindow::ClearContent()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -800,7 +800,7 @@ void CSoyokazeDlg::ClearContent()
 
 // 現在選択中のコマンドを取得
 core::Command*
-CSoyokazeDlg::GetCurrentCommand()
+LauncherMainWindow::GetCurrentCommand()
 {
 	return in->mCandidates.GetCurrentCommand();
 }
@@ -808,7 +808,7 @@ CSoyokazeDlg::GetCurrentCommand()
 /**
  * テキスト変更通知
  */
-void CSoyokazeDlg::OnEditCommandChanged()
+void LauncherMainWindow::OnEditCommandChanged()
 {
 	//DWORD curCaretPos = in->mKeywordEdit.GetSel();
 
@@ -884,7 +884,7 @@ void CSoyokazeDlg::OnEditCommandChanged()
 	in->mCandidateListBox.Invalidate(TRUE);
 }
 
-void CSoyokazeDlg::OnOK()
+void LauncherMainWindow::OnOK()
 {
 	UpdateData();
 
@@ -939,7 +939,7 @@ void CSoyokazeDlg::OnOK()
 	ShowWindow(SW_HIDE);
 }
 
-void CSoyokazeDlg::OnCancel()
+void LauncherMainWindow::OnCancel()
 {
 	// 入力欄に入力中のテキストがあったらクリア、何もなければメインウインドウを非表示にする
 	if (in->mCommandStr.IsEmpty() == FALSE) {
@@ -950,7 +950,7 @@ void CSoyokazeDlg::OnCancel()
 	}
 }
 
-LRESULT CSoyokazeDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
+LRESULT LauncherMainWindow::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 {
 	if (msg == WM_HOTKEY) {
 		// ホットキー押下からの表示状態変更
@@ -968,7 +968,7 @@ LRESULT CSoyokazeDlg::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 	return CDialogEx::WindowProc(msg, wp, lp);
 }
 
-BOOL CSoyokazeDlg::PreTranslateMessage(MSG* pMsg)
+BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
 {
 	HACCEL accel = core::CommandHotKeyManager::GetInstance()->GetAccelerator();
 	if (accel && TranslateAccelerator(GetSafeHwnd(), accel, pMsg)) {
@@ -977,7 +977,7 @@ BOOL CSoyokazeDlg::PreTranslateMessage(MSG* pMsg)
 	return __super::PreTranslateMessage(pMsg);
 }
 
-void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	if (bShow) {
 		// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
@@ -1004,7 +1004,7 @@ void CSoyokazeDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 /**
  *
  */
-LRESULT CSoyokazeDlg::OnKeywordEditNotify(
+LRESULT LauncherMainWindow::OnKeywordEditNotify(
 	WPARAM wParam,
 	LPARAM lParam
 )
@@ -1110,7 +1110,7 @@ LRESULT CSoyokazeDlg::OnKeywordEditNotify(
 }
 
 // クライアント領域をドラッグしてウインドウを移動させるための処理
-LRESULT CSoyokazeDlg::OnNcHitTest(
+LRESULT LauncherMainWindow::OnNcHitTest(
 	CPoint point
 )
 {
@@ -1128,7 +1128,7 @@ LRESULT CSoyokazeDlg::OnNcHitTest(
 	return __super::OnNcHitTest(point);
 }
 
-void CSoyokazeDlg::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
+void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
 	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
@@ -1140,7 +1140,7 @@ void CSoyokazeDlg::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 }
 
-void CSoyokazeDlg::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
+void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
 	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
@@ -1148,7 +1148,7 @@ void CSoyokazeDlg::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 	OnOK();
 }
 
-void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
+void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
 
@@ -1160,7 +1160,7 @@ void CSoyokazeDlg::OnSize(UINT type, int cx, int cy)
 /**
  * コンテキストメニューの表示
  */
-void CSoyokazeDlg::OnContextMenu(
+void LauncherMainWindow::OnContextMenu(
 	CWnd* pWnd,
 	CPoint point
 )
@@ -1236,14 +1236,14 @@ void CSoyokazeDlg::OnContextMenu(
 	}
 }
 
-void CSoyokazeDlg::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
+void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
 	in->mWindowTransparencyPtr->UpdateActiveState(nState);
 	__super::OnActivate(nState, wnd, bMinimized);
 }
 
 // Windowsの終了(ログオフ)通知
-void CSoyokazeDlg::OnEndSession(BOOL isEnding)
+void LauncherMainWindow::OnEndSession(BOOL isEnding)
 {
 	SPDLOG_INFO(_T("args isEnding:{}"), (bool)isEnding);
 
@@ -1252,20 +1252,20 @@ void CSoyokazeDlg::OnEndSession(BOOL isEnding)
 	}
 }
 
-void CSoyokazeDlg::OnCommandHelp()
+void LauncherMainWindow::OnCommandHelp()
 {
 	// ヘルプ表示
 	ShowHelp();
 }
 
-void CSoyokazeDlg::OnCommandHotKey(UINT id)
+void LauncherMainWindow::OnCommandHotKey(UINT id)
 {
 	// ローカルホットキーに対応されたコマンドを実行する
 	SPDLOG_DEBUG(_T("args id:{}"), id);
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
 }
 
-void CSoyokazeDlg::OnTimer(UINT_PTR timerId)
+void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 {
 	if (timerId == TIMERID_KEYSTATE) {
 		bool shouldBeTransparent = (GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_MENU) & 0x8000);
@@ -1281,7 +1281,7 @@ void CSoyokazeDlg::OnTimer(UINT_PTR timerId)
 	}
 }
 
-LRESULT CSoyokazeDlg::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
+LRESULT LauncherMainWindow::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
 {
 	// ロックされたとき、wpにWTS_SESSION_LOCK(7)、解除されたときは WTS_SESSION_UNLOCK(8)が通知される
 	if (wParam == WTS_SESSION_LOCK) {

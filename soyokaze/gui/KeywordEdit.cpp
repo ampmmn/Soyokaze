@@ -142,7 +142,7 @@ void KeywordEdit::SetIMEOff()
 
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 {
-	// 親ウインドウ(CSoyokazeDlg)にキー入力を通知
+	// 親ウインドウ(LauncherMainWindow)にキー入力を通知
 	if (GetParent()->SendMessage(WM_APP + 1, nChar, 0) != 0) {
 		return ;
 	}

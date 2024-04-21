@@ -651,7 +651,7 @@
     <ClInclude Include="icon/IconLoader.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/SoyokazeDlg.h">
+    <ClInclude Include="mainwindow/LauncherMainWindow.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\CandidateListCtrl.h">
@@ -1313,7 +1313,7 @@
     <ClCompile Include="icon/IconLoader.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/SoyokazeDlg.cpp">
+    <ClCompile Include="mainwindow/LauncherMainWindow.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">

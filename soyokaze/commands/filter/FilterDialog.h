@@ -1,5 +1,5 @@
 ﻿
-// SoyokazeDlg.h : ヘッダー ファイル
+// LauncherMainWindow.h : ヘッダー ファイル
 //
 
 #pragma once

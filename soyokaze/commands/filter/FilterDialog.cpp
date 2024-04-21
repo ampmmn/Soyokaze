@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "FilterDialog.h"
 #include "commands/filter/FilterExecutor.h"
-#include "mainwindow/SoyokazeDlg.h"
+#include "mainwindow/LauncherMainWindow.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "afxdialogex.h"
@@ -259,7 +259,7 @@ void FilterDialog::OnEditCommandChanged()
 
 	UpdateData();
 
-	// Ctrl-Backspace対応(※CSoyokazeDlg::OnEditCommandChangedのコメント参照)
+	// Ctrl-Backspace対応(※LauncherMainWindow::OnEditCommandChangedのコメント参照)
 	if (in->mInputStr.Find((TCHAR)0x7F) != -1) {
 		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
 		in->mInputStr.Replace(bsStr, _T(""));
