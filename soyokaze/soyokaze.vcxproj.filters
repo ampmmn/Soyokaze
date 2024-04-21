@@ -738,7 +738,7 @@
     <ClInclude Include="hotkey/NamedCommandHotKeyHandler.h">
       <Filter>hotkey</Filter>
     </ClInclude>
-    <ClInclude Include="app/Soyokaze.h">
+    <ClInclude Include="app/LauncherApp.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="app/StartupParam.h">
@@ -1394,7 +1394,7 @@
     <ClCompile Include="hotkey/NamedCommandHotKeyHandler.cpp">
       <Filter>hotkey</Filter>
     </ClCompile>
-    <ClCompile Include="app/Soyokaze.cpp">
+    <ClCompile Include="app/LauncherApp.cpp">
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="app/StartupParam.cpp">

@@ -4,7 +4,7 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "app/Soyokaze.h"
+#include "app/LauncherApp.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "commands/core/CommandRepository.h"

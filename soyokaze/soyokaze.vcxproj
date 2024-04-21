@@ -558,7 +558,7 @@
     <ClInclude Include="app/StartupParam.h" />
     <ClInclude Include="utility/AppProfile.h" />
     <ClInclude Include="app/Arguments.h" />
-    <ClInclude Include="app/Soyokaze.h" />
+    <ClInclude Include="app/LauncherApp.h" />
     <ClInclude Include="mainwindow/LauncherMainWindow.h" />
     <ClInclude Include="mainwindow/SoyokazeDropTarget.h" />
     <ClInclude Include="mainwindow/CmdReceiveEdit.h" />
@@ -788,7 +788,7 @@
     <ClCompile Include="app/StartupParam.cpp" />
     <ClCompile Include="utility/AppProfile.cpp" />
     <ClCompile Include="app/Arguments.cpp" />
-    <ClCompile Include="app/Soyokaze.cpp" />
+    <ClCompile Include="app/LauncherApp.cpp" />
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
     <ClCompile Include="mainwindow/SoyokazeDropTarget.cpp" />
     <ClCompile Include="mainwindow/CmdReceiveEdit.cpp" />

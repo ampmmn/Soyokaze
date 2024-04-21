@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Message.h"
-#include "app/Soyokaze.h"
+#include "app/LauncherApp.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,7 +12,7 @@ namespace common {
 
 void PopupMessage(const CString& msg)
 {
-	auto app = (CSoyokazeApp*)AfxGetApp();
+	auto app = (LauncherApp*)AfxGetApp();
 	app->PopupMessage(msg);
 }
 

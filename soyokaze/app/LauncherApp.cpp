@@ -1,10 +1,10 @@
 ﻿
-// Soyokaze.cpp : アプリケーションのクラス動作を定義します。
+// LauncherApp.cpp : アプリケーションのクラス動作を定義します。
 //
 
 #include "pch.h"
 #include "framework.h"
-#include "app/Soyokaze.h"
+#include "app/LauncherApp.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
@@ -20,15 +20,15 @@
 
 static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_Soyokaze_exist");
 
-// CSoyokazeApp
+// LauncherApp
 
-BEGIN_MESSAGE_MAP(CSoyokazeApp, CWinApp)
+BEGIN_MESSAGE_MAP(LauncherApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-// CSoyokazeApp の構築
+// LauncherApp の構築
 
-CSoyokazeApp::CSoyokazeApp() : m_hMutexRun(NULL)
+LauncherApp::LauncherApp() : m_hMutexRun(NULL)
 {
 #ifdef UNICODE
 	_tsetlocale(LC_ALL, _T(""));
@@ -39,7 +39,7 @@ CSoyokazeApp::CSoyokazeApp() : m_hMutexRun(NULL)
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 }
 
-CSoyokazeApp::~CSoyokazeApp()
+LauncherApp::~LauncherApp()
 {
 	if (m_hMutexRun != NULL) {
 		CloseHandle(m_hMutexRun);
@@ -47,14 +47,14 @@ CSoyokazeApp::~CSoyokazeApp()
 	CoUninitialize();
 }
 
-// 唯一の CSoyokazeApp オブジェクト
+// 唯一の LauncherApp オブジェクト
 
-CSoyokazeApp theApp;
+LauncherApp theApp;
 
 
-// CSoyokazeApp の初期化
+// LauncherApp の初期化
 
-BOOL CSoyokazeApp::InitInstance()
+BOOL LauncherApp::InitInstance()
 {
 	AppPreference::Get()->Init();
 
@@ -62,7 +62,7 @@ BOOL CSoyokazeApp::InitInstance()
 	Logger::Get()->Initialize();
 	spdlog::info(_T("==== Start App ===="));
 
-	if (SoyokazeProcessExists() == false) {
+	if (LauncherAppProcessExists() == false) {
 		// 通常の起動
 		InitFirstInstance();
 	}
@@ -79,7 +79,7 @@ BOOL CSoyokazeApp::InitInstance()
 /**
  * 既存のsoyokazeプロセスが存在しない場合の初期化処理
  */
-BOOL CSoyokazeApp::InitFirstInstance()
+BOOL LauncherApp::InitFirstInstance()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -155,7 +155,7 @@ BOOL CSoyokazeApp::InitFirstInstance()
 /**
  * 既存のsoyokazeプロセスが存在する場合の初期化処理
  */
-BOOL CSoyokazeApp::InitSecondInstance()
+BOOL LauncherApp::InitSecondInstance()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -208,7 +208,7 @@ BOOL CSoyokazeApp::InitSecondInstance()
  * 先行するアプリのプロセスが存在するか?
  * @return true: 存在する  false: 存在しない
  */
-bool CSoyokazeApp::SoyokazeProcessExists()
+bool LauncherApp::LauncherAppProcessExists()
 {
 	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
 	bool isExists = (h != nullptr);
@@ -223,7 +223,7 @@ bool CSoyokazeApp::SoyokazeProcessExists()
 /**
  * @return true: アクティブ化した  false: 先行プロセスはない
  */
-bool CSoyokazeApp::ActivateExistingProcess()
+bool LauncherApp::ActivateExistingProcess()
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -243,7 +243,7 @@ bool CSoyokazeApp::ActivateExistingProcess()
  *  先行プロセスに対しコマンド文字列を送る
  *  (先行プロセス側でコマンドを実行する)
  */
-bool CSoyokazeApp::SendCommandString(const CString& commandStr, bool isPasteOnly)
+bool LauncherApp::SendCommandString(const CString& commandStr, bool isPasteOnly)
 {
 	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
 
@@ -266,7 +266,7 @@ bool CSoyokazeApp::SendCommandString(const CString& commandStr, bool isPasteOnly
 	return true;
 }
 
-bool CSoyokazeApp::SendCaretRange(int startPos, int length)
+bool LauncherApp::SendCaretRange(int startPos, int length)
 {
 	SPDLOG_DEBUG(_T("args startPos:{0} length:{1}"), startPos, length);
 
@@ -291,7 +291,7 @@ bool CSoyokazeApp::SendCaretRange(int startPos, int length)
  *  @return true: 成功 false:失敗
  *  @param pathStr  登録対象のファイルパス
  */
-bool CSoyokazeApp::RegisterPath(const CString& pathStr)
+bool LauncherApp::RegisterPath(const CString& pathStr)
 {
 	SPDLOG_DEBUG(_T("args path:{0}"), (LPCTSTR)pathStr);
 
@@ -308,7 +308,7 @@ bool CSoyokazeApp::RegisterPath(const CString& pathStr)
 }
 
 // バルーンメッセージを表示
-bool CSoyokazeApp::PopupMessage(const CString& message)
+bool LauncherApp::PopupMessage(const CString& message)
 {
 	SPDLOG_DEBUG(_T("args msg:{0}"), (LPCTSTR)message);
 	if (!mTaskTray) {

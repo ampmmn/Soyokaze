@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WarnWorkTimeToast.h"
-#include "app/Soyokaze.h"
+#include "app/LauncherApp.h"
 #include "app/AppName.h"
 #include "settingwindow/ShortcutSettingPage.h"
 
@@ -44,7 +44,7 @@ void Toast::Show()
 		// スタートメニューにショートカットが登録されていない場合はShell_NotifyIconのメッセージで代替する
 		CString notifyMsg;
 		notifyMsg.Format(_T("%d分以上の連続稼働を検知\n健康のため、適宜休憩を入れるが吉"), in->mTh);
-		auto app = (CSoyokazeApp*)AfxGetApp();
+		auto app = (LauncherApp*)AfxGetApp();
 		app->PopupMessage(notifyMsg);
 		return;
 	}

@@ -1,5 +1,5 @@
 ﻿
-// Soyokaze.h : PROJECT_NAME アプリケーションのメイン ヘッダー ファイルです
+// LauncherApp.h : PROJECT_NAME アプリケーションのメイン ヘッダー ファイルです
 //
 
 #pragma once
@@ -11,17 +11,17 @@
 #include "resource.h"		// メイン シンボル
 
 
-// CSoyokazeApp:
-// このクラスの実装については、Soyokaze.cpp を参照してください
+// LauncherApp:
+// このクラスの実装については、LauncherApp.cpp を参照してください
 //
 
 class TaskTray;
 
-class CSoyokazeApp : public CWinApp
+class LauncherApp : public CWinApp
 {
 public:
-	CSoyokazeApp();
-	virtual ~CSoyokazeApp();
+	LauncherApp();
+	virtual ~LauncherApp();
 
 protected:
 	HANDLE m_hMutexRun;
@@ -35,8 +35,8 @@ public:
 	BOOL InitFirstInstance();
 	BOOL InitSecondInstance();
 
-	// 先行するSoyokazeプロセスが存在するか?
-	bool SoyokazeProcessExists();
+	// 先行するLauncherAppプロセスが存在するか?
+	bool LauncherAppProcessExists();
 	// 先行するプロセスがあればそちらを有効化する
 	bool ActivateExistingProcess();
 
@@ -53,5 +53,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CSoyokazeApp theApp;
+extern LauncherApp theApp;
 
