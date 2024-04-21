@@ -22,6 +22,7 @@ public:
 	void GetPropertyVariant(LPOLESTR name, VARIANT& value);
 
 	int GetPropertyInt(LPOLESTR name);
+	int64_t GetPropertyInt64(LPOLESTR name);
 	CString GetPropertyString(LPOLESTR name);
 	CString GetPropertyString(LPOLESTR name, int index);
 	bool GetPropertyObject(LPOLESTR name, DispWrapper& object);

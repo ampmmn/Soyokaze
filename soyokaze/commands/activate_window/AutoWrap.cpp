@@ -120,6 +120,21 @@ int DispWrapper::GetPropertyInt(
 	return result.intVal;
 }
 
+int64_t DispWrapper::GetPropertyInt64(
+		LPOLESTR name
+)
+{
+	ASSERT(mDispPtr);
+
+	int val = 0;
+
+	VARIANT result;
+	VariantInit(&result);
+
+	AutoWrap(DISPATCH_PROPERTYGET, &result, mDispPtr, name, 0);
+	return result.llVal;
+}
+
 CString DispWrapper::GetPropertyString(LPOLESTR name)
 {
 	ASSERT(mDispPtr);

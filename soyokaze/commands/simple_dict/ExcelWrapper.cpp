@@ -75,6 +75,16 @@ static bool CreateExcelApplication(DispWrapper& excelApp)
 			return false;
 		}
 
+		HWND hwndApp = (HWND)excelApp.GetPropertyInt64(L"Hwnd");
+		if (IsWindow(hwndApp)) {
+			DWORD pid;
+			GetWindowThreadProcessId(hwndApp, &pid);
+			spdlog::debug(_T("Excel PID is {}"), pid);
+		}
+		else {
+			spdlog::debug(_T("Excel HWND is invalid {}"), (int64_t)hwndApp);
+		}
+
 		// 警告ダイアログをださない
 		excelApp.CallVoidMethod(L"DisplayAlerts", false);
 
