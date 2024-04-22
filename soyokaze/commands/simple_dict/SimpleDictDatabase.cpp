@@ -3,6 +3,7 @@
 #include "commands/simple_dict/SimpleDictCommand.h"
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "utility/TimeoutChecker.h"
+#include "commands/common/Message.h" // for PopupMessage
 #include <thread>
 #include <mutex>
 #include <map>
@@ -154,6 +155,13 @@ struct SimpleDictDatabase::PImpl
 			param = updateState.mParam;
 			updateState.mFtLastUpdated = ftUpdated;
 			isUpdatedItemExist = true;
+
+			if (param.mIsNotifyUpdate) {
+				// 更新を通知する
+				CString msg;
+				msg.Format(_T("【%s】ファイルが更新されました\n%s"), param.mName, param.mFilePath);
+				launcherapp::commands::common::PopupMessage(msg);
+			}
 
 			SPDLOG_DEBUG(_T("Update dict(timestamp). name:{0}"), (LPCTSTR)param.mName);
 			break;

@@ -223,6 +223,7 @@ bool SimpleDictCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("IsFirstRowHeader"), (bool)in->mParam.mIsFirstRowHeader);
 	cmdFile->Set(entry, _T("IsMatchWithoutKeyword"), (bool)in->mParam.mIsMatchWithoutKeyword);
 	cmdFile->Set(entry, _T("IsEnableReverse"), (bool)in->mParam.mIsEnableReverse);
+	cmdFile->Set(entry, _T("IsNotifyUpdate"), (bool)in->mParam.mIsNotifyUpdate);
 
 	cmdFile->Set(entry, _T("aftertype"), in->mParam.mActionType);
 	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
@@ -302,6 +303,7 @@ bool SimpleDictCommand::LoadFrom(CommandFile* cmdFile, void* e, SimpleDictComman
 	command->in->mParam.mIsFirstRowHeader = cmdFile->Get(entry, _T("IsFirstRowHeader"), false);
 	command->in->mParam.mIsMatchWithoutKeyword = cmdFile->Get(entry, _T("IsMatchWithoutKeyword"), true);
 	command->in->mParam.mIsEnableReverse = cmdFile->Get(entry, _T("IsEnableReverse"), false);
+	command->in->mParam.mIsNotifyUpdate = cmdFile->Get(entry, _T("IsNotifyUpdate"), false);
 
 	command->in->mParam.mActionType = cmdFile->Get(entry, _T("aftertype"), 2);
 	command->in->mParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));

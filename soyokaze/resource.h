@@ -333,6 +333,7 @@
 #define IDC_BUTTON_HOTKEY_UP            1147
 #define IDC_CHECK_WARNLONGWORKING       1148
 #define IDC_EDIT_TIME                   1149
+#define IDC_CHECK_NOTIFYUPDATE          1149
 #define IDC_EDIT_FILTER                 1150
 #define IDC_COMBO_LEVEL                 1151
 

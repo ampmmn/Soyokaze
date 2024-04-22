@@ -29,6 +29,8 @@ public:
 	BOOL mIsMatchWithoutKeyword;
 	// 逆引きを有効にする
 	BOOL mIsEnableReverse;
+	// 更新を通知する
+	BOOL mIsNotifyUpdate;
 	// 後段の処理の種類
 	int mActionType;
 	// 後段のコマンド(mPostFilterType=0の場合)
