@@ -761,6 +761,17 @@ int AppPreference::GetTimeToWarnLongOperation()
 	return in->mSettings.Get(_T("Health:TimeToWarn"), 90);
 }
 
+// メイン画面のフォント名
+bool AppPreference::GetMainWindowFontName(CString& fontName)
+{
+	auto name = in->mSettings.Get(_T("MainWindow:FontName"), _T(""));
+	if (name.IsEmpty()) {
+		return false;
+	}
+	fontName = name;
+	return true;
+}
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

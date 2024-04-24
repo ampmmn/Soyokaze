@@ -133,6 +133,9 @@ public:
 	// 長時間連続稼働警告までの時間を取得する(分単位)
 	int GetTimeToWarnLongOperation();
 
+	// メイン画面のフォント名
+	bool GetMainWindowFontName(CString& fontName);
+
 	// ログレベル
 	int GetLogLevel();
 

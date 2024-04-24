@@ -89,6 +89,7 @@ struct LauncherMainWindow::PImpl
 	//
 	bool mIsPrevTransparentState = false;
 
+	CFont mFontDlg;
 
 	// ドロップターゲット
 	LauncherDropTarget mDropTargetDialog;
@@ -162,6 +163,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
+	AppPreference::Get()->RegisterListener(this);
 }
 
 LauncherMainWindow::~LauncherMainWindow()
@@ -646,6 +648,37 @@ LRESULT LauncherMainWindow::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 	return 0;
 }
 
+void LauncherMainWindow::OnAppFirstBoot()
+{
+}
+
+void LauncherMainWindow::OnAppPreferenceUpdated()
+{
+	auto pref = AppPreference::Get();
+
+	CString fontName;
+	if (pref->GetMainWindowFontName(fontName) == false) {
+		return;
+	}
+
+	LOGFONT lf;
+	GetFont()->GetLogFont(&lf);
+
+	if (in->mFontDlg.m_hObject) {
+		in->mFontDlg.DeleteObject();
+	}
+	_tcsncpy_s(lf.lfFaceName, LF_FACESIZE, fontName, _TRUNCATE);
+	in->mFontDlg.CreateFontIndirectW(&lf);
+	SetFont(&in->mFontDlg);
+
+	SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
+}
+
+void LauncherMainWindow::OnAppExit()
+{
+	AppPreference::Get()->UnregisterListener(this);
+}
+
 // LauncherMainWindow メッセージ ハンドラー
 
 BOOL LauncherMainWindow::OnInitDialog()
@@ -653,6 +686,20 @@ BOOL LauncherMainWindow::OnInitDialog()
 	SPDLOG_DEBUG(_T("start"));
 
 	CDialogEx::OnInitDialog();
+
+	auto pref = AppPreference::Get();
+
+	CString fontName;
+	if (pref->GetMainWindowFontName(fontName)) {
+		LOGFONT lf;
+		GetFont()->GetLogFont(&lf);
+
+		_tcsncpy_s(lf.lfFaceName, LF_FACESIZE, fontName, _TRUNCATE);
+		in->mFontDlg.CreateFontIndirectW(&lf);
+		SetFont(&in->mFontDlg);
+
+		SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
+	}
 
 	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
 	SetTimer(TIMERID_OPERATION, 1000, nullptr);
@@ -698,7 +745,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
 
-	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mGuideStr.Empty();
 

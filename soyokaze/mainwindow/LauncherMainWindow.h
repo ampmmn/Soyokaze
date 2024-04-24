@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include "tasktray/TaskTrayEventListenerIF.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include "gui/KeywordEdit.h"
 #include "mainwindow/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"
@@ -27,7 +28,7 @@ class WindowPosition;
 class WindowTransparency;
 
 // LauncherMainWindow ダイアログ
-class LauncherMainWindow : public CDialogEx, public TaskTrayEventListenerIF
+class LauncherMainWindow : public CDialogEx, public TaskTrayEventListenerIF, public AppPreferenceListenerIF
 {
 	using CommandRepository = launcherapp::core::CommandRepository;
 	using AppHotKey = launcherapp::core::AppHotKey;
@@ -62,6 +63,10 @@ protected:
 
 	LRESULT OnTaskTrayLButtonDblclk() override;
 	LRESULT OnTaskTrayContextMenu(CWnd* wnd, CPoint point) override;
+
+	void OnAppFirstBoot() override;
+	void OnAppPreferenceUpdated() override;
+	void OnAppExit() override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;

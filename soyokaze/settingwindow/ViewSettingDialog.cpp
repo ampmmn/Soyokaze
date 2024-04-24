@@ -96,6 +96,13 @@ void ViewSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)in->mIsAlternateColor);
 	settingsPtr->Set(_T("Soyokaze:IsDrawIconOnCandidate"), (bool)in->mIsDrawIconOnCandidate);
 
+	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
+	ASSERT(fontCombo);
+	auto fontInfo = fontCombo->GetSelFont();
+
+	settingsPtr->Set(_T("MainWindow:FontName"), fontInfo->m_strName);
+
+
 	__super::OnOK();
 }
 
@@ -172,4 +179,9 @@ void ViewSettingDialog::OnEnterSettings()
 	in->mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
 	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), false);
 	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
+
+	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), _T("Tahoma"));
+	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
+	ASSERT(fontCombo);
+	fontCombo->SelectFont(fontName);
 }
