@@ -1492,6 +1492,8 @@ exeと同じディレクトリ階層に`profile`というディレクトリが�
 
 - [nlohmann-json](https://github.com/nlohmann/json)
 
+- [spdlog](https://github.com/gabime/spdlog)
+
 ## 連絡先
 
 htmnymgw@gmail.com
