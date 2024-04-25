@@ -18,11 +18,15 @@ static const int INTERVAL = 5000;
 
 struct SpecialFolderFiles::PImpl
 {
+	PImpl() : mEvent(TRUE, TRUE)
+	{}
+
 	std::mutex mMutex;
 	std::vector<ITEM> mItems;
 	DWORD mElapsed = 0;
-	bool mIsUpdated = false;
+	CEvent mEvent;
 
+	bool mIsUpdated = false;
 	bool mIsEnableRecent = true;
 	bool mIsEnableStartMenu = true;
 };
@@ -34,6 +38,7 @@ SpecialFolderFiles::SpecialFolderFiles() : in(std::make_unique<PImpl>())
 
 SpecialFolderFiles::~SpecialFolderFiles()
 {
+	WaitForSingleObject(in->mEvent, 3000);
 }
 
 void SpecialFolderFiles::EnableStartMenu(bool isEnable)
@@ -61,6 +66,8 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 		}
 	}
 
+	in->mEvent.ResetEvent();
+
 	std::thread th([&]() {
 		
 		CoInitialize(NULL);
@@ -84,6 +91,7 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 		in->mItems.swap(tmp);
 		in->mElapsed = GetTickCount();
 		in->mIsUpdated = true;
+		in->mEvent.SetEvent();
 	});
 	th.detach();
 
