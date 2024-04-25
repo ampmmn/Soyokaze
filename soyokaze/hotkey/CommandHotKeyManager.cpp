@@ -299,6 +299,7 @@ bool CommandHotKeyManager::Register(
 
 	if (key.GetVKCode() == 0) {
 		SPDLOG_DEBUG(_T("ignored VKCode=0"));
+		delete handler;
 		return false;
 	}
 
@@ -325,6 +326,7 @@ bool CommandHotKeyManager::Register(
 			// 登録失敗
 			spdlog::warn(_T("Failed to register global key. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
 			                hotkeyId, key.GetModifiers(), key.GetVKCode());
+			delete handler;
 			return false;
 		}
 		item.mGlobalHotKey.swap(hotKey);
