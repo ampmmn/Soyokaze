@@ -169,6 +169,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 LauncherMainWindow::~LauncherMainWindow()
 {
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
+	AppPreference::Get()->UnregisterListener(this);
 
 	// mWindowPositionPtrのインスタンス破棄時に位置情報を設定ファイルに保存する
 }
@@ -676,7 +677,6 @@ void LauncherMainWindow::OnAppPreferenceUpdated()
 
 void LauncherMainWindow::OnAppExit()
 {
-	AppPreference::Get()->UnregisterListener(this);
 }
 
 // LauncherMainWindow メッセージ ハンドラー
