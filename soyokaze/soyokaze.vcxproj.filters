@@ -831,6 +831,12 @@
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinEditDialog.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinCommandFactory.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1477,6 +1483,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,9 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(UserDirCommand)
+
 CString UserDirCommand::GetType()
 {
 	return TYPE;
@@ -53,6 +56,11 @@ HICON UserDirCommand::GetIcon()
 launcherapp::core::Command* UserDirCommand::Clone()
 {
 	return new UserDirCommand();
+}
+
+launcherapp::core::Command* UserDirCommand::Create(LPCTSTR name)
+{
+	return new UserDirCommand(name);
 }
 
 } // end of namespace builtin

@@ -15,6 +15,9 @@ namespace builtin {
 
 CString ManagerCommand::TYPE(_T("Builtin-Manager"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(ManagerCommand)
+
 CString ManagerCommand::GetType()
 {
 	return TYPE;
@@ -44,6 +47,11 @@ HICON ManagerCommand::GetIcon()
 launcherapp::core::Command* ManagerCommand::Clone()
 {
 	return new ManagerCommand();
+}
+
+launcherapp::core::Command* ManagerCommand::Create(LPCTSTR name)
+{
+	return new ManagerCommand(name);
 }
 
 } // end of namespace builtin

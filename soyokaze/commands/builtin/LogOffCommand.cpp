@@ -16,6 +16,9 @@ namespace builtin {
 
 CString LogOffCommand::TYPE(_T("Builtin-LogOff"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(LogOffCommand)
+
 CString LogOffCommand::GetType()
 {
 	return TYPE;
@@ -46,6 +49,11 @@ BOOL LogOffCommand::Execute(const Parameter& param)
 launcherapp::core::Command* LogOffCommand::Clone()
 {
 	return new LogOffCommand();
+}
+
+launcherapp::core::Command* LogOffCommand::Create(LPCTSTR name)
+{
+	return new LogOffCommand(name);
 }
 
 }

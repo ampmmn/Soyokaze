@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "commands/builtin/BuiltinCommandFactory.h"
 
 namespace launcherapp {
 namespace commands {
@@ -37,6 +38,16 @@ protected:
 	CString mDescription;
 	CString mError;
 	uint32_t mRefCount;
+
+	// 実行前に確認するか?
+	bool mIsConfirmBeforeRun = false;
+	// 実行前の確認有無を選択可能か?
+	bool mCanSetConfirm = false;
+
+	// 機能は有効か?
+	bool mIsEnable = true;
+	// 機能を無効化できるか?
+	bool mCanDisable = false;
 };
 
 }

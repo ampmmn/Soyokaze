@@ -15,6 +15,9 @@ namespace builtin {
 
 CString LockScreenCommand::TYPE(_T("Builtin-LockScreen"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(LockScreenCommand)
+
 CString LockScreenCommand::GetType()
 {
 	return TYPE;
@@ -44,6 +47,11 @@ HICON LockScreenCommand::GetIcon()
 launcherapp::core::Command* LockScreenCommand::Clone()
 {
 	return new LockScreenCommand();
+}
+
+launcherapp::core::Command* LockScreenCommand::Create(LPCTSTR name)
+{
+	return new LockScreenCommand(name);
 }
 
 } // end of namespace builtin

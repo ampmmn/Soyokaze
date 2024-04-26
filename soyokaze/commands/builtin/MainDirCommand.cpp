@@ -18,6 +18,9 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 CString MainDirCommand::TYPE(_T("Builtin-MainDir"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(MainDirCommand)
+
 CString MainDirCommand::GetType()
 {
 	return TYPE;
@@ -55,6 +58,11 @@ HICON MainDirCommand::GetIcon()
 launcherapp::core::Command* MainDirCommand::Clone()
 {
 	return new MainDirCommand();
+}
+
+launcherapp::core::Command* MainDirCommand::Create(LPCTSTR name)
+{
+	return new MainDirCommand(name);
 }
 
 }

@@ -16,6 +16,9 @@ namespace builtin {
 
 CString EmptyRecycleBinCommand::TYPE(_T("Builtin-EmptyRecycleBin"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(EmptyRecycleBinCommand)
+
 CString EmptyRecycleBinCommand::GetType()
 {
 	return TYPE;
@@ -46,6 +49,11 @@ BOOL EmptyRecycleBinCommand::Execute(const Parameter& param)
 launcherapp::core::Command* EmptyRecycleBinCommand::Clone()
 {
 	return new EmptyRecycleBinCommand();
+}
+
+launcherapp::core::Command* EmptyRecycleBinCommand::Create(LPCTSTR name)
+{
+	return new EmptyRecycleBinCommand(name);
 }
 
 }

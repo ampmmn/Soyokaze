@@ -16,6 +16,9 @@ namespace builtin {
 
 CString DeleteCommand::TYPE(_T("Builtin-Delete"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(DeleteCommand)
+
 CString DeleteCommand::GetType()
 {
 	return TYPE;
@@ -81,6 +84,11 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 launcherapp::core::Command* DeleteCommand::Clone()
 {
 	return new DeleteCommand();
+}
+
+launcherapp::core::Command* DeleteCommand::Create(LPCTSTR name)
+{
+	return new DeleteCommand(name);
 }
 
 }

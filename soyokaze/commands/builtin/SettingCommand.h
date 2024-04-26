@@ -19,6 +19,10 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 
+	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+	static launcherapp::core::Command* Create(LPCTSTR);
+	DECLARE_BUILTINCOMMAND(SettingCommand)
+
 protected:
 	bool mIsExecuting;
 	// 前回表示時のページ階層を表すパンくずリスト

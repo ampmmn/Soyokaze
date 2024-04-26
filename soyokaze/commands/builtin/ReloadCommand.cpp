@@ -15,6 +15,9 @@ namespace builtin {
 
 CString ReloadCommand::TYPE(_T("Builtin-Reload"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(ReloadCommand)
+
 CString ReloadCommand::GetType()
 {
 	return TYPE;
@@ -44,6 +47,11 @@ HICON ReloadCommand::GetIcon()
 launcherapp::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand();
+}
+
+launcherapp::core::Command* ReloadCommand::Create(LPCTSTR name)
+{
+	return new ReloadCommand(name);
 }
 
 } // end of namespace builtin

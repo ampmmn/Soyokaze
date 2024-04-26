@@ -18,6 +18,9 @@ namespace builtin {
 
 CString SuspendCommand::TYPE(_T("Builtin-Suspend"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(SuspendCommand)
+
 CString SuspendCommand::GetType()
 {
 	return TYPE;
@@ -27,6 +30,8 @@ SuspendCommand::SuspendCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("suspend"))
 {
 	mDescription = _T("【PCをサスペンド状態にする】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 SuspendCommand::~SuspendCommand()
@@ -47,6 +52,11 @@ BOOL SuspendCommand::Execute(const Parameter& param)
 launcherapp::core::Command* SuspendCommand::Clone()
 {
 	return new SuspendCommand();
+}
+
+launcherapp::core::Command* SuspendCommand::Create(LPCTSTR name)
+{
+	return new SuspendCommand(name);
 }
 
 BOOL SuspendCommand::DoSuspend(BOOL isSuspend)

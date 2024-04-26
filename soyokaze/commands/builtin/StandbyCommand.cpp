@@ -19,6 +19,9 @@ namespace builtin {
 
 CString StandbyCommand::TYPE(_T("Builtin-Standby"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(StandbyCommand)
+
 CString StandbyCommand::GetType()
 {
 	return TYPE;
@@ -48,6 +51,11 @@ BOOL StandbyCommand::Execute(const Parameter& param)
 launcherapp::core::Command* StandbyCommand::Clone()
 {
 	return new StandbyCommand();
+}
+
+launcherapp::core::Command* StandbyCommand::Create(LPCTSTR name)
+{
+	return new StandbyCommand(name);
 }
 
 }

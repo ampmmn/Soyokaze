@@ -16,6 +16,9 @@ namespace builtin {
 
 CString SettingCommand::TYPE(_T("Builtin-Setting"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(SettingCommand)
+
 CString SettingCommand::GetType()
 {
 	return TYPE;
@@ -82,6 +85,11 @@ HICON SettingCommand::GetIcon()
 launcherapp::core::Command* SettingCommand::Clone()
 {
 	return new SettingCommand();
+}
+
+launcherapp::core::Command* SettingCommand::Create(LPCTSTR name)
+{
+	return new SettingCommand(name);
 }
 
 } // end of namespace builtin

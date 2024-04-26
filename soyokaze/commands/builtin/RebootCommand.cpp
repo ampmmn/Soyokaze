@@ -17,6 +17,9 @@ namespace builtin {
 
 CString RebootCommand::TYPE(_T("Builtin-Reboot"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(RebootCommand)
+
 CString RebootCommand::GetType()
 {
 	return TYPE;
@@ -46,6 +49,11 @@ BOOL RebootCommand::Execute(const Parameter& param)
 launcherapp::core::Command* RebootCommand::Clone()
 {
 	return new RebootCommand();
+}
+
+launcherapp::core::Command* RebootCommand::Create(LPCTSTR name)
+{
+	return new RebootCommand(name);
 }
 
 }

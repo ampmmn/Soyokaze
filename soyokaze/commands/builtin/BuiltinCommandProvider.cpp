@@ -1,25 +1,6 @@
 #include "pch.h"
 #include "BuiltinCommandProvider.h"
-#include "commands/builtin/NewCommand.h"
-#include "commands/builtin/ReloadCommand.h"
-#include "commands/builtin/EditCommand.h"
-#include "commands/builtin/ExitCommand.h"
-#include "commands/builtin/VersionCommand.h"
-#include "commands/builtin/UserDirCommand.h"
-#include "commands/builtin/MainDirCommand.h"
-#include "commands/builtin/SettingCommand.h"
-#include "commands/builtin/ManagerCommand.h"
-#include "commands/builtin/RegistWinCommand.h"
-#include "commands/builtin/ChangeDirectoryCommand.h"
-#include "commands/builtin/DeleteCommand.h"
-#include "commands/builtin/EmptyRecycleBinCommand.h"
-#include "commands/builtin/LogOffCommand.h"
-#include "commands/builtin/ShutdownCommand.h"
-#include "commands/builtin/RebootCommand.h"
-#include "commands/builtin/LockScreenCommand.h"
-#include "commands/builtin/StandbyCommand.h"
-#include "commands/builtin/SuspendCommand.h"
-#include "commands/builtin/AfxChangeDirectoryCommand.h"
+#include "commands/builtin/BuiltinCommandFactory.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -40,41 +21,12 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+using Entry = CommandFile::Entry;
+
 
 struct BuiltinCommandProvider::PImpl
 {
-	void InitMap()
-	{
-		if (mIsFirstCall == false) {
-			return;
-		}
-
-		mFactoryMap[NewCommand::TYPE] = [](LPCTSTR name) { return new NewCommand(name); };
-		mFactoryMap[EditCommand::TYPE] = [](LPCTSTR name) { return new EditCommand(name); };
-		mFactoryMap[ReloadCommand::TYPE] = [](LPCTSTR name) { return new ReloadCommand(name); };
-		mFactoryMap[ManagerCommand::TYPE] = [](LPCTSTR name) { return new ManagerCommand(name); };
-		mFactoryMap[ExitCommand::TYPE] = [](LPCTSTR name) { return new ExitCommand(name); };
-		mFactoryMap[VersionCommand::TYPE] = [](LPCTSTR name) { return new VersionCommand(name); };
-		mFactoryMap[UserDirCommand::TYPE] = [](LPCTSTR name) { return new UserDirCommand(name); };
-		mFactoryMap[MainDirCommand::TYPE] = [](LPCTSTR name) { return new MainDirCommand(name); };
-		mFactoryMap[SettingCommand::TYPE] = [](LPCTSTR name) { return new SettingCommand(name); };
-		mFactoryMap[RegistWinCommand::TYPE] = [](LPCTSTR name) { return new RegistWinCommand(name); };
-		mFactoryMap[ChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new ChangeDirectoryCommand(name); };
-		mFactoryMap[DeleteCommand::TYPE] = [](LPCTSTR name) { return new DeleteCommand(name); };
-		mFactoryMap[EmptyRecycleBinCommand::TYPE] = [](LPCTSTR name) { return new EmptyRecycleBinCommand(name); };
-		mFactoryMap[LogOffCommand::TYPE] = [](LPCTSTR name) { return new LogOffCommand(name); };
-		mFactoryMap[ShutdownCommand::TYPE] = [](LPCTSTR name) { return new ShutdownCommand(name); };
-		mFactoryMap[RebootCommand::TYPE] = [](LPCTSTR name) { return new RebootCommand(name); };
-		mFactoryMap[LockScreenCommand::TYPE] = [](LPCTSTR name) { return new LockScreenCommand(name); };
-		mFactoryMap[StandbyCommand::TYPE] = [](LPCTSTR name) { return new StandbyCommand(name); };
-		mFactoryMap[SuspendCommand::TYPE] = [](LPCTSTR name) { return new SuspendCommand(name); };
-		mFactoryMap[AfxChangeDirectoryCommand::TYPE] = [](LPCTSTR name) { return new AfxChangeDirectoryCommand(name); };
-		mIsFirstCall = false;
-	}
-
 	uint32_t mRefCount = 1;
-	bool mIsFirstCall = true;
-	std::map<CString, std::function<launcherapp::core::Command*(LPCTSTR)> > mFactoryMap;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,13 +47,21 @@ BuiltinCommandProvider::~BuiltinCommandProvider()
 // 初回起動の初期化を行う
 void BuiltinCommandProvider::OnFirstBoot()
 {
-	in->InitMap();
-
 	// コマンド登録
 	auto cmdRepo = CommandRepository::GetInstance();
 
-	for (auto& entry : in->mFactoryMap) {
-		cmdRepo->RegisterCommand(entry.second(nullptr));
+	// 初回起動時に組み込みコマンドをリポジトリに登録する
+	auto factory = BuiltinCommandFactory::GetInstance();
+
+	std::vector<CString> typeNames;
+	factory->EnumTypeName(typeNames);
+	for (auto& type : typeNames) {
+
+		Command* cmd = nullptr;
+		if (factory->Create(type, nullptr, &cmd) == false) {
+			continue;
+		}
+		cmdRepo->RegisterCommand(cmd);
 	}
 }
 
@@ -113,9 +73,9 @@ void BuiltinCommandProvider::LoadCommands(
 {
 	ASSERT(cmdFile);
 
-	in->InitMap();
-
 	auto cmdRepo = CommandRepository::GetInstance();
+
+	auto factory = BuiltinCommandFactory::GetInstance();
 
 	int entries = cmdFile->GetEntryCount();
 	for (int i = 0; i < entries; ++i) {
@@ -126,27 +86,34 @@ void BuiltinCommandProvider::LoadCommands(
 			continue;
 		}
 
+		CString name = cmdFile->GetName(entry);
+
+		// エントリのコマンド種別が組み込みコマンドのものならインスタンスを生成する
 		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		auto itFind = in->mFactoryMap.find(typeStr);
-		if (itFind == in->mFactoryMap.end()) {
+
+		Command* command = nullptr;
+		if (factory->Create(typeStr, name, &command) == false) {
 			continue;
 		}
-
-		CString name = cmdFile->GetName(entry);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
 
-		auto command = itFind->second(name);
+		auto cmdName = command->GetName();
 
-		// 登録
+		// 生成したコマンドのインスタンスを登録
 		cmdRepo->RegisterCommand(command);
 	}
 
 	// システムコマンドがなければ作成しておく
-	for (auto& elem : in->mFactoryMap) {
-		auto cmd = elem.second(nullptr);
+	std::vector<CString> typeNames;
+	factory->EnumTypeName(typeNames);
+	for (auto& type : typeNames) {
 
+		Command* cmd = nullptr;
+		if (factory->Create(type, nullptr, &cmd) == false) {
+			continue;
+		}
 		if (cmdRepo->HasCommand(cmd->GetName())) {
 			cmd->Release();
 			continue;

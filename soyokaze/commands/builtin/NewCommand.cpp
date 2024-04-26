@@ -15,6 +15,9 @@ namespace builtin {
 
 CString NewCommand::TYPE(_T("Builtin-New"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(NewCommand)
+
 CString NewCommand::GetType()
 {
 	return TYPE;
@@ -65,6 +68,11 @@ HICON NewCommand::GetIcon()
 launcherapp::core::Command* NewCommand::Clone()
 {
 	return new NewCommand();
+}
+
+launcherapp::core::Command* NewCommand::Create(LPCTSTR name)
+{
+	return new NewCommand(name);
 }
 
 } // end of namespace builtin

@@ -16,6 +16,9 @@ namespace builtin {
 
 CString ShutdownCommand::TYPE(_T("Builtin-Shutdown"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(ShutdownCommand)
+
 CString ShutdownCommand::GetType()
 {
 	return TYPE;
@@ -45,6 +48,11 @@ BOOL ShutdownCommand::Execute(const Parameter& param)
 launcherapp::core::Command* ShutdownCommand::Clone()
 {
 	return new ShutdownCommand();
+}
+
+launcherapp::core::Command* ShutdownCommand::Create(LPCTSTR name)
+{
+	return new ShutdownCommand(name);
 }
 
 BOOL ShutdownCommand::DoExit(UINT uFlags)

@@ -19,6 +19,9 @@ namespace builtin {
 
 CString AfxChangeDirectoryCommand::TYPE(_T("Builtin-AfxCD"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(AfxChangeDirectoryCommand)
+
 CString AfxChangeDirectoryCommand::GetType()
 {
 	return TYPE;
@@ -68,6 +71,11 @@ HICON AfxChangeDirectoryCommand::GetIcon()
 launcherapp::core::Command* AfxChangeDirectoryCommand::Clone()
 {
 	return new AfxChangeDirectoryCommand();
+}
+
+launcherapp::core::Command* AfxChangeDirectoryCommand::Create(LPCTSTR name)
+{
+	return new AfxChangeDirectoryCommand(name);
 }
 
 }

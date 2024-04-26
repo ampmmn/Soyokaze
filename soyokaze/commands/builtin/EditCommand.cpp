@@ -16,6 +16,9 @@ namespace builtin {
 
 CString EditCommand::TYPE(_T("Builtin"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(EditCommand)
+
 CString EditCommand::GetType()
 {
 	return TYPE;
@@ -71,6 +74,11 @@ HICON EditCommand::GetIcon()
 launcherapp::core::Command* EditCommand::Clone()
 {
 	return new EditCommand();
+}
+
+launcherapp::core::Command* EditCommand::Create(LPCTSTR name)
+{
+	return new EditCommand(name);
 }
 
 }

@@ -18,8 +18,11 @@ namespace builtin {
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
-
 CString ChangeDirectoryCommand::TYPE(_T("Builtin-CD"));
+
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(ChangeDirectoryCommand)
+
 
 CString ChangeDirectoryCommand::GetType()
 {
@@ -80,6 +83,11 @@ HICON ChangeDirectoryCommand::GetIcon()
 launcherapp::core::Command* ChangeDirectoryCommand::Clone()
 {
 	return new ChangeDirectoryCommand();
+}
+
+launcherapp::core::Command* ChangeDirectoryCommand::Create(LPCTSTR name)
+{
+	return new ChangeDirectoryCommand(name);
 }
 
 }

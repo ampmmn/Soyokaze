@@ -126,6 +126,7 @@
 #define IDS_X                           178
 #define IDD_APPSETTING_OTHER            178
 #define IDS_Y                           179
+#define IDD_BUILTINEDIT                 179
 #define IDS_WIDTH                       180
 #define IDS_HEIGHT                      181
 #define IDS_FILTER_ICONIMAGEFILES       182
@@ -337,6 +338,8 @@
 #define IDC_EDIT_FILTER                 1150
 #define IDC_COMBO_LEVEL                 1151
 #define IDC_MFCFONTCOMBO_MAIN           1153
+#define IDC_CHECK_DISABLE               1154
+#define IDC_CHECK_ENABLE                1154
 
 // Next default values for new objects
 // 
@@ -344,7 +347,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        167
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1154
+#define _APS_NEXT_CONTROL_VALUE         1155
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

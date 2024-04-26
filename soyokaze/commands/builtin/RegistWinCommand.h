@@ -18,6 +18,10 @@ public:
 
 	CString GetType() override;
 	static CString TYPE;
+
+	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+	static launcherapp::core::Command* Create(LPCTSTR);
+	DECLARE_BUILTINCOMMAND(RegistWinCommand)
 };
 
 } // end of namespace builtin

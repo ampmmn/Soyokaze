@@ -52,6 +52,9 @@ static HWND GetTargetWindow(HWND startHwnd)
 
 CString RegistWinCommand::TYPE(_T("Builtin-RegisterWindow"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(RegistWinCommand)
+
 CString RegistWinCommand::GetType()
 {
 	return TYPE;
@@ -115,6 +118,11 @@ HICON RegistWinCommand::GetIcon()
 launcherapp::core::Command* RegistWinCommand::Clone()
 {
 	return new RegistWinCommand();
+}
+
+launcherapp::core::Command* RegistWinCommand::Create(LPCTSTR name)
+{
+	return new RegistWinCommand(name);
 }
 
 } // end of namespace builtin

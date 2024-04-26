@@ -14,6 +14,9 @@ namespace builtin {
 
 CString VersionCommand::TYPE(_T("Builtin-Version"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(VersionCommand)
+
 CString VersionCommand::GetType()
 {
 	return TYPE;
@@ -53,6 +56,11 @@ launcherapp::core::Command*
 VersionCommand::Clone()
 {
 	return new VersionCommand();
+}
+
+launcherapp::core::Command* VersionCommand::Create(LPCTSTR name)
+{
+	return new VersionCommand(name);
 }
 
 } // end of namespace builtin

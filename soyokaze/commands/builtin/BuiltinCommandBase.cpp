@@ -3,6 +3,7 @@
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "commands/builtin/BuiltinEditDialog.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -56,18 +57,35 @@ HICON BuiltinCommandBase::GetIcon()
 
 int BuiltinCommandBase::Match(Pattern* pattern)
 {
+	if (mIsEnable == false) {
+		return Pattern::Mismatch;
+	}
 	return pattern->Match(GetName());
 }
 
 bool BuiltinCommandBase::IsEditable()
 {
-	return false;
+	return (mCanDisable || mCanSetConfirm);
 }
 
 int BuiltinCommandBase::EditDialog(const Parameter* param)
 {
-	// 実装なし
-	return -1;
+	if (mCanDisable == false && mCanSetConfirm == false) {
+		return -1;
+	}
+
+	BuiltinEditDialog dlg(GetName(), mCanDisable, mCanSetConfirm);
+	dlg.SetEnable(mIsEnable);
+	dlg.SetConfirm(mIsConfirmBeforeRun);
+
+	if (dlg.DoModal() != IDOK) {
+		return -1;
+	}
+
+	mIsEnable = dlg.GetEnable();
+	mIsConfirmBeforeRun = dlg.GetConfirm();
+
+	return 0;
 }
 
 /**

@@ -387,6 +387,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
+    <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
@@ -617,6 +619,8 @@
     <ClInclude Include="mainwindow/WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
+    <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />

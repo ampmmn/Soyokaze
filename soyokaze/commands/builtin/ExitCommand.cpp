@@ -15,6 +15,9 @@ namespace builtin {
 
 CString ExitCommand::TYPE(_T("Builtin-Exit"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(ExitCommand)
+
 CString ExitCommand::GetType()
 {
 	return TYPE;
@@ -59,6 +62,11 @@ HICON ExitCommand::GetIcon()
 launcherapp::core::Command* ExitCommand::Clone()
 {
 	return new ExitCommand();
+}
+
+launcherapp::core::Command* ExitCommand::Create(LPCTSTR name)
+{
+	return new ExitCommand(name);
 }
 
 }

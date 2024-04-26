@@ -885,6 +885,19 @@ BEGIN
                     "Static",SS_LEFTNOWORDWRAP | WS_GROUP,27,85,279,26
 END
 
+IDD_BUILTINEDIT DIALOGEX 0, 0, 303, 87
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "システムコマンドの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "コマンドを有効にする(&E)",IDC_CHECK_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,34,276,10
+    CONTROL         "実行前に確認する(&C)",IDC_CHECK_CONFIRM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,50,274,10
+    DEFPUSHBUTTON   "OK",IDOK,188,66,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,241,66,50,14
+    LTEXT           "コマンドの名前(&N):",-1,16,11,65,8
+    EDITTEXT        IDC_EDIT_NAME,87,9,205,14,ES_AUTOHSCROLL | ES_READONLY
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1224,6 +1237,14 @@ BEGIN
         RIGHTMARGIN, 337
         TOPMARGIN, 7
         BOTTOMMARGIN, 284
+    END
+
+    IDD_BUILTINEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 296
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1775,6 +1796,17 @@ END
 IDD_APPSETTING_OTHER AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_BUILTINEDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0
 END
 
 
