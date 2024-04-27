@@ -16,6 +16,7 @@
 #include "commands/core/CommandRanking.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/NamedCommandHotKeyHandler.h"
+#include "spdlog/stopwatch.h"
 #include <vector>
 #include <algorithm>
 
@@ -475,16 +476,22 @@ CommandRepository::Query(
 
 	CommandMap::CommandQueryItemList matchedItems;
 
+	spdlog::stopwatch sw;
 	in->mCommands.Query(in->mPattern.get(), matchedItems);
+	spdlog::debug("CommandMap.Query duration:{:.6f} s.", sw);
 	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	for (auto& provider : in->mProviders) {
+		sw.reset();
 		provider->QueryAdhocCommands(in->mPattern.get(), matchedItems);
+		spdlog::debug(_T("QueryAdhocCommands name:{0} duration:{1:.6f} s."), (LPCTSTR)provider->GetName(), sw.elapsed().count());
 	}
 
 	// 一致レベルに基づきソート
 	const CommandRanking* rankPtr = &in->mRanking;
+
+	sw.reset();
 
 	std::stable_sort(matchedItems.begin(), matchedItems.end(),
 		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
@@ -498,6 +505,8 @@ CommandRepository::Query(
 			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(cmdR->GetName()) : 0;
 			return priorityR < priorityL;
 	});
+
+	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)matchedItems.size(), sw);
 
 	items.reserve(matchedItems.size());
 	for (auto& item : matchedItems) {
