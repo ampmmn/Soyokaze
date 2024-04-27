@@ -1497,6 +1497,13 @@ exeと同じディレクトリ階層に`profile`というディレクトリが�
 
 - [spdlog](https://github.com/gabime/spdlog)
 
+- [c/migemo](https://github.com/koron/cmigemo)
+
+- [Python3](https://www.python.org/)
+
+- [SQLite3](https://www.sqlite.org/)
+  - Windows標準搭載の`winsqlite3.dll`を利用
+
 ## 連絡先
 
 htmnymgw@gmail.com
