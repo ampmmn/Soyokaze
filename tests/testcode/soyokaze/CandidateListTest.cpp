@@ -62,6 +62,10 @@ struct DummyCommand : public launcherapp::core::Command
 	{
 		return false;
 	}
+	bool IsDeletable() override
+	{
+		return false;
+	}
 
 	int EditDialog(const launcherapp::core::CommandParameter* param) override
 	{
