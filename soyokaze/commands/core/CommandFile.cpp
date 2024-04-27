@@ -350,7 +350,7 @@ CommandFile::GetEntry(int index) const
 	return in->mEntries[index].get();
 }
 
-CString CommandFile::GetName(Entry* entry) const
+CString CommandFile::GetName(Entry* entry)
 {
 	ASSERT(entry);
 	return entry->mName;
@@ -362,20 +362,20 @@ void CommandFile::MarkAsUsed(Entry* entry)
 	entry->mIsUsed = true;
 }
 
-bool CommandFile::IsUsedEntry(Entry* entry) const
+bool CommandFile::IsUsedEntry(Entry* entry)
 {
 	ASSERT(entry);
 	return entry->mIsUsed;
 }
 
-bool CommandFile::HasValue(Entry* entry, LPCTSTR key) const
+bool CommandFile::HasValue(Entry* entry, LPCTSTR key)
 {
 	ASSERT(entry);
 	return GetValueType(entry, key) != TYPE_UNKNOWN;
 }
 
 
-int CommandFile::GetValueType(Entry* entry, LPCTSTR key) const
+int CommandFile::GetValueType(Entry* entry, LPCTSTR key)
 {
 	ASSERT(entry);
 	auto itFind = entry->mTypeMap.find(key);
@@ -383,7 +383,7 @@ int CommandFile::GetValueType(Entry* entry, LPCTSTR key) const
 }
 
 
-int CommandFile::Get(Entry* entry, LPCTSTR key, int defValue) const
+int CommandFile::Get(Entry* entry, LPCTSTR key, int defValue)
 {
 	ASSERT(entry);
 	auto itFind = entry->mIntMap.find(key);
@@ -401,7 +401,7 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, int value)
 }
 
 
-double CommandFile::Get(Entry* entry, LPCTSTR key, double defValue) const
+double CommandFile::Get(Entry* entry, LPCTSTR key, double defValue)
 {
 	ASSERT(entry);
 	ASSERT(entry);
@@ -420,7 +420,7 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, double value)
 }
 
 
-CString CommandFile::Get(Entry* entry, LPCTSTR key, LPCTSTR defValue) const
+CString CommandFile::Get(Entry* entry, LPCTSTR key, LPCTSTR defValue)
 {
 	ASSERT(entry);
 	auto itFind = entry->mStrMap.find(key);
@@ -438,7 +438,7 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, const CString& value)
 }
 
 
-bool CommandFile::Get(Entry* entry, LPCTSTR key, bool defValue) const
+bool CommandFile::Get(Entry* entry, LPCTSTR key, bool defValue)
 {
 	ASSERT(entry);
 	auto itFind = entry->mBoolMap.find(key);
@@ -455,7 +455,7 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, bool value)
 	entry->mTypeMap[key] = TYPE_BOOLEAN;
 }
 
-bool CommandFile::Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value) const
+bool CommandFile::Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value)
 {
 	ASSERT(entry);
 	auto itFind = entry->mStreamMap.find(key);

@@ -29,6 +29,8 @@ RebootCommand::RebootCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("reboot"))
 {
 	mDescription = _T("【PCを再起動する】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 RebootCommand::~RebootCommand()
@@ -43,17 +45,17 @@ HICON RebootCommand::GetIcon()
 
 BOOL RebootCommand::Execute(const Parameter& param)
 {
+	if (mIsConfirmBeforeRun) {
+		if (AfxMessageBox(_T("再起動しますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+			return TRUE;
+		}
+	}
 	return ShutdownCommand::DoExit(EWX_REBOOT | EWX_FORCEIFHUNG);
 }
 
 launcherapp::core::Command* RebootCommand::Clone()
 {
 	return new RebootCommand();
-}
-
-launcherapp::core::Command* RebootCommand::Create(LPCTSTR name)
-{
-	return new RebootCommand(name);
 }
 
 }

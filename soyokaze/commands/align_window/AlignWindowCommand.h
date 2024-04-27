@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/core/CommandIF.h"
+#include "commands/common/UserCommandBase.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace align_window {
 
-class AlignWindowCommand : public launcherapp::core::Command
+class AlignWindowCommand : public launcherapp::commands::common::UserCommandBase
 {
 public:
 	AlignWindowCommand();
@@ -22,15 +22,11 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 	static CString GetType();
 

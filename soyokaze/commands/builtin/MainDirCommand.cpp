@@ -60,11 +60,6 @@ launcherapp::core::Command* MainDirCommand::Clone()
 	return new MainDirCommand();
 }
 
-launcherapp::core::Command* MainDirCommand::Create(LPCTSTR name)
-{
-	return new MainDirCommand(name);
-}
-
 }
 }
 }

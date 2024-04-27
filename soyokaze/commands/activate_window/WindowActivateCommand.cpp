@@ -28,7 +28,6 @@ struct WindowActivateCommand::PImpl
 
 	HWND mCachedHwnd = nullptr;
 	DWORD mLastUpdate = 0;
-	uint32_t mRefCount = 1;
 };
 
 HWND WindowActivateCommand::PImpl::FindHwnd()
@@ -123,11 +122,6 @@ int WindowActivateCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-bool WindowActivateCommand::IsEditable()
-{
-	return true;
-}
-
 int WindowActivateCommand::EditDialog(const Parameter*)
 {
 	SettingDialog dlg;
@@ -208,20 +202,6 @@ bool WindowActivateCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
 
 	return true;
-}
-
-uint32_t WindowActivateCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t WindowActivateCommand::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool WindowActivateCommand::NewDialog(

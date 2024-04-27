@@ -23,6 +23,7 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
+	bool IsDeletable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	//launcherapp::core::Command* Clone() override;

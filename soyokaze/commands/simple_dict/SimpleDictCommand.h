@@ -1,7 +1,7 @@
 #pragma once
 
-#include "commands/core/CommandIF.h"
-#include "commands/core/CommandQueryItem.h"	
+#include "commands/common/UserCommandBase.h"
+#include "commands/core/CommandQueryItem.h"
 #include "commands/simple_dict/SimpleDictParam.h"
 #include <memory>
 
@@ -11,7 +11,7 @@ namespace simple_dict {
 
 class CommandUpdateListenerIF;
 
-class SimpleDictCommand : public launcherapp::core::Command
+class SimpleDictCommand : public launcherapp::commands::common::UserCommandBase
 {
 public:
 	SimpleDictCommand();
@@ -29,15 +29,11 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 	static CString GetType();
 

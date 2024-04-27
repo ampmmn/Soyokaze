@@ -20,7 +20,6 @@ namespace align_window {
 struct AlignWindowCommand::PImpl
 {
 	CommandParam mParam;
-	uint32_t mRefCount = 1;
 };
 
 CString AlignWindowCommand::GetType() { return _T("AlignWindow"); }
@@ -179,11 +178,6 @@ int AlignWindowCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-bool AlignWindowCommand::IsEditable()
-{
-	return true;
-}
-
 int AlignWindowCommand::EditDialog(const Parameter*)
 {
 	SettingDialog dlg;
@@ -288,20 +282,6 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 	}
 
 	return true;
-}
-
-uint32_t AlignWindowCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t AlignWindowCommand::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool AlignWindowCommand::NewDialog(

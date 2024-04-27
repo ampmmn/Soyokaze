@@ -26,6 +26,7 @@ public:
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
 	virtual bool IsEditable() = 0;
+	virtual bool IsDeletable() = 0;
 	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
 
 	/**

@@ -19,8 +19,7 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 
-	// BuiltinCommandFactory$B7PM3$G%$%s%9%?%s%9$r@8@.$G$-$k$h$&$K$9$k$?$a$N<jB3$-(B
-	static launcherapp::core::Command* Create(LPCTSTR);
+	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
 	DECLARE_BUILTINCOMMAND(UserDirCommand)
 };
 

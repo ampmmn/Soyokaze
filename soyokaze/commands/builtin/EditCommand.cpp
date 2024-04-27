@@ -76,11 +76,6 @@ launcherapp::core::Command* EditCommand::Clone()
 	return new EditCommand();
 }
 
-launcherapp::core::Command* EditCommand::Create(LPCTSTR name)
-{
-	return new EditCommand(name);
-}
-
 }
 }
 }

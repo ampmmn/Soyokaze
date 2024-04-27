@@ -38,7 +38,6 @@ struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 
 	SimpleDictCommand* mThisPtr;
 	SimpleDictParam mParam;
-	uint32_t mRefCount = 1;
 
 	std::set<CommandUpdateListenerIF*> mListeners;
 };
@@ -135,11 +134,6 @@ int SimpleDictCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-bool SimpleDictCommand::IsEditable()
-{
-	return true;
-}
-
 int SimpleDictCommand::EditDialog(const Parameter*)
 {
 	// 設定変更画面を表示する
@@ -231,20 +225,6 @@ bool SimpleDictCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
 
 	return true;
-}
-
-uint32_t SimpleDictCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t SimpleDictCommand::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool SimpleDictCommand::NewDialog(

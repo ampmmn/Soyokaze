@@ -58,11 +58,6 @@ VersionCommand::Clone()
 	return new VersionCommand();
 }
 
-launcherapp::core::Command* VersionCommand::Create(LPCTSTR name)
-{
-	return new VersionCommand(name);
-}
-
 } // end of namespace builtin
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -37,8 +37,7 @@ struct RegExpCommand::PImpl
 {
 	PImpl() :
 		mRunAs(0),
-		mIcon(nullptr),
-		mRefCount(1)
+		mIcon(nullptr)
 	{
 	}
 	~PImpl()
@@ -58,9 +57,6 @@ struct RegExpCommand::PImpl
 	HICON mIcon;
 
 	CString mErrMsg;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 
@@ -232,11 +228,6 @@ int RegExpCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-bool RegExpCommand::IsEditable()
-{
-	return true;
-}
-
 int RegExpCommand::EditDialog(const Parameter* param)
 {
 	CommandEditDialog dlg;
@@ -360,21 +351,6 @@ bool RegExpCommand::Load(CommandFile* cmdFile, void* entry_)
 
 	return true;
 }
-
-uint32_t RegExpCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t RegExpCommand::Release()
-{
-	auto n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 bool RegExpCommand::IsRunAsAdmin()
 {

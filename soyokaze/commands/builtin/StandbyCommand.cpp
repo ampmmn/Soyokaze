@@ -31,6 +31,8 @@ StandbyCommand::StandbyCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("standby"))
 {
 	mDescription = _T("【PCをスタンバイ状態にする】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 StandbyCommand::~StandbyCommand()
@@ -45,17 +47,17 @@ HICON StandbyCommand::GetIcon()
 
 BOOL StandbyCommand::Execute(const Parameter& param)
 {
+	if (mIsConfirmBeforeRun) {
+		if (AfxMessageBox(_T("スタンバイ状態にしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+			return TRUE;
+		}
+	}
 	return SuspendCommand::DoSuspend(FALSE);
 }
 
 launcherapp::core::Command* StandbyCommand::Clone()
 {
 	return new StandbyCommand();
-}
-
-launcherapp::core::Command* StandbyCommand::Create(LPCTSTR name)
-{
-	return new StandbyCommand(name);
 }
 
 }

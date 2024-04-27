@@ -38,22 +38,11 @@ class GroupCommand::Exception
 
 struct GroupCommand::PImpl
 {
-	PImpl() :
-		mRefCount(1)
-	{
-	}
-	~PImpl()
-	{
-	}
-
 	BOOL Execute(const Parameter& param, int round);
 
 	CommandParam mParam;
 
 	CString mErrMsg;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 
@@ -225,11 +214,6 @@ int GroupCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-bool GroupCommand::IsEditable()
-{
-	return true;
-}
-
 int GroupCommand::EditDialog(const Parameter* param)
 {
 	GroupEditDialog dlg;
@@ -321,20 +305,6 @@ bool GroupCommand::Save(CommandFile* cmdFile)
 	}
 
 	return true;
-}
-
-uint32_t GroupCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t GroupCommand::Release()
-{
-	auto n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 } // end of namespace group

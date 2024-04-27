@@ -28,6 +28,8 @@ LogOffCommand::LogOffCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("logoff"))
 {
 	mDescription = _T("【ログオフする】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 LogOffCommand::~LogOffCommand()
@@ -42,6 +44,11 @@ HICON LogOffCommand::GetIcon()
 
 BOOL LogOffCommand::Execute(const Parameter& param)
 {
+	if (mIsConfirmBeforeRun) {
+		if (AfxMessageBox(_T("ログオフしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+			return TRUE;
+		}
+	}
 	ExitWindows(0, 0);
 	return TRUE;
 }
@@ -49,11 +56,6 @@ BOOL LogOffCommand::Execute(const Parameter& param)
 launcherapp::core::Command* LogOffCommand::Clone()
 {
 	return new LogOffCommand();
-}
-
-launcherapp::core::Command* LogOffCommand::Create(LPCTSTR name)
-{
-	return new LogOffCommand(name);
 }
 
 }

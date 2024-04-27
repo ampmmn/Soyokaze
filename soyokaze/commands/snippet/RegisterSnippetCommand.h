@@ -20,6 +20,9 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 	static CString DEFAULT_NAME;
+
+	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+	DECLARE_BUILTINCOMMAND(RegisterSnippetCommand)
 };
 
 } // end of namespace builtin

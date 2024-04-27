@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/core/CommandIF.h"
+#include "commands/common/UserCommandBase.h"
 #include <memory>
 
 class HOTKEY_ATTR;
@@ -12,7 +12,7 @@ namespace group {
 class CommandParam;
 
 // グループコマンド
-class GroupCommand : public launcherapp::core::Command
+class GroupCommand : public launcherapp::commands::common::UserCommandBase
 {
 	class Exception;
 public:
@@ -28,15 +28,11 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 	static CString GroupCommand::GetType();
 

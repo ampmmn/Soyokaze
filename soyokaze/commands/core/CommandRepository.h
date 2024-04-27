@@ -54,8 +54,6 @@ public:
 
 	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
 
-	bool IsBuiltinName(const CString& cmdName);
-
 	void Query(const CommandParameter& param, std::vector<launcherapp::core::Command*>& commands);
 	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);
 	bool HasCommand(const CString& strQueryStr);

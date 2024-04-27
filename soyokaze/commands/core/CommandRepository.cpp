@@ -325,24 +325,6 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 }
 
 /**
- * 指定したコマンド名は組み込みコマンドか?
- */
-bool CommandRepository::IsBuiltinName(const CString& cmdName)
-{
-	CSingleLock sl(&in->mCS, TRUE);
-
-	auto* cmd = in->mCommands.Get(cmdName);
-	if (cmd == nullptr) {
-		return false;
-	}
-	bool isEditable = cmd->IsEditable();
-
-	cmd->Release();
-
-	return isEditable == false;
-}
-
-/**
  *  キーワードマネージャーの表示
  */
 int CommandRepository::ManagerDialog()

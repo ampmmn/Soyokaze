@@ -86,13 +86,11 @@ void BuiltinCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString name = cmdFile->GetName(entry);
-
 		// エントリのコマンド種別が組み込みコマンドのものならインスタンスを生成する
 		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
 
 		Command* command = nullptr;
-		if (factory->Create(typeStr, name, &command) == false) {
+		if (factory->Create(typeStr, entry, &command) == false) {
 			continue;
 		}
 

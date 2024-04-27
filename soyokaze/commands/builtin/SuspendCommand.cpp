@@ -46,17 +46,17 @@ HICON SuspendCommand::GetIcon()
 
 BOOL SuspendCommand::Execute(const Parameter& param)
 {
+	if (mIsConfirmBeforeRun) {
+		if (AfxMessageBox(_T("サスペンドしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+			return TRUE;
+		}
+	}
 	return SuspendCommand::DoSuspend(TRUE);
 }
 
 launcherapp::core::Command* SuspendCommand::Clone()
 {
 	return new SuspendCommand();
-}
-
-launcherapp::core::Command* SuspendCommand::Create(LPCTSTR name)
-{
-	return new SuspendCommand(name);
 }
 
 BOOL SuspendCommand::DoSuspend(BOOL isSuspend)

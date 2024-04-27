@@ -28,7 +28,6 @@ struct WebSearchCommand::PImpl
 	HICON mIcon = nullptr;
 
 	CString mErrorMsg;
-	uint32_t mRefCount = 1;
 };
 
 CString WebSearchCommand::GetType() { return _T("WebSearch"); }
@@ -219,20 +218,6 @@ bool WebSearchCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("IconData"), in->mParam.mIconData);
 
 	return true;
-}
-
-uint32_t WebSearchCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t WebSearchCommand::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool WebSearchCommand::NewDialog(

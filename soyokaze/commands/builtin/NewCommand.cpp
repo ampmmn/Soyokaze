@@ -70,11 +70,6 @@ launcherapp::core::Command* NewCommand::Clone()
 	return new NewCommand();
 }
 
-launcherapp::core::Command* NewCommand::Create(LPCTSTR name)
-{
-	return new NewCommand(name);
-}
-
 } // end of namespace builtin
 } // end of namespace commands
 } // end of namespace launcherapp

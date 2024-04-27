@@ -258,16 +258,10 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mName = name;
 	in->mDescription = in->mSelCommand->GetDescription();
 
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	bool isBuiltin = cmdRepoPtr->IsBuiltinName(name);
-	if (isBuiltin) {
-		btnEdit->EnableWindow(FALSE);
-		btnDel->EnableWindow(FALSE);
-		return false;
-	}
-
-	btnEdit->EnableWindow(TRUE);
-	btnDel->EnableWindow(TRUE);
+	bool isEditable = in->mSelCommand->IsEditable();
+	bool isDeletable = in->mSelCommand->IsDeletable();
+	btnEdit->EnableWindow(isEditable ? TRUE : FALSE);
+	btnDel->EnableWindow(isDeletable ? TRUE : FALSE);
 
 	return true;
 }
@@ -357,15 +351,12 @@ void KeywordManagerDialog::OnButtonNew()
 
 void KeywordManagerDialog::OnButtonEdit()
 {
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	if (in->mSelCommand == nullptr) {
+	if (in->mSelCommand == nullptr || in->mSelCommand->IsEditable() == false) {
 		return;
 	}
 	CString name = in->mSelCommand->GetName();
-	if (cmdRepoPtr->IsBuiltinName(name)) {
-		return;
-	}
 
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->EditCommandDialog(name);
 
 	ResetContents();
@@ -376,7 +367,7 @@ void KeywordManagerDialog::OnButtonEdit()
 
 void KeywordManagerDialog::OnButtonDelete()
 {
-	if (in->mSelCommand == nullptr) {
+	if (in->mSelCommand == nullptr || in->mSelCommand->IsDeletable() == false) {
 		return ;
 	}
 

@@ -31,6 +31,9 @@ AfxChangeDirectoryCommand::AfxChangeDirectoryCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("afxcd"))
 {
 	mDescription = _T("【afxwカレントディレクトリ変更】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
+	mIsEnable = false;
 }
 
 AfxChangeDirectoryCommand::~AfxChangeDirectoryCommand()
@@ -71,11 +74,6 @@ HICON AfxChangeDirectoryCommand::GetIcon()
 launcherapp::core::Command* AfxChangeDirectoryCommand::Clone()
 {
 	return new AfxChangeDirectoryCommand();
-}
-
-launcherapp::core::Command* AfxChangeDirectoryCommand::Create(LPCTSTR name)
-{
-	return new AfxChangeDirectoryCommand(name);
 }
 
 }

@@ -86,11 +86,6 @@ launcherapp::core::Command* DeleteCommand::Clone()
 	return new DeleteCommand();
 }
 
-launcherapp::core::Command* DeleteCommand::Create(LPCTSTR name)
-{
-	return new DeleteCommand(name);
-}
-
 }
 }
 }

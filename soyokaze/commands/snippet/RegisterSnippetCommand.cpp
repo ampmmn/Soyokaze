@@ -18,6 +18,9 @@ namespace snippet {
 CString RegisterSnippetCommand::TYPE(_T("Builtin-RegisterSnippet"));
 CString RegisterSnippetCommand::DEFAULT_NAME(_T("newsnippet"));
 
+// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
+REGISTER_BUILTINCOMMAND(RegisterSnippetCommand)
+
 CString RegisterSnippetCommand::GetType()
 {
 	return TYPE;
@@ -27,6 +30,8 @@ RegisterSnippetCommand::RegisterSnippetCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : DEFAULT_NAME)
 {
 	mDescription = _T("【クリップボードのテキストを定型文として登録】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 RegisterSnippetCommand::~RegisterSnippetCommand()

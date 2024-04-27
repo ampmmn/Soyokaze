@@ -46,17 +46,17 @@ void BuiltinCommandFactory::EnumTypeName(std::vector<CString>& typeNames)
 	}
 }
 
-bool BuiltinCommandFactory::Create(LPCTSTR typeName, LPCTSTR cmdName, CommandType** cmd)
+bool BuiltinCommandFactory::Create(LPCTSTR typeName, Entry* entry, CommandType** cmd)
 {
 	ASSERT(cmd);
 
 	auto it = in->mFactoryMap.find(typeName);
 	if (it == in->mFactoryMap.end()) {
-		SPDLOG_ERROR(_T("command type {0} is not registered. cmdName:{1}"), typeName, cmdName);
+		SPDLOG_ERROR(_T("command type {0} is not registered."), typeName);
 		return false;
 	}
 
-	*cmd = it->second(cmdName);
+	*cmd = it->second(entry);
 	return true;
 }
 

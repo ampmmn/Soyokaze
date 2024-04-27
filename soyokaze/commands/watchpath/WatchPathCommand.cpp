@@ -27,7 +27,7 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 struct WatchPathCommand::PImpl
 {
-	PImpl() : mRefCount(1)
+	PImpl()
 	{
 	}
 	~PImpl()
@@ -38,9 +38,6 @@ struct WatchPathCommand::PImpl
 	CString mDescription;
 	CString mPath;
 	CString mMessage;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 
@@ -107,11 +104,6 @@ HICON WatchPathCommand::GetIcon()
 int WatchPathCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
-}
-
-bool WatchPathCommand::IsEditable()
-{
-	return true;
 }
 
 int WatchPathCommand::EditDialog(const Parameter* param)
@@ -211,20 +203,6 @@ bool WatchPathCommand::Load(CommandFile* cmdFile, void* entry_)
 	PathWatcher::Get()->RegisterPath(in->mName, item);
 
 	return true;
-}
-
-uint32_t WatchPathCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t WatchPathCommand::Release()
-{
-	auto n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool WatchPathCommand::NewDialog(const Parameter* param)

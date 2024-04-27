@@ -10,6 +10,8 @@ namespace builtin {
 class BuiltinCommandBase : public launcherapp::core::Command
 {
 public:
+	using Entry = BuiltinCommandFactory::Entry;
+public:
 	BuiltinCommandBase(LPCTSTR name = nullptr);
 	virtual ~BuiltinCommandBase();
 
@@ -22,6 +24,7 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
+	bool IsDeletable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	//launcherapp::core::Command* Clone() override;
@@ -31,7 +34,9 @@ public:
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
+
 	virtual CString GetType() = 0;
+	virtual void LoadFrom(Entry* entry);
 
 protected:
 	CString mName;

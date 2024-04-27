@@ -41,7 +41,6 @@ namespace filter {
 struct FilterCommand::PImpl
 {
 	PImpl() :
-		mRefCount(1),
 		mIsSilent(true),
 		mExecutingCount(0)
 	{
@@ -70,9 +69,6 @@ struct FilterCommand::PImpl
 	//
 	bool mIsRunning;
 	std::unique_ptr<FilterDialog> mDialog;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 // 前段のプログラムを実行する
@@ -407,11 +403,6 @@ int FilterCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-bool FilterCommand::IsEditable()
-{
-	return true;
-}
-
 int FilterCommand::EditDialog(const Parameter* param)
 {
 	FilterEditDialog dlg;
@@ -498,21 +489,6 @@ bool FilterCommand::Save(CommandFile* cmdFile)
 
 	return true;
 }
-
-uint32_t FilterCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t FilterCommand::Release()
-{
-	auto n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace filter
 } // end of namespace commands

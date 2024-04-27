@@ -40,7 +40,7 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 struct ShellExecCommand::PImpl
 {
 	PImpl() :
-		mIcon(nullptr), mRefCount(1)
+		mIcon(nullptr)
 	{
 	}
 	~PImpl()
@@ -54,9 +54,6 @@ struct ShellExecCommand::PImpl
 
 	CString mErrMsg;
 	HICON mIcon;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 
@@ -277,11 +274,6 @@ int ShellExecCommand::Match(Pattern* pattern)
 		return level;
 	}
 	return pattern->Match(GetDescription());
-}
-
-bool ShellExecCommand::IsEditable()
-{
-	return true;
 }
 
 int ShellExecCommand::EditDialog(const Parameter* args)
@@ -583,22 +575,6 @@ bool ShellExecCommand::Save(CommandFile* cmdFile)
 
 	return true;
 }
-
-uint32_t ShellExecCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t ShellExecCommand::Release()
-{
-	auto n = --in->mRefCount;
-
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 // 管理者権限で実行しているか?
 bool ShellExecCommand::IsRunAsAdmin()

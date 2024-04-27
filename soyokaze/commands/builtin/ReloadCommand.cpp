@@ -27,6 +27,8 @@ ReloadCommand::ReloadCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("reload"))
 {
 	mDescription = _T("【設定のリロード】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 ReloadCommand::~ReloadCommand()
@@ -47,11 +49,6 @@ HICON ReloadCommand::GetIcon()
 launcherapp::core::Command* ReloadCommand::Clone()
 {
 	return new ReloadCommand();
-}
-
-launcherapp::core::Command* ReloadCommand::Create(LPCTSTR name)
-{
-	return new ReloadCommand(name);
 }
 
 } // end of namespace builtin

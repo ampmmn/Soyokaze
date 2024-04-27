@@ -87,11 +87,6 @@ launcherapp::core::Command* SettingCommand::Clone()
 	return new SettingCommand();
 }
 
-launcherapp::core::Command* SettingCommand::Create(LPCTSTR name)
-{
-	return new SettingCommand(name);
-}
-
 } // end of namespace builtin
 } // end of namespace commands
 } // end of namespace launcherapp

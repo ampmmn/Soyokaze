@@ -27,6 +27,8 @@ LockScreenCommand::LockScreenCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("lockscreen"))
 {
 	mDescription = _T("【スクリーンロック】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 LockScreenCommand::~LockScreenCommand()
@@ -47,11 +49,6 @@ HICON LockScreenCommand::GetIcon()
 launcherapp::core::Command* LockScreenCommand::Clone()
 {
 	return new LockScreenCommand();
-}
-
-launcherapp::core::Command* LockScreenCommand::Create(LPCTSTR name)
-{
-	return new LockScreenCommand(name);
 }
 
 } // end of namespace builtin

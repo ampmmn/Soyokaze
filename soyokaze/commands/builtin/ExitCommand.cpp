@@ -64,11 +64,6 @@ launcherapp::core::Command* ExitCommand::Clone()
 	return new ExitCommand();
 }
 
-launcherapp::core::Command* ExitCommand::Create(LPCTSTR name)
-{
-	return new ExitCommand(name);
-}
-
 }
 }
 }

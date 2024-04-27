@@ -49,11 +49,6 @@ launcherapp::core::Command* ManagerCommand::Clone()
 	return new ManagerCommand();
 }
 
-launcherapp::core::Command* ManagerCommand::Create(LPCTSTR name)
-{
-	return new ManagerCommand(name);
-}
-
 } // end of namespace builtin
 } // end of namespace commands
 } // end of namespace launcherapp

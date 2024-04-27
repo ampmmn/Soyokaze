@@ -64,6 +64,8 @@ RegistWinCommand::RegistWinCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("registwin"))
 {
 	mDescription = _T("【アクティブウインドウ登録】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 RegistWinCommand::~RegistWinCommand()
@@ -118,11 +120,6 @@ HICON RegistWinCommand::GetIcon()
 launcherapp::core::Command* RegistWinCommand::Clone()
 {
 	return new RegistWinCommand();
-}
-
-launcherapp::core::Command* RegistWinCommand::Create(LPCTSTR name)
-{
-	return new RegistWinCommand(name);
 }
 
 } // end of namespace builtin

@@ -33,6 +33,8 @@ ChangeDirectoryCommand::ChangeDirectoryCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("cd"))
 {
 	mDescription = _T("【カレントディレクトリ変更】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 ChangeDirectoryCommand::~ChangeDirectoryCommand()
@@ -83,11 +85,6 @@ HICON ChangeDirectoryCommand::GetIcon()
 launcherapp::core::Command* ChangeDirectoryCommand::Clone()
 {
 	return new ChangeDirectoryCommand();
-}
-
-launcherapp::core::Command* ChangeDirectoryCommand::Create(LPCTSTR name)
-{
-	return new ChangeDirectoryCommand(name);
 }
 
 }

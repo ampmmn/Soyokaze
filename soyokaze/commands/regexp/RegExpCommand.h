@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/core/CommandIF.h"
+#include "commands/common/UserCommandBase.h"
 #include <memory>
 
 class HOTKEY_ATTR;
@@ -9,7 +9,7 @@ namespace launcherapp {
 namespace commands {
 namespace regexp {
 
-class RegExpCommand : public launcherapp::core::Command
+class RegExpCommand : public launcherapp::commands::common::UserCommandBase
 {
 public:
 	struct ATTRIBUTE {
@@ -35,7 +35,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
 	int EditDialog(const Parameter* param) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
@@ -43,9 +42,6 @@ public:
 	bool Save(CommandFile* cmdFile) override;
 
 	bool Load(CommandFile* cmdFile, void* entry_);
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 	static CString GetType();
 

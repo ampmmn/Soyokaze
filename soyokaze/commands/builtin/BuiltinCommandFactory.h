@@ -3,6 +3,7 @@
 #include <memory>
 #include <functional>
 #include "commands/core/CommandIF.h"
+#include "commands/core/CommandFile.h"
 
 namespace launcherapp {
 namespace commands {
@@ -11,8 +12,10 @@ namespace builtin {
 class BuiltinCommandFactory
 {
 public:
-	using FactoryMethodType = std::function<launcherapp::core::Command*(LPCTSTR)>;
+	using Entry = CommandFile::Entry;
+	using FactoryMethodType = std::function<launcherapp::core::Command*(Entry*)>;
 	using CommandType = launcherapp::core::Command;
+
 private:
 	BuiltinCommandFactory();
 	~BuiltinCommandFactory();
@@ -22,7 +25,7 @@ public:
 
 	void Register(LPCTSTR typeName,FactoryMethodType func); 
 	void EnumTypeName(std::vector<CString>& typeNames);
-	bool Create(LPCTSTR typeName, LPCTSTR cmdName, CommandType** cmd);
+	bool Create(LPCTSTR typeName, Entry* entry, CommandType** cmd);
 
 private:
 	struct PImpl;
@@ -39,7 +42,13 @@ private:
 	private: \
 	static bool _mIsRegistered; \
 	public: \
-	static bool IsRegistered();
+	static bool IsRegistered(); \
+	static launcherapp::core::Command* Create(Entry* entry) { \
+		auto cmd = new clsName(entry ? (LPCTSTR)CommandFile::GetName(entry) : nullptr); \
+		if (entry) { cmd->LoadFrom(entry); } \
+		return cmd; \
+	}
+
 
 #define REGISTER_BUILTINCOMMAND(clsName)   \
 	bool clsName::RegisterAsBuiltinCommand() { \

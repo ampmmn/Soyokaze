@@ -837,6 +837,9 @@
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\UserCommandBase.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1489,6 +1492,9 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\UserCommandBase.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

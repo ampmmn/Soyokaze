@@ -67,6 +67,11 @@ bool AdhocCommandBase::IsEditable()
 	return false;
 }
 
+bool AdhocCommandBase::IsDeletable()
+{
+	return false;
+}
+
 int AdhocCommandBase::EditDialog(const Parameter* param)
 {
 	return -1;

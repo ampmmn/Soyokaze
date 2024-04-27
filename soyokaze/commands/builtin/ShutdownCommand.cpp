@@ -28,6 +28,8 @@ ShutdownCommand::ShutdownCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("shutdown"))
 {
 	mDescription = _T("【PCをシャットダウンする】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 ShutdownCommand::~ShutdownCommand()
@@ -42,17 +44,17 @@ HICON ShutdownCommand::GetIcon()
 
 BOOL ShutdownCommand::Execute(const Parameter& param)
 {
+	if (mIsConfirmBeforeRun) {
+		if (AfxMessageBox(_T("シャットダウンしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+			return TRUE;
+		}
+	}
 	return DoExit(EWX_SHUTDOWN | EWX_FORCEIFHUNG);
 }
 
 launcherapp::core::Command* ShutdownCommand::Clone()
 {
 	return new ShutdownCommand();
-}
-
-launcherapp::core::Command* ShutdownCommand::Create(LPCTSTR name)
-{
-	return new ShutdownCommand(name);
 }
 
 BOOL ShutdownCommand::DoExit(UINT uFlags)

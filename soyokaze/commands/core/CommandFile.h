@@ -34,30 +34,30 @@ public:
 
 
 	Entry* NewEntry(const CString& name);
-	Entry* GetEntry(int index) const;
+	Entry* GetEntry(int index) const;	
 
-	CString GetName(Entry* entry) const;
+	static CString GetName(Entry* entry);
 
 	void MarkAsUsed(Entry* entry);
-	bool IsUsedEntry(Entry* entry) const;
+	static bool IsUsedEntry(Entry* entry);
 
-	bool HasValue(Entry* entry, LPCTSTR key) const;
+	static bool HasValue(Entry* entry, LPCTSTR key);
 
-	int GetValueType(Entry* entry, LPCTSTR key) const;
+	static int GetValueType(Entry* entry, LPCTSTR key);
 
-	int Get(Entry* entry, LPCTSTR key, int defValue) const;
+	static int Get(Entry* entry, LPCTSTR key, int defValue);
 	void Set(Entry* entry, LPCTSTR key, int value);
 
-	double Get(Entry* entry, LPCTSTR key, double defValue) const;
+	static double Get(Entry* entry, LPCTSTR key, double defValue);
 	void Set(Entry* entry, LPCTSTR key, double value);
 
-	CString Get(Entry* entry, LPCTSTR key, LPCTSTR defValue) const;
+	static CString Get(Entry* entry, LPCTSTR key, LPCTSTR defValue);
 	void Set(Entry* entry, LPCTSTR key, const CString& value);
 
-	bool Get(Entry* entry, LPCTSTR key, bool defValue) const;
+	static bool Get(Entry* entry, LPCTSTR key, bool defValue);
 	void Set(Entry* entry, LPCTSTR key, bool value);
 
-	bool Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value) const;
+	static bool Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value);
 	void Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value);
 
 	void ClearEntries();

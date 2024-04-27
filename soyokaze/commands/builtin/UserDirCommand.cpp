@@ -58,11 +58,6 @@ launcherapp::core::Command* UserDirCommand::Clone()
 	return new UserDirCommand();
 }
 
-launcherapp::core::Command* UserDirCommand::Create(LPCTSTR name)
-{
-	return new UserDirCommand(name);
-}
-
 } // end of namespace builtin
 } // end of namespace commands
 } // end of namespace launcherapp

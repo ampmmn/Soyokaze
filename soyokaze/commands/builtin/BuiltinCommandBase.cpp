@@ -68,6 +68,12 @@ bool BuiltinCommandBase::IsEditable()
 	return (mCanDisable || mCanSetConfirm);
 }
 
+bool BuiltinCommandBase::IsDeletable()
+{
+	// 組み込みコマンドは削除させない
+	return false;
+}
+
 int BuiltinCommandBase::EditDialog(const Parameter* param)
 {
 	if (mCanDisable == false && mCanSetConfirm == false) {
@@ -104,6 +110,10 @@ bool BuiltinCommandBase::Save(CommandFile* cmdFile)
 	ASSERT(cmdFile);
 	auto entry = cmdFile->NewEntry(GetName());
 	cmdFile->Set(entry, _T("Type"), GetType());
+
+	cmdFile->Set(entry, _T("IsConfirmBeforeRun"), mIsConfirmBeforeRun);
+	cmdFile->Set(entry, _T("IsEnable"), mIsEnable);
+
 	return true;
 }
 
@@ -119,6 +129,16 @@ uint32_t BuiltinCommandBase::Release()
 		delete this;
 	}
 	return n;
+}
+
+void BuiltinCommandBase::LoadFrom(Entry* entry)
+{
+	if (CommandFile::HasValue(entry, _T("IsConfirmBeforeRun"))) {
+		mIsConfirmBeforeRun = CommandFile::Get(entry, _T("IsConfirmBeforeRun"), false);
+	}
+	if (CommandFile::HasValue(entry, _T("IsEnable"))) {
+		mIsEnable = CommandFile::Get(entry, _T("IsEnable"), false);
+	}
 }
 
 }

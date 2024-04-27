@@ -28,6 +28,8 @@ EmptyRecycleBinCommand::EmptyRecycleBinCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("emptyrecyclebin"))
 {
 	mDescription = _T("【ごみ箱を空にする】");
+	mCanSetConfirm = true;
+	mCanDisable = true;
 }
 
 EmptyRecycleBinCommand::~EmptyRecycleBinCommand()
@@ -42,18 +44,14 @@ HICON EmptyRecycleBinCommand::GetIcon()
 
 BOOL EmptyRecycleBinCommand::Execute(const Parameter& param)
 {
-	SHEmptyRecycleBin(nullptr, nullptr, SHERB_NOCONFIRMATION);
+	DWORD flags = mIsConfirmBeforeRun ? 0 : SHERB_NOCONFIRMATION;
+	SHEmptyRecycleBin(nullptr, nullptr, flags);
 	return TRUE;
 }
 
 launcherapp::core::Command* EmptyRecycleBinCommand::Clone()
 {
 	return new EmptyRecycleBinCommand();
-}
-
-launcherapp::core::Command* EmptyRecycleBinCommand::Create(LPCTSTR name)
-{
-	return new EmptyRecycleBinCommand(name);
 }
 
 }

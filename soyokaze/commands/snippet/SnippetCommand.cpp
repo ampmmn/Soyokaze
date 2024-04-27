@@ -24,7 +24,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 
 struct SnippetCommand::PImpl
 {
-	PImpl() : mRefCount(1)
+	PImpl()
 	{
 	}
 	~PImpl()
@@ -34,9 +34,6 @@ struct SnippetCommand::PImpl
 	CString mName;
 	CString mDescription;
 	CString mText;
-
-	// 参照カウント
-	uint32_t mRefCount;
 };
 
 
@@ -116,11 +113,6 @@ HICON SnippetCommand::GetIcon()
 int SnippetCommand::Match(Pattern* pattern)
 {
 	return pattern->Match(GetName());
-}
-
-bool SnippetCommand::IsEditable()
-{
-	return true;
 }
 
 int SnippetCommand::EditDialog(const Parameter* param)
@@ -214,20 +206,6 @@ bool SnippetCommand::Load(CommandFile* cmdFile, void* entry_)
 	in->mText = cmdFile->Get(entry, _T("text"), _T(""));
 
 	return true;
-}
-
-uint32_t SnippetCommand::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t SnippetCommand::Release()
-{
-	auto n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 bool SnippetCommand::NewDialog(const Parameter* param)

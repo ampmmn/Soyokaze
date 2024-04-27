@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/core/CommandIF.h"
+#include "commands/common/UserCommandBase.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace websearch {
 
-class WebSearchCommand : public launcherapp::core::Command
+class WebSearchCommand : public launcherapp::commands::common::UserCommandBase
 {
 public:
 	WebSearchCommand();
@@ -33,9 +33,6 @@ public:
 	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandFile* cmdFile) override;
-
-	uint32_t AddRef() override;
-	uint32_t Release() override;
 
 	static CString GetType();
 
