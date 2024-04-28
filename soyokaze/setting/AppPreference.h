@@ -40,6 +40,11 @@ public:
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
 
+	// 入力履歴機能を使用するか?
+	bool IsUseInputHistory();
+	// 履歴件数の上限を取得
+	int GetHistoryLimit();
+
 	// 入力画面表示時にIMEをオフにするか?
 	bool IsIMEOffOnActive();
 

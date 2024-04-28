@@ -546,6 +546,7 @@
     <ClInclude Include="settingwindow\ExcludePathPage.h" />
     <ClInclude Include="settingwindow\ExecSettingDialog.h" />
     <ClInclude Include="settingwindow\ExtensionSettingDialog.h" />
+    <ClInclude Include="settingwindow\InputHistorySettingPage.h" />
     <ClInclude Include="settingwindow\InputSettingDialog.h" />
     <ClInclude Include="gui\ModalComboBox.h" />
     <ClInclude Include="gui\SelectCommandTypeDialog.h" />
@@ -779,6 +780,7 @@
     <ClCompile Include="settingwindow\ExcludePathPage.cpp" />
     <ClCompile Include="settingwindow\ExecSettingDialog.cpp" />
     <ClCompile Include="settingwindow\ExtensionSettingDialog.cpp" />
+    <ClCompile Include="settingwindow\InputHistorySettingPage.cpp" />
     <ClCompile Include="settingwindow\InputSettingDialog.cpp" />
     <ClCompile Include="gui\ModalComboBox.cpp" />
     <ClCompile Include="gui\SelectCommandTypeDialog.cpp" />

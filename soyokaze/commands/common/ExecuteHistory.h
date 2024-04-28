@@ -30,6 +30,8 @@ public:
 	void GetItems(const CString& type, ItemList& items) const;
 	int EraseItems(const CString& type, const std::set<CString>& words);
 
+	void ClearAllItems();
+
 	void Save();
 	void Load();
 

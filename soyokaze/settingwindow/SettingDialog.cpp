@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "settingwindow/BasicSettingDialog.h"
 #include "settingwindow/InputSettingDialog.h"
+#include "settingwindow/InputHistorySettingPage.h"
 #include "settingwindow/InputWindowKeySettingPage.h"
 #include "settingwindow/ExecSettingDialog.h"
 #include "settingwindow/ExcludePathPage.h"
@@ -94,6 +95,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 
 	auto hInputItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new InputSettingDialog(this)), param);
 	AddPage(hInputItem, std::unique_ptr<SettingPage>(new InputWindowKeySettingPage(this)), param);
+	AddPage(hInputItem, std::unique_ptr<SettingPage>(new InputHistorySettingPage(this)), param);
 	auto hExecItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new ExcludePathPage(this)), param);

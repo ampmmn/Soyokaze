@@ -898,6 +898,17 @@ BEGIN
     EDITTEXT        IDC_EDIT_NAME,87,9,205,14,ES_AUTOHSCROLL | ES_READONLY
 END
 
+IDD_APPSETTING_INPUTHISTORY DIALOGEX 0, 0, 344, 291
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "履歴機能を使う(&H)",IDC_CHECK_USEHISTORY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,9,77,10
+    LTEXT           "履歴件数(&U):",IDC_STATIC,19,26,57,8
+    EDITTEXT        IDC_EDIT_COUNT,80,26,50,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "履歴の削除(&D)",IDC_BUTTON_CLEAR,17,46,60,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -905,8 +916,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,19,0,1
- PRODUCTVERSION 0,19,0,1
+ FILEVERSION 0,20,0,1
+ PRODUCTVERSION 0,20,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -922,12 +933,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.19.0.1"
+            VALUE "FileVersion", "0.20.0.1"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.19.0.1"
+            VALUE "ProductVersion", "0.20.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -1245,6 +1256,14 @@ BEGIN
         RIGHTMARGIN, 296
         TOPMARGIN, 7
         BOTTOMMARGIN, 80
+    END
+
+    IDD_APPSETTING_INPUTHISTORY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 337
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 284
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1807,6 +1826,11 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_APPSETTING_INPUTHISTORY AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

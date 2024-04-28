@@ -404,6 +404,18 @@ UINT AppPreference::GetVirtualKeyCode()
 	return in->mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
+// 入力履歴機能を使用するか?
+bool AppPreference::IsUseInputHistory()
+{
+	return in->mSettings.Get(_T("Input:IsUseHistory"), false);
+}
+
+// 履歴件数の上限を取得
+int AppPreference::GetHistoryLimit()
+{
+	return in->mSettings.Get(_T("Input:HistoryLimit"), 128);
+}
+
 // 入力画面表示時にIMEをオフにするか?
 bool AppPreference::IsIMEOffOnActive()
 {

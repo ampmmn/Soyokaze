@@ -166,6 +166,11 @@ void PartialMatchPattern::SetParam(
 		auto& token = in->mTokens[i];
 		ASSERT(token.GetLength() > 0);
 
+		// 2つ目以降のキーワードが絶対パス表記ならパターンから除外(単なるパラメータとしての扱いとし、マッチングには使用しない)
+		if (i > 0 && PathIsRelative(token) == FALSE) {
+			continue;
+		}
+
 		try {
 			if (in->shouldUseMigemo(i, token)) {
 

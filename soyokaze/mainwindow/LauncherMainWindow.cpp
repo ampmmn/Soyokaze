@@ -48,7 +48,7 @@ struct LauncherMainWindow::PImpl
 	}
 
 	void RestoreWindowPosition(CWnd* thisPtr, bool isForceReset);
-	void UpdateGuide(CWnd* thisPtr, bool isShow);
+	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
 
 	HICON mIconHandle;
 
@@ -113,40 +113,74 @@ void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForc
 	}
 }
 
-//void LauncherMainWindow::PImpl::UpdateGuide(CWnd* thisPtr, bool isShow)
-//{
-//	thisPtr->GetDlgItem(IDC_STATIC_GUIDE)->ShowWindow(isShow ? SW_SHOW : SW_HIDE);
-//
-//	CWnd* edit = thisPtr->GetDlgItem(IDC_EDIT_COMMAND);
-//	CWnd* list = thisPtr->GetDlgItem(IDC_LIST_CANDIDATE);
-//
-//	CRect rcEdit;
-//	edit->GetClientRect(rcEdit);
-//	edit->MapWindowPoints(thisPtr, &rcEdit);
-//
-//	CRect rcList;
-//	list->GetClientRect(rcList);
-//	list->MapWindowPoints(thisPtr, &rcList);
-//
-//
-//	CPoint pt = rcEdit.TopLeft();
-//	CSize size = rcEdit.Size();
-//
-//	if (isShow == false) {
-//		int offsetX = 35;
-//		edit->SetWindowPos(nullptr, pt.x + offsetX, pt.y - 23, size.cx - offsetX, size.cy, SWP_NOZORDER);
-//
-//		pt = rcList.TopLeft();
-//		size= rcList.Size();
-//		int offsetY = 27;
-//		list->SetWindowPos(nullptr, pt.x, pt.y - offsetY, size.cx, size.cy + offsetY, SWP_NOZORDER);
-//	}
-//
-//	auto layout = thisPtr->GetDynamicLayout();
-//	layout->AddItem(edit->GetSafeHwnd(), CMFCDynamicLayout::MoveNone(), CMFCDynamicLayout::SizeHorizontal(100));
-//	layout->AddItem(list->GetSafeHwnd(), CMFCDynamicLayout::MoveNone(), CMFCDynamicLayout::SizeHorizontalAndVertical(100, 100));
-//	layout->Adjust();
-//}
+void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
+{
+	// ToDo: キャレット位置を考慮した選択
+	std::vector<int> tokenPos;
+	bool inToken = false;
+	bool inQuate = false;
+	int len = mCommandStr.GetLength();
+	for (int i = 0; i < len; ++i) {
+		auto c = mCommandStr[i];
+		if (inQuate == false && c == _T('"')) {
+		 	inQuate = true;
+			inToken = true;
+			tokenPos.push_back(i);
+			continue;
+	 	}
+		if (inQuate && c == _T('"')) {
+		 	inQuate = false;
+			continue;
+	 	}
+		if (inQuate == false && c == _T(' ')) {
+			inToken = false;
+			continue;
+		}
+		else {
+			if (inToken) {
+				continue;
+			}
+			tokenPos.push_back(i);
+			inToken = true;
+		}
+	}
+
+
+	mKeywordEdit.GetSel(startPos, endPos);
+	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
+
+	auto it = tokenPos.begin();
+	for (; it != tokenPos.end(); ++it) {
+		auto pos = *it;
+		if (endPos < pos) {
+			break;
+		}
+	}
+	// FIXME: 空白を含むと引数が増える問題
+
+	auto cmdName = cmd->GetName();
+
+	if (it == tokenPos.end()) {
+		mCommandStr = cmdName;
+	}
+	else {
+		mCommandStr = cmdName + _T(" ") + mCommandStr.Mid(*it);
+	}
+	startPos = 0;
+	endPos = cmdName.GetLength(); 
+
+	// 説明の更新
+	mDescriptionStr = cmd->GetDescription();
+	if (mDescriptionStr.IsEmpty()) {
+		mDescriptionStr = cmd->GetName();
+	}
+
+	// ガイド文字列の更新
+	mGuideStr = cmd->GetGuideString();
+
+	// アイコン更新
+	mIconLabel.DrawIcon(cmd->GetIcon());
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -748,8 +782,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mDescriptionStr = pref->GetDefaultComment();
 	in->mGuideStr.Empty();
 
-	// in->UpdateGuide(this, pref->IsShowGuide());
-
 	// ウインドウ位置の復元
 	in->RestoreWindowPosition(this, false);
 
@@ -1067,6 +1099,8 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 	}
 
 	if (in->mCandidates.IsEmpty() == false) {
+
+		// 矢印↑キー押下
 		if (wParam == VK_UP) {
 			in->mCandidates.OffsetCurrentSelect(-1, true);
 
@@ -1078,19 +1112,16 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 
 			AppSound::Get()->PlaySelectSound();
 
-			in->mCommandStr = cmd->GetName();
-			in->mDescriptionStr = cmd->GetDescription();
-			if (in->mDescriptionStr.IsEmpty()) {
-				in->mDescriptionStr = cmd->GetName();
-			}
-			in->mGuideStr = cmd->GetGuideString();
-			in->mIconLabel.DrawIcon(cmd->GetIcon());
-
+			int startPos = 0;
+			int endPos = 0;
+			in->UpdateCommandString(cmd, startPos, endPos);
 			UpdateData(FALSE);
 
-			in->mKeywordEdit.SetCaretToEnd();
+			in->mKeywordEdit.SetSel(startPos, endPos);
+
 			return 1;
 		}
+		// 矢印↓キー押下
 		else if (wParam ==VK_DOWN) {
 			in->mCandidates.OffsetCurrentSelect(1, true);
 
@@ -1102,17 +1133,13 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 
 			AppSound::Get()->PlaySelectSound();
 
-			in->mCommandStr = cmd->GetName();
-			in->mDescriptionStr = cmd->GetDescription();
-			if (in->mDescriptionStr.IsEmpty()) {
-				in->mDescriptionStr = cmd->GetName();
-			}
-			in->mGuideStr = cmd->GetGuideString();
-			in->mIconLabel.DrawIcon(cmd->GetIcon());
-
+			int startPos = 0;
+			int endPos = 0;
+			in->UpdateCommandString(cmd, startPos, endPos);
 			UpdateData(FALSE);
 
-			in->mKeywordEdit.SetCaretToEnd();
+			in->mKeywordEdit.SetSel(startPos, endPos);
+
 			return 1;
 		}
 		else if (wParam == VK_TAB) {

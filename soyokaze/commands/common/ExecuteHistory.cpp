@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ExecuteHistory.h"
 #include "utility/AppProfile.h"
+#include "setting/AppPreference.h"
 #include "utility/IniFile.h"
 #include <map>
 #include <list>
@@ -64,6 +65,12 @@ void ExecuteHistory::Add(
 	const CString& fullPath
 )
 {
+	auto pref = AppPreference::Get();
+	if (pref->IsUseInputHistory() == false) {
+		// 履歴機能を使用しない場合
+		return;
+	}
+
 	HISTORY_ITEM item;
 	item.mWord = word;
 	item.mFullPath = fullPath;
@@ -82,9 +89,10 @@ void ExecuteHistory::Add(
 	}
 
 	items.push_front(item);
-	// ToDo: 上限を設定できるようにする
-	if (items.size() >= 128) {
-		items.pop_back();
+	int limit = pref->GetHistoryLimit();
+	ASSERT(limit >= 0);
+	if (items.size() > limit) {
+		items.resize(limit);
 	}
 }
 
@@ -96,6 +104,11 @@ void ExecuteHistory::Add(
 	const CString& word
 )
 {
+	auto pref = AppPreference::Get();
+	if (pref->IsUseInputHistory() == false) {
+		// 履歴機能を使用しない場合
+		return;
+	}
 	HISTORY_ITEM item;
 	item.mWord = word;
 
@@ -112,9 +125,10 @@ void ExecuteHistory::Add(
 	}
 
 	items.push_front(item);
-	// ToDo: 上限を設定できるようにする
-	if (items.size() >= 128) {
-		items.pop_back();
+
+	int limit = pref->GetHistoryLimit();
+	if (items.size() > limit) {
+		items.resize(limit);
 	}
 }
 
@@ -126,6 +140,12 @@ void ExecuteHistory::GetItems(
 	ItemList& items
 ) const
 {
+	auto pref = AppPreference::Get();
+	if (pref->IsUseInputHistory() == false) {
+		// 履歴機能を使用しない場合
+		return;
+	}
+
 	auto itFind = in->mItemMap.find(type);
 	if (itFind == in->mItemMap.end()) {
 		return ;
@@ -163,6 +183,11 @@ int ExecuteHistory::EraseItems(const CString& type, const std::set<CString>& wor
 	return n;
 }
 
+void ExecuteHistory::ClearAllItems()
+{
+	in->mItemMap.clear();
+	in->mIsLoaded = true;
+}
 
 void ExecuteHistory::Save()
 {
