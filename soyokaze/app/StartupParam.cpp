@@ -32,6 +32,31 @@ bool StartupParam::HasRunCommand(CString& commands)
 	       in->mArgs.GetValue(_T("-c"), commands);
 }
 
+//
+void StartupParam::ShiftRunCommand()
+{
+	LPCTSTR bwOptName = _T("/Runcommand=");
+	int len = (int)_tcslen(bwOptName);
+
+	int numArgs = in->mArgs.GetCount();
+	for (int i = 0; i < numArgs; ++i) {
+		auto arg = in->mArgs.Get(i);
+
+		if (arg == _T("-c") && i + 1 < numArgs) {
+			in->mArgs.Erase(i);
+			in->mArgs.Erase(i);
+			return;
+		}
+
+		auto argPart = arg.Left(len);
+		if (_tcsicmp(bwOptName, argPart) != 0) {
+			continue;
+		}
+		in->mArgs.Erase(i);
+		return;
+	}
+}
+
 
 bool StartupParam::HasPathToRegister(CString& pathToRegister)
 {

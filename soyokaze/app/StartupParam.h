@@ -11,6 +11,9 @@ public:
 
 	// 実行コマンドを指定するオプションが指定されたか?
 	bool HasRunCommand(CString& commands);
+	//
+	void ShiftRunCommand();
+
 	// 登録するパスが指定されたか?
 	bool HasPathToRegister(CString& pathToRegister);
 	//

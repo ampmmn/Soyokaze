@@ -161,10 +161,17 @@ BOOL LauncherApp::InitSecondInstance()
 
 	StartupParam startupParam(__argc, __targv);
 
+	bool hasRunCommand = false;
 	CString value;
-	if (startupParam.HasRunCommand(value)) {
+	while (startupParam.HasRunCommand(value)) {
 		// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
 		SendCommandString(value, false);
+		hasRunCommand = true;
+		startupParam.ShiftRunCommand();
+	}
+
+	if (hasRunCommand) {
+		// -cオプションを処理したら、プログラムを終了する
 		return FALSE;
 	}
 

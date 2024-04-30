@@ -26,6 +26,16 @@ CString Arguments::Get(int index)
 	return mArgV[index];
 }
 
+bool Arguments::Erase(int index)
+{
+	if (index < 0 || mArgV.size() <= (size_t)index) {
+		return false;
+	}
+
+	mArgV.erase(mArgV.begin() + index);
+	return true;
+}
+
 bool Arguments::Has(LPCTSTR optName)
 {
 	CString optLower(optName);

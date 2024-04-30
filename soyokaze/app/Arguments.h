@@ -10,6 +10,8 @@ public:
 
 	int GetCount();
 	CString Get(int index);
+	bool Erase(int index);
+
 
 	bool Has(LPCTSTR optName);
 
