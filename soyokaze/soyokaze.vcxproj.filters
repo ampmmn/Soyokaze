@@ -843,6 +843,9 @@
     <ClInclude Include="settingwindow\InputHistorySettingPage.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_window\WindowList.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1499,14 +1502,14 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\SinglePageDialog.cpp">
-      <Filter>commands\common</Filter>
+    <ClCompile Include="settingwindow\InputHistorySettingPage.cpp">
+      <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="app\Manual.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputHistorySettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="commands\activate_window\WindowList.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

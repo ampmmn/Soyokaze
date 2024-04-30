@@ -387,6 +387,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="commands\activate_window\WindowList.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
@@ -621,6 +622,7 @@
     <ClInclude Include="mainwindow/WindowTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="commands\activate_window\WindowList.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />

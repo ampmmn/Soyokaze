@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ActivateWindowProvider.h"
+#include "commands/activate_window/WindowList.h"
 #include "commands/activate_window/WorksheetCommand.h"
 #include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
@@ -21,9 +22,6 @@
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
-
-// 切り替え候補ウインドウの一覧を再利用する間隔
-static const int HWNDUPDATE_INTERVAL = 5000;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
@@ -59,8 +57,7 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 	WorkSheets mWorksheets;
 	CalcWorkSheets mCalcWorksheets;
 
-	DWORD mLastHwndUpdate;
-	std::vector<HWND> mHwndCandidates;
+	WindowList mWndList;
 
 	uint32_t mRefCount = 1;
 };
@@ -77,7 +74,6 @@ ActivateWindowProvider::ActivateWindowProvider() : in(std::make_unique<PImpl>())
 	in->mIsEnableWorksheet = false;
 	in->mIsEnableWindowSwitch = false;
 	in->mIsFirstCall = true;
-	in->mLastHwndUpdate = 0;
 }
 
 ActivateWindowProvider::~ActivateWindowProvider()
@@ -259,34 +255,12 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(
 		return ;
 	}
 
-	struct local_param {
-		static BOOL CALLBACK OnEnumWindows(HWND hwnd, LPARAM lParam) {
-
-			LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
-			LONG_PTR styleRequired = (WS_VISIBLE);
-
-			if ((style & styleRequired) != styleRequired) {
-				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
-				return TRUE;
-			}
-			auto param = (local_param*)lParam;
-			param->mCandidates.push_back(hwnd);
-
-			return TRUE;
-		}
-
-		std::vector<HWND> mCandidates;
-	} param;
-
-	// 一定時間内の再実行の場合は過去の結果を再利用する
-	if (GetTickCount() - in->mLastHwndUpdate > HWNDUPDATE_INTERVAL) {
-		EnumWindows(local_param::OnEnumWindows, (LPARAM)&param);
-		in->mHwndCandidates.swap(param.mCandidates);
-		in->mLastHwndUpdate = GetTickCount();
-	}
+	std::vector<HWND> windowHandles;
+	in->mWndList.EnumWindowHandles(windowHandles);
+	SPDLOG_DEBUG(_T("Window count : {}"), windowHandles.size());
 
 	TCHAR caption[256];
-	for (auto hwnd : in->mHwndCandidates) {
+	for (auto hwnd : windowHandles) {
 		GetWindowText(hwnd, caption, 256);
 
 		// ウインドウテキストを持たないものを除外する
