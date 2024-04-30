@@ -141,6 +141,13 @@ void PartialMatchPattern::SetParam(
 				continue;
 			}
 
+			// 残り部分が一つの絶対パスを表しているなら、連結してひと固まりとして扱う
+			CString partLeftAll(wholeText.Mid(start));
+			if (PathIsRelative(partLeftAll) == FALSE && PathFileExists(partLeftAll)) {
+				tokens.push_back(partLeftAll);
+				break;
+			}
+
 			tokens.push_back(part);
 
 			start=i+1;
