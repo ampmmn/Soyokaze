@@ -30,6 +30,11 @@ DeleteCommand::DeleteCommand(LPCTSTR name) :
 	mDescription = _T("【削除】");
 }
 
+DeleteCommand::DeleteCommand(const DeleteCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 DeleteCommand::~DeleteCommand()
 {
 }
@@ -83,7 +88,7 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* DeleteCommand::Clone()
 {
-	return new DeleteCommand();
+	return new DeleteCommand(*this);
 }
 
 }

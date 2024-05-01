@@ -31,6 +31,11 @@ SettingCommand::SettingCommand(LPCTSTR name) :
 	mIsExecuting = false;
 }
 
+SettingCommand::SettingCommand(const SettingCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 SettingCommand::~SettingCommand()
 {
 }
@@ -84,7 +89,7 @@ HICON SettingCommand::GetIcon()
 
 launcherapp::core::Command* SettingCommand::Clone()
 {
-	return new SettingCommand();
+	return new SettingCommand(*this);
 }
 
 } // end of namespace builtin

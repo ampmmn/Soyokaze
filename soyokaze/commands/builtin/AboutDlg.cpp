@@ -12,8 +12,9 @@
 #endif
 
 
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
+CAboutDlg::CAboutDlg() : SinglePageDialog(IDD_ABOUTBOX)
 {
+	SetHelpPageId(_T("About"));
 }
 
 CAboutDlg::~CAboutDlg()
@@ -27,7 +28,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_BUILDDATE, mBuildDateStr);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CAboutDlg, SinglePageDialog)
+	ON_WM_NCPAINT()
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK1, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, OnNotifyLinkOpen)
@@ -59,8 +61,8 @@ BOOL CAboutDlg::OnInitDialog()
 
 
 	// バージョン情報を取得
-	TCHAR szModulePath[65536];
-	GetModuleFileName( NULL, szModulePath, 65536);
+	TCHAR szModulePath[MAX_PATH_NTFS];
+	GetModuleFileName( NULL, szModulePath, MAX_PATH_NTFS);
 
 	DWORD size = GetFileVersionInfoSize(szModulePath, NULL);
 	std::vector<BYTE> versionData(size);
@@ -160,5 +162,5 @@ bool CAboutDlg::GetBuildDateTime(CTime& tmBuildDate)
 	tmBuildDate = CTime(offset);
 
 	return true;
-}
+}	
 

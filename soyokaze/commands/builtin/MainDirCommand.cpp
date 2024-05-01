@@ -32,6 +32,11 @@ MainDirCommand::MainDirCommand(LPCTSTR name) :
 	mDescription = _T("【メインフォルダ】");
 }
 
+MainDirCommand::MainDirCommand(const MainDirCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 MainDirCommand::~MainDirCommand()
 {
 }
@@ -57,7 +62,7 @@ HICON MainDirCommand::GetIcon()
 
 launcherapp::core::Command* MainDirCommand::Clone()
 {
-	return new MainDirCommand();
+	return new MainDirCommand(*this);
 }
 
 }

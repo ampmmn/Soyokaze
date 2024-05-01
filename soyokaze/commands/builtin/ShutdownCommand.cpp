@@ -32,6 +32,11 @@ ShutdownCommand::ShutdownCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+ShutdownCommand::ShutdownCommand(const ShutdownCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 ShutdownCommand::~ShutdownCommand()
 {
 }
@@ -54,7 +59,7 @@ BOOL ShutdownCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* ShutdownCommand::Clone()
 {
-	return new ShutdownCommand();
+	return new ShutdownCommand(*this);
 }
 
 BOOL ShutdownCommand::DoExit(UINT uFlags)

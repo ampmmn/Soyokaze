@@ -11,6 +11,7 @@ class SuspendCommand : public BuiltinCommandBase
 {
 public:
 	SuspendCommand(LPCTSTR name = nullptr);
+	SuspendCommand(const SuspendCommand& rhs);
 	virtual ~SuspendCommand();
 
 	static BOOL DoSuspend(BOOL isSuspend);

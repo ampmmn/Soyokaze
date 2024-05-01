@@ -11,6 +11,7 @@ class AfxChangeDirectoryCommand : public BuiltinCommandBase
 {
 public:
 	AfxChangeDirectoryCommand(LPCTSTR name = nullptr);
+	AfxChangeDirectoryCommand(const AfxChangeDirectoryCommand& rhs);
 	virtual ~AfxChangeDirectoryCommand();
 
 	BOOL Execute(const Parameter& param) override;

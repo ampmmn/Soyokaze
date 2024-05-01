@@ -10,6 +10,7 @@ class RegistWinCommand : public BuiltinCommandBase
 {
 public:
 	RegistWinCommand(LPCTSTR name = nullptr);
+	RegistWinCommand(const RegistWinCommand& rhs);
 	virtual ~RegistWinCommand();
 
 	BOOL Execute(const Parameter& param) override;

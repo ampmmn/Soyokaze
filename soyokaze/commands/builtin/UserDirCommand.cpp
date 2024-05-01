@@ -31,6 +31,11 @@ UserDirCommand::UserDirCommand(LPCTSTR name) :
 	mDescription = _T("【ユーザーフォルダ】");
 }
 
+UserDirCommand::UserDirCommand(const UserDirCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 UserDirCommand::~UserDirCommand()
 {
 }
@@ -55,7 +60,7 @@ HICON UserDirCommand::GetIcon()
 
 launcherapp::core::Command* UserDirCommand::Clone()
 {
-	return new UserDirCommand();
+	return new UserDirCommand(*this);
 }
 
 } // end of namespace builtin

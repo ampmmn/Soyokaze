@@ -11,6 +11,7 @@ class ReloadCommand : public BuiltinCommandBase
 {
 public:
 	ReloadCommand(LPCTSTR name = nullptr);
+	ReloadCommand(const ReloadCommand& rhs);
 	virtual ~ReloadCommand();
 
 	BOOL Execute(const Parameter& param) override;

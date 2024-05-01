@@ -36,6 +36,11 @@ AfxChangeDirectoryCommand::AfxChangeDirectoryCommand(LPCTSTR name) :
 	mIsEnable = false;
 }
 
+AfxChangeDirectoryCommand::AfxChangeDirectoryCommand(const AfxChangeDirectoryCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 AfxChangeDirectoryCommand::~AfxChangeDirectoryCommand()
 {
 }
@@ -73,7 +78,7 @@ HICON AfxChangeDirectoryCommand::GetIcon()
 
 launcherapp::core::Command* AfxChangeDirectoryCommand::Clone()
 {
-	return new AfxChangeDirectoryCommand();
+	return new AfxChangeDirectoryCommand(*this);
 }
 
 }

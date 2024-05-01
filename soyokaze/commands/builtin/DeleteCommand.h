@@ -11,6 +11,7 @@ class DeleteCommand : public BuiltinCommandBase
 {
 public:
 	DeleteCommand(LPCTSTR name = nullptr);
+	DeleteCommand(const DeleteCommand& rhs);
 	virtual ~DeleteCommand();
 
 	BOOL Execute(const Parameter& param) override;

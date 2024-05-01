@@ -11,6 +11,7 @@ class MainDirCommand : public BuiltinCommandBase
 {
 public:
 	MainDirCommand(LPCTSTR name = nullptr);
+	MainDirCommand(const MainDirCommand& rhs);
 	virtual ~MainDirCommand();
 
 	BOOL Execute(const Parameter& param) override;

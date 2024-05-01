@@ -11,6 +11,7 @@ class ShutdownCommand : public BuiltinCommandBase
 {
 public:
 	ShutdownCommand(LPCTSTR name = nullptr);
+	ShutdownCommand(const ShutdownCommand& rhs);
 	virtual ~ShutdownCommand();
 
 	static BOOL DoExit(UINT uFlags);

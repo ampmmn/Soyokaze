@@ -11,6 +11,7 @@ class LogOffCommand : public BuiltinCommandBase
 {
 public:
 	LogOffCommand(LPCTSTR name = nullptr);
+	LogOffCommand(const LogOffCommand& rhs);
 	virtual ~LogOffCommand();
 
 	HICON GetIcon() override;

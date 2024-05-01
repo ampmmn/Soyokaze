@@ -11,6 +11,7 @@ class RebootCommand : public BuiltinCommandBase
 {
 public:
 	RebootCommand(LPCTSTR name = nullptr);
+	RebootCommand(const RebootCommand& rhs);
 	virtual ~RebootCommand();
 
 	HICON GetIcon() override;

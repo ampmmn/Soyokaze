@@ -10,6 +10,7 @@ class UserDirCommand : public BuiltinCommandBase
 {
 public:
 	UserDirCommand(LPCTSTR name = nullptr);
+	UserDirCommand(const UserDirCommand& rhs);
 	virtual ~UserDirCommand();
 
 	BOOL Execute(const Parameter& param) override;

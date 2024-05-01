@@ -29,6 +29,11 @@ ExitCommand::ExitCommand(LPCTSTR name) :
 	mDescription = _T("【終了】");
 }
 
+ExitCommand::ExitCommand(const ExitCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 ExitCommand::~ExitCommand()
 {
 }
@@ -61,7 +66,7 @@ HICON ExitCommand::GetIcon()
 }
 launcherapp::core::Command* ExitCommand::Clone()
 {
-	return new ExitCommand();
+	return new ExitCommand(*this);
 }
 
 }

@@ -20,6 +20,18 @@ BuiltinCommandBase::BuiltinCommandBase(LPCTSTR name) :
 {
 }
 
+BuiltinCommandBase::BuiltinCommandBase(const BuiltinCommandBase& rhs) :
+	mName(rhs.mName),
+	mDescription(rhs.mDescription),
+	mError(rhs.mError),
+	mRefCount(1),
+	mIsConfirmBeforeRun(rhs.mIsConfirmBeforeRun),
+	mCanSetConfirm(rhs.mCanSetConfirm),
+	mIsEnable(rhs.mIsEnable),
+	mCanDisable(rhs.mCanDisable)
+{
+}
+
 BuiltinCommandBase::~BuiltinCommandBase()
 {
 }

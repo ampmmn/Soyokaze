@@ -11,6 +11,7 @@ class NewCommand : public BuiltinCommandBase
 {
 public:
 	NewCommand(LPCTSTR name = nullptr);
+	NewCommand(const NewCommand& rhs);
 	virtual ~NewCommand();
 
 	BOOL Execute(const Parameter& param) override;

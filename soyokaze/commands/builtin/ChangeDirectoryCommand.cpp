@@ -37,6 +37,11 @@ ChangeDirectoryCommand::ChangeDirectoryCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+ChangeDirectoryCommand::ChangeDirectoryCommand(const ChangeDirectoryCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 ChangeDirectoryCommand::~ChangeDirectoryCommand()
 {
 }
@@ -84,7 +89,7 @@ HICON ChangeDirectoryCommand::GetIcon()
 
 launcherapp::core::Command* ChangeDirectoryCommand::Clone()
 {
-	return new ChangeDirectoryCommand();
+	return new ChangeDirectoryCommand(*this);
 }
 
 }

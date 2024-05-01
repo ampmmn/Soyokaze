@@ -11,6 +11,7 @@ class ChangeDirectoryCommand : public BuiltinCommandBase
 {
 public:
 	ChangeDirectoryCommand(LPCTSTR name = nullptr);
+	ChangeDirectoryCommand(const ChangeDirectoryCommand& rhs);
 	virtual ~ChangeDirectoryCommand();
 
 	BOOL Execute(const Parameter& param) override;

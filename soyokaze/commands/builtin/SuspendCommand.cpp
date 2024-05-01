@@ -34,6 +34,11 @@ SuspendCommand::SuspendCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+SuspendCommand::SuspendCommand(const SuspendCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 SuspendCommand::~SuspendCommand()
 {
 }
@@ -56,7 +61,7 @@ BOOL SuspendCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* SuspendCommand::Clone()
 {
-	return new SuspendCommand();
+	return new SuspendCommand(*this);
 }
 
 BOOL SuspendCommand::DoSuspend(BOOL isSuspend)

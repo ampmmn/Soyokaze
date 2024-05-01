@@ -11,6 +11,7 @@ class EmptyRecycleBinCommand : public BuiltinCommandBase
 {
 public:
 	EmptyRecycleBinCommand(LPCTSTR name = nullptr);
+	EmptyRecycleBinCommand(const EmptyRecycleBinCommand& rhs);
 	virtual ~EmptyRecycleBinCommand();
 
 	HICON GetIcon() override;

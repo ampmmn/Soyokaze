@@ -11,6 +11,7 @@ class StandbyCommand : public BuiltinCommandBase
 {
 public:
 	StandbyCommand(LPCTSTR name = nullptr);
+	StandbyCommand(const StandbyCommand& rhs);
 	virtual ~StandbyCommand();
 
 	HICON GetIcon() override;

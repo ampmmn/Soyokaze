@@ -11,6 +11,7 @@ class ManagerCommand : public BuiltinCommandBase
 {
 public:
 	ManagerCommand(LPCTSTR name = nullptr);
+	ManagerCommand(const ManagerCommand& rhs);
 	virtual ~ManagerCommand();
 
 	BOOL Execute(const Parameter& param) override;

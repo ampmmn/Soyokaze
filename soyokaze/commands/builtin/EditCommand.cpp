@@ -30,6 +30,11 @@ EditCommand::EditCommand(LPCTSTR name) :
 	mDescription = _T("【編集】");
 }
 
+EditCommand::EditCommand(const EditCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 EditCommand::~EditCommand()
 {
 }
@@ -73,7 +78,7 @@ HICON EditCommand::GetIcon()
 
 launcherapp::core::Command* EditCommand::Clone()
 {
-	return new EditCommand();
+	return new EditCommand(*this);
 }
 
 }

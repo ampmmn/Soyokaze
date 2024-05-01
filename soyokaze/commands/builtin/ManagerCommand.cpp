@@ -29,6 +29,11 @@ ManagerCommand::ManagerCommand(LPCTSTR name) :
 	mDescription = _T("【キーワードマネージャ】");
 }
 
+ManagerCommand::ManagerCommand(const ManagerCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 ManagerCommand::~ManagerCommand()
 {
 }
@@ -46,7 +51,7 @@ HICON ManagerCommand::GetIcon()
 
 launcherapp::core::Command* ManagerCommand::Clone()
 {
-	return new ManagerCommand();
+	return new ManagerCommand(*this);
 }
 
 } // end of namespace builtin

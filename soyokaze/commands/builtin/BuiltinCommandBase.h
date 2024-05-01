@@ -13,6 +13,7 @@ public:
 	using Entry = BuiltinCommandFactory::Entry;
 public:
 	BuiltinCommandBase(LPCTSTR name = nullptr);
+	BuiltinCommandBase(const BuiltinCommandBase& rhs);
 	virtual ~BuiltinCommandBase();
 
 	CString GetName() override;

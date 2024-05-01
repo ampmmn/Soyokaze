@@ -35,6 +35,11 @@ StandbyCommand::StandbyCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+StandbyCommand::StandbyCommand(const StandbyCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 StandbyCommand::~StandbyCommand()
 {
 }
@@ -57,7 +62,7 @@ BOOL StandbyCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* StandbyCommand::Clone()
 {
-	return new StandbyCommand();
+	return new StandbyCommand(*this);
 }
 
 }

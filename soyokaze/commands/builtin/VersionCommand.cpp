@@ -29,6 +29,11 @@ VersionCommand::VersionCommand(LPCTSTR name) :
 	mDescription = _T("【バージョン情報】");
 }
 
+VersionCommand::VersionCommand(const VersionCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 VersionCommand::~VersionCommand()
 {
 }
@@ -55,7 +60,7 @@ HICON VersionCommand::GetIcon()
 launcherapp::core::Command*
 VersionCommand::Clone()
 {
-	return new VersionCommand();
+	return new VersionCommand(*this);
 }
 
 } // end of namespace builtin

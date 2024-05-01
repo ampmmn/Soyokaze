@@ -11,6 +11,7 @@ class EditCommand : public BuiltinCommandBase
 {
 public:
 	EditCommand(LPCTSTR name = nullptr);
+	EditCommand(const EditCommand& rhs);
 	virtual ~EditCommand();
 
 	BOOL Execute(const Parameter& param) override;

@@ -29,6 +29,11 @@ NewCommand::NewCommand(LPCTSTR name) :
 	mDescription = _T("【新規作成】");
 }
 
+NewCommand::NewCommand(const NewCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 NewCommand::~NewCommand()
 {
 }
@@ -67,7 +72,7 @@ HICON NewCommand::GetIcon()
 
 launcherapp::core::Command* NewCommand::Clone()
 {
-	return new NewCommand();
+	return new NewCommand(*this);
 }
 
 } // end of namespace builtin

@@ -11,6 +11,7 @@ class LockScreenCommand : public BuiltinCommandBase
 {
 public:
 	LockScreenCommand(LPCTSTR name = nullptr);
+	LockScreenCommand(const LockScreenCommand& rhs);
 	virtual ~LockScreenCommand();
 
 	BOOL Execute(const Parameter& param) override;

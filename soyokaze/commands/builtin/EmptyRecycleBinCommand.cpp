@@ -32,6 +32,11 @@ EmptyRecycleBinCommand::EmptyRecycleBinCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+EmptyRecycleBinCommand::EmptyRecycleBinCommand(const EmptyRecycleBinCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 EmptyRecycleBinCommand::~EmptyRecycleBinCommand()
 {
 }
@@ -51,7 +56,7 @@ BOOL EmptyRecycleBinCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* EmptyRecycleBinCommand::Clone()
 {
-	return new EmptyRecycleBinCommand();
+	return new EmptyRecycleBinCommand(*this);
 }
 
 }

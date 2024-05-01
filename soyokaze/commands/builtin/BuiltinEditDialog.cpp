@@ -85,6 +85,8 @@ BOOL BuiltinEditDialog::OnInitDialog()
 	GetDlgItem(IDC_CHECK_ENABLE)->EnableWindow(in->mCanEditEnable ? TRUE: FALSE);
 	GetDlgItem(IDC_CHECK_CONFIRM)->EnableWindow(in->mCanEditConfirm ? TRUE: FALSE);
 
+	OnUpdateStatus();
+
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
 

@@ -31,6 +31,11 @@ LockScreenCommand::LockScreenCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+LockScreenCommand::LockScreenCommand(const LockScreenCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 LockScreenCommand::~LockScreenCommand()
 {
 }
@@ -48,7 +53,7 @@ HICON LockScreenCommand::GetIcon()
 
 launcherapp::core::Command* LockScreenCommand::Clone()
 {
-	return new LockScreenCommand();
+	return new LockScreenCommand(*this);
 }
 
 } // end of namespace builtin

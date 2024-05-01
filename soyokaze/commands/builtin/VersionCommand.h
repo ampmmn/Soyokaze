@@ -10,6 +10,7 @@ class VersionCommand : public BuiltinCommandBase
 {
 public:
 	VersionCommand(LPCTSTR name = nullptr);
+	VersionCommand(const VersionCommand& rhs);
 	virtual ~VersionCommand();
 
 	BOOL Execute(const Parameter& param) override;

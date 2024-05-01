@@ -11,6 +11,7 @@ class ExitCommand : public BuiltinCommandBase
 {
 public:
 	ExitCommand(LPCTSTR name = nullptr);
+	ExitCommand(const ExitCommand& rhs);
 	virtual ~ExitCommand();
 
 	BOOL Execute(const Parameter& param) override;

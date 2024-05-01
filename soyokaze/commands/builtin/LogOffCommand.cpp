@@ -32,6 +32,11 @@ LogOffCommand::LogOffCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+LogOffCommand::LogOffCommand(const LogOffCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 LogOffCommand::~LogOffCommand()
 {
 }
@@ -55,7 +60,7 @@ BOOL LogOffCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* LogOffCommand::Clone()
 {
-	return new LogOffCommand();
+	return new LogOffCommand(*this);
 }
 
 }

@@ -31,6 +31,11 @@ ReloadCommand::ReloadCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+ReloadCommand::ReloadCommand(const ReloadCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 ReloadCommand::~ReloadCommand()
 {
 }
@@ -48,7 +53,7 @@ HICON ReloadCommand::GetIcon()
 
 launcherapp::core::Command* ReloadCommand::Clone()
 {
-	return new ReloadCommand();
+	return new ReloadCommand(*this);
 }
 
 } // end of namespace builtin

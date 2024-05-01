@@ -10,6 +10,7 @@ class SettingCommand : public BuiltinCommandBase
 {
 public:
 	SettingCommand(LPCTSTR name = nullptr);
+	SettingCommand(const SettingCommand& rhs);
 	virtual ~SettingCommand();
 
 	BOOL Execute(const Parameter& param) override;

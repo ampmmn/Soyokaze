@@ -33,6 +33,11 @@ RebootCommand::RebootCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+RebootCommand::RebootCommand(const RebootCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 RebootCommand::~RebootCommand()
 {
 }
@@ -55,7 +60,7 @@ BOOL RebootCommand::Execute(const Parameter& param)
 
 launcherapp::core::Command* RebootCommand::Clone()
 {
-	return new RebootCommand();
+	return new RebootCommand(*this);
 }
 
 }

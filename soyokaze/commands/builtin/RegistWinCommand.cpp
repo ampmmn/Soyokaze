@@ -68,6 +68,11 @@ RegistWinCommand::RegistWinCommand(LPCTSTR name) :
 	mCanDisable = true;
 }
 
+RegistWinCommand::RegistWinCommand(const RegistWinCommand& rhs) :
+	BuiltinCommandBase(rhs)
+{
+}
+
 RegistWinCommand::~RegistWinCommand()
 {
 }
@@ -119,7 +124,7 @@ HICON RegistWinCommand::GetIcon()
 
 launcherapp::core::Command* RegistWinCommand::Clone()
 {
-	return new RegistWinCommand();
+	return new RegistWinCommand(*this);
 }
 
 } // end of namespace builtin
