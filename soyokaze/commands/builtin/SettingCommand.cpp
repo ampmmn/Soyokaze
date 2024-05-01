@@ -32,7 +32,9 @@ SettingCommand::SettingCommand(LPCTSTR name) :
 }
 
 SettingCommand::SettingCommand(const SettingCommand& rhs) :
-	BuiltinCommandBase(rhs)
+	BuiltinCommandBase(rhs),
+	mIsExecuting(rhs.mIsExecuting),
+	mLastBreakCrumbs(rhs.mLastBreakCrumbs)
 {
 }
 

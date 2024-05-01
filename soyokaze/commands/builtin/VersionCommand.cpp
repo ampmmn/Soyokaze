@@ -30,7 +30,8 @@ VersionCommand::VersionCommand(LPCTSTR name) :
 }
 
 VersionCommand::VersionCommand(const VersionCommand& rhs) :
-	BuiltinCommandBase(rhs)
+	BuiltinCommandBase(rhs),
+	mIsExecuting(rhs.mIsExecuting)
 {
 }
 
