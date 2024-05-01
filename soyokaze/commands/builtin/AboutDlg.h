@@ -1,12 +1,11 @@
 #pragma once
 
-#include "commands/common/SinglePageDialog.h"
+#include "utility/TopMostMask.h"
 
 // アプリケーションのバージョン情報に使われる CAboutDlg ダイアログ
 
-class CAboutDlg : public launcherapp::commands::common::SinglePageDialog
+class CAboutDlg : public CDialogEx
 {
-	using SinglePageDialog = launcherapp::commands::common::SinglePageDialog;
 public:
 	CAboutDlg();
 	virtual ~CAboutDlg();
@@ -19,6 +18,9 @@ public:
 	CString mBuildDateStr; 
 
 	bool GetBuildDateTime(CTime& tm);
+
+private:
+	TopMostMask mTopMostMask;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
