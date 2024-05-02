@@ -1022,6 +1022,7 @@ void LauncherMainWindow::OnCancel()
 	// 入力欄に入力中のテキストがあったらクリア、何もなければメインウインドウを非表示にする
 	if (in->mCommandStr.IsEmpty() == FALSE) {
 		ClearContent();
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
 		ShowWindow(SW_HIDE);
