@@ -33,6 +33,9 @@ struct CandidateListCtrl::PImpl
 	// アイコンを表示しない場合のイメージリスト
 	CImageList mIconListDummy;
 	bool mIsDrawIcon = true;
+
+	// 種別を描画するか
+	bool mIsShowCommandType = false;
 	//
 	std::map<HICON,int> mIconIndexMap;
 };
@@ -106,6 +109,9 @@ void CandidateListCtrl::PImpl::DrawItemCategory(
 	int itemId
 )
 {
+	if (mIsShowCommandType == false) {
+		return;
+	}
 	CRect rcItem;
 	thisPtr->GetSubItemRect(itemId, 1, LVIR_LABEL, rcItem);
 	auto cmd = mCandidates->GetCommand(itemId);
@@ -140,6 +146,9 @@ void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
 
 void CandidateListCtrl::InitColumns()
 {
+	AppPreference* pref= AppPreference::Get();
+	in->mIsShowCommandType = pref->IsShowCommandType();
+
 	if (GetSafeHwnd() == nullptr) {
 		return;
 	}
@@ -163,7 +172,6 @@ void CandidateListCtrl::InitColumns()
 
 	int cx = rect.Width();
 
-	AppPreference* pref= AppPreference::Get();
 
 	// 交互別色表示設定
 	in->mIsAlternateColor = pref->IsAlternateColor();
@@ -171,12 +179,12 @@ void CandidateListCtrl::InitColumns()
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = pref->IsShowCommandType() ? cx - 165 : cx - 25;
+	lvc.cx = in->mIsShowCommandType ? cx - 165 : cx - 25;
 	lvc.fmt = LVCFMT_LEFT;
 	InsertColumn(0,&lvc);
 
 	in->mHasCommandTypeColumn = false;
-	if (pref->IsShowCommandType()) {
+	if (in->mIsShowCommandType) {
 		strHeader.LoadString(IDS_COMMANDTYPE);
 		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 		lvc.cx = 140;  //  #dummy-col-width
