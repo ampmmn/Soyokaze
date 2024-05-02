@@ -225,6 +225,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_CANDIDATE, OnNMClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
@@ -1202,16 +1203,47 @@ LRESULT LauncherMainWindow::OnNcHitTest(
 	return __super::OnNcHitTest(point);
 }
 
+// SetItemStateで状態設定されると、この通知が呼ばれる
 void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
 	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	if (nm->iItem == -1) {
+		return;
+	}
 
 	AppSound::Get()->PlaySelectSound();
 
 	in->mCandidates.SetCurrentSelect(nm->iItem);
 	UpdateData(FALSE);
 
+}
+
+// 候補欄のリストをクリックしたときの処理
+// 選択した要素の情報を入力欄やコメント欄に反映する
+void LauncherMainWindow::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	*pResult = 0;
+	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	 if (nm->iItem == -1) {
+		 return;
+	 }
+
+	 auto cmd = GetCurrentCommand();
+	 if (cmd == nullptr) {
+		 spdlog::warn(_T("command is null. iItem:{}"), nm->iItem);
+		 return ;
+	 }
+
+	 // 選択したコマンドの情報を入力欄やコメント欄に反映する
+	 int startPos = 0;
+	 int endPos = 0;
+	 in->UpdateCommandString(cmd, startPos, endPos);
+	 UpdateData(FALSE);
+
+	 // 入力欄を選択状態にする
+	 in->mKeywordEdit.SetSel(startPos, endPos);
+	 in->mKeywordEdit.SetFocus();
 }
 
 void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
