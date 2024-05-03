@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppProfile.h"
+#include "app/AppName.h"
 #include "utility/IniFile.h"
 
 #include <shlwapi.h>
@@ -31,7 +32,7 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 
 	_tcscpy_s(path, len, buff);
 
-	PathAppend(path, _T(".soyokaze"));
+	PathAppend(path, APP_PROFILE_DIRNAME);
 
 	return path;
 }

@@ -18,7 +18,7 @@
 #endif
 
 
-static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_Soyokaze_exist");
+static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_launcherapp_exist");
 
 // LauncherApp
 
@@ -77,7 +77,7 @@ BOOL LauncherApp::InitInstance()
 }
 
 /**
- * 既存のsoyokazeプロセスが存在しない場合の初期化処理
+ * 既存のランチャーアプリプロセスが存在しない場合の初期化処理
  */
 BOOL LauncherApp::InitFirstInstance()
 {
@@ -153,7 +153,7 @@ BOOL LauncherApp::InitFirstInstance()
 }
 
 /**
- * 既存のsoyokazeプロセスが存在する場合の初期化処理
+ * 既存のランチャーアプリプロセスが存在する場合の初期化処理
  */
 BOOL LauncherApp::InitSecondInstance()
 {

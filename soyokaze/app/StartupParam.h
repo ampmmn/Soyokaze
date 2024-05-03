@@ -2,7 +2,7 @@
 
 #include <memory>
 
-// Soyokaze起動時パラメータ
+// ランチャーアプリ起動時パラメータ
 class StartupParam
 {
 public:

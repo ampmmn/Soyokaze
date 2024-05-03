@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WindowPosition.h"
 #include "utility/AppProfile.h"
+#include "app/AppName.h"
 #include <utility> // for std::pair
 
 #ifdef _DEBUG
@@ -85,7 +86,7 @@ bool WindowPosition::Restore(HWND hwnd)
 
 	if (PathFileExists(path) == FALSE) {
 		// 設定ファイルが存在しない場合は気休めにデフォルトの設定ファイルを流用する
-		WindowPosition::GetFilePath(_T("Soyokaze"), path, MAX_PATH_NTFS);
+		WindowPosition::GetFilePath(APPNAME, path, MAX_PATH_NTFS);
 	}
 
 	CFile file;
