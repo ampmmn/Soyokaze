@@ -50,6 +50,9 @@ struct LauncherMainWindow::PImpl
 	void RestoreWindowPosition(CWnd* thisPtr, bool isForceReset);
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
 
+	void EnumTokenPos(std::vector<int>& tokenPos);
+	bool GetTrailingString(CString& text);
+
 	HICON mIconHandle;
 
 	// キーワード入力欄の文字列
@@ -115,56 +118,14 @@ void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForc
 
 void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
 {
-	// ToDo: キャレット位置を考慮した選択
-	std::vector<int> tokenPos;
-	bool inToken = false;
-	bool inQuate = false;
-	int len = mCommandStr.GetLength();
-	for (int i = 0; i < len; ++i) {
-		auto c = mCommandStr[i];
-		if (inQuate == false && c == _T('"')) {
-		 	inQuate = true;
-			inToken = true;
-			tokenPos.push_back(i);
-			continue;
-	 	}
-		if (inQuate && c == _T('"')) {
-		 	inQuate = false;
-			continue;
-	 	}
-		if (inQuate == false && c == _T(' ')) {
-			inToken = false;
-			continue;
-		}
-		else {
-			if (inToken) {
-				continue;
-			}
-			tokenPos.push_back(i);
-			inToken = true;
-		}
-	}
-
-
-	mKeywordEdit.GetSel(startPos, endPos);
-	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
-
-	auto it = tokenPos.begin();
-	for (; it != tokenPos.end(); ++it) {
-		auto pos = *it;
-		if (endPos < pos) {
-			break;
-		}
-	}
-	// FIXME: 空白を含むと引数が増える問題
-
 	auto cmdName = cmd->GetName();
 
-	if (it == tokenPos.end()) {
-		mCommandStr = cmdName;
+	CString trailing;
+	if (GetTrailingString(trailing)) {
+		mCommandStr = cmdName + _T(" ") + trailing;
 	}
 	else {
-		mCommandStr = cmdName + _T(" ") + mCommandStr.Mid(*it);
+		mCommandStr = cmdName;
 	}
 	startPos = 0;
 	endPos = cmdName.GetLength(); 
@@ -180,6 +141,66 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 
 	// アイコン更新
 	mIconLabel.DrawIcon(cmd->GetIcon());
+}
+
+void LauncherMainWindow::PImpl::EnumTokenPos(std::vector<int>& tokenPos)
+{
+	std::vector<int> tmpPos;
+
+	bool inToken = false;
+	bool inQuate = false;
+	int len = mCommandStr.GetLength();
+	for (int i = 0; i < len; ++i) {
+		auto c = mCommandStr[i];
+		if (inQuate == false && c == _T('"')) {
+		 	inQuate = true;
+			inToken = true;
+			tmpPos.push_back(i);
+			continue;
+	 	}
+		if (inQuate && c == _T('"')) {
+		 	inQuate = false;
+			continue;
+	 	}
+		if (inQuate == false && c == _T(' ')) {
+			inToken = false;
+			continue;
+		}
+		else {
+			if (inToken) {
+				continue;
+			}
+			tmpPos.push_back(i);
+			inToken = true;
+		}
+	}
+
+	tokenPos.swap(tmpPos);
+}
+
+bool LauncherMainWindow::PImpl::GetTrailingString(CString& text)
+{
+	std::vector<int> tokenPos;
+	EnumTokenPos(tokenPos);
+
+	int startPos;
+	int endPos;
+	mKeywordEdit.GetSel(startPos, endPos);
+	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
+
+	auto it = tokenPos.begin();
+	for (; it != tokenPos.end(); ++it) {
+		auto pos = *it;
+		if (endPos < pos) {
+			break;
+		}
+	}
+	if (it == tokenPos.end()) {
+		return false;
+	}
+
+	text = mCommandStr.Mid(*it);
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -876,6 +897,38 @@ void LauncherMainWindow::ClearContent()
 	UpdateData(FALSE);
 }
 
+void LauncherMainWindow::Complement()
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("Comlement: bommand is null"));
+		return ;
+	}
+
+	// 現在のキャレット位置より後ろにある文字を取得
+	CString trailing;
+	bool hasTrailing = in->GetTrailingString(trailing);
+
+	in->mCommandStr = cmd->GetName();
+	in->mCommandStr += _T(" ");
+
+	if (hasTrailing) {
+		in->mCommandStr += trailing;
+	}
+
+	UpdateData(FALSE);
+
+	OnEditCommandChanged();
+
+	// 直前のOnEditCommandChangedの結果、選択中のコマンドが変化するため、取り直す
+	cmd = GetCurrentCommand();
+	if (cmd) {
+		// コマンド名 + " " の位置にキャレットを設定する
+		int caretPos = cmd->GetName().GetLength() + 1;
+		in->mKeywordEdit.SetSel(caretPos, caretPos);
+	}
+}
+
 
 // 現在選択中のコマンドを取得
 core::Command*
@@ -1145,20 +1198,10 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 			return 1;
 		}
 		else if (wParam == VK_TAB) {
-			auto cmd = GetCurrentCommand();
-			if (cmd == nullptr) {
-				spdlog::debug(_T("command is null vk:{}"), wParam);
-				return 1;
-			}
-
-			in->mCommandStr = cmd->GetName();
-			in->mCommandStr += _T(" ");
-			UpdateData(FALSE);
-
-			OnEditCommandChanged();
-
-			in->mKeywordEdit.SetCaretToEnd();
+			// 補完
+			Complement();
 			return 1;
+
 		}
 		else if (wParam == VK_RETURN) {
 			OnOK();
