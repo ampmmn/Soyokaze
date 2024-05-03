@@ -99,17 +99,14 @@ CString SimpleDictCommand::GetTypeDisplayName()
 
 BOOL SimpleDictCommand::Execute(const Parameter& param)
 {
-	// ホットキーで入力したときだけここに到達できる
-	// (入力画面上の短縮入力として作用する)
-	bool isHotKeyRun = param.GetNamedParamBool(_T("OnHotKey"));
-	if (isHotKeyRun) {
-		SharedHwnd sharedWnd;
-		SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+	// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
 
-		auto cmdline = GetName();
-		cmdline += _T(" ");
-		SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
-	}
+	SharedHwnd sharedWnd;
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+
+	auto cmdline = GetName();
+	cmdline += _T(" ");
+	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
 	return TRUE;
 }
 
@@ -120,14 +117,19 @@ CString SimpleDictCommand::GetErrorString()
 
 HICON SimpleDictCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	// バインダーに矢印みたいなアイコン
+	return IconLoader::Get()->GetImageResIcon(-5301);
 }
 
 int SimpleDictCommand::Match(Pattern* pattern)
 {
 	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
-		// このコマンドは入力欄からの入力では直接実行させないが、内部のコマンド名マッチングの時だけヒットさせる
+		// 内部のコマンド名マッチング用の判定
 		return Pattern::WholeMatch;
+	}
+	else if (pattern->shouldWholeMatch() == false && pattern->Match(GetName()) == Pattern::FrontMatch) {
+		// 入力欄からの入力で、前方一致するときは候補に出す
+		return Pattern::FrontMatch;
 	}
 
 	// 通常はこちら

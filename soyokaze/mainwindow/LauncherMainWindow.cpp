@@ -1153,14 +1153,9 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 
 			in->mCommandStr = cmd->GetName();
 			in->mCommandStr += _T(" ");
-
-			in->mDescriptionStr = cmd->GetDescription();
-			if (in->mDescriptionStr.IsEmpty()) {
-				in->mDescriptionStr = cmd->GetName();
-			}
-			in->mGuideStr = cmd->GetGuideString();
-			in->mIconLabel.DrawIcon(cmd->GetIcon());
 			UpdateData(FALSE);
+
+			OnEditCommandChanged();
 
 			in->mKeywordEdit.SetCaretToEnd();
 			return 1;
