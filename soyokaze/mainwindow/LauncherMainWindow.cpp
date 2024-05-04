@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "app/LauncherApp.h"
+#include "app/Manual.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "commands/core/CommandRepository.h"
@@ -287,36 +288,20 @@ void LauncherMainWindow::HideWindow()
 }
 
 
-void LauncherMainWindow::ShowHelp()
+void LauncherMainWindow::ShowHelpTop()
 {
 	SPDLOG_DEBUG(_T("start"));
-
-	TCHAR path[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
-	PathRemoveFileSpec(path);
-	PathAppend(path, _T("help.html"));
-	if (PathFileExists(path) == FALSE) {
-		CString msg((LPCTSTR)IDS_ERR_HELPDOESNOTEXIST);
-		msg += _T("\n");
-		msg += path;
-		AfxMessageBox(msg);
-
-		SPDLOG_WARN(_T("help file does not exist path:{}"), (LPCTSTR)path);
-		return ;
-	}
-
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = SW_NORMAL;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-
-	ShellExecuteEx(&si);
-
-	SPDLOG_DEBUG(_T("launch help PID:{}"), GetProcessId(si.hProcess));
-
-	CloseHandle(si.hProcess);
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("Top"));
 }
+
+void LauncherMainWindow::ShowHelpInputWindow()
+{
+	SPDLOG_DEBUG(_T("start"));
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("InputWindow"));
+}
+
 
 /**
  * ActiveWindow経由の処理
@@ -1370,7 +1355,7 @@ void LauncherMainWindow::OnContextMenu(
 	}
 	else if (n == ID_MANUAL) {
 		// ヘルプ表示
-		ShowHelp();
+		ShowHelpTop();
 	}
 	else if (n == ID_VERSIONINFO) {
 		ExecuteCommand(_T("version"));
@@ -1399,7 +1384,7 @@ void LauncherMainWindow::OnEndSession(BOOL isEnding)
 void LauncherMainWindow::OnCommandHelp()
 {
 	// ヘルプ表示
-	ShowHelp();
+	ShowHelpInputWindow();
 }
 
 void LauncherMainWindow::OnCommandHotKey(UINT id)

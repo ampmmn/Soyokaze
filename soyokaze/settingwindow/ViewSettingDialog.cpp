@@ -185,3 +185,10 @@ void ViewSettingDialog::OnEnterSettings()
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(fontName);
 }
+
+bool ViewSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("InputWindowSetting");
+	return true;
+}
+

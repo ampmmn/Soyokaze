@@ -20,8 +20,9 @@ namespace watchpath {
 
 
 CommandEditDialog::CommandEditDialog() : 
-	CDialogEx(IDD_WATCHPATH)
+	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH)
 {
+	SetHelpPageId(_T("WatchPathEdit"));
 	mNotifyMessage = _T("更新を検知");
 }
 
@@ -51,7 +52,7 @@ void CommandEditDialog::SetNotifyMessage(const CString& msg)
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
@@ -59,7 +60,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_MESSAGE, mNotifyMessage);
 }
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonFileBrowse)

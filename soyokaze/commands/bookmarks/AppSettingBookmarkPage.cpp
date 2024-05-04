@@ -112,6 +112,13 @@ void AppSettingBookmarkPage::OnEnterSettings()
 	mIsUseURLForHistory = settingsPtr->Get(_T("Browser::UseURL"), true);
 }
 
+bool AppSettingBookmarkPage::GetHelpPageId(CString& id)
+{
+	id = _T("BrowserSetting");
+	return true;
+}
+
+
 void AppSettingBookmarkPage::OnCheckEnable()
 {
 	UpdateData();

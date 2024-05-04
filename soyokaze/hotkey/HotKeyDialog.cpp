@@ -11,9 +11,10 @@
 
 
 HotKeyDialog::HotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) : 
-	CDialogEx(IDD_HOTKEY, parent),
+	launcherapp::gui::SinglePageDialog(IDD_HOTKEY, parent),
 	mHotKeyAttr(attr)
 {
+	SetHelpPageId(_T("HotKey"));
 }
 
 HotKeyDialog::~HotKeyDialog()
@@ -22,7 +23,7 @@ HotKeyDialog::~HotKeyDialog()
 
 void HotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_SHIFT, mHotKeyAttr.mUseShift);
 	DDX_Check(pDX, IDC_CHECK_ALT, mHotKeyAttr.mUseAlt);
 	DDX_Check(pDX, IDC_CHECK_CTRL, mHotKeyAttr.mUseCtrl);
@@ -31,7 +32,7 @@ void HotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 }
 
-BEGIN_MESSAGE_MAP(HotKeyDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(HotKeyDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)

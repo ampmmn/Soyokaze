@@ -84,6 +84,13 @@ void SoundSettingDialog::OnEnterSettings()
 	mSoundFilePathExecute = settingsPtr->Get(_T("Sound:FilePathExecute"), _T(""));
 }
 
+bool SoundSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("SoundSetting");
+	return true;
+}
+
+
 bool SoundSettingDialog::SelectFile(CString& fileStr)
 {
 	UpdateData();

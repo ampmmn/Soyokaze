@@ -108,6 +108,13 @@ void InputWindowKeySettingPage::OnEnterSettings()
 	mHotKeyCompl = mHotKeyAttrCompl.ToString();
 }
 
+bool InputWindowKeySettingPage::GetHelpPageId(CString& id)
+{
+	id = _T("InputKeySetting");
+	return true;
+}
+
+
 void InputWindowKeySettingPage::OnButtonHotKeyUp()
 {
 	UpdateData();

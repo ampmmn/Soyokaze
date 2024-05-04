@@ -24,11 +24,12 @@ namespace filter {
 
 
 FilterEditDialog::FilterEditDialog() : 
-	CDialogEx(IDD_FILTEREDIT),
+	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
 	mIsGlobal(false),
 	mCommandSelIndex(-1)
 {
+	SetHelpPageId(_T("FilterEdit"));
 }
 
 FilterEditDialog::~FilterEditDialog()
@@ -78,7 +79,7 @@ void FilterEditDialog::GetParam(CommandParam& param)
 
 void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
@@ -94,7 +95,7 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
 }
 
-BEGIN_MESSAGE_MAP(FilterEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH2, OnEditPathChanged)

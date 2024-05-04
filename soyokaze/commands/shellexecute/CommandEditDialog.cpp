@@ -243,6 +243,13 @@ void CommandEditDialog::OnEnterSettings()
 
 }
 
+bool CommandEditDialog::GetHelpPageId(CString& id)
+{
+	id = _T("ShellExecute_Basic");
+	return true;
+}
+
+
 
 void CommandEditDialog::OnOK()
 {

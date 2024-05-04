@@ -5,7 +5,6 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
@@ -39,8 +38,6 @@ struct SettingDialog::PImpl
 
 	// ウインドウキャプチャ用アイコン
 	//CaptureIconLabel mIconLabel;
-
-	TopMostMask mTopMostMask;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,9 +46,10 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog() : 
-	CDialogEx(IDD_ALIGNWINDOWEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWEDIT),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("AlignWindowSetting"));
 }
 
 SettingDialog::~SettingDialog()
@@ -80,7 +78,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_KEEPACTIVEWINDOW, in->mParam.mIsKeepActiveWindow);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)

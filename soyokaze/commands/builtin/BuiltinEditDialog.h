@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
 
 namespace launcherapp {
@@ -7,7 +8,7 @@ namespace commands {
 namespace builtin {
 
 // 
-class BuiltinEditDialog : public CDialogEx
+class BuiltinEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	BuiltinEditDialog(const CString& name, bool canEditEnable, bool canEditConfirm);

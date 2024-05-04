@@ -1,8 +1,9 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
 
-class KeywordManagerDialog : public CDialogEx
+class KeywordManagerDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	KeywordManagerDialog();

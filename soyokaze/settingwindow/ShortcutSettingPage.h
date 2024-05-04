@@ -36,6 +36,7 @@ protected:
 	BOOL OnKillActive() override;
 	BOOL OnSetActive() override;
 	void OnEnterSettings() override;
+	bool GetHelpPageId(CString& id) override;
 
 	void UpdateStatus();
 // 実装

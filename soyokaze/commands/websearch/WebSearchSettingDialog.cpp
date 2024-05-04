@@ -5,7 +5,6 @@
 #include "icon/IconLoader.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 
@@ -38,8 +37,6 @@ struct SettingDialog::PImpl
 
 	HICON mIcon = nullptr;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
-
-	TopMostMask mTopMostMask;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,9 +46,10 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog() : 
-	CDialogEx(IDD_WEBSEARCHEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_WEBSEARCHEDIT),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("WebSearchSetting"));
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 }
 
@@ -85,7 +83,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLESHORTCUT, in->mIsEnableShortcut);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_WM_CTLCOLOR()

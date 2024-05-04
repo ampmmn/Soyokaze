@@ -1,9 +1,9 @@
 #pragma once
 
-#include "utility/TopMostMask.h"
+#include "gui/SinglePageDialog.h"
 #include <vector>
 
-class SelectCommandTypeDialog : public CDialogEx
+class SelectCommandTypeDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	SelectCommandTypeDialog();
@@ -23,8 +23,6 @@ private:
 		LPARAM mItemData;
 	};
 	std::vector<ITEM> mItems;
-
-	TopMostMask mTopMostMask;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート

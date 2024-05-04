@@ -5,7 +5,6 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
@@ -38,8 +37,6 @@ struct SettingDialog::PImpl
 
 	// ウインドウキャプチャ用アイコン
 	CaptureIconLabel mIconLabel;
-
-	TopMostMask mTopMostMask;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,9 +46,10 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog() : 
-	CDialogEx(IDD_WINDOWACTIVATEEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEEDIT),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("WindowActivateSetting"));
 }
 
 SettingDialog::~SettingDialog()
@@ -82,7 +80,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)

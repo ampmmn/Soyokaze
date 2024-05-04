@@ -111,6 +111,13 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
+bool ExtensionSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("ExtensionSetting");
+	return true;
+}
+
+
 bool ExtensionSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_PYTHONDLLPATH)->EnableWindow(mIsEnableCalc);

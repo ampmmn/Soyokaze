@@ -107,3 +107,10 @@ void BasicSettingDialog::OnEnterSettings()
 	mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 
 }
+
+bool BasicSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("GeneralSetting");
+	return true;
+}
+

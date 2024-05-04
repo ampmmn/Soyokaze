@@ -3,7 +3,6 @@
 #include "gui/KeywordManagerDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
-#include "utility/TopMostMask.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -61,7 +60,6 @@ struct KeywordManagerDialog::PImpl
 
 	CommandHotKeyMappings mKeyMapping;
 
-	TopMostMask mTopMostMask;
 	int mSortType;
 };
 
@@ -115,9 +113,11 @@ void KeywordManagerDialog::PImpl::SortCommands()
 
 
 KeywordManagerDialog::KeywordManagerDialog() : 
-	CDialogEx(IDD_KEYWORDMANAGER),
+	launcherapp::gui::SinglePageDialog(IDD_KEYWORDMANAGER),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("KeywordManager"));
+
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 	in->mSortType = SORT_ASCEND_NAME;
 	in->mSelCommand = nullptr;
@@ -138,7 +138,7 @@ void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILTER, in->mFilterStr);
 }
 
-BEGIN_MESSAGE_MAP(KeywordManagerDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
@@ -542,3 +542,4 @@ void KeywordManagerDialog::OnFindCommand(
 		}
 	}
 }
+

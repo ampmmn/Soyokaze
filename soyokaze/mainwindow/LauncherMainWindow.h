@@ -42,7 +42,8 @@ public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
 	void HideWindow();
-	void ShowHelp();
+	void ShowHelpTop();
+	void ShowHelpInputWindow();
 
 	bool ExecuteCommand(const CString& commandStr);
 

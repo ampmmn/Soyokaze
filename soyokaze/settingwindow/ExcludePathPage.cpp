@@ -157,6 +157,13 @@ void ExcludePathPage::OnEnterSettings()
 
 }
 
+bool ExcludePathPage::GetHelpPageId(CString& id)
+{
+	id = _T("ExcludeFileSetting");
+	return true;
+}
+
+
 void ExcludePathPage::OnButtonAdd()
 {
 	TCHAR path[MAX_PATH_NTFS];

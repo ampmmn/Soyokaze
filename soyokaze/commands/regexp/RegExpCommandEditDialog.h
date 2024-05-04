@@ -1,7 +1,7 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
-#include "utility/TopMostMask.h"
 #include "hotkey/HotKeyAttribute.h"
 
 class IconLabel;
@@ -11,7 +11,7 @@ namespace commands {
 namespace regexp {
 
 
-class CommandEditDialog : public CDialogEx
+class CommandEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	CommandEditDialog();
@@ -66,8 +66,6 @@ public:
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
-private:
-	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

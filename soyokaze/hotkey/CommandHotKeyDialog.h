@@ -1,10 +1,11 @@
 // あ
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include "hotkey/HotKeyAttribute.h"
 
 // 
-class CommandHotKeyDialog : public CDialogEx
+class CommandHotKeyDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal);

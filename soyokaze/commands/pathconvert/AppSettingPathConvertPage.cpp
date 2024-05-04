@@ -79,6 +79,13 @@ void AppSettingPathConvertPage::OnEnterSettings()
 	mIsEnableFileProtolPath = settingsPtr->Get(_T("PathConvert:IsEnableFileProtol"), true);
 }
 
+bool AppSettingPathConvertPage::GetHelpPageId(CString& id)
+{
+	id = _T("PathConvertSetting");
+	return true;
+}
+
+
 } // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace launcherapp

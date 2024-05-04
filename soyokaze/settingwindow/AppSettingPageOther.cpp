@@ -123,6 +123,13 @@ void AppSettingPageOther::OnEnterSettings()
 	}
 }
 
+bool AppSettingPageOther::GetHelpPageId(CString& id)
+{
+	id = _T("OtherSetting");
+	return true;
+}
+
+
 void AppSettingPageOther::OnCheckWarnLongTime()
 {
 	UpdateData();

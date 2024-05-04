@@ -2,7 +2,6 @@
 #include "BuiltinEditDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/TopMostMask.h"
 #include "resource.h"
 
 namespace launcherapp {
@@ -23,7 +22,6 @@ struct BuiltinEditDialog::PImpl
 
 	BOOL mIsEnable;
 	BOOL mIsConfirm;
-	TopMostMask mTopMostMask;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,9 +31,10 @@ struct BuiltinEditDialog::PImpl
 
 
 BuiltinEditDialog::BuiltinEditDialog(const CString& name, bool canEditEnable, bool canEditConfirm) : 
-	CDialogEx(IDD_BUILTINEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_BUILTINEDIT),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("BuiltinCommandEdit"));
 	in->mName = name;
 	in->mCanEditEnable = canEditEnable;
 	in->mCanEditConfirm = canEditConfirm;
@@ -73,7 +72,7 @@ void BuiltinEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_CONFIRM, in->mIsConfirm);
 }
 
-BEGIN_MESSAGE_MAP(BuiltinEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(BuiltinEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
 END_MESSAGE_MAP()
 

@@ -21,10 +21,11 @@ namespace regexp {
 
 
 CommandEditDialog::CommandEditDialog() : 
-	CDialogEx(IDD_REGEXPCOMMAND),
+	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
 	mIcon(nullptr)
 {
+	SetHelpPageId(_T("RegExpEdit"));
 }
 
 CommandEditDialog::~CommandEditDialog()
@@ -84,7 +85,7 @@ void CommandEditDialog::SetShowType(int type)
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
@@ -96,7 +97,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
 }
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)

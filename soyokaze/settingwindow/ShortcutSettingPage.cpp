@@ -204,3 +204,9 @@ bool ShortcutSettingPage::CreateStartMenu()
 	return true;
 }
 
+bool ShortcutSettingPage::GetHelpPageId(CString& id)
+{
+	id = _T("ShortcutSetting");
+	return true;
+}
+

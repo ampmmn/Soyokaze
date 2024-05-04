@@ -1,7 +1,7 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
-#include "utility/TopMostMask.h"
 
 class IconLabel;
 
@@ -9,7 +9,7 @@ namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
-class CommandEditDialog : public CDialogEx
+class CommandEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	CommandEditDialog();
@@ -47,8 +47,6 @@ public:
 	// メッセージ
 	CString mNotifyMessage;
 
-private:
-	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

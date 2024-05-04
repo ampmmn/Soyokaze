@@ -3,7 +3,6 @@
 #include "commands/common/Message.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/TopMostMask.h"
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
@@ -30,8 +29,6 @@ struct ItemDialog::PImpl
 	// ウインドウキャプチャ用アイコン
 	CaptureIconLabel mIconLabel;
 
-	TopMostMask mTopMostMask;
-
 	int mWidth;
 	int mHeight;
 };
@@ -41,9 +38,10 @@ struct ItemDialog::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 ItemDialog::ItemDialog(CWnd* parentWnd) : 
-	CDialogEx(IDD_ALIGNWINDOWITEMEDIT, this),
+	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWITEMEDIT, this),
 	in(std::make_unique<PImpl>())
 {
+	SetHelpPageId(_T("AlignWindowItemSetting"));
 }
 
 ItemDialog::~ItemDialog()
@@ -76,7 +74,7 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_APPLYALL, in->mParam.mIsApplyAll);
 }
 
-BEGIN_MESSAGE_MAP(ItemDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(ItemDialog, launcherapp::gui::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_UPDATE, OnButtonUpdate)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)

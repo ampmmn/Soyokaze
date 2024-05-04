@@ -180,6 +180,13 @@ void AppSettingPathPage::OnEnterSettings()
 
 }
 
+bool AppSettingPathPage::GetHelpPageId(CString& id)
+{
+	id = _T("ExecutePathSetting");
+	return true;
+}
+
+
 void AppSettingPathPage::OnButtonAdd()
 {
 	TCHAR path[MAX_PATH_NTFS];

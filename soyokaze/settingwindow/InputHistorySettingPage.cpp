@@ -80,6 +80,13 @@ void InputHistorySettingPage::OnEnterSettings()
 	mHistoryLimit = settingsPtr->Get(_T("Input:HistoryLimit"), 128);
 }
 
+bool InputHistorySettingPage::GetHelpPageId(CString& id)
+{
+	id = _T("InputHistorySetting");
+	return true;
+}
+
+
 void InputHistorySettingPage::OnButtonClear()
 {
 	auto history = launcherapp::commands::common::ExecuteHistory::GetInstance();

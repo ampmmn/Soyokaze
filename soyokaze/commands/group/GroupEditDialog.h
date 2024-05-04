@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/group/CommandParam.h"
-#include "utility/TopMostMask.h"
 #include "hotkey/HotKeyAttribute.h"
 
 class ModalComboBox;
@@ -13,7 +13,7 @@ namespace group {
 
 struct GroupItem;
 
-class GroupEditDialog : public CDialogEx
+class GroupEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	GroupEditDialog();
@@ -52,8 +52,6 @@ public:
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
 
-private:
-	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

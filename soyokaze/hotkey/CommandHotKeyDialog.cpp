@@ -12,10 +12,11 @@
 
 
 CommandHotKeyDialog::CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal) : 
-	CDialogEx(IDD_HOTKEY),
+	launcherapp::gui::SinglePageDialog(IDD_HOTKEY),
 	mHotKeyAttr(attr),
 	mIsGlobal(isGlobal ? TRUE : FALSE)
 {
+	SetHelpPageId(_T("HotKey"));
 }
 
 
@@ -25,7 +26,7 @@ CommandHotKeyDialog::~CommandHotKeyDialog()
 
 void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_SHIFT, mHotKeyAttr.mUseShift);
 	DDX_Check(pDX, IDC_CHECK_ALT, mHotKeyAttr.mUseAlt);
 	DDX_Check(pDX, IDC_CHECK_CTRL, mHotKeyAttr.mUseCtrl);
@@ -35,7 +36,7 @@ void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mIsGlobal);
 }
 
-BEGIN_MESSAGE_MAP(CommandHotKeyDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)

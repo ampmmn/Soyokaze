@@ -22,6 +22,7 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) override;
 	BOOL OnInitDialog() override;
 	void OnEnterSettings() override;
+	bool GetHelpPageId(CString& id) override;
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()

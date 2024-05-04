@@ -119,3 +119,10 @@ void ExecSettingDialog::OnEnterSettings()
 	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 
 }
+
+bool ExecSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("ExecuteSetting");
+	return true;
+}
+

@@ -3,7 +3,6 @@
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "gui/FolderDialog.h"
-#include "utility/TopMostMask.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "hotkey/CommandHotKeyDialog.h"
@@ -36,8 +35,6 @@ struct SettingDialog::PImpl
 	//
 	CListCtrl* mPreviewListPtr;
 
-	TopMostMask mTopMostMask;
-
 	bool mIsTestPassed;
 
 	// ホットキー(表示用)
@@ -49,8 +46,9 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog() : 
-	CDialogEx(IDD_SIMPLEDICT), in(new PImpl)
+	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT), in(new PImpl)
 {
+	SetHelpPageId(_T("SimpleDictEdit"));
 	in->mPreviewListPtr = nullptr;
 	in->mIsTestPassed = false;
 }
@@ -88,7 +86,7 @@ void SettingDialog::GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal)
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
 	DDX_Text(pDX, IDC_STATIC_RECORDS, in->mRecordMsg);
 	DDX_Text(pDX, IDC_EDIT_NAME, in->mParam.mName);
@@ -109,7 +107,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateName)
 	ON_EN_CHANGE(IDC_EDIT_SHEETNAME, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_FRONT, OnUpdateCondition)

@@ -20,10 +20,11 @@ namespace group {
 
 
 GroupEditDialog::GroupEditDialog() : 
-	CDialogEx(IDD_GROUP),
+	launcherapp::gui::SinglePageDialog(IDD_GROUP),
 	mCommandListPtr(nullptr),
 	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {
+	SetHelpPageId(_T("GroupEdit"));
 }
 
 GroupEditDialog::~GroupEditDialog()
@@ -43,7 +44,7 @@ const CommandParam& GroupEditDialog::GetParam() const
 
 void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
@@ -55,7 +56,7 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(GroupEditDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_COMMAND(IDC_CHECK_REPEAT, OnUpdate)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)

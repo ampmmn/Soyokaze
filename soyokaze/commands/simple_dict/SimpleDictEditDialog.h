@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "hotkey/HotKeyAttribute.h"
@@ -10,7 +11,7 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-class SettingDialog : public CDialogEx
+class SettingDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	SettingDialog();

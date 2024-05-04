@@ -7,8 +7,9 @@
 #endif
 
 SelectCommandTypeDialog::SelectCommandTypeDialog() :
-	CDialogEx(IDD_SELECTCOMMANDTYPE)
+	launcherapp::gui::SinglePageDialog(IDD_SELECTCOMMANDTYPE)
 {
+	SetHelpPageId(_T("SelectCommandType"));
 }
 
 SelectCommandTypeDialog::~SelectCommandTypeDialog()
@@ -45,7 +46,7 @@ void SelectCommandTypeDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, mDescriptionStr);
 }
 
-BEGIN_MESSAGE_MAP(SelectCommandTypeDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(SelectCommandTypeDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_TYPES, OnNotifyItemChanged)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_TYPES, OnNotifyItemDblClick)
 END_MESSAGE_MAP()

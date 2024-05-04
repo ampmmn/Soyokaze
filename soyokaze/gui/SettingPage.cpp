@@ -66,3 +66,7 @@ BEGIN_MESSAGE_MAP(SettingPage, CPropertyPage)
 END_MESSAGE_MAP()
 
 
+bool SettingPage::GetHelpPageId(CString& id)
+{
+	return false;
+}

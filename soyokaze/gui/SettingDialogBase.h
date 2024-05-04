@@ -24,10 +24,12 @@ protected:
 
 protected:
 	bool SelectPage(HTREEITEM hTreeCtrl);
+	bool ShowHelp();
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
+	void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV サポート
+	BOOL OnInitDialog() override;
+	void OnOK() override;
+	BOOL PreTranslateMessage(MSG* pMsg) override;
 
 // 実装
 protected:
@@ -36,6 +38,8 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg LRESULT OnUserEnableOKButton(WPARAM wp, LPARAM lp);
 	afx_msg LRESULT OnUserDisableOKButton(WPARAM wp, LPARAM lp);
+	afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint pt);
+	afx_msg void OnCommandHelp();
 
 protected:
 	struct PImpl;

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
-#include "utility/TopMostMask.h"
 #include "hotkey/HotKeyAttribute.h"
 
 class IconLabel;
@@ -12,7 +12,7 @@ namespace commands {
 namespace filter {
 
 
-class FilterEditDialog : public CDialogEx
+class FilterEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	FilterEditDialog();
@@ -50,8 +50,6 @@ public:
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
 
-private:
-	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

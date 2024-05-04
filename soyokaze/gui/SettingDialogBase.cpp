@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "SettingDialogBase.h"
 #include "SettingPage.h"
+#include "app/Manual.h"
 #include "gui/BreadCrumbs.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
@@ -40,6 +41,8 @@ struct SettingDialogBase::PImpl
 
 	TopMostMask mTopMostMask;
 
+	HACCEL mAccel;
+
 
 };
 
@@ -57,6 +60,12 @@ struct SettingDialogBase::PImpl
 {
 	in->mTreeCtrl = nullptr;
 	in->mLastTreeItem = nullptr;
+
+	ACCEL accels[1];
+	accels[0].cmd = ID_VIEW_HELP;
+	accels[0].fVirt = FVIRTKEY;
+	accels[0].key = 0x70;   // F1
+	in->mAccel = CreateAcceleratorTable(accels, 1);
 }
 
 /**
@@ -64,6 +73,9 @@ struct SettingDialogBase::PImpl
 */
 SettingDialogBase::~SettingDialogBase()
 {
+	if (in->mAccel) {
+		DestroyAcceleratorTable(in->mAccel);
+	}
 }
 
 CString SettingDialogBase::GetBreadCrumbsString()
@@ -87,12 +99,16 @@ BEGIN_MESSAGE_MAP(SettingDialogBase, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_APP+1, OnUserEnableOKButton)
 	ON_MESSAGE(WM_APP+2, OnUserDisableOKButton)
+	ON_WM_NCLBUTTONDOWN()
+	ON_COMMAND(ID_VIEW_HELP, OnCommandHelp)
 END_MESSAGE_MAP()
 
 // ダイアログ初期化
 BOOL SettingDialogBase::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	ModifyStyleEx(0, WS_EX_CONTEXTHELP);
 
 	in->brBk.CreateSolidBrush(RGB(0xBC, 0xE1, 0xDF));
 
@@ -150,6 +166,14 @@ void SettingDialogBase::OnOK()
 
 }
 
+BOOL SettingDialogBase::PreTranslateMessage(MSG* pMsg)
+{
+	if (in->mAccel && TranslateAccelerator(GetSafeHwnd(), in->mAccel, pMsg)) {
+		return TRUE;
+	}
+	return __super::PreTranslateMessage(pMsg);
+}
+
 
 bool SettingDialogBase::SelectPage(HTREEITEM hTreeItem)
 {
@@ -190,6 +214,26 @@ bool SettingDialogBase::SelectPage(HTREEITEM hTreeItem)
 
 	UpdateData(FALSE);
 
+	return true;
+}
+
+bool SettingDialogBase::ShowHelp()
+{
+	CTreeCtrl* tree = in->mTreeCtrl;
+	ASSERT(tree);
+
+	SettingPage* newPagePtr = (SettingPage*)tree->GetItemData(in->mLastTreeItem);
+	if (newPagePtr == nullptr) {
+		return false;
+	}
+
+	CString helpPageId;
+	if (newPagePtr->GetHelpPageId(helpPageId) == false) {
+		return false;
+	}
+
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(helpPageId);
 	return true;
 }
 
@@ -309,4 +353,19 @@ LRESULT SettingDialogBase::OnUserDisableOKButton(
 	GetDlgItem(IDOK)->EnableWindow(FALSE);
 
 	return 0;
+}
+
+void SettingDialogBase::OnNcLButtonDown(UINT nHitTest, CPoint pt)
+{
+	if (nHitTest == HTHELP) {
+		ShowHelp();
+	}
+	else {
+		__super::OnNcLButtonDown(nHitTest, pt);
+	}
+}
+
+void SettingDialogBase::OnCommandHelp()
+{
+	ShowHelp();
 }

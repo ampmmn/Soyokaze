@@ -1,7 +1,7 @@
 #pragma once
 
+#include "gui/SinglePageDialog.h"
 #include <memory>
-#include "utility/TopMostMask.h"
 #include "hotkey/HotKeyAttribute.h"
 
 class IconLabel;
@@ -11,7 +11,7 @@ namespace commands {
 namespace snippet {
 
 
-class CommandEditDialog : public CDialogEx
+class CommandEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
 	CommandEditDialog();
@@ -50,9 +50,6 @@ public:
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
-
-private:
-	TopMostMask mTopMostMask;
 // 実装
 protected:
 	virtual void OnOK();

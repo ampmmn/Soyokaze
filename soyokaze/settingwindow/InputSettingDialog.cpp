@@ -94,6 +94,13 @@ void InputSettingDialog::OnEnterSettings()
 	mIsEnableMigemo = settingsPtr->Get(_T("Soyokaze:IsEnableMigemo"), true);
 }
 
+bool InputSettingDialog::GetHelpPageId(CString& id)
+{
+	id = _T("InputSetting");
+	return true;
+}
+
+
 void InputSettingDialog::OnNotifyLinkOpen(
 	NMHDR *pNMHDR,
  	LRESULT *pResult
