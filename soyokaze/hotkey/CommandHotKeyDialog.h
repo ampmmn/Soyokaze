@@ -11,6 +11,8 @@ public:
 	CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal);
 	virtual ~CommandHotKeyDialog();
 
+	void SetTargetName(const CString& name);
+
 	void GetAttribute(HOTKEY_ATTR& attr);
 	bool IsGlobal();
 
@@ -22,6 +24,8 @@ public:
 
 	// メッセージ欄
 	CString mMessage;
+	//
+	CString mTargetName;
 
 protected:
 	static bool IsReservedKey(const HOTKEY_ATTR& attr);

@@ -120,6 +120,7 @@ void InputWindowKeySettingPage::OnButtonHotKeyUp()
 	UpdateData();
 
 	HotKeyDialog dlg(mHotKeyAttrUp, this);
+	dlg.SetTargetName(_T("上へ"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
@@ -135,6 +136,7 @@ void InputWindowKeySettingPage::OnButtonHotKeyDown()
 	UpdateData();
 
 	HotKeyDialog dlg(mHotKeyAttrDown, this);
+	dlg.SetTargetName(_T("下へ"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
@@ -150,6 +152,7 @@ void InputWindowKeySettingPage::OnButtonHotKeyEnter()
 	UpdateData();
 
 	HotKeyDialog dlg(mHotKeyAttrEnter, this);
+	dlg.SetTargetName(_T("決定"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
@@ -165,6 +168,7 @@ void InputWindowKeySettingPage::OnButtonHotKeyCompl()
 	UpdateData();
 
 	HotKeyDialog dlg(mHotKeyAttrCompl, this);
+	dlg.SetTargetName(_T("補完"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

@@ -281,6 +281,7 @@ void GroupEditDialog::OnButtonHotKey()
 	UpdateData();
 
 	CommandHotKeyDialog dlg(mHotKeyAttr, mIsGlobal);
+	dlg.SetTargetName(mParam.mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

@@ -84,6 +84,7 @@ void BasicSettingDialog::OnButtonHotKey()
 	UpdateData();
 
 	HotKeyDialog dlg(mHotKeyAttr, this);
+	dlg.SetTargetName(_T("ランチャー呼び出しキー"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

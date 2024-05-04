@@ -21,6 +21,11 @@ HotKeyDialog::~HotKeyDialog()
 {
 }
 
+void HotKeyDialog::SetTargetName(const CString& name)
+{
+	mTargetName = name;
+}
+
 void HotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
@@ -49,6 +54,16 @@ void HotKeyDialog::GetAttribute(HOTKEY_ATTR& attr)
 BOOL HotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	if (mTargetName.IsEmpty() == FALSE) {
+		CString caption;
+		GetWindowText(caption);
+
+		caption += _T(" - ");
+		caption += mTargetName;
+
+		SetWindowText(caption);
+	}
 
 	// ダイアログリソース(IDD_HOTKEY)をコマンド用ホットキーと共有するが、
 	// アプリのホットキー設定では使わない項目を非表示にする

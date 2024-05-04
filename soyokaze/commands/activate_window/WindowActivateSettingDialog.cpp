@@ -49,7 +49,7 @@ SettingDialog::SettingDialog() :
 	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEEDIT),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("WindowActivateSetting"));
+	SetHelpPageId(_T("ActivateWindowSetting"));
 }
 
 SettingDialog::~SettingDialog()
@@ -125,6 +125,7 @@ void SettingDialog::OnButtonHotKey()
 	UpdateData();
 
 	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+	dlg.SetTargetName(in->mParam.mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}

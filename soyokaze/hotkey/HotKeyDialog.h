@@ -11,11 +11,15 @@ public:
 	HotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent = nullptr);
 	virtual ~HotKeyDialog();
 
+	void SetTargetName(const CString& name);
+
 	void GetAttribute(HOTKEY_ATTR& attr);
 
 	HOTKEY_ATTR mHotKeyAttr;
 	// メッセージ欄
 	CString mMessage;
+	// 設定対象の名前
+	CString mTargetName;
 
 protected:
 	static bool IsReservedKey(const HOTKEY_ATTR& attr);

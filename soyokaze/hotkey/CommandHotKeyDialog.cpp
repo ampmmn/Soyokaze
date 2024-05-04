@@ -24,6 +24,11 @@ CommandHotKeyDialog::~CommandHotKeyDialog()
 {
 }
 
+void CommandHotKeyDialog::SetTargetName(const CString& name)
+{
+	mTargetName = name;
+}
+
 void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
@@ -60,6 +65,17 @@ bool CommandHotKeyDialog::IsGlobal()
 BOOL CommandHotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	if (mTargetName.IsEmpty() == FALSE) {
+		CString caption;
+		GetWindowText(caption);
+
+		caption += _T(" - ");
+		caption += mTargetName;
+		caption += _T("コマンド");
+
+		SetWindowText(caption);
+	}
 
 	// 初期値を覚えておく
 	mHotKeyAttrInit = mHotKeyAttr;
