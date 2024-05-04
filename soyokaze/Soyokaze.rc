@@ -697,11 +697,12 @@ BEGIN
     LTEXT           "サイズ(幅,高さ):",IDC_STATIC,22,212,64,8
     EDITTEXT        IDC_EDIT_WIDTH,89,209,58,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_HEIGHT,161,209,58,14,ES_AUTOHSCROLL
-    CONTROL         "複数に該当するときはすべてに対して適用する(&M)",IDC_CHECK_APPLYALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,228,198,10
+    CONTROL         "複数のウインドウが該当するときはすべてに対して適用する(&M)",IDC_CHECK_APPLYALL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,228,267,10
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,101,8,230,8
     GROUPBOX        "検索条件",IDC_STATIC,13,40,322,115
-    GROUPBOX        "動作",IDC_STATIC,12,161,322,81
+    GROUPBOX        "整列設定",IDC_STATIC,12,161,322,81
     LTEXT           "整列したいウインドウのタイトル／クラスを検索条件欄に入力してください。\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較でウインドウを検索します。",IDC_STATIC_PARAMHELP,21,54,311,27
     DEFPUSHBUTTON   "OK",IDOK,237,247,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,290,247,50,14
