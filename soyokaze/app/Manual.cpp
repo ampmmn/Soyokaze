@@ -41,7 +41,6 @@ bool Manual::Navigate(const CString& pageId)
 	TCHAR dirPath[MAX_PATH_NTFS];
 	GetModuleFileName(NULL, dirPath, MAX_PATH_NTFS);
 	PathRemoveFileSpec(dirPath);
-	PathAppend(dirPath, _T("doc"));
 
 	TCHAR filePath[MAX_PATH_NTFS];
 	_tcscpy_s(filePath, dirPath);
@@ -55,6 +54,11 @@ bool Manual::Navigate(const CString& pageId)
 		SPDLOG_WARN(_T("help file does not exist. filePath:{}"), (LPCTSTR)filePath);
 		return false;
 	}
+
+	// クッションページ?のパス生成
+	PathAppend(dirPath, _T("files"));
+	PathAppend(dirPath, _T("fragment"));
+	SPDLOG_DEBUG(_T("dirPath:{}"), (LPCTSTR)dirPath);
 
 	// 指定されたIDに対応するページの有無を確認
 	CString pagePath;

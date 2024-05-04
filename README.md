@@ -48,6 +48,7 @@ bluewindのReadMeから抜粋
 - soyokaze.exe
 - help.html
 - LICENSE
+- files/
 
 ## 主な特徴
 
