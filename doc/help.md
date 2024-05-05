@@ -1634,6 +1634,9 @@ exeと同じディレクトリ階層に`profile`というディレクトリが�
 - [SQLite3](https://www.sqlite.org/)
   - Windows標準搭載の`winsqlite3.dll`を利用
 
+- [UPX](https://github.com/upx/upx)
+  - リリースページに置いているバイナリを圧縮するために利用
+
 ## 連絡先
 
 htmnymgw@gmail.com
