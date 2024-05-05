@@ -246,6 +246,7 @@ int CommandRepository::NewCommandDialog(const CommandParameter* param)
 {
 	if (in->mIsNewDialog) {
 		// 編集操作中の再入はしない
+		SPDLOG_WARN(_T("re-entry is not allowed."));
 		return -1;
 	}
 	ScopeEdit scopeEdit(in->mIsNewDialog);
@@ -303,6 +304,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 {
 	if (in->mIsEditDialog) {
 		// 編集操作中の再入はしない
+		SPDLOG_WARN(_T("re-entry is not allowed."));
 		return 0;
 	}
 	ScopeEdit scopeEdit(in->mIsEditDialog);
@@ -332,6 +334,7 @@ int CommandRepository::ManagerDialog()
 {
 	if (in->mIsManagerDialog) {
 		// 編集操作中の再入はしない
+		SPDLOG_WARN(_T("re-entry is not allowed."));
 		return 0;
 	}
 	ScopeEdit scopeEdit(in->mIsManagerDialog);
@@ -360,6 +363,7 @@ int CommandRepository::RegisterCommandFromFiles(
 {
 	if (in->mIsRegisteFromFileDialog) {
 		// 編集操作中の再入はしない
+		SPDLOG_WARN(_T("re-entry is not allowed."));
 		return 0;
 	}
 
