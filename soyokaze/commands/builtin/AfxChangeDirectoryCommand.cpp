@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/AfxChangeDirectoryCommand.h"
-#include "commands/common/AfxWWrapper.h"
+#include "macros/afxw/AfxWWrapper.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"

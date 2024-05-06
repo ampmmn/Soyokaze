@@ -96,7 +96,7 @@ CString WatchPathCommand::GetErrorString()
 HICON WatchPathCommand::GetIcon()
 {
 	CString path = in->mPath;
-	ExpandEnv(path);
+	ExpandMacros(path);
 
 	return IconLoader::Get()->LoadIconFromPath(path);
 }

@@ -127,9 +127,7 @@ bool SubProcess::Run(
 
 	// 変数置換(パス)
 	ExpandArguments(path, args);
-	ExpandEnv(path);
-	ExpandClipboard(path);
-	ExpandAfxCurrentDir(path);
+	ExpandMacros(path);
 
 	if ((in->IsOpenPathKeyPressed() && PathFileExists(path)) || PathIsDirectory(path)) {
 		auto pref = AppPreference::Get();
@@ -139,10 +137,8 @@ bool SubProcess::Run(
 			paramStr.Replace(_T("$target"), path);
 
 			path = pref->GetFilerPath();
+			ExpandMacros(path);
 			ExpandArguments(path, args);
-			ExpandEnv(path);
-			ExpandClipboard(path);
-			ExpandAfxCurrentDir(path);
 
 		}
 		else {
@@ -156,10 +152,8 @@ bool SubProcess::Run(
 	}
 	else { 
 		// 変数置換(パラメータ)
+		ExpandMacros(paramStr);
 		ExpandArguments(paramStr, args);
-		ExpandEnv(path);
-		ExpandClipboard(paramStr);
-		ExpandAfxCurrentDir(paramStr);
 	}
 
 	SHELLEXECUTEINFO si = {};
@@ -180,7 +174,7 @@ bool SubProcess::Run(
 
 	CString workDir = in->mWorkingDir;
 	if (workDir.IsEmpty() == FALSE) {
-		ExpandAfxCurrentDir(workDir);
+		ExpandMacros(workDir);
 		si.lpDirectory = workDir;
 	}
 

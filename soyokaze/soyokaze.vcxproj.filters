@@ -145,6 +145,18 @@
     <Filter Include="setting">
       <UniqueIdentifier>{227e2a02-e98b-43c0-964d-ae7d5290d478}</UniqueIdentifier>
     </Filter>
+    <Filter Include="macros">
+      <UniqueIdentifier>{766e943b-7264-4628-b10e-36f36acd788f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="macros\core">
+      <UniqueIdentifier>{a9cce10b-45e5-4220-8f68-0c6803cf8041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="macros\builtin">
+      <UniqueIdentifier>{2f10e29d-4270-44a4-bbd1-fe71f4e9b88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="macros\afxw">
+      <UniqueIdentifier>{d4738602-a6ea-48e0-84a3-6766be6d02b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -326,9 +338,6 @@
     </ClInclude>
     <ClInclude Include="commands\shellexecute\ArgumentDialog.h">
       <Filter>commands\shellexecute</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\common\AfxWWrapper.h">
-      <Filter>commands\common</Filter>
     </ClInclude>
     <ClInclude Include="commands\calculator\Calculator.h">
       <Filter>commands\calculator</Filter>
@@ -852,6 +861,30 @@
     <ClInclude Include="gui\SinglePageDialog.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="macros\core\MacroIF.h">
+      <Filter>macros\core</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\core\MacroRepository.h">
+      <Filter>macros\core</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\core\Token.h">
+      <Filter>macros\core</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\builtin\EnvMacro.h">
+      <Filter>macros\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\core\MacroBase.h">
+      <Filter>macros\core</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\afxw\AfxwMacro.h">
+      <Filter>macros\afxw</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\builtin\ClipboardMacro.h">
+      <Filter>macros\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\afxw\AfxWWrapper.h">
+      <Filter>macros\afxw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1018,9 +1051,6 @@
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ArgumentDialog.cpp">
       <Filter>commands\shellexecute</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\common\AfxWWrapper.cpp">
-      <Filter>commands\common</Filter>
     </ClCompile>
     <ClCompile Include="commands\calculator\Calculator.cpp">
       <Filter>commands\calculator</Filter>
@@ -1519,6 +1549,24 @@
     </ClCompile>
     <ClCompile Include="gui\SinglePageDialog.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\core\MacroRepository.cpp">
+      <Filter>macros\core</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\builtin\EnvMacro.cpp">
+      <Filter>macros\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\core\MacroBase.cpp">
+      <Filter>macros\core</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\afxw\AfxwMacro.cpp">
+      <Filter>macros\afxw</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\builtin\ClipboardMacro.cpp">
+      <Filter>macros\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\afxw\AfxWWrapper.cpp">
+      <Filter>macros\afxw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

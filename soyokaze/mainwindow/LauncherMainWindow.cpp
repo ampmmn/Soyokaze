@@ -24,6 +24,7 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "mainwindow/MainWindowHotKey.h"
 #include "mainwindow/OperationWatcher.h"
+#include "macros/core/MacroRepository.h"
 #include "CandidateList.h"
 #include <algorithm>
 #include <thread>
@@ -787,6 +788,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
 
 	in->mDescriptionStr = pref->GetDefaultComment();
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
 	in->mGuideStr.Empty();
 
 	// ウインドウ位置の復元
@@ -873,6 +875,7 @@ void LauncherMainWindow::ClearContent()
 
 	AppPreference* pref= AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
 	in->mGuideStr.Empty();
 
 	in->mIconLabel.DrawDefaultIcon();
@@ -949,6 +952,7 @@ void LauncherMainWindow::OnEditCommandChanged()
 		in->mCandidates.Clear();
 		in->mGuideStr.Empty();
 		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
+		launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(strMisMatch);
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawDefaultIcon();
 		in->mCandidateListBox.Invalidate(TRUE);

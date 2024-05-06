@@ -99,7 +99,7 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 	CString argSub = in->mParam.mAfterCommandParam;
 	argSub.Replace(_T("$key"), in->mKey);
 	argSub.Replace(_T("$value"), in->mValue);
-	ExpandAfxCurrentDir(argSub);
+	ExpandMacros(argSub);
 
 	int actionType = in->mParam.mActionType;
 	if (actionType == 0) {
@@ -120,7 +120,7 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 		attr.mPath = in->mParam.mAfterFilePath;
 		attr.mPath.Replace(_T("$key"), in->mKey);
 		attr.mPath.Replace(_T("$value"), in->mValue);
-		ExpandAfxCurrentDir(attr.mPath);
+		ExpandMacros(attr.mPath);
 
 		attr.mParam = argSub;
 

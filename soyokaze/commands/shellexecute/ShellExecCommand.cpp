@@ -143,7 +143,7 @@ BOOL ShellExecCommand::Execute(const Parameter& param_)
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
 	ATTRIBUTE attr;
 	SelectAttribute(args, attr);
-
+		
 	SubProcess exec(param);
 	exec.SetShowType(attr.mShowType);
 	exec.SetWorkDirectory(attr.mDir);
@@ -241,15 +241,15 @@ ShellExecCommand::SelectAttribute(
 	}
 
 	// 変数を解決
-	ExpandEnv(attr.mPath);
-	ExpandEnv(attr.mParam);
+	ExpandMacros(attr.mPath);
+	ExpandMacros(attr.mParam);
 }
 
 HICON ShellExecCommand::GetIcon()
 {
 	if (in->mParam.mIconData.empty()) {
 		CString path = in->mNormalAttr.mPath;
-		ExpandEnv(path);
+		ExpandMacros(path);
 
 		return IconLoader::Get()->LoadIconFromPath(path);
 	}

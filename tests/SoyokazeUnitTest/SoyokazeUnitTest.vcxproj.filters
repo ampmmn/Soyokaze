@@ -28,6 +28,12 @@
     <Filter Include="soyokaze\utility">
       <UniqueIdentifier>{0b80e0d7-4fc7-41e3-b7ca-2706bc2e6415}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\macros">
+      <UniqueIdentifier>{81243e7c-b4bb-488e-bade-65943371535b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\macros\core">
+      <UniqueIdentifier>{f63210f4-e93b-4f84-8965-ed76918c0020}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -56,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp">
+      <Filter>soyokaze\macros\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -204,7 +204,7 @@ HICON RegExpCommand::GetIcon()
 {
 	if (in->mIconData.empty()) {
 		CString path = in->mNormalAttr.mPath;
-		ExpandEnv(path);
+		ExpandMacros(path);
 
 		return IconLoader::Get()->LoadIconFromPath(path);
 	}

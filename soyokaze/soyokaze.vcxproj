@@ -395,6 +395,14 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
+    <ClInclude Include="macros\afxw\AfxwMacro.h" />
+    <ClInclude Include="macros\afxw\AfxWWrapper.h" />
+    <ClInclude Include="macros\builtin\ClipboardMacro.h" />
+    <ClInclude Include="macros\builtin\EnvMacro.h" />
+    <ClInclude Include="macros\core\MacroBase.h" />
+    <ClInclude Include="macros\core\MacroIF.h" />
+    <ClInclude Include="macros\core\MacroRepository.h" />
+    <ClInclude Include="macros\core\Token.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
     <ClInclude Include="commands\core\CommandProviderIF.h" />
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h" />
@@ -442,7 +450,6 @@
     <ClInclude Include="commands\color\HSL.h" />
     <ClInclude Include="commands\common\AdhocCommandBase.h" />
     <ClInclude Include="commands\common\AdhocCommandProviderBase.h" />
-    <ClInclude Include="commands\common\AfxWWrapper.h" />
     <ClInclude Include="commands\common\Clipboard.h" />
     <ClInclude Include="commands\common\ExecuteHistory.h" />
     <ClInclude Include="commands\common\ExpandFunctions.h" />
@@ -632,6 +639,12 @@
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
+    <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
+    <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />
+    <ClCompile Include="macros\builtin\ClipboardMacro.cpp" />
+    <ClCompile Include="macros\builtin\EnvMacro.cpp" />
+    <ClCompile Include="macros\core\MacroBase.cpp" />
+    <ClCompile Include="macros\core\MacroRepository.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />
     <ClCompile Include="gui/BreadCrumbs.cpp" />
     <ClCompile Include="mainwindow/CandidateList.cpp" />
@@ -676,7 +689,6 @@
     <ClCompile Include="commands\color\HSL.cpp" />
     <ClCompile Include="commands\common\AdhocCommandBase.cpp" />
     <ClCompile Include="commands\common\AdhocCommandProviderBase.cpp" />
-    <ClCompile Include="commands\common\AfxWWrapper.cpp" />
     <ClCompile Include="commands\common\Clipboard.cpp" />
     <ClCompile Include="commands\common\ExecuteHistory.cpp" />
     <ClCompile Include="commands\common\ExpandFunctions.cpp" />

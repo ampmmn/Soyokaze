@@ -107,20 +107,21 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 
 	CString path = mParam.mPath;
 
-	ExpandEnv(path);
+	ExpandMacros(path);
 	ExpandArguments(path, args);
 
 	LocalPathResolver resolver;
 	resolver.Resolve(path);
 
 	CString commandLine = _T(" ") + mParam.mParameter;
+	ExpandMacros(commandLine);
 	ExpandArguments(commandLine, args);
-	ExpandClipboard(commandLine);
 
 	CString workDirStr;
 	if (mParam.mDir.GetLength() > 0) {
 		workDirStr = mParam.mDir;
-		ExpandAfxCurrentDir(workDirStr);
+		ExpandMacros(workDirStr);
+
 	}
 
 	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;
@@ -221,7 +222,7 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 {
 	CString argSub = mParam.mAfterCommandParam;
 	argSub.Replace(_T("$select"), dst);
-	ExpandAfxCurrentDir(argSub);
+	ExpandMacros(argSub);
 
 	CString parents;
 	param.GetNamedParam(_T("PARENTS"), &parents);
@@ -265,7 +266,7 @@ bool FilterCommand::PImpl::ExecutePostFilter(
 
 		attr.mPath = mParam.mAfterFilePath;
 		attr.mPath.Replace(_T("$select"), dst);
-		ExpandAfxCurrentDir(attr.mPath);
+		ExpandMacros(attr.mPath);
 
 		attr.mParam = argSub;
 
