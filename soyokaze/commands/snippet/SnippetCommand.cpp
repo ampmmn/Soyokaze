@@ -7,6 +7,7 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "macros/core/MacroRepository.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -75,8 +76,12 @@ CString SnippetCommand::GetTypeDisplayName()
 
 BOOL SnippetCommand::Execute(const Parameter& param)
 {
+	// 定型文をマクロ置換
+	CString text = in->mText;
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
+
 	// クリップボードにコピー
-	Clipboard::Copy(in->mText);
+	Clipboard::Copy(text);
 
 	return TRUE;
 }

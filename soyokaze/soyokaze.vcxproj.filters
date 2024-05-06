@@ -157,6 +157,9 @@
     <Filter Include="macros\afxw">
       <UniqueIdentifier>{d4738602-a6ea-48e0-84a3-6766be6d02b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="macros\random">
+      <UniqueIdentifier>{24590d00-f442-4db5-ada1-e415389d4a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -885,6 +888,9 @@
     <ClInclude Include="macros\afxw\AfxWWrapper.h">
       <Filter>macros\afxw</Filter>
     </ClInclude>
+    <ClInclude Include="macros\random\RandomMacro.h">
+      <Filter>macros\random</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1567,6 +1573,9 @@
     </ClCompile>
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp">
       <Filter>macros\afxw</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\random\RandomMacro.cpp">
+      <Filter>macros\random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

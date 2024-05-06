@@ -403,6 +403,7 @@
     <ClInclude Include="macros\core\MacroIF.h" />
     <ClInclude Include="macros\core\MacroRepository.h" />
     <ClInclude Include="macros\core\Token.h" />
+    <ClInclude Include="macros\random\RandomMacro.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
     <ClInclude Include="commands\core\CommandProviderIF.h" />
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h" />
@@ -645,6 +646,7 @@
     <ClCompile Include="macros\builtin\EnvMacro.cpp" />
     <ClCompile Include="macros\core\MacroBase.cpp" />
     <ClCompile Include="macros\core\MacroRepository.cpp" />
+    <ClCompile Include="macros\random\RandomMacro.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />
     <ClCompile Include="gui/BreadCrumbs.cpp" />
     <ClCompile Include="mainwindow/CandidateList.cpp" />

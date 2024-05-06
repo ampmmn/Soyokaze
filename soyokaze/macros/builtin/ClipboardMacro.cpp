@@ -14,7 +14,7 @@ REGISTER_LAUNCHERMACRO(ClipboardMacro)
 
 ClipboardMacro::ClipboardMacro()
 {
-	mName = _T("env");
+	mName = _T("clipboard");
 }
 
 ClipboardMacro::~ClipboardMacro()
