@@ -55,5 +55,6 @@ protected:
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveShortcut();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

@@ -7,6 +7,7 @@
 #include "utility/Accessibility.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
+#include "app/Manual.h"
 #include "resource.h"
 #include <vector>
 
@@ -59,6 +60,8 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_TEXT, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -177,6 +180,17 @@ void CommandEditDialog::OnButtonHotKey()
 
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+// マニュアル表示
+void CommandEditDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
 }
 
 }

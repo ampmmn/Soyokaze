@@ -7,6 +7,7 @@
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
+#include "app/Manual.h"
 #include "resource.h"
 #include <vector>
 
@@ -108,6 +109,8 @@ BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -418,6 +421,19 @@ bool FilterEditDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
 
 	return true;
 }
+
+// マニュアル表示
+void FilterEditDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
+
 
 } // end of namespace filter
 } // end of namespace commands

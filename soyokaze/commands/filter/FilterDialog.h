@@ -60,6 +60,7 @@ protected:
 	void OnCancel() override;
 	BOOL PreTranslateMessage(MSG* pMsg) override;
 
+	DECLARE_MESSAGE_MAP()
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnEditCommandChanged();
@@ -73,7 +74,6 @@ protected:
 	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	DECLARE_MESSAGE_MAP()
 };
 
 } // end of namespace filter

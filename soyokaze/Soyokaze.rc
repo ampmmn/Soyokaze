@@ -158,9 +158,11 @@ BEGIN
     EDITTEXT        IDC_EDIT_HOTKEY2,123,187,124,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,248,187,21,14
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
-    LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,130,205,32
+    LTEXT           "$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC,125,130,205,19
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,34,7,304,8
     LTEXT           "※.exe/.batのみ",IDC_STATIC,32,172,103,9
+    CONTROL         "<A HREF=""https://sample.com/sample"">その他利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
+                    "SysLink",WS_TABSTOP,125,149,147,15
 END
 
 IDD_KEYWORDMANAGER DIALOGEX 0, 0, 387, 284
@@ -443,9 +445,12 @@ BEGIN
     EDITTEXT        IDC_EDIT_PATH,125,82,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE1,279,82,21,17
     PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR1,302,82,21,17
-    PUSHBUTTON      "リンク先に置換(&E)",IDC_BUTTON_RESOLVESHORTCUT,279,101,64,17
     LTEXT           "パラメータ(&A):",IDC_STATIC_PARAM,34,102,65,8
     EDITTEXT        IDC_EDIT_PARAM,125,102,154,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "リンク先に置換(&E)",IDC_BUTTON_RESOLVESHORTCUT,279,101,64,17
+    LTEXT           "$1, $2, $3... : 1,2,3番目の括弧でキャプチャされた文字列に置換する",IDC_STATIC,126,121,220,13
+    CONTROL         "<A HREF=""https://sample.com/sample"">その他利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
+                    "SysLink",WS_TABSTOP,125,136,147,9
     LTEXT           "作業フォルダ(&W):",IDC_STATIC,34,152,65,8
     EDITTEXT        IDC_EDIT_DIR,125,152,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "お",IDC_BUTTON_BROWSEDIR3,281,151,21,17
@@ -455,7 +460,6 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,245,243,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,298,243,50,14
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
-    LTEXT           "$val : 環境変数valを展開する\n$1, $2, $3... : 1,2,3番目の括弧でキャプチャされた文字列に置換する",IDC_STATIC,122,121,223,24
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,144,8,204,8
     LTEXT           "※.exe/.batのみ",IDC_STATIC,34,202,103,9
 END
@@ -526,6 +530,8 @@ BEGIN
     PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE1,280,93,21,17
     LTEXT           "パラメータ(&A):",IDC_STATIC_PARAM,34,113,65,8
     EDITTEXT        IDC_EDIT_PARAM,125,113,154,14,ES_AUTOHSCROLL
+    CONTROL         "<A HREF=""https://sample.com/sample"">その他利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
+                    "SysLink",WS_TABSTOP,134,147,147,8
     LTEXT           "作業フォルダ(&W):",IDC_STATIC_WORKDIR,34,158,65,8
     EDITTEXT        IDC_EDIT_DIR,125,158,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "お",IDC_BUTTON_BROWSEDIR3,281,157,21,17
@@ -550,7 +556,7 @@ BEGIN
     LTEXT           "$select : 絞込みで選択されたテキスト",IDC_STATIC,126,268,172,11
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
     GROUPBOX        "後段の処理(絞込み後に実行するコマンド)",IDC_STATIC,18,195,313,90
-    LTEXT           "$val : 環境変数valを展開する\n$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC_PARAMHELP,134,128,172,25
+    LTEXT           "$* : 全ての実行時引数を展開する\n$1, $2, $3... : 1,2,3番目の引数を展開する",IDC_STATIC_PARAMHELP,134,128,172,18
     GROUPBOX        "前段の処理(絞込対象候補の生成)",IDC_STATIC,19,60,313,131
 END
 
@@ -589,7 +595,7 @@ BEGIN
     CTEXT           "__ (Guide) __",IDC_STATIC_GUIDE,26,12,92,9
 END
 
-IDD_SNIPPET_EDIT DIALOGEX 0, 0, 337, 230
+IDD_SNIPPET_EDIT DIALOGEX 0, 0, 337, 242
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "定型文の編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -600,11 +606,13 @@ BEGIN
     EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,215,14,ES_AUTOHSCROLL
     LTEXT           "テキスト(&T):",IDC_STATIC,13,66,65,8
     EDITTEXT        IDC_EDIT_TEXT,21,78,301,101,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
-    LTEXT           "ホットキー(K):",IDC_STATIC,20,188,43,8
-    EDITTEXT        IDC_EDIT_HOTKEY,111,185,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,185,21,14
-    DEFPUSHBUTTON   "OK",IDOK,226,207,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,207,50,14
+    CONTROL         "<A HREF=""https://sample.com/sample"">利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
+                    "SysLink",WS_TABSTOP,23,183,147,9
+    LTEXT           "ホットキー(K):",IDC_STATIC,20,200,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,111,197,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,197,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,219,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,219,50,14
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
@@ -1118,7 +1126,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 223
+        BOTTOMMARGIN, 235
     END
 
     IDD_ALIGNWINDOWEDIT, DIALOG
@@ -1271,6 +1279,7 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0
 END
 
@@ -1425,18 +1434,19 @@ BEGIN
     0, 0, 100, 0,
     100, 0, 0, 0,
     100, 0, 0, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    100, 0, 0, 0,
+    0, 0, 100, 0,
     100, 0, 0, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0
@@ -1490,6 +1500,7 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     100, 0, 0, 0,
@@ -1558,6 +1569,7 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 100,
+    0, 0, 0, 0,
     0, 100, 0, 0,
     0, 100, 0, 0,
     0, 100, 0, 0,

@@ -342,6 +342,7 @@
 #define IDC_CHECK_ENABLE                1154
 #define IDC_CHECK_USEHISTORY            1155
 #define IDC_EDIT_COUNT                  1156
+#define IDC_SYSLINK_MACRO               1158
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -350,7 +351,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        167
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1158
+#define _APS_NEXT_CONTROL_VALUE         1159
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

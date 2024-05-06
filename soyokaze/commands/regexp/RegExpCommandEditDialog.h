@@ -80,6 +80,7 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonResolveShortcut();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

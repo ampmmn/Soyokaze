@@ -8,6 +8,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
+#include "app/Manual.h"
 #include "resource.h"
 #include <vector>
 
@@ -107,6 +108,8 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -359,6 +362,18 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 
 	return 0;
 }
+
+// マニュアル表示
+void CommandEditDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
 
 }
 }
