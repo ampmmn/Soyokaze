@@ -28,5 +28,6 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnCbnTransparencyChanged();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

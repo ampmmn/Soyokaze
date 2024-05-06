@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ViewSettingDialog.h"
 #include "setting/Settings.h"
+#include "app/Manual.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -125,6 +126,8 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnCbnTransparencyChanged)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -191,4 +194,16 @@ bool ViewSettingDialog::GetHelpPageId(CString& id)
 	id = _T("InputWindowSetting");
 	return true;
 }
+
+// マニュアル表示
+void ViewSettingDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
 
