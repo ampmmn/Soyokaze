@@ -156,6 +156,9 @@ bool SubProcess::Run(
 		ExpandMacros(paramStr);
 	}
 
+	SPDLOG_DEBUG(_T("path:{} param:{}"), (LPCTSTR)path, (LPCTSTR)paramStr);
+
+
 	SHELLEXECUTEINFO si = {};
 	si.cbSize = sizeof(si);
 	si.nShow = in->mShowType;
