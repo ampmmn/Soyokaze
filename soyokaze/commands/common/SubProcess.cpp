@@ -137,8 +137,8 @@ bool SubProcess::Run(
 			paramStr.Replace(_T("$target"), path);
 
 			path = pref->GetFilerPath();
-			ExpandMacros(path);
 			ExpandArguments(path, args);
+			ExpandMacros(path);
 
 		}
 		else {
@@ -152,8 +152,8 @@ bool SubProcess::Run(
 	}
 	else { 
 		// 変数置換(パラメータ)
-		ExpandMacros(paramStr);
 		ExpandArguments(paramStr, args);
+		ExpandMacros(paramStr);
 	}
 
 	SHELLEXECUTEINFO si = {};
@@ -174,6 +174,7 @@ bool SubProcess::Run(
 
 	CString workDir = in->mWorkingDir;
 	if (workDir.IsEmpty() == FALSE) {
+		ExpandArguments(workDir, args);
 		ExpandMacros(workDir);
 		si.lpDirectory = workDir;
 	}

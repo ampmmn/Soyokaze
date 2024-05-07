@@ -239,10 +239,6 @@ ShellExecCommand::SelectAttribute(
 			attr = in->mNormalAttr;
 		}
 	}
-
-	// 変数を解決
-	ExpandMacros(attr.mPath);
-	ExpandMacros(attr.mParam);
 }
 
 HICON ShellExecCommand::GetIcon()

@@ -107,19 +107,20 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 
 	CString path = mParam.mPath;
 
-	ExpandMacros(path);
 	ExpandArguments(path, args);
+	ExpandMacros(path);
 
 	LocalPathResolver resolver;
 	resolver.Resolve(path);
 
 	CString commandLine = _T(" ") + mParam.mParameter;
-	ExpandMacros(commandLine);
 	ExpandArguments(commandLine, args);
+	ExpandMacros(commandLine);
 
 	CString workDirStr;
 	if (mParam.mDir.GetLength() > 0) {
 		workDirStr = mParam.mDir;
+		ExpandArguments(workDirStr, args);
 		ExpandMacros(workDirStr);
 
 	}
