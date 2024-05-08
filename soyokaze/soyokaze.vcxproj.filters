@@ -891,6 +891,9 @@
     <ClInclude Include="macros\random\RandomMacro.h">
       <Filter>macros\random</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\DisplayOffCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1576,6 +1579,9 @@
     </ClCompile>
     <ClCompile Include="macros\random\RandomMacro.cpp">
       <Filter>macros\random</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\DisplayOffCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

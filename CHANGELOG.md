@@ -10,6 +10,7 @@
   - 定型文コマンドのテキストとしてマクロを使えるようにした
 - 下記のマクロを実装
   - afxw/clipboard/env/random
+- システムコマンド`displayoff`(モニターの電源を切る)を追加
 
 ### Changed
 
