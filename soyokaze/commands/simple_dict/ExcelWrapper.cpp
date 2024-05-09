@@ -113,7 +113,7 @@ ExcelApplication::ExcelApplication(bool isGetObject) : in(new PImpl)
 
 ExcelApplication::~ExcelApplication()
 {
-	bool isExist = !(in->mApp);
+	bool isExist = (((IDispatch*)in->mApp) != nullptr);
 
 	// GetObjectで確保したインスタンスでない(→自分でCreateInstanceした)場合はQuitで終了する
 	if (isExist && in->mIsGetObject == false) {
