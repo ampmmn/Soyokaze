@@ -1,3 +1,4 @@
+// あ
 #include "pch.h"
 #include "BuiltinCommandFactory.h"
 #include <map>
@@ -38,6 +39,7 @@ void BuiltinCommandFactory::Register(LPCTSTR typeName, FactoryMethodType func)
 	in->mFactoryMap[typeName] = func;
 }
 
+// 登録済のタイプ名一覧を取得
 void BuiltinCommandFactory::EnumTypeName(std::vector<CString>& typeNames)
 {
 	typeNames.reserve(in->mFactoryMap.size());

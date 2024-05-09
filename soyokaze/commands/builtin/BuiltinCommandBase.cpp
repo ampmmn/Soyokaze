@@ -3,6 +3,7 @@
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "commands/core/CommandRepository.h"
 #include "commands/builtin/BuiltinEditDialog.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -92,7 +93,7 @@ int BuiltinCommandBase::EditDialog(const Parameter* param)
 		return -1;
 	}
 
-	BuiltinEditDialog dlg(GetName(), mCanDisable, mCanSetConfirm);
+	BuiltinEditDialog dlg(GetName(), GetDescription(), mCanDisable, mCanSetConfirm);
 	dlg.SetEnable(mIsEnable);
 	dlg.SetConfirm(mIsConfirmBeforeRun);
 
@@ -100,8 +101,13 @@ int BuiltinCommandBase::EditDialog(const Parameter* param)
 		return -1;
 	}
 
+	mName = dlg.GetName();
 	mIsEnable = dlg.GetEnable();
 	mIsConfirmBeforeRun = dlg.GetConfirm();
+
+	// 名前の変更を登録しなおす
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+	cmdRepo->ReregisterCommand(this);
 
 	return 0;
 }

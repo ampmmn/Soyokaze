@@ -77,6 +77,8 @@ void BuiltinCommandProvider::LoadCommands(
 
 	auto factory = BuiltinCommandFactory::GetInstance();
 
+	std::set<CString> existingTypes;
+
 	int entries = cmdFile->GetEntryCount();
 	for (int i = 0; i < entries; ++i) {
 
@@ -101,12 +103,20 @@ void BuiltinCommandProvider::LoadCommands(
 
 		// 生成したコマンドのインスタンスを登録
 		cmdRepo->RegisterCommand(command);
+
+		// システムコマンドとして登場した種別を記憶しておく
+		existingTypes.insert(typeStr);
 	}
 
 	// システムコマンドがなければ作成しておく
 	std::vector<CString> typeNames;
 	factory->EnumTypeName(typeNames);
 	for (auto& type : typeNames) {
+
+		if (existingTypes.count(type) != 0) {
+			// 存在するので作成無用
+			continue;
+		}
 
 		Command* cmd = nullptr;
 		if (factory->Create(type, nullptr, &cmd) == false) {

@@ -11,8 +11,10 @@ namespace builtin {
 class BuiltinEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	BuiltinEditDialog(const CString& name, bool canEditEnable, bool canEditConfirm);
+	BuiltinEditDialog(const CString& name, const CString& description, bool canEditEnable, bool canEditConfirm);
 	virtual ~BuiltinEditDialog();
+
+	CString GetName();
 
 	void SetEnable(bool isEnable);
 	bool GetEnable();
@@ -26,6 +28,7 @@ protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 protected:
 	struct PImpl;
