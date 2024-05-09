@@ -816,6 +816,10 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mDropTargetDialog.Register(this);
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
 
+	if (pref->IsHideOnStartup()) {
+		PostMessage(WM_APP+7, 0, 0);
+	}
+
 	spdlog::info(_T("MainWindow initialized."));
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
