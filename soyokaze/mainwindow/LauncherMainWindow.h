@@ -54,6 +54,7 @@ protected:
 	void SetDescription(const CString& msg);
 	void ClearContent();
 	void Complement();
+	void UpdateCandidates();
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();

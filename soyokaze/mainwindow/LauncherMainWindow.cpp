@@ -38,8 +38,12 @@
 
 using namespace launcherapp;
 
+// Ctrl-Altキーで半透明にする隠しコマンド用のタイマー
 static UINT TIMERID_KEYSTATE = 1;
+// ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 static UINT TIMERID_OPERATION = 2;
+// キー入力を遅延して絞り込むためのタイマー
+static UINT TIMERID_INPUTKEY = 3;
 
 struct LauncherMainWindow::PImpl
 {
@@ -398,7 +402,7 @@ LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
-	OnEditCommandChanged();
+	UpdateCandidates();
 
 	return 0;
 }
@@ -910,9 +914,9 @@ void LauncherMainWindow::Complement()
 
 	UpdateData(FALSE);
 
-	OnEditCommandChanged();
+	UpdateCandidates();
 
-	// 直前のOnEditCommandChangedの結果、選択中のコマンドが変化するため、取り直す
+	// 直前のUpdateCandidatesの結果、選択中のコマンドが変化するため、取り直す
 	cmd = GetCurrentCommand();
 	if (cmd) {
 		// コマンド名 + " " の位置にキャレットを設定する
@@ -934,12 +938,7 @@ LauncherMainWindow::GetCurrentCommand()
  */
 void LauncherMainWindow::OnEditCommandChanged()
 {
-	//DWORD curCaretPos = in->mKeywordEdit.GetSel();
-
 	UpdateData();
-
-	// 
-	AppSound::Get()->PlayInputSound();
 
 	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
 	// (Editコントロールの通常の挙動)
@@ -949,21 +948,29 @@ void LauncherMainWindow::OnEditCommandChanged()
 		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
 		in->mCommandStr.Replace(bsStr, _T(""));
 		in->mKeywordEdit.Clear();
-	}
-
-	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mCommandStr.IsEmpty()) {
-		in->mCandidates.Clear();
-		in->mGuideStr.Empty();
-		CString strMisMatch = AppPreference::Get()->GetDefaultComment();
-		launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(strMisMatch);
-		SetDescription(strMisMatch);
-		in->mIconLabel.DrawDefaultIcon();
-		in->mCandidateListBox.Invalidate(TRUE);
+		ClearContent();
 		return;
 	}
 
-	//
+	// タイマーを挟むことにより、高速にタイプしているときは1文字ごとのリスト更新(絞り込み)を省略する
+	KillTimer(TIMERID_INPUTKEY);
+
+	// 最初の出だし(1文字目)は短く、以降は長めに間隔をとってみる
+	int interval = in->mCommandStr.GetLength() < 2 ? 10 : 120;
+	SetTimer(TIMERID_INPUTKEY, interval, nullptr);
+
+}
+
+void LauncherMainWindow::UpdateCandidates()
+{
+	AppSound::Get()->PlayInputSound();
+
+	// 入力テキストが空文字列の場合はデフォルト表示に戻す
+	if (in->mCommandStr.IsEmpty()) {
+		ClearContent();
+		return;
+	}
+
 	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
 
 	// キーワードによる候補の列挙
@@ -991,20 +998,6 @@ void LauncherMainWindow::OnEditCommandChanged()
 
 		SetDescription(descriptionStr);
 	}
-
-	// 補完
-//	bool isCharAdded = (curCaretPos & 0xFFFF) > (in->mLastCaretPos & 0xFFFF);
-//	if (isCharAdded) {
-//
-//		int start, end;
-//		in->mKeywordEdit.GetSel(start, end);
-//		if (commandParam.ComplementCommand(pCmd->GetName(), in->mCommandStr)) {
-//			// 補完が行われたらDDXにも反映し、入力欄の選択範囲も変える
-//			UpdateData(FALSE);
-//			in->mKeywordEdit.SetSel(end,-1);
-//		}
-//	}
-//	in->mLastCaretPos = in->mKeywordEdit.GetSel();
 
 	in->mCandidateListBox.Invalidate(TRUE);
 }
@@ -1413,8 +1406,12 @@ void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 	}
 	else if (timerId == TIMERID_OPERATION) {
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-				listener->OnTimer();
+			listener->OnTimer();
 		});
+	}
+	else if (timerId == TIMERID_INPUTKEY) {
+		UpdateCandidates();
+		KillTimer(TIMERID_INPUTKEY);
 	}
 }
 
