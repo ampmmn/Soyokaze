@@ -475,6 +475,8 @@ CommandRepository::Query(
 
 	CSingleLock sl(&in->mCS, TRUE);
 
+	spdlog::stopwatch swAll;
+
 	// 入力文字列をを設定
 	in->mPattern->SetParam(param);
 
@@ -517,6 +519,8 @@ CommandRepository::Query(
 		item.mCommand->AddRef();
 		items.push_back(item.mCommand.get());
 	}
+
+	spdlog::debug("Query took about {:.6f} seconds.", swAll);
 }
 
 launcherapp::core::Command*

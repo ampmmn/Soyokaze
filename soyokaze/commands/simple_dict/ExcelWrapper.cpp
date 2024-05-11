@@ -54,6 +54,17 @@ static bool GetExcelApplication(DispWrapper& excelApp)
 			spdlog::error(_T("Excel is not running."));
 			return false;
 		}
+
+		// デバッグ用にPIDを出力しておく
+		HWND hwndApp = (HWND)excelApp.GetPropertyInt64(L"Hwnd");
+		if (IsWindow(hwndApp)) {
+			DWORD pid;
+			GetWindowThreadProcessId(hwndApp, &pid);
+			spdlog::debug(_T("Excel PID is {}"), pid);
+		}
+		else {
+			spdlog::debug(_T("Excel HWND is invalid {}"), (int64_t)hwndApp);
+		}
 		return true;
 }
 
