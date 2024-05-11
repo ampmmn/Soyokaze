@@ -43,7 +43,6 @@
 #define IDS_BUILTINCOMMAND              133
 #define IDS_DESCRIPTION_BUILTINCOMMAND  134
 #define IDS_GROUPCOMMAND                135
-#define IDI_ICON2                       136
 #define IDS_ERR_NODELETECOMMAND         136
 #define IDS_DESCRIPTION_GROUPCOMMAND    137
 #define IDS_ISWAIT                      138

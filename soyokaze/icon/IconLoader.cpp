@@ -431,7 +431,7 @@ HICON IconLoader::LoadKeywordManagerIcon()
 
 HICON IconLoader::LoadDefaultIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 HICON IconLoader::LoadUserDirIcon()
@@ -446,12 +446,12 @@ HICON IconLoader::LoadMainDirIcon()
 
 HICON IconLoader::LoadVersionIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 HICON IconLoader::LoadTasktrayIcon()
 {
-	return AfxGetApp()->LoadIcon(IDI_ICON2);
+	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 HICON IconLoader::LoadUnknownIcon()
