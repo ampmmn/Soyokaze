@@ -8,6 +8,7 @@
 #endif
 
 namespace launcherapp {
+namespace commands {
 namespace core {
 
 struct CommandRanking::PImpl
@@ -16,7 +17,7 @@ struct CommandRanking::PImpl
 	{
 		TCHAR path[MAX_PATH_NTFS];
 		CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-		PathAppend(path, _T("usage.dat"));
+		PathAppend(path, _T("priority.dat"));
 
 		mFilePath = path;
 
@@ -30,6 +31,8 @@ struct CommandRanking::PImpl
 	CString mFilePath;
 
 	bool mIsLoaded;
+
+	bool mIsTemporary = false;
 };
 
 CommandRanking::CommandRanking() : in(std::make_unique<PImpl>())
@@ -39,6 +42,12 @@ CommandRanking::CommandRanking() : in(std::make_unique<PImpl>())
 
 CommandRanking::~CommandRanking()
 {
+}
+
+CommandRanking* CommandRanking::GetInstance()
+{
+	static CommandRanking inst;
+	return &inst;
 }
 
 bool CommandRanking::Load()
@@ -138,6 +147,11 @@ void CommandRanking::Add(const CString& name, int num)
 	in->mRank[name] += num;
 }
 
+void CommandRanking::Set(const CString& name, int num)
+{
+	in->mRank[name] = num;
+}
+
 // 順位取得
 int CommandRanking::Get(const CString& name) const
 {
@@ -157,6 +171,37 @@ bool CommandRanking::Delete(const CString& name)
 	return true;
 }
 
+// すべてリセット
+void CommandRanking::ResetAll()
+{
+	in->mRank.clear();
+}
+
+CommandRanking* CommandRanking::CloneTemporarily()
+{
+	auto newObj = new CommandRanking();
+	newObj->in->mRank = in->mRank;
+	newObj->in->mFilePath = in->mFilePath;
+	newObj->in->mIsLoaded = in->mIsLoaded;
+	newObj->in->mIsTemporary = true;
+
+	return newObj;
+}
+void CommandRanking::CopyTo(CommandRanking* dst)
+{
+	dst->in->mRank = in->mRank;
+	dst->in->mFilePath = in->mFilePath;
+	dst->in->mIsLoaded = in->mIsLoaded;
+}
+
+void CommandRanking::Release()
+{
+	if (in->mIsTemporary) {
+		delete this;
+	}
+}
+
+}
 }
 }
 

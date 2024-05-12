@@ -549,6 +549,7 @@
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
     <ClInclude Include="setting/AppPreference.h" />
+    <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
     <ClInclude Include="settingwindow\AppSettingPageOther.h" />
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
     <ClInclude Include="settingwindow\BasicSettingDialog.h" />
@@ -793,6 +794,7 @@
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
@@ -885,10 +887,7 @@
     <None Include="res\Soyokaze.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Soyokaze.ico" />
-    <Image Include="res\gear.ico" />
     <Image Include="res\icon.ico" />
-    <Image Include="res\icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

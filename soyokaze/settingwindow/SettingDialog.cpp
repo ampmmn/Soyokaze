@@ -14,6 +14,7 @@
 #include "settingwindow/ExtensionSettingDialog.h"
 #include "settingwindow/ShortcutSettingPage.h"
 #include "settingwindow/AppSettingPageOther.h"
+#include "settingwindow/AppSettingPageCommandPriority.h"
 #include "utility/TopMostMask.h"
 #include "resource.h"
 #include <algorithm>
@@ -99,6 +100,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 	auto hExecItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExecSettingDialog(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPathPage(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new ExcludePathPage(this)), param);
+	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPageCommandPriority(this)), param);
 
 	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
 

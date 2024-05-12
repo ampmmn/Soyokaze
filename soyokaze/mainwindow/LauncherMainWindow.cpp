@@ -940,6 +940,9 @@ void LauncherMainWindow::OnEditCommandChanged()
 {
 	UpdateData();
 
+	// 音を鳴らす
+	AppSound::Get()->PlayInputSound();
+
 	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
 	// (Editコントロールの通常の挙動)
 	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
@@ -961,10 +964,9 @@ void LauncherMainWindow::OnEditCommandChanged()
 
 }
 
+// 候補リストを更新する
 void LauncherMainWindow::UpdateCandidates()
 {
-	AppSound::Get()->PlayInputSound();
-
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
 		ClearContent();
@@ -1002,48 +1004,63 @@ void LauncherMainWindow::UpdateCandidates()
 	in->mCandidateListBox.Invalidate(TRUE);
 }
 
+/**
+ 	コマンドを実行する
+ 	@param[in] cmd 実行対象のコマンドオブジェクト
+*/
+void LauncherMainWindow::RunCommand(
+	launcherapp::core::Command* cmd
+)
+{
+	// 実行時の音声を再生する
+	AppSound::Get()->PlayExecuteSound();
+
+	CString str = in->mCommandStr;
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	std::thread th([cmd, str]() {
+
+		launcherapp::core::CommandParameter commandParam(str);
+
+		// Ctrlキーが押されているかを設定
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+			commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+			commandParam.SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+			commandParam.SetNamedParamBool(_T("WinKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+			commandParam.SetNamedParamBool(_T("AltKeyPressed"), true);
+		}
+
+		if (cmd->Execute(commandParam) == FALSE) {
+			auto errMsg = cmd->GetErrorString();
+			if (errMsg.IsEmpty() == FALSE) {
+				auto app = (LauncherApp*)AfxGetApp();
+				app->PopupMessage(errMsg);
+			}
+		}
+
+		// コマンドの参照カウントを下げる
+		cmd->Release();
+	});
+	th.detach();
+}
+
+
 void LauncherMainWindow::OnOK()
 {
 	UpdateData();
 
-	// コマンドを実行する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
-
-		// 再生
-		AppSound::Get()->PlayExecuteSound();
-
-		// 優先度を上げる
-		GetCommandRepository()->AddRank(cmd, 10);
-
-		CString str = in->mCommandStr;
-
-		cmd->AddRef();
-
-		std::thread th([cmd, str]() {
-
-			launcherapp::core::CommandParameter commandParam(str);
-
-			// Ctrlキーが押されているかを設定
-			if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-				commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
-			}
-			if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-				commandParam.SetNamedParamBool(_T("ShiftKeyPressed"), true);
-			}
-			if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-				commandParam.SetNamedParamBool(_T("WinKeyPressed"), true);
-			}
-			if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-				commandParam.SetNamedParamBool(_T("AltKeyPressed"), true);
-			}
-
-			if (cmd->Execute(commandParam) == FALSE) {
-				AfxMessageBox(cmd->GetErrorString());
-			}
-			cmd->Release();
-		});
-		th.detach();
+		// コマンドを実行する
+		RunCommand(cmd);
 	}
 	else {
 		// 空文字状態でEnterキーから実行したときはキーワードマネージャを表示
@@ -1051,8 +1068,7 @@ void LauncherMainWindow::OnOK()
 			ExecuteCommand(_T("manager"));
 		}
 	}
-
-	// 実行したら、入力文字列を消す
+	// 実行したら、入力文字列を消して、入力ウインドウも非表示にする
 	ClearContent();
 	ShowWindow(SW_HIDE);
 }

@@ -3,6 +3,7 @@
 #include <memory>
 
 namespace launcherapp {
+namespace commands {
 namespace core {
 
 /**
@@ -11,9 +12,12 @@ namespace core {
  */
 class CommandRanking
 {
-public:
+private:
 	CommandRanking();
 	~CommandRanking();
+
+public:
+	static CommandRanking* GetInstance();
 
 	// 読み込み
 	bool Load();
@@ -22,14 +26,23 @@ public:
 
 	// 順位変更
 	void Add(const CString& name, int num);
+	//
+	void Set(const CString& name, int num);
 	// 順位取得
 	int Get(const CString& name) const;
 
 	// 削除
 	bool Delete(const CString& name);
 
+	// すべてリセット
+	void ResetAll();
+
 	// ファイルパス設定
 	void SetFilePath(const CString& path);
+
+	CommandRanking* CloneTemporarily();
+	void CopyTo(CommandRanking* dst);
+	void Release();
 
 protected:
 	struct PImpl;
@@ -38,6 +51,7 @@ protected:
 
 };
 
+}
 }
 }
 

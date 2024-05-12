@@ -55,6 +55,7 @@ protected:
 	void ClearContent();
 	void Complement();
 	void UpdateCandidates();
+	void RunCommand(launcherapp::core::Command* cmd);
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();

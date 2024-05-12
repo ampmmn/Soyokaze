@@ -128,7 +128,9 @@
 #define IDS_WIDTH                       180
 #define IDD_APPSETTING_INPUTHISTORY     180
 #define IDS_HEIGHT                      181
+#define IDD_APPSETTING_COMMANDPRIORITY  181
 #define IDS_FILTER_ICONIMAGEFILES       182
+#define IDD_PRIORITY                    182
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -342,15 +344,16 @@
 #define IDC_CHECK_USEHISTORY            1155
 #define IDC_EDIT_COUNT                  1156
 #define IDC_SYSLINK_MACRO               1158
+#define IDC_EDIT_PRIORITY               1159
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        167
+#define _APS_NEXT_RESOURCE_VALUE        184
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1159
+#define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

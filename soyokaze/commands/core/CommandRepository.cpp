@@ -25,6 +25,7 @@
 #endif
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandRanking = launcherapp::commands::core::CommandRanking;
 
 namespace launcherapp {
 namespace core {
@@ -91,9 +92,6 @@ struct CommandRepository::PImpl
 	// キーワード比較用のクラス
 	std::unique_ptr<Pattern> mPattern;
 	
-	// 優先順位
-	CommandRanking mRanking;
-
 	// 編集中フラグ
 	bool mIsNewDialog = false;
 	bool mIsEditDialog = false;
@@ -168,7 +166,7 @@ int CommandRepository::UnregisterCommand(Command* command)
 		listener->OnDeleteCommand(command);
 	}
 
-	in->mRanking.Delete(command->GetName());
+	CommandRanking::GetInstance()->Delete(command->GetName());
 	in->mCommands.Unregister(command);
 	return 0;
 }
@@ -179,13 +177,6 @@ int CommandRepository::ReregisterCommand(Command* command)
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Reregister(command);
 	return 0;
-}
-
-// 順位の更新
-void CommandRepository::AddRank(Command* command, int number)
-{
-	CSingleLock sl(&in->mCS, TRUE);
-	in->mRanking.Add(command->GetName(), number);
 }
 
 CommandRepository* CommandRepository::GetInstance()
@@ -217,7 +208,7 @@ BOOL CommandRepository::Load()
 		provider->LoadCommands(&commandFile);
 	}
 
-	in->mRanking.Load();
+	CommandRanking::GetInstance()->Load();
 
 	return TRUE;
 }
@@ -495,7 +486,7 @@ CommandRepository::Query(
 	}
 
 	// 一致レベルに基づきソート
-	const CommandRanking* rankPtr = &in->mRanking;
+	const CommandRanking* rankPtr = CommandRanking::GetInstance();
 
 	sw.reset();
 
@@ -507,8 +498,12 @@ CommandRepository::Query(
 			// 一致レベルが同じ場合は優先順位による判断を行う
 			auto& cmdL = l.mCommand;
 			auto& cmdR = r.mCommand;
-			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(cmdL->GetName()) : 0;
-			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(cmdR->GetName()) : 0;
+
+			auto nameL = cmdL->GetName();
+			auto nameR = cmdR->GetName();
+
+			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(nameL) : 0;
+			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(nameR) : 0;
 			return priorityR < priorityL;
 	});
 
@@ -616,7 +611,7 @@ void CommandRepository::OnAppPreferenceUpdated()
 void CommandRepository::OnAppExit()
 {
 	// 優先度情報をファイルに保存する
-	in->mRanking.Save();
+	CommandRanking::GetInstance()->Save();
 
 	for (auto& provider : in->mProviders) {
 		provider->Release();

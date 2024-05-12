@@ -191,7 +191,7 @@ int SimpleDictCommand::EditDialog(const Parameter*)
  */
 bool SimpleDictCommand::IsPriorityRankEnabled()
 {
-	return false;
+	return true;
 }
 
 launcherapp::core::Command*

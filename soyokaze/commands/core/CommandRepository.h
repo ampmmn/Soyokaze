@@ -36,9 +36,6 @@ public:
 	// 名前変更による登録しなおし
 	int ReregisterCommand(Command* command);
 
-	// 優先度の更新
-	void AddRank(Command* command, int number);
-
 	// コマンドデータのロード
 	BOOL Load();
 
