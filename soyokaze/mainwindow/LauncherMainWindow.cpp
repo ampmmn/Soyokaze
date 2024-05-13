@@ -107,6 +107,8 @@ struct LauncherMainWindow::PImpl
 	// 稼働状況を監視する(長時間連続稼働を警告する目的)
 	OperationWatcher mOpWatcher;
 
+	//
+	UINT_PTR mInputTimerId = 0;
 
 };
 
@@ -895,6 +897,12 @@ void LauncherMainWindow::ClearContent()
 
 void LauncherMainWindow::Complement()
 {
+	if (in->mInputTimerId != 0) {
+		UpdateCandidates();
+		KillTimer(TIMERID_INPUTKEY);
+		in->mInputTimerId = 0;
+	}
+
 	auto cmd = GetCurrentCommand();
 	if (cmd == nullptr) {
 		spdlog::warn(_T("Comlement: bommand is null"));
@@ -955,12 +963,13 @@ void LauncherMainWindow::OnEditCommandChanged()
 		return;
 	}
 
-	// タイマーを挟むことにより、高速にタイプしているときは1文字ごとのリスト更新(絞り込み)を省略する
+	// 高速にタイプしているときは、タイマーを挟むことにより、1文字ごとのリスト更新(絞り込み)を省略する
 	KillTimer(TIMERID_INPUTKEY);
+	in->mInputTimerId = 0;
 
 	// 最初の出だし(1文字目)は短く、以降は長めに間隔をとってみる
 	int interval = in->mCommandStr.GetLength() < 2 ? 10 : 120;
-	SetTimer(TIMERID_INPUTKEY, interval, nullptr);
+	in->mInputTimerId = SetTimer(TIMERID_INPUTKEY, interval, nullptr);
 
 }
 
@@ -1428,6 +1437,7 @@ void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 	else if (timerId == TIMERID_INPUTKEY) {
 		UpdateCandidates();
 		KillTimer(TIMERID_INPUTKEY);
+		in->mInputTimerId = 0;
 	}
 }
 
