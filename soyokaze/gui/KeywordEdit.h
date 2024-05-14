@@ -28,5 +28,6 @@ protected:
 	afx_msg void OnSetFocus(CWnd* oldWindow);
 	afx_msg void OnKillFocus(CWnd* newWindow);
 	afx_msg void OnDestroy();
+	afx_msg void OnChar(UINT,UINT,UINT);
 	DECLARE_MESSAGE_MAP()
 };

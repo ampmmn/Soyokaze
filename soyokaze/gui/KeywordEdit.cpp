@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_SETFOCUS()
 	ON_WM_KILLFOCUS()
 	ON_WM_DESTROY()
+	ON_WM_CHAR()
 END_MESSAGE_MAP()
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -189,3 +190,11 @@ void KeywordEdit::OnDestroy()
 	__super::OnDestroy();
 }
 
+void KeywordEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_TAB) {
+		// Tabキーを押したときにBeep音が鳴るのを防ぐ目的
+		return;
+	}
+	__super::OnChar(nChar, nRepCnt, nFlags);
+}
