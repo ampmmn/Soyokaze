@@ -1066,6 +1066,12 @@ void LauncherMainWindow::OnOK()
 {
 	UpdateData();
 
+	if (in->mInputTimerId != 0) {
+		UpdateCandidates();
+		KillTimer(TIMERID_INPUTKEY);
+		in->mInputTimerId = 0;
+	}
+
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 		// コマンドを実行する
