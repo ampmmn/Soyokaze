@@ -14,6 +14,8 @@
 #include "utility/WindowPosition.h"
 #include "SharedHwnd.h"
 #include "hotkey/AppHotKey.h"
+#include "hotkey/CommandHotKeyManager.h"
+#include "hotkey/KeyInputWatch.h"
 #include "mainwindow/WindowTransparency.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
@@ -21,7 +23,6 @@
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "hotkey/CommandHotKeyManager.h"
 #include "mainwindow/MainWindowHotKey.h"
 #include "mainwindow/OperationWatcher.h"
 #include "macros/core/MacroRepository.h"
@@ -39,11 +40,11 @@
 using namespace launcherapp;
 
 // Ctrl-Altキーで半透明にする隠しコマンド用のタイマー
-static UINT TIMERID_KEYSTATE = 1;
+constexpr UINT TIMERID_KEYSTATE = 1;
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
-static UINT TIMERID_OPERATION = 2;
+constexpr UINT TIMERID_OPERATION = 2;
 // キー入力を遅延して絞り込むためのタイマー
-static UINT TIMERID_INPUTKEY = 3;
+constexpr UINT TIMERID_INPUTKEY = 3;
 
 struct LauncherMainWindow::PImpl
 {
@@ -79,6 +80,9 @@ struct LauncherMainWindow::PImpl
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
 	//DWORD mLastCaretPos;
+
+	// キー入力監視(修飾キー入力によるホットキー機能用)
+	KeyInputWatch mKeyInputWatch;
 
 	// 外部からのコマンド受付用エディットボックス
 	CmdReceiveEdit mCmdReceiveEdit;
@@ -734,6 +738,8 @@ BOOL LauncherMainWindow::OnInitDialog()
 	SPDLOG_DEBUG(_T("start"));
 
 	CDialogEx::OnInitDialog();
+
+	in->mKeyInputWatch.Create();
 
 	auto pref = AppPreference::Get();
 

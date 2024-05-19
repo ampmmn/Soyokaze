@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tchar.h>
+
 class SharedHwnd
 {
 public:

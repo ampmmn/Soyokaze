@@ -897,6 +897,12 @@
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
+    <ClInclude Include="hotkey\KeyInputWatch.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
+    <ClInclude Include="hotkey\AppHotKeyDialog.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1588,6 +1594,12 @@
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp">
       <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\KeyInputWatch.cpp">
+      <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\AppHotKeyDialog.cpp">
+      <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

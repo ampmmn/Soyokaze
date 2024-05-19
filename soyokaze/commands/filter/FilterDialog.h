@@ -13,7 +13,6 @@
 
 namespace launcherapp {
 namespace core {
-	class AppHotKey;
 	class Command;
 	class CommandHotKeyManager;
 	class CommandRepository;
@@ -34,7 +33,6 @@ namespace filter {
 class FilterDialog : public CDialogEx
 {
 	using CommandRepository = launcherapp::core::CommandRepository;
-	using AppHotKey = launcherapp::core::AppHotKey;
 
 // コンストラクション
 public:

@@ -84,7 +84,7 @@ BOOL LauncherApp::InitFirstInstance()
 	SPDLOG_DEBUG(_T("start"));
 
 	// 多重起動検知のための名前付きミューテックスを作っておく
-	m_hMutexRun = CreateMutex(NULL, FALSE, PROCESS_MUTEX_NAME);
+	m_hMutexRun = CreateMutex(NULL, TRUE, PROCESS_MUTEX_NAME);
 	if (m_hMutexRun == NULL) {
 		DWORD lastErr = GetLastError(); 
 		if (lastErr == ERROR_ACCESS_DENIED) {

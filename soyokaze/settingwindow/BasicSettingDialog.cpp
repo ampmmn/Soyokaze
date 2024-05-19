@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "BasicSettingDialog.h"
+#include "hotkey/AppHotKeyDialog.h"
 #include "setting/Settings.h"
 #include "resource.h"
 
@@ -40,6 +41,10 @@ void BasicSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
 	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
+	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), mIsModifierHotKey);
+	settingsPtr->Set(_T("HotKey:FirstModifierVirtualKeyCode"), (int)mModifierFirstVK);
+	settingsPtr->Set(_T("HotKey:SecondModifierVirtualKeyCode"),(int) mModifierSecondVK);
+
 	settingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
 	settingsPtr->Set(_T("Soyokaze:IsIKeepTextWhenDlgHide"), (bool)mIsKeepTextWhenDlgHide);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
@@ -74,7 +79,12 @@ BOOL BasicSettingDialog::OnInitDialog()
 
 bool BasicSettingDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
+	if (mIsModifierHotKey == false) {
+		mHotKey = mHotKeyAttr.ToString();
+	}
+	else {
+		mHotKey = AppHotKeyDialog::ToString(mModifierFirstVK, mModifierSecondVK);
+	}
 
 	return true;
 }
@@ -83,13 +93,19 @@ void BasicSettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	HotKeyDialog dlg(mHotKeyAttr, this);
+	AppHotKeyDialog dlg(mHotKeyAttr, this);
 	dlg.SetTargetName(_T("ランチャー呼び出しキー"));
+	dlg.SetModifierHotKeyType(mIsModifierHotKey);
+	dlg.SetModifierFirstVK(mModifierFirstVK);
+	dlg.SetModifierSecondVK(mModifierSecondVK);
+
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
-
 	dlg.GetAttribute(mHotKeyAttr);
+	mIsModifierHotKey = dlg.IsModifierHotKey();
+	mModifierFirstVK = dlg.GetModifierFirstVK();
+	mModifierSecondVK = dlg.GetModifierSecondVK();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -102,6 +118,10 @@ void BasicSettingDialog::OnEnterSettings()
 	mHotKeyAttr = HOTKEY_ATTR(settingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
 		                        settingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
 	mHotKey = mHotKeyAttr.ToString();
+
+	mIsModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
+	mModifierFirstVK = settingsPtr->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
+	mModifierSecondVK = settingsPtr->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
 
 	mIsShowToggle = settingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
 	mIsKeepTextWhenDlgHide = settingsPtr->Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);

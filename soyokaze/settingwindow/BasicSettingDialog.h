@@ -1,8 +1,7 @@
 #pragma once
 
 #include "gui/SettingPage.h"
-#include "hotkey/HotKeyDialog.h"
-
+#include "hotkey/HotKeyAttribute.h"
 // 
 class BasicSettingDialog : public SettingPage
 {
@@ -13,6 +12,11 @@ public:
 	// ランチャー呼び出しキー（表示用)
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
+
+	//
+	bool mIsModifierHotKey;
+	UINT mModifierFirstVK;
+	UINT mModifierSecondVK;
 
 	// 表示中にホットキーを押したら隠れる
 	BOOL mIsShowToggle;

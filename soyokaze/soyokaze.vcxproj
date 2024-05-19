@@ -396,6 +396,8 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
+    <ClInclude Include="hotkey\AppHotKeyDialog.h" />
+    <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
     <ClInclude Include="macros\builtin\ClipboardMacro.h" />
@@ -643,6 +645,8 @@
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
+    <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
+    <ClCompile Include="hotkey\KeyInputWatch.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />
     <ClCompile Include="macros\builtin\ClipboardMacro.cpp" />

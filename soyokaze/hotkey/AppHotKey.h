@@ -30,13 +30,12 @@ public:
 	CString ToString() const;
 
 private:
-	static bool LoadKeyConfig(UINT& modifiers, UINT& vk);
-
 	void OnAppFirstBoot() override;
 	void OnAppPreferenceUpdated() override;
 	void OnAppExit() override;
 protected:
-	std::unique_ptr<GlobalHotKey> mHotKey;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
 }

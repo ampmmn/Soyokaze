@@ -40,6 +40,10 @@ public:
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
 
+	bool IsEnableModifierHotKey();
+	UINT GetFirstModifierVirtualKeyCode();
+	UINT GetSecondModifierVirtualKeyCode();
+
 	// 入力履歴機能を使用するか?
 	bool IsUseInputHistory();
 	// 履歴件数の上限を取得

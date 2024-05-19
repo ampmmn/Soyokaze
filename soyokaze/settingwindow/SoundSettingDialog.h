@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gui/SettingPage.h"
-#include "hotkey/HotKeyDialog.h"
 
 // 
 class SoundSettingDialog : public SettingPage

@@ -131,6 +131,7 @@
 #define IDD_APPSETTING_COMMANDPRIORITY  181
 #define IDS_FILTER_ICONIMAGEFILES       182
 #define IDD_PRIORITY                    182
+#define IDD_LAUNCHER_HOTKEY             183
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -240,7 +241,10 @@
 #define IDC_CHECK_IGNOREUNC             1071
 #define IDC_COMBO_VK                    1072
 #define IDC_CHECK_ENABLEMIGEMO          1073
+#define IDC_COMBO_VKMODFIRST            1073
 #define IDC_SYSLINK1                    1074
+#define IDC_COMBO_VKMODFIRST2           1074
+#define IDC_COMBO_VKMODSECOND           1074
 #define IDC_BUTTON_SHORTCUT             1075
 #define IDC_CHECK_KEEPTEXTWHENDLGHIDE   1076
 #define IDC_SYSLINK3                    1077
@@ -345,6 +349,8 @@
 #define IDC_EDIT_COUNT                  1156
 #define IDC_SYSLINK_MACRO               1158
 #define IDC_EDIT_PRIORITY               1159
+#define IDC_RADIO_HOTKEY                1160
+#define IDC_RADIO_HOTKEY2               1161
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -353,7 +359,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        184
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1160
+#define _APS_NEXT_CONTROL_VALUE         1161
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

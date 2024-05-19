@@ -11,7 +11,6 @@
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
 #include "SharedHwnd.h"
-#include "hotkey/AppHotKey.h"
 #include "setting/AppPreference.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "matcher/PartialMatchPattern.h"

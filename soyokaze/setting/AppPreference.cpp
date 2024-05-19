@@ -404,6 +404,21 @@ UINT AppPreference::GetVirtualKeyCode()
 	return in->mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
+bool AppPreference::IsEnableModifierHotKey()
+{
+	return in->mSettings.Get(_T("HotKey:IsEnableModifierHotKey"), false);
+}
+
+UINT AppPreference::GetFirstModifierVirtualKeyCode()
+{
+	return in->mSettings.Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
+}
+
+UINT AppPreference::GetSecondModifierVirtualKeyCode()
+{
+	return in->mSettings.Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
+}
+
 // 入力履歴機能を使用するか?
 bool AppPreference::IsUseInputHistory()
 {
