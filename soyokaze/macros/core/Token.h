@@ -67,7 +67,7 @@ public:
 
 	void SkipName(CString& name)
  	{
-		// $BL>A0$H$7$F;H$($kJ8;z(B
+		// 名前として使える文字
 		static TCHAR NAMECHARS[] = _T("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
 		static size_t len = sizeof(NAMECHARS) / sizeof(NAMECHARS[0]);
 
@@ -85,7 +85,7 @@ public:
 		name = tmpName;
 	}
 
-	// c$B$,8=$l$k$^$G0LCV$r?J$a$k(B
+	// cが現れるまで位置を進める
 	void SkipUntil(TCHAR c)
 	{
 		while (AtEnd() == false && Get() != c) {
@@ -93,7 +93,7 @@ public:
 		}
 	}
 
-	// $B8=:_0LCV$K$"$kJ8;zNs$N<!$N0LCV$K?J$a$k!#Ht$P$7$?0LCV$K$"$kJ8;zNs$r(Bstr$B$KF~$l$FJV$9(B
+	// 現在位置にある文字列の次の位置に進める。飛ばした位置にある文字列をstrに入れて返す
 	void SkipString(CString& str)
 	{
 		CString tmpStr;
@@ -102,8 +102,18 @@ public:
 				break;
 			}
 			if (Get() == _T('\\')) {
-				// $B%(%9%1!<%W%7!<%1%s%9(B
+				// エスケープシーケンス
 				Next();
+
+				if (AtEnd()) {
+					break;
+				}
+				if (Get() != _T('}')) {
+					tmpStr += _T('\\');
+					tmpStr += Get();
+					Next();
+					continue;
+				}
 			}
 			tmpStr += Get();
 			Next();

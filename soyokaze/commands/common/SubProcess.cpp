@@ -179,6 +179,7 @@ bool SubProcess::Run(
 	if (workDir.IsEmpty() == FALSE) {
 		ExpandArguments(workDir, args);
 		ExpandMacros(workDir);
+		StripDoubleQuate(workDir);
 		si.lpDirectory = workDir;
 	}
 

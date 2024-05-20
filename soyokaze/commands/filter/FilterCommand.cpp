@@ -122,7 +122,7 @@ bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>
 		workDirStr = mParam.mDir;
 		ExpandArguments(workDirStr, args);
 		ExpandMacros(workDirStr);
-
+		StripDoubleQuate(workDirStr);
 	}
 
 	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;

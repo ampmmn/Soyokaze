@@ -903,6 +903,9 @@
     <ClInclude Include="hotkey\AppHotKeyDialog.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="macros\builtin\BaseNameMacro.h">
+      <Filter>macros\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1600,6 +1603,9 @@
     </ClCompile>
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp">
       <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\builtin\BaseNameMacro.cpp">
+      <Filter>macros\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

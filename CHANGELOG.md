@@ -6,6 +6,7 @@
 
 - `Alt` `Ctrl` `Shift` `Win`キーの組み合わせにより入力ウインドウを表示する機能を実装
   - `Ctrl`x2や、`Ctrl`+`Alt`同時押し、で入力ウインドウを表示できる
+- `basename`マクロを実装
 
 ### Fixed
 

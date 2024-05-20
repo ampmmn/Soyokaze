@@ -55,6 +55,14 @@ bool ExpandMacros(CString& target)
 	return macroRepos->Evaluate(target);
 }
 
+// 前後のダブルクォーテーションを除去する
+void StripDoubleQuate(CString& str)
+{
+	if (str.GetLength() >= 2 && str[0] == _T('"') && str[str.GetLength()-1] == _T('"')) {
+		str = str.Mid(1, str.GetLength()-2);
+	}
+}
+
 
 } // end of namespace common
 } // end of namespace commands

@@ -1554,10 +1554,27 @@ Edge/Chromeに対応している。
 
 ### 利用可能なマクロ一覧
 
+- [basename](#basenameマクロ)
 - [clipboard](#clipboardマクロ)
 - [env](#envマクロ)
 - [random](#randomマクロ)
 - [afxw](#afxwマクロ)
+
+#### basenameマクロ
+
+引数で与えたパスからファイル名を除去する
+
+##### 記法
+
+`${basename パス文字列}`の形式で指定する。
+
+##### 例
+
+```
+# ユーザのホームディレクトリのパスを取得する
+${basename c:\dir\a.txt }   → c:\dir
+
+```
 
 #### clipboardマクロ
 

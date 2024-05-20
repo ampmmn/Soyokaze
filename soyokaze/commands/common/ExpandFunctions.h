@@ -12,6 +12,8 @@ void ExpandArguments(CString& target, const std::vector<CString>& args);
 // ランチャーのマクロ機能による置換
 bool ExpandMacros(CString& target);
 
+// 前後のダブルクォーテーションを除去する
+void StripDoubleQuate(CString& str);
 
 } // end of namespace common
 } // end of namespace commands

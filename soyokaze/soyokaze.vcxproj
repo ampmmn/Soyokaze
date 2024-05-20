@@ -400,6 +400,7 @@
     <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
+    <ClInclude Include="macros\builtin\BaseNameMacro.h" />
     <ClInclude Include="macros\builtin\ClipboardMacro.h" />
     <ClInclude Include="macros\builtin\EnvMacro.h" />
     <ClInclude Include="macros\core\MacroBase.h" />
@@ -649,6 +650,7 @@
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />
+    <ClCompile Include="macros\builtin\BaseNameMacro.cpp" />
     <ClCompile Include="macros\builtin\ClipboardMacro.cpp" />
     <ClCompile Include="macros\builtin\EnvMacro.cpp" />
     <ClCompile Include="macros\core\MacroBase.cpp" />
