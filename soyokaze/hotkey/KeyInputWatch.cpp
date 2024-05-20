@@ -197,15 +197,27 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			LPARAM vk = ((curVK << 16) & 0xFFFF0000) |(in->mPrevVK & 0xFFFF);
 
 			// ここで設定したキーかどうかの判断をする
-			if (in->mFirstVK != curVK || in->mSecondVK != prevVK) {
+			bool isMatchNormalOrder = (in->mFirstVK == curVK && in->mSecondVK == prevVK);
+			bool isMatchReverseOrder = (in->mFirstVK == prevVK && in->mSecondVK == curVK);
+			if (isMatchNormalOrder == false && isMatchReverseOrder == false) {
 				continue;
 			}
+
+			in->mPrevVK = 0;
+			in->mPrevTime = 0;
+
+			// アクティブなウインドウがリモートデスクトップの場合はホットキー通知しない
+			HWND h = GetForegroundWindow();
+			TCHAR clsName[64];
+			GetClassName(h,clsName, 64);
+			if (_tcscmp(clsName, _T("TscShellContainerClass")) == 0) {
+				spdlog::debug(_T("mstsc is active. className:{}"), (LPCTSTR)clsName);
+				break;
+			}		
 
 			SharedHwnd hwnd;
 			PostMessage(hwnd.GetHwnd(), WM_APP+2, 0, 0);
 
-			in->mPrevVK = 0;
-			in->mPrevTime = 0;
 			continue;
 		}
 
