@@ -125,5 +125,15 @@ TEST(MacrosCoreToken, testSkipString3)
 	CString str;
 	tok.SkipString(str);
 	EXPECT_EQ(6, tok.GetPos());
-	EXPECT_TRUE(str == _T("hoge "));
+	EXPECT_TRUE(str == _T("hoge\\ "));
+}
+
+TEST(MacrosCoreToken, testSkipString4)
+{
+	Token tok(_T("hoge\\} }"));
+
+	CString str;
+	tok.SkipString(str);
+	EXPECT_EQ(6, tok.GetPos());
+	EXPECT_TRUE(str == _T("hoge}"));
 }
