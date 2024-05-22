@@ -96,8 +96,8 @@ CString AfxWWrapper::GetCurrentDir()
 		return _T("");
 	}
 
-	CComBSTR hisDirStr(L"HisDir");
-	OLECHAR* p = hisDirStr;
+	CComBSTR extractStr(L"Extract");
+	OLECHAR* p = extractStr;
 
 	DISPID methodId;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
@@ -105,16 +105,16 @@ CString AfxWWrapper::GetCurrentDir()
 		return _T("");
 	}
 
+	CStringW cmdline(L"$P");
+	CComBSTR cmdlineBstr(cmdline);
 
 	DISPPARAMS params = {};
-	params.cArgs = 2;
+	params.cArgs = 1;
 
-	VARIANT args[2];
+	VARIANT args[1];
 	params.rgvarg = args;
-	args[0].intVal = 0;
-	args[0].vt = VT_INT;
-	args[1].intVal = in->GetCurrentWinNo();
-	args[1].vt = VT_INT;
+	args[0].vt = VT_BSTR;
+	args[0].bstrVal = cmdlineBstr;
 
 	CComVariant vResult;
 	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
