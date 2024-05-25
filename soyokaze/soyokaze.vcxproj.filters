@@ -22,9 +22,6 @@
     <Filter Include="gui">
       <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core">
-      <UniqueIdentifier>{d32d2dfa-ffaf-4137-9f65-a42504cb6cdd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="commands\shellexecute">
       <UniqueIdentifier>{b6de4d04-4dc2-46af-aa21-fa35db0ffc15}</UniqueIdentifier>
     </Filter>
@@ -159,6 +156,9 @@
     </Filter>
     <Filter Include="macros\random">
       <UniqueIdentifier>{24590d00-f442-4db5-ada1-e415389d4a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\volumecontrol">
+      <UniqueIdentifier>{6c0145c3-38fc-4070-a139-9883bb0aa980}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -906,6 +906,21 @@
     <ClInclude Include="macros\builtin\BaseNameMacro.h">
       <Filter>macros\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\volumecontrol\VolumeCommand.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\volumecontrol\VolumeCommandParam.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\volumecontrol\VolumeCommandProvider.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\volumecontrol\VolumeEditDialog.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1606,6 +1621,18 @@
     </ClCompile>
     <ClCompile Include="macros\builtin\BaseNameMacro.cpp">
       <Filter>macros\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp">
+      <Filter>commands\volumecontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp">
+      <Filter>commands\volumecontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\volumecontrol\VolumeEditDialog.cpp">
+      <Filter>commands\volumecontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp">
+      <Filter>commands\volumecontrol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

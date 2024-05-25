@@ -239,7 +239,11 @@ bool CommandHotKeyManager::HasKeyBinding(
 )
 {
 	SPDLOG_DEBUG(_T("args name:{0}"), (LPCTSTR)name);
+	return GetKeyBinding(name, keyPtr, isGlobalPtr);
+}
 
+bool CommandHotKeyManager::GetKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr)
+{
 	CSingleLock sl(&in->mCS, TRUE);
 
 	auto itFind = in->mNameKeyMap.find(name);

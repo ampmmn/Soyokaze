@@ -21,7 +21,9 @@ struct IconLoader::PImpl
 {
 	PImpl() : 
 		mEditIcon(nullptr),
-		mKeywordManagerIcon(nullptr)
+		mKeywordManagerIcon(nullptr),
+		mVolumeIcon(nullptr),
+		mVolumeMuteIcon(nullptr)
 	{
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
 
@@ -65,6 +67,8 @@ struct IconLoader::PImpl
 	std::map<CString, HICON> mAppIconMap;
 	HICON mEditIcon;
 	HICON mKeywordManagerIcon;
+	HICON mVolumeIcon;
+	HICON mVolumeMuteIcon;
 
 	LocalPathResolver mResolver;
 };
@@ -101,6 +105,13 @@ IconLoader::~IconLoader()
 	//		DestroyIcon(elem.second);
 	//	}
 	//}
+
+	if (in->mVolumeIcon) {
+		DestroyIcon(in->mVolumeIcon);
+	}
+	if (in->mVolumeMuteIcon) {
+		DestroyIcon(in->mVolumeMuteIcon);
+	}
 }
 
 IconLoader* IconLoader::Get()
@@ -483,6 +494,36 @@ HICON IconLoader::LoadGroupIcon()
 HICON IconLoader::LoadPromptIcon()
 {
 	return GetImageResIcon(-5372);
+}
+
+HICON IconLoader::LoadVolumeIcon(bool isMute)
+{
+	const LPCTSTR SYSTEMROOT = _T("SystemRoot");
+	TCHAR path[MAX_PATH_NTFS];
+	size_t reqLen = 0;
+
+	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, SYSTEMROOT);
+	PathAppend(path, _T("System32"));
+	PathAppend(path, _T("mmsys.cpl"));
+
+	if (isMute) {
+		if (in->mVolumeMuteIcon) {
+			return in->mVolumeMuteIcon;
+		}
+		HICON icon[1];
+		UINT n = ExtractIconEx(path, -111, icon, NULL, 1);
+		in->mVolumeMuteIcon = icon[0];
+		return in->mVolumeMuteIcon;
+	}
+	else {
+		if (in->mVolumeIcon) {
+			return in->mVolumeIcon;
+		}
+		HICON icon[1];
+		UINT n = ExtractIconEx(path, -110, icon, NULL, 1);
+		in->mVolumeIcon = icon[0];
+		return in->mVolumeIcon;
+	}
 }
 
 static bool GetTempFilePath(LPTSTR userDataPath, size_t len)

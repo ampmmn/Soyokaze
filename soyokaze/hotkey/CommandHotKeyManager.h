@@ -38,6 +38,7 @@ public:
 
 	// 名前からホットキーを取得
 	bool HasKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr);
+	bool GetKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr);
 
 	// ホットキーに関連付けられたものがあるかをチェック
 	bool HasKeyBinding(const HOTKEY_ATTR& key, bool* isGlobalPtr = nullptr);

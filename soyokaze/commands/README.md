@@ -36,6 +36,7 @@
 |[unitconvert](./unitconvert)|単位変換系コマンド|
 |[uwp](./uwp)|UWPアプリを実行できるようにするためのコマンド|
 |[vmware](./vmware)|VMWare(Player)の実行履歴からVMを実行できるようにするためのコマンド|
+|[volumecontrol](./volumecontrol)|音量調節(音量変更/ミュート状態の変更)をするためのコマンド|
 |[watchpath](./watchpath)|フォルダ更新検知コマンド|
 |[websearch](./websearch)|Web検索コマンド|
 

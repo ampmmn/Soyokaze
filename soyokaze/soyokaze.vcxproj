@@ -394,6 +394,11 @@
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
+    <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h" />
+    <ClInclude Include="commands\volumecontrol\VolumeCommand.h" />
+    <ClInclude Include="commands\volumecontrol\VolumeCommandParam.h" />
+    <ClInclude Include="commands\volumecontrol\VolumeCommandProvider.h" />
+    <ClInclude Include="commands\volumecontrol\VolumeEditDialog.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
@@ -644,6 +649,10 @@
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
+    <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp" />
+    <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />
+    <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp" />
+    <ClCompile Include="commands\volumecontrol\VolumeEditDialog.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
