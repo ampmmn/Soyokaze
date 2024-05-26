@@ -21,8 +21,6 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this);
-
-		OnAppPreferenceUpdated();
 	}
 	virtual ~PImpl()
 	{
@@ -97,11 +95,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-
-		std::lock_guard<std::mutex> lock(mMutex);
-		mIsEnable = pref->IsEnablePowerPointSlide();
-
+		Load();
 	}
 	void OnAppExit() override {}
 
@@ -110,12 +104,20 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		return mIsEnable;
 	}
 
+	void Load()
+	{
+		auto pref = AppPreference::Get();
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsEnable = pref->IsEnablePowerPointSlide();
+	}
+
 	bool mIsEnable;
 
 	std::mutex mMutex;
-	bool mIsAbort;
-	bool mIsExited;
-	bool mIsAvailable;
+	bool mIsAbort = false;
+	bool mIsExited = false;
+	bool mIsAvailable = false;
+	bool mIsFirstCall = true;
 
 	// pptxファイルのパス(ディレクトリまで)
 	CString mFilePath;
@@ -333,6 +335,11 @@ void Presentations::Abort()
 
 void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int limit)
 {
+	if (in->mIsFirstCall) {
+		in->Load();
+		in->mIsFirstCall = false;
+	}
+
 	if (in->mIsAvailable == false || in->IsEnable() == false) {
 		return;
 	}

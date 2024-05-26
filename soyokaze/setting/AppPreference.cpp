@@ -21,13 +21,145 @@ struct AppPreference::PImpl
 
 	void OnAppPreferenceUpdated();
 
+	CString Get(LPCTSTR key, LPCTSTR defValue) {
+		if (mIsLoaded == false) {
+			Load();
+		}
+		return mSettings.Get(key, defValue);
+	}
+	bool Get(LPCTSTR key, bool defValue) {
+		if (mIsLoaded == false) {
+			Load();
+		}
+		return mSettings.Get(key, defValue);
+	}
+	int Get(LPCTSTR key, int defValue) {
+		if (mIsLoaded == false) {
+			Load();
+		}
+		return mSettings.Get(key, defValue);
+	}
+
+	void Load();
+
 	std::unique_ptr<NotifyWindow> mNotifyWindow;
 
 	Settings mSettings;
+	bool mIsLoaded = false;
 
 	// 設定変更時(正確にはSave時)に通知を受け取る
 	std::set<AppPreferenceListenerIF*> mListeners;
 };
+
+static void TrimComment(CString& s)
+{
+	bool inDQ = false;
+
+	int n = s.GetLength();
+	for (int i = 0; i < n; ++i) {
+		if (inDQ == false && s[i] == _T('#')) {
+			s = s.Left(i);
+			return;
+		}
+
+		if (inDQ == false && s[i] == _T('"')) {
+			inDQ = true;
+		}
+		if (inDQ != true && s[i] == _T('"')) {
+			inDQ = false;
+		}
+	}
+}
+
+
+void AppPreference::PImpl::Load()
+{
+	TCHAR path[MAX_PATH_NTFS];
+	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
+
+	FILE* fpIn = nullptr;
+	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0) {
+		return;
+	}
+
+	Settings settings;
+
+	tregex regInt(_T("^ *-?[0-9]+ *$"));
+	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
+
+	// ファイルを読む
+	CStdioFile file(fpIn);
+
+	CString strCurSectionName;
+
+	CString strCommandName;
+
+	CString strLine;
+	while(file.ReadString(strLine)) {
+
+		TrimComment(strLine);
+		strLine.Trim();
+
+		if (strLine.IsEmpty()) {
+			continue;
+		}
+
+		if (strLine[0] == _T('[')) {
+			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
+			continue;
+		}
+
+		int n = strLine.Find(_T('='));
+		if (n == -1) {
+			continue;
+		}
+
+		CString strKey = strLine.Left(n);
+		strKey.Trim();
+
+		CString strValue = strLine.Mid(n+1);
+		strValue.Trim();
+		std::wstring pat(strValue);
+
+		CString key(strCurSectionName + _T(":") + strKey);
+
+		if (strValue == _T("true")) {
+			settings.Set(key, true);
+		}
+		else if (strValue == _T("false")) {
+			settings.Set(key, false);
+		}
+		else if (std::regex_match(pat, regDouble)) {
+			double value;
+			_stscanf_s(strValue, _T("%lg"), &value);
+			settings.Set(key, value);
+		}
+		else if (std::regex_match(pat, regInt)) {
+			int value;
+			_stscanf_s(strValue, _T("%d"), &value);
+			settings.Set(key, value);
+		}
+		else {
+			if (strValue.Left(1) == _T('"') && strValue.Right(1) == _T('"')) {
+				strValue = strValue.Mid(1, strValue.GetLength()-2);
+			}
+			settings.Set(key, strValue);
+		}
+	}
+
+	file.Close();
+	fclose(fpIn);
+
+	mSettings.Swap(settings);
+	mIsLoaded = true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 class AppPreference::NotifyWindow
 {
@@ -107,7 +239,6 @@ void AppPreference::PImpl::OnAppPreferenceUpdated()
  */
 AppPreference::AppPreference() : in(std::make_unique<PImpl>())
 {
-	Load();
 }
 
 /**
@@ -124,26 +255,6 @@ AppPreference* AppPreference::Get()
 	return &thePrefObj;
 }
 
-static void TrimComment(CString& s)
-{
-	bool inDQ = false;
-
-	int n = s.GetLength();
-	for (int i = 0; i < n; ++i) {
-		if (inDQ == false && s[i] == _T('#')) {
-			s = s.Left(i);
-			return;
-		}
-
-		if (inDQ == false && s[i] == _T('"')) {
-			inDQ = true;
-		}
-		if (inDQ != true && s[i] == _T('"')) {
-			inDQ = false;
-		}
-	}
-}
-
 void AppPreference::Init()
 {
 	in->mNotifyWindow->Create();
@@ -154,85 +265,7 @@ void AppPreference::Init()
  */
 void AppPreference::Load()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
-
-	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0) {
-		return;
-	}
-
-	Settings settings;
-
-	tregex regInt(_T("^ *-?[0-9]+ *$"));
-	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
-
-	// ファイルを読む
-	CStdioFile file(fpIn);
-
-	CString strCurSectionName;
-
-	CString strCommandName;
-
-	CString strLine;
-	while(file.ReadString(strLine)) {
-
-		TrimComment(strLine);
-		strLine.Trim();
-
-		if (strLine.IsEmpty()) {
-			continue;
-		}
-
-		if (strLine[0] == _T('[')) {
-			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
-			continue;
-		}
-
-		int n = strLine.Find(_T('='));
-		if (n == -1) {
-			continue;
-		}
-
-		CString strKey = strLine.Left(n);
-		strKey.Trim();
-
-		CString strValue = strLine.Mid(n+1);
-		strValue.Trim();
-		std::wstring pat(strValue);
-
-		CString key(strCurSectionName + _T(":") + strKey);
-
-		if (strValue == _T("true")) {
-			settings.Set(key, true);
-		}
-		else if (strValue == _T("false")) {
-			settings.Set(key, false);
-		}
-		else if (std::regex_match(pat, regDouble)) {
-			double value;
-			_stscanf_s(strValue, _T("%lg"), &value);
-			settings.Set(key, value);
-		}
-		else if (std::regex_match(pat, regInt)) {
-			int value;
-			_stscanf_s(strValue, _T("%d"), &value);
-			settings.Set(key, value);
-		}
-		else {
-			if (strValue.Left(1) == _T('"') && strValue.Right(1) == _T('"')) {
-				strValue = strValue.Mid(1, strValue.GetLength()-2);
-			}
-			settings.Set(key, strValue);
-		}
-	}
-
-	file.Close();
-	fclose(fpIn);
-
-	in->mSettings.Swap(settings);
-
-	return ;
+	in->Load();
 }
 
 void AppPreference::Save()
@@ -341,106 +374,106 @@ void AppPreference::OnExit()
 
 CString AppPreference::GetFilerPath()
 {
-	return in->mSettings.Get(_T("Soyokaze:FilerPath"), _T(""));
+	return in->Get(_T("Soyokaze:FilerPath"), _T(""));
 }
 
 CString AppPreference::GetFilerParam()
 {
-	return in->mSettings.Get(_T("Soyokaze:FilerParam"), _T(""));
+	return in->Get(_T("Soyokaze:FilerParam"), _T(""));
 }
 
 bool AppPreference::IsUseFiler()
 {
-	return in->mSettings.Get(_T("Soyokaze:UseFiler"), false);
+	return in->Get(_T("Soyokaze:UseFiler"), false);
 }
 
 bool AppPreference::IsEnablePathFind()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnablePathFind"), true);
+	return in->Get(_T("Soyokaze:IsEnablePathFind"), true);
 }
 
 bool AppPreference::IsHideOnStartup()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsHideOnStartup"), false);
+	return in->Get(_T("Soyokaze:IsHideOnStartup"), false);
 }
 
 bool AppPreference::IsHideOnInactive()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsHideOnInactive"), false);
+	return in->Get(_T("Soyokaze:IsHideOnInactive"), false);
 }
 
 bool AppPreference::IsTopMost()
 {
-	return in->mSettings.Get(_T("Soyokaze:TopMost"), false);
+	return in->Get(_T("Soyokaze:TopMost"), false);
 }
 
 bool AppPreference::IsShowToggle()
 {
-	return in->mSettings.Get(_T("Soyokaze:ShowToggle"), true);
+	return in->Get(_T("Soyokaze:ShowToggle"), true);
 }
 
 bool AppPreference::IsWindowTransparencyEnable()
 {
-	return in->mSettings.Get(_T("WindowTransparency:Enable"), false);
+	return in->Get(_T("WindowTransparency:Enable"), false);
 }
 
 int AppPreference::GetAlpha()
 {
-	return in->mSettings.Get(_T("WindowTransparency:Alpha"), 128);
+	return in->Get(_T("WindowTransparency:Alpha"), 128);
 }
 
 bool AppPreference::IsTransparencyInactiveOnly()
 {
-	return in->mSettings.Get(_T("WindowTransparency:InactiveOnly"), true);
+	return in->Get(_T("WindowTransparency:InactiveOnly"), true);
 }
 
 UINT AppPreference::GetModifiers()
 {
-	return in->mSettings.Get(_T("HotKey:Modifiers"), 1);  // ALT
+	return in->Get(_T("HotKey:Modifiers"), 1);  // ALT
 }
 
 UINT AppPreference::GetVirtualKeyCode()
 {
-	return in->mSettings.Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
+	return in->Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
 bool AppPreference::IsEnableModifierHotKey()
 {
-	return in->mSettings.Get(_T("HotKey:IsEnableModifierHotKey"), false);
+	return in->Get(_T("HotKey:IsEnableModifierHotKey"), false);
 }
 
 UINT AppPreference::GetFirstModifierVirtualKeyCode()
 {
-	return in->mSettings.Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
+	return in->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
 }
 
 UINT AppPreference::GetSecondModifierVirtualKeyCode()
 {
-	return in->mSettings.Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
+	return in->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
 }
 
 // 入力履歴機能を使用するか?
 bool AppPreference::IsUseInputHistory()
 {
-	return in->mSettings.Get(_T("Input:IsUseHistory"), false);
+	return in->Get(_T("Input:IsUseHistory"), false);
 }
 
 // 履歴件数の上限を取得
 int AppPreference::GetHistoryLimit()
 {
-	return in->mSettings.Get(_T("Input:HistoryLimit"), 128);
+	return in->Get(_T("Input:HistoryLimit"), 128);
 }
 
 // 入力画面表示時にIMEをオフにするか?
 bool AppPreference::IsIMEOffOnActive()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsIMEOffOnActive"), false);
+	return in->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
 }
 
 // ネットワークパスを無視する
 bool AppPreference::IsIgnoreUNC()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsIgnoreUNC"), false);
+	return in->Get(_T("Soyokaze:IsIgnoreUNC"), false);
 }
 
 void AppPreference::GetAdditionalPaths(std::vector<CString>& paths)
@@ -459,14 +492,14 @@ void AppPreference::GetAdditionalPaths(std::vector<CString>& paths)
 // フィルタコマンドの同時実行を許可する
 bool AppPreference::IsArrowFilterCommandConcurrentRun()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
+	return in->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
 }
 
 // コメント表示欄の初期表示文字列を取得
 CString AppPreference::GetDefaultComment()
 {
 	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
-	return in->mSettings.Get(_T("Soyokaze:DefaultComment"), defStr);
+	return in->Get(_T("Soyokaze:DefaultComment"), defStr);
 }
 
 void AppPreference::SetSettings(const Settings& settings)
@@ -608,190 +641,190 @@ bool AppPreference::CreateUserDirectory()
 
 bool AppPreference::IsEnableCalculator()
 {
-	return in->mSettings.Get(_T("Calculator:Enable"), false);
+	return in->Get(_T("Calculator:Enable"), false);
 }
 
 CString AppPreference::GetPythonDLLPath()
 {
-	return in->mSettings.Get(_T("Soyokaze:PythonDLLPath"), _T(""));
+	return in->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 }
 
 bool AppPreference::IsEnableExcelWorksheet()
 {
-	return in->mSettings.Get(_T("Excel:EnableWorkSheet"), true);
+	return in->Get(_T("Excel:EnableWorkSheet"), true);
 }
 
 bool AppPreference::IsEnablePowerPointSlide()
 {
-	return in->mSettings.Get(_T("PowerPoint:EnableSlide"), false);
+	return in->Get(_T("PowerPoint:EnableSlide"), false);
 }
 
 // ウインドウの切り替え機能を有効にするか?
 bool AppPreference::IsEnableWindowSwitch()
 {
-	return in->mSettings.Get(_T("WindowSwitch:EnableWindowSwitch"), true);
+	return in->Get(_T("WindowSwitch:EnableWindowSwitch"), true);
 }
 
 bool AppPreference::IsEnableBookmark()
 {
-	return in->mSettings.Get(_T("Bookmarks:EnableBookmarks"), true);
+	return in->Get(_T("Bookmarks:EnableBookmarks"), true);
 }
 
 bool AppPreference::IsUseURLForBookmarkSearch()
 {
-	return in->mSettings.Get(_T("Bookmarks:UseURL"), true);
+	return in->Get(_T("Bookmarks:UseURL"), true);
 }
 
 // Chromeの履歴を検索するか
 bool AppPreference::IsEnableHistoryChrome()
 {
-	return in->mSettings.Get(_T("Browser::EnableHistoryChrome"), false);
+	return in->Get(_T("Browser::EnableHistoryChrome"), false);
 }
 
 // Edgeの履歴を検索するか
 bool AppPreference::IsEnableHistoryEdge()
 {
-	return in->mSettings.Get(_T("Browser::EnableHistoryEdge"), false);
+	return in->Get(_T("Browser::EnableHistoryEdge"), false);
 }
 
 int AppPreference::GetBrowserHistoryTimeout()
 {
-	return in->mSettings.Get(_T("Browser::Timeout"), 150);
+	return in->Get(_T("Browser::Timeout"), 150);
 }
 
 int AppPreference::GetBrowserHistoryCandidates()
 {
-	return in->mSettings.Get(_T("Browser::Candidates"), 8);
+	return in->Get(_T("Browser::Candidates"), 8);
 }
 
 bool AppPreference::IsUseMigemoForBrowserHistory()
 {
-	return in->mSettings.Get(_T("Browser::UseMigemo"), false);
+	return in->Get(_T("Browser::UseMigemo"), false);
 }
 
 bool AppPreference::IsUseURLForBrowserHistory()
 {
-	return in->mSettings.Get(_T("Browser::UseURL"), true);
+	return in->Get(_T("Browser::UseURL"), true);
 }
 
 bool AppPreference::IsShowFolderIfCtrlKeyIsPressed()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
+	return in->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 }
 
 // 入力欄ウインドウをマウスカーソル位置に表示するか
 bool AppPreference::IsShowMainWindowOnCurorPos()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
+	return in->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 }
 
 // 入力欄ウインドウにコマンド種別を表示するか
 bool AppPreference::IsShowCommandType()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsShowCommandType"), true);
+	return in->Get(_T("Soyokaze:IsShowCommandType"), true);
 }
 
 // 操作ガイド欄を表示するか
 bool AppPreference::IsShowGuide()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsShowGuide"), true);
+	return in->Get(_T("Soyokaze:IsShowGuide"), true);
 }
 
 // 候補欄の背景色を交互に変えるか
 bool AppPreference::IsAlternateColor()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsAlternateColor"), false);
+	return in->Get(_T("Soyokaze:IsAlternateColor"), false);
 }
 
 // 候補欄の各項目にアイコンを描画するか
 bool AppPreference::IsDrawIconOnCandidate()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
+	return in->Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
 }
 
 // C/Migemo検索を利用するか
 bool AppPreference::IsEnableMigemo()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableMigemo"), true);
+	return in->Get(_T("Soyokaze:IsEnableMigemo"), true);
 }
 
 // コントロールパネルのアイテム検索を使用するか
 bool AppPreference::IsEnableControlPanel()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableControlPanel"), true);
+	return in->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 }
 
 // スタートメニュー/最近使ったファイルのアイテム検索を使用するか
 bool AppPreference::IsEnableSpecialFolder()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
+	return in->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 }
 
 // UWPアプリの検索を使用するか
 bool AppPreference::IsEnableUWP()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableUWP"), true);
+	return in->Get(_T("Soyokaze:IsEnableUWP"), true);
 }
 
 // Outlookのメール(受信トレイ)の検索を使用するか
 bool AppPreference::IsEnableOutlookMailItem()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
+	return in->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
 // GitBashパス変換機能を使用するか
 bool AppPreference::IsEnableGitBashPath()
 {
-	return in->mSettings.Get(_T("PathConvert:IsEnableGitBashPath"), false);
+	return in->Get(_T("PathConvert:IsEnableGitBashPath"), false);
 
 }
 
 // fileプロトコルパス変換機能を使用するか
 bool AppPreference::IsEnableFileProtocolPathConvert()
 {
-	return in->mSettings.Get(_T("PathConvert:IsEnableFileProtol"), false);
+	return in->Get(_T("PathConvert:IsEnableFileProtol"), false);
 }
 
 // 入力窓が消えるときにテキストを消去しない(コマンドを実行したときだけ入力欄をクリアする)
 bool AppPreference::IsKeepTextWhenDlgHide()
 {
-	return in->mSettings.Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
+	return in->Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
 }
 
 // 効果音ファイルパスを取得(文字入力)
 CString AppPreference::GetInputSoundFile()
 {
-	return in->mSettings.Get(_T("Sound:FilePathInput"), _T(""));
+	return in->Get(_T("Sound:FilePathInput"), _T(""));
 }
 
 // 効果音ファイルパスを取得(候補選択)
 CString AppPreference::GetSelectSoundFile()
 {
-	return in->mSettings.Get(_T("Sound:FilePathSelect"), _T(""));
+	return in->Get(_T("Sound:FilePathSelect"), _T(""));
 }
 
 // 効果音ファイルパスを取得(コマンド実行)
 CString AppPreference::GetExecuteSoundFile()
 {
-	return in->mSettings.Get(_T("Sound:FilePathExecute"), _T(""));
+	return in->Get(_T("Sound:FilePathExecute"), _T(""));
 }
 
 // 長時間の連続稼働を警告する
 bool AppPreference::IsWarnLongOperation()
 {
-	return in->mSettings.Get(_T("Health:IsWarnLongOperation"), false);
+	return in->Get(_T("Health:IsWarnLongOperation"), false);
 }
 
 // 長時間連続稼働警告までの時間を取得する(分単位)
 int AppPreference::GetTimeToWarnLongOperation()
 {
-	return in->mSettings.Get(_T("Health:TimeToWarn"), 90);
+	return in->Get(_T("Health:TimeToWarn"), 90);
 }
 
 // メイン画面のフォント名
 bool AppPreference::GetMainWindowFontName(CString& fontName)
 {
-	auto name = in->mSettings.Get(_T("MainWindow:FontName"), _T(""));
+	auto name = in->Get(_T("MainWindow:FontName"), _T(""));
 	if (name.IsEmpty()) {
 		return false;
 	}
@@ -810,7 +843,7 @@ int AppPreference::GetLogLevel()
 // #define SPDLOG_LEVEL_CRITICAL 5
 // #define SPDLOG_LEVEL_OFF 6
 
-	return in->mSettings.Get(_T("Logging:Level"), 6);
+	return in->Get(_T("Logging:Level"), 6);
 }
 
 
