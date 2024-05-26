@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "commands/core/CommandQueryRequest.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include <vector>
 #include <memory>
@@ -51,7 +52,7 @@ public:
 
 	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
 
-	void Query(const CommandParameter& param, std::vector<launcherapp::core::Command*>& commands);
+	void Query(const launcherapp::commands::core::CommandQueryRequest& req);
 	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);
 	bool HasCommand(const CString& strQueryStr);
 

@@ -14,6 +14,8 @@ public:
 	CommandParameter(const CString& str);
 	~CommandParameter();
 
+	CommandParameter& operator = (const CommandParameter& rhs);
+
 public:
 	bool IsEmpty() const;
 	bool HasParameter() const;
@@ -41,9 +43,7 @@ public:
 	bool GetNamedParamBool(LPCTSTR name) const;
 	void SetNamedParamBool(LPCTSTR name, bool value);
 
-	void AppendParameterPart(CString& str);
-
-	// $BJd40(B
+	// 補完
 	bool ComplementCommand(const CString& commandName, CString& comlementedStr) const;
 
 protected:

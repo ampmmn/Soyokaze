@@ -71,6 +71,19 @@ CommandParameter::~CommandParameter()
 {
 }
 
+CommandParameter& CommandParameter::operator = (const CommandParameter& rhs)
+{
+	if (&rhs != this) {
+		in->mWholeText = rhs.in->mWholeText;
+		in->mCommandPart = rhs.in->mCommandPart;
+		in->mParamPart = rhs.in->mParamPart;
+		in->mHasSpace = rhs.in->mHasSpace;
+		in->mStrParamMap = rhs.in->mStrParamMap;
+		in->mBoolParamMap = rhs.in->mBoolParamMap;
+	}
+	return *this;
+}
+
 bool CommandParameter::IsEmpty() const
 {
 	return in->mWholeText.IsEmpty() != FALSE;
@@ -240,14 +253,6 @@ bool CommandParameter::GetNamedParam(
 		*value = it->second;
 	}
 	return true;
-}
-
-void CommandParameter::AppendParameterPart(CString& str)
-{
-	if (in->mHasSpace) {
-		str += _T(" ");
-		str += in->mParamPart;
-	}
 }
 
 // 補完

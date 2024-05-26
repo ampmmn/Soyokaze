@@ -43,8 +43,6 @@ using namespace launcherapp;
 constexpr UINT TIMERID_KEYSTATE = 1;
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
-// キー入力を遅延して絞り込むためのタイマー
-constexpr UINT TIMERID_INPUTKEY = 3;
 
 struct LauncherMainWindow::PImpl
 {
@@ -101,6 +99,7 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 	//
 	bool mIsPrevTransparentState = false;
+	bool mIsQueryDoing = false;
 
 	CFont mFontDlg;
 
@@ -272,6 +271,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
 	ON_MESSAGE(WM_APP+11, OnUserMessageSetText)
 	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
+	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -408,6 +408,7 @@ LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
+
 	UpdateCandidates();
 
 	return 0;
@@ -446,6 +447,20 @@ LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 	}
 
 	in->mKeywordEdit.SetSel(startChar, endChar);
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam)
+{
+	in->mIsQueryDoing = false;
+	auto commands = (std::vector<launcherapp::core::Command*>*)lParam;
+	if (commands != nullptr) {
+		in->mCandidates.SetItems(*commands);
+		delete commands;
+	}
+	else {
+		in->mCandidates.Clear();
+	}
 	return 0;
 }
 
@@ -903,11 +918,7 @@ void LauncherMainWindow::ClearContent()
 
 void LauncherMainWindow::Complement()
 {
-	if (in->mInputTimerId != 0) {
-		UpdateCandidates();
-		KillTimer(TIMERID_INPUTKEY);
-		in->mInputTimerId = 0;
-	}
+	WaitQueryRequest();
 
 	auto cmd = GetCurrentCommand();
 	if (cmd == nullptr) {
@@ -969,14 +980,11 @@ void LauncherMainWindow::OnEditCommandChanged()
 		return;
 	}
 
-	// 高速にタイプしているときは、タイマーを挟むことにより、1文字ごとのリスト更新(絞り込み)を省略する
-	KillTimer(TIMERID_INPUTKEY);
-	in->mInputTimerId = 0;
-
-	// 最初の出だし(1文字目)は短く、以降は長めに間隔をとってみる
-	int interval = in->mCommandStr.GetLength() < 2 ? 10 : 120;
-	in->mInputTimerId = SetTimer(TIMERID_INPUTKEY, interval, nullptr);
-
+	// 検索リクエスト
+	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
+	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
+	in->mIsQueryDoing = true;
+	GetCommandRepository()->Query(req);
 }
 
 // 候補リストを更新する
@@ -991,9 +999,11 @@ void LauncherMainWindow::UpdateCandidates()
 	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
 
 	// キーワードによる候補の列挙
-	std::vector<launcherapp::core::Command*> commands;
-	GetCommandRepository()->Query(commandParam, commands);
-	in->mCandidates.SetItems(commands);
+	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
+	in->mIsQueryDoing = true;
+	GetCommandRepository()->Query(req);
+
+	WaitQueryRequest();
 
 	// 候補なし
 	if (in->mCandidates.IsEmpty()) {
@@ -1017,6 +1027,16 @@ void LauncherMainWindow::UpdateCandidates()
 	}
 
 	in->mCandidateListBox.Invalidate(TRUE);
+}
+
+void LauncherMainWindow::WaitQueryRequest()
+{
+	while(in->mIsQueryDoing) {
+		MSG msg;
+		GetMessage(&msg, 0, NULL, NULL);
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 }
 
 /**
@@ -1072,11 +1092,7 @@ void LauncherMainWindow::OnOK()
 {
 	UpdateData();
 
-	if (in->mInputTimerId != 0) {
-		UpdateCandidates();
-		KillTimer(TIMERID_INPUTKEY);
-		in->mInputTimerId = 0;
-	}
+	WaitQueryRequest();
 
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
@@ -1445,11 +1461,6 @@ void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
 			listener->OnTimer();
 		});
-	}
-	else if (timerId == TIMERID_INPUTKEY) {
-		UpdateCandidates();
-		KillTimer(TIMERID_INPUTKEY);
-		in->mInputTimerId = 0;
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
+#include "commands/core/CommandQueryRequest.h"
 #include "utility/AppProfile.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"
@@ -19,6 +20,8 @@
 #include "spdlog/stopwatch.h"
 #include <vector>
 #include <algorithm>
+#include <mutex>
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +32,14 @@ using CommandRanking = launcherapp::commands::core::CommandRanking;
 
 namespace launcherapp {
 namespace core {
+
+using QueryRequest = launcherapp::commands::core::CommandQueryRequest;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 struct CommandRepository::PImpl
 {
@@ -77,6 +88,23 @@ struct CommandRepository::PImpl
 		commandFile.Save();
 	}
 
+	void RunQueryThread();
+
+	bool IsRunning() {
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mIsExit == false;
+	}
+	void SetExit()
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsExit = true;
+		mQueryRequestEvt.SetEvent();
+	}
+	void AddRequest(const QueryRequest& req);
+	bool WaitForRequest(QueryRequest& req);
+	bool HasSubsequentRequest();
+	void Query(QueryRequest& req);
+
 	CCriticalSection mCS;
 
 	std::vector<CommandProvider*> mProviders;
@@ -97,7 +125,152 @@ struct CommandRepository::PImpl
 	bool mIsEditDialog = false;
 	bool mIsManagerDialog = false;
 	bool mIsRegisteFromFileDialog = false;
+
+	std::mutex mMutex;
+	bool mIsExit = false;
+	bool mIsThreadInitialized = false;
+	CEvent mQueryRequestEvt;
+	std::vector<QueryRequest> mQueryRequestQueue;
 };
+
+void CommandRepository::PImpl::RunQueryThread()
+{
+	std::lock_guard<std::mutex> lock(mMutex);
+	if (mIsExit) {
+		return ;
+	}
+	if (mIsThreadInitialized) {
+		return ;
+	}
+
+	std::thread th([&]() {
+
+			while (IsRunning()) {
+				QueryRequest req;
+				if (WaitForRequest(req) == false) {
+					continue;
+				}
+				Query(req);
+			}
+
+	});
+	th.detach();
+
+	mIsThreadInitialized = true;
+}
+
+void CommandRepository::PImpl::AddRequest(const QueryRequest& req)
+{
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mQueryRequestQueue.push_back(req);
+	}
+	mQueryRequestEvt.SetEvent();
+}
+
+bool CommandRepository::PImpl::WaitForRequest(QueryRequest& req)
+{
+	WaitForSingleObject(mQueryRequestEvt, INFINITE);
+
+	std::lock_guard<std::mutex> lock(mMutex);
+	if (mIsExit) {
+		return false;
+	}
+	if (mQueryRequestQueue.empty()) {
+		return false;
+	}
+
+	req = mQueryRequestQueue.back();
+	mQueryRequestQueue.clear();
+
+	return true;
+}
+
+bool CommandRepository::PImpl::HasSubsequentRequest()
+{
+	std::lock_guard<std::mutex> lock(mMutex);
+	return mQueryRequestQueue.size() > 0;
+}
+
+void CommandRepository::PImpl::Query(QueryRequest& req)
+{
+	const CommandParameter& param = req.GetCommandParameter();
+	HWND hwndNotify = req.GetNotifyWindow();
+	UINT notifyMsg = req.GetNotifyMessage();
+
+	// パラメータが空の場合は検索しない
+	if (param.IsEmpty()) {
+		// 結果なし
+		PostMessage(hwndNotify, notifyMsg, 0, 0);
+		return;
+	}
+
+	CSingleLock sl(&mCS, TRUE);
+
+	spdlog::stopwatch swAll;
+
+	// 入力文字列をを設定
+	mPattern->SetParam(param);
+
+	CommandMap::CommandQueryItemList matchedItems;
+
+	spdlog::stopwatch sw;
+	mCommands.Query(mPattern.get(), matchedItems);
+	spdlog::debug("CommandMap.Query duration:{:.6f} s.", sw);
+	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
+
+	// コマンドプロバイダーから一時的なコマンドを取得する
+	for (auto& provider : mProviders) {
+		sw.reset();
+		if (HasSubsequentRequest()) {
+			// キャンセル通知
+			PostMessage(hwndNotify, notifyMsg, 1, 0);
+			break;
+		}
+		provider->QueryAdhocCommands(mPattern.get(), matchedItems);
+		spdlog::debug(_T("QueryAdhocCommands name:{0} duration:{1:.6f} s."), (LPCTSTR)provider->GetName(), sw.elapsed().count());
+	}
+
+	// 一致レベルに基づきソート
+	const CommandRanking* rankPtr = CommandRanking::GetInstance();
+
+	sw.reset();
+
+	std::stable_sort(matchedItems.begin(), matchedItems.end(),
+		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
+			if (r.mMatchLevel < l.mMatchLevel) { return true; }
+			if (r.mMatchLevel > l.mMatchLevel) { return false; }
+
+			// 一致レベルが同じ場合は優先順位による判断を行う
+			auto& cmdL = l.mCommand;
+			auto& cmdR = r.mCommand;
+
+			auto nameL = cmdL->GetName();
+			auto nameR = cmdR->GetName();
+
+			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(nameL) : 0;
+			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(nameR) : 0;
+			return priorityR < priorityL;
+	});
+
+	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)matchedItems.size(), sw);
+
+	std::vector<launcherapp::core::Command*>* items = new std::vector<launcherapp::core::Command*>();
+	items->reserve(matchedItems.size());
+	for (auto& item : matchedItems) {
+		item.mCommand->AddRef();
+		items->push_back(item.mCommand.get());
+	}
+
+	spdlog::debug("Query took about {:.6f} seconds.", swAll);
+
+	PostMessage(hwndNotify, notifyMsg, 0, (LPARAM)items);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 
 
 CommandRepository::CommandRepository() : in(std::make_unique<PImpl>())
@@ -450,72 +623,13 @@ void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& e
 
 void
 CommandRepository::Query(
-	const CommandParameter& param,
-	std::vector<launcherapp::core::Command*>& items
+	const QueryRequest& newRequest
 )
 {
-	for (auto& command : items) {
-		command->Release();
-	}
-	items.clear();
-
-	// パラメータが空の場合は検索しない
-	if (param.IsEmpty()) {
-		return;
-	}
-
-	CSingleLock sl(&in->mCS, TRUE);
-
-	spdlog::stopwatch swAll;
-
-	// 入力文字列をを設定
-	in->mPattern->SetParam(param);
-
-	CommandMap::CommandQueryItemList matchedItems;
-
-	spdlog::stopwatch sw;
-	in->mCommands.Query(in->mPattern.get(), matchedItems);
-	spdlog::debug("CommandMap.Query duration:{:.6f} s.", sw);
-	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
-
-	// コマンドプロバイダーから一時的なコマンドを取得する
-	for (auto& provider : in->mProviders) {
-		sw.reset();
-		provider->QueryAdhocCommands(in->mPattern.get(), matchedItems);
-		spdlog::debug(_T("QueryAdhocCommands name:{0} duration:{1:.6f} s."), (LPCTSTR)provider->GetName(), sw.elapsed().count());
-	}
-
-	// 一致レベルに基づきソート
-	const CommandRanking* rankPtr = CommandRanking::GetInstance();
-
-	sw.reset();
-
-	std::stable_sort(matchedItems.begin(), matchedItems.end(),
-		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
-			if (r.mMatchLevel < l.mMatchLevel) { return true; }
-			if (r.mMatchLevel > l.mMatchLevel) { return false; }
-
-			// 一致レベルが同じ場合は優先順位による判断を行う
-			auto& cmdL = l.mCommand;
-			auto& cmdR = r.mCommand;
-
-			auto nameL = cmdL->GetName();
-			auto nameR = cmdR->GetName();
-
-			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(nameL) : 0;
-			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(nameR) : 0;
-			return priorityR < priorityL;
-	});
-
-	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)matchedItems.size(), sw);
-
-	items.reserve(matchedItems.size());
-	for (auto& item : matchedItems) {
-		item.mCommand->AddRef();
-		items.push_back(item.mCommand.get());
-	}
-
-	spdlog::debug("Query took about {:.6f} seconds.", swAll);
+	// 初回に問い合わせスレッドを起動する
+	in->RunQueryThread();
+	// 問い合わせリクエストをキューに追加
+	in->AddRequest(newRequest);
 }
 
 launcherapp::core::Command*
@@ -610,6 +724,8 @@ void CommandRepository::OnAppPreferenceUpdated()
 
 void CommandRepository::OnAppExit()
 {
+	in->SetExit();
+
 	// 優先度情報をファイルに保存する
 	CommandRanking::GetInstance()->Save();
 

@@ -55,6 +55,7 @@ protected:
 	void ClearContent();
 	void Complement();
 	void UpdateCandidates();
+	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
 
 	// 現在選択中のコマンドを取得
@@ -103,7 +104,9 @@ protected:
 	LRESULT OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageGetClipboardString(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
+	 
 	DECLARE_MESSAGE_MAP()
 
 public:
