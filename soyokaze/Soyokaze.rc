@@ -960,8 +960,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,22,0,1
- PRODUCTVERSION 0,22,0,1
+ FILEVERSION 0,23,0,1
+ PRODUCTVERSION 0,23,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -977,12 +977,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.22.0.1"
+            VALUE "FileVersion", "0.23.0.1"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.22.0.1"
+            VALUE "ProductVersion", "0.23.0.1"
         END
     END
     BLOCK "VarFileInfo"
