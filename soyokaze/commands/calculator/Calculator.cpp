@@ -16,6 +16,16 @@ struct Calculator::PImpl
 {
 	PImpl()
 	{
+	}
+
+	tregex& GetSysFuncRegex()
+	{
+		static bool isFirstCall = true;
+		if (isFirstCall == false) {
+			return mRegSysFuncs;
+		}
+		isFirstCall = false;
+
 		// 実行を許可しない組み込み関数群
 		std::vector<tstring> buildinFuncsions {
 			_T("aiter"), _T("all"), _T("any"), _T("anext"),
@@ -49,7 +59,7 @@ struct Calculator::PImpl
 		}
 
 		mRegSysFuncs = tregex(pattern);
-
+		return mRegSysFuncs;
 	}
 
 	PythonDLL mPython;
@@ -80,7 +90,7 @@ void Calculator::SetPythonDLLPath(const CString& dllPath)
 bool Calculator::Evaluate(const CString& src_, CString& result)
 {
 	// 実行を許可しない組み込み関数を含む場合は評価しない
-	if (std::regex_search((LPCTSTR)src_, in->mRegSysFuncs)) {
+	if (std::regex_search((LPCTSTR)src_, in->GetSysFuncRegex())) {
 		return false;
 	}
 

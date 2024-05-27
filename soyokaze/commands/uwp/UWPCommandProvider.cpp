@@ -54,7 +54,6 @@ REGISTER_COMMANDPROVIDER(UWPCommandProvider)
 
 UWPCommandProvider::UWPCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mUWPApps.GetApplications(in->mItems);
 }
 
 UWPCommandProvider::~UWPCommandProvider()
