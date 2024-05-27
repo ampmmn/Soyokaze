@@ -54,6 +54,7 @@ protected:
 	void SetDescription(const CString& msg);
 	void ClearContent();
 	void Complement();
+	void QuerySync();
 	void UpdateCandidates();
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);

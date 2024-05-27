@@ -409,7 +409,7 @@ LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
 
-	UpdateCandidates();
+	QuerySync();
 
 	return 0;
 }
@@ -461,6 +461,9 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 	else {
 		in->mCandidates.Clear();
 	}
+
+	UpdateCandidates();
+
 	return 0;
 }
 
@@ -939,9 +942,9 @@ void LauncherMainWindow::Complement()
 
 	UpdateData(FALSE);
 
-	UpdateCandidates();
+	QuerySync();
 
-	// 直前のUpdateCandidatesの結果、選択中のコマンドが変化するため、取り直す
+	// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
 	cmd = GetCurrentCommand();
 	if (cmd) {
 		// コマンド名 + " " の位置にキャレットを設定する
@@ -987,8 +990,8 @@ void LauncherMainWindow::OnEditCommandChanged()
 	GetCommandRepository()->Query(req);
 }
 
-// 候補リストを更新する
-void LauncherMainWindow::UpdateCandidates()
+// 入力キーワードで検索をリクエストを出し、完了を待つ
+void LauncherMainWindow::QuerySync()
 {
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mCommandStr.IsEmpty()) {
@@ -998,12 +1001,22 @@ void LauncherMainWindow::UpdateCandidates()
 
 	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
 
-	// キーワードによる候補の列挙
+	// キーワードによる絞り込みを実施
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
 	GetCommandRepository()->Query(req);
 
 	WaitQueryRequest();
+}
+
+// 候補欄を更新
+void LauncherMainWindow::UpdateCandidates()
+{
+	// 入力テキストが空文字列の場合はデフォルト表示に戻す
+	if (in->mCommandStr.IsEmpty()) {
+		ClearContent();
+		return;
+	}
 
 	// 候補なし
 	if (in->mCandidates.IsEmpty()) {
