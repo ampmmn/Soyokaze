@@ -129,13 +129,10 @@ void LocalPathResolver::GetSystemPath(std::vector<CString>& paths)
 	while(item.IsEmpty() == FALSE) {
 
 		// UNCや相対パスは許可しない
-		if (PathIsUNC(item)) {
+		if (PathIsUNC(item) || PathIsRelative(item)) {
+			item = val.Tokenize(_T(";"), n);
 			continue;
 		}
-		if (PathIsRelative(item)) {
-			continue;
-		}
-
 		if (PathIsDirectory(item)) {
 			pathsWork.push_back(item);
 		}
