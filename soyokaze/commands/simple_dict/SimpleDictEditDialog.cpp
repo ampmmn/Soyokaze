@@ -259,7 +259,7 @@ bool SettingDialog::UpdateStatus()
 		canTest = FALSE;
 		canCreate = FALSE;
 	}
-	else if (PathFileExists(in->mParam.mFilePath) == FALSE) {
+	else if (PathIsURL(in->mParam.mFilePath) == FALSE && PathFileExists(in->mParam.mFilePath) == FALSE) {
 		in->mMessage = _T("ファイルが存在しません");
 		canTest = FALSE;
 		canCreate = FALSE;

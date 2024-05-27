@@ -37,6 +37,11 @@ struct UPDATESTATE
 
 static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 {
+	if (PathIsURL(path)) {
+		// URLパスは非対応(ここでチェックしなくても後段のCreateFileで失敗するはずではあるが..)
+		return false;
+	}
+
 	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 	if (h == INVALID_HANDLE_VALUE) {
 		return false;
