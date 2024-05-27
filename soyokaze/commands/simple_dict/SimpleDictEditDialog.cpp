@@ -6,6 +6,7 @@
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "hotkey/CommandHotKeyDialog.h"
+#include "app/Manual.h"
 #include "resource.h"
 #include <vector>
 
@@ -99,6 +100,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_MATCHWITHOUTKEYWORD, in->mParam.mIsMatchWithoutKeyword);
 	DDX_Check(pDX, IDC_CHECK_REVERSE, in->mParam.mIsEnableReverse);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYUPDATE, in->mParam.mIsNotifyUpdate);
+	DDX_Check(pDX, IDC_CHECK_EXPANDMACRO, in->mParam.mIsExpandMacro);
 
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, in->mCommandSelIndex);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, in->mParam.mActionType);
@@ -124,6 +126,8 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 
 END_MESSAGE_MAP()
 
@@ -543,6 +547,18 @@ void SettingDialog::OnButtonHotKey()
 	UpdateStatus();
 	UpdateData(FALSE);
 }
+
+// マニュアル表示
+void SettingDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
 
 
 

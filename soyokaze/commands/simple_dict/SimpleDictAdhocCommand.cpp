@@ -87,19 +87,29 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 	bool isShiftKeyPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
 	if (isCtrlKeyPressed && isShiftKeyPressed == false) {
 		// 値をコピー
-		Clipboard::Copy(in->mValue);
+		auto value = in->mValue;
+		if (in->mParam.mIsExpandMacro) {
+			ExpandMacros(value);
+		}
+		Clipboard::Copy(value);
 		return true;
 	}
 	if (isCtrlKeyPressed == false && isShiftKeyPressed) {
 		// キーをコピー
-		Clipboard::Copy(in->mKey);
+		auto key = in->mKey;
+		if (in->mParam.mIsExpandMacro) {
+			ExpandMacros(key);
+		}
+		Clipboard::Copy(key);
 		return true;
 	}
 
 	CString argSub = in->mParam.mAfterCommandParam;
 	argSub.Replace(_T("$key"), in->mKey);
 	argSub.Replace(_T("$value"), in->mValue);
-	ExpandMacros(argSub);
+	if (in->mParam.mIsExpandMacro) {
+		ExpandMacros(argSub);
+	}
 
 	int actionType = in->mParam.mActionType;
 	if (actionType == 0) {
@@ -120,7 +130,9 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 		attr.mPath = in->mParam.mAfterFilePath;
 		attr.mPath.Replace(_T("$key"), in->mKey);
 		attr.mPath.Replace(_T("$value"), in->mValue);
-		ExpandMacros(attr.mPath);
+		if (in->mParam.mIsExpandMacro) {
+			ExpandMacros(attr.mPath);
+		}
 
 		attr.mParam = argSub;
 

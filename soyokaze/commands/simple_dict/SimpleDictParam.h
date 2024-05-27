@@ -31,6 +31,8 @@ public:
 	BOOL mIsEnableReverse;
 	// 更新を通知する
 	BOOL mIsNotifyUpdate;
+	// マクロを展開する
+	BOOL mIsExpandMacro;
 	// 後段の処理の種類
 	int mActionType;
 	// 後段のコマンド(mPostFilterType=0の場合)

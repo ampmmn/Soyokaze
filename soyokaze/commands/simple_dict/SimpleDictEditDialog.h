@@ -49,6 +49,7 @@ protected:
 	afx_msg void OnButtonBrowseAfterCommandFile();
 	afx_msg void OnButtonBrowseAfterCommandDir();
 	afx_msg void OnButtonHotKey();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 } // end of namespace simple_dict
