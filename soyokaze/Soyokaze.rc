@@ -75,6 +75,7 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\icon.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
@@ -789,7 +790,7 @@ BEGIN
     GROUPBOX        "選択後の処理",IDC_STATIC,8,283,313,98
 END
 
-IDD_WATCHPATH DIALOGEX 0, 0, 337, 126
+IDD_WATCHPATH DIALOGEX 0, 0, 337, 142
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "フォルダ更新検知コマンドの編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -803,8 +804,9 @@ BEGIN
     DEFPUSHBUTTON   "&...",IDC_BUTTON_BROWSEDIR1,302,62,28,14
     LTEXT           "通知時のメッセージ(&M):",-1,13,83,83,8
     EDITTEXT        IDC_EDIT_MESSAGE,104,80,198,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,226,105,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,105,50,14
+    CONTROL         "コマンドを無効化する(&I)",IDC_CHECK_DISABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,106,90,10
+    DEFPUSHBUTTON   "OK",IDOK,226,121,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,121,50,14
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
@@ -1262,7 +1264,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 119
+        BOTTOMMARGIN, 135
     END
 
     IDD_APPSETTING_KEY, DIALOG
@@ -1821,6 +1823,7 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0

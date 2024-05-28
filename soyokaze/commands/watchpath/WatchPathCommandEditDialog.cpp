@@ -20,7 +20,7 @@ namespace watchpath {
 
 
 CommandEditDialog::CommandEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH)
+	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH), mIsDisabled(FALSE)
 {
 	SetHelpPageId(_T("WatchPathEdit"));
 	mNotifyMessage = _T("更新を検知");
@@ -58,6 +58,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
 	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
 	DDX_Text(pDX, IDC_EDIT_MESSAGE, mNotifyMessage);
+	DDX_Check(pDX, IDC_CHECK_DISABLE, mIsDisabled);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)

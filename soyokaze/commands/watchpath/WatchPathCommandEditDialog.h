@@ -46,6 +46,8 @@ public:
 	CString mPath;
 	// メッセージ
 	CString mNotifyMessage;
+	// 無効化する
+	BOOL mIsDisabled;
 
 // 実装
 protected:

@@ -27,17 +27,11 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 struct WatchPathCommand::PImpl
 {
-	PImpl()
-	{
-	}
-	~PImpl()
-	{
-	}
-
 	CString mName;
 	CString mDescription;
 	CString mPath;
 	CString mMessage;
+	bool mIsDisabled = false;
 };
 
 
@@ -78,6 +72,10 @@ CString WatchPathCommand::GetTypeDisplayName()
 
 BOOL WatchPathCommand::Execute(const Parameter& param)
 {
+	if (in->mIsDisabled) {
+		return TRUE;
+	}
+
 	auto path = in->mPath;
 	path += _T("\\");
 
@@ -117,6 +115,7 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	dlg.mDescription = in->mDescription;
 	dlg.mPath = in->mPath;
 	dlg.mNotifyMessage = in->mMessage;
+	dlg.mIsDisabled = in->mIsDisabled ? TRUE : FALSE;
 
 	if (dlg.DoModal() != IDOK) {
 		return 1;
@@ -134,15 +133,16 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	in->mDescription = dlg.mDescription;
 	in->mPath = dlg.mPath;
 	in->mMessage = dlg.mNotifyMessage;
+	in->mIsDisabled = (dlg.mIsDisabled != FALSE);
 
 	// RegisterCommandはrefCountを+1しないので、#addrefで上げたカウントをさげる必要はない
 	cmdRepo->RegisterCommand(this);
 
-	// パスが変わったら登録しなおす
-	if (orgName != in->mName) {
-		auto watcher = PathWatcher::Get();
-		watcher->UnregisterPath(orgName);
+	// 登録しなおす
+	auto watcher = PathWatcher::Get();
+	watcher->UnregisterPath(orgName);
 
+	if (in->mIsDisabled == false) {
 		PathWatcher::ITEM item;
 		item.mPath = dlg.mPath;
 		item.mMessage = dlg.mNotifyMessage;
@@ -169,6 +169,7 @@ WatchPathCommand::Clone()
 	clonedObj->in->mName = in->mName;
 	clonedObj->in->mDescription = in->mDescription;
 	clonedObj->in->mPath = in->mPath;
+	clonedObj->in->mIsDisabled = in->mIsDisabled;
 
 	return clonedObj.release();
 }
@@ -183,6 +184,7 @@ bool WatchPathCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("path"), in->mPath);
 	cmdFile->Set(entry, _T("message"), in->mMessage);
+	cmdFile->Set(entry, _T("isDisabled"), in->mIsDisabled);
 
 	return true;
 }
@@ -195,6 +197,7 @@ bool WatchPathCommand::Load(CommandFile* cmdFile, void* entry_)
 	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
 	in->mPath = cmdFile->Get(entry, _T("path"), _T(""));
 	in->mMessage = cmdFile->Get(entry, _T("message"), _T(""));
+	in->mIsDisabled = cmdFile->Get(entry, _T("isDisabled"), false);
 
 	// 監視対象に登録
 	PathWatcher::ITEM item;
@@ -227,14 +230,17 @@ bool WatchPathCommand::NewDialog(const Parameter* param)
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mPath = dlg.mPath;
 	newCmd->in->mMessage = dlg.mNotifyMessage;
+	newCmd->in->mIsDisabled = dlg.mIsDisabled != FALSE;
 
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	// 監視対象に登録
-	PathWatcher::ITEM item;
-	item.mPath = dlg.mPath;
-	item.mMessage = dlg.mNotifyMessage;
-	PathWatcher::Get()->RegisterPath(dlg.mName, item);
+	if (newCmd->in->mIsDisabled == false) {
+		PathWatcher::ITEM item;
+		item.mPath = dlg.mPath;
+		item.mMessage = dlg.mNotifyMessage;
+		PathWatcher::Get()->RegisterPath(dlg.mName, item);
+	}
 
 	return true;
 
