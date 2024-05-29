@@ -18,8 +18,6 @@ public:
 public:
 	bool GetApplications(std::vector<ItemPtr>& items);
 
-private:
-	void EnumApplications(std::vector<ItemPtr>& items);
 
 private:
 	struct PImpl;

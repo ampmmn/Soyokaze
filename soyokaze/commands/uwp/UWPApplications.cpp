@@ -2,6 +2,7 @@
 #include "UWPApplications.h"
 #include "utility/RegistryKey.h"
 #include "icon/IconLoader.h"
+#include "SharedHwnd.h"
 #include <atlbase.h>
 #include <propvarutil.h>
 #include <mutex>
@@ -20,66 +21,76 @@ namespace launcherapp {
 namespace commands {
 namespace uwp {
 
-static const int INTERVAL = 10000;
+static constexpr int UPDATE_INTERVAL = 3600;      // 3600回*50msec = 180,000msec → 3分
 
 struct UWPApplications::PImpl
 {
+	void SetAbort()
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsAbort = true;
+	}
+	bool IsAbort()
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mIsAbort;
+	}
+	void RunUpdateTask();
+	void EnumApplications(std::vector<ItemPtr>& items);
+
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
-	DWORD mElapsed = 0;
-	bool mIsUpdated = false;
+	bool mIsAbort = false;
+	CEvent mWaitEvt;
 };
 
-
-UWPApplications::UWPApplications() : in(std::make_unique<PImpl>())
+void UWPApplications::PImpl::RunUpdateTask()
 {
-}
-
-UWPApplications::~UWPApplications()
-{
-}
-
-bool UWPApplications::GetApplications(std::vector<ItemPtr>& items)
-{
-	{
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		DWORD elapsed = GetTickCount() - in->mElapsed;
-		if (elapsed <= INTERVAL) {
-			if (in->mIsUpdated) {
-				items = in->mItems;
-				in->mIsUpdated = false;
-				return true;
-			}
-			return false;
-		}
-	}
-
 	std::thread th([&]() {
-		
+
+		Sleep(2000);
+
 		CoInitialize(NULL);
+		mWaitEvt.ResetEvent();
 
-		std::vector<ItemPtr> tmp;
-		EnumApplications(tmp);
+		bool isFirst = true;
+		int count = UPDATE_INTERVAL;
+		while(IsAbort() == false) {
+			if (count < UPDATE_INTERVAL) {
+				count++;
+				Sleep(50);
+				continue;
+			}
 
+			SharedHwnd hwnd;
+			if (IsWindow(hwnd.GetHwnd()) == FALSE) {
+				// 入力欄がクローズされたら終了
+				break;
+			}
+			if (isFirst == false && IsWindowVisible(hwnd.GetHwnd())) {
+				// 入力欄が表示されているときは更新しない
+				Sleep(50);
+				continue;
+			}
+			// カウンタをリセット
+			count = 0;
+			isFirst = false;
+
+			std::vector<ItemPtr> tmp;
+			EnumApplications(tmp);
+
+
+			std::lock_guard<std::mutex> lock(mMutex);
+			mItems = tmp;
+		}
+
+		mWaitEvt.SetEvent();
 		CoUninitialize();
-
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		in->mItems.swap(tmp);
-		in->mElapsed = GetTickCount();
-		in->mIsUpdated = true;
 	});
 	th.detach();
-
-	std::lock_guard<std::mutex> lock(in->mMutex);
-	if (in->mIsUpdated) {
-		items = in->mItems;
-		in->mIsUpdated = false;
-		return true;
-	}
-	return false;
 }
 
-void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
+void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 {
 	HRESULT hr;
 
@@ -177,6 +188,29 @@ void UWPApplications::EnumApplications(std::vector<ItemPtr>& items)
 		tmpList.push_back(newItem);
 	}
 	items.swap(tmpList);
+}
+
+
+
+UWPApplications::UWPApplications() : in(std::make_unique<PImpl>())
+{
+	in->mWaitEvt.SetEvent();
+	// 一定間隔で更新をするタスクを起動
+	in->RunUpdateTask();
+}
+
+UWPApplications::~UWPApplications()
+{
+	// 更新をするタスクの完了を待つ
+	in->SetAbort();
+	WaitForSingleObject(in->mWaitEvt, 5000);
+}
+
+bool UWPApplications::GetApplications(std::vector<ItemPtr>& items)
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	items = in->mItems;
+	return true;
 }
 
 } // end of namespace uwp
