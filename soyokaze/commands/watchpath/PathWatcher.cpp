@@ -207,16 +207,15 @@ void PathWatcher::PImpl::StartWatch()
 	// 初回にタスクを生成する
 	mTask.reset(new std::thread([&]() {
 
+		int count = 0;
 		while(IsAbort() == false) {
 
-			bool hasLocalItem = WatchForLocalPath();
-			bool hasUNCItem = WatchForUNCPath();
-			if (hasLocalItem == false && hasUNCItem == false) {
-				// 監視対象がなければ5秒待機
-				Sleep(5000);
-				continue;
+			if (count++ >= 100) {
+				WatchForLocalPath();
+				WatchForUNCPath();
+				count = 0;
 			}
-
+			Sleep(50);
 		}
 
 		// 終了処理

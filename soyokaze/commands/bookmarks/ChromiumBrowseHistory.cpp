@@ -35,11 +35,12 @@ struct ChromiumBrowseHistory::PImpl
 	void WaitExit() {
 		DWORD start = GetTickCount();
 		while (GetTickCount() - start < 3000) {
-			if (mIsExited) {
+			if (IsAbort()) {
 				break;
 			}
 			Sleep(50);
 		}
+		Sleep(250);
 	}
 
 	std::mutex mMutex;
@@ -94,9 +95,14 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 
 	dbDstPath.ReleaseBuffer();
 
+	int count = 0;
 	while(IsAbort() == false) {
 
-		Sleep(1000);
+		Sleep(50);
+		if (count++ <= 20) {
+			continue;
+		}
+		count = 0;
 
 		// ファイルがなければコピー
 		bool shouldCopy = false;
@@ -140,7 +146,6 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 			}
 		}
 	}
-	mIsExited = true;
 }
 
 ChromiumBrowseHistory::ChromiumBrowseHistory(
@@ -152,7 +157,6 @@ ChromiumBrowseHistory::ChromiumBrowseHistory(
 	in(new PImpl)
 {
 	in->mIsAbort = false;
-	in->mIsExited = false;
 	in->mId = id;
 	in->mProfileDir = profileDir;
 	in->mIsUseURL = isUseURL;

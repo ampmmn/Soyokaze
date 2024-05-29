@@ -301,10 +301,14 @@ Presentations::Presentations() : in(new PImpl)
 
 	// 監視スレッドを実行する
 	std::thread th([&]() {
+		int count = 0;
 		while(in->IsAbort() == false) {
 			try {
-				in->WatchPresentations();
-				Sleep(1000);
+				if (count++ >= 20) {
+					in->WatchPresentations();
+					count = 0;
+				}
+					Sleep(50);
 			}
 			catch(...) {
 			}
