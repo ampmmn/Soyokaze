@@ -185,7 +185,7 @@ struct SimpleDictDatabase::PImpl
 	{
 		SPDLOG_DEBUG(_T("args name:{}"), (LPCTSTR)param.mName);
 
-		size_t startIdx = param.mIsFirstRowHeader ? 1 : 0;
+		bool isSkipFirst = param.mIsFirstRowHeader != FALSE;
 
 		std::lock_guard<std::mutex> lock(mMutex);
 		auto& dictionary = mDictData[param.mName];
@@ -199,8 +199,13 @@ struct SimpleDictDatabase::PImpl
 		// データを更新
 		auto& data = dictionary.mRecords;
 		data.clear();
-		for (size_t i = startIdx; i < count; ++i) {
+		for (size_t i = 0; i < count; ++i) {
 			if (keys[i].IsEmpty() && values[i].IsEmpty()) {
+				continue;
+			}
+			if (isSkipFirst) {
+				// 「一行目をヘッダとして扱う」場合は初回のデータを無視する
+				isSkipFirst = false;
 				continue;
 			}
 			data.push_back(RECORD(keys[i], values[i]));
