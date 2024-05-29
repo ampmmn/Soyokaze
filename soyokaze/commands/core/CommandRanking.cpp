@@ -7,6 +7,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define PRIORITY_FILENAME _T("priority.dat")
+
 namespace launcherapp {
 namespace commands {
 namespace core {
@@ -17,7 +19,7 @@ struct CommandRanking::PImpl
 	{
 		TCHAR path[MAX_PATH_NTFS];
 		CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-		PathAppend(path, _T("priority.dat"));
+		PathAppend(path, PRIORITY_FILENAME);
 
 		mFilePath = path;
 
@@ -58,6 +60,7 @@ bool CommandRanking::Load()
 
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, filePath, _T("r,ccs=UTF-8")) != 0) {
+		SPDLOG_WARN(_T("priority data file does not exist. {}"), PRIORITY_FILENAME);
 		return false;
 	}
 
@@ -97,6 +100,7 @@ bool CommandRanking::Load()
 bool CommandRanking::Save()
 {
 	if (in->mIsLoaded == false) {
+		SPDLOG_WARN(_T("skip save."));
 		return false;
 	}
 
@@ -130,6 +134,7 @@ bool CommandRanking::Save()
 		return true;
 	}
 	catch(CFileException* e) {
+		spdlog::error(_T("an exception occurred."));
 		e->Delete();
 		fclose(fpOut);
 	}

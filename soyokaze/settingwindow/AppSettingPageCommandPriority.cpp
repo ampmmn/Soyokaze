@@ -151,6 +151,9 @@ void AppSettingPageCommandPriority::OnOK()
 	ASSERT(in->mCommandPriority);
 	in->mCommandPriority->CopyTo(CommandRanking::GetInstance());
 
+	// 優先度情報をファイルに保存する
+	CommandRanking::GetInstance()->Save();
+
 	__super::OnOK();
 }
 

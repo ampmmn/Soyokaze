@@ -726,9 +726,6 @@ void CommandRepository::OnAppExit()
 {
 	in->SetExit();
 
-	// 優先度情報をファイルに保存する
-	CommandRanking::GetInstance()->Save();
-
 	for (auto& provider : in->mProviders) {
 		provider->Release();
 	}
