@@ -12,6 +12,7 @@
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "SharedHwnd.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <assert.h>
@@ -120,17 +121,17 @@ BOOL ShellExecCommand::Execute(const Parameter& param_)
 {
 	Parameter param(param_);
 
-	std::vector<CString> args;
-	param.GetParameters(args);
 
 	if (param.HasParameter() == false && in->mParam.mIsShowArgDialog) {
 		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
-		ArgumentDialog dlg(GetName());
+		SharedHwnd hwnd;
+		ArgumentDialog dlg(GetName(), CWnd::FromHandle(hwnd.GetHwnd()));
 		if (dlg.DoModal() != IDOK) {
 			return TRUE;
 		}
 		param.SetParamString(dlg.GetArguments());
 	}
+
 
 
 	// 実行時引数が与えられた場合は履歴に登録しておく
@@ -139,6 +140,9 @@ BOOL ShellExecCommand::Execute(const Parameter& param_)
 	}
 
 	in->mErrMsg.Empty();
+
+	std::vector<CString> args;
+	param.GetParameters(args);
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
 	ATTRIBUTE attr;
