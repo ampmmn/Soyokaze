@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "gui/KeywordManagerDialog.h"
+#include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -40,6 +41,7 @@ enum {
 struct KeywordManagerDialog::PImpl
 {
 	void SortCommands();
+	void SelectItem(int selItemIndex, bool isRedraw);
 
 	Command* GetItem(int index) {
 		ASSERT(0 <= index && index < mShowCommands.size()); 
@@ -57,6 +59,7 @@ struct KeywordManagerDialog::PImpl
 
 	CListCtrl mListCtrl;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
+	KeywordEdit mKeywordEdit;
 
 	CommandHotKeyMappings mKeyMapping;
 
@@ -111,6 +114,29 @@ void KeywordManagerDialog::PImpl::SortCommands()
 	}
 }
 
+// 選択状態の更新
+void KeywordManagerDialog::PImpl::SelectItem(int selItemIndex, bool isRedraw)
+{
+	int itemIndex = 0;
+	for (auto& cmd : mShowCommands) {
+
+		bool isSelItem = itemIndex== selItemIndex;
+		if (isSelItem) {
+			mSelCommand = cmd;
+		}
+		mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+		itemIndex++;
+	}
+	mListCtrl.EnsureVisible(selItemIndex, FALSE);
+
+	if (isRedraw) {
+		mListCtrl.Invalidate();
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 KeywordManagerDialog::KeywordManagerDialog() : 
 	launcherapp::gui::SinglePageDialog(IDD_KEYWORDMANAGER),
@@ -148,6 +174,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST_COMMANDS, OnHeaderClicked)
 	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_COMMANDS, OnGetDispInfo)
 	ON_NOTIFY(LVN_ODFINDITEM , IDC_LIST_COMMANDS, OnFindCommand)
+	ON_MESSAGE(WM_APP+1, OnKeywrodEditKeyDown)
 END_MESSAGE_MAP()
 
 
@@ -158,6 +185,7 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
+	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_FILTER, this);
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	// リスト　スタイル変更
@@ -322,17 +350,7 @@ void KeywordManagerDialog::UpdateListItems()
 	}
 
 	// 選択状態の更新
-	int itemIndex = 0;
-	for (auto& cmd : in->mShowCommands) {
-
-		bool isSelItem = itemIndex== selItemIndex;
-		if (isSelItem) {
-			in->mSelCommand = cmd;
-		}
-		in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
-		itemIndex++;
-	}
-	in->mListCtrl.Invalidate();
+	in->SelectItem(selItemIndex, true);
 }
 
 void KeywordManagerDialog::OnEditFilterChanged()
@@ -541,5 +559,28 @@ void KeywordManagerDialog::OnFindCommand(
 			return;
 		}
 	}
+}
+
+LRESULT KeywordManagerDialog::OnKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
+{
+	// 矢印↓キー押下
+	if (wParam ==VK_DOWN) {
+		in->mListCtrl.SetFocus();
+
+		in->SelectItem(0, false);
+		return 1;
+	}
+	if (wParam ==VK_UP) {
+		in->mListCtrl.SetFocus();
+
+		int visibleItems = (int)(in->mShowCommands.size());
+		in->SelectItem(visibleItems - 1, false);
+		return 1;
+	}
+	else if (wParam == VK_TAB) {
+		in->mListCtrl.SetFocus();
+		return 1;
+	}
+	return 0;
 }
 
