@@ -107,7 +107,7 @@ void TaskTray::ShowMessage(const CString& msg, const CString& title)
 LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 {
 	UINT nID   = (UINT)wp;
-	UINT msg = (UINT)lp;
+	UINT msg = (UINT)LOWORD(lp);
 	
 	if (nID != ID_SOYOKAZE_TASKTRAY) {
 		return 0;
@@ -116,7 +116,7 @@ LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 	if (msg == WM_LBUTTONDBLCLK) {
 		mListenerPtr->OnTaskTrayLButtonDblclk();
 	}
-	else if (msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN) {
+	else if (msg == WM_RBUTTONDOWN) {
 		OnContextMenu();
 	}
 
