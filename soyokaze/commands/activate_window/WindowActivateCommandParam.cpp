@@ -23,13 +23,6 @@ HWND CommandParam::FindHwnd()
 		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
 			auto thisPtr = (local_param*)lp;
 
-			LONG_PTR style = GetWindowLongPtr(h, GWL_STYLE);
-			LONG_PTR styleRequired = (WS_VISIBLE);
-			if ((style & styleRequired) != styleRequired) {
-				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
-				return TRUE;
-			}
-
 			if (thisPtr->mParam->mCaptionStr.IsEmpty() == FALSE) {
 				TCHAR caption[256];
 				::GetWindowText(h, caption, 256);

@@ -93,6 +93,10 @@ BOOL WindowActivateCommand::Execute(const Parameter& param)
 
 	ScopeAttachThreadInput scope;
 
+	if (IsWindowVisible(hwndTarget) == FALSE) {
+		ShowWindow(hwndTarget, SW_SHOW);
+	}
+
 	LONG_PTR style = GetWindowLongPtr(hwndTarget, GWL_STYLE);
 	if (param.GetNamedParamBool(_T("CtrlKeyPressed")) && (style & WS_MAXIMIZE) == 0) {
 		// Ctrlキーが押されていたら最大化表示する
