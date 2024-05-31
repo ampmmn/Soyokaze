@@ -1395,6 +1395,11 @@ void LauncherMainWindow::OnContextMenu(
 	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
 
 	spdlog::info(_T("Show context menu."));
+
+	// TrackPopupMenuをよぶ時点でSetForegroundWindowでウインドウをアクティブにしておかないと
+	// ポップアップメニュー以外の領域をクリックしたときにメニューが閉じないので、ここで呼んでおく
+	SetForegroundWindow();
+
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	spdlog::debug(_T("selected menu id:{}"), n);
 
