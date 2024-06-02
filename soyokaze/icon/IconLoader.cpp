@@ -17,6 +17,8 @@
 
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
+using IconIndexMap = std::map<int, HICON>;
+
 struct IconLoader::PImpl
 {
 	PImpl() : 
@@ -38,18 +40,6 @@ struct IconLoader::PImpl
 
 	}
 
-	int GetImageResIconCount()
-	{
-		return (int)ExtractIconEx(mImgResDll, 0, nullptr, nullptr, 0);
-	}
-
-	HICON GetImageResIcon(int index)
-	{
-		HICON icon[1];
-		UINT n = ExtractIconEx(mImgResDll, index, icon, NULL, 1);
-		return (n == 1) ? icon[0]: NULL;
-	}
-
 	HICON GetShell32Icon(int index)
 	{
 		HICON icon[1];
@@ -57,11 +47,20 @@ struct IconLoader::PImpl
 		return (n == 1) ? icon[0]: NULL;
 	}
 
+	IconIndexMap& GetIconIndexMap(const CString& path)
+	{
+		auto it = mIconIndexCache.find(path);
+		if (it != mIconIndexCache.end()) {
+			return it->second;
+		}
+		mIconIndexCache[path] = IconIndexMap();
+
+		return mIconIndexCache[path];
+	}
 
 	TCHAR mImgResDll[MAX_PATH_NTFS];
 	TCHAR mShell32Dll[MAX_PATH_NTFS];
-	std::map<int, HICON> mShell32IconCache;
-	std::map<int, HICON> mImageResIconCache;
+	std::map<CString, IconIndexMap> mIconIndexCache;
 	std::map<CString, HICON> mDefaultIconCache;
 	std::map<CString, HICON> mFileExtIconCache;
 	std::map<CString, HICON> mAppIconMap;
@@ -79,14 +78,11 @@ IconLoader::IconLoader() : in(std::make_unique<PImpl>())
 
 IconLoader::~IconLoader()
 {
-	for (auto& elem : in->mShell32IconCache) {
-		if (elem.second) {
-			DestroyIcon(elem.second);
-		}
-	}
-	for (auto& elem : in->mImageResIconCache) {
-		if (elem.second) {
-			DestroyIcon(elem.second);
+	for (auto& elem : in->mIconIndexCache) {
+		for (auto& elem2 : elem.second) {
+			if (elem2.second) {
+				DestroyIcon(elem2.second);
+			}
 		}
 	}
 	for (auto& elem : in->mDefaultIconCache) {
@@ -257,33 +253,32 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 
 HICON IconLoader::GetShell32Icon(int index)
 {
-	auto it = in->mShell32IconCache.find(index);
-	if (it != in->mShell32IconCache.end()) {
-		return it->second;
-	}
-
-	HICON h =in->GetShell32Icon(index);
-	if (h == NULL) {
-		return nullptr;
-	}
-
-	in->mShell32IconCache[index] = h;
-	return h;
+	return LoadIconResource(in->mShell32Dll, index);
 }
 
 HICON IconLoader::GetImageResIcon(int index)
 {
-	auto it = in->mImageResIconCache.find(index);
-	if (it != in->mImageResIconCache.end()) {
+	return LoadIconResource(in->mImgResDll, index);
+}
+
+// ファイルがリソースとして保持するアイコンを取得
+HICON IconLoader::LoadIconResource(const CString& path, int index)
+{
+	IconIndexMap& idxMap = in->GetIconIndexMap(path);
+
+	auto it = idxMap.find(index);
+	if (it != idxMap.end()) {
 		return it->second;
 	}
 
-	HICON h =in->GetImageResIcon(index);
-	if (h == NULL) {
+	HICON icon[1];
+	UINT n = ExtractIconEx(path, index, icon, nullptr, 1);
+	HICON h = (n == 1) ? icon[0]: nullptr;
+	if (h == nullptr) {
 		return nullptr;
 	}
 
-	in->mImageResIconCache[index] = h;
+	idxMap[index] = h;
 	return h;
 }
 
@@ -328,7 +323,6 @@ HICON IconLoader::LoadSettingIcon()
 
 HICON IconLoader::LoadExitIcon()
 {
-	int n = in->GetImageResIconCount();
 	return GetImageResIcon(-5102);
 }
 
@@ -430,14 +424,12 @@ void IconLoader::RegisterIcon(const CString& appId, HICON icon)
 
 HICON IconLoader::LoadEditIcon()
 {
-	// ToDo: 実装
-	return in->mEditIcon;
+	return GetShell32Icon(-16826);
 }
 
 HICON IconLoader::LoadKeywordManagerIcon()
 {
-	// ToDo: 実装
-	return in->mKeywordManagerIcon;
+	return GetShell32Icon(-16826);
 }
 
 HICON IconLoader::LoadDefaultIcon()

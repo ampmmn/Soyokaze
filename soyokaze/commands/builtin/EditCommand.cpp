@@ -73,7 +73,7 @@ BOOL EditCommand::Execute(const Parameter& param)
 
 HICON EditCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadEditIcon();
 }
 
 launcherapp::core::Command* EditCommand::Clone()

@@ -46,7 +46,7 @@ BOOL ManagerCommand::Execute(const Parameter& param)
 
 HICON ManagerCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadKeywordManagerIcon();
 }
 
 launcherapp::core::Command* ManagerCommand::Clone()

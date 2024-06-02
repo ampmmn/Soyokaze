@@ -264,15 +264,17 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,106,253,10
     CONTROL         "PowerPointのスライドタイトルによる選択を有効にする(&T)",IDC_CHECK_ENABLE_SLIDE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,119,253,10
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,151,282,65
+    CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,132,253,10
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,151,282,76
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,165,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,181,206,10
     CONTROL         "アプリケーション(UWPアプリなど)を候補として表示する(&W)",IDC_CHECK_ENABLE_UWPAPPS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,197,192,10
-    CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,132,253,10
+    CONTROL         "MMCスナップインを候補として表示する(&S)",IDC_CHECK_ENABLE_MMCSNAPINS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,213,144,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140

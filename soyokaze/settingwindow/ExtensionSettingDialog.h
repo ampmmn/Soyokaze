@@ -24,6 +24,8 @@ public:
 	BOOL mIsEnableSpecialFolder;
 	// UWPアプリ選択機能
 	BOOL mIsEnableUWP;
+	// MMCスナップイン選択機能
+	BOOL mIsEnableMMCSnapin;
 	// Outlookメール選択機能(Inboxのみ)
 	BOOL mIsEnableOutlookMail;
 

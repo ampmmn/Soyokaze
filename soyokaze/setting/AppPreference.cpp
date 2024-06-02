@@ -766,6 +766,12 @@ bool AppPreference::IsEnableUWP()
 	return in->Get(_T("Soyokaze:IsEnableUWP"), true);
 }
 
+// MMCスナップインの検索を使用するか
+bool AppPreference::IsEnableMMCSnapin()
+{
+	return in->Get(_T("Soyokaze:IsEnableMMCSnapin"), true);
+}
+
 // Outlookのメール(受信トレイ)の検索を使用するか
 bool AppPreference::IsEnableOutlookMailItem()
 {

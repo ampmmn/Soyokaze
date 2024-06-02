@@ -393,6 +393,10 @@
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
+    <ClInclude Include="commands\mmc\MMCCommand.h" />
+    <ClInclude Include="commands\mmc\MMCCommandProvider.h" />
+    <ClInclude Include="commands\mmc\MMCSnapin.h" />
+    <ClInclude Include="commands\mmc\MMCSnapins.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommand.h" />
@@ -648,6 +652,11 @@
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
+    <ClCompile Include="commands\mmc\MMCCommand.cpp" />
+    <ClCompile Include="commands\mmc\MMCCommandProvider.cpp" />
+    <ClCompile Include="commands\mmc\MMCSnapins.cpp">
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MultiProcessorCompilation>
+    </ClCompile>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />

@@ -7,6 +7,7 @@ class IconLoader
 public:
 	static IconLoader* Get();
 
+	// ファイルに関連付けられたアイコンを取得
 	HICON LoadIconFromPath(const CString& path);
 	// ファイル拡張子に関連付けられたアイコンを取得
 	HICON LoadExtensionIcon(const CString& fileExt);
@@ -21,6 +22,8 @@ public:
 
 	HICON GetShell32Icon(int index);
 	HICON GetImageResIcon(int index);
+	// ファイルがリソースとして保持するアイコンを取得
+	HICON LoadIconResource(const CString& path, int index);
 
 	HICON LoadFolderIcon();
 	HICON LoadWebIcon();

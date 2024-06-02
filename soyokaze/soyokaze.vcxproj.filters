@@ -160,6 +160,9 @@
     <Filter Include="commands\volumecontrol">
       <UniqueIdentifier>{6c0145c3-38fc-4070-a139-9883bb0aa980}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\mmc">
+      <UniqueIdentifier>{f68e1d43-9b05-4f8f-ad6b-4f8b5673401e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -921,6 +924,18 @@
     <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h">
       <Filter>commands\volumecontrol</Filter>
     </ClInclude>
+    <ClInclude Include="commands\mmc\MMCCommand.h">
+      <Filter>commands\mmc</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\mmc\MMCCommandProvider.h">
+      <Filter>commands\mmc</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\mmc\MMCSnapin.h">
+      <Filter>commands\mmc</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\mmc\MMCSnapins.h">
+      <Filter>commands\mmc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1633,6 +1648,15 @@
     </ClCompile>
     <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp">
       <Filter>commands\volumecontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mmc\MMCCommand.cpp">
+      <Filter>commands\mmc</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mmc\MMCCommandProvider.cpp">
+      <Filter>commands\mmc</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mmc\MMCSnapins.cpp">
+      <Filter>commands\mmc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

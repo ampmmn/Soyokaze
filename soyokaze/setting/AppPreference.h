@@ -118,6 +118,8 @@ public:
 
 	// UWPアプリの検索を使用するか
 	bool IsEnableUWP();
+	// MMCスナップインの検索を使用するか
+	bool IsEnableMMCSnapin();
 
 	// Outlookのメール(受信トレイ)の検索を使用するか
 	bool IsEnableOutlookMailItem();

@@ -23,6 +23,7 @@
 |[group](./group)|グループコマンド|
 |[history](./history)|実行履歴コマンド<br>(ブラウザ履歴とは別。このアプリ内のコマンド実行履歴。)|
 |[mailto](./mailto)|メール送信コマンド|
+|[mmc](./mmc)|MMCスナップインコマンド|
 |[outlook](./outlook)|OutlookのInboxにあるメールを候補として表示するコマンド|
 |[pathconvert](./pathconvert)|パス変換系コマンド<br>(file:///...や/c/path/to/file... とローカルパスの相互変換)|
 |[pathfind](./pathfind)|アプリ内の`ファイル名を指定して実行`コマンド。<br>環境変数PATH以下にある`exe`ファイル、またはURLをランチャーから実行するコマンド|

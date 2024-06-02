@@ -48,10 +48,10 @@ void UWPApplications::PImpl::RunUpdateTask()
 {
 	std::thread th([&]() {
 
-		Sleep(2000);
-
-		CoInitialize(NULL);
 		mWaitEvt.ResetEvent();
+
+		Sleep(2000);
+		CoInitialize(NULL);
 
 		bool isFirst = true;
 		int count = UPDATE_INTERVAL;
