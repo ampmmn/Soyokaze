@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "MMCSnapins.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include <thread>
 
 #import <msxml6.dll> raw_interfaces_only
@@ -12,11 +14,32 @@ namespace launcherapp {
 namespace commands {
 namespace mmc {
 
-struct MMCSnapins::PImpl
+struct MMCSnapins::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
 	void RunCollectTask();
 	void EnumItems(std::vector<MMCSnapin>& items);
 	bool LoadItem(LPCTSTR filePath, MMCSnapin& item);
+
+	void OnAppFirstBoot() override
+ 	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override
+ 	{
+		mWaitEvt.SetEvent();
+		RunCollectTask();
+	}
+	void OnAppPreferenceUpdated() override {}
+	void OnAppExit() override {}
 
 	std::mutex mMutex;
 	std::vector<MMCSnapin> mItems;
@@ -489,7 +512,6 @@ bool MMCSnapins::PImpl::LoadItem(
 MMCSnapins::MMCSnapins() : in(new PImpl)
 {
 	in->mWaitEvt.SetEvent();
-	in->RunCollectTask();
 }
 
 MMCSnapins::~MMCSnapins()

@@ -723,6 +723,10 @@ void LauncherMainWindow::OnAppFirstBoot()
 {
 }
 
+void LauncherMainWindow::OnAppNormalBoot()
+{
+}
+
 void LauncherMainWindow::OnAppPreferenceUpdated()
 {
 	auto pref = AppPreference::Get();

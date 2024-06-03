@@ -33,6 +33,8 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
+	void OnAppNormalBoot() override {}
+
 	void OnAppPreferenceUpdated() override
 	{
 		LoadSettings();

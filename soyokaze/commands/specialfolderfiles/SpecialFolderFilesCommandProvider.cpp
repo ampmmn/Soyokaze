@@ -29,6 +29,7 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 
 	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();

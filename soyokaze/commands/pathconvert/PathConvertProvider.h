@@ -18,14 +18,14 @@ public:
 	void AddHistory(const CString& word, const CString& fullPath);
 
 public:
-	// $B%3%^%s%I$NFI$_9~$_(B
+	// コマンドの読み込み
 	virtual void LoadCommands(CommandFile* commandFile);
 
 	virtual CString GetName();
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
+	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 
-	// $B@_Dj%Z!<%8$r<hF@$9$k(B
+	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
 
 	DECLARE_COMMANDPROVIDER(PathConvertProvider)

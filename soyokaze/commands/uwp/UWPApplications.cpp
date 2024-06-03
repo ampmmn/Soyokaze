@@ -3,6 +3,8 @@
 #include "utility/RegistryKey.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
+#include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include <atlbase.h>
 #include <propvarutil.h>
 #include <mutex>
@@ -23,8 +25,17 @@ namespace uwp {
 
 static constexpr int UPDATE_INTERVAL = 3600;      // 3600回*50msec = 180,000msec → 3分
 
-struct UWPApplications::PImpl
+struct UWPApplications::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
 	void SetAbort()
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -37,6 +48,18 @@ struct UWPApplications::PImpl
 	}
 	void RunUpdateTask();
 	void EnumApplications(std::vector<ItemPtr>& items);
+
+	void OnAppFirstBoot() override 
+	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override
+ 	{
+		// 一定間隔で更新をするタスクを起動
+		RunUpdateTask();
+	}
+	void OnAppPreferenceUpdated() override {}
+	void OnAppExit() override {}
 
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
@@ -195,8 +218,6 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 UWPApplications::UWPApplications() : in(std::make_unique<PImpl>())
 {
 	in->mWaitEvt.SetEvent();
-	// 一定間隔で更新をするタスクを起動
-	in->RunUpdateTask();
 }
 
 UWPApplications::~UWPApplications()

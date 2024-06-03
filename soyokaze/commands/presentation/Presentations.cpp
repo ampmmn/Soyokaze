@@ -92,7 +92,36 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		return slideCount != (int)mItems.size();
 	}
 
-	void OnAppFirstBoot() override {}
+	void RunWatchThread()
+	{
+		mIsExited = false;
+		// 監視スレッドを実行する
+		std::thread th([&]() {
+			int count = 0;
+			while(IsAbort() == false) {
+				try {
+					if (count++ >= 20) {
+						WatchPresentations();
+						count = 0;
+					}
+						Sleep(50);
+				}
+				catch(...) {
+				}
+			}
+			mIsExited = true;
+		});
+		th.detach();
+	}
+
+	void OnAppFirstBoot() override
+ 	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override 
+	{
+		RunWatchThread();
+	}
 	void OnAppPreferenceUpdated() override
 	{
 		Load();
@@ -115,7 +144,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	bool mIsAbort = false;
-	bool mIsExited = false;
+	bool mIsExited = true;
 	bool mIsAvailable = false;
 	bool mIsFirstCall = true;
 
@@ -291,31 +320,12 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 
 Presentations::Presentations() : in(new PImpl)
 {
-	in->mIsExited = false;
 	in->mIsAbort = false;
 	in->mIsAvailable = in->IsAvailable();
 	if (in->mIsAvailable == false) {
 		// PowerPointが利用できない
 		return ;
 	}
-
-	// 監視スレッドを実行する
-	std::thread th([&]() {
-		int count = 0;
-		while(in->IsAbort() == false) {
-			try {
-				if (count++ >= 20) {
-					in->WatchPresentations();
-					count = 0;
-				}
-					Sleep(50);
-			}
-			catch(...) {
-			}
-		}
-		in->mIsExited = true;
-	});
-	th.detach();
 }
 
 Presentations::~Presentations()

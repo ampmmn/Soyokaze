@@ -141,6 +141,10 @@ void MainWindowHotKey::OnAppFirstBoot()
 {
 }
 
+void MainWindowHotKey::OnAppNormalBoot()
+{
+}
+
 void MainWindowHotKey::OnAppPreferenceUpdated()
 {
 	// アプリ設定変更の影響を受ける項目の再登録

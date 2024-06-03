@@ -71,6 +71,7 @@ protected:
 	LRESULT OnTaskTrayContextMenu(CWnd* wnd, CPoint point) override;
 
 	void OnAppFirstBoot() override;
+	void OnAppNormalBoot() override;
 	void OnAppPreferenceUpdated() override;
 	void OnAppExit() override;
 

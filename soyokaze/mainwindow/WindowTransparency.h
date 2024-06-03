@@ -22,6 +22,7 @@ protected:
 
 
 	void OnAppFirstBoot() override;
+	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override;
 	void OnAppExit() override;
 

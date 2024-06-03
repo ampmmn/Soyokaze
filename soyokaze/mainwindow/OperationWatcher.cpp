@@ -75,6 +75,7 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 	void OnAppFirstBoot() override
 	{
 	}
+	void OnAppNormalBoot() override {}
 
 	void OnAppPreferenceUpdated() override
 	{

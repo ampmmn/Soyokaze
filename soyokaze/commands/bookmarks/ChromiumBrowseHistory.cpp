@@ -4,6 +4,8 @@
 #include "utility/AppProfile.h"
 #include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include <thread>
 #include <mutex>
 
@@ -18,8 +20,17 @@ namespace bookmarks {
 using CharConverter = launcherapp::utility::CharConverter;
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
-struct ChromiumBrowseHistory::PImpl
+struct ChromiumBrowseHistory::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
 	void WatchHistoryDB();
 
 	bool IsAbort() {
@@ -42,6 +53,20 @@ struct ChromiumBrowseHistory::PImpl
 		}
 		Sleep(250);
 	}
+
+	void OnAppFirstBoot() override 
+	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override
+ 	{
+		std::thread th([&]() {
+			WatchHistoryDB();
+		});
+		th.detach();
+	}
+	void OnAppPreferenceUpdated() override {}
+	void OnAppExit() override {}
 
 	std::mutex mMutex;
 	bool mIsAbort;
@@ -162,10 +187,6 @@ ChromiumBrowseHistory::ChromiumBrowseHistory(
 	in->mIsUseURL = isUseURL;
 	in->mIsUseMigemo = isUseMigemo;
 
-	std::thread th([&]() {
-			in->WatchHistoryDB();
-	});
-	th.detach();
 }
 
 ChromiumBrowseHistory::~ChromiumBrowseHistory()

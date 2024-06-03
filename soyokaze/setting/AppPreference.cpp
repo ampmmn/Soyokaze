@@ -622,7 +622,6 @@ bool AppPreference::CreateUserDirectory()
 		}
 	}
 
-
 	if (IsDirectoryEmpty(path)) {
 		// ディレクトリが空の場合は初回起動とみなす
 		CString msg;
@@ -632,6 +631,12 @@ bool AppPreference::CreateUserDirectory()
 		// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
 		for (auto& listener : in->mListeners) {
 			listener->OnAppFirstBoot();
+		}
+	}
+	else {
+		// 2回目以降の起動(設定値の取得が可能であること)を通知
+		for (auto& listener : in->mListeners) {
+			listener->OnAppNormalBoot();
 		}
 	}
 

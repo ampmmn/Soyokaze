@@ -24,6 +24,7 @@ struct Logger::PImpl : public AppPreferenceListenerIF
 	void OnAppFirstBoot() override
 	{
 	}
+	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
 		// ログレベルを取得

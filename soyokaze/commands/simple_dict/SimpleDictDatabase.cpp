@@ -3,6 +3,8 @@
 #include "commands/simple_dict/SimpleDictCommand.h"
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "utility/TimeoutChecker.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "commands/common/Message.h" // for PopupMessage
 #include <thread>
 #include <mutex>
@@ -52,10 +54,20 @@ static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 }
 
 
-struct SimpleDictDatabase::PImpl
+struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 {
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
 	void StartWatch()
 	{
+		mIsExited = false;
 		std::thread th([&]() {
 
 			spdlog::info(_T("[SimpleDict] Start Watch Thread"));
@@ -232,6 +244,18 @@ struct SimpleDictDatabase::PImpl
 	void MatchKeyValue(Pattern* pattern, std::vector<ITEM>& items, const CString& cmdName, const CString& keyStr,	const CString& valueStr,bool isMatchWithoutKeyword, bool isEnableReverse);
 	void MatchDict(Pattern* pattern, std::vector<ITEM>& items, int limit, utility::TimeoutChecker& tm, const CString& cmdName, const DICTIONARY& dictionary);
 
+
+	void OnAppFirstBoot() override 
+	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override 
+	{
+		StartWatch();
+	}
+	void OnAppPreferenceUpdated() override {}
+	void OnAppExit() override {}
+
 	// key:コマンド名, value: DICTIONARY
 	std::map<CString, DICTIONARY> mDictData;  // ToDo: 自前でなくsqlite経由にしたい
 
@@ -243,7 +267,7 @@ struct SimpleDictDatabase::PImpl
 
 	std::mutex mMutex;
 	bool mIsAbort = false;
-	bool mIsExited = false;
+	bool mIsExited = true;
 	DWORD mLastUpdateCheckTime = 0;
 };
 
@@ -341,7 +365,6 @@ void SimpleDictDatabase::PImpl::MatchDict(
 
 SimpleDictDatabase::SimpleDictDatabase() : in(new PImpl)
 {
-	in->StartWatch();
 }
 
 SimpleDictDatabase::~SimpleDictDatabase()

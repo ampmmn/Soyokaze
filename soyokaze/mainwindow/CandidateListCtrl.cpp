@@ -372,6 +372,10 @@ void CandidateListCtrl::OnAppFirstBoot()
 	// 初回起動時、これが呼ばれる時点でこのクラスはたぶんインスタンス化されてない
 }
 
+void CandidateListCtrl::OnAppNormalBoot()
+{
+}
+
 void CandidateListCtrl::OnAppPreferenceUpdated()
 {
 	// カラムを再生成する

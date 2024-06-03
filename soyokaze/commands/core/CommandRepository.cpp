@@ -626,8 +626,6 @@ CommandRepository::Query(
 	const QueryRequest& newRequest
 )
 {
-	// 初回に問い合わせスレッドを起動する
-	in->RunQueryThread();
 	// 問い合わせリクエストをキューに追加
 	in->AddRequest(newRequest);
 }
@@ -714,6 +712,14 @@ void CommandRepository::OnAppFirstBoot()
 	// コマンド設定ファイルを保存
 	in->SaveCommands();
 
+	// 問い合わせキュー処理用スレッドを起動する
+	in->RunQueryThread();
+}
+
+void CommandRepository::OnAppNormalBoot()
+{
+	// 問い合わせキュー処理用スレッドを起動する
+	in->RunQueryThread();
 }
 
 void CommandRepository::OnAppPreferenceUpdated()

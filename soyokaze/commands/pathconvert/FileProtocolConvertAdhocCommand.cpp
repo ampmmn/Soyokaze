@@ -34,6 +34,7 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	}
 
 	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
 		reload();
