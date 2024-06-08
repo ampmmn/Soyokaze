@@ -8,7 +8,7 @@
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
-#include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "resource.h"
 
 using namespace launcherapp::commands::common;
@@ -171,9 +171,10 @@ bool SettingDialog::UpdateStatus()
 	bool canTest = in->mParam.mCaptionStr.IsEmpty() == FALSE || in->mParam.mClassStr.IsEmpty() == FALSE;
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
 
-	const CString& name = in->mParam.mName;
-	if (name.IsEmpty()) {
-		in->mMessage = _T("コマンド名を入力してください");
+	// 名前チェック
+	bool isNameValid =
+	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
@@ -194,25 +195,6 @@ bool SettingDialog::UpdateStatus()
 	if (in->mParam.BuildClassRegExp(&msg)  == false) {
 		AfxMessageBox(msg);
 		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (name.CompareNoCase(in->mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-			return false;
-		}
-	}
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(name) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

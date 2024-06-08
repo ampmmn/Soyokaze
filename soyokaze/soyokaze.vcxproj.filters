@@ -957,6 +957,9 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h">
       <Filter>commands\ejectvolume</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\CommandEditValidation.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1693,6 +1696,9 @@
     </ClCompile>
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp">
       <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\CommandEditValidation.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

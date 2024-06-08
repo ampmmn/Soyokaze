@@ -2,7 +2,7 @@
 #include "EjectVolumeEditDialog.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
-#include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -162,30 +162,9 @@ void SettingDialog::UpdateStatus()
 		in->mDriveLetterMsg += _T("\n(取り外しができるのはリムーバブルメディアとディスクドライブのみ)");
 	}
 
-	bool canPressOK = true;
-
 	// 名前チェック
-	const CString& name = in->mParam.mName;
-	if (name.IsEmpty()) {
-		in->mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		canPressOK = false;
-	}
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (name.CompareNoCase(in->mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			canPressOK = false;
-		}
-	}
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(name) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		canPressOK = false;
-	}
+	bool canPressOK =
+	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
 
 	// OKボタンの状態変更
 	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);

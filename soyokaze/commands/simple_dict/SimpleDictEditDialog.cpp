@@ -4,6 +4,7 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "app/Manual.h"
@@ -249,8 +250,10 @@ bool SettingDialog::UpdateStatus()
 	BOOL canTest = TRUE;
 	BOOL canCreate = TRUE;
 
-	if (in->mParam.mName.IsEmpty()) {
-		in->mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
+	// 名前チェック
+	bool isNameValid =
+	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	if (isNameValid == false) {
 		canTest = FALSE;
 		canCreate = FALSE;
 	}
@@ -283,27 +286,7 @@ bool SettingDialog::UpdateStatus()
 		in->mMessage = _T("テストを押下して内容を確認してください");
 		canCreate = FALSE;
 	}
-
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
-
-	// 重複チェック
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	if (in->mParam.mName.CompareNoCase(in->mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mParam.mName, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-			return false;
-		}
-	}
-
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(in->mParam.mName) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
 
 	if (canCreate) {
 		in->mMessage.Empty();

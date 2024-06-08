@@ -8,7 +8,7 @@
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
-#include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "resource.h"
 
 using namespace launcherapp::commands::common;
@@ -197,6 +197,8 @@ void SettingDialog::OnOK()
 
 bool SettingDialog::UpdateStatus()
 {
+	in->mMessage.Empty();
+
 	// ボタンの状態を更新
 	POSITION pos = in->mListPtr->GetFirstSelectedItemPosition();
 	bool hasSelect = pos != NULL;
@@ -212,40 +214,17 @@ bool SettingDialog::UpdateStatus()
 		GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
 	}
 
-	const CString& name = in->mParam.mName;
-	if (name.IsEmpty()) {
-		in->mMessage = _T("コマンド名を入力してください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-	if (in->mParam.mItems.size() == 0) {
+	// 名前チェック
+	bool canPressOK =
+	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+
+	if (canPressOK && in->mParam.mItems.size() == 0) {
 		in->mMessage = _T("整列するウインドウを追加してください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		canPressOK = false;
 		return false;
 	}
 
-	in->mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (name.CompareNoCase(in->mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-			return false;
-		}
-	}
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(name) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
+	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
 	return true;
 }
 

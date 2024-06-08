@@ -3,6 +3,7 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "gui/ModalComboBox.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>
@@ -139,6 +140,8 @@ BOOL GroupEditDialog::OnInitDialog()
 
 bool GroupEditDialog::UpdateStatus()
 {
+	mMessage.Empty();
+
 	GetDlgItem(IDC_EDIT_REPEATS)->EnableWindow(mParam.mIsRepeat);
 
 	// 32を上限とする
@@ -147,19 +150,6 @@ bool GroupEditDialog::UpdateStatus()
 	mHotKey = mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
-
-	BOOL canCreate = TRUE;
-
-	if (mParam.mName.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		canCreate = FALSE;
-	}
-	if (canCreate && mParam.mItems.empty()) {
-		mMessage.LoadString(IDS_ERR_GROUPITEMEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		canCreate = FALSE;
 	}
 
 	// ボタンの状態を更新
@@ -176,34 +166,18 @@ bool GroupEditDialog::UpdateStatus()
 		GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
 		GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
 	}
-
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
 	// ToDo: 存在しないコマンドがあったら警告
 
-	// 重複チェック
-	if (mParam.mName.CompareNoCase(mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mParam.mName, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-		}
+	// 名前チェック
+	bool canPressOK =
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+
+	if (canPressOK && mParam.mItems.empty()) {
+		mMessage.LoadString(IDS_ERR_GROUPITEMEMPTY);
+		canPressOK = FALSE;
 	}
 
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(mParam.mName) == false) {
-		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	if (canCreate) {
-		mMessage.Empty();
-		GetDlgItem(IDOK)->EnableWindow(TRUE);
-	}
-
+	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
 	return true;
 }
 

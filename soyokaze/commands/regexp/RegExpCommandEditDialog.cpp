@@ -3,7 +3,7 @@
 #include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
-#include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -154,6 +154,8 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
+	mMessage.Empty();
+
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
@@ -165,41 +167,16 @@ bool CommandEditDialog::UpdateStatus()
 		mIconLabelPtr->DrawIcon(mIcon);
 	}
 
-	if (mName.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (mName.CompareNoCase(mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mName, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-			return false;
-		}
-	}
-
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(mName) == false) {
-		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
+	// 名前チェック
+	bool canPressOK =
+	 	launcherapp::commands::common::IsValidCommandName(mName, mOrgName, mMessage);
 	//
-	if (mPath.IsEmpty()) {
+	if (canPressOK && mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
+		canPressOK = false;
 	}
 
-	mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
+	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
 
 	return true;
 }

@@ -5,6 +5,7 @@
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
@@ -222,28 +223,10 @@ bool FilterEditDialog::UpdateStatus()
 		mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadDefaultIcon());
 	}
 
-	if (mParam.mName.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (mParam.mName.CompareNoCase(mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(mParam.mName, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			GetDlgItem(IDOK)->EnableWindow(FALSE);
-			return false;
-		}
-	}
-
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(mParam.mName) == false) {
-		mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
+	// 名前チェック
+	bool isNameValid =
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

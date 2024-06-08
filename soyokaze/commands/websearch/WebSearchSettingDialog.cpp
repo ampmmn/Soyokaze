@@ -3,7 +3,7 @@
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
-#include "commands/core/CommandRepository.h"
+#include "commands/common/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -130,7 +130,13 @@ void SettingDialog::UpdateStatus()
 	CString& url = in->mParam.mURL;
 
 	bool canPressOK = true;
-	if (url.IsEmpty()) {
+
+	bool isNameValid =
+	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	if (isNameValid == false) {
+		canPressOK = false;
+	}
+	else if (url.IsEmpty()) {
 		in->mMessage = _T("URLを入力してください");
 		canPressOK = false;
 	}
@@ -140,28 +146,6 @@ void SettingDialog::UpdateStatus()
 	}
 	else {
 		in->mMessage.Empty();
-	}
-
-	const CString& name = in->mParam.mName;
-	if (name.IsEmpty()) {
-		in->mMessage.LoadString(IDS_ERR_NAMEISEMPTY);
-		canPressOK = false;
-	}
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
-	// 重複チェック
-	if (name.CompareNoCase(in->mOrgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
-		if (cmd != nullptr) {
-			cmd->Release();
-			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
-			canPressOK = false;
-		}
-	}
-	// 使えない文字チェック
-	if (cmdRepoPtr->IsValidAsName(name) == false) {
-		in->mMessage.LoadString(IDS_ERR_ILLEGALCHARCONTAINS);
-		canPressOK = false;
 	}
 
 	if (url.Find(_T("$*")) == -1) {
