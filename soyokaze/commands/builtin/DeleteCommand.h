@@ -15,6 +15,7 @@ public:
 	virtual ~DeleteCommand();
 
 	BOOL Execute(const Parameter& param) override;
+	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
 	CString GetType() override;

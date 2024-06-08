@@ -86,6 +86,11 @@ BOOL DeleteCommand::Execute(const Parameter& param)
 	return TRUE;
 }
 
+HICON DeleteCommand::GetIcon()
+{
+	return IconLoader::Get()->GetImageResIcon(-5383);
+}
+
 launcherapp::core::Command* DeleteCommand::Clone()
 {
 	return new DeleteCommand(*this);
