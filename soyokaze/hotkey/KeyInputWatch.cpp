@@ -12,6 +12,31 @@
 
 constexpr UINT TIMERID_HOTKEY = 1;
 
+static int OTHER_KEYS[] = {
+	// Backspace,tab, スペースキー..
+	0x08, 0x09, 0x20, 0x21, 0x22, 0x23, 0x24, 0x2d, 0x2e,
+	// 数字キー0-9
+	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+	0x38, 0x39,
+	// アルファベットキーA-Z
+ 	0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
+	0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e,
+	0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56,
+	0x57, 0x58, 0x59, 0x5a,
+	// NUMキー
+ 	0x60, 0x61, 0x62, 0x63,
+	0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b,
+	0x6c, 0x6d, 0x6e, 0x6f,
+	// ファンクションキーF1-F24
+ 	0x70, 0x71, 0x72, 0x73,
+	0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x7b,
+	0x7c, 0x7d, 0x7e, 0x7f, 0x80, 0x81, 0x82, 0x83,
+	0x84, 0x85, 0x86, 0x87,
+	// OEMキー
+	0xba, 0xbb, 0xbc, 0xbd, 0xbe, 0xbf, 0xc0, 0xdb,
+	0xdc, 0xdd, 0xde, 0xdf, 0xe2,
+};
+
 struct KeyInputWatch::KEYEVENT
 {
 	UINT VKey;
@@ -23,6 +48,10 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this);
+
+		for (int i = 0; i < sizeof(mPrevStates) / sizeof(mPrevStates[0]); ++i) {
+			mPrevStates[i] = 0;
+		}
 	}
 	~PImpl()
 	{
@@ -44,8 +73,11 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
-	bool UpdateKeyState(std::vector<KEYEVENT>& events, SHORT vk, SHORT& prevState)
+	bool UpdateKeyState(std::vector<KEYEVENT>& events, SHORT vk)
 	{
+		ASSERT(0 <= vk && vk < 255);
+
+		SHORT& prevState = mPrevStates[vk];
 		SHORT curState = GetKeyState(vk);
 		bool isPrevDown = (prevState & 0x8000);
 		bool isCurDown = (curState & 0x8000);
@@ -67,14 +99,24 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 	void GetKeyEvents(std::vector<KEYEVENT>& events)
 	{
 		// 各修飾キーの状態をチェックする
-		UpdateKeyState(events, VK_LSHIFT, mPrevStateLShift);
-		UpdateKeyState(events, VK_RSHIFT, mPrevStateRShift);
-		UpdateKeyState(events, VK_LCONTROL, mPrevStateLCtrl);
-		UpdateKeyState(events, VK_RCONTROL, mPrevStateRCtrl);
-		UpdateKeyState(events, VK_LWIN, mPrevStateLWin);
-		UpdateKeyState(events, VK_RWIN, mPrevStateRWin);
-		UpdateKeyState(events, VK_LMENU, mPrevStateLMenu);
-		UpdateKeyState(events, VK_RMENU, mPrevStateRMenu);
+		UpdateKeyState(events, VK_LSHIFT);
+		UpdateKeyState(events, VK_RSHIFT);
+		UpdateKeyState(events, VK_LCONTROL);
+		UpdateKeyState(events, VK_RCONTROL);
+		UpdateKeyState(events, VK_LWIN);
+		UpdateKeyState(events, VK_RWIN);
+		UpdateKeyState(events, VK_LMENU);
+		UpdateKeyState(events, VK_RMENU);
+		
+		// 他のキーが押されていたら状態リセット
+		int nelems = sizeof(OTHER_KEYS) / sizeof(OTHER_KEYS[0]);
+		for (int i = 0; i < nelems; ++i) {
+			int vk = OTHER_KEYS[i];
+			if (UpdateKeyState(events, vk) == false){
+				continue;
+			}
+			break;  // 一つでも何かキー入力があれば、この後の結果として十分なので止める
+		}
 	}
 
 	void LoadSettings()
@@ -108,16 +150,10 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 	HWND mHwnd = nullptr;
 	UINT mPrevVK = 0;
 	DWORD mPrevTime = 0;
+	bool mIsOtherKeyPressed = false;
 
 	bool mIsEnableHotKey = false;
-	SHORT mPrevStateLShift = 0;
-	SHORT mPrevStateRShift = 0;
-	SHORT mPrevStateLCtrl = 0;
-	SHORT mPrevStateRCtrl = 0;
-	SHORT mPrevStateLWin = 0;
-	SHORT mPrevStateRWin = 0;
-	SHORT mPrevStateLMenu = 0;
-	SHORT mPrevStateRMenu = 0;
+	SHORT mPrevStates[256];
 
 	UINT mFirstVK = 0;
 	UINT mSecondVK = 0;
@@ -150,11 +186,6 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 
 	for (auto& evt : events) {
 
-		if (evt.Message != WM_KEYUP) {
-			// あつかうのはKEYUPのみ
-			continue;
-		}
-
 		UINT vk = evt.VKey;
 
 		// アップされたキーが着目するキー(修飾キー)かどうかを判断する
@@ -181,10 +212,22 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			break;
 		}
 
-		if (curVK == 0) {
-			// 着目しないキーの場合はスルー
+		if (evt.Message == WM_KEYDOWN && (curVK == in->mFirstVK || curVK == in->mSecondVK)) {
+			// リセット
+			in->mIsOtherKeyPressed = false;
 			continue;
 		}
+		if (curVK == 0) {
+			// 着目しないキーの場合はスルー
+			in->mIsOtherKeyPressed = true;
+			continue;
+		}
+
+		if (evt.Message != WM_KEYUP) {
+			// あつかうのはKEYUPのみ
+			continue;
+		}
+
 
 		UINT prevVK = in->mPrevVK;
 
@@ -204,6 +247,11 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			if (isMatchNormalOrder == false && isMatchReverseOrder == false) {
 				continue;
 			}
+			if (in->mIsOtherKeyPressed) {
+				// 入力判定の間に別のキー入力があった場合は除外する
+				continue;
+			}
+
 
 			in->mPrevVK = 0;
 			in->mPrevTime = 0;
