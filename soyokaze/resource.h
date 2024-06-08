@@ -133,6 +133,8 @@
 #define IDD_PRIORITY                    182
 #define IDD_LAUNCHER_HOTKEY             183
 #define IDD_VOLUMEEDIT                  184
+#define IDD_VOLUMEEDIT1                 185
+#define IDD_EJECTVOLUMEEDIT             185
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -361,6 +363,8 @@
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK1                      1166
+#define IDC_STATIC_DRIVELETTER          1167
+#define IDC_COMBO_DRIVELETTER           1168
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -369,7 +373,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1167
+#define _APS_NEXT_CONTROL_VALUE         1169
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

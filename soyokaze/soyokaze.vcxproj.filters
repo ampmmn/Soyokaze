@@ -166,6 +166,9 @@
     <Filter Include="macros\macro">
       <UniqueIdentifier>{2663256a-1afb-4be8-ac83-5dddd9d61935}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\ejectvolume">
+      <UniqueIdentifier>{16f38041-62ce-49de-84cb-4bcabe754b8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -942,6 +945,18 @@
     <ClInclude Include="macros\powerstatus\PowerStatusMacro.h">
       <Filter>macros\macro</Filter>
     </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolume.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1666,6 +1681,18 @@
     </ClCompile>
     <ClCompile Include="macros\powerstatus\PowerStatusMacro.cpp">
       <Filter>macros\macro</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolume.cpp">
+      <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp">
+      <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp">
+      <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp">
+      <Filter>commands\ejectvolume</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

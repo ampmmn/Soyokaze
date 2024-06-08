@@ -393,6 +393,10 @@
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h" />
     <ClInclude Include="commands\mmc\MMCCommand.h" />
     <ClInclude Include="commands\mmc\MMCCommandProvider.h" />
     <ClInclude Include="commands\mmc\MMCSnapin.h" />
@@ -653,6 +657,10 @@
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp" />
     <ClCompile Include="commands\mmc\MMCCommand.cpp" />
     <ClCompile Include="commands\mmc\MMCCommandProvider.cpp" />
     <ClCompile Include="commands\mmc\MMCSnapins.cpp">
