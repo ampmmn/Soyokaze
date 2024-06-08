@@ -182,11 +182,12 @@ BOOL KeywordManagerDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
+	SetIcon(IconLoader::Get()->LoadKeywordManagerIcon(), FALSE);
 
 	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_FILTER, this);
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadKeywordManagerIcon());
 
 	// リスト　スタイル変更
 	in->mListCtrl.SetExtendedStyle(in->mListCtrl.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
