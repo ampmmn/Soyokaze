@@ -86,8 +86,7 @@ CString SimpleDictCommand::GetDescription()
 
 CString SimpleDictCommand::GetGuideString()
 {
-	// このコマンドはマッチしない
-	return _T("");
+	return _T("キーワード入力すると候補を絞り込むことができます");
 }
 
 
@@ -127,9 +126,15 @@ int SimpleDictCommand::Match(Pattern* pattern)
 		// 内部のコマンド名マッチング用の判定
 		return Pattern::WholeMatch;
 	}
-	else if (pattern->shouldWholeMatch() == false && pattern->Match(GetName()) == Pattern::FrontMatch) {
-		// 入力欄からの入力で、前方一致するときは候補に出す
-		return Pattern::FrontMatch;
+	else if (pattern->shouldWholeMatch() == false) {
+		int level = pattern->Match(GetName());
+		if (level == Pattern::FrontMatch) {
+			return Pattern::FrontMatch;
+		}
+		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+			// 入力欄からの入力で、前方一致するときは候補に出す
+			return Pattern::WholeMatch;
+		}
 	}
 
 	// 通常はこちら

@@ -17,6 +17,7 @@ public:
 	CString GetWholeString() override;
 	bool shouldWholeMatch() override;
 	void GetWords(std::vector<WORD>& words) override;
+	void GetRawWords(std::vector<CString>& words) override;
 	int GetWordCount() override;
 
 protected:

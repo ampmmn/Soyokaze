@@ -169,6 +169,21 @@
     <Filter Include="commands\ejectvolume">
       <UniqueIdentifier>{16f38041-62ce-49de-84cb-4bcabe754b8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\everything">
+      <UniqueIdentifier>{d8c769f8-362b-4ac3-ac30-9b340043d1e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\everything\Everything-SDK">
+      <UniqueIdentifier>{8be89ee8-b0e6-4dfb-a6a8-14f9ec591324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\everything\Everything-SDK\src">
+      <UniqueIdentifier>{04139615-b75f-4da9-925a-f2afa162e9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\everything\Everything-SDK\include">
+      <UniqueIdentifier>{6a6d7544-d5ea-4e85-9276-e2d04f038915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\everything\Everything-SDK\ipc">
+      <UniqueIdentifier>{cf763401-e6d7-4779-91b3-02db722c8370}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -960,6 +975,30 @@
     <ClInclude Include="commands\common\CommandEditValidation.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\everything\Everything-SDK\include\Everything.h">
+      <Filter>commands\everything\Everything-SDK\include</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\Everything-SDK\ipc\everything_ipc.h">
+      <Filter>commands\everything\Everything-SDK\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingCommand.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingCommandEditDialog.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingCommandParam.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingCommandProvider.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingResult.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingAdhocCommand.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1699,6 +1738,21 @@
     </ClCompile>
     <ClCompile Include="commands\common\CommandEditValidation.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\Everything-SDK\src\Everything.c">
+      <Filter>commands\everything\Everything-SDK\src</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingCommand.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingCommandEditDialog.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingCommandProvider.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingAdhocCommand.cpp">
+      <Filter>commands\everything</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

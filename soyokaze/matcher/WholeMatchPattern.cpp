@@ -68,6 +68,11 @@ void WholeMatchPattern::GetWords(std::vector<WORD>& words)
 	words.push_back(WORD(in->mWholeText, Pattern::FixString));
 }
 
+void WholeMatchPattern::GetRawWords(std::vector<CString>& words)
+{
+	words.push_back(in->mWholeText);
+}
+
 int WholeMatchPattern::GetWordCount()
 {
 	return 1;

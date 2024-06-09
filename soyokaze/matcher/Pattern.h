@@ -42,6 +42,7 @@ public:
 	virtual CString GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;
 	virtual void GetWords(std::vector<WORD>& words) = 0;
+	virtual void GetRawWords(std::vector<CString>& words) = 0;
 	virtual int GetWordCount() = 0;
 
 	static CString StripEscapeChars(const CString& pat);

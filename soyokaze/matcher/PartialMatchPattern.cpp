@@ -281,6 +281,11 @@ void PartialMatchPattern::GetWords(std::vector<WORD>& words)
 	words = in->mWords;
 }
 
+void PartialMatchPattern::GetRawWords(std::vector<CString>& words)
+{
+	words = in->mTokens;
+}
+
 int PartialMatchPattern::GetWordCount()
 {
 	return (int)in->mWords.size();
