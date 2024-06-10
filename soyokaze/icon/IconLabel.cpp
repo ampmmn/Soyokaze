@@ -32,31 +32,8 @@ void IconLabel::DrawIcon(HICON iconHandle)
 	DrawIcon(&dc, iconHandle);
 }
 
-static bool GetIconDimensions(HICON hico, __out SIZE& size)
-{
-	ICONINFO ii;
-	if (GetIconInfo(hico, &ii) == FALSE) {
-		return false;
-	}
-
-	BITMAP bm;
-	if (GetObject(ii.hbmMask, sizeof(bm), &bm) == sizeof(bm)) {
-		size.cx = bm.bmWidth;
-		size.cy = ii.hbmColor ? bm.bmHeight : bm.bmHeight / 2;
-	}
-	if (ii.hbmMask) {
-		DeleteObject(ii.hbmMask);
-	}
-	if (ii.hbmColor) {
-		DeleteObject(ii.hbmColor);
-	}
-	return true;
-}
-
 void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 {
-	SIZE sizeIcon;
-	GetIconDimensions(iconHandle, sizeIcon);
 
 	CRect rc;
 	GetClientRect(rc);
@@ -82,6 +59,7 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	CBrush* orgBr = dcMem.SelectObject(&br);
 	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
+	CSize sizeIcon(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
 	CPoint offset((rc.Width() - sizeIcon.cx)/2, (rc.Height() - sizeIcon.cy)/2);
 	dcMem.DrawIcon(offset.x, offset.y, iconHandle);
 
