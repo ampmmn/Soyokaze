@@ -284,6 +284,10 @@ static bool FindIconFilePath(CComPtr<IXMLDOMNode>& node, CString& path, CString&
 		path = attrValueStr;
 		// 環境変数の解決をする
 		ResolveEnv(path);
+
+		// eventvwr.mscのIconタグのFile属性値が"%SystemRoot%\Windows"になっている対策
+		path.Replace(_T("WINDOWS\\Windows\\system32"), _T("Windows\\system32"));
+
 		return true;
 	}
 	return false;
