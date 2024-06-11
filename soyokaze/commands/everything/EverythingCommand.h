@@ -40,7 +40,6 @@ public:
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommand** newCmdPtr);
 
 	const CommandParam& GetParam();
-
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

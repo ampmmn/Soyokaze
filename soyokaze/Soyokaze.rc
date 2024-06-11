@@ -1005,6 +1005,24 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
 END
 
+IDD_APPSETTING_EVERYTHING DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Everyhing SDKが提供するAPIを利用して検索を行う(&S)",IDC_CHECK_USEAPI,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,34,187,10
+    CONTROL         "ウインドウメッセージ経由で検索を行う(&W)",IDC_CHECK_USEWM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,75,145,10
+    CONTROL         "Everythingが起動していなかった場合に起動する(&R)",IDC_CHECK_RUNEVERYTHING,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,123,177,10
+    LTEXT           "&Everything.exeのパス:",-1,28,141,81,8
+    EDITTEXT        IDC_EDIT_EVERYTHINGEXEPATH,115,138,149,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&...",IDC_BUTTON_BROWSEFILE1,263,138,20,14
+    LTEXT           "Everything Liteを利用している場合はAPIを利用できません。\n代替方法としてウインドウメッセージ経由でEverythingにクエリを渡すことにより\n検索結果をEverything側のウインドウに表示することができます。",-1,27,89,257,29
+    LTEXT           "Everything SDKのAPIを使って検索を行います\nインクリメンタル検索ができ、結果は候補欄に表示されます。",-1,29,47,257,24
+    CONTROL         "<A HREF=""https://sample.com/sample"">Everything検索コマンド</A>実行に関する設定",IDC_SYSLINK_COMMAND,
+                    "SysLink",WS_TABSTOP,15,15,179,9
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1398,6 +1416,14 @@ BEGIN
         RIGHTMARGIN, 340
         TOPMARGIN, 7
         BOTTOMMARGIN, 163
+    END
+
+    IDD_APPSETTING_EVERYTHING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2013,6 +2039,11 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_APPSETTING_EVERYTHING AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

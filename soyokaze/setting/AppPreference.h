@@ -147,6 +147,15 @@ public:
 	// メイン画面のフォント名
 	bool GetMainWindowFontName(CString& fontName);
 
+	// Everything検索コマンドでEverything APIを使うか?
+	bool IsUseEverythingAPI();
+	// ウインドウメッセージ経由でEverything検索を行うか?
+	bool IsUseEverythingViaWM();
+	// Everything検索実行時にEverythingが起動していなかった場合に起動するか?
+	bool IsRunEverythingApp();
+	// (Everything APIを使わない場合)Everything.exeのパスを取得する
+	CString GetEverythingExePath();
+
 	// ログレベル
 	int GetLogLevel();
 

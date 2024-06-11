@@ -3,6 +3,7 @@
 #include "commands/everything/EverythingCommand.h"
 #include "commands/everything/EverythingAdhocCommand.h"
 #include "commands/everything/EverythingResult.h"
+#include "commands/everything/AppSettingEverythingPage.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
@@ -63,9 +64,7 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 		}
 	}
 
-
 	std::vector<EverythingCommand*> mCommands;
-
 	uint32_t mRefCount = 1;
 };
 
@@ -193,6 +192,7 @@ void EverythingCommandProvider::QueryAdhocCommands(
 // 設定ページを取得する
 bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
 {
+	pages.push_back(new AppSettingEverythingPage(parent));
 	return true;
 }
 

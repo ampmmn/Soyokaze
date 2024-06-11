@@ -136,6 +136,7 @@
 #define IDD_VOLUMEEDIT1                 185
 #define IDD_EJECTVOLUMEEDIT             185
 #define IDD_EVERYTHINGEDIT              186
+#define IDD_APPSETTING_EVERYTHING       187
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -365,12 +366,17 @@
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK1                      1166
+#define IDC_CHECK_USEAPI                1166
 #define IDC_STATIC_DRIVELETTER          1167
+#define IDC_CHECK_USEWM                 1167
 #define IDC_COMBO_DRIVELETTER           1168
+#define IDC_CHECK_RUNEVERYTHING         1168
 #define IDC_CHECK_MATCHBASE             1169
 #define IDC_CHECK_MATCHCASE             1169
 #define IDC_COMBO_TARGET                1170
 #define IDC_EDIT_BASEDIR                1171
+#define IDC_EDIT_EVERYTHINGEXEPATH      1174
+#define IDC_SYSLINK_COMMAND             1175
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -379,7 +385,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1172
+#define _APS_NEXT_CONTROL_VALUE         1176
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

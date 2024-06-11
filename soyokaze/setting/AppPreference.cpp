@@ -843,6 +843,31 @@ bool AppPreference::GetMainWindowFontName(CString& fontName)
 	return true;
 }
 
+// Everything検索コマンドでEverything APIを使うか?
+bool AppPreference::IsUseEverythingAPI()
+{
+	return in->Get(_T("Everything:IsUseAPI"), true);
+}
+
+// ウインドウメッセージ経由でEverything検索を行うか?
+bool AppPreference::IsUseEverythingViaWM()
+{
+	return in->Get(_T("Everything:IsUseWM"), true);
+}
+
+// Everything検索実行時にEverythingが起動していなかった場合に起動するか?
+bool AppPreference::IsRunEverythingApp()
+{
+	return in->Get(_T("Everything:IsRunApp"), false);
+}
+
+
+// (Everything APIを使わない場合)Everything.exeのパスを取得する
+CString AppPreference::GetEverythingExePath()
+{
+	return in->Get(_T("Everything:EverythingExePath"), _T(""));
+}
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

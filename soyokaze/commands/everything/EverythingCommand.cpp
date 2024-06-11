@@ -2,7 +2,7 @@
 #include "EverythingCommand.h"
 #include "commands/everything/EverythingCommandEditDialog.h"
 #include "commands/everything/EverythingResult.h"
-#include "commands/everything/Everything-SDK/include/Everything.h"
+#include "commands/everything/EverythingProxy.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -26,8 +26,15 @@ using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListener
 struct EverythingCommand::PImpl
 {
 	CommandParam mParam;
+	bool mShouldComletion = false;
 	LONG mRefCount = 1;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 CString EverythingCommand::GetType() { return _T("EverythingCommand"); }
 
@@ -77,39 +84,7 @@ void EverythingCommand::Query(Pattern* pattern, std::vector<EverythingResult>& r
 		queryStr += _T(" ");
 	}
 
-
-	spdlog::debug(_T("EverythingQueryWord : {}"), (LPCTSTR)queryStr);
-	Everything_SetSearch(queryStr);
-
-	if (Everything_Query(TRUE) == FALSE) {
-		return;
-	}
-
-	DWORD dwNumResults = Everything_GetNumResults();
-
-	std::vector<EverythingResult> tmp;
-
-	constexpr int LIMIT_TIME = 100;   // 結果取得にかける時間(これを超過したら打ち切り)
-	DWORD start = GetTickCount();
-
-	for (DWORD i = 0; i < dwNumResults; ++i) {
-
-		TCHAR path[MAX_PATH_NTFS];
-		if (Everything_GetResultFullPathName(i, path, MAX_PATH_NTFS) == EVERYTHING_ERROR_INVALIDCALL) {
-			break;
-		}
-
-		EverythingResult result;
-		result.mFullPath = path;
-		result.mMatchLevel = Pattern::PartialMatch;
-
-		tmp.push_back(result);
-
-		if (i == dwNumResults || (GetTickCount() - start) >= LIMIT_TIME) {
-			break;
-		}
-	}
-	results.swap(tmp);
+	EverythingProxy::Get()->Query(queryStr, results);
 }
 
 
@@ -130,7 +105,7 @@ CString EverythingCommand::GetDescription()
 
 CString EverythingCommand::GetGuideString()
 {
-	return _T("キーワード入力すると候補を絞り込むことができます");
+	return _T("キーワード入力するとEverything検索結果を表示します");
 }
 
 
@@ -141,15 +116,23 @@ CString EverythingCommand::GetTypeDisplayName()
 
 BOOL EverythingCommand::Execute(const Parameter& param)
 {
-	// コマンド名単体(後続のパラメータなし)で実行したときは、
-	// コマンド名後ろに空白を入れた状態にして、検索ワードの入力を待つ状態にする
+	if (in->mShouldComletion) {
+		// コマンド名単体(後続のパラメータなし)で実行したときは、
+		// コマンド名後ろに空白を入れた状態にして、検索ワードの入力を待つ状態にする
 
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+		SharedHwnd sharedWnd;
+		SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
 
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+		auto cmdline = GetName();
+		cmdline += _T(" ");
+		SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+		return TRUE;
+	}
+
+	auto proxy = EverythingProxy::Get();
+	if (proxy->GetLastMethod() == 1) {
+		proxy->ActivateMainWindow();
+	}
 	return TRUE;
 }
 
@@ -160,34 +143,44 @@ CString EverythingCommand::GetErrorString()
 
 HICON EverythingCommand::GetIcon()
 {
-	// ToDo: Everythingのアイコン
-
-	// 管理者権限でプロセスが動いている場合取れないので無効化
-	// Everythingからアイコンがとれたらそれを使う
-	// HWND h = FindWindow(_T("EVERYTHING_TASKBAR_NOTIFICATION"), NULL);
-	// if (IsWindow(h)) {
-	// 	return IconLoader::Get()->LoadIconFromHwnd(h);
-	// }
-	return IconLoader::Get()->GetImageResIcon(-5332);
+	return EverythingProxy::Get()->GetIcon();
 }
 
 int EverythingCommand::Match(Pattern* pattern)
 {
+	in->mShouldComletion = false;
+
 	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
 		// 内部のコマンド名マッチング用の判定
 		return Pattern::WholeMatch;
 	}
 	else if (pattern->shouldWholeMatch() == false) {
+
+		auto proxy = EverythingProxy::Get();
+
+		// APIもWMも利用しない場合はマッチさせない
+		if (proxy->IsUseAPI() == false && proxy->IsUseWM() == false) {
+			return Pattern::Mismatch;
+		}
+
 		int level = pattern->Match(GetName());
 		if (level == Pattern::FrontMatch) {
+			in->mShouldComletion = true;
 			return Pattern::FrontMatch;
 		}
-		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
-			// 入力欄からの入力で、前方一致するときは候補に出す
-			return Pattern::WholeMatch;
+
+		// API利用の場合は簡易辞書コマンド的な動作にする
+		if (proxy->IsUseWM() == false) {
+			if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+				// 入力欄からの入力で、前方一致するときは候補に出す
+				in->mShouldComletion = true;
+				return Pattern::WholeMatch;
+			}
+		}
+		else {
+			return level;
 		}
 	}
-
 	// 通常はこちら
 	return Pattern::Mismatch;
 }
@@ -250,7 +243,6 @@ launcherapp::core::Command*
 EverythingCommand::Clone()
 {
 	auto clonedCmd = std::make_unique<EverythingCommand>();
-
 	clonedCmd->in->mParam = in->mParam;
 
 	return clonedCmd.release();

@@ -999,6 +999,12 @@
     <ClInclude Include="commands\everything\EverythingAdhocCommand.h">
       <Filter>commands\everything</Filter>
     </ClInclude>
+    <ClInclude Include="commands\everything\AppSettingEverythingPage.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingProxy.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1752,6 +1758,12 @@
       <Filter>commands\everything</Filter>
     </ClCompile>
     <ClCompile Include="commands\everything\EverythingAdhocCommand.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\AppSettingEverythingPage.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingProxy.cpp">
       <Filter>commands\everything</Filter>
     </ClCompile>
   </ItemGroup>
