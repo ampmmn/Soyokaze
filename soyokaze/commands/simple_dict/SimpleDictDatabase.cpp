@@ -85,16 +85,23 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 				}
 
 				spdlog::debug(_T("[SimpleDict]Start loading dict data. name:{}"), (LPCTSTR)param.mName); 
-				ExcelApplication app;
 
-				keys.clear();
-				values.clear();
-				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
-					spdlog::warn(_T("[SimpleDict]Failed to get key text. name:{}"), (LPCTSTR)param.mName);
-					continue;
+				try {
+					ExcelApplication app;
+
+					keys.clear();
+					values.clear();
+					if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
+						spdlog::warn(_T("[SimpleDict]Failed to get key text. name:{}"), (LPCTSTR)param.mName);
+						continue;
+					}
+					if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
+						spdlog::warn(_T("[SimpleDict]Failed to get value text. name:{}"), (LPCTSTR)param.mName);
+						continue;
+					}
 				}
-				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
-					spdlog::warn(_T("[SimpleDict]Failed to get value text. name:{}"), (LPCTSTR)param.mName);
+				catch(...) {
+					SPDLOG_ERROR(_T("An unexpected exception occurred!"));
 					continue;
 				}
 				UpdateDictData(param, keys, values);
