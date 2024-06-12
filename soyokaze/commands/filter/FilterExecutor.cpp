@@ -4,6 +4,7 @@
 #include "commands/core/CommandParameter.h"
 #include <thread>
 #include <mutex>
+#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -13,6 +14,18 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
+struct CANDIDATE_ITEM
+{
+	CANDIDATE_ITEM(int index, const CString& name) : mIndex(index), mDisplayName(name)
+	{
+	}
+	CANDIDATE_ITEM(const CANDIDATE_ITEM&) = default;
+
+	int mIndex;
+	CString mDisplayName;
+};
+
+using CandidateList = std::vector<CANDIDATE_ITEM>;
 
 constexpr int MINIMUM_QUOTA = 64;
 
@@ -63,7 +76,7 @@ struct FilterExecutor::PImpl
 	}
 
 	// 1つのスレッドが担当するデータを取得する
-	bool GetNextCandidates(std::vector<CString>& candidates, int threads) {
+	bool GetNextCandidates(CandidateList& candidates, int threads) {
 
 		std::lock_guard<std::mutex> lock(mMutex);
 
@@ -86,8 +99,12 @@ struct FilterExecutor::PImpl
 
 		// スレッドが担当する分の要素一覧をわたす
 		candidates.clear();
-		auto itCur = mAllCandidates.begin() + mCurIndex;
-		candidates.insert(candidates.end(), itCur, itCur + n);
+
+		auto itEnd = (mAllCandidates.begin() + mCurIndex + n);
+		int itemIndex = (int)mCurIndex;
+		for (auto itCur = mAllCandidates.begin() + mCurIndex; itCur != itEnd; ++itCur) {
+			candidates.push_back(CANDIDATE_ITEM(itemIndex++, *itCur));
+		}
 
 		// スレッドに渡した分だけ、位置を進める
 		mCurIndex += n;
@@ -98,7 +115,7 @@ struct FilterExecutor::PImpl
 	// 検索対象の候補一覧
 	std::vector<CString> mAllCandidates;
 	// 検索結果
-	std::vector<CString> mResult;
+	CandidateList mResult;
 
 	// スレッド側が絞り込み開始を検知する(待つ)ためのイベント
 	std::unique_ptr<CEvent> mWaitEvt;
@@ -144,7 +161,7 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 			PartialMatchPattern pattern;
 			CString candidate;
 
-			std::vector<CString> candidates;
+			CandidateList candidates;
 
 			for(;;) {
 
@@ -171,10 +188,10 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				pattern.SetParam(commandParam);
 
 				// 担当ぶんの要素を処理する
-				std::vector<CString> matchedItems;
+				CandidateList matchedItems;
 				for (auto& candidate : candidates) {
 
-					if (pattern.Match(candidate) == Pattern::Mismatch) {
+					if (pattern.Match(candidate.mDisplayName) == Pattern::Mismatch) {
 						continue;
 					}
 
@@ -240,7 +257,17 @@ void FilterExecutor::Execute(const CString& keyword, std::vector<CString>& resul
 	in->mWaitEvt->ResetEvent();
 
 	// 絞り込み結果を呼び出し側に返す
-	result.swap(in->mResult);
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	std::sort(in->mResult.begin(), in->mResult.end(), [](const CANDIDATE_ITEM& l, const CANDIDATE_ITEM& r) {
+		return l.mIndex < r.mIndex;
+	});
+
+	result.clear();
+	result.reserve(in->mResult.size());
+	for (auto& item : in->mResult) {
+		result.push_back(item.mDisplayName);
+	}
+	in->mResult.clear();
 }
 
 } // end of namespace filter
