@@ -25,6 +25,8 @@ struct SettingDialog::PImpl
 	CString mOrgName;
 	// メッセージ欄
 	CString mMessage;
+	// プレビュー
+	CString mPreview;
 
 	// 編集対象パラメータ
 	CommandParam mParam;
@@ -77,18 +79,26 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, in->mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_BASEDIR, in->mParam.mBaseDir);
+	DDX_Check(pDX, IDC_CHECK_REGEX, in->mParam.mIsRegex);
 	DDX_Check(pDX, IDC_CHECK_MATCHCASE, in->mParam.mIsMatchCase);
+	DDX_Text(pDX, IDC_EDIT_OTHERPARAM, in->mParam.mOtherParam);
 	DDX_CBIndex(pDX, IDC_COMBO_TARGET, in->mParam.mTargetType);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
+	DDX_Text(pDX, IDC_STATIC_PREVIEW, in->mPreview);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_BASEDIR, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_BASEDIR, OnButtonBaseDir)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
-	//ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
-	//ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_COMMAND(IDC_CHECK_REGEX, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_MATCHCASE, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_TARGET, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_OTHERPARAM, OnUpdateStatus)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_OPTION, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_OPTION, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
@@ -121,6 +131,8 @@ bool SettingDialog::UpdateStatus()
 	if (in->mHotKey.IsEmpty()) {
 		in->mHotKey.LoadString(IDS_NOHOTKEY);
 	}
+
+	in->mPreview = in->mParam.BuildQueryString(_T("(検索ワード)"));
 
 	// 名前チェック
 	bool isNameValid =
@@ -191,16 +203,15 @@ void SettingDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
-// マニュアル表示
-//void SettingDialog::OnNotifyLinkOpen(
-//	NMHDR *pNMHDR,
-// 	LRESULT *pResult
-//)
-//{
-//	auto manual = launcherapp::app::Manual::GetInstance();
-//	manual->Navigate(_T("MacroList"));
-//	*pResult = 0;
-//}
+// 検索仕様ページを開く
+void SettingDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	ShellExecute(0, _T("open"), _T("https://www.voidtools.com/support/everything/searching/"),  0, 0, SW_NORMAL);
+	*pResult = 0;
+}
 
 
 

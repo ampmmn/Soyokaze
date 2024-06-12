@@ -149,6 +149,7 @@
 #define IDC_EDIT_DESCRIPTION            1008
 #define IDC_CHECK_RUNASADMIN            1009
 #define IDC_EDIT_FILEPATH               1009
+#define IDC_EDIT_OTHERPARAM             1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_EDIT_FRONT                  1010
@@ -375,8 +376,11 @@
 #define IDC_CHECK_MATCHCASE             1169
 #define IDC_COMBO_TARGET                1170
 #define IDC_EDIT_BASEDIR                1171
+#define IDC_CHECK_REGEX                 1172
 #define IDC_EDIT_EVERYTHINGEXEPATH      1174
 #define IDC_SYSLINK_COMMAND             1175
+#define IDC_STATIC_PREVIEW              1176
+#define IDC_SYSLINK_OPTION              1177
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -385,7 +389,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1176
+#define _APS_NEXT_CONTROL_VALUE         1178
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

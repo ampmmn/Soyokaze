@@ -684,6 +684,7 @@
     <ClCompile Include="commands\everything\EverythingAdhocCommand.cpp" />
     <ClCompile Include="commands\everything\EverythingCommand.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandEditDialog.cpp" />
+    <ClCompile Include="commands\everything\EverythingCommandParam.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />
     <ClCompile Include="commands\mmc\MMCCommand.cpp" />

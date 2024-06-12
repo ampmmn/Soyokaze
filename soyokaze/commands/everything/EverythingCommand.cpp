@@ -54,35 +54,15 @@ void EverythingCommand::Query(Pattern* pattern, std::vector<EverythingResult>& r
 		return;
 	}
 
-	// コマンドに設定されたオプションをEverythingの検索キーワードに置換する
-	CString queryStr;
-	switch(in->mParam.mTargetType) {
-	case 1:
-		queryStr += _T("file: ");
-		break;
-	case 2:
-		queryStr += _T("folder: ");
-		break;
-	case 0:   // through
-	default:
-		// なし
-		break;
-	}
-
-	queryStr += in->mParam.mBaseDir;
-	queryStr += _T(" ");
-
-
-	if (in->mParam.mIsMatchCase) {
-		queryStr += _T("case:");
-	}
-
 	std::vector<CString> words;
+	CString queryStr;
 	pattern->GetRawWords(words);
 	for (size_t i = 1; i < words.size(); ++i) {
 		queryStr += words[i];
 		queryStr += _T(" ");
 	}
+
+	queryStr = in->mParam.BuildQueryString(queryStr);
 
 	EverythingProxy::Get()->Query(queryStr, results);
 }
@@ -256,6 +236,10 @@ bool EverythingCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("Type"), GetType());
 	cmdFile->Set(entry, _T("description"), GetDescription());
 	cmdFile->Set(entry, _T("BaseDir"), in->mParam.mBaseDir);
+	cmdFile->Set(entry, _T("TargetType"), in->mParam.mTargetType);
+	cmdFile->Set(entry, _T("IsMatchCase"), in->mParam.mIsMatchCase);
+	cmdFile->Set(entry, _T("IsRegex"), in->mParam.mIsRegex);
+	cmdFile->Set(entry, _T("OtherParam"), in->mParam.mOtherParam);
 
 	return true;
 }
@@ -304,6 +288,10 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 	command->in->mParam.mDescription = descriptionStr;
 
 	command->in->mParam.mBaseDir = cmdFile->Get(entry, _T("BaseDir"), _T(""));
+	command->in->mParam.mTargetType = cmdFile->Get(entry, _T("TargetType"), 0);
+	command->in->mParam.mIsMatchCase = cmdFile->Get(entry, _T("IsMatchCase"), false);
+	command->in->mParam.mIsRegex = cmdFile->Get(entry, _T("IsRegex"), false);
+	command->in->mParam.mOtherParam = cmdFile->Get(entry, _T("OtherParam"), _T(""));
 
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();

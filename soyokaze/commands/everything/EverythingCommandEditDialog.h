@@ -38,7 +38,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonBaseDir();
 	afx_msg void OnButtonHotKey();
-	//afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 } // end of namespace everything

@@ -190,6 +190,8 @@ bool EverythingProxy::PImpl::ShowEverythingMainWindow(bool isActivateEvWnd)
 		return false;
 	}
 
+	// Everythingをアクティブにすることにより、メインウインドウはフォーカスを失う。
+	// アプリ設定によってはフォーカスを失うことにより非表示になってしまうため、それを一時的に阻害する
 	MainWindowDeactivateBlocker blocker;
 
 	// アクティブにする
@@ -203,6 +205,13 @@ bool EverythingProxy::PImpl::ShowEverythingMainWindow(bool isActivateEvWnd)
 
 		HWND h = mainWnd.GetHwnd();
 		SetForegroundWindow(h);
+	}
+	else {
+		ScopeAttachThreadInput input;
+		HWND hEverything = FindWindow(_T("EVERYTHING"), NULL);
+		if (IsWindow(hEverything)) {
+			SetForegroundWindow(hEverything);
+		}
 	}
 
 	return true;

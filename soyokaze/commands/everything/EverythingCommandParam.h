@@ -7,13 +7,11 @@ namespace everything {
 class CommandParam
 {
 public:
-	CommandParam()
-	{
-	}
+	CommandParam();
 	CommandParam(const CommandParam&) = default;
-	~CommandParam()
-	{
-	}
+	~CommandParam();
+
+	CString BuildQueryString(const CString& queryStr);
 
 public:
 	CString mName;
@@ -25,6 +23,10 @@ public:
 	int mTargetType = 0;   // 0:ファイルとフォルダ 1:ファイルのみ 2:フォルダのみ
 	// 大文字小文字を区別する
 	BOOL mIsMatchCase = FALSE;
+	// 正規表現を使う
+	BOOL mIsRegex = FALSE;
+	// その他のパラメータ
+	CString mOtherParam;
 };
 
 

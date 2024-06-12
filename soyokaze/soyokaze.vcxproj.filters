@@ -1772,6 +1772,9 @@
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
+    <ClCompile Include="commands\everything\EverythingCommandParam.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
