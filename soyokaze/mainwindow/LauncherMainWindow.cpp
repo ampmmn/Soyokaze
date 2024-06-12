@@ -100,6 +100,7 @@ struct LauncherMainWindow::PImpl
 	//
 	bool mIsPrevTransparentState = false;
 	bool mIsQueryDoing = false;
+	bool mIsBlockDeactivateOnUnfocus = false;
 
 	CFont mFontDlg;
 
@@ -272,6 +273,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+11, OnUserMessageSetText)
 	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
 	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
+	ON_MESSAGE(WM_APP+14, OnUserMessageBlockDeactivateOnUnfocus)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -362,7 +364,7 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 		AppPreference* pref= AppPreference::Get();
 		if (pref->IsShowToggle()) {
 			// トグル表示設定にしている場合は非表示にする
-			::ShowWindow(hwnd, SW_HIDE);
+			HideWindow();
 		}
 	}
 	return 0;
@@ -467,6 +469,12 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 	return 0;
 }
 
+LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam)
+{
+	// ウインドウが
+	in->mIsBlockDeactivateOnUnfocus = (lParam != 0);
+	return 0;
+}
 
 
 LRESULT 
@@ -1443,7 +1451,9 @@ void LauncherMainWindow::OnContextMenu(
 
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
-	in->mWindowTransparencyPtr->UpdateActiveState(nState);
+	if (in->mIsBlockDeactivateOnUnfocus == false) {
+		in->mWindowTransparencyPtr->UpdateActiveState(nState);
+	}
 	__super::OnActivate(nState, wnd, bMinimized);
 }
 

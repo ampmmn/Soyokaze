@@ -6,6 +6,7 @@
 #include "matcher/Pattern.h"
 #include "icon/IconLoader.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "mainwindow/MainWindowDeactivateBlocker.h"
 #include "SharedHwnd.h"
 
 #ifdef _DEBUG
@@ -184,20 +185,24 @@ bool EverythingProxy::PImpl::QueryWithWM(const CString& queryStr)
 bool EverythingProxy::PImpl::ShowEverythingMainWindow(bool isActivateEvWnd)
 {
 	// メインウインドウを取得できない場合はタスクバー経由で表示させる
-	HWND h = FindWindow(_T("EVERYTHING_TASKBAR_NOTIFICATION"), NULL);
-	if (IsWindow(h) == false) {
+	HWND notifyWnd = FindWindow(_T("EVERYTHING_TASKBAR_NOTIFICATION"), NULL);
+	if (IsWindow(notifyWnd) == false) {
 		return false;
 	}
+
+	MainWindowDeactivateBlocker blocker;
 
 	// アクティブにする
 	WPARAM wp = (WPARAM)MAKEWPARAM(40007, 0);
 	LPARAM lp = (LPARAM)0;
-	SendMessage(h, WM_COMMAND, wp, lp);
+	SendMessage(notifyWnd, WM_COMMAND, wp, lp);
 
 	// 直後にEverything側にウインドウが移るため、元に戻す
 	if (isActivateEvWnd == false) {
-		SharedHwnd main;
-		SetForegroundWindow(main.GetHwnd());
+		SharedHwnd mainWnd;
+
+		HWND h = mainWnd.GetHwnd();
+		SetForegroundWindow(h);
 	}
 
 	return true;

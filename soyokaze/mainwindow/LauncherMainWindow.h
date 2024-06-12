@@ -107,6 +107,7 @@ protected:
 	LRESULT OnUserMessageSetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageGetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
 	 
 	DECLARE_MESSAGE_MAP()

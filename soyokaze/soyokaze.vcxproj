@@ -573,6 +573,7 @@
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
     <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
+    <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
@@ -851,6 +852,7 @@
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
     <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
+    <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
