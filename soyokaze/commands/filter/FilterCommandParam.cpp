@@ -5,7 +5,7 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
-CommandParam::CommandParam() : mShowType(SW_NORMAL),
+CommandParam::CommandParam() : mShowType(SW_HIDE),
 	mAfterCommandParam(_T("$select")),
 	mPreFilterType(0),
 	mPostFilterType(0)
