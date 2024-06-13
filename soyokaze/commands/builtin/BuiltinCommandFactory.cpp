@@ -54,7 +54,7 @@ bool BuiltinCommandFactory::Create(LPCTSTR typeName, Entry* entry, CommandType**
 
 	auto it = in->mFactoryMap.find(typeName);
 	if (it == in->mFactoryMap.end()) {
-		SPDLOG_ERROR(_T("command type {0} is not registered."), typeName);
+		SPDLOG_DEBUG(_T("command type {0} is not buildin command."), typeName);
 		return false;
 	}
 
