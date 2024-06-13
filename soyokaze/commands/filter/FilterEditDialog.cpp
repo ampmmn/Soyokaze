@@ -186,6 +186,7 @@ bool FilterEditDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_STATIC_SHOWTYPE)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_COMBO_SHOWTYPE)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_SYSLINK_MACRO)->ShowWindow(showTypePreFilter);
 
 	if (mParam.mPostFilterType == 0) {
 		// 他のコマンドを実行する
