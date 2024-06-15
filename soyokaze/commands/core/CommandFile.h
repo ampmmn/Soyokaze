@@ -4,13 +4,15 @@
 #include <vector>
 #include <memory>
 
+class CommandFileEntry;
+
 /**
  * コマンドデータをファイルに読んだり書いたりするためのクラス
  */
 class CommandFile
 {
 public:
-	class Entry;
+	using Entry = CommandFileEntry;
 
 	struct Exception {};
 
@@ -60,14 +62,8 @@ public:
 	static bool Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value);
 	void Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value);
 
-	void ClearEntries();
 	bool Load();
 	bool Save();
-
-	static void TrimComment(CString& s);
-
-	static CString EscapeString(const CString& s);
-	static CString UnescapeString(const CString& s);
 
 protected:
 	struct PImpl;

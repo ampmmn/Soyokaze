@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/core/CommandFile.h"
+#include "commands/core/CommandFileEntry.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include <wincrypt.h>
 #include <map>
@@ -12,6 +13,25 @@
 #endif
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+
+
+static CString EscapeString(const CString& s)
+{
+	CString ret(s);
+	ret.Replace(_T("\r"), _T("%0D"));
+	ret.Replace(_T("\n"), _T("%0A"));
+	return ret;
+}
+
+
+static CString UnescapeString(const CString& s)
+{
+	CString ret(s);
+	ret.Replace(_T("%0D"), _T("\r"));
+	ret.Replace(_T("%0A"), _T("\n"));
+	return ret;
+}
+
 
 static CString EncodeBase64(const std::vector<uint8_t>& stm)
 {
@@ -43,34 +63,13 @@ static std::vector<uint8_t> DecodeBase64(const CString& src)
 	return dst;
 }
 
-class CommandFile::Entry
-{
-public:
-	Entry() : mIsUsed(false)
-	{
-	}
-
-
-	CString mName;
-	bool mIsUsed;
-
-	std::map<CString, int> mTypeMap;
-
-	std::map<CString, int> mIntMap;
-	std::map<CString, CString> mStrMap;
-	std::map<CString, bool> mBoolMap;
-	std::map<CString, double> mDoubleMap;
-	std::map<CString, std::vector<uint8_t> > mStreamMap;
-};
-
-
 struct CommandFile::PImpl
 {
 	// ファイルのパス
 	CString mFilePath;
 
 	// エントリのリスト
-	std::vector<std::unique_ptr<CommandFile::Entry> > mEntries;
+	std::vector<std::unique_ptr<CommandFileEntry> > mEntries;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +84,7 @@ CommandFile::CommandFile() : in(std::make_unique<PImpl>())
 
 CommandFile::~CommandFile()
 {
-	ClearEntries();
+	in->mEntries.clear();
 }
 
 void CommandFile::SetFilePath(const CString& filePath)
@@ -93,7 +92,7 @@ void CommandFile::SetFilePath(const CString& filePath)
 	in->mFilePath = filePath;
 }
 
-void CommandFile::TrimComment(CString& s)
+static void TrimComment(CString& s)
 {
 	bool inDQ = false;
 
@@ -123,7 +122,7 @@ CommandFile::Entry* CommandFile::NewEntry(
 )
 {
 	auto entry = std::make_unique<Entry>();
-	entry->mName = name;
+	entry->SetName(name);
 
 	auto retPtr = entry.get();
 	in->mEntries.push_back(std::move(entry));
@@ -141,130 +140,96 @@ CommandFile::GetEntry(int index) const
 CString CommandFile::GetName(Entry* entry)
 {
 	ASSERT(entry);
-	return entry->mName;
+	return entry->GetName();
 }
 
 void CommandFile::MarkAsUsed(Entry* entry)
 {
 	ASSERT(entry);
-	entry->mIsUsed = true;
+	entry->MarkAsUsed();
 }
 
 bool CommandFile::IsUsedEntry(Entry* entry)
 {
 	ASSERT(entry);
-	return entry->mIsUsed;
+	return entry->IsUsedEntry();
 }
 
 bool CommandFile::HasValue(Entry* entry, LPCTSTR key)
 {
 	ASSERT(entry);
-	return GetValueType(entry, key) != TYPE_UNKNOWN;
+	return entry->HasValue(key);
 }
 
 
 int CommandFile::GetValueType(Entry* entry, LPCTSTR key)
 {
 	ASSERT(entry);
-	auto itFind = entry->mTypeMap.find(key);
-	return itFind == entry->mTypeMap.end() ? TYPE_UNKNOWN : itFind->second;
+	return entry->GetValueType(key);
 }
 
 
 int CommandFile::Get(Entry* entry, LPCTSTR key, int defValue)
 {
 	ASSERT(entry);
-	auto itFind = entry->mIntMap.find(key);
-	if (itFind == entry->mIntMap.end()) {
-		return defValue;
-	}
-	return itFind->second;
+	return entry->Get(key, defValue);
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, int value)
 {
 	ASSERT(entry);
-	entry->mIntMap[key] = value;
-	entry->mTypeMap[key] = TYPE_INT;
+	entry->Set(key, value);
 }
 
 
 double CommandFile::Get(Entry* entry, LPCTSTR key, double defValue)
 {
 	ASSERT(entry);
-	ASSERT(entry);
-	auto itFind = entry->mDoubleMap.find(key);
-	if (itFind == entry->mDoubleMap.end()) {
-		return defValue;
-	}
-	return itFind->second;
+	return entry->Get(key, defValue);
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, double value)
 {
 	ASSERT(entry);
-	entry->mDoubleMap[key] = value;
-	entry->mTypeMap[key] = TYPE_DOUBLE;
+	entry->Set(key, value);
 }
 
 
 CString CommandFile::Get(Entry* entry, LPCTSTR key, LPCTSTR defValue)
 {
 	ASSERT(entry);
-	auto itFind = entry->mStrMap.find(key);
-	if (itFind == entry->mStrMap.end()) {
-		return defValue;
-	}
-	return itFind->second;
+	return entry->Get(key, defValue);
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, const CString& value)
 {
 	ASSERT(entry);
-	entry->mStrMap[key] = value;
-	entry->mTypeMap[key] = TYPE_STRING;
+	entry->Set(key, value);
 }
 
 
 bool CommandFile::Get(Entry* entry, LPCTSTR key, bool defValue)
 {
 	ASSERT(entry);
-	auto itFind = entry->mBoolMap.find(key);
-	if (itFind == entry->mBoolMap.end()) {
-		return defValue;
-	}
-	return itFind->second;
+	return entry->Get(key, defValue);
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, bool value)
 {
 	ASSERT(entry);
-	entry->mBoolMap[key] = value;
-	entry->mTypeMap[key] = TYPE_BOOLEAN;
+	entry->Set(key, value);
 }
 
 bool CommandFile::Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value)
 {
 	ASSERT(entry);
-	auto itFind = entry->mStreamMap.find(key);
-	if (itFind == entry->mStreamMap.end()) {
-		return false;
-	}
-
-	value = itFind->second;
-	return true;
+	return entry->Get(key, value);
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value)
 {
 	ASSERT(entry);
-	entry->mStreamMap[key] = value;
-	entry->mTypeMap[key] = TYPE_STREAM;
-}
-
-void CommandFile::ClearEntries()
-{
-	in->mEntries.clear();
+	entry->Set(key, value);
 }
 
 bool CommandFile::Load()
@@ -302,7 +267,7 @@ bool CommandFile::Load()
 			CString strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
 			curEntry = std::make_unique<Entry>();
-			curEntry->mName =strCurSectionName;
+			curEntry->SetName(strCurSectionName);
 			continue;
 		}
 
@@ -323,28 +288,23 @@ bool CommandFile::Load()
 		tstring pat(strValue);
 
 		if (strValue== _T("true")) {
-			curEntry->mBoolMap[strKey] = true;
-			curEntry->mTypeMap[strKey] = TYPE_BOOLEAN;
+			curEntry->Set(strKey, true);
 		}
 		else if (strValue== _T("false") || strValue== _T("second")) {  // second:初期実装時のバグのリカバーのための処理
-			curEntry->mBoolMap[strKey] = false;
-			curEntry->mTypeMap[strKey] = TYPE_BOOLEAN;
+			curEntry->Set(strKey, false);
 		}
 		else if (strValue.Left(7) == _T("stream:")) {
-			curEntry->mStreamMap[strKey] = DecodeBase64(strValue.Mid(7));
-			curEntry->mTypeMap[strKey] = TYPE_STREAM;
+			curEntry->Set(strKey, DecodeBase64(strValue.Mid(7)));
 		}
 		else if (std::regex_match(pat, regDouble)) {
 			double value;
 			_stscanf_s(strValue, _T("%lg"), &value);
-			curEntry->mDoubleMap[strKey] = value;
-			curEntry->mTypeMap[strKey] = TYPE_DOUBLE;
+			curEntry->Set(strKey, value);
 		}
 		else if (std::regex_match(pat, regInt)) {
 			int value;
 			_stscanf_s(strValue, _T("%d"), &value);
-			curEntry->mIntMap[strKey] = value;
-			curEntry->mTypeMap[strKey] = TYPE_INT;
+			curEntry->Set(strKey, value);
 		}
 		else {
 			if (strValue.Left(1) == _T('"') && strValue.Right(1) == _T('"')) {
@@ -353,8 +313,7 @@ bool CommandFile::Load()
 			else if (strValue.Left(1) == _T('\'') && strValue.Right(1) == _T('\'')) {
 				strValue = strValue.Mid(1, strValue.GetLength()-2);
 			}
-			curEntry->mStrMap[strKey] = UnescapeString(strValue);
-			curEntry->mTypeMap[strKey] = TYPE_STRING;
+			curEntry->Set(strKey, UnescapeString(strValue));
 		}
 	}
 
@@ -382,49 +341,8 @@ bool CommandFile::Save()
 		CStdioFile file(fpOut);
 
 		for (auto& entry :  in->mEntries) {
-
-			file.WriteString(_T("["));
-			file.WriteString(entry->mName);
-			file.WriteString(_T("]\n"));
-
-			for (auto& kv : entry->mIntMap) {
-				file.WriteString(kv.first);
-				file.WriteString(_T("="));
-
-				TCHAR val[256];
-				_stprintf_s(val, _T("%d"), kv.second);
-				file.WriteString(val);
-				file.WriteString(_T("\n"));
-			}
-			for (auto& kv : entry->mDoubleMap) {
-				file.WriteString(kv.first);
-				file.WriteString(_T("="));
-
-				TCHAR val[256];
-				_stprintf_s(val, _T("%lg"), kv.second);
-				file.WriteString(val);
-				file.WriteString(_T("\n"));
-			}
-			for (auto& kv : entry->mStrMap) {
-				file.WriteString(kv.first);
-				file.WriteString(_T("=\""));
-				file.WriteString(EscapeString(kv.second));
-				file.WriteString(_T("\"\n"));
-			}
-			for (auto& kv : entry->mBoolMap) {
-				file.WriteString(kv.first);
-				file.WriteString(_T("="));
-				file.WriteString(kv.second ? _T("true") : _T("false"));
-				file.WriteString(_T("\n"));
-			}
-			for (auto& kv : entry->mStreamMap) {
-				file.WriteString(kv.first);
-				file.WriteString(_T("=stream:"));
-				file.WriteString(EncodeBase64(kv.second));
-				file.WriteString(_T("\n"));
-			}
-
-			file.WriteString(_T("\n"));
+			// FIXME: SaveとLoadで処理の形が非対称なのが気に入らない..
+			entry->Save(file);
 		}
 
 		file.Close();
@@ -445,22 +363,5 @@ bool CommandFile::Save()
 		fclose(fpOut);
 		return false;
 	}
-}
-
-CString CommandFile::EscapeString(const CString& s)
-{
-	CString ret(s);
-	ret.Replace(_T("\r"), _T("%0D"));
-	ret.Replace(_T("\n"), _T("%0A"));
-	return ret;
-}
-
-
-CString CommandFile::UnescapeString(const CString& s)
-{
-	CString ret(s);
-	ret.Replace(_T("%0D"), _T("\r"));
-	ret.Replace(_T("%0A"), _T("\n"));
-	return ret;
 }
 
