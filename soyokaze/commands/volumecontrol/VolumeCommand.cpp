@@ -177,33 +177,37 @@ VolumeCommand::Clone()
 	return clonedObj.release();
 }
 
-bool VolumeCommand::Save(CommandFile* cmdFile)
+bool VolumeCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("IsSetVolume"), in->mParam.mIsSetVolume? true : false);
-	cmdFile->Set(entry, _T("VolumeLevel"), in->mParam.mVolume);
-	cmdFile->Set(entry, _T("IsVolumeRelative"), in->mParam.mIsRelative);
-	cmdFile->Set(entry, _T("MuteControlType"), in->mParam.mMuteControl);
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("IsSetVolume"), in->mParam.mIsSetVolume? true : false);
+	entry->Set(_T("VolumeLevel"), in->mParam.mVolume);
+	entry->Set(_T("IsVolumeRelative"), in->mParam.mIsRelative);
+	entry->Set(_T("MuteControlType"), in->mParam.mMuteControl);
 
 	return true;
 }
 
-bool VolumeCommand::Load(CommandFile* cmdFile, void* entry_)
+bool VolumeCommand::Load(CommandEntryIF* entry)
 {
-	auto entry = (CommandFile::Entry*)entry_;
+	ASSERT(entry);
 
-	in->mParam.mName = cmdFile->GetName(entry);
-	in->mParam.mDescription = cmdFile->Get(entry, _T("description"), _T(""));
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr !=GetType()) {
+		return false;
+	}
 
-	in->mParam.mIsSetVolume = cmdFile->Get(entry, _T("IsSetVolume"), false) ? TRUE : FALSE;
-	in->mParam.mVolume = cmdFile->Get(entry,_T("VolumeLevel") , 0); 
-	in->mParam.mIsRelative = cmdFile->Get(entry,_T("VolumeLevel") , false); 
-	in->mParam.mMuteControl = cmdFile->Get(entry,_T("MuteControlType") , 0); 
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+
+	in->mParam.mIsSetVolume = entry->Get(_T("IsSetVolume"), false) ? TRUE : FALSE;
+	in->mParam.mVolume = entry->Get(_T("VolumeLevel") , 0); 
+	in->mParam.mIsRelative = entry->Get(_T("VolumeLevel") , false); 
+	in->mParam.mMuteControl = entry->Get(_T("MuteControlType") , 0); 
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

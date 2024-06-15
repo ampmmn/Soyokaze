@@ -90,21 +90,17 @@ void SimpleDictProvider::LoadCommands(CommandFile* cmdFile)
 			continue;
 		}
 
-		SimpleDictCommand* command = nullptr;
-		if (SimpleDictCommand::LoadFrom(cmdFile, entry, &command) == false) {
-			if (command) {
-				command->Release();
-			}
+		auto command = std::make_unique<SimpleDictCommand>();
+		if (command->Load(entry) == false) {
 			continue;
 		}
 
-		// 登録
-		cmdRepo->RegisterCommand(command);
-
-		in->mCommands.push_back(command);
+		in->mCommands.push_back(command.get());
 		command->AddRef();
-
 		command->AddListener(in->mDatabase.get());
+
+		// 登録
+		cmdRepo->RegisterCommand(command.release());
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

@@ -307,24 +307,22 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 		return 1;
 	}
 
-	auto cmdNew = std::make_unique<ShellExecCommand>();
-
 	// 追加する処理
 	param = dlg.GetParam();
 
-	cmdNew->SetName(param.mName);
-	cmdNew->SetDescription(param.mDescription);
-	cmdNew->SetRunAs(param.mIsRunAsAdmin);
-	cmdNew->in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
-	cmdNew->in->mParam.mIsUseDescriptionForMatching = param.mIsUseDescriptionForMatching;
-	cmdNew->in->mParam.mIconData = param.mIconData;
+	SetName(param.mName);
+	SetDescription(param.mDescription);
+	SetRunAs(param.mIsRunAsAdmin);
+	in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
+	in->mParam.mIsUseDescriptionForMatching = param.mIsUseDescriptionForMatching;
+	in->mParam.mIconData = param.mIconData;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = param.mPath;
 	normalAttr.mParam = param.mParameter;
 	normalAttr.mDir = param.mDir;
 	normalAttr.mShowType = param.GetShowType();
-	cmdNew->SetAttribute(normalAttr);
+	SetAttribute(normalAttr);
 
 	if (param.mIsUse0) {
 		ShellExecCommand::ATTRIBUTE param0Attr;
@@ -332,17 +330,16 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 		param0Attr.mParam = param.mParameter0;
 		param0Attr.mDir = param.mDir;
 		param0Attr.mShowType = param.GetShowType();
-		cmdNew->SetAttributeForParam0(param0Attr);
+		SetAttributeForParam0(param0Attr);
 	}
 	else {
 		ShellExecCommand::ATTRIBUTE param0Attr;
-		cmdNew->SetAttributeForParam0(param0Attr);
+		SetAttributeForParam0(param0Attr);
 	}
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -490,43 +487,9 @@ bool ShellExecCommand::LoadFrom(
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
-		return false;
-	}
-
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-	int runAs = cmdFile->Get(entry, _T("runas"), 0);
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = cmdFile->Get(entry, _T("path"), _T(""));
-	normalAttr.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
-	normalAttr.mParam = cmdFile->Get(entry, _T("parameter"), _T(""));
-	normalAttr.mShowType = cmdFile->Get(entry, _T("show"), normalAttr.mShowType);
-
-	ShellExecCommand::ATTRIBUTE noParamAttr;
-	noParamAttr.mPath = cmdFile->Get(entry, _T("path0"), _T(""));
-	noParamAttr.mDir = cmdFile->Get(entry, _T("dir0"), _T(""));
-	noParamAttr.mParam = cmdFile->Get(entry, _T("parameter0"), _T(""));
-	noParamAttr.mShowType = cmdFile->Get(entry, _T("show0"), noParamAttr.mShowType);
-
 	auto command = std::make_unique<ShellExecCommand>();
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-	command->in->mParam.mIsRunAsAdmin = (runAs != 0);
-
-	command->in->mParam.mIsShowArgDialog = cmdFile->Get(entry, _T("isShowArgInput"), 0);
-
-	cmdFile->Get(entry, _T("IconData"), command->in->mParam.mIconData);
-
-
-	if (normalAttr.mPath.IsEmpty() == FALSE) {
-		command->in->mNormalAttr = normalAttr;
-	}
-	if (noParamAttr.mPath.IsEmpty() == FALSE) {
-		command->in->mNoParamAttr = noParamAttr;
+	if (command->Load(entry) == false) {
+		return false;
 	}
 
 	if (newCmdPtr) {
@@ -548,30 +511,63 @@ CString& ShellExecCommand::SanitizeName(
 	return str;
 }
 
-bool ShellExecCommand::Save(CommandFile* cmdFile)
+bool ShellExecCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("runas"), GetRunAs());
-	cmdFile->Set(entry, _T("isShowArgInput"), in->mParam.mIsShowArgDialog);
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("runas"), GetRunAs());
+	entry->Set(_T("isShowArgInput"), in->mParam.mIsShowArgDialog);
 
 	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
-	cmdFile->Set(entry, _T("path"), normalAttr.mPath);
-	cmdFile->Set(entry, _T("dir"), normalAttr.mDir);
-	cmdFile->Set(entry, _T("parameter"), normalAttr.mParam);
-	cmdFile->Set(entry, _T("show"), normalAttr.mShowType);
+	entry->Set(_T("path"), normalAttr.mPath);
+	entry->Set(_T("dir"), normalAttr.mDir);
+	entry->Set(_T("parameter"), normalAttr.mParam);
+	entry->Set(_T("show"), normalAttr.mShowType);
 
 	ShellExecCommand::ATTRIBUTE& param0Attr = in->mNoParamAttr;
-	cmdFile->Set(entry, _T("path0"), param0Attr.mPath);
-	cmdFile->Set(entry, _T("dir0"), param0Attr.mDir);
-	cmdFile->Set(entry, _T("parameter0"), param0Attr.mParam);
-	cmdFile->Set(entry, _T("show0"), param0Attr.mShowType);
+	entry->Set(_T("path0"), param0Attr.mPath);
+	entry->Set(_T("dir0"), param0Attr.mDir);
+	entry->Set(_T("parameter0"), param0Attr.mParam);
+	entry->Set(_T("show0"), param0Attr.mShowType);
 
-	cmdFile->Set(entry, _T("IconData"), in->mParam.mIconData);
+	entry->Set(_T("IconData"), in->mParam.mIconData);
+
+	return true;
+}
+
+bool ShellExecCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
+		return false;
+	}
+
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mIsRunAsAdmin = (entry->Get(_T("runas"), 0) != 0);
+
+	ShellExecCommand::ATTRIBUTE normalAttr;
+	normalAttr.mPath = entry->Get(_T("path"), _T(""));
+	normalAttr.mDir = entry->Get(_T("dir"), _T(""));
+	normalAttr.mParam = entry->Get(_T("parameter"), _T(""));
+	normalAttr.mShowType = entry->Get(_T("show"), normalAttr.mShowType);
+	in->mNormalAttr = normalAttr;
+
+	ShellExecCommand::ATTRIBUTE noParamAttr;
+	noParamAttr.mPath = entry->Get(_T("path0"), _T(""));
+	noParamAttr.mDir = entry->Get(_T("dir0"), _T(""));
+	noParamAttr.mParam = entry->Get(_T("parameter0"), _T(""));
+	noParamAttr.mShowType = entry->Get(_T("show0"), noParamAttr.mShowType);
+	in->mNoParamAttr = noParamAttr;
+
+	in->mParam.mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
+
+	entry->Get(_T("IconData"), in->mParam.mIconData);
 
 	return true;
 }

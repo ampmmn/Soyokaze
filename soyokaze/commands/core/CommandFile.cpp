@@ -15,14 +15,6 @@
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 
-static CString EscapeString(const CString& s)
-{
-	CString ret(s);
-	ret.Replace(_T("\r"), _T("%0D"));
-	ret.Replace(_T("\n"), _T("%0A"));
-	return ret;
-}
-
 
 static CString UnescapeString(const CString& s)
 {
@@ -32,23 +24,6 @@ static CString UnescapeString(const CString& s)
 	return ret;
 }
 
-
-static CString EncodeBase64(const std::vector<uint8_t>& stm)
-{
-	// 長さを調べる
-	DWORD dstLen = 0;
-	if (stm.size() == 0) {
-		return CString();
-	}
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &dstLen);
-
-	// 変換する
-	CString dstStr;
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, dstStr.GetBuffer(dstLen+1), &dstLen );
-	dstStr.ReleaseBuffer();
-
-	return dstStr;
-}
 
 static std::vector<uint8_t> DecodeBase64(const CString& src)
 {
@@ -121,7 +96,7 @@ CommandFile::Entry* CommandFile::NewEntry(
 	const CString& name
 )
 {
-	auto entry = std::make_unique<Entry>();
+	auto entry = std::make_unique<CommandFileEntry>();
 	entry->SetName(name);
 
 	auto retPtr = entry.get();
@@ -241,9 +216,9 @@ bool CommandFile::Load()
 	// ファイルを読む
 	CStdioFile file(fpIn);
 
-	std::unique_ptr<Entry> curEntry;
+	std::unique_ptr<CommandFileEntry> curEntry;
 
-	std::vector<std::unique_ptr<Entry> > entries;
+	std::vector<std::unique_ptr<CommandFileEntry> > entries;
 
 	tregex regInt(_T("^ *-?[0-9]+ *$"));
 	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
@@ -266,7 +241,7 @@ bool CommandFile::Load()
 
 			CString strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
-			curEntry = std::make_unique<Entry>();
+			curEntry = std::make_unique<CommandFileEntry>();
 			curEntry->SetName(strCurSectionName);
 			continue;
 		}

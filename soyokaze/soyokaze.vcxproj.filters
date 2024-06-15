@@ -1008,6 +1008,12 @@
     <ClInclude Include="commands\filter\FilterAdhocCommand.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
+    <ClInclude Include="commands\core\CommandEntryIF.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\CommandFileEntry.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1774,6 +1780,9 @@
     </ClCompile>
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp">
       <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\CommandFileEntry.cpp">
+      <Filter>commands\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

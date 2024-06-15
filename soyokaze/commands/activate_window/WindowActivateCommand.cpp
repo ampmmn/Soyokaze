@@ -145,15 +145,10 @@ int WindowActivateCommand::EditDialog(const Parameter*)
 		return 0;
 	}
 
-	auto cmdNew = std::make_unique<WindowActivateCommand>();
+	in->mParam = dlg.GetParam();
 
-	param = dlg.GetParam();
-	cmdNew->in->mParam = param;
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -191,20 +186,49 @@ WindowActivateCommand::Clone()
 	return clonedCmd.release();
 }
 
-bool WindowActivateCommand::Save(CommandFile* cmdFile)
+bool WindowActivateCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
+	entry->Set(_T("description"), GetDescription());
 
-	cmdFile->Set(entry, _T("CaptionStr"), in->mParam.mCaptionStr);
-	cmdFile->Set(entry, _T("ClassStr"), in->mParam.mClassStr);
-	cmdFile->Set(entry, _T("IsUseRegExp"), in->mParam.mIsUseRegExp != FALSE);
-	cmdFile->Set(entry, _T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
+	entry->Set(_T("CaptionStr"), in->mParam.mCaptionStr);
+	entry->Set(_T("ClassStr"), in->mParam.mClassStr);
+	entry->Set(_T("IsUseRegExp"), in->mParam.mIsUseRegExp != FALSE);
+	entry->Set(_T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
 
+	return true;
+}
+
+bool WindowActivateCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != WindowActivateCommand::GetType()) {
+		return false;
+	}
+
+	CString name = entry->GetName();
+	CString descriptionStr = entry->Get(_T("description"), _T(""));
+
+	CString captionStr = entry->Get(_T("CaptionStr"), _T(""));
+	CString classStr = entry->Get(_T("ClassStr"), _T(""));
+	BOOL isUseRegExp = entry->Get(_T("IsUseRegExp"), false) ? TRUE : FALSE;
+	BOOL isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
+
+	in->mParam.mName = name;
+	in->mParam.mDescription = descriptionStr;
+	in->mParam.mCaptionStr = captionStr;
+	in->mParam.mClassStr = classStr;
+	in->mParam.mIsUseRegExp = isUseRegExp;
+	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
+
+	if (in->mParam.BuildRegExp() == false) {
+		return false;
+	}
 	return true;
 }
 
@@ -254,32 +278,12 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != WindowActivateCommand::GetType()) {
-		return false;
-	}
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-
-	CString captionStr = cmdFile->Get(entry, _T("CaptionStr"), _T(""));
-	CString classStr = cmdFile->Get(entry, _T("ClassStr"), _T(""));
-	BOOL isUseRegExp = cmdFile->Get(entry, _T("IsUseRegExp"), false) ? TRUE : FALSE;
-	BOOL isNotify = cmdFile->Get(entry, _T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
-
 
 	auto command = std::make_unique<WindowActivateCommand>();
-
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-	command->in->mParam.mCaptionStr = captionStr;
-	command->in->mParam.mClassStr = classStr;
-	command->in->mParam.mIsUseRegExp = isUseRegExp;
-	command->in->mParam.mIsNotifyIfWindowNotFound = isNotify;
-
-	if (command->in->mParam.BuildRegExp() == false) {
+	if (command->Load(entry) == false) {
 		return false;
 	}
+
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();
 	}

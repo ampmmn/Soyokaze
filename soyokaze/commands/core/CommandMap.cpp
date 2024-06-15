@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CommandMap.h"
+#include "commands/core/CommandFile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,6 +22,22 @@ CommandMap::CommandMap(const CommandMap& rhs)
 CommandMap::~CommandMap()
 {
 	Clear();
+}
+
+void CommandMap::LoadSettings(Settings& settings)
+{
+	for (auto& item : mMap) {
+		auto cmd = item.second;
+		settings.Add(cmd);
+	}
+}
+
+void CommandMap::RestoreSettings(Settings& settings)
+{
+	for (auto& item : mMap) {
+		auto cmd = item.second;
+		settings.Restore(cmd);
+	}
 }
 
 void CommandMap::Clear()
@@ -149,5 +166,51 @@ CommandMap::Enumerate(std::vector<launcherapp::core::Command*>& commands)
 		commands.push_back(item.second);
 	}
 	return commands;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+struct CommandMap::Settings::PImpl
+{
+	CommandFile mCommandFile;
+	std::map<launcherapp::core::Command*, CommandEntryIF*> mEntryMap;
+};
+
+CommandMap::Settings::Settings() : in(new PImpl)
+{
+}
+
+CommandMap::Settings::~Settings()
+{
+}
+
+void CommandMap::Settings::Add(launcherapp::core::Command* cmd)
+{
+	ASSERT(cmd);
+
+	auto entry = in->mCommandFile.NewEntry(cmd->GetName());
+	cmd->Save(entry);
+	in->mEntryMap[cmd] = entry;
+
+}
+
+void CommandMap::Settings::Restore(launcherapp::core::Command* cmd)
+{
+	ASSERT(cmd);
+
+	auto it = in->mEntryMap.find(cmd);
+	if (it == in->mEntryMap.end()) {
+		SPDLOG_WARN(_T("Entry does not exist. {}"), (LPCTSTR)cmd->GetName());
+		return;
+	}
+
+	auto entry = it->second;
+	if (cmd->Load(entry) == false) {
+		SPDLOG_WARN(_T("Failed to restore. {}"), (LPCTSTR)cmd->GetName());
+	}
+
+	in->mEntryMap.erase(it);
 }
 

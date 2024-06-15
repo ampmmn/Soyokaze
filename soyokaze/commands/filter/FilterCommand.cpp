@@ -279,24 +279,47 @@ FilterCommand::Clone()
 	return clonedObj.release();
 }
 
-bool FilterCommand::Save(CommandFile* cmdFile)
+bool FilterCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
+	entry->Set(_T("description"), GetDescription());
 
-	cmdFile->Set(entry, _T("path"), in->mParam.mPath);
-	cmdFile->Set(entry, _T("dir"), in->mParam.mDir);
-	cmdFile->Set(entry, _T("parameter"), in->mParam.mParameter);
-	cmdFile->Set(entry, _T("prefiltertype"), in->mParam.mPreFilterType);
-	cmdFile->Set(entry, _T("cachetype"), in->mParam.mCacheType);
-	cmdFile->Set(entry, _T("aftertype"), in->mParam.mPostFilterType);
-	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
-	cmdFile->Set(entry, _T("afterfilepath"), in->mParam.mAfterFilePath);
-	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
+	entry->Set(_T("path"), in->mParam.mPath);
+	entry->Set(_T("dir"), in->mParam.mDir);
+	entry->Set(_T("parameter"), in->mParam.mParameter);
+	entry->Set(_T("prefiltertype"), in->mParam.mPreFilterType);
+	entry->Set(_T("cachetype"), in->mParam.mCacheType);
+	entry->Set(_T("aftertype"), in->mParam.mPostFilterType);
+	entry->Set(_T("aftercommand"), in->mParam.mAfterCommandName);
+	entry->Set(_T("afterfilepath"), in->mParam.mAfterFilePath);
+	entry->Set(_T("afterparam"), in->mParam.mAfterCommandParam);
+
+	return true;
+}
+
+bool FilterCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != FilterCommand::GetType()) {
+		return false;
+	}
+
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mPath = entry->Get(_T("path"), _T(""));
+	in->mParam.mDir = entry->Get(_T("dir"), _T(""));
+	in->mParam.mParameter = entry->Get(_T("parameter"), _T(""));
+	in->mParam.mPreFilterType = entry->Get(_T("prefiltertype"), 0);
+	in->mParam.mCacheType = entry->Get(_T("cachetype"), 0);
+	in->mParam.mPostFilterType = entry->Get(_T("aftertype"), 0);
+	in->mParam.mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
+	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
+	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$select"));
 
 	return true;
 }
@@ -363,33 +386,16 @@ bool FilterCommand::LoadFrom(CommandFile* cmdFile, void* e, FilterCommand** newC
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != FilterCommand::GetType()) {
+
+	auto command = std::make_unique<FilterCommand>();
+	if (command->Load(entry) == false) {
 		return false;
 	}
 
-		CommandParam newParam;
-		newParam.mName = cmdFile->GetName(entry);
-		newParam.mDescription = cmdFile->Get(entry, _T("description"), _T(""));
-
-		newParam.mPath = cmdFile->Get(entry, _T("path"), _T(""));
-		newParam.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
-		newParam.mParameter = cmdFile->Get(entry, _T("parameter"), _T(""));
-		newParam.mPreFilterType = cmdFile->Get(entry, _T("prefiltertype"), 0);
-		newParam.mCacheType = cmdFile->Get(entry, _T("cachetype"), 0);
-		newParam.mPostFilterType = cmdFile->Get(entry, _T("aftertype"), 0);
-		newParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
-		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
-		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));
-
-		auto command = std::make_unique<FilterCommand>();
-		command->SetParam(newParam);
-
-		if (newCmdPtr) {
-			*newCmdPtr = command.release();
-		}
-
-		return true;
+	if (newCmdPtr) {
+		*newCmdPtr = command.release();
+	}
+	return true;
 }
 
 } // end of namespace filter

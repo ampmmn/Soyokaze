@@ -250,26 +250,22 @@ int RegExpCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	auto cmdNew = std::make_unique<RegExpCommand>();
-
 	// 追加する処理
-	cmdNew->SetName(dlg.mName);
-	cmdNew->SetDescription(dlg.mDescription);
-	cmdNew->SetRunAs(dlg.mIsRunAsAdmin);
-	cmdNew->SetMatchPattern(dlg.mPatternStr);
+	SetName(dlg.mName);
+	SetDescription(dlg.mDescription);
+	SetRunAs(dlg.mIsRunAsAdmin);
+	SetMatchPattern(dlg.mPatternStr);
 
 	RegExpCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = dlg.mPath;
 	normalAttr.mParam = dlg.mParameter;
 	normalAttr.mDir = dlg.mDir;
 	normalAttr.mShowType = dlg.GetShowType();
-	cmdNew->SetAttribute(normalAttr);
-	cmdNew->in->mIconData = dlg.mIconData;
+	SetAttribute(normalAttr);
+	in->mIconData = dlg.mIconData;
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	return 0;
 }
@@ -308,46 +304,45 @@ RegExpCommand::Clone()
 	return clonedObj.release();
 }
 
-bool RegExpCommand::Save(CommandFile* cmdFile)
+bool RegExpCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("runas"), GetRunAs());
-	cmdFile->Set(entry, _T("matchpattern"), in->mPatternStr);
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("runas"), GetRunAs());
+	entry->Set(_T("matchpattern"), in->mPatternStr);
 
 	RegExpCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
-	cmdFile->Set(entry, _T("path"), normalAttr.mPath);
-	cmdFile->Set(entry, _T("dir"), normalAttr.mDir);
-	cmdFile->Set(entry, _T("parameter"), normalAttr.mParam);
-	cmdFile->Set(entry, _T("show"), normalAttr.mShowType);
+	entry->Set(_T("path"), normalAttr.mPath);
+	entry->Set(_T("dir"), normalAttr.mDir);
+	entry->Set(_T("parameter"), normalAttr.mParam);
+	entry->Set(_T("show"), normalAttr.mShowType);
 
-	cmdFile->Set(entry, _T("IconData"), in->mIconData);
+	entry->Set(_T("IconData"), in->mIconData);
 
 	return true;
 }
 
-bool RegExpCommand::Load(CommandFile* cmdFile, void* entry_)
+bool RegExpCommand::Load(CommandEntryIF* entry)
 {
-	auto entry = (CommandFile::Entry*)entry_;
+	ASSERT(entry);
 
-	in->mName = cmdFile->GetName(entry);
-	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
-	in->mRunAs = cmdFile->Get(entry, _T("runas"), 0);
+	in->mName = entry->GetName();
+	in->mDescription = entry->Get(_T("description"), _T(""));
+	in->mRunAs = entry->Get(_T("runas"), 0);
 
 	RegExpCommand::ATTRIBUTE& attr = in->mNormalAttr;
-	attr.mPath = cmdFile->Get(entry, _T("path"), _T(""));
-	attr.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
-	attr.mParam = cmdFile->Get(entry, _T("parameter"), _T(""));
-	attr.mShowType = cmdFile->Get(entry, _T("show"), attr.mShowType);
+	attr.mPath = entry->Get(_T("path"), _T(""));
+	attr.mDir = entry->Get(_T("dir"), _T(""));
+	attr.mParam = entry->Get(_T("parameter"), _T(""));
+	attr.mShowType = entry->Get(_T("show"), attr.mShowType);
 
-	auto patternStr = cmdFile->Get(entry, _T("matchpattern"), _T("")); 
+	auto patternStr = entry->Get(_T("matchpattern"), _T("")); 
 	SetMatchPattern(patternStr);
 
-	cmdFile->Get(entry, _T("IconData"), in->mIconData);
+	entry->Get(_T("IconData"), in->mIconData);
 
 	return true;
 }

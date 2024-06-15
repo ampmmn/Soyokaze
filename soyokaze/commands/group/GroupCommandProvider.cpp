@@ -68,49 +68,12 @@ void GroupCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != GroupCommand::GetType()) {
+		auto command = std::make_unique<GroupCommand>();
+		if (command->Load(entry) == false) {
 			continue;
 		}
-
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
-
-		CString name = cmdFile->GetName(entry);
-		CString descriptionStr = cmdFile->Get(entry, _T("Description"), _T(""));
-
-		CommandParam param;
-		param.mName = name;
-		param.mDescription = descriptionStr;
-		param.mIsPassParam = cmdFile->Get(entry, _T("IsPassParam"), false);
-		param.mIsRepeat = cmdFile->Get(entry, _T("IsRepeat"), false);
-		param.mRepeats = cmdFile->Get(entry, _T("Repeats"), 1);
-		param.mIsConfirm = cmdFile->Get(entry, _T("IsConfirm"), true);
-
-		auto command = std::make_unique<GroupCommand>();
-
-		int count = cmdFile->Get(entry, _T("CommandCount"), 0);
-		if (count > 32) {  // 32を上限とする
-			count = 32;
-		}
-
-		TCHAR key[64];
-		for (int i = 0; i < count; ++i) {
-			int index = i + 1;
-
-			_stprintf_s(key, _T("ItemName%d"), index);
-			CString name = cmdFile->Get(entry, key, _T(""));
-
-			_stprintf_s(key, _T("IsWait%d"), index);
-			bool isWait = cmdFile->Get(entry, key, false);
-
-			GroupItem item;
-			item.mItemName = name;
-			item.mIsWait = isWait;
-			param.mItems.push_back(item);
-		}
-
-		command->SetParam(param);
 
 		// 登録
 		cmdRepo->RegisterCommand(command.release());

@@ -225,18 +225,37 @@ EverythingCommand::Clone()
 	return clonedCmd.release();
 }
 
-bool EverythingCommand::Save(CommandFile* cmdFile)
+bool EverythingCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("BaseDir"), in->mParam.mBaseDir);
-	cmdFile->Set(entry, _T("TargetType"), in->mParam.mTargetType);
-	cmdFile->Set(entry, _T("IsMatchCase"), in->mParam.mIsMatchCase);
-	cmdFile->Set(entry, _T("IsRegex"), in->mParam.mIsRegex);
-	cmdFile->Set(entry, _T("OtherParam"), in->mParam.mOtherParam);
+	entry->Set(_T("Type"), GetType());
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("BaseDir"), in->mParam.mBaseDir);
+	entry->Set(_T("TargetType"), in->mParam.mTargetType);
+	entry->Set(_T("IsMatchCase"), in->mParam.mIsMatchCase);
+	entry->Set(_T("IsRegex"), in->mParam.mIsRegex);
+	entry->Set(_T("OtherParam"), in->mParam.mOtherParam);
+
+	return true;
+}
+
+bool EverythingCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != EverythingCommand::GetType()) {
+		return false;
+	}
+
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mBaseDir = entry->Get(_T("BaseDir"), _T(""));
+	in->mParam.mTargetType = entry->Get(_T("TargetType"), 0);
+	in->mParam.mIsMatchCase = entry->Get(_T("IsMatchCase"), false);
+	in->mParam.mIsRegex = entry->Get(_T("IsRegex"), false);
+	in->mParam.mOtherParam = entry->Get(_T("OtherParam"), _T(""));
 
 	return true;
 }
@@ -271,24 +290,11 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != EverythingCommand::GetType()) {
-		return false;
-	}
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
 
 	auto command = std::make_unique<EverythingCommand>();
-
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-
-	command->in->mParam.mBaseDir = cmdFile->Get(entry, _T("BaseDir"), _T(""));
-	command->in->mParam.mTargetType = cmdFile->Get(entry, _T("TargetType"), 0);
-	command->in->mParam.mIsMatchCase = cmdFile->Get(entry, _T("IsMatchCase"), false);
-	command->in->mParam.mIsRegex = cmdFile->Get(entry, _T("IsRegex"), false);
-	command->in->mParam.mOtherParam = cmdFile->Get(entry, _T("OtherParam"), _T(""));
+	if (command->Load(entry) == false) {
+		return false;
+	}
 
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();

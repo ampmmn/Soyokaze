@@ -28,9 +28,8 @@ public:
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
-	bool Save(CommandFile* cmdFile) override;
-
-	bool Load(CommandFile* cmdFile, void* entry_);
+	bool Save(CommandEntryIF* entry) override;
+	bool Load(CommandEntryIF* entry) override;
 
 	static CString GetType();
 

@@ -87,7 +87,13 @@ bool AdhocCommandBase::IsPriorityRankEnabled()
 	return true;
 }
 
-bool AdhocCommandBase::Save(CommandFile* cmdFile)
+bool AdhocCommandBase::Save(CommandEntryIF* entry)
+{
+	// 非サポート
+	return false;
+}
+
+bool AdhocCommandBase::Load(CommandEntryIF* entry)
 {
 	// 非サポート
 	return false;

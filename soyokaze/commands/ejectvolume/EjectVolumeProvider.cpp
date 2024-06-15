@@ -69,7 +69,7 @@ void EjectVolumeProvider::LoadCommands(
 		}
 
 		auto command = std::make_unique<EjectVolumeCommand>();
-		if (command->Load(cmdFile, entry) == false) {
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

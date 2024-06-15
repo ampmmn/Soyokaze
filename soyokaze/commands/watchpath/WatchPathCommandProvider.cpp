@@ -62,13 +62,8 @@ void WatchPathCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != WatchPathCommand::GetType()) {
-			continue;
-		}
-
 		auto command = std::make_unique<WatchPathCommand>();
-		if (command->Load(cmdFile, entry) == false) {
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

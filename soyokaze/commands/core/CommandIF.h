@@ -1,5 +1,6 @@
 #pragma once
 
+#include "commands/core/CommandEntryIF.h"
 #include "commands/core/CommandParameter.h"
 #include "matcher/Pattern.h"
 
@@ -37,7 +38,8 @@ public:
 
 	virtual Command* Clone() = 0;
 
-	virtual bool Save(CommandFile* cmdFile) = 0;
+	virtual bool Save(CommandEntryIF* entry) = 0;
+	virtual bool Load(CommandEntryIF* entry) = 0;
 
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;

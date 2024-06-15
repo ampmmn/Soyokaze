@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandRepository.h"
+#include "commands/core/CommandFileEntry.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
 #include "commands/core/CommandQueryRequest.h"
@@ -82,7 +83,10 @@ struct CommandRepository::PImpl
 
 		std::vector<launcherapp::core::Command*> commands;
 		for (auto& command : mCommands.Enumerate(commands)) {
-			command->Save(&commandFile);
+
+			auto& name = command->GetName();
+			auto entry = commandFile.NewEntry(name);
+			command->Save(entry);
 			command->Release();
 		}
 		commandFile.Save();
@@ -504,17 +508,18 @@ int CommandRepository::ManagerDialog()
 	ScopeEdit scopeEdit(in->mIsManagerDialog);
 
 	// キャンセル時用のバックアップ
-	CommandMap commandsBkup(in->mCommands);
+	CommandMap::Settings bkup;
+	in->mCommands.LoadSettings(bkup);
 
 	KeywordManagerDialog dlg;
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
-		in->mCommands.Swap(commandsBkup);
+		in->mCommands.RestoreSettings(bkup);
 	}
 	else {
 		// ファイルに保存
-	in->SaveCommands();
+		in->SaveCommands();
 	}
 	return 0;
 }

@@ -204,21 +204,39 @@ WebSearchCommand::Clone()
 	return clonedCmd.release();
 }
 
-bool WebSearchCommand::Save(CommandFile* cmdFile)
+bool WebSearchCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
+	entry->Set(_T("description"), GetDescription());
 
-	cmdFile->Set(entry, _T("URL"), in->mParam.mURL);
-	cmdFile->Set(entry, _T("IsEnableShortcut"), in->mParam.mIsEnableShortcut);
-	cmdFile->Set(entry, _T("IconData"), in->mParam.mIconData);
+	entry->Set(_T("URL"), in->mParam.mURL);
+	entry->Set(_T("IsEnableShortcut"), in->mParam.mIsEnableShortcut);
+	entry->Set(_T("IconData"), in->mParam.mIconData);
 
 	return true;
 }
+
+bool WebSearchCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr !=GetType()) {
+		return false;
+	}
+
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mURL = entry->Get(_T("URL"), _T(""));
+	in->mParam.mIsEnableShortcut = entry->Get(_T("IsEnableShortcut"), false);
+	entry->Get(_T("IconData"), in->mParam.mIconData);
+
+	return true;
+}
+
 
 bool WebSearchCommand::NewDialog(
 	const Parameter* param,
@@ -239,39 +257,6 @@ bool WebSearchCommand::NewDialog(
 	auto commandParam = dlg.GetParam();
 	auto command = std::make_unique<WebSearchCommand>();
 	command->in->mParam = commandParam;
-
-	newCmd = std::move(command);
-
-	return true;
-}
-
-bool WebSearchCommand::LoadFrom(
-	CommandFile* cmdFile,
- 	void* e,
-	std::unique_ptr<WebSearchCommand>& newCmd
-)
-{
-	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != WebSearchCommand::GetType()) {
-		return false;
-	}
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-	CString url = cmdFile->Get(entry, _T("URL"), _T(""));
-	bool isEnableShortcut = cmdFile->Get(entry, _T("IsEnableShortcut"), false);
-
-	std::vector<uint8_t> iconData;
-	cmdFile->Get(entry, _T("IconData"), iconData);
-
-	auto command = std::make_unique<WebSearchCommand>();
-
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-	command->in->mParam.mURL = url;
-	command->in->mParam.mIsEnableShortcut = isEnableShortcut;
-	command->in->mParam.mIconData = iconData;
 
 	newCmd = std::move(command);
 

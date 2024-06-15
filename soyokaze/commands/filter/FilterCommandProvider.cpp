@@ -196,7 +196,7 @@ void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIte
 
 		for (auto& result : results) {
 			auto adhocCmd = new FilterAdhocCommand(cmdParam, result);
-			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd)); // ToDo: 候補ごとの一致レベル
+			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd));
 		}
 	}
 }

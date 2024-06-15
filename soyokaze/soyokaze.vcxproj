@@ -394,6 +394,8 @@
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
+    <ClInclude Include="commands\core\CommandEntryIF.h" />
+    <ClInclude Include="commands\core\CommandFileEntry.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
@@ -670,6 +672,7 @@
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
+    <ClCompile Include="commands\core\CommandFileEntry.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />

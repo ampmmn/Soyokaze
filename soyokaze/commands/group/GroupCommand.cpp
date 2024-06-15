@@ -231,13 +231,10 @@ int GroupCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	auto cmdNew = std::make_unique<GroupCommand>();
-	cmdNew->SetParam(dlg.GetParam());
+	in->mParam = dlg.GetParam();
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -276,32 +273,69 @@ GroupCommand::Clone()
 	return clonedObj.release();
 }
 
-bool GroupCommand::Save(CommandFile* cmdFile)
+bool GroupCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	ASSERT(entry);
+	entry->Set(_T("Type"), GetType());
 
 	const CommandParam& param = in->mParam;
 
-	cmdFile->Set(entry, _T("Description"), GetDescription());
-	cmdFile->Set(entry, _T("IsPassParam"), (bool)param.mIsPassParam);
-	cmdFile->Set(entry, _T("IsRepeat"), (bool)param.mIsRepeat);
-	cmdFile->Set(entry, _T("Repeats"), param.mRepeats);
-	cmdFile->Set(entry, _T("IsConfirm"), (bool)param.mIsConfirm);
+	entry->Set(_T("Description"), GetDescription());
+	entry->Set(_T("IsPassParam"), (bool)param.mIsPassParam);
+	entry->Set(_T("IsRepeat"), (bool)param.mIsRepeat);
+	entry->Set(_T("Repeats"), param.mRepeats);
+	entry->Set(_T("IsConfirm"), (bool)param.mIsConfirm);
 
-	cmdFile->Set(entry, _T("CommandCount"), (int)param.mItems.size());
+	entry->Set(_T("CommandCount"), (int)param.mItems.size());
 	int index = 1;
 
 	TCHAR key[128];
 	for (auto& item : param.mItems) {
 
 		_stprintf_s(key, _T("ItemName%d"), index);
-		cmdFile->Set(entry, key, item.mItemName);
+		entry->Set(key, item.mItemName);
 		_stprintf_s(key, _T("IsWait%d"), index);
-		cmdFile->Set(entry, key, item.mIsWait);
+		entry->Set(key, item.mIsWait);
 
 		index++;
+	}
+
+	return true;
+}
+
+bool GroupCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	if (GetType() != entry->Get(_T("Type"), _T(""))) {
+		return false;
+	}
+
+	CommandParam& param = in->mParam;
+
+	param.mName = entry->GetName();
+	param.mDescription = entry->Get(_T("Description"), _T(""));
+	param.mIsPassParam = entry->Get(_T("IsPassParam"), false) ? TRUE : FALSE;
+	param.mIsRepeat = entry->Get(_T("IsRepeat"), false) ? TRUE : FALSE;
+	param.mRepeats = entry->Get(_T("Repeats"), 1);
+	param.mIsConfirm = entry->Get(_T("IsConfirm"), true) ? TRUE : FALSE;
+
+	int nItems = entry->Get(_T("CommandCount"), 0);
+	if (nItems > 32) {  // 32を上限とする
+		nItems = 32;
+	}
+
+	TCHAR key[128];
+	for (int i = 1; i <= nItems; ++i) {
+
+		GroupItem item;
+
+		_stprintf_s(key, _T("ItemName%d"), i);
+		item.mItemName = entry->Get(key, _T(""));
+		_stprintf_s(key, _T("IsWait%d"), i);
+		item.mIsWait = entry->Get(key, false);
+
+		param.mItems.push_back(item);
 	}
 
 	return true;

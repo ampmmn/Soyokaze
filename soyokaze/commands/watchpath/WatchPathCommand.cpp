@@ -174,30 +174,34 @@ WatchPathCommand::Clone()
 	return clonedObj.release();
 }
 
-bool WatchPathCommand::Save(CommandFile* cmdFile)
+bool WatchPathCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("path"), in->mPath);
-	cmdFile->Set(entry, _T("message"), in->mMessage);
-	cmdFile->Set(entry, _T("isDisabled"), in->mIsDisabled);
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("path"), in->mPath);
+	entry->Set(_T("message"), in->mMessage);
+	entry->Set(_T("isDisabled"), in->mIsDisabled);
 
 	return true;
 }
 
-bool WatchPathCommand::Load(CommandFile* cmdFile, void* entry_)
+bool WatchPathCommand::Load(CommandEntryIF* entry)
 {
-	auto entry = (CommandFile::Entry*)entry_;
+	ASSERT(entry);
 
-	in->mName = cmdFile->GetName(entry);
-	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
-	in->mPath = cmdFile->Get(entry, _T("path"), _T(""));
-	in->mMessage = cmdFile->Get(entry, _T("message"), _T(""));
-	in->mIsDisabled = cmdFile->Get(entry, _T("isDisabled"), false);
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != GetType()) {
+		return false;
+	}
+
+	in->mName = entry->GetName();
+	in->mDescription = entry->Get(_T("description"), _T(""));
+	in->mPath = entry->Get(_T("path"), _T(""));
+	in->mMessage = entry->Get(_T("message"), _T(""));
+	in->mIsDisabled = entry->Get(_T("isDisabled"), false);
 
 	// 監視対象に登録
 	PathWatcher::ITEM item;

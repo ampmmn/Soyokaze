@@ -123,15 +123,22 @@ bool BuiltinCommandBase::IsPriorityRankEnabled()
 	return true;
 }
 
-bool BuiltinCommandBase::Save(CommandFile* cmdFile)
+bool BuiltinCommandBase::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	ASSERT(entry);
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("IsConfirmBeforeRun"), mIsConfirmBeforeRun);
-	cmdFile->Set(entry, _T("IsEnable"), mIsEnable);
+	entry->Set(_T("IsConfirmBeforeRun"), mIsConfirmBeforeRun);
+	entry->Set(_T("IsEnable"), mIsEnable);
 
+	return true;
+}
+
+bool BuiltinCommandBase::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+	mIsConfirmBeforeRun = entry->Get(_T("IsConfirmBeforeRun"), false);
+	mIsEnable = entry->Get(_T("IsEnable"), false);
 	return true;
 }
 
@@ -151,12 +158,7 @@ uint32_t BuiltinCommandBase::Release()
 
 void BuiltinCommandBase::LoadFrom(Entry* entry)
 {
-	if (CommandFile::HasValue(entry, _T("IsConfirmBeforeRun"))) {
-		mIsConfirmBeforeRun = CommandFile::Get(entry, _T("IsConfirmBeforeRun"), false);
-	}
-	if (CommandFile::HasValue(entry, _T("IsEnable"))) {
-		mIsEnable = CommandFile::Get(entry, _T("IsEnable"), false);
-	}
+	Load(entry);
 }
 
 }

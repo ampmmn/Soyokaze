@@ -70,7 +70,7 @@ void RegExpCommandProvider::LoadCommands(
 		}
 
 		auto command = std::make_unique<RegExpCommand>();
-		if (command->Load(cmdFile, entry) == false) {
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

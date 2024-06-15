@@ -212,29 +212,59 @@ SimpleDictCommand::Clone()
 	return clonedCmd.release();
 }
 
-bool SimpleDictCommand::Save(CommandFile* cmdFile)
+bool SimpleDictCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("FilePath"), in->mParam.mFilePath);
-	cmdFile->Set(entry, _T("SheetName"), in->mParam.mSheetName);
-	cmdFile->Set(entry, _T("Range"), in->mParam.mRangeFront);
-	cmdFile->Set(entry, _T("RangeBack"), in->mParam.mRangeBack);
-	cmdFile->Set(entry, _T("IsFirstRowHeader"), (bool)in->mParam.mIsFirstRowHeader);
-	cmdFile->Set(entry, _T("IsMatchWithoutKeyword"), (bool)in->mParam.mIsMatchWithoutKeyword);
-	cmdFile->Set(entry, _T("IsEnableReverse"), (bool)in->mParam.mIsEnableReverse);
-	cmdFile->Set(entry, _T("IsNotifyUpdate"), (bool)in->mParam.mIsNotifyUpdate);
-	cmdFile->Set(entry, _T("IsExpandMacro"), (bool)in->mParam.mIsExpandMacro);
-	cmdFile->Set(entry, _T("aftertype"), in->mParam.mActionType);
-	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
-	cmdFile->Set(entry, _T("afterfilepath"), in->mParam.mAfterFilePath);
-	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
+	entry->Set(_T("Type"), GetType());
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("FilePath"), in->mParam.mFilePath);
+	entry->Set(_T("SheetName"), in->mParam.mSheetName);
+	entry->Set(_T("Range"), in->mParam.mRangeFront);
+	entry->Set(_T("RangeBack"), in->mParam.mRangeBack);
+	entry->Set(_T("IsFirstRowHeader"), (bool)in->mParam.mIsFirstRowHeader);
+	entry->Set(_T("IsMatchWithoutKeyword"), (bool)in->mParam.mIsMatchWithoutKeyword);
+	entry->Set(_T("IsEnableReverse"), (bool)in->mParam.mIsEnableReverse);
+	entry->Set(_T("IsNotifyUpdate"), (bool)in->mParam.mIsNotifyUpdate);
+	entry->Set(_T("IsExpandMacro"), (bool)in->mParam.mIsExpandMacro);
+	entry->Set(_T("aftertype"), in->mParam.mActionType);
+	entry->Set(_T("aftercommand"), in->mParam.mAfterCommandName);
+	entry->Set(_T("afterfilepath"), in->mParam.mAfterFilePath);
+	entry->Set(_T("afterparam"), in->mParam.mAfterCommandParam);
 
 	return true;
 }
+
+bool SimpleDictCommand::Load(CommandEntryIF* entry)
+{
+	ASSERT(entry);
+
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != GetType()) {
+		return false;
+	}
+
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+
+	in->mParam.mFilePath = entry->Get(_T("FilePath"), _T(""));
+	in->mParam.mSheetName = entry->Get(_T("SheetName"), _T(""));
+	in->mParam.mRangeFront = entry->Get(_T("Range"), _T(""));
+	in->mParam.mRangeBack = entry->Get(_T("RangeBack"), _T(""));
+	in->mParam.mIsFirstRowHeader = entry->Get(_T("IsFirstRowHeader"), false);
+	in->mParam.mIsMatchWithoutKeyword = entry->Get(_T("IsMatchWithoutKeyword"), true);
+	in->mParam.mIsEnableReverse = entry->Get(_T("IsEnableReverse"), false);
+	in->mParam.mIsNotifyUpdate = entry->Get(_T("IsNotifyUpdate"), false);
+	in->mParam.mIsExpandMacro = entry->Get(_T("IsExpandMacro"), false);
+
+	in->mParam.mActionType = entry->Get(_T("aftertype"), 2);
+	in->mParam.mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
+	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
+	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$value"));
+
+	return true;
+}
+
 
 bool SimpleDictCommand::NewDialog(
 	const Parameter* param,
@@ -263,45 +293,6 @@ bool SimpleDictCommand::NewDialog(
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
-	}
-	return true;
-}
-
-bool SimpleDictCommand::LoadFrom(CommandFile* cmdFile, void* e, SimpleDictCommand** newCmdPtr)
-{
-	ASSERT(newCmdPtr);
-
-	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != SimpleDictCommand::GetType()) {
-		return false;
-	}
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-
-	auto command = std::make_unique<SimpleDictCommand>();
-
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-
-	command->in->mParam.mFilePath = cmdFile->Get(entry, _T("FilePath"), _T(""));
-	command->in->mParam.mSheetName = cmdFile->Get(entry, _T("SheetName"), _T(""));
-	command->in->mParam.mRangeFront = cmdFile->Get(entry, _T("Range"), _T(""));
-	command->in->mParam.mRangeBack = cmdFile->Get(entry, _T("RangeBack"), _T(""));
-	command->in->mParam.mIsFirstRowHeader = cmdFile->Get(entry, _T("IsFirstRowHeader"), false);
-	command->in->mParam.mIsMatchWithoutKeyword = cmdFile->Get(entry, _T("IsMatchWithoutKeyword"), true);
-	command->in->mParam.mIsEnableReverse = cmdFile->Get(entry, _T("IsEnableReverse"), false);
-	command->in->mParam.mIsNotifyUpdate = cmdFile->Get(entry, _T("IsNotifyUpdate"), false);
-	command->in->mParam.mIsExpandMacro = cmdFile->Get(entry, _T("IsExpandMacro"), false);
-
-	command->in->mParam.mActionType = cmdFile->Get(entry, _T("aftertype"), 2);
-	command->in->mParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
-	command->in->mParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
-	command->in->mParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$value"));
-
-	if (newCmdPtr) {
-		*newCmdPtr = command.release();
 	}
 	return true;
 }

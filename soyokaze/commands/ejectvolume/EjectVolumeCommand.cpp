@@ -155,27 +155,25 @@ EjectVolumeCommand::Clone()
 	return clonedObj.release();
 }
 
-bool EjectVolumeCommand::Save(CommandFile* cmdFile)
+bool EjectVolumeCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("DriveLetter"), (int)in->mParam.mDriveLetter);
+	entry->Set(_T("Type"), GetType());
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("DriveLetter"), (int)in->mParam.mDriveLetter);
 
 	return true;
 }
 
-bool EjectVolumeCommand::Load(CommandFile* cmdFile, void* entry_)
+bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 {
-	auto entry = (CommandFile::Entry*)entry_;
+	ASSERT(entry);
 
-	in->mParam.mName = cmdFile->GetName(entry);
-	in->mParam.mDescription = cmdFile->Get(entry, _T("description"), _T(""));
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
 
-	TCHAR letter = (TCHAR)cmdFile->Get(entry, _T("DriveLetter"), 0);
+	TCHAR letter = (TCHAR)entry->Get(_T("DriveLetter"), 0);
 	if (letter < _T('A') || _T('Z') < letter) {
 		return false;
 	}

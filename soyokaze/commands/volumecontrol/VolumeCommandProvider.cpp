@@ -64,13 +64,8 @@ void VolumeCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != VolumeCommand::GetType()) {
-			continue;
-		}
-
 		auto command = std::make_unique<VolumeCommand>();
-		if (command->Load(cmdFile, entry) == false) {
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

@@ -11,12 +11,15 @@ public:
 	using CommandQueryItem = launcherapp::CommandQueryItem;
 	using CommandQueryItemList = launcherapp::CommandQueryItemList;
 
+	class Settings;
+
 public:
 	CommandMap();
 	CommandMap(const CommandMap& rhs);
 	~CommandMap();
 
-	bool Serialize(CommandFile* file);
+	void LoadSettings(Settings& settings);
+	void RestoreSettings(Settings& settings);
 
 	void Clear();
 
@@ -43,3 +46,19 @@ public:
 protected:
 	std::map<CString, launcherapp::core::Command*> mMap;
 };
+
+
+class CommandMap::Settings
+{
+public:
+	Settings();
+	~Settings();
+
+	void Add(launcherapp::core::Command* cmd);
+	void Restore(launcherapp::core::Command* cmd);
+
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
+};
+

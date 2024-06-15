@@ -68,13 +68,8 @@ void SnippetCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != SnippetCommand::GetType()) {
-			continue;
-		}
-
 		auto command = std::make_unique<SnippetCommand>();
-		if (command->Load(cmdFile, entry) == false) {
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

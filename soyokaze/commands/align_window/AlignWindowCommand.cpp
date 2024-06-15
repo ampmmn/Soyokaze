@@ -197,15 +197,12 @@ int AlignWindowCommand::EditDialog(const Parameter*)
 		return 0;
 	}
 
-	auto cmdNew = std::make_unique<AlignWindowCommand>();
-
 	param = dlg.GetParam();
-	cmdNew->in->mParam = param;
+	in->mParam = param;
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -243,18 +240,17 @@ AlignWindowCommand::Clone()
 	return clonedCmd.release();
 }
 
-bool AlignWindowCommand::Save(CommandFile* cmdFile)
+bool AlignWindowCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
+	entry->Set(_T("Type"), GetType());
 
-	cmdFile->Set(entry, _T("description"), GetDescription());
+	entry->Set(_T("description"), GetDescription());
 
-	cmdFile->Set(entry, _T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
-	cmdFile->Set(entry, _T("IsKeepActiveWindow"), (bool)(in->mParam.mIsKeepActiveWindow != FALSE));
-	cmdFile->Set(entry, _T("ItemCount"), (int)in->mParam.mItems.size());
+	entry->Set(_T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
+	entry->Set(_T("IsKeepActiveWindow"), (bool)(in->mParam.mIsKeepActiveWindow != FALSE));
+	entry->Set(_T("ItemCount"), (int)in->mParam.mItems.size());
 
 	CString key;
 
@@ -262,24 +258,83 @@ bool AlignWindowCommand::Save(CommandFile* cmdFile)
 	for (auto& item : in->mParam.mItems) {
 
 		key.Format(_T("CaptionStr%d"), index);
-		cmdFile->Set(entry, key, item.mCaptionStr);
+		entry->Set(key, item.mCaptionStr);
 		key.Format(_T("ClassStr%d"), index);
-		cmdFile->Set(entry, key, item.mClassStr);
+		entry->Set(key, item.mClassStr);
 		key.Format(_T("IsUseRegExp%d"), index);
-		cmdFile->Set(entry, key, item.mIsUseRegExp != FALSE);
+		entry->Set(key, item.mIsUseRegExp != FALSE);
 		key.Format(_T("IsApplyAll%d"), index);
-		cmdFile->Set(entry, key, item.mIsApplyAll != FALSE);
+		entry->Set(key, item.mIsApplyAll != FALSE);
 
 		key.Format(_T("Action%d"), index);
-		cmdFile->Set(entry, key, item.mAction);
+		entry->Set(key, item.mAction);
 
 		key.Format(_T("Placement%d"), index);
 		std::vector<uint8_t> data(sizeof(item.mPlacement));
 		memcpy(&data.front(), &item.mPlacement, sizeof(item.mPlacement));
-		cmdFile->Set(entry, key, data);
+		entry->Set(key, data);
 
 		index++;
 	}
+
+	return true;
+}
+
+bool AlignWindowCommand::Load(CommandEntryIF* entry)
+{
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != AlignWindowCommand::GetType()) {
+		return false;
+	}
+
+	CString name = entry->GetName();
+	CString descriptionStr = entry->Get(_T("description"), _T(""));
+
+	BOOL isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
+	BOOL isKeepActive = entry->Get(_T("IsKeepActiveWindow"), true) ? TRUE : FALSE;
+
+	CString key;
+
+	std::vector<CommandParam::ITEM> items;
+
+	std::vector<uint8_t> placement;
+
+	int itemCount = entry->Get(_T("ItemCount"), 0);
+	for (int i = 1; i <= itemCount; ++i) {
+
+		CommandParam::ITEM item;
+
+		key.Format(_T("CaptionStr%d"), i);
+		item.mCaptionStr = entry->Get(key, _T(""));
+		key.Format(_T("ClassStr%d"), entry);
+		item.mClassStr = entry->Get(key, _T(""));
+		key.Format(_T("IsUseRegExp%d"), i);
+		item.mIsUseRegExp = entry->Get(key, false) ? TRUE : FALSE;
+		key.Format(_T("IsApplyAll%d"), i);
+		item.mIsApplyAll = entry->Get(key, false) ? TRUE : FALSE;
+
+		key.Format(_T("Action%d"), i);
+		item.mAction = entry->Get(key, 0);
+
+		key.Format(_T("Placement%d"), i);
+		if (entry->Get(key, placement) == false) {
+			continue;
+		}
+		if (placement.size() != sizeof(WINDOWPLACEMENT)) {
+			continue;
+		}
+		memcpy(&item.mPlacement, &placement.front(), placement.size());
+
+		item.BuildRegExp();
+
+		items.push_back(item);
+	}
+
+	in->mParam.mName = name;
+	in->mParam.mDescription = descriptionStr;
+	in->mParam.mItems.swap(items);
+	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
+	in->mParam.mIsKeepActiveWindow = isKeepActive;
 
 	return true;
 }
@@ -330,61 +385,11 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != AlignWindowCommand::GetType()) {
-		return false;
-	}
-
-	CString name = cmdFile->GetName(entry);
-	CString descriptionStr = cmdFile->Get(entry, _T("description"), _T(""));
-
-	BOOL isNotify = cmdFile->Get(entry, _T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
-	BOOL isKeepActive = cmdFile->Get(entry, _T("IsKeepActiveWindow"), true) ? TRUE : FALSE;
-
-	CString key;
-
-	std::vector<CommandParam::ITEM> items;
-
-	std::vector<uint8_t> placement;
-
-	int itemCount = cmdFile->Get(entry, _T("ItemCount"), 0);
-	for (int i = 1; i <= itemCount; ++i) {
-
-		CommandParam::ITEM item;
-
-		key.Format(_T("CaptionStr%d"), i);
-		item.mCaptionStr = cmdFile->Get(entry, key, _T(""));
-		key.Format(_T("ClassStr%d"), i);
-		item.mClassStr = cmdFile->Get(entry, key, _T(""));
-		key.Format(_T("IsUseRegExp%d"), i);
-		item.mIsUseRegExp = cmdFile->Get(entry, key, false) ? TRUE : FALSE;
-		key.Format(_T("IsApplyAll%d"), i);
-		item.mIsApplyAll = cmdFile->Get(entry, key, false) ? TRUE : FALSE;
-
-		key.Format(_T("Action%d"), i);
-		item.mAction = cmdFile->Get(entry, key, 0);
-
-		key.Format(_T("Placement%d"), i);
-		if (cmdFile->Get(entry, key, placement) == false) {
-			continue;
-		}
-		if (placement.size() != sizeof(WINDOWPLACEMENT)) {
-			continue;
-		}
-		memcpy(&item.mPlacement, &placement.front(), placement.size());
-
-		item.BuildRegExp();
-
-		items.push_back(item);
-	}
 
 	auto command = std::make_unique<AlignWindowCommand>();
-
-	command->in->mParam.mName = name;
-	command->in->mParam.mDescription = descriptionStr;
-	command->in->mParam.mItems.swap(items);
-	command->in->mParam.mIsNotifyIfWindowNotFound = isNotify;
-	command->in->mParam.mIsKeepActiveWindow = isKeepActive;
+	if (command->Load(entry) == false) {
+		return false;
+	}
 
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();

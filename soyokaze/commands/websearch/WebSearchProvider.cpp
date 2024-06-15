@@ -103,8 +103,8 @@ void WebSearchProvider::LoadCommands(CommandFile* cmdFile)
 			continue;
 		}
 
-		std::unique_ptr<WebSearchCommand> command;
-		if (WebSearchCommand::LoadFrom(cmdFile, entry, command) == false) {
+		std::unique_ptr<WebSearchCommand> command(new WebSearchCommand);
+		if (command->Load(entry) == false) {
 			continue;
 		}
 

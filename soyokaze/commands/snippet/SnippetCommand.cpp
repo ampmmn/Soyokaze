@@ -140,17 +140,13 @@ int SnippetCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	auto cmdNew = std::make_unique<SnippetCommand>();
-
 	// 追加する処理
-	cmdNew->SetName(dlg.mName);
-	cmdNew->SetDescription(dlg.mDescription);
-	cmdNew->SetText(dlg.mText);
+	SetName(dlg.mName);
+	SetDescription(dlg.mDescription);
+	SetText(dlg.mText);
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -189,26 +185,29 @@ SnippetCommand::Clone()
 	return clonedObj.release();
 }
 
-bool SnippetCommand::Save(CommandFile* cmdFile)
+bool SnippetCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(cmdFile);
+	ASSERT(entry);
 
-	auto entry = cmdFile->NewEntry(GetName());
-	cmdFile->Set(entry, _T("Type"), GetType());
-
-	cmdFile->Set(entry, _T("description"), GetDescription());
-	cmdFile->Set(entry, _T("text"), in->mText);
+	entry->Set(_T("Type"), GetType());
+	entry->Set(_T("description"), GetDescription());
+	entry->Set(_T("text"), in->mText);
 
 	return true;
 }
 
-bool SnippetCommand::Load(CommandFile* cmdFile, void* entry_)
+bool SnippetCommand::Load(CommandEntryIF* entry)
 {
-	auto entry = (CommandFile::Entry*)entry_;
+	ASSERT(entry);
 
-	in->mName = cmdFile->GetName(entry);
-	in->mDescription = cmdFile->Get(entry, _T("description"), _T(""));
-	in->mText = cmdFile->Get(entry, _T("text"), _T(""));
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != GetType()) {
+		return false;
+	}
+
+	in->mName = entry->GetName();
+	in->mDescription = entry->Get(_T("description"), _T(""));
+	in->mText = entry->Get(_T("text"), _T(""));
 
 	return true;
 }

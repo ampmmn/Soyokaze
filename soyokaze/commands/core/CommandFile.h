@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "commands/core/CommandEntryIF.h"
 #include <vector>
 #include <memory>
 
@@ -12,18 +13,9 @@ class CommandFileEntry;
 class CommandFile
 {
 public:
-	using Entry = CommandFileEntry;
+	using Entry = CommandEntryIF;
 
 	struct Exception {};
-
-	enum {
-		TYPE_INT,
-		TYPE_DOUBLE,
-		TYPE_STRING,
-		TYPE_BOOLEAN,
-		TYPE_STREAM,
-		TYPE_UNKNOWN,
-	};
 
 public:
 	CommandFile();
