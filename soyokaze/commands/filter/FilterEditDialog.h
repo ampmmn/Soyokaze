@@ -39,8 +39,6 @@ protected:
 
 public:
 	CommandParam mParam;
-	//
-	int mShowTypeIdx;
 	int mCommandSelIndex;
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;

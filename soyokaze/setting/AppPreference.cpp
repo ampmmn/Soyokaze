@@ -489,12 +489,6 @@ void AppPreference::GetAdditionalPaths(std::vector<CString>& paths)
 	paths.swap(pathsWork);
 }
 
-// フィルタコマンドの同時実行を許可する
-bool AppPreference::IsArrowFilterCommandConcurrentRun()
-{
-	return in->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
-}
-
 // コメント表示欄の初期表示文字列を取得
 CString AppPreference::GetDefaultComment()
 {

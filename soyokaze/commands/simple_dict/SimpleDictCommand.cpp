@@ -35,6 +35,8 @@ struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 			listener->OnDeleteCommand(mThisPtr);
 		}
 	}
+	void OnLancuherActivate() override {}
+	void OnLancuherUnactivate() override {}
 
 	SimpleDictCommand* mThisPtr;
 	SimpleDictParam mParam;

@@ -621,6 +621,23 @@ void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& e
 	in->mCommands.Enumerate(enumCommands);
 }
 
+
+void CommandRepository::Activate()
+{
+	// ランチャーがアクティブになった通知
+	for (auto& listener : in->mListeners) {
+		listener->OnLancuherActivate();
+	}
+}
+
+void CommandRepository::Unactivate()
+{
+	// ランチャーが非アクティブになった通知
+	for (auto& listener : in->mListeners) {
+		listener->OnLancuherUnactivate();
+	}
+}
+
 void
 CommandRepository::Query(
 	const QueryRequest& newRequest

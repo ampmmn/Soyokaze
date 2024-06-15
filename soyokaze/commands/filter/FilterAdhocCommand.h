@@ -1,20 +1,21 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/filter/FilterResult.h"
 #include <memory>
+#include <vector>
 
 namespace launcherapp {
 namespace commands {
-namespace everything {
+namespace filter {
 
 class CommandParam;
-class EverythingResult;
 
-class EverythingAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
+class FilterAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
-	EverythingAdhocCommand(const CommandParam& param, const EverythingResult& result);
-	virtual ~EverythingAdhocCommand();
+	FilterAdhocCommand(const CommandParam& param, const FilterResult& result);
+	virtual ~FilterAdhocCommand();
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -30,7 +31,10 @@ protected:
 };
 
 
-} // end of namespace everything
+
+
+} // end of namespace filter
 } // end of namespace commands
 } // end of namespace launcherapp
+
 

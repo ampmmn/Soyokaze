@@ -58,9 +58,6 @@ public:
 	// 追加パスを取得
 	void GetAdditionalPaths(std::vector<CString>& paths);
 
-	// フィルタコマンドの同時実行を許可する
-	bool IsArrowFilterCommandConcurrentRun();
-
 	// コメント表示欄の初期表示文字列を取得
 	CString GetDefaultComment();
 

@@ -1,30 +1,88 @@
 #include "pch.h"
 #include "FilterCommandProvider.h"
 #include "commands/filter/FilterCommand.h"
+#include "commands/filter/FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "FilterEditDialog.h"
 #include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "resource.h"
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
 namespace launcherapp {
 namespace commands {
 namespace filter {
 
 
-struct FilterCommandProvider::PImpl
+struct FilterCommandProvider::PImpl : public AppPreferenceListenerIF, public CommandRepositoryListenerIF
 {
-	uint32_t mRefCount;
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		for (auto command : mCommands) {
+			command->Release();
+		}
+		mCommands.clear();
+	}
+
+// AppPreferenceListenerIF
+	void OnAppFirstBoot() override
+	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override
+	{
+		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+		cmdRepo->RegisterListener(this);
+	}
+
+	void OnAppPreferenceUpdated() override
+	{
+	}
+	void OnAppExit() override
+	{
+		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+		cmdRepo->UnregisterListener(this);
+	}
+
+
+// CommandRepositoryListenerIF
+	void OnDeleteCommand(Command* command) override
+	{
+		auto it = std::find(mCommands.begin(), mCommands.end(), command);
+		if (it != mCommands.end()) {
+			mCommands.erase(it);
+			command->Release();
+		}
+	}
+	void OnLancuherActivate() override
+	{
+		for (auto cmd : mCommands) {
+			cmd->ClearCache();
+		}
+	}
+	void OnLancuherUnactivate() override
+	{
+	}
+
+	std::vector<FilterCommand*> mCommands;
+	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +94,6 @@ REGISTER_COMMANDPROVIDER(FilterCommandProvider)
 
 FilterCommandProvider::FilterCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mRefCount = 1;
 }
 
 FilterCommandProvider::~FilterCommandProvider()
@@ -68,32 +125,22 @@ void FilterCommandProvider::LoadCommands(
 			continue;
 		}
 
-		CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
-		if (typeStr.IsEmpty() == FALSE && typeStr != FilterCommand::GetType()) {
+		FilterCommand* command = nullptr;
+		if (FilterCommand::LoadFrom(cmdFile, entry, &command) == false) {
+			if (command) {
+				command->Release();
+			}
 			continue;
 		}
 
+		// 登録
+		cmdRepo->RegisterCommand(command);
+
+		in->mCommands.push_back(command);
+		command->AddRef();
+
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
-
-		CommandParam newParam;
-		newParam.mName = cmdFile->GetName(entry);
-		newParam.mDescription = cmdFile->Get(entry, _T("description"), _T(""));
-
-		newParam.mPath = cmdFile->Get(entry, _T("path"), _T(""));
-		newParam.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
-		newParam.mParameter = cmdFile->Get(entry, _T("parameter"), _T(""));
-		newParam.mShowType = cmdFile->Get(entry, _T("show"), SW_HIDE);
-		newParam.mPreFilterType = cmdFile->Get(entry, _T("prefiltertype"), 0);
-		newParam.mPostFilterType = cmdFile->Get(entry, _T("aftertype"), 0);
-		newParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
-		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
-		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));
-
-		auto command = std::make_unique<FilterCommand>();
-		command->SetParam(newParam);
-		// 登録
-		cmdRepo->RegisterCommand(command.release());
 	}
 }
 
@@ -117,53 +164,14 @@ CString FilterCommandProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 {
-	// 新規作成ダイアログを表示
-	CString value;
-
-	CommandParam tmpParam;
-
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		tmpParam.mName = value;
-	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		tmpParam.mPath = value;
-	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		tmpParam.mDescription = value;
-	}
-	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
-		tmpParam.mParameter = value;
-	}
-
-	FilterEditDialog dlg;
-	dlg.SetParam(tmpParam);
-
-	if (dlg.DoModal() != IDOK) {
+	FilterCommand* newCmd = nullptr;
+	if (FilterCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
+	CommandRepository::GetInstance()->RegisterCommand(newCmd);
 
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<FilterCommand>();
-
-	dlg.GetParam(tmpParam);
-	newCmd->SetParam(tmpParam);
-
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(tmpParam.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
+	in->mCommands.push_back(newCmd);
+	newCmd->AddRef();
 
 	return true;
 }
@@ -175,9 +183,22 @@ bool FilterCommandProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
+void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
-	// このCommandProviderは一時的なコマンドを持たない
+	std::vector<FilterResult> results;
+	for (auto& cmd : in->mCommands) {
+
+		results.clear();
+		cmd->Query(pattern, results);
+
+		CommandParam cmdParam;
+		cmd->GetParam(cmdParam);
+
+		for (auto& result : results) {
+			auto adhocCmd = new FilterAdhocCommand(cmdParam, result);
+			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd)); // ToDo: 候補ごとの一致レベル
+		}
+	}
 }
 
 // Provider間の優先順位を表す値を返す。小さいほど優先

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/filter/FilterResult.h"
 #include <memory>
 
 class HOTKEY_ATTR;
@@ -16,6 +17,9 @@ class FilterCommand : public launcherapp::commands::common::UserCommandBase
 public:
 	FilterCommand();
 	virtual ~FilterCommand();
+
+	void ClearCache();
+	void Query(Pattern* pattern, FilterResultList& results);
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -33,6 +37,9 @@ public:
 	bool Save(CommandFile* cmdFile) override;
 
 	static CString GetType();
+
+	static bool NewDialog(const Parameter* param, FilterCommand** newCmd);
+	static bool LoadFrom(CommandFile* cmdFile, void* entry, FilterCommand** newCmdPtr);
 	
 public:
 	FilterCommand& SetParam(const CommandParam& param);

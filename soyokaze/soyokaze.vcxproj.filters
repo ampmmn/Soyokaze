@@ -306,9 +306,6 @@
     <ClInclude Include="commands\filter\FilterEditDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
-    <ClInclude Include="commands\filter\FilterDialog.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
     <ClInclude Include="commands\filter\FilterCommandParam.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
@@ -1008,6 +1005,9 @@
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="commands\filter\FilterAdhocCommand.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1116,9 +1116,6 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="commands\filter\FilterEditDialog.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\filter\FilterDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
     <ClCompile Include="commands\filter\FilterCommandParam.cpp">
@@ -1774,6 +1771,9 @@
     </ClCompile>
     <ClCompile Include="commands\everything\EverythingCommandParam.cpp">
       <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterAdhocCommand.cpp">
+      <Filter>commands\filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

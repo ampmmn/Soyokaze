@@ -1,12 +1,13 @@
 #pragma once
 
 #include <memory>
+#include "commands/filter/FilterResult.h"
 
 namespace launcherapp {
 namespace commands {
 namespace filter {
 
-
+class CommandParam;
 
 class FilterExecutor
 {
@@ -15,9 +16,17 @@ public:
 	~FilterExecutor();
 
 public:
+	void LoadCandidates(const CommandParam& param);
+	bool IsLoaded();
+
 	void ClearCandidates();
 	void AddCandidates(const CString& item);
-	void Execute(const CString& keyword, std::vector<CString>& result);
+	size_t GetCandidatesCount();
+
+	void Query(const CString& keyword, FilterResultList& result);
+
+	LONG AddRef();
+	LONG Release();
 
 private:
 	struct PImpl;

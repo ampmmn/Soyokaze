@@ -200,6 +200,8 @@
 #define IDC_COMBO_AFTERTYPE2            1032
 #define IDC_COMBO_PREFILTERTYPE         1032
 #define IDC_BUTTON_NEW                  1033
+#define IDC_COMBO_PREFILTERTYPE2        1033
+#define IDC_COMBO_CANDIDATECACHE        1033
 #define IDC_BUTTON_EDIT                 1034
 #define IDC_BUTTON_EDIT2                1035
 #define IDC_BUTTON_DOWN                 1036
@@ -208,9 +210,7 @@
 #define IDC_BUTTON_EDIT4                1039
 #define IDC_CHECK_USEFILER              1040
 #define IDC_BUTTON_UP                   1041
-#define IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER 1042
 #define IDC_CHECK_TOPMOST               1043
-#define IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER2 1043
 #define IDC_CHECK_ENABLEPATHFIND        1043
 #define IDC_CHECK_SHOWDIR               1044
 #define IDC_BUTTON_NEW4                 1045
@@ -279,6 +279,7 @@
 #define IDC_EDIT_PYTHONDLLPATH          1097
 #define IDC_STATIC_WORKDIR              1098
 #define IDC_STATIC_SHOWTYPE             1099
+#define IDC_STATIC_WORKDIR2             1099
 #define IDC_STATIC_PARAMHELP            1100
 #define IDC_CHECK_ENABLECALCULATOR      1101
 #define IDC_BUTTON_BROWSE               1102

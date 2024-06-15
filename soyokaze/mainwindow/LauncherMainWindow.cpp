@@ -274,6 +274,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
 	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
 	ON_MESSAGE(WM_APP+14, OnUserMessageBlockDeactivateOnUnfocus)
+	ON_MESSAGE(WM_APP+15, OnUserMessageUpdateCandidate)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -297,6 +298,7 @@ void LauncherMainWindow::ActivateWindow()
 
 void LauncherMainWindow::HideWindow()
 {
+	GetCommandRepository()->Unactivate();
 	::ShowWindow(GetSafeHwnd(), SW_HIDE);
 }
 
@@ -348,6 +350,8 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 		if (pref->IsIMEOffOnActive()) {
 			in->mKeywordEdit.SetIMEOff();
 		}
+
+		GetCommandRepository()->Activate();
 	}
 	else {
 		// 表示状態ではあるが、非アクティブならアクティブにする
@@ -471,8 +475,20 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 
 LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam)
 {
-	// ウインドウが
+	// メインウインドウがフォーカスを失っても非表示にしないようにする
 	in->mIsBlockDeactivateOnUnfocus = (lParam != 0);
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam)
+{
+	if (::IsWindowVisible(GetSafeHwnd()) == FALSE) {
+		// ウインドウを表示していない場合は更新しない
+		return 0;
+	}
+
+	// 候補欄を更新するため、再度検索リクエストを出す
+	QueryAsync();
 	return 0;
 }
 
@@ -996,11 +1012,25 @@ void LauncherMainWindow::OnEditCommandChanged()
 	}
 
 	// 検索リクエスト
+	QueryAsync();
+}
+
+// 入力キーワードで検索をリクエストを出す(完了をまたない)
+void LauncherMainWindow::QueryAsync()
+{
+	// 入力テキストが空文字列の場合はデフォルト表示に戻す
+	if (in->mCommandStr.IsEmpty()) {
+		ClearContent();
+		return;
+	}
+
+	// 検索リクエスト
 	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
 	GetCommandRepository()->Query(req);
 }
+
 
 // 入力キーワードで検索をリクエストを出し、完了を待つ
 void LauncherMainWindow::QuerySync()
@@ -1132,7 +1162,7 @@ void LauncherMainWindow::OnOK()
 	}
 	// 実行したら、入力文字列を消して、入力ウインドウも非表示にする
 	ClearContent();
-	ShowWindow(SW_HIDE);
+	HideWindow();
 }
 
 void LauncherMainWindow::OnCancel()
@@ -1143,7 +1173,7 @@ void LauncherMainWindow::OnCancel()
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
-		ShowWindow(SW_HIDE);
+		HideWindow();
 	}
 }
 

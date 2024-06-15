@@ -21,9 +21,6 @@ public:
 	// ファイラーのパラメータ
 	CString mFilerParam;
 
-	// 同一フィルタコマンドの並列実行を許可する
-	BOOL mIsArrowFilterConcurrentRun;
-
 protected:
 	bool UpdateStatus();
 

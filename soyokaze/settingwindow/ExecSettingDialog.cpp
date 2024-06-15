@@ -39,7 +39,6 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
 	settingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
-	settingsPtr->Set(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), (bool)mIsArrowFilterConcurrentRun);
 	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
 	__super::OnOK();
@@ -52,7 +51,6 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USEFILER, mIsUseExternalFiler);
 	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
-	DDX_Check(pDX, IDC_CHECK_ALLOWCONCURRENTEXEC_FILTER, mIsArrowFilterConcurrentRun);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, mIsEnablePathFind);
 	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
 	
@@ -114,7 +112,6 @@ void ExecSettingDialog::OnEnterSettings()
 	mIsUseExternalFiler = settingsPtr->Get(_T("Soyokaze:UseFiler"), false);
 	mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
 	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
-	mIsArrowFilterConcurrentRun = settingsPtr->Get(_T("Soyokaze:IsArrowFilterCommandConcurrentRun"), false);
 	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 

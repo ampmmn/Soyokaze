@@ -5,9 +5,10 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
-CommandParam::CommandParam() : mShowType(SW_HIDE),
+CommandParam::CommandParam() : 
 	mAfterCommandParam(_T("$select")),
 	mPreFilterType(0),
+	mCacheType(0),
 	mPostFilterType(0)
 {
 }
@@ -15,11 +16,11 @@ CommandParam::CommandParam() : mShowType(SW_HIDE),
 CommandParam::CommandParam(const CommandParam& rhs) : 
 	mName(rhs.mName),
 	mDescription(rhs.mDescription),
-	mShowType(rhs.mShowType),
 	mDir(rhs.mDir),
 	mPath(rhs.mPath),
 	mParameter(rhs.mParameter),
 	mPreFilterType(rhs.mPreFilterType),
+	mCacheType(rhs.mCacheType),
 	mPostFilterType(rhs.mPostFilterType),
 	mAfterCommandName(rhs.mAfterCommandName),
 	mAfterFilePath(rhs.mAfterFilePath),
@@ -36,11 +37,11 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 	if (this != &rhs) {
 		mName = rhs.mName;
 		mDescription = rhs.mDescription;
-		mShowType = rhs.mShowType;
 		mDir = rhs.mDir;
 		mPath = rhs.mPath;
 		mParameter = rhs.mParameter;
 		mPreFilterType = rhs.mPreFilterType;
+		mCacheType = rhs.mCacheType;
 		mPostFilterType = rhs.mPostFilterType;
 		mAfterCommandName = rhs.mAfterCommandName;
 		mAfterFilePath = rhs.mAfterFilePath;

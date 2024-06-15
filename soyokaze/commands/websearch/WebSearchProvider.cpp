@@ -48,6 +48,9 @@ struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryLis
 			break;
 		}
 	}
+	void OnLancuherActivate() override {}
+	void OnLancuherUnactivate() override {}
+
 
 	WebSearchCommandList mCommands;
 

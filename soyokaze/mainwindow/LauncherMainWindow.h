@@ -54,6 +54,7 @@ protected:
 	void SetDescription(const CString& msg);
 	void ClearContent();
 	void Complement();
+	void QueryAsync();
 	void QuerySync();
 	void UpdateCandidates();
 	void WaitQueryRequest();
@@ -108,6 +109,7 @@ protected:
 	LRESULT OnUserMessageGetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
 	 
 	DECLARE_MESSAGE_MAP()

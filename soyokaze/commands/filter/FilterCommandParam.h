@@ -17,8 +17,6 @@ public:
 public:
 	CString mName;
 	CString mDescription;
-	// 表示方法
-	int mShowType;
 	// カレントディレクトリ
 	CString mDir;
 	// パス
@@ -27,6 +25,8 @@ public:
 	CString mParameter;
 	// 前段の処理の種類
 	int mPreFilterType;
+	// 候補のキャッシュ方法(0:しない 1:する(アプリ終了まで))
+	int mCacheType;
 	// 後段の処理の種類
 	int mPostFilterType;
 	// 後段のコマンド(mPostFilterType=0の場合)

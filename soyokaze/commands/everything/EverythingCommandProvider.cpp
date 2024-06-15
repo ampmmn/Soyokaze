@@ -32,6 +32,10 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 	}
 	virtual ~PImpl()
 	{
+		for (auto command : mCommands) {
+			command->Release();
+		}
+		mCommands.clear();
 	}
 
 // AppPreferenceListenerIF
@@ -63,6 +67,8 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 			command->Release();
 		}
 	}
+	void OnLancuherActivate() override {}
+	void OnLancuherUnactivate() override {}
 
 	std::vector<EverythingCommand*> mCommands;
 	uint32_t mRefCount = 1;
@@ -81,10 +87,6 @@ EverythingCommandProvider::EverythingCommandProvider() : in(std::make_unique<PIm
 
 EverythingCommandProvider::~EverythingCommandProvider()
 {
-	for (auto command : in->mCommands) {
-		command->Release();
-	}
-	in->mCommands.clear();
 }
 
 // 初回起動の初期化を行う

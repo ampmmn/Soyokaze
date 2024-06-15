@@ -1,7 +1,15 @@
 #include "pch.h"
 #include "FilterExecutor.h"
+#include "commands/filter/FilterCommandParam.h"
 #include "matcher/PartialMatchPattern.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/common/ExpandFunctions.h"
+#include "commands/common/Clipboard.h"
+#include "utility/LocalPathResolver.h"
+#include "utility/CharConverter.h"
+#include "utility/LastErrorString.h"
+#include "utility/Pipe.h"
+#include "SharedHwnd.h"
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -10,18 +18,30 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
+
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+using CharConverter = launcherapp::utility::CharConverter;
+
 namespace launcherapp {
 namespace commands {
 namespace filter {
 
 struct CANDIDATE_ITEM
 {
-	CANDIDATE_ITEM(int index, const CString& name) : mIndex(index), mDisplayName(name)
+	CANDIDATE_ITEM(int index, const CString& name) :
+	 	mIndex(index), mMatchLevel(Pattern::Mismatch), mDisplayName(name)
 	{
 	}
+	CANDIDATE_ITEM(int index, int level, const CString& name) :
+	 	mIndex(index), mMatchLevel(level), mDisplayName(name)
+	{
+	}
+
 	CANDIDATE_ITEM(const CANDIDATE_ITEM&) = default;
 
 	int mIndex;
+	int mMatchLevel;
 	CString mDisplayName;
 };
 
@@ -31,8 +51,15 @@ constexpr int MINIMUM_QUOTA = 64;
 
 struct FilterExecutor::PImpl
 {
+
+	bool LoadCandidatesFromSubProcess(const CommandParam& param);
+	bool LoadCandidatesFromDefinedValue(const CommandParam& param);
+	bool LoadCandidatesFromClipboard(const CommandParam& param);
+	void MakeCandidatesFromString(const CString& text);
+
+
 	//  開始の指示を出す
-	void Start(const CString& keyword) {
+	void StartQuery(const CString& keyword) {
 
 		std::lock_guard<std::mutex> lock(mMutex);
 
@@ -51,6 +78,17 @@ struct FilterExecutor::PImpl
 		std::lock_guard<std::mutex> lock(mMutex);
 		mWaitEvt->SetEvent();
 		mIsAbort = true;
+	}
+
+	void SetLoaded()
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsLoaded = true;
+	}
+	bool IsLoaded()
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mIsLoaded;
 	}
 
 	// 完了指示が出ているかを問い合わせる
@@ -126,6 +164,8 @@ struct FilterExecutor::PImpl
 	// 次にスレッドに渡す候補の位置
 	size_t mCurIndex;
 
+	LONG mRefCount = 1;
+
 	// 絞り込み文字列
 	CString mKeyword;
 
@@ -135,9 +175,143 @@ struct FilterExecutor::PImpl
 	// 完了フラグ
 	bool mIsAbort;
 
+	// 候補生成済フラグ
+	bool mIsLoaded = false;
+
 	// スレッドが終了済かどうかを表す真偽値の配列
 	std::vector<BOOL> mAllExited;
 };
+
+// 子プロセスの出力から候補一覧を生成する
+bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& param)
+{
+	// 子プロセスの出力を受け取るためのパイプを作成する
+	Pipe pipeForStdout;
+	Pipe pipeForStderr;
+
+	PROCESS_INFORMATION pi = {};
+
+	STARTUPINFO si = {};
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+	si.hStdOutput = pipeForStdout.GetWriteHandle();
+	si.hStdError = pipeForStderr.GetWriteHandle();
+	si.wShowWindow = SW_HIDE;
+
+	CString path = param.mPath;
+
+	ExpandMacros(path);
+
+	LocalPathResolver resolver;
+	resolver.Resolve(path);
+
+	CString commandLine = _T(" ") + param.mParameter;
+	ExpandMacros(commandLine);
+
+	CString workDirStr;
+	if (param.mDir.GetLength() > 0) {
+		workDirStr = param.mDir;
+		ExpandMacros(workDirStr);
+		StripDoubleQuate(workDirStr);
+	}
+
+	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;
+	BOOL isOK = CreateProcess(path, commandLine.GetBuffer(commandLine.GetLength()), NULL, NULL, TRUE, 0, NULL, workDir, &si, &pi);
+	commandLine.ReleaseBuffer();
+
+	if (isOK == FALSE) {
+		LastErrorString errStr(GetLastError());
+		spdlog::error(_T("Failed to run process ErrString:{}"), (LPCTSTR)errStr);
+		return false;
+	}
+
+	CloseHandle(pi.hThread);
+
+	HANDLE hRead = pipeForStdout.GetReadHandle();
+
+	std::vector<char> output;
+	std::vector<char> err;
+
+	CharConverter conv;
+
+	bool isExitChild = false;
+	while(isExitChild == false) {
+
+		if (isExitChild == false && WaitForSingleObject(pi.hProcess, 0) == WAIT_OBJECT_0) {
+			isExitChild = true;
+
+			DWORD exitCode;
+			GetExitCodeProcess(pi.hProcess, &exitCode);
+
+			if (exitCode != 0) {
+				pipeForStderr.ReadAll(err);
+				err.push_back(0x00);
+				CString errStr;
+				AfxMessageBox(conv.Convert(&err.front(), errStr));
+				CloseHandle(pi.hProcess);
+				return TRUE;
+			}
+		}
+
+		pipeForStdout.ReadAll(output);
+		pipeForStderr.ReadAll(err);
+	}
+	output.push_back(0x00);
+
+	// ToDo: 文字コードを選べるようにする
+	CString src;
+	conv.Convert(&output.front(), src);
+
+	CloseHandle(pi.hProcess);
+
+
+	MakeCandidatesFromString(src);
+	return true;
+}
+
+bool FilterExecutor::PImpl::LoadCandidatesFromDefinedValue(const CommandParam& param)
+{
+	// ToDo: 実装
+	return true;
+}
+
+bool FilterExecutor::PImpl::LoadCandidatesFromClipboard(const CommandParam& param)
+{
+	CString src;
+	SharedHwnd sharedWnd;
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&src);
+
+	if (src.IsEmpty()) {
+		spdlog::info(_T("Clipboard is empty."));
+		return false;
+	}
+
+	MakeCandidatesFromString(src);
+	return true;
+}
+
+void FilterExecutor::PImpl::MakeCandidatesFromString(const CString& text)
+{
+	std::vector<CString> allCandidates;
+
+	int n = 0;
+	CString token = text.Tokenize(_T("\n"), n);
+	while(token.IsEmpty() == FALSE) {
+		token.Trim(_T(" \t\r"));
+		allCandidates.push_back(token);
+		token = text.Tokenize(_T("\n"), n);
+	}
+
+	std::lock_guard<std::mutex> lock(mMutex);
+	mAllCandidates.swap(allCandidates);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 FilterExecutor::FilterExecutor() : in(new PImpl)
 {
@@ -191,12 +365,13 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				CandidateList matchedItems;
 				for (auto& candidate : candidates) {
 
-					if (pattern.Match(candidate.mDisplayName) == Pattern::Mismatch) {
+					int level = pattern.Match(candidate.mDisplayName);
+					if (level == Pattern::Mismatch) {
 						continue;
 					}
 
 					// 該当するものを候補として登録
-					matchedItems.push_back(candidate);
+					matchedItems.push_back(CANDIDATE_ITEM(candidate.mIndex, level, candidate.mDisplayName));
 				}
 
 				// 該当した候補の一覧をマージ
@@ -225,6 +400,42 @@ FilterExecutor::~FilterExecutor()
 	}
 }
 
+void FilterExecutor::LoadCandidates(const CommandParam& param)
+{
+	std::thread th([&, param]() {
+
+		AddRef();
+
+		if (param.mPreFilterType == 0) {
+			// 子プロセスの出力から絞込み文字列を得る
+			in->LoadCandidatesFromSubProcess(param);
+		}
+		else if (param.mPreFilterType == 1) {
+			// クリップボードの値から
+			in->LoadCandidatesFromClipboard(param);
+		}
+		else if (param.mPreFilterType == 2) {
+			// 固定値
+			in->LoadCandidatesFromDefinedValue(param);
+		}
+
+		in->SetLoaded();
+
+		// 候補の抽出が完了したことを通知
+		SharedHwnd sharedWnd;
+		PostMessage(sharedWnd.GetHwnd(), WM_APP+15, 0, 0);
+
+		Release();
+	});
+	th.detach();
+}
+
+bool FilterExecutor::IsLoaded()
+{
+	return in->IsLoaded();
+}
+
+
 void FilterExecutor::ClearCandidates()
 {
 	std::lock_guard<std::mutex> lock(in->mMutex);
@@ -237,18 +448,27 @@ void FilterExecutor::AddCandidates(const CString& item)
 	in->mAllCandidates.push_back(item);
 }
 
-void FilterExecutor::Execute(const CString& keyword, std::vector<CString>& result)
+size_t FilterExecutor::GetCandidatesCount()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	return in->mAllCandidates.size();
+}
+
+void FilterExecutor::Query(const CString& keyword, FilterResultList& result)
 {
 	if (keyword.IsEmpty()) {
 		// 入力キーワードが空文字の場合は全てを候補に追加する
-		auto& allCandidates = in->mAllCandidates;
-		result.insert(result.end(), allCandidates.begin(), allCandidates.end());
+		std::lock_guard<std::mutex> lock(in->mMutex);
+		for (auto& value: in->mAllCandidates) {
+			result.push_back(FilterResult(Pattern::PartialMatch, value));
+				// この時点では入力キーワードがないため、一致レベルは一律でPartialMatchとする
+		}
 		return;
 	}
 
 	// 入力キーワードによる絞り込みを開始する
 	// (コンストラクタで作成したスレッド側で行う)
-	in->Start(keyword);
+	in->StartQuery(keyword);
 
 	// スレッドの作業完了を待つ
 	WaitForMultipleObjects((int)in->mCompleteEvts.size(), &in->mCompleteEvts.front(), TRUE, INFINITE);
@@ -265,9 +485,23 @@ void FilterExecutor::Execute(const CString& keyword, std::vector<CString>& resul
 	result.clear();
 	result.reserve(in->mResult.size());
 	for (auto& item : in->mResult) {
-		result.push_back(item.mDisplayName);
+		result.push_back(FilterResult(item.mMatchLevel, item.mDisplayName));
 	}
 	in->mResult.clear();
+}
+
+LONG FilterExecutor::AddRef()
+{
+	return InterlockedIncrement(&in->mRefCount);
+}
+
+LONG FilterExecutor::Release()
+{
+	auto n = InterlockedDecrement(&in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return n;
 }
 
 } // end of namespace filter

@@ -46,36 +46,10 @@ void FilterEditDialog::SetOrgName(const CString& name)
 void FilterEditDialog::SetParam(const CommandParam& param)
 {
 	mParam = param;
-
-	if (param.mShowType == SW_HIDE) {
-		mShowTypeIdx = 3;
-	}
-	else if (param.mShowType == SW_SHOWMINIMIZED) {
-		mShowTypeIdx = 2;
-	}
-	else if (param.mShowType== SW_MAXIMIZE) {
-		mShowTypeIdx = 1;
-	}
-	else {
-		mShowTypeIdx = 0;
-	}
 }
 
 void FilterEditDialog::GetParam(CommandParam& param)
 {
-	if (mShowTypeIdx == 1) {
-		mParam.mShowType = SW_MAXIMIZE;
-	}
-	else if (mShowTypeIdx == 2) {
-		mParam.mShowType =  SW_SHOWMINIMIZED;
-	}
-	else if (mShowTypeIdx == 3) {
-		mParam.mShowType =  SW_HIDE;
-	}
-	else {
-		mParam.mShowType =  SW_NORMAL;
-	}
-
 	param = mParam;
 }
 
@@ -85,12 +59,12 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mShowTypeIdx);
 	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
 	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mDir);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, mCommandSelIndex);
+	DDX_CBIndex(pDX, IDC_COMBO_CANDIDATECACHE, mParam.mCacheType);
 	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
 	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERTYPE, mParam.mPreFilterType);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mPostFilterType);
@@ -180,12 +154,9 @@ bool FilterEditDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_STATIC_PARAM)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_EDIT_PARAM)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_PARAMHELP)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_STATIC_WORKDIR)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_EDIT_DIR)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_SHOWTYPE)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_COMBO_SHOWTYPE)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_SYSLINK_MACRO)->ShowWindow(showTypePreFilter);
 
 	if (mParam.mPostFilterType == 0) {

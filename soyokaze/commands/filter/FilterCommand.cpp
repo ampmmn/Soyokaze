@@ -1,18 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterCommand.h"
-#include "commands/common/ExpandFunctions.h"
-#include "commands/common/ExecuteHistory.h"
-#include "commands/common/Clipboard.h"
-#include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterEditDialog.h"
-#include "commands/filter/FilterDialog.h"
+#include "commands/filter/FilterExecutor.h"
 #include "commands/core/CommandRepository.h"
-#include "utility/LocalPathResolver.h"
-#include "utility/ScopeAttachThreadInput.h"
-#include "utility/CharConverter.h"
-#include "utility/LastErrorString.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -20,18 +12,14 @@
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
-#include "utility/Pipe.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using namespace launcherapp::commands::common;
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using LocalPathResolver = launcherapp::utility::LocalPathResolver;
-using CharConverter = launcherapp::utility::CharConverter;
 
 namespace launcherapp {
 namespace commands {
@@ -40,252 +28,33 @@ namespace filter {
 
 struct FilterCommand::PImpl
 {
-	PImpl() :
-		mIsSilent(true),
-		mExecutingCount(0)
+	PImpl()
 	{
 	}
 	~PImpl()
 	{
+		if (mExecutor) {
+			mExecutor->Release();
+		}
 	}
-
-	bool ExecutePreFilter(const std::vector<CString>& args, CString& src);
-	bool ExecutePreFilterSubProcess(const std::vector<CString>& args, CString& src);
-	bool ExecutePreFilterDefinedValue(const std::vector<CString>& args, CString& src);
-	bool ExecutePreFilterClipboard(const std::vector<CString>& args, CString& src);
-
-	bool ExecuteFilter(const CString& src, CString& dst);
-	bool ExecutePostFilter(CString& dst, const Parameter& param);
+	void LoadCandidates();
 
 	CommandParam mParam;
 	CString mErrMsg;
-
-	// エラーがあったときにメッセージを表示する
-	bool mIsSilent;
-
-	// 並列実行を許可しない場合の判定用のカウント
-	int mExecutingCount;
-
 	//
-	bool mIsRunning;
-	std::unique_ptr<FilterDialog> mDialog;
+	FilterExecutor* mExecutor = nullptr;
+
+	bool mIsEmpty = false;
 };
 
-// 前段のプログラムを実行する
-bool FilterCommand::PImpl::ExecutePreFilter(const std::vector<CString>& args, CString& src)
+// 候補一覧の生成を開始する
+void FilterCommand::PImpl::LoadCandidates()
 {
-	if (mParam.mPreFilterType == 0) {
-		// 子プロセスの出力から絞込み文字列を得る
-		return ExecutePreFilterSubProcess(args, src);
+	if (mExecutor == nullptr) {
+		mExecutor = new FilterExecutor();
+		mExecutor->LoadCandidates(mParam);
 	}
-	else if (mParam.mPreFilterType == 1) {
-		// クリップボードの値から
-		return ExecutePreFilterClipboard(args, src);
-	}
-	else if (mParam.mPreFilterType == 2) {
-		// 固定値
-		return ExecutePreFilterDefinedValue(args, src);
-	}
-	
-	return false;
 }
-
-bool FilterCommand::PImpl::ExecutePreFilterSubProcess(const std::vector<CString>& args, CString& src)
-{
-	// 子プロセスの出力を受け取るためのパイプを作成する
-	Pipe pipeForStdout;
-	Pipe pipeForStderr;
-
-	PROCESS_INFORMATION pi = {};
-
-	STARTUPINFO si = {};
-	si.cb = sizeof(si);
-	si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
-	si.hStdOutput = pipeForStdout.GetWriteHandle();
-	si.hStdError = pipeForStderr.GetWriteHandle();
-	si.wShowWindow = mParam.mShowType;
-
-	CString path = mParam.mPath;
-
-	ExpandArguments(path, args);
-	ExpandMacros(path);
-
-	LocalPathResolver resolver;
-	resolver.Resolve(path);
-
-	CString commandLine = _T(" ") + mParam.mParameter;
-	ExpandArguments(commandLine, args);
-	ExpandMacros(commandLine);
-
-	CString workDirStr;
-	if (mParam.mDir.GetLength() > 0) {
-		workDirStr = mParam.mDir;
-		ExpandArguments(workDirStr, args);
-		ExpandMacros(workDirStr);
-		StripDoubleQuate(workDirStr);
-	}
-
-	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;
-	BOOL isOK = CreateProcess(path, commandLine.GetBuffer(commandLine.GetLength()), NULL, NULL, TRUE, 0, NULL, workDir, &si, &pi);
-	commandLine.ReleaseBuffer();
-
-
-	if (isOK == FALSE) {
-		LastErrorString errStr(GetLastError());
-		mErrMsg = (LPCTSTR)errStr;
-		return false;
-	}
-
-	CloseHandle(pi.hThread);
-
-	HANDLE hRead = pipeForStdout.GetReadHandle();
-
-	std::vector<char> output;
-	std::vector<char> err;
-
-	CharConverter conv;
-
-	bool isExitChild = false;
-	while(isExitChild == false) {
-
-		if (isExitChild == false && WaitForSingleObject(pi.hProcess, 0) == WAIT_OBJECT_0) {
-			isExitChild = true;
-
-			DWORD exitCode;
-			GetExitCodeProcess(pi.hProcess, &exitCode);
-
-			if (exitCode != 0) {
-				pipeForStderr.ReadAll(err);
-				err.push_back(0x00);
-				CString errStr;
-				AfxMessageBox(conv.Convert(&err.front(), errStr));
-				CloseHandle(pi.hProcess);
-				return TRUE;
-			}
-		}
-
-		pipeForStdout.ReadAll(output);
-		pipeForStderr.ReadAll(err);
-	}
-	output.push_back(0x00);
-
-	// ToDo: 文字コードを選べるようにする
-	CString& outputStr = src;
-	conv.Convert(&output.front(), outputStr);
-
-	CloseHandle(pi.hProcess);
-
-	return true;
-}
-
-bool FilterCommand::PImpl::ExecutePreFilterDefinedValue(const std::vector<CString>& args, CString& src)
-{
-	return true;
-}
-
-bool FilterCommand::PImpl::ExecutePreFilterClipboard(const std::vector<CString>& args, CString& src)
-{
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&src);
-
-	if (src.IsEmpty()) {
-		mErrMsg = _T("クリップボードが空です");
-		return false;
-	}
-
-	return true;
-}
-
-// 絞込み(フィルタ処理)の実行
-bool FilterCommand::PImpl::ExecuteFilter(
-	const CString& src,
-	CString& dst
-)
-{
-	FilterDialog& dlg = *mDialog.get();
-	dlg.SetCommandName(mParam.mName);
-	dlg.SetText(src);
-
-	if (dlg.DoModal() != IDOK) {
-		return false;
-	}
-
-	// 後段の処理
-	dst = dlg.GetFilteredText();
-
-	return true;
-}
-
-bool FilterCommand::PImpl::ExecutePostFilter(
-	CString& dst,
-	const Parameter& param
-)
-{
-	CString argSub = mParam.mAfterCommandParam;
-	argSub.Replace(_T("$select"), dst);
-	ExpandMacros(argSub);
-
-	CString parents;
-	param.GetNamedParam(_T("PARENTS"), &parents);
-
-	// 呼び出し元に自分自身を追加
-	if (parents.IsEmpty() == FALSE) {
-		parents += _T("/");
-	}
-	parents += mParam.mName;
-
-	Parameter paramSub;
-	paramSub.AddArgument(argSub);
-	paramSub.SetNamedParamString(_T("PARENTS"), parents);
-
-	// Ctrlキーが押されているかを設定
-	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("CtrlKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("ShiftKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("WinKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("AltKeyPressed"), true);
-	}
-
-	if (mParam.mPostFilterType == 0) {
-		// 他のコマンドを実行
-		auto cmdRepo = CommandRepository::GetInstance();
-		auto command = cmdRepo->QueryAsWholeMatch(mParam.mAfterCommandName, false);
-		if (command) {
-			command->Execute(paramSub);
-			command->Release();
-		}
-	}
-	else if (mParam.mPostFilterType == 1) {
-		// 他のファイルを実行/URLを開く
-		ShellExecCommand::ATTRIBUTE attr;
-
-		attr.mPath = mParam.mAfterFilePath;
-		attr.mPath.Replace(_T("$select"), dst);
-		ExpandMacros(attr.mPath);
-
-		attr.mParam = argSub;
-
-		ShellExecCommand cmd;
-		cmd.SetAttribute(attr);
-
-		Parameter paramEmpty;
-		return cmd.Execute(paramEmpty);
-
-	}
-	else if (mParam.mPostFilterType == 2) {
-		// クリップボードにコピー
-		Clipboard::Copy(argSub);
-	}
-
-	return true;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -301,6 +70,45 @@ FilterCommand::~FilterCommand()
 {
 }
 
+void FilterCommand::ClearCache()
+{
+	if (in->mParam.mCacheType == 0) { // キャッシュしない場合
+		SPDLOG_DEBUG(_T("clear cache."));
+		if (in->mExecutor) {
+			SPDLOG_DEBUG(_T("extcutor exists."));
+			in->mExecutor->Release();
+			in->mExecutor = nullptr;
+		}
+	}
+	else {
+		SPDLOG_DEBUG(_T("do not clear cache."));
+	}
+}
+
+void FilterCommand::Query(Pattern* pattern, FilterResultList& results)
+{
+	if (in->mExecutor == nullptr) {
+		spdlog::error(_T("executor is nullptr!"));
+		return ;
+	}
+
+	// コマンド名が一致しなければ候補を表示しない
+	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
+
+	std::vector<CString> words;
+	CString queryStr;
+	pattern->GetRawWords(words);
+	for (size_t i = 1; i < words.size(); ++i) {
+		queryStr += words[i];
+		queryStr += _T(" ");
+	}
+
+	in->mExecutor->Query(queryStr, results);
+
+}
+
 CString FilterCommand::GetName()
 {
 	return in->mParam.mName;
@@ -309,12 +117,15 @@ CString FilterCommand::GetName()
 
 CString FilterCommand::GetDescription()
 {
+	if (in->mIsEmpty) {
+		return _T("(候補なし)");
+	}
 	return in->mParam.mDescription;
 }
 
 CString FilterCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("Enter:候補を表示する");
 }
 
 CString FilterCommand::GetTypeDisplayName()
@@ -325,55 +136,17 @@ CString FilterCommand::GetTypeDisplayName()
 
 BOOL FilterCommand::Execute(const Parameter& param)
 {
-	auto pref = AppPreference::Get();
-	if (pref->IsArrowFilterCommandConcurrentRun() == false &&
-	    in->mExecutingCount > 0) {
-		// 同一コマンドの並列実行を許可しない
-
-		// 先行して実行しているダイアログをアクティブにする
-		HWND hwnd = in->mDialog ? in->mDialog->GetSafeHwnd() : nullptr;
-		if (IsWindow(hwnd)) {
-			ScopeAttachThreadInput scope;
-			SetForegroundWindow(hwnd);
-		}
-
+	if (in->mIsEmpty) {
+		// 候補が存在しないとわかっている場合は何もしない
 		return TRUE;
 	}
 
-	struct scope_count {
-		scope_count(int& c) : count(c) { ++count; }
-		~scope_count() { --count; }
-		int& count;
-	} count_(in->mExecutingCount);
+	SharedHwnd sharedWnd;
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
 
-	in->mDialog = std::make_unique<FilterDialog>();
-
-	std::vector<CString> args;
-	param.GetParameters(args);
-
-	if (args.size() > 0) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
-	}
-
-	in->mErrMsg.Empty();
-
-	// 前段の処理を実行(フィルタリング対象の文字列を生成する)
-	CString inputSrc;
-	if (in->ExecutePreFilter(args, inputSrc) == false) {
-		return FALSE;
-	}
-
-	// 絞込みを行う
-	CString resultText;
-	if (in->ExecuteFilter(inputSrc, resultText) == false) {
-		return TRUE;
-	}
-
-	// 後段の処理を実行(絞込み結果に使って処理を行う)
-	if (in->ExecutePostFilter(resultText, param) == false) {
-		return FALSE;
-	}
-
+	auto cmdline = GetName();
+	cmdline += _T(" ");
+	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
 	return TRUE;
 }
 
@@ -402,7 +175,44 @@ HICON FilterCommand::GetIcon()
 
 int FilterCommand::Match(Pattern* pattern)
 {
-	return pattern->Match(GetName());
+	in->mIsEmpty = false;
+
+	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
+		// 内部のコマンド名マッチング用の判定
+		return Pattern::WholeMatch;
+	}
+	else if (pattern->shouldWholeMatch() == false) {
+
+		// 入力欄からの入力で、前方一致するときは候補に出す
+		int level = pattern->Match(GetName());
+		if (level == Pattern::FrontMatch) {
+			return Pattern::FrontMatch;
+		}
+		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+
+			if (in->mExecutor && in->mExecutor->IsLoaded()) {
+
+				// 候補列挙済の場合、候補が存在する場合は、候補をFilterAdhocCommandとして表示するため、
+				// このコマンド自身は表示しない
+				if (in->mExecutor->GetCandidatesCount() > 0) {
+					// 候補一覧生成済の場合は表示しない
+					return Pattern::Mismatch;
+				}
+
+				// 候補件数が0の場合、その旨をFilterCommand自身が表示する
+				in->mIsEmpty = true;
+
+				return Pattern::WholeMatch;
+			}
+
+			// このタイミングで候補一覧の生成を行う
+			in->LoadCandidates();
+			return Pattern::WholeMatch;
+		}
+	}
+
+	// 通常はこちら
+	return Pattern::Mismatch;
 }
 
 int FilterCommand::EditDialog(const Parameter* param)
@@ -420,20 +230,16 @@ int FilterCommand::EditDialog(const Parameter* param)
 	}
 
 	if (dlg.DoModal() != IDOK) {
+		spdlog::info(_T("Dialog cancelled."));
 		return 1;
 	}
 
-	auto cmdNew = std::make_unique<FilterCommand>();
+	// 変更後の設定値で上書き
+	dlg.GetParam(in->mParam);
 
-	// 追加する処理
-	CommandParam paramTmp;
-	dlg.GetParam(paramTmp);
-	cmdNew->SetParam(paramTmp);
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	// 名前の変更を登録しなおす
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
-	cmdRepo->RegisterCommand(cmdNew.release());
+	cmdRepo->ReregisterCommand(this);
 
 	// ホットキー設定を更新
 	CommandHotKeyMappings hotKeyMap;
@@ -441,7 +247,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 
 	hotKeyMap.RemoveItem(hotKeyAttr);
 	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(paramTmp.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+		hotKeyMap.AddItem(GetName(), dlg.mHotKeyAttr, dlg.mIsGlobal);
 	}
 
 	auto pref = AppPreference::Get();
@@ -449,6 +255,8 @@ int FilterCommand::EditDialog(const Parameter* param)
 
 	pref->Save();
 
+	// 設定変更を反映するため、候補のキャッシュを消す
+	ClearCache();
 
 	return 0;
 }
@@ -467,6 +275,7 @@ FilterCommand::Clone()
 {
 	auto clonedObj = std::make_unique<FilterCommand>();
 	clonedObj->in->mParam = in->mParam;
+	// mExecutorはコピーする必要があるか?
 	return clonedObj.release();
 }
 
@@ -482,14 +291,105 @@ bool FilterCommand::Save(CommandFile* cmdFile)
 	cmdFile->Set(entry, _T("path"), in->mParam.mPath);
 	cmdFile->Set(entry, _T("dir"), in->mParam.mDir);
 	cmdFile->Set(entry, _T("parameter"), in->mParam.mParameter);
-	cmdFile->Set(entry, _T("show"), in->mParam.mShowType);
 	cmdFile->Set(entry, _T("prefiltertype"), in->mParam.mPreFilterType);
+	cmdFile->Set(entry, _T("cachetype"), in->mParam.mCacheType);
 	cmdFile->Set(entry, _T("aftertype"), in->mParam.mPostFilterType);
 	cmdFile->Set(entry, _T("aftercommand"), in->mParam.mAfterCommandName);
 	cmdFile->Set(entry, _T("afterfilepath"), in->mParam.mAfterFilePath);
 	cmdFile->Set(entry, _T("afterparam"), in->mParam.mAfterCommandParam);
 
 	return true;
+}
+
+bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
+{
+	// 新規作成ダイアログを表示
+	CString value;
+
+	CommandParam tmpParam;
+
+	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+		tmpParam.mName = value;
+	}
+	if (param && param->GetNamedParam(_T("PATH"), &value)) {
+		tmpParam.mPath = value;
+	}
+	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+		tmpParam.mDescription = value;
+	}
+	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
+		tmpParam.mParameter = value;
+	}
+
+	FilterEditDialog dlg;
+	dlg.SetParam(tmpParam);
+
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto cmd = std::make_unique<FilterCommand>();
+
+	if (newCmd) {
+		*newCmd = cmd.get();
+	}
+
+	dlg.GetParam(tmpParam);
+	cmd->SetParam(tmpParam);
+
+	CommandRepository::GetInstance()->RegisterCommand(cmd.release());
+
+	// ホットキー設定を更新
+	if (dlg.mHotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		hotKeyMap.AddItem(tmpParam.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		pref->Save();
+	}
+
+	return true;
+}
+
+bool FilterCommand::LoadFrom(CommandFile* cmdFile, void* e, FilterCommand** newCmdPtr)
+{
+	ASSERT(newCmdPtr);
+
+	CommandFile::Entry* entry = (CommandFile::Entry*)e;
+	CString typeStr = cmdFile->Get(entry, _T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != FilterCommand::GetType()) {
+		return false;
+	}
+
+		CommandParam newParam;
+		newParam.mName = cmdFile->GetName(entry);
+		newParam.mDescription = cmdFile->Get(entry, _T("description"), _T(""));
+
+		newParam.mPath = cmdFile->Get(entry, _T("path"), _T(""));
+		newParam.mDir = cmdFile->Get(entry, _T("dir"), _T(""));
+		newParam.mParameter = cmdFile->Get(entry, _T("parameter"), _T(""));
+		newParam.mPreFilterType = cmdFile->Get(entry, _T("prefiltertype"), 0);
+		newParam.mCacheType = cmdFile->Get(entry, _T("cachetype"), 0);
+		newParam.mPostFilterType = cmdFile->Get(entry, _T("aftertype"), 0);
+		newParam.mAfterCommandName = cmdFile->Get(entry, _T("aftercommand"), _T(""));
+		newParam.mAfterFilePath = cmdFile->Get(entry, _T("afterfilepath"), _T(""));
+		newParam.mAfterCommandParam = cmdFile->Get(entry, _T("afterparam"), _T("$select"));
+
+		auto command = std::make_unique<FilterCommand>();
+		command->SetParam(newParam);
+
+		if (newCmdPtr) {
+			*newCmdPtr = command.release();
+		}
+
+		return true;
 }
 
 } // end of namespace filter
