@@ -437,6 +437,11 @@ UINT AppPreference::GetVirtualKeyCode()
 	return in->Get(_T("HotKey:VirtualKeyCode"), 32);  // SPACE
 }
 
+bool AppPreference::IsEnableAppHotKey()
+{
+	return in->Get(_T("HotKey:IsEnableHotKey"), true);
+}
+
 bool AppPreference::IsEnableModifierHotKey()
 {
 	return in->Get(_T("HotKey:IsEnableModifierHotKey"), false);

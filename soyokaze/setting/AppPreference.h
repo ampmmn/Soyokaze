@@ -40,6 +40,7 @@ public:
 	UINT GetModifiers();
 	UINT GetVirtualKeyCode();
 
+	bool IsEnableAppHotKey();
 	bool IsEnableModifierHotKey();
 	UINT GetFirstModifierVirtualKeyCode();
 	UINT GetSecondModifierVirtualKeyCode();

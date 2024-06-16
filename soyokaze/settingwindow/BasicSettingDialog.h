@@ -14,7 +14,8 @@ public:
 	HOTKEY_ATTR mHotKeyAttr;
 
 	//
-	bool mIsModifierHotKey;
+	bool mIsEnableHotKey;
+	bool mIsEnableModifierHotKey;
 	UINT mModifierFirstVK;
 	UINT mModifierSecondVK;
 

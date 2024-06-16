@@ -367,8 +367,8 @@
 #define IDC_COMBO_MUTE                  1163
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
-#define IDC_CHECK1                      1166
 #define IDC_CHECK_USEAPI                1166
+#define IDC_CHECK_HOTKEY                1166
 #define IDC_STATIC_DRIVELETTER          1167
 #define IDC_CHECK_USEWM                 1167
 #define IDC_COMBO_DRIVELETTER           1168
@@ -382,6 +382,7 @@
 #define IDC_SYSLINK_COMMAND             1175
 #define IDC_STATIC_PREVIEW              1176
 #define IDC_SYSLINK_OPTION              1177
+#define IDC_CHECK_HOTKEY2               1178
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -390,7 +391,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1178
+#define _APS_NEXT_CONTROL_VALUE         1179
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

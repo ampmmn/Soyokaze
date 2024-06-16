@@ -41,7 +41,8 @@ void BasicSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
 	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
-	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), mIsModifierHotKey);
+	settingsPtr->Set(_T("HotKey:IsEnableHotKey"), mIsEnableHotKey);
+	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), mIsEnableModifierHotKey);
 	settingsPtr->Set(_T("HotKey:FirstModifierVirtualKeyCode"), (int)mModifierFirstVK);
 	settingsPtr->Set(_T("HotKey:SecondModifierVirtualKeyCode"),(int) mModifierSecondVK);
 
@@ -79,12 +80,17 @@ BOOL BasicSettingDialog::OnInitDialog()
 
 bool BasicSettingDialog::UpdateStatus()
 {
-	if (mIsModifierHotKey == false) {
-		mHotKey = mHotKeyAttr.ToString();
+	CString text;
+	if (mIsEnableHotKey) {
+		text = mHotKeyAttr.ToString();
 	}
-	else {
-		mHotKey = AppHotKeyDialog::ToString(mModifierFirstVK, mModifierSecondVK);
+	if (mIsEnableModifierHotKey) {
+		if (text.IsEmpty() == FALSE) {
+			text += _T(" / ");
+		}
+		text += AppHotKeyDialog::ToString(mModifierFirstVK, mModifierSecondVK);
 	}
+	mHotKey = text;
 
 	return true;
 }
@@ -95,7 +101,8 @@ void BasicSettingDialog::OnButtonHotKey()
 
 	AppHotKeyDialog dlg(mHotKeyAttr, this);
 	dlg.SetTargetName(_T("ランチャー呼び出しキー"));
-	dlg.SetModifierHotKeyType(mIsModifierHotKey);
+	dlg.SetEnableHotKey(mIsEnableHotKey);
+	dlg.SetEnableModifierHotKey(mIsEnableModifierHotKey);
 	dlg.SetModifierFirstVK(mModifierFirstVK);
 	dlg.SetModifierSecondVK(mModifierSecondVK);
 
@@ -103,7 +110,8 @@ void BasicSettingDialog::OnButtonHotKey()
 		return ;
 	}
 	dlg.GetAttribute(mHotKeyAttr);
-	mIsModifierHotKey = dlg.IsModifierHotKey();
+	mIsEnableHotKey = dlg.IsEnableHotKey();
+	mIsEnableModifierHotKey = dlg.IsEnableModifierHotKey();
 	mModifierFirstVK = dlg.GetModifierFirstVK();
 	mModifierSecondVK = dlg.GetModifierSecondVK();
 
@@ -119,7 +127,8 @@ void BasicSettingDialog::OnEnterSettings()
 		                        settingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
 	mHotKey = mHotKeyAttr.ToString();
 
-	mIsModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
+	mIsEnableHotKey = settingsPtr->Get(_T("HotKey:IsEnableHotKey"), true);
+	mIsEnableModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
 	mModifierFirstVK = settingsPtr->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
 	mModifierSecondVK = settingsPtr->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
 

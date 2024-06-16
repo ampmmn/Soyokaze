@@ -12,7 +12,9 @@
 
 AppHotKeyDialog::AppHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) : 
 	launcherapp::gui::SinglePageDialog(IDD_LAUNCHER_HOTKEY, parent),
-	mHotKeyAttr(attr)
+	mHotKeyAttr(attr),
+	mIsEnableHotKey(TRUE),
+	mIsEnableModifieHotKey(FALSE)
 {
 	SetHelpPageId(_T("AppHotKey"));
 }
@@ -35,22 +37,23 @@ void AppHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WIN, mHotKeyAttr.mUseWin);
 	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mVirtualKeyIdx);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Radio(pDX, IDC_RADIO_HOTKEY, mHotKeyType);
+	DDX_Check(pDX, IDC_CHECK_HOTKEY, mIsEnableHotKey);
+	DDX_Check(pDX, IDC_CHECK_HOTKEY2, mIsEnableModifieHotKey);
 	DDX_CBIndex(pDX, IDC_COMBO_VKMODFIRST, mFirstVKIndex);
 	DDX_CBIndex(pDX, IDC_COMBO_VKMODSECOND, mSecondVKIndex);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, mDescription);
 }
 
 BEGIN_MESSAGE_MAP(AppHotKeyDialog, launcherapp::gui::SinglePageDialog)
-	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_WIN, UpdateStatus)
-	ON_COMMAND(IDC_RADIO_HOTKEY, UpdateStatus)
-	ON_COMMAND(IDC_RADIO_HOTKEY2, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_VKMODFIRST, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_VKMODSECOND, UpdateStatus)
+	ON_COMMAND(IDC_CHECK_SHIFT, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ALT, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_CTRL, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_WIN, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_HOTKEY, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_HOTKEY2, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_VK, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_VKMODFIRST, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_VKMODSECOND, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -59,14 +62,24 @@ void AppHotKeyDialog::GetAttribute(HOTKEY_ATTR& attr)
 	attr = mHotKeyAttr;
 }
 
-void AppHotKeyDialog::SetModifierHotKeyType(bool isModifierHotKey)
+bool AppHotKeyDialog::IsEnableHotKey()
 {
-	mHotKeyType = isModifierHotKey ? 1 : 0;
+	return mIsEnableHotKey != FALSE;
 }
 
-bool AppHotKeyDialog::IsModifierHotKey()
+bool AppHotKeyDialog::IsEnableModifierHotKey()
 {
-	return mHotKeyType == 1;
+	return mIsEnableModifieHotKey != FALSE;
+}
+
+void AppHotKeyDialog::SetEnableHotKey(bool isEnable)
+{
+	mIsEnableHotKey = isEnable ? TRUE : FALSE;
+}
+
+void AppHotKeyDialog::SetEnableModifierHotKey(bool isEnable)
+{
+	mIsEnableModifieHotKey = isEnable ? TRUE : FALSE;
 }
 
 static int VKToCBIndex(UINT vk)
@@ -142,23 +155,33 @@ static CString GetVKComboText(int n)
 	}
 }
 
-void AppHotKeyDialog::UpdateStatus()
+void AppHotKeyDialog::OnUpdateStatus()
 {
 	UpdateData();
-	// ToDo: 新しいコントロールに対する制御
+	UpdateStatus();
+	UpdateData(FALSE);
+}
 
+bool AppHotKeyDialog::UpdateStatus()
+{
 	mDescription.Empty();
 
-	bool isHotKey = (mHotKeyType == 0);
-	GetDlgItem(IDC_CHECK_SHIFT)->EnableWindow(isHotKey);
-	GetDlgItem(IDC_CHECK_CTRL)->EnableWindow(isHotKey);
-	GetDlgItem(IDC_CHECK_ALT)->EnableWindow(isHotKey);
-	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(isHotKey);
-	GetDlgItem(IDC_COMBO_VK)->EnableWindow(isHotKey);
-	GetDlgItem(IDC_COMBO_VKMODFIRST)->EnableWindow(!isHotKey);
-	GetDlgItem(IDC_COMBO_VKMODSECOND)->EnableWindow(!isHotKey);
+	GetDlgItem(IDC_CHECK_SHIFT)->EnableWindow(mIsEnableHotKey);
+	GetDlgItem(IDC_CHECK_CTRL)->EnableWindow(mIsEnableHotKey);
+	GetDlgItem(IDC_CHECK_ALT)->EnableWindow(mIsEnableHotKey);
+	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsEnableHotKey);
+	GetDlgItem(IDC_COMBO_VK)->EnableWindow(mIsEnableHotKey);
 
-	if (isHotKey) {
+	GetDlgItem(IDC_COMBO_VKMODFIRST)->EnableWindow(mIsEnableModifieHotKey);
+	GetDlgItem(IDC_COMBO_VKMODSECOND)->EnableWindow(mIsEnableModifieHotKey);
+
+	if (mIsEnableHotKey == FALSE && mIsEnableModifieHotKey == FALSE) {
+		mMessage = _T("いずれかのホットキーを有効にする必要があります");
+		return false;
+	}
+
+	bool isOK = false;
+	if (mIsEnableHotKey) {
 		// 予約済みのキーか?
 		if (IsReservedKey(mHotKeyAttr)) {
 			GetDlgItem(IDOK)->EnableWindow(false);
@@ -169,14 +192,20 @@ void AppHotKeyDialog::UpdateStatus()
 			bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
 			GetDlgItem(IDOK)->EnableWindow(canRegister);
 
-			mMessage.Empty();
 			if (canRegister == false) {
 				mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
 			}
+			else {
+				mMessage.Empty();
+				isOK = true;
+			}
 		}
 	}
-	else {
+
+	if (mIsEnableModifieHotKey) {
+
 			mMessage.Empty();
+			isOK = true;
 
 			bool isSame = (mFirstVKIndex == mSecondVKIndex);
 
@@ -190,7 +219,7 @@ void AppHotKeyDialog::UpdateStatus()
 			}
 	}
 
-	UpdateData(FALSE);
+	return isOK;
 }
 
 /**

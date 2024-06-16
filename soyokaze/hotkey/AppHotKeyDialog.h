@@ -15,8 +15,10 @@ public:
 
 	void GetAttribute(HOTKEY_ATTR& attr);
 
-	void SetModifierHotKeyType(bool isModifierHotKey);
-	bool IsModifierHotKey();
+	bool IsEnableHotKey();
+	bool IsEnableModifierHotKey();
+	void SetEnableHotKey(bool isEnable);
+	void SetEnableModifierHotKey(bool isEnable);
 	void SetModifierFirstVK(UINT vk);
 	void SetModifierSecondVK(UINT vk);
 	UINT GetModifierFirstVK();
@@ -28,7 +30,8 @@ public:
 	// 設定対象の名前
 	CString mTargetName;
 	//
-	int mHotKeyType;
+	BOOL mIsEnableHotKey;
+	BOOL mIsEnableModifieHotKey;
 	// 補足説明
 	CString mDescription;
 
@@ -38,6 +41,7 @@ public:
 	static CString ToString(UINT firstVK, UINT secondVK);
 
 protected:
+	bool UpdateStatus();
 	static bool IsReservedKey(const HOTKEY_ATTR& attr);
 
 protected:
@@ -47,7 +51,7 @@ protected:
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg void UpdateStatus();
+	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
 

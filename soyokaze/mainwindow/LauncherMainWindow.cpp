@@ -1513,11 +1513,12 @@ void LauncherMainWindow::OnCommandHotKey(UINT id)
 void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 {
 	if (timerId == TIMERID_KEYSTATE) {
-		bool shouldBeTransparent = (GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_MENU) & 0x8000);
-		if (in->mIsPrevTransparentState != shouldBeTransparent) {
-			in->mWindowTransparencyPtr->ToggleAlphaState(shouldBeTransparent);
-			in->mIsPrevTransparentState = shouldBeTransparent;
-		}
+		// いったん無効化
+		// bool shouldBeTransparent = (GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_MENU) & 0x8000);
+		// if (in->mIsPrevTransparentState != shouldBeTransparent) {
+		// 	in->mWindowTransparencyPtr->ToggleAlphaState(shouldBeTransparent);
+		// 	in->mIsPrevTransparentState = shouldBeTransparent;
+		// }
 	}
 	else if (timerId == TIMERID_OPERATION) {
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {

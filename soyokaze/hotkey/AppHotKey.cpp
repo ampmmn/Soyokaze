@@ -22,13 +22,13 @@ static const int ID_SOYOKAZE_HOTKEY = 0xB31E;
 struct AppHotKey::PImpl
 {
 	std::unique_ptr<GlobalHotKey> mHotKey;
-	bool mIsModifierHotKey;
+	bool mIsEnableHotKey;
 };
 
 AppHotKey::AppHotKey(HWND targetWnd) : in(new PImpl)
 {
 	in->mHotKey = std::make_unique<GlobalHotKey>(targetWnd);
-	in->mIsModifierHotKey = false;
+	in->mIsEnableHotKey = true;
 
 	AppPreference::Get()->RegisterListener(this);
 }
@@ -42,9 +42,9 @@ AppHotKey::~AppHotKey()
 bool AppHotKey::Register()
 {
 	auto pref = AppPreference::Get();
-	in->mIsModifierHotKey = pref->IsEnableModifierHotKey();
+	in->mIsEnableHotKey = pref->IsEnableAppHotKey();
 	
-	if (in->mIsModifierHotKey == false) {
+	if (in->mIsEnableHotKey) {
 		UINT mod = pref->GetModifiers();
 		UINT vk = pref->GetVirtualKeyCode();
 		return in->mHotKey->Register(ID_SOYOKAZE_HOTKEY, mod, vk);
@@ -58,14 +58,14 @@ bool AppHotKey::Register()
 // 登録解除する
 void AppHotKey::Unregister()
 {
-	if (in->mIsModifierHotKey == false) {
+	if (in->mIsEnableHotKey) {
 		in->mHotKey->Unregister();
 	}
 }
 
 bool AppHotKey::IsSameKey(LPARAM lParam)
 {
-	if (in->mIsModifierHotKey) {
+	if (in->mIsEnableHotKey == false) {
 		return false;
 	}
 	return in->mHotKey->IsSameKey(lParam);
