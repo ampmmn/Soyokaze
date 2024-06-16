@@ -82,7 +82,12 @@ struct DummyCommand : public launcherapp::core::Command
 		return new DummyCommand();
 	}
 
-	bool Save(CommandFile* cmdFile) override
+	bool Save(CommandEntryIF* entry) override
+	{
+		return false;
+	}
+
+	bool Load(CommandEntryIF* entry) override
 	{
 		return false;
 	}
