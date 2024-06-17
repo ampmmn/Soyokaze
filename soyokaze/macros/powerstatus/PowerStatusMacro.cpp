@@ -47,10 +47,10 @@ bool PowerStatusMacro::Evaluate(const std::vector<CString>& args, CString& resul
 	if (n != -1) {
 		BYTE acStatus = sts.ACLineStatus;
 		CString val;
-		if (acStatus == 0) {
+		if (acStatus == 1) {
 			val = _T("オンライン");
 		}
-		else if (acStatus == 1) {
+		else if (acStatus == 0) {
 			val = _T("オフライン");
 		}
 		else {
