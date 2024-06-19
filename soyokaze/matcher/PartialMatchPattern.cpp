@@ -59,7 +59,6 @@ struct PartialMatchPattern::PImpl
 	std::wregex mRegPatternFront;
 
 	CString mWholeText;
-	bool mHasError;
 	bool mIsUseMigemoForHistory;
 
 	Migemo mMigemo;
@@ -67,8 +66,6 @@ struct PartialMatchPattern::PImpl
 
 PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 {
-	in->mHasError = false;
-
 	auto pref = AppPreference::Get();
 
 	if (pref->IsEnableMigemo()) {
@@ -88,13 +85,32 @@ PartialMatchPattern::~PartialMatchPattern()
 {
 }
 
+static tstring tostring(std::regex_constants::error_type e)
+{
+  switch (e) {
+		case std::regex_constants::error_collate:    return _T("error_collapse");
+    case std::regex_constants::error_ctype:      return _T("error_ctype");
+    case std::regex_constants::error_escape:     return _T("error_escape");
+    case std::regex_constants::error_backref:    return _T("error_back reference");
+    case std::regex_constants::error_brack:      return _T("error_bracket");
+    case std::regex_constants::error_paren:      return _T("error_paren");
+    case std::regex_constants::error_brace:      return _T("error_brace");
+    case std::regex_constants::error_badbrace:   return _T("error_bad brace");
+    case std::regex_constants::error_range:      return _T("error_range");
+    case std::regex_constants::error_space:      return _T("error_space");
+    case std::regex_constants::error_badrepeat:  return _T("error_bad repeat");
+    case std::regex_constants::error_complexity: return _T("error_complexity");
+    case std::regex_constants::error_stack:      return _T("error_stack");
+    default:                                     return _T("error_unknown");
+  }
+}
+
 void PartialMatchPattern::SetParam(
 	const launcherapp::core::CommandParameter& param
 )
 {
 	const CString& wholeText = param.GetWholeString();
 
-	in->mHasError = false;
 	in->mWholeText = wholeText;
 
 
@@ -201,13 +217,20 @@ void PartialMatchPattern::SetParam(
 				words.push_back(WORD(token, Pattern::FixString));
 			}
 		}
-		catch (std::regex_error&) {
-			in->mHasError = true;
+		catch (std::regex_error& e) {
+
+			tstring reason = tostring(e.code());
+			spdlog::debug(_T("Failed to build regex from Migemo. reason={0} input={1}"),
+			              reason.c_str(), (LPCTSTR)token);
+
+			std::wstring escapedPat = Pattern::StripEscapeChars(token);
+			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+			words.push_back(WORD(token, Pattern::FixString));
 			break;
 		}
 
 		// 前方一致比較用にパターンを生成しておく
-		std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[0]);
+		std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[i]);
 		patternsForFM.push_back(std::wregex(L"^" + escapedPat));
 	}
 	in->mRegPatterns.swap(patterns);
@@ -227,11 +250,6 @@ int PartialMatchPattern::Match(
 	int offset
 )
 {
-	if (in->mHasError) {
-		// エラー時は無効化
-		return Mismatch;
-	}
-
 	// 入力されたキーワードに完全一致するかどうかの判断
 	CString keyword;
 	if (in->GetKeyword(offset, keyword) &&
