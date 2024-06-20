@@ -66,17 +66,20 @@ struct FilterExecutor::PImpl
 		mResult.clear();
 		mKeyword = keyword;
 		mCurIndex = 0;
-		for (auto& h : mCompleteEvts) {
+		for (auto& h : mCompleteEvents) {
 			::ResetEvent(h);
 		}
-
-		mWaitEvt->SetEvent();
+		for (auto& h : mWaitEvents) {
+			::SetEvent(h);
+		}
 	}
 
 	// 完了の指示を出す
 	void Abort() {
 		std::lock_guard<std::mutex> lock(mMutex);
-		mWaitEvt->SetEvent();
+		for (auto& h : mWaitEvents) {
+			::SetEvent(h);
+		}
 		mIsAbort = true;
 	}
 
@@ -108,9 +111,16 @@ struct FilterExecutor::PImpl
 		}
 	}
 
+	void ResetWaitEvents() {
+		for (auto h : mWaitEvents) {
+			ResetEvent(h);
+		}
+	}
+
 	// index番目のスレッドが処理を終えたことを報告する
 	void NotifyComplete(int index) {
-		::SetEvent(mCompleteEvts[index]);
+		::SetEvent(mCompleteEvents[index]);
+		::ResetEvent(mWaitEvents[index]);
 	}
 
 	// 1つのスレッドが担当するデータを取得する
@@ -156,10 +166,10 @@ struct FilterExecutor::PImpl
 	CandidateList mResult;
 
 	// スレッド側が絞り込み開始を検知する(待つ)ためのイベント
-	std::unique_ptr<CEvent> mWaitEvt;
+	std::vector<HANDLE> mWaitEvents;
 
 	// 各スレッドが完了したことを依頼側が待つためのイベントの配列
-	std::vector<HANDLE> mCompleteEvts;
+	std::vector<HANDLE> mCompleteEvents;
 
 	// 次にスレッドに渡す候補の位置
 	size_t mCurIndex;
@@ -316,31 +326,32 @@ void FilterExecutor::PImpl::MakeCandidatesFromString(const CString& text)
 FilterExecutor::FilterExecutor() : in(new PImpl)
 {
 	in->mIsAbort = false;
-	in->mWaitEvt.reset(new CEvent(FALSE, TRUE));
 
 	// スレッドを作成する
 	size_t threads = std::thread::hardware_concurrency() + 1;
+	in->mWaitEvents.resize(threads, nullptr);
 	in->mAllExited.resize(threads, FALSE);
 
 	for (size_t index = 0; index < threads; ++index) {
 
-		in->mCompleteEvts.push_back(CreateEvent(nullptr, TRUE, FALSE, nullptr));
+		in->mCompleteEvents.push_back(CreateEvent(nullptr, TRUE, FALSE, nullptr));
+		in->mWaitEvents.push_back(CreateEvent(nullptr, TRUE, FALSE, nullptr));
 
 		std::thread th([&, index, threads]() {
 
 			BOOL* isExitPtr = &(in->mAllExited.front()) + index;
 
-			HANDLE evtHandle = *(in->mWaitEvt);
+			HANDLE evtHandle = in->mWaitEvents[index];
 
 			PartialMatchPattern pattern;
 			CString candidate;
 
 			CandidateList candidates;
 
-			for(;;) {
+			while (in->IsAbort() == false) {
 
 			  // 開始を待つ
-				if (WaitForSingleObject(evtHandle, 2000) == WAIT_TIMEOUT) {
+				if (WaitForSingleObject(evtHandle, 500) == WAIT_TIMEOUT) {
 					continue;
 				}
 
@@ -395,7 +406,10 @@ FilterExecutor::~FilterExecutor()
 	in->Abort();
 	in->WaitExited();
 
-	for (auto& h : in->mCompleteEvts) {
+	for (auto& h : in->mCompleteEvents) {
+		CloseHandle(h);
+	}
+	for (auto& h : in->mWaitEvents) {
 		CloseHandle(h);
 	}
 }
@@ -471,10 +485,10 @@ void FilterExecutor::Query(const CString& keyword, FilterResultList& result)
 	in->StartQuery(keyword);
 
 	// スレッドの作業完了を待つ
-	WaitForMultipleObjects((int)in->mCompleteEvts.size(), &in->mCompleteEvts.front(), TRUE, INFINITE);
+	WaitForMultipleObjects((int)in->mCompleteEvents.size(), &in->mCompleteEvents.front(), TRUE, INFINITE);
 
 	// スレッドが待ち状態になるよう、イベントの状態を戻す
-	in->mWaitEvt->ResetEvent();
+	in->ResetWaitEvents();
 
 	// 絞り込み結果を呼び出し側に返す
 	std::lock_guard<std::mutex> lock(in->mMutex);
