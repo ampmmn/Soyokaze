@@ -95,6 +95,10 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 						spdlog::warn(_T("[SimpleDict]Failed to get key text. name:{}"), (LPCTSTR)param.mName);
 						continue;
 					}
+					if (IsAbort()) {
+						SPDLOG_DEBUG(_T("Aborted."));
+						break;
+					}
 					if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeBack, values) != 0) {
 						spdlog::warn(_T("[SimpleDict]Failed to get value text. name:{}"), (LPCTSTR)param.mName);
 						continue;
@@ -104,6 +108,12 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 					SPDLOG_ERROR(_T("An unexpected exception occurred!"));
 					continue;
 				}
+
+				if (IsAbort()) {
+					SPDLOG_DEBUG(_T("Aborted."));
+					continue;
+				}
+
 				UpdateDictData(param, keys, values);
 
 				spdlog::debug(_T("[SimpleDict]Completed loading dict data. name:{}"), (LPCTSTR)param.mName); 
@@ -219,6 +229,12 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 		auto& data = dictionary.mRecords;
 		data.clear();
 		for (size_t i = 0; i < count; ++i) {
+
+			if (IsAbort()) {
+				SPDLOG_DEBUG(_T("Aborted."));
+				break;
+			}
+
 			if (keys[i].IsEmpty() && values[i].IsEmpty()) {
 				continue;
 			}
@@ -261,7 +277,10 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 		StartWatch();
 	}
 	void OnAppPreferenceUpdated() override {}
-	void OnAppExit() override {}
+	void OnAppExit() override 
+	{
+		Abort();
+	}
 
 	// key:コマンド名, value: DICTIONARY
 	std::map<CString, DICTIONARY> mDictData;  // ToDo: 自前でなくsqlite経由にしたい
@@ -336,10 +355,6 @@ void SimpleDictDatabase::PImpl::MatchKeyValue(
 		}
 	}
 
-	// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
-	if (level == Pattern::PartialMatch) {
-		level = Pattern::FrontMatch;
-	}
 	items.push_back(ITEM(level, cmdName, keyStr, valueStr));
 }
 
@@ -400,6 +415,12 @@ void SimpleDictDatabase::Query(Pattern* pattern, std::vector<ITEM>& items, int l
 		// 辞書データをひとつずつ比較する
 		in->MatchDict(pattern, items, limit, tm, cmdName, dictionary);
 	}
+
+	std::sort(items.begin(), items.end(), [](const ITEM& l, const ITEM& r) {
+			// 一致度が高いものほど先に表示する
+			if (r.mMatchLevel < l.mMatchLevel) { return true; }
+			return false;
+	});
 }
 
 void SimpleDictDatabase::OnUpdateCommand(SimpleDictCommand* cmd, const CString& oldName)

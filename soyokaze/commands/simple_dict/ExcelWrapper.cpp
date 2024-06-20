@@ -299,6 +299,7 @@ int ExcelApplication::GetCellText(
 		local_close(DispWrapper& dispPtr) : mDisp(dispPtr) {}
 		~local_close() {
 			mDisp.CallVoidMethod(L"Close", false);
+			SPDLOG_DEBUG(_T("Workbook closed."));
 		}
 		DispWrapper mDisp;
 	} _close_(workBook);

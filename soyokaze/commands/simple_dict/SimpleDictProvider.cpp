@@ -168,7 +168,12 @@ void SimpleDictProvider::QueryAdhocCommands(
 		auto cmd = new SimpleDictAdhocCommand(item.mKey, item.mValue);
 		cmd->SetParam(param);
 
-		commands.push_back(CommandQueryItem(item.mMatchLevel, cmd));
+		// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
+		int level = item.mMatchLevel;
+		if (param.mIsMatchWithoutKeyword == false && level == Pattern::PartialMatch) {
+			level = Pattern::FrontMatch;
+		}
+		commands.push_back(CommandQueryItem(level, cmd));
 	}
 }
 
