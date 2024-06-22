@@ -128,7 +128,7 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 
 		EverythingResult result;
 		result.mFullPath = path;
-		result.mMatchLevel = Pattern::PartialMatch;
+		result.mMatchLevel = Pattern::FrontMatch;
 
 		tmp.push_back(result);
 
