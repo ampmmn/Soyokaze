@@ -17,6 +17,11 @@ UserCommandBase::~UserCommandBase()
 {
 }
 
+CString UserCommandBase::GetErrorString()
+{
+	return _T("");
+}
+
 bool UserCommandBase::IsEditable()
 {
 	return true;

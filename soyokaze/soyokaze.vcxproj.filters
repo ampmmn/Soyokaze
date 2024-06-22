@@ -1014,6 +1014,9 @@
     <ClInclude Include="commands\core\CommandFileEntry.h">
       <Filter>commands\core</Filter>
     </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1783,6 +1786,9 @@
     </ClCompile>
     <ClCompile Include="commands\core\CommandFileEntry.cpp">
       <Filter>commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp">
+      <Filter>commands\websearch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

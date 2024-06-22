@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
+#include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
@@ -172,19 +173,34 @@ void WebSearchProvider::QueryAdhocCommands(
 		return;
 	}
 
+	std::vector<std::unique_ptr<WebSearchAdhocCommand> > shortcutsCandidates;
+
+	bool isHit = false;
+
+	CString url;
+	CString displayName;
 	for (auto& cmd : in->mCommands) {
-		if (cmd->IsEnableShortcut() == false) {
+
+		int level = cmd->BuildSearchUrlString(pattern, displayName, url);
+		if (level == Pattern::Mismatch) {
 			continue;
 		}
 
-		// コマンド名に一致する場合は表示しない
-		// (一時的なcommandてはなく、通常のWeb検索コマンドとして候補に表示されるため)
-		int matchLevel = pattern->Match(cmd->GetName());
-		if (matchLevel == Pattern::WholeMatch) {
+		auto adhocCmd = new WebSearchAdhocCommand(cmd.get(), displayName, url);
+		if (level == Pattern::WeakMatch) {
+			// 他のWeb検索コマンドでヒットするものがなければ表示するのでいったん貯めておく
+			shortcutsCandidates.emplace_back(std::unique_ptr<WebSearchAdhocCommand>(adhocCmd));
 			continue;
 		}
+		commands.push_back(CommandQueryItem(level, adhocCmd));
+		isHit = true;
+	}
 
-		commands.push_back(CommandQueryItem(Pattern::WeakMatch, cmd->CloneAsAdhocCommand(pattern->GetWholeString())));
+	if (isHit == false) {
+		// WeakMatchでヒットしたものは、他にヒットしたものがなかったら候補として表示する
+		for (auto& adhocCmd : shortcutsCandidates) {
+			commands.push_back(CommandQueryItem(Pattern::WeakMatch, adhocCmd.release()));
+		}
 	}
 }
 

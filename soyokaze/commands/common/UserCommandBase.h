@@ -12,6 +12,8 @@ public:
 	UserCommandBase();
 	virtual ~UserCommandBase();
 
+	CString GetErrorString() override;
+
 	bool IsEditable() override;
 	bool IsDeletable() override;
 

@@ -422,6 +422,7 @@
     <ClInclude Include="commands\volumecontrol\VolumeCommandProvider.h" />
     <ClInclude Include="commands\volumecontrol\VolumeEditDialog.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
+    <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
@@ -705,6 +706,7 @@
     <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeEditDialog.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
+    <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />

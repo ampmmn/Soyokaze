@@ -13,10 +13,8 @@ public:
 	WebSearchCommand();
 	virtual ~WebSearchCommand();
 
+	int BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url);
 	// 
-	bool IsEnableShortcut() const;
-	WebSearchCommand* CloneAsAdhocCommand(CString& searchWord);
-
 // Comand
 	CString GetName() override;
 	CString GetDescription() override;
@@ -24,7 +22,6 @@ public:
 	CString GetTypeDisplayName() override;
 
 	BOOL Execute(const Parameter& param) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;

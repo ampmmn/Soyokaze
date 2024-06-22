@@ -9,6 +9,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <assert.h>
 
@@ -20,15 +21,88 @@ namespace websearch {
 
 struct WebSearchCommand::PImpl
 {
+	int BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url);
+	int BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url);
 	CommandParam mParam;
 
-	bool mIsShortcut = false;
-	CString mSearchWord;
-
 	HICON mIcon = nullptr;
-
-	CString mErrorMsg;
 };
+
+int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
+{
+	const auto& cmdName = mParam.mName;
+	// コマンド名が一致しなければ候補を表示しない
+	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return Pattern::Mismatch;
+	}
+
+	std::vector<CString> words;
+	pattern->GetRawWords(words);
+
+	if (words.size() == 1) {
+		// 後続キーワードなし
+		return Pattern::Mismatch;
+	}
+
+	CString queryStr;
+	for (size_t i = 1; i < words.size(); ++i) {
+		if (i != 1) {
+			queryStr += _T(" ");
+		}
+		queryStr += words[i];
+	}
+
+	// URLを生成
+	url = mParam.mURL;
+	url.Replace(_T("$*"), queryStr);
+
+	// 表示名
+	displayName.Format(_T("%s %s"), cmdName, queryStr);
+
+	return Pattern::FrontMatch;
+}
+
+// 「常に検索候補として表示する」としての処理
+int WebSearchCommand::PImpl::BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url)
+{
+	const auto& cmdName = mParam.mName;
+
+	if (cmdName.CompareNoCase(pattern->GetFirstWord()) == 0) {
+		// コマンド名が前方一致する場合は通常処理を使う
+		return BuildSearchUrlString(pattern, displayName, url);
+	}
+
+	std::vector<CString> words;
+	pattern->GetRawWords(words);
+
+	if (words.size() == 0) {
+		// 後続キーワードなし
+		return Pattern::Mismatch;
+	}
+
+	CString queryStr;
+	for (size_t i = 0; i < words.size(); ++i) {
+		if (i != 0) {
+			queryStr += _T(" ");
+		}
+		queryStr += words[i];
+	}
+
+	// URLを生成
+	url = mParam.mURL;
+	url.Replace(_T("$*"), queryStr);
+
+	displayName = queryStr;
+
+	// 「常に検索候補として表示する」として表示する場合は弱い一致を使う
+	return Pattern::WeakMatch;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 CString WebSearchCommand::GetType() { return _T("WebSearch"); }
 
@@ -40,29 +114,19 @@ WebSearchCommand::~WebSearchCommand()
 {
 }
 
-bool WebSearchCommand::IsEnableShortcut() const
-{
-	return in->mParam.IsEnableShortcutSearch();
-}
 
-WebSearchCommand* WebSearchCommand::CloneAsAdhocCommand(CString& searchWord)
+int WebSearchCommand::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
 {
-	auto newCmd = new WebSearchCommand();
-	newCmd->in->mParam = in->mParam;
-	newCmd->in->mIsShortcut = true;
-	newCmd->in->mSearchWord = searchWord;
-
-	return newCmd;
-}
-
-CString WebSearchCommand::GetName()
-{
-	if (in->mIsShortcut == false) {
-		return in->mParam.mName;
+	if (in->mParam.IsEnableShortcutSearch() == false) {
+		return in->BuildSearchUrlString(pattern, displayName, url);
 	}
 	else {
-		return in->mSearchWord;
+		return in->BuildSearchUrlStringAsShortcut(pattern, displayName, url);
 	}
+}
+CString WebSearchCommand::GetName()
+{
+	return in->mParam.mName;
 }
 
 CString WebSearchCommand::GetDescription()
@@ -83,29 +147,13 @@ CString WebSearchCommand::GetTypeDisplayName()
 
 BOOL WebSearchCommand::Execute(const Parameter& param_)
 {
-	in->mErrorMsg.Empty();
+	SharedHwnd sharedWnd;
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
 
-	Parameter param(param_);
-
-	std::vector<CString> args;
-	if (in->mIsShortcut) {
-		// 先頭のキーワード(本来はコマンド名)も含める
-		param.SetParamString(param_.GetWholeString());
-	}
-
-	SubProcess exec(param);
-
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mParam.mURL, process) == FALSE) {
-		in->mErrorMsg = process->GetErrorMessage();
-		return FALSE;
-	}
+	auto cmdline = GetName();
+	cmdline += _T(" ");
+	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
 	return TRUE;
-}
-
-CString WebSearchCommand::GetErrorString()
-{
-	return in->mErrorMsg;
 }
 
 HICON WebSearchCommand::GetIcon()
@@ -124,38 +172,32 @@ HICON WebSearchCommand::GetIcon()
 
 int WebSearchCommand::Match(Pattern* pattern)
 {
-	if (in->mIsShortcut == false) {
-		// キーワード名にマッチする場合
-		int matchLevel = pattern->Match(in->mParam.mName);
-		if (matchLevel != Pattern::Mismatch) {
-			in->mIsShortcut = false;
-			in->mSearchWord.Empty();
-			return matchLevel;
+	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
+		// 内部のコマンド名マッチング用の判定
+		return Pattern::WholeMatch;
+	}
+	else if (pattern->shouldWholeMatch() == false) {
+
+		// 入力欄からの入力で、前方一致するときは候補に出す
+		int level = pattern->Match(GetName());
+		if (level == Pattern::FrontMatch) {
+			return Pattern::FrontMatch;
 		}
-		return Pattern::Mismatch;
+		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+			return Pattern::WholeMatch;
+		}
 	}
-	else {
-		// キーワード補完による一時的なコマンドとしてふるまう場合
-		return Pattern::PartialMatch;
-	}
+	// 通常はこちら
+	return Pattern::Mismatch;
 }
 
 bool WebSearchCommand::IsEditable()
 {
-	if (in->mIsShortcut == false) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return true;
 }
 
 int WebSearchCommand::EditDialog(const Parameter*)
 {
-	if (in->mIsShortcut) {
-		return 0;
-	}
-
 	SettingDialog dlg;
 	dlg.SetIcon(GetIcon());
 
