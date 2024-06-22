@@ -62,6 +62,8 @@ struct LauncherMainWindow::PImpl
 
 	// キーワード入力欄の文字列
 	CString mCommandStr;
+	// 最後に外部からの入力によって更新された時点での文字列
+	CString mLastInputStr;
 	CString mGuideStr;
 	// 現在選択中のコマンドの説明
 	CString mDescriptionStr;
@@ -132,15 +134,16 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 {
 	auto cmdName = cmd->GetName();
 
-	CString trailing;
-	if (GetTrailingString(trailing)) {
-		mCommandStr = cmdName + _T(" ") + trailing;
-	}
-	else {
+	if (cmdName.Find(mLastInputStr) == 0 && cmdName.GetLength() > mLastInputStr.GetLength()) {
+		startPos = mLastInputStr.GetLength();
+		endPos = cmdName.GetLength();
 		mCommandStr = cmdName;
 	}
-	startPos = 0;
-	endPos = cmdName.GetLength(); 
+	else {
+		mCommandStr = mLastInputStr;
+		startPos = mCommandStr.GetLength();
+		endPos = mCommandStr.GetLength();
+	}
 
 	// 説明の更新
 	mDescriptionStr = cmd->GetDescription();
@@ -190,6 +193,7 @@ void LauncherMainWindow::PImpl::EnumTokenPos(std::vector<int>& tokenPos)
 	tokenPos.swap(tmpPos);
 }
 
+// 現在のキャレット位置より後ろにある文字を取得する
 bool LauncherMainWindow::PImpl::GetTrailingString(CString& text)
 {
 	std::vector<int> tokenPos;
@@ -412,6 +416,8 @@ LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	}
 	SPDLOG_DEBUG(_T("text:{}"), text);
 
+	in->mCommandStr = text;
+	in->mLastInputStr = text;
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
 
@@ -995,6 +1001,8 @@ LauncherMainWindow::GetCurrentCommand()
 void LauncherMainWindow::OnEditCommandChanged()
 {
 	UpdateData();
+
+	in->mLastInputStr = in->mCommandStr;
 
 	// 音を鳴らす
 	AppSound::Get()->PlayInputSound();
