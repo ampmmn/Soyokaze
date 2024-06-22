@@ -4,6 +4,7 @@
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/common/CommandEditValidation.h"
+#include "hotkey/CommandHotKeyDialog.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -37,6 +38,8 @@ struct SettingDialog::PImpl
 
 	HICON mIcon = nullptr;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
+
+	CString mHotKey;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +84,14 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, in->mParam.mURL);
 	DDX_Check(pDX, IDC_CHECK_ENABLESHORTCUT, in->mIsEnableShortcut);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
+	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 END_MESSAGE_MAP()
 
@@ -99,6 +104,8 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->EnableIconChange();
 
 	in->mOrgName = in->mParam.mName;
+
+	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 
 	CString caption(_T("Web検索コマンドの設定"));
 
@@ -193,6 +200,23 @@ HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SetTextColor(crTxt);
 	}
 	return br;
+}
+
+void SettingDialog::OnButtonHotKey()
+{
+	UpdateData();
+
+	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+	dlg.SetTargetName(in->mParam.mName);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	dlg.GetAttribute(in->mParam.mHotKeyAttr);
+	in->mParam.mIsGlobal = dlg.IsGlobal();
+	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+
+	UpdateData(FALSE);
 }
 
 LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)

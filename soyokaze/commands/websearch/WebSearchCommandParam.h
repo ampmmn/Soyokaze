@@ -21,6 +21,9 @@ public:
 
 	CString mURL;
 
+	HOTKEY_ATTR mHotKeyAttr;
+	bool mIsGlobal;
+
 	bool mIsEnableShortcut;
 
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)

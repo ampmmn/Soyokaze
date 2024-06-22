@@ -7,7 +7,7 @@ namespace commands {
 namespace websearch {
 
 CommandParam::CommandParam() :
-	mIsEnableShortcut(false)
+	mIsEnableShortcut(false), mIsGlobal(false)
 {
 }
 

@@ -8,6 +8,8 @@
 #include "utility/LastErrorString.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "hotkey/CommandHotKeyManager.h"
+#include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -208,21 +210,31 @@ int WebSearchCommand::EditDialog(const Parameter*)
 		return 0;
 	}
 
-	param = dlg.GetParam();
+	// ホットキー登録をいったん削除
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
 
-	AddRef();
-	// UnregisterCommandのときに参照カウント-1されるので、削除を防ぐために+1しておく
-	// RegisterCommandの際は呼び出し側が参照カウントを上げる
-
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterCommand(this);
+	if (in->mParam.mHotKeyAttr.IsValid()) {
+		hotKeyMap.RemoveItem(in->mParam.mHotKeyAttr);
+	}
 
 	in->mParam = param;
+
+	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+	cmdRepo->ReregisterCommand(this);
+
 	in->mIcon = nullptr;
 
-	cmdRepo->RegisterCommand(this);
+	// ホットキー設定を更新
+	if (in->mParam.mHotKeyAttr.IsValid()) {
+		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+	}
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(hotKeyMap);
+	pref->Save();
+
 
 	return 0;
 }
@@ -276,6 +288,10 @@ bool WebSearchCommand::Load(CommandEntryIF* entry)
 	in->mParam.mIsEnableShortcut = entry->Get(_T("IsEnableShortcut"), false);
 	entry->Get(_T("IconData"), in->mParam.mIconData);
 
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr,&in->mParam.mIsGlobal); 
+
 	return true;
 }
 
@@ -301,6 +317,22 @@ bool WebSearchCommand::NewDialog(
 	command->in->mParam = commandParam;
 
 	newCmd = std::move(command);
+
+	// ホットキー設定を更新
+	if (commandParam.mHotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr, commandParam.mIsGlobal);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		pref->Save();
+	}
+
 
 	return true;
 }
