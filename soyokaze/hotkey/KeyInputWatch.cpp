@@ -115,6 +115,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 			if (UpdateKeyState(events, vk) == false){
 				continue;
 			}
+			events.clear();
 			break;  // 一つでも何かキー入力があれば、この後の結果として十分なので止める
 		}
 	}
