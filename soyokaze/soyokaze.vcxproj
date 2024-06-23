@@ -421,7 +421,10 @@
     <ClInclude Include="commands\volumecontrol\VolumeCommandParam.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommandProvider.h" />
     <ClInclude Include="commands\volumecontrol\VolumeEditDialog.h" />
+    <ClInclude Include="commands\watchpath\LocalPathTarget.h" />
+    <ClInclude Include="commands\watchpath\UNCPathTarget.h" />
     <ClInclude Include="commands\watchpath\WatchPathToast.h" />
+    <ClInclude Include="commands\watchpath\WatchTarget.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
@@ -705,6 +708,8 @@
     <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeEditDialog.cpp" />
+    <ClCompile Include="commands\watchpath\LocalPathTarget.cpp" />
+    <ClCompile Include="commands\watchpath\UNCPathTarget.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />

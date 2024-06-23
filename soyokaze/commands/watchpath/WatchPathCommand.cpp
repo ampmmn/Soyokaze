@@ -121,12 +121,6 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	// 名前が変わっている可能性があるため、いったん削除して再登録する #addref
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	AddRef();  // UnregisterCommandで削除されるのを防ぐため+1しておく
-	cmdRepo->UnregisterCommand(this);
-
 	CString orgName = in->mName;
 
 	in->mName = dlg.mName;
@@ -135,18 +129,21 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	in->mMessage = dlg.mNotifyMessage;
 	in->mIsDisabled = (dlg.mIsDisabled != FALSE);
 
-	// RegisterCommandはrefCountを+1しないので、#addrefで上げたカウントをさげる必要はない
-	cmdRepo->RegisterCommand(this);
+	auto cmdRepo = CommandRepository::GetInstance();
+	cmdRepo->ReregisterCommand(this);
 
 	// 登録しなおす
 	auto watcher = PathWatcher::Get();
-	watcher->UnregisterPath(orgName);
+	watcher->UnregisterPath(in->mName);
 
 	if (in->mIsDisabled == false) {
 		PathWatcher::ITEM item;
 		item.mPath = dlg.mPath;
 		item.mMessage = dlg.mNotifyMessage;
 		watcher->RegisterPath(in->mName, item);
+	}
+	if (orgName != in->mName) {
+		watcher->UnregisterPath(orgName);
 	}
 
 	return 0;

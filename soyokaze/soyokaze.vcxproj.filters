@@ -1017,6 +1017,15 @@
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h">
       <Filter>commands\websearch</Filter>
     </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchTarget.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\UNCPathTarget.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\LocalPathTarget.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1789,6 +1798,12 @@
     </ClCompile>
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp">
       <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\UNCPathTarget.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\LocalPathTarget.cpp">
+      <Filter>commands\watchpath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

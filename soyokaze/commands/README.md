@@ -17,7 +17,9 @@
 |[core](./core)|コマンド回りのデータ管理|
 |[controlpanel](./controlpanel)|コントロールパネル項目のコマンド|
 |[decodestring](./decodestring)|文字列をデコードする系コマンド(DecodeURIなど)|
+|[ejectvolume](./ejectvolume)|ボリュームの取り外しを行うコマンド|
 |[env](./env)|環境変数を表示するコマンド|
+|[everything](./everything)|everything検索コマンド|
 |[filter](./filter)|フィルタコマンド|
 |[getip](./getip)|IPアドレスを取得する|
 |[group](./group)|グループコマンド|
