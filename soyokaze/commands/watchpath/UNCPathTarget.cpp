@@ -14,7 +14,7 @@ namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
-using TimeStampList = std::vector<std::pair<CString, FILETIME> >;
+using TimeStampList = std::vector<std::pair<CString, DWORD> >;
 
 struct DirectoryNode
 {
@@ -99,7 +99,7 @@ struct DirectoryNode
 				FILETIME ft;
 				f.GetLastWriteTime(&ft);
 
-				parent->mFiles[PathFindFileName(filePath)] = ft;
+				parent->mFiles[PathFindFileName(filePath)] = ft.dwLowDateTime;
 			}
 			f.Close();
 		}
@@ -144,7 +144,7 @@ private:
 				action = 0;  // added
 				return true;
 			}
-			if (memcmp(&item.second, &(it->second), sizeof(FILETIME)) != 0) {
+			if (memcmp(&item.second, &(it->second), sizeof(DWORD)) != 0) {
 				MakePath(lastChangedItem, basePath, name);
 				action = 2;  // updated
 				return true;
@@ -202,7 +202,7 @@ private:
 
 public:
 	CString mName;
-	std::map<CString, FILETIME, CompareName> mFiles;
+	std::map<CString, DWORD, CompareName> mFiles;
 	std::map<CString, DirectoryNode*, CompareName> mChildren;
 	CString mLastChangedItem;
 	int mLastChangedAction = 0;
