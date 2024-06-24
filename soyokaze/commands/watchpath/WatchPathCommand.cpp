@@ -233,8 +233,6 @@ bool WatchPathCommand::NewDialog(const Parameter* param)
 	newCmd->in->mMessage = dlg.mNotifyMessage;
 	newCmd->in->mIsDisabled = dlg.mIsDisabled != FALSE;
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
 	// 監視対象に登録
 	if (newCmd->in->mIsDisabled == false) {
 		PathWatcher::ITEM item;
@@ -242,6 +240,8 @@ bool WatchPathCommand::NewDialog(const Parameter* param)
 		item.mMessage = dlg.mNotifyMessage;
 		PathWatcher::Get()->RegisterPath(dlg.mName, item);
 	}
+
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 
