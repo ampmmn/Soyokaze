@@ -4,6 +4,7 @@
 #include <deque>
 #include <map>
 #include "utility/SHA1.h"
+#include "spdlog/stopwatch.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,18 +15,6 @@ namespace commands {
 namespace watchpath {
 
 using TimeStampList = std::vector<std::pair<CString, FILETIME> >;
-
-
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
 
 struct DirectoryNode
 {
@@ -57,6 +46,8 @@ struct DirectoryNode
 		if (PathIsDirectory(path) == FALSE) {
 			return false;
 		}
+
+		spdlog::stopwatch sw;
 
 		Clear();
 
@@ -106,12 +97,15 @@ struct DirectoryNode
 				CString filePath = f.GetFilePath();
 
 				FILETIME ft;
-				GetLastUpdateTime(filePath, ft);
+				f.GetLastWriteTime(&ft);
 
 				parent->mFiles[PathFindFileName(filePath)] = ft;
 			}
 			f.Close();
 		}
+
+		SPDLOG_DEBUG("Elapsed : {:.6f} s", sw);
+
 		return true;
 	}
 
