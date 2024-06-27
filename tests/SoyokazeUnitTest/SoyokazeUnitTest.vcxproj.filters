@@ -34,6 +34,9 @@
     <Filter Include="soyokaze\macros\core">
       <UniqueIdentifier>{f63210f4-e93b-4f84-8965-ed76918c0020}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\hotkey">
+      <UniqueIdentifier>{cdd1c956-2a2f-444f-877b-089a7b943af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp">
       <Filter>soyokaze\macros\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp">
+      <Filter>soyokaze\hotkey</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

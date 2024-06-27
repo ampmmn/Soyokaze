@@ -1,5 +1,6 @@
 #pragma once
 
+// ホットキーの属性
 class HOTKEY_ATTR
 {
 	struct VK_ITEM;
@@ -31,11 +32,11 @@ public:
 	UINT GetModifiers() const;
 	UINT GetVKCode() const;
 
-	BOOL mUseShift;
-	BOOL mUseCtrl;
-	BOOL mUseAlt;
-	BOOL mUseWin;
-	int mVirtualKeyIdx;
+	bool mUseShift;
+	bool mUseCtrl;
+	bool mUseAlt;
+	bool mUseWin;
+	short mVirtualKeyIdx;
 
 	static const VK_ITEM VK_DEFINED_DATA[];
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "utility/TopMostMask.h"
+#include "gui/DDXWrapper.h"
 
 namespace launcherapp {
 namespace gui {

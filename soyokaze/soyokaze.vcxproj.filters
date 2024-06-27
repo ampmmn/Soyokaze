@@ -1026,6 +1026,9 @@
     <ClInclude Include="commands\watchpath\LocalPathTarget.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
+    <ClInclude Include="gui\DDXWrapper.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1804,6 +1807,9 @@
     </ClCompile>
     <ClCompile Include="commands\watchpath\LocalPathTarget.cpp">
       <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\DDXWrapper.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
