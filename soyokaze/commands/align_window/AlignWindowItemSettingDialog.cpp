@@ -120,13 +120,13 @@ void ItemDialog::OnButtonUpdate()
 
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 	if (style & WS_MAXIMIZE) {
-		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
+		in->mParam.mAction = ACTION::AT_MAXIMIZE;
 	}
 	else if (style & WS_MINIMIZE) {
-		in->mParam.mAction = CommandParam::AT_MINIMIZE;
+		in->mParam.mAction = ACTION::AT_MINIMIZE;
 	}
 	else {
-		in->mParam.mAction = CommandParam::AT_SETPOS;
+		in->mParam.mAction = ACTION::AT_SETPOS;
 	}
 
 
@@ -154,16 +154,16 @@ void ItemDialog::OnOK()
 	}
 
 	// ダイアログを閉じるタイミングでmActionの値に応じてWINDOWPLACEMENT.showCmdを書き換える
-	if (in->mParam.mAction == CommandParam::AT_MAXIMIZE) {
+	if (in->mParam.mAction == ACTION::AT_MAXIMIZE) {
 		in->mParam.mPlacement.showCmd = SW_MAXIMIZE;
 	}
-	else if (in->mParam.mAction == CommandParam::AT_MINIMIZE) {
+	else if (in->mParam.mAction == ACTION::AT_MINIMIZE) {
 		in->mParam.mPlacement.showCmd = SW_MINIMIZE;
 	}
-	else if (in->mParam.mAction == CommandParam::AT_SETPOS) {
+	else if (in->mParam.mAction == ACTION::AT_SETPOS) {
 		in->mParam.mPlacement.showCmd = SW_RESTORE;
 	}
-	else if (in->mParam.mAction == CommandParam::AT_HIDE) {
+	else if (in->mParam.mAction == ACTION::AT_HIDE) {
 		in->mParam.mPlacement.showCmd = SW_HIDE;
 	}
 	__super::OnOK();
@@ -202,8 +202,8 @@ bool ItemDialog::UpdateStatus()
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 	GetDlgItem(IDC_COMBO_ACTION)->EnableWindow(TRUE);
 
-	bool isSetPos = in->mParam.mAction != CommandParam::AT_MAXIMIZE && in->mParam.mAction != CommandParam::AT_MINIMIZE && 
-	                in->mParam.mAction != CommandParam::AT_HIDE;
+	bool isSetPos = in->mParam.mAction != ACTION::AT_MAXIMIZE && in->mParam.mAction != ACTION::AT_MINIMIZE && 
+	                in->mParam.mAction != ACTION::AT_HIDE;
 	GetDlgItem(IDC_EDIT_X)->EnableWindow(isSetPos);
 	GetDlgItem(IDC_EDIT_Y)->EnableWindow(isSetPos);
 	GetDlgItem(IDC_EDIT_WIDTH)->EnableWindow(isSetPos);
@@ -245,13 +245,13 @@ ItemDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 
 	LONG_PTR style = GetWindowLongPtr(hwndRoot, GWL_STYLE);
 	if (style & WS_MAXIMIZE) {
-		in->mParam.mAction = CommandParam::AT_MAXIMIZE;
+		in->mParam.mAction = ACTION::AT_MAXIMIZE;
 	}
 	else if (style & WS_MINIMIZE) {
-		in->mParam.mAction = CommandParam::AT_MINIMIZE;
+		in->mParam.mAction = ACTION::AT_MINIMIZE;
 	}
 	else {
-		in->mParam.mAction = CommandParam::AT_SETPOS;
+		in->mParam.mAction = ACTION::AT_SETPOS;
 	}
 
 	UpdateStatus();

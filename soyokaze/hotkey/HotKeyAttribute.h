@@ -1,6 +1,6 @@
 #pragma once
 
-// $B%[%C%H%-!<$NB0@-(B
+// ホットキーの属性
 class HOTKEY_ATTR
 {
 	struct VK_ITEM;

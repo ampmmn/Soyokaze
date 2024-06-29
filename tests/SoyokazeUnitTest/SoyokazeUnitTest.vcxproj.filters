@@ -37,6 +37,9 @@
     <Filter Include="soyokaze\hotkey">
       <UniqueIdentifier>{cdd1c956-2a2f-444f-877b-089a7b943af7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\align_window">
+      <UniqueIdentifier>{7d88cf8e-d381-4d4a-ad36-6204a36e1f41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp">
       <Filter>soyokaze\hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp">
+      <Filter>soyokaze\commands\align_window</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

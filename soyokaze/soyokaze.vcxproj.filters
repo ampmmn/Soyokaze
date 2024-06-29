@@ -1029,6 +1029,9 @@
     <ClInclude Include="gui\DDXWrapper.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1810,6 +1813,9 @@
     </ClCompile>
     <ClCompile Include="gui\DDXWrapper.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp">
+      <Filter>commands\align_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

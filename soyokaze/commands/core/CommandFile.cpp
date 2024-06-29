@@ -220,8 +220,8 @@ bool CommandFile::Load()
 
 	std::vector<std::unique_ptr<CommandFileEntry> > entries;
 
-	tregex regInt(_T("^ *-?[0-9]+ *$"));
-	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
+	static tregex regInt(_T("^ *-?[0-9]+ *$"));
+	static tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
 
 	CString strLine;
 	while(file.ReadString(strLine)) {

@@ -132,7 +132,7 @@ void SettingDialog::UpdateStatus()
 		in->mIconLabelPtr->DrawIcon(in->mIcon);
 	}
 
-	tregex regHttp(_T("^https?://.+$"));
+	static tregex regHttp(_T("^https?://.+$"));
 
 	CString& url = in->mParam.mURL;
 

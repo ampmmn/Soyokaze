@@ -389,6 +389,7 @@
   <ItemGroup>
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
+    <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
@@ -672,6 +673,7 @@
   <ItemGroup>
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />

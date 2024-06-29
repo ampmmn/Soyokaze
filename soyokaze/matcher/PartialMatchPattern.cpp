@@ -33,9 +33,11 @@ struct PartialMatchPattern::PImpl
 		// 入力文字が1文字で子音の場合はC/Migemoを使わない
 		// (子音によっては何もヒットしないことがあるので)
 		static CString vowelChars(_T("aiueoAIUEO"));
-		bool isVowel = (vowelChars.Find(token[0]) != -1);
-		if (token.GetLength() == 1 && isVowel == false) {
-			return false;
+		if (token.GetLength() == 1) {
+			bool isVowel = (vowelChars.Find(token[0]) != -1);
+			if (isVowel == false) {
+				return false;
+			}
 		}
 
 		// 先頭2ワードまではMigemoを使う

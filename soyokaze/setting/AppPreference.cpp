@@ -84,8 +84,8 @@ void AppPreference::PImpl::Load()
 
 	Settings settings;
 
-	tregex regInt(_T("^ *-?[0-9]+ *$"));
-	tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
+	static tregex regInt(_T("^ *-?[0-9]+ *$"));
+	static tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
 
 	// ファイルを読む
 	CStdioFile file(fpIn);
