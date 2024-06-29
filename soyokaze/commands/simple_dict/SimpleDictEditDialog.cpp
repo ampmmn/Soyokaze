@@ -41,8 +41,7 @@ struct SettingDialog::PImpl
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal = false;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 };
 
@@ -74,16 +73,14 @@ const SimpleDictParam& SettingDialog::GetParam() const
 	return in->mParam;
 }
 
-void SettingDialog::SetHotKeyAttribute(const HOTKEY_ATTR& attr, bool isGlobal)
+void SettingDialog::SetHotKeyAttribute(const CommandHotKeyAttribute& attr)
 {
 	in->mHotKeyAttr = attr;
-	in->mIsGlobal = isGlobal;
 }
 
-void SettingDialog::GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal)
+void SettingDialog::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mHotKeyAttr;
-	isGlobal = in->mIsGlobal;
 }
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
@@ -524,14 +521,13 @@ void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(in->mHotKeyAttr, in->mIsGlobal);
+	CommandHotKeyDialog dlg(in->mHotKeyAttr);
 	dlg.SetTargetName(in->mParam.mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
 	dlg.GetAttribute(in->mHotKeyAttr);
-	in->mIsGlobal = dlg.IsGlobal();
 
 	UpdateStatus();
 	UpdateData(FALSE);

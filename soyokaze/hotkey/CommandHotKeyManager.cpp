@@ -14,12 +14,12 @@ namespace core {
 struct NameMapValue {
 	NameMapValue() = default;
 
-	NameMapValue(void* owner, const HOTKEY_ATTR& attr) : mOwner(owner), mAttr(attr)
+	NameMapValue(void* owner, const CommandHotKeyAttribute& attr) : mOwner(owner), mAttr(attr)
 	{
 	}
 
 	NameMapValue(const NameMapValue&) = default;
-	HOTKEY_ATTR mAttr;
+	CommandHotKeyAttribute mAttr;
 	void* mOwner;
 };
 
@@ -234,15 +234,14 @@ void CommandHotKeyManager::InvokeGlobalHandler(LPARAM lp)
 // 名前からホットキーを取得
 bool CommandHotKeyManager::HasKeyBinding(
 	const CString& name,
-	HOTKEY_ATTR* keyPtr,
-	bool* isGlobalPtr
+	CommandHotKeyAttribute* keyPtr
 )
 {
 	SPDLOG_DEBUG(_T("args name:{0}"), (LPCTSTR)name);
-	return GetKeyBinding(name, keyPtr, isGlobalPtr);
+	return GetKeyBinding(name, keyPtr);
 }
 
-bool CommandHotKeyManager::GetKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr)
+bool CommandHotKeyManager::GetKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 
@@ -253,53 +252,39 @@ bool CommandHotKeyManager::GetKeyBinding(const CString& name, HOTKEY_ATTR* keyPt
 	}
 	spdlog::debug(_T("key bind exists. name:{0}"), (LPCTSTR)name);
 
-	HOTKEY_ATTR attr = itFind->second.mAttr;
+	const auto& attr = itFind->second.mAttr;
 	if (keyPtr) {
 		*keyPtr = attr;
 	}
-	if (isGlobalPtr) {
-		auto itFind2 = in->mKeyItemMap.find(attr);
-		*isGlobalPtr = itFind2->second.mIsGlobal;
-	}
-
 	return true;
 }
 
 // ホットキーに関連付けられたものがあるかをチェック
 bool CommandHotKeyManager::HasKeyBinding(
-	const HOTKEY_ATTR& key,
-	bool* isGlobalPtr
+	const CommandHotKeyAttribute& key
 )
 {
 	SPDLOG_DEBUG(_T("args Modifier:{0} VKCode:{1}"), key.GetModifiers(), key.GetVKCode());
 
 	CSingleLock sl(&in->mCS, TRUE);
 
-	auto itFind = in->mKeyItemMap.find(key);
+	auto itFind = in->mKeyItemMap.find(*(HOTKEY_ATTR*)&key);
 	if (itFind == in->mKeyItemMap.end()) {
 		spdlog::debug(_T("key bind does not exist."));
 		return false;
 	}
 	spdlog::debug(_T("key bind exists."));
-
-	if (isGlobalPtr == nullptr) {
-		spdlog::debug(_T("isGlobalPtr is nullptr"));
-		return true;
-	}
-
-	*isGlobalPtr = itFind->second.mIsGlobal;
-	spdlog::debug(_T("isGlobal:{0}"), *isGlobalPtr);
 	return true;
 }
 
 bool CommandHotKeyManager::Register(
 	void* owner,
 	CommandHotKeyHandler* handler,
-	const HOTKEY_ATTR& key,
-	bool isGlobal
+	const CommandHotKeyAttribute& key
 )
 {
-	SPDLOG_DEBUG(_T("args name:{0} Modifier:{1} VKCode:{2} isGlobal:{3}"), (LPCTSTR)handler->GetDisplayName(), key.GetModifiers(), key.GetVKCode(), isGlobal);
+	SPDLOG_DEBUG(_T("args name:{0} Modifier:{1} VKCode:{2} isGlobal:{3}"),
+	             (LPCTSTR)handler->GetDisplayName(), key.GetModifiers(), key.GetVKCode(), key.mIsGlobal);
 
 	if (key.GetVKCode() == 0) {
 		SPDLOG_DEBUG(_T("ignored VKCode=0"));
@@ -311,9 +296,11 @@ bool CommandHotKeyManager::Register(
 
 	ASSERT(handler);
 
-	auto itFind = in->mKeyItemMap.find(key);
+	HOTKEY_ATTR key_(*(HOTKEY_ATTR*)&key);
+
+	auto itFind = in->mKeyItemMap.find(key_);
 	if (itFind == in->mKeyItemMap.end()) {
-		auto p = in->mKeyItemMap.insert(std::make_pair(key, PImpl::ITEM()));
+		auto p = in->mKeyItemMap.insert(std::make_pair(key_, PImpl::ITEM()));
 		itFind = p.first;
 	}
 
@@ -321,7 +308,7 @@ bool CommandHotKeyManager::Register(
 	PImpl::ITEM& item = itFind->second;
 
 	// グローバルホットキーの処理(使えないキー場合はエラーを返す)
-	if (isGlobal) {
+	if (key.mIsGlobal) {
 		HWND hwnd = in->mReceiverWindow;
 		ASSERT(hwnd);
 		auto hotKey = std::make_unique<GlobalHotKey>(hwnd);
@@ -345,7 +332,7 @@ bool CommandHotKeyManager::Register(
 	}
 
 	// Delete older one.
-	item.mIsGlobal = isGlobal;
+	item.mIsGlobal = key.mIsGlobal;
 	item.mHandlerPtr.reset(handler);
 
 	in->mIsChanged = true;
@@ -388,45 +375,14 @@ int CommandHotKeyManager::GetItemCount()
 	return (int)in->mKeyItemMap.size();
 }
 
-bool CommandHotKeyManager::GetItem(int index, CommandHotKeyHandler** handler, HOTKEY_ATTR* keyPtr, bool * isGlobalPtr)
-{
-	SPDLOG_DEBUG(_T("start"));
-
-	CSingleLock sl(&in->mCS, TRUE);
-
-	if (index >= in->mKeyItemMap.size()) {
-		SPDLOG_WARN(_T("out of bounds index:{}"), index);
-		return false;
-	}
-	auto& it = in->mKeyItemMap.begin();
-	std::advance(it, index);
-
-	if (handler) {
-		*handler = it->second.mHandlerPtr.get();
-	}
-	if (keyPtr) {
-		*keyPtr = (it->first);
-	}
-	if (isGlobalPtr) {
-		*isGlobalPtr = it->second.mIsGlobal;
-	}
-
-	return true;
-}
-
 void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 
 	CommandHotKeyMappings tmp;
 	for (auto& elem : in->mNameKeyMap) {
-
-		const HOTKEY_ATTR& attr = elem.second.mAttr;
-
-		auto& itKeyItem = in->mKeyItemMap.find(attr);
-		PImpl::ITEM& item = itKeyItem->second;
-
-		tmp.AddItem(elem.first, attr, item.mIsGlobal);
+		const CommandHotKeyAttribute& attr = elem.second.mAttr;
+		tmp.AddItem(elem.first, attr);
 	}
 	keyMap.Swap(tmp);
 }
@@ -448,8 +404,9 @@ void CommandHotKeyManager::Clear(void* owner)
 
 		auto owner = it->second.mOwner;
 		auto& attr = it->second.mAttr;
+		HOTKEY_ATTR attr_(*(HOTKEY_ATTR*)&attr);
 
-		auto it2 = in->mKeyItemMap.find(attr);
+		auto it2 = in->mKeyItemMap.find(attr_);
 		if (it2 != in->mKeyItemMap.end()) {
 			in->mKeyItemMap.erase(it2);
 		}

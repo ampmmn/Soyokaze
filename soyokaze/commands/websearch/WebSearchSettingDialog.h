@@ -3,7 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {

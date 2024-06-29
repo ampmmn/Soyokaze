@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include <regex>
 
 namespace launcherapp {
@@ -34,8 +34,7 @@ public:
 	tregex mRegClass;
 	tregex mRegCaption;
 
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 	CString mCaptionStr;
 	CString mClassStr;

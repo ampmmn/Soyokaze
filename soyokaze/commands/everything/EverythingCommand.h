@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+class CommandFile;
+
 namespace launcherapp {
 namespace commands {
 namespace everything {

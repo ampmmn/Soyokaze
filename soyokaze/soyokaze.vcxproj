@@ -430,6 +430,7 @@
     <ClInclude Include="gui\DDXWrapper.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
+    <ClInclude Include="hotkey\CommandHotkeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
@@ -718,6 +719,7 @@
     <ClCompile Include="gui\DDXWrapper.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
+    <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />

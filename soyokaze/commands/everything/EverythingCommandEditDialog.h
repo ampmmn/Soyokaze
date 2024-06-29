@@ -3,7 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/everything/EverythingCommandParam.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -18,8 +18,8 @@ public:
 	void SetParam(const CommandParam& param);
 	const CommandParam& GetParam() const;
 
-	void SetHotKeyAttribute(const HOTKEY_ATTR& attr, bool isGlobal);
-	void GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal);
+	void SetHotKeyAttribute(const CommandHotKeyAttribute& attr);
+	void GetHotKeyAttribute(CommandHotKeyAttribute& attr);
 
 	bool UpdateStatus();
 

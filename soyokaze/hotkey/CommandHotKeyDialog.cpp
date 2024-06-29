@@ -11,10 +11,9 @@
 #endif
 
 
-CommandHotKeyDialog::CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal) : 
+CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr) : 
 	launcherapp::gui::SinglePageDialog(IDD_HOTKEY),
-	mHotKeyAttr(attr),
-	mIsGlobal(isGlobal ? TRUE : FALSE)
+	mHotKeyAttr(attr)
 {
 	SetHelpPageId(_T("HotKey"));
 }
@@ -38,7 +37,7 @@ void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WIN, mHotKeyAttr.mUseWin);
 	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mVirtualKeyIdx);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mIsGlobal);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mHotKeyAttr.mIsGlobal);
 }
 
 BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
@@ -52,14 +51,9 @@ BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_CLEAR, OnButtonClear)
 END_MESSAGE_MAP()
 
-void CommandHotKeyDialog::GetAttribute(HOTKEY_ATTR& attr)
+void CommandHotKeyDialog::GetAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = mHotKeyAttr;
-}
-
-bool CommandHotKeyDialog::IsGlobal()
-{
-	return mIsGlobal != FALSE;
 }
 
 BOOL CommandHotKeyDialog::OnInitDialog()
@@ -92,8 +86,8 @@ void CommandHotKeyDialog::UpdateStatus()
 {
 	UpdateData();
 
-	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsGlobal);
-	if (mIsGlobal == FALSE) {
+	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mHotKeyAttr.mIsGlobal);
+	if (mHotKeyAttr.mIsGlobal == FALSE) {
 		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
 		mHotKeyAttr.mUseWin = 0;
 	}
@@ -116,7 +110,7 @@ void CommandHotKeyDialog::UpdateStatus()
 			}
 
 
-			if (mIsGlobal) {
+			if (mHotKeyAttr.mIsGlobal) {
 				bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
 				GetDlgItem(IDOK)->EnableWindow(canRegister);
 
@@ -185,7 +179,7 @@ bool CommandHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
 void CommandHotKeyDialog::OnButtonClear()
 {
 	UpdateData();
-	mHotKeyAttr = HOTKEY_ATTR();
+	mHotKeyAttr = CommandHotKeyAttribute();
 	UpdateData(FALSE);
 
 	UpdateStatus();

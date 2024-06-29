@@ -4,7 +4,7 @@
 #include "commands/core/CommandParameter.h"
 #include "matcher/Pattern.h"
 
-class CommandFile;
+class CommandHotKeyAttribute;
 
 namespace launcherapp {
 namespace core {
@@ -31,8 +31,8 @@ public:
 	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
 
 	/**
-	 *  @brief $BM%@h=g0L$N=E$_$E$1$r;HMQ$9$k$+(B?
-	 *  @true true:$BM%@h=g0L$N=E$_$E$1$r;HMQ$9$k(B false:$B;HMQ$7$J$$(B
+	 *  @brief 優先順位の重みづけを使用するか?
+	 *  @true true:優先順位の重みづけを使用する false:使用しない
 	 */
 	virtual bool IsPriorityRankEnabled() = 0;
 

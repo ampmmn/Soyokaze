@@ -229,7 +229,8 @@ int WebSearchCommand::EditDialog(const Parameter*)
 
 	// ホットキー設定を更新
 	if (in->mParam.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+		auto& attr = in->mParam.mHotKeyAttr;
+		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr);
 	}
 	auto pref = AppPreference::Get();
 	pref->SetCommandKeyMappings(hotKeyMap);
@@ -290,7 +291,7 @@ bool WebSearchCommand::Load(CommandEntryIF* entry)
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr,&in->mParam.mIsGlobal); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	return true;
 }
@@ -325,7 +326,7 @@ bool WebSearchCommand::NewDialog(
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr, commandParam.mIsGlobal);
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

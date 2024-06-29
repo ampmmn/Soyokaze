@@ -5,6 +5,8 @@
 #include "commands/simple_dict/SimpleDictParam.h"
 #include <memory>
 
+class CommandFile;
+
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {

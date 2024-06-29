@@ -176,14 +176,13 @@ void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr);
 	dlg.SetTargetName(in->mParam.mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
 	dlg.GetAttribute(in->mParam.mHotKeyAttr);
-	in->mParam.mIsGlobal = dlg.IsGlobal();
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 
 	UpdateData(FALSE);

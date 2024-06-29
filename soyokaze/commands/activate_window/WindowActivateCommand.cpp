@@ -133,11 +133,9 @@ int WindowActivateCommand::EditDialog(const Parameter*)
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	auto param = in->mParam;
 
-	HOTKEY_ATTR hotKeyAttr;
-	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr, &isGlobal)) {
+	CommandHotKeyAttribute hotKeyAttr;
+	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr)) {
 		param.mHotKeyAttr = hotKeyAttr;
-		param.mIsGlobal = isGlobal;
 	}
 
 	dlg.SetParam(param);
@@ -156,7 +154,7 @@ int WindowActivateCommand::EditDialog(const Parameter*)
 
 	hotKeyMap.RemoveItem(hotKeyAttr);
 	if (param.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(param.mName, param.mHotKeyAttr, param.mIsGlobal);
+		hotKeyMap.AddItem(param.mName, param.mHotKeyAttr);
 	}
 
 	auto pref = AppPreference::Get();
@@ -262,7 +260,7 @@ bool WindowActivateCommand::NewDialog(
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr, commandParam.mIsGlobal);
+		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

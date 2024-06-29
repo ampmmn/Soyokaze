@@ -8,7 +8,6 @@ namespace align_window {
 
 
 CommandParam::CommandParam() :
-	mIsGlobal(false),
 	mIsNotifyIfWindowNotFound(FALSE),
 	mIsKeepActiveWindow(TRUE)
 {

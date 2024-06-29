@@ -3,7 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 class IconLabel;
 
@@ -45,8 +45,7 @@ public:
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 // 実装
 protected:

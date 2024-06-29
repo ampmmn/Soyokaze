@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include <regex>
 
 namespace launcherapp {
@@ -21,8 +21,7 @@ public:
 
 	CString mURL;
 
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 	bool mIsEnableShortcut;
 

@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 #include "hotkey/CommandHotKeyHandlerIF.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include "hotkey/CommandHotKeyMappings.h"
 
 namespace launcherapp {
@@ -37,20 +37,18 @@ public:
 	void InvokeGlobalHandler(LPARAM lp);
 
 	// 名前からホットキーを取得
-	bool HasKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr);
-	bool GetKeyBinding(const CString& name, HOTKEY_ATTR* keyPtr, bool* isGlobalPtr);
+	bool HasKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr);
+	bool GetKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr);
 
 	// ホットキーに関連付けられたものがあるかをチェック
-	bool HasKeyBinding(const HOTKEY_ATTR& key, bool* isGlobalPtr = nullptr);
+	bool HasKeyBinding(const CommandHotKeyAttribute& key);
 
 	// 登録
-	bool Register(void* owner, CommandHotKeyHandler* handler, const HOTKEY_ATTR& key, bool isGlobal);
+	bool Register(void* owner, CommandHotKeyHandler* handler, const CommandHotKeyAttribute& key);
 	// 登録解除(ハンドラオブジェクトがわかっている場合利用可能)
 	bool Unregister(CommandHotKeyHandler* handler);
 	// 登録された要素数を取得
 	int GetItemCount();
-	// 登録された要素の情報を取得する
-	bool GetItem(int index, CommandHotKeyHandler** handler, HOTKEY_ATTR* keyPtr = nullptr, bool* isGlobalPtr = nullptr);
 
 	void GetMappings(CommandHotKeyMappings& keyMap);
 

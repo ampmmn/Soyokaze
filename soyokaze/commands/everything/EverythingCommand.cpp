@@ -172,10 +172,9 @@ int EverythingCommand::EditDialog(const Parameter*)
 	dlg.SetParam(in->mParam);
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	HOTKEY_ATTR hotKeyAttr;
-	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr, &isGlobal)) {
-		dlg.SetHotKeyAttribute(hotKeyAttr, isGlobal);
+	CommandHotKeyAttribute hotKeyAttr;
+	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr)) {
+		dlg.SetHotKeyAttribute(hotKeyAttr);
 	}
 
 	if (dlg.DoModal() != IDOK) {
@@ -195,9 +194,9 @@ int EverythingCommand::EditDialog(const Parameter*)
 
 	hotKeyMap.RemoveItem(hotKeyAttr);
 
-	dlg.GetHotKeyAttribute(hotKeyAttr, isGlobal);
+	dlg.GetHotKeyAttribute(hotKeyAttr);
 	if (hotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(GetName(), hotKeyAttr, isGlobal);
+		hotKeyMap.AddItem(GetName(), hotKeyAttr);
 	}
 
 	auto pref = AppPreference::Get();

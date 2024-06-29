@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -31,8 +31,7 @@ public:
 	// ミュート(消音)状態の変更方法(0:変更しない 1:ミュート 2:非ミュート 3:トグル)
 	int mMuteControl = 0;
 
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 };
 

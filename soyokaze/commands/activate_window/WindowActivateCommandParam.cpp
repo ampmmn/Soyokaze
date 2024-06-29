@@ -7,7 +7,6 @@ namespace commands {
 namespace activate_window {
 
 CommandParam::CommandParam() :
-	mIsGlobal(false),
 	mIsUseRegExp(FALSE),
 	mIsNotifyIfWindowNotFound(FALSE)
 {

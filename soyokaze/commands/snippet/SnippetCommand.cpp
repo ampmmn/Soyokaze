@@ -130,11 +130,9 @@ int SnippetCommand::EditDialog(const Parameter* param)
 	dlg.mText = in->mText;
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	HOTKEY_ATTR hotKeyAttr;
-	bool isGlobal = false;
-	if (hotKeyManager->HasKeyBinding(in->mName, &hotKeyAttr, &isGlobal)) {
+	CommandHotKeyAttribute hotKeyAttr;
+	if (hotKeyManager->HasKeyBinding(in->mName, &hotKeyAttr)) {
 		dlg.mHotKeyAttr = hotKeyAttr;
-		dlg.mIsGlobal = isGlobal;
 	}
 	if (dlg.DoModal() != IDOK) {
 		return 1;
@@ -154,7 +152,7 @@ int SnippetCommand::EditDialog(const Parameter* param)
 
 	hotKeyMap.RemoveItem(hotKeyAttr);
 	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
 	}
 
 	auto pref = AppPreference::Get();
@@ -244,7 +242,7 @@ bool SnippetCommand::NewDialog(const Parameter* param)
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

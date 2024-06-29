@@ -3,7 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/simple_dict/SimpleDictParam.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 class ModalComboBox;
 
@@ -20,8 +20,8 @@ public:
 	void SetParam(const SimpleDictParam& param);
 	const SimpleDictParam& GetParam() const;
 
-	void SetHotKeyAttribute(const HOTKEY_ATTR& attr, bool isGlobal);
-	void GetHotKeyAttribute(HOTKEY_ATTR& attr, bool& isGlobal);
+	void SetHotKeyAttribute(const CommandHotKeyAttribute& attr);
+	void GetHotKeyAttribute(CommandHotKeyAttribute& attr);
 
 	bool UpdateStatus();
 

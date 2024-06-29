@@ -97,28 +97,30 @@ bool MainWindowHotKey::Register()
 	auto pref = AppPreference::Get();
 	auto settingsPtr = (Settings*)&pref->GetSettings();
 
-	auto hotKeyAttrUp = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
+	using HotKeyAttr = CommandHotKeyAttribute;
+
+	auto hotKeyAttrUp = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:Up-VirtualKeyCode"), -1));
 	if (hotKeyAttrUp.GetVKCode() != -1) {
-		manager->Register(this, new UpHandler, hotKeyAttrUp, false);
+		manager->Register(this, new UpHandler, hotKeyAttrUp);
 	}
 
-	auto hotKeyAttrDown = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Down-Modifiers"), 0),
+	auto hotKeyAttrDown = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Down-Modifiers"), 0),
 	                                 settingsPtr->Get(_T("MainWindowKey:Down-VirtualKeyCode"), -1));
 	if (hotKeyAttrDown.GetVKCode() != -1) {
-		manager->Register(this, new DownHandler, hotKeyAttrDown, false);
+		manager->Register(this, new DownHandler, hotKeyAttrDown);
 	}
 
-	auto hotKeyAttrEnter = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Enter-Modifiers"), 0),
+	auto hotKeyAttrEnter = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Enter-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Enter-VirtualKeyCode"), -1));
 	if (hotKeyAttrEnter.GetVKCode() != -1) {
-		manager->Register(this, new EnterHandler, hotKeyAttrEnter, false);
+		manager->Register(this, new EnterHandler, hotKeyAttrEnter);
 	}
 
-	auto hotKeyAttrCompl = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
+	auto hotKeyAttrCompl = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	if (hotKeyAttrCompl.GetVKCode() != -1) {
-		manager->Register(this, new ComplHandler, hotKeyAttrCompl, false);
+		manager->Register(this, new ComplHandler, hotKeyAttrCompl);
 	}
 	return true;
 }

@@ -3,7 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/activate_window/WindowActivateCommandParam.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {

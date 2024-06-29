@@ -3,7 +3,7 @@
 #include "commands/common/UserCommandBase.h"
 #include <memory>
 
-class HOTKEY_ATTR;
+class CommandFile;
 
 namespace launcherapp {
 namespace commands {

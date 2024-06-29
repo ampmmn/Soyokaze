@@ -122,7 +122,7 @@ bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(paramNew.mName, dlg.mHotKeyAttr, dlg.mIsGlobal);
+		hotKeyMap.AddItem(paramNew.mName, dlg.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

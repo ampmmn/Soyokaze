@@ -2,7 +2,7 @@
 
 #include "gui/SinglePageDialog.h"
 #include <memory>
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 class IconLabel;
 
@@ -48,8 +48,7 @@ public:
 	CString mText;
 	// ホットキー(表示用)
 	CString mHotKey;
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 // 実装
 protected:
 	virtual void OnOK();

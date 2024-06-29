@@ -78,5 +78,8 @@
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp">
       <Filter>soyokaze\commands\align_window</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp">
+      <Filter>soyokaze\hotkey</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

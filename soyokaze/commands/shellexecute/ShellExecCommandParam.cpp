@@ -15,7 +15,6 @@ CommandParam::CommandParam() :
 	mIsRunAsAdmin(FALSE),
 	mShowType(0),
 	mIsUse0(FALSE),
-	mIsGlobal(false),
 	mIsShowArgDialog(FALSE),
 	mIsUseDescriptionForMatching(FALSE)
 {
@@ -36,7 +35,6 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mIsUse0 = rhs.mIsUse0;
 	mIsShowArgDialog = rhs.mIsShowArgDialog;
 	mHotKeyAttr = rhs.mHotKeyAttr;
-	mIsGlobal = rhs.mIsGlobal;
 	mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 	mIconData = rhs.mIconData;
 }
@@ -60,7 +58,6 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mIsUse0 = rhs.mIsUse0;
 		mIsShowArgDialog = rhs.mIsShowArgDialog;
 		mHotKeyAttr = rhs.mHotKeyAttr;
-		mIsGlobal = rhs.mIsGlobal;
 		mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 		mIconData = rhs.mIconData;
 	}

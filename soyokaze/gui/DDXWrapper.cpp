@@ -15,3 +15,11 @@ void DDX_CBIndex(CDataExchange* pDX, int nIDC, short& index)
 	ASSERT(n == -1 || n <= 32767);
 	index = (short)n;
 }
+
+void DDX_CBIndex(CDataExchange* pDX, int nIDC, bool& is)
+{
+	int n = is ? 1 : 0;
+	DDX_CBIndex(pDX, nIDC, n);
+	ASSERT(n == 0 || n == 1 || n == -1);
+	is = (n != 0);
+}

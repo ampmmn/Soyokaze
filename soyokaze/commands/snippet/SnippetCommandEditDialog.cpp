@@ -152,14 +152,13 @@ void CommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr, mIsGlobal);
+	CommandHotKeyDialog dlg(mHotKeyAttr);
 	dlg.SetTargetName(mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
 	dlg.GetAttribute(mHotKeyAttr);
-	mIsGlobal = dlg.IsGlobal();
 
 	UpdateStatus();
 	UpdateData(FALSE);

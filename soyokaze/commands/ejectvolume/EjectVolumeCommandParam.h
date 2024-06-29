@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -18,10 +18,7 @@ public:
 
 	// ドライブレター('A'～'Z')
 	TCHAR mDriveLetter;
-
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
-
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 

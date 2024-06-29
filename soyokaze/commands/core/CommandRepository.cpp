@@ -63,13 +63,12 @@ struct CommandRepository::PImpl
 		SPDLOG_DEBUG(_T("hotKeyMap number of items:{}"), count);
 		for (int i = 0; i < count; ++i) {
 			auto name = hotKeyMap.GetName(i);
-			HOTKEY_ATTR attr;
+			CommandHotKeyAttribute attr;
 			hotKeyMap.GetHotKeyAttr(i, attr);
 
 			auto handler = std::make_unique<NamedCommandHotKeyHandler>(name);
-			bool isGlobal = hotKeyMap.IsGlobal(i);
 
-			hotKeyManager->Register(this, handler.release(), attr, isGlobal);
+			hotKeyManager->Register(this, handler.release(), attr);
 		}
 		SPDLOG_DEBUG(_T("end"));
 	}

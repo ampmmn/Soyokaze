@@ -4,7 +4,7 @@
 #include "commands/filter/FilterResult.h"
 #include <memory>
 
-class HOTKEY_ATTR;
+class CommandFile;
 
 namespace launcherapp {
 namespace commands {

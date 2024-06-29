@@ -3,7 +3,7 @@
 #include "AppPreference.h"
 #include "utility/AppProfile.h"
 #include "hotkey/CommandHotKeyMappings.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include "resource.h"
 #include <regex>
 #include <map>
@@ -528,7 +528,7 @@ void AppPreference::SetCommandKeyMappings(
 		key.Format(_T("CommandHotKey:Command%d"), keyIdx);
 		in->mSettings.Set(key, keyMap.GetName(i));
 
-		HOTKEY_ATTR hotKeyAttr;
+		CommandHotKeyAttribute hotKeyAttr;
 		keyMap.GetHotKeyAttr(i, hotKeyAttr);
 		key.Format(_T("CommandHotKey:Modifiers%d"), keyIdx);
 		in->mSettings.Set(key, (int)hotKeyAttr.GetModifiers());
@@ -537,7 +537,7 @@ void AppPreference::SetCommandKeyMappings(
 		in->mSettings.Set(key, (int)hotKeyAttr.GetVKCode());
 
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
-		in->mSettings.Set(key, keyMap.IsGlobal(i));
+		in->mSettings.Set(key, hotKeyAttr.IsGlobal());
 	}
 }
 
@@ -566,8 +566,8 @@ void AppPreference::GetCommandKeyMappings(
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
 		bool isGlobal = in->mSettings.Get(key, false);
 
-		HOTKEY_ATTR attr(modifiers, vk);
-		tmp.AddItem(commandStr, attr, isGlobal);
+		CommandHotKeyAttribute attr(modifiers, vk, isGlobal);
+		tmp.AddItem(commandStr, attr);
 	}
 
 	keyMap.Swap(tmp);

@@ -1032,6 +1032,9 @@
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h">
       <Filter>commands\align_window</Filter>
     </ClInclude>
+    <ClInclude Include="hotkey\CommandHotkeyAttribute.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1816,6 +1819,9 @@
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp">
       <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp">
+      <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

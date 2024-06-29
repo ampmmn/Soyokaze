@@ -28,7 +28,6 @@ namespace filter {
 FilterEditDialog::FilterEditDialog() : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
-	mIsGlobal(false),
 	mCommandSelIndex(-1)
 {
 	SetHelpPageId(_T("FilterEdit"));
@@ -302,14 +301,13 @@ void FilterEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr, mIsGlobal);
+	CommandHotKeyDialog dlg(mHotKeyAttr);
 	dlg.SetTargetName(mParam.mName);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
 	dlg.GetAttribute(mHotKeyAttr);
-	mIsGlobal = dlg.IsGlobal();
 
 	UpdateStatus();
 	UpdateData(FALSE);

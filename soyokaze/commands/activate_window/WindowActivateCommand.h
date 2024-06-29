@@ -3,6 +3,8 @@
 #include "commands/common/UserCommandBase.h"
 #include <memory>
 
+class CommandFile;
+
 namespace launcherapp {
 namespace commands {
 namespace activate_window {

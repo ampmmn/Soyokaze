@@ -127,7 +127,7 @@ int EjectVolumeCommand::EditDialog(const Parameter* param)
 
 	// ホットキー設定を更新
 	if (in->mParam.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr, in->mParam.mIsGlobal);
+		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr);
 	}
 	auto pref = AppPreference::Get();
 	pref->SetCommandKeyMappings(hotKeyMap);
@@ -181,7 +181,7 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr,&in->mParam.mIsGlobal); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	return true;
 }
@@ -210,7 +210,7 @@ bool EjectVolumeCommand::NewDialog(const Parameter* param)
 		CommandHotKeyMappings hotKeyMap;
 		hotKeyManager->GetMappings(hotKeyMap);
 
-		hotKeyMap.AddItem(paramNew.mName, paramNew.mHotKeyAttr, paramNew.mIsGlobal);
+		hotKeyMap.AddItem(paramNew.mName, paramNew.mHotKeyAttr);
 
 		auto pref = AppPreference::Get();
 		pref->SetCommandKeyMappings(hotKeyMap);

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "hotkey/CommandHotKeyMappings.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -12,9 +12,7 @@ struct CommandHotKeyMappings::PImpl
 {
 	struct ITEM {
 		CString mName;
-		HOTKEY_ATTR mAttr;
-		bool mIsGlobal;
-
+		CommandHotKeyAttribute mAttr;
 	};
 	std::vector<ITEM> mItems;
 };
@@ -47,34 +45,26 @@ CString CommandHotKeyMappings::GetName(int index) const
 
 void CommandHotKeyMappings::GetHotKeyAttr(
 	int index,
- 	HOTKEY_ATTR& hotKeyAttr
+ 	CommandHotKeyAttribute& hotKeyAttr
 ) const
 {
 	ASSERT(0 <= index && index < (int)in->mItems.size());
 	hotKeyAttr = in->mItems[index].mAttr;
 }
 
-bool CommandHotKeyMappings::IsGlobal(int index) const
-{
-	ASSERT(0 <= index && index < (int)in->mItems.size());
-	return in->mItems[index].mIsGlobal;
-}
-
 void CommandHotKeyMappings::AddItem(
 	const CString& name,
-	const HOTKEY_ATTR& hotKeyAttr,
-	bool isGlobal
+	const CommandHotKeyAttribute& hotKeyAttr
 
 )
 {
 	PImpl::ITEM item;
 	item.mName = name;
 	item.mAttr = hotKeyAttr;
-	item.mIsGlobal = isGlobal;
 	in->mItems.push_back(item);
 }
 
-void CommandHotKeyMappings::RemoveItem(const HOTKEY_ATTR& hotKeyAttr)
+void CommandHotKeyMappings::RemoveItem(const CommandHotKeyAttribute& hotKeyAttr)
 {
 	if (hotKeyAttr.IsValid() == false) {
 		return;

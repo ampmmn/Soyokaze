@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -50,8 +50,7 @@ public:
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)
 	std::vector<uint8_t> mIconData;
 
-	HOTKEY_ATTR mHotKeyAttr;
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 

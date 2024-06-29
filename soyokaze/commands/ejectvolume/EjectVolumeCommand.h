@@ -3,8 +3,6 @@
 #include "commands/common/UserCommandBase.h"
 #include <memory>
 
-class HOTKEY_ATTR;
-
 namespace launcherapp {
 namespace commands {
 namespace ejectvolume {

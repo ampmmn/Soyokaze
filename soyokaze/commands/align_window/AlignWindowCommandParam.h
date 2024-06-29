@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/align_window/AlignWindowCommandParamItem.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 #include <regex>
 #include <vector>
 
@@ -25,9 +25,7 @@ public:
 	CString mName;
 	CString mDescription;
 
-	HOTKEY_ATTR mHotKeyAttr;
-
-	bool mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttr;
 	// ウインドウが見つからなかった場合に通知
 	bool mIsNotifyIfWindowNotFound;
 	// アクティブなウインドウを実行後も変えない

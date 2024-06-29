@@ -2,7 +2,7 @@
 
 #include "gui/SinglePageDialog.h"
 #include <memory>
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 class IconLabel;
 

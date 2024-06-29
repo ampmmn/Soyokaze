@@ -2,25 +2,22 @@
 #pragma once
 
 #include "gui/SinglePageDialog.h"
-#include "hotkey/HotKeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 // 
 class CommandHotKeyDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	CommandHotKeyDialog(const HOTKEY_ATTR& attr, bool isGlobal);
+	CommandHotKeyDialog(const CommandHotKeyAttribute& attr);
 	virtual ~CommandHotKeyDialog();
 
 	void SetTargetName(const CString& name);
 
-	void GetAttribute(HOTKEY_ATTR& attr);
-	bool IsGlobal();
+	void GetAttribute(CommandHotKeyAttribute& attr);
 
-	HOTKEY_ATTR mHotKeyAttr;
+	CommandHotKeyAttribute mHotKeyAttr;
 	// 初期値
-	HOTKEY_ATTR mHotKeyAttrInit;
-
-	BOOL mIsGlobal;
+	CommandHotKeyAttribute mHotKeyAttrInit;
 
 	// メッセージ欄
 	CString mMessage;

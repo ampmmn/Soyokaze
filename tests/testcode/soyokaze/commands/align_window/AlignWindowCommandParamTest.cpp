@@ -5,24 +5,23 @@
 using CommandParam = launcherapp::commands::align_window::CommandParam;
 using ACTION = launcherapp::commands::align_window::ACTION;
 
-TEST(AlignWIndowCommandParam, testSizeOf)
+TEST(AlignWindowCommandParam, testSizeOf)
 {
 	EXPECT_EQ(64, sizeof(CommandParam));
 }
 
-TEST(AlignWIndowCommandParam, testConstruct)
+TEST(AlignWindowCommandParam, testConstruct)
 {
 	CommandParam param;
-	EXPECT_FALSE(param.mIsGlobal);
 	EXPECT_FALSE(param.mIsNotifyIfWindowNotFound);
 	EXPECT_TRUE(param.mIsKeepActiveWindow);
 	EXPECT_TRUE(param.mName.IsEmpty());
 	EXPECT_TRUE(param.mDescription.IsEmpty());
 	EXPECT_TRUE(param.mItems.empty());
-	EXPECT_TRUE(param.mHotKeyAttr == HOTKEY_ATTR());
+	EXPECT_TRUE(param.mHotKeyAttr == CommandHotKeyAttribute());
 }
 
-TEST(AlignWIndowCommandParamItem, testSizeOf)
+TEST(AlignWindowCommandParamItem, testSizeOf)
 {
 	EXPECT_EQ(44, sizeof(WINDOWPLACEMENT));
 	EXPECT_EQ(88, sizeof(tregex));
@@ -30,7 +29,7 @@ TEST(AlignWIndowCommandParamItem, testSizeOf)
 }
 
 
-TEST(AlignWIndowCommandParamItem, testConstruct)
+TEST(AlignWindowCommandParamItem, testConstruct)
 {
 	CommandParam::ITEM item;
 	EXPECT_TRUE(item.mCaptionStr.IsEmpty());
@@ -40,7 +39,7 @@ TEST(AlignWIndowCommandParamItem, testConstruct)
 	EXPECT_EQ(ACTION::AT_SETPOS, item.mAction);
 }
 
-TEST(AlignWIndowCommandParamItem, testHasClassRegExpr)
+TEST(AlignWindowCommandParamItem, testHasClassRegExpr)
 {
 	CommandParam::ITEM item;
 	EXPECT_FALSE(item.HasClassRegExpr());
@@ -49,7 +48,7 @@ TEST(AlignWIndowCommandParamItem, testHasClassRegExpr)
 	EXPECT_TRUE(item.HasClassRegExpr());
 }
 
-TEST(AlignWIndowCommandParamItem, testHasCaptionRegExpr)
+TEST(AlignWindowCommandParamItem, testHasCaptionRegExpr)
 {
 	CommandParam::ITEM item;
 	EXPECT_FALSE(item.HasCaptionRegExpr());
@@ -58,7 +57,7 @@ TEST(AlignWIndowCommandParamItem, testHasCaptionRegExpr)
 	EXPECT_TRUE(item.HasCaptionRegExpr());
 }
 
-TEST(AlignWIndowCommandParamItem, testIsMatchClass)
+TEST(AlignWindowCommandParamItem, testIsMatchClass)
 {
 	CommandParam::ITEM item;
 	EXPECT_TRUE(item.IsMatchClass(_T("aiueo")));
