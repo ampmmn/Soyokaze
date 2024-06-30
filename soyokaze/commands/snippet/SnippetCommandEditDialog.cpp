@@ -152,14 +152,9 @@ void CommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr);
-	dlg.SetTargetName(mName);
-	if (dlg.DoModal() != IDOK) {
+	if (CommandHotKeyDialog::ShowDialog(mName, mHotKeyAttr, this) == false) {
 		return ;
 	}
-
-	dlg.GetAttribute(mHotKeyAttr);
-
 	UpdateStatus();
 	UpdateData(FALSE);
 }

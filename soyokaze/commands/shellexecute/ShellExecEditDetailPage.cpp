@@ -4,7 +4,6 @@
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"

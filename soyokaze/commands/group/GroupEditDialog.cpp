@@ -254,14 +254,9 @@ void GroupEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(mHotKeyAttr);
-	dlg.SetTargetName(mParam.mName);
-	if (dlg.DoModal() != IDOK) {
+	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mHotKeyAttr, this) == false) {
 		return ;
 	}
-
-	dlg.GetAttribute(mHotKeyAttr);
-
 	UpdateStatus();
 	UpdateData(FALSE);
 }

@@ -11,8 +11,8 @@
 #endif
 
 
-CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr) : 
-	launcherapp::gui::SinglePageDialog(IDD_HOTKEY),
+CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_HOTKEY, parentWnd),
 	mHotKeyAttr(attr)
 {
 	SetHelpPageId(_T("HotKey"));
@@ -183,5 +183,16 @@ void CommandHotKeyDialog::OnButtonClear()
 	UpdateData(FALSE);
 
 	UpdateStatus();
+}
+
+bool CommandHotKeyDialog::ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parentWnd)
+{
+	CommandHotKeyDialog dlg(attr, parentWnd);
+	dlg.SetTargetName(name);
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+	dlg.GetAttribute(attr);
+	return true;
 }
 

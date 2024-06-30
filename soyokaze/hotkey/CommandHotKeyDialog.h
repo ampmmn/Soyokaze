@@ -8,7 +8,7 @@
 class CommandHotKeyDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	CommandHotKeyDialog(const CommandHotKeyAttribute& attr);
+	CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd = nullptr);
 	virtual ~CommandHotKeyDialog();
 
 	void SetTargetName(const CString& name);
@@ -23,6 +23,8 @@ public:
 	CString mMessage;
 	//
 	CString mTargetName;
+
+	static bool ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parent=nullptr);
 
 protected:
 	static bool IsReservedKey(const HOTKEY_ATTR& attr);

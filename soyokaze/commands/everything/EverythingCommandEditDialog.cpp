@@ -187,14 +187,9 @@ void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(in->mHotKeyAttr);
-	dlg.SetTargetName(in->mParam.mName);
-	if (dlg.DoModal() != IDOK) {
+	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mHotKeyAttr, this) == false) {
 		return ;
 	}
-
-	dlg.GetAttribute(in->mHotKeyAttr);
-
 	UpdateStatus();
 	UpdateData(FALSE);
 }

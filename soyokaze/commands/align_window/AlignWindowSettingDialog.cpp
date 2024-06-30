@@ -176,15 +176,10 @@ void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	CommandHotKeyDialog dlg(in->mParam.mHotKeyAttr);
-	dlg.SetTargetName(in->mParam.mName);
-	if (dlg.DoModal() != IDOK) {
+	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName,  in->mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
-
-	dlg.GetAttribute(in->mParam.mHotKeyAttr);
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-
 	UpdateData(FALSE);
 }
 
