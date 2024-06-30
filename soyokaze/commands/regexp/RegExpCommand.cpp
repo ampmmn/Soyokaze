@@ -270,6 +270,11 @@ int RegExpCommand::EditDialog(const Parameter* param)
 	return 0;
 }
 
+bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	return false;
+}
+
 /**
  *  @brief 優先順位の重みづけを使用するか?
  *  @true true:優先順位の重みづけを使用する false:使用しない
@@ -401,7 +406,8 @@ bool RegExpCommand::NewDialog(const Parameter* param)
 	attr.mShowType = dlg.GetShowType();
 	newCmd->SetAttribute(attr);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
+	bool isReloadHotKey = false;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
 

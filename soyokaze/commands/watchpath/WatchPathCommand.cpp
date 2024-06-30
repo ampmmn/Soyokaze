@@ -149,6 +149,11 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 	return 0;
 }
 
+bool WatchPathCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	return false;
+}
+
 /**
  *  @brief 優先順位の重みづけを使用するか?
  *  @true true:優先順位の重みづけを使用する false:使用しない
@@ -241,7 +246,8 @@ bool WatchPathCommand::NewDialog(const Parameter* param)
 		PathWatcher::Get()->RegisterPath(dlg.mName, item);
 	}
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
+	bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
 

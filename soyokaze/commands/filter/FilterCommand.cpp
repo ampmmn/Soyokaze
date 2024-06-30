@@ -40,6 +40,7 @@ struct FilterCommand::PImpl
 	void LoadCandidates();
 
 	CommandParam mParam;
+	CommandHotKeyAttribute mHotKeyAttr;
 	CString mErrMsg;
 	//
 	FilterExecutor* mExecutor = nullptr;
@@ -221,11 +222,7 @@ int FilterCommand::EditDialog(const Parameter* param)
 	dlg.SetOrgName(GetName());
 
 	dlg.SetParam(in->mParam);
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-	}
+	dlg.mHotKeyAttr = in->mHotKeyAttr;
 
 	if (dlg.DoModal() != IDOK) {
 		spdlog::info(_T("Dialog cancelled."));
@@ -234,29 +231,22 @@ int FilterCommand::EditDialog(const Parameter* param)
 
 	// 変更後の設定値で上書き
 	dlg.GetParam(in->mParam);
+	in->mHotKeyAttr = dlg.mHotKeyAttr;
 
 	// 名前の変更を登録しなおす
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(GetName(), dlg.mHotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
-
 	// 設定変更を反映するため、候補のキャッシュを消す
 	ClearCache();
 
 	return 0;
+}
+
+bool FilterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -319,6 +309,9 @@ bool FilterCommand::Load(CommandEntryIF* entry)
 	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
 	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$select"));
 
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(GetName(), &in->mHotKeyAttr);
+
 	return true;
 }
 
@@ -359,22 +352,8 @@ bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
 	dlg.GetParam(tmpParam);
 	cmd->SetParam(tmpParam);
 
-	CommandRepository::GetInstance()->RegisterCommand(cmd.release());
-
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(tmpParam.mName, dlg.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
+	constexpr bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(cmd.release(), isReloadHotKey);
 
 	return true;
 }

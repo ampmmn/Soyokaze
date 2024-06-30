@@ -64,19 +64,16 @@ void CommandHotKeyMappings::AddItem(
 	in->mItems.push_back(item);
 }
 
-void CommandHotKeyMappings::RemoveItem(const CommandHotKeyAttribute& hotKeyAttr)
+bool CommandHotKeyMappings::RemoveItem(const CString& name)
 {
-	if (hotKeyAttr.IsValid() == false) {
-		return;
-	}
-
 	for (auto it = in->mItems.begin(); it != in->mItems.end(); ++it) {
-		auto& attr = it->mAttr;
-		if (attr == hotKeyAttr) {
-			in->mItems.erase(it);
-			return;
+		if (name != it->mName) {
+			continue;
 		}
+		in->mItems.erase(it);
+		return true;
 	}
+	return false;
 }
 
 // コマンド名から割り当てキーの表示用文字列を取得する

@@ -119,7 +119,8 @@ void EverythingCommandProvider::LoadCommands(CommandFile* cmdFile)
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command);
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command, isReloadHotKey);
 
 		in->mCommands.push_back(command);
 		command->AddRef();
@@ -157,7 +158,9 @@ bool EverythingCommandProvider::NewDialog(const CommandParameter* param)
 	if (EverythingCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+
+	constexpr bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 
 	in->mCommands.push_back(newCmd);
 	newCmd->AddRef();

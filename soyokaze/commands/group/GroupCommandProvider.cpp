@@ -76,7 +76,8 @@ void GroupCommandProvider::LoadCommands(
 		cmdFile->MarkAsUsed(entry);
 
 		// 登録
-		cmdRepo->RegisterCommand(command.release());
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
 	}
 }
 
@@ -113,22 +114,8 @@ bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 	auto newCmd = std::make_unique<GroupCommand>();
 	newCmd->SetParam(paramNew);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(paramNew.mName, dlg.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
+	constexpr bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
 }

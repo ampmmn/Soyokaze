@@ -68,7 +68,8 @@ void WatchPathCommandProvider::LoadCommands(
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command.release());
+		bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

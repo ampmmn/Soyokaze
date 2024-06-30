@@ -108,7 +108,9 @@ bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
 	if (ShellExecCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+
+	constexpr bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 	return true;
 }
 

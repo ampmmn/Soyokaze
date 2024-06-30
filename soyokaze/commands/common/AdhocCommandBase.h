@@ -25,6 +25,8 @@ public:
 	bool IsEditable() override;
 	bool IsDeletable() override;
 	int EditDialog(const Parameter* param) override;
+	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
+
 	bool IsPriorityRankEnabled() override;
 	//launcherapp::core::Command* Clone() override;
 

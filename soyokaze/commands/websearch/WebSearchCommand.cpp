@@ -209,35 +209,20 @@ int WebSearchCommand::EditDialog(const Parameter*)
 	if (dlg.DoModal() != IDOK) {
 		return 0;
 	}
-
-	// ホットキー登録をいったん削除
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	if (in->mParam.mHotKeyAttr.IsValid()) {
-		hotKeyMap.RemoveItem(in->mParam.mHotKeyAttr);
-	}
-
-	in->mParam = param;
+	in->mParam = dlg.GetParam();
 
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
 	in->mIcon = nullptr;
 
-	// ホットキー設定を更新
-	if (in->mParam.mHotKeyAttr.IsValid()) {
-		auto& attr = in->mParam.mHotKeyAttr;
-		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr);
-	}
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-	pref->Save();
-
-
 	return 0;
+}
+
+bool WebSearchCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mParam.mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -318,22 +303,6 @@ bool WebSearchCommand::NewDialog(
 	command->in->mParam = commandParam;
 
 	newCmd = std::move(command);
-
-	// ホットキー設定を更新
-	if (commandParam.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
-
 
 	return true;
 }

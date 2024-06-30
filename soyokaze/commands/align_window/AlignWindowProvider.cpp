@@ -75,7 +75,8 @@ void AlignWindowProvider::LoadCommands(CommandFile* cmdFile)
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command);
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command, isReloadHotKey);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
@@ -110,7 +111,9 @@ bool AlignWindowProvider::NewDialog(const CommandParameter* param)
 	if (AlignWindowCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+
+	constexpr bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 	return true;
 }
 

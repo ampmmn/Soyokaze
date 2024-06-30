@@ -100,7 +100,8 @@ void SimpleDictProvider::LoadCommands(CommandFile* cmdFile)
 		command->AddListener(in->mDatabase.get());
 
 		// 登録
-		cmdRepo->RegisterCommand(command.release());
+		bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);
@@ -135,7 +136,9 @@ bool SimpleDictProvider::NewDialog(const CommandParameter* param)
 	if (SimpleDictCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+
+	bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 
 	in->mCommands.push_back(newCmd);
 	newCmd->AddRef();

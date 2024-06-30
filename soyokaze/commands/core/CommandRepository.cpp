@@ -325,10 +325,28 @@ void CommandRepository::EnumProviderSettingDialogs(
 
 // コマンドを登録
 // このコマンドは参照カウントを+1しない
-int CommandRepository::RegisterCommand(Command* command)
+int CommandRepository::RegisterCommand(Command* command, bool isNotify)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Register(command);
+
+	// ホットキーの登録
+	CommandHotKeyAttribute hotKeyAttr;
+	if (command->GetHotKeyAttribute(hotKeyAttr) && hotKeyAttr.IsValid()) {
+
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+		if (isNotify) {
+			// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
+			pref->Save();
+		}
+	}
+
 	return 0;
 }
 
@@ -342,7 +360,24 @@ int CommandRepository::UnregisterCommand(Command* command)
 		listener->OnDeleteCommand(command);
 	}
 
-	CommandRanking::GetInstance()->Delete(command->GetName());
+	auto name = command->GetName();
+
+	// ホットキーの登録解除
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
+	bool isRemoved = hotKeyMap.RemoveItem(name);
+
+	if (isRemoved) {
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
+		pref->Save();
+	}
+
+	CommandRanking::GetInstance()->Delete(name);
 	in->mCommands.Unregister(command);
 	return 0;
 }
@@ -352,6 +387,30 @@ int CommandRepository::ReregisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Reregister(command);
+
+	// ホットキーの登録
+	CommandHotKeyAttribute hotKeyAttr;
+	if (command->GetHotKeyAttribute(hotKeyAttr)) {
+
+		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+
+		CommandHotKeyMappings hotKeyMap;
+		hotKeyManager->GetMappings(hotKeyMap);
+
+		// 以前の設定を消して、新しい設定を登録する
+		auto name = command->GetName();
+		hotKeyMap.RemoveItem(name);
+		if (hotKeyAttr.IsValid()) {
+			hotKeyMap.AddItem(name, hotKeyAttr);
+		}
+
+		auto pref = AppPreference::Get();
+		pref->SetCommandKeyMappings(hotKeyMap);
+
+		// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
+		pref->Save();
+	}
+
 	return 0;
 }
 

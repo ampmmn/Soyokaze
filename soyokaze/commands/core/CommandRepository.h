@@ -31,7 +31,7 @@ public:
 	void EnumProviderSettingDialogs(CWnd* parent, std::vector<SettingPage*>& pages);
 
 	// コマンドを登録
-	int RegisterCommand(Command* command);
+	int RegisterCommand(Command* command, bool isNotify = false);
 	// コマンドの登録を解除
 	int UnregisterCommand(Command* command);
 	// 名前変更による登録しなおし

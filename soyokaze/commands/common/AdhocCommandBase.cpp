@@ -77,6 +77,12 @@ int AdhocCommandBase::EditDialog(const Parameter* param)
 	return -1;
 }
 
+bool AdhocCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	// 一時コマンドはホットキー設定を持たない
+	return false;
+}
+
 /**
  *  @brief 優先順位の重みづけを使用するか?
  *  @true true:優先順位の重みづけを使用する false:使用しない

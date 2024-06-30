@@ -32,8 +32,8 @@ bool CommandHotKeyAttribute::operator == (const CommandHotKeyAttribute& rhs) con
 
 bool CommandHotKeyAttribute::operator != (const CommandHotKeyAttribute& rhs) const
 {
-	if (!(*(HOTKEY_ATTR*)this != *(HOTKEY_ATTR*)&rhs)) {
-		return false;
+	if ((*(HOTKEY_ATTR*)this != *(HOTKEY_ATTR*)&rhs)) {
+		return true;
 	}
 	return mIsGlobal != rhs.mIsGlobal;
 }

@@ -130,16 +130,6 @@ int VolumeCommand::EditDialog(const Parameter* param)
 		return 1;
 	}
 
-	// ホットキー登録をいったん削除
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	if (in->mParam.mHotKeyAttr.IsValid()) {
-		hotKeyMap.RemoveItem(in->mParam.mHotKeyAttr);
-	}
-
 	// 更新後の設定値を取得
 	in->mParam = dlg.GetParam();
 
@@ -147,15 +137,13 @@ int VolumeCommand::EditDialog(const Parameter* param)
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	if (in->mParam.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(in->mParam.mName, in->mParam.mHotKeyAttr);
-	}
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-	pref->Save();
-
 	return 0;
+}
+
+bool VolumeCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mParam.mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -231,22 +219,8 @@ bool VolumeCommand::NewDialog(const Parameter* param)
 	auto newCmd = std::make_unique<VolumeCommand>();
 	newCmd->SetParam(paramNew);
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
-	// ホットキー設定を更新
-	if (paramNew.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(paramNew.mName, paramNew.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
+	bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
 

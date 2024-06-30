@@ -35,6 +35,7 @@ struct SnippetCommand::PImpl
 	CString mName;
 	CString mDescription;
 	CString mText;
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 
@@ -128,12 +129,8 @@ int SnippetCommand::EditDialog(const Parameter* param)
 	dlg.mName = in->mName;
 	dlg.mDescription = in->mDescription;
 	dlg.mText = in->mText;
+	dlg.mHotKeyAttr = in->mHotKeyAttr;
 
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(in->mName, &hotKeyAttr)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-	}
 	if (dlg.DoModal() != IDOK) {
 		return 1;
 	}
@@ -142,24 +139,18 @@ int SnippetCommand::EditDialog(const Parameter* param)
 	SetName(dlg.mName);
 	SetDescription(dlg.mDescription);
 	SetText(dlg.mText);
+	in->mHotKeyAttr = dlg.mHotKeyAttr;
 
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-	pref->Save();
-
 	return 0;
+}
+
+bool SnippetCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -207,6 +198,10 @@ bool SnippetCommand::Load(CommandEntryIF* entry)
 	in->mDescription = entry->Get(_T("description"), _T(""));
 	in->mText = entry->Get(_T("text"), _T(""));
 
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mName, &in->mHotKeyAttr); 
+
 	return true;
 }
 
@@ -234,23 +229,10 @@ bool SnippetCommand::NewDialog(const Parameter* param)
 	newCmd->in->mName = dlg.mName;
 	newCmd->in->mDescription = dlg.mDescription;
 	newCmd->in->mText = dlg.mText;
+	newCmd->in->mHotKeyAttr = dlg.mHotKeyAttr;
 
-	// ホットキー設定を更新
-	if (dlg.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(dlg.mName, dlg.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
-
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
+	bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
 
 }

@@ -71,6 +71,11 @@ struct DummyCommand : public launcherapp::core::Command
 	{
 		return 0;
 	}
+	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override
+	{
+		return false;
+	}
+
 
 	bool IsPriorityRankEnabled() override
 	{

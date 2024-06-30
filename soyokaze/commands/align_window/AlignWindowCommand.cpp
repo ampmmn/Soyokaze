@@ -181,41 +181,22 @@ int AlignWindowCommand::Match(Pattern* pattern)
 int AlignWindowCommand::EditDialog(const Parameter*)
 {
 	SettingDialog dlg;
-
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	auto param = in->mParam;
-
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr)) {
-		param.mHotKeyAttr = hotKeyAttr;
-	}
-
-	dlg.SetParam(param);
+	dlg.SetParam(in->mParam);
 	if (dlg.DoModal() != IDOK) {
 		return 0;
 	}
-
-	param = dlg.GetParam();
-	in->mParam = param;
+	in->mParam = dlg.GetParam();
 
 	// 名前が変わっている可能性があるため、いったん削除して再登録する
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
-
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (param.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(param.mName, param.mHotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
 	return 0;
+}
+
+bool AlignWindowCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mParam.mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -334,6 +315,10 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
 	in->mParam.mIsKeepActiveWindow = isKeepActive;
 
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
+
 	return true;
 }
 
@@ -359,22 +344,6 @@ bool AlignWindowCommand::NewDialog(
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
 	}
-
-	// ホットキー設定を更新
-	if (commandParam.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
-
 	return true;
 }
 

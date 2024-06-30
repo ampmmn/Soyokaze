@@ -29,6 +29,7 @@ public:
 	virtual bool IsEditable() = 0;
 	virtual bool IsDeletable() = 0;
 	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
+	virtual bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) = 0;
 
 	/**
 	 *  @brief 優先順位の重みづけを使用するか?

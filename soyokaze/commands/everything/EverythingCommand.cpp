@@ -26,6 +26,8 @@ using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListener
 struct EverythingCommand::PImpl
 {
 	CommandParam mParam;
+	CommandHotKeyAttribute mHotKeyAttr;
+
 	bool mShouldComletion = false;
 	LONG mRefCount = 1;
 };
@@ -132,6 +134,7 @@ int EverythingCommand::Match(Pattern* pattern)
 
 	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
 		// 内部のコマンド名マッチング用の判定
+		in->mShouldComletion = true;
 		return Pattern::WholeMatch;
 	}
 	else if (pattern->shouldWholeMatch() == false) {
@@ -170,40 +173,26 @@ int EverythingCommand::EditDialog(const Parameter*)
 	// 設定変更画面を表示する
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
-
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr)) {
-		dlg.SetHotKeyAttribute(hotKeyAttr);
-	}
-
+	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 	if (dlg.DoModal() != IDOK) {
 		return 0;
 	}
 
 	// 変更後の設定値で上書き
 	in->mParam = dlg.GetParam();
+	dlg.GetHotKeyAttribute(in->mHotKeyAttr);
 
 	// 名前の変更を登録しなおす
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-
-	dlg.GetHotKeyAttribute(hotKeyAttr);
-	if (hotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(GetName(), hotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-	pref->Save();
-
 	return 0;
+}
+
+bool EverythingCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -255,6 +244,10 @@ bool EverythingCommand::Load(CommandEntryIF* entry)
 	in->mParam.mIsMatchCase = entry->Get(_T("IsMatchCase"), false);
 	in->mParam.mIsRegex = entry->Get(_T("IsRegex"), false);
 	in->mParam.mOtherParam = entry->Get(_T("OtherParam"), _T(""));
+
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
 
 	return true;
 }

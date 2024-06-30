@@ -74,7 +74,8 @@ void EjectVolumeProvider::LoadCommands(
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command.release());
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

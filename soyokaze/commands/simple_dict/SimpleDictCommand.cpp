@@ -40,6 +40,7 @@ struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 
 	SimpleDictCommand* mThisPtr;
 	SimpleDictParam mParam;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 	std::set<CommandUpdateListenerIF*> mListeners;
 };
@@ -148,12 +149,7 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 	// 設定変更画面を表示する
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
-
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(GetName(), &hotKeyAttr)) {
-		dlg.SetHotKeyAttribute(hotKeyAttr);
-	}
+	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 
 	if (dlg.DoModal() != IDOK) {
 		return 0;
@@ -164,31 +160,23 @@ int SimpleDictCommand::EditDialog(const Parameter*)
 
 	// 変更後の設定値で上書き
 	in->mParam = dlg.GetParam();
+	dlg.GetHotKeyAttribute(in->mHotKeyAttr);
 
 	// 名前の変更を登録しなおす
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
-
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-
-	dlg.GetHotKeyAttribute(hotKeyAttr);
-	if (hotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(GetName(), hotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-	pref->Save();
 
 	// コマンドの設定情報の変更を通知
 	for (auto listener : in->mListeners) {
 		listener->OnUpdateCommand(this, orgName);
 	}
 	return 0;
+}
+
+bool SimpleDictCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -260,6 +248,10 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 	in->mParam.mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
 	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
 	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$value"));
+
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
 
 	return true;
 }

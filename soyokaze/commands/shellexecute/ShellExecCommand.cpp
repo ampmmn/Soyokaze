@@ -292,12 +292,6 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	param.mPath0 = attr.mPath;
 	param.mParameter0 = attr.mParam;
 
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(param.mName, &hotKeyAttr)) {
-		param.mHotKeyAttr = hotKeyAttr;
-	}
-
 	SettingDialog dlg;
 	dlg.SetParam(param);
 
@@ -307,13 +301,6 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 
 	// 追加する処理
 	param = dlg.GetParam();
-
-	SetName(param.mName);
-	SetDescription(param.mDescription);
-	SetRunAs(param.mIsRunAsAdmin);
-	in->mParam.mIsShowArgDialog = param.mIsShowArgDialog;
-	in->mParam.mIsUseDescriptionForMatching = param.mIsUseDescriptionForMatching;
-	in->mParam.mIconData = param.mIconData;
 
 	ShellExecCommand::ATTRIBUTE normalAttr;
 	normalAttr.mPath = param.mPath;
@@ -339,22 +326,14 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (param.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(param.mName, param.mHotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
-
 
 	return 0;
+}
+
+bool ShellExecCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mParam.mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -457,21 +436,6 @@ bool ShellExecCommand::NewDialog(
 		*newCmdPtr = newCmd.release();
 	}
 
-	// ホットキー設定を更新
-	if (commandParam.mHotKeyAttr.IsValid()) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		hotKeyMap.AddItem(commandParam.mName, commandParam.mHotKeyAttr);
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		pref->Save();
-	}
-
 	return true;
 }
 
@@ -566,6 +530,10 @@ bool ShellExecCommand::Load(CommandEntryIF* entry)
 	in->mParam.mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
 
 	entry->Get(_T("IconData"), in->mParam.mIconData);
+
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	return true;
 }

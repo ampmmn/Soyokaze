@@ -41,6 +41,7 @@ struct GroupCommand::PImpl
 	BOOL Execute(const Parameter& param, int round);
 
 	CommandParam mParam;
+	CommandHotKeyAttribute mHotKeyAttr;
 
 	CString mErrMsg;
 };
@@ -216,39 +217,30 @@ int GroupCommand::Match(Pattern* pattern)
 
 int GroupCommand::EditDialog(const Parameter* param)
 {
+	// ダイアログを表示
 	GroupEditDialog dlg;
 	dlg.SetParam(in->mParam);
-
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	CommandHotKeyAttribute hotKeyAttr;
-	if (hotKeyManager->HasKeyBinding(in->mParam.mName, &hotKeyAttr)) {
-		dlg.mHotKeyAttr = hotKeyAttr;
-	}
+	dlg.mHotKeyAttr = in->mHotKeyAttr;
 
 	if (dlg.DoModal() != IDOK) {
 		return 1;
 	}
 
+	// 更新後の値を取得
 	in->mParam = dlg.GetParam();
+	in->mHotKeyAttr = dlg.mHotKeyAttr;
 
+	// 変更後の内容で再登録
 	auto cmdRepo = CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// ホットキー設定を更新
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-
-	hotKeyMap.RemoveItem(hotKeyAttr);
-	if (dlg.mHotKeyAttr.IsValid()) {
-		hotKeyMap.AddItem(dlg.mParam.mName, dlg.mHotKeyAttr);
-	}
-
-	auto pref = AppPreference::Get();
-	pref->SetCommandKeyMappings(hotKeyMap);
-
-	pref->Save();
-
 	return 0;
+}
+
+bool GroupCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	attr = in->mHotKeyAttr;
+	return true;
 }
 
 /**
@@ -335,6 +327,10 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 
 		param.mItems.push_back(item);
 	}
+
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
 
 	return true;
 }

@@ -112,6 +112,12 @@ int BuiltinCommandBase::EditDialog(const Parameter* param)
 	return 0;
 }
 
+bool BuiltinCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+{
+	// 組み込みコマンドは基本的にはホットキーを設定する機能を持たない
+	return false;
+}
+
 /**
  *  @brief 優先順位の重みづけを使用するか?
  *  @remark 同一のコマンド種別の間で表示順序を維持したいようなケースで重みづけを使わないようにできる

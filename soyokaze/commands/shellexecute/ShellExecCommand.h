@@ -36,6 +36,7 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	int EditDialog(const Parameter* param) override;
+	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 

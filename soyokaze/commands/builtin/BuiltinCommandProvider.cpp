@@ -61,7 +61,9 @@ void BuiltinCommandProvider::OnFirstBoot()
 		if (factory->Create(type, nullptr, &cmd) == false) {
 			continue;
 		}
-		cmdRepo->RegisterCommand(cmd);
+
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(cmd, isReloadHotKey);
 	}
 }
 
@@ -102,7 +104,8 @@ void BuiltinCommandProvider::LoadCommands(
 		auto cmdName = command->GetName();
 
 		// 生成したコマンドのインスタンスを登録
-		cmdRepo->RegisterCommand(command);
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command, isReloadHotKey);
 
 		// システムコマンドとして登場した種別を記憶しておく
 		existingTypes.insert(typeStr);
@@ -126,7 +129,9 @@ void BuiltinCommandProvider::LoadCommands(
 			cmd->Release();
 			continue;
 		}
-		cmdRepo->RegisterCommand(cmd);
+
+		constexpr bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(cmd, isReloadHotKey);
 	}
 }
 

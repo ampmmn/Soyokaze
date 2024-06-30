@@ -110,7 +110,8 @@ void WebSearchProvider::LoadCommands(CommandFile* cmdFile)
 		}
 
 		// 登録
-		cmdRepo->RegisterCommand(command.get());
+		bool isReloadHotKey = false;
+		cmdRepo->RegisterCommand(command.get(), isReloadHotKey);
 
 		command->AddRef();  // mCommandsで保持する分の参照カウント+1
 		tmp.push_back(WebSearchCommandPtr(command.release(), releaseCmd));
@@ -152,7 +153,8 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 	newCmd->AddRef();  // mCommandsで保持する分の参照カウント+1
 	in->mCommands.push_back(WebSearchCommandPtr(newCmd.get(), releaseCmd));
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
+	bool isReloadHotKey = true;
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
 }
 

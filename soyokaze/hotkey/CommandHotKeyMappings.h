@@ -15,9 +15,9 @@ public:
 	CString GetName(int index) const;
 	void GetHotKeyAttr(int index, CommandHotKeyAttribute& hotKeyAttr) const;
 	void AddItem(const CString& name, const CommandHotKeyAttribute& hotKeyAttr);
-	void RemoveItem(const CommandHotKeyAttribute& hotKeyAttr);
+	bool RemoveItem(const CString& name);
 
-	// $B%3%^%s%IL>$+$i3d$jEv$F%-!<$NI=<(MQJ8;zNs$r<hF@$9$k(B
+	// コマンド名から割り当てキーの表示用文字列を取得する
 	CString FindKeyMappingString(const CString& name) const;
 
 	void Swap(CommandHotKeyMappings& rhs);
