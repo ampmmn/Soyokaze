@@ -78,7 +78,7 @@ const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
 	{ 0x27, _T("→"), KIND_OTHER },
 	{ 0x6C, _T(","), KIND_OTHER },
 	{ 0x6E, _T("."), KIND_OTHER },
-	{ 0x6F, _T("/"), KIND_OTHER },
+	{ 0xBF, _T("/"), KIND_OTHER },
 	{ 0xBA, _T(":"), KIND_OTHER },
 	{ 0xBB, _T(";"), KIND_OTHER },
 	{ 0xC0, _T("@"), KIND_OTHER },
