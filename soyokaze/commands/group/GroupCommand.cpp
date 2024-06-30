@@ -315,6 +315,8 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 		nItems = 32;
 	}
 
+	std::vector<GroupItem> items;
+
 	TCHAR key[128];
 	for (int i = 1; i <= nItems; ++i) {
 
@@ -325,8 +327,9 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 		_stprintf_s(key, _T("IsWait%d"), i);
 		item.mIsWait = entry->Get(key, false);
 
-		param.mItems.push_back(item);
+		items.push_back(item);
 	}
+	param.mItems.swap(items);
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
