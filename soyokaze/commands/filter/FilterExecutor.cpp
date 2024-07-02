@@ -328,14 +328,20 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 	in->mIsAbort = false;
 
 	// スレッドを作成する
-	size_t threads = std::thread::hardware_concurrency() + 1;
-	in->mWaitEvents.resize(threads, nullptr);
+	size_t threads = std::thread::hardware_concurrency();
+	if (threads > 4) {
+		threads = 4;
+	}
+
 	in->mAllExited.resize(threads, FALSE);
 
 	for (size_t index = 0; index < threads; ++index) {
 
-		in->mCompleteEvents.push_back(CreateEvent(nullptr, TRUE, FALSE, nullptr));
-		in->mWaitEvents.push_back(CreateEvent(nullptr, TRUE, FALSE, nullptr));
+		constexpr BOOL isManualReset = TRUE;
+		constexpr BOOL isInitialState = FALSE;
+
+		in->mCompleteEvents.push_back(CreateEvent(nullptr, isManualReset, isInitialState, nullptr));
+		in->mWaitEvents.push_back(CreateEvent(nullptr, isManualReset, isInitialState, nullptr));
 
 		std::thread th([&, index, threads]() {
 
@@ -364,7 +370,6 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				if (in->GetNextCandidates(candidates, (int)threads) == false) {
 					// 自分の分がなければ戻る
 					in->NotifyComplete((int)index);
-					Sleep(0);
 					continue;
 				}
 
