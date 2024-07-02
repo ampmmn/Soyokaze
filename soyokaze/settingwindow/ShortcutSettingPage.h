@@ -14,7 +14,7 @@ public:
 	static bool CreateStartMenu();
 
 public:
-	CString mSoyokazePath;
+	CString mAppPath;
 
 	// 各種ショートカットのパス
 	CString mSendToPath;

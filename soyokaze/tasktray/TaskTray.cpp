@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-const int ID_SOYOKAZE_TASKTRAY = 1000;
+const int ID_LAUNCHER_TASKTRAY = 1000;
 
 IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 
@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 BOOL TaskTray::Create()
 {
 	BOOL isOK = CreateEx(WS_EX_TOOLWINDOW, AfxRegisterWndClass(0),
-	                     _T("SoyokazeTaskTray"), WS_OVERLAPPED,
+	                     _T("LauncherTaskTray"), WS_OVERLAPPED,
 	                     0, 0, 0, 0, NULL, NULL );
 
 	if (isOK == FALSE) {
@@ -48,7 +48,7 @@ BOOL TaskTray::Create()
 	NOTIFYICONDATA nid;
 	nid.cbSize           = sizeof(NOTIFYICONDATA);
 	nid.hWnd             = GetSafeHwnd();
-	nid.uID              = ID_SOYOKAZE_TASKTRAY;
+	nid.uID              = ID_LAUNCHER_TASKTRAY;
 	nid.uCallbackMessage = WM_APP+1;
 	nid.uFlags           = NIF_MESSAGE;
 
@@ -109,7 +109,7 @@ LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 	UINT nID   = (UINT)wp;
 	UINT msg = (UINT)LOWORD(lp);
 	
-	if (nID != ID_SOYOKAZE_TASKTRAY) {
+	if (nID != ID_LAUNCHER_TASKTRAY) {
 		return 0;
 	}
 

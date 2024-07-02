@@ -26,7 +26,7 @@ void ShortcutSettingPage::OnOK()
 	}
 	else if (mSendTo && PathFileExists(mSendToPath) == FALSE) {
 		ShortcutFile link;
-		link.SetLinkPath(mSoyokazePath);
+		link.SetLinkPath(mAppPath);
 		link.Save(mSendToPath);
 	}
 
@@ -43,7 +43,7 @@ void ShortcutSettingPage::OnOK()
 	}
 	else if (mDesktop && PathFileExists(mDesktopPath) == FALSE) {
 		ShortcutFile link;
-		link.SetLinkPath(mSoyokazePath);
+		link.SetLinkPath(mAppPath);
 		link.Save(mDesktopPath);
 	}
 
@@ -52,7 +52,7 @@ void ShortcutSettingPage::OnOK()
 	}
 	else if (mStartup && PathFileExists(mStartupPath) == FALSE) {
 		ShortcutFile link;
-		link.SetLinkPath(mSoyokazePath);
+		link.SetLinkPath(mAppPath);
 		link.Save(mStartupPath);
 	}
 
@@ -76,10 +76,10 @@ BOOL ShortcutSettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	GetModuleFileName(NULL, mSoyokazePath.GetBuffer(MAX_PATH_NTFS), MAX_PATH_NTFS);
-	mSoyokazePath.ReleaseBuffer();
+	GetModuleFileName(NULL, mAppPath.GetBuffer(MAX_PATH_NTFS), MAX_PATH_NTFS);
+	mAppPath.ReleaseBuffer();
 
-	LPCTSTR exeName = PathFindFileName(mSoyokazePath);
+	LPCTSTR exeName = PathFindFileName(mAppPath);
 
 	TCHAR linkName[MAX_PATH_NTFS];
 	_tcscpy_s(linkName, exeName);
@@ -128,7 +128,7 @@ void ShortcutSettingPage::UpdateStatus()
 
 void ShortcutSettingPage::OnButtonDelete()
 {
-	LPCTSTR exeName = PathFindFileName(mSoyokazePath);
+	LPCTSTR exeName = PathFindFileName(mAppPath);
 
 	CString msg((LPCTSTR)IDS_CONFIRM_DELETESHORTCUT);
 	msg.Replace(_T("$APPNAME"), exeName);

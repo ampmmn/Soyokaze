@@ -25,8 +25,6 @@ struct NameMapValue {
 
 using NameMap = std::map<CString, NameMapValue>;
 
-static const int ID_SOYOKAZE_COMMAND_HOTKEY = 0xB31E + 1;
-
 struct CommandHotKeyManager::PImpl
 {
 	struct ITEM

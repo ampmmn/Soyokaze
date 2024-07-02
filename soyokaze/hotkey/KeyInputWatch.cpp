@@ -117,6 +117,8 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 			}
 			events.clear();
 			mIsOtherKeyPressed = true;
+			mPrevVK = 0;
+			mPrevTime = 0;
 			break;  // 一つでも何かキー入力があれば、この後の結果として十分なので止める
 		}
 	}

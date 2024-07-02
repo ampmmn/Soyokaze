@@ -67,7 +67,7 @@ static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, L
 }
 
 /**
- *  設定ファイル(Soyokaze.position)の情報からウインドウ位置を復元する
+ *  ウインドウ位置設定ファイル(.position)の情報からウインドウ位置を復元する
  *  前回の位置を復元するために使用する
  *  復元した結果のウインドウ位置がモニター領域に収まっていない場合はfalseを返す
  *

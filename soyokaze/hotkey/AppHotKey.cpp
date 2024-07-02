@@ -17,7 +17,7 @@ namespace core {
 // MOD_WIN     (0x0008)
 // MOD_NOREPEAT(0x4000)
 
-static const int ID_SOYOKAZE_HOTKEY = 0xB31E;
+static const int ID_LAUNCHER_HOTKEY = 0xB31E;
 
 struct AppHotKey::PImpl
 {
@@ -47,7 +47,7 @@ bool AppHotKey::Register()
 	if (in->mIsEnableHotKey) {
 		UINT mod = pref->GetModifiers();
 		UINT vk = pref->GetVirtualKeyCode();
-		return in->mHotKey->Register(ID_SOYOKAZE_HOTKEY, mod, vk);
+		return in->mHotKey->Register(ID_LAUNCHER_HOTKEY, mod, vk);
 	}
 	else {
 		// グローバルホットキーを利用しない

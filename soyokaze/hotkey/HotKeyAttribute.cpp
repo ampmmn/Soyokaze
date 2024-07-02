@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-static const int ID_SOYOKAZE_TRY_HOTKEY = 0xB31D;
+static const int ID_LAUNCHER_TRY_HOTKEY = 0xB31D;
 
 enum {
 	KIND_ALPHA,
@@ -279,10 +279,10 @@ bool HOTKEY_ATTR::TryRegister(HWND targetWnd) const
 	}
 
 	// 登録できるか実際に試す(すぐに解除)
-	if (RegisterHotKey(targetWnd, ID_SOYOKAZE_TRY_HOTKEY, GetModifiers(), GetVKCode()) == FALSE) {
+	if (RegisterHotKey(targetWnd, ID_LAUNCHER_TRY_HOTKEY, GetModifiers(), GetVKCode()) == FALSE) {
 		return false;
 	}
-	UnregisterHotKey(targetWnd, ID_SOYOKAZE_TRY_HOTKEY);
+	UnregisterHotKey(targetWnd, ID_LAUNCHER_TRY_HOTKEY);
 	return true;
 }
 
