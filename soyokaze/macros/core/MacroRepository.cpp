@@ -33,6 +33,7 @@ MacroRepository::MacroRepository() : in(std::make_unique<PImpl>())
 
 MacroRepository::~MacroRepository()
 {
+	ReleaseAllMacros();
 }
 
 MacroRepository* MacroRepository::GetInstance()
