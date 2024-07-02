@@ -2,7 +2,6 @@
 #include "ExecuteHistory.h"
 #include "utility/AppProfile.h"
 #include "setting/AppPreference.h"
-#include "utility/IniFile.h"
 #include <map>
 #include <list>
 
