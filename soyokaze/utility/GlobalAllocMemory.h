@@ -17,10 +17,15 @@ public:
 	operator HGLOBAL() { return mMemHandle; }
 
 	void* Lock() {
-		return GlobalLock(mMemHandle);
+		if (mMemHandle) {
+			return GlobalLock(mMemHandle);
+		}
+		return nullptr;
 	}
 	void Unlock() {
-		GlobalUnlock(mMemHandle);
+		if (mMemHandle) {
+			GlobalUnlock(mMemHandle);
+		}
 	}
 
 	// 所有権を放棄する

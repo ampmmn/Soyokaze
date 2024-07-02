@@ -46,6 +46,7 @@
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>

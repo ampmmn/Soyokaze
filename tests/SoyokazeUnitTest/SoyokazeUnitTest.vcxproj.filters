@@ -81,5 +81,8 @@
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp">
       <Filter>soyokaze\hotkey</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
