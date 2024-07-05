@@ -118,9 +118,6 @@ CString FilterCommand::GetName()
 
 CString FilterCommand::GetDescription()
 {
-	if (in->mIsEmpty) {
-		return _T("(候補なし)");
-	}
 	return in->mParam.mDescription;
 }
 
