@@ -58,8 +58,6 @@ struct LauncherMainWindow::PImpl
 	void EnumTokenPos(std::vector<int>& tokenPos);
 	bool GetTrailingString(CString& text);
 
-	HICON mIconHandle;
-
 	// キーワード入力欄の文字列
 	CString mCommandStr;
 	// 最後に外部からの入力によって更新された時点での文字列
@@ -230,7 +228,6 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(AppPreference::Get()->IsShowGuide() ? IDD_MAIN_GUIDE : IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
-	in->mIconHandle = IconLoader::Get()->LoadDefaultIcon();
 	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
@@ -846,8 +843,9 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	// このダイアログのアイコンを設定します。アプリケーションのメイン ウィンドウがダイアログでない場合、
 	//  Framework は、この設定を自動的に行います。
-	SetIcon(in->mIconHandle, TRUE);			// 大きいアイコンの設定
-	SetIcon(in->mIconHandle, FALSE);		// 小さいアイコンの設定
+	HICON icon = IconLoader::Get()->LoadDefaultIcon();
+	SetIcon(icon, TRUE);			// 大きいアイコンの設定
+	SetIcon(icon, FALSE);		// 小さいアイコンの設定
 
 	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
 
@@ -910,7 +908,7 @@ void LauncherMainWindow::OnPaint()
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
 		// アイコンの描画
-		dc.DrawIcon(x, y, in->mIconHandle);
+		dc.DrawIcon(x, y, IconLoader::Get()->LoadDefaultIcon());
 	}
 	else
 	{
@@ -922,7 +920,7 @@ void LauncherMainWindow::OnPaint()
 //  システムがこの関数を呼び出します。
 HCURSOR LauncherMainWindow::OnQueryDragIcon()
 {
-	return static_cast<HCURSOR>(in->mIconHandle);
+	return static_cast<HCURSOR>(IconLoader::Get()->LoadDefaultIcon());
 }
 
 LauncherMainWindow::CommandRepository*

@@ -107,10 +107,10 @@ void SelectFilesDialog::OnListItemChanged()
 	}
 
 	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(mFiles[selIndex], 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
+	SHGetFileInfo(mFiles[selIndex], 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
 	HICON hIcon = sfi.hIcon;
 	mIconLabel.DrawIcon(hIcon);
+	DestroyIcon(hIcon);
 }
 
 void SelectFilesDialog::OnListItemChecked()

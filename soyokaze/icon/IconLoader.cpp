@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "IconLoader.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/RegistryKey.h"
 #include "utility/AppProfile.h"
@@ -15,15 +17,55 @@
 #define new DEBUG_NEW
 #endif
 
+// キャッシュクリアを実行する回数
+constexpr int CLEARCACHE_INTERVAL = 5 * 60;  // 5分
+
+// 前回使用時から経過した時間がこの時間を過ぎていたらキャッシュをクリアする
+constexpr int CACHE_KEEP_IN_MS = 5 * 60 * 1000;  // 5分
+
+
+struct IconLoader::ICONITEM
+{
+	ICONITEM() = default;
+
+	ICONITEM(HICON icon) : mIcon(icon), mLastUsedTime(GetTickCount())
+	{
+	}
+	ICONITEM(const ICONITEM&) = default;
+
+	HICON IconHandle()
+	{
+		mLastUsedTime = GetTickCount();
+		return mIcon;
+	}
+
+	bool IsTimeout(DWORD now) const
+ 	{
+		DWORD elapsed = now - mLastUsedTime;
+		return elapsed >= CACHE_KEEP_IN_MS;
+	}
+
+	void Destroy()
+	{
+		if (mIcon) {
+			DestroyIcon(mIcon);
+			mIcon = nullptr;
+		}
+	}
+
+	HICON mIcon;
+	DWORD mLastUsedTime;
+};
+
+using ICONITEM = IconLoader::ICONITEM;
+
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
-using IconIndexMap = std::map<int, HICON>;
+using IconIndexMap = std::map<int, ICONITEM>;
 
-struct IconLoader::PImpl
+struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 {
 	PImpl() : 
-		mEditIcon(nullptr),
-		mKeywordManagerIcon(nullptr),
 		mVolumeIcon(nullptr),
 		mVolumeMuteIcon(nullptr)
 	{
@@ -38,6 +80,11 @@ struct IconLoader::PImpl
 		PathAppend(mShell32Dll, _T("System32"));
 		PathAppend(mShell32Dll, _T("shell32.dll"));
 
+		LauncherWindowEventDispatcher::Get()->AddListener(this);
+	}
+	~PImpl()
+	{
+		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 	}
 
 	HICON GetShell32Icon(int index)
@@ -58,164 +105,132 @@ struct IconLoader::PImpl
 		return mIconIndexCache[path];
 	}
 
+	HICON LoadIconFromImage(const CString& path);
+	HICON LoadIconForID1(LPCTSTR dllPath);
+
+	void ClearCache();
+	bool GetDefaultIcon(const CString& path, HICON& icon);
+
+	void OnLockScreenOccurred() override
+	{
+	}
+
+	void OnUnlockScreenOccurred() override
+	{
+	}
+
+	void OnTimer() override
+	{
+		mCleanCount--;
+		if (mCleanCount < 0) {
+			ClearCache();
+			mCleanCount = CLEARCACHE_INTERVAL;
+		}
+	}
+
+
 	TCHAR mImgResDll[MAX_PATH_NTFS];
 	TCHAR mShell32Dll[MAX_PATH_NTFS];
+
+	// ファイルがリソースとして保持するアイコンを管理するためのmap
 	std::map<CString, IconIndexMap> mIconIndexCache;
-	std::map<CString, HICON> mDefaultIconCache;
-	std::map<CString, HICON> mFileExtIconCache;
-	std::map<CString, HICON> mAppIconMap;
-	HICON mEditIcon;
-	HICON mKeywordManagerIcon;
+	// ファイルパスに対するアイコン
+	std::map<CString, ICONITEM> mDefaultIconCache;
+	// ファイル拡張子に関連付けられたアイコン
+	std::map<CString, ICONITEM> mFileExtIconCache;
+	// アプリケーションIDに対応するアイコン
+	std::map<CString, ICONITEM> mAppIconMap;
+	// 音量変更アイコン
 	HICON mVolumeIcon;
+	// 音量変更(ミュート)のアイコン
 	HICON mVolumeMuteIcon;
 
 	LocalPathResolver mResolver;
+
+	int mCleanCount = CLEARCACHE_INTERVAL;
 };
 
-IconLoader::IconLoader() : in(std::make_unique<PImpl>())
+void IconLoader::PImpl::ClearCache()
 {
-}
+	spdlog::debug(_T("ClearCache in."));
 
-IconLoader::~IconLoader()
-{
-	for (auto& elem : in->mIconIndexCache) {
-		for (auto& elem2 : elem.second) {
-			if (elem2.second) {
-				DestroyIcon(elem2.second);
+	int clearedItemCount = 0;
+
+	auto now = GetTickCount();
+
+	for (auto& item : mIconIndexCache) {
+		auto& indexMap = item.second;
+
+		auto it = indexMap.begin();
+		while (it != indexMap.end()) {
+			auto& iconItem = it->second;
+			if (iconItem.IsTimeout(now) == false) {
+				++it;
+				continue;
 			}
-		}
-	}
-	for (auto& elem : in->mDefaultIconCache) {
-		if (elem.second) {
-			DestroyIcon(elem.second);
-		}
-	}
-	for (auto& elem : in->mAppIconMap) {
-		if (elem.second) {
-			DestroyIcon(elem.second);
-		}
-	}
-	// mFileExtIconCacheに格納されているアイコンハンドルはmDefaultIconCacheにも含まれるのでDestroyIconは不要。
-	//for (auto& elem : in->mFileExtIconCache) {
-	//	if (elem.second) {
-	//		DestroyIcon(elem.second);
-	//	}
-	//}
-
-	if (in->mVolumeIcon) {
-		DestroyIcon(in->mVolumeIcon);
-	}
-	if (in->mVolumeMuteIcon) {
-		DestroyIcon(in->mVolumeMuteIcon);
-	}
-}
-
-IconLoader* IconLoader::Get()
-{
-	static IconLoader instance;
-	return &instance;
-}
-
-HICON IconLoader::LoadIconFromPath(const CString& path)
-{
-	if (path.Find(_T("http")) == 0) {
-		// URLの場合は固定のWebアイコンにする
-		return LoadWebIcon();
-	}
-
-	// 絶対パス指定でファイルが見つからなかった場合は不明アイコン
-	if (PathIsRelative(path) == FALSE) {
-		if (PathFileExists(path) == FALSE) {
-			return LoadUnknownIcon();
+			iconItem.Destroy();
+			it = indexMap.erase(it);
+			clearedItemCount++;
 		}
 	}
 
-	// 相対パス指定の場合はパス解決する
-	CString fullPath(path);
-	if (PathIsRelative(path)) {
-		if (in->mResolver.Resolve(path, fullPath) == false) {
-			return LoadUnknownIcon();
-		}
-	}
-
-	// パスがフォルダだった場合はフォルダアイコン
-	if (PathIsDirectory(fullPath)) {
-		return LoadFolderIcon();
-	}
-
-	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
-	HICON hIcon = sfi.hIcon;
-
-	RegisterIcon(fullPath, hIcon);
-
-	return hIcon;
-}
-
-HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
-{
-	auto it = in->mFileExtIconCache.find(fileExt);
-	if (it != in->mFileExtIconCache.end()) {
-		return it->second;
-	}
-
-	CString iconPath;
-	CString subKey = fileExt;
-	subKey += _T("\\OpenWithProgIDs");
-	RegistryKey HKCR(HKEY_CLASSES_ROOT);
-	std::vector<CString> valueNames;
-	if (HKCR.EnumValueNames(subKey, valueNames) == false) {
-		return nullptr;
-	}
-
-	for (auto& valueName : valueNames) {
-		if (valueName.IsEmpty()) {
+	auto it = mDefaultIconCache.begin();
+	while (it != mDefaultIconCache.end()) {
+		auto& iconItem = it->second;
+		if (iconItem.IsTimeout(now) == false) {
+			++it;
 			continue;
 		}
+		iconItem.Destroy();
+		it = mDefaultIconCache.erase(it);
+		clearedItemCount++;
+	}
 
-		subKey = valueName + _T("\\DefaultIcon");
-		CString iconPath;
-		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
-			return nullptr;
+	it = mDefaultIconCache.begin();
+	while (it != mDefaultIconCache.end()) {
+		auto& iconItem = it->second;
+		if (iconItem.IsTimeout(now) == false) {
+			++it;
+			continue;
 		}
-
-		// 次回以降は再利用
-		HICON icon = GetDefaultIcon(iconPath);
-		in->mFileExtIconCache[fileExt] = icon;
-		return icon;
+		iconItem.Destroy();
+		it = mDefaultIconCache.erase(it);
+		clearedItemCount++;
 	}
 
-	return nullptr;
+	it = mFileExtIconCache.begin();
+	while (it != mFileExtIconCache.end()) {
+		auto& iconItem = it->second;
+		if (iconItem.IsTimeout(now) == false) {
+			++it;
+			continue;
+		}
+		iconItem.Destroy();
+		it = mFileExtIconCache.erase(it);
+		clearedItemCount++;
+	}
+
+
+	it = mAppIconMap.begin();
+	while (it != mAppIconMap.end()) {
+		auto& iconItem = it->second;
+		if (iconItem.IsTimeout(now) == false) {
+			++it;
+			continue;
+		}
+		iconItem.Destroy();
+		it = mAppIconMap.erase(it);
+		clearedItemCount++;
+	}
+	spdlog::info(_T("IconLoader ClearCache {} icons cleared."), clearedItemCount);
 }
 
-static HICON LoadIconForID1(LPCTSTR dllPath)
+bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
 {
-	HMODULE dll = LoadLibraryEx(dllPath, nullptr, LOAD_LIBRARY_AS_DATAFILE | LOAD_WITH_ALTERED_SEARCH_PATH);
-	if (dll == nullptr) {
-		return nullptr;
-	}
-
-	HRSRC hRes2 = FindResource(dll, MAKEINTRESOURCE(1), RT_ICON);
-	HGLOBAL hMem2 = LoadResource(dll, hRes2);
-	void* lpv2 = LockResource(hMem2);
-	HICON icon = CreateIconFromResource((PBYTE) lpv2, SizeofResource(dll, hRes2), TRUE, 0x00030000);
-
-	FreeLibrary(dll);
-	return icon;
-}
-
-HICON IconLoader::GetDefaultIcon(const CString& path)
-{
-	auto it = in->mDefaultIconCache.find(path);
-	if (it != in->mDefaultIconCache.end()) {
-		return it->second;
-	}
-
 	int n = 0;
 	CString modulePath = path.Tokenize(_T(","), n);
 	if (modulePath.IsEmpty()) {
-		return LoadUnknownIcon();
+		return false;
 	}
 	CString indexStr =  path.Tokenize(_T(","), n);
 
@@ -224,114 +239,29 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 		index = 0;
 	}
 
-	HICON icon[1] = {};
-
 	// UWPの場合、アイコンが.icoではなく.PNGなので
 	// PNGからアイコンに変換する
 	static CString extPNG(_T(".png"));
 	if (index == 0 && extPNG == PathFindExtension(modulePath)) {
-		icon[0] = LoadIconFromImage(modulePath);
+		icon = LoadIconFromImage(modulePath);
 	}
 	else if (index == -1) {
 		// -1のときアイコン総数が返ってきてそうなので別系統の処理をする
-		icon[0] = LoadIconForID1(modulePath);
+		icon = LoadIconForID1(modulePath);
 	}
 	else {
-		ExtractIconEx(modulePath, index, icon, nullptr, 1);
+		ExtractIconEx(modulePath, index, &icon, nullptr, 1);
 	}
 
-	if (icon[0] == 0)  {
-		return LoadUnknownIcon();
+	if (icon == nullptr)  {
+		return false;
 	}
 
-	in->mDefaultIconCache[path] = icon[0];
-
-	return icon[0];
+	return true;
 }
 
 
-
-HICON IconLoader::GetShell32Icon(int index)
-{
-	return LoadIconResource(in->mShell32Dll, index);
-}
-
-HICON IconLoader::GetImageResIcon(int index)
-{
-	return LoadIconResource(in->mImgResDll, index);
-}
-
-// ファイルがリソースとして保持するアイコンを取得
-HICON IconLoader::LoadIconResource(const CString& path, int index)
-{
-	IconIndexMap& idxMap = in->GetIconIndexMap(path);
-
-	auto it = idxMap.find(index);
-	if (it != idxMap.end()) {
-		return it->second;
-	}
-
-	HICON icon[1];
-	UINT n = ExtractIconEx(path, index, icon, nullptr, 1);
-	HICON h = (n == 1) ? icon[0]: nullptr;
-	if (h == nullptr) {
-		return nullptr;
-	}
-
-	idxMap[index] = h;
-	return h;
-}
-
-
-HICON IconLoader::LoadFolderIcon()
-{
-	return GetImageResIcon(-3);
-}
-
-static CString GetHttpsIconPathFromRegistry()
-{
-	CString progName;
-	RegistryKey HKCU(HKEY_CURRENT_USER);
-	if (HKCU.GetValue(_T("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice"), _T("ProgId"), progName) == false) {
-		return _T("");
-	}
-
-	CString iconPath;
-	CString subKey = progName;
-	subKey += _T("\\DefaultIcon");
-	RegistryKey HKCR(HKEY_CLASSES_ROOT);
-	if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
-		return _T("");
-	}
-	return iconPath;
-}
-
-HICON IconLoader::LoadWebIcon()
-{
-	return GetDefaultIcon(GetHttpsIconPathFromRegistry());
-}
-
-HICON IconLoader::LoadNewIcon()
-{
-	return GetImageResIcon(-1024);
-}
-
-HICON IconLoader::LoadSettingIcon()
-{
-	return GetImageResIcon(-114);
-}
-
-HICON IconLoader::LoadExitIcon()
-{
-	return GetImageResIcon(-5102);
-}
-
-static int GetPitch(int w, int bpp)
-{
-	return (((w * bpp) + 31) / 32) * 4;
-}
-
-HICON IconLoader::LoadIconFromImage(const CString& path)
+HICON IconLoader::PImpl::LoadIconFromImage(const CString& path)
 {
 	// 画像ファイルをロードする
 	ATL::CImage image;
@@ -389,6 +319,242 @@ HICON IconLoader::LoadIconFromImage(const CString& path)
 	return icon;
 }
 
+HICON IconLoader::PImpl::LoadIconForID1(LPCTSTR dllPath)
+{
+	HMODULE dll = LoadLibraryEx(dllPath, nullptr, LOAD_LIBRARY_AS_DATAFILE | LOAD_WITH_ALTERED_SEARCH_PATH);
+	if (dll == nullptr) {
+		return nullptr;
+	}
+
+	HRSRC hRes2 = FindResource(dll, MAKEINTRESOURCE(1), RT_ICON);
+	HGLOBAL hMem2 = LoadResource(dll, hRes2);
+	void* lpv2 = LockResource(hMem2);
+	HICON icon = CreateIconFromResource((PBYTE) lpv2, SizeofResource(dll, hRes2), TRUE, 0x00030000);
+
+	FreeLibrary(dll);
+	return icon;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+IconLoader::IconLoader() : in(std::make_unique<PImpl>())
+{
+}
+
+IconLoader::~IconLoader()
+{
+	for (auto& elem : in->mIconIndexCache) {
+		for (auto& elem2 : elem.second) {
+			auto& item = elem2.second;
+			item.Destroy();
+		}
+	}
+	for (auto& elem : in->mDefaultIconCache) {
+		auto& item = elem.second;
+		item.Destroy();
+	}
+	for (auto& elem : in->mAppIconMap) {
+		auto& item = elem.second;
+		item.Destroy();
+	}
+	for (auto& elem : in->mFileExtIconCache) {
+		auto& item = elem.second;
+		item.Destroy();
+	}
+
+	if (in->mVolumeIcon) {
+		DestroyIcon(in->mVolumeIcon);
+	}
+	if (in->mVolumeMuteIcon) {
+		DestroyIcon(in->mVolumeMuteIcon);
+	}
+}
+
+IconLoader* IconLoader::Get()
+{
+	static IconLoader instance;
+	return &instance;
+}
+
+HICON IconLoader::LoadIconFromPath(const CString& path)
+{
+	if (path.Find(_T("http")) == 0) {
+		// URLの場合は固定のWebアイコンにする
+		return LoadWebIcon();
+	}
+
+	// 絶対パス指定でファイルが見つからなかった場合は不明アイコン
+	if (PathIsRelative(path) == FALSE) {
+		if (PathFileExists(path) == FALSE) {
+			return LoadUnknownIcon();
+		}
+	}
+
+	// 相対パス指定の場合はパス解決する
+	CString fullPath(path);
+	if (PathIsRelative(path)) {
+		if (in->mResolver.Resolve(path, fullPath) == false) {
+			return LoadUnknownIcon();
+		}
+	}
+
+	// パスがフォルダだった場合はフォルダアイコン
+	if (PathIsDirectory(fullPath)) {
+		return LoadFolderIcon();
+	}
+
+	SHFILEINFO sfi = {};
+	::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+	HICON hIcon = sfi.hIcon;
+
+	RegisterIcon(fullPath, hIcon);
+
+	return hIcon;
+}
+
+HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
+{
+	auto it = in->mFileExtIconCache.find(fileExt);
+	if (it != in->mFileExtIconCache.end()) {
+		return it->second.IconHandle();
+	}
+
+	CString iconPath;
+	CString subKey = fileExt;
+	subKey += _T("\\OpenWithProgIDs");
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	std::vector<CString> valueNames;
+	if (HKCR.EnumValueNames(subKey, valueNames) == false) {
+		return nullptr;
+	}
+
+	for (auto& valueName : valueNames) {
+		if (valueName.IsEmpty()) {
+			continue;
+		}
+
+		subKey = valueName + _T("\\DefaultIcon");
+		CString iconPath;
+		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+			return nullptr;
+		}
+
+		// 次回以降は再利用
+		HICON icon = nullptr;
+		if (in->GetDefaultIcon(iconPath, icon) == false) {
+			continue;
+		}
+		in->mFileExtIconCache[fileExt] = ICONITEM(icon);
+		return icon;
+	}
+
+	return nullptr;
+}
+
+HICON IconLoader::GetDefaultIcon(const CString& path)
+{
+	auto it = in->mDefaultIconCache.find(path);
+	if (it != in->mDefaultIconCache.end()) {
+		auto& item = it->second;
+		return item.IconHandle();
+	}
+	HICON icon = nullptr;
+	if (in->GetDefaultIcon(path, icon) == false)  {
+		return LoadUnknownIcon();
+	}
+
+	in->mDefaultIconCache[path] = ICONITEM(icon);
+
+	return icon;
+}
+
+
+
+HICON IconLoader::GetShell32Icon(int index)
+{
+	return LoadIconResource(in->mShell32Dll, index);
+}
+
+HICON IconLoader::GetImageResIcon(int index)
+{
+	return LoadIconResource(in->mImgResDll, index);
+}
+
+// ファイルがリソースとして保持するアイコンを取得
+HICON IconLoader::LoadIconResource(const CString& path, int index)
+{
+	IconIndexMap& idxMap = in->GetIconIndexMap(path);
+
+	auto it = idxMap.find(index);
+	if (it != idxMap.end()) {
+		return it->second.IconHandle();
+	}
+
+	HICON icon[1];
+	UINT n = ExtractIconEx(path, index, icon, nullptr, 1);
+	HICON h = (n == 1) ? icon[0]: nullptr;
+	if (h == nullptr) {
+		return nullptr;
+	}
+
+	idxMap[index] = ICONITEM(h);
+	return h;
+}
+
+
+HICON IconLoader::LoadFolderIcon()
+{
+	return GetImageResIcon(-3);
+}
+
+static CString GetHttpsIconPathFromRegistry()
+{
+	CString progName;
+	RegistryKey HKCU(HKEY_CURRENT_USER);
+	if (HKCU.GetValue(_T("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice"), _T("ProgId"), progName) == false) {
+		return _T("");
+	}
+
+	CString iconPath;
+	CString subKey = progName;
+	subKey += _T("\\DefaultIcon");
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+		return _T("");
+	}
+	return iconPath;
+}
+
+HICON IconLoader::LoadWebIcon()
+{
+	return GetDefaultIcon(GetHttpsIconPathFromRegistry());
+}
+
+HICON IconLoader::LoadNewIcon()
+{
+	return GetImageResIcon(-1024);
+}
+
+HICON IconLoader::LoadSettingIcon()
+{
+	return GetImageResIcon(-114);
+}
+
+HICON IconLoader::LoadExitIcon()
+{
+	return GetImageResIcon(-5102);
+}
+
+static int GetPitch(int w, int bpp)
+{
+	return (((w * bpp) + 31) / 32) * 4;
+}
+
 // ウインドウハンドルからアプリアイコンを取得
 HICON IconLoader::LoadIconFromHwnd(HWND hwnd)
 {
@@ -416,10 +582,10 @@ void IconLoader::RegisterIcon(const CString& appId, HICON icon)
 {
 	auto it = in->mAppIconMap.find(appId);
 	if (it != in->mAppIconMap.end()) {
-		DestroyIcon(it->second);
+		it->second.Destroy();
 		in->mAppIconMap.erase(it);
 	}
-	in->mAppIconMap[appId] = icon;
+	in->mAppIconMap[appId] = ICONITEM(icon);
 }
 
 HICON IconLoader::LoadEditIcon()
@@ -548,7 +714,7 @@ HICON IconLoader::LoadIconFromStream(
 	auto it = in->mAppIconMap.find(str);
 	if (it != in->mAppIconMap.end()) {
 		// すでに作成済
-		return it->second;
+		return it->second.IconHandle();
 	}
 
 	// アイコンを一時ファイルに書き出す
@@ -565,7 +731,7 @@ HICON IconLoader::LoadIconFromStream(
 	WriteFile(h, &strm.front(), (DWORD)strm.size(), &writtenBytes, nullptr);
 	CloseHandle(h);
 
-	HICON hIcon = LoadIconFromImage(userDataPath);
+	HICON hIcon = in->LoadIconFromImage(userDataPath);
 	RegisterIcon(str, hIcon);
 
 	return hIcon;

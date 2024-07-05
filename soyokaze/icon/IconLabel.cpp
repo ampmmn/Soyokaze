@@ -73,6 +73,7 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 void IconLabel::DrawDefaultIcon()
 {
 	if (mIconDefault == nullptr) {
+		// 取得したアイコンの所有権はIconLoader側にあるので解放不要
 		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 	}
 	DrawIcon(mIconDefault);

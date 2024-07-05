@@ -5,14 +5,14 @@
 class IconLoader
 {
 public:
+	struct ICONITEM;
+public:
 	static IconLoader* Get();
 
 	// ファイルに関連付けられたアイコンを取得
 	HICON LoadIconFromPath(const CString& path);
 	// ファイル拡張子に関連付けられたアイコンを取得
 	HICON LoadExtensionIcon(const CString& fileExt);
-	// 画像ファイルからアイコンを生成
-	HICON LoadIconFromImage(const CString& path);
 	// ウインドウハンドルからアプリアイコンを取得
 	HICON LoadIconFromHwnd(HWND hwnd);
 

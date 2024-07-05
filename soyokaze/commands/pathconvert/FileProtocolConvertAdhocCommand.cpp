@@ -49,6 +49,7 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	}
 
 	CString mFullPath;
+	HICON mIcon = nullptr;
 
 	bool mIsEnable;
 	//
@@ -67,6 +68,10 @@ FileProtocolConvertAdhocCommand::FileProtocolConvertAdhocCommand() : in(std::mak
 
 FileProtocolConvertAdhocCommand::~FileProtocolConvertAdhocCommand()
 {
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+		in->mIcon = nullptr;
+	}
 }
 
 
@@ -108,12 +113,12 @@ HICON FileProtocolConvertAdhocCommand::GetIcon()
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
-
-	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
-	HICON hIcon = sfi.hIcon;
-	return hIcon;
+	if (in->mIcon == nullptr) {
+		SHFILEINFO sfi = {};
+		SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
+		in->mIcon = sfi.hIcon;
+	}
+	return in->mIcon;
 }
 
 static void DecodeUri(CString& str)
@@ -210,6 +215,11 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 	in->mFullPath.Replace(_T('/'), _T('\\'));
 
 	DecodeUri(in->mFullPath);
+
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+		in->mIcon = nullptr;
+	}
 
 	return Pattern::WholeMatch;
 }

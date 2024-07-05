@@ -21,7 +21,7 @@ namespace color {
 
 struct ColorCommand::PImpl
 {
-	HICON mColorIcon;
+	HICON mColorIcon = nullptr;
 	COLORREF mColor;
 	int mFormatType;
 };

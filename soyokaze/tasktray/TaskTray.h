@@ -14,14 +14,12 @@ public:
 	void ShowMessage(const CString& msg, const CString& title);
 
 protected:
-	// $B%?%9%/%H%l%$%"%$%3%s(B
-	HICON mIcon;
-	// $B%?%9%/%H%l%$%&%$%s%I%&(B
+	// タスクトレイウインドウ
 	HWND mTaskTrayWindow;
-	// $B%?%9%/%H%l%$4XO"%$%Y%s%HDLCN@h(B
+	// タスクトレイ関連イベント通知先
 	TaskTrayEventListenerIF* mListenerPtr;
 
-	// $B%?%9%/%H%l%$$KEPO?MQ$N>pJs(B
+	// タスクトレイに登録用の情報
 	NOTIFYICONDATA mNotifyIconData;
 
 public:

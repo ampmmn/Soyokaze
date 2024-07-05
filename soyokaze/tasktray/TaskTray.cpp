@@ -16,7 +16,6 @@ IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 TaskTray::TaskTray(TaskTrayEventListenerIF* listener) : mListenerPtr(listener)
 {
 	memset(&mNotifyIconData, 0, sizeof(mNotifyIconData));
-	mIcon = IconLoader::Get()->LoadTasktrayIcon();
 }
 
 TaskTray::~TaskTray()
@@ -53,7 +52,7 @@ BOOL TaskTray::Create()
 	nid.uFlags           = NIF_MESSAGE;
 
 	nid.uFlags |= NIF_ICON;
-	nid.hIcon   = mIcon;
+	nid.hIcon   = IconLoader::Get()->LoadTasktrayIcon();
 
 	TCHAR moduleName[MAX_PATH_NTFS];
 	GetModuleFileName(NULL, moduleName, MAX_PATH_NTFS);
@@ -80,11 +79,11 @@ void TaskTray::ShowMessage(const CString& msg)
 	_tcsncpy_s(nid.szInfoTitle, _T(""), _TRUNCATE);
 	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
 	nid.uFlags |= NIF_ICON;
-	nid.hIcon  = mIcon;
+	nid.hIcon  = IconLoader::Get()->LoadTasktrayIcon();
 	nid.dwInfoFlags = NIIF_INFO;
 	// Note: 任意のアイコンを表示する場合は下記
 	// nid.dwInfoFlags = NIIF_USER;
-	// nid.hBalloonIcon = mIcon;   // ここで任意のアイコン
+	// nid.hBalloonIcon = IconLoader::Get()->LoadTasktrayIcon();   // ここで任意のアイコン
 
 	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
@@ -97,7 +96,7 @@ void TaskTray::ShowMessage(const CString& msg, const CString& title)
 	_tcsncpy_s(nid.szInfoTitle, title, _TRUNCATE);
 	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
 	nid.uFlags |= NIF_ICON;
-	nid.hIcon  = mIcon;
+	nid.hIcon  = IconLoader::Get()->LoadTasktrayIcon();
 	nid.dwInfoFlags = NIIF_INFO;
 
 	Shell_NotifyIcon(NIM_MODIFY, &nid);

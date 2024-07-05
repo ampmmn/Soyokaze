@@ -23,6 +23,7 @@ namespace pathconvert {
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	CString mFullPath;
+	HICON mIcon = nullptr;
 	bool mIsExe;
 };
 
@@ -34,6 +35,10 @@ GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_
 
 GitBashToLocalPathAdhocCommand::~GitBashToLocalPathAdhocCommand()
 {
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+		in->mIcon = nullptr;
+	}
 }
 
 
@@ -92,11 +97,13 @@ HICON GitBashToLocalPathAdhocCommand::GetIcon()
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
 
-	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
-	HICON hIcon = sfi.hIcon;
-	return hIcon;
+	if (in->mIcon == nullptr) {
+		SHFILEINFO sfi = {};
+		SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
+		in->mIcon = sfi.hIcon;
+	}
+
+	return in->mIcon;
 }
 
 int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
@@ -112,6 +119,11 @@ int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
 
 		in->mFullPath.Format(_T("%s:\\%s"), driveLetter.c_str(), path.c_str());
 		in->mFullPath.Replace(_T('/'), _T('\\'));
+
+		if (in->mIcon) {
+			DestroyIcon(in->mIcon);
+			in->mIcon = nullptr;
+		}
 
 		return Pattern::WholeMatch;
 	}
