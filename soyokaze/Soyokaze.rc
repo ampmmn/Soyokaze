@@ -242,9 +242,9 @@ BEGIN
     PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,235,19,21,14
     CONTROL         "すでにアクティブなときに呼び出しキーを押したら隠れる(&H)",IDC_CHECK_SHOWTOGGLE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,37,192,10
-    CONTROL         "入力画面を非表示にして起動する(&E)",IDC_CHECK_HIDEONRUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,68,134,10
     CONTROL         "隠れるときに入力文字列を消去しない(&K)",IDC_CHECK_KEEPTEXTWHENDLGHIDE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,53,145,10
+    CONTROL         "入力画面を非表示にして起動する(&E)",IDC_CHECK_HIDEONRUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,68,134,10
 END
 
 IDD_EXTENSIONSETTING DIALOGEX 0, 0, 309, 285
