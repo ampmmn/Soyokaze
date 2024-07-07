@@ -71,15 +71,16 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
-	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH2, OnEditPathChanged)
+	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_DIR, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
-	ON_CBN_SELCHANGE(IDC_COMBO_PREFILTERTYPE, OnCbnAfterTypeChanged)
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnCbnAfterTypeChanged)
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnCbnAfterCommandChanged)
+	ON_CBN_SELCHANGE(IDC_COMBO_PREFILTERTYPE, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
@@ -219,6 +220,11 @@ bool FilterEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
+	if (mParam.mDir.IsEmpty() == FALSE && PathIsDirectory(mParam.mDir) == FALSE) {
+		mMessage = _T("作業フォルダは存在しません");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
 
 	mMessage.Empty();
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
@@ -226,14 +232,7 @@ bool FilterEditDialog::UpdateStatus()
 	return true;
 }
 
-void FilterEditDialog::OnEditNameChanged()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void FilterEditDialog::OnEditPathChanged()
+void FilterEditDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
@@ -304,20 +303,6 @@ void FilterEditDialog::OnButtonHotKey()
 	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mHotKeyAttr, this) == false) {
 		return ;
 	}
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void FilterEditDialog::OnCbnAfterTypeChanged()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void FilterEditDialog::OnCbnAfterCommandChanged()
-{
-	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
