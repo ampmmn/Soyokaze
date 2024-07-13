@@ -166,7 +166,7 @@ HACCEL CommandHotKeyManager::GetAccelerator()
 
 		ACCEL accel;
 		hotKeyAttr.GetAccel(accel);
-		accel.cmd = id;
+		accel.cmd = (WORD)id;
 
 		accels.push_back(accel);
 		in->mLocalHandlerMap[id] = item.mHandlerPtr.get();
@@ -391,16 +391,12 @@ void CommandHotKeyManager::Clear(void* owner)
 
 	CSingleLock sl(&in->mCS, TRUE);
 
-	HWND hwnd = in->mReceiverWindow;
-	ASSERT(hwnd);
-
 	for (auto it = in->mNameKeyMap.begin(); it != in->mNameKeyMap.end();) {
 		if (owner != it->second.mOwner) {
 			it++;
 			continue;
 		}
 
-		auto owner = it->second.mOwner;
 		auto& attr = it->second.mAttr;
 		HOTKEY_ATTR attr_(*(HOTKEY_ATTR*)&attr);
 

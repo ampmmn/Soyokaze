@@ -60,6 +60,8 @@ CString DecodeUriCommand::GetTypeDisplayName()
 
 BOOL DecodeUriCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(mName);
 	return TRUE;
@@ -119,8 +121,7 @@ int DecodeUriCommand::Match(Pattern* pattern)
 		uint32_t hex;
 
 		char tmp[] = { *(it+1), *(it+2), '\0' };
-		int n = sscanf_s(tmp, "%02x", &hex);
-		ASSERT(n == 1);
+		sscanf_s(tmp, "%02x", &hex);
 
 		dst.append(1, (char)hex);
 		it += 2;

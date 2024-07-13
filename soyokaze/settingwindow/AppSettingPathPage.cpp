@@ -283,6 +283,8 @@ void AppSettingPathPage::OnButtonDown()
 
 void AppSettingPathPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	UpdateStatus();
 	UpdateData(FALSE);
 	*pResult = 0;

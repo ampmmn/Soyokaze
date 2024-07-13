@@ -101,6 +101,8 @@ CString SimpleDictCommand::GetTypeDisplayName()
 
 BOOL SimpleDictCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
 
 	SharedHwnd sharedWnd;
@@ -263,7 +265,8 @@ bool SimpleDictCommand::NewDialog(
 )
 {
 	// パラメータ指定には対応していない
-	// param;
+	UNREFERENCED_PARAMETER(param);
+
 
 	ExcelApplication app;
 	if (app.IsInstalled() == false) {

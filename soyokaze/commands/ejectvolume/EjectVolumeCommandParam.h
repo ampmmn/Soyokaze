@@ -9,8 +9,11 @@ namespace ejectvolume {
 class CommandParam
 {
 public:
-	CommandParam() {}
+	CommandParam() : mDriveLetter(_T('A')) {}
+	CommandParam(const CommandParam&) = default;
 	~CommandParam() {}
+
+	CommandParam& operator = (const CommandParam&) = default;
 
 public:
 	CString mName;

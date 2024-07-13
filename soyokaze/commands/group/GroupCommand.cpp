@@ -60,7 +60,7 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 
 		if (mParam.mIsConfirm) {
 			CString msg;
-			msg.Format(IDS_CONFIRMRUNGROUP, cmdName);
+			msg.Format(IDS_CONFIRMRUNGROUP, (LPCTSTR)cmdName);
 
 			SharedHwnd sharedHwnd;
 
@@ -217,6 +217,8 @@ int GroupCommand::Match(Pattern* pattern)
 
 int GroupCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// ダイアログを表示
 	GroupEditDialog dlg;
 	dlg.SetParam(in->mParam);

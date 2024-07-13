@@ -57,6 +57,8 @@ CString GetIPCommand::GetTypeDisplayName()
 
 BOOL GetIPCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(in->mAddress);
 	return TRUE;

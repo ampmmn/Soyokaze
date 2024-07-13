@@ -92,6 +92,8 @@ void PathConvertProvider::LoadCommands(
 	CommandFile* cmdFile
 )
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 }
 
 CString PathConvertProvider::GetName()

@@ -140,11 +140,17 @@ bool SelectCommandTypeDialog::UpdateStatus()
 
 void SelectCommandTypeDialog::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+	UNREFERENCED_PARAMETER(pResult);
+
 	UpdateStatus();
 }
 
 void SelectCommandTypeDialog::OnNotifyItemDblClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+	UNREFERENCED_PARAMETER(pResult);
+
 	OnOK();
 }
 

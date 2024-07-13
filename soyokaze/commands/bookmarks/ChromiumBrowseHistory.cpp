@@ -94,10 +94,10 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 	// 退避先のファイル名にPC名を含める(UserDirをOneDrive共有フォルダで運用している環境向けの処理)
 	TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
 	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL ret = GetComputerName(computerName, &bufLen);
+	GetComputerName(computerName, &bufLen);
 
 	CString fileName;
-	fileName.Format(_T("%s-history-%s"), computerName, mId);
+	fileName.Format(_T("%s-history-%s"), computerName, (LPCTSTR)mId);
 	PathAppend(p, fileName);
 
 	dbDstPath.ReleaseBuffer();
@@ -215,14 +215,14 @@ void ChromiumBrowseHistory::Query(
 		CString token;
 		for(auto& word : words) {
 			if (word.mMethod == Pattern::RegExp) {
-				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), word.mWord);
+				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
 			}
 			else {
 				if (in->mIsUseURL) {
-					token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), word.mWord, word.mWord);
+					token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
 				}
 				else {
-					token.Format(_T("%s title like '%%%s%%' "), isFirst ? _T(""): _T("and"), word.mWord);
+					token.Format(_T("%s title like '%%%s%%' "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord);
 				}
 			}
 			queryStr += token;
@@ -236,6 +236,9 @@ void ChromiumBrowseHistory::Query(
 
 		struct local_param {
 			static int Callback(void* p, int argc, char** argv, char**colName) {
+				UNREFERENCED_PARAMETER(argc);
+				UNREFERENCED_PARAMETER(colName);
+
 				auto param = (local_param*)p;
 
 				if (GetTickCount() - param->mStart > param->mTimeout) {
@@ -258,7 +261,7 @@ void ChromiumBrowseHistory::Query(
 		// mHistoryDBに対し、問い合わせを行う
 		local_param param;
 		param.mTimeout = timeout;
-		int n = in->mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
+		in->mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
 
 		items.swap(param.mItems);
 }

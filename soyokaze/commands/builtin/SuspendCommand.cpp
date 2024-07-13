@@ -51,6 +51,8 @@ HICON SuspendCommand::GetIcon()
 
 BOOL SuspendCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsConfirmBeforeRun) {
 		if (AfxMessageBox(_T("サスペンドしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
 			return TRUE;
@@ -90,7 +92,7 @@ BOOL SuspendCommand::DoSuspend(BOOL isSuspend)
 	AdjustTokenPrivileges(token.mHandle, FALSE, &priv, 0, 0, 0);
 
 	if (GetLastError() == ERROR_SUCCESS) {
-		SetSuspendState(isSuspend, FALSE, FALSE);
+		SetSuspendState((BOOLEAN)isSuspend, (BOOLEAN)FALSE, (BOOLEAN)FALSE);
 		return TRUE;
 	}
 	else {

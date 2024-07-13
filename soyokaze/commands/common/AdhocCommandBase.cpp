@@ -41,6 +41,8 @@ CString AdhocCommandBase::GetGuideString()
 
 BOOL AdhocCommandBase::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// 派生側で実装する
 	ASSERT(0);
 	return TRUE;
@@ -74,11 +76,15 @@ bool AdhocCommandBase::IsDeletable()
 
 int AdhocCommandBase::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	return -1;
 }
 
 bool AdhocCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
+	UNREFERENCED_PARAMETER(attr);
+
 	// 一時コマンドはホットキー設定を持たない
 	return false;
 }
@@ -95,12 +101,16 @@ bool AdhocCommandBase::IsPriorityRankEnabled()
 
 bool AdhocCommandBase::Save(CommandEntryIF* entry)
 {
+	UNREFERENCED_PARAMETER(entry);
+
 	// 非サポート
 	return false;
 }
 
 bool AdhocCommandBase::Load(CommandEntryIF* entry)
 {
+	UNREFERENCED_PARAMETER(entry);
+
 	// 非サポート
 	return false;
 }

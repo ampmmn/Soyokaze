@@ -49,6 +49,8 @@ HICON EmptyRecycleBinCommand::GetIcon()
 
 BOOL EmptyRecycleBinCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	DWORD flags = mIsConfirmBeforeRun ? 0 : SHERB_NOCONFIRMATION;
 	SHEmptyRecycleBin(nullptr, nullptr, flags);
 	return TRUE;

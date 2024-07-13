@@ -75,6 +75,7 @@ CString EjectVolumeCommand::GetTypeDisplayName()
 
 BOOL EjectVolumeCommand::Execute(const Parameter& param_)
 {
+	UNUSED(param_);
 	const auto& param = in->mParam;
 	if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
 		spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
@@ -101,6 +102,8 @@ int EjectVolumeCommand::Match(Pattern* pattern)
 
 int EjectVolumeCommand::EditDialog(const Parameter* param)
 {
+	UNUSED(param);
+
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
 

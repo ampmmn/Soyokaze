@@ -413,10 +413,8 @@ BOOL Worksheet::Activate(bool isShowMaximize)
 			}
 
 			// シートをアクティブにする
-			VARIANT result;
 			VariantInit(&result);
-			HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"Activate", 0);
-
+			hr = AutoWrap(DISPATCH_PROPERTYGET, &result, sheet, L"Activate", 0);
 			if (FAILED(hr)) {
 				return FALSE;
 			}

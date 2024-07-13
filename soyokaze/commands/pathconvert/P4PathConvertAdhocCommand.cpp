@@ -80,14 +80,15 @@ HICON P4PathConvertAdhocCommand::GetIcon()
 	}
 
 	SHFILEINFO sfi = {};
-	HIMAGELIST hImgList =
-		(HIMAGELIST)::SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
+	::SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
 	HICON hIcon = sfi.hIcon;
 	return hIcon;
 }
 
 int P4PathConvertAdhocCommand::Match(Pattern* pattern)
 {
+	UNREFERENCED_PARAMETER(pattern);
+
 	// ToDo: 変換
 	return Pattern::Mismatch;
 }

@@ -59,7 +59,7 @@ HRESULT AutoWrap(
 		dp.rgdispidNamedArgs = &dispidNamed;
 	}
 
-	return pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, &dp, pvResult, NULL, NULL);
+	return pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, (WORD)autoType, &dp, pvResult, NULL, NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,9 +110,7 @@ int DispWrapper::GetPropertyInt(
 )
 {
 	ASSERT(mDispPtr);
-
-	int val = 0;
-
+		
 	VARIANT result;
 	VariantInit(&result);
 
@@ -125,8 +123,6 @@ int64_t DispWrapper::GetPropertyInt64(
 )
 {
 	ASSERT(mDispPtr);
-
-	int val = 0;
 
 	VARIANT result;
 	VariantInit(&result);

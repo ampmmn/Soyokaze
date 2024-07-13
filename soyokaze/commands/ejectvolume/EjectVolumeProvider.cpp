@@ -115,7 +115,7 @@ bool EjectVolumeProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void EjectVolumeProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
+void EjectVolumeProvider::QueryAdhocCommands(Pattern* , CommandQueryItemList& )
 {
 	// このCommandProviderは一時的なコマンドを持たない
 }
@@ -137,6 +137,8 @@ bool EjectVolumeProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNUSED(parent);
+	UNUSED(pages);
 	// 必要に応じて実装する
 	return true;
 }

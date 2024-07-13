@@ -245,7 +245,7 @@ bool CommandParameter::GetNamedParam(
 	CString* value
 ) const
 {
-	auto& it = in->mStrParamMap.find(name);
+	auto it = in->mStrParamMap.find(name);
 	if (it == in->mStrParamMap.end()) {
 		return false;
 	}

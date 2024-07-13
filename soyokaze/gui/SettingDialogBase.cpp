@@ -286,6 +286,15 @@ HTREEITEM SettingDialogBase::AddPage(
 	void* param
 )
 {
+	return AddPage(parent, std::move(page), param);
+}
+
+HTREEITEM SettingDialogBase::AddPage(
+	HTREEITEM parent,
+ 	std::unique_ptr<SettingPage>&& page,
+	void* param
+)
+{
 	ASSERT(page.get());
 
 	if (page->GetSafeHwnd() == NULL) {
@@ -320,6 +329,8 @@ LRESULT SettingDialogBase::OnUserEnableOKButton(
 	LPARAM lp
 )
 {
+	UNREFERENCED_PARAMETER(wp);
+
 	SettingPage* page = (SettingPage*)lp;
 
 	auto it = in->mInvalidPages.find(page);
@@ -347,6 +358,8 @@ LRESULT SettingDialogBase::OnUserDisableOKButton(
 	LPARAM lp
 )
 {
+	UNREFERENCED_PARAMETER(wp);
+
 	SettingPage* page = (SettingPage*)lp;
 	in->mInvalidPages.insert(page);
 

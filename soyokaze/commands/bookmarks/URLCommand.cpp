@@ -20,6 +20,8 @@ namespace bookmarks {
 
 static bool GetChromeExecutablePath(LPTSTR path, size_t len)
 {
+	UNREFERENCED_PARAMETER(len);
+
 	size_t reqLen = 0;
 	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("PROGRAMFILES"));
 	PathAppend(path, _T("Google\\Chrome\\Application\\chrome.exe"));
@@ -29,6 +31,8 @@ static bool GetChromeExecutablePath(LPTSTR path, size_t len)
 
 static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 {
+	UNREFERENCED_PARAMETER(len);
+
 	size_t reqLen = 0;
 #ifndef _WIN64
 	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
@@ -93,7 +97,7 @@ CString URLCommand::GetTypeDisplayName()
 	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
 
 	CString str;
-	str.Format(_T("%s %s"), in->mBrowserName, in->mType == BOOKMARK ? TEXT_BOOKMARK : TEXT_HISTORY);
+	str.Format(_T("%s %s"), (LPCTSTR)in->mBrowserName, in->mType == BOOKMARK ? (LPCTSTR)TEXT_BOOKMARK : (LPCTSTR)TEXT_HISTORY);
 
 	return str;
 }

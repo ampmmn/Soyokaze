@@ -3,7 +3,7 @@
 class CmdReceiveEdit : public CEdit
 {
 public:
-	CmdReceiveEdit(CWnd* pParent = nullptr);	// 標準コンストラクター
+	CmdReceiveEdit();	// 標準コンストラクター
 	virtual ~CmdReceiveEdit();
 
 	bool mIsPasteOnly;

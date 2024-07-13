@@ -18,12 +18,15 @@ LauncherDropTarget::~LauncherDropTarget()
 DROPEFFECT LauncherDropTarget::OnDragEnter(
 	CWnd* wnd, COleDataObject* dataObj, DWORD dwKeyState, CPoint point)
 {
+	UNREFERENCED_PARAMETER(dwKeyState);
+	UNREFERENCED_PARAMETER(point);
+
 	mParent->SendMessage(WM_APP+4, 0, (LPARAM)wnd);
 
 	if (dataObj->IsDataAvailable(CF_HDROP)) {
 		return DROPEFFECT_COPY;
 	}
-	else if (dataObj->IsDataAvailable(mUrlFomatId)) {
+	else if (dataObj->IsDataAvailable((CLIPFORMAT)mUrlFomatId)) {
 		return DROPEFFECT_LINK;
 	}
 
@@ -37,12 +40,15 @@ DROPEFFECT LauncherDropTarget::OnDragOver(
  	CPoint point
 )
 {
+	UNREFERENCED_PARAMETER(keyState);
+	UNREFERENCED_PARAMETER(point);
+
 	mParent->SendMessage(WM_APP+4, 0, (LPARAM)wnd);
 
 	if (dataObj->IsDataAvailable(CF_HDROP)) {
 		return DROPEFFECT_COPY;
 	}
-	else if (dataObj->IsDataAvailable(mUrlFomatId)) {
+	else if (dataObj->IsDataAvailable((CLIPFORMAT)mUrlFomatId)) {
 		return DROPEFFECT_LINK;
 	}
 
@@ -59,6 +65,9 @@ BOOL LauncherDropTarget::OnDrop(
 	CPoint point
 )
 {
+	UNREFERENCED_PARAMETER(dropEffect);
+	UNREFERENCED_PARAMETER(point);
+
 	mParent->SendMessage(WM_APP+5, (WPARAM)dataObj, (LPARAM)wnd);
 
 	return TRUE;

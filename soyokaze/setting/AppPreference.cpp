@@ -311,31 +311,31 @@ void AppPreference::Save()
 		CString line;
 		for (auto& item : sectionMap) {
 			const auto& section = item.first;
-			const auto& keys = item.second;
+			const auto& keysInSec = item.second;
 
-			line.Format(_T("[%s]\n"), section);
+			line.Format(_T("[%s]\n"), (LPCTSTR)section);
 			file.WriteString(line);
 
-			for (auto& key : keys) {
+			for (auto& key : keysInSec) {
 
 				CString fullKey(section + _T(":") + key);
 
 				int type = in->mSettings.GetType(fullKey);
 				if (type == Settings::TYPE_INT) {
 					int value = in->mSettings.Get(fullKey, 0);
-					line.Format(_T("%s=%d\n"), key, value);
+					line.Format(_T("%s=%d\n"), (LPCTSTR)key, value);
 				}
 				else if (type == Settings::TYPE_DOUBLE) {
 					double value = in->mSettings.Get(fullKey, 0.0);
-					line.Format(_T("%s=%g\n"), key, value);
+					line.Format(_T("%s=%g\n"), (LPCTSTR)key, value);
 				}
 				else if (type == Settings::TYPE_BOOLEAN) {
 					bool value = in->mSettings.Get(fullKey, false);
-					line.Format(_T("%s=%s\n"), key, value ? _T("true") : _T("false"));
+					line.Format(_T("%s=%s\n"), (LPCTSTR)key, value ? _T("true") : _T("false"));
 				}
 				else if (type == Settings::TYPE_STRING) {
 					auto value = in->mSettings.Get(fullKey, _T(""));
-					line.Format(_T("%s=\"%s\"\n"), key, value);
+					line.Format(_T("%s=\"%s\"\n"), (LPCTSTR)key, (LPCTSTR)value);
 				}
 				file.WriteString(line);
 			}

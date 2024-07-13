@@ -72,6 +72,8 @@ CString WatchPathCommand::GetTypeDisplayName()
 
 BOOL WatchPathCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (in->mIsDisabled) {
 		return TRUE;
 	}
@@ -106,6 +108,8 @@ int WatchPathCommand::Match(Pattern* pattern)
 
 int WatchPathCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	auto oldPath = in->mPath;
 
 	CommandEditDialog dlg;
@@ -151,6 +155,8 @@ int WatchPathCommand::EditDialog(const Parameter* param)
 
 bool WatchPathCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
+	UNREFERENCED_PARAMETER(attr);
+
 	return false;
 }
 

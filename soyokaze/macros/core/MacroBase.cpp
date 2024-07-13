@@ -30,6 +30,9 @@ CString MacroBase::GetDescription()
 
 bool MacroBase::Evaluate(const std::vector<CString>& args, CString& result)
 {
+	UNREFERENCED_PARAMETER(args);
+	UNREFERENCED_PARAMETER(result);
+
 	spdlog::warn(_T("Macro has no implemetation. name:{}"), (LPCTSTR)GetName());
 	return false;
 }

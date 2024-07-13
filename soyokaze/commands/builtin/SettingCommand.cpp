@@ -44,6 +44,8 @@ SettingCommand::~SettingCommand()
 
 BOOL SettingCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsExecuting) {
 		// 既に実行中
 		return TRUE;

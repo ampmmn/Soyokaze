@@ -84,7 +84,7 @@ void WindowTransparency::UpdateStyle()
 {
 	auto* pref = AppPreference::Get();
 	mIsEnable = pref->IsWindowTransparencyEnable();
-	mAlpha = pref->GetAlpha();
+	mAlpha = (uint8_t)pref->GetAlpha();
 	mIsInactiveOnly = pref->IsTransparencyInactiveOnly();
 	mIsTopmost = pref->IsTopMost();
 	mIsHideOnInactive = pref->IsHideOnInactive();

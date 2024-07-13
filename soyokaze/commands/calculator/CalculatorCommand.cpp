@@ -69,7 +69,7 @@ CString CalculatorCommand::GetTypeDisplayName()
 	}
 	else {
 		if (in->mTypeDisplayName.IsEmpty()) {
-			in->mTypeDisplayName.Format(_T("%s (%d進数)"), TEXT_TYPE, in->mBase);
+			in->mTypeDisplayName.Format(_T("%s (%d進数)"), (LPCTSTR)TEXT_TYPE, in->mBase);
 		}
 		return in->mTypeDisplayName;
 	}
@@ -77,6 +77,8 @@ CString CalculatorCommand::GetTypeDisplayName()
 
 BOOL CalculatorCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// Calculatorといいつつ、ここに処理が及ぶ時点で計算はおわっていて、
 	// ここでは単にクリップボードに結果をコピーするのみ
 

@@ -201,6 +201,8 @@ bool SettingDialog::UpdateStatus()
 LRESULT
 SettingDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(pParam);
+
 	HWND hTargetWnd = (HWND)lParam;
 	if (IsWindow(hTargetWnd) == FALSE) {
 		return 0;

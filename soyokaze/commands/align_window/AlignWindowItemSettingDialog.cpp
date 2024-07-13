@@ -41,6 +41,8 @@ ItemDialog::ItemDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWITEMEDIT, this),
 	in(std::make_unique<PImpl>())
 {
+	UNREFERENCED_PARAMETER(parentWnd);
+
 	SetHelpPageId(_T("AlignWindowItemSetting"));
 }
 
@@ -219,6 +221,8 @@ bool ItemDialog::UpdateStatus()
 LRESULT
 ItemDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(pParam);
+
 	HWND hTargetWnd = (HWND)lParam;
 	if (IsWindow(hTargetWnd) == FALSE) {
 		return 0;

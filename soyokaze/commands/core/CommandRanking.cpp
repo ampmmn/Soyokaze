@@ -120,7 +120,7 @@ bool CommandRanking::Save()
 			const CString& name = elem.first;
 			int rank = elem.second;
 
-			lineBuff.Format(_T("%s\t%d\n"), name, rank);
+			lineBuff.Format(_T("%s\t%d\n"), (LPCTSTR)name, rank);
 			file.WriteString(lineBuff);
 		}
 

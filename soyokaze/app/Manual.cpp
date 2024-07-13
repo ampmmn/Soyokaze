@@ -71,7 +71,7 @@ bool Manual::Navigate(const CString& pageId)
 	}
 
 	CString uri;
-	uri.Format(_T("file:///%s/%s.html"), dirPath, pagePath);
+	uri.Format(_T("file:///%s/%s.html"), dirPath, (LPCTSTR)pagePath);
 	uri.Replace(_T('\\'), _T('/'));
 
 	auto p = uri.GetBuffer(uri.GetLength() + 1);

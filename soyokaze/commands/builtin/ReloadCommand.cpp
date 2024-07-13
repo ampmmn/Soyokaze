@@ -42,6 +42,8 @@ ReloadCommand::~ReloadCommand()
 
 BOOL ReloadCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	return launcherapp::core::CommandRepository::GetInstance()->Load();
 }
 

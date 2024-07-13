@@ -49,7 +49,12 @@ BOOL ITEM::OnEnumWindows(HWND h, LPARAM lp)
 		}
 	}
 
-	param->mHwnd.push_back(h);
+	try {
+		param->mHwnd.push_back(h);
+	}
+	catch(...) {
+		return FALSE;
+	}
 
 	if (thisPtr->mIsApplyAll) {
 		// 「複数該当する場合はすべて適用」の場合は検索を継続する
@@ -134,11 +139,16 @@ bool ITEM::IsMatchCaption(LPCTSTR caption)
 		// 設定値がない場合は無条件で許可
 		return true;
 	}
-	if (mIsUseRegExp) {
-		return std::regex_match(tstring(caption), mRegCaption);
+	try {
+		if (mIsUseRegExp) {
+			return std::regex_match(tstring(caption), mRegCaption);
+		}
+		else {
+			return mCaptionStr == caption;
+		}
 	}
-	else {
-		return mCaptionStr == caption;
+	catch(std::regex_error&) {
+		return false;
 	}
 }
 

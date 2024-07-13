@@ -40,6 +40,8 @@ ManagerCommand::~ManagerCommand()
 
 BOOL ManagerCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	launcherapp::core::CommandRepository::GetInstance()->ManagerDialog();
 	return TRUE;
 }

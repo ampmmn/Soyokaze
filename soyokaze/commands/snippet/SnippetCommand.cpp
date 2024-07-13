@@ -77,6 +77,8 @@ CString SnippetCommand::GetTypeDisplayName()
 
 BOOL SnippetCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// 定型文をマクロ置換
 	CString text = in->mText;
 	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
@@ -123,6 +125,8 @@ int SnippetCommand::Match(Pattern* pattern)
 
 int SnippetCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	CommandEditDialog dlg;
 	dlg.SetOrgName(in->mName);
 

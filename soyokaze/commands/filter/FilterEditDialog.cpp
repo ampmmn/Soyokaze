@@ -361,6 +361,8 @@ void FilterEditDialog::OnNotifyLinkOpen(
  	LRESULT *pResult
 )
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	auto manual = launcherapp::app::Manual::GetInstance();
 	manual->Navigate(_T("MacroList"));
 	*pResult = 0;

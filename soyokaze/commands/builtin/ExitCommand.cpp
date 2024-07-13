@@ -40,6 +40,8 @@ ExitCommand::~ExitCommand()
 
 BOOL ExitCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (AfxGetMainWnd() != nullptr) {
 		// AfxGetGetMainWnd()でウインドウがとれる==メインスレッドなので、
 		// この場合はたんにPostQuitMessage(0)でOK

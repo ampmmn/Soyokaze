@@ -134,6 +134,8 @@ CString FilterCommand::GetTypeDisplayName()
 
 BOOL FilterCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (in->mIsEmpty) {
 		// 候補が存在しないとわかっている場合は何もしない
 		return TRUE;
@@ -215,6 +217,8 @@ int FilterCommand::Match(Pattern* pattern)
 
 int FilterCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	FilterEditDialog dlg;
 	dlg.SetOrgName(GetName());
 
@@ -357,6 +361,8 @@ bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
 
 bool FilterCommand::LoadFrom(CommandFile* cmdFile, void* e, FilterCommand** newCmdPtr)
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;

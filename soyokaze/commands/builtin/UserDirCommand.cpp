@@ -42,6 +42,8 @@ UserDirCommand::~UserDirCommand()
 
 BOOL UserDirCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	TCHAR userDirPath[65536];
 	CAppProfile::GetDirPath(userDirPath, 65536);
 	_tcscat_s(userDirPath, _T("\\"));

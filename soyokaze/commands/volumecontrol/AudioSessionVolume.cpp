@@ -21,7 +21,7 @@ struct AudioSessionVolume::PImpl
 AudioSessionVolume::AudioSessionVolume() : in(new PImpl)
 {
 	CoInitialize(nullptr);
-	HRESULT hr = Initialize();
+	Initialize();
 }
 
 AudioSessionVolume::~AudioSessionVolume()

@@ -52,6 +52,8 @@ HICON DisplayOffCommand::GetIcon()
 
 BOOL DisplayOffCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsConfirmBeforeRun) {
 		if (AfxMessageBox(_T("モニタの電源をオフにしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
 			return TRUE;

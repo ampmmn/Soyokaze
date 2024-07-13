@@ -320,6 +320,8 @@ const CString& MailItem::GetSubject()
 */
 BOOL MailItem::Activate(bool isShowMaximize)
 {
+	UNREFERENCED_PARAMETER(isShowMaximize);
+
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"Outlook.Application", &clsid);
 

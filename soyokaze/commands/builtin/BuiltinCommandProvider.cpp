@@ -155,6 +155,8 @@ CString BuiltinCommandProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool BuiltinCommandProvider::NewDialog(const CommandParameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// ToDo: 実装
 	return false;
 }
@@ -168,6 +170,9 @@ bool BuiltinCommandProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void BuiltinCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands)
 {
+	UNREFERENCED_PARAMETER(pattern);
+	UNREFERENCED_PARAMETER(comands);
+
 	// このCommandProviderは一時的なコマンドを持たない
 }
 
@@ -188,6 +193,9 @@ bool BuiltinCommandProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	// 必要に応じて実装する
 	return true;
 }

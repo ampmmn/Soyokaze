@@ -77,7 +77,7 @@ RegistWinCommand::~RegistWinCommand()
 {
 }
 
-BOOL RegistWinCommand::Execute(const Parameter& param)
+BOOL RegistWinCommand::Execute(const Parameter&)
 {
 	mError.Empty();
 

@@ -193,7 +193,7 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 			if (param.mIsNotifyUpdate) {
 				// 更新を通知する
 				CString msg;
-				msg.Format(_T("【%s】ファイルが更新されました\n%s"), param.mName, param.mFilePath);
+				msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)param.mName, (LPCTSTR)param.mFilePath);
 				launcherapp::commands::common::PopupMessage(msg);
 			}
 

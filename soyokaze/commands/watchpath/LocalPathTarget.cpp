@@ -151,7 +151,7 @@ struct LocalPathTarget::PImpl
 				break;
 		}
 
-		mDetail.Format(_T("%s %s"), act, path);
+		mDetail.Format(_T("%s %s"), (LPCTSTR)act, (LPCTSTR)path);
 
 		if (itemCount > 1) {
 			CString countMsg;

@@ -55,6 +55,8 @@ CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()
 
 BOOL LocalToGitBashPathAdhocCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(in->mFullPath);
 	return TRUE;

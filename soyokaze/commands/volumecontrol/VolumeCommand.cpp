@@ -73,6 +73,8 @@ CString VolumeCommand::GetTypeDisplayName()
 
 BOOL VolumeCommand::Execute(const Parameter& param_)
 {
+	UNREFERENCED_PARAMETER(param_);
+
 	AudioSessionVolume vol;
 
 	const auto& param = in->mParam;
@@ -123,6 +125,8 @@ int VolumeCommand::Match(Pattern* pattern)
 
 int VolumeCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	SettingDialog dlg;
 	dlg.SetParam(in->mParam);
 

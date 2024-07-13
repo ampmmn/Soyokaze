@@ -230,6 +230,8 @@ int RegExpCommand::Match(Pattern* pattern)
 
 int RegExpCommand::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	CommandEditDialog dlg;
 	dlg.SetOrgName(in->mName);
 
@@ -272,6 +274,8 @@ int RegExpCommand::EditDialog(const Parameter* param)
 
 bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
+	UNREFERENCED_PARAMETER(attr);
+
 	return false;
 }
 

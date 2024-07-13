@@ -57,7 +57,7 @@ CString FilterAdhocCommand::GetName()
 CString FilterAdhocCommand::GetDescription()
 {
 	CString str;
-	str.Format(_T("%s"), in->mResult.mDisplayName);
+	str.Format(_T("%s"), (LPCTSTR)in->mResult.mDisplayName);
 	return str;
 
 }

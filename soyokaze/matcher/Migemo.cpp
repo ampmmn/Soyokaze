@@ -15,9 +15,6 @@ typedef void (*MIGEMO_CLOSE)(void*);
 typedef unsigned char* (*MIGEMO_QUERY)(void*, const unsigned char* query);
 typedef void (*MIGEMO_RELEASE)(void*, unsigned char*);
 
-const int MIGEMO_DICTID_INVALID = 0;
-const int MIGEMO_DICTID_MIGEMO = 1;
-
 struct Migemo::PImpl
 {
 	void* mMigemoObj = nullptr;
@@ -94,12 +91,6 @@ bool Migemo::Open(LPCTSTR dictPath)
 	if (in->mMigemoObj == nullptr) {
 		in->mMigemoObj = in->mMigemoOpen(dictPathA);
 	}
-
-	// 辞書を読む
-	//int result = in->mMigemoLoad(in->mMigemoObj, MIGEMO_DICTID_MIGEMO, dictPathA);
-	//if (result == MIGEMO_DICTID_INVALID) {
-	//	return false;
-	//}
 
 	in->mIsDictLoaded = true;
 

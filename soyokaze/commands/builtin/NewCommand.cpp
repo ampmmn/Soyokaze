@@ -50,7 +50,7 @@ BOOL NewCommand::Execute(const Parameter& param)
 		inParam.SetNamedParamString(_T("COMMAND"), args[0]);
 		hasParam = true;
 	}
-	const CString* pathPtr = nullptr;
+
 	if (args.size() > 1) {
 		inParam.SetNamedParamString(_T("PATH"), args[1]);
 		hasParam = true;

@@ -646,6 +646,8 @@ static void _Everything_GetSearchTextA(LPSTR buf)
 
 static DWORD EVERYTHINGAPI _Everything_query_thread_proc(void *param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	HWND everything_hwnd;
 
 	everything_hwnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
@@ -2086,6 +2088,8 @@ DWORD EVERYTHINGAPI Everything_GetResultFullPathNameA(DWORD dwIndex,LPSTR buf,DW
 
 BOOL EVERYTHINGAPI Everything_IsQueryReply(UINT message,WPARAM wParam,LPARAM lParam,DWORD dwId)
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	if (message == WM_COPYDATA)
 	{
 		COPYDATASTRUCT *cds = (COPYDATASTRUCT *)lParam;
@@ -2983,6 +2987,8 @@ BOOL EVERYTHINGAPI Everything_Exit(void)
 // TODO: no longer used, remove.
 UINT EVERYTHINGAPI Everything_MSIExitAndStopService(void *msihandle)
 {
+	UNREFERENCED_PARAMETER(msihandle);
+
 	// close Everything client
 	{
 		HWND everything_hwnd;
@@ -3143,6 +3149,8 @@ UINT EVERYTHINGAPI Everything_MSIExitAndStopService(void *msihandle)
 // TODO: no longer used, remove.
 UINT EVERYTHINGAPI Everything_MSIStartService(void *msihandle)
 {
+	UNREFERENCED_PARAMETER(msihandle);
+
 	HANDLE scm_handle;
 	
 	scm_handle = OpenSCManager(0,0,SC_MANAGER_ENUMERATE_SERVICE);

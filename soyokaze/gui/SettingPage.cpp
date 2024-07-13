@@ -68,5 +68,6 @@ END_MESSAGE_MAP()
 
 bool SettingPage::GetHelpPageId(CString& id)
 {
+	UNREFERENCED_PARAMETER(id);
 	return false;
 }

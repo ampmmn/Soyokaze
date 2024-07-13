@@ -215,6 +215,8 @@ void CandidateListCtrl::InitColumns()
 
 void CandidateListCtrl::UpdateSize(int cx, int cy)
 {
+	UNREFERENCED_PARAMETER(cy);
+
 	if (in->mHasCommandTypeColumn) {
 		SetColumnWidth(0, cx-165);
 		SetColumnWidth(1, 140);
@@ -351,14 +353,14 @@ void CandidateListCtrl::DrawItem(
 		// 末尾の要素に達したら、リストの最後まで背景を交互にぬる
 		rcItem.OffsetRect(0, rcItem.Height());
 
-		CBrush brBk;
-		brBk.CreateSolidBrush(crBk);
 		CBrush brBk2;
-		brBk2.CreateSolidBrush(crBk2);
+		brBk2.CreateSolidBrush(crBk);
+		CBrush brBk3;
+		brBk3.CreateSolidBrush(crBk2);
 
-		CBrush* p = (itemID % 2) ? &brBk2 : &brBk;
+		CBrush* p = (itemID % 2) ? &brBk3 : &brBk2;
 		while (rcItem.top < rcCtrl.Height()) {
-			p = (p == &brBk)? &brBk2 : &brBk;
+			p = (p == &brBk2)? &brBk3 : &brBk2;
 			pDC->FillRect(rcItem, p);
 			rcItem.OffsetRect(0, rcItem.Height());
 		}

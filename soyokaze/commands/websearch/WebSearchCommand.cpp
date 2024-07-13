@@ -59,7 +59,7 @@ int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& dis
 	url.Replace(_T("$*"), queryStr);
 
 	// 表示名
-	displayName.Format(_T("%s %s"), cmdName, queryStr);
+	displayName.Format(_T("%s %s"), (LPCTSTR)cmdName, (LPCTSTR)queryStr);
 
 	return Pattern::FrontMatch;
 }
@@ -149,6 +149,8 @@ CString WebSearchCommand::GetTypeDisplayName()
 
 BOOL WebSearchCommand::Execute(const Parameter& param_)
 {
+	UNREFERENCED_PARAMETER(param_);
+
 	SharedHwnd sharedWnd;
 	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
 
@@ -288,7 +290,7 @@ bool WebSearchCommand::NewDialog(
 )
 {
 	// パラメータ指定には対応していない
-	// param;
+	UNREFERENCED_PARAMETER(param);
 
 	// 新規作成ダイアログを表示
 	SettingDialog dlg;

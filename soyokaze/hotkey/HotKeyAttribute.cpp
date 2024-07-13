@@ -158,7 +158,7 @@ HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) :
 
 	for (int i = 0; i < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]); ++i) {
 		if (VK_DEFINED_DATA[i].mVKCode == hotkey) {
-			mVirtualKeyIdx = i;
+			mVirtualKeyIdx = (short)i;
 			break;
 		}
 	}
@@ -262,7 +262,7 @@ bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
 	if (mUseAlt) {
 		accel.fVirt |= FALT;
 	}
-	accel.key = VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
+	accel.key = (WORD)VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
 
 	return true;
 }

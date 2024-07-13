@@ -52,6 +52,9 @@ WindowPosition::~WindowPosition()
  */
 static BOOL CALLBACK MonitorCallback(HMONITOR hm, HDC hdc, LPRECT rectMonitor, LPARAM lp)
 {
+	UNREFERENCED_PARAMETER(hm);
+	UNREFERENCED_PARAMETER(hdc);
+
 	std::pair<RECT,bool>* param = (std::pair<RECT,bool>*)lp;
 
 	const RECT& rectWnd = param->first;

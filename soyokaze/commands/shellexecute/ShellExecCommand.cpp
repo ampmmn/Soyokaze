@@ -278,6 +278,8 @@ int ShellExecCommand::Match(Pattern* pattern)
 
 int ShellExecCommand::EditDialog(const Parameter* args)
 {
+	UNREFERENCED_PARAMETER(args);
+
 	auto& param = in->mParam;
 
 	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
@@ -445,6 +447,7 @@ bool ShellExecCommand::LoadFrom(
 	ShellExecCommand** newCmdPtr
 )
 {
+	UNREFERENCED_PARAMETER(cmdFile);
 	assert(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;

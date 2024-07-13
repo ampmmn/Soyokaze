@@ -89,6 +89,8 @@ bool BuiltinCommandBase::IsDeletable()
 
 int BuiltinCommandBase::EditDialog(const Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mCanDisable == false && mCanSetConfirm == false) {
 		return -1;
 	}
@@ -114,6 +116,8 @@ int BuiltinCommandBase::EditDialog(const Parameter* param)
 
 bool BuiltinCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
+	UNREFERENCED_PARAMETER(attr);
+
 	// 組み込みコマンドは基本的にはホットキーを設定する機能を持たない
 	return false;
 }

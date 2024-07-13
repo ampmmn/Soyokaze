@@ -60,7 +60,7 @@ CString SimpleDictAdhocCommand::GetName()
 CString SimpleDictAdhocCommand::GetDescription()
 {
 	CString str;
-	str.Format(_T("%s → %s"), in->mKey, in->mValue);
+	str.Format(_T("%s → %s"), (LPCTSTR)in->mKey, (LPCTSTR)in->mValue);
 	return str;
 
 }

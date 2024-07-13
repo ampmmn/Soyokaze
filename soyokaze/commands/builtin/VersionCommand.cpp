@@ -41,6 +41,8 @@ VersionCommand::~VersionCommand()
 
 BOOL VersionCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsExecuting) {
 		return TRUE;
 	}

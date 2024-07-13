@@ -53,7 +53,7 @@ CString EverythingAdhocCommand::GetName()
 CString EverythingAdhocCommand::GetDescription()
 {
 	CString str;
-	str.Format(_T("%s"), in->mResult.mFullPath);
+	str.Format(_T("%s"), (LPCTSTR)in->mResult.mFullPath);
 	return str;
 
 }

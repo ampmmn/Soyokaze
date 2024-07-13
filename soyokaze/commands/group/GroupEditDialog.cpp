@@ -383,6 +383,8 @@ void GroupEditDialog::OnButtonDown()
 
 void GroupEditDialog::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	UpdateStatus();
 	UpdateData(FALSE);
 	*pResult = 0;
@@ -425,8 +427,6 @@ void GroupEditDialog::OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult)
 	if (index < 0 || mParam.mItems.size() <= index) {
 		return;
 	}
-
-	auto& item = mParam.mItems[index];
 
 	if (nm->iSubItem == 0) {
 		if (SelectCommand(index) == false) {

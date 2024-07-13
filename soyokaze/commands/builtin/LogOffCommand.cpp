@@ -49,6 +49,8 @@ HICON LogOffCommand::GetIcon()
 
 BOOL LogOffCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsConfirmBeforeRun) {
 		if (AfxMessageBox(_T("ログオフしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
 			return TRUE;

@@ -86,8 +86,8 @@ HTREEITEM SettingDialog::OnSetupPages()
 	void* param = &(in->mParam);
 
 	// 各ページ作成
-	HTREEITEM hItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new CommandEditDialog(this)), param);
-	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ShellExecEditDetailPage(this)), param);
+	HTREEITEM hItem = AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new CommandEditDialog(this))), param);
+	AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new ShellExecEditDetailPage(this))), param);
 
 	return hItem;
 }

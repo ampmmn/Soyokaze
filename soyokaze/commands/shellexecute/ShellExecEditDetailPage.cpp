@@ -74,8 +74,6 @@ bool ShellExecEditDetailPage::UpdateStatus()
 	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mPath0)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
 
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-
 	if (mParam.mIsUse0 && mParam.mPath0.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATH0ISEMPTY);
 		DisalbleOKButton();

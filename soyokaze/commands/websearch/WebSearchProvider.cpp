@@ -223,6 +223,9 @@ bool WebSearchProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	// 必要に応じて実装する
 	return true;
 }

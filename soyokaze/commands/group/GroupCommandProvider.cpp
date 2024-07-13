@@ -101,6 +101,8 @@ CString GroupCommandProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// グループ作成ダイアログを表示
 	GroupEditDialog dlg;
 	if (dlg.DoModal() != IDOK) {
@@ -129,6 +131,9 @@ bool GroupCommandProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void GroupCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
+	UNREFERENCED_PARAMETER(pattern);
+	UNREFERENCED_PARAMETER(comands);
+
 	// このCommandProviderは一時的なコマンドを持たない
 }
 
@@ -149,6 +154,8 @@ bool GroupCommandProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
 	// 必要に応じて実装する
 	return true;
 }

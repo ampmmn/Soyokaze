@@ -439,7 +439,6 @@ HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
 		}
 
 		subKey = valueName + _T("\\DefaultIcon");
-		CString iconPath;
 		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
 			return nullptr;
 		}
@@ -669,7 +668,7 @@ HICON IconLoader::LoadVolumeIcon(bool isMute)
 			return in->mVolumeMuteIcon;
 		}
 		HICON icon[1];
-		UINT n = ExtractIconEx(path, -111, icon, NULL, 1);
+		ExtractIconEx(path, -111, icon, NULL, 1);
 		in->mVolumeMuteIcon = icon[0];
 		return in->mVolumeMuteIcon;
 	}
@@ -678,7 +677,7 @@ HICON IconLoader::LoadVolumeIcon(bool isMute)
 			return in->mVolumeIcon;
 		}
 		HICON icon[1];
-		UINT n = ExtractIconEx(path, -110, icon, NULL, 1);
+		ExtractIconEx(path, -110, icon, NULL, 1);
 		in->mVolumeIcon = icon[0];
 		return in->mVolumeIcon;
 	}

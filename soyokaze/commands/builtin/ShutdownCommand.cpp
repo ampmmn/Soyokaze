@@ -49,6 +49,8 @@ HICON ShutdownCommand::GetIcon()
 
 BOOL ShutdownCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsConfirmBeforeRun) {
 		if (AfxMessageBox(_T("シャットダウンしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
 			return TRUE;

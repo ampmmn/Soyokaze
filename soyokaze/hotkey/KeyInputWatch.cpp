@@ -112,7 +112,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 		int nelems = sizeof(OTHER_KEYS) / sizeof(OTHER_KEYS[0]);
 		for (int i = 0; i < nelems; ++i) {
 			int vk = OTHER_KEYS[i];
-			if (UpdateKeyState(events, vk) == false){
+			if (UpdateKeyState(events, (SHORT)vk) == false){
 				continue;
 			}
 			events.clear();
@@ -243,8 +243,6 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 		bool isSimulPressed = (prevVK != curVK && (time - in->mPrevTime) < 100);
 
 		if (isDblPressed || isSimulPressed) {
-			LPARAM vk = ((curVK << 16) & 0xFFFF0000) |(in->mPrevVK & 0xFFFF);
-
 			// ここで設定したキーかどうかの判断をする
 			bool isMatchNormalOrder = (in->mFirstVK == curVK && in->mSecondVK == prevVK);
 			bool isMatchReverseOrder = (in->mFirstVK == prevVK && in->mSecondVK == curVK);
@@ -269,8 +267,8 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 				break;
 			}		
 
-			SharedHwnd hwnd;
-			PostMessage(hwnd.GetHwnd(), WM_APP+2, 0, 0);
+			SharedHwnd sharedHwnd;
+			PostMessage(sharedHwnd.GetHwnd(), WM_APP+2, 0, 0);
 
 			continue;
 		}

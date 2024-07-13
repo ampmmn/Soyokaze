@@ -21,6 +21,7 @@ protected:
 	virtual HTREEITEM OnSetupPages() = 0;
 
 	HTREEITEM AddPage(HTREEITEM hParent, std::unique_ptr<SettingPage>& page, void* param);
+	HTREEITEM AddPage(HTREEITEM hParent, std::unique_ptr<SettingPage>&& page, void* param);
 
 protected:
 	bool SelectPage(HTREEITEM hTreeCtrl);

@@ -86,6 +86,8 @@ void PathExeAdhocCommandProvider::LoadCommands(
 	CommandFile* cmdFile
 )
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 	// 内部でもつ履歴データを読み込む
 	ExecuteHistory::GetInstance()->Load();
 }

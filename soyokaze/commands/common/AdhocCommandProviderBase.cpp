@@ -31,6 +31,8 @@ void AdhocCommandProviderBase::LoadCommands(
 	CommandFile* cmdFile
 )
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 	// 何もしない
 }
 
@@ -58,6 +60,8 @@ CString AdhocCommandProviderBase::GetDescription()
 // コマンド新規作成ダイアログ
 bool AdhocCommandProviderBase::NewDialog(const CommandParameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// サポートしない
 	return false;
 }
@@ -85,6 +89,9 @@ bool AdhocCommandProviderBase::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	// 必要に応じて実装する
 	return true;
 }

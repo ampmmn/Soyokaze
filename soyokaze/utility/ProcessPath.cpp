@@ -78,15 +78,15 @@ CString ProcessPath::GetProcessPath()
 	// デバイス形式のパスをドライブレターから始まる絶対パスに変換する
 	bool isReplaced = false;
 	for (auto& item : deviceToDrive) {
-		auto& deviceName = item.first;
+		auto& name = item.first;
 		auto& driveLetter = item.second;
 
-		if (_tcsncmp(deviceName, modulePath, deviceName.GetLength()) != 0) {
+		if (_tcsncmp(name, modulePath, name.GetLength()) != 0) {
 			continue;
 		}
 
 		isReplaced = true;
-		modulePath = driveLetter + modulePath.Mid(deviceName.GetLength());
+		modulePath = driveLetter + modulePath.Mid(name.GetLength());
 		break;
 	}
 

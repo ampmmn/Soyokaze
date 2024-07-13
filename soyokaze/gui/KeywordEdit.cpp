@@ -82,6 +82,8 @@ struct KeywordEdit::PImpl
 
 KeywordEdit::KeywordEdit(CWnd* pParent) : in(std::make_unique<PImpl>())
 {
+	UNREFERENCED_PARAMETER(pParent);
+
 	in->mIsFirst = true;
 	in->mIsFocus = false;
 	in->mCaretNormal = NULL;

@@ -130,7 +130,7 @@ void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const CString& messa
 	else {
 		// 登録されていない場合はShell_NotifyIconのメッセージで代替する
 		CString notifyMsg;
-		notifyMsg.Format(_T("【%s】%s : %s"), cmdName, msg, detail);
+		notifyMsg.Format(_T("【%s】%s : %s"), (LPCTSTR)cmdName, msg, (LPCTSTR)detail);
 		launcherapp::commands::common::PopupMessage(notifyMsg);
 	}
 }

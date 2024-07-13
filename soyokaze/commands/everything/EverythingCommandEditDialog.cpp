@@ -200,6 +200,8 @@ void SettingDialog::OnNotifyLinkOpen(
  	LRESULT *pResult
 )
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	ShellExecute(0, _T("open"), _T("https://www.voidtools.com/support/everything/searching/"),  0, 0, SW_NORMAL);
 	*pResult = 0;
 }

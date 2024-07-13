@@ -343,6 +343,8 @@ void SettingDialog::OnButtonDown()
 
 void SettingDialog::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	UpdateStatus();
 	UpdateData(FALSE);
 	*pResult = 0;

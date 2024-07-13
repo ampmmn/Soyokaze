@@ -263,16 +263,13 @@ bool KeywordManagerDialog::UpdateStatus()
 	ASSERT(btnEdit && btnDel);
 
 	// 選択状態を見て選択中のコマンドを決定
-	int itemIndex = 0;
-	for (auto& cmd : in->mShowCommands) {
-		UINT mask = in->mListCtrl.GetItemState(itemIndex, LVIS_SELECTED | LVIS_FOCUSED);
+	for (int i = 0; i < in->mShowCommands.size(); ++i) {
+		UINT mask = in->mListCtrl.GetItemState(i, LVIS_SELECTED | LVIS_FOCUSED);
 		bool isSelItem = mask != 0;
 
 		if (isSelItem) {
-			in->mSelCommand = in->mShowCommands[itemIndex];
+			in->mSelCommand = in->mShowCommands[i];
 		}
-
-		itemIndex++;
 	}
 
 	if (in->mSelCommand == nullptr) {
@@ -321,8 +318,8 @@ void KeywordManagerDialog::UpdateListItems()
 			auto typeName = cmd->GetTypeDisplayName();
 
 			bool shouldShow = false;
-			for (auto& tok : tokens) {
-				if (name.Find(tok) == -1 && desc.Find(tok) == -1 && typeName.Find(tok) == -1) {
+			for (auto& token : tokens) {
+				if (name.Find(token) == -1 && desc.Find(token) == -1 && typeName.Find(token) == -1) {
 					continue;
 				}
 				shouldShow = true;
@@ -415,6 +412,8 @@ void KeywordManagerDialog::OnButtonDelete()
  */
 void KeywordManagerDialog::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	*pResult = 0;
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -422,8 +421,9 @@ void KeywordManagerDialog::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
 
 void KeywordManagerDialog::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	*pResult = 0;
-	NM_LISTVIEW* pNMLV = (NM_LISTVIEW*)pNMHDR;
 	OnButtonEdit();
 }
 
@@ -535,8 +535,6 @@ void KeywordManagerDialog::OnFindCommand(
 		startPos = 0;
 	}
 
-	int currentPos=startPos;
-
 	// 検索開始位置からリスト末尾までを探す
 	int commandCount = (int)in->mShowCommands.size();
 	for (int i = startPos; i < commandCount; ++i) {
@@ -564,6 +562,8 @@ void KeywordManagerDialog::OnFindCommand(
 
 LRESULT KeywordManagerDialog::OnKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	// 矢印↓キー押下
 	if (wParam ==VK_DOWN) {
 		in->mListCtrl.SetFocus();

@@ -120,6 +120,8 @@ CString ColorCommand::GetTypeDisplayName()
 
 BOOL ColorCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(mName);
 	return TRUE;

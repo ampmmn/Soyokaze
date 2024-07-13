@@ -40,7 +40,6 @@ struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 
 	void Reload()
 	{
-		auto pref = AppPreference::Get();
 	}
 
 	InchAdhocCommand* mInchCmdPtr;
@@ -82,7 +81,6 @@ void UnitConvertProvider::QueryAdhocCommands(
 {
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
 		in->Reload();
 		in->mIsFirstCall = false;
 	}
@@ -106,6 +104,9 @@ bool UnitConvertProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	// 必要に応じて実装する
 	return true;
 }

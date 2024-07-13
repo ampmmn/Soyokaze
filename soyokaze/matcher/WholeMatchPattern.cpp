@@ -41,6 +41,8 @@ int WholeMatchPattern::Match(
 
 int WholeMatchPattern::Match(const CString& str, int offset)
 {
+	UNREFERENCED_PARAMETER(offset);
+
 	// offsetをサポートしない
 	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
 }

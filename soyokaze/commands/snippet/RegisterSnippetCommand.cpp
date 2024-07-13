@@ -40,6 +40,8 @@ RegisterSnippetCommand::~RegisterSnippetCommand()
 
 BOOL RegisterSnippetCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// ウインドウ経由でクリップボードのテキストを取得
 	CString clipboardText;
 	SharedHwnd sharedWnd;

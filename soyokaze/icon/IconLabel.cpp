@@ -141,6 +141,8 @@ void IconLabel::OnContextMenu(
 	CPoint point
 )
 {
+	UNREFERENCED_PARAMETER(pWnd);
+
 	if (mCanIconChange == false) {
 		return;
 	}
@@ -150,8 +152,8 @@ void IconLabel::OnContextMenu(
 
 	CMenu menu;
 	menu.CreatePopupMenu();
-	menu.InsertMenu(-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
-	menu.InsertMenu(-1, 0, ID_DEFAULTICON, _T("アイコンを初期状態に戻す"));
+	menu.InsertMenu((UINT)-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
+	menu.InsertMenu((UINT)-1, 0, ID_DEFAULTICON, _T("アイコンを初期状態に戻す"));
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	if (n == ID_CHANGEICON) {

@@ -16,9 +16,6 @@ namespace launcherapp {
 namespace commands {
 namespace outlook {
 
-// 切り替え候補ウインドウの一覧を再利用する間隔
-static const int HWNDUPDATE_INTERVAL = 5000;
-
 using CommandRepository = launcherapp::core::CommandRepository;
 
 struct OutlookItemProvider::PImpl : public AppPreferenceListenerIF

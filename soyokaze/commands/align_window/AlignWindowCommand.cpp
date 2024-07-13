@@ -109,6 +109,8 @@ BOOL AlignWindowCommand::Execute(
 	const Parameter& param
 )
 {
+	UNREFERENCED_PARAMETER(param);
+
 	CString missingTitles;
 
 	ScopeAttachThreadInput scope;
@@ -142,7 +144,7 @@ BOOL AlignWindowCommand::Execute(
 
 	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.IsEmpty() == FALSE) {
 		CString msg;
-		msg.Format(_T("以下のウインドウは見つかりませんでした。\n%s"), missingTitles);
+		msg.Format(_T("以下のウインドウは見つかりませんでした。\n%s"), (LPCTSTR)missingTitles);
 		launcherapp::commands::common::PopupMessage(msg);
 	}
 
@@ -151,7 +153,7 @@ BOOL AlignWindowCommand::Execute(
 	}
 	else {
 		if (in->mParam.mItems.size() > 0) {
-			std::vector<HWND> targets;
+			targets.clear();
 			in->mParam.mItems.back().FindHwnd(targets);
 			if (targets.size() > 0) {
 				SetForegroundWindow(targets[0]);
@@ -327,6 +329,8 @@ bool AlignWindowCommand::NewDialog(
 	AlignWindowCommand** newCmdPtr
 )
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// パラメータ指定には対応していない
 	// param;
 
@@ -349,6 +353,7 @@ bool AlignWindowCommand::NewDialog(
 
 bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowCommand** newCmdPtr)
 {
+	UNREFERENCED_PARAMETER(cmdFile);
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;

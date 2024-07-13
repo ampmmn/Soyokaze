@@ -80,10 +80,12 @@ struct CommandRepository::PImpl
 		CommandFile commandFile;
 		commandFile.SetFilePath(mCommandFilePath);
 
+		CString name;
+
 		std::vector<launcherapp::core::Command*> commands;
 		for (auto& command : mCommands.Enumerate(commands)) {
 
-			auto& name = command->GetName();
+			name = command->GetName();
 			auto entry = commandFile.NewEntry(name);
 			command->Save(entry);
 			command->Release();

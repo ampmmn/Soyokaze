@@ -43,6 +43,8 @@ MainDirCommand::~MainDirCommand()
 
 BOOL MainDirCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	TCHAR mainDirPath[MAX_PATH_NTFS];
 	GetModuleFileName(NULL, mainDirPath, MAX_PATH_NTFS);
 	PathRemoveFileSpec(mainDirPath);

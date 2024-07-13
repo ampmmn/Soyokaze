@@ -62,6 +62,8 @@ CString EscapedCharCommand::GetTypeDisplayName()
 
 BOOL EscapedCharCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(mName);
 	return TRUE;
@@ -162,8 +164,7 @@ static bool ScanAsU8(std::string::iterator& it, std::string::iterator itEnd, std
 
 	uint32_t scalar;
 	char tmp[] = { *(it+2), *(it+3), *(it+4), *(it+5), *(it+6), *(it+7), *(it+8), *(it+9), '\0' };
-	int n = sscanf_s(tmp, "%08x", &scalar);
-	ASSERT(n == 1);
+	sscanf_s(tmp, "%08x", &scalar);
 
 	// スカラ値をutf-8表現に変換
 	char out[5] = {};
@@ -192,9 +193,7 @@ static bool ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, st
 	char chr;
 
 	char tmp[] = { *(it+2), *(it+3), '\0' };
-	int n = sscanf_s(tmp, "%hhx", &chr);
-	ASSERT(n == 1);
-
+	sscanf_s(tmp, "%hhx", &chr);
 
 	dst.append(1, chr);
 	it += 3;
@@ -220,8 +219,7 @@ static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, 
 	char chr;
 
 	char tmp[] = { *(it+1), *(it+2), *(it+3), '\0' };
-	int n = sscanf_s(tmp, "%hho", &chr);
-	ASSERT(n == 1);
+	sscanf_s(tmp, "%hho", &chr);
 
 	dst.append(1, chr);
 	it += 3;

@@ -52,6 +52,8 @@ HICON StandbyCommand::GetIcon()
 
 BOOL StandbyCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (mIsConfirmBeforeRun) {
 		if (AfxMessageBox(_T("スタンバイ状態にしますか?"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
 			return TRUE;

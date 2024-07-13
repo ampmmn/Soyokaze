@@ -157,7 +157,7 @@ bool Sound::PlayAsync(LPCTSTR filePath)
 			playItem->mAlias.Format(_T("device%d"), in->mAliasIndex++);
 			playItem->mParam.lpstrAlias = playItem->mAlias;
 
-			MCIERROR result = mciSendCommand(0, MCI_OPEN, commands, (DWORD_PTR)&param);
+			result = mciSendCommand(0, MCI_OPEN, commands, (DWORD_PTR)&param);
 			if (result != 0) {
 				return false;
 			}

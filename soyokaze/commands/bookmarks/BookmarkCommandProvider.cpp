@@ -148,7 +148,7 @@ void BookmarkCommandProvider::QueryBookmarks(Pattern* pattern, CommandQueryItemL
 					// URLを絞り込みに使わない場合はここではじく
 					continue;
 				}
-				int level = pattern->Match(item.mUrl);
+				level = pattern->Match(item.mUrl);
 				if (level == Pattern::Mismatch) {
 					continue;
 				}

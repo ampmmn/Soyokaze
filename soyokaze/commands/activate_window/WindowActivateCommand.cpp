@@ -224,8 +224,9 @@ bool WindowActivateCommand::NewDialog(
 )
 {
 	// パラメータ指定には対応していない
-	// param;
+	UNREFERENCED_PARAMETER(param);
 
+	
 	// 新規作成ダイアログを表示
 	SettingDialog dlg;
 	if (dlg.DoModal() != IDOK) {
@@ -245,6 +246,8 @@ bool WindowActivateCommand::NewDialog(
 
 bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActivateCommand** newCmdPtr)
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;

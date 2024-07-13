@@ -123,6 +123,9 @@ bool ShellExecCommandProvider::IsPrivate() const
 // 一時的なコマンドを必要に応じて提供する
 void ShellExecCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
+	UNREFERENCED_PARAMETER(pattern);
+	UNREFERENCED_PARAMETER(comands);
+
 	// このCommandProviderは一時的なコマンドを持たない
 }
 
@@ -143,6 +146,9 @@ bool ShellExecCommandProvider::CreateSettingPages(
 	std::vector<SettingPage*>& pages
 )
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	// 必要に応じて実装する
 	return true;
 }

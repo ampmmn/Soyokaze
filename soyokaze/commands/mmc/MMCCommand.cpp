@@ -47,7 +47,7 @@ CString MMCCommand::GetTypeDisplayName()
 BOOL MMCCommand::Execute(const Parameter& param)
 {
 	CString paramStr;
-	paramStr.Format(_T("/c start \"\" \"%s\""), in->mSnapin.mMscFilePath);
+	paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mSnapin.mMscFilePath);
 
 	SubProcess::ProcessPtr process;
 

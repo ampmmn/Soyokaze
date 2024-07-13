@@ -105,7 +105,7 @@ struct FilterExecutor::PImpl
 		for(;;) {
 			Sleep(50);
 			std::lock_guard<std::mutex> lock(mMutex);
-			if (std::count(mAllExited.begin(), mAllExited.end(), TRUE) == mAllExited.size()) {
+			if (std::count(mAllExited.begin(), mAllExited.end(), TRUE) == (int)mAllExited.size()) {
 				break;
 			}
 		}
@@ -237,8 +237,6 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 
 	CloseHandle(pi.hThread);
 
-	HANDLE hRead = pipeForStdout.GetReadHandle();
-
 	std::vector<char> output;
 	std::vector<char> err;
 
@@ -281,12 +279,16 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 
 bool FilterExecutor::PImpl::LoadCandidatesFromDefinedValue(const CommandParam& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// ToDo: 実装
 	return true;
 }
 
 bool FilterExecutor::PImpl::LoadCandidatesFromClipboard(const CommandParam& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	CString src;
 	SharedHwnd sharedWnd;
 	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&src);
@@ -350,7 +352,6 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 			HANDLE evtHandle = in->mWaitEvents[index];
 
 			PartialMatchPattern pattern;
-			CString candidate;
 
 			CandidateList candidates;
 

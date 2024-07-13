@@ -4,7 +4,7 @@
 #include "setting/AppPreference.h"
 #include <thread>
 
-#import <msxml6.dll> raw_interfaces_only
+#import "msxml6.dll" exclude("ISequentialStream","_FILETIME")named_guids
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -122,7 +122,7 @@ static bool FindVirtualAttributesNode(CComPtr<IXMLDOMElement>& domElem, CComPtr<
 		hr = childList->get_item(i, &item);
 
 		CComBSTR nodeName;
-		HRESULT hr = item->get_baseName(&nodeName);
+		hr = item->get_baseName(&nodeName);
 		if (FAILED(hr)) {
 			continue;
 		}
@@ -151,7 +151,7 @@ static bool FindApplicationTitleId(CComPtr<IXMLDOMNode>& node, CString& titleId)
 		hr = childList->get_item(i, &item);
 
 		CComBSTR nodeName;
-		HRESULT hr = item->get_baseName(&nodeName);
+		hr = item->get_baseName(&nodeName);
 		if (FAILED(hr)) {
 			continue;
 		}
@@ -240,7 +240,7 @@ static bool FindIconFilePath(CComPtr<IXMLDOMNode>& node, CString& path, CString&
 		hr = childList->get_item(i, &item);
 
 		CComBSTR nodeName;
-		HRESULT hr = item->get_baseName(&nodeName);
+		hr = item->get_baseName(&nodeName);
 		if (FAILED(hr)) {
 			continue;
 		}
@@ -307,7 +307,7 @@ static bool FindStringTablesNode(CComPtr<IXMLDOMElement>& domElem, CComPtr<IXMLD
 		hr = childList->get_item(i, &item);
 
 		CComBSTR nodeName;
-		HRESULT hr = item->get_baseName(&nodeName);
+		hr = item->get_baseName(&nodeName);
 		if (FAILED(hr)) {
 			continue;
 		}

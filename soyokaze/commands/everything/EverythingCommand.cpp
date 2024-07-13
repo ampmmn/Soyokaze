@@ -98,6 +98,8 @@ CString EverythingCommand::GetTypeDisplayName()
 
 BOOL EverythingCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (in->mShouldComletion) {
 		// コマンド名単体(後続のパラメータなし)で実行したときは、
 		// コマンド名後ろに空白を入れた状態にして、検索ワードの入力を待つ状態にする
@@ -257,6 +259,8 @@ bool EverythingCommand::NewDialog(
 	EverythingCommand** newCmdPtr
 )
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// パラメータ指定には対応していない
 	// param;
 
@@ -279,6 +283,8 @@ bool EverythingCommand::NewDialog(
 
 bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingCommand** newCmdPtr)
 {
+	UNREFERENCED_PARAMETER(cmdFile);
+
 	ASSERT(newCmdPtr);
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;

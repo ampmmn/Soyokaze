@@ -212,11 +212,11 @@ void ExecuteHistory::Save()
 			auto& type = elem.first;
 			auto& items = elem.second;
 
-			line.Format(_T("[%s]\n"), type);
+			line.Format(_T("[%s]\n"), (LPCTSTR)type);
 			file.WriteString(line);
 			int i = 1;
 			for (auto& item : items) {
-				line.Format(_T("Item%d=%s\t%s\n"), i, item.mWord, item.mFullPath);
+				line.Format(_T("Item%d=%s\t%s\n"), i, (LPCTSTR)item.mWord, (LPCTSTR)item.mFullPath);
 				file.WriteString(line);
 				i++;
 			}

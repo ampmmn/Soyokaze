@@ -136,7 +136,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		CString fmtStr;
 
 		// 16進数
-		fmtStr.Format(_T("hex(%s)"), numStr);
+		fmtStr.Format(_T("hex(%s)"), (LPCTSTR)numStr);
 		if (in->mCalc.Evaluate(fmtStr, result)) {
 			result.Replace(_T("'"), _T(""));
 			in->mHexResultPtr->SetResult(result);
@@ -145,7 +145,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		}
 
 		// 8
-		fmtStr.Format(_T("oct(%s)"), numStr);
+		fmtStr.Format(_T("oct(%s)"), (LPCTSTR)numStr);
 		if (in->mCalc.Evaluate(fmtStr, result)) {
 			result.Replace(_T("'"), _T(""));
 			in->mOctResultPtr->SetResult(result);
@@ -154,7 +154,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		}
 
 		// 2進数
-		fmtStr.Format(_T("bin(%s)"), numStr);
+		fmtStr.Format(_T("bin(%s)"), (LPCTSTR)numStr);
 		if (in->mCalc.Evaluate(fmtStr, result)) {
 			result.Replace(_T("'"), _T(""));
 			in->mBinResultPtr->SetResult(result);

@@ -48,10 +48,10 @@ BOOL UWPCommand::Execute(const Parameter& param)
 {
 	CString paramStr;
 	if (in->mItem->mIsUWP) {
-		paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), in->mItem->mAppID);
+		paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), (LPCTSTR)in->mItem->mAppID);
 	}
 	else {
-		paramStr.Format(_T("/c start \"\" \"%s\""), in->mItem->mAppID);
+		paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mItem->mAppID);
 	}
 
 	SubProcess::ProcessPtr process;

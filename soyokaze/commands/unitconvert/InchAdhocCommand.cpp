@@ -51,6 +51,8 @@ CString InchAdhocCommand::GetTypeDisplayName()
 
 BOOL InchAdhocCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(in->mName);
 	return TRUE;

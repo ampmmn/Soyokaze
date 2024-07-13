@@ -183,6 +183,9 @@ void SimpleDictProvider::QueryAdhocCommands(
 // 設定ページを取得する
 bool SimpleDictProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
+
 	return true;
 }
 

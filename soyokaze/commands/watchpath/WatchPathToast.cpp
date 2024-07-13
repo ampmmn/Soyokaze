@@ -30,6 +30,8 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 			[[maybe_unused]] NOTIFICATION_USER_INPUT_DATA const* data,
 			[[maybe_unused]] ULONG count) noexcept final
 	{
+		UNREFERENCED_PARAMETER(app);
+
 		try
 		{
 			std::map<CString, CString> argsMap;
@@ -164,7 +166,7 @@ void Toast::Show()
 	doc.DocumentElement().SetAttribute(L"launch", (LPCWSTR)actionStr);
 
 	CString buf;
-	buf.Format(_T("[%s] %s"), in->mName, in->mMessage);
+	buf.Format(_T("[%s] %s"), (LPCTSTR)in->mName, (LPCTSTR)in->mMessage);
 
 	doc.SelectSingleNode(L"//text[1]").InnerText((LPCTSTR)buf);
 

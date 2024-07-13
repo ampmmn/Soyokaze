@@ -265,6 +265,8 @@ void AppSettingPageCommandPriority::UpdateListItems()
 	int itemIndex = 0;
 	for (auto& cmd : in->mCommands) {
 
+		UNREFERENCED_PARAMETER(cmd);
+
 		bool isSelItem = itemIndex== selItemIndex;
 		in->mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 		itemIndex++;
@@ -323,14 +325,17 @@ void AppSettingPageCommandPriority::OnButtonResetAll()
 
 void AppSettingPageCommandPriority::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	*pResult = 0;
 	UpdateStatus();
 }
 
 void AppSettingPageCommandPriority::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	*pResult = 0;
-	NM_LISTVIEW* pNMLV = (NM_LISTVIEW*)pNMHDR;
 	OnButtonEdit();
 }
 
@@ -423,8 +428,6 @@ void AppSettingPageCommandPriority::OnFindCommand(
 	if (startPos >= in->mCommands.size()) {
 		startPos = 0;
 	}
-
-	int currentPos=startPos;
 
 	// 検索開始位置からリスト末尾までを探す
 	int commandCount = (int)in->mCommands.size();

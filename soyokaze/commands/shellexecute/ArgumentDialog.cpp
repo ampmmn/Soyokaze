@@ -16,7 +16,7 @@ namespace shellexecute {
 ArgumentDialog::ArgumentDialog(
 	const CString& cmdName,
 	CWnd* parentWnd
-) :  CDialogEx(IDD_ARGUMENTS), mCommandName(cmdName)
+) :  CDialogEx(IDD_ARGUMENTS, parentWnd), mCommandName(cmdName)
 {
 }
 
@@ -47,7 +47,7 @@ BOOL ArgumentDialog::OnInitDialog()
 	GetWindowText(caption);
 	if (mCommandName.IsEmpty() == FALSE) {
 		CString tmp;
-		tmp.Format(_T("【%s】"), mCommandName);
+		tmp.Format(_T("【%s】"), (LPCTSTR)mCommandName);
 		caption += tmp;
 		SetWindowText(caption);
 	}

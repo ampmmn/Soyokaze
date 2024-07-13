@@ -5,7 +5,7 @@
 #define new DEBUG_NEW
 #endif
 
-static const int Py_single_input = 256;    // defined in compile.h
+//static const int Py_single_input = 256;    // defined in compile.h
 static const int Py_file_input = 257;      // defined in compile.h
 static const int Py_eval_input = 258;    // defined in compile.h
 

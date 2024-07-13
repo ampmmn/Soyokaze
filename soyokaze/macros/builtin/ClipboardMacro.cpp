@@ -23,6 +23,8 @@ ClipboardMacro::~ClipboardMacro()
 
 bool ClipboardMacro::Evaluate(const std::vector<CString>& args, CString& result)
 {
+	UNREFERENCED_PARAMETER(args);
+
 	SharedHwnd sharedHwnd;
 	HWND hwnd = sharedHwnd.GetHwnd();
 

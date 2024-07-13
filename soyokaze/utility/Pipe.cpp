@@ -15,7 +15,9 @@ Pipe::Pipe() : mReadHandle(nullptr), mWriteHandle(nullptr)
 	sa.lpSecurityDescriptor = NULL;
 
 	BOOL isOK = CreatePipe(&mReadHandle, &mWriteHandle, &sa, 0);
-	ASSERT(isOK);
+	if (isOK == FALSE) {
+		spdlog::warn(_T("Failed to createpipe."));
+	}
 }
 
 Pipe::~Pipe()

@@ -325,6 +325,8 @@ void LauncherMainWindow::ShowHelpInputWindow()
  */
 LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	bool isShowForce = ((wParam & 0x1) != 0);
 
 	HWND hwnd = GetSafeHwnd();
@@ -404,6 +406,8 @@ LRESULT LauncherMainWindow::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam
  */
 LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	LPCTSTR text = (LPCTSTR)lParam;
@@ -461,6 +465,8 @@ LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 
 LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	in->mIsQueryDoing = false;
 	auto commands = (std::vector<launcherapp::core::Command*>*)lParam;
 	if (commands != nullptr) {
@@ -478,6 +484,8 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 
 LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	// メインウインドウがフォーカスを失っても非表示にしないようにする
 	in->mIsBlockDeactivateOnUnfocus = (lParam != 0);
 	return 0;
@@ -485,6 +493,9 @@ LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam,
 
 LRESULT LauncherMainWindow::OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
 	if (::IsWindowVisible(GetSafeHwnd()) == FALSE) {
 		// ウインドウを表示していない場合は更新しない
 		return 0;
@@ -502,6 +513,8 @@ LauncherMainWindow::OnUserMessageDragOverObject(
  	LPARAM lParam
 )
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	CWnd* wnd = (CWnd*)lParam;
@@ -563,10 +576,10 @@ LauncherMainWindow::OnUserMessageDropObject(
 	}
 
 	UINT urlFormatId = RegisterClipboardFormat(CFSTR_INETURL);
-	if (dataObj->IsDataAvailable(urlFormatId)) {
+	if (dataObj->IsDataAvailable((CLIPFORMAT)urlFormatId)) {
 
 		STGMEDIUM st;
-		if (dataObj->GetData(urlFormatId, &st) ) {
+		if (dataObj->GetData((CLIPFORMAT)urlFormatId, &st) ) {
 			CString urlString((LPCTSTR)GlobalLock(st.hGlobal));
 			GlobalUnlock(st.hGlobal);
 
@@ -590,8 +603,10 @@ LauncherMainWindow::OnUserMessageDropObject(
 }
 
 LRESULT
-LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
+LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	HWND hTargetWnd = (HWND)lParam;
@@ -636,6 +651,9 @@ LRESULT LauncherMainWindow::OnUserMessageHideAtFirst(
 	LPARAM lParam
 )
 {
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	HideWindow();
@@ -644,6 +662,9 @@ LRESULT LauncherMainWindow::OnUserMessageHideAtFirst(
 
 LRESULT LauncherMainWindow::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	PostQuitMessage(0);
@@ -680,6 +701,8 @@ LRESULT LauncherMainWindow::OnUserMessageGetClipboardString(
  	LPARAM lParam
 )
 {
+	UNREFERENCED_PARAMETER(wParam);
+
 	SPDLOG_DEBUG(_T("start"));
 
 	CString* strPtr = (CString*)lParam;
@@ -1212,6 +1235,8 @@ BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
 
 void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 {
+	UNREFERENCED_PARAMETER(nStatus);
+
 	if (bShow) {
 		// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
 		// (実際には表示直前に消去する)
@@ -1242,6 +1267,8 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 	LPARAM lParam
 )
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	if (wParam == VK_BACK) {
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 
@@ -1386,8 +1413,9 @@ void LauncherMainWindow::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 
 void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 {
+	UNREFERENCED_PARAMETER(pNMHDR);
+
 	*pResult = 0;
-	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
 	// ダブルクリックで確定
 	OnOK();
 }
@@ -1409,38 +1437,40 @@ void LauncherMainWindow::OnContextMenu(
 	CPoint point
 )
 {
+	UNREFERENCED_PARAMETER(pWnd);
+
 	SPDLOG_DEBUG(_T("args point:({0},{1})"), point.x, point.y);
 
 	CMenu menu;
 	menu.CreatePopupMenu();
 
-	const int ID_SHOW = 1;
-	const int ID_HIDE = 2;
-	const int ID_NEW = 3;
-	const int ID_MANAGER = 4;
-	const int ID_APPSETTING = 5;
-	const int ID_USERDIR = 6;
-	const int ID_RESETPOS = 7;
-	const int ID_MANUAL = 8;
-	const int ID_VERSIONINFO = 9;
-	const int ID_EXIT = 19;
+	const UINT ID_SHOW = 1;
+	const UINT ID_HIDE = 2;
+	const UINT ID_NEW = 3;
+	const UINT ID_MANAGER = 4;
+	const UINT ID_APPSETTING = 5;
+	const UINT ID_USERDIR = 6;
+	const UINT ID_RESETPOS = 7;
+	const UINT ID_MANUAL = 8;
+	const UINT ID_VERSIONINFO = 9;
+	const UINT ID_EXIT = 19;
 
 	BOOL isVisible = IsWindowVisible();
 	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
 
-	menu.InsertMenu(-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
-	menu.InsertMenu(-1, 0, ID_NEW, _T("新規作成(&N)"));
-	menu.InsertMenu(-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
-	menu.InsertMenu(-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
-	menu.InsertMenu(-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
-	menu.InsertMenu(-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu(-1, 0, ID_EXIT, _T("終了(&E)"));
+	menu.InsertMenu((UINT)-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu((UINT)-1, 0, ID_NEW, _T("新規作成(&N)"));
+	menu.InsertMenu((UINT)-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
+	menu.InsertMenu((UINT)-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
+	menu.InsertMenu((UINT)-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_EXIT, _T("終了(&E)"));
 
 	spdlog::info(_T("Show context menu."));
 
@@ -1535,6 +1565,8 @@ void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 
 LRESULT LauncherMainWindow::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	// ロックされたとき、wpにWTS_SESSION_LOCK(7)、解除されたときは WTS_SESSION_UNLOCK(8)が通知される
 	if (wParam == WTS_SESSION_LOCK) {
 		SPDLOG_INFO(_T("WTS_SESSION_LOCK"));

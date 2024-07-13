@@ -29,7 +29,7 @@ PptJumpCommand::PptJumpCommand(
 	in->mTitle = title;
 
 	this->mName = title;
-	this->mDescription.Format(_T("スライド%d: %s"), page, title);
+	this->mDescription.Format(_T("スライド%d: %s"), page, (LPCTSTR)title);
 }
 
 PptJumpCommand::~PptJumpCommand()
@@ -55,7 +55,7 @@ BOOL PptJumpCommand::Execute(const Parameter& param)
 	PowerPointWindow::GetAcitveWindow(pptWnd);
 
 	// スライドにジャンプ
-	pptWnd->GoToSlide(in->mPage);
+	pptWnd->GoToSlide((int16_t)in->mPage);
 
 	// 表示しているパワポのウインドウをアクティブにする
 	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));

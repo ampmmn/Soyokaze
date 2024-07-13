@@ -297,7 +297,7 @@ bool UNCPathTarget::IsUpdated()
 		break;
 	}
 
-	in->mDetail.Format(_T("%s %s"), typeStr, changedItem);
+	in->mDetail.Format(_T("%s %s"), (LPCTSTR)typeStr, (LPCTSTR)changedItem);
 	in->mLastCheckTime = GetTickCount();
 	in->mPrevTimeStamps.swap(currentTS);
 	return true;

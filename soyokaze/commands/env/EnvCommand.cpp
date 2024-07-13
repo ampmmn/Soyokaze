@@ -48,6 +48,8 @@ CString EnvCommand::GetTypeDisplayName()
 
 BOOL EnvCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// クリップボードにコピー
 	Clipboard::Copy(in->mValue);
 	return TRUE;

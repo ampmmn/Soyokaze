@@ -78,8 +78,8 @@ void GetIPCommandProvider::QueryAdhocCommands(
 				continue;
 			}
 
-			SOCKET_ADDRESS& addr = uniAddr->Address;
-			sockaddr* sa = addr.lpSockaddr;
+			SOCKET_ADDRESS& sock_addr = uniAddr->Address;
+			sockaddr* sa = sock_addr.lpSockaddr;
 
 			if (sa->sa_family == AF_INET) {
 				char ipStr[16];

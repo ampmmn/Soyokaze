@@ -42,6 +42,8 @@ LockScreenCommand::~LockScreenCommand()
 
 BOOL LockScreenCommand::Execute(const Parameter& param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	return LockWorkStation();
 }
 

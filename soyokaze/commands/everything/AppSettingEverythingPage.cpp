@@ -132,7 +132,7 @@ void AppSettingEverythingPage::OnButtonBrowse()
 
 // マニュアル表示
 void AppSettingEverythingPage::OnNotifyLinkOpen(
-	NMHDR *pNMHDR,
+	NMHDR *,
  	LRESULT *pResult
 )
 {

@@ -6,7 +6,7 @@
 #define new DEBUG_NEW
 #endif
 
-CmdReceiveEdit::CmdReceiveEdit(CWnd* pParent) : mIsPasteOnly(false)
+CmdReceiveEdit::CmdReceiveEdit() : mIsPasteOnly(false)
 {
 }
 
@@ -37,6 +37,9 @@ int CmdReceiveEdit::OnSetText(LPCTSTR text)
 
 LRESULT CmdReceiveEdit::OnUserMessagePasteOnly(WPARAM wp, LPARAM lp)
 {
+	UNREFERENCED_PARAMETER(wp);
+	UNREFERENCED_PARAMETER(lp);
+
 	// これがよばれたら次回のWM_SETTEXTではコマンド入力だけとする
 	mIsPasteOnly = true;
 	return 0;
