@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+### Added
+
+- Base64デコード機能を追加
 
 ### Fixed
 

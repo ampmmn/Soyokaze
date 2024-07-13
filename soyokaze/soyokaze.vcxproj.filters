@@ -1035,6 +1035,9 @@
     <ClInclude Include="hotkey\CommandHotkeyAttribute.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="commands\decodestring\DecodeBase64Command.h">
+      <Filter>commands\decodestring</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1822,6 +1825,9 @@
     </ClCompile>
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp">
       <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp">
+      <Filter>commands\decodestring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
