@@ -709,20 +709,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,22,177,10
     CONTROL         "URL文字列を候補の絞り込みに使う(&U)",IDC_CHECK_USEURL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,39,139,10
     LTEXT           "※使わない場合、ブックマーク名のみで絞り込みを行う",IDC_STATIC,33,51,168,8
-    GROUPBOX        "Webブラウザの履歴選択機能",IDC_STATIC,11,81,282,154
-    CONTROL         "Chromeの履歴を候補として表示する(&C)",IDC_CHECK_ENABLE_HISTORY_CHROME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,92,141,10
-    CONTROL         "Edgeの履歴を候補として表示する(&E)",IDC_CHECK_ENABLE_HISTORY_EDGE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,108,132,10
-    LTEXT           "クエリのタイムアウト(&Q):",IDC_STATIC,24,128,87,8
-    EDITTEXT        IDC_EDIT_TIMEOUT,115,126,51,14,ES_AUTOHSCROLL
-    LTEXT           "候補件数(&C):",IDC_STATIC,23,145,85,8
-    EDITTEXT        IDC_EDIT_CANDIDATES,116,145,51,14,ES_AUTOHSCROLL
-    CONTROL         "&Migemo検索を利用する",IDC_CHECK_USE_MIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,160,91,10
-    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,198,129,10
-    LTEXT           "※使わない場合、履歴のタイトルのみで絞り込みを行う",IDC_STATIC,33,212,172,8
-    LTEXT           "※非力なPCでは結果が出る前にタイムアウトになる可能性があります。\nタイムアウト時間を長くすると、入力画面のレスポンスが悪くなる可能性があります。",IDC_STATIC,34,171,257,22
-    LTEXT           "ミリ秒",IDC_STATIC,173,128,87,8
 END
 
 IDD_APPSETTING_PATHCONVERT DIALOGEX 0, 0, 309, 285
@@ -1029,6 +1015,38 @@ BEGIN
                     "SysLink",WS_TABSTOP,15,15,179,9
 END
 
+IDD_WEBHISTORYEDIT DIALOGEX 0, 0, 347, 287
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Web履歴コマンドの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,23,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,114,24,205,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,23,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,114,44,205,14,ES_AUTOHSCROLL
+    LTEXT           "追加キーワード(&K):",IDC_STATIC,23,64,65,8
+    EDITTEXT        IDC_EDIT_KEYWORD,113,64,205,14,ES_AUTOHSCROLL
+    CONTROL         "Chromeの履歴を候補として表示する(&C)",IDC_CHECK_ENABLE_HISTORY_CHROME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,105,141,10
+    CONTROL         "Edgeの履歴を候補として表示する(&E)",IDC_CHECK_ENABLE_HISTORY_EDGE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,121,132,10
+    LTEXT           "クエリのタイムアウト(&Q):",IDC_STATIC,24,141,87,8
+    EDITTEXT        IDC_EDIT_TIMEOUT,115,139,51,14,ES_AUTOHSCROLL
+    LTEXT           "件数の上限(&L):",IDC_STATIC,23,158,85,8
+    EDITTEXT        IDC_EDIT_CANDIDATES,116,158,51,14,ES_AUTOHSCROLL
+    CONTROL         "&Migemo検索を利用する",IDC_CHECK_USE_MIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,176,91,10
+    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,214,129,10
+    LTEXT           "ホットキー(K):",IDC_STATIC,32,250,58,8
+    EDITTEXT        IDC_EDIT_HOTKEY,93,247,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,216,247,21,14
+    DEFPUSHBUTTON   "OK",IDOK,237,266,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,290,266,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
+    LTEXT           "※使わない場合、履歴のタイトルのみで絞り込みを行う",IDC_STATIC,33,228,172,8
+    LTEXT           "キーワードを指定すると、それを含む履歴のみが表示されます。",IDC_STATIC,115,80,219,14
+    LTEXT           "ミリ秒",IDC_STATIC,173,141,87,8
+    LTEXT           "※非力なPCでは結果が出る前にタイムアウトになる可能性があります。\nタイムアウト時間を長くすると、入力画面のレスポンスが悪くなる可能性があります。",IDC_STATIC,33,189,257,22
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1430,6 +1448,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 278
+    END
+
+    IDD_WEBHISTORYEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 340
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 280
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2059,6 +2085,34 @@ BEGIN
     0
 END
 
+IDD_WEBHISTORYEDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

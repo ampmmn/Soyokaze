@@ -26,7 +26,6 @@ public:
 
 private:
 	void QueryBookmarks(Pattern* pattern, CommandQueryItemList& comands);
-	void QueryHistories(Pattern* pattern, CommandQueryItemList& comands);
 
 private:
 	struct PImpl;

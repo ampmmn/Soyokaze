@@ -6,7 +6,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace bookmarks {
+namespace webhistory {
 
 class ChromiumBrowseHistory
 {
@@ -23,7 +23,7 @@ public:
 
 public:
 	void Abort();
-	void Query(Pattern* pattern, std::vector<ITEM>& items, int limit, DWORD timeout);
+	void Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 private:
 	struct PImpl;
@@ -32,7 +32,7 @@ private:
 
 
 
-} // end of namespace bookmarks
+} // end of namespace webhistory
 } // end of namespace commands
 } // end of namespace launcherapp
 

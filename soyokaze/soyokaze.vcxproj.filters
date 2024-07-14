@@ -184,6 +184,9 @@
     <Filter Include="commands\everything\Everything-SDK\ipc">
       <UniqueIdentifier>{cf763401-e6d7-4779-91b3-02db722c8370}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\webhistory">
+      <UniqueIdentifier>{2ac3f8de-6a7b-4a79-9b9f-7cc7163da64e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -593,9 +596,6 @@
     </ClInclude>
     <ClInclude Include="utility\SQLite3Database.h">
       <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\bookmarks\ChromiumBrowseHistory.h">
-      <Filter>commands\bookmarks</Filter>
     </ClInclude>
     <ClInclude Include="commands\bookmarks\URLCommand.h">
       <Filter>commands\bookmarks</Filter>
@@ -1038,6 +1038,24 @@
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h">
       <Filter>commands\decodestring</Filter>
     </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryCommand.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryCommandParam.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryProvider.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistorySettingDialog.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryAdhocCommand.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\ChromiumBrowseHistory.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1429,9 +1447,6 @@
     </ClCompile>
     <ClCompile Include="utility\SQLite3Database.cpp">
       <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\bookmarks\ChromiumBrowseHistory.cpp">
-      <Filter>commands\bookmarks</Filter>
     </ClCompile>
     <ClCompile Include="commands\bookmarks\URLCommand.cpp">
       <Filter>commands\bookmarks</Filter>
@@ -1828,6 +1843,24 @@
     </ClCompile>
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp">
       <Filter>commands\decodestring</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryCommand.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryCommandParam.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryProvider.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistorySettingDialog.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryAdhocCommand.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\ChromiumBrowseHistory.cpp">
+      <Filter>commands\webhistory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

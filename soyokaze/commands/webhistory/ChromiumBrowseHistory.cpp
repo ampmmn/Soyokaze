@@ -13,7 +13,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace bookmarks {
+namespace webhistory {
 
 using CharConverter = launcherapp::utility::CharConverter;
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
@@ -49,6 +49,9 @@ struct ChromiumBrowseHistory::PImpl
 		}
 		Sleep(250);
 	}
+
+
+	void Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 	std::mutex mMutex;
 	bool mIsAbort;
@@ -155,70 +158,30 @@ void ChromiumBrowseHistory::PImpl::WatchHistoryDB()
 	}
 }
 
-ChromiumBrowseHistory::ChromiumBrowseHistory(
-		const CString& id,
-	 	const CString& profileDir,
-		bool isUseURL,
-	 	bool isUseMigemo
-) : 
-	in(new PImpl)
-{
-	in->mIsAbort = false;
-	in->mId = id;
-	in->mProfileDir = profileDir;
-	in->mIsUseURL = isUseURL;
-	in->mIsUseMigemo = isUseMigemo;
-
-	std::thread th([&]() {
-			in->WatchHistoryDB();
-	});
-	th.detach();
-}
-
-ChromiumBrowseHistory::~ChromiumBrowseHistory()
-{
-	Abort();
-
-}
-
-void ChromiumBrowseHistory::Abort()
-{
-	in->Abort();
-	in->WaitExit();
-}
-
-void ChromiumBrowseHistory::Query(
-		Pattern* pattern,
+void ChromiumBrowseHistory::PImpl::Query(
+		const std::vector<Pattern::WORD>& words,
 	 	std::vector<ITEM>& items,
 	 	int limit,
-		DWORD timeout
+	 	DWORD timeout
 )
 {
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		if (!in->mHistoryDB) {
-			return;
-		}
-		// patternから検索ワード一覧を得る
-		std::vector<Pattern::WORD> words;
-		pattern->GetWords(words);
-
-		if(words.empty()) {
-			return;
-		}
-		std::reverse(words.begin(), words.end());
-
 		// 得た検索ワードからsqlite3のクエリ文字列を生成する
-		static LPCTSTR basePart = _T("select url,title from hoge2 where ");
+		static LPCTSTR basePart = _T("select distinct url,title from hoge2 where ");
 		CString queryStr(basePart);
 
 		bool isFirst = true;
 		CString token;
-		for(auto& word : words) {
+		for(const auto& word : words) {
 			if (word.mMethod == Pattern::RegExp) {
-				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
+				if (mIsUseURL) {
+					token.Format(_T("%s (title regexp '%s' or url regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
+				}
+				else {
+					token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
+				}
 			}
 			else {
-				if (in->mIsUseURL) {
+				if (mIsUseURL) {
 					token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
 				}
 				else {
@@ -261,9 +224,65 @@ void ChromiumBrowseHistory::Query(
 		// mHistoryDBに対し、問い合わせを行う
 		local_param param;
 		param.mTimeout = timeout;
-		in->mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
+		mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
 
 		items.swap(param.mItems);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+ChromiumBrowseHistory::ChromiumBrowseHistory(
+		const CString& id,
+	 	const CString& profileDir,
+		bool isUseURL,
+	 	bool isUseMigemo
+) : 
+	in(new PImpl)
+{
+	in->mIsAbort = false;
+	in->mId = id;
+	in->mProfileDir = profileDir;
+	in->mIsUseURL = isUseURL;
+	in->mIsUseMigemo = isUseMigemo;
+
+	std::thread th([&]() {
+			in->WatchHistoryDB();
+	});
+	th.detach();
+}
+
+ChromiumBrowseHistory::~ChromiumBrowseHistory()
+{
+	Abort();
+
+}
+
+void ChromiumBrowseHistory::Abort()
+{
+	in->Abort();
+	in->WaitExit();
+}
+
+void ChromiumBrowseHistory::Query(
+		const std::vector<Pattern::WORD>& words,
+	 	std::vector<ITEM>& items,
+	 	int limit,
+	 	DWORD timeout
+)
+{
+		std::lock_guard<std::mutex> lock(in->mMutex);
+		if (!in->mHistoryDB) {
+			return;
+		}
+		if(words.empty()) {
+			return;
+		}
+		in->Query(words, items, limit, timeout);
 }
 
 }
