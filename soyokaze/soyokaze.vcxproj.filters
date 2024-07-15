@@ -585,9 +585,6 @@
     <ClInclude Include="commands\pathconvert\P4AppSettings.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
-    <ClInclude Include="commands\bookmarks\AppSettingBookmarkPage.h">
-      <Filter>commands\bookmarks</Filter>
-    </ClInclude>
     <ClInclude Include="commands\pathconvert\AppSettingPathConvertPage.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
@@ -1056,6 +1053,15 @@
     <ClInclude Include="commands\webhistory\ChromiumBrowseHistory.h">
       <Filter>commands\webhistory</Filter>
     </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkCommand.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkSettingDialog.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1435,9 +1441,6 @@
     </ClCompile>
     <ClCompile Include="commands\pathconvert\P4AppSettings.cpp">
       <Filter>commands\pathconvert</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\bookmarks\AppSettingBookmarkPage.cpp">
-      <Filter>commands\bookmarks</Filter>
     </ClCompile>
     <ClCompile Include="commands\pathconvert\AppSettingPathConvertPage.cpp">
       <Filter>commands\pathconvert</Filter>
@@ -1861,6 +1864,15 @@
     </ClCompile>
     <ClCompile Include="commands\webhistory\ChromiumBrowseHistory.cpp">
       <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp">
+      <Filter>commands\bookmarks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

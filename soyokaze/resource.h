@@ -108,7 +108,6 @@
 #define IDS_SENDTO                      171
 #define IDD_APPSETTING_PATH             171
 #define IDS_CONFIRM_VMXLOCKED           172
-#define IDD_APPSETTING_BOOKMARK         172
 #define IDS_SNIPPETCOMMAND              173
 #define IDD_APPSETTING_PATHCONVERT      173
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  174
@@ -138,6 +137,7 @@
 #define IDD_EVERYTHINGEDIT              186
 #define IDD_APPSETTING_EVERYTHING       187
 #define IDD_WEBHISTORYEDIT              188
+#define IDD_BOOKMARKEDIT                189
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -287,10 +287,8 @@
 #define IDC_CHECK_ENABLE_WORKSHEET      1103
 #define IDC_BUTTON_CLEAR                1104
 #define IDC_CHECK_ENABLE_SLIDE          1104
-#define IDC_CHECK_ENABLE_BOOKMARKS      1105
 #define IDC_EDIT_SOUNDINPUT             1106
 #define IDC_CHECK_ENABLE_BOOKMARKS2     1106
-#define IDC_CHECK_USEURL                1106
 #define IDC_CHECK_ENABLE_WINDOWTITLE    1107
 #define IDC_CHECK_ENABLE_HISTORY_CHROME 1107
 #define IDC_EDIT_SOUNDSELECT            1108
@@ -385,6 +383,8 @@
 #define IDC_SYSLINK_OPTION              1177
 #define IDC_CHECK_HOTKEY2               1178
 #define IDC_EDIT_KEYWORD                1179
+#define IDC_CHECK_ENABLE_CHROME         1180
+#define IDC_CHECK_ENABLE_EDGE           1181
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -393,7 +393,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1180
+#define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

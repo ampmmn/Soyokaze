@@ -6,10 +6,18 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-struct ITEM
+enum BrowserType {
+	Chrome,
+	Edge,
+};
+
+
+struct Bookmark
 {
 	CString mName;
 	CString mUrl;
+	int mBrowser;
+	int mMatchLevel;
 };
 
 class Bookmarks
@@ -18,8 +26,8 @@ public:
 	Bookmarks();
 	~Bookmarks();
 
-	bool LoadChromeBookmarks(std::vector<ITEM>& items);
-	bool LoadEdgeBookmarks(std::vector<ITEM>& items);
+	bool LoadChromeBookmarks(std::vector<Bookmark>& items);
+	bool LoadEdgeBookmarks(std::vector<Bookmark>& items);
 
 private:
 	struct PImpl;

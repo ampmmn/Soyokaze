@@ -2,7 +2,7 @@
 #include "P4AppSettings.h"
 #include <atlbase.h>
 
-#import <msxml6.dll> raw_interfaces_only
+#import "msxml6.dll" exclude("ISequentialStream","_FILETIME")named_guids
 
 namespace launcherapp {
 namespace commands {

@@ -50,7 +50,6 @@ struct URLCommand::PImpl
 	bool GetExecutablePath(LPTSTR path, size_t len);
 
 	CString mBrowserName;    // ブラウザ種類を表す文字列
-	int mType;               // 種別(ブックマーク or 履歴)
 	CString mUrl;
 };
 
@@ -70,7 +69,6 @@ bool URLCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 
 URLCommand::URLCommand(
 	const CString& browserName,
-	int type,
 	const CString& name,
 	const CString& url
 ) : 
@@ -78,7 +76,6 @@ URLCommand::URLCommand(
 	in(std::make_unique<PImpl>())
 {
 	in->mBrowserName = browserName;
-	in->mType = type;
 	in->mUrl = url;
 }
 
@@ -94,10 +91,9 @@ CString URLCommand::GetGuideString()
 CString URLCommand::GetTypeDisplayName()
 {
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
-	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
 
 	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)in->mBrowserName, in->mType == BOOKMARK ? (LPCTSTR)TEXT_BOOKMARK : (LPCTSTR)TEXT_HISTORY);
+	str.Format(_T("%s %s"), (LPCTSTR)in->mBrowserName, (LPCTSTR)TEXT_BOOKMARK);
 
 	return str;
 }
@@ -142,7 +138,7 @@ HICON URLCommand::GetIcon()
 launcherapp::core::Command*
 URLCommand::Clone()
 {
-	return new URLCommand(in->mBrowserName, in->mType, this->mName, in->mUrl);
+	return new URLCommand(in->mBrowserName, this->mName, in->mUrl);
 }
 
 } // end of namespace bookmarks

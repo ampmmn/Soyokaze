@@ -10,12 +10,8 @@ namespace bookmarks {
 class URLCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
-	enum Type {
-		BOOKMARK,
-		HISTORY,
-	};
 public:
-	URLCommand(const CString& browserName, int type, const CString& name, const CString& url);
+	URLCommand(const CString& browserName, const CString& name, const CString& url);
 	virtual ~URLCommand();
 
 	CString GetGuideString() override;

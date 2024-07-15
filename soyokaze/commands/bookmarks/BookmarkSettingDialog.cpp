@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "WebHistorySettingDialog.h"
-#include "commands/webhistory/WebHistoryCommandParam.h"
+#include "BookmarkSettingDialog.h"
+#include "commands/bookmarks/BookmarkCommandParam.h"
 #include "commands/common/CommandEditValidation.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -9,7 +9,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace webhistory {
+namespace bookmarks {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,10 +36,10 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_WEBHISTORYEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_BOOKMARKEDIT),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("WebHistorySetting"));
+	SetHelpPageId(_T("BookmarkSetting"));
 }
 
 SettingDialog::~SettingDialog()
@@ -63,22 +63,16 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, in->mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_KEYWORD, in->mParam.mKeyword);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_CHROME, in->mParam.mIsEnableHistoryChrome);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_HISTORY_EDGE, in->mParam.mIsEnableHistoryEdge);
-	DDX_Text(pDX, IDC_EDIT_TIMEOUT, in->mParam.mTimeout);
-	DDV_MinMaxInt(pDX, in->mParam.mTimeout, 0, 1000);
-	DDX_Text(pDX, IDC_EDIT_CANDIDATES, in->mParam.mLimit);
-	DDV_MinMaxInt(pDX, in->mParam.mLimit, 0, 32);
-	DDX_Check(pDX, IDC_CHECK_USE_MIGEMO, in->mParam.mIsUseMigemo);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_CHROME, in->mParam.mIsEnableChrome);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_EDGE, in->mParam.mIsEnableEdge);
 	DDX_Check(pDX, IDC_CHECK_USEURL2, in->mParam.mIsUseURL);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
-	ON_COMMAND(IDC_CHECK_ENABLE_HISTORY_CHROME, OnUpdateStatus)
-	ON_COMMAND(IDC_CHECK_ENABLE_HISTORY_EDGE, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_CHROME, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_EDGE, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 END_MESSAGE_MAP()
@@ -114,8 +108,8 @@ void SettingDialog::UpdateStatus()
 {
 	bool canPressOK = true;
 
-	bool isBothDisabled = in->mParam.mIsEnableHistoryChrome == false &&
-	                      in->mParam.mIsEnableHistoryEdge == false;
+	bool isBothDisabled = in->mParam.mIsEnableChrome == false &&
+	                      in->mParam.mIsEnableEdge == false;
 
 	bool isNameValid =
 	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);

@@ -24,11 +24,11 @@ struct Bookmarks::PImpl
 {
 	TCHAR mChromeBookmarkPath[MAX_PATH_NTFS];
 	FILETIME mChromeUpdateTime;
-	std::vector<ITEM> mChromeItems;
+	std::vector<Bookmark> mChromeItems;
 
 	TCHAR mEdgeBookmarkPath[MAX_PATH_NTFS];
 	FILETIME mEdgeUpdateTime;
-	std::vector<ITEM> mEdgeItems;
+	std::vector<Bookmark> mEdgeItems;
 };
 
 Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
@@ -62,7 +62,7 @@ static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 	return true;
 }
 
-static void parseJSONObject(json& j, std::vector<ITEM>& items)
+static void parseJSONObject(json& j, std::vector<Bookmark>& items)
 {
 	if (j["type"] == "folder") {
 		auto children_array = j["children"];
@@ -74,7 +74,7 @@ static void parseJSONObject(json& j, std::vector<ITEM>& items)
 		}
 	}
 	else if (j["type"] == "url") {
-		ITEM item;
+		Bookmark item;
 
 
 		auto name = j["name"].get<std::string>();
@@ -88,7 +88,7 @@ static void parseJSONObject(json& j, std::vector<ITEM>& items)
 }
 
 
-bool Bookmarks::LoadChromeBookmarks(std::vector<ITEM>& items)
+bool Bookmarks::LoadChromeBookmarks(std::vector<Bookmark>& items)
 {
 	FILETIME lastUpdate;
 	if (GetLastUpdateTime(in->mChromeBookmarkPath, lastUpdate) == false) {
@@ -102,7 +102,7 @@ bool Bookmarks::LoadChromeBookmarks(std::vector<ITEM>& items)
 	}
 
 	// 読み直す
-	std::vector<ITEM> tmp;
+	std::vector<Bookmark> tmp;
 
 	try {
 		std::ifstream f(in->mChromeBookmarkPath);
@@ -122,7 +122,7 @@ bool Bookmarks::LoadChromeBookmarks(std::vector<ITEM>& items)
 	return true;
 }
 
-bool Bookmarks::LoadEdgeBookmarks(std::vector<ITEM>& items)
+bool Bookmarks::LoadEdgeBookmarks(std::vector<Bookmark>& items)
 {
 	FILETIME lastUpdate;
 	if (GetLastUpdateTime(in->mEdgeBookmarkPath, lastUpdate) == false) {
@@ -136,7 +136,7 @@ bool Bookmarks::LoadEdgeBookmarks(std::vector<ITEM>& items)
 	}
 
 	// 読み直す
-	std::vector<ITEM> tmp;
+	std::vector<Bookmark> tmp;
 
 	try {
 		std::ifstream f(in->mEdgeBookmarkPath);

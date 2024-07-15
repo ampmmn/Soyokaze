@@ -390,6 +390,9 @@
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
+    <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
+    <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h" />
+    <ClInclude Include="commands\bookmarks\BookmarkSettingDialog.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
@@ -472,7 +475,6 @@
     <ClInclude Include="commands\align_window\AlignWindowItemSettingDialog.h" />
     <ClInclude Include="commands\align_window\AlignWindowProvider.h" />
     <ClInclude Include="commands\align_window\AlignWindowSettingDialog.h" />
-    <ClInclude Include="commands\bookmarks\AppSettingBookmarkPage.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h" />
     <ClInclude Include="commands\bookmarks\Bookmarks.h" />
     <ClInclude Include="commands\bookmarks\URLCommand.h" />
@@ -681,6 +683,9 @@
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
+    <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
+    <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp" />
+    <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
@@ -762,7 +767,6 @@
     <ClCompile Include="commands\align_window\AlignWindowItemSettingDialog.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowProvider.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowSettingDialog.cpp" />
-    <ClCompile Include="commands\bookmarks\AppSettingBookmarkPage.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp" />
     <ClCompile Include="commands\bookmarks\Bookmarks.cpp" />
     <ClCompile Include="commands\bookmarks\URLCommand.cpp" />
