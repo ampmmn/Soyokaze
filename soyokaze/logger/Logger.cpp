@@ -55,7 +55,7 @@ void Logger::Initialize()
 {
 	TCHAR logPath[MAX_PATH_NTFS];
 	CAppProfile::GetDirPath(logPath, MAX_PATH_NTFS); 
-	PathAppend(logPath, APPNAME_LOWERCASE _T(".log"));
+	PathAppend(logPath, APPLOGNAME);
 
 	auto max_size = 1048576 * 8;
 	auto max_files = 3;

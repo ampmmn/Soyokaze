@@ -678,6 +678,7 @@
     <ClInclude Include="matcher/WholeMatchPattern.h" />
     <ClInclude Include="utility/WindowPosition.h" />
     <ClInclude Include="mainwindow/WindowTransparency.h" />
+    <ClInclude Include="utility\VersionInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\Manual.cpp" />
@@ -974,6 +975,7 @@
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
     <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="mainwindow/WindowTransparency.cpp" />
+    <ClCompile Include="utility\VersionInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc" />

@@ -17,8 +17,6 @@ public:
 	CString mVersionStr;
 	CString mBuildDateStr; 
 
-	bool GetBuildDateTime(CTime& tm);
-
 private:
 	TopMostMask mTopMostMask;
 protected:

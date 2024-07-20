@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppPreference.h"
+#include "app/AppName.h"
 #include "utility/AppProfile.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -599,6 +600,10 @@ static bool IsDirectoryEmpty(const CString& path)
 		if (ff.IsDots()) {
 			continue;
 		}
+		if (ff.GetFileName() == APPLOGNAME) {
+			continue;
+		}
+
 		hasContent = true;
 		break;
 	}

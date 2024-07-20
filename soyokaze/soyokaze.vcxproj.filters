@@ -1062,6 +1062,9 @@
     <ClInclude Include="commands\bookmarks\BookmarkSettingDialog.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
+    <ClInclude Include="utility\VersionInfo.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1873,6 +1876,9 @@
     </ClCompile>
     <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp">
       <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\VersionInfo.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
