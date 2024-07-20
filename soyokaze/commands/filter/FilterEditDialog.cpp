@@ -6,6 +6,7 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/CommandEditValidation.h"
+#include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
@@ -16,6 +17,7 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
 
@@ -220,7 +222,11 @@ bool FilterEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (mParam.mDir.IsEmpty() == FALSE && PathIsDirectory(mParam.mDir) == FALSE) {
+
+	CString workDir = mParam.mDir;
+	ExpandMacros(workDir);
+
+	if (workDir.IsEmpty() == FALSE && PathIsDirectory(workDir) == FALSE) {
 		mMessage = _T("作業フォルダは存在しません");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
