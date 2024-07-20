@@ -742,13 +742,13 @@ bool AppPreference::IsShowGuide()
 // 候補欄の背景色を交互に変えるか
 bool AppPreference::IsAlternateColor()
 {
-	return in->Get(_T("Soyokaze:IsAlternateColor"), false);
+	return in->Get(_T("Soyokaze:IsAlternateColor"), true);
 }
 
 // 候補欄の各項目にアイコンを描画するか
 bool AppPreference::IsDrawIconOnCandidate()
 {
-	return in->Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
+	return in->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 }
 
 // C/Migemo検索を利用するか

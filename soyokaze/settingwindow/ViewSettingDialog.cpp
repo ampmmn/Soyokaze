@@ -180,8 +180,8 @@ void ViewSettingDialog::OnEnterSettings()
 	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 	in->mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
 	in->mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
-	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), false);
-	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), false);
+	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
+	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 
 	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), _T("Tahoma"));
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
