@@ -117,7 +117,12 @@ CString ProcessPath::GetProcessName()
 CString ProcessPath::GetCaption()
 {
 	CString caption;
-	GetWindowText(mHwnd, caption.GetBuffer(128), 128);
+	int len = GetWindowTextLengthW(mHwnd);
+	if (len <= 0) {
+		return _T("");
+	}
+
+	GetWindowText(mHwnd, caption.GetBuffer(len), len);
 	caption.ReleaseBuffer();
 	return caption;
 }
@@ -175,7 +180,6 @@ CString ProcessPath::GetCommandLine()
 		scope_freelib(HANDLE hProcess, HINSTANCE h) : mP(hProcess), mH(h) {}
 		~scope_freelib() {
 			CloseHandle(mP);
-			FreeLibrary(mH);
 		}
 
 		HANDLE mP;
@@ -230,13 +234,9 @@ CString ProcessPath::GetCommandLine()
 		if (n == -1) {
 			return CString(cmdline);
 		}
-		return CString(cmdline.Mid(n+1));
+		return cmdline.Mid(1, n-1);
 	}
 	else {
-		int n = cmdline.Find(_T(' '), 0);
-		if (n == -1) {
-			return CString(cmdline);
-		}
-		return CString(cmdline.Mid(n+1));
+		return cmdline;
 	}
 }
