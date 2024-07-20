@@ -40,6 +40,9 @@
     <Filter Include="soyokaze\commands\align_window">
       <UniqueIdentifier>{7d88cf8e-d381-4d4a-ad36-6204a36e1f41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\decodestring">
+      <UniqueIdentifier>{e6438e73-2efd-4e0a-ae70-99505ebb26b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp">
+      <Filter>soyokaze\commands\decodestring</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

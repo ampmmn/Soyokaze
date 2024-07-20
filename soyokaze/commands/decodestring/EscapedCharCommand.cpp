@@ -76,11 +76,10 @@ HICON EscapedCharCommand::GetIcon()
 	return IconLoader::Get()->LoadDefaultIcon();
 }
 
-static bool ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
+bool EscapedCharCommand::ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
 {
 	// この時点で \u までは一致してることを確認済、itは'\'の位置にいる
-
-	if (it+2 == itEnd || it+3 == itEnd || it+4 == itEnd || it+5 == itEnd) {
+	if (std::distance(it, itEnd) < 6) {
 		// 残り文字数がたりない
 		return false;
 	}
@@ -107,16 +106,14 @@ static bool ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std
 		}
 
 		dst.append(out, out + converted);
-		it += 5;
+		it += 6;
 		return true;
 	}
 
 	// サロゲートペア文字だったので後続の文字も解析したうえで、ペアとして扱う
 
 	auto it2 = it + 6;  // 後続文字を解析位置をあらわすイテレータ
-
-	if (it2 == itEnd || it2+1 == itEnd || 
-	    it2+2 == itEnd || it2+3 == itEnd || it2+4 == itEnd || it2+5 == itEnd) {
+	if (std::distance(it2, itEnd) < 6) {
 		// 残り文字数がたりない
 		return false;
 	}
@@ -139,17 +136,15 @@ static bool ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std
 	}
 
 	dst.append(out, out + converted);
-	it += 11;
+	it += 12;
 
 	return true;
 }
 
-static bool ScanAsU8(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
+bool EscapedCharCommand::ScanAsU8(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
 {
 	// この時点で \U までは一致してることを確認済、itは'\'の位置にいる
-
-	if (it+2 == itEnd || it+3 == itEnd || it+4 == itEnd || it+5 == itEnd || 
-	    it+6 == itEnd || it+7 == itEnd || it+8 == itEnd || it+9 == itEnd) {
+	if (std::distance(it, itEnd) < 10) {
 		// 残り文字数がたりない
 		return false;
 	}
@@ -171,20 +166,18 @@ static bool ScanAsU8(std::string::iterator& it, std::string::iterator itEnd, std
 	int converted = CharConverter::ScalarToUTF8(scalar, out);
 
 	dst.append(out, out + converted);
-	it += 9;
+	it += 10;
 
 	return true;
 }
 
-static bool ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
+bool EscapedCharCommand::ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
 {
 	// この時点で \x までは一致してることを確認済、itは'\'の位置にいる
-
-	if (it+2 == itEnd || it+3 == itEnd) {
+	if (std::distance(it, itEnd) < 4) {
 		// 残り文字数がたりない
 		return false;
 	}
-
 	if (isxdigit(*(it+2)) == 0 || isxdigit(*(it+3)) == 0) {
 		// 条件を満たさない(後続2文字が16進文字でない)
 		return false;
@@ -196,16 +189,15 @@ static bool ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, st
 	sscanf_s(tmp, "%hhx", &chr);
 
 	dst.append(1, chr);
-	it += 3;
+	it += 4;
 
 	return true;
 }
 
-static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
+bool EscapedCharCommand::ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)
 {
 	// この時点で \o までは一致してることを確認済、itは'\'の位置にいる
-
-	if (it+1 == itEnd || it+2 == itEnd || it+3 == itEnd) {
+	if (std::distance(it, itEnd) < 4) {
 		// 残り文字数がたりない
 		return false;
 	}
@@ -222,7 +214,7 @@ static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, 
 	sscanf_s(tmp, "%hho", &chr);
 
 	dst.append(1, chr);
-	it += 3;
+	it += 4;
 
 	return true;
 }
@@ -259,6 +251,9 @@ int EscapedCharCommand::Match(Pattern* pattern)
 				continue;
 			}
 
+			// ScanAsXXXのなかで次の文字のイテレータに移動するが、forのstep処理でインクメントされるため一つ戻す
+			it--;
+
 			isMatched = true;
 			continue;
 		}
@@ -269,6 +264,8 @@ int EscapedCharCommand::Match(Pattern* pattern)
 				it++;
 				continue;
 			}
+			// ScanAsXXXのなかで次の文字のイテレータに移動するが、forのstep処理でインクメントされるため一つ戻す
+			it--;
 
 			isMatched = true;
 			continue;
@@ -281,6 +278,9 @@ int EscapedCharCommand::Match(Pattern* pattern)
 				continue;
 			}
 
+			// ScanAsXXXのなかで次の文字のイテレータに移動するが、forのstep処理でインクメントされるため一つ戻す
+			it--;
+
 			isMatched = true;
 			continue;
 		}
@@ -291,6 +291,9 @@ int EscapedCharCommand::Match(Pattern* pattern)
 				it++;
 				continue;
 			}
+
+			// ScanAsXXXのなかで次の文字のイテレータに移動するが、forのstep処理でインクメントされるため一つ戻す
+			it--;
 
 			isMatched = true;
 			continue;

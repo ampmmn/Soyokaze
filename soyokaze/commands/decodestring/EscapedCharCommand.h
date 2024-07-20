@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/common/Clipboard.h"
 #include <memory>
+#include <string>
 
 namespace launcherapp {
 namespace commands {
@@ -25,6 +26,11 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
+
+	static bool ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
+	static bool ScanAsU8(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
+	static bool ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
+	static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
 
 protected:
 	struct PImpl;
