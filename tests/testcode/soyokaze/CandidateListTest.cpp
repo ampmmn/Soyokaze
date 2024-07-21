@@ -67,10 +67,11 @@ struct DummyCommand : public launcherapp::core::Command
 		return false;
 	}
 
-	int EditDialog(const launcherapp::core::CommandParameter* param) override
+	int EditDialog(HWND parent) override
 	{
 		return 0;
 	}
+
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override
 	{
 		return false;
