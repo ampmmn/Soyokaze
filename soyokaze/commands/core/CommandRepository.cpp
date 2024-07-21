@@ -128,8 +128,10 @@ struct CommandRepository::PImpl
 	// 編集中フラグ
 	bool mIsNewDialog = false;
 	bool mIsEditDialog = false;
-	bool mIsManagerDialog = false;
+	KeywordManagerDialog* mManagerDlgPtr = nullptr;
 	bool mIsRegisteFromFileDialog = false;
+
+	//
 
 	std::mutex mMutex;
 	bool mIsExit = false;
@@ -542,7 +544,12 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 		return 1;
 	}
 
-	int ret =cmdAbs->EditDialog();
+	HWND parent = nullptr;
+	if (in->mManagerDlgPtr) {
+		parent = in->mManagerDlgPtr->GetSafeHwnd();
+	}
+
+	int ret =cmdAbs->EditDialog(parent);
 	cmdAbs->Release();
 
 	if (ret != 0) {
@@ -560,18 +567,25 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
  */
 int CommandRepository::ManagerDialog()
 {
-	if (in->mIsManagerDialog) {
+	if (in->mManagerDlgPtr != nullptr) {
 		// 編集操作中の再入はしない
 		SPDLOG_WARN(_T("re-entry is not allowed."));
 		return 0;
 	}
-	ScopeEdit scopeEdit(in->mIsManagerDialog);
+
+	struct scope_clear {
+		scope_clear(KeywordManagerDialog*& p) : ptr(p) {}
+		~scope_clear() { ptr = nullptr; }
+		KeywordManagerDialog*& ptr;
+	} _scope(in->mManagerDlgPtr);
+
 
 	// キャンセル時用のバックアップ
 	CommandMap::Settings bkup;
 	in->mCommands.LoadSettings(bkup);
 
 	KeywordManagerDialog dlg;
+	in->mManagerDlgPtr = &dlg;
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)

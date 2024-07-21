@@ -16,7 +16,7 @@ struct GroupItem;
 class GroupEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	GroupEditDialog();
+	GroupEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~GroupEditDialog();
 
 	void SetParam(const CommandParam& param);

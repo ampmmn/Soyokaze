@@ -9,7 +9,7 @@ class SettingDialogBase : public CDialogEx
 {
 public:
 	// コンストラクタ
-	SettingDialogBase();
+	SettingDialogBase(CWnd* parentWnd = nullptr);
 	// デストラクタ
 	virtual ~SettingDialogBase();
 

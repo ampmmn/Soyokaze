@@ -14,7 +14,7 @@ namespace simple_dict {
 class SettingDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	SettingDialog();
+	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
 	void SetParam(const SimpleDictParam& param);

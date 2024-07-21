@@ -100,11 +100,9 @@ int EjectVolumeCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int EjectVolumeCommand::EditDialog(const Parameter* param)
+int EjectVolumeCommand::EditDialog(HWND parent)
 {
-	UNUSED(param);
-
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 
 	if (dlg.DoModal() != IDOK) {

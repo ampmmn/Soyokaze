@@ -20,8 +20,8 @@ namespace group {
 
 
 
-GroupEditDialog::GroupEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_GROUP),
+GroupEditDialog::GroupEditDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_GROUP, parentWnd),
 	mCommandListPtr(nullptr),
 	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {

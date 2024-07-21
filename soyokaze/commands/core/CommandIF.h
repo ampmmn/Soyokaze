@@ -28,7 +28,7 @@ public:
 	virtual int Match(Pattern* pattern) = 0;
 	virtual bool IsEditable() = 0;
 	virtual bool IsDeletable() = 0;
-	virtual int EditDialog(const CommandParameter* param = nullptr) = 0;
+	virtual int EditDialog(HWND parent) = 0;
 	virtual bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) = 0;
 
 	/**

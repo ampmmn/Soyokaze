@@ -74,9 +74,9 @@ bool AdhocCommandBase::IsDeletable()
 	return false;
 }
 
-int AdhocCommandBase::EditDialog(const Parameter* param)
+int AdhocCommandBase::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(parent);
 
 	return -1;
 }

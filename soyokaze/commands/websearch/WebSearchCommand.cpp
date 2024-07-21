@@ -200,9 +200,9 @@ bool WebSearchCommand::IsEditable()
 	return true;
 }
 
-int WebSearchCommand::EditDialog(const Parameter*)
+int WebSearchCommand::EditDialog(HWND parent)
 {
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetIcon(GetIcon());
 
 	auto param = in->mParam;

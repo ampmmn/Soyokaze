@@ -40,9 +40,10 @@ BuiltinEditDialog::BuiltinEditDialog(
 	const CString& name,
 	const CString& description,
 	bool canEditEnable,
-	bool canEditConfirm
+	bool canEditConfirm,
+	CWnd* parentWnd
 ) : 
-	launcherapp::gui::SinglePageDialog(IDD_BUILTINEDIT),
+	launcherapp::gui::SinglePageDialog(IDD_BUILTINEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId(_T("BuiltinCommandEdit"));

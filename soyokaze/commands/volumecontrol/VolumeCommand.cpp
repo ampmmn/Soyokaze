@@ -123,11 +123,9 @@ int VolumeCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int VolumeCommand::EditDialog(const Parameter* param)
+int VolumeCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 
 	if (dlg.DoModal() != IDOK) {

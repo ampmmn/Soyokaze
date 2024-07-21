@@ -123,11 +123,9 @@ int SnippetCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int SnippetCommand::EditDialog(const Parameter* param)
+int SnippetCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	CommandEditDialog dlg;
+	CommandEditDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetOrgName(in->mName);
 
 	dlg.mName = in->mName;

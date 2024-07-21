@@ -45,8 +45,8 @@ struct SettingDialog::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 
-SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWEDIT),
+SettingDialog::SettingDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId(_T("AlignWindowSetting"));

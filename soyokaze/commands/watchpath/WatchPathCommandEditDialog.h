@@ -12,7 +12,7 @@ namespace watchpath {
 class CommandEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	CommandEditDialog();
+	CommandEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~CommandEditDialog();
 
 	void SetOrgName(const CString& name);

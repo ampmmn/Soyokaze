@@ -106,13 +106,11 @@ int WatchPathCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int WatchPathCommand::EditDialog(const Parameter* param)
+int WatchPathCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	auto oldPath = in->mPath;
 
-	CommandEditDialog dlg;
+	CommandEditDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetOrgName(in->mName);
 
 	dlg.mName = in->mName;

@@ -146,10 +146,10 @@ int SimpleDictCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int SimpleDictCommand::EditDialog(const Parameter*)
+int SimpleDictCommand::EditDialog(HWND parent)
 {
 	// 設定変更画面を表示する
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 

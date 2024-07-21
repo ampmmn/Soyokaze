@@ -87,15 +87,13 @@ bool BuiltinCommandBase::IsDeletable()
 	return false;
 }
 
-int BuiltinCommandBase::EditDialog(const Parameter* param)
+int BuiltinCommandBase::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	if (mCanDisable == false && mCanSetConfirm == false) {
 		return -1;
 	}
 
-	BuiltinEditDialog dlg(GetName(), GetDescription(), mCanDisable, mCanSetConfirm);
+	BuiltinEditDialog dlg(GetName(), GetDescription(), mCanDisable, mCanSetConfirm, CWnd::FromHandle(parent));
 	dlg.SetEnable(mIsEnable);
 	dlg.SetConfirm(mIsConfirmBeforeRun);
 

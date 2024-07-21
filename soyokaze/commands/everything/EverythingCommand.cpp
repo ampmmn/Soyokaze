@@ -170,10 +170,10 @@ int EverythingCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int EverythingCommand::EditDialog(const Parameter*)
+int EverythingCommand::EditDialog(HWND parent)
 {
 	// 設定変更画面を表示する
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 	if (dlg.DoModal() != IDOK) {

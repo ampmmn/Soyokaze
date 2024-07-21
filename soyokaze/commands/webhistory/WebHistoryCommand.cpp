@@ -222,9 +222,9 @@ bool WebHistoryCommand::IsEditable()
 	return true;
 }
 
-int WebHistoryCommand::EditDialog(const Parameter*)
+int WebHistoryCommand::EditDialog(HWND parent)
 {
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	auto param = in->mParam;
 
 	dlg.SetParam(param);

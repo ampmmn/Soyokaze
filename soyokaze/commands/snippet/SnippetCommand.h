@@ -22,7 +22,7 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	int EditDialog(const Parameter* param) override;
+	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;

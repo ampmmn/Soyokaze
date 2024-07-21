@@ -24,7 +24,7 @@ public:
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
 	bool IsDeletable() override;
-	int EditDialog(const Parameter* param) override;
+	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 
 	bool IsPriorityRankEnabled() override;

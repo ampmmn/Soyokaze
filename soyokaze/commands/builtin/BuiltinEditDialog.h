@@ -11,7 +11,7 @@ namespace builtin {
 class BuiltinEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	BuiltinEditDialog(const CString& name, const CString& description, bool canEditEnable, bool canEditConfirm);
+	BuiltinEditDialog(const CString& name, const CString& description, bool canEditEnable, bool canEditConfirm, CWnd* parentWnd = nullptr);
 	virtual ~BuiltinEditDialog();
 
 	CString GetName();

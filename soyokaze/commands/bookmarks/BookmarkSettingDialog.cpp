@@ -35,8 +35,8 @@ struct SettingDialog::PImpl
 
 
 
-SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_BOOKMARKEDIT),
+SettingDialog::SettingDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_BOOKMARKEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId(_T("BookmarkSetting"));

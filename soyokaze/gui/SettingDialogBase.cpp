@@ -55,7 +55,7 @@ struct SettingDialogBase::PImpl
 /**
 	コンストラクタ
 */
- SettingDialogBase::SettingDialogBase() :  CDialogEx(IDD_SETTING),
+ SettingDialogBase::SettingDialogBase(CWnd* parentWnd) :  CDialogEx(IDD_SETTING, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	in->mTreeCtrl = nullptr;

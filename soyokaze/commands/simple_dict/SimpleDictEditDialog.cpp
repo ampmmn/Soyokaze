@@ -46,8 +46,8 @@ struct SettingDialog::PImpl
 };
 
 
-SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT), in(new PImpl)
+SettingDialog::SettingDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
 {
 	SetHelpPageId(_T("SimpleDictEdit"));
 	in->mPreviewListPtr = nullptr;

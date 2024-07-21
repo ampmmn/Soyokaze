@@ -189,9 +189,9 @@ bool BookmarkCommand::IsEditable()
 	return true;
 }
 
-int BookmarkCommand::EditDialog(const Parameter*)
+int BookmarkCommand::EditDialog(HWND parent)
 {
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	auto param = in->mParam;
 
 	dlg.SetParam(param);

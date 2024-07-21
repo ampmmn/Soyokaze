@@ -27,8 +27,8 @@ namespace filter {
 
 
 
-FilterEditDialog::FilterEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT),
+FilterEditDialog::FilterEditDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
 	mCommandSelIndex(-1)
 {

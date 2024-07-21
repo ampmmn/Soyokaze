@@ -126,9 +126,9 @@ int WindowActivateCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int WindowActivateCommand::EditDialog(const Parameter*)
+int WindowActivateCommand::EditDialog(HWND parent)
 {
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	if (dlg.DoModal() != IDOK) {
 		return 0;

@@ -15,7 +15,7 @@ namespace filter {
 class FilterEditDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	FilterEditDialog();
+	FilterEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~FilterEditDialog();
 
 	void SetOrgName(const CString& name);

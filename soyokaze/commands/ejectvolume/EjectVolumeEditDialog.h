@@ -16,7 +16,7 @@ protected:
 	using Param = CommandParam; 
 
 public:
-	SettingDialog();
+	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
 	void SetParam(const Param& param);

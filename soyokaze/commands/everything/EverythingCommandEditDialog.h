@@ -12,7 +12,7 @@ namespace everything {
 class SettingDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	SettingDialog();
+	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
 	void SetParam(const CommandParam& param);

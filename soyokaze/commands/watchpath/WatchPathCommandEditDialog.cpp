@@ -19,8 +19,8 @@ namespace commands {
 namespace watchpath {
 
 
-CommandEditDialog::CommandEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH), mIsDisabled(FALSE)
+CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH, parentWnd), mIsDisabled(FALSE)
 {
 	SetHelpPageId(_T("WatchPathEdit"));
 	mNotifyMessage = _T("更新を検知");

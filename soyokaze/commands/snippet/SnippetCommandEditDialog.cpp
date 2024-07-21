@@ -20,8 +20,8 @@ namespace commands {
 namespace snippet {
 
 
-CommandEditDialog::CommandEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_SNIPPET_EDIT)
+CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_SNIPPET_EDIT, parentWnd)
 {
 	SetHelpPageId(_T("SnippetEdit"));
 }

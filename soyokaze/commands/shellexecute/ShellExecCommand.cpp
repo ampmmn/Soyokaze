@@ -276,10 +276,8 @@ int ShellExecCommand::Match(Pattern* pattern)
 	return pattern->Match(GetDescription());
 }
 
-int ShellExecCommand::EditDialog(const Parameter* args)
+int ShellExecCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(args);
-
 	auto& param = in->mParam;
 
 	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
@@ -294,7 +292,7 @@ int ShellExecCommand::EditDialog(const Parameter* args)
 	param.mPath0 = attr.mPath;
 	param.mParameter0 = attr.mParam;
 
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(param);
 
 	if (dlg.DoModal() != IDOK) {

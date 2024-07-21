@@ -180,9 +180,9 @@ int AlignWindowCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int AlignWindowCommand::EditDialog(const Parameter*)
+int AlignWindowCommand::EditDialog(HWND parent)
 {
-	SettingDialog dlg;
+	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	if (dlg.DoModal() != IDOK) {
 		return 0;

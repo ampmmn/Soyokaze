@@ -35,8 +35,8 @@ struct SettingDialog::PImpl
 
 
 
-SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_WEBHISTORYEDIT),
+SettingDialog::SettingDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_WEBHISTORYEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId(_T("WebHistorySetting"));

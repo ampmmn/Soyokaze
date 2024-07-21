@@ -215,11 +215,9 @@ int FilterCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int FilterCommand::EditDialog(const Parameter* param)
+int FilterCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	FilterEditDialog dlg;
+	FilterEditDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetOrgName(GetName());
 
 	dlg.SetParam(in->mParam);

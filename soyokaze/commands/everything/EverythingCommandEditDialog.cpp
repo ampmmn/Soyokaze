@@ -38,8 +38,8 @@ struct SettingDialog::PImpl
 };
 
 
-SettingDialog::SettingDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_EVERYTHINGEDIT), in(new PImpl)
+SettingDialog::SettingDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_EVERYTHINGEDIT, parentWnd), in(new PImpl)
 {
 	SetHelpPageId(_T("EverythingEdit"));
 }

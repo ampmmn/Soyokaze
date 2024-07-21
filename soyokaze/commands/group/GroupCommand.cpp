@@ -215,12 +215,10 @@ int GroupCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int GroupCommand::EditDialog(const Parameter* param)
+int GroupCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	// ダイアログを表示
-	GroupEditDialog dlg;
+	GroupEditDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	dlg.mHotKeyAttr = in->mHotKeyAttr;
 

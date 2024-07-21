@@ -21,8 +21,8 @@ namespace commands {
 namespace regexp {
 
 
-CommandEditDialog::CommandEditDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND),
+CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
+	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
 	mIcon(nullptr)
 {

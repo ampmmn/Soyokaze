@@ -228,11 +228,9 @@ int RegExpCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int RegExpCommand::EditDialog(const Parameter* param)
+int RegExpCommand::EditDialog(HWND parent)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	CommandEditDialog dlg;
+	CommandEditDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetOrgName(in->mName);
 
 	dlg.mName = in->mName;
