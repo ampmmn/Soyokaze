@@ -72,8 +72,7 @@ BOOL EscapedCharCommand::Execute(const Parameter& param)
 
 HICON EscapedCharCommand::GetIcon()
 {
-	// ToDo: 設定
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadConvertIcon();
 }
 
 bool EscapedCharCommand::ScanAsU4(std::string::iterator& it, std::string::iterator itEnd, std::string& dst)

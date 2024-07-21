@@ -25,10 +25,6 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
-
-protected:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
 };
 
 

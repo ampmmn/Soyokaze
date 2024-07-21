@@ -70,8 +70,7 @@ BOOL DecodeUriCommand::Execute(const Parameter& param)
 
 HICON DecodeUriCommand::GetIcon()
 {
-	// ToDo: 設定
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadConvertIcon();
 }
 
 int DecodeUriCommand::Match(Pattern* pattern)

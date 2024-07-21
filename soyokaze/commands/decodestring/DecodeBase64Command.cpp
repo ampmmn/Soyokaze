@@ -36,12 +36,7 @@ constexpr std::array<uint8_t, 256> DECODE_TABLE{
 };
 
 
-struct DecodeBase64Command::PImpl
-{
-};
-
-
-DecodeBase64Command::DecodeBase64Command() : in(std::make_unique<PImpl>())
+DecodeBase64Command::DecodeBase64Command()
 {
 }
 
@@ -89,8 +84,7 @@ BOOL DecodeBase64Command::Execute(const Parameter& param)
 
 HICON DecodeBase64Command::GetIcon()
 {
-	// ToDo: 設定
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->LoadConvertIcon();
 }
 
 int DecodeBase64Command::Match(Pattern* pattern)

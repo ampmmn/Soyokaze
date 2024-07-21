@@ -693,6 +693,11 @@ HICON IconLoader::LoadVolumeIcon(bool isMute)
 	}
 }
 
+HICON IconLoader::LoadConvertIcon()
+{
+	return GetWMPlocIcon(-29608);
+}
+
 static bool GetTempFilePath(LPTSTR userDataPath, size_t len)
 {
 	CAppProfile::GetDirPath(userDataPath, len);
