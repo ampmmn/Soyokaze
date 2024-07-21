@@ -80,6 +80,10 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		PathAppend(mShell32Dll, _T("System32"));
 		PathAppend(mShell32Dll, _T("shell32.dll"));
 
+		_tgetenv_s(&reqLen, mWMPlocDll, MAX_PATH_NTFS, SYSTEMROOT);
+		PathAppend(mWMPlocDll, _T("System32"));
+		PathAppend(mWMPlocDll, _T("wmploc.dll"));
+
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	~PImpl()
@@ -131,6 +135,7 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 
 	TCHAR mImgResDll[MAX_PATH_NTFS];
 	TCHAR mShell32Dll[MAX_PATH_NTFS];
+	TCHAR mWMPlocDll[MAX_PATH_NTFS];
 
 	// ファイルがリソースとして保持するアイコンを管理するためのmap
 	std::map<CString, IconIndexMap> mIconIndexCache;
@@ -484,6 +489,11 @@ HICON IconLoader::GetImageResIcon(int index)
 	return LoadIconResource(in->mImgResDll, index);
 }
 
+HICON IconLoader::GetWMPlocIcon(int index)
+{
+	return LoadIconResource(in->mWMPlocDll, index);
+}
+
 // ファイルがリソースとして保持するアイコンを取得
 HICON IconLoader::LoadIconResource(const CString& path, int index)
 {
@@ -536,7 +546,7 @@ HICON IconLoader::LoadWebIcon()
 
 HICON IconLoader::LoadNewIcon()
 {
-	return GetImageResIcon(-1024);
+	return GetWMPlocIcon(-474);
 }
 
 HICON IconLoader::LoadSettingIcon()
