@@ -123,18 +123,18 @@ void PartialMatchPattern::SetParam(
 	int wholeLen = wholeText.GetLength();
 
 	// tokensの構築
-	bool isQuate = false;
+	bool isQuote = false;
 	for (int i = 0; i < wholeLen; ++i) {
 
 		TCHAR c = wholeText[i];
 
-		if (isQuate == false && c == _T('"')) {
-			isQuate = true;
+		if (isQuote == false && c == _T('"')) {
+			isQuote = true;
 			start = i+1;
 			continue;
 		}
-		if (isQuate != false && c == _T('"')) {
-			isQuate = false;
+		if (isQuote != false && c == _T('"')) {
+			isQuote = false;
 
 			int count = i - start;
 			CString part = wholeText.Mid(start, count);
@@ -148,7 +148,7 @@ void PartialMatchPattern::SetParam(
 			continue;
 		}
 
-		if (isQuate == false && c == _T(' ')) {
+		if (isQuote == false && c == _T(' ')) {
 
 			int count = i-start;
 
@@ -231,9 +231,15 @@ void PartialMatchPattern::SetParam(
 			break;
 		}
 
-		// 前方一致比較用にパターンを生成しておく
-		std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[i]);
-		patternsForFM.push_back(std::wregex(L"^" + escapedPat));
+		try {
+			// 前方一致比較用にパターンを生成しておく
+			std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[i]);
+			patternsForFM.push_back(std::wregex(L"^" + escapedPat));
+		}
+		catch (std::regex_error& e) {
+			tstring reason = tostring(e.code());
+			spdlog::warn(_T("Failed to build regex for frontmatch. reason={0} "), reason.c_str());
+		}
 	}
 	in->mRegPatterns.swap(patterns);
 	in->mRegPatternsForFM.swap(patternsForFM);
