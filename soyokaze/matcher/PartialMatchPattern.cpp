@@ -29,6 +29,10 @@ struct PartialMatchPattern::PImpl
 		if (mMigemo.IsInitialized() == false) {
 			return false;
 		}
+		// 文字列が空なら使わない
+		if (token.IsEmpty()) {
+			return false;
+		}
 
 		// 入力文字が1文字で子音の場合はC/Migemoを使わない
 		// (子音によっては何もヒットしないことがあるので)
@@ -116,6 +120,7 @@ void PartialMatchPattern::SetParam(
 	in->mWholeText = wholeText;
 
 
+	// 与えられたテキストを空白で区切ったリスト
 	std::vector<CString> tokens;
 
 	int start = 0;
@@ -128,26 +133,27 @@ void PartialMatchPattern::SetParam(
 
 		TCHAR c = wholeText[i];
 
+		// "の中であることを識別するためのフラグを立てる
 		if (isQuote == false && c == _T('"')) {
 			isQuote = true;
 			start = i+1;
 			continue;
 		}
+
+		// "の終わり
 		if (isQuote != false && c == _T('"')) {
 			isQuote = false;
 
+			// "..." のなかのテキストを取得する
 			int count = i - start;
 			CString part = wholeText.Mid(start, count);
-			if (part.IsEmpty()) {
-				start=i+1;
-				continue;
-			}
 
 			tokens.push_back(part);
 			start = i + 1;
 			continue;
 		}
 
+		// "..."でない空白が現れた場合
 		if (isQuote == false && c == _T(' ')) {
 
 			int count = i-start;
@@ -173,6 +179,7 @@ void PartialMatchPattern::SetParam(
 		}
 	}
 
+	// 終端に達した際の末尾にあったキーワードをtokensに追加する
 	int count = wholeLen-start;
 	CString part = wholeText.Mid(start, count);
 	part.Trim();
@@ -187,9 +194,10 @@ void PartialMatchPattern::SetParam(
 	std::vector<std::wregex> patternsForFM;
 	patterns.reserve(in->mTokens.size());
 
+	// tokensに分解したキーワードをregexに変換してpatternsに入れる
 	for (size_t i = 0; i < in->mTokens.size(); ++i) {
+
 		auto& token = in->mTokens[i];
-		ASSERT(token.GetLength() > 0);
 
 		// 2つ目以降のキーワードが絶対パス表記ならパターンから除外(単なるパラメータとしての扱いとし、マッチングには使用しない)
 		if (i > 0 && PathIsRelative(token) == FALSE) {
@@ -213,9 +221,10 @@ void PartialMatchPattern::SetParam(
 				}
 			}
 			else {
-				std::wstring escapedPat = Pattern::StripEscapeChars(token);
-				patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
-
+				if (token.IsEmpty() == FALSE) {
+					std::wstring escapedPat = Pattern::StripEscapeChars(token);
+					patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
+				}
 				words.push_back(WORD(token, Pattern::FixString));
 			}
 		}
