@@ -39,6 +39,11 @@ protected:
 	bool GetHelpPageId(CString& id) override;
 
 	void UpdateStatus();
+
+	bool MakeShortcutSendToPath();
+	bool MakeShortcutStartMenu();
+	bool MakeShortcutDesktop();
+	bool MakeShortcutStartup();
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
