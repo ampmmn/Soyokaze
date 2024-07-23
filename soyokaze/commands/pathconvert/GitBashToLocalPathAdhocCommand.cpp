@@ -120,11 +120,6 @@ int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)
 		in->mFullPath.Format(_T("%s:\\%s"), driveLetter.c_str(), path.c_str());
 		in->mFullPath.Replace(_T('/'), _T('\\'));
 
-		if (in->mIcon) {
-			DestroyIcon(in->mIcon);
-			in->mIcon = nullptr;
-		}
-
 		return Pattern::WholeMatch;
 	}
 	return Pattern::Mismatch;
