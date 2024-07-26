@@ -287,7 +287,7 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 
 		key.Format(_T("CaptionStr%d"), i);
 		item.mCaptionStr = entry->Get(key, _T(""));
-		key.Format(_T("ClassStr%d"), entry);
+		key.Format(_T("ClassStr%d"), i);
 		item.mClassStr = entry->Get(key, _T(""));
 		key.Format(_T("IsUseRegExp%d"), i);
 		item.mIsUseRegExp = entry->Get(key, false) ? TRUE : FALSE;
