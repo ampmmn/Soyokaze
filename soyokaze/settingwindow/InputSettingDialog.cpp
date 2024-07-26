@@ -12,7 +12,11 @@
 using MainDirCommand = launcherapp::commands::builtin::MainDirCommand;
 
 InputSettingDialog::InputSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("入力"), IDD_INPUTSETTING, parentWnd)
+	SettingPage(_T("入力"), IDD_INPUTSETTING, parentWnd),
+	mIsIMEOff(false),
+	mIsIgnoreUNC(false),
+	mIsEnableMigemo(true)
+
 {
 }
 
@@ -67,9 +71,9 @@ BOOL InputSettingDialog::OnInitDialog()
 	CWnd* link2 = GetDlgItem(IDC_SYSLINK_APPDIR);
 	ASSERT(link2);
 	CString str;
-	 link2->GetWindowText(str);
+	link2->GetWindowText(str);
 
-	TCHAR appDir[MAX_PATH];
+	TCHAR appDir[MAX_PATH_NTFS];
 	GetModuleFileName(nullptr, appDir, MAX_PATH_NTFS);
 	PathRemoveFileSpec(appDir);
 	str.Replace(_T("$APPDIR"), appDir);
