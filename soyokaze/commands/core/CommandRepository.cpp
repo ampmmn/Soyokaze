@@ -828,6 +828,8 @@ void CommandRepository::OnAppExit()
 {
 	in->SetExit();
 
+	in->mCommands.Clear();
+
 	for (auto& provider : in->mProviders) {
 		provider->Release();
 	}

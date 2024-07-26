@@ -22,8 +22,7 @@ public:
 	~ChromiumBrowseHistory();
 
 public:
-	void Abort();
-	void Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
+	bool Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 private:
 	struct PImpl;

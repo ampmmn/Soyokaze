@@ -37,7 +37,7 @@ struct SQLite3Wrapper::PImpl
 	HMODULE mModule;
 	CharConverter mConv;
 	tregex mRegExp;
-	bool mIsFirst;
+	bool mIsFirst = true;
 };
 
 
@@ -89,6 +89,7 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 	if (in->mIsFirst) {
 		in->mConv.Convert(reg, str);
 		in->mRegExp = tregex(str);
+		in->mIsFirst = false;
 	}
 
 	in->mConv.Convert(text, str);
