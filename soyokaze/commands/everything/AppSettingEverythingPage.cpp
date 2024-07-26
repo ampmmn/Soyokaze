@@ -15,7 +15,8 @@ namespace commands {
 namespace everything {
 
 AppSettingEverythingPage::AppSettingEverythingPage(CWnd* parentWnd) : 
-	SettingPage(_T("Everything"), IDD_APPSETTING_EVERYTHING, parentWnd)
+	SettingPage(_T("Everything"), IDD_APPSETTING_EVERYTHING, parentWnd),
+	mIsUseAPI(FALSE), mIsUseWM(FALSE), mIsRunApp(FALSE)
 {
 }
 
@@ -67,6 +68,9 @@ void AppSettingEverythingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_EVERYTHINGEXEPATH, mEverythingExePath);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(AppSettingEverythingPage, SettingPage)
 	ON_COMMAND(IDC_CHECK_RUNEVERYTHING, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowse)
@@ -74,6 +78,7 @@ BEGIN_MESSAGE_MAP(AppSettingEverythingPage, SettingPage)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_COMMAND, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL AppSettingEverythingPage::OnInitDialog()
 {

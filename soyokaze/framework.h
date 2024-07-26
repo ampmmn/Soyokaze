@@ -50,6 +50,8 @@
 
 constexpr int MAX_PATH_NTFS = (32767+1);
 
+#define NELEMENTS(ary)  (sizeof(ary) / sizeof(*(ary)))
+
 #include <regex>
 #include <string>
 

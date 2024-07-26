@@ -20,7 +20,7 @@ private:
 	struct ITEM {
 		CString mDisplayName;
 		CString mDescription;
-		LPARAM mItemData;
+		LPARAM mItemData = 0;
 	};
 	std::vector<ITEM> mItems;
 

@@ -31,7 +31,7 @@ struct SettingDialog::PImpl
 	CommandParam mParam;
 	CString mOrgName;
 
-	int mIsEnableShortcut;
+	int mIsEnableShortcut = false;
 
 	// メッセージ欄
 	CString mMessage;

@@ -40,7 +40,7 @@ HWND CommandParam::FindHwnd()
 			thisPtr->mHwnd = h;
 			return FALSE;
 		}
-		CommandParam* mParam;
+		CommandParam* mParam = nullptr;
 		HWND mHwnd = nullptr;
 	} param;
 	param.mParam = this;

@@ -10,7 +10,10 @@
 
 
 ExecSettingDialog::ExecSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("実行"), IDD_EXECSETTING, parentWnd)
+	SettingPage(_T("実行"), IDD_EXECSETTING, parentWnd),
+	mIsShowFolderIfCtrlPressed(true),
+	mIsUseExternalFiler(false),
+	mIsEnablePathFind(true)
 {
 }
 

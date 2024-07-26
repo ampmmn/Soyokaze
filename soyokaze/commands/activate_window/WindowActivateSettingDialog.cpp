@@ -228,8 +228,13 @@ SettingDialog::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
 	UpdateStatus();
 	UpdateData(FALSE);
 
-	CString path = processPath.GetProcessPath();
-	in->mIconLabel.DrawIcon(IconLoader::Get()->GetDefaultIcon(path));
+	try {
+		CString path = processPath.GetProcessPath();
+		in->mIconLabel.DrawIcon(IconLoader::Get()->GetDefaultIcon(path));
+	}
+	catch (ProcessPath::Exception&) {
+		in->mIconLabel.DrawIcon(IconLoader::Get()->LoadWindowIcon());
+	}
 	return 0;
 }
 

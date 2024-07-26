@@ -20,9 +20,9 @@ static int SPDLOGLEVEL[] = {
 struct AppSettingPageOther::PImpl
 {
 	// 長時間の連続稼働を警告する
-	BOOL mIsWarnLongOperation;
+	BOOL mIsWarnLongOperation = false;
 	// 警告までの時間(分単位)
-	int mTimeToWarnLongOperation;
+	int mTimeToWarnLongOperation = 90;
 	// ログレベル
 	int mLogLevel = 0;
 };

@@ -39,11 +39,10 @@ struct OutlookItemProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 	//
-	bool mIsEnableMailItem;
-	bool mIsFirstCall;
+	bool mIsEnableMailItem = false;
+	bool mIsFirstCall = true;
 
 	OutlookItems mOutlookItems;
-	DWORD mLastUpdate;
 
 	uint32_t mRefCount = 1;
 };
@@ -57,9 +56,6 @@ REGISTER_COMMANDPROVIDER(OutlookItemProvider)
 
 OutlookItemProvider::OutlookItemProvider() : in(std::make_unique<PImpl>())
 {
-	in->mIsEnableMailItem = false;
-	in->mIsFirstCall = true;
-	in->mLastUpdate = 0;
 }
 
 OutlookItemProvider::~OutlookItemProvider()

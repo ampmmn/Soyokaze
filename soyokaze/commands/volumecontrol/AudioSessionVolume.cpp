@@ -20,7 +20,11 @@ struct AudioSessionVolume::PImpl
 
 AudioSessionVolume::AudioSessionVolume() : in(new PImpl)
 {
-	CoInitialize(nullptr);
+	HRESULT hr = CoInitialize(nullptr);
+	if (FAILED(hr)) {
+		spdlog::error(_T("Failed to CoInitialize!"));
+		return ;
+	}
 	Initialize();
 }
 

@@ -24,7 +24,7 @@ namespace regexp {
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
-	mIcon(nullptr)
+	mIcon(nullptr), mShowType(1), mIsRunAsAdmin(FALSE)
 {
 	SetHelpPageId(_T("RegExpEdit"));
 }
@@ -98,6 +98,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
@@ -112,6 +115,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL CommandEditDialog::OnInitDialog()
 {

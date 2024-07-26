@@ -65,7 +65,7 @@ struct PartialMatchPattern::PImpl
 	std::wregex mRegPatternFront;
 
 	CString mWholeText;
-	bool mIsUseMigemoForHistory;
+	bool mIsUseMigemoForHistory = false;
 
 	Migemo mMigemo;
 };

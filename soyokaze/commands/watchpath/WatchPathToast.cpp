@@ -113,8 +113,11 @@ struct Toast::PImpl
 static void registerCallback()
 {
 	DWORD registration;
-	CoRegisterClassObject(LAUNCHER_TOAST_CALLBACK_GUID, make<callback_factory>().get(),
+	HRESULT hr = CoRegisterClassObject(LAUNCHER_TOAST_CALLBACK_GUID, make<callback_factory>().get(),
 	                      CLSCTX_LOCAL_SERVER, REGCLS_SINGLEUSE, &registration);
+	if (FAILED(hr)) {
+		spdlog::error(_T("Failed to CoRegisterClassObject!"));
+	}
 }
 
 static bool isRegistered = false;

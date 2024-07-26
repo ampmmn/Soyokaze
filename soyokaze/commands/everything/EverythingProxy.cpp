@@ -90,7 +90,9 @@ bool EverythingProxy::PImpl::RunApp()
 	si.lpParameters = param;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	if (ShellExecuteEx(&si)) {
-		CloseHandle(si.hProcess);
+		if (si.hProcess != nullptr) {
+			CloseHandle(si.hProcess);
+		}
 		return true;
 	}
 	return false;
@@ -117,7 +119,7 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 	std::vector<EverythingResult> tmp;
 
 	constexpr int LIMIT_TIME = 100;   // 結果取得にかける時間(これを超過したら打ち切り)
-	DWORD start = GetTickCount();
+	uint64_t start = GetTickCount64();
 
 	for (DWORD i = 0; i < dwNumResults; ++i) {
 
@@ -132,7 +134,7 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 
 		tmp.push_back(result);
 
-		if (i == dwNumResults || (GetTickCount() - start) >= LIMIT_TIME) {
+		if (i == dwNumResults || (GetTickCount64() - start) >= LIMIT_TIME) {
 			break;
 		}
 	}
@@ -169,7 +171,7 @@ bool EverythingProxy::PImpl::QueryWithWM(const CString& queryStr)
 	// 入力欄
 	HWND hEditCtrl = nullptr;
 	EnumChildWindows(hEverything, local::OnChildWindows, (LPARAM)&hEditCtrl);
-	if (IsWindow(hEditCtrl)== FALSE) {
+	if (hEditCtrl == nullptr || IsWindow(hEditCtrl) == FALSE) {
 		spdlog::debug(_T("QueryWithWM: can't find edit."));
 		mLastMethod  = -1;  // Err
 		return false;

@@ -47,14 +47,14 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 	// 環境変数PATHにあるexeを実行するためのコマンド
-	PathExecuteCommand* mExeCommandPtr;
+	PathExecuteCommand* mExeCommandPtr = nullptr;
 	//
 	ExcludePathList mExcludeFiles;
 	//
-	bool mIsIgnoreUNC;
-	bool mIsEnable;
+	bool mIsIgnoreUNC = false;
+	bool mIsEnable = true;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall;
+	bool mIsFirstCall = true;
 
 };
 
@@ -68,8 +68,6 @@ REGISTER_COMMANDPROVIDER(PathExeAdhocCommandProvider)
 PathExeAdhocCommandProvider::PathExeAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
 	in->mExeCommandPtr = new PathExecuteCommand(&in->mExcludeFiles);
-	in->mIsIgnoreUNC = false;
-	in->mIsFirstCall = true;
 }
 
 PathExeAdhocCommandProvider::~PathExeAdhocCommandProvider()

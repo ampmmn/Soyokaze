@@ -34,7 +34,7 @@ static LPSQLITE3_USER_DATA sqlite3_user_data = nullptr;
 
 struct SQLite3Wrapper::PImpl
 {
-	HMODULE mModule;
+	HMODULE mModule = nullptr;
 	CharConverter mConv;
 	tregex mRegExp;
 	bool mIsFirst = true;
@@ -43,21 +43,24 @@ struct SQLite3Wrapper::PImpl
 
 SQLite3Wrapper::SQLite3Wrapper() : in(new PImpl)
 {
-	in->mModule = nullptr;
-
 	HMODULE lib = LoadLibrary(_T("winsqlite3.dll"));
 	in->mModule = lib;
 
-	sqlite3_open = (LPSQLITE3_OPEN)GetProcAddress(lib, "sqlite3_open");
-	sqlite3_exec = (LPSQLITE3_EXEC)GetProcAddress(lib, "sqlite3_exec");
-	sqlite3_get_table = (LPSQLITE3_GET_TABLE)GetProcAddress(lib, "sqlite3_get_table");
-	sqlite3_free_table = (LPSQLITE3_FREE_TABLE)GetProcAddress(lib, "sqlite3_free_table");
-	sqlite3_close = (LPSQLITE3_CLOSE)GetProcAddress(lib, "sqlite3_close");
-	sqlite3_value_text = (LPSQLITE3_VALUE_TEXT )GetProcAddress(lib, "sqlite3_value_text");
-	sqlite3_result_error = (LPSQLITE3_RESULT_ERROR )GetProcAddress(lib, "sqlite3_result_error");
-	sqlite3_result_int = (LPSQLITE3_RESULT_INT )GetProcAddress(lib, "sqlite3_result_int");
-	sqlite3_create_function = (LPSQLITE3_CREATE_FUNCTION)GetProcAddress(lib, "sqlite3_create_function");
-	sqlite3_user_data =  (LPSQLITE3_USER_DATA)GetProcAddress(lib, "sqlite3_user_data");
+	if (lib) {
+		sqlite3_open = (LPSQLITE3_OPEN)GetProcAddress(lib, "sqlite3_open");
+		sqlite3_exec = (LPSQLITE3_EXEC)GetProcAddress(lib, "sqlite3_exec");
+		sqlite3_get_table = (LPSQLITE3_GET_TABLE)GetProcAddress(lib, "sqlite3_get_table");
+		sqlite3_free_table = (LPSQLITE3_FREE_TABLE)GetProcAddress(lib, "sqlite3_free_table");
+		sqlite3_close = (LPSQLITE3_CLOSE)GetProcAddress(lib, "sqlite3_close");
+		sqlite3_value_text = (LPSQLITE3_VALUE_TEXT )GetProcAddress(lib, "sqlite3_value_text");
+		sqlite3_result_error = (LPSQLITE3_RESULT_ERROR )GetProcAddress(lib, "sqlite3_result_error");
+		sqlite3_result_int = (LPSQLITE3_RESULT_INT )GetProcAddress(lib, "sqlite3_result_int");
+		sqlite3_create_function = (LPSQLITE3_CREATE_FUNCTION)GetProcAddress(lib, "sqlite3_create_function");
+		sqlite3_user_data =  (LPSQLITE3_USER_DATA)GetProcAddress(lib, "sqlite3_user_data");
+	}
+	else {
+		spdlog::error(_T("Failed to load winsqlite3.dll!"));
+	}
 
 }
 

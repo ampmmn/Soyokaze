@@ -7,7 +7,7 @@ namespace mmc {
 class MMCSnapin
 {
 public:
-	MMCSnapin()
+	MMCSnapin() : mIconIndex(0)
 	{
 	}
 

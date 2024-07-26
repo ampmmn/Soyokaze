@@ -66,7 +66,7 @@ bool ShortcutFile::Save(LPCTSTR pathToSave)
 		propStore->SetValue(PKEY_AppUserModel_ID, appIdPropVar);
 
 		// ToastのコールバックIDを設定
-		PROPVARIANT callbackIdPropVar;
+		PROPVARIANT callbackIdPropVar = {};
 		if (mToastCallbackGuid.get()) {
 			InitPropVariantFromCLSID(*(mToastCallbackGuid.get()), &callbackIdPropVar);
 			propStore->SetValue(PKEY_AppUserModel_ToastActivatorCLSID, callbackIdPropVar);
@@ -125,7 +125,7 @@ CString ShortcutFile::ResolvePath(
 
 	wchar_t pathWideChar[MAX_PATH_NTFS];
 
-	WIN32_FIND_DATA wfd;
+	WIN32_FIND_DATA wfd = {};
 	shellLinkPtr->GetPath(pathWideChar, MAX_PATH_NTFS, &wfd, 0);
 
 	if (description) {

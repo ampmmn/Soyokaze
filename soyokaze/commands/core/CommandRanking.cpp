@@ -32,14 +32,13 @@ struct CommandRanking::PImpl
 	// 設定ファイル保存先パス
 	CString mFilePath;
 
-	bool mIsLoaded;
+	bool mIsLoaded = false;
 
 	bool mIsTemporary = false;
 };
 
 CommandRanking::CommandRanking() : in(std::make_unique<PImpl>())
 {
-	in->mIsLoaded = false;
 }
 
 CommandRanking::~CommandRanking()
@@ -59,7 +58,7 @@ bool CommandRanking::Load()
 	const CString& filePath = in->GetFilePath();
 
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, filePath, _T("r,ccs=UTF-8")) != 0) {
+	if (_tfopen_s(&fpIn, filePath, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
 		SPDLOG_WARN(_T("priority data file does not exist. {}"), PRIORITY_FILENAME);
 		return false;
 	}
@@ -109,7 +108,7 @@ bool CommandRanking::Save()
 	try {
 		CString filePathTmp = filePath + _T(".tmp");
 
-		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0) {
+		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0 || fpOut == nullptr) {
 			return false;
 		}
 		CStdioFile file(fpOut);

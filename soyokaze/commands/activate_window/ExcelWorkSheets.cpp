@@ -29,13 +29,13 @@ struct WorkSheets::PImpl
 	}
 
 	// 前回の取得時のタイムスタンプ
-	DWORD mLastUpdate;
+	uint64_t mLastUpdate = 0;
 	std::vector<Worksheet*> mCache;
 
 	// 生成処理の排他制御
 	std::mutex mMutex;
 
-	int mStatus;
+	int mStatus= STATUS_BUSY;
 };
 
 void WorkSheets::PImpl::Update()
@@ -53,7 +53,7 @@ void WorkSheets::PImpl::Update()
 		if (FAILED(hr)) {
 			// 取得できなかった(インストールされていないとか)
 			std::lock_guard<std::mutex> lock(mMutex);
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -70,7 +70,7 @@ void WorkSheets::PImpl::Update()
 			}
 			mCache.clear();
 
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -173,7 +173,7 @@ void WorkSheets::PImpl::Update()
 
 		std::lock_guard<std::mutex> lock(mMutex);
 		mCache.swap(tmpList);
-		mLastUpdate = GetTickCount();
+		mLastUpdate = GetTickCount64();
 		mStatus = STATUS_READY;
 
 		for (auto& item : tmpList) {
@@ -185,7 +185,10 @@ void WorkSheets::PImpl::Update()
 
 WorkSheets::WorkSheets() : in(std::make_unique<PImpl>())
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 
 	in->mLastUpdate = 0;
 	in->mStatus = STATUS_READY;
@@ -208,7 +211,7 @@ constexpr int INTERVAL_REUSE = 5000;
 bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 {
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
-	DWORD elapsed = GetTickCount() - in->mLastUpdate;
+	uint64_t elapsed = GetTickCount64() - in->mLastUpdate;
 	if (elapsed < INTERVAL_REUSE) {
 
 		std::lock_guard<std::mutex> lock(in->mMutex);
@@ -243,7 +246,7 @@ struct Worksheet::PImpl
 	// シート名
 	CString mSheetName;
 	// 参照カウント
-	uint32_t mRefCount;
+	uint32_t mRefCount = 1;
 	
 };
 
@@ -260,8 +263,6 @@ struct Worksheet::PImpl
 ) : 
 	in(std::make_unique<PImpl>())
 {
-	in->mRefCount = 1;
-
 	// 引数で与えられる文字列はフォルダパスなので、ファイル名を補う
 	in->mAppPath = appPath;
 	in->mAppPath += _T("\\EXCEL.EXE");

@@ -34,12 +34,11 @@ struct ExecuteHistory::PImpl
 	std::map<CString, std::list<HISTORY_ITEM> > mItemMap;
 
 	// 読み込み済か?
-	bool mIsLoaded;
+	bool mIsLoaded = false;
 };
 
 ExecuteHistory::ExecuteHistory() : in(std::make_unique<PImpl>())
 {
-	in->mIsLoaded = false;
 }
 
 ExecuteHistory::~ExecuteHistory()
@@ -200,7 +199,7 @@ void ExecuteHistory::Save()
 		CString filePathTmp(path);
 		filePathTmp += _T(".tmp");
 
-		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0) {
+		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0 || fpOut == nullptr) {
 			return ;
 		}
 
@@ -244,7 +243,7 @@ void ExecuteHistory::Load()
 	auto& path = in->GetFilePath();
 
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0) {
+	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
 		return;
 	}
 

@@ -30,13 +30,13 @@ struct CalcWorkSheets::PImpl
 	}
 
 	// 前回の取得時のタイムスタンプ
-	DWORD mLastUpdate;
+	uint64_t mLastUpdate = 0;
 	std::vector<CalcWorksheet*> mCache;
 
 	// 生成処理の排他制御
 	std::mutex mMutex;
 
-	int mStatus;
+	int mStatus = STATUS_BUSY;
 };
 
 void CalcWorkSheets::PImpl::Update()
@@ -47,7 +47,15 @@ void CalcWorkSheets::PImpl::Update()
 	}
 
 	std::thread th([&]() {
-		CoInitialize(nullptr);
+		HRESULT hr = CoInitialize(nullptr);
+		if (FAILED(hr)) {
+			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+
+			std::lock_guard<std::mutex> lock(mMutex);
+			mLastUpdate = GetTickCount64();
+			mStatus = STATUS_READY;
+			return ;
+		}
 
 		struct scope_uninit {
 			~scope_uninit() {
@@ -57,12 +65,11 @@ void CalcWorkSheets::PImpl::Update()
 
 		// ExcelのCLSIDを得る
 		CLSID clsid;
-		HRESULT hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
-
+		hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
 		if (FAILED(hr)) {
 			// 取得できなかった(インストールされていないとか)
 			std::lock_guard<std::mutex> lock(mMutex);
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -79,7 +86,7 @@ void CalcWorkSheets::PImpl::Update()
 			}
 			mCache.clear();
 
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -148,7 +155,7 @@ void CalcWorkSheets::PImpl::Update()
 
 		std::lock_guard<std::mutex> lock(mMutex);
 		mCache.swap(tmpList);
-		mLastUpdate = GetTickCount();
+		mLastUpdate = GetTickCount64();
 		mStatus = STATUS_READY;
 
 		for (auto& item : tmpList) {
@@ -160,7 +167,10 @@ void CalcWorkSheets::PImpl::Update()
 
 CalcWorkSheets::CalcWorkSheets() : in(std::make_unique<PImpl>())
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize! err={:x}"), GetLastError());
+	}
 
 	in->mLastUpdate = 0;
 	in->mStatus = STATUS_READY;
@@ -183,7 +193,7 @@ constexpr int INTERVAL_REUSE = 5000;
 bool CalcWorkSheets::GetWorksheets(std::vector<CalcWorksheet*>& worksheets)
 {
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
-	DWORD elapsed = GetTickCount() - in->mLastUpdate;
+	uint64_t elapsed = GetTickCount64() - in->mLastUpdate;
 	if (elapsed < INTERVAL_REUSE) {
 
 		std::lock_guard<std::mutex> lock(in->mMutex);
@@ -218,7 +228,7 @@ struct CalcWorksheet::PImpl
 	// シート名
 	CString mSheetName;
 	// 参照カウント
-	uint32_t mRefCount;
+	uint32_t mRefCount = 1;
 	
 };
 
@@ -312,7 +322,6 @@ static CString DecodeURI(const CString& src)
 ) : 
 	in(std::make_unique<PImpl>())
 {
-	in->mRefCount = 1;
 	in->mBookName = workbookName;
 
 	CString decoded = DecodeURI(workbookName);

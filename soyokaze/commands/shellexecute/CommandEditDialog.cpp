@@ -48,6 +48,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
@@ -62,6 +65,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL CommandEditDialog::OnInitDialog()
 {

@@ -5,15 +5,15 @@ namespace utility {
 class TimeoutChecker
 {
 public:
-	TimeoutChecker(DWORD timeout) : mStart(GetTickCount()), mTimeout(timeout) {}
+	TimeoutChecker(uint64_t timeout) : mStart(GetTickCount64()), mTimeout(timeout) {}
 	
 	bool IsTimeout()
 	{
-		return (GetTickCount() - mStart) >= mTimeout;
+		return (GetTickCount64() - mStart) >= mTimeout;
 	}
 
-	DWORD mStart;
-	DWORD mTimeout;
+	uint64_t mStart;
+	uint64_t mTimeout;
 	
 
 };

@@ -13,7 +13,8 @@ const int ID_LAUNCHER_TASKTRAY = 1000;
 
 IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 
-TaskTray::TaskTray(TaskTrayEventListenerIF* listener) : mListenerPtr(listener)
+TaskTray::TaskTray(TaskTrayEventListenerIF* listener) : 
+	mTaskTrayWindow(nullptr), mListenerPtr(listener)
 {
 	memset(&mNotifyIconData, 0, sizeof(mNotifyIconData));
 }
@@ -62,7 +63,7 @@ BOOL TaskTray::Create()
 	tipsStr = PathFindFileName(moduleName);
 
 	nid.uFlags |= NIF_TIP;
-	_tcsncpy_s(nid.szTip, sizeof(nid.szTip), tipsStr, _TRUNCATE);
+	_tcsncpy_s(nid.szTip, NELEMENTS(nid.szTip), tipsStr, _TRUNCATE);
 
 	mNotifyIconData = nid;
 

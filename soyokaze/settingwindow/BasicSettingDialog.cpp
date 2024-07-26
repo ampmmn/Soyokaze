@@ -12,7 +12,14 @@
 
 
 BasicSettingDialog::BasicSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("基本"), IDD_BASICSETTING, parentWnd)
+	SettingPage(_T("基本"), IDD_BASICSETTING, parentWnd),
+	mIsEnableHotKey(true),
+	mIsEnableModifierHotKey(false),
+	mModifierFirstVK(VK_CONTROL),
+	mModifierSecondVK(VK_CONTROL),
+	mIsShowToggle(true),
+	mIsKeepTextWhenDlgHide(false),
+	mIsHideOnRun(false)
 {
 }
 

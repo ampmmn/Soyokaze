@@ -47,7 +47,7 @@ size_t Pipe::ReadAll(Buffer& output)
 
 	HANDLE hRead = mReadHandle;
 
-	char buff[65536];
+	char buff[65536] = {};
 	DWORD bufLen = (DWORD)sizeof(buff);
 
 	DWORD rest = 0;
@@ -55,7 +55,11 @@ size_t Pipe::ReadAll(Buffer& output)
 
 	while (rest > 0) {
 		DWORD readed = 0;
-		ReadFile(hRead, buff,  bufLen < rest? bufLen : rest, &readed, NULL);
+		if (ReadFile(hRead, buff,  bufLen < rest? bufLen : rest, &readed, NULL) == FALSE) {
+			SPDLOG_ERROR(_T("Failed to ReadFile! err={:x}"), GetLastError());
+			break;
+		}
+
 		rest -= readed;
 		readTotal += readed;
 

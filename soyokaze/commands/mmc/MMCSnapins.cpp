@@ -53,7 +53,10 @@ void MMCSnapins::PImpl::RunCollectTask()
 			mWaitEvt.ResetEvent();
 
 			Sleep(500);
-			CoInitialize(NULL);
+			HRESULT hr = CoInitialize(NULL);
+			if (FAILED(hr)) {
+				spdlog::error(_T("Failed to CoInitialize!"));
+			}
 
 			std::vector<MMCSnapin> items;
 			EnumItems(items);
@@ -444,7 +447,11 @@ bool MMCSnapins::PImpl::LoadItem(
 
 	try {
 		CComPtr<IXMLDOMDocument> pXmlDom;
-		pXmlDom.CoCreateInstance(CLSID_DOMDocument);
+		HRESULT hr = pXmlDom.CoCreateInstance(CLSID_DOMDocument);
+		if (FAILED(hr)) {
+			spdlog::error(_T("Failed to createinstance of DOMDocument!"));
+			return false;
+		}
 
 		CComBSTR argVal(filePath);
 
@@ -454,7 +461,7 @@ bool MMCSnapins::PImpl::LoadItem(
 		arg1.bstrVal = argVal;
 
 		VARIANT_BOOL arg2;
-		HRESULT hr = pXmlDom->load(arg1, &arg2);
+		hr = pXmlDom->load(arg1, &arg2);
 		if (FAILED(hr)) {
 			return false;
 		}

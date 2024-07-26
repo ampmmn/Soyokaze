@@ -28,6 +28,9 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_BUILDDATE, mBuildDateStr);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK1, OnNotifyLinkOpen)
@@ -35,6 +38,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK2, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL CAboutDlg::OnInitDialog()
 {

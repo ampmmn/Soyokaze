@@ -38,7 +38,7 @@ struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 	void OnLancuherActivate() override {}
 	void OnLancuherUnactivate() override {}
 
-	SimpleDictCommand* mThisPtr;
+	SimpleDictCommand* mThisPtr = nullptr;
 	SimpleDictParam mParam;
 	CommandHotKeyAttribute mHotKeyAttr;
 

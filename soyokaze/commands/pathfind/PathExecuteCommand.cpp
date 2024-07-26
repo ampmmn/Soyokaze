@@ -50,12 +50,12 @@ struct PathExecuteCommand::PImpl
 	}
 
 	LocalPathResolver mResolver;
-	ExcludePathList* mExcludeFiles;
+	ExcludePathList* mExcludeFiles = nullptr;
 	CString mWord;
 	CString mFullPath;
-	bool mIsURL;
-	bool mIsFromHistory;
-	bool mIsExe;
+	bool mIsURL = false;
+	bool mIsFromHistory = false;
+	bool mIsExe = false;
 };
 
 
@@ -63,9 +63,6 @@ PathExecuteCommand::PathExecuteCommand(
 	ExcludePathList* excludeList
 ) : in(std::make_unique<PImpl>())
 {
-	in->mIsURL = false;
-	in->mIsFromHistory = false;
-	in->mIsExe = false;
 	in->mExcludeFiles = excludeList;
 }
 

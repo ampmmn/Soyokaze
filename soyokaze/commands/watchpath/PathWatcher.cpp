@@ -30,8 +30,8 @@ struct PathWatcher::PImpl
 	}
 	// 監視スレッドの完了を待機する(最大3秒)
 	void WaitExit() {
-		DWORD start = GetTickCount();
-		while (GetTickCount() - start < 3000) {
+		uint64_t start = GetTickCount64();
+		while (GetTickCount64() - start < 3000) {
 			if (mIsExited) {
 				break;
 			}
@@ -54,9 +54,9 @@ struct PathWatcher::PImpl
 	std::map<CString, WatchTarget*> mTargets;
 
 	// 監視終了フラグ
-	bool mIsAbort;
+	bool mIsAbort = false;
 	// 監視スレッド終了済を表すフラグ
-	bool mIsExited;
+	bool mIsExited = false;
 	// 監視スレッド
 	std::unique_ptr<std::thread> mTask;
 };

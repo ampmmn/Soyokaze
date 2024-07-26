@@ -42,9 +42,9 @@ struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
-	InchAdhocCommand* mInchCmdPtr;
+	InchAdhocCommand* mInchCmdPtr = nullptr;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall;
+	bool mIsFirstCall = true;
 
 };
 
@@ -58,7 +58,6 @@ REGISTER_COMMANDPROVIDER(UnitConvertProvider)
 UnitConvertProvider::UnitConvertProvider() : in(std::make_unique<PImpl>())
 {
 	in->mInchCmdPtr = new InchAdhocCommand();
-	in->mIsFirstCall = true;
 }
 
 UnitConvertProvider::~UnitConvertProvider()

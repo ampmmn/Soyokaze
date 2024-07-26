@@ -23,7 +23,7 @@ struct SpecialFolderFiles::PImpl
 
 	std::mutex mMutex;
 	std::vector<ITEM> mItems;
-	DWORD mElapsed = 0;
+	uint64_t mElapsed = 0;
 	CEvent mEvent;
 
 	bool mIsUpdated = false;
@@ -55,7 +55,7 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 {
 	{
 		std::lock_guard<std::mutex> lock(in->mMutex);
-		DWORD elapsed = GetTickCount() - in->mElapsed;
+		uint64_t elapsed = GetTickCount64() - in->mElapsed;
 		if (elapsed <= INTERVAL) {
 			if (in->mIsUpdated) {
 				items = in->mItems;
@@ -70,7 +70,10 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 
 	std::thread th([&]() {
 		
-		CoInitialize(NULL);
+		HRESULT hr = CoInitialize(NULL);
+		if (FAILED(hr)) {
+			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+		}
 
 		std::vector<ITEM> tmp;
 
@@ -89,7 +92,7 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 
 		std::lock_guard<std::mutex> lock(in->mMutex);
 		in->mItems.swap(tmp);
-		in->mElapsed = GetTickCount();
+		in->mElapsed = GetTickCount64();
 		in->mIsUpdated = true;
 		in->mEvent.SetEvent();
 	});

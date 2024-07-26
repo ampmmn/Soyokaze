@@ -24,7 +24,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 struct HistoryCommandProvider::PImpl
 {
 	bool mQuering = false;
-	DWORD mLastCheck = 0;
+	uint64_t mLastCheck = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ void HistoryCommandProvider::QueryAdhocCommands(
 	auto history = ExecuteHistory::GetInstance();
 	history->GetItems(_T("history"), items);
 
-	if (GetTickCount() - in->mLastCheck > CHECK_INTERVAL) {
+	if (GetTickCount64() - in->mLastCheck > CHECK_INTERVAL) {
 		// 一定間隔でコマンドが存在するかどうかをチェックする
 
 		std::set<CString> missingWords;
@@ -100,7 +100,7 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 		history->EraseItems(_T("history"), missingWords);
 
-		in->mLastCheck = GetTickCount();
+		in->mLastCheck = GetTickCount64();
 	}
 
 	for (const auto& item : items) {

@@ -11,7 +11,11 @@
 
 
 ShortcutSettingPage::ShortcutSettingPage(CWnd* parentWnd) : 
-	SettingPage(_T("ショートカット登録"), IDD_SHORTCUTSETTING, parentWnd)
+	SettingPage(_T("ショートカット登録"), IDD_SHORTCUTSETTING, parentWnd),
+	mSendTo(FALSE),
+	mStartMenu(FALSE),
+	mDesktop(FALSE),
+	mStartup(FALSE)
 {
 }
 

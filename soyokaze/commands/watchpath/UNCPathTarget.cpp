@@ -225,7 +225,7 @@ struct UNCPathTarget::PImpl
 	// 監視対象パス以下にある要素の更新日時情報
 	DirectoryNode mPrevTimeStamps;
 	// 最後にチェックした時刻
-	DWORD mLastCheckTime = 0;
+	uint64_t mLastCheckTime = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ bool UNCPathTarget::IsUpdated()
 {
 	//bool isFirst = in->mLastCheckTime == 0;
 	//if (isFirst == false) {
-	//	DWORD elapsed = GetTickCount() - in->mLastCheckTime;
+	//	DWORD elapsed = GetTickCount64() - in->mLastCheckTime;
 	//	if (elapsed < 5000) {  // FIXME: 間隔調整
 	//		return false;
 	//	}
@@ -268,14 +268,14 @@ bool UNCPathTarget::IsUpdated()
 
 	// 初回だった場合は比較しない
 	if (in->mLastCheckTime == 0) {
-		in->mLastCheckTime = GetTickCount();
+		in->mLastCheckTime = GetTickCount64();
 		in->mPrevTimeStamps.swap(currentTS);
 		return false;
 	}
 
 	// 前回と比較
 	if (currentTS.IsDiffer(in->mPrevTimeStamps) == false) {
-		in->mLastCheckTime = GetTickCount();
+		in->mLastCheckTime = GetTickCount64();
 		return false;
 	}
 
@@ -298,7 +298,7 @@ bool UNCPathTarget::IsUpdated()
 	}
 
 	in->mDetail.Format(_T("%s %s"), (LPCTSTR)typeStr, (LPCTSTR)changedItem);
-	in->mLastCheckTime = GetTickCount();
+	in->mLastCheckTime = GetTickCount64();
 	in->mPrevTimeStamps.swap(currentTS);
 	return true;
 }

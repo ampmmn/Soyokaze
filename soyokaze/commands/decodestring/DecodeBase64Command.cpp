@@ -129,7 +129,7 @@ int DecodeBase64Command::Match(Pattern* pattern)
 				index = 0;
 			}
 		}
-		uint8_t bits[4];
+		uint8_t bits[4] = {};
 		int index = 0;
 	} bits;
 

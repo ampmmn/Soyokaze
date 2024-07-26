@@ -15,7 +15,7 @@ namespace presentation {
 
 struct PptJumpCommand::PImpl
 {
-	int mPage;
+	int mPage = 0;
 	CString mTitle;
 };
 

@@ -40,7 +40,7 @@ struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 
 
 	bool mIsEnable = true;
-	bool mIsFirstCall;
+	bool mIsFirstCall = true;
 	std::vector<ItemPtr> mItems;
 	UWPApplications mUWPApps;
 

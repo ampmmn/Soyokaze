@@ -140,7 +140,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		mIsEnable = pref->IsEnablePowerPointSlide();
 	}
 
-	bool mIsEnable;
+	bool mIsEnable = true;
 
 	std::mutex mMutex;
 	bool mIsAbort = false;
@@ -338,8 +338,8 @@ void Presentations::Abort()
 	in->Abort();
 
 	// 監視スレッドの終了を待つ(最大3秒)
-	DWORD start = GetTickCount();
-	while(GetTickCount() - start < 3000) {
+	uint64_t start = GetTickCount64();
+	while(GetTickCount64() - start < 3000) {
 		if (in->mIsExited) {
 			break;
 		}

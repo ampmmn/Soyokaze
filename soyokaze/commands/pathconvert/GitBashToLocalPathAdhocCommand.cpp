@@ -24,13 +24,12 @@ struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	CString mFullPath;
 	HICON mIcon = nullptr;
-	bool mIsExe;
+	bool mIsExe = false;
 };
 
 
 GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
-	in->mIsExe = false;
 }
 
 GitBashToLocalPathAdhocCommand::~GitBashToLocalPathAdhocCommand()

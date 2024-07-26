@@ -27,12 +27,12 @@ struct WindowActivateCommand::PImpl
 	CString mErrorMsg;
 
 	HWND mCachedHwnd = nullptr;
-	DWORD mLastUpdate = 0;
+	uint64_t mLastUpdate = 0;
 };
 
 HWND WindowActivateCommand::PImpl::FindHwnd()
 {
-	if (IsWindow(mCachedHwnd) && GetTickCount() - mLastUpdate < UPDATE_INTERVAL) {
+	if (IsWindow(mCachedHwnd) && GetTickCount64() - mLastUpdate < UPDATE_INTERVAL) {
 		return mCachedHwnd;
 	}
 	mCachedHwnd = nullptr;
@@ -40,7 +40,7 @@ HWND WindowActivateCommand::PImpl::FindHwnd()
 	HWND hwnd = mParam.FindHwnd();
 	if (hwnd) {
 		mCachedHwnd = hwnd;
-		mLastUpdate = GetTickCount();
+		mLastUpdate = GetTickCount64();
 	}
 	return mCachedHwnd;
 }

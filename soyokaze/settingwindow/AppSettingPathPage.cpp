@@ -84,6 +84,9 @@ void AppSettingPathPage::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(AppSettingPathPage, SettingPage)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
@@ -94,6 +97,7 @@ BEGIN_MESSAGE_MAP(AppSettingPathPage, SettingPage)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_PATH, OnNotifyItemDblClk)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL AppSettingPathPage::OnInitDialog()
 {

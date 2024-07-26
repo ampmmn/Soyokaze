@@ -13,30 +13,30 @@
 struct ViewSettingDialog::PImpl
 {
 	// 入力画面を常に最前面に表示
-	BOOL mIsTopMost;
+	BOOL mIsTopMost = FALSE;
 
 	// アクティブ状態でなくなったらウインドウを隠す
-	BOOL mIsHideOnInactive;
+	BOOL mIsHideOnInactive = FALSE;
 
 	// 半透明の表示方法
-	int mTransparencyType;
+	int mTransparencyType = 0;
 	// 半透明表示の透明度
-	UINT mAlpha;
+	UINT mAlpha = 128;
 
 	// マウスカーソル位置に入力欄を表示する
-	BOOL mIsShowMainWindowOnCursor;
+	BOOL mIsShowMainWindowOnCursor = FALSE;
 
 	// コマンド種別を表示するか?
-	BOOL mIsShowCommandType;
+	BOOL mIsShowCommandType = TRUE;
 
 	// 操作ガイドを表示するか?
-	BOOL mIsShowGuide;
+	BOOL mIsShowGuide = TRUE;
 
 	// 候補欄の背景色を交互に変える
-	BOOL mIsAlternateColor;
+	BOOL mIsAlternateColor = TRUE;
 
 	// 候補欄の各項目にアイコンを描画するか
-	BOOL mIsDrawIconOnCandidate;
+	BOOL mIsDrawIconOnCandidate = TRUE;
 
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
@@ -46,7 +46,6 @@ ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) :
 	SettingPage(_T("表示"), IDD_VIEWSETTING, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	in->mAlpha = 128;
 }
 
 ViewSettingDialog::~ViewSettingDialog()
@@ -124,12 +123,16 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, in->mIsDrawIconOnCandidate);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnCbnTransparencyChanged)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL ViewSettingDialog::OnInitDialog()
 {

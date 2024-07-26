@@ -70,7 +70,10 @@ int AfxWWrapper::PImpl::GetCurrentWinNo()
 // コンストラクタ
 AfxWWrapper::AfxWWrapper() : in(std::make_unique<PImpl>())
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 
 	in->mDispPtr = nullptr;
 }

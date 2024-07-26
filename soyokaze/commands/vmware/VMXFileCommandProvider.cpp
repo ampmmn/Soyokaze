@@ -31,7 +31,7 @@ struct VMXFileCommandProvider::PImpl
 	void Reload();
 
 	CString mPrefFilePath;
-	FILETIME mPrefUpdateTime;
+	FILETIME mPrefUpdateTime = {};
 
 	std::vector<VMXFileCommand*> mCommands;
 };
@@ -47,7 +47,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 	mCommands.clear();
 
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0) {
+	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0 || fpIn == nullptr) {
 		return;
 	}
 

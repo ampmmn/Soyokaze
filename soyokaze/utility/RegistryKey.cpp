@@ -18,7 +18,11 @@ RegistryKey::~RegistryKey()
 	if (mKey == nullptr) {
 		return ;
 	}
-	if (mKey != HKEY_LOCAL_MACHINE || mKey != HKEY_CLASSES_ROOT) {
+
+	bool isHKLM = mKey == HKEY_LOCAL_MACHINE;
+	bool isHKCR = mKey == HKEY_CLASSES_ROOT;
+	bool isHKCU = mKey == HKEY_CURRENT_USER;
+	if (isHKLM == false && isHKCR == false && isHKCU == false) {
 		// 他の定義済みキーは今のところ使ってないので見ない
 		RegCloseKey(mKey);
 		mKey = nullptr;

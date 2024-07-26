@@ -13,7 +13,8 @@ namespace commands {
 namespace pathconvert {
 
 AppSettingPathConvertPage::AppSettingPathConvertPage(CWnd* parentWnd) : 
-	SettingPage(_T("パス変換"), IDD_APPSETTING_PATHCONVERT, parentWnd)
+	SettingPage(_T("パス変換"), IDD_APPSETTING_PATHCONVERT, parentWnd),
+	mIsEnableGitBashPath(true), mIsEnableFileProtolPath(true)
 {
 }
 

@@ -26,7 +26,7 @@ struct CandidateListCtrl::PImpl
 	// 背景色を交互に色を変える
 	bool mIsAlternateColor = false;
 
-	int mItemsInPage;
+	int mItemsInPage = 0;
 
 	// アイコンを保持するためのイメージリスト
 	CImageList mIconList;

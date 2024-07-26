@@ -250,6 +250,9 @@ void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -284,6 +287,8 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
+
+#pragma warning( pop )
 
 void LauncherMainWindow::ActivateWindow(HWND hwnd)
 {

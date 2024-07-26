@@ -21,11 +21,11 @@ struct BuiltinEditDialog::PImpl
 
 	CString mOrgName;
 
-	bool mCanEditEnable;
-	bool mCanEditConfirm;
+	bool mCanEditEnable = false;
+	bool mCanEditConfirm = false;
 
-	BOOL mIsEnable;
-	BOOL mIsConfirm;
+	BOOL mIsEnable = FALSE;
+	BOOL mIsConfirm = FALSE;
 
 	CString mMessage;
 };

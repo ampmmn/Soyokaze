@@ -33,7 +33,7 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 	void OnUnlockScreenOccurred() override
 	{
 		mIsLocking = false;
-		mStartWorkTime = GetTickCount();
+		mStartWorkTime = GetTickCount64();
 		mIsWarned = false;
 
 		// 通知を消す
@@ -57,7 +57,7 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 		}
 
 		// 前回ロック時からの経過時間を確認する
-		DWORD n = GetTickCount() - mStartWorkTime;
+		uint64_t n = GetTickCount64() - mStartWorkTime;
 		if (n <= (DWORD)(mTimeToWarn * 60 * 1000)) {
 			return;
 		}
@@ -92,7 +92,7 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 	int mTimeToWarn = 0;
 
 	HWND mWhd = nullptr;
-	DWORD mStartWorkTime = 0;
+	uint64_t mStartWorkTime = 0;
 	bool mIsLocking = false;
 	bool mIsWarned = false;
 
@@ -112,7 +112,7 @@ void OperationWatcher::StartWatch(CWnd* wnd)
 	in->mWhd = wnd->GetSafeHwnd();
 	in->OnAppPreferenceUpdated();
 
-	in->mStartWorkTime = GetTickCount();
+	in->mStartWorkTime = GetTickCount64();
 	in->mIsLocking = false;
 }
 

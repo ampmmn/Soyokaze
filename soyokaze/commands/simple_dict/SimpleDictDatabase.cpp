@@ -26,15 +26,15 @@ struct RECORD
 
 struct DICTIONARY
 {
-	bool mIsMatchWithoutKeyword;
-	bool mIsEnableReverse;
+	bool mIsMatchWithoutKeyword = false;
+	bool mIsEnableReverse = false;
 	std::vector<RECORD> mRecords;
 };
 
 struct UPDATESTATE
 {
 	SimpleDictParam mParam;
-	FILETIME mFtLastUpdated; 
+	FILETIME mFtLastUpdated = {}; 
 };
 
 static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
@@ -132,8 +132,8 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 
 	// 監視スレッドの完了を待機する(最大3秒)
 	void WaitExit() {
-		DWORD start = GetTickCount();
-		while (GetTickCount() - start < 3000) {
+		uint64_t start = GetTickCount64();
+		while (GetTickCount64() - start < 3000) {
 			if (mIsExited) {
 				break;
 			}
@@ -171,7 +171,7 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 		}
 
 		// 更新されたデータソースがあったら再読み込みする
-		auto elapsed = GetTickCount() - mLastUpdateCheckTime;
+		auto elapsed = GetTickCount64() - mLastUpdateCheckTime;
 		if (elapsed <= 1000) {
 			// ある程度間隔をあけてチェックする
 			return false;
@@ -200,7 +200,7 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 			SPDLOG_DEBUG(_T("Update dict(timestamp). name:{0}"), (LPCTSTR)param.mName);
 			break;
 		}
-		mLastUpdateCheckTime = GetTickCount();
+		mLastUpdateCheckTime = GetTickCount64();
 
 		return isUpdatedItemExist;
 	}
@@ -294,7 +294,7 @@ struct SimpleDictDatabase::PImpl : public AppPreferenceListenerIF
 	std::mutex mMutex;
 	bool mIsAbort = false;
 	bool mIsExited = true;
-	DWORD mLastUpdateCheckTime = 0;
+	uint64_t mLastUpdateCheckTime = 0;
 };
 
 

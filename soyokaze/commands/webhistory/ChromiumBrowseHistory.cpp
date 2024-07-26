@@ -18,7 +18,7 @@ using SQLite3Database = launcherapp::utility::SQLite3Database;
 
 struct ChromiumBrowseHistory::PImpl
 {
-	PImpl()
+	PImpl() : mLastUpdatedTime({})
 	{
 	}
 	virtual ~PImpl()
@@ -62,10 +62,10 @@ struct ChromiumBrowseHistory::PImpl
 	CString mProfileDir;
 	CString mOrgDBFilePath;
 	CString mDBFilePath;
-	bool mIsUseURL;
-	bool mIsUseMigemo;
+	bool mIsUseURL = false;
+	bool mIsUseMigemo = false;
 
-	FILETIME mLastUpdatedTime;
+	FILETIME mLastUpdatedTime = {};
 
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };
@@ -180,7 +180,7 @@ bool ChromiumBrowseHistory::PImpl::Query(
 
 			auto param = (local_param*)p;
 
-			if (GetTickCount() - param->mStart > param->mTimeout) {
+			if (GetTickCount64() - param->mStart > param->mTimeout) {
 				return 1;
 			}
 
@@ -193,7 +193,7 @@ bool ChromiumBrowseHistory::PImpl::Query(
 
 		std::vector<ITEM> mItems;
 		CharConverter conv;
-		DWORD mStart = GetTickCount();
+		uint64_t mStart = GetTickCount64();
 		DWORD mTimeout = 150;
 	};
 

@@ -11,8 +11,8 @@ struct CFolderDialogData
 {
 	CFolderDialogData() { ZeroMemory(szPath, sizeof(szPath));}
 	CString strTitle;
-	TCHAR szPath[MAX_PATH];
-	HWND hwndParent;
+	TCHAR szPath[MAX_PATH_NTFS] = {};
+	HWND hwndParent = nullptr;
 };
 
 
@@ -73,7 +73,7 @@ void CFolderDialog::Init(
 		m_pData->strTitle = pszTitle;
 
 	if (pszInitialPath != NULL)
-		_tcsncpy_s(m_pData->szPath, pszInitialPath, MAX_PATH);
+		_tcsncpy_s(m_pData->szPath, pszInitialPath, MAX_PATH_NTFS);
 
 	m_pData->hwndParent = pwndParent ? pwndParent->GetSafeHwnd() : NULL;
 
@@ -90,17 +90,22 @@ int CFolderDialog::DoModal()
 	if (FAILED(hr))
 		return 0;
 
-	LPWSTR lpszItem = NULL;
-	IShellItem* psiParent = NULL;
+	LPWSTR lpszItem = nullptr;
+	IShellItem* psiParent = nullptr;
+
 	if (PathFileExists(m_pData->szPath)) {
-		IShellItem* psiFolder;
+		IShellItem* psiFolder = nullptr;
 		SHCreateItemFromParsingName(m_pData->szPath, NULL, IID_PPV_ARGS(&psiFolder));
-		psiFolder->GetParent(&psiParent);
 
-		psiFolder->GetDisplayName(SIGDN_NORMALDISPLAY, &lpszItem);
+		if (psiFolder) {
+			psiFolder->GetParent(&psiParent);
+			psiFolder->GetDisplayName(SIGDN_NORMALDISPLAY, &lpszItem);
 
-		pFileOpenDialog->SetFolder(psiParent);
-		pFileOpenDialog->SetFileName(lpszItem);
+			pFileOpenDialog->SetFolder(psiParent);
+			if (lpszItem) {
+				pFileOpenDialog->SetFileName(lpszItem);
+			}
+		}
 	}
 
 	pFileOpenDialog->SetTitle(m_pData->strTitle);
@@ -113,14 +118,16 @@ int CFolderDialog::DoModal()
 
 	hr = pFileOpenDialog->Show(m_pData->hwndParent);
 	if (SUCCEEDED(hr)) {
-		LPWSTR     lpszPath;
+		LPWSTR     lpszPath = nullptr;
 		IShellItem *psi;
 
 		hr = pFileOpenDialog->GetResult(&psi);
 		if (SUCCEEDED(hr)) {
 			psi->GetDisplayName(SIGDN_FILESYSPATH, &lpszPath);
-			_tcscpy_s(m_pData->szPath, lpszPath);
-			CoTaskMemFree(lpszPath);
+			if (lpszPath) {
+				_tcscpy_s(m_pData->szPath, lpszPath);
+				CoTaskMemFree(lpszPath);
+			}
 			psi->Release();
 			ret = IDOK;
 		}

@@ -11,7 +11,7 @@ class CommandQueryRequest
 	using CommandParameter = launcherapp::core::CommandParameter;
 
 public:
-	CommandQueryRequest() {}
+	CommandQueryRequest() : mHwnd(nullptr), mMsg(0) {}
 	CommandQueryRequest(const CommandParameter& param, HWND hwndNotify, UINT notifyMsg) :
 		mParam(param), mHwnd(hwndNotify), mMsg(notifyMsg)
 	{

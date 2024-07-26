@@ -54,7 +54,7 @@ struct KeywordManagerDialog::PImpl
 	CString mFilterStr;
 
 	std::vector<Command*> mCommands;
-	Command* mSelCommand;
+	Command* mSelCommand = nullptr;
 	std::vector<Command*> mShowCommands;
 
 	CListCtrl mListCtrl;
@@ -63,7 +63,7 @@ struct KeywordManagerDialog::PImpl
 
 	CommandHotKeyMappings mKeyMapping;
 
-	int mSortType;
+	int mSortType = SORT_ASCEND_NAME;
 };
 
 void KeywordManagerDialog::PImpl::SortCommands()
@@ -146,7 +146,6 @@ KeywordManagerDialog::KeywordManagerDialog() :
 
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 	in->mSortType = SORT_ASCEND_NAME;
-	in->mSelCommand = nullptr;
 }
 
 KeywordManagerDialog::~KeywordManagerDialog()
@@ -164,6 +163,9 @@ void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILTER, in->mFilterStr);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
@@ -177,6 +179,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_MESSAGE(WM_APP+1, OnKeywrodEditKeyDown)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL KeywordManagerDialog::OnInitDialog()
 {

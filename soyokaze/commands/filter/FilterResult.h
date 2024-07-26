@@ -18,7 +18,7 @@ public:
 	FilterResult(const FilterResult&) = default;
 
 
-	int mMatchLevel;
+	int mMatchLevel = 0;
 	CString mDisplayName;
 };
 

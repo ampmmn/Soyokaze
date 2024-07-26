@@ -49,11 +49,9 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 
 
 	//
-	bool mIsEnableWorksheet;
-
-	bool mIsEnableWindowSwitch;
-
-	bool mIsFirstCall;
+	bool mIsEnableWorksheet = false;
+	bool mIsEnableWindowSwitch = false;
+	bool mIsFirstCall = true;
 
 	WorkSheets mWorksheets;
 	CalcWorkSheets mCalcWorksheets;
@@ -72,9 +70,6 @@ REGISTER_COMMANDPROVIDER(ActivateWindowProvider)
 
 ActivateWindowProvider::ActivateWindowProvider() : in(std::make_unique<PImpl>())
 {
-	in->mIsEnableWorksheet = false;
-	in->mIsEnableWindowSwitch = false;
-	in->mIsFirstCall = true;
 }
 
 ActivateWindowProvider::~ActivateWindowProvider()

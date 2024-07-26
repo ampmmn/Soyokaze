@@ -19,7 +19,7 @@ struct WindowList::PImpl
 	PImpl() : mEvent(TRUE, TRUE)
 	{}
 
-	DWORD mLastHwndUpdate = 0;
+	uint64_t mLastHwndUpdate = 0;
 	std::mutex mMutex;
 	std::vector<HWND> mHandles;
 	CEvent mEvent;
@@ -73,7 +73,7 @@ static BOOL CALLBACK OnEnumWindows(HWND hwnd, LPARAM lParam)
 void WindowList::EnumWindowHandles(std::vector<HWND>& handles)
 {
 	// 一定時間内の再実行の場合は過去の結果を再利用する
-	if (GetTickCount() - in->mLastHwndUpdate < HWNDUPDATE_INTERVAL) {
+	if (GetTickCount64() - in->mLastHwndUpdate < HWNDUPDATE_INTERVAL) {
 		std::lock_guard<std::mutex> lock(in->mMutex);
 		handles = in->mHandles;
 		return ;
@@ -87,7 +87,7 @@ void WindowList::EnumWindowHandles(std::vector<HWND>& handles)
 		std::lock_guard<std::mutex> lock(in->mMutex);
 		in->mHandles.swap(handles);
 		in->mEvent.SetEvent();
-		in->mLastHwndUpdate = GetTickCount();
+		in->mLastHwndUpdate = GetTickCount64();
 	});
 	th.detach();
 

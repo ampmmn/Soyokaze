@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-WindowPosition::WindowPosition()
+WindowPosition::WindowPosition() : mPosition({})
 {
 	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
 	BOOL ret = GetComputerName(mName.GetBuffer(bufLen), &bufLen);
@@ -20,7 +20,7 @@ WindowPosition::WindowPosition()
 	}
 }
 
-WindowPosition::WindowPosition(LPCTSTR name)
+WindowPosition::WindowPosition(LPCTSTR name) : mPosition({})
 {
 	ASSERT(name);
 

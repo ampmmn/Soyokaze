@@ -13,7 +13,7 @@ static LPCTSTR DEVICETYPE = _T("MPEGVideo");
 
 struct Sound::ITEM
 {
-	MCI_OPEN_PARMS mParam;
+	MCI_OPEN_PARMS mParam = {};
 	CString mFilePath;
 	CString mAlias;
 };

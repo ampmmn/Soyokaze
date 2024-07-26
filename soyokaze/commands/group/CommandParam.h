@@ -9,7 +9,7 @@ namespace group {
 struct GroupItem
 {
 	CString mItemName;
-	bool mIsWait;
+	bool mIsWait = false;
 
 };
 

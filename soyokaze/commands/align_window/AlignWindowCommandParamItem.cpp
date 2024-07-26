@@ -11,7 +11,7 @@ namespace commands {
 namespace align_window {
 
 ITEM::ITEM() :
-	mIsUseRegExp(false), mIsApplyAll(false), mAction(AT_SETPOS)
+	mIsUseRegExp(false), mIsApplyAll(false), mAction(AT_SETPOS), mPlacement({})
 {
 }
 

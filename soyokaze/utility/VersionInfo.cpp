@@ -36,7 +36,7 @@ bool VersionInfo::GetBuildDateTime(CTime& tmBuildDate)
 	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
 
 	FILE* fp = nullptr;
- 	if(_tfopen_s(&fp, path, _T("rb"))!= 0) {
+ 	if(_tfopen_s(&fp, path, _T("rb")) != 0 || fp == nullptr) {
 		return false;
 	}
 

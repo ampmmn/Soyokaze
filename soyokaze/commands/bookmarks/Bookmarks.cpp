@@ -22,12 +22,12 @@ namespace bookmarks {
 
 struct Bookmarks::PImpl
 {
-	TCHAR mChromeBookmarkPath[MAX_PATH_NTFS];
-	FILETIME mChromeUpdateTime;
+	TCHAR mChromeBookmarkPath[MAX_PATH_NTFS] = {};
+	FILETIME mChromeUpdateTime = {};
 	std::vector<Bookmark> mChromeItems;
 
-	TCHAR mEdgeBookmarkPath[MAX_PATH_NTFS];
-	FILETIME mEdgeUpdateTime;
+	TCHAR mEdgeBookmarkPath[MAX_PATH_NTFS] = {};
+	FILETIME mEdgeUpdateTime = {};
 	std::vector<Bookmark> mEdgeItems;
 };
 

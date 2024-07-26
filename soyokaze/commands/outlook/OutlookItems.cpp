@@ -36,8 +36,8 @@ struct OutlookItems::PImpl
 	}
 
 	// 前回の取得時のタイムスタンプ
-	DWORD mLastUpdate;
-	int mLastItemCount;
+	uint64_t mLastUpdate = 0;
+	int mLastItemCount = 0;
 	std::map<CString, MailItem*> mMailItemMap;
 
 	// 最新の受信日時(これ以前の日付のメールは処理済みとする)
@@ -46,7 +46,7 @@ struct OutlookItems::PImpl
 	// 生成処理の排他制御
 	std::mutex mMutex;
 
-	int mStatus;
+	int mStatus = STATUS_BUSY;
 };
 
 static DWORD GetReceivedTime(
@@ -61,7 +61,7 @@ static DWORD GetReceivedTime(
 		DWORD dwTime;
 	} t;
 
-	VARIANT result;
+	VARIANT result = {};
 	item.GetPropertyVariant(L"ReceivedTime", result);
 	VariantToDosDateTime(result, &t.st.receivedDate, &t.st.receivedTime);
 
@@ -83,7 +83,7 @@ void OutlookItems::PImpl::Update()
 		if (FAILED(hr)) {
 			// 取得できなかった(インストールされていないとか)
 			std::lock_guard<std::mutex> lock(mMutex);
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -101,7 +101,7 @@ void OutlookItems::PImpl::Update()
 			}
 			mMailItemMap.clear();
 
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -146,7 +146,7 @@ void OutlookItems::PImpl::Update()
 		if (itemCount == mLastItemCount) {
 			// 前回とメール件数が同じだったら変化がないものとみなす
 			// (操作次第で、新着メールの取りこぼしの可能性はあるが..)
-			mLastUpdate = GetTickCount();
+			mLastUpdate = GetTickCount64();
 			mStatus = STATUS_READY;
 			return ;
 		}
@@ -210,7 +210,7 @@ void OutlookItems::PImpl::Update()
 			mMailItemMap[key] = newItem;
 		}
 
-		mLastUpdate = GetTickCount();
+		mLastUpdate = GetTickCount64();
 		mStatus = STATUS_READY;
 	});
 	th.detach();
@@ -218,7 +218,10 @@ void OutlookItems::PImpl::Update()
 
 OutlookItems::OutlookItems() : in(std::make_unique<PImpl>())
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 
 	in->mLastUpdate = 0;
 	in->mLastItemCount = 0;
@@ -244,7 +247,7 @@ bool OutlookItems::GetInboxMailItems(std::vector<MailItem*>& mailItems)
 	ASSERT(mailItems.empty());
 
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
-	DWORD elapsed = GetTickCount() - in->mLastUpdate;
+	uint64_t elapsed = GetTickCount64() - in->mLastUpdate;
 
 	if (elapsed >= INTERVAL_REUSE) {
 		if (in->IsBusy() == false) {
@@ -279,7 +282,7 @@ struct MailItem::PImpl
 	// 件名
 	CString mSubject;
 	// 参照カウント
-	uint32_t mRefCount;
+	uint32_t mRefCount = 1;
 	
 };
 
@@ -294,8 +297,6 @@ struct MailItem::PImpl
 ) : 
 	in(std::make_unique<PImpl>())
 {
-	in->mRefCount = 1;
-
 	in->mConversationID = conversationID;
 	in->mSubject = subject;
 }

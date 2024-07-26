@@ -26,7 +26,7 @@ struct SettingDialog::PImpl
 
 	// 設定情報
 	CommandParam mParam;
-	int mDriveLetterIndex;
+	int mDriveLetterIndex = 0;
 
 	CString mOrgName;
 

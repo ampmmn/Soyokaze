@@ -33,8 +33,6 @@ LauncherApp::LauncherApp() : m_hMutexRun(NULL)
 #ifdef UNICODE
 	_tsetlocale(LC_ALL, _T(""));
 #endif
-	CoInitialize(NULL);
-
 	// 再起動マネージャーをサポートします
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 }
@@ -44,7 +42,6 @@ LauncherApp::~LauncherApp()
 	if (m_hMutexRun != NULL) {
 		CloseHandle(m_hMutexRun);
 	}
-	CoUninitialize();
 }
 
 // 唯一の LauncherApp オブジェクト
@@ -62,6 +59,11 @@ BOOL LauncherApp::InitInstance()
 	Logger::Get()->Initialize();
 	spdlog::info(_T("==== Start App ===="));
 
+	HRESULT hr = CoInitialize(nullptr);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
+
 	if (LauncherAppProcessExists() == false) {
 		// 通常の起動
 		InitFirstInstance();
@@ -72,6 +74,9 @@ BOOL LauncherApp::InitInstance()
 	}
 
 	AppPreference::Get()->OnExit();
+
+	CoUninitialize();
+
 	spdlog::info(_T("==== Exit App ===="));
 	return FALSE;
 }

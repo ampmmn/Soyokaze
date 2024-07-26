@@ -5,22 +5,28 @@
 class SharedHwnd
 {
 public:
-	SharedHwnd(HWND hwnd) : m_hMapFile(NULL), m_phwnd(NULL)
+	SharedHwnd(HWND hwnd) : m_hMapFile(nullptr), m_phwnd(nullptr)
 	{
 		m_hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(HWND), _T("LauncherAppWindowHandle"));
-		m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
-		SetHwnd(hwnd);
+		if (m_hMapFile != nullptr) {
+			m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
+			SetHwnd(hwnd);
+		}
 	}
 
-	SharedHwnd() : m_hMapFile(NULL), m_phwnd(NULL)
+	SharedHwnd() : m_hMapFile(nullptr), m_phwnd(nullptr)
 	{
 		m_hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, _T("LauncherAppWindowHandle"));
-		m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
+		if (m_hMapFile != nullptr) {
+			m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
+		}
 	}
 
 	~SharedHwnd()
 	{
-		UnmapViewOfFile(m_phwnd);
+		if (m_phwnd) {
+			UnmapViewOfFile(m_phwnd);
+		}
 		if (m_hMapFile) {
 			CloseHandle(m_hMapFile);
 		}
@@ -30,6 +36,9 @@ void SetHwnd(HWND hwnd)
 {
 	if (m_phwnd) {
 		*m_phwnd = hwnd;
+	}
+	else {
+		spdlog::error(_T("Failed to set shared hwnd!"));
 	}
 }
 

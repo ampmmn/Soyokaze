@@ -56,11 +56,6 @@ void SnippetCommandProvider::LoadCommands(
 
 	constexpr bool isReloadHotKey = false;
 
-	// スニペット登録コマンドがなければここで登録
-	if (cmdRepo->HasCommand(RegisterSnippetCommand::DEFAULT_NAME) == false) {
-		cmdRepo->RegisterCommand(new RegisterSnippetCommand(nullptr), isReloadHotKey);
-	}
-
 	int entries = cmdFile->GetEntryCount();
 	for (int i = 0; i < entries; ++i) {
 

@@ -86,9 +86,13 @@ bool Manual::Navigate(const CString& pageId)
 
 	uri.ReleaseBuffer();
 
-	SPDLOG_DEBUG(_T("launch help PID:{}"), GetProcessId(si.hProcess));
-
-	CloseHandle(si.hProcess);
+	if (si.hProcess == nullptr) {
+		SPDLOG_WARN(_T("Failed to launch help: {}"), (LPCTSTR)pagePath);
+	}
+	else {
+		SPDLOG_DEBUG(_T("launch help PID:{}"), GetProcessId(si.hProcess));
+		CloseHandle(si.hProcess);
+	}
 
 	return true;
 }

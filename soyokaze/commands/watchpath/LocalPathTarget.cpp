@@ -38,14 +38,21 @@ struct LocalPathTarget::PImpl
 		                      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 				                  NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
 		if (h == INVALID_HANDLE_VALUE) {
+			spdlog::warn(_T("path does not exist. {}"), (LPCTSTR)mPath);
+			return false;
+		}
+
+		// 更新検知するためのイベントを作成する
+		HANDLE hEventAuto = CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (hEventAuto == nullptr) {
+			spdlog::error(_T("Failed to CreateEvent!"));
+			CloseHandle(h);
 			return false;
 		}
 
 		// 変更通知受信用のバッファを作成する
 		mBuffer.resize(sizeof(FILE_NOTIFY_INFORMATION) + sizeof(TCHAR) * MAX_PATH_NTFS);
 
-		// 更新検知するためのイベントを作成する
-		HANDLE hEventAuto = CreateEvent(NULL, TRUE, FALSE, NULL);
 		mOverlapped.hEvent = hEventAuto;
 		mDirHandle = h;
 

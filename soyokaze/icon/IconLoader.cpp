@@ -28,20 +28,20 @@ struct IconLoader::ICONITEM
 {
 	ICONITEM() = default;
 
-	ICONITEM(HICON icon) : mIcon(icon), mLastUsedTime(GetTickCount())
+	ICONITEM(HICON icon) : mIcon(icon), mLastUsedTime(GetTickCount64())
 	{
 	}
 	ICONITEM(const ICONITEM&) = default;
 
 	HICON IconHandle()
 	{
-		mLastUsedTime = GetTickCount();
+		mLastUsedTime = GetTickCount64();
 		return mIcon;
 	}
 
-	bool IsTimeout(DWORD now) const
+	bool IsTimeout(uint64_t now) const
  	{
-		DWORD elapsed = now - mLastUsedTime;
+		uint64_t elapsed = now - mLastUsedTime;
 		return elapsed >= CACHE_KEEP_IN_MS;
 	}
 
@@ -54,7 +54,7 @@ struct IconLoader::ICONITEM
 	}
 
 	HICON mIcon;
-	DWORD mLastUsedTime;
+	uint64_t mLastUsedTime;
 };
 
 using ICONITEM = IconLoader::ICONITEM;
@@ -161,7 +161,7 @@ void IconLoader::PImpl::ClearCache()
 
 	int clearedItemCount = 0;
 
-	auto now = GetTickCount();
+	auto now = GetTickCount64();
 
 	for (auto& item : mIconIndexCache) {
 		auto& indexMap = item.second;
@@ -332,7 +332,13 @@ HICON IconLoader::PImpl::LoadIconForID1(LPCTSTR dllPath)
 	}
 
 	HRSRC hRes2 = FindResource(dll, MAKEINTRESOURCE(1), RT_ICON);
+	if (hRes2 == nullptr) {
+		return nullptr;
+	}
 	HGLOBAL hMem2 = LoadResource(dll, hRes2);
+	if (hMem2 == nullptr) {
+		return nullptr;
+	}
 	void* lpv2 = LockResource(hMem2);
 	HICON icon = CreateIconFromResource((PBYTE) lpv2, SizeofResource(dll, hRes2), TRUE, 0x00030000);
 
@@ -809,7 +815,9 @@ bool IconLoader::GetStreamFromPath(
 	strm.resize(fileSize);
 
 	DWORD readBytes = 0;
-	ReadFile(h, &strm.front(), fileSize, &readBytes, nullptr);
+	if (ReadFile(h, &strm.front(), fileSize, &readBytes, nullptr) == FALSE) {
+		SPDLOG_ERROR(_T("Failed to ReadFile! err={:x}"), GetLastError());
+	}
 
 	CloseHandle(h);
 

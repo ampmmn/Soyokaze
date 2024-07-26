@@ -57,6 +57,9 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_COMMAND(IDC_CHECK_REPEAT, OnUpdate)
@@ -74,6 +77,7 @@ BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::gui::SinglePageDialog)
 
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL GroupEditDialog::OnInitDialog()
 {

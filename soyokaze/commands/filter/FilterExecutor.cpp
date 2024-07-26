@@ -172,7 +172,7 @@ struct FilterExecutor::PImpl
 	std::vector<HANDLE> mCompleteEvents;
 
 	// 次にスレッドに渡す候補の位置
-	size_t mCurIndex;
+	size_t mCurIndex = 0;
 
 	LONG mRefCount = 1;
 
@@ -183,7 +183,7 @@ struct FilterExecutor::PImpl
 	std::mutex mMutex;
 
 	// 完了フラグ
-	bool mIsAbort;
+	bool mIsAbort = false;
 
 	// 候補生成済フラグ
 	bool mIsLoaded = false;

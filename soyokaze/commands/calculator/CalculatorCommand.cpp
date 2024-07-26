@@ -20,19 +20,18 @@ namespace calculator {
 struct CalculatorCommand::PImpl
 {
 	// 基数(0以外の値が指定されたら基数を表示する)
-	int mBase;
+	int mBase = 0;
 	// 基数込みで表示する場合の種別名
 	CString mTypeDisplayName;
 	// 計算結果
 	CString mResult;
 	// アイコン取得用のファイルパス(calc.exeのアイコンを使う)
-	TCHAR mCalcPath[MAX_PATH_NTFS];
+	TCHAR mCalcPath[MAX_PATH_NTFS] = {};
 };
 
 
 CalculatorCommand::CalculatorCommand() : in(std::make_unique<PImpl>())
 {
-	in->mBase = 0;
 	in->mCalcPath[0] = _T('\0');
 }
 

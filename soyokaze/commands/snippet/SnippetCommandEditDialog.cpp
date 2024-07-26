@@ -55,6 +55,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_TEXT, OnUpdateStatus)
@@ -64,6 +67,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL CommandEditDialog::OnInitDialog()
 {

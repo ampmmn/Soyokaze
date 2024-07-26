@@ -82,7 +82,7 @@ struct AppSettingPageCommandPriority::PImpl
 	std::vector<Command*> mCommands;
 	CString mBuffer;
 
-	int mSortType;
+	int mSortType = SORT_ASCEND_NAME;
 };
 
 void AppSettingPageCommandPriority::PImpl::SortCommands()
@@ -162,6 +162,9 @@ void AppSettingPageCommandPriority::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(AppSettingPageCommandPriority, SettingPage)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_RESET, OnButtonResetAll)
@@ -172,6 +175,7 @@ BEGIN_MESSAGE_MAP(AppSettingPageCommandPriority, SettingPage)
 	ON_NOTIFY(LVN_ODFINDITEM , IDC_LIST_COMMANDS, OnFindCommand)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL AppSettingPageCommandPriority::OnInitDialog()
 {

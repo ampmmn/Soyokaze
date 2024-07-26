@@ -24,12 +24,12 @@
 struct SettingDialogBase::PImpl
 {
 	CBrush brBk;
-	CTreeCtrl* mTreeCtrl;
+	CTreeCtrl* mTreeCtrl = nullptr;
 
 	CRect mPageRect;
 
 	// 最後に選択したツリー項目
-	HTREEITEM mLastTreeItem;
+	HTREEITEM mLastTreeItem = nullptr;
 
 	// ページ階層を示す文字列
 	CString mBreadCrumbs;
@@ -41,7 +41,7 @@ struct SettingDialogBase::PImpl
 
 	TopMostMask mTopMostMask;
 
-	HACCEL mAccel;
+	HACCEL mAccel = nullptr;
 
 
 };
@@ -58,9 +58,6 @@ struct SettingDialogBase::PImpl
  SettingDialogBase::SettingDialogBase(CWnd* parentWnd) :  CDialogEx(IDD_SETTING, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	in->mTreeCtrl = nullptr;
-	in->mLastTreeItem = nullptr;
-
 	ACCEL accels[1];
 	accels[0].cmd = ID_VIEW_HELP;
 	accels[0].fVirt = FVIRTKEY;
@@ -94,6 +91,9 @@ void SettingDialogBase::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_BREADCRUMBS, in->mBreadCrumbs);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(SettingDialogBase, CDialogEx)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_PAGES, OnTvnSelChangingPage)
 	ON_WM_CTLCOLOR()
@@ -102,6 +102,8 @@ BEGIN_MESSAGE_MAP(SettingDialogBase, CDialogEx)
 	ON_WM_NCLBUTTONDOWN()
 	ON_COMMAND(ID_VIEW_HELP, OnCommandHelp)
 END_MESSAGE_MAP()
+
+#pragma warning( pop )
 
 // ダイアログ初期化
 BOOL SettingDialogBase::OnInitDialog()

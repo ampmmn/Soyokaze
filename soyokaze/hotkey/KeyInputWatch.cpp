@@ -153,7 +153,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 
 	HWND mHwnd = nullptr;
 	UINT mPrevVK = 0;
-	DWORD mPrevTime = 0;
+	uint64_t mPrevTime = 0;
 	bool mIsOtherKeyPressed = false;
 
 	bool mIsEnableHotKey = false;
@@ -235,7 +235,7 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 
 		UINT prevVK = in->mPrevVK;
 
-		DWORD time = GetTickCount();
+		uint64_t time = GetTickCount64();
 
 		// 同一キー2回押し判定
 		bool isDblPressed = (prevVK == curVK && (time - in->mPrevTime) < 350);

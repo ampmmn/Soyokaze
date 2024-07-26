@@ -27,7 +27,7 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 
 	// profileフォルダがなければ非ポータブル版として動作する
 	size_t buflen = MAX_PATH_NTFS;
-	TCHAR buff[MAX_PATH_NTFS];
+	TCHAR buff[MAX_PATH_NTFS] = {};
 	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
 
 	_tcscpy_s(path, len, buff);
@@ -227,8 +227,9 @@ size_t CAppProfile::GetBinary(LPCTSTR section, LPCTSTR key, void* out, size_t le
 		return 0;
 	}
 
-	DWORD nBinLen;
-	DWORD dwSkip, dwFlags;
+	DWORD nBinLen = 0;
+	DWORD dwSkip = 0;
+	DWORD dwFlags = 0;
 	if (CryptStringToBinary(str, str.GetLength(), CRYPT_STRING_BASE64, NULL, &nBinLen, &dwSkip, &dwFlags) == FALSE) {
 		return 0;
 	}

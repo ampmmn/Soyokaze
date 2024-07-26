@@ -22,8 +22,8 @@ namespace color {
 struct ColorCommand::PImpl
 {
 	HICON mColorIcon = nullptr;
-	COLORREF mColor;
-	int mFormatType;
+	COLORREF mColor = RGB(0, 0, 0);
+	int mFormatType = TYPE_HEX6;
 };
 
 

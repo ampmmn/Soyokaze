@@ -78,6 +78,9 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_KEEPACTIVEWINDOW, in->mParam.mIsKeepActiveWindow);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
@@ -90,6 +93,8 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnNotifyItemChanged)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNotifyItemDblClk)
 END_MESSAGE_MAP()
+
+#pragma warning( pop )
 
 
 BOOL SettingDialog::OnInitDialog()

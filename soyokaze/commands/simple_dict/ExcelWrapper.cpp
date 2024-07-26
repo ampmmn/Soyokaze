@@ -108,12 +108,18 @@ static bool CreateExcelApplication(DispWrapper& excelApp)
 
 ExcelApplication::ExcelApplication() : in(new PImpl)
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 }
 
 ExcelApplication::ExcelApplication(bool isGetObject) : in(new PImpl)
 {
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 
 	if (isGetObject) {
 		GetExcelApplication(in->mApp);

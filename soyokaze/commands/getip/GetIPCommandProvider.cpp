@@ -50,7 +50,7 @@ void GetIPCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	DWORD size;
+	DWORD size = 0;
 	if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, NULL, &size) != ERROR_BUFFER_OVERFLOW) {
 		return ;
 	}

@@ -148,7 +148,10 @@ bool P4AppSettings::PImpl::ParseConnectionString(const CString& str)
 
 P4AppSettings::P4AppSettings() : in(new PImpl)
 {
-	CoInitialize(nullptr);
+	HRESULT hr = CoInitialize(nullptr);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+	}
 
 	CString filePath = in->GetSettingsFilePath();
 	if (PathFileExists(filePath) == FALSE) {
@@ -158,7 +161,11 @@ P4AppSettings::P4AppSettings() : in(new PImpl)
 
 	try {
 		CComPtr<IXMLDOMDocument> pXmlDom;
-		pXmlDom.CoCreateInstance(CLSID_DOMDocument);
+		hr = pXmlDom.CoCreateInstance(CLSID_DOMDocument);
+		if (FAILED(hr)) {
+			SPDLOG_ERROR(_T("Failed to CoCreateInstance of DOMDocument!"));
+			return;
+		}
 
 		CComBSTR argVal(filePath);
 
@@ -168,7 +175,7 @@ P4AppSettings::P4AppSettings() : in(new PImpl)
 		arg1.bstrVal = argVal;
 
 		VARIANT_BOOL arg2;
-		HRESULT hr = pXmlDom->load(arg1, &arg2);
+		hr = pXmlDom->load(arg1, &arg2);
 		if (FAILED(hr)) {
 			return;
 		}

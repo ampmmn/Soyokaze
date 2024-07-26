@@ -22,13 +22,12 @@ static const int ID_LAUNCHER_HOTKEY = 0xB31E;
 struct AppHotKey::PImpl
 {
 	std::unique_ptr<GlobalHotKey> mHotKey;
-	bool mIsEnableHotKey;
+	bool mIsEnableHotKey = true;
 };
 
 AppHotKey::AppHotKey(HWND targetWnd) : in(new PImpl)
 {
 	in->mHotKey = std::make_unique<GlobalHotKey>(targetWnd);
-	in->mIsEnableHotKey = true;
 
 	AppPreference::Get()->RegisterListener(this);
 }

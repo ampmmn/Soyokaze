@@ -21,7 +21,7 @@ namespace timespan {
 struct TimespanCommand::PImpl
 {
 	CTimeSpan mTimeSpan;
-	int mUnitType;
+	int mUnitType = TYPE_HOUR;
 	CString mNum;
 	CString mUnit;
 };
@@ -37,11 +37,11 @@ TimespanCommand::TimespanCommand(CTimeSpan ts, int unitType) : in(std::make_uniq
 		in->mUnit = _T("時間");
 	}
 	else if (unitType == TYPE_MINUTE) {
-		in->mNum.Format(_T("%d"), ts.GetTotalMinutes());
+		in->mNum.Format(_T("%d"), (int)ts.GetTotalMinutes());
 		in->mUnit = _T("分");
 	}
 	else if (unitType == TYPE_SECOND) {
-		in->mNum.Format(_T("%d"), ts.GetTotalSeconds());
+		in->mNum.Format(_T("%d"), (int)ts.GetTotalSeconds());
 		in->mUnit = _T("秒");
 	}
 	this->mName = in->mNum + _T(" ") + in->mUnit;

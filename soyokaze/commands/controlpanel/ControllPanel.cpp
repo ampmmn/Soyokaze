@@ -84,7 +84,7 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 
 		
 		// Tipsテキストの取得
-		TCHAR description[1024];
+		TCHAR description[1024 + 1] = {};
 		if (HKCR.GetValue(subKey, _T("InfoTip"), tmpName)) {
 			SHLoadIndirectString(tmpName, description, 1024, nullptr);
 		}

@@ -30,14 +30,14 @@ struct SettingDialog::PImpl
 	CString mMessage;
 	CString mRecordMsg;
 
-	int mCommandSelIndex;
+	int mCommandSelIndex = 0;
 
 	// 編集対象パラメータ
 	SimpleDictParam mParam;
 	//
-	CListCtrl* mPreviewListPtr;
+	CListCtrl* mPreviewListPtr = nullptr;
 
-	bool mIsTestPassed;
+	bool mIsTestPassed = false;
 
 	// ホットキー(表示用)
 	CString mHotKey;
@@ -107,6 +107,9 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateName)
 	ON_EN_CHANGE(IDC_EDIT_SHEETNAME, OnUpdateCondition)
@@ -129,6 +132,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL SettingDialog::OnInitDialog()
 {

@@ -7,7 +7,14 @@ namespace simple_dict {
 class SimpleDictParam
 {
 public:
-	SimpleDictParam() : mActionType(2), mAfterCommandParam(_T("$value"))
+	SimpleDictParam() :
+	 	mIsFirstRowHeader(TRUE),
+		mIsMatchWithoutKeyword(FALSE),
+		mIsEnableReverse(FALSE),
+		mIsNotifyUpdate(FALSE),
+		mIsExpandMacro(FALSE),
+	 	mActionType(2),
+	 	mAfterCommandParam(_T("$value"))
 	{}
 
 	SimpleDictParam(const SimpleDictParam&) = default;

@@ -74,7 +74,10 @@ void UWPApplications::PImpl::RunUpdateTask()
 		mWaitEvt.ResetEvent();
 
 		Sleep(2000);
-		CoInitialize(NULL);
+		HRESULT hr = CoInitialize(NULL);
+		if (FAILED(hr)) {
+			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+		}
 
 		bool isFirst = true;
 		int count = UPDATE_INTERVAL;

@@ -31,10 +31,18 @@ bool RandomMacro::Evaluate(const std::vector<CString>& args, CString& result)
 
 	if (args[0].CompareNoCase(_T("uuid")) == 0) {
 		UUID uuid;
-		UuidCreate(&uuid);
+		auto ret = UuidCreate(&uuid);
+		if (ret != RPC_S_OK) {
+			spdlog::warn(_T("Failed to UuidCreate!"));
+			return false;
+		}
 
 		RPC_WSTR strUuid;
-		UuidToString(&uuid, &strUuid);
+		ret = UuidToString(&uuid, &strUuid);
+		if (ret != RPC_S_OK) {
+			spdlog::warn(_T("Failed to UuidToString!"));
+			return false;
+		}
 
 		result = (const wchar_t*)strUuid;
 

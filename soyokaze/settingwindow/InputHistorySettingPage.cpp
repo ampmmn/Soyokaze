@@ -1,3 +1,4 @@
+// あ
 #include "pch.h"
 #include "framework.h"
 #include "InputHistorySettingPage.h"
@@ -10,7 +11,9 @@
 #endif
 
 InputHistorySettingPage::InputHistorySettingPage(CWnd* parentWnd) : 
-	SettingPage(_T("履歴"), IDD_APPSETTING_INPUTHISTORY, parentWnd)
+	SettingPage(_T("履歴"), IDD_APPSETTING_INPUTHISTORY, parentWnd),
+	mIsUseHistory(false),
+	mHistoryLimit(128)
 {
 }
 

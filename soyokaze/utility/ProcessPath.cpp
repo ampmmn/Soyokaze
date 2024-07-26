@@ -101,9 +101,12 @@ CString ProcessPath::GetProcessPath()
 
 CString ProcessPath::GetProcessName()
 {
+	CString modulePath;
 	// モジュールファイル名の拡張子を除いたものをプロセス名として返す
-	CString modulePath = GetProcessPath();
-	if (modulePath.IsEmpty()) {
+	try {
+		modulePath = GetProcessPath();
+	}
+	catch (ProcessPath::Exception&) {
 		return _T("");
 	}
 
@@ -174,17 +177,22 @@ CString ProcessPath::GetCommandLine()
 	DWORD pid;
 	GetWindowThreadProcessId(mHwnd, &pid);
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+	if (hProcess == nullptr) {
+		throw Exception(pid);
+	}
 
 	HINSTANCE hNtDll = GetModuleHandleW(L"ntdll.dll");
+	if (hNtDll == nullptr) {
+		throw Exception(pid);
+	}
+
 	struct scope_freelib {
-		scope_freelib(HANDLE hProcess, HINSTANCE h) : mP(hProcess), mH(h) {}
+		scope_freelib(HANDLE hProcess) : mP(hProcess) {}
 		~scope_freelib() {
 			CloseHandle(mP);
 		}
-
 		HANDLE mP;
-		HINSTANCE mH;
-	} scope_lib(hProcess, hNtDll);
+	} scope_lib(hProcess);
 
 	NtQueryInformationProcessPtr NtQueryInformationProcess = 
 		(NtQueryInformationProcessPtr)GetProcAddress(hNtDll, "NtQueryInformationProcess");

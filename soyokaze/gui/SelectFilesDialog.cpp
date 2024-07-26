@@ -109,8 +109,13 @@ void SelectFilesDialog::OnListItemChanged()
 	SHFILEINFO sfi = {};
 	SHGetFileInfo(mFiles[selIndex], 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
 	HICON hIcon = sfi.hIcon;
-	mIconLabel.DrawIcon(hIcon);
-	DestroyIcon(hIcon);
+	if (hIcon != nullptr) {
+		mIconLabel.DrawIcon(hIcon);
+		DestroyIcon(hIcon);
+	}
+	else {
+		spdlog::warn(_T("Failed to get icon {}"), (LPCTSTR)mFiles[selIndex]);
+	}
 }
 
 void SelectFilesDialog::OnListItemChecked()

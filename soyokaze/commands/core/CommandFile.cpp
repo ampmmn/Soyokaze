@@ -210,7 +210,7 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& val
 bool CommandFile::Load()
 {
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, in->mFilePath, _T("r,ccs=UTF-8")) != 0) {
+	if (_tfopen_s(&fpIn, in->mFilePath, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
 		return false;
 	}
 	// ファイルを読む
@@ -310,7 +310,7 @@ bool CommandFile::Save()
 	try {
 		CString filePathTmp = in->mFilePath + _T(".tmp");
 
-		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0) {
+		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0 || fpOut == nullptr) {
 			return false;
 		}
 		CStdioFile file(fpOut);

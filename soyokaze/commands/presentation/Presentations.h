@@ -9,8 +9,8 @@ namespace presentation {
 
 struct SLIDE_ITEM
 {
-	int mPage;
-	int mMatchLevel;
+	int mPage = 0;
+	int mMatchLevel = 0;
 	CString mTitle;
 };
 

@@ -58,11 +58,15 @@ void InputSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLEMIGEMO, mIsEnableMigemo);
 }
 
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
 BEGIN_MESSAGE_MAP(InputSettingDialog, SettingPage)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_APPDIR, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
+#pragma warning( pop )
 
 BOOL InputSettingDialog::OnInitDialog()
 {

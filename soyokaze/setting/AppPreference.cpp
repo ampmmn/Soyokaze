@@ -79,7 +79,7 @@ void AppPreference::PImpl::Load()
 	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
 
 	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0) {
+	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
 		return;
 	}
 

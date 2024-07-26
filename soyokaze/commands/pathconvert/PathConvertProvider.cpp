@@ -44,14 +44,14 @@ struct PathConvertProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr;
-	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr;
-	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr;
+	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr = nullptr;
+	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr = nullptr;
+	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr = nullptr;
 	std::vector<P4PathConvertAdhocCommand*> mP4PathCommands;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall;
+	bool mIsFirstCall = true;
 
-	bool mIsEnableGitBash;
+	bool mIsEnableGitBash = false;
 
 };
 
@@ -67,8 +67,6 @@ PathConvertProvider::PathConvertProvider() : in(std::make_unique<PImpl>())
 	in->mGitBashToLocalPathCmdPtr = new GitBashToLocalPathAdhocCommand();
 	in->mLocalToGitBashPathCmdPtr = new LocalToGitBashPathAdhocCommand();
 	in->mFileProtocolCmdPtr = new FileProtocolConvertAdhocCommand();
-	in->mIsFirstCall = true;
-	in->mIsEnableGitBash = false;
 }
 
 PathConvertProvider::~PathConvertProvider()
