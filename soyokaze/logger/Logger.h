@@ -13,7 +13,10 @@
 //#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_OFF
 //#endif
 
+#pragma warning( push )
+#pragma warning( disable : 26495 26437 26450 26498 26800 6285 6385)
 #include "spdlog/spdlog.h"
+#pragma warning( pop )
 
 class Logger
 {

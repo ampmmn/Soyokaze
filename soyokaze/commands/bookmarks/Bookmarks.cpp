@@ -3,7 +3,11 @@
 #include "utility/CharConverter.h" 
 #include <fstream>
 #include <vector>
+
+#pragma warning( push )
+#pragma warning( disable : 26800 26819 )
 #include <nlohmann/json.hpp>
+#pragma warning( pop )
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

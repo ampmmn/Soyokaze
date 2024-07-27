@@ -2,6 +2,7 @@
 #include "EverythingProxy.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#define EVERYTHINGUSERAPI
 #include "commands/everything/Everything-SDK/include/Everything.h"
 #include "matcher/Pattern.h"
 #include "icon/IconLoader.h"
