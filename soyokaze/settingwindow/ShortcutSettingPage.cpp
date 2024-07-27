@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShortcutSettingPage.h"
 #include "utility/ShortcutFile.h"
+#include "utility/Path.h"
 #include "app/AppName.h"
 #include "resource.h"
 
@@ -125,9 +126,8 @@ BOOL ShortcutSettingPage::OnInitDialog()
 
 	LPCTSTR exeName = PathFindFileName(mAppPath);
 
-	TCHAR linkName[MAX_PATH_NTFS];
-	_tcscpy_s(linkName, exeName);
-	PathRenameExtension(linkName, _T(".lnk"));
+	Path linkName(exeName);
+	linkName.RenameExtension(_T(".lnk"));
 
 	// 「送る」のパス生成
 	CString linkNameForSendTo((LPCTSTR)IDS_SENDTO);
@@ -202,17 +202,15 @@ void ShortcutSettingPage::OnEnterSettings()
 // スタートメニューのパス生成
 void ShortcutSettingPage::CreateStartMenuPath(CString& pathToMenu)
 {
-	TCHAR appPath[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, appPath, MAX_PATH_NTFS);
+	Path appPath(Path::MODULEFILEPATH);
 
-	LPCTSTR exeName = PathFindFileName(appPath);
+	LPCTSTR exeName = appPath.FindFileName();
 
-	TCHAR linkNameForStartMenu[MAX_PATH_NTFS];
-	_tcscpy_s(linkNameForStartMenu, exeName);
-	PathRemoveExtension(linkNameForStartMenu);
+	Path linkNameForStartMenu(exeName);
+	linkNameForStartMenu.RemoveExtension();
 	// フォルダ作成
-	PathAppend(linkNameForStartMenu, exeName);
-	PathRenameExtension(linkNameForStartMenu, _T(".lnk"));
+	linkNameForStartMenu.Append(exeName);
+	linkNameForStartMenu.RenameExtension(_T(".lnk"));
 	// ショートカットファイルのパス作成
 	ShortcutFile::MakeSpecialFolderPath(pathToMenu, CSIDL_PROGRAMS, linkNameForStartMenu);
 }
@@ -230,12 +228,8 @@ bool ShortcutSettingPage::CreateStartMenu()
 	CString pathToStartMenu;
 	CreateStartMenuPath(pathToStartMenu);
 
-	CString pathToDir(pathToStartMenu);
-	PathRemoveFileSpec(pathToDir.GetBuffer(MAX_PATH_NTFS));
-	pathToDir.ReleaseBuffer();
-
-	TCHAR appPath[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, appPath, MAX_PATH_NTFS);
+	Path pathToDir((LPCTSTR)pathToStartMenu);
+	pathToDir.RemoveFileSpec();
 	if (CreateDirectory(pathToDir, NULL) == FALSE) {
 		spdlog::warn(_T("Failed to create start menu folder."));
 		return false;
@@ -243,6 +237,7 @@ bool ShortcutSettingPage::CreateStartMenu()
 
 	ShortcutFile link;
 
+	Path appPath(Path::MODULEFILEPATH);
 	link.SetLinkPath(appPath);
 	link.SetAppId(LAUNCHER_APPID);
 	link.SetToastCallbackGUID(LAUNCHER_TOAST_CALLBACK_GUID);

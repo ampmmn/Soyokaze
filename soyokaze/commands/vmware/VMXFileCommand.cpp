@@ -28,17 +28,17 @@ struct VMXFileCommand::PImpl
 
 bool VMXFileCommand::PImpl::IsLocked()
 {
-	TCHAR pattern[MAX_PATH_NTFS];
-	_tcscpy_s(pattern, mFullPath);
-	PathRemoveFileSpec(pattern);
+	std::vector<TCHAR> pattern(MAX_PATH_NTFS);
+	_tcscpy_s(pattern.data(), pattern.size(), mFullPath);
+	PathRemoveFileSpec(pattern.data());
 
-	PathAppend(pattern, _T("*.*"));
+	PathAppend(pattern.data(), _T("*.*"));
 
 	CString extLck(_T(".lck"));
 	bool isLocked = false;
 
 	CFileFind f;
-	BOOL isLoop = f.FindFile(pattern, 0);
+	BOOL isLoop = f.FindFile(pattern.data(), 0);
 	while (isLoop) {
 		isLoop = f.FindNextFile();
 		if (f.IsDots()) {

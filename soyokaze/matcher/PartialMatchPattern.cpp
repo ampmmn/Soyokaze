@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "matcher/Migemo.h"
 #include "commands/core/CommandParameter.h"
+#include "utility/Path.h"
 #include <vector>
 #include <regex>
 
@@ -76,11 +77,8 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 
 	if (pref->IsEnableMigemo()) {
 		// Migemoの辞書設定
-		TCHAR dictPath[MAX_PATH_NTFS];
-		GetModuleFileName(nullptr, dictPath, MAX_PATH_NTFS);
-		PathRemoveFileSpec(dictPath);
-		PathAppend(dictPath, _T("dict\\utf-8\\migemo-dict"));
-		if (PathFileExists(dictPath)) {
+		Path dictPath(Path::MODULEFILEDIR, _T("dict\\utf-8\\migemo-dict"));
+		if (dictPath.FileExists()) {
 			in->mMigemo.Open(dictPath);
 		}
 	}

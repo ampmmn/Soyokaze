@@ -3,6 +3,7 @@
 #include "AppPreference.h"
 #include "app/AppName.h"
 #include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "resource.h"
@@ -75,8 +76,8 @@ static void TrimComment(CString& s)
 
 void AppPreference::PImpl::Load()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
+	Path path;
+	CAppProfile::GetFilePath(path, path.size());
 
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
@@ -271,8 +272,8 @@ void AppPreference::Load()
 
 void AppPreference::Save()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetFilePath(path, MAX_PATH_NTFS);
+	Path path;
+	CAppProfile::GetFilePath(path, path.size());
 
 	FILE* fpOut = nullptr;
 	try {
@@ -584,7 +585,7 @@ void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 	in->mListeners.erase(listener);
 }
 
-static bool IsDirectoryEmpty(const CString& path)
+static bool IsDirectoryEmpty(LPCTSTR path)
 {
 	bool hasContent = false;
 
@@ -616,11 +617,9 @@ static bool IsDirectoryEmpty(const CString& path)
 
 bool AppPreference::CreateUserDirectory()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-
+	Path path(Path::APPDIR);
 	// ディレクトリがなければ作成する
-	if (PathIsDirectory(path) == FALSE) {
+	if (path.IsDirectory() == false) {
 		if (CreateDirectory(path, NULL) == FALSE) {
 			return false;
 		}
@@ -629,7 +628,7 @@ bool AppPreference::CreateUserDirectory()
 	if (IsDirectoryEmpty(path)) {
 		// ディレクトリが空の場合は初回起動とみなす
 		CString msg;
-		msg.Format(_T("【初回起動】\n設定ファイルは以下の場所に保存されます。\n%s"), path);
+		msg.Format(_T("【初回起動】\n設定ファイルは以下の場所に保存されます。\n%s"), (LPCTSTR)path);
 		AfxMessageBox(msg, MB_ICONINFORMATION);
 
 		// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する

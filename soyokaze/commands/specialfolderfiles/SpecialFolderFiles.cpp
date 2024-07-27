@@ -121,13 +121,13 @@ static bool GetLastWriteTime(const CString& path, FILETIME& tm)
 
 void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 {
-	TCHAR path[MAX_PATH_NTFS];
-	SHGetSpecialFolderPath(NULL, path, csidl, 0);
-	PathAppend(path, _T("*.*"));
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	SHGetSpecialFolderPath(NULL, path.data(), csidl, 0);
+	PathAppend(path.data(), _T("*.*"));
 
 	// フォルダ内のファイル列挙
 	std::deque<CString> stk;
-	stk.push_back(path);
+	stk.push_back(path.data());
 
 	std::vector<ITEM> tmp;
 	while(stk.empty() == false) {

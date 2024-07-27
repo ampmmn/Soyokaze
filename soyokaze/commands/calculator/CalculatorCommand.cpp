@@ -3,6 +3,7 @@
 #include "CalculatorCommand.h"
 #include "commands/common/Clipboard.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <vector>
 
@@ -26,20 +27,18 @@ struct CalculatorCommand::PImpl
 	// 計算結果
 	CString mResult;
 	// アイコン取得用のファイルパス(calc.exeのアイコンを使う)
-	TCHAR mCalcPath[MAX_PATH_NTFS] = {};
+	Path mCalcPath;
 };
 
 
 CalculatorCommand::CalculatorCommand() : in(std::make_unique<PImpl>())
 {
-	in->mCalcPath[0] = _T('\0');
 }
 
 CalculatorCommand::CalculatorCommand(int base) : in(std::make_unique<PImpl>())
 {
 	ASSERT(base == 2 || base == 8 || base == 10 || base == 16);
 	in->mBase = base;
-	in->mCalcPath[0] = _T('\0');
 }
 
 CalculatorCommand::~CalculatorCommand()
@@ -89,13 +88,14 @@ BOOL CalculatorCommand::Execute(const Parameter& param)
 
 HICON CalculatorCommand::GetIcon()
 {
-	if (in->mCalcPath[0] == _T('\0')) {
-		if (GetCalcExePath(in->mCalcPath,  MAX_PATH_NTFS) == false) {
+	if (in->mCalcPath.IsEmptyPath()) {
+		if (GetCalcExePath(in->mCalcPath,  in->mCalcPath.size()) == false) {
 			// パスを取得できなかった場合(普通ないはず..)
 			return IconLoader::Get()->LoadDefaultIcon(); 
 		};
+		in->mCalcPath.Shrink();
 	}
-	return IconLoader::Get()->LoadIconFromPath(in->mCalcPath);
+	return IconLoader::Get()->LoadIconFromPath((LPCTSTR)in->mCalcPath);
 }
 
 launcherapp::core::Command*
@@ -109,8 +109,8 @@ CalculatorCommand::Clone()
 bool CalculatorCommand::GetCalcExePath(LPTSTR path, size_t len)
 {
 	size_t reqLen = 0;
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("SystemRoot"));
-	if  (len <= reqLen + 18) {
+	_tgetenv_s(&reqLen, path, len, _T("SystemRoot"));
+	if  (len <= reqLen + 18) {   // 18: len("System32\calc.exe")
 		return false;
 	}
 	PathAppend(path, _T("System32"));

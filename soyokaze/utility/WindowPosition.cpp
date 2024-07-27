@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WindowPosition.h"
 #include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "app/AppName.h"
 #include <utility> // for std::pair
 
@@ -83,13 +84,12 @@ bool WindowPosition::Restore(HWND hwnd)
 		return false;
 	}
 
-	TCHAR path[MAX_PATH_NTFS];
-	GetFilePath(path, MAX_PATH_NTFS);
+	Path path;
+	WindowPosition::GetFilePath(mName, path);
 
-
-	if (PathFileExists(path) == FALSE) {
+	if (path.FileExists() == FALSE) {
 		// 設定ファイルが存在しない場合は気休めにデフォルトの設定ファイルを流用する
-		WindowPosition::GetFilePath(APPNAME, path, MAX_PATH_NTFS);
+		WindowPosition::GetFilePath(APPNAME, path);
 	}
 
 	CFile file;
@@ -128,8 +128,8 @@ bool WindowPosition::Update(HWND hwnd)
 bool WindowPosition::Save()
 {
 	try {
-		TCHAR path[MAX_PATH_NTFS];
-		GetFilePath(path, MAX_PATH_NTFS);
+		Path path;
+		WindowPosition::GetFilePath(mName, path);
 
 		UINT nFlags = CFile::modeCreate | CFile::modeWrite | CFile::typeBinary;
 		CFile file(path, nFlags);
@@ -141,16 +141,10 @@ bool WindowPosition::Save()
 	}
 }
 
-
-void WindowPosition::GetFilePath(TCHAR* pathBuf, size_t len)
+void WindowPosition::GetFilePath(LPCTSTR baseName, Path& path)
 {
-	WindowPosition::GetFilePath(mName, pathBuf, len);
-}
-
-void WindowPosition::GetFilePath(LPCTSTR baseName, TCHAR* pathBuf, size_t len)
-{
-	CAppProfile::GetDirPath(pathBuf, len);
-	PathAppend(pathBuf, baseName);
-	_tcscat_s(pathBuf, len, _T(".position"));
+	CAppProfile::GetDirPath(path, path.size());
+	path.Append(baseName);
+	path.AddExtension(_T(".position"));
 }
 

@@ -27,10 +27,11 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
 
 	// profileフォルダがなければ非ポータブル版として動作する
 	size_t buflen = MAX_PATH_NTFS;
-	TCHAR buff[MAX_PATH_NTFS] = {};
-	_tgetenv_s(&buflen, buff, _T("USERPROFILE"));
 
-	_tcscpy_s(path, len, buff);
+	std::vector<TCHAR> buff(buflen);
+	_tgetenv_s(&buflen, &buff.front(), buff.size(), _T("USERPROFILE"));
+
+	_tcscpy_s(path, len, &buff.front());
 
 	PathAppend(path, APP_PROFILE_DIRNAME);
 

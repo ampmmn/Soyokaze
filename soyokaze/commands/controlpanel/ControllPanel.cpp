@@ -2,6 +2,7 @@
 #include "ControllPanel.h"
 #include "commands/controlpanel/ControlPanelCommand.h"
 #include "utility/RegistryKey.h"
+#include "utility/Path.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -79,8 +80,9 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 		if (HKCR.GetValue(subKey, _T("LocalizedString"), tmpName) == false) {
 			continue;
 		}
-		TCHAR resolvedName[MAX_PATH_NTFS];
-		SHLoadIndirectString(tmpName, resolvedName, MAX_PATH_NTFS, nullptr);
+
+		Path resolvedName;
+		SHLoadIndirectString(tmpName, resolvedName, (DWORD)resolvedName.size(), nullptr);
 
 		
 		// Tipsテキストの取得
@@ -100,7 +102,7 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 		if (HKCR.GetValue(subKey, _T("System.ApplicationName"), appName) == false) {
 			continue;
 		}
-		tmp.push_back(new ControlPanelCommand(resolvedName, defaultIcon, appName, description));
+		tmp.push_back(new ControlPanelCommand((LPCTSTR)resolvedName, defaultIcon, appName, description));
 	}
 
 	out.swap(tmp);

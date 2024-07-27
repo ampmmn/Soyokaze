@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "TaskTray.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -55,12 +56,10 @@ BOOL TaskTray::Create()
 	nid.uFlags |= NIF_ICON;
 	nid.hIcon   = IconLoader::Get()->LoadTasktrayIcon();
 
-	TCHAR moduleName[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, moduleName, MAX_PATH_NTFS);
-	PathRemoveExtension(moduleName);
+	Path moduleName(Path::MODULEFILEDIR);
 
 	CString tipsStr;
-	tipsStr = PathFindFileName(moduleName);
+	tipsStr = moduleName.FindFileName();
 
 	nid.uFlags |= NIF_TIP;
 	_tcsncpy_s(nid.szTip, NELEMENTS(nid.szTip), tipsStr, _TRUNCATE);

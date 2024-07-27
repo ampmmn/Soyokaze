@@ -4,6 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "setting/Settings.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -170,8 +171,7 @@ bool ExcludePathPage::GetHelpPageId(CString& id)
 
 void ExcludePathPage::OnButtonAdd()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	GetModuleFileName(nullptr, path, MAX_PATH_NTFS);
+	Path path(Path::MODULEFILEPATH);
 	CFileDialog dlg(TRUE, NULL, path, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return ;

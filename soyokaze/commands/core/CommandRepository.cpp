@@ -4,7 +4,7 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
 #include "commands/core/CommandQueryRequest.h"
-#include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"
 #include "matcher/WholeMatchPattern.h"
@@ -284,11 +284,8 @@ CommandRepository::CommandRepository() : in(std::make_unique<PImpl>())
 {
 	AppPreference::Get()->RegisterListener(this);
 
-	TCHAR path[MAX_PATH_NTFS];
-	CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-	PathAppend(path, _T("commands.ini"));
+	Path path(Path::APPDIR, _T("commands.ini"));
 	in->mCommandFilePath = path;
-
 }
 
 CommandRepository::~CommandRepository()

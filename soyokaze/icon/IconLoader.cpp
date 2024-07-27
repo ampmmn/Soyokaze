@@ -8,6 +8,7 @@
 #include "utility/AppProfile.h"
 #include "utility/SHA1.h"
 #include "utility/ProcessPath.h"
+#include "utility/Path.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
@@ -72,17 +73,17 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		const LPCTSTR SYSTEMROOT = _T("SystemRoot");
 
 		size_t reqLen = 0;
-		_tgetenv_s(&reqLen, mImgResDll, MAX_PATH_NTFS, SYSTEMROOT);
-		PathAppend(mImgResDll, _T("System32"));
-		PathAppend(mImgResDll, _T("imageres.dll"));
+		_tgetenv_s(&reqLen, mImgResDll, mImgResDll.size(), SYSTEMROOT);
+		mImgResDll.Append(_T("System32\\imageres.dll"));
+		mImgResDll.Shrink();
 
-		_tgetenv_s(&reqLen, mShell32Dll, MAX_PATH_NTFS, SYSTEMROOT);
-		PathAppend(mShell32Dll, _T("System32"));
-		PathAppend(mShell32Dll, _T("shell32.dll"));
+		_tgetenv_s(&reqLen, mShell32Dll, mShell32Dll.size(), SYSTEMROOT);
+		mShell32Dll.Append(_T("System32\\shell32.dll"));
+		mShell32Dll.Shrink();
 
-		_tgetenv_s(&reqLen, mWMPlocDll, MAX_PATH_NTFS, SYSTEMROOT);
-		PathAppend(mWMPlocDll, _T("System32"));
-		PathAppend(mWMPlocDll, _T("wmploc.dll"));
+		_tgetenv_s(&reqLen, mWMPlocDll, mWMPlocDll.size(), SYSTEMROOT);
+		mWMPlocDll.Append(_T("System32\\wmploc.dll"));
+		mWMPlocDll.Shrink();
 
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
@@ -109,7 +110,7 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		return mIconIndexCache[path];
 	}
 
-	HICON LoadIconFromImage(const CString& path);
+	HICON LoadIconFromImage(LPCTSTR path);
 	HICON LoadIconForID1(LPCTSTR dllPath);
 
 	void ClearCache();
@@ -133,9 +134,9 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	}
 
 
-	TCHAR mImgResDll[MAX_PATH_NTFS];
-	TCHAR mShell32Dll[MAX_PATH_NTFS];
-	TCHAR mWMPlocDll[MAX_PATH_NTFS];
+	Path mImgResDll;
+	Path mShell32Dll;
+	Path mWMPlocDll;
 
 	// ファイルがリソースとして保持するアイコンを管理するためのmap
 	std::map<CString, IconIndexMap> mIconIndexCache;
@@ -266,7 +267,7 @@ bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
 }
 
 
-HICON IconLoader::PImpl::LoadIconFromImage(const CString& path)
+HICON IconLoader::PImpl::LoadIconFromImage(LPCTSTR path)
 {
 	// 画像ファイルをロードする
 	ATL::CImage image;
@@ -487,17 +488,17 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 
 HICON IconLoader::GetShell32Icon(int index)
 {
-	return LoadIconResource(in->mShell32Dll, index);
+	return LoadIconResource((LPCTSTR)in->mShell32Dll, index);
 }
 
 HICON IconLoader::GetImageResIcon(int index)
 {
-	return LoadIconResource(in->mImgResDll, index);
+	return LoadIconResource((LPCTSTR)in->mImgResDll, index);
 }
 
 HICON IconLoader::GetWMPlocIcon(int index)
 {
-	return LoadIconResource(in->mWMPlocDll, index);
+	return LoadIconResource((LPCTSTR)in->mWMPlocDll, index);
 }
 
 // ファイルがリソースとして保持するアイコンを取得
@@ -672,12 +673,12 @@ HICON IconLoader::LoadPromptIcon()
 HICON IconLoader::LoadVolumeIcon(bool isMute)
 {
 	const LPCTSTR SYSTEMROOT = _T("SystemRoot");
-	TCHAR path[MAX_PATH_NTFS];
+	Path path;
 	size_t reqLen = 0;
 
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, SYSTEMROOT);
-	PathAppend(path, _T("System32"));
-	PathAppend(path, _T("mmsys.cpl"));
+	_tgetenv_s(&reqLen, path, path.size(), SYSTEMROOT);
+	path.Append(_T("System32"));
+	path.Append(_T("mmsys.cpl"));
 
 	if (isMute) {
 		if (in->mVolumeMuteIcon) {
@@ -704,17 +705,15 @@ HICON IconLoader::LoadConvertIcon()
 	return GetWMPlocIcon(-29608);
 }
 
-static bool GetTempFilePath(LPTSTR userDataPath, size_t len)
+static bool GetTempFilePath(Path& userDataPath)
 {
-	CAppProfile::GetDirPath(userDataPath, len);
-
-	PathAppend(userDataPath, _T("tmp"));
+	userDataPath.Append(_T("tmp"));
 	if (PathIsDirectory(userDataPath) == FALSE) {
 		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
 			return false;
 		}
 	}
-	PathAppend(userDataPath, _T("icondata.png"));
+	userDataPath.Append(_T("icondata.png"));
 	return true;
 }
 
@@ -738,8 +737,8 @@ HICON IconLoader::LoadIconFromStream(
 	}
 
 	// アイコンを一時ファイルに書き出す
-	TCHAR userDataPath[MAX_PATH_NTFS];
-	if (GetTempFilePath(userDataPath, MAX_PATH_NTFS) == false) {
+	Path userDataPath(Path::APPDIR);
+	if (GetTempFilePath(userDataPath) == false) {
 		return nullptr;
 	}
 
@@ -779,8 +778,8 @@ bool IconLoader::GetStreamFromPath(
 
 	ATL::CImage imageResize;
 
-	TCHAR tmpFilePath[MAX_PATH_NTFS];
-	GetTempFilePath(tmpFilePath, MAX_PATH_NTFS);
+	Path tmpFilePath(Path::APPDIR);
+	GetTempFilePath(tmpFilePath);
 	
 	// サイズが大きすぎる場合はリサイズする
 	// (アイコン表示用の画像なので大きいサイズは想定しない)

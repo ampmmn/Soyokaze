@@ -1065,6 +1065,9 @@
     <ClInclude Include="utility\VersionInfo.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="utility\Path.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1878,6 +1881,9 @@
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
     <ClCompile Include="utility\VersionInfo.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\Path.cpp">
       <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>

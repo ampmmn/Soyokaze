@@ -3,6 +3,7 @@
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/CharConverter.h"
+#include "utility/Path.h"
 #include <mutex>
 #include <thread>
 
@@ -325,9 +326,8 @@ static CString DecodeURI(const CString& src)
 	in->mBookName = workbookName;
 
 	CString decoded = DecodeURI(workbookName);
-	TCHAR localPath[MAX_PATH_NTFS];
-	DWORD len = MAX_PATH_NTFS;
-	PathCreateFromUrl(decoded, localPath, &len, NULL);
+	Path localPath;
+	localPath.CreateFromUrl(decoded, 0);
 	in->mBookLocalName = localPath;
 
 	in->mSheetName = sheetName;

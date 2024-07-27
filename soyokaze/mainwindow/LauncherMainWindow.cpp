@@ -12,6 +12,7 @@
 #include "commands/core/CommandParameter.h"
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
+#include "utility/Path.h"
 #include "SharedHwnd.h"
 #include "hotkey/AppHotKey.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -553,10 +554,10 @@ LauncherMainWindow::OnUserMessageDropObject(
 			int fileCount = (int)DragQueryFile( dropInfo, (UINT)-1, NULL, 0 );
 			files.reserve(fileCount);
 
-			TCHAR filePath[MAX_PATH_NTFS];
+			Path filePath;
 			for (int i = 0; i < fileCount; ++i) {
-				DragQueryFile(dropInfo, i, filePath, MAX_PATH_NTFS);
-				files.push_back(filePath);
+				DragQueryFile(dropInfo, i, filePath, (UINT)filePath.size());
+				files.push_back((LPCTSTR)filePath);
 			}
 		}
 

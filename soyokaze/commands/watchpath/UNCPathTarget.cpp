@@ -161,6 +161,8 @@ private:
 			return true;
 		}
 
+		std::vector<TCHAR> fullPath(MAX_PATH_NTFS);
+
 		for (auto& item : mChildren) {
 			auto& name = item.first;
 			auto it = other.mChildren.find(name);
@@ -170,11 +172,10 @@ private:
 				return true;
 			}
 
-			TCHAR fullPath[MAX_PATH_NTFS];
-			_tcscpy_s(fullPath, basePath);
-			PathAppend(fullPath, name);
+			_tcscpy_s(fullPath.data(), fullPath.size(), basePath);
+			PathAppend(fullPath.data(), name);
 
-			if (item.second->IsDifferInternal(*it->second, fullPath, lastChangedItem, action)) {
+			if (item.second->IsDifferInternal(*it->second, fullPath.data(), lastChangedItem, action)) {
 				return true;
 			}
 		}

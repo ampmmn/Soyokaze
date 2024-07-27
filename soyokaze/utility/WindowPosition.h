@@ -1,5 +1,7 @@
 #pragma once
 
+class Path;
+
 class WindowPosition
 {
 public:
@@ -13,8 +15,7 @@ public:
 	bool Save();
 
 protected:
-	void GetFilePath(TCHAR* buf, size_t len);
-	static void GetFilePath(LPCTSTR baseName, TCHAR* buf, size_t len);
+	static void GetFilePath(LPCTSTR baseName, Path& path);
 
 protected:
 	CString mName;

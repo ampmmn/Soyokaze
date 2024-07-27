@@ -103,22 +103,22 @@ BOOL WebHistoryAdhocCommand::Execute(const Parameter& param)
 	}
 
 	// URLをブラウザで開く
-	TCHAR path[MAX_PATH_NTFS];
-	if (in->GetExecutablePath(path, MAX_PATH_NTFS) == false) {
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	if (in->GetExecutablePath(path.data(), MAX_PATH_NTFS) == false) {
 		return FALSE;
 	}
 
-	if (PathFileExists(path) == FALSE) {
+	if (PathFileExists(path.data()) == FALSE) {
 		CString msg(_T("Browser executable not found."));
 		msg += _T("\n");
-		msg += path;
+		msg += path.data();
 		AfxMessageBox(msg);
 		return TRUE;
 	}
 
 	SubProcess::ProcessPtr process;
 	SubProcess exec(param);
-	exec.Run(path, in->mHistory.mUrl, process);
+	exec.Run(path.data(), in->mHistory.mUrl, process);
 
 	return TRUE;
 }
@@ -126,9 +126,9 @@ BOOL WebHistoryAdhocCommand::Execute(const Parameter& param)
 HICON WebHistoryAdhocCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
-	TCHAR path[MAX_PATH_NTFS];
-	in->GetExecutablePath(path, MAX_PATH_NTFS);
-	return IconLoader::Get()->LoadIconFromPath(path);
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	in->GetExecutablePath(path.data(), MAX_PATH_NTFS);
+	return IconLoader::Get()->LoadIconFromPath(path.data());
 }
 
 launcherapp::core::Command*

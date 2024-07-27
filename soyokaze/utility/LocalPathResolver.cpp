@@ -86,10 +86,11 @@ bool LocalPathResolver::Resolve(
 		isSupplyExeExt = true;
 	}
 
-	TCHAR fullPath[MAX_PATH_NTFS];
+	std::vector<TCHAR> fullPath_(MAX_PATH_NTFS);
+	TCHAR* fullPath = &fullPath_.front();
 
 	for (const auto& dir : in->targetDirs) {
-		_tcscpy_s(fullPath, dir);
+		_tcscpy_s(fullPath, MAX_PATH_NTFS, dir);
 		PathAppend(fullPath, path);
 		if (isSupplyExeExt) {
 			PathAddExtension(fullPath, _T(".exe"));

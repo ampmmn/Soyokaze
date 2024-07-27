@@ -47,15 +47,15 @@ size_t Pipe::ReadAll(Buffer& output)
 
 	HANDLE hRead = mReadHandle;
 
-	char buff[65536] = {};
-	DWORD bufLen = (DWORD)sizeof(buff);
+	std::vector<char> buff(65536);
+	DWORD bufLen = (DWORD)buff.size();
 
 	DWORD rest = 0;
-	PeekNamedPipe(hRead, buff, bufLen, NULL, &rest, 0);
+	PeekNamedPipe(hRead, buff.data(), bufLen, NULL, &rest, 0);
 
 	while (rest > 0) {
 		DWORD readed = 0;
-		if (ReadFile(hRead, buff,  bufLen < rest? bufLen : rest, &readed, NULL) == FALSE) {
+		if (ReadFile(hRead, buff.data(), bufLen < rest ? bufLen : rest, &readed, NULL) == FALSE) {
 			SPDLOG_ERROR(_T("Failed to ReadFile! err={:x}"), GetLastError());
 			break;
 		}
@@ -63,7 +63,7 @@ size_t Pipe::ReadAll(Buffer& output)
 		rest -= readed;
 		readTotal += readed;
 
-		output.insert(output.end(), buff, buff + readed);
+		output.insert(output.end(), buff.data(), buff.data() + readed);
 	}
 
 	return readTotal;

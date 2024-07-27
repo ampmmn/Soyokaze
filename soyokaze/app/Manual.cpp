@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Manual.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <map>
 
@@ -38,14 +39,9 @@ bool Manual::Navigate(const CString& pageId)
 	SPDLOG_DEBUG(_T("start"));
 
 	// ヘルプの有無を確認
-	TCHAR dirPath[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, dirPath, MAX_PATH_NTFS);
-	PathRemoveFileSpec(dirPath);
-
-	TCHAR filePath[MAX_PATH_NTFS];
-	_tcscpy_s(filePath, dirPath);
-	PathAppend(filePath, _T("help.html"));
-	if (PathFileExists(filePath) == FALSE) {
+	Path filePath(Path::MODULEFILEDIR);
+	filePath.Append(_T("help.html"));
+	if (filePath.FileExists() == FALSE) {
 		CString msg((LPCTSTR)IDS_ERR_HELPDOESNOTEXIST);
 		msg += _T("\n");
 		msg += filePath;
@@ -56,8 +52,8 @@ bool Manual::Navigate(const CString& pageId)
 	}
 
 	// クッションページ?のパス生成
-	PathAppend(dirPath, _T("files"));
-	PathAppend(dirPath, _T("fragment"));
+	Path dirPath(Path::MODULEFILEDIR);
+	dirPath.Append(_T("files\\fragment"));
 	SPDLOG_DEBUG(_T("dirPath:{}"), (LPCTSTR)dirPath);
 
 	// 指定されたIDに対応するページの有無を確認
@@ -71,7 +67,7 @@ bool Manual::Navigate(const CString& pageId)
 	}
 
 	CString uri;
-	uri.Format(_T("file:///%s/%s.html"), dirPath, (LPCTSTR)pagePath);
+	uri.Format(_T("file:///%s/%s.html"), (LPCTSTR)dirPath, (LPCTSTR)pagePath);
 	uri.Replace(_T('\\'), _T('/'));
 
 	auto p = uri.GetBuffer(uri.GetLength() + 1);

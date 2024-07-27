@@ -1,19 +1,19 @@
 #include "pch.h"
 #include "VersionInfo.h"
+#include "utility/Path.h"
 #include <vector>
 
 
 bool VersionInfo::GetVersionInfo(CString& version)
 {
 	// バージョン情報を取得
-	TCHAR szModulePath[MAX_PATH_NTFS];
-	GetModuleFileName( NULL, szModulePath, MAX_PATH_NTFS);
+	Path modulePath(Path::MODULEFILEPATH);
 
-	DWORD size = GetFileVersionInfoSize(szModulePath, NULL);
+	DWORD size = GetFileVersionInfoSize(modulePath, NULL);
 	std::vector<BYTE> versionData(size);
 
 	BYTE* pVersion = &(versionData.front());
-	if (GetFileVersionInfo(szModulePath, NULL, size, pVersion) == FALSE) {
+	if (GetFileVersionInfo(modulePath, NULL, size, pVersion) == FALSE) {
 		return false;
 	}
 
@@ -32,8 +32,7 @@ bool VersionInfo::GetVersionInfo(CString& version)
 
 bool VersionInfo::GetBuildDateTime(CTime& tmBuildDate)
 {
-	TCHAR path[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, path, MAX_PATH_NTFS);
+	Path path(Path::MODULEFILEPATH);
 
 	FILE* fp = nullptr;
  	if(_tfopen_s(&fp, path, _T("rb")) != 0 || fp == nullptr) {
@@ -53,10 +52,10 @@ bool VersionInfo::GetBuildDateTime(CTime& tmBuildDate)
 
 	size_t offset2PE = hdr.e_lfanew - sizeof(hdr);
 
-	uint8_t skipbytes[65536];
+	std::vector<uint8_t> skipbytes(65536);
 	while(offset2PE > 0) {
 		size_t skipSize = offset2PE > 65536 ? 65536 : offset2PE;
-		if (fread(skipbytes, 1, skipSize, fp) != skipSize) {
+		if (fread(skipbytes.data(), 1, skipSize, fp) != skipSize) {
 			fclose(fp);
 			return false;
 		}

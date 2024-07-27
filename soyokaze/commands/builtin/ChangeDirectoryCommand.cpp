@@ -54,12 +54,12 @@ BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
 	                  param.GetNamedParamBool(_T("CtrlKeyPressed"));
 	if (isOpenPath) {
-		TCHAR currentDir[MAX_PATH_NTFS];
-		GetCurrentDirectory(MAX_PATH_NTFS, currentDir);
-		_tcscat_s(currentDir, _T("\\"));
+		std::vector<TCHAR> currentDir(MAX_PATH_NTFS);
+		GetCurrentDirectory(MAX_PATH_NTFS, &currentDir.front());
+		_tcscat_s(&currentDir.front(), currentDir.size(), _T("\\"));
 
 		ShellExecCommand cmd;
-		cmd.SetPath(currentDir);
+		cmd.SetPath(&currentDir.front());
 
 		Parameter paramEmpty;
 		return cmd.Execute(paramEmpty);

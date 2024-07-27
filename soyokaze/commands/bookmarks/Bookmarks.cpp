@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bookmarks.h"
 #include "utility/CharConverter.h" 
+#include "utility/Path.h" 
 #include <fstream>
 #include <vector>
 
@@ -26,11 +27,11 @@ namespace bookmarks {
 
 struct Bookmarks::PImpl
 {
-	TCHAR mChromeBookmarkPath[MAX_PATH_NTFS] = {};
+	Path mChromeBookmarkPath;
 	FILETIME mChromeUpdateTime = {};
 	std::vector<Bookmark> mChromeItems;
 
-	TCHAR mEdgeBookmarkPath[MAX_PATH_NTFS] = {};
+	Path mEdgeBookmarkPath;
 	FILETIME mEdgeUpdateTime = {};
 	std::vector<Bookmark> mEdgeItems;
 };
@@ -40,13 +41,16 @@ Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
 	size_t reqLen = 0;
 
 	// Chrome
-	_tgetenv_s(&reqLen, in->mChromeBookmarkPath, MAX_PATH_NTFS, _T("USERPROFILE"));
-	PathAppend(in->mChromeBookmarkPath, _T("AppData/Local/Google/Chrome/User Data/Default/Bookmarks"));
+	_tgetenv_s(&reqLen, in->mChromeBookmarkPath, in->mChromeBookmarkPath.size(), _T("USERPROFILE"));
+	in->mChromeBookmarkPath.Append(_T("AppData/Local/Google/Chrome/User Data/Default/Bookmarks"));
+	in->mChromeBookmarkPath.Shrink();
+
 	memset(&in->mChromeUpdateTime, 0, sizeof(FILETIME));
 
 	// Edge
-	_tgetenv_s(&reqLen, in->mEdgeBookmarkPath, MAX_PATH_NTFS, _T("USERPROFILE"));
-	PathAppend(in->mEdgeBookmarkPath, _T("AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks"));
+	_tgetenv_s(&reqLen, in->mEdgeBookmarkPath, in->mEdgeBookmarkPath.size(), _T("USERPROFILE"));
+	in->mEdgeBookmarkPath.Append(_T("AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks"));
+	in->mEdgeBookmarkPath.Shrink();
 	memset(&in->mEdgeUpdateTime, 0, sizeof(FILETIME));
 
 }

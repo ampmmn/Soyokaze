@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "app/AppName.h"
@@ -53,13 +54,11 @@ Logger* Logger::Get()
 
 void Logger::Initialize()
 {
-	TCHAR logPath[MAX_PATH_NTFS];
-	CAppProfile::GetDirPath(logPath, MAX_PATH_NTFS); 
-	PathAppend(logPath, APPLOGNAME);
+	Path logPath(Path::APPDIR, APPLOGNAME);
 
 	auto max_size = 1048576 * 8;
 	auto max_files = 3;
-	auto logger = spdlog::rotating_logger_mt("lancuher_logger", logPath, max_size, max_files);
+	auto logger = spdlog::rotating_logger_mt("lancuher_logger", (LPCTSTR)logPath, max_size, max_files);
 	logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%5t] [%L]:%!:%v");
 
 	auto pref = AppPreference::Get();

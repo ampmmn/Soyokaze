@@ -3,6 +3,7 @@
 #include "MainDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -45,10 +46,8 @@ BOOL MainDirCommand::Execute(const Parameter& param)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	TCHAR mainDirPath[MAX_PATH_NTFS];
-	GetModuleFileName(NULL, mainDirPath, MAX_PATH_NTFS);
-	PathRemoveFileSpec(mainDirPath);
-	_tcscat_s(mainDirPath, _T("\\"));
+	Path mainDirPath(Path::MODULEFILEDIR);
+	_tcscat_s(mainDirPath, mainDirPath.size(), _T("\\"));
 
 	ShellExecCommand cmd;
 	cmd.SetPath(mainDirPath);

@@ -2,6 +2,7 @@
 #include "MMCSnapins.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include "utility/Path.h"
 #include <thread>
 
 #import "msxml6.dll" exclude("ISequentialStream","_FILETIME")named_guids
@@ -74,9 +75,9 @@ void MMCSnapins::PImpl::EnumItems(std::vector<MMCSnapin>& items)
 {
 	spdlog::info(_T("start Enum MMC snapins."));
 	// windows/system32のパスを得る
-	TCHAR pattern[MAX_PATH_NTFS];
-	GetSystemDirectory(pattern, MAX_PATH_NTFS); 
-	PathAppend(pattern, _T("*.msc"));
+	Path pattern;
+	GetSystemDirectory(pattern, (DWORD)pattern.size()); 
+	pattern.Append(_T("*.msc"));
 
 	std::vector<MMCSnapin> tmpItems;
 
@@ -91,13 +92,13 @@ void MMCSnapins::PImpl::EnumItems(std::vector<MMCSnapin>& items)
 		CString filePath = f.GetFilePath();
 
 		// 言語別のファイルパスに置き換える
-		TCHAR langFilePath[MAX_PATH_NTFS];
-		ULONG maxFilePath = MAX_PATH_NTFS;
+		Path langFilePath;
+		ULONG maxFilePath = (ULONG)langFilePath.size();
 		ULONG maxLangLen = 256;
 		ULONGLONG enumId = 0;
 		BOOL isLangFileExists = GetFileMUIPath(MUI_USER_PREFERRED_UI_LANGUAGES, filePath, 0, &maxLangLen, langFilePath, &maxFilePath, &enumId);
 
-		LPCTSTR path = isLangFileExists ? langFilePath : (LPCTSTR)filePath;
+		LPCTSTR path = isLangFileExists ? (LPCTSTR)langFilePath : (LPCTSTR)filePath;
 
 		MMCSnapin item;
 		if (LoadItem(path, item) == false) {

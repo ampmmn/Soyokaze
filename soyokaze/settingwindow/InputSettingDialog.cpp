@@ -3,6 +3,7 @@
 #include "InputSettingDialog.h"
 #include "commands/builtin/MainDirCommand.h"
 #include "setting/Settings.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -77,9 +78,7 @@ BOOL InputSettingDialog::OnInitDialog()
 	CString str;
 	link2->GetWindowText(str);
 
-	TCHAR appDir[MAX_PATH_NTFS];
-	GetModuleFileName(nullptr, appDir, MAX_PATH_NTFS);
-	PathRemoveFileSpec(appDir);
+	Path appDir(Path::MODULEFILEDIR);
 	str.Replace(_T("$APPDIR"), appDir);
 	link2->SetWindowText(str);
 

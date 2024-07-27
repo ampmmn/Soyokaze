@@ -5,6 +5,7 @@
 #include "commands/webhistory/ChromiumBrowseHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/LastErrorString.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -33,12 +34,12 @@ struct WebHistoryCommand::PImpl
 		if (mChromeHistory.get() == nullptr) {
 
 			// Chromeブラウザのパスを得る
-			TCHAR profilePath[MAX_PATH_NTFS];
+			Path profilePath;
 			size_t reqLen = 0;
-			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
-			PathAppend(profilePath, _T("Google\\Chrome\\User Data\\Default"));
+			_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
+			profilePath.Append(_T("Google\\Chrome\\User Data\\Default"));
 
-			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
+			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
 		}
 		return mChromeHistory.get();
 	}
@@ -51,12 +52,12 @@ struct WebHistoryCommand::PImpl
 		if (mEdgeHistory.get() == nullptr) {
 
 			// Edgeブラウザのパスを得る
-			TCHAR profilePath[MAX_PATH_NTFS];
+			Path profilePath;
 			size_t reqLen = 0;
-			_tgetenv_s(&reqLen, profilePath, MAX_PATH_NTFS, _T("LOCALAPPDATA"));
-			PathAppend(profilePath, _T("Microsoft\\Edge\\User Data\\Default"));
+			_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
+			profilePath.Append(_T("Microsoft\\Edge\\User Data\\Default"));
 
-			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
+			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
 		}
 		return mEdgeHistory.get();
 	}

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ChromiumBrowseHistory.h"
 #include "matcher/Pattern.h"
-#include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"
 
@@ -33,10 +33,8 @@ struct ChromiumBrowseHistory::PImpl
 		mOrgDBFilePath.ReleaseBuffer();
 
 		// 退避先のパスを生成
-		TCHAR dbDstPath[MAX_PATH_NTFS];
-		CAppProfile::GetDirPath(dbDstPath, MAX_PATH_NTFS);
-		PathAppend(dbDstPath, _T("tmp"));
-		if (PathIsDirectory(dbDstPath) == FALSE) {
+		Path dbDstPath(Path::APPDIR, _T("tmp"));
+		if (dbDstPath.IsDirectory() == false) {
 			if (CreateDirectory(dbDstPath, nullptr) == FALSE) {
 				spdlog::warn(_T("Failed to create directory {}"), (LPCTSTR)dbDstPath);
 				return;
@@ -50,7 +48,8 @@ struct ChromiumBrowseHistory::PImpl
 
 		CString fileName;
 		fileName.Format(_T("%s-history-%s"), computerName, (LPCTSTR)mId);
-		PathAppend(dbDstPath, fileName);
+
+		dbDstPath.Append(fileName);
 		mDBFilePath = dbDstPath;
 	}
 

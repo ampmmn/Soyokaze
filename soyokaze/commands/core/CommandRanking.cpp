@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "commands/core/CommandRanking.h"
-#include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include <map>
 
 #ifdef _DEBUG
@@ -17,11 +17,10 @@ struct CommandRanking::PImpl
 {
 	const CString& GetFilePath()
 	{
-		TCHAR path[MAX_PATH_NTFS];
-		CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-		PathAppend(path, PRIORITY_FILENAME);
-
-		mFilePath = path;
+		if (mFilePath.IsEmpty()) {
+			Path path(Path::APPDIR, PRIORITY_FILENAME);
+			mFilePath = path;
+		}
 
 		return mFilePath;
 	}

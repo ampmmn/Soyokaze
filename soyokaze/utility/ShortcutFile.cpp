@@ -123,17 +123,17 @@ CString ShortcutFile::ResolvePath(
 		return _T("");
 	}
 
-	wchar_t pathWideChar[MAX_PATH_NTFS];
+	std::vector<wchar_t> pathWideChar(MAX_PATH_NTFS);
 
 	WIN32_FIND_DATA wfd = {};
-	shellLinkPtr->GetPath(pathWideChar, MAX_PATH_NTFS, &wfd, 0);
+	shellLinkPtr->GetPath(&pathWideChar.front(), MAX_PATH_NTFS, &wfd, 0);
 
 	if (description) {
 		shellLinkPtr->GetDescription(description->GetBuffer(INFOTIPSIZE), INFOTIPSIZE);
 		description->ReleaseBuffer();
 	}
 
-	CString path((CStringW)pathWideChar);
+	CString path((CStringW)&pathWideChar.front());
 	return path;
 }
 

@@ -122,15 +122,16 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 	constexpr int LIMIT_TIME = 100;   // 結果取得にかける時間(これを超過したら打ち切り)
 	uint64_t start = GetTickCount64();
 
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+
 	for (DWORD i = 0; i < dwNumResults; ++i) {
 
-		TCHAR path[MAX_PATH_NTFS];
-		if (Everything_GetResultFullPathName(i, path, MAX_PATH_NTFS) == EVERYTHING_ERROR_INVALIDCALL) {
+		if (Everything_GetResultFullPathName(i, path.data(), MAX_PATH_NTFS) == EVERYTHING_ERROR_INVALIDCALL) {
 			break;
 		}
 
 		EverythingResult result;
-		result.mFullPath = path;
+		result.mFullPath = path.data();
 		result.mMatchLevel = Pattern::FrontMatch;
 
 		tmp.push_back(result);

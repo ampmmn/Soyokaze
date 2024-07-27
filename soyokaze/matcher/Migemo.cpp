@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Migemo.h"
 #include "utility/CharConverter.h"
+#include "utility/Path.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,10 +32,8 @@ struct Migemo::PImpl
 
 Migemo::Migemo() : in(std::make_unique<PImpl>())
 {
-	TCHAR path[MAX_PATH_NTFS];
-	GetModuleFileName(nullptr, path, MAX_PATH_NTFS);
-	PathRemoveFileSpec(path);
-	PathAppend(path, _T("migemo.dll"));
+	Path path(Path::MODULEFILEDIR);
+	path.Append(_T("migemo.dll"));
 
 	in->mMigemoDll = LoadLibrary(path);
 	in->mIsDictLoaded = false;

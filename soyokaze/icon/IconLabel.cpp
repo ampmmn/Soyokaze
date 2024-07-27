@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "IconLabel.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -107,21 +108,17 @@ void IconLabel::OnPaint()
 void IconLabel::OnMenuChangeIcon()
 {
 	CString filterStr((LPCTSTR)IDS_FILTER_ICONIMAGEFILES);
-	CString iconPath;
-	LPTSTR p = iconPath.GetBuffer(MAX_PATH_NTFS);
-	PathRemoveFileSpec(p);
-	iconPath.ReleaseBuffer();
-	GetModuleFileName(NULL, p, MAX_PATH_NTFS);
+
+	Path iconPath(Path::MODULEFILEPATH);
+	iconPath.Shrink();
 
 	CFileDialog dlg(TRUE, NULL, iconPath, OFN_FILEMUSTEXIST, filterStr, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
-	iconPath = dlg.GetPathName();
-
 	// 親ウインドウに変更後のアイコントとする画像ファイルパスを通知する
-	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)iconPath);
+	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)dlg.GetPathName());
 
 	// IconLabelに対してアイコンを設定するのはクラス利用者側の責務
 

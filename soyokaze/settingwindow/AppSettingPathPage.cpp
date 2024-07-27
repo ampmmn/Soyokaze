@@ -4,6 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "setting/Settings.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -193,8 +194,7 @@ bool AppSettingPathPage::GetHelpPageId(CString& id)
 
 void AppSettingPathPage::OnButtonAdd()
 {
-	TCHAR path[MAX_PATH_NTFS];
-	GetModuleFileName(nullptr, path, MAX_PATH_NTFS);
+	Path path(Path::MODULEFILEDIR);
 	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;

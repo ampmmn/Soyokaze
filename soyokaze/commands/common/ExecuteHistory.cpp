@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ExecuteHistory.h"
-#include "utility/AppProfile.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include <map>
 #include <list>
@@ -21,9 +21,7 @@ struct ExecuteHistory::PImpl
 			return mFilePath;
 		}
 
-		TCHAR path[MAX_PATH_NTFS];
-		CAppProfile::GetDirPath(path, MAX_PATH_NTFS);
-		PathAppend(path, _T("history.txt"));
+		Path path(Path::APPDIR, _T("history.txt"));
 		mFilePath = path;
 
 		return mFilePath;

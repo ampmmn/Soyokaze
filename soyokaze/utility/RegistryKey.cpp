@@ -115,13 +115,13 @@ bool RegistryKey::OpenSubKey(LPCTSTR subKeyName, RegistryKey& subKey)
 
 bool RegistryKey::GetValue(LPCTSTR subKey, LPCTSTR valueName, CString& value)
 {
-	TCHAR buff[MAX_PATH_NTFS];
+	std::vector<TCHAR> buff(MAX_PATH_NTFS);
 	DWORD len = MAX_PATH_NTFS;
-	if (RegGetValue(mKey, subKey, valueName, RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ, nullptr, buff, &len) != ERROR_SUCCESS) {
+	if (RegGetValue(mKey, subKey, valueName, RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ, nullptr, &buff.front(), &len) != ERROR_SUCCESS) {
 		return false;
 	}
 
-	value = buff;
+	value = &buff.front();
 	return true;
 }
 
