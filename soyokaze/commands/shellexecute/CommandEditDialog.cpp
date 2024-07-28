@@ -325,7 +325,9 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	}
 	else {
 		// デフォルトに戻す
-		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+		CString resolvedPath(mParam.mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 		mParam.mIconData.clear();
 	}
 

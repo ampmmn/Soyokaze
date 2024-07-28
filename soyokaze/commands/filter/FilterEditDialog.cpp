@@ -194,12 +194,7 @@ bool FilterEditDialog::UpdateStatus()
 	}
 
 
-	if (mParam.mPreFilterType == 0) {
-		mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadIconFromPath(mParam.mPath));
-	}
-	else {
-		mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadDefaultIcon());
-	}
+	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadPromptIcon());
 
 	// 名前チェック
 	bool isNameValid =

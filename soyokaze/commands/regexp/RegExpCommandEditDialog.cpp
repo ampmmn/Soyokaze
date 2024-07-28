@@ -4,6 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/common/CommandEditValidation.h"
+#include "commands/common/ExpandFunctions.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -20,6 +21,7 @@ namespace launcherapp {
 namespace commands {
 namespace regexp {
 
+using namespace launcherapp::commands::common;
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
@@ -127,7 +129,9 @@ BOOL CommandEditDialog::OnInitDialog()
 	mIconLabelPtr->EnableIconChange();
 
 	if (mIconData.empty()) {
-		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+		CString resolvedPath(mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 	else {
 		mIcon = IconLoader::Get()->LoadIconFromStream(mIconData);
@@ -164,7 +168,9 @@ bool CommandEditDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
 	if (mIconData.empty()) {
-		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+		CString resolvedPath(mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 
 	if (mIcon) {
@@ -332,7 +338,9 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	}
 	else {
 		// デフォルトに戻す
-		mIcon = IconLoader::Get()->LoadIconFromPath(mPath);
+		CString resolvedPath(mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 		mIconData.clear();
 	}
 
