@@ -291,10 +291,7 @@ static CString DecodeURI(const CString& src)
 		char& c2 = num[0];
 		char& c3 = num[1];
 
-		if ((c2 < '0' || '9' < c2) && (c2 < 'a' || 'f' < c2) && (c2 < 'A' || 'F' < c2)) {
-			continue;
-		}
-		if ((c3 < '0' || '9' < c3) && (c3 < 'a' || 'f' < c3) && (c3 < 'A' || 'F' < c3)) {
+		if (_istxdigit(c2) == 0 || _istxdigit(c3) == 0) {
 			continue;
 		}
 

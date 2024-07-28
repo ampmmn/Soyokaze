@@ -21,9 +21,43 @@ namespace bookmarks {
 
 struct BookmarkCommand::PImpl
 {
+	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark> items, std::vector<Bookmark>& out);
+
+
 	CommandParam mParam;
 	Bookmarks mBookmarks;
 };
+
+void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark> items, std::vector<Bookmark>& out)
+{
+	for (auto& item : items) {
+
+		if (item.mUrl.Find(_T("javascript:")) == 0) {
+			// ブックマークレットは対象外
+			continue;
+		}
+
+		int level = pattern->Match(item.mName, 1);
+		if (level == Pattern::Mismatch) {
+
+			if (mParam.mIsUseURL == false) {
+				// URLを絞り込みに使わない場合はここではじく
+				continue;
+			}
+
+			level = pattern->Match(item.mUrl, 1);
+			if (level == Pattern::Mismatch) {
+				continue;
+			}
+		}
+
+		Bookmark newItem(item);
+		newItem.mMatchLevel = level;
+		newItem.mBrowser = type;
+
+		out.push_back(newItem);
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,73 +83,19 @@ bool BookmarkCommand::QueryBookmarks(Pattern* pattern, std::vector<Bookmark>& bo
 		return false;
 	}
 
-	// patternから検索ワード一覧を得る
-	std::vector<Pattern::WORD> words;
-	pattern->GetWords(words);
-
-	std::reverse(words.begin(), words.end());
-
-	// コマンド名を除外
-	words.pop_back();
-
 	// ToDo: 階層をコマンド設定で指定できるようにする
 
 	std::vector<Bookmark> tmp;
 
+	// Chromeのブックマークを取得し、キーワードで絞り込み
 	std::vector<Bookmark> items;
 	if (in->mParam.mIsEnableChrome && in->mBookmarks.LoadChromeBookmarks(items)) {
-		for (auto& item : items) {
-
-			if (item.mUrl.Find(_T("javascript:")) == 0) {
-				// ブックマークレットは対象外
-				continue;
-			}
-
-			int level = pattern->Match(item.mName, 1);
-			if (level == Pattern::Mismatch) {
-
-				if (in->mParam.mIsUseURL == false) {
-					// URLを絞り込みに使わない場合はここではじく
-					continue;
-				}
-
-				level = pattern->Match(item.mUrl, 1);
-				if (level == Pattern::Mismatch) {
-					continue;
-				}
-			}
-			item.mMatchLevel = level;
-			item.mBrowser = BrowserType::Chrome;
-			tmp.push_back(item);
-			//commands.push_back(CommandQueryItem(level, new URLCommand(_T("Chrome"), URLCommand::BOOKMARK, item.mName, item.mUrl)));
-		}
+		in->Query(BrowserType::Chrome, pattern, items, tmp);
 	}
+
+	// Edgeのブックマーク一覧をしゅとくし、キーワードで絞り込み
 	if (in->mParam.mIsEnableEdge && in->mBookmarks.LoadEdgeBookmarks(items)) {
-		for (auto& item : items) {
-
-			if (item.mUrl.Find(_T("javascript:")) == 0) {
-				// ブックマークレットは対象外
-				continue;
-			}
-
-			int level = pattern->Match(item.mName, 1);
-			if (level == Pattern::Mismatch) {
-
-				if (in->mParam.mIsUseURL == false) {
-					// URLを絞り込みに使わない場合はここではじく
-					continue;
-				}
-
-				level = pattern->Match(item.mUrl, 1);
-				if (level == Pattern::Mismatch) {
-					continue;
-				}
-			}
-			item.mMatchLevel = level;
-			item.mBrowser = BrowserType::Edge;
-			tmp.push_back(item);
-			//commands.push_back(CommandQueryItem(level, new URLCommand(_T("Edge"), URLCommand::BOOKMARK, item.mName, item.mUrl)));
-		}
+		in->Query(BrowserType::Edge, pattern, items, tmp);
 	}
 
 	// 結果をコピー

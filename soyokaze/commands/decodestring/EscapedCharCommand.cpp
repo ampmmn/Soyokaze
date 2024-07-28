@@ -83,8 +83,7 @@ bool EscapedCharCommand::ScanAsU4(std::string::iterator& it, std::string::iterat
 		return false;
 	}
 
-	if (isxdigit(*(it+2)) == 0 || isxdigit(*(it+3)) == 0 ||
-      isxdigit(*(it+4)) == 0 || isxdigit(*(it+5)) == 0) {
+	if (std::any_of(it+2, it+6, [](auto c) { return isxdigit(c) == 0; })) {
 		// 条件を満たさない(後続4文字が16進文字でない)
 		return false;
 	}
@@ -117,9 +116,8 @@ bool EscapedCharCommand::ScanAsU4(std::string::iterator& it, std::string::iterat
 		return false;
 	}
 
-	if (*it2 != '\\' || *(it2+1) != 'u' || 
-	    isxdigit(*(it2+2)) == 0 || isxdigit(*(it2+3)) == 0 ||
-      isxdigit(*(it2+4)) == 0 || isxdigit(*(it2+5)) == 0) {
+	if (*it2 != '\\' || *(it2+1) != 'u' ||
+	    std::any_of(it2 + 2, it2 + 6, [](auto c) { return isxdigit(c) == 0; })) {
 		// 条件を満たさない(後続4文字が16進文字でない)
 		return false;
 	}

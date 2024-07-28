@@ -9,7 +9,11 @@ public:
 	BOOL Create(CWnd* pParent, UINT nID = 0xffff, DWORD nStyle = WS_CHILD | CBS_DROPDOWNLIST);
 	int DoModal(const CRect& rectItem, CString& rstrText);
 	int DoModalOverListItem(CWnd* pParent, int nItem, int nSubItem = 0);
+
 protected:
+	bool DoPumpMessage(CWnd* oldFocus);
+
+
 	DECLARE_MESSAGE_MAP()
 };
 

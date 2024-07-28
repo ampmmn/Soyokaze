@@ -69,49 +69,7 @@ int ModalComboBox::DoModal(
 
 	ShowDropDown();
 
-	bool isOK = true;
-	for(;;) {
-
-		if (CWnd::GetFocus()->GetSafeHwnd() != GetSafeHwnd()) {
-			// フォーカスを外れたらぬける
-			break;
-		}
-
-		MSG msg;
-		if (PeekMessage(&msg, NULL, 0, 0, FALSE) == FALSE) {
-			Sleep(0);
-			continue;
-		}
-
-		BOOL IsMsgForMe = (msg.hwnd == GetSafeHwnd());
-
-		TCHAR className[256+1];
-		GetClassName(msg.hwnd, className, 256+1);
-		if (msg.hwnd != GetSafeHwnd() && _tcscmp(className, _T("ComboLBox")) != 0)  {
-			
-			if (msg.message == WM_LBUTTONDOWN || msg.message == WM_NCLBUTTONDOWN) {
-				if (oldFocus)
-					oldFocus->SetFocus();
-
-				::TranslateMessage(&msg);
-				::DispatchMessage(&msg);
-				break;
-			}
-		}
-
-		GetMessage(&msg, NULL, 0, 0);
-		if (IsMsgForMe)  {
-			if (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE) {
-				isOK = false;
-				break;
-			}
-			if (msg.message == WM_KEYDOWN && msg.wParam == VK_RETURN) {
-				break;
-			}
-		}
-		::TranslateMessage(&msg);
-		::DispatchMessage(&msg);
-	}
+	bool isOK = DoPumpMessage(oldFocus);
 
 	ReleaseCapture();
 	ShowWindow(SW_HIDE);
@@ -155,4 +113,50 @@ int ModalComboBox::DoModalOverListItem(
 
 	return DoModal(rcItem, orgText);
 }
+
+bool ModalComboBox::DoPumpMessage(CWnd* oldFocus)
+{
+	for(;;) {
+
+		if (CWnd::GetFocus()->GetSafeHwnd() != GetSafeHwnd()) {
+			// フォーカスを外れたらぬける
+			return true;
+		}
+
+		MSG msg;
+		if (PeekMessage(&msg, NULL, 0, 0, FALSE) == FALSE) {
+			Sleep(0);
+			continue;
+		}
+
+		BOOL IsMsgForMe = (msg.hwnd == GetSafeHwnd());
+
+		TCHAR className[256+1];
+		GetClassName(msg.hwnd, className, 256+1);
+		if (msg.hwnd != GetSafeHwnd() && _tcscmp(className, _T("ComboLBox")) != 0)  {
+			
+			if (msg.message == WM_LBUTTONDOWN || msg.message == WM_NCLBUTTONDOWN) {
+				if (oldFocus)
+					oldFocus->SetFocus();
+
+				::TranslateMessage(&msg);
+				::DispatchMessage(&msg);
+				return true;
+			}
+		}
+
+		GetMessage(&msg, NULL, 0, 0);
+		if (IsMsgForMe)  {
+			if (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE) {
+				return false;
+			}
+			if (msg.message == WM_KEYDOWN && msg.wParam == VK_RETURN) {
+				return true;
+			}
+		}
+		::TranslateMessage(&msg);
+		::DispatchMessage(&msg);
+	}
+}
+
 
