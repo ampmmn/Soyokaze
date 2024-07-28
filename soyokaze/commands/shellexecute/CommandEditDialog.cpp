@@ -6,6 +6,7 @@
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/common/CommandEditValidation.h"
+#include "commands/common/ExpandFunctions.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
@@ -16,6 +17,9 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
+using namespace launcherapp::commands::common;
 
 static const tregex& GetRegexForArgument()
 {
@@ -113,7 +117,9 @@ bool CommandEditDialog::UpdateStatus()
 	}
 
 	if (mParam.mIconData.empty()) {
-		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+		CString resolvedPath(mParam.mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 
 	if (mIcon) {
@@ -224,7 +230,9 @@ void CommandEditDialog::OnEnterSettings()
 	SetWindowText(caption);
 
 	if (mParam.mIconData.empty()) {
-		mIcon = IconLoader::Get()->LoadIconFromPath(mParam.mPath);
+		CString resolvedPath(mParam.mPath);
+		ExpandMacros(resolvedPath);
+		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 	else {
 		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
