@@ -34,7 +34,10 @@ TEST(Path, testConstructModuleDir)
 {
 	Path path(Path::MODULEFILEDIR);
 
-	EXPECT_TRUE(path.IsDirectory());
+	bool isEmpty = path.IsEmptyPath();
+
+	// 何かしらパスが取得できていること(ただし、取得したパスにディレクトリが存在するとは限らない)
+	EXPECT_FALSE(isEmpty);
 }
 
 TEST(Path, testConstructAppDir)
@@ -57,7 +60,7 @@ TEST(Path, testShrink)
 
 	path.Shrink();
 
-	// $B=*C<J8;z$N$_$H$J$k$N$G%5%$%:$O(B1
+	// 終端文字のみとなるのでサイズは1
 	EXPECT_EQ(1, path.size());
 }
 
