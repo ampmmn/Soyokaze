@@ -42,9 +42,9 @@ public:
 	bool IsURL() const;
 
 	bool IsRelative() const;
-	HRESULT CreateFromUrl(LPCTSTR url, DWORD flags);
+	HRESULT CreateFromUrl(LPCTSTR url, DWORD flags = 0);
 
-	// $B<B:]$N%Q%9$ND9$5$K(Bbuffer$B$r@Z$j5M$a$k(B
+	// 実際のパスの長さにbufferを切り詰める
 	void Shrink();
 
 protected:

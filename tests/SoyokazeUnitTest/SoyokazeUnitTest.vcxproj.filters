@@ -90,5 +90,8 @@
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp">
       <Filter>soyokaze\commands\decodestring</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
