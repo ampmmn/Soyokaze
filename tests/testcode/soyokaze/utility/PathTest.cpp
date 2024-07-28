@@ -34,17 +34,17 @@ TEST(Path, testConstructModuleDir)
 {
 	Path path(Path::MODULEFILEDIR);
 
-	bool isEmpty = path.IsEmptyPath();
-
-	// 何かしらパスが取得できていること(ただし、取得したパスにディレクトリが存在するとは限らない)
-	EXPECT_FALSE(isEmpty);
+	EXPECT_TRUE(path.IsDirectory());
 }
 
 TEST(Path, testConstructAppDir)
 {
 	Path path(Path::APPDIR);
 
-	EXPECT_TRUE(path.IsDirectory());
+	bool isEmpty = path.IsEmptyPath();
+
+	// 何かしらパスが取得できていること(ただし、取得したパスにディレクトリが存在するとは限らない)
+	EXPECT_FALSE(isEmpty);
 }
 
 TEST(Path, testSize)
