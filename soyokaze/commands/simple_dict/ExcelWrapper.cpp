@@ -2,8 +2,6 @@
 #include "ExcelWrapper.h"
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include <mutex>
-#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
