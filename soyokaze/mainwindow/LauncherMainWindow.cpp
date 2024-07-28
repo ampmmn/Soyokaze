@@ -980,6 +980,41 @@ void LauncherMainWindow::ClearContent()
 	UpdateData(FALSE);
 }
 
+// 末尾の1単語分の削除を行う
+void LauncherMainWindow::RemoveLastWord()
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	int n = 0;
+
+	CString str = in->mCommandStr;
+	str.TrimRight();
+
+	int len = str.GetLength();
+	for (int i = len-1; i >= 0; --i) {
+		if (str[i] == _T(' ')) {
+			n = i;
+			break;
+		}
+	}
+
+	if (n == 0) {
+		ClearContent();
+		return;
+	}
+
+	in->mCommandStr = in->mCommandStr.Mid(0, n+1);
+
+	// 検索リクエスト
+	QueryAsync();
+
+	UpdateData(FALSE);
+
+	// キャレット位置も更新する
+	in->mKeywordEdit.SetCaretToEnd();
+}
+
+
 void LauncherMainWindow::Complement()
 {
 	WaitQueryRequest();
@@ -1041,8 +1076,7 @@ void LauncherMainWindow::OnEditCommandChanged()
 	if (in->mCommandStr.Find((TCHAR)0x7F) != -1) {
 		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
 		in->mCommandStr.Replace(bsStr, _T(""));
-		in->mKeywordEdit.Clear();
-		ClearContent();
+		RemoveLastWord();
 		return;
 	}
 
@@ -1274,17 +1308,6 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 )
 {
 	UNREFERENCED_PARAMETER(lParam);
-
-	if (wParam == VK_BACK) {
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-
-			AppSound::Get()->PlayInputSound();
-
-			ClearContent();
-			in->mKeywordEdit.Clear();
-			return 1;
-		}
-	}
 
 	if (in->mCandidates.IsEmpty() == false) {
 
