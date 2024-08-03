@@ -249,7 +249,7 @@ void CandidateListCtrl::OnUpdateItems(void* sender)
 	int count = candidates->GetSize();
 
 	// アイテム数が0のときでも背景を交互で描画できるようにするため、ダミーの項目数を1つだけ挟む
-	in->mIsEmpty = count == 0;
+	in->mIsEmpty = candidates->IsEmpty();
 	SetItemCountEx(in->mIsEmpty ? 1 : count);
 	if (count > 0) {
 		SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);

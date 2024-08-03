@@ -154,6 +154,9 @@ public:
 	// (Everything APIを使わない場合)Everything.exeのパスを取得する
 	CString GetEverythingExePath();
 
+	// キーワード未登録時のアクション
+	CString GetDefaultActionType();
+
 	// ログレベル
 	int GetLogLevel();
 

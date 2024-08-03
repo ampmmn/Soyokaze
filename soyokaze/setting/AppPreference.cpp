@@ -871,6 +871,13 @@ CString AppPreference::GetEverythingExePath()
 	return in->Get(_T("Everything:EverythingExePath"), _T(""));
 }
 
+// キーワード未登録時のアクション種別名を返す
+// 空文字:なにもしない
+CString AppPreference::GetDefaultActionType()
+{
+	return in->Get(_T("Launcher:DefaultActionType"), _T("register"));
+}
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

@@ -690,14 +690,16 @@ BEGIN
     CONTROL         "&Ctrl-Enterキーで実行した場合にフォルダを表示する",IDC_CHECK_SHOWDIR,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,13,175,10
     CONTROL         "フォルダを開くファイラーを指定(&I)",IDC_CHECK_USEFILER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,33,115,10
-    LTEXT           "ファイラーのパス(&N):",-1,25,50,61,8
+    LTEXT           "ファイラーのパス(&N):",IDC_STATIC,25,50,61,8
     EDITTEXT        IDC_EDIT_FILERPATH,91,46,183,14,ES_AUTOHSCROLL
     PUSHBUTTON      "Button1",IDC_BUTTON_BROWSEFILE,275,46,21,14
-    LTEXT           "パラメータ(&P):",-1,25,64,42,8
+    LTEXT           "パラメータ(&P):",IDC_STATIC,25,64,42,8
     EDITTEXT        IDC_EDIT_FILERPARAM,91,64,183,14,ES_AUTOHSCROLL
-    LTEXT           "$target と指定するとリンク先に置き換えます",-1,91,81,183,11
+    LTEXT           "$target と指定するとリンク先に置き換えます",IDC_STATIC,91,81,183,11
     CONTROL         "「ファイル名を指定して実行」機能を使用する(&R)",IDC_CHECK_ENABLEPATHFIND,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,99,165,10
+    LTEXT           "未登録キーワード入力時の動作(&D):",IDC_STATIC,26,122,116,8
+    COMBOBOX        IDC_COMBO_DEFAULTACTION,151,120,122,71,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_APPSETTING_PATHCONVERT DIALOGEX 0, 0, 309, 285
@@ -2768,6 +2770,19 @@ BEGIN
 0x7483, 0x4083, 0x4383, 0x8b83, 0xcc82, 0xdd82, "\000" 
     IDC_COMBO_TARGET, 0x403, 13, 0
 0x7483, 0x4883, 0x8b83, 0x5f83, 0xcc82, 0xdd82, "\000" 
+    0
+END
+
+IDD_EXECSETTING DLGINIT
+BEGIN
+    IDC_COMBO_DEFAULTACTION, 0x403, 11, 0
+0xbd89, 0xe082, 0xb582, 0xc882, 0xa282, "\000" 
+    IDC_COMBO_DEFAULTACTION, 0x403, 23, 0
+0x4e83, 0x8a83, 0x6283, 0x7683, 0x7b83, 0x5b81, 0x6883, 0xc982, 0x5283, 
+0x7383, 0x5b81, "\000" 
+    IDC_COMBO_DEFAULTACTION, 0x403, 25, 0
+0x4c83, 0x5b81, 0x8f83, 0x5b81, 0x6883, 0xf082, 0x5283, 0x7d83, 0x9383, 
+0x6883, 0x6f93, 0x5e98, "\000" 
     0
 END
 

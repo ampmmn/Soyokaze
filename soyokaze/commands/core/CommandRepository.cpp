@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
 #include "commands/core/CommandQueryRequest.h"
+#include "commands/core/DefaultCommand.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"
@@ -28,13 +29,14 @@
 #define new DEBUG_NEW
 #endif
 
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandRanking = launcherapp::commands::core::CommandRanking;
-
 namespace launcherapp {
 namespace core {
 
+using ShellExecCommand  = launcherapp::commands::shellexecute::ShellExecCommand;
+using DefaultCommand = launcherapp::commands::core::DefaultCommand;
+using CommandRanking = launcherapp::commands::core::CommandRanking;
 using QueryRequest = launcherapp::commands::core::CommandQueryRequest;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +112,14 @@ struct CommandRepository::PImpl
 	bool HasSubsequentRequest();
 	void Query(QueryRequest& req);
 
+	DefaultCommand* GetDefaultCommand()
+	{
+		if (mDefaultCommand.get() == nullptr) {
+			mDefaultCommand.reset(new DefaultCommand());
+		}
+		return mDefaultCommand.get();
+	}
+
 	CCriticalSection mCS;
 
 	std::vector<CommandProvider*> mProviders;
@@ -124,6 +134,10 @@ struct CommandRepository::PImpl
 	CommandMap mCommands;
 	// キーワード比較用のクラス
 	std::unique_ptr<Pattern> mPattern;
+
+	// 一致したコマンドがなかったときのコマンド
+	std::unique_ptr<DefaultCommand> mDefaultCommand;
+
 	
 	// 編集中フラグ
 	bool mIsNewDialog = false;
@@ -267,6 +281,12 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	for (auto& item : matchedItems) {
 		item.mCommand->AddRef();
 		items->push_back(item.mCommand.get());
+	}
+
+	if (items->empty()) {
+		auto defaultCmd = GetDefaultCommand();
+		defaultCmd->SetName(param.GetWholeString());
+		items->push_back(defaultCmd);
 	}
 
 	spdlog::debug("Query took about {:.6f} seconds.", swAll);

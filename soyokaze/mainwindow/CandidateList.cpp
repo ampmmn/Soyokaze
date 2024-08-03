@@ -91,7 +91,19 @@ bool CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
 
 bool CandidateList::IsEmpty()
 {
-	return in->mCandidates.empty();
+	if (in->mCandidates.empty()) {
+		return true;
+	}
+
+	if (in->mCandidates.size() > 1) {
+		return false;
+	}
+
+	// 候補数が1で、名前が空文字の場合はデフォルトコマンドとして扱う
+	// (デフォルトコマンドは「コマンドがある」とみなさない)
+	auto cmd = in->mCandidates[0];
+	ASSERT(cmd);
+	return cmd->GetName().IsEmpty() != FALSE;
 }
 
 int CandidateList::GetSize()

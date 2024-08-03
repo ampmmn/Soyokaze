@@ -27,7 +27,7 @@ CString DeleteCommand::GetType()
 DeleteCommand::DeleteCommand(LPCTSTR name) : 
 	BuiltinCommandBase(name ? name : _T("delete"))
 {
-	mDescription = _T("【削除】");
+	mDescription = _T("【コマンドを削除】");
 }
 
 DeleteCommand::DeleteCommand(const DeleteCommand& rhs) :

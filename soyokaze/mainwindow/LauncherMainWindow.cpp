@@ -1129,8 +1129,9 @@ void LauncherMainWindow::UpdateCandidates()
 		return;
 	}
 
-	// 候補なし
-	if (in->mCandidates.IsEmpty()) {
+	auto pCmd = GetCurrentCommand();
+	if (pCmd == nullptr) {
+		// 候補なし
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
 		in->mGuideStr.Empty();
@@ -1140,13 +1141,14 @@ void LauncherMainWindow::UpdateCandidates()
 		return;
 	}
 	else {
-		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
-		// サムネイルの更新
-		auto pCmd = GetCurrentCommand();
-		ASSERT(pCmd);
+		// サムネイルの更新		
 		in->mIconLabel.DrawIcon(pCmd->GetIcon());
+
+		// ガイド欄
 		in->mGuideStr = pCmd->GetGuideString();
 
+		// 説明欄の更新
+		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
 		SetDescription(descriptionStr);
 	}
 
@@ -1216,8 +1218,10 @@ void LauncherMainWindow::OnOK()
 {
 	UpdateData();
 
+	// バックグラウンドで実行中の問い合わせを待つ
 	WaitQueryRequest();
 
+	// 問い合わせの結果として得られた選択中の候補を取得する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
 		// コマンドを実行する

@@ -20,6 +20,8 @@ public:
 	CString mFilerPath;
 	// ファイラーのパラメータ
 	CString mFilerParam;
+	// 未登録キーワード実行時の動作
+	int mDefaultActionIndex;
 
 protected:
 	bool UpdateStatus();

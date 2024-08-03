@@ -1068,6 +1068,12 @@
     <ClInclude Include="utility\Path.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\CopyClipboardCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\DefaultCommand.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1885,6 +1891,12 @@
     </ClCompile>
     <ClCompile Include="utility\Path.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\CopyClipboardCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\DefaultCommand.cpp">
+      <Filter>commands\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

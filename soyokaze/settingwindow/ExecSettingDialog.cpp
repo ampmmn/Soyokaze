@@ -13,7 +13,8 @@ ExecSettingDialog::ExecSettingDialog(CWnd* parentWnd) :
 	SettingPage(_T("実行"), IDD_EXECSETTING, parentWnd),
 	mIsShowFolderIfCtrlPressed(true),
 	mIsUseExternalFiler(false),
-	mIsEnablePathFind(true)
+	mIsEnablePathFind(true),
+	mDefaultActionIndex(0)
 {
 }
 
@@ -38,12 +39,30 @@ BOOL ExecSettingDialog::OnSetActive()
 
 void ExecSettingDialog::OnOK()
 {
+	UpdateData();
+
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
 	settingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
 	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
+
+	CString defAction;
+	if (mDefaultActionIndex == 1) {
+		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
+		defAction = _T("copy");
+	}
+	else if (mDefaultActionIndex == 2) {
+		defAction = _T("register");
+	}
+	else {
+		// 何もしない
+		defAction = _T("");
+	}
+
+	settingsPtr->Set(_T("Launcher:DefaultActionType"), defAction); 
+
 	__super::OnOK();
 }
 
@@ -56,7 +75,7 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, mIsEnablePathFind);
 	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
-	
+	DDX_CBIndex(pDX, IDC_COMBO_DEFAULTACTION, mDefaultActionIndex);
 }
 
 BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
@@ -117,6 +136,19 @@ void ExecSettingDialog::OnEnterSettings()
 	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
+
+	CString defAction = settingsPtr->Get(_T("Launcher:DefaultActionType"), _T("register")); 
+	if (defAction == _T("copy")) {
+		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
+		mDefaultActionIndex = 1;
+	}
+	else if (defAction == _T("register")) {
+		mDefaultActionIndex = 2;
+	}
+	else {
+		// なにもしない
+		mDefaultActionIndex = 0;
+	}
 
 }
 
