@@ -271,7 +271,7 @@ CString ExcelApplication::GetSelectionAddress(int& cols, int& rows)
 
 /**
  	指定した範囲のセルのテキストを取得する
- 	@return 
+ 	@return  0:正常終了 ほか:エラー
  	@param[in]  wbPath    workbookファイルパス
  	@param[in]  sheetName シート名
  	@param[in]  address   範囲
@@ -286,6 +286,12 @@ int ExcelApplication::GetCellText(
 {
 	SPDLOG_DEBUG(_T("args path:{0} sheet:{1} address:{2}"),
 	             (LPCTSTR)wbPath, (LPCTSTR)sheetName, (LPCTSTR)address);
+
+	// ファイルが存在しなければ処理を行わない
+	if (PathFileExists(wbPath) == FALSE) {
+		spdlog::error(_T("data source does not exist. {}"), (LPCTSTR)wbPath);
+		return -1;
+	}
 
 	DispWrapper& excelApp = in->mApp;
 	if (!excelApp) {
