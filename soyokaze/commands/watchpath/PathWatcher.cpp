@@ -6,6 +6,7 @@
 #include <thread>
 #include <vector>
 #include <deque>
+#include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "commands/common/Message.h"
 #include "commands/watchpath/LocalPathTarget.h"
 #include "commands/watchpath/UNCPathTarget.h"
@@ -18,10 +19,13 @@ namespace watchpath {
 
 using ITEM = PathWatcher::ITEM;
 
-struct PathWatcher::PImpl
+struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 {
 	// 監視を開始
 	void StartWatch();
+
+	//
+	bool IsLockWorkstation();
 
 	// 監視を中止する
 	void Abort() {
@@ -47,6 +51,21 @@ struct PathWatcher::PImpl
 
 	void NotifyPath(const CString& cmdName, const CString& message, const CString& detail);
 
+
+	void OnLockScreenOccurred() override
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsScreenLocked = true;
+	}
+	void OnUnlockScreenOccurred() override
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsScreenLocked = false;
+	}
+	void OnTimer() override
+	{
+	}
+
 	// 排他制御用
 	std::mutex mMutex;
 
@@ -57,6 +76,8 @@ struct PathWatcher::PImpl
 	bool mIsAbort = false;
 	// 監視スレッド終了済を表すフラグ
 	bool mIsExited = false;
+	// 
+	bool mIsScreenLocked = false;
 	// 監視スレッド
 	std::unique_ptr<std::thread> mTask;
 };
@@ -74,11 +95,11 @@ void PathWatcher::PImpl::StartWatch()
 	// 初回にタスクを生成する
 	mTask.reset(new std::thread([&]() {
 
-		int count = 0;
+		uint64_t count = 0;
 		while(IsAbort() == false) {
 
 			// 5秒に1回(50msec * 100回)=5sec
-			if (count++ >= 100) {
+			if (count++ >= 100 && IsLockWorkstation() == false) {
 				WatchPath();
 				count = 0;
 			}
@@ -95,6 +116,12 @@ void PathWatcher::PImpl::StartWatch()
 
 	}));
 	mTask->detach();
+}
+
+bool PathWatcher::PImpl::IsLockWorkstation()
+{
+	std::lock_guard<std::mutex> lock(mMutex);
+	return mIsScreenLocked;
 }
 
 // ローカルパス向けの更新検知処理
@@ -139,10 +166,14 @@ PathWatcher::PathWatcher() : in(new PImpl)
 {
 	in->mIsAbort = false;
 	in->mIsExited = false;
+
+	LauncherWindowEventDispatcher::Get()->AddListener(in.get());
 }
 
 PathWatcher::~PathWatcher()
 {
+	LauncherWindowEventDispatcher::Get()->RemoveListener(in.get());
+
 	in->Abort();
 	in->WaitExit();
 }

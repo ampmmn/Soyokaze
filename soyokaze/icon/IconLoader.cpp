@@ -118,10 +118,13 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 
 	void OnLockScreenOccurred() override
 	{
+		mIsScreenLocked = true;
+
 	}
 
 	void OnUnlockScreenOccurred() override
 	{
+		mIsScreenLocked = false;
 	}
 
 	void OnTimer() override
@@ -154,10 +157,15 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	LocalPathResolver mResolver;
 
 	int mCleanCount = CLEARCACHE_INTERVAL;
+
+	bool mIsScreenLocked = false;
 };
 
 void IconLoader::PImpl::ClearCache()
 {
+	if (mIsScreenLocked) {
+		return;
+	}
 	spdlog::debug(_T("ClearCache in."));
 
 	int clearedItemCount = 0;
