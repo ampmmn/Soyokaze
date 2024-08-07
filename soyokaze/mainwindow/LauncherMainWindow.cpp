@@ -27,6 +27,7 @@
 #include "mainwindow/MainWindowHotKey.h"
 #include "mainwindow/OperationWatcher.h"
 #include "macros/core/MacroRepository.h"
+#include "matcher/CommandToken.h"
 #include "CandidateList.h"
 #include <algorithm>
 #include <thread>
@@ -55,9 +56,6 @@ struct LauncherMainWindow::PImpl
 
 	void RestoreWindowPosition(CWnd* thisPtr, bool isForceReset);
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
-
-	void EnumTokenPos(std::vector<int>& tokenPos);
-	bool GetTrailingString(CString& text);
 
 	// キーワード入力欄の文字列
 	CString mCommandStr;
@@ -155,67 +153,6 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 
 	// アイコン更新
 	mIconLabel.DrawIcon(cmd->GetIcon());
-}
-
-void LauncherMainWindow::PImpl::EnumTokenPos(std::vector<int>& tokenPos)
-{
-	std::vector<int> tmpPos;
-
-	bool inToken = false;
-	bool inQuate = false;
-	int len = mCommandStr.GetLength();
-	for (int i = 0; i < len; ++i) {
-		auto c = mCommandStr[i];
-		if (inQuate == false && c == _T('"')) {
-		 	inQuate = true;
-			inToken = true;
-			tmpPos.push_back(i);
-			continue;
-	 	}
-		if (inQuate && c == _T('"')) {
-		 	inQuate = false;
-			continue;
-	 	}
-		if (inQuate == false && c == _T(' ')) {
-			inToken = false;
-			continue;
-		}
-		else {
-			if (inToken) {
-				continue;
-			}
-			tmpPos.push_back(i);
-			inToken = true;
-		}
-	}
-
-	tokenPos.swap(tmpPos);
-}
-
-// 現在のキャレット位置より後ろにある文字を取得する
-bool LauncherMainWindow::PImpl::GetTrailingString(CString& text)
-{
-	std::vector<int> tokenPos;
-	EnumTokenPos(tokenPos);
-
-	int startPos;
-	int endPos;
-	mKeywordEdit.GetSel(startPos, endPos);
-	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
-
-	auto it = tokenPos.begin();
-	for (; it != tokenPos.end(); ++it) {
-		auto pos = *it;
-		if (endPos < pos) {
-			break;
-		}
-	}
-	if (it == tokenPos.end()) {
-		return false;
-	}
-
-	text = mCommandStr.Mid(*it);
-	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1026,8 +963,14 @@ void LauncherMainWindow::Complement()
 	}
 
 	// 現在のキャレット位置より後ろにある文字を取得
+	int startPos;
+	int endPos;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
+
 	CString trailing;
-	bool hasTrailing = in->GetTrailingString(trailing);
+	launcherapp::matcher::CommandToken tok(in->mCommandStr);
+	bool hasTrailing = tok.GetTrailingString(endPos, trailing);
 
 	in->mCommandStr = cmd->GetName();
 	in->mCommandStr += _T(" ");

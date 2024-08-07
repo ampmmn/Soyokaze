@@ -602,6 +602,7 @@
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
+    <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
     <ClInclude Include="settingwindow\AppSettingPageOther.h" />
@@ -901,6 +902,7 @@
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
+    <ClCompile Include="matcher\CommandToken.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />

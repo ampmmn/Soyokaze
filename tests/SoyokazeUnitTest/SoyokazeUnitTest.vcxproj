@@ -45,6 +45,7 @@
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />

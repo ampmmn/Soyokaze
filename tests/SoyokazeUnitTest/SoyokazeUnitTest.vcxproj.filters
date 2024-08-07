@@ -43,6 +43,9 @@
     <Filter Include="soyokaze\commands\decodestring">
       <UniqueIdentifier>{e6438e73-2efd-4e0a-ae70-99505ebb26b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\matcher">
+      <UniqueIdentifier>{7fe6fbe9-a9a0-42f1-a8e3-632f487d75c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp">
+      <Filter>soyokaze\matcher</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
