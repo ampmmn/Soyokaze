@@ -82,7 +82,6 @@ struct FilterCommandProvider::PImpl : public AppPreferenceListenerIF, public Com
 	}
 
 	std::vector<FilterCommand*> mCommands;
-	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,58 +90,12 @@ struct FilterCommandProvider::PImpl : public AppPreferenceListenerIF, public Com
 
 REGISTER_COMMANDPROVIDER(FilterCommandProvider)
 
-
 FilterCommandProvider::FilterCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 
 FilterCommandProvider::~FilterCommandProvider()
 {
-}
-
-// 初回起動の初期化を行う
-void FilterCommandProvider::OnFirstBoot()
-{
-	// 特に何もしない
-}
-
-
-// コマンドの読み込み
-void FilterCommandProvider::LoadCommands(
-	CommandFile* cmdFile
-)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		FilterCommand* command = nullptr;
-		if (FilterCommand::LoadFrom(cmdFile, entry, &command) == false) {
-			if (command) {
-				command->Release();
-			}
-			continue;
-		}
-
-		// 登録
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command, isReloadHotKey);
-
-		in->mCommands.push_back(command);
-		command->AddRef();
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
 }
 
 CString FilterCommandProvider::GetName()
@@ -179,12 +132,6 @@ bool FilterCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool FilterCommandProvider::IsPrivate() const
-{
-	return false;
-}
-
 // 一時的なコマンドを必要に応じて提供する
 void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
@@ -210,36 +157,19 @@ uint32_t FilterCommandProvider::FilterCommandProvider::GetOrder() const
 	return 400;
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool FilterCommandProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
+bool FilterCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-
-	// 必要に応じて実装する
-	return true;
-}
-
-uint32_t FilterCommandProvider::FilterCommandProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t FilterCommandProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
+	std::unique_ptr<FilterCommand> command(new FilterCommand);
+	if (command->Load(entry) == false) {
+		return false;
 	}
-	return n;
+	ASSERT(retCommand);
+	*retCommand = command.get();
+
+	command->AddRef();
+	in->mCommands.push_back(command.release());
+
+	return true;
 }
 
 } // end of namespace filter

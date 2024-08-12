@@ -159,6 +159,11 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != EjectVolumeCommand::GetType()) {
+		return false;
+	}
+
 	in->mParam.mName = entry->GetName();
 	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
 

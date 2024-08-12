@@ -54,8 +54,6 @@ struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryLis
 
 
 	WebSearchCommandList mCommands;
-
-	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,11 +71,6 @@ WebSearchProvider::~WebSearchProvider()
 {
 }
 
-// 初回起動の初期化を行う
-void WebSearchProvider::OnFirstBoot()
-{
-}
-
 static void releaseCmd(void* p)
 {
 	auto ptr = (WebSearchCommand*)p;
@@ -85,44 +78,6 @@ static void releaseCmd(void* p)
 		ptr->Release();
 	}
 }
-
-// コマンドの読み込み
-void WebSearchProvider::LoadCommands(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	WebSearchCommandList tmp;
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		std::unique_ptr<WebSearchCommand> command(new WebSearchCommand);
-		if (command->Load(entry) == false) {
-			continue;
-		}
-
-		// 登録
-		bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.get(), isReloadHotKey);
-
-		command->AddRef();  // mCommandsで保持する分の参照カウント+1
-		tmp.push_back(WebSearchCommandPtr(command.release(), releaseCmd));
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
-
-	in->mCommands.swap(tmp);
-}
-
 
 CString WebSearchProvider::GetName()
 {
@@ -156,12 +111,6 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
-}
-
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool WebSearchProvider::IsPrivate() const
-{
-	return false;
 }
 
 // 一時的なコマンドを必要に応じて提供する
@@ -212,37 +161,21 @@ uint32_t WebSearchProvider::GetOrder() const
 	return 140;
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool WebSearchProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
+bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
+	std::unique_ptr<WebSearchCommand> command(new WebSearchCommand);
+	if (command->Load(entry) == false) {
+		return false;
+	}
+	ASSERT(retCommand);
+	*retCommand = command.get();
 
-	// 必要に応じて実装する
+	command->AddRef();
+	in->mCommands.push_back(WebSearchCommandPtr(command.release(), releaseCmd));
+
 	return true;
 }
 
-uint32_t WebSearchProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t WebSearchProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
 
 } // end of namespace websearch
 } // end of namespace commands

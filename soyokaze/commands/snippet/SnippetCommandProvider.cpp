@@ -1,10 +1,8 @@
 #include "pch.h"
 #include "SnippetCommandProvider.h"
 #include "commands/snippet/SnippetCommand.h"
-#include "commands/snippet/RegisterSnippetCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
-#include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 
@@ -12,17 +10,10 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = launcherapp::core::CommandRepository;
-
 namespace launcherapp {
 namespace commands {
 namespace snippet {
 
-
-struct SnippetCommandProvider::PImpl
-{
-	uint32_t mRefCount;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,52 +21,14 @@ struct SnippetCommandProvider::PImpl
 
 REGISTER_COMMANDPROVIDER(SnippetCommandProvider)
 
+IMPLEMENT_LOADFROM(SnippetCommandProvider, SnippetCommand)
 
-SnippetCommandProvider::SnippetCommandProvider() : in(std::make_unique<PImpl>())
+SnippetCommandProvider::SnippetCommandProvider()
 {
-	in->mRefCount = 1;
 }
 
 SnippetCommandProvider::~SnippetCommandProvider()
 {
-}
-
-// 初回起動の初期化を行う
-void SnippetCommandProvider::OnFirstBoot()
-{
-}
-
-// コマンドの読み込み
-void SnippetCommandProvider::LoadCommands(
-	CommandFile* cmdFile
-)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	constexpr bool isReloadHotKey = false;
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		auto command = std::make_unique<SnippetCommand>();
-		if (command->Load(entry) == false) {
-			continue;
-		}
-
-		// 登録
-		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
 }
 
 CString SnippetCommandProvider::GetName()
@@ -101,57 +54,10 @@ bool SnippetCommandProvider::NewDialog(const CommandParameter* param)
 	return SnippetCommand::NewDialog(param);
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool SnippetCommandProvider::IsPrivate() const
-{
-	return false;
-}
-
-// 一時的なコマンドを必要に応じて提供する
-void SnippetCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
-{
-	UNREFERENCED_PARAMETER(pattern);
-	UNREFERENCED_PARAMETER(comands);
-
-	// このCommandProviderは一時的なコマンドを持たない
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t SnippetCommandProvider::SnippetCommandProvider::GetOrder() const
 {
 	return 120;
-}
-
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool SnippetCommandProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
-{
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-
-	// 必要に応じて実装する
-	return true;
-}
-
-uint32_t SnippetCommandProvider::SnippetCommandProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t SnippetCommandProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 }

@@ -1077,6 +1077,9 @@
     <ClInclude Include="matcher\CommandToken.h">
       <Filter>matcher</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\RoutineCommandProviderBase.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1903,6 +1906,9 @@
     </ClCompile>
     <ClCompile Include="matcher\CommandToken.cpp">
       <Filter>matcher</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\RoutineCommandProviderBase.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

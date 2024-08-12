@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/core/CommandProviderIF.h"
+#include "commands/common/RoutineCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,49 +8,34 @@ namespace filter {
 
 
 class FilterCommandProvider :
-	public launcherapp::core::CommandProvider
+	public launcherapp::commands::common::RoutineCommandProviderBase
 {
-	using Command = launcherapp::core::Command;
-	using CommandParameter = launcherapp::core::CommandParameter;
-
 private:
 	FilterCommandProvider();
-	virtual ~FilterCommandProvider();
+	~FilterCommandProvider() override;
 
 public:
-	// $B=i2s5/F0$N=i4|2=$r9T$&(B
-	virtual void OnFirstBoot();
+	CString GetName() override;
 
-	// $B%3%^%s%I$NFI$_9~$_(B
-	virtual void LoadCommands(CommandFile* commandFile);
+	// 作成できるコマンドの種類を表す文字列を取得
+	CString GetDisplayName() override;
 
-	virtual CString GetName();
+	// コマンドの種類の説明を示す文字列を取得
+	CString GetDescription() override;
 
-	// $B:n@.$G$-$k%3%^%s%I$N<oN`$rI=$9J8;zNs$r<hF@(B
-	virtual CString GetDisplayName();
+	// コマンド新規作成ダイアログ
+	bool NewDialog(const CommandParameter* param) override;
 
-	// $B%3%^%s%I$N<oN`$N@bL@$r<($9J8;zNs$r<hF@(B
-	virtual CString GetDescription();
+	// 一時的なコマンドを必要に応じて提供する
+	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
-	// $B%3%^%s%I?75,:n@.%@%$%"%m%0(B
-	virtual bool NewDialog(const CommandParameter* param);
-
-	// $BHs8x3+%3%^%s%I$+$I$&$+(B($B?75,:n@.BP>]$K$7$J$$(B)
-	virtual bool IsPrivate() const;
-
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
-	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
-
-	// Provider$B4V$NM%@h=g0L$rI=$9CM$rJV$9!#>.$5$$$[$IM%@h(B
-	virtual uint32_t GetOrder() const;
-
-	// $B@_Dj%Z!<%8$r<hF@$9$k(B
-	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
-
-	virtual uint32_t AddRef();
-	virtual uint32_t Release();
+	// Provider間の優先順位を表す値を返す。小さいほど優先
+	uint32_t GetOrder() const override;
 
 	DECLARE_COMMANDPROVIDER(FilterCommandProvider)
+
+// RoutineCommandProviderBase
+	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 private:
 	struct PImpl;

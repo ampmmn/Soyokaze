@@ -20,65 +20,20 @@ namespace launcherapp {
 namespace commands {
 namespace group {
 
-
-
-struct GroupCommandProvider::PImpl
-{
-	uint32_t mRefCount;
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 REGISTER_COMMANDPROVIDER(GroupCommandProvider)
 
+IMPLEMENT_LOADFROM(GroupCommandProvider, GroupCommand)
 
-GroupCommandProvider::GroupCommandProvider() : in(std::make_unique<PImpl>())
+GroupCommandProvider::GroupCommandProvider()
 {
-	in->mRefCount = 1;
 }
 
 GroupCommandProvider::~GroupCommandProvider()
 {
-}
-
-// 初回起動の初期化を行う
-void GroupCommandProvider::OnFirstBoot()
-{
-	// 特に何もしない
-}
-
-
-// コマンドの読み込み
-void GroupCommandProvider::LoadCommands(
-	CommandFile* cmdFile
-)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		auto command = std::make_unique<GroupCommand>();
-		if (command->Load(entry) == false) {
-			continue;
-		}
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-
-		// 登録
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
-	}
 }
 
 CString GroupCommandProvider::GetName()
@@ -122,56 +77,10 @@ bool GroupCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool GroupCommandProvider::IsPrivate() const
-{
-	return false;
-}
-
-// 一時的なコマンドを必要に応じて提供する
-void GroupCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
-{
-	UNREFERENCED_PARAMETER(pattern);
-	UNREFERENCED_PARAMETER(comands);
-
-	// このCommandProviderは一時的なコマンドを持たない
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t GroupCommandProvider::GroupCommandProvider::GetOrder() const
 {
 	return 300;
-}
-
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool GroupCommandProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
-{
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-	// 必要に応じて実装する
-	return true;
-}
-
-uint32_t GroupCommandProvider::GroupCommandProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t GroupCommandProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
 }
 
 } // end of namespace group

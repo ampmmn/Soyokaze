@@ -32,8 +32,6 @@ struct SimpleDictProvider::PImpl
 
 	std::vector<SimpleDictCommand*> mCommands;
 	std::unique_ptr<SimpleDictDatabase> mDatabase;
-
-	uint32_t mRefCount = 1;
 };
 
 bool SimpleDictProvider::PImpl::GetParam(const CString& name, SimpleDictParam& param)
@@ -68,46 +66,6 @@ SimpleDictProvider::~SimpleDictProvider()
 		command->Release();
 	}
 }
-
-// 初回起動の初期化を行う
-void SimpleDictProvider::OnFirstBoot()
-{
-}
-
-// コマンドの読み込み
-void SimpleDictProvider::LoadCommands(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		auto command = std::make_unique<SimpleDictCommand>();
-		if (command->Load(entry) == false) {
-			continue;
-		}
-
-		in->mCommands.push_back(command.get());
-		command->AddRef();
-		command->AddListener(in->mDatabase.get());
-
-		// 登録
-		bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
-}
-
 
 CString SimpleDictProvider::GetName()
 {
@@ -148,12 +106,6 @@ bool SimpleDictProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool SimpleDictProvider::IsPrivate() const
-{
-	return false;
-}
-
 // 一時的なコマンドを必要に応じて提供する
 void SimpleDictProvider::QueryAdhocCommands(
 	Pattern* pattern,
@@ -180,33 +132,27 @@ void SimpleDictProvider::QueryAdhocCommands(
 	}
 }
 
-// 設定ページを取得する
-bool SimpleDictProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
-{
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-
-	return true;
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t SimpleDictProvider::GetOrder() const
 {
 	return 2000;
 }
 
-uint32_t SimpleDictProvider::AddRef()
+bool SimpleDictProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	return ++in->mRefCount;
-}
-
-uint32_t SimpleDictProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
+	std::unique_ptr<SimpleDictCommand> command(new SimpleDictCommand);
+	if (command->Load(entry) == false) {
+		return false;
 	}
-	return n;
+	ASSERT(retCommand);
+	*retCommand = command.get();
+
+	command->AddListener(in->mDatabase.get());
+
+	command->AddRef();
+	in->mCommands.push_back(command.release());
+
+	return true;
 }
 
 

@@ -357,25 +357,6 @@ bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
 	return true;
 }
 
-bool FilterCommand::LoadFrom(CommandFile* cmdFile, void* e, FilterCommand** newCmdPtr)
-{
-	UNREFERENCED_PARAMETER(cmdFile);
-
-	ASSERT(newCmdPtr);
-
-	CommandFile::Entry* entry = (CommandFile::Entry*)e;
-
-	auto command = std::make_unique<FilterCommand>();
-	if (command->Load(entry) == false) {
-		return false;
-	}
-
-	if (newCmdPtr) {
-		*newCmdPtr = command.release();
-	}
-	return true;
-}
-
 } // end of namespace filter
 } // end of namespace commands
 } // end of namespace launcherapp

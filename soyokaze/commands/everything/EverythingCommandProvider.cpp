@@ -71,7 +71,6 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 	void OnLancuherUnactivate() override {}
 
 	std::vector<EverythingCommand*> mCommands;
-	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,48 +87,6 @@ EverythingCommandProvider::EverythingCommandProvider() : in(std::make_unique<PIm
 EverythingCommandProvider::~EverythingCommandProvider()
 {
 }
-
-// 初回起動の初期化を行う
-void EverythingCommandProvider::OnFirstBoot()
-{
-}
-
-// コマンドの読み込み
-void EverythingCommandProvider::LoadCommands(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		EverythingCommand* command = nullptr;
-		if (EverythingCommand::LoadFrom(cmdFile, entry, &command) == false) {
-			if (command) {
-				command->Release();
-			}
-			continue;
-		}
-
-		// 登録
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command, isReloadHotKey);
-
-		in->mCommands.push_back(command);
-		command->AddRef();
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
-}
-
 
 CString EverythingCommandProvider::GetName()
 {
@@ -168,12 +125,6 @@ bool EverythingCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool EverythingCommandProvider::IsPrivate() const
-{
-	return false;
-}
-
 // 一時的なコマンドを必要に応じて提供する
 void EverythingCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
@@ -207,21 +158,20 @@ uint32_t EverythingCommandProvider::GetOrder() const
 	return 2050;
 }
 
-uint32_t EverythingCommandProvider::AddRef()
+bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	return ++in->mRefCount;
-}
-
-uint32_t EverythingCommandProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
+	std::unique_ptr<EverythingCommand> command(new EverythingCommand);
+	if (command->Load(entry) == false) {
+		return false;
 	}
-	return n;
+	ASSERT(retCommand);
+	*retCommand = command.get();
+
+	command->AddRef();
+	in->mCommands.push_back(command.release());
+
+	return true;
 }
-
-
 
 } // end of namespace everything
 } // end of namespace commands

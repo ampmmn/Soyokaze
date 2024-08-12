@@ -336,6 +336,11 @@ bool RegExpCommand::Load(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 
+	CString typeStr = entry->Get(_T("Type"), _T(""));
+	if (typeStr.IsEmpty() == FALSE && typeStr != RegExpCommand::GetType()) {
+		return false;
+	}
+
 	in->mName = entry->GetName();
 	in->mDescription = entry->Get(_T("description"), _T(""));
 	in->mRunAs = entry->Get(_T("runas"), 0);

@@ -54,8 +54,6 @@ struct BookmarkCommandProvider::PImpl : public launcherapp::core::CommandReposit
 
 
 	BookmarkCommandList mCommands;
-
-	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,11 +71,6 @@ BookmarkCommandProvider::~BookmarkCommandProvider()
 {
 }
 
-// 初回起動の初期化を行う
-void BookmarkCommandProvider::OnFirstBoot()
-{
-}
-
 static void releaseCmd(void* p)
 {
 	auto ptr = (BookmarkCommand*)p;
@@ -85,44 +78,6 @@ static void releaseCmd(void* p)
 		ptr->Release();
 	}
 }
-
-// コマンドの読み込み
-void BookmarkCommandProvider::LoadCommands(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	BookmarkCommandList tmp;
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		std::unique_ptr<BookmarkCommand> command(new BookmarkCommand);
-		if (command->Load(entry) == false) {
-			continue;
-		}
-
-		// 登録
-		bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.get(), isReloadHotKey);
-
-		command->AddRef();  // mCommandsで保持する分の参照カウント+1
-		tmp.push_back(BookmarkCommandPtr(command.release(), releaseCmd));
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
-
-	in->mCommands.swap(tmp);
-}
-
 
 CString BookmarkCommandProvider::GetName()
 {
@@ -155,12 +110,6 @@ bool BookmarkCommandProvider::NewDialog(const CommandParameter* param)
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
-}
-
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool BookmarkCommandProvider::IsPrivate() const
-{
-	return false;
 }
 
 // 一時的なコマンドを必要に応じて提供する
@@ -200,37 +149,21 @@ uint32_t BookmarkCommandProvider::GetOrder() const
 	return 145;
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool BookmarkCommandProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
+bool BookmarkCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
+	std::unique_ptr<BookmarkCommand> command(new BookmarkCommand);
+	if (command->Load(entry) == false) {
+		return false;
+	}
+	ASSERT(retCommand);
+	*retCommand = command.get();
 
-	// 必要に応じて実装する
+	command->AddRef();
+	in->mCommands.push_back(BookmarkCommandPtr(command.release(), releaseCmd));
+
 	return true;
 }
 
-uint32_t BookmarkCommandProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t BookmarkCommandProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
 
 } // end of namespace bookmarks
 } // end of namespace commands

@@ -54,8 +54,6 @@ struct WebHistoryProvider::PImpl : public launcherapp::core::CommandRepositoryLi
 
 
 	WebHistoryCommandList mCommands;
-
-	uint32_t mRefCount = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,54 +71,12 @@ WebHistoryProvider::~WebHistoryProvider()
 {
 }
 
-// 初回起動の初期化を行う
-void WebHistoryProvider::OnFirstBoot()
-{
-}
-
 static void releaseCmd(void* p)
 {
 	auto ptr = (WebHistoryCommand*)p;
 	if (ptr) {
 		ptr->Release();
 	}
-}
-
-// コマンドの読み込み
-void WebHistoryProvider::LoadCommands(CommandFile* cmdFile)
-{
-	ASSERT(cmdFile);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-
-	WebHistoryCommandList tmp;
-
-	int entries = cmdFile->GetEntryCount();
-	for (int i = 0; i < entries; ++i) {
-
-		auto entry = cmdFile->GetEntry(i);
-		if (cmdFile->IsUsedEntry(entry)) {
-			// 既にロード済(使用済)のエントリ
-			continue;
-		}
-
-		std::unique_ptr<WebHistoryCommand> command(new WebHistoryCommand);
-		if (command->Load(entry) == false) {
-			continue;
-		}
-
-		// 登録
-		bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.get(), isReloadHotKey);
-
-		command->AddRef();  // mCommandsで保持する分の参照カウント+1
-		tmp.push_back(WebHistoryCommandPtr(command.release(), releaseCmd));
-
-		// 使用済みとしてマークする
-		cmdFile->MarkAsUsed(entry);
-	}
-
-	in->mCommands.swap(tmp);
 }
 
 
@@ -157,12 +113,6 @@ bool WebHistoryProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool WebHistoryProvider::IsPrivate() const
-{
-	return false;
-}
-
 // 一時的なコマンドを必要に応じて提供する
 void WebHistoryProvider::QueryAdhocCommands(
 	Pattern* pattern,
@@ -197,37 +147,21 @@ uint32_t WebHistoryProvider::GetOrder() const
 	return 145;
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool WebHistoryProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
+bool WebHistoryProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
+	std::unique_ptr<WebHistoryCommand> command(new WebHistoryCommand);
+	if (command->Load(entry) == false) {
+		return false;
+	}
+	ASSERT(retCommand);
+	*retCommand = command.get();
 
-	// 必要に応じて実装する
+	command->AddRef();
+	in->mCommands.push_back(WebHistoryCommandPtr(command.release(), releaseCmd));
+
 	return true;
 }
 
-uint32_t WebHistoryProvider::AddRef()
-{
-	return ++in->mRefCount;
-}
-
-uint32_t WebHistoryProvider::Release()
-{
-	uint32_t n = --in->mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
 
 } // end of namespace webhistory
 } // end of namespace commands

@@ -41,7 +41,6 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, FilterCommand** newCmd);
-	static bool LoadFrom(CommandFile* cmdFile, void* entry, FilterCommand** newCmdPtr);
 	
 public:
 	FilterCommand& SetParam(const CommandParam& param);
