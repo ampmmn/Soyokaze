@@ -290,7 +290,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)spdlog/build/Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)spdlog/build/Release;$(SolutionDir)tidy-html5/build\cmake\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>soyokaze.lib;googletest.lib;spdlog.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

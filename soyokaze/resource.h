@@ -138,6 +138,7 @@
 #define IDD_APPSETTING_EVERYTHING       187
 #define IDD_WEBHISTORYEDIT              188
 #define IDD_BOOKMARKEDIT                189
+#define IDD_URLDIRECTORYINDEXEDIT       190
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -310,12 +311,18 @@
 #define IDC_CHECK_ENABLE_OUTLOOKMAIL    1117
 #define IDC_EDIT_URL                    1118
 #define IDC_CHECK_REGEXP2               1119
+#define IDC_EDIT_AUTHUSER               1119
 #define IDC_CHECK_NOTIFYIFNOTEXIST      1120
+#define IDC_EDIT_AUTHPASSWORD           1120
 #define IDC_CHECK_ENABLE_CONTROLPANEL2  1121
+#define IDC_EDIT_PROXYUSER              1121
 #define IDC_CHECK_ENABLE_GITBASH        1122
+#define IDC_EDIT_PROXYPASSWORD          1122
 #define IDC_CHECK_APPLYALL              1123
 #define IDC_CHECK_ENABLE_GITBASH2       1123
 #define IDC_CHECK_ENABLE_FILEPROTOCOL   1123
+#define IDC_EDIT_PROXYUSER2             1123
+#define IDC_EDIT_PROXYHOST              1123
 #define IDC_CHECK_ENABLESHORTCUT        1124
 #define IDC_CHECK_KEEPACTIVEWINDOW      1125
 #define IDC_BUTTON1                     1126

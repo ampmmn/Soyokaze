@@ -187,6 +187,9 @@
     <Filter Include="commands\webhistory">
       <UniqueIdentifier>{2ac3f8de-6a7b-4a79-9b9f-7cc7163da64e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\url_directoryindex">
+      <UniqueIdentifier>{ffdcfe33-2235-4f87-844f-52c43b84a9e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1080,6 +1083,24 @@
     <ClInclude Include="commands\common\RoutineCommandProviderBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommand.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditDialog.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1909,6 +1930,21 @@
     </ClCompile>
     <ClCompile Include="commands\common\RoutineCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditDialog.cpp">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.cpp">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.cpp">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp">
+      <Filter>commands\url_directoryindex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

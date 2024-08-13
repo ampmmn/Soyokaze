@@ -2053,6 +2053,9 @@ exeと同じフォルダ階層に`profile`というフォルダが存在する�
 - [spdlog](https://github.com/gabime/spdlog)
   - 実行時ログを出力するためのライブラリとして使用している
 
+- [tidy-html5](https://github.com/htacg/tidy-html5)
+  - DirectoryIndexコマンド内において、取得したHTMLを解析するためのライブラリとして使用している
+
 - [c/migemo](https://github.com/koron/cmigemo)
   - 日本語をローマ字検索するためのライブラリとして使用している
 
