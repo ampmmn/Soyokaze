@@ -99,5 +99,8 @@
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp">
       <Filter>soyokaze\matcher</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

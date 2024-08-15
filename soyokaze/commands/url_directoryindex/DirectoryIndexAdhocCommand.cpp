@@ -25,11 +25,57 @@ namespace url_directoryindex {
 
 struct DirectoryIndexAdhocCommand::PImpl
 {
+	bool EnterURL();
 	bool OpenURL(const CString& url);
+	bool OpenURL();
 
 	URLDirectoryIndexCommand* mBaseCmd = nullptr;
 	QueryResult mResult;
 };
+
+
+bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
+{
+	auto& linkPath = mResult.mLinkPath;
+	if (linkPath != _T("..") && linkPath.Right(1) != _T("/")) {
+		// 次のパスがディレクトリでない場合はブラウザで開く
+		return OpenURL();
+	}
+
+	// DirectoryIndexCommandに次のパスを設定する
+	mBaseCmd->SetSubPath(mResult.mLinkPath);
+
+	// ウインドウを強制的に前面に出す
+	SharedHwnd sharedWnd;
+	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+
+	// 入力欄に"コマンド名 "のテキストを入力した状態にする
+	auto cmdline = mBaseCmd->GetName();
+	cmdline += _T(" ");
+	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+
+	// 次のパスをロードする
+	bool isHTML = false;
+	mBaseCmd->LoadCanidates(isHTML);
+
+	// 次のパスがHTMLファイルでなかった場合はブラウザで表示する
+	if (isHTML == false) {
+		return OpenURL();
+	}
+
+	// 候補の抽出が完了したことを通知
+	PostMessage(sharedWnd.GetHwnd(), WM_APP+15, 0, 0);
+
+	return true;
+}
+
+bool DirectoryIndexAdhocCommand::PImpl::OpenURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+	return OpenURL(url);
+}
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
@@ -76,7 +122,7 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 	CommandParam param;
 	in->mBaseCmd->GetParam(param);
 
-	CString url = param.CombineURL(in->mResult.mLinkPath);
+	CString url = param.CombineURL(in->mBaseCmd->GetSubPath(), in->mResult.mLinkPath);
 
 	CString str;
 	str.Format(_T("%s"), (LPCTSTR)url);
@@ -86,34 +132,47 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 
 CString DirectoryIndexAdhocCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("Enter:開く Shift-Enter:ブラウザで開く Ctrl-Enter:URLをコピー");
 }
 
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
-	return TEXT_TYPE;
+	ASSERT(in->mBaseCmd);
+	return in->mBaseCmd->GetTypeDisplayName();
 }
 
-BOOL DirectoryIndexAdhocCommand::Execute(const Parameter& param_)
+
+BOOL DirectoryIndexAdhocCommand::Execute(const Parameter& param)
 {
-	CommandParam param;
-	in->mBaseCmd->GetParam(param);
-	CString url = param.CombineURL(in->mResult.mLinkPath);
-	if (param.IsContentURL(url)) {
-		return in->OpenURL(url) ? TRUE : FALSE;
+	auto IsCtrlKeyPressed = [&param]() {
+		// Ctrlキーのみが押されていたら
+		return param.GetNamedParamBool(_T("CtrlKeyPressed")) && 
+			     param.GetNamedParamBool(_T("ShiftKeyPressed")) == false &&
+			     param.GetNamedParamBool(_T("AltKeyPressed")) == false &&
+			     param.GetNamedParamBool(_T("WinKeyPressed")) == false;
+	};
+	auto IsShiftKeyPressed = [&param]() {
+		// Shiftキーのみが押されていたら
+		return param.GetNamedParamBool(_T("CtrlKeyPressed")) == false && 
+			     param.GetNamedParamBool(_T("ShiftKeyPressed")) &&
+			     param.GetNamedParamBool(_T("AltKeyPressed")) == false &&
+			     param.GetNamedParamBool(_T("WinKeyPressed")) == false;
+	};
+
+	if (IsCtrlKeyPressed()) {
+		// URLをコピー
+		CommandParam param_;
+		in->mBaseCmd->GetParam(param_);
+		Clipboard::Copy(param_.CombineURL(in->mBaseCmd->GetSubPath(), in->mResult.mLinkPath));
 	}
-
-	in->mBaseCmd->SetSubPath(in->mResult.mLinkPath);
-
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
-
-	auto cmdline = in->mBaseCmd->GetName();
-	cmdline += _T(" ");
-	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
-
-	in->mBaseCmd->LoadCanidates();
+	else if (IsShiftKeyPressed()) {
+		// URLをブラウザで開く
+		in->OpenURL();
+	}
+	else {
+		// ランチャーでリンク先に遷移する
+		in->EnterURL();
+	}
 	return TRUE;
 }
 

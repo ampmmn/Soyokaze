@@ -3,6 +3,7 @@
 #include "URLDirectoryIndexCommand.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditDialog.h"
+#include "commands/url_directoryindex/WinHttp.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -13,13 +14,15 @@
 #include "resource.h"
 #include "commands/activate_window/AutoWrap.h"
 #include "utility/CharConverter.h"
+#include "utility/AES.h"
 
 #include <deque>
+#include <map>
 #include <tidy.h>
 #include <tidybuffio.h>
 #include "spdlog/stopwatch.h"
 
-#import "msxml6.dll" exclude("ISequentialStream","_FILETIME")named_guids
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,8 +35,6 @@ using CommandRepository = launcherapp::core::CommandRepository;
 namespace launcherapp {
 namespace commands {
 namespace url_directoryindex {
-
-using IServerXMLHTTPRequestPtr = MSXML2::IServerXMLHTTPRequestPtr;
 
 using LinkItems = std::vector<std::pair<CString, CString> >;
 
@@ -51,8 +52,8 @@ struct URLDirectoryIndexCommand::PImpl
 	~PImpl()
 	{
 	}
-	bool LoadCandidates();
-	bool ExtractCandidates(const CString& text);
+	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML);
+	bool ExtractCandidates(const std::vector<BYTE>& content, LinkItems& items);
 
 	void Query(Pattern* pattern, DirectoryIndexQueryResult& results);
 
@@ -66,11 +67,27 @@ struct URLDirectoryIndexCommand::PImpl
 		return mLinkItems.size();
 	}
 
+	void ClearCache()
+	{
+		mLinkCache.clear();
+	}
+	void Reset()
+	{
+		mLinkItems.clear();
+		mIsEmpty = false;
+		mIsLoaded = false;
+		mIsLoadOK = false;
+	}
+
+	std::vector<uint8_t>& Encode(const CString& str, std::vector<uint8_t>& buf);
+	CString Decode(const std::vector<uint8_t>& buf);
+
 	CommandParam mParam;
 	CommandHotKeyAttribute mHotKeyAttr;
 	CString mErrMsg;
 
 	LinkItems mLinkItems;
+	std::map<CString, LinkItems> mLinkCache;
 
 	CString mSubPath;
 
@@ -80,79 +97,31 @@ struct URLDirectoryIndexCommand::PImpl
 };
 
 // 候補一覧の生成を開始する
-bool URLDirectoryIndexCommand::PImpl::LoadCandidates()
+bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
 {
-	spdlog::stopwatch sw;
-
-	// 既存のExcel.Applicationインスタンスを取得する
-	IServerXMLHTTPRequestPtr pIXMLHTTPRequest;
-	HRESULT hr = pIXMLHTTPRequest.CreateInstance(L"MSXML2.ServerXMLHTTP.6.0");
-	if(FAILED(hr)) {
-		spdlog::debug(_T("Failed to createinstance MSXML2.ServerXMLHTTP.6.0"));
-		return false;
+	WinHttp http;
+	if (mParam.mServerUser.IsEmpty() == FALSE) {
+		http.SetServerCredential(mParam.mServerUser, mParam.mServerPassword);
 	}
+	http.SetProxyType(mParam.mProxyType);
+	http.SetProxyCredential(mParam.mProxyHost, mParam.mProxyUser, mParam.mProxyPassword);
 
-	spdlog::debug("createinstance {:.6f} s.", sw);
-	// ToDo:認証が必要な場合は設定する
-
-	// ToDo:プロキシを経由する場合は設定する
-
-	// サブパスを連結
-	CString url = mParam.CombineURL(mSubPath);
-
-	hr = pIXMLHTTPRequest->open(L"GET", (LPCWSTR)url, true);
-	if(FAILED(hr)) {
-		spdlog::debug(_T("Failed to open"));
-		return false;
-	}
-	spdlog::debug("open {:.6f} s.", sw);
-
-	hr = pIXMLHTTPRequest->send();  
-	if(FAILED(hr)) {
-		spdlog::debug(_T("Failed to send"));
-		return false;
-	}
-
-	spdlog::debug("send {:.6f} s.", sw);
-
-	pIXMLHTTPRequest->waitForResponse();
-
-	if (pIXMLHTTPRequest->status >= 400) {
-		spdlog::debug(_T("returned error"));
-		return false;
-	}
-
-	spdlog::debug("waitforResponse {:.6f} s.", sw);
-
-	CString text((LPCTSTR)pIXMLHTTPRequest->responseText);
-
-	spdlog::debug(_T("URL : {}"), (LPCTSTR)url);
-	spdlog::debug("download {:.6f} s.", sw);
-
-
-	// 取得したテキストを解析
-	return ExtractCandidates(text);
+	return http.LoadContent(url, content, isHTML);
 }
 
 // HTMLからリンク一覧を生成する
 bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
-	const CString& text
+	const std::vector<BYTE>& content,
+	LinkItems& items
 )
 {
-	spdlog::stopwatch sw;
 	launcherapp::utility::CharConverter conv;
 
  	TidyDoc doc = tidyCreate();
-	tidyOptSetBool(doc, TidyForceOutput, no);
-	tidyOptSetInt(doc, TidyWrapLen, 4096);
+	//tidyOptSetBool(doc, TidyForceOutput, no);
+	//tidyOptSetInt(doc, TidyWrapLen, 4096);
 
-  //TidyBuffer tidy_errbuf = {0};
-	//tidySetErrorBuffer(doc, &tidy_errbuf);
-
-	CStringA srcA(text);
- 
-	int err = tidyParseString(doc, srcA);
-	spdlog::debug(_T("tidyParseString returned {}."), err);
+	int err = tidyParseString(doc, (LPCSTR)content.data());
 	if (err < 0) {
 		mIsLoadOK = false;
 		mIsLoaded = true;
@@ -160,7 +129,6 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	}
 
 	int doctype = tidyReportDoctype(doc);
-	spdlog::debug(_T("tidyReportDoctype returned {}."), doctype);
 
 	err = tidyCleanAndRepair(doc);
 	err = tidyRunDiagnostics(doc);
@@ -201,7 +169,9 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 				}
 				stk.push_back(childNode);
 
-				if (isA) {
+				// apacheのDirectory IndexのName/Last modified/Size/Descriptionのソートは出さないことにする
+				bool isSortLink = (href.Find(_T("?C=")) == 0);
+				if (isA && isSortLink == false) {
 					auto textNode = tidyGetChild(childNode);
 					if (textNode) {
 						TidyBuffer buf;
@@ -212,6 +182,12 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 						conv.Convert((const char*)buf.bp, displayName);
 						if (isA) {
 							displayName.Trim();
+
+							// "Parent Directory"だったら、".."に置き換える
+							if (displayName.CompareNoCase(_T("Parent Directory")) == 0) {
+								displayName = _T("..");
+							}
+
 							links.push_back(std::pair<CString, CString>(href, displayName));
 						}
 						tidyBufFree(&buf);
@@ -225,19 +201,10 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
  
   tidyRelease(doc);
 
-	mLinkItems.swap(links);
-	mIsLoaded = true;
-	mIsLoadOK = true;
-
-	// 候補の抽出が完了したことを通知
-	SharedHwnd sharedWnd;
-	PostMessage(sharedWnd.GetHwnd(), WM_APP+15, 0, 0);
-
-	spdlog::debug("HTML parse {:.6f} s.", sw);
+	items.swap(links);
 
 	return true;
 }
-
 
 void URLDirectoryIndexCommand::PImpl::Query(Pattern* pattern, DirectoryIndexQueryResult& results)
 {
@@ -278,6 +245,38 @@ void URLDirectoryIndexCommand::PImpl::Query(Pattern* pattern, DirectoryIndexQuer
 	tmpList.swap(results);
 }
 
+
+std::vector<uint8_t>& URLDirectoryIndexCommand::PImpl::Encode(const CString& str, std::vector<uint8_t>& buf)
+{
+	::utility::aes::AES aes;
+	aes.SetPassphrase("aiueo");  // てきとうa
+
+	int len = str.GetLength() + 1;
+	std::vector<uint8_t> plainData(len * sizeof(TCHAR));
+	memcpy(plainData.data(), (LPCTSTR)str, plainData.size());
+
+	aes.Encrypt(plainData, buf);
+	return buf;
+}
+
+CString URLDirectoryIndexCommand::PImpl::Decode(const std::vector<uint8_t>& src)
+{
+	::utility::aes::AES aes;
+	aes.SetPassphrase("aiueo");  // てきとう
+
+	std::vector<uint8_t> plainData;
+	if (aes.Decrypt(src, plainData) == false) {
+		return _T("");
+	}
+
+	int len = (int)plainData.size();
+	CString str;
+	memcpy(str.GetBuffer(len), plainData.data(), len);
+	str.ReleaseBuffer();
+
+	return str;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,36 +294,63 @@ URLDirectoryIndexCommand::~URLDirectoryIndexCommand()
 
 void URLDirectoryIndexCommand::SetSubPath(const CString& subPath)
 {
-	if (subPath.Left(1) == _T('/')) {
+	// https?から始まる場合はURLとして扱う
+	// '/'で始まる場合は絶対パスとして扱う
+	static tregex regURL(_T("https?://.+"));
+	if (subPath.Left(1) == _T('/') || std::regex_search((LPCTSTR)subPath, regURL)) {
 		in->mSubPath = subPath;
 	}
 	else {
+		// 相対パスの場合はルートから
 		if (in->mSubPath.IsEmpty() == FALSE && in->mSubPath.Right(1) != _T('/')) {
 			in->mSubPath += _T('/');
 		}
 		in->mSubPath += subPath;
 	}
-	ClearCache();
+
+	in->Reset();
 }
 
-void URLDirectoryIndexCommand::LoadCanidates()
+CString URLDirectoryIndexCommand::GetSubPath()
 {
-	in->LoadCandidates();
+	return in->mSubPath;
 }
 
-void URLDirectoryIndexCommand::ClearCache()
+void URLDirectoryIndexCommand::LoadCanidates(bool& isHTML)
 {
-	in->mLinkItems.clear();
-	in->mIsEmpty = false;
-	in->mIsLoaded = false;
-	in->mIsLoadOK = false;
+	CString url = in->mParam.CombineURL(in->mSubPath);
+
+	// キャッシュがあればそれを使う
+	auto itCache = in->mLinkCache.find(url);
+	if (itCache != in->mLinkCache.end()) {
+		in->mLinkItems = itCache->second;
+		isHTML = true;
+	}
+	else {
+		// なければダウンロード
+		std::vector<BYTE> content;
+		if (in->LoadContent(url, content, isHTML) == false) {
+			return;
+		}
+		// 取得したテキストを解析
+		spdlog::debug("extract candidates");
+		LinkItems items;
+		if (in->ExtractCandidates(content, items) == false) {
+			return;
+		}
+		in->mLinkCache[url] = items;
+		in->mLinkItems.swap(items);
+	}
+
+	in->mIsLoaded = true;
+	in->mIsLoadOK = true;
 }
 
 void URLDirectoryIndexCommand::Query(Pattern* pattern, DirectoryIndexQueryResult& results)
 {
 	// コマンド名が一致しなければ候補を表示しない
 	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
-		ClearCache();
+		in->Reset();
 		in->mSubPath.Empty();
 		spdlog::info(_T("clear state"));
 		return;
@@ -340,10 +366,6 @@ CString URLDirectoryIndexCommand::GetName()
 
 CString URLDirectoryIndexCommand::GetDescription()
 {
-	if (in->IsLoaded() == false) {
-		return _T("(取得中)");
-	}
-
 	return in->mParam.mDescription;
 }
 
@@ -354,7 +376,7 @@ CString URLDirectoryIndexCommand::GetGuideString()
 
 CString URLDirectoryIndexCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("DirectiryIndexコマンド"));
+	static CString TEXT_TYPE(_T("DirectiryIndex"));
 	return TEXT_TYPE;
 }
 
@@ -432,7 +454,8 @@ int URLDirectoryIndexCommand::Match(Pattern* pattern)
 			}
 
 			// このタイミングで候補一覧の生成を行う
-			in->LoadCandidates();
+			bool isHTML = false;
+			LoadCanidates(isHTML);
 
 			return Pattern::WholeMatch;
 		}
@@ -464,7 +487,8 @@ int URLDirectoryIndexCommand::EditDialog(HWND parent)
 	cmdRepo->ReregisterCommand(this);
 
 	// 設定変更を反映するため、候補のキャッシュを消す
-	ClearCache();
+	in->ClearCache();
+	in->Reset();
 
 	return 0;
 }
@@ -502,6 +526,15 @@ bool URLDirectoryIndexCommand::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("url"), in->mParam.mURL);
 
+	entry->Set(_T("serveruser"), in->mParam.mServerUser);
+	std::vector<uint8_t> buf;
+	entry->Set(_T("serverpassword"), in->Encode(in->mParam.mServerPassword, buf));
+
+	entry->Set(_T("proxyhost"), in->mParam.mProxyHost);
+	entry->Set(_T("proxyuser"), in->mParam.mProxyUser);
+	entry->Set(_T("proxypassword"), in->Encode(in->mParam.mProxyPassword, buf));
+
+
 	return true;
 }
 
@@ -517,6 +550,18 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 	in->mParam.mName = entry->GetName();
 	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
 	in->mParam.mURL = entry->Get(_T("url"), _T(""));
+
+	in->mParam.mServerUser = entry->Get(_T("serveruser"), _T(""));
+
+	std::vector<uint8_t> buf;
+	entry->Get(_T("serverpassword"), buf);
+	in->mParam.mServerPassword = in->Decode(buf);
+
+	in->mParam.mProxyHost = entry->Get(_T("proxyhost"), _T(""));
+	in->mParam.mProxyUser = entry->Get(_T("proxyuser"), _T(""));
+
+	entry->Get(_T("proxypassword"), buf);
+	in->mParam.mProxyPassword = in->Decode(buf);
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(GetName(), &in->mHotKeyAttr);

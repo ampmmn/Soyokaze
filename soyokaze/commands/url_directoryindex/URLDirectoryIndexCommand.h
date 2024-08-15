@@ -19,9 +19,9 @@ public:
 	virtual ~URLDirectoryIndexCommand();
 
 	void SetSubPath(const CString& subPath);
-	void LoadCanidates();
+	CString GetSubPath();
+	void LoadCanidates(bool& isHTML);
 
-	void ClearCache();
 	void Query(Pattern* pattern, DirectoryIndexQueryResult& results);
 
 	CString GetName() override;

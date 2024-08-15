@@ -132,3 +132,10 @@ bluewindのReadMeから抜粋
 
 [MIT License](./LICENSE)
 
+
+## 連絡先
+
+- X(Twitter) : https://x.com/ymgw
+- htmnymgw@gmail.com
+
+

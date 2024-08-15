@@ -16,14 +16,23 @@ public:
 	CommandParam& operator = (const CommandParam& rhs);
 
 	CString CombineURL(const CString& subPath) const;
+	CString CombineURL(const CString& subPath1, const CString& subPath2) const;
 
-	bool IsContentURL(const CString& url) const;
-
+	static CString CombineURL2(const CString& urlPart, const CString& subPath);
 public:
 	CString mName;
 	CString mDescription;
 	// ベースURL
 	CString mURL;
+
+	// サーバ認証のユーザ名とパスワード
+	CString mServerUser;
+	CString mServerPassword;
+	// プロキシ認証のユーザ名とパスワード
+	int mProxyType;
+	CString mProxyHost;
+	CString mProxyUser;
+	CString mProxyPassword;
 
 	CommandHotKeyAttribute mHotKeyAttr;
 };

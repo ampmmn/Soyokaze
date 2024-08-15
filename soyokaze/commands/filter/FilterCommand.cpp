@@ -89,7 +89,6 @@ void FilterCommand::ClearCache()
 void FilterCommand::Query(Pattern* pattern, FilterResultList& results)
 {
 	if (in->mExecutor == nullptr) {
-		spdlog::error(_T("executor is nullptr!"));
 		return ;
 	}
 

@@ -55,6 +55,12 @@ void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, mParam.mURL);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
+	DDX_Text(pDX, IDC_EDIT_AUTHUSER, mParam.mServerUser);
+	DDX_Text(pDX, IDC_EDIT_AUTHPASSWORD, mParam.mServerPassword);
+	DDX_CBIndex(pDX, IDC_COMBO_PROXY, mParam.mProxyType);
+	DDX_Text(pDX, IDC_EDIT_PROXYHOST, mParam.mProxyHost);
+	DDX_Text(pDX, IDC_EDIT_PROXYUSER, mParam.mProxyUser);
+	DDX_Text(pDX, IDC_EDIT_PROXYPASSWORD, mParam.mProxyPassword);
 }
 
 #pragma warning( push )
@@ -63,6 +69,8 @@ void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(URLDirectoryIndexCommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PROXYHOST, OnUpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_PROXY, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
@@ -93,6 +101,21 @@ bool URLDirectoryIndexCommandEditDialog::UpdateStatus()
 	mHotKey = mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
+	}
+
+	// プロキシ欄の有効/無効
+	BOOL isEnableProxyHost = mParam.mProxyType == 1;  // 直接指定する
+	GetDlgItem(IDC_EDIT_PROXYHOST)->EnableWindow(isEnableProxyHost);
+	GetDlgItem(IDC_EDIT_PROXYUSER)->EnableWindow(isEnableProxyHost);
+	GetDlgItem(IDC_EDIT_PROXYPASSWORD)->EnableWindow(isEnableProxyHost);
+
+	if (isEnableProxyHost) {
+		static tregex reg(_T("^[0-9a-zA-z-.]+:[0-9]+$"));
+		if (std::regex_match(tstring((LPCTSTR)mParam.mProxyHost), reg) == false) {
+			mMessage = _T("プロキシを「ホスト名:ポート番号」の形式で指定してください");
+			GetDlgItem(IDOK)->EnableWindow(FALSE);
+			return false;
+		}
 	}
 
 	// 名前チェック

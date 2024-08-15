@@ -372,6 +372,7 @@
 #define IDC_COMBO1                      1163
 #define IDC_COMBO_MUTE                  1163
 #define IDC_COMBO_DEFAULTACTION         1163
+#define IDC_COMBO_PROXY                 1163
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK_USEAPI                1166
@@ -399,7 +400,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        185
+#define _APS_NEXT_RESOURCE_VALUE        188
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           101

@@ -436,6 +436,7 @@
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditDialog.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.h" />
+    <ClInclude Include="commands\url_directoryindex\WinHttp.h" />
     <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommand.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommandParam.h" />
@@ -677,6 +678,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tasktray/TaskTray.h" />
     <ClInclude Include="utility\Accessibility.h" />
+    <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\CharConverter.h" />
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
@@ -751,6 +753,7 @@
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditDialog.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.cpp" />
+    <ClCompile Include="commands\url_directoryindex\WinHttp.cpp" />
     <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp" />
@@ -992,6 +995,7 @@
     <ClCompile Include="settingwindow/SettingDialog.cpp" />
     <ClCompile Include="tasktray/TaskTray.cpp" />
     <ClCompile Include="utility\Accessibility.cpp" />
+    <ClCompile Include="utility\AES.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Path.cpp" />
