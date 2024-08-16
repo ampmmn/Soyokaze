@@ -20,6 +20,7 @@ env:
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: ReleaseStatic
   BUILD_CONFIGURATION_TEST: UnitTest
+  TIDYLIB_STATICRUNTIME: ON
 
 permissions:
   contents: read
@@ -68,7 +69,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd tidy-html5/build/cmake
-        cmake ../.. -DCMAKE_BUILD_TYPE=Release
+        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF
         cmake --build . --config Release
 
     - name: Build Release
