@@ -108,7 +108,7 @@ CString URLDirectoryIndexCommandProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString URLDirectoryIndexCommandProvider::GetDescription()
 {
-	static LPCTSTR description = _T("DirectoryIndexページに表示される項目を候補として表示します");
+	static LPCTSTR description = _T("Webサーバーのインデックスページ上のファイルやディレクトリなどを候補として表示します");
 	return description;
 }
 

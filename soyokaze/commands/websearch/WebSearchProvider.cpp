@@ -93,7 +93,10 @@ CString WebSearchProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString WebSearchProvider::GetDescription()
 {
-	CString description((LPCTSTR)IDS_DESCRIPTION_WEBSEARCH);
+	static LPCTSTR description = _T("Web検索を定義するコマンドです\n")
+		_T("コマンド名とWebの検索条件を登録することにより、\n")
+		_T("「コマンド名 (検索キーワード)」の形で任意のWeb検索を行うことができます\n")
+		_T("例: ggl→Google検索  tw→Twitter検索");
 	return description;
 }
 

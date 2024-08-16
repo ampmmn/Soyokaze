@@ -93,7 +93,10 @@ CString BookmarkCommandProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString BookmarkCommandProvider::GetDescription()
 {
-	return _T("ブラウザのブックマークを検索するコマンドです");
+	static LPCTSTR description = _T("ブラウザのブックマークを検索するコマンドです\n")
+		_T("「コマンド名 (キーワード)」でキーワードを含むブックマークを候補として表示できます\n")
+		_T("EdgeとChromeに対応しています");
+	return description;
 }
 
 // コマンド新規作成ダイアログ

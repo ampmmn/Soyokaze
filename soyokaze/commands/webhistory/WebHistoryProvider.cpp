@@ -94,7 +94,12 @@ CString WebHistoryProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString WebHistoryProvider::GetDescription()
 {
-	return _T("ブラウザで閲覧したページを検索するコマンドです");
+	static LPCTSTR description = _T("ブラウザ(Edge,Chrome)で閲覧したページを検索するコマンドです\n")
+		_T("「コマンド名 (キーワード)」でキーワードを含む過去に閲覧したページを候補として表示します\n")
+		_T("検索条件をプリセットできるので、特定の話題に関する履歴だけを抽出する使い方ができます\n")
+		_T("");
+
+	return description;
 }
 
 // コマンド新規作成ダイアログ

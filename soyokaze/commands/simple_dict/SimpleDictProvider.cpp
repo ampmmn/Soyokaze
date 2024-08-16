@@ -81,9 +81,10 @@ CString SimpleDictProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString SimpleDictProvider::GetDescription()
 {
-	CString description(_T("簡易的な辞書を定義します。\n"));
-	description += _T("Excelファイル内の任意の範囲のデータを簡易的な辞書として利用することができるコマンドです。\n");
-	description += _T("(要Excel)");
+	CString description;
+	description += _T("Excelファイル内の任意の範囲をKey-Value型のデータベースと見立てるコマンドです\n");
+	description += _T("利用例として、キーや値で絞り込んで、選択したものをクリップボードにコピーする、\nといった辞書的な使い方ができます。\n");
+	description += _T("(Excelが必要です)");
 	return description;
 }
 

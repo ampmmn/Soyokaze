@@ -47,7 +47,11 @@ CString RegExpCommandProvider::GetDisplayName()
 // コマンドの種類の説明を示す文字列を取得
 CString RegExpCommandProvider::GetDescription()
 {
-	return CString((LPCTSTR)IDS_DESCRIPTION_REGEXPCOMMAND);
+	static LPCTSTR description = _T("正規表現によるコマンド名のマッチングを行うことができます。\n")
+		_T("一致したテキストからグループを取り出して、後段の処理に渡すことができます\n")
+		_T("活用例として、課題管理システムの識別子から該当するURLを開くような使い方ができます\n")
+		_T("(メールやチャット上のチケット識別子をコピペしてチケット画面を開く、のようなことができる)");
+	return description;
 }
 
 // コマンド新規作成ダイアログ
