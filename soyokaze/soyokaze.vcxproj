@@ -373,13 +373,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)spdlog/build/Release;$(SolutionDir)tidy-html5/build\cmake\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>spdlog.lib;tidy_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>spdlog.lib;tidy_staticrtst.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
