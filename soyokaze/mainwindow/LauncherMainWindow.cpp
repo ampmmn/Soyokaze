@@ -10,6 +10,7 @@
 #include "mainwindow/CandidateListCtrl.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/common/Clipboard.h"
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
 #include "utility/Path.h"
@@ -217,6 +218,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
 	ON_MESSAGE(WM_APP+14, OnUserMessageBlockDeactivateOnUnfocus)
 	ON_MESSAGE(WM_APP+15, OnUserMessageUpdateCandidate)
+	ON_MESSAGE(WM_APP+16, OnUserMessageCopyText)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -446,6 +448,19 @@ LRESULT LauncherMainWindow::OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM l
 
 	// 候補欄を更新するため、再度検索リクエストを出す
 	QueryAsync();
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageCopyText(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	// 入力欄のテキストをコピー
+	launcherapp::commands::common::Clipboard::Copy(in->mCommandStr);
+
+	// コピーした後は非表示にする
+	HideWindow();
 	return 0;
 }
 

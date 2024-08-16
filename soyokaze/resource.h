@@ -189,6 +189,7 @@
 #define IDC_EDIT_DIR                    1025
 #define IDC_EDIT_HOTKEY_COMPL           1025
 #define IDC_BUTTON_BROWSEDIR3           1026
+#define IDC_EDIT_HOTKEY_COPY            1026
 #define IDC_COMBO_SHOWTYPE              1027
 #define IDC_STATIC_STATUSMSG            1028
 #define IDC_STATIC_PARAM0               1029
@@ -235,6 +236,8 @@
 #define IDC_BUTTON_HOTKEY_COMPL2        1057
 #define IDC_BUTTON_RESET                1057
 #define IDC_CHECK_ALTERNATELISTCOLOR    1058
+#define IDC_BUTTON_HOTKEY_COMPL3        1058
+#define IDC_BUTTON_HOTKEY_COPY          1058
 #define IDC_CHECK_SHIFT                 1059
 #define IDC_BUTTON_SOUNDEXECUTE         1060
 #define IDC_CHECK_DRAWICONONCANDIDATE   1061

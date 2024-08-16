@@ -112,7 +112,8 @@ protected:
 	LRESULT OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
-	 
+	LRESULT OnUserMessageCopyText(WPARAM wParam, LPARAM lParam);
+
 	DECLARE_MESSAGE_MAP()
 
 public:

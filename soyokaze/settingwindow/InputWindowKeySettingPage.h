@@ -21,6 +21,9 @@ public:
 	// 補完
 	CString mHotKeyCompl;
 	HOTKEY_ATTR mHotKeyAttrCompl;
+	// コピー
+	CString mHotKeyCopy;
+	HOTKEY_ATTR mHotKeyAttrCopy;
 
 protected:
 	bool UpdateStatus();
@@ -40,6 +43,7 @@ protected:
 	afx_msg void OnButtonHotKeyDown();
 	afx_msg void OnButtonHotKeyEnter();
 	afx_msg void OnButtonHotKeyCompl();
+	afx_msg void OnButtonHotKeyCopy();
 	afx_msg void OnButtonReset();
 };
 

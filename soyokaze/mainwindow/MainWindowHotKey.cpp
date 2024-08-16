@@ -59,6 +59,18 @@ public:
 	}
 };
 
+class MainWindowHotKey::CopyHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~CopyHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_copy"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_APP+16, 0, 0);
+		return true;
+	}
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +133,12 @@ bool MainWindowHotKey::Register()
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	if (hotKeyAttrCompl.GetVKCode() != -1) {
 		manager->Register(this, new ComplHandler, hotKeyAttrCompl);
+	}
+
+	auto hotKeyAttrCopy = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Copy-Modifiers"), 0),
+	                            settingsPtr->Get(_T("MainWindowKey:Copy-VirtualKeyCode"), -1));
+	if (hotKeyAttrCopy.GetVKCode() != -1) {
+		manager->Register(this, new CopyHandler, hotKeyAttrCopy);
 	}
 	return true;
 }

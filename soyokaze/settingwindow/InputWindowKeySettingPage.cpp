@@ -46,6 +46,9 @@ void InputWindowKeySettingPage::OnOK()
 
 	settingsPtr->Set(_T("MainWindowKey:Compl-Modifiers"), (int)mHotKeyAttrCompl.GetModifiers());
 	settingsPtr->Set(_T("MainWindowKey:Compl-VirtualKeyCode"), (int)mHotKeyAttrCompl.GetVKCode());
+
+	settingsPtr->Set(_T("MainWindowKey:Copy-Modifiers"), (int)mHotKeyAttrCopy.GetModifiers());
+	settingsPtr->Set(_T("MainWindowKey:Copy-VirtualKeyCode"), (int)mHotKeyAttrCopy.GetVKCode());
 	__super::OnOK();
 }
 
@@ -57,6 +60,7 @@ void InputWindowKeySettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_DOWN, mHotKeyDown);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_ENTER, mHotKeyEnter);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_COMPL, mHotKeyCompl);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY_COPY, mHotKeyCopy);
 }
 
 BEGIN_MESSAGE_MAP(InputWindowKeySettingPage, SettingPage)
@@ -64,6 +68,7 @@ BEGIN_MESSAGE_MAP(InputWindowKeySettingPage, SettingPage)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_DOWN, OnButtonHotKeyDown)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_ENTER, OnButtonHotKeyEnter)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_COMPL, OnButtonHotKeyCompl)
+	ON_COMMAND(IDC_BUTTON_HOTKEY_COPY, OnButtonHotKeyCopy)
 	ON_COMMAND(IDC_BUTTON_RESET, OnButtonReset)
 END_MESSAGE_MAP()
 
@@ -84,6 +89,7 @@ bool InputWindowKeySettingPage::UpdateStatus()
 	mHotKeyDown = mHotKeyAttrDown.ToString();
 	mHotKeyEnter = mHotKeyAttrEnter.ToString();
 	mHotKeyCompl = mHotKeyAttrCompl.ToString();
+	mHotKeyCopy = mHotKeyAttrCopy.ToString();
 	return true;
 }
 
@@ -106,6 +112,10 @@ void InputWindowKeySettingPage::OnEnterSettings()
 	mHotKeyAttrCompl = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	mHotKeyCompl = mHotKeyAttrCompl.ToString();
+
+	mHotKeyAttrCopy = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Copy-Modifiers"), 0),
+	                            settingsPtr->Get(_T("MainWindowKey:Copy-VirtualKeyCode"), -1));
+	mHotKeyCopy = mHotKeyAttrCopy.ToString();
 }
 
 bool InputWindowKeySettingPage::GetHelpPageId(CString& id)
@@ -179,12 +189,29 @@ void InputWindowKeySettingPage::OnButtonHotKeyCompl()
 	UpdateData(FALSE);
 }
 
+void InputWindowKeySettingPage::OnButtonHotKeyCopy()
+{
+	UpdateData();
+
+	HotKeyDialog dlg(mHotKeyAttrCopy, this);
+	dlg.SetTargetName(_T("コピー"));
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	dlg.GetAttribute(mHotKeyAttrCopy);
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 void InputWindowKeySettingPage::OnButtonReset()
 {
 	mHotKeyAttrUp = HOTKEY_ATTR();
 	mHotKeyAttrDown = HOTKEY_ATTR();
 	mHotKeyAttrEnter = HOTKEY_ATTR();
 	mHotKeyAttrCompl = HOTKEY_ATTR();
+	mHotKeyAttrCopy = HOTKEY_ATTR();
 
 	UpdateStatus();
 	UpdateData(FALSE);
