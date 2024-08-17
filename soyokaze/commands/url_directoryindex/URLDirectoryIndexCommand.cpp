@@ -109,6 +109,13 @@ bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vecto
 	return http.LoadContent(url, content, isHTML);
 }
 
+static tregex& GetURLRegex()
+{
+	static tregex regURL(_T("https?://.+"));
+	return regURL;
+}
+
+
 // HTMLからリンク一覧を生成する
 bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	const std::vector<BYTE>& content,
@@ -118,8 +125,7 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	launcherapp::utility::CharConverter conv;
 
  	TidyDoc doc = tidyCreate();
-	//tidyOptSetBool(doc, TidyForceOutput, no);
-	//tidyOptSetInt(doc, TidyWrapLen, 4096);
+	tidyOptSetBool(doc, TidyForceOutput, yes);
 
 	int err = tidyParseString(doc, (LPCSTR)content.data());
 	if (err < 0) {
@@ -127,8 +133,6 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 		mIsLoaded = true;
 		return false;
 	}
-
-	int doctype = tidyReportDoctype(doc);
 
 	err = tidyCleanAndRepair(doc);
 	err = tidyRunDiagnostics(doc);
@@ -171,29 +175,39 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 
 				// apacheのDirectory IndexのName/Last modified/Size/Descriptionのソートは出さないことにする
 				bool isSortLink = (href.Find(_T("?C=")) == 0);
-				if (isA && isSortLink == false) {
-					auto textNode = tidyGetChild(childNode);
-					if (textNode) {
-						TidyBuffer buf;
-						tidyBufInit(&buf);
-						tidyNodeGetText(doc, textNode, &buf);
 
-						CString displayName;
-						conv.Convert((const char*)buf.bp, displayName);
-						if (isA) {
-							displayName.Trim();
+				// 遷移先が絶対URLであるものを除外する
+				// (他ドメインに遷移するのを防ぐため)
+				static tregex regURL = GetURLRegex();
+				bool isAbsURL = std::regex_search((LPCTSTR)href, regURL);
 
-							// "Parent Directory"だったら、".."に置き換える
-							if (displayName.CompareNoCase(_T("Parent Directory")) == 0) {
-								displayName = _T("..");
-							}
-
-							links.push_back(std::pair<CString, CString>(href, displayName));
-						}
-						tidyBufFree(&buf);
-					}
+				if (isA== false || isSortLink || isAbsURL) {
+					continue ;
 				}
-				continue;
+
+				auto textNode = tidyGetChild(childNode);
+
+				if (textNode == nullptr) {
+					continue;
+				}
+
+				TidyBuffer buf;
+				tidyBufInit(&buf);
+				tidyNodeGetText(doc, textNode, &buf);
+
+				CString displayName;
+				conv.Convert((const char*)buf.bp, displayName);
+				if (isA) {
+					displayName.Trim();
+
+					// 表示テキストが"Parent Directory"だったら、".."に置き換える
+					if (displayName.CompareNoCase(_T("Parent Directory")) == 0) {
+						displayName = _T("..");
+					}
+
+					links.push_back(std::pair<CString, CString>(href, displayName));
+				}
+				tidyBufFree(&buf);
 			}
 			stk.push_back(childNode);
 		}
@@ -291,12 +305,11 @@ URLDirectoryIndexCommand::~URLDirectoryIndexCommand()
 {
 }
 
-
 void URLDirectoryIndexCommand::SetSubPath(const CString& subPath)
 {
 	// https?から始まる場合はURLとして扱う
 	// '/'で始まる場合は絶対パスとして扱う
-	static tregex regURL(_T("https?://.+"));
+	static tregex regURL = GetURLRegex();
 	if (subPath.Left(1) == _T('/') || std::regex_search((LPCTSTR)subPath, regURL)) {
 		in->mSubPath = subPath;
 	}
@@ -338,6 +351,12 @@ void URLDirectoryIndexCommand::LoadCanidates(bool& isHTML)
 		if (in->ExtractCandidates(content, items) == false) {
 			return;
 		}
+
+		// リンクがなかったらその旨を示すダミー項目を追加する
+		if (items.empty()) {
+			items.push_back(std::pair<CString, CString>(_T("."), _T("(No links found)")));
+		}
+
 		in->mLinkCache[url] = items;
 		in->mLinkItems.swap(items);
 	}
@@ -418,7 +437,7 @@ URLDirectoryIndexCommand& URLDirectoryIndexCommand::GetParam(CommandParam& param
 
 HICON URLDirectoryIndexCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadPromptIcon();
+	return IconLoader::Get()->GetShell32Icon(-63011);
 }
 
 int URLDirectoryIndexCommand::Match(Pattern* pattern)
