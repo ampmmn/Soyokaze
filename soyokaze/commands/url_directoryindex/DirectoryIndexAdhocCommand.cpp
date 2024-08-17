@@ -178,7 +178,22 @@ BOOL DirectoryIndexAdhocCommand::Execute(const Parameter& param)
 
 HICON DirectoryIndexAdhocCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadPromptIcon();
+	// リンクテキストが".."または"/"を含む場合はフォルダアイコンを表示
+	auto& text = in->mResult.mLinkText;
+	if (text.Find(_T("..")) == 0 || 
+			(text.IsEmpty() == FALSE && text[text.GetLength()-1] == _T('/'))) {
+		return IconLoader::Get()->LoadFolderIcon();
+	}
+
+	CString ext = PathFindExtension(in->mResult.mLinkPath);
+	if (ext.IsEmpty() == FALSE) {
+		HICON icon = IconLoader::Get()->LoadExtensionIcon(ext);
+		if (icon) {
+			return icon;
+		}
+	}
+
+	return IconLoader::Get()->LoadUnknownIcon();
 }
 
 launcherapp::core::Command*
