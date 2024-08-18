@@ -236,8 +236,6 @@ bool SettingDialog::SelectCommand(int index)
 	CString cmdName;
 	cmbBox->GetLBText(cmbBox->GetCurSel(), cmdName);
 
-	ASSERT(index <= mParam.mItems.size());
-
 	ITEM item;
 	item.mCommandName = cmdName;
 	mParam.SetMapping(state, item);
