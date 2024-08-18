@@ -32,7 +32,7 @@ public:
 	DECLARE_COMMANDPROVIDER(VolumeCommandProvider)
 
 // RoutineCommandProviderBase
-	DECLARE_LOADFROM(ShellExecCommandProvider)
+	DECLARE_LOADFROM(VolumeCommandProvider)
 };
 
 } // end of namespace volumecontrol
