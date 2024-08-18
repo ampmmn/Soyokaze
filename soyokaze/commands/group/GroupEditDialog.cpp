@@ -94,7 +94,15 @@ BOOL GroupEditDialog::OnInitDialog()
 	std::vector<Command*> commands;
 	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commands);
 	for (auto& cmd : commands) {
-		mCommandSelectBox->AddString(cmd->GetName());
+
+		auto name = cmd->GetName();
+
+		if (mOrgName == name) {
+			// 自分自身は追加しない
+			continue;
+		}
+
+		mCommandSelectBox->AddString(name);
 	}
 
 	CString caption;
@@ -129,11 +137,6 @@ BOOL GroupEditDialog::OnInitDialog()
 	// 項目を登録
 	int index = 0;
 	for (auto& item : mParam.mItems) {
-
-		if (mOrgName == item.mItemName) {
-			// 自分自身は追加しない
-			continue;
-		}
 
 		SetItemToList(index++, item);
 	}
