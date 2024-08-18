@@ -184,24 +184,17 @@ BEGIN
     LTEXT           "(説明)",IDC_STATIC_DESCRIPTION,69,21,211,8
 END
 
-IDD_HOTKEY DIALOGEX 0, 0, 251, 109
+IDD_KEYSPLITTERMODIFIER DIALOGEX 0, 0, 183, 77
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "ホットキーの設定"
+CAPTION "キー割り当ての追加"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "修飾キー",IDC_STATIC,8,5,62,76
     CONTROL         "&Shift",IDC_CHECK_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,31,10
-    CONTROL         "&Alt",IDC_CHECK_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,35,25,10
-    CONTROL         "&Ctrl",IDC_CHECK_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,49,27,10
-    CONTROL         "&Win",IDC_CHECK_WIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,63,28,10
-    LTEXT           "キー(&K):",IDC_STATIC,91,26,26,8
-    LTEXT           "+",IDC_STATIC,77,40,8,8
-    COMBOBOX        IDC_COMBO_VK,91,40,135,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "割り当てなし(&E)",IDC_BUTTON_CLEAR,9,83,59,14,NOT WS_VISIBLE
-    DEFPUSHBUTTON   "OK",IDOK,139,83,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,194,83,50,14
-    LTEXT           "スタティック",IDC_STATIC_STATUSMSG,83,68,161,8
-    COMBOBOX        IDC_COMBO_TYPE,91,7,135,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "&Alt",IDC_CHECK_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,58,21,25,10
+    CONTROL         "&Ctrl",IDC_CHECK_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,93,21,27,10
+    CONTROL         "&Win",IDC_CHECK_WIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,21,28,10
+    DEFPUSHBUTTON   "OK",IDOK,71,54,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,126,54,50,14
 END
 
 IDD_SHORTCUT DIALOGEX 0, 0, 267, 157
@@ -1098,6 +1091,44 @@ BEGIN
     LTEXT           "例: proxyhost:8080",IDC_STATIC,125,185,87,8
 END
 
+IDD_KEYSPLITTER DIALOGEX 0, 0, 337, 257
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "振り分けコマンド"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,154,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,154,14,ES_AUTOHSCROLL
+    LTEXT           "キー別割り当てコマンド(&K):",IDC_STATIC,14,67,122,8
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,20,82,226,146
+    PUSHBUTTON      "追加(&A)",IDC_BUTTON_ADD,255,83,50,14
+    PUSHBUTTON      "削除(&R)",IDC_BUTTON_DELETE,254,103,50,14
+    DEFPUSHBUTTON   "OK",IDOK,226,236,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,236,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+END
+
+IDD_HOTKEY DIALOGEX 0, 0, 251, 109
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ホットキーの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "修飾キー",IDC_STATIC,8,5,62,76
+    CONTROL         "&Shift",IDC_CHECK_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,31,10
+    CONTROL         "&Alt",IDC_CHECK_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,35,25,10
+    CONTROL         "&Ctrl",IDC_CHECK_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,49,27,10
+    CONTROL         "&Win",IDC_CHECK_WIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,63,28,10
+    LTEXT           "キー(&K):",IDC_STATIC,91,26,26,8
+    LTEXT           "+",IDC_STATIC,77,40,8,8
+    COMBOBOX        IDC_COMBO_VK,91,40,135,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "割り当てなし(&E)",IDC_BUTTON_CLEAR,9,83,59,14,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "OK",IDOK,139,83,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,194,83,50,14
+    LTEXT           "スタティック",IDC_STATIC_STATUSMSG,83,68,161,8
+    COMBOBOX        IDC_COMBO_TYPE,91,7,135,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1184,12 +1215,12 @@ BEGIN
         BOTTOMMARGIN, 277
     END
 
-    IDD_HOTKEY, DIALOG
+    IDD_KEYSPLITTERMODIFIER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 244
+        RIGHTMARGIN, 176
         TOPMARGIN, 7
-        BOTTOMMARGIN, 102
+        BOTTOMMARGIN, 68
     END
 
     IDD_SHORTCUT, DIALOG
@@ -1516,6 +1547,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 289
     END
+
+    IDD_KEYSPLITTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 250
+    END
+
+    IDD_HOTKEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 102
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1594,7 +1641,7 @@ BEGIN
     0, 0, 100, 0
 END
 
-IDD_HOTKEY AFX_DIALOG_LAYOUT
+IDD_KEYSPLITTERMODIFIER AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -2222,218 +2269,32 @@ BEGIN
     0, 0, 0, 0
 END
 
+IDD_KEYSPLITTER AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0
+END
+
+IDD_HOTKEY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog Info
 //
-
-IDD_HOTKEY DLGINIT
-BEGIN
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0041, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0042, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0043, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0044, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0045, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0046, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0047, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0048, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0049, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004a, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004b, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004c, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004d, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004e, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x004f, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0050, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0051, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0052, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0053, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0054, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0055, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0056, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0057, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0058, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0059, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x005a, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0031, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0032, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0033, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0034, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0035, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0036, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0037, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0038, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0039, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0030, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x7053, 0x6361, 0x0065, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x6e45, 0x6574, 0x0072, 
-    IDC_COMBO_VK, 0x403, 7, 0
-0x6544, 0x656c, 0x6574, "\000" 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x6154, 0x0062, 
-    IDC_COMBO_VK, 0x403, 3, 0
-0xaa81, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0xab81, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0xa981, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0xa881, "\000" 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x002c, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x002e, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x002f, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x003a, 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x4781, "\000" 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x0040, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x005b, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x005d, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x005e, 
-    IDC_COMBO_VK, 0x403, 2, 0
-0x002d, 
-    IDC_COMBO_VK, 0x403, 9, 0
-0x6150, 0x6567, 0x6f44, 0x6e77, "\000" 
-    IDC_COMBO_VK, 0x403, 7, 0
-0x6150, 0x6567, 0x7055, "\000" 
-    IDC_COMBO_VK, 0x403, 5, 0
-0x6f48, 0x656d, "\000" 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x6e45, 0x0064, 
-    IDC_COMBO_VK, 0x403, 7, 0
-0x6e49, 0x6573, 0x7472, "\000" 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0031, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0032, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0033, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0034, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0035, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0036, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0037, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0038, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0039, 
-    IDC_COMBO_VK, 0x403, 6, 0
-0x754e, 0x206d, 0x0030, 
-    IDC_COMBO_VK, 0x403, 8, 0
-0x6143, 0x4c70, 0x636f, 0x006b, 
-    IDC_COMBO_VK, 0x403, 5, 0
-0xa982, 0xc882, "\000" 
-    IDC_COMBO_VK, 0x403, 5, 0
-0xcf95, 0xb78a, "\000" 
-    IDC_COMBO_VK, 0x403, 7, 0
-0xb396, 0xcf95, 0xb78a, "\000" 
-    IDC_COMBO_VK, 0x403, 8, 0
-0x754e, 0x4c6d, 0x636f, 0x006b, 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3146, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3246, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3346, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3446, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3546, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3646, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3746, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3846, "\000" 
-    IDC_COMBO_VK, 0x403, 3, 0
-0x3946, "\000" 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0030, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0031, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0032, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0033, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0034, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0035, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0036, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0037, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0038, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3146, 0x0039, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3246, 0x0030, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3246, 0x0031, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3246, 0x0032, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3246, 0x0033, 
-    IDC_COMBO_VK, 0x403, 4, 0
-0x3246, 0x0034, 
-    IDC_COMBO_TYPE, 0x403, 21, 0
-0x4183, 0x4e83, 0x6583, 0x4283, 0x7583, 0x9e8e, 0xcc82, 0xdd82, 0x4c97, 
-0xf88c, "\000" 
-    IDC_COMBO_TYPE, 0x403, 19, 0
-0xed8f, 0x9392, 0x9e8e, 0xa282, 0xc282, 0xc582, 0xe082, 0x4c97, 0xf88c, 
-"\000" 
-    0
-END
 
 IDD_VIEWSETTING DLGINIT
 BEGIN
@@ -2880,6 +2741,213 @@ BEGIN
     0
 END
 
+IDD_HOTKEY DLGINIT
+BEGIN
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0041, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0042, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0043, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0044, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0045, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0046, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0047, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0048, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0049, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004a, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004b, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004c, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004d, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004f, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0050, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0051, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0052, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0053, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0054, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0055, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0056, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0057, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0058, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0059, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005a, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0030, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x7053, 0x6361, 0x0065, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x6e45, 0x6574, 0x0072, 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6544, 0x656c, 0x6574, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x6154, 0x0062, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xaa81, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xab81, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xa981, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xa881, "\000" 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002c, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002f, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x003a, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x4781, "\000" 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0040, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005b, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005d, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002d, 
+    IDC_COMBO_VK, 0x403, 9, 0
+0x6150, 0x6567, 0x6f44, 0x6e77, "\000" 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6150, 0x6567, 0x7055, "\000" 
+    IDC_COMBO_VK, 0x403, 5, 0
+0x6f48, 0x656d, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x6e45, 0x0064, 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6e49, 0x6573, 0x7472, "\000" 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0031, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0032, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0033, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0034, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0035, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0036, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0037, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0038, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0039, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0030, 
+    IDC_COMBO_VK, 0x403, 8, 0
+0x6143, 0x4c70, 0x636f, 0x006b, 
+    IDC_COMBO_VK, 0x403, 5, 0
+0xa982, 0xc882, "\000" 
+    IDC_COMBO_VK, 0x403, 5, 0
+0xcf95, 0xb78a, "\000" 
+    IDC_COMBO_VK, 0x403, 7, 0
+0xb396, 0xcf95, 0xb78a, "\000" 
+    IDC_COMBO_VK, 0x403, 8, 0
+0x754e, 0x4c6d, 0x636f, 0x006b, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0033, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0034, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0035, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0036, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0037, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0038, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0039, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0030, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0031, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0032, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0033, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0034, 
+    IDC_COMBO_TYPE, 0x403, 21, 0
+0x4183, 0x4e83, 0x6583, 0x4283, 0x7583, 0x9e8e, 0xcc82, 0xdd82, 0x4c97, 
+0xf88c, "\000" 
+    IDC_COMBO_TYPE, 0x403, 19, 0
+0xed8f, 0x9392, 0x9e8e, 0xa282, 0xc282, 0xc582, 0xe082, 0x4c97, 0xf88c, 
+"\000" 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2904,13 +2972,13 @@ BEGIN
     IDS_TITLE_CONFIRMRUNGROUP "グループ実行の確認"
     IDS_ERR_NAMEISEMPTY     "名前を入力してください"
     IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
-    IDS_CONFIRMRUNGROUP     "グループ: %s を実行します。よろしいですか?"
-    IDS_ERR_NAMEALREADYEXISTS "コマンド名はすでに使用されています"
-    IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_CONFIRMRUNGROUP     "グループ: %s を実行します。よろしいですか?"
+    IDS_ERR_NAMEALREADYEXISTS "コマンド名はすでに使用されています"
+    IDS_ERR_PATHISEMPTY     "実行ファイルまたはURLを入力してください"
     IDS_ERR_PATH0ISEMPTY    "【実行時引数なし】実行ファイルまたはURLを入力してください"
     IDS_NAME                "名前"
     IDS_DESCRIPTION         "説明"
@@ -2925,13 +2993,13 @@ BEGIN
     IDS_ERR_GETNEXTWINDOW   "アクティブウインドウを取得できませんでした"
     IDS_ERR_QUERYPROCESSINFO 
                             "アクティブウインドウの情報を取得できません\n(管理者権限で実行されているプロセスかもしれません)"
-    IDS_NEWREGISTER         "新規作成"
-    IDS_PASTE               "貼り付け"
-    IDS_BUILDDATE           "ビルド日時"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_NEWREGISTER         "新規作成"
+    IDS_PASTE               "貼り付け"
+    IDS_BUILDDATE           "ビルド日時"
     IDS_VERSION             "バージョン"
     IDS_NOHOTKEY            "なし"
     IDS_NORMALCOMMAND       "通常コマンド"
@@ -2942,22 +3010,32 @@ BEGIN
     IDS_DESCRIPTION_BUILTINCOMMAND "コマンドの登録・整理などランチャー自体にかかわるコマンドを登録できます"
     IDS_GROUPCOMMAND        "グループ"
     IDS_ERR_NODELETECOMMAND "削除するコマンド名を指定してください。"
-    IDS_DESCRIPTION_GROUPCOMMAND "キーワードの分類・連続起動を可能にするグループを作ります"
     IDS_ISWAIT              "完了するまで待つ"
     IDS_ERR_COMMANDDOESNOTEXIST "指定されたキーワードは存在しません。"
-    IDS_ERR_INVALIDSHORTCUT "ファイルはショートカットファイルではありません。"
-    IDS_ERR_INVALIDREGEXP   "指定されたパターンは正しい正規表現ではありません。"
-    IDS_ERR_FAILTOSHELLEXECUTE "ファイルが存在しません。"
-    IDS_PATH                "パス"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_PATH                "パス"
+    IDS_COMMANDTYPE         "種別"
+    IDS_COMMAND_COLOR       "カラー"
+    IDS_X                   "X座標値"
+    IDS_DESCRIPTION_GROUPCOMMAND "キーワードの分類・連続起動を可能にするグループを作ります"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERR_INVALIDSHORTCUT "ファイルはショートカットファイルではありません。"
+    IDS_ERR_INVALIDREGEXP   "指定されたパターンは正しい正規表現ではありません。"
+    IDS_ERR_FAILTOSHELLEXECUTE "ファイルが存在しません。"
     IDS_REGEXPCOMMAND       "正規表現コマンド"
     IDS_DESCRIPTION_REGEXPCOMMAND "正規表現によるコマンド名のマッチングを行うことができます。"
     IDS_ERR_HOTKEYRESERVED  "文字入力に使うキーを割り当てることはできません。"
     IDS_FILTER_DLL          "DLLファイル(*.dll)|*.dll|全てのファイル(*.*)|*.*||"
-    IDS_COMMANDTYPE         "種別"
+END
+
+STRINGTABLE
+BEGIN
     IDS_COMMAND_WINDOWACTIVATE "ウインドウ切替"
     IDS_COMMAND_WORKSHEET   "Excelシート"
     IDS_COMMAND_BOOKMARK    "ブックマーク"
@@ -2966,15 +3044,14 @@ BEGIN
     IDS_COMMAND_HISTORY     "履歴"
     IDS_COMMAND_MAILTO      "メール"
     IDS_COMMAND_PATHEXEC    "ファイル名を指定して実行"
-    IDS_COMMAND_CONTROLPANEL "コントロールパネル"
-    IDS_COMMAND_PATHEXEC_HISTORY "履歴"
-    IDS_COMMAND_ENVIRON     "環境変数"
 END
 
 STRINGTABLE
 BEGIN
+    IDS_COMMAND_CONTROLPANEL "コントロールパネル"
+    IDS_COMMAND_PATHEXEC_HISTORY "履歴"
+    IDS_COMMAND_ENVIRON     "環境変数"
     IDS_COMMAND_RECENTFILES "最近使ったファイル"
-    IDS_COMMAND_COLOR       "カラー"
     IDS_COMMAND_VMXFILE     "最近使ったVM"
     IDS_ERR_VMXLOCKED       "%sはロックされています。"
     IDS_FILTER_SOUND        "mp3ファイル (*.mp3)|*.mp3||"
@@ -2983,6 +3060,10 @@ BEGIN
                             "指定したウインドウテキストに合致するウインドウをアクティブにするコマンドを作成します。"
     IDS_COMMANDNAME_WEBSEARCH "Web検索コマンド"
     IDS_DESCRIPTION_WEBSEARCH "Web検索を定義します。"
+END
+
+STRINGTABLE
+BEGIN
     IDS_COMMAND_STARTMENU   "スタートメニュー"
     IDS_COMMAND_APP         "アプリ"
     IDS_SENDTO              "コマンドとして登録する.lnk"
@@ -2990,13 +3071,12 @@ BEGIN
     IDS_SNIPPETCOMMAND      "スニペットコマンド"
     IDS_DESCRIPTION_SNIPPETCOMMAND "定型文をクリップボードにコピーするコマンドを作成します。"
     IDS_ERR_TEXTISEMPTY     "テキストを入力してください。"
+    IDS_WINDOWTITLE         "ウインドウタイトル"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_WINDOWTITLE         "ウインドウタイトル"
     IDS_WINDOWCLASS         "ウインドウクラス"
-    IDS_X                   "X座標値"
     IDS_Y                   "Y座標値"
     IDS_WIDTH               "幅"
     IDS_HEIGHT              "高さ"

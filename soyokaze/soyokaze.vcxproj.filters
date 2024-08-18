@@ -190,6 +190,9 @@
     <Filter Include="commands\url_directoryindex">
       <UniqueIdentifier>{ffdcfe33-2235-4f87-844f-52c43b84a9e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\keysplitter">
+      <UniqueIdentifier>{491319ca-409f-4775-ad09-ef2537b40718}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1107,6 +1110,24 @@
     <ClInclude Include="utility\AES.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterParam.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterModifierState.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterEditDialog.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterModifierDialog.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterCommand.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1957,6 +1978,24 @@
     </ClCompile>
     <ClCompile Include="utility\AES.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterParam.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterModifierState.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterEditDialog.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterModifierDialog.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterCommand.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp">
+      <Filter>commands\keysplitter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

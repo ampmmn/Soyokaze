@@ -85,6 +85,10 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		mWMPlocDll.Append(_T("System32\\wmploc.dll"));
 		mWMPlocDll.Shrink();
 
+		_tgetenv_s(&reqLen, mMMCndMgrDll, mMMCndMgrDll.size(), SYSTEMROOT);
+		mMMCndMgrDll.Append(_T("System32\\mmcndmgr.dll"));
+		mMMCndMgrDll.Shrink();
+
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	~PImpl()
@@ -140,6 +144,7 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	Path mImgResDll;
 	Path mShell32Dll;
 	Path mWMPlocDll;
+	Path mMMCndMgrDll;
 
 	// ファイルがリソースとして保持するアイコンを管理するためのmap
 	std::map<CString, IconIndexMap> mIconIndexCache;
@@ -507,6 +512,11 @@ HICON IconLoader::GetImageResIcon(int index)
 HICON IconLoader::GetWMPlocIcon(int index)
 {
 	return LoadIconResource((LPCTSTR)in->mWMPlocDll, index);
+}
+
+HICON IconLoader::GetMMCndMgrIcon(int index)
+{
+	return LoadIconResource((LPCTSTR)in->mMMCndMgrDll, index);
 }
 
 // ファイルがリソースとして保持するアイコンを取得

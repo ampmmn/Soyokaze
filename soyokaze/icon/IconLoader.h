@@ -23,6 +23,7 @@ public:
 	HICON GetShell32Icon(int index);
 	HICON GetImageResIcon(int index);
 	HICON GetWMPlocIcon(int index);
+	HICON GetMMCndMgrIcon(int index);
 	// ファイルがリソースとして保持するアイコンを取得
 	HICON LoadIconResource(const CString& path, int index);
 
