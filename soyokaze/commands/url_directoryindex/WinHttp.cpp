@@ -83,17 +83,20 @@ WinHttp::~WinHttp()
 
 static DWORD ChooseAuthScheme(DWORD supportedSchemes)
 {
-  if( supportedSchemes & WINHTTP_AUTH_SCHEME_NEGOTIATE ) {
+  if (supportedSchemes & WINHTTP_AUTH_SCHEME_NEGOTIATE) {
     return WINHTTP_AUTH_SCHEME_NEGOTIATE;
 	}
-  else if( supportedSchemes & WINHTTP_AUTH_SCHEME_NTLM ) {
+  else if (supportedSchemes & WINHTTP_AUTH_SCHEME_NTLM) {
     return WINHTTP_AUTH_SCHEME_NTLM;
 	}
-  else if( supportedSchemes & WINHTTP_AUTH_SCHEME_PASSPORT ) {
+  else if (supportedSchemes & WINHTTP_AUTH_SCHEME_PASSPORT) {
     return WINHTTP_AUTH_SCHEME_PASSPORT;
 	}
-  else if( supportedSchemes & WINHTTP_AUTH_SCHEME_DIGEST ) {
+  else if (supportedSchemes & WINHTTP_AUTH_SCHEME_DIGEST) {
     return WINHTTP_AUTH_SCHEME_DIGEST;
+	}
+	else if (supportedSchemes & WINHTTP_AUTH_SCHEME_BASIC) {
+		return WINHTTP_AUTH_SCHEME_BASIC;
 	}
   else {
     return 0;
@@ -123,6 +126,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	cmp.dwPasswordLength = 256;
 
 	if (WinHttpCrackUrl(url, url.GetLength(), 0, &cmp) == FALSE) {
+		spdlog::error(_T("Invalid url. {}"), (LPCTSTR)url);
 		return false;
 	}
 
@@ -134,8 +138,6 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 	WinHttpHandle req(WinHttpOpenRequest(connect, L"GET", urlPath.data(), nullptr, WINHTTP_NO_REFERER, 
 				WINHTTP_DEFAULT_ACCEPT_TYPES, (INTERNET_SCHEME_HTTPS == cmp.nScheme) ? WINHTTP_FLAG_SECURE : 0));
-
-	//LPCWSTR headers = L"Accept: */*\r\nPragma: no-cache\r\nCache-Control: no-cache\r\n";
 
 	spdlog::debug("openrequest {:.6f} s.", sw);
 
@@ -195,6 +197,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 			DWORD selectedScheme = ChooseAuthScheme(supporteScheme);
 
 			if (selectedScheme == 0) {
+				spdlog::error(_T("401 : unknown scheme {}"), supporteScheme);
 				return false;
 			}
 			// 認証情報を設定
@@ -206,6 +209,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 			// 2回目以降はリトライしない(無限リトライになってしまうのを防ぐため)
 			if (isRetryProxyAuth == false) {
+				spdlog::error(_T("407 : failed to authenticate."));
 				return false;
 			}
 
@@ -217,6 +221,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 			proxyScheme = ChooseAuthScheme(supporteScheme);
 			if (proxyScheme == 0) {
+				spdlog::error(_T("407 : unknown scheme {}"), supporteScheme);
 				return false;
 			}
 			isRetryProxyAuth = false;

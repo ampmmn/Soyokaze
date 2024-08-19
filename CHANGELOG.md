@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- [DirectoryIndex] プロキシの利用方法の設定値が保存されない問題を修正
+- [DirectoryIndex] サーバ/プロキシの認証方式がBasic認証だったときにエラー扱いにしていたのを修正
+
+## [0.27.0] - 2024-08-18
+
 ### Added
 
 - DirectoryIndexコマンドを追加

@@ -549,6 +549,7 @@ bool URLDirectoryIndexCommand::Save(CommandEntryIF* entry)
 	std::vector<uint8_t> buf;
 	entry->Set(_T("serverpassword"), in->Encode(in->mParam.mServerPassword, buf));
 
+	entry->Set(_T("proxytype"), in->mParam.mProxyType);
 	entry->Set(_T("proxyhost"), in->mParam.mProxyHost);
 	entry->Set(_T("proxyuser"), in->mParam.mProxyUser);
 	entry->Set(_T("proxypassword"), in->Encode(in->mParam.mProxyPassword, buf));
@@ -576,6 +577,7 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 	entry->Get(_T("serverpassword"), buf);
 	in->mParam.mServerPassword = in->Decode(buf);
 
+	in->mParam.mProxyType = entry->Get(_T("proxytype"), 0);
 	in->mParam.mProxyHost = entry->Get(_T("proxyhost"), _T(""));
 	in->mParam.mProxyUser = entry->Get(_T("proxyuser"), _T(""));
 
