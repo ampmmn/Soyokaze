@@ -18,6 +18,10 @@
   - ログ出力ライブラリ  
 要ビルド
 
+- [tidy-html5](https://github.com/htacg/tidy-html5)
+  - HTML文書を修正するためのライブラリであるが、HTMLをパースしてノードの情報を取得することもできるので、その用途で利用している
+  - ライブラリ部(libtidy)を利用している  
+要ビルド
 
 ### 外部ライブラリの配置
 
@@ -27,6 +31,9 @@
 - spdlog
   - https://github.com/gabime/spdlog からソース一式を取得する
     - `Soyokaze`のソースファイル一式と同じ階層に`spdlog`を配置する
+- tidy-html5
+  - https://github.com/htacg/tidy-html5 からソース一式を取得する
+    - `Soyokaze`のソースファイル一式と同じ階層に`tidy-html5`を配置する
 
 - `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -39,12 +46,15 @@ soyokaze-src/
       nlohmann/
         json.hpp
   spdlog/
+    include/
+  tidy-html5/
+    include/
 ```
 
 ### spdlogのビルド
 
 配置した`spdlog`を下記コマンドでビルドする。  
-cmakeやmsbuildは`vcvars64.bat`を実行すればパスが通る想定
+cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
 cd spdlog
@@ -52,6 +62,25 @@ mkdir build
 cd build
 cmake ..
 msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln 
+```
+
+### tidy-html5(libtidy)のビルド
+
+配置した`tidy-html5`を下記コマンドでビルドする。  
+cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
+
+```
+cd tidy-html5/build/cmake
+
+# ランチャー側の「Debug」「Release」「UnitTest」構成で利用するモジュールのビルド
+cmake ../.. -DCMAKE_BUILD_TYPE=Release -A x64
+cmake --build . --config Release
+
+# ランチャー側の「ReleaseStatic」構成で利用するモジュールのビルド
+del CMakeCache.txt
+cmake ../.. -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=rtst -A x64
+cmake --build . --config Release
+
 ```
 
 ## ビルド方法
