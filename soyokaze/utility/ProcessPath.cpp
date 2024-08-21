@@ -125,7 +125,7 @@ CString ProcessPath::GetCaption()
 		return _T("");
 	}
 
-	GetWindowText(mHwnd, caption.GetBuffer(len), len);
+	GetWindowText(mHwnd, caption.GetBuffer(len + 1), len + 1);
 	caption.ReleaseBuffer();
 	return caption;
 }
@@ -242,9 +242,13 @@ CString ProcessPath::GetCommandLine()
 		if (n == -1) {
 			return CString(cmdline);
 		}
-		return cmdline.Mid(1, n-1);
+		return CString(cmdline.Mid(n+1));
 	}
 	else {
-		return cmdline;
+		int n = cmdline.Find(_T(' '), 0);
+		if (n == -1) {
+			return CString(cmdline);
+		}
+		return CString(cmdline.Mid(n+1));
 	}
 }
