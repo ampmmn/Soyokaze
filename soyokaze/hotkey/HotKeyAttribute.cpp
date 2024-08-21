@@ -12,6 +12,8 @@ static const int ID_LAUNCHER_TRY_HOTKEY = 0xB31D;
 enum {
 	KIND_ALPHA,
 	KIND_NUMBER,
+	KIND_CHAR,
+	KIND_MOVE,
 	KIND_NUMKEY,
 	KIND_FUNCTION,
 	KIND_OTHER,
@@ -68,29 +70,29 @@ const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
 	{ 0x38, _T("8"), KIND_NUMBER },
 	{ 0x39, _T("9"), KIND_NUMBER },
 	{ 0x30, _T("0"), KIND_NUMBER },
-	{ 0x20, _T("Space"), KIND_OTHER },
-	{ 0x0D, _T("Enter"), KIND_OTHER },
-	{ 0x2E, _T("Delete"), KIND_OTHER },
-	{ 0x09, _T("Tab"), KIND_OTHER },
-	{ 0x26, _T("↑"), KIND_OTHER },
-	{ 0x28, _T("↓"), KIND_OTHER },
-	{ 0x25, _T("←"), KIND_OTHER },
-	{ 0x27, _T("→"), KIND_OTHER },
-	{ 0x6C, _T(","), KIND_OTHER },
-	{ 0x6E, _T("."), KIND_OTHER },
-	{ 0xBF, _T("/"), KIND_OTHER },
-	{ 0xBA, _T(":"), KIND_OTHER },
-	{ 0xBB, _T(";"), KIND_OTHER },
-	{ 0xC0, _T("@"), KIND_OTHER },
-	{ 0xDB, _T("["), KIND_OTHER },
-	{ 0xDD, _T("]"), KIND_OTHER },
-	{ 0xBD, _T("^"), KIND_OTHER },
-	{ 0x6D, _T("-"), KIND_OTHER },
-	{ 0x22, _T("PageDown"), KIND_OTHER },
-	{ 0x21, _T("PageUp"), KIND_OTHER },
-	{ 0x24, _T("Home"), KIND_OTHER },
-	{ 0x23, _T("End"), KIND_OTHER },
-	{ 0x2D, _T("Insert"), KIND_OTHER },
+	{ 0x20, _T("Space"), KIND_CHAR },
+	{ 0x0D, _T("Enter"), KIND_CHAR },
+	{ 0x2E, _T("Delete"), KIND_CHAR },
+	{ 0x09, _T("Tab"), KIND_CHAR },
+	{ 0x26, _T("↑"), KIND_MOVE },
+	{ 0x28, _T("↓"), KIND_MOVE },
+	{ 0x25, _T("←"), KIND_MOVE },
+	{ 0x27, _T("→"), KIND_MOVE },
+	{ 0x6C, _T(","), KIND_CHAR },
+	{ 0x6E, _T("."), KIND_CHAR },
+	{ 0xBF, _T("/"), KIND_CHAR },
+	{ 0xBA, _T(":"), KIND_CHAR },
+	{ 0xBB, _T(";"), KIND_CHAR },
+	{ 0xC0, _T("@"), KIND_CHAR },
+	{ 0xDB, _T("["), KIND_CHAR },
+	{ 0xDD, _T("]"), KIND_CHAR },
+	{ 0xBD, _T("^"), KIND_CHAR },
+	{ 0x6D, _T("-"), KIND_CHAR },
+	{ 0x22, _T("PageDown"), KIND_MOVE },
+	{ 0x21, _T("PageUp"), KIND_MOVE },
+	{ 0x24, _T("Home"), KIND_MOVE },
+	{ 0x23, _T("End"), KIND_MOVE },
+	{ 0x2D, _T("Insert"), KIND_MOVE },
 	{ 0x61, _T("Num 1"), KIND_NUMKEY },
 	{ 0x62, _T("Num 2"), KIND_NUMKEY },
 	{ 0x63, _T("Num 3"), KIND_NUMKEY },
@@ -101,8 +103,8 @@ const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
 	{ 0x68, _T("Num 8"), KIND_NUMKEY },
 	{ 0x69, _T("Num 9"), KIND_NUMKEY },
 	{ 0x60, _T("Num 0"), KIND_NUMKEY },
-	{ 0x14, _T("CapLock"), KIND_OTHER },
-	{ VK_KANA, _T("かな"), KIND_OTHER },
+	{ 0xF0, _T("CapsLock"), KIND_OTHER },
+	{ 0xF2, _T("かな"), KIND_OTHER },
 	{ 0x1C, _T("変換"), KIND_OTHER },
 	{ 0x1D, _T("無変換"), KIND_OTHER },
 	{ 0x90, _T("NumLock"), KIND_OTHER },
@@ -349,22 +351,26 @@ UINT HOTKEY_ATTR::GetVKCode() const
 	return VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
 }
 
-// Num0～Num9キーかどうか
-bool HOTKEY_ATTR::IsNumKey() const
+// 割り当てを許可しないキーか?
+bool HOTKEY_ATTR::IsReservedKey() const
 {
-	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_NUMKEY;
-}
+	const auto& data = VK_DEFINED_DATA[mVirtualKeyIdx];
+	auto kind = data.mKind;
+	if (GetModifiers() == 0) {
 
-// Functionキーかどうか
-bool HOTKEY_ATTR::IsFunctionKey() const
-{
-	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_FUNCTION;
-}
-
-// 英字キー(A-Z)かどうか
-bool HOTKEY_ATTR::IsAlphabetKey() const
-{
-	return VK_DEFINED_DATA[mVirtualKeyIdx].mKind == KIND_ALPHA;
+		// 横取りすると通常の入力に差し支えある文字は許可しない
+		return kind == KIND_ALPHA || kind == KIND_NUMBER || 
+		       kind == KIND_CHAR || kind == KIND_MOVE;
+	}
+	if (GetModifiers() == MOD_SHIFT) {
+		// Shift+CapsLockは許可しない
+		if  (data.mVKCode == 0xF0)  {
+			return true;
+		}
+		// Shift+英数字キーも差し支えありそうなので許可しない
+		return kind == KIND_ALPHA || kind == KIND_NUMBER;
+	}
+	return false;
 }
 
 // 何にも割り当てられていないか

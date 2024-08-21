@@ -166,7 +166,10 @@ void AppHotKeyDialog::OnUpdateStatus()
 
 bool AppHotKeyDialog::UpdateStatus()
 {
+	mMessage.Empty();
 	mDescription.Empty();
+
+	GetDlgItem(IDOK)->EnableWindow(false);
 
 	GetDlgItem(IDC_CHECK_SHIFT)->EnableWindow(mIsEnableHotKey);
 	GetDlgItem(IDC_CHECK_CTRL)->EnableWindow(mIsEnableHotKey);
@@ -182,12 +185,12 @@ bool AppHotKeyDialog::UpdateStatus()
 		return false;
 	}
 
-	bool isOK = false;
+	bool isOK = true;
 	if (mIsEnableHotKey) {
 		// 予約済みのキーか?
-		if (IsReservedKey(mHotKeyAttr)) {
-			GetDlgItem(IDOK)->EnableWindow(false);
+		if (mHotKeyAttr.IsReservedKey()) {
 			mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
+			isOK = false;
 		}
 		else {
 			// ホットキーが既に使用されていないかチェック
@@ -196,18 +199,12 @@ bool AppHotKeyDialog::UpdateStatus()
 
 			if (canRegister == false) {
 				mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
-			}
-			else {
-				mMessage.Empty();
-				isOK = true;
+				isOK = false;
 			}
 		}
 	}
 
 	if (mIsEnableModifieHotKey) {
-
-			mMessage.Empty();
-			isOK = true;
 
 			bool isSame = (mFirstVKIndex == mSecondVKIndex);
 
@@ -219,6 +216,10 @@ bool AppHotKeyDialog::UpdateStatus()
 					 	(LPCTSTR)GetVKComboText(mFirstVKIndex),
 					 	(LPCTSTR)GetVKComboText(mSecondVKIndex));
 			}
+	}
+
+	if (isOK) {
+		GetDlgItem(IDOK)->EnableWindow(true);
 	}
 
 	return isOK;
@@ -240,32 +241,6 @@ HBRUSH AppHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 
 	return br;
-}
-
-// 利用できないキーか?
-bool AppHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
-{
-	if (attr.IsValid() == false) {
-		return false;
-	}
-
-	if (attr.GetModifiers() == 0) {
-
-		// 無修飾、かつ、Num0-9キーとFunctionキー以外のキーは割り当てを許可しない
-		// (横取りすると通常の入力に差し支えあるので)
-		if (attr.IsNumKey() == false && attr.IsFunctionKey() == false) {
-			return true;
-		}
-	}
-	if (attr.GetModifiers() == MOD_SHIFT) {
-		// Shift+英字キーも許可しない
-		// (横取りすると通常の入力に差し支えあるので)
-		if (attr.IsAlphabetKey()) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 CString AppHotKeyDialog::ToString(UINT firstVK, UINT secondVK)

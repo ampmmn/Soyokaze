@@ -22,10 +22,7 @@ public:
 
 	bool TryRegister(HWND targetWnd) const;
 
-	bool IsNumKey() const;
-	bool IsFunctionKey() const;
-	bool IsAlphabetKey() const;
-
+	bool IsReservedKey() const;
 	bool IsUnmapped() const;
 
 	CString ToString() const;

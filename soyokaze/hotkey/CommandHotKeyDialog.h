@@ -27,9 +27,6 @@ public:
 	static bool ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parent=nullptr);
 
 protected:
-	static bool IsReservedKey(const HOTKEY_ATTR& attr);
-
-protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 

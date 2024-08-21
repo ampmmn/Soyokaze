@@ -92,7 +92,7 @@ void CommandHotKeyDialog::UpdateStatus()
 		mHotKeyAttr.mUseWin = 0;
 	}
 
-	if (IsReservedKey(mHotKeyAttr)) {
+	if (mHotKeyAttr.IsReservedKey()) {
 		GetDlgItem(IDOK)->EnableWindow(false);
 		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
 	}
@@ -148,32 +148,6 @@ HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 
 	return br;
-}
-
-// 利用できないキーか?
-bool CommandHotKeyDialog::IsReservedKey(const HOTKEY_ATTR& attr)
-{
-	if (attr.IsValid() == false) {
-		return false;
-	}
-
-	if (attr.GetModifiers() == 0) {
-
-		// 無修飾、かつ、Num0-9キーとFunctionキー以外のキーは割り当てを許可しない
-		// (横取りすると通常の入力に差し支えあるので)
-		if (attr.IsNumKey() == false && attr.IsFunctionKey() == false) {
-			return true;
-		}
-	}
-	if (attr.GetModifiers() == MOD_SHIFT) {
-		// Shift+英字キーも許可しない
-		// (横取りすると通常の入力に差し支えあるので)
-		if (attr.IsAlphabetKey()) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 void CommandHotKeyDialog::OnButtonClear()
