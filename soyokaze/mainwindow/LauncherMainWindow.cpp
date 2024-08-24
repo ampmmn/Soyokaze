@@ -560,6 +560,12 @@ LauncherMainWindow::OnUserMessageDropObject(
 	return 0;
 }
 
+/**
+ 	アイコン欄をドラッグして他ウインドウをキャプチャしたときに実行されるハンドラ
+ 	@return 
+ 	@param[in] wParam  0
+ 	@param[in] lParam  キャプチャ対象ウインドウハンドル
+*/
 LRESULT
 LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 {

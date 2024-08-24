@@ -50,8 +50,12 @@ void CaptureIconLabel::OnLButtonUp(UINT, CPoint point)
 		return;
 	}
 
+	// 得られたウインドウからルートウインドウを取得する
+	HWND rootWindow = ::GetAncestor(wnd->GetSafeHwnd(), GA_ROOT);
+	spdlog::debug("captured windows handle {}", (void*)rootWindow);
+
 	// キャプチャ対象のウインドウハンドルを親に通知
-	GetParent()->PostMessage(WM_APP+6, 0, (LPARAM)wnd->GetSafeHwnd());
+	GetParent()->PostMessage(WM_APP+6, 0, (LPARAM)rootWindow);
 
 }
 
