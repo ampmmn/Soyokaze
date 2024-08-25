@@ -878,6 +878,58 @@ CString AppPreference::GetDefaultActionType()
 	return in->Get(_T("Launcher:DefaultActionType"), _T("register"));
 }
 
+// システム設定の色を使用するか?
+bool AppPreference::IsUseSystemColorSettings()
+{
+	return in->Get(_T("ColorSettings:UseSystemColor"), true);
+}
+
+COLORREF AppPreference::GetWindowTextColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:WindowText"), 0);
+}
+
+COLORREF AppPreference::GetWindowBackgroundColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:WindowBackground"), 0);
+
+}
+
+COLORREF AppPreference::GetEditTextColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:EditText"), 0);
+}
+
+COLORREF AppPreference::GetEditBackgroundColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:EditBackground"), 0);
+}
+
+COLORREF AppPreference::GetListTextColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListText"), 0);
+}
+
+COLORREF AppPreference::GetListBackgroundColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListBackground"), 0);
+}
+
+COLORREF AppPreference::GetListBackgroundAltColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListBackgroundAlt"), 0);
+}
+
+COLORREF AppPreference::GetListTextHighlightColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListHighlightText"), 0);
+}
+
+COLORREF AppPreference::GetListBackgroundHighlightColor()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListHighlightBackground"), 0);
+}
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

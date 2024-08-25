@@ -11,8 +11,10 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/common/Clipboard.h"
+#include "gui/ColorSettings.h"
 #include "afxdialogex.h"
 #include "utility/WindowPosition.h"
+#include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "SharedHwnd.h"
 #include "hotkey/AppHotKey.h"
@@ -32,9 +34,12 @@
 #include "CandidateList.h"
 #include <algorithm>
 #include <thread>
-#include <wtsapi32.h>
 
+#include <wtsapi32.h>
 #pragma comment(lib, "Wtsapi32.lib")
+
+#include <dwmapi.h>
+#pragma comment(lib, "Dwmapi.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -114,6 +119,7 @@ struct LauncherMainWindow::PImpl
 	//
 	UINT_PTR mInputTimerId = 0;
 
+	bool mShouldColorInit = true;
 };
 
 void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
@@ -219,11 +225,13 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+14, OnUserMessageBlockDeactivateOnUnfocus)
 	ON_MESSAGE(WM_APP+15, OnUserMessageUpdateCandidate)
 	ON_MESSAGE(WM_APP+16, OnUserMessageCopyText)
+	ON_MESSAGE(WM_APP+17, OnUserMessageRequestCallback)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP, OnCommandHelp)
 	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
+	ON_WM_CTLCOLOR()
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -464,6 +472,13 @@ LRESULT LauncherMainWindow::OnUserMessageCopyText(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT LauncherMainWindow::OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam)
+{
+	typedef LRESULT(*LAUNCHERWINDOWCALLBACK)(LPARAM lp);
+	LAUNCHERWINDOWCALLBACK callbackFunc = (LAUNCHERWINDOWCALLBACK)wParam;
+	return callbackFunc(lParam);
+}
+
 
 LRESULT 
 LauncherMainWindow::OnUserMessageDragOverObject(
@@ -562,7 +577,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 /**
  	アイコン欄をドラッグして他ウインドウをキャプチャしたときに実行されるハンドラ
- 	@return 
+ 	@return 0
  	@param[in] wParam  0
  	@param[in] lParam  キャプチャ対象ウインドウハンドル
 */
@@ -761,6 +776,8 @@ void LauncherMainWindow::OnAppPreferenceUpdated()
 	SetFont(&in->mFontDlg);
 
 	SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
+
+	in->mShouldColorInit = true;
 }
 
 void LauncherMainWindow::OnAppExit()
@@ -774,8 +791,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 	SPDLOG_DEBUG(_T("start"));
 
 	CDialogEx::OnInitDialog();
-
-	in->mKeyInputWatch.Create();
 
 	auto pref = AppPreference::Get();
 
@@ -1254,6 +1269,24 @@ void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 		}
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 
+		// 前回と色設定が変わっている場合は、色設定をウインドウに反映する
+		// 非クライアント領域の色を変える
+		if (in->mShouldColorInit) {
+			auto colorSettings = ColorSettings::Get();
+			auto colorScheme = colorSettings->GetCurrentScheme();
+
+			bool isDefaultColor = colorSettings->IsSystemSettings();
+			COLORREF cr = DWMWA_COLOR_DEFAULT;
+			if (isDefaultColor == false) {
+				cr = colorScheme->GetBackgroundColor();
+			}
+			::DwmSetWindowAttribute(GetSafeHwnd(), DWMWA_BORDER_COLOR, &cr, sizeof(cr));
+			::DwmSetWindowAttribute(GetSafeHwnd(), DWMWA_CAPTION_COLOR, &cr, sizeof(cr));
+			in->mIconLabel.SetBackgroundColor(isDefaultColor, colorScheme->GetBackgroundColor());
+			in->mShouldColorInit = false;
+		}
+
+
 		SetTimer(TIMERID_KEYSTATE, 375, nullptr);
 	}
 	else {
@@ -1578,4 +1611,27 @@ LRESULT LauncherMainWindow::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
 		});
 	}
 	return 0;
+}
+
+HBRUSH LauncherMainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (utility::IsHighContrastMode()) {
+		return br;
+	}
+
+	auto colorSettings = ColorSettings::Get();
+	auto colorScheme = colorSettings->GetCurrentScheme();
+
+	if (nCtlColor == CTLCOLOR_DLG || nCtlColor == CTLCOLOR_STATIC) {
+		pDC->SetTextColor(colorScheme->GetTextColor());
+		pDC->SetBkColor(colorScheme->GetBackgroundColor());
+		return colorScheme->GetBackgroundBrush();
+	}
+	else if (nCtlColor == CTLCOLOR_EDIT) {
+		pDC->SetTextColor(colorScheme->GetEditTextColor());
+		pDC->SetBkColor(colorScheme->GetEditBackgroundColor());
+		return colorScheme->GetEditBackgroundBrush();
+	}
+	return br;
 }

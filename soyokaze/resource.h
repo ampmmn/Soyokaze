@@ -104,6 +104,7 @@
 #define IDD_APPSETTING_PATH             198
 #define IDS_CONFIRM_VMXLOCKED           199
 #define IDS_SNIPPETCOMMAND              200
+#define IDD_APPSETTING_EXCLUDEFILE      200
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  201
 #define IDD_GROUP1                      202
 #define IDD_SIMPLEDICT                  203
@@ -113,7 +114,6 @@
 #define IDD_APPSETTING_KEY              207
 #define IDS_WINDOWCLASS                 208
 #define IDD_APPSETTING_PATH1            209
-#define IDD_APPSETTING_EXCLUDEFILE      200
 #define IDD_APPSETTING_OTHER            211
 #define IDS_Y                           212
 #define IDD_BUILTINEDIT                 213
@@ -142,6 +142,7 @@
 #define IDS_X                           236
 #define IDD_VOLUMEEDIT                  237
 #define IDS_DESCRIPTION_GROUPCOMMAND    238
+#define IDD_APPSETTING_COLOR            238
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -332,6 +333,7 @@
 #define IDC_CHECK_ENABLESHORTCUT        1124
 #define IDC_CHECK_KEEPACTIVEWINDOW      1125
 #define IDC_BUTTON1                     1126
+#define IDC_BUTTON_RESTORE              1126
 #define IDC_BUTTON_TEST                 1127
 #define IDC_EDIT_TEXT                   1128
 #define IDC_BUTTON_UPDATE               1129
@@ -400,15 +402,26 @@
 #define IDC_EDIT_KEYWORD                1179
 #define IDC_CHECK_ENABLE_CHROME         1180
 #define IDC_CHECK_ENABLE_EDGE           1181
+#define IDC_CHECK_USEDEFAULT            1182
+#define IDC_BUTTON_WINDOWTEXT           1184
+#define IDC_BUTTON_WINDOWBACKGROUND     1185
+#define IDC_BUTTON_EDITTEXT             1186
+#define IDC_BUTTON_LISTTEXT             1187
+#define IDC_BUTTON_EDITBACKGROUND       1188
+#define IDC_BUTTON_LISTBACKGROUND       1189
+#define IDC_BUTTON_LISTBACKGROUNDALT    1190
+#define IDC_BUTTON_LISTTEXTHIGHLIGHT    1191
+#define IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT 1192
+#define IDC_STATIC_WARNING              1193
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        239
+#define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1182
+#define _APS_NEXT_CONTROL_VALUE         1194
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

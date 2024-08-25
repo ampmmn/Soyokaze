@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordEdit.h"
+#include "gui/ColorSettings.h"
 #include <imm.h>
 
 #pragma comment(lib, "imm32.lib")
@@ -47,15 +48,21 @@ struct KeywordEdit::PImpl
 			memDC.CreateCompatibleDC(&dc);
 
 			mCaretIMEON = CreateCompatibleBitmap(dc.GetSafeHdc(), cx + 1, cy);
-				// IME=ONのキャレットは強調のため少しだ太くする
+				// IME=ONのキャレットは強調のため少しだけ太くする
 			mCaretNormal = CreateCompatibleBitmap(dc.GetSafeHdc(), cx, cy);
 
-			CBrush br(RGB(255-160, 255-32, 255-240));
+			auto colorSettings = ColorSettings::Get();
+			auto colorScheme = colorSettings->GetCurrentScheme();
+
+			COLORREF crCaretIMEOn = colorScheme->GetCaretColor(true);
+			COLORREF crCaretIMEOff = colorScheme->GetCaretColor(false);
+
+			CBrush br(crCaretIMEOn);
 			auto oldBr = memDC.SelectObject(&br);
 			auto oldBmp = memDC.SelectObject(mCaretIMEON);
 			memDC.PatBlt(0, 0, cx + 1, cy, PATCOPY);
 
-			CBrush br2(RGB(255, 255, 255));
+			CBrush br2(crCaretIMEOff);
 			memDC.SelectObject(&br2);
 			memDC.SelectObject(mCaretNormal);
 			memDC.PatBlt(0, 0, cx, cy, PATCOPY);

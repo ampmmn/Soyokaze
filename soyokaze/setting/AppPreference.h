@@ -157,6 +157,18 @@ public:
 	// キーワード未登録時のアクション
 	CString GetDefaultActionType();
 
+	// システム設定の色を使用するか?
+	bool IsUseSystemColorSettings();
+	COLORREF GetWindowTextColor();
+	COLORREF GetWindowBackgroundColor();
+	COLORREF GetEditTextColor();
+	COLORREF GetEditBackgroundColor();
+	COLORREF GetListTextColor();
+	COLORREF GetListBackgroundColor();
+	COLORREF GetListBackgroundAltColor();
+	COLORREF GetListTextHighlightColor();
+	COLORREF GetListBackgroundHighlightColor();
+
 	// ログレベル
 	int GetLogLevel();
 

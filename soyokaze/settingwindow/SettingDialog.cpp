@@ -10,6 +10,7 @@
 #include "settingwindow/ExcludePathPage.h"
 #include "settingwindow/AppSettingPathPage.h"
 #include "settingwindow/ViewSettingDialog.h"
+#include "settingwindow/AppSettingPageColor.h"
 #include "settingwindow/SoundSettingDialog.h"
 #include "settingwindow/ExtensionSettingDialog.h"
 #include "settingwindow/ShortcutSettingPage.h"
@@ -102,7 +103,8 @@ HTREEITEM SettingDialog::OnSetupPages()
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new ExcludePathPage(this)), param);
 	AddPage(hExecItem, std::unique_ptr<SettingPage>(new AppSettingPageCommandPriority(this)), param);
 
-	AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
+	auto hViewItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ViewSettingDialog(this)), param);
+	AddPage(hViewItem, std::unique_ptr<SettingPage>(new AppSettingPageColor(this)), param);
 
 	auto hExtensionItem = AddPage(TVI_ROOT, std::unique_ptr<SettingPage>(new ExtensionSettingDialog(this)), param);
 

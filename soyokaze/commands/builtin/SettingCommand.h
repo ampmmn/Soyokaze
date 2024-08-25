@@ -20,6 +20,10 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 
+
+	static LRESULT CallbackExecute(LPARAM lparam);
+	LRESULT OnCallbackExecute();
+
 	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
 	DECLARE_BUILTINCOMMAND(SettingCommand)
 

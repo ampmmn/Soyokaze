@@ -4,6 +4,7 @@
 #include "settingwindow/SettingDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -57,6 +58,20 @@ BOOL SettingCommand::Execute(const Parameter& param)
 		bool& mf;
 	} _local(mIsExecuting);
 
+
+	SharedHwnd sharedHwnd;
+	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+17, (WPARAM)CallbackExecute, (LPARAM)this);
+	return TRUE;
+}
+
+LRESULT SettingCommand::CallbackExecute(LPARAM lparam)
+{
+	SettingCommand* pThis = (SettingCommand*)lparam;
+	return pThis->OnCallbackExecute();
+}
+
+LRESULT SettingCommand::OnCallbackExecute()
+{
 	SettingDialog dlg;
 
 	// 前回表示していたページを復元する
@@ -73,15 +88,14 @@ BOOL SettingCommand::Execute(const Parameter& param)
 	mLastBreakCrumbs = dlg.GetBreadCrumbsString();
 
 	if (response != IDOK) {
-		return TRUE;
+		return 0;
 	}
 
 	// 設定変更を反映する
 	pref->SetSettings(dlg.GetSettings());
 	pref->Save();
 
-
-	return TRUE;
+	return 0;
 }
 
 HICON SettingCommand::GetIcon()

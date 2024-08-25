@@ -9,7 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-IconLabel::IconLabel() : mIconDefault(nullptr), mCanIconChange(false)
+IconLabel::IconLabel() : mIconDefault(nullptr), mCanIconChange(false), mIsUseBackgroundColor(false), mBackgroundColor(RGB(0,0,0))
 {
 }
 
@@ -56,7 +56,9 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
 
 	CBrush br;
-	br.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+
+	COLORREF crBr = mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : mBackgroundColor;
+	br.CreateSolidBrush(crBr);
 	CBrush* orgBr = dcMem.SelectObject(&br);
 	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
@@ -78,6 +80,12 @@ void IconLabel::DrawDefaultIcon()
 		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
 	}
 	DrawIcon(mIconDefault);
+}
+
+void IconLabel::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
+{
+	mIsUseBackgroundColor = !isUseSystemSetting;
+	mBackgroundColor = cr;
 }
 
 void IconLabel::OnPaint()

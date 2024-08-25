@@ -1128,6 +1128,24 @@
     <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h">
       <Filter>commands\keysplitter</Filter>
     </ClInclude>
+    <ClInclude Include="gui\ColorScheme.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ColorSettings.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\SystemColorScheme.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageColor.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\ImageLabel.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\CustomColorScheme.h">
+      <Filter>gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1996,6 +2014,21 @@
     </ClCompile>
     <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp">
       <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ColorSettings.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SystemColorScheme.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageColor.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\ImageLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\CustomColorScheme.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

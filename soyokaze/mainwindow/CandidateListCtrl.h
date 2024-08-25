@@ -34,7 +34,6 @@ public:
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 
 	DECLARE_MESSAGE_MAP()
-
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

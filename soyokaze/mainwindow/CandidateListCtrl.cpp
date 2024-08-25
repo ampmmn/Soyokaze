@@ -2,6 +2,8 @@
 #include "CandidateListCtrl.h"
 #include "CandidateList.h"
 #include "setting/AppPreference.h"
+#include "utility/Accessibility.h"
+#include "gui/ColorSettings.h"
 #include "resource.h"
 #include <algorithm>
 #include <map>
@@ -277,59 +279,37 @@ void CandidateListCtrl::DrawItem(
 
 
 	// 色の定義
-	COLORREF crText = GetSysColor(COLOR_WINDOWTEXT);
-	COLORREF crBk = GetSysColor(COLOR_WINDOW);
-	BYTE rgb[] = { GetRValue(crBk), GetGValue(crBk), GetBValue(crBk) };
+	auto colorSettings = ColorSettings::Get();
+	auto colorScheme = colorSettings->GetCurrentScheme();
 
-	// 背景色を行単位で交互に変えるときの一方の色を決める
-	// (基準とする色から6%ほど弱めた感じにしてみる)
-	if (*(std::max_element(rgb, rgb+3)) > 128) {
-		// 明るい寄り(というかたいてい白のはず..)の場合は黒方向に近づける
-		rgb[0] = BYTE(rgb[0] * 0.94);
-		rgb[1] = BYTE(rgb[1] * 0.94);
-		rgb[2] = BYTE(rgb[2] * 0.94);
-	}
-	else {
-		// 暗い寄り(ハイコントラストモードで動いている場合とか..)の場合は白方向に近づける
-		rgb[0] = BYTE(rgb[0] + BYTE((255 - rgb[0]) * 0.06));
-		rgb[1] = BYTE(rgb[1] + BYTE((255 - rgb[1]) * 0.06));
-		rgb[2] = BYTE(rgb[2] + BYTE((255 - rgb[2]) * 0.06));
-	}
-	COLORREF crBk2 = RGB(rgb[0], rgb[1], rgb[2]);
 
-	// 背景色を交互に色を変えない場合
+	HBRUSH brBk1 = colorScheme->GetListBackgroundBrush();
+	HBRUSH brBk2 = colorScheme->GetListBackgroundAltBrush();
 	if (in->mIsAlternateColor == false) {
-		crBk2 = crBk;
+		brBk2 = brBk1;
 	}
 
 	if (in->mIsEmpty) {
 		// ToDo: 末尾の塗りつぶしとここの塗りつぶしの処理を関数化する
 
 		// 要素数が空の場合の塗りつぶし処理
-		CBrush brBk;
-		brBk.CreateSolidBrush(crBk);
-		CBrush brBk2;
-		brBk2.CreateSolidBrush(crBk2);
-
-		CBrush* p = &brBk2;
+		HBRUSH p = brBk2;
 		while (rcItem.top < rcCtrl.Height()) {
-			p = (p == &brBk)? &brBk2 : &brBk;
-			pDC->FillRect(rcItem, p);
+			p = (p == brBk1)? brBk2 : brBk1;
+			pDC->FillRect(rcItem, CBrush::FromHandle(p));
 			rcItem.OffsetRect(0, rcItem.Height());
 		}
 		return;
 	}
 
 	// 背景の消去
-	CBrush brBk;
-	brBk.CreateSolidBrush((itemID%2) ? crBk2 : crBk);
-	pDC->FillRect(rcItem,&brBk);
+	HBRUSH hbr = (itemID%2) ? brBk2 : brBk1;
+	pDC->FillRect(rcItem, CBrush::FromHandle(hbr));
 
 	// 選択領域の塗りつぶし
+	COLORREF crText = colorScheme->GetListTextColor();
 	if (isSelect) {
-		CBrush brSelect;
-		brSelect.CreateSysColorBrush(COLOR_HIGHLIGHT);
-		crText = ::GetSysColor(COLOR_HIGHLIGHTTEXT); // or GetSysColor(COLOR_WINDOW);
+		crText = colorScheme->GetListHighlightTextColor();
 
 		CRect rcSelect;
 		GetItemRect(itemID, rcSelect, LVIR_BOUNDS);
@@ -340,7 +320,7 @@ void CandidateListCtrl::DrawItem(
 		// GetItemRect(nItem,rcIcon,LVIR_ICON);
 		// rcSelect.left = rcIcon.right-c_nMargin; // アイコン領域は含めない
 
-		pDC->FillRect(rcSelect,&brSelect);
+		pDC->FillRect(rcSelect, CBrush::FromHandle(colorScheme->GetListHighlightBackgroundBrush()));
 	}
 
 	int orgTextColor = pDC->SetTextColor(crText);
@@ -353,15 +333,10 @@ void CandidateListCtrl::DrawItem(
 		// 末尾の要素に達したら、リストの最後まで背景を交互にぬる
 		rcItem.OffsetRect(0, rcItem.Height());
 
-		CBrush brBk2;
-		brBk2.CreateSolidBrush(crBk);
-		CBrush brBk3;
-		brBk3.CreateSolidBrush(crBk2);
-
-		CBrush* p = (itemID % 2) ? &brBk3 : &brBk2;
+		HBRUSH p = (itemID % 2) ? brBk2 : brBk1;
 		while (rcItem.top < rcCtrl.Height()) {
-			p = (p == &brBk2)? &brBk3 : &brBk2;
-			pDC->FillRect(rcItem, p);
+			p = (p == brBk1)? brBk2 : brBk1;
+			pDC->FillRect(rcItem, CBrush::FromHandle(p));
 			rcItem.OffsetRect(0, rcItem.Height());
 		}
 	}

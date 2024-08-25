@@ -460,8 +460,13 @@
     <ClInclude Include="commands\webhistory\WebHistoryProvider.h" />
     <ClInclude Include="commands\webhistory\WebHistorySettingDialog.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
+    <ClInclude Include="gui\ColorScheme.h" />
+    <ClInclude Include="gui\ColorSettings.h" />
+    <ClInclude Include="gui\CustomColorScheme.h" />
     <ClInclude Include="gui\DDXWrapper.h" />
+    <ClInclude Include="gui\ImageLabel.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
+    <ClInclude Include="gui\SystemColorScheme.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotkeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
@@ -619,6 +624,7 @@
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
     <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="setting/AppPreference.h" />
+    <ClInclude Include="settingwindow\AppSettingPageColor.h" />
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
     <ClInclude Include="settingwindow\AppSettingPageOther.h" />
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
@@ -781,8 +787,12 @@
     <ClCompile Include="commands\webhistory\WebHistoryProvider.cpp" />
     <ClCompile Include="commands\webhistory\WebHistorySettingDialog.cpp" />
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
+    <ClCompile Include="gui\ColorSettings.cpp" />
+    <ClCompile Include="gui\CustomColorScheme.cpp" />
     <ClCompile Include="gui\DDXWrapper.cpp" />
+    <ClCompile Include="gui\ImageLabel.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
+    <ClCompile Include="gui\SystemColorScheme.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
@@ -938,6 +948,7 @@
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageColor.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
