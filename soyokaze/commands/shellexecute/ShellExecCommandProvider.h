@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace shellexecute {
 
 
 class ShellExecCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	ShellExecCommandProvider();
@@ -31,7 +31,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(ShellExecCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(ShellExecCommandProvider)
 };
 

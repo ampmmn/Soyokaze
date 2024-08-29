@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace filter {
 
 
 class FilterCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	FilterCommandProvider();
@@ -34,7 +34,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(FilterCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 private:

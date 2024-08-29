@@ -7,7 +7,7 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
-class RoutineCommandProviderBase :
+class UserCommandProviderBase :
 	public launcherapp::core::CommandProvider
 {
 protected:
@@ -15,8 +15,8 @@ protected:
 	using CommandParameter = launcherapp::core::CommandParameter;
 
 protected:
-	RoutineCommandProviderBase();
-	~RoutineCommandProviderBase() override;
+	UserCommandProviderBase();
+	~UserCommandProviderBase() override;
 
 public:
 	// 初回起動の初期化を行う

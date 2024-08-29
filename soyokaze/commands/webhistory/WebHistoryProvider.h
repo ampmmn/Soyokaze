@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
 class WebHistoryProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	WebHistoryProvider();
@@ -33,7 +33,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(WebHistoryProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 private:
 	struct PImpl;

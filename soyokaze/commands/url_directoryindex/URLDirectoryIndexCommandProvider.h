@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace url_directoryindex {
 
 
 class URLDirectoryIndexCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 
 private:
@@ -35,7 +35,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(URLDirectoryIndexCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 private:

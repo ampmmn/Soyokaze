@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
 class SimpleDictProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	SimpleDictProvider();
@@ -33,7 +33,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(SimpleDictProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 protected:

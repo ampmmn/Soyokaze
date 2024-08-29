@@ -405,8 +405,8 @@
     <ClInclude Include="commands\builtin\CopyClipboardCommand.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\common\CommandEditValidation.h" />
-    <ClInclude Include="commands\common\RoutineCommandProviderBase.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
+    <ClInclude Include="commands\common\UserCommandProviderBase.h" />
     <ClInclude Include="commands\core\CommandEntryIF.h" />
     <ClInclude Include="commands\core\CommandFileEntry.h" />
     <ClInclude Include="commands\core\DefaultCommand.h" />
@@ -724,8 +724,8 @@
     <ClCompile Include="commands\builtin\CopyClipboardCommand.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
-    <ClCompile Include="commands\common\RoutineCommandProviderBase.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
+    <ClCompile Include="commands\common\UserCommandProviderBase.cpp" />
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
     <ClCompile Include="commands\core\DefaultCommand.cpp" />
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp" />

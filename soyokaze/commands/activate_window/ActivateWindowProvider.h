@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace activate_window {
 
 
 class ActivateWindowProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	ActivateWindowProvider();
@@ -34,7 +34,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(ActivateWindowProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(ActivateWindowProvider)
 protected:
 	// Excelシート切り替え用コマンド生成

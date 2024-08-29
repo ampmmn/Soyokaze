@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace keysplitter {
 
 // キー押下状態に応じてコマンドを分けるためのクラス
 class KeySplitterCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	KeySplitterCommandProvider();
@@ -31,7 +31,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(KeySplitterCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(KeySplitterCommandProvider)
 };
 

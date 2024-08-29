@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 
 namespace launcherapp {
@@ -9,7 +9,7 @@ namespace ejectvolume {
 
 // リムーバブルドライブを外したりCDドライブのトレイを開くコマンドを生成するためのクラス
 class EjectVolumeProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	EjectVolumeProvider();
@@ -32,7 +32,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(EjectVolumeProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(EjectVolumeProvider)
 };
 

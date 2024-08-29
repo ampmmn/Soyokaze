@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
 class BookmarkCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	BookmarkCommandProvider();
@@ -33,7 +33,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(BookmarkCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 private:
 	struct PImpl;

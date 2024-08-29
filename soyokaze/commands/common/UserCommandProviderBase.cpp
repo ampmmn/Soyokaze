@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RoutineCommandProviderBase.h"
+#include "UserCommandProviderBase.h"
 #include "commands/core/CommandRepository.h"
 
 #ifdef _DEBUG
@@ -12,23 +12,23 @@ namespace common {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
-RoutineCommandProviderBase::RoutineCommandProviderBase() : 
+UserCommandProviderBase::UserCommandProviderBase() : 
 	mRefCount(1)
 {
 }
 
-RoutineCommandProviderBase::~RoutineCommandProviderBase()
+UserCommandProviderBase::~UserCommandProviderBase()
 {
 }
 
 // 初回起動の初期化を行う
-void RoutineCommandProviderBase::OnFirstBoot()
+void UserCommandProviderBase::OnFirstBoot()
 {
 	// 特に何もしない
 }
 
 // コマンドの読み込み
-void RoutineCommandProviderBase::LoadCommands(
+void UserCommandProviderBase::LoadCommands(
 	CommandFile* cmdFile
 )
 {
@@ -63,12 +63,12 @@ void RoutineCommandProviderBase::LoadCommands(
 }
 
 // 非公開コマンドかどうか(新規作成対象にしない)
-bool RoutineCommandProviderBase::IsPrivate() const
+bool UserCommandProviderBase::IsPrivate() const
 {
 	return false;
 }
 
-void RoutineCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
+void UserCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	UNREFERENCED_PARAMETER(pattern);
 	UNREFERENCED_PARAMETER(comands);
@@ -82,7 +82,7 @@ void RoutineCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQue
  	@param[in]  parent 親ウインドウ
  	@param[out] pages  設定ページリスト
 */
-bool RoutineCommandProviderBase::CreateSettingPages(
+bool UserCommandProviderBase::CreateSettingPages(
 	CWnd* parent,
 	std::vector<SettingPage*>& pages
 )
@@ -95,12 +95,12 @@ bool RoutineCommandProviderBase::CreateSettingPages(
 }
 
 
-uint32_t RoutineCommandProviderBase::AddRef()
+uint32_t UserCommandProviderBase::AddRef()
 {
 	return (uint32_t)InterlockedIncrement(&mRefCount);
 }
 
-uint32_t RoutineCommandProviderBase::Release()
+uint32_t UserCommandProviderBase::Release()
 {
 	auto n = InterlockedDecrement(&mRefCount);
 	if (n == 0) {
@@ -109,7 +109,7 @@ uint32_t RoutineCommandProviderBase::Release()
 	return (uint32_t)n;
 }
 
-bool RoutineCommandProviderBase::LoadFrom(CommandEntryIF* entry, Command** command)
+bool UserCommandProviderBase::LoadFrom(CommandEntryIF* entry, Command** command)
 {
 	UNREFERENCED_PARAMETER(entry);
 	UNREFERENCED_PARAMETER(command);

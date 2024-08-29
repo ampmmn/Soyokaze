@@ -1,13 +1,13 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
 class WatchPathCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	WatchPathCommandProvider();
@@ -30,7 +30,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(WatchPathCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(WatchPathCommandProvider)
 };
 

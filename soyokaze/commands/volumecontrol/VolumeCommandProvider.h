@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -8,7 +8,7 @@ namespace volumecontrol {
 
 // 音量調節コマンドを生成するためのクラス
 class VolumeCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	VolumeCommandProvider();
@@ -31,7 +31,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(VolumeCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(VolumeCommandProvider)
 };
 

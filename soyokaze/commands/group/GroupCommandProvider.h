@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/common/RoutineCommandProviderBase.h"
+#include "commands/common/UserCommandProviderBase.h"
 
 namespace launcherapp {
 namespace commands {
@@ -9,7 +9,7 @@ namespace group {
 
 // グループコマンドを生成するためのクラス
 class GroupCommandProvider :
-	public launcherapp::commands::common::RoutineCommandProviderBase
+	public launcherapp::commands::common::UserCommandProviderBase
 {
 private:
 	GroupCommandProvider();
@@ -32,7 +32,7 @@ public:
 
 	DECLARE_COMMANDPROVIDER(GroupCommandProvider)
 
-// RoutineCommandProviderBase
+// UserCommandProviderBase
 	DECLARE_LOADFROM(GroupCommandProvider)
 };
 

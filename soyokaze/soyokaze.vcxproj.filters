@@ -1083,9 +1083,6 @@
     <ClInclude Include="matcher\CommandToken.h">
       <Filter>matcher</Filter>
     </ClInclude>
-    <ClInclude Include="commands\common\RoutineCommandProviderBase.h">
-      <Filter>commands\common</Filter>
-    </ClInclude>
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommand.h">
       <Filter>commands\url_directoryindex</Filter>
     </ClInclude>
@@ -1145,6 +1142,9 @@
     </ClInclude>
     <ClInclude Include="gui\CustomColorScheme.h">
       <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\UserCommandProviderBase.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1973,9 +1973,6 @@
     <ClCompile Include="matcher\CommandToken.cpp">
       <Filter>matcher</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\RoutineCommandProviderBase.cpp">
-      <Filter>commands\common</Filter>
-    </ClCompile>
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
       <Filter>commands\url_directoryindex</Filter>
     </ClCompile>
@@ -2029,6 +2026,9 @@
     </ClCompile>
     <ClCompile Include="gui\CustomColorScheme.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\UserCommandProviderBase.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
