@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
+#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,6 +45,22 @@ BOOL ReloadCommand::Execute(const Parameter& param)
 {
 	UNREFERENCED_PARAMETER(param);
 
+	// リロードに伴い発生するホットキーの解除(UnregisterHotKey)は、
+	// 登録時と同じスレッド(メインスレッド)から行う必要があるため
+	// メインウインドウからコールバックしてもらう
+	SharedHwnd hwnd;
+	::SendMessage(hwnd.GetHwnd(), WM_APP+17, (WPARAM)CallbackExecute, (LPARAM)this);
+	return TRUE;
+}
+
+LRESULT ReloadCommand::CallbackExecute(LPARAM lparam)
+{
+	ReloadCommand* pThis = (ReloadCommand*)lparam;
+	return pThis->OnCallbackExecute();
+}
+
+LRESULT ReloadCommand::OnCallbackExecute()
+{
 	return launcherapp::core::CommandRepository::GetInstance()->Load();
 }
 

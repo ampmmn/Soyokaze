@@ -43,7 +43,8 @@ bool GlobalHotKey::Register(UINT id, UINT mod, UINT vk)
 // 登録解除する
 void GlobalHotKey::Unregister()
 {
-	UnregisterHotKey(mTargetWnd, mID);
+	BOOL isOK = UnregisterHotKey(mTargetWnd, mID);
+	spdlog::debug("Unregiser resutl : {}", isOK != FALSE);
 }
 
 /**

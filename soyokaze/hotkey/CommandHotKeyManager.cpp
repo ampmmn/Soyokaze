@@ -296,10 +296,14 @@ bool CommandHotKeyManager::Register(
 
 	HOTKEY_ATTR key_(*(HOTKEY_ATTR*)&key);
 
+
+	bool isInserted = false;
+
 	auto itFind = in->mKeyItemMap.find(key_);
 	if (itFind == in->mKeyItemMap.end()) {
 		auto p = in->mKeyItemMap.insert(std::make_pair(key_, PImpl::ITEM()));
 		itFind = p.first;
+		isInserted = true;
 	}
 
 
@@ -316,6 +320,11 @@ bool CommandHotKeyManager::Register(
 			spdlog::warn(_T("Failed to register global key. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
 			                hotkeyId, key.GetModifiers(), key.GetVKCode());
 			delete handler;
+
+			if (isInserted) {
+				in->mKeyItemMap.erase(itFind);
+			}
+
 			return false;
 		}
 		item.mGlobalHotKey.swap(hotKey);
