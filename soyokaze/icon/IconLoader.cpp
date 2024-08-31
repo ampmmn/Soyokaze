@@ -13,6 +13,8 @@
 #include "resource.h"
 #include <map>
 #include <atlimage.h>
+#include <mutex>
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -164,6 +166,8 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	int mCleanCount = CLEARCACHE_INTERVAL;
 
 	bool mIsScreenLocked = false;
+
+	std::mutex mAppIconMapMutex;
 };
 
 void IconLoader::PImpl::ClearCache()
@@ -229,6 +233,8 @@ void IconLoader::PImpl::ClearCache()
 		clearedItemCount++;
 	}
 
+
+	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
 
 	it = mAppIconMap.begin();
 	while (it != mAppIconMap.end()) {
@@ -383,9 +389,12 @@ IconLoader::~IconLoader()
 		auto& item = elem.second;
 		item.Destroy();
 	}
-	for (auto& elem : in->mAppIconMap) {
-		auto& item = elem.second;
-		item.Destroy();
+	{
+		std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+		for (auto& elem : in->mAppIconMap) {
+			auto& item = elem.second;
+			item.Destroy();
+		}
 	}
 	for (auto& elem : in->mFileExtIconCache) {
 		auto& item = elem.second;
@@ -433,13 +442,32 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 		return LoadFolderIcon();
 	}
 
-	SHFILEINFO sfi = {};
-	::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
-	HICON hIcon = sfi.hIcon;
+	{
+		std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+		// キャッシュに存在する場合はそれを返す
+		auto it = in->mAppIconMap.find(fullPath);
+		if (it != in->mAppIconMap.end()) {
+			// すでに作成済
+			return it->second.IconHandle();
+		}
+	}
 
-	RegisterIcon(fullPath, hIcon);
+	// SHGetFileInfoは環境により、呼び出しが返るのに時間がかかる(ブロックする)場合がある
+	// このためバックグラウンドで実行し、初回はUnknownアイコンを返す
+	// 解決後はmAppIconMap経由のキャッシュを返すようにする
 
-	return hIcon;
+	std::thread th([&, fullPath]() {
+		DWORD tid  = GetCurrentThreadId();
+		spdlog::debug(_T("SHGetFileInfo thread start. {0} file:{1}"), tid, (LPCTSTR)fullPath);
+		SHFILEINFO sfi = {};
+		::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+		HICON hIcon = sfi.hIcon;
+		RegisterIcon(fullPath, hIcon);
+		spdlog::debug("SHGetFileInfo thread end. {}", tid);
+	});
+	th.detach();
+
+	return LoadUnknownIcon();
 }
 
 HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
@@ -614,6 +642,8 @@ HICON IconLoader::LoadIconFromHwnd(HWND hwnd)
 
 void IconLoader::RegisterIcon(const CString& appId, HICON icon)
 {
+	std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+
 	auto it = in->mAppIconMap.find(appId);
 	if (it != in->mAppIconMap.end()) {
 		it->second.Destroy();
