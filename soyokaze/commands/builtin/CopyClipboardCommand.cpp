@@ -32,6 +32,8 @@ CopyClipboardCommand::CopyClipboardCommand(LPCTSTR name) :
 	BuiltinCommandBase(name ? name : _T("copyclip"))
 {
 	mDescription = _T("【文字列をクリップボードにコピー】");
+	mCanSetConfirm = false;
+	mCanDisable = true;
 }
 
 CopyClipboardCommand::CopyClipboardCommand(const CopyClipboardCommand& rhs) :
