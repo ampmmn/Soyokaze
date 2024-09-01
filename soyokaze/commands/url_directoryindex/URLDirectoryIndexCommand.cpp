@@ -233,7 +233,7 @@ void URLDirectoryIndexCommand::PImpl::Query(Pattern* pattern, DirectoryIndexQuer
 			result.mLinkPath = item.first;
 			result.mLinkText = item.second;
 			result.mURL = mParam.CombineURL(item.first);
-			result.mMatchLevel = Pattern::PartialMatch;
+			result.mMatchLevel = Pattern::FrontMatch;
 			tmpList.push_back(result);
 		}
 		tmpList.swap(results);
@@ -245,6 +245,10 @@ void URLDirectoryIndexCommand::PImpl::Query(Pattern* pattern, DirectoryIndexQuer
 		int level = pattern->Match(item.second, 1);
 		if (level == Pattern::Mismatch) {
 			continue;
+		}
+		if (level == Pattern::PartialMatch) {
+			// 先行キーワードは一致しているので前方一致扱いとする
+			level = Pattern::FrontMatch;
 		}
 
 		QueryResult result;
