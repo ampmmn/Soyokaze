@@ -34,6 +34,8 @@ void UserCommandProviderBase::LoadCommands(
 {
 	ASSERT(cmdFile);
 
+	OnBeforeLoad();
+
 	auto cmdRepo = CommandRepository::GetInstance();
 
 	int entries = cmdFile->GetEntryCount();
@@ -107,6 +109,11 @@ uint32_t UserCommandProviderBase::Release()
 		delete this;
 	}
 	return (uint32_t)n;
+}
+
+void UserCommandProviderBase::OnBeforeLoad()
+{
+	// ロード開始時の処理。必要に応じて派生クラス側で実装する
 }
 
 bool UserCommandProviderBase::LoadFrom(CommandEntryIF* entry, Command** command)

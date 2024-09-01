@@ -36,6 +36,7 @@ public:
 	DECLARE_COMMANDPROVIDER(URLDirectoryIndexCommandProvider)
 
 // UserCommandProviderBase
+	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 private:

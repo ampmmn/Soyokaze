@@ -32,10 +32,7 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 	}
 	virtual ~PImpl()
 	{
-		for (auto command : mCommands) {
-			command->Release();
-		}
-		mCommands.clear();
+		ClearCommands();
 	}
 
 // AppPreferenceListenerIF
@@ -69,6 +66,14 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 	}
 	void OnLancuherActivate() override {}
 	void OnLancuherUnactivate() override {}
+
+	void ClearCommands()
+	{
+		for (auto command : mCommands) {
+			command->Release();
+		}
+		mCommands.clear();
+	}
 
 	std::vector<EverythingCommand*> mCommands;
 };
@@ -156,6 +161,11 @@ bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<Set
 uint32_t EverythingCommandProvider::GetOrder() const
 {
 	return 2050;
+}
+
+void EverythingCommandProvider::OnBeforeLoad()
+{
+	in->ClearCommands();
 }
 
 bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

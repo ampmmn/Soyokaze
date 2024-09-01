@@ -152,6 +152,11 @@ uint32_t BookmarkCommandProvider::GetOrder() const
 	return 145;
 }
 
+void BookmarkCommandProvider::OnBeforeLoad()
+{
+	in->mCommands.clear();
+}
+
 bool BookmarkCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
 	std::unique_ptr<BookmarkCommand> command(new BookmarkCommand);

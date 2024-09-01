@@ -52,6 +52,10 @@ struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryLis
 	void OnLancuherActivate() override {}
 	void OnLancuherUnactivate() override {}
 
+	void ClearCommands()
+	{
+		mCommands.clear();
+	}
 
 	WebSearchCommandList mCommands;
 };
@@ -162,6 +166,11 @@ void WebSearchProvider::QueryAdhocCommands(
 uint32_t WebSearchProvider::GetOrder() const
 {
 	return 140;
+}
+
+void WebSearchProvider::OnBeforeLoad()
+{
+	in->ClearCommands();
 }
 
 bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

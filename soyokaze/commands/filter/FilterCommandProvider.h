@@ -35,6 +35,7 @@ public:
 	DECLARE_COMMANDPROVIDER(FilterCommandProvider)
 
 // UserCommandProviderBase
+	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 private:

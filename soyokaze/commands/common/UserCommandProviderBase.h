@@ -36,6 +36,7 @@ public:
 	uint32_t Release() override;
 
 	// 派生クラス側で実装する必要のあるメソッド
+	virtual void OnBeforeLoad();
 	virtual bool LoadFrom(CommandEntryIF* entry, Command** command);
 
 private:

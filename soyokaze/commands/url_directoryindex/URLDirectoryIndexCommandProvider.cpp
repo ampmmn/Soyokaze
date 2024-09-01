@@ -33,6 +33,11 @@ struct URLDirectoryIndexCommandProvider::PImpl : public AppPreferenceListenerIF,
 	}
 	virtual ~PImpl()
 	{
+		ClearCommands();
+	}
+
+	void ClearCommands()
+	{
 		for (auto command : mCommands) {
 			command->Release();
 		}
@@ -152,6 +157,11 @@ void URLDirectoryIndexCommandProvider::QueryAdhocCommands(Pattern* pattern, Comm
 uint32_t URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider::GetOrder() const
 {
 	return 400;
+}
+
+void URLDirectoryIndexCommandProvider::OnBeforeLoad()
+{
+	in->ClearCommands();
 }
 
 bool URLDirectoryIndexCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

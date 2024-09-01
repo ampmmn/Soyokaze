@@ -35,6 +35,10 @@ struct FilterCommandProvider::PImpl : public AppPreferenceListenerIF, public Com
 	}
 	virtual ~PImpl()
 	{
+		ClearCommands();
+	}
+
+	void ClearCommands() {
 		for (auto command : mCommands) {
 			command->Release();
 		}
@@ -155,6 +159,11 @@ void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIte
 uint32_t FilterCommandProvider::FilterCommandProvider::GetOrder() const
 {
 	return 400;
+}
+
+void FilterCommandProvider::OnBeforeLoad()
+{
+	in->ClearCommands();
 }
 
 bool FilterCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

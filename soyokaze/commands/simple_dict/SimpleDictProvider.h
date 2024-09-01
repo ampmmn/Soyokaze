@@ -34,6 +34,7 @@ public:
 	DECLARE_COMMANDPROVIDER(SimpleDictProvider)
 
 // UserCommandProviderBase
+	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
 
 protected:

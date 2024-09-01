@@ -29,6 +29,7 @@ struct SimpleDictProvider::PImpl
 	}
 
 	bool GetParam(const CString& name, SimpleDictParam& param);
+	void ClearCommands();
 
 	std::vector<SimpleDictCommand*> mCommands;
 	std::unique_ptr<SimpleDictDatabase> mDatabase;
@@ -46,6 +47,15 @@ bool SimpleDictProvider::PImpl::GetParam(const CString& name, SimpleDictParam& p
 	return false;
 }
 
+void SimpleDictProvider::PImpl::ClearCommands()
+{
+	for (auto command : mCommands) {
+		command->RemoveListener(mDatabase.get());
+		command->Release();
+	}
+	mCommands.clear();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +71,7 @@ SimpleDictProvider::SimpleDictProvider() : in(std::make_unique<PImpl>())
 
 SimpleDictProvider::~SimpleDictProvider()
 {
-	for (auto command : in->mCommands) {
-		command->RemoveListener(in->mDatabase.get());
-		command->Release();
-	}
+	in->ClearCommands();
 }
 
 CString SimpleDictProvider::GetName()
@@ -137,6 +144,11 @@ void SimpleDictProvider::QueryAdhocCommands(
 uint32_t SimpleDictProvider::GetOrder() const
 {
 	return 2000;
+}
+
+void SimpleDictProvider::OnBeforeLoad()
+{
+	in->ClearCommands();
 }
 
 bool SimpleDictProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

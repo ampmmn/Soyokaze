@@ -152,6 +152,11 @@ uint32_t WebHistoryProvider::GetOrder() const
 	return 145;
 }
 
+void WebHistoryProvider::OnBeforeLoad()
+{
+	in->mCommands.clear();
+}
+
 bool WebHistoryProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
 	std::unique_ptr<WebHistoryCommand> command(new WebHistoryCommand);
