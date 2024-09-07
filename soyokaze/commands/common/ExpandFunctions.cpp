@@ -11,6 +11,10 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
+static bool HasSpace(const CString& arg)
+{
+	return arg.Find(_T(' ')) != -1;
+}
 
 void ExpandArguments(
 	CString& target,
@@ -25,9 +29,15 @@ void ExpandArguments(
 
 		CString arg;
 
-		arg = _T("\"");
-		arg += args[i];
-		arg += _T("\"");
+		bool hasSpace = HasSpace(args[i]);
+		if (hasSpace) {
+			arg = _T("\"");
+			arg += args[i];
+			arg += _T("\"");
+		}
+		else {
+			arg = args[i];
+		}
 
 		_stprintf_s(key, _T("$%d"), i+1);
 
