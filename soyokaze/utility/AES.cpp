@@ -204,8 +204,6 @@ bool AES::Decrypt(
 		std::vector<uint8_t>& plainData
 )
 {
-	const std::vector<uint8_t>& keyData = in->mAESKey;
-
 	if (in->mKey == 0) {
 		if (in->Initialize(in->mAESKey) == false) {
 			return false;
