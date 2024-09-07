@@ -8,6 +8,7 @@
 #include "app/Manual.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
+#include "mainwindow/MainWindowLayout.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/common/Clipboard.h"
@@ -120,6 +121,8 @@ struct LauncherMainWindow::PImpl
 	UINT_PTR mInputTimerId = 0;
 
 	bool mShouldColorInit = true;
+
+	std::unique_ptr<MainWindowLayout> mLayout;
 };
 
 void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
@@ -170,10 +173,11 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 // LauncherMainWindow ダイアログ
 
 LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(AppPreference::Get()->IsShowGuide() ? IDD_MAIN_GUIDE : IDD_MAIN, pParent),
+	: CDialogEx(IDD_MAIN_GUIDE, pParent),
 	in(std::make_unique<PImpl>(this))
 {
 	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
+	in->mLayout = std::make_unique<MainWindowLayout>();
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 	AppPreference::Get()->RegisterListener(this);
@@ -209,6 +213,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_CANDIDATE, OnNMClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
+	ON_WM_SIZING()
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 	ON_MESSAGE(WM_APP+3, OnUserMessageRunCommand)
@@ -1450,9 +1455,17 @@ void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 	OnOK();
 }
 
+void LauncherMainWindow::OnSizing(UINT side, LPRECT rect)
+{
+	__super::OnSizing(side, rect);
+	in->mLayout->RecalcWindowSize(GetSafeHwnd(), side, rect);
+	in->mLayout->RecalcControls(GetSafeHwnd());
+}
+
 void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
+	in->mLayout->RecalcControls(GetSafeHwnd());
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.UpdateSize(cx, cy);

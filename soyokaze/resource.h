@@ -6,7 +6,6 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDS_ERR_GROUPITEMEMPTY          102
-#define IDD_MAIN                        103
 #define ID_STRING_MISMATCH              104
 #define ID_STRING_DEFAULTDESCRIPTION    105
 #define IDS_MENUTEXT_SHOW               106

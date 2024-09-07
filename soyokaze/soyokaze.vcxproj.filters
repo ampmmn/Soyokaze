@@ -1146,6 +1146,12 @@
     <ClInclude Include="commands\common\UserCommandProviderBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowLayout.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowLayoutIF.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2029,6 +2035,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MainWindowLayout.cpp">
+      <Filter>mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

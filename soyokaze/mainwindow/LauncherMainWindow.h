@@ -96,6 +96,7 @@ protected:
 	afx_msg void OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMClick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnSizing(UINT side, LPRECT rect);
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam);
