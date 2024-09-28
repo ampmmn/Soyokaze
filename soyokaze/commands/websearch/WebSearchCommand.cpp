@@ -320,6 +320,16 @@ bool WebSearchCommand::NewDialog(
 	return true;
 }
 
+bool WebSearchCommand::CastFrom(launcherapp::core::Command* cmd, WebSearchCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<WebSearchCommand*>(cmd);
+	cmd->AddRef();
+	return true;
+}
+
 } // end of namespace websearch
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -43,6 +43,7 @@ public:
 
 	static bool NewDialog(const Parameter* param, EverythingCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommand** newCmdPtr);
+	static bool CastFrom(launcherapp::core::Command* cmd, EverythingCommand** newCmd); 
 
 	const CommandParam& GetParam();
 protected:

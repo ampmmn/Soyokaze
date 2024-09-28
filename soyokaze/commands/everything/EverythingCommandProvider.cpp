@@ -56,6 +56,16 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 	}
 
 // CommandRepositoryListenerIF
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		EverythingCommand* newCmd = nullptr;
+		if (EverythingCommand::CastFrom(cmd, &newCmd) == false) {
+			return;
+		}
+		mCommands.push_back(newCmd);
+
+	}
+
 	void OnDeleteCommand(Command* command) override
 	{
 		auto it = std::find(mCommands.begin(), mCommands.end(), command);
@@ -124,9 +134,6 @@ bool EverythingCommandProvider::NewDialog(const CommandParameter* param)
 	constexpr bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 
-	in->mCommands.push_back(newCmd);
-	newCmd->AddRef();
-
 	return true;
 }
 
@@ -175,11 +182,7 @@ bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCom
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
-
-	command->AddRef();
-	in->mCommands.push_back(command.release());
-
+	*retCommand = command.release();
 	return true;
 }
 

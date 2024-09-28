@@ -66,6 +66,14 @@ struct URLDirectoryIndexCommandProvider::PImpl : public AppPreferenceListenerIF,
 
 
 // CommandRepositoryListenerIF
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		URLDirectoryIndexCommand* newCmd = nullptr;
+		if (URLDirectoryIndexCommand::CastFrom(cmd, &newCmd) == false) {
+			return;
+		}
+		mCommands.push_back(newCmd);
+	}
 	void OnDeleteCommand(Command* command) override
 	{
 		auto it = std::find(mCommands.begin(), mCommands.end(), command);
@@ -128,9 +136,6 @@ bool URLDirectoryIndexCommandProvider::NewDialog(const CommandParameter* param)
 	constexpr bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 
-	in->mCommands.push_back(newCmd);
-	newCmd->AddRef();
-
 	return true;
 }
 
@@ -171,10 +176,7 @@ bool URLDirectoryIndexCommandProvider::LoadFrom(CommandEntryIF* entry, Command**
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
-
-	command->AddRef();
-	in->mCommands.push_back(command.release());
+	*retCommand = command.release();
 
 	return true;
 }

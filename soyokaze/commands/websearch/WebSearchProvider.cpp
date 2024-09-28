@@ -24,6 +24,15 @@ using WebSearchCommandList = std::vector<WebSearchCommandPtr>;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+static void releaseCmd(void* p)
+{
+	auto ptr = (WebSearchCommand*)p;
+	if (ptr) {
+		ptr->Release();
+	}
+}
+
+
 struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
 {
 	PImpl()
@@ -36,6 +45,15 @@ struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryLis
 	{
 		auto cmdRepo = CommandRepository::GetInstance();
 		cmdRepo->UnregisterListener(this);
+	}
+
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		WebSearchCommand* newCmd = nullptr;
+		if (WebSearchCommand::CastFrom(cmd, &newCmd) == false) {
+			return;
+		}
+		mCommands.push_back(WebSearchCommandPtr(newCmd, releaseCmd));
 	}
 
 	void OnDeleteCommand(launcherapp::core::Command* cmd) override
@@ -75,14 +93,6 @@ WebSearchProvider::~WebSearchProvider()
 {
 }
 
-static void releaseCmd(void* p)
-{
-	auto ptr = (WebSearchCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
 CString WebSearchProvider::GetName()
 {
 	return _T("WebSearchCommand");
@@ -111,9 +121,6 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 	if (WebSearchCommand::NewDialog(param, newCmd) == false) {
 		return false;
 	}
-
-	newCmd->AddRef();  // mCommandsで保持する分の参照カウント+1
-	in->mCommands.push_back(WebSearchCommandPtr(newCmd.get(), releaseCmd));
 
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
@@ -180,11 +187,7 @@ bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
-
-	command->AddRef();
-	in->mCommands.push_back(WebSearchCommandPtr(command.release(), releaseCmd));
-
+	*retCommand = command.release();
 	return true;
 }
 

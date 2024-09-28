@@ -45,6 +45,7 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, URLDirectoryIndexCommand** newCmd);
+	static bool CastFrom(launcherapp::core::Command* cmd, URLDirectoryIndexCommand** newCmd); 
 	
 public:
 	URLDirectoryIndexCommand& SetParam(const CommandParam& param);

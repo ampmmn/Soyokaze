@@ -38,6 +38,7 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<BookmarkCommand>& newCmd);
+	static bool CastFrom(launcherapp::core::Command* cmd, BookmarkCommand** castedCmd);
 
 protected:
 	struct PImpl;

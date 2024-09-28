@@ -286,6 +286,19 @@ bool BookmarkCommand::NewDialog(
 	return true;
 }
 
+bool BookmarkCommand::CastFrom(launcherapp::core::Command* cmd, BookmarkCommand** castedCmd)
+{
+	ASSERT(cmd != nullptr);
+	ASSERT(castedCmd != nullptr);
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	cmd->AddRef();
+	*castedCmd = dynamic_cast<BookmarkCommand*>(cmd);
+
+	return true;
+}
+
 } // end of namespace bookmarks
 } // end of namespace commands
 } // end of namespace launcherapp

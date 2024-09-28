@@ -345,6 +345,16 @@ bool WebHistoryCommand::NewDialog(
 	return true;
 }
 
+bool WebHistoryCommand::CastFrom(launcherapp::core::Command* cmd, WebHistoryCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<WebHistoryCommand*>(cmd);
+	cmd->AddRef();
+	return true;
+}
+
 } // end of namespace webhistory
 } // end of namespace commands
 } // end of namespace launcherapp

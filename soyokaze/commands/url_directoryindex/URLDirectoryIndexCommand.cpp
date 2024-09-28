@@ -644,6 +644,16 @@ bool URLDirectoryIndexCommand::NewDialog(const Parameter* param, URLDirectoryInd
 	return true;
 }
 
+bool URLDirectoryIndexCommand::CastFrom(launcherapp::core::Command* cmd, URLDirectoryIndexCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<URLDirectoryIndexCommand*>(cmd);
+	cmd->AddRef();
+	return true;
+}
+
 } // end of namespace url_directoryindex
 } // end of namespace commands
 } // end of namespace launcherapp

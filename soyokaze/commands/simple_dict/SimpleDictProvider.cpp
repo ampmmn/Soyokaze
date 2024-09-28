@@ -4,8 +4,11 @@
 #include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/SimpleDictDatabase.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
+#include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include "resource.h"
 #include <list>
 
@@ -18,11 +21,13 @@ namespace commands {
 namespace simple_dict {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
-struct SimpleDictProvider::PImpl
+struct SimpleDictProvider::PImpl : public AppPreferenceListenerIF, public CommandRepositoryListenerIF
 {
 	PImpl()
 	{
+		AppPreference::Get()->RegisterListener(this);
 	}
 	virtual ~PImpl()
 	{
@@ -30,6 +35,56 @@ struct SimpleDictProvider::PImpl
 
 	bool GetParam(const CString& name, SimpleDictParam& param);
 	void ClearCommands();
+
+// AppPreferenceListenerIF
+	void OnAppFirstBoot() override
+	{
+		OnAppNormalBoot();
+	}
+	void OnAppNormalBoot() override
+	{
+		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+		cmdRepo->RegisterListener(this);
+	}
+
+	void OnAppPreferenceUpdated() override
+	{
+	}
+	void OnAppExit() override
+	{
+		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+		cmdRepo->UnregisterListener(this);
+	}
+
+// CommandRepositoryListenerIF
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		SimpleDictCommand* newCmd = nullptr;
+		if (SimpleDictCommand::CastFrom(cmd, &newCmd)) {
+			mCommands.push_back(newCmd);
+		}
+	}
+
+	void OnDeleteCommand(Command* command) override
+	{
+		SimpleDictCommand* cmd = nullptr;
+		if (SimpleDictCommand::CastFrom(command, &cmd) == false) {
+			return;
+		}
+		auto it = std::find(mCommands.begin(), mCommands.end(), cmd);
+		if (it != mCommands.end()) {
+			mCommands.erase(it);
+			cmd->RemoveListener(mDatabase.get());
+			cmd->Release();
+		}
+	}
+	void OnLancuherActivate() override
+	{
+	}
+	void OnLancuherUnactivate() override
+	{
+	}
+
 
 	std::vector<SimpleDictCommand*> mCommands;
 	std::unique_ptr<SimpleDictDatabase> mDatabase;
@@ -106,9 +161,6 @@ bool SimpleDictProvider::NewDialog(const CommandParameter* param)
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 
-	in->mCommands.push_back(newCmd);
-	newCmd->AddRef();
-
 	newCmd->AddListener(in->mDatabase.get());
 
 	return true;
@@ -158,13 +210,9 @@ bool SimpleDictProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
 
 	command->AddListener(in->mDatabase.get());
-
-	command->AddRef();
-	in->mCommands.push_back(command.release());
-
+	*retCommand = command.release();
 	return true;
 }
 

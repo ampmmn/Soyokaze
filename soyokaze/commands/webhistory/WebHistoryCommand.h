@@ -38,6 +38,7 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<WebHistoryCommand>& newCmd);
+	static bool CastFrom(launcherapp::core::Command* cmd, WebHistoryCommand** newCmd); 
 
 protected:
 	struct PImpl;

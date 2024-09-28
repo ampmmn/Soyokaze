@@ -367,6 +367,16 @@ bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
 	return true;
 }
 
+bool FilterCommand::CastFrom(launcherapp::core::Command* cmd, FilterCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<FilterCommand*>(cmd);
+	cmd->AddRef();
+	return true;
+}
+
 } // end of namespace filter
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -58,7 +58,7 @@ void EverythingCommand::Query(Pattern* pattern, std::vector<EverythingResult>& r
 		return;
 	}
 
-	std::vector<CString> words;
+ 	std::vector<CString> words;
 	CString queryStr;
 	pattern->GetRawWords(words);
 	for (size_t i = 1; i < words.size(); ++i) {
@@ -307,6 +307,16 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();
 	}
+	return true;
+}
+
+bool EverythingCommand::CastFrom(launcherapp::core::Command* cmd, EverythingCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<EverythingCommand*>(cmd);
+	cmd->AddRef();
 	return true;
 }
 

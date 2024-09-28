@@ -37,6 +37,7 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<WebSearchCommand>& newCmd);
+	static bool CastFrom(launcherapp::core::Command* cmd, WebSearchCommand** newCmd); 
 
 protected:
 	struct PImpl;

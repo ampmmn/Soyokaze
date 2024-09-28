@@ -24,6 +24,16 @@ using WebHistoryCommandList = std::vector<WebHistoryCommandPtr>;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+static void releaseCmd(void* p)
+{
+	auto ptr = (WebHistoryCommand*)p;
+	if (ptr) {
+		ptr->Release();
+	}
+}
+
+
+
 struct WebHistoryProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
 {
 	PImpl()
@@ -38,6 +48,14 @@ struct WebHistoryProvider::PImpl : public launcherapp::core::CommandRepositoryLi
 		cmdRepo->UnregisterListener(this);
 	}
 
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		WebHistoryCommand* newCmd = nullptr;
+		if (WebHistoryCommand::CastFrom(cmd, &newCmd) == false) {
+			return;
+		}
+		mCommands.push_back(WebHistoryCommandPtr(newCmd, releaseCmd));
+	}
 	void OnDeleteCommand(launcherapp::core::Command* cmd) override
  	{
 		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
@@ -71,15 +89,6 @@ WebHistoryProvider::~WebHistoryProvider()
 {
 }
 
-static void releaseCmd(void* p)
-{
-	auto ptr = (WebHistoryCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
-
 CString WebHistoryProvider::GetName()
 {
 	return _T("WebHistoryCommand");
@@ -109,10 +118,6 @@ bool WebHistoryProvider::NewDialog(const CommandParameter* param)
 	if (WebHistoryCommand::NewDialog(param, newCmd) == false) {
 		return false;
 	}
-
-	newCmd->AddRef();  // mCommandsで保持する分の参照カウント+1
-	in->mCommands.push_back(WebHistoryCommandPtr(newCmd.get(), releaseCmd));
-
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
@@ -164,10 +169,7 @@ bool WebHistoryProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
-
-	command->AddRef();
-	in->mCommands.push_back(WebHistoryCommandPtr(command.release(), releaseCmd));
+	*retCommand = command.release();
 
 	return true;
 }

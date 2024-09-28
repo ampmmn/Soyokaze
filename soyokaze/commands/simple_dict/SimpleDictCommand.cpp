@@ -28,6 +28,10 @@ constexpr LPCTSTR TYPENAME = _T("SimpleDictCommand");
 
 struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 {
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		UNREFERENCED_PARAMETER(cmd);
+	}
 	void OnDeleteCommand(Command* command) override
 	{
 		if (command != mThisPtr) {
@@ -298,6 +302,16 @@ bool SimpleDictCommand::NewDialog(
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
 	}
+	return true;
+}
+
+bool SimpleDictCommand::CastFrom(launcherapp::core::Command* cmd, SimpleDictCommand** newCmd)
+{
+	if (cmd->GetTypeName() != TYPENAME) {
+		return false;
+	}
+	*newCmd = dynamic_cast<SimpleDictCommand*>(cmd);
+	cmd->AddRef();
 	return true;
 }
 

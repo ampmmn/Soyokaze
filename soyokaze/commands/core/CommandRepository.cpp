@@ -351,6 +351,11 @@ int CommandRepository::RegisterCommand(Command* command, bool isNotify)
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Register(command);
 
+	// コマンドが登録されたことをリスナーに通知
+	for (auto& listener : in->mListeners) {
+		listener->OnNewCommand(command);
+	}
+
 	// ホットキーの登録
 	CommandHotKeyAttribute hotKeyAttr;
 	if (command->GetHotKeyAttribute(hotKeyAttr) && hotKeyAttr.IsValid()) {

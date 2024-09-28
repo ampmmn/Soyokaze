@@ -44,6 +44,7 @@ public:
 
 	static bool NewDialog(const Parameter* param, SimpleDictCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, SimpleDictCommand** newCmdPtr);
+	static bool CastFrom(launcherapp::core::Command* cmd, SimpleDictCommand** newCmd); 
 
 	const SimpleDictParam& GetParam();
 

@@ -24,6 +24,16 @@ using BookmarkCommandList = std::vector<BookmarkCommandPtr>;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+
+static void releaseCmd(void* p)
+{
+	auto ptr = (BookmarkCommand*)p;
+	if (ptr) {
+		ptr->Release();
+	}
+}
+
+
 struct BookmarkCommandProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
 {
 	PImpl()
@@ -36,6 +46,15 @@ struct BookmarkCommandProvider::PImpl : public launcherapp::core::CommandReposit
 	{
 		auto cmdRepo = CommandRepository::GetInstance();
 		cmdRepo->UnregisterListener(this);
+	}
+
+	void OnNewCommand(launcherapp::core::Command* cmd) override
+	{
+		BookmarkCommand* newCmd = nullptr;
+		if (BookmarkCommand::CastFrom(cmd, &newCmd) == false) {
+			return;
+		}
+		mCommands.push_back(BookmarkCommandPtr(newCmd, releaseCmd));
 	}
 
 	void OnDeleteCommand(launcherapp::core::Command* cmd) override
@@ -71,14 +90,6 @@ BookmarkCommandProvider::~BookmarkCommandProvider()
 {
 }
 
-static void releaseCmd(void* p)
-{
-	auto ptr = (BookmarkCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
 CString BookmarkCommandProvider::GetName()
 {
 	return _T("BookmarkCommand");
@@ -106,9 +117,6 @@ bool BookmarkCommandProvider::NewDialog(const CommandParameter* param)
 	if (BookmarkCommand::NewDialog(param, newCmd) == false) {
 		return false;
 	}
-
-	newCmd->AddRef();  // mCommandsで保持する分の参照カウント+1
-	in->mCommands.push_back(BookmarkCommandPtr(newCmd.get(), releaseCmd));
 
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
@@ -164,10 +172,7 @@ bool BookmarkCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retComma
 		return false;
 	}
 	ASSERT(retCommand);
-	*retCommand = command.get();
-
-	command->AddRef();
-	in->mCommands.push_back(BookmarkCommandPtr(command.release(), releaseCmd));
+	*retCommand = command.release();
 
 	return true;
 }

@@ -42,6 +42,7 @@ public:
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, FilterCommand** newCmd);
+	static bool CastFrom(launcherapp::core::Command* cmd, FilterCommand** newCmd); 
 	
 public:
 	FilterCommand& SetParam(const CommandParam& param);
