@@ -195,7 +195,7 @@ int AlignWindowCommand::EditDialog(HWND parent)
 	SettingDialog dlg(CWnd::FromHandle(parent));
 	dlg.SetParam(in->mParam);
 	if (dlg.DoModal() != IDOK) {
-		return 0;
+		return 1;
 	}
 	in->mParam = dlg.GetParam();
 

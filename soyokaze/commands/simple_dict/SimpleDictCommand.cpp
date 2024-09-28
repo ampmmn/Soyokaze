@@ -168,7 +168,7 @@ int SimpleDictCommand::EditDialog(HWND parent)
 	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 
 	if (dlg.DoModal() != IDOK) {
-		return 0;
+		return 1;
 	}
 
 	// 元の名前

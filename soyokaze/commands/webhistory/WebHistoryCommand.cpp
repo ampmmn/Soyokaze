@@ -241,7 +241,7 @@ int WebHistoryCommand::EditDialog(HWND parent)
 
 	dlg.SetParam(param);
 	if (dlg.DoModal() != IDOK) {
-		return 0;
+		return 1;
 	}
 	in->mParam = dlg.GetParam();
 

@@ -187,7 +187,7 @@ int EverythingCommand::EditDialog(HWND parent)
 	dlg.SetParam(in->mParam);
 	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
 	if (dlg.DoModal() != IDOK) {
-		return 0;
+		return 1;
 	}
 
 	// 変更後の設定値で上書き
