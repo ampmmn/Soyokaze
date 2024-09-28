@@ -16,6 +16,8 @@ namespace core {
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::builtin;
 
+constexpr LPCTSTR TYPENAME = _T("DefaultCommand");
+
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
@@ -93,6 +95,15 @@ CString DefaultCommand::GetGuideString()
 		return _T("Enter: コマンドを登録");
 	}
 	return _T("");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString DefaultCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString DefaultCommand::GetTypeDisplayName()

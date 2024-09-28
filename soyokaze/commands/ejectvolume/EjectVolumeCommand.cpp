@@ -22,6 +22,8 @@ namespace ejectvolume {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+constexpr LPCTSTR TYPENAME = _T("EjectVolumeCommand");
+
 struct EjectVolumeCommand::PImpl
 {
 	PImpl()
@@ -65,6 +67,15 @@ CString EjectVolumeCommand::GetGuideString()
 	CString guideStr;
 	guideStr.Format(_T("Enter:%c:ドライブを取り外す"), in->mParam.mDriveLetter);
 	return guideStr; 
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString EjectVolumeCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString EjectVolumeCommand::GetTypeDisplayName()

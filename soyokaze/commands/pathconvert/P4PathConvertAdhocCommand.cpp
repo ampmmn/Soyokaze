@@ -20,6 +20,8 @@ namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
+constexpr LPCTSTR TYPENAME = _T("P4PathConvertAdhocCommand");
+
 struct P4PathConvertAdhocCommand::PImpl
 {
 	ITEM mItem;
@@ -48,6 +50,15 @@ CString P4PathConvertAdhocCommand::GetName()
 CString P4PathConvertAdhocCommand::GetGuideString()
 {
 	return _T("Enter:パスをコピー Shift-Enter:開く Ctrl-Enter:フォルダを開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString P4PathConvertAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString P4PathConvertAdhocCommand::GetTypeDisplayName()

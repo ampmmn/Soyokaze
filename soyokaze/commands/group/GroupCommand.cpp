@@ -24,6 +24,8 @@ namespace group {
 using CommandRepository = launcherapp::core::CommandRepository;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
+constexpr LPCTSTR TYPENAME = _T("GroupCommand");
+
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
 class GroupCommand::Exception
@@ -159,6 +161,15 @@ CString GroupCommand::GetDescription()
 CString GroupCommand::GetGuideString()
 {
 	return _T("Enter:開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString GroupCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString GroupCommand::GetTypeDisplayName()

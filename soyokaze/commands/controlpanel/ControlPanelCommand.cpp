@@ -16,6 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace controlpanel {
 
+constexpr LPCTSTR TYPENAME = _T("ControlPanelCommand");
 
 struct ControlPanelCommand::PImpl
 {
@@ -43,6 +44,15 @@ ControlPanelCommand::~ControlPanelCommand()
 CString ControlPanelCommand::GetGuideString()
 {
 	return _T("Enter:é–‹ã");
+}
+
+/**
+ * í•Ê‚ğ•\‚·•¶š—ñ‚ğæ“¾‚·‚é
+ * @return •¶š—ñ
+ */
+CString ControlPanelCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString ControlPanelCommand::GetTypeDisplayName()

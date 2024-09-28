@@ -33,6 +33,8 @@ RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+constexpr LPCTSTR TYPENAME = _T("RegExpCommand");
+
 struct RegExpCommand::PImpl
 {
 	PImpl() :
@@ -88,6 +90,15 @@ CString RegExpCommand::GetDescription()
 CString RegExpCommand::GetGuideString()
 {
 	return _T("Enter:開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString RegExpCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString RegExpCommand::GetTypeDisplayName()

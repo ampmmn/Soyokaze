@@ -20,6 +20,8 @@ namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
+constexpr LPCTSTR TYPENAME = _T("GitBashToLocalPathAdhocCommand");
+
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	CString mFullPath;
@@ -49,6 +51,15 @@ CString GitBashToLocalPathAdhocCommand::GetName()
 CString GitBashToLocalPathAdhocCommand::GetGuideString()
 {
 	return _T("Enter:パスをコピー Ctrl-Enter:フォルダを開く Shift-Enter:開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString GitBashToLocalPathAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()

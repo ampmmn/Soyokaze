@@ -15,6 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace mmc {
 
+constexpr LPCTSTR TYPENAME = _T("MMCCommand");
 
 struct MMCCommand::PImpl
 {
@@ -36,6 +37,15 @@ MMCCommand::~MMCCommand()
 CString MMCCommand::GetGuideString()
 {
 	return _T("Enter:実行");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString MMCCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString MMCCommand::GetTypeDisplayName()

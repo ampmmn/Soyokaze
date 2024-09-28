@@ -25,6 +25,8 @@ using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
+constexpr LPCTSTR TYPENAME = _T("WatchPathCommand");
+
 struct WatchPathCommand::PImpl
 {
 	CString mName;
@@ -63,6 +65,15 @@ CString WatchPathCommand::GetDescription()
 CString WatchPathCommand::GetGuideString()
 {
 	return _T("Enter:更新検知対象パスを開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WatchPathCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString WatchPathCommand::GetTypeDisplayName()

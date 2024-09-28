@@ -24,6 +24,8 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
+constexpr LPCTSTR TYPENAME = _T("FilterAdhocCommand");
+
 struct FilterAdhocCommand::PImpl
 {
 	CommandParam mParam;
@@ -65,6 +67,15 @@ CString FilterAdhocCommand::GetDescription()
 CString FilterAdhocCommand::GetGuideString()
 {
 	return _T("Enter:開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString FilterAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString FilterAdhocCommand::GetTypeDisplayName()

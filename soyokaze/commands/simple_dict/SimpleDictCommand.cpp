@@ -24,6 +24,8 @@ namespace simple_dict {
 
 using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
+constexpr LPCTSTR TYPENAME = _T("SimpleDictCommand");
+
 struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
 {
 	void OnDeleteCommand(Command* command) override
@@ -92,6 +94,14 @@ CString SimpleDictCommand::GetGuideString()
 	return _T("キーワード入力すると候補を絞り込むことができます");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString SimpleDictCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString SimpleDictCommand::GetTypeDisplayName()
 {

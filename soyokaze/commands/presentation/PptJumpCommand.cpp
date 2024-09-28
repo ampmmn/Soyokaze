@@ -13,6 +13,8 @@ namespace launcherapp {
 namespace commands {
 namespace presentation {
 
+constexpr LPCTSTR TYPENAME = _T("PptJumpCommand");
+
 struct PptJumpCommand::PImpl
 {
 	int mPage = 0;
@@ -39,6 +41,15 @@ PptJumpCommand::~PptJumpCommand()
 CString PptJumpCommand::GetGuideString()
 {
 	return _T("Enter:スライドを表示する Ctrl-Enter:最大化表示");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString PptJumpCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 

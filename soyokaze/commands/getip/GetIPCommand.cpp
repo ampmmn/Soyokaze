@@ -16,6 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace getip {
 
+constexpr LPCTSTR TYPENAME = _T("GetIPCommand");
 
 struct GetIPCommand::PImpl
 {
@@ -47,6 +48,15 @@ CString GetIPCommand::GetDescription()
 CString GetIPCommand::GetGuideString()
 {
 	return _T("Enter:IPアドレスをコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString GetIPCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString GetIPCommand::GetTypeDisplayName()

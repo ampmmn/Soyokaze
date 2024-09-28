@@ -18,6 +18,8 @@ namespace history {
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
 
+constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
+
 struct HistoryCommand::PImpl
 {
 	CString mKeyword;
@@ -60,6 +62,14 @@ CString HistoryCommand::GetGuideString()
 	return in->mCmd->GetGuideString();
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString HistoryCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString HistoryCommand::GetTypeDisplayName()
 {

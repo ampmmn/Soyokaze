@@ -18,6 +18,7 @@ namespace launcherapp {
 namespace commands {
 namespace color {
 
+constexpr LPCTSTR TYPENAME = _T("ColorCommand");
 
 struct ColorCommand::PImpl
 {
@@ -110,6 +111,15 @@ ColorCommand::~ColorCommand()
 CString ColorCommand::GetGuideString()
 {
 	return _T("Enter:クリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString ColorCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString ColorCommand::GetTypeDisplayName()

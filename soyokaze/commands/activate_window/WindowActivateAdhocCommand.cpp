@@ -14,6 +14,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
+constexpr LPCTSTR TYPENAME = _T("WindowActivateAdhocCommand");
 
 struct WindowActivateAdhocCommand::PImpl
 {
@@ -42,6 +43,14 @@ CString WindowActivateAdhocCommand::GetGuideString()
 	return _T("Enter:ウインドウをアクティブにする");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WindowActivateAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {

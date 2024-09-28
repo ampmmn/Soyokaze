@@ -43,6 +43,7 @@ using LinkItems = std::vector<std::pair<CString, CString> >;
 ////////////////////////////////////////////////////////////////////////////////
 
 
+constexpr LPCTSTR TYPENAME = _T("URLDirectoryIndexCommand");
 
 struct URLDirectoryIndexCommand::PImpl
 {
@@ -395,6 +396,15 @@ CString URLDirectoryIndexCommand::GetDescription()
 CString URLDirectoryIndexCommand::GetGuideString()
 {
 	return _T("Enter:候補を表示する");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString URLDirectoryIndexCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString URLDirectoryIndexCommand::GetTypeDisplayName()

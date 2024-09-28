@@ -17,6 +17,7 @@ namespace launcherapp {
 namespace commands {
 namespace calculator {
 
+constexpr LPCTSTR TYPENAME = _T("CalculatorCommand");
 
 struct CalculatorCommand::PImpl
 {
@@ -56,6 +57,15 @@ void CalculatorCommand::SetResult(const CString& result)
 CString CalculatorCommand::GetGuideString()
 {
 	return _T("Enter:クリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString CalculatorCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString CalculatorCommand::GetTypeDisplayName()

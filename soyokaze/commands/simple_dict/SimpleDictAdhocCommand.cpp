@@ -23,6 +23,8 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
+constexpr LPCTSTR TYPENAME = _T("SimpleDictAdhocCommand");
+
 struct SimpleDictAdhocCommand::PImpl
 {
 	SimpleDictParam mParam;
@@ -72,6 +74,15 @@ CString SimpleDictAdhocCommand::GetGuideString()
 	guideStr += _T(" Ctrl-Enter:値をコピー");
 
 	return guideStr;
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString SimpleDictAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString SimpleDictAdhocCommand::GetTypeDisplayName()

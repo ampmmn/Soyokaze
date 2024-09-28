@@ -19,6 +19,8 @@ namespace keysplitter {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+constexpr LPCTSTR TYPENAME = _T("KeySplitterCommand");
+
 struct KeySplitterCommand::PImpl
 {
 	PImpl()
@@ -82,6 +84,15 @@ CString KeySplitterCommand::GetGuideString()
 		in->mGuideStr= tmp;
 	}
 	return in->mGuideStr;
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString KeySplitterCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString KeySplitterCommand::GetTypeDisplayName()

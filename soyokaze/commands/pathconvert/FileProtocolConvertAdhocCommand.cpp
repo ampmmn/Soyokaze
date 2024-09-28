@@ -22,6 +22,8 @@ namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
+constexpr LPCTSTR TYPENAME = _T("FileProtocolConvertAdhocCommand");
+
 struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
@@ -80,6 +82,15 @@ CString FileProtocolConvertAdhocCommand::GetName()
 CString FileProtocolConvertAdhocCommand::GetGuideString()
 {
 	return _T("Enter:パスをコピー Shift-Enter:開く Ctrl-Enter:フォルダを開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString FileProtocolConvertAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()

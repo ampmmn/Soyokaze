@@ -15,6 +15,7 @@ public:
 	virtual ~VMXFileCommand();
 
 	CString GetGuideString() override;
+	CString GetTypeName() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	CString GetErrorString() override;

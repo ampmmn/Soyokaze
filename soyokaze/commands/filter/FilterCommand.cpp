@@ -26,6 +26,8 @@ namespace commands {
 namespace filter {
 
 
+constexpr LPCTSTR TYPENAME = _T("FilterCommand");
+
 struct FilterCommand::PImpl
 {
 	PImpl()
@@ -123,6 +125,15 @@ CString FilterCommand::GetDescription()
 CString FilterCommand::GetGuideString()
 {
 	return _T("Enter:候補を表示する");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString FilterCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString FilterCommand::GetTypeDisplayName()

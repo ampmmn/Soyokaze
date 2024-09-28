@@ -17,6 +17,7 @@ namespace launcherapp {
 namespace commands {
 namespace timespan {
 
+constexpr LPCTSTR TYPENAME = _T("TimespanCommand");
 
 struct TimespanCommand::PImpl
 {
@@ -55,6 +56,15 @@ TimespanCommand::~TimespanCommand()
 CString TimespanCommand::GetGuideString()
 {
 	return _T("Enter:数値のみコピー Ctrl-Enter:単位含めてコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString TimespanCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString TimespanCommand::GetTypeDisplayName()

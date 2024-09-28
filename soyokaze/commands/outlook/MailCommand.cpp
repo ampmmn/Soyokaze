@@ -15,6 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace outlook {
 
+constexpr LPCTSTR TYPENAME = _T("MailCommand");
 
 struct MailCommand::PImpl
 {
@@ -52,6 +53,14 @@ CString MailCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString MailCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString MailCommand::GetTypeDisplayName()
 {

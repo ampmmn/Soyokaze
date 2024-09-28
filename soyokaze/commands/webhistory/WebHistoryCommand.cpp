@@ -22,6 +22,8 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
+constexpr LPCTSTR TYPENAME = _T("WebHistoryCommand");
+
 struct WebHistoryCommand::PImpl
 {
 	CommandParam mParam;
@@ -171,6 +173,15 @@ CString WebHistoryCommand::GetDescription()
 CString WebHistoryCommand::GetGuideString()
 {
 	return _T("Enter:ページを表示する");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WebHistoryCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString WebHistoryCommand::GetTypeDisplayName()

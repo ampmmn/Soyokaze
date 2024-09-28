@@ -21,6 +21,8 @@ namespace launcherapp {
 namespace commands {
 namespace websearch {
 
+constexpr LPCTSTR TYPENAME = _T("WebSearchCommand");
+
 struct WebSearchCommand::PImpl
 {
 	int BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url);
@@ -139,6 +141,15 @@ CString WebSearchCommand::GetDescription()
 CString WebSearchCommand::GetGuideString()
 {
 	return _T("Enter:検索を実行");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WebSearchCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString WebSearchCommand::GetTypeDisplayName()

@@ -16,6 +16,7 @@ namespace mailto {
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
+constexpr LPCTSTR TYPENAME = _T("MailToCommand");
 
 MailToCommand::MailToCommand() : 
 	AdhocCommandBase(_T("mailto:"), _T("あて先を指定してメール"))
@@ -29,6 +30,15 @@ MailToCommand::~MailToCommand()
 CString MailToCommand::GetGuideString()
 {
 	return _T("Enter:開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString MailToCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString MailToCommand::GetTypeDisplayName()

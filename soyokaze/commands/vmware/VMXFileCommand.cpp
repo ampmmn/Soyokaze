@@ -17,6 +17,7 @@ namespace launcherapp {
 namespace commands {
 namespace vmware {
 
+constexpr LPCTSTR TYPENAME = _T("VMXFileCommand");
 
 struct VMXFileCommand::PImpl
 {
@@ -78,6 +79,14 @@ VMXFileCommand::~VMXFileCommand()
 CString VMXFileCommand::GetGuideString()
 {
 	return _T("Enter:ファイルを開く Ctrl-Enter:パスを開く");
+}
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString VMXFileCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString VMXFileCommand::GetTypeDisplayName()

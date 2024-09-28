@@ -23,6 +23,8 @@ namespace snippet {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+constexpr LPCTSTR TYPENAME = _T("SnippetCommand");
+
 struct SnippetCommand::PImpl
 {
 	PImpl()
@@ -67,6 +69,15 @@ CString SnippetCommand::GetDescription()
 CString SnippetCommand::GetGuideString()
 {
 	return _T("Enter:定型文をクリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString SnippetCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString SnippetCommand::GetTypeDisplayName()

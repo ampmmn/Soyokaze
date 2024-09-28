@@ -23,6 +23,8 @@ namespace launcherapp {
 namespace commands {
 namespace everything {
 
+constexpr LPCTSTR TYPENAME = _T("EverythingAdhocCommand");
+
 struct EverythingAdhocCommand::PImpl
 {
 	CommandParam mParam;
@@ -65,6 +67,15 @@ CString EverythingAdhocCommand::GetGuideString()
 	guideStr += _T(" Ctrl-Enter:フォルダを開く");
 
 	return guideStr;
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString EverythingAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString EverythingAdhocCommand::GetTypeDisplayName()

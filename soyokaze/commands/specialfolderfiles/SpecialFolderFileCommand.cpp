@@ -17,6 +17,8 @@ namespace commands {
 namespace specialfolderfiles {
 
 
+constexpr LPCTSTR TYPENAME = _T("SpecialFolderFileCommand");
+
 struct SpecialFolderFileCommand::PImpl
 {
 	ITEM mItem;
@@ -40,6 +42,15 @@ SpecialFolderFileCommand::~SpecialFolderFileCommand()
 CString SpecialFolderFileCommand::GetGuideString()
 {
 	return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString SpecialFolderFileCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 

@@ -38,6 +38,8 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+constexpr LPCTSTR TYPENAME = _T("ShellExecCommand");
+
 struct ShellExecCommand::PImpl
 {
 	PImpl() :
@@ -102,6 +104,15 @@ CString ShellExecCommand::GetGuideString()
 
 		return guideStr;
 	}
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString ShellExecCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString ShellExecCommand::GetTypeDisplayName()

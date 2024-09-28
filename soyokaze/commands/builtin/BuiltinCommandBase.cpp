@@ -16,6 +16,8 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+constexpr LPCTSTR TYPENAME = _T("BuiltinCommandBase");
+
 BuiltinCommandBase::BuiltinCommandBase(LPCTSTR name) : 
 	mName(name? name : _T("")), mRefCount(1)
 {
@@ -50,6 +52,15 @@ CString BuiltinCommandBase::GetDescription()
 CString BuiltinCommandBase::GetGuideString()
 {
 	return _T("Enter:実行");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString BuiltinCommandBase::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString BuiltinCommandBase::GetTypeDisplayName()

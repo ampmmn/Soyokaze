@@ -44,6 +44,7 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 	return true;
 }
 
+constexpr LPCTSTR TYPENAME = _T("WebHistoryAdhocCommand");
 
 struct WebHistoryAdhocCommand::PImpl
 {
@@ -82,6 +83,15 @@ WebHistoryAdhocCommand::~WebHistoryAdhocCommand()
 CString WebHistoryAdhocCommand::GetGuideString()
 {
 	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WebHistoryAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString WebHistoryAdhocCommand::GetTypeDisplayName()

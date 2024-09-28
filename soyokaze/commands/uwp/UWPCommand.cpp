@@ -16,6 +16,8 @@ namespace commands {
 namespace uwp {
 
 
+constexpr LPCTSTR TYPENAME = _T("UWPCommand");
+
 struct UWPCommand::PImpl
 {
 	ItemPtr mItem;
@@ -36,6 +38,15 @@ UWPCommand::~UWPCommand()
 CString UWPCommand::GetGuideString()
 {
 	return _T("Enter:実行");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString UWPCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString UWPCommand::GetTypeDisplayName()

@@ -18,6 +18,8 @@ namespace launcherapp {
 namespace commands {
 namespace unitconvert {
 
+constexpr LPCTSTR TYPENAME = _T("InchAdhocCommand");
+
 struct InchAdhocCommand::PImpl
 {
 	CString mName;
@@ -41,6 +43,15 @@ CString InchAdhocCommand::GetName()
 CString InchAdhocCommand::GetGuideString()
 {
 	return _T("Enter:クリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString InchAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString InchAdhocCommand::GetTypeDisplayName()

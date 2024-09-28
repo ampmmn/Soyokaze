@@ -15,6 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
+constexpr LPCTSTR TYPENAME = _T("CalcWorksheetCommand");
 
 struct CalcWorksheetCommand::PImpl
 {
@@ -45,6 +46,10 @@ CString CalcWorksheetCommand::GetGuideString()
 	return _T("Enter:シートをアクティブにする");
 }
 
+CString CalcWorksheetCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {

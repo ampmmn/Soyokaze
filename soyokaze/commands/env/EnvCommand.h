@@ -15,6 +15,7 @@ public:
 	virtual ~EnvCommand();
 
 	CString GetGuideString() override;
+	CString GetTypeName() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(const Parameter& param) override;
 	HICON GetIcon() override;

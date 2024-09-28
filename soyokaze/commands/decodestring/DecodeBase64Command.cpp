@@ -35,6 +35,7 @@ constexpr std::array<uint8_t, 256> DECODE_TABLE{
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 };
 
+constexpr LPCTSTR TYPENAME = _T("DecodeBase64Command");
 
 DecodeBase64Command::DecodeBase64Command()
 {
@@ -63,6 +64,15 @@ CString DecodeBase64Command::GetDescription()
 CString DecodeBase64Command::GetGuideString()
 {
 	return _T("Enter:デコード後データをコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString DecodeBase64Command::GetTypeName()
+{
+	return TYPENAME;
 }
 
 

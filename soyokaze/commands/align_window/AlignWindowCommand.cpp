@@ -17,6 +17,8 @@ namespace launcherapp {
 namespace commands {
 namespace align_window {
 
+constexpr LPCTSTR TYPENAME = _T("AlignWindowCommand");
+
 struct AlignWindowCommand::PImpl
 {
 	CommandParam mParam;
@@ -66,6 +68,14 @@ CString AlignWindowCommand::GetGuideString()
 	return _T("Enter:ウインドウを整列する");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString AlignWindowCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 /**
  	コマンド種別を表す文字列を取得する

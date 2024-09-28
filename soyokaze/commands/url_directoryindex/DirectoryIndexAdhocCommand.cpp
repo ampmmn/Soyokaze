@@ -23,6 +23,8 @@ namespace launcherapp {
 namespace commands {
 namespace url_directoryindex {
 
+constexpr LPCTSTR TYPENAME = _T("DirectoryIndexAdhocCommand");
+
 struct DirectoryIndexAdhocCommand::PImpl
 {
 	bool EnterURL();
@@ -133,6 +135,15 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 CString DirectoryIndexAdhocCommand::GetGuideString()
 {
 	return _T("Enter:開く Shift-Enter:ブラウザで開く Ctrl-Enter:URLをコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString DirectoryIndexAdhocCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()

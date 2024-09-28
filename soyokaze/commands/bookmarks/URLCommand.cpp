@@ -45,6 +45,7 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 	return true;
 }
 
+constexpr LPCTSTR TYPENAME = _T("URLCommand");
 
 struct URLCommand::PImpl
 {
@@ -87,6 +88,15 @@ URLCommand::~URLCommand()
 CString URLCommand::GetGuideString()
 {
 	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString URLCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString URLCommand::GetTypeDisplayName()

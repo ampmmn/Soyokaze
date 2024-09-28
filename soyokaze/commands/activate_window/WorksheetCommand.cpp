@@ -15,6 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
+constexpr LPCTSTR TYPENAME = _T("WorksheetCommand");
 
 struct WorksheetCommand::PImpl
 {
@@ -44,6 +45,15 @@ WorksheetCommand::~WorksheetCommand()
 CString WorksheetCommand::GetGuideString()
 {
 	return _T("Enter:シートをアクティブにする");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WorksheetCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 

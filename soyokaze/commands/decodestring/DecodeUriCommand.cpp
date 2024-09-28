@@ -16,6 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
+constexpr LPCTSTR TYPENAME = _T("DecodeUriCommand");
 
 struct DecodeUriCommand::PImpl
 {
@@ -51,6 +52,14 @@ CString DecodeUriCommand::GetGuideString()
 	return _T("Enter:デコード後の文字列をコピー");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString DecodeUriCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString DecodeUriCommand::GetTypeDisplayName()
 {

@@ -23,6 +23,8 @@ namespace everything {
 
 using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
+constexpr LPCTSTR TYPENAME = _T("EverythingCommand");
+
 struct EverythingCommand::PImpl
 {
 	CommandParam mParam;
@@ -90,6 +92,14 @@ CString EverythingCommand::GetGuideString()
 	return _T("キーワード入力するとEverything検索結果を表示します");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString EverythingCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString EverythingCommand::GetTypeDisplayName()
 {

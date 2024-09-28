@@ -19,6 +19,8 @@ namespace activate_window {
 
 constexpr int UPDATE_INTERVAL = 5000;
 
+constexpr LPCTSTR TYPENAME = _T("WindowActivateCommand");
+
 struct WindowActivateCommand::PImpl
 {
 	HWND FindHwnd();
@@ -71,6 +73,14 @@ CString WindowActivateCommand::GetGuideString()
 	return _T("Enter:ウインドウをアクティブにする");
 }
 
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString WindowActivateCommand::GetTypeName()
+{
+	return TYPENAME;
+}
 
 CString WindowActivateCommand::GetTypeDisplayName()
 {

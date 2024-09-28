@@ -22,6 +22,8 @@ namespace volumecontrol {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
+constexpr LPCTSTR TYPENAME = _T("VolumeCommand");
+
 struct VolumeCommand::PImpl
 {
 	PImpl()
@@ -63,6 +65,15 @@ CString VolumeCommand::GetDescription()
 CString VolumeCommand::GetGuideString()
 {
 	return _T("Enter:音量設定を変更");
+}
+
+/**
+ * 種別を表す文字列を取得する
+ * @return 文字列
+ */
+CString VolumeCommand::GetTypeName()
+{
+	return TYPENAME;
 }
 
 CString VolumeCommand::GetTypeDisplayName()
