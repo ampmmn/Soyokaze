@@ -28,6 +28,11 @@ struct DummyCommand : public launcherapp::core::Command
 		return mDesc;
 	}
 
+	CString GetTypeName() override
+	{
+		return _T("");
+	}
+
 	CString GetTypeDisplayName() override
 	{
 		return _T("");
