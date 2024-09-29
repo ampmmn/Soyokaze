@@ -78,9 +78,9 @@ void TimespanCommandProvider::QueryAdhocCommands(
 		CTimeSpan ts2(0, h2, m2, 0);
 
 		CTimeSpan result = ts1 - ts2;
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_HOUR)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_MINUTE)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_SECOND)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_HOUR)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_MINUTE)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new TimespanCommand(result, TYPE_SECOND)));
 		return;
 	}
 }

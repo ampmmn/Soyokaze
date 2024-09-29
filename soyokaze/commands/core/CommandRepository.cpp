@@ -252,38 +252,21 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 		spdlog::debug(_T("QueryAdhocCommands name:{0} duration:{1:.6f} s."), (LPCTSTR)provider->GetName(), sw.elapsed().count());
 	}
 
-	// 一致レベルに基づきソート
-	const CommandRanking* rankPtr = CommandRanking::GetInstance();
 
 	sw.reset();
 
-	std::stable_sort(matchedItems.begin(), matchedItems.end(),
-		[rankPtr](const CommandMap::CommandQueryItem& l, const CommandMap::CommandQueryItem& r) {
-			if (r.mMatchLevel < l.mMatchLevel) { return true; }
-			if (r.mMatchLevel > l.mMatchLevel) { return false; }
-
-			// 一致レベルが同じ場合は優先順位による判断を行う
-			auto& cmdL = l.mCommand;
-			auto& cmdR = r.mCommand;
-
-			auto nameL = cmdL->GetName();
-			auto nameR = cmdR->GetName();
-
-			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(nameL) : 0;
-			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(nameR) : 0;
-			return priorityR < priorityL;
-	});
-
-	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)matchedItems.size(), sw);
+	// 一致レベルに基づきソート
+	matchedItems.Sort();
+	size_t itemCount = matchedItems.GetItemCount();
+	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)itemCount, sw);
 
 	std::vector<launcherapp::core::Command*>* items = new std::vector<launcherapp::core::Command*>();
-	items->reserve(matchedItems.size());
-	for (auto& item : matchedItems) {
-		item.mCommand->AddRef();
-		items->push_back(item.mCommand.get());
+	
+	if (itemCount > 0) {
+		items->resize(itemCount);
+		matchedItems.GetItems(&(items->front()), items->size());
 	}
-
-	if (items->empty()) {
+	else {
 		auto defaultCmd = GetDefaultCommand();
 		defaultCmd->SetName(param.GetWholeString());
 		items->push_back(defaultCmd);
@@ -777,22 +760,17 @@ CommandRepository::QueryAsWholeMatch(
 	for (auto& provider : in->mProviders) {
 		provider->QueryAdhocCommands(&pat, matchedItems);
 
-		if (matchedItems.empty()) {
+		if (matchedItems.IsEmpty()) {
 			continue;
 		}
 
 		// 完全一致のものを探す
-		for (auto& item : matchedItems) {
-			if (item.mMatchLevel != Pattern::WholeMatch) {
-				continue;
-			}
-			command = item.mCommand.get();
-			command->AddRef();
-
-			return command;
+		command = nullptr;
+		if (matchedItems.FindWholeMatchItem(&command) == false) {
+			continue;
 		}
+		return command;
 	}
-
 	return nullptr;
 }
 

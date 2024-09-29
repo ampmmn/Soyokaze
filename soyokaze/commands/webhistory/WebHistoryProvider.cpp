@@ -126,7 +126,7 @@ bool WebHistoryProvider::NewDialog(const CommandParameter* param)
 // 一時的なコマンドを必要に応じて提供する
 void WebHistoryProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+	CommandQueryItemList& commands
 )
 {
 	// 完全一致検索の場合は検索ワード補完をしない
@@ -146,7 +146,7 @@ void WebHistoryProvider::QueryAdhocCommands(
 
 		for (auto& history : histories) {
 			auto adhocCmd = new WebHistoryAdhocCommand(history);
-			commands.push_back(CommandQueryItem(history.mMatchLevel, adhocCmd));
+			commands.Add(CommandQueryItem(history.mMatchLevel, adhocCmd));
 		}
 	}
 }

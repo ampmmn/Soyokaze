@@ -16,19 +16,19 @@ private:
 public:
 	CString GetName() override;
 
-	// $B:n@.$G$-$k%3%^%s%I$N<oN`$rI=$9J8;zNs$r<hF@(B
+	// 作成できるコマンドの種類を表す文字列を取得
 	CString GetDisplayName() override;
 
-	// $B%3%^%s%I$N<oN`$N@bL@$r<($9J8;zNs$r<hF@(B
+	// コマンドの種類の説明を示す文字列を取得
 	CString GetDescription() override;
 
-	// $B%3%^%s%I?75,:n@.%@%$%"%m%0(B
+	// コマンド新規作成ダイアログ
 	bool NewDialog(const CommandParameter* param) override;
 
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
-	void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands) override;
+	// 一時的なコマンドを必要に応じて提供する
+	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
-	// Provider$B4V$NM%@h=g0L$rI=$9CM$rJV$9!#>.$5$$$[$IM%@h(B
+	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
 
 	DECLARE_COMMANDPROVIDER(SimpleDictProvider)

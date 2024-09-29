@@ -39,6 +39,14 @@ BuiltinCommandBase::~BuiltinCommandBase()
 {
 }
 
+bool BuiltinCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	UNREFERENCED_PARAMETER(ifid);
+	UNREFERENCED_PARAMETER(cmd);
+	// 未実装
+	return false;
+}
+
 CString BuiltinCommandBase::GetName()
 {
 	return mName;

@@ -152,7 +152,7 @@ void EverythingCommandProvider::QueryAdhocCommands(
 		for (auto& result : results) {
 
 			auto adhocCmd = new EverythingAdhocCommand(cmd->GetParam(), result);
-			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd));
+			commands.Add(CommandQueryItem(result.mMatchLevel, adhocCmd));
 		}
 	}
 }

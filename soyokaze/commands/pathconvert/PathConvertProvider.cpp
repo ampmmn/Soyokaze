@@ -124,7 +124,7 @@ void PathConvertProvider::QueryAdhocCommands(
 	int level = in->mFileProtocolCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mFileProtocolCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mFileProtocolCmdPtr));
+		commands.Add(CommandQueryItem(level, in->mFileProtocolCmdPtr));
 		return;
 	}
 
@@ -136,7 +136,7 @@ void PathConvertProvider::QueryAdhocCommands(
 	level = in->mGitBashToLocalPathCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mGitBashToLocalPathCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mGitBashToLocalPathCmdPtr));
+		commands.Add(CommandQueryItem(level, in->mGitBashToLocalPathCmdPtr));
 		return;
 	}
 
@@ -144,14 +144,14 @@ void PathConvertProvider::QueryAdhocCommands(
 	level = in->mLocalToGitBashPathCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mLocalToGitBashPathCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mLocalToGitBashPathCmdPtr));
+		commands.Add(CommandQueryItem(level, in->mLocalToGitBashPathCmdPtr));
 	}
 
 	for (auto& p4cmd : in->mP4PathCommands) {
 		level = p4cmd->Match(pattern);
 		if (level != Pattern::Mismatch) {
 			p4cmd->AddRef();
-			commands.push_back(CommandQueryItem(level, p4cmd));
+			commands.Add(CommandQueryItem(level, p4cmd));
 			return;
 		}
 	}

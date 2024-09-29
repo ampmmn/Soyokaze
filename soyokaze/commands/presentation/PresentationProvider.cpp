@@ -56,7 +56,7 @@ void PresentationProvider::QueryAdhocCommands(
 
 	for (auto& item : items) {
 		int level = item.mMatchLevel;
-		commands.push_back(CommandQueryItem(level, new PptJumpCommand(item.mPage, item.mTitle)));
+		commands.Add(CommandQueryItem(level, new PptJumpCommand(item.mPage, item.mTitle)));
 	}
 }
 

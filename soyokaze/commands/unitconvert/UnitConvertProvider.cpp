@@ -87,7 +87,7 @@ void UnitConvertProvider::QueryAdhocCommands(
 	int level = in->mInchCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mInchCmdPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mInchCmdPtr));
+		commands.Add(CommandQueryItem(level, in->mInchCmdPtr));
 		return;
 	}
 }

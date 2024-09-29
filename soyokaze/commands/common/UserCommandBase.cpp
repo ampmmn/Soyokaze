@@ -17,6 +17,14 @@ UserCommandBase::~UserCommandBase()
 {
 }
 
+bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	UNREFERENCED_PARAMETER(ifid);
+	UNREFERENCED_PARAMETER(cmd);
+	// 未実装
+	return false;
+}
+
 CString UserCommandBase::GetErrorString()
 {
 	return _T("");

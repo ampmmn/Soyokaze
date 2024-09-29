@@ -18,6 +18,8 @@ public:
 
 	void SetName(const CString& word);
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;

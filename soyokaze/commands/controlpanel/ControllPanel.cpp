@@ -153,7 +153,7 @@ void ControlPanelProvider::QueryAdhocCommands(
 		}
 
 		command->AddRef();
-		commands.push_back(CommandQueryItem(level, command));
+		commands.Add(CommandQueryItem(level, command));
 	}
 
 }

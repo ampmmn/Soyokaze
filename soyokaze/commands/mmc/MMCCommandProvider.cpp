@@ -93,7 +93,7 @@ void MMCCommandProvider::QueryAdhocCommands(
 			continue;
 		}
 		auto cmd = std::make_unique<MMCCommand>(item);
-		commands.push_back(CommandQueryItem(level, cmd.release()));
+		commands.Add(CommandQueryItem(level, cmd.release()));
 	}
 }
 

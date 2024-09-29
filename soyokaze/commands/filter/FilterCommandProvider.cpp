@@ -155,7 +155,7 @@ void FilterCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIte
 
 		for (auto& result : results) {
 			auto adhocCmd = new FilterAdhocCommand(cmdParam, result);
-			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd));
+			commands.Add(CommandQueryItem(result.mMatchLevel, adhocCmd));
 		}
 	}
 }

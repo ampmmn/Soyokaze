@@ -57,7 +57,7 @@ void MailToCommandProvider::QueryAdhocCommands(
 	int level = in->mCommandPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mCommandPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mCommandPtr));
+		commands.Add(CommandQueryItem(level, in->mCommandPtr));
 	}
 }
 

@@ -130,7 +130,7 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 // 一時的なコマンドを必要に応じて提供する
 void WebSearchProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+	CommandQueryItemList& commands
 )
 {
 	// 完全一致検索の場合は検索ワード補完をしない
@@ -157,14 +157,14 @@ void WebSearchProvider::QueryAdhocCommands(
 			shortcutsCandidates.emplace_back(std::unique_ptr<WebSearchAdhocCommand>(adhocCmd));
 			continue;
 		}
-		commands.push_back(CommandQueryItem(level, adhocCmd));
+		commands.Add(CommandQueryItem(level, adhocCmd));
 		isHit = true;
 	}
 
 	if (isHit == false) {
 		// WeakMatchでヒットしたものは、他にヒットしたものがなかったら候補として表示する
 		for (auto& adhocCmd : shortcutsCandidates) {
-			commands.push_back(CommandQueryItem(Pattern::WeakMatch, adhocCmd.release()));
+			commands.Add(CommandQueryItem(Pattern::WeakMatch, adhocCmd.release()));
 		}
 	}
 }

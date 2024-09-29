@@ -137,7 +137,7 @@ void CommandMap::Query(
 			continue;
 		}
 		command->AddRef();
-		commands.push_back(CommandQueryItem(matchLevel, command));
+		commands.Add(CommandQueryItem(matchLevel, command));
 	}
 }
 

@@ -21,7 +21,27 @@ public:
 	std::unique_ptr<Command, std::function<void(void*)> > mCommand;
 };
 
-using CommandQueryItemList = std::vector<CommandQueryItem>;
+class CommandQueryItemList
+{
+	using Command = launcherapp::core::Command;
+public:
+	CommandQueryItemList();
+	~CommandQueryItemList();
+
+	bool IsEmpty() const;
+
+	bool FindWholeMatchItem(Command** item);
+
+	void Add(const CommandQueryItem& item);
+	size_t GetItemCount();
+	size_t GetItems(Command** array, size_t arrayLen);
+
+	void Sort();
+
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
+};
 
 }
 

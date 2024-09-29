@@ -1,8 +1,10 @@
 #pragma once
 
+#include "commands/core/UnknownIF.h"
 #include "commands/core/CommandEntryIF.h"
 #include "commands/core/CommandParameter.h"
 #include "matcher/Pattern.h"
+
 
 class CommandHotKeyAttribute;
 
@@ -11,7 +13,7 @@ namespace core {
 
 class CommandParameter;
 
-class Command
+class Command : public UnknownIF
 {
 protected:
 	using Parameter = launcherapp::core::CommandParameter;
@@ -44,10 +46,6 @@ public:
 
 	virtual bool Save(CommandEntryIF* entry) = 0;
 	virtual bool Load(CommandEntryIF* entry) = 0;
-
-	virtual uint32_t AddRef() = 0;
-	virtual uint32_t Release() = 0;
-
 };
 
 

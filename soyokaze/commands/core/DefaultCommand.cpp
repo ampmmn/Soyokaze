@@ -67,6 +67,14 @@ void DefaultCommand::SetName(const CString& word)
 	in->mName = word;
 }
 
+bool DefaultCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	UNREFERENCED_PARAMETER(ifid);
+	UNREFERENCED_PARAMETER(cmd);
+	// 未実装
+	return false;
+}
+
 CString DefaultCommand::GetName()
 {
 	return _T("");

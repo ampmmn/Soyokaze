@@ -61,18 +61,18 @@ void DecodeStringCommandProvider::QueryAdhocCommands(
 {
 	int level = in->mDecodeUriCommand->Match(pattern);
 	if (level != Pattern::Mismatch) {
-		commands.push_back(CommandQueryItem(level, in->mDecodeUriCommand.get()));
+		commands.Add(CommandQueryItem(level, in->mDecodeUriCommand.get()));
 		in->mDecodeUriCommand->AddRef();
 	}
 
 	level = in->mEscapedCharCommand->Match(pattern);
 	if (level != Pattern::Mismatch) {
-		commands.push_back(CommandQueryItem(level, in->mEscapedCharCommand.get()));
+		commands.Add(CommandQueryItem(level, in->mEscapedCharCommand.get()));
 		in->mEscapedCharCommand->AddRef();
 	}
 	level = in->mDecodeBase64Command->Match(pattern);
 	if (level != Pattern::Mismatch) {
-		commands.push_back(CommandQueryItem(level, in->mDecodeBase64Command.get()));
+		commands.Add(CommandQueryItem(level, in->mDecodeBase64Command.get()));
 		in->mDecodeBase64Command->AddRef();
 	}
 }

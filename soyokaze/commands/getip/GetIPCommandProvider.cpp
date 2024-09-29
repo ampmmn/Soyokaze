@@ -84,7 +84,7 @@ void GetIPCommandProvider::QueryAdhocCommands(
 			if (sa->sa_family == AF_INET) {
 				char ipStr[16];
 				inet_ntop(AF_INET, &((struct sockaddr_in *)sa)->sin_addr, ipStr, sizeof(ipStr));
-				commands.push_back(CommandQueryItem(Pattern::WholeMatch, new GetIPCommand(displayName, CString(CStringA(ipStr)))));
+				commands.Add(CommandQueryItem(Pattern::WholeMatch, new GetIPCommand(displayName, CString(CStringA(ipStr)))));
 			}
 			else if (sa->sa_family == AF_INET6) {
 
@@ -92,7 +92,7 @@ void GetIPCommandProvider::QueryAdhocCommands(
 				int sz = 40;
 				char ipStr[40];
 				inet_ntop(sa6->sin6_family, &sa6->sin6_addr, ipStr, sz);
-				commands.push_back(CommandQueryItem(Pattern::WholeMatch, new GetIPCommand(displayName, CString(CStringA(ipStr)))));
+				commands.Add(CommandQueryItem(Pattern::WholeMatch, new GetIPCommand(displayName, CString(CStringA(ipStr)))));
 			}
 		}
 	}

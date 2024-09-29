@@ -79,7 +79,7 @@ void EnvCommandProvider::QueryAdhocCommands(
 	_tgetenv_s(&reqLen, value.GetBuffer((int)reqLen), reqLen, valName);
 	value.ReleaseBuffer();
 
-	commands.push_back(CommandQueryItem(Pattern::WholeMatch, new EnvCommand(valName, value)));
+	commands.Add(CommandQueryItem(Pattern::WholeMatch, new EnvCommand(valName, value)));
 }
 
 

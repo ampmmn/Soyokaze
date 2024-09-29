@@ -126,7 +126,7 @@ bool BookmarkCommandProvider::NewDialog(const CommandParameter* param)
 // 一時的なコマンドを必要に応じて提供する
 void BookmarkCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
- 	std::vector<CommandQueryItem>& commands
+ 	CommandQueryItemList& commands
 )
 {
 	// 完全一致検索の場合は検索ワード補完をしない
@@ -148,7 +148,7 @@ void BookmarkCommandProvider::QueryAdhocCommands(
 
 			LPCTSTR brwoserType = bkm.mBrowser == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
 
-			commands.push_back(CommandQueryItem(bkm.mMatchLevel, 
+			commands.Add(CommandQueryItem(bkm.mMatchLevel, 
 			                                    new URLCommand(brwoserType, bkm.mName, bkm.mUrl)));
 		}
 	}

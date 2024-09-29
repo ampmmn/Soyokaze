@@ -93,7 +93,7 @@ void UWPCommandProvider::QueryAdhocCommands(
 		}
 		auto cmd = std::make_unique<UWPCommand>(item);
 
-		commands.push_back(CommandQueryItem(level, cmd.release()));
+		commands.Add(CommandQueryItem(level, cmd.release()));
 	}
 }
 

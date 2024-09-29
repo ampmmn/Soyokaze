@@ -161,7 +161,7 @@ void VMXFileCommandProvider::QueryAdhocCommands(
 		}
 
 		cmd->AddRef();
-		commands.push_back(CommandQueryItem(level, cmd));
+		commands.Add(CommandQueryItem(level, cmd));
 	}
 }
 

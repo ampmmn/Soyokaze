@@ -73,9 +73,9 @@ void ColorCommandProvider::QueryAdhocCommands(
 		BYTE g = (value >>  8) & 0xFF;
 		BYTE b = (value >>  0) & 0xFF;
 
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
 		return;
 	}
 	if (cmdline[0] == _T('#') && cmdline.GetLength() == 4) {   // #rgb
@@ -90,10 +90,10 @@ void ColorCommandProvider::QueryAdhocCommands(
 		BYTE g = ((value >> 4) & 0x0F) | ((value >> 0) & 0xF0);
 		BYTE b = ((value >> 0) & 0x0F) | ((value << 4) & 0xF0);
 
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX3)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX3)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
 		return;
 	}
 
@@ -114,9 +114,9 @@ void ColorCommandProvider::QueryAdhocCommands(
 		BYTE g = (BYTE)std::stoi(gstr);
 		BYTE b = (BYTE)std::stoi(bstr);
 
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
-		commands.push_back(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HSL)));
 		return;
 	}
 }

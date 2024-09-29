@@ -107,7 +107,7 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 		int level = pattern->Match(item.mWord);
 		if (level != Pattern::Mismatch) {
-			commands.push_back(CommandQueryItem(level, new HistoryCommand(item.mWord)));
+			commands.Add(CommandQueryItem(level, new HistoryCommand(item.mWord)));
 		}
 	}
 }

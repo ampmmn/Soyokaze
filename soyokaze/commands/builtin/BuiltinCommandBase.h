@@ -16,6 +16,8 @@ public:
 	BuiltinCommandBase(const BuiltinCommandBase& rhs);
 	virtual ~BuiltinCommandBase();
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;

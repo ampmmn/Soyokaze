@@ -18,33 +18,33 @@ private:
 	virtual ~BuiltinCommandProvider();
 
 public:
-	// $B=i2s5/F0$N=i4|2=$r9T$&(B
+	// 初回起動の初期化を行う
 	virtual void OnFirstBoot();
 
-	// $B%3%^%s%I$NFI$_9~$_(B
+	// コマンドの読み込み
 	virtual void LoadCommands(CommandFile* commandFile);
 
 	virtual CString GetName();
 
-	// $B:n@.$G$-$k%3%^%s%I$N<oN`$rI=$9J8;zNs$r<hF@(B
+	// 作成できるコマンドの種類を表す文字列を取得
 	virtual CString GetDisplayName();
 
-	// $B%3%^%s%I$N<oN`$N@bL@$r<($9J8;zNs$r<hF@(B
+	// コマンドの種類の説明を示す文字列を取得
 	virtual CString GetDescription();
 
-	// $B%3%^%s%I?75,:n@.%@%$%"%m%0(B
+	// コマンド新規作成ダイアログ
 	virtual bool NewDialog(const CommandParameter* param);
 
-	// $BHs8x3+%3%^%s%I$+$I$&$+(B($B?75,:n@.BP>]$K$7$J$$(B)
+	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const;
 
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
-	virtual void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands);
+	// 一時的なコマンドを必要に応じて提供する
+	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 
-	// Provider$B4V$NM%@h=g0L$rI=$9CM$rJV$9!#>.$5$$$[$IM%@h(B
+	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;
 
-	// $B@_Dj%Z!<%8$r<hF@$9$k(B
+	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
 
 	virtual uint32_t AddRef();

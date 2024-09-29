@@ -150,7 +150,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 		int level = pattern->Match(str);
 		if (level != Pattern::Mismatch) {
 
-			commands.push_back(CommandQueryItem(level, new WorksheetCommand(sheet)));
+			commands.Add(CommandQueryItem(level, new WorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}
@@ -163,7 +163,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
 		int level = pattern->Match(str);
 		if (level != Pattern::Mismatch) {
 
-			commands.push_back(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
+			commands.Add(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}
@@ -196,7 +196,7 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		commands.push_back(CommandQueryItem(level, new WindowActivateAdhocCommand(hwnd)));
+		commands.Add(CommandQueryItem(level, new WindowActivateAdhocCommand(hwnd)));
 	}
 }
 

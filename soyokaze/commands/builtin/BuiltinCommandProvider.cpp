@@ -168,7 +168,7 @@ bool BuiltinCommandProvider::IsPrivate() const
 }
 
 // 一時的なコマンドを必要に応じて提供する
-void BuiltinCommandProvider::QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands)
+void BuiltinCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	UNREFERENCED_PARAMETER(pattern);
 	UNREFERENCED_PARAMETER(comands);

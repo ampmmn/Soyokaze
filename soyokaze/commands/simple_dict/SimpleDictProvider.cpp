@@ -188,7 +188,7 @@ void SimpleDictProvider::QueryAdhocCommands(
 		if (param.mIsMatchWithoutKeyword == false && level == Pattern::PartialMatch) {
 			level = Pattern::FrontMatch;
 		}
-		commands.push_back(CommandQueryItem(level, cmd));
+		commands.Add(CommandQueryItem(level, cmd));
 	}
 }
 

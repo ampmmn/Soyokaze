@@ -12,6 +12,8 @@ public:
 	UserCommandBase();
 	virtual ~UserCommandBase();
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
 	CString GetErrorString() override;
 
 	bool IsEditable() override;

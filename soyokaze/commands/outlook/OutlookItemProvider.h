@@ -21,8 +21,8 @@ private:
 public:
 	CString GetName() override;
 
-	// $B0l;~E*$J%3%^%s%I$rI,MW$K1~$8$FDs6!$9$k(B
-	void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands) override;
+	// 一時的なコマンドを必要に応じて提供する
+	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 	DECLARE_COMMANDPROVIDER(OutlookItemProvider)
 

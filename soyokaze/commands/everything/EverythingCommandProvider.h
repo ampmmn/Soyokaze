@@ -27,7 +27,7 @@ public:
 	bool NewDialog(const CommandParameter* param) override;
 
 	// 一時的なコマンドを必要に応じて提供する
-	void QueryAdhocCommands(Pattern* pattern, std::vector<CommandQueryItem>& comands) override;
+	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;

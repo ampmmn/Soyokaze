@@ -92,7 +92,7 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 		}
 		auto cmd = std::make_unique<SpecialFolderFileCommand>(item);
 
-		commands.push_back(CommandQueryItem(level, cmd.release()));
+		commands.Add(CommandQueryItem(level, cmd.release()));
 	}
 }
 

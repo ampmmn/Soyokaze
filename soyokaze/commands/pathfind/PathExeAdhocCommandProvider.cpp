@@ -128,7 +128,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	int level = in->mExeCommandPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mExeCommandPtr->AddRef();
-		commands.push_back(CommandQueryItem(level, in->mExeCommandPtr));
+		commands.Add(CommandQueryItem(level, in->mExeCommandPtr));
 	}
 
 	// ToDo: HistoryCommandに責務を移動
@@ -149,7 +149,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		}
 		auto cmdHist = std::make_unique<PathExecuteCommand>();
 		cmdHist->SetFullPath(item.mFullPath, true);
-		commands.push_back(CommandQueryItem(level, cmdHist.release()));
+		commands.Add(CommandQueryItem(level, cmdHist.release()));
 	}
 
 }

@@ -153,7 +153,7 @@ void URLDirectoryIndexCommandProvider::QueryAdhocCommands(Pattern* pattern, Comm
 
 		for (auto& result : results) {
 			auto adhocCmd = new DirectoryIndexAdhocCommand(cmd, result);
-			commands.push_back(CommandQueryItem(result.mMatchLevel, adhocCmd));
+			commands.Add(CommandQueryItem(result.mMatchLevel, adhocCmd));
 		}
 	}
 }
