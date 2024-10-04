@@ -13,7 +13,7 @@ namespace core {
 
 class CommandParameter;
 
-class Command : public UnknownIF
+class Command : virtual public UnknownIF
 {
 protected:
 	using Parameter = launcherapp::core::CommandParameter;

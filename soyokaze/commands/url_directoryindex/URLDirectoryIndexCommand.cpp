@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "URLDirectoryIndexCommand.h"
+#include "commands/url_directoryindex/DirectoryIndexAdhocCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditDialog.h"
 #include "commands/url_directoryindex/WinHttp.h"
@@ -55,8 +57,6 @@ struct URLDirectoryIndexCommand::PImpl
 	}
 	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML);
 	bool ExtractCandidates(const std::vector<BYTE>& content, LinkItems& items);
-
-	void Query(Pattern* pattern, DirectoryIndexQueryResult& results);
 
 	bool IsLoaded()
 	{
@@ -221,48 +221,16 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	return true;
 }
 
-void URLDirectoryIndexCommand::PImpl::Query(Pattern* pattern, DirectoryIndexQueryResult& results)
+bool URLDirectoryIndexCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	DirectoryIndexQueryResult tmpList;
-
-	std::vector<CString> words;
-	pattern->GetRawWords(words);
-	if (words.size() == 1) {
-		// 入力キーワードが空文字の場合は全てを候補に追加する
-		for(auto& item : mLinkItems) {
-			QueryResult result;
-			result.mLinkPath = item.first;
-			result.mLinkText = item.second;
-			result.mURL = mParam.CombineURL(item.first);
-			result.mMatchLevel = Pattern::FrontMatch;
-			tmpList.push_back(result);
-		}
-		tmpList.swap(results);
-		return;
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-
-
-	for(auto& item : mLinkItems) {
-		int level = pattern->Match(item.second, 1);
-		if (level == Pattern::Mismatch) {
-			continue;
-		}
-		if (level == Pattern::PartialMatch) {
-			// 先行キーワードは一致しているので前方一致扱いとする
-			level = Pattern::FrontMatch;
-		}
-
-		QueryResult result;
-		result.mLinkPath = item.first;
-		result.mLinkText = item.second;
-		result.mURL = mParam.CombineURL(item.first);
-		result.mMatchLevel = level;
-
-		tmpList.push_back(result);
-	}
-
-	tmpList.swap(results);
+	return false;
 }
+
 
 
 std::vector<uint8_t>& URLDirectoryIndexCommand::PImpl::Encode(const CString& str, std::vector<uint8_t>& buf)
@@ -368,18 +336,6 @@ void URLDirectoryIndexCommand::LoadCanidates(bool& isHTML)
 
 	in->mIsLoaded = true;
 	in->mIsLoadOK = true;
-}
-
-void URLDirectoryIndexCommand::Query(Pattern* pattern, DirectoryIndexQueryResult& results)
-{
-	// コマンド名が一致しなければ候補を表示しない
-	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
-		in->Reset();
-		in->mSubPath.Empty();
-		spdlog::info(_T("clear state"));
-		return;
-	}
-	in->Query(pattern, results);
 }
 
 CString URLDirectoryIndexCommand::GetName()
@@ -520,7 +476,7 @@ int URLDirectoryIndexCommand::EditDialog(HWND parent)
 	cmdRepo->ReregisterCommand(this);
 
 	// 設定変更を反映するため、候補のキャッシュを消す
-	in->ClearCache();
+	ClearCache();
 	in->Reset();
 
 	return 0;
@@ -644,14 +600,62 @@ bool URLDirectoryIndexCommand::NewDialog(const Parameter* param, URLDirectoryInd
 	return true;
 }
 
-bool URLDirectoryIndexCommand::CastFrom(launcherapp::core::Command* cmd, URLDirectoryIndexCommand** newCmd)
+bool URLDirectoryIndexCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
+	// コマンド名が一致しなければ候補を表示しない
+	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
+		in->Reset();
+		in->mSubPath.Empty();
+		spdlog::info(_T("clear state"));
 		return false;
 	}
-	*newCmd = dynamic_cast<URLDirectoryIndexCommand*>(cmd);
-	cmd->AddRef();
+
+	DirectoryIndexQueryResult results;
+
+	std::vector<CString> words;
+	pattern->GetRawWords(words);
+	if (words.size() == 1) {
+		// 入力キーワードが空文字の場合は全てを候補に追加する
+		for(auto& item : in->mLinkItems) {
+			QueryResult result;
+			result.mLinkPath = item.first;
+			result.mLinkText = item.second;
+			result.mURL = in->mParam.CombineURL(item.first);
+			result.mMatchLevel = Pattern::FrontMatch;
+			results.push_back(result);
+		}
+	}
+	else {
+		for(auto& item : in->mLinkItems) {
+			int level = pattern->Match(item.second, 1);
+			if (level == Pattern::Mismatch) {
+				continue;
+			}
+			if (level == Pattern::PartialMatch) {
+				// 先行キーワードは一致しているので前方一致扱いとする
+				level = Pattern::FrontMatch;
+			}
+
+			QueryResult result;
+			result.mLinkPath = item.first;
+			result.mLinkText = item.second;
+			result.mURL = in->mParam.CombineURL(item.first);
+			result.mMatchLevel = level;
+
+			results.push_back(result);
+		}
+	}
+
+	for (auto& result : results) {
+		commands.Add(CommandQueryItem(result.mMatchLevel, new DirectoryIndexAdhocCommand(this, result)));
+	}
+
 	return true;
+}
+
+void URLDirectoryIndexCommand::ClearCache()
+{
+	in->ClearCache();
 }
 
 } // end of namespace url_directoryindex

@@ -443,6 +443,11 @@ BOOL CommandRepository::Load()
 	auto tmpProviders = in->mProviders;
 	sl.Unlock();
 
+	// ロード前を通知するイベントをリスナーに通知する
+	for (auto& listener : in->mListeners) {
+		listener->OnBeforeLoad();
+	}
+
 	// 設定ファイルを読み、コマンド一覧を登録する
 	CommandFile commandFile;
 	commandFile.SetFilePath(in->mCommandFilePath);

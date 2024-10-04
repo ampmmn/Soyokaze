@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/filter/FilterResult.h"
 #include <memory>
 
@@ -12,14 +13,15 @@ namespace filter {
 
 class CommandParam;
 
-class FilterCommand : public launcherapp::commands::common::UserCommandBase
+class FilterCommand :
+ 	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	FilterCommand();
 	virtual ~FilterCommand();
 
-	void ClearCache();
-	void Query(Pattern* pattern, FilterResultList& results);
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -39,10 +41,13 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, FilterCommand** newCmd);
-	static bool CastFrom(launcherapp::core::Command* cmd, FilterCommand** newCmd); 
 	
 public:
 	FilterCommand& SetParam(const CommandParam& param);

@@ -2,11 +2,13 @@
 
 #include "commands/core/CommandIF.h"
 
+#pragma warning( disable : 4250)
+
 namespace launcherapp {
 namespace commands {
 namespace common {
 
-class UserCommandBase : public launcherapp::core::Command
+class UserCommandBase : virtual public launcherapp::core::Command
 {
 public:
 	UserCommandBase();

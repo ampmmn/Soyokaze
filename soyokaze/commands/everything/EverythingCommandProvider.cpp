@@ -1,15 +1,10 @@
 #include "pch.h"
 #include "EverythingCommandProvider.h"
 #include "commands/everything/EverythingCommand.h"
-#include "commands/everything/EverythingAdhocCommand.h"
-#include "commands/everything/EverythingResult.h"
 #include "commands/everything/AppSettingEverythingPage.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
-#include "setting/AppPreference.h"
-#include "setting/AppPreferenceListenerIF.h"
 #include "resource.h"
 #include <list>
 
@@ -22,71 +17,6 @@ namespace commands {
 namespace everything {
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
-
-struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public CommandRepositoryListenerIF
-{
-	PImpl()
-	{
-		AppPreference::Get()->RegisterListener(this);
-	}
-	virtual ~PImpl()
-	{
-		ClearCommands();
-	}
-
-// AppPreferenceListenerIF
-	void OnAppFirstBoot() override
-	{
-		OnAppNormalBoot();
-	}
-	void OnAppNormalBoot() override
-	{
-		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-		cmdRepo->RegisterListener(this);
-	}
-
-	void OnAppPreferenceUpdated() override
-	{
-	}
-	void OnAppExit() override
-	{
-		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-		cmdRepo->UnregisterListener(this);
-	}
-
-// CommandRepositoryListenerIF
-	void OnNewCommand(launcherapp::core::Command* cmd) override
-	{
-		EverythingCommand* newCmd = nullptr;
-		if (EverythingCommand::CastFrom(cmd, &newCmd) == false) {
-			return;
-		}
-		mCommands.push_back(newCmd);
-
-	}
-
-	void OnDeleteCommand(Command* command) override
-	{
-		auto it = std::find(mCommands.begin(), mCommands.end(), command);
-		if (it != mCommands.end()) {
-			mCommands.erase(it);
-			command->Release();
-		}
-	}
-	void OnLancuherActivate() override {}
-	void OnLancuherUnactivate() override {}
-
-	void ClearCommands()
-	{
-		for (auto command : mCommands) {
-			command->Release();
-		}
-		mCommands.clear();
-	}
-
-	std::vector<EverythingCommand*> mCommands;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +25,7 @@ struct EverythingCommandProvider::PImpl : public AppPreferenceListenerIF, public
 REGISTER_COMMANDPROVIDER(EverythingCommandProvider)
 
 
-EverythingCommandProvider::EverythingCommandProvider() : in(std::make_unique<PImpl>())
+EverythingCommandProvider::EverythingCommandProvider()
 {
 }
 
@@ -137,26 +67,6 @@ bool EverythingCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 一時的なコマンドを必要に応じて提供する
-void EverythingCommandProvider::QueryAdhocCommands(
-	Pattern* pattern,
- 	launcherapp::CommandQueryItemList& commands
-)
-{
-	std::vector<EverythingResult> results;
-	for (auto& cmd : in->mCommands) {
-
-		results.clear();
-		cmd->Query(pattern, results);
-
-		for (auto& result : results) {
-
-			auto adhocCmd = new EverythingAdhocCommand(cmd->GetParam(), result);
-			commands.Add(CommandQueryItem(result.mMatchLevel, adhocCmd));
-		}
-	}
-}
-
 // 設定ページを取得する
 bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
 {
@@ -172,7 +82,6 @@ uint32_t EverythingCommandProvider::GetOrder() const
 
 void EverythingCommandProvider::OnBeforeLoad()
 {
-	in->ClearCommands();
 }
 
 bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

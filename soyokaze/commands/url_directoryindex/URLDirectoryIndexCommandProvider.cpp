@@ -4,7 +4,6 @@
 #include "commands/url_directoryindex/DirectoryIndexAdhocCommand.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
@@ -18,79 +17,12 @@
 #endif
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
 namespace launcherapp {
 namespace commands {
 namespace url_directoryindex {
 
 
-struct URLDirectoryIndexCommandProvider::PImpl : public AppPreferenceListenerIF, public CommandRepositoryListenerIF
-{
-	PImpl()
-	{
-		AppPreference::Get()->RegisterListener(this);
-	}
-	virtual ~PImpl()
-	{
-		ClearCommands();
-	}
-
-	void ClearCommands()
-	{
-		for (auto command : mCommands) {
-			command->Release();
-		}
-		mCommands.clear();
-	}
-
-// AppPreferenceListenerIF
-	void OnAppFirstBoot() override
-	{
-		OnAppNormalBoot();
-	}
-	void OnAppNormalBoot() override
-	{
-		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-		cmdRepo->RegisterListener(this);
-	}
-
-	void OnAppPreferenceUpdated() override
-	{
-	}
-	void OnAppExit() override
-	{
-		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-		cmdRepo->UnregisterListener(this);
-	}
-
-
-// CommandRepositoryListenerIF
-	void OnNewCommand(launcherapp::core::Command* cmd) override
-	{
-		URLDirectoryIndexCommand* newCmd = nullptr;
-		if (URLDirectoryIndexCommand::CastFrom(cmd, &newCmd) == false) {
-			return;
-		}
-		mCommands.push_back(newCmd);
-	}
-	void OnDeleteCommand(Command* command) override
-	{
-		auto it = std::find(mCommands.begin(), mCommands.end(), command);
-		if (it != mCommands.end()) {
-			mCommands.erase(it);
-			command->Release();
-		}
-	}
-	void OnLancuherActivate() override
-	{
-	}
-	void OnLancuherUnactivate() override
-	{
-	}
-
-	std::vector<URLDirectoryIndexCommand*> mCommands;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +31,7 @@ struct URLDirectoryIndexCommandProvider::PImpl : public AppPreferenceListenerIF,
 REGISTER_COMMANDPROVIDER(URLDirectoryIndexCommandProvider)
 
 
-URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider() : in(std::make_unique<PImpl>())
+URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider()
 {
 }
 
@@ -139,25 +71,6 @@ bool URLDirectoryIndexCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 一時的なコマンドを必要に応じて提供する
-void URLDirectoryIndexCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
-{
-	DirectoryIndexQueryResult results;
-	for (auto& cmd : in->mCommands) {
-
-		results.clear();
-		cmd->Query(pattern, results);
-
-		CommandParam cmdParam;
-		cmd->GetParam(cmdParam);
-
-		for (auto& result : results) {
-			auto adhocCmd = new DirectoryIndexAdhocCommand(cmd, result);
-			commands.Add(CommandQueryItem(result.mMatchLevel, adhocCmd));
-		}
-	}
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider::GetOrder() const
 {
@@ -166,7 +79,6 @@ uint32_t URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider::Get
 
 void URLDirectoryIndexCommandProvider::OnBeforeLoad()
 {
-	in->ClearCommands();
 }
 
 bool URLDirectoryIndexCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

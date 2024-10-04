@@ -13,10 +13,8 @@ class SimpleDictAdhocCommand : public launcherapp::commands::common::AdhocComman
 {
 public:
 public:
-	SimpleDictAdhocCommand(const CString& key, const CString& value);
+	SimpleDictAdhocCommand(const SimpleDictParam& param, const CString& key, const CString& value);
 	virtual ~SimpleDictAdhocCommand();
-
-	void SetParam(const SimpleDictParam& param);
 
 	CString GetName() override;
 	CString GetDescription() override;

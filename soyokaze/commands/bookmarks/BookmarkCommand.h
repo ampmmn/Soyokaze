@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/bookmarks/Bookmarks.h"
 #include <memory>
 
@@ -8,14 +9,16 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-class BookmarkCommand : public launcherapp::commands::common::UserCommandBase
+class BookmarkCommand :
+ 	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	BookmarkCommand();
 	virtual ~BookmarkCommand();
 
-	bool QueryBookmarks(Pattern* pattern, std::vector<Bookmark>& bookmarks);
-	// 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
 // Comand
 	CString GetName() override;
 	CString GetDescription() override;
@@ -35,10 +38,13 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<BookmarkCommand>& newCmd);
-	static bool CastFrom(launcherapp::core::Command* cmd, BookmarkCommand** castedCmd);
 
 protected:
 	struct PImpl;

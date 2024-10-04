@@ -35,23 +35,20 @@ struct SimpleDictAdhocCommand::PImpl
 
 
 SimpleDictAdhocCommand::SimpleDictAdhocCommand(
+	const SimpleDictParam& param,
 	const CString& key,
 	const CString& value
 ) : 
 	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
 {
+	in->mParam = param;
 	in->mKey = key;
 	in->mValue = value;
 }
 
 SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 {
-}
-
-void SimpleDictAdhocCommand::SetParam(const SimpleDictParam& param)
-{
-	in->mParam = param;
 }
 
 CString SimpleDictAdhocCommand::GetName()
@@ -169,7 +166,7 @@ HICON SimpleDictAdhocCommand::GetIcon()
 launcherapp::core::Command*
 SimpleDictAdhocCommand::Clone()
 {
-	return new SimpleDictAdhocCommand(in->mKey, in->mValue);
+	return new SimpleDictAdhocCommand(in->mParam, in->mKey, in->mValue);
 }
 
 } // end of namespace simple_dict

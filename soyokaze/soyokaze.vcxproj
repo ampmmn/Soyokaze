@@ -425,6 +425,7 @@
     <ClInclude Include="commands\everything\EverythingCommandProvider.h" />
     <ClInclude Include="commands\everything\EverythingProxy.h" />
     <ClInclude Include="commands\everything\EverythingResult.h" />
+    <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h" />
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommand.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h" />
@@ -437,6 +438,8 @@
     <ClInclude Include="commands\mmc\MMCSnapin.h" />
     <ClInclude Include="commands\mmc\MMCSnapins.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
+    <ClInclude Include="commands\simple_dict\DictionaryLoader.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictionary.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommand.h" />
@@ -581,7 +584,6 @@
     <ClInclude Include="commands\simple_dict\SimpleDictAdhocCommand.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommand.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommandUpdateListenerIF.h" />
-    <ClInclude Include="commands\simple_dict\SimpleDictDatabase.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictEditDialog.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictParam.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictProvider.h" />
@@ -748,6 +750,7 @@
     <ClCompile Include="commands\everything\EverythingCommandParam.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />
+    <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp" />
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommand.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp" />
@@ -764,6 +767,7 @@
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">false</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
+    <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MultiProcessorCompilation>
@@ -909,7 +913,6 @@
     <ClCompile Include="commands\simple_dict\ExcelWrapper.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictAdhocCommand.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictCommand.cpp" />
-    <ClCompile Include="commands\simple_dict\SimpleDictDatabase.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictEditDialog.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictProvider.cpp" />
     <ClCompile Include="commands\snippet\RegisterSnippetCommand.cpp" />

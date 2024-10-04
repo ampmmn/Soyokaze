@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/core/CommandQueryItem.h"
 #include "commands/simple_dict/SimpleDictParam.h"
 #include <memory>
@@ -11,16 +12,21 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
+class Dictionary;
+
 class CommandUpdateListenerIF;
 
-class SimpleDictCommand : public launcherapp::commands::common::UserCommandBase
+class SimpleDictCommand :
+ 	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	SimpleDictCommand();
 	virtual ~SimpleDictCommand();
 
-	void AddListener(CommandUpdateListenerIF* listener);
-	void RemoveListener(CommandUpdateListenerIF* listener);
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
+	void UpdateDictionary(Dictionary& dict);
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -40,11 +46,14 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, SimpleDictCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, SimpleDictCommand** newCmdPtr);
-	static bool CastFrom(launcherapp::core::Command* cmd, SimpleDictCommand** newCmd); 
 
 	const SimpleDictParam& GetParam();
 

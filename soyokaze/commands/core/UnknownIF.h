@@ -1,3 +1,4 @@
+#pragma once
 
 #include "commands/core/IFID.h"
 

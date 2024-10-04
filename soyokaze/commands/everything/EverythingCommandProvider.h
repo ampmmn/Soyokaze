@@ -26,9 +26,6 @@ public:
 	// コマンド新規作成ダイアログ
 	bool NewDialog(const CommandParameter* param) override;
 
-	// 一時的なコマンドを必要に応じて提供する
-	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
-
 	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
 
@@ -40,10 +37,6 @@ public:
 // UserCommandProviderBase
 	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
-
-private:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
 };
 
 

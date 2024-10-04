@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
-#include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
-#include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
@@ -19,64 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace websearch {
 
-using WebSearchCommandPtr = std::unique_ptr<WebSearchCommand, std::function<void(void*)> >;
-using WebSearchCommandList = std::vector<WebSearchCommandPtr>;
-
 using CommandRepository = launcherapp::core::CommandRepository;
-
-static void releaseCmd(void* p)
-{
-	auto ptr = (WebSearchCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
-
-struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
-{
-	PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->RegisterListener(this);
-
-	}
-	virtual ~PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->UnregisterListener(this);
-	}
-
-	void OnNewCommand(launcherapp::core::Command* cmd) override
-	{
-		WebSearchCommand* newCmd = nullptr;
-		if (WebSearchCommand::CastFrom(cmd, &newCmd) == false) {
-			return;
-		}
-		mCommands.push_back(WebSearchCommandPtr(newCmd, releaseCmd));
-	}
-
-	void OnDeleteCommand(launcherapp::core::Command* cmd) override
- 	{
-		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
-			if ((*it).get() != cmd) {
-				continue;
-			}
-
-			mCommands.erase(it);
-			break;
-		}
-	}
-	void OnLancuherActivate() override {}
-	void OnLancuherUnactivate() override {}
-
-	void ClearCommands()
-	{
-		mCommands.clear();
-	}
-
-	WebSearchCommandList mCommands;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +25,7 @@ struct WebSearchProvider::PImpl : public launcherapp::core::CommandRepositoryLis
 REGISTER_COMMANDPROVIDER(WebSearchProvider)
 
 
-WebSearchProvider::WebSearchProvider() : in(std::make_unique<PImpl>())
+WebSearchProvider::WebSearchProvider()
 {
 }
 
@@ -127,48 +67,6 @@ bool WebSearchProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 一時的なコマンドを必要に応じて提供する
-void WebSearchProvider::QueryAdhocCommands(
-	Pattern* pattern,
-	CommandQueryItemList& commands
-)
-{
-	// 完全一致検索の場合は検索ワード補完をしない
-	if (pattern->shouldWholeMatch()) {
-		return;
-	}
-
-	std::vector<std::unique_ptr<WebSearchAdhocCommand> > shortcutsCandidates;
-
-	bool isHit = false;
-
-	CString url;
-	CString displayName;
-	for (auto& cmd : in->mCommands) {
-
-		int level = cmd->BuildSearchUrlString(pattern, displayName, url);
-		if (level == Pattern::Mismatch) {
-			continue;
-		}
-
-		auto adhocCmd = new WebSearchAdhocCommand(cmd.get(), displayName, url);
-		if (level == Pattern::WeakMatch) {
-			// 他のWeb検索コマンドでヒットするものがなければ表示するのでいったん貯めておく
-			shortcutsCandidates.emplace_back(std::unique_ptr<WebSearchAdhocCommand>(adhocCmd));
-			continue;
-		}
-		commands.Add(CommandQueryItem(level, adhocCmd));
-		isHit = true;
-	}
-
-	if (isHit == false) {
-		// WeakMatchでヒットしたものは、他にヒットしたものがなかったら候補として表示する
-		for (auto& adhocCmd : shortcutsCandidates) {
-			commands.Add(CommandQueryItem(Pattern::WeakMatch, adhocCmd.release()));
-		}
-	}
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t WebSearchProvider::GetOrder() const
 {
@@ -177,7 +75,6 @@ uint32_t WebSearchProvider::GetOrder() const
 
 void WebSearchProvider::OnBeforeLoad()
 {
-	in->ClearCommands();
 }
 
 bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

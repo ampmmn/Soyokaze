@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "EverythingCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/everything/EverythingCommandEditDialog.h"
+#include "commands/everything/EverythingAdhocCommand.h"
 #include "commands/everything/EverythingResult.h"
 #include "commands/everything/EverythingProxy.h"
 #include "commands/core/CommandRepository.h"
@@ -51,26 +53,15 @@ EverythingCommand::~EverythingCommand()
 {
 }
 
-void EverythingCommand::Query(Pattern* pattern, std::vector<EverythingResult>& results)
+bool EverythingCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	// コマンド名が一致しなければ候補を表示しない
-	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
-		return;
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-
- 	std::vector<CString> words;
-	CString queryStr;
-	pattern->GetRawWords(words);
-	for (size_t i = 1; i < words.size(); ++i) {
-		queryStr += words[i];
-		queryStr += _T(" ");
-	}
-
-	queryStr = in->mParam.BuildQueryString(queryStr);
-
-	EverythingProxy::Get()->Query(queryStr, results);
+	return false;
 }
-
 
 const CommandParam& EverythingCommand::GetParam()
 {
@@ -310,15 +301,37 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 	return true;
 }
 
-bool EverythingCommand::CastFrom(launcherapp::core::Command* cmd, EverythingCommand** newCmd)
+bool EverythingCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
+	// コマンド名が一致しなければ候補を表示しない
+	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return false;
 	}
-	*newCmd = dynamic_cast<EverythingCommand*>(cmd);
-	cmd->AddRef();
+
+
+ 	std::vector<CString> words;
+	CString queryStr;
+	pattern->GetRawWords(words);
+	for (size_t i = 1; i < words.size(); ++i) {
+		queryStr += words[i];
+		queryStr += _T(" ");
+	}
+
+	queryStr = in->mParam.BuildQueryString(queryStr);
+
+	std::vector<EverythingResult> results;
+	EverythingProxy::Get()->Query(queryStr, results);
+
+	for (auto& result : results) {
+		commands.Add(CommandQueryItem(result.mMatchLevel, new EverythingAdhocCommand(in->mParam, result)));
+	}
 	return true;
 }
+
+void EverythingCommand::ClearCache()
+{
+}
+
 
 } // end of namespace everything
 } // end of namespace commands

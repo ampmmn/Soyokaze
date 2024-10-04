@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "WebSearchCommand.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchSettingDialog.h"
 #include "commands/common/SubProcess.h"
@@ -35,10 +37,6 @@ struct WebSearchCommand::PImpl
 int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
 {
 	const auto& cmdName = mParam.mName;
-	// コマンド名が一致しなければ候補を表示しない
-	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
-		return Pattern::Mismatch;
-	}
 
 	std::vector<CString> words;
 	pattern->GetRawWords(words);
@@ -69,13 +67,6 @@ int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& dis
 // 「常に検索候補として表示する」としての処理
 int WebSearchCommand::PImpl::BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url)
 {
-	const auto& cmdName = mParam.mName;
-
-	if (cmdName.CompareNoCase(pattern->GetFirstWord()) == 0) {
-		// コマンド名が前方一致する場合は通常処理を使う
-		return BuildSearchUrlString(pattern, displayName, url);
-	}
-
 	std::vector<CString> words;
 	pattern->GetRawWords(words);
 
@@ -118,16 +109,17 @@ WebSearchCommand::~WebSearchCommand()
 {
 }
 
-
-int WebSearchCommand::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
+bool WebSearchCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	if (in->mParam.IsEnableShortcutSearch() == false) {
-		return in->BuildSearchUrlString(pattern, displayName, url);
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-	else {
-		return in->BuildSearchUrlStringAsShortcut(pattern, displayName, url);
-	}
+	return false;
 }
+
+
 CString WebSearchCommand::GetName()
 {
 	return in->mParam.mName;
@@ -320,15 +312,59 @@ bool WebSearchCommand::NewDialog(
 	return true;
 }
 
-bool WebSearchCommand::CastFrom(launcherapp::core::Command* cmd, WebSearchCommand** newCmd)
+/**
+ 	コマンドの候補として追加表示する項目を取得する
+ 	@return true:取得成功   false:取得失敗(表示しない)
+ 	@param[in]  pattern  入力パターン
+ 	@param[out] commands 表示する候補
+*/
+bool WebSearchCommand::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands
+)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
+	// 完全一致検索の場合は検索ワード補完をしない
+	if (pattern->shouldWholeMatch()) {
 		return false;
 	}
-	*newCmd = dynamic_cast<WebSearchCommand*>(cmd);
-	cmd->AddRef();
+
+	const auto& cmdName = in->mParam.mName;
+
+	bool isMatchName = (cmdName.CompareNoCase(pattern->GetFirstWord()) == 0);
+	if (isMatchName == false && in->mParam.IsEnableShortcutSearch() == false) {
+		// 名前が一致せず、かつ、「常に検索候補として表示する」でない場合はなにもしない
+		return false;
+	}
+
+	CString url;
+	CString displayName;
+
+	// コマンド名が前方一致する場合は通常処理を使う
+	int level = Pattern::Mismatch;
+	if (isMatchName || in->mParam.IsEnableShortcutSearch() == false) {
+		level = in->BuildSearchUrlString(pattern, displayName, url);
+	}
+	else {
+		// 「常に検索候補として表示する」としての処理
+		level = in->BuildSearchUrlStringAsShortcut(pattern, displayName, url);
+	}
+	if (level == Pattern::Mismatch) {
+		return false;
+	}
+
+	commands.Add(CommandQueryItem(level, new WebSearchAdhocCommand(this, displayName, url)));
+
 	return true;
 }
+
+/**
+ 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
+*/
+void WebSearchCommand::ClearCache()
+{
+	// なし
+}
+
 
 } // end of namespace websearch
 } // end of namespace commands

@@ -27,9 +27,6 @@ public:
 	// コマンド新規作成ダイアログ
 	virtual bool NewDialog(const CommandParameter* param);
 
-	// 一時的なコマンドを必要に応じて提供する
-	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
-
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;
 
@@ -38,10 +35,6 @@ public:
 // UserCommandProviderBase
 	void OnBeforeLoad() override;
 	bool LoadFrom(CommandEntryIF* entry, Command** command) override;
-
-private:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
 };
 
 

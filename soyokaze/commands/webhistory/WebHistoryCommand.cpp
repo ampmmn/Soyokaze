@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "WebHistoryCommand.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
 #include "commands/webhistory/WebHistorySettingDialog.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
@@ -64,9 +66,52 @@ struct WebHistoryCommand::PImpl
 		return mEdgeHistory.get();
 	}
 
+	void QueryHistory(ChromiumBrowseHistory* historyDB, LPCTSTR appName, const std::vector<Pattern::WORD>& words, CommandQueryItemList& commands);
+
+
 	std::unique_ptr<ChromiumBrowseHistory> mChromeHistory;
 	std::unique_ptr<ChromiumBrowseHistory> mEdgeHistory;
 };
+
+/**
+ 	履歴を問い合わせる
+ 	@param[in]     historyDB 履歴を保持するDB的なもの
+ 	@param[in]     appName   アプリ名
+ 	@param[in]     words     検索ワード
+ 	@param[out]    commands  取得した履歴から生成された候補
+*/
+void WebHistoryCommand::PImpl::QueryHistory(
+	ChromiumBrowseHistory* historyDB,
+	LPCTSTR appName,
+	const std::vector<Pattern::WORD>& words,
+	CommandQueryItemList& commands
+)
+{
+	if (historyDB == nullptr) {
+		return;
+	}
+
+	// 条件に該当するブラウザ履歴項目一覧を取得する
+	std::vector<ChromiumBrowseHistory::ITEM> items;
+	historyDB->Query(words, items, mParam.mLimit, mParam.mTimeout);
+
+	// 取得した項目を候補として登録する
+	for (auto& item : items) {
+
+		if (item.mTitle.IsEmpty()) {
+			// タイトルが空の場合は表示しない
+			continue;
+		}
+
+		HISTORY history;
+		history.mMatchLevel = Pattern::PartialMatch;
+		history.mBrowserName = appName;
+		history.mDisplayName = item.mTitle;
+		history.mUrl = item.mUrl;
+		commands.Add(CommandQueryItem(history.mMatchLevel, new WebHistoryAdhocCommand(history)));
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,81 +129,16 @@ WebHistoryCommand::~WebHistoryCommand()
 {
 }
 
-bool WebHistoryCommand::QueryHistories(Pattern* pattern, std::vector<HISTORY>& histories)
+bool WebHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	const auto& cmdName = in->mParam.mName;
-	// コマンド名が一致しなければ候補を表示しない
-	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
-		return false;
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-
-	// patternから検索ワード一覧を得る
-	std::vector<Pattern::WORD> words;
-	pattern->GetWords(words);
-
-	std::reverse(words.begin(), words.end());
-
-	// コマンド名を除外
-	words.pop_back();
-
-	// コマンド設定で指定されたキーワードを追加
-	const auto& extraKeyword = in->mParam.mKeyword;
-	if (extraKeyword.IsEmpty() == FALSE) {
-
-		int n = 0;
-		CString tok = extraKeyword.Tokenize(_T(" "), n);
-		while(tok.IsEmpty() == FALSE) {
-
-			words.push_back(Pattern::WORD(tok, Pattern::FixString));
-			tok = extraKeyword.Tokenize(_T(" "), n);
-		}
-	}
-
-	std::vector<HISTORY> tmp;
-
-	// Chromeの履歴を検索する
-	auto chrome = in->GetChromeHistory();
-	if (chrome) {
-		std::vector<ChromiumBrowseHistory::ITEM> items;
-		chrome->Query(words, items, in->mParam.mLimit, in->mParam.mTimeout);
-
-		for (auto& item : items) {
-			if (item.mTitle.IsEmpty()) {
-				continue;
-			}
-			HISTORY history;
-			history.mMatchLevel = Pattern::PartialMatch;
-			history.mBrowserName = _T("Chrome");
-			history.mDisplayName = item.mTitle;
-			history.mUrl = item.mUrl;
-			tmp.push_back(history);
-		}
-	}
-
-	// Edgeの履歴を検索する
-	auto edge = in->GetEdgeHistory();
-	if (edge) {
-		std::vector<ChromiumBrowseHistory::ITEM> items;
-		in->mEdgeHistory->Query(words, items, in->mParam.mLimit, in->mParam.mTimeout);
-
-		for (auto& item : items) {
-			if (item.mTitle.IsEmpty()) {
-				continue;
-			}
-			HISTORY history;
-			history.mMatchLevel = Pattern::PartialMatch;
-			history.mBrowserName = _T("Edge");
-			history.mDisplayName = item.mTitle;
-			history.mUrl = item.mUrl;
-			tmp.push_back(history);
-		}
-	}
-
-	// 結果をコピー
-	histories.swap(tmp);
-
-	return histories.size() > 0; 
+	return false;
 }
+
 
 CString WebHistoryCommand::GetName()
 {
@@ -345,15 +325,64 @@ bool WebHistoryCommand::NewDialog(
 	return true;
 }
 
-bool WebHistoryCommand::CastFrom(launcherapp::core::Command* cmd, WebHistoryCommand** newCmd)
+/**
+ 	コマンドの候補として追加表示する項目を取得する
+ 	@return true:取得成功   false:取得失敗(表示しない)
+ 	@param[in]  pattern  入力パターン
+ 	@param[out] commands 表示する候補
+*/
+bool WebHistoryCommand::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands
+)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
+	const auto& cmdName = in->mParam.mName;
+	// コマンド名が一致しなければ候補を表示しない
+	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return false;
 	}
-	*newCmd = dynamic_cast<WebHistoryCommand*>(cmd);
-	cmd->AddRef();
+
+	// patternから検索ワード一覧を得る
+	std::vector<Pattern::WORD> words;
+	pattern->GetWords(words);
+
+	std::reverse(words.begin(), words.end());
+
+	// コマンド名を除外
+	words.pop_back();
+
+	// コマンド設定で指定されたキーワードを追加
+	const auto& extraKeyword = in->mParam.mKeyword;
+	if (extraKeyword.IsEmpty() == FALSE) {
+
+		int n = 0;
+		CString tok = extraKeyword.Tokenize(_T(" "), n);
+		while(tok.IsEmpty() == FALSE) {
+
+			words.push_back(Pattern::WORD(tok, Pattern::FixString));
+			tok = extraKeyword.Tokenize(_T(" "), n);
+		}
+	}
+
+	// Chromeの履歴を検索する
+	in->QueryHistory(in->GetChromeHistory(),_T("Chrome"), words, commands); 
+
+	// Edgeの履歴を検索する
+	in->QueryHistory(in->GetEdgeHistory(),_T("Edge"), words, commands); 
+
 	return true;
 }
+
+
+/**
+ 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
+*/
+void WebHistoryCommand::ClearCache()
+{
+	// ない
+}
+
+
 
 } // end of namespace webhistory
 } // end of namespace commands

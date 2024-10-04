@@ -1,55 +1,221 @@
 #include "pch.h"
 #include "SimpleDictCommand.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/simple_dict/DictionaryLoader.h"
 #include "commands/simple_dict/SimpleDictEditDialog.h"
+#include "commands/simple_dict/SimpleDictionary.h"
+#include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/ExcelWrapper.h"
-#include "commands/simple_dict/SimpleDictCommandUpdateListenerIF.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "setting/AppPreference.h"
+#include "utility/TimeoutChecker.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
-#include "commands/common/Message.h"
+#include "commands/common/Message.h" // for PopupMessage
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "SharedHwnd.h"
-#include <assert.h>
-#include <regex>
-#include <set>
+#include <mutex>
 
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
+static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
+{
+	if (PathIsURL(path)) {
+		// URLパスは非対応(ここでチェックしなくても後段のCreateFileで失敗するはずではあるが..)
+		return false;
+	}
+
+	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+	GetFileTime(h, nullptr, nullptr, &ftime);
+	CloseHandle(h);
+	return true;
+}
 
 constexpr LPCTSTR TYPENAME = _T("SimpleDictCommand");
 
-struct SimpleDictCommand::PImpl : public CommandRepositoryListenerIF
+struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 {
-	void OnNewCommand(launcherapp::core::Command* cmd) override
+	void OnLockScreenOccurred() override { }
+	void OnUnlockScreenOccurred() override { }
+	void OnTimer() override
 	{
-		UNREFERENCED_PARAMETER(cmd);
+			if (mLastUpdate == 0) {
+				GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
+				mLastUpdate = GetTickCount64(); 
+			}
+
+			if (GetTickCount64() - mLastUpdate <= 5000) {  // 更新チェック間隔は5秒に1回
+				return;
+			}
+
+			if (shouldReload()) {
+				// データ更新を予約する
+				DictionaryLoader::Get()->AddWaitingQueue(mThisPtr);
+				if (mParam.mIsNotifyUpdate) {
+					// 更新を通知する
+					CString msg;
+					msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
+					launcherapp::commands::common::PopupMessage(msg);
+				}
+			}
+
+			GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
+			mLastUpdate = GetTickCount64(); 
 	}
-	void OnDeleteCommand(Command* command) override
+
+	// 辞書データをリロードすべきか?
+	bool shouldReload()
 	{
-		if (command != mThisPtr) {
-			return;
+		// ファイルがなければリロードしない
+		if (PathFileExists(mParam.mFilePath) == FALSE) {
+			return false;
 		}
-		for (auto listener : mListeners) {
-			listener->OnDeleteCommand(mThisPtr);
-		}
+
+		// 更新日時が変化したらリロード
+		FILETIME ft;
+		return GetLastUpdateTime(mParam.mFilePath, ft) && memcmp(&ft, &mLastUpdated, sizeof(ft)) != 0;
 	}
-	void OnLancuherActivate() override {}
-	void OnLancuherUnactivate() override {}
+
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands,utility::TimeoutChecker& tm);
+	bool QueryCandidatesWithoutName(Pattern* pattern, CommandQueryItemList& commands,utility::TimeoutChecker& tm);
+	int MatchRecord(Pattern* pattern, const Record& record, int offset);
 
 	SimpleDictCommand* mThisPtr = nullptr;
 	SimpleDictParam mParam;
 	CommandHotKeyAttribute mHotKeyAttr;
 
-	std::set<CommandUpdateListenerIF*> mListeners;
+	std::mutex mMutex;
+	Dictionary mDictData;
+	FILETIME mLastUpdated;
+	uint64_t mLastUpdate = 0;
 };
+
+/**
+ 	検索処理(コマンド名が入力していなければ候補を表示しない)
+ 	@return        true: 検索結果あり   false:検索結果なし
+ 	@param[in]     pattern  検索パターン
+ 	@param[out]    commands 検索して見つかった候補を入れる入れ物
+ 	@param[in]     tm       タイムアウト判定用
+*/
+bool SimpleDictCommand::PImpl::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands,
+	utility::TimeoutChecker& tm
+)
+{
+	if (mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		// コマンド名が一致しない場合は検索対象外
+		return false;
+	}
+
+	int hitCount = 0;
+	int limit = 20;
+
+	// 辞書データをひとつずつ比較する
+	std::lock_guard<std::mutex> lock(mMutex);
+	for (const auto& record : mDictData.mRecords) {
+
+		if (tm.IsTimeout()) {
+			// 一定時間たっても終わらなかったらあきらめる
+			break;
+		}
+
+		int level = MatchRecord(pattern, record, 1);
+		if (level == Pattern::Mismatch) {
+			continue;
+		}
+
+		if (level == Pattern::PartialMatch) {
+			// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
+			level = Pattern::FrontMatch;
+		}
+		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record.mKey, record.mValue)));
+		if (++hitCount >= limit) {
+			break;
+		}
+	}
+	return hitCount > 0;
+}
+
+/**
+ 	検索処理(コマンド名が入力していなくても候補を表示する、の場合)
+ 	@return        true: 検索結果あり   false:検索結果なし
+ 	@param[in]     pattern  検索パターン
+ 	@param[out]    commands 検索して見つかった候補を入れる入れ物
+ 	@param[in]     tm       タイムアウト判定用
+*/
+bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
+	Pattern* pattern,
+	CommandQueryItemList& commands,
+	utility::TimeoutChecker& tm
+)
+{
+	int hitCount = 0;
+	int limit = 20;
+
+	// 辞書データをひとつずつ比較する
+	std::lock_guard<std::mutex> lock(mMutex);
+	for (const auto& record : mDictData.mRecords) {
+
+		if (tm.IsTimeout()) {
+			// 一定時間たっても終わらなかったらあきらめる
+			break;
+		}
+
+		int level = Pattern::Mismatch;
+		if (mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+			// コマンド名が一致しない場合。コマンド名がなくても検索する。
+			level = MatchRecord(pattern, record, 0);
+		}
+		else {
+			// コマンド名が一致する場合。コマンド名を除いて検索する
+			level = MatchRecord(pattern, record, 1);
+			if (level == Pattern::PartialMatch) {
+				// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
+				level = Pattern::FrontMatch;
+			}
+		}
+
+		if (level == Pattern::Mismatch) {
+			continue;
+		}
+		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record.mKey, record.mValue)));
+		if (++hitCount >= limit) {
+			break;
+		}
+	}
+
+	return hitCount > 0;
+}
+
+int SimpleDictCommand::PImpl::MatchRecord(Pattern* pattern, const Record& record, int offset)
+{
+	int level = pattern->Match(record.mKey, offset);
+	if (level != Pattern::Mismatch) {
+		return level;
+	}
+	if (mParam.mIsEnableReverse == false) {
+		return Pattern::Mismatch;
+	}
+
+	// 逆引きが有効なら値でのマッチングも行う
+	return pattern->Match(record.mValue, offset);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 CString SimpleDictCommand::GetType() { return _T("SimpleDict"); }
 
@@ -57,25 +223,29 @@ CString SimpleDictCommand::GetType() { return _T("SimpleDict"); }
 SimpleDictCommand::SimpleDictCommand() : in(std::make_unique<PImpl>())
 {
 	in->mThisPtr = this;
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->RegisterListener(in.get());
+	LauncherWindowEventDispatcher::Get()->AddListener(in.get());
 }
 
 SimpleDictCommand::~SimpleDictCommand()
 {
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->UnregisterListener(in.get());
+	LauncherWindowEventDispatcher::Get()->RemoveListener(in.get());
 }
 
-void SimpleDictCommand::AddListener(CommandUpdateListenerIF* listener)
+bool SimpleDictCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	in->mListeners.insert(listener);
-	listener->OnUpdateCommand(this, in->mParam.mName);
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
+	}
+	return false;
 }
 
-void SimpleDictCommand::RemoveListener(CommandUpdateListenerIF* listener)
+
+void SimpleDictCommand::UpdateDictionary(Dictionary& dict)
 {
-	in->mListeners.erase(listener);
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	in->mDictData.mRecords.swap(dict.mRecords);
 }
 
 const SimpleDictParam& SimpleDictCommand::GetParam()
@@ -182,10 +352,9 @@ int SimpleDictCommand::EditDialog(HWND parent)
 	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepo->ReregisterCommand(this);
 
-	// コマンドの設定情報の変更を通知
-	for (auto listener : in->mListeners) {
-		listener->OnUpdateCommand(this, orgName);
-	}
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(this);
+
 	return 0;
 }
 
@@ -210,7 +379,8 @@ SimpleDictCommand::Clone()
 	auto clonedCmd = std::make_unique<SimpleDictCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
-	clonedCmd->in->mListeners = in->mListeners;
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	clonedCmd->in->mDictData = in->mDictData;
 
 	return clonedCmd.release();
 }
@@ -269,6 +439,9 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
 
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(this);
+
 	return true;
 }
 
@@ -281,10 +454,9 @@ bool SimpleDictCommand::NewDialog(
 	// パラメータ指定には対応していない
 	UNREFERENCED_PARAMETER(param);
 
-
 	ExcelApplication app;
 	if (app.IsInstalled() == false) {
-		AfxMessageBox(_T("簡易辞書コマンドはExcelがインストールされていないと利用できません"));
+		AfxMessageBox(_T("簡易辞書コマンドを利用するにはExcelがインストールされている必要がありまず"));
 		return false;
 	}
 
@@ -299,21 +471,44 @@ bool SimpleDictCommand::NewDialog(
 	auto newCmd = std::make_unique<SimpleDictCommand>();
 	newCmd->in->mParam = commandParam;
 
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(newCmd.get());
+
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
 	}
+
 	return true;
 }
 
-bool SimpleDictCommand::CastFrom(launcherapp::core::Command* cmd, SimpleDictCommand** newCmd)
+/**
+ 	コマンドの候補として追加表示する項目を取得する
+ 	@return true:取得成功   false:取得失敗(表示しない)
+ 	@param[in]  pattern  入力パターン
+ 	@param[out] commands 表示する候補
+*/
+bool SimpleDictCommand::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands
+)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
-		return false;
+	utility::TimeoutChecker tm(100);  // 100msecでタイムアウト
+
+	if (in->mParam.mIsMatchWithoutKeyword == false) {
+		return in->QueryCandidates(pattern, commands, tm);
 	}
-	*newCmd = dynamic_cast<SimpleDictCommand*>(cmd);
-	cmd->AddRef();
-	return true;
+	else {
+		return in->QueryCandidatesWithoutName(pattern, commands, tm);
+	}
 }
+
+/**
+ 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
+*/
+void SimpleDictCommand::ClearCache()
+{
+}
+
 
 } // end of namespace simple_dict
 } // end of namespace commands

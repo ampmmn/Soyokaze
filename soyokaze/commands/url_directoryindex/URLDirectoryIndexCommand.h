@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/url_directoryindex/DirectoryIndexQueryResult.h"
 #include <memory>
 
@@ -12,7 +13,9 @@ namespace url_directoryindex {
 
 class CommandParam;
 
-class URLDirectoryIndexCommand : public launcherapp::commands::common::UserCommandBase
+class URLDirectoryIndexCommand : 
+	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	URLDirectoryIndexCommand();
@@ -22,7 +25,7 @@ public:
 	CString GetSubPath();
 	void LoadCanidates(bool& isHTML);
 
-	void Query(Pattern* pattern, DirectoryIndexQueryResult& results);
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -42,10 +45,13 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, URLDirectoryIndexCommand** newCmd);
-	static bool CastFrom(launcherapp::core::Command* cmd, URLDirectoryIndexCommand** newCmd); 
 	
 public:
 	URLDirectoryIndexCommand& SetParam(const CommandParam& param);

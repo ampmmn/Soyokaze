@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/everything/EverythingCommandParam.h"
 #include <memory>
 #include <vector>
@@ -13,13 +14,15 @@ namespace everything {
 
 class EverythingResult;
 
-class EverythingCommand : public launcherapp::commands::common::UserCommandBase
+class EverythingCommand : 
+	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	EverythingCommand();
 	virtual ~EverythingCommand();
 
-	void Query(Pattern* pattern, std::vector<EverythingResult>& results);
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -39,11 +42,14 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, EverythingCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommand** newCmdPtr);
-	static bool CastFrom(launcherapp::core::Command* cmd, EverythingCommand** newCmd); 
 
 	const CommandParam& GetParam();
 protected:

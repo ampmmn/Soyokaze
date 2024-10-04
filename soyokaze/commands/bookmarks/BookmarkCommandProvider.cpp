@@ -1,15 +1,10 @@
 #include "pch.h"
 #include "BookmarkCommandProvider.h"
 #include "commands/bookmarks/BookmarkCommand.h"
-#include "commands/bookmarks/URLCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
-#include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
-#include <list>
-#include <functional>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,61 +14,7 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-using BookmarkCommandPtr = std::unique_ptr<BookmarkCommand, std::function<void(void*)> >;
-using BookmarkCommandList = std::vector<BookmarkCommandPtr>;
-
 using CommandRepository = launcherapp::core::CommandRepository;
-
-
-static void releaseCmd(void* p)
-{
-	auto ptr = (BookmarkCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
-
-struct BookmarkCommandProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
-{
-	PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->RegisterListener(this);
-
-	}
-	virtual ~PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->UnregisterListener(this);
-	}
-
-	void OnNewCommand(launcherapp::core::Command* cmd) override
-	{
-		BookmarkCommand* newCmd = nullptr;
-		if (BookmarkCommand::CastFrom(cmd, &newCmd) == false) {
-			return;
-		}
-		mCommands.push_back(BookmarkCommandPtr(newCmd, releaseCmd));
-	}
-
-	void OnDeleteCommand(launcherapp::core::Command* cmd) override
- 	{
-		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
-			if ((*it).get() != cmd) {
-				continue;
-			}
-
-			mCommands.erase(it);
-			break;
-		}
-	}
-	void OnLancuherActivate() override {}
-	void OnLancuherUnactivate() override {}
-
-
-	BookmarkCommandList mCommands;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +23,7 @@ struct BookmarkCommandProvider::PImpl : public launcherapp::core::CommandReposit
 REGISTER_COMMANDPROVIDER(BookmarkCommandProvider)
 
 
-BookmarkCommandProvider::BookmarkCommandProvider() : in(std::make_unique<PImpl>())
+BookmarkCommandProvider::BookmarkCommandProvider()
 {
 }
 
@@ -123,37 +64,6 @@ bool BookmarkCommandProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 一時的なコマンドを必要に応じて提供する
-void BookmarkCommandProvider::QueryAdhocCommands(
-	Pattern* pattern,
- 	CommandQueryItemList& commands
-)
-{
-	// 完全一致検索の場合は検索ワード補完をしない
-	if (pattern->shouldWholeMatch()) {
-		return;
-	}
-
-	std::vector<Bookmark> bookmarks;
-
-	CString url;
-	CString displayName;
-	for (auto& cmd : in->mCommands) {
-
-		if (cmd->QueryBookmarks(pattern, bookmarks) == false) {
-			continue;
-		}
-
-		for (auto& bkm : bookmarks) {
-
-			LPCTSTR brwoserType = bkm.mBrowser == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
-
-			commands.Add(CommandQueryItem(bkm.mMatchLevel, 
-			                                    new URLCommand(brwoserType, bkm.mName, bkm.mUrl)));
-		}
-	}
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t BookmarkCommandProvider::GetOrder() const
 {
@@ -162,7 +72,6 @@ uint32_t BookmarkCommandProvider::GetOrder() const
 
 void BookmarkCommandProvider::OnBeforeLoad()
 {
-	in->mCommands.clear();
 }
 
 bool BookmarkCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)

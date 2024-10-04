@@ -18,6 +18,12 @@ struct DummyCommand : public launcherapp::core::Command
 	{
 	}
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override
+	{
+		return false;
+	}
+
+
 	CString GetName() override
 	{
 		return _T("Dummy name");

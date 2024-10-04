@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/webhistory/WebHistory.h"
 #include <memory>
 
@@ -8,13 +9,15 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-class WebHistoryCommand : public launcherapp::commands::common::UserCommandBase
+class WebHistoryCommand :
+ 	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	WebHistoryCommand();
 	virtual ~WebHistoryCommand();
 
-	bool QueryHistories(Pattern* pattern, std::vector<HISTORY>& histories);
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	// 
 // Comand
 	CString GetName() override;
@@ -35,10 +38,13 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<WebHistoryCommand>& newCmd);
-	static bool CastFrom(launcherapp::core::Command* cmd, WebHistoryCommand** newCmd); 
 
 protected:
 	struct PImpl;

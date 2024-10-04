@@ -193,6 +193,9 @@
     <Filter Include="commands\keysplitter">
       <UniqueIdentifier>{491319ca-409f-4775-ad09-ef2537b40718}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\extracandidate">
+      <UniqueIdentifier>{df6b0b9b-124f-4810-a5e8-751fa60ef48a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -619,9 +622,6 @@
       <Filter>commands\simple_dict</Filter>
     </ClInclude>
     <ClInclude Include="commands\simple_dict\SimpleDictCommandUpdateListenerIF.h">
-      <Filter>commands\simple_dict</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\simple_dict\SimpleDictDatabase.h">
       <Filter>commands\simple_dict</Filter>
     </ClInclude>
     <ClInclude Include="commands\simple_dict\SimpleDictAdhocCommand.h">
@@ -1152,6 +1152,15 @@
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h">
+      <Filter>commands\extracandidate</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\DictionaryLoader.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictionary.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1554,9 +1563,6 @@
       <Filter>commands\simple_dict</Filter>
     </ClCompile>
     <ClCompile Include="commands\simple_dict\SimpleDictProvider.cpp">
-      <Filter>commands\simple_dict</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\simple_dict\SimpleDictDatabase.cpp">
       <Filter>commands\simple_dict</Filter>
     </ClCompile>
     <ClCompile Include="commands\simple_dict\SimpleDictAdhocCommand.cpp">
@@ -2038,6 +2044,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\MainWindowLayout.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp">
+      <Filter>commands\extracandidate</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp">
+      <Filter>commands\simple_dict</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

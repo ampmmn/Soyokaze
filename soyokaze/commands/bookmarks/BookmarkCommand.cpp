@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "BookmarkCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/bookmarks/BookmarkCommandParam.h"
 #include "commands/bookmarks/URLCommand.h"
 #include "commands/bookmarks/BookmarkSettingDialog.h"
@@ -77,33 +78,14 @@ BookmarkCommand::~BookmarkCommand()
 {
 }
 
-bool BookmarkCommand::QueryBookmarks(Pattern* pattern, std::vector<Bookmark>& bookmarks)
+bool BookmarkCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	const auto& cmdName = in->mParam.mName;
-	// コマンド名が一致しなければ候補を表示しない
-	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
-		return false;
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-
-	// ToDo: 階層をコマンド設定で指定できるようにする
-
-	std::vector<Bookmark> tmp;
-
-	// Chromeのブックマークを取得し、キーワードで絞り込み
-	std::vector<Bookmark> items;
-	if (in->mParam.mIsEnableChrome && in->mBookmarks.LoadChromeBookmarks(items)) {
-		in->Query(BrowserType::Chrome, pattern, items, tmp);
-	}
-
-	// Edgeのブックマーク一覧をしゅとくし、キーワードで絞り込み
-	if (in->mParam.mIsEnableEdge && in->mBookmarks.LoadEdgeBookmarks(items)) {
-		in->Query(BrowserType::Edge, pattern, items, tmp);
-	}
-
-	// 結果をコピー
-	bookmarks.swap(tmp);
-
-	return bookmarks.size() > 0; 
+	return false;
 }
 
 CString BookmarkCommand::GetName()
@@ -286,18 +268,45 @@ bool BookmarkCommand::NewDialog(
 	return true;
 }
 
-bool BookmarkCommand::CastFrom(launcherapp::core::Command* cmd, BookmarkCommand** castedCmd)
+bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {
-	ASSERT(cmd != nullptr);
-	ASSERT(castedCmd != nullptr);
-	if (cmd->GetTypeName() != TYPENAME) {
+	// コマンド名が一致しなければ候補を表示しない
+	if (in->mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return false;
 	}
-	cmd->AddRef();
-	*castedCmd = dynamic_cast<BookmarkCommand*>(cmd);
+
+	// 完全一致検索の場合は検索ワード補完をしない
+	if (pattern->shouldWholeMatch()) {
+		return false;
+	}
+
+	// ToDo: 階層をコマンド設定で指定できるようにする
+
+	std::vector<Bookmark> bookmarks;
+
+	// Chromeのブックマークを取得し、キーワードで絞り込み
+	std::vector<Bookmark> items;
+	if (in->mParam.mIsEnableChrome && in->mBookmarks.LoadChromeBookmarks(items)) {
+		in->Query(BrowserType::Chrome, pattern, items, bookmarks);
+	}
+
+	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
+	if (in->mParam.mIsEnableEdge && in->mBookmarks.LoadEdgeBookmarks(items)) {
+		in->Query(BrowserType::Edge, pattern, items, bookmarks);
+	}
+
+	for (auto& bkm : bookmarks) {
+		LPCTSTR brwoserType = bkm.mBrowser == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
+		commands.Add(CommandQueryItem(bkm.mMatchLevel, new URLCommand(brwoserType, bkm.mName, bkm.mUrl)));
+	}
 
 	return true;
 }
+
+void BookmarkCommand::ClearCache()
+{
+}
+
 
 } // end of namespace bookmarks
 } // end of namespace commands

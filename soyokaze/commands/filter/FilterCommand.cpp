@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterCommand.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/filter/FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterEditDialog.h"
 #include "commands/filter/FilterExecutor.h"
@@ -73,42 +75,14 @@ FilterCommand::~FilterCommand()
 {
 }
 
-void FilterCommand::ClearCache()
+bool FilterCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	if (in->mParam.mCacheType == 0) { // キャッシュしない場合
-		SPDLOG_DEBUG(_T("clear cache."));
-		if (in->mExecutor) {
-			SPDLOG_DEBUG(_T("extcutor exists."));
-			in->mExecutor->Release();
-			in->mExecutor = nullptr;
-		}
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
 	}
-	else {
-		SPDLOG_DEBUG(_T("do not clear cache."));
-	}
-}
-
-void FilterCommand::Query(Pattern* pattern, FilterResultList& results)
-{
-	if (in->mExecutor == nullptr) {
-		return ;
-	}
-
-	// コマンド名が一致しなければ候補を表示しない
-	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
-		return;
-	}
-
-	std::vector<CString> words;
-	CString queryStr;
-	pattern->GetRawWords(words);
-	for (size_t i = 1; i < words.size(); ++i) {
-		queryStr += words[i];
-		queryStr += _T(" ");
-	}
-
-	in->mExecutor->Query(queryStr, results);
-
+	return false;
 }
 
 CString FilterCommand::GetName()
@@ -367,15 +341,62 @@ bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
 	return true;
 }
 
-bool FilterCommand::CastFrom(launcherapp::core::Command* cmd, FilterCommand** newCmd)
+/**
+ 	フィルタコマンドの候補として追加表示する項目を取得する
+ 	@return true:取得成功   false:取得失敗(表示しない)
+ 	@param[in]  pattern  入力パターン
+ 	@param[out] commands 表示する候補
+*/
+bool FilterCommand::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands
+)
 {
-	if (cmd->GetTypeName() != TYPENAME) {
+	if (in->mExecutor == nullptr) {
 		return false;
 	}
-	*newCmd = dynamic_cast<FilterCommand*>(cmd);
-	cmd->AddRef();
+
+	// コマンド名が一致しなければ候補を表示しない
+	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return false;
+	}
+
+	std::vector<CString> words;
+	CString queryStr;
+	pattern->GetRawWords(words);
+	for (size_t i = 1; i < words.size(); ++i) {
+		queryStr += words[i];
+		queryStr += _T(" ");
+	}
+
+	std::vector<FilterResult> results;
+	in->mExecutor->Query(queryStr, results);
+
+	for (auto& result : results) {
+		commands.Add(CommandQueryItem(result.mMatchLevel, new FilterAdhocCommand(in->mParam, result)));
+	}
+
 	return true;
 }
+
+/**
+ 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
+*/
+void FilterCommand::ClearCache()
+{
+	if (in->mParam.mCacheType == 0) { // キャッシュしない場合
+		SPDLOG_DEBUG(_T("clear cache."));
+		if (in->mExecutor) {
+			SPDLOG_DEBUG(_T("extcutor exists."));
+			in->mExecutor->Release();
+			in->mExecutor = nullptr;
+		}
+	}
+	else {
+		SPDLOG_DEBUG(_T("do not clear cache."));
+	}
+}
+
 
 } // end of namespace filter
 } // end of namespace commands

@@ -1,21 +1,23 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace websearch {
 
-class WebSearchCommand : public launcherapp::commands::common::UserCommandBase
+class WebSearchCommand :
+ 	virtual public launcherapp::commands::common::UserCommandBase,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	WebSearchCommand();
 	virtual ~WebSearchCommand();
 
-	int BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url);
-	// 
 // Comand
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
@@ -34,10 +36,13 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 	static CString GetType();
 
 	static bool NewDialog(const Parameter* param, std::unique_ptr<WebSearchCommand>& newCmd);
-	static bool CastFrom(launcherapp::core::Command* cmd, WebSearchCommand** newCmd); 
 
 protected:
 	struct PImpl;

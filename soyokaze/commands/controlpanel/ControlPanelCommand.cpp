@@ -47,8 +47,8 @@ CString ControlPanelCommand::GetGuideString()
 }
 
 /**
- * í•Ê‚ğ•\‚·•¶š—ñ‚ğæ“¾‚·‚é
- * @return •¶š—ñ
+ * ç¨®åˆ¥ã‚’è¡¨ã™æ–‡å­—åˆ—ã‚’å–å¾—ã™ã‚‹
+ * @return æ–‡å­—åˆ—
  */
 CString ControlPanelCommand::GetTypeName()
 {

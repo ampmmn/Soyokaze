@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "WebHistoryProvider.h"
 #include "commands/webhistory/WebHistoryCommand.h"
-#include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandParameter.h"
-#include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
@@ -19,60 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-using WebHistoryCommandPtr = std::unique_ptr<WebHistoryCommand, std::function<void(void*)> >;
-using WebHistoryCommandList = std::vector<WebHistoryCommandPtr>;
-
 using CommandRepository = launcherapp::core::CommandRepository;
-
-static void releaseCmd(void* p)
-{
-	auto ptr = (WebHistoryCommand*)p;
-	if (ptr) {
-		ptr->Release();
-	}
-}
-
-
-
-struct WebHistoryProvider::PImpl : public launcherapp::core::CommandRepositoryListenerIF
-{
-	PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->RegisterListener(this);
-
-	}
-	virtual ~PImpl()
-	{
-		auto cmdRepo = CommandRepository::GetInstance();
-		cmdRepo->UnregisterListener(this);
-	}
-
-	void OnNewCommand(launcherapp::core::Command* cmd) override
-	{
-		WebHistoryCommand* newCmd = nullptr;
-		if (WebHistoryCommand::CastFrom(cmd, &newCmd) == false) {
-			return;
-		}
-		mCommands.push_back(WebHistoryCommandPtr(newCmd, releaseCmd));
-	}
-	void OnDeleteCommand(launcherapp::core::Command* cmd) override
- 	{
-		for (auto it = mCommands.begin(); it != mCommands.end(); ++it) {
-			if ((*it).get() != cmd) {
-				continue;
-			}
-
-			mCommands.erase(it);
-			break;
-		}
-	}
-	void OnLancuherActivate() override {}
-	void OnLancuherUnactivate() override {}
-
-
-	WebHistoryCommandList mCommands;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +25,7 @@ struct WebHistoryProvider::PImpl : public launcherapp::core::CommandRepositoryLi
 REGISTER_COMMANDPROVIDER(WebHistoryProvider)
 
 
-WebHistoryProvider::WebHistoryProvider() : in(std::make_unique<PImpl>())
+WebHistoryProvider::WebHistoryProvider()
 {
 }
 
@@ -123,34 +67,6 @@ bool WebHistoryProvider::NewDialog(const CommandParameter* param)
 	return true;
 }
 
-// 一時的なコマンドを必要に応じて提供する
-void WebHistoryProvider::QueryAdhocCommands(
-	Pattern* pattern,
-	CommandQueryItemList& commands
-)
-{
-	// 完全一致検索の場合は検索ワード補完をしない
-	if (pattern->shouldWholeMatch()) {
-		return;
-	}
-
-	std::vector<HISTORY> histories;
-
-	CString url;
-	CString displayName;
-	for (auto& cmd : in->mCommands) {
-
-		if (cmd->QueryHistories(pattern, histories) == false) {
-			continue;
-		}
-
-		for (auto& history : histories) {
-			auto adhocCmd = new WebHistoryAdhocCommand(history);
-			commands.Add(CommandQueryItem(history.mMatchLevel, adhocCmd));
-		}
-	}
-}
-
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t WebHistoryProvider::GetOrder() const
 {
@@ -159,7 +75,6 @@ uint32_t WebHistoryProvider::GetOrder() const
 
 void WebHistoryProvider::OnBeforeLoad()
 {
-	in->mCommands.clear();
 }
 
 bool WebHistoryProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
