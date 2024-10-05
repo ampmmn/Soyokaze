@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "MailCommand.h"
 #include "commands/outlook/OutlookItems.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -11,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
+
 namespace launcherapp {
 namespace commands {
 namespace outlook {
-
-constexpr LPCTSTR TYPENAME = _T("MailCommand");
 
 struct MailCommand::PImpl
 {
@@ -53,24 +54,15 @@ CString MailCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString MailCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString MailCommand::GetTypeDisplayName()
 {
 	return _T("Outlookメール");
 }
 
-BOOL MailCommand::Execute(const Parameter& param)
+BOOL MailCommand::Execute(Parameter* param)
 {
 	// Ctrlキーが押されていたら最大化表示する
-	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
 
 	if (in->mMailItem) {
 		return in->mMailItem->Activate(isShowMaximize);

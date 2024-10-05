@@ -50,10 +50,9 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 			}
 
 			// フォルダを開く
-			launcherapp::core::CommandParameter param;
-			SubProcess exec(param);
+			SubProcess exec(launcherapp::core::CommandParameterBuilder::EmptyParam());
 			SubProcess::ProcessPtr process;
-			exec.Run(path, param.GetParameterString(), process);
+			exec.Run(path, _T(""), process);
 
 			return S_OK;
 		}

@@ -58,7 +58,7 @@ CString URLDirectoryIndexCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool URLDirectoryIndexCommandProvider::NewDialog(const CommandParameter* param)
+bool URLDirectoryIndexCommandProvider::NewDialog(CommandParameter* param)
 {
 	URLDirectoryIndexCommand* newCmd = nullptr;
 	if (URLDirectoryIndexCommand::NewDialog(param, &newCmd) == false) {

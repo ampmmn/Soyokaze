@@ -24,8 +24,6 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-constexpr LPCTSTR TYPENAME = _T("WebHistoryCommand");
-
 struct WebHistoryCommand::PImpl
 {
 	CommandParam mParam;
@@ -155,21 +153,12 @@ CString WebHistoryCommand::GetGuideString()
 	return _T("Enter:ページを表示する");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WebHistoryCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WebHistoryCommand::GetTypeDisplayName()
 {
 	return _T("ブラウザ履歴検索");
 }
 
-BOOL WebHistoryCommand::Execute(const Parameter& param_)
+BOOL WebHistoryCommand::Execute(Parameter* param_)
 {
 	UNREFERENCED_PARAMETER(param_);
 
@@ -301,7 +290,7 @@ bool WebHistoryCommand::Load(CommandEntryIF* entry)
 
 
 bool WebHistoryCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	std::unique_ptr<WebHistoryCommand>& newCmd
 )
 {

@@ -17,8 +17,6 @@ namespace launcherapp {
 namespace commands {
 namespace env {
 
-constexpr LPCTSTR TYPENAME = _T("EnvCommand");
-
 struct EnvCommand::PImpl
 {
 	CString mValue;
@@ -41,22 +39,13 @@ CString EnvCommand::GetGuideString()
 	return _T("Enter:クリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString EnvCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString EnvCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_ENVIRON);
 	return TEXT_TYPE;
 }
 
-BOOL EnvCommand::Execute(const Parameter& param)
+BOOL EnvCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

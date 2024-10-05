@@ -24,7 +24,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(const CommandParameter* param) override;
+	bool NewDialog(CommandParameter* param) override;
 
 	// 一時的なコマンドを必要に応じて提供する
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;

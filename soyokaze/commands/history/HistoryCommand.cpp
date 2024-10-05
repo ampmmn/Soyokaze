@@ -17,13 +17,13 @@ namespace history {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
 struct HistoryCommand::PImpl
 {
 	CString mKeyword;
-	Parameter mParam;
 	Command* mCmd = nullptr;
 };
 
@@ -33,10 +33,14 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PIm
 	this->mName = keyword;
 
 	in->mKeyword = keyword;
-	in->mParam.SetWholeString(keyword);
+
+	auto paramTmp = CommandParameterBuilder::Create(keyword);
+	auto commandPart = paramTmp->GetCommandString();
+	paramTmp->Release();
+	
 
 	auto cmdRepo = CommandRepository::GetInstance();
-	auto cmd = cmdRepo->QueryAsWholeMatch(in->mParam.GetCommandString(), true);
+	auto cmd = cmdRepo->QueryAsWholeMatch(commandPart, true);
 	if (cmd == nullptr) {
 		return;
 	}
@@ -56,19 +60,10 @@ HistoryCommand::~HistoryCommand()
 CString HistoryCommand::GetGuideString()
 {
 	if (in->mCmd == nullptr) {
-		return _T("Enter:$B3+$/(B");
+		return _T("Enter:開く");
 	}
 
 	return in->mCmd->GetGuideString();
-}
-
-/**
- * $B<oJL$rI=$9J8;zNs$r<hF@$9$k(B
- * @return $BJ8;zNs(B
- */
-CString HistoryCommand::GetTypeName()
-{
-	return TYPENAME;
 }
 
 CString HistoryCommand::GetTypeDisplayName()
@@ -77,16 +72,20 @@ CString HistoryCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL HistoryCommand::Execute(const Parameter& param)
+BOOL HistoryCommand::Execute(Parameter* param)
 {
 	if (in->mCmd == nullptr) {
 		return FALSE;
 	}
 
-	Parameter paramTmp(in->mParam);
-	param.CopyNamedParamTo(paramTmp);
+	auto paramTmp = param->Clone();
+	paramTmp->SetWholeString(in->mKeyword);
 
-	return in->mCmd->Execute(paramTmp);
+	BOOL result = in->mCmd->Execute(paramTmp);
+
+	paramTmp->Release();
+
+	return result;
 }
 
 HICON HistoryCommand::GetIcon()

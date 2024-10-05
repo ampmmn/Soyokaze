@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "commands/core/IFIDDefine.h"
 #include <memory>
 
 namespace launcherapp {
@@ -19,9 +20,8 @@ public:
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
-	CString GetTypeName() override;
 	//CString GetTypeDisplayName() override;
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;

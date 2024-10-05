@@ -17,8 +17,6 @@ namespace launcherapp {
 namespace commands {
 namespace align_window {
 
-constexpr LPCTSTR TYPENAME = _T("AlignWindowCommand");
-
 struct AlignWindowCommand::PImpl
 {
 	CommandParam mParam;
@@ -69,15 +67,6 @@ CString AlignWindowCommand::GetGuideString()
 }
 
 /**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString AlignWindowCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
-/**
  	コマンド種別を表す文字列を取得する
  	@return コマンド種別
 */
@@ -116,7 +105,7 @@ static HWND GetNextHwnd()
  	@param[in] param コマンド実行時パラメータ
 */
 BOOL AlignWindowCommand::Execute(
-	const Parameter& param
+	Parameter* param
 )
 {
 	UNREFERENCED_PARAMETER(param);
@@ -335,7 +324,7 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 }
 
 bool AlignWindowCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	AlignWindowCommand** newCmdPtr
 )
 {

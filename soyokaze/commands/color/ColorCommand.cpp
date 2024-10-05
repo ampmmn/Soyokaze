@@ -18,8 +18,6 @@ namespace launcherapp {
 namespace commands {
 namespace color {
 
-constexpr LPCTSTR TYPENAME = _T("ColorCommand");
-
 struct ColorCommand::PImpl
 {
 	HICON mColorIcon = nullptr;
@@ -113,22 +111,13 @@ CString ColorCommand::GetGuideString()
 	return _T("Enter:クリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString ColorCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString ColorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_COLOR);
 	return TEXT_TYPE;
 }
 
-BOOL ColorCommand::Execute(const Parameter& param)
+BOOL ColorCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

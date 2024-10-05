@@ -18,8 +18,6 @@ namespace launcherapp {
 namespace commands {
 namespace pathconvert {
 
-constexpr LPCTSTR TYPENAME = _T("LocalToGitBashPathAdhocCommand");
-
 struct LocalToGitBashPathAdhocCommand::PImpl
 {
 	CString mFullPath;
@@ -50,21 +48,12 @@ CString LocalToGitBashPathAdhocCommand::GetGuideString()
 	return _T("Enter:パスをコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString LocalToGitBashPathAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()
 {
 	return _T("Local To git-bash Path");
 }
 
-BOOL LocalToGitBashPathAdhocCommand::Execute(const Parameter& param)
+BOOL LocalToGitBashPathAdhocCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

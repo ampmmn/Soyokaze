@@ -28,8 +28,6 @@ namespace commands {
 namespace filter {
 
 
-constexpr LPCTSTR TYPENAME = _T("FilterCommand");
-
 struct FilterCommand::PImpl
 {
 	PImpl()
@@ -101,22 +99,13 @@ CString FilterCommand::GetGuideString()
 	return _T("Enter:候補を表示する");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString FilterCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString FilterCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL FilterCommand::Execute(const Parameter& param)
+BOOL FilterCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -298,25 +287,17 @@ bool FilterCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool FilterCommand::NewDialog(const Parameter* param, FilterCommand** newCmd)
+bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 {
 	// 新規作成ダイアログを表示
 	CString value;
 
 	CommandParam tmpParam;
 
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		tmpParam.mName = value;
-	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		tmpParam.mPath = value;
-	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		tmpParam.mDescription = value;
-	}
-	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
-		tmpParam.mParameter = value;
-	}
+	GetNamedParamString(param, _T("COMMAND"), tmpParam.mName);
+	GetNamedParamString(param, _T("PATH"), tmpParam.mPath);
+	GetNamedParamString(param, _T("DESCRIPTION"), tmpParam.mDescription);
+	GetNamedParamString(param, _T("ARGUMENT"), tmpParam.mParameter);
 
 	FilterEditDialog dlg;
 	dlg.SetParam(tmpParam);

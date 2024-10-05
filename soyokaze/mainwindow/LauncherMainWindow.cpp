@@ -563,11 +563,13 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				launcherapp::core::CommandParameter param;
-				param.SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
-				param.SetNamedParamString(_T("PATH"), urlString);
+				auto param = launcherapp::core::CommandParameterBuilder::Create();
+				param->SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
+				param->SetNamedParamString(_T("PATH"), urlString);
 
-				GetCommandRepository()->NewCommandDialog(&param);
+				GetCommandRepository()->NewCommandDialog(param);
+
+				param->Release();
 			}
 			else if (wnd == &in->mKeywordEdit) {
 				in->mCommandStr += urlString;
@@ -607,14 +609,16 @@ LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 
 	// 
 	try {
-		launcherapp::core::CommandParameter param;
-		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
-		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
-		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
-		param.SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
-		param.SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
+		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
+		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
+		param->SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
+		param->SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
 
-		GetCommandRepository()->NewCommandDialog(&param);
+		GetCommandRepository()->NewCommandDialog(param);
+
+		param->Release();
 		return 0;
 	}
 	catch(ProcessPath::Exception& e) {
@@ -717,17 +721,19 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
 	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
 
-	launcherapp::core::CommandParameter commandParam(str);
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
 
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam.GetCommandString(), true);
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam->GetCommandString(), true);
 	if (cmd == nullptr) {
-		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam.GetCommandString());
+		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam->GetCommandString());
+
+		commandParam->Release();
 		return false;
 	}
 
-	std::thread th([cmd, str]() {
-		launcherapp::core::CommandParameter commandParam(str);
+	std::thread th([cmd, commandParam]() {
 		cmd->Execute(commandParam);
+		commandParam->Release();
 		cmd->Release();
 	});
 	th.detach();
@@ -1078,10 +1084,12 @@ void LauncherMainWindow::QueryAsync()
 	}
 
 	// 検索リクエスト
-	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mCommandStr);
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
 	GetCommandRepository()->Query(req);
+
+	commandParam->Release();
 }
 
 
@@ -1094,12 +1102,14 @@ void LauncherMainWindow::QuerySync()
 		return;
 	}
 
-	launcherapp::core::CommandParameter commandParam(in->mCommandStr);
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mCommandStr);
 
 	// キーワードによる絞り込みを実施
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
 	GetCommandRepository()->Query(req);
+
+	commandParam->Release();
 
 	WaitQueryRequest();
 }
@@ -1167,20 +1177,20 @@ void LauncherMainWindow::RunCommand(
 
 	std::thread th([cmd, str]() {
 
-		launcherapp::core::CommandParameter commandParam(str);
+		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
 
 		// Ctrlキーが押されているかを設定
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			commandParam.SetNamedParamBool(_T("CtrlKeyPressed"), true);
+			commandParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
 		}
 		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-			commandParam.SetNamedParamBool(_T("ShiftKeyPressed"), true);
+			commandParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
 		}
 		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-			commandParam.SetNamedParamBool(_T("WinKeyPressed"), true);
+			commandParam->SetNamedParamBool(_T("WinKeyPressed"), true);
 		}
 		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-			commandParam.SetNamedParamBool(_T("AltKeyPressed"), true);
+			commandParam->SetNamedParamBool(_T("AltKeyPressed"), true);
 		}
 
 		if (cmd->Execute(commandParam) == FALSE) {
@@ -1190,6 +1200,8 @@ void LauncherMainWindow::RunCommand(
 				app->PopupMessage(errMsg);
 			}
 		}
+
+		commandParam->Release();
 
 		// コマンドの参照カウントを下げる
 		cmd->Release();

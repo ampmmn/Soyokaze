@@ -24,7 +24,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(const CommandParameter* param) override;
+	bool NewDialog(CommandParameter* param) override;
 
 	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;

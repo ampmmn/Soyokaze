@@ -2,6 +2,7 @@
 #include "WindowActivateCommand.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateSettingDialog.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -13,13 +14,13 @@
 #include <assert.h>
 #include <regex>
 
+using namespace launcherapp::commands::common;
+
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
 constexpr int UPDATE_INTERVAL = 5000;
-
-constexpr LPCTSTR TYPENAME = _T("WindowActivateCommand");
 
 struct WindowActivateCommand::PImpl
 {
@@ -73,22 +74,13 @@ CString WindowActivateCommand::GetGuideString()
 	return _T("Enter:ウインドウをアクティブにする");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WindowActivateCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WindowActivateCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);
 	return TEXT_TYPE;
 }
 
-BOOL WindowActivateCommand::Execute(const Parameter& param)
+BOOL WindowActivateCommand::Execute(Parameter* param)
 {
 	// ここで該当するウインドウを探す
 	HWND hwndTarget = in->FindHwnd();
@@ -108,7 +100,7 @@ BOOL WindowActivateCommand::Execute(const Parameter& param)
 	}
 
 	LONG_PTR style = GetWindowLongPtr(hwndTarget, GWL_STYLE);
-	if (param.GetNamedParamBool(_T("CtrlKeyPressed")) && (style & WS_MAXIMIZE) == 0) {
+	if (GetModifierKeyState(param, MASK_CTRL) != 0 && (style & WS_MAXIMIZE) == 0) {
 		// Ctrlキーが押されていたら最大化表示する
 		PostMessage(hwndTarget, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 	}
@@ -229,7 +221,7 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 }
 
 bool WindowActivateCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	WindowActivateCommand** newCmdPtr
 )
 {

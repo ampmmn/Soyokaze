@@ -38,7 +38,7 @@ ManagerCommand::~ManagerCommand()
 {
 }
 
-BOOL ManagerCommand::Execute(const Parameter& param)
+BOOL ManagerCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -13,7 +13,7 @@ public:
 	CopyClipboardCommand(const CopyClipboardCommand& rhs);
 	virtual ~CopyClipboardCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

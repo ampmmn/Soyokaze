@@ -52,7 +52,7 @@ CString VolumeCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool VolumeCommandProvider::NewDialog(const CommandParameter* param)
+bool VolumeCommandProvider::NewDialog(CommandParameter* param)
 {
 	return VolumeCommand::NewDialog(param);
 }

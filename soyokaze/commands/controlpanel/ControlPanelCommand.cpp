@@ -16,8 +16,6 @@ namespace launcherapp {
 namespace commands {
 namespace controlpanel {
 
-constexpr LPCTSTR TYPENAME = _T("ControlPanelCommand");
-
 struct ControlPanelCommand::PImpl
 {
 	CString mIconPath;
@@ -46,22 +44,13 @@ CString ControlPanelCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString ControlPanelCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString ControlPanelCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CONTROLPANEL);
 	return TEXT_TYPE;
 }
 
-BOOL ControlPanelCommand::Execute(const Parameter& param)
+BOOL ControlPanelCommand::Execute(Parameter* param)
 {
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;

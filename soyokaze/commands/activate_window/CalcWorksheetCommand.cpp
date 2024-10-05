@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CalcWorksheetCommand.h"
 #include "commands/activate_window/CalcWorksheets.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -15,7 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-constexpr LPCTSTR TYPENAME = _T("CalcWorksheetCommand");
+using namespace launcherapp::commands::common;
 
 struct CalcWorksheetCommand::PImpl
 {
@@ -46,20 +47,15 @@ CString CalcWorksheetCommand::GetGuideString()
 	return _T("Enter:シートをアクティブにする");
 }
 
-CString CalcWorksheetCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {
 	return _T("Calcワークシート");
 }
 
-BOOL CalcWorksheetCommand::Execute(const Parameter& param)
+BOOL CalcWorksheetCommand::Execute(Parameter* param)
 {
 	// Ctrlキーが押されていたら最大化表示する
-	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
 
 	if (in->mCalcWorksheet) {
 		return in->mCalcWorksheet->Activate(isShowMaximize);

@@ -16,6 +16,8 @@ namespace builtin {
 
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
 
 CString MainDirCommand::TYPE(_T("Builtin-MainDir"));
 
@@ -42,7 +44,7 @@ MainDirCommand::~MainDirCommand()
 {
 }
 
-BOOL MainDirCommand::Execute(const Parameter& param)
+BOOL MainDirCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -52,8 +54,7 @@ BOOL MainDirCommand::Execute(const Parameter& param)
 	ShellExecCommand cmd;
 	cmd.SetPath(mainDirPath);
 
-	Parameter paramEmpty;
-	return cmd.Execute(paramEmpty);
+	return cmd.Execute(CommandParameterBuilder::EmptyParam());
 }
 
 HICON MainDirCommand::GetIcon()

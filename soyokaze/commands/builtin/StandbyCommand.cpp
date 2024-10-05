@@ -50,7 +50,7 @@ HICON StandbyCommand::GetIcon()
 }
 
 
-BOOL StandbyCommand::Execute(const Parameter& param)
+BOOL StandbyCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

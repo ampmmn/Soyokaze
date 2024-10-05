@@ -27,10 +27,9 @@ public:
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
-	CString GetTypeName() override;
 	CString GetTypeDisplayName() override;
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
@@ -44,7 +43,7 @@ public:
 
 	static CString GetType();
 
-	static bool NewDialog(const Parameter* param);
+	static bool NewDialog(Parameter* param);
 
 	// 管理者権限で実行しているか
 	static bool IsRunAsAdmin();

@@ -24,12 +24,16 @@ WholeMatchPattern::~WholeMatchPattern()
 {
 }
 
-void WholeMatchPattern::SetParam(
-	const launcherapp::core::CommandParameter& param
+void WholeMatchPattern::SetWholeText(
+	LPCTSTR wholeText
 )
 {
-	in->mWord = param.GetCommandString();
-	in->mWholeText = param.GetWholeString();
+	auto param = launcherapp::core::CommandParameterBuilder::Create(wholeText);
+
+	in->mWord = param->GetCommandString();
+	in->mWholeText = param->GetWholeString();
+
+	param->Release();
 }
 
 int WholeMatchPattern::Match(

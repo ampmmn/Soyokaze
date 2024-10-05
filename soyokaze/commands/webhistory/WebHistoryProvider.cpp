@@ -56,7 +56,7 @@ CString WebHistoryProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool WebHistoryProvider::NewDialog(const CommandParameter* param)
+bool WebHistoryProvider::NewDialog(CommandParameter* param)
 {
 	std::unique_ptr<WebHistoryCommand> newCmd;
 	if (WebHistoryCommand::NewDialog(param, newCmd) == false) {

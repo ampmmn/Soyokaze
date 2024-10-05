@@ -51,7 +51,7 @@ CString KeySplitterCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool KeySplitterCommandProvider::NewDialog(const CommandParameter* param)
+bool KeySplitterCommandProvider::NewDialog(CommandParameter* param)
 {
 	return KeySplitterCommand::NewDialog(param);
 }

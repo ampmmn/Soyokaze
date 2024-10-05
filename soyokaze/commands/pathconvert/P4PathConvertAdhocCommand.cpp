@@ -4,6 +4,7 @@
 #include "commands/pathconvert/P4AppSettings.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -13,14 +14,13 @@
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = launcherapp::commands::common::Clipboard;
+using namespace launcherapp::commands::common;
+
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 namespace launcherapp {
 namespace commands {
 namespace pathconvert {
-
-constexpr LPCTSTR TYPENAME = _T("P4PathConvertAdhocCommand");
 
 struct P4PathConvertAdhocCommand::PImpl
 {
@@ -52,24 +52,16 @@ CString P4PathConvertAdhocCommand::GetGuideString()
 	return _T("Enter:パスをコピー Shift-Enter:開く Ctrl-Enter:フォルダを開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString P4PathConvertAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString P4PathConvertAdhocCommand::GetTypeDisplayName()
 {
 	return _T("パス変換(p4)");
 }
 
-BOOL P4PathConvertAdhocCommand::Execute(const Parameter& param)
+BOOL P4PathConvertAdhocCommand::Execute(Parameter* param)
 {
-	bool isCtrlPressed = param.GetNamedParamBool(_T("CtrlKeyPressed"));
-	bool isShiftPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
+	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
+	bool isCtrlPressed = (state | MASK_CTRL) != 0;
+	bool isShiftPressed = (state | MASK_SHIFT) != 0;
 	if (isCtrlPressed != false || isShiftPressed != false) {
 		// フォルダを開く or 開く
 		ShellExecCommand cmd;

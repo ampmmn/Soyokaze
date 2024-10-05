@@ -47,7 +47,7 @@ HICON ShutdownCommand::GetIcon()
 }
 
 
-BOOL ShutdownCommand::Execute(const Parameter& param)
+BOOL ShutdownCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -5,6 +5,7 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -16,7 +17,11 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+using namespace launcherapp::commands::common;
+
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
 
 CString ChangeDirectoryCommand::TYPE(_T("Builtin-CD"));
 
@@ -46,13 +51,13 @@ ChangeDirectoryCommand::~ChangeDirectoryCommand()
 {
 }
 
-BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
+BOOL ChangeDirectoryCommand::Execute(Parameter* param)
 {
 	auto pref = AppPreference::Get();
 
 	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示
 	bool isOpenPath = pref->IsShowFolderIfCtrlKeyIsPressed() &&
-	                  param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	                  GetModifierKeyState(param, MASK_CTRL) != 0;
 	if (isOpenPath) {
 		std::vector<TCHAR> currentDir(MAX_PATH_NTFS);
 		GetCurrentDirectory(MAX_PATH_NTFS, &currentDir.front());
@@ -61,23 +66,21 @@ BOOL ChangeDirectoryCommand::Execute(const Parameter& param)
 		ShellExecCommand cmd;
 		cmd.SetPath(&currentDir.front());
 
-		Parameter paramEmpty;
-		return cmd.Execute(paramEmpty);
+		return cmd.Execute(CommandParameterBuilder::EmptyParam());
 	}
 
-	std::vector<CString> args;
-	param.GetParameters(args);
 
-	if (args.empty()) {
+	if (param->HasParameter() == false) {
 		return TRUE;
 	}
 
-	if (PathIsDirectory(args[0]) == FALSE) {
+	LPCTSTR newDir = param->GetParam(0);
+	if (PathIsDirectory(newDir) == FALSE) {
 		return TRUE;
 	}
 
 	// カレントディレクトリ変更
-	SetCurrentDirectory(args[0]);
+	SetCurrentDirectory(newDir);
 
 	return TRUE;
 }

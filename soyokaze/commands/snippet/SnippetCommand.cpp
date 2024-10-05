@@ -23,8 +23,6 @@ namespace snippet {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
-constexpr LPCTSTR TYPENAME = _T("SnippetCommand");
-
 struct SnippetCommand::PImpl
 {
 	PImpl()
@@ -71,22 +69,13 @@ CString SnippetCommand::GetGuideString()
 	return _T("Enter:定型文をクリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString SnippetCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString SnippetCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_SNIPPETCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL SnippetCommand::Execute(const Parameter& param)
+BOOL SnippetCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -218,19 +207,19 @@ bool SnippetCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool SnippetCommand::NewDialog(const Parameter* param)
+bool SnippetCommand::NewDialog(Parameter* param)
 {
 	// 新規作成ダイアログを表示
 	CString value;
 
 	CommandEditDialog dlg;
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
 		dlg.SetName(value);
 	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
 		dlg.SetDescription(value);
 	}
-	if (param && param->GetNamedParam(_T("TEXT"), &value)) {
+	if (GetNamedParamString(param, _T("TEXT"), value)) {
 		dlg.mText = value;
 	}
 	if (dlg.DoModal() != IDOK) {

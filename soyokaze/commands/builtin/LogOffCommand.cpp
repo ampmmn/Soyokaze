@@ -47,7 +47,7 @@ HICON LogOffCommand::GetIcon()
 }
 
 
-BOOL LogOffCommand::Execute(const Parameter& param)
+BOOL LogOffCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

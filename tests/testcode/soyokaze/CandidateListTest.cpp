@@ -34,11 +34,6 @@ struct DummyCommand : public launcherapp::core::Command
 		return mDesc;
 	}
 
-	CString GetTypeName() override
-	{
-		return _T("");
-	}
-
 	CString GetTypeDisplayName() override
 	{
 		return _T("");
@@ -49,7 +44,7 @@ struct DummyCommand : public launcherapp::core::Command
 		return _T("");
 	}
 
-	BOOL Execute(const Parameter& param) override
+	BOOL Execute(Parameter* param) override
 	{
 		return TRUE;
 	}

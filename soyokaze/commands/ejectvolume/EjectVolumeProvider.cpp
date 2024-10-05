@@ -50,7 +50,7 @@ CString EjectVolumeProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool EjectVolumeProvider::NewDialog(const CommandParameter* param)
+bool EjectVolumeProvider::NewDialog(CommandParameter* param)
 {
 	return EjectVolumeCommand::NewDialog(param);
 }

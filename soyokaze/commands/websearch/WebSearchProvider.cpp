@@ -55,7 +55,7 @@ CString WebSearchProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool WebSearchProvider::NewDialog(const CommandParameter* param)
+bool WebSearchProvider::NewDialog(CommandParameter* param)
 {
 	std::unique_ptr<WebSearchCommand> newCmd;
 	if (WebSearchCommand::NewDialog(param, newCmd) == false) {

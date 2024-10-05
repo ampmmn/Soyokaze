@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WorksheetCommand.h"
 #include "commands/activate_window/ExcelWorksheets.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -11,11 +12,11 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
+
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
-
-constexpr LPCTSTR TYPENAME = _T("WorksheetCommand");
 
 struct WorksheetCommand::PImpl
 {
@@ -47,26 +48,16 @@ CString WorksheetCommand::GetGuideString()
 	return _T("Enter:シートをアクティブにする");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WorksheetCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
-
 CString WorksheetCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
 	return TEXT_TYPE;
 }
 
-BOOL WorksheetCommand::Execute(const Parameter& param)
+BOOL WorksheetCommand::Execute(Parameter* param)
 {
 	// Ctrlキーが押されていたら最大化表示する
-	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
 
 	if (in->mWorksheet) {
 		return in->mWorksheet->Activate(isShowMaximize);

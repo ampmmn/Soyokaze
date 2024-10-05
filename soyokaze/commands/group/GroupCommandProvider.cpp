@@ -54,7 +54,7 @@ CString GroupCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool GroupCommandProvider::NewDialog(const CommandParameter* param)
+bool GroupCommandProvider::NewDialog(CommandParameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

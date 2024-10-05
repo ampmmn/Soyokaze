@@ -14,7 +14,7 @@ public:
 	LockScreenCommand(const LockScreenCommand& rhs);
 	virtual ~LockScreenCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

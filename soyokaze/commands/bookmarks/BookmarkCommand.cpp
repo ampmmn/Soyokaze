@@ -20,8 +20,6 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-constexpr LPCTSTR TYPENAME = _T("BookmarkCommand");
-
 struct BookmarkCommand::PImpl
 {
 	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark> items, std::vector<Bookmark>& out);
@@ -103,21 +101,12 @@ CString BookmarkCommand::GetGuideString()
 	return _T("Enter:ページを表示する");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString BookmarkCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString BookmarkCommand::GetTypeDisplayName()
 {
 	return _T("ブックマーク検索");
 }
 
-BOOL BookmarkCommand::Execute(const Parameter& param_)
+BOOL BookmarkCommand::Execute(Parameter* param_)
 {
 	UNREFERENCED_PARAMETER(param_);
 
@@ -245,7 +234,7 @@ bool BookmarkCommand::Load(CommandEntryIF* entry)
 
 
 bool BookmarkCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	std::unique_ptr<BookmarkCommand>& newCmd
 )
 {

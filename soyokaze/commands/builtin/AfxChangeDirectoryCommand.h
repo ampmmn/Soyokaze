@@ -14,7 +14,7 @@ public:
 	AfxChangeDirectoryCommand(const AfxChangeDirectoryCommand& rhs);
 	virtual ~AfxChangeDirectoryCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

@@ -3,6 +3,7 @@
 #include "URLCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
@@ -44,8 +45,6 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 
 	return true;
 }
-
-constexpr LPCTSTR TYPENAME = _T("URLCommand");
 
 struct URLCommand::PImpl
 {
@@ -90,15 +89,6 @@ CString URLCommand::GetGuideString()
 	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString URLCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString URLCommand::GetTypeDisplayName()
 {
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
@@ -109,9 +99,9 @@ CString URLCommand::GetTypeDisplayName()
 	return str;
 }
 
-BOOL URLCommand::Execute(const Parameter& param)
+BOOL URLCommand::Execute(Parameter* param)
 {
-	if (param.GetNamedParamBool(_T("ShiftKeyPressed"))) {
+	if (GetModifierKeyState(param, MASK_SHIFT) != 0) {
 		// URLをクリップボードにコピー
 		Clipboard::Copy(in->mUrl);
 		return TRUE;

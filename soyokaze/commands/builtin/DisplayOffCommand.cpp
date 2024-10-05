@@ -50,7 +50,7 @@ HICON DisplayOffCommand::GetIcon()
 }
 
 
-BOOL DisplayOffCommand::Execute(const Parameter& param)
+BOOL DisplayOffCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

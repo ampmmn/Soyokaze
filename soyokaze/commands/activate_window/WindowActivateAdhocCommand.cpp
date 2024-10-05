@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WindowActivateAdhocCommand.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -14,7 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-constexpr LPCTSTR TYPENAME = _T("WindowActivateAdhocCommand");
+using namespace launcherapp::commands::common;
 
 struct WindowActivateAdhocCommand::PImpl
 {
@@ -43,27 +44,20 @@ CString WindowActivateAdhocCommand::GetGuideString()
 	return _T("Enter:ウインドウをアクティブにする");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WindowActivateAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WINDOWACTIVATE);
 	return TEXT_TYPE;
 }
 
-BOOL WindowActivateAdhocCommand::Execute(const Parameter& param)
+BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
 {
 	ScopeAttachThreadInput scope;
 
+	bool isCtrlKeyPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
+
 	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
-	if (param.GetNamedParamBool(_T("CtrlKeyPressed")) && (style & WS_MAXIMIZE) == 0) {
+	if (isCtrlKeyPressed && (style & WS_MAXIMIZE) == 0) {
 		// Ctrlキーが押されていたら最大化表示する
 		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 	}

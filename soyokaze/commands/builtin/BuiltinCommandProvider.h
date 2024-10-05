@@ -33,7 +33,7 @@ public:
 	virtual CString GetDescription();
 
 	// コマンド新規作成ダイアログ
-	virtual bool NewDialog(const CommandParameter* param);
+	virtual bool NewDialog(CommandParameter* param);
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const;

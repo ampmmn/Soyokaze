@@ -18,8 +18,6 @@ namespace launcherapp {
 namespace commands {
 namespace decodestring {
 
-constexpr LPCTSTR TYPENAME = _T("EscapedCharCommand");
-
 struct EscapedCharCommand::PImpl
 {
 };
@@ -54,22 +52,13 @@ CString EscapedCharCommand::GetGuideString()
 	return _T("Enter:デコード後の文字列をコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString EscapedCharCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString EscapedCharCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("EscapedChar"));
 	return TEXT_TYPE;
 }
 
-BOOL EscapedCharCommand::Execute(const Parameter& param)
+BOOL EscapedCharCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

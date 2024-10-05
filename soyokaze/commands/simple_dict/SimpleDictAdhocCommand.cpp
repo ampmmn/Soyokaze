@@ -5,6 +5,7 @@
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -18,12 +19,12 @@ using namespace launcherapp::commands::common;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
 
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
-
-constexpr LPCTSTR TYPENAME = _T("SimpleDictAdhocCommand");
 
 struct SimpleDictAdhocCommand::PImpl
 {
@@ -73,26 +74,18 @@ CString SimpleDictAdhocCommand::GetGuideString()
 	return guideStr;
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString SimpleDictAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
 {
 	return _T("簡易辞書");
 }
 
-BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
+BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 {
 	// Shift-Enterでキーをコピー、Ctrl-Enterで値をコピー
 	// Enterキーのみ押下の場合は設定したアクションを実行
-	bool isCtrlKeyPressed = param.GetNamedParamBool(_T("CtrlKeyPressed"));
-	bool isShiftKeyPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
+	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
+	bool isCtrlKeyPressed = (state & MASK_CTRL) != 0;
+	bool isShiftKeyPressed = (state & MASK_SHIFT) != 0;
 	if (isCtrlKeyPressed && isShiftKeyPressed == false) {
 		// 値をコピー
 		auto value = in->mValue;
@@ -125,9 +118,10 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 		auto cmdRepo = CommandRepository::GetInstance();
 		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
 		if (command) {
-			Parameter paramSub;
-			paramSub.AddArgument(argSub);
+			auto paramSub = CommandParameterBuilder::Create();
+			paramSub->AddArgument(argSub);
 			command->Execute(paramSub);
+			paramSub->Release();
 			command->Release();
 		}
 	}
@@ -147,8 +141,7 @@ BOOL SimpleDictAdhocCommand::Execute(const Parameter& param)
 		ShellExecCommand cmd;
 		cmd.SetAttribute(attr);
 
-		Parameter paramEmpty;
-		cmd.Execute(paramEmpty);
+		cmd.Execute(CommandParameterBuilder::EmptyParam());
 	}
 	else {
 		// クリップボードにコピー

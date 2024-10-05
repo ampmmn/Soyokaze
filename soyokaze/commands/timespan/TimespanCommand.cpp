@@ -3,6 +3,7 @@
 #include "TimespanCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
@@ -16,8 +17,6 @@ using namespace launcherapp::commands::common;
 namespace launcherapp {
 namespace commands {
 namespace timespan {
-
-constexpr LPCTSTR TYPENAME = _T("TimespanCommand");
 
 struct TimespanCommand::PImpl
 {
@@ -58,25 +57,16 @@ CString TimespanCommand::GetGuideString()
 	return _T("Enter:数値のみコピー Ctrl-Enter:単位含めてコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString TimespanCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString TimespanCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)_T("時間"));
 	return TEXT_TYPE;
 }
 
-BOOL TimespanCommand::Execute(const Parameter& param)
+BOOL TimespanCommand::Execute(Parameter* param)
 {
 	// クリップボードにコピー
-	if (param.GetNamedParamBool(_T("CtrlKeyPressed"))) {
+	if (GetModifierKeyState(param, MASK_CTRL) != 0) {
 		Clipboard::Copy(mName);
 	}
 	else {

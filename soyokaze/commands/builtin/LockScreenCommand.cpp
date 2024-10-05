@@ -40,7 +40,7 @@ LockScreenCommand::~LockScreenCommand()
 {
 }
 
-BOOL LockScreenCommand::Execute(const Parameter& param)
+BOOL LockScreenCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -24,8 +24,8 @@ using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
-constexpr LPCTSTR TYPENAME = _T("WatchPathCommand");
 
 struct WatchPathCommand::PImpl
 {
@@ -67,21 +67,12 @@ CString WatchPathCommand::GetGuideString()
 	return _T("Enter:更新検知対象パスを開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WatchPathCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WatchPathCommand::GetTypeDisplayName()
 {
 	return _T("フォルダ更新検知");
 }
 
-BOOL WatchPathCommand::Execute(const Parameter& param)
+BOOL WatchPathCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -95,8 +86,7 @@ BOOL WatchPathCommand::Execute(const Parameter& param)
 	ShellExecCommand cmd;
 	cmd.SetPath(path);
 
-	Parameter paramEmpty;
-	return cmd.Execute(paramEmpty);
+	return cmd.Execute(CommandParameterBuilder::EmptyParam());
 }
 
 CString WatchPathCommand::GetErrorString()
@@ -229,16 +219,16 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool WatchPathCommand::NewDialog(const Parameter* param)
+bool WatchPathCommand::NewDialog(Parameter* param)
 {
 	// 新規作成ダイアログを表示
 	CString value;
 
 	CommandEditDialog dlg;
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
 		dlg.SetName(value);
 	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
 		dlg.SetDescription(value);
 	}
 	if (dlg.DoModal() != IDOK) {

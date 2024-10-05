@@ -39,22 +39,16 @@ DeleteCommand::~DeleteCommand()
 {
 }
 
-BOOL DeleteCommand::Execute(const Parameter& param)
+BOOL DeleteCommand::Execute(Parameter* param)
 {
-	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示
-	std::vector<CString> args;
-	param.GetParameters(args);
-
-	if (args.empty()) {
+	if (param->HasParameter() == false) {
 		AfxMessageBox(IDS_ERR_NODELETECOMMAND);
 		return TRUE;
 	}
 
+	LPCTSTR delName = param->GetParam(0);
 
-	auto cmdRepoPtr =
-	 	launcherapp::core::CommandRepository::GetInstance();
-
-	auto delName = args[0];
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	auto cmd = cmdRepoPtr->QueryAsWholeMatch(delName);
 	if (cmd == nullptr) {

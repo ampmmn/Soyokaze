@@ -52,22 +52,13 @@ CString DecodeUriCommand::GetGuideString()
 	return _T("Enter:デコード後の文字列をコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString DecodeUriCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString DecodeUriCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("DecodeURI"));
 	return TEXT_TYPE;
 }
 
-BOOL DecodeUriCommand::Execute(const Parameter& param)
+BOOL DecodeUriCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

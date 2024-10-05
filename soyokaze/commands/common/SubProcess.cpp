@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SubProcess.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
 #include "setting/AppPreference.h"
@@ -15,7 +17,7 @@ namespace common {
 
 struct SubProcess::PImpl
 {
-	PImpl(const launcherapp::core::CommandParameter& param) : mParam(param)
+	PImpl(launcherapp::core::CommandParameter* param) : mParam(param)
 	{
 	}
 
@@ -24,7 +26,7 @@ struct SubProcess::PImpl
 	bool IsRunningAsAdmin();
 	bool CanRunAsAdmin(const CString& path);
 
-	const CommandParameter& mParam;
+	CommandParameter* mParam = nullptr;
 	int mShowType = SW_SHOW;
 	bool mIsRunAdAdmin = false;
 	CString mWorkingDir;
@@ -33,10 +35,8 @@ struct SubProcess::PImpl
 bool SubProcess::PImpl::IsRunAsKeyPressed()
 {
 	// Ctrl-Shiftキーが押されていたら
-	return mParam.GetNamedParamBool(_T("CtrlKeyPressed")) && 
-	       mParam.GetNamedParamBool(_T("ShiftKeyPressed")) &&
-	       mParam.GetNamedParamBool(_T("AltKeyPressed")) == false &&
-	       mParam.GetNamedParamBool(_T("WinKeyPressed")) == false;
+	uint32_t state = GetModifierKeyState(mParam, MASK_ALL);
+	return state == (MASK_CTRL | MASK_SHIFT);
 }
 
 bool SubProcess::PImpl::IsOpenPathKeyPressed()
@@ -46,10 +46,9 @@ bool SubProcess::PImpl::IsOpenPathKeyPressed()
 		return false;
 	}
 
-	return mParam.GetNamedParamBool(_T("CtrlKeyPressed")) &&
-	       mParam.GetNamedParamBool(_T("ShiftKeyPressed")) == false &&
-	       mParam.GetNamedParamBool(_T("AltKeyPressed")) == false &&
-	       mParam.GetNamedParamBool(_T("WinKeyPressed")) == false;
+	// Ctrlキーのみが押されていたら
+	uint32_t state = GetModifierKeyState(mParam, MASK_ALL);
+	return state == MASK_CTRL;
 }
 
 // 管理者権限で実行されているか?
@@ -84,7 +83,7 @@ bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-SubProcess::SubProcess(const CommandParameter& param) : 
+SubProcess::SubProcess(CommandParameter* param) : 
 	in(std::make_unique<PImpl>(param))
 {
 }
@@ -122,8 +121,12 @@ bool SubProcess::Run(
 	CString path = path_;
 	CString paramStr = paramStr_;
 
+	int paramCount = in->mParam->GetParamCount();
 	std::vector<CString> args;
-	in->mParam.GetParameters(args);
+	args.reserve(paramCount);
+	for (int i = 0; i < paramCount; ++i) {
+		args.push_back(in->mParam->GetParam(i));
+	}
 
 	// 変数置換(パス)
 	ExpandArguments(path, args);

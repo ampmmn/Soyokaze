@@ -47,7 +47,7 @@ HICON EmptyRecycleBinCommand::GetIcon()
 }
 
 
-BOOL EmptyRecycleBinCommand::Execute(const Parameter& param)
+BOOL EmptyRecycleBinCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

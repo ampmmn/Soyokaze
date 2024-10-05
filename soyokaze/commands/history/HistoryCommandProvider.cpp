@@ -20,6 +20,8 @@ namespace history {
 constexpr DWORD CHECK_INTERVAL = 1000;  // 10秒
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
 
 struct HistoryCommandProvider::PImpl
 {
@@ -78,8 +80,9 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 			auto& item = *it;
 
-			CommandParameter param(item.mWord);
-			auto cmdName = param.GetCommandString();
+			auto param = CommandParameterBuilder::Create(item.mWord);
+			auto cmdName = param->GetCommandString();
+			param->Release();
 
 			if (existingCmds.find(item.mWord) != existingCmds.end()) {
 				++it;

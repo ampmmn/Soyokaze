@@ -2,6 +2,7 @@
 #include "WebHistoryAdhocCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -44,8 +45,6 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 	return true;
 }
 
-constexpr LPCTSTR TYPENAME = _T("WebHistoryAdhocCommand");
-
 struct WebHistoryAdhocCommand::PImpl
 {
 	bool GetExecutablePath(LPTSTR path, size_t len);
@@ -85,15 +84,6 @@ CString WebHistoryAdhocCommand::GetGuideString()
 	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WebHistoryAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
@@ -104,9 +94,10 @@ CString WebHistoryAdhocCommand::GetTypeDisplayName()
 	return str;
 }
 
-BOOL WebHistoryAdhocCommand::Execute(const Parameter& param)
+BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
 {
-	if (param.GetNamedParamBool(_T("ShiftKeyPressed"))) {
+	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
+	if (isShiftKeyPressed) {
 		// URLをクリップボードにコピー
 		Clipboard::Copy(in->mHistory.mUrl);
 		return TRUE;

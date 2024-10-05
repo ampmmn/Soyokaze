@@ -38,7 +38,7 @@ ExitCommand::~ExitCommand()
 {
 }
 
-BOOL ExitCommand::Execute(const Parameter& param)
+BOOL ExitCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

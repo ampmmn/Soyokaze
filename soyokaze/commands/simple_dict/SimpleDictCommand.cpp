@@ -39,8 +39,6 @@ static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 	return true;
 }
 
-constexpr LPCTSTR TYPENAME = _T("SimpleDictCommand");
-
 struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 {
 	void OnLockScreenOccurred() override { }
@@ -268,22 +266,13 @@ CString SimpleDictCommand::GetGuideString()
 	return _T("キーワード入力すると候補を絞り込むことができます");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString SimpleDictCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString SimpleDictCommand::GetTypeDisplayName()
 {
 	// コマンドとしてマッチしないが、キーワードマネージャに表示する文字列として使用する
 	return _T("簡易辞書コマンド");
 }
 
-BOOL SimpleDictCommand::Execute(const Parameter& param)
+BOOL SimpleDictCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -447,7 +436,7 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 
 
 bool SimpleDictCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	SimpleDictCommand** newCmdPtr
 )
 {

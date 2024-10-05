@@ -16,8 +16,6 @@ namespace core {
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::builtin;
 
-constexpr LPCTSTR TYPENAME = _T("DefaultCommand");
-
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
@@ -105,21 +103,12 @@ CString DefaultCommand::GetGuideString()
 	return _T("");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString DefaultCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString DefaultCommand::GetTypeDisplayName()
 {
 	return _T("");
 }
 
-BOOL DefaultCommand::Execute(const Parameter& param)
+BOOL DefaultCommand::Execute(Parameter* param)
 {
 	if (in->mIsLoaded == false) {
 		in->Load();
@@ -128,16 +117,21 @@ BOOL DefaultCommand::Execute(const Parameter& param)
 	const auto& type = in->mActionType;
 	if (type == _T("copy")) {
 		// クリップボードにコピー
-		auto str = param.GetWholeString();
+		auto str = param->GetWholeString();
 		Clipboard::Copy(str);
 		return TRUE;
 	}
 	else if (type == _T("register")) {
 		// コマンドを登録
-		auto str = param.GetWholeString();
-		launcherapp::core::CommandParameter commandParam(_T("new ") + str);
+		CString str = param->GetWholeString();
+		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(_T("new ") + str);
+
 		NewCommand cmd;
-		return cmd.Execute(commandParam);
+		BOOL result = cmd.Execute(commandParam);
+
+		commandParam->Release();
+
+		return result;
 	}
 	return TRUE;
 }

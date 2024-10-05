@@ -18,8 +18,8 @@ namespace commands {
 namespace keysplitter {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
-constexpr LPCTSTR TYPENAME = _T("KeySplitterCommand");
 
 struct KeySplitterCommand::PImpl
 {
@@ -86,22 +86,13 @@ CString KeySplitterCommand::GetGuideString()
 	return in->mGuideStr;
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString KeySplitterCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString KeySplitterCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("振り分け"));
 	return TEXT_TYPE;
 }
 
-BOOL KeySplitterCommand::Execute(const Parameter& param)
+BOOL KeySplitterCommand::Execute(Parameter* param)
 {
 	// Ctrlキーが押されているかを設定
 	ModifierState state;
@@ -121,7 +112,7 @@ BOOL KeySplitterCommand::Execute(const Parameter& param)
 	}
 
 	CString parents;
-	param.GetNamedParam(_T("PARENTS"), &parents);
+	GetNamedParamString(param, _T("PARENTS"), parents);
 
 	CString cmdName = in->mParam.mName;
 
@@ -148,18 +139,21 @@ BOOL KeySplitterCommand::Execute(const Parameter& param)
 	}
 	parents += cmdName;
 
-	Parameter paramSub;
-	param.CopyParamTo(paramSub);
-	paramSub.SetNamedParamString(_T("PARENTS"), parents);
+	auto paramSub = CommandParameterBuilder::Create();
+	paramSub->SetParameterString(param->GetParameterString());
+	paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
 
 	// 振り分け先のコマンドを実行する
 	auto cmdRepo = CommandRepository::GetInstance();
 	auto command = cmdRepo->QueryAsWholeMatch(item.mCommandName, false);
 	if (command == nullptr) {
+		paramSub->Release();
 		return TRUE;
 	}
 	BOOL isOK = command->Execute(paramSub);
+
+	paramSub->Release();
 	command->Release();
 
 	return isOK;
@@ -291,7 +285,7 @@ bool KeySplitterCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool KeySplitterCommand::NewDialog(const Parameter* param)
+bool KeySplitterCommand::NewDialog(Parameter* param)
 {
 	param;  // 非サポート
 

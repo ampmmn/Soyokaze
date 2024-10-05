@@ -14,6 +14,7 @@ namespace commands {
 namespace builtin {
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
 
@@ -40,7 +41,7 @@ UserDirCommand::~UserDirCommand()
 {
 }
 
-BOOL UserDirCommand::Execute(const Parameter& param)
+BOOL UserDirCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -51,8 +52,7 @@ BOOL UserDirCommand::Execute(const Parameter& param)
 	ShellExecCommand cmd;
 	cmd.SetPath(userDirPath.data());
 
-	Parameter paramEmpty;
-	return cmd.Execute(paramEmpty);
+	return cmd.Execute(CommandParameterBuilder::EmptyParam());
 }
 
 HICON UserDirCommand::GetIcon()

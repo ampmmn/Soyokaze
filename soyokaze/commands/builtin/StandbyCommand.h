@@ -15,7 +15,7 @@ public:
 	virtual ~StandbyCommand();
 
 	HICON GetIcon() override;
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	launcherapp::core::Command* Clone() override;
 
 	CString GetType() override;

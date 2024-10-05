@@ -21,10 +21,9 @@ public:
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
-	CString GetTypeName() override;
 	CString GetTypeDisplayName() override;
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
@@ -42,7 +41,7 @@ public:
 
 	static CString GetType();
 
-	static bool NewDialog(const Parameter* param, std::unique_ptr<WebSearchCommand>& newCmd);
+	static bool NewDialog(Parameter* param, std::unique_ptr<WebSearchCommand>& newCmd);
 
 protected:
 	struct PImpl;

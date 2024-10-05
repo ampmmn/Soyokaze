@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "RegExpCommand.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/regexp/RegExpCommandEditDialog.h"
@@ -32,8 +33,6 @@ RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-constexpr LPCTSTR TYPENAME = _T("RegExpCommand");
 
 struct RegExpCommand::PImpl
 {
@@ -92,33 +91,24 @@ CString RegExpCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString RegExpCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString RegExpCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL RegExpCommand::Execute(const Parameter& param)
+BOOL RegExpCommand::Execute(Parameter* param)
 {
 	in->mErrMsg.Empty();
 
-	ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 
 	ATTRIBUTE attr = in->mNormalAttr;
 
 	CString path;
 	CString paramStr;
 	try {
-		const CString& wholeText = param.GetWholeString();
+		LPCTSTR wholeText = param->GetWholeString();
 
 		tstring paramStr_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)attr.mParam);
 		paramStr = paramStr_.c_str();
@@ -145,10 +135,12 @@ BOOL RegExpCommand::Execute(const Parameter& param)
 	}
 
 	// もしwaitするようにするのであればここで待つ
-	if (param.GetNamedParamBool(_T("WAIT"))) {
+	auto namedParam = GetCommandNamedParameter(param);
+	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);
 	}
+	namedParam->Release();
 
 	return TRUE;
 }
@@ -386,22 +378,22 @@ bool RegExpCommand::IsRunAsAdmin()
 	return result && isMember;
 }
 
-bool RegExpCommand::NewDialog(const Parameter* param)
+bool RegExpCommand::NewDialog(Parameter* param)
 {
 	// 新規作成ダイアログを表示
 	CString value;
 
 	CommandEditDialog dlg;
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
 		dlg.SetName(value);
 	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
+	if (GetNamedParamString(param, _T("PATH"), value)) {
 		dlg.SetPath(value);
 	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
 		dlg.SetDescription(value);
 	}
-	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
+	if (GetNamedParamString(param, _T("ARGUMENT"), value)) {
 		dlg.SetParam(value);
 	}
 

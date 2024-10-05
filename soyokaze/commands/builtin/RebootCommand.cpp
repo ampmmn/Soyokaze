@@ -48,7 +48,7 @@ HICON RebootCommand::GetIcon()
 }
 
 
-BOOL RebootCommand::Execute(const Parameter& param)
+BOOL RebootCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -77,7 +77,7 @@ RegistWinCommand::~RegistWinCommand()
 {
 }
 
-BOOL RegistWinCommand::Execute(const Parameter&)
+BOOL RegistWinCommand::Execute(Parameter*)
 {
 	mError.Empty();
 
@@ -93,17 +93,19 @@ BOOL RegistWinCommand::Execute(const Parameter&)
 	ProcessPath processPath(hNextWindow);
 
 	try {
-		launcherapp::core::CommandParameter param;
-		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
-		param.SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
-		param.SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
+		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
+		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
 
 		// ウインドウタイトルを説明として使う
-		param.SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
-		param.SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
+		param->SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
+		param->SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
 
 		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-		cmdRepoPtr->NewCommandDialog(&param);
+		cmdRepoPtr->NewCommandDialog(param);
+
+		param->Release();
 		return TRUE;
 	}
 	catch(ProcessPath::Exception& e) {

@@ -4,7 +4,6 @@
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchSettingDialog.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/LastErrorString.h"
@@ -22,8 +21,6 @@ using namespace launcherapp::commands::common;
 namespace launcherapp {
 namespace commands {
 namespace websearch {
-
-constexpr LPCTSTR TYPENAME = _T("WebSearchCommand");
 
 struct WebSearchCommand::PImpl
 {
@@ -135,22 +132,13 @@ CString WebSearchCommand::GetGuideString()
 	return _T("Enter:検索を実行");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WebSearchCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WebSearchCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);
 	return TEXT_TYPE;
 }
 
-BOOL WebSearchCommand::Execute(const Parameter& param_)
+BOOL WebSearchCommand::Execute(Parameter* param_)
 {
 	UNREFERENCED_PARAMETER(param_);
 
@@ -288,7 +276,7 @@ bool WebSearchCommand::Load(CommandEntryIF* entry)
 
 
 bool WebSearchCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	std::unique_ptr<WebSearchCommand>& newCmd
 )
 {

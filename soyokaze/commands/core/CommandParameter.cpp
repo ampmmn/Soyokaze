@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "CommandParameter.h"
+#include "commands/core/CommandParameterIF.h"
+#include "commands/core/IFIDDefine.h"
 #include <map>
 
 #ifdef _DEBUG
@@ -10,162 +12,7 @@
 namespace launcherapp {
 namespace core {
 
-struct CommandParameter::PImpl
-{
-	PImpl() : 
-		mWholeText(),
-		mCommandPart(),
-		mHasSpace(false)
-	{
-	}
-
-
-	CString mWholeText;
-	CString mCommandPart;
-	CString mParamPart;
-	bool mHasSpace;
-
-	std::map<CString, CString> mStrParamMap;
-	std::map<CString, bool> mBoolParamMap;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-CommandParameter::CommandParameter() : in(std::make_unique<PImpl>())
-{
-}
-
-CommandParameter::CommandParameter(const CommandParameter& rhs) :
-	in(std::make_unique<PImpl>())
-{
-	in->mWholeText = rhs.in->mWholeText;
-	in->mCommandPart = rhs.in->mCommandPart;
-	in->mParamPart = rhs.in->mParamPart;
-	in->mHasSpace = rhs.in->mHasSpace;
-	in->mStrParamMap = rhs.in->mStrParamMap;
-	in->mBoolParamMap = rhs.in->mBoolParamMap;
-}
-
-CommandParameter::CommandParameter(
-	const CString& str
-) : in(std::make_unique<PImpl>())
-{
-	auto tmpStr = str;
-	tmpStr.TrimLeft();
-
-	in->mWholeText = tmpStr;
-	in->mCommandPart = tmpStr;
-
-	int n = tmpStr.Find(_T(" "));
-	if (n > -1) {
-		in->mCommandPart = tmpStr.Left(n);
-		in->mParamPart = tmpStr.Mid(n + 1);
-		in->mHasSpace = true;
-	}
-}
-
-CommandParameter::~CommandParameter()
-{
-}
-
-CommandParameter& CommandParameter::operator = (const CommandParameter& rhs)
-{
-	if (&rhs != this) {
-		in->mWholeText = rhs.in->mWholeText;
-		in->mCommandPart = rhs.in->mCommandPart;
-		in->mParamPart = rhs.in->mParamPart;
-		in->mHasSpace = rhs.in->mHasSpace;
-		in->mStrParamMap = rhs.in->mStrParamMap;
-		in->mBoolParamMap = rhs.in->mBoolParamMap;
-	}
-	return *this;
-}
-
-bool CommandParameter::IsEmpty() const
-{
-	return in->mWholeText.IsEmpty() != FALSE;
-}
-
-bool CommandParameter::HasParameter() const
-{
-	return in->mParamPart.IsEmpty() == FALSE;
-}
-
-void CommandParameter::AddArgument(const CString& arg)
-{
-	if (in->mParamPart.IsEmpty() == FALSE) {
-		in->mParamPart += _T(" ");
-		in->mWholeText += _T(" ");
-	}
-	in->mParamPart += arg;
-	in->mWholeText += arg;
-}
-
-void CommandParameter::SetWholeString(const CString& str)
-{
-	in->mWholeText = str;
-
-	CString tmpStr = str;
-	int n = tmpStr.Find(_T(" "));
-	if (n > -1) {
-		in->mCommandPart = tmpStr.Left(n);
-		in->mParamPart = tmpStr.Mid(n + 1);
-		in->mHasSpace = true;
-	}
-	else {
-		in->mCommandPart = str;
-		in->mParamPart.Empty();
-		in->mHasSpace = false;
-	}
-}
-
-void CommandParameter::SetParamString(const CString& paramStr)
-{
-	in->mParamPart = paramStr;
-	in->mWholeText = in->mCommandPart + _T(" ") + paramStr;
-	in->mHasSpace = (paramStr.IsEmpty() == FALSE);
-}
-
-const CString& CommandParameter::GetWholeString() const
-{
-	return in->mWholeText;
-}
-
-const CString& CommandParameter::GetCommandString() const
-{
-	return in->mCommandPart;
-}
-
-const CString& CommandParameter::GetParameterString() const
-{
-	return in->mParamPart;
-}
-
-void CommandParameter::CopyParamTo(CommandParameter& rhs) const
-{
-	rhs.in->mParamPart = in->mParamPart;
-	rhs.in->mHasSpace = in->mHasSpace;
-
-	// 内部用のパラメータ↓はコピーしない
-	//rhs.in->mStrParamMap = in->mStrParamMap;
-	//rhs.in->mBoolParamMap = in->mBoolParamMap;
-}
-
-void CommandParameter::CopyNamedParamTo(CommandParameter& rhs) const
-{
-	// 内部用のパラメータのみコピー
-	rhs.in->mStrParamMap = in->mStrParamMap;
-	rhs.in->mBoolParamMap = in->mBoolParamMap;
-}
-void CommandParameter::GetParameters(std::vector<CString>& args) const
-{
-	CommandParameter::GetParameters(in->mParamPart, args);
-}
-
-void CommandParameter::GetParameters(
+static void GetParameters(
 	const CString& paramStr,
  	std::vector<CString>& args
 )
@@ -239,24 +86,199 @@ void CommandParameter::GetParameters(
 	args.swap(argsTmp);
 }
 
-
-bool CommandParameter::GetNamedParam(
-	LPCTSTR name,
-	CString* value
-) const
+struct CommandParameterBuilder::PImpl
 {
-	auto it = in->mStrParamMap.find(name);
-	if (it == in->mStrParamMap.end()) {
-		return false;
+	PImpl() : 
+		mWholeText(),
+		mCommandPart(),
+		mHasSpace(false)
+	{
 	}
-	if (value) {
-		*value = it->second;
+
+	void SetParamPart(const CString& paramPart)
+	{
+		mParamPart = paramPart;
+		mParamArray.clear();
+		GetParameters(mParamPart, mParamArray);
 	}
-	return true;
+
+	CString mWholeText;
+	CString mCommandPart;
+	CString mParamPart;
+	bool mHasSpace;
+
+	std::vector<CString> mParamArray;
+
+	std::map<CString, CString> mStrParamMap;
+	std::map<CString, bool> mBoolParamMap;
+	uint32_t mRefCount = 1;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+CommandParameterBuilder::CommandParameterBuilder() : in(std::make_unique<PImpl>())
+{
+}
+
+CommandParameterBuilder::CommandParameterBuilder(const CommandParameterBuilder& rhs) :
+	in(std::make_unique<PImpl>())
+{
+	in->mWholeText = rhs.in->mWholeText;
+	in->mCommandPart = rhs.in->mCommandPart;
+	in->SetParamPart(rhs.in->mParamPart);
+	in->mHasSpace = rhs.in->mHasSpace;
+	in->mStrParamMap = rhs.in->mStrParamMap;
+	in->mBoolParamMap = rhs.in->mBoolParamMap;
+}
+
+CommandParameterBuilder::CommandParameterBuilder(
+	const CString& str
+) : in(std::make_unique<PImpl>())
+{
+	SetWholeString(str);
+}
+
+CommandParameterBuilder::~CommandParameterBuilder()
+{
+}
+
+CommandParameterBuilder& CommandParameterBuilder::operator = (const CommandParameterBuilder& rhs)
+{
+	if (&rhs != this) {
+		in->mWholeText = rhs.in->mWholeText;
+		in->mCommandPart = rhs.in->mCommandPart;
+		in->SetParamPart(rhs.in->mParamPart);
+		in->mHasSpace = rhs.in->mHasSpace;
+		in->mStrParamMap = rhs.in->mStrParamMap;
+		in->mBoolParamMap = rhs.in->mBoolParamMap;
+	}
+	return *this;
+}
+
+CommandParameterBuilder* CommandParameterBuilder::Create()
+{
+	return new CommandParameterBuilder();
+}
+
+CommandParameterBuilder* CommandParameterBuilder::Create(const CString& str)
+{
+	return new CommandParameterBuilder(str);
+}
+
+CommandParameterBuilder* CommandParameterBuilder::Clone_() const
+{
+	return new CommandParameterBuilder(*this); 
+}
+
+CommandParameterBuilder* CommandParameterBuilder::EmptyParam()
+{
+	static CommandParameterBuilder paramEmpty;
+	return &paramEmpty;
+}
+
+
+bool CommandParameterBuilder::IsEmpty() const
+{
+	return in->mWholeText.IsEmpty() != FALSE;
+}
+
+bool CommandParameterBuilder::HasParameter() const
+{
+	return in->mParamPart.IsEmpty() == FALSE;
+}
+
+void CommandParameterBuilder::AddArgument(const CString& arg)
+{
+	if (in->mParamPart.IsEmpty() == FALSE) {
+		in->SetParamPart(in->mParamPart + _T(" ") + arg);
+	}
+	else {
+		in->SetParamPart(arg);
+	}
+
+	in->mWholeText += _T(" ");
+	in->mWholeText += arg;
+}
+
+LPCTSTR CommandParameterBuilder::GetWholeString() const
+{
+	return in->mWholeText;
+}
+
+LPCTSTR CommandParameterBuilder::GetCommandString() const
+{
+	return in->mCommandPart;
+}
+
+LPCTSTR CommandParameterBuilder::GetParameterString() const
+{
+	return in->mParamPart;
+}
+
+void CommandParameterBuilder::CopyParamTo(CommandParameterBuilder& rhs) const
+{
+	rhs.in->SetParamPart(in->mParamPart);
+	rhs.in->mHasSpace = in->mHasSpace;
+
+	// 内部用のパラメータ↓はコピーしない
+	//rhs.in->mStrParamMap = in->mStrParamMap;
+	//rhs.in->mBoolParamMap = in->mBoolParamMap;
+}
+
+void CommandParameterBuilder::CopyNamedParamTo(CommandParameterBuilder& rhs) const
+{
+	// 内部用のパラメータのみコピー
+	rhs.in->mStrParamMap = in->mStrParamMap;
+	rhs.in->mBoolParamMap = in->mBoolParamMap;
+}
+
+int CommandParameterBuilder::GetParamCount() const
+{
+	return (int)in->mParamArray.size();
+}
+
+LPCTSTR CommandParameterBuilder::GetParam(int index) const
+{
+	return in->mParamArray[index];
+}
+
+void CommandParameterBuilder::SetWholeString(LPCTSTR str)
+{
+	in->mWholeText = str;
+
+	CString tmpStr(str);
+	tmpStr.TrimLeft();
+
+	int n = tmpStr.Find(_T(" "));
+	if (n > -1) {
+		in->mCommandPart = tmpStr.Left(n);
+		in->SetParamPart(tmpStr.Mid(n + 1));
+		in->mHasSpace = true;
+	}
+	else {
+		in->mCommandPart = str;
+		in->SetParamPart(_T(""));
+		in->mHasSpace = false;
+	}
+}
+
+void CommandParameterBuilder::SetParameterString(LPCTSTR param)
+{
+	in->SetParamPart(param);
+	in->mWholeText = in->mCommandPart + _T(" ") + param;
+	in->mHasSpace = (param[0] != _T('\0'));
+}
+
+CommandParameter* CommandParameterBuilder::Clone() const
+{
+	return new CommandParameterBuilder(*this); 
 }
 
 // 補完
-bool CommandParameter::ComplementCommand(
+bool CommandParameterBuilder::ComplementCommand(
 	const CString& commandName,
  	CString& comlementedStr
 ) const
@@ -279,21 +301,39 @@ bool CommandParameter::ComplementCommand(
 	return true;
 }
 
-CString CommandParameter::GetNamedParamString(LPCTSTR name) const
+/**
+ 	名前付きパラメータの値の文字列長を取得する
+ 	@return 文字列の長さ(\0終端分含む。パラメータが存在しない場合は0)
+ 	@param[in] name 名前
+*/
+int CommandParameterBuilder::GetNamedParamStringLength(
+	LPCTSTR name
+) const
+{
+	auto itFind = in->mStrParamMap.find(name);
+	if (itFind == in->mStrParamMap.end()) {
+		return 0;
+	}
+	return itFind->second.GetLength() + 1;
+}
+
+LPCTSTR CommandParameterBuilder::GetNamedParamString(LPCTSTR name, LPTSTR buf, int bufLen) const
 {
 	auto itFind = in->mStrParamMap.find(name);
 	if (itFind == in->mStrParamMap.end()) {
 		return _T("");
 	}
-	return itFind->second;
+
+	_tcsncpy_s(buf, bufLen, itFind->second, bufLen);
+	return buf;
 }
 
-void CommandParameter::SetNamedParamString(LPCTSTR name, LPCTSTR value)
+void CommandParameterBuilder::SetNamedParamString(LPCTSTR name, LPCTSTR value)
 {
 	in->mStrParamMap[name] = value;
 }
 
-bool CommandParameter::GetNamedParamBool(LPCTSTR name) const
+bool CommandParameterBuilder::GetNamedParamBool(LPCTSTR name) const
 {
 	auto itFind = in->mBoolParamMap.find(name);
 	if (itFind == in->mBoolParamMap.end()) {
@@ -302,12 +342,41 @@ bool CommandParameter::GetNamedParamBool(LPCTSTR name) const
 	return itFind->second;
 }
 
-void CommandParameter::SetNamedParamBool(
+void CommandParameterBuilder::SetNamedParamBool(
 	LPCTSTR name,
 	bool value
 )
 {
 	in->mBoolParamMap[name] = value;
+}
+
+
+bool CommandParameterBuilder::QueryInterface(const IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_COMMANDPARAMETER) {
+		AddRef();
+		*cmd = (launcherapp::core::CommandParameter*)this;
+		return true;
+	}
+	else if (ifid == IFID_COMMANDNAMEDPARAMETER) {
+		AddRef();
+		*cmd = (launcherapp::core::CommandNamedParameter*)this;
+		return true;
+	}
+	return false;
+}
+uint32_t CommandParameterBuilder::AddRef()
+{
+	return (uint32_t)InterlockedIncrement(&in->mRefCount);
+}
+
+uint32_t CommandParameterBuilder::Release()
+{
+	auto n = InterlockedDecrement(&in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return (uint32_t)n;
 }
 
 }

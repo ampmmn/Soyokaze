@@ -49,7 +49,7 @@ HICON SuspendCommand::GetIcon()
 }
 
 
-BOOL SuspendCommand::Execute(const Parameter& param)
+BOOL SuspendCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

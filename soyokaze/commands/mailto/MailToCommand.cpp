@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MailToCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "commands/core/CommandParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -15,8 +16,7 @@ namespace commands {
 namespace mailto {
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-
-constexpr LPCTSTR TYPENAME = _T("MailToCommand");
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 MailToCommand::MailToCommand() : 
 	AdhocCommandBase(_T("mailto:"), _T("あて先を指定してメール"))
@@ -32,26 +32,17 @@ CString MailToCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString MailToCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString MailToCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_MAILTO);
 	return TEXT_TYPE;
 }
 
-BOOL MailToCommand::Execute(const Parameter& param)
+BOOL MailToCommand::Execute(Parameter* param)
 {
 	CString recipient;
 
-	CString str = param.GetCommandString();
+	CString str = param->GetCommandString();
 	int n = str.Find(_T("mailto:"));
 	if (n != -1) {
 		recipient = str.Mid(n + 7);
@@ -66,8 +57,7 @@ BOOL MailToCommand::Execute(const Parameter& param)
 	ShellExecCommand cmd;
 	cmd.SetAttribute(attr);
 
-	Parameter paramEmpty;
-	return cmd.Execute(paramEmpty);
+	return cmd.Execute(CommandParameterBuilder::EmptyParam());
 }
 
 HICON MailToCommand::GetIcon()

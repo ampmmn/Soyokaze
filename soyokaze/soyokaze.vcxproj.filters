@@ -1161,6 +1161,9 @@
     <ClInclude Include="commands\simple_dict\SimpleDictionary.h">
       <Filter>commands\simple_dict</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\CommandParameterFunctions.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2050,6 +2053,9 @@
     </ClCompile>
     <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp">
       <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\CommandParameterFunctions.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

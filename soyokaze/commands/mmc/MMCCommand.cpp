@@ -15,8 +15,6 @@ namespace launcherapp {
 namespace commands {
 namespace mmc {
 
-constexpr LPCTSTR TYPENAME = _T("MMCCommand");
-
 struct MMCCommand::PImpl
 {
 	MMCSnapin mSnapin;
@@ -39,22 +37,13 @@ CString MMCCommand::GetGuideString()
 	return _T("Enter:実行");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString MMCCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString MMCCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("MMCスナップイン"));
 	return TEXT_TYPE;
 }
 
-BOOL MMCCommand::Execute(const Parameter& param)
+BOOL MMCCommand::Execute(Parameter* param)
 {
 	CString paramStr;
 	paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mSnapin.mMscFilePath);

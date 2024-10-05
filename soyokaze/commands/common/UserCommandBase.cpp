@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "UserCommandBase.h"
+#include "commands/core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -52,6 +53,29 @@ uint32_t UserCommandBase::Release()
 		delete this;
 	}
 	return n;
+}
+
+bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CString& value)
+{
+	if (param== nullptr) {
+		return false;
+	}
+
+	launcherapp::core::CommandNamedParameter* namedParam = nullptr;
+	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+		return false;
+	}
+	namedParam->Release();   // ここでReleaseしても、元のオブジェクトの分があるので破棄はされない
+
+	int len = namedParam->GetNamedParamStringLength(name);
+	if (len == 0) {
+		return false;
+	}
+
+	namedParam->GetNamedParamString(name, value.GetBuffer(len), len);
+	value.ReleaseBuffer();
+
+	return true;
 }
 
 }

@@ -3,6 +3,7 @@
 #include "commands/group/CommandParam.h"
 #include "commands/group/GroupEditDialog.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -20,11 +21,11 @@ namespace launcherapp {
 namespace commands {
 namespace group {
 
+using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
-constexpr LPCTSTR TYPENAME = _T("GroupCommand");
 
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
@@ -40,7 +41,7 @@ class GroupCommand::Exception
 
 struct GroupCommand::PImpl
 {
-	BOOL Execute(const Parameter& param, int round);
+	BOOL Execute(Parameter* param, int round);
 
 	CommandParam mParam;
 	CommandHotKeyAttribute mHotKeyAttr;
@@ -49,7 +50,7 @@ struct GroupCommand::PImpl
 };
 
 
-BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
+BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 {
 	auto cmdRepo = CommandRepository::GetInstance();
 	ASSERT(cmdRepo);
@@ -57,7 +58,9 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 	CString cmdName = mParam.mName;
 
 	// 初回に(必要に応じて)実行確認を行う
-	bool isConfirmed = param.GetNamedParamBool(_T("CONFIRMED"));
+	auto namedParam = GetCommandNamedParameter(param);
+	bool isConfirmed = namedParam->GetNamedParamBool(_T("CONFIRMED"));
+	namedParam->Release();
 	if (round == 0 && isConfirmed == false) {
 
 		if (mParam.mIsConfirm) {
@@ -80,7 +83,7 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 
 
 	CString parents;
-	param.GetNamedParam(_T("PARENTS"), &parents);
+	GetNamedParamString(param, _T("PARENTS"), parents);
 
 	// 循環参照チェック
 	int depth = 0;
@@ -113,20 +116,22 @@ BOOL GroupCommand::PImpl::Execute(const Parameter& param, int round)
 			continue;
 		}
 
-		Parameter paramSub;
+		auto paramSub = CommandParameterBuilder::Create();
 		if (mParam.mIsPassParam) {
-			param.CopyParamTo(paramSub);
+			paramSub->SetParameterString(param->GetParameterString());
 		}
+
 		if (item.mIsWait) {
-			paramSub.SetNamedParamBool(_T("WAIT"), true);
+			paramSub->SetNamedParamBool(_T("WAIT"), true);
 		}
 		if (isConfirmed) {
-			paramSub.SetNamedParamBool(_T("CONFIRMED"), true);
+			paramSub->SetNamedParamBool(_T("CONFIRMED"), true);
 		}
-		paramSub.SetNamedParamString(_T("PARENTS"), parents);
+		paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
 		command->Execute(paramSub);
 
+		paramSub->Release();
 		command->Release();
 	}
 
@@ -163,25 +168,16 @@ CString GroupCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString GroupCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString GroupCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_GROUPCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL GroupCommand::Execute(const Parameter& param)
+BOOL GroupCommand::Execute(Parameter* param)
 {
-	if (param.GetParameterString().IsEmpty() == FALSE) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	if (param->HasParameter()) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
 
 	try {

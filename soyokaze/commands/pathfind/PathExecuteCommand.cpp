@@ -33,8 +33,6 @@ static const tregex& GetURLRegex()
 	return reg;
 }
 
-constexpr LPCTSTR TYPENAME = _T("PathExecuteCommand");
-
 struct PathExecuteCommand::PImpl
 {
 	void Reload()
@@ -117,15 +115,6 @@ CString PathExecuteCommand::GetGuideString()
 	}
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString PathExecuteCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString PathExecuteCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
@@ -134,7 +123,7 @@ CString PathExecuteCommand::GetTypeDisplayName()
 	return in->mIsFromHistory ? TEXT_TYPE_HISTORY : TEXT_TYPE_ADHOC;
 }
 
-BOOL PathExecuteCommand::Execute(const Parameter& param)
+BOOL PathExecuteCommand::Execute(Parameter* param)
 {
 	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
 		return FALSE;
@@ -145,7 +134,7 @@ BOOL PathExecuteCommand::Execute(const Parameter& param)
 
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mFullPath, param.GetParameterString(), process) == FALSE) {
+	if (exec.Run(in->mFullPath, param->GetParameterString(), process) == FALSE) {
 		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
 		return FALSE;
 	}

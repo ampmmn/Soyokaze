@@ -13,7 +13,7 @@ public:
 	RegistWinCommand(const RegistWinCommand& rhs);
 	virtual ~RegistWinCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

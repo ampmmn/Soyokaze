@@ -17,6 +17,7 @@
 #include "gui/SelectCommandTypeDialog.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/core/CommandRanking.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/NamedCommandHotKeyHandler.h"
 #include "spdlog/stopwatch.h"
@@ -31,6 +32,8 @@
 
 namespace launcherapp {
 namespace core {
+
+using namespace launcherapp::commands::common;
 
 using ShellExecCommand  = launcherapp::commands::shellexecute::ShellExecCommand;
 using DefaultCommand = launcherapp::commands::core::DefaultCommand;
@@ -215,12 +218,12 @@ bool CommandRepository::PImpl::HasSubsequentRequest()
 
 void CommandRepository::PImpl::Query(QueryRequest& req)
 {
-	const CommandParameter& param = req.GetCommandParameter();
+	const auto param = req.GetCommandParameter();
 	HWND hwndNotify = req.GetNotifyWindow();
 	UINT notifyMsg = req.GetNotifyMessage();
 
 	// パラメータが空の場合は検索しない
-	if (param.IsEmpty()) {
+	if (param->IsEmpty()) {
 		// 結果なし
 		PostMessage(hwndNotify, notifyMsg, 0, 0);
 		return;
@@ -231,7 +234,7 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	spdlog::stopwatch swAll;
 
 	// 入力文字列をを設定
-	mPattern->SetParam(param);
+	mPattern->SetWholeText(param->GetWholeString());
 
 	CommandMap::CommandQueryItemList matchedItems;
 
@@ -268,7 +271,7 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	}
 	else {
 		auto defaultCmd = GetDefaultCommand();
-		defaultCmd->SetName(param.GetWholeString());
+		defaultCmd->SetName(param->GetWholeString());
 		items->push_back(defaultCmd);
 	}
 
@@ -482,7 +485,7 @@ public:
  *  新規キーワード作成
  *  @param paramr パラメータ
  */
-int CommandRepository::NewCommandDialog(const CommandParameter* param)
+int CommandRepository::NewCommandDialog(CommandParameter* param)
 {
 	if (in->mIsNewDialog) {
 		// 編集操作中の再入はしない
@@ -495,7 +498,17 @@ int CommandRepository::NewCommandDialog(const CommandParameter* param)
 
 	// 種類選択ダイアログを表示
 	CString typeStr;
-	if (param == nullptr || param->GetNamedParam(_T("TYPE"), &typeStr) == false) {
+	if (param) {
+		auto namedParam = GetCommandNamedParameter(param);
+		int len = namedParam->GetNamedParamStringLength(_T("TYPE"));
+		if (len > 0) {
+			namedParam->GetNamedParamString(_T("TYPE"), typeStr.GetBuffer(len), len);
+			typeStr.ReleaseBuffer();
+		}
+		namedParam->Release();
+	}
+
+	if (typeStr.IsEmpty()) {
 		SelectCommandTypeDialog dlgSelect;
 
 		for (auto& provider : in->mProviders) {
@@ -694,12 +707,14 @@ int CommandRepository::RegisterCommandFromFiles(
 		PathRemoveExtension(name.GetBuffer(name.GetLength()));
 		name.ReleaseBuffer();
 
-		CommandParameter param;
-		param.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
-		param.SetNamedParamString(_T("COMMAND"), name);
-		param.SetNamedParamString(_T("PATH"), filePath);
+		auto param = CommandParameterBuilder::Create();
+		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param->SetNamedParamString(_T("COMMAND"), name);
+		param->SetNamedParamString(_T("PATH"), filePath);
 
-		return NewCommandDialog(&param);
+		auto result = NewCommandDialog(param);
+		param->Release();
+		return result;
 	}
 	return 0;
 }

@@ -55,7 +55,7 @@ CString RegExpCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool RegExpCommandProvider::NewDialog(const CommandParameter* param)
+bool RegExpCommandProvider::NewDialog(CommandParameter* param)
 {
 	return RegExpCommand::NewDialog(param);
 }

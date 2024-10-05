@@ -23,7 +23,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(const CommandParameter* param) override;
+	bool NewDialog(CommandParameter* param) override;
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;

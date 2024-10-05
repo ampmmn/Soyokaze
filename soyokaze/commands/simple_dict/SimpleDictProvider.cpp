@@ -52,7 +52,7 @@ CString SimpleDictProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool SimpleDictProvider::NewDialog(const CommandParameter* param)
+bool SimpleDictProvider::NewDialog(CommandParameter* param)
 {
 	SimpleDictCommand* newCmd = nullptr;
 	if (SimpleDictCommand::NewDialog(param, &newCmd) == false) {

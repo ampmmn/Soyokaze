@@ -39,7 +39,7 @@ VersionCommand::~VersionCommand()
 {
 }
 
-BOOL VersionCommand::Execute(const Parameter& param)
+BOOL VersionCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

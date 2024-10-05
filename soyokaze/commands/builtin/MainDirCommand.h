@@ -14,7 +14,7 @@ public:
 	MainDirCommand(const MainDirCommand& rhs);
 	virtual ~MainDirCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

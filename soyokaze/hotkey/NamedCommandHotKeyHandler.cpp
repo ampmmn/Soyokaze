@@ -36,9 +36,11 @@ bool NamedCommandHotKeyHandler::Invoke()
 	ASSERT(wnd);
 	ShowWindow(wnd->GetSafeHwnd(), SW_HIDE);
 
-	launcherapp::core::CommandParameter param;
-	param.SetNamedParamBool(_T("OnHotKey"), _T("true"));
+	auto param = launcherapp::core::CommandParameterBuilder::Create();
+	param->SetNamedParamBool(_T("OnHotKey"), _T("true"));
 	bool result = cmd->Execute(param);
+
+	param->Release();
 	cmd->Release();
 
 	return result;

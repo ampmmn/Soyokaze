@@ -13,6 +13,9 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
+
 CString NewCommand::TYPE(_T("Builtin-New"));
 
 // BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
@@ -38,29 +41,30 @@ NewCommand::~NewCommand()
 {
 }
 
-BOOL NewCommand::Execute(const Parameter& param)
+BOOL NewCommand::Execute(Parameter* param)
 {
-	Parameter inParam;
+	auto inParam = CommandParameterBuilder::Create();
 
 	bool hasParam = false;
 
-	std::vector<CString> args;
-	param.GetParameters(args);
-	if (args.size() > 0) {
-		inParam.SetNamedParamString(_T("COMMAND"), args[0]);
+	int paramCount = param->GetParamCount();
+	if (paramCount > 0) {
+		inParam->SetNamedParamString(_T("COMMAND"), param->GetParam(0));
 		hasParam = true;
 	}
 
-	if (args.size() > 1) {
-		inParam.SetNamedParamString(_T("PATH"), args[1]);
+	if (paramCount > 1) {
+		inParam->SetNamedParamString(_T("PATH"), param->GetParam(1));
 		hasParam = true;
 	}
 	if (hasParam) {
-		inParam.SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		inParam->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 	}
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog(&inParam);
+	cmdRepoPtr->NewCommandDialog(inParam);
+
+	inParam->Release();
 
 	return TRUE;
 }

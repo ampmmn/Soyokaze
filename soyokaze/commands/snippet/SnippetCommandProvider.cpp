@@ -49,7 +49,7 @@ CString SnippetCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool SnippetCommandProvider::NewDialog(const CommandParameter* param)
+bool SnippetCommandProvider::NewDialog(CommandParameter* param)
 {
 	return SnippetCommand::NewDialog(param);
 }

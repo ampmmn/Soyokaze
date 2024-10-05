@@ -52,7 +52,7 @@ CString BookmarkCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool BookmarkCommandProvider::NewDialog(const CommandParameter* param)
+bool BookmarkCommandProvider::NewDialog(CommandParameter* param)
 {
 	std::unique_ptr<BookmarkCommand> newCmd;
 	if (BookmarkCommand::NewDialog(param, newCmd) == false) {

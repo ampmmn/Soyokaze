@@ -45,8 +45,6 @@ using LinkItems = std::vector<std::pair<CString, CString> >;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-constexpr LPCTSTR TYPENAME = _T("URLDirectoryIndexCommand");
-
 struct URLDirectoryIndexCommand::PImpl
 {
 	PImpl()
@@ -354,22 +352,13 @@ CString URLDirectoryIndexCommand::GetGuideString()
 	return _T("Enter:候補を表示する");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString URLDirectoryIndexCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString URLDirectoryIndexCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("DirectiryIndex"));
 	return TEXT_TYPE;
 }
 
-BOOL URLDirectoryIndexCommand::Execute(const Parameter& param)
+BOOL URLDirectoryIndexCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -560,22 +549,16 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool URLDirectoryIndexCommand::NewDialog(const Parameter* param, URLDirectoryIndexCommand** newCmd)
+bool URLDirectoryIndexCommand::NewDialog(Parameter* param, URLDirectoryIndexCommand** newCmd)
 {
 	// 新規作成ダイアログを表示
 	CString value;
 
 	CommandParam tmpParam;
 
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		tmpParam.mName = value;
-	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		tmpParam.mURL = value;
-	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		tmpParam.mDescription = value;
-	}
+	GetNamedParamString(param, _T("COMMAND"), tmpParam.mName);
+	GetNamedParamString(param, _T("PATH"), tmpParam.mURL);
+	GetNamedParamString(param, _T("DESCRIPTION"), tmpParam.mDescription);
 
 	URLDirectoryIndexCommandEditDialog dlg;
 	dlg.SetParam(tmpParam);

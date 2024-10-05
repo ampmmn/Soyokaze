@@ -12,8 +12,6 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
-constexpr LPCTSTR TYPENAME = _T("AdhocCommandBase");
-
 AdhocCommandBase::AdhocCommandBase(LPCTSTR name, LPCTSTR description) : 
 	mName(name),
 	mDescription(description),
@@ -49,16 +47,7 @@ CString AdhocCommandBase::GetGuideString()
 	return _T("");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString AdhocCommandBase::GetTypeName()
-{
-	return TYPENAME;
-}
-
-BOOL AdhocCommandBase::Execute(const Parameter& param)
+BOOL AdhocCommandBase::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

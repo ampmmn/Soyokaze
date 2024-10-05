@@ -109,14 +109,10 @@ static tstring tostring(std::regex_constants::error_type e)
   }
 }
 
-void PartialMatchPattern::SetParam(
-	const launcherapp::core::CommandParameter& param
-)
+void PartialMatchPattern::SetWholeText(LPCTSTR text)
 {
-	const CString& wholeText = param.GetWholeString();
-
-	in->mWholeText = wholeText;
-
+	in->mWholeText = text;
+	const CString& wholeText = in->mWholeText;
 
 	// 与えられたテキストを空白で区切ったリスト
 	std::vector<CString> tokens;
@@ -220,7 +216,7 @@ void PartialMatchPattern::SetParam(
 			}
 			else {
 				if (token.IsEmpty() == FALSE) {
-					std::wstring escapedPat = Pattern::StripEscapeChars(token);
+					std::wstring escapedPat = StripEscapeChars(token);
 					patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
 				}
 				words.push_back(WORD(token, Pattern::FixString));
@@ -232,7 +228,7 @@ void PartialMatchPattern::SetParam(
 			spdlog::debug(_T("Failed to build regex from Migemo. reason={0} input={1}"),
 			              reason.c_str(), (LPCTSTR)token);
 
-			std::wstring escapedPat = Pattern::StripEscapeChars(token);
+			std::wstring escapedPat = StripEscapeChars(token);
 			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
 			words.push_back(WORD(token, Pattern::FixString));
 			break;
@@ -240,7 +236,7 @@ void PartialMatchPattern::SetParam(
 
 		try {
 			// 前方一致比較用にパターンを生成しておく
-			std::wstring escapedPat = Pattern::StripEscapeChars(in->mTokens[i]);
+			std::wstring escapedPat = StripEscapeChars(in->mTokens[i]);
 			patternsForFM.push_back(std::wregex(L"^" + escapedPat));
 		}
 		catch (std::regex_error& e) {
@@ -324,4 +320,29 @@ int PartialMatchPattern::GetWordCount()
 	return (int)in->mWords.size();
 }
 
+
+CString PartialMatchPattern::StripEscapeChars(const CString& pattern)
+{
+	// 後段のwregexに値を渡したときにエスケープ記号として解釈されるのを防ぐため
+
+	CString tmp(pattern);
+	tmp.Replace(_T("\\"), _T("\\\\"));
+	tmp.Replace(_T("?"), _T("\\?"));
+	tmp.Replace(_T("."), _T("\\."));
+	tmp.Replace(_T("*"), _T("\\*"));
+	tmp.Replace(_T("+"), _T("\\+"));
+	tmp.Replace(_T("^"), _T("\\^"));
+	tmp.Replace(_T("$"), _T("\\$"));
+	tmp.Replace(_T("["), _T("\\["));
+	tmp.Replace(_T("]"), _T("\\]"));
+	tmp.Replace(_T("|"), _T("\\|"));
+	tmp.Replace(_T("("), _T("\\("));
+	tmp.Replace(_T(")"), _T("\\)"));
+	tmp.Replace(_T("{"), _T("\\{"));
+	tmp.Replace(_T("}"), _T("\\}"));
+	tmp.Replace(_T("!"), _T("\\!"));
+	tmp.Replace(_T("&"), _T("\\&"));
+
+	return tmp;
+}
 

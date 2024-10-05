@@ -41,7 +41,7 @@ ReloadCommand::~ReloadCommand()
 {
 }
 
-BOOL ReloadCommand::Execute(const Parameter& param)
+BOOL ReloadCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

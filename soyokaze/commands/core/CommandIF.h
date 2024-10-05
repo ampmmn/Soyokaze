@@ -5,13 +5,10 @@
 #include "commands/core/CommandParameter.h"
 #include "matcher/Pattern.h"
 
-
 class CommandHotKeyAttribute;
 
 namespace launcherapp {
 namespace core {
-
-class CommandParameter;
 
 class Command : virtual public UnknownIF
 {
@@ -23,11 +20,9 @@ public:
 	virtual CString GetName() = 0;
 	virtual CString GetDescription() = 0;
 	virtual CString GetGuideString() = 0;
-	// コマンドの種類を表す識別子
-	virtual CString GetTypeName() = 0;
 	// コマンド種類を表す表示名称
 	virtual CString GetTypeDisplayName() = 0;
-	virtual BOOL Execute(const Parameter& param) = 0;
+	virtual BOOL Execute(Parameter* param) = 0;
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;

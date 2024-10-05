@@ -41,7 +41,7 @@ public:
 	BOOL Load();
 
 	// 新規登録ダイアログの表示
-	int NewCommandDialog(const CommandParameter* param = nullptr);
+	int NewCommandDialog(CommandParameter* param = nullptr);
 
 	// コマンド編集ダイアログの表示
 	int EditCommandDialog(const CString& cmdName);

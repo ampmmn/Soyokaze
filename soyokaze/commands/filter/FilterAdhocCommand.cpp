@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
+#include "commands/core/CommandParameter.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
@@ -18,13 +20,12 @@ using namespace launcherapp::commands::common;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 
 namespace launcherapp {
 namespace commands {
 namespace filter {
-
-constexpr LPCTSTR TYPENAME = _T("FilterAdhocCommand");
 
 struct FilterAdhocCommand::PImpl
 {
@@ -69,29 +70,27 @@ CString FilterAdhocCommand::GetGuideString()
 	return _T("Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString FilterAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString FilterAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL FilterAdhocCommand::Execute(const Parameter& param)
+BOOL FilterAdhocCommand::Execute(Parameter* param)
 {
 	CString argSub = in->mParam.mAfterCommandParam;
 	argSub.Replace(_T("$select"), in->mResult.mDisplayName);
 	ExpandMacros(argSub);
 
+	auto namedParam = GetCommandNamedParameter(param);
+
 	CString parents;
-	param.GetNamedParam(_T("PARENTS"), &parents);
+	int len = namedParam->GetNamedParamStringLength(_T("PARENTS"));
+	if (len > 0) {
+		namedParam->GetNamedParamString(_T("PARENTS"), parents.GetBuffer(len), len);
+		parents.ReleaseBuffer();
+	}
+	namedParam->Release();
 
 	// 呼び出し元に自分自身を追加
 	if (parents.IsEmpty() == FALSE) {
@@ -99,26 +98,27 @@ BOOL FilterAdhocCommand::Execute(const Parameter& param)
 	}
 	parents += in->mParam.mName;
 
-	Parameter paramSub;
-	paramSub.AddArgument(argSub);
-	paramSub.SetNamedParamString(_T("PARENTS"), parents);
-
-	// Ctrlキーが押されているかを設定
-	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("CtrlKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("ShiftKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("WinKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		paramSub.SetNamedParamBool(_T("AltKeyPressed"), true);
-	}
-
 	int type = in->mParam.mPostFilterType;
 	if (type == 0) {
+
+		auto paramSub = CommandParameterBuilder::Create();
+		paramSub->AddArgument(argSub);
+		paramSub->SetNamedParamString(_T("PARENTS"), parents);
+
+		// Ctrlキーが押されているかを設定
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+			paramSub->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+			paramSub->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+			paramSub->SetNamedParamBool(_T("WinKeyPressed"), true);
+		}
+		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+			paramSub->SetNamedParamBool(_T("AltKeyPressed"), true);
+		}
+
 		// 他のコマンドを実行
 		auto cmdRepo = CommandRepository::GetInstance();
 		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
@@ -126,6 +126,7 @@ BOOL FilterAdhocCommand::Execute(const Parameter& param)
 			command->Execute(paramSub);
 			command->Release();
 		}
+		paramSub->Release();
 		return true;
 	}
 
@@ -142,9 +143,7 @@ BOOL FilterAdhocCommand::Execute(const Parameter& param)
 		ShellExecCommand cmd;
 		cmd.SetAttribute(attr);
 
-		Parameter paramEmpty;
-		return cmd.Execute(paramEmpty);
-
+		return cmd.Execute(CommandParameterBuilder::EmptyParam());
 	}
 
 	if (type == 2) {

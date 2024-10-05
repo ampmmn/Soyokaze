@@ -51,7 +51,7 @@ CString WatchPathCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool WatchPathCommandProvider::NewDialog(const CommandParameter* param)
+bool WatchPathCommandProvider::NewDialog(CommandParameter* param)
 {
 	return WatchPathCommand::NewDialog(param);
 }

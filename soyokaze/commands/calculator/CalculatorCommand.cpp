@@ -17,8 +17,6 @@ namespace launcherapp {
 namespace commands {
 namespace calculator {
 
-constexpr LPCTSTR TYPENAME = _T("CalculatorCommand");
-
 struct CalculatorCommand::PImpl
 {
 	// 基数(0以外の値が指定されたら基数を表示する)
@@ -59,15 +57,6 @@ CString CalculatorCommand::GetGuideString()
 	return _T("Enter:クリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString CalculatorCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString CalculatorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CALCULATOR);
@@ -83,7 +72,7 @@ CString CalculatorCommand::GetTypeDisplayName()
 	}
 }
 
-BOOL CalculatorCommand::Execute(const Parameter& param)
+BOOL CalculatorCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

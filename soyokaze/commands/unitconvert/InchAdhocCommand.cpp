@@ -18,8 +18,6 @@ namespace launcherapp {
 namespace commands {
 namespace unitconvert {
 
-constexpr LPCTSTR TYPENAME = _T("InchAdhocCommand");
-
 struct InchAdhocCommand::PImpl
 {
 	CString mName;
@@ -45,22 +43,13 @@ CString InchAdhocCommand::GetGuideString()
 	return _T("Enter:クリップボードにコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString InchAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString InchAdhocCommand::GetTypeDisplayName()
 {
 	return _T("単位変換(inch)");
 }
 
 
-BOOL InchAdhocCommand::Execute(const Parameter& param)
+BOOL InchAdhocCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -19,7 +19,7 @@ public:
 	using ProcessPtr = std::unique_ptr<Instance>;
 
 public:
-	SubProcess(const CommandParameter& param);
+	SubProcess(CommandParameter* param);
 	~SubProcess();
 
 	void SetShowType(int showType);

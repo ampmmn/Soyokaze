@@ -14,7 +14,7 @@ public:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
-	void SetParam(const launcherapp::core::CommandParameter& param) override;
+	void SetWholeText(LPCTSTR wholeText) override;
 	int Match(const CString& str) override;
 	int Match(const CString& str, int offset) override;
 	CString GetFirstWord() override;
@@ -23,6 +23,8 @@ public:
 	void GetWords(std::vector<WORD>& words) override;
 	void GetRawWords(std::vector<CString>& words) override;
 	int GetWordCount() override;
+
+	static CString StripEscapeChars(const CString& pat);
 
 protected:
 	struct PImpl;

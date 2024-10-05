@@ -20,8 +20,6 @@ namespace launcherapp {
 namespace commands {
 namespace websearch {
 
-constexpr LPCTSTR TYPENAME = _T("WebSearchAdhocCommand");
-
 struct WebSearchAdhocCommand::PImpl
 {
 	WebSearchCommand* mBaseCommand = nullptr;
@@ -55,22 +53,13 @@ CString WebSearchAdhocCommand::GetGuideString()
 	return _T("Enter:検索を実行");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString WebSearchAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString WebSearchAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);
 	return TEXT_TYPE;
 }
 
-BOOL WebSearchAdhocCommand::Execute(const Parameter& param)
+BOOL WebSearchAdhocCommand::Execute(Parameter* param)
 {
 	SubProcess exec(param);
 

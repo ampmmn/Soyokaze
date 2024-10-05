@@ -375,8 +375,7 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				}
 
 				// 検索条件
-				launcherapp::core::CommandParameter commandParam(in->mKeyword);
-				pattern.SetParam(commandParam);
+				pattern.SetWholeText(in->mKeyword);
 
 				// 担当ぶんの要素を処理する
 				CandidateList matchedItems;

@@ -25,7 +25,7 @@ public:
 	virtual CString GetDescription();
 
 	// コマンド新規作成ダイアログ
-	virtual bool NewDialog(const CommandParameter* param);
+	virtual bool NewDialog(CommandParameter* param);
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;

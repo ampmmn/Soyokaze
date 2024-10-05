@@ -43,7 +43,7 @@ SettingCommand::~SettingCommand()
 {
 }
 
-BOOL SettingCommand::Execute(const Parameter& param)
+BOOL SettingCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

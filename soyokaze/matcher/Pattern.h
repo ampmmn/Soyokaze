@@ -35,7 +35,7 @@ public:
 public:
 	virtual ~Pattern() {}
 
-	virtual void SetParam(const launcherapp::core::CommandParameter& param) = 0;
+	virtual void SetWholeText(LPCTSTR wholeText) = 0;
 	virtual int Match(const CString& str) = 0;
 	virtual int Match(const CString& str, int offset) = 0;
 	virtual CString GetFirstWord() = 0;
@@ -45,7 +45,6 @@ public:
 	virtual void GetRawWords(std::vector<CString>& words) = 0;
 	virtual int GetWordCount() = 0;
 
-	static CString StripEscapeChars(const CString& pat);
 };
 
 

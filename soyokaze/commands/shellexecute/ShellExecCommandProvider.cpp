@@ -53,7 +53,7 @@ CString ShellExecCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool ShellExecCommandProvider::NewDialog(const CommandParameter* param)
+bool ShellExecCommandProvider::NewDialog(CommandParameter* param)
 {
 	ShellExecCommand* newCmd = nullptr;
 	if (ShellExecCommand::NewDialog(param, &newCmd) == false) {

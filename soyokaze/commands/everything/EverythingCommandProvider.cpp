@@ -54,7 +54,7 @@ CString EverythingCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool EverythingCommandProvider::NewDialog(const CommandParameter* param)
+bool EverythingCommandProvider::NewDialog(CommandParameter* param)
 {
 	EverythingCommand* newCmd = nullptr;
 	if (EverythingCommand::NewDialog(param, &newCmd) == false) {

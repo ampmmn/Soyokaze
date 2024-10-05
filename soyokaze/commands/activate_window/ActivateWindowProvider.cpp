@@ -97,7 +97,7 @@ CString ActivateWindowProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool ActivateWindowProvider::NewDialog(const CommandParameter* param)
+bool ActivateWindowProvider::NewDialog(CommandParameter* param)
 {
 	WindowActivateCommand* newCmd = nullptr;
 	if (WindowActivateCommand::NewDialog(param, &newCmd) == false) {

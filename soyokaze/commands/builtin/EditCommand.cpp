@@ -39,21 +39,18 @@ EditCommand::~EditCommand()
 {
 }
 
-BOOL EditCommand::Execute(const Parameter& param)
+BOOL EditCommand::Execute(Parameter* param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
-
 	auto cmdRepoPtr =
 	 	launcherapp::core::CommandRepository::GetInstance();
 
-	if (args.empty()) {
+	if (param->HasParameter() == false) {
 		// キーワードマネージャを実行する
 		cmdRepoPtr->ManagerDialog();
 		return TRUE;
 	}
 
-	CString editName = args[0];
+	LPCTSTR editName = param->GetParam(0);
 	auto cmd = cmdRepoPtr->QueryAsWholeMatch(editName);
 
 	if (cmd == nullptr) {

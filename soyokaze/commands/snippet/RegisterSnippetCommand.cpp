@@ -15,6 +15,9 @@ namespace launcherapp {
 namespace commands {
 namespace snippet {
 
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
+
 CString RegisterSnippetCommand::TYPE(_T("Builtin-RegisterSnippet"));
 CString RegisterSnippetCommand::DEFAULT_NAME(_T("newsnippet"));
 
@@ -38,7 +41,7 @@ RegisterSnippetCommand::~RegisterSnippetCommand()
 {
 }
 
-BOOL RegisterSnippetCommand::Execute(const Parameter& param)
+BOOL RegisterSnippetCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -47,9 +50,11 @@ BOOL RegisterSnippetCommand::Execute(const Parameter& param)
 	SharedHwnd sharedWnd;
 	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&clipboardText);
 
-	Parameter inParam;
-	inParam.SetNamedParamString(_T("TEXT"), clipboardText);
-	SnippetCommand::NewDialog(&inParam);
+	auto inParam = CommandParameterBuilder::Create();
+	inParam->SetNamedParamString(_T("TEXT"), clipboardText);
+	SnippetCommand::NewDialog(inParam);
+
+	inParam->Release();
 
 	// キャンセルされてもエラーダイアログを出さないようにするため、常にTRUEをかえす
 	return TRUE;

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecSettingDialog.h"
 #include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
@@ -23,6 +24,8 @@
 
 using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+
 
 namespace launcherapp {
 namespace commands {
@@ -37,8 +40,6 @@ ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-constexpr LPCTSTR TYPENAME = _T("ShellExecCommand");
 
 struct ShellExecCommand::PImpl
 {
@@ -106,54 +107,41 @@ CString ShellExecCommand::GetGuideString()
 	}
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString ShellExecCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString ShellExecCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_NORMALCOMMAND);
 	return TEXT_TYPE;
 }
 
-// Ctrl-Shift-Enterキー押下で実行した場合は管理者権限で実行する。
-// CtrlとShiftが押されているかを判断する。
-static bool IsRunAsKeyPressed(const launcherapp::core::CommandParameter& param)
+BOOL ShellExecCommand::Execute(Parameter* param_)
 {
-	return param.GetNamedParamBool(_T("CtrlKeyPressed")) && param.GetNamedParamBool(_T("ShiftKeyPressed"));
-}
+	auto param = param_->Clone();
 
-BOOL ShellExecCommand::Execute(const Parameter& param_)
-{
-	Parameter param(param_);
-
-
-	if (param.HasParameter() == false && in->mParam.mIsShowArgDialog) {
+	if (param->HasParameter() == false && in->mParam.mIsShowArgDialog) {
 		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
 		SharedHwnd hwnd;
 		ArgumentDialog dlg(GetName(), CWnd::FromHandle(hwnd.GetHwnd()));
 		if (dlg.DoModal() != IDOK) {
 			return TRUE;
 		}
-		param.SetParamString(dlg.GetArguments());
+		param->SetParameterString(dlg.GetArguments());
 	}
 
 
 
 	// 実行時引数が与えられた場合は履歴に登録しておく
-	if (param.HasParameter()) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param.GetWholeString());
+	if (param->HasParameter()) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
 
 	in->mErrMsg.Empty();
 
+	int paramCount = param->GetParamCount();
 	std::vector<CString> args;
-	param.GetParameters(args);
+	args.reserve(paramCount);
+	for (int i = 0; i < paramCount; ++i) {
+		args.push_back(param->GetParam(i));
+	}
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
 	ATTRIBUTE attr;
@@ -169,14 +157,19 @@ BOOL ShellExecCommand::Execute(const Parameter& param_)
 	SubProcess::ProcessPtr process;
 	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
 		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
+		param->Release();
 		return FALSE;
 	}
 
 	// もしwaitするようにするのであればここで待つ
-	if (param.GetNamedParamBool(_T("WAIT"))) {
+	auto namedParam = GetCommandNamedParameter(param);
+	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);
 	}
+	namedParam->Release();
+
+	param->Release();
 
 	return TRUE;
 }
@@ -385,7 +378,7 @@ ShellExecCommand::Clone()
 }
 
 bool ShellExecCommand::NewDialog(
-	const Parameter* param,
+	Parameter* param,
 	ShellExecCommand** newCmdPtr
 )
 {
@@ -393,18 +386,10 @@ bool ShellExecCommand::NewDialog(
 	CString value;
 
 	CommandParam commandParam;
-	if (param && param->GetNamedParam(_T("COMMAND"), &value)) {
-		commandParam.mName = value;
-	}
-	if (param && param->GetNamedParam(_T("PATH"), &value)) {
-		commandParam.mPath = value;
-	}
-	if (param && param->GetNamedParam(_T("DESCRIPTION"), &value)) {
-		commandParam.mDescription = value;
-	}
-	if (param && param->GetNamedParam(_T("ARGUMENT"), &value)) {
-		commandParam.mParameter = value;
-	}
+	GetNamedParamString(param, _T("COMMAND"), commandParam.mName);
+	GetNamedParamString(param, _T("PATH"), commandParam.mPath);
+	GetNamedParamString(param, _T("DESCRIPTION"), commandParam.mDescription);
+	GetNamedParamString(param, _T("ARGUMENT"), commandParam.mParameter);
 
 	SettingDialog dlg;
 	dlg.SetParam(commandParam);

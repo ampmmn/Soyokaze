@@ -35,7 +35,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(const CommandParameter* param) override;
+	bool NewDialog(CommandParameter* param) override;
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	bool IsPrivate() const override;

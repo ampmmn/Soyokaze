@@ -24,9 +24,8 @@ public:
 	virtual ~ColorCommand();
 
 	CString GetGuideString() override;
-	CString GetTypeName() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

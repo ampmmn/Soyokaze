@@ -5,6 +5,7 @@
 #include "commands/everything/EverythingResult.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
@@ -22,8 +23,6 @@ using CommandRepository = launcherapp::core::CommandRepository;
 namespace launcherapp {
 namespace commands {
 namespace everything {
-
-constexpr LPCTSTR TYPENAME = _T("EverythingAdhocCommand");
 
 struct EverythingAdhocCommand::PImpl
 {
@@ -69,24 +68,16 @@ CString EverythingAdhocCommand::GetGuideString()
 	return guideStr;
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString EverythingAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString EverythingAdhocCommand::GetTypeDisplayName()
 {
 	return _T("Everything検索");
 }
 
-BOOL EverythingAdhocCommand::Execute(const Parameter& param)
+BOOL EverythingAdhocCommand::Execute(Parameter* param)
 {
-	bool isCtrlPressed = param.GetNamedParamBool(_T("CtrlKeyPressed"));
-	bool isShiftPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
+	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
+	bool isCtrlPressed = (state & MASK_CTRL) != 0;
+	bool isShiftPressed = (state & MASK_SHIFT) != 0;
 	if (isCtrlPressed == false && isShiftPressed != false) {
 		// クリップボードにコピー
 		Clipboard::Copy(in->mResult.mFullPath);
@@ -95,7 +86,7 @@ BOOL EverythingAdhocCommand::Execute(const Parameter& param)
 
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mResult.mFullPath, param.GetParameterString(), process) == FALSE) {
+	if (exec.Run(in->mResult.mFullPath, param->GetParameterString(), process) == FALSE) {
 		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
 		return FALSE;
 	}

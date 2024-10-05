@@ -3,6 +3,7 @@
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
 #include "SharedHwnd.h"
@@ -17,13 +18,12 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 
 namespace launcherapp {
 namespace commands {
 namespace url_directoryindex {
-
-constexpr LPCTSTR TYPENAME = _T("DirectoryIndexAdhocCommand");
 
 struct DirectoryIndexAdhocCommand::PImpl
 {
@@ -81,10 +81,12 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	Parameter param;
+	auto param = CommandParameterBuilder::Create();
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;
-	exec.Run(url, param.GetParameterString(), process);
+	exec.Run(url, param->GetParameterString(), process);
+
+	param->Release();
 	return true;
 }
 
@@ -137,15 +139,6 @@ CString DirectoryIndexAdhocCommand::GetGuideString()
 	return _T("Enter:開く Shift-Enter:ブラウザで開く Ctrl-Enter:URLをコピー");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString DirectoryIndexAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 {
 	ASSERT(in->mBaseCmd);
@@ -153,30 +146,20 @@ CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 }
 
 
-BOOL DirectoryIndexAdhocCommand::Execute(const Parameter& param)
+BOOL DirectoryIndexAdhocCommand::Execute(Parameter* param)
 {
-	auto IsCtrlKeyPressed = [&param]() {
-		// Ctrlキーのみが押されていたら
-		return param.GetNamedParamBool(_T("CtrlKeyPressed")) && 
-			     param.GetNamedParamBool(_T("ShiftKeyPressed")) == false &&
-			     param.GetNamedParamBool(_T("AltKeyPressed")) == false &&
-			     param.GetNamedParamBool(_T("WinKeyPressed")) == false;
-	};
-	auto IsShiftKeyPressed = [&param]() {
-		// Shiftキーのみが押されていたら
-		return param.GetNamedParamBool(_T("CtrlKeyPressed")) == false && 
-			     param.GetNamedParamBool(_T("ShiftKeyPressed")) &&
-			     param.GetNamedParamBool(_T("AltKeyPressed")) == false &&
-			     param.GetNamedParamBool(_T("WinKeyPressed")) == false;
-	};
+	uint32_t state = GetModifierKeyState(param, MASK_ALL);
 
-	if (IsCtrlKeyPressed()) {
+	bool isCtrlKeyPressed = state == MASK_CTRL;
+	bool isShiftKeyPressed = state == MASK_SHIFT;
+
+	if (isCtrlKeyPressed) {
 		// URLをコピー
 		CommandParam param_;
 		in->mBaseCmd->GetParam(param_);
 		Clipboard::Copy(param_.CombineURL(in->mBaseCmd->GetSubPath(), in->mResult.mLinkPath));
 	}
-	else if (IsShiftKeyPressed()) {
+	else if (isShiftKeyPressed) {
 		// URLをブラウザで開く
 		in->OpenURL();
 	}

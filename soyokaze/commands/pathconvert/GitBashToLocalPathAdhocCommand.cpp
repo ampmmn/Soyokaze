@@ -4,6 +4,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -12,15 +13,11 @@
 #define new DEBUG_NEW
 #endif
 
-using SubProcess = launcherapp::commands::common::SubProcess;
-using Clipboard = launcherapp::commands::common::Clipboard;
-
+using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
 namespace pathconvert {
-
-constexpr LPCTSTR TYPENAME = _T("GitBashToLocalPathAdhocCommand");
 
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
@@ -53,30 +50,18 @@ CString GitBashToLocalPathAdhocCommand::GetGuideString()
 	return _T("Enter:パスをコピー Ctrl-Enter:フォルダを開く Shift-Enter:開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString GitBashToLocalPathAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 {
 	return _T("git-bash To Local Path");
 }
 
-bool GitBashToLocalPathAdhocCommand::ShouldCopy(const Parameter& param)
+bool GitBashToLocalPathAdhocCommand::ShouldCopy(Parameter* param)
 {
 	// 何も修飾キーがおされてないならコピー操作をする
-	return param.GetNamedParamBool(_T("CtrlKeyPressed")) == false &&
-	       param.GetNamedParamBool(_T("ShiftKeyPressed")) == false &&
-	       param.GetNamedParamBool(_T("AltKeyPressed")) == false &&
-	       param.GetNamedParamBool(_T("WinKeyPressed")) == false;
+	return GetModifierKeyState(param, MASK_ALL) == 0;
 }
 
-BOOL GitBashToLocalPathAdhocCommand::Execute(const Parameter& param)
+BOOL GitBashToLocalPathAdhocCommand::Execute(Parameter* param)
 {
 	if (ShouldCopy(param)) {
 		// クリップボードにコピー
@@ -92,7 +77,7 @@ BOOL GitBashToLocalPathAdhocCommand::Execute(const Parameter& param)
 
 		SubProcess exec(param);
 		SubProcess::ProcessPtr process;
-		if (exec.Run(in->mFullPath, param.GetParameterString(), process) == FALSE) {
+		if (exec.Run(in->mFullPath, param->GetParameterString(), process) == FALSE) {
 			this->mErrMsg = (LPCTSTR)process->GetErrorMessage();
 			return FALSE;
 		}

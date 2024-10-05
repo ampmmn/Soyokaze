@@ -45,18 +45,15 @@ CopyClipboardCommand::~CopyClipboardCommand()
 {
 }
 
-BOOL CopyClipboardCommand::Execute(const Parameter& param)
+BOOL CopyClipboardCommand::Execute(Parameter* param)
 {
-	std::vector<CString> args;
-	param.GetParameters(args);
-
 	// 引数が空なら何もしない
-	if (args.empty()) {
+	if (param->HasParameter() == false) {
 		return TRUE;
 	}
 
 	// クリップボードにコピー
-	OnCopy(param.GetParameterString());
+	OnCopy(param->GetParameterString());
 
 	return TRUE;
 }

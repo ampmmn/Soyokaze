@@ -116,9 +116,11 @@ void InputSettingDialog::OnNotifyLinkOpen(
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
 	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
-		launcherapp::core::CommandParameter param;
+		auto param = launcherapp::core::CommandParameterBuilder::Create();
 		MainDirCommand cmd(_T("tmp"));
 		cmd.Execute(param);
+
+		param->Release();
 	}
 	else {
 		ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);

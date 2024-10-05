@@ -37,7 +37,7 @@ public:
 	virtual CString GetDescription() = 0;
 
 	// コマンド新規作成ダイアログを表示する
-	virtual bool NewDialog(const CommandParameter* param = nullptr) = 0;
+	virtual bool NewDialog(CommandParameter* param = nullptr) = 0;
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const = 0;

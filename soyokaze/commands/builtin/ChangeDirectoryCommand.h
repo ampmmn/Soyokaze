@@ -1,3 +1,4 @@
+// あ
 #pragma once
 
 #include "commands/builtin/BuiltinCommandBase.h"
@@ -14,7 +15,7 @@ public:
 	ChangeDirectoryCommand(const ChangeDirectoryCommand& rhs);
 	virtual ~ChangeDirectoryCommand();
 
-	BOOL Execute(const Parameter& param) override;
+	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

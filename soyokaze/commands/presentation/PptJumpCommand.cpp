@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "PptJumpCommand.h"
 #include "commands/presentation/PowerPointWindow.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -9,11 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
+
 namespace launcherapp {
 namespace commands {
 namespace presentation {
-
-constexpr LPCTSTR TYPENAME = _T("PptJumpCommand");
 
 struct PptJumpCommand::PImpl
 {
@@ -43,15 +44,6 @@ CString PptJumpCommand::GetGuideString()
 	return _T("Enter:スライドを表示する Ctrl-Enter:最大化表示");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString PptJumpCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 
 CString PptJumpCommand::GetTypeDisplayName()
 {
@@ -59,7 +51,7 @@ CString PptJumpCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL PptJumpCommand::Execute(const Parameter& param)
+BOOL PptJumpCommand::Execute(Parameter* param)
 {
 	// 現在表示中のパワポを取得
 	std::unique_ptr<PowerPointWindow> pptWnd;
@@ -69,7 +61,7 @@ BOOL PptJumpCommand::Execute(const Parameter& param)
 	pptWnd->GoToSlide((int16_t)in->mPage);
 
 	// 表示しているパワポのウインドウをアクティブにする
-	bool isShowMaximize = param.GetNamedParamBool(_T("CtrlKeyPressed"));
+	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
 	pptWnd->Activate(isShowMaximize);
 
 	return TRUE;

@@ -69,22 +69,13 @@ CString EjectVolumeCommand::GetGuideString()
 	return guideStr; 
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString EjectVolumeCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString EjectVolumeCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(_T("取リ外しコマンド"));
 	return TEXT_TYPE;
 }
 
-BOOL EjectVolumeCommand::Execute(const Parameter& param_)
+BOOL EjectVolumeCommand::Execute(Parameter* param_)
 {
 	UNUSED(param_);
 	const auto& param = in->mParam;
@@ -191,7 +182,7 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool EjectVolumeCommand::NewDialog(const Parameter* param)
+bool EjectVolumeCommand::NewDialog(Parameter* param)
 {
 	param;  // 非サポート
 

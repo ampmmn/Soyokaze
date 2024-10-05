@@ -55,7 +55,7 @@ CString AlignWindowProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool AlignWindowProvider::NewDialog(const CommandParameter* param)
+bool AlignWindowProvider::NewDialog(CommandParameter* param)
 {
 	AlignWindowCommand* newCmd = nullptr;
 	if (AlignWindowCommand::NewDialog(param, &newCmd) == false) {

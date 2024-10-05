@@ -3,6 +3,7 @@
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/CharConverter.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -15,14 +16,12 @@
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = launcherapp::commands::common::Clipboard;
+using namespace launcherapp::commands::common;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 namespace launcherapp {
 namespace commands {
 namespace pathconvert {
-
-constexpr LPCTSTR TYPENAME = _T("FileProtocolConvertAdhocCommand");
 
 struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 {
@@ -84,24 +83,16 @@ CString FileProtocolConvertAdhocCommand::GetGuideString()
 	return _T("Enter:パスをコピー Shift-Enter:開く Ctrl-Enter:フォルダを開く");
 }
 
-/**
- * 種別を表す文字列を取得する
- * @return 文字列
- */
-CString FileProtocolConvertAdhocCommand::GetTypeName()
-{
-	return TYPENAME;
-}
-
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 {
 	return _T("パス変換(file://)");
 }
 
-BOOL FileProtocolConvertAdhocCommand::Execute(const Parameter& param)
+BOOL FileProtocolConvertAdhocCommand::Execute(Parameter* param)
 {
-	bool isCtrlPressed = param.GetNamedParamBool(_T("CtrlKeyPressed"));
-	bool isShiftPressed = param.GetNamedParamBool(_T("ShiftKeyPressed"));
+	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
+	bool isCtrlPressed = (state &  MASK_CTRL) != 0;
+	bool isShiftPressed = (state & MASK_SHIFT) != 0;
 	if (isCtrlPressed != false || isShiftPressed != false) {
 		// フォルダを開く or 開く
 		ShellExecCommand cmd;
