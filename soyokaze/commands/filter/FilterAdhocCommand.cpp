@@ -9,6 +9,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
 #include "icon/IconLoader.h"
+#include "utility/RefPtr.h"
 #include "resource.h"
 #include <vector>
 
@@ -90,7 +91,6 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 		namedParam->GetNamedParamString(_T("PARENTS"), parents.GetBuffer(len), len);
 		parents.ReleaseBuffer();
 	}
-	namedParam->Release();
 
 	// 呼び出し元に自分自身を追加
 	if (parents.IsEmpty() == FALSE) {
@@ -101,7 +101,7 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 	int type = in->mParam.mPostFilterType;
 	if (type == 0) {
 
-		auto paramSub = CommandParameterBuilder::Create();
+		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 		paramSub->AddArgument(argSub);
 		paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
@@ -126,7 +126,6 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 			command->Execute(paramSub);
 			command->Release();
 		}
-		paramSub->Release();
 		return true;
 	}
 

@@ -140,8 +140,6 @@ BOOL RegExpCommand::Execute(Parameter* param)
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);
 	}
-	namedParam->Release();
-
 	return TRUE;
 }
 

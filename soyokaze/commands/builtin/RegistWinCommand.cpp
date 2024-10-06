@@ -16,6 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 static HWND GetTargetWindow(HWND startHwnd)
 {
@@ -93,7 +94,7 @@ BOOL RegistWinCommand::Execute(Parameter*)
 	ProcessPath processPath(hNextWindow);
 
 	try {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
@@ -105,7 +106,6 @@ BOOL RegistWinCommand::Execute(Parameter*)
 		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 		cmdRepoPtr->NewCommandDialog(param);
 
-		param->Release();
 		return TRUE;
 	}
 	catch(ProcessPath::Exception& e) {

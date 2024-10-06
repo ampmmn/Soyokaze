@@ -2,6 +2,7 @@
 
 #include "commands/core/CommandIF.h"
 #include "commands/core/IFIDDefine.h"
+#include "utility/RefPtr.h"
 #include <memory>
 
 namespace launcherapp {

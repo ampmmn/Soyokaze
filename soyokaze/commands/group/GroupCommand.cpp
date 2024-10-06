@@ -60,7 +60,6 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 	// 初回に(必要に応じて)実行確認を行う
 	auto namedParam = GetCommandNamedParameter(param);
 	bool isConfirmed = namedParam->GetNamedParamBool(_T("CONFIRMED"));
-	namedParam->Release();
 	if (round == 0 && isConfirmed == false) {
 
 		if (mParam.mIsConfirm) {
@@ -116,7 +115,7 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 			continue;
 		}
 
-		auto paramSub = CommandParameterBuilder::Create();
+		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 		if (mParam.mIsPassParam) {
 			paramSub->SetParameterString(param->GetParameterString());
 		}
@@ -131,7 +130,6 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 
 		command->Execute(paramSub);
 
-		paramSub->Release();
 		command->Release();
 	}
 

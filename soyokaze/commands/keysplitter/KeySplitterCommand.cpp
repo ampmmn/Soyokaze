@@ -139,7 +139,7 @@ BOOL KeySplitterCommand::Execute(Parameter* param)
 	}
 	parents += cmdName;
 
-	auto paramSub = CommandParameterBuilder::Create();
+	RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 	paramSub->SetParameterString(param->GetParameterString());
 	paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
@@ -148,12 +148,10 @@ BOOL KeySplitterCommand::Execute(Parameter* param)
 	auto cmdRepo = CommandRepository::GetInstance();
 	auto command = cmdRepo->QueryAsWholeMatch(item.mCommandName, false);
 	if (command == nullptr) {
-		paramSub->Release();
 		return TRUE;
 	}
 	BOOL isOK = command->Execute(paramSub);
 
-	paramSub->Release();
 	command->Release();
 
 	return isOK;

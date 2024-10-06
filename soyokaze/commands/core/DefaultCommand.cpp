@@ -15,6 +15,7 @@ namespace core {
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::builtin;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 {
@@ -124,12 +125,10 @@ BOOL DefaultCommand::Execute(Parameter* param)
 	else if (type == _T("register")) {
 		// コマンドを登録
 		CString str = param->GetWholeString();
-		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(_T("new ") + str);
+		RefPtr<CommandParameterBuilder> commandParam(CommandParameterBuilder::Create(_T("new ") + str), false);
 
 		NewCommand cmd;
 		BOOL result = cmd.Execute(commandParam);
-
-		commandParam->Release();
 
 		return result;
 	}

@@ -34,10 +34,8 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PIm
 
 	in->mKeyword = keyword;
 
-	auto paramTmp = CommandParameterBuilder::Create(keyword);
+	RefPtr<CommandParameterBuilder> paramTmp(CommandParameterBuilder::Create(keyword), false);
 	auto commandPart = paramTmp->GetCommandString();
-	paramTmp->Release();
-	
 
 	auto cmdRepo = CommandRepository::GetInstance();
 	auto cmd = cmdRepo->QueryAsWholeMatch(commandPart, true);
@@ -78,12 +76,10 @@ BOOL HistoryCommand::Execute(Parameter* param)
 		return FALSE;
 	}
 
-	auto paramTmp = param->Clone();
+	RefPtr<Parameter> paramTmp(param->Clone(), false);
 	paramTmp->SetWholeString(in->mKeyword);
 
 	BOOL result = in->mCmd->Execute(paramTmp);
-
-	paramTmp->Release();
 
 	return result;
 }

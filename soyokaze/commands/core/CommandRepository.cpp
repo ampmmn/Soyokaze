@@ -505,7 +505,6 @@ int CommandRepository::NewCommandDialog(CommandParameter* param)
 			namedParam->GetNamedParamString(_T("TYPE"), typeStr.GetBuffer(len), len);
 			typeStr.ReleaseBuffer();
 		}
-		namedParam->Release();
 	}
 
 	if (typeStr.IsEmpty()) {
@@ -707,13 +706,12 @@ int CommandRepository::RegisterCommandFromFiles(
 		PathRemoveExtension(name.GetBuffer(name.GetLength()));
 		name.ReleaseBuffer();
 
-		auto param = CommandParameterBuilder::Create();
+		RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), name);
 		param->SetNamedParamString(_T("PATH"), filePath);
 
 		auto result = NewCommandDialog(param);
-		param->Release();
 		return result;
 	}
 	return 0;

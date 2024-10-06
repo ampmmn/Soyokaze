@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "utility/RefPtr.h"
 
 #pragma warning( disable : 4250)
 

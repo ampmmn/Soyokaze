@@ -50,11 +50,9 @@ BOOL RegisterSnippetCommand::Execute(Parameter* param)
 	SharedHwnd sharedWnd;
 	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&clipboardText);
 
-	auto inParam = CommandParameterBuilder::Create();
+	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
 	inParam->SetNamedParamString(_T("TEXT"), clipboardText);
 	SnippetCommand::NewDialog(inParam);
-
-	inParam->Release();
 
 	// キャンセルされてもエラーダイアログを出さないようにするため、常にTRUEをかえす
 	return TRUE;

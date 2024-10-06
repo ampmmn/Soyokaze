@@ -118,10 +118,10 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		auto cmdRepo = CommandRepository::GetInstance();
 		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
 		if (command) {
-			auto paramSub = CommandParameterBuilder::Create();
+			RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
+
 			paramSub->AddArgument(argSub);
 			command->Execute(paramSub);
-			paramSub->Release();
 			command->Release();
 		}
 	}

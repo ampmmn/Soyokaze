@@ -81,12 +81,12 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	auto param = CommandParameterBuilder::Create();
+	RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
+
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;
 	exec.Run(url, param->GetParameterString(), process);
 
-	param->Release();
 	return true;
 }
 

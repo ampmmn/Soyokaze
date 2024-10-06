@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utility/RefPtr.h"
+
 namespace launcherapp {
 
 namespace core {
@@ -18,7 +20,7 @@ enum {
 	MASK_ALL = 15,
 };
 
-launcherapp::core::CommandNamedParameter* GetCommandNamedParameter(launcherapp::core::CommandParameter* param);
+RefPtr<launcherapp::core::CommandNamedParameter> GetCommandNamedParameter(launcherapp::core::CommandParameter * param);
 
 bool IsCtrlKeyPressed(launcherapp::core::CommandParameter* param);
 bool IsShiftKeyPressed(launcherapp::core::CommandParameter* param);

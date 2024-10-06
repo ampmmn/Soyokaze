@@ -80,9 +80,8 @@ void HistoryCommandProvider::QueryAdhocCommands(
 
 			auto& item = *it;
 
-			auto param = CommandParameterBuilder::Create(item.mWord);
+			RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(item.mWord), false);
 			auto cmdName = param->GetCommandString();
-			param->Release();
 
 			if (existingCmds.find(item.mWord) != existingCmds.end()) {
 				++it;

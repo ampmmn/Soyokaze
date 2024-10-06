@@ -2,6 +2,7 @@
 
 #include "commands/core/CommandIF.h"
 #include "commands/builtin/BuiltinCommandFactory.h"
+#include "utility/RefPtr.h"
 
 namespace launcherapp {
 namespace commands {

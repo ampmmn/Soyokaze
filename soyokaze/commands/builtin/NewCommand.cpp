@@ -43,7 +43,7 @@ NewCommand::~NewCommand()
 
 BOOL NewCommand::Execute(Parameter* param)
 {
-	auto inParam = CommandParameterBuilder::Create();
+	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
 
 	bool hasParam = false;
 
@@ -63,8 +63,6 @@ BOOL NewCommand::Execute(Parameter* param)
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->NewCommandDialog(inParam);
-
-	inParam->Release();
 
 	return TRUE;
 }

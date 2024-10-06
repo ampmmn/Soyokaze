@@ -1,7 +1,9 @@
 #pragma once
 
 #include "commands/core/CommandProviderIF.h"
+#include "utility/RefPtr.h"
 #include <stdint.h>
+
 
 namespace launcherapp {
 namespace commands {

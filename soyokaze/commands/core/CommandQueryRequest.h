@@ -20,7 +20,12 @@ public:
 		mParam(rhs.mParam->Clone_()), mHwnd(rhs.mHwnd), mMsg(rhs.mMsg)
 	{
 	}
-	~CommandQueryRequest() {}
+	~CommandQueryRequest() {
+		if (mParam) {
+			mParam->Release();
+			mParam = nullptr;
+		}
+	}
 
 	CommandQueryRequest& operator = (const CommandQueryRequest& rhs)
 	{
