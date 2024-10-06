@@ -6,9 +6,12 @@
 class CommandEntryIF
 {
 public:
+	static constexpr auto NO_ENTRY { static_cast<size_t>(-1) };
+
+public:
 	virtual ~CommandEntryIF() {}
 
-	virtual CString GetName() = 0;
+	virtual LPCTSTR GetName() = 0;
 
 	virtual void MarkAsUsed() = 0;
 	virtual bool IsUsedEntry() = 0;
@@ -29,7 +32,8 @@ public:
 	virtual bool Get(LPCTSTR key, bool defValue) = 0;
 	virtual void Set(LPCTSTR key, bool value) = 0;
 
-	virtual bool Get(LPCTSTR key, std::vector<uint8_t>& value) = 0;
-	virtual void Set(LPCTSTR key, const std::vector<uint8_t>& value) = 0;
+	virtual size_t GetBytesLength(LPCTSTR key) = 0;
+	virtual bool GetBytes(LPCTSTR key, uint8_t* buf, size_t bufLen) = 0;
+	virtual void SetBytes(LPCTSTR key, const uint8_t* buf, size_t bufLen) = 0;
 };
 

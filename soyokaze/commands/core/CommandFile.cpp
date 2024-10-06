@@ -198,13 +198,21 @@ void CommandFile::Set(Entry* entry, LPCTSTR key, bool value)
 bool CommandFile::Get(Entry* entry, LPCTSTR key, std::vector<uint8_t>& value)
 {
 	ASSERT(entry);
-	return entry->Get(key, value);
+	size_t len = entry->GetBytesLength(key);
+	if (len != CommandEntryIF::NO_ENTRY) {
+		value.resize(len);
+		return entry->GetBytes(key, value.data(), len);
+	}
+	else {
+		value.clear();
+		return false;
+	}
 }
 
 void CommandFile::Set(Entry* entry, LPCTSTR key, const std::vector<uint8_t>& value)
 {
 	ASSERT(entry);
-	entry->Set(key, value);
+	entry->SetBytes(key, value.data(), value.size());
 }
 
 bool CommandFile::Load()
@@ -269,7 +277,8 @@ bool CommandFile::Load()
 			curEntry->Set(strKey, false);
 		}
 		else if (strValue.Left(7) == _T("stream:")) {
-			curEntry->Set(strKey, DecodeBase64(strValue.Mid(7)));
+			auto stm = DecodeBase64(strValue.Mid(7));
+			curEntry->SetBytes(strKey, stm.data(),stm.size());
 		}
 		else if (std::regex_match(pat, regDouble)) {
 			double value;

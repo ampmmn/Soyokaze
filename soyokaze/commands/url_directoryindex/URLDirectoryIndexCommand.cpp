@@ -506,12 +506,15 @@ bool URLDirectoryIndexCommand::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("serveruser"), in->mParam.mServerUser);
 	std::vector<uint8_t> buf;
-	entry->Set(_T("serverpassword"), in->Encode(in->mParam.mServerPassword, buf));
+	auto& stm = in->Encode(in->mParam.mServerPassword, buf);
+	entry->SetBytes(_T("serverpassword"), stm.data(), stm.size());
 
 	entry->Set(_T("proxytype"), in->mParam.mProxyType);
 	entry->Set(_T("proxyhost"), in->mParam.mProxyHost);
 	entry->Set(_T("proxyuser"), in->mParam.mProxyUser);
-	entry->Set(_T("proxypassword"), in->Encode(in->mParam.mProxyPassword, buf));
+
+	auto& stm2 = in->Encode(in->mParam.mProxyPassword, buf);
+	entry->SetBytes(_T("proxypassword"), stm2.data(), stm2.size());
 
 
 	return true;
@@ -532,16 +535,23 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 
 	in->mParam.mServerUser = entry->Get(_T("serveruser"), _T(""));
 
-	std::vector<uint8_t> buf;
-	entry->Get(_T("serverpassword"), buf);
-	in->mParam.mServerPassword = in->Decode(buf);
+	size_t len = entry->GetBytesLength(_T("serverpassword"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		std::vector<uint8_t> buf(len);
+		entry->GetBytes(_T("serverpassword"), buf.data(), len);
+		in->mParam.mServerPassword = in->Decode(buf);
+	}
 
 	in->mParam.mProxyType = entry->Get(_T("proxytype"), 0);
 	in->mParam.mProxyHost = entry->Get(_T("proxyhost"), _T(""));
 	in->mParam.mProxyUser = entry->Get(_T("proxyuser"), _T(""));
 
-	entry->Get(_T("proxypassword"), buf);
-	in->mParam.mProxyPassword = in->Decode(buf);
+	len = entry->GetBytesLength(_T("proxypassword"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		std::vector<uint8_t> buf(len);
+		entry->GetBytes(_T("proxypassword"), buf.data(), len);
+		in->mParam.mProxyPassword = in->Decode(buf);
+	}
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(GetName(), &in->mHotKeyAttr);

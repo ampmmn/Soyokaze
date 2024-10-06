@@ -13,7 +13,7 @@ public:
 
 	void SetName(LPCTSTR name);
 
-	CString GetName() override;
+	LPCTSTR GetName() override;
 
 	void MarkAsUsed() override;
 	bool IsUsedEntry() override;
@@ -34,8 +34,9 @@ public:
 	bool Get(LPCTSTR key, bool defValue) override;
 	void Set(LPCTSTR key, bool value) override;
 
-	bool Get(LPCTSTR key, std::vector<uint8_t>& value) override;
-	void Set(LPCTSTR key, const std::vector<uint8_t>& value) override;
+	size_t GetBytesLength(LPCTSTR key) override;
+	bool GetBytes(LPCTSTR key, uint8_t* buf, size_t bufLen) override;
+	void SetBytes(LPCTSTR key, const uint8_t* buf, size_t bufLen) override;
 
 private:
 	struct PImpl;

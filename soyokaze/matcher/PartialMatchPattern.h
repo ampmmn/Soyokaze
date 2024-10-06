@@ -15,10 +15,10 @@ public:
 	virtual ~PartialMatchPattern();
 
 	void SetWholeText(LPCTSTR wholeText) override;
-	int Match(const CString& str) override;
-	int Match(const CString& str, int offset) override;
-	CString GetFirstWord() override;
-	CString GetWholeString() override;
+	int Match(LPCTSTR str) override;
+	int Match(LPCTSTR str, int offset) override;
+	LPCTSTR GetFirstWord() override;
+	LPCTSTR GetWholeString() override;
 	bool shouldWholeMatch() override;
 	void GetWords(std::vector<WORD>& words) override;
 	void GetRawWords(std::vector<CString>& words) override;

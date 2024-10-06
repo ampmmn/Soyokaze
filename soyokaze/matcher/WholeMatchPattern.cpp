@@ -37,28 +37,28 @@ void WholeMatchPattern::SetWholeText(
 }
 
 int WholeMatchPattern::Match(
-	const CString& str
+	LPCTSTR str
 )
 {
-	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
+	return in->mWord.CompareNoCase(str) == 0 ? WholeMatch : Mismatch;
 }
 
-int WholeMatchPattern::Match(const CString& str, int offset)
+int WholeMatchPattern::Match(LPCTSTR str, int offset)
 {
 	UNREFERENCED_PARAMETER(offset);
 
 	// offsetをサポートしない
-	return str.CompareNoCase(in->mWord) == 0 ? WholeMatch : Mismatch;
+	return in->mWord.CompareNoCase(str) == 0 ? WholeMatch : Mismatch;
 }
 
 
-CString WholeMatchPattern::GetFirstWord()
+LPCTSTR WholeMatchPattern::GetFirstWord()
 {
 	return in->mWord;
 }
 
 
-CString WholeMatchPattern::GetWholeString()
+LPCTSTR WholeMatchPattern::GetWholeString()
 {
 	return in->mWholeText;
 }

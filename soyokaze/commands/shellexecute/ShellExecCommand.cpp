@@ -492,7 +492,7 @@ bool ShellExecCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("parameter0"), param0Attr.mParam);
 	entry->Set(_T("show0"), param0Attr.mShowType);
 
-	entry->Set(_T("IconData"), in->mParam.mIconData);
+	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mParam.mIconData.data(), in->mParam.mIconData.size());
 
 	return true;
 }
@@ -526,7 +526,11 @@ bool ShellExecCommand::Load(CommandEntryIF* entry)
 
 	in->mParam.mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
 
-	entry->Get(_T("IconData"), in->mParam.mIconData);
+	size_t len = entry->GetBytesLength(_T("IconData"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		in->mParam.mIconData.resize(len);
+		entry->GetBytes(_T("IconData"), (uint8_t*)in->mParam.mIconData.data(), len);
+	}
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

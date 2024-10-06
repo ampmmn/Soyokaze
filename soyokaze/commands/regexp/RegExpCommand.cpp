@@ -330,7 +330,7 @@ bool RegExpCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("parameter"), normalAttr.mParam);
 	entry->Set(_T("show"), normalAttr.mShowType);
 
-	entry->Set(_T("IconData"), in->mIconData);
+	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mIconData.data(), in->mIconData.size());
 
 	return true;
 }
@@ -357,7 +357,11 @@ bool RegExpCommand::Load(CommandEntryIF* entry)
 	auto patternStr = entry->Get(_T("matchpattern"), _T("")); 
 	SetMatchPattern(patternStr);
 
-	entry->Get(_T("IconData"), in->mIconData);
+	size_t len = entry->GetBytesLength(_T("IconData"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		in->mIconData.resize(len);
+		entry->GetBytes(_T("IconData"), (uint8_t*)in->mIconData.data(), len);
+	}
 
 	return true;
 }

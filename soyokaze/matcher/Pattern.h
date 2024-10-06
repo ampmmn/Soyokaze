@@ -36,10 +36,10 @@ public:
 	virtual ~Pattern() {}
 
 	virtual void SetWholeText(LPCTSTR wholeText) = 0;
-	virtual int Match(const CString& str) = 0;
-	virtual int Match(const CString& str, int offset) = 0;
-	virtual CString GetFirstWord() = 0;
-	virtual CString GetWholeString() = 0;
+	virtual int Match(LPCTSTR str) = 0;
+	virtual int Match(LPCTSTR str, int offset) = 0;
+	virtual LPCTSTR GetFirstWord() = 0;
+	virtual LPCTSTR GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;
 	virtual void GetWords(std::vector<WORD>& words) = 0;
 	virtual void GetRawWords(std::vector<CString>& words) = 0;

@@ -247,7 +247,7 @@ bool WebSearchCommand::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("URL"), in->mParam.mURL);
 	entry->Set(_T("IsEnableShortcut"), in->mParam.mIsEnableShortcut);
-	entry->Set(_T("IconData"), in->mParam.mIconData);
+	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mParam.mIconData.data(), in->mParam.mIconData.size());
 
 	return true;
 }
@@ -265,7 +265,12 @@ bool WebSearchCommand::Load(CommandEntryIF* entry)
 	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
 	in->mParam.mURL = entry->Get(_T("URL"), _T(""));
 	in->mParam.mIsEnableShortcut = entry->Get(_T("IsEnableShortcut"), false);
-	entry->Get(_T("IconData"), in->mParam.mIconData);
+
+	size_t len = entry->GetBytesLength(_T("IconData"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		in->mParam.mIconData.resize(len);
+		entry->GetBytes(_T("IconData"), (uint8_t*)in->mParam.mIconData.data(), len);
+	}
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

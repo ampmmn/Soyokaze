@@ -250,9 +250,7 @@ bool AlignWindowCommand::Save(CommandEntryIF* entry)
 		entry->Set(key, item.mAction);
 
 		key.Format(_T("Placement%d"), index);
-		std::vector<uint8_t> data(sizeof(item.mPlacement));
-		memcpy(&data.front(), &item.mPlacement, sizeof(item.mPlacement));
-		entry->Set(key, data);
+		entry->SetBytes(key, (uint8_t*)&item.mPlacement, sizeof(item.mPlacement));
 
 		index++;
 	}
@@ -277,8 +275,6 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 
 	std::vector<CommandParam::ITEM> items;
 
-	std::vector<uint8_t> placement;
-
 	int itemCount = entry->Get(_T("ItemCount"), 0);
 	for (int i = 1; i <= itemCount; ++i) {
 
@@ -297,14 +293,9 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 		item.mAction = entry->Get(key, 0);
 
 		key.Format(_T("Placement%d"), i);
-		if (entry->Get(key, placement) == false) {
+		if (entry->GetBytes(key, (uint8_t*)&item.mPlacement, sizeof(WINDOWPLACEMENT)) == false) {
 			continue;
 		}
-		if (placement.size() != sizeof(WINDOWPLACEMENT)) {
-			continue;
-		}
-		memcpy(&item.mPlacement, &placement.front(), placement.size());
-
 		item.BuildRegExp();
 
 		items.push_back(item);

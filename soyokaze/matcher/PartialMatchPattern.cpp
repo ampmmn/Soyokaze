@@ -250,21 +250,21 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 }
 
 int PartialMatchPattern::Match(
-	const CString& str
+	LPCTSTR str
 )
 {
 	return Match(str, 0);
 }
 
 int PartialMatchPattern::Match(
-	const CString& str,
+	LPCTSTR str,
 	int offset
 )
 {
 	// 入力されたキーワードに完全一致するかどうかの判断
 	CString keyword;
 	if (in->GetKeyword(offset, keyword) &&
-	    str.CompareNoCase(keyword) == 0) {
+	    keyword.CompareNoCase(str) == 0) {
 		return WholeMatch;
 	}
 
@@ -273,7 +273,7 @@ int PartialMatchPattern::Match(
 		auto& pat = in->mRegPatterns[i];
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
-		if (std::regex_search((const wchar_t*)str, pat) == false) {
+		if (std::regex_search(str, pat) == false) {
 			return Mismatch;
 		}
 	}
@@ -281,7 +281,7 @@ int PartialMatchPattern::Match(
 	// 先頭のキーワードに前方一致する場合は前方一致とみなす
 	if (offset < in->mRegPatternsForFM.size()) {
 		auto& patForFM = in->mRegPatternsForFM[offset];
-		if (std::regex_search((const wchar_t*)str, patForFM)) {
+		if (std::regex_search(str, patForFM)) {
 			return FrontMatch;
 		}
 	}
@@ -290,12 +290,12 @@ int PartialMatchPattern::Match(
 	return PartialMatch;
 }
 
-CString PartialMatchPattern::GetFirstWord()
+LPCTSTR PartialMatchPattern::GetFirstWord()
 {
 	return in->mTokens.empty() ? _T("") : in->mTokens[0];
 }
 
-CString PartialMatchPattern::GetWholeString()
+LPCTSTR PartialMatchPattern::GetWholeString()
 {
 	return in->mWholeText;
 }

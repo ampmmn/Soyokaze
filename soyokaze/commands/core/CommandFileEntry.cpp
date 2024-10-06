@@ -113,7 +113,7 @@ void CommandFileEntry::SetName(LPCTSTR name)
 	in->mName = name;
 }
 
-CString CommandFileEntry::GetName()
+LPCTSTR CommandFileEntry::GetName()
 {
 	return in->mName;
 }
@@ -199,20 +199,37 @@ void CommandFileEntry::Set(LPCTSTR key, bool value)
 	in->mTypeMap[key] = TYPE_BOOLEAN;
 }
 
-bool CommandFileEntry::Get(LPCTSTR key, std::vector<uint8_t>& value)
+size_t CommandFileEntry::GetBytesLength(LPCTSTR key)
+{
+	auto itFind = in->mStreamMap.find(key);
+	if (itFind == in->mStreamMap.end()) {
+		return (size_t)NO_ENTRY;
+	}
+
+	const auto& stm = itFind->second;
+	return stm.size();
+}
+
+bool CommandFileEntry::GetBytes(LPCTSTR key, uint8_t* value, size_t len)
 {
 	auto itFind = in->mStreamMap.find(key);
 	if (itFind == in->mStreamMap.end()) {
 		return false;
 	}
 
-	value = itFind->second;
+	const auto& stm = itFind->second;
+
+	size_t copyLen = len > stm.size() ? stm.size() : len;
+	memcpy(value, stm.data(), copyLen);
+
 	return true;
 }
 
-void CommandFileEntry::Set(LPCTSTR key, const std::vector<uint8_t>& value)
+void CommandFileEntry::SetBytes(LPCTSTR key, const uint8_t* value, size_t len)
 {
-	in->mStreamMap[key] = value;
+	auto& stm = in->mStreamMap[key];
+	stm.clear();
+	stm.insert(stm.end(), value, value + len);
 	in->mTypeMap[key] = TYPE_STREAM;
 }
 
