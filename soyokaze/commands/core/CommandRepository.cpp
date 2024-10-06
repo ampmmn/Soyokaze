@@ -53,7 +53,7 @@ struct CommandRepository::PImpl
 	{
 		SPDLOG_DEBUG(_T("start"));
 
-		mPattern.reset(new PartialMatchPattern());
+		mPattern.reset(PartialMatchPattern::Create());
 
 		// コマンドのホットキー設定のリロード
 		CommandHotKeyMappings hotKeyMap;
@@ -136,7 +136,7 @@ struct CommandRepository::PImpl
 	// 一般コマンド一覧
 	CommandMap mCommands;
 	// キーワード比較用のクラス
-	std::unique_ptr<Pattern> mPattern;
+	RefPtr<Pattern> mPattern;
 
 	// 一致したコマンドがなかったときのコマンド
 	std::unique_ptr<DefaultCommand> mDefaultCommand;
@@ -762,9 +762,9 @@ CommandRepository::QueryAsWholeMatch(
 		return nullptr;
 	}
 
-	WholeMatchPattern pat(strQueryStr);
+	RefPtr<WholeMatchPattern> pat(WholeMatchPattern::Create(strQueryStr));
 
-	auto command = in->mCommands.FindOne(&pat);
+	auto command = in->mCommands.FindOne(pat.get());
 	if (command != nullptr) {
 		return command;
 	}
@@ -776,7 +776,7 @@ CommandRepository::QueryAsWholeMatch(
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	launcherapp::CommandQueryItemList matchedItems;
 	for (auto& provider : in->mProviders) {
-		provider->QueryAdhocCommands(&pat, matchedItems);
+		provider->QueryAdhocCommands(pat.get(), matchedItems);
 
 		if (matchedItems.IsEmpty()) {
 			continue;

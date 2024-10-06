@@ -8,12 +8,23 @@
 /**
  * 部分一致比較を行うためのクラス
  */
-class PartialMatchPattern : public Pattern
+class PartialMatchPattern :
+ 	virtual public Pattern
 {
-public:
+private:
 	PartialMatchPattern();
 	virtual ~PartialMatchPattern();
 
+public:
+	static PartialMatchPattern* Create();
+
+public:
+// UnknownIF
+	bool QueryInterface(const IFID& ifid, void** cmd) override;
+	uint32_t AddRef() override;
+	uint32_t Release() override;
+
+// Pattern
 	void SetWholeText(LPCTSTR wholeText) override;
 	int Match(LPCTSTR str) override;
 	int Match(LPCTSTR str, int offset) override;

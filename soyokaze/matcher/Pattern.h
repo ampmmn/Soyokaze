@@ -1,5 +1,7 @@
 #pragma once
 
+#include "commands/core/UnknownIF.h"
+
 namespace launcherapp {
 namespace core {
 
@@ -9,7 +11,7 @@ namespace core {
 
 
 // キーワード比較処理のためのインタフェース
-class Pattern
+class Pattern : virtual public launcherapp::core::UnknownIF
 {
 public:
 	enum MatchLevel {
@@ -33,8 +35,9 @@ public:
 	};
 
 public:
-	virtual ~Pattern() {}
+	using IFID = launcherapp::core::IFID;
 
+public:
 	virtual void SetWholeText(LPCTSTR wholeText) = 0;
 	virtual int Match(LPCTSTR str) = 0;
 	virtual int Match(LPCTSTR str, int offset) = 0;

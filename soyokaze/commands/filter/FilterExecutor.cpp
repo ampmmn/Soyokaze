@@ -9,6 +9,7 @@
 #include "utility/CharConverter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Pipe.h"
+#include "utility/RefPtr.h"
 #include "SharedHwnd.h"
 #include <thread>
 #include <mutex>
@@ -351,7 +352,7 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 
 			HANDLE evtHandle = in->mWaitEvents[index];
 
-			PartialMatchPattern pattern;
+			RefPtr<PartialMatchPattern> pattern(PartialMatchPattern::Create(), false);
 
 			CandidateList candidates;
 
@@ -375,13 +376,13 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				}
 
 				// 検索条件
-				pattern.SetWholeText(in->mKeyword);
+				pattern->SetWholeText(in->mKeyword);
 
 				// 担当ぶんの要素を処理する
 				CandidateList matchedItems;
 				for (auto& candidate : candidates) {
 
-					int level = pattern.Match(candidate.mDisplayName);
+					int level = pattern->Match(candidate.mDisplayName);
 					if (level == Pattern::Mismatch) {
 						continue;
 					}

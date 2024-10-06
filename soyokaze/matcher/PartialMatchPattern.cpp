@@ -69,6 +69,8 @@ struct PartialMatchPattern::PImpl
 	bool mIsUseMigemoForHistory = false;
 
 	Migemo mMigemo;
+
+	uint32_t mRefCount = 1;
 };
 
 PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
@@ -88,6 +90,36 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 PartialMatchPattern::~PartialMatchPattern()
 {
 }
+
+PartialMatchPattern* PartialMatchPattern::Create()
+{
+	return new PartialMatchPattern();
+}
+
+bool PartialMatchPattern::QueryInterface(const IFID& ifid, void** cmd)
+{
+	// if (ifid == IFID_COMMANDPARAMETER) {
+	// 	AddRef();
+	// 	*cmd = (launcherapp::core::CommandParameter*)this;
+	// 	return true;
+	// }
+	return false;
+}
+
+uint32_t PartialMatchPattern::AddRef()
+{
+	return (uint32_t)InterlockedIncrement(&in->mRefCount);
+}
+
+uint32_t PartialMatchPattern::Release()
+{
+	auto n = InterlockedDecrement(&in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return (uint32_t)n;
+}
+
 
 static tstring tostring(std::regex_constants::error_type e)
 {

@@ -4,12 +4,22 @@
 #include "matcher/Pattern.h"
 
 
-class WholeMatchPattern : public Pattern
+class WholeMatchPattern :
+ 	virtual public Pattern
 {
-public:
+private:
 	WholeMatchPattern(const CString& word);
-	virtual ~WholeMatchPattern();
+	~WholeMatchPattern();
 
+public:
+	static WholeMatchPattern* Create(const CString& word);
+
+// UnknownIF
+	bool QueryInterface(const IFID& ifid, void** cmd) override;
+	uint32_t AddRef() override;
+	uint32_t Release() override;
+
+// Pattern
 	void SetWholeText(LPCTSTR wholeText) override;
 	int Match(LPCTSTR str) override;
 	virtual int Match(LPCTSTR str, int offset) override;

@@ -12,6 +12,7 @@ struct WholeMatchPattern::PImpl
 {
 	CString mWord;
 	CString mWholeText;
+	uint32_t mRefCount = 1;
 };
 
 WholeMatchPattern::WholeMatchPattern(const CString& word) : in(std::make_unique<PImpl>())
@@ -22,6 +23,30 @@ WholeMatchPattern::WholeMatchPattern(const CString& word) : in(std::make_unique<
 
 WholeMatchPattern::~WholeMatchPattern()
 {
+}
+
+WholeMatchPattern* WholeMatchPattern::Create(const CString& word)
+{
+	return new WholeMatchPattern(word);
+}
+
+bool WholeMatchPattern::QueryInterface(const IFID& ifid, void** cmd)
+{
+	return false;
+}
+
+uint32_t WholeMatchPattern::AddRef()
+{
+	return (uint32_t)InterlockedIncrement(&in->mRefCount);
+}
+
+uint32_t WholeMatchPattern::Release()
+{
+	auto n = InterlockedDecrement(&in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return (uint32_t)n;
 }
 
 void WholeMatchPattern::SetWholeText(

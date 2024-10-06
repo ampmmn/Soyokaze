@@ -6,7 +6,7 @@ class RefPtr
 public:
 	RefPtr() : mPtr(nullptr){}
 
-	RefPtr(T* ptr, bool isAddRefCount = true) : mPtr(ptr) {
+	RefPtr(T* ptr, bool isAddRefCount = false) : mPtr(ptr) {
 		if (ptr && isAddRefCount) {
 			ptr->AddRef();
 		}
@@ -42,11 +42,11 @@ public:
 		return p;
 	}
 
-	void reset() {
+	void reset(T* ptr = nullptr) {
 		if (mPtr) {
 			mPtr->Release();
 		}
-		mPtr = nullptr;
+		mPtr = ptr;
 	}
 
 	void swap(RefPtr<T>& rhs) {
