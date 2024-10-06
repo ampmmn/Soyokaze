@@ -402,7 +402,7 @@ int CommandRepository::ReregisterCommand(Command* command)
 
 	// ホットキーの登録
 	CommandHotKeyAttribute hotKeyAttr;
-	if (command->GetHotKeyAttribute(hotKeyAttr)) {
+	if (command->GetHotKeyAttribute(hotKeyAttr) && hotKeyAttr.IsValid()) {
 
 		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 
