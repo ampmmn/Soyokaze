@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "matcher/Pattern.h"
+#include "matcher/PatternInternal.h"
 
 
 class WholeMatchPattern :
- 	virtual public Pattern
+ 	virtual public PatternInternal
 {
 private:
 	WholeMatchPattern(const CString& word);

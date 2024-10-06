@@ -2,14 +2,13 @@
 
 #include <memory>
 
-#include "matcher/Pattern.h"
-
+#include "matcher/PatternInternal.h"
 
 /**
  * 部分一致比較を行うためのクラス
  */
 class PartialMatchPattern :
- 	virtual public Pattern
+ 	virtual public PatternInternal
 {
 private:
 	PartialMatchPattern();
@@ -20,7 +19,7 @@ public:
 
 public:
 // UnknownIF
-	bool QueryInterface(const IFID& ifid, void** cmd) override;
+	bool QueryInterface(const IFID& ifid, void** obj) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

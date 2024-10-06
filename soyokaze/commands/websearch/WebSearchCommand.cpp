@@ -6,6 +6,7 @@
 #include "commands/websearch/WebSearchSettingDialog.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "matcher/PatternInternal.h"
 #include "utility/LastErrorString.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -35,8 +36,14 @@ int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& dis
 {
 	const auto& cmdName = mParam.mName;
 
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return Pattern::Mismatch;
+	}
+
+
 	std::vector<CString> words;
-	pattern->GetRawWords(words);
+	pat2->GetRawWords(words);
 
 	if (words.size() == 1) {
 		// 後続キーワードなし
@@ -64,8 +71,13 @@ int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& dis
 // 「常に検索候補として表示する」としての処理
 int WebSearchCommand::PImpl::BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url)
 {
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return Pattern::Mismatch;
+	}
+
 	std::vector<CString> words;
-	pattern->GetRawWords(words);
+	pat2->GetRawWords(words);
 
 	if (words.size() == 0) {
 		// 後続キーワードなし

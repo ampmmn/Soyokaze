@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
-#include "matcher/WholeMatchPattern.h"
+#include "WholeMatchPattern.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/core/IFIDDefine.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -30,8 +31,18 @@ WholeMatchPattern* WholeMatchPattern::Create(const CString& word)
 	return new WholeMatchPattern(word);
 }
 
-bool WholeMatchPattern::QueryInterface(const IFID& ifid, void** cmd)
+bool WholeMatchPattern::QueryInterface(const IFID& ifid, void** obj)
 {
+	if (ifid == IFID_PATTERN) {
+		AddRef();
+		*obj = (Pattern*)this;
+		return true;
+	}
+	if (ifid == IFID_PATTERNINTERNAL) {
+		AddRef();
+		*obj = (PatternInternal*)this;
+		return true;
+	}
 	return false;
 }
 
@@ -96,7 +107,7 @@ bool WholeMatchPattern::shouldWholeMatch()
 
 void WholeMatchPattern::GetWords(std::vector<WORD>& words)
 {
-	words.push_back(WORD(in->mWholeText, Pattern::FixString));
+	words.push_back(WORD(in->mWholeText, PatternInternal::FixString));
 }
 
 void WholeMatchPattern::GetRawWords(std::vector<CString>& words)

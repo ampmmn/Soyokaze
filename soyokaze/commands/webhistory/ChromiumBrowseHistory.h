@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "matcher/Pattern.h"
+#include "matcher/PatternInternal.h"
 
 namespace launcherapp {
 namespace commands {
@@ -22,7 +22,7 @@ public:
 	~ChromiumBrowseHistory();
 
 public:
-	bool Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
+	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 private:
 	struct PImpl;

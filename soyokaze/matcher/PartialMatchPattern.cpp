@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "matcher/Migemo.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/core/IFIDDefine.h"
 #include "utility/Path.h"
 #include <vector>
 #include <regex>
@@ -96,13 +97,18 @@ PartialMatchPattern* PartialMatchPattern::Create()
 	return new PartialMatchPattern();
 }
 
-bool PartialMatchPattern::QueryInterface(const IFID& ifid, void** cmd)
+bool PartialMatchPattern::QueryInterface(const IFID& ifid, void** obj)
 {
-	// if (ifid == IFID_COMMANDPARAMETER) {
-	// 	AddRef();
-	// 	*cmd = (launcherapp::core::CommandParameter*)this;
-	// 	return true;
-	// }
+	if (ifid == IFID_PATTERN) {
+		AddRef();
+		*obj = (Pattern*)this;
+		return true;
+	}
+	if (ifid == IFID_PATTERNINTERNAL) {
+		AddRef();
+		*obj = (PatternInternal*)this;
+		return true;
+	}
 	return false;
 }
 
@@ -240,10 +246,10 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 				// ↓ChromiumBrowseHistory用のデータ。
 				if (in->mIsUseMigemoForHistory) {
-					words.push_back(WORD(migemoExpr, Pattern::RegExp));
+					words.push_back(WORD(migemoExpr, PatternInternal::RegExp));
 				}
 				else {
-					words.push_back(WORD(token, Pattern::FixString));
+					words.push_back(WORD(token, PatternInternal::FixString));
 				}
 			}
 			else {
@@ -251,7 +257,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 					std::wstring escapedPat = StripEscapeChars(token);
 					patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
 				}
-				words.push_back(WORD(token, Pattern::FixString));
+				words.push_back(WORD(token, PatternInternal::FixString));
 			}
 		}
 		catch (std::regex_error& e) {
@@ -262,7 +268,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 			std::wstring escapedPat = StripEscapeChars(token);
 			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
-			words.push_back(WORD(token, Pattern::FixString));
+			words.push_back(WORD(token, PatternInternal::FixString));
 			break;
 		}
 

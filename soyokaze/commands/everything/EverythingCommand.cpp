@@ -7,9 +7,11 @@
 #include "commands/everything/EverythingProxy.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
+#include "commands/core/CommandFile.h"
+#include "matcher/PatternInternal.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"
-#include "commands/core/CommandFile.h"
+
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -297,10 +299,14 @@ bool EverythingCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& 
 		return false;
 	}
 
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return false;
+	}
 
  	std::vector<CString> words;
 	CString queryStr;
-	pattern->GetRawWords(words);
+	pat2->GetRawWords(words);
 	for (size_t i = 1; i < words.size(); ++i) {
 		queryStr += words[i];
 		queryStr += _T(" ");

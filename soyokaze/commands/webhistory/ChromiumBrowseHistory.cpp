@@ -55,7 +55,7 @@ struct ChromiumBrowseHistory::PImpl
 
 	void UpdateDatabase();
 
-	bool Query(const std::vector<Pattern::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
+	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
 	CString mId;
 	CString mProfileDir;
@@ -130,7 +130,7 @@ void ChromiumBrowseHistory::PImpl::UpdateDatabase()
 }
 
 bool ChromiumBrowseHistory::PImpl::Query(
-		const std::vector<Pattern::WORD>& words,
+		const std::vector<PatternInternal::WORD>& words,
 	 	std::vector<ITEM>& items,
 	 	int limit,
 	 	DWORD timeout
@@ -147,7 +147,7 @@ bool ChromiumBrowseHistory::PImpl::Query(
 	bool isFirst = true;
 	CString token;
 	for(const auto& word : words) {
-		if (word.mMethod == Pattern::RegExp) {
+		if (word.mMethod == PatternInternal::RegExp) {
 			if (mIsUseURL) {
 				token.Format(_T("%s (title regexp '%s' or url regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
 			}
@@ -232,7 +232,7 @@ ChromiumBrowseHistory::~ChromiumBrowseHistory()
 }
 
 bool ChromiumBrowseHistory::Query(
-		const std::vector<Pattern::WORD>& words,
+		const std::vector<PatternInternal::WORD>& words,
 	 	std::vector<ITEM>& items,
 	 	int limit,
 	 	DWORD timeout

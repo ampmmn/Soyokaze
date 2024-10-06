@@ -6,6 +6,7 @@
 #include "commands/webhistory/WebHistorySettingDialog.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
 #include "commands/core/CommandRepository.h"
+#include "matcher/PatternInternal.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
@@ -64,7 +65,7 @@ struct WebHistoryCommand::PImpl
 		return mEdgeHistory.get();
 	}
 
-	void QueryHistory(ChromiumBrowseHistory* historyDB, LPCTSTR appName, const std::vector<Pattern::WORD>& words, CommandQueryItemList& commands);
+	void QueryHistory(ChromiumBrowseHistory* historyDB, LPCTSTR appName, const std::vector<PatternInternal::WORD>& words, CommandQueryItemList& commands);
 
 
 	std::unique_ptr<ChromiumBrowseHistory> mChromeHistory;
@@ -81,7 +82,7 @@ struct WebHistoryCommand::PImpl
 void WebHistoryCommand::PImpl::QueryHistory(
 	ChromiumBrowseHistory* historyDB,
 	LPCTSTR appName,
-	const std::vector<Pattern::WORD>& words,
+	const std::vector<PatternInternal::WORD>& words,
 	CommandQueryItemList& commands
 )
 {
@@ -331,9 +332,14 @@ bool WebHistoryCommand::QueryCandidates(
 		return false;
 	}
 
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return false;
+	}
+
 	// patternから検索ワード一覧を得る
-	std::vector<Pattern::WORD> words;
-	pattern->GetWords(words);
+	std::vector<PatternInternal::WORD> words;
+	pat2->GetWords(words);
 
 	std::reverse(words.begin(), words.end());
 
@@ -348,7 +354,7 @@ bool WebHistoryCommand::QueryCandidates(
 		CString tok = extraKeyword.Tokenize(_T(" "), n);
 		while(tok.IsEmpty() == FALSE) {
 
-			words.push_back(Pattern::WORD(tok, Pattern::FixString));
+			words.push_back(PatternInternal::WORD(tok, PatternInternal::FixString));
 			tok = extraKeyword.Tokenize(_T(" "), n);
 		}
 	}

@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "framework.h"
-#include "Pattern.h"
+#include "PatternInternal.h"
 
 
-Pattern::WORD::WORD(const CString& word, MatchMethod method) :
+PatternInternal::WORD::WORD(const CString& word, MatchMethod method) :
  	mWord(word), mMethod(method)
 {
 }

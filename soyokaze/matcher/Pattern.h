@@ -2,14 +2,6 @@
 
 #include "commands/core/UnknownIF.h"
 
-namespace launcherapp {
-namespace core {
-
-	class CommandParameter;
-}
-}
-
-
 // キーワード比較処理のためのインタフェース
 class Pattern : virtual public launcherapp::core::UnknownIF
 {
@@ -22,18 +14,6 @@ public:
 		Mismatch = -1,     // 不一致
 	};
 
-	enum MatchMethod {
-		RegExp,           // 正規表現比較
-		FixString,        // 文字列比較
-	};
-
-	struct WORD {
-		WORD(const CString& word, MatchMethod method);
-
-		CString mWord;    // パターン
-		MatchMethod mMethod; // 比較方法
-	};
-
 public:
 	using IFID = launcherapp::core::IFID;
 
@@ -44,8 +24,6 @@ public:
 	virtual LPCTSTR GetFirstWord() = 0;
 	virtual LPCTSTR GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;
-	virtual void GetWords(std::vector<WORD>& words) = 0;
-	virtual void GetRawWords(std::vector<CString>& words) = 0;
 	virtual int GetWordCount() = 0;
 
 };

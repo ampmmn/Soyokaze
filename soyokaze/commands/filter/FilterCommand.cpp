@@ -7,6 +7,7 @@
 #include "commands/filter/FilterEditDialog.h"
 #include "commands/filter/FilterExecutor.h"
 #include "commands/core/CommandRepository.h"
+#include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -342,9 +343,14 @@ bool FilterCommand::QueryCandidates(
 		return false;
 	}
 
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return false;
+	}
+
 	std::vector<CString> words;
 	CString queryStr;
-	pattern->GetRawWords(words);
+	pat2->GetRawWords(words);
 	for (size_t i = 1; i < words.size(); ++i) {
 		queryStr += words[i];
 		queryStr += _T(" ");

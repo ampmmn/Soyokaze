@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <stdint.h>
 
 class CommandEntryIF
@@ -9,7 +8,7 @@ public:
 	static constexpr auto NO_ENTRY { static_cast<size_t>(-1) };
 
 public:
-	virtual ~CommandEntryIF() {}
+	//virtual ~CommandEntryIF() {}
 
 	virtual LPCTSTR GetName() = 0;
 

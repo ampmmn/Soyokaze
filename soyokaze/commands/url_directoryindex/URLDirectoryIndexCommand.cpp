@@ -7,6 +7,7 @@
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditDialog.h"
 #include "commands/url_directoryindex/WinHttp.h"
 #include "commands/core/CommandRepository.h"
+#include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -603,10 +604,15 @@ bool URLDirectoryIndexCommand::QueryCandidates(Pattern* pattern, CommandQueryIte
 		return false;
 	}
 
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return false;
+	}
+
 	DirectoryIndexQueryResult results;
 
 	std::vector<CString> words;
-	pattern->GetRawWords(words);
+	pat2->GetRawWords(words);
 	if (words.size() == 1) {
 		// 入力キーワードが空文字の場合は全てを候補に追加する
 		for(auto& item : in->mLinkItems) {
