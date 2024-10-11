@@ -1158,6 +1158,9 @@
     <ClInclude Include="commands\common\CommandParameterFunctions.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\EditCandidateCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2044,6 +2047,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\EditCandidateCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -404,6 +404,7 @@
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
     <ClInclude Include="commands\builtin\CopyClipboardCommand.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
+    <ClInclude Include="commands\builtin\EditCandidateCommand.h" />
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
@@ -726,6 +727,7 @@
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
     <ClCompile Include="commands\builtin\CopyClipboardCommand.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
+    <ClCompile Include="commands\builtin\EditCandidateCommand.cpp" />
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />

@@ -8,7 +8,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-class BuiltinCommandBase : public launcherapp::core::Command
+class BuiltinCommandBase : virtual public launcherapp::core::Command
 {
 public:
 	using Entry = BuiltinCommandFactory::Entry;

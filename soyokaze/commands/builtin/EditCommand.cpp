@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/EditCommand.h"
+#include "commands/builtin/EditCandidateCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
+#include "matcher/PartialMatchPattern.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -38,6 +41,17 @@ EditCommand::EditCommand(const EditCommand& rhs) :
 EditCommand::~EditCommand()
 {
 }
+
+bool EditCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
+	}
+	return false;
+}
+
 
 BOOL EditCommand::Execute(Parameter* param)
 {
@@ -77,6 +91,64 @@ launcherapp::core::Command* EditCommand::Clone()
 {
 	return new EditCommand(*this);
 }
+
+/**
+ 	コマンドの候補として追加表示する項目を取得する
+ 	@return true:取得成功   false:取得失敗(表示しない)
+ 	@param[in]  pattern  入力パターン
+ 	@param[out] commands 表示する候補
+*/
+bool EditCommand::QueryCandidates(
+	Pattern* pattern,
+	CommandQueryItemList& commands
+)
+{
+	// コマンド名が一致しなければ候補を表示しない
+	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return false;
+	}
+
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return false;
+	}
+
+	std::vector<CString> words;
+	CString queryStr;
+	pat2->GetRawWords(words);
+	for (size_t i = 1; i < words.size(); ++i) {
+		queryStr += words[i];
+		queryStr += _T(" ");
+	}
+	pat2->Release();
+
+	auto patTmp = PartialMatchPattern::Create();
+	patTmp->SetWholeText(queryStr);
+
+	std::vector<launcherapp::core::Command*> commandList;
+	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commandList);
+
+	for (auto& cmd : commandList) {
+
+		int level = cmd->Match(patTmp);
+		if (level != Pattern::Mismatch) {
+			commands.Add(CommandQueryItem(level, new EditCandidateCommand(cmd->GetName())));
+		}
+		cmd->Release();
+	}
+
+	patTmp->Release();
+
+	return true;
+}
+
+/**
+ 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
+*/
+void EditCommand::ClearCache()
+{
+}
+
 
 }
 }
