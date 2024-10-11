@@ -26,6 +26,8 @@ public:
 	// 指定したパターンに合致するウインドウを探す
 	void Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int limit);
 
+	static bool ParseTextAsPageNo(LPCTSTR text, int& pageNo);
+
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

@@ -358,12 +358,27 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 		return;
 	}
 
+	// キーワードが数値として解釈できる場合、ページ番号でのマッチングを行うため、数値として拾っておく
+	int pageNo = -1;
+	ParseTextAsPageNo(pattern->GetWholeString(), pageNo);
+
 	std::lock_guard<std::mutex> lock(in->mMutex);
 
 	for (auto& item : in->mItems) {
-		int level = pattern->Match(item.mTitle);
-		if (level == Pattern::Mismatch) {
-			continue;
+
+		int level = Pattern::Mismatch;
+
+		bool isMatchPageNo = pageNo != -1 && pageNo == item.mPage;
+		if (isMatchPageNo) {
+			// 入力キーワードが数値で、スライド番号として一致する場合は全体一致とみなす
+			level = Pattern::WholeMatch;
+		}
+		else {
+			// スライド番号として一致しなかった場合、キーワードでのマッチングを行う
+			level = pattern->Match(item.mTitle);
+			if (level == Pattern::Mismatch) {
+				continue;
+			}
 		}
 
 		auto itemCopy(item);
@@ -376,6 +391,11 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 	}
 }
 
+bool Presentations::ParseTextAsPageNo(LPCTSTR text, int& pageNo)
+{
+	static tregex pat(_T("^ *[0-9]+ *$"));
+	return std::regex_match(text, pat) == false || _stscanf_s(text, _T("%d"), &pageNo) == -1;
+}
 
 
 }

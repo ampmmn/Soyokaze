@@ -52,7 +52,7 @@ void PresentationProvider::QueryAdhocCommands(
 )
 {
 	std::vector<SLIDE_ITEM> items;
-	in->mPresentations.Query(pattern, items, 5);
+	in->mPresentations.Query(pattern, items, 10);
 
 	for (auto& item : items) {
 		int level = item.mMatchLevel;
