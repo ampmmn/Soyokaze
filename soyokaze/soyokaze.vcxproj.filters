@@ -588,12 +588,6 @@
     <ClInclude Include="utility\SHA1.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="commands\pathconvert\P4PathConvertAdhocCommand.h">
-      <Filter>commands\pathconvert</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\pathconvert\P4AppSettings.h">
-      <Filter>commands\pathconvert</Filter>
-    </ClInclude>
     <ClInclude Include="commands\pathconvert\AppSettingPathConvertPage.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
@@ -1537,12 +1531,6 @@
     </ClCompile>
     <ClCompile Include="utility\SHA1.cpp">
       <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\pathconvert\P4PathConvertAdhocCommand.cpp">
-      <Filter>commands\pathconvert</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\pathconvert\P4AppSettings.cpp">
-      <Filter>commands\pathconvert</Filter>
     </ClCompile>
     <ClCompile Include="commands\pathconvert\AppSettingPathConvertPage.cpp">
       <Filter>commands\pathconvert</Filter>
