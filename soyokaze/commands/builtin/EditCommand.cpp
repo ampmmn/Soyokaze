@@ -16,6 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+using Command = launcherapp::core::Command;
 
 CString EditCommand::TYPE(_T("Builtin"));
 
@@ -50,6 +51,21 @@ bool EditCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd
 		return true;
 	}
 	return false;
+}
+
+int EditCommand::Match(Pattern* pattern)
+{
+	int level = pattern->Match(GetName());
+	if (level == Pattern::WholeMatch) {
+		// 後続キーワードが存在する場合、追加候補(EditCandidateCommand)を優先させたいので、
+		// edit自身は表示させない
+		int numOfWords = pattern->GetWordCount();
+		if (numOfWords > 1) {
+			return Pattern::Mismatch;
+		}
+	}
+	return level;
+
 }
 
 
@@ -87,7 +103,7 @@ HICON EditCommand::GetIcon()
 	return IconLoader::Get()->LoadEditIcon();
 }
 
-launcherapp::core::Command* EditCommand::Clone()
+Command* EditCommand::Clone()
 {
 	return new EditCommand(*this);
 }
@@ -121,22 +137,28 @@ bool EditCommand::QueryCandidates(
 		queryStr += _T(" ");
 	}
 
-	auto patTmp = PartialMatchPattern::Create();
+	// "edit "の後に入力したキーワードのみで別のPartialMatchPatternを生成しておく
+	RefPtr<PartialMatchPattern> patTmp(PartialMatchPattern::Create());
 	patTmp->SetWholeText(queryStr);
 
-	std::vector<launcherapp::core::Command*> commandList;
+	// すべてのコマンドを列挙
+	std::vector<Command*> commandList;
 	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commandList);
 
+	// 列挙結果をアルファベット降順で表示するためにソートする
+	std::sort(commandList.begin(), commandList.end(),
+	          [](Command* l, Command* r) { return _tcscmp(l->GetName(), r->GetName()) < 0; });
+
+	// 追加候補としてのコマンド(EditCandidateCommand)を生成する
 	for (auto& cmd : commandList) {
 
-		int level = cmd->Match(patTmp);
+		// 後続キーワードで絞込をおこない、該当するものを候補として表示する
+		int level = cmd->Match(patTmp.get());
 		if (level != Pattern::Mismatch) {
 			commands.Add(CommandQueryItem(level, new EditCandidateCommand(cmd->GetName())));
 		}
 		cmd->Release();
 	}
-
-	patTmp->Release();
 
 	return true;
 }

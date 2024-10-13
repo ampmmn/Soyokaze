@@ -19,17 +19,19 @@ namespace builtin {
 
 struct EditCandidateCommand::PImpl
 {
-	CString mName;
+	CString mCmdName;
 };
 
 
 EditCandidateCommand::EditCandidateCommand(
-	const CString& displayName
+	const CString& cmdName
 ) : 
-	AdhocCommandBase(displayName, displayName),
+	AdhocCommandBase(cmdName, cmdName),
 	in(std::make_unique<PImpl>())
 {
-	in->mName = displayName;
+	this->mName.Format(_T("edit %s"), (LPCTSTR)cmdName);
+	this->mDescription.Format(_T("%s の設定変更を行います"), (LPCTSTR)cmdName);
+	in->mCmdName = cmdName;
 }
 
 EditCandidateCommand::~EditCandidateCommand()
@@ -50,17 +52,17 @@ BOOL EditCandidateCommand::Execute(Parameter* param)
 {
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
-	auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mName);
+	auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mCmdName);
 	if (cmd == nullptr) {
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
 		msgStr += _T("\n\n");
-		msgStr += in->mName;
+		msgStr += in->mCmdName;
 		AfxMessageBox(msgStr);
 		return TRUE;
 	}
 	cmd->Release();
 
-	cmdRepoPtr->EditCommandDialog(in->mName);
+	cmdRepoPtr->EditCommandDialog(in->mCmdName);
 	return TRUE;
 }
 
@@ -72,7 +74,7 @@ HICON EditCandidateCommand::GetIcon()
 launcherapp::core::Command*
 EditCandidateCommand::Clone()
 {
-	return new EditCandidateCommand(in->mName);
+	return new EditCandidateCommand(in->mCmdName);
 }
 
 } // end of namespace builtin

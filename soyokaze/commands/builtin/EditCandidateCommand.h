@@ -12,7 +12,7 @@ class WebSearchCommand;
 class EditCandidateCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
-	EditCandidateCommand(const CString& displayName);
+	EditCandidateCommand(const CString& cmdName);
 	virtual ~EditCandidateCommand();
 
 	CString GetGuideString() override;

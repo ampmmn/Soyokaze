@@ -1,4 +1,3 @@
-// あ
 #pragma once
 
 #include "commands/builtin/BuiltinCommandBase.h"
@@ -20,6 +19,7 @@ public:
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
+	int Match(Pattern* pattern) override;
 	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
@@ -31,7 +31,6 @@ public:
 	CString GetType() override;
 	static CString TYPE;
 
-	// BuiltinCommandFactory邨檎罰縺ｧ繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ繧堤函謌舌〒縺阪ｋ繧医≧縺ｫ縺吶ｋ縺溘ａ縺ｮ謇狗ｶ壹″
 	DECLARE_BUILTINCOMMAND(EditCommand)
 };
 
