@@ -165,7 +165,11 @@ void Presentations::PImpl::WatchPresentations()
 
 	CLSID clsid;
 	HRESULT hr = CLSIDFromProgID(L"PowerPoint.Application", &clsid);
-	ASSERT(hr == S_OK);
+	if (FAILED(hr)) {
+		// インストールされていない
+		ClearSlides();
+		return;
+	}
 
 	// アプリケーションを取得
 	CComPtr<IUnknown> unkPtr;
