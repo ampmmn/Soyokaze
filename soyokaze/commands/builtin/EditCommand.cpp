@@ -120,7 +120,6 @@ bool EditCommand::QueryCandidates(
 		queryStr += words[i];
 		queryStr += _T(" ");
 	}
-	pat2->Release();
 
 	auto patTmp = PartialMatchPattern::Create();
 	patTmp->SetWholeText(queryStr);
