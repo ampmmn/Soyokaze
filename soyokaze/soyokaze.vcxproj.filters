@@ -1161,6 +1161,9 @@
     <ClInclude Include="commands\builtin\EditCandidateCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\DeleteCandidateCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2049,6 +2052,9 @@
       <Filter>commands\common</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\EditCandidateCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\DeleteCandidateCommand.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
