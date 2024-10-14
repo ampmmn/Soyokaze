@@ -3,7 +3,6 @@
 
 static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_launcherapp_exist");
 
-
 AppProcess::AppProcess() : m_hMutexRun(nullptr)
 {
 }
@@ -39,3 +38,15 @@ bool AppProcess::IsExist()
 
 	return false;
 }
+
+// テスト用にオブジェクト名を上書きする
+void AppProcess::SetSyncObjectName(LPCTSTR name)
+{
+	PROCESS_MUTEX_NAME = name;
+}
+
+HANDLE AppProcess::GetHandle()
+{
+	return m_hMutexRun;
+}
+

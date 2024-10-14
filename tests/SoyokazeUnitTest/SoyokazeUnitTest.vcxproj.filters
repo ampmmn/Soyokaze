@@ -46,6 +46,9 @@
     <Filter Include="soyokaze\matcher">
       <UniqueIdentifier>{7fe6fbe9-a9a0-42f1-a8e3-632f487d75c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\app">
+      <UniqueIdentifier>{91cbd481-f619-4fc1-bf08-9097369f4f5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -101,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\app\AppProcessTest.cpp">
+      <Filter>soyokaze\app</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

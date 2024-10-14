@@ -13,6 +13,10 @@ public:
 
 	bool IsExist();
 
+// for test
+	static void SetSyncObjectName(LPCTSTR name);
+	HANDLE GetHandle();
+
 private:
 	HANDLE m_hMutexRun;
 };
