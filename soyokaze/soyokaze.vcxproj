@@ -394,6 +394,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
@@ -718,6 +719,7 @@
     <ClInclude Include="utility\VersionInfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />

@@ -1164,6 +1164,9 @@
     <ClInclude Include="commands\builtin\DeleteCandidateCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="app\AppProcess.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2056,6 +2059,9 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\DeleteCandidateCommand.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="app\AppProcess.cpp">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

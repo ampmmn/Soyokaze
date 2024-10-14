@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "app/LauncherApp.h"
+#include "app/AppProcess.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
@@ -18,8 +19,6 @@
 #endif
 
 
-static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_launcherapp_exist");
-
 // LauncherApp
 
 BEGIN_MESSAGE_MAP(LauncherApp, CWinApp)
@@ -28,7 +27,7 @@ END_MESSAGE_MAP()
 
 // LauncherApp の構築
 
-LauncherApp::LauncherApp() : m_hMutexRun(NULL)
+LauncherApp::LauncherApp()
 {
 #ifdef UNICODE
 	_tsetlocale(LC_ALL, _T(""));
@@ -39,9 +38,6 @@ LauncherApp::LauncherApp() : m_hMutexRun(NULL)
 
 LauncherApp::~LauncherApp()
 {
-	if (m_hMutexRun != NULL) {
-		CloseHandle(m_hMutexRun);
-	}
 }
 
 // 唯一の LauncherApp オブジェクト
@@ -64,13 +60,19 @@ BOOL LauncherApp::InitInstance()
 		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
 	}
 
-	if (LauncherAppProcessExists() == false) {
-		// 通常の起動
-		InitFirstInstance();
+	try {
+		AppProcess appProcess;
+		if (appProcess.IsExist() == false) {
+			// 通常の起動(初回起動)
+			InitFirstInstance();
+		}
+		else {
+			// 既にプロセスが起動している場合は起動しない(先行プロセスを有効化したりなどする)
+			InitSecondInstance();
+		}
 	}
-	else {
-		// 既にプロセスが起動している場合は起動しない(先行プロセスを有効化したりなどする)
-		InitSecondInstance();
+	catch(AppProcess::exception& e) {
+		AfxMessageBox(e.mMessage);
 	}
 
 	AppPreference::Get()->OnExit();
@@ -87,20 +89,6 @@ BOOL LauncherApp::InitInstance()
 BOOL LauncherApp::InitFirstInstance()
 {
 	SPDLOG_DEBUG(_T("start"));
-
-	// 多重起動検知のための名前付きミューテックスを作っておく
-	m_hMutexRun = CreateMutex(NULL, TRUE, PROCESS_MUTEX_NAME);
-	if (m_hMutexRun == NULL) {
-		DWORD lastErr = GetLastError(); 
-		if (lastErr == ERROR_ACCESS_DENIED) {
-			AfxMessageBox(_T("起動に失敗しました。\n管理者権限で既に起動されている可能性があります。"));
-		}
-		else {
-			AfxMessageBox(_T("Failed to init."));
-		}
-		spdlog::error(_T("Failed to create mutex. err:{0:x}"), lastErr);
-		return FALSE;
-	}
 
 	if (!AfxOleInit()) {
 		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
@@ -214,22 +202,6 @@ BOOL LauncherApp::InitSecondInstance()
 	}
 
 	return FALSE;
-}
-
-/**
- * 先行するアプリのプロセスが存在するか?
- * @return true: 存在する  false: 存在しない
- */
-bool LauncherApp::LauncherAppProcessExists()
-{
-	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
-	bool isExists = (h != nullptr);
-	if (h != nullptr) {
-		CloseHandle(h);
-	}
-
-	SPDLOG_DEBUG(_T("isExists={}"), isExists);
-	return isExists;
 }
 
 /**

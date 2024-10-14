@@ -24,8 +24,6 @@ public:
 	virtual ~LauncherApp();
 
 protected:
-	HANDLE m_hMutexRun;
-
 	std::unique_ptr<TaskTray> mTaskTray;
 
 // オーバーライド
@@ -35,8 +33,6 @@ public:
 	BOOL InitFirstInstance();
 	BOOL InitSecondInstance();
 
-	// 先行するLauncherAppプロセスが存在するか?
-	bool LauncherAppProcessExists();
 	// 先行するプロセスがあればそちらを有効化する
 	bool ActivateExistingProcess();
 
