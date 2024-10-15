@@ -1040,6 +1040,7 @@
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
     <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="mainwindow/WindowTransparency.cpp" />
+    <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
   </ItemGroup>
   <ItemGroup>

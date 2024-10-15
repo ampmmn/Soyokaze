@@ -2063,6 +2063,9 @@
     <ClCompile Include="app\AppProcess.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="utility\TopMostMask.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
