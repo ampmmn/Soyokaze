@@ -42,23 +42,15 @@ BOOL ExitCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	if (AfxGetMainWnd() != nullptr) {
-		// AfxGetGetMainWnd()でウインドウがとれる==メインスレッドなので、
-		// この場合はたんにPostQuitMessage(0)でOK
-		PostQuitMessage(0);
-		return TRUE;
+	// 別スレッド経由でコマンドが実行される場合があるので、
+	// PostMessageでメインウインドウに配送することにより
+	// メインウインドウ側スレッドの処理として終了処理を行う
+	SharedHwnd sharedHwnd;
+	HWND hwnd = sharedHwnd.GetHwnd();
+	if (hwnd) {
+		PostMessage(hwnd, WM_APP+8, 0, 0);
 	}
-	else {
-		// 別スレッド経由でコマンドが実行される場合があるので、
-		// PostMessageでメインウインドウに配送することにより
-		// メインウインドウ側スレッドの処理として終了処理を行う
-		SharedHwnd sharedHwnd;
-		HWND hwnd = sharedHwnd.GetHwnd();
-		if (hwnd) {
-			PostMessage(hwnd, WM_APP+8, 0, 0);
-		}
-		return TRUE;
-	}
+	return TRUE;
 }
 
 
