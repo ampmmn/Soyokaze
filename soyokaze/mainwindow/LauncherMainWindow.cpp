@@ -803,6 +803,8 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	CDialogEx::OnInitDialog();
 
+	in->mKeyInputWatch.Create();
+
 	auto pref = AppPreference::Get();
 
 	CString fontName;
