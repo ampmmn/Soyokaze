@@ -32,15 +32,15 @@ public:
 		}
 	}
 
-void SetHwnd(HWND hwnd)
-{
-	if (m_phwnd) {
-		*m_phwnd = hwnd;
+	void SetHwnd(HWND hwnd)
+	{
+		if (m_phwnd) {
+			*m_phwnd = hwnd;
+		}
+		else {
+			spdlog::error(_T("Failed to set shared hwnd!"));
+		}
 	}
-	else {
-		spdlog::error(_T("Failed to set shared hwnd!"));
-	}
-}
 
 	HWND GetHwnd()
 	{
