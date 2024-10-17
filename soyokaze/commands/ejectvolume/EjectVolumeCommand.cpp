@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "EjectVolumeCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/ejectvolume/EjectVolumeCommandParam.h"
-#include "commands/ejectvolume/EjectVolumeEditDialog.h"
+#include "commands/ejectvolume/EjectVolumeCommandEditor.h"
 #include "commands/ejectvolume/EjectVolume.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
@@ -102,25 +103,6 @@ int EjectVolumeCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int EjectVolumeCommand::EditDialog(HWND parent)
-{
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 更新後の設定値を取得
-	in->mParam = dlg.GetParam();
-
-	// 再登録
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool EjectVolumeCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -186,12 +168,12 @@ bool EjectVolumeCommand::NewDialog(Parameter* param)
 {
 	param;  // 非サポート
 
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<EjectVolumeCommandEditor> cmdEditor(new EjectVolumeCommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
-	auto& paramNew = dlg.GetParam();
+	auto& paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<EjectVolumeCommand>();
@@ -207,6 +189,53 @@ bool EjectVolumeCommand::NewDialog(Parameter* param)
 void EjectVolumeCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool EjectVolumeCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new EjectVolumeCommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool EjectVolumeCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<EjectVolumeCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_EJECTVOLUMECOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool EjectVolumeCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<EjectVolumeCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_EJECTVOLUMECOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<EjectVolumeCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
 }
 
 }
