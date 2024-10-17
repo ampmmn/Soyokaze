@@ -5,6 +5,7 @@
 #include "commands/core/CommandMap.h"
 #include "commands/core/CommandQueryRequest.h"
 #include "commands/core/DefaultCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"
@@ -398,9 +399,11 @@ int CommandRepository::UnregisterCommand(Command* command)
 int CommandRepository::ReregisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
+
+	// 再登録
 	in->mCommands.Reregister(command);
 
-	// ホットキーの登録
+	// ホットキーの再登録
 	CommandHotKeyAttribute hotKeyAttr;
 	if (command->GetHotKeyAttribute(hotKeyAttr)) {
 
@@ -571,12 +574,35 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 		parent = in->mManagerDlgPtr->GetSafeHwnd();
 	}
 
-	int ret =cmdAbs->EditDialog(parent);
-	cmdAbs->Release();
-
-	if (ret != 0) {
+	RefPtr<Editable> editable;
+	if (cmdAbs->QueryInterface(IFID_EDITABLE, (void**)&editable) == false || 
+      editable->IsEditable() == false) {
+		spdlog::info(_T("{} is unediable."), (LPCTSTR)cmdAbs->GetName());
 		return 2;
 	}
+
+	RefPtr<CommandEditor> editor;
+	if (editable->CreateEditor(parent, &editor) == false) {
+		spdlog::error(_T("Failed to create editor. name:{} "), (LPCTSTR)cmdAbs->GetName());
+		return 3;
+	}
+
+	// 変更前の名前をセットする
+	editor->SetOriginalName(cmdAbs->GetName());
+	// 設定画面を表示する
+	if (editor->DoModal() == false) {
+		spdlog::info(_T("edit cancelled. name:{}"), (LPCTSTR)cmdAbs->GetName());
+		return 0;
+	}
+
+	// 設定画面上の変更をコマンドに適用する
+	if (editable->Apply(editor.get()) == false) {
+		spdlog::error(_T("Failed to apply. name:{} "), (LPCTSTR)cmdAbs->GetName());
+		return 4;
+	}
+
+	// コマンドを再登録(名前変更があった場合にそれを反映する)
+	ReregisterCommand(cmdAbs);
 
 	// コマンドファイルに保存
 	in->SaveCommands();

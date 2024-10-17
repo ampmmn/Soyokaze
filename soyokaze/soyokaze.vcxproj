@@ -396,7 +396,9 @@
   <ItemGroup>
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\Manual.h" />
+    <ClInclude Include="commands\activate_window\WindowActivateCommandEditor.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
+    <ClInclude Include="commands\align_window\AlignWindowCommandEditor.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h" />
@@ -411,12 +413,15 @@
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
     <ClInclude Include="commands\common\UserCommandProviderBase.h" />
+    <ClInclude Include="commands\core\CommandEditDialogIF.h" />
     <ClInclude Include="commands\core\CommandEntryIF.h" />
     <ClInclude Include="commands\core\CommandFileEntry.h" />
     <ClInclude Include="commands\core\DefaultCommand.h" />
+    <ClInclude Include="commands\core\EditableIF.h" />
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommandEditor.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h" />
     <ClInclude Include="commands\everything\AppSettingEverythingPage.h" />
@@ -721,7 +726,9 @@
   <ItemGroup>
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\Manual.cpp" />
+    <ClCompile Include="commands\activate_window\WindowActivateCommandEditor.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
+    <ClCompile Include="commands\align_window\AlignWindowCommandEditor.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp" />
@@ -741,6 +748,7 @@
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommandEditor.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp" />
     <ClCompile Include="commands\everything\AppSettingEverythingPage.cpp" />

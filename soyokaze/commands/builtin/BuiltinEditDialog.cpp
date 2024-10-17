@@ -48,7 +48,6 @@ BuiltinEditDialog::BuiltinEditDialog(
 {
 	SetHelpPageId(_T("BuiltinCommandEdit"));
 	in->mName = name;
-	in->mOrgName = name;
 	in->mDescription = description;
 	in->mCanEditEnable = canEditEnable;
 	in->mCanEditConfirm = canEditConfirm;
@@ -61,6 +60,11 @@ BuiltinEditDialog::~BuiltinEditDialog()
 CString BuiltinEditDialog::GetName()
 {
 	return in->mName;
+}
+
+void BuiltinEditDialog::SetOriginalName(LPCTSTR name)
+{
+	in->mOrgName = name;
 }
 
 void BuiltinEditDialog::SetEnable(bool isEnable)

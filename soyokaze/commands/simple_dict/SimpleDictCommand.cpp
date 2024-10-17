@@ -330,9 +330,6 @@ int SimpleDictCommand::EditDialog(HWND parent)
 		return 1;
 	}
 
-	// 元の名前
-	CString orgName = in->mParam.mName;
-
 	// 変更後の設定値で上書き
 	in->mParam = dlg.GetParam();
 	dlg.GetHotKeyAttribute(in->mHotKeyAttr);

@@ -16,8 +16,6 @@ public:
 	AdhocCommandBase(LPCTSTR name = _T(""), LPCTSTR description = _T(""));
 	virtual ~AdhocCommandBase();
 
-	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
-
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
@@ -26,9 +24,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
-	bool IsDeletable() override;
-	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 
 	bool IsPriorityRankEnabled() override;
@@ -37,6 +32,7 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

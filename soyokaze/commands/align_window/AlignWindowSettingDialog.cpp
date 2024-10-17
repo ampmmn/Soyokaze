@@ -56,6 +56,11 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
 void SettingDialog::SetParam(const Param& param)
 {
 	in->mParam = param;
@@ -153,8 +158,6 @@ BOOL SettingDialog::OnInitDialog()
 	for (auto& item : in->mParam.mItems) {
 		SetItemToList(index++, item);
 	}
-
-	in->mOrgName = in->mParam.mName;
 
 	CString caption;
 	GetWindowText(caption);

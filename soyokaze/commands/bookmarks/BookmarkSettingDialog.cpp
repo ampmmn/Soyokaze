@@ -46,6 +46,11 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
 void SettingDialog::SetParam(const Param& param)
 {
 	in->mParam = param;
@@ -81,8 +86,6 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
-
-	in->mOrgName = in->mParam.mName;
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 

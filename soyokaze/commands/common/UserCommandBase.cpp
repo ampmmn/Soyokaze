@@ -6,6 +6,8 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::core;
+
 namespace launcherapp {
 namespace commands {
 namespace common {
@@ -18,19 +20,6 @@ UserCommandBase::~UserCommandBase()
 {
 }
 
-bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
-{
-	UNREFERENCED_PARAMETER(ifid);
-	UNREFERENCED_PARAMETER(cmd);
-	// $BL$<BAu(B
-	return false;
-}
-
-CString UserCommandBase::GetErrorString()
-{
-	return _T("");
-}
-
 bool UserCommandBase::IsEditable()
 {
 	return true;
@@ -39,6 +28,49 @@ bool UserCommandBase::IsEditable()
 bool UserCommandBase::IsDeletable()
 {
 	return true;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool UserCommandBase::CreateEditor(HWND parent, CommandEditor** editor)
+{
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(editor);
+
+	ASSERT(0);    // ToDo: 派生クラス側で実装のこと
+	return false;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool UserCommandBase::Apply(CommandEditor* editor)
+{
+	UNREFERENCED_PARAMETER(editor);
+
+	ASSERT(0);    // ToDo: 派生クラス側で実装のこと
+	return false;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool UserCommandBase::CreateNewInstanceFrom(CommandEditor* editor, Command** newCmd)
+{
+	UNREFERENCED_PARAMETER(editor);
+	UNREFERENCED_PARAMETER(newCmd);
+	ASSERT(0);    // ToDo: 派生クラス側で実装のこと
+	return false;
+}
+
+bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_EDITABLE) {
+		AddRef();
+		*cmd = (launcherapp::core::Editable*)this;
+		return true;
+	}
+	return false;
+}
+
+CString UserCommandBase::GetErrorString()
+{
+	return _T("");
 }
 
 uint32_t UserCommandBase::AddRef()
@@ -65,7 +97,7 @@ bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CStrin
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}
-	namedParam->Release();   // $B$3$3$G(BRelease$B$7$F$b!"85$N%*%V%8%'%/%H$NJ,$,$"$k$N$GGK4~$O$5$l$J$$(B
+	namedParam->Release();   // ここでReleaseしても、元のオブジェクトの分があるので破棄はされない
 
 	int len = namedParam->GetNamedParamStringLength(name);
 	if (len == 0) {

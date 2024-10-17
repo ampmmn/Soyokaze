@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
+#include "commands/core/EditableIF.h"
 #include "commands/builtin/BuiltinCommandFactory.h"
 #include "utility/RefPtr.h"
 
@@ -8,7 +9,9 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-class BuiltinCommandBase : virtual public launcherapp::core::Command
+class BuiltinCommandBase :
+ 	virtual public launcherapp::core::Command,
+	virtual public launcherapp::core::Editable
 {
 public:
 	using Entry = BuiltinCommandFactory::Entry;
@@ -16,8 +19,6 @@ public:
 	BuiltinCommandBase(LPCTSTR name = nullptr);
 	BuiltinCommandBase(const BuiltinCommandBase& rhs);
 	virtual ~BuiltinCommandBase();
-
-	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	CString GetName() override;
 	CString GetDescription() override;
@@ -27,9 +28,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
-	bool IsDeletable() override;
-	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	//launcherapp::core::Command* Clone() override;
@@ -37,6 +35,20 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// Editable
+	// コマンドは編集可能か?
+	bool IsEditable() override;
+	// コマンドは削除可能か?
+	bool IsDeletable() override;
+	// コマンドを編集するためのダイアログを作成/取得する
+	bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
+	// ダイアログ上での編集結果をコマンドに適用する
+	bool Apply(launcherapp::core::CommandEditor* editor) override;
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+	bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, launcherapp::core::Command** newCmd) override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
@@ -50,14 +62,14 @@ protected:
 	CString mError;
 	uint32_t mRefCount;
 
-	// $B<B9TA0$K3NG'$9$k$+(B?
+	// 実行前に確認するか?
 	bool mIsConfirmBeforeRun = false;
-	// $B<B9TA0$N3NG'M-L5$rA*Br2DG=$+(B?
+	// 実行前の確認有無を選択可能か?
 	bool mCanSetConfirm = false;
 
-	// $B5!G=$OM-8z$+(B?
+	// 機能は有効か?
 	bool mIsEnable = true;
-	// $B5!G=$rL58z2=$G$-$k$+(B?
+	// 機能を無効化できるか?
 	bool mCanDisable = false;
 };
 

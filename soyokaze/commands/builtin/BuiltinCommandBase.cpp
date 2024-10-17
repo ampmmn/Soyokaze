@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/BuiltinCommandBase.h"
+#include "commands/builtin/BuiltinCommandEditor.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/builtin/BuiltinEditDialog.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace launcherapp::core;
 
 namespace launcherapp {
 namespace commands {
@@ -84,42 +86,6 @@ int BuiltinCommandBase::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-bool BuiltinCommandBase::IsEditable()
-{
-	return (mCanDisable || mCanSetConfirm);
-}
-
-bool BuiltinCommandBase::IsDeletable()
-{
-	// 組み込みコマンドは削除させない
-	return false;
-}
-
-int BuiltinCommandBase::EditDialog(HWND parent)
-{
-	if (mCanDisable == false && mCanSetConfirm == false) {
-		return -1;
-	}
-
-	BuiltinEditDialog dlg(GetName(), GetDescription(), mCanDisable, mCanSetConfirm, CWnd::FromHandle(parent));
-	dlg.SetEnable(mIsEnable);
-	dlg.SetConfirm(mIsConfirmBeforeRun);
-
-	if (dlg.DoModal() != IDOK) {
-		return -1;
-	}
-
-	mName = dlg.GetName();
-	mIsEnable = dlg.GetEnable();
-	mIsConfirmBeforeRun = dlg.GetConfirm();
-
-	// 名前の変更を登録しなおす
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool BuiltinCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);
@@ -156,6 +122,60 @@ bool BuiltinCommandBase::Load(CommandEntryIF* entry)
 	mIsConfirmBeforeRun = entry->Get(_T("IsConfirmBeforeRun"), false);
 	mIsEnable = entry->Get(_T("IsEnable"), false);
 	return true;
+}
+
+// コマンドは編集可能か?
+bool BuiltinCommandBase::IsEditable()
+{
+	return (mCanDisable || mCanSetConfirm);
+}
+
+// コマンドは削除可能か?
+bool BuiltinCommandBase::IsDeletable()
+{
+	// 組み込みコマンドは削除させない
+	return false;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool BuiltinCommandBase::CreateEditor(HWND parent, CommandEditor** editor)
+{
+	if (mCanDisable == false && mCanSetConfirm == false) {
+		return false;
+	}
+
+	auto cmdEditor = new BuiltinCommandEditor(GetName(), GetDescription(), mCanDisable, mCanSetConfirm, CWnd::FromHandle(parent));
+	cmdEditor->SetEnable(mIsEnable);
+	cmdEditor->SetConfirm(mIsConfirmBeforeRun);
+
+	*editor = cmdEditor;
+
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool BuiltinCommandBase::Apply(CommandEditor* editor)
+{
+	RefPtr<BuiltinCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_BUILTINCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	mName = cmdEditor->GetName();
+	mIsEnable = cmdEditor->GetEnable();
+	mIsConfirmBeforeRun = cmdEditor->GetConfirm();
+
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool BuiltinCommandBase::CreateNewInstanceFrom(CommandEditor* editor, Command** newCmd)
+{
+	UNREFERENCED_PARAMETER(editor);
+	UNREFERENCED_PARAMETER(newCmd);
+
+	// 複製はサポートしない
+	return false;
 }
 
 uint32_t BuiltinCommandBase::AddRef()

@@ -15,6 +15,7 @@ public:
 	WindowActivateCommand();
 	virtual ~WindowActivateCommand();
 
+// Command
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
@@ -24,7 +25,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	int EditDialog(HWND parentm) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
@@ -32,8 +32,18 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// Editable
+	// コマンドを編集するためのダイアログを作成/取得する
+	bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
+	// ダイアログ上での編集結果をコマンドに適用する
+	bool Apply(launcherapp::core::CommandEditor* editor) override;
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+	bool CreateNewInstanceFrom(launcherapp::core::CommandEditor*editor, Command** newCmd) override;
+
+
 	static CString GetType();
 
+	static bool NewInstance(launcherapp::core::CommandEditor* editor, Command** newCmdPtr);
 	static bool NewDialog(Parameter* param, WindowActivateCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, WindowActivateCommand** newCmdPtr);
 

@@ -90,7 +90,11 @@ BOOL DeleteCommand::Execute(Parameter* param)
 	}
 
 	// Note: 現状はシステムコマンド作成をサポートしていないので削除を許可しない
-	if (cmd->IsEditable() == false) {
+	RefPtr<Editable> editable;
+	if (cmd->QueryInterface(IFID_EDITABLE, (void**)&editable) == false) {
+		return false;
+	}
+	if (editable->IsDeletable() == false) {
 		return TRUE;
 	}
 

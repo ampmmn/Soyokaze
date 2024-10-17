@@ -17,8 +17,6 @@ public:
 	BookmarkCommand();
 	virtual ~BookmarkCommand();
 
-	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
-
 // Comand
 	CString GetName() override;
 	CString GetDescription() override;
@@ -28,8 +26,6 @@ public:
 	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	bool IsEditable() override;
-	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
@@ -40,6 +36,17 @@ public:
 // ExtraCandidateSource
 	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
 	void ClearCache() override;
+
+// Editable
+	// コマンドを編集するためのダイアログを作成/取得する
+	virtual bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
+	// ダイアログ上での編集結果をコマンドに適用する
+	virtual bool Apply(launcherapp::core::CommandEditor* editor) override;
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	static CString GetType();
 

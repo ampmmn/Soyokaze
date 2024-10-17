@@ -15,8 +15,6 @@ class Command : virtual public UnknownIF
 protected:
 	using Parameter = launcherapp::core::CommandParameter;
 public:
-	virtual ~Command() {}
-
 	virtual CString GetName() = 0;
 	virtual CString GetDescription() = 0;
 	virtual CString GetGuideString() = 0;
@@ -26,9 +24,6 @@ public:
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
-	virtual bool IsEditable() = 0;
-	virtual bool IsDeletable() = 0;
-	virtual int EditDialog(HWND parent) = 0;
 	virtual bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) = 0;
 
 	/**

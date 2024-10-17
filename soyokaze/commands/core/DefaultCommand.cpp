@@ -151,22 +151,6 @@ int DefaultCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-bool DefaultCommand::IsEditable()
-{
-	return false;
-}
-
-bool DefaultCommand::IsDeletable()
-{
-	return false;
-}
-
-int DefaultCommand::EditDialog(HWND parent)
-{
-	UNREFERENCED_PARAMETER(parent);
-	return 0;
-}
-
 bool DefaultCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "WindowActivateCommand.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
-#include "commands/activate_window/WindowActivateSettingDialog.h"
+#include "commands/activate_window/WindowActivateCommandEditor.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -128,22 +128,6 @@ int WindowActivateCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int WindowActivateCommand::EditDialog(HWND parent)
-{
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	in->mParam = dlg.GetParam();
-
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool WindowActivateCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -220,6 +204,29 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool WindowActivateCommand::NewInstance(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<WindowActivateCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WINDOWACTIVATECOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	if (cmdEditor->DoModal() == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto commandParam = cmdEditor->GetParam();
+	auto newCmd = std::make_unique<WindowActivateCommand>();
+	newCmd->in->mParam = commandParam;
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+	return true;
+}
+
 bool WindowActivateCommand::NewDialog(
 	Parameter* param,
 	WindowActivateCommand** newCmdPtr
@@ -228,22 +235,8 @@ bool WindowActivateCommand::NewDialog(
 	// パラメータ指定には対応していない
 	UNREFERENCED_PARAMETER(param);
 
-	
-	// 新規作成ダイアログを表示
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
-		return false;
-	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = dlg.GetParam();
-	auto newCmd = std::make_unique<WindowActivateCommand>();
-	newCmd->in->mParam = commandParam;
-
-	if (newCmdPtr) {
-		*newCmdPtr = newCmd.release();
-	}
-	return true;
+	RefPtr<WindowActivateCommandEditor> editor(new WindowActivateCommandEditor);
+	return NewInstance(editor.get(), (Command**)newCmdPtr);
 }
 
 bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActivateCommand** newCmdPtr)
@@ -263,6 +256,38 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 		*newCmdPtr = command.release();
 	}
 	return true;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool WindowActivateCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new WindowActivateCommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool WindowActivateCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<WindowActivateCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WINDOWACTIVATECOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool WindowActivateCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	return NewInstance(editor, newCmdPtr);
 }
 
 } // end of namespace activate_window

@@ -1167,6 +1167,21 @@
     <ClInclude Include="app\AppProcess.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="commands\core\CommandEditDialogIF.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\EditableIF.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\align_window\AlignWindowCommandEditor.h">
+      <Filter>commands\align_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\WindowActivateCommandEditor.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommandEditor.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2065,6 +2080,15 @@
     </ClCompile>
     <ClCompile Include="utility\TopMostMask.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\align_window\AlignWindowCommandEditor.cpp">
+      <Filter>commands\align_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\WindowActivateCommandEditor.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommandEditor.cpp">
+      <Filter>commands\ejectvolume</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@ public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
+	void SetOriginalName(const CString& name);
 	void SetParam(const Param& param);
 	const Param& GetParam();
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "AlignWindowCommand.h"
 #include "commands/align_window/AlignWindowCommandParam.h"
-#include "commands/align_window/AlignWindowSettingDialog.h"
+#include "commands/align_window/AlignWindowCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -12,6 +12,8 @@
 #include "commands/common/Message.h"
 #include <assert.h>
 #include <regex>
+
+using namespace launcherapp::core;
 
 namespace launcherapp {
 namespace commands {
@@ -179,21 +181,6 @@ int AlignWindowCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int AlignWindowCommand::EditDialog(HWND parent)
-{
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-	in->mParam = dlg.GetParam();
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-	return 0;
-}
-
 bool AlignWindowCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -325,13 +312,13 @@ bool AlignWindowCommand::NewDialog(
 	// param;
 
 	// 新規作成ダイアログを表示
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	CommandEditor editor;
+	if (editor.DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = dlg.GetParam();
+	auto commandParam = editor.GetParam();
 	auto newCmd = std::make_unique<AlignWindowCommand>();
 	newCmd->in->mParam = commandParam;
 
@@ -355,6 +342,55 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 
 	if (newCmdPtr) {
 		*newCmdPtr = command.release();
+	}
+	return true;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool AlignWindowCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool AlignWindowCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_ALIGNWINDOWCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool AlignWindowCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_ALIGNWINDOWCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	if (cmdEditor->DoModal() == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto commandParam = cmdEditor->GetParam();
+	auto newCmd = std::make_unique<AlignWindowCommand>();
+	newCmd->in->mParam = commandParam;
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
 	}
 	return true;
 }

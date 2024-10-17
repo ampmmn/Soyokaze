@@ -4,6 +4,8 @@
 #include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/core/EditableIF.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -14,8 +16,7 @@
 #define new DEBUG_NEW
 #endif
 
-using Command = launcherapp::core::Command;
-using CommandHotKeyManager = launcherapp::core::CommandHotKeyManager;
+using namespace launcherapp::core;
 
 // リストの列情報
 enum {
@@ -287,8 +288,15 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mName = name;
 	in->mDescription = in->mSelCommand->GetDescription();
 
-	bool isEditable = in->mSelCommand->IsEditable();
-	bool isDeletable = in->mSelCommand->IsDeletable();
+	bool isEditable = false;
+	bool isDeletable = false;
+
+	RefPtr<Editable> editable;
+	if (in->mSelCommand->QueryInterface(IFID_EDITABLE, (void**)&editable)) {
+		isEditable = editable->IsEditable();
+		isDeletable = editable->IsDeletable();
+	}
+
 	btnEdit->EnableWindow(isEditable ? TRUE : FALSE);
 	btnDel->EnableWindow(isDeletable ? TRUE : FALSE);
 

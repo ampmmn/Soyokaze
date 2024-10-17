@@ -72,23 +72,6 @@ int AdhocCommandBase::Match(Pattern* pattern)
 	return pattern->Match(this->mName);
 }
 
-bool AdhocCommandBase::IsEditable()
-{
-	return false;
-}
-
-bool AdhocCommandBase::IsDeletable()
-{
-	return false;
-}
-
-int AdhocCommandBase::EditDialog(HWND parent)
-{
-	UNREFERENCED_PARAMETER(parent);
-
-	return -1;
-}
-
 bool AdhocCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

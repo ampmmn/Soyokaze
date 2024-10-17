@@ -56,6 +56,11 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
 void SettingDialog::SetParam(const Param& param)
 {
 	in->mParam = param;
@@ -97,8 +102,6 @@ BOOL SettingDialog::OnInitDialog()
 
 	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabel.DrawIcon(IconLoader::Get()->LoadWindowIcon());
-
-	in->mOrgName = in->mParam.mName;
 
 	CString caption(_T("コマンドの設定"));
 
