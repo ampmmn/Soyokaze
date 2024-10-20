@@ -136,42 +136,14 @@ ExcelApplication::~ExcelApplication()
 		return;
 	}
 
-	DWORD pid = 0;
-
-	HWND hwndApp = (HWND)in->mApp.GetPropertyInt64(L"Hwnd");
-	if (IsWindow(hwndApp)) {
-		GetWindowThreadProcessId(hwndApp, &pid);
-	}
-
 	// GetObjectで確保したインスタンスでない(→自分でCreateInstanceした)場合はQuitで終了する
 	if (in->mIsGetObject == false) {
-		in->mApp.CallVoidMethod(L"Quit");
+		Quit();
 	}
 
 	in->mApp.Release();
-
 	CoUninitialize();
 
-	// pidのプロセスを一定時間後に消す
-	if (pid == 0) {
-		return;
-	}
-
-	HANDLE h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE, FALSE, pid);
-	std::thread th([pid, h]() {
-			utility::TimeoutChecker ch(2000);
-			DWORD exitCode = 0;
-			while(ch.IsTimeout() == false) {
-				if (GetExitCodeProcess(h, &exitCode) && exitCode != STILL_ACTIVE) {
-					spdlog::debug(_T("Excel app exit PID:{}"), pid);
-					return;
-				}
-				Sleep(50);
-			}
-			spdlog::debug(_T("Excel app terminated PID:{}"), pid);
-			TerminateProcess(h, 0);
-	});
-	th.detach();
 }
 
 
@@ -428,6 +400,39 @@ int ExcelApplication::GetCellText(
 	SPDLOG_DEBUG(_T("Completed. path:{0} sheet:{1} address:{2}"),
 	             (LPCTSTR)wbPath, (LPCTSTR)sheetName, (LPCTSTR)address);
 	return 0;
+}
+
+void ExcelApplication::Quit()
+{
+	// Quitしても終わらないときは強制終了させるので、プロセスIDを取得しておく
+	DWORD pid = 0;
+	HWND hwndApp = (HWND)in->mApp.GetPropertyInt64(L"Hwnd");
+	if (IsWindow(hwndApp)) {
+		GetWindowThreadProcessId(hwndApp, &pid);
+	}
+
+	in->mApp.CallVoidMethod(L"Quit");
+
+	if (pid == 0) {
+		return;
+	}
+
+	// 2秒まってもプロセスが終了していなかったら強制的に落とす
+	HANDLE h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE, FALSE, pid);
+	std::thread th([pid, h]() {
+			utility::TimeoutChecker ch(2000);
+			DWORD exitCode = 0;
+			while(ch.IsTimeout() == false) {
+			if (GetExitCodeProcess(h, &exitCode) && exitCode != STILL_ACTIVE) {
+			spdlog::debug(_T("Excel app exit PID:{}"), pid);
+			return;
+			}
+			Sleep(50);
+			}
+			spdlog::debug(_T("Excel app terminated PID:{}"), pid);
+			TerminateProcess(h, 0);
+			});
+	th.detach();
 }
 
 } // end of namespace simple_dict

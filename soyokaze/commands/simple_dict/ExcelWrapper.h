@@ -24,6 +24,9 @@ public:
 	int GetCellText(const CString wbPath, const CString& sheetName, const CString& address, std::vector<CString>& texts);
 
 private:
+	void Quit();
+
+private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
