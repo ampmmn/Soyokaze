@@ -93,11 +93,10 @@ bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CStrin
 		return false;
 	}
 
-	launcherapp::core::CommandNamedParameter* namedParam = nullptr;
+	RefPtr<launcherapp::core::CommandNamedParameter> namedParam;
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}
-	namedParam->Release();   // ここでReleaseしても、元のオブジェクトの分があるので破棄はされない
 
 	int len = namedParam->GetNamedParamStringLength(name);
 	if (len == 0) {

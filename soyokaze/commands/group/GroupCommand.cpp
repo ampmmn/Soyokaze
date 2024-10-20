@@ -109,7 +109,7 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 
 	for (auto& item : mParam.mItems) {
 
-		auto command = cmdRepo->QueryAsWholeMatch(item.mItemName, false);
+		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(item.mItemName, false));
 		if (command == nullptr) {
 			continue;
 		}
@@ -128,8 +128,6 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 		paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
 		command->Execute(paramSub);
-
-		command->Release();
 	}
 
 	return TRUE;

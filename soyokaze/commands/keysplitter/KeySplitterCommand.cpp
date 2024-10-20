@@ -147,15 +147,12 @@ BOOL KeySplitterCommand::Execute(Parameter* param)
 
 	// 振り分け先のコマンドを実行する
 	auto cmdRepo = CommandRepository::GetInstance();
-	auto command = cmdRepo->QueryAsWholeMatch(item.mCommandName, false);
+	RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(item.mCommandName, false));
 	if (command == nullptr) {
 		return TRUE;
 	}
-	BOOL isOK = command->Execute(paramSub);
 
-	command->Release();
-
-	return isOK;
+	return command->Execute(paramSub);
 }
 
 CString KeySplitterCommand::GetErrorString()

@@ -148,7 +148,7 @@ CString ShellExecCommand::GetTypeDisplayName()
 
 BOOL ShellExecCommand::Execute(Parameter* param_)
 {
-	auto param = param_->Clone();
+	RefPtr<Parameter> param(param_->Clone());
 
 	if (param->HasParameter() == false && in->mParam.mIsShowArgDialog) {
 		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
@@ -190,7 +190,6 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	SubProcess::ProcessPtr process;
 	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
 		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		param->Release();
 		return FALSE;
 	}
 
@@ -200,8 +199,6 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);
 	}
-	param->Release();
-
 	return TRUE;
 }
 
@@ -325,11 +322,10 @@ bool ShellExecCommand::NewCommand(const CString& filePath)
 
 	// 重複しないコマンド名を決定する
 	for (int i = 1;; ++i) {
-		auto cmd = cmdRepos->QueryAsWholeMatch(name + suffix, false);
+		RefPtr<launcherapp::core::Command> cmd(cmdRepos->QueryAsWholeMatch(name + suffix, false));
 		if (cmd == nullptr) {
 			break;
 		}
-		cmd->Release();
 		// 既存の場合は末尾に数字を付与
 		suffix.Format(_T("(%d)"), i);
 	}

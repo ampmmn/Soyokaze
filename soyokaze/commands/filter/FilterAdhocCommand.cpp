@@ -121,10 +121,9 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 
 		// 他のコマンドを実行
 		auto cmdRepo = CommandRepository::GetInstance();
-		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
+		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false));
 		if (command) {
 			command->Execute(paramSub);
-			command->Release();
 		}
 		return true;
 	}

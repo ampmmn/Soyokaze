@@ -22,9 +22,8 @@ bool IsValidCommandName(const CString& name, const CString& orgName, CString& er
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	// 重複チェック
 	if (name.CompareNoCase(orgName) != 0) {
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(name, false);
+		RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(name, false));
 		if (cmd != nullptr) {
-			cmd->Release();
 			errMsg.LoadString(IDS_ERR_NAMEALREADYEXISTS);
 			return false;
 		}

@@ -47,17 +47,14 @@ void UserCommandProviderBase::LoadCommands(
 			continue;
 		}
 
-		Command* command = nullptr;
+		RefPtr<Command> command;
 		if (LoadFrom( entry, &command) == false) {
-			if (command) {
-				command->Release();
-			}
 			continue;
 		}
 
 		// 登録
 		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command, isReloadHotKey);
+		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

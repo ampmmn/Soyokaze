@@ -54,7 +54,7 @@ BOOL EditCandidateCommand::Execute(Parameter* param)
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
-	auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mCmdName);
+	RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(in->mCmdName));
 	if (cmd == nullptr) {
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
 		msgStr += _T("\n\n");
@@ -62,7 +62,6 @@ BOOL EditCandidateCommand::Execute(Parameter* param)
 		AfxMessageBox(msgStr);
 		return TRUE;
 	}
-	cmd->Release();
 
 	constexpr bool isClone = false;
 	cmdRepoPtr->EditCommandDialog(in->mCmdName, isClone);

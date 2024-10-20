@@ -88,9 +88,8 @@ void HistoryCommandProvider::QueryAdhocCommands(
 				continue;
 			}
 
-			auto cmd = repos->QueryAsWholeMatch(cmdName, true);
+			RefPtr<launcherapp::core::Command> cmd(repos->QueryAsWholeMatch(cmdName, true));
 			if (cmd != nullptr) {
-				cmd->Release();
 				existingCmds.insert(cmdName);
 				it++;
 				continue;

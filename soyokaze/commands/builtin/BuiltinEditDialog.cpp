@@ -146,9 +146,8 @@ void BuiltinEditDialog::OnUpdateStatus()
 	// コマンド名の重複チェック
 	if (in->mName.CompareNoCase(in->mOrgName) != 0) {
 		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-		auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mName, false);
+		RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(in->mName, false));
 		if (cmd != nullptr) {
-			cmd->Release();
 			in->mMessage.LoadString(IDS_ERR_NAMEALREADYEXISTS);
 			UpdateData(FALSE);
 			return;

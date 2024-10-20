@@ -81,7 +81,7 @@ BOOL EditCommand::Execute(Parameter* param)
 	}
 
 	LPCTSTR editName = param->GetParam(0);
-	auto cmd = cmdRepoPtr->QueryAsWholeMatch(editName);
+	RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(editName));
 
 	if (cmd == nullptr) {
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
@@ -90,12 +90,9 @@ BOOL EditCommand::Execute(Parameter* param)
 		AfxMessageBox(msgStr);
 		return TRUE;
 	}
-	cmd->Release();
 
 	constexpr bool isClone = false;
 	cmdRepoPtr->EditCommandDialog(editName, isClone);
-	return TRUE;
-
 	return TRUE;
 }
 

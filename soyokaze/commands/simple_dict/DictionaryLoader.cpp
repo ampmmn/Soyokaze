@@ -58,7 +58,7 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 		mUpdatedParamQueue.push_back(cmd);
 	}
 
-	bool NextUpdatedItem(SimpleDictCommand*& cmd)
+	bool NextUpdatedItem(SimpleDictCommand** cmd)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
 
@@ -68,10 +68,10 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 		}
 
 		auto it = mUpdatedParamQueue.begin();
-		cmd = *it;
+		*cmd = *it;
 		mUpdatedParamQueue.erase(it);
 
-		SPDLOG_DEBUG(_T("Update dict(edit command). name:{0}"), (LPCTSTR)cmd->GetName());
+		SPDLOG_DEBUG(_T("Update dict(edit command). name:{0}"), (LPCTSTR)(*cmd)->GetName());
 		return true;
 	}
 
@@ -152,19 +152,12 @@ void DictionaryLoader::PImpl::StartWatch()
 		Sleep(50);
 
 		// 更新されたアイテムがあるまで待機
-		SimpleDictCommand* cmd = nullptr;
-		if (NextUpdatedItem(cmd) == false) {
+		RefPtr<SimpleDictCommand> cmd;
+		if (NextUpdatedItem(&cmd) == false) {
 			ASSERT(cmd == nullptr);
 			continue;
 		}
-
-		ASSERT(cmd);
-
-		struct local {
-			local(SimpleDictCommand* cmd) : ptr(cmd) {}
-			~local() { ptr->Release(); }
-			SimpleDictCommand* ptr;
-		} _scope_(cmd);
+		ASSERT(cmd.get());
 
 		const auto& param = cmd->GetParam();
 

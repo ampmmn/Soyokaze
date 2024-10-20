@@ -47,6 +47,7 @@
 #endif
 
 #include "logger/Logger.h"
+#include "utility/RefPtr.h"
 
 constexpr int MAX_PATH_NTFS = (32767+1);
 

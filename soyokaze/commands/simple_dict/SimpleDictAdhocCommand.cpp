@@ -116,13 +116,12 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 	if (actionType == 0) {
 		// 他のコマンドを実行
 		auto cmdRepo = CommandRepository::GetInstance();
-		auto command = cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false);
+		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false));
 		if (command) {
 			RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 
 			paramSub->AddArgument(argSub);
 			command->Execute(paramSub);
-			command->Release();
 		}
 	}
 	else if (actionType == 1) {

@@ -121,17 +121,16 @@ void BuiltinCommandProvider::LoadCommands(
 			continue;
 		}
 
-		Command* cmd = nullptr;
+		RefPtr<Command> cmd;
 		if (factory->Create(type, nullptr, &cmd) == false) {
 			continue;
 		}
 		if (cmdRepo->HasCommand(cmd->GetName())) {
-			cmd->Release();
 			continue;
 		}
 
 		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(cmd, isReloadHotKey);
+		cmdRepo->RegisterCommand(cmd.release(), isReloadHotKey);
 	}
 }
 
