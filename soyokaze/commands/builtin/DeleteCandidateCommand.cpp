@@ -53,6 +53,8 @@ CString DeleteCandidateCommand::GetTypeDisplayName()
 
 BOOL DeleteCandidateCommand::Execute(Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	DeleteCommand cmd;
 	RefPtr<CommandParameterBuilder> paramTmp(CommandParameterBuilder::Create(_T("delete")));
 	paramTmp->AddArgument(in->mCmdName);

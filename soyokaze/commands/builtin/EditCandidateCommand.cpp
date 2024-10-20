@@ -50,6 +50,8 @@ CString EditCandidateCommand::GetTypeDisplayName()
 
 BOOL EditCandidateCommand::Execute(Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
 	auto cmd = cmdRepoPtr->QueryAsWholeMatch(in->mCmdName);
