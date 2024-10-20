@@ -114,6 +114,9 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	in->mDriveLetterIndex = (int)(in->mParam.mDriveLetter - _T('A'));
 
@@ -222,6 +225,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 }

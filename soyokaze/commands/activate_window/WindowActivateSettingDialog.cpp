@@ -121,12 +121,15 @@ BOOL SettingDialog::OnInitDialog()
 	caption += suffix;
 	SetWindowText(caption);
 
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
 
 	UpdateStatus();
+
+	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 
@@ -140,6 +143,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 }

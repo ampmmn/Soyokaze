@@ -119,6 +119,9 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->EnableIconChange();
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	CString caption(_T("Web検索コマンドの設定"));
 
@@ -223,6 +226,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 }

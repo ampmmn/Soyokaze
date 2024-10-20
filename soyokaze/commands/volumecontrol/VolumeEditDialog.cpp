@@ -114,6 +114,9 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	// 音量の設定値に合わせてテキスト文字列作成
 	if (in->mParam.mIsRelative) {
@@ -236,6 +239,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 }

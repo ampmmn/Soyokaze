@@ -98,6 +98,9 @@ BOOL SettingDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	CString caption;
 	GetWindowText(caption);
@@ -176,6 +179,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	UpdateData(FALSE);
 }

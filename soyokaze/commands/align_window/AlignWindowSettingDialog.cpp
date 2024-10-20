@@ -179,6 +179,9 @@ BOOL SettingDialog::OnInitDialog()
 	SetWindowText(caption);
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
@@ -198,6 +201,9 @@ void SettingDialog::OnButtonHotKey()
 		return ;
 	}
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	}
 	UpdateData(FALSE);
 }
 
