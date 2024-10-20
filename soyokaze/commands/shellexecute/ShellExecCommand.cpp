@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
-#include "commands/shellexecute/ShellExecSettingDialog.h"
+#include "commands/shellexecute/ShellExecCommandEditor.h"
 #include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
@@ -25,17 +26,12 @@
 using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
-
+using CommandRepository = launcherapp::core::CommandRepository;
 
 namespace launcherapp {
 namespace commands {
 namespace shellexecute {
 
-
-ShellExecCommand::ATTRIBUTE::ATTRIBUTE() :
-	mShowType(SW_NORMAL)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,14 +47,50 @@ struct ShellExecCommand::PImpl
 	{
 	}
 
-	CommandParam mParam;
+	ATTRIBUTE& GetNormalAttr() { return mParam.mNormalAttr; }
+	ATTRIBUTE& GetNoParamAttr() { return mParam.mNoParamAttr; }
 
-	ATTRIBUTE mNormalAttr;
-	ATTRIBUTE mNoParamAttr;
+	void SelectAttribute(const std::vector<CString>& args,ATTRIBUTE& attr);
+
+	CommandParam mParam;
 
 	CString mErrMsg;
 	HICON mIcon;
 };
+
+// パラメータの有無などでATTRIBUTEを切り替える
+void
+ShellExecCommand::PImpl::SelectAttribute(
+	const std::vector<CString>& args,
+	ATTRIBUTE& attr
+)
+{
+	const auto& attrNormal = GetNormalAttr();
+	const auto& attrNoParam = GetNoParamAttr();
+
+	if (args.size() > 0) {
+		// パラメータあり
+
+		// mNormalAttr優先
+		if (attrNormal.mPath.IsEmpty() == FALSE) {
+			attr = attrNormal;
+		}
+		else {
+			attr = attrNoParam;
+		}
+	}
+	else {
+		// パラメータなし
+
+		// mNoParamAttr優先
+		if (attrNoParam.mPath.IsEmpty() == FALSE) {
+			attr = attrNoParam;
+		}
+		else {
+			attr = attrNormal;
+		}
+	}
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,16 +120,17 @@ CString ShellExecCommand::GetDescription()
 
 CString ShellExecCommand::GetGuideString()
 {
-	if (in->mNormalAttr.mPath.Find(_T("http"))==0) {
+	const auto& attr = in->GetNormalAttr();
+	if (attr.mPath.Find(_T("http"))==0) {
 		return _T("Enter:ブラウザで開く");
 	}
 	else {
 		CString guideStr(_T("Enter:実行"));
 
-		if (PathFileExists(in->mNormalAttr.mPath)) {
+		if (PathFileExists(attr.mPath)) {
 			guideStr += _T(" Ctrl-Enter:フォルダを開く");
 
-			CString ext(PathFindExtension(in->mNormalAttr.mPath));
+			CString ext(PathFindExtension(attr.mPath));
 			if (ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0) {
 				guideStr += _T(" Ctrl-Shift-Enter:管理者権限で実行");
 			}
@@ -145,10 +178,10 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 
 	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
 	ATTRIBUTE attr;
-	SelectAttribute(args, attr);
+	in->SelectAttribute(args, attr);
 		
 	SubProcess exec(param);
-	exec.SetShowType(attr.mShowType);
+	exec.SetShowType(attr.GetShowType());
 	exec.SetWorkDirectory(attr.mDir);
 	if (in->mParam.mIsRunAsAdmin) {
 		exec.SetRunAsAdmin();
@@ -177,80 +210,26 @@ CString ShellExecCommand::GetErrorString()
 	return in->mErrMsg;
 }
 
-ShellExecCommand& ShellExecCommand::SetName(LPCTSTR name)
+void ShellExecCommand::SetPath(const CString& path)
 {
-	in->mParam.mName = name;
-	return *this;
+	in->mParam.mNormalAttr.mPath = path;
 }
 
-ShellExecCommand& ShellExecCommand::SetDescription(LPCTSTR description)
+void ShellExecCommand::SetArgument(const CString& arg)
 {
-	in->mParam.mDescription = description;
-	return *this;
+	in->mParam.mNormalAttr.mParam = arg;
 }
 
-
-ShellExecCommand& ShellExecCommand::SetAttribute(const ATTRIBUTE& attr)
+void ShellExecCommand::SetParam(const CommandParam& param)
 {
-	in->mNormalAttr = attr;
-
-	return *this;
+	in->mParam = param;
 }
 
-ShellExecCommand& ShellExecCommand::SetAttributeForParam0(const ATTRIBUTE& attr)
-{
-	in->mNoParamAttr = attr;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetPath(LPCTSTR path)
-{
-	in->mNormalAttr.mPath = path;
-	return *this;
-}
-
-ShellExecCommand& ShellExecCommand::SetRunAs(int runAs)
-{
-	in->mParam.mIsRunAsAdmin = runAs != 0;
-	return *this;
-}
-
-void
-ShellExecCommand::SelectAttribute(
-	const std::vector<CString>& args,
-	ATTRIBUTE& attr
-)
-{
-	// パラメータの有無などでATTRIBUTEを切り替える
-
-	if (args.size() > 0) {
-		// パラメータあり
-
-		// mNormalAttr優先
-		if (in->mNormalAttr.mPath.IsEmpty() == FALSE) {
-			attr = in->mNormalAttr;
-		}
-		else {
-			attr = in->mNoParamAttr;
-		}
-	}
-	else {
-		// パラメータなし
-
-		// mNoParamAttr優先
-		if (in->mNoParamAttr.mPath.IsEmpty() == FALSE) {
-			attr = in->mNoParamAttr;
-		}
-		else {
-			attr = in->mNormalAttr;
-		}
-	}
-}
 
 HICON ShellExecCommand::GetIcon()
 {
 	if (in->mParam.mIconData.empty()) {
-		CString path = in->mNormalAttr.mPath;
+		CString path = in->GetNormalAttr().mPath;
 		ExpandMacros(path);
 
 		return IconLoader::Get()->LoadIconFromPath(path);
@@ -278,60 +257,6 @@ int ShellExecCommand::Match(Pattern* pattern)
 	return pattern->Match(GetDescription());
 }
 
-int ShellExecCommand::EditDialog(HWND parent)
-{
-	auto& param = in->mParam;
-
-	ShellExecCommand::ATTRIBUTE attr = in->mNormalAttr;
-
-	param.mPath = attr.mPath;
-	param.mParameter = attr.mParam;
-	param.mDir = attr.mDir;
-	param.SetShowType(attr.mShowType);
-
-	attr = in->mNoParamAttr;
-	param.mIsUse0 = (attr.mPath.IsEmpty() == FALSE);
-	param.mPath0 = attr.mPath;
-	param.mParameter0 = attr.mParam;
-
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(param);
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 追加する処理
-	param = dlg.GetParam();
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = param.mPath;
-	normalAttr.mParam = param.mParameter;
-	normalAttr.mDir = param.mDir;
-	normalAttr.mShowType = param.GetShowType();
-	SetAttribute(normalAttr);
-
-	if (param.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = param.mPath0;
-		param0Attr.mParam = param.mParameter0;
-		param0Attr.mDir = param.mDir;
-		param0Attr.mShowType = param.GetShowType();
-		SetAttributeForParam0(param0Attr);
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		SetAttributeForParam0(param0Attr);
-	}
-
-	// 名前が変わっている可能性があるため、いったん削除して再登録する
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-
-	return 0;
-}
-
 bool ShellExecCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -347,31 +272,11 @@ bool ShellExecCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-void ShellExecCommand::GetAttribute(ATTRIBUTE& attr)
-{
-	attr = in->mNormalAttr;
-}
-
-void ShellExecCommand::GetAttributeForParam0(ATTRIBUTE& attr)
-{
-	attr = in->mNoParamAttr;
-}
-
-int ShellExecCommand::GetRunAs()
-{
-	return in->mParam.mIsRunAsAdmin ? 1 : 0;
-}
-
 launcherapp::core::Command*
 ShellExecCommand::Clone()
 {
 	auto clonedObj = std::make_unique<ShellExecCommand>();
-
-	clonedObj->in->mNormalAttr = in->mNormalAttr;
-	clonedObj->in->mNoParamAttr = in->mNoParamAttr;
 	clonedObj->in->mParam = in->mParam;
-
-
 	return clonedObj.release();
 }
 
@@ -380,55 +285,67 @@ bool ShellExecCommand::NewDialog(
 	ShellExecCommand** newCmdPtr
 )
 {
-	// 新規作成ダイアログを表示
-	CString value;
-
 	CommandParam commandParam;
 	GetNamedParamString(param, _T("COMMAND"), commandParam.mName);
-	GetNamedParamString(param, _T("PATH"), commandParam.mPath);
 	GetNamedParamString(param, _T("DESCRIPTION"), commandParam.mDescription);
-	GetNamedParamString(param, _T("ARGUMENT"), commandParam.mParameter);
+	GetNamedParamString(param, _T("PATH"), commandParam.mNormalAttr.mPath);
+	GetNamedParamString(param, _T("ARGUMENT"), commandParam.mNormalAttr.mParam);
 
-	SettingDialog dlg;
-	dlg.SetParam(commandParam);
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(commandParam);
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	commandParam = dlg.GetParam();
-
 	auto newCmd = std::make_unique<ShellExecCommand>();
-	newCmd->in->mParam.mName = commandParam.mName;
-	newCmd->in->mParam.mDescription = commandParam.mDescription;
-	newCmd->in->mParam.mIsRunAsAdmin = (commandParam.mIsRunAsAdmin != 0);
-	newCmd->in->mParam.mIsShowArgDialog =  commandParam.mIsShowArgDialog;
-	newCmd->in->mParam.mIsUseDescriptionForMatching = commandParam.mIsUseDescriptionForMatching;
-	newCmd->in->mParam.mIconData = commandParam.mIconData;
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath =commandParam.mPath;
-	normalAttr.mParam = commandParam.mParameter;
-	normalAttr.mDir = commandParam.mDir;
-	normalAttr.mShowType = commandParam.GetShowType();
-	newCmd->in->mNormalAttr = normalAttr;
-
-	if (commandParam.mIsUse0) {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		param0Attr.mPath = commandParam.mPath0;
-		param0Attr.mParam = commandParam.mParameter0;
-		param0Attr.mDir = commandParam.mDir;
-		param0Attr.mShowType = commandParam.GetShowType();
-		newCmd->in->mNoParamAttr = param0Attr;
-	}
-	else {
-		ShellExecCommand::ATTRIBUTE param0Attr;
-		newCmd->in->mNoParamAttr = param0Attr;
-	}
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
 	}
+	return true;
+}
+
+bool ShellExecCommand::NewCommand(const CString& filePath)
+{
+	CString name(PathFindFileName(filePath));
+	PathRemoveExtension(name.GetBuffer(name.GetLength()));
+	name.ReleaseBuffer();
+
+	if (name.IsEmpty()) {
+		// .xxx というファイル名の場合にnameが空文字になるのを回避する
+		name = PathFindFileName(filePath);
+	}
+
+	auto cmdRepos = CommandRepository::GetInstance();
+	// パスとして使えるが、ShellExecCommandのコマンド名として許可しない文字をカットする
+	SanitizeName(name);
+
+	CString suffix;
+
+	// 重複しないコマンド名を決定する
+	for (int i = 1;; ++i) {
+		auto cmd = cmdRepos->QueryAsWholeMatch(name + suffix, false);
+		if (cmd == nullptr) {
+			break;
+		}
+		cmd->Release();
+		// 既存の場合は末尾に数字を付与
+		suffix.Format(_T("(%d)"), i);
+	}
+
+	if (suffix.IsEmpty() == FALSE) {
+		name = name + suffix;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<ShellExecCommand>();
+	newCmd->in->mParam.mName =name;
+
+	ATTRIBUTE& normalAttr = newCmd->in->mParam.mNormalAttr;
+	normalAttr.mPath = filePath;
+
+	cmdRepos->RegisterCommand(newCmd.release(), false);
 
 	return true;
 }
@@ -470,29 +387,9 @@ CString& ShellExecCommand::SanitizeName(
 
 bool ShellExecCommand::Save(CommandEntryIF* entry)
 {
-	ASSERT(entry);
-
 	entry->Set(_T("Type"), GetType());
 
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("runas"), GetRunAs());
-	entry->Set(_T("isShowArgInput"), in->mParam.mIsShowArgDialog);
-
-	ShellExecCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
-	entry->Set(_T("path"), normalAttr.mPath);
-	entry->Set(_T("dir"), normalAttr.mDir);
-	entry->Set(_T("parameter"), normalAttr.mParam);
-	entry->Set(_T("show"), normalAttr.mShowType);
-
-	ShellExecCommand::ATTRIBUTE& param0Attr = in->mNoParamAttr;
-	entry->Set(_T("path0"), param0Attr.mPath);
-	entry->Set(_T("dir0"), param0Attr.mDir);
-	entry->Set(_T("parameter0"), param0Attr.mParam);
-	entry->Set(_T("show0"), param0Attr.mShowType);
-
-	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mParam.mIconData.data(), in->mParam.mIconData.size());
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool ShellExecCommand::Load(CommandEntryIF* entry)
@@ -503,55 +400,58 @@ bool ShellExecCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
 		return false;
 	}
+	return in->mParam.Load(entry);
+}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mIsRunAsAdmin = (entry->Get(_T("runas"), 0) != 0);
-
-	ShellExecCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = entry->Get(_T("path"), _T(""));
-	normalAttr.mDir = entry->Get(_T("dir"), _T(""));
-	normalAttr.mParam = entry->Get(_T("parameter"), _T(""));
-	normalAttr.mShowType = entry->Get(_T("show"), normalAttr.mShowType);
-	in->mNormalAttr = normalAttr;
-
-	ShellExecCommand::ATTRIBUTE noParamAttr;
-	noParamAttr.mPath = entry->Get(_T("path0"), _T(""));
-	noParamAttr.mDir = entry->Get(_T("dir0"), _T(""));
-	noParamAttr.mParam = entry->Get(_T("parameter0"), _T(""));
-	noParamAttr.mShowType = entry->Get(_T("show0"), noParamAttr.mShowType);
-	in->mNoParamAttr = noParamAttr;
-
-	in->mParam.mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
-
-	size_t len = entry->GetBytesLength(_T("IconData"));
-	if (len != CommandEntryIF::NO_ENTRY) {
-		in->mParam.mIconData.resize(len);
-		entry->GetBytes(_T("IconData"), (uint8_t*)in->mParam.mIconData.data(), len);
+// コマンドを編集するためのダイアログを作成/取得する
+bool ShellExecCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
 	}
 
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool ShellExecCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SHELLEXECCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+
+	// 設定変更によりアイコンが変わる可能性があるためクリアする
+	in->mIcon = nullptr;
 
 	return true;
 }
 
-// 管理者権限で実行しているか?
-bool ShellExecCommand::IsRunAsAdmin()
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
 {
-	PSID grp;
-	SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-	BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
-	if (result == FALSE) {
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SHELLEXECCOMMANDEDITOR, (void**)&cmdEditor) == false) {
 		return false;
 	}
 
-	BOOL isMember = FALSE;
-	result = CheckTokenMembership(nullptr, grp, &isMember);
-	FreeSid(grp);
+	auto paramNew = cmdEditor->GetParam();
 
-	return result && isMember;
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<ShellExecCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
 }
 
 

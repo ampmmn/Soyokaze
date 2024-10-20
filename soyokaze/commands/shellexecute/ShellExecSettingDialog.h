@@ -11,15 +11,16 @@ namespace shellexecute {
 // 
 class SettingDialog : public SettingDialogBase
 {
-protected:
-	using Param = CommandParam; 
-
 public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
-	void SetParam(const Param& param);
-	const Param& GetParam();
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
+	void SetParam(const CommandParam& param);
+	const CommandParam& GetParam();
+
+	void ResetHotKey();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();

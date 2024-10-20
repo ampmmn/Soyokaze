@@ -225,7 +225,7 @@ bool BookmarkCommand::NewDialog(
 
 	// 新規作成ダイアログを表示
 	BookmarkCommandEditor editor;
-	if (editor.DoModal() != IDOK) {
+	if (editor.DoModal() == false) {
 		return false;
 	}
 

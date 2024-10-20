@@ -38,6 +38,11 @@ CommandEditDialog::~CommandEditDialog()
 {
 }
 
+void CommandEditDialog::SetOriginalName(const CString& name)
+{
+	mOrgName = name;
+}
+
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
@@ -45,8 +50,8 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mParam.mIsRunAsAdmin);
-	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
-	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
+	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mNormalAttr.mPath);
+	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mNormalAttr.mParam);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
@@ -95,13 +100,15 @@ bool CommandEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0;
+	const CString& targetPath = mParam.mNormalAttr.mPath;
+
+	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 
 	// $1,2,3... または $*の指定がある場合は、引数必須を選択するチェックを表示
 	const tregex& regArg = GetRegexForArgument();
 
-	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
-		            std::regex_search((LPCTSTR)mParam.mParameter, regArg);
+	bool hasArg = std::regex_search((LPCTSTR)targetPath, regArg) ||
+		            std::regex_search((LPCTSTR)mParam.mNormalAttr.mParam, regArg);
 
 	GetDlgItem(IDC_CHECK_SHOWARGINPUT)->ShowWindow(hasArg? SW_SHOW : SW_HIDE);
 
@@ -109,15 +116,15 @@ bool CommandEditDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
 	// .exe/.batでなければ、管理者権限実行を無効化する
-	BOOL isExecutable = CString(_T(".exe")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0 ||
-	                    CString(_T(".bat")).CompareNoCase(PathFindExtension(mParam.mPath)) == 0;
+	BOOL isExecutable = CString(_T(".exe")).CompareNoCase(PathFindExtension(targetPath)) == 0 ||
+	                    CString(_T(".bat")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 	GetDlgItem(IDC_CHECK_RUNASADMIN)->EnableWindow(isExecutable);
 	if (isExecutable == FALSE) {
 		mParam.mIsRunAsAdmin = FALSE;
 	}
 
 	if (mParam.mIconData.empty()) {
-		CString resolvedPath(mParam.mPath);
+		CString resolvedPath(targetPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
@@ -135,7 +142,7 @@ bool CommandEditDialog::UpdateStatus()
 		return false;
 	}
 
-	if (mParam.mPath.IsEmpty()) {
+	if (targetPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
 		DisalbleOKButton();
 		return false;
@@ -158,12 +165,12 @@ void CommandEditDialog::OnUpdateStatus()
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mParam.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, mParam.mNormalAttr.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mPath = dlg.GetPathName();
+	mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -171,13 +178,13 @@ void CommandEditDialog::OnButtonBrowseFile1Clicked()
 void CommandEditDialog::OnButtonBrowseDir1Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mPath, this);
+	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mPath = dlg.GetPathName();
+	mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -217,7 +224,6 @@ void CommandEditDialog::OnEnterSettings()
 {
 	auto param = (CommandParam*)GetParam();
 
-	mOrgName = param->mName;
 	mParam = *param;
 
 	CString caption;
@@ -230,7 +236,7 @@ void CommandEditDialog::OnEnterSettings()
 	SetWindowText(caption);
 
 	if (mParam.mIconData.empty()) {
-		CString resolvedPath(mParam.mPath);
+		CString resolvedPath(mParam.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
@@ -259,18 +265,20 @@ void CommandEditDialog::OnOK()
 
 	param->mName = mParam.mName;
 	param->mDescription = mParam.mDescription;
+
+	param->mNormalAttr.mPath = mParam.mNormalAttr.mPath;
+	param->mNormalAttr.mParam = mParam.mNormalAttr.mParam;
+
 	param->mIsRunAsAdmin = mParam.mIsRunAsAdmin;
-	param->mShowType = mParam.mShowType;
-	param->mPath = mParam.mPath;
-	param->mParameter = mParam.mParameter;
 	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
 	param->mIsUseDescriptionForMatching = mParam.mIsUseDescriptionForMatching;
-	param->mHotKeyAttr = mParam.mHotKeyAttr;
 	param->mIconData = mParam.mIconData;
+	param->mHotKeyAttr = mParam.mHotKeyAttr;
 
+	// 引数展開のキーワードが含まれていない場合は、引数入力ダイアログの表示を無効化する
 	const tregex& regArg = GetRegexForArgument();
-	bool hasArg = std::regex_search((LPCTSTR)mParam.mPath, regArg) ||
-		            std::regex_search((LPCTSTR)mParam.mParameter, regArg);
+	bool hasArg = std::regex_search((LPCTSTR)mParam.mNormalAttr.mPath, regArg) ||
+		            std::regex_search((LPCTSTR)mParam.mNormalAttr.mParam, regArg);
 	if (hasArg == false) {
 		param->mIsShowArgDialog = false;
 	}
@@ -308,7 +316,7 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 
 void CommandEditDialog::OnButtonResolveShortcut()
 {
-	ResolveShortcut(mParam.mPath);
+	ResolveShortcut(mParam.mNormalAttr.mPath);
 }
 
 LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
@@ -325,7 +333,7 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	}
 	else {
 		// デフォルトに戻す
-		CString resolvedPath(mParam.mPath);
+		CString resolvedPath(mParam.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 		mParam.mIconData.clear();

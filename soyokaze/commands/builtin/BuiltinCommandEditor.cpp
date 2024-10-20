@@ -4,7 +4,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace align_window {
+namespace builtin {
 
 struct BuiltinCommandEditor::PImpl
 {
@@ -20,7 +20,7 @@ struct BuiltinCommandEditor::PImpl
 	CWnd* parentWnd
 ) : in(new PImpl())
 {
-	mDialog.reset(new BuiltinEditDialog(name, description, canEditEnable, canEditConfirm, parentWnd)); 
+	in->mDialog.reset(new BuiltinEditDialog(name, description, canEditEnable, canEditConfirm, parentWnd)); 
 }
 
 BuiltinCommandEditor::~BuiltinCommandEditor()
@@ -52,7 +52,13 @@ bool BuiltinCommandEditor::GetConfirm()
 	return in->mDialog->GetConfirm();
 }
 
-// コマンドは編集可能か?
+// 名前を上書きする
+void BuiltinCommandEditor::OverrideName(LPCTSTR name) 
+{
+	in->mDialog->SetName(name);
+}
+
+// 元のコマンド名を設定する(そのコマンド名と同じ場合は「コマンド名重複」とみなさない)
 void BuiltinCommandEditor::SetOriginalName(LPCTSTR name) 
 {
 	in->mDialog->SetOriginalName(name);
@@ -61,14 +67,14 @@ void BuiltinCommandEditor::SetOriginalName(LPCTSTR name)
 // コマンドを編集するためのダイアログを作成/取得する
 bool BuiltinCommandEditor::DoModal() 
 {
-	return in->mDialog->DoModal() != IDOK;
+	return in->mDialog->DoModal() == IDOK;
 }
 
 
 // UnknownIF
-bool BuiltinCommandEditor::QueryInterface(const IFID& ifid, void** obj) 
+bool BuiltinCommandEditor::QueryInterface(const launcherapp::core::IFID& ifid, void** obj) 
 {
-	if (ifid == IFID_ALIGNWINDOWCOMMANDEDITOR) {
+	if (ifid == IFID_BUILTINCOMMANDEDITOR) {
 		*obj = (BuiltinCommandEditor*)this;
 		AddRef();
 		return true;

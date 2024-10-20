@@ -18,10 +18,13 @@ public:
 	FilterEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~FilterEditDialog();
 
-	void SetOrgName(const CString& name);
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
 
 	void SetParam(const CommandParam& param);
-	void GetParam(CommandParam& param);
+	const CommandParam& GetParam();
+
+	void ResetHotKey();
 
 	bool UpdateStatus();
 
@@ -45,7 +48,6 @@ public:
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 // 実装
 protected:

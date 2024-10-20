@@ -24,7 +24,8 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mPostFilterType(rhs.mPostFilterType),
 	mAfterCommandName(rhs.mAfterCommandName),
 	mAfterFilePath(rhs.mAfterFilePath),
-	mAfterCommandParam(rhs.mAfterCommandParam)
+	mAfterCommandParam(rhs.mAfterCommandParam),
+	mHotKeyAttr(rhs.mHotKeyAttr)
 {
 }
 
@@ -46,6 +47,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mAfterCommandName = rhs.mAfterCommandName;
 		mAfterFilePath = rhs.mAfterFilePath;
 		mAfterCommandParam = rhs.mAfterCommandParam;
+		mHotKeyAttr = rhs.mHotKeyAttr;
 	}
 	return *this;
 

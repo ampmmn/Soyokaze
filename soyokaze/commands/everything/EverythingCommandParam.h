@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hotkey/CommandHotKeyAttribute.h"
+
 namespace launcherapp {
 namespace commands {
 namespace everything {
@@ -27,6 +29,8 @@ public:
 	BOOL mIsRegex = FALSE;
 	// その他のパラメータ
 	CString mOtherParam;
+	// ホットキー設定
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 

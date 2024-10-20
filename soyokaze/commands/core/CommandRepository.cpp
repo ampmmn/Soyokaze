@@ -555,7 +555,7 @@ int CommandRepository::NewCommandDialog(CommandParameter* param)
 /**
  *  既存キーワードの編集
  */
-int CommandRepository::EditCommandDialog(const CString& cmdName)
+int CommandRepository::EditCommandDialog(const CString& cmdName, bool isClone)
 {
 	if (in->mIsEditDialog) {
 		// 編集操作中の再入はしない
@@ -587,22 +587,43 @@ int CommandRepository::EditCommandDialog(const CString& cmdName)
 		return 3;
 	}
 
-	// 変更前の名前をセットする
-	editor->SetOriginalName(cmdAbs->GetName());
-	// 設定画面を表示する
-	if (editor->DoModal() == false) {
-		spdlog::info(_T("edit cancelled. name:{}"), (LPCTSTR)cmdAbs->GetName());
-		return 0;
-	}
+	if (isClone == false) {
+		// 変更前の名前をセットする
+		editor->SetOriginalName(cmdAbs->GetName());
+		// 設定画面を表示する
+		if (editor->DoModal() == false) {
+			spdlog::info(_T("edit cancelled. name:{}"), (LPCTSTR)cmdAbs->GetName());
+			return 0;
+		}
 
-	// 設定画面上の変更をコマンドに適用する
-	if (editable->Apply(editor.get()) == false) {
-		spdlog::error(_T("Failed to apply. name:{} "), (LPCTSTR)cmdAbs->GetName());
-		return 4;
+		// 設定画面上の変更をコマンドに適用する
+		if (editable->Apply(editor.get()) == false) {
+			spdlog::error(_T("Failed to apply. name:{} "), (LPCTSTR)cmdAbs->GetName());
+			return 4;
+		}
+		// コマンドを再登録(名前変更があった場合にそれを反映する)
+		ReregisterCommand(cmdAbs);
 	}
+	else {
+		// 元コマンドの名前をベースに新しい名前を設定する
+		editor->OverrideName(IssueClonedCommandName(cmdAbs->GetName()));
+		// 設定画面を表示する
+		if (editor->DoModal() == false) {
+			spdlog::info(_T("clone cancelled. name:{}"), (LPCTSTR)cmdAbs->GetName());
+			return 0;
+		}
 
-	// コマンドを再登録(名前変更があった場合にそれを反映する)
-	ReregisterCommand(cmdAbs);
+		// 設定画面上の変更をコマンドに適用する
+		RefPtr<launcherapp::core::Command> newCmd;
+		if (editable->CreateNewInstanceFrom(editor.get(), &newCmd) == false) {
+			spdlog::error(_T("Failed to clone. name:{} "), (LPCTSTR)cmdAbs->GetName());
+			return 4;
+		}
+
+		// 複製したコマンドを登録する
+		constexpr bool isReloadHotKey = true;
+		RegisterCommand(newCmd.release(), isReloadHotKey);
+	}
 
 	// コマンドファイルに保存
 	in->SaveCommands();
@@ -639,10 +660,10 @@ int CommandRepository::ManagerDialog()
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
 		in->mCommands.RestoreSettings(bkup);
 	}
-	else {
-		// ファイルに保存
-		in->SaveCommands();
-	}
+
+	// ファイルに保存
+	in->SaveCommands();
+
 	return 0;
 }
 
@@ -683,42 +704,7 @@ int CommandRepository::RegisterCommandFromFiles(
 
 		// ダイアログで選択されたファイルを一括登録
 		for (const auto& filePath : filesToRegister) {
-
-			CString name(PathFindFileName(filePath));
-			PathRemoveExtension(name.GetBuffer(name.GetLength()));
-			name.ReleaseBuffer();
-			
-			if (name.IsEmpty()) {
-				// .xxx というファイル名の場合にnameが空文字になるのを回避する
-				name = PathFindFileName(filePath);
-			}
-
-			// パスとして使えるが、ShellExecCommandのコマンド名として許可しない文字をカットする
-			ShellExecCommand::SanitizeName(name);
-
-			CString suffix;
-			
-			for (int i = 1;; ++i) {
-				auto cmd = QueryAsWholeMatch(name + suffix, false);
-				if (cmd == nullptr) {
-					break;
-				}
-				cmd->Release();
-				suffix.Format(_T("(%d)"), i);
-			}
-
-			if (suffix.IsEmpty() == FALSE) {
-				name = name + suffix;
-			}
-
-			// ダイアログで入力された内容に基づき、コマンドを新規作成する
-			auto newCmd = std::make_unique<ShellExecCommand>();
-			newCmd->SetName(name);
-
-			ShellExecCommand::ATTRIBUTE normalAttr;
-			normalAttr.mPath = filePath;
-			newCmd->SetAttribute(normalAttr);
-			in->mCommands.Register(newCmd.release());
+			ShellExecCommand::NewCommand(filePath);
 		}
 
 		AfxMessageBox(_T("登録しました"));
@@ -881,6 +867,17 @@ void CommandRepository::OnAppExit()
 
 	AppPreference::Get()->UnregisterListener(this);
 }
+
+CString CommandRepository::IssueClonedCommandName(const CString& baseName)
+{
+	static tregex regex(_T("^.+-コピー$"));
+	if (std::regex_match(tstring(baseName), regex) == false) {
+		return baseName + _T("-コピー");
+	}
+	return baseName;
+}
+
+
 
 }
 }

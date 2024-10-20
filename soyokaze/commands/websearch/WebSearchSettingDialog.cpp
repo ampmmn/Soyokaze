@@ -60,6 +60,16 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetName(const CString& name)
+{
+	in->mParam.mName = name;
+}
+
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
 void SettingDialog::SetParam(const Param& param)
 {
 	in->mParam = param;
@@ -69,6 +79,11 @@ const SettingDialog::Param&
 SettingDialog::GetParam()
 {
 	return in->mParam;
+}
+
+void SettingDialog::ResetHotKey()
+{
+	in->mParam.mHotKeyAttr.Reset();
 }
 
 void SettingDialog::SetIcon(HICON icon)
@@ -102,8 +117,6 @@ BOOL SettingDialog::OnInitDialog()
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->EnableIconChange();
-
-	in->mOrgName = in->mParam.mName;
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 

@@ -21,7 +21,8 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mIsPassParam(rhs.mIsPassParam),
 	mIsRepeat(rhs.mIsRepeat),
 	mRepeats(rhs.mRepeats),
-	mIsConfirm(rhs.mIsConfirm)
+	mIsConfirm(rhs.mIsConfirm),
+	mHotKeyAttr(rhs.mHotKeyAttr)
 {
 
 }
@@ -42,6 +43,7 @@ CommandParam& CommandParam::operator = (
 		mIsRepeat = rhs.mIsRepeat;
 		mRepeats = rhs.mRepeats;
 		mIsConfirm = rhs.mIsConfirm;
+		mHotKeyAttr = rhs.mHotKeyAttr;
 	}
 	return *this;
 }

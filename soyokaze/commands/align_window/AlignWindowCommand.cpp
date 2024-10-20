@@ -380,10 +380,6 @@ bool AlignWindowCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 		return false;
 	}
 
-	if (cmdEditor->DoModal() == false) {
-		return false;
-	}
-
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = std::make_unique<AlignWindowCommand>();

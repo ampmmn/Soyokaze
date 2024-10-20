@@ -131,16 +131,13 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 
 	if (type == 1) {
 		// 他のファイルを実行/URLを開く
-		ShellExecCommand::ATTRIBUTE attr;
-
-		attr.mPath = in->mParam.mAfterFilePath;
-		attr.mPath.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(attr.mPath);
-
-		attr.mParam = argSub;
+		CString path = in->mParam.mAfterFilePath;
+		path.Replace(_T("$select"), in->mResult.mDisplayName);
+		ExpandMacros(path);
 
 		ShellExecCommand cmd;
-		cmd.SetAttribute(attr);
+		cmd.SetPath(path);
+		cmd.SetArgument(argSub);
 
 		return cmd.Execute(CommandParameterBuilder::EmptyParam());
 	}

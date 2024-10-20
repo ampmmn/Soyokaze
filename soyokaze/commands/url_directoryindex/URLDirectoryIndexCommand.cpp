@@ -4,7 +4,7 @@
 #include "commands/url_directoryindex/DirectoryIndexAdhocCommand.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
-#include "commands/url_directoryindex/URLDirectoryIndexCommandEditDialog.h"
+#include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
 #include "commands/url_directoryindex/WinHttp.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
@@ -23,8 +23,6 @@
 #include <map>
 #include <tidy.h>
 #include <tidybuffio.h>
-#include "spdlog/stopwatch.h"
-
 
 
 #ifdef _DEBUG
@@ -83,7 +81,6 @@ struct URLDirectoryIndexCommand::PImpl
 	CString Decode(const std::vector<uint8_t>& buf);
 
 	CommandParam mParam;
-	CommandHotKeyAttribute mHotKeyAttr;
 	CString mErrMsg;
 
 	LinkItems mLinkItems;
@@ -222,6 +219,9 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 
 bool URLDirectoryIndexCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
@@ -444,37 +444,9 @@ int URLDirectoryIndexCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int URLDirectoryIndexCommand::EditDialog(HWND parent)
-{
-	URLDirectoryIndexCommandEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetOrgName(GetName());
-
-	dlg.SetParam(in->mParam);
-	dlg.mHotKeyAttr = in->mHotKeyAttr;
-
-	if (dlg.DoModal() != IDOK) {
-		spdlog::info(_T("Dialog cancelled."));
-		return 1;
-	}
-
-	// 変更後の設定値で上書き
-	dlg.GetParam(in->mParam);
-	in->mHotKeyAttr = dlg.mHotKeyAttr;
-
-	// 名前の変更を登録しなおす
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	// 設定変更を反映するため、候補のキャッシュを消す
-	ClearCache();
-	in->Reset();
-
-	return 0;
-}
-
 bool URLDirectoryIndexCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -555,7 +527,7 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 	}
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(GetName(), &in->mHotKeyAttr);
+	hotKeyManager->GetKeyBinding(GetName(), &in->mParam.mHotKeyAttr);
 
 	return true;
 }
@@ -571,10 +543,10 @@ bool URLDirectoryIndexCommand::NewDialog(Parameter* param, URLDirectoryIndexComm
 	GetNamedParamString(param, _T("PATH"), tmpParam.mURL);
 	GetNamedParamString(param, _T("DESCRIPTION"), tmpParam.mDescription);
 
-	URLDirectoryIndexCommandEditDialog dlg;
-	dlg.SetParam(tmpParam);
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(tmpParam);
 
-	if (dlg.DoModal() != IDOK) {
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
@@ -584,15 +556,66 @@ bool URLDirectoryIndexCommand::NewDialog(Parameter* param, URLDirectoryIndexComm
 	if (newCmd) {
 		*newCmd = cmd.get();
 	}
-
-	dlg.GetParam(tmpParam);
-	cmd->SetParam(tmpParam);
+	cmd->SetParam(cmdEditor->GetParam());
 
 	constexpr bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(cmd.release(), isReloadHotKey);
 
 	return true;
 }
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool URLDirectoryIndexCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool URLDirectoryIndexCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_URLDIRECTORYINDEXCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+
+	// 設定変更を反映するため、候補のキャッシュを消す
+	ClearCache();
+	in->Reset();
+
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool URLDirectoryIndexCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_URLDIRECTORYINDEXCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<URLDirectoryIndexCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
+}
+
 
 bool URLDirectoryIndexCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "hotkey/CommandHotkeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -36,6 +37,7 @@ public:
 	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
 
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 } // end of namespace filter

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hotkey/CommandHotkeyAttribute.h"
+
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
@@ -48,6 +50,8 @@ public:
 	CString mAfterFilePath;
 	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
+
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 }

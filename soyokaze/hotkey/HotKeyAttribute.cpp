@@ -379,3 +379,13 @@ bool HOTKEY_ATTR::IsUnmapped() const
 	return mUseShift == FALSE && mUseCtrl == FALSE && mUseAlt == FALSE && mUseWin == FALSE && 
 	       mVirtualKeyIdx == -1;
 }
+
+void HOTKEY_ATTR::Reset()
+{
+	mVirtualKeyIdx = -1;
+	mUseShift = false;
+	mUseCtrl = false;
+	mUseAlt = false;
+	mUseWin = false;
+}
+

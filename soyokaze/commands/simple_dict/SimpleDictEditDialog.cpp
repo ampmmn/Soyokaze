@@ -41,7 +41,6 @@ struct SettingDialog::PImpl
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 };
 
@@ -58,9 +57,18 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetName(const CString& name)
+{
+	in->mParam.mName = name;
+}
+
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
 void SettingDialog::SetParam(const SimpleDictParam& param)
 {
-	in->mOrgName = param.mName;
 	in->mParam = param;
 
 	if (in->mOrgName.IsEmpty() == FALSE) {
@@ -73,14 +81,9 @@ const SimpleDictParam& SettingDialog::GetParam() const
 	return in->mParam;
 }
 
-void SettingDialog::SetHotKeyAttribute(const CommandHotKeyAttribute& attr)
+void SettingDialog::ResetHotKey()
 {
-	in->mHotKeyAttr = attr;
-}
-
-void SettingDialog::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
-{
-	attr = in->mHotKeyAttr;
+	in->mParam.mHotKeyAttr.Reset();
 }
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
@@ -184,7 +187,7 @@ BOOL SettingDialog::OnInitDialog()
 
 bool SettingDialog::UpdateStatus()
 {
-	in->mHotKey = in->mHotKeyAttr.ToString();
+	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 	if (in->mHotKey.IsEmpty()) {
 		in->mHotKey.LoadString(IDS_NOHOTKEY);
 	}
@@ -525,7 +528,7 @@ void SettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 

@@ -1,10 +1,21 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 
 namespace launcherapp {
 namespace commands {
 namespace shellexecute {
+
+struct ATTRIBUTE {
+
+	int GetShowType() const;
+
+	CString mPath;
+	CString mParam;
+	CString mDir;
+	int mShowType = 0;
+};
 
 class CommandParam
 {
@@ -15,29 +26,21 @@ public:
 
 	CommandParam& operator = (const CommandParam& rhs);
 
-	int GetShowType() const;
-	void SetShowType(int type);
+	bool Save(CommandEntryIF* entry) const;
+	bool Load(CommandEntryIF* entry);
+
 public:
 	// コマンド名
 	CString mName;
 	// 説明
 	CString mDescription;
 
+	ATTRIBUTE mNormalAttr;
+	ATTRIBUTE mNoParamAttr;
+
 	// 管理者権限で実行
 	BOOL mIsRunAsAdmin;
 
-	// 表示方法
-	int mShowType;
-	// カレントディレクトリ
-	CString mDir;
-	// パス
-	CString mPath;
-	// パラメータ
-	CString mParameter;
-	// パス(引数なし版)
-	CString mPath0;
-	// パラメータ(引数なし版)
-	CString mParameter0;
 	// 引数なし版を使うか?
 	BOOL mIsUse0;
 
@@ -50,6 +53,7 @@ public:
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)
 	std::vector<uint8_t> mIconData;
 
+	// ホットキー
 	CommandHotKeyAttribute mHotKeyAttr;
 };
 

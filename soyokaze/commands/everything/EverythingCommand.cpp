@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "EverythingCommand.h"
 #include "commands/core/IFIDDefine.h"
-#include "commands/everything/EverythingCommandEditDialog.h"
+#include "commands/everything/EverythingCommandEditor.h"
 #include "commands/everything/EverythingAdhocCommand.h"
 #include "commands/everything/EverythingResult.h"
 #include "commands/everything/EverythingProxy.h"
@@ -30,7 +30,6 @@ using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListener
 struct EverythingCommand::PImpl
 {
 	CommandParam mParam;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 	bool mShouldComletion = false;
 	LONG mRefCount = 1;
@@ -55,12 +54,20 @@ EverythingCommand::~EverythingCommand()
 
 bool EverythingCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
 		return true;
 	}
 	return false;
+}
+
+void EverythingCommand::SetParam(const CommandParam& param)
+{
+	in->mParam = param;
 }
 
 const CommandParam& EverythingCommand::GetParam()
@@ -162,30 +169,9 @@ int EverythingCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int EverythingCommand::EditDialog(HWND parent)
-{
-	// 設定変更画面を表示する
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 変更後の設定値で上書き
-	in->mParam = dlg.GetParam();
-	dlg.GetHotKeyAttribute(in->mHotKeyAttr);
-
-	// 名前の変更を登録しなおす
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool EverythingCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -241,7 +227,7 @@ bool EverythingCommand::Load(CommandEntryIF* entry)
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	return true;
 }
@@ -253,17 +239,13 @@ bool EverythingCommand::NewDialog(
 {
 	UNREFERENCED_PARAMETER(param);
 
-	// パラメータ指定には対応していない
-	// param;
-
-	// 新規作成ダイアログを表示
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = dlg.GetParam();
+	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = std::make_unique<EverythingCommand>();
 	newCmd->in->mParam = commandParam;
 
@@ -291,6 +273,54 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 	}
 	return true;
 }
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool EverythingCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool EverythingCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_EVERYTHINGCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool EverythingCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_EVERYTHINGCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<EverythingCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
+}
+
 
 bool EverythingCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {

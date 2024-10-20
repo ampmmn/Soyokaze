@@ -1182,6 +1182,60 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommandEditor.h">
       <Filter>commands\ejectvolume</Filter>
     </ClInclude>
+    <ClInclude Include="commands\keysplitter\KeySplitterCommandEditor.h">
+      <Filter>commands\keysplitter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingCommandEditor.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.h">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictCommandEditor.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\volumecontrol\VolumeCommandEditor.h">
+      <Filter>commands\volumecontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryCommandEditor.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\websearch\WebSearchCommandEditor.h">
+      <Filter>commands\websearch</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\FilterCommandEditor.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\GroupCommandEditor.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpCommandEditor.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpCommandParam.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippet\SnippetCommandEditor.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippet\SnippetCommandParam.h">
+      <Filter>commands\snippet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathCommandParam.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\watchpath\WatchPathCommandEditor.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkCommandEditor.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinCommandEditor.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2089,6 +2143,51 @@
     </ClCompile>
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommandEditor.cpp">
       <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\keysplitter\KeySplitterCommandEditor.cpp">
+      <Filter>commands\keysplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingCommandEditor.cpp">
+      <Filter>commands\everything</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.cpp">
+      <Filter>commands\url_directoryindex</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictCommandEditor.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\volumecontrol\VolumeCommandEditor.cpp">
+      <Filter>commands\volumecontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryCommandEditor.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp">
+      <Filter>commands\websearch</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\FilterCommandEditor.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupCommandEditor.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp">
+      <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp">
+      <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathCommandEditor.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkCommandEditor.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

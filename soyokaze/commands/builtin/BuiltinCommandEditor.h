@@ -23,7 +23,9 @@ public:
 	bool GetConfirm();
 
 // CommandEditor
-	// コマンドは編集可能か?
+	// 名前を上書きする
+	void OverrideName(LPCTSTR name) override;
+	// 元のコマンド名を設定する(そのコマンド名と同じ場合は「コマンド名重複」とみなさない)
 	void SetOriginalName(LPCTSTR name) override;
 	// コマンドを編集するためのダイアログを作成/取得する
 	bool DoModal() override;

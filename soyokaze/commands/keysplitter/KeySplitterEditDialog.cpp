@@ -30,9 +30,18 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	mOrgName = name;
+}
+
 void SettingDialog::SetParam(const CommandParam& param)
 {
-	mOrgName = param.mName;
 	mParam = param;
 }
 

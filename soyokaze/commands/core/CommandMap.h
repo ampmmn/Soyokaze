@@ -55,7 +55,7 @@ public:
 	~Settings();
 
 	void Add(launcherapp::core::Command* cmd);
-	void Restore(launcherapp::core::Command* cmd);
+	bool Restore(launcherapp::core::Command* cmd);
 
 private:
 	struct PImpl;

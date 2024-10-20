@@ -32,7 +32,12 @@ URLDirectoryIndexCommandEditDialog::~URLDirectoryIndexCommandEditDialog()
 {
 }
 
-void URLDirectoryIndexCommandEditDialog::SetOrgName(const CString& name)
+void URLDirectoryIndexCommandEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void URLDirectoryIndexCommandEditDialog::SetOriginalName(const CString& name)
 {
 	mOrgName = name;
 }
@@ -42,9 +47,9 @@ void URLDirectoryIndexCommandEditDialog::SetParam(const CommandParam& param)
 	mParam = param;
 }
 
-void URLDirectoryIndexCommandEditDialog::GetParam(CommandParam& param)
+const CommandParam& URLDirectoryIndexCommandEditDialog::GetParam()
 {
-	param = mParam;
+	return mParam;
 }
 
 void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
@@ -98,7 +103,7 @@ BOOL URLDirectoryIndexCommandEditDialog::OnInitDialog()
 
 bool URLDirectoryIndexCommandEditDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
+	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
@@ -174,7 +179,7 @@ void URLDirectoryIndexCommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();

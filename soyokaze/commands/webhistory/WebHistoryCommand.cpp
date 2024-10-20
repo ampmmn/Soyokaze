@@ -3,7 +3,7 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
-#include "commands/webhistory/WebHistorySettingDialog.h"
+#include "commands/webhistory/WebHistoryCommandEditor.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
@@ -130,6 +130,9 @@ WebHistoryCommand::~WebHistoryCommand()
 
 bool WebHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
@@ -202,23 +205,6 @@ int WebHistoryCommand::Match(Pattern* pattern)
 bool WebHistoryCommand::IsEditable()
 {
 	return true;
-}
-
-int WebHistoryCommand::EditDialog(HWND parent)
-{
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	auto param = in->mParam;
-
-	dlg.SetParam(param);
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-	in->mParam = dlg.GetParam();
-
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
 }
 
 bool WebHistoryCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
@@ -299,18 +285,61 @@ bool WebHistoryCommand::NewDialog(
 	UNREFERENCED_PARAMETER(param);
 
 	// 新規作成ダイアログを表示
-	SettingDialog dlg;
-	//dlg.SetIcon(IconLoader::Get()->LoadWebIcon());
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = dlg.GetParam();
 	auto command = std::make_unique<WebHistoryCommand>();
-	command->in->mParam = commandParam;
+	command->in->mParam = cmdEditor->GetParam();
 
 	newCmd = std::move(command);
+
+	return true;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool WebHistoryCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool WebHistoryCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WEBHISTORYCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool WebHistoryCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WEBHISTORYCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<WebHistoryCommand>();
+	newCmd->in->mParam = cmdEditor->GetParam();
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
 
 	return true;
 }

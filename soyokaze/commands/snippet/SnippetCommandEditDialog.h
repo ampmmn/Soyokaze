@@ -1,8 +1,9 @@
 #pragma once
 
 #include "gui/SinglePageDialog.h"
+#include "commands/snippet/SnippetCommandParam.h"
+
 #include <memory>
-#include "hotkey/CommandHotKeyAttribute.h"
 
 class IconLabel;
 
@@ -17,13 +18,10 @@ public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~CommandEditDialog();
 
-	void SetOrgName(const CString& name);
 	void SetName(const CString& name);
-	void SetDescription(const CString& desc);
-	void SetParam(const CString& param);
-
-	int GetShowType();
-	void SetShowType(int type);
+	void SetOriginalName(const CString& name);
+	void SetParam(const CommandParam& param);
+	const CommandParam& GetParam();
 
 	bool UpdateStatus();
 
@@ -38,17 +36,12 @@ protected:
 
 	// メッセージ欄
 	CString mMessage;
-
-public:
-	// コマンド名
-	CString mName;
-	// 説明
-	CString mDescription;
-	// テキスト
-	CString mText;
 	// ホットキー(表示用)
 	CString mHotKey;
-	CommandHotKeyAttribute mHotKeyAttr;
+
+public:
+	CommandParam mParam;
+
 // 実装
 protected:
 	virtual void OnOK();

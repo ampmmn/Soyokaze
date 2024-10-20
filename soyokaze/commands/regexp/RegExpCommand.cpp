@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "framework.h"
 #include "RegExpCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
-#include "commands/regexp/RegExpCommandEditDialog.h"
+#include "commands/regexp/RegExpCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/LastErrorString.h"
 #include "setting/AppPreference.h"
@@ -25,10 +26,6 @@ namespace regexp {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
-RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
-	mShowType(SW_NORMAL)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,26 +33,10 @@ RegExpCommand::ATTRIBUTE::ATTRIBUTE() :
 
 struct RegExpCommand::PImpl
 {
-	PImpl() :
-		mRunAs(0),
-		mIcon(nullptr)
-	{
-	}
-	~PImpl()
-	{
-	}
-
-	CString mName;
-	CString mDescription;
-	CString mPatternStr;
+	CommandParam mParam;
 	tregex mRegex;
-	int mRunAs;
 
-	ATTRIBUTE mNormalAttr;
-
-	std::vector<uint8_t> mIconData;
-
-	HICON mIcon;
+	HICON mIcon = nullptr;
 
 	CString mErrMsg;
 };
@@ -77,13 +58,13 @@ RegExpCommand::~RegExpCommand()
 
 CString RegExpCommand::GetName()
 {
-	return in->mName;
+	return in->mParam.mName;
 }
 
 
 CString RegExpCommand::GetDescription()
 {
-	return in->mDescription;
+	return in->mParam.mDescription;
 }
 
 CString RegExpCommand::GetGuideString()
@@ -103,7 +84,7 @@ BOOL RegExpCommand::Execute(Parameter* param)
 
 	ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 
-	ATTRIBUTE attr = in->mNormalAttr;
+	const ATTRIBUTE& attr = in->mParam.mNormalAttr;
 
 	CString path;
 	CString paramStr;
@@ -123,7 +104,7 @@ BOOL RegExpCommand::Execute(Parameter* param)
 	SubProcess::ProcessPtr process;
 
 	SubProcess exec(param);
-	if (in->mRunAs) {
+	if (in->mParam.mRunAs != 0) {
 		exec.SetRunAsAdmin();
 	}
 	exec.SetShowType(attr.mShowType);
@@ -147,71 +128,35 @@ CString RegExpCommand::GetErrorString()
 {
 	return in->mErrMsg;
 }
-
-RegExpCommand& RegExpCommand::SetName(LPCTSTR name)
+void RegExpCommand::SetParam(const CommandParam& param)
 {
-	in->mName = name;
-	return *this;
-}
+	in->mParam = param;
 
-RegExpCommand& RegExpCommand::SetDescription(LPCTSTR description)
-{
-	in->mDescription = description;
-	return *this;
-}
-
-
-RegExpCommand& RegExpCommand::SetAttribute(const ATTRIBUTE& attr)
-{
-	in->mNormalAttr = attr;
-
-	return *this;
-}
-
-RegExpCommand& RegExpCommand::SetPath(LPCTSTR path)
-{
-	in->mNormalAttr.mPath = path;
-	return *this;
-}
-
-RegExpCommand& RegExpCommand::SetRunAs(int runAs)
-{
-	in->mRunAs = runAs;
-	return *this;
-}
-
-RegExpCommand& RegExpCommand::SetMatchPattern(LPCTSTR pattern)
-{
-	if (pattern == nullptr || _tcslen(pattern) == 0) {
-		in->mPatternStr.Empty();
+	if (param.mPatternStr.IsEmpty()) {
 		in->mRegex = tregex();
-		return *this;
+		return;
 	}
 
 	try {
-		tregex regex(pattern);
-
-		in->mPatternStr = pattern;
+		tregex regex((LPCTSTR)param.mPatternStr);
 		in->mRegex.swap(regex);
-
-		return *this;
 	}
 	catch(std::regex_error&) {
-		return *this;
+		spdlog::error("invalid regex pattern.");
 	}
 }
 
 HICON RegExpCommand::GetIcon()
 {
-	if (in->mIconData.empty()) {
-		CString path = in->mNormalAttr.mPath;
+	if (in->mParam.mIconData.empty()) {
+		CString path = in->mParam.mNormalAttr.mPath;
 		ExpandMacros(path);
 
 		return IconLoader::Get()->LoadIconFromPath(path);
 	}
 	else {
 		if (in->mIcon == nullptr) {
-			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mIconData);
+			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
 			// mIconの解放はIconLoaderが行うので、ここでは行わない
 		}
 		return in->mIcon;
@@ -221,54 +166,12 @@ HICON RegExpCommand::GetIcon()
 int RegExpCommand::Match(Pattern* pattern)
 {
 	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
-	if (in->mPatternStr.IsEmpty() == FALSE) {
+	if (in->mParam.mPatternStr.IsEmpty() == FALSE) {
 		if (std::regex_match((tstring)pattern->GetWholeString(), in->mRegex)) {
 			return Pattern::WholeMatch;
 		}
 	}
 	return Pattern::Mismatch;
-}
-
-int RegExpCommand::EditDialog(HWND parent)
-{
-	CommandEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetOrgName(in->mName);
-
-	dlg.mName = in->mName;
-	dlg.mDescription = in->mDescription;
-	dlg.mIsRunAsAdmin = in->mRunAs;
-	dlg.mPatternStr = in->mPatternStr;
-
-	RegExpCommand::ATTRIBUTE attr = in->mNormalAttr;
-
-	dlg.mPath = attr.mPath;
-	dlg.mParameter = attr.mParam;
-	dlg.mDir = attr.mDir;
-	dlg.SetShowType(attr.mShowType);
-	dlg.mIconData = in->mIconData;
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 追加する処理
-	SetName(dlg.mName);
-	SetDescription(dlg.mDescription);
-	SetRunAs(dlg.mIsRunAsAdmin);
-	SetMatchPattern(dlg.mPatternStr);
-
-	RegExpCommand::ATTRIBUTE normalAttr;
-	normalAttr.mPath = dlg.mPath;
-	normalAttr.mParam = dlg.mParameter;
-	normalAttr.mDir = dlg.mDir;
-	normalAttr.mShowType = dlg.GetShowType();
-	SetAttribute(normalAttr);
-	in->mIconData = dlg.mIconData;
-
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
 }
 
 bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
@@ -287,28 +190,11 @@ bool RegExpCommand::IsPriorityRankEnabled()
 	return true;
 }
 
-void RegExpCommand::GetAttribute(ATTRIBUTE& attr)
-{
-	attr = in->mNormalAttr;
-}
-
-int RegExpCommand::GetRunAs()
-{
-	return in->mRunAs;
-}
-
 launcherapp::core::Command*
 RegExpCommand::Clone()
 {
 	auto clonedObj = std::make_unique<RegExpCommand>();
-
-	clonedObj->in->mName = in->mName;
-	clonedObj->in->mDescription = in->mDescription;
-	clonedObj->in->mRunAs = in->mRunAs;
-	clonedObj->in->mPatternStr = in->mPatternStr;
-	clonedObj->in->mRegex = in->mRegex;
-	clonedObj->in->mNormalAttr = in->mNormalAttr;
-
+	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
 
@@ -319,16 +205,16 @@ bool RegExpCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("Type"), GetType());
 
 	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("runas"), GetRunAs());
-	entry->Set(_T("matchpattern"), in->mPatternStr);
+	entry->Set(_T("runas"), in->mParam.mRunAs);
+	entry->Set(_T("matchpattern"), in->mParam.mPatternStr);
 
-	RegExpCommand::ATTRIBUTE& normalAttr = in->mNormalAttr;
+	ATTRIBUTE& normalAttr = in->mParam.mNormalAttr;
 	entry->Set(_T("path"), normalAttr.mPath);
 	entry->Set(_T("dir"), normalAttr.mDir);
 	entry->Set(_T("parameter"), normalAttr.mParam);
 	entry->Set(_T("show"), normalAttr.mShowType);
 
-	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mIconData.data(), in->mIconData.size());
+	entry->SetBytes(_T("IconData"), (const uint8_t*)in->mParam.mIconData.data(), in->mParam.mIconData.size());
 
 	return true;
 }
@@ -342,87 +228,112 @@ bool RegExpCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mName = entry->GetName();
-	in->mDescription = entry->Get(_T("description"), _T(""));
-	in->mRunAs = entry->Get(_T("runas"), 0);
+	CommandParam param;
+	param.mName = entry->GetName();
+	param.mDescription = entry->Get(_T("description"), _T(""));
+	param.mRunAs = entry->Get(_T("runas"), 0);
 
-	RegExpCommand::ATTRIBUTE& attr = in->mNormalAttr;
+	ATTRIBUTE& attr = param.mNormalAttr;
 	attr.mPath = entry->Get(_T("path"), _T(""));
 	attr.mDir = entry->Get(_T("dir"), _T(""));
 	attr.mParam = entry->Get(_T("parameter"), _T(""));
 	attr.mShowType = entry->Get(_T("show"), attr.mShowType);
 
-	auto patternStr = entry->Get(_T("matchpattern"), _T("")); 
-	SetMatchPattern(patternStr);
+	param.mPatternStr = entry->Get(_T("matchpattern"), _T("")); 
 
 	size_t len = entry->GetBytesLength(_T("IconData"));
 	if (len != CommandEntryIF::NO_ENTRY) {
-		in->mIconData.resize(len);
-		entry->GetBytes(_T("IconData"), (uint8_t*)in->mIconData.data(), len);
+		param.mIconData.resize(len);
+		entry->GetBytes(_T("IconData"), (uint8_t*)param.mIconData.data(), len);
 	}
+
+	SetParam(param);
 
 	return true;
 }
 
-bool RegExpCommand::IsRunAsAdmin()
-{
-	PSID grp;
-	SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-	BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
-	if (result == FALSE) {
-		return false;
-	}
-
-	BOOL isMember = FALSE;
-	result = CheckTokenMembership(nullptr, grp, &isMember);
-	FreeSid(grp);
-
-	return result && isMember;
-}
-
 bool RegExpCommand::NewDialog(Parameter* param)
 {
-	// 新規作成ダイアログを表示
 	CString value;
+	CommandParam paramTmp;
 
-	CommandEditDialog dlg;
 	if (GetNamedParamString(param, _T("COMMAND"), value)) {
-		dlg.SetName(value);
+		paramTmp.mName = value;
 	}
 	if (GetNamedParamString(param, _T("PATH"), value)) {
-		dlg.SetPath(value);
+		paramTmp.mNormalAttr.mPath = value;
 	}
 	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
-		dlg.SetDescription(value);
+		paramTmp.mDescription = value;
 	}
 	if (GetNamedParamString(param, _T("ARGUMENT"), value)) {
-		dlg.SetParam(value);
+		paramTmp.mNormalAttr.mParam = value;
 	}
 
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<RegExpCommand>();
-	newCmd->in->mName = dlg.mName;
-	newCmd->in->mDescription = dlg.mDescription;
-	newCmd->in->mRunAs = dlg.mIsRunAsAdmin;
-	newCmd->in->mIconData = dlg.mIconData;
-	newCmd->SetMatchPattern(dlg.mPatternStr);
-
-	RegExpCommand::ATTRIBUTE attr;
-	attr.mPath = dlg.mPath;
-	attr.mParam = dlg.mParameter;
-	attr.mDir = dlg.mDir;
-	attr.mShowType = dlg.GetShowType();
-	newCmd->SetAttribute(attr);
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	bool isReloadHotKey = false;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
 
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool RegExpCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool RegExpCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_REGEXPCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mIcon = nullptr;
+	in->mParam = cmdEditor->GetParam();
+
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool RegExpCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_REGEXPCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<RegExpCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
 }
 
 }

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "GroupCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/group/CommandParam.h"
-#include "commands/group/GroupEditDialog.h"
+#include "commands/group/GroupCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
@@ -44,8 +45,6 @@ struct GroupCommand::PImpl
 	BOOL Execute(Parameter* param, int round);
 
 	CommandParam mParam;
-	CommandHotKeyAttribute mHotKeyAttr;
-
 	CString mErrMsg;
 };
 
@@ -220,31 +219,9 @@ int GroupCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int GroupCommand::EditDialog(HWND parent)
-{
-	// ダイアログを表示
-	GroupEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-	dlg.mHotKeyAttr = in->mHotKeyAttr;
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 更新後の値を取得
-	in->mParam = dlg.GetParam();
-	in->mHotKeyAttr = dlg.mHotKeyAttr;
-
-	// 変更後の内容で再登録
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool GroupCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -338,7 +315,52 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
+
+	return true;
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool GroupCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool GroupCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_GROUPCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool GroupCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_GROUPCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<GroupCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
 
 	return true;
 }

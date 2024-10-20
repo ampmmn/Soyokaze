@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/SinglePageDialog.h"
+#include "commands/watchpath/WatchPathCommandParam.h"
 #include <memory>
 
 class IconLabel;
@@ -15,13 +16,10 @@ public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~CommandEditDialog();
 
-	void SetOrgName(const CString& name);
 	void SetName(const CString& name);
-	void SetDescription(const CString& desc);
-	void SetNotifyMessage(const CString& msg);
-
-	int GetShowType();
-	void SetShowType(int type);
+	void SetOriginalName(const CString& name);
+	void SetParam(const CommandParam& param);
+	const CommandParam& GetParam();
 
 	bool UpdateStatus();
 
@@ -38,16 +36,7 @@ protected:
 	CString mMessage;
 
 public:
-	// コマンド名
-	CString mName;
-	// 説明
-	CString mDescription;
-	// パス
-	CString mPath;
-	// メッセージ
-	CString mNotifyMessage;
-	// 無効化する
-	BOOL mIsDisabled;
+	CommandParam mParam;
 
 // 実装
 protected:

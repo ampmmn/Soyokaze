@@ -27,6 +27,7 @@ protected:
 	afx_msg void OnEditFilterChanged();
 	afx_msg void OnButtonNew();
 	afx_msg void OnButtonEdit();
+	afx_msg void OnButtonClone();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnLbnDblClkCommands();
 	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);

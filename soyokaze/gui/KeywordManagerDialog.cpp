@@ -6,6 +6,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/core/EditableIF.h"
+#include "utility/RefPtr.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -48,6 +49,9 @@ struct KeywordManagerDialog::PImpl
 		ASSERT(0 <= index && index < mShowCommands.size()); 
 		return mShowCommands[index];
 	}
+
+	bool IsEditable();
+	bool IsDeletable();
 
 	CString mName;
 	CString mDescription;
@@ -135,6 +139,38 @@ void KeywordManagerDialog::PImpl::SelectItem(int selItemIndex, bool isRedraw)
 	}
 }
 
+bool KeywordManagerDialog::PImpl::IsEditable()
+{
+	if (mSelCommand == nullptr) {
+		return false;
+	}
+
+	RefPtr<Editable> editable;
+	if (mSelCommand->QueryInterface(IFID_EDITABLE, (void**)&editable) == false) {
+		return false;
+	}
+	if (editable->IsEditable() == false) {
+		return false;
+	}
+	return true;
+}
+
+bool KeywordManagerDialog::PImpl::IsDeletable()
+{
+	if (mSelCommand == nullptr) {
+		return false;
+	}
+
+	RefPtr<Editable> editable;
+	if (mSelCommand->QueryInterface(IFID_EDITABLE, (void**)&editable) == false) {
+		return false;
+	}
+	if (editable->IsDeletable() == false) {
+		return false;
+	}
+	return true;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +207,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
+	ON_COMMAND(IDC_BUTTON_CLONE, OnButtonClone)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnLvnItemChange)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNMDblclk)
@@ -263,6 +300,7 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mDescription.Empty();
 
 	CWnd* btnEdit = GetDlgItem(IDC_BUTTON_EDIT);
+	CWnd* btnClone = GetDlgItem(IDC_BUTTON_CLONE);
 	CWnd* btnDel = GetDlgItem(IDC_BUTTON_DELETE);
 	ASSERT(btnEdit && btnDel);
 
@@ -278,6 +316,7 @@ bool KeywordManagerDialog::UpdateStatus()
 
 	if (in->mSelCommand == nullptr) {
 		btnEdit->EnableWindow(FALSE);
+		btnClone->EnableWindow(FALSE);
 		btnDel->EnableWindow(FALSE);
 		return false;
 	}
@@ -288,16 +327,11 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mName = name;
 	in->mDescription = in->mSelCommand->GetDescription();
 
-	bool isEditable = false;
-	bool isDeletable = false;
-
-	RefPtr<Editable> editable;
-	if (in->mSelCommand->QueryInterface(IFID_EDITABLE, (void**)&editable)) {
-		isEditable = editable->IsEditable();
-		isDeletable = editable->IsDeletable();
-	}
-
+	bool isEditable = in->IsEditable();
 	btnEdit->EnableWindow(isEditable ? TRUE : FALSE);
+
+	bool isDeletable = in->IsDeletable();
+	btnClone->EnableWindow(isDeletable ? TRUE : FALSE);
 	btnDel->EnableWindow(isDeletable ? TRUE : FALSE);
 
 	return true;
@@ -378,13 +412,33 @@ void KeywordManagerDialog::OnButtonNew()
 
 void KeywordManagerDialog::OnButtonEdit()
 {
-	if (in->mSelCommand == nullptr || in->mSelCommand->IsEditable() == false) {
+	// 編集不可ならしない
+	if (in->IsEditable() == false) {
 		return;
 	}
+
 	CString name = in->mSelCommand->GetName();
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepoPtr->EditCommandDialog(name);
+	cmdRepoPtr->EditCommandDialog(name, false);
+
+	ResetContents();
+
+	// 編集画面を閉じた後はキーワードマネージャー画面を操作できる状態にする
+	SetForegroundWindow();
+}
+
+void KeywordManagerDialog::OnButtonClone()
+{
+	// 削除不可ならしない(削除できないコマンドは複製させない)
+	if (in->IsDeletable() == false) {
+		return;
+	}
+
+	CString name = in->mSelCommand->GetName();
+
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+	cmdRepoPtr->EditCommandDialog(name, true);
 
 	ResetContents();
 
@@ -394,8 +448,9 @@ void KeywordManagerDialog::OnButtonEdit()
 
 void KeywordManagerDialog::OnButtonDelete()
 {
-	if (in->mSelCommand == nullptr || in->mSelCommand->IsDeletable() == false) {
-		return ;
+	// 削除不可なら許可しない
+	if (in->IsDeletable() == false) {
+		return;
 	}
 
 	CString name = in->mSelCommand->GetName();

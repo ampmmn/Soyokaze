@@ -62,7 +62,8 @@ BOOL EditCandidateCommand::Execute(Parameter* param)
 	}
 	cmd->Release();
 
-	cmdRepoPtr->EditCommandDialog(in->mCmdName);
+	constexpr bool isClone = false;
+	cmdRepoPtr->EditCommandDialog(in->mCmdName, isClone);
 	return TRUE;
 }
 

@@ -26,7 +26,7 @@ using namespace launcherapp::commands::common;
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>()),
-	mIcon(nullptr), mShowType(1), mIsRunAsAdmin(FALSE)
+	mIcon(nullptr)
 {
 	SetHelpPageId(_T("RegExpEdit"));
 }
@@ -35,69 +35,38 @@ CommandEditDialog::~CommandEditDialog()
 {
 }
 
-void CommandEditDialog::SetOrgName(const CString& name)
+void CommandEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void CommandEditDialog::SetOriginalName(const CString& name)
 {
 	mOrgName = name;
 }
 
-void CommandEditDialog::SetName(const CString& name)
+void CommandEditDialog::SetParam(const CommandParam& param)
 {
-	mName = name;
+	mParam = param;
 }
 
-void CommandEditDialog::SetPath(const CString& path)
+const CommandParam& CommandEditDialog::GetParam()
 {
-	mPath = path;
-}
-
-void CommandEditDialog::SetDescription(const CString& desc)
-{
-	mDescription = desc;
-}
-
-void CommandEditDialog::SetParam(const CString& param)
-{
-	mParameter = param;
-}
-
-int CommandEditDialog::GetShowType()
-{
-	if (mShowType == 1) {
-		return SW_MAXIMIZE;
-	}
-	else if (mShowType == 2) {
-		return SW_SHOWMINIMIZED;
-	}
-	else {
-		return SW_NORMAL;
-	}
-}
-
-void CommandEditDialog::SetShowType(int type)
-{
-	if (type == SW_SHOWMINIMIZED) {
-		mShowType = 2;
-	}
-	else if (type == SW_MAXIMIZE) {
-		mShowType = 1;
-	}
-	else {
-		mShowType = 0;
-	}
+	return mParam;
 }
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_NAME, mName);
-	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
-	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mIsRunAsAdmin);
+	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
+	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mParam.mRunAs);
 	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mShowType);
-	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
-	DDX_Text(pDX, IDC_EDIT_PARAM, mParameter);
-	DDX_Text(pDX, IDC_EDIT_DIR, mDir);
-	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mPatternStr);
+	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mNormalAttr.mPath);
+	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mNormalAttr.mParam);
+	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mNormalAttr.mDir);
+	DDX_Text(pDX, IDC_EDIT_PATTERNSTR, mParam.mPatternStr);
 }
 
 #pragma warning( push )
@@ -123,18 +92,29 @@ BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	int type = mParam.mNormalAttr.mShowType;
+	if (type == SW_SHOWMINIMIZED) {
+		mShowType = 2;
+	}
+	else if (type == SW_MAXIMIZE) {
+		mShowType = 1;
+	}
+	else {
+		mShowType = 0;
+	}
+
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	mIconLabelPtr->EnableIconChange();
 
-	if (mIconData.empty()) {
-		CString resolvedPath(mPath);
+	if (mParam.mIconData.empty()) {
+		CString resolvedPath(mParam.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 	else {
-		mIcon = IconLoader::Get()->LoadIconFromStream(mIconData);
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
 	}
 
 	CString caption;
@@ -164,11 +144,11 @@ bool CommandEditDialog::UpdateStatus()
 {
 	mMessage.Empty();
 
-	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mPath)) == 0;
+	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mNormalAttr.mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
-	if (mIconData.empty()) {
-		CString resolvedPath(mPath);
+	if (mParam.mIconData.empty()) {
+		CString resolvedPath(mParam.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
@@ -179,11 +159,22 @@ bool CommandEditDialog::UpdateStatus()
 
 	// 名前チェック
 	bool canPressOK =
-	 	launcherapp::commands::common::IsValidCommandName(mName, mOrgName, mMessage);
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 	//
-	if (canPressOK && mPath.IsEmpty()) {
+	if (canPressOK && mParam.mNormalAttr.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
 		canPressOK = false;
+	}
+
+	// 変換
+	if (mShowType == 1) {
+		mParam.mNormalAttr.mShowType = SW_MAXIMIZE;
+	}
+	else if (mShowType == 2) {
+		mParam.mNormalAttr.mShowType = SW_SHOWMINIMIZED;
+	}
+	else {
+		mParam.mNormalAttr.mShowType = SW_NORMAL;
 	}
 
 	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
@@ -215,12 +206,12 @@ void CommandEditDialog::OnEditPath0Changed()
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, mParam.mNormalAttr.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
+	mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -228,13 +219,13 @@ void CommandEditDialog::OnButtonBrowseFile1Clicked()
 void CommandEditDialog::OnButtonBrowseDir1Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mPath, this);
+	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
+	mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -242,13 +233,13 @@ void CommandEditDialog::OnButtonBrowseDir1Clicked()
 void CommandEditDialog::OnButtonBrowseDir3Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mDir, this);
+	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mDir, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mDir = dlg.GetPathName();
+	mParam.mNormalAttr.mDir = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -283,7 +274,7 @@ void CommandEditDialog::OnOK()
 	}
 
 	try {
-		tregex regTmp(mPatternStr);
+		tregex regTmp((LPCTSTR)mParam.mPatternStr);
 	}
 	catch(std::regex_error& e) {
 		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
@@ -293,7 +284,7 @@ void CommandEditDialog::OnOK()
 		msg += _T("\n");
 		msg += (CString)what;
 		msg += _T("\n");
-		msg += mPatternStr;
+		msg += mParam.mPatternStr;
 		AfxMessageBox(msg);
 		return;
 	}
@@ -321,7 +312,7 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 
 void CommandEditDialog::OnButtonResolveShortcut()
 {
-	ResolveShortcut(mPath);
+	ResolveShortcut(mParam.mNormalAttr.mPath);
 }
 
 LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
@@ -329,19 +320,19 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	if (wp != 0) {
 		// 変更
 		LPCTSTR iconPath = (LPCTSTR)lp;
-		if (IconLoader::GetStreamFromPath(iconPath, mIconData) == false) {
+		if (IconLoader::GetStreamFromPath(iconPath, mParam.mIconData) == false) {
 			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
 			return 0;
 		}
 
-		mIcon = IconLoader::Get()->LoadIconFromStream(mIconData);
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
 	}
 	else {
 		// デフォルトに戻す
-		CString resolvedPath(mPath);
+		CString resolvedPath(mParam.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
 		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
-		mIconData.clear();
+		mParam.mIconData.clear();
 	}
 
 	// 再描画

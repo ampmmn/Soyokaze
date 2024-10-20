@@ -15,6 +15,7 @@ public:
 	virtual ~BuiltinEditDialog();
 
 	CString GetName();
+	void SetName(LPCTSTR name);
 	void SetOriginalName(LPCTSTR name);
 
 	void SetEnable(bool isEnable);

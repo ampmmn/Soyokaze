@@ -38,7 +38,14 @@ const CommandParam& CommandEditor::GetParam()
 	return in->mDialog.GetParam();
 }
 
-// コマンドは編集可能か?
+// 名前を上書きする
+void CommandEditor::OverrideName(LPCTSTR name) 
+{
+	in->mDialog.SetName(name);
+	in->mDialog.ResetHotKey();
+}
+
+// 元のコマンド名を設定する(そのコマンド名と同じ場合は「コマンド名重複」とみなさない)
 void CommandEditor::SetOriginalName(LPCTSTR name) 
 {
 	in->mDialog.SetOriginalName(name);
@@ -47,7 +54,7 @@ void CommandEditor::SetOriginalName(LPCTSTR name)
 // コマンドを編集するためのダイアログを作成/取得する
 bool CommandEditor::DoModal() 
 {
-	return in->mDialog.DoModal() != IDOK;
+	return in->mDialog.DoModal() == IDOK;
 }
 
 

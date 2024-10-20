@@ -19,9 +19,12 @@ public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
+	void SetName(const CString& name);
 	void SetOriginalName(const CString& name);
 	void SetParam(const Param& param);
 	const Param& GetParam();
+
+	void ResetHotKey();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();

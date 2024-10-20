@@ -7,19 +7,10 @@ namespace launcherapp {
 namespace commands {
 namespace regexp {
 
-class RegExpCommand : public launcherapp::commands::common::UserCommandBase
+class CommandParam;
+
+class RegExpCommand : virtual public launcherapp::commands::common::UserCommandBase
 {
-public:
-	struct ATTRIBUTE {
-		ATTRIBUTE();
-
-		CString mPath;
-		CString mParam;
-		CString mDir;
-		int mShowType;
-	};
-
-
 public:
 	RegExpCommand();
 	virtual ~RegExpCommand();
@@ -33,7 +24,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
@@ -41,26 +31,19 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// Editable
+	// コマンドを編集するためのダイアログを作成/取得する
+	virtual bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
+	// ダイアログ上での編集結果をコマンドに適用する
+	virtual bool Apply(launcherapp::core::CommandEditor* editor) override;
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
+
 	static CString GetType();
 
 	static bool NewDialog(Parameter* param);
 
-	// 管理者権限で実行しているか
-	static bool IsRunAsAdmin();
-	
-public:
-	RegExpCommand& SetName(LPCTSTR name);
-	RegExpCommand& SetDescription(LPCTSTR description);
-	RegExpCommand& SetAttribute(const ATTRIBUTE& attr);
-	RegExpCommand& SetAttributeForParam0(const ATTRIBUTE& attr);
-	RegExpCommand& SetPath(LPCTSTR path);
-	RegExpCommand& SetRunAs(int runAs);
-
-	RegExpCommand& SetMatchPattern(LPCTSTR pattern);
-
-	void GetAttribute(ATTRIBUTE& attr);
-	int GetRunAs();
-
+	void SetParam(const CommandParam& param);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

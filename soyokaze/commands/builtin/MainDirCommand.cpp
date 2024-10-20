@@ -52,7 +52,7 @@ BOOL MainDirCommand::Execute(Parameter* param)
 	_tcscat_s(mainDirPath, mainDirPath.size(), _T("\\"));
 
 	ShellExecCommand cmd;
-	cmd.SetPath(mainDirPath);
+	cmd.SetPath((LPCTSTR)mainDirPath);
 
 	return cmd.Execute(CommandParameterBuilder::EmptyParam());
 }

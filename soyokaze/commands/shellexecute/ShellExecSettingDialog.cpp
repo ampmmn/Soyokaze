@@ -42,15 +42,30 @@ SettingDialog::~SettingDialog()
 {
 }
 
-void SettingDialog::SetParam(const Param& param)
+void SettingDialog::SetName(const CString& name)
+{
+	in->mParam.mName = name;
+}
+
+void SettingDialog::SetOriginalName(const CString& name)
+{
+	in->mOrgName = name;
+}
+
+void SettingDialog::SetParam(const CommandParam& param)
 {
 	in->mParam = param;
 }
 
-const SettingDialog::Param&
+const CommandParam&
 SettingDialog::GetParam()
 {
 	return in->mParam;
+}
+
+void SettingDialog::ResetHotKey()
+{
+	in->mParam.mHotKeyAttr.Reset();
 }
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)
@@ -66,7 +81,6 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mOrgName = in->mParam.mName;
 
 	CString caption(_T("コマンドの設定"));
 
@@ -88,7 +102,9 @@ HTREEITEM SettingDialog::OnSetupPages()
 	void* param = &(in->mParam);
 
 	// 各ページ作成
-	HTREEITEM hItem = AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new CommandEditDialog(this))), param);
+	auto dlg1 = new CommandEditDialog(this);
+	dlg1->SetOriginalName(in->mOrgName);
+	HTREEITEM hItem = AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(dlg1)), param);
 	AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new ShellExecEditDetailPage(this))), param);
 
 	return hItem;

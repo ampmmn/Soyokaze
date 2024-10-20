@@ -18,10 +18,11 @@ public:
 	URLDirectoryIndexCommandEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~URLDirectoryIndexCommandEditDialog();
 
-	void SetOrgName(const CString& name);
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
 
 	void SetParam(const CommandParam& param);
-	void GetParam(CommandParam& param);
+	const CommandParam& GetParam();
 
 	bool UpdateStatus();
 
@@ -42,7 +43,6 @@ public:
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 // 実装
 protected:

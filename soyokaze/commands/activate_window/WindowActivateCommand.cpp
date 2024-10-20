@@ -235,8 +235,20 @@ bool WindowActivateCommand::NewDialog(
 	// パラメータ指定には対応していない
 	UNREFERENCED_PARAMETER(param);
 
-	RefPtr<WindowActivateCommandEditor> editor(new WindowActivateCommandEditor);
-	return NewInstance(editor.get(), (Command**)newCmdPtr);
+	RefPtr<WindowActivateCommandEditor> cmdEditor(new WindowActivateCommandEditor);
+	if (cmdEditor->DoModal() == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto commandParam = cmdEditor->GetParam();
+	auto newCmd = std::make_unique<WindowActivateCommand>();
+	newCmd->in->mParam = commandParam;
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+	return true;
 }
 
 bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActivateCommand** newCmdPtr)
@@ -287,7 +299,20 @@ bool WindowActivateCommand::Apply(launcherapp::core::CommandEditor* editor)
 // ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
 bool WindowActivateCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
 {
-	return NewInstance(editor, newCmdPtr);
+	RefPtr<WindowActivateCommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WINDOWACTIVATECOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto commandParam = cmdEditor->GetParam();
+	auto newCmd = std::make_unique<WindowActivateCommand>();
+	newCmd->in->mParam = commandParam;
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+	return true;
 }
 
 } // end of namespace activate_window

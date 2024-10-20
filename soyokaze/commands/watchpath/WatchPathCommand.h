@@ -7,7 +7,10 @@ namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
-class WatchPathCommand : public launcherapp::commands::common::UserCommandBase
+class CommandParam;
+
+class WatchPathCommand :
+	virtual public launcherapp::commands::common::UserCommandBase
 {
 public:
 	WatchPathCommand();
@@ -22,7 +25,6 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
-	int EditDialog(HWND parent) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
@@ -30,9 +32,19 @@ public:
 	bool Save(CommandEntryIF* entry) override;
 	bool Load(CommandEntryIF* entry) override;
 
+// Editable
+	// コマンドを編集するためのダイアログを作成/取得する
+	virtual bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
+	// ダイアログ上での編集結果をコマンドに適用する
+	virtual bool Apply(launcherapp::core::CommandEditor* editor) override;
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
+
 	static CString GetType();
 
 	static bool NewDialog(Parameter* param);
+
+	void SetParam(const CommandParam& param);
 	
 protected:
 	struct PImpl;

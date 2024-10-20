@@ -62,6 +62,11 @@ CString BuiltinEditDialog::GetName()
 	return in->mName;
 }
 
+void BuiltinEditDialog::SetName(LPCTSTR name)
+{
+	in->mName = name;
+}
+
 void BuiltinEditDialog::SetOriginalName(LPCTSTR name)
 {
 	in->mOrgName = name;

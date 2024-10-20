@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeySplitterCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/keysplitter/KeySplitterParam.h"
-#include "commands/keysplitter/KeySplitterEditDialog.h"
+#include "commands/keysplitter/KeySplitterCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
 #include "setting/AppPreference.h"
@@ -172,27 +173,6 @@ int KeySplitterCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int KeySplitterCommand::EditDialog(HWND parent)
-{
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 更新後の設定値を取得
-	in->mParam = dlg.GetParam();
-
-	in->mGuideStr.Empty();
-
-	// 再登録
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool KeySplitterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);
@@ -285,18 +265,16 @@ bool KeySplitterCommand::Load(CommandEntryIF* entry)
 
 bool KeySplitterCommand::NewDialog(Parameter* param)
 {
-	param;  // 非サポート
+	UNREFERENCED_PARAMETER(param);
 
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
-	auto& paramNew = dlg.GetParam();
-
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<KeySplitterCommand>();
-	newCmd->SetParam(paramNew);
+	newCmd->SetParam(cmdEditor->GetParam());
 		
 	bool isReloadHotKey = false;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
@@ -309,6 +287,52 @@ void KeySplitterCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;
 }
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool KeySplitterCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool KeySplitterCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_KEYSPLITTERCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool KeySplitterCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_KEYSPLITTERCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<KeySplitterCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
+}
+
 
 }
 }

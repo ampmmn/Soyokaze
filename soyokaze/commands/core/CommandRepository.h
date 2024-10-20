@@ -44,7 +44,7 @@ public:
 	int NewCommandDialog(CommandParameter* param = nullptr);
 
 	// コマンド編集ダイアログの表示
-	int EditCommandDialog(const CString& cmdName);
+	int EditCommandDialog(const CString& cmdName, bool isClone);
 	// キーワードマネージャダイアログの表示
 	int ManagerDialog();
 	// まとめて登録ダイアログの表示
@@ -64,6 +64,8 @@ public:
 	// リスナー登録
 	void RegisterListener(CommandRepositoryListenerIF* listener);
 	void UnregisterListener(CommandRepositoryListenerIF* listener);
+
+	CString IssueClonedCommandName(const CString& baseName); 
 
 protected:
 	void OnAppFirstBoot() override;

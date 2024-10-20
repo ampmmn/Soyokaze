@@ -64,20 +64,6 @@ struct DummyCommand : public launcherapp::core::Command
 		return Pattern::WholeMatch;
 	}
 
-	bool IsEditable() override
-	{
-		return false;
-	}
-	bool IsDeletable() override
-	{
-		return false;
-	}
-
-	int EditDialog(HWND parent) override
-	{
-		return 0;
-	}
-
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override
 	{
 		return false;

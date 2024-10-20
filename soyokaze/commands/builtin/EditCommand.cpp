@@ -92,7 +92,8 @@ BOOL EditCommand::Execute(Parameter* param)
 	}
 	cmd->Release();
 
-	cmdRepoPtr->EditCommandDialog(editName);
+	constexpr bool isClone = false;
+	cmdRepoPtr->EditCommandDialog(editName, isClone);
 	return TRUE;
 
 	return TRUE;

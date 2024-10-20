@@ -1,5 +1,6 @@
 #pragma once
 
+#include "hotkey/CommandHotKeyAttribute.h"
 #include <vector>
 
 namespace launcherapp {
@@ -36,7 +37,7 @@ public:
 	// 確認ダイアログを出す
 	BOOL mIsConfirm;
 
-
+	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 

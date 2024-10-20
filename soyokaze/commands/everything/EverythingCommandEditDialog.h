@@ -15,11 +15,12 @@ public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
 	void SetParam(const CommandParam& param);
 	const CommandParam& GetParam() const;
 
-	void SetHotKeyAttribute(const CommandHotKeyAttribute& attr);
-	void GetHotKeyAttribute(CommandHotKeyAttribute& attr);
+	void ResetHotKey();
 
 	bool UpdateStatus();
 

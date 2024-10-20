@@ -17,7 +17,7 @@ ModifierDialog::ModifierDialog(CWnd* parentWnd) :
 	mIsPressAlt(FALSE),
 	mIsPressWin(FALSE)
 {
-	SetHelpPageId(_T("KeySplitterModifier"));
+	SetHelpPageId(_T("KeySplitterEdit"));
 }
 
 ModifierDialog::~ModifierDialog()
@@ -49,7 +49,7 @@ void ModifierDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WIN, mIsPressWin);
 }
 
-BEGIN_MESSAGE_MAP(ModifierDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(ModifierDialog, launcherapp::gui::SinglePageDialog)
 END_MESSAGE_MAP()
 
 BOOL ModifierDialog::OnInitDialog()

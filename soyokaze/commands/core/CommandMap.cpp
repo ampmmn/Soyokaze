@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CommandMap.h"
 #include "commands/core/CommandFile.h"
+#include <set>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,9 +35,18 @@ void CommandMap::LoadSettings(Settings& settings)
 
 void CommandMap::RestoreSettings(Settings& settings)
 {
+	std::set<CString> eraseTargets;
 	for (auto& item : mMap) {
 		auto cmd = item.second;
-		settings.Restore(cmd);
+		if (settings.Restore(cmd) == false) {
+			// リストアできなかったものは、リストア用データ作成時点で存在していなかった
+			// (=後から追加された)ものなので、消す
+			eraseTargets.insert(item.first);
+		}
+	}
+
+	for (auto& target : eraseTargets) {
+		Unregister(target);
 	}
 }
 
@@ -196,14 +206,14 @@ void CommandMap::Settings::Add(launcherapp::core::Command* cmd)
 
 }
 
-void CommandMap::Settings::Restore(launcherapp::core::Command* cmd)
+bool CommandMap::Settings::Restore(launcherapp::core::Command* cmd)
 {
 	ASSERT(cmd);
 
 	auto it = in->mEntryMap.find(cmd);
 	if (it == in->mEntryMap.end()) {
-		SPDLOG_WARN(_T("Entry does not exist. {}"), (LPCTSTR)cmd->GetName());
-		return;
+		SPDLOG_INFO(_T("Entry does not exist. {}"), (LPCTSTR)cmd->GetName());
+		return false;
 	}
 
 	auto entry = it->second;
@@ -212,5 +222,7 @@ void CommandMap::Settings::Restore(launcherapp::core::Command* cmd)
 	}
 
 	in->mEntryMap.erase(it);
+
+	return true;
 }
 

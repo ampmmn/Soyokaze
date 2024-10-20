@@ -56,6 +56,11 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetName(const CString& name)
+{
+	in->mParam.mName = name;
+}
+
 void SettingDialog::SetOriginalName(const CString& name)
 {
 	in->mOrgName = name;
@@ -70,6 +75,11 @@ const SettingDialog::Param&
 SettingDialog::GetParam()
 {
 	return in->mParam;
+}
+
+void SettingDialog::ResetHotKey()
+{
+	in->mParam.mHotKeyAttr.Reset();
 }
 
 void SettingDialog::DoDataExchange(CDataExchange* pDX)

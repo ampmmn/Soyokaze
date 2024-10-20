@@ -2,7 +2,7 @@
 #include "SimpleDictCommand.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/simple_dict/DictionaryLoader.h"
-#include "commands/simple_dict/SimpleDictEditDialog.h"
+#include "commands/simple_dict/SimpleDictCommandEditor.h"
 #include "commands/simple_dict/SimpleDictionary.h"
 #include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/ExcelWrapper.h"
@@ -45,28 +45,28 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 	void OnUnlockScreenOccurred() override { }
 	void OnTimer() override
 	{
-			if (mLastUpdate == 0) {
-				GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
-				mLastUpdate = GetTickCount64(); 
-			}
-
-			if (GetTickCount64() - mLastUpdate <= 5000) {  // 更新チェック間隔は5秒に1回
-				return;
-			}
-
-			if (shouldReload()) {
-				// データ更新を予約する
-				DictionaryLoader::Get()->AddWaitingQueue(mThisPtr);
-				if (mParam.mIsNotifyUpdate) {
-					// 更新を通知する
-					CString msg;
-					msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
-					launcherapp::commands::common::PopupMessage(msg);
-				}
-			}
-
+		if (mLastUpdate == 0) {
 			GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
-			mLastUpdate = GetTickCount64(); 
+			mLastUpdate = GetTickCount64();
+		}
+
+		if (GetTickCount64() - mLastUpdate <= 5000) {  // 更新チェック間隔は5秒に1回
+			return;
+		}
+
+		if (shouldReload()) {
+			// データ更新を予約する
+			DictionaryLoader::Get()->AddWaitingQueue(mThisPtr);
+			if (mParam.mIsNotifyUpdate) {
+				// 更新を通知する
+				CString msg;
+				msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
+				launcherapp::commands::common::PopupMessage(msg);
+			}
+		}
+
+		GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
+		mLastUpdate = GetTickCount64();
 	}
 
 	// 辞書データをリロードすべきか?
@@ -82,17 +82,16 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 		return GetLastUpdateTime(mParam.mFilePath, ft) && memcmp(&ft, &mLastUpdated, sizeof(ft)) != 0;
 	}
 
-	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands,utility::TimeoutChecker& tm);
-	bool QueryCandidatesWithoutName(Pattern* pattern, CommandQueryItemList& commands,utility::TimeoutChecker& tm);
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
+	bool QueryCandidatesWithoutName(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
 	int MatchRecord(Pattern* pattern, const Record& record, int offset);
 
 	SimpleDictCommand* mThisPtr = nullptr;
 	SimpleDictParam mParam;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 	std::mutex mMutex;
 	Dictionary mDictData;
-	FILETIME mLastUpdated;
+	FILETIME mLastUpdated = {};
 	uint64_t mLastUpdate = 0;
 };
 
@@ -231,6 +230,9 @@ SimpleDictCommand::~SimpleDictCommand()
 
 bool SimpleDictCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
@@ -244,6 +246,11 @@ void SimpleDictCommand::UpdateDictionary(Dictionary& dict)
 {
 	std::lock_guard<std::mutex> lock(in->mMutex);
 	in->mDictData.mRecords.swap(dict.mRecords);
+}
+
+void SimpleDictCommand::SetParam(const SimpleDictParam& param)
+{
+	in->mParam = param;
 }
 
 const SimpleDictParam& SimpleDictCommand::GetParam()
@@ -319,34 +326,9 @@ int SimpleDictCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int SimpleDictCommand::EditDialog(HWND parent)
-{
-	// 設定変更画面を表示する
-	SettingDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetParam(in->mParam);
-	dlg.SetHotKeyAttribute(in->mHotKeyAttr);
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 変更後の設定値で上書き
-	in->mParam = dlg.GetParam();
-	dlg.GetHotKeyAttribute(in->mHotKeyAttr);
-
-	// 名前の変更を登録しなおす
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	// データ更新を予約する
-	DictionaryLoader::Get()->AddWaitingQueue(this);
-
-	return 0;
-}
-
 bool SimpleDictCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -423,7 +405,7 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mHotKeyAttr); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	// データ更新を予約する
 	DictionaryLoader::Get()->AddWaitingQueue(this);
@@ -447,13 +429,13 @@ bool SimpleDictCommand::NewDialog(
 	}
 
 	// 新規作成ダイアログを表示
-	SettingDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = dlg.GetParam();
+	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = std::make_unique<SimpleDictCommand>();
 	newCmd->in->mParam = commandParam;
 
@@ -466,6 +448,59 @@ bool SimpleDictCommand::NewDialog(
 
 	return true;
 }
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool SimpleDictCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool SimpleDictCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SIMPLEDICTCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(this);
+
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool SimpleDictCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SIMPLEDICTCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<SimpleDictCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(newCmd.get());
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
+}
+
 
 /**
  	コマンドの候補として追加表示する項目を取得する

@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/SimpleDictParam.h"
-#include "commands/shellexecute/ShellExecCommand.h"
+#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
@@ -16,10 +16,10 @@
 #endif
 
 using namespace launcherapp::commands::common;
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using SubProcess = launcherapp::commands::common::SubProcess;
 
 
 namespace launcherapp {
@@ -126,22 +126,19 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		}
 	}
 	else if (actionType == 1) {
-		// 他のファイルを実行/URLを開く
-		ShellExecCommand::ATTRIBUTE attr;
 
-		attr.mPath = in->mParam.mAfterFilePath;
-		attr.mPath.Replace(_T("$key"), in->mKey);
-		attr.mPath.Replace(_T("$value"), in->mValue);
+		// 他のファイルを実行/URLを開く
+		SubProcess exec(CommandParameterBuilder::EmptyParam());
+
+		CString path = in->mParam.mAfterFilePath;
+		path.Replace(_T("$key"), in->mKey);
+		path.Replace(_T("$value"), in->mValue);
 		if (in->mParam.mIsExpandMacro) {
-			ExpandMacros(attr.mPath);
+			ExpandMacros(path);
 		}
 
-		attr.mParam = argSub;
-
-		ShellExecCommand cmd;
-		cmd.SetAttribute(attr);
-
-		cmd.Execute(CommandParameterBuilder::EmptyParam());
+		SubProcess::ProcessPtr process;
+		exec.Run(path, argSub, process);
 	}
 	else {
 		// クリップボードにコピー

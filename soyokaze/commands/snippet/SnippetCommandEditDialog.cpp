@@ -30,28 +30,33 @@ CommandEditDialog::~CommandEditDialog()
 {
 }
 
-void CommandEditDialog::SetOrgName(const CString& name)
+void CommandEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void CommandEditDialog::SetOriginalName(const CString& name)
 {
 	mOrgName = name;
 }
 
-void CommandEditDialog::SetName(const CString& name)
+void CommandEditDialog::SetParam(const CommandParam& param)
 {
-	mName = name;
+	mParam = param;
 }
 
-void CommandEditDialog::SetDescription(const CString& desc)
+const CommandParam& CommandEditDialog::GetParam()
 {
-	mDescription = desc;
+	return mParam;
 }
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_NAME, mName);
-	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
-	DDX_Text(pDX, IDC_EDIT_TEXT, mText);
+	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
+	DDX_Text(pDX, IDC_EDIT_TEXT, mParam.mText);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 }
 
@@ -95,20 +100,20 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
+	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(mName, mOrgName, mMessage);
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
-	if (mText.IsEmpty()) {
+	if (mParam.mText.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_TEXTISEMPTY);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -156,7 +161,7 @@ void CommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mName, mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();

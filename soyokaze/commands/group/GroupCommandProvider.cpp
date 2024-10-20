@@ -4,7 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
-#include "commands/group/GroupEditDialog.h"
+#include "commands/group/GroupCommandEditor.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -59,17 +59,14 @@ bool GroupCommandProvider::NewDialog(CommandParameter* param)
 	UNREFERENCED_PARAMETER(param);
 
 	// グループ作成ダイアログを表示
-	GroupEditDialog dlg;
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
-
-	auto& paramNew = dlg.GetParam();
-
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<GroupCommand>();
-	newCmd->SetParam(paramNew);
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	constexpr bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);

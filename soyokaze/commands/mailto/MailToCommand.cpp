@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MailToCommand.h"
-#include "commands/shellexecute/ShellExecCommand.h"
+#include "commands/common/SubProcess.h"
 #include "commands/core/CommandParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -15,8 +15,9 @@ namespace launcherapp {
 namespace commands {
 namespace mailto {
 
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using SubProcess = launcherapp::commands::common::SubProcess;
+
 
 MailToCommand::MailToCommand() : 
 	AdhocCommandBase(_T("mailto:"), _T("あて先を指定してメール"))
@@ -49,15 +50,14 @@ BOOL MailToCommand::Execute(Parameter* param)
 		recipient.Trim();
 	}
 
-	ShellExecCommand::ATTRIBUTE attr;
-	attr.mPath = _T("cmd.exe");
-	attr.mParam = _T("/c start \"\" mailto:" + recipient);
-	attr.mShowType = SW_HIDE;
+	SubProcess::ProcessPtr process;
+	SubProcess exec(CommandParameterBuilder::EmptyParam());
 
-	ShellExecCommand cmd;
-	cmd.SetAttribute(attr);
+	CString arg = _T("/c start \"\" mailto:" + recipient);
+	exec.SetShowType(SW_HIDE);
+	exec.Run(_T("cmd.exe"), arg, process);
 
-	return cmd.Execute(CommandParameterBuilder::EmptyParam());
+	return TRUE;
 }
 
 HICON MailToCommand::GetIcon()

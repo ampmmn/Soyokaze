@@ -210,6 +210,7 @@
 #define IDC_COMBO_CANDIDATECACHE        1033
 #define IDC_BUTTON_EDIT                 1034
 #define IDC_BUTTON_EDIT2                1035
+#define IDC_BUTTON_CLONE                1035
 #define IDC_BUTTON_DOWN                 1036
 #define IDC_BUTTON_EDIT3                1037
 #define IDC_BUTTON_DELETE               1038

@@ -20,45 +20,44 @@ namespace watchpath {
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH, parentWnd), mIsDisabled(FALSE)
+	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH, parentWnd)
 {
 	SetHelpPageId(_T("WatchPathEdit"));
-	mNotifyMessage = _T("更新を検知");
 }
 
 CommandEditDialog::~CommandEditDialog()
 {
 }
 
-void CommandEditDialog::SetOrgName(const CString& name)
+void CommandEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void CommandEditDialog::SetOriginalName(const CString& name)
 {
 	mOrgName = name;
 }
 
-void CommandEditDialog::SetName(const CString& name)
+void CommandEditDialog::SetParam(const CommandParam& param)
 {
-	mName = name;
+	mParam = param;
 }
 
-void CommandEditDialog::SetDescription(const CString& desc)
+const CommandParam& CommandEditDialog::GetParam()
 {
-	mDescription = desc;
-}
-
-void CommandEditDialog::SetNotifyMessage(const CString& msg)
-{
-	mNotifyMessage = msg;
+	return mParam;
 }
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_NAME, mName);
-	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mDescription);
-	DDX_Text(pDX, IDC_EDIT_PATH, mPath);
-	DDX_Text(pDX, IDC_EDIT_MESSAGE, mNotifyMessage);
-	DDX_Check(pDX, IDC_CHECK_DISABLE, mIsDisabled);
+	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
+	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
+	DDX_Text(pDX, IDC_EDIT_MESSAGE, mParam.mNotifyMessage);
+	DDX_Check(pDX, IDC_CHECK_DISABLE, mParam.mIsDisabled);
 }
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
@@ -98,17 +97,17 @@ bool CommandEditDialog::UpdateStatus()
 {
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(mName, mOrgName, mMessage);
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (mPath.IsEmpty()) {
+	if (mParam.mPath.IsEmpty()) {
 		mMessage = _T("フォルダのパスを指定してください。");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (PathIsDirectory(mPath) == FALSE) {
+	if (PathIsDirectory(mParam.mPath) == FALSE) {
 		mMessage = _T("指定されたフォルダは存在しません。");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -148,7 +147,7 @@ void CommandEditDialog::OnOK()
 		return ;
 	}
 
-	if (PathIsDirectory(mPath) == FALSE) {
+	if (PathIsDirectory(mParam.mPath) == FALSE) {
 		return;
 	}
 
@@ -158,12 +157,12 @@ void CommandEditDialog::OnOK()
 void CommandEditDialog::OnButtonFileBrowse()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, mParam.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
+	mParam.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -171,13 +170,13 @@ void CommandEditDialog::OnButtonFileBrowse()
 void CommandEditDialog::OnButtonDirBrowse()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mPath, this);
+	CFolderDialog dlg(_T(""), mParam.mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mPath = dlg.GetPathName();
+	mParam.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }

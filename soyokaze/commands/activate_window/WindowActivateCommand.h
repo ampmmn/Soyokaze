@@ -9,7 +9,8 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-class WindowActivateCommand : public launcherapp::commands::common::UserCommandBase
+class WindowActivateCommand : 
+	virtual public launcherapp::commands::common::UserCommandBase
 {
 public:
 	WindowActivateCommand();

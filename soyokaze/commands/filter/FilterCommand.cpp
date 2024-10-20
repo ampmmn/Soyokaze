@@ -4,7 +4,7 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/filter/FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
-#include "commands/filter/FilterEditDialog.h"
+#include "commands/filter/FilterCommandEditor.h"
 #include "commands/filter/FilterExecutor.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
@@ -43,7 +43,6 @@ struct FilterCommand::PImpl
 	void LoadCandidates();
 
 	CommandParam mParam;
-	CommandHotKeyAttribute mHotKeyAttr;
 	CString mErrMsg;
 	//
 	FilterExecutor* mExecutor = nullptr;
@@ -76,6 +75,9 @@ FilterCommand::~FilterCommand()
 
 bool FilterCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
@@ -189,36 +191,9 @@ int FilterCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-int FilterCommand::EditDialog(HWND parent)
-{
-	FilterEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetOrgName(GetName());
-
-	dlg.SetParam(in->mParam);
-	dlg.mHotKeyAttr = in->mHotKeyAttr;
-
-	if (dlg.DoModal() != IDOK) {
-		spdlog::info(_T("Dialog cancelled."));
-		return 1;
-	}
-
-	// 変更後の設定値で上書き
-	dlg.GetParam(in->mParam);
-	in->mHotKeyAttr = dlg.mHotKeyAttr;
-
-	// 名前の変更を登録しなおす
-	auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	// 設定変更を反映するため、候補のキャッシュを消す
-	ClearCache();
-
-	return 0;
-}
-
 bool FilterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -283,7 +258,7 @@ bool FilterCommand::Load(CommandEntryIF* entry)
 	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$select"));
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(GetName(), &in->mHotKeyAttr);
+	hotKeyManager->GetKeyBinding(GetName(), &in->mParam.mHotKeyAttr);
 
 	return true;
 }
@@ -300,22 +275,19 @@ bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 	GetNamedParamString(param, _T("DESCRIPTION"), tmpParam.mDescription);
 	GetNamedParamString(param, _T("ARGUMENT"), tmpParam.mParameter);
 
-	FilterEditDialog dlg;
-	dlg.SetParam(tmpParam);
-
-	if (dlg.DoModal() != IDOK) {
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(tmpParam);
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto cmd = std::make_unique<FilterCommand>();
+	cmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmd) {
 		*newCmd = cmd.get();
 	}
-
-	dlg.GetParam(tmpParam);
-	cmd->SetParam(tmpParam);
 
 	constexpr bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(cmd.release(), isReloadHotKey);
@@ -323,8 +295,58 @@ bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 	return true;
 }
 
+// コマンドを編集するためのダイアログを作成/取得する
+bool FilterCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool FilterCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_FILTERCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+
+	// 設定変更を反映するため、候補のキャッシュを消す
+	ClearCache();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool FilterCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_FILTERCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<FilterCommand>();
+	newCmd->SetParam(paramNew);
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
+}
+
 /**
- 	フィルタコマンドの候補として追加表示する項目を取得する
+ 	コマンドの候補として追加表示する項目を取得する
  	@return true:取得成功   false:取得失敗(表示しない)
  	@param[in]  pattern  入力パターン
  	@param[out] commands 表示する候補

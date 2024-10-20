@@ -30,6 +30,8 @@ public:
 	UINT GetModifiers() const;
 	UINT GetVKCode() const;
 
+	void Reset();
+
 	bool mUseShift;
 	bool mUseCtrl;
 	bool mUseAlt;

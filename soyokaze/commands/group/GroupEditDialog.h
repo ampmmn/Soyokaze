@@ -19,6 +19,8 @@ public:
 	GroupEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~GroupEditDialog();
 
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
 	void SetParam(const CommandParam& param);
 	const CommandParam& GetParam() const;
 
@@ -49,7 +51,6 @@ public:
 
 	// ホットキー(表示用)
 	CString mHotKey;
-	CommandHotKeyAttribute mHotKeyAttr;
 
 // 実装
 protected:

@@ -32,9 +32,18 @@ GroupEditDialog::~GroupEditDialog()
 {
 }
 
+void GroupEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void GroupEditDialog::SetOriginalName(const CString& name)
+{
+	mOrgName = name;
+}
+
 void GroupEditDialog::SetParam(const CommandParam& param)
 {
-	mOrgName = param.mName;
 	mParam = param;
 }
 
@@ -156,7 +165,7 @@ bool GroupEditDialog::UpdateStatus()
 	// 32を上限とする
 	GetDlgItem(IDC_BUTTON_ADD)->EnableWindow(mParam.mItems.size() < 32);
 
-	mHotKey = mHotKeyAttr.ToString();
+	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
@@ -263,7 +272,7 @@ void GroupEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();

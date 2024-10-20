@@ -1,8 +1,8 @@
 #pragma once
 
+#include "commands/regexp/RegExpCommandParam.h"
 #include "gui/SinglePageDialog.h"
 #include <memory>
-#include "hotkey/CommandHotKeyAttribute.h"
 
 class IconLabel;
 
@@ -17,14 +17,10 @@ public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);
 	virtual ~CommandEditDialog();
 
-	void SetOrgName(const CString& name);
 	void SetName(const CString& name);
-	void SetPath(const CString& path);
-	void SetDescription(const CString& desc);
-	void SetParam(const CString& param);
-
-	int GetShowType();
-	void SetShowType(int type);
+	void SetOriginalName(const CString& name);
+	void SetParam(const CommandParam& param);
+	const CommandParam& GetParam();
 
 	bool UpdateStatus();
 
@@ -41,28 +37,11 @@ protected:
 	CString mMessage;
 
 	// アイコン(表示用)
-	HICON mIcon;
-public:
-	// コマンド名
-	CString mName;
-	// 説明
-	CString mDescription;
-	// 管理者権限で実行
-	BOOL mIsRunAsAdmin;
-	//! パターン(正規表現)
-	CString mPatternStr;
-
+	HICON mIcon = nullptr;
 	// 表示方法
-	int mShowType;
-	// カレントディレクトリ
-	CString mDir;
-	// パス
-	CString mPath;
-	// パラメータ
-	CString mParameter;
-
-	// アイコンデータ
-	std::vector<uint8_t> mIconData;
+	int mShowType = 0;
+public:
+	CommandParam mParam;
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 

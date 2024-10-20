@@ -39,7 +39,12 @@ FilterEditDialog::~FilterEditDialog()
 {
 }
 
-void FilterEditDialog::SetOrgName(const CString& name)
+void FilterEditDialog::SetName(const CString& name)
+{
+	mParam.mName = name;
+}
+
+void FilterEditDialog::SetOriginalName(const CString& name)
 {
 	mOrgName = name;
 }
@@ -49,9 +54,14 @@ void FilterEditDialog::SetParam(const CommandParam& param)
 	mParam = param;
 }
 
-void FilterEditDialog::GetParam(CommandParam& param)
+const CommandParam& FilterEditDialog::GetParam()
 {
-	param = mParam;
+	return mParam;
+}
+
+void FilterEditDialog::ResetHotKey()
+{
+	mParam.mHotKeyAttr.Reset();
 }
 
 void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
@@ -149,7 +159,7 @@ BOOL FilterEditDialog::OnInitDialog()
 
 bool FilterEditDialog::UpdateStatus()
 {
-	mHotKey = mHotKeyAttr.ToString();
+	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
@@ -305,7 +315,7 @@ void FilterEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();

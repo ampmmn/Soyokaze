@@ -56,9 +56,19 @@ SettingDialog::~SettingDialog()
 {
 }
 
+void SettingDialog::SetName(const CString& name)
+{
+	in->mParam.mName = name;
+}
+
 void SettingDialog::SetOriginalName(const CString& name)
 {
 	in->mOrgName = name;
+}
+
+void SettingDialog::ResetHotKey()
+{
+	in->mParam.mHotKeyAttr.Reset();
 }
 
 void SettingDialog::SetParam(const Param& param)

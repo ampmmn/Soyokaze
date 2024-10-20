@@ -19,7 +19,9 @@ public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	virtual ~SettingDialog();
 
+	void SetName(const CString& name);
 	void SetOriginalName(const CString& name);
+	void ResetHotKey();
 
 	void SetParam(const Param& param);
 	const Param& GetParam();

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "SnippetCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
-#include "commands/snippet/SnippetCommandEditDialog.h"
+#include "commands/snippet/SnippetCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
@@ -32,10 +33,7 @@ struct SnippetCommand::PImpl
 	{
 	}
 
-	CString mName;
-	CString mDescription;
-	CString mText;
-	CommandHotKeyAttribute mHotKeyAttr;
+	CommandParam mParam;
 };
 
 
@@ -55,13 +53,13 @@ SnippetCommand::~SnippetCommand()
 
 CString SnippetCommand::GetName()
 {
-	return in->mName;
+	return in->mParam.mName;
 }
 
 
 CString SnippetCommand::GetDescription()
 {
-	return in->mDescription;
+	return in->mParam.mDescription;
 }
 
 CString SnippetCommand::GetGuideString()
@@ -80,7 +78,7 @@ BOOL SnippetCommand::Execute(Parameter* param)
 	UNREFERENCED_PARAMETER(param);
 
 	// 定型文をマクロ置換
-	CString text = in->mText;
+	CString text = in->mParam.mText;
 	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
 
 	// クリップボードにコピー
@@ -94,23 +92,10 @@ CString SnippetCommand::GetErrorString()
 	return _T("");
 }
 
-SnippetCommand& SnippetCommand::SetName(LPCTSTR name)
-{
-	in->mName = name;
-	return *this;
-}
 
-SnippetCommand& SnippetCommand::SetDescription(LPCTSTR description)
+void SnippetCommand::SetParam(const CommandParam& param)
 {
-	in->mDescription = description;
-	return *this;
-}
-
-
-SnippetCommand& SnippetCommand::SetText(const CString& text)
-{
-	in->mText = text;
-	return *this;
+	in->mParam = param;
 }
 
 HICON SnippetCommand::GetIcon()
@@ -123,35 +108,9 @@ int SnippetCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
-int SnippetCommand::EditDialog(HWND parent)
-{
-	CommandEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetOrgName(in->mName);
-
-	dlg.mName = in->mName;
-	dlg.mDescription = in->mDescription;
-	dlg.mText = in->mText;
-	dlg.mHotKeyAttr = in->mHotKeyAttr;
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	// 追加する処理
-	SetName(dlg.mName);
-	SetDescription(dlg.mDescription);
-	SetText(dlg.mText);
-	in->mHotKeyAttr = dlg.mHotKeyAttr;
-
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	return 0;
-}
-
 bool SnippetCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
-	attr = in->mHotKeyAttr;
+	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
@@ -168,11 +127,7 @@ launcherapp::core::Command*
 SnippetCommand::Clone()
 {
 	auto clonedObj = std::make_unique<SnippetCommand>();
-
-	clonedObj->in->mName = in->mName;
-	clonedObj->in->mDescription = in->mDescription;
-	clonedObj->in->mText = in->mText;
-
+	clonedObj->in->mParam = in->mParam;
 	return clonedObj.release();
 }
 
@@ -182,7 +137,7 @@ bool SnippetCommand::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("Type"), GetType());
 	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("text"), in->mText);
+	entry->Set(_T("text"), in->mParam.mText);
 
 	return true;
 }
@@ -196,13 +151,13 @@ bool SnippetCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mName = entry->GetName();
-	in->mDescription = entry->Get(_T("description"), _T(""));
-	in->mText = entry->Get(_T("text"), _T(""));
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mText = entry->Get(_T("text"), _T(""));
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mName, &in->mHotKeyAttr); 
+	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	return true;
 }
@@ -211,32 +166,75 @@ bool SnippetCommand::NewDialog(Parameter* param)
 {
 	// 新規作成ダイアログを表示
 	CString value;
+	CommandParam paramTmp;
 
-	CommandEditDialog dlg;
 	if (GetNamedParamString(param, _T("COMMAND"), value)) {
-		dlg.SetName(value);
+		paramTmp.mName = value;
 	}
 	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
-		dlg.SetDescription(value);
+		paramTmp.mDescription = value;
 	}
 	if (GetNamedParamString(param, _T("TEXT"), value)) {
-		dlg.mText = value;
+		paramTmp.mText = value;
 	}
-	if (dlg.DoModal() != IDOK) {
+
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<SnippetCommand>();
-	newCmd->in->mName = dlg.mName;
-	newCmd->in->mDescription = dlg.mDescription;
-	newCmd->in->mText = dlg.mText;
-	newCmd->in->mHotKeyAttr = dlg.mHotKeyAttr;
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	bool isReloadHotKey = true;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 	return true;
 
+}
+
+// コマンドを編集するためのダイアログを作成/取得する
+bool SnippetCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool SnippetCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SNIPPETCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool SnippetCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_SNIPPETCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+	auto newCmd = std::make_unique<SnippetCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
 }
 
 }

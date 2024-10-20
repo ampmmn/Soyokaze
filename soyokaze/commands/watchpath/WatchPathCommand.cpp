@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "WatchPathCommand.h"
-#include "commands/watchpath/WatchPathCommandEditDialog.h"
+#include "commands/core/IFIDDefine.h"
+#include "commands/watchpath/WatchPathCommandEditor.h"
 #include "commands/watchpath/PathWatcher.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
@@ -29,11 +30,7 @@ using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 struct WatchPathCommand::PImpl
 {
-	CString mName;
-	CString mDescription;
-	CString mPath;
-	CString mMessage;
-	bool mIsDisabled = false;
+	CommandParam mParam;
 };
 
 
@@ -51,15 +48,21 @@ WatchPathCommand::~WatchPathCommand()
 {
 }
 
+
+void WatchPathCommand::SetParam(const CommandParam& param)
+{
+	in->mParam = param;
+}
+
 CString WatchPathCommand::GetName()
 {
-	return in->mName;
+	return in->mParam.mName;
 }
 
 
 CString WatchPathCommand::GetDescription()
 {
-	return in->mDescription;
+	return in->mParam.mDescription;
 }
 
 CString WatchPathCommand::GetGuideString()
@@ -76,11 +79,11 @@ BOOL WatchPathCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	if (in->mIsDisabled) {
+	if (in->mParam.mIsDisabled) {
 		return TRUE;
 	}
 
-	auto path = in->mPath;
+	auto path = in->mParam.mPath;
 	path += _T("\\");
 
 	ShellExecCommand cmd;
@@ -96,7 +99,7 @@ CString WatchPathCommand::GetErrorString()
 
 HICON WatchPathCommand::GetIcon()
 {
-	CString path = in->mPath;
+	CString path = in->mParam.mPath;
 	ExpandMacros(path);
 
 	return IconLoader::Get()->LoadIconFromPath(path);
@@ -104,52 +107,7 @@ HICON WatchPathCommand::GetIcon()
 
 int WatchPathCommand::Match(Pattern* pattern)
 {
-	return pattern->Match(GetName());
-}
-
-int WatchPathCommand::EditDialog(HWND parent)
-{
-	auto oldPath = in->mPath;
-
-	CommandEditDialog dlg(CWnd::FromHandle(parent));
-	dlg.SetOrgName(in->mName);
-
-	dlg.mName = in->mName;
-	dlg.mDescription = in->mDescription;
-	dlg.mPath = in->mPath;
-	dlg.mNotifyMessage = in->mMessage;
-	dlg.mIsDisabled = in->mIsDisabled ? TRUE : FALSE;
-
-	if (dlg.DoModal() != IDOK) {
-		return 1;
-	}
-
-	CString orgName = in->mName;
-
-	in->mName = dlg.mName;
-	in->mDescription = dlg.mDescription;
-	in->mPath = dlg.mPath;
-	in->mMessage = dlg.mNotifyMessage;
-	in->mIsDisabled = (dlg.mIsDisabled != FALSE);
-
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->ReregisterCommand(this);
-
-	// 登録しなおす
-	auto watcher = PathWatcher::Get();
-	watcher->UnregisterPath(in->mName);
-
-	if (in->mIsDisabled == false) {
-		PathWatcher::ITEM item;
-		item.mPath = dlg.mPath;
-		item.mMessage = dlg.mNotifyMessage;
-		watcher->RegisterPath(in->mName, item);
-	}
-	if (orgName != in->mName) {
-		watcher->UnregisterPath(orgName);
-	}
-
-	return 0;
+	return pattern->Match(in->mParam.mName);
 }
 
 bool WatchPathCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
@@ -172,12 +130,7 @@ launcherapp::core::Command*
 WatchPathCommand::Clone()
 {
 	auto clonedObj = std::make_unique<WatchPathCommand>();
-
-	clonedObj->in->mName = in->mName;
-	clonedObj->in->mDescription = in->mDescription;
-	clonedObj->in->mPath = in->mPath;
-	clonedObj->in->mIsDisabled = in->mIsDisabled;
-
+	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
 
@@ -188,9 +141,9 @@ bool WatchPathCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("Type"), GetType());
 
 	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("path"), in->mPath);
-	entry->Set(_T("message"), in->mMessage);
-	entry->Set(_T("isDisabled"), in->mIsDisabled);
+	entry->Set(_T("path"), in->mParam.mPath);
+	entry->Set(_T("message"), in->mParam.mNotifyMessage);
+	entry->Set(_T("isDisabled"), in->mParam.mIsDisabled);
 
 	return true;
 }
@@ -204,58 +157,127 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mName = entry->GetName();
-	in->mDescription = entry->Get(_T("description"), _T(""));
-	in->mPath = entry->Get(_T("path"), _T(""));
-	in->mMessage = entry->Get(_T("message"), _T(""));
-	in->mIsDisabled = entry->Get(_T("isDisabled"), false);
+	in->mParam.mName = entry->GetName();
+	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	in->mParam.mPath = entry->Get(_T("path"), _T(""));
+	in->mParam.mNotifyMessage = entry->Get(_T("message"), _T(""));
+	in->mParam.mIsDisabled = entry->Get(_T("isDisabled"), false);
 
 	// 監視対象に登録
 	PathWatcher::ITEM item;
-	item.mPath = in->mPath;
-	item.mMessage = in->mMessage;
-	PathWatcher::Get()->RegisterPath(in->mName, item);
+	item.mPath = in->mParam.mPath;
+	item.mMessage = in->mParam.mNotifyMessage;
+	PathWatcher::Get()->RegisterPath(in->mParam.mName, item);
 
 	return true;
 }
 
 bool WatchPathCommand::NewDialog(Parameter* param)
 {
-	// 新規作成ダイアログを表示
 	CString value;
+	CommandParam paramTmp;
 
-	CommandEditDialog dlg;
 	if (GetNamedParamString(param, _T("COMMAND"), value)) {
-		dlg.SetName(value);
+		paramTmp.mName = value;
 	}
 	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
-		dlg.SetDescription(value);
+		paramTmp.mDescription = value;
 	}
-	if (dlg.DoModal() != IDOK) {
+
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
+	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto newCmd = std::make_unique<WatchPathCommand>();
-	newCmd->in->mName = dlg.mName;
-	newCmd->in->mDescription = dlg.mDescription;
-	newCmd->in->mPath = dlg.mPath;
-	newCmd->in->mMessage = dlg.mNotifyMessage;
-	newCmd->in->mIsDisabled = dlg.mIsDisabled != FALSE;
+
+	const auto& paramNew = cmdEditor->GetParam();
+	newCmd->SetParam(paramNew);
 
 	// 監視対象に登録
-	if (newCmd->in->mIsDisabled == false) {
+	if (paramNew.mIsDisabled == false) {
 		PathWatcher::ITEM item;
-		item.mPath = dlg.mPath;
-		item.mMessage = dlg.mNotifyMessage;
-		PathWatcher::Get()->RegisterPath(dlg.mName, item);
+		item.mPath = paramNew.mPath;
+		item.mMessage = paramNew.mNotifyMessage;
+		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 
-	bool isReloadHotKey = true;
+	bool isReloadHotKey = false;
 	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
 
 	return true;
+}
 
+// コマンドを編集するためのダイアログを作成/取得する
+bool WatchPathCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+{
+	if (editor == nullptr) {
+		return false;
+	}
+
+	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
+	cmdEditor->SetParam(in->mParam);
+
+	*editor = cmdEditor;
+	return true;
+}
+
+// ダイアログ上での編集結果をコマンドに適用する
+bool WatchPathCommand::Apply(launcherapp::core::CommandEditor* editor)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WATCHPATHCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	in->mParam = cmdEditor->GetParam();
+
+	// 登録しなおす
+	auto watcher = PathWatcher::Get();
+
+	CString orgName = cmdEditor->GetOriginalName();
+	watcher->UnregisterPath(orgName);
+
+	if (in->mParam.mIsDisabled == false) {
+		PathWatcher::ITEM item;
+		item.mPath = in->mParam.mPath;
+		item.mMessage = in->mParam.mNotifyMessage;
+		watcher->RegisterPath(GetName(), item);
+	}
+
+	return true;
+}
+
+// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
+bool WatchPathCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+{
+	RefPtr<CommandEditor> cmdEditor;
+	if (editor->QueryInterface(IFID_WATCHPATHCOMMANDEDITOR, (void**)&cmdEditor) == false) {
+		return false;
+	}
+
+	auto paramNew = cmdEditor->GetParam();
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = std::make_unique<WatchPathCommand>();
+	newCmd->SetParam(paramNew);
+
+	// 監視対象に登録
+	if (paramNew.mIsDisabled == false) {
+		PathWatcher::ITEM item;
+		item.mPath = paramNew.mPath;
+		item.mMessage = paramNew.mNotifyMessage;
+		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
+	}
+
+
+	if (newCmdPtr) {
+		*newCmdPtr = newCmd.release();
+	}
+
+	return true;
 }
 
 }

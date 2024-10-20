@@ -7,6 +7,8 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+#pragma warning(push)
+#pragma warning(disable : 4250)
 
 class DeleteCommand :
 	virtual public BuiltinCommandBase,
@@ -34,6 +36,8 @@ public:
 	// BuiltinCommandFactory経由でインスタンスを生成できるようにするための手続き
 	DECLARE_BUILTINCOMMAND(DeleteCommand)
 };
+
+#pragma warning(pop)
 
 }
 }

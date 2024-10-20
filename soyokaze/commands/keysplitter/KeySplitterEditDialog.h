@@ -16,6 +16,8 @@ public:
 	SettingDialog(CWnd* parentWnd = nullptr);
 	~SettingDialog() override;
 
+	void SetName(const CString& name);
+	void SetOriginalName(const CString& name);
 	void SetParam(const CommandParam& param);
 	const CommandParam& GetParam() const;
 

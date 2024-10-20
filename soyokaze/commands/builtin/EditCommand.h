@@ -7,6 +7,8 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
+#pragma warning(push)
+#pragma warning(disable : 4250)
 
 class EditCommand : 
 	virtual public BuiltinCommandBase,
@@ -33,6 +35,8 @@ public:
 
 	DECLARE_BUILTINCOMMAND(EditCommand)
 };
+
+#pragma warning(pop)
 
 }
 }
