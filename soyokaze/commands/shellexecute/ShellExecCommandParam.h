@@ -10,6 +10,7 @@ namespace shellexecute {
 struct ATTRIBUTE {
 
 	int GetShowType() const;
+	void SetShowType(int type);
 
 	CString mPath;
 	CString mParam;

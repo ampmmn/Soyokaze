@@ -25,6 +25,21 @@ int ATTRIBUTE::GetShowType() const
 	}
 }
 
+void ATTRIBUTE::SetShowType(int type)
+{
+	switch(type) {
+	case SW_MAXIMIZE:
+		mShowType = 1;
+		return;
+	case SW_SHOWMINIMIZED:
+		mShowType = 2;
+		return;
+	default:
+		mShowType = 0;
+		return;
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,12 +100,12 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 	entry->Set(_T("path"), mNormalAttr.mPath);
 	entry->Set(_T("dir"), mNormalAttr.mDir);
 	entry->Set(_T("parameter"), mNormalAttr.mParam);
-	entry->Set(_T("show"), mNormalAttr.mShowType);
+	entry->Set(_T("show"), mNormalAttr.GetShowType());
 
 	entry->Set(_T("path0"), mNoParamAttr.mPath);
 	entry->Set(_T("dir0"), mNoParamAttr.mDir);
 	entry->Set(_T("parameter0"), mNoParamAttr.mParam);
-	entry->Set(_T("show0"), mNoParamAttr.mShowType);
+	entry->Set(_T("show0"), mNoParamAttr.GetShowType());
 
 	entry->SetBytes(_T("IconData"),
 	                (const uint8_t*)mIconData.data(), mIconData.size());
@@ -109,12 +124,12 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mNormalAttr.mPath = entry->Get(_T("path"), _T(""));
 	mNormalAttr.mDir = entry->Get(_T("dir"), _T(""));
 	mNormalAttr.mParam = entry->Get(_T("parameter"), _T(""));
-	mNormalAttr.mShowType = entry->Get(_T("show"), mNormalAttr.mShowType);
+	mNormalAttr.SetShowType(entry->Get(_T("show"), SW_SHOW));
 
 	mNoParamAttr.mPath = entry->Get(_T("path0"), _T(""));
 	mNoParamAttr.mDir = entry->Get(_T("dir0"), _T(""));
 	mNoParamAttr.mParam = entry->Get(_T("parameter0"), _T(""));
-	mNoParamAttr.mShowType = entry->Get(_T("show0"), mNoParamAttr.mShowType);
+	mNoParamAttr.SetShowType(entry->Get(_T("show0"), SW_SHOW));
 	mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
 
 	size_t len = entry->GetBytesLength(_T("IconData"));
