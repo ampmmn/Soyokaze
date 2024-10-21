@@ -59,6 +59,7 @@ SettingDialog::~SettingDialog()
 void SettingDialog::SetName(const CString& name)
 {
 	in->mParam.mName = name;
+	ResetHotKey();
 }
 
 void SettingDialog::SetOriginalName(const CString& name)
