@@ -80,16 +80,6 @@ bool AdhocCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 	return false;
 }
 
-/**
- *  @brief 優先順位の重みづけを使用するか?
- *  @true true:優先順位の重みづけを使用する false:使用しない
- */
-bool AdhocCommandBase::IsPriorityRankEnabled()
-{
-	// 基本は重みづけをする
-	return true;
-}
-
 bool AdhocCommandBase::Save(CommandEntryIF* entry)
 {
 	UNREFERENCED_PARAMETER(entry);

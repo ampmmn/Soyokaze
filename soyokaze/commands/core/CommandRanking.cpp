@@ -144,12 +144,6 @@ void CommandRanking::SetFilePath(const CString& path)
 	in->mFilePath = path;
 }
 
-// 順位変更
-void CommandRanking::Add(const CString& name, int num)
-{
-	in->mRank[name] += num;
-}
-
 void CommandRanking::Set(const CString& name, int num)
 {
 	in->mRank[name] = num;

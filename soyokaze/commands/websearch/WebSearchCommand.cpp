@@ -212,15 +212,6 @@ bool WebSearchCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 	return true;
 }
 
-/**
- *  @brief 優先順位の重みづけを使用するか?
- *  @true true:優先順位の重みづけを使用する false:使用しない
- */
-bool WebSearchCommand::IsPriorityRankEnabled()
-{
-	return true;
-}
-
 launcherapp::core::Command*
 WebSearchCommand::Clone()
 {

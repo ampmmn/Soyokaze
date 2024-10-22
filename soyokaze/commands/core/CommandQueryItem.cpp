@@ -133,11 +133,8 @@ void CommandQueryItemList::Sort()
 			auto& cmdL = l.mCommand;
 			auto& cmdR = r.mCommand;
 
-			auto nameL = cmdL->GetName();
-			auto nameR = cmdR->GetName();
-
-			int priorityL = cmdL->IsPriorityRankEnabled() ? rankPtr->Get(nameL) : 0;
-			int priorityR = cmdR->IsPriorityRankEnabled() ? rankPtr->Get(nameR) : 0;
+			int priorityL = rankPtr->Get(cmdL->GetName());
+			int priorityR = rankPtr->Get(cmdR->GetName());
 			return priorityR < priorityL;
 	});
 }

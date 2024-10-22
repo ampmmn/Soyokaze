@@ -27,7 +27,6 @@ public:
 	int Match(Pattern* pattern) override;
 	bool IsEditable() override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
-	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
 	bool Save(CommandEntryIF* entry) override;

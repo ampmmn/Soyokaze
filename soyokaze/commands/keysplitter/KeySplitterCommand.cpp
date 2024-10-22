@@ -177,15 +177,6 @@ bool KeySplitterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 	return false;
 }
 
-/**
- *  @brief 優先順位の重みづけを使用するか?
- *  @true true:優先順位の重みづけを使用する false:使用しない
- */
-bool KeySplitterCommand::IsPriorityRankEnabled()
-{
-	return false;
-}
-
 launcherapp::core::Command*
 KeySplitterCommand::Clone()
 {

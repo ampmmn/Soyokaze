@@ -134,16 +134,6 @@ bool WindowActivateCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 	return true;
 }
 
-/**
- *  @brief 優先順位の重みづけを使用するか?
- *  @true true:優先順位の重みづけを使用する false:使用しない
- */
-bool WindowActivateCommand::IsPriorityRankEnabled()
-{
-	// 基本は重みづけをする
-	return true;
-}
-
 launcherapp::core::Command*
 WindowActivateCommand::Clone()
 {

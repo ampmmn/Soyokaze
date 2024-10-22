@@ -24,14 +24,11 @@ public:
 	// 保存
 	bool Save();
 
-	// 順位変更
-	void Add(const CString& name, int num);
 	//
 	void Set(const CString& name, int num);
 	// 順位取得
 	int Get(const CString& name) const;
 
-	// 削除
 	bool Delete(const CString& name);
 
 	// すべてリセット

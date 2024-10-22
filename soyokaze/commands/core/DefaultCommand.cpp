@@ -157,11 +157,6 @@ bool DefaultCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 	return false;
 }
 
-bool DefaultCommand::IsPriorityRankEnabled()
-{
-	return false;
-}
-
 launcherapp::core::Command* DefaultCommand::Clone()
 {
 	return nullptr;

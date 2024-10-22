@@ -19,7 +19,6 @@ public:
 	BOOL Execute(Parameter* param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
-	bool IsPriorityRankEnabled() override;
 	launcherapp::core::Command* Clone() override;
 
 
