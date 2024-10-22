@@ -20,8 +20,6 @@ struct Manual::PImpl
 
 Manual::Manual() : in(new PImpl)
 {
-	// 仮
-	//in->mPageMapping[_T("Top")] = _T("help");
 }
 
 Manual::~Manual()
