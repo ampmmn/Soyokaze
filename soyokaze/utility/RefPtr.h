@@ -59,3 +59,9 @@ private:
 	T* mPtr = nullptr;
 
 };
+
+template <class T, class... _Types>
+RefPtr<T> make_refptr(_Types&&... _Args)
+{
+    return RefPtr<T>(new T(std::forward<_Types>(_Args)...));
+}
