@@ -200,7 +200,7 @@ bool FilterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 FilterCommand::Clone()
 {
-	auto clonedObj = std::make_unique<FilterCommand>();
+	auto clonedObj = make_refptr<FilterCommand>();
 	clonedObj->in->mParam = in->mParam;
 	// mExecutorはコピーする必要があるか?
 	return clonedObj.release();
@@ -273,7 +273,7 @@ bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto cmd = std::make_unique<FilterCommand>();
+	auto cmd = make_refptr<FilterCommand>();
 	cmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmd) {
@@ -326,7 +326,7 @@ bool FilterCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edit
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<FilterCommand>();
+	auto newCmd = make_refptr<FilterCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

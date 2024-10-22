@@ -90,7 +90,7 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		auto cmd = std::make_unique<SpecialFolderFileCommand>(item);
+		auto cmd = make_refptr<SpecialFolderFileCommand>(item);
 
 		commands.Add(CommandQueryItem(level, cmd.release()));
 	}

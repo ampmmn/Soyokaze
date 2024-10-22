@@ -206,7 +206,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 launcherapp::core::Command*
 PathExecuteCommand::Clone()
 {
-	auto clonedObj = std::make_unique<PathExecuteCommand>();
+	auto clonedObj = make_refptr<PathExecuteCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 

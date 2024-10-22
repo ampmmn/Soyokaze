@@ -98,7 +98,7 @@ int InchAdhocCommand::Match(Pattern* pattern)
 launcherapp::core::Command*
 InchAdhocCommand::Clone()
 {
-	auto clonedObj = std::make_unique<InchAdhocCommand>();
+	auto clonedObj = make_refptr<InchAdhocCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 	clonedObj->in->mName = in->mName;

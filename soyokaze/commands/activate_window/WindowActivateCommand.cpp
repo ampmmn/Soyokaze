@@ -137,7 +137,7 @@ bool WindowActivateCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 WindowActivateCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<WindowActivateCommand>();
+	auto clonedCmd = make_refptr<WindowActivateCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 
@@ -208,7 +208,7 @@ bool WindowActivateCommand::NewInstance(launcherapp::core::CommandEditor* editor
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<WindowActivateCommand>();
+	auto newCmd = make_refptr<WindowActivateCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {
@@ -232,7 +232,7 @@ bool WindowActivateCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<WindowActivateCommand>();
+	auto newCmd = make_refptr<WindowActivateCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {
@@ -249,7 +249,7 @@ bool WindowActivateCommand::LoadFrom(CommandFile* cmdFile, void* e, WindowActiva
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	auto command = std::make_unique<WindowActivateCommand>();
+	auto command = make_refptr<WindowActivateCommand>();
 	if (command->Load(entry) == false) {
 		return false;
 	}
@@ -296,7 +296,7 @@ bool WindowActivateCommand::CreateNewInstanceFrom(launcherapp::core::CommandEdit
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<WindowActivateCommand>();
+	auto newCmd = make_refptr<WindowActivateCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {

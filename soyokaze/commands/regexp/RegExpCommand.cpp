@@ -184,7 +184,7 @@ bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 RegExpCommand::Clone()
 {
-	auto clonedObj = std::make_unique<RegExpCommand>();
+	auto clonedObj = make_refptr<RegExpCommand>();
 	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
@@ -268,7 +268,7 @@ bool RegExpCommand::NewDialog(Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<RegExpCommand>();
+	auto newCmd = make_refptr<RegExpCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	bool isReloadHotKey = false;
@@ -317,7 +317,7 @@ bool RegExpCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edit
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<RegExpCommand>();
+	auto newCmd = make_refptr<RegExpCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

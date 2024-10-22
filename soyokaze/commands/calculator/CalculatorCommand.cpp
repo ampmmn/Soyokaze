@@ -100,7 +100,7 @@ HICON CalculatorCommand::GetIcon()
 launcherapp::core::Command*
 CalculatorCommand::Clone()
 {
-	auto clonedObj = std::make_unique<CalculatorCommand>();
+	auto clonedObj = make_refptr<CalculatorCommand>();
 	clonedObj->SetResult(in->mResult);
 	return clonedObj.release();
 }

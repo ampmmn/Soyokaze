@@ -147,7 +147,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 			// 除外対象のファイル
 			continue;
 		}
-		auto cmdHist = std::make_unique<PathExecuteCommand>();
+		auto cmdHist = make_refptr<PathExecuteCommand>();
 		cmdHist->SetFullPath(item.mFullPath, true);
 		commands.Add(CommandQueryItem(level, cmdHist.release()));
 	}

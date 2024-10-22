@@ -133,7 +133,7 @@ bool VolumeCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 VolumeCommand::Clone()
 {
-	auto clonedObj = std::make_unique<VolumeCommand>();
+	auto clonedObj = make_refptr<VolumeCommand>();
 
 	clonedObj->in->mParam = in->mParam;
 
@@ -189,7 +189,7 @@ bool VolumeCommand::NewDialog(Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<VolumeCommand>();
+	auto newCmd = make_refptr<VolumeCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	bool isReloadHotKey = true;
@@ -241,7 +241,7 @@ bool VolumeCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edit
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<VolumeCommand>();
+	auto newCmd = make_refptr<VolumeCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

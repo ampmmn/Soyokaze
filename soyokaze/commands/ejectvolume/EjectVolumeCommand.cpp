@@ -112,7 +112,7 @@ bool EjectVolumeCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 EjectVolumeCommand::Clone()
 {
-	auto clonedObj = std::make_unique<EjectVolumeCommand>();
+	auto clonedObj = make_refptr<EjectVolumeCommand>();
 
 	clonedObj->in->mParam = in->mParam;
 
@@ -167,7 +167,7 @@ bool EjectVolumeCommand::NewDialog(Parameter* param)
 	auto& paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<EjectVolumeCommand>();
+	auto newCmd = make_refptr<EjectVolumeCommand>();
 	newCmd->SetParam(paramNew);
 
 	constexpr bool isReloadHotKey = true;
@@ -219,7 +219,7 @@ bool EjectVolumeCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<EjectVolumeCommand>();
+	auto newCmd = make_refptr<EjectVolumeCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

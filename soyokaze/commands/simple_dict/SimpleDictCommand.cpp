@@ -335,7 +335,7 @@ bool SimpleDictCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 SimpleDictCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<SimpleDictCommand>();
+	auto clonedCmd = make_refptr<SimpleDictCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 	std::lock_guard<std::mutex> lock(in->mMutex);
@@ -427,7 +427,7 @@ bool SimpleDictCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<SimpleDictCommand>();
+	auto newCmd = make_refptr<SimpleDictCommand>();
 	newCmd->in->mParam = commandParam;
 
 	// データ更新を予約する
@@ -479,7 +479,7 @@ bool SimpleDictCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<SimpleDictCommand>();
+	auto newCmd = make_refptr<SimpleDictCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	// データ更新を予約する

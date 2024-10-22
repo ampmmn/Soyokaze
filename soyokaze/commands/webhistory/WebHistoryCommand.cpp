@@ -216,7 +216,7 @@ bool WebHistoryCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 WebHistoryCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<WebHistoryCommand>();
+	auto clonedCmd = make_refptr<WebHistoryCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 
@@ -325,7 +325,7 @@ bool WebHistoryCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<WebHistoryCommand>();
+	auto newCmd = make_refptr<WebHistoryCommand>();
 	newCmd->in->mParam = cmdEditor->GetParam();
 
 	if (newCmdPtr) {

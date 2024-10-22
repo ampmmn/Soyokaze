@@ -91,7 +91,7 @@ void UWPCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		auto cmd = std::make_unique<UWPCommand>(item);
+		auto cmd = make_refptr<UWPCommand>(item);
 
 		commands.Add(CommandQueryItem(level, cmd.release()));
 	}

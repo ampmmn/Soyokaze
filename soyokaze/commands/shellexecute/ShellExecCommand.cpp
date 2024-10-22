@@ -263,7 +263,7 @@ bool ShellExecCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 ShellExecCommand::Clone()
 {
-	auto clonedObj = std::make_unique<ShellExecCommand>();
+	auto clonedObj = make_refptr<ShellExecCommand>();
 	clonedObj->in->mParam = in->mParam;
 	return clonedObj.release();
 }
@@ -285,7 +285,7 @@ bool ShellExecCommand::NewDialog(
 		return false;
 	}
 
-	auto newCmd = std::make_unique<ShellExecCommand>();
+	auto newCmd = make_refptr<ShellExecCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {
@@ -326,7 +326,7 @@ bool ShellExecCommand::NewCommand(const CString& filePath)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<ShellExecCommand>();
+	auto newCmd = make_refptr<ShellExecCommand>();
 	newCmd->in->mParam.mName =name;
 
 	ATTRIBUTE& normalAttr = newCmd->in->mParam.mNormalAttr;
@@ -348,7 +348,7 @@ bool ShellExecCommand::LoadFrom(
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	auto command = std::make_unique<ShellExecCommand>();
+	auto command = make_refptr<ShellExecCommand>();
 	if (command->Load(entry) == false) {
 		return false;
 	}
@@ -431,7 +431,7 @@ bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<ShellExecCommand>();
+	auto newCmd = make_refptr<ShellExecCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

@@ -225,7 +225,7 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 launcherapp::core::Command*
 FileProtocolConvertAdhocCommand::Clone()
 {
-	auto clonedObj = std::make_unique<FileProtocolConvertAdhocCommand>();
+	auto clonedObj = make_refptr<FileProtocolConvertAdhocCommand>();
 	clonedObj->in->mFullPath = in->mFullPath;
 
 	return clonedObj.release();

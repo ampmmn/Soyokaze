@@ -180,7 +180,7 @@ bool KeySplitterCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 KeySplitterCommand::Clone()
 {
-	auto clonedObj = std::make_unique<KeySplitterCommand>();
+	auto clonedObj = make_refptr<KeySplitterCommand>();
 
 	clonedObj->in->mParam = in->mParam;
 
@@ -261,7 +261,7 @@ bool KeySplitterCommand::NewDialog(Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<KeySplitterCommand>();
+	auto newCmd = make_refptr<KeySplitterCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 		
 	bool isReloadHotKey = false;
@@ -311,7 +311,7 @@ bool KeySplitterCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<KeySplitterCommand>();
+	auto newCmd = make_refptr<KeySplitterCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {

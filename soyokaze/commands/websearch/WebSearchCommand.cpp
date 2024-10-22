@@ -215,7 +215,7 @@ bool WebSearchCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 WebSearchCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<WebSearchCommand>();
+	auto clonedCmd = make_refptr<WebSearchCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 
@@ -324,7 +324,7 @@ bool WebSearchCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<WebSearchCommand>();
+	auto newCmd = make_refptr<WebSearchCommand>();
 	newCmd->in->mParam = cmdEditor->GetParam();
 
 	if (newCmdPtr) {

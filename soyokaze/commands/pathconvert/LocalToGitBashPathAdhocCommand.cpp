@@ -98,7 +98,7 @@ int LocalToGitBashPathAdhocCommand::Match(Pattern* pattern)
 launcherapp::core::Command*
 LocalToGitBashPathAdhocCommand::Clone()
 {
-	auto clonedObj = std::make_unique<LocalToGitBashPathAdhocCommand>();
+	auto clonedObj = make_refptr<LocalToGitBashPathAdhocCommand>();
 
 	clonedObj->mDescription = this->mDescription;
 	clonedObj->in->mFullPath = in->mFullPath;

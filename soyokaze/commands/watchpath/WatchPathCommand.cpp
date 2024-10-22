@@ -120,7 +120,7 @@ bool WatchPathCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 WatchPathCommand::Clone()
 {
-	auto clonedObj = std::make_unique<WatchPathCommand>();
+	auto clonedObj = make_refptr<WatchPathCommand>();
 	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
@@ -182,7 +182,7 @@ bool WatchPathCommand::NewDialog(Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<WatchPathCommand>();
+	auto newCmd = make_refptr<WatchPathCommand>();
 
 	const auto& paramNew = cmdEditor->GetParam();
 	newCmd->SetParam(paramNew);
@@ -252,7 +252,7 @@ bool WatchPathCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<WatchPathCommand>();
+	auto newCmd = make_refptr<WatchPathCommand>();
 	newCmd->SetParam(paramNew);
 
 	// 監視対象に登録

@@ -92,7 +92,7 @@ void MMCCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		auto cmd = std::make_unique<MMCCommand>(item);
+		auto cmd = make_refptr<MMCCommand>(item);
 		commands.Add(CommandQueryItem(level, cmd.release()));
 	}
 }

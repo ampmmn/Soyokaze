@@ -190,7 +190,7 @@ bool AlignWindowCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 AlignWindowCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<AlignWindowCommand>();
+	auto clonedCmd = make_refptr<AlignWindowCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 
@@ -309,7 +309,7 @@ bool AlignWindowCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = editor.GetParam();
-	auto newCmd = std::make_unique<AlignWindowCommand>();
+	auto newCmd = make_refptr<AlignWindowCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {
@@ -325,7 +325,7 @@ bool AlignWindowCommand::LoadFrom(CommandFile* cmdFile, void* e, AlignWindowComm
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	auto command = std::make_unique<AlignWindowCommand>();
+	auto command = make_refptr<AlignWindowCommand>();
 	if (command->Load(entry) == false) {
 		return false;
 	}
@@ -372,7 +372,7 @@ bool AlignWindowCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<AlignWindowCommand>();
+	auto newCmd = make_refptr<AlignWindowCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {

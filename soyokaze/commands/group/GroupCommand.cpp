@@ -226,7 +226,7 @@ bool GroupCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 GroupCommand::Clone()
 {
-	auto clonedObj = std::make_unique<GroupCommand>();
+	auto clonedObj = make_refptr<GroupCommand>();
 
 	clonedObj->in->mParam = in->mParam;
 	clonedObj->in->mErrMsg = in->mErrMsg;
@@ -344,7 +344,7 @@ bool GroupCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edito
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<GroupCommand>();
+	auto newCmd = make_refptr<GroupCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {

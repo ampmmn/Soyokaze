@@ -159,7 +159,7 @@ bool BookmarkCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 BookmarkCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<BookmarkCommand>();
+	auto clonedCmd = make_refptr<BookmarkCommand>();
 
 	clonedCmd->in->mParam = in->mParam;
 
@@ -304,7 +304,7 @@ bool BookmarkCommand::CreateNewInstanceFrom(CommandEditor* editor, Command** new
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto command = std::make_unique<BookmarkCommand>();
+	auto command = make_refptr<BookmarkCommand>();
 	command->in->mParam = commandParam;
 
 	if (newCmd) {

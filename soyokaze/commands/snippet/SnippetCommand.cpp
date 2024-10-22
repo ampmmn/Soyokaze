@@ -117,7 +117,7 @@ bool SnippetCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 SnippetCommand::Clone()
 {
-	auto clonedObj = std::make_unique<SnippetCommand>();
+	auto clonedObj = make_refptr<SnippetCommand>();
 	clonedObj->in->mParam = in->mParam;
 	return clonedObj.release();
 }
@@ -176,7 +176,7 @@ bool SnippetCommand::NewDialog(Parameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<SnippetCommand>();
+	auto newCmd = make_refptr<SnippetCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	bool isReloadHotKey = true;
@@ -218,7 +218,7 @@ bool SnippetCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edi
 	if (editor->QueryInterface(IFID_SNIPPETCOMMANDEDITOR, (void**)&cmdEditor) == false) {
 		return false;
 	}
-	auto newCmd = std::make_unique<SnippetCommand>();
+	auto newCmd = make_refptr<SnippetCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {

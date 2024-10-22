@@ -65,7 +65,7 @@ bool GroupCommandProvider::NewDialog(CommandParameter* param)
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<GroupCommand>();
+	auto newCmd = make_refptr<GroupCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	constexpr bool isReloadHotKey = true;

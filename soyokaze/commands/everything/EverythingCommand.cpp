@@ -178,7 +178,7 @@ bool EverythingCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 EverythingCommand::Clone()
 {
-	auto clonedCmd = std::make_unique<EverythingCommand>();
+	auto clonedCmd = make_refptr<EverythingCommand>();
 	clonedCmd->in->mParam = in->mParam;
 
 	return clonedCmd.release();
@@ -237,7 +237,7 @@ bool EverythingCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = std::make_unique<EverythingCommand>();
+	auto newCmd = make_refptr<EverythingCommand>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {
@@ -254,7 +254,7 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	auto command = std::make_unique<EverythingCommand>();
+	auto command = make_refptr<EverythingCommand>();
 	if (command->Load(entry) == false) {
 		return false;
 	}
@@ -302,7 +302,7 @@ bool EverythingCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<EverythingCommand>();
+	auto newCmd = make_refptr<EverythingCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {

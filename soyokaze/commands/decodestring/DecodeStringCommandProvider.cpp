@@ -25,9 +25,9 @@ struct DecodeStringCommandProvider::PImpl
 	{
 	}
 
-	std::unique_ptr<DecodeUriCommand> mDecodeUriCommand;
-	std::unique_ptr<EscapedCharCommand> mEscapedCharCommand;
-	std::unique_ptr<DecodeBase64Command> mDecodeBase64Command;
+	RefPtr<DecodeUriCommand> mDecodeUriCommand;
+	RefPtr<EscapedCharCommand> mEscapedCharCommand;
+	RefPtr<DecodeBase64Command> mDecodeBase64Command;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,9 +39,9 @@ REGISTER_COMMANDPROVIDER(DecodeStringCommandProvider)
 
 DecodeStringCommandProvider::DecodeStringCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mDecodeUriCommand = std::make_unique<DecodeUriCommand>();
-	in->mEscapedCharCommand = std::make_unique<EscapedCharCommand>();
-	in->mDecodeBase64Command = std::make_unique<DecodeBase64Command>();
+	in->mDecodeUriCommand.reset(new DecodeUriCommand());
+	in->mEscapedCharCommand.reset(new EscapedCharCommand());
+	in->mDecodeBase64Command.reset(new DecodeBase64Command());
 }
 
 DecodeStringCommandProvider::~DecodeStringCommandProvider()

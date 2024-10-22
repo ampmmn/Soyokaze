@@ -453,7 +453,7 @@ bool URLDirectoryIndexCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 launcherapp::core::Command*
 URLDirectoryIndexCommand::Clone()
 {
-	auto clonedObj = std::make_unique<URLDirectoryIndexCommand>();
+	auto clonedObj = make_refptr<URLDirectoryIndexCommand>();
 	clonedObj->in->mParam = in->mParam;
 	return clonedObj.release();
 }
@@ -542,7 +542,7 @@ bool URLDirectoryIndexCommand::NewDialog(Parameter* param, URLDirectoryIndexComm
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto cmd = std::make_unique<URLDirectoryIndexCommand>();
+	auto cmd = make_refptr<URLDirectoryIndexCommand>();
 
 	if (newCmd) {
 		*newCmd = cmd.get();
@@ -597,7 +597,7 @@ bool URLDirectoryIndexCommand::CreateNewInstanceFrom(launcherapp::core::CommandE
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = std::make_unique<URLDirectoryIndexCommand>();
+	auto newCmd = make_refptr<URLDirectoryIndexCommand>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {
