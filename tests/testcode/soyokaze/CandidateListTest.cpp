@@ -69,12 +69,6 @@ struct DummyCommand : public launcherapp::core::Command
 		return false;
 	}
 
-
-	bool IsPriorityRankEnabled() override
-	{
-		return true;
-	}
-
 	Command* Clone() override
 	{
 		return new DummyCommand();
