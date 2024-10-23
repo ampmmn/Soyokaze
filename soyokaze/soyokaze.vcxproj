@@ -809,6 +809,7 @@
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictCommandEditor.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">

@@ -347,28 +347,13 @@ SimpleDictCommand::Clone()
 bool SimpleDictCommand::Save(CommandEntryIF* entry)
 {
 	ASSERT(entry);
-
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("FilePath"), in->mParam.mFilePath);
-	entry->Set(_T("SheetName"), in->mParam.mSheetName);
-	entry->Set(_T("Range"), in->mParam.mRangeFront);
-	entry->Set(_T("RangeBack"), in->mParam.mRangeBack);
-	entry->Set(_T("IsFirstRowHeader"), (bool)in->mParam.mIsFirstRowHeader);
-	entry->Set(_T("IsMatchWithoutKeyword"), (bool)in->mParam.mIsMatchWithoutKeyword);
-	entry->Set(_T("IsEnableReverse"), (bool)in->mParam.mIsEnableReverse);
-	entry->Set(_T("IsNotifyUpdate"), (bool)in->mParam.mIsNotifyUpdate);
-	entry->Set(_T("IsExpandMacro"), (bool)in->mParam.mIsExpandMacro);
-	entry->Set(_T("aftertype"), in->mParam.mActionType);
-	entry->Set(_T("aftercommand"), in->mParam.mAfterCommandName);
-	entry->Set(_T("afterfilepath"), in->mParam.mAfterFilePath);
-	entry->Set(_T("afterparam"), in->mParam.mAfterCommandParam);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool SimpleDictCommand::Load(CommandEntryIF* entry)
 {
+	SPDLOG_DEBUG("enter.");
 	ASSERT(entry);
 
 	CString typeStr = entry->Get(_T("Type"), _T(""));
@@ -376,23 +361,16 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
+	SimpleDictParam paramTmp;
+	paramTmp.Load(entry);
 
-	in->mParam.mFilePath = entry->Get(_T("FilePath"), _T(""));
-	in->mParam.mSheetName = entry->Get(_T("SheetName"), _T(""));
-	in->mParam.mRangeFront = entry->Get(_T("Range"), _T(""));
-	in->mParam.mRangeBack = entry->Get(_T("RangeBack"), _T(""));
-	in->mParam.mIsFirstRowHeader = entry->Get(_T("IsFirstRowHeader"), false);
-	in->mParam.mIsMatchWithoutKeyword = entry->Get(_T("IsMatchWithoutKeyword"), true);
-	in->mParam.mIsEnableReverse = entry->Get(_T("IsEnableReverse"), false);
-	in->mParam.mIsNotifyUpdate = entry->Get(_T("IsNotifyUpdate"), false);
-	in->mParam.mIsExpandMacro = entry->Get(_T("IsExpandMacro"), false);
+	if (paramTmp == in->mParam) {
+		// 変化がなければ何もしない
+		SPDLOG_DEBUG(_T("skip loading"));
+		return true;
+	}
 
-	in->mParam.mActionType = entry->Get(_T("aftertype"), 2);
-	in->mParam.mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
-	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
-	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$value"));
+	in->mParam.swap(paramTmp);
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

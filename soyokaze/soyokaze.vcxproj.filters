@@ -2189,6 +2189,9 @@
     <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp">
+      <Filter>commands\simple_dict</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">

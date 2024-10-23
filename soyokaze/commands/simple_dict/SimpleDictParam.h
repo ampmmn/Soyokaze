@@ -2,25 +2,26 @@
 
 #include "hotkey/CommandHotkeyAttribute.h"
 
+class CommandEntryIF;
+
 namespace launcherapp {
+
 namespace commands {
 namespace simple_dict {
 
 class SimpleDictParam
 {
 public:
-	SimpleDictParam() :
-	 	mIsFirstRowHeader(TRUE),
-		mIsMatchWithoutKeyword(FALSE),
-		mIsEnableReverse(FALSE),
-		mIsNotifyUpdate(FALSE),
-		mIsExpandMacro(FALSE),
-	 	mActionType(2),
-	 	mAfterCommandParam(_T("$value"))
-	{}
-
+	SimpleDictParam();
 	SimpleDictParam(const SimpleDictParam&) = default;
+	~SimpleDictParam();
 
+	bool operator == (const SimpleDictParam& rhs) const;
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
+
+	void swap(SimpleDictParam& rhs);
 public:
 	CString mName;
 	CString mDescription;
