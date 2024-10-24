@@ -128,15 +128,9 @@ WatchPathCommand::Clone()
 bool WatchPathCommand::Save(CommandEntryIF* entry)
 {
 	ASSERT(entry);
-
 	entry->Set(_T("Type"), GetType());
+	return in->mParam.Save(entry);
 
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("path"), in->mParam.mPath);
-	entry->Set(_T("message"), in->mParam.mNotifyMessage);
-	entry->Set(_T("isDisabled"), in->mParam.mIsDisabled);
-
-	return true;
 }
 
 bool WatchPathCommand::Load(CommandEntryIF* entry)
@@ -148,11 +142,16 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mPath = entry->Get(_T("path"), _T(""));
-	in->mParam.mNotifyMessage = entry->Get(_T("message"), _T(""));
-	in->mParam.mIsDisabled = entry->Get(_T("isDisabled"), false);
+	CommandParam paramTmp;
+	paramTmp.Load(entry);
+
+	if (paramTmp == in->mParam) {
+		// 変化がなければ何もしない
+		SPDLOG_DEBUG(_T("skip loading"));
+		return true;
+	}
+
+	in->mParam.swap(paramTmp);
 
 	// 監視対象に登録
 	PathWatcher::ITEM item;

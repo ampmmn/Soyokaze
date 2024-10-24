@@ -353,7 +353,6 @@ bool SimpleDictCommand::Save(CommandEntryIF* entry)
 
 bool SimpleDictCommand::Load(CommandEntryIF* entry)
 {
-	SPDLOG_DEBUG("enter.");
 	ASSERT(entry);
 
 	CString typeStr = entry->Get(_T("Type"), _T(""));

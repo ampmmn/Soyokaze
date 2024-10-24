@@ -2192,6 +2192,9 @@
     <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp">
       <Filter>commands\simple_dict</Filter>
     </ClCompile>
+    <ClCompile Include="commands\watchpath\WatchPathCommandParam.cpp">
+      <Filter>commands\watchpath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">

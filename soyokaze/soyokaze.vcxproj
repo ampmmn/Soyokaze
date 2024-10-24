@@ -831,6 +831,7 @@
     <ClCompile Include="commands\watchpath\LocalPathTarget.cpp" />
     <ClCompile Include="commands\watchpath\UNCPathTarget.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathCommandEditor.cpp" />
+    <ClCompile Include="commands\watchpath\WatchPathCommandParam.cpp" />
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp" />
     <ClCompile Include="commands\webhistory\ChromiumBrowseHistory.cpp" />
     <ClCompile Include="commands\webhistory\WebHistoryAdhocCommand.cpp" />
