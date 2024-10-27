@@ -30,6 +30,9 @@ public:
 	bool IsHideOnStartup();
 	bool IsHideOnInactive();
 
+	// 入力欄にアイコンを描画するか
+	bool IsDrawIcon();
+
 	bool IsTopMost();
 	bool IsShowToggle();
 

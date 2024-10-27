@@ -8,7 +8,7 @@
 #include "app/Manual.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
-#include "mainwindow/MainWindowLayout.h"
+#include "mainwindow/layout/MainWindowLayout.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/common/Clipboard.h"

@@ -645,9 +645,15 @@
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
     <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
+    <ClInclude Include="mainwindow\layout\ComponentPlacer.h" />
+    <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h" />
+    <ClInclude Include="mainwindow\layout\MainWindowLayout.h" />
+    <ClInclude Include="mainwindow\layout\MainWindowPlacement.h" />
+    <ClInclude Include="mainwindow\layout\NoGuideComponentPlacer.h" />
+    <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h" />
+    <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
-    <ClInclude Include="mainwindow\MainWindowLayout.h" />
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
@@ -722,6 +728,7 @@
     <ClInclude Include="utility\Accessibility.h" />
     <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\CharConverter.h" />
+    <ClInclude Include="utility\HWNDRect.h" />
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Path.h" />
@@ -989,9 +996,13 @@
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
     <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
+    <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
+    <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />
+    <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp" />
+    <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp" />
+    <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
-    <ClCompile Include="mainwindow\MainWindowLayout.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />
@@ -1069,6 +1080,7 @@
     <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\AES.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
+    <ClCompile Include="utility\HWNDRect.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />

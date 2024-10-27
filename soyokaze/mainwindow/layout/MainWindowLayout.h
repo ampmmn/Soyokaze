@@ -2,7 +2,7 @@
 
 #include "mainwindow/MainWindowLayoutIF.h"
 
-// メインウインドウのリサイズ時にウインドウ上のコントロールを再計算する
+// メインウインドウのリサイズ時にウインドウ上の部品の位置とサイズを再計算し配置する
 class MainWindowLayout : public MainWindowLayoutIF
 {
 public:

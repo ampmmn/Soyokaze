@@ -196,6 +196,9 @@
     <Filter Include="commands\extracandidate">
       <UniqueIdentifier>{df6b0b9b-124f-4810-a5e8-751fa60ef48a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\layout">
+      <UniqueIdentifier>{fcc5abc1-3e80-4540-ab8a-02290af3e331}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1140,9 +1143,6 @@
     <ClInclude Include="commands\common\UserCommandProviderBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowLayout.h">
-      <Filter>mainwindow</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -1235,6 +1235,30 @@
     </ClInclude>
     <ClInclude Include="commands\builtin\BuiltinCommandEditor.h">
       <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\MainWindowLayout.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\HWNDRect.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\ComponentPlacer.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\MainWindowPlacement.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\NoGuideComponentPlacer.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h">
+      <Filter>mainwindow\layout</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2111,9 +2135,6 @@
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowLayout.cpp">
-      <Filter>mainwindow</Filter>
-    </ClCompile>
     <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp">
       <Filter>commands\extracandidate</Filter>
     </ClCompile>
@@ -2194,6 +2215,24 @@
     </ClCompile>
     <ClCompile Include="commands\watchpath\WatchPathCommandParam.cpp">
       <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\HWNDRect.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp">
+      <Filter>mainwindow\layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

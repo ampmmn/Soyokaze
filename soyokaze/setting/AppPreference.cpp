@@ -404,6 +404,12 @@ bool AppPreference::IsHideOnInactive()
 	return in->Get(_T("Soyokaze:IsHideOnInactive"), false);
 }
 
+// 入力欄にアイコンを描画するか
+bool AppPreference::IsDrawIcon()
+{
+	return in->Get(_T("ViewSetting:IsDrawIcon"), true);
+}
+
 bool AppPreference::IsTopMost()
 {
 	return in->Get(_T("Soyokaze:TopMost"), false);

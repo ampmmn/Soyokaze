@@ -248,6 +248,8 @@
 #define IDC_CHECK_USEFILER2             1062
 #define IDC_CHECK_SHOWGUIDE             1063
 #define IDC_CHECK_SHOWTOGGLE            1064
+#define IDC_CHECK_SHOWGUIDE2            1064
+#define IDC_CHECK_DRAWICON              1064
 #define IDC_CHECK_ALT                   1065
 #define IDC_CHECK_HIDEONRUN             1066
 #define IDC_CHECK_CTRL                  1067

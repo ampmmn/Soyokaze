@@ -12,6 +12,9 @@
 
 struct ViewSettingDialog::PImpl
 {
+	// 入力欄のアイコンを表示する
+	BOOL mIsDrawIcon = TRUE;
+
 	// 入力画面を常に最前面に表示
 	BOOL mIsTopMost = FALSE;
 
@@ -70,6 +73,8 @@ BOOL ViewSettingDialog::OnSetActive()
 void ViewSettingDialog::OnOK()
 {
 	auto settingsPtr = (Settings*)GetParam();
+	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)in->mIsDrawIcon);
+
 	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
 
@@ -110,6 +115,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
+	DDX_Check(pDX, IDC_CHECK_DRAWICON, in->mIsDrawIcon);
 	DDX_Check(pDX, IDC_CHECK_TOPMOST, in->mIsTopMost);
 	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, in->mIsHideOnInactive);
 	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, in->mTransparencyType);
@@ -161,6 +167,8 @@ void ViewSettingDialog::OnCbnTransparencyChanged()
 void ViewSettingDialog::OnEnterSettings()
 {
 	auto settingsPtr = (Settings*)GetParam();
+
+	in->mIsDrawIcon = settingsPtr->Get(_T("ViewSetting:IsDrawIcon"), true);
 	in->mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
 	in->mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
 
