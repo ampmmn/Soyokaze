@@ -468,7 +468,6 @@
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.h" />
-    <ClInclude Include="commands\url_directoryindex\WinHttp.h" />
     <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommand.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommandEditor.h" />
@@ -747,6 +746,8 @@
     <ClInclude Include="utility/WindowPosition.h" />
     <ClInclude Include="mainwindow/WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
+    <ClInclude Include="utility\WinHttp.h" />
+    <ClInclude Include="utility\WinHttpHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\AppProcess.cpp" />
@@ -829,7 +830,6 @@
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.cpp" />
-    <ClCompile Include="commands\url_directoryindex\WinHttp.cpp" />
     <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommandEditor.cpp" />
@@ -1097,6 +1097,7 @@
     <ClCompile Include="mainwindow/WindowTransparency.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
+    <ClCompile Include="utility\WinHttp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc" />

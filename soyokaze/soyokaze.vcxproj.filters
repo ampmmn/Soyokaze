@@ -1098,9 +1098,6 @@
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h">
       <Filter>commands\url_directoryindex</Filter>
     </ClInclude>
-    <ClInclude Include="commands\url_directoryindex\WinHttp.h">
-      <Filter>commands\url_directoryindex</Filter>
-    </ClInclude>
     <ClInclude Include="utility\AES.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -1259,6 +1256,12 @@
     </ClInclude>
     <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h">
       <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\WinHttp.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\WinHttpHandle.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2093,9 +2096,6 @@
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp">
       <Filter>commands\url_directoryindex</Filter>
     </ClCompile>
-    <ClCompile Include="commands\url_directoryindex\WinHttp.cpp">
-      <Filter>commands\url_directoryindex</Filter>
-    </ClCompile>
     <ClCompile Include="utility\AES.cpp">
       <Filter>utility</Filter>
     </ClCompile>
@@ -2233,6 +2233,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp">
       <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\WinHttp.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

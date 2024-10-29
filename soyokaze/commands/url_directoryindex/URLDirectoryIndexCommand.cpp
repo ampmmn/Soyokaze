@@ -5,7 +5,7 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
-#include "commands/url_directoryindex/WinHttp.h"
+#include "utility/WinHttp.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"

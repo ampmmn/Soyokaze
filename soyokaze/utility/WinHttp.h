@@ -4,9 +4,6 @@
 #include <vector>
 
 namespace launcherapp {
-namespace commands {
-namespace url_directoryindex {
-
 
 class WinHttp
 {
@@ -33,7 +30,5 @@ private:
 
 };
 
-} // end of namespace url_directoryindex
-} // end of namespace commands
 } // end of namespace launcherapp
 

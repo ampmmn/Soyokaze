@@ -1,15 +1,32 @@
 #include "pch.h"
 #include "WinHttp.h"
-#include "commands/url_directoryindex/WinHttpHandle.h"
+#include <winhttp.h>
 #include "spdlog/stopwatch.h"
+
+#pragma comment (lib, "winhttp.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 namespace launcherapp {
-namespace commands {
-namespace url_directoryindex {
+
+class WinHttpHandle
+{
+public:
+	WinHttpHandle(HINTERNET h) : mHandle(h) {}
+	~WinHttpHandle()
+ 	{ 
+		if (mHandle) {
+			WinHttpCloseHandle(mHandle);
+		}
+	}
+
+	operator HINTERNET() { return mHandle; }
+
+	HINTERNET mHandle;
+};
+
 
 struct WinHttp::PImpl
 {
@@ -305,7 +322,5 @@ void WinHttp::SetServerCredential(const CString& user, const CString& password)
 	in->mServerPassword = password;
 }
 
-} // end of namespace url_directoryindex
-} // end of namespace commands
 } // end of namespace launcherapp
 
