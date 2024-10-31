@@ -22,12 +22,13 @@ protected:
 // 実装
 protected:
 	LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp) override;
-
+	
 	afx_msg void OnKeyDown(UINT,UINT,UINT);
 	afx_msg UINT OnGetDlgCode();
 	afx_msg void OnSetFocus(CWnd* oldWindow);
 	afx_msg void OnKillFocus(CWnd* newWindow);
 	afx_msg void OnDestroy();
 	afx_msg void OnChar(UINT,UINT,UINT);
+	afx_msg void OnSize(UINT type, int cx, int cy);
 	DECLARE_MESSAGE_MAP()
 };

@@ -4,9 +4,6 @@
 #include "utility/HWNDRect.h"
 
 
-constexpr int MARGIN_X = 2;
-constexpr int MARGIN_Y = 2;
-
 
 namespace launcherapp {
 namespace mainwindow {
@@ -30,6 +27,9 @@ DefaultComponentPlacer::~DefaultComponentPlacer()
 // アイコン欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
+
 	ASSERT(elemHwnd);
 	SetWindowPos(elemHwnd, nullptr, MARGIN_X, MARGIN_Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
@@ -39,6 +39,8 @@ bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd)
 // 説明欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
 	int margin = 2;
 
 	// アイコン欄の右側に説明欄を配置する
@@ -61,6 +63,8 @@ bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd)
 // ガイド欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceGuide(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
 	int margin = 2;
 
 	// アイコン欄の右側にガイド欄を配置する
@@ -84,6 +88,8 @@ bool DefaultComponentPlacer::PlaceGuide(HWND elemHwnd)
 // 入力欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceEdit(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
 	int margin = 2;
 
 	int x = MARGIN_X;
@@ -110,7 +116,9 @@ bool DefaultComponentPlacer::PlaceEdit(HWND elemHwnd)
 // 候補欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceCandidateList(HWND elemHwnd)
 {
-	int margin = 1;
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
+	int margin = in->mPlacement.GetMarginEditToList();
 
 	int x = MARGIN_X;
 

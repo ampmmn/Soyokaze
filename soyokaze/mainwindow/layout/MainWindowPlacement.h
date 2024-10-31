@@ -175,6 +175,13 @@ public:
 		return rc.Height();
 	}
 
+	// 上の余白
+	int GetMarginTop() { return 2; }
+	// 左の余白
+	int GetMarginLeft() { return 2; }
+	// 入力欄と候補欄の余白
+	int GetMarginEditToList() { return 3; }
+
 
 // 
 private:

@@ -819,7 +819,9 @@ BOOL LauncherMainWindow::OnInitDialog()
 		SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
 	}
 
+	// スクリーンロック/アンロックの通知をうけとる
 	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
+
 	SetTimer(TIMERID_OPERATION, 1000, nullptr);
 
 	in->mOpWatcher.StartWatch(this);

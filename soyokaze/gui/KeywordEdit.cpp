@@ -76,6 +76,29 @@ struct KeywordEdit::PImpl
 		return isIMEOn ? mCaretIMEON : mCaretNormal;
 	}
 
+	void AdjustLayout(KeywordEdit* thisWnd)
+	{
+		auto font = thisWnd->GetFont();
+		CClientDC dc(thisWnd);
+		auto orgFont = dc.SelectObject(font);
+
+		TEXTMETRIC tm;
+		dc.GetTextMetrics(&tm);
+		int fontH = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
+		dc.SelectObject(orgFont);
+
+		CRect rc;
+		thisWnd->GetClientRect(&rc);
+		int rcOrgH = rc.Height();
+		ASSERT(rcOrgH >= fontH);
+
+		rc.top = (rcOrgH - fontH) / 2;
+		rc.bottom = rc.top + fontH;
+		rc.left = 2;
+
+		thisWnd->SetRect(&rc);
+	}
+
 
 	bool mIsFirst;
 	bool mIsFocus;
@@ -119,6 +142,7 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_KILLFOCUS()
 	ON_WM_DESTROY()
 	ON_WM_CHAR()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -133,6 +157,11 @@ LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 			::CreateCaret(GetSafeHwnd(), h, 0, 0);
 			ShowCaret();
 		}
+	}
+	else if (msg == WM_SETFONT) {
+		LRESULT ret = __super::WindowProc(msg, wp, lp);
+		in->AdjustLayout(this);
+		return ret;
 	}
 
 	return __super::WindowProc(msg, wp, lp);
@@ -207,3 +236,10 @@ void KeywordEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	__super::OnChar(nChar, nRepCnt, nFlags);
 }
+
+void KeywordEdit::OnSize(UINT type, int cx, int cy)
+{
+	__super::OnSize(type, cx, cy);
+	in->AdjustLayout(this);
+}
+

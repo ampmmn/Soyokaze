@@ -4,10 +4,6 @@
 #include "utility/HWNDRect.h"
 
 
-constexpr int MARGIN_X = 2;
-constexpr int MARGIN_Y = 2;
-
-
 namespace launcherapp {
 namespace mainwindow {
 namespace layout {
@@ -38,6 +34,9 @@ bool NoGuideNoIconComponentPlacer::PlaceIcon(HWND elemHwnd)
 // 説明欄のサイズ計算と配置
 bool NoGuideNoIconComponentPlacer::PlaceDescription(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
+
 	// アイコンを表示しないので左端に表示
 	int x = MARGIN_X;
 	int y =	MARGIN_Y;
@@ -66,6 +65,8 @@ bool NoGuideNoIconComponentPlacer::PlaceGuide(HWND elemHwnd)
 // 入力欄のサイズ計算と配置
 bool NoGuideNoIconComponentPlacer::PlaceEdit(HWND elemHwnd)
 {
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+
 	int margin = 2;
 
 	// アイコンを表示しないので左端に表示
@@ -93,7 +94,9 @@ bool NoGuideNoIconComponentPlacer::PlaceEdit(HWND elemHwnd)
 // 候補欄のサイズ計算と配置
 bool NoGuideNoIconComponentPlacer::PlaceCandidateList(HWND elemHwnd)
 {
-	int margin = 1;
+	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_Y = in->mPlacement.GetMarginTop();
+	int margin = in->mPlacement.GetMarginEditToList();
 
 	int x = MARGIN_X;
 
