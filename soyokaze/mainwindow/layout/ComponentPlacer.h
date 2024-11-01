@@ -22,6 +22,8 @@ public:
 	virtual bool PlaceCandidateList(HWND elemHwnd) = 0;
 	// 適用
 	virtual void Apply(HWND mainWindow) = 0;
+	// それより以下のリサイズを許容しない最小限の高さを取得する
+	virtual int GetMinimumHeight() = 0;
 };
 
 }

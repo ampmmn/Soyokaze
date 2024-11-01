@@ -144,6 +144,19 @@ void NoGuideComponentPlacer::Apply(HWND hwnd)
 	list->UpdateWindow();
 }
 
+// それより以下のリサイズを許容しない最小限の高さを取得する
+int NoGuideComponentPlacer::GetMinimumHeight()
+{
+	int margin = 2;
+	auto& p = in->mPlacement;
+	return p.GetMarginTop() + 
+	       p.GetDescriptionWindowHeight() +
+	       margin + 
+	       p.GetEditWindowHeight() +
+	       margin + 
+	       p.GetMarginTop();
+}
+
 }
 }
 }

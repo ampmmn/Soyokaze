@@ -103,6 +103,7 @@ bool WindowPosition::Restore(HWND hwnd)
 	if (SetWindowPlacement(hwnd, &wp) == FALSE) {
 		return FALSE;
 	}
+	mPosition = wp;
 
 	// 各モニタ領域の中に納まっているかをチェック
 	RECT rectWnd;
@@ -121,6 +122,22 @@ bool WindowPosition::Update(HWND hwnd)
 	if (GetWindowPlacement(hwnd, &wp) == false) {
 		return false;
 	}
+	mPosition = wp;
+	return true;
+}
+
+bool WindowPosition::UpdateExceptHeight(HWND hwnd)
+{
+	WINDOWPLACEMENT wp;
+	wp.length = sizeof(wp);
+	if (GetWindowPlacement(hwnd, &wp) == false) {
+		return false;
+	}
+
+	int orgHeight = mPosition.rcNormalPosition.bottom - mPosition.rcNormalPosition.top; 
+
+	wp.rcNormalPosition.bottom = wp.rcNormalPosition.top + orgHeight;
+
 	mPosition = wp;
 	return true;
 }
@@ -146,5 +163,28 @@ void WindowPosition::GetFilePath(LPCTSTR baseName, Path& path)
 	CAppProfile::GetDirPath(path, path.size());
 	path.Append(baseName);
 	path.AddExtension(_T(".position"));
+}
+
+WINDOWPLACEMENT WindowPosition::GetPosition() const
+{
+	return mPosition;
+}
+
+bool WindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
+{
+	auto wp = mPosition;
+	wp.rcNormalPosition = rc;
+
+	if (IsZoomed(hwnd) == FALSE && IsIconic(hwnd) == FALSE) {
+		SetWindowPos(hwnd, nullptr,rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
+	}
+	return true;
+
+	//return SetWindowPlacement(hwnd, &wp) != FALSE;
+}
+
+bool WindowPosition::SyncPosition(HWND hwnd)
+{
+	return SetWindowPlacement(hwnd, &mPosition) != FALSE;
 }
 

@@ -28,6 +28,8 @@ public:
 	bool PlaceCandidateList(HWND elemHwnd) override;
 	// 適用
 	void Apply(HWND hwnd) override;
+	// それより以下のリサイズを許容しない最小限の高さを取得する
+	int GetMinimumHeight() override;
 
 private:
 	struct PImpl;

@@ -643,6 +643,8 @@
     <ClInclude Include="commands/core\CommandRanking.h" />
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
+    <ClInclude Include="mainwindow\LauncherInputStatusIF.h" />
+    <ClInclude Include="mainwindow\LauncherMainWindowIF.h" />
     <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
     <ClInclude Include="mainwindow\layout\ComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h" />
@@ -651,11 +653,14 @@
     <ClInclude Include="mainwindow\layout\NoGuideComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
+    <ClInclude Include="mainwindow\layout\WindowPosition.h" />
+    <ClInclude Include="mainwindow\MainWindowAppearance.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
+    <ClInclude Include="mainwindow\WindowAppearanceIF.h" />
     <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingPageColor.h" />
@@ -743,7 +748,6 @@
     <ClInclude Include="utility\SQLite3Wrapper.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
-    <ClInclude Include="utility/WindowPosition.h" />
     <ClInclude Include="mainwindow/WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
     <ClInclude Include="utility\WinHttp.h" />
@@ -1001,6 +1005,8 @@
     <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
+    <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
+    <ClCompile Include="mainwindow\MainWindowAppearance.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
@@ -1093,7 +1099,6 @@
     <ClCompile Include="utility\SQLite3Database.cpp" />
     <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
-    <ClCompile Include="utility/WindowPosition.cpp" />
     <ClCompile Include="mainwindow/WindowTransparency.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />

@@ -9,19 +9,17 @@
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "mainwindow/layout/MainWindowLayout.h"
+#include "mainwindow/MainWindowAppearance.h"
+#include "mainwindow/LauncherInputStatusIF.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/common/Clipboard.h"
-#include "gui/ColorSettings.h"
 #include "afxdialogex.h"
-#include "utility/WindowPosition.h"
-#include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "SharedHwnd.h"
 #include "hotkey/AppHotKey.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/KeyInputWatch.h"
-#include "mainwindow/WindowTransparency.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/AppSound.h"
@@ -47,9 +45,8 @@
 #endif
 
 using namespace launcherapp;
+using namespace launcherapp::mainwindow;
 
-// Ctrl-Altキーで半透明にする隠しコマンド用のタイマー
-constexpr UINT TIMERID_KEYSTATE = 1;
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
 
@@ -61,9 +58,9 @@ struct LauncherMainWindow::PImpl
 	{
 	}
 
-	void RestoreWindowPosition(CWnd* thisPtr, bool isForceReset);
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
 
+// 入力データ
 	// キーワード入力欄の文字列
 	CString mCommandStr;
 	// 最後に外部からの入力によって更新された時点での文字列
@@ -77,65 +74,45 @@ struct LauncherMainWindow::PImpl
 	// 候補一覧表示用リストボックス
 	CandidateListCtrl mCandidateListBox;
 
+// キーワード検索状態
+	bool mIsQueryDoing = false;
+
 	// ウインドウハンドル(共有メモリに保存する用)
 	std::unique_ptr<SharedHwnd> mSharedHwnd;
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
+
+// ウインドウ上に配置する部品
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
-	//DWORD mLastCaretPos;
-
-	// キー入力監視(修飾キー入力によるホットキー機能用)
-	KeyInputWatch mKeyInputWatch;
-
-	// 外部からのコマンド受付用エディットボックス
-	CmdReceiveEdit mCmdReceiveEdit;
-
 	// アイコン描画用ラベル
 	CaptureIconLabel mIconLabel;
 
+// ウインドウ状態管理
+	// 位置・サイズ・コンポーネントの配置を管理するクラス
+	std::unique_ptr<MainWindowLayout> mLayout;
+	// 外観(色、フォント)などを管理するクラス
+	std::unique_ptr<MainWindowAppearance> mAppearance;
+
+// ホットキー関連
 	// 入力画面を呼び出すホットキー関連の処理をする
 	std::unique_ptr<AppHotKey> mHotKeyPtr;
 	std::unique_ptr<MainWindowHotKey> mMainWindowHotKeyPtr;
+	// キー入力監視(修飾キー入力によるホットキー機能用)
+	KeyInputWatch mKeyInputWatch;
 
-	// ウインドウ位置を保存するためのクラス
-	std::unique_ptr<WindowPosition> mWindowPositionPtr;
-
-	// ウインドウの透明度を制御するためのクラス
-	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
-	//
-	bool mIsPrevTransparentState = false;
-	bool mIsQueryDoing = false;
-	bool mIsBlockDeactivateOnUnfocus = false;
-
-	CFont mFontDlg;
-
+// 外部との連携用
+	// 外部からのコマンド受付用エディットボックス
+	CmdReceiveEdit mCmdReceiveEdit;
 	// ドロップターゲット
 	LauncherDropTarget mDropTargetDialog;
 	LauncherDropTarget mDropTargetEdit;
 
+// その他
 	// 稼働状況を監視する(長時間連続稼働を警告する目的)
 	OperationWatcher mOpWatcher;
 
-	//
-	UINT_PTR mInputTimerId = 0;
-
-	bool mShouldColorInit = true;
-
-	std::unique_ptr<MainWindowLayout> mLayout;
 };
-
-void LauncherMainWindow::PImpl::RestoreWindowPosition(CWnd* thisPtr, bool isForceReset)
-{
-	mWindowPositionPtr = std::make_unique<WindowPosition>();
-
-	bool isSucceededToRestore = mWindowPositionPtr->Restore(thisPtr->GetSafeHwnd());
-	if (isForceReset || isSucceededToRestore == false) {
-		// 復元に失敗した場合は中央に表示
-		thisPtr->SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
-		thisPtr->CenterWindow();
-	}
-}
 
 void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
 {
@@ -176,19 +153,14 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MAIN_GUIDE, pParent),
 	in(std::make_unique<PImpl>(this))
 {
-	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
 	in->mLayout = std::make_unique<MainWindowLayout>();
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
-	AppPreference::Get()->RegisterListener(this);
 }
 
 LauncherMainWindow::~LauncherMainWindow()
 {
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
-	AppPreference::Get()->UnregisterListener(this);
-
-	// mWindowPositionPtrのインスタンス破棄時に位置情報を設定ファイルに保存する
 }
 
 void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
@@ -215,6 +187,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZING()
 	ON_WM_SIZE()
+	ON_WM_MOVE()
 	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
 	ON_MESSAGE(WM_APP+3, OnUserMessageRunCommand)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
@@ -268,14 +241,6 @@ void LauncherMainWindow::ShowHelpTop()
 	auto manual = launcherapp::app::Manual::GetInstance();
 	manual->Navigate(_T("Top"));
 }
-
-void LauncherMainWindow::ShowHelpInputWindow()
-{
-	SPDLOG_DEBUG(_T("start"));
-	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("InputWindow"));
-}
-
 
 /**
  * ActiveWindow経由の処理
@@ -444,8 +409,8 @@ LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam,
 {
 	UNREFERENCED_PARAMETER(wParam);
 
-	// メインウインドウがフォーカスを失っても非表示にしないようにする
-	in->mIsBlockDeactivateOnUnfocus = (lParam != 0);
+	in->mAppearance->SetBlockDeactivateOnUnfocus(lParam != 0);
+
 	return 0;
 }
 
@@ -759,41 +724,36 @@ LRESULT LauncherMainWindow::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
 	return 0;
 }
 
-void LauncherMainWindow::OnAppFirstBoot()
+CWnd* LauncherMainWindow::GetWindowObject()
 {
+	return this;
 }
 
-void LauncherMainWindow::OnAppNormalBoot()
+IconLabel* LauncherMainWindow::GetIconLabel()
 {
+	return &in->mIconLabel;
 }
 
-void LauncherMainWindow::OnAppPreferenceUpdated()
+CStatic* LauncherMainWindow::GetDescriptionLabel()
 {
-	auto pref = AppPreference::Get();
-
-	CString fontName;
-	if (pref->GetMainWindowFontName(fontName) == false) {
-		return;
-	}
-
-	LOGFONT lf;
-	GetFont()->GetLogFont(&lf);
-
-	if (in->mFontDlg.m_hObject) {
-		in->mFontDlg.DeleteObject();
-	}
-	_tcsncpy_s(lf.lfFaceName, LF_FACESIZE, fontName, _TRUNCATE);
-	in->mFontDlg.CreateFontIndirectW(&lf);
-	SetFont(&in->mFontDlg);
-
-	SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
-
-	in->mShouldColorInit = true;
+	return (CStatic*)GetDlgItem(IDC_STATIC_DESCRIPTION);
 }
 
-void LauncherMainWindow::OnAppExit()
+CStatic* LauncherMainWindow::GetGuideLabel()
 {
+	return (CStatic*)GetDlgItem(IDC_STATIC_GUIDE);
 }
+
+KeywordEdit* LauncherMainWindow::GetEdit()
+{
+	return &in->mKeywordEdit;
+}
+
+CandidateListCtrl* LauncherMainWindow::GetCandidateList()
+{
+	return &in->mCandidateListBox;
+}
+
 
 // LauncherMainWindow メッセージ ハンドラー
 
@@ -803,21 +763,8 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	CDialogEx::OnInitDialog();
 
+	in->mAppearance = std::make_unique<MainWindowAppearance>(this);
 	in->mKeyInputWatch.Create();
-
-	auto pref = AppPreference::Get();
-
-	CString fontName;
-	if (pref->GetMainWindowFontName(fontName)) {
-		LOGFONT lf;
-		GetFont()->GetLogFont(&lf);
-
-		_tcsncpy_s(lf.lfFaceName, LF_FACESIZE, fontName, _TRUNCATE);
-		in->mFontDlg.CreateFontIndirectW(&lf);
-		SetFont(&in->mFontDlg);
-
-		SendMessageToDescendants(WM_SETFONT, (WPARAM)in->mFontDlg.m_hObject, MAKELONG(FALSE, 0), FALSE);
-	}
 
 	// スクリーンロック/アンロックの通知をうけとる
 	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
@@ -866,15 +813,14 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
 
+	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
 	in->mGuideStr.Empty();
 
 	// ウインドウ位置の復元
-	in->RestoreWindowPosition(this, false);
+	in->mLayout->RestoreWindowPosition(this, false);
 
-	// 透明度制御
-	in->mWindowTransparencyPtr->SetWindowHandle(GetSafeHwnd());
 
 	// 設定値の読み込み
 	GetCommandRepository()->Load();
@@ -964,6 +910,12 @@ void LauncherMainWindow::ClearContent()
 	in->mIconLabel.DrawDefaultIcon();
 	in->mCommandStr.Empty();
 	in->mCandidates.Clear();
+
+	// 状態変更を通知
+	struct LocalInputStatus : public LauncherInputStatus {
+		virtual bool HasKeyword() { return false;	}
+	} status;
+	in->mLayout->UpdateInputStatus(&status);
 
 	UpdateData(FALSE);
 }
@@ -1126,6 +1078,11 @@ void LauncherMainWindow::UpdateCandidates()
 		ClearContent();
 		return;
 	}
+	// 状態変更を通知
+	struct LocalInputStatus : public LauncherInputStatus {
+		virtual bool HasKeyword() { return true;	}
+	} status;
+	in->mLayout->UpdateInputStatus(&status);
 
 	auto pCmd = GetCurrentCommand();
 	if (pCmd == nullptr) {
@@ -1279,45 +1236,21 @@ BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
 
 void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	UNREFERENCED_PARAMETER(nStatus);
+	in->mLayout->OnShowWindow(this, bShow, nStatus);
+	in->mAppearance->OnShowWindow(bShow, nStatus);
 
-	if (bShow) {
-		// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
-		// (実際には表示直前に消去する)
-		AppPreference* pref = AppPreference::Get();
-		if (pref->IsKeepTextWhenDlgHide() == false) {
-			ClearContent();
-		}
-		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
-
-		// 前回と色設定が変わっている場合は、色設定をウインドウに反映する
-		// 非クライアント領域の色を変える
-		if (in->mShouldColorInit) {
-			auto colorSettings = ColorSettings::Get();
-			auto colorScheme = colorSettings->GetCurrentScheme();
-
-			bool isDefaultColor = colorSettings->IsSystemSettings();
-			COLORREF cr = DWMWA_COLOR_DEFAULT;
-			if (isDefaultColor == false) {
-				cr = colorScheme->GetBackgroundColor();
-			}
-			::DwmSetWindowAttribute(GetSafeHwnd(), DWMWA_BORDER_COLOR, &cr, sizeof(cr));
-			::DwmSetWindowAttribute(GetSafeHwnd(), DWMWA_CAPTION_COLOR, &cr, sizeof(cr));
-			in->mIconLabel.SetBackgroundColor(isDefaultColor, colorScheme->GetBackgroundColor());
-			in->mShouldColorInit = false;
-		}
-
-
-		SetTimer(TIMERID_KEYSTATE, 375, nullptr);
+	if (bShow == FALSE) {
+		// 表示になるときは何もしない
+		return;
 	}
-	else {
-		// 位置情報を更新する
-		if (in->mWindowPositionPtr.get()) {
-			in->mWindowPositionPtr->Update(GetSafeHwnd());
-		}
 
-		KillTimer(TIMERID_KEYSTATE);
+	// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
+	// (実際には表示直前に消去する)
+	AppPreference* pref = AppPreference::Get();
+	if (pref->IsKeepTextWhenDlgHide() == false) {
+		ClearContent();
 	}
+	GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 }
 
 
@@ -1474,18 +1407,45 @@ void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 void LauncherMainWindow::OnSizing(UINT side, LPRECT rect)
 {
 	__super::OnSizing(side, rect);
-	in->mLayout->RecalcWindowSize(GetSafeHwnd(), side, rect);
-	in->mLayout->RecalcControls(GetSafeHwnd());
+
+	struct LocalInputStatus : public LauncherInputStatus {
+		LocalInputStatus(bool has) : mHasKeyword(has) {}
+		virtual bool HasKeyword() { return mHasKeyword;	}
+		bool mHasKeyword;
+	} status(in->mCommandStr.IsEmpty() == FALSE);
+
+	in->mLayout->RecalcWindowSize(GetSafeHwnd(), &status, side, rect);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
 }
 
 void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
-	in->mLayout->RecalcControls(GetSafeHwnd());
+
+	struct LocalInputStatus : public LauncherInputStatus {
+		LocalInputStatus(bool has) : mHasKeyword(has) {}
+		virtual bool HasKeyword() { return mHasKeyword; }
+		bool mHasKeyword;
+	} status(in->mCommandStr.IsEmpty() == FALSE);
+
+	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.UpdateSize(cx, cy);
 	}
+}
+
+void LauncherMainWindow::OnMove(int x, int y)
+{
+	__super::OnMove(x, y);
+
+	struct LocalInputStatus : public LauncherInputStatus {
+		LocalInputStatus(bool has) : mHasKeyword(has) {}
+		virtual bool HasKeyword() { return mHasKeyword; }
+		bool mHasKeyword;
+	} status(in->mCommandStr.IsEmpty() == FALSE);
+
+	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
 }
 
 /**
@@ -1560,7 +1520,7 @@ void LauncherMainWindow::OnContextMenu(
 	}
 	else if (n == ID_RESETPOS) {
 		// ウインドウ位置をリセット
-		in->RestoreWindowPosition(this, true);
+		in->mLayout->RestoreWindowPosition(this, true);
 	}
 	else if (n == ID_MANUAL) {
 		// ヘルプ表示
@@ -1576,8 +1536,9 @@ void LauncherMainWindow::OnContextMenu(
 
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
-	if (in->mIsBlockDeactivateOnUnfocus == false) {
-		in->mWindowTransparencyPtr->UpdateActiveState(nState);
+	spdlog::debug("OnActivate nState {}", nState);
+	if (in->mAppearance) {
+		in->mAppearance->OnActivate(nState, wnd, bMinimized);
 	}
 	__super::OnActivate(nState, wnd, bMinimized);
 }
@@ -1594,8 +1555,10 @@ void LauncherMainWindow::OnEndSession(BOOL isEnding)
 
 void LauncherMainWindow::OnCommandHelp()
 {
-	// ヘルプ表示
-	ShowHelpInputWindow();
+	// 入力ウインドウのヘルプ表示
+	SPDLOG_DEBUG(_T("start"));
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("InputWindow"));
 }
 
 void LauncherMainWindow::OnCommandHotKey(UINT id)
@@ -1607,15 +1570,7 @@ void LauncherMainWindow::OnCommandHotKey(UINT id)
 
 void LauncherMainWindow::OnTimer(UINT_PTR timerId)
 {
-	if (timerId == TIMERID_KEYSTATE) {
-		// いったん無効化
-		// bool shouldBeTransparent = (GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_MENU) & 0x8000);
-		// if (in->mIsPrevTransparentState != shouldBeTransparent) {
-		// 	in->mWindowTransparencyPtr->ToggleAlphaState(shouldBeTransparent);
-		// 	in->mIsPrevTransparentState = shouldBeTransparent;
-		// }
-	}
-	else if (timerId == TIMERID_OPERATION) {
+	if (timerId == TIMERID_OPERATION) {
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
 			listener->OnTimer();
 		});
@@ -1644,23 +1599,6 @@ LRESULT LauncherMainWindow::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
 
 HBRUSH LauncherMainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
-	if (utility::IsHighContrastMode()) {
-		return br;
-	}
-
-	auto colorSettings = ColorSettings::Get();
-	auto colorScheme = colorSettings->GetCurrentScheme();
-
-	if (nCtlColor == CTLCOLOR_DLG || nCtlColor == CTLCOLOR_STATIC) {
-		pDC->SetTextColor(colorScheme->GetTextColor());
-		pDC->SetBkColor(colorScheme->GetBackgroundColor());
-		return colorScheme->GetBackgroundBrush();
-	}
-	else if (nCtlColor == CTLCOLOR_EDIT) {
-		pDC->SetTextColor(colorScheme->GetEditTextColor());
-		pDC->SetBkColor(colorScheme->GetEditBackgroundColor());
-		return colorScheme->GetEditBackgroundBrush();
-	}
-	return br;
+	HBRUSH defBr = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	return in->mAppearance->OnCtlColor(pDC, pWnd, nCtlColor, defBr);
 }

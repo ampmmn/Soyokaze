@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include "mainwindow/LauncherMainWindowIF.h"
+
 #include <vector>
 #include <memory>
 #include "tasktray/TaskTrayEventListenerIF.h"
-#include "setting/AppPreferenceListenerIF.h"
 #include "gui/KeywordEdit.h"
 #include "mainwindow/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"
@@ -24,11 +25,13 @@ namespace core {
 }
 
 class SharedHwnd;
-class WindowPosition;
 class WindowTransparency;
 
 // LauncherMainWindow ダイアログ
-class LauncherMainWindow : public CDialogEx, public TaskTrayEventListenerIF, public AppPreferenceListenerIF
+class LauncherMainWindow :
+ 	public CDialogEx,
+ 	public TaskTrayEventListenerIF,
+	public launcherapp::mainwindow::LauncherMainWindowIF
 {
 	using CommandRepository = launcherapp::core::CommandRepository;
 	using AppHotKey = launcherapp::core::AppHotKey;
@@ -43,7 +46,6 @@ public:
 	void ActivateWindow();
 	void HideWindow();
 	void ShowHelpTop();
-	void ShowHelpInputWindow();
 
 	bool ExecuteCommand(const CString& commandStr);
 
@@ -72,10 +74,13 @@ protected:
 	LRESULT OnTaskTrayLButtonDblclk() override;
 	LRESULT OnTaskTrayContextMenu(CWnd* wnd, CPoint point) override;
 
-	void OnAppFirstBoot() override;
-	void OnAppNormalBoot() override;
-	void OnAppPreferenceUpdated() override;
-	void OnAppExit() override;
+// LauncherMainWindow
+	CWnd* GetWindowObject() override;
+	IconLabel* GetIconLabel() override;
+	CStatic* GetDescriptionLabel() override;
+	CStatic* GetGuideLabel() override;
+	KeywordEdit* GetEdit() override;
+	CandidateListCtrl* GetCandidateList() override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;
@@ -98,6 +103,7 @@ protected:
 	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnSizing(UINT side, LPRECT rect);
 	afx_msg void OnSize(UINT type, int cx, int cy);
+	afx_msg void OnMove(int x, int y);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);

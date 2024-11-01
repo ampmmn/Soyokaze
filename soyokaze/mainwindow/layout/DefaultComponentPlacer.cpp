@@ -48,7 +48,7 @@ bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd)
 	int y =	MARGIN_Y;
 
 	// 親ウインドウの幅と、説明欄の配置した位置をもとに幅を決定
-	int cx = in->mPlacement.GetMainWindowWidth() - x - 1;
+	int cx = in->mPlacement.GetMainWindowWidth() - x - MARGIN_X;
 	// 高さは変えない
 	int cy = in->mPlacement.GetDescriptionWindowHeight();
 
@@ -165,6 +165,21 @@ void DefaultComponentPlacer::Apply(HWND hwnd)
 	auto list = in->mPlacement.GetCandidateList();
 	list->InvalidateRect(nullptr);
 	list->UpdateWindow();
+}
+
+// それより以下のリサイズを許容しない最小限の高さを取得する
+int DefaultComponentPlacer::GetMinimumHeight()
+{
+	int margin = 2;
+	auto& p = in->mPlacement;
+	return p.GetMarginTop() + 
+	       p.GetDescriptionWindowHeight() +
+	       margin + 
+	       p.GetGuideWindowHeight() +
+	       margin + 
+	       p.GetEditWindowHeight() +
+	       margin + 
+	       p.GetMarginTop();
 }
 
 }

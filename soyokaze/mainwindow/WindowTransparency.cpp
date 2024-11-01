@@ -50,7 +50,11 @@ bool WindowTransparency::UpdateActiveState(UINT nState)
 	if (mIsInactiveOnly && nState != WA_INACTIVE) {
 		alpha = 0xff;
 	}
+	else {
+		int hit = 1;
+	}
 
+	spdlog::debug("alpha {0}, mIsInactiveOnly {1} nState {2}", alpha, mIsInactiveOnly, nState);
 	SetLayeredWindowAttributes(mWindowHandle, 0, alpha, LWA_ALPHA);
 
 	return true;

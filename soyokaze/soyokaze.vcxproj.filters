@@ -216,9 +216,6 @@
     <ClInclude Include="utility\ShortcutFile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="utility/WindowPosition.h">
-      <Filter>utility</Filter>
-    </ClInclude>
     <ClInclude Include="utility/AppProfile.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -1263,6 +1260,21 @@
     <ClInclude Include="utility\WinHttpHandle.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\WindowAppearanceIF.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowAppearance.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\LauncherInputStatusIF.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\LauncherMainWindowIF.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\WindowPosition.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1281,9 +1293,6 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="utility/IniFile.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="utility/WindowPosition.cpp">
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="gui/KeywordEdit.cpp">
@@ -2236,6 +2245,12 @@
     </ClCompile>
     <ClCompile Include="utility\WinHttp.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MainWindowAppearance.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\WindowPosition.cpp">
+      <Filter>mainwindow\layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
