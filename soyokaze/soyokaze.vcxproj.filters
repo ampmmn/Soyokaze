@@ -1275,6 +1275,9 @@
     <ClInclude Include="mainwindow\layout\WindowPosition.h">
       <Filter>mainwindow\layout</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowInput.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2251,6 +2254,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp">
       <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MainWindowInput.cpp">
+      <Filter>mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

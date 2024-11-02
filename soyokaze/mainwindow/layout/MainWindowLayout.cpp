@@ -126,7 +126,7 @@ MainWindowLayout::~MainWindowLayout()
 }
 
 // 入力状態が更新された
-void MainWindowLayout::UpdateInputStatus(LauncherInputStatus* status)
+void MainWindowLayout::UpdateInputStatus(LauncherInput* status)
 {
 	ASSERT(status);
 
@@ -172,7 +172,7 @@ void MainWindowLayout::OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus)
 	UNREFERENCED_PARAMETER(nStatus);
 }
 
-void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInputStatus* status, UINT side, LPRECT rect)
+void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect)
 {
 	// 直近のウインドウを親ウインドウとして覚えておく(基本的に変化しないけど)
 	in->mMainWnd = hwnd;
@@ -223,7 +223,7 @@ void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInputStatus* status, 
 	}
 }
 
-void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInputStatus* status)
+void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 {
 	// 直近のウインドウを親ウインドウとして覚えておく(基本的に変化しないけど)
 	in->mMainWnd = hwnd;

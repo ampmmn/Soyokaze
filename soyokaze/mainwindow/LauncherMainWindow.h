@@ -55,7 +55,6 @@ protected:
 	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
 	void ClearContent();
-	void RemoveLastWord();
 	void Complement();
 	void QueryAsync();
 	void QuerySync();

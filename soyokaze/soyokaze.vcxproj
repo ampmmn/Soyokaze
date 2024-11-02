@@ -657,6 +657,7 @@
     <ClInclude Include="mainwindow\MainWindowAppearance.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
+    <ClInclude Include="mainwindow\MainWindowInput.h" />
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
@@ -1009,6 +1010,7 @@
     <ClCompile Include="mainwindow\MainWindowAppearance.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
+    <ClCompile Include="mainwindow\MainWindowInput.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />

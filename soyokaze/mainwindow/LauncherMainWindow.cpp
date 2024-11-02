@@ -10,7 +10,7 @@
 #include "mainwindow/CandidateListCtrl.h"
 #include "mainwindow/layout/MainWindowLayout.h"
 #include "mainwindow/MainWindowAppearance.h"
-#include "mainwindow/LauncherInputStatusIF.h"
+#include "mainwindow/MainWindowInput.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/common/Clipboard.h"
@@ -61,18 +61,15 @@ struct LauncherMainWindow::PImpl
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
 
 // 入力データ
-	// キーワード入力欄の文字列
-	CString mCommandStr;
+	// 入力欄のテキスト情報
+	MainWindowInput mInput;
 	// 最後に外部からの入力によって更新された時点での文字列
 	CString mLastInputStr;
 	CString mGuideStr;
 	// 現在選択中のコマンドの説明
 	CString mDescriptionStr;
-
 	// 現在の候補一覧(選択中の項目もここが管理する)
 	CandidateList mCandidates;
-	// 候補一覧表示用リストボックス
-	CandidateListCtrl mCandidateListBox;
 
 // キーワード検索状態
 	bool mIsQueryDoing = false;
@@ -81,12 +78,13 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<SharedHwnd> mSharedHwnd;
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
-
 // ウインドウ上に配置する部品
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
 	// アイコン描画用ラベル
 	CaptureIconLabel mIconLabel;
+	// 候補一覧表示用リストボックス
+	CandidateListCtrl mCandidateListBox;
 
 // ウインドウ状態管理
 	// 位置・サイズ・コンポーネントの配置を管理するクラス
@@ -114,19 +112,26 @@ struct LauncherMainWindow::PImpl
 
 };
 
+// 候補欄の選択変更により、新しく選択されたコマンドの名前で選択欄のテキストを置き換える
 void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
 {
+	// コマンド名
 	auto cmdName = cmd->GetName();
 
+	// コマンド名が前回の入力ワードと前方一致し、文字列が増えていたら
 	if (cmdName.Find(mLastInputStr) == 0 && cmdName.GetLength() > mLastInputStr.GetLength()) {
+		// 
+		mInput.SetKeyword(cmdName);
+		// 追記部分を選択した状態にする
 		startPos = mLastInputStr.GetLength();
 		endPos = cmdName.GetLength();
-		mCommandStr = cmdName;
 	}
 	else {
-		mCommandStr = mLastInputStr;
-		startPos = mCommandStr.GetLength();
-		endPos = mCommandStr.GetLength();
+		// 上記に該当しない場合は、前回の状態から変更しない
+		mInput.SetKeyword(mLastInputStr);
+		// (キャレット選択もしない)
+		startPos = mInput.GetLength();
+		endPos = mInput.GetLength();
 	}
 
 	// 説明の更新
@@ -165,8 +170,10 @@ LauncherMainWindow::~LauncherMainWindow()
 
 void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
 {
+	auto& commandStr = in->mInput.CommandStr();
+
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_COMMAND, in->mCommandStr);
+	DDX_Text(pDX, IDC_EDIT_COMMAND, commandStr);
 	DDX_Text(pDX, IDC_STATIC_GUIDE, in->mGuideStr);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
 }
@@ -340,7 +347,7 @@ LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
 	}
 	SPDLOG_DEBUG(_T("text:{}"), text);
 
-	in->mCommandStr = text;
+	in->mInput.SetKeyword(text);
 	in->mLastInputStr = text;
 	in->mKeywordEdit.SetWindowText(text);
 	in->mKeywordEdit.SetCaretToEnd();
@@ -435,7 +442,7 @@ LRESULT LauncherMainWindow::OnUserMessageCopyText(WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(lParam);
 
 	// 入力欄のテキストをコピー
-	launcherapp::commands::common::Clipboard::Copy(in->mCommandStr);
+	launcherapp::commands::common::Clipboard::Copy(in->mInput.GetKeyword());
 
 	// コピーした後は非表示にする
 	HideWindow();
@@ -506,12 +513,8 @@ LauncherMainWindow::OnUserMessageDropObject(
 		}
 		else if (wnd == &in->mKeywordEdit) {
 			// キーワードのEdit欄にドロップされた場合はパスをコピー
-
 			for (auto& str : files) {
-				if (in->mCommandStr.IsEmpty() == FALSE) {
-					in->mCommandStr += _T(" ");
-				}
-				in->mCommandStr += str;
+				in->mInput.AddArgument(str);
 			}
 			UpdateData(FALSE);
 		}
@@ -537,7 +540,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 				param->Release();
 			}
 			else if (wnd == &in->mKeywordEdit) {
-				in->mCommandStr += urlString;
+				in->mInput.AddArgument(urlString);
 				UpdateData(FALSE);
 			}
 
@@ -908,52 +911,17 @@ void LauncherMainWindow::ClearContent()
 	in->mGuideStr.Empty();
 
 	in->mIconLabel.DrawDefaultIcon();
-	in->mCommandStr.Empty();
+	in->mInput.Clear();
 	in->mCandidates.Clear();
 
 	// 状態変更を通知
-	struct LocalInputStatus : public LauncherInputStatus {
+	struct LocalInputStatus : public LauncherInput {
 		virtual bool HasKeyword() { return false;	}
 	} status;
 	in->mLayout->UpdateInputStatus(&status);
 
 	UpdateData(FALSE);
 }
-
-// 末尾の1単語分の削除を行う
-void LauncherMainWindow::RemoveLastWord()
-{
-	SPDLOG_DEBUG(_T("start"));
-
-	int n = 0;
-
-	CString str = in->mCommandStr;
-	str.TrimRight();
-
-	int len = str.GetLength();
-	for (int i = len-1; i >= 0; --i) {
-		if (str[i] == _T(' ')) {
-			n = i;
-			break;
-		}
-	}
-
-	if (n == 0) {
-		ClearContent();
-		return;
-	}
-
-	in->mCommandStr = in->mCommandStr.Mid(0, n+1);
-
-	// 検索リクエスト
-	QueryAsync();
-
-	UpdateData(FALSE);
-
-	// キャレット位置も更新する
-	in->mKeywordEdit.SetCaretToEnd();
-}
-
 
 void LauncherMainWindow::Complement()
 {
@@ -972,14 +940,13 @@ void LauncherMainWindow::Complement()
 	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
 
 	CString trailing;
-	launcherapp::matcher::CommandToken tok(in->mCommandStr);
+	launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
 	bool hasTrailing = tok.GetTrailingString(endPos, trailing);
 
-	in->mCommandStr = cmd->GetName();
-	in->mCommandStr += _T(" ");
-
+	bool withSpace = true;
+	in->mInput.SetKeyword(cmd->GetName(), withSpace);
 	if (hasTrailing) {
-		in->mCommandStr += trailing;
+		in->mInput.AddArgument(trailing);
 	}
 
 	UpdateData(FALSE);
@@ -1010,7 +977,7 @@ void LauncherMainWindow::OnEditCommandChanged()
 {
 	UpdateData();
 
-	in->mLastInputStr = in->mCommandStr;
+	in->mLastInputStr = in->mInput.GetKeyword();
 
 	// 音を鳴らす
 	AppSound::Get()->PlayInputSound();
@@ -1019,10 +986,24 @@ void LauncherMainWindow::OnEditCommandChanged()
 	// (Editコントロールの通常の挙動)
 	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
 	// 入力文字列をクリアした後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
-	if (in->mCommandStr.Find((TCHAR)0x7F) != -1) {
-		TCHAR bsStr[] = { (TCHAR)0x7F, (TCHAR)0x00 };
-		in->mCommandStr.Replace(bsStr, _T(""));
-		RemoveLastWord();
+	if (in->mInput.ReplaceInvisibleChars()) {
+
+		// FIXME: 0x7Eが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい
+		in->mInput.RemoveLastWord();
+
+		// ToDo: elseの系き共通化して問題ないなら消す
+		if (in->mInput.HasKeyword() == false) {
+			ClearContent();
+			return;
+		}
+
+		// 検索リクエスト
+		QueryAsync();
+
+		UpdateData(FALSE);
+
+		// キャレット位置も更新する
+		in->mKeywordEdit.SetCaretToEnd();
 		return;
 	}
 
@@ -1034,13 +1015,13 @@ void LauncherMainWindow::OnEditCommandChanged()
 void LauncherMainWindow::QueryAsync()
 {
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mCommandStr.IsEmpty()) {
+	if (in->mInput.HasKeyword() == false) {
 		ClearContent();
 		return;
 	}
 
 	// 検索リクエスト
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mCommandStr);
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
 	GetCommandRepository()->Query(req);
@@ -1053,12 +1034,12 @@ void LauncherMainWindow::QueryAsync()
 void LauncherMainWindow::QuerySync()
 {
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mCommandStr.IsEmpty()) {
+	if (in->mInput.HasKeyword() == false) {
 		ClearContent();
 		return;
 	}
 
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mCommandStr);
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 
 	// キーワードによる絞り込みを実施
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
@@ -1074,15 +1055,12 @@ void LauncherMainWindow::QuerySync()
 void LauncherMainWindow::UpdateCandidates()
 {
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mCommandStr.IsEmpty()) {
+	if (in->mInput.HasKeyword() == false) {
 		ClearContent();
 		return;
 	}
 	// 状態変更を通知
-	struct LocalInputStatus : public LauncherInputStatus {
-		virtual bool HasKeyword() { return true;	}
-	} status;
-	in->mLayout->UpdateInputStatus(&status);
+	in->mLayout->UpdateInputStatus(&in->mInput);
 
 	auto pCmd = GetCurrentCommand();
 	if (pCmd == nullptr) {
@@ -1131,7 +1109,8 @@ void LauncherMainWindow::RunCommand(
 	// 実行時の音声を再生する
 	AppSound::Get()->PlayExecuteSound();
 
-	CString str = in->mCommandStr;
+	// 別スレッドで処理するのでコピーを生成する
+	CString str = in->mInput.GetKeyword();
 
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
@@ -1186,7 +1165,7 @@ void LauncherMainWindow::OnOK()
 	}
 	else {
 		// 空文字状態でEnterキーから実行したときはキーワードマネージャを表示
-		if (in->mCommandStr.IsEmpty()) {
+		if (in->mInput.HasKeyword() == false) {
 			ExecuteCommand(_T("manager"));
 		}
 	}
@@ -1198,7 +1177,7 @@ void LauncherMainWindow::OnOK()
 void LauncherMainWindow::OnCancel()
 {
 	// 入力欄に入力中のテキストがあったらクリア、何もなければメインウインドウを非表示にする
-	if (in->mCommandStr.IsEmpty() == FALSE) {
+	if (in->mInput.HasKeyword()) {
 		ClearContent();
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
@@ -1408,27 +1387,15 @@ void LauncherMainWindow::OnSizing(UINT side, LPRECT rect)
 {
 	__super::OnSizing(side, rect);
 
-	struct LocalInputStatus : public LauncherInputStatus {
-		LocalInputStatus(bool has) : mHasKeyword(has) {}
-		virtual bool HasKeyword() { return mHasKeyword;	}
-		bool mHasKeyword;
-	} status(in->mCommandStr.IsEmpty() == FALSE);
-
-	in->mLayout->RecalcWindowSize(GetSafeHwnd(), &status, side, rect);
-	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
+	in->mLayout->RecalcWindowSize(GetSafeHwnd(), &in->mInput, side, rect);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
 }
 
 void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
 
-	struct LocalInputStatus : public LauncherInputStatus {
-		LocalInputStatus(bool has) : mHasKeyword(has) {}
-		virtual bool HasKeyword() { return mHasKeyword; }
-		bool mHasKeyword;
-	} status(in->mCommandStr.IsEmpty() == FALSE);
-
-	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
 
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.UpdateSize(cx, cy);
@@ -1438,14 +1405,7 @@ void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 void LauncherMainWindow::OnMove(int x, int y)
 {
 	__super::OnMove(x, y);
-
-	struct LocalInputStatus : public LauncherInputStatus {
-		LocalInputStatus(bool has) : mHasKeyword(has) {}
-		virtual bool HasKeyword() { return mHasKeyword; }
-		bool mHasKeyword;
-	} status(in->mCommandStr.IsEmpty() == FALSE);
-
-	in->mLayout->RecalcControls(GetSafeHwnd(), &status);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
 }
 
 /**

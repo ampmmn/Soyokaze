@@ -179,7 +179,7 @@ int DefaultComponentPlacer::GetMinimumHeight()
 	       margin + 
 	       p.GetEditWindowHeight() +
 	       margin + 
-	       p.GetMarginTop();
+	       p.GetMarginTop() + 1;
 }
 
 }

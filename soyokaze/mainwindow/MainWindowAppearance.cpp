@@ -81,6 +81,8 @@ MainWindowAppearance::~MainWindowAppearance()
 
 void MainWindowAppearance::OnShowWindow(BOOL bShow, UINT nStatus)
 {
+	UNREFERENCED_PARAMETER(nStatus);
+
 	if (bShow == FALSE) {
 		// 表示になるときは何もしない
 		return;
@@ -117,6 +119,9 @@ void MainWindowAppearance::OnShowWindow(BOOL bShow, UINT nStatus)
 
 void MainWindowAppearance::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
+	UNREFERENCED_PARAMETER(wnd);
+	UNREFERENCED_PARAMETER(bMinimized);
+
 	// メインウインドウがフォーカスを失っても非表示にしない設定であれば透過状態を更新
 	if (in->mIsBlockDeactivateOnUnfocus == false) {
 		in->mWindowTransparencyPtr->UpdateActiveState(nState);
@@ -125,6 +130,8 @@ void MainWindowAppearance::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 
 HBRUSH MainWindowAppearance::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HBRUSH defBr)
 {
+	UNREFERENCED_PARAMETER(pWnd);
+
 	// ハイコントラストモードの場合はシステム設定をそのまま使う
 	if (utility::IsHighContrastMode()) {
 		return defBr;

@@ -13,15 +13,15 @@ public:
 	~MainWindowLayout() override;
 
 	// 入力が更新された
-	void UpdateInputStatus(LauncherInputStatus* status) override;
+	void UpdateInputStatus(LauncherInput* status) override;
 	// ウインドウ位置の復元
 	void RestoreWindowPosition(CWnd* wnd, bool isForceReset) override;
 	// 表示/非表示になるときの処理
 	void OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus) override;
 	// リサイズ中のメインウインドウのサイズ制限を決定する
-	void RecalcWindowSize(HWND hwnd, LauncherInputStatus* status, UINT side, LPRECT rect) override;
+	void RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect) override;
 	// リサイズ時のコントロール位置・サイズの再計算
-	void RecalcControls(HWND hwnd, LauncherInputStatus* status) override;
+	void RecalcControls(HWND hwnd, LauncherInput* status) override;
 
 private:
 	struct PImpl;

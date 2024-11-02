@@ -3,10 +3,10 @@
 namespace launcherapp {
 namespace mainwindow {
 
-class LauncherInputStatus
+class LauncherInput
 {
 public:
-	virtual ~LauncherInputStatus() {}
+	virtual ~LauncherInput() {}
 
 	virtual bool HasKeyword() = 0;
 };
