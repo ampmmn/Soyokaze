@@ -106,6 +106,130 @@ NamedCommandHotKeyHandler ..> Command : 実行
 ```
 
 
+## ローカルホットキー周りの処理
+
+```plantuml
+
+class LauncherMainWindow
+
+class CommandHotKeyManager <<singleton>>
+
+LauncherMainWindow -> CommandHotKeyManager
+
+```
+
+### シーケンス(初期化～コールバック呼び出し)
+
+``` plantuml
+
+autonumber
+
+participant LauncherMainWindow
+participant CommandHotKeyManager
+participant CommandHotKeyHandler
+
+note across : 初期化
+-> LauncherMainWindow ++ : OnInitDialog
+
+    ' インスタンス取得
+    LauncherMainWindow -> CommandHotKeyManager ++: GetInstance()
+    return
+
+    ' ウインドウ登録 
+    LauncherMainWindow -> CommandHotKeyManager ++: SetRegisterWindow(hwnd)
+    return
+
+<-- LauncherMainWindow --
+
+note across : 通知
+
+-> LauncherMainWindow ++ : PreTranslateMessage
+
+    ' インスタンス取得
+    LauncherMainWindow -> CommandHotKeyManager ++: GetInstance()
+    return
+
+    ' アクセラレータ取得
+    LauncherMainWindow -> CommandHotKeyManager ++: GetAccelelator()
+    return accel
+
+    ' アクセラレータにメッセージを渡す
+    LauncherMainWindow -> LauncherMainWindow ++: TranslateAccelerator(hwnd, accel)
+        note over LauncherMainWindow : 該当するキー入力メッセージだったら、LauncherMainWindowのハンドラが呼ばれる
+    return
+
+<-- LauncherMainWindow --
+
+note across : コールバック通知
+
+-> LauncherMainWindow ++ : OnCommandHotKey(id)
+
+    ' インスタンス取得
+    LauncherMainWindow -> CommandHotKeyManager ++: GetInstance()
+    return
+   
+    ' ローカルハンドラを呼び出す 
+    LauncherMainWindow -> CommandHotKeyManager ++: InvokeLocalHandler(id)
+        CommandHotKeyManager -> CommandHotKeyManager ++ : find(id)
+        return handler
+
+        CommandHotKeyManager -> CommandHotKeyHandler ++ : Invoke()
+    return
+
+<-- LauncherMainWindow --
+
+```
+
+### シーケンス(ハンドラ登録)
+
+```plantuml
+
+autonumber
+
+participant CommandRepository
+participant AppPreference
+participant CommandHotKeyManager
+participant NamedCommandHotKeyHandler
+
+note over CommandRepository : コマンド登録データ更新時に呼ばれる
+-> CommandRepository ++ : ReloadPatternObject
+
+    CommandRepository -> AppPreference ++ : Get()
+    return
+
+    CommandRepository -> AppPreference ++ : GetCommandKeyMappings()
+    return hotKeyMap
+
+    loop foreach map in hotKeyMap
+
+        CommandRepository -> CommandHotKeyManager ++ : GetInstance()
+        return
+
+        CommandRepository -> NamedCommandHotKeyHandler ** : 作成
+        CommandRepository <-- NamedCommandHotKeyHandler : handler
+        
+        CommandRepository -> CommandHotKeyManager ++ : Register(handler)
+        return
+    end
+    
+
+<-- CommandRepository --
+
+```
+
+
+
+
+### 説明
+
+- LauncherMainWindowはメッセージハンドラのテーブルで以下を登録しているので、
+CommandHotKeyManagerが生成したアクセラレータのコールバックをうけとることができる
+  - ID範囲はCommandHotKeyManagerが提供する
+
+```
+	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
+	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
+```
 
 
 

@@ -1206,8 +1206,8 @@ LRESULT LauncherMainWindow::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 
 BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
 {
-	HACCEL accel = core::CommandHotKeyManager::GetInstance()->GetAccelerator();
-	if (accel && TranslateAccelerator(GetSafeHwnd(), accel, pMsg)) {
+	// メッセージの内容に応じてホットキーハンドラを呼ぶ
+	if (core::CommandHotKeyManager::GetInstance()->TryCallLocalHotKeyHander(pMsg)) {
 		return TRUE;
 	}
 	return __super::PreTranslateMessage(pMsg);

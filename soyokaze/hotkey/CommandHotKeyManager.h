@@ -30,8 +30,9 @@ public:
 	// グローバルホットキーのイベント受け取り先となるウインドウを設定する
 	HWND SetReceiverWindow(HWND hwnd);
 
-	// アクセラレータ取得
-	HACCEL GetAccelerator();
+	// メッセージ内容によりハンドラを呼ぶ
+	bool TryCallLocalHotKeyHander(MSG* msg);
+
 	// 実行
 	void InvokeLocalHandler(UINT id);
 	void InvokeGlobalHandler(LPARAM lp);
