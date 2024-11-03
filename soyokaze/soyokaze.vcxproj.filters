@@ -1278,6 +1278,9 @@
     <ClInclude Include="mainwindow\MainWindowInput.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="macros\builtin\AppNameMacro.h">
+      <Filter>macros\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2257,6 +2260,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\MainWindowInput.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\builtin\AppNameMacro.cpp">
+      <Filter>macros\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
