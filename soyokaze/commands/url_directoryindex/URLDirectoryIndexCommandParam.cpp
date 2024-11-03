@@ -67,8 +67,11 @@ CString CommandParam::CombineURL2(const CString& urlPart, const CString& subPath
 	// 絶対表記の場合はそのまま返す
 	static tregex regURL(_T("https?://.+"));
 	if (std::regex_search((LPCTSTR)subPath, regURL)) {
-		spdlog::debug(_T("route1 {}"), (LPCTSTR)subPath);
-		return subPath;
+		url = subPath;
+		SimplifyURL(url);
+
+		spdlog::debug(_T("route1 {}"), (LPCTSTR)url);
+		return url;
 	}
 
 	WCHAR hostName[256];
@@ -91,11 +94,14 @@ CString CommandParam::CombineURL2(const CString& urlPart, const CString& subPath
 		DWORD len =8000;
 		WinHttpCreateUrl(&cmp, 0, url.GetBuffer(8000), &len);
 		url.ReleaseBuffer();
+		SimplifyURL(url);
 		return url;
 	}
 
+	// urlとsubPathを連結する
 	int pos = -1;
 	for (int i = url.GetLength()-1;i >= 0; --i) {
+		//最後に登場する'/'の位置を探す
 		if (url[i] != _T('/')) {
 			continue;
 		}
@@ -108,10 +114,34 @@ CString CommandParam::CombineURL2(const CString& urlPart, const CString& subPath
 		return url;
 	}
 
+	// urlの先頭から'/'までを取り出し、subPathを連結する
 	url = url.Left(pos + 1);
 	url += subPath;
 
+	SimplifyURL(url);
 	return url;
+}
+
+// URLに含まれる ../ を除去する
+void CommandParam::SimplifyURL(CString& url)
+{
+	tstring wholeText((LPCTSTR)url);
+
+	// まずホスト名までとパスにばらす
+	static tregex reg(_T("(https?://[^/]+)(/.*)$"));
+	if (std::regex_match(wholeText, reg) == false) {
+		return;
+	}
+	tstring host = std::regex_replace(wholeText, reg, _T("$1"));
+	tstring path = std::regex_replace(wholeText, reg, _T("$2"));
+
+	// パス部分に含まれる../を除去する
+	static tregex reg2(_T("^(.*?)(/[^/]+)?/\\.\\.(/.+)$"));
+	while (std::regex_match(path, reg2)) {
+		path = std::regex_replace(path, reg2, _T("$1$3"));
+	}
+
+	url = (host + path).c_str();
 }
 
 } // end of namespace url_directoryindex

@@ -19,6 +19,8 @@ public:
 	CString CombineURL(const CString& subPath1, const CString& subPath2) const;
 
 	static CString CombineURL2(const CString& urlPart, const CString& subPath);
+
+	static void SimplifyURL(CString& url);
 public:
 	CString mName;
 	CString mDescription;
