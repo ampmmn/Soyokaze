@@ -10,7 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
-WindowPosition::WindowPosition() : mPosition({})
+constexpr int DEFAULT_HEIGHT = 480;
+
+WindowPosition::WindowPosition() : mPosition({}), mIsLoaded(false)
 {
 	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
 	BOOL ret = GetComputerName(mName.GetBuffer(bufLen), &bufLen);
@@ -21,7 +23,7 @@ WindowPosition::WindowPosition() : mPosition({})
 	}
 }
 
-WindowPosition::WindowPosition(LPCTSTR name) : mPosition({})
+WindowPosition::WindowPosition(LPCTSTR name) : mPosition({}), mIsLoaded(false)
 {
 	ASSERT(name);
 
@@ -104,6 +106,7 @@ bool WindowPosition::Restore(HWND hwnd)
 		return FALSE;
 	}
 	mPosition = wp;
+	mIsLoaded = true;
 
 	// 各モニタ領域の中に納まっているかをチェック
 	RECT rectWnd;
@@ -123,6 +126,7 @@ bool WindowPosition::Update(HWND hwnd)
 		return false;
 	}
 	mPosition = wp;
+	mIsLoaded = true;
 	return true;
 }
 
@@ -185,6 +189,11 @@ bool WindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
 
 bool WindowPosition::SyncPosition(HWND hwnd)
 {
+	if (mIsLoaded == false) {
+		GetWindowRect(hwnd, &mPosition.rcNormalPosition);
+		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;
+
+	}
 	return SetWindowPlacement(hwnd, &mPosition) != FALSE;
 }
 

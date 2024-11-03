@@ -26,5 +26,6 @@ protected:
 protected:
 	CString mName;
 	WINDOWPLACEMENT mPosition;
+	bool mIsLoaded;
 };
 
