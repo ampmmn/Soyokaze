@@ -497,7 +497,7 @@
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="gui\SystemColorScheme.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
-    <ClInclude Include="hotkey\CommandHotkeyAttribute.h" />
+    <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="hotkey\VirtualKeyDefine.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />

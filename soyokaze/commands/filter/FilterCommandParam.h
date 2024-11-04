@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hotkey/CommandHotkeyAttribute.h"
+#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
