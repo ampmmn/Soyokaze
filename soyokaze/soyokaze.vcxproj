@@ -499,6 +499,7 @@
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotkeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
+    <ClInclude Include="hotkey\VirtualKeyDefine.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
     <ClInclude Include="macros\builtin\AppNameMacro.h" />
@@ -864,6 +865,7 @@
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
+    <ClCompile Include="hotkey\VirtualKeyDefine.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />
     <ClCompile Include="macros\builtin\AppNameMacro.cpp" />

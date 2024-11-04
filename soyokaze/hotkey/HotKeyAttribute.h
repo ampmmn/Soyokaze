@@ -4,7 +4,6 @@
 // ホットキーの属性
 class HOTKEY_ATTR
 {
-	struct VK_ITEM;
 public:
 	HOTKEY_ATTR();
 	HOTKEY_ATTR(const HOTKEY_ATTR& rhs);
@@ -37,8 +36,5 @@ public:
 	bool mUseAlt;
 	bool mUseWin;
 	short mVirtualKeyIdx;
-
-	static const VK_ITEM VK_DEFINED_DATA[];
-
 };
 

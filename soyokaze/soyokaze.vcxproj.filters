@@ -1281,6 +1281,9 @@
     <ClInclude Include="macros\builtin\AppNameMacro.h">
       <Filter>macros\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="hotkey\VirtualKeyDefine.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2263,6 +2266,9 @@
     </ClCompile>
     <ClCompile Include="macros\builtin\AppNameMacro.cpp">
       <Filter>macros\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\VirtualKeyDefine.cpp">
+      <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

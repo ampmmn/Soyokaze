@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "hotkey/HotKeyAttribute.h"
+#include "hotkey/VirtualKeyDefine.h"
 #include "setting/AppPreference.h"
 #include <utility>
 
@@ -8,131 +9,6 @@
 #endif
 
 static const int ID_LAUNCHER_TRY_HOTKEY = 0xB31D;
-
-enum {
-	KIND_ALPHA,
-	KIND_NUMBER,
-	KIND_CHAR,
-	KIND_MOVE,
-	KIND_NUMKEY,
-	KIND_FUNCTION,
-	KIND_OTHER,
-};
-
-struct HOTKEY_ATTR::VK_ITEM
-{
-	VK_ITEM(UINT vk, LPCTSTR chr, int kind) : 
-		mVKCode(vk), mChar(chr), mKind(kind)
-	{
-	}
-	VK_ITEM(const VK_ITEM&) = default;
-	VK_ITEM& operator = (const VK_ITEM&) = default;
-
-	UINT mVKCode;
-	CString mChar;
-	int mKind;
-};
-
-const HOTKEY_ATTR::VK_ITEM HOTKEY_ATTR::VK_DEFINED_DATA[] = {
-	{ 0x41, _T("A"), KIND_ALPHA },
-	{ 0x42, _T("B"), KIND_ALPHA },
-	{ 0x43, _T("C"), KIND_ALPHA },
-	{ 0x44, _T("D"), KIND_ALPHA },
-	{ 0x45, _T("E"), KIND_ALPHA },
-	{ 0x46, _T("F"), KIND_ALPHA },
-	{ 0x47, _T("G"), KIND_ALPHA },
-	{ 0x48, _T("H"), KIND_ALPHA },
-	{ 0x49, _T("I"), KIND_ALPHA },
-	{ 0x4A, _T("J"), KIND_ALPHA },
-	{ 0x4B, _T("K"), KIND_ALPHA },
-	{ 0x4C, _T("L"), KIND_ALPHA },
-	{ 0x4D, _T("M"), KIND_ALPHA },
-	{ 0x4E, _T("N"), KIND_ALPHA },
-	{ 0x4F, _T("O"), KIND_ALPHA },
-	{ 0x50, _T("P"), KIND_ALPHA },
-	{ 0x51, _T("Q"), KIND_ALPHA },
-	{ 0x52, _T("R"), KIND_ALPHA },
-	{ 0x53, _T("S"), KIND_ALPHA },
-	{ 0x54, _T("T"), KIND_ALPHA },
-	{ 0x55, _T("U"), KIND_ALPHA },
-	{ 0x56, _T("V"), KIND_ALPHA },
-	{ 0x57, _T("W"), KIND_ALPHA },
-	{ 0x58, _T("X"), KIND_ALPHA },
-	{ 0x59, _T("Y"), KIND_ALPHA },
-	{ 0x5A, _T("Z"), KIND_ALPHA },
-	{ 0x31, _T("1"), KIND_NUMBER },
-	{ 0x32, _T("2"), KIND_NUMBER },
-	{ 0x33, _T("3"), KIND_NUMBER },
-	{ 0x34, _T("4"), KIND_NUMBER },
-	{ 0x35, _T("5"), KIND_NUMBER },
-	{ 0x36, _T("6"), KIND_NUMBER },
-	{ 0x37, _T("7"), KIND_NUMBER },
-	{ 0x38, _T("8"), KIND_NUMBER },
-	{ 0x39, _T("9"), KIND_NUMBER },
-	{ 0x30, _T("0"), KIND_NUMBER },
-	{ 0x20, _T("Space"), KIND_CHAR },
-	{ 0x0D, _T("Enter"), KIND_CHAR },
-	{ 0x2E, _T("Delete"), KIND_CHAR },
-	{ 0x09, _T("Tab"), KIND_CHAR },
-	{ 0x26, _T("↑"), KIND_MOVE },
-	{ 0x28, _T("↓"), KIND_MOVE },
-	{ 0x25, _T("←"), KIND_MOVE },
-	{ 0x27, _T("→"), KIND_MOVE },
-	{ 0x6C, _T(","), KIND_CHAR },
-	{ 0x6E, _T("."), KIND_CHAR },
-	{ 0xBF, _T("/"), KIND_CHAR },
-	{ 0xBA, _T(":"), KIND_CHAR },
-	{ 0xBB, _T(";"), KIND_CHAR },
-	{ 0xC0, _T("@"), KIND_CHAR },
-	{ 0xDB, _T("["), KIND_CHAR },
-	{ 0xDD, _T("]"), KIND_CHAR },
-	{ 0xBD, _T("^"), KIND_CHAR },
-	{ 0x6D, _T("-"), KIND_CHAR },
-	{ 0x22, _T("PageDown"), KIND_MOVE },
-	{ 0x21, _T("PageUp"), KIND_MOVE },
-	{ 0x24, _T("Home"), KIND_MOVE },
-	{ 0x23, _T("End"), KIND_MOVE },
-	{ 0x2D, _T("Insert"), KIND_MOVE },
-	{ 0x61, _T("Num 1"), KIND_NUMKEY },
-	{ 0x62, _T("Num 2"), KIND_NUMKEY },
-	{ 0x63, _T("Num 3"), KIND_NUMKEY },
-	{ 0x64, _T("Num 4"), KIND_NUMKEY },
-	{ 0x65, _T("Num 5"), KIND_NUMKEY },
-	{ 0x66, _T("Num 6"), KIND_NUMKEY },
-	{ 0x67, _T("Num 7"), KIND_NUMKEY },
-	{ 0x68, _T("Num 8"), KIND_NUMKEY },
-	{ 0x69, _T("Num 9"), KIND_NUMKEY },
-	{ 0x60, _T("Num 0"), KIND_NUMKEY },
-	{ 0xF0, _T("CapsLock"), KIND_OTHER },
-	{ 0xF2, _T("かな"), KIND_OTHER },
-	{ 0x1C, _T("変換"), KIND_OTHER },
-	{ 0x1D, _T("無変換"), KIND_OTHER },
-	{ 0x90, _T("NumLock"), KIND_OTHER },
-	{ 0x70, _T("F1"), KIND_FUNCTION },
-	{ 0x71, _T("F2"), KIND_FUNCTION },
-	{ 0x72, _T("F3"), KIND_FUNCTION },
-	{ 0x73, _T("F4"), KIND_FUNCTION },
-	{ 0x74, _T("F5"), KIND_FUNCTION },
-	{ 0x75, _T("F6"), KIND_FUNCTION },
-	{ 0x76, _T("F7"), KIND_FUNCTION },
-	{ 0x77, _T("F8"), KIND_FUNCTION },
-	{ 0x78, _T("F9"), KIND_FUNCTION },
-	{ 0x79, _T("F10"), KIND_FUNCTION },
-	{ 0x7A, _T("F11"), KIND_FUNCTION },
-	{ 0x7B, _T("F12"), KIND_FUNCTION },
-	{ 0x7C, _T("F13"), KIND_FUNCTION },
-	{ 0x7D, _T("F14"), KIND_FUNCTION },
-	{ 0x7E, _T("F15"), KIND_FUNCTION },
-	{ 0x7F, _T("F16"), KIND_FUNCTION },
-	{ 0x80, _T("F17"), KIND_FUNCTION },
-	{ 0x81, _T("F18"), KIND_FUNCTION },
-	{ 0x82, _T("F19"), KIND_FUNCTION },
-	{ 0x83, _T("F20"), KIND_FUNCTION },
-	{ 0x84, _T("F21"), KIND_FUNCTION },
-	{ 0x85, _T("F22"), KIND_FUNCTION },
-	{ 0x86, _T("F23"), KIND_FUNCTION },
-	{ 0x87, _T("F24"), KIND_FUNCTION },
-};
 
 // 修飾キー
 // MOD_ALT     (0x0001)
@@ -157,9 +33,11 @@ HOTKEY_ATTR::HOTKEY_ATTR(const HOTKEY_ATTR& rhs) :
 HOTKEY_ATTR::HOTKEY_ATTR(UINT modifiers, UINT hotkey) : 
 	mVirtualKeyIdx(-1)
 {
-
-	for (int i = 0; i < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]); ++i) {
-		if (VK_DEFINED_DATA[i].mVKCode == hotkey) {
+	auto keyDefine = VirtualKeyDefine::GetInstance();
+	int count = keyDefine->GetItemCount();
+	for (int i = 0; i < count; ++i) {
+		auto key = keyDefine->GetItem(i);
+		if (key.mVKCode == hotkey) {
 			mVirtualKeyIdx = (short)i;
 			break;
 		}
@@ -244,7 +122,7 @@ HOTKEY_ATTR& HOTKEY_ATTR::operator = (
 
 bool HOTKEY_ATTR::IsValid() const
 {
-	return 0 <= mVirtualKeyIdx && mVirtualKeyIdx < sizeof(VK_DEFINED_DATA) / sizeof(VK_DEFINED_DATA[0]);
+	return 0 <= mVirtualKeyIdx && mVirtualKeyIdx < VirtualKeyDefine::GetInstance()->GetItemCount();
 }
 
 bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
@@ -264,7 +142,9 @@ bool HOTKEY_ATTR::GetAccel(ACCEL& accel) const
 	if (mUseAlt) {
 		accel.fVirt |= FALT;
 	}
-	accel.key = (WORD)VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
+
+	auto keyDefine = VirtualKeyDefine::GetInstance();
+	accel.key = (WORD)keyDefine->GetItem(mVirtualKeyIdx).mVKCode;
 
 	return true;
 }
@@ -320,7 +200,9 @@ CString HOTKEY_ATTR::ToString() const
 	if (str.IsEmpty() == FALSE) {
 		str += _T("-");
 	}
-	str += VK_DEFINED_DATA[mVirtualKeyIdx].mChar;
+
+	auto keyDefine = VirtualKeyDefine::GetInstance();
+	str += keyDefine->GetItem(mVirtualKeyIdx).mChar;
 	return str;
 }
 
@@ -348,19 +230,21 @@ UINT HOTKEY_ATTR::GetVKCode() const
 		return 0;
 	}
 
-	return VK_DEFINED_DATA[mVirtualKeyIdx].mVKCode;
+	auto keyDefine = VirtualKeyDefine::GetInstance();
+	return keyDefine->GetItem(mVirtualKeyIdx).mVKCode;
 }
 
 // 割り当てを許可しないキーか?
 bool HOTKEY_ATTR::IsReservedKey() const
 {
-	const auto& data = VK_DEFINED_DATA[mVirtualKeyIdx];
+	auto keyDefine = VirtualKeyDefine::GetInstance();
+	const auto& data = keyDefine->GetItem(mVirtualKeyIdx);
 	auto kind = data.mKind;
 	if (GetModifiers() == 0) {
 
 		// 横取りすると通常の入力に差し支えある文字は許可しない
-		return kind == KIND_ALPHA || kind == KIND_NUMBER || 
-		       kind == KIND_CHAR || kind == KIND_MOVE;
+		return kind == VirtualKeyDefine::KIND_ALPHA || kind == VirtualKeyDefine::KIND_NUMBER ||
+		       kind == VirtualKeyDefine::KIND_CHAR || kind == VirtualKeyDefine::KIND_MOVE;
 	}
 	if (GetModifiers() == MOD_SHIFT) {
 		// Shift+CapsLockは許可しない
@@ -368,7 +252,7 @@ bool HOTKEY_ATTR::IsReservedKey() const
 			return true;
 		}
 		// Shift+英数字キーも差し支えありそうなので許可しない
-		return kind == KIND_ALPHA || kind == KIND_NUMBER;
+		return kind == VirtualKeyDefine::KIND_ALPHA || kind == VirtualKeyDefine::KIND_NUMBER;
 	}
 	return false;
 }
