@@ -31,11 +31,11 @@ void CommandHotKeyDialog::SetTargetName(const CString& name)
 void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_CHECK_SHIFT, mHotKeyAttr.mUseShift);
-	DDX_Check(pDX, IDC_CHECK_ALT, mHotKeyAttr.mUseAlt);
-	DDX_Check(pDX, IDC_CHECK_CTRL, mHotKeyAttr.mUseCtrl);
-	DDX_Check(pDX, IDC_CHECK_WIN, mHotKeyAttr.mUseWin);
-	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mVirtualKeyIdx);
+	DDX_Check(pDX, IDC_CHECK_SHIFT, mHotKeyAttr.mHotKeyAttr.mUseShift);
+	DDX_Check(pDX, IDC_CHECK_ALT, mHotKeyAttr.mHotKeyAttr.mUseAlt);
+	DDX_Check(pDX, IDC_CHECK_CTRL, mHotKeyAttr.mHotKeyAttr.mUseCtrl);
+	DDX_Check(pDX, IDC_CHECK_WIN, mHotKeyAttr.mHotKeyAttr.mUseWin);
+	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mHotKeyAttr.mIsGlobal);
 }
@@ -89,10 +89,10 @@ void CommandHotKeyDialog::UpdateStatus()
 	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mHotKeyAttr.mIsGlobal);
 	if (mHotKeyAttr.mIsGlobal == FALSE) {
 		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
-		mHotKeyAttr.mUseWin = 0;
+		mHotKeyAttr.mHotKeyAttr.mUseWin = 0;
 	}
 
-	if (mHotKeyAttr.IsReservedKey()) {
+	if (mHotKeyAttr.mHotKeyAttr.IsReservedKey()) {
 		GetDlgItem(IDOK)->EnableWindow(false);
 		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
 	}
@@ -102,7 +102,7 @@ void CommandHotKeyDialog::UpdateStatus()
 
 			// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
 
-			if (mHotKeyAttr.IsUnmapped()) {
+			if (mHotKeyAttr.mHotKeyAttr.IsUnmapped()) {
 				// キー割り当てなし
 				GetDlgItem(IDOK)->EnableWindow(TRUE);
 				UpdateData(FALSE);
@@ -111,7 +111,7 @@ void CommandHotKeyDialog::UpdateStatus()
 
 
 			if (mHotKeyAttr.mIsGlobal) {
-				bool canRegister = mHotKeyAttr.TryRegister(GetSafeHwnd());
+				bool canRegister = mHotKeyAttr.mHotKeyAttr.TryRegister(GetSafeHwnd());
 				GetDlgItem(IDOK)->EnableWindow(canRegister);
 
 				if (canRegister == false) {

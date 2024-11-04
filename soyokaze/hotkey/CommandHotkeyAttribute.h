@@ -2,8 +2,8 @@
 
 #include "hotkey/HotKeyAttribute.h"
 
-// $B%3%^%s%IMQ$N%[%C%H%-!<B0@-(B
-class CommandHotKeyAttribute : public HOTKEY_ATTR
+// コマンド用のホットキー属性
+class CommandHotKeyAttribute
 {
 public:
 	CommandHotKeyAttribute(bool isGlobal = false);
@@ -16,8 +16,16 @@ public:
 
 	CommandHotKeyAttribute& operator = (const CommandHotKeyAttribute& rhs);
 
+	void Reset();
+
+	bool IsValid() const;
+	UINT GetVKCode() const;
+	UINT GetModifiers() const;
 	bool IsGlobal() const;
 
+	CString ToString() const;
+
+	HOTKEY_ATTR mHotKeyAttr;
 	bool mIsGlobal;
 };
 

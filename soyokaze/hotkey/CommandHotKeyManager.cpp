@@ -44,6 +44,7 @@ struct CommandHotKeyManager::PImpl
 	};
 
 	UINT GetHotKeyID();
+	HACCEL GetAccelerator();
 
 	CCriticalSection mCS;
 
@@ -81,6 +82,80 @@ UINT CommandHotKeyManager::PImpl::GetHotKeyID()
 	return curId;
 }
 
+// アクセラレータ取得
+HACCEL CommandHotKeyManager::PImpl::GetAccelerator()
+{
+	// 頻繁に呼ばれるのでここではログをださない
+	// SPDLOG_DEBUG(_T("start"));
+
+	CSingleLock sl(&mCS, TRUE);
+
+	// すでにアクセラレータテーブル作成済で、かつ、設定に変更がなければ再利用する
+	if (mIsChanged == false) {
+		// 頻繁に呼ばれるのでここではログをださない
+		//SPDLOG_DEBUG(_T("Reuse HACCEL."));
+		return mAccel;
+	}
+
+	// 変更かあれば再作成するのでいったん破棄
+	if (mAccel) {
+		DestroyAcceleratorTable(mAccel);
+		mAccel = nullptr;
+
+		SPDLOG_DEBUG(_T("Destroy HACCEL."));
+	}
+
+	// テーブル情報が空の場合はnull
+	if (mKeyItemMap.empty()) {
+		SPDLOG_DEBUG(_T("mKeyItemMap is empty. HACCEL will be nullptr."));
+		return nullptr;
+	}
+
+	// 再作成
+	mLocalHandlerMap.clear();
+	std::vector<ACCEL> accels;
+	accels.reserve(mKeyItemMap.size());
+
+	// ローカルホットキー用を実行できるようにするため、
+	// キーアクセラレータに登録するテーブル生成
+	UINT id = ID_LOCAL_START;
+	for (auto& elem : mKeyItemMap) {
+
+		const HOTKEY_ATTR& hotKeyAttr = elem.first;
+		auto& item = elem.second;
+
+		if (item.mIsGlobal) {
+			// グローバルホットキーはアクセラレータテーブルでは扱わない
+			continue;
+		}
+
+		ACCEL accel;
+		hotKeyAttr.GetAccel(accel);
+		accel.cmd = (WORD)id;
+
+		accels.push_back(accel);
+		mLocalHandlerMap[id] = item.mHandlerPtr.get();
+
+		SPDLOG_DEBUG(_T("local key entry name:{0} id:{1}"), (LPCTSTR)item.mHandlerPtr->GetDisplayName(), id);
+		id++;
+	}
+
+	SPDLOG_DEBUG(_T("number of local handler : {}"), (int)(id - ID_LOCAL_START));
+
+	if (accels.empty()) {
+		SPDLOG_DEBUG(_T("HACCEL is empty."));
+		return nullptr;
+	}
+
+	mAccel = CreateAcceleratorTable(&accels.front(), (int)accels.size());
+	mIsChanged = false;
+
+	SPDLOG_DEBUG(_T("HACCEL for local key handler created. result:{}"), (mAccel != nullptr));
+
+	return mAccel;
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,77 +192,21 @@ HWND CommandHotKeyManager::SetReceiverWindow(HWND hwnd)
 	return orgWindow;
 }
 
-// アクセラレータ取得
-HACCEL CommandHotKeyManager::GetAccelerator()
+bool CommandHotKeyManager::TryCallLocalHotKeyHander(MSG* msg)
 {
-	// 頻繁に呼ばれるのでここではログをださない
-	// SPDLOG_DEBUG(_T("start"));
-
-	CSingleLock sl(&in->mCS, TRUE);
-
-	// すでにアクセラレータテーブル作成済で、かつ、設定に変更がなければ再利用する
-	if (in->mIsChanged == false) {
-		// 頻繁に呼ばれるのでここではログをださない
-		//SPDLOG_DEBUG(_T("Reuse HACCEL."));
-		return in->mAccel;
+	// アクセラレータがなければ処理しない
+	HACCEL accel = in->GetAccelerator();
+	if (accel == nullptr) {
+		return false;
 	}
 
-	// 変更かあれば再作成するのでいったん破棄
-	if (in->mAccel) {
-		DestroyAcceleratorTable(in->mAccel);
-		in->mAccel = nullptr;
-
-		SPDLOG_DEBUG(_T("Destroy HACCEL."));
+	// Win32APIに渡す
+	if (TranslateAccelerator(in->mReceiverWindow, accel, msg)) {
+		return true;
 	}
 
-	// テーブル情報が空の場合はnull
-	if (in->mKeyItemMap.empty()) {
-		SPDLOG_DEBUG(_T("mKeyItemMap is empty. HACCEL will be nullptr."));
-		return nullptr;
-	}
-
-	// 再作成
-	in->mLocalHandlerMap.clear();
-	std::vector<ACCEL> accels;
-	accels.reserve(in->mKeyItemMap.size());
-
-	// ローカルホットキー用を実行できるようにするため、
-	// キーアクセラレータに登録するテーブル生成
-	UINT id = ID_LOCAL_START;
-	for (auto& elem : in->mKeyItemMap) {
-
-		const HOTKEY_ATTR& hotKeyAttr = elem.first;
-		auto& item = elem.second;
-
-		if (item.mIsGlobal) {
-			// グローバルホットキーはアクセラレータテーブルでは扱わない
-			continue;
-		}
-
-		ACCEL accel;
-		hotKeyAttr.GetAccel(accel);
-		accel.cmd = (WORD)id;
-
-		accels.push_back(accel);
-		in->mLocalHandlerMap[id] = item.mHandlerPtr.get();
-
-		SPDLOG_DEBUG(_T("local key entry name:{0} id:{1}"), (LPCTSTR)item.mHandlerPtr->GetDisplayName(), id);
-		id++;
-	}
-
-	SPDLOG_DEBUG(_T("number of local handler : {}"), (int)(id - ID_LOCAL_START));
-
-	if (accels.empty()) {
-		SPDLOG_DEBUG(_T("HACCEL is empty."));
-		return nullptr;
-	}
-
-	in->mAccel = CreateAcceleratorTable(&accels.front(), (int)accels.size());
-	in->mIsChanged = false;
-
-	SPDLOG_DEBUG(_T("HACCEL for local key handler created. result:{}"), (in->mAccel != nullptr));
-
-	return in->mAccel;
+	// 通常のメッセージ処理をする
+	return false;
 }
 
 void CommandHotKeyManager::InvokeLocalHandler(UINT id)

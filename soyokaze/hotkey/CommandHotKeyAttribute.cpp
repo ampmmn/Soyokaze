@@ -12,19 +12,19 @@ CommandHotKeyAttribute::CommandHotKeyAttribute(bool isGlobal) :
 }
 
 CommandHotKeyAttribute::CommandHotKeyAttribute(const CommandHotKeyAttribute& rhs) : 
-	HOTKEY_ATTR(rhs), mIsGlobal(rhs.mIsGlobal)
+	mHotKeyAttr(rhs.mHotKeyAttr), mIsGlobal(rhs.mIsGlobal)
 {
 }
 
 CommandHotKeyAttribute::CommandHotKeyAttribute(UINT modifiers, UINT hotkey, bool isGlobal) :
-	HOTKEY_ATTR(modifiers, hotkey), mIsGlobal(isGlobal)
+	mHotKeyAttr(modifiers, hotkey), mIsGlobal(isGlobal)
 {
 }
 
 
 bool CommandHotKeyAttribute::operator == (const CommandHotKeyAttribute& rhs) const
 {
-	if (!(*(HOTKEY_ATTR*)this == *(HOTKEY_ATTR*)&rhs)) {
+	if (mHotKeyAttr != rhs.mHotKeyAttr) {
 		return false;
 	}
 	return mIsGlobal == rhs.mIsGlobal;
@@ -32,7 +32,7 @@ bool CommandHotKeyAttribute::operator == (const CommandHotKeyAttribute& rhs) con
 
 bool CommandHotKeyAttribute::operator != (const CommandHotKeyAttribute& rhs) const
 {
-	if ((*(HOTKEY_ATTR*)this != *(HOTKEY_ATTR*)&rhs)) {
+	if (mHotKeyAttr != rhs.mHotKeyAttr) {
 		return true;
 	}
 	return mIsGlobal != rhs.mIsGlobal;
@@ -40,7 +40,7 @@ bool CommandHotKeyAttribute::operator != (const CommandHotKeyAttribute& rhs) con
 
 bool CommandHotKeyAttribute::operator < (const CommandHotKeyAttribute& rhs) const
 {
-	if ((*(HOTKEY_ATTR*)this < *(HOTKEY_ATTR*)&rhs)) {
+	if (mHotKeyAttr < rhs.mHotKeyAttr) {
 		return true;
 	}
 	return mIsGlobal < rhs.mIsGlobal;
@@ -51,10 +51,32 @@ CommandHotKeyAttribute&
 CommandHotKeyAttribute::operator = (const CommandHotKeyAttribute& rhs)
 {
 	if (this != &rhs) {
-		((HOTKEY_ATTR*)this)->operator = (rhs);
+		mHotKeyAttr = rhs.mHotKeyAttr;
 		mIsGlobal = rhs.mIsGlobal;
 	}
 	return *this;
+}
+
+void CommandHotKeyAttribute::Reset()
+{
+	mHotKeyAttr.Reset();
+}
+
+
+
+bool CommandHotKeyAttribute::IsValid() const
+{
+	return mHotKeyAttr.IsValid();
+}
+
+UINT CommandHotKeyAttribute::GetVKCode() const
+{
+	return mHotKeyAttr.GetVKCode();
+}
+
+UINT CommandHotKeyAttribute::GetModifiers() const
+{
+	return mHotKeyAttr.GetModifiers();
 }
 
 
@@ -63,3 +85,7 @@ bool CommandHotKeyAttribute::IsGlobal() const
 	return mIsGlobal;
 }
 
+CString CommandHotKeyAttribute::ToString() const
+{
+	return mHotKeyAttr.ToString();
+}
