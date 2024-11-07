@@ -24,6 +24,8 @@ using ItemList = std::list<ItemPtr>;
 
 struct Sound::PImpl
 {
+	bool IsInitialized();
+	void Initialize();
 	bool GetWaitingItem(const CString& filePath, ItemPtr& item);
 
 	HWND mNotifyHwnd = nullptr;
@@ -33,6 +35,28 @@ struct Sound::PImpl
 
 	int mAliasIndex = 1;
 };
+
+bool Sound::PImpl::IsInitialized()
+{
+	return IsWindow(mNotifyHwnd);
+}
+
+void Sound::PImpl::Initialize()
+{
+	SharedHwnd sharedWnd;
+	HWND hParent = sharedWnd.GetHwnd();
+	if (IsWindow(hParent) == FALSE) {
+		return;
+	}
+
+	HINSTANCE hInst = (HINSTANCE)GetWindowLongPtr(hParent, GWLP_HINSTANCE);
+
+	mNotifyHwnd = CreateWindow(_T("Static"), _T(""), WS_CHILD, 0, 0, 0, 0, hParent, NULL, hInst, 0);
+	ASSERT(mNotifyHwnd);
+
+	SetWindowLongPtr(mNotifyHwnd, GWLP_WNDPROC, (DWORD_PTR)OnPlayCallbackProc);
+}
+
 
 bool Sound::PImpl::GetWaitingItem(const CString& filePath, ItemPtr& itemRet)
 {
@@ -113,20 +137,7 @@ Sound::OnPlayCallbackProc(HWND h, UINT msg, WPARAM wp, LPARAM lp)
 
 Sound* Sound::Get()
 {
-	SharedHwnd sharedWnd;
-	HWND hParent = sharedWnd.GetHwnd();
-	if (IsWindow(hParent) == FALSE) {
-		return nullptr;
-	}
-
-	HINSTANCE hInst = (HINSTANCE)GetWindowLongPtr(hParent, GWLP_HINSTANCE);
-
 	static Sound inst;
-	inst.in->mNotifyHwnd = CreateWindow(_T("Static"), _T(""), WS_CHILD, 0, 0, 0, 0, hParent, NULL, hInst, 0);
-	ASSERT(inst.in->mNotifyHwnd);
-
-	SetWindowLongPtr(inst.in->mNotifyHwnd, GWLP_WNDPROC, (DWORD_PTR)OnPlayCallbackProc);
-
 	return &inst;
 }
 
@@ -134,6 +145,9 @@ bool Sound::PlayAsync(LPCTSTR filePath)
 {
 	if (PathFileExists(filePath) == FALSE) {
 		return false;
+	}
+	if (in->IsInitialized() == false) {
+		in->Initialize();
 	}
 
 	ItemPtr playItem;

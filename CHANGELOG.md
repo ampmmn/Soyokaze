@@ -17,6 +17,7 @@
 - [DirectoryIndex] パスに ../ が含まれるときにそれを除去するようにした
   - コマンドを選択した結果として得られるURL文字列を下記のようにする  
 例: `http://host/path/to/subdir/../a.txt` → `http://host/path/to/a.txt`
+- Soundクラス回りの不備でまれに落ちる問題を修正
 
 ## [0.29.1] - 2024-10-21
 
