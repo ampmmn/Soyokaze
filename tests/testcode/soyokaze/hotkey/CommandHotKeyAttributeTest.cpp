@@ -4,12 +4,13 @@
 
 TEST(CommandHotKeyAttribute, testSizeOf)
 {
-	EXPECT_EQ(8, sizeof(CommandHotKeyAttribute));
+	EXPECT_EQ(12, sizeof(CommandHotKeyAttribute));
 }
 
 TEST(CommandHotKeyAttribute, testConstruct)
 {
-	CommandHotKeyAttribute attr;
+	CommandHotKeyAttribute cmdAttr;
+	auto& attr = cmdAttr.mHotKeyAttr;
 	EXPECT_EQ(-1, attr.mVirtualKeyIdx);
 	EXPECT_FALSE(attr.mUseShift);
 	EXPECT_FALSE(attr.mUseCtrl);
@@ -19,14 +20,17 @@ TEST(CommandHotKeyAttribute, testConstruct)
 
 TEST(CommandHotKeyAttribute, testCopyConstruct)
 {
-	CommandHotKeyAttribute attr;
+	CommandHotKeyAttribute cmdAttr;
+	auto& attr = cmdAttr.mHotKeyAttr;
+
 	attr.mVirtualKeyIdx = 1;
 	attr.mUseShift = true;
 	attr.mUseCtrl = false;
 	attr.mUseAlt = true;
 	attr.mUseWin = false;
 
-	CommandHotKeyAttribute attr2(attr);
+	CommandHotKeyAttribute cmdAttr2(cmdAttr);
+	auto& attr2 = cmdAttr2.mHotKeyAttr;
 
 	EXPECT_EQ(1, attr2.mVirtualKeyIdx);
 	EXPECT_TRUE(attr2.mUseShift);
@@ -37,14 +41,18 @@ TEST(CommandHotKeyAttribute, testCopyConstruct)
 
 TEST(CommandHotKeyAttribute, testConstruct2)
 {
-	CommandHotKeyAttribute attr(MOD_SHIFT| MOD_ALT, 0x41);
+	CommandHotKeyAttribute cmdAttr(MOD_SHIFT| MOD_ALT, 0x41);
+	auto& attr = cmdAttr.mHotKeyAttr;
+
 	EXPECT_EQ(0, attr.mVirtualKeyIdx);
 	EXPECT_TRUE(attr.mUseShift);
 	EXPECT_FALSE(attr.mUseCtrl);
 	EXPECT_TRUE(attr.mUseAlt);
 	EXPECT_FALSE(attr.mUseWin);
 
-	CommandHotKeyAttribute attr2(MOD_CONTROL | MOD_WIN, 0xdead);
+	CommandHotKeyAttribute cmdAttr2(MOD_CONTROL | MOD_WIN, 0xdead);
+	auto& attr2 = cmdAttr2.mHotKeyAttr;
+
 	EXPECT_EQ(-1, attr2.mVirtualKeyIdx);
 	EXPECT_FALSE(attr2.mUseShift);
 	EXPECT_TRUE(attr2.mUseCtrl);
@@ -55,6 +63,7 @@ TEST(CommandHotKeyAttribute, testConstruct2)
 TEST(CommandHotKeyAttribute, testEqual)
 {
 	CommandHotKeyAttribute attr(MOD_SHIFT| MOD_ALT, 0x41);
+
 	EXPECT_TRUE(attr == attr);
 
 	EXPECT_FALSE(attr == CommandHotKeyAttribute(MOD_ALT, 0x41));
@@ -81,19 +90,19 @@ TEST(CommandHotKeyAttribute, testGetAccel)
 {
 	CommandHotKeyAttribute attr(MOD_SHIFT| MOD_ALT, -1);
 	ACCEL accel;
-	EXPECT_FALSE(attr.GetAccel(accel));
+	EXPECT_FALSE(attr.mHotKeyAttr.GetAccel(accel));
 
 	CommandHotKeyAttribute attr2(MOD_SHIFT| MOD_ALT, 0x41);
-	EXPECT_TRUE(attr2.GetAccel(accel));
+	EXPECT_TRUE(attr2.mHotKeyAttr.GetAccel(accel));
 }
 
 TEST(CommandHotKeyAttribute, testCopy)
 {
 	CommandHotKeyAttribute attr(MOD_CONTROL | MOD_WIN, 0x45);
-	CommandHotKeyAttribute attr2;
+	CommandHotKeyAttribute attr2_;
 
-	attr2 = attr;
-
+	attr2_ = attr;
+	auto& attr2 = attr2_.mHotKeyAttr;
 
 	EXPECT_EQ(4, attr2.mVirtualKeyIdx);
 	EXPECT_FALSE(attr2.mUseShift);

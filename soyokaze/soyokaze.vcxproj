@@ -218,7 +218,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -248,7 +248,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -334,7 +334,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -368,7 +368,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)json/include;$(SolutionDir)spdlog/include;$(SolutionDir)tidy-html5/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -499,6 +499,8 @@
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
+    <ClInclude Include="hotkey\SandSKeyAttribute.h" />
+    <ClInclude Include="hotkey\SandSKeyState.h" />
     <ClInclude Include="hotkey\VirtualKeyDefine.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
@@ -865,6 +867,8 @@
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
+    <ClCompile Include="hotkey\SandSKeyAttribute.cpp" />
+    <ClCompile Include="hotkey\SandSKeyState.cpp" />
     <ClCompile Include="hotkey\VirtualKeyDefine.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />

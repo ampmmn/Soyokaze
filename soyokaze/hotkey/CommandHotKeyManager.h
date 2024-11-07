@@ -38,18 +38,16 @@ public:
 	void InvokeGlobalHandler(LPARAM lp);
 
 	// 名前からホットキーを取得
-	bool HasKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr);
 	bool GetKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr);
 
 	// ホットキーに関連付けられたものがあるかをチェック
-	bool HasKeyBinding(const CommandHotKeyAttribute& key);
+	bool HasKeyBinding(const HOTKEY_ATTR& attr);
+	bool HasKeyBinding(const SANDSKEY_ATTR& attr);
 
 	// 登録
 	bool Register(void* owner, CommandHotKeyHandler* handler, const CommandHotKeyAttribute& key);
 	// 登録解除(ハンドラオブジェクトがわかっている場合利用可能)
 	bool Unregister(CommandHotKeyHandler* handler);
-	// 登録された要素数を取得
-	int GetItemCount();
 
 	void GetMappings(CommandHotKeyMappings& keyMap);
 

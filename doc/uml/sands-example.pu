@@ -1,0 +1,11 @@
+@startuml{../../image/sands-example.png}
+
+card "初期状態" as init
+card "入力画面が表示される" as show
+card "コマンドが実行される" as exec
+
+init -do-> show : ランチャー呼び出しキー(CapsLock)押下
+show -do-> exec : CapsLockを押したままJキー押下
+
+@enduml
+

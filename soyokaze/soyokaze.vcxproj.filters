@@ -1284,6 +1284,12 @@
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="hotkey\SandSKeyAttribute.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
+    <ClInclude Include="hotkey\SandSKeyState.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2268,6 +2274,12 @@
       <Filter>macros\builtin</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\VirtualKeyDefine.cpp">
+      <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\SandSKeyAttribute.cpp">
+      <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\SandSKeyState.cpp">
       <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>

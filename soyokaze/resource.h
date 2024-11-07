@@ -142,6 +142,8 @@
 #define IDD_VOLUMEEDIT                  237
 #define IDS_DESCRIPTION_GROUPCOMMAND    238
 #define IDD_APPSETTING_COLOR            238
+#define IDD_HOTKEY1                     239
+#define IDD_COMMAND_HOTKEY              239
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -260,9 +262,12 @@
 #define IDC_COMBO_VK                    1072
 #define IDC_CHECK_ENABLEMIGEMO          1073
 #define IDC_COMBO_VKMODFIRST            1073
+#define IDC_COMBO_SANDSMOD              1073
 #define IDC_SYSLINK1                    1074
 #define IDC_COMBO_VKMODFIRST2           1074
 #define IDC_COMBO_VKMODSECOND           1074
+#define IDC_COMBO_VK2                   1074
+#define IDC_COMBO_SANDSVK               1074
 #define IDC_BUTTON_SHORTCUT             1075
 #define IDC_CHECK_KEEPTEXTWHENDLGHIDE   1076
 #define IDC_SYSLINK3                    1077
@@ -415,6 +420,7 @@
 #define IDC_BUTTON_LISTTEXTHIGHLIGHT    1191
 #define IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT 1192
 #define IDC_STATIC_WARNING              1193
+#define IDC_CHECK_SANDSHOTKEY           1194
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -423,7 +429,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1194
+#define _APS_NEXT_CONTROL_VALUE         1195
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

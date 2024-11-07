@@ -12,10 +12,13 @@
 
 
 CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_HOTKEY, parentWnd),
+	launcherapp::gui::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
 	mHotKeyAttr(attr)
 {
 	SetHelpPageId(_T("HotKey"));
+
+	mIsUseHotKey = attr.IsValid();
+	mIsUseSandS = attr.IsValidSandS();
 }
 
 
@@ -38,6 +41,10 @@ void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mHotKeyAttr.mIsGlobal);
+	DDX_Check(pDX, IDC_CHECK_HOTKEY, mIsUseHotKey);
+	DDX_Check(pDX, IDC_CHECK_SANDSHOTKEY, mIsUseSandS);
+	DDX_CBIndex(pDX, IDC_COMBO_SANDSMOD, mHotKeyAttr.mSandSKeyAttr.mModifier);
+	DDX_CBIndex(pDX, IDC_COMBO_SANDSVK, mHotKeyAttr.mSandSKeyAttr.mVirtualKeyIdx);
 }
 
 BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
@@ -48,12 +55,21 @@ BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_CLEAR, OnButtonClear)
+	ON_COMMAND(IDC_CHECK_HOTKEY, UpdateStatus)
+	ON_COMMAND(IDC_CHECK_SANDSHOTKEY, UpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_SANDSMOD, UpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_SANDSVK, UpdateStatus)
 END_MESSAGE_MAP()
 
 void CommandHotKeyDialog::GetAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = mHotKeyAttr;
+	if (mIsUseHotKey == FALSE) {
+		attr.Reset();
+	}
+	if (mIsUseSandS == FALSE) {
+		attr.ResetSandS();
+	}
 }
 
 BOOL CommandHotKeyDialog::OnInitDialog()
@@ -74,9 +90,6 @@ BOOL CommandHotKeyDialog::OnInitDialog()
 	// 初期値を覚えておく
 	mHotKeyAttrInit = mHotKeyAttr;
 
-	// 割り当て解除ボタンを有効にする
-	GetDlgItem(IDC_BUTTON_CLEAR)->ShowWindow(SW_SHOW);
-
 	UpdateStatus();
 
 	return TRUE;
@@ -86,50 +99,101 @@ void CommandHotKeyDialog::UpdateStatus()
 {
 	UpdateData();
 
-	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mHotKeyAttr.mIsGlobal);
+	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsUseHotKey && mHotKeyAttr.mIsGlobal);
+	GetDlgItem(IDC_CHECK_SHIFT)->EnableWindow(mIsUseHotKey);
+	GetDlgItem(IDC_CHECK_ALT)->EnableWindow(mIsUseHotKey);
+	GetDlgItem(IDC_CHECK_CTRL)->EnableWindow(mIsUseHotKey);
+	GetDlgItem(IDC_COMBO_VK)->EnableWindow(mIsUseHotKey);
+	GetDlgItem(IDC_COMBO_TYPE)->EnableWindow(mIsUseHotKey);
+	GetDlgItem(IDC_COMBO_SANDSMOD)->EnableWindow(mIsUseSandS);
+	GetDlgItem(IDC_COMBO_SANDSVK)->EnableWindow(mIsUseSandS);
+
+	mMessage.Empty();
+
+	bool isOK = UpdateStatusForHotKey();
+	if (isOK) {
+		isOK = UpdateStatusForSandS();
+	}
+
+	GetDlgItem(IDOK)->EnableWindow(isOK);
+	UpdateData(FALSE);
+}
+
+bool CommandHotKeyDialog::UpdateStatusForHotKey()
+{
 	if (mHotKeyAttr.mIsGlobal == FALSE) {
 		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
 		mHotKeyAttr.mHotKeyAttr.mUseWin = 0;
 	}
 
+	if (mIsUseHotKey == FALSE) {
+		return true;
+	}
+
+	if (mHotKeyAttr.mHotKeyAttr.IsValid() == false) {
+		mMessage = _T("キーを設定してください");
+		return false;
+	}
+
 	if (mHotKeyAttr.mHotKeyAttr.IsReservedKey()) {
-		GetDlgItem(IDOK)->EnableWindow(false);
+		// 予約済みキー
 		mMessage.LoadString(IDS_ERR_HOTKEYRESERVED);
+		return false;
+	}
+
+	if (mHotKeyAttr.mHotKeyAttr == mHotKeyAttrInit.mHotKeyAttr) {
+		return true;
+	}
+
+	// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
+	if (mHotKeyAttr.mHotKeyAttr.IsUnmapped()) {
+		// キー割り当てなし
+		return true;
+	}
+
+	if (mHotKeyAttr.mIsGlobal) {
+		// グローバルホットキーの場合
+		bool canRegister = mHotKeyAttr.mHotKeyAttr.TryRegister(GetSafeHwnd());
+		if (canRegister == false) {
+			mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
+		}
+		return canRegister;
 	}
 	else {
-		mMessage.Empty();
-		if (mHotKeyAttr != mHotKeyAttrInit) {
-
-			// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
-
-			if (mHotKeyAttr.mHotKeyAttr.IsUnmapped()) {
-				// キー割り当てなし
-				GetDlgItem(IDOK)->EnableWindow(TRUE);
-				UpdateData(FALSE);
-				return;
-			}
-
-
-			if (mHotKeyAttr.mIsGlobal) {
-				bool canRegister = mHotKeyAttr.mHotKeyAttr.TryRegister(GetSafeHwnd());
-				GetDlgItem(IDOK)->EnableWindow(canRegister);
-
-				if (canRegister == false) {
-					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
-				}
-			}
-			else {
-				auto manager = launcherapp::core::CommandHotKeyManager::GetInstance();
-				bool alreadUsed = manager->HasKeyBinding(mHotKeyAttr);
-				if (alreadUsed) {
-					mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
-				}
-				GetDlgItem(IDOK)->EnableWindow(alreadUsed == false);
-			}
+		// ローカルホットキーの場合
+		auto manager = launcherapp::core::CommandHotKeyManager::GetInstance();
+		bool alreadyUsed = manager->HasKeyBinding(mHotKeyAttr.mHotKeyAttr);
+		if (alreadyUsed) {
+			mMessage.LoadString(IDS_ERR_HOTKEYALREADYUSE);
 		}
+		return alreadyUsed == false;
+	}
+}
+
+bool CommandHotKeyDialog::UpdateStatusForSandS()
+{
+	if (mIsUseSandS == FALSE) {
+		return true;
 	}
 
-	UpdateData(FALSE);
+	const auto& sandsAttr = mHotKeyAttr.mSandSKeyAttr;
+	if (sandsAttr.IsValid() == false) {
+		mMessage = _T("キーを設定してください");
+		return false;
+	}
+
+	if (mHotKeyAttr.mSandSKeyAttr == mHotKeyAttrInit.mSandSKeyAttr) {
+		return true;
+	}
+
+	auto manager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	bool alreadyUsed = manager->HasKeyBinding(sandsAttr);
+	if (alreadyUsed) {
+		mMessage = _T("指定されたSandS設定は他のコマンドで既に使用されています");
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -148,15 +212,6 @@ HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 
 	return br;
-}
-
-void CommandHotKeyDialog::OnButtonClear()
-{
-	UpdateData();
-	mHotKeyAttr = CommandHotKeyAttribute();
-	UpdateData(FALSE);
-
-	UpdateStatus();
 }
 
 bool CommandHotKeyDialog::ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parentWnd)

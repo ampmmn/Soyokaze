@@ -19,6 +19,9 @@ public:
 	// 初期値
 	CommandHotKeyAttribute mHotKeyAttrInit;
 
+	BOOL mIsUseHotKey;
+	BOOL mIsUseSandS;
+
 	// メッセージ欄
 	CString mMessage;
 	//
@@ -30,11 +33,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
+	bool UpdateStatusForHotKey();
+	bool UpdateStatusForSandS();
+
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void UpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonClear();
 };
 

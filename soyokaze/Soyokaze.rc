@@ -54,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 髣比ｼ夲ｽｽ・･髯樊ｻ薙§邵ｲ蟶昴％繝ｻ・ｨ鬯ｮ・ｮ郢晢ｽｻ繝ｻ繝ｻ・ｹ・ｧ陟募ｨｯ陞ｺ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 髫ｶ轣倡ｶ懊・・ｺ隰費ｽｶ邵ｺ諷包ｽｹ譎｢・ｽ・ｳ驛｢譎・ｺ｢郢晢ｽｻ驛｢譎樔ｺゑｾ趣ｽｦ驛｢譏ｴ繝ｻ\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 驛｢譎｢・ｽ・ｪ驛｢譎・鯵・趣ｽｦ驍ｵ・ｺ驗呻ｽｫ繝ｻ閧ｲ・ｸ・ｺ繝ｻ・ｳ驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取ｺｽ・ｹ譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ 驛｢譎√・郢晢ｽｻ 驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｽ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -1147,6 +1147,34 @@ BEGIN
     PUSHBUTTON      "システムの色設定に戻す(&R)",IDC_BUTTON_RESTORE,185,24,101,14
 END
 
+IDD_COMMAND_HOTKEY DIALOGEX 0, 0, 251, 211
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ホットキーの設定"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,7,6,237,104
+    GROUPBOX        "",IDC_STATIC,7,114,237,54
+    CONTROL         "ホットキーを設定する(&H)",IDC_CHECK_HOTKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,6,94,10
+    CONTROL         "SandSを設定する(&N)",IDC_CHECK_SANDSHOTKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,114,88,10
+    CONTROL         "&Shift",IDC_CHECK_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,44,31,10
+    CONTROL         "&Alt",IDC_CHECK_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,58,25,10
+    CONTROL         "&Ctrl",IDC_CHECK_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,72,27,10
+    CONTROL         "&Win",IDC_CHECK_WIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,86,28,10
+    COMBOBOX        IDC_COMBO_TYPE,91,30,135,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "キー(&K):",IDC_STATIC,91,49,26,8
+    COMBOBOX        IDC_COMBO_VK,91,63,135,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "修飾キー(&M):",IDC_STATIC,15,128,44,8
+    COMBOBOX        IDC_COMBO_SANDSMOD,16,142,54,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "キー(&E):",IDC_STATIC,91,128,26,8
+    COMBOBOX        IDC_COMBO_SANDSVK,91,142,135,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,139,190,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,194,190,50,14
+    GROUPBOX        "修飾キー",IDC_STATIC,12,28,60,75
+    LTEXT           "+",IDC_STATIC,77,63,8,8
+    LTEXT           "スタティック",IDC_STATIC_STATUSMSG,7,174,237,8
+    LTEXT           "+",IDC_STATIC,77,142,8,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1581,6 +1609,14 @@ BEGIN
         RIGHTMARGIN, 337
         TOPMARGIN, 7
         BOTTOMMARGIN, 284
+    END
+
+    IDD_COMMAND_HOTKEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 204
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2290,6 +2326,11 @@ BEGIN
 END
 
 IDD_APPSETTING_COLOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_COMMAND_HOTKEY AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -3074,6 +3115,409 @@ BEGIN
     0
 END
 
+IDD_COMMAND_HOTKEY DLGINIT
+BEGIN
+    IDC_COMBO_TYPE, 0x403, 21, 0
+0x4183, 0x4e83, 0x6583, 0x4283, 0x7583, 0x9e8e, 0xcc82, 0xdd82, 0x4c97, 
+0xf88c, "\000" 
+    IDC_COMBO_TYPE, 0x403, 19, 0
+0xed8f, 0x9392, 0x9e8e, 0xa282, 0xc282, 0xc582, 0xe082, 0x4c97, 0xf88c, 
+"\000" 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0041, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0042, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0043, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0044, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0045, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0046, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0047, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0048, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0049, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004a, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004b, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004c, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004d, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x004f, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0050, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0051, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0052, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0053, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0054, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0055, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0056, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0057, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0058, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0059, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005a, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0030, 
+    IDC_COMBO_VK, 0x403, 1, 0
+"\000" 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x6e45, 0x6574, 0x0072, 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6544, 0x656c, 0x6574, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x6154, 0x0062, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xaa81, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xab81, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xa981, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0xa881, "\000" 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002c, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002f, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x003a, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x4781, "\000" 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x0040, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005b, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005d, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x005e, 
+    IDC_COMBO_VK, 0x403, 2, 0
+0x002d, 
+    IDC_COMBO_VK, 0x403, 9, 0
+0x6150, 0x6567, 0x6f44, 0x6e77, "\000" 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6150, 0x6567, 0x7055, "\000" 
+    IDC_COMBO_VK, 0x403, 5, 0
+0x6f48, 0x656d, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x6e45, 0x0064, 
+    IDC_COMBO_VK, 0x403, 7, 0
+0x6e49, 0x6573, 0x7472, "\000" 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0031, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0032, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0033, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0034, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0035, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0036, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0037, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0038, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0039, 
+    IDC_COMBO_VK, 0x403, 6, 0
+0x754e, 0x206d, 0x0030, 
+    IDC_COMBO_VK, 0x403, 1, 0
+"\000" 
+    IDC_COMBO_VK, 0x403, 1, 0
+"\000" 
+    IDC_COMBO_VK, 0x403, 1, 0
+"\000" 
+    IDC_COMBO_VK, 0x403, 1, 0
+"\000" 
+    IDC_COMBO_VK, 0x403, 8, 0
+0x754e, 0x4c6d, 0x636f, 0x006b, 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_COMBO_VK, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0033, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0034, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0035, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0036, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0037, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0038, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3146, 0x0039, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0030, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0031, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0032, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0033, 
+    IDC_COMBO_VK, 0x403, 4, 0
+0x3246, 0x0034, 
+    IDC_COMBO_SANDSMOD, 0x403, 6, 0
+0x7053, 0x6361, 0x0065, 
+    IDC_COMBO_SANDSMOD, 0x403, 9, 0
+0x6143, 0x7370, 0x6f4c, 0x6b63, "\000" 
+    IDC_COMBO_SANDSMOD, 0x403, 5, 0
+0xcf95, 0xb78a, "\000" 
+    IDC_COMBO_SANDSMOD, 0x403, 7, 0
+0xb396, 0xcf95, 0xb78a, "\000" 
+    IDC_COMBO_SANDSMOD, 0x403, 5, 0
+0xa982, 0xc882, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0041, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0042, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0043, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0044, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0045, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0046, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0047, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0048, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0049, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004a, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004b, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004c, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004d, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004e, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x004f, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0050, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0051, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0052, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0053, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0054, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0055, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0056, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0057, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0058, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0059, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x005a, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0030, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x6e45, 0x6574, 0x0072, 
+    IDC_COMBO_SANDSVK, 0x403, 7, 0
+0x6544, 0x656c, 0x6574, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x6154, 0x0062, 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0xaa81, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0xab81, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0xa981, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0xa881, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x002c, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x002e, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x002f, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x003a, 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x4781, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x0040, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x005b, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x005d, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x005e, 
+    IDC_COMBO_SANDSVK, 0x403, 2, 0
+0x002d, 
+    IDC_COMBO_SANDSVK, 0x403, 9, 0
+0x6150, 0x6567, 0x6f44, 0x6e77, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 7, 0
+0x6150, 0x6567, 0x7055, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 5, 0
+0x6f48, 0x656d, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x6e45, 0x0064, 
+    IDC_COMBO_SANDSVK, 0x403, 7, 0
+0x6e49, 0x6573, 0x7472, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0031, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0032, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0033, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0034, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0035, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0036, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0037, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0038, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0039, 
+    IDC_COMBO_SANDSVK, 0x403, 6, 0
+0x754e, 0x206d, 0x0030, 
+    IDC_COMBO_SANDSVK, 0x403, 8, 0
+0x754e, 0x4c6d, 0x636f, 0x006b, 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0033, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0034, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0035, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0036, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0037, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0038, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3146, 0x0039, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3246, 0x0030, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3246, 0x0031, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3246, 0x0032, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3246, 0x0033, 
+    IDC_COMBO_SANDSVK, 0x403, 4, 0
+0x3246, 0x0034, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3227,10 +3671,10 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 闔会ｽ･陞滓じ縲帝こ・ｨ鬮ｮ繝ｻ・・ｹｧ蠕娯螺郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
-#include "l.JPN\afxres.rc"      // 隶灘綜・ｺ謔ｶ縺慕ｹ晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢昴・
+#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
+#include "l.JPN\afxres.rc"      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 郢晢ｽｪ郢晄㈱ﾎｦ邵ｺ鄙ｫ・育ｸｺ・ｳ郢ｧ・ｳ郢晢ｽｳ郢晏現ﾎ溽ｹ晢ｽｼ郢晢ｽｫ 郢晁・繝ｻ 郢晢ｽｪ郢ｧ・ｽ郢晢ｽｼ郢ｧ・ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
 #endif
 #endif
 

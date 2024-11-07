@@ -546,6 +546,12 @@ void AppPreference::SetCommandKeyMappings(
 
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
 		in->mSettings.Set(key, hotKeyAttr.IsGlobal());
+
+		key.Format(_T("CommandHotKey:SandSModifier%d"), keyIdx);
+		in->mSettings.Set(key, (int)hotKeyAttr.GetSandSModifier());
+
+		key.Format(_T("CommandHotKey:SandSVirtualKeyCode%d"), keyIdx);
+		in->mSettings.Set(key, (int)hotKeyAttr.GetSandSVKCode());
 	}
 }
 
@@ -574,7 +580,14 @@ void AppPreference::GetCommandKeyMappings(
 		key.Format(_T("CommandHotKey:IsGlobal%d"), keyIdx);
 		bool isGlobal = in->mSettings.Get(key, false);
 
+		key.Format(_T("CommandHotKey:SandSModifier%d"), keyIdx);
+		UINT sandsModifier = (UINT)in->mSettings.Get(key, -1);
+
+		key.Format(_T("CommandHotKey:SandSVirtualKeyCode%d"), keyIdx);
+		UINT sandsVK = (UINT)in->mSettings.Get(key, -1);
+
 		CommandHotKeyAttribute attr(modifiers, vk, isGlobal);
+		attr.SetSandsHotKey(sandsModifier, sandsVK);
 		tmp.AddItem(commandStr, attr);
 	}
 

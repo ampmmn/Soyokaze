@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CommandHotKeyManager.h"
 #include "hotkey/GlobalHotKey.h"
+#include "hotkey/SandSKeyState.h"
 #include <set>
 #include <map>
 
@@ -42,9 +43,17 @@ struct CommandHotKeyManager::PImpl
 		// グローバルホットキーの場合
 		std::unique_ptr<GlobalHotKey> mGlobalHotKey;
 	};
+	struct SANDS_ITEM
+	{
+		// ホットキーから呼び出すハンドラオブジェクト
+		std::unique_ptr<CommandHotKeyHandler> mHandlerPtr;
+	};
 
-	UINT GetHotKeyID();
+	UINT IssueNextGlobalHotKeyID();
 	HACCEL GetAccelerator();
+
+	bool RegisterHotKeyAttr(CommandHotKeyHandler* handler, const CommandHotKeyAttribute& key);
+	bool RegisterSandSKeyAttr(CommandHotKeyHandler* handler, const CommandHotKeyAttribute& key);
 
 	CCriticalSection mCS;
 
@@ -52,15 +61,18 @@ struct CommandHotKeyManager::PImpl
 
 	HACCEL mAccel = nullptr;
 	bool mIsChanged = false;
+	bool mIsSandSInvoked = false;
 
 	// 関連付けられた名前からキー割り当てを引くためのmap
 	NameMap mNameKeyMap;
 	// キー割り当てから要素を引くためのmap
 	std::map<HOTKEY_ATTR, ITEM> mKeyItemMap;
 	std::map<UINT, CommandHotKeyHandler*> mLocalHandlerMap;
+
+	std::map<SANDSKEY_ATTR, SANDS_ITEM> mSandSItemMap;
 };
 
-UINT CommandHotKeyManager::PImpl::GetHotKeyID()
+UINT CommandHotKeyManager::PImpl::IssueNextGlobalHotKeyID()
 {
 	std::set<UINT> sets;
 
@@ -155,6 +167,92 @@ HACCEL CommandHotKeyManager::PImpl::GetAccelerator()
 	return mAccel;
 }
 
+bool CommandHotKeyManager::PImpl::RegisterHotKeyAttr(CommandHotKeyHandler* handler, const CommandHotKeyAttribute& key)
+{
+	ASSERT(handler);
+
+	HOTKEY_ATTR key_(key.mHotKeyAttr);
+	if (key_.IsValid() == false) {
+		return false;
+	}
+
+	bool isInserted = false;
+
+	auto itFind = mKeyItemMap.find(key_);
+	if (itFind == mKeyItemMap.end()) {
+		auto p = mKeyItemMap.insert(std::make_pair(key_, PImpl::ITEM()));
+		itFind = p.first;
+		isInserted = true;
+	}
+
+
+	PImpl::ITEM& item = itFind->second;
+
+	// グローバルホットキーの処理(使えないキー場合はエラーを返す)
+	if (key.mIsGlobal) {
+		HWND hwnd = mReceiverWindow;
+		ASSERT(hwnd);
+		auto hotKey = std::make_unique<GlobalHotKey>(hwnd);
+		auto hotkeyId = IssueNextGlobalHotKeyID();
+		if (hotKey->Register(hotkeyId, key.GetModifiers(), key.GetVKCode()) == false) {
+			// 登録失敗
+			spdlog::warn(_T("Failed to register global key. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
+			                hotkeyId, key.GetModifiers(), key.GetVKCode());
+			delete handler;
+
+			if (isInserted) {
+				mKeyItemMap.erase(itFind);
+			}
+
+			return false;
+		}
+		item.mGlobalHotKey.swap(hotKey);
+
+		spdlog::info(_T("A global key registered. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
+			           hotkeyId, key.GetModifiers(), key.GetVKCode());
+	}
+	else {
+		item.mGlobalHotKey.reset();
+
+		spdlog::info(_T("A local key registered. Modifier:{1} VKCode:{2}"), key.GetModifiers(), key.GetVKCode());
+	}
+
+	// Delete older one.
+	item.mIsGlobal = key.mIsGlobal;
+	item.mHandlerPtr.reset(handler);
+
+	mIsChanged = true;
+
+	return true;
+}
+
+bool CommandHotKeyManager::PImpl::RegisterSandSKeyAttr(
+	 	CommandHotKeyHandler* handler,
+	 	const CommandHotKeyAttribute& key
+)
+{
+	ASSERT(handler);
+
+	const auto& attr = key.mSandSKeyAttr;
+	if (attr.IsValid() == false) {
+		return false;
+	}
+
+	auto itFind = mSandSItemMap.find(attr);
+	if (itFind == mSandSItemMap.end()) {
+		auto p = mSandSItemMap.insert(std::make_pair(attr, PImpl::SANDS_ITEM()));
+		itFind = p.first;
+	}
+
+	PImpl::SANDS_ITEM& item = itFind->second;
+
+	// Delete older one.
+	item.mHandlerPtr.reset(handler);
+
+	mIsChanged = true;
+
+	return true;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,14 +292,36 @@ HWND CommandHotKeyManager::SetReceiverWindow(HWND hwnd)
 
 bool CommandHotKeyManager::TryCallLocalHotKeyHander(MSG* msg)
 {
-	// アクセラレータがなければ処理しない
+
+	// ローカルアクセラレータによるホットキー向けの処理
 	HACCEL accel = in->GetAccelerator();
-	if (accel == nullptr) {
+	if (accel) {
+		// Win32APIに渡す
+		if (TranslateAccelerator(in->mReceiverWindow, accel, msg)) {
+			return true;
+		}
+	}
+
+	if (GetForegroundWindow() != in->mReceiverWindow) {
+		// SandSはランチャーウインドウがアクティブなときしか実行しない
 		return false;
 	}
 
-	// Win32APIに渡す
-	if (TranslateAccelerator(in->mReceiverWindow, accel, msg)) {
+	// SandSによるホットキー向けの処理
+	auto sandsState = SandSKeyState::GetInstance();
+
+	for (auto& pa : in->mSandSItemMap) {
+		auto& sandsAttr = pa.first;
+		auto& sandsItem = pa.second;
+
+		if (sandsState->IsPressed(sandsAttr.GetModifierVKCode(), sandsAttr.GetVKCode()) == false) {
+			continue;
+		}
+
+		// ハンドラ実行
+		auto& handlerPtr = sandsItem.mHandlerPtr;
+		handlerPtr->Invoke();
+		in->mIsSandSInvoked = true;
 		return true;
 	}
 
@@ -248,16 +368,6 @@ void CommandHotKeyManager::InvokeGlobalHandler(LPARAM lp)
 	item.mHandlerPtr->Invoke();
 }
 
-// 名前からホットキーを取得
-bool CommandHotKeyManager::HasKeyBinding(
-	const CString& name,
-	CommandHotKeyAttribute* keyPtr
-)
-{
-	SPDLOG_DEBUG(_T("args name:{0}"), (LPCTSTR)name);
-	return GetKeyBinding(name, keyPtr);
-}
-
 bool CommandHotKeyManager::GetKeyBinding(const CString& name, CommandHotKeyAttribute* keyPtr)
 {
 	CSingleLock sl(&in->mCS, TRUE);
@@ -278,15 +388,31 @@ bool CommandHotKeyManager::GetKeyBinding(const CString& name, CommandHotKeyAttri
 
 // ホットキーに関連付けられたものがあるかをチェック
 bool CommandHotKeyManager::HasKeyBinding(
-	const CommandHotKeyAttribute& key
+	const HOTKEY_ATTR& attr
 )
 {
-	SPDLOG_DEBUG(_T("args Modifier:{0} VKCode:{1}"), key.GetModifiers(), key.GetVKCode());
+	SPDLOG_DEBUG(_T("args Modifier:{0} VKCode:{1}"), attr.GetModifiers(), attr.GetVKCode());
 
 	CSingleLock sl(&in->mCS, TRUE);
 
-	auto itFind = in->mKeyItemMap.find(*(HOTKEY_ATTR*)&key);
+	auto itFind = in->mKeyItemMap.find(attr);
 	if (itFind == in->mKeyItemMap.end()) {
+		spdlog::debug(_T("key bind does not exist."));
+		return false;
+	}
+	spdlog::debug(_T("key bind exists."));
+	return true;
+}
+
+// ホットキーに関連付けられたものがあるかをチェック
+bool CommandHotKeyManager::HasKeyBinding(const SANDSKEY_ATTR& attr)
+{
+	SPDLOG_DEBUG(_T("args Modifier:{0} VKCode:{1}"), attr.GetModifier(), attr.GetVKCode());
+
+	CSingleLock sl(&in->mCS, TRUE);
+
+	auto itFind = in->mSandSItemMap.find(attr);
+	if (itFind == in->mSandSItemMap.end()) {
 		spdlog::debug(_T("key bind does not exist."));
 		return false;
 	}
@@ -303,8 +429,7 @@ bool CommandHotKeyManager::Register(
 	SPDLOG_DEBUG(_T("args name:{0} Modifier:{1} VKCode:{2} isGlobal:{3}"),
 	             (LPCTSTR)handler->GetDisplayName(), key.GetModifiers(), key.GetVKCode(), key.mIsGlobal);
 
-	if (key.GetVKCode() == 0) {
-		SPDLOG_DEBUG(_T("ignored VKCode=0"));
+	if (key.IsValid() == false && key.IsValidSandS() == false) {
 		delete handler;
 		return false;
 	}
@@ -313,92 +438,14 @@ bool CommandHotKeyManager::Register(
 
 	ASSERT(handler);
 
-	HOTKEY_ATTR key_(*(HOTKEY_ATTR*)&key);
-
-
-	bool isInserted = false;
-
-	auto itFind = in->mKeyItemMap.find(key_);
-	if (itFind == in->mKeyItemMap.end()) {
-		auto p = in->mKeyItemMap.insert(std::make_pair(key_, PImpl::ITEM()));
-		itFind = p.first;
-		isInserted = true;
+	if (in->RegisterHotKeyAttr(handler, key) == false &&
+      in->RegisterSandSKeyAttr(handler, key) == false) {
+		return false;
 	}
-
-
-	PImpl::ITEM& item = itFind->second;
-
-	// グローバルホットキーの処理(使えないキー場合はエラーを返す)
-	if (key.mIsGlobal) {
-		HWND hwnd = in->mReceiverWindow;
-		ASSERT(hwnd);
-		auto hotKey = std::make_unique<GlobalHotKey>(hwnd);
-		auto hotkeyId = in->GetHotKeyID();
-		if (hotKey->Register(hotkeyId, key.GetModifiers(), key.GetVKCode()) == false) {
-			// 登録失敗
-			spdlog::warn(_T("Failed to register global key. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
-			                hotkeyId, key.GetModifiers(), key.GetVKCode());
-			delete handler;
-
-			if (isInserted) {
-				in->mKeyItemMap.erase(itFind);
-			}
-
-			return false;
-		}
-		item.mGlobalHotKey.swap(hotKey);
-
-		spdlog::info(_T("A global key registered. HotKeyId:{0} Modifier:{1} VKCode:{2}"),
-			           hotkeyId, key.GetModifiers(), key.GetVKCode());
-	}
-	else {
-		item.mGlobalHotKey.reset();
-
-		spdlog::info(_T("A local key registered. Modifier:{1} VKCode:{2}"), key.GetModifiers(), key.GetVKCode());
-	}
-
-	// Delete older one.
-	item.mIsGlobal = key.mIsGlobal;
-	item.mHandlerPtr.reset(handler);
-
-	in->mIsChanged = true;
 
 	in->mNameKeyMap[handler->GetDisplayName()] = NameMapValue(owner, key);
 
 	return true;
-}
-
-// 登録解除(ハンドラオブジェクトがわかっている場合利用可能)
-bool CommandHotKeyManager::Unregister(CommandHotKeyHandler* handler)
-{
-	SPDLOG_DEBUG(_T("start"));
-
-	for (auto it = in->mKeyItemMap.begin(); it != in->mKeyItemMap.end(); ++it) {
-		const auto& item = it->second;
-		if (handler != item.mHandlerPtr.get()) {
-			continue;
-		}
-
-		// eraseするとhandlerも削除されるのでここで名前を保持しておく
-		auto name = handler->GetDisplayName();
-
-		in->mKeyItemMap.erase(it);
-
-
-		auto it2 = in->mNameKeyMap.find(name);
-		if (it2 != in->mNameKeyMap.end()) {
-			in->mNameKeyMap.erase(it2);
-		}
-		in->mIsChanged = true;
-		return true;
-	}
-
-	return false;
-}
-
-int CommandHotKeyManager::GetItemCount()
-{
-	return (int)in->mKeyItemMap.size();
 }
 
 void CommandHotKeyManager::GetMappings(CommandHotKeyMappings& keyMap)
@@ -425,15 +472,21 @@ void CommandHotKeyManager::Clear(void* owner)
 			continue;
 		}
 
-		auto& attr = it->second.mAttr;
-		HOTKEY_ATTR attr_(*(HOTKEY_ATTR*)&attr);
+		const CommandHotKeyAttribute& cmdKeyAttr = it->second.mAttr;
 
-		auto it2 = in->mKeyItemMap.find(attr_);
+		auto hotKeyAttr = cmdKeyAttr.mHotKeyAttr;
+		auto it2 = in->mKeyItemMap.find(hotKeyAttr);
 		if (it2 != in->mKeyItemMap.end()) {
 			in->mKeyItemMap.erase(it2);
 		}
 
-		it =in->mNameKeyMap.erase(it);
+		auto sandsAttr = cmdKeyAttr.mSandSKeyAttr;
+		auto it3 = in->mSandSItemMap.find(sandsAttr);
+		if (it3 != in->mSandSItemMap.end()) {
+			in->mSandSItemMap.erase(it3);
+		}
+
+		it = in->mNameKeyMap.erase(it);
 
 		in->mIsChanged = true;
 	}

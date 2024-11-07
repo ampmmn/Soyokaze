@@ -237,6 +237,10 @@ UINT HOTKEY_ATTR::GetVKCode() const
 // 割り当てを許可しないキーか?
 bool HOTKEY_ATTR::IsReservedKey() const
 {
+	if (IsValid() == false) {
+		return true;
+	}
+
 	auto keyDefine = VirtualKeyDefine::GetInstance();
 	const auto& data = keyDefine->GetItem(mVirtualKeyIdx);
 	auto kind = data.mKind;
