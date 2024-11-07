@@ -2039,12 +2039,42 @@ MMC(Microsoft管理コンソール)の要素を候補として表示し、実行
 
 ### 利用可能なマクロ一覧
 
+- [app](#appマクロ)
 - [basename](#basenameマクロ)
 - [clipboard](#clipboardマクロ)
 - [env](#envマクロ)
 - [random](#randomマクロ)
 - [afxw](#afxwマクロ)
 - [powerstatus](#powerstatusマクロ)
+
+#### appマクロ
+
+アプリケーション名やアプリケーションのバージョン、ビルド日時を得る
+引数で与えたパスからファイル名を除去する
+
+##### 記法
+
+以下のいずれかを指定できる。
+
+- `${app}`
+- `${app name}`
+- `${app version}`
+- `${app builddate}`
+- `${app buildtime}`
+
+##### 例
+
+```
+# アプリ名を得る
+${app}   → Soyokaze
+${app name}   → Soyokaze
+# バージョン番号を得る
+${app version}   → 0.30.0
+# ビルド日を得る
+${app builddate}   → 2024/11/08
+# ビルド時刻を得る
+${app builddate}   → 01:23:45
+```
 
 #### basenameマクロ
 

@@ -34,17 +34,17 @@ bool AppNameMacro::Evaluate(const std::vector<CString>& args, CString& result)
 		result = APPNAME;
 	}
 	else if (param == _T("version")) {
-		// $B%P!<%8%g%s>pJs$r<hF@(B
+		// バージョン情報を取得
 		VersionInfo::GetVersionInfo(result);
 	}
 	else if (param == _T("builddate")) {
-		// $B%S%k%IF|;~(B
+		// ビルド日時
 		CTime tmBuildDate;
 		VersionInfo::GetBuildDateTime(tmBuildDate);
 		result = tmBuildDate.Format(_T("%F"));
 	}
 	else if (param == _T("buildtime")) {
-		// $B%S%k%IF|;~(B
+		// ビルド時刻
 		CTime tmBuildDate;
 		VersionInfo::GetBuildDateTime(tmBuildDate);
 		result = tmBuildDate.Format(_T("%T"));
