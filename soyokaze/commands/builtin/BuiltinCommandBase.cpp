@@ -109,7 +109,7 @@ bool BuiltinCommandBase::Load(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 	mIsConfirmBeforeRun = entry->Get(_T("IsConfirmBeforeRun"), false);
-	mIsEnable = entry->Get(_T("IsEnable"), false);
+	mIsEnable = entry->Get(_T("IsEnable"), true);
 	return true;
 }
 
