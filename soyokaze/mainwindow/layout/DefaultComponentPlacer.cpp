@@ -182,6 +182,17 @@ int DefaultComponentPlacer::GetMinimumHeight()
 	       p.GetMarginTop() + 1;
 }
 
+// 最低限の候補欄の高さを取得する
+int DefaultComponentPlacer::GetMinimumCandidateHeight()
+{
+	CRect rcItem;
+	auto list = (CListCtrl*)in->mPlacement.GetCandidateList();
+	if (list->GetItemRect(0, &rcItem, LVIR_BOUNDS) == FALSE) {
+		return 0;
+	}
+	return rcItem.Height();
+}
+
 }
 }
 }

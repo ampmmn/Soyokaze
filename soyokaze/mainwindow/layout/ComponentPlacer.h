@@ -24,6 +24,9 @@ public:
 	virtual void Apply(HWND mainWindow) = 0;
 	// それより以下のリサイズを許容しない最小限の高さを取得する
 	virtual int GetMinimumHeight() = 0;
+	// 最低限の候補欄の高さを取得する
+	virtual int GetMinimumCandidateHeight() = 0;
+
 };
 
 }

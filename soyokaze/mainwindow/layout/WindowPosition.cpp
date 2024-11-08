@@ -194,6 +194,6 @@ bool WindowPosition::SyncPosition(HWND hwnd)
 		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;
 
 	}
-	return SetWindowPlacement(hwnd, &mPosition) != FALSE;
+	return SetWindowPlacement(hwnd, &mPosition) != FALSE;  // ToDo これの先にClearContent
 }
 

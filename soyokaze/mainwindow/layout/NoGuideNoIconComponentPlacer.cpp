@@ -151,6 +151,18 @@ int NoGuideNoIconComponentPlacer::GetMinimumHeight()
 	return p.GetMarginTop() + p.GetDescriptionWindowHeight() + margin + p.GetEditWindowHeight() + p.GetMarginTop();
 }
 
+// 最低限の候補欄の高さを取得する
+int NoGuideNoIconComponentPlacer::GetMinimumCandidateHeight()
+{
+	CRect rcItem;
+	auto list = (CListCtrl*)in->mPlacement.GetCandidateList();
+	if (list->GetItemRect(0, &rcItem, LVIR_BOUNDS) == FALSE) {
+		return 0;
+	}
+	return rcItem.Height();
+}
+
+
 }
 }
 }

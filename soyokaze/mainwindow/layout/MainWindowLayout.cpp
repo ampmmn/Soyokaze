@@ -172,6 +172,13 @@ void MainWindowLayout::OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus)
 	UNREFERENCED_PARAMETER(nStatus);
 }
 
+/**
+ 	ウインドウのリサイズ中のサイズ制御をする
+ 	@param[in]     hwnd   入力画面のウインドウハンドル
+ 	@param[in]     status 入力状態
+ 	@param[in]     side   サイズ変更中の辺を表す値
+ 	@param[in,out] rect   現在の領域
+*/
 void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect)
 {
 	// 直近のウインドウを親ウインドウとして覚えておく(基本的に変化しないけど)
@@ -183,39 +190,47 @@ void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT s
 		return ;
 	}
 
+	// ウインドウ領域とクライアント領域の差からフレーム(非クライアント領域)の高さを求める
 	CRect rcC;
 	GetClientRect(hwnd, rcC);
 	CRect rcW;
 	GetWindowRect(hwnd, rcW);
-
 	int frameH = rcW.Height() - rcC.Height();
 
+	// 触っているのが上側か?
 	bool isUpside = side == WMSZ_TOP || side == WMSZ_TOPLEFT || side == WMSZ_TOPRIGHT;
 
 	ComponentPlacer* placer = in->CreateComponentPlacer(hwnd);
+
+	// 最低限の高さ
 	int minH = placer->GetMinimumHeight() + frameH;
 
 	if (status && status->HasKeyword() == false) {
-		// 上方向の場合
+		// キーワード未入力状態の場合、サイズ変更自体を許さない
+
 		if (isUpside) {
 			rect->bottom = rect->top + minH;
 		}
-		// 下方向
 		else {
 			rect->top = rect->bottom - minH;
 		}
 	}
 	else {
-		// 上方向の場合
+		// キーワードが入力されている場合はサイズ変更を許すが、所定サイズより小さくさせない
+
+		// ToDo: 最低限の候補欄の高さも加算
+		int minCandidateH = placer->GetMinimumCandidateHeight();
+
+		minH += minCandidateH;
+
 		if (isUpside) {
-			int allowedY = rect->bottom - minH; 
+			int allowedY = rect->bottom - minH;
 			if (allowedY < rect->top) {
 				rect->top = allowedY;
 			}
 		}
-		// 下方向
 		else {
-			int allowedY = rect->top + minH; 
+			int allowedY = rect->top + minH;
 			if (rect->bottom < allowedY) {
 				rect->bottom = allowedY;
 			}

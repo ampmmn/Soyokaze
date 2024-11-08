@@ -30,6 +30,8 @@ public:
 	void Apply(HWND hwnd) override;
 	// それより以下のリサイズを許容しない最小限の高さを取得する
 	int GetMinimumHeight() override;
+	// 最低限の候補欄の高さを取得する
+	int GetMinimumCandidateHeight() override;
 
 private:
 	struct PImpl;
