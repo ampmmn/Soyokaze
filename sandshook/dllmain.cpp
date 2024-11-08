@@ -6,7 +6,20 @@
 
 struct SandSKeyState
 {
+	bool ResetIfNeeded() {
+		auto curTickCount = GetTickCount64();
+		if (curTickCount - mLastCalled <= 2000) {
+			// 不要
+			return false;
+		}
+
+		// 前回呼び出し時から所定の時間が経過していたら、状態を戻す
+		memset(mKeyPressed, 0, sizeof(mKeyPressed));
+		mLastCalled = curTickCount;
+		return true;
+	}
 	bool mKeyPressed[256] = {};
+	ULONGLONG mLastCalled = GetTickCount64();
 };
 
 static SandSKeyState keyState;
@@ -46,6 +59,10 @@ static LRESULT CALLBACK OnKeyHookProc(
 	LPARAM lp
 )
 {
+	// 前回のキー状態変化時から所定の時間が経過している場合は内部状態をいったんリセット
+	// (他ツールと干渉している可能性もあるが、内部状態的にキーが押下されたまま戻らないことがあるケースへの対策)
+	keyState.ResetIfNeeded();
+
 	KBDLLHOOKSTRUCT* info = (KBDLLHOOKSTRUCT*)lp;
 	if ((info->flags & LLKHF_INJECTED) != 0) {
 		return CallNextHookEx(hHook, code, wp, lp);
