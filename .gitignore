@@ -13,3 +13,9 @@ coverage_report
 doc/help.html
 json/
 plantuml-images/
+packages/
+*.zip
+spdlog/
+tidy-html5/
+tags
+packages.config
