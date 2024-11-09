@@ -19,8 +19,10 @@ public:
 	// 初期値
 	CommandHotKeyAttribute mHotKeyAttrInit;
 
+	int mHotKeyType;
+	short mVK;
+
 	BOOL mIsUseHotKey;
-	BOOL mIsUseSandS;
 
 	// メッセージ欄
 	CString mMessage;
@@ -29,9 +31,13 @@ public:
 
 	static bool ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parent=nullptr);
 
+private:
+	void UpdateCtrlState(UINT ctrlID, bool isShow, bool isEnable);
+
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
-	virtual BOOL OnInitDialog();
+	void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV サポート
+	BOOL OnInitDialog() override;
+	void OnOK() override;
 
 	bool UpdateStatusForHotKey();
 	bool UpdateStatusForSandS();

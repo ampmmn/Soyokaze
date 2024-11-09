@@ -25,11 +25,6 @@ AppHotKeyDialog::~AppHotKeyDialog()
 {
 }
 
-void AppHotKeyDialog::SetTargetName(const CString& name)
-{
-	mTargetName = name;
-}
-
 void AppHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
@@ -130,17 +125,6 @@ UINT AppHotKeyDialog::GetModifierSecondVK()
 BOOL AppHotKeyDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
-
-	if (mTargetName.IsEmpty() == FALSE) {
-		CString caption;
-		GetWindowText(caption);
-
-		caption += _T(" - ");
-		caption += mTargetName;
-
-		SetWindowText(caption);
-	}
-
 	UpdateStatus();
 
 	return TRUE;

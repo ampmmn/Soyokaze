@@ -10,15 +10,36 @@
 #define new DEBUG_NEW
 #endif
 
+enum {
+	TYPE_LOCAL,       // アクティブなときだけ有効
+	TYPE_LOCAL_SANDS, // アクティブなときだけ有効(SandS)
+	TYPE_GLOBAL,      // 常に有効
+};
 
 CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
-	mHotKeyAttr(attr)
+	mHotKeyType(TYPE_LOCAL), mHotKeyAttr(attr)
 {
 	SetHelpPageId(_T("HotKey"));
 
-	mIsUseHotKey = attr.IsValid();
-	mIsUseSandS = attr.IsValidSandS();
+	mIsUseHotKey = TRUE;
+	if (attr.IsValid()) {
+		if (attr.IsGlobal()) {
+			mHotKeyType = TYPE_GLOBAL;
+		}
+		else {
+			mHotKeyType = TYPE_LOCAL;
+		}
+		mVK =mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx;
+	}
+	else if (attr.IsValidSandS()) {
+			mHotKeyType = TYPE_LOCAL_SANDS;
+			mVK =mHotKeyAttr.mSandSKeyAttr.mVirtualKeyIdx;
+	}
+	else {
+		mIsUseHotKey = FALSE;
+		mVK =mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx;
+	}
 }
 
 
@@ -34,41 +55,44 @@ void CommandHotKeyDialog::SetTargetName(const CString& name)
 void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
+	DDX_Check(pDX, IDC_CHECK_HOTKEY, mIsUseHotKey);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mHotKeyType);
 	DDX_Check(pDX, IDC_CHECK_SHIFT, mHotKeyAttr.mHotKeyAttr.mUseShift);
 	DDX_Check(pDX, IDC_CHECK_ALT, mHotKeyAttr.mHotKeyAttr.mUseAlt);
 	DDX_Check(pDX, IDC_CHECK_CTRL, mHotKeyAttr.mHotKeyAttr.mUseCtrl);
 	DDX_Check(pDX, IDC_CHECK_WIN, mHotKeyAttr.mHotKeyAttr.mUseWin);
-	DDX_CBIndex(pDX, IDC_COMBO_VK, mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx);
-	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE, mHotKeyAttr.mIsGlobal);
-	DDX_Check(pDX, IDC_CHECK_HOTKEY, mIsUseHotKey);
-	DDX_Check(pDX, IDC_CHECK_SANDSHOTKEY, mIsUseSandS);
 	DDX_CBIndex(pDX, IDC_COMBO_SANDSMOD, mHotKeyAttr.mSandSKeyAttr.mModifier);
-	DDX_CBIndex(pDX, IDC_COMBO_SANDSVK, mHotKeyAttr.mSandSKeyAttr.mVirtualKeyIdx);
+	DDX_CBIndex(pDX, IDC_COMBO_VK, mVK);
+	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 }
 
 BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
+	ON_COMMAND(IDC_CHECK_HOTKEY, UpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_WIN, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
-	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_CHECK_HOTKEY, UpdateStatus)
-	ON_COMMAND(IDC_CHECK_SANDSHOTKEY, UpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_SANDSMOD, UpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_SANDSVK, UpdateStatus)
+	ON_CBN_SELCHANGE(IDC_COMBO_VK, UpdateStatus)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 void CommandHotKeyDialog::GetAttribute(CommandHotKeyAttribute& attr)
 {
+	// 使用しない設定をクリアする
+	// (CommandHotKeyAttributeクラス自体は使う/使わないという形で設定値を保持しないため)
 	attr = mHotKeyAttr;
 	if (mIsUseHotKey == FALSE) {
 		attr.Reset();
-	}
-	if (mIsUseSandS == FALSE) {
 		attr.ResetSandS();
+		return;
+	}
+	if (mHotKeyType == TYPE_LOCAL || mHotKeyType == TYPE_GLOBAL) {
+		attr.ResetSandS();
+	}
+	else {
+		attr.Reset();
 	}
 }
 
@@ -95,39 +119,77 @@ BOOL CommandHotKeyDialog::OnInitDialog()
 	return TRUE;
 }
 
+void CommandHotKeyDialog::OnOK()
+{
+	if (UpdateData() == FALSE) {
+		return;
+	}
+
+	if (mHotKeyType == TYPE_LOCAL || mHotKeyType == TYPE_GLOBAL) {
+		mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx = mVK;
+		mHotKeyAttr.mIsGlobal = mHotKeyType == TYPE_GLOBAL;
+	}
+	else {
+		mHotKeyAttr.mSandSKeyAttr.mVirtualKeyIdx = mVK;
+	}
+
+
+	__super::OnOK();
+}
+
 void CommandHotKeyDialog::UpdateStatus()
 {
 	UpdateData();
 
-	GetDlgItem(IDC_CHECK_WIN)->EnableWindow(mIsUseHotKey && mHotKeyAttr.mIsGlobal);
-	GetDlgItem(IDC_CHECK_SHIFT)->EnableWindow(mIsUseHotKey);
-	GetDlgItem(IDC_CHECK_ALT)->EnableWindow(mIsUseHotKey);
-	GetDlgItem(IDC_CHECK_CTRL)->EnableWindow(mIsUseHotKey);
-	GetDlgItem(IDC_COMBO_VK)->EnableWindow(mIsUseHotKey);
-	GetDlgItem(IDC_COMBO_TYPE)->EnableWindow(mIsUseHotKey);
-	GetDlgItem(IDC_COMBO_SANDSMOD)->EnableWindow(mIsUseSandS);
-	GetDlgItem(IDC_COMBO_SANDSVK)->EnableWindow(mIsUseSandS);
-
 	mMessage.Empty();
 
-	bool isOK = UpdateStatusForHotKey();
-	if (isOK) {
-		isOK = UpdateStatusForSandS();
+	// 表示状態の制御
+	BOOL isHotKeySelected = (mHotKeyType == TYPE_LOCAL || mHotKeyType == TYPE_GLOBAL);
+	BOOL isSandSSelected = !isHotKeySelected;
+
+	UpdateCtrlState(IDC_STATIC_FRAME, isHotKeySelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_CHECK_SHIFT, isHotKeySelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_CHECK_ALT, isHotKeySelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_CHECK_CTRL, isHotKeySelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_CHECK_WIN, isHotKeySelected, mIsUseHotKey != FALSE);
+
+	UpdateCtrlState(IDC_STATIC_MODSANDS, isSandSSelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_COMBO_SANDSMOD, isSandSSelected, mIsUseHotKey != FALSE);
+
+	UpdateCtrlState(IDC_COMBO_VK, true, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_COMBO_TYPE, true, mIsUseHotKey != FALSE);
+
+	bool isOK = true;
+	if (mIsUseHotKey) {
+		if (mHotKeyType == TYPE_LOCAL || mHotKeyType == TYPE_GLOBAL) {
+			isOK = UpdateStatusForHotKey();
+		}
+		else if (mHotKeyType == TYPE_LOCAL_SANDS) {
+			isOK = UpdateStatusForSandS();
+		}
 	}
 
 	GetDlgItem(IDOK)->EnableWindow(isOK);
 	UpdateData(FALSE);
 }
 
+void CommandHotKeyDialog::UpdateCtrlState(UINT ctrlID,bool isShow, bool isEnable)
+{
+	auto ctrl = GetDlgItem(ctrlID);
+	if (ctrl == nullptr) {
+		return;
+	}
+	ctrl->ShowWindow(isShow ? SW_SHOW : SW_HIDE);
+	ctrl->EnableWindow(isEnable);
+}
+
 bool CommandHotKeyDialog::UpdateStatusForHotKey()
 {
+	mHotKeyAttr.mHotKeyAttr.mVirtualKeyIdx = mVK;
+
 	if (mHotKeyAttr.mIsGlobal == FALSE) {
 		// ローカルホットキー(→キーアクセラレータ)の場合は、WINキーが使えないのでチェックを外す
 		mHotKeyAttr.mHotKeyAttr.mUseWin = 0;
-	}
-
-	if (mIsUseHotKey == FALSE) {
-		return true;
 	}
 
 	if (mHotKeyAttr.mHotKeyAttr.IsValid() == false) {
@@ -148,7 +210,8 @@ bool CommandHotKeyDialog::UpdateStatusForHotKey()
 	// 設定が初期値と異なる場合は、そのキーが使えるかどうかをチェックする
 	if (mHotKeyAttr.mHotKeyAttr.IsUnmapped()) {
 		// キー割り当てなし
-		return true;
+		mMessage = _T("キーを設定してください");
+		return false;
 	}
 
 	if (mHotKeyAttr.mIsGlobal) {
@@ -172,9 +235,7 @@ bool CommandHotKeyDialog::UpdateStatusForHotKey()
 
 bool CommandHotKeyDialog::UpdateStatusForSandS()
 {
-	if (mIsUseSandS == FALSE) {
-		return true;
-	}
+	mHotKeyAttr.mSandSKeyAttr.mVirtualKeyIdx = mVK;
 
 	const auto& sandsAttr = mHotKeyAttr.mSandSKeyAttr;
 	if (sandsAttr.IsValid() == false) {

@@ -107,7 +107,6 @@ void BasicSettingDialog::OnButtonHotKey()
 	UpdateData();
 
 	AppHotKeyDialog dlg(mHotKeyAttr, this);
-	dlg.SetTargetName(_T("ランチャー呼び出しキー"));
 	dlg.SetEnableHotKey(mIsEnableHotKey);
 	dlg.SetEnableModifierHotKey(mIsEnableModifierHotKey);
 	dlg.SetModifierFirstVK(mModifierFirstVK);

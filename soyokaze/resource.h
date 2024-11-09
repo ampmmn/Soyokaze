@@ -136,7 +136,7 @@
 #define IDS_COMMANDTYPE                 231
 #define IDD_INPUTSETTING                232
 #define IDS_COMMAND_COLOR               233
-#define IDD_MAIN_GUIDE                  234
+#define IDD_MAIN                        234
 #define IDD_APPSETTING_PATHCONVERT      235
 #define IDS_X                           236
 #define IDD_VOLUMEEDIT                  237
@@ -421,6 +421,8 @@
 #define IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT 1192
 #define IDC_STATIC_WARNING              1193
 #define IDC_CHECK_SANDSHOTKEY           1194
+#define IDC_STATIC_FRAME                1195
+#define IDC_STATIC_MODSANDS             1196
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -429,7 +431,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1195
+#define _APS_NEXT_CONTROL_VALUE         1197
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

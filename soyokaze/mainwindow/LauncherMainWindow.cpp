@@ -155,7 +155,7 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 // LauncherMainWindow ダイアログ
 
 LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_MAIN_GUIDE, pParent),
+	: CDialogEx(IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
 	in->mLayout = std::make_unique<MainWindowLayout>();

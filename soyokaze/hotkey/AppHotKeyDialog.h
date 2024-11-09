@@ -27,9 +27,7 @@ public:
 	HOTKEY_ATTR mHotKeyAttr;
 	// メッセージ欄
 	CString mMessage;
-	// 設定対象の名前
-	CString mTargetName;
-	//
+
 	BOOL mIsEnableHotKey;
 	BOOL mIsEnableModifieHotKey;
 	// 補足説明
