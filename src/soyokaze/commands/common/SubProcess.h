@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace launcherapp {
 namespace core {
 	class CommandParameter;
@@ -37,7 +39,7 @@ private:
 class SubProcess::Instance
 {
 public:
-	Instance(SHELLEXECUTEINFO si);
+	Instance(HANDLE hProcess);
 	~Instance();
 
 public:
@@ -46,8 +48,8 @@ public:
 	CString GetErrorMessage();
 
 private:
-	SHELLEXECUTEINFO mShellExecuteInfo;
-	CString mErrMsg;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
 }

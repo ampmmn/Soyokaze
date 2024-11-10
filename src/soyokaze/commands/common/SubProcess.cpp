@@ -6,11 +6,15 @@
 #include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
+#include "utility/DemotedProcessToken.h"
+#include "utility/LocalPathResolver.h"
 #include "setting/AppPreference.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
 namespace launcherapp {
 namespace commands {
@@ -27,9 +31,14 @@ struct SubProcess::PImpl
 	bool IsRunningAsAdmin();
 	bool CanRunAsAdmin(const CString& path);
 
+	bool ReplaceWithFiler(CString& path, CString& param, const std::vector<CString>& args);
+
+	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
+	bool Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
+
 	CommandParameter* mParam = nullptr;
 	int mShowType = SW_SHOW;
-	bool mIsRunAdAdmin = false;
+	bool mIsRunAsAdmin = false;
 	CString mWorkingDir;
 };
 
@@ -72,11 +81,106 @@ bool SubProcess::PImpl::IsRunningAsAdmin()
 	return isRunAsAdmin;
 }
 
+bool SubProcess::PImpl::ReplaceWithFiler(CString& path, CString& param,const std::vector<CString>& args)
+{
+	auto pref = AppPreference::Get();
+	bool useExternalFiler = pref->IsUseFiler();
+
+	if (useExternalFiler) {
+		param = pref->GetFilerParam();
+		param.Replace(_T("$target"), path);
+
+		path = pref->GetFilerPath();
+		ExpandArguments(path, args);
+		ExpandMacros(path);
+		return true;
+	}
+	else {
+		// 登録されたファイラーがない場合はエクスプローラで開く
+		CString filerPath = _T("explorer.exe");
+		LocalPathResolver resolver;
+		resolver.Resolve(filerPath);
+
+		bool isFilePath = PathIsDirectory(path) == FALSE;
+		bool isEndsWithSep = path.Right(1) == _T('\\');
+	
+		if (isFilePath || isEndsWithSep == false) {
+				param = _T("/select,\"");
+				param += path;
+				param += _T("\"");
+		}
+		else {
+			param = _T("\"");
+			param += path;
+			param += _T("\"");
+		}
+		return true;
+	}
+}
+
 // 管理者権限で実行可能なファイルタイプか?
 bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 {
 	CString ext = PathFindExtension(path);
 	return ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0;
+}
+
+bool SubProcess::PImpl::StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process)
+{
+	STARTUPINFO si = {};
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = (WORD)mShowType;
+
+	PROCESS_INFORMATION pi = {};
+
+	CString cmdLine;
+	cmdLine += param;
+	spdlog::debug(_T("path:{}"), (LPCTSTR)path);
+	spdlog::debug(_T("cmdLine:{}"), (LPCTSTR)cmdLine);
+
+	DemoteedProcessToken tok;
+	HANDLE htok = tok.FetchPrimaryToken();
+	spdlog::debug(_T("primary token  {}"), (void*)htok);
+
+	LPCTSTR cd = PathIsDirectory(workDir) ? (LPCTSTR)workDir : nullptr;
+
+	bool isRun = CreateProcessWithTokenW(htok, 0, 
+	                                     path, cmdLine.GetBuffer(MAX_PATH_NTFS), 0, nullptr, cd, &si, &pi);
+	cmdLine.ReleaseBuffer();
+
+	process = std::move(std::make_unique<Instance>(pi.hProcess));
+
+	return isRun;
+}
+
+bool SubProcess::PImpl::Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process)
+{
+	SHELLEXECUTEINFO si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = mShowType;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = path;
+
+	// 管理者として実行する指定がされているか?
+	bool isRunAsAdminSpecified = mIsRunAsAdmin || (IsRunAsKeyPressed() && CanRunAsAdmin(path) );
+	if (IsRunningAsAdmin() == false && isRunAsAdminSpecified) {
+		si.lpVerb = _T("runas");
+	}
+
+	if (param.IsEmpty() == FALSE) {
+		si.lpParameters = param;
+	}
+
+	if (workDir.IsEmpty() == FALSE) {
+		si.lpDirectory = workDir;
+	}
+
+	BOOL isRun = ShellExecuteEx(&si);
+
+	process = std::move(std::make_unique<SubProcess::Instance>(si.hProcess));
+
+	return isRun != FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +204,7 @@ void SubProcess::SetShowType(int showType)
 
 void SubProcess::SetRunAsAdmin()
 {
-	in->mIsRunAdAdmin = true;
+	in->mIsRunAsAdmin = true;
 }
 
 void SubProcess::SetWorkDirectory(const CString& dir)
@@ -119,9 +223,14 @@ bool SubProcess::Run(
 	 	ProcessPtr& process
 )
 {
+	if (path_.IsEmpty()) {
+		return false;
+	}
+
 	CString path = path_;
 	CString paramStr = paramStr_;
 
+	// 与えられた実行時引数を配列にコピー
 	int paramCount = in->mParam->GetParamCount();
 	std::vector<CString> args;
 	args.reserve(paramCount);
@@ -129,10 +238,11 @@ bool SubProcess::Run(
 		args.push_back(in->mParam->GetParam(i));
 	}
 
-	// 変数置換(パス)
+	// 変数を展開(パス)
 	ExpandArguments(path, args);
 	ExpandMacros(path);
 
+	// 「パスを開く」指定の場合はファイラで経由でパスを表示する形に差し替える
 	bool isDir = Path::IsDirectory(path);
 	if ((in->IsOpenPathKeyPressed() && Path::FileExists(path)) || isDir) {
 		auto pref = AppPreference::Get();
@@ -154,6 +264,7 @@ bool SubProcess::Run(
 			}
 			paramStr = _T("open");
 		}
+		in->ReplaceWithFiler(path, paramStr, args);
 	}
 	else { 
 		// 変数置換(パラメータ)
@@ -163,42 +274,32 @@ bool SubProcess::Run(
 
 	SPDLOG_DEBUG(_T("path:{} param:{}"), (LPCTSTR)path, (LPCTSTR)paramStr);
 
-
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = in->mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-
-	bool isRunAsAdminSpecified = in->mIsRunAdAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path) );
-	if (isRunAsAdminSpecified && in->IsRunningAsAdmin() == false) {
-		si.lpVerb = _T("runas");
-	}
-
-	if (paramStr.IsEmpty() == FALSE) {
-		si.lpParameters = paramStr;
-	}
-	
-
+	// 作業ディレクトリ
 	CString workDir = in->mWorkingDir;
 	if (workDir.IsEmpty() == FALSE) {
 		ExpandArguments(workDir, args);
 		ExpandMacros(workDir);
 		StripDoubleQuate(workDir);
-		si.lpDirectory = workDir;
 	}
 
-	BOOL bRun = ShellExecuteEx(&si);
+	// 管理者として実行する指定がされているか?
+	bool isRunAsAdminSpecified = in->mIsRunAsAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path));
 
-	process = std::move(std::make_unique<Instance>(si));
+	bool isRun = false;
+	if (in->IsRunningAsAdmin() && isRunAsAdminSpecified == false) {
+		// ランチャーを管理者権限で実行していて、かつ、コマンドを管理者権限で起動しない場合は、
+		// 降格した権限で起動する
+		isRun = in->StartWithLowerPermissions(path, paramStr, workDir, process);
+	}
+	else {
+		isRun = in->Start(path, paramStr, workDir, process);
+	}
 
-	if (bRun == FALSE) {
+	if (isRun == false) {
 		LastErrorString errStr(GetLastError());
 		process->SetErrorMessage((LPCTSTR)errStr);
-		return false;
 	}
-
-	return true;
+	return isRun;
 }
 
 
@@ -206,35 +307,40 @@ bool SubProcess::Run(
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-SubProcess::Instance::Instance(SHELLEXECUTEINFO si) :
-	mShellExecuteInfo(si)
+struct SubProcess::Instance::PImpl
 {
+	HANDLE mProcess = nullptr;
+	CString mErrMsg;
+};
+
+SubProcess::Instance::Instance(HANDLE hProcess) : in(new PImpl)
+{
+	in->mProcess = hProcess;
 }
 
 SubProcess::Instance::~Instance()
 {
-	if (mShellExecuteInfo.hProcess) {
-		CloseHandle(mShellExecuteInfo.hProcess);
+	if (in->mProcess) {
+		CloseHandle(in->mProcess);
 	}
 }
 
 bool SubProcess::Instance::Wait(DWORD timeout)
 {
-	auto& si = mShellExecuteInfo;
-	if (si.hProcess == nullptr) {
+	if (in->mProcess == nullptr) {
 		return false;
 	}
-	return WaitForSingleObject(si.hProcess, timeout) == WAIT_OBJECT_0;
+	return WaitForSingleObject(in->mProcess, timeout) == WAIT_OBJECT_0;
 }
 
 void SubProcess::Instance::SetErrorMessage(const CString& msg)
 {
-	mErrMsg = msg;
+	in->mErrMsg = msg;
 }
 
 CString SubProcess::Instance::GetErrorMessage()
 {
-	return mErrMsg;
+	return in->mErrMsg;
 }
 
 }

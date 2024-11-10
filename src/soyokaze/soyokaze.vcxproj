@@ -765,6 +765,7 @@
     <ClInclude Include="utility\Accessibility.h" />
     <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\CharConverter.h" />
+    <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
@@ -1147,6 +1148,7 @@
     <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\AES.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
+    <ClCompile Include="utility\DemotedProcessToken.cpp" />
     <ClCompile Include="utility\HWNDRect.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Path.cpp" />
