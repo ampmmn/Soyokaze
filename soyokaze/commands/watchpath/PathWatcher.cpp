@@ -196,10 +196,10 @@ void PathWatcher::RegisterPath(const CString& cmdName, const ITEM& item)
 		}
 
 		if (PathIsUNC(item.mPath) == FALSE) {
-			in->mTargets[cmdName] = new LocalPathTarget(cmdName, item.mMessage,item.mPath);
+			in->mTargets[cmdName] = new LocalPathTarget(cmdName, item.mMessage, item.mPath, item.mInterval);
 		}
 		else {
-			in->mTargets[cmdName] = new UNCPathTarget(cmdName, item.mMessage,item.mPath);
+			in->mTargets[cmdName] = new UNCPathTarget(cmdName, item.mMessage,item.mPath, item.mInterval);
 		}
 	}
 	in->StartWatch();

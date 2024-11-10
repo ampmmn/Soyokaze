@@ -184,6 +184,7 @@
 #define IDC_EDIT_HOTKEY                 1022
 #define IDC_EDIT_PARAM2                 1022
 #define IDC_BUTTON_RESOLVESHORTCUT      1022
+#define IDC_EDIT_INTERVAL               1022
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PATH2                  1023
 #define IDC_EDIT_HOTKEY_DOWN            1023
@@ -422,6 +423,7 @@
 #define IDC_CHECK_SANDSHOTKEY           1194
 #define IDC_STATIC_FRAME                1195
 #define IDC_STATIC_MODSANDS             1196
+#define IDC_STATIC_CACHECANDIDATES      1197
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -430,7 +432,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1197
+#define _APS_NEXT_CONTROL_VALUE         1198
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

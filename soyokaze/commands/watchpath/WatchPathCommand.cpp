@@ -157,6 +157,7 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 	PathWatcher::ITEM item;
 	item.mPath = in->mParam.mPath;
 	item.mMessage = in->mParam.mNotifyMessage;
+	item.mInterval = in->mParam.mWatchInterval;
 	PathWatcher::Get()->RegisterPath(in->mParam.mName, item);
 
 	return true;
@@ -191,6 +192,7 @@ bool WatchPathCommand::NewDialog(Parameter* param)
 		PathWatcher::ITEM item;
 		item.mPath = paramNew.mPath;
 		item.mMessage = paramNew.mNotifyMessage;
+		item.mInterval = paramNew.mWatchInterval;
 		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 
@@ -234,6 +236,7 @@ bool WatchPathCommand::Apply(launcherapp::core::CommandEditor* editor)
 		PathWatcher::ITEM item;
 		item.mPath = in->mParam.mPath;
 		item.mMessage = in->mParam.mNotifyMessage;
+		item.mInterval = in->mParam.mWatchInterval;
 		watcher->RegisterPath(GetName(), item);
 	}
 
@@ -259,6 +262,7 @@ bool WatchPathCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 		PathWatcher::ITEM item;
 		item.mPath = paramNew.mPath;
 		item.mMessage = paramNew.mNotifyMessage;
+		item.mInterval = paramNew.mWatchInterval;
 		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 

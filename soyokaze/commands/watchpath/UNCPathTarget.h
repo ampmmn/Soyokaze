@@ -10,7 +10,7 @@ namespace watchpath {
 class UNCPathTarget : public WatchTarget
 {
 public:
-	UNCPathTarget(const CString& cmdName, const CString& message, const CString& path);
+	UNCPathTarget(const CString& cmdName, const CString& message, const CString& path, UINT interval);
 	virtual ~UNCPathTarget() ;
 
 	bool IsUpdated() override;

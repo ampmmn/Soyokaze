@@ -22,10 +22,18 @@ public:
 	void swap(CommandParam& rhs);
 
 public:
+	// コマンド名
 	CString mName;
+	// 説明
 	CString mDescription;
+	// 監視対象パス
 	CString mPath;
+	// 更新検知時の通知メッセージ
 	CString mNotifyMessage;
+	// 更新検知後の間隔(秒単位)
+	// 指定秒数が経過するまで次の通知をしない
+	UINT mWatchInterval;    
+	// 無効にする
 	bool mIsDisabled;
 };
 

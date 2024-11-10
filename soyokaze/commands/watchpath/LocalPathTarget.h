@@ -10,7 +10,7 @@ namespace watchpath {
 class LocalPathTarget : public WatchTarget
 {
 public:
-	LocalPathTarget(const CString& cmdName, const CString& message, const CString& path);
+	LocalPathTarget(const CString& cmdName, const CString& message, const CString& path, UINT interval);
 	virtual ~LocalPathTarget() ;
 
 	bool IsUpdated() override;

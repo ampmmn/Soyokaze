@@ -57,6 +57,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
 	DDX_Text(pDX, IDC_EDIT_MESSAGE, mParam.mNotifyMessage);
+	DDX_Text(pDX, IDC_EDIT_INTERVAL, mParam.mWatchInterval);
 	DDX_Check(pDX, IDC_CHECK_DISABLE, mParam.mIsDisabled);
 }
 

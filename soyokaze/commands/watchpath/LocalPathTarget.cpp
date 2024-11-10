@@ -176,6 +176,7 @@ struct LocalPathTarget::PImpl
 	CString mMessage;
 	//
 	CString mDetail;
+	UINT mInterval = 300 * 1000;
 
 	// ReadDirectoryChangesWに渡すためのファイルハンドル
 	HANDLE mDirHandle = nullptr;
@@ -183,6 +184,8 @@ struct LocalPathTarget::PImpl
 	OVERLAPPED mOverlapped = {};
 	// 変更通知受信用のバッファ
 	std::vector<BYTE> mBuffer;
+	// 最後に通知した時刻
+	uint64_t mLastNotifyTime = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,12 +197,14 @@ struct LocalPathTarget::PImpl
 LocalPathTarget::LocalPathTarget(
 	const CString& cmdName,
  	const CString& message,
- 	const CString& path
+ 	const CString& path,
+	UINT interval
 ) : in(new PImpl)
 {
 	in->mCommandName = cmdName;
 	in->mMessage = message;
 	in->mPath = path;
+	in->mInterval = interval * 1000;  // ミリ秒単位にする
 }
 
 LocalPathTarget::~LocalPathTarget()
@@ -221,6 +226,15 @@ bool LocalPathTarget::IsUpdated()
 	}
 	ASSERT(in->mOverlapped.hEvent);
 
+	// 前回の通知から時間が経過していない場合はチェックしない
+	bool isFirst = in->mLastNotifyTime == 0;
+	if (isFirst == false) {
+		ULONGLONG elapsed = GetTickCount64() - in->mLastNotifyTime;
+		if (elapsed < in->mInterval) {
+			return false;
+		}
+	}
+
 	// 更新があったか確認する
 	if (WaitForSingleObject(in->mOverlapped.hEvent, 0) == WAIT_TIMEOUT) {
 		return false;
@@ -230,6 +244,9 @@ bool LocalPathTarget::IsUpdated()
 	if (in->PrepareInformation() == false) {
 		return false;
 	}
+
+	// 更新検知した時刻を記憶しておく
+	in->mLastNotifyTime = GetTickCount64();
 
 	return true;  // 更新あり
 }

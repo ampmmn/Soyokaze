@@ -222,11 +222,15 @@ struct UNCPathTarget::PImpl
 	CString mCommandName;
 	CString mPath;
 	CString mMessage;
+	// 間隔(ミリ秒単位)
+	UINT mInterval = 300 * 1000;
 	CString mDetail;
 	// 監視対象パス以下にある要素の更新日時情報
 	DirectoryNode mPrevTimeStamps;
 	// 最後にチェックした時刻
 	uint64_t mLastCheckTime = 0;
+	// 最後に通知した時刻
+	uint64_t mLastNotifyTime = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -236,15 +240,23 @@ struct UNCPathTarget::PImpl
 
 
 
+/**
+ 	@param[in] cmdName  コマンド名
+ 	@param[in] message  通知メッセージ
+ 	@param[in] path     監視対象パス
+ 	@param[in] interval 間隔(秒単位)
+*/
 UNCPathTarget::UNCPathTarget(
 	const CString& cmdName,
  	const CString& message,
- 	const CString& path
+ 	const CString& path,
+	UINT interval
 ) : in(new PImpl)
 {
 	in->mCommandName = cmdName;
 	in->mMessage = message;
 	in->mPath = path;
+	in->mInterval = interval * 1000;  // ミリ秒単位にする
 }
 
 UNCPathTarget::~UNCPathTarget()
@@ -253,13 +265,13 @@ UNCPathTarget::~UNCPathTarget()
 
 bool UNCPathTarget::IsUpdated()
 {
-	//bool isFirst = in->mLastCheckTime == 0;
-	//if (isFirst == false) {
-	//	DWORD elapsed = GetTickCount64() - in->mLastCheckTime;
-	//	if (elapsed < 5000) {  // FIXME: 間隔調整
-	//		return false;
-	//	}
-	//}
+	bool isFirst = in->mLastNotifyTime == 0;
+	if (isFirst == false) {
+		ULONGLONG elapsed = GetTickCount64() - in->mLastNotifyTime;
+		if (elapsed < in->mInterval) {
+			return false;
+		}
+	}
 
 	// 現在の情報を取得する
 	DirectoryNode currentTS;
@@ -300,6 +312,7 @@ bool UNCPathTarget::IsUpdated()
 
 	in->mDetail.Format(_T("%s %s"), (LPCTSTR)typeStr, (LPCTSTR)changedItem);
 	in->mLastCheckTime = GetTickCount64();
+	in->mLastNotifyTime = in->mLastCheckTime; 
 	in->mPrevTimeStamps.swap(currentTS);
 	return true;
 }
