@@ -15,19 +15,10 @@ struct ViewSettingDialog::PImpl
 	// 入力欄のアイコンを表示する
 	BOOL mIsDrawIcon = TRUE;
 
-	// 入力画面を常に最前面に表示
-	BOOL mIsTopMost = FALSE;
-
-	// アクティブ状態でなくなったらウインドウを隠す
-	BOOL mIsHideOnInactive = FALSE;
-
 	// 半透明の表示方法
 	int mTransparencyType = 0;
 	// 半透明表示の透明度
 	UINT mAlpha = 128;
-
-	// マウスカーソル位置に入力欄を表示する
-	BOOL mIsShowMainWindowOnCursor = FALSE;
 
 	// コマンド種別を表示するか?
 	BOOL mIsShowCommandType = TRUE;
@@ -75,9 +66,6 @@ void ViewSettingDialog::OnOK()
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)in->mIsDrawIcon);
 
-	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
-	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
-
 	if (in->mTransparencyType == 0) {
 		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
 		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
@@ -95,7 +83,6 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
 
-	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), (bool)in->mIsShowMainWindowOnCursor);
 	settingsPtr->Set(_T("Soyokaze:IsShowCommandType"), (bool)in->mIsShowCommandType);
 	settingsPtr->Set(_T("Soyokaze:IsShowGuide"), (bool)in->mIsShowGuide);
 	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)in->mIsAlternateColor);
@@ -116,13 +103,10 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_DRAWICON, in->mIsDrawIcon);
-	DDX_Check(pDX, IDC_CHECK_TOPMOST, in->mIsTopMost);
-	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, in->mIsHideOnInactive);
 	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, in->mTransparencyType);
 	DDX_Text(pDX, IDC_EDIT_ALPHA, in->mAlpha);
 	DDV_MinMaxInt(pDX, in->mAlpha, 0, 255);
 	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
-	DDX_Check(pDX, IDC_CHECK_MOVETOCURSOR, in->mIsShowMainWindowOnCursor);
 	DDX_Check(pDX, IDC_CHECK_SHOWCOMMANDTYPE, in->mIsShowCommandType);
 	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, in->mIsShowGuide);
 	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, in->mIsAlternateColor);
@@ -169,8 +153,6 @@ void ViewSettingDialog::OnEnterSettings()
 	auto settingsPtr = (Settings*)GetParam();
 
 	in->mIsDrawIcon = settingsPtr->Get(_T("ViewSetting:IsDrawIcon"), true);
-	in->mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
-	in->mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
 
 	if (settingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
 		in->mTransparencyType = 2;
@@ -188,7 +170,6 @@ void ViewSettingDialog::OnEnterSettings()
 
 	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
 	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
-	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 	in->mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
 	in->mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
 	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);

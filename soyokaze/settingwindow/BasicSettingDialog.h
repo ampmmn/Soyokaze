@@ -1,34 +1,18 @@
 #pragma once
 
 #include "gui/SettingPage.h"
-#include "hotkey/HotKeyAttribute.h"
-// 
+#include <memory>
+
+
 class BasicSettingDialog : public SettingPage
 {
 public:
 	BasicSettingDialog(CWnd* parentWnd);
 	virtual ~BasicSettingDialog();
 
-	// ランチャー呼び出しキー（表示用)
-	CString mHotKey;
-	HOTKEY_ATTR mHotKeyAttr;
-
-	//
-	bool mIsEnableHotKey;
-	bool mIsEnableModifierHotKey;
-	UINT mModifierFirstVK;
-	UINT mModifierSecondVK;
-
-	// 表示中にホットキーを押したら隠れる
-	BOOL mIsShowToggle;
-
-	// 入力画面を非表示にするときに入力文字列を消去しない
-	BOOL mIsKeepTextWhenDlgHide;
-
-
-	// 起動直後は入力画面を非表示にする
-	BOOL mIsHideOnRun;
-
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 protected:
 	bool UpdateStatus();
 
