@@ -69,7 +69,6 @@
 #define IDS_COMMAND_WORKSHEET           164
 #define IDD_FILTEREDIT                  165
 #define IDS_COMMAND_BOOKMARK            166
-#define IDD_FILTER                      167
 #define IDS_COMMAND_BUILTIN             168
 #define IDD_EXECSETTING                 169
 #define IDS_COMMAND_CALCULATOR          170
