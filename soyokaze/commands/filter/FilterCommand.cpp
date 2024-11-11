@@ -373,7 +373,12 @@ bool FilterCommand::QueryCandidates(
 	in->mExecutor->Query(queryStr, results);
 
 	for (auto& result : results) {
-		commands.Add(CommandQueryItem(result.mMatchLevel, new FilterAdhocCommand(in->mParam, result)));
+		int level = result.mMatchLevel;
+		if (level == Pattern::PartialMatch) {
+			// コマンド名が一致しているので少なくとも前方一致
+			level = Pattern::FrontMatch;
+		}
+		commands.Add(CommandQueryItem(level, new FilterAdhocCommand(in->mParam, result)));
 	}
 
 	return true;
