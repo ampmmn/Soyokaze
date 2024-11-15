@@ -8,18 +8,23 @@ struct SandSKeyState
 {
 	bool ResetIfNeeded() {
 		auto curTickCount = GetTickCount64();
-		if (curTickCount - mLastCalled <= 2000) {
+		if (curTickCount - mLastCalled <= mWaitTime) {
 			// 不要
 			return false;
 		}
 
 		// 前回呼び出し時から所定の時間が経過していたら、状態を戻す
-		memset(mKeyPressed, 0, sizeof(mKeyPressed));
+		Reset();
 		mLastCalled = curTickCount;
 		return true;
 	}
+
+	void Reset()  {
+		memset(mKeyPressed, 0, sizeof(mKeyPressed));
+	}
 	bool mKeyPressed[256] = {};
 	ULONGLONG mLastCalled = GetTickCount64();
+	ULONGLONG mWaitTime = 500;
 };
 
 static SandSKeyState keyState;
@@ -88,6 +93,27 @@ LRESULT sands_RegisterHook()
 		return 1;
 	}
 
+	// キーリピーとの設定値を取得
+	TCHAR value[32] = {};
+	DWORD len = 32;
+	if (RegGetValue(HKEY_CURRENT_USER, _T("Control Panel\\Keyboard"), _T("KeyboardDelay"), RRF_RT_REG_SZ, nullptr, value, &len) == ERROR_SUCCESS) {
+		if (_tcscmp(value, _T("0")) == 0) {
+			keyState.mWaitTime = 250;
+		}
+		else if (_tcscmp(value, _T("1")) == 0) {
+			keyState.mWaitTime = 500;
+		}
+		else if (_tcscmp(value, _T("2")) == 0) {
+			keyState.mWaitTime = 750;
+		}
+		else if (_tcscmp(value, _T("3")) == 0) {
+			keyState.mWaitTime = 1000;
+		}
+		else {
+			keyState.mWaitTime = 500;
+		}
+	}
+
 	return true;
 }
 
@@ -116,4 +142,12 @@ sands_IsPressed(UINT modKeyCode, UINT keyCode)
 	return true;
 }
 
+extern "C"
+__declspec(dllexport)
+int
+sands_ResetState()
+{
+	keyState.Reset();
+	return 0;
+}
 

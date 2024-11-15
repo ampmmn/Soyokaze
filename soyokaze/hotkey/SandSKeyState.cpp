@@ -14,8 +14,9 @@ struct SandSKeyState::PImpl
 	SANDS_REGISTERHOOK mRegisterHook = nullptr;
 	SANDS_UNREGISTERHOOK mUnregisterHook = nullptr;
 	SANDS_ISPRESSED mIsPressed = nullptr;
+	SANDS_RESET mReset = nullptr;
 
-	bool mLastState[0x10000];
+	bool mLastState[0x10000] = {};
 	bool mIsLogPrinted = false;
 };
 
@@ -46,6 +47,7 @@ void SandSKeyState::Initialize()
 	in->mRegisterHook = (SANDS_REGISTERHOOK)GetProcAddress(in->mDll, "sands_RegisterHook");
 	in->mUnregisterHook = (SANDS_UNREGISTERHOOK)GetProcAddress(in->mDll, "sands_UnregisterHook");
 	in->mIsPressed = (SANDS_ISPRESSED)GetProcAddress(in->mDll, "sands_IsPressed");
+	in->mReset = (SANDS_RESET)GetProcAddress(in->mDll, "sands_ResetState");
 
 	if (in->mRegisterHook) {
 		in->mRegisterHook();
@@ -85,3 +87,15 @@ bool SandSKeyState::IsPressed(UINT modKeyCode, UINT keyCode)
 	return true;
 }
 
+void SandSKeyState::Reset()
+{
+	if (in->mIsPressed == nullptr) {
+		if (in->mIsLogPrinted == false) {
+			spdlog::info("SandS is not available.");
+			in->mIsLogPrinted = true;
+		}
+		return ;
+	}
+
+	in->mReset();
+}

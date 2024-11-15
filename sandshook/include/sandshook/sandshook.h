@@ -13,6 +13,7 @@ __declspec(dllimport) int sands_IsPressed(UINT modKeyCode, UINT keyCode);
 typedef LRESULT (*SANDS_REGISTERHOOK)(void);
 typedef LRESULT (*SANDS_UNREGISTERHOOK)(void);
 typedef LRESULT (*SANDS_ISPRESSED)(UINT modKeyCode, UINT keyCode);
+typedef LRESULT (*SANDS_RESET)(void);
 
 #ifdef __cplusplus
 }

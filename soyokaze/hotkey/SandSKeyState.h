@@ -12,6 +12,7 @@ public:
 	void Finalize();
 
 	bool IsPressed(UINT modKeyCode, UINT keyCode);
+	void Reset();
 	
 	static SandSKeyState* GetInstance();
 private:

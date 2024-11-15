@@ -302,13 +302,13 @@ bool CommandHotKeyManager::TryCallLocalHotKeyHander(MSG* msg)
 		}
 	}
 
+	// SandSによるホットキー向けの処理
+	auto sandsState = SandSKeyState::GetInstance();
 	if (GetForegroundWindow() != in->mReceiverWindow) {
 		// SandSはランチャーウインドウがアクティブなときしか実行しない
 		return false;
 	}
 
-	// SandSによるホットキー向けの処理
-	auto sandsState = SandSKeyState::GetInstance();
 
 	for (auto& pa : in->mSandSItemMap) {
 		auto& sandsAttr = pa.first;
@@ -322,6 +322,8 @@ bool CommandHotKeyManager::TryCallLocalHotKeyHander(MSG* msg)
 		auto& handlerPtr = sandsItem.mHandlerPtr;
 		handlerPtr->Invoke();
 		in->mIsSandSInvoked = true;
+
+		sandsState->Reset();
 		return true;
 	}
 
