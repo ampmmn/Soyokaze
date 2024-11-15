@@ -259,12 +259,6 @@ int ExcelApplication::GetCellText(
 	SPDLOG_DEBUG(_T("args path:{0} sheet:{1} address:{2}"),
 	             (LPCTSTR)wbPath, (LPCTSTR)sheetName, (LPCTSTR)address);
 
-	// ファイルが存在しなければ処理を行わない
-	if (PathFileExists(wbPath) == FALSE) {
-		spdlog::error(_T("data source does not exist. {}"), (LPCTSTR)wbPath);
-		return -1;
-	}
-
 	DispWrapper& excelApp = in->mApp;
 	if (!excelApp) {
 		if (CreateExcelApplication(excelApp) == false) {
@@ -304,7 +298,7 @@ int ExcelApplication::GetCellText(
 
 		HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, workBooks, L"Open", 3, &arg3, &arg2, &arg1);
 		if (FAILED(hr)) {
-			SPDLOG_ERROR(_T("Failed to create open"));
+			SPDLOG_ERROR(_T("Failed to open workbook. path:{}"), (LPCTSTR)wbPath);
 			return -3;
 		}
 	}
