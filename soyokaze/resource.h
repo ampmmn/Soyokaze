@@ -211,6 +211,8 @@
 #define IDC_COMBO_PREFILTERTYPE2        1033
 #define IDC_COMBO_CANDIDATECACHE        1033
 #define IDC_BUTTON_EDIT                 1034
+#define IDC_COMBO_PREFILTERTYPE3        1034
+#define IDC_COMBO_PREFILTERCODEPAGE     1034
 #define IDC_BUTTON_EDIT2                1035
 #define IDC_BUTTON_CLONE                1035
 #define IDC_BUTTON_DOWN                 1036
@@ -296,6 +298,7 @@
 #define IDC_STATIC_WORKDIR              1098
 #define IDC_STATIC_SHOWTYPE             1099
 #define IDC_STATIC_WORKDIR2             1099
+#define IDC_STATIC_PREFILTERCODEPAGE    1099
 #define IDC_STATIC_PARAMHELP            1100
 #define IDC_CHECK_ENABLECALCULATOR      1101
 #define IDC_BUTTON_BROWSE               1102

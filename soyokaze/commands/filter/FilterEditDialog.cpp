@@ -80,6 +80,7 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERTYPE, mParam.mPreFilterType);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mPostFilterType);
 	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
+	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERCODEPAGE, mPreFilterCodePageIndex);
 }
 
 #pragma warning( push )
@@ -151,6 +152,18 @@ BOOL FilterEditDialog::OnInitDialog()
 		}
 	}
 
+	// 前段フィルタの文字コード
+	if (mParam.mPreFilterCodePage == CP_UTF8) {
+		mPreFilterCodePageIndex = 0;
+	}
+	else if (mParam.mPreFilterCodePage == 932) {   // codepage 932 → sjis
+		mPreFilterCodePageIndex = 1;
+	}
+	else {
+		// その他の値はUTF-8扱い
+		mPreFilterCodePageIndex = 0;
+	}
+
 	UpdateStatus();
 	UpdateData(FALSE);
 
@@ -164,7 +177,7 @@ bool FilterEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	int showTypePreFilter = mParam.mPreFilterType == 0 ? SW_SHOW : SW_HIDE;
+	int showTypePreFilter = mParam.mPreFilterType == FILTER_SUBPROCESS ? SW_SHOW : SW_HIDE;
 	GetDlgItem(IDC_STATIC_PATH)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_EDIT_PATH)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->ShowWindow(showTypePreFilter);
@@ -176,6 +189,8 @@ bool FilterEditDialog::UpdateStatus()
 	GetDlgItem(IDC_SYSLINK_MACRO)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_STATIC_CACHECANDIDATES)->ShowWindow(showTypePreFilter);
 	GetDlgItem(IDC_COMBO_CANDIDATECACHE)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_STATIC_PREFILTERCODEPAGE)->ShowWindow(showTypePreFilter);
+	GetDlgItem(IDC_COMBO_PREFILTERCODEPAGE)->ShowWindow(showTypePreFilter);
 
 	if (mParam.mPostFilterType == 0) {
 		// 他のコマンドを実行する
@@ -307,6 +322,17 @@ void FilterEditDialog::OnOK()
 	if (mParam.mPostFilterType == 0) {
 		CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
 		cmbBox->GetLBText(mCommandSelIndex, mParam.mAfterCommandName);
+	}
+
+	if (mPreFilterCodePageIndex == 0) {
+		mParam.mPreFilterCodePage = CP_UTF8;
+	}
+	else if (mPreFilterCodePageIndex == 1) {
+		mParam.mPreFilterCodePage = 932;
+	}
+	else {
+		// その他の値はUTF-8扱い
+		mParam.mPreFilterCodePage = CP_UTF8;
 	}
 
 	__super::OnOK();

@@ -241,7 +241,7 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 	std::vector<char> output;
 	std::vector<char> err;
 
-	CharConverter conv;
+	CharConverter conv(param.mPreFilterCodePage);
 
 	bool isExitChild = false;
 	while(isExitChild == false) {
@@ -267,7 +267,6 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 	}
 	output.push_back(0x00);
 
-	// ToDo: 文字コードを選べるようにする
 	CString src;
 	conv.Convert(&output.front(), src);
 
@@ -426,15 +425,15 @@ void FilterExecutor::LoadCandidates(const CommandParam& param)
 
 		AddRef();
 
-		if (param.mPreFilterType == 0) {
+		if (param.mPreFilterType == FILTER_SUBPROCESS) {
 			// 子プロセスの出力から絞込み文字列を得る
 			in->LoadCandidatesFromSubProcess(param);
 		}
-		else if (param.mPreFilterType == 1) {
+		else if (param.mPreFilterType == FILTER_CLIPBOARD) {
 			// クリップボードの値から
 			in->LoadCandidatesFromClipboard(param);
 		}
-		else if (param.mPreFilterType == 2) {
+		else if (param.mPreFilterType == FILTER_TEXT) {
 			// 固定値
 			in->LoadCandidatesFromDefinedValue(param);
 		}

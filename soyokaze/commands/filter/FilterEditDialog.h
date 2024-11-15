@@ -43,6 +43,7 @@ protected:
 public:
 	CommandParam mParam;
 	int mCommandSelIndex;
+	int mPreFilterCodePageIndex;
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 

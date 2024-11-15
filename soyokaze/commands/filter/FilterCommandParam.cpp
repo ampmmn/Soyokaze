@@ -9,7 +9,8 @@ CommandParam::CommandParam() :
 	mAfterCommandParam(_T("$select")),
 	mPreFilterType(0),
 	mCacheType(0),
-	mPostFilterType(0)
+	mPostFilterType(0),
+	mPreFilterCodePage(CP_UTF8)
 {
 }
 
@@ -21,6 +22,7 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mParameter(rhs.mParameter),
 	mPreFilterType(rhs.mPreFilterType),
 	mCacheType(rhs.mCacheType),
+	mPreFilterCodePage(rhs.mPreFilterCodePage),
 	mPostFilterType(rhs.mPostFilterType),
 	mAfterCommandName(rhs.mAfterCommandName),
 	mAfterFilePath(rhs.mAfterFilePath),
@@ -43,6 +45,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mParameter = rhs.mParameter;
 		mPreFilterType = rhs.mPreFilterType;
 		mCacheType = rhs.mCacheType;
+		mPreFilterCodePage = rhs.mPreFilterCodePage;
 		mPostFilterType = rhs.mPostFilterType;
 		mAfterCommandName = rhs.mAfterCommandName;
 		mAfterFilePath = rhs.mAfterFilePath;
