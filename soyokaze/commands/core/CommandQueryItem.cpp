@@ -126,6 +126,9 @@ void CommandQueryItemList::Sort()
 	auto& items = in->mItems;
 	std::stable_sort(items.begin(), items.end(),
 		[rankPtr](const CommandQueryItem& l, const CommandQueryItem& r) {
+
+			// 一致度レベルで比較
+			// 一致度レベルの数値が高いほうを優先するため、 R < L で比較
 			if (r.mMatchLevel < l.mMatchLevel) { return true; }
 			if (r.mMatchLevel > l.mMatchLevel) { return false; }
 
@@ -133,12 +136,16 @@ void CommandQueryItemList::Sort()
 			auto& cmdL = l.mCommand;
 			auto& cmdR = r.mCommand;
 
+			// 優先度の数値が高いほうを優先するため、 R < L で比較
 			int priorityL = rankPtr->Get(cmdL->GetName());
 			int priorityR = rankPtr->Get(cmdR->GetName());
 			return priorityR < priorityL;
+
+			// Note: 動的なコマンド(AdhocCommand)が生成したコマンド順序を維持したいので、
+			//       名前での昇順ソートを行わないことにしている
+			//       例: vmxのMRU、定型文グループの要素など
 	});
 }
-
 
 }
 
