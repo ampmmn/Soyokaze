@@ -138,8 +138,8 @@ bool SettingDialog::UpdateStatus()
 {
 	mMessage.Empty();
 
-	// 64を上限とする
-	GetDlgItem(IDC_BUTTON_ADD)->EnableWindow(mParam.mItems.size() < 64);
+	// 128を上限とする
+	GetDlgItem(IDC_BUTTON_ADD)->EnableWindow(mParam.mItems.size() < 128);
 
 	mHotKey = mParam.mHotKeyAttr.ToString();
 	if (mHotKey.IsEmpty()) {
