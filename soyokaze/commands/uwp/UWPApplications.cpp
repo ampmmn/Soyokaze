@@ -203,7 +203,7 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 		SHFILEINFO sfi = {};
 
 		hr = SHGetIDListFromObject((IUnknown*)item, &pidl);
-    if (FAILED(hr)) {
+		if (FAILED(hr)) {
 			continue;
 		}
 
