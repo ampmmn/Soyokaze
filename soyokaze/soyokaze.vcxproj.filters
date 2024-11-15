@@ -199,6 +199,9 @@
     <Filter Include="mainwindow\layout">
       <UniqueIdentifier>{fcc5abc1-3e80-4540-ab8a-02290af3e331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\snippetgroup">
+      <UniqueIdentifier>{e7e0e85c-2f0f-4922-b922-67d2c2e7319b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1290,6 +1293,30 @@
     <ClInclude Include="hotkey\SandSKeyState.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupAdhocCommand.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupCommand.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupCommandEditor.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupEditDialog.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupItem.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupItemDialog.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupParam.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\snippetgroup\SnippetGroupProvider.h">
+      <Filter>commands\snippetgroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2281,6 +2308,30 @@
     </ClCompile>
     <ClCompile Include="hotkey\SandSKeyState.cpp">
       <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupAdhocCommand.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupCommand.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupCommandEditor.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupEditDialog.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupItem.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupItemDialog.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp">
+      <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp">
+      <Filter>commands\snippetgroup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

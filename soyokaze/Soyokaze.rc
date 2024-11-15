@@ -1164,6 +1164,48 @@ BEGIN
     LTEXT           "スタティック",IDC_STATIC_STATUSMSG,7,133,237,8
 END
 
+IDD_SNIPPETGROUP DIALOGEX 0, 0, 337, 263
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "定型文グループの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "グループの名前(&N):",-1,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,154,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",-1,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,154,14,ES_AUTOHSCROLL
+    LTEXT           "定型文の一覧(&L):",-1,9,67,122,8
+    CONTROL         "",IDC_LIST_ITEMS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,20,82,226,131
+    PUSHBUTTON      "追加(&A)",IDC_BUTTON_ADD,255,83,50,14
+    PUSHBUTTON      "編集(&E)",IDC_BUTTON_EDIT,255,101,50,14
+    PUSHBUTTON      "削除(&R)",IDC_BUTTON_DELETE,255,119,50,14
+    PUSHBUTTON      "上へ移動(&U)",IDC_BUTTON_UP,255,137,50,14
+    PUSHBUTTON      "下へ移動(&O)",IDC_BUTTON_DOWN,255,155,50,14
+    LTEXT           "ホットキー(K):",-1,22,220,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY2,113,217,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,238,217,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,242,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,242,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
+END
+
+IDD_SNIPPETGROUP_ITEM DIALOGEX 0, 0, 337, 240
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "定型文の編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "名前(&N):",-1,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,104,24,215,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",-1,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,104,44,215,14,ES_AUTOHSCROLL
+    LTEXT           "テキスト(&T):",-1,13,66,65,8
+    EDITTEXT        IDC_EDIT_TEXT,21,78,301,134,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    CONTROL         "<A HREF=""https://sample.com/sample"">利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
+                    "SysLink",WS_TABSTOP,22,221,147,9
+    DEFPUSHBUTTON   "OK",IDOK,226,219,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,219,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1600,6 +1642,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 163
     END
+
+    IDD_SNIPPETGROUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 256
+    END
+
+    IDD_SNIPPETGROUP_ITEM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 233
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1920,7 +1978,7 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 100,
-    0, 0, 0, 0,
+    0, 100, 0, 0,
     0, 100, 0, 0,
     0, 100, 0, 0,
     0, 100, 0, 0,
@@ -2310,6 +2368,43 @@ END
 IDD_COMMAND_HOTKEY AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_SNIPPETGROUP AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 100,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
+END
+
+IDD_SNIPPETGROUP_ITEM AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 100,
+    0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
 END
 
 
@@ -3436,7 +3531,7 @@ BEGIN
     IDS_COMMAND_APP         "アプリ"
     IDS_SENDTO              "コマンドとして登録する.lnk"
     IDS_CONFIRM_VMXLOCKED   "%sはロックされているようですが、実行しますか?"
-    IDS_SNIPPETCOMMAND      "スニペットコマンド"
+    IDS_SNIPPETCOMMAND      "定型文コマンド"
     IDS_DESCRIPTION_SNIPPETCOMMAND "定型文をクリップボードにコピーするコマンドを作成します。"
     IDS_ERR_TEXTISEMPTY     "テキストを入力してください。"
     IDS_WINDOWTITLE         "ウインドウタイトル"

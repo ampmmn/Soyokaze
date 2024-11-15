@@ -34,6 +34,7 @@
 |[shellexecute](./shellexecute)|通常コマンド|
 |[simple_dict](./simple_dict)|簡易辞書コマンド|
 |[snippet](./snippet)|定型文コマンド|
+|[snippetgroup](./snippetgroup)|定型文グループコマンド|
 |[specialfolderfiles](./specialfolderfiles)|特殊フォルダの項目を実行できるようにするためのコマンド<br>(最近使ったファイル、スタートメニューなど)|
 |[timespan](./timespan)|経過時間を計算して表示するコマンド|
 |[unitconvert](./unitconvert)|単位変換系コマンド|

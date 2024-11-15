@@ -143,6 +143,9 @@
 #define IDD_APPSETTING_COLOR            238
 #define IDD_HOTKEY1                     239
 #define IDD_COMMAND_HOTKEY              239
+#define IDD_SNIPPETGROUP                240
+#define IDD_SNIPPET_EDIT1               241
+#define IDD_SNIPPETGROUP_ITEM           241
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -427,6 +430,7 @@
 #define IDC_STATIC_FRAME                1195
 #define IDC_STATIC_MODSANDS             1196
 #define IDC_STATIC_CACHECANDIDATES      1197
+#define IDC_LIST_ITEMS                  1198
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -435,7 +439,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        240
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1198
+#define _APS_NEXT_CONTROL_VALUE         1199
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
