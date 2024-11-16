@@ -114,7 +114,9 @@ BOOL BuiltinEditDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	GetDlgItem(IDC_CHECK_ENABLE)->EnableWindow(in->mCanEditEnable ? TRUE: FALSE);
-	GetDlgItem(IDC_CHECK_CONFIRM)->EnableWindow(in->mCanEditConfirm ? TRUE: FALSE);
+	if (in->mCanEditConfirm == false) {
+		GetDlgItem(IDC_CHECK_CONFIRM)->ShowWindow(SW_HIDE);
+	}
 
 	OnUpdateStatus();
 
@@ -136,7 +138,7 @@ void BuiltinEditDialog::OnUpdateStatus()
 
 	GetDlgItem(IDOK)->EnableWindow(FALSE);
 
-	GetDlgItem(IDC_CHECK_CONFIRM)->EnableWindow(in->mIsEnable);
+	GetDlgItem(IDC_CHECK_CONFIRM)->EnableWindow(in->mIsEnable && in->mCanEditConfirm);
 
 	if (in->mName.IsEmpty()) {
 		in->mMessage.LoadString(IDS_ERR_NAMEISEMPTY);

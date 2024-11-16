@@ -5,6 +5,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -41,9 +42,11 @@ BuiltinCommandBase::~BuiltinCommandBase()
 
 bool BuiltinCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	UNREFERENCED_PARAMETER(ifid);
-	UNREFERENCED_PARAMETER(cmd);
-	// 未実装
+	if (ifid == IFID_EDITABLE) {
+		AddRef();
+		*cmd = (launcherapp::core::Editable*)this;
+		return true;
+	}
 	return false;
 }
 
