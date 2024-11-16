@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="303px" preserveAspectRatio="none" style="width:341px;height:303px;background:#FFFFFF;" version="1.1" viewBox="0 0 341 303" width="341px" zoomAndPan="magnify"><defs><filter height="300%" id="f1myzs1xvyr3id" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[8fc3522a43f8c7199df5e09e5bb0188e]
+entity user--><ellipse cx="168" cy="14" fill="#FEFECE" filter="url(#f1myzs1xvyr3id)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M168,22 L168,49 M155,30 L181,30 M168,49 L155,64 M168,49 L181,64 " fill="none" filter="url(#f1myzs1xvyr3id)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42" x="147" y="84.0332">利用者</text><!--MD5=[84947c9ab41620577ad302ba4b50b1b3]
+entity splitter--><rect fill="#FEFECE" filter="url(#f1myzs1xvyr3id)" height="23.6094" style="stroke:#000000;stroke-width:1.5;" width="132" x="102" y="165.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="112" y="183.0332">振り分けコマンド</text><!--MD5=[1ce4ea15b77bdf94c303683cd358add7]
+entity cmd1--><rect fill="#FEFECE" filter="url(#f1myzs1xvyr3id)" height="23.6094" style="stroke:#000000;stroke-width:1.5;" width="84" x="7" y="267.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="17" y="285.0332">コマンド1</text><!--MD5=[5279c0370533442ed5e522342528f714]
+entity cmd2--><rect fill="#FEFECE" filter="url(#f1myzs1xvyr3id)" height="23.6094" style="stroke:#000000;stroke-width:1.5;" width="84" x="126" y="267.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="136" y="285.0332">コマンド2</text><!--MD5=[d1813b2f855cbd3bc383b596aa7a5aca]
+entity cmd3--><rect fill="#FEFECE" filter="url(#f1myzs1xvyr3id)" height="23.6094" style="stroke:#000000;stroke-width:1.5;" width="84" x="245" y="267.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="255" y="285.0332">コマンド3</text><!--MD5=[a707da165143314805483d8c57812bab]
+link user to splitter--><path d="M168,87.62 C168,112.09 168,141.92 168,160.05 " fill="none" id="user-to-splitter" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="168,165.28,172,156.28,168,160.28,164,156.28,168,165.28" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="26" x="169" y="131.9951">実行</text><!--MD5=[fd3f7387d2e9baf1e503c1c0a7fa494c]
+link splitter to cmd1--><path d="M154.81,189.58 C133.19,207.75 90.21,243.87 66.21,264.03 " fill="none" id="splitter-to-cmd1" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="62.25,267.37,71.7148,264.6466,66.0794,264.155,66.5709,258.5196,62.25,267.37" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="31" x="120" y="233.9951">Enter</text><!--MD5=[87e25b45fc98a6e3d1bf609ccc8ffce0]
+link splitter to cmd2--><path d="M168,189.58 C168,207.23 168,241.8 168,262.25 " fill="none" id="splitter-to-cmd2" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="168,267.37,172,258.37,168,262.37,164,258.37,168,267.37" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="55" x="169" y="233.9951">Ctrl-Enter</text><!--MD5=[463c8c4507fd29a9098ca048dcc78137]
+link splitter to cmd3--><path d="M188.57,189.58 C201.86,197.18 219.18,207.95 233,219.5 C248.89,232.78 264.59,250.61 274.93,263.18 " fill="none" id="splitter-to-cmd3" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="278.23,267.23,275.6591,257.7226,275.077,263.3494,269.4502,262.7673,278.23,267.23" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="51" x="251" y="233.9951">Alt-Enter</text><!--MD5=[a1c413ea53cc61e5824da3d5d171272c]
+@startuml{splitter.svg}
+
+actor "利用者" as user
+
+card "振り分けコマンド" as splitter
+
+card "コマンド1" as cmd1
+card "コマンド2" as cmd2
+card "コマンド3" as cmd3
+
+user -do-> splitter : 実行
+
+splitter -do-> cmd1 : Enter
+splitter -do-> cmd2 : Ctrl-Enter
+splitter -do-> cmd3 : Alt-Enter
+
+@enduml
+
+PlantUML version 1.2021.10(Mon Aug 30 22:43:48 JST 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: MS932
+Language: ja
+Country: JP
+--></g></svg>
