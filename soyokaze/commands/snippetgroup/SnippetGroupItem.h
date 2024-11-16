@@ -1,6 +1,9 @@
 #pragma once
 
+#include "utility/AES.h"
+
 class CommandEntryIF;
+
 
 namespace launcherapp {
 namespace commands {
@@ -15,8 +18,8 @@ public:
 
 	bool operator == (const Item& rhs) const;
 
-	bool Save(CommandEntryIF* entry, LPCTSTR prefix);
-	bool Load(CommandEntryIF* entry, LPCTSTR prefix);
+	bool Save(CommandEntryIF* entry, LPCTSTR prefix, utility::aes::AES& aes);
+	bool Load(CommandEntryIF* entry, LPCTSTR prefix, utility::aes::AES& aes);
 
 	void swap(Item& rhs);
 public:

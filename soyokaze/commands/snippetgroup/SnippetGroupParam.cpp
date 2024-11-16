@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "SnippetGroupParam.h"
 #include "commands/core/CommandEntryIF.h"
+#include "utility/AES.h"
 
 namespace launcherapp {
 namespace commands {
 namespace snippetgroup {
+
+static LPCSTR PASSPHRASE = "nandokuka";
 
 SnippetGroupParam::SnippetGroupParam()
 {
@@ -30,6 +33,10 @@ bool SnippetGroupParam::Save(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 
+	// 気休め程度の難読化をしておく
+	utility::aes::AES aes;
+	aes.SetPassphrase(PASSPHRASE);
+
 	// Note: nameは上位で書き込みを行っているのでここではしない
 	entry->Set(_T("description"), mDescription);
 
@@ -39,7 +46,7 @@ bool SnippetGroupParam::Save(CommandEntryIF* entry)
 	CString keyName;
 	for (int i = 0; i < count; ++i) {
 		keyName.Format(_T("Item%d"), i+1);
-		mItems[i].Save(entry, keyName);
+		mItems[i].Save(entry, keyName, aes);
 	}
 
 	return true;
@@ -48,6 +55,10 @@ bool SnippetGroupParam::Save(CommandEntryIF* entry)
 bool SnippetGroupParam::Load(CommandEntryIF* entry)
 {
 	ASSERT(entry);
+
+	// 気休め程度の難読化をしておく
+	utility::aes::AES aes;
+	aes.SetPassphrase(PASSPHRASE);
 
 	mName = entry->GetName();
 	mDescription = entry->Get(_T("description"), _T(""));
@@ -61,7 +72,9 @@ bool SnippetGroupParam::Load(CommandEntryIF* entry)
 	for (int i = 0; i < count; ++i) {
 		keyName.Format(_T("Item%d"), i+1);
 		Item item;
-		item.Load(entry, keyName);
+		if (item.Load(entry, keyName, aes) == false) {
+			continue;
+		}
 		items.push_back(item);
 	}
 
