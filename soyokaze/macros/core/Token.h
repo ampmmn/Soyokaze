@@ -96,11 +96,18 @@ public:
 	// 現在位置にある文字列の次の位置に進める。飛ばした位置にある文字列をstrに入れて返す
 	void SkipString(CString& str)
 	{
+		if (Get() == _T('"')) {
+			Next();
+			SkipStringWithQuate(str);
+			return;
+		}
+
 		CString tmpStr;
 		while (AtEnd() == false) {
 			if (IsWhiteSpace() || Get() == _T('}')) {
 				break;
 			}
+
 			if (Get() == _T('\\')) {
 				// エスケープシーケンス
 				Next();
@@ -115,6 +122,34 @@ public:
 					continue;
 				}
 			}
+			tmpStr += Get();
+			Next();
+		}
+		str = tmpStr;
+	}
+
+	void SkipStringWithQuate(CString& str)
+	{
+		CString tmpStr;
+		while (AtEnd() == false) {
+
+			if (Get() == _T('"')) {
+				Next();
+				break;
+			}
+
+			if (Get() == _T('\\')) {
+				// エスケープシーケンス
+				Next();
+				if (AtEnd()) {
+					break;
+				}
+
+				tmpStr += Get();
+				Next();
+				continue;
+			}
+
 			tmpStr += Get();
 			Next();
 		}

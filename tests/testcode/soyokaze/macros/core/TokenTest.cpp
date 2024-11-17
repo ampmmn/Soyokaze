@@ -42,11 +42,19 @@ TEST(MacrosCoreToken, testGet)
 TEST(MacrosCoreToken, testIsWhiteSpace)
 {
 	Token tok(_T("a \ti"));
+
+	// 現在の位置は 'a'
 	EXPECT_FALSE(tok.IsWhiteSpace());
+
+	// 現在の位置は ' '
 	tok.Next();
 	EXPECT_TRUE(tok.IsWhiteSpace());
+
+	// 現在の位置は '\t'
 	tok.Next();
 	EXPECT_TRUE(tok.IsWhiteSpace());
+
+	// 現在の位置は 'i'
 	tok.Next();
 	EXPECT_FALSE(tok.IsWhiteSpace());
 	tok.Next();

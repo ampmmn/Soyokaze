@@ -1317,6 +1317,9 @@
     <ClInclude Include="commands\snippetgroup\SnippetGroupProvider.h">
       <Filter>commands\snippetgroup</Filter>
     </ClInclude>
+    <ClInclude Include="macros\builtin\DateMacro.h">
+      <Filter>macros\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2332,6 +2335,9 @@
     </ClCompile>
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp">
       <Filter>commands\snippetgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\builtin\DateMacro.cpp">
+      <Filter>macros\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

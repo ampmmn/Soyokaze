@@ -515,6 +515,7 @@
     <ClInclude Include="macros\builtin\AppNameMacro.h" />
     <ClInclude Include="macros\builtin\BaseNameMacro.h" />
     <ClInclude Include="macros\builtin\ClipboardMacro.h" />
+    <ClInclude Include="macros\builtin\DateMacro.h" />
     <ClInclude Include="macros\builtin\EnvMacro.h" />
     <ClInclude Include="macros\core\MacroBase.h" />
     <ClInclude Include="macros\core\MacroIF.h" />
@@ -891,6 +892,7 @@
     <ClCompile Include="macros\builtin\AppNameMacro.cpp" />
     <ClCompile Include="macros\builtin\BaseNameMacro.cpp" />
     <ClCompile Include="macros\builtin\ClipboardMacro.cpp" />
+    <ClCompile Include="macros\builtin\DateMacro.cpp" />
     <ClCompile Include="macros\builtin\EnvMacro.cpp" />
     <ClCompile Include="macros\core\MacroBase.cpp" />
     <ClCompile Include="macros\core\MacroRepository.cpp" />
