@@ -301,7 +301,7 @@ bool RegExpCommand::Apply(launcherapp::core::CommandEditor* editor)
 	}
 
 	in->mIcon = nullptr;
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 
 	return true;
 }
