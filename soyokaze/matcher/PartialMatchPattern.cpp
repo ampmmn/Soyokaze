@@ -299,6 +299,11 @@ int PartialMatchPattern::Match(
 	int offset
 )
 {
+	// 空文字の場合はマッチさせない
+	if (str == nullptr || str[0] == _T('\0')) {
+		return Mismatch;
+	}
+
 	// 入力されたキーワードに完全一致するかどうかの判断
 	CString keyword;
 	if (in->GetKeyword(offset, keyword) &&
