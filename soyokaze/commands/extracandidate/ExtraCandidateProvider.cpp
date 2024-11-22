@@ -66,24 +66,25 @@ struct ExtraCandidateProvider::PImpl : public AppPreferenceListenerIF, public Co
 	}
 	void OnNewCommand(launcherapp::core::Command* cmd) override
 	{
-		ExtraCandidateSource* newSource = nullptr;
+		RefPtr<ExtraCandidateSource> newSource;
 		if (cmd->QueryInterface(IFID_EXTRACANDIDATESOURCE, (void**)&newSource) == false) {
 			return;
 		}
-		ASSERT(newSource);
-		mSources.push_back(newSource);
+		ASSERT(newSource.get());
+		mSources.push_back(newSource.release());
 	}
 
 	void OnDeleteCommand(Command* command) override
 	{
-		ExtraCandidateSource* newSource = nullptr;
+		RefPtr<ExtraCandidateSource> newSource;
 		if (command->QueryInterface(IFID_EXTRACANDIDATESOURCE, (void**)&newSource) == false) {
 			return;
 		}
 
-		auto it = std::find(mSources.begin(), mSources.end(), newSource);
+		auto it = std::find(mSources.begin(), mSources.end(), newSource.get());
 		if (it != mSources.end()) {
 			mSources.erase(it);
+			// mSourcesで抱えていたぶんの参照カウントを減らす
 			command->Release();
 		}
 	}
