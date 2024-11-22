@@ -210,7 +210,7 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 		}
 	}
  
-  tidyRelease(doc);
+	tidyRelease(doc);
 
 	items.swap(links);
 
@@ -544,13 +544,11 @@ bool URLDirectoryIndexCommand::NewDialog(Parameter* param, URLDirectoryIndexComm
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto cmd = make_refptr<URLDirectoryIndexCommand>();
 
-	if (newCmd) {
-		*newCmd = cmd.get();
-	}
 	cmd->SetParam(cmdEditor->GetParam());
 
-	constexpr bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(cmd.release(), isReloadHotKey);
+	if (newCmd) {
+		*newCmd = cmd.release();
+	}
 
 	return true;
 }
