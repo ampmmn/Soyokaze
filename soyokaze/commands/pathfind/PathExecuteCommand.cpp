@@ -150,6 +150,14 @@ HICON PathExecuteCommand::GetIcon()
 int PathExecuteCommand::Match(Pattern* pattern)
 {
 	CString wholeWord = pattern->GetWholeString();
+	wholeWord.Trim();
+
+	// "..." で囲われている場合は除去
+	int len = wholeWord.GetLength();
+	if (len > 2 && 
+	    wholeWord[0] == _T('"') && wholeWord[len-1] == _T('"')){
+		wholeWord = wholeWord.Mid(1, len-2);
+	}
 
 	// URLパターンマッチするかを判定
 	const tregex& regURL = GetURLRegex();
