@@ -64,7 +64,13 @@ CommandQueryItem& CommandQueryItem::operator = (
 
 struct CommandQueryItemList::PImpl
 {
+	std::vector<CommandQueryItem>& GetItems() {
+		return mItems.empty() == false ? mItems : mWeakItems;
+	}
+
 	std::vector<CommandQueryItem> mItems;
+	// 弱一致の要素は分けて管理する
+	std::vector<CommandQueryItem> mWeakItems;
 };
 
 CommandQueryItemList::CommandQueryItemList() : in(new PImpl)
@@ -83,7 +89,8 @@ bool CommandQueryItemList::IsEmpty() const
 // 完全一致のものを探す
 bool CommandQueryItemList::FindWholeMatchItem(Command** command)
 {
-	for (auto& item : in->mItems) {
+	auto& items = in->GetItems();
+	for (auto& item : items) {
 		if (item.mMatchLevel != Pattern::WholeMatch) {
 			continue;
 		}
@@ -98,19 +105,26 @@ bool CommandQueryItemList::FindWholeMatchItem(Command** command)
 
 void CommandQueryItemList::Add(const CommandQueryItem& item)
 {
-	in->mItems.push_back(item);
+	if (item.mMatchLevel != Pattern::WeakMatch) {
+		in->mItems.push_back(item);
+	}
+	else {
+		in->mWeakItems.push_back(item);
+	}
 }
 
 size_t CommandQueryItemList::GetItemCount()
 {
-	return in->mItems.size();
+	return in->GetItems().size();
 }
 
 size_t CommandQueryItemList::GetItems(Command** array, size_t arrayLen)
 {
-	size_t copyCount = arrayLen > GetItemCount() ? GetItemCount() : arrayLen;
+	auto& items = in->GetItems();
+	size_t copyCount = arrayLen > items.size() ? items.size() : arrayLen;
+
 	for (size_t i = 0; i < copyCount; ++i) {
-		auto& item = in->mItems[i];
+		auto& item = items[i];
 
 		auto command = item.mCommand.get();
 		command->AddRef();
@@ -123,7 +137,7 @@ void CommandQueryItemList::Sort()
 {
 	const CommandRanking* rankPtr = CommandRanking::GetInstance();
 
-	auto& items = in->mItems;
+	auto& items = in->GetItems();
 	std::stable_sort(items.begin(), items.end(),
 		[rankPtr](const CommandQueryItem& l, const CommandQueryItem& r) {
 
