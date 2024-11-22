@@ -30,5 +30,6 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnChar(UINT,UINT,UINT);
 	afx_msg void OnSize(UINT type, int cx, int cy);
+	afx_msg void OnPaste();
 	DECLARE_MESSAGE_MAP()
 };

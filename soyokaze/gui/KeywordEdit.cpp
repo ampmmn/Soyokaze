@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordEdit.h"
+#include "SharedHwnd.h"
 #include "gui/ColorSettings.h"
 #include <imm.h>
 
@@ -143,6 +144,7 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_DESTROY()
 	ON_WM_CHAR()
 	ON_WM_SIZE()
+	ON_WM_PASTE()
 END_MESSAGE_MAP()
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -241,5 +243,23 @@ void KeywordEdit::OnSize(UINT type, int cx, int cy)
 {
 	__super::OnSize(type, cx, cy);
 	in->AdjustLayout(this);
+}
+
+// ペースト時の動作
+void KeywordEdit::OnPaste()
+{
+	// 複数行のテキストが入力欄にペーストされたときに、先頭行のテキストだけを取得するようにする
+
+	// ウインドウ経由でクリップボードのテキストを取得
+	CString text;
+	SharedHwnd sharedWnd;
+	::SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&text);
+
+	// 先頭行のみにする
+	int pos = text.FindOneOf(_T("\r\n"));
+	if (pos != -1) {
+		text = text.Left(pos);
+	}
+	SendMessage(EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)(LPCTSTR)text);
 }
 
