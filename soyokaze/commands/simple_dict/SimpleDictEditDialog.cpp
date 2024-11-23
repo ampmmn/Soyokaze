@@ -65,15 +65,12 @@ void SettingDialog::SetName(const CString& name)
 void SettingDialog::SetOriginalName(const CString& name)
 {
 	in->mOrgName = name;
+	in->mIsTestPassed = true;
 }
 
 void SettingDialog::SetParam(const SimpleDictParam& param)
 {
 	in->mParam = param;
-
-	if (in->mOrgName.IsEmpty() == FALSE) {
-		in->mIsTestPassed = true;
-	}
 }
 
 const SimpleDictParam& SettingDialog::GetParam() const
