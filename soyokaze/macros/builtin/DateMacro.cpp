@@ -96,14 +96,17 @@ CTimeSpan DateMacro::MakeTimeSpan(const CString& arg)
 {
 	tstring str = (LPCTSTR)arg;
 
-	static tregex pat(_T("([+-])(\\d+)([YMDhms])"));
-	if (std::regex_search(str, pat) == false) {
+	CTime curTime = CTime::GetCurrentTime();
+
+	static tregex pat(_T("^(S)?([+-])(\\d+)([YMDhms])"));
+	if (std::regex_match(str, pat) == false) {
 		return CTimeSpan();
 	}
 
-	tstring sign = std::regex_replace(str, pat, _T("$1"));
-	tstring offset = std::regex_replace(str, pat, _T("$2"));
-	tstring unit = std::regex_replace(str, pat, _T("$3"));
+	tstring head = std::regex_replace(str, pat, _T("$1"));
+	tstring sign = std::regex_replace(str, pat, _T("$2"));
+	tstring offset = std::regex_replace(str, pat, _T("$3"));
+	tstring unit = std::regex_replace(str, pat, _T("$4"));
 
 	// 符号がマイナスなら反転
 	int n = _ttoi(offset.c_str());
@@ -112,25 +115,32 @@ CTimeSpan DateMacro::MakeTimeSpan(const CString& arg)
 	}
 
 	try {
+		CTimeSpan tmOffset;
+		// "S"が指定された場合、その週の日曜日を基準とする
+		if (head.empty() == false) {
+			tmOffset = CTimeSpan(-(curTime.GetDayOfWeek() - 1), 0, 0, 0);
+		}
+
 		// 年と月の場合は現在の日付から日数を計算してCTimeSpanを生成
 		if (unit == _T("Y")) {
-			return CTimeSpan(ComputeDayFromYear(n, CTime::GetCurrentTime()), 0, 0, 0);
+			tmOffset += CTimeSpan(ComputeDayFromYear(n, curTime), 0, 0, 0);
 		}
 		else if (unit == _T("M")) {
-			return CTimeSpan(ComputeDayFromMonth(n, CTime::GetCurrentTime()), 0, 0, 0);
+			tmOffset += CTimeSpan(ComputeDayFromMonth(n, curTime), 0, 0, 0);
 		}
 		else if (unit == _T("D")) {
-			return CTimeSpan(n, 0, 0, 0);
+			tmOffset += CTimeSpan(n, 0, 0, 0);
 		}
 		else if (unit == _T("h")) {
-			return CTimeSpan(0, n, 0, 0);
+			tmOffset += CTimeSpan(0, n, 0, 0);
 		}
 		else if (unit == _T("m")) {
-			return CTimeSpan(0, 0, n, 0);
+			tmOffset += CTimeSpan(0, 0, n, 0);
 		}
 		else /*if (unit == _T("s"))*/ {
-			return CTimeSpan(0, 0, 0, n);
+			tmOffset += CTimeSpan(0, 0, 0, n);
 		}
+		return tmOffset;
 	}
 	catch(...) {
 		SPDLOG_ERROR(_T("Failed to get timespan. {}"), (LPCTSTR)arg);
