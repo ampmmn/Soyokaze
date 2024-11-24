@@ -2,6 +2,7 @@
 #include "SimpleDictEditDialog.h"
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "commands/simple_dict/ExcelWrapper.h"
+#include "commands/simple_dict/SimpleDictPreviewDialog.h"
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/CommandEditValidation.h"
@@ -28,14 +29,11 @@ struct SettingDialog::PImpl
 	CString mOrgName;
 	// メッセージ欄
 	CString mMessage;
-	CString mRecordMsg;
 
 	int mCommandSelIndex = 0;
 
 	// 編集対象パラメータ
 	SimpleDictParam mParam;
-	//
-	CListCtrl* mPreviewListPtr = nullptr;
 
 	bool mIsTestPassed = false;
 
@@ -49,7 +47,6 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
 {
 	SetHelpPageId(_T("SimpleDictEdit"));
-	in->mPreviewListPtr = nullptr;
 	in->mIsTestPassed = false;
 }
 
@@ -87,13 +84,15 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
-	DDX_Text(pDX, IDC_STATIC_RECORDS, in->mRecordMsg);
 	DDX_Text(pDX, IDC_EDIT_NAME, in->mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_FILEPATH, in->mParam.mFilePath);
 	DDX_Text(pDX, IDC_EDIT_SHEETNAME, in->mParam.mSheetName);
 	DDX_Text(pDX, IDC_EDIT_FRONT, in->mParam.mRangeFront);
 	DDX_Text(pDX, IDC_EDIT_BACK, in->mParam.mRangeBack);
+	DDX_Text(pDX, IDC_EDIT_VALUE2, in->mParam.mRangeValue2);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTIONFORMAT, in->mParam.mDescriptionFormat);
+	DDX_Text(pDX, IDC_EDIT_NAMEFORMAT, in->mParam.mNameFormat);
 	DDX_Check(pDX, IDC_CHECK_FIRSTROWISHEADER, in->mParam.mIsFirstRowHeader);
 	DDX_Check(pDX, IDC_CHECK_MATCHWITHOUTKEYWORD, in->mParam.mIsMatchWithoutKeyword);
 	DDX_Check(pDX, IDC_CHECK_REVERSE, in->mParam.mIsEnableReverse);
@@ -115,11 +114,13 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_SHEETNAME, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_FRONT, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_BACK, OnUpdateCondition)
+	ON_EN_CHANGE(IDC_EDIT_VALUE2, OnUpdateCondition)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_BROWSE, OnButtonFilePath)
 	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 	ON_COMMAND(IDC_BUTTON_IMPORTFRONT, OnButtonFrontRange)
 	ON_COMMAND(IDC_BUTTON_IMPORTBACK, OnButtonBackRange)
+	ON_COMMAND(IDC_BUTTON_IMPORTVALUE2, OnButtonValue2Range)
 
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnUpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
@@ -127,8 +128,10 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
-	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
-	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
 
 END_MESSAGE_MAP()
 
@@ -138,10 +141,6 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mPreviewListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_PREVIEW);
-	ASSERT(in->mPreviewListPtr);
-	in->mPreviewListPtr->SetExtendedStyle(in->mPreviewListPtr->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-
 	CString caption;
   GetWindowText(caption);
 
@@ -150,25 +149,6 @@ BOOL SettingDialog::OnInitDialog()
 
 	caption += suffix;
 	SetWindowText(caption);
-
-	// ヘッダー追加
-	ASSERT(in->mPreviewListPtr);
-
-	LVCOLUMN lvc;
-	memset(&lvc,0,sizeof(LV_COLUMN));
-	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
-
-	CString strHeader(_T("キー"));
-	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 200;
-	lvc.fmt = LVCFMT_LEFT;
-	in->mPreviewListPtr->InsertColumn(0,&lvc);
-
-	strHeader = (_T("値"));
-	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 200;
-	lvc.fmt = LVCFMT_LEFT;
-	in->mPreviewListPtr->InsertColumn(1,&lvc);
 
 	// 後段のコマンド設定 排他の項目の位置を調整する
 	Overlap(GetDlgItem(IDC_STATIC_AFTERCOMMAND), GetDlgItem(IDC_STATIC_PATH2));
@@ -284,7 +264,7 @@ bool SettingDialog::UpdateStatus()
 		canCreate = FALSE;
 	}
 	else if (in->mIsTestPassed == false) {
-		in->mMessage = _T("テストを押下して内容を確認してください");
+		in->mMessage = _T("取得内容確認ボタンを押して内容を確認してください");
 		canCreate = FALSE;
 	}
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
@@ -369,24 +349,30 @@ void SettingDialog::OnButtonTest()
 		return;
 	}
 
+	CWaitCursor wc;
+
 	ExcelApplication app;
 	std::vector<CString> frontTexts;
 	app.GetCellText(in->mParam.mFilePath, in->mParam.mSheetName, in->mParam.mRangeFront, frontTexts);
 	std::vector<CString> backTexts;
 	app.GetCellText(in->mParam.mFilePath, in->mParam.mSheetName, in->mParam.mRangeBack, backTexts);
 
+	std::vector<CString> value2Texts;
+	// 値2は任意
+	if (in->mParam.mRangeValue2.IsEmpty() == FALSE) {
+		app.GetCellText(in->mParam.mFilePath, in->mParam.mSheetName, in->mParam.mRangeValue2, value2Texts);
+	}
+
 	// 表面と裏面のうち、少ないほうを選択
 	size_t recordCount = frontTexts.size() < backTexts.size() ? frontTexts.size() : backTexts.size();
 
 	bool isSkipFirst =  in->mParam.mIsFirstRowHeader != FALSE;
 
-	int emptyCount = 0;
+	PreviewDialog dlg(this);
 
-	in->mPreviewListPtr->DeleteAllItems();
-	int listIndex = 0;
+	int totalCount = 0;
 	for (size_t i = 0; i < recordCount; ++i) {
 		if (frontTexts[i].IsEmpty() && backTexts[i].IsEmpty()) {
-			emptyCount++;
 			continue;
 		}
 		if (isSkipFirst) {
@@ -395,14 +381,27 @@ void SettingDialog::OnButtonTest()
 			continue;
 		}
 
-		int n = in->mPreviewListPtr->InsertItem(listIndex++, frontTexts[i]);
-		in->mPreviewListPtr->SetItemText(n, 1, backTexts[i]);
+
+		Record record(frontTexts[i], backTexts[i]);
+
+		if (i < value2Texts.size()) {
+			record.mValue2 = value2Texts[i];
+		}
+
+		if (dlg.GetActualRecordCount() < 100) {
+			dlg.AddRecord(record);
+		}
+		totalCount++;
+	}
+
+	dlg.SetTotalRecordCount(totalCount);
+	if (dlg.DoModal() != IDOK) {
+		return;
 	}
 
 	in->mIsTestPassed = true;
-	in->mRecordMsg.Format(_T("%d件のレコードが見つかりました"), listIndex);
-	UpdateStatus();
 
+	UpdateStatus();
 	UpdateData(FALSE);
 }
 
@@ -457,6 +456,36 @@ void SettingDialog::OnButtonBackRange()
 	}
 
 	in->mParam.mRangeBack = address;
+
+	CString filePath;
+	if (app.GetFilePath(filePath)) {
+		in->mParam.mFilePath = filePath;
+	}
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void SettingDialog::OnButtonValue2Range()
+{
+	UpdateData();
+
+	ExcelApplication app(true);
+	CString sheetName = app.GetActiveSheetName();
+	if (sheetName.IsEmpty()) {
+		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));
+		return;
+	}
+	in->mParam.mSheetName = sheetName;
+
+	int col,row;
+	CString address = app.GetSelectionAddress(col, row);
+
+	if (address.Find(_T(',')) != -1) {
+		AfxMessageBox(_T("Ctrlキーによる複数領域選択については非対応です"));
+		return;
+	}
+
+	in->mParam.mRangeValue2 = address;
 
 	CString filePath;
 	if (app.GetFilePath(filePath)) {
@@ -534,7 +563,7 @@ void SettingDialog::OnButtonHotKey()
 }
 
 // マニュアル表示
-void SettingDialog::OnNotifyLinkOpen(
+void SettingDialog::OnNotifyLinkOpenMacro(
 	NMHDR *pNMHDR,
  	LRESULT *pResult
 )
@@ -543,6 +572,18 @@ void SettingDialog::OnNotifyLinkOpen(
 
 	auto manual = launcherapp::app::Manual::GetInstance();
 	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
+void SettingDialog::OnNotifyLinkOpenTebiki(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	UNREFERENCED_PARAMETER(pNMHDR);
+
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("SimpleDictTebiki"));
 	*pResult = 0;
 }
 

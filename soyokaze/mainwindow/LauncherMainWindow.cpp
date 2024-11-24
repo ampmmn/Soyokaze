@@ -916,7 +916,7 @@ void LauncherMainWindow::ClearContent()
 
 	// 状態変更を通知
 	struct LocalInputStatus : public LauncherInput {
-		virtual bool HasKeyword() { return false;	}
+		virtual bool HasKeyword() { return false; }
 	} status;
 	in->mLayout->UpdateInputStatus(&status);
 
@@ -991,12 +991,6 @@ void LauncherMainWindow::OnEditCommandChanged()
 		// FIXME: 0x7Eが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい
 		in->mInput.RemoveLastWord();
 
-		// ToDo: elseの系き共通化して問題ないなら消す
-		if (in->mInput.HasKeyword() == false) {
-			ClearContent();
-			return;
-		}
-
 		// 検索リクエスト
 		QueryAsync();
 
@@ -1014,12 +1008,6 @@ void LauncherMainWindow::OnEditCommandChanged()
 // 入力キーワードで検索をリクエストを出す(完了をまたない)
 void LauncherMainWindow::QueryAsync()
 {
-	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mInput.HasKeyword() == false) {
-		ClearContent();
-		return;
-	}
-
 	// 検索リクエスト
 	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
@@ -1033,12 +1021,6 @@ void LauncherMainWindow::QueryAsync()
 // 入力キーワードで検索をリクエストを出し、完了を待つ
 void LauncherMainWindow::QuerySync()
 {
-	// 入力テキストが空文字列の場合はデフォルト表示に戻す
-	if (in->mInput.HasKeyword() == false) {
-		ClearContent();
-		return;
-	}
-
 	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 
 	// キーワードによる絞り込みを実施

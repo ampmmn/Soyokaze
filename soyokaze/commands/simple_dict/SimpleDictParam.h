@@ -33,6 +33,10 @@ public:
 	// 範囲
 	CString mRangeFront;
 	CString mRangeBack;
+	CString mRangeValue2;
+	//
+	CString mNameFormat;
+	CString mDescriptionFormat;
 	// 先頭行はヘッダか?
 	BOOL mIsFirstRowHeader; 
 	// コマンド名を入力しなくても候補を表示する

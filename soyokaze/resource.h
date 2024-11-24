@@ -146,6 +146,7 @@
 #define IDD_SNIPPETGROUP                240
 #define IDD_SNIPPET_EDIT1               241
 #define IDD_SNIPPETGROUP_ITEM           241
+#define IDD_SIMPLEDICT_TEST             242
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -175,8 +176,13 @@
 #define IDC_CHECK_SHOWARGINPUT2         1014
 #define IDC_CHECK_USEDESCRIPTIONFORMATCHING 1014
 #define IDC_BUTTON_BROWSEDIR2           1015
+#define IDC_EDIT_FRONT3                 1015
+#define IDC_EDIT_DESCRIPTIONFORMAT      1015
 #define IDC_STATIC_PATH                 1016
+#define IDC_EDIT_BACK2                  1016
+#define IDC_EDIT_NAMEFORMAT             1016
 #define IDC_STATIC_PARAM                1017
+#define IDC_EDIT_VALUE2                 1017
 #define IDC_STATIC_PATH0                1018
 #define IDC_STATIC_PATH3                1018
 #define IDC_STATIC_PARAM00              1019
@@ -366,6 +372,8 @@
 #define IDC_BUTTON_IMPORTFRONT          1141
 #define IDC_BUTTON_IMPORTBACK           1142
 #define IDC_LIST_PREVIEW                1143
+#define IDC_BUTTON_IMPORTBACK2          1143
+#define IDC_BUTTON_IMPORTVALUE2         1143
 #define IDC_CHECK_FIRSTLINEISHEADER     1144
 #define IDC_CHECK_FIRSTROWISHEADER      1144
 #define IDC_STATIC_RECORDS              1145
@@ -386,6 +394,7 @@
 #define IDC_EDIT_COUNT                  1156
 #define IDC_SYSLINK_MACRO               1158
 #define IDC_EDIT_PRIORITY               1159
+#define IDC_SYSLINK_TEBIKI              1159
 #define IDC_RADIO_HOTKEY                1160
 #define IDC_RADIO_HOTKEY2               1161
 #define IDC_STATIC_HELP                 1161

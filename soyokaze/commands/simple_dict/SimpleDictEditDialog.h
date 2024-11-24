@@ -47,10 +47,12 @@ protected:
 	afx_msg void OnButtonTest();
 	afx_msg void OnButtonFrontRange();
 	afx_msg void OnButtonBackRange();
+	afx_msg void OnButtonValue2Range();
 	afx_msg void OnButtonBrowseAfterCommandFile();
 	afx_msg void OnButtonBrowseAfterCommandDir();
 	afx_msg void OnButtonHotKey();
-	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNotifyLinkOpenMacro(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNotifyLinkOpenTebiki(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 } // end of namespace simple_dict

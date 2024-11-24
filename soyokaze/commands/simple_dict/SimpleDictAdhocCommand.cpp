@@ -28,41 +28,50 @@ namespace simple_dict {
 
 struct SimpleDictAdhocCommand::PImpl
 {
-	SimpleDictParam mParam;
+	const SimpleDictParam* mParam = nullptr;
 
-	CString mKey;   // キー
-	CString mValue; // 値
+	Record mRecord;
 };
 
 
 SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	const SimpleDictParam& param,
-	const CString& key,
-	const CString& value
+	const Record& record
 ) : 
 	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
 {
-	in->mParam = param;
-	in->mKey = key;
-	in->mValue = value;
+	in->mParam = &param;
+	in->mRecord = record;
+
+	// 名前の生成
+	CString tmp;
+	if (param.mNameFormat.IsEmpty()) {
+		tmp = _T("$key : $value");
+	}
+	else {
+		tmp = param.mNameFormat;
+	}
+	tmp.Replace(_T("$key"), record.mKey);
+	tmp.Replace(_T("$value2"), record.mValue2);
+	tmp.Replace(_T("$value"), record.mValue);
+	this->mName = param.mName + _T(" ") + tmp;
+
+	// 説明の生成
+	if (param.mDescriptionFormat.IsEmpty()) {
+		tmp = _T("$key → $value");
+	}
+	else {
+		tmp = param.mDescriptionFormat;
+	}
+	tmp.Replace(_T("$key"), record.mKey);
+	tmp.Replace(_T("$value2"), record.mValue2);
+	tmp.Replace(_T("$value"), record.mValue);
+	this->mDescription = tmp;
 }
 
 SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 {
-}
-
-CString SimpleDictAdhocCommand::GetName()
-{
-	return in->mParam.mName + _T(" ") + in->mKey + _T(" : ") + in->mValue;
-}
-
-CString SimpleDictAdhocCommand::GetDescription()
-{
-	CString str;
-	str.Format(_T("%s → %s"), (LPCTSTR)in->mKey, (LPCTSTR)in->mValue);
-	return str;
-
 }
 
 CString SimpleDictAdhocCommand::GetGuideString()
@@ -88,8 +97,8 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 	bool isShiftKeyPressed = (state & MASK_SHIFT) != 0;
 	if (isCtrlKeyPressed && isShiftKeyPressed == false) {
 		// 値をコピー
-		auto value = in->mValue;
-		if (in->mParam.mIsExpandMacro) {
+		auto value = in->mRecord.mValue;
+		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(value);
 		}
 		Clipboard::Copy(value);
@@ -97,26 +106,27 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 	}
 	if (isCtrlKeyPressed == false && isShiftKeyPressed) {
 		// キーをコピー
-		auto key = in->mKey;
-		if (in->mParam.mIsExpandMacro) {
+		auto key = in->mRecord.mKey;
+		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(key);
 		}
 		Clipboard::Copy(key);
 		return true;
 	}
 
-	CString argSub = in->mParam.mAfterCommandParam;
-	argSub.Replace(_T("$key"), in->mKey);
-	argSub.Replace(_T("$value"), in->mValue);
-	if (in->mParam.mIsExpandMacro) {
+	CString argSub = in->mParam->mAfterCommandParam;
+	argSub.Replace(_T("$key"), in->mRecord.mKey);
+	argSub.Replace(_T("$value2"), in->mRecord.mValue2);
+	argSub.Replace(_T("$value"), in->mRecord.mValue);
+	if (in->mParam->mIsExpandMacro) {
 		ExpandMacros(argSub);
 	}
 
-	int actionType = in->mParam.mActionType;
+	int actionType = in->mParam->mActionType;
 	if (actionType == 0) {
 		// 他のコマンドを実行
 		auto cmdRepo = CommandRepository::GetInstance();
-		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false));
+		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam->mAfterCommandName, false));
 		if (command) {
 			RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 
@@ -129,10 +139,11 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		// 他のファイルを実行/URLを開く
 		SubProcess exec(CommandParameterBuilder::EmptyParam());
 
-		CString path = in->mParam.mAfterFilePath;
-		path.Replace(_T("$key"), in->mKey);
-		path.Replace(_T("$value"), in->mValue);
-		if (in->mParam.mIsExpandMacro) {
+		CString path = in->mParam->mAfterFilePath;
+		path.Replace(_T("$key"), in->mRecord.mKey);
+		path.Replace(_T("$value2"), in->mRecord.mValue2);
+		path.Replace(_T("$value"), in->mRecord.mValue);
+		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(path);
 		}
 
@@ -155,7 +166,7 @@ HICON SimpleDictAdhocCommand::GetIcon()
 launcherapp::core::Command*
 SimpleDictAdhocCommand::Clone()
 {
-	return new SimpleDictAdhocCommand(in->mParam, in->mKey, in->mValue);
+	return new SimpleDictAdhocCommand(*in->mParam, in->mRecord);
 }
 
 } // end of namespace simple_dict

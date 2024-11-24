@@ -134,7 +134,7 @@ bool SimpleDictCommand::PImpl::QueryCandidates(
 			// 最低でも前方一致扱いにする(先頭のコマンド名は合致しているため)
 			level = Pattern::FrontMatch;
 		}
-		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record.mKey, record.mValue)));
+		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record)));
 		if (++hitCount >= limit) {
 			break;
 		}
@@ -189,7 +189,7 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record.mKey, record.mValue)));
+		commands.Add(CommandQueryItem(level, new SimpleDictAdhocCommand(mParam, record)));
 		if (++hitCount >= limit) {
 			break;
 		}

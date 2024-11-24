@@ -79,7 +79,8 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	void UpdateDictData(
 			SimpleDictCommand* cmd,
 		 	const std::vector<CString>& keys,
-		 	const std::vector<CString>& values
+		 	const std::vector<CString>& values,
+		 	const std::vector<CString>& values2
 	)
 	{
 		SPDLOG_DEBUG(_T("args name:{}"), (LPCTSTR)cmd->GetName());
@@ -111,7 +112,12 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 				isSkipFirst = false;
 				continue;
 			}
-			dictionary.mRecords.push_back(Record(keys[i], values[i]));
+
+			Record record(keys[i], values[i]);
+			if (i < values2.size()) {
+				record.mValue2 = values2[i];
+			}
+			dictionary.mRecords.push_back(record);
 		}
 
 		cmd->UpdateDictionary(dictionary);
@@ -147,6 +153,7 @@ void DictionaryLoader::PImpl::StartWatch()
 
 	std::vector<CString> keys;
 	std::vector<CString> values;
+	std::vector<CString> values2;
 	while(IsAbort() == false) {
 
 		Sleep(50);
@@ -168,6 +175,7 @@ void DictionaryLoader::PImpl::StartWatch()
 
 			keys.clear();
 			values.clear();
+			values2.clear();
 			if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
 				spdlog::warn(_T("[SimpleDict]Failed to get key text. name:{}"), (LPCTSTR)param.mName);
 				continue;
@@ -180,6 +188,16 @@ void DictionaryLoader::PImpl::StartWatch()
 				spdlog::warn(_T("[SimpleDict]Failed to get value text. name:{}"), (LPCTSTR)param.mName);
 				continue;
 			}
+			if (param.mRangeValue2.IsEmpty() == FALSE) {
+				if (IsAbort()) {
+					SPDLOG_DEBUG(_T("Aborted."));
+					break;
+				}
+				if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeValue2, values2) != 0) {
+					spdlog::warn(_T("[SimpleDict]Failed to get value2 text. name:{}"), (LPCTSTR)param.mName);
+					continue;
+				}
+			}
 		}
 		catch(...) {
 			SPDLOG_ERROR(_T("An unexpected exception occurred!"));
@@ -191,7 +209,7 @@ void DictionaryLoader::PImpl::StartWatch()
 			continue;
 		}
 
-		UpdateDictData(cmd, keys, values);
+		UpdateDictData(cmd, keys, values, values2);
 
 		spdlog::debug(_T("[SimpleDict]Completed loading dict data. name:{}"), (LPCTSTR)param.mName); 
 	}

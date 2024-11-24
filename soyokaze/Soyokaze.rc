@@ -684,7 +684,7 @@ BEGIN
     LTEXT           "file:///c:/path/to/... -> c:\\path\\to\\...",IDC_STATIC,31,56,263,8
 END
 
-IDD_SIMPLEDICT DIALOGEX 0, 0, 337, 424
+IDD_SIMPLEDICT DIALOGEX 0, 0, 337, 412
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "簡易辞書コマンドの編集"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -693,47 +693,54 @@ BEGIN
     EDITTEXT        IDC_EDIT_NAME,104,21,154,14,ES_AUTOHSCROLL
     LTEXT           "コマンドの説明(&D):",IDC_STATIC,13,38,65,8
     EDITTEXT        IDC_EDIT_DESCRIPTION,104,38,154,14,ES_AUTOHSCROLL
-    LTEXT           "Excelファイル内の任意の範囲のデータを簡易的な辞書として利用することができるコマンドです",IDC_STATIC,13,57,302,12
-    LTEXT           "【設定の手引き】\n1.Excelで辞書として利用したいシートを表示する\n2.キーとして使うセル範囲を選択し、キー範囲取得ボタンを押す\n3.値として使うデータのセル範囲を選択し、値範囲取得ボタンを押す",IDC_STATIC,13,70,302,35
-    LTEXT           "Excelファイル(&F):",IDC_STATIC,13,110,87,8
-    EDITTEXT        IDC_EDIT_FILEPATH,104,108,152,14,ES_AUTOHSCROLL
-    LTEXT           "シート名(&S):",IDC_STATIC,14,127,40,8
-    EDITTEXT        IDC_EDIT_SHEETNAME,104,125,151,14,ES_AUTOHSCROLL
-    LTEXT           "キーのデータ範囲(&Y):",IDC_STATIC,13,144,68,8
-    EDITTEXT        IDC_EDIT_FRONT,104,143,151,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "キー範囲取得(&I)",IDC_BUTTON_IMPORTFRONT,255,143,66,14
-    LTEXT           "値のデータ範囲(&V):",IDC_STATIC,14,161,62,8
-    EDITTEXT        IDC_EDIT_BACK,104,160,151,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "値範囲取得(&M)",IDC_BUTTON_IMPORTBACK,255,160,66,14
+    LTEXT           "Excelファイル(&F):",IDC_STATIC,13,66,87,8
+    EDITTEXT        IDC_EDIT_FILEPATH,104,64,152,14,ES_AUTOHSCROLL
+    CONTROL         "<A HREF=""https://sample.com/sample"">設定の手引き</A>",IDC_SYSLINK_TEBIKI,
+                    "SysLink",WS_TABSTOP,261,69,59,9
+    LTEXT           "シート名(&S):",IDC_STATIC,13,83,40,8
+    EDITTEXT        IDC_EDIT_SHEETNAME,104,81,151,14,ES_AUTOHSCROLL
+    LTEXT           "キーのデータ範囲(&Y):",IDC_STATIC,13,100,68,8
+    EDITTEXT        IDC_EDIT_FRONT,104,99,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "キー範囲取得(&I)",IDC_BUTTON_IMPORTFRONT,255,99,66,14
+    LTEXT           "値のデータ範囲(&V):",IDC_STATIC,13,117,62,8
+    EDITTEXT        IDC_EDIT_BACK,104,116,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "値範囲取得(&M)",IDC_BUTTON_IMPORTBACK,255,116,66,14
+    LTEXT           "値2のデータ範囲(&2):",IDC_STATIC,13,134,66,8
+    EDITTEXT        IDC_EDIT_VALUE2,104,133,151,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "値2範囲取得(&G)",IDC_BUTTON_IMPORTVALUE2,255,133,66,14
+    CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,151,111,10
+    CONTROL         "更新時に通知を行う(&O)",IDC_CHECK_NOTIFYUPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,152,151,98,10
+    PUSHBUTTON      "取得内容確認(&T)",IDC_BUTTON_TEST,255,149,65,14
+    LTEXT           "説明欄の書式(&E):",IDC_STATIC,13,191,60,8
+    EDITTEXT        IDC_EDIT_DESCRIPTIONFORMAT,104,191,151,14,ES_AUTOHSCROLL
+    LTEXT           "候補欄の書式(&C):",IDC_STATIC,13,209,60,8
+    EDITTEXT        IDC_EDIT_NAMEFORMAT,104,209,151,14,ES_AUTOHSCROLL
     CONTROL         "コマンド名を入力しなくても候補を表示する(&A)",IDC_CHECK_MATCHWITHOUTKEYWORD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,179,172,10
-    CONTROL         "値でのマッチングも行う(&L)",IDC_CHECK_REVERSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,179,114,10
-    CONTROL         "一行目をヘッダ行として扱う(&H)",IDC_CHECK_FIRSTROWISHEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,192,111,10
-    CONTROL         "更新時に通知を行う(&O)",IDC_CHECK_NOTIFYUPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,162,192,103,10
-    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,271,196,45,14
-    CONTROL         "",IDC_LIST_PREVIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,222,302,53
-    LTEXT           "実行する処理(&P):",IDC_STATIC,26,297,63,8
-    COMBOBOX        IDC_COMBO_AFTERTYPE,115,297,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "コマンド(&C):",IDC_STATIC_AFTERCOMMAND,27,317,63,8
-    COMBOBOX        IDC_COMBO_AFTERCOMMAND,115,315,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE3,268,314,21,17
-    PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR4,291,314,21,17
-    LTEXT           "パラメータ(&R):",IDC_STATIC,27,336,63,8
-    EDITTEXT        IDC_EDIT_PARAM2,115,333,154,14,ES_AUTOHSCROLL
-    CONTROL         "マクロを展開する(&E)",IDC_CHECK_EXPANDMACRO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,366,77,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,227,172,10
+    CONTROL         "値でのマッチングも行う(&L)",IDC_CHECK_REVERSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,241,114,10
+    LTEXT           "実行する処理(&P):",IDC_STATIC,26,284,63,8
+    COMBOBOX        IDC_COMBO_AFTERTYPE,115,284,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "コマンド(&C):",IDC_STATIC_AFTERCOMMAND,27,304,63,8
+    COMBOBOX        IDC_COMBO_AFTERCOMMAND,115,302,151,40,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "F1",IDC_BUTTON_BROWSEFILE3,269,301,21,17
+    PUSHBUTTON      "D1",IDC_BUTTON_BROWSEDIR4,291,301,21,17
+    LTEXT           "パラメータ(&R):",IDC_STATIC,27,323,63,8
+    EDITTEXT        IDC_EDIT_PARAM2,115,320,154,14,ES_AUTOHSCROLL
+    CONTROL         "マクロを展開する(&E)",IDC_CHECK_EXPANDMACRO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,353,77,10
     CONTROL         "<A HREF=""https://sample.com/sample"">利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
-                    "SysLink",WS_TABSTOP,115,367,147,9
-    LTEXT           "ホットキー(K):",IDC_STATIC,28,387,85,8
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,241,384,21,14
-    DEFPUSHBUTTON   "OK",IDOK,226,403,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,280,403,50,14
-    LTEXT           " ",IDC_STATIC_RECORDS,14,210,193,8
-    EDITTEXT        IDC_EDIT_HOTKEY2,116,384,124,14,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "実行ファイル(&U):",IDC_STATIC_PATH2,27,317,87,8
-    EDITTEXT        IDC_EDIT_PATH2,115,315,154,14,ES_AUTOHSCROLL
+                    "SysLink",WS_TABSTOP,115,354,147,9
+    LTEXT           "ホットキー(K):",IDC_STATIC,28,374,85,8
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,241,371,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,391,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,391,50,14
+    EDITTEXT        IDC_EDIT_HOTKEY2,116,371,124,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "実行ファイル(&U):",IDC_STATIC_PATH2,27,304,87,8
+    EDITTEXT        IDC_EDIT_PATH2,115,302,154,14,ES_AUTOHSCROLL
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,204,8
-    LTEXT           "$value : 選択された値  $key : 値に対応するキー値",IDC_STATIC,116,353,172,11
-    GROUPBOX        "選択後の処理",IDC_STATIC,8,283,313,98
+    LTEXT           "$key : 選択されたキー $value : 選択された値  $value2 : 選択された値2",IDC_STATIC,27,338,248,11
+    GROUPBOX        "選択後の処理",IDC_STATIC,8,270,319,98
+    GROUPBOX        "データの取得元",IDC_STATIC,7,53,319,116
+    GROUPBOX        "候補の表示・マッチング",IDC_STATIC,7,176,319,82
 END
 
 IDD_WATCHPATH DIALOGEX 0, 0, 337, 163
@@ -1206,6 +1213,18 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
 END
 
+IDD_SIMPLEDICT_TEST DIALOGEX 0, 0, 337, 162
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "簡易辞書コマンド - 取得内容の確認"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "以下の内容が候補として表示されます。問題なければOKボタンを押してください。\n期待した内容と異なる場合はキャンセルボタンを押して、データ取得元設定を修正してください。",IDC_STATIC,7,7,323,21
+    CONTROL         "",IDC_LIST_PREVIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,32,323,103
+    DEFPUSHBUTTON   "OK",IDOK,226,140,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,140,50,14
+    LTEXT           " ",IDC_STATIC_RECORDS,7,138,193,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1482,7 +1501,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 330
         TOPMARGIN, 7
-        BOTTOMMARGIN, 417
+        BOTTOMMARGIN, 405
     END
 
     IDD_WATCHPATH, DIALOG
@@ -1657,6 +1676,14 @@ BEGIN
         RIGHTMARGIN, 330
         TOPMARGIN, 7
         BOTTOMMARGIN, 233
+    END
+
+    IDD_SIMPLEDICT_TEST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 155
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2059,9 +2086,8 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
     0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -2071,11 +2097,17 @@ BEGIN
     0, 0, 100, 0,
     100, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     100, 0, 0, 0,
-    0, 0, 100, 100,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 100, 0, 0,
     0, 100, 100, 0,
     0, 100, 0, 0,
@@ -2090,12 +2122,13 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     100, 100, 0, 0,
-    0, 0, 100, 0,
     0, 100, 100, 0,
     0, 100, 0, 0,
     0, 100, 100, 0,
     0, 0, 100, 0,
     0, 100, 0, 0,
+    0, 100, 100, 0,
+    0, 100, 100, 0,
     0, 100, 100, 0
 END
 
@@ -2402,6 +2435,16 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 100, 100,
     0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
+END
+
+IDD_SIMPLEDICT_TEST AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 100,
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0

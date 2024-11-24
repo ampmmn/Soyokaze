@@ -29,19 +29,22 @@ bool SimpleDictParam::operator == (const SimpleDictParam& rhs) const
 
 	return mName == rhs.mName &&
 	       mDescription == rhs.mDescription &&
-	       mFilePath == mFilePath &&
-	       mSheetName == mSheetName &&
-	       mRangeFront == mRangeFront &&
-	       mRangeBack == mRangeBack &&
-	       mIsFirstRowHeader == mIsFirstRowHeader && 
-	       mIsMatchWithoutKeyword == mIsMatchWithoutKeyword &&
-	       mIsEnableReverse == mIsEnableReverse &&
-	       mIsNotifyUpdate == mIsNotifyUpdate &&
-	       mIsExpandMacro == mIsExpandMacro &&
-	       mActionType == mActionType &&
-	       mAfterCommandName == mAfterCommandName &&
-	       mAfterFilePath == mAfterFilePath &&
-	       mAfterCommandParam == mAfterCommandParam;
+	       mFilePath == rhs.mFilePath &&
+	       mSheetName == rhs.mSheetName &&
+	       mRangeFront == rhs.mRangeFront &&
+	       mRangeBack == rhs.mRangeBack &&
+	       mRangeValue2 == rhs.mRangeValue2 &&
+	       mNameFormat == rhs.mNameFormat &&
+	       mDescriptionFormat == rhs.mDescriptionFormat &&
+	       mIsFirstRowHeader == rhs.mIsFirstRowHeader && 
+	       mIsMatchWithoutKeyword == rhs.mIsMatchWithoutKeyword &&
+	       mIsEnableReverse == rhs.mIsEnableReverse &&
+	       mIsNotifyUpdate == rhs.mIsNotifyUpdate &&
+	       mIsExpandMacro == rhs.mIsExpandMacro &&
+	       mActionType == rhs.mActionType &&
+	       mAfterCommandName == rhs.mAfterCommandName &&
+	       mAfterFilePath == rhs.mAfterFilePath &&
+	       mAfterCommandParam == rhs.mAfterCommandParam;
 }
 
 bool SimpleDictParam::Save(CommandEntryIF* entry)
@@ -54,6 +57,9 @@ bool SimpleDictParam::Save(CommandEntryIF* entry)
 	entry->Set(_T("SheetName"), mSheetName);
 	entry->Set(_T("Range"), mRangeFront);
 	entry->Set(_T("RangeBack"), mRangeBack);
+	entry->Set(_T("RangeValue2"), mRangeValue2);
+	entry->Set(_T("NameFormat"), mNameFormat);
+	entry->Set(_T("DescriptionFormat"), mDescriptionFormat);
 	entry->Set(_T("IsFirstRowHeader"), (bool)mIsFirstRowHeader);
 	entry->Set(_T("IsMatchWithoutKeyword"), (bool)mIsMatchWithoutKeyword);
 	entry->Set(_T("IsEnableReverse"), (bool)mIsEnableReverse);
@@ -78,6 +84,9 @@ bool SimpleDictParam::Load(CommandEntryIF* entry)
 	mSheetName = entry->Get(_T("SheetName"), _T(""));
 	mRangeFront = entry->Get(_T("Range"), _T(""));
 	mRangeBack = entry->Get(_T("RangeBack"), _T(""));
+	mRangeValue2 = entry->Get(_T("RangeValue2"), _T(""));
+	mNameFormat = entry->Get(_T("NameFormat"), _T(""));
+	mDescriptionFormat = entry->Get(_T("DescriptionFormat"), _T(""));
 	mIsFirstRowHeader = entry->Get(_T("IsFirstRowHeader"), false);
 	mIsMatchWithoutKeyword = entry->Get(_T("IsMatchWithoutKeyword"), true);
 	mIsEnableReverse = entry->Get(_T("IsEnableReverse"), false);
@@ -100,6 +109,9 @@ void SimpleDictParam::swap(SimpleDictParam& rhs)
 	std::swap(mSheetName, rhs.mSheetName);
 	std::swap(mRangeFront, rhs.mRangeFront);
 	std::swap(mRangeBack, rhs.mRangeBack);
+	std::swap(mRangeValue2, rhs.mRangeValue2);
+	std::swap(mNameFormat, rhs.mNameFormat);
+	std::swap(mDescriptionFormat, rhs.mDescriptionFormat);
 	std::swap(mIsFirstRowHeader, rhs.mIsFirstRowHeader); 
 	std::swap(mIsMatchWithoutKeyword, rhs.mIsMatchWithoutKeyword);
 	std::swap(mIsEnableReverse, rhs.mIsEnableReverse);

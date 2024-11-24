@@ -459,6 +459,7 @@
     <ClInclude Include="commands\simple_dict\DictionaryLoader.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommandEditor.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictionary.h" />
+    <ClInclude Include="commands\simple_dict\SimpleDictPreviewDialog.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupAdhocCommand.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupCommand.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupCommandEditor.h" />
@@ -836,6 +837,7 @@
     <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictCommandEditor.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp" />
+    <ClCompile Include="commands\simple_dict\SimpleDictPreviewDialog.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupAdhocCommand.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupCommand.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupCommandEditor.cpp" />

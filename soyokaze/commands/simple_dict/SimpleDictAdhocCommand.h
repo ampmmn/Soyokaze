@@ -3,6 +3,8 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
+#include "commands/simple_dict/SimpleDictionary.h"
+
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
@@ -13,11 +15,9 @@ class SimpleDictAdhocCommand : public launcherapp::commands::common::AdhocComman
 {
 public:
 public:
-	SimpleDictAdhocCommand(const SimpleDictParam& param, const CString& key, const CString& value);
+	SimpleDictAdhocCommand(const SimpleDictParam& param, const Record& record);
 	virtual ~SimpleDictAdhocCommand();
 
-	CString GetName() override;
-	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(Parameter* param) override;

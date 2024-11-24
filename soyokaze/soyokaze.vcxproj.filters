@@ -1320,6 +1320,9 @@
     <ClInclude Include="macros\builtin\DateMacro.h">
       <Filter>macros\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\simple_dict\SimpleDictPreviewDialog.h">
+      <Filter>commands\simple_dict</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2338,6 +2341,9 @@
     </ClCompile>
     <ClCompile Include="macros\builtin\DateMacro.cpp">
       <Filter>macros\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\simple_dict\SimpleDictPreviewDialog.cpp">
+      <Filter>commands\simple_dict</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
