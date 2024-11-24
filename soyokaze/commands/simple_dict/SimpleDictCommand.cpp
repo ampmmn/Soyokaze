@@ -171,6 +171,11 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 		if (mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
 			// コマンド名が一致しない場合。コマンド名がなくても検索する。
 			level = MatchRecord(pattern, record, 0);
+
+			if (level != Pattern::Mismatch) {
+				// コマンド名なしで候補を表示する場合は弱一致扱いとする
+				level = Pattern::WeakMatch;
+			}
 		}
 		else {
 			// コマンド名が一致する場合。コマンド名を除いて検索する
