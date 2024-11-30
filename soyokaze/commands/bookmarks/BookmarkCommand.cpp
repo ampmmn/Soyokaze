@@ -23,14 +23,14 @@ namespace bookmarks {
 
 struct BookmarkCommand::PImpl
 {
-	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark> items, std::vector<Bookmark>& out);
+	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out);
 
 
 	CommandParam mParam;
 	Bookmarks mBookmarks;
 };
 
-void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark> items, std::vector<Bookmark>& out)
+void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out)
 {
 	for (auto& item : items) {
 
