@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
-なし
+### Added
+
+- システムコマンド`restart`を追加。ランチャー本体を再起動するためのコマンド
+  - 初期状態では無効
+  - 再起動を実現するにあたり、`launcher_proxy.exe`を追加
 
 ### Fixed
 

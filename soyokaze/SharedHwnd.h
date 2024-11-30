@@ -38,7 +38,7 @@ public:
 			*m_phwnd = hwnd;
 		}
 		else {
-			spdlog::error(_T("Failed to set shared hwnd!"));
+			spdlog::error("Failed to set shared hwnd!");
 		}
 	}
 

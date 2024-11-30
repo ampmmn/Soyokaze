@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoyokazeUnitTest", "tests\S
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sandshook", "sandshook\sandshook.vcxproj", "{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "launcher_proxy", "launcher_proxy\launcher_proxy.vcxproj", "{B539A776-C9B6-494E-840D-BB339392135E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -82,6 +84,22 @@ Global
 		{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}.UnitTest|x64.ActiveCfg = Debug|x64
 		{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}.UnitTest|x86.ActiveCfg = Debug|Win32
 		{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}.UnitTest|x86.Build.0 = Debug|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.Debug|x64.ActiveCfg = Debug|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.Debug|x64.Build.0 = Debug|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.Debug|x86.ActiveCfg = Debug|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.Debug|x86.Build.0 = Debug|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.Release|x64.ActiveCfg = Release|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.Release|x64.Build.0 = Release|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.Release|x86.ActiveCfg = Release|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.Release|x86.Build.0 = Release|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.ReleaseStatic|x64.ActiveCfg = ReleaseStatic|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.ReleaseStatic|x64.Build.0 = ReleaseStatic|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.ReleaseStatic|x86.ActiveCfg = ReleaseStatic|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.ReleaseStatic|x86.Build.0 = ReleaseStatic|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.UnitTest|x64.ActiveCfg = UnitTest|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.UnitTest|x64.Build.0 = UnitTest|x64
+		{B539A776-C9B6-494E-840D-BB339392135E}.UnitTest|x86.ActiveCfg = UnitTest|Win32
+		{B539A776-C9B6-494E-840D-BB339392135E}.UnitTest|x86.Build.0 = UnitTest|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

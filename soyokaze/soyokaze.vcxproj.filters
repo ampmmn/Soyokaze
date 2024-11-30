@@ -1323,6 +1323,9 @@
     <ClInclude Include="commands\simple_dict\SimpleDictPreviewDialog.h">
       <Filter>commands\simple_dict</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\RestartCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2344,6 +2347,9 @@
     </ClCompile>
     <ClCompile Include="commands\simple_dict\SimpleDictPreviewDialog.cpp">
       <Filter>commands\simple_dict</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\RestartCommand.cpp">
+      <Filter>commands\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
