@@ -255,6 +255,14 @@ void CandidateListCtrl::OnUpdateItems(void* sender)
 	SetItemCountEx(in->mIsEmpty ? 1 : count);
 	if (count > 0) {
 		SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+
+		// 選択項目が可視領域に収まるようにする
+		CRect rcItem;
+		GetItemRect(0, &rcItem, LVIR_BOUNDS);
+		CSize sizeScroll(0, -rcItem.Height() * count);
+		Scroll(sizeScroll);
+		// Note: EnsureVisible(0, FALSE)の場合、アプリ起動後1回目の表示のときだけ
+		//       先頭の候補が表示されなかったので、Scrollを使用している
 	}
 
 	Invalidate();
