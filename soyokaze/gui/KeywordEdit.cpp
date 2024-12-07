@@ -37,6 +37,7 @@ struct KeywordEdit::PImpl
 	HBITMAP GetCaret(CWnd* wnd, bool isIMEOn)
 	{
 		if (mIsFirst) {
+			// 初回にキャレット用のビットマップを生成する
 			CFont* currentFont = wnd->GetFont();
 			LOGFONT lf;
 			currentFont->GetLogFont(&lf);
@@ -100,14 +101,16 @@ struct KeywordEdit::PImpl
 		thisWnd->SetRect(&rc);
 	}
 
+	bool mIsFirst = true;
+	bool mIsFocus = false;
 
-	bool mIsFirst;
-	bool mIsFocus;
+	// IMMのハンドル
+	HIMC mImcHandle = nullptr;
+	// Note: IMEの状態に応じてカーソルの色を変えるために使用する
 
-	HIMC mImcHandle;
-
-	HBITMAP mCaretNormal;
-	HBITMAP mCaretIMEON;
+	// キャレット用のビットマップ
+	HBITMAP mCaretNormal = nullptr;
+	HBITMAP mCaretIMEON = nullptr;
 
 };
 
@@ -178,7 +181,14 @@ void KeywordEdit::SetCaretToEnd()
 
 void KeywordEdit::SetIMEOff()
 {
-		ImmSetOpenStatus(in->GetImmContext(this), FALSE);
+	ImmSetOpenStatus(in->GetImmContext(this), FALSE);
+}
+
+// プレースホルダーの文字列を設定する(空文字の場合はプレースホルダーを表示しない)
+void KeywordEdit::SetPlaceHolder(const CString& text)
+{
+	SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)text);
+
 }
 
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)

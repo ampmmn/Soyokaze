@@ -9,8 +9,8 @@ public:
 	virtual ~KeywordEdit();
 
 	void SetCaretToEnd();
-
 	void SetIMEOff();
+	void SetPlaceHolder(const CString& text);
 
 protected:
 	struct PImpl;
