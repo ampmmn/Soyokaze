@@ -112,6 +112,8 @@ struct KeywordEdit::PImpl
 	HBITMAP mCaretNormal = nullptr;
 	HBITMAP mCaretIMEON = nullptr;
 
+	CString mPlaceHolderText;
+
 };
 
 KeywordEdit::KeywordEdit(CWnd* pParent) : in(std::make_unique<PImpl>())
@@ -140,6 +142,7 @@ KeywordEdit::~KeywordEdit()
 }
 
 BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
+	ON_WM_PAINT()
 	ON_WM_KEYDOWN()
 	ON_WM_GETDLGCODE()
 	ON_WM_SETFOCUS()
@@ -184,9 +187,10 @@ void KeywordEdit::SetIMEOff()
 	ImmSetOpenStatus(in->GetImmContext(this), FALSE);
 }
 
-// プレースホルダーの文字列を設定する(空文字の場合はプレースホルダーを表示しない)
+// プレースホルダーの文字列を設定する
 void KeywordEdit::SetPlaceHolder(const CString& text)
 {
+	in->mPlaceHolderText = text;
 	SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)text);
 
 }
@@ -271,5 +275,38 @@ void KeywordEdit::OnPaste()
 		text = text.Left(pos);
 	}
 	SendMessage(EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)(LPCTSTR)text);
+}
+
+void KeywordEdit::OnPaint()
+{
+	// ES_MULTILINEの場合、EM_SETCUEBANNERによる描画が効かないため、自分で描画する
+	LONG style = GetWindowLong(GetSafeHwnd(), GWL_STYLE);
+	if ((style & ES_MULTILINE) == 0) {
+		__super::OnPaint();
+		return;
+	}
+
+	CString s;
+	GetWindowText(s);
+	if (s.IsEmpty()) {
+		// 描画領域を取得する
+		CRect rc;
+		GetRect(rc);
+
+		// デバイスコンテキストを準備する
+		CPaintDC dc(this);
+		auto org = dc.SelectObject(GetFont());
+		int bk = dc.SetBkMode(TRANSPARENT);
+		COLORREF cr = dc.SetTextColor(RGB(128,128,128));
+
+		// テキスト描画
+		dc.DrawText(in->mPlaceHolderText, rc, DT_LEFT);
+
+		// デバイスコンテキストの状態を元に戻す
+		dc.SetTextColor(cr);
+		dc.SetBkMode(bk);
+		dc.SelectObject(org);
+	}
+	__super::OnPaint();
 }
 

@@ -32,6 +32,8 @@ public:
 
 	// 入力欄にアイコンを描画するか
 	bool IsDrawIcon();
+	// 入力欄にプレースホルダーを表示するか
+	bool IsDrawPlaceHolder();
 
 	bool IsTopMost();
 	bool IsShowToggle();

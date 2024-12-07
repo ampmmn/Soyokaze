@@ -231,7 +231,7 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	in->mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadKeywordManagerIcon());
 
 	// フィルタ欄にプレースホルダーを設定する
-	in->mKeywordEdit.SetPlaceHolder(_T("文字列を入力するとリストの絞り込みができます"));
+	in->mKeywordEdit.SetPlaceHolder(_T("文字列をここに入力するとリストの絞り込みができます"));
 
 	// リスト　スタイル変更
 	in->mListCtrl.SetExtendedStyle(in->mListCtrl.GetExtendedStyle()|LVS_EX_FULLROWSELECT);

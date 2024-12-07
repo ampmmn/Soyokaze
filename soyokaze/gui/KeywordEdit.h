@@ -23,6 +23,7 @@ protected:
 protected:
 	LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp) override;
 	
+	afx_msg void OnPaint();
 	afx_msg void OnKeyDown(UINT,UINT,UINT);
 	afx_msg UINT OnGetDlgCode();
 	afx_msg void OnSetFocus(CWnd* oldWindow);

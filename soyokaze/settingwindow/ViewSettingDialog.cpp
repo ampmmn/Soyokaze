@@ -14,6 +14,8 @@ struct ViewSettingDialog::PImpl
 {
 	// 入力欄のアイコンを表示する
 	BOOL mIsDrawIcon = TRUE;
+	// 入力欄のプレースホルダーを表示する
+	BOOL mIsDrawPlaceHolder = TRUE;
 
 	// 半透明の表示方法
 	int mTransparencyType = 0;
@@ -65,6 +67,7 @@ void ViewSettingDialog::OnOK()
 {
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)in->mIsDrawIcon);
+	settingsPtr->Set(_T("ViewSetting:IsDrawPlaceHolder"), (bool)in->mIsDrawPlaceHolder);
 
 	if (in->mTransparencyType == 0) {
 		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
@@ -103,6 +106,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_DRAWICON, in->mIsDrawIcon);
+	DDX_Check(pDX, IDC_CHECK_DRAWPLACEHOLDER, in->mIsDrawPlaceHolder);
 	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, in->mTransparencyType);
 	DDX_Text(pDX, IDC_EDIT_ALPHA, in->mAlpha);
 	DDV_MinMaxInt(pDX, in->mAlpha, 0, 255);
@@ -153,6 +157,7 @@ void ViewSettingDialog::OnEnterSettings()
 	auto settingsPtr = (Settings*)GetParam();
 
 	in->mIsDrawIcon = settingsPtr->Get(_T("ViewSetting:IsDrawIcon"), true);
+	in->mIsDrawPlaceHolder = settingsPtr->Get(_T("ViewSetting:IsDrawPlaceHolder"), true);
 
 	if (settingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
 		in->mTransparencyType = 2;

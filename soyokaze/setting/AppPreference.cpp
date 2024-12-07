@@ -410,6 +410,12 @@ bool AppPreference::IsDrawIcon()
 	return in->Get(_T("ViewSetting:IsDrawIcon"), true);
 }
 
+// 入力欄にプレースホルダーを表示するか
+bool AppPreference::IsDrawPlaceHolder()
+{
+	return in->Get(_T("ViewSetting:IsDrawPlaceHolder"), true);
+}
+
 bool AppPreference::IsTopMost()
 {
 	return in->Get(_T("Soyokaze:TopMost"), false);

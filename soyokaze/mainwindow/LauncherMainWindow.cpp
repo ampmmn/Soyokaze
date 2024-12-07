@@ -276,6 +276,11 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 			               SWP_NOZORDER | SWP_NOSIZE);
 		}
 
+		// プレースホルダー設定
+		LPCTSTR placeholderText = pref->IsDrawPlaceHolder() ? _T("キーワードを入力してください") : _T("");
+		in->mKeywordEdit.SetPlaceHolder(placeholderText);
+
+		// 表示
 		::ShowWindow(hwnd, SW_SHOW);
 		::SetForegroundWindow(hwnd);
 		::BringWindowToTop(hwnd);
@@ -786,6 +791,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 
 	in->mCandidateListBox.InitColumns();
+
 
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 
