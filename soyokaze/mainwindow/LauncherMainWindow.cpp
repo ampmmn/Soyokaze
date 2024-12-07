@@ -1407,6 +1407,10 @@ void LauncherMainWindow::OnContextMenu(
 
 	SPDLOG_DEBUG(_T("args point:({0},{1})"), point.x, point.y);
 
+	if (point == CPoint(-1, -1)) {
+		GetCursorPos(&point);
+	}
+
 	CMenu menu;
 	menu.CreatePopupMenu();
 
