@@ -61,6 +61,7 @@ protected:
 	void UpdateCandidates();
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
+	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();

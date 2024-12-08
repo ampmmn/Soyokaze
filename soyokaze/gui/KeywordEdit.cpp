@@ -151,6 +151,7 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_CHAR()
 	ON_WM_SIZE()
 	ON_WM_PASTE()
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -310,3 +311,12 @@ void KeywordEdit::OnPaint()
 	__super::OnPaint();
 }
 
+void KeywordEdit::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	auto parent = GetParent();
+	if (parent) {
+		WPARAM wp = (WPARAM)pWnd->GetSafeHwnd();
+		LPARAM lp = MAKELPARAM(point.x, point.y);
+		parent->SendMessage(WM_CONTEXTMENU, wp, lp);
+	}
+}

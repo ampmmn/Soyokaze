@@ -32,8 +32,6 @@ public:
 	void AddArgument(const CString& arg);
 	void CopyParamTo(CommandParameterBuilder& rhs) const;
 	void CopyNamedParamTo(CommandParameterBuilder& rhs) const;
-	void SetNamedParamString(LPCTSTR name, LPCTSTR value);
-	void SetNamedParamBool(LPCTSTR name, bool value);
 
 	// 補完
 	bool ComplementCommand(const CString& commandName, CString& comlementedStr) const;
@@ -58,7 +56,9 @@ public:
 // CommandNamedParameter
 	int GetNamedParamStringLength(LPCTSTR name) const override;
 	LPCTSTR GetNamedParamString(LPCTSTR name, LPTSTR buf, int bufLen) const override;
+	void SetNamedParamString(LPCTSTR name, LPCTSTR value) override;
 	bool GetNamedParamBool(LPCTSTR name) const override;
+	void SetNamedParamBool(LPCTSTR name, bool value) override;
 
 protected:
 	struct PImpl;

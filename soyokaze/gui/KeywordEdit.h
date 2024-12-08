@@ -32,5 +32,7 @@ protected:
 	afx_msg void OnChar(UINT,UINT,UINT);
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	afx_msg void OnPaste();
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+
 	DECLARE_MESSAGE_MAP()
 };

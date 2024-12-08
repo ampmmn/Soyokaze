@@ -145,6 +145,29 @@ CandidateListCtrl::~CandidateListCtrl()
 BEGIN_MESSAGE_MAP(CandidateListCtrl, CListCtrl)
 END_MESSAGE_MAP()
 
+// 現在選択中のアイテムの領域を取得
+bool CandidateListCtrl::GetCurrentItemRect(RECT* rect)
+{
+	if (GetSafeHwnd() == nullptr) {
+		return false;
+	}
+
+	POSITION pos = GetFirstSelectedItemPosition();
+	if (pos == nullptr) {
+		return false;
+	}
+
+	int selItemIndex = GetNextSelectedItem(pos);
+	CRect rcItem;
+	GetItemRect(selItemIndex, &rcItem, LVIR_BOUNDS);
+
+	if (rect) {
+		*rect = rcItem;
+	}
+
+	return true;
+}
+
 void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
 {
 	in->mCandidates = candidates;

@@ -28,8 +28,10 @@ namespace url_directoryindex {
 struct DirectoryIndexAdhocCommand::PImpl
 {
 	bool EnterURL();
+	bool CopyURL();
 	bool OpenURL(const CString& url);
 	bool OpenURL();
+	bool OpenParentURL();
 
 	URLDirectoryIndexCommand* mBaseCmd = nullptr;
 	QueryResult mResult;
@@ -71,11 +73,31 @@ bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
 	return true;
 }
 
+bool DirectoryIndexAdhocCommand::PImpl::CopyURL()
+{
+		CommandParam param;
+		mBaseCmd->GetParam(param);
+		Clipboard::Copy(param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath));
+		return true;
+}
+
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL()
 {
 	CommandParam param;
 	mBaseCmd->GetParam(param);
 	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+	return OpenURL(url);
+}
+
+bool DirectoryIndexAdhocCommand::PImpl::OpenParentURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+	int pos = url.ReverseFind(_T('/'));
+	if (pos != -1) {
+		url = url.Left(pos);
+	}
 	return OpenURL(url);
 }
 
@@ -155,9 +177,7 @@ BOOL DirectoryIndexAdhocCommand::Execute(Parameter* param)
 
 	if (isCtrlKeyPressed) {
 		// URLをコピー
-		CommandParam param_;
-		in->mBaseCmd->GetParam(param_);
-		Clipboard::Copy(param_.CombineURL(in->mBaseCmd->GetSubPath(), in->mResult.mLinkPath));
+		in->CopyURL();
 	}
 	else if (isShiftKeyPressed) {
 		// URLをブラウザで開く
@@ -196,6 +216,75 @@ DirectoryIndexAdhocCommand::Clone()
 	return new DirectoryIndexAdhocCommand(in->mBaseCmd, in->mResult);
 }
 
+// メニューの項目数を取得する
+int DirectoryIndexAdhocCommand::GetMenuItemCount()
+{
+	return 4;
+}
+
+// メニューの表示名を取得する
+bool DirectoryIndexAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"開く(&E)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 1) {
+		static LPCWSTR name = L"URLをクリップボードにコピー(&C)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 2) {
+		static LPCWSTR name = L"ブラウザで開く(&B)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 3) {
+		static LPCWSTR name = L"ディレクトリをブラウザで開く(&P)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	UNREFERENCED_PARAMETER(param);
+
+	if (index < 0 || GetMenuItemCount() < index) {
+		return false;
+	}
+
+	if (index == 0) {
+		return in->EnterURL();
+	}
+	else if (index == 1) {
+		return in->CopyURL();
+	}
+	else if (index == 2) {
+		return in->OpenURL();
+	}
+	else if (index == 3) {
+		return in->OpenParentURL();
+	}
+	return false;
+}
+
+bool DirectoryIndexAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
+}
 
 
 } // end of namespace url_directoryindex

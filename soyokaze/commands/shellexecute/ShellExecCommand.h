@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ContextMenuSourceIF.h"
 #include <memory>
 
 class CommandFile;
@@ -12,7 +13,8 @@ namespace shellexecute {
 class CommandParam;
 
 class ShellExecCommand :
-	virtual public launcherapp::commands::common::UserCommandBase
+	virtual public launcherapp::commands::common::UserCommandBase,
+	virtual public launcherapp::commands::core::ContextMenuSource
 {
 public:
 	ShellExecCommand();
@@ -40,6 +42,17 @@ public:
 	virtual bool Apply(launcherapp::core::CommandEditor* editor) override;
 	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
 	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
+
+// ContextMenuSource
+	// メニューの項目数を取得する
+	int GetMenuItemCount() override;
+	// メニューの表示名を取得する
+	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
+	// メニュー選択時の処理を実行する
+	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	static CString GetType();
 

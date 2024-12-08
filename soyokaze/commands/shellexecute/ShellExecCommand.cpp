@@ -2,13 +2,13 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "commands/core/IFIDDefine.h"
+#include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommandEditor.h"
 #include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
-#include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -25,7 +25,7 @@
 
 using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
 using CommandRepository = launcherapp::core::CommandRepository;
 
 namespace launcherapp {
@@ -441,6 +441,75 @@ bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 	return true;
 }
 
+// メニューの項目数を取得する
+int ShellExecCommand::GetMenuItemCount()
+{
+	return 3;
+}
+
+// メニューの表示名を取得する
+bool ShellExecCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"実行(&E)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 1) {
+		static LPCWSTR name = L"パスを開く(&O)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 2) {
+		static LPCWSTR name = L"管理者権限で実行(&A)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool ShellExecCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	if (index < 0 || 2 < index) {
+		return false;
+	}
+
+	if (index == 0) {
+		return Execute(param) != FALSE;
+	}
+
+	RefPtr<CommandNamedParameter> namedParam;
+	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+		return false;
+	}
+
+	if (index == 1) {
+		// パスを開くため、疑似的にCtrl押下で実行したことにする
+		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		return Execute(param) != FALSE;
+	}
+	else  {
+		// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
+		namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		return Execute(param) != FALSE;
+	}
+}
+
+bool ShellExecCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
+}
 
 }
 }

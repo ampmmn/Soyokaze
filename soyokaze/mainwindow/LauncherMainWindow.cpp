@@ -13,6 +13,8 @@
 #include "mainwindow/MainWindowInput.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
 #include "afxdialogex.h"
 #include "utility/Path.h"
@@ -30,7 +32,7 @@
 #include "mainwindow/OperationWatcher.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
-#include "CandidateList.h"
+#include "mainwindow/CandidateList.h"
 #include <algorithm>
 #include <thread>
 
@@ -1137,6 +1139,48 @@ void LauncherMainWindow::RunCommand(
 	th.detach();
 }
 
+/**
+ 	コマンドが持つコンテキストメニューを実行する
+ 	@param[in] cmd 実行対象のコマンドオブジェクト
+ 	@param[in] index メニューのインデックス
+*/
+void LauncherMainWindow::SelectCommandContextMenu(
+	launcherapp::core::Command* cmd,
+	int index
+)
+{
+	// 実行時の音声を再生する
+	//AppSound::Get()->PlayExecuteSound();
+
+	// 別スレッドで処理するのでコピーを生成する
+	CString str = in->mInput.GetKeyword();
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	std::thread th([cmd, index, str]() {
+
+		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+			cmd->Release();
+			return;
+		}
+
+		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+
+		if (menuSrc->SelectMenuItem(index, commandParam) == false) {
+			auto errMsg = cmd->GetErrorString();
+			if (errMsg.IsEmpty() == FALSE) {
+				auto app = (LauncherApp*)AfxGetApp();
+				app->PopupMessage(errMsg);
+			}
+		}
+		commandParam->Release();
+		cmd->Release();
+	});
+	th.detach();
+}
+
 
 void LauncherMainWindow::OnOK()
 {
@@ -1408,25 +1452,57 @@ void LauncherMainWindow::OnContextMenu(
 	SPDLOG_DEBUG(_T("args point:({0},{1})"), point.x, point.y);
 
 	if (point == CPoint(-1, -1)) {
-		GetCursorPos(&point);
+		// リストの要素が選択されていたら、その領域付近にメニューを表示する
+		auto listCtrl = GetCandidateList();
+		ASSERT(listCtrl);
+		CRect rc;
+		if (listCtrl->GetCurrentItemRect(&rc)) {
+			point.x = rc.left;
+			point.y = rc.bottom;
+			listCtrl->ClientToScreen(&point);
+		}
+		else {
+			GetCursorPos(&point);
+		}
 	}
 
 	CMenu menu;
 	menu.CreatePopupMenu();
 
-	const UINT ID_SHOW = 1;
-	const UINT ID_HIDE = 2;
-	const UINT ID_NEW = 3;
-	const UINT ID_MANAGER = 4;
-	const UINT ID_APPSETTING = 5;
-	const UINT ID_USERDIR = 6;
-	const UINT ID_RESETPOS = 7;
-	const UINT ID_MANUAL = 8;
-	const UINT ID_VERSIONINFO = 9;
-	const UINT ID_EXIT = 19;
+	const UINT ID_COMMAND_TOP = 1;
+	const UINT ID_COMMAND_LAST = 1000;
+	const UINT ID_SHOW = 1001;
+	const UINT ID_HIDE = 1002;
+	const UINT ID_NEW = 1003;
+	const UINT ID_MANAGER = 1004;
+	const UINT ID_APPSETTING = 1005;
+	const UINT ID_USERDIR = 1006;
+	const UINT ID_RESETPOS = 1007;
+	const UINT ID_MANUAL = 1008;
+	const UINT ID_VERSIONINFO = 1009;
+	const UINT ID_EXIT = 1019;
 
 	BOOL isVisible = IsWindowVisible();
 	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
+
+	// コマンド固有のメニューがあったら取得する
+	auto cmd = GetCurrentCommand();
+	if (cmd) {
+		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc)) {
+			int count = menuSrc->GetMenuItemCount();
+			for (int i = 0; i < count; ++i) {
+				LPCTSTR displayName = nullptr;
+				menuSrc->GetMenuItemName(i, &displayName);
+				if (displayName == nullptr) {
+					menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+					continue;
+				}
+				menu.InsertMenu((UINT)-1, 0, ID_COMMAND_TOP + i, displayName);
+			}
+			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+		}
+	}
 
 	menu.InsertMenu((UINT)-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
 	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
@@ -1450,12 +1526,21 @@ void LauncherMainWindow::OnContextMenu(
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	spdlog::debug(_T("selected menu id:{}"), n);
+	if (n == 0) {
+		// キャンセル
+		return;
+	}
 
-	if (n == ID_SHOW) {
+	if (n <= ID_COMMAND_LAST) {
+		int index = n - ID_COMMAND_TOP;
+		SelectCommandContextMenu(cmd, index);
+	}
+	else if (n == ID_SHOW) {
 		ActivateWindow();
+		return;
 	}
 	else if (n == ID_HIDE) {
-		HideWindow();
+		// Note: 後方の処理でウインドウを消すのでここでは何もしない
 	}
 	else if (n == ID_NEW) {
 		ExecuteCommand(_T("new"));
@@ -1472,6 +1557,7 @@ void LauncherMainWindow::OnContextMenu(
 	else if (n == ID_RESETPOS) {
 		// ウインドウ位置をリセット
 		in->mLayout->RestoreWindowPosition(this, true);
+		return;
 	}
 	else if (n == ID_MANUAL) {
 		// ヘルプ表示
@@ -1483,6 +1569,10 @@ void LauncherMainWindow::OnContextMenu(
 	else if (n == ID_EXIT) {
 		ExecuteCommand(_T("exit"));
 	}
+
+	// 選択後はウインドウを隠す
+	ClearContent();
+	HideWindow();
 }
 
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)

@@ -15,6 +15,8 @@ public:
 	CandidateListCtrl();
 	virtual ~CandidateListCtrl();
 
+	// 現在選択中のアイテムの領域を取得
+	bool GetCurrentItemRect(RECT* rect);
 	void SetCandidateList(CandidateList* candidates);
 
 	void InitColumns();
