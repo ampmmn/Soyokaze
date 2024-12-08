@@ -645,6 +645,7 @@ int CommandRepository::ManagerDialog()
 	if (in->mManagerDlgPtr != nullptr) {
 		// 編集操作中の再入はしない
 		SPDLOG_WARN(_T("re-entry is not allowed."));
+		in->mManagerDlgPtr->SetForegroundWindow();
 		return 0;
 	}
 
