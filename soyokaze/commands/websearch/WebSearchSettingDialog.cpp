@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
+#include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/common/CommandEditValidation.h"
@@ -35,6 +36,8 @@ struct SettingDialog::PImpl
 
 	// メッセージ欄
 	CString mMessage;
+
+	KeywordEdit mQueryEdit;
 
 	HICON mIcon = nullptr;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
@@ -117,6 +120,9 @@ BOOL SettingDialog::OnInitDialog()
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->EnableIconChange();
+
+	in->mQueryEdit.SubclassDlgItem(IDC_EDIT_URL, this);
+	in->mQueryEdit.SetPlaceHolder(_T("例:https://www.google.com/search?q=$*"));
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
 	if (in->mHotKey.IsEmpty()) {
