@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "commands/core/CommandRanking.h"
+#include "commands/core/CommandIF.h"
 #include "utility/Path.h"
 #include <map>
 
@@ -144,21 +145,24 @@ void CommandRanking::SetFilePath(const CString& path)
 	in->mFilePath = path;
 }
 
-void CommandRanking::Set(const CString& name, int num)
+void CommandRanking::Set(Command* cmd, int num)
 {
+	auto name = cmd->GetName();
 	in->mRank[name] = num;
 }
 
 // 順位取得
-int CommandRanking::Get(const CString& name) const
+int CommandRanking::Get(Command* cmd) const
 {
+	auto name = cmd->GetName();
 	auto it = in->mRank.find(name);
 	return it != in->mRank.end() ? it->second : 0;
 }
 
 // 削除
-bool CommandRanking::Delete(const CString& name)
+bool CommandRanking::Delete(Command* cmd)
 {
+	auto name = cmd->GetName();
 	auto it = in->mRank.find(name);
 	if (it == in->mRank.end()) {
 		return false;

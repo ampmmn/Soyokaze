@@ -151,8 +151,8 @@ void CommandQueryItemList::Sort()
 			auto& cmdR = r.mCommand;
 
 			// 優先度の数値が高いほうを優先するため、 R < L で比較
-			int priorityL = rankPtr->Get(cmdL->GetName());
-			int priorityR = rankPtr->Get(cmdR->GetName());
+			int priorityL = rankPtr->Get(cmdL.get());
+			int priorityR = rankPtr->Get(cmdR.get());
 			return priorityR < priorityL;
 
 			// Note: 動的なコマンド(AdhocCommand)が生成したコマンド順序を維持したいので、

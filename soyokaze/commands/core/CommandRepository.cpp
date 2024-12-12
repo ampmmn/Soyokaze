@@ -396,7 +396,7 @@ int CommandRepository::UnregisterCommand(Command* command)
 		pref->Save();
 	}
 
-	CommandRanking::GetInstance()->Delete(name);
+	CommandRanking::GetInstance()->Delete(command);
 	in->mCommands.Unregister(command);
 	return 0;
 }

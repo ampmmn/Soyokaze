@@ -103,15 +103,15 @@ void AppSettingPageCommandPriority::PImpl::SortCommands()
 	const CommandRanking* rankPtr = mCommandPriority;
 	if (mSortType == SORT_ASCEND_PRIORITY) {
 		std::sort(mCommands.begin(), mCommands.end(), [rankPtr](Command* l, Command* r) {
-			int priorityL = rankPtr->Get(l->GetName());
-			int priorityR = rankPtr->Get(r->GetName());
+			int priorityL = rankPtr->Get(l);
+			int priorityR = rankPtr->Get(r);
 			return priorityR < priorityL;
 		});
 	}
 	else if (mSortType == SORT_DESCEND_PRIORITY) {
 		std::sort(mCommands.begin(), mCommands.end(), [rankPtr](Command* l, Command* r) {
-			int priorityL = rankPtr->Get(l->GetName());
-			int priorityR = rankPtr->Get(r->GetName());
+			int priorityL = rankPtr->Get(l);
+			int priorityR = rankPtr->Get(r);
 			return priorityL < priorityR;
 		});
 	}
@@ -293,7 +293,7 @@ void AppSettingPageCommandPriority::OnButtonEdit()
 			continue;
 		}
 
-		dlg.mPriority = rank->Get(cmd->GetName());
+		dlg.mPriority = rank->Get(cmd);
 		break;
 	}
 	if (dlg.DoModal() != IDOK) {
@@ -311,7 +311,7 @@ void AppSettingPageCommandPriority::OnButtonEdit()
 			continue;
 		}
 
-		rank->Set(cmd->GetName(), newPriority);
+		rank->Set(cmd, newPriority);
 	}
 
 	// 更新
@@ -401,7 +401,7 @@ void AppSettingPageCommandPriority::OnGetDispInfo(
 
 			if (0 <= itemIndex && itemIndex < in->mCommands.size()) {
 				auto cmd = in->mCommands[itemIndex];
-				int priority = rankPtr->Get(cmd->GetName());
+				int priority = rankPtr->Get(cmd);
 				in->mBuffer.Format(_T("%d"), priority);
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, in->mBuffer, _TRUNCATE);
 			}

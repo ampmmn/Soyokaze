@@ -3,6 +3,10 @@
 #include <memory>
 
 namespace launcherapp {
+
+namespace core {
+	class Command;
+}
 namespace commands {
 namespace core {
 
@@ -12,6 +16,8 @@ namespace core {
  */
 class CommandRanking
 {
+public:
+	using Command = launcherapp::core::Command;
 private:
 	CommandRanking();
 	~CommandRanking();
@@ -25,11 +31,11 @@ public:
 	bool Save();
 
 	//
-	void Set(const CString& name, int num);
+	void Set(Command* cmd, int num);
 	// 順位取得
-	int Get(const CString& name) const;
+	int Get(Command* cmd) const;
 
-	bool Delete(const CString& name);
+	bool Delete(Command* cmd);
 
 	// すべてリセット
 	void ResetAll();
