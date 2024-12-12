@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "VMXFileCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/common/SubProcess.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
@@ -19,11 +20,37 @@ namespace vmware {
 
 struct VMXFileCommand::PImpl
 {
+	bool Execute(Parameter* param, int showType);
 	bool IsLocked();
 
+	CString mName;
 	CString mFullPath;
 	CString mErrorMsg;
 };
+
+bool VMXFileCommand::PImpl::Execute(Parameter* param, int showType)
+{
+	mErrorMsg.Empty();
+
+	// .lckファイルの確認
+	if (IsLocked()) {
+		CString msg;
+		msg.Format(IDS_CONFIRM_VMXLOCKED, (LPCTSTR)this->mName);
+		int sel = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+		if (sel != IDYES) {
+			return TRUE;
+		}
+	}
+
+	SubProcess::ProcessPtr process;
+	SubProcess exec(param);
+	exec.SetShowType(showType);
+	if (exec.Run(mFullPath, process) == false) {
+		mErrorMsg = process->GetErrorMessage();
+		return false;
+	}
+	return true;
+}
 
 bool VMXFileCommand::PImpl::IsLocked()
 {
@@ -65,6 +92,7 @@ bool VMXFileCommand::PImpl::IsLocked()
 
 VMXFileCommand::VMXFileCommand(const CString& name, const CString& fullPath) : in(std::make_unique<PImpl>())
 {
+	in->mName = name;
 	this->mName = name;
 	this->mDescription = fullPath;
 	in->mFullPath = fullPath;
@@ -87,25 +115,7 @@ CString VMXFileCommand::GetTypeDisplayName()
 
 BOOL VMXFileCommand::Execute(Parameter* param)
 {
-	in->mErrorMsg.Empty();
-
-	// .lckファイルの確認
-	if (in->IsLocked()) {
-		CString msg;
-		msg.Format(IDS_CONFIRM_VMXLOCKED, (LPCTSTR)this->mName);
-		int sel = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
-		if (sel != IDYES) {
-			return TRUE;
-		}
-	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	if (exec.Run(in->mFullPath, process) == false) {
-		in->mErrorMsg = process->GetErrorMessage();
-		return FALSE;
-	}
-	return TRUE;
+	return in->Execute(param, SW_SHOW) ? TRUE : FALSE;
 }
 
 CString VMXFileCommand::GetErrorString()
@@ -123,6 +133,66 @@ VMXFileCommand::Clone()
 {
 	return new VMXFileCommand(this->mName, in->mFullPath);
 }
+
+// メニューの項目数を取得する
+int VMXFileCommand::GetMenuItemCount()
+{
+	return 3;
+}
+
+// メニューの表示名を取得する
+bool VMXFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"実行(&E)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 1) {
+		static LPCWSTR name = L"最大化状態で実行(&X)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 2) {
+		static LPCWSTR name = L"最小化状態で実行(&M)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool VMXFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	if (index < 0 || 2 < index) {
+		return false;
+	}
+
+	if (index == 0) {
+		return in->Execute(param, SW_SHOW) != FALSE;
+	}
+	else if (index == 1) {
+		return in->Execute(param, SW_MAXIMIZE) != FALSE;
+	}
+	else {
+		return in->Execute(param, SW_MINIMIZE) != FALSE;
+	}
+}
+
+bool VMXFileCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
+}
+
 
 } // end of namespace vmware
 } // end of namespace commands
