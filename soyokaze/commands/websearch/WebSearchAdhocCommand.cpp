@@ -82,6 +82,46 @@ WebSearchAdhocCommand::Clone()
 	return new WebSearchAdhocCommand(in->mBaseCommand, GetName(), in->mURL);
 }
 
+// メニューの項目数を取得する
+int WebSearchAdhocCommand::GetMenuItemCount()
+{
+	return 1;
+}
+
+// メニューの表示名を取得する
+bool WebSearchAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"検索(&E)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool WebSearchAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	if (index == 0) {
+		return Execute(param) != FALSE;
+	}
+	return false;
+}
+
+bool WebSearchAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
+}
+
 } // end of namespace websearch
 } // end of namespace commands
 } // end of namespace launcherapp
