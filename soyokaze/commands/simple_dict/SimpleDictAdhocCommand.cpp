@@ -33,6 +33,7 @@ struct SimpleDictAdhocCommand::PImpl
 	Record mRecord;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(SimpleDictAdhocCommand)
 
 SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	const SimpleDictParam& param,

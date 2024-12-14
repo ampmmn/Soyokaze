@@ -25,6 +25,7 @@ struct ColorCommand::PImpl
 	int mFormatType = TYPE_HEX6;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ColorCommand)
 
 ColorCommand::ColorCommand(COLORREF cr, int formatType) : in(std::make_unique<PImpl>())
 {

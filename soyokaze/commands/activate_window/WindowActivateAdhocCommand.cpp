@@ -22,6 +22,7 @@ struct WindowActivateAdhocCommand::PImpl
 	HWND mHwnd;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WindowActivateAdhocCommand)
 
 WindowActivateAdhocCommand::WindowActivateAdhocCommand(
 	HWND hwnd

@@ -20,6 +20,7 @@ struct MMCCommand::PImpl
 	MMCSnapin mSnapin;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MMCCommand)
 
 MMCCommand::MMCCommand(const MMCSnapin& snapin) : 
 	AdhocCommandBase(snapin.mDisplayName, snapin.mDescription),

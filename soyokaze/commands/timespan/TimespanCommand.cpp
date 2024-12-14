@@ -27,6 +27,8 @@ struct TimespanCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(TimespanCommand)
+
 TimespanCommand::TimespanCommand(CTimeSpan ts, int unitType) : in(std::make_unique<PImpl>())
 {
 	in->mTimeSpan = ts;

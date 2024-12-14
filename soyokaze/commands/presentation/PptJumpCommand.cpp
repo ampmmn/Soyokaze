@@ -23,6 +23,8 @@ struct PptJumpCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(PptJumpCommand)
+
 PptJumpCommand::PptJumpCommand(
 		int page,
 	 	const CString& title

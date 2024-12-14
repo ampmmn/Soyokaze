@@ -23,6 +23,8 @@ public:
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(FileProtocolConvertAdhocCommand)
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

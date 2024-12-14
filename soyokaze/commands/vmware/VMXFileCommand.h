@@ -35,6 +35,7 @@ public:
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(VMXFileCommand)
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

@@ -22,6 +22,7 @@ struct SpecialFolderFileCommand::PImpl
 	ITEM mItem;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(SpecialFolderFileCommand)
 
 SpecialFolderFileCommand::SpecialFolderFileCommand(const ITEM& item) : 
 	AdhocCommandBase(item.mName, item.mDescription),

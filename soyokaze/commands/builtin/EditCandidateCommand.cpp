@@ -23,6 +23,8 @@ struct EditCandidateCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(EditCandidateCommand)
+
 EditCandidateCommand::EditCandidateCommand(
 	const CString& cmdName
 ) : 

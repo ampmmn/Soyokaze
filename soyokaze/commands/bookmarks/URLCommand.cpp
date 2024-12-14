@@ -67,6 +67,7 @@ bool URLCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 	}
 }
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
 
 URLCommand::URLCommand(
 	const CString& browserName,

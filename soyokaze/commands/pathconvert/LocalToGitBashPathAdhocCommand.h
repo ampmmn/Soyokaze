@@ -23,6 +23,8 @@ public:
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(LocalToGitBashPathAdhocCommand)
+
 	static bool IsLocalPath(const CString& path);
 
 protected:

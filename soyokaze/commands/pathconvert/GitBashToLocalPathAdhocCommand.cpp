@@ -27,6 +27,8 @@ struct GitBashToLocalPathAdhocCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(GitBashToLocalPathAdhocCommand)
+
 GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_unique<PImpl>())
 {
 }

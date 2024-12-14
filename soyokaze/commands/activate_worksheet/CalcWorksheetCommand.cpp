@@ -23,6 +23,8 @@ struct CalcWorksheetCommand::PImpl
 	CalcWorksheet* mCalcWorksheet = nullptr;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(CalcWorksheetCommand)
+
 CalcWorksheetCommand::CalcWorksheetCommand(
 	CalcWorksheet* sheet
 ) : in(std::make_unique<PImpl>())

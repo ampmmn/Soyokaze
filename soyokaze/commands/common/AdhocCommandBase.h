@@ -30,11 +30,7 @@ public:
 	bool Load(CommandEntryIF* entry) override;
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
-	uint32_t AddRef() override;
-	uint32_t Release() override;
-
 protected:
-	uint32_t mRefCount;
 	CString mName;
 	CString mDescription;
 	CString mErrMsg;
@@ -44,4 +40,19 @@ protected:
 } // end of namespace common
 } // end of namespace commands
 } // end of namespace launcherapp
+
+#define DECLARE_ADHOCCOMMAND_UNKNOWNIF(clsName) \
+	public: \
+		uint32_t AddRef() override; \
+		uint32_t Release() override; \
+	protected: \
+		uint32_t mRefCount = 1;
+
+#define IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(clsName) \
+	uint32_t clsName::AddRef() { return (uint32_t)InterlockedIncrement(&mRefCount); } \
+	uint32_t clsName::Release() { \
+		auto n = InterlockedDecrement(&mRefCount); \
+		if (n == 0) { delete this; } \
+		return n; \
+	}
 

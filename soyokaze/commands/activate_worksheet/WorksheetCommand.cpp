@@ -24,6 +24,8 @@ struct WorksheetCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WorksheetCommand)
+
 WorksheetCommand::WorksheetCommand(
 	Worksheet* sheet
 ) : in(std::make_unique<PImpl>())

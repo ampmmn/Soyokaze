@@ -24,6 +24,8 @@ public:
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(CalculatorCommand)
+
 	static bool GetCalcExePath(LPTSTR path, size_t len);
 protected:
 	struct PImpl;

@@ -14,8 +14,7 @@ namespace common {
 
 AdhocCommandBase::AdhocCommandBase(LPCTSTR name, LPCTSTR description) : 
 	mName(name),
-	mDescription(description),
-	mRefCount(1)
+	mDescription(description)
 {
 }
 
@@ -95,21 +94,6 @@ bool AdhocCommandBase::Load(CommandEntryIF* entry)
 	// 非サポート
 	return false;
 }
-
-uint32_t AdhocCommandBase::AddRef()
-{
-	return ++mRefCount;
-}
-
-uint32_t AdhocCommandBase::Release()
-{
-	auto n = --mRefCount;
-	if (n == 0) {
-		delete this;
-	}
-	return n;
-}
-
 
 } // end of namespace common
 } // end of namespace commands

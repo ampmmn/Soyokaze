@@ -18,6 +18,7 @@ namespace mailto {
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 using SubProcess = launcherapp::commands::common::SubProcess;
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MailToCommand)
 
 MailToCommand::MailToCommand() : 
 	AdhocCommandBase(_T("mailto:"), _T("あて先を指定してメール"))

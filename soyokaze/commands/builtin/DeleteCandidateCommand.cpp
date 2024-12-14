@@ -26,6 +26,8 @@ struct DeleteCandidateCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(DeleteCandidateCommand)
+
 DeleteCandidateCommand::DeleteCandidateCommand(
 	const CString& cmdName
 ) : 

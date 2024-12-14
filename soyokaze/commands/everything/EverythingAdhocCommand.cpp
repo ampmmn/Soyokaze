@@ -31,6 +31,8 @@ struct EverythingAdhocCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(EverythingAdhocCommand)
+
 EverythingAdhocCommand::EverythingAdhocCommand(
 	const CommandParam& param,
  	const EverythingResult& result

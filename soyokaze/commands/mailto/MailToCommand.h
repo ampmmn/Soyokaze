@@ -21,6 +21,8 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
+
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(MailToCommand)
 };
 
 

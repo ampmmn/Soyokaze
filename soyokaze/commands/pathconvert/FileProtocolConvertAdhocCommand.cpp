@@ -59,6 +59,7 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	bool mIsFirstCall = true;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(FileProtocolConvertAdhocCommand)
 
 FileProtocolConvertAdhocCommand::FileProtocolConvertAdhocCommand() : in(std::make_unique<PImpl>())
 {

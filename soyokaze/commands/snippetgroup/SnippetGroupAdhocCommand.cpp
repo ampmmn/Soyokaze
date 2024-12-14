@@ -29,6 +29,8 @@ struct SnippetGroupAdhocCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(SnippetGroupAdhocCommand)
+
 SnippetGroupAdhocCommand::SnippetGroupAdhocCommand(
 	const SnippetGroupParam& param,
 	const Item& item

@@ -29,6 +29,7 @@ struct CalculatorCommand::PImpl
 	Path mCalcPath;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(CalculatorCommand)
 
 CalculatorCommand::CalculatorCommand() : in(std::make_unique<PImpl>())
 {

@@ -23,6 +23,8 @@ struct MailCommand::PImpl
 	MailItem* mMailItem;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MailCommand)
+
 MailCommand::MailCommand(
 	MailItem* itemPtr
 ) : in(std::make_unique<PImpl>())

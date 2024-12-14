@@ -23,6 +23,8 @@ struct EscapedCharCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(EscapedCharCommand)
+
 EscapedCharCommand::EscapedCharCommand() : in(std::make_unique<PImpl>())
 {
 }

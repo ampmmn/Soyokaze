@@ -23,6 +23,8 @@ struct GetIPCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(GetIPCommand)
+
 GetIPCommand::GetIPCommand(const CString& displayName, const CString& addr) : in(std::make_unique<PImpl>())
 {
 	in->mDisplayName = displayName;

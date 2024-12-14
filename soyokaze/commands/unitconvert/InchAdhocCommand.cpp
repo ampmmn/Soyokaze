@@ -24,6 +24,8 @@ struct InchAdhocCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(InchAdhocCommand)
+
 InchAdhocCommand::InchAdhocCommand() : in(std::make_unique<PImpl>())
 {
 }

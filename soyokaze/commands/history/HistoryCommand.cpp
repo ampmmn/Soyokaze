@@ -27,6 +27,7 @@ struct HistoryCommand::PImpl
 	Command* mCmd = nullptr;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(HistoryCommand)
 
 HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PImpl>())
 {

@@ -26,6 +26,7 @@ public:
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(DecodeUriCommand)
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

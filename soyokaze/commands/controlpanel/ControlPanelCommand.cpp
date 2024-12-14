@@ -22,6 +22,7 @@ struct ControlPanelCommand::PImpl
 	CString mAppName;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ControlPanelCommand)
 
 ControlPanelCommand::ControlPanelCommand(
 	const CString& name,

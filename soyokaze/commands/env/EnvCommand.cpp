@@ -22,6 +22,7 @@ struct EnvCommand::PImpl
 	CString mValue;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(EnvCommand)
 
 EnvCommand::EnvCommand(const CString& name, const CString& value) : 
 	AdhocCommandBase(name, value),

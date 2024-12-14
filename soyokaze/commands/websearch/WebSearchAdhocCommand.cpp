@@ -27,6 +27,7 @@ struct WebSearchAdhocCommand::PImpl
 	CString mErrorMsg;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WebSearchAdhocCommand)
 
 WebSearchAdhocCommand::WebSearchAdhocCommand(
 	WebSearchCommand* baseCommand,

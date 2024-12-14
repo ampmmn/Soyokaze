@@ -67,6 +67,7 @@ bool WebHistoryAdhocCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 	}
 }
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WebHistoryAdhocCommand)
 
 WebHistoryAdhocCommand::WebHistoryAdhocCommand(
 	const CString& name, 

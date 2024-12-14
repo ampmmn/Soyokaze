@@ -31,6 +31,7 @@ public:
 	static bool ScanAsHex(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
 	static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(EscapedCharCommand)
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

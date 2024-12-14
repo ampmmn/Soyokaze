@@ -22,6 +22,7 @@ struct DecodeUriCommand::PImpl
 {
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(DecodeUriCommand)
 
 DecodeUriCommand::DecodeUriCommand() : in(std::make_unique<PImpl>())
 {

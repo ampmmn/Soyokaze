@@ -58,6 +58,7 @@ struct PathExecuteCommand::PImpl
 	bool mIsExe = false;
 };
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)
 
 PathExecuteCommand::PathExecuteCommand(
 	ExcludePathList* excludeList

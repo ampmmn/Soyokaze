@@ -21,6 +21,8 @@ public:
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
 
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(InchAdhocCommand)
+
 protected:
 
 	struct PImpl;

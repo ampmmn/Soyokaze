@@ -22,6 +22,8 @@ struct UWPCommand::PImpl
 };
 
 
+IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(UWPCommand)
+
 UWPCommand::UWPCommand(ItemPtr& item) : 
 	AdhocCommandBase(item->mName, item->mName),
 	in(std::make_unique<PImpl>())
