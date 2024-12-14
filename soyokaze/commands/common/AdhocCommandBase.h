@@ -10,7 +10,7 @@ namespace commands {
 namespace common {
 
 
-class AdhocCommandBase : public launcherapp::core::Command
+class AdhocCommandBase : virtual public launcherapp::core::Command
 {
 public:
 	AdhocCommandBase(LPCTSTR name = _T(""), LPCTSTR description = _T(""));

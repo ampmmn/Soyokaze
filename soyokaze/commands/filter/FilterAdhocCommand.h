@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include "commands/filter/FilterResult.h"
 #include <memory>
 #include <vector>
@@ -11,7 +12,9 @@ namespace filter {
 
 class CommandParam;
 
-class FilterAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
+class FilterAdhocCommand :
+ 	virtual public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
 	FilterAdhocCommand(const CommandParam& param, const FilterResult& result);
@@ -25,6 +28,11 @@ public:
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
+// ExtraCandidate
+	CString GetSourceName() override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

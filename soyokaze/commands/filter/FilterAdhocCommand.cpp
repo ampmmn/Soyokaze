@@ -160,6 +160,25 @@ FilterAdhocCommand::Clone()
 	return new FilterAdhocCommand(in->mParam, in->mResult);
 }
 
+CString FilterAdhocCommand::GetSourceName()
+{
+	return in->mParam.mName;
+}
+
+bool FilterAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_EXTRACANDIDATE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	return false;
+}
+
 
 
 } // end of namespace filter

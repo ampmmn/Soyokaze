@@ -2,6 +2,7 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommand.h"
 #include "commands/url_directoryindex/DirectoryIndexQueryResult.h"
 #include <memory>
@@ -12,9 +13,10 @@ namespace url_directoryindex {
 
 class CommandParam;
 
-class DirectoryIndexAdhocCommand : public launcherapp::commands::common::AdhocCommandBase,
-	virtual public launcherapp::commands::core::ContextMenuSource
-
+class DirectoryIndexAdhocCommand :
+ 	virtual public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::commands::core::ContextMenuSource,
+	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
 	DirectoryIndexAdhocCommand(URLDirectoryIndexCommand* baseCmd, const QueryResult& result);
@@ -35,6 +37,9 @@ public:
 	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
 	// メニュー選択時の処理を実行する
 	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+
+// ExtraCandidate
+	CString GetSourceName() override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

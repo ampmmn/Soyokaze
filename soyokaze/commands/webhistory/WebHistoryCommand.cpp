@@ -107,7 +107,7 @@ void WebHistoryCommand::PImpl::QueryHistory(
 		history.mBrowserName = appName;
 		history.mDisplayName = item.mTitle;
 		history.mUrl = item.mUrl;
-		commands.Add(CommandQueryItem(history.mMatchLevel, new WebHistoryAdhocCommand(history)));
+		commands.Add(CommandQueryItem(history.mMatchLevel, new WebHistoryAdhocCommand(mParam.mName, history)));
 	}
 }
 

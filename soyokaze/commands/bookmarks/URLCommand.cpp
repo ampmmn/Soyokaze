@@ -142,6 +142,25 @@ URLCommand::Clone()
 	return new URLCommand(in->mBrowserName, this->mName, in->mUrl);
 }
 
+CString URLCommand::GetSourceName()
+{
+	return mName;
+}
+
+bool URLCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_EXTRACANDIDATE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	return false;
+}
+
 } // end of namespace bookmarks
 } // end of namespace commands
 } // end of namespace launcherapp

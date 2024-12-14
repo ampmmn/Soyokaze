@@ -108,6 +108,11 @@ bool WebSearchAdhocCommand::SelectMenuItem(int index, launcherapp::core::Command
 	return false;
 }
 
+CString WebSearchAdhocCommand::GetSourceName()
+{
+	return in->mBaseCommand->GetName();
+}
+
 bool WebSearchAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (__super::QueryInterface(ifid, cmd)) {
@@ -117,6 +122,11 @@ bool WebSearchAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, 
 	if (ifid == IFID_CONTEXTMENUSOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	else if (ifid == IFID_EXTRACANDIDATE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
 		return true;
 	}
 	return false;

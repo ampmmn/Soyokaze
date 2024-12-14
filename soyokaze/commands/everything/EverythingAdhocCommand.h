@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include <memory>
 
 namespace launcherapp {
@@ -10,7 +11,9 @@ namespace everything {
 class CommandParam;
 class EverythingResult;
 
-class EverythingAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
+class EverythingAdhocCommand :
+	virtual public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
 	EverythingAdhocCommand(const CommandParam& param, const EverythingResult& result);
@@ -23,6 +26,12 @@ public:
 	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
+
+// ExtraCandidate
+	CString GetSourceName() override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 protected:
 	struct PImpl;

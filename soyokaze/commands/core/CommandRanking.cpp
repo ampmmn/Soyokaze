@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "commands/core/CommandRanking.h"
+#include "commands/core/IFIDDefine.h"
 #include "commands/core/CommandIF.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include "utility/Path.h"
 #include <map>
 
@@ -154,7 +156,14 @@ void CommandRanking::Set(Command* cmd, int num)
 // 順位取得
 int CommandRanking::Get(Command* cmd) const
 {
-	auto name = cmd->GetName();
+	CString name;
+	RefPtr<ExtraCandidate> extraCandidate;
+	if (cmd->QueryInterface(IFID_EXTRACANDIDATE, (void**)&extraCandidate)) {
+		name = extraCandidate->GetSourceName();
+	}
+	else  {
+		name = cmd->GetName();
+	}
 	auto it = in->mRank.find(name);
 	return it != in->mRank.end() ? it->second : 0;
 }

@@ -272,6 +272,12 @@ bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, launcherapp::core::Co
 	return false;
 }
 
+CString DirectoryIndexAdhocCommand::GetSourceName()
+{
+	return in->mBaseCmd->GetName();
+}
+
+
 bool DirectoryIndexAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (__super::QueryInterface(ifid, cmd)) {
@@ -281,6 +287,11 @@ bool DirectoryIndexAdhocCommand::QueryInterface(const launcherapp::core::IFID& i
 	if (ifid == IFID_CONTEXTMENUSOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	else if (ifid == IFID_EXTRACANDIDATE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
 		return true;
 	}
 	return false;

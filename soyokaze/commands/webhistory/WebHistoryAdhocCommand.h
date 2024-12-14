@@ -2,23 +2,33 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/webhistory/WebHistory.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-class WebHistoryAdhocCommand : public launcherapp::commands::common::AdhocCommandBase
+class WebHistoryAdhocCommand :
+	virtual public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
-	WebHistoryAdhocCommand(const HISTORY& item);
+	WebHistoryAdhocCommand(const CString& name, const HISTORY& item);
 	virtual ~WebHistoryAdhocCommand();
 
+	CString GetName() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
+
+// ExtraCandidate
+	CString GetSourceName() override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 protected:
 	struct PImpl;

@@ -2,6 +2,7 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/ExtraCandidateIF.h"
 #include <memory>
 
 namespace launcherapp {
@@ -12,7 +13,8 @@ class WebSearchCommand;
 
 class WebSearchAdhocCommand :
 	virtual public launcherapp::commands::common::AdhocCommandBase,
-	virtual public launcherapp::commands::core::ContextMenuSource
+	virtual public launcherapp::commands::core::ContextMenuSource,
+	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
 	WebSearchAdhocCommand(WebSearchCommand* baseCommand, const CString& displayName, const CString& showUrl);
@@ -31,6 +33,9 @@ public:
 	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
 	// メニュー選択時の処理を実行する
 	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+
+// ExtraCandidate
+	CString GetSourceName() override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

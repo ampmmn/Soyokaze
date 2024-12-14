@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WebHistoryAdhocCommand.h"
+#include "commands/core/ContextMenuSourceIF.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
@@ -49,6 +50,7 @@ struct WebHistoryAdhocCommand::PImpl
 {
 	bool GetExecutablePath(LPTSTR path, size_t len);
 
+	CString mName;
 	HISTORY mHistory;
 };
 
@@ -67,16 +69,23 @@ bool WebHistoryAdhocCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 
 
 WebHistoryAdhocCommand::WebHistoryAdhocCommand(
+	const CString& name, 
 	const HISTORY& item
 ) : 
-	AdhocCommandBase(item.mDisplayName, item.mDisplayName),
+	AdhocCommandBase(_T(""), item.mDisplayName),
 	in(std::make_unique<PImpl>())
 {
+	in->mName = name;
 	in->mHistory = item;
 }
 
 WebHistoryAdhocCommand::~WebHistoryAdhocCommand()
 {
+}
+
+CString WebHistoryAdhocCommand::GetName()
+{
+	return in->mName + _T(" ") + in->mHistory.mDisplayName;
 }
 
 CString WebHistoryAdhocCommand::GetGuideString()
@@ -135,8 +144,28 @@ HICON WebHistoryAdhocCommand::GetIcon()
 launcherapp::core::Command*
 WebHistoryAdhocCommand::Clone()
 {
-	return new WebHistoryAdhocCommand(in->mHistory);
+	return new WebHistoryAdhocCommand(in->mName, in->mHistory);
 }
+
+CString WebHistoryAdhocCommand::GetSourceName()
+{
+	return in->mName;
+}
+
+bool WebHistoryAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_EXTRACANDIDATE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	return false;
+}
+
 
 } // end of namespace webhistory
 } // end of namespace commands
