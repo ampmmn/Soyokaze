@@ -202,6 +202,9 @@
     <Filter Include="commands\snippetgroup">
       <UniqueIdentifier>{e7e0e85c-2f0f-4922-b922-67d2c2e7319b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\activate_worksheet">
+      <UniqueIdentifier>{e8a0558c-92ee-401b-8a79-fe0b34e43d97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -396,13 +399,7 @@
     <ClInclude Include="commands\activate_window\ActivateWindowProvider.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
-    <ClInclude Include="commands\activate_window\ExcelWorkSheets.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
     <ClInclude Include="commands\activate_window\WindowActivateCommand.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\WorksheetCommand.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
     <ClInclude Include="utility\CharConverter.h">
@@ -470,15 +467,6 @@
     </ClInclude>
     <ClInclude Include="commands\common\Clipboard.h">
       <Filter>commands\common</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\AutoWrap.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\CalcWorkSheets.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\CalcWorksheetCommand.h">
-      <Filter>commands\activate_window</Filter>
     </ClInclude>
     <ClInclude Include="commands\color\HSL.h">
       <Filter>commands\color</Filter>
@@ -1326,6 +1314,24 @@
     <ClInclude Include="commands\builtin\RestartCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_worksheet\ActivateWorksheetProvider.h">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_worksheet\CalcWorksheetCommand.h">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_worksheet\CalcWorkSheets.h">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_worksheet\ExcelWorkSheets.h">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_worksheet\WorksheetCommand.h">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\AutoWrap.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1505,13 +1511,7 @@
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
-    <ClCompile Include="commands\activate_window\ExcelWorkSheets.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateCommand.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\WorksheetCommand.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="utility\CharConverter.cpp">
@@ -1576,15 +1576,6 @@
     </ClCompile>
     <ClCompile Include="commands\common\Clipboard.cpp">
       <Filter>commands\common</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\AutoWrap.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\CalcWorkSheets.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\CalcWorksheetCommand.cpp">
-      <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="commands\color\HSL.cpp">
       <Filter>commands\color</Filter>
@@ -2350,6 +2341,24 @@
     </ClCompile>
     <ClCompile Include="commands\builtin\RestartCommand.cpp">
       <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_worksheet\ActivateWorksheetProvider.cpp">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_worksheet\CalcWorksheetCommand.cpp">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_worksheet\CalcWorkSheets.cpp">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_worksheet\ExcelWorkSheets.cpp">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_worksheet\WorksheetCommand.cpp">
+      <Filter>commands\activate_worksheet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\AutoWrap.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
