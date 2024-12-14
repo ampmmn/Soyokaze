@@ -4,6 +4,7 @@
 #include "commands/pathfind/ExcludePathList.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/Clipboard.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
 #include "setting/AppPreference.h"
@@ -15,6 +16,7 @@
 #define new DEBUG_NEW
 #endif
 
+using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 using SubProcess = launcherapp::commands::common::SubProcess;
@@ -223,6 +225,97 @@ PathExecuteCommand::Clone()
 	clonedObj->in->mFullPath = in->mFullPath;
 
 	return clonedObj.release();
+}
+
+// メニューの項目数を取得する
+int PathExecuteCommand::GetMenuItemCount()
+{
+	return in->mIsURL ? 1 : 5;
+}
+
+// メニューの表示名を取得する
+bool PathExecuteCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"開く(&O)";
+		static LPCWSTR nameBrws = L"ブラウザで開く(&O)";
+		*displayNamePtr= in->mIsURL ? nameBrws : name;
+		return true;
+	}
+	else if (index == 1) {
+		static LPCWSTR name = L"フォルダを開く(&P)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 2) {
+		static LPCWSTR name = L"管理者権限で実行(&A)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 3) {
+		static LPCWSTR name = L"フルパスをコピー(&C)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 4) {
+		static LPCWSTR name = L"プロパティ(&T)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	if (index < 0 || 4 < index) {
+		return false;
+	}
+
+	if (index == 0) {
+		return Execute(param) != FALSE;
+	}
+
+	RefPtr<CommandNamedParameter> namedParam;
+	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+		return false;
+	}
+
+	if (index == 1) {
+		// パスを開くため、疑似的にCtrl押下で実行したことにする
+		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		return Execute(param) != FALSE;
+	}
+	else if (index == 2)  {
+		// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
+		namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		return Execute(param) != FALSE;
+	}
+	else if (index == 3) {
+		// クリップボードにコピー
+		launcherapp::commands::common::Clipboard::Copy(in->mFullPath);
+		return true;
+	}
+	else { // if (index == 4)
+		// プロパティダイアログを表示
+		SHObjectProperties(nullptr, SHOP_FILEPATH, in->mFullPath, nullptr);
+		return true;
+	}
+}
+
+bool PathExecuteCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (__super::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
 }
 
 

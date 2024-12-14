@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/core/ContextMenuSourceIF.h"
 #include <memory>
 
 namespace launcherapp {
@@ -10,7 +11,9 @@ namespace pathfind {
 class ExcludePathList;
 
 
-class PathExecuteCommand : public launcherapp::commands::common::AdhocCommandBase
+class PathExecuteCommand :
+ 	virtual public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::commands::core::ContextMenuSource
 {
 public:
 	PathExecuteCommand(ExcludePathList* excludeList = nullptr);
@@ -26,6 +29,17 @@ public:
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
+
+// ContextMenuSource
+	// メニューの項目数を取得する
+	int GetMenuItemCount() override;
+	// メニューの表示名を取得する
+	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
+	// メニュー選択時の処理を実行する
+	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)
 
