@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "OutlookItems.h"
-#include "commands/activate_window/AutoWrap.h"
+#include "commands/common/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include <propvarutil.h>
 #include <mutex>
@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace launcherapp::commands::activate_window;
+using DispWrapper = launcherapp::commands::common::DispWrapper;
 
 namespace launcherapp {
 namespace commands {

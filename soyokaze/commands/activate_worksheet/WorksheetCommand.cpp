@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WorksheetCommand.h"
-#include "commands/activate_window/ExcelWorksheets.h"
+#include "commands/activate_worksheet/ExcelWorksheets.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
@@ -16,7 +16,7 @@ using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace activate_worksheet {
 
 struct WorksheetCommand::PImpl
 {
@@ -81,7 +81,7 @@ WorksheetCommand::Clone()
 	return new WorksheetCommand(in->mWorksheet);
 }
 
-} // end of namespace activate_window
+} // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp
 

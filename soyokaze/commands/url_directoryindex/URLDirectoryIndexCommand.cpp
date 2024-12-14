@@ -15,7 +15,6 @@
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
-#include "commands/activate_window/AutoWrap.h"
 #include "utility/CharConverter.h"
 #include "utility/AES.h"
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Presentations.h"
-#include "commands/activate_window/AutoWrap.h"
+#include "commands/common/AutoWrap.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include <thread>
@@ -14,7 +14,7 @@ namespace launcherapp {
 namespace commands {
 namespace presentation {
 
-using DispWrapper = launcherapp::commands::activate_window::DispWrapper;
+using DispWrapper = launcherapp::commands::common::DispWrapper;
 
 struct Presentations::PImpl : public AppPreferenceListenerIF
 {

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PowerPointWindow.h"
-#include "commands/activate_window/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "commands/common/AutoWrap.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -12,7 +12,7 @@ namespace launcherapp {
 namespace commands {
 namespace presentation {
 
-using DispWrapper = launcherapp::commands::activate_window::DispWrapper;
+using DispWrapper = launcherapp::commands::common::DispWrapper;
 
 struct PowerPointWindow::PImpl
 {

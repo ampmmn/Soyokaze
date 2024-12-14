@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ExcelWrapper.h"
-#include "commands/activate_window/AutoWrap.h"
+#include "commands/common/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TimeoutChecker.h"
 #include <thread>
@@ -15,7 +15,7 @@ namespace simple_dict {
 
 constexpr int EMPTY_LIMIT = 20;   // この数だけ空白が連続で続いたら検索を打ち切る
 
-using namespace launcherapp::commands::activate_window;
+using DispWrapper = launcherapp::commands::common::DispWrapper;
 
 struct ExcelApplication::PImpl
 {

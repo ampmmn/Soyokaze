@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CalcWorksheetCommand.h"
-#include "commands/activate_window/CalcWorksheets.h"
+#include "commands/activate_worksheet/CalcWorksheets.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
@@ -14,7 +14,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace activate_worksheet {
 
 using namespace launcherapp::commands::common;
 
@@ -79,7 +79,7 @@ CalcWorksheetCommand::Clone()
 	return new CalcWorksheetCommand(in->mCalcWorksheet);
 }
 
-} // end of namespace activate_window
+} // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp
 

@@ -2,7 +2,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace common {
 
 HRESULT AutoWrap(int autoType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptName, int cArgs...);
 

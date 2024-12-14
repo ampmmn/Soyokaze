@@ -5,7 +5,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace activate_worksheet {
 
 class Worksheet;
 
@@ -51,7 +51,7 @@ private:
 
 
 
-} // end of namespace activate_window
+} // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp
 

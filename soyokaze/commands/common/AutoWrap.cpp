@@ -3,7 +3,7 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace common {
 
 // 
 /**

@@ -36,11 +36,6 @@ public:
 
 // UserCommandProviderBase
 	DECLARE_LOADFROM(ActivateWindowProvider)
-protected:
-	// Excelシート切り替え用コマンド生成
-	void QueryAdhocCommandsForWorksheets(Pattern* pattern, CommandQueryItemList& commands);
-	// ウインドウ切り替え用コマンド生成
-	void QueryAdhocCommandsForWindows(Pattern* pattern, CommandQueryItemList& commands);
 
 private:
 	struct PImpl;

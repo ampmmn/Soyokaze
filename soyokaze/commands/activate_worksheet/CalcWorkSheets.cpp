@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CalcWorkSheets.h"
-#include "commands/activate_window/AutoWrap.h"
+#include "commands/common/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/CharConverter.h"
 #include "utility/Path.h"
@@ -13,7 +13,9 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace activate_worksheet {
+
+using DispWrapper = commands::common::DispWrapper;
 
 
 enum {
@@ -477,7 +479,7 @@ uint32_t CalcWorksheet::Release()
 	return n;
 }
 
-} // end of namespace activate_window
+} // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp
 

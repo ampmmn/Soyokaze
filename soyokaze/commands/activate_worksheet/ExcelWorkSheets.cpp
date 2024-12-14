@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ExcelWorkSheets.h"
-#include "commands/activate_window/AutoWrap.h"
+#include "commands/common/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include <mutex>
 #include <thread>
@@ -11,8 +11,9 @@
 
 namespace launcherapp {
 namespace commands {
-namespace activate_window {
+namespace activate_worksheet {
 
+using namespace launcherapp::commands::common;
 
 enum {
 	STATUS_READY,   // 待機状態
@@ -457,7 +458,7 @@ uint32_t Worksheet::Release()
 	return n;
 }
 
-} // end of namespace activate_window
+} // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp
 

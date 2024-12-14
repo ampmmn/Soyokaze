@@ -1,19 +1,14 @@
 #include "pch.h"
 #include "ActivateWindowProvider.h"
 #include "commands/activate_window/WindowList.h"
-#include "commands/activate_window/WorksheetCommand.h"
 #include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
-#include "commands/activate_window/ExcelWorksheets.h"
-#include "commands/activate_window/CalcWorksheets.h"
-#include "commands/activate_window/CalcWorksheetCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
-#include <list>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,21 +36,14 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();
-		mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
 		mIsEnableWindowSwitch = pref->IsEnableWindowSwitch();
 
 	}
 	void OnAppExit() override {}
 
 
-	//
-	bool mIsEnableWorksheet = false;
 	bool mIsEnableWindowSwitch = false;
 	bool mIsFirstCall = true;
-
-	WorkSheets mWorksheets;
-	CalcWorkSheets mCalcWorksheets;
-
 	WindowList mWndList;
 };
 
@@ -118,63 +106,10 @@ void ActivateWindowProvider::QueryAdhocCommands(
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
 		auto pref = AppPreference::Get();
-		in->mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
 		in->mIsEnableWindowSwitch = pref->IsEnableWindowSwitch();
 		in->mIsFirstCall = false;
 	}
 
-	QueryAdhocCommandsForWorksheets(pattern, commands);
-	QueryAdhocCommandsForWindows(pattern, commands);
-}
-
-// Provider間の優先順位を表す値を返す。小さいほど優先
-uint32_t ActivateWindowProvider::GetOrder() const
-{
-	return 500;
-}
-
-void ActivateWindowProvider::QueryAdhocCommandsForWorksheets(
-	Pattern* pattern,
-	launcherapp::CommandQueryItemList& commands
-)
-{
-	if (in->mIsEnableWorksheet == false) {
-		return ;
-	}
-
-	std::vector<Worksheet*> sheets;
-	in->mWorksheets.GetWorksheets(sheets);
-
-	for (auto& sheet : sheets) {
-		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-		int level = pattern->Match(str);
-		if (level != Pattern::Mismatch) {
-
-			commands.Add(CommandQueryItem(level, new WorksheetCommand(sheet)));
-		}
-		sheet->Release();
-	}
-
-	std::vector<CalcWorksheet*> calcSheets;
-	in->mCalcWorksheets.GetWorksheets(calcSheets);
-
-	for (auto& sheet : calcSheets) {
-		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-		int level = pattern->Match(str);
-		if (level != Pattern::Mismatch) {
-
-			commands.Add(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
-		}
-		sheet->Release();
-	}
-}
-
-// ウインドウ切り替え用コマンド生成
-void ActivateWindowProvider::QueryAdhocCommandsForWindows(
-	Pattern* pattern,
-	launcherapp::CommandQueryItemList& commands
-)
-{
 	if (in->mIsEnableWindowSwitch == false) {
 		return ;
 	}
@@ -198,6 +133,12 @@ void ActivateWindowProvider::QueryAdhocCommandsForWindows(
 		}
 		commands.Add(CommandQueryItem(level, new WindowActivateAdhocCommand(hwnd)));
 	}
+}
+
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t ActivateWindowProvider::GetOrder() const
+{
+	return 500;
 }
 
 } // end of namespace activate_window
