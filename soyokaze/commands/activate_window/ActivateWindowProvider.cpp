@@ -3,12 +3,14 @@
 #include "commands/activate_window/WindowList.h"
 #include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
+#include "commands/activate_window/WindowActivateAdhocNameDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -20,7 +22,9 @@ namespace activate_window {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
-struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
+struct ActivateWindowProvider::PImpl :
+ 	public AppPreferenceListenerIF,
+ 	public MenuEventListener
 {
 	PImpl()
 	{
@@ -31,6 +35,7 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
+// AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
@@ -41,10 +46,45 @@ struct ActivateWindowProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
+// MenuEventListener
+	void OnRequestPutName(HWND hwnd)
+	{
+		AdhocNameDialog dlg;
+
+		// 既に設定されている名前がある場合はそれをダイアログにセットする
+		auto it = mAdhocNameMap.find(hwnd);
+		if (it != mAdhocNameMap.end()) {
+			dlg.SetName(it->second);
+		}
+
+		if (dlg.DoModal() != IDOK) {
+			return ;
+		}
+		auto& name = dlg.GetName();
+		if (name.IsEmpty() && it != mAdhocNameMap.end()) {
+			// 変更後の名前が空で、以前に設定されていた名前がある場合は関連付けを削除する
+			mAdhocNameMap.erase(it);
+			return;
+		}
+		if (name.IsEmpty() == FALSE) {
+			// 新たに名前を登録する
+			mAdhocNameMap[hwnd] = name;
+		}
+	}
+	void OnRequestClose(HWND hwnd)
+	{
+		auto it = mAdhocNameMap.find(hwnd);
+		if (it == mAdhocNameMap.end()) {
+			return;
+		}
+		mAdhocNameMap.erase(it);
+	}
 
 	bool mIsEnableWindowSwitch = false;
 	bool mIsFirstCall = true;
 	WindowList mWndList;
+
+	std::map<HWND, CString> mAdhocNameMap;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +154,26 @@ void ActivateWindowProvider::QueryAdhocCommands(
 		return ;
 	}
 
+	auto it = in->mAdhocNameMap.begin();
+	while(it != in->mAdhocNameMap.end()) { 
+		auto& name = it->second;
+		int level = pattern->Match(name);
+		if (level == Pattern::Mismatch) {
+			it++;
+			continue;
+		}
+
+		auto hwnd = it->first;
+		if (IsWindow(hwnd) == FALSE) {
+			it = in->mAdhocNameMap.erase(it);
+			continue;
+		}
+		auto cmd = new WindowActivateAdhocCommand(hwnd);
+		cmd->SetListener(in.get());
+		commands.Add(CommandQueryItem(level, cmd));
+		it++;
+	}
+
 	std::vector<HWND> windowHandles;
 	in->mWndList.EnumWindowHandles(windowHandles);
 	SPDLOG_DEBUG(_T("Window count : {}"), windowHandles.size());
@@ -131,7 +191,9 @@ void ActivateWindowProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		commands.Add(CommandQueryItem(level, new WindowActivateAdhocCommand(hwnd)));
+		auto cmd = new WindowActivateAdhocCommand(hwnd);
+		cmd->SetListener(in.get());
+		commands.Add(CommandQueryItem(level, cmd));
 	}
 }
 

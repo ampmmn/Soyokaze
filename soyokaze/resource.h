@@ -147,6 +147,7 @@
 #define IDD_SNIPPET_EDIT1               241
 #define IDD_SNIPPETGROUP_ITEM           241
 #define IDD_SIMPLEDICT_TEST             242
+#define IDD_WINDOWACTIVATEADHOCNAME     243
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -448,9 +449,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        240
+#define _APS_NEXT_RESOURCE_VALUE        245
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1199
+#define _APS_NEXT_CONTROL_VALUE         1200
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

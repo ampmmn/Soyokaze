@@ -1332,6 +1332,9 @@
     <ClInclude Include="commands\common\AutoWrap.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2359,6 +2362,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\AutoWrap.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

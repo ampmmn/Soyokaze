@@ -1227,6 +1227,18 @@ BEGIN
     LTEXT           " ",IDC_STATIC_RECORDS,7,138,193,8
 END
 
+IDD_WINDOWACTIVATEADHOCNAME DIALOGEX 0, 0, 197, 73
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ウインドウに一時的な名前を付ける"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "名前(&N):",IDC_STATIC,7,8,30,8
+    EDITTEXT        IDC_EDIT_NAME,43,8,147,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,87,52,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,141,52,50,14
+    LTEXT           "名前を設定すると、\nその名前でウインドウをアクティブにすることができます\n名前は対象のウインドウが存在する間まで有効です。",IDC_STATIC,7,26,183,28
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1686,6 +1698,14 @@ BEGIN
         RIGHTMARGIN, 330
         TOPMARGIN, 7
         BOTTOMMARGIN, 155
+    END
+
+    IDD_WINDOWACTIVATEADHOCNAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 190
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 66
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2450,6 +2470,11 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_WINDOWACTIVATEADHOCNAME AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
