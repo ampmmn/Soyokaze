@@ -32,7 +32,7 @@ bool StartupParam::HasRunCommand(CString& commands)
 	       in->mArgs.GetValue(_T("-c"), commands);
 }
 
-//
+// 引数のうち -c ... または /Runcommand=... の部分を一つぶんカットする
 void StartupParam::ShiftRunCommand()
 {
 	LPCTSTR bwOptName = _T("/Runcommand=");
@@ -42,18 +42,18 @@ void StartupParam::ShiftRunCommand()
 	for (int i = 0; i < numArgs; ++i) {
 		auto arg = in->mArgs.Get(i);
 
+		// -cと後続の値をカットする
 		if (arg == _T("-c") && i + 1 < numArgs) {
 			in->mArgs.Erase(i);
 			in->mArgs.Erase(i);
 			return;
 		}
-
+		// /RunCommand=と後続の値をカットする
 		auto argPart = arg.Left(len);
-		if (_tcsicmp(bwOptName, argPart) != 0) {
-			continue;
+		if (_tcsicmp(bwOptName, argPart) == 0) {
+			in->mArgs.Erase(i);
+			return;
 		}
-		in->mArgs.Erase(i);
-		return;
 	}
 }
 
@@ -94,7 +94,7 @@ bool StartupParam::GetSelectRange(int& startPos, int& selLength)
 	}
 
 	if (startPos < -1) {
-		// startPos=-1$B$rA*Br2r=|$H$7$F07$&(B
+		// startPos=-1を選択解除として扱う
 		spdlog::warn(_T("startPos is out of bounds. {}"), startPos);
 		startPos = -1;
 	}

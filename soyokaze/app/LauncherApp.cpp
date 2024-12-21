@@ -10,6 +10,7 @@
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
 #include "app/StartupParam.h"
+#include "app/SecondProcessProxy.h"
 #include "logger/Logger.h"
 #include "SharedHwnd.h"
 #include <locale.h>
@@ -154,11 +155,13 @@ BOOL LauncherApp::InitSecondInstance()
 
 	StartupParam startupParam(__argc, __targv);
 
+	launcherapp::SecondProcessProxy proxy;
+
 	bool hasRunCommand = false;
 	CString value;
 	while (startupParam.HasRunCommand(value)) {
 		// -cオプションでコマンドが与えられた場合、既存プロセス側にコマンドを送り、終了する
-		SendCommandString(value, false);
+		proxy.SendCommandString(value, false);
 		hasRunCommand = true;
 		startupParam.ShiftRunCommand();
 	}
@@ -170,7 +173,7 @@ BOOL LauncherApp::InitSecondInstance()
 
 	if (startupParam.HasPathToRegister(value)) {
 		// 第一引数で存在するパスが指定された場合は登録画面を表示する
-		RegisterPath(value);
+		proxy.RegisterPath(value);
 		return FALSE;
 	}
 
@@ -184,111 +187,24 @@ BOOL LauncherApp::InitSecondInstance()
 	}
 
 	// プロセスをアクティブ化し、このプロセスは終了する
-	ActivateExistingProcess();
+	proxy.Show();
 
 	if (startupParam.HasPasteOption(value)) {
 		// /pasteオプションでコマンドが与えられた場合、既存プロセス側にテキストを送る
-		// 直前で実行したActivateExistingProcessにより、入力欄のクリアが走るため、テキストを送る処理をあとに行っている
+		// 直前で実行したproxy.Show()により、入力欄のクリアが走るため、テキストを送る処理をあとに行っている
 		spdlog::debug(_T("HasPaste value:{}"), (LPCTSTR)value);
 
 		bool isPasteOnly = true;
-		SendCommandString(value, isPasteOnly);
+		proxy.SendCommandString(value, isPasteOnly);
 	}
 
 	// 選択範囲を指定するオプションが指定されていたら範囲を送信する
 	int startPos = -1, selLength = 0;
 	if (startupParam.GetSelectRange(startPos, selLength)) {
-		SendCaretRange(startPos, selLength);
+		proxy.SendCaretRange(startPos, selLength);
 	}
 
 	return FALSE;
-}
-
-/**
- * @return true: アクティブ化した  false: 先行プロセスはない
- */
-bool LauncherApp::ActivateExistingProcess()
-{
-	SPDLOG_DEBUG(_T("start"));
-
-	// 先行プロセスを有効化する
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		return false;
-	}
-
-	LauncherMainWindow::ActivateWindow(hwnd);
-
-	return true;
-}
-
-/**
- *  先行プロセスに対しコマンド文字列を送る
- *  (先行プロセス側でコマンドを実行する)
- */
-bool LauncherApp::SendCommandString(const CString& commandStr, bool isPasteOnly)
-{
-	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
-
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		return false;
-	}
-
-	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
-	if (hwndCommand == NULL) {
-		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
-		return false;
-	}
-
-	if (isPasteOnly) {
-		SendMessage(hwndCommand, WM_APP+1, 0, 0);
-	}
-	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)commandStr);
-	return true;
-}
-
-bool LauncherApp::SendCaretRange(int startPos, int length)
-{
-	SPDLOG_DEBUG(_T("args startPos:{0} length:{1}"), startPos, length);
-
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		return false;
-	}
-
-	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
-	if (hwndCommand == NULL) {
-		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
-		return false;
-	}
-
-	SendMessage(hwndCommand, WM_APP+2, startPos, length);
-	return true;
-}
-
-/**
- *  指定されたパスをコマンドとして登録する
- *  @return true: 成功 false:失敗
- *  @param pathStr  登録対象のファイルパス
- */
-bool LauncherApp::RegisterPath(const CString& pathStr)
-{
-	SPDLOG_DEBUG(_T("args path:{0}"), (LPCTSTR)pathStr);
-
-	CString name = PathFindFileName(pathStr);
-	PathRemoveExtension(name.GetBuffer(name.GetLength()));
-	name.ReleaseBuffer();
-
-	// 空白を置換
-	name.Replace(_T(' '), _T('_'));
-
-	CString commandStr(_T("new "));
-	commandStr += _T("\"") + name + _T("\" \"") + pathStr + _T("\"");
-	return SendCommandString(commandStr, false);
 }
 
 // バルーンメッセージを表示

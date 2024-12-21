@@ -1335,6 +1335,12 @@
     <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="app\SecondProcessProxy.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\SecondProcessProxyIF.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2365,6 +2371,9 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="app\SecondProcessProxy.cpp">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
