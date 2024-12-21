@@ -60,6 +60,7 @@ void StartupParam::ShiftRunCommand()
 
 bool StartupParam::HasPathToRegister(CString& pathToRegister)
 {
+	// 有効な(存在している)パスが指定された場合は登録すべきパスとして扱う
 	if (in->mArgs.GetCount() > 1 && PathFileExists(in->mArgs.Get(1))) {
 		pathToRegister = in->mArgs.Get(1);
 		return true;
@@ -104,5 +105,13 @@ bool StartupParam::GetSelectRange(int& startPos, int& selLength)
 		selLength = _ttoi(value);
 	}
 	return true;
+}
+
+// ディレクトリ変更するオプションが指定されたか?
+bool StartupParam::HasChangeDirectoryOption(CString& dirPath)
+{
+	return in->mArgs.GetValue(_T("/ChangeDir"), dirPath) ||
+	       in->mArgs.GetBWOptValue(_T("/ChangeDir="), dirPath);
+
 }
 

@@ -1341,6 +1341,9 @@
     <ClInclude Include="app\SecondProcessProxyIF.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="app\CommandLineProcessor.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2373,6 +2376,9 @@
       <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="app\SecondProcessProxy.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>

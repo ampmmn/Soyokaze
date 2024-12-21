@@ -23,6 +23,9 @@ public:
 	//
 	bool GetSelectRange(int& startPos, int& selLength);
 
+	// ディレクトリ変更するオプションが指定されたか?
+	bool HasChangeDirectoryOption(CString& dirPath);
+
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

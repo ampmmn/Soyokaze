@@ -111,5 +111,8 @@
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp">
+      <Filter>soyokaze\app</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

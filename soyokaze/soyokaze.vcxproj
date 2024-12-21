@@ -395,6 +395,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app\AppProcess.h" />
+    <ClInclude Include="app\CommandLineProcessor.h" />
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
@@ -775,6 +776,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\AppProcess.cpp" />
+    <ClCompile Include="app\CommandLineProcessor.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp" />
