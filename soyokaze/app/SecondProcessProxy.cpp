@@ -3,6 +3,9 @@
 #include "SharedHwnd.h"
 #include "resource.h"
 #include "mainwindow/LauncherMainWindow.h"
+#include "mainwindow/interprocess/InterProcessEventID.h"
+
+using namespace launcherapp::mainwindow::interprocess;
 
 namespace launcherapp {
 
@@ -14,6 +17,22 @@ SecondProcessProxy::~SecondProcessProxy()
 {
 }
 
+static HWND GetReceiverWindow()
+{
+	SharedHwnd sharedHwnd;
+	HWND hwnd = sharedHwnd.GetHwnd();
+	if (hwnd == NULL) {
+		return nullptr;
+	}
+
+	HWND receiverWindow = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
+	if (receiverWindow == NULL) {
+		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
+		return nullptr;
+	}
+	return receiverWindow;
+}
+
 /**
  *  先行プロセスに対しコマンド文字列を送る
  *  (先行プロセス側でコマンドを実行する)
@@ -22,22 +41,21 @@ bool SecondProcessProxy::SendCommandString(const CString& commandStr, bool isPas
 {
 	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
 
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		return false;
-	}
-
-	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
+	HWND hwndCommand = GetReceiverWindow();
 	if (hwndCommand == NULL) {
-		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
 		return false;
 	}
+	std::vector<uint8_t> stm(sizeof(SEND_COMMAND_PARAM) + sizeof(TCHAR) * commandStr.GetLength());
+	auto p = (SEND_COMMAND_PARAM*)stm.data();
+	p->mIsPasteOnly = isPasteOnly;
+	memcpy(p->mText, (LPCTSTR)commandStr, sizeof(TCHAR) * commandStr.GetLength());
 
-	if (isPasteOnly) {
-		SendMessage(hwndCommand, WM_APP+1, 0, 0);
-	}
-	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)commandStr);
+	COPYDATASTRUCT copyData;
+	copyData.dwData = SEND_COMMAND;
+	copyData.cbData = (DWORD)stm.size();
+	copyData.lpData = (void*)p;
+
+	SendMessage(hwndCommand, WM_COPYDATA, 0, (LPARAM)&copyData);
 	return true;
 }
 
@@ -45,19 +63,22 @@ bool SecondProcessProxy::SendCaretRange(int startPos, int length)
 {
 	SPDLOG_DEBUG(_T("args startPos:{0} length:{1}"), startPos, length);
 
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd == NULL) {
-		return false;
-	}
-
-	HWND hwndCommand = GetDlgItem(hwnd, IDC_EDIT_COMMAND2);
+	HWND hwndCommand = GetReceiverWindow();
 	if (hwndCommand == NULL) {
-		SPDLOG_ERROR(_T("CmdReceiveEdit does not found."));
 		return false;
 	}
 
-	SendMessage(hwndCommand, WM_APP+2, startPos, length);
+	std::vector<uint8_t> stm(sizeof(SET_CARETRANGE_PARAM));
+	auto p = (SET_CARETRANGE_PARAM*)stm.data();
+	p->mStartPos = startPos;
+	p->mLength = length;
+
+	COPYDATASTRUCT copyData;
+	copyData.dwData = SET_CARETRANGE;
+	copyData.cbData = (DWORD)stm.size();
+	copyData.lpData = (void*)p;
+
+	SendMessage(hwndCommand, WM_COPYDATA, 0, (LPARAM)&copyData);
 	return true;
 }
 
@@ -84,9 +105,24 @@ bool SecondProcessProxy::RegisterPath(const CString& pathStr)
 
 bool SecondProcessProxy::ChangeDirectory(const CString& pathStr)
 {
-	UNREFERENCED_PARAMETER(pathStr);
-	// FIXME: 実装
-	return false;
+	SPDLOG_DEBUG(_T("args startPos:{}"), (LPCTSTR)pathStr);
+
+	HWND hwndCommand = GetReceiverWindow();
+	if (hwndCommand == NULL) {
+		return false;
+	}
+
+	std::vector<uint8_t> stm(sizeof(CHANGE_DIRECTORY_PARAM) + sizeof(TCHAR) * pathStr.GetLength());
+	auto p = (CHANGE_DIRECTORY_PARAM*)stm.data();
+	memcpy(p->mDirPath, (LPCTSTR)pathStr, sizeof(TCHAR) * pathStr.GetLength());
+
+	COPYDATASTRUCT copyData;
+	copyData.dwData = CHANGE_DIRECTORY;
+	copyData.cbData = (DWORD)stm.size();
+	copyData.lpData = (void*)p;
+
+	SendMessage(hwndCommand, WM_COPYDATA, 0, (LPARAM)&copyData);
+	return true;
 }
 
 bool SecondProcessProxy::Hide()
