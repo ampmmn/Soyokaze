@@ -205,6 +205,9 @@
     <Filter Include="commands\activate_worksheet">
       <UniqueIdentifier>{e8a0558c-92ee-401b-8a79-fe0b34e43d97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\interprocess">
+      <UniqueIdentifier>{77cad20c-991f-406e-a2e8-a0507db44b19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1343,6 +1346,9 @@
     </ClInclude>
     <ClInclude Include="app\CommandLineProcessor.h">
       <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
+      <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

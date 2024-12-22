@@ -663,6 +663,7 @@
     <ClInclude Include="commands/core\CommandRanking.h" />
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
+    <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h" />
     <ClInclude Include="mainwindow\LauncherInputStatusIF.h" />
     <ClInclude Include="mainwindow\LauncherMainWindowIF.h" />
     <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />

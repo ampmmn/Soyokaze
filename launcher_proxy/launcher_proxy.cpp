@@ -51,7 +51,26 @@ static int RunCommand(HWND hwnd, const wchar_t* cmd)
 		SPDLOG_ERROR("CmdReceiveEdit does not found.");
 		return 2;
 	}
-	SendMessage(hwndCommand, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)cmd);
+
+	struct SEND_COMMAND_PARAM
+	{
+		bool mIsPasteOnly;
+		wchar_t mText[1];
+	};
+
+	size_t len = wcslen(cmd);
+
+	std::vector<uint8_t> stm(sizeof(SEND_COMMAND_PARAM) + sizeof(wchar_t) * len);
+	auto p = (SEND_COMMAND_PARAM*)stm.data();
+	p->mIsPasteOnly = false;
+	wcscpy_s(p->mText, len + 1, cmd);
+
+	COPYDATASTRUCT copyData;
+	copyData.dwData = 0;   // SEND_COMMAND
+	copyData.cbData = (DWORD)stm.size();
+	copyData.lpData = (void*)p;
+
+	SendMessage(hwndCommand, WM_COPYDATA, 0, (LPARAM)&copyData);
 
 	return 0;
 }
