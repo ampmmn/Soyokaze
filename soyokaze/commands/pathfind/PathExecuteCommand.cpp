@@ -156,9 +156,10 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	CString wholeWord = pattern->GetWholeString();
 	wholeWord.Trim();
 
-	// "..." で囲われている場合は除去
 	int len = wholeWord.GetLength();
-	if (len > 2 && 
+
+	// 先頭が "..." で囲われている場合は除去
+	if (len >= 2 && 
 	    wholeWord[0] == _T('"') && wholeWord[len-1] == _T('"')){
 		wholeWord = wholeWord.Mid(1, len-2);
 	}
@@ -175,14 +176,39 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		return Pattern::WholeMatch;
 	}
 
+	CString filePart;
+
+	int pos = 0;
+	// "で始まる場合は対応する"まで切り出す
+	if (wholeWord[pos] == _T('"')) {
+		pos++;
+
+		// 対応する"を探す
+		while (pos < len) {
+			if (wholeWord[pos] != _T('"')) {
+				pos++;
+				continue;
+			}
+			break;
+		}
+		if (pos == len) {
+			// 対応する"がなかった
+			return Pattern::Mismatch;
+		}
+		filePart = wholeWord.Mid(1, pos-1);
+	}
+	else {
+		filePart = wholeWord;
+	}
+
 	in->mIsURL = false;
 
 	// 絶対パス指定、かつ、存在するパスの場合は候補として表示
-	if (PathIsRelative(wholeWord) == FALSE && PathFileExists(wholeWord)) {
-		this->mDescription = wholeWord;
+	if (PathIsRelative(filePart) == FALSE && PathFileExists(filePart)) {
+		this->mDescription = filePart;
 
-		in->mWord = wholeWord;
-		in->mFullPath = wholeWord;
+		in->mWord = filePart;
+		in->mFullPath = filePart;
 		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
@@ -307,6 +333,9 @@ bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandPar
 			HWND hwnd = sharedHwnd.GetHwnd();
 			::SendMessage(hwnd, WM_APP+3, 0, (LPARAM)(LPCTSTR)cmdStr);
 			return true;
+		}
+		else {
+			return false;
 		}
 	}
 	else {

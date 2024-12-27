@@ -249,10 +249,34 @@ void CommandParameterBuilder::SetWholeString(LPCTSTR str)
 {
 	in->mWholeText = str;
 
+	// 与えられた文字列が絶対パスで、かつ、存在するものである場合は、
+	// たとえスペースを含むとしても、パラメータとして扱わない
+	if (PathIsRelative(str) == FALSE && PathFileExists(str)) {
+		in->mCommandPart = str;
+		in->SetParamPart(_T(""));
+		in->mHasSpace = false;
+		return;
+	}
+
+	// パラメータ指定部分を取り出す
 	CString tmpStr(str);
 	tmpStr.TrimLeft();
 
-	int n = tmpStr.Find(_T(" "));
+	int pos = 0;
+	if (tmpStr[pos] == _T('"')) {
+		// 対応するダブルクォーテーションが現れるまでスキップ
+		pos++;
+		int len = tmpStr.GetLength();
+		while(pos < len) {
+			if (tmpStr[pos] != _T('"')) {
+				pos++;
+				continue;
+			}
+			break;
+		}
+	}	
+
+	int n = tmpStr.Find(_T(" "), pos);
 	if (n > -1) {
 		in->mCommandPart = tmpStr.Left(n);
 		in->SetParamPart(tmpStr.Mid(n + 1));
