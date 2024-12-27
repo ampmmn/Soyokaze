@@ -179,7 +179,9 @@ LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 
 void KeywordEdit::SetCaretToEnd()
 {
-	int n = GetLimitText();
+	CString s;
+	GetWindowText(s);
+	int n = s.GetLength();
 	SetSel(n, n, FALSE);
 }
 
