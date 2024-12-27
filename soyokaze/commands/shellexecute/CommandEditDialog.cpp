@@ -55,6 +55,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
+	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
 }
 
 #pragma warning( push )
@@ -64,14 +65,13 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PARAM, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -80,12 +80,13 @@ BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	mMenuForPathBtn.CreatePopupMenu();
+	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));
+	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 2, _T("フォルダ選択"));
+	mPathMenuBtn.m_hMenu = (HMENU)mMenuForPathBtn;
+
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	mIconLabelPtr->EnableIconChange();
-
-	// File&Folder Select Button
-	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR1)->SetWindowTextW(L"\U0001F4C2");
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -111,6 +112,12 @@ bool CommandEditDialog::UpdateStatus()
 		            std::regex_search((LPCTSTR)mParam.mNormalAttr.mParam, regArg);
 
 	GetDlgItem(IDC_CHECK_SHOWARGINPUT)->ShowWindow(hasArg? SW_SHOW : SW_HIDE);
+
+	// パスが有効なファイルだったら編集メニューを表示する
+	mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);
+	if (IsEditableFileType(targetPath)) {
+			mMenuForPathBtn.InsertMenu((UINT)-1, 0, 3, _T("編集"));
+	}
 
 	// .lnkだったらショートカット解決ボタンを表示する
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
@@ -187,6 +194,11 @@ void CommandEditDialog::OnButtonBrowseDir1Clicked()
 	mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+void CommandEditDialog::OpenTarget()
+{
+	// FIXME: 実装
 }
 
 
@@ -314,6 +326,27 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 	UpdateData(FALSE);
 }
 
+// (テキストエディタなどで)編集するようなファイルタイプか?
+bool CommandEditDialog::IsEditableFileType(const CString& path)
+{
+	// FIXME: 後で有効化する
+	return false;
+
+	if (PathFileExists(path) == FALSE || PathIsDirectory(path)) {
+		return false;
+	}
+
+	CString ext(PathFindExtension(path));
+
+	// 実行ファイルはバイナリ形式なので普通は編集しない
+	if (ext.CompareNoCase(_T(".exe")) == 0) {
+		return false;
+	}
+
+	// それ以外は編集する可能性がある
+	return true;
+}
+
 void CommandEditDialog::OnButtonResolveShortcut()
 {
 	ResolveShortcut(mParam.mNormalAttr.mPath);
@@ -358,6 +391,22 @@ void CommandEditDialog::OnNotifyLinkOpen(
 	auto manual = launcherapp::app::Manual::GetInstance();
 	manual->Navigate(_T("MacroList"));
 	*pResult = 0;
+}
+
+void CommandEditDialog::OnPathMenuBtnClicked()
+{
+	switch (mPathMenuBtn.m_nMenuResult) {
+		case 1:
+			OnButtonBrowseFile1Clicked();
+			break;
+		case 2:
+			OnButtonBrowseDir1Clicked();
+			break;
+		case 3:
+			// ToDo: テキストエディタで開く
+			OpenTarget();
+			break;
+	}
 }
 
 

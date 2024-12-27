@@ -23,6 +23,7 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	void ResolveShortcut(CString& path);
+	bool IsEditableFileType(const CString& path);
 
 	// 編集開始時のコマンド名
 	CString mOrgName;
@@ -40,6 +41,10 @@ public:
 
 	// アイコン(表示用)
 	HICON mIcon;
+
+	// 
+	CMFCMenuButton mPathMenuBtn;
+	CMenu mMenuForPathBtn;
 
 // 実装
 protected:
@@ -59,5 +64,7 @@ protected:
 	afx_msg void OnButtonResolveShortcut();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnPathMenuBtnClicked();
+	void OpenTarget();
 };
 
