@@ -10,6 +10,7 @@
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
+#include "SharedHwnd.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -230,37 +231,50 @@ PathExecuteCommand::Clone()
 // メニューの項目数を取得する
 int PathExecuteCommand::GetMenuItemCount()
 {
-	return in->mIsURL ? 1 : 5;
+	return in->mIsURL ? 2 : 5;
 }
 
 // メニューの表示名を取得する
 bool PathExecuteCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 {
-	if (index == 0) {
-		static LPCWSTR name = L"開く(&O)";
-		static LPCWSTR nameBrws = L"ブラウザで開く(&O)";
-		*displayNamePtr= in->mIsURL ? nameBrws : name;
-		return true;
+	if (in->mIsURL) {
+		if (index == 0) {
+			static LPCWSTR name = L"ブラウザで開く(&O)";
+			*displayNamePtr= name;
+			return true;
+		}
+		else if (index == 1) {
+			static LPCWSTR name = L"URLをコマンドとして登録する(&U)";
+			*displayNamePtr= name;
+			return true;
+		}
 	}
-	else if (index == 1) {
-		static LPCWSTR name = L"フォルダを開く(&P)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"管理者権限で実行(&A)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"フルパスをコピー(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 4) {
-		static LPCWSTR name = L"プロパティ(&T)";
-		*displayNamePtr= name;
-		return true;
+	else {
+		if (index == 0) {
+			static LPCWSTR name = L"開く(&O)";
+			*displayNamePtr= name;
+			return true;
+		}
+		else if (index == 1) {
+			static LPCWSTR name = L"フォルダを開く(&P)";
+			*displayNamePtr= name;
+			return true;
+		}
+		else if (index == 2) {
+			static LPCWSTR name = L"管理者権限で実行(&A)";
+			*displayNamePtr= name;
+			return true;
+		}
+		else if (index == 3) {
+			static LPCWSTR name = L"フルパスをコピー(&C)";
+			*displayNamePtr= name;
+			return true;
+		}
+		else if (index == 4) {
+			static LPCWSTR name = L"プロパティ(&T)";
+			*displayNamePtr= name;
+			return true;
+		}
 	}
 	return false;
 }
@@ -281,26 +295,42 @@ bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandPar
 		return false;
 	}
 
-	if (index == 1) {
-		// パスを開くため、疑似的にCtrl押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
+	if (in->mIsURL) {
+		if (index == 1) {
+			// URLをコマンドとして登録
+
+			// 登録用のコマンド文字列を生成
+			CString cmdStr;
+			cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
+
+			SharedHwnd sharedHwnd;
+			HWND hwnd = sharedHwnd.GetHwnd();
+			::SendMessage(hwnd, WM_APP+3, 0, (LPARAM)(LPCTSTR)cmdStr);
+			return true;
+		}
 	}
-	else if (index == 2)  {
-		// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
-	}
-	else if (index == 3) {
-		// クリップボードにコピー
-		launcherapp::commands::common::Clipboard::Copy(in->mFullPath);
-		return true;
-	}
-	else { // if (index == 4)
-		// プロパティダイアログを表示
-		SHObjectProperties(nullptr, SHOP_FILEPATH, in->mFullPath, nullptr);
-		return true;
+	else {
+		if (index == 1) {
+			// パスを開くため、疑似的にCtrl押下で実行したことにする
+			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+			return Execute(param) != FALSE;
+		}
+		else if (index == 2)  {
+			// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
+			namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+			return Execute(param) != FALSE;
+		}
+		else if (index == 3) {
+			// クリップボードにコピー
+			launcherapp::commands::common::Clipboard::Copy(in->mFullPath);
+			return true;
+		}
+		else { // if (index == 4)
+			// プロパティダイアログを表示
+			SHObjectProperties(nullptr, SHOP_FILEPATH, in->mFullPath, nullptr);
+			return true;
+		}
 	}
 }
 
