@@ -4,13 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soyokaze", "soyokaze\soyokaze.vcxproj", "{B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B539A776-C9B6-494E-840D-BB339392135E} = {B539A776-C9B6-494E-840D-BB339392135E}
+		{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06} = {EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "tests\googletest\googletest.vcxproj", "{6D6AE8C3-8970-427B-BE0F-687B3AF87740}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoyokazeUnitTest", "tests\SoyokazeUnitTest\SoyokazeUnitTest.vcxproj", "{D2A59071-07F9-4CEE-BB6C-769577545944}"
 	ProjectSection(ProjectDependencies) = postProject
-		{B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D} = {B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D}
 		{6D6AE8C3-8970-427B-BE0F-687B3AF87740} = {6D6AE8C3-8970-427B-BE0F-687B3AF87740}
+		{B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D} = {B5B64A1E-D6F5-4CC9-9CE4-42A88720DB3D}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sandshook", "sandshook\sandshook.vcxproj", "{EEEC7CD6-62EB-4B2E-93CD-3D846CF9EF06}"

@@ -72,5 +72,5 @@ jobs:
 
     - name: Run UnitTest
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: ./x64/UnitTest/SoyokazeUnitTest.exe
+      run: ./dist/x64/UnitTest/SoyokazeUnitTest.exe
 
