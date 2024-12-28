@@ -11,12 +11,9 @@ coverage_report
 *.lastupdate
 *.bak
 doc/help.html
-json/
 plantuml-images/
 packages/
 *.zip
-spdlog/
-tidy-html5/
 tags
 packages.config
 

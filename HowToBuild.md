@@ -27,28 +27,29 @@
 
 - nlohmann-json
   - https://github.com/nlohmann/json からソース一式を取得する
-    - `Soyokaze`のソースファイル一式と同じ階層に`nlohmann-json`を配置する
+    - `externals`ディレクトリに`nlohmann-json`を配置する
 - spdlog
   - https://github.com/gabime/spdlog からソース一式を取得する
-    - `Soyokaze`のソースファイル一式と同じ階層に`spdlog`を配置する
+    - `externals`ディレクトリに`spdlog`を配置する
 - tidy-html5
   - https://github.com/htacg/tidy-html5 からソース一式を取得する
-    - `Soyokaze`のソースファイル一式と同じ階層に`tidy-html5`を配置する
+    - `externals`ディレクトリに`tidy-html5`を配置する
 
-- `Soyokaze`のプロジェクト設定にて、`Soyokaze.sln`と同じ階層に`json` `spdlog`というフォルダがあることを想定している  
+- `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
 ↓
 ```
 soyokaze-src/
   Soyokaze.sln
-  json/
-    include/
-      nlohmann/
-        json.hpp
-  spdlog/
-    include/
-  tidy-html5/
-    include/
+  externals/
+    json/
+      include/
+        nlohmann/
+          json.hpp
+    spdlog/
+      include/
+    tidy-html5/
+      include/
 ```
 
 ### spdlogのビルド
@@ -57,7 +58,7 @@ soyokaze-src/
 cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
-cd spdlog
+cd externals/spdlog
 mkdir build
 cd build
 cmake ..
@@ -70,7 +71,7 @@ msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
 cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
-cd tidy-html5/build/cmake
+cd externals/tidy-html5/build/cmake
 
 # ランチャー側の「Debug」「Release」「UnitTest」構成で利用するモジュールのビルド
 cmake ../.. -DCMAKE_BUILD_TYPE=Release -A x64

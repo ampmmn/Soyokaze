@@ -1,0 +1,9 @@
+[submodule "externals/json"]
+	path = externals/json
+	url = https://github.com/nlohmann/json.git
+[submodule "externals/tidy-html5"]
+	path = externals/tidy-html5
+	url = https://github.com/htacg/tidy-html5.git
+[submodule "externals/spdlog"]
+	path = externals/spdlog
+	url = https://github.com/gabime/spdlog.git

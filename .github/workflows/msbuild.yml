@@ -33,6 +33,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -41,36 +43,18 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Checkout json
-      uses: actions/checkout@v3
-      with:
-        repository: nlohmann/json
-        path: json
-
-    - name: Checkout spdlog
-      uses: actions/checkout@v3
-      with:
-        repository: gabime/spdlog
-        path: spdlog
-
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        mkdir -p spdlog/build
-        cd spdlog/build
+        mkdir -p externals/spdlog/build
+        cd externals/spdlog/build
         cmake ..
         msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
-
-    - name: Checkout tidy-html5
-      uses: actions/checkout@v3
-      with:
-        repository: htacg/tidy-html5
-        path: tidy-html5
 
     - name: Build tidy-html5
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cd tidy-html5/build/cmake
+        cd externals/tidy-html5/build/cmake
         cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.TIDYLIB_POSTFIX}}
         cmake --build . --config Release
 
