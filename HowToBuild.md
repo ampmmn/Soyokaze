@@ -40,7 +40,8 @@
 ↓
 ```
 soyokaze-src/
-  Soyokaze.sln
+  src/
+     Soyokaze.sln
   externals/
     json/
       include/
@@ -86,7 +87,7 @@ cmake --build . --config Release
 
 ## ビルド方法
 
-- VisualStudioでソリューションファイル`Soyokaze.sln`を開く
+- VisualStudioでソリューションファイル`src/Soyokaze.sln`を開く
   - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
 
 - プロジェクト設定の下記項目を変更する必要があるのでビルド環境にあわせて設定する
@@ -97,8 +98,9 @@ cmake --build . --config Release
   - メニューの `ビルド`→`ソリューションのビルド`
 
 - ビルドが完了すると下記の場所にモジュールがてきる
-  - `x64`/(`Debug` or `Release` or `ReleaseStatic`)
+  - `dist`/`x64`/(`Debug` or `Release` or `ReleaseStatic`)
     - 64bit版モジュールの場合
+    - 32bit版モジュールのビルドは非サポート
 
 ## ソリューション構成
 
