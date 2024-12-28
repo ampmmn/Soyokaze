@@ -23,7 +23,7 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	void ResolveShortcut(CString& path);
-	bool IsEditableFileType(const CString& path);
+	bool IsEditableFileType(CString path);
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

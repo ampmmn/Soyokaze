@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CommandEditDialog.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
+#include "commands/common/ExpandFunctions.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
@@ -198,7 +199,26 @@ void CommandEditDialog::OnButtonBrowseDir1Clicked()
 
 void CommandEditDialog::OpenTarget()
 {
-	// FIXME: 実装
+	CString path(mParam.mNormalAttr.mPath);
+	ExpandMacros(path);
+
+	auto p = path.GetBuffer(path.GetLength() + 1);
+
+	SHELLEXECUTEINFO si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = SW_NORMAL;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = p;
+
+	TCHAR verb[24];
+	_tcscpy_s(verb, _T("edit"));
+	si.lpVerb = verb;
+
+	ShellExecuteEx(&si);
+
+	path.ReleaseBuffer();
+
+	CloseHandle(si.hProcess);
 }
 
 
@@ -327,11 +347,9 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 }
 
 // (テキストエディタなどで)編集するようなファイルタイプか?
-bool CommandEditDialog::IsEditableFileType(const CString& path)
+bool CommandEditDialog::IsEditableFileType(CString path)
 {
-	// FIXME: 後で有効化する
-	return false;
-
+	ExpandMacros(path);
 	if (PathFileExists(path) == FALSE || PathIsDirectory(path)) {
 		return false;
 	}
@@ -403,7 +421,6 @@ void CommandEditDialog::OnPathMenuBtnClicked()
 			OnButtonBrowseDir1Clicked();
 			break;
 		case 3:
-			// ToDo: テキストエディタで開く
 			OpenTarget();
 			break;
 	}
