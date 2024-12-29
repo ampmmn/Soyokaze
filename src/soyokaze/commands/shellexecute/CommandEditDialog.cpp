@@ -57,6 +57,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
 	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
+	// 以下のパラメータは通常と引数なし版で兼用
+	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mParam.mNormalAttr.mShowType);
+	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mNormalAttr.mDir);
 }
 
 #pragma warning( push )
@@ -73,6 +76,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)
+	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -80,6 +84,8 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
 	mMenuForPathBtn.CreatePopupMenu();
 	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));
@@ -293,6 +299,7 @@ void CommandEditDialog::OnOK()
 		return ;
 	}
 
+	// Note : このページで設定するパラメータだけ書き戻す
 	auto param = (CommandParam*)GetParam();
 
 	param->mName = mParam.mName;
@@ -306,6 +313,12 @@ void CommandEditDialog::OnOK()
 	param->mIsUseDescriptionForMatching = mParam.mIsUseDescriptionForMatching;
 	param->mIconData = mParam.mIconData;
 	param->mHotKeyAttr = mParam.mHotKeyAttr;
+
+	// 以下、兼用パラメータ
+	param->mNormalAttr.mShowType = mParam.mNormalAttr.mShowType;
+	param->mNoParamAttr.mShowType = mParam.mNormalAttr.mShowType;
+	param->mNormalAttr.mDir = mParam.mNormalAttr.mDir;
+	param->mNoParamAttr.mDir = mParam.mNormalAttr.mDir;
 
 	// 引数展開のキーワードが含まれていない場合は、引数入力ダイアログの表示を無効化する
 	const tregex& regArg = GetRegexForArgument();
@@ -424,6 +437,20 @@ void CommandEditDialog::OnPathMenuBtnClicked()
 			OpenTarget();
 			break;
 	}
+}
+
+void CommandEditDialog::OnButtonBrowseDir3Clicked()
+{
+	UpdateData();
+	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mDir, this);
+
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	mParam.mNormalAttr.mDir = dlg.GetPathName();
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 

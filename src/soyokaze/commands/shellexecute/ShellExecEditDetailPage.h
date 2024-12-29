@@ -24,6 +24,9 @@ protected:
 	// メッセージ欄
 	CString mMessage;
 
+	// 
+	CMFCMenuButton mPathMenuBtn;
+	CMenu mMenuForPathBtn;
 public:
 	CommandParam mParam;
 
@@ -39,9 +42,9 @@ protected:
 	afx_msg void OnEditPath0Changed();
 	afx_msg void OnButtonBrowseFile2Clicked();
 	afx_msg void OnButtonBrowseDir2Clicked();
-	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonResolveShortcut0();
+	afx_msg void OnPathMenuBtnClicked();
 };
 

@@ -65,6 +65,7 @@ protected:
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnPathMenuBtnClicked();
+	afx_msg void OnButtonBrowseDir3Clicked();
 	void OpenTarget();
 };
 

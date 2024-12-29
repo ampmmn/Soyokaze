@@ -32,19 +32,15 @@ void ShellExecEditDetailPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_USE0, mParam.mIsUse0);
 	DDX_Text(pDX, IDC_EDIT_PATH0, mParam.mNoParamAttr.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM0, mParam.mNoParamAttr.mParam);
-	// 以下のパラメータは通常と引数なし版で兼用
-	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mParam.mNormalAttr.mShowType);
-	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mNormalAttr.mDir);
+	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
 }
 
 BEGIN_MESSAGE_MAP(ShellExecEditDetailPage, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_PATH0, OnEditPath0Changed)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE2, OnButtonBrowseFile2Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR2, OnButtonBrowseDir2Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
 	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -52,10 +48,11 @@ BOOL ShellExecEditDetailPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	// File&Folder Select Button
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->SetWindowTextW(L"\U0001F4C2");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
+	mMenuForPathBtn.CreatePopupMenu();
+	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));
+	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 2, _T("フォルダ選択"));
+	mPathMenuBtn.m_hMenu = (HMENU)mMenuForPathBtn;
+
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -69,8 +66,7 @@ bool ShellExecEditDetailPage::UpdateStatus()
 	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_EDIT_PATH0)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_EDIT_PARAM0)->EnableWindow(mParam.mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEFILE2)->EnableWindow(mParam.mIsUse0);
-	GetDlgItem(IDC_BUTTON_BROWSEDIR2)->EnableWindow(mParam.mIsUse0);
+	GetDlgItem(IDC_BUTTON_MENU)->EnableWindow(mParam.mIsUse0);
 
 	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mNoParamAttr.mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
@@ -117,20 +113,6 @@ void ShellExecEditDetailPage::OnButtonBrowseDir2Clicked()
 	}
 
 	mParam.mNoParamAttr.mPath = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void ShellExecEditDetailPage::OnButtonBrowseDir3Clicked()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mDir, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mParam.mNormalAttr.mDir = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -197,14 +179,10 @@ void ShellExecEditDetailPage::OnOK()
 
 	// Note : このページで設定するパラメータだけ書き戻す
 	auto param = (CommandParam*)GetParam();
+
 	param->mNoParamAttr.mPath = mParam.mNoParamAttr.mPath;
 	param->mNoParamAttr.mParam = mParam.mNoParamAttr.mParam;
 	param->mIsUse0 = mParam.mIsUse0;
-	// 以下、兼用パラメータ
-	param->mNormalAttr.mShowType = mParam.mNormalAttr.mShowType;
-	param->mNoParamAttr.mShowType = mParam.mNormalAttr.mShowType;
-	param->mNormalAttr.mDir = mParam.mNormalAttr.mDir;
-	param->mNoParamAttr.mDir = mParam.mNormalAttr.mDir;
 
 	__super::OnOK();
 }
@@ -229,6 +207,18 @@ void ShellExecEditDetailPage::ResolveShortcut(CString& path)
 void ShellExecEditDetailPage::OnButtonResolveShortcut0()
 {
 	ResolveShortcut(mParam.mNoParamAttr.mPath);
+}
+
+void ShellExecEditDetailPage::OnPathMenuBtnClicked()
+{
+	switch (mPathMenuBtn.m_nMenuResult) {
+		case 1:
+			OnButtonBrowseFile2Clicked();
+			break;
+		case 2:
+			OnButtonBrowseDir2Clicked();
+			break;
+	}
 }
 
 
