@@ -784,12 +784,15 @@ BEGIN
     LTEXT           "補完(&C):",IDC_STATIC,25,75,30,8
     EDITTEXT        IDC_EDIT_HOTKEY_COMPL,135,72,124,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_COMPL,261,72,21,14
-    LTEXT           "入力欄のテキストをコピー(&O):",IDC_STATIC,25,92,93,8
-    EDITTEXT        IDC_EDIT_HOTKEY_COPY,135,92,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_COPY,261,92,21,14
+    LTEXT           "コンテキストメニュー表示(&M):",IDC_STATIC,25,91,89,8
+    EDITTEXT        IDC_EDIT_HOTKEY_CONTEXTMENU,135,90,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_CONTEXTMENU,261,90,21,14
+    LTEXT           "入力欄のテキストをコピー(&O):",IDC_STATIC,25,108,93,8
+    EDITTEXT        IDC_EDIT_HOTKEY_COPY,135,107,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY_COPY,261,107,21,14
     GROUPBOX        "入力画面のキー割り当て",IDC_STATIC,7,7,322,174
-    LTEXT           "標準キー設定に加えて、追加のキーを設定できます。\n(標準キー設定 上へ:↑ 下へ:↓ 決定:Enter 補完:Tab)\n※標準キーを無効化することはできません。",IDC_STATIC,25,114,208,26
-    PUSHBUTTON      "リセット(&R)",IDC_BUTTON_RESET,235,112,45,14
+    LTEXT           "標準キー設定に加えて、追加のキーを設定できます。\n(標準キー設定 上へ:↑ 下へ:↓ 決定:Enter 補完:Tab)\n※標準キーを無効化することはできません。",IDC_STATIC,25,132,208,26
+    PUSHBUTTON      "リセット(&R)",IDC_BUTTON_RESET,235,130,45,14
 END
 
 IDD_APPSETTING_EXCLUDEFILE DIALOGEX 0, 0, 344, 291
@@ -2176,6 +2179,9 @@ END
 IDD_APPSETTING_KEY AFX_DIALOG_LAYOUT
 BEGIN
     0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,

@@ -59,6 +59,18 @@ public:
 	}
 };
 
+class MainWindowHotKey::ContextMenuHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~ContextMenuHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_contextmenu"); }
+	bool Invoke() override {
+		SharedHwnd h;
+		PostMessage(h.GetHwnd(), WM_CONTEXTMENU, 0, MAKELPARAM(-1, -1));
+		return true;
+	}
+};
+
 class MainWindowHotKey::CopyHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
@@ -133,6 +145,12 @@ bool MainWindowHotKey::Register()
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	if (hotKeyAttrCompl.GetVKCode() != -1) {
 		manager->Register(this, new ComplHandler, hotKeyAttrCompl);
+	}
+
+	auto hotKeyAttrContextMenu = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:ContextMenu-Modifiers"), 0),
+	                            settingsPtr->Get(_T("MainWindowKey:ContextMenu-VirtualKeyCode"), -1));
+	if (hotKeyAttrContextMenu.GetVKCode() != -1) {
+		manager->Register(this, new ContextMenuHandler, hotKeyAttrContextMenu);
 	}
 
 	auto hotKeyAttrCopy = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Copy-Modifiers"), 0),

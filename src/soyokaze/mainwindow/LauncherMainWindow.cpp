@@ -832,10 +832,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 	// ウインドウ位置の復元
 	in->mLayout->RestoreWindowPosition(this, false);
 
-
-	// 設定値の読み込み
-	GetCommandRepository()->Load();
-
 	// ホットキー登録
 	in->mHotKeyPtr = std::make_unique<AppHotKey>(GetSafeHwnd());
 	if (in->mHotKeyPtr->Register() == false) {
@@ -847,6 +843,9 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mMainWindowHotKeyPtr = std::make_unique<MainWindowHotKey>();
 	in->mMainWindowHotKeyPtr->Register();
 	
+	// 設定値の読み込み
+	GetCommandRepository()->Load();
+
 	UpdateData(FALSE);
 
 	in->mDropTargetDialog.Register(this);

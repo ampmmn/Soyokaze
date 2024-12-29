@@ -11,6 +11,7 @@ class MainWindowHotKey : public AppPreferenceListenerIF
 	class DownHandler;
 	class EnterHandler;
 	class ComplHandler;
+	class ContextMenuHandler;
 	class CopyHandler;
 public:
 	MainWindowHotKey();

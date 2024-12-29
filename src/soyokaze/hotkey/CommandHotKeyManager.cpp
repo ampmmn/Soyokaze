@@ -440,12 +440,20 @@ bool CommandHotKeyManager::Register(
 
 	ASSERT(handler);
 
+	auto dispName = handler->GetDisplayName();
+
+	// 別の登録元によって既に登録されているキーの場合は登録を許可しない
+	auto it = in->mNameKeyMap.find(dispName);
+	if (it != in->mNameKeyMap.end() && it->second.mOwner != owner) {
+		return false;
+	}
+
 	if (in->RegisterHotKeyAttr(handler, key) == false &&
       in->RegisterSandSKeyAttr(handler, key) == false) {
 		return false;
 	}
 
-	in->mNameKeyMap[handler->GetDisplayName()] = NameMapValue(owner, key);
+	in->mNameKeyMap[dispName] = NameMapValue(owner, key);
 
 	return true;
 }
