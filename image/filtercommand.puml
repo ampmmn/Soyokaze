@@ -1,6 +1,6 @@
 @startuml{filtercommand.svg}
 
-card "前段のプログラム" as precommand
+card "前段の処理" as precommand
 
 card "標準出力に出力されたテキスト" as preout
 
@@ -10,7 +10,7 @@ card "絞り込み画面" as filter
 
 card "選択結果\n(1行)" as filteredtext
 
-card "後段のプログラム" as postcommand
+card "後段の処理" as postcommand
 
 precommand -ri-> preout #blue : stdout
 
