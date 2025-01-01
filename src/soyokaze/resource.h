@@ -165,9 +165,12 @@
 #define IDC_CHECK_RUNASADMIN            1009
 #define IDC_EDIT_FILEPATH               1009
 #define IDC_EDIT_OTHERPARAM             1009
+#define IDC_EDIT_REGPATTERN             1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_EDIT_FRONT                  1010
+#define IDC_EDIT_SUBSTITUTE             1010
+#define IDC_EDIT_REPLACE                1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_CHECK_SHOWARGINPUT          1011
 #define IDC_EDIT_BACK                   1011
@@ -458,6 +461,7 @@
 #define IDC_STATIC_AFTERDETAIL          1204
 #define IDC_STATIC_PREFILTERDETAIL2     1205
 #define IDC_BUTTON_BROWSEDIR            1205
+#define IDC_CHECK_DISPLAYNAME           1206
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -466,7 +470,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        247
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1206
+#define _APS_NEXT_CONTROL_VALUE         1207
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

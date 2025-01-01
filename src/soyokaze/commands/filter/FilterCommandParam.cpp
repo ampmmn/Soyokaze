@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "FilterCommandParam.h"
+#include "resource.h"
 
 namespace launcherapp {
 namespace commands {
@@ -10,7 +11,10 @@ CommandParam::CommandParam() :
 	mPreFilterType(0),
 	mCacheType(0),
 	mPostFilterType(0),
-	mPreFilterCodePage(CP_UTF8)
+	mPreFilterCodePage(CP_UTF8),
+	mIsReplaceText(false),
+	mAfterShowType(0)
+
 {
 }
 
@@ -29,7 +33,10 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mAfterCommandParam(rhs.mAfterCommandParam),
 	mHotKeyAttr(rhs.mHotKeyAttr),
 	mAfterDir(rhs.mAfterDir),
-	mAfterShowType(rhs.mAfterShowType)
+	mAfterShowType(rhs.mAfterShowType),
+	mIsReplaceText(rhs.mIsReplaceText),
+	mReplacePattern(rhs.mReplacePattern),
+	mReplaceText(rhs.mReplaceText)
 {
 }
 
@@ -55,6 +62,9 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mHotKeyAttr = rhs.mHotKeyAttr;
 		mAfterDir = rhs.mAfterDir;
 		mAfterShowType = rhs.mAfterShowType;
+		mIsReplaceText = rhs.mIsReplaceText;
+		mReplacePattern = rhs.mReplacePattern;
+		mReplaceText = rhs.mReplaceText;
 	}
 	return *this;
 
@@ -80,6 +90,10 @@ bool CommandParam::Save(CommandEntryIF* entry)
 	entry->Set(_T("afterparam"), mAfterCommandParam);
 	entry->Set(_T("afterdir"), mAfterDir);
 	entry->Set(_T("aftershowtype"), mAfterShowType);
+	entry->Set(_T("isreplacetext"), mIsReplaceText);
+	entry->Set(_T("replacepattern"), mReplacePattern);
+	entry->Set(_T("replacetext"), mReplaceText);
+
 	return true;
 }
 
@@ -98,7 +112,50 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mAfterCommandParam = entry->Get(_T("afterparam"), _T("$select"));
 	mAfterDir = entry->Get(_T("afterdir"), _T(""));
 	mAfterShowType = entry->Get(_T("aftershowtype"), 0);
+	mIsReplaceText = entry->Get(_T("isreplacetext"), false);
+	mReplacePattern = entry->Get(_T("replacepattern"), _T(""));
+	mReplaceText = entry->Get(_T("replacetext"), _T(""));
+
+	CString errMsg;
+	BuildCandidateTextRegExp(errMsg);
+
 	return true;
+}
+
+bool CommandParam::BuildCandidateTextRegExp(CString& errMsg)
+{
+	try {
+		if (mIsReplaceText) {
+			mRegPattern = tregex(tstring(mReplacePattern));
+		}
+	}
+	catch(std::regex_error& e) {
+		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
+		msg += _T("\n");
+
+		CStringA what(e.what());
+		msg += _T("\n");
+		msg += (CString)what;
+		msg += _T("\n");
+		msg += mReplacePattern;
+
+		errMsg = msg;
+		return false;
+	}
+	return true;
+}
+
+bool CommandParam::ReplaceCandidateText(const CString& input, CString& replacedText) const
+{
+	try {
+		tstring rstr = std::regex_replace(tstring(input), mRegPattern , tstring(mReplaceText));
+		replacedText = rstr.c_str();
+		return true;
+	}
+	catch(...) {
+		replacedText = input;
+		return false;
+	}
 }
 
 

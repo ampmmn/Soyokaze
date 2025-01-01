@@ -47,17 +47,14 @@ FilterAdhocCommand::FilterAdhocCommand(
 	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
 {
+	param.ReplaceCandidateText(result.mDisplayName, mName);
+
 	in->mParam = param;
 	in->mResult = result;
 }
 
 FilterAdhocCommand::~FilterAdhocCommand()
 {
-}
-
-CString FilterAdhocCommand::GetName()
-{
-	return in->mParam.mName + _T(" ") + PathFindFileName(in->mResult.mDisplayName);
 }
 
 CString FilterAdhocCommand::GetDescription()

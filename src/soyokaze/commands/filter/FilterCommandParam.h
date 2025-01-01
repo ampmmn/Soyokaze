@@ -38,6 +38,9 @@ public:
 	bool Save(CommandEntryIF* entry);
 	bool Load(CommandEntryIF* entry);
 
+	bool BuildCandidateTextRegExp(CString& errMsg);
+	bool ReplaceCandidateText(const CString& input, CString& replacedText) const;
+
 public:
 	CString mName;
 	CString mDescription;
@@ -65,8 +68,16 @@ public:
 	CString mAfterDir;
 	// 後段のプログラムの表示方法
 	int mAfterShowType;
+	// 候補のテキストを置換するか?
+	bool mIsReplaceText;
+	// 置換パターン
+	CString mReplacePattern;
+	// 置換後の文字列
+	CString mReplaceText;
 
 	CommandHotKeyAttribute mHotKeyAttr;
+
+	tregex mRegPattern;
 };
 
 } // end of namespace filter

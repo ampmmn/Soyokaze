@@ -20,7 +20,6 @@ public:
 	FilterAdhocCommand(const CommandParam& param, const FilterResult& result);
 	virtual ~FilterAdhocCommand();
 
-	CString GetName() override;
 	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;

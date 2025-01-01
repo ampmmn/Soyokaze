@@ -63,6 +63,7 @@ protected:
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnType1MenuBtnClicked();
 	afx_msg void OnType2MenuBtnClicked();
+	afx_msg void OnCheckDisplayName();
 
 	void OnSelectSubProcessFilter();
 	void OnSelectClipboardFilter();

@@ -80,6 +80,9 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_TYPE2, mPathMenuType2);
 	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, mAfterDetail);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_DISPLAYNAME, mParam.mIsReplaceText);
+	DDX_Text(pDX, IDC_EDIT_REGPATTERN, mParam.mReplacePattern);
+	DDX_Text(pDX, IDC_EDIT_REPLACE, mParam.mReplaceText);
 }
 
 #pragma warning( push )
@@ -91,6 +94,7 @@ BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE2, OnType2MenuBtnClicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
+	ON_COMMAND(IDC_CHECK_DISPLAYNAME, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -177,6 +181,19 @@ bool FilterEditDialog::UpdateStatus()
 		mAfterDetail.Format(_T("パラメータ:%s"), (LPCTSTR)mParam.mAfterCommandParam);
 	}
 
+	// 表示文字列の置換に関する設定
+	GetDlgItem(IDC_EDIT_REGPATTERN)->EnableWindow(mParam.mIsReplaceText);
+	GetDlgItem(IDC_EDIT_REPLACE)->EnableWindow(mParam.mIsReplaceText);
+
+	if (mParam.mIsReplaceText) {
+		CString msg;
+		if (mParam.BuildCandidateTextRegExp(msg) == false) {
+			AfxMessageBox(msg);
+			mMessage = _T("検索パターンの内容が不正です");
+			isOK = false;
+		}
+	}
+
 	// 名前チェック
 	bool isNameValid =
 	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
@@ -188,6 +205,7 @@ bool FilterEditDialog::UpdateStatus()
 
 	if (isOK == false) {
 			GetDlgItem(IDOK)->EnableWindow(FALSE);
+			return false;
 	}
 
 	if (mParam.mPreFilterType == 0 && mParam.mPath.IsEmpty()) {
@@ -375,7 +393,6 @@ void FilterEditDialog::OnSelectAfterCopyClipboard()
 	UpdateStatus();
 	UpdateData(FALSE);
 }
-
 
 } // end of namespace filter
 } // end of namespace commands
