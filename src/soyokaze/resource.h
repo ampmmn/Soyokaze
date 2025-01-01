@@ -148,6 +148,10 @@
 #define IDD_SNIPPETGROUP_ITEM           241
 #define IDD_SIMPLEDICT_TEST             242
 #define IDD_WINDOWACTIVATEADHOCNAME     243
+#define IDD_FILTER_SUBPROCESS           244
+#define IDD_FILTER_AFTER_SUBPROCESS     245
+#define IDD_FILTER_AFTER_COMMAND        246
+#define IDD_FILTER_AFTER_CLIPBOARD      247
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -446,16 +450,23 @@
 #define IDC_STATIC_MODSANDS             1196
 #define IDC_STATIC_CACHECANDIDATES      1197
 #define IDC_LIST_ITEMS                  1198
-#define IDC_BUTTON_MENU                 1200
+#define IDC_BUTTON_MENU                 1199
+#define IDC_BUTTON_TYPE1                1200
+#define IDC_CHECK_CACHE                 1201
+#define IDC_BUTTON_TYPE2                1202
+#define IDC_STATIC_PREFILTERDETAIL      1203
+#define IDC_STATIC_AFTERDETAIL          1204
+#define IDC_STATIC_PREFILTERDETAIL2     1205
+#define IDC_BUTTON_BROWSEDIR            1205
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        246
+#define _APS_NEXT_RESOURCE_VALUE        247
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1201
+#define _APS_NEXT_CONTROL_VALUE         1206
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

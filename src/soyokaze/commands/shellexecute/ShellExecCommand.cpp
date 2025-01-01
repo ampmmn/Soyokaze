@@ -217,6 +217,16 @@ void ShellExecCommand::SetArgument(const CString& arg)
 	in->mParam.mNormalAttr.mParam = arg;
 }
 
+void ShellExecCommand::SetWorkDir(const CString& path)
+{
+	in->mParam.mNormalAttr.mDir = path;
+}
+
+void ShellExecCommand::SetShowType(int showType)
+{
+	in->mParam.mNormalAttr.mShowType = showType;
+}
+
 void ShellExecCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;

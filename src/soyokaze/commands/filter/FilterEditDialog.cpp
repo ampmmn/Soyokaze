@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterEditDialog.h"
+#include "commands/filter/SubProcessFilterEditDialog.h"
+#include "commands/filter/AfterSubProcessDialog.h"
+#include "commands/filter/AfterCommandDialog.h"
+#include "commands/filter/AfterCopyDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
-#include "commands/core/CommandRepository.h"
 #include "commands/common/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
@@ -18,19 +21,21 @@
 #endif
 
 using namespace launcherapp::commands::common;
-using CommandRepository = launcherapp::core::CommandRepository;
-using Command = launcherapp::core::Command;
 
 namespace launcherapp {
 namespace commands {
 namespace filter {
 
+constexpr int ID_PREFILTER_SUBPROCESS = FILTER_SUBPROCESS + 1;
+constexpr int ID_PREFILTER_CLIPBOARD = FILTER_CLIPBOARD + 1;
 
+constexpr int ID_POSTFILTER_COMMAND = POSTFILTER_COMMAND + 1;
+constexpr int ID_POSTFILTER_SUBPROCESS = POSTFILTER_SUBPROCESS + 1;
+constexpr int ID_POSTFILTER_CLIPBOARD = POSTFILTER_CLIPBOARD + 1;
 
 FilterEditDialog::FilterEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
-	mIconLabelPtr(std::make_unique<IconLabel>()),
-	mCommandSelIndex(-1)
+	mIconLabelPtr(std::make_unique<IconLabel>())
 {
 	SetHelpPageId(_T("FilterEdit"));
 }
@@ -70,17 +75,11 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mPath);
-	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mParameter);
-	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mDir);
+	DDX_Control(pDX, IDC_BUTTON_TYPE1, mPathMenuType1);
+	DDX_Text(pDX, IDC_STATIC_PREFILTERDETAIL, mPreFilterDetail);
+	DDX_Control(pDX, IDC_BUTTON_TYPE2, mPathMenuType2);
+	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, mAfterDetail);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
-	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, mCommandSelIndex);
-	DDX_CBIndex(pDX, IDC_COMBO_CANDIDATECACHE, mParam.mCacheType);
-	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
-	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERTYPE, mParam.mPreFilterType);
-	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, mParam.mPostFilterType);
-	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
-	DDX_CBIndex(pDX, IDC_COMBO_PREFILTERCODEPAGE, mPreFilterCodePageIndex);
 }
 
 #pragma warning( push )
@@ -88,20 +87,10 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
-	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
-	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
-	ON_EN_CHANGE(IDC_EDIT_DIR, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
+	ON_BN_CLICKED(IDC_BUTTON_TYPE1, OnType1MenuBtnClicked)
+	ON_BN_CLICKED(IDC_BUTTON_TYPE2, OnType2MenuBtnClicked)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
-	ON_CBN_SELCHANGE(IDC_COMBO_PREFILTERTYPE, OnUpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnUpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
-	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
-	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -110,15 +99,22 @@ BOOL FilterEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	// 候補生成方法の選択肢
+	mMenuForType1Btn.CreatePopupMenu();
+	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_SUBPROCESS, _T("プログラムを実行する"));
+	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_CLIPBOARD, _T("クリップボードの内容を取得"));
+	mPathMenuType1.m_hMenu = (HMENU)mMenuForType1Btn;
+
+	// 後段の処理の選択肢
+	mMenuForType2Btn.CreatePopupMenu();
+	mMenuForType2Btn.InsertMenu((UINT)-1, 0, ID_POSTFILTER_COMMAND, _T("他のコマンドを実行する"));
+	mMenuForType2Btn.InsertMenu((UINT)-1, 0, ID_POSTFILTER_SUBPROCESS, _T("プログラムを実行する"));
+	mMenuForType2Btn.InsertMenu((UINT)-1, 0, ID_POSTFILTER_CLIPBOARD, _T("クリップボードにコピーする"));
+	mPathMenuType2.m_hMenu = (HMENU)mMenuForType2Btn;
+
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
 	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
-
-	// 後段のコマンド設定 排他の項目の位置を調整する
-	Overlap(GetDlgItem(IDC_STATIC_AFTERCOMMAND), GetDlgItem(IDC_STATIC_PATH2));
-	Overlap(GetDlgItem(IDC_COMBO_AFTERCOMMAND), GetDlgItem(IDC_EDIT_PATH2));
-	GetDlgItem(IDC_BUTTON_BROWSEFILE3)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR4)->SetWindowTextW(L"\U0001F4C2");
 
 	CString caption;
   GetWindowText(caption);
@@ -128,41 +124,6 @@ BOOL FilterEditDialog::OnInitDialog()
 
 	caption += suffix;
 	SetWindowText(caption);
-
-	// File&Folder Select Button
-	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
-
-	// コマンド一覧のコンボボックス
-	std::vector<Command*> commands;
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->EnumCommands(commands);
-
-	CComboBox* commandComboBox =
-	 	(CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-	ASSERT(commandComboBox);
-
-	for (auto& cmd : commands) {
-		CString name = cmd->GetName();
-		int idx = commandComboBox->AddString(name);
-		cmd->Release();
-
-		if (name == mParam.mAfterCommandName) {
-			mCommandSelIndex = idx;
-		}
-	}
-
-	// 前段フィルタの文字コード
-	if (mParam.mPreFilterCodePage == CP_UTF8) {
-		mPreFilterCodePageIndex = 0;
-	}
-	else if (mParam.mPreFilterCodePage == 932) {   // codepage 932 → sjis
-		mPreFilterCodePageIndex = 1;
-	}
-	else {
-		// その他の値はUTF-8扱い
-		mPreFilterCodePageIndex = 0;
-	}
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -177,68 +138,65 @@ bool FilterEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	int showTypePreFilter = mParam.mPreFilterType == FILTER_SUBPROCESS ? SW_SHOW : SW_HIDE;
-	GetDlgItem(IDC_STATIC_PATH)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_EDIT_PATH)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_PARAM)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_EDIT_PARAM)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_WORKDIR)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_EDIT_DIR)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_SYSLINK_MACRO)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_CACHECANDIDATES)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_COMBO_CANDIDATECACHE)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_STATIC_PREFILTERCODEPAGE)->ShowWindow(showTypePreFilter);
-	GetDlgItem(IDC_COMBO_PREFILTERCODEPAGE)->ShowWindow(showTypePreFilter);
+	bool isOK = true;
 
-	if (mParam.mPostFilterType == 0) {
-		// 他のコマンドを実行する
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+	// 前段の処理の設定値
+	if (mParam.mPreFilterType == FILTER_SUBPROCESS) {
+
+		if (mParam.mPath.IsEmpty()) {
+			mPathMenuType1.SetWindowText(_T("(生成方法を選択)"));
+			mPreFilterDetail.Empty();
+			mMessage = _T("候補の生成方法を設定してください");
+			isOK = false;
+
+		}
+		else {
+			mPathMenuType1.SetWindowText(_T("プログラムを実行する"));
+			mPreFilterDetail.Format(_T("ファイルパス:%s\nパラメータ:%s\n作業フォルダ:%s"),
+					(LPCTSTR)mParam.mPath, (LPCTSTR)mParam.mParameter, (LPCTSTR)mParam.mDir);
+		}
 	}
-	else if (mParam.mPostFilterType == 1) {
-		// 他のプログラムを実行する
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_SHOW);
+	else if (mParam.mPreFilterType == FILTER_CLIPBOARD) {
+		mPathMenuType1.SetWindowText(_T("クリップボードの内容を使用する"));
+		mPreFilterDetail = _T("クリップボードのテキストを行単位で分割して候補として表示します");
+	}
+	
+	// 後段の処理の設定値
+	if (mParam.mPostFilterType == POSTFILTER_COMMAND) {
+		mPathMenuType2.SetWindowText(_T("他のコマンドを実行する"));
+		mAfterDetail.Format(_T("コマンド:%s\nパラメータ:%s"),
+					(LPCTSTR)mParam.mAfterCommandName, (LPCTSTR)mParam.mAfterCommandParam);
+	}
+	else if (mParam.mPostFilterType == POSTFILTER_SUBPROCESS) {
+		mPathMenuType2.SetWindowText(_T("プログラムを実行する"));
+		mAfterDetail.Format(_T("ファイルパス:%s\nパラメータ:%s\n作業フォルダ:%s"),
+					(LPCTSTR)mParam.mAfterFilePath, (LPCTSTR)mParam.mAfterCommandParam, (LPCTSTR)mParam.mAfterDir);
 	}
 	else {
-		// クリップボードコピー
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+		mPathMenuType2.SetWindowText(_T("クリップボードにコピーする"));
+		mAfterDetail.Format(_T("パラメータ:%s"), (LPCTSTR)mParam.mAfterCommandParam);
 	}
-
-
-	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadPromptIcon());
 
 	// 名前チェック
 	bool isNameValid =
 	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 	if (isNameValid == false) {
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
+		isOK = false;
 	}
 
-	//
+	mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadPromptIcon());
+
+	if (isOK == false) {
+			GetDlgItem(IDOK)->EnableWindow(FALSE);
+	}
+
 	if (mParam.mPreFilterType == 0 && mParam.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
-	if (mParam.mPostFilterType == 0 && mCommandSelIndex == -1) {
+	if (mParam.mPostFilterType == 0 && mParam.mAfterCommandName.IsEmpty()) {
 		mMessage = _T("絞込み後に実行するコマンドを選んでください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -271,33 +229,6 @@ void FilterEditDialog::OnUpdateStatus()
 	UpdateData(FALSE);
 }
 
-void FilterEditDialog::OnButtonBrowseFile1Clicked()
-{
-	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mParam.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mParam.mPath = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void FilterEditDialog::OnButtonBrowseDir3Clicked()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mDir, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	mParam.mDir = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
 HBRUSH FilterEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -318,23 +249,6 @@ void FilterEditDialog::OnOK()
 	if (UpdateStatus() == false) {
 		return ;
 	}
-
-	if (mParam.mPostFilterType == 0) {
-		CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-		cmbBox->GetLBText(mCommandSelIndex, mParam.mAfterCommandName);
-	}
-
-	if (mPreFilterCodePageIndex == 0) {
-		mParam.mPreFilterCodePage = CP_UTF8;
-	}
-	else if (mPreFilterCodePageIndex == 1) {
-		mParam.mPreFilterCodePage = 932;
-	}
-	else {
-		// その他の値はUTF-8扱い
-		mParam.mPreFilterCodePage = CP_UTF8;
-	}
-
 	__super::OnOK();
 }
 
@@ -350,67 +264,117 @@ void FilterEditDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
-void FilterEditDialog::OnButtonBrowseAfterCommandFile()
+void FilterEditDialog::OnType1MenuBtnClicked()
+{
+	int action = mPathMenuType1.m_nMenuResult;
+
+	// ボタン部分が単に押された場合、mMenuResultに0が格納される
+	if (action == 0) {
+		if (mParam.mPreFilterType != FILTER_SUBPROCESS) {
+			return;
+		}
+		action = ID_PREFILTER_SUBPROCESS;
+	}
+
+	switch (action) {
+		case ID_PREFILTER_SUBPROCESS:
+			OnSelectSubProcessFilter();
+			break;
+		case ID_PREFILTER_CLIPBOARD:
+			OnSelectClipboardFilter();
+			break;
+	}
+}
+
+void FilterEditDialog::OnSelectSubProcessFilter()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mParam.mAfterFilePath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+
+	SubProcessFilterEditDialog dlg(this);
+	dlg.SetParam(mParam);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mAfterFilePath = dlg.GetPathName();
+	mParam = dlg.GetParam();
+
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void FilterEditDialog::OnButtonBrowseAfterCommandDir()
+void FilterEditDialog::OnSelectClipboardFilter()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mAfterFilePath, this);
 
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
+	mParam.mPreFilterType = FILTER_CLIPBOARD;
 
-	mParam.mAfterFilePath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-bool FilterEditDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
+void FilterEditDialog::OnType2MenuBtnClicked()
 {
-	ASSERT(dstWnd && srcWnd);
+	int action = mPathMenuType2.m_nMenuResult;
 
-	if (dstWnd->GetParent() != srcWnd->GetParent()) {
-		return false;
+	// ボタン部分が単に押された場合、mMenuResultに0が格納される
+	if (action == 0) {
+		action = mParam.mPostFilterType + 1;
 	}
 
-	CWnd* parentWnd = srcWnd->GetParent();
-
-	CRect rcDst;
-	dstWnd->GetClientRect(&rcDst);
-	CPoint ptDst = rcDst.TopLeft();
-	dstWnd->MapWindowPoints(parentWnd, &ptDst, 1);
-
-
-	srcWnd->SetWindowPos(NULL, ptDst.x, ptDst.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-
-	return true;
+	switch (action) {
+		case ID_POSTFILTER_COMMAND:
+			// 他のコマンドを実行する
+			OnSelectAfterExecOtherCommand();
+			break;
+		case ID_POSTFILTER_SUBPROCESS:
+			// プログラムを実行する
+			OnSelectAfterSubProcess();
+			break;
+		case ID_POSTFILTER_CLIPBOARD:
+			// クリップボードにコピーする
+			OnSelectAfterCopyClipboard();
+			break;
+	}
 }
 
-// マニュアル表示
-void FilterEditDialog::OnNotifyLinkOpen(
-	NMHDR *pNMHDR,
- 	LRESULT *pResult
-)
+void FilterEditDialog::OnSelectAfterExecOtherCommand()
 {
-	UNREFERENCED_PARAMETER(pNMHDR);
+	AfterCommandDialog dlg(this);
+	dlg.SetParam(mParam);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+	mParam = dlg.GetParam();
 
-	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
-	*pResult = 0;
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
+void FilterEditDialog::OnSelectAfterSubProcess()
+{
+	AfterSubProcessDialog dlg(this);
+	dlg.SetParam(mParam);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+	mParam = dlg.GetParam();
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void FilterEditDialog::OnSelectAfterCopyClipboard()
+{
+	AfterCopyDialog dlg(this);
+	dlg.SetParam(mParam);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+	mParam = dlg.GetParam();
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
 
 
 } // end of namespace filter

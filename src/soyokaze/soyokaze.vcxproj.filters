@@ -1350,6 +1350,18 @@
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
       <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
+    <ClInclude Include="commands\filter\SubProcessFilterEditDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\AfterSubProcessDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\AfterCommandDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\AfterCopyDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2386,6 +2398,18 @@
     </ClCompile>
     <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\SubProcessFilterEditDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\AfterSubProcessDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\AfterCommandDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\AfterCopyDialog.cpp">
+      <Filter>commands\filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

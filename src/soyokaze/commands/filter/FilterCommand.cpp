@@ -211,20 +211,7 @@ bool FilterCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-
-	entry->Set(_T("description"), GetDescription());
-
-	entry->Set(_T("path"), in->mParam.mPath);
-	entry->Set(_T("dir"), in->mParam.mDir);
-	entry->Set(_T("parameter"), in->mParam.mParameter);
-	entry->Set(_T("prefiltertype"), in->mParam.mPreFilterType);
-	entry->Set(_T("cachetype"), in->mParam.mCacheType);
-	entry->Set(_T("aftertype"), in->mParam.mPostFilterType);
-	entry->Set(_T("aftercommand"), in->mParam.mAfterCommandName);
-	entry->Set(_T("afterfilepath"), in->mParam.mAfterFilePath);
-	entry->Set(_T("afterparam"), in->mParam.mAfterCommandParam);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool FilterCommand::Load(CommandEntryIF* entry)
@@ -235,18 +222,9 @@ bool FilterCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != FilterCommand::GetType()) {
 		return false;
 	}
-
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mPath = entry->Get(_T("path"), _T(""));
-	in->mParam.mDir = entry->Get(_T("dir"), _T(""));
-	in->mParam.mParameter = entry->Get(_T("parameter"), _T(""));
-	in->mParam.mPreFilterType = entry->Get(_T("prefiltertype"), 0);
-	in->mParam.mCacheType = entry->Get(_T("cachetype"), 0);
-	in->mParam.mPostFilterType = entry->Get(_T("aftertype"), 0);
-	in->mParam.mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
-	in->mParam.mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
-	in->mParam.mAfterCommandParam = entry->Get(_T("afterparam"), _T("$select"));
+	if (in->mParam.Load(entry) == false) {
+		return false;
+	}
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(GetName(), &in->mParam.mHotKeyAttr);

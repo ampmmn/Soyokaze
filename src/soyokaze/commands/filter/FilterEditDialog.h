@@ -32,18 +32,22 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
-	bool Overlap(CWnd* dstWnd, CWnd* srcWnd);
-
 	// 編集開始時のコマンド名
 	CString mOrgName;
 
 	// メッセージ欄
 	CString mMessage;
 
+	// 前段設定内容詳細
+	CString mPreFilterDetail;
+	CMFCMenuButton mPathMenuType1;
+	CMenu mMenuForType1Btn;
+
+	CString mAfterDetail;
+	CMFCMenuButton mPathMenuType2;
+	CMenu mMenuForType2Btn;
 public:
 	CommandParam mParam;
-	int mCommandSelIndex;
-	int mPreFilterCodePageIndex;
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
@@ -55,13 +59,16 @@ protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
-	afx_msg void OnButtonBrowseFile1Clicked();
-	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
-	afx_msg void OnButtonBrowseAfterCommandFile();
-	afx_msg void OnButtonBrowseAfterCommandDir();
-	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnType1MenuBtnClicked();
+	afx_msg void OnType2MenuBtnClicked();
+
+	void OnSelectSubProcessFilter();
+	void OnSelectClipboardFilter();
+	void OnSelectAfterExecOtherCommand();
+	void OnSelectAfterSubProcess();
+	void OnSelectAfterCopyClipboard();
 };
 
 } // end of namespace filter

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 
 namespace launcherapp {
 namespace commands {
@@ -16,6 +17,13 @@ enum PREFILTERTYPE {
 	FILTER_TEXT,
 };
 
+// 後段フィルタの種別
+enum POSTFILTERTYPE {
+	POSTFILTER_COMMAND = 0,
+	POSTFILTER_SUBPROCESS,
+	POSTFILTER_CLIPBOARD,
+};
+
 class CommandParam
 {
 public:
@@ -25,10 +33,15 @@ public:
 
 	CommandParam& operator = (const CommandParam& rhs);
 
+	int GetAfterShowType() const;
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
+
 public:
 	CString mName;
 	CString mDescription;
-	// カレントディレクトリ
+	// (前段の)カレントディレクトリ
 	CString mDir;
 	// パス
 	CString mPath;
@@ -48,6 +61,10 @@ public:
 	CString mAfterFilePath;
 	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
+	// 後段のカレントディレクトリ
+	CString mAfterDir;
+	// 後段のプログラムの表示方法
+	int mAfterShowType;
 
 	CommandHotKeyAttribute mHotKeyAttr;
 };

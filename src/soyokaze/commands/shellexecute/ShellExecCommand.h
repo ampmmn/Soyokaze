@@ -67,6 +67,8 @@ private:
 public:
 	void SetPath(const CString& path);
 	void SetArgument(const CString& arg);
+	void SetWorkDir(const CString& path);
+	void SetShowType(int showType);
 	void SetParam(const CommandParam& param);
 
 protected:

@@ -101,7 +101,7 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 	parents += in->mParam.mName;
 
 	int type = in->mParam.mPostFilterType;
-	if (type == 0) {
+	if (type == POSTFILTER_COMMAND) {
 
 		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 		paramSub->AddArgument(argSub);
@@ -130,20 +130,27 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 		return true;
 	}
 
-	if (type == 1) {
+	if (type == POSTFILTER_SUBPROCESS) {
 		// 他のファイルを実行/URLを開く
+		ShellExecCommand cmd;
+
 		CString path = in->mParam.mAfterFilePath;
 		path.Replace(_T("$select"), in->mResult.mDisplayName);
 		ExpandMacros(path);
-
-		ShellExecCommand cmd;
 		cmd.SetPath(path);
+
 		cmd.SetArgument(argSub);
+
+		path = in->mParam.mAfterDir;
+		path.Replace(_T("$select"), in->mResult.mDisplayName);
+		ExpandMacros(path);
+		cmd.SetWorkDir(path);
+		cmd.SetShowType(in->mParam.GetAfterShowType());
 
 		return cmd.Execute(CommandParameterBuilder::EmptyParam());
 	}
 
-	if (type == 2) {
+	if (type == POSTFILTER_CLIPBOARD) {
 		// クリップボードにコピー
 		Clipboard::Copy(argSub);
 		return true;
