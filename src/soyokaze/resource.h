@@ -152,6 +152,7 @@
 #define IDD_FILTER_AFTER_SUBPROCESS     245
 #define IDD_FILTER_AFTER_COMMAND        246
 #define IDD_FILTER_AFTER_CLIPBOARD      247
+#define IDD_FILTER_PRE_CONSTANT         248
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -462,6 +463,7 @@
 #define IDC_STATIC_PREFILTERDETAIL2     1205
 #define IDC_BUTTON_BROWSEDIR            1205
 #define IDC_CHECK_DISPLAYNAME           1206
+#define IDC_EDIT_VALUE                  1207
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -470,7 +472,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        247
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1207
+#define _APS_NEXT_CONTROL_VALUE         1208
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

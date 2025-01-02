@@ -27,6 +27,7 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mPreFilterType(rhs.mPreFilterType),
 	mCacheType(rhs.mCacheType),
 	mPreFilterCodePage(rhs.mPreFilterCodePage),
+	mPreFilterText(rhs.mPreFilterText),
 	mPostFilterType(rhs.mPostFilterType),
 	mAfterCommandName(rhs.mAfterCommandName),
 	mAfterFilePath(rhs.mAfterFilePath),
@@ -55,6 +56,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mPreFilterType = rhs.mPreFilterType;
 		mCacheType = rhs.mCacheType;
 		mPreFilterCodePage = rhs.mPreFilterCodePage;
+		mPreFilterText = rhs.mPreFilterText;
 		mPostFilterType = rhs.mPostFilterType;
 		mAfterCommandName = rhs.mAfterCommandName;
 		mAfterFilePath = rhs.mAfterFilePath;
@@ -84,6 +86,8 @@ bool CommandParam::Save(CommandEntryIF* entry)
 	entry->Set(_T("parameter"), mParameter);
 	entry->Set(_T("prefiltertype"), mPreFilterType);
 	entry->Set(_T("cachetype"), mCacheType);
+	entry->Set(_T("prefiltercodepage"), mPreFilterCodePage);
+	entry->Set(_T("prefiltertext"), mPreFilterText);
 	entry->Set(_T("aftertype"), mPostFilterType);
 	entry->Set(_T("aftercommand"), mAfterCommandName);
 	entry->Set(_T("afterfilepath"), mAfterFilePath);
@@ -106,6 +110,8 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mParameter = entry->Get(_T("parameter"), _T(""));
 	mPreFilterType = entry->Get(_T("prefiltertype"), 0);
 	mCacheType = entry->Get(_T("cachetype"), 0);
+	mPreFilterCodePage = entry->Get(_T("prefiltercodepage"), 0);
+	mPreFilterText = entry->Get(_T("prefiltertext"), _T(""));
 	mPostFilterType = entry->Get(_T("aftertype"), 0);
 	mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
 	mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
@@ -147,6 +153,11 @@ bool CommandParam::BuildCandidateTextRegExp(CString& errMsg)
 
 bool CommandParam::ReplaceCandidateText(const CString& input, CString& replacedText) const
 {
+	if (mIsReplaceText == false) {
+		replacedText = input;
+		return true;
+	}
+
 	try {
 		tstring rstr = std::regex_replace(tstring(input), mRegPattern , tstring(mReplaceText));
 		replacedText = rstr.c_str();

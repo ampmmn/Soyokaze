@@ -1350,9 +1350,6 @@
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
       <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
-    <ClInclude Include="commands\filter\SubProcessFilterEditDialog.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
     <ClInclude Include="commands\filter\AfterSubProcessDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
@@ -1360,6 +1357,12 @@
       <Filter>commands\filter</Filter>
     </ClInclude>
     <ClInclude Include="commands\filter\AfterCopyDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\PreFilterConstantDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2399,9 +2402,6 @@
     <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="commands\filter\SubProcessFilterEditDialog.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
     <ClCompile Include="commands\filter\AfterSubProcessDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
@@ -2409,6 +2409,12 @@
       <Filter>commands\filter</Filter>
     </ClCompile>
     <ClCompile Include="commands\filter\AfterCopyDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
   </ItemGroup>

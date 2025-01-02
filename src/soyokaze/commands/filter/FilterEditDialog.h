@@ -67,6 +67,7 @@ protected:
 
 	void OnSelectSubProcessFilter();
 	void OnSelectClipboardFilter();
+	void OnSelectConstantFilter();
 	void OnSelectAfterExecOtherCommand();
 	void OnSelectAfterSubProcess();
 	void OnSelectAfterCopyClipboard();

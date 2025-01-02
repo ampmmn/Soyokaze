@@ -1299,6 +1299,18 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,174,40,50,14
 END
 
+IDD_FILTER_PRE_CONSTANT DIALOGEX 0, 0, 265, 152
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "候補の生成方法 -候補を定義する"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "候補の一覧(&C):",IDC_STATIC_PATH,7,10,87,8
+    EDITTEXT        IDC_EDIT_VALUE,7,21,251,91,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    DEFPUSHBUTTON   "OK",IDOK,153,131,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,206,131,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,7,117,251,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1798,6 +1810,14 @@ BEGIN
         RIGHTMARGIN, 228
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
+    END
+
+    IDD_FILTER_PRE_CONSTANT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 258
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 145
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2619,6 +2639,16 @@ BEGIN
     0, 0, 0, 0,
     100, 0, 0, 0,
     100, 0, 0, 0
+END
+
+IDD_FILTER_PRE_CONSTANT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0
 END
 
 

@@ -13,8 +13,8 @@ enum PREFILTERTYPE {
 	FILTER_SUBPROCESS = 0,
 	// クリップボードから取得
 	FILTER_CLIPBOARD,
-	// テキスト文字列
-	FILTER_TEXT,
+	// 固定値
+	FILTER_CONSTANT,
 };
 
 // 後段フィルタの種別
@@ -56,6 +56,8 @@ public:
 	int mCacheType;
 	// 前段の文字コード(FILTER_SUBPROCESSのみ)
 	int mPreFilterCodePage;
+	// FILTER_CONSTANT時の固定値として用いる値
+	CString mPreFilterText;
 	// 後段の処理の種類
 	int mPostFilterType;
 	// 後段のコマンド(mPostFilterType=0の場合)

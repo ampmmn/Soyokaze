@@ -279,9 +279,7 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 
 bool FilterExecutor::PImpl::LoadCandidatesFromDefinedValue(const CommandParam& param)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// ToDo: 実装
+	MakeCandidatesFromString(param.mPreFilterText);
 	return true;
 }
 
@@ -433,7 +431,7 @@ void FilterExecutor::LoadCandidates(const CommandParam& param)
 			// クリップボードの値から
 			in->LoadCandidatesFromClipboard(param);
 		}
-		else if (param.mPreFilterType == FILTER_TEXT) {
+		else if (param.mPreFilterType == FILTER_CONSTANT) {
 			// 固定値
 			in->LoadCandidatesFromDefinedValue(param);
 		}

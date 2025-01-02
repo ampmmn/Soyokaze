@@ -57,6 +57,11 @@ FilterAdhocCommand::~FilterAdhocCommand()
 {
 }
 
+CString FilterAdhocCommand::GetName()
+{
+	return in->mParam.mName + _T(" ") + mName;
+}
+
 CString FilterAdhocCommand::GetDescription()
 {
 	CString str;

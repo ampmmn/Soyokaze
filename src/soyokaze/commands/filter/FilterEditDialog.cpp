@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterEditDialog.h"
-#include "commands/filter/SubProcessFilterEditDialog.h"
+#include "commands/filter/PreFilterSubProcessDialog.h"
+#include "commands/filter/PreFilterConstantDialog.h"
 #include "commands/filter/AfterSubProcessDialog.h"
 #include "commands/filter/AfterCommandDialog.h"
 #include "commands/filter/AfterCopyDialog.h"
@@ -28,6 +29,7 @@ namespace filter {
 
 constexpr int ID_PREFILTER_SUBPROCESS = FILTER_SUBPROCESS + 1;
 constexpr int ID_PREFILTER_CLIPBOARD = FILTER_CLIPBOARD + 1;
+constexpr int ID_PREFILTER_CONSTANT = FILTER_CONSTANT + 1;
 
 constexpr int ID_POSTFILTER_COMMAND = POSTFILTER_COMMAND + 1;
 constexpr int ID_POSTFILTER_SUBPROCESS = POSTFILTER_SUBPROCESS + 1;
@@ -106,7 +108,8 @@ BOOL FilterEditDialog::OnInitDialog()
 	// 候補生成方法の選択肢
 	mMenuForType1Btn.CreatePopupMenu();
 	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_SUBPROCESS, _T("プログラムを実行する"));
-	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_CLIPBOARD, _T("クリップボードの内容を取得"));
+	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_CLIPBOARD, _T("クリップボードの内容を取得する"));
+	mMenuForType1Btn.InsertMenu((UINT)-1, 0, ID_PREFILTER_CONSTANT, _T("候補を定義する"));
 	mPathMenuType1.m_hMenu = (HMENU)mMenuForType1Btn;
 
 	// 後段の処理の選択肢
@@ -163,6 +166,10 @@ bool FilterEditDialog::UpdateStatus()
 	else if (mParam.mPreFilterType == FILTER_CLIPBOARD) {
 		mPathMenuType1.SetWindowText(_T("クリップボードの内容を使用する"));
 		mPreFilterDetail = _T("クリップボードのテキストを行単位で分割して候補として表示します");
+	}
+	else if (mParam.mPreFilterType == FILTER_CONSTANT) {
+		mPathMenuType1.SetWindowText(_T("候補を定義する"));
+		mPreFilterDetail.Format(_T("候補の一覧:\n%s"), (LPCTSTR)mParam.mPreFilterText);
 	}
 	
 	// 後段の処理の設定値
@@ -288,10 +295,7 @@ void FilterEditDialog::OnType1MenuBtnClicked()
 
 	// ボタン部分が単に押された場合、mMenuResultに0が格納される
 	if (action == 0) {
-		if (mParam.mPreFilterType != FILTER_SUBPROCESS) {
-			return;
-		}
-		action = ID_PREFILTER_SUBPROCESS;
+		action = mParam.mPreFilterType + 1;
 	}
 
 	switch (action) {
@@ -301,6 +305,9 @@ void FilterEditDialog::OnType1MenuBtnClicked()
 		case ID_PREFILTER_CLIPBOARD:
 			OnSelectClipboardFilter();
 			break;
+		case ID_PREFILTER_CONSTANT:
+			OnSelectConstantFilter();
+			break;
 	}
 }
 
@@ -308,7 +315,7 @@ void FilterEditDialog::OnSelectSubProcessFilter()
 {
 	UpdateData();
 
-	SubProcessFilterEditDialog dlg(this);
+	PreFilterSubProcessDialog dlg(this);
 	dlg.SetParam(mParam);
 	if (dlg.DoModal() != IDOK) {
 		return;
@@ -325,6 +332,22 @@ void FilterEditDialog::OnSelectClipboardFilter()
 	UpdateData();
 
 	mParam.mPreFilterType = FILTER_CLIPBOARD;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void FilterEditDialog::OnSelectConstantFilter()
+{
+	UpdateData();
+
+	PreFilterConstantDialog dlg(this);
+	dlg.SetParam(mParam);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	mParam = dlg.GetParam();
 
 	UpdateStatus();
 	UpdateData(FALSE);

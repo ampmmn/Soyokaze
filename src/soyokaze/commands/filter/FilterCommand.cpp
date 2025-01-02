@@ -134,6 +134,9 @@ CString FilterCommand::GetErrorString()
 FilterCommand& FilterCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;
+
+	CString errMsg;
+	in->mParam.BuildCandidateTextRegExp(errMsg);
 	return *this;
 }
 
@@ -201,7 +204,7 @@ launcherapp::core::Command*
 FilterCommand::Clone()
 {
 	auto clonedObj = make_refptr<FilterCommand>();
-	clonedObj->in->mParam = in->mParam;
+	clonedObj->SetParam(in->mParam);
 	// mExecutorはコピーする必要があるか?
 	return clonedObj.release();
 }
@@ -286,7 +289,7 @@ bool FilterCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 
 	// 設定変更を反映するため、候補のキャッシュを消す
 	ClearCache();

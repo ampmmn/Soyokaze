@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "SubProcessFilterEditDialog.h"
+#include "PreFilterSubProcessDialog.h"
 #include "gui/FolderDialog.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
@@ -18,28 +18,28 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
-SubProcessFilterEditDialog::SubProcessFilterEditDialog(CWnd* parentWnd) : 
+PreFilterSubProcessDialog::PreFilterSubProcessDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_SUBPROCESS, parentWnd),
 	mPreFilterCodePageIndex(0)
 {
 	SetHelpPageId(_T("PreFilterSubprocess"));
 }
 
-SubProcessFilterEditDialog::~SubProcessFilterEditDialog()
+PreFilterSubProcessDialog::~PreFilterSubProcessDialog()
 {
 }
 
-void SubProcessFilterEditDialog::SetParam(const CommandParam& param)
+void PreFilterSubProcessDialog::SetParam(const CommandParam& param)
 {
 	mParam = param;
 }
 
-const CommandParam& SubProcessFilterEditDialog::GetParam()
+const CommandParam& PreFilterSubProcessDialog::GetParam()
 {
 	return mParam;
 }
 
-void SubProcessFilterEditDialog::DoDataExchange(CDataExchange* pDX)
+void PreFilterSubProcessDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
@@ -53,7 +53,7 @@ void SubProcessFilterEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SubProcessFilterEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(PreFilterSubProcessDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_DIR, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
@@ -65,7 +65,7 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL SubProcessFilterEditDialog::OnInitDialog()
+BOOL PreFilterSubProcessDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -91,7 +91,7 @@ BOOL SubProcessFilterEditDialog::OnInitDialog()
 	return TRUE;
 }
 
-bool SubProcessFilterEditDialog::UpdateStatus()
+bool PreFilterSubProcessDialog::UpdateStatus()
 {
 	if (mParam.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
@@ -114,14 +114,14 @@ bool SubProcessFilterEditDialog::UpdateStatus()
 	return true;
 }
 
-void SubProcessFilterEditDialog::OnUpdateStatus()
+void PreFilterSubProcessDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void SubProcessFilterEditDialog::OnButtonBrowseFile1Clicked()
+void PreFilterSubProcessDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
 	CFileDialog dlg(TRUE, NULL, mParam.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
@@ -134,7 +134,7 @@ void SubProcessFilterEditDialog::OnButtonBrowseFile1Clicked()
 	UpdateData(FALSE);
 }
 
-void SubProcessFilterEditDialog::OnButtonBrowseDir3Clicked()
+void PreFilterSubProcessDialog::OnButtonBrowseDir3Clicked()
 {
 	UpdateData();
 	CFolderDialog dlg(_T(""), mParam.mDir, this);
@@ -148,7 +148,7 @@ void SubProcessFilterEditDialog::OnButtonBrowseDir3Clicked()
 	UpdateData(FALSE);
 }
 
-HBRUSH SubProcessFilterEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH PreFilterSubProcessDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
@@ -162,7 +162,7 @@ HBRUSH SubProcessFilterEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlCol
 	return br;
 }
 
-void SubProcessFilterEditDialog::OnOK()
+void PreFilterSubProcessDialog::OnOK()
 {
 	UpdateData();
 	if (UpdateStatus() == false) {
@@ -186,7 +186,7 @@ void SubProcessFilterEditDialog::OnOK()
 }
 
 // マニュアル表示
-void SubProcessFilterEditDialog::OnNotifyLinkOpen(
+void PreFilterSubProcessDialog::OnNotifyLinkOpen(
 	NMHDR *pNMHDR,
  	LRESULT *pResult
 )
