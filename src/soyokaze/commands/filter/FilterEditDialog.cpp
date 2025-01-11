@@ -12,6 +12,7 @@
 #include "commands/common/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
 #include "resource.h"
@@ -232,10 +233,11 @@ bool FilterEditDialog::UpdateStatus()
 		return false;
 	}
 
-	CString workDir = mParam.mDir;
-	ExpandMacros(workDir);
+	CString workDirStr = mParam.mDir;
+	ExpandMacros(workDirStr);
 
-	if (workDir.IsEmpty() == FALSE && PathIsDirectory(workDir) == FALSE) {
+	Path workDir(workDirStr);
+	if (workDirStr.IsEmpty() == FALSE && workDir.IsDirectory() == false) {
 		mMessage = _T("作業フォルダは存在しません");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -274,11 +276,13 @@ void FilterEditDialog::OnOK()
 	if (UpdateStatus() == false) {
 		return ;
 	}
+
+
 	__super::OnOK();
 }
 
 
-void FilterEditDialog::OnButtonHotKey()	
+void FilterEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 

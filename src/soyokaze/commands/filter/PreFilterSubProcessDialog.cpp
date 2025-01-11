@@ -4,6 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "app/Manual.h"
 #include "resource.h"
 #include <vector>
@@ -99,10 +100,11 @@ bool PreFilterSubProcessDialog::UpdateStatus()
 		return false;
 	}
 
-	CString workDir = mParam.mDir;
-	ExpandMacros(workDir);
+	CString workDirStr = mParam.mDir;
+	ExpandMacros(workDirStr);
 
-	if (workDir.IsEmpty() == FALSE && PathIsDirectory(workDir) == FALSE) {
+	Path workDir(workDirStr);
+	if (workDirStr.IsEmpty() == FALSE && workDir.IsDirectory() == false) {
 		mMessage = _T("作業フォルダは存在しません");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;

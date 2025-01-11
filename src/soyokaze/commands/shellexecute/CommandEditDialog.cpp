@@ -10,6 +10,7 @@
 #include "commands/common/ExpandFunctions.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
 #include "resource.h"
@@ -360,14 +361,15 @@ void CommandEditDialog::ResolveShortcut(CString& path)
 }
 
 // (テキストエディタなどで)編集するようなファイルタイプか?
-bool CommandEditDialog::IsEditableFileType(CString path)
+bool CommandEditDialog::IsEditableFileType(CString pathStr)
 {
-	ExpandMacros(path);
-	if (PathFileExists(path) == FALSE || PathIsDirectory(path)) {
+	ExpandMacros(pathStr);
+	Path pathObj(pathStr);
+	if (pathObj.FileExists() == FALSE || pathObj.IsDirectory()) {
 		return false;
 	}
 
-	CString ext(PathFindExtension(path));
+	CString ext(pathObj.FindExtension());
 
 	// 実行ファイルはバイナリ形式なので普通は編集しない
 	if (ext.CompareNoCase(_T(".exe")) == 0) {

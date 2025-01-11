@@ -5,6 +5,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "app/Manual.h"
 #include "resource.h"
 #include <vector>
@@ -87,10 +88,11 @@ bool AfterSubProcessDialog::UpdateStatus()
 		return false;
 	}
 
-	CString workDir = mParam.mAfterDir;
-	ExpandMacros(workDir);
+	CString workDirStr = mParam.mAfterDir;
+	ExpandMacros(workDirStr);
 
-	if (workDir.IsEmpty() == FALSE && PathIsDirectory(workDir) == FALSE) {
+	Path workDir(workDirStr);
+	if (workDirStr.IsEmpty() == FALSE && workDir.IsDirectory() == false) {
 		mMessage = _T("作業フォルダは存在しません");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -184,10 +186,13 @@ void AfterSubProcessDialog::OnPathMenuBtnClicked()
 }
 
 // (テキストエディタなどで)編集するようなファイルタイプか?
-bool AfterSubProcessDialog::IsEditableFileType(CString path)
+bool AfterSubProcessDialog::IsEditableFileType(CString pathStr)
 {
-	ExpandMacros(path);
-	if (PathFileExists(path) == FALSE || PathIsDirectory(path)) {
+	ExpandMacros(pathStr);
+
+	Path path(pathStr);
+	if (path.FileExists() == false || path.IsDirectory()) {
+		// ファイルが存在しない、あるいは、パスはディレクトリであるため、編集できない
 		return false;
 	}
 

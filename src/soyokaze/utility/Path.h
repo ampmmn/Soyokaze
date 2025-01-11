@@ -7,6 +7,9 @@
 
 class Path
 {
+	class QueryData;
+	class QueryDataHost;
+
 public:
 	enum MODULEFILEPATH_TAG {
 	 	MODULEFILEPATH,

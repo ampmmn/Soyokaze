@@ -423,10 +423,9 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	}
 
 	// 絶対パス指定でファイルが見つからなかった場合は不明アイコン
-	if (PathIsRelative(path) == FALSE) {
-		if (PathFileExists(path) == FALSE) {
-			return LoadUnknownIcon();
-		}
+	Path pathObj(path);
+	if (pathObj.IsRelative() == false && pathObj.FileExists() == false) {
+		return LoadUnknownIcon();
 	}
 
 	// 相対パス指定の場合はパス解決する
@@ -438,7 +437,8 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	}
 
 	// パスがフォルダだった場合はフォルダアイコン
-	if (PathIsDirectory(fullPath)) {
+	Path fullPathObj(fullPath);
+	if (fullPathObj.IsDirectory()) {
 		return LoadFolderIcon();
 	}
 
@@ -756,7 +756,7 @@ HICON IconLoader::LoadConvertIcon()
 static bool GetTempFilePath(Path& userDataPath)
 {
 	userDataPath.Append(_T("tmp"));
-	if (PathIsDirectory(userDataPath) == FALSE) {
+	if (userDataPath.IsDirectory() == FALSE) {
 		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
 			return false;
 		}
