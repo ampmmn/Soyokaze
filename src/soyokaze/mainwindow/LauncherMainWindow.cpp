@@ -1515,7 +1515,7 @@ void LauncherMainWindow::OnContextMenu(
 	menu.InsertMenu((UINT)-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
 	menu.InsertMenu((UINT)-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
 	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
-	menu.InsertMenu((UINT)-1, 0, ID_EXIT, _T("終了(&E)"));
+	menu.InsertMenu((UINT)-1, 0, ID_EXIT, _T("終了"));
 
 	spdlog::info(_T("Show context menu."));
 
