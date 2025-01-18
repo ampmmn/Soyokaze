@@ -13,20 +13,21 @@ class Path::QueryData
 {
 public:
 	QueryData() :
-	 	mHandle(CreateEvent(nullptr, FALSE, FALSE, nullptr)), mRefCount(1), mResult(false)
+	 	mEventHandle(CreateEvent(nullptr, FALSE, FALSE, nullptr)), mRefCount(1), mResult(false)
  	{
 	}
 	~QueryData() {
-		CloseHandle(mHandle);
+		CloseHandle(mEventHandle);
 	}
 
 	void Push(bool result) {
 		mResult = result;
+		SetEvent(mEventHandle);
 	}
 
 	bool TryGet(DWORD timeout)
 	{
-		if (WaitForSingleObject(mHandle, timeout) == WAIT_TIMEOUT) {
+		if (WaitForSingleObject(mEventHandle, timeout) == WAIT_TIMEOUT) {
 			return false;
 		}
 		bool returnValue = mResult;
@@ -47,7 +48,7 @@ public:
 	}
 
 private:
-	HANDLE mHandle;
+	HANDLE mEventHandle;
 	uint32_t mRefCount;
 	bool mResult;
 };
@@ -261,7 +262,7 @@ bool Path::FileExists() const
 			return false;
 		}
 
-		bool result = queryData->TryGet(100);
+		bool result = queryData->TryGet(50);
 		queryData->Release();
 
 		return result;
@@ -283,7 +284,7 @@ bool Path::IsDirectory() const
 			return false;
 		}
 
-		bool result = queryData->TryGet(100);
+		bool result = queryData->TryGet(50);
 		queryData->Release();
 
 		return result;
