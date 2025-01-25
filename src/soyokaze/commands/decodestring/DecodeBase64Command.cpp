@@ -102,8 +102,24 @@ int DecodeBase64Command::Match(Pattern* pattern)
 		return Pattern::Mismatch;
 	}
 
+	// 検証
+	for (auto it = s.begin(); it != s.end(); ++it) {
+		uint8_t c = (uint8_t)*it;
+
+		bool isPadding = c == '=';
+		if (isPadding) {
+			break;
+		}
+
+		bool isValid = ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || ('0' <= c && c <= '9') || 
+		               c == '+' || c == '/' || c == '-' || c == '_';   // '-'と'_'もBase64URL Encodingとして使われるため、対象に含める
+		if (isValid == false) {
+			return Pattern::Mismatch;
+		}
+	}
+
 	struct Bits {
-		void flush(std::string& dst) {
+		void flush(std::vector<uint8_t>& dst) {
 			
 			if (index == 0 || index == 1) {
 				return;
@@ -119,7 +135,7 @@ int DecodeBase64Command::Match(Pattern* pattern)
 			dst.insert(dst.end(), s, s + n);
 			index = 0;
 	 	}
-		void add(uint8_t c, std::string& dst) {
+		void add(uint8_t c, std::vector<uint8_t>& dst) {
 			bits[index++] = DECODE_TABLE[c];
 			if (index == 4) {
 				char s[3];
@@ -134,7 +150,7 @@ int DecodeBase64Command::Match(Pattern* pattern)
 		int index = 0;
 	} bits;
 
-	std::string dst;
+	std::vector<uint8_t> dst;
 	for (auto it = s.begin(); it != s.end(); ++it) {
 
 		uint8_t c = (uint8_t)*it;
@@ -152,18 +168,12 @@ int DecodeBase64Command::Match(Pattern* pattern)
 		if (isPadding) {
 			break;
 		}
-
-		bool isValid = ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || ('0' <= c && c <= '9') || 
-		               c == '+' || c == '/' || c == '-' || c == '_';   // '-'と'_'もBase64URL Encodingとして使われるため、対象に含める
-		if (isValid == false) {
-			return Pattern::Mismatch;
-		}
-
 		bits.add(c, dst);
 	}
 	bits.flush(dst);
+	dst.push_back(0x00);
 
-	conv.Convert(dst.c_str(), mName);
+	conv.Convert((const char*)dst.data(), mName);
 
 	return Pattern::PartialMatch;
 }
