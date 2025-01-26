@@ -15,7 +15,7 @@ public:
 	virtual CString GetCommandName() = 0;
 	virtual CString GetTitle() = 0;
 	virtual CString GetDetail() = 0;
-
+	virtual CString GetPath() = 0;
 };
 
 }

@@ -18,6 +18,7 @@ public:
 	CString GetCommandName() override;
 	CString GetTitle() override;
 	CString GetDetail() override;
+	CString GetPath() override;
 
 private:
 	struct PImpl;

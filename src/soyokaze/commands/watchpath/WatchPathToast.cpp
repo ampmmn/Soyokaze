@@ -36,14 +36,20 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 		{
 			std::map<CString, CString> argsMap;
 			parseArguments(args, argsMap);
-			if (argsMap[_T("action")] != _T("showFolder")) {
+			auto action = argsMap[_T("action")];
+			spdlog::debug(_T("action:{}"), (LPCTSTR)action);
+			if (action != _T("showFolder")) {
 					return S_OK;
 			}
 
 			// フォルダ
 			CString path = argsMap[_T("path")];
-			if (PathIsDirectory(path) == FALSE) {
+			if (PathFileExists(path) == FALSE) {
 				return S_OK;
+			}
+			if (PathIsDirectory(path) == FALSE) {
+				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
+				path.ReleaseBuffer();
 			}
 			if (path.Right(1) != _T('\\')) {
 				path += _T("\\");
@@ -107,6 +113,7 @@ struct Toast::PImpl
 	CString mName;
 	CString mPath;
 	CString mMessage;
+	CString mDetail;
 };
 
 static void registerCallback()
@@ -147,6 +154,11 @@ void Toast::SetMessage(const CString& message)
 	in->mMessage = message;
 }
 
+void Toast::SetDetail(const CString& detail)
+{
+	in->mDetail = detail;
+}
+
 
 void Toast::Show()
 {
@@ -172,7 +184,7 @@ void Toast::Show()
 
 	doc.SelectSingleNode(L"//text[1]").InnerText((LPCTSTR)buf);
 
-	doc.SelectSingleNode(L"//text[2]").InnerText((LPCTSTR)in->mPath);
+	doc.SelectSingleNode(L"//text[2]").InnerText((LPCTSTR)in->mDetail);
 	doc.SelectSingleNode(L"//text[3]").InnerText(L"クリックするとフォルダを開きます");
 
 	winrt::Windows::UI::Notifications::ToastNotification notif(doc);

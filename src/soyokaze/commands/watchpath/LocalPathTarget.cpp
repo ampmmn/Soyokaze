@@ -266,6 +266,11 @@ CString LocalPathTarget::GetDetail()
 	return in->mDetail;
 }
 
+CString LocalPathTarget::GetPath()
+{
+	return in->mPath;
+}
+
 }
 }
 }

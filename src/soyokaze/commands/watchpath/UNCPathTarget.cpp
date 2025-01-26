@@ -332,6 +332,11 @@ CString UNCPathTarget::GetDetail()
 	return in->mDetail;
 }
 
+CString UNCPathTarget::GetPath()
+{
+	return in->mPath;
+}
+
 
 }
 }

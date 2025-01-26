@@ -49,7 +49,7 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	}
 	bool WatchPath();
 
-	void NotifyPath(const CString& cmdName, const CString& message, const CString& detail);
+	void NotifyPath(const CString& cmdName, const CString& message, const CString& detail, const CString& path);
 
 
 	void OnLockScreenOccurred() override
@@ -137,12 +137,18 @@ bool PathWatcher::PImpl::WatchPath()
 		auto cmdName = target->GetCommandName();
 		auto title = target->GetTitle();
 		auto detail = target->GetDetail();
-		NotifyPath(cmdName, title, detail);
+		auto path = target->GetPath();
+		NotifyPath(cmdName, title, detail, path);
 	}
 	return true;
 }
 
-void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const CString& message, const CString& detail)
+void PathWatcher::PImpl::NotifyPath(
+	const CString& cmdName,
+ 	const CString& message,
+ 	const CString& detail,
+ 	const CString& path
+)
 {
 	LPCTSTR msg = message.IsEmpty() == FALSE? (LPCTSTR)message : _T("更新を検知");
 
@@ -150,8 +156,9 @@ void PathWatcher::PImpl::NotifyPath(const CString& cmdName, const CString& messa
 		// スタートメニューにショートカットが登録されている場合はトーストを使う
 		Toast toast;
 		toast.SetCommandName(cmdName);
-		toast.SetPath(detail);
+		toast.SetPath(path);
 		toast.SetMessage(msg);
+		toast.SetDetail(detail);
 		toast.Show();
 	}
 	else {

@@ -15,6 +15,7 @@ public:
 	void SetCommandName(const CString& name);
 	void SetPath(const CString& path);
 	void SetMessage(const CString& message);
+	void SetDetail(const CString& detail);
 
 	void Show();
 
