@@ -7,10 +7,11 @@ class Pattern : virtual public launcherapp::core::UnknownIF
 {
 public:
 	enum MatchLevel {
-		WholeMatch = 4,    // 完全一致
-		FrontMatch = 3,    // 前方一致
-		PartialMatch = 2,  // 部分一致
-		WeakMatch = 1,     // 弱い一致
+		WholeMatch = 5,    // 完全一致
+		FrontMatch = 4,    // 前方一致
+		PartialMatch = 3,  // 部分一致
+		WeakMatch = 2,     // 弱い一致
+		HiddenMatch = 1,   // 一致、しかし非表示
 		Mismatch = -1,     // 不一致
 	};
 

@@ -65,12 +65,13 @@ CommandQueryItem& CommandQueryItem::operator = (
 struct CommandQueryItemList::PImpl
 {
 	std::vector<CommandQueryItem>& GetItems() {
-		return mItems.empty() == false ? mItems : mWeakItems;
+		return mItems.empty() == false || mHiddenItems.empty() == false ? mItems : mWeakItems;
 	}
 
 	std::vector<CommandQueryItem> mItems;
-	// 弱一致の要素は分けて管理する
+	// 弱一致、非表示の要素は分けて管理する
 	std::vector<CommandQueryItem> mWeakItems;
+	std::vector<CommandQueryItem> mHiddenItems;
 };
 
 CommandQueryItemList::CommandQueryItemList() : in(new PImpl)
@@ -105,11 +106,14 @@ bool CommandQueryItemList::FindWholeMatchItem(Command** command)
 
 void CommandQueryItemList::Add(const CommandQueryItem& item)
 {
-	if (item.mMatchLevel != Pattern::WeakMatch) {
-		in->mItems.push_back(item);
+	if (item.mMatchLevel == Pattern::WeakMatch) {
+		in->mWeakItems.push_back(item);
+	}
+	else if (item.mMatchLevel == Pattern::HiddenMatch) {
+		in->mHiddenItems.push_back(item);
 	}
 	else {
-		in->mWeakItems.push_back(item);
+		in->mItems.push_back(item);
 	}
 }
 

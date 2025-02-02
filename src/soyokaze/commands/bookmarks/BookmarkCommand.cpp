@@ -130,20 +130,21 @@ HICON BookmarkCommand::GetIcon()
 
 int BookmarkCommand::Match(Pattern* pattern)
 {
-	bool isWholeMatch = pattern->shouldWholeMatch();
-	if (isWholeMatch && pattern->Match(GetName()) == Pattern::WholeMatch) {
-		// 内部のコマンド名マッチング用の判定
+	bool shouldWholeMatch = pattern->shouldWholeMatch();
+	if (shouldWholeMatch && pattern->Match(GetName()) == Pattern::WholeMatch) {
+		// 内部のコマンド名マッチング用の判定(完全一致するかどうか)
 		return Pattern::WholeMatch;
 	}
-	else if (isWholeMatch == false) {
+	else if (shouldWholeMatch == false) {
 
 		// 入力欄からの入力で、前方一致するときは候補に出す
 		int level = pattern->Match(GetName());
 		if (level == Pattern::FrontMatch) {
 			return Pattern::FrontMatch;
 		}
-		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
-			return Pattern::WholeMatch;
+		if (level == Pattern::WholeMatch) {
+			// 後続のキーワードが存在する場合は非表示
+			return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
 		}
 	}
 	// 通常はこちら

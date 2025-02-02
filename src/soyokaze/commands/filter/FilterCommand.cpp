@@ -167,7 +167,12 @@ int FilterCommand::Match(Pattern* pattern)
 		if (level == Pattern::FrontMatch) {
 			return Pattern::FrontMatch;
 		}
-		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+
+		if (level == Pattern::WholeMatch) {
+
+		 	if (pattern->GetWordCount() > 1) {
+				return Pattern::HiddenMatch;
+			}
 
 			if (in->mExecutor && in->mExecutor->IsLoaded()) {
 

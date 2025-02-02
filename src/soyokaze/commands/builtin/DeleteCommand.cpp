@@ -57,10 +57,10 @@ int DeleteCommand::Match(Pattern* pattern)
 	int level = pattern->Match(GetName());
 	if (level == Pattern::WholeMatch) {
 		// 後続キーワードが存在する場合、追加候補(DeleteCandidateCommand)を優先させたいので、
-		// edit自身は表示させない
+		// delete自身は表示させない
 		int numOfWords = pattern->GetWordCount();
 		if (numOfWords > 1) {
-			return Pattern::Mismatch;
+			return Pattern::HiddenMatch;
 		}
 	}
 	return level;

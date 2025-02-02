@@ -61,7 +61,7 @@ int EditCommand::Match(Pattern* pattern)
 		// edit自身は表示させない
 		int numOfWords = pattern->GetWordCount();
 		if (numOfWords > 1) {
-			return Pattern::Mismatch;
+			return Pattern::HiddenMatch;
 		}
 	}
 	return level;

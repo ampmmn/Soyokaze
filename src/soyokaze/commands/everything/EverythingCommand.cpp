@@ -155,10 +155,11 @@ int EverythingCommand::Match(Pattern* pattern)
 
 		// API利用の場合は簡易辞書コマンド的な動作にする
 		if (proxy->IsUseWM() == false) {
-			if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
+
+			if (level == Pattern::WholeMatch) {
 				// 入力欄からの入力で、前方一致するときは候補に出す
-				in->mShouldComletion = true;
-				return Pattern::WholeMatch;
+				// 後続のキーワードが存在する場合は非表示
+				return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
 			}
 		}
 		else {

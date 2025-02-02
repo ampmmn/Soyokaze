@@ -193,8 +193,10 @@ int WebSearchCommand::Match(Pattern* pattern)
 		if (level == Pattern::FrontMatch) {
 			return Pattern::FrontMatch;
 		}
-		if (level == Pattern::WholeMatch && pattern->GetWordCount() == 1) {
-			return Pattern::WholeMatch;
+
+		if (level == Pattern::WholeMatch) {
+			// 後続のキーワードが存在する場合は非表示
+			return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
 		}
 	}
 	// 通常はこちら
