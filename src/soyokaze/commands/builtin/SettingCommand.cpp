@@ -95,6 +95,15 @@ LRESULT SettingCommand::OnCallbackExecute()
 	pref->SetSettings(dlg.GetSettings());
 	pref->Save();
 
+	// 
+	SharedHwnd sharedHwnd;
+	// 状態クリア
+	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+18, 0, 0);
+	// ウインドウ非表示
+	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+7, 0, 0);
+	// ウインドウ再表示
+	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+2, 0, 0);
+
 	return 0;
 }
 

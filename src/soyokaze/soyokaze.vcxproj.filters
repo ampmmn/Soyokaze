@@ -1365,6 +1365,12 @@
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
+    <ClInclude Include="icon\IconLabelForApp.h">
+      <Filter>icon</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\AppIcon.h">
+      <Filter>icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2417,6 +2423,12 @@
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
+    <ClCompile Include="icon\IconLabelForApp.cpp">
+      <Filter>icon</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\AppIcon.cpp">
+      <Filter>icon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -2433,6 +2445,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\icon2.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

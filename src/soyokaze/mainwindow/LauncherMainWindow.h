@@ -111,7 +111,7 @@ protected:
 	LRESULT OnUserMessageDragOverObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageDropObject(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
-	LRESULT OnUserMessageHideAtFirst(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageHide(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetClipboardString(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageGetClipboardString(WPARAM wParam, LPARAM lParam);
@@ -121,6 +121,7 @@ protected:
 	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCopyText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 

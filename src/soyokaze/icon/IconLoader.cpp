@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "IconLoader.h"
+#include "icon/AppIcon.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "utility/LocalPathResolver.h"
@@ -19,6 +20,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace launcherapp::icon;
 
 // キャッシュクリアを実行する回数
 constexpr int CLEARCACHE_INTERVAL = 5 * 60;  // 5分
@@ -664,7 +667,7 @@ HICON IconLoader::LoadKeywordManagerIcon()
 
 HICON IconLoader::LoadDefaultIcon()
 {
-	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	return AppIcon::Get()->IconHandle();
 }
 
 HICON IconLoader::LoadUserDirIcon()
@@ -679,12 +682,12 @@ HICON IconLoader::LoadMainDirIcon()
 
 HICON IconLoader::LoadVersionIcon()
 {
-	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	return LoadDefaultIcon();
 }
 
 HICON IconLoader::LoadTasktrayIcon()
 {
-	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	return AppIcon::Get()->DefaultIconHandle();
 }
 
 HICON IconLoader::LoadUnknownIcon()

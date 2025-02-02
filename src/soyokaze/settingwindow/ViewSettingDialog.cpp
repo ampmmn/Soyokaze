@@ -3,11 +3,16 @@
 #include "ViewSettingDialog.h"
 #include "setting/Settings.h"
 #include "app/Manual.h"
+#include "icon/IconLabelForApp.h"
+#include "icon/AppIcon.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace launcherapp::icon;
 
 
 struct ViewSettingDialog::PImpl
@@ -36,6 +41,12 @@ struct ViewSettingDialog::PImpl
 
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
+
+	// アプリアイコン
+	HICON mIcon = nullptr;
+	CString mAppIconFilePath;
+	IconLabelForApp mIconLabelPtr;
+	bool mIsIconReset = false;
 };
 
 ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) : 
@@ -46,6 +57,10 @@ ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) :
 
 ViewSettingDialog::~ViewSettingDialog()
 {
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+		in->mIcon = nullptr;
+	}
 }
 
 BOOL ViewSettingDialog::OnKillActive()
@@ -97,6 +112,15 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("MainWindow:FontName"), fontInfo->m_strName);
 
+	// アプリアイコンが設定(変更)された場合は上書き
+	Path icon(in->mAppIconFilePath);
+	if (in->mIsIconReset == false && icon.FileExists()) {
+		AppIcon::Get()->Import(in->mAppIconFilePath);
+	}
+	else if (in->mIsIconReset) {
+		AppIcon::Get()->Reset();
+	}
+
 
 	__super::OnOK();
 }
@@ -121,9 +145,12 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( disable : 26454 )
 
 BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
-	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnCbnTransparencyChanged)
+	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnUpdateStatus)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
+	ON_COMMAND(IDC_BUTTON_RESETICON, OnButtonResetIcon)
+	ON_COMMAND(IDC_CHECK_DRAWICON, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -131,6 +158,9 @@ END_MESSAGE_MAP()
 BOOL ViewSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mIconLabelPtr.SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mIconLabelPtr.EnableIconChange();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -142,11 +172,29 @@ bool ViewSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(in->mTransparencyType != 2);
 
+	bool isDrawIcon = in->mIsDrawIcon != FALSE;
+	GetDlgItem(IDC_BUTTON_RESETICON)->EnableWindow(isDrawIcon);
+	if (isDrawIcon) {
+		in->mIconLabelPtr.EnableIconChange();
+	}
+	else {
+		in->mIconLabelPtr.DisableIconChange();
+	}
+
+	if (in->mIcon) {
+		in->mIconLabelPtr.DrawIcon(in->mIcon);
+	}
+	else {
+		auto appIcon = AppIcon::Get();
+		auto iconHandle = (in->mIsIconReset) ? appIcon->DefaultIconHandle() : appIcon->IconHandle();
+		in->mIconLabelPtr.DrawIcon(iconHandle);
+	}
+
 	return true;
 }
 
 
-void ViewSettingDialog::OnCbnTransparencyChanged()
+void ViewSettingDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
@@ -205,4 +253,47 @@ void ViewSettingDialog::OnNotifyLinkOpen(
 	*pResult = 0;
 }
 
+void ViewSettingDialog::OnButtonResetIcon()
+{
+	UpdateData();
+
+	// アイコンを初期状態に戻す
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+		in->mIcon = nullptr;
+	}
+	in->mAppIconFilePath.Empty();
+	in->mIsIconReset = true;
+
+	UpdateStatus();
+
+}
+
+LRESULT ViewSettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
+{
+	if (wp != 1) {
+		return 0;
+	}
+
+	// 変更
+	LPCTSTR appIconPath = (LPCTSTR)lp;
+
+	HICON h = (HICON)LoadImage(nullptr, (LPCTSTR)appIconPath, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+	if (h == nullptr) {
+		AfxMessageBox(_T("icoファイルのロードに失敗しました"));
+		return 0;
+	}
+
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+	}
+	in->mIcon = h;
+	in->mAppIconFilePath = appIconPath;
+	in->mIsIconReset = false;
+
+	// 再描画
+	in->mIconLabelPtr.DrawIcon(in->mIcon);
+
+	return 0;
+}
 

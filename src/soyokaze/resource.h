@@ -367,6 +367,7 @@
 #define IDC_CHECK_KEEPACTIVEWINDOW      1125
 #define IDC_BUTTON1                     1126
 #define IDC_BUTTON_RESTORE              1126
+#define IDC_BUTTON_RESETICON            1126
 #define IDC_BUTTON_TEST                 1127
 #define IDC_EDIT_TEXT                   1128
 #define IDC_BUTTON_UPDATE               1129
@@ -470,7 +471,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        247
+#define _APS_NEXT_RESOURCE_VALUE        248
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1208
 #define _APS_NEXT_SYMED_VALUE           101

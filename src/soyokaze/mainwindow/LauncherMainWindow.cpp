@@ -202,7 +202,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
-	ON_MESSAGE(WM_APP+7, OnUserMessageHideAtFirst)
+	ON_MESSAGE(WM_APP+7, OnUserMessageHide)
 	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
 	ON_MESSAGE(WM_APP+9, OnUserMessageSetClipboardString)
 	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
@@ -213,6 +213,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+15, OnUserMessageUpdateCandidate)
 	ON_MESSAGE(WM_APP+16, OnUserMessageCopyText)
 	ON_MESSAGE(WM_APP+17, OnUserMessageRequestCallback)
+	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -463,6 +464,15 @@ LRESULT LauncherMainWindow::OnUserMessageRequestCallback(WPARAM wParam, LPARAM l
 	return callbackFunc(lParam);
 }
 
+LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	ClearContent();
+	return 0;
+}
+
 
 LRESULT 
 LauncherMainWindow::OnUserMessageDragOverObject(
@@ -609,7 +619,7 @@ LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 }
 
 
-LRESULT LauncherMainWindow::OnUserMessageHideAtFirst(
+LRESULT LauncherMainWindow::OnUserMessageHide(
 	WPARAM wParam,
 	LPARAM lParam
 )

@@ -531,6 +531,8 @@
     <ClInclude Include="hotkey\SandSKeyAttribute.h" />
     <ClInclude Include="hotkey\SandSKeyState.h" />
     <ClInclude Include="hotkey\VirtualKeyDefine.h" />
+    <ClInclude Include="icon\AppIcon.h" />
+    <ClInclude Include="icon\IconLabelForApp.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\afxw\AfxWWrapper.h" />
     <ClInclude Include="macros\builtin\AppNameMacro.h" />
@@ -920,6 +922,8 @@
     <ClCompile Include="hotkey\SandSKeyAttribute.cpp" />
     <ClCompile Include="hotkey\SandSKeyState.cpp" />
     <ClCompile Include="hotkey\VirtualKeyDefine.cpp" />
+    <ClCompile Include="icon\AppIcon.cpp" />
+    <ClCompile Include="icon\IconLabelForApp.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\afxw\AfxWWrapper.cpp" />
     <ClCompile Include="macros\builtin\AppNameMacro.cpp" />
@@ -1169,6 +1173,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icon.ico" />
+    <Image Include="res\icon2.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

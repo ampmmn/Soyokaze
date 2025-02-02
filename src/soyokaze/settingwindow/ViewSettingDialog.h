@@ -27,7 +27,9 @@ protected:
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnCbnTransparencyChanged();
+	afx_msg void OnUpdateStatus();
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnButtonResetIcon();
+	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 };
 

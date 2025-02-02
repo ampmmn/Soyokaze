@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "IconLabel.h"
+#include "IconLabelForApp.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -9,31 +9,41 @@
 #define new DEBUG_NEW
 #endif
 
-IconLabel::IconLabel() : mCanIconChange(false), mIsUseBackgroundColor(false), mBackgroundColor(RGB(0,0,0))
+IconLabelForApp::IconLabelForApp() :
+ 	mIconDefault(nullptr),
+ 	mCanIconChange(false),
+ 	mIsUseBackgroundColor(false),
+ 	mBackgroundColor(RGB(0,0,0))
 {
 }
 
-IconLabel::~IconLabel()
+IconLabelForApp::~IconLabelForApp()
 {
 }
 
-BEGIN_MESSAGE_MAP(IconLabel, CStatic)
+BEGIN_MESSAGE_MAP(IconLabelForApp, CStatic)
 	ON_WM_PAINT()
 	ON_WM_CONTEXTMENU()
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
-void IconLabel::EnableIconChange()
+void IconLabelForApp::EnableIconChange()
 {
 	mCanIconChange = true;
 }
 
-void IconLabel::DrawIcon(HICON iconHandle)
+void IconLabelForApp::DisableIconChange()
+{
+	mCanIconChange = false;
+}
+
+void IconLabelForApp::DrawIcon(HICON iconHandle)
 {
 	CClientDC dc(this);
 	DrawIcon(&dc, iconHandle);
 }
 
-void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
+void IconLabelForApp::DrawIcon(CDC* pDC, HICON iconHandle)
 {
 
 	CRect rc;
@@ -73,25 +83,30 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 }
 
 // デフォルトアイコンの描画
-void IconLabel::DrawDefaultIcon()
+void IconLabelForApp::DrawDefaultIcon()
 {
-	DrawIcon(IconLoader::Get()->LoadDefaultIcon());
+	if (mIconDefault == nullptr) {
+		// 取得したアイコンの所有権はIconLoader側にあるので解放不要
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
+	}
+	DrawIcon(mIconDefault);
 }
 
-void IconLabel::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
+void IconLabelForApp::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
 {
 	mIsUseBackgroundColor = !isUseSystemSetting;
 	mBackgroundColor = cr;
 }
 
-void IconLabel::OnPaint()
+void IconLabelForApp::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
 	CBitmap& bmp = mBuffer;
 	if  (bmp == (HBITMAP)nullptr) {
 		// 初回はデフォルトアイコンを描画
-		DrawIcon(&dc, IconLoader::Get()->LoadDefaultIcon());
+		mIconDefault = IconLoader::Get()->LoadDefaultIcon();
+		DrawIcon(&dc, mIconDefault);
 	}
 	else {
 		// 2回目以降は前回のバッファを使って描画
@@ -108,9 +123,9 @@ void IconLabel::OnPaint()
 	}
 }
 
-void IconLabel::OnMenuChangeIcon()
+void IconLabelForApp::OnMenuChangeIcon()
 {
-	CString filterStr((LPCTSTR)IDS_FILTER_ICONIMAGEFILES);
+	CString filterStr((LPCTSTR)_T("icoファイル(*.ico)|*.ico||"));
 
 	Path iconPath(Path::MODULEFILEPATH);
 	iconPath.Shrink();
@@ -120,14 +135,14 @@ void IconLabel::OnMenuChangeIcon()
 		return ;
 	}
 
-	// 親ウインドウに変更後のアイコントとする画像ファイルパスを通知する
+	// 親ウインドウに変更後のアイコンとするファイルパスを通知する
 	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)dlg.GetPathName());
 
-	// IconLabelに対してアイコンを設定するのはクラス利用者側の責務
+	// IconLabelForAppに対してアイコンを設定するのはクラス利用者側の責務
 
 }
 
-void IconLabel::OnMenuDefaultIcon()
+void IconLabelForApp::OnMenuDefaultIcon()
 {
 	// wparam=0でリセット
 	GetParent()->SendMessage(WM_APP + 11, 0, 0);
@@ -136,7 +151,7 @@ void IconLabel::OnMenuDefaultIcon()
 /**
  * コンテキストメニューの表示
  */
-void IconLabel::OnContextMenu(
+void IconLabelForApp::OnContextMenu(
 	CWnd* pWnd,
 	CPoint point
 )
@@ -148,20 +163,25 @@ void IconLabel::OnContextMenu(
 	}
 
 	const int ID_CHANGEICON = 1;
-	const int ID_DEFAULTICON = 2;
 
 	CMenu menu;
 	menu.CreatePopupMenu();
 	menu.InsertMenu((UINT)-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
-	menu.InsertMenu((UINT)-1, 0, ID_DEFAULTICON, _T("アイコンを初期状態に戻す"));
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	if (n == ID_CHANGEICON) {
 		OnMenuChangeIcon();
 	}
-	else if (n == ID_DEFAULTICON) {
-		OnMenuDefaultIcon();
+}
+
+void IconLabelForApp::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	__super::OnLButtonDblClk(nFlags, point);
+
+	if (mCanIconChange == false) {
+		return;
 	}
 
+	OnMenuChangeIcon();
 }
 
