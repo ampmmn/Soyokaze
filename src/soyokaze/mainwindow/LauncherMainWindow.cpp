@@ -862,8 +862,14 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
 
 	if (pref->IsHideOnStartup()) {
+		// 「起動直後に非表示」の場合はウインドウを隠す
 		PostMessage(WM_APP+7, 0, 0);
 	}
+	else {
+		// そうでない場合はアクティブにする
+		PostMessage(WM_APP+2, 1, 0);
+	}
+	ClearContent();
 
 	spdlog::info(_T("MainWindow initialized."));
 
@@ -935,7 +941,7 @@ void LauncherMainWindow::ClearContent()
 	struct LocalInputStatus : public LauncherInput {
 		virtual bool HasKeyword() { return false; }
 	} status;
-	in->mLayout->UpdateInputStatus(&status);
+	in->mLayout->UpdateInputStatus(&status, true);
 
 	UpdateData(FALSE);
 }
@@ -1059,7 +1065,7 @@ void LauncherMainWindow::UpdateCandidates()
 		return;
 	}
 	// 状態変更を通知
-	in->mLayout->UpdateInputStatus(&in->mInput);
+	in->mLayout->UpdateInputStatus(&in->mInput, false);
 
 	auto pCmd = GetCurrentCommand();
 	if (pCmd == nullptr) {

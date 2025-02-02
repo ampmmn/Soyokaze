@@ -44,6 +44,11 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 
 		if (mMainWnd) {
 			mThisPtr->RecalcControls(mMainWnd, nullptr);
+
+			struct LocalInputStatus : public LauncherInput {
+				virtual bool HasKeyword() { return false; }
+			} status;
+			mThisPtr->UpdateInputStatus(&status, true); 
 		}
 	}
 
@@ -126,23 +131,29 @@ MainWindowLayout::~MainWindowLayout()
 }
 
 // 入力状態が更新された
-void MainWindowLayout::UpdateInputStatus(LauncherInput* status)
+void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpdate)
 {
 	ASSERT(status);
 
+	// 初回 or 強制更新フラグ or 状態が変化した場合は実施するが、
+	// そうでない場合はスキップする
 	bool isCurHasKeyword = status->HasKeyword();
-	if (in->mIsFirstUpdate  == false && in->mIsPrevHasKeyword == isCurHasKeyword) {
-		// 状態変化なし
+	bool isStatusUpdated = in->mIsPrevHasKeyword != isCurHasKeyword;
+	if (isForceUpdate == false &&
+	    in->mIsFirstUpdate  == false && 
+			isStatusUpdated == false) {
+		// スキップ
 		return;
-	}	 
+	}	
+
 	in->mIsFirstUpdate = false;
 
 	if (status->HasKeyword()) {
-		// 候補欄を表示
+		// キーワードが入力されているため、候補欄を表示する
 		in->mWindowPositionPtr->SyncPosition(in->mMainWnd);
 	}
 	else {
-		// 候補欄を非表示
+		// キーワードは未入力であるため、候補欄を非表示にする
 		CRect rc;
 		GetWindowRect(in->mMainWnd, &rc);
 		RecalcWindowSize(in->mMainWnd, status, WMSZ_TOP, rc); 

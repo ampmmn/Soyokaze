@@ -67,11 +67,6 @@ MainWindowAppearance::MainWindowAppearance(LauncherMainWindowIF* mainWnd) : in(n
 
 	// 
 	in->UpdateFont();
-
-	// 透明度制御
-	HWND hwnd = mainWnd->GetWindowObject()->GetSafeHwnd();
-	in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
-	in->mWindowTransparencyPtr->SetWindowHandle(hwnd);
 }
 
 MainWindowAppearance::~MainWindowAppearance()
@@ -124,6 +119,14 @@ void MainWindowAppearance::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 
 	// メインウインドウがフォーカスを失っても非表示にしない設定であれば透過状態を更新
 	if (in->mIsBlockDeactivateOnUnfocus == false) {
+
+		// 透明度制御
+		if (in->mWindowTransparencyPtr.get() == nullptr) {
+			HWND hwnd = in->mMainWnd->GetWindowObject()->GetSafeHwnd();
+			in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
+			in->mWindowTransparencyPtr->SetWindowHandle(hwnd);
+		}
+
 		in->mWindowTransparencyPtr->UpdateActiveState(nState);
 	}
 }

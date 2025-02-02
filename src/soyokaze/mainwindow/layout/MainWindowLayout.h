@@ -13,7 +13,7 @@ public:
 	~MainWindowLayout() override;
 
 	// 入力が更新された
-	void UpdateInputStatus(LauncherInput* status) override;
+	void UpdateInputStatus(LauncherInput* status, bool isForceUpdate) override;
 	// ウインドウ位置の復元
 	void RestoreWindowPosition(CWnd* wnd, bool isForceReset) override;
 	// 表示/非表示になるときの処理
