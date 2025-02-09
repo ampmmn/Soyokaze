@@ -19,6 +19,7 @@ struct BasicSettingDialog::PImpl
 
 	bool mIsEnableHotKey = true;
 	bool mIsEnableModifierHotKey = false;
+	bool mIsEnableModifierHotKeyOnRD = false;
 	UINT mModifierFirstVK = VK_CONTROL;
 	UINT mModifierSecondVK = VK_CONTROL;
 
@@ -78,6 +79,7 @@ void BasicSettingDialog::OnOK()
 	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)in->mHotKeyAttr.GetVKCode());
 	settingsPtr->Set(_T("HotKey:IsEnableHotKey"), in->mIsEnableHotKey);
 	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), in->mIsEnableModifierHotKey);
+	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKeyOnRD"), in->mIsEnableModifierHotKeyOnRD);
 	settingsPtr->Set(_T("HotKey:FirstModifierVirtualKeyCode"), (int)in->mModifierFirstVK);
 	settingsPtr->Set(_T("HotKey:SecondModifierVirtualKeyCode"),(int) in->mModifierSecondVK);
 
@@ -144,6 +146,7 @@ void BasicSettingDialog::OnButtonHotKey()
 	AppHotKeyDialog dlg(in->mHotKeyAttr, this);
 	dlg.SetEnableHotKey(in->mIsEnableHotKey);
 	dlg.SetEnableModifierHotKey(in->mIsEnableModifierHotKey);
+	dlg.SetEnableModifierHotKeyOnRD(in->mIsEnableModifierHotKeyOnRD);
 	dlg.SetModifierFirstVK(in->mModifierFirstVK);
 	dlg.SetModifierSecondVK(in->mModifierSecondVK);
 
@@ -153,6 +156,7 @@ void BasicSettingDialog::OnButtonHotKey()
 	dlg.GetAttribute(in->mHotKeyAttr);
 	in->mIsEnableHotKey = dlg.IsEnableHotKey();
 	in->mIsEnableModifierHotKey = dlg.IsEnableModifierHotKey();
+	in->mIsEnableModifierHotKeyOnRD = dlg.IsEnableModifierHotKeyOnRD();
 	in->mModifierFirstVK = dlg.GetModifierFirstVK();
 	in->mModifierSecondVK = dlg.GetModifierSecondVK();
 
@@ -170,6 +174,7 @@ void BasicSettingDialog::OnEnterSettings()
 
 	in->mIsEnableHotKey = settingsPtr->Get(_T("HotKey:IsEnableHotKey"), true);
 	in->mIsEnableModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
+	in->mIsEnableModifierHotKeyOnRD = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKeyOnRD"), false);
 	in->mModifierFirstVK = settingsPtr->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
 	in->mModifierSecondVK = settingsPtr->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
 

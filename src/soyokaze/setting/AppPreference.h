@@ -47,6 +47,7 @@ public:
 
 	bool IsEnableAppHotKey();
 	bool IsEnableModifierHotKey();
+	bool IsEnableModifierHotKeyOnRemoteDesktop();
 	UINT GetFirstModifierVirtualKeyCode();
 	UINT GetSecondModifierVirtualKeyCode();
 

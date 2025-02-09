@@ -438,6 +438,8 @@
 #define IDC_SYSLINK_OPTION              1177
 #define IDC_CHECK_HOTKEY2               1178
 #define IDC_EDIT_KEYWORD                1179
+#define IDC_CHECK_HOTKEY3               1179
+#define IDC_CHECK_ENABLE_ON_RD          1179
 #define IDC_CHECK_ENABLE_CHROME         1180
 #define IDC_CHECK_ENABLE_EDGE           1181
 #define IDC_CHECK_USEDEFAULT            1182

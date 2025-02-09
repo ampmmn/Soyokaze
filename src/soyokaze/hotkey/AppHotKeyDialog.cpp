@@ -15,6 +15,7 @@ AppHotKeyDialog::AppHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) :
 	mHotKeyAttr(attr),
 	mIsEnableHotKey(TRUE),
 	mIsEnableModifieHotKey(FALSE),
+	mIsEnableOnRD(FALSE),
 	mFirstVKIndex(-1),
 	mSecondVKIndex(-1)
 {
@@ -39,6 +40,7 @@ void AppHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_VKMODFIRST, mFirstVKIndex);
 	DDX_CBIndex(pDX, IDC_COMBO_VKMODSECOND, mSecondVKIndex);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, mDescription);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_ON_RD, mIsEnableOnRD);
 }
 
 BEGIN_MESSAGE_MAP(AppHotKeyDialog, launcherapp::gui::SinglePageDialog)
@@ -69,6 +71,11 @@ bool AppHotKeyDialog::IsEnableModifierHotKey()
 	return mIsEnableModifieHotKey != FALSE;
 }
 
+bool AppHotKeyDialog::IsEnableModifierHotKeyOnRD()
+{
+	return mIsEnableOnRD != FALSE;
+}
+
 void AppHotKeyDialog::SetEnableHotKey(bool isEnable)
 {
 	mIsEnableHotKey = isEnable ? TRUE : FALSE;
@@ -77,6 +84,11 @@ void AppHotKeyDialog::SetEnableHotKey(bool isEnable)
 void AppHotKeyDialog::SetEnableModifierHotKey(bool isEnable)
 {
 	mIsEnableModifieHotKey = isEnable ? TRUE : FALSE;
+}
+
+void AppHotKeyDialog::SetEnableModifierHotKeyOnRD(bool isEnable)
+{
+	mIsEnableOnRD = isEnable ? TRUE : FALSE;
 }
 
 static int VKToCBIndex(UINT vk)
@@ -163,6 +175,7 @@ bool AppHotKeyDialog::UpdateStatus()
 
 	GetDlgItem(IDC_COMBO_VKMODFIRST)->EnableWindow(mIsEnableModifieHotKey);
 	GetDlgItem(IDC_COMBO_VKMODSECOND)->EnableWindow(mIsEnableModifieHotKey);
+	GetDlgItem(IDC_CHECK_ENABLE_ON_RD)->EnableWindow(mIsEnableModifieHotKey);
 
 	if (mIsEnableHotKey == FALSE && mIsEnableModifieHotKey == FALSE) {
 		mMessage = _T("いずれかのホットキーを有効にする必要があります");

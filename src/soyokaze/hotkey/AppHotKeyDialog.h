@@ -17,8 +17,10 @@ public:
 
 	bool IsEnableHotKey();
 	bool IsEnableModifierHotKey();
+	bool IsEnableModifierHotKeyOnRD();
 	void SetEnableHotKey(bool isEnable);
 	void SetEnableModifierHotKey(bool isEnable);
+	void SetEnableModifierHotKeyOnRD(bool isEnable);
 	void SetModifierFirstVK(UINT vk);
 	void SetModifierSecondVK(UINT vk);
 	UINT GetModifierFirstVK();
@@ -30,6 +32,8 @@ public:
 
 	BOOL mIsEnableHotKey;
 	BOOL mIsEnableModifieHotKey;
+	// リモートデスクトップにフォーカスがある場合であっても、修飾キーの組み合わせ入力によるホットキーを有効にする
+	BOOL mIsEnableOnRD;
 	// 補足説明
 	CString mDescription;
 

@@ -461,6 +461,11 @@ bool AppPreference::IsEnableModifierHotKey()
 	return in->Get(_T("HotKey:IsEnableModifierHotKey"), false);
 }
 
+bool AppPreference::IsEnableModifierHotKeyOnRemoteDesktop()
+{
+	return in->Get(_T("HotKey:IsEnableModifierHotKeyOnRD"), false);
+}
+
 UINT AppPreference::GetFirstModifierVirtualKeyCode()
 {
 	return in->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);

@@ -129,6 +129,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 
 		bool prevEnable = mIsEnableHotKey;
 		mIsEnableHotKey = pref->IsEnableModifierHotKey();
+		mIsEnableOnRD = pref->IsEnableModifierHotKeyOnRemoteDesktop();
 
 		mFirstVK = pref->GetFirstModifierVirtualKeyCode();
 		mSecondVK = pref->GetSecondModifierVirtualKeyCode();
@@ -151,12 +152,30 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 		}
 	}
 
+	bool IsSkipNotify() {
+
+		if (mIsEnableOnRD) {
+			// リモートデスクトップでも有効(とするので、スキップをしない)
+			return false;
+		}
+
+		HWND h = GetForegroundWindow();
+		TCHAR clsName[64];
+		GetClassName(h,clsName, 64);
+		if (_tcscmp(clsName, _T("TscShellContainerClass")) == 0) {
+			spdlog::debug(_T("mstsc is active. className:{}"), (LPCTSTR)clsName);
+			return true;
+		}		
+		return false;
+	}
+
 	HWND mHwnd = nullptr;
 	UINT mPrevVK = 0;
 	uint64_t mPrevTime = 0;
 	bool mIsOtherKeyPressed = false;
 
 	bool mIsEnableHotKey = false;
+	bool mIsEnableOnRD = false;
 	SHORT mPrevStates[256];
 
 	UINT mFirstVK = 0;
@@ -259,13 +278,9 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			in->mPrevTime = 0;
 
 			// アクティブなウインドウがリモートデスクトップの場合はホットキー通知しない
-			HWND h = GetForegroundWindow();
-			TCHAR clsName[64];
-			GetClassName(h,clsName, 64);
-			if (_tcscmp(clsName, _T("TscShellContainerClass")) == 0) {
-				spdlog::debug(_T("mstsc is active. className:{}"), (LPCTSTR)clsName);
+			if (in->IsSkipNotify()) {
 				break;
-			}		
+			}
 
 			SharedHwnd sharedHwnd;
 			PostMessage(sharedHwnd.GetHwnd(), WM_APP+2, 0, 0);
