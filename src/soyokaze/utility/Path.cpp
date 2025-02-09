@@ -166,12 +166,12 @@ Path::Path() : mPath(MAX_PATH_NTFS)
 
 Path::Path(LPCTSTR initPath) : mPath(MAX_PATH_NTFS)
 {
-	_tcsncpy_s(&mPath.front(), (DWORD)mPath.size(), initPath, _TRUNCATE);
+	_tcsncpy_s(mPath.data(), (DWORD)mPath.size(), initPath, _TRUNCATE);
 }
 
 Path::Path(MODULEFILEPATH_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 {
-	GetModuleFileName(nullptr, &mPath.front(), (DWORD)mPath.size());
+	GetModuleFileName(nullptr, mPath.data(), (DWORD)mPath.size());
 	if (tag == MODULEFILEDIR) {
 		RemoveFileSpec();
 	}
@@ -190,6 +190,13 @@ Path::Path(APPPROFILE_TAG, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 
 Path::~Path()
 {
+}
+
+Path& Path::operator = (const CString& path)
+{
+	mPath.resize(path.GetLength() + 1);
+	_tcsncpy_s(mPath.data(), (DWORD)mPath.size(), path, _TRUNCATE);
+	return *this;
 }
 
 bool Path::IsEmptyPath() const
@@ -317,11 +324,11 @@ void Path::Shrink()
 
 LPCTSTR Path::cdata() const
 {
-	return &mPath.front();
+	return mPath.data();
 }
 LPTSTR Path::data()
 {
-	return &mPath.front();
+	return mPath.data();
 }
 
 

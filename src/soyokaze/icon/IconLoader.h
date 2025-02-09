@@ -9,12 +9,19 @@ public:
 public:
 	static IconLoader* Get();
 
-	// ファイルに関連付けられたアイコンを取得
+	// ファイルに関連付けられたアイコンを取得(SHGetFileInfo経由の取得)
 	HICON LoadIconFromPath(const CString& path);
 	// ファイル拡張子に関連付けられたアイコンを取得
 	HICON LoadExtensionIcon(const CString& fileExt);
 	// ウインドウハンドルからアプリアイコンを取得
 	HICON LoadIconFromHwnd(HWND hwnd);
+	// ファイルがリソースとして保持するアイコンを取得
+	HICON LoadIconResource(const CString& path, int index);
+	// イメージファイルからアイコンを取得
+	HICON LoadIconFromImageFile(const CString& imageFilePath, bool isShared);
+	// (LoadIconFromImageFileで取得した)アイコンを破棄する
+	void Destroy(HICON iconHandle);
+
 
 	void RegisterIcon(const CString& path, HICON icon);
 
@@ -24,8 +31,6 @@ public:
 	HICON GetImageResIcon(int index);
 	HICON GetWMPlocIcon(int index);
 	HICON GetMMCndMgrIcon(int index);
-	// ファイルがリソースとして保持するアイコンを取得
-	HICON LoadIconResource(const CString& path, int index);
 
 	HICON LoadFolderIcon();
 	HICON LoadWebIcon();
@@ -50,6 +55,8 @@ public:
 
 	HICON LoadIconFromStream(const std::vector<uint8_t>& strm);
 	static bool GetStreamFromPath(const CString& path, std::vector<uint8_t>& strm);
+private:
+	static bool TryGetStreamFromIconPath(const CString& path, std::vector<uint8_t>& strm);
 
 private:
 	IconLoader();

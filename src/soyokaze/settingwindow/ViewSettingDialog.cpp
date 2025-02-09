@@ -3,6 +3,7 @@
 #include "ViewSettingDialog.h"
 #include "setting/Settings.h"
 #include "app/Manual.h"
+#include "icon/IconLoader.h"
 #include "icon/IconLabelForApp.h"
 #include "icon/AppIcon.h"
 #include "utility/Path.h"
@@ -148,7 +149,7 @@ BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnUpdateStatus)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
-	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
+	ON_COMMAND(IDC_BUTTON_BROWSE, OnButtonBrowse)
 	ON_COMMAND(IDC_BUTTON_RESETICON, OnButtonResetIcon)
 	ON_COMMAND(IDC_CHECK_DRAWICON, OnUpdateStatus)
 END_MESSAGE_MAP()
@@ -160,7 +161,7 @@ BOOL ViewSettingDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	in->mIconLabelPtr.SubclassDlgItem(IDC_STATIC_ICON, this);
-	in->mIconLabelPtr.EnableIconChange();
+	in->mIconLabelPtr.DisableIconChange();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -168,18 +169,33 @@ BOOL ViewSettingDialog::OnInitDialog()
 	return TRUE;
 }
 
+void ViewSettingDialog::SetIconPath(const CString& appIconPath)
+{
+	bool isShared = false;
+	HICON h = IconLoader::Get()->LoadIconFromImageFile(appIconPath, isShared);
+	if (h == nullptr) {
+		AfxMessageBox(_T("ファイルのロードに失敗しました"));
+		return ;
+	}
+
+	if (in->mIcon) {
+		DestroyIcon(in->mIcon);
+	}
+	in->mIcon = h;
+	in->mAppIconFilePath = appIconPath;
+	in->mIsIconReset = false;
+
+	// 再描画
+	in->mIconLabelPtr.DrawIcon(in->mIcon);
+}
+
 bool ViewSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(in->mTransparencyType != 2);
 
 	bool isDrawIcon = in->mIsDrawIcon != FALSE;
+	GetDlgItem(IDC_BUTTON_BROWSE)->EnableWindow(isDrawIcon);
 	GetDlgItem(IDC_BUTTON_RESETICON)->EnableWindow(isDrawIcon);
-	if (isDrawIcon) {
-		in->mIconLabelPtr.EnableIconChange();
-	}
-	else {
-		in->mIconLabelPtr.DisableIconChange();
-	}
 
 	if (in->mIcon) {
 		in->mIconLabelPtr.DrawIcon(in->mIcon);
@@ -253,6 +269,29 @@ void ViewSettingDialog::OnNotifyLinkOpen(
 	*pResult = 0;
 }
 
+// アイコン変更ボタン押下時の処理
+void ViewSettingDialog::OnButtonBrowse()
+{
+	UpdateData();
+
+	CString filterStr((LPCTSTR)IDS_FILTER_ICONIMAGEFILES);
+
+	Path iconPath(Path::MODULEFILEPATH);
+	iconPath.Shrink();
+
+	if (in->mAppIconFilePath.IsEmpty() == FALSE) {
+		iconPath = in->mAppIconFilePath;
+	}
+
+	CFileDialog dlg(TRUE, NULL, iconPath, OFN_FILEMUSTEXIST, filterStr, this);
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	SetIconPath(dlg.GetPathName());
+}
+
+
 void ViewSettingDialog::OnButtonResetIcon()
 {
 	UpdateData();
@@ -267,33 +306,5 @@ void ViewSettingDialog::OnButtonResetIcon()
 
 	UpdateStatus();
 
-}
-
-LRESULT ViewSettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
-{
-	if (wp != 1) {
-		return 0;
-	}
-
-	// 変更
-	LPCTSTR appIconPath = (LPCTSTR)lp;
-
-	HICON h = (HICON)LoadImage(nullptr, (LPCTSTR)appIconPath, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
-	if (h == nullptr) {
-		AfxMessageBox(_T("icoファイルのロードに失敗しました"));
-		return 0;
-	}
-
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-	}
-	in->mIcon = h;
-	in->mAppIconFilePath = appIconPath;
-	in->mIsIconReset = false;
-
-	// 再描画
-	in->mIconLabelPtr.DrawIcon(in->mIcon);
-
-	return 0;
 }
 

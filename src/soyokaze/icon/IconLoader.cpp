@@ -291,7 +291,13 @@ bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
 
 HICON IconLoader::PImpl::LoadIconFromImage(LPCTSTR path)
 {
-	// 画像ファイルをロードする
+	// icoとして読み込んでみる
+	HICON iconHandle = (HICON)LoadImage(nullptr, path, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+	if (iconHandle != nullptr) {
+		return iconHandle;
+	}
+
+	// icoとして読めなかった場合は、画像ファイルをロードする
 	ATL::CImage image;
 	HRESULT hr = image.Load(path);
 	if (FAILED(hr)) {
@@ -571,6 +577,49 @@ HICON IconLoader::LoadIconResource(const CString& path, int index)
 	return h;
 }
 
+/**
+  イメージファイルからアイコンを取得
+	isSharedがtrueの場合は所有権をIconLoaderが持つ
+	(同じパスに対して再度メソッドを呼び出したときは前回と同じアイコンハンドルを返す)
+	isSharedがfalseの場合は呼び出し側がアイコンを破棄する責務を持つ
+
+ 	@return アイコンハンドル
+ 	@param[in] imageFilePath 画像ファイルパス
+ 	@param[in] isShared      
+*/
+HICON IconLoader::LoadIconFromImageFile(
+	const CString& imageFilePath,
+	bool isShared
+)
+{
+	if (isShared) {
+		std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+		// キャッシュに存在する場合はそれを返す
+		auto it = in->mAppIconMap.find(imageFilePath);
+		if (it != in->mAppIconMap.end()) {
+			// すでに作成済
+			return it->second.IconHandle();
+		}
+	}
+
+	HICON iconHandle = in->LoadIconFromImage(imageFilePath);
+	if (iconHandle == nullptr) {
+		return nullptr;
+	}
+
+	if (isShared) {
+		// アイコンを登録
+		RegisterIcon(imageFilePath, iconHandle);
+	}
+	return iconHandle;
+}
+
+// (LoadIconFromImageFileで取得した)アイコンを破棄する
+void IconLoader::Destroy(HICON iconHandle)
+{
+	::DestroyIcon(iconHandle);
+}
+
 
 HICON IconLoader::LoadFolderIcon()
 {
@@ -818,6 +867,11 @@ bool IconLoader::GetStreamFromPath(
 	std::vector<uint8_t>& strm
 )
 {
+	// アイコンの場合はそれをそのまま使う
+	if (TryGetStreamFromIconPath(path, strm)) {
+		return true;
+	}
+
 	// 画像ファイルをロードする
 	ATL::CImage image;
 	HRESULT hr = image.Load(path);
@@ -872,6 +926,38 @@ bool IconLoader::GetStreamFromPath(
 	CloseHandle(h);
 
 	return true;
+}
+
+// アイコンファイルからよみこむ
+bool IconLoader::TryGetStreamFromIconPath(const CString& path, std::vector<uint8_t>& strm)
+{
+	// アイコンとしてよみこめるか、実際に試してみる
+	HICON iconHandle = (HICON)LoadImage(nullptr, (LPCTSTR)path, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+	if (iconHandle == nullptr) {
+		// アイコンファイルではない
+		return false;
+	}
+	DestroyIcon(iconHandle);
+
+	// ファイルの中身を読む
+	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (h == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+
+	// アイコンファイルなので大きいファイルサイズは想定しない
+	DWORD fileSize = GetFileSize(h, nullptr);
+	strm.resize(fileSize);
+
+	DWORD readBytes = 0;
+	if (ReadFile(h, &strm.front(), fileSize, &readBytes, nullptr) == FALSE) {
+		SPDLOG_ERROR(_T("Failed to ReadFile! err={:x}"), GetLastError());
+	}
+
+	CloseHandle(h);
+
+	return true;
+
 }
 
 

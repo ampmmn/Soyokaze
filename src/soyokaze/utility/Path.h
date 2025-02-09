@@ -26,6 +26,8 @@ public:
 	Path(APPPROFILE_TAG tag, LPCTSTR extraPath = nullptr);
 	~Path();
 
+	Path& operator = (const CString& path);
+
 	bool IsEmptyPath() const;
 	operator LPCTSTR() const;
 	operator LPTSTR();

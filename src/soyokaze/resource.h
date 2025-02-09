@@ -369,6 +369,7 @@
 #define IDC_BUTTON_RESTORE              1126
 #define IDC_BUTTON_RESETICON            1126
 #define IDC_BUTTON_TEST                 1127
+#define IDC_BUTTON_RESETICON2           1127
 #define IDC_EDIT_TEXT                   1128
 #define IDC_BUTTON_UPDATE               1129
 #define IDC_EDIT_X                      1130

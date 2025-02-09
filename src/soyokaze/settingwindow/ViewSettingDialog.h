@@ -14,6 +14,7 @@ public:
 	std::unique_ptr<PImpl> in;
 
 protected:
+	void SetIconPath(const CString& appIconPath);
 	bool UpdateStatus();
 
 	BOOL OnKillActive() override;
@@ -29,7 +30,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnButtonBrowse();
 	afx_msg void OnButtonResetIcon();
-	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 };
 
