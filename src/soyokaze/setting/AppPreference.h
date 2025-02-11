@@ -98,6 +98,8 @@ public:
 
 	// 入力欄ウインドウをマウスカーソル位置に表示するか
 	bool IsShowMainWindowOnCurorPos();
+	// 入力欄ウインドウをアクティブなウインドウの中央に表示するか
+	bool IsShowMainWindowOnActiveWindowCenter();
 
 	// 入力欄ウインドウにコマンド種別を表示するか
 	bool IsShowCommandType();

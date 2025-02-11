@@ -11,6 +11,13 @@
 #define new DEBUG_NEW
 #endif
 
+enum POSITIONTYPE {
+	POSTYPE_KEEPLAST = 0,        // 前回と同じ位置
+	POSTYPE_MOUSECURSOR,         // マウスカーソル
+	POSTYPE_ACTIVEWINDOWCENTER,  // アクティブなウインドウの中央
+};
+
+
 struct BasicSettingDialog::PImpl
 {
 	// ランチャー呼び出しキー（表示用)
@@ -22,6 +29,9 @@ struct BasicSettingDialog::PImpl
 	bool mIsEnableModifierHotKeyOnRD = false;
 	UINT mModifierFirstVK = VK_CONTROL;
 	UINT mModifierSecondVK = VK_CONTROL;
+
+	// 入力画面の表示位置
+	int mShowPositionType = POSTYPE_KEEPLAST;
 
 	// 表示中にホットキーを押したら隠れる
 	BOOL mIsShowToggle = true;
@@ -88,8 +98,11 @@ void BasicSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)in->mIsHideOnRun);
 	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
-	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), (bool)in->mIsShowMainWindowOnCursor);
 
+	bool isShowOnActWin = (in->mShowPositionType == POSTYPE_MOUSECURSOR);
+	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), isShowOnActWin);
+	bool isShowOnCursor = (in->mShowPositionType == POSTYPE_ACTIVEWINDOWCENTER);
+	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), isShowOnCursor);
 
 	__super::OnOK();
 }
@@ -104,7 +117,7 @@ void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, in->mIsHideOnRun);
 	DDX_Check(pDX, IDC_CHECK_TOPMOST, in->mIsTopMost);
 	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, in->mIsHideOnInactive);
-	DDX_Check(pDX, IDC_CHECK_MOVETOCURSOR, in->mIsShowMainWindowOnCursor);
+	DDX_CBIndex(pDX, IDC_COMBO_POSITION, in->mShowPositionType);
 }
 
 BEGIN_MESSAGE_MAP(BasicSettingDialog, SettingPage)
@@ -183,7 +196,19 @@ void BasicSettingDialog::OnEnterSettings()
 	in->mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 	in->mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
 	in->mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
-	in->mIsShowMainWindowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
+
+	bool isShowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
+	bool isShowOnActWin = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), false);
+	if (isShowOnCursor) {
+		in->mShowPositionType = POSTYPE_MOUSECURSOR;
+	}
+	else if (isShowOnActWin) {
+		in->mShowPositionType = POSTYPE_ACTIVEWINDOWCENTER;
+	}
+	else {
+		in->mShowPositionType = POSTYPE_KEEPLAST;
+	}
+
 
 }
 

@@ -756,6 +756,11 @@ bool AppPreference::IsShowMainWindowOnCurorPos()
 	return in->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 }
 
+bool AppPreference::IsShowMainWindowOnActiveWindowCenter()
+{
+	return in->Get(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), false);
+}
+
 // 入力欄ウインドウにコマンド種別を表示するか
 bool AppPreference::IsShowCommandType()
 {
