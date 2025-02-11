@@ -110,7 +110,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 
 	std::vector<SettingPage*> pages;
 	CommandRepository::GetInstance()->EnumProviderSettingDialogs(this, pages);
-		// EnumProviderSettingDialogsで取得した各ページの解放は呼び出し側で行う
+	// EnumProviderSettingDialogsで取得した各ページの解放は呼び出し側で行う
 	for (auto page : pages) {
 		AddPage(hExtensionItem, std::unique_ptr<SettingPage>(page), param);
 	}
