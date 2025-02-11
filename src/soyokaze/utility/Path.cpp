@@ -269,7 +269,7 @@ bool Path::FileExists() const
 			return false;
 		}
 
-		bool result = queryData->TryGet(50);
+		bool result = queryData->TryGet(100);
 		queryData->Release();
 
 		return result;
@@ -291,7 +291,7 @@ bool Path::IsDirectory() const
 			return false;
 		}
 
-		bool result = queryData->TryGet(50);
+		bool result = queryData->TryGet(100);
 		queryData->Release();
 
 		return result;
