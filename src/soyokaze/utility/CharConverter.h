@@ -8,10 +8,13 @@ namespace utility {
 class CharConverter
 {
 public:
+	struct Exception {};
+
+public:
 	CharConverter(int codePage = CP_UTF8);
 	~CharConverter();
 
-	CString& Convert(const char* src, CString& dst);
+	CString& Convert(const char* src, CString& dst, bool isFailIfInvalidChars = false);
 	CStringA& Convert(const CString& src, CStringA& dst);
 	std::string& Convert(const CString& src, std::string& dst);
 

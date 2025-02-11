@@ -9,6 +9,7 @@
 
 ### Changed
 
+- DecodeBase64Commandで変換結果がUTF-8文字列として正しくない場合は候補に表示しないようにした
 - 候補欄に表示する初期アイコンをico以外の形式も指定できるようにした(thanks to @sk74)
 - あわせて、初期アイコン設定回りのUIを少し変更(thanks to @sk74)
 

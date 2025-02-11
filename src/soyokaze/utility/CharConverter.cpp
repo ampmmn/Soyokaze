@@ -20,13 +20,18 @@ CharConverter::~CharConverter()
 {
 }
 
-CString& CharConverter::Convert(const char* src, CString& dst)
+CString& CharConverter::Convert(const char* src, CString& dst, bool isFailIfInvalidChars)
 {
 	int cp = mCodePage;
 
-	int requiredLen = MultiByteToWideChar(cp, 0, src, -1, NULL, 0);
+	DWORD flags = isFailIfInvalidChars ? MB_ERR_INVALID_CHARS : 0;
 
-	MultiByteToWideChar(cp, 0, src, -1, dst.GetBuffer(requiredLen), requiredLen);
+	int requiredLen = MultiByteToWideChar(cp, flags, src, -1, NULL, 0);
+	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
+		throw Exception();
+	}
+
+	MultiByteToWideChar(cp, flags, src, -1, dst.GetBuffer(requiredLen), requiredLen);
 	dst.ReleaseBuffer();
 
 	return dst;

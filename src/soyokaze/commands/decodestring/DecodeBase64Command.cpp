@@ -173,9 +173,17 @@ int DecodeBase64Command::Match(Pattern* pattern)
 	bits.flush(dst);
 	dst.push_back(0x00);
 
-	conv.Convert((const char*)dst.data(), mName);
-
-	return Pattern::PartialMatch;
+	try {
+		// Base64デコードして得られたバイト列をUTF-8とみなしてwchar_t配列に変換する
+		bool isFailInvalidChars = true;
+		conv.Convert((const char*)dst.data(), mName, isFailInvalidChars);
+		return Pattern::PartialMatch;
+	}
+	catch(launcherapp::utility::CharConverter::Exception) {
+		// UTF-8文字列として変換できない場合は不一致扱いとする
+		return Pattern::Mismatch;
+	}
+	return Pattern::Mismatch;
 }
 
 launcherapp::core::Command*
