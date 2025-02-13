@@ -267,9 +267,9 @@ static bool IsValidForegroundWindow(HWND hwnd)
 		SPDLOG_DEBUG("desktop");
 		return false;
 	}
-	if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0) {
-		// タスクトレイのウインドウがとれることもある
-		SPDLOG_DEBUG("traywnd");
+	if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0 || _tcscmp(clsName, _T("Progman")) == 0) {
+		// タスクトレイやプログラムマネージャのウインドウがとれることもある
+		SPDLOG_DEBUG("traywnd or progman");
 		return false;
 	}
 
