@@ -36,21 +36,32 @@ struct KeywordEdit::PImpl
 
 	HBITMAP GetCaret(CWnd* wnd, bool isIMEOn)
 	{
-		if (mIsFirst) {
+		CFont* currentFont = wnd->GetFont();
+		LOGFONT lf;
+		currentFont->GetLogFont(&lf);
+
+		int fontSize = abs((int)lf.lfHeight);
+		bool isFontSizeChanged = mFontSize != fontSize; 
+		mFontSize = fontSize;
+
+		if (mCaretIMEON == nullptr || isFontSizeChanged) {
 			// 初回にキャレット用のビットマップを生成する
-			CFont* currentFont = wnd->GetFont();
-			LOGFONT lf;
-			currentFont->GetLogFont(&lf);
 
 			int cx = GetSystemMetrics(SM_CXBORDER);
-			int cy = abs((int)lf.lfHeight);
+			int cy = fontSize;
 
 			CClientDC dc(wnd);
 			CDC memDC;
 			memDC.CreateCompatibleDC(&dc);
 
+			if (mCaretIMEON != nullptr) {
+				DeleteObject(mCaretIMEON);
+			}
 			mCaretIMEON = CreateCompatibleBitmap(dc.GetSafeHdc(), cx + 1, cy);
 				// IME=ONのキャレットは強調のため少しだけ太くする
+			if (mCaretNormal != nullptr) {
+				DeleteObject(mCaretNormal);
+			}
 			mCaretNormal = CreateCompatibleBitmap(dc.GetSafeHdc(), cx, cy);
 
 			auto colorSettings = ColorSettings::Get();
@@ -71,8 +82,6 @@ struct KeywordEdit::PImpl
 
 			memDC.SelectObject(oldBr);
 			memDC.SelectObject(oldBmp);
-
-			mIsFirst = false;
 		}
 
 		return isIMEOn ? mCaretIMEON : mCaretNormal;
@@ -92,7 +101,6 @@ struct KeywordEdit::PImpl
 		CRect rc;
 		thisWnd->GetClientRect(&rc);
 		int rcOrgH = rc.Height();
-		ASSERT(rcOrgH >= fontH);
 
 		rc.top = (rcOrgH - fontH) / 2;
 		rc.bottom = rc.top + fontH;
@@ -101,7 +109,6 @@ struct KeywordEdit::PImpl
 		thisWnd->SetRect(&rc);
 	}
 
-	bool mIsFirst = true;
 	bool mIsFocus = false;
 
 	// IMMのハンドル
@@ -111,6 +118,7 @@ struct KeywordEdit::PImpl
 	// キャレット用のビットマップ
 	HBITMAP mCaretNormal = nullptr;
 	HBITMAP mCaretIMEON = nullptr;
+	int mFontSize = 16;
 
 	CString mPlaceHolderText;
 
@@ -119,13 +127,6 @@ struct KeywordEdit::PImpl
 KeywordEdit::KeywordEdit(CWnd* pParent) : in(std::make_unique<PImpl>())
 {
 	UNREFERENCED_PARAMETER(pParent);
-
-	in->mIsFirst = true;
-	in->mIsFocus = false;
-	in->mCaretNormal = NULL;
-	in->mCaretIMEON = NULL;
-	in->mImcHandle = NULL;
-
 }
 
 KeywordEdit::~KeywordEdit()

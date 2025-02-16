@@ -23,6 +23,7 @@ public:
 	void UpdateSize(int cx, int cy);
 
 	int GetItemCountInPage();
+	void OnMeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 
 // CandidateListListenerIF
 	void OnUpdateSelect(void* sender) override;

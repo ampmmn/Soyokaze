@@ -8,6 +8,7 @@
 #include "mainwindow/layout/NoIconComponentPlacer.h"
 #include "mainwindow/layout/NoGuideNoIconComponentPlacer.h"
 #include "mainwindow/layout/WindowPosition.h"
+#include "mainwindow/layout/MainWindowPlacement.h"
 
 
 #ifdef _DEBUG
@@ -43,7 +44,8 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 		LoadSettings();
 
 		if (mMainWnd) {
-			mThisPtr->RecalcControls(mMainWnd, nullptr);
+			HWND hwnd = mMainWnd->GetWindowObject()->GetSafeHwnd();
+			mThisPtr->RecalcControls(hwnd, nullptr);
 
 			struct LocalInputStatus : public LauncherInput {
 				virtual bool HasKeyword() { return false; }
@@ -73,39 +75,41 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 
 	}
 
-	ComponentPlacer* CreateComponentPlacer(HWND hwnd)
+	ComponentPlacer* CreateComponentPlacer()
 	{
 		if (mPlacer.get() == nullptr) {
-			mPlacer.reset(CreateComponentPlacerIn(hwnd));
+			mPlacer.reset(CreateComponentPlacerIn());
 		}
 		return mPlacer.get();
 	}
 
-	ComponentPlacer* CreateComponentPlacerIn(HWND hwnd)
+	ComponentPlacer* CreateComponentPlacerIn()
 	{
 		if (mIsFirstCall) {
 			LoadSettings();
 			mIsFirstCall = false;
 		}
 
+		auto placement = new launcherapp::mainwindow::layout::MainWindowPlacement(mMainWnd);
+
 		if (mIsShowGuide == false && mIsDrawIcon) {
 			// ガイドなし、アイコンあり
-			return new launcherapp::mainwindow::layout::NoGuideComponentPlacer(hwnd);
+			return new launcherapp::mainwindow::layout::NoGuideComponentPlacer(placement);
 		}
 		if (mIsShowGuide && mIsDrawIcon == false) {
 			// ガイドあり、アイコンなし
-			return new launcherapp::mainwindow::layout::NoIconComponentPlacer(hwnd);
+			return new launcherapp::mainwindow::layout::NoIconComponentPlacer(placement);
 		}
 		if (mIsShowGuide == false && mIsDrawIcon == false) {
 			// ガイドなし、アイコンなし
-			return new launcherapp::mainwindow::layout::NoGuideNoIconComponentPlacer(hwnd);
+			return new launcherapp::mainwindow::layout::NoGuideNoIconComponentPlacer(placement);
 		}
 		else {
-			return new launcherapp::mainwindow::layout::DefaultComponentPlacer(hwnd);
+			return new launcherapp::mainwindow::layout::DefaultComponentPlacer(placement);
 		}
 	}
 
-	HWND mMainWnd = nullptr;
+	LauncherMainWindowIF* mMainWnd = nullptr;
 	MainWindowLayout* mThisPtr = nullptr;
 	bool mIsFirstCall = true;
 	bool mIsShowGuide = false;
@@ -120,9 +124,10 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	bool mIsPrevHasKeyword = false;
 };
 
-MainWindowLayout::MainWindowLayout() : in(new PImpl)
+MainWindowLayout::MainWindowLayout(LauncherMainWindowIF* mainWnd) : in(new PImpl)
 {
 	in->mThisPtr = this;
+	in->mMainWnd = mainWnd;
 }
 
 MainWindowLayout::~MainWindowLayout()
@@ -148,16 +153,18 @@ void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpda
 
 	in->mIsFirstUpdate = false;
 
+	HWND mainWndHandle = in->mMainWnd->GetWindowObject()->GetSafeHwnd();
+
 	if (status->HasKeyword()) {
 		// キーワードが入力されているため、候補欄を表示する
-		in->mWindowPositionPtr->SyncPosition(in->mMainWnd);
+		in->mWindowPositionPtr->SyncPosition(mainWndHandle);
 	}
 	else {
 		// キーワードは未入力であるため、候補欄を非表示にする
 		CRect rc;
-		GetWindowRect(in->mMainWnd, &rc);
-		RecalcWindowSize(in->mMainWnd, status, WMSZ_TOP, rc); 
-		in->mWindowPositionPtr->SetPositionTemporary(in->mMainWnd, rc);
+		GetWindowRect(mainWndHandle, &rc);
+		RecalcWindowSize(mainWndHandle, status, WMSZ_TOP, rc); 
+		in->mWindowPositionPtr->SetPositionTemporary(mainWndHandle, rc);
 	}
 	in->mIsPrevHasKeyword = isCurHasKeyword;
 }
@@ -192,10 +199,6 @@ void MainWindowLayout::OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus)
 */
 void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect)
 {
-	// 直近のウインドウを親ウインドウとして覚えておく(基本的に変化しないけど)
-	in->mMainWnd = hwnd;
-
-
 	if (side == WMSZ_LEFT || side == WMSZ_RIGHT) {
 		// 左右のリサイズは制約なし
 		return ;
@@ -211,7 +214,7 @@ void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT s
 	// 触っているのが上側か?
 	bool isUpside = side == WMSZ_TOP || side == WMSZ_TOPLEFT || side == WMSZ_TOPRIGHT;
 
-	ComponentPlacer* placer = in->CreateComponentPlacer(hwnd);
+	ComponentPlacer* placer = in->CreateComponentPlacer();
 
 	// 最低限の高さ
 	int minH = placer->GetMinimumHeight() + frameH;
@@ -251,10 +254,7 @@ void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT s
 
 void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 {
-	// 直近のウインドウを親ウインドウとして覚えておく(基本的に変化しないけど)
-	in->mMainWnd = hwnd;
-
-	CWnd* mainWnd = CWnd::FromHandle(hwnd);
+	CWnd* mainWnd = in->mMainWnd->GetWindowObject();
 
 	auto iconLabel = mainWnd->GetDlgItem(IDC_STATIC_ICON);
 	if (iconLabel == nullptr) {
@@ -262,7 +262,7 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 		return;
 	}
 
-	ComponentPlacer* placer = in->CreateComponentPlacer(hwnd);
+	ComponentPlacer* placer = in->CreateComponentPlacer();
 
 	// アイコン欄
 	placer->PlaceIcon(iconLabel->GetSafeHwnd());

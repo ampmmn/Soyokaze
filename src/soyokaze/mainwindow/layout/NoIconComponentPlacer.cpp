@@ -10,12 +10,12 @@ namespace layout {
 
 struct NoIconComponentPlacer::PImpl
 {
-	MainWindowPlacement mPlacement;
+	std::unique_ptr<MainWindowPlacement> mPlacement;
 };
 
-NoIconComponentPlacer::NoIconComponentPlacer(HWND hwnd) : in(new PImpl)
+NoIconComponentPlacer::NoIconComponentPlacer(MainWindowPlacement* placement) : in(new PImpl)
 {
-	in->mPlacement.SetMainWindowHwnd(hwnd);
+	in->mPlacement.reset(placement);
 }
 
 NoIconComponentPlacer::~NoIconComponentPlacer()
@@ -34,17 +34,19 @@ bool NoIconComponentPlacer::PlaceIcon(HWND elemHwnd)
 // 説明欄のサイズ計算と配置
 bool NoIconComponentPlacer::PlaceDescription(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement.GetMarginLeft();
-	int MARGIN_Y = in->mPlacement.GetMarginTop();
+	int MARGIN_X = in->mPlacement->GetMarginLeft();
+	int MARGIN_Y = in->mPlacement->GetMarginTop();
 
 	// アイコンを表示しないので左端に表示
 	int x = MARGIN_X;
 	int y =	MARGIN_Y;
 
 	// 親ウインドウの幅と、説明欄の配置した位置をもとに幅を決定
-	int cx = in->mPlacement.GetMainWindowWidth() - x - MARGIN_X;
-	// 高さは変えない
-	int cy = in->mPlacement.GetDescriptionWindowHeight();
+	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;
+
+	// フォントサイズから説明欄(と入力欄)の高さを求める
+	int fontH = in->mPlacement->GetFontPixelSize();
+	int cy = fontH + 4;
 
 	// 説明欄の位置・サイズを移動
 	spdlog::debug("desc xywh=({},{},{},{})", x, y, cx, cy);
@@ -57,20 +59,22 @@ bool NoIconComponentPlacer::PlaceDescription(HWND elemHwnd)
 // ガイド欄のサイズ計算と配置
 bool NoIconComponentPlacer::PlaceGuide(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement.GetMarginLeft();
-	int MARGIN_Y = in->mPlacement.GetMarginTop();
+	int MARGIN_X = in->mPlacement->GetMarginLeft();
+	int MARGIN_Y = in->mPlacement->GetMarginTop();
 
 	int margin = 2;
 
 	// アイコンを表示しないので左端に表示
 	int x = MARGIN_X;
 	// 説明欄の下
-	int y =	MARGIN_Y + in->mPlacement.GetDescriptionWindowHeight() + margin;
+	int y =	MARGIN_Y + in->mPlacement->GetDescriptionWindowHeight() + margin;
 
 	// 親ウインドウの幅と、ガイド欄を配置した位置をもとに幅を決定
-	int cx = in->mPlacement.GetMainWindowWidth() - x - MARGIN_X;
-	// 高さは変えない
-	int cy = in->mPlacement.GetGuideWindowHeight();
+	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;
+
+	// フォントサイズから説明欄(と入力欄)の高さを求める
+	int fontH = in->mPlacement->GetFontPixelSize();
+	int cy = fontH + 4;
 
 	// 説明欄の位置・サイズを移動
 	spdlog::debug("comment xywh=({},{},{},{})", x, y, cx, cy);
@@ -86,7 +90,7 @@ bool NoIconComponentPlacer::PlaceGuide(HWND elemHwnd)
 // 入力欄のサイズ計算と配置
 bool NoIconComponentPlacer::PlaceEdit(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement.GetMarginLeft();
+	int MARGIN_X = in->mPlacement->GetMarginLeft();
 	
 	int margin = 2;
 
@@ -94,15 +98,16 @@ bool NoIconComponentPlacer::PlaceEdit(HWND elemHwnd)
 	int x = MARGIN_X;
 
 	// ガイド欄の下に配置
-	HWNDRect rcGuide(in->mPlacement.GetGuideLabel()->GetSafeHwnd());
+	HWNDRect rcGuide(in->mPlacement->GetGuideLabel()->GetSafeHwnd());
 	rcGuide.MapToParent();
 	int y =	rcGuide->bottom + margin;
 
 	// 親ウインドウの幅と、説明欄の配置した位置をもとに幅を決定
-	int cx = in->mPlacement.GetMainWindowWidth() - MARGIN_X * 2;
+	int cx = in->mPlacement->GetMainWindowWidth() - MARGIN_X * 2;
 
-	// 高さは変えない
-	int cy = in->mPlacement.GetEditWindowHeight();
+	// フォントサイズから説明欄(と入力欄)の高さを求める
+	int fontH = in->mPlacement->GetFontPixelSize();
+	int cy = fontH + 4;
 
 	// 説明欄の位置・サイズを移動
 	spdlog::debug("edit xywh=({},{},{},{})", x, y, cx, cy);
@@ -115,22 +120,22 @@ bool NoIconComponentPlacer::PlaceEdit(HWND elemHwnd)
 // 候補欄のサイズ計算と配置
 bool NoIconComponentPlacer::PlaceCandidateList(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement.GetMarginLeft();
-	int MARGIN_Y = in->mPlacement.GetMarginTop();
-	int margin = in->mPlacement.GetMarginEditToList();
+	int MARGIN_X = in->mPlacement->GetMarginLeft();
+	int MARGIN_Y = in->mPlacement->GetMarginTop();
+	int margin = in->mPlacement->GetMarginEditToList();
 
 	int x = MARGIN_X;
 
 	// 入力欄の下に配置する
-	HWNDRect rcEdit(in->mPlacement.GetEdit()->GetSafeHwnd());
+	HWNDRect rcEdit(in->mPlacement->GetEdit()->GetSafeHwnd());
 	rcEdit.MapToParent();
 
 	int y =	rcEdit->bottom + margin;
 
 	// 親ウインドウの幅をもとに幅を決定
-	int cx = in->mPlacement.GetMainWindowWidth() - MARGIN_X * 2;
+	int cx = in->mPlacement->GetMainWindowWidth() - MARGIN_X * 2;
 
-	int cy = in->mPlacement.GetMainWindowHeight() - rcEdit->bottom - margin - MARGIN_Y;
+	int cy = in->mPlacement->GetMainWindowHeight() - rcEdit->bottom - margin - MARGIN_Y;
 
 	// 説明欄の位置・サイズを移動
 	spdlog::debug("candidate xywh=({},{},{},{})", x, y, cx, cy);
@@ -146,22 +151,22 @@ void NoIconComponentPlacer::Apply(HWND hwnd)
 {
 	UNREFERENCED_PARAMETER(hwnd);
 
-	in->mPlacement.GetIconLabel()->ShowWindow(SW_HIDE);
+	in->mPlacement->GetIconLabel()->ShowWindow(SW_HIDE);
 
-	auto descLabel = in->mPlacement.GetDescriptionLabel();
+	auto descLabel = in->mPlacement->GetDescriptionLabel();
 	descLabel->InvalidateRect(nullptr);
 	descLabel->UpdateWindow();
 
-	auto guideLabel = in->mPlacement.GetGuideLabel();
+	auto guideLabel = in->mPlacement->GetGuideLabel();
 	guideLabel->ShowWindow(SW_SHOW);
 	guideLabel->InvalidateRect(nullptr);
 	guideLabel->UpdateWindow();
 
-	auto edit = in->mPlacement.GetEdit();
+	auto edit = in->mPlacement->GetEdit();
 	edit->InvalidateRect(nullptr);
 	edit->UpdateWindow();
 
-	auto list = in->mPlacement.GetCandidateList();
+	auto list = in->mPlacement->GetCandidateList();
 	list->InvalidateRect(nullptr);
 	list->UpdateWindow();
 }
@@ -171,21 +176,21 @@ int NoIconComponentPlacer::GetMinimumHeight()
 {
 	int margin = 2;
 	auto& p = in->mPlacement;
-	return p.GetMarginTop() + 
-	       p.GetDescriptionWindowHeight() +
+	return p->GetMarginTop() + 
+	       p->GetDescriptionWindowHeight() +
 	       margin + 
-	       p.GetGuideWindowHeight() +
+	       p->GetGuideWindowHeight() +
 	       margin + 
-	       p.GetEditWindowHeight() +
+	       p->GetEditWindowHeight() +
 	       margin + 
-	       p.GetMarginTop();
+	       p->GetMarginTop();
 }
 
 // 最低限の候補欄の高さを取得する
 int NoIconComponentPlacer::GetMinimumCandidateHeight()
 {
 	CRect rcItem;
-	auto list = (CListCtrl*)in->mPlacement.GetCandidateList();
+	auto list = (CListCtrl*)in->mPlacement->GetCandidateList();
 	if (list->GetItemRect(0, &rcItem, LVIR_BOUNDS) == FALSE) {
 		return 0;
 	}

@@ -1061,6 +1061,7 @@
     <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />
+    <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp" />
     <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />

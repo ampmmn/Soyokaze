@@ -32,6 +32,8 @@ public:
 	// 候補欄
 	virtual CandidateListCtrl* GetCandidateList() = 0;
 	
+	// メインウインドウのフォント
+	virtual CFont* GetMainWindowFont() = 0;
 
 };
 

@@ -81,6 +81,7 @@ protected:
 	CStatic* GetGuideLabel() override;
 	KeywordEdit* GetEdit() override;
 	CandidateListCtrl* GetCandidateList() override;
+	CFont* GetMainWindowFont() override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;
@@ -131,5 +132,6 @@ public:
 	afx_msg void OnCommandHelp();
 	afx_msg void OnTimer(UINT_PTR timerId);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnMeasureItem(int ctrlId, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 
 };

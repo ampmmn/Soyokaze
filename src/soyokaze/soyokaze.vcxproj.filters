@@ -2429,6 +2429,9 @@
     <ClCompile Include="icon\AppIcon.cpp">
       <Filter>icon</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">

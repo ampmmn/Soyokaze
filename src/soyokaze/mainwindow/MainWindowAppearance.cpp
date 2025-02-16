@@ -42,6 +42,13 @@ struct MainWindowAppearance::PImpl
 		if (mFont.m_hObject) {
 			mFont.DeleteObject();
 		}
+
+		// サイズ計算(ポイントサイズからlfHeight)
+		HDC hdc = GetDC(nullptr);
+		int pointSize = pref->GetMainWindowFontSize();
+		lf.lfHeight = -(pointSize * 72 / GetDeviceCaps(hdc, LOGPIXELSY));
+		ReleaseDC(nullptr, hdc);
+
 		mFont.CreateFontIndirectW(&lf);
 
 		// 作りなおしたフォントをウインドウや子ウインドウにセットする
@@ -78,6 +85,11 @@ MainWindowAppearance::MainWindowAppearance(LauncherMainWindowIF* mainWnd) : in(n
 MainWindowAppearance::~MainWindowAppearance()
 {
 	AppPreference::Get()->UnregisterListener(this);
+}
+
+CFont* MainWindowAppearance::GetFont()
+{
+	return &in->mFont;
 }
 
 void MainWindowAppearance::OnShowWindow(BOOL bShow, UINT nStatus)

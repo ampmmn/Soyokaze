@@ -881,6 +881,11 @@ bool AppPreference::GetMainWindowFontName(CString& fontName)
 	return true;
 }
 
+int AppPreference::GetMainWindowFontSize()
+{
+	return in->Get(_T("MainWindow:FontSize"), 16);
+}
+
 // Everything検索コマンドでEverything APIを使うか?
 bool AppPreference::IsUseEverythingAPI()
 {

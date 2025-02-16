@@ -152,6 +152,7 @@ public:
 
 	// メイン画面のフォント名
 	bool GetMainWindowFontName(CString& fontName);
+	int GetMainWindowFontSize();
 
 	// Everything検索コマンドでEverything APIを使うか?
 	bool IsUseEverythingAPI();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mainwindow/LauncherMainWindowIF.h"
 #include "mainwindow/MainWindowLayoutIF.h"
 
 namespace launcherapp {
@@ -9,7 +10,7 @@ namespace mainwindow {
 class MainWindowLayout : public MainWindowLayoutIF
 {
 public:
-	MainWindowLayout();
+	MainWindowLayout(LauncherMainWindowIF* mainWnd);
 	~MainWindowLayout() override;
 
 	// 入力が更新された

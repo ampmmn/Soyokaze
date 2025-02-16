@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-constexpr int ICON_SIZE = 16;
+constexpr int ITEM_MARGIN = 2;
 
 struct CandidateListCtrl::PImpl
 {
@@ -22,6 +22,7 @@ struct CandidateListCtrl::PImpl
 	CandidateList* mCandidates = nullptr;
 
 	bool mHasCommandTypeColumn = false;
+	bool mShouldReinitColumns = true;
 
 	bool mIsEmpty = false;
 
@@ -29,9 +30,12 @@ struct CandidateListCtrl::PImpl
 	bool mIsAlternateColor = false;
 
 	int mItemsInPage = 0;
+	// 
+	int mTextHeight = 16;
+	int mIconSize = 16;
 
 	// アイコンを保持するためのイメージリスト
-	CImageList mIconList;
+	std::unique_ptr<CImageList> mIconList;
 	// アイコンを表示しない場合のイメージリスト
 	CImageList mIconListDummy;
 	bool mIsDrawIcon = true;
@@ -68,7 +72,7 @@ void CandidateListCtrl::PImpl::DrawItemIcon(
 	HICON h = cmd->GetIcon();
 	auto it = mIconIndexMap.find(h);
 	if (it == mIconIndexMap.end()) {
-		index = mIconList.Add(h);
+		index = mIconList->Add(h);
 		mIconIndexMap[h] = index;
 	}
 	else {
@@ -76,8 +80,8 @@ void CandidateListCtrl::PImpl::DrawItemIcon(
 	}
 
 	if (index != -1) {
-		mIconList.DrawEx(pDC, index, rcIcon.TopLeft(), CSize(ICON_SIZE, ICON_SIZE),
-		                 CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
+		mIconList->DrawEx(pDC, index, rcIcon.TopLeft(), CSize(mIconSize, mIconSize),
+		                  CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
 	}
 }
 
@@ -174,6 +178,37 @@ void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
 	candidates->AddListener(this);
 }
 
+/**
+ 	コマンド種別の列サイズを決定する
+ 	@param[in]  hwnd         CListCtrlウインドウハンドル
+ 	@param[out] typeColWidth コマンド種別列の幅(pixel)
+ 	@param[out] textHeight   テキストの高さ(pixel)
+*/
+static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
+{
+	HFONT hf = (HFONT)SendMessage(hwnd, WM_GETFONT, 0, 0);
+	HDC hdc = GetDC(hwnd);
+
+	auto orgFont = SelectObject(hdc, hf);
+
+	// 24個ぶんのスペースを描画できるだけの幅を種別描画用の列幅として確保する
+	LPCTSTR text = _T("                        ");
+
+	CSize size;
+  GetTextExtentPoint32(hdc, text, (int)_tcslen(text), &size);
+	TEXTMETRIC tm;
+	GetTextMetrics(hdc, &tm);
+
+	spdlog::debug("typecol len:{}", size.cx);
+
+	SelectObject(hdc, orgFont);
+	ReleaseDC(hwnd, hdc);
+
+
+	typeColWidth = size.cx;
+	textHeight = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
+}
+
 
 void CandidateListCtrl::InitColumns()
 {
@@ -183,6 +218,11 @@ void CandidateListCtrl::InitColumns()
 	if (GetSafeHwnd() == nullptr) {
 		return;
 	}
+
+	// 列幅、高さを計算する
+	int typeColWidth = 140;
+	GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mIconSize);
+	in->mIconSize += ITEM_MARGIN;
 
 	ModifyStyle(0, LVS_OWNERDATA);
 	SetExtendedStyle(GetExtendedStyle()|LVS_EX_FULLROWSELECT| LVS_EX_DOUBLEBUFFER);
@@ -210,7 +250,7 @@ void CandidateListCtrl::InitColumns()
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = in->mIsShowCommandType ? cx - 165 : cx - 25;
+	lvc.cx = in->mIsShowCommandType ? cx - (typeColWidth-25) : cx - 25;
 	lvc.fmt = LVCFMT_LEFT;
 	InsertColumn(0,&lvc);
 
@@ -218,42 +258,64 @@ void CandidateListCtrl::InitColumns()
 	if (in->mIsShowCommandType) {
 		strHeader.LoadString(IDS_COMMANDTYPE);
 		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-		lvc.cx = 140;  //  #dummy-col-width
+		lvc.cx = typeColWidth;  //  #dummy-col-width
 		lvc.fmt = LVCFMT_LEFT;
 		InsertColumn(1,&lvc);
 		in->mHasCommandTypeColumn = true;
 	}
 
 	// イメージリストの初期化
-	if (in->mIconList.m_hImageList == NULL) {
-		in->mIconList.Create(ICON_SIZE, ICON_SIZE, ILC_COLOR24 | ILC_MASK, 0, 0);
+	auto newIconList = new CImageList;
+	newIconList->Create(in->mIconSize, in->mIconSize, ILC_COLOR24 | ILC_MASK, 0, 0);
+	ASSERT(newIconList->m_hImageList);
+
+	if (in->mIconListDummy.m_hImageList == nullptr) {
+		// 初回のみ
 		in->mIconListDummy.Create(1, 1, ILC_COLOR, 0, 0);
 	}
-	ASSERT(in->mIconList.m_hImageList);
 
 	in->mIsDrawIcon = pref->IsDrawIconOnCandidate();
-	SetImageList(in->mIsDrawIcon ? &in->mIconList : &in->mIconListDummy, LVSIL_SMALL);
+	SetImageList(in->mIsDrawIcon ? newIconList : &in->mIconListDummy, LVSIL_SMALL);
 	// Note: ひとたび、SetImageListでイメージリストを設定すると、
 	// そのリストウインドウが生きている間はイメージリスト非設定状態に戻せない(イメージリストの幅のぶんだけラベルがずれる)ため、
 	// 幅1pixelの別のイメージリストを設定することでごまかす
+
+	in->mIconList.reset(newIconList);
+	in->mIconIndexMap.clear();
+
+	in->mShouldReinitColumns = false;
 }
 
 void CandidateListCtrl::UpdateSize(int cx, int cy)
 {
 	UNREFERENCED_PARAMETER(cy);
 
+	if (in->mShouldReinitColumns) {
+		InitColumns();
+	}
+	// スクロールバーの幅
+	constexpr int SCROLLBAR_WIDTH = 25;
+
 	if (in->mHasCommandTypeColumn) {
-		SetColumnWidth(0, cx-165);
-		SetColumnWidth(1, 140);
+		int typeColWidth = 140;
+		GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight);
+		SetColumnWidth(0, cx - (typeColWidth + SCROLLBAR_WIDTH));
+		SetColumnWidth(1, typeColWidth);
+
 	}
 	else {
-		SetColumnWidth(0, cx-25);
+		SetColumnWidth(0, cx - SCROLLBAR_WIDTH);
 	}
 }
 
 int CandidateListCtrl::GetItemCountInPage()
 {
 	return in->mItemsInPage;
+}
+
+void CandidateListCtrl::OnMeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+{
+	lpMeasureItemStruct->itemHeight = in->mTextHeight + ITEM_MARGIN;
 }
 
 void CandidateListCtrl::OnUpdateSelect(void* sender)
@@ -386,8 +448,7 @@ void CandidateListCtrl::OnAppNormalBoot()
 
 void CandidateListCtrl::OnAppPreferenceUpdated()
 {
-	// カラムを再生成する
-	InitColumns();
+	in->mShouldReinitColumns = true;
 }
 
 void CandidateListCtrl::OnAppExit()

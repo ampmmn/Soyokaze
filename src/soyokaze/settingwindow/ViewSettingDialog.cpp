@@ -15,6 +15,7 @@
 
 using namespace launcherapp::icon;
 
+constexpr LPCTSTR DEFAULTFONTNAME = _T("Tahoma");
 
 struct ViewSettingDialog::PImpl
 {
@@ -42,6 +43,9 @@ struct ViewSettingDialog::PImpl
 
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
+
+	// フォントサイズ
+	int mFontSize = 16;
 
 	// アプリアイコン
 	HICON mIcon = nullptr;
@@ -81,6 +85,10 @@ BOOL ViewSettingDialog::OnSetActive()
 
 void ViewSettingDialog::OnOK()
 {
+	if (UpdateData() == FALSE) {
+		return;
+	}
+
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)in->mIsDrawIcon);
 	settingsPtr->Set(_T("ViewSetting:IsDrawPlaceHolder"), (bool)in->mIsDrawPlaceHolder);
@@ -113,6 +121,11 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("MainWindow:FontName"), fontInfo->m_strName);
 
+	if (in->mFontSize < 6) { in->mFontSize = 6; }
+	else if (in->mFontSize > 128) { in->mFontSize = 128; }
+
+	settingsPtr->Set(_T("MainWindow:FontSize"), in->mFontSize);
+
 	// アプリアイコンが設定(変更)された場合は上書き
 	Path icon(in->mAppIconFilePath);
 	if (in->mIsIconReset == false && icon.FileExists()) {
@@ -140,6 +153,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, in->mIsShowGuide);
 	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, in->mIsAlternateColor);
 	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, in->mIsDrawIconOnCandidate);
+	DDX_Text(pDX, IDC_COMBO_FONTSIZE, in->mFontSize);
 }
 
 #pragma warning( push )
@@ -151,7 +165,9 @@ BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_COMMAND(IDC_BUTTON_BROWSE, OnButtonBrowse)
 	ON_COMMAND(IDC_BUTTON_RESETICON, OnButtonResetIcon)
+	ON_COMMAND(IDC_BUTTON_RESETFONT, OnButtonResetFont)
 	ON_COMMAND(IDC_CHECK_DRAWICON, OnUpdateStatus)
+	ON_CBN_KILLFOCUS(IDC_COMBO_FONTSIZE, OnCbnKillfocusFontSize)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -192,6 +208,10 @@ void ViewSettingDialog::SetIconPath(const CString& appIconPath)
 bool ViewSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(in->mTransparencyType != 2);
+
+	// フォントサイズの有効範囲を超えていたら範囲内に丸める
+	if (in->mFontSize < 6) { in->mFontSize = 6; }
+	else if (in->mFontSize > 128) { in->mFontSize = 128; }
 
 	bool isDrawIcon = in->mIsDrawIcon != FALSE;
 	GetDlgItem(IDC_BUTTON_BROWSE)->EnableWindow(isDrawIcon);
@@ -244,10 +264,11 @@ void ViewSettingDialog::OnEnterSettings()
 	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
 	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 
-	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), _T("Tahoma"));
+	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), DEFAULTFONTNAME);
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(fontName);
+	in->mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 16);
 }
 
 bool ViewSettingDialog::GetHelpPageId(CString& id)
@@ -308,3 +329,22 @@ void ViewSettingDialog::OnButtonResetIcon()
 
 }
 
+void ViewSettingDialog::OnButtonResetFont()
+{
+	UpdateData();
+
+	in->mFontSize = 16;
+	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
+	ASSERT(fontCombo);
+	fontCombo->SelectFont(DEFAULTFONTNAME);
+
+
+	UpdateData(FALSE);
+}
+
+void ViewSettingDialog::OnCbnKillfocusFontSize()
+{
+	UpdateData();
+	UpdateStatus();
+	UpdateData(FALSE);
+}

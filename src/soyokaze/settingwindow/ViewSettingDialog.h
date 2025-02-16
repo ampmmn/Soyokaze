@@ -32,5 +32,7 @@ protected:
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnButtonBrowse();
 	afx_msg void OnButtonResetIcon();
+	afx_msg void OnButtonResetFont();
+	afx_msg void OnCbnKillfocusFontSize();
 };
 

@@ -160,7 +160,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
-	in->mLayout = std::make_unique<MainWindowLayout>();
+	in->mLayout = std::make_unique<MainWindowLayout>(this);
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 }
@@ -220,6 +220,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_COMMAND(ID_HELP, OnCommandHelp)
 	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
 	ON_WM_CTLCOLOR()
+	ON_WM_MEASUREITEM()
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -829,6 +830,10 @@ CandidateListCtrl* LauncherMainWindow::GetCandidateList()
 	return &in->mCandidateListBox;
 }
 
+CFont* LauncherMainWindow::GetMainWindowFont()
+{
+	return in->mAppearance->GetFont();
+}
 
 // LauncherMainWindow メッセージ ハンドラー
 
@@ -1713,3 +1718,12 @@ HBRUSH LauncherMainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH defBr = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	return in->mAppearance->OnCtlColor(pDC, pWnd, nCtlColor, defBr);
 }
+
+void LauncherMainWindow::OnMeasureItem(int ctrlId, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+{
+	if (ctrlId == IDC_LIST_CANDIDATE) {
+		// 候補欄コントロールクラス側で行の高さを計算し、決定する
+		in->mCandidateListBox.OnMeasureItem(lpMeasureItemStruct);
+	}
+}
+

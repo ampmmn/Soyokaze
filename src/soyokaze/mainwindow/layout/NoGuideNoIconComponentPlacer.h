@@ -8,12 +8,14 @@ namespace launcherapp {
 namespace mainwindow {
 namespace layout {
 
+class MainWindowPlacement;
+
 // メインウインドウ上の各部品を所定の位置に配置する
 // ガイド欄表示なし/アイコン表示なし配置処理
 class NoGuideNoIconComponentPlacer : public ComponentPlacer
 {
 public:
-	NoGuideNoIconComponentPlacer(HWND hwnd);
+	NoGuideNoIconComponentPlacer(MainWindowPlacement* placement);
 	~NoGuideNoIconComponentPlacer() override;
 
 	// アイコン欄のサイズ計算と配置

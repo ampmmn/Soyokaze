@@ -370,6 +370,7 @@
 #define IDC_BUTTON_RESETICON            1126
 #define IDC_BUTTON_TEST                 1127
 #define IDC_BUTTON_RESETICON2           1127
+#define IDC_BUTTON_RESETFONT            1127
 #define IDC_EDIT_TEXT                   1128
 #define IDC_BUTTON_UPDATE               1129
 #define IDC_EDIT_X                      1130
@@ -420,6 +421,7 @@
 #define IDC_COMBO_DEFAULTACTION         1163
 #define IDC_COMBO_PROXY                 1163
 #define IDC_COMBO_POSITION              1163
+#define IDC_COMBO_FONTSIZE              1163
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK_USEAPI                1166

@@ -8,12 +8,14 @@ namespace launcherapp {
 namespace mainwindow {
 namespace layout {
 
+class MainWindowPlacement;
+
 // メインウインドウ上の各部品を所定の位置に配置する
 // アプリ初回起動時の設定に基づく配置処理
 class DefaultComponentPlacer : public ComponentPlacer
 {
 public:
-	DefaultComponentPlacer(HWND hwnd);
+	DefaultComponentPlacer(MainWindowPlacement* placement);
 	~DefaultComponentPlacer() override;
 
 	// アイコン欄のサイズ計算と配置

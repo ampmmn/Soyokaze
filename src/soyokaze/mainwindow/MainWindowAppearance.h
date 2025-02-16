@@ -15,6 +15,7 @@ public:
 
 public:
 // WindowAppearanceIF
+	CFont* GetFont() override;
 	void OnShowWindow(BOOL bShow, UINT nStatus) override;
 	void OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized) override;
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HBRUSH defBr) override;
