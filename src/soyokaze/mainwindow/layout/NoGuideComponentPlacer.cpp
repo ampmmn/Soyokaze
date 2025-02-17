@@ -26,22 +26,25 @@ NoGuideComponentPlacer::~NoGuideComponentPlacer()
 // アイコン欄のサイズ計算と配置
 bool NoGuideComponentPlacer::PlaceIcon(HWND elemHwnd)
 {
-	ASSERT(elemHwnd);
 	int MARGIN_X = in->mPlacement->GetMarginLeft();
 	int MARGIN_Y = in->mPlacement->GetMarginTop();
 
 	// フォントサイズから説明欄(と入力欄)の高さを求める
 	int fontH = in->mPlacement->GetFontPixelSize();
-	int cy = fontH + 4;
-
-	int h = in->mPlacement->GetIconWindowHeight();
+	int editH = fontH + 4;
 
 	// 説明欄の高さ + 余白 + 入力欄の高さ
-	int components_h = cy + 2 + cy;
+	int components_h = editH + 2 + editH;
 
-	int offset = (components_h - h) / 2;
+	CSize sizeIconArea(32, 32);
+	if (fontH > 32) {
+		sizeIconArea = CSize(fontH, fontH);
+	}
 
-	SetWindowPos(elemHwnd, nullptr, MARGIN_X, MARGIN_Y + offset, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	int offset = (components_h - sizeIconArea.cy) / 2;
+
+	ASSERT(elemHwnd);
+	SetWindowPos(elemHwnd, nullptr, MARGIN_X, MARGIN_Y + offset, sizeIconArea.cx, sizeIconArea.cy, SWP_NOZORDER);
 	return true;
 }
 

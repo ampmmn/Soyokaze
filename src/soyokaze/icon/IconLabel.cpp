@@ -43,6 +43,8 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	dcMem.CreateCompatibleDC(pDC);
 	ASSERT(dcMem.GetSafeHdc() != NULL);
 
+	COLORREF crBr = mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : mBackgroundColor;
+
 	// 初回またはサイズが変わってたらビットマップ作り直し
 	CBitmap& memBmp = mBuffer;
 	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
@@ -54,20 +56,34 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 		memBmp.CreateCompatibleBitmap(pDC, rc.Width(), rc.Height());
 	}
 	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
+	if (mIconList.m_hImageList == nullptr || mCtrlSize != rc.Size()) {
+		mIconList.DeleteImageList();
+		mIconList.Create(rc.Width(), rc.Height(), ILC_COLOR24 | ILC_MASK, 0, 0);
+		mIconList.SetBkColor(crBr);
+		mCtrlSize = rc.Size();
+		mIconIndexMap.clear();
+	}
 
+	int index = -1;
+
+	auto it = mIconIndexMap.find(iconHandle);
+	if (it == mIconIndexMap.end()) {
+		index = mIconList.Add(iconHandle);
+		mIconIndexMap[iconHandle] = index;
+	}
+	else {
+		index = it->second;
+	}
 	CBrush br;
 
-	COLORREF crBr = mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : mBackgroundColor;
 	br.CreateSolidBrush(crBr);
 	CBrush* orgBr = dcMem.SelectObject(&br);
 	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
-	CSize sizeIcon(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
-	CPoint offset((rc.Width() - sizeIcon.cx)/2, (rc.Height() - sizeIcon.cy)/2);
-	dcMem.DrawIcon(offset.x, offset.y, iconHandle);
-
-	pDC->BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
-
+	if (index != -1) {
+		mIconList.DrawEx(&dcMem, index, CPoint(0, 0), mCtrlSize, CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
+		pDC->BitBlt(0, 0, mCtrlSize.cx, mCtrlSize.cy, &dcMem, 0, 0, SRCCOPY);
+	}
 	dcMem.SelectObject(orgBr);
 	dcMem.SelectObject(orgBmp);
 }

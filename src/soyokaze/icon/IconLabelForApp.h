@@ -1,5 +1,6 @@
 #pragma once
 
+// アプリ設定のアイコン欄用のコントロール
 class IconLabelForApp : public CStatic
 {
 public:

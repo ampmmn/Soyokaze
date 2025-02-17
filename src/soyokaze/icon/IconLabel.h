@@ -18,6 +18,10 @@ private:
 
 protected:
 	CBitmap mBuffer;
+	std::map<HICON,int> mIconIndexMap;
+	CImageList mIconList;
+	CSize mCtrlSize;
+
 	bool mCanIconChange;
 	bool mIsUseBackgroundColor;
 	COLORREF mBackgroundColor;

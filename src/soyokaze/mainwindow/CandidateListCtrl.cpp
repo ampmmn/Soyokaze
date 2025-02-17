@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-constexpr int ITEM_MARGIN = 2;
+constexpr int ITEM_MARGIN = 4;
 
 struct CandidateListCtrl::PImpl
 {
@@ -297,9 +297,17 @@ void CandidateListCtrl::UpdateSize(int cx, int cy)
 	constexpr int SCROLLBAR_WIDTH = 25;
 
 	if (in->mHasCommandTypeColumn) {
+
+		// コマンド種別の列幅を得る
 		int typeColWidth = 140;
 		GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight);
-		SetColumnWidth(0, cx - (typeColWidth + SCROLLBAR_WIDTH));
+
+		int nameColWidth = cx - (typeColWidth + SCROLLBAR_WIDTH);
+		if (nameColWidth < typeColWidth) {
+			// コマンド名の列幅が種別の列幅より小さくなる場合は、種別の列幅を縮める
+			std::swap(nameColWidth, typeColWidth);
+		}
+		SetColumnWidth(0, nameColWidth);
 		SetColumnWidth(1, typeColWidth);
 
 	}

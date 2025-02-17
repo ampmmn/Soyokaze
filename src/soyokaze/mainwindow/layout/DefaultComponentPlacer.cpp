@@ -32,17 +32,20 @@ bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd)
 
 	// フォントサイズから入力欄(とガイド欄)の高さを求める
 	int fontH = in->mPlacement->GetFontPixelSize();
-	int cy = fontH + 4;
-
-	int h = in->mPlacement->GetIconWindowHeight();
+	int editH = fontH + 4;
 
 	// 説明欄の高さ + 余白 + ガイド欄の高さ
-	int components_h = cy + 2 + cy;
+	int components_h = editH + 2 + editH;
 
-	int offset = (components_h - h) / 2;
+	CSize sizeIconArea(32, 32);
+	if (fontH > 32) {
+		sizeIconArea = CSize(fontH, fontH);
+	}
+
+	int offset = (components_h - sizeIconArea.cy) / 2;
 
 	ASSERT(elemHwnd);
-	SetWindowPos(elemHwnd, nullptr, MARGIN_X, MARGIN_Y + offset, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	SetWindowPos(elemHwnd, nullptr, MARGIN_X, MARGIN_Y + offset, sizeIconArea.cx, sizeIconArea.cy, SWP_NOZORDER);
 
 	return true;
 }

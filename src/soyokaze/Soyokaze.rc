@@ -1329,8 +1329,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,35,0,1
- PRODUCTVERSION 0,35,0,1
+ FILEVERSION 0,35,1,1
+ PRODUCTVERSION 0,35,1,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1346,12 +1346,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", "Soyokaze"
-            VALUE "FileVersion", "0.35.0.1"
+            VALUE "FileVersion", "0.35.1.1"
             VALUE "InternalName", "soyokaze.exe"
             VALUE "LegalCopyright", "ymgw.  All rights reserved."
             VALUE "OriginalFilename", "soyokaze.exe"
             VALUE "ProductName", "Soyokaze"
-            VALUE "ProductVersion", "0.35.0.1"
+            VALUE "ProductVersion", "0.35.1.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -2690,41 +2690,51 @@ BEGIN
     IDC_COMBO_FONTSIZE, 0x403, 2, 0
 0x0036, 
     IDC_COMBO_FONTSIZE, 0x403, 2, 0
-0x0037, 
-    IDC_COMBO_FONTSIZE, 0x403, 2, 0
 0x0038, 
     IDC_COMBO_FONTSIZE, 0x403, 2, 0
 0x0039, 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3031, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3131, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3231, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3331, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3431, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3531, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3631, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3731, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3831, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3931, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3032, "\000" 
     IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3132, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3232, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
-0x3332, "\000" 
-    IDC_COMBO_FONTSIZE, 0x403, 3, 0
 0x3432, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3832, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3233, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3633, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3034, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3434, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3834, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3435, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3036, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3636, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3237, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3038, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3838, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 3, 0
+0x3639, "\000" 
+    IDC_COMBO_FONTSIZE, 0x403, 4, 0
+0x3231, 0x0038, 
     IDC_COMBO_TRANSPARENCY, 0x403, 27, 0
 0xf194, 0x4183, 0x4e83, 0x6583, 0x4283, 0x7583, 0xc882, 0xc682, 0xab82, 
 0xc982, 0xbc94, 0xa793, 0xbe96, "\000" 
