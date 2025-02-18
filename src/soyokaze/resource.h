@@ -427,7 +427,6 @@
 #define IDC_CHECK_USEAPI                1166
 #define IDC_CHECK_HOTKEY                1166
 #define IDC_STATIC_DRIVELETTER          1167
-#define IDC_CHECK_USEWM                 1167
 #define IDC_COMBO_DRIVELETTER           1168
 #define IDC_CHECK_RUNEVERYTHING         1168
 #define IDC_CHECK_MATCHBASE             1169

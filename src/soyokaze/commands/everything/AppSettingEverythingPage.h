@@ -13,7 +13,6 @@ public:
 	virtual ~AppSettingEverythingPage();
 
 	BOOL mIsUseAPI;
-	BOOL mIsUseWM;
 	BOOL mIsRunApp;
 
 	// コマンドライン経由で使用する場合のEverything.exeのパス

@@ -46,7 +46,6 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsUseAPI = pref->IsUseEverythingAPI();
-		mIsUseWM = pref->IsUseEverythingViaWM();
 		mIsRunApp = pref->IsRunEverythingApp();
 		mAppPath = pref->GetEverythingExePath();
 	}
@@ -58,17 +57,11 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	bool IsEverythingActive();
 	bool RunApp();
 	bool QueryWithAPI(const CString& queryStr, std::vector<EverythingResult>& results);
-	bool QueryWithWM(const CString& queryStr);
-	bool ShowEverythingMainWindow(bool isActivateEvWnd);
-
-	HWND GetAppMainWindow();
 
 	bool mIsUseAPI;
-	bool mIsUseWM;
 	bool mIsRunApp;
 	CString mAppPath;
 	HICON mAppIcon = nullptr;
-	int mLastMethod = -1;
 };
 
 
@@ -106,12 +99,10 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 	// Everythingが起動していない
 	if (IsEverythingActive() == false) {
 		if (RunApp() == false) {
-			mLastMethod  = -1;  // Err
 			return false;
 		}
 	}
 	if (Everything_Query(TRUE) == FALSE) {
-		mLastMethod  = -1;  // Err
 		return false;
 	}
 
@@ -141,118 +132,8 @@ bool EverythingProxy::PImpl::QueryWithAPI(const CString& queryStr, std::vector<E
 		}
 	}
 	results.swap(tmp);
-
-	mLastMethod  = 0;  // API
 	return true;
 }
-
-bool EverythingProxy::PImpl::QueryWithWM(const CString& queryStr)
-{
-	// Everythingのメインウインドウを探す
-	HWND hEverything = GetAppMainWindow();
-	if (IsWindow(hEverything) == FALSE) {
-		mLastMethod  = -1;  // Err
-		return false;
-	}
-
-	struct local {
-		static BOOL CALLBACK OnChildWindows(HWND hwnd, LPARAM lp)
-		{
-			HWND* ph = (HWND*)lp;
-			TCHAR clsName[64];
-			GetClassName(hwnd, clsName, 64);
-			if (_tcscmp(clsName, _T("Edit")) != 0) {
-				return TRUE;
-			}
-
-			*ph = hwnd;
-			return FALSE;
-		}
-	};
-
-	// 入力欄
-	HWND hEditCtrl = nullptr;
-	EnumChildWindows(hEverything, local::OnChildWindows, (LPARAM)&hEditCtrl);
-	if (hEditCtrl == nullptr || IsWindow(hEditCtrl) == FALSE) {
-		spdlog::debug(_T("QueryWithWM: can't find edit."));
-		mLastMethod  = -1;  // Err
-		return false;
-	}
-
-	SendMessage(hEditCtrl, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)queryStr);
-
-	mLastMethod  = 1;  // WM
-
-	return true;
-}
-
-bool EverythingProxy::PImpl::ShowEverythingMainWindow(bool isActivateEvWnd)
-{
-	// メインウインドウを取得できない場合はタスクバー経由で表示させる
-	HWND notifyWnd = FindWindow(_T("EVERYTHING_TASKBAR_NOTIFICATION"), NULL);
-	if (IsWindow(notifyWnd) == false) {
-		return false;
-	}
-
-	// Everythingをアクティブにすることにより、メインウインドウはフォーカスを失う。
-	// アプリ設定によってはフォーカスを失うことにより非表示になってしまうため、それを一時的に阻害する
-	MainWindowDeactivateBlocker blocker;
-
-	// アクティブにする
-	WPARAM wp = (WPARAM)MAKEWPARAM(40007, 0);
-	LPARAM lp = (LPARAM)0;
-	SendMessage(notifyWnd, WM_COMMAND, wp, lp);
-
-	// 直後にEverything側にウインドウが移るため、元に戻す
-	if (isActivateEvWnd == false) {
-		SharedHwnd mainWnd;
-
-		HWND h = mainWnd.GetHwnd();
-		SetForegroundWindow(h);
-	}
-	else {
-		ScopeAttachThreadInput input;
-		HWND hEverything = FindWindow(_T("EVERYTHING"), NULL);
-		if (IsWindow(hEverything)) {
-			SetForegroundWindow(hEverything);
-		}
-	}
-
-	return true;
-}
-
-HWND EverythingProxy::PImpl::GetAppMainWindow()
-{
-	HWND hEverything = FindWindow(_T("EVERYTHING"), NULL);
-	if (IsWindow(hEverything) == FALSE) {
-
-		// メインウインドウを取得できない場合はタスクバー経由で表示させる
-		if (ShowEverythingMainWindow(false) == false) {
-			// タスクバーが取得できない場合は起動できていないため起動する
-			if (RunApp() == false) {
-				return false;
-			}
-		}
-	}
-
-	// アクティブ後に改めて探す
-	if (IsWindow(hEverything) == FALSE) {
-		hEverything = FindWindow(_T("EVERYTHING"), NULL);
-		if (IsWindow(hEverything) == FALSE) {
-			return nullptr;
-		}
-	}
-
-	LONG_PTR style = GetWindowLongPtr(hEverything, GWL_STYLE);
-	if (style & WS_MINIMIZE) {
-		// メインウインドウが最小化されているときは表示
-		ShowEverythingMainWindow(false);
-	}
-
-	return hEverything;
-}
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -276,35 +157,18 @@ EverythingProxy* EverythingProxy::Get()
 
 void EverythingProxy::Query(const CString& queryStr, std::vector<EverythingResult>& results)
 {
-	if (in->mIsUseAPI) {
-		if (in->QueryWithAPI(queryStr, results)) {
-			return;
-		}
+	if (in->mIsUseAPI == false) {
+		return;
 	}
-	if (in->mIsUseWM) {
-		// WM経由の検索結果はEverything本体の方に表示するのでresultsを渡さない
-		in->QueryWithWM(queryStr);
-	}
-}
 
-bool EverythingProxy::ActivateMainWindow()
-{
-	return in->ShowEverythingMainWindow(true);
+	if (in->QueryWithAPI(queryStr, results)) {
+		return;
+	}
 }
 
 bool EverythingProxy::IsUseAPI()
 {
 	return in->mIsUseAPI;
-}
-
-bool EverythingProxy::IsUseWM()
-{
-	return in->mIsUseWM;
-}
-
-int EverythingProxy::GetLastMethod()
-{
-	return in->mLastMethod;
 }
 
 HICON EverythingProxy::GetIcon()

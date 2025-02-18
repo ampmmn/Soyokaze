@@ -19,12 +19,8 @@ public:
 	static EverythingProxy* Get();
 
 	void Query(const CString& queryStr, std::vector<EverythingResult>& results);
-	bool ActivateMainWindow();
 
 	bool IsUseAPI();
-	bool IsUseWM();
-
-	int GetLastMethod();
 
 	HICON GetIcon();
 

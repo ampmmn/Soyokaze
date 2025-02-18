@@ -111,11 +111,6 @@ BOOL EverythingCommand::Execute(Parameter* param)
 		SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
 		return TRUE;
 	}
-
-	auto proxy = EverythingProxy::Get();
-	if (proxy->GetLastMethod() == 1) {
-		proxy->ActivateMainWindow();
-	}
 	return TRUE;
 }
 
@@ -133,38 +128,34 @@ int EverythingCommand::Match(Pattern* pattern)
 {
 	in->mShouldComletion = false;
 
-	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
+	if (pattern->shouldWholeMatch()) {
 		// 内部のコマンド名マッチング用の判定
+		 if (pattern->Match(GetName()) != Pattern::WholeMatch) {
+			 return Pattern::Mismatch;
+		 }
 		in->mShouldComletion = true;
 		return Pattern::WholeMatch;
 	}
-	else if (pattern->shouldWholeMatch() == false) {
 
-		auto proxy = EverythingProxy::Get();
+	// 通常のマッチング
 
-		// APIもWMも利用しない場合はマッチさせない
-		if (proxy->IsUseAPI() == false && proxy->IsUseWM() == false) {
-			return Pattern::Mismatch;
-		}
+	// APIを利用しない場合はマッチさせない
+	auto proxy = EverythingProxy::Get();
+	if (proxy->IsUseAPI() == false) {
+		return Pattern::Mismatch;
+	}
 
-		int level = pattern->Match(GetName());
-		if (level == Pattern::FrontMatch) {
-			in->mShouldComletion = true;
-			return Pattern::FrontMatch;
-		}
-
+	int level = pattern->Match(GetName());
+	if (level == Pattern::FrontMatch) {
+		in->mShouldComletion = true;
+		return Pattern::FrontMatch;
+	}
+	else if (level == Pattern::WholeMatch) {
 		// API利用の場合は簡易辞書コマンド的な動作にする
-		if (proxy->IsUseWM() == false) {
-
-			if (level == Pattern::WholeMatch) {
-				// 入力欄からの入力で、前方一致するときは候補に出す
-				// 後続のキーワードが存在する場合は非表示
-				return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
-			}
-		}
-		else {
-			return level;
-		}
+		// 入力欄からの入力で、前方一致するときは候補に出す
+		// 後続のキーワードが存在する場合は非表示
+		in->mShouldComletion = true;
+		return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
 	}
 	// 通常はこちら
 	return Pattern::Mismatch;

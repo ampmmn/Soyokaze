@@ -16,7 +16,7 @@ namespace everything {
 
 AppSettingEverythingPage::AppSettingEverythingPage(CWnd* parentWnd) : 
 	SettingPage(_T("Everything"), IDD_APPSETTING_EVERYTHING, parentWnd),
-	mIsUseAPI(FALSE), mIsUseWM(FALSE), mIsRunApp(FALSE)
+	mIsUseAPI(FALSE), mIsRunApp(FALSE)
 {
 }
 
@@ -51,7 +51,6 @@ void AppSettingEverythingPage::OnOK()
 {
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("Everything:IsUseAPI"), mIsUseAPI != FALSE);
-	settingsPtr->Set(_T("Everything:IsUseWM"), mIsUseWM != FALSE);
 	settingsPtr->Set(_T("Everything:IsRunApp"), mIsRunApp != FALSE);
 	settingsPtr->Set(_T("Everything:EverythingExePath"), mEverythingExePath);
 
@@ -63,7 +62,6 @@ void AppSettingEverythingPage::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_USEAPI, mIsUseAPI);
-	DDX_Check(pDX, IDC_CHECK_USEWM, mIsUseWM);
 	DDX_Check(pDX, IDC_CHECK_RUNEVERYTHING, mIsRunApp);
 	DDX_Text(pDX, IDC_EDIT_EVERYTHINGEXEPATH, mEverythingExePath);
 }
@@ -103,7 +101,6 @@ void AppSettingEverythingPage::OnEnterSettings()
 	auto settingsPtr = (Settings*)GetParam();
 
 	mIsUseAPI = settingsPtr->Get(_T("Everything:IsUseAPI"), true);
-	mIsUseWM = settingsPtr->Get(_T("Everything:IsUseWM"), true);
 	mIsRunApp = settingsPtr->Get(_T("Everything:IsRunApp"), false);
 	mEverythingExePath = settingsPtr->Get(_T("Everything:EverythingExePath"), _T(""));
 }
