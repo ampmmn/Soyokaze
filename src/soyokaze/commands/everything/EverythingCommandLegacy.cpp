@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "EverythingCommand.h"
+#include "EverythingCommandLegacy.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/everything/EverythingCommandEditor.h"
 #include "commands/everything/EverythingAdhocCommand.h"
@@ -27,7 +27,7 @@ namespace everything {
 
 using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 
-struct EverythingCommand::PImpl
+struct EverythingCommandLegacy::PImpl
 {
 	CommandParam mParam;
 
@@ -41,18 +41,18 @@ struct EverythingCommand::PImpl
 
 
 
-CString EverythingCommand::GetType() { return _T("EverythingCommand"); }
+CString EverythingCommandLegacy::GetType() { return _T("EverythingCommand"); }
 
 
-EverythingCommand::EverythingCommand() : in(std::make_unique<PImpl>())
+EverythingCommandLegacy::EverythingCommandLegacy() : in(std::make_unique<PImpl>())
 {
 }
 
-EverythingCommand::~EverythingCommand()
+EverythingCommandLegacy::~EverythingCommandLegacy()
 {
 }
 
-bool EverythingCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+bool EverythingCommandLegacy::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (__super::QueryInterface(ifid, cmd)) {
 		return true;
@@ -65,37 +65,37 @@ bool EverythingCommand::QueryInterface(const launcherapp::core::IFID& ifid, void
 	return false;
 }
 
-void EverythingCommand::SetParam(const CommandParam& param)
+void EverythingCommandLegacy::SetParam(const CommandParam& param)
 {
 	in->mParam = param;
 }
 
-const CommandParam& EverythingCommand::GetParam()
+const CommandParam& EverythingCommandLegacy::GetParam()
 {
 	return in->mParam;
 }
 
-CString EverythingCommand::GetName()
+CString EverythingCommandLegacy::GetName()
 {
 	return in->mParam.mName;
 }
 
-CString EverythingCommand::GetDescription()
+CString EverythingCommandLegacy::GetDescription()
 {
 	return in->mParam.mDescription;
 }
 
-CString EverythingCommand::GetGuideString()
+CString EverythingCommandLegacy::GetGuideString()
 {
 	return _T("キーワード入力するとEverything検索結果を表示します");
 }
 
-CString EverythingCommand::GetTypeDisplayName()
+CString EverythingCommandLegacy::GetTypeDisplayName()
 {
 	return _T("Everything検索");
 }
 
-BOOL EverythingCommand::Execute(Parameter* param)
+BOOL EverythingCommandLegacy::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -114,17 +114,17 @@ BOOL EverythingCommand::Execute(Parameter* param)
 	return TRUE;
 }
 
-CString EverythingCommand::GetErrorString()
+CString EverythingCommandLegacy::GetErrorString()
 {
 	return _T("");
 }
 
-HICON EverythingCommand::GetIcon()
+HICON EverythingCommandLegacy::GetIcon()
 {
 	return EverythingProxy::Get()->GetIcon();
 }
 
-int EverythingCommand::Match(Pattern* pattern)
+int EverythingCommandLegacy::Match(Pattern* pattern)
 {
 	in->mShouldComletion = false;
 
@@ -161,22 +161,22 @@ int EverythingCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
-bool EverythingCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
+bool EverythingCommandLegacy::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
 	return true;
 }
 
 launcherapp::core::Command*
-EverythingCommand::Clone()
+EverythingCommandLegacy::Clone()
 {
-	auto clonedCmd = make_refptr<EverythingCommand>();
+	auto clonedCmd = make_refptr<EverythingCommandLegacy>();
 	clonedCmd->in->mParam = in->mParam;
 
 	return clonedCmd.release();
 }
 
-bool EverythingCommand::Save(CommandEntryIF* entry)
+bool EverythingCommandLegacy::Save(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 
@@ -191,12 +191,12 @@ bool EverythingCommand::Save(CommandEntryIF* entry)
 	return true;
 }
 
-bool EverythingCommand::Load(CommandEntryIF* entry)
+bool EverythingCommandLegacy::Load(CommandEntryIF* entry)
 {
 	ASSERT(entry);
 
 	CString typeStr = entry->Get(_T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr != EverythingCommand::GetType()) {
+	if (typeStr.IsEmpty() == FALSE && typeStr != EverythingCommandLegacy::GetType()) {
 		return false;
 	}
 
@@ -215,9 +215,9 @@ bool EverythingCommand::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool EverythingCommand::NewDialog(
+bool EverythingCommandLegacy::NewDialog(
 	Parameter* param,
-	EverythingCommand** newCmdPtr
+	EverythingCommandLegacy** newCmdPtr
 )
 {
 	UNREFERENCED_PARAMETER(param);
@@ -229,7 +229,7 @@ bool EverythingCommand::NewDialog(
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
-	auto newCmd = make_refptr<EverythingCommand>();
+	auto newCmd = make_refptr<EverythingCommandLegacy>();
 	newCmd->in->mParam = commandParam;
 
 	if (newCmdPtr) {
@@ -238,7 +238,7 @@ bool EverythingCommand::NewDialog(
 	return true;
 }
 
-bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingCommand** newCmdPtr)
+bool EverythingCommandLegacy::LoadFrom(CommandFile* cmdFile, void* e, EverythingCommandLegacy** newCmdPtr)
 {
 	UNREFERENCED_PARAMETER(cmdFile);
 
@@ -246,7 +246,7 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 
 	CommandFile::Entry* entry = (CommandFile::Entry*)e;
 
-	auto command = make_refptr<EverythingCommand>();
+	auto command = make_refptr<EverythingCommandLegacy>();
 	if (command->Load(entry) == false) {
 		return false;
 	}
@@ -258,7 +258,7 @@ bool EverythingCommand::LoadFrom(CommandFile* cmdFile, void* e, EverythingComman
 }
 
 // コマンドを編集するためのダイアログを作成/取得する
-bool EverythingCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
+bool EverythingCommandLegacy::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
 {
 	if (editor == nullptr) {
 		return false;
@@ -272,7 +272,7 @@ bool EverythingCommand::CreateEditor(HWND parent, launcherapp::core::CommandEdit
 }
 
 // ダイアログ上での編集結果をコマンドに適用する
-bool EverythingCommand::Apply(launcherapp::core::CommandEditor* editor)
+bool EverythingCommandLegacy::Apply(launcherapp::core::CommandEditor* editor)
 {
 	RefPtr<CommandEditor> cmdEditor;
 	if (editor->QueryInterface(IFID_EVERYTHINGCOMMANDEDITOR, (void**)&cmdEditor) == false) {
@@ -284,7 +284,7 @@ bool EverythingCommand::Apply(launcherapp::core::CommandEditor* editor)
 }
 
 // ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
-bool EverythingCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
+bool EverythingCommandLegacy::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
 {
 	RefPtr<CommandEditor> cmdEditor;
 	if (editor->QueryInterface(IFID_EVERYTHINGCOMMANDEDITOR, (void**)&cmdEditor) == false) {
@@ -294,7 +294,7 @@ bool EverythingCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 	auto paramNew = cmdEditor->GetParam();
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = make_refptr<EverythingCommand>();
+	auto newCmd = make_refptr<EverythingCommandLegacy>();
 	newCmd->SetParam(paramNew);
 
 	if (newCmdPtr) {
@@ -305,7 +305,7 @@ bool EverythingCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 }
 
 
-bool EverythingCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
+bool EverythingCommandLegacy::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
 {
 	// コマンド名が一致しなければ候補を表示しない
 	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
@@ -336,7 +336,7 @@ bool EverythingCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& 
 	return true;
 }
 
-void EverythingCommand::ClearCache()
+void EverythingCommandLegacy::ClearCache()
 {
 }
 

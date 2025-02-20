@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EverythingCommandProvider.h"
-#include "commands/everything/EverythingCommand.h"
+#include "commands/everything/EverythingCommandLegacy.h"
 #include "commands/everything/AppSettingEverythingPage.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
@@ -56,8 +56,8 @@ CString EverythingCommandProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool EverythingCommandProvider::NewDialog(CommandParameter* param)
 {
-	EverythingCommand* newCmd = nullptr;
-	if (EverythingCommand::NewDialog(param, &newCmd) == false) {
+	EverythingCommandLegacy* newCmd = nullptr;
+	if (EverythingCommandLegacy::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
 
@@ -74,6 +74,13 @@ bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<Set
 	return true;
 }
 
+// 非公開コマンドかどうか(新規作成対象にしない)
+bool EverythingCommandProvider::IsPrivate() const
+{
+	// 0.36.0で、登録型コマンドを廃止
+	return true;
+}
+
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t EverythingCommandProvider::GetOrder() const
 {
@@ -86,7 +93,7 @@ void EverythingCommandProvider::OnBeforeLoad()
 
 bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 {
-	std::unique_ptr<EverythingCommand> command(new EverythingCommand);
+	std::unique_ptr<EverythingCommandLegacy> command(new EverythingCommandLegacy);
 	if (command->Load(entry) == false) {
 		return false;
 	}

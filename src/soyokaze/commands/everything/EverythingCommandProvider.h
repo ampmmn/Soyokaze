@@ -29,6 +29,9 @@ public:
 	// 設定ページを取得する
 	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
 
+	// 非公開コマンドかどうか(新規作成対象にしない)
+	bool IsPrivate() const override;
+
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
 

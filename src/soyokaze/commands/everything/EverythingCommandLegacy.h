@@ -14,13 +14,13 @@ namespace everything {
 
 class EverythingResult;
 
-class EverythingCommand : 
+class EverythingCommandLegacy : 
 	virtual public launcherapp::commands::common::UserCommandBase,
  	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
-	EverythingCommand();
-	virtual ~EverythingCommand();
+	EverythingCommandLegacy();
+	virtual ~EverythingCommandLegacy();
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
@@ -53,8 +53,8 @@ public:
 
 	static CString GetType();
 
-	static bool NewDialog(Parameter* param, EverythingCommand** newCmd);
-	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommand** newCmdPtr);
+	static bool NewDialog(Parameter* param, EverythingCommandLegacy** newCmd);
+	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommandLegacy** newCmdPtr);
 
 	void SetParam(const CommandParam& param);
 	const CommandParam& GetParam();
