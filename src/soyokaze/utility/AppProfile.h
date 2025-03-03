@@ -15,9 +15,11 @@ class CAppProfile
 public:
 
 	//! ディレクトリパスを取得
-	static const TCHAR* GetDirPath(TCHAR* path, size_t len);
+	static const TCHAR* GetDirPath(TCHAR* path, size_t len, bool isPerMachine);
 	//! ファイルパスを取得
-	static const TCHAR* GetFilePath(TCHAR* path, size_t len);
+	static const TCHAR* GetFilePath(TCHAR* path, size_t len, bool isPerMachine);
+	//! 設定フォルダの初期化
+	static bool InitializeProfileDir(bool* isNewCreated);
 
 	//! インスタンスの生成・取得
 	static CAppProfile* Get();

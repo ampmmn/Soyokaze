@@ -28,7 +28,7 @@ int MainWindowPlacement::GetMainWindowHeight()
 	return rc.Height();
 }
 
-// $B%"%$%3%sMs(B
+// アイコン欄
 CWnd* MainWindowPlacement::GetIconLabel()
 {
 	if (mIcon == nullptr) {
@@ -59,7 +59,7 @@ int MainWindowPlacement::GetIconWindowHeight()
 	return rc.Height();
 }
 
-// $B@bL@Ms(B
+// 説明欄
 CWnd* MainWindowPlacement::GetDescriptionLabel()
 {
 	if (mDesc == nullptr) {
@@ -91,7 +91,7 @@ int MainWindowPlacement::GetDescriptionWindowHeight()
 }
 
 
-// $B%,%$%IMs(B
+// ガイド欄
 CWnd* MainWindowPlacement::GetGuideLabel()
 {
 	if (mGuide == nullptr) {
@@ -122,7 +122,7 @@ int MainWindowPlacement::GetGuideWindowHeight()
 	return rc.Height();
 }
 
-// $BF~NOMs(B
+// 入力欄
 CWnd* MainWindowPlacement::GetEdit()
 {
 	if (mEdit == nullptr) {
@@ -153,7 +153,7 @@ int MainWindowPlacement::GetEditWindowHeight()
 	return rc.Height();
 }
 
-// $B8uJdMs(B
+// 候補欄
 CWnd* MainWindowPlacement::GetCandidateList()
 {
 	if (mCandidateList== nullptr) {
@@ -184,20 +184,24 @@ int MainWindowPlacement::GetCandidateListWindowHeight()
 	return rc.Height();
 }
 
-// $B>e$NM>Gr(B
+// 上の余白
 int MainWindowPlacement::GetMarginTop() { return 2; }
-// $B:8$NM>Gr(B
+// 左の余白
 int MainWindowPlacement::GetMarginLeft() { return 2; }
-// $BF~NOMs$H8uJdMs$NM>Gr(B
+// 入力欄と候補欄の余白
 int MainWindowPlacement::GetMarginEditToList() { return 3; }
 
-// $BF~NO2hLL$N%U%)%s%H%5%$%:(B
+// 入力画面のフォントサイズ
 int MainWindowPlacement::GetFontPixelSize()
 {
 	auto font = mMainWnd->GetMainWindowFont();
 
-	LOGFONT lf;
-	font->GetLogFont(&lf);
+	LOGFONT lf = {};
+	if (font->GetSafeHandle() == nullptr) {
+		// フォントハンドルがない場合は気休めにデフォルト値(16)を返す
+		return 16;
+	}
+	font->GetLogFont(&lf);	
 
 	CClientDC dc(GetParent());
 	auto orgFont = dc.SelectObject(font);

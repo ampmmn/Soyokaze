@@ -33,7 +33,7 @@ struct ChromiumBrowseHistory::PImpl
 		mOrgDBFilePath.ReleaseBuffer();
 
 		// 退避先のパスを生成
-		Path dbDstPath(Path::APPDIR, _T("tmp"));
+		Path dbDstPath(Path::APPDIRPERMACHINE, _T("tmp"));
 		if (dbDstPath.IsDirectory() == false) {
 			if (CreateDirectory(dbDstPath, nullptr) == FALSE) {
 				spdlog::warn(_T("Failed to create directory {}"), (LPCTSTR)dbDstPath);

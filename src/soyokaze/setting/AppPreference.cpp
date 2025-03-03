@@ -77,7 +77,7 @@ static void TrimComment(CString& s)
 void AppPreference::PImpl::Load()
 {
 	Path path;
-	CAppProfile::GetFilePath(path, path.size());
+	CAppProfile::GetFilePath(path, path.size(), false);
 
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
@@ -273,7 +273,7 @@ void AppPreference::Load()
 void AppPreference::Save()
 {
 	Path path;
-	CAppProfile::GetFilePath(path, path.size());
+	CAppProfile::GetFilePath(path, path.size(), false);
 
 	FILE* fpOut = nullptr;
 	try {
@@ -615,48 +615,16 @@ void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 	in->mListeners.erase(listener);
 }
 
-static bool IsDirectoryEmpty(LPCTSTR path)
-{
-	bool hasContent = false;
-
-	CString pattern(path);
-	pattern += _T("\\*.*");
-
-	CFileFind ff;
-	BOOL b = ff.FindFile(pattern);
-
-	while(b) {
-		b = ff.FindNextFile();
-
-		if (ff.IsDots()) {
-			continue;
-		}
-		if (ff.GetFileName() == APPLOGNAME) {
-			continue;
-		}
-
-		hasContent = true;
-		break;
-	}
-
-	ff.Close();
-
-	return hasContent == false;
-}
-
-
 bool AppPreference::CreateUserDirectory()
 {
-	Path path(Path::APPDIR);
-	// ディレクトリがなければ作成する
-	if (path.IsDirectory() == false) {
-		if (CreateDirectory(path, NULL) == FALSE) {
-			return false;
-		}
+	bool isDirectoryEmpty = false;
+	if (CAppProfile::InitializeProfileDir(&isDirectoryEmpty) == false) {
+		return false;
 	}
-
-	if (IsDirectoryEmpty(path)) {
+	if (isDirectoryEmpty) {
 		// ディレクトリが空の場合は初回起動とみなす
+		Path path(Path::APPDIR);
+
 		CString msg;
 		msg.Format(_T("【初回起動】\n設定ファイルは以下の場所に保存されます。\n%s"), (LPCTSTR)path);
 		AfxMessageBox(msg, MB_ICONINFORMATION);

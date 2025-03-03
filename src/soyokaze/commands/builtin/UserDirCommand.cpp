@@ -46,7 +46,7 @@ BOOL UserDirCommand::Execute(Parameter* param)
 	UNREFERENCED_PARAMETER(param);
 
 	std::vector<TCHAR> userDirPath(65536);
-	CAppProfile::GetDirPath(userDirPath.data(), userDirPath.size());
+	CAppProfile::GetDirPath(userDirPath.data(), userDirPath.size(), false);
 	_tcscat_s(userDirPath.data(), userDirPath.size(), _T("\\"));
 
 	ShellExecCommand cmd;

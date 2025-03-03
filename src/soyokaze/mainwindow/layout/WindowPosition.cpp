@@ -14,29 +14,13 @@ constexpr int DEFAULT_HEIGHT = 480;
 
 WindowPosition::WindowPosition() : mPosition({}), mIsLoaded(false)
 {
-	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL ret = GetComputerName(mName.GetBuffer(bufLen), &bufLen);
-	mName.ReleaseBuffer();
-
-	if (ret == FALSE) {
-		mName = _T("Window");
-	}
+	mName = _T("Window");
 }
 
 WindowPosition::WindowPosition(LPCTSTR name) : mPosition({}), mIsLoaded(false)
 {
 	ASSERT(name);
-
-	DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
-	TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
-	if (GetComputerName(computerName, &bufLen)) {
-		mName = computerName;
-		mName += _T(".");
-		mName += name;
-	}
-	else {
-		mName = name;
-	}
+	mName = name;
 }
 
 WindowPosition::~WindowPosition()
@@ -164,7 +148,7 @@ bool WindowPosition::Save()
 
 void WindowPosition::GetFilePath(LPCTSTR baseName, Path& path)
 {
-	CAppProfile::GetDirPath(path, path.size());
+	CAppProfile::GetDirPath(path, path.size(), true);
 	path.Append(baseName);
 	path.AddExtension(_T(".position"));
 }

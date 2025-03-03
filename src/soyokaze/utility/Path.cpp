@@ -180,9 +180,10 @@ Path::Path(MODULEFILEPATH_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 	}
 }
 
-Path::Path(APPPROFILE_TAG, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
+Path::Path(APPPROFILE_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 {
-	CAppProfile::GetDirPath(data(), (DWORD)size());
+	bool isPerMachine = (tag == APPDIRPERMACHINE);
+	CAppProfile::GetDirPath(data(), (DWORD)size(), isPerMachine);
 	if (extraPath != nullptr) {
 		Append(extraPath);
 	}

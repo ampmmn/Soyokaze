@@ -15,36 +15,140 @@
 #define new DEBUG_NEW
 #endif
 
-const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len)
+constexpr LPCTSTR INTERMADIATE_DIRNAME = _T("per_machine");
+
+static void GetProfileDirRoot(TCHAR* path, size_t len)
 {
-	// exeと同じディレクトリにprofileフォルダがあったらポータブル版として動作する
 	GetModuleFileName(NULL, path, (DWORD)len);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("profile"));
 	if (PathIsDirectory(path)) {
+		// exeと同じディレクトリにprofileフォルダが存在する場合は、ポータブル版として動作する
+		return;
+	}
+	else {
+		// profileフォルダがなければ、非ポータブル版として動作する
+		size_t buflen = MAX_PATH_NTFS;
+
+		// ユーザのホームディレクトリ直下のAPP_PROFILE_DIRNAMEフォルダをユーザ設定ディレクトとする
+		std::vector<TCHAR> buff(buflen);
+		_tgetenv_s(&buflen, &buff.front(), buff.size(), _T("USERPROFILE"));
+
+		_tcscpy_s(path, len, &buff.front());
+
+		PathAppend(path, APP_PROFILE_DIRNAME);
+
+		return;
+	}
+}
+
+static void GetIntermadiateDirPath(TCHAR* path, size_t len)
+{
+	GetProfileDirRoot(path, len);
+	PathAppend(path, INTERMADIATE_DIRNAME);
+}
+
+/**
+ 	ユーザ設定ディレクトリのパスを取得する
+ 	@return 
+ 	@param[out] path         パス文字列を受け取るバッファ
+ 	@param[in]  len          バッファの長さ
+ 	@param[in]  isPerMachine ディレクトリのスコープはマシン固有か?
+*/
+const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len, bool isPerMachine)
+{
+	TCHAR pcName[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD bufLen = sizeof(pcName);
+	GetComputerName(pcName, &bufLen);
+
+	if (isPerMachine == false) {
+		GetProfileDirRoot(path, len);
 		return path;
 	}
+	else {
+		GetIntermadiateDirPath(path, len);
+		PathAppend(path, pcName);
+		return path;
+	}
+}
 
-	// profileフォルダがなければ非ポータブル版として動作する
-	size_t buflen = MAX_PATH_NTFS;
-
-	std::vector<TCHAR> buff(buflen);
-	_tgetenv_s(&buflen, &buff.front(), buff.size(), _T("USERPROFILE"));
-
-	_tcscpy_s(path, len, &buff.front());
-
-	PathAppend(path, APP_PROFILE_DIRNAME);
+// ファイルパスを取得
+const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len, bool isPerMachine)
+{
+	GetDirPath(path, len, isPerMachine);
+	PathAppend(path, _T("settings.ini"));
 
 	return path;
 }
 
-// ファイルパスを取得
-const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
+static bool IsDirectoryEmpty(LPCTSTR path)
 {
-	GetDirPath(path, len);
-	PathAppend(path, _T("settings.ini"));
+	bool hasContent = false;
 
-	return path;
+	CString pattern(path);
+	pattern += _T("\\*.*");
+
+	CFileFind ff;
+	BOOL b = ff.FindFile(pattern);
+
+	while(b) {
+		b = ff.FindNextFile();
+
+		if (ff.IsDots()) {
+			continue;
+		}
+		auto name = ff.GetFileName();
+		if (name == INTERMADIATE_DIRNAME) {
+			continue;
+		}
+
+		hasContent = true;
+		break;
+	}
+
+	ff.Close();
+
+	return hasContent == false;
+}
+
+
+//! 設定フォルダの初期化
+bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
+{
+	// ユーザ設定ディレクトリがなければ作成する
+	std::vector<TCHAR> pathBuf(MAX_PATH_NTFS);
+	LPTSTR path = pathBuf.data();
+
+	// ユーザ設定ディレクトリを作成する
+	GetProfileDirRoot(path, MAX_PATH_NTFS);
+	if (PathIsDirectory(path) == FALSE) {
+		if (CreateDirectory(path, NULL) == FALSE) {
+			return false;
+		}
+	}
+
+	if (isNewCreated) {
+		// ディレクトリは新規に作成されたものかどうか?
+		*isNewCreated = IsDirectoryEmpty(path);
+	}
+
+	// PC固有のユーザ設定を置くための中間ディレクトリを作成する
+	GetIntermadiateDirPath(path, MAX_PATH_NTFS);
+	if (PathIsDirectory(path) == FALSE) {
+		if (CreateDirectory(path, NULL) == FALSE) {
+			return false;
+		}
+	}
+
+	// ユーザ設定(PC別)ディレクトリがなければ作成する
+	bool isPerMachine = true;
+	GetDirPath(path, MAX_PATH_NTFS, isPerMachine);
+	if (PathIsDirectory(path) == false) {
+		if (CreateDirectory(path, NULL) == FALSE) {
+			return false;
+		}
+	}
+	return true;
 }
 
 /*!
@@ -52,9 +156,9 @@ const TCHAR* CAppProfile::GetFilePath(TCHAR* path, size_t len)
 */
  CAppProfile::CAppProfile() : m_entity(std::make_unique<CIniFile>())
 {
-	TCHAR path[1024];
-	GetFilePath(path, 1024);
-	m_entity->Open((LPCTSTR)path);
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	GetFilePath(path.data(), path.size(), false);
+	m_entity->Open((LPCTSTR)path.data());
 }
 
 /*!

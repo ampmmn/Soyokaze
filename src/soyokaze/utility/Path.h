@@ -17,6 +17,7 @@ public:
  	};
 	enum APPPROFILE_TAG {
 		APPDIR,
+		APPDIRPERMACHINE,
 	};
 
 public:

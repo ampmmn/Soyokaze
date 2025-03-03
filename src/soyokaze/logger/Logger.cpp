@@ -54,7 +54,7 @@ Logger* Logger::Get()
 
 void Logger::Initialize()
 {
-	Path logPath(Path::APPDIR, APPLOGNAME);
+	Path logPath(Path::APPDIRPERMACHINE, APPLOGNAME);
 
 	auto max_size = 1048576 * 8;
 	auto max_files = 3;

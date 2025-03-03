@@ -21,7 +21,7 @@ struct ExecuteHistory::PImpl
 			return mFilePath;
 		}
 
-		Path path(Path::APPDIR, _T("history.txt"));
+		Path path(Path::APPDIRPERMACHINE, _T("history.txt"));
 		mFilePath = path;
 
 		return mFilePath;
