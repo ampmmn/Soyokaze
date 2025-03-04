@@ -26,6 +26,8 @@ class Logger
 public:
 	static Logger* Get();
 
+	CString GetLogDirectory();
+
 	void Initialize();
 
 private:

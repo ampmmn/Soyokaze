@@ -36,6 +36,8 @@ struct Logger::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override
 	{
 	}
+
+	CString mLogDirectory;
 };
 
 Logger::Logger() : in(new PImpl)
@@ -50,6 +52,11 @@ Logger* Logger::Get()
 {
 	static Logger logger;
 	return &logger;
+}
+
+CString Logger::GetLogDirectory()
+{
+	return in->mLogDirectory;
 }
 
 void Logger::Initialize()
@@ -67,6 +74,10 @@ void Logger::Initialize()
 	spdlog::flush_every(std::chrono::seconds(3));
 
 	spdlog::set_default_logger(logger);
+
+	in->mLogDirectory = logPath;
+	PathRemoveFileSpec(in->mLogDirectory.GetBuffer(in->mLogDirectory.GetLength()));
+	in->mLogDirectory.ReleaseBuffer();
 }
 
 

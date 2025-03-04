@@ -1,12 +1,17 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingPageOther.h"
+#include "commands/shellexecute/ShellExecCommand.h"
 #include "setting/Settings.h"
+#include "logger/Logger.h"
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 
 static int SPDLOGLEVEL[] = { 
@@ -80,12 +85,21 @@ void AppSettingPageOther::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(AppSettingPageOther, SettingPage)
 	ON_COMMAND(IDC_CHECK_WARNLONGWORKING, OnCheckWarnLongTime)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_LOGDIR, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
 BOOL AppSettingPageOther::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	CWnd* link = GetDlgItem(IDC_SYSLINK_LOGDIR);
+	CString str;
+	link->GetWindowText(str);
+
+	auto logDir = Logger::Get()->GetLogDirectory();
+	str.Replace(_T("$LOGDIR"), logDir);
+	link->SetWindowText(str);
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -137,3 +151,21 @@ void AppSettingPageOther::OnCheckWarnLongTime()
 	UpdateData(FALSE);
 }
 
+void AppSettingPageOther::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	NMLINK* linkPtr = (NMLINK*)pNMHDR;
+
+	if (linkPtr->hdr.idFrom == IDC_SYSLINK_LOGDIR) {
+		// ログ出力ディレクトリを開く
+		auto logDir = Logger::Get()->GetLogDirectory();
+		logDir += _T("\\");
+
+		ShellExecCommand cmd;
+		cmd.SetPath((LPCTSTR)logDir);
+		cmd.Execute(CommandParameterBuilder::EmptyParam());
+	}
+	*pResult = 0;
+}

@@ -470,6 +470,7 @@
 #define IDC_BUTTON_BROWSEDIR            1205
 #define IDC_CHECK_DISPLAYNAME           1206
 #define IDC_EDIT_VALUE                  1207
+#define IDC_SYSLINK_LOGDIR              1208
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -478,7 +479,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        249
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1208
+#define _APS_NEXT_CONTROL_VALUE         1209
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
