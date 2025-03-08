@@ -3,6 +3,7 @@
 #include "CommandParameter.h"
 #include "commands/core/CommandParameterIF.h"
 #include "commands/core/IFIDDefine.h"
+#include "utility/Path.h"
 #include <map>
 
 #ifdef _DEBUG
@@ -251,7 +252,7 @@ void CommandParameterBuilder::SetWholeString(LPCTSTR str)
 
 	// 与えられた文字列が絶対パスで、かつ、存在するものである場合は、
 	// たとえスペースを含むとしても、パラメータとして扱わない
-	if (PathIsRelative(str) == FALSE && PathFileExists(str)) {
+	if (PathIsRelative(str) == FALSE && Path::FileExists(str)) {
 		in->mCommandPart = str;
 		in->SetParamPart(_T(""));
 		in->mHasSpace = false;

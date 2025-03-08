@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "AppSettingEverythingPage.h"
 #include "setting/Settings.h"
+#include "utility/Path.h"
 #include "app/Manual.h"
 #include "resource.h"
 
@@ -30,7 +31,7 @@ BOOL AppSettingEverythingPage::OnKillActive()
 		return FALSE;
 	}
 
-	if (mIsRunApp == 1 && PathFileExists(mEverythingExePath) == FALSE) {
+	if (mIsRunApp == 1 && Path::FileExists(mEverythingExePath) == FALSE) {
 		CString msg;
 		msg.Format(_T("%sは有効なパスではありません"), (LPCTSTR)mEverythingExePath);
 		AfxMessageBox(msg);

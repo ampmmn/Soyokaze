@@ -7,6 +7,7 @@
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <list>
 
@@ -139,7 +140,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
-		if (PathFileExists(item.mFullPath) == FALSE) {
+		if (Path::FileExists(item.mFullPath) == FALSE) {
 			// 存在しないファイルは除外
 			continue;
 		}

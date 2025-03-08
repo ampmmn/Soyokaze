@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SpecialFolderFiles.h"
 #include "utility/ShortcutFile.h"
+#include "utility/Path.h"
 #include <mutex>
 #include <thread>
 #include <deque>
@@ -177,7 +178,7 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 			if (item.mFullPath.IsEmpty()) {
 				continue;
 			}
-			if (PathFileExists(item.mFullPath) == FALSE) {
+			if (Path::FileExists(item.mFullPath) == FALSE) {
 				// 存在しないパスを除外する
 				continue;
 			}

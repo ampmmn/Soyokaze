@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "LocalPathTarget.h"
+#include "utility/Path.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -128,7 +129,7 @@ struct LocalPathTarget::PImpl
 		MakeDetailMessage(actionFirst, filePathFirst, itemCount);
 
 		// フォルダがなくなっていたら終了
-		if (PathIsDirectory(mPath) == FALSE) {
+		if (Path::IsDirectory(mPath) == FALSE) {
 			Reset();
 			return true;
 		}
@@ -215,7 +216,7 @@ LocalPathTarget::~LocalPathTarget()
 bool LocalPathTarget::IsUpdated()
 {
 	// 監視対象の有無を確認
-	if (PathIsDirectory(in->mPath) == FALSE) {
+	if (Path::IsDirectory(in->mPath) == FALSE) {
 		in->Reset();
 		return false;
 	}

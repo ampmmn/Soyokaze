@@ -7,6 +7,7 @@
 #include "commands/core/CommandFile.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -75,7 +76,7 @@ BOOL ChangeDirectoryCommand::Execute(Parameter* param)
 	}
 
 	LPCTSTR newDir = param->GetParam(0);
-	if (PathIsDirectory(newDir) == FALSE) {
+	if (Path::IsDirectory(newDir) == FALSE) {
 		return TRUE;
 	}
 

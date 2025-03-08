@@ -36,13 +36,13 @@ void ShortcutSettingPage::OnOK()
 
 bool ShortcutSettingPage::MakeShortcutSendToPath()
 {
-	if (mSendTo == FALSE && PathFileExists(mSendToPath)) {
+	if (mSendTo == FALSE && Path::FileExists(mSendToPath)) {
 		if (DeleteFile(mSendToPath) == FALSE) {
 			spdlog::warn(_T("Failed to delete send to path shortcut."));
 		}
 		return true;
 	}
-	if (mSendTo && PathFileExists(mSendToPath) == FALSE) {
+	if (mSendTo && Path::FileExists(mSendToPath) == FALSE) {
 		ShortcutFile link;
 		link.SetLinkPath(mAppPath);
 		link.Save(mSendToPath);
@@ -52,7 +52,7 @@ bool ShortcutSettingPage::MakeShortcutSendToPath()
 
 bool ShortcutSettingPage::MakeShortcutStartMenu()
 {
-	if (mStartMenu == FALSE && PathFileExists(mStartMenuPath)) {
+	if (mStartMenu == FALSE && Path::FileExists(mStartMenuPath)) {
 		// スタートメニューを作成しない、かつ、存在する場合は消す
 		if (DeleteFile(mStartMenuPath) == FALSE ||
 		    RemoveDirectory(mStartMenuDir) == FALSE) {
@@ -61,7 +61,7 @@ bool ShortcutSettingPage::MakeShortcutStartMenu()
 		return true;
 	}
 
-	if (mStartMenu && PathFileExists(mStartMenuPath) == FALSE) {
+	if (mStartMenu && Path::FileExists(mStartMenuPath) == FALSE) {
 		// スタートメニューを作成する、かつ、存在しない場合は作成する
 		CreateStartMenu();
 	}
@@ -70,7 +70,7 @@ bool ShortcutSettingPage::MakeShortcutStartMenu()
 
 bool ShortcutSettingPage::MakeShortcutDesktop()
 {
-	if (mDesktop == FALSE && PathFileExists(mDesktopPath)) {
+	if (mDesktop == FALSE && Path::FileExists(mDesktopPath)) {
 		// デスクトップにアイコンを作成しない、かつ、存在する場合は消す
 		if (DeleteFile(mDesktopPath) == FALSE) {
 			spdlog::warn(_T("Failed to delete desktop shortcut."));
@@ -78,7 +78,7 @@ bool ShortcutSettingPage::MakeShortcutDesktop()
 		return true;
 	}
 
-	if (mDesktop && PathFileExists(mDesktopPath) == FALSE) {
+	if (mDesktop && Path::FileExists(mDesktopPath) == FALSE) {
 		// デスクトップにアイコンを作成する、かつ、存在しない場合は作成する
 		ShortcutFile link;
 		link.SetLinkPath(mAppPath);
@@ -89,13 +89,13 @@ bool ShortcutSettingPage::MakeShortcutDesktop()
 
 bool ShortcutSettingPage::MakeShortcutStartup()
 {
-	if (mStartup == FALSE && PathFileExists(mStartupPath)) {
+	if (mStartup == FALSE && Path::FileExists(mStartupPath)) {
 		if (DeleteFile(mStartupPath) == FALSE) {
 			spdlog::warn(_T("Failed to delete startup shortcut."));
 		}
 		return true;
 	}
-	if (mStartup && PathFileExists(mStartupPath) == FALSE) {
+	if (mStartup && Path::FileExists(mStartupPath) == FALSE) {
 		ShortcutFile link;
 		link.SetLinkPath(mAppPath);
 		link.Save(mStartupPath);
@@ -163,10 +163,10 @@ BOOL ShortcutSettingPage::OnSetActive()
 
 void ShortcutSettingPage::UpdateStatus()
 {
-	mSendTo = PathFileExists(mSendToPath);
-	mStartMenu = PathFileExists(mStartMenuPath);
-	mDesktop = PathFileExists(mDesktopPath);
-	mStartup = PathFileExists(mStartupPath);
+	mSendTo = Path::FileExists(mSendToPath);
+	mStartMenu = Path::FileExists(mStartMenuPath);
+	mDesktop = Path::FileExists(mDesktopPath);
+	mStartup = Path::FileExists(mStartupPath);
 	UpdateData(FALSE);
 }
 
@@ -220,7 +220,7 @@ bool ShortcutSettingPage::IsStartMenuExists()
 {
 	CString path;
 	CreateStartMenuPath(path);
-	return PathFileExists(path) != FALSE;
+	return Path::FileExists(path) != FALSE;
 }
 
 bool ShortcutSettingPage::CreateStartMenu()

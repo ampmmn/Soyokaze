@@ -4,6 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "icon/IconLoader.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <vector>
 
@@ -66,7 +67,7 @@ BOOL LocalToGitBashPathAdhocCommand::Execute(Parameter* param)
 
 HICON LocalToGitBashPathAdhocCommand::GetIcon()
 {
-	if (PathFileExists(in->mFullPath) == FALSE) {
+	if (Path::FileExists(in->mFullPath) == FALSE) {
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}

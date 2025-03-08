@@ -53,6 +53,9 @@ public:
 	// 実際のパスの長さにbufferを切り詰める
 	void Shrink();
 
+	static bool FileExists(LPCTSTR path);
+	static bool IsDirectory(LPCTSTR path);
+
 protected:
 	LPCTSTR cdata() const;
 	LPTSTR data();

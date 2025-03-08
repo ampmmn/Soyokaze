@@ -10,6 +10,7 @@
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TimeoutChecker.h"
+#include "utility/Path.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -73,7 +74,7 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 	bool shouldReload()
 	{
 		// ファイルがなければリロードしない
-		if (PathFileExists(mParam.mFilePath) == FALSE) {
+		if (Path::FileExists(mParam.mFilePath) == FALSE) {
 			return false;
 		}
 

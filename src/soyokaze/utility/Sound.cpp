@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Sound.h"
 #include "SharedHwnd.h"
+#include "utility/Path.h"
 #include <mmsystem.h>
 #include <list>
 #include <map>
@@ -143,7 +144,7 @@ Sound* Sound::Get()
 
 bool Sound::PlayAsync(LPCTSTR filePath)
 {
-	if (PathFileExists(filePath) == FALSE) {
+	if (Path::FileExists(filePath) == FALSE) {
 		return false;
 	}
 	if (in->IsInitialized() == false) {

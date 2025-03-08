@@ -5,6 +5,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 
 #ifdef _DEBUG
@@ -132,7 +133,8 @@ bool SubProcess::Run(
 	ExpandArguments(path, args);
 	ExpandMacros(path);
 
-	if ((in->IsOpenPathKeyPressed() && PathFileExists(path)) || PathIsDirectory(path)) {
+	bool isDir = Path::IsDirectory(path);
+	if ((in->IsOpenPathKeyPressed() && Path::FileExists(path)) || isDir) {
 		auto pref = AppPreference::Get();
 		if (pref->IsUseFiler()) {
 			// ファイラ経由でパスを表示する形に差し替える
@@ -146,7 +148,7 @@ bool SubProcess::Run(
 		}
 		else {
 			// 登録されたファイラーがない場合はエクスプローラで開く
-			if (PathIsDirectory(path) == FALSE) {
+			if (isDir == FALSE) {
 				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
 				path.ReleaseBuffer();
 			}

@@ -2,6 +2,7 @@
 #include "VMXFileCommandProvider.h"
 #include "commands/vmware/VMXFileCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "utility/Path.h"
 #include <vector>
 #include <regex>
 #include <map>
@@ -86,7 +87,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 
 	for (auto& entry : items) {
 		auto item = entry.second;
-		if (PathFileExists(item.filePath) == FALSE) {
+		if (Path::FileExists(item.filePath) == FALSE) {
 			// 存在しない.vmxファイルは除外する
 			continue;
 		}

@@ -199,7 +199,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 			// 残り部分が一つの絶対パスを表しているなら、連結してひと固まりとして扱う
 			CString partLeftAll(wholeText.Mid(start));
-			if (PathIsRelative(partLeftAll) == FALSE && PathFileExists(partLeftAll)) {
+			if (PathIsRelative(partLeftAll) == FALSE && Path::FileExists(partLeftAll)) {
 				tokens.push_back(partLeftAll);
 				break;
 			}

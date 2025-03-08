@@ -3,6 +3,7 @@
 #include "AppProfile.h"
 #include "app/AppName.h"
 #include "utility/IniFile.h"
+#include "utility/Path.h"
 
 #include <shlwapi.h>
 #include <atlpath.h>
@@ -22,7 +23,7 @@ static void GetProfileDirRoot(TCHAR* path, size_t len)
 	GetModuleFileName(NULL, path, (DWORD)len);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("profile"));
-	if (PathIsDirectory(path)) {
+	if (Path::IsDirectory(path)) {
 		// exeと同じディレクトリにprofileフォルダが存在する場合は、ポータブル版として動作する
 		return;
 	}
@@ -121,7 +122,7 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 
 	// ユーザ設定ディレクトリを作成する
 	GetProfileDirRoot(path, MAX_PATH_NTFS);
-	if (PathIsDirectory(path) == FALSE) {
+	if (Path::IsDirectory(path) == FALSE) {
 		if (CreateDirectory(path, NULL) == FALSE) {
 			return false;
 		}
@@ -134,7 +135,7 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 
 	// PC固有のユーザ設定を置くための中間ディレクトリを作成する
 	GetIntermadiateDirPath(path, MAX_PATH_NTFS);
-	if (PathIsDirectory(path) == FALSE) {
+	if (Path::IsDirectory(path) == FALSE) {
 		if (CreateDirectory(path, NULL) == FALSE) {
 			return false;
 		}
@@ -143,7 +144,7 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	// ユーザ設定(PC別)ディレクトリがなければ作成する
 	bool isPerMachine = true;
 	GetDirPath(path, MAX_PATH_NTFS, isPerMachine);
-	if (PathIsDirectory(path) == false) {
+	if (Path::IsDirectory(path) == false) {
 		if (CreateDirectory(path, NULL) == FALSE) {
 			return false;
 		}

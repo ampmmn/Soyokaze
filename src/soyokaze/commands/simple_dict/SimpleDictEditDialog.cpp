@@ -7,6 +7,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/common/CommandEditValidation.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "app/Manual.h"
 #include "resource.h"
@@ -243,7 +244,7 @@ bool SettingDialog::UpdateStatus()
 		canTest = FALSE;
 		canCreate = FALSE;
 	}
-	else if (PathIsURL(in->mParam.mFilePath) == FALSE && PathFileExists(in->mParam.mFilePath) == FALSE) {
+	else if (PathIsURL(in->mParam.mFilePath) == FALSE && Path::FileExists(in->mParam.mFilePath) == FALSE) {
 		in->mMessage = _T("ファイルが存在しません");
 		canTest = FALSE;
 		canCreate = FALSE;

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ExtensionSettingDialog.h"
 #include "setting/Settings.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -84,7 +85,7 @@ BOOL ExtensionSettingDialog::OnKillActive()
 	if (UpdateData() == FALSE) {
 		return FALSE;
 	}
-	if (mIsEnableCalc && PathFileExists(mPythonDLLPath) == FALSE) {
+	if (mIsEnableCalc && Path::FileExists(mPythonDLLPath) == FALSE) {
 		AfxMessageBox(_T("Python(DLL)のパスを設定してください\n(ファイルが存在しません)"));
 		return FALSE;
 	}

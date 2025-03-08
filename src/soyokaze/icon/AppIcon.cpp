@@ -125,7 +125,7 @@ bool AppIcon::Import(const CString& iconFilePath)
 	SPDLOG_DEBUG("start");
 
 	// パスが無効ならエラー
-	if (PathFileExists(iconFilePath) == FALSE) {
+	if (Path::FileExists(iconFilePath) == FALSE) {
 		return false;
 	}
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShortcutFile.h"
+#include "utility/Path.h"
 #include <propkey.h>
 #include <propvarutil.h>
 
@@ -14,7 +15,7 @@ ShortcutFile::~ShortcutFile()
 
 bool ShortcutFile::SetLinkPath(LPCTSTR path)
 {
-	if (PathFileExists(path) == FALSE) {
+	if (Path::FileExists(path) == FALSE) {
 		return false;
 	}
 	mLinkPath = path;

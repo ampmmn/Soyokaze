@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "FolderDialog.h"
+#include "utility/Path.h"
 
 #if (defined(_DEBUG) && defined(WIN32))
 #define new DEBUG_NEW
@@ -93,7 +94,7 @@ int CFolderDialog::DoModal()
 	LPWSTR lpszItem = nullptr;
 	IShellItem* psiParent = nullptr;
 
-	if (PathFileExists(m_pData->szPath)) {
+	if (Path::FileExists(m_pData->szPath)) {
 		IShellItem* psiFolder = nullptr;
 		SHCreateItemFromParsingName(m_pData->szPath, NULL, IID_PPV_ARGS(&psiFolder));
 

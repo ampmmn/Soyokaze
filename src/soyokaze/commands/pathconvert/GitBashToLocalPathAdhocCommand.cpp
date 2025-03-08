@@ -5,6 +5,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -72,7 +73,7 @@ BOOL GitBashToLocalPathAdhocCommand::Execute(Parameter* param)
 	}
 	else {
 		// フォルダを開く or 開く
-		if (PathFileExists(in->mFullPath) == FALSE) {
+		if (Path::FileExists(in->mFullPath) == FALSE) {
 			launcherapp::commands::common::PopupMessage(_T("パスは存在しません"));
 			return TRUE;
 		}
@@ -89,7 +90,7 @@ BOOL GitBashToLocalPathAdhocCommand::Execute(Parameter* param)
 
 HICON GitBashToLocalPathAdhocCommand::GetIcon()
 {
-	if (PathFileExists(in->mFullPath) == FALSE) {
+	if (Path::FileExists(in->mFullPath) == FALSE) {
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}

@@ -4,6 +4,7 @@
 #include "macros/afxw/AfxWWrapper.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
@@ -48,7 +49,7 @@ AfxChangeDirectoryCommand::~AfxChangeDirectoryCommand()
 BOOL AfxChangeDirectoryCommand::Execute(Parameter* param)
 {
 	CString path = param->GetWholeString();
-	if (PathFileExists(path) == FALSE) {
+	if (Path::FileExists(path) == FALSE) {
 		return TRUE;
 	}
 

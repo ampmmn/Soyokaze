@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "LocalPathResolver.h"
+#include "utility/Path.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,7 +97,7 @@ bool LocalPathResolver::Resolve(
 			PathAddExtension(fullPath, _T(".exe"));
 		}
 
-		if (PathFileExists(fullPath) == FALSE) {
+		if (Path::FileExists(fullPath) == FALSE) {
 			continue;
 		}
 
@@ -134,7 +135,7 @@ void LocalPathResolver::GetSystemPath(std::vector<CString>& paths)
 			item = val.Tokenize(_T(";"), n);
 			continue;
 		}
-		if (PathIsDirectory(item)) {
+		if (Path::IsDirectory(item)) {
 			pathsWork.push_back(item);
 		}
 

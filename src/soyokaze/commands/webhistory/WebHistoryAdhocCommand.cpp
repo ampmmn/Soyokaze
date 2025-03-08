@@ -4,6 +4,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -119,7 +120,7 @@ BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
 		return FALSE;
 	}
 
-	if (PathFileExists(path.data()) == FALSE) {
+	if (Path::FileExists(path.data()) == FALSE) {
 		CString msg(_T("Browser executable not found."));
 		msg += _T("\n");
 		msg += path.data();

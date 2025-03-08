@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "StartupParam.h"
 #include "app/Arguments.h"
+#include "utility/Path.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,7 +62,7 @@ void StartupParam::ShiftRunCommand()
 bool StartupParam::HasPathToRegister(CString& pathToRegister)
 {
 	// 有効な(存在している)パスが指定された場合は登録すべきパスとして扱う
-	if (in->mArgs.GetCount() > 1 && PathFileExists(in->mArgs.Get(1))) {
+	if (in->mArgs.GetCount() > 1 && Path::FileExists(in->mArgs.Get(1))) {
 		pathToRegister = in->mArgs.Get(1);
 		return true;
 	}

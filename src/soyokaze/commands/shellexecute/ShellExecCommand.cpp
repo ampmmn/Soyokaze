@@ -11,6 +11,7 @@
 #include "commands/common/SubProcess.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
+#include "utility/Path.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -127,7 +128,7 @@ CString ShellExecCommand::GetGuideString()
 	else {
 		CString guideStr(_T("Enter:実行"));
 
-		if (PathFileExists(attr.mPath)) {
+		if (Path::FileExists(attr.mPath)) {
 			guideStr += _T(" Ctrl-Enter:フォルダを開く");
 
 			CString ext(PathFindExtension(attr.mPath));

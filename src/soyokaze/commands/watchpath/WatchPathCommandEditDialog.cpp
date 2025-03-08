@@ -4,6 +4,7 @@
 #include "commands/common/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "gui/FolderDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
@@ -108,7 +109,7 @@ bool CommandEditDialog::UpdateStatus()
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
-	if (PathIsDirectory(mParam.mPath) == FALSE) {
+	if (Path::IsDirectory(mParam.mPath) == FALSE) {
 		mMessage = _T("指定されたフォルダは存在しません。");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -148,7 +149,7 @@ void CommandEditDialog::OnOK()
 		return ;
 	}
 
-	if (PathIsDirectory(mParam.mPath) == FALSE) {
+	if (Path::IsDirectory(mParam.mPath) == FALSE) {
 		return;
 	}
 

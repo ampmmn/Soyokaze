@@ -3,6 +3,7 @@
 #include "app/AppName.h"
 #include "commands/common/SubProcess.h"
 #include "commands/core/CommandParameter.h"
+#include "utility/Path.h"
 
 #include <winrt/Windows.UI.Notifications.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
@@ -44,10 +45,10 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 
 			// フォルダ
 			CString path = argsMap[_T("path")];
-			if (PathFileExists(path) == FALSE) {
+			if (Path::FileExists(path) == FALSE) {
 				return S_OK;
 			}
-			if (PathIsDirectory(path) == FALSE) {
+			if (Path::IsDirectory(path) == FALSE) {
 				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
 				path.ReleaseBuffer();
 			}

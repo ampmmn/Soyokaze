@@ -4,6 +4,7 @@
 #include <deque>
 #include <map>
 #include "utility/SHA1.h"
+#include "utility/Path.h"
 #include "spdlog/stopwatch.h"
 
 #ifdef _DEBUG
@@ -43,7 +44,7 @@ struct DirectoryNode
 	bool Build(const CString& path)
 	{
 		// 対象パスが存在しない場合
-		if (PathIsDirectory(path) == FALSE) {
+		if (Path::IsDirectory(path) == FALSE) {
 			return false;
 		}
 

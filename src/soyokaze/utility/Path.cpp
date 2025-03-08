@@ -257,46 +257,12 @@ bool Path::RenameExtension(LPCTSTR ext)
 
 bool Path::FileExists() const
 {
-	if (PathIsUNC(cdata()) == FALSE) {
-		// UNC形式でなければ単にAPIをよぶ
-		return PathFileExists(cdata()) != FALSE;
-	}
-	else {
-		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
-		tstring path(cdata());
-
-		auto queryData = QueryDataHost::Get()->RequestFileExists(path);
-		if (queryData == nullptr) {
-			return false;
-		}
-
-		bool result = queryData->TryGet(100);
-		queryData->Release();
-
-		return result;
-	}
+	return Path::FileExists(cdata());
 }
 
 bool Path::IsDirectory() const
 {
-	if (PathIsUNC(cdata()) == FALSE) {
-		// UNC形式でなければ単にAPIをよぶ
-		return PathIsDirectory(cdata()) != FALSE;
-	}
-	else {
-		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
-		tstring path(cdata());
-
-		auto queryData = QueryDataHost::Get()->RequestIsDirectory(path);
-		if (queryData == nullptr) {
-			return false;
-		}
-
-		bool result = queryData->TryGet(100);
-		queryData->Release();
-
-		return result;
-	}
+	return Path::IsDirectory(cdata());
 }
 
 bool Path::IsURL() const
@@ -332,4 +298,47 @@ LPTSTR Path::data()
 	return mPath.data();
 }
 
+bool Path::FileExists(LPCTSTR pathStr)
+{
+	if (PathIsUNC(pathStr) == FALSE) {
+		// UNC形式でなければ単にAPIをよぶ
+		return PathFileExists(pathStr) != FALSE;
+	}
+	else {
+		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
+		tstring path(pathStr);
+
+		auto queryData = QueryDataHost::Get()->RequestFileExists(path);
+		if (queryData == nullptr) {
+			return false;
+		}
+
+		bool result = queryData->TryGet(100);
+		queryData->Release();
+
+		return result;
+	}
+}
+
+bool Path::IsDirectory(LPCTSTR pathStr)
+{
+	if (PathIsUNC(pathStr) == FALSE) {
+		// UNC形式でなければ単にAPIをよぶ
+		return PathIsDirectory(pathStr) != FALSE;
+	}
+	else {
+		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
+		tstring path(pathStr);
+
+		auto queryData = QueryDataHost::Get()->RequestIsDirectory(path);
+		if (queryData == nullptr) {
+			return false;
+		}
+
+		bool result = queryData->TryGet(100);
+		queryData->Release();
+
+		return result;
+	}
+}
 

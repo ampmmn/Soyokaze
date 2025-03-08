@@ -7,6 +7,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -129,7 +130,7 @@ CString PathExecuteCommand::GetTypeDisplayName()
 
 BOOL PathExecuteCommand::Execute(Parameter* param)
 {
-	if (in->mIsURL == false && PathFileExists(in->mFullPath) == FALSE) {
+	if (in->mIsURL == false && Path::FileExists(in->mFullPath) == FALSE) {
 		return FALSE;
 	}
 
@@ -204,7 +205,7 @@ int PathExecuteCommand::Match(Pattern* pattern)
 	in->mIsURL = false;
 
 	// 絶対パス指定、かつ、存在するパスの場合は候補として表示
-	if (PathIsRelative(filePart) == FALSE && PathFileExists(filePart)) {
+	if (PathIsRelative(filePart) == FALSE && Path::FileExists(filePart)) {
 		this->mDescription = filePart;
 
 		in->mWord = filePart;

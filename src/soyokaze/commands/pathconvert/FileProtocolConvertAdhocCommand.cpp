@@ -6,6 +6,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/CharConverter.h"
+#include "utility/Path.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
@@ -109,7 +110,7 @@ BOOL FileProtocolConvertAdhocCommand::Execute(Parameter* param)
 
 HICON FileProtocolConvertAdhocCommand::GetIcon()
 {
-	if (in->mIsIgnoreUNC || PathFileExists(in->mFullPath) == FALSE) {
+	if (in->mIsIgnoreUNC || Path::FileExists(in->mFullPath) == FALSE) {
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}

@@ -73,7 +73,7 @@ bool Migemo::IsInitialized()
 bool Migemo::Open(LPCTSTR dictPath)
 {
 	// 辞書ファイルが存在しなければエラー
-	if (PathFileExists(dictPath) == FALSE) {
+	if (Path::FileExists(dictPath) == FALSE) {
 		return false;
 	}
 
