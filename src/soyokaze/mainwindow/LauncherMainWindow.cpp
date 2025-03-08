@@ -242,7 +242,13 @@ void LauncherMainWindow::ActivateWindow()
 void LauncherMainWindow::HideWindow()
 {
 	GetCommandRepository()->Unactivate();
+
+	HWND nextWindow = ::GetNextWindow(GetSafeHwnd(), GW_HWNDNEXT);
+
 	::ShowWindow(GetSafeHwnd(), SW_HIDE);
+
+	// 次のウインドウを明示的に前面に出す
+	::SetForegroundWindow(nextWindow);
 }
 
 
