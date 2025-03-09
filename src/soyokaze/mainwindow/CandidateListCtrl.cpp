@@ -286,15 +286,27 @@ void CandidateListCtrl::InitColumns()
 	in->mShouldReinitColumns = false;
 }
 
+/**
+ 	
+ 	@param[in] cx 親ウインドウの幅
+ 	@param[in] cy  親ウインドウの高さ
+*/
 void CandidateListCtrl::UpdateSize(int cx, int cy)
 {
+	UNREFERENCED_PARAMETER(cx);
 	UNREFERENCED_PARAMETER(cy);
 
 	if (in->mShouldReinitColumns) {
 		InitColumns();
 	}
 	// スクロールバーの幅
-	constexpr int SCROLLBAR_WIDTH = 25;
+	int SCROLLBAR_WIDTH =  GetSystemMetrics(SM_CXVSCROLL);
+	spdlog::debug("SCROLLBAR_WIDTH {}", SCROLLBAR_WIDTH);
+
+	// コントロールの幅
+	CRect rcClient;
+	GetClientRect(rcClient);
+	int width = rcClient.Width();
 
 	if (in->mHasCommandTypeColumn) {
 
@@ -302,7 +314,7 @@ void CandidateListCtrl::UpdateSize(int cx, int cy)
 		int typeColWidth = 140;
 		GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight);
 
-		int nameColWidth = cx - (typeColWidth + SCROLLBAR_WIDTH);
+		int nameColWidth = width - (typeColWidth + SCROLLBAR_WIDTH);
 		if (nameColWidth < typeColWidth) {
 			// コマンド名の列幅が種別の列幅より小さくなる場合は、種別の列幅を縮める
 			std::swap(nameColWidth, typeColWidth);
@@ -312,7 +324,7 @@ void CandidateListCtrl::UpdateSize(int cx, int cy)
 
 	}
 	else {
-		SetColumnWidth(0, cx - SCROLLBAR_WIDTH);
+		SetColumnWidth(0, width - SCROLLBAR_WIDTH);
 	}
 }
 
@@ -370,6 +382,7 @@ void CandidateListCtrl::DrawItem(
 	GetClientRect(&rcCtrl);
 
 	CRect rcItem = lpDrawItemStruct->rcItem;
+	rcItem.right = rcCtrl.right;
 
 	// 画面内のアイテム数
 	in->mItemsInPage = rcCtrl.Height() / rcItem.Height();
@@ -414,6 +427,7 @@ void CandidateListCtrl::DrawItem(
 
 		CRect rcSelect;
 		GetItemRect(itemID, rcSelect, LVIR_BOUNDS);
+		rcSelect.right = rcCtrl.right;
 
 		// // アイコン領域取得
 		// const int c_nMargin = 3;
