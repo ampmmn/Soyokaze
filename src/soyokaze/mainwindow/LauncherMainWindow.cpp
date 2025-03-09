@@ -242,13 +242,7 @@ void LauncherMainWindow::ActivateWindow()
 void LauncherMainWindow::HideWindow()
 {
 	GetCommandRepository()->Unactivate();
-
-	HWND nextWindow = ::GetNextWindow(GetSafeHwnd(), GW_HWNDNEXT);
-
 	::ShowWindow(GetSafeHwnd(), SW_HIDE);
-
-	// 次のウインドウを明示的に前面に出す
-	::SetForegroundWindow(nextWindow);
 }
 
 
@@ -1007,7 +1001,7 @@ void LauncherMainWindow::ClearContent()
 	struct LocalInputStatus : public LauncherInput {
 		virtual bool HasKeyword() { return false; }
 	} status;
-	in->mLayout->UpdateInputStatus(&status, true);
+	in->mLayout->UpdateInputStatus(&status, false);
 
 	UpdateData(FALSE);
 }
