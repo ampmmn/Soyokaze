@@ -45,7 +45,7 @@ struct ViewSettingDialog::PImpl
 	CString mDefaultComment;
 
 	// フォントサイズ
-	int mFontSize = 16;
+	int mFontSize = 9;
 
 	// アプリアイコン
 	HICON mIcon = nullptr;
@@ -268,7 +268,7 @@ void ViewSettingDialog::OnEnterSettings()
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(fontName);
-	in->mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 16);
+	in->mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 9);
 }
 
 bool ViewSettingDialog::GetHelpPageId(CString& id)
@@ -333,7 +333,7 @@ void ViewSettingDialog::OnButtonResetFont()
 {
 	UpdateData();
 
-	in->mFontSize = 16;
+	in->mFontSize = 9;
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(DEFAULTFONTNAME);

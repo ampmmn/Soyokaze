@@ -46,7 +46,7 @@ struct MainWindowAppearance::PImpl
 		// サイズ計算(ポイントサイズからlfHeight)
 		HDC hdc = GetDC(nullptr);
 		int pointSize = pref->GetMainWindowFontSize();
-		lf.lfHeight = -(pointSize * 72 / GetDeviceCaps(hdc, LOGPIXELSY));
+		lf.lfHeight = -MulDiv(pointSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 		ReleaseDC(nullptr, hdc);
 
 		mFont.CreateFontIndirectW(&lf);
