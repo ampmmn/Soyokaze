@@ -6,6 +6,9 @@
 namespace launcherapp {
 namespace utility {
 
+
+typedef void (__stdcall *SQLITE3_DESTRUCTOR_TYPE)(void*);
+
 typedef int (__stdcall * LPSQLITE3_OPEN)(const char *, void **);
 typedef int (__stdcall * LPSQLITE3_EXEC)(void *, const char *, void*, void *, char **);
 typedef int (__stdcall * LPSQLITE3_GET_TABLE)(void *, const char *, char ***, int *, int *, char **);
@@ -16,6 +19,13 @@ typedef void (__stdcall * LPSQLITE3_RESULT_ERROR)(void*, const char*, int);
 typedef void (__stdcall * LPSQLITE3_RESULT_INT)(void*, int);
 typedef int (__stdcall * LPSQLITE3_CREATE_FUNCTION)(void* ctx, const char*, int, int, void*, void*, void*, void*);
 typedef void* (__stdcall * LPSQLITE3_USER_DATA)(void* ctx);
+typedef int (__stdcall * LPSQLITE3_PREPARE_V2)(void*, const char*, int, void**, const char**);
+typedef int (__stdcall * LPSQLITE3_STEP)(void*);
+typedef int (__stdcall * LPSQLITE3_BIND_TEXT)(void*,int,const char*,int,void(__stdcall*)(void*));
+
+typedef int (__stdcall * LPSQLITE3_RESET)(void*);
+typedef int (__stdcall * LPSQLITE3_FINALIZE)(void*);
+
 
 static LPSQLITE3_OPEN sqlite3_open = nullptr;
 static LPSQLITE3_EXEC sqlite3_exec = nullptr;
@@ -27,6 +37,11 @@ static LPSQLITE3_RESULT_ERROR sqlite3_result_error = nullptr;
 static LPSQLITE3_RESULT_INT sqlite3_result_int = nullptr;
 static LPSQLITE3_CREATE_FUNCTION sqlite3_create_function = nullptr;
 static LPSQLITE3_USER_DATA sqlite3_user_data = nullptr;
+static LPSQLITE3_PREPARE_V2 sqlite3_prepare_v2 = nullptr;
+static LPSQLITE3_STEP sqlite3_step = nullptr;
+static LPSQLITE3_BIND_TEXT sqlite3_bind_text = nullptr;
+static LPSQLITE3_RESET sqlite3_reset = nullptr;
+static LPSQLITE3_FINALIZE sqlite3_finalize = nullptr;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +72,11 @@ SQLite3Wrapper::SQLite3Wrapper() : in(new PImpl)
 		sqlite3_result_int = (LPSQLITE3_RESULT_INT )GetProcAddress(lib, "sqlite3_result_int");
 		sqlite3_create_function = (LPSQLITE3_CREATE_FUNCTION)GetProcAddress(lib, "sqlite3_create_function");
 		sqlite3_user_data =  (LPSQLITE3_USER_DATA)GetProcAddress(lib, "sqlite3_user_data");
+		sqlite3_prepare_v2 =  (LPSQLITE3_PREPARE_V2)GetProcAddress(lib, "sqlite3_prepare_v2");
+		sqlite3_step = (LPSQLITE3_STEP)GetProcAddress(lib, "sqlite3_step");
+		sqlite3_bind_text = (LPSQLITE3_BIND_TEXT)GetProcAddress(lib, "sqlite3_bind_text");
+		sqlite3_reset = (LPSQLITE3_RESET)GetProcAddress(lib, "sqlite3_reset");
+		sqlite3_finalize = (LPSQLITE3_FINALIZE)GetProcAddress(lib, "sqlite3_finalize");
 	}
 	else {
 		spdlog::error(_T("Failed to load winsqlite3.dll!"));
@@ -125,9 +145,54 @@ int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, voi
 	return sqlite3_exec(ctx, queryStrA, callback, param, err);
 }
 
+int SQLite3Wrapper::Prepare(void* ctx, const char* sql, void** stmt)
+{
+	return sqlite3_prepare_v2(ctx, sql, -1, stmt, nullptr);
+}
+
 int SQLite3Wrapper::Close(void *ctx)
 {
 	return sqlite3_close(ctx);
+}
+
+int SQLite3Wrapper::BindText(void* stmt, int index, const CStringA& text)
+{
+	return sqlite3_bind_text(stmt, index, text, -1, (SQLITE3_DESTRUCTOR_TYPE)-1);
+}
+int SQLite3Wrapper::Step(void* stmt)
+{
+	return sqlite3_step(stmt);
+}
+
+int SQLite3Wrapper::Reset(void* stmt)
+{
+	return sqlite3_reset(stmt);
+}
+
+int SQLite3Wrapper::Finalize(void* stmt)
+{
+	return sqlite3_finalize(stmt);
+}
+
+bool SQLite3Wrapper::TableExists(void* ctx, const CString& tableName)
+{
+	CStringA tblNameA;
+	CharConverter conv;
+	conv.Convert(tableName, tblNameA);
+
+	CStringA queryStrA;
+	queryStrA.Format("SELECT name FROM sqlite_master WHERE type='table' AND name='%s';",
+	                 (LPCSTR)tblNameA);
+
+	void* stmt = nullptr;
+	if (sqlite3_prepare_v2(ctx, queryStrA, -1, &stmt, nullptr) != 0) {
+		spdlog::warn("Failed to prepare statement.");
+		return false;
+	}
+
+	int exists = sqlite3_step(stmt) == 100;   // 100==SQLITE_ROW
+	sqlite3_finalize(stmt);
+	return exists != 0;
 }
 
 SQLite3Wrapper* SQLite3Wrapper::Get()

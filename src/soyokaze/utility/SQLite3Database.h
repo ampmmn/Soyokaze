@@ -5,6 +5,24 @@
 namespace launcherapp {
 namespace utility {
 
+class SQLite3Statement
+{
+public:
+	SQLite3Statement();
+	~SQLite3Statement();
+
+	int BindText(int index, const CString& str);
+	int Step();
+	int Reset();
+	int Finalize();
+
+	void SetStatement(void* stmt);
+
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
+};
+
 class SQLite3Database
 {
 public:
@@ -16,6 +34,8 @@ public:
 
 public:
 	int Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* param);
+	int Prepare(LPCSTR sql, SQLite3Statement* stmt);
+	bool TableExists(LPCTSTR tableName);
 
 private:
 	struct PImpl;

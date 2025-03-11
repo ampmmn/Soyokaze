@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SimpleDictParam.h"
 #include "commands/core/CommandEntryIF.h"
+#include "utility/SHA1.h"
 
 namespace launcherapp {
 namespace commands {
@@ -99,6 +100,15 @@ bool SimpleDictParam::Load(CommandEntryIF* entry)
 	mAfterCommandParam = entry->Get(_T("afterparam"), _T("$value"));
 
 	return true;
+}
+
+CString SimpleDictParam::GetIdentifier() const
+{
+	auto tmp = mFilePath + mSheetName + mRangeFront + mRangeBack + mRangeValue2;
+
+	SHA1 sha1;
+	sha1.Add(tmp);
+	return sha1.Finish();
 }
 
 void SimpleDictParam::swap(SimpleDictParam& rhs)

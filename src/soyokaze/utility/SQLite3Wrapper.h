@@ -13,7 +13,15 @@ private:
 public:
 	int Open(const CString& filePath, void** ctx);
 	int Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err);
+	int Prepare(void* ctx, const char* sql, void** stmt);
 	int Close(void *ctx);
+
+	int BindText(void* stmt, int index, const CStringA& text);
+	int Step(void* stmt);
+	int Reset(void* stmt);
+	int Finalize(void* stmt);
+
+	bool TableExists(void* ctx, const CString& tableName);
 
 	static SQLite3Wrapper* Get();
 

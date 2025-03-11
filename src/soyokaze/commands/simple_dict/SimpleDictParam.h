@@ -21,6 +21,8 @@ public:
 	bool Save(CommandEntryIF* entry);
 	bool Load(CommandEntryIF* entry);
 
+	CString GetIdentifier() const;
+
 	void swap(SimpleDictParam& rhs);
 public:
 	CString mName;
