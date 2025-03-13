@@ -23,6 +23,8 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
+constexpr int64_t DBVERSION = 1;
+
 struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
@@ -185,6 +187,11 @@ void DictionaryLoader::PImpl::StartWatch()
 
 		bool isLoadOK = false;
 
+		// 初期化
+		keys.clear();
+		values.clear();
+		values2.clear();
+
 		// キャッシュから読み込みを試みる
 		isLoadOK = LoadCacheFile(param, keys, values, values2);
 
@@ -217,17 +224,13 @@ bool DictionaryLoader::PImpl::LoadFromExcelApp(
 )
 {
 	try {
-		if (Path::FileExists(param.mFilePath) == false) {
-			// ファイルが存在しない場合は読み込みをしない
+		if (PathIsURL(param.mFilePath) == FALSE && Path::FileExists(param.mFilePath) == false) {
+			// ファイルパスがURLでなく、かつ、ファイルが存在しない場合は読み込みをしない
+			// (URLの場合は判別できないので、実際に開いてみる)
 			return false;
 		}
 
 		ExcelApplication app;
-
-		// すべて空にする
-		keys.clear();
-		values.clear();
-		values2.clear();
 
 		// キーを読みこむ
 		if (app.GetCellText(param.mFilePath, param.mSheetName, param.mRangeFront, keys) != 0) {
@@ -274,6 +277,26 @@ static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
 	return true;
 }
 
+static bool CheckSchemaVersion(SQLite3Database& db, int64_t version)
+{
+	struct local_callback_version {
+		static int Callback(void* p, int argc, char** argv, char**colName) {
+			auto param = (local_callback_version*)p;
+			param->mVersion = std::stoull(argv[0]);
+			return 1;  // 一つだけ取得できればOK
+		}
+		int64_t mVersion = 0;   // DBから取得したバージョン
+	} callback;
+
+	db.Query(_T("SELECT LASTMODIFIEDTIME FROM TBL_UPDATETIME WHERE ID = '__VERSION__';"), local_callback_version::Callback, &callback);
+
+	bool isSameVersion = (version == callback.mVersion);
+	if (isSameVersion == false) {
+		SPDLOG_DEBUG(_T("Scheme version differ. expect:{0} actual:{1}"), version, callback.mVersion);
+	}
+	return isSameVersion;
+}
+
 bool DictionaryLoader::PImpl::LoadCacheFile(
 	const SimpleDictParam& param,
  	std::vector<CString>& keys,
@@ -292,12 +315,21 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 	CString idStr = param.GetIdentifier();
 
 	// 4. ハッシュに対応した更新日時情報を得る
+	CString queryStr;
+
 	if (db.TableExists(_T("TBL_UPDATETIME")) == false) {
 		// 4.1 更新日時情報テーブルがなければ新規作成
-		db.Query(_T("CREATE TABLE IF NOT EXISTS TBL_UPDATETIME(ID TEXT PRIMARY KEY NOT NULL, LASTMODIFIEDTIME INTEGER NOT NULL);"), nullptr, nullptr);
+		db.Query(_T("CREATE TABLE IF NOT EXISTS TBL_UPDATETIME(ID TEXT PRIMARY KEY NOT NULL, LASTMODIFIEDTIME INTEGER NOT NULL, COMMANDNAME TEXT);"), nullptr, nullptr);
+		// スキーマバージョンを設定
+		queryStr.Format(_T("INSERT INTO TBL_UPDATETIME (ID, LASTMODIFIEDTIME, COMMANDNAME) VALUES ('__VERSION__', %d, '');"), DBVERSION);
+		db.Query(queryStr, nullptr, nullptr);
 	}
-	CString queryStr;
-	queryStr.Format(_T("SELECT LASTMODIFIEDTIME FROM TBL_UPDATETIME WHERE ID = '%s';"), (LPCTSTR)idStr);
+
+	if (CheckSchemaVersion(db, DBVERSION) == false) {
+		db.Close();
+		DeleteFile(cachePath);
+		return false;
+	}
 
 	struct local_callback_updatetime {
 		static int Callback(void* p, int argc, char** argv, char**colName) {
@@ -308,6 +340,7 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 		uint64_t mUpdateTime;   // キャッシュ側に登録された更新日時
 	} callback;
 
+	queryStr.Format(_T("SELECT LASTMODIFIEDTIME FROM TBL_UPDATETIME WHERE ID = '%s';"), (LPCTSTR)idStr);
 	db.Query(queryStr, local_callback_updatetime::Callback, &callback);
 
 	// 5. ファイルから更新日時情報を得る
@@ -428,8 +461,8 @@ bool DictionaryLoader::PImpl::SaveCacheFile(
 	stmt.Finalize();
 
 	// 7. ハッシュと更新日時情報を更新する
-	queryStr.Format(_T("INSERT OR REPLACE INTO TBL_UPDATETIME (ID, LASTMODIFIEDTIME) VALUES ('%s', %I64u);"),
-			            (LPCTSTR)idStr, lastWriteTime);
+	queryStr.Format(_T("INSERT OR REPLACE INTO TBL_UPDATETIME (ID, LASTMODIFIEDTIME, COMMANDNAME) VALUES ('%s', %I64u, '%s');"),
+			            (LPCTSTR)idStr, lastWriteTime, (LPCTSTR)param.mName);
 	db.Query(queryStr, nullptr, nullptr);
 
 	return true;

@@ -3,6 +3,7 @@
 #include "utility/AppProfile.h"
 #include <thread>
 #include <mutex>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

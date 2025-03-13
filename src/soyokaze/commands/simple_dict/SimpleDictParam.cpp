@@ -104,7 +104,7 @@ bool SimpleDictParam::Load(CommandEntryIF* entry)
 
 CString SimpleDictParam::GetIdentifier() const
 {
-	auto tmp = mFilePath + mSheetName + mRangeFront + mRangeBack + mRangeValue2;
+	auto tmp = mFilePath + mSheetName + mRangeFront + mRangeBack + mRangeValue2 + (mIsFirstRowHeader ? _T("T") : _T("F"));
 
 	SHA1 sha1;
 	sha1.Add(tmp);
