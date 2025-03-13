@@ -36,6 +36,7 @@ public:
 	int Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* param);
 	int Prepare(LPCSTR sql, SQLite3Statement* stmt);
 	bool TableExists(LPCTSTR tableName);
+	void Close();
 
 private:
 	struct PImpl;

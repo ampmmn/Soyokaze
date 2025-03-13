@@ -71,10 +71,7 @@ SQLite3Database::SQLite3Database(LPCTSTR filePath) : in(new PImpl)
 
 SQLite3Database::~SQLite3Database()
 {
-	if (in->mDB) {
-		SQLite3Wrapper::Get()->Close(&in->mDB);
-		in->mDB = nullptr;
-	} 
+	Close();
 }
 
 int SQLite3Database::Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* param)
@@ -99,6 +96,14 @@ int SQLite3Database::Prepare(LPCSTR sql, SQLite3Statement* stmt)
 bool SQLite3Database::TableExists(LPCTSTR tableName)
 {
 	return SQLite3Wrapper::Get()->TableExists(in->mDB, tableName);
+}
+
+void SQLite3Database::Close()
+{
+	if (in->mDB) {
+		SQLite3Wrapper::Get()->Close(in->mDB);
+		in->mDB = nullptr;
+	}
 }
 
 } // end of namespace utility
