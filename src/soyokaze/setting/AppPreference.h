@@ -27,6 +27,9 @@ public:
 	bool IsUseFiler();
 	bool IsEnablePathFind();
 
+	// 管理者権限で実行しているときにコマンドを一般ユーザ権限で実行する
+	bool ShouldDemotePriviledge();
+
 	bool IsHideOnStartup();
 	bool IsHideOnInactive();
 

@@ -394,6 +394,12 @@ bool AppPreference::IsEnablePathFind()
 	return in->Get(_T("Soyokaze:IsEnablePathFind"), true);
 }
 
+// 管理者権限で実行しているときにコマンドを一般ユーザ権限で実行する
+bool AppPreference::ShouldDemotePriviledge()
+{
+	return in->Get(_T("Soyokaze:ShouldDemotePriviledge"), true);
+}
+
 bool AppPreference::IsHideOnStartup()
 {
 	return in->Get(_T("Soyokaze:IsHideOnStartup"), false);

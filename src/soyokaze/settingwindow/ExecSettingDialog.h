@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/SettingPage.h"
+#include <memory>
 
 // 
 class ExecSettingDialog : public SettingPage
@@ -9,19 +10,8 @@ public:
 	ExecSettingDialog(CWnd* parentWnd);
 	virtual ~ExecSettingDialog();
 
-
-	// Ctrl+Enterキー実行でフォルダ表示する
-	BOOL mIsShowFolderIfCtrlPressed;
-	// フォルダを開くファイラーを指定
-	BOOL mIsUseExternalFiler;
-	// ファイル名を指定して実行を使用する
-	BOOL mIsEnablePathFind;
-	// ファイラーのパス
-	CString mFilerPath;
-	// ファイラーのパラメータ
-	CString mFilerParam;
-	// 未登録キーワード実行時の動作
-	int mDefaultActionIndex;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 protected:
 	bool UpdateStatus();

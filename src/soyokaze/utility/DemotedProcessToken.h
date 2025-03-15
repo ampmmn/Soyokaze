@@ -1,10 +1,10 @@
 #pragma once
 
-class DemoteedProcessToken
+class DemotedProcessToken
 {
 public:
-	DemoteedProcessToken();
-	~DemoteedProcessToken();
+	DemotedProcessToken();
+	~DemotedProcessToken();
 
 	HANDLE FetchPrimaryToken();
 

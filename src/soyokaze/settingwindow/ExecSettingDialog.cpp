@@ -8,13 +8,26 @@
 #define new DEBUG_NEW
 #endif
 
+struct ExecSettingDialog::PImpl
+{
+	// Ctrl+Enterキー実行でフォルダ表示する
+	BOOL mIsShowFolderIfCtrlPressed = true;
+	// フォルダを開くファイラーを指定
+	BOOL mIsUseExternalFiler = false;
+	// ファイル名を指定して実行を使用する
+	BOOL mIsEnablePathFind = true;
+	// 管理者権限で着実行時にコマンド通常権限で実行する
+	BOOL mShouldDemotePriviledge = true;
+	// ファイラーのパス
+	CString mFilerPath;
+	// ファイラーのパラメータ
+	CString mFilerParam;
+	// 未登録キーワード実行時の動作
+	int mDefaultActionIndex = 0;
+};
 
 ExecSettingDialog::ExecSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("実行"), IDD_EXECSETTING, parentWnd),
-	mIsShowFolderIfCtrlPressed(true),
-	mIsUseExternalFiler(false),
-	mIsEnablePathFind(true),
-	mDefaultActionIndex(0)
+	SettingPage(_T("実行"), IDD_EXECSETTING, parentWnd), in(new PImpl)
 {
 }
 
@@ -42,18 +55,19 @@ void ExecSettingDialog::OnOK()
 	UpdateData();
 
 	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)mIsUseExternalFiler);
-	settingsPtr->Set(_T("Soyokaze:FilerPath"), mFilerPath);
-	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
-	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
-	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
+	settingsPtr->Set(_T("Soyokaze:UseFiler"), (bool)in->mIsUseExternalFiler);
+	settingsPtr->Set(_T("Soyokaze:FilerPath"), in->mFilerPath);
+	settingsPtr->Set(_T("Soyokaze:FilerParam"), in->mFilerParam);
+	settingsPtr->Set(_T("Soyokaze:ShouldDemotePriviledge"), (bool)in->mShouldDemotePriviledge);
+	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)in->mIsShowFolderIfCtrlPressed);
+	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)in->mIsEnablePathFind);
 
 	CString defAction;
-	if (mDefaultActionIndex == 1) {
+	if (in->mDefaultActionIndex == 1) {
 		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
 		defAction = _T("copy");
 	}
-	else if (mDefaultActionIndex == 2) {
+	else if (in->mDefaultActionIndex == 2) {
 		defAction = _T("register");
 	}
 	else {
@@ -70,12 +84,13 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_USEFILER, mIsUseExternalFiler);
-	DDX_Text(pDX, IDC_EDIT_FILERPATH, mFilerPath);
-	DDX_Text(pDX, IDC_EDIT_FILERPARAM, mFilerParam);
-	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, mIsEnablePathFind);
-	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
-	DDX_CBIndex(pDX, IDC_COMBO_DEFAULTACTION, mDefaultActionIndex);
+	DDX_Check(pDX, IDC_CHECK_USEFILER, in->mIsUseExternalFiler);
+	DDX_Text(pDX, IDC_EDIT_FILERPATH, in->mFilerPath);
+	DDX_Text(pDX, IDC_EDIT_FILERPARAM, in->mFilerParam);
+	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, in->mIsEnablePathFind);
+	DDX_Check(pDX, IDC_CHECK_ENABLEDEMOTEPRIVILEDGE, in->mShouldDemotePriviledge);
+	DDX_Check(pDX, IDC_CHECK_SHOWDIR, in->mIsShowFolderIfCtrlPressed);
+	DDX_CBIndex(pDX, IDC_COMBO_DEFAULTACTION, in->mDefaultActionIndex);
 }
 
 BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
@@ -83,6 +98,25 @@ BEGIN_MESSAGE_MAP(ExecSettingDialog, SettingPage)
 	ON_COMMAND(IDC_CHECK_USEFILER, OnCheckUseFilter)
 END_MESSAGE_MAP()
 
+// 管理者権限で実行されているか?
+static bool IsRunningAsAdmin()
+{
+	static bool isRunAsAdmin = []() {
+		PSID grp;
+		SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+		BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
+		if (result == FALSE) {
+			return false;
+		}
+
+		BOOL isMember = FALSE;
+		result = CheckTokenMembership(nullptr, grp, &isMember);
+		FreeSid(grp);
+
+		return result && isMember;
+	}();
+	return isRunAsAdmin;
+}
 
 BOOL ExecSettingDialog::OnInitDialog()
 {
@@ -90,6 +124,12 @@ BOOL ExecSettingDialog::OnInitDialog()
 
 	// ファイル選択ボタン(絵文字にする)
 	GetDlgItem(IDC_BUTTON_BROWSEFILE)->SetWindowTextW(L"\U0001F4C4");
+
+	// 管理者特権のときに通常ユーザー権限で実行
+	if (IsRunningAsAdmin()) {
+		GetDlgItem(IDC_STATIC_RUNASONLY)->ShowWindow(SW_HIDE);
+	}
+
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -100,9 +140,13 @@ BOOL ExecSettingDialog::OnInitDialog()
 bool ExecSettingDialog::UpdateStatus()
 {
 	// 外部ファイラーを使わない場合は関連する設定をグレーアウトする
-	GetDlgItem(IDC_EDIT_FILERPATH)->EnableWindow(mIsUseExternalFiler);
-	GetDlgItem(IDC_EDIT_FILERPARAM)->EnableWindow(mIsUseExternalFiler);
-	GetDlgItem(IDC_BUTTON_BROWSEFILE)->EnableWindow(mIsUseExternalFiler);
+	bool hasExternFilter = in->mIsUseExternalFiler;
+	GetDlgItem(IDC_EDIT_FILERPATH)->EnableWindow(hasExternFilter);
+	GetDlgItem(IDC_EDIT_FILERPARAM)->EnableWindow(hasExternFilter);
+	GetDlgItem(IDC_BUTTON_BROWSEFILE)->EnableWindow(hasExternFilter);
+
+	// 管理者特権のときに通常ユーザー権限で実行
+	GetDlgItem(IDC_CHECK_ENABLEDEMOTEPRIVILEDGE)->EnableWindow(IsRunningAsAdmin());
 
 	return true;
 }
@@ -112,12 +156,12 @@ void ExecSettingDialog::OnButtonBrowseFile()
 	UpdateData();
 
 	CString filterStr((LPCTSTR)IDS_FILTER_EXE);
-	CFileDialog dlg(TRUE, NULL, mFilerPath, OFN_FILEMUSTEXIST, filterStr, this);
+	CFileDialog dlg(TRUE, NULL, in->mFilerPath, OFN_FILEMUSTEXIST, filterStr, this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mFilerPath = dlg.GetPathName();
+	in->mFilerPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -131,23 +175,24 @@ void ExecSettingDialog::OnCheckUseFilter()
 void ExecSettingDialog::OnEnterSettings()
 {
 	auto settingsPtr = (Settings*)GetParam();
-	mIsUseExternalFiler = settingsPtr->Get(_T("Soyokaze:UseFiler"), false);
-	mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
-	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
-	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
-	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
+	in->mIsUseExternalFiler = settingsPtr->Get(_T("Soyokaze:UseFiler"), false);
+	in->mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
+	in->mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
+	in->mShouldDemotePriviledge = settingsPtr->Get(_T("Soyokaze:ShouldDemotePriviledge"), true);
+	in->mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
+	in->mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 
 	CString defAction = settingsPtr->Get(_T("Launcher:DefaultActionType"), _T("register")); 
 	if (defAction == _T("copy")) {
 		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
-		mDefaultActionIndex = 1;
+		in->mDefaultActionIndex = 1;
 	}
 	else if (defAction == _T("register")) {
-		mDefaultActionIndex = 2;
+		in->mDefaultActionIndex = 2;
 	}
 	else {
 		// なにもしない
-		mDefaultActionIndex = 0;
+		in->mDefaultActionIndex = 0;
 	}
 
 }

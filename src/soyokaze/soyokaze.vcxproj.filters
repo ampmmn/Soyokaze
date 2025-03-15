@@ -1374,6 +1374,9 @@
     <ClInclude Include="utility\DemotedProcessToken.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\NormalPriviledgeProcessProxy.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2437,6 +2440,9 @@
     </ClCompile>
     <ClCompile Include="utility\DemotedProcessToken.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\NormalPriviledgeProcessProxy.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

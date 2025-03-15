@@ -3,6 +3,7 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/NormalPriviledgeProcessProxy.h"
 #include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -127,29 +128,22 @@ bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 
 bool SubProcess::PImpl::StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process)
 {
-	STARTUPINFO si = {};
-	si.cb = sizeof(si);
-	si.dwFlags = STARTF_USESHOWWINDOW;
-	si.wShowWindow = (WORD)mShowType;
+	SHELLEXECUTEINFO si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = mShowType;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = path;
+	if (param.IsEmpty() == FALSE) {
+		si.lpParameters = param;
+	}
+	if (workDir.IsEmpty() == FALSE) {
+		si.lpDirectory = workDir;
+	}
 
-	PROCESS_INFORMATION pi = {};
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	bool isRun = proxy->StartProcess(&si);
 
-	CString cmdLine;
-	cmdLine += param;
-	spdlog::debug(_T("path:{}"), (LPCTSTR)path);
-	spdlog::debug(_T("cmdLine:{}"), (LPCTSTR)cmdLine);
-
-	DemoteedProcessToken tok;
-	HANDLE htok = tok.FetchPrimaryToken();
-	spdlog::debug(_T("primary token  {}"), (void*)htok);
-
-	LPCTSTR cd = PathIsDirectory(workDir) ? (LPCTSTR)workDir : nullptr;
-
-	bool isRun = CreateProcessWithTokenW(htok, 0, 
-	                                     path, cmdLine.GetBuffer(MAX_PATH_NTFS), 0, nullptr, cd, &si, &pi);
-	cmdLine.ReleaseBuffer();
-
-	process = std::move(std::make_unique<Instance>(pi.hProcess));
+	process = std::move(std::make_unique<Instance>(si.hProcess));
 
 	return isRun;
 }
@@ -242,10 +236,11 @@ bool SubProcess::Run(
 	ExpandArguments(path, args);
 	ExpandMacros(path);
 
+	auto pref = AppPreference::Get();
+
 	// 「パスを開く」指定の場合はファイラで経由でパスを表示する形に差し替える
 	bool isDir = Path::IsDirectory(path);
 	if ((in->IsOpenPathKeyPressed() && Path::FileExists(path)) || isDir) {
-		auto pref = AppPreference::Get();
 		if (pref->IsUseFiler()) {
 			// ファイラ経由でパスを表示する形に差し替える
 			paramStr = pref->GetFilerParam();
@@ -286,7 +281,7 @@ bool SubProcess::Run(
 	bool isRunAsAdminSpecified = in->mIsRunAsAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path));
 
 	bool isRun = false;
-	if (in->IsRunningAsAdmin() && isRunAsAdminSpecified == false) {
+	if (in->IsRunningAsAdmin() && isRunAsAdminSpecified == false && pref->ShouldDemotePriviledge()) {
 		// ランチャーを管理者権限で実行していて、かつ、コマンドを管理者権限で起動しない場合は、
 		// 降格した権限で起動する
 		isRun = in->StartWithLowerPermissions(path, paramStr, workDir, process);

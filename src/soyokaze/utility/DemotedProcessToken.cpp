@@ -5,21 +5,21 @@
 #define new DEBUG_NEW
 #endif
 
-DemoteedProcessToken::DemoteedProcessToken() : 
+DemotedProcessToken::DemotedProcessToken() : 
 	mShProcTokenHandle(nullptr),
 	mPrimaryToken(nullptr),
 	mShellProcessHandle(nullptr)
 {
 }
 
-DemoteedProcessToken::~DemoteedProcessToken()
+DemotedProcessToken::~DemotedProcessToken()
 {
 	CloseHandle(mShProcTokenHandle);
 	CloseHandle(mPrimaryToken);
 	CloseHandle(mShellProcessHandle);
 }
 
-HANDLE DemoteedProcessToken::FetchPrimaryToken()
+HANDLE DemotedProcessToken::FetchPrimaryToken()
 {
 	if (mPrimaryToken) {
 		return mPrimaryToken;

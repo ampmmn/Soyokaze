@@ -12,6 +12,7 @@
 #include "app/StartupParam.h"
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
+#include "commands/common/NormalPriviledgeProcessProxy.h"
 #include "logger/Logger.h"
 #include <locale.h>
 
@@ -50,6 +51,11 @@ LauncherApp theApp;
 
 BOOL LauncherApp::InitInstance()
 {
+	if (InitNormalProcessAgentIfNeeded()) {
+		// サーバ動作した場合はここで終わる
+		return FALSE;
+	}
+
 	AppPreference::Get()->Init();
 
 	// ログ初期化
@@ -157,6 +163,19 @@ BOOL LauncherApp::InitSecondInstance()
 
 	launcherapp::CommandLineProcessor argProcessor;
 	return argProcessor.Run(__argc, __targv, &proxy);
+}
+
+/**
+ * 管理者特権で動作する親プロセスからの指示により、通常権限で起動するサーバとして動作するための初期化処理
+ */
+BOOL LauncherApp::InitNormalProcessAgentIfNeeded()
+{
+	// サーバ起動(終わるまで制御を返さない)
+	if (launcherapp::commands::common::NormalPriviledgeProcessProxy::GetInstance()->RunAgentUntilParentDie(__argc, __targv) == false) {
+		// サーバとしての実行ではなかった
+		return FALSE;
+	}
+	return TRUE;
 }
 
 // バルーンメッセージを表示

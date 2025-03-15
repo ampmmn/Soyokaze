@@ -5,18 +5,25 @@
 class SharedHwnd
 {
 public:
-	SharedHwnd(HWND hwnd) : m_hMapFile(nullptr), m_phwnd(nullptr)
+// 登録側が呼び出すコンストラクタ
+	SharedHwnd(HWND hwnd) : SharedHwnd(hwnd, _T("LauncherAppWindowHandle"))
 	{
-		m_hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(HWND), _T("LauncherAppWindowHandle"));
+	}
+	SharedHwnd(HWND hwnd, LPCTSTR windowName) : m_hMapFile(nullptr), m_phwnd(nullptr)
+	{
+		m_hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(HWND), windowName);
 		if (m_hMapFile != nullptr) {
 			m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
 			SetHwnd(hwnd);
 		}
 	}
-
-	SharedHwnd() : m_hMapFile(nullptr), m_phwnd(nullptr)
+// 参照側が呼び出すコンストラクタ
+	SharedHwnd() : SharedHwnd(_T("LauncherAppWindowHandle"))
 	{
-		m_hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, _T("LauncherAppWindowHandle"));
+	}
+	SharedHwnd(LPCTSTR windowName) : m_hMapFile(nullptr), m_phwnd(nullptr)
+	{
+		m_hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, windowName);
 		if (m_hMapFile != nullptr) {
 			m_phwnd = (HWND*) MapViewOfFile(m_hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(HWND));
 		}
