@@ -32,8 +32,6 @@ struct SubProcess::PImpl
 	bool IsRunningAsAdmin();
 	bool CanRunAsAdmin(const CString& path);
 
-	bool ReplaceWithFiler(CString& path, CString& param, const std::vector<CString>& args);
-
 	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 	bool Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 
@@ -80,43 +78,6 @@ bool SubProcess::PImpl::IsRunningAsAdmin()
 		return result && isMember;
 	}();
 	return isRunAsAdmin;
-}
-
-bool SubProcess::PImpl::ReplaceWithFiler(CString& path, CString& param,const std::vector<CString>& args)
-{
-	auto pref = AppPreference::Get();
-	bool useExternalFiler = pref->IsUseFiler();
-
-	if (useExternalFiler) {
-		param = pref->GetFilerParam();
-		param.Replace(_T("$target"), path);
-
-		path = pref->GetFilerPath();
-		ExpandArguments(path, args);
-		ExpandMacros(path);
-		return true;
-	}
-	else {
-		// 登録されたファイラーがない場合はエクスプローラで開く
-		CString filerPath = _T("explorer.exe");
-		LocalPathResolver resolver;
-		resolver.Resolve(filerPath);
-
-		bool isFilePath = PathIsDirectory(path) == FALSE;
-		bool isEndsWithSep = path.Right(1) == _T('\\');
-	
-		if (isFilePath || isEndsWithSep == false) {
-				param = _T("/select,\"");
-				param += path;
-				param += _T("\"");
-		}
-		else {
-			param = _T("\"");
-			param += path;
-			param += _T("\"");
-		}
-		return true;
-	}
 }
 
 // 管理者権限で実行可能なファイルタイプか?
@@ -259,7 +220,6 @@ bool SubProcess::Run(
 			}
 			paramStr = _T("open");
 		}
-		in->ReplaceWithFiler(path, paramStr, args);
 	}
 	else { 
 		// 変数置換(パラメータ)
