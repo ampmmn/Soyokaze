@@ -858,10 +858,13 @@ BOOL LauncherMainWindow::OnInitDialog()
 	manager->SetReceiverWindow(GetSafeHwnd());
 
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
-	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
-	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
-	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 
+	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
+	in->mCmdReceiveEdit.Init();
+
+	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+
+	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 	in->mCandidateListBox.InitColumns();
 
 

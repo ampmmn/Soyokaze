@@ -6,18 +6,16 @@ namespace interprocess {
 
 enum EVENT_ID
 {
-	// $B%3%^%s%IJ8;zNs$rDLCN(B
+	// コマンド文字列を通知
 	SEND_COMMAND = 0,
-	// $BA*BrHO0O$rDLCN(B
+	// 選択範囲を通知
 	SET_CARETRANGE,
-	// $B%Q%9$rEPO?(B
-	REGISTER_PATH,
-	// $B%+%l%s%H%G%#%l%/%H%j$rJQ99(B
+	// カレントディレクトリを変更
 	CHANGE_DIRECTORY,
-	// $B%&%$%s%I%&$r>C$9(B
+	// ウインドウを消す
 	HIDE,
-	// $B%&%$%s%I%&$rI=<((B
-	SHOW
+	//
+	ACTIVATE_WINDOW,
 };
 
 struct SEND_COMMAND_PARAM

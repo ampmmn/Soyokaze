@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "framework.h"
 #include "CmdReceiveEdit.h"
-#include "mainwindow/interprocess/InterProcessEventID.h"
+#include "SharedHwnd.h"
+#include "mainwindow/interprocess/InterProcessMessageQueue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+constexpr int TIMERID_READQUEUE = 1;
 
 using namespace launcherapp::mainwindow::interprocess;
 
@@ -18,8 +21,14 @@ CmdReceiveEdit::~CmdReceiveEdit()
 }
 
 BEGIN_MESSAGE_MAP(CmdReceiveEdit, CEdit)
-	ON_WM_COPYDATA()
+	ON_WM_CREATE()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
+
+void CmdReceiveEdit::Init()
+{
+	::SetTimer(GetSafeHwnd(), TIMERID_READQUEUE, 50, 0);
+}
 
 
 BOOL CmdReceiveEdit::OnSendCommand(SEND_COMMAND_PARAM* param)
@@ -47,21 +56,53 @@ BOOL CmdReceiveEdit::OnChangeDirectory(CHANGE_DIRECTORY_PARAM* param)
 	return SetCurrentDirectory(param->mDirPath);
 }
 
-BOOL CmdReceiveEdit::OnCopyData(CWnd*, COPYDATASTRUCT* data)
+void CmdReceiveEdit::OnTimer(UINT_PTR timerId)
 {
-	if (data->dwData == SEND_COMMAND) {
-		auto param = (SEND_COMMAND_PARAM*)data->lpData;
-		return OnSendCommand(param);
-	}
-	else if (data->dwData == SET_CARETRANGE) {
-		auto param = (SET_CARETRANGE_PARAM*)data->lpData;
-		return OnSetCaretRange(param);
-	}
-	else if (data->dwData == CHANGE_DIRECTORY) {
-		auto param = (CHANGE_DIRECTORY_PARAM*)data->lpData;
-		return OnChangeDirectory(param);
+	if (timerId != TIMERID_READQUEUE) {
+		return;
 	}
 
-	return FALSE;
+
+	EVENT_ID id;
+	std::vector<uint8_t> stm;
+
+	auto queue = InterProcessMessageQueue::GetInstance();
+	if (queue->Dequeue(&id, stm) == false) {
+		return;
+	}
+
+	if (id == SEND_COMMAND) {
+		auto param = (SEND_COMMAND_PARAM*)stm.data();
+		OnSendCommand(param);
+		return;
+	}
+	else if (id == SET_CARETRANGE) {
+		auto param = (SET_CARETRANGE_PARAM*)stm.data();
+		OnSetCaretRange(param);
+		return;
+	}
+	else if (id == CHANGE_DIRECTORY) {
+		auto param = (CHANGE_DIRECTORY_PARAM*)stm.data();
+		OnChangeDirectory(param);
+		return;
+	}
+	else if (id == HIDE) {
+		SharedHwnd sharedHwnd;
+		HWND hwnd = sharedHwnd.GetHwnd();
+		if (IsWindow(hwnd) == FALSE) {
+			return ;
+		}
+		::PostMessage(hwnd, WM_APP+7, 0, 0);
+		return;
+	}
+	else if (id == ACTIVATE_WINDOW) {
+		// 先行プロセスを有効化する
+		SharedHwnd sharedHwnd;
+		HWND hwnd = sharedHwnd.GetHwnd();
+		if (IsWindow(hwnd) == FALSE) {
+			return;
+		}
+		::PostMessage(hwnd, WM_APP+2, 0, 0);
+		return;
+	}
 }
-

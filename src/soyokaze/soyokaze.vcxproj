@@ -678,6 +678,7 @@
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h" />
+    <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h" />
     <ClInclude Include="mainwindow\LauncherInputStatusIF.h" />
     <ClInclude Include="mainwindow\LauncherMainWindowIF.h" />
     <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
@@ -1063,6 +1064,7 @@
     <ClCompile Include="commands/core\CommandRanking.cpp" />
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
+    <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp" />
     <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />

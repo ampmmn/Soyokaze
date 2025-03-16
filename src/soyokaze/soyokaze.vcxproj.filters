@@ -1386,6 +1386,9 @@
     <ClInclude Include="commands\share\ProcessIDSharedMemory.h">
       <Filter>commands\share</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h">
+      <Filter>mainwindow\interprocess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2452,6 +2455,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\NormalPriviledgeProcessProxy.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp">
+      <Filter>mainwindow\interprocess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
