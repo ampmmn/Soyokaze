@@ -12,7 +12,6 @@
 #include "app/StartupParam.h"
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
-#include "commands/common/NormalPriviledgeProcessProxy.h"
 #include "logger/Logger.h"
 #include <locale.h>
 
@@ -51,11 +50,6 @@ LauncherApp theApp;
 
 BOOL LauncherApp::InitInstance()
 {
-	if (InitNormalProcessAgentIfNeeded()) {
-		// サーバ動作した場合はここで終わる
-		return FALSE;
-	}
-
 	AppPreference::Get()->Init();
 
 	// ログ初期化
@@ -70,8 +64,12 @@ BOOL LauncherApp::InitInstance()
 	try {
 		AppProcess appProcess;
 		if (appProcess.IsExist() == false) {
-			// 通常の起動(初回起動)
-			InitFirstInstance();
+
+			// 管理者権限として起動する場合は再起動
+			if (appProcess.RebootAsAdminIfNeeded() == false) {
+				// 管理者権限として起動しない場合は通常の起動(初回起動)
+				InitFirstInstance();
+			}
 		}
 		else {
 			// 既にプロセスが起動している場合は起動しない(先行プロセスを有効化したりなどする)
@@ -163,19 +161,6 @@ BOOL LauncherApp::InitSecondInstance()
 
 	launcherapp::CommandLineProcessor argProcessor;
 	return argProcessor.Run(__argc, __targv, &proxy);
-}
-
-/**
- * 管理者特権で動作する親プロセスからの指示により、通常権限で起動するサーバとして動作するための初期化処理
- */
-BOOL LauncherApp::InitNormalProcessAgentIfNeeded()
-{
-	// サーバ起動(終わるまで制御を返さない)
-	if (launcherapp::commands::common::NormalPriviledgeProcessProxy::GetInstance()->RunAgentUntilParentDie(__argc, __targv) == false) {
-		// サーバとしての実行ではなかった
-		return FALSE;
-	}
-	return TRUE;
 }
 
 // バルーンメッセージを表示

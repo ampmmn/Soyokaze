@@ -12,6 +12,7 @@ public:
 	~AppProcess();
 
 	bool IsExist();
+	bool RebootAsAdminIfNeeded();
 
 // for test
 	static void SetSyncObjectName(LPCTSTR name);
@@ -19,4 +20,5 @@ public:
 
 private:
 	HANDLE m_hMutexRun;
+	bool mIsFirstProcess;
 };

@@ -246,6 +246,7 @@
 #define IDC_BUTTON_NEW4                 1045
 #define IDC_CHECK_ENABLEDEMOTEPRIVILEDGE 1045
 #define IDC_CHECK_HIDEONINACTIVE        1046
+#define IDC_CHECK_RUNAS                 1046
 #define IDC_COMBO_TRANSPARENCY          1047
 #define IDC_EDIT_ALPHA                  1048
 #define IDC_BUTTON_BROWSEFILE           1049
@@ -473,6 +474,7 @@
 #define IDC_EDIT_VALUE                  1207
 #define IDC_SYSLINK_LOGDIR              1208
 #define IDC_STATIC_RUNASONLY            1209
+#define IDC_STATIC_RUNASONLY2           1210
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects

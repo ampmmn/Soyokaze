@@ -476,6 +476,8 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
+    <ClInclude Include="commands\share\NormalPriviledgeCopyData.h" />
+    <ClInclude Include="commands\share\ProcessIDSharedMemory.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\simple_dict\DictionaryLoader.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommandEditor.h" />

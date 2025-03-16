@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "NormalPriviledgeProcessProxy.h"
 #include "SharedHwnd.h"
-#include "SharedHwnd.h"
+#include "commands/share/NormalPriviledgeCopyData.h"
+#include "commands/share/ProcessIDSharedMemory.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
 #include <mutex>
@@ -19,134 +20,59 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
-// サーバ(子プロセス)によって、通常権限で起動したコマンドプロセスのPIDを、
-// 管理者特権で動作する親プロセス側に渡すための共有メモリクラス
-class ProcessIDSharedMemory
+static void CreateFrom(int indexPID, const SHELLEXECUTEINFO* si, std::vector<uint8_t>& stm)
 {
-	static constexpr int NumOfArrays = 4;
-public:
-	ProcessIDSharedMemory()
-	{
-		// 共有メモリ領域を作成する
-		mMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(DWORD) * NumOfArrays, _T("LauncherAppProcessIDShare"));
-		if (mMapFile != nullptr) {
-			mPID = (DWORD*) MapViewOfFile(mMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(DWORD) * NumOfArrays);
-		}
+	// 文字列系データの合計長を求める
+	size_t dataLen = _tcslen(si->lpFile) + 1;
+
+	if (si->lpParameters) {
+		dataLen += (_tcslen(si->lpParameters) + 1);
 	}
-	~ProcessIDSharedMemory()
-	{
-		// 共有メモリ領域を破棄する
-		if (mPID) {
-			UnmapViewOfFile(mPID);
-		}
-		if (mMapFile) {
-			CloseHandle(mMapFile);
-		}
+	if (si->lpDirectory) {
+		dataLen += (_tcslen(si->lpDirectory) + 1);
 	}
 
-	int IssueIndex() {
-		int indexPID = mNextIndex++;
-		if (mNextIndex >= NumOfArrays) {
-			mNextIndex = 0;
-		}
-		return indexPID;
-	}
+	// 求めた合計長を踏まえてデータ領域を確保する
+	stm.resize(sizeof(COPYDATA_SHELLEXEC) + sizeof(TCHAR) * (dataLen));
 
-	DWORD GetPID(int indexPID)
-	{
-		ASSERT(0 <= indexPID && indexPID < NumOfArrays);
-
-		return mPID ? mPID[indexPID] : 0xFFFFFFFF;
-	}
-
-	static void RegisterPID(int indexPID, DWORD pid)
-	{
-		// 親プロセス側がひらいた共有メモリ領域を開く
-		HANDLE hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, _T("LauncherAppProcessIDShare"));
-		if (hMapFile == nullptr) {
-			return;
-		}
-		auto pids = (DWORD*) MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(DWORD) * NumOfArrays);
-		if (pids == nullptr) {
-			return;
-		}
-
-		pids[indexPID] = pid;
-
-		UnmapViewOfFile(pids);
-		CloseHandle(hMapFile);
-	}
-
-private:
-	HANDLE mMapFile = nullptr;
-	DWORD* mPID = nullptr;
-	int mNextIndex = 0;
-};
-
-struct COPYDATA_SHELLEXEC
-{
-	static constexpr int ID = 1;
-
-	static void CreateFrom(int indexPID, const SHELLEXECUTEINFO* si, std::vector<uint8_t>& stm)
-	{
-		// 文字列系データの合計長を求める
-		size_t dataLen = _tcslen(si->lpFile) + 1;
-
-		if (si->lpParameters) {
-			dataLen += (_tcslen(si->lpParameters) + 1);
-		}
-		if (si->lpDirectory) {
-			dataLen += (_tcslen(si->lpDirectory) + 1);
-		}
-
-		// 求めた合計長を踏まえてデータ領域を確保する
-		stm.resize(sizeof(COPYDATA_SHELLEXEC) + sizeof(TCHAR) * (dataLen));
-
-		auto p = (COPYDATA_SHELLEXEC*)stm.data();
+	auto p = (COPYDATA_SHELLEXEC*)stm.data();
 
 
-		p->mVersion = 1;
-		p->mShowType = si->nShow;
-		p->mIndexPID = indexPID;
-		p->mParamOffset = -1;
-		p->mWorkDirOffset = -1;
+	p->mVersion = 1;
+	p->mShowType = si->nShow;
+	p->mIndexPID = indexPID;
+	p->mParamOffset = -1;
+	p->mWorkDirOffset = -1;
 
 
-		// 文字列系データ(パス,パラメータ,作業ディレクトリ)をコピーするとともに、
-		// オフセット値を計算してセットする
-		int offset = 0;
+	// 文字列系データ(パス,パラメータ,作業ディレクトリ)をコピーするとともに、
+	// オフセット値を計算してセットする
+	int offset = 0;
 
-		// パスをコピー
-		size_t len = _tcslen(si->lpFile);
-		memcpy(p->mData + offset, si->lpFile, sizeof(TCHAR) * (len + 1));
-		p->mPathOffset = offset;
+	// パスをコピー
+	size_t len = _tcslen(si->lpFile);
+	memcpy(p->mData + offset, si->lpFile, sizeof(TCHAR) * (len + 1));
+	p->mPathOffset = offset;
+	offset += (int)(len + 1);
+
+	// パラメータをコピー
+	if (si->lpParameters) {
+		len = _tcslen(si->lpParameters);
+		memcpy(p->mData + offset, si->lpParameters, sizeof(TCHAR) * (len + 1));
+		p->mParamOffset = offset;
 		offset += (int)(len + 1);
-
-		// パラメータをコピー
-		if (si->lpParameters) {
-			len = _tcslen(si->lpParameters);
-			memcpy(p->mData + offset, si->lpParameters, sizeof(TCHAR) * (len + 1));
-			p->mParamOffset = offset;
-			offset += (int)(len + 1);
-		}
-
-		// 作業ディレクトリのパスをコピー
-		if (si->lpDirectory) {
-			len = _tcslen(si->lpDirectory);
-			memcpy(p->mData + offset, si->lpDirectory, sizeof(TCHAR) * (len + 1));
-			p->mWorkDirOffset = offset;
-			offset += (int)(len + 1);
-		}
 	}
 
-	uint32_t mVersion = 0;
-	int32_t mShowType = 0;
-	int32_t mPathOffset = 0;
-	int32_t mParamOffset = -1;
-	int32_t mWorkDirOffset = -1;
-	int32_t mIndexPID = 0;
-	TCHAR mData[1] = {};
-};
+	// 作業ディレクトリのパスをコピー
+	if (si->lpDirectory) {
+		len = _tcslen(si->lpDirectory);
+		memcpy(p->mData + offset, si->lpDirectory, sizeof(TCHAR) * (len + 1));
+		p->mWorkDirOffset = offset;
+		offset += (int)(len + 1);
+	}
+}
+
+
 
 struct NormalPriviledgeProcessProxy::PImpl
 {
@@ -204,7 +130,7 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded(HWND& hwnd)
 bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 {
 	// 自分自身を起動
-	Path pathSelf(Path::MODULEFILEPATH);
+	Path pathSelf(Path::MODULEFILEDIR, _T("launcher_proxy.exe"));
 
 	STARTUPINFO si = {};
 	si.cb = sizeof(si);
@@ -213,7 +139,7 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 
 	PROCESS_INFORMATION pi = {};
 
-	CString cmdline(_T("--run-as-normal-priviledge-agent"));
+	CString cmdline(_T("launcher_proxy.exe run-normal-priviledge-agent"));
 
 	DemotedProcessToken tok;
 	HANDLE htok = tok.FetchPrimaryToken();
@@ -272,7 +198,7 @@ void NormalPriviledgeProcessProxy::PImpl::RunAsNormalUser(COPYDATA_SHELLEXEC* pa
 	}
 
 	// 実行
-	BOOL isRun = ShellExecuteEx(&si);
+	ShellExecuteEx(&si);
 
 	// 起動したプロセスIDを呼び出し元に返す
 	DWORD pid = 0xFFFFFFFF;
@@ -314,7 +240,7 @@ bool NormalPriviledgeProcessProxy::StartProcess(SHELLEXECUTEINFO* si)
 
 	// SHELLEXECUTEINFOの情報からCOPYDATA_SHELLEXECを生成する
 	std::vector<uint8_t> stm;
-	COPYDATA_SHELLEXEC::CreateFrom(indexPID, si, stm);
+	CreateFrom(indexPID, si, stm);
 
 	COPYDATASTRUCT copyData;
 	copyData.dwData = COPYDATA_SHELLEXEC::ID;
@@ -362,50 +288,6 @@ void NormalPriviledgeProcessProxy::OnCopyData(COPYDATASTRUCT* data)
 	}	
 }
 
-
-// 以下、通常権限で実行されたプロセス側から待ち受けようのウインドウを作成する
-bool NormalPriviledgeProcessProxy::RunAgentUntilParentDie(int argc, TCHAR* argv[])
-{
-	bool isServerMode = false;
-	for (int i = 0; i < argc; ++i) {
-		if (_tcscmp(argv[i], _T("--run-as-normal-priviledge-agent")) == 0) {
-			isServerMode = true;
-			break;
-		}
-	}
-	if (isServerMode == false) {
-		return false;
-	}
-
-	CRect rc(0, 0, 0, 0);
-	HINSTANCE hInst = AfxGetInstanceHandle();
-
-	// 内部のmessage処理用の不可視のウインドウを作っておく
-	HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("LncrNormalProviledgeProcessProxy"), 0, 
-	                           rc.left, rc.top, rc.Width(), rc.Height(),
-	                           NULL, NULL, hInst, NULL);
-	ASSERT(hwnd);
-
-	// 作成したウインドウのハンドルをサーバウインドウとして登録
-	SharedHwnd serverHwnd(hwnd, NAME_NORMALPRIV_SERVER); 
-
-	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-
-	SetTimer(hwnd, TIMERID_HEARTBEAT, 250, 0);
-
-	for (;;) {
-		MSG msg;
-		int n = GetMessage(&msg, NULL, 0, 0); 
-		if (n == 0 || n == -1) {
-			break;
-		}
-		::TranslateMessage(&msg);
-		::DispatchMessage(&msg);
-	}
-
-	return true;
-}
 
 }
 }

@@ -208,6 +208,9 @@
     <Filter Include="mainwindow\interprocess">
       <UniqueIdentifier>{77cad20c-991f-406e-a2e8-a0507db44b19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\share">
+      <UniqueIdentifier>{79a971c8-8984-4743-ad5e-fcad21b5b6ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1376,6 +1379,12 @@
     </ClInclude>
     <ClInclude Include="commands\common\NormalPriviledgeProcessProxy.h">
       <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\share\NormalPriviledgeCopyData.h">
+      <Filter>commands\share</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\share\ProcessIDSharedMemory.h">
+      <Filter>commands\share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,13 +11,15 @@
 struct ExecSettingDialog::PImpl
 {
 	// Ctrl+Enterキー実行でフォルダ表示する
-	BOOL mIsShowFolderIfCtrlPressed = true;
+	BOOL mIsShowFolderIfCtrlPressed = TRUE;
 	// フォルダを開くファイラーを指定
-	BOOL mIsUseExternalFiler = false;
+	BOOL mIsUseExternalFiler = FALSE;
 	// ファイル名を指定して実行を使用する
-	BOOL mIsEnablePathFind = true;
+	BOOL mIsEnablePathFind = TRUE;
 	// 管理者権限で着実行時にコマンド通常権限で実行する
-	BOOL mShouldDemotePriviledge = true;
+	BOOL mShouldDemotePriviledge = TRUE;
+	// 管理者権限で起動する
+	BOOL mShouldRunAsAdmin = FALSE;
 	// ファイラーのパス
 	CString mFilerPath;
 	// ファイラーのパラメータ
@@ -59,6 +61,7 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:FilerPath"), in->mFilerPath);
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), in->mFilerParam);
 	settingsPtr->Set(_T("Soyokaze:ShouldDemotePriviledge"), (bool)in->mShouldDemotePriviledge);
+	settingsPtr->Set(_T("Soyokaze:ShouldRunAsAdmin"), (bool)in->mShouldRunAsAdmin);
 	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)in->mIsShowFolderIfCtrlPressed);
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)in->mIsEnablePathFind);
 
@@ -89,6 +92,7 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILERPARAM, in->mFilerParam);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, in->mIsEnablePathFind);
 	DDX_Check(pDX, IDC_CHECK_ENABLEDEMOTEPRIVILEDGE, in->mShouldDemotePriviledge);
+	DDX_Check(pDX, IDC_CHECK_RUNAS, in->mShouldRunAsAdmin);
 	DDX_Check(pDX, IDC_CHECK_SHOWDIR, in->mIsShowFolderIfCtrlPressed);
 	DDX_CBIndex(pDX, IDC_COMBO_DEFAULTACTION, in->mDefaultActionIndex);
 }
@@ -179,6 +183,7 @@ void ExecSettingDialog::OnEnterSettings()
 	in->mFilerPath = settingsPtr->Get(_T("Soyokaze:FilerPath"), _T(""));
 	in->mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	in->mShouldDemotePriviledge = settingsPtr->Get(_T("Soyokaze:ShouldDemotePriviledge"), true);
+	in->mShouldRunAsAdmin = settingsPtr->Get(_T("Soyokaze:ShouldRunAsAdmin"), false);
 	in->mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 	in->mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 

@@ -1958,11 +1958,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="launcher_proxy.h" />
+    <ClInclude Include="NormalPriviledgeAgent.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Restart.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp" />
+    <ClCompile Include="NormalPriviledgeAgent.cpp" />
+    <ClCompile Include="Restart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="launcher_proxy.rc" />

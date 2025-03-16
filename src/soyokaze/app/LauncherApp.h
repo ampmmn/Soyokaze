@@ -32,7 +32,6 @@ public:
 
 	BOOL InitFirstInstance();
 	BOOL InitSecondInstance();
-	BOOL InitNormalProcessAgentIfNeeded();
 
 	// バルーンメッセージを表示
 	bool PopupMessage(const CString& message);

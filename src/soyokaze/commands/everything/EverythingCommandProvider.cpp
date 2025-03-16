@@ -70,6 +70,8 @@ bool EverythingCommandProvider::NewDialog(CommandParameter* param)
 // 設定ページを取得する
 bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
 {
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(pages);
 	//pages.push_back(new AppSettingEverythingPage(parent));
 	return true;
 }
