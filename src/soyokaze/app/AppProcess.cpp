@@ -102,13 +102,16 @@ bool AppProcess::RebootAsAdminIfNeeded()
 	si.lpFile = pathSelf;
 	si.lpVerb = _T("runas");
 
-	BOOL isRun = ShellExecuteEx(&si);
+	ShellExecuteEx(&si);
 
 	if (si.hProcess) {
 		CloseHandle(si.hProcess);
 	}
 
-	return isRun != FALSE;
+	// UACの確認画面で「いいえ」を選択した場合、ShellExecuteExの結果はfalseになるが、
+	// その場合、アプリとしては起動しない(このプロセスを終了する)ので、
+	// アプリの起動結果にかかわらず、trueを返す。
+	return true;
 }
 
 // テスト用にオブジェクト名を上書きする
