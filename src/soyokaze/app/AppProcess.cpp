@@ -67,7 +67,10 @@ static bool IsRunningAsAdmin()
 }
 
 
-// 管理者権限で再起動が必要なら再起動する
+/**
+  管理者権限で再起動が必要なら再起動する
+ 	@return true:実行中のプロセスを終了する(再起動をするため)  false:プロセスを終了しない
+*/
 bool AppProcess::RebootAsAdminIfNeeded()
 {
 	// 管理者権限として再起動するかどうかの判断をする

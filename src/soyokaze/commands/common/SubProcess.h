@@ -31,6 +31,8 @@ public:
 	bool Run(const CString& path, ProcessPtr& process);
 	bool Run(const CString& path, const CString& paramStr, ProcessPtr& process);
 
+	static bool IsRunningAsAdmin();
+
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

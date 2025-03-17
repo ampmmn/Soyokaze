@@ -29,7 +29,6 @@ struct SubProcess::PImpl
 
 	bool IsRunAsKeyPressed();
 	bool IsOpenPathKeyPressed();
-	bool IsRunningAsAdmin();
 	bool CanRunAsAdmin(const CString& path);
 
 	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
@@ -60,25 +59,6 @@ bool SubProcess::PImpl::IsOpenPathKeyPressed()
 	return state == MASK_CTRL;
 }
 
-// 管理者権限で実行されているか?
-bool SubProcess::PImpl::IsRunningAsAdmin()
-{
-	static bool isRunAsAdmin = []() {
-		PSID grp;
-		SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-		BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
-		if (result == FALSE) {
-			return false;
-		}
-
-		BOOL isMember = FALSE;
-		result = CheckTokenMembership(nullptr, grp, &isMember);
-		FreeSid(grp);
-
-		return result && isMember;
-	}();
-	return isRunAsAdmin;
-}
 
 // 管理者権限で実行可能なファイルタイプか?
 bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
@@ -241,7 +221,7 @@ bool SubProcess::Run(
 	bool isRunAsAdminSpecified = in->mIsRunAsAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path));
 
 	bool isRun = false;
-	if (in->IsRunningAsAdmin() && isRunAsAdminSpecified == false && pref->ShouldDemotePriviledge()) {
+	if (IsRunningAsAdmin() && isRunAsAdminSpecified == false && pref->ShouldDemotePriviledge()) {
 		// ランチャーを管理者権限で実行していて、かつ、コマンドを管理者権限で起動しない場合は、
 		// 降格した権限で起動する
 		isRun = in->StartWithLowerPermissions(path, paramStr, workDir, process);
@@ -257,6 +237,25 @@ bool SubProcess::Run(
 	return isRun;
 }
 
+// 管理者権限で実行されているか?
+bool SubProcess::IsRunningAsAdmin()
+{
+	static bool isRunAsAdmin = []() {
+		PSID grp;
+		SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+		BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
+		if (result == FALSE) {
+			return false;
+		}
+
+		BOOL isMember = FALSE;
+		result = CheckTokenMembership(nullptr, grp, &isMember);
+		FreeSid(grp);
+
+		return result && isMember;
+	}();
+	return isRunAsAdmin;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

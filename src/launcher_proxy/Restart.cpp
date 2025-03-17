@@ -39,33 +39,34 @@ static bool GetProcessPathFromWindow(HWND h, std::wstring& path)
 	return true;
 }
 
-static int RunCommand(HWND hwnd, const wchar_t* cmd)
+/**
+ 	ランチャー本体にコマンドを送信する
+ 	@return 0:成功  1:失敗
+ 	@param[in] exe_path 本体exeのファイルパス
+ 	@param[in] cmd      送信するコマンド
+*/
+static int RunCommand(
+	const std::wstring& exe_path,
+	const wchar_t* cmd
+)
 {
-	HWND hwndCommand = GetDlgItem(hwnd, 1003);   // IDC_EDIT_COMMAND2 = 1003, FIXME:本体と連動
-	if (hwndCommand == NULL) {
-		SPDLOG_ERROR("CmdReceiveEdit does not found.");
-		return 2;
+	SHELLEXECUTEINFO si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = SW_SHOW;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = exe_path.c_str();
+
+	std::wstring cmdline(L"-c ");
+	cmdline += cmd;
+	si.lpParameters = cmdline.data();
+
+	if (ShellExecuteEx(&si) == FALSE) {
+		return 1;
 	}
-
-	struct SEND_COMMAND_PARAM
-	{
-		bool mIsPasteOnly;
-		wchar_t mText[1];
-	};
-
-	size_t len = wcslen(cmd);
-
-	std::vector<uint8_t> stm(sizeof(SEND_COMMAND_PARAM) + sizeof(wchar_t) * len);
-	auto p = (SEND_COMMAND_PARAM*)stm.data();
-	p->mIsPasteOnly = false;
-	wcscpy_s(p->mText, len + 1, cmd);
-
-	COPYDATASTRUCT copyData;
-	copyData.dwData = 0;   // SEND_COMMAND
-	copyData.cbData = (DWORD)stm.size();
-	copyData.lpData = (void*)p;
-
-	SendMessage(hwndCommand, WM_COPYDATA, 0, (LPARAM)&copyData);
+	
+	if (si.hProcess) {
+		CloseHandle(si.hProcess);
+	}
 
 	return 0;
 }
@@ -90,7 +91,7 @@ int RestartApp()
 	HANDLE process_handle = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);
 
 	// ③シャットダウンの指示を出す
-	RunCommand(h, L"exit");
+	RunCommand(exe_path, L"exit");
 	// Note: exitコマンドは変更を許可しないため必ず存在するはず..
 
 	// ④シャットダウン完了を待つ
@@ -131,6 +132,8 @@ int RestartApp()
 		return 1;
 	}
 
-	CloseHandle(si.hProcess);
+	if (si.hProcess) {
+		CloseHandle(si.hProcess);
+	}
 	return 0;
 }
