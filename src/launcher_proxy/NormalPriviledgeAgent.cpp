@@ -47,6 +47,8 @@ static void RunAsNormalUser(COPYDATA_SHELLEXEC* param)
 	DWORD pid = 0xFFFFFFFF;
 	if (si.hProcess) {
 		pid = GetProcessId(si.hProcess);
+		CloseHandle(si.hProcess);
+		si.hProcess = nullptr;
 	}
 	ProcessIDSharedMemory::RegisterPID(param->mIndexPID, pid);
 }
