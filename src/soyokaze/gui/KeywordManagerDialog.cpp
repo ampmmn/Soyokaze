@@ -6,6 +6,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/core/EditableIF.h"
+#include "matcher/PartialMatchPattern.h"
 #include "utility/RefPtr.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
@@ -349,32 +350,20 @@ void KeywordManagerDialog::UpdateListItems()
 		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
 	}
 
-	// 空白でばらす
-	std::vector<CString> tokens;
-	int n = 0;
-	CString tok = in->mFilterStr.Tokenize(_T(" "), n);
-	while(tok.IsEmpty() == FALSE) {
-		tokens.push_back(tok);
-		tok = in->mFilterStr.Tokenize(_T(" "), n);
-	}
+	if (in->mFilterStr.IsEmpty() == FALSE) {
+		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
+		pattern->SetWholeText(in->mFilterStr);
 
-	if (tokens.size() > 0) {
 		in->mShowCommands.clear();
 		for (auto& cmd : in->mCommands) {
+
 			auto name = cmd->GetName();
 			auto desc = cmd->GetDescription();
 			auto typeName = cmd->GetTypeDisplayName();
-
-			bool shouldShow = false;
-			for (auto& token : tokens) {
-				if (name.Find(token) == -1 && desc.Find(token) == -1 && typeName.Find(token) == -1) {
-					continue;
-				}
-				shouldShow = true;
-				break;
-			}
-
-			if (shouldShow == false) {
+			
+			if (pattern->Match(name) == Pattern::Mismatch &&
+			    pattern->Match(desc) == Pattern::Mismatch &&
+			    pattern->Match(typeName) == Pattern::Mismatch)  {
 				continue;
 			}
 			in->mShowCommands.push_back(cmd);
