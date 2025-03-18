@@ -64,7 +64,6 @@ struct PartialMatchPattern::PImpl
 	std::vector<WORD> mWords;
 	// 前方一致用のパターン
 	std::vector<std::wregex> mRegPatternsForFM;
-	std::wregex mRegPatternFront;
 
 	CString mWholeText;
 	bool mIsUseMigemoForHistory = false;
@@ -275,7 +274,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 		try {
 			// 前方一致比較用にパターンを生成しておく
 			std::wstring escapedPat = StripEscapeChars(in->mTokens[i]);
-			patternsForFM.push_back(std::wregex(L"^" + escapedPat));
+			patternsForFM.push_back(std::wregex(L"^" + escapedPat, std::regex_constants::icase));
 		}
 		catch (std::regex_error& e) {
 			tstring reason = tostring(e.code());
