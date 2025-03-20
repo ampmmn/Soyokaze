@@ -1389,6 +1389,9 @@
     <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h">
       <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
+    <ClInclude Include="commands\watchpath\PathWatcherItem.h">
+      <Filter>commands\watchpath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2458,6 +2461,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp">
       <Filter>mainwindow\interprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\watchpath\PathWatcherItem.cpp">
+      <Filter>commands\watchpath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

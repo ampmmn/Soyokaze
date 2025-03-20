@@ -206,6 +206,8 @@
 #define IDC_EDIT_PATH0                  1023
 #define IDC_EDIT_PATH2                  1023
 #define IDC_EDIT_HOTKEY_DOWN            1023
+#define IDC_EDIT_MESSAGE2               1023
+#define IDC_EDIT_EXCLUDEFILTER          1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_SOUNDEXECUTE           1024
 #define IDC_EDIT_HOTKEY_ENTER           1024
@@ -483,7 +485,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        249
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1210
+#define _APS_NEXT_CONTROL_VALUE         1211
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

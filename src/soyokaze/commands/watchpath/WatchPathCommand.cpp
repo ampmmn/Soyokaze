@@ -158,6 +158,7 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 	item.mPath = in->mParam.mPath;
 	item.mMessage = in->mParam.mNotifyMessage;
 	item.mInterval = in->mParam.mWatchInterval;
+	item.mExcludeFilter = in->mParam.mExcludeFilter;
 	PathWatcher::Get()->RegisterPath(in->mParam.mName, item);
 
 	return true;
@@ -193,6 +194,7 @@ bool WatchPathCommand::NewDialog(Parameter* param)
 		item.mPath = paramNew.mPath;
 		item.mMessage = paramNew.mNotifyMessage;
 		item.mInterval = paramNew.mWatchInterval;
+		item.mExcludeFilter = paramNew.mExcludeFilter;
 		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 
@@ -237,6 +239,7 @@ bool WatchPathCommand::Apply(launcherapp::core::CommandEditor* editor)
 		item.mPath = in->mParam.mPath;
 		item.mMessage = in->mParam.mNotifyMessage;
 		item.mInterval = in->mParam.mWatchInterval;
+		item.mExcludeFilter = in->mParam.mExcludeFilter;
 		watcher->RegisterPath(GetName(), item);
 	}
 
@@ -263,6 +266,7 @@ bool WatchPathCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 		item.mPath = paramNew.mPath;
 		item.mMessage = paramNew.mNotifyMessage;
 		item.mInterval = paramNew.mWatchInterval;
+		item.mExcludeFilter = paramNew.mExcludeFilter;
 		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 

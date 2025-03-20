@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/watchpath/WatchTarget.h"
+#include "commands/watchpath/PathWatcherItem.h"
 #include <memory>
 
 namespace launcherapp {
@@ -10,7 +11,7 @@ namespace watchpath {
 class UNCPathTarget : public WatchTarget
 {
 public:
-	UNCPathTarget(const CString& cmdName, const CString& message, const CString& path, UINT interval);
+	UNCPathTarget(const CString& cmdName, const PathWatcherItem& item);
 	virtual ~UNCPathTarget() ;
 
 	bool IsUpdated() override;

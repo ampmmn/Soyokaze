@@ -32,7 +32,9 @@ public:
 	CString mNotifyMessage;
 	// 更新検知後の間隔(秒単位)
 	// 指定秒数が経過するまで次の通知をしない
-	UINT mWatchInterval;    
+	UINT mWatchInterval;
+	// 除外フィルタ(,区切り、ワイルドカード指定)
+	CString mExcludeFilter;
 	// 無効にする
 	bool mIsDisabled;
 };

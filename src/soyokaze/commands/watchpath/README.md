@@ -14,12 +14,32 @@ class CommandRepository
 class WatchPathCommandProvider
 class WatchPathCommandEditDialog
 class WatchPathCommand
+class WatchPathCommandParam
 class PathWatcher <<singleton>>
+class PathWatcherItem
+class WatchTarget <<interface>>
+class LocalPathTarget
+class UNCPathTarget
 
 WatchPathCommandProvider -le> CommandRepository : 生成したコマンドを登録
 WatchPathCommandProvider -down-> WatchPathCommand : 生成
 WatchPathCommand -> WatchPathCommandEditDialog : 設定ダイアログ表示
 WatchPathCommand -do-> PathWatcher : パス更新監視を依頼する
+WatchPathCommand "1" o.. "1" WatchPathCommandParam
+WatchPathCommandEditDialog ..> WatchPathCommandParam : 編集
+
+WatchPathCommand ..> PathWatcherItem : つくる
+PathWatcher .ri.> PathWatcherItem : 参照
+
+PathWatcher "1" o.. "0..*" WatchTarget : 利用
+
+LocalPathTarget -up-|> WatchTarget : ローカルパス用
+UNCPathTarget -up-|> WatchTarget : UNCパス用
+
+note right of WatchTarget
+フォルダ監視コマンドのぶんインスタンスが作られる
+end note
+
 ```
 
 ### WatchPathCommandProvider
@@ -39,6 +59,29 @@ WatchPathCommand -do-> PathWatcher : パス更新監視を依頼する
 `WatchPathCommand`で監視するパスの実際の監視処理を行うクラス。  
 シングルトン。パスをmapで管理する  
 スレッドを内部で作成し、スレッド側で一定間隔で更新があったかどうかを調べて、更新があったら更新された旨を通知する。
+
+### PathWatcherItem
+
+WatchPathCommmandがPathWatcherに対して監視対象を登録するさいに、監視対象の諸情報を渡すための入れ物クラス
+
+1つの監視対象につき1つのPathWatcherItemが対応している。  
+役割的にはWatchPathCommandParamに統合してもいいかもしれない
+
+### WatchTarget
+
+監視対象ディレクトリを表すインタフェースクラス。  
+監視対象ディレクトリの更新を確認したり、更新があった場合に更新内容の情報を呼び出し元に返す機能を持つ
+
+### LocalPathTarget
+
+ローカルパス(例`C:\Path\To\Dir`)に対する監視処理を実装したクラス。
+`ReadDirectoryChangesW`を用いて実装している。
+
+### UNCPathTarget
+
+UNCパス(例:`\\server\Path\To\Dir`)に対する監視処理を実装したクラス。  
+UNCパスに対しては`ReadDirectoryChangesW`が安定的に機能しなかったので、自前での監視処理を実装している。
+
 
 ## シーケンス
 

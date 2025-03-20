@@ -99,7 +99,8 @@ struct LocalPathTarget::PImpl
 		int actionFirst = 0;
 		CString filePathFirst;
 
-		std::vector<TCHAR> fileName;
+		// 変更のあったファイル名
+		tstring fileName;
 		for (;;) {
 
 			int action = data->Action;
@@ -111,11 +112,15 @@ struct LocalPathTarget::PImpl
 				DWORD lenInByte = data->FileNameLength;
 				size_t lenInStrCount = lenInByte / sizeof(TCHAR);
 
-				fileName.resize(lenInStrCount + 1);
-				memcpy(&fileName.front(), data->FileName, lenInByte);
-				fileName[lenInStrCount] = _T('\0');
+				fileName.assign(data->FileName, lenInStrCount);
+
+				// 除外パターンにマッチする場合は除外
+				if (mExcludePattern.get() && std::regex_match(fileName, *mExcludePattern.get())) {
+						continue;
+				}
+
 				actionFirst = action;
-				filePathFirst = &fileName.front();
+				filePathFirst = fileName.c_str();
 			}
 			itemCount++;
 
@@ -187,6 +192,8 @@ struct LocalPathTarget::PImpl
 	std::vector<BYTE> mBuffer;
 	// 最後に通知した時刻
 	uint64_t mLastNotifyTime = 0;
+	// 除外パターン
+	std::unique_ptr<tregex> mExcludePattern;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,18 +201,20 @@ struct LocalPathTarget::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
+/**
+ 	@param[in] cmdName  コマンド名
+ 	@param[in] item     監視対象の情報
+*/
 LocalPathTarget::LocalPathTarget(
 	const CString& cmdName,
- 	const CString& message,
- 	const CString& path,
-	UINT interval
+	const PathWatcherItem& item
 ) : in(new PImpl)
 {
 	in->mCommandName = cmdName;
-	in->mMessage = message;
-	in->mPath = path;
-	in->mInterval = interval * 1000;  // ミリ秒単位にする
+	in->mMessage = item.mMessage;
+	in->mPath = item.mPath;
+	in->mInterval = item.mInterval * 1000;  // ミリ秒単位にする
+	item.BuildExcludeFilterRegex(in->mExcludePattern);
 }
 
 LocalPathTarget::~LocalPathTarget()

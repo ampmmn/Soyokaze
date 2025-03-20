@@ -41,7 +41,7 @@ struct DirectoryNode
 		}
 	}
 
-	bool Build(const CString& path)
+	bool Build(const CString& path, std::unique_ptr<tregex>& excludePat)
 	{
 		// 対象パスが存在しない場合
 		if (Path::IsDirectory(path) == FALSE) {
@@ -95,7 +95,14 @@ struct DirectoryNode
 					continue;
 				}
 
-				CString filePath = f.GetFilePath();
+				// ファイル名が除外パターンにマッチする場合はリストに含めない
+				tstring fileName((LPCTSTR)f.GetFileName());
+				if (excludePat.get() && std::regex_match(fileName, *excludePat)) {
+					continue;
+				}
+
+				auto filePath = f.GetFilePath();
+				
 
 				FILETIME ft;
 				f.GetLastWriteTime(&ft);
@@ -232,6 +239,8 @@ struct UNCPathTarget::PImpl
 	uint64_t mLastCheckTime = 0;
 	// 最後に通知した時刻
 	uint64_t mLastNotifyTime = 0;
+	// 除外パターン
+	std::unique_ptr<tregex> mExcludeRegex;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -243,21 +252,18 @@ struct UNCPathTarget::PImpl
 
 /**
  	@param[in] cmdName  コマンド名
- 	@param[in] message  通知メッセージ
- 	@param[in] path     監視対象パス
- 	@param[in] interval 間隔(秒単位)
+ 	@param[in] item     監視対象の情報
 */
 UNCPathTarget::UNCPathTarget(
 	const CString& cmdName,
- 	const CString& message,
- 	const CString& path,
-	UINT interval
+	const PathWatcherItem& item
 ) : in(new PImpl)
 {
 	in->mCommandName = cmdName;
-	in->mMessage = message;
-	in->mPath = path;
-	in->mInterval = interval * 1000;  // ミリ秒単位にする
+	in->mMessage = item.mMessage;
+	in->mPath = item.mPath;
+	in->mInterval = item.mInterval * 1000;  // ミリ秒単位にする
+	item.BuildExcludeFilterRegex(in->mExcludeRegex);
 }
 
 UNCPathTarget::~UNCPathTarget()
@@ -276,7 +282,7 @@ bool UNCPathTarget::IsUpdated()
 
 	// 現在の情報を取得する
 	DirectoryNode currentTS;
-	if (currentTS.Build(in->mPath) == false) {
+	if (currentTS.Build(in->mPath, in->mExcludeRegex) == false) {
 		return false;
 	}
 

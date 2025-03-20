@@ -49,6 +49,9 @@
     <Filter Include="soyokaze\app">
       <UniqueIdentifier>{91cbd481-f619-4fc1-bf08-9097369f4f5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\watchpath">
+      <UniqueIdentifier>{69ddaea5-6216-4d9b-adc2-bee23ece6645}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp">
       <Filter>soyokaze\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp">
+      <Filter>soyokaze\commands\watchpath</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
