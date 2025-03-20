@@ -8,13 +8,14 @@ if errorlevel 1 call vcvars64.bat
 WHERE OpenCppCoverage > NUL 2> NUL
 if errorlevel 1 exit OpenCppCoverage is required.&& exit /b 1
 
-pushd %~dp0..\x64\UnitTest
+if not exist %~dp0..\dist\x64\UnitTest mkdir %~dp0..\dist\x64\UnitTest
+pushd %~dp0..\dist\x64\UnitTest
 
-msbuild %~dp0..\Soyokaze.sln  /t:build /p:configuration=UnitTest /p:Platform="x64" -m
+msbuild %~dp0..\src/Soyokaze.sln  /t:build /p:configuration=UnitTest /p:Platform="x64" -m
 
 if errorlevel 1 pause && exit /b 1
 
-OpenCppCoverage --source Soyokaze\soyokaze SoyokazeUnitTest.exe --export_type html:%~dp0..\coverage_report
+OpenCppCoverage --source Soyokaze\src\* SoyokazeUnitTest.exe --export_type html:%~dp0..\coverage_report
 
 popd
 
