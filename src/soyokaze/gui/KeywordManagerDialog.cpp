@@ -350,6 +350,7 @@ void KeywordManagerDialog::UpdateListItems()
 		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
 	}
 
+	// フィルタ欄が空でない場合は絞り込みを行う
 	if (in->mFilterStr.IsEmpty() == FALSE) {
 		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
 		pattern->SetWholeText(in->mFilterStr);

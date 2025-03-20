@@ -859,11 +859,13 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "コマンドの優先度(&P):",-1,14,12,67,8
-    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,11,25,219,217
-    PUSHBUTTON      "優先度変更(&E)",IDC_BUTTON_EDIT,235,24,58,14
-    PUSHBUTTON      "すべてリセット(&R)",IDC_BUTTON_RESET,235,61,58,14
-    LTEXT           "一致の度合いにより、候補欄の表示順序を変えています。\n一致度の区分: 完全一致 / 前方一致 / 部分一致\n一致度が同じ場合、コマンドの優先度が高いものを先に表示します。",-1,15,247,256,29
+    LTEXT           "フィルター(&F):",IDC_STATIC,123,12,42,8
+    EDITTEXT        IDC_EDIT_FILTER,170,10,123,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの優先度(&P):",IDC_STATIC,14,12,67,8
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,11,27,219,216
+    PUSHBUTTON      "優先度変更(&E)",IDC_BUTTON_EDIT,235,27,58,14
+    PUSHBUTTON      "すべてリセット(&R)",IDC_BUTTON_RESET,235,48,58,14
+    LTEXT           "一致の度合いにより、候補欄の表示順序を変えています。\n一致度の区分: 完全一致 / 前方一致 / 部分一致\n一致度が同じ場合、コマンドの優先度が高いものを先に表示します。",IDC_STATIC,15,247,256,29
 END
 
 IDD_PRIORITY DIALOGEX 0, 0, 141, 47

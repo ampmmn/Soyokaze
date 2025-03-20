@@ -28,6 +28,7 @@ protected:
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnEditFilterChanged();
 	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonResetAll();
 	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);
