@@ -80,7 +80,7 @@ enum {
 struct AppSettingPageCommandPriority::PImpl
 {
 	void SortCommands();
-	void SelectItem(int selItemInedex, bool isRedraw);
+	void SelectItem(Command* command, bool isRedraw);
 
 	CommandRanking* mCommandPriority = nullptr;
 
@@ -88,6 +88,8 @@ struct AppSettingPageCommandPriority::PImpl
 	CListCtrl mListCtrl;
 	// すべてのコマンド
 	std::vector<Command*> mCommands;
+	// 選択中のコマンド
+	Command* mSelCommand = nullptr;
 	// フィルタで絞り込みされた結果、画面に表示されているコマンド一覧
 	std::vector<Command*> mShowCommands;
 
@@ -139,22 +141,28 @@ void AppSettingPageCommandPriority::PImpl::SortCommands()
 
 /**
   選択状態の更新
-	@param[in] selItemIndex リスト要素のインデックス
+	@param[in] command 選択対象コマンド
 	@param[in] isRedraw     再描画するか?
 */
 void AppSettingPageCommandPriority::PImpl::SelectItem(
-	int selItemIndex,
+	Command* command,
 	bool isRedraw
 )
 {
+	int selItemIndex = -1;
 	int itemIndex = 0;
 	for (auto& cmd : mShowCommands) {
 
-		bool isSelItem = itemIndex== selItemIndex;
+		bool isSelItem = cmd == command;
+		if (isSelItem) {
+			selItemIndex = itemIndex;
+		}
 		mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 		itemIndex++;
 	}
-	mListCtrl.EnsureVisible(selItemIndex, FALSE);
+	if (selItemIndex != -1) {
+		mListCtrl.EnsureVisible(selItemIndex, FALSE);
+	}
 
 	if (isRedraw) {
 		mListCtrl.Invalidate();
@@ -277,15 +285,18 @@ BOOL AppSettingPageCommandPriority::OnInitDialog()
 
 bool AppSettingPageCommandPriority::UpdateStatus()
 {
-	// 更新前の選択位置を覚えておく
-	int selItemIndex = -1;
 	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
 	if (pos) {
-		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
+		int selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
+		in->mSelCommand = in->mShowCommands[selItemIndex];
+	}
+	else {
+		in->mSelCommand = nullptr;
 	}
 
 	// 選択項目がなければ編集ボタンを無効化する
-	GetDlgItem(IDC_BUTTON_EDIT)->EnableWindow(selItemIndex != -1);
+	bool canEdit = in->mSelCommand != nullptr;
+	GetDlgItem(IDC_BUTTON_EDIT)->EnableWindow(canEdit);
 
 	return true;
 }
@@ -306,13 +317,6 @@ bool AppSettingPageCommandPriority::GetHelpPageId(CString& id)
 
 void AppSettingPageCommandPriority::UpdateListItems()
 {
-	// 更新前の選択位置を覚えておく
-	int selItemIndex = -1;
-	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
-	if (pos) {
-		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
-	}
-
 	// フィルタ欄が空でない場合は絞り込みを行う
 	if (in->mFilterStr.IsEmpty() == FALSE) {
 		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
@@ -337,16 +341,12 @@ void AppSettingPageCommandPriority::UpdateListItems()
 		in->mShowCommands = in->mCommands;
 	}
 
-	// 選択項目がなければ編集ボタンを無効化する
-	bool canEdit = selItemIndex != -1 && selItemIndex < in->mShowCommands.size();
-	GetDlgItem(IDC_BUTTON_EDIT)->EnableWindow(canEdit);
-
 	// アイテム数を設定
 	int visibleItems = (int)(in->mShowCommands.size());
 	in->mListCtrl.SetItemCountEx(visibleItems);
 
 	// 選択状態の更新
-	in->SelectItem(selItemIndex, true);
+	in->SelectItem(in->mSelCommand, true);
 }
 
 // フィルター欄の文字列が更新されたときの処理

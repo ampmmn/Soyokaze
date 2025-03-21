@@ -44,7 +44,7 @@ enum {
 struct KeywordManagerDialog::PImpl
 {
 	void SortCommands();
-	void SelectItem(int selItemIndex, bool isRedraw);
+	void SelectItem(Command* command, bool isRedraw);
 
 	Command* GetItem(int index) {
 		ASSERT(0 <= index && index < mShowCommands.size()); 
@@ -121,19 +121,23 @@ void KeywordManagerDialog::PImpl::SortCommands()
 }
 
 // 選択状態の更新
-void KeywordManagerDialog::PImpl::SelectItem(int selItemIndex, bool isRedraw)
+void KeywordManagerDialog::PImpl::SelectItem(Command* command, bool isRedraw)
 {
+	int selItemIndex = -1;
+
 	int itemIndex = 0;
 	for (auto& cmd : mShowCommands) {
 
-		bool isSelItem = itemIndex== selItemIndex;
+		bool isSelItem = cmd == command;
 		if (isSelItem) {
-			mSelCommand = cmd;
+			selItemIndex = itemIndex;
 		}
 		mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
 		itemIndex++;
 	}
-	mListCtrl.EnsureVisible(selItemIndex, FALSE);
+	if (selItemIndex != -1) {
+		mListCtrl.EnsureVisible(selItemIndex, FALSE);
+	}
 
 	if (isRedraw) {
 		mListCtrl.Invalidate();
@@ -300,23 +304,22 @@ void KeywordManagerDialog::ResetContents()
 
 bool KeywordManagerDialog::UpdateStatus()
 {
+	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
+	if (pos) {
+		int selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
+		in->mSelCommand = in->mShowCommands[selItemIndex];
+	}
+	else {
+		in->mSelCommand = nullptr;
+	}
+
 	in->mName.Empty();
 	in->mDescription.Empty();
 
 	CWnd* btnEdit = GetDlgItem(IDC_BUTTON_EDIT);
 	CWnd* btnClone = GetDlgItem(IDC_BUTTON_CLONE);
 	CWnd* btnDel = GetDlgItem(IDC_BUTTON_DELETE);
-	ASSERT(btnEdit && btnDel);
-
-	// 選択状態を見て選択中のコマンドを決定
-	for (int i = 0; i < in->mShowCommands.size(); ++i) {
-		UINT mask = in->mListCtrl.GetItemState(i, LVIS_SELECTED | LVIS_FOCUSED);
-		bool isSelItem = mask != 0;
-
-		if (isSelItem) {
-			in->mSelCommand = in->mShowCommands[i];
-		}
-	}
+	ASSERT(btnEdit && btnClone && btnDel);
 
 	if (in->mSelCommand == nullptr) {
 		btnEdit->EnableWindow(FALSE);
@@ -343,13 +346,6 @@ bool KeywordManagerDialog::UpdateStatus()
 
 void KeywordManagerDialog::UpdateListItems()
 {
-	// 更新前の選択位置を覚えておく
-	int selItemIndex = -1;
-	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
-	if (pos) {
-		selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
-	}
-
 	// フィルタ欄が空でない場合は絞り込みを行う
 	if (in->mFilterStr.IsEmpty() == FALSE) {
 		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
@@ -380,13 +376,8 @@ void KeywordManagerDialog::UpdateListItems()
 	int visibleItems = (int)(in->mShowCommands.size());
 	in->mListCtrl.SetItemCountEx(visibleItems);
 
-	// 更新前の選択項目のインデックスが更新後の範囲外になる場合は非選択状態に戻す
-	if (selItemIndex >= visibleItems) {
-		in->mSelCommand = nullptr;
-	}
-
 	// 選択状態の更新
-	in->SelectItem(selItemIndex, true);
+	in->SelectItem(in->mSelCommand, true);
 }
 
 void KeywordManagerDialog::OnEditFilterChanged()
@@ -627,14 +618,20 @@ LRESULT KeywordManagerDialog::OnKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
 	if (wParam ==VK_DOWN) {
 		in->mListCtrl.SetFocus();
 
-		in->SelectItem(0, false);
+		if (in->mShowCommands.size() > 0) {
+			in->mSelCommand = in->mShowCommands[0];
+			in->SelectItem(in->mSelCommand, false);
+		}
 		return 1;
 	}
 	if (wParam ==VK_UP) {
 		in->mListCtrl.SetFocus();
 
-		int visibleItems = (int)(in->mShowCommands.size());
-		in->SelectItem(visibleItems - 1, false);
+		if (in->mShowCommands.size() > 0) {
+			int visibleItems = (int)(in->mShowCommands.size());
+			in->mSelCommand = in->mShowCommands[visibleItems - 1];
+			in->SelectItem(in->mSelCommand, false);
+		}
 		return 1;
 	}
 	else if (wParam == VK_TAB) {
