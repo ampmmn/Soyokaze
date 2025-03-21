@@ -185,6 +185,8 @@ public:
 
 	// ログレベル
 	int GetLogLevel();
+	// 性能ログを出力するか?
+	bool UsePerformanceLog();
 
 protected:
 	AppPreference();

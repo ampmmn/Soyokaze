@@ -1094,6 +1094,9 @@ void LauncherMainWindow::OnEditCommandChanged()
 // 入力キーワードで検索をリクエストを出す(完了をまたない)
 void LauncherMainWindow::QueryAsync()
 {
+	PERFLOG("QueryAsync Start");
+	spdlog::stopwatch sw;
+
 	// 検索リクエスト
 	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
@@ -1101,6 +1104,8 @@ void LauncherMainWindow::QueryAsync()
 	GetCommandRepository()->Query(req);
 
 	commandParam->Release();
+
+	PERFLOG("QueryAsync End {0:.6f} s.", sw);
 }
 
 

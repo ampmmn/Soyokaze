@@ -117,14 +117,29 @@ ExtraCandidateProvider::~ExtraCandidateProvider()
 
 CString ExtraCandidateProvider::GetName()
 {
-	return _T("");
+	return _T("ExtraCandidate");
 }
 
 // 一時的なコマンドを必要に応じて提供する
 void ExtraCandidateProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
+	CString name;
 	for (auto& source : in->mSources) {
+
+		RefPtr<Command> cmd;
+		if (source->QueryInterface(IFID_COMMAND, (void**)&cmd)) {
+			name = cmd->GetName();
+		}
+		else {
+			name = _T("Unknown");
+		}
+
+		PERFLOG(_T("ExtracCandidate Start name:{}"), (LPCTSTR)name);
+		spdlog::stopwatch sw;
+
 		source->QueryCandidates(pattern, commands);
+
+		PERFLOG("ExtracCandidate End {0:.6f} s.", sw);
 	}
 }
 

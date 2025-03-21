@@ -407,6 +407,8 @@
 #define IDC_EDIT_TIME                   1149
 #define IDC_CHECK_NOTIFYUPDATE          1149
 #define IDC_EDIT_FILTER                 1150
+#define IDC_CHECK_WARNLONGWORKING2      1150
+#define IDC_CHECK_ENABLEPERFLOG         1150
 #define IDC_COMBO_LEVEL                 1151
 #define IDC_MFCFONTCOMBO_MAIN           1153
 #define IDC_CHECK_DISABLE               1154

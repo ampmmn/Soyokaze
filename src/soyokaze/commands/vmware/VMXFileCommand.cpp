@@ -182,7 +182,7 @@ bool VMXFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParamet
 
 bool VMXFileCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	if (__super::QueryInterface(ifid, cmd)) {
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
 		return true;
 	}
 

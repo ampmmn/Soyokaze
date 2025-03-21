@@ -25,11 +25,13 @@ static int SPDLOGLEVEL[] = {
 struct AppSettingPageOther::PImpl
 {
 	// 長時間の連続稼働を警告する
-	BOOL mIsWarnLongOperation = false;
+	BOOL mIsWarnLongOperation = FALSE;
 	// 警告までの時間(分単位)
 	int mTimeToWarnLongOperation = 90;
 	// ログレベル
 	int mLogLevel = 0;
+	// 性能ログを出力する
+	BOOL mIsEnablePerfLog = FALSE;
 };
 
 AppSettingPageOther::AppSettingPageOther(CWnd* parentWnd) : 
@@ -59,6 +61,10 @@ BOOL AppSettingPageOther::OnSetActive()
 
 void AppSettingPageOther::OnOK()
 {
+	if (UpdateData() == FALSE) {
+		return;
+	}
+
 	auto settingsPtr = (Settings*)GetParam();
 	settingsPtr->Set(_T("Health:IsWarnLongOperation"), (bool)in->mIsWarnLongOperation);
 	settingsPtr->Set(_T("Health:TimeToWarn"), in->mTimeToWarnLongOperation);
@@ -69,6 +75,7 @@ void AppSettingPageOther::OnOK()
 		spdLogLevel = SPDLOGLEVEL[in->mLogLevel];
 	}
 	settingsPtr->Set(_T("Logging:Level"), spdLogLevel);
+	settingsPtr->Set(_T("Logging:UsePerformanceLog"), in->mIsEnablePerfLog != FALSE);
 
 	__super::OnOK();
 }
@@ -81,6 +88,7 @@ void AppSettingPageOther::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_TIME, in->mTimeToWarnLongOperation);
 	DDV_MinMaxInt(pDX, in->mTimeToWarnLongOperation, 1, 1440);
 	DDX_CBIndex(pDX, IDC_COMBO_LEVEL, in->mLogLevel);
+	DDX_Check(pDX, IDC_CHECK_ENABLEPERFLOG, in->mIsEnablePerfLog);
 }
 
 BEGIN_MESSAGE_MAP(AppSettingPageOther, SettingPage)
@@ -135,6 +143,7 @@ void AppSettingPageOther::OnEnterSettings()
 		in->mLogLevel = i;
 		break;
 	}
+	in->mIsEnablePerfLog = settingsPtr->Get(_T("Logging:UsePerformanceLog"), false);
 }
 
 bool AppSettingPageOther::GetHelpPageId(CString& id)

@@ -964,4 +964,10 @@ int AppPreference::GetLogLevel()
 	return in->Get(_T("Logging:Level"), 6);
 }
 
+// 性能ログを出力するか?
+bool AppPreference::UsePerformanceLog()
+{
+	return in->Get(_T("Logging:UsePerformanceLog"), false);
+}
+
 

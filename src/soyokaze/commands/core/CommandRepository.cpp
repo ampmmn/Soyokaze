@@ -170,6 +170,8 @@ void CommandRepository::PImpl::RunQueryThread()
 
 	std::thread th([&]() {
 
+			spdlog::info("Enter RunQueryThread.");
+
 			while (IsRunning()) {
 				QueryRequest req;
 				if (WaitForRequest(req) == false) {
@@ -177,6 +179,7 @@ void CommandRepository::PImpl::RunQueryThread()
 				}
 				Query(req);
 			}
+			spdlog::info("Exit RunQueryThread.");
 
 	});
 	th.detach();
@@ -187,15 +190,23 @@ void CommandRepository::PImpl::RunQueryThread()
 void CommandRepository::PImpl::AddRequest(const QueryRequest& req)
 {
 	{
+		PERFLOG("AddRequest lock start.");
+		spdlog::stopwatch sw;
+
 		std::lock_guard<std::mutex> lock(mMutex);
 		mQueryRequestQueue.push_back(req);
+
+		PERFLOG("AddRequest lock end. {0:.6f} s.", sw);
 	}
 	mQueryRequestEvt.SetEvent();
 }
 
 bool CommandRepository::PImpl::WaitForRequest(QueryRequest& req)
 {
+	PERFLOG("WaitForRequest wait start.");
+	spdlog::stopwatch sw;
 	WaitForSingleObject(mQueryRequestEvt, INFINITE);
+	PERFLOG("WaitForRequest wait end. {0:.6f} s.", sw);
 
 	std::lock_guard<std::mutex> lock(mMutex);
 	if (mIsExit) {
@@ -240,11 +251,13 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	CommandMap::CommandQueryItemList matchedItems;
 
 	spdlog::stopwatch sw;
+	PERFLOG("CommandMap.Query start.");
 	mCommands.Query(mPattern.get(), matchedItems);
-	spdlog::debug("CommandMap.Query duration:{:.6f} s.", sw);
+	PERFLOG("CommandMap.Query end. {0:.6f} s num:{1}", sw, (int)matchedItems.GetItemCount());
 	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
+	int prevCount = (int)matchedItems.GetItemCount();
 	for (auto& provider : mProviders) {
 		sw.reset();
 		if (HasSubsequentRequest()) {
@@ -252,17 +265,22 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 			PostMessage(hwndNotify, notifyMsg, 1, 0);
 			break;
 		}
+		PERFLOG(_T("QueryAdhocCommands start. name:{0}"), (LPCTSTR)provider->GetName());
 		provider->QueryAdhocCommands(mPattern.get(), matchedItems);
-		spdlog::debug(_T("QueryAdhocCommands name:{0} duration:{1:.6f} s."), (LPCTSTR)provider->GetName(), sw.elapsed().count());
+
+		int n = (int)matchedItems.GetItemCount();
+		PERFLOG(_T("QueryAdhocCommands end. name:{0} {1:.6f} s num:{2}"), (LPCTSTR)provider->GetName(), sw.elapsed().count(), n - prevCount);
+		prevCount = n;
 	}
 
 
 	sw.reset();
 
 	// 一致レベルに基づきソート
+	int itemCount = (int)matchedItems.GetItemCount();
+	PERFLOG("sort candidates start num:{0}", itemCount);
 	matchedItems.Sort();
-	size_t itemCount = matchedItems.GetItemCount();
-	spdlog::debug("sort items:{0} duration:{1:.6f} s.", (int)itemCount, sw);
+	PERFLOG("sort candidates end {1:.6f} s.", sw);
 
 	std::vector<launcherapp::core::Command*>* items = new std::vector<launcherapp::core::Command*>();
 	
@@ -276,7 +294,7 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 		items->push_back(defaultCmd);
 	}
 
-	spdlog::debug("Query took about {:.6f} seconds.", swAll);
+	PERFLOG("Query total processsing time: {:.6f} s.", swAll);
 
 	PostMessage(hwndNotify, notifyMsg, 0, (LPARAM)items);
 }

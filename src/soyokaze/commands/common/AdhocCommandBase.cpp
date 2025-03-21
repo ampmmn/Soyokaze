@@ -24,9 +24,11 @@ AdhocCommandBase::~AdhocCommandBase()
 
 bool AdhocCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	UNREFERENCED_PARAMETER(ifid);
-	UNREFERENCED_PARAMETER(cmd);
-	// 未実装
+	if (ifid == IFID_COMMAND) {
+		AddRef();
+		*cmd = (launcherapp::core::Command*)this;
+		return true;
+	}
 	return false;
 }
 

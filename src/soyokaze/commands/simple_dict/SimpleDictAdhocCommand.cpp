@@ -177,7 +177,7 @@ CString SimpleDictAdhocCommand::GetSourceName()
 
 bool SimpleDictAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	if (__super::QueryInterface(ifid, cmd)) {
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
 		return true;
 	}
 

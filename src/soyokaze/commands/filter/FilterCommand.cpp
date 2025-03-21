@@ -75,7 +75,7 @@ FilterCommand::~FilterCommand()
 
 bool FilterCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
-	if (__super::QueryInterface(ifid, cmd)) {
+	if (UserCommandBase::QueryInterface(ifid, cmd)) {
 		return true;
 	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {

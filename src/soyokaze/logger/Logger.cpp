@@ -32,6 +32,9 @@ struct Logger::PImpl : public AppPreferenceListenerIF
 		auto pref = AppPreference::Get();
 		int level = pref->GetLogLevel();
 		spdlog::set_level((spdlog::level::level_enum)level);
+
+		spdlog::level::level_enum perfLevel = pref->UsePerformanceLog() ? spdlog::level::debug : spdlog::level::off;
+		spdlog::get("lancuher_perflog")->set_level(perfLevel);
 	}
 	void OnAppExit() override
 	{
@@ -61,6 +64,14 @@ CString Logger::GetLogDirectory()
 
 void Logger::Initialize()
 {
+	// 通常ログ
+	InitializeDefaultLog();
+	// 性能計測用ログ
+	InitializePerformanceLog();
+}
+
+void Logger::InitializeDefaultLog()
+{
 	Path logPath(Path::APPDIRPERMACHINE, APPLOGNAME);
 
 	auto max_size = 1048576 * 8;
@@ -80,4 +91,18 @@ void Logger::Initialize()
 	in->mLogDirectory.ReleaseBuffer();
 }
 
+
+void Logger::InitializePerformanceLog()
+{
+	Path logPath(Path::APPDIRPERMACHINE, _T("perf.log"));
+
+	auto max_size = 1048576 * 8;
+	auto max_files = 3;
+	auto logger = spdlog::rotating_logger_mt("lancuher_perflog", (LPCTSTR)logPath, max_size, max_files);
+	logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%5t] [%L]:%!:%v");
+
+	auto pref = AppPreference::Get();
+	spdlog::level::level_enum level = pref->UsePerformanceLog() ? spdlog::level::debug : spdlog::level::off;
+	logger->set_level(level);
+}
 

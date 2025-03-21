@@ -65,6 +65,11 @@ bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void**
 		*cmd = (launcherapp::core::Editable*)this;
 		return true;
 	}
+	if (ifid == IFID_COMMAND) {
+		AddRef();
+		*cmd = (launcherapp::core::Command*)this;
+		return true;
+	}
 	return false;
 }
 

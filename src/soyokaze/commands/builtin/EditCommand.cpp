@@ -45,6 +45,9 @@ EditCommand::~EditCommand()
 
 bool EditCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
+	if (BuiltinCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;

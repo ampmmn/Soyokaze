@@ -45,9 +45,11 @@ struct DirectoryNode
 	{
 		// 対象パスが存在しない場合
 		if (Path::IsDirectory(path) == FALSE) {
+			spdlog::warn(_T("watch target path does not exist. {}"), (LPCTSTR)path);
 			return false;
 		}
 
+		PERFLOG("UNCPathTarget DirectoryNode Build Start");
 		spdlog::stopwatch sw;
 
 		Clear();
@@ -112,7 +114,7 @@ struct DirectoryNode
 			f.Close();
 		}
 
-		SPDLOG_DEBUG("Elapsed : {:.6f} s", sw);
+		PERFLOG("UNCPathTarget DirectoryNode Build End {:.6f} s", sw);
 
 		return true;
 	}
