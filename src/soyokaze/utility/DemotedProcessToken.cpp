@@ -5,6 +5,9 @@
 #define new DEBUG_NEW
 #endif
 
+/**
+ * @brief デフォルトコンストラクタ
+ */
 DemotedProcessToken::DemotedProcessToken() : 
 	mShProcTokenHandle(nullptr),
 	mPrimaryToken(nullptr),
@@ -12,13 +15,21 @@ DemotedProcessToken::DemotedProcessToken() :
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 DemotedProcessToken::~DemotedProcessToken()
 {
+	// ハンドルを閉じる
 	CloseHandle(mShProcTokenHandle);
 	CloseHandle(mPrimaryToken);
 	CloseHandle(mShellProcessHandle);
 }
 
+/**
+ * @brief プライマリトークンを取得する
+ * @return プライマリトークンのハンドル、失敗した場合は nullptr
+ */
 HANDLE DemotedProcessToken::FetchPrimaryToken()
 {
 	if (mPrimaryToken) {
@@ -32,6 +43,7 @@ HANDLE DemotedProcessToken::FetchPrimaryToken()
 		return nullptr;
 	}
 
+	// トークンの特権を調整
 	TOKEN_PRIVILEGES tkp;
 	tkp.PrivilegeCount = 1;
 	LookupPrivilegeValueW(nullptr, SE_INCREASE_QUOTA_NAME, &tkp.Privileges[0].Luid);
@@ -46,6 +58,7 @@ HANDLE DemotedProcessToken::FetchPrimaryToken()
 		return nullptr;
 	}
 
+	// デスクトップシェルウィンドウのハンドルを取得
 	HWND hwnd = GetShellWindow();
 	if (hwnd == nullptr) {
 		spdlog::error("No desktop shell is present");
@@ -55,25 +68,27 @@ HANDLE DemotedProcessToken::FetchPrimaryToken()
 	// デスクトップシェルプロセスのプロセスIDを取得
 	DWORD dwPID = 0;
 	GetWindowThreadProcessId(hwnd, &dwPID);
-	if (dwPID == 0)	{
+	if (dwPID == 0) {
 		spdlog::error("Unable to get PID of desktop shell.");
 		return nullptr;
 	}
 
+	// デスクトップシェルプロセスのハンドルを開く
 	mShellProcessHandle = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPID);
 	if (mShellProcessHandle == nullptr) {
 		spdlog::error("Can't open desktop shell process:  {}", GetLastError());
 		return nullptr;
 	}
 
+	// デスクトップシェルプロセスのトークンを取得
 	BOOL ret = OpenProcessToken(mShellProcessHandle, TOKEN_DUPLICATE, &mShProcTokenHandle);
 	if (ret == FALSE) {
 		spdlog::error("Can't get process token of desktop shell: {}", GetLastError());
 		return nullptr;
 	}
 
+	// トークンを複製してプライマリトークンを作成
 	const DWORD dwTokenRights = TOKEN_QUERY | TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_ADJUST_DEFAULT | TOKEN_ADJUST_SESSIONID;
-
 	ret = DuplicateTokenEx(mShProcTokenHandle, dwTokenRights, NULL, SecurityImpersonation, TokenPrimary, &mPrimaryToken);
 	if (ret == FALSE) {
 		spdlog::error("Can't get primary token: {} ", GetLastError());
