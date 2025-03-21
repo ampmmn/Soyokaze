@@ -35,7 +35,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\testcode\soyokaze\AppProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\app\AppProcessTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
@@ -52,6 +51,8 @@
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp" />

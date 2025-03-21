@@ -236,7 +236,7 @@ double CAppProfile::Get(
 	CString retVal = m_entity->GetString(section, key, str);
 	
 	double d;
-	if (_stscanf_s(retVal, _T("%lf"), &d) != 0) {
+	if (_stscanf_s(retVal, _T("%lf"), &d) != 1) {
 		return def;
 	}
 	return d;

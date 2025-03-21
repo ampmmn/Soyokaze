@@ -63,9 +63,6 @@
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
       <Filter>soyokaze\commands\shellexecute</Filter>
     </ClCompile>
-    <ClCompile Include="..\testcode\soyokaze\AppProfileTest.cpp">
-      <Filter>soyokaze</Filter>
-    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>
@@ -119,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp">
       <Filter>soyokaze\commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp">
+      <Filter>soyokaze\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

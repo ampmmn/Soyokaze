@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 
 namespace launcherapp {
 namespace utility {
@@ -8,7 +9,10 @@ namespace utility {
 class CharConverter
 {
 public:
-	struct Exception {};
+	class Exception : public std::runtime_error {
+	public:
+			Exception();
+	};
 
 public:
 	CharConverter(int codePage = CP_UTF8);
