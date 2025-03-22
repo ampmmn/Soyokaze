@@ -15,7 +15,6 @@ public:
 	virtual ~ClipboardHistoryCommand();
 
 	CString GetName() override;
-	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(Parameter* param) override;

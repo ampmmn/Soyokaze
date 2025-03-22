@@ -27,6 +27,19 @@ struct ClipboardHistoryCommand::PImpl
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ClipboardHistoryCommand)
 
+static CString GetFirstLine(const CString& str)
+{
+	int pos = 0;
+	pos	= str.Find(_T("\r\n"));
+	if (pos == -1) {
+		pos	= str.Find(_T("\n"));
+		if (pos == -1) {
+			return str;
+		}
+	}
+	return str.Left(pos);
+}
+
 ClipboardHistoryCommand::ClipboardHistoryCommand(
  	const CString& prefix,
 	uint64_t appendDate,
@@ -38,6 +51,9 @@ ClipboardHistoryCommand::ClipboardHistoryCommand(
 	in->mAppendDate = appendDate;
 	in->mPrefix = prefix;
 	in->mData = data;
+
+	this->mDescription = GetFirstLine(data);
+
 }
 
 ClipboardHistoryCommand::~ClipboardHistoryCommand()
@@ -47,12 +63,6 @@ ClipboardHistoryCommand::~ClipboardHistoryCommand()
 CString ClipboardHistoryCommand::GetName()
 {
 	return in->mPrefix + _T(" ") + in->mData;
-}
-
-CString ClipboardHistoryCommand::GetDescription()
-{
-	return in->mData;
-
 }
 
 CString ClipboardHistoryCommand::GetGuideString()

@@ -103,10 +103,11 @@ void CandidateListCtrl::PImpl::DrawItemName(
 
 	// 改行を文字化する
 	CString name = cmd->GetName();
+	name.Replace(_T("\r\n"), _T("\\n"));
 	name.Replace(_T("\n"), _T("\\n"));
 	name.Replace(_T("\t"), _T("  "));
 
-	pDC->DrawText(name, rcItem, DT_LEFT);
+	pDC->DrawText(name, rcItem, DT_LEFT | DT_END_ELLIPSIS);
 }
 
 /**
@@ -127,7 +128,7 @@ void CandidateListCtrl::PImpl::DrawItemCategory(
 	CRect rcItem;
 	thisPtr->GetSubItemRect(itemId, 1, LVIR_LABEL, rcItem);
 	auto cmd = mCandidates->GetCommand(itemId);
-	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, DT_LEFT);
+	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, DT_LEFT | DT_END_ELLIPSIS);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
