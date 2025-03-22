@@ -253,42 +253,6 @@ void LauncherMainWindow::ShowHelpTop()
 	manual->Navigate(_T("Top"));
 }
 
-static bool IsValidForegroundWindow(HWND hwnd)
-{
-	if (IsWindow(hwnd) == FALSE) {
-		return false;
-	}
-
-	TCHAR clsName[256];
-	GetClassName(hwnd, clsName, 256);
-	TCHAR caption[128];
-	GetWindowText(hwnd, caption, 128);
-	if (_tcscmp(clsName, _T("SysListView32")) == 0 && _tcscmp(caption, _T("FolderView")) == 0) {
-		// デスクトップ上にアクティブなウインドウがない場合、ExcplorerのSysListView32が前面に来る
-		SPDLOG_DEBUG("desktop");
-		return false;
-	}
-	if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0 || _tcscmp(clsName, _T("Progman")) == 0) {
-		// タスクトレイやプログラムマネージャのウインドウがとれることもある
-		SPDLOG_DEBUG("traywnd or progman");
-		return false;
-	}
-
-	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
-	if (style & WS_MINIMIZE) {
-		// 最小化されている場合は対象外
-		SPDLOG_DEBUG("minimized");
-		return false;
-	}
-	if ((style & WS_VISIBLE) == 0) {
-		// 非表示も対象外
-		SPDLOG_DEBUG("invisible");
-		return false;
-	}
-
-	return true;
-}
-
 /**
  * ActiveWindow経由の処理
  * (後続プロセスから処理できるようにするためウインドウメッセージ経由で処理している)
@@ -301,41 +265,17 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 
 	HWND hwnd = GetSafeHwnd();
 	if (isShowForce || ::IsWindowVisible(hwnd) == FALSE) {
-
-		AppPreference* pref= AppPreference::Get();
-
 		// 非表示状態なら表示
 		ScopeAttachThreadInput scope;
 
-		if (pref->IsShowMainWindowOnCurorPos()) {
-			// マウスカーソル位置に入力欄ウインドウを表示する
-			CPoint offset(-60, -50);
-			POINT cursorPos;
-			::GetCursorPos(&cursorPos);
-			::SetWindowPos(hwnd, nullptr, cursorPos.x + offset.x, cursorPos.y + offset.y, 0, 0, 
-			               SWP_NOZORDER | SWP_NOSIZE);
+		// 表示する際の位置を決定する
+		CPoint newPt;
+		if (in->mLayout->RecalcWindowOnActivate(this, newPt)) {
+			::SetWindowPos(hwnd, nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 		}
-		else if (pref->IsShowMainWindowOnActiveWindowCenter()) {
-			// アクティブなウインドウの中央位置に入力欄ウインドウを表示する
-			HWND fgWindow = ::GetForegroundWindow();
-			if (IsValidForegroundWindow(fgWindow)) {
-				CRect rc;
-				::GetWindowRect(fgWindow, &rc);
-
-				CRect rcSelf;
-				GetWindowRect(&rcSelf);
-
-				CPoint offset(0,0);
-				if (rcSelf.Width() > 0) { offset.x = -(rcSelf.Width()) / 2; }
-				if (rcSelf.Height() > 0) { offset.y = -(rcSelf.Height()) / 2; }
-
-				POINT centerPos = rc.CenterPoint();
-				::SetWindowPos(hwnd, nullptr, centerPos.x + offset.x, centerPos.y + offset.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			}
-		}
-
 
 		// プレースホルダー設定
+		AppPreference* pref= AppPreference::Get();
 		LPCTSTR placeholderText = pref->IsDrawPlaceHolder() ? _T("キーワードを入力してください") : _T("");
 		in->mKeywordEdit.SetPlaceHolder(placeholderText);
 
@@ -1330,7 +1270,6 @@ BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
 
 void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	in->mLayout->OnShowWindow(this, bShow, nStatus);
 	in->mAppearance->OnShowWindow(bShow, nStatus);
 
 	if (bShow) {

@@ -17,8 +17,8 @@ public:
 	void UpdateInputStatus(LauncherInput* status, bool isForceUpdate) override;
 	// ウインドウ位置の復元
 	void RestoreWindowPosition(CWnd* wnd, bool isForceReset) override;
-	// 表示/非表示になるときの処理
-	void OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus) override;
+	// ウインドウがアクティブになるときのウインドウ位置を決める
+	bool RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt) override;
 	// リサイズ中のメインウインドウのサイズ制限を決定する
 	void RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect) override;
 	// リサイズ時のコントロール位置・サイズの再計算

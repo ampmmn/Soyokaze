@@ -169,6 +169,120 @@ void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpda
 	in->mIsPrevHasKeyword = isCurHasKeyword;
 }
 
+
+static bool IsValidForegroundWindow(HWND hwnd)
+{
+	if (IsWindow(hwnd) == FALSE) {
+		return false;
+	}
+
+	TCHAR clsName[256];
+	GetClassName(hwnd, clsName, 256);
+	TCHAR caption[128];
+	GetWindowText(hwnd, caption, 128);
+	if (_tcscmp(clsName, _T("SysListView32")) == 0 && _tcscmp(caption, _T("FolderView")) == 0) {
+		// デスクトップ上にアクティブなウインドウがない場合、ExcplorerのSysListView32が前面に来る
+		SPDLOG_DEBUG("desktop");
+		return false;
+	}
+	if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0 || _tcscmp(clsName, _T("Progman")) == 0) {
+		// タスクトレイやプログラムマネージャのウインドウがとれることもある
+		SPDLOG_DEBUG("traywnd or progman");
+		return false;
+	}
+
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	if (style & WS_MINIMIZE) {
+		// 最小化されている場合は対象外
+		SPDLOG_DEBUG("minimized");
+		return false;
+	}
+	if ((style & WS_VISIBLE) == 0) {
+		// 非表示も対象外
+		SPDLOG_DEBUG("invisible");
+		return false;
+	}
+
+	return true;
+}
+
+// 指定した領域がモニターに収まっているかを判定する
+static bool IsRectInMonitors(const CRect& rc)
+{
+	struct local_param {
+		static BOOL CALLBACK EnumProc(HMONITOR hmon, HDC hdcMon, LPRECT lprcMon, LPARAM dwData) {
+			auto thisPtr = (local_param*)dwData;
+
+			MONITORINFO mi = { sizeof(MONITORINFO) };
+			if (GetMonitorInfo(hmon, &mi)) {
+				// モニター作業領域内に完全に収まっている領域の面積を得る
+				auto validArea = thisPtr->mTargetRect & mi.rcWork;
+				if (validArea.IsRectEmpty() == FALSE) {
+					thisPtr->mValidArea += validArea.Width() * validArea.Height();
+				}
+			}
+
+			return TRUE;
+		}
+
+		int mValidArea = 0;
+		CRect mTargetRect;
+	} param;
+
+	param.mTargetRect = rc;
+	EnumDisplayMonitors(nullptr, nullptr, local_param::EnumProc, (LPARAM)&param);
+
+	// 画面内に半分収まってればヨシとする
+	return param.mValidArea >= (rc.Width() * rc.Height()) / 2;
+}
+
+
+// ウインドウがアクティブになるときのウインドウ位置を決める
+bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt)
+{
+	AppPreference* pref = AppPreference::Get();
+	if (pref->IsShowMainWindowOnCurorPos()) {
+		// マウスカーソル位置に入力欄ウインドウを表示する
+		CPoint offset(-60, -50);
+		POINT cursorPos;
+		::GetCursorPos(&cursorPos);
+		newPt.x = cursorPos.x + offset.x;
+		newPt.y = cursorPos.y + offset.y;
+		return true;
+	}
+
+	if (pref->IsShowMainWindowOnActiveWindowCenter()) {
+		// アクティブなウインドウの中央位置に入力欄ウインドウを表示する
+		HWND fgWindow = ::GetForegroundWindow();
+		if (IsValidForegroundWindow(fgWindow) == false) {
+			return false;
+		}
+
+		// 基準とするウインドウのスクリーン座標上の領域
+		CRect rc;
+		::GetWindowRect(fgWindow, &rc);
+
+		// 自ウインドウのスクリーン座標上の領域
+		CRect rcSelf;
+		wnd->GetWindowRect(&rcSelf);
+		
+		// 新しい位置を算出(基準ウインドウの中央)
+		CSize offset(rcSelf.Width() / 2, rcSelf.Height() / 2);
+		CRect newRect(rc.CenterPoint() - offset, rcSelf.Size()); 
+
+		// 新しい位置がモニター内に収まっているかを判定する
+		if (IsRectInMonitors(newRect) == false) {
+			spdlog::warn(_T("out of monitor"));
+			return false;
+		}
+
+		newPt.x = newRect.left;
+		newPt.y = newRect.top;
+		return true;
+	}
+	return false;
+}
+
 void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
 {
 	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
@@ -179,15 +293,6 @@ void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
 		wnd->SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
 		wnd->CenterWindow();
 	}
-}
-
-
-
-void MainWindowLayout::OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus)
-{
-	UNREFERENCED_PARAMETER(wnd);
-	UNREFERENCED_PARAMETER(bShow);
-	UNREFERENCED_PARAMETER(nStatus);
 }
 
 /**

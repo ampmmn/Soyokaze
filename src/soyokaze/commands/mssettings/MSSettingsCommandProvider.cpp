@@ -71,7 +71,7 @@ void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>
 	settingsFilePath.Append(_T("files\\ms-settings\\default.json"));
 
 	if (Path::FileExists(settingsFilePath) == false) {
-		spdlog::warn(_T("ms-settings settings list does not exist. {}"), (LPCTSTR)settingsFilePath);
+		spdlog::error(_T("ms-settings settings list does not exist. {}"), (LPCTSTR)settingsFilePath);
 		return;
 	}
 

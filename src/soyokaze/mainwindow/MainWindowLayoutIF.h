@@ -15,8 +15,11 @@ public:
 	virtual void UpdateInputStatus(LauncherInput* status, bool isForceUpdate) = 0;
 	// ウインドウ位置の復元
 	virtual void RestoreWindowPosition(CWnd* wnd, bool isForceReset) = 0;
-	virtual void OnShowWindow(CWnd* wnd, BOOL bShow, UINT nStatus) = 0;
+	// ウインドウがアクティブになるときのウインドウ位置を決める
+	virtual bool RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt) = 0;
+	// リサイズ時のサイズ計算
 	virtual void RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT side, LPRECT rect) = 0;
+	// リサイズ時の部品の再配置
 	virtual void RecalcControls(HWND hwnd, LauncherInput* status) = 0;
 };
 
