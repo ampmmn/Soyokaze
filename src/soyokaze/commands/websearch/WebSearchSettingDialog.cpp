@@ -14,6 +14,21 @@ namespace launcherapp {
 namespace commands {
 namespace websearch {
 
+struct SITE_ITEM {
+	int mID;
+	LPCTSTR mSiteName;
+	LPCTSTR mURL;
+};
+
+static std::vector<SITE_ITEM> SITE_TEMPLATE = {
+	{ 1, _T("&Google"), _T("https://www.google.com/search?q=$*") },
+	{ 2, _T("&Bing"), _T("https://www.bing.com/search?q=$*") },
+	{ 3, _T("&DuckDuckGo"), _T("https://duckduckgo.com/?t=h_&q=$*") },
+	{ 4, _T("&X"), _T("https://x.com/search?q=$*") },
+	{ 5, _T("&Amazon"), _T("https://www.amazon.co.jp/s?k=$*") },
+	{ 6, _T("&Youtube"), _T("https://www.youtube.com/results?search_query=$*") },
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +41,15 @@ struct SettingDialog::PImpl
 	void SetIcon(HICON hIcon)
 	{
 		mIcon = hIcon;
+	}
+
+	void InitSiteMenu()
+	{
+		mMenuForSiteBtn.CreatePopupMenu();
+		for (auto& item : SITE_TEMPLATE) {
+			mMenuForSiteBtn.InsertMenu((UINT)-1, 0, item.mID, item.mSiteName);
+		}
+		mSiteMenuBtn.m_hMenu = (HMENU)mMenuForSiteBtn;
 	}
 
 	// 設定情報
@@ -41,6 +65,10 @@ struct SettingDialog::PImpl
 
 	HICON mIcon = nullptr;
 	std::unique_ptr<IconLabel> mIconLabelPtr;
+
+	// URLの例
+	CMFCMenuButton mSiteMenuBtn;
+	CMenu mMenuForSiteBtn;
 
 	CString mHotKey;
 };
@@ -103,6 +131,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_URL, in->mParam.mURL);
 	DDX_Check(pDX, IDC_CHECK_ENABLESHORTCUT, in->mIsEnableShortcut);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
+	DDX_Control(pDX, IDC_BUTTON_MENU, in->mSiteMenuBtn);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
@@ -111,12 +140,15 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
+	ON_BN_CLICKED(IDC_BUTTON_MENU, OnSiteMenuBtnClicked)
 END_MESSAGE_MAP()
 
 
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->InitSiteMenu();
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->EnableIconChange();
@@ -264,6 +296,26 @@ LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 
 	return 0;
 }
+
+void SettingDialog::OnSiteMenuBtnClicked()
+{
+	UpdateData();
+
+	int id = in->mSiteMenuBtn.m_nMenuResult;
+	for (const auto& item : SITE_TEMPLATE) {
+		if (id != item.mID) {
+			continue;
+		}
+		in->mParam.mURL = item.mURL;
+		in->mParam.mDescription = item.mSiteName;
+		in->mParam.mDescription.Replace(_T("&"),_T(""));
+
+		UpdateStatus();
+		UpdateData(FALSE);
+		break;
+	}
+}
+
 
 }
 }

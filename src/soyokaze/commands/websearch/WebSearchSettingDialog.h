@@ -40,6 +40,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonHotKey();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
+	afx_msg void OnSiteMenuBtnClicked();
 
 protected:
 	struct PImpl;
