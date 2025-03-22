@@ -211,6 +211,9 @@
     <Filter Include="commands\share">
       <UniqueIdentifier>{79a971c8-8984-4743-ad5e-fcad21b5b6ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\mssettings">
+      <UniqueIdentifier>{7e3c363a-9dbc-4cf5-9cf0-9b56ad50bb4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1392,6 +1395,12 @@
     <ClInclude Include="commands\watchpath\PathWatcherItem.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
+    <ClInclude Include="commands\mssettings\MSSettingsCommandProvider.h">
+      <Filter>commands\mssettings</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\mssettings\MSSettingsCommand.h">
+      <Filter>commands\mssettings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2464,6 +2473,12 @@
     </ClCompile>
     <ClCompile Include="commands\watchpath\PathWatcherItem.cpp">
       <Filter>commands\watchpath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp">
+      <Filter>commands\mssettings</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\mssettings\MSSettingsCommand.cpp">
+      <Filter>commands\mssettings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

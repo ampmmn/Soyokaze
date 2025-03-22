@@ -1,0 +1,846 @@
+{
+  "ms-settings:workplace": {
+    "Category": "アカウント",
+    "Page": "職場または学校にアクセスする"
+  },
+  "ms-settings:emailandaccounts": {
+    "Category": "アカウント",
+    "Page": "メールとアカウント"
+  },
+  "ms-settings:otherusers": {
+    "Category": "アカウント",
+    "Page": "その他のユーザー"
+  },
+  "ms-settings:assignedaccess": {
+    "Category": "アカウント",
+    "Page": "キオスクの設定"
+  },
+  "ms-settings:signinoptions": {
+    "Category": "アカウント",
+    "Page": "サインイン オプション"
+  },
+  "ms-settings:sync": {
+    "Category": "アカウント",
+    "Page": "Windows バックアップ"
+  },
+  "ms-settings:signinoptions-launchfaceenrollment": {
+    "Category": "アカウント",
+    "Page": "Windows Hello セットアップ"
+  },
+  "ms-settings:yourinfo": {
+    "Category": "アカウント",
+    "Page": "ユーザーの情報"
+  },
+  "ms-settings:appsfeatures": {
+    "Category": "アプリ",
+    "Page": "インストールされているアプリ"
+  },
+  "ms-settings:appsfeatures-app": {
+    "Category": "アプリ",
+    "Page": "インストールされているアプリ",
+    "Enable": false
+  },
+  "ms-settings:appsforwebsites": {
+    "Category": "アプリ",
+    "Page": "Web サイト用のアプリ"
+  },
+  "ms-settings:defaultapps": {
+    "Category": "アプリ",
+    "Page": "既定のアプリ"
+  },
+  "ms-settings:defaultbrowsersettings": {
+    "Category": "アプリ",
+    "Page": "既定のブラウザー設定",
+		"Enable":false
+  },
+  "ms-settings:optionalfeatures": {
+    "Category": "システム",
+    "Page": "オプション機能"
+  },
+  "ms-settings:maps": {
+    "Category": "アプリ",
+    "Page": "オフライン マップ"
+  },
+  "ms-settings:startupapps": {
+    "Category": "アプリ",
+    "Page": "スタートアップ"
+  },
+  "ms-settings:videoplayback": {
+    "Category": "アプリ",
+    "Page": "ビデオ再生"
+  },
+  "ms-settings:controlcenter": {
+    "Category": "コントロール センター",
+    "Page": "コントロール センター",
+		"Enable": false
+  },
+  "ms-settings:cortana-notifications": {
+    "Category": "Cortana",
+    "Page": "[デバイス間での Cortana]",
+		"Enable": false
+  },
+  "ms-settings:cortana-moredetails": {
+    "Category": "Cortana",
+    "Page": "詳細",
+		"Enable": false
+  },
+  "ms-settings:cortana-permissions": {
+    "Category": "Cortana",
+    "Page": "アクセス許可と履歴",
+		"Enable": false
+  },
+  "ms-settings:cortana-windowssearch": {
+    "Category": "Cortana",
+    "Page": "Windows の検索",
+		"Enable": false
+  },
+  "ms-settings:cortana-language": {
+    "Category": "Cortana",
+    "Page": "Cortana に話す",
+		"Enable": false
+  },
+  "ms-settings:autoplay": {
+    "Category": "BlueToothとデバイス",
+    "Page": "自動再生"
+  },
+  "ms-settings:bluetooth": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "デバイス"
+  },
+  "ms-settings:connecteddevices": {
+    "Category": "デバイス",
+    "Page": "接続されたデバイス",
+		"Enable": false
+  },
+  "ms-settings:camera": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "カメラ"
+  },
+  "ms-settings:mousetouchpad": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "マウス"
+  },
+  "ms-settings:pen": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "ペンと Windows Ink"
+  },
+  "ms-settings:printers": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "プリンターとスキャナー"
+  },
+  "ms-settings:devices-touch": {
+    "Category": "デバイス",
+    "Page": "Touch",
+		"Enable": false
+  },
+  "ms-settings:devices-touchpad": {
+    "Category": "デバイス",
+    "Page": "Touchpad",
+		"Enable": false
+  },
+  "ms-settings:devicestyping-hwkbtextsuggestions": {
+    "Category": "デバイス",
+    "Page": "テキストの提案",
+		"Enable": false
+  },
+  "ms-settings:typing": {
+    "Category": "デバイス",
+    "Page": "Typing ",
+		"Enable": false
+  },
+  "ms-settings:usb": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "USB"
+  },
+  "ms-settings:wheel": {
+    "Category": "デバイス",
+    "Page": "Wheel",
+		"Enable": false
+  },
+  "ms-settings:mobile-devices": {
+    "Category": "Bluetoothとデバイス",
+    "Page": "モバイルデバイス"
+  },
+  "ms-settings:easeofaccess-audio": {
+    "Category": "アクセシビリティ",
+    "Page": "オーディオ"
+  },
+  "ms-settings:easeofaccess-closedcaptioning": {
+    "Category": "アクセシビリティ",
+    "Page": "字幕"
+  },
+  "ms-settings:easeofaccess-colorfilter": {
+    "Category": "アクセシビリティ",
+    "Page": "カラー フィルター"
+  },
+  "ms-settings:easeofaccess-display": {
+    "Category": "アクセシビリティ",
+    "Page": "表示"
+  },
+  "ms-settings:easeofaccess-eyecontrol": {
+    "Category": "アクセシビリティ",
+    "Page": "視線制御"
+  },
+  "ms-settings:fonts": {
+    "Category": "個人用設定",
+    "Page": "フォント"
+  },
+  "ms-settings:easeofaccess-highcontrast": {
+    "Category": "アクセシビリティ",
+    "Page": "コントラスト テーマ"
+  },
+  "ms-settings:easeofaccess-keyboard": {
+    "Category": "アクセシビリティ",
+    "Page": "キーボード"
+  },
+  "ms-settings:easeofaccess-magnifier": {
+    "Category": "アクセシビリティ",
+    "Page": "拡大鏡"
+  },
+  "ms-settings:easeofaccess-mouse": {
+    "Category": "アクセシビリティ",
+    "Page": "マウス"
+  },
+  "ms-settings:easeofaccess-mousepointer": {
+    "Category": "アクセシビリティ",
+    "Page": "マウス ポインターとタッチ"
+  },
+  "ms-settings:easeofaccess-narrator": {
+    "Category": "アクセシビリティ",
+    "Page": "ナレーター"
+  },
+  "ms-settings:easeofaccess-speechrecognition": {
+    "Category": "アクセシビリティ",
+    "Page": "音声認識"
+  },
+  "ms-settings:easeofaccess-cursor": {
+    "Category": "アクセシビリティ",
+    "Page": "テキスト カーソル"
+  },
+  "ms-settings:easeofaccess-visualeffects": {
+    "Category": "アクセシビリティ",
+    "Page": "視覚効果"
+  },
+  "ms-settings:extras": {
+    "Category": "追加",
+    "Page": "追加",
+		"Enable": false
+  },
+  "ms-settings:family-group": {
+    "Category": "アカウント",
+    "Page": "家族"
+  },
+  "ms-settings:gaming-gamebar": {
+    "Category": "ゲーム",
+    "Page": "Game Bar"
+  },
+  "ms-settings:gaming-gamedvr": {
+    "Category": "ゲーム",
+    "Page": "キャプチャ"
+  },
+  "ms-settings:gaming-gamemode": {
+    "Category": "ゲーム",
+    "Page": "ゲーム モード"
+  },
+  "ms-settings:quietmomentsgame": {
+    "Category": "ゲーム",
+    "Page": "ゲームの全画面表示の再生",
+		"Enable": false
+  },
+  "ms-settings:gaming-trueplay": {
+    "Category": "ゲーム",
+    "Page": "TruePlay",
+		"Enable": false
+  },
+  "ms-settings:holographic-audio": {
+    "Category": "ゲーム",
+    "Page": "オーディオと音声認識",
+		"Enable": false
+  },
+  "ms-settings:privacy-holographic-environment": {
+    "Category": "ゲーム",
+    "Page": "環境",
+		"Enable": false
+  },
+  "ms-settings:holographic-headset": {
+    "Category": "ゲーム",
+    "Page": "ヘッドセット ディスプレイ"
+  },
+  "ms-settings:holographic-management": {
+    "Category": "ゲーム",
+    "Page": "[アンインストール]",
+		"Enable": false
+  },
+  "ms-settings:holographic-startupandesktop": {
+    "Category": "ゲーム",
+    "Page": "スタートアップとデスクトップ",
+		"Enable": false
+  },
+  "ms-settings:network-status": {
+    "Category": "ネットワークとインターネット",
+    "Page": "ネットワークとインターネット"
+  },
+  "ms-settings:network-advancedsettings": {
+    "Category": "ネットワークとインターネット",
+    "Page": "ネットワークの詳細設定"
+  },
+  "ms-settings:network-airplanemode": {
+    "Category": "ネットワークとインターネット",
+    "Page": "機内モード"
+  },
+  "ms-settings:network-cellular": {
+    "Category": "ネットワークとインターネット",
+    "Page": "携帯ネットワークと SIM"
+  },
+  "ms-settings:network-dialup": {
+    "Category": "ネットワークとインターネット",
+    "Page": "ダイヤルアップ"
+  },
+  "ms-settings:network-directaccess": {
+    "Category": "ネットワークとインターネット",
+    "Page": "DirectAccess"
+  },
+  "ms-settings:network-ethernet": {
+    "Category": "ネットワークとインターネット",
+    "Page": "イーサネット"
+  },
+  "ms-settings:network-wifisettings": {
+    "Category": "ネットワークとインターネット",
+    "Page": "既知のネットワークの管理"
+  },
+  "ms-settings:network-mobilehotspot": {
+    "Category": "ネットワークとインターネット",
+    "Page": "モバイルホットスポット"
+  },
+  "ms-settings:network-proxy": {
+    "Category": "ネットワークとインターネット",
+    "Page": "プロキシ"
+  },
+  "ms-settings:network-vpn": {
+    "Category": "ネットワークとインターネット",
+    "Page": "VPN"
+  },
+  "ms-settings:network-wifi": {
+    "Category": "ネットワークとインターネット",
+    "Page": "Wi-Fi"
+  },
+  "ms-settings:wifi-provisioning": {
+    "Category": "ネットワークとインターネット",
+    "Page": "Wi-Fi プロビジョニング"
+  },
+  "ms-settings:personalization-background": {
+    "Category": "個人用設定",
+    "Page": "背景"
+  },
+  "ms-settings:personalization-start-places": {
+    "Category": "個人用設定",
+    "Page": "スタート > フォルダー"
+  },
+  "ms-settings:personalization-colors": {
+    "Category": "個人用設定",
+    "Page": "色"
+  },
+  "ms-settings:personalization-textinput-copilot-hardwarekey": {
+    "Category": "個人用設定",
+    "Page": "キーボードの Copilot キーをカスタマイズする"
+  },
+  "ms-settings:personalization-lighting": {
+    "Category": "個人用設定",
+    "Page": "動的ライティング"
+  },
+  "ms-settings:personalization-glance": {
+    "Category": "個人用設定",
+    "Page": "概要"
+  },
+  "ms-settings:lockscreen": {
+    "Category": "個人用設定",
+    "Page": "ロック画面"
+  },
+  "ms-settings:personalization-navbar": {
+    "Category": "個人用設定",
+    "Page": "ナビゲーション バー"
+  },
+  "ms-settings:personalization": {
+    "Category": "個人用設定",
+    "Page": "個人用設定 "
+  },
+  "ms-settings:personalization-start": {
+    "Category": "個人用設定",
+    "Page": "スタート"
+  },
+  "ms-settings:taskbar": {
+    "Category": "システム",
+    "Page": "タスク バー"
+  },
+  "ms-settings:personalization-textinput": {
+    "Category": "個人用設定",
+    "Page": "テキスト入力"
+  },
+  "ms-settings:personalization-touchkeyboard": {
+    "Category": "個人用設定",
+    "Page": "タッチ キーボード"
+  },
+  "ms-settings:themes": {
+    "Category": "個人用設定",
+    "Page": "テーマ"
+  },
+  "ms-settings:deviceusage": {
+    "Category": "個人用設定",
+    "Page": "デバイスの使用状況"
+  },
+  "ms-settings:privacy-accessoryapps": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "アクセサリ用アプリ"
+  },
+  "ms-settings:privacy-accountinfo": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "アカウント情報"
+  },
+  "ms-settings:privacy-activityhistory": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "アクティビティの履歴"
+  },
+  "ms-settings:privacy-advertisingid": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "広告識別子"
+  },
+  "ms-settings:privacy-appdiagnostics": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "アプリの診断"
+  },
+  "ms-settings:privacy-automaticfiledownloads": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ファイルの自動ダウンロード"
+  },
+  "ms-settings:privacy-backgroundapps": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "バックグラウンド アプリ"
+  },
+  "ms-settings:privacy-backgroundspatialperception": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "バックグラウンドでの空間認識"
+  },
+  "ms-settings:privacy-calendar": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "カレンダー"
+  },
+  "ms-settings:privacy-callhistory": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "通話履歴"
+  },
+  "ms-settings:privacy-webcam": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "カメラ"
+  },
+  "ms-settings:privacy-contacts": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "連絡先"
+  },
+  "ms-settings:privacy-documents": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ドキュメント"
+  },
+  "ms-settings:privacy-downloadsfolder": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ダウンロード フォルダー"
+  },
+  "ms-settings:privacy-email": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "電子メール"
+  },
+  "ms-settings:privacy-eyetracker": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "アイ トラッカー"
+  },
+  "ms-settings:privacy-feedback": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "診断とフィードバック"
+  },
+  "ms-settings:privacy-broadfilesystemaccess": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ファイル システム"
+  },
+  "ms-settings:privacy": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "全般"
+  },
+  "ms-settings:privacy-graphicscaptureprogrammatic": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "スクリーンショットとアプリ"
+  },
+  "ms-settings:privacy-speechtyping": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "手書き入力と入力の個人用設定"
+  },
+  "ms-settings:privacy-location": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "場所"
+  },
+  "ms-settings:privacy-messaging": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "メッセージング"
+  },
+  "ms-settings:privacy-microphone": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "マイク"
+  },
+  "ms-settings:privacy-motion": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "モーション"
+  },
+  "ms-settings:privacy-musiclibrary": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "音楽ライブラリ"
+  },
+  "ms-settings:privacy-notifications": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "通知"
+  },
+  "ms-settings:privacy-customdevices": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "その他のデバイス"
+  },
+  "ms-settings:privacy-phonecalls": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "電話をかける"
+  },
+  "ms-settings:privacy-pictures": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ピクチャ"
+  },
+  "ms-settings:privacy-radios": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "無線"
+  },
+  "ms-settings:privacy-speech": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "音声認識"
+  },
+  "ms-settings:privacy-tasks": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "タスク"
+  },
+  "ms-settings:privacy-videos": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "ビデオ"
+  },
+  "ms-settings:privacy-voiceactivation": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "音声によるアクティブ化"
+  },
+  "ms-settings:search": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "Windows検索"
+  },
+  "ms-settings:search-moredetails": {
+    "Category": "検索",
+    "Page": "詳細の検索",
+		"Enable": false
+  },
+  "ms-settings:search-permissions": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "検索アクセス許可"
+  },
+  "ms-settings:apps-volume": {
+    "Category": "システム",
+    "Page": "音量ミキサー"
+  },
+  "ms-settings:sound": {
+    "Category": "システム",
+    "Page": "サウンド"
+  },
+  "ms-settings:sound-devices": {
+    "Category": "システム",
+    "Page": "すべてのサウンドデバイス"
+  },
+  "ms-settings:sound-defaultinputproperties": {
+    "Category": "サウンド",
+    "Page": "既定のマイク",
+		"Enable": false
+  },
+  "ms-settings:sound-defaultoutputproperties": {
+    "Category": "サウンド",
+    "Page": "既定のオーディオ出力",
+		"Enable": false
+  },
+  "ms-settings:sound-properties": {
+    "Category": "サウンド",
+    "Page": "オーディオ デバイスのプロパティ",
+		"Enable": false
+  },
+  "ms-settings:surfacehub-accounts": {
+    "Category": "Surface Hub",
+    "Page": "アカウント"
+  },
+  "ms-settings:surfacehub-sessioncleanup": {
+    "Category": "Surface Hub",
+    "Page": "セッションのクリーンアップ"
+  },
+  "ms-settings:surfacehub-calling": {
+    "Category": "Surface Hub",
+    "Page": "チーム会議"
+  },
+  "ms-settings:surfacehub-devicemanagement": {
+    "Category": "Surface Hub",
+    "Page": "チーム デバイス管理"
+  },
+  "ms-settings:surfacehub-welcome": {
+    "Category": "Surface Hub",
+    "Page": "[ようこそ] 画面"
+  },
+  "ms-settings:about": {
+    "Category": "システム",
+    "Page": "バージョン情報"
+  },
+  "ms-settings:display-advanced": {
+    "Category": "システム",
+    "Page": "ディスプレイ"
+  },
+  "ms-settings:batterysaver": {
+    "Category": "システム",
+    "Page": "電源"
+  },
+  "ms-settings:batterysaver-settings": {
+    "Category": "システム",
+    "Page": "バッテリー節約機能の設定",
+		"Enable": false
+  },
+  "ms-settings:batterysaver-usagedetails": {
+    "Category": "システム",
+    "Page": "バッテリーの使用状況"
+  },
+  "ms-settings:clipboard": {
+    "Category": "システム",
+    "Page": "クリップボード"
+  },
+  "ms-settings:display": {
+    "Category": "システム",
+    "Page": "表示",
+		"Enable": false
+  },
+  "ms-settings:savelocations": {
+    "Category": "システム",
+    "Page": "ストレージ > 新しいコンテンツの保存先"
+  },
+  "ms-settings:screenrotation": {
+    "Category": "システム",
+    "Page": "表示",
+		"Enable": false
+  },
+  "ms-settings:quietmomentspresentation": {
+    "Category": "システム",
+    "Page": "ディスプレイの複製"
+  },
+  "ms-settings:quietmomentsscheduled": {
+    "Category": "システム",
+    "Page": "これらの時間帯"
+  },
+  "ms-settings:deviceencryption": {
+    "Category": "システム",
+    "Page": "暗号化"
+  },
+  "ms-settings:energyrecommendations": {
+    "Category": "システム",
+    "Page": "エネルギーに関する推奨事項"
+  },
+  "ms-settings:quiethours": {
+    "Category": "システム",
+    "Page": "フォーカス"
+  },
+  "ms-settings:display-advancedgraphics": {
+    "Category": "システム",
+    "Page": "ディスプレイ > グラフィック"
+  },
+  "ms-settings:display-advancedgraphics-default": {
+    "Category": "システム",
+    "Page": "グラフィックスの既定の設定"
+  },
+  "ms-settings:multitasking": {
+    "Category": "システム",
+    "Page": "マルチタスク"
+  },
+  "ms-settings:nightlight": {
+    "Category": "システム",
+    "Page": "夜間モード"
+  },
+  "ms-settings:project": {
+    "Category": "システム",
+    "Page": "この PC へのプロジェクション"
+  },
+  "ms-settings:crossdevice": {
+    "Category": "システム",
+    "Page": "近距離共有"
+  },
+  "ms-settings:tabletmode": {
+    "Category": "システム",
+    "Page": "タブレット モード"
+  },
+  "ms-settings:notifications": {
+    "Category": "システム",
+    "Page": "通知"
+  },
+  "ms-settings:remotedesktop": {
+    "Category": "システム",
+    "Page": "リモート デスクトップ"
+  },
+  "ms-settings:phone": {
+    "Category": "システム",
+    "Page": "電話"
+  },
+  "ms-settings:powersleep": {
+    "Category": "システム",
+    "Page": "電源とスリープ",
+		"Enable": false
+  },
+  "ms-settings:presence": {
+    "Category": "システム",
+    "Page": "プレゼンス センシング"
+  },
+  "ms-settings:storagesense": {
+    "Category": "システム",
+    "Page": "ストレージ"
+  },
+  "ms-settings:storagepolicies": {
+    "Category": "システム",
+    "Page": "ストレージ センサー"
+  },
+  "ms-settings:storagerecommendations": {
+    "Category": "システム",
+    "Page": "記憶域の推奨事項",
+		"Enable": false
+  },
+  "ms-settings:disksandvolumes": {
+    "Category": "システム",
+    "Page": "ディスクとボリューム"
+  },
+  "ms-settings:dateandtime": {
+    "Category": "時刻と言語",
+    "Page": "日付と時刻"
+  },
+  "ms-settings:regionlanguage-jpnime": {
+    "Category": "時刻と言語",
+    "Page": "Microsoft IME"
+  },
+  "ms-settings:regionformatting": {
+    "Category": "時刻と言語",
+    "Page": "地域と言語"
+  },
+  "ms-settings:keyboard": {
+    "Category": "時刻と言語",
+    "Page": "言語",
+		"Enable": false
+  },
+  "ms-settings:regionlanguage-chsime-pinyin": {
+    "Category": "時刻と言語",
+    "Page": "Pinyin IME の設定",
+		"Enable": false
+  },
+  "ms-settings:speech": {
+    "Category": "時刻と言語",
+    "Page": "音声認識"
+  },
+  "ms-settings:regionlanguage-chsime-wubi": {
+    "Category": "時刻と言語",
+    "Page": "Wubi IME の設定",
+		"Enable": false
+  },
+  "ms-settings:regionlanguage-adddisplaylanguage": {
+    "Category": "時刻と言語",
+    "Page": "表示言語の追加",
+		"Enable": false
+  },
+  "ms-settings:regionlanguage-languageoptions": {
+    "Category": "時刻と言語",
+    "Page": "言語オプション",
+		"Enable": false
+  },
+  "ms-settings:regionlanguage-setdisplaylanguage": {
+    "Category": "時刻と言語",
+    "Page": "表示言語の設定",
+		"Enable": false
+  },
+  "ms-settings:activation": {
+    "Category": "システム",
+    "Page": "ライセンス認証"
+  },
+  "ms-settings:backup": {
+    "Category": "アカウント",
+    "Page": "Windows バックアップ"
+  },
+  "ms-settings:delivery-optimization": {
+    "Category": "Windows Update",
+    "Page": "配信の最適化"
+  },
+  "ms-settings:findmydevice": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "デバイスの検索"
+  },
+  "ms-settings:developers": {
+    "Category": "システム",
+    "Page": "開発者向け"
+  },
+  "ms-settings:recovery": {
+    "Category": "システム",
+    "Page": "回復"
+  },
+  "ms-settings:signinoptions-launchsecuritykeyenrollment": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "セキュリティ キーの登録の起動"
+  },
+  "ms-settings:troubleshoot": {
+    "Category": "システム",
+    "Page": "トラブルシューティング"
+  },
+  "ms-settings:windowsdefender": {
+    "Category": "プライバシーとセキュリティ",
+    "Page": "Windows セキュリティ"
+  },
+  "ms-settings:windowsinsider": {
+    "Category": "Windows Update",
+    "Page": "Windows Insider Program"
+  },
+  "ms-settings:windowsupdate": {
+    "Category": "Windows Update",
+    "Page": "Windows Update"
+  },
+  "ms-settings:windowsupdate-activehours": {
+    "Category": "Windows Update",
+    "Page": "高度なオプション"
+  },
+  "ms-settings:windowsupdate-options": {
+    "Category": "Windows Update",
+    "Page": "詳細オプション"
+  },
+  "ms-settings:windowsupdate-optionalupdates": {
+    "Category": "Windows Update",
+    "Page": "オプションの更新プログラム"
+  },
+  "ms-settings:windowsupdate-restartoptions": {
+    "Category": "Windows Update",
+    "Page": "再起動オプション"
+  },
+  "ms-settings:windowsupdate-seekerondemand": {
+    "Category": "Windows Update",
+    "Page": "Windows Update - オンデマンドの Seeker",
+		"Enable": false
+  },
+  "ms-settings:windowsupdate-history": {
+    "Category": "Windows Update",
+    "Page": "更新の履歴"
+  },
+  "ms-settings:workplace-provisioning": {
+    "Category": "ユーザー アカウント",
+    "Page": "プロビジョニング",
+		"Enable": false
+  },
+  "ms-settings:workplace-repairtoken": {
+    "Category": "ユーザー アカウント",
+    "Page": "修復トークン",
+		"Enable": false
+  },
+  "ms-settings:windowsanywhere": {
+    "Category": "ユーザー アカウント",
+    "Page": "Windows Anywhere",
+		"Enable": false
+  }
+}

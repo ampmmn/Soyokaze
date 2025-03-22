@@ -473,6 +473,8 @@
     <ClInclude Include="commands\mmc\MMCCommandProvider.h" />
     <ClInclude Include="commands\mmc\MMCSnapin.h" />
     <ClInclude Include="commands\mmc\MMCSnapins.h" />
+    <ClInclude Include="commands\mssettings\MSSettingsCommand.h" />
+    <ClInclude Include="commands\mssettings\MSSettingsCommandProvider.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
@@ -871,6 +873,8 @@
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">false</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="commands\mssettings\MSSettingsCommand.cpp" />
+    <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />

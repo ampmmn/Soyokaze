@@ -26,6 +26,8 @@ public:
 	BOOL mIsEnableUWP;
 	// MMCスナップイン選択機能
 	BOOL mIsEnableMMCSnapin;
+	// Windowsの設定(ms-settings)選択機能
+	BOOL mIsEnableMSSettings;
 	// Outlookメール選択機能(Inboxのみ)
 	BOOL mIsEnableOutlookMail;
 

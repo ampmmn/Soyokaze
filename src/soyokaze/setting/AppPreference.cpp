@@ -777,6 +777,12 @@ bool AppPreference::IsEnableControlPanel()
 	return in->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 }
 
+// ms-settingsのアイテム検索を使用するか
+bool AppPreference::IsEnableMSSettings()
+{
+	return in->Get(_T("Soyokaze:IsEnableMSSettings"), true);
+}
+
 // スタートメニュー/最近使ったファイルのアイテム検索を使用するか
 bool AppPreference::IsEnableSpecialFolder()
 {

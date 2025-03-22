@@ -123,6 +123,8 @@ public:
 
 	// コントロールパネルのアイテム検索を使用するか
 	bool IsEnableControlPanel();
+	// ms-settingsのアイテム検索を使用するか
+	bool IsEnableMSSettings();
 
 	// スタートメニュー/最近使ったファイルのアイテム検索を使用するか
 	bool IsEnableSpecialFolder();

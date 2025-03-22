@@ -254,7 +254,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,119,253,10
     CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,132,253,10
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,151,282,76
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,151,282,96
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,165,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
@@ -263,6 +263,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,197,192,10
     CONTROL         "MMCスナップインを候補として表示する(&S)",IDC_CHECK_ENABLE_MMCSNAPINS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,213,144,10
+    CONTROL         "Windowsの設定を候補として表示する(&I)",IDC_CHECK_ENABLE_MSSETTINGS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,229,143,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
