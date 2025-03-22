@@ -7,6 +7,7 @@
 #include "utility/SQLite3Database.h"
 #include "utility/SHA1.h"
 #include "utility/Path.h"
+#include <mutex>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,6 +45,7 @@ struct ClipboardHistoryDB::PImpl
 	int mCountLimit = 1024; ///< カウント制限
 
 	std::unique_ptr<SQLite3Database> mDB; ///< SQLite3 データベース
+	std::mutex mMutex;
 };
 
 /**
@@ -56,6 +58,8 @@ void ClipboardHistoryDB::PImpl::Query(
 	ResultList& result
 )
 {
+	std::lock_guard<std::mutex> lock(mMutex);
+
 	// 得た検索ワードからsqlite3のクエリ文字列を生成する
 	static LPCTSTR basePart = _T("SELECT DISTINCT APPENDDATE,DATA from TBL_CLIPHISTORY where ");
 	CString queryStr(basePart);
@@ -141,6 +145,8 @@ ClipboardHistoryDB::~ClipboardHistoryDB()
  */
 bool ClipboardHistoryDB::Load(int numResults, int sizeLimit, int countLimit)
 {
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
 	in->mNumOfResults = numResults;
 	in->mSizeLimit = sizeLimit;
 	in->mCountLimit = countLimit;
@@ -180,6 +186,7 @@ bool ClipboardHistoryDB::Load(int numResults, int sizeLimit, int countLimit)
  */
 bool ClipboardHistoryDB::Unload()
 {
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	if (in->mDB.get()) {
 		in->mDB->Close();
 		in->mDB.reset();
@@ -252,10 +259,11 @@ void ClipboardHistoryDB::UpdateClipboard(LPCTSTR data)
 	                (LPCTSTR)idStr, timeVal, (LPCTSTR)escapedData);
 
 	// データベースに挿入
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	int n = in->mDB->Query(queryStr, nullptr, nullptr);
 	// 重複した場合はINSERTに失敗するのでAPPENDDATEを更新
 	if (n != 0) {
-		queryStr.Format(_T("UPDATE TBL_CLIPHISTORY SET APPENDDATE = %lld WHERE ID = '%s';"), (LPCTSTR)idStr, timeVal);
+		queryStr.Format(_T("UPDATE TBL_CLIPHISTORY SET APPENDDATE = %lld WHERE ID = '%s';"), timeVal, (LPCTSTR)idStr);
 		in->mDB->Query(queryStr, nullptr, nullptr);
 	}
 }
