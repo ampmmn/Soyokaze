@@ -214,6 +214,9 @@
     <Filter Include="commands\mssettings">
       <UniqueIdentifier>{7e3c363a-9dbc-4cf5-9cf0-9b56ad50bb4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\clipboardhistory">
+      <UniqueIdentifier>{55509fd4-bbca-4f97-bf79-ebe1e18c3690}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1401,6 +1404,27 @@
     <ClInclude Include="commands\mssettings\MSSettingsCommand.h">
       <Filter>commands\mssettings</Filter>
     </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventListener.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryCommand.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryDB.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\Base64.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2479,6 +2503,24 @@
     </ClCompile>
     <ClCompile Include="commands\mssettings\MSSettingsCommand.cpp">
       <Filter>commands\mssettings</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryCommand.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryDB.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\Base64.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

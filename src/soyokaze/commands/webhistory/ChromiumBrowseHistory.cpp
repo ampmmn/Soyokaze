@@ -4,7 +4,6 @@
 #include "utility/Path.h"
 #include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"
-#include "utility/Path.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

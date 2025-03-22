@@ -153,6 +153,7 @@
 #define IDD_FILTER_AFTER_COMMAND        246
 #define IDD_FILTER_AFTER_CLIPBOARD      247
 #define IDD_FILTER_PRE_CONSTANT         248
+#define IDD_APPSETTING_CLIPBOARD        249
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -208,6 +209,7 @@
 #define IDC_EDIT_HOTKEY_DOWN            1023
 #define IDC_EDIT_MESSAGE2               1023
 #define IDC_EDIT_EXCLUDEFILTER          1023
+#define IDC_EDIT_EXCLUDE                1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_SOUNDEXECUTE           1024
 #define IDC_EDIT_HOTKEY_ENTER           1024
@@ -480,6 +482,11 @@
 #define IDC_SYSLINK_LOGDIR              1208
 #define IDC_STATIC_RUNASONLY            1209
 #define IDC_STATIC_RUNASONLY2           1210
+#define IDC_EDIT_PREFIX                 1211
+#define IDC_EDIT_SIZELIMIT              1212
+#define IDC_EDIT_COUNTLIMIT             1213
+#define IDC_EDIT_PREFIX2                1214
+#define IDC_EDIT_NUMOFRESULTS           1214
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -488,7 +495,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        249
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1211
+#define _APS_NEXT_CONTROL_VALUE         1212
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

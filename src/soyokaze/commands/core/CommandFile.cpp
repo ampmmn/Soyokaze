@@ -3,6 +3,7 @@
 #include "commands/core/CommandFile.h"
 #include "commands/core/CommandFileEntry.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "utility/Base64.h"
 #include <wincrypt.h>
 #include <map>
 #include <set>
@@ -12,9 +13,9 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace utility::base64;
+
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-
-
 
 static CString UnescapeString(const CString& s)
 {
@@ -25,18 +26,6 @@ static CString UnescapeString(const CString& s)
 }
 
 
-static std::vector<uint8_t> DecodeBase64(const CString& src)
-{
-	DWORD dstLen = 0;
-	if (CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, nullptr, &dstLen, nullptr, nullptr ) == FALSE) {
-		return std::vector<uint8_t>();
-	}
-
-	std::vector<uint8_t> dst(dstLen);
-	CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, &dst.front(), &dstLen, nullptr, nullptr);
-
-	return dst;
-}
 
 struct CommandFile::PImpl
 {
@@ -277,7 +266,8 @@ bool CommandFile::Load()
 			curEntry->Set(strKey, false);
 		}
 		else if (strValue.Left(7) == _T("stream:")) {
-			auto stm = DecodeBase64(strValue.Mid(7));
+			std::vector<uint8_t> stm;
+			DecodeBase64(strValue.Mid(7), stm);
 			curEntry->SetBytes(strKey, stm.data(),stm.size());
 		}
 		else if (std::regex_match(pat, regDouble)) {

@@ -425,6 +425,12 @@
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\builtin\EditCandidateCommand.h" />
     <ClInclude Include="commands\builtin\RestartCommand.h" />
+    <ClInclude Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryCommand.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryDB.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventListener.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
@@ -771,6 +777,7 @@
     <ClInclude Include="tasktray/TaskTray.h" />
     <ClInclude Include="utility\Accessibility.h" />
     <ClInclude Include="utility\AES.h" />
+    <ClInclude Include="utility\Base64.h" />
     <ClInclude Include="utility\CharConverter.h" />
     <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
@@ -821,6 +828,11 @@
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\builtin\EditCandidateCommand.cpp" />
     <ClCompile Include="commands\builtin\RestartCommand.cpp" />
+    <ClCompile Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryCommand.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryDB.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
@@ -1159,6 +1171,7 @@
     <ClCompile Include="tasktray/TaskTray.cpp" />
     <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\AES.cpp" />
+    <ClCompile Include="utility\Base64.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\DemotedProcessToken.cpp" />
     <ClCompile Include="utility\HWNDRect.cpp" />

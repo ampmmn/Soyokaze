@@ -111,7 +111,7 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 	CString str;
 	if (in->mIsFirst) {
 		in->mConv.Convert(reg, str);
-		in->mRegExp = tregex(str);
+		in->mRegExp = tregex(str, std::regex_constants::icase);
 		in->mIsFirst = false;
 	}
 

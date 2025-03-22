@@ -956,6 +956,42 @@ COLORREF AppPreference::GetListBackgroundHighlightColor()
 	return (COLORREF)in->Get(_T("CurrentColor:ListHighlightBackground"), 0);
 }
 
+bool AppPreference::IsEnableClipboardHistory()
+{
+	return in->Get(_T("ClipboardHistory:IsEnable"), false);
+}
+
+CString AppPreference::GetClipboardHistoryPrefix()
+{
+	return in->Get(_T("ClipboardHistory:Prefix"), _T("cb"));
+}
+
+int AppPreference::GetClipboardHistoryNumberOfResults()
+{
+	return in->Get(_T("ClipboardHistory:NumOfResults"), 16);
+}
+
+int AppPreference::GetClipboardHistorySizeLimit()
+{
+	return in->Get(_T("ClipboardHistory:SizeLimit"), 64);
+}
+
+int AppPreference::GetClipboardHistoryCountLimit()
+{
+	return in->Get(_T("ClipboardHistory:CountLimit"), 1000);
+}
+
+int AppPreference::GetClipboardHistoryInterval()
+{
+	return in->Get(_T("ClipboardHistory:Interval"), 500);
+}
+
+CString AppPreference::GetClipboardHistoryExcludePattern()
+{
+	return in->Get(_T("ClipboardHistory:ExcludePattern"), _T(""));
+}
+
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

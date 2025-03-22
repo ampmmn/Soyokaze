@@ -185,6 +185,15 @@ public:
 	COLORREF GetListTextHighlightColor();
 	COLORREF GetListBackgroundHighlightColor();
 
+	// クリップボード履歴
+	bool IsEnableClipboardHistory();
+	CString GetClipboardHistoryPrefix();
+	int GetClipboardHistoryNumberOfResults();
+	int GetClipboardHistorySizeLimit();
+	int GetClipboardHistoryCountLimit();
+	int GetClipboardHistoryInterval();
+	CString GetClipboardHistoryExcludePattern();
+
 	// ログレベル
 	int GetLogLevel();
 	// 性能ログを出力するか?

@@ -1338,6 +1338,30 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,7,117,251,8
 END
 
+IDD_APPSETTING_CLIPBOARD DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "【試作】クリップボード履歴",IDC_STATIC,11,7,282,218
+    CONTROL         "有効にする(&C)",IDC_CHECK_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,22,61,10
+    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,37,51,8
+    EDITTEXT        IDC_EDIT_PREFIX,88,34,52,14,ES_AUTOHSCROLL
+    LTEXT           "検索結果表示件数(&N):",IDC_STATIC,33,54,78,8
+    EDITTEXT        IDC_EDIT_NUMOFRESULTS,38,64,52,14,ES_AUTOHSCROLL
+    LTEXT           "登録時の1件あたり上限サイズ(&L):",IDC_STATIC,33,84,108,8
+    EDITTEXT        IDC_EDIT_SIZELIMIT,38,95,52,14,ES_AUTOHSCROLL
+    LTEXT           "(KB)",IDC_STATIC,93,98,14,8
+    LTEXT           "履歴件数の上限(&T):",IDC_STATIC,151,84,68,8
+    EDITTEXT        IDC_EDIT_COUNTLIMIT,155,95,52,14,ES_AUTOHSCROLL
+    LTEXT           "(件数)",IDC_STATIC,210,98,28,8
+    LTEXT           "次の記録を有効にするまでの間隔(&I):",IDC_STATIC,33,118,118,8
+    EDITTEXT        IDC_EDIT_INTERVAL,155,115,52,14,ES_AUTOHSCROLL
+    LTEXT           "(msec.)",IDC_STATIC,212,118,28,8
+    LTEXT           "無視するパターン(&E):",IDC_STATIC,33,135,66,8
+    EDITTEXT        IDC_EDIT_EXCLUDE,38,147,211,52,ES_AUTOHSCROLL
+    LTEXT           "(正規表現で指定します)",IDC_STATIC,117,135,89,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1845,6 +1869,14 @@ BEGIN
         RIGHTMARGIN, 258
         TOPMARGIN, 7
         BOTTOMMARGIN, 145
+    END
+
+    IDD_APPSETTING_CLIPBOARD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2680,6 +2712,11 @@ BEGIN
     100, 0, 0, 0,
     100, 0, 0, 0,
     0, 0, 100, 0
+END
+
+IDD_APPSETTING_CLIPBOARD AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

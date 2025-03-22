@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "CommandFileEntry.h"
+#include "utility/Base64.h"
 #include <map>
-#include <wincrypt.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace utility::base64;
 
 static CString EscapeString(const CString& s)
 {
@@ -13,23 +15,6 @@ static CString EscapeString(const CString& s)
 	ret.Replace(_T("\r"), _T("%0D"));
 	ret.Replace(_T("\n"), _T("%0A"));
 	return ret;
-}
-
-static CString EncodeBase64(const std::vector<uint8_t>& stm)
-{
-	// 長さを調べる
-	DWORD dstLen = 0;
-	if (stm.size() == 0) {
-		return CString();
-	}
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &dstLen);
-
-	// 変換する
-	CString dstStr;
-	CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, dstStr.GetBuffer(dstLen+1), &dstLen );
-	dstStr.ReleaseBuffer();
-
-	return dstStr;
 }
 
 enum {
