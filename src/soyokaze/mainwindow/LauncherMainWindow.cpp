@@ -318,21 +318,24 @@ LRESULT LauncherMainWindow::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam
 {
 	SPDLOG_DEBUG(_T("start"));
 
-	LPCTSTR text = (LPCTSTR)lParam;
-	if (text == nullptr) {
-		SPDLOG_WARN(_T("text is null"));
+	bool isWaitSync = (wParam == 1);
+
+	if(isWaitSync) {
+		// 入力欄にテキストを入力して、検索をまって、先頭の候補を実行する
+		OnUserMessageSetText(0, lParam);
+		OnOK();
 		return 0;
 	}
-
-	bool isPasteOnly = (wParam == 1);
-
-	if(isPasteOnly) {
-		ExecuteCommand(text);
-	}
 	else {
+		// 単にテキストに合致するコマンドを実行するだけ
+		LPCTSTR text = (LPCTSTR)lParam;
+		if (text == nullptr) {
+			SPDLOG_WARN(_T("text is null"));
+			return 0;
+		}
 		ExecuteCommand(text);
+		return 0;
 	}
-	return 0;
 }
 
 /**

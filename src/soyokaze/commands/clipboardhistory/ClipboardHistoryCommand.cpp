@@ -4,6 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
+#include "utility/StringUtil.h"
 #include "resource.h"
 #include <vector>
 
@@ -27,19 +28,6 @@ struct ClipboardHistoryCommand::PImpl
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ClipboardHistoryCommand)
 
-static CString GetFirstLine(const CString& str)
-{
-	int pos = 0;
-	pos	= str.Find(_T("\r\n"));
-	if (pos == -1) {
-		pos	= str.Find(_T("\n"));
-		if (pos == -1) {
-			return str;
-		}
-	}
-	return str.Left(pos);
-}
-
 ClipboardHistoryCommand::ClipboardHistoryCommand(
  	const CString& prefix,
 	uint64_t appendDate,
@@ -52,8 +40,17 @@ ClipboardHistoryCommand::ClipboardHistoryCommand(
 	in->mPrefix = prefix;
 	in->mData = data;
 
-	this->mDescription = GetFirstLine(data);
+	FILETIME sysFt;
+	sysFt.dwHighDateTime = appendDate >> 32;
+	sysFt.dwLowDateTime = appendDate & 0xFFFFFFFF;
+	SYSTEMTIME st;
+	FILETIME ft;
+	FileTimeToLocalFileTime(&sysFt, &ft);
+	FileTimeToSystemTime(&ft, &st);
 
+	this->mDescription.Format(_T("%04d-%02d-%02d %02d:%02d %s"), 
+			st.wYear,  st.wMonth, st.wDay, st.wHour, st.wMinute,
+			(LPCTSTR)launcherapp::utility::GetFirstLine(data));
 }
 
 ClipboardHistoryCommand::~ClipboardHistoryCommand()
@@ -67,7 +64,7 @@ CString ClipboardHistoryCommand::GetName()
 
 CString ClipboardHistoryCommand::GetGuideString()
 {
-	return _T("Enter:コピー");
+	return _T("Enter:コピー Shift-Enter:コピーとペースト");
 }
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()
@@ -82,12 +79,41 @@ BOOL ClipboardHistoryCommand::Execute(Parameter* param)
 	// 値をコピー
 	Clipboard::Copy(in->mData);
 
+	uint32_t state = GetModifierKeyState(param, MASK_ALL);
+
+	bool isShiftKeyPressed = state == MASK_SHIFT;
+	if (isShiftKeyPressed) {
+		// Shift-Insertキー押下による疑似的なペースト
+    INPUT inputs[4] = {0};
+
+    // Shiftキー押下
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift
+
+    // Insertキー押下
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = VK_INSERT; // 仮想キーコード: Insert
+
+    // Insertキー離上
+    inputs[2].type = INPUT_KEYBOARD;
+    inputs[2].ki.wVk = VK_INSERT;
+    inputs[2].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
+    // Shiftキー離上
+    inputs[3].type = INPUT_KEYBOARD;
+    inputs[3].ki.wVk = VK_SHIFT;
+    inputs[3].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
+    // イベント送信
+    SendInput(4, inputs, sizeof(INPUT));
+	}
+
 	return TRUE;
 }
 
 HICON ClipboardHistoryCommand::GetIcon()
 {
-	return IconLoader::Get()->GetImageResIcon(-5301);
+	return IconLoader::Get()->GetShell32Icon(-16763);
 }
 
 launcherapp::core::Command*

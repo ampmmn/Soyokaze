@@ -411,6 +411,11 @@
     <ClInclude Include="commands\activate_worksheet\CalcWorkSheets.h" />
     <ClInclude Include="commands\activate_worksheet\ExcelWorkSheets.h" />
     <ClInclude Include="commands\activate_worksheet\WorksheetCommand.h" />
+    <ClInclude Include="commands\alias\AliasCommand.h" />
+    <ClInclude Include="commands\alias\AliasCommandEditDialog.h" />
+    <ClInclude Include="commands\alias\AliasCommandEditor.h" />
+    <ClInclude Include="commands\alias\AliasCommandParam.h" />
+    <ClInclude Include="commands\alias\AliasCommandProvider.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandEditor.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
@@ -794,6 +799,7 @@
     <ClInclude Include="utility\Sound.h" />
     <ClInclude Include="utility\SQLite3Database.h" />
     <ClInclude Include="utility\SQLite3Wrapper.h" />
+    <ClInclude Include="utility\StringUtil.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
     <ClInclude Include="mainwindow/WindowTransparency.h" />
@@ -814,6 +820,10 @@
     <ClCompile Include="commands\activate_worksheet\CalcWorkSheets.cpp" />
     <ClCompile Include="commands\activate_worksheet\ExcelWorkSheets.cpp" />
     <ClCompile Include="commands\activate_worksheet\WorksheetCommand.cpp" />
+    <ClCompile Include="commands\alias\AliasCommand.cpp" />
+    <ClCompile Include="commands\alias\AliasCommandEditDialog.cpp" />
+    <ClCompile Include="commands\alias\AliasCommandEditor.cpp" />
+    <ClCompile Include="commands\alias\AliasCommandProvider.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandEditor.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
@@ -1188,6 +1198,7 @@
     <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
     <ClCompile Include="mainwindow/WindowTransparency.cpp" />
+    <ClCompile Include="utility\StringUtil.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
     <ClCompile Include="utility\WinHttp.cpp" />

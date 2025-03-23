@@ -154,6 +154,7 @@
 #define IDD_FILTER_AFTER_CLIPBOARD      247
 #define IDD_FILTER_PRE_CONSTANT         248
 #define IDD_APPSETTING_CLIPBOARD        249
+#define IDD_ALIAS_EDIT                  250
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -493,7 +494,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        249
+#define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1212
 #define _APS_NEXT_SYMED_VALUE           101

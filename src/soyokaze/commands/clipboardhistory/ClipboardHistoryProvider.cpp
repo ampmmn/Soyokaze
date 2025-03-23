@@ -192,6 +192,13 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	ClipboardHistoryDB::ResultList result;
 	in->mHistoryDB.Query(pattern, result);
 
+	if (result.empty()) {
+		// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
+		commands.Add(CommandQueryItem(Pattern::HiddenMatch, 
+					new ClipboardHistoryCommand(prefix, 0, _T(""))));
+		return;
+	}
+
 	// 結果をコマンドリストに追加
 	for (auto& item : result) {
 		commands.Add(CommandQueryItem(Pattern::FrontMatch, 

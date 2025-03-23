@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SelectCommandTypeDialog.h"
+#include "utility/StringUtil.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -81,7 +82,7 @@ BOOL SelectCommandTypeDialog::OnInitDialog()
 
 	strHeader.LoadString(IDS_DESCRIPTION);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 300;
+	lvc.cx = 450;
 	lvc.fmt = LVCFMT_LEFT;
 	listTypes->InsertColumn(1,&lvc);
 
@@ -89,7 +90,9 @@ BOOL SelectCommandTypeDialog::OnInitDialog()
 	for (auto& item : mItems) {
 		int index = listItemCount++;
 		listTypes->InsertItem(index, item.mDisplayName, 0);
-		listTypes->SetItemText(index, 1, item.mDescription);
+
+		CString desc = launcherapp::utility::GetFirstLine(item.mDescription);
+		listTypes->SetItemText(index, 1, desc);
 	}
 
 	if (mItems.size() > 0) {

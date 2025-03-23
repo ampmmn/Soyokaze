@@ -217,6 +217,9 @@
     <Filter Include="commands\clipboardhistory">
       <UniqueIdentifier>{55509fd4-bbca-4f97-bf79-ebe1e18c3690}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\alias">
+      <UniqueIdentifier>{bd0dc010-33c2-4e47-8f2f-4c99f8ffac88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1425,6 +1428,24 @@
     <ClInclude Include="utility\Base64.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="commands\alias\AliasCommand.h">
+      <Filter>commands\alias</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\alias\AliasCommandEditDialog.h">
+      <Filter>commands\alias</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\alias\AliasCommandEditor.h">
+      <Filter>commands\alias</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\alias\AliasCommandParam.h">
+      <Filter>commands\alias</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\alias\AliasCommandProvider.h">
+      <Filter>commands\alias</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\StringUtil.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2520,6 +2541,21 @@
       <Filter>commands\clipboardhistory</Filter>
     </ClCompile>
     <ClCompile Include="utility\Base64.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\alias\AliasCommand.cpp">
+      <Filter>commands\alias</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\alias\AliasCommandEditDialog.cpp">
+      <Filter>commands\alias</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\alias\AliasCommandEditor.cpp">
+      <Filter>commands\alias</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\alias\AliasCommandProvider.cpp">
+      <Filter>commands\alias</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\StringUtil.cpp">
       <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>

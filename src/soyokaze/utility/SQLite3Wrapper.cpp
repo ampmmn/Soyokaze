@@ -51,7 +51,7 @@ struct SQLite3Wrapper::PImpl
 {
 	HMODULE mModule = nullptr;
 	CharConverter mConv;
-	tregex mRegExp;
+	std::regex mRegExp;
 	bool mIsFirst = true;
 };
 
@@ -110,13 +110,11 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 
 	CString str;
 	if (in->mIsFirst) {
-		in->mConv.Convert(reg, str);
-		in->mRegExp = tregex(str, std::regex_constants::icase);
+		in->mRegExp = std::regex(reg, std::regex_constants::icase);
 		in->mIsFirst = false;
 	}
 
-	in->mConv.Convert(text, str);
-	bool isMatch = std::regex_search(tstring(str), in->mRegExp);
+	bool isMatch = std::regex_search(text, in->mRegExp);
 	sqlite3_result_int(ctx, isMatch ? 1 : 0);
 }
 
@@ -135,7 +133,7 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx)
 
 int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err)
 {
-	in->mRegExp = tregex();
+	in->mRegExp = std::regex();
 	in->mIsFirst = true;
 
 	CStringA queryStrA;
