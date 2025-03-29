@@ -57,6 +57,9 @@ SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	tmp.Replace(_T("$value2"), record.mValue2);
 	tmp.Replace(_T("$value"), record.mValue);
 	this->mName = param.mName + _T(" ") + tmp;
+	if (in->mParam->mIsExpandMacro) {
+		ExpandMacros(this->mName);
+	}
 
 	// 説明の生成
 	if (param.mDescriptionFormat.IsEmpty()) {
@@ -69,6 +72,9 @@ SimpleDictAdhocCommand::SimpleDictAdhocCommand(
 	tmp.Replace(_T("$value2"), record.mValue2);
 	tmp.Replace(_T("$value"), record.mValue);
 	this->mDescription = tmp;
+	if (in->mParam->mIsExpandMacro) {
+		ExpandMacros(this->mDescription);
+	}
 }
 
 SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
@@ -147,6 +153,8 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(path);
 		}
+		exec.SetShowType(in->mParam->GetAfterShowType());
+		exec.SetWorkDirectory(in->mParam->mAfterDir);
 
 		SubProcess::ProcessPtr process;
 		exec.Run(path, argSub, process);

@@ -99,7 +99,9 @@ DispWrapper::operator IDispatch*()
 
 void DispWrapper::GetPropertyVariant(LPOLESTR name, VARIANT& value)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return ;
+	}
 
 	VariantInit(&value);
 	AutoWrap(DISPATCH_PROPERTYGET, &value, mDispPtr, name, 0);
@@ -109,7 +111,9 @@ int DispWrapper::GetPropertyInt(
 		LPOLESTR name
 )
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return 0;
+	}
 		
 	VARIANT result;
 	VariantInit(&result);
@@ -122,7 +126,9 @@ int64_t DispWrapper::GetPropertyInt64(
 		LPOLESTR name
 )
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return 0;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -133,7 +139,9 @@ int64_t DispWrapper::GetPropertyInt64(
 
 CString DispWrapper::GetPropertyString(LPOLESTR name)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return _T("");
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -144,7 +152,9 @@ CString DispWrapper::GetPropertyString(LPOLESTR name)
 
 CString DispWrapper::GetPropertyString(LPOLESTR name, int index)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return _T("");
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -161,7 +171,9 @@ CString DispWrapper::GetPropertyString(LPOLESTR name, int index)
 
 bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -177,7 +189,9 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
 
 bool DispWrapper::GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -195,7 +209,9 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& o
 
 bool DispWrapper::GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -213,7 +229,9 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& o
 
 bool DispWrapper::GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -234,7 +252,9 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper
 
 int DispWrapper::CallIntMethod(LPOLESTR methodName, int defValue)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return defValue;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -250,7 +270,9 @@ int DispWrapper::CallIntMethod(LPOLESTR methodName, int defValue)
 
 bool DispWrapper::CallBooleanMethod(LPOLESTR methodName, bool defValue)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return defValue;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -266,7 +288,9 @@ bool DispWrapper::CallBooleanMethod(LPOLESTR methodName, bool defValue)
 
 CString DispWrapper::CallStringMethod(LPOLESTR methodName, const CString& defValue)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return defValue;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -285,7 +309,9 @@ CString DispWrapper::CallStringMethod(LPOLESTR methodName, const CString& defVal
 
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -299,7 +325,9 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
 
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -318,7 +346,9 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, Dis
 
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -338,7 +368,9 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWra
 
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -357,7 +389,9 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrap
 
 bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrapper& object)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return false;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -376,7 +410,9 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrap
 
 void DispWrapper::CallVoidMethod(LPOLESTR methodName)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -385,7 +421,9 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName)
 
 void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -401,7 +439,9 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
 
 void DispWrapper::CallVoidMethod(LPOLESTR methodName, int16_t param1)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return ;
+	}
 
 	VARIANT result;
 	VariantInit(&result);
@@ -417,7 +457,9 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName, int16_t param1)
 
 void DispWrapper::CallVoidMethod(LPOLESTR methodName, bool param1)
 {
-	ASSERT(mDispPtr);
+	if (mDispPtr == nullptr) {
+		return;
+	}
 
 	VARIANT result;
 	VariantInit(&result);

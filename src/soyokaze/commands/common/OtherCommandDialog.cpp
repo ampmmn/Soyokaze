@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "AfterCommandDialog.h"
+#include "OtherCommandDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "app/Manual.h"
@@ -16,49 +16,58 @@ using Command = launcherapp::core::Command;
 
 namespace launcherapp {
 namespace commands {
-namespace filter {
+namespace common {
 
 
-AfterCommandDialog::AfterCommandDialog(CWnd* parentWnd) : 
+OtherCommandDialog::OtherCommandDialog(LPCTSTR helpId, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_COMMAND, parentWnd),
 	mCommandSelIndex(-1)
 {
-	SetHelpPageId(_T("PostFilterCommand"));
+	SetHelpPageId(helpId);
+	//SetHelpPageId(_T("PostFilterCommand"));
 }
 
-AfterCommandDialog::~AfterCommandDialog()
+OtherCommandDialog::~OtherCommandDialog()
 {
 }
 
-void AfterCommandDialog::SetParam(const CommandParam& param)
+void OtherCommandDialog::SetParam(const Param& param)
 {
 	mParam = param;
 }
 
-const CommandParam& AfterCommandDialog::GetParam()
+const OtherCommandDialog::Param&
+OtherCommandDialog::GetParam()
 {
 	return mParam;
 }
 
-void AfterCommandDialog::DoDataExchange(CDataExchange* pDX)
+void OtherCommandDialog::SetVariableDescription(LPCTSTR text)
+{
+	mVariableText = text;
+}
+
+
+void OtherCommandDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, mCommandSelIndex);
-	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
+	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mCommandParam);
+	DDX_Text(pDX, IDC_STATIC_VARIABLE, mVariableText);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AfterCommandDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(OtherCommandDialog, launcherapp::gui::SinglePageDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AfterCommandDialog::OnInitDialog()
+BOOL OtherCommandDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -76,7 +85,7 @@ BOOL AfterCommandDialog::OnInitDialog()
 		int idx = commandComboBox->AddString(name);
 		cmd->Release();
 
-		if (name == mParam.mAfterCommandName) {
+		if (name == mParam.mCommandName) {
 			mCommandSelIndex = idx;
 		}
 	}
@@ -87,9 +96,9 @@ BOOL AfterCommandDialog::OnInitDialog()
 	return TRUE;
 }
 
-bool AfterCommandDialog::UpdateStatus()
+bool OtherCommandDialog::UpdateStatus()
 {
-	if (mParam.mPostFilterType == 0 && mCommandSelIndex == -1) {
+	if (mCommandSelIndex == -1) {
 		mMessage = _T("絞込み後に実行するコマンドを選んでください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
@@ -100,14 +109,14 @@ bool AfterCommandDialog::UpdateStatus()
 	return true;
 }
 
-void AfterCommandDialog::OnUpdateStatus()
+void OtherCommandDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-HBRUSH AfterCommandDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH OtherCommandDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
@@ -121,7 +130,7 @@ HBRUSH AfterCommandDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-void AfterCommandDialog::OnOK()
+void OtherCommandDialog::OnOK()
 {
 	UpdateData();
 	if (UpdateStatus() == false) {
@@ -129,14 +138,12 @@ void AfterCommandDialog::OnOK()
 	}
 
 	CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-	cmbBox->GetLBText(mCommandSelIndex, mParam.mAfterCommandName);
-
-	mParam.mPostFilterType = 0;
+	cmbBox->GetLBText(mCommandSelIndex, mParam.mCommandName);
 
 	__super::OnOK();
 }
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace launcherapp
 

@@ -3,9 +3,9 @@
 #include "FilterEditDialog.h"
 #include "commands/filter/PreFilterSubProcessDialog.h"
 #include "commands/filter/PreFilterConstantDialog.h"
-#include "commands/filter/AfterSubProcessDialog.h"
-#include "commands/filter/AfterCommandDialog.h"
-#include "commands/filter/AfterCopyDialog.h"
+#include "commands/common/SubProcessDialog.h"
+#include "commands/common/OtherCommandDialog.h"
+#include "commands/common/CopyToClipboardDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
@@ -384,12 +384,23 @@ void FilterEditDialog::OnType2MenuBtnClicked()
 
 void FilterEditDialog::OnSelectAfterExecOtherCommand()
 {
-	AfterCommandDialog dlg(this);
-	dlg.SetParam(mParam);
+	// ダイアログ用のパラメータに変換
+	OtherCommandDialog::Param param;
+	param.mCommandName = mParam.mAfterCommandName;
+	param.mCommandParam = mParam.mAfterCommandParam;
+
+	// ダイアログを表示
+	OtherCommandDialog dlg(_T("PostFilterCommand"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
-	mParam = dlg.GetParam();
+
+	// ダイアログの設定値を取得
+	param = dlg.GetParam();
+	mParam.mAfterCommandName = param.mCommandName;
+	mParam.mAfterCommandParam = param.mCommandParam;
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -397,12 +408,27 @@ void FilterEditDialog::OnSelectAfterExecOtherCommand()
 
 void FilterEditDialog::OnSelectAfterSubProcess()
 {
-	AfterSubProcessDialog dlg(this);
-	dlg.SetParam(mParam);
+	// ダイアログ用のパラメータに変換
+	SubProcessDialog::Param param;
+	param.mFilePath = mParam.mAfterFilePath;
+	param.mCommandParam = mParam.mAfterCommandParam;
+	param.mWorkDir = mParam.mAfterDir;
+	param.mShowType = mParam.mAfterShowType;
+
+	// ダイアログを表示
+	SubProcessDialog dlg(_T("PostFilterSubProcess"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
-	mParam = dlg.GetParam();
+
+	// ダイアログの設定値を取得
+	param = dlg.GetParam();
+	mParam.mAfterFilePath = param.mFilePath;
+	mParam.mAfterCommandParam = param.mCommandParam;
+	mParam.mAfterDir = param.mWorkDir;
+	mParam.mAfterShowType = param.mShowType;
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -410,12 +436,20 @@ void FilterEditDialog::OnSelectAfterSubProcess()
 
 void FilterEditDialog::OnSelectAfterCopyClipboard()
 {
-	AfterCopyDialog dlg(this);
-	dlg.SetParam(mParam);
+	// ダイアログ用のパラメータに変換
+	CopyToClipboardDialog::Param param;
+	param.mCommandParam = mParam.mAfterCommandParam;
+
+	// ダイアログを表示
+	CopyToClipboardDialog dlg(_T("PostFilterCopy"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
-	mParam = dlg.GetParam();
+
+	// ダイアログの設定値を取得
+	mParam.mAfterCommandParam = param.mCommandParam;
 
 	UpdateStatus();
 	UpdateData(FALSE);

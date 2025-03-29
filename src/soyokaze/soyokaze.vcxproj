@@ -439,7 +439,10 @@
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
+    <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
     <ClInclude Include="commands\common\NormalPriviledgeProcessProxy.h" />
+    <ClInclude Include="commands\common\OtherCommandDialog.h" />
+    <ClInclude Include="commands\common\SubProcessDialog.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
     <ClInclude Include="commands\common\UserCommandProviderBase.h" />
     <ClInclude Include="commands\core\CommandEditDialogIF.h" />
@@ -465,9 +468,6 @@
     <ClInclude Include="commands\everything\EverythingProxy.h" />
     <ClInclude Include="commands\everything\EverythingResult.h" />
     <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h" />
-    <ClInclude Include="commands\filter\AfterCommandDialog.h" />
-    <ClInclude Include="commands\filter\AfterCopyDialog.h" />
-    <ClInclude Include="commands\filter\AfterSubProcessDialog.h" />
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandEditor.h" />
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h" />
@@ -846,7 +846,10 @@
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
+    <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
     <ClCompile Include="commands\common\NormalPriviledgeProcessProxy.cpp" />
+    <ClCompile Include="commands\common\OtherCommandDialog.cpp" />
+    <ClCompile Include="commands\common\SubProcessDialog.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp" />
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
@@ -872,9 +875,6 @@
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />
     <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp" />
-    <ClCompile Include="commands\filter\AfterCommandDialog.cpp" />
-    <ClCompile Include="commands\filter\AfterCopyDialog.cpp" />
-    <ClCompile Include="commands\filter\AfterSubProcessDialog.cpp" />
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandEditor.cpp" />
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp" />

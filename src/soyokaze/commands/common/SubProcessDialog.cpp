@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "AfterSubProcessDialog.h"
+#include "SubProcessDialog.h"
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
@@ -18,43 +18,50 @@ using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
-namespace filter {
+namespace common {
 
-AfterSubProcessDialog::AfterSubProcessDialog(CWnd* parentWnd) : 
+SubProcessDialog::SubProcessDialog(LPCTSTR helpId, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_SUBPROCESS, parentWnd)
 {
-	SetHelpPageId(_T("PostFilterSubProcess"));
+	SetHelpPageId(helpId);
 }
 
-AfterSubProcessDialog::~AfterSubProcessDialog()
+SubProcessDialog::~SubProcessDialog()
 {
 }
 
-void AfterSubProcessDialog::SetParam(const CommandParam& param)
+void SubProcessDialog::SetParam(const Param& param)
 {
 	mParam = param;
 }
 
-const CommandParam& AfterSubProcessDialog::GetParam()
+const SubProcessDialog::Param& SubProcessDialog::GetParam()
 {
 	return mParam;
 }
 
-void AfterSubProcessDialog::DoDataExchange(CDataExchange* pDX)
+void SubProcessDialog::SetVariableDescription(LPCTSTR text)
+{
+	mVariableText = text;
+}
+
+
+void SubProcessDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mAfterFilePath);
-	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mAfterCommandParam);
+	DDX_Text(pDX, IDC_EDIT_PATH2, mParam.mFilePath);
+	DDX_Text(pDX, IDC_EDIT_PARAM2, mParam.mCommandParam);
 	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
-	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mAfterDir);
-	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mParam.mAfterShowType);
+	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mWorkDir);
+	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mParam.mShowType);
+	DDX_Text(pDX, IDC_STATIC_VARIABLE, mVariableText);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AfterSubProcessDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SubProcessDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR, OnSelectWorkDir)
 	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)
@@ -63,7 +70,7 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AfterSubProcessDialog::OnInitDialog()
+BOOL SubProcessDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -80,15 +87,15 @@ BOOL AfterSubProcessDialog::OnInitDialog()
 	return TRUE;
 }
 
-bool AfterSubProcessDialog::UpdateStatus()
+bool SubProcessDialog::UpdateStatus()
 {
-	if (mParam.mAfterFilePath.IsEmpty()) {
-		mMessage = _T("絞込み後に実行するファイルまたはURLを入力してください");
+	if (mParam.mFilePath.IsEmpty()) {
+		mMessage = _T("実行するファイルまたはURLを入力してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
 
-	CString workDirStr = mParam.mAfterDir;
+	CString workDirStr = mParam.mWorkDir;
 	ExpandMacros(workDirStr);
 
 	Path workDir(workDirStr);
@@ -100,7 +107,7 @@ bool AfterSubProcessDialog::UpdateStatus()
 
 	// パスが有効なファイルだったら編集メニューを表示する
 	mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);
-	if (IsEditableFileType(mParam.mAfterFilePath)) {
+	if (IsEditableFileType(mParam.mFilePath)) {
 			mMenuForPathBtn.InsertMenu((UINT)-1, 0, 3, _T("編集"));
 	}
 
@@ -110,14 +117,14 @@ bool AfterSubProcessDialog::UpdateStatus()
 	return true;
 }
 
-void AfterSubProcessDialog::OnUpdateStatus()
+void SubProcessDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-HBRUSH AfterSubProcessDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH SubProcessDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 	if (utility::IsHighContrastMode()) {
@@ -131,46 +138,46 @@ HBRUSH AfterSubProcessDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-void AfterSubProcessDialog::OnOK()
+void SubProcessDialog::OnOK()
 {
 	UpdateData();
 	if (UpdateStatus() == false) {
 		return ;
 	}
 
-	mParam.mPostFilterType = 1;
+	//mParam.mPostFilterType = 1;
 
 	__super::OnOK();
 }
 
-void AfterSubProcessDialog::OnSelectFilePath()
+void SubProcessDialog::OnSelectFilePath()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mParam.mAfterFilePath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, mParam.mFilePath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mAfterFilePath = dlg.GetPathName();
+	mParam.mFilePath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void AfterSubProcessDialog::OnSelectFolderPath()
+void SubProcessDialog::OnSelectFolderPath()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mAfterFilePath, this);
+	CFolderDialog dlg(_T(""), mParam.mFilePath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mAfterFilePath = dlg.GetPathName();
+	mParam.mFilePath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void AfterSubProcessDialog::OnPathMenuBtnClicked()
+void SubProcessDialog::OnPathMenuBtnClicked()
 {
 	switch (mPathMenuBtn.m_nMenuResult) {
 		case 1:
@@ -186,7 +193,7 @@ void AfterSubProcessDialog::OnPathMenuBtnClicked()
 }
 
 // (テキストエディタなどで)編集するようなファイルタイプか?
-bool AfterSubProcessDialog::IsEditableFileType(CString pathStr)
+bool SubProcessDialog::IsEditableFileType(CString pathStr)
 {
 	ExpandMacros(pathStr);
 
@@ -207,9 +214,9 @@ bool AfterSubProcessDialog::IsEditableFileType(CString pathStr)
 	return true;
 }
 
-void AfterSubProcessDialog::OpenTarget()
+void SubProcessDialog::OpenTarget()
 {
-	CString path(mParam.mAfterFilePath);
+	CString path(mParam.mFilePath);
 	ExpandMacros(path);
 
 	auto p = path.GetBuffer(path.GetLength() + 1);
@@ -233,22 +240,22 @@ void AfterSubProcessDialog::OpenTarget()
 	}
 }
 
-void AfterSubProcessDialog::OnSelectWorkDir()
+void SubProcessDialog::OnSelectWorkDir()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mAfterDir, this);
+	CFolderDialog dlg(_T(""), mParam.mWorkDir, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mAfterDir = dlg.GetPathName();
+	mParam.mWorkDir = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace launcherapp
 

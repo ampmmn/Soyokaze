@@ -74,7 +74,15 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 
 int CommandParam::GetAfterShowType() const
 {
-	return mAfterShowType;
+	if (mAfterShowType == 1) {
+		return SW_MAXIMIZE;
+	}
+	else if (mAfterShowType == 2) {
+		return SW_SHOWMINIMIZED;
+	}
+	else {
+		return SW_NORMAL;
+	}
 }
 
 bool CommandParam::Save(CommandEntryIF* entry)

@@ -6,16 +6,24 @@
 
 namespace launcherapp {
 namespace commands {
-namespace filter {
+namespace common {
 
-class AfterCopyDialog : public launcherapp::gui::SinglePageDialog
+class CopyToClipboardDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	AfterCopyDialog(CWnd* parentWnd = nullptr);
-	virtual ~AfterCopyDialog();
+	class Param {
+	public:
+		CString mCommandParam;
+	};
 
-	void SetParam(const CommandParam& param);
-	const CommandParam& GetParam();
+public:
+	CopyToClipboardDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	virtual ~CopyToClipboardDialog();
+
+	void SetParam(const Param& param);
+	const Param& GetParam();
+
+	void SetVariableDescription(LPCTSTR text);
 
 	bool UpdateStatus();
 
@@ -24,7 +32,8 @@ protected:
 	virtual BOOL OnInitDialog();
 
 public:
-	CommandParam mParam;
+	Param mParam;
+	CString mVariableText;
 
 // 実装
 protected:
@@ -33,7 +42,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 };
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace launcherapp
 

@@ -3,6 +3,9 @@
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/simple_dict/SimpleDictPreviewDialog.h"
+#include "commands/common/SubProcessDialog.h"
+#include "commands/common/OtherCommandDialog.h"
+#include "commands/common/CopyToClipboardDialog.h"
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/CommandEditValidation.h"
@@ -19,10 +22,15 @@
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command =  launcherapp::core::Command;
+using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
+
+constexpr int ID_POSTFILTER_COMMAND = 0;
+constexpr int ID_POSTFILTER_SUBPROCESS = 1;
+constexpr int ID_POSTFILTER_CLIPBOARD = 2;
 
 struct SettingDialog::PImpl
 {
@@ -31,10 +39,16 @@ struct SettingDialog::PImpl
 	// メッセージ欄
 	CString mMessage;
 
-	int mCommandSelIndex = 0;
-
 	// 編集対象パラメータ
 	SimpleDictParam mParam;
+
+	// 後段の処理内容
+	CString mAfterDetail;
+	// 後段の処理の種別を選択するためのボタン
+	CMFCMenuButton mMenuTypeBtn;
+	// 後段の処理の種別を選択するためのメニュー
+	CMenu mMenuBtn;
+
 
 	bool mIsTestPassed = false;
 
@@ -99,12 +113,9 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_REVERSE, in->mParam.mIsEnableReverse);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYUPDATE, in->mParam.mIsNotifyUpdate);
 	DDX_Check(pDX, IDC_CHECK_EXPANDMACRO, in->mParam.mIsExpandMacro);
-
-	DDX_CBIndex(pDX, IDC_COMBO_AFTERCOMMAND, in->mCommandSelIndex);
-	DDX_CBIndex(pDX, IDC_COMBO_AFTERTYPE, in->mParam.mActionType);
-	DDX_Text(pDX, IDC_EDIT_PARAM2, in->mParam.mAfterCommandParam);
-	DDX_Text(pDX, IDC_EDIT_PATH2, in->mParam.mAfterFilePath);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
+	DDX_Control(pDX, IDC_BUTTON_TYPE, in->mMenuTypeBtn);
+	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, in->mAfterDetail);
 }
 
 #pragma warning( push )
@@ -112,6 +123,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateName)
+	ON_EN_CHANGE(IDC_EDIT_FILEPATH, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_SHEETNAME, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_FRONT, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_BACK, OnUpdateCondition)
@@ -123,16 +135,12 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_IMPORTBACK, OnButtonBackRange)
 	ON_COMMAND(IDC_BUTTON_IMPORTVALUE2, OnButtonValue2Range)
 
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERTYPE, OnUpdateStatus)
-	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
-	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_BROWSEFILE3, OnButtonBrowseAfterCommandFile)
-	ON_COMMAND(IDC_BUTTON_BROWSEDIR4, OnButtonBrowseAfterCommandDir)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
+	ON_BN_CLICKED(IDC_BUTTON_TYPE, OnTypeMenuBtnClicked)
 
 END_MESSAGE_MAP()
 
@@ -142,6 +150,13 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	// 後段の処理の選択肢
+	in->mMenuBtn.CreatePopupMenu();
+	in->mMenuBtn.InsertMenu((UINT)-1, 0, 1, _T("他のコマンドを実行する"));
+	in->mMenuBtn.InsertMenu((UINT)-1, 0, 2, _T("プログラムを実行する"));
+	in->mMenuBtn.InsertMenu((UINT)-1, 0, 3, _T("クリップボードにコピーする"));
+	in->mMenuTypeBtn.m_hMenu = (HMENU)in->mMenuBtn;
+
 	CString caption;
   GetWindowText(caption);
 
@@ -150,12 +165,6 @@ BOOL SettingDialog::OnInitDialog()
 
 	caption += suffix;
 	SetWindowText(caption);
-
-	// 後段のコマンド設定 排他の項目の位置を調整する
-	Overlap(GetDlgItem(IDC_STATIC_AFTERCOMMAND), GetDlgItem(IDC_STATIC_PATH2));
-	Overlap(GetDlgItem(IDC_COMBO_AFTERCOMMAND), GetDlgItem(IDC_EDIT_PATH2));
-	GetDlgItem(IDC_BUTTON_BROWSEFILE3)->SetWindowTextW(L"\U0001F4C4");
-	GetDlgItem(IDC_BUTTON_BROWSEDIR4)->SetWindowTextW(L"\U0001F4C2");
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -170,64 +179,22 @@ bool SettingDialog::UpdateStatus()
 		in->mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	int actionType = in->mParam.mActionType;
-	if (actionType== 0) {
-		// 他のコマンドを実行する
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+	// 後段の処理の設定値
+	auto& param = in->mParam;
+	if (param.mActionType == 0) {
+		in->mMenuTypeBtn.SetWindowText(_T("他のコマンドを実行する"));
+		in->mAfterDetail.Format(_T("コマンド:%s\nパラメータ:%s"),
+					(LPCTSTR)param.mAfterCommandName, (LPCTSTR)param.mAfterCommandParam);
 	}
-	else if (actionType== 1) {
-		// 他のプログラムを実行する
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_SHOW);
+	else if (param.mActionType == 1) {
+		in->mMenuTypeBtn.SetWindowText(_T("プログラムを実行する"));
+		in->mAfterDetail.Format(_T("ファイルパス:%s\nパラメータ:%s\n作業フォルダ:%s"),
+					(LPCTSTR)param.mAfterFilePath, (LPCTSTR)param.mAfterCommandParam, (LPCTSTR)param.mAfterDir);
 	}
 	else {
-		// クリップボードコピー
-		GetDlgItem(IDC_STATIC_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_COMBO_AFTERCOMMAND)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_PATH2)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEFILE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_BROWSEDIR4)->ShowWindow(SW_HIDE);
+		in->mMenuTypeBtn.SetWindowText(_T("クリップボードにコピーする"));
+		in->mAfterDetail.Format(_T("パラメータ:%s"), (LPCTSTR)param.mAfterCommandParam);
 	}
-	if (actionType == 0 && in->mCommandSelIndex == -1) {
-		in->mMessage = _T("絞込み後に実行するコマンドを選んでください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-	if (actionType == 1 && in->mParam.mAfterFilePath.IsEmpty()) {
-		in->mMessage = _T("絞込み後に実行するファイルまたはURLを入力してください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	// コマンド一覧のコンボボックス
-	std::vector<Command*> commands;
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->EnumCommands(commands);
-
-	CComboBox* commandComboBox =
-	 	(CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-	ASSERT(commandComboBox);
-
-	for (auto& cmd : commands) {
-		CString name = cmd->GetName();
-		int idx = commandComboBox->AddString(name);
-		cmd->Release();
-
-		if (name == in->mParam.mAfterCommandName) {
-			in->mCommandSelIndex = idx;
-		}
-	}
-
 
 	BOOL canTest = TRUE;
 	BOOL canCreate = TRUE;
@@ -313,13 +280,6 @@ void SettingDialog::OnOK()
 	if (UpdateStatus() == false) {
 		return ;
 	}
-
-	// 「他のコマンドを実行」の場合、リストコントロールからコマンド名を取得する
-	if (in->mParam.mActionType == 0) {
-		CComboBox* cmbBox = (CComboBox*)GetDlgItem(IDC_COMBO_AFTERCOMMAND);
-		cmbBox->GetLBText(in->mCommandSelIndex, in->mParam.mAfterCommandName);
-	}
-
 	__super::OnOK();
 }
 
@@ -503,54 +463,6 @@ void SettingDialog::OnUpdateStatus()
 	UpdateData(FALSE);
 }
 
-void SettingDialog::OnButtonBrowseAfterCommandFile()
-{
-	UpdateData();
-	CFileDialog dlg(TRUE, NULL, in->mParam.mAfterFilePath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	in->mParam.mAfterFilePath = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void SettingDialog::OnButtonBrowseAfterCommandDir()
-{
-	UpdateData();
-	CFolderDialog dlg(_T(""), in->mParam.mAfterFilePath, this);
-
-	if (dlg.DoModal() != IDOK) {
-		return;
-	}
-
-	in->mParam.mAfterFilePath = dlg.GetPathName();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-bool SettingDialog::Overlap(CWnd* dstWnd, CWnd* srcWnd)
-{
-	ASSERT(dstWnd && srcWnd);
-
-	if (dstWnd->GetParent() != srcWnd->GetParent()) {
-		return false;
-	}
-
-	CWnd* parentWnd = srcWnd->GetParent();
-
-	CRect rcDst;
-	dstWnd->GetClientRect(&rcDst);
-	CPoint ptDst = rcDst.TopLeft();
-	dstWnd->MapWindowPoints(parentWnd, &ptDst, 1);
-
-
-	srcWnd->SetWindowPos(NULL, ptDst.x, ptDst.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-
-	return true;
-}
-
 void SettingDialog::OnButtonHotKey()	
 {
 	UpdateData();
@@ -588,6 +500,112 @@ void SettingDialog::OnNotifyLinkOpenTebiki(
 	*pResult = 0;
 }
 
+void SettingDialog::OnTypeMenuBtnClicked()
+{
+	UpdateData();
+
+	int action = in->mMenuTypeBtn.m_nMenuResult;
+
+	// ボタン部分が単に押された場合、mMenuResultに0が格納される
+	if (action == 0) {
+		action = in->mParam.mActionType + 1;    // メニューID(1始まり)に変換
+	}
+
+	switch (action) {
+		case 1:
+			// 他のコマンドを実行する
+			OnSelectExecOtherCommand();
+			break;
+		case 2:
+			// プログラムを実行する
+			OnSelectSubProcess();
+			break;
+		case 3:
+			// クリップボードにコピーする
+			OnSelectCopyClipboard();
+			break;
+	}
+}
+
+void SettingDialog::OnSelectExecOtherCommand()
+{
+	// ダイアログ用のパラメータに変換
+	OtherCommandDialog::Param param;
+	param.mCommandName = in->mParam.mAfterCommandName;
+	param.mCommandParam = in->mParam.mAfterCommandParam;
+
+	// ダイアログを表示
+	OtherCommandDialog dlg(_T("SimpleDictAfterOtherCommand"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	// ダイアログの設定値を取得
+	param = dlg.GetParam();
+	in->mParam.mAfterCommandName = param.mCommandName;
+	in->mParam.mAfterCommandParam = param.mCommandParam;
+
+	in->mParam.mActionType = 0;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void SettingDialog::OnSelectSubProcess()
+{
+	// ダイアログ用のパラメータに変換
+	SubProcessDialog::Param param;
+	param.mFilePath = in->mParam.mAfterFilePath;
+	param.mCommandParam = in->mParam.mAfterCommandParam;
+	param.mWorkDir = in->mParam.mAfterDir;
+	param.mShowType = in->mParam.mAfterShowType;
+
+	// ダイアログを表示
+	SubProcessDialog dlg(_T("SimpleDictAfterSubProcess"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	// ダイアログの設定値を取得
+	param = dlg.GetParam();
+	in->mParam.mAfterFilePath = param.mFilePath;
+	in->mParam.mAfterCommandParam = param.mCommandParam;
+	in->mParam.mAfterDir = param.mWorkDir;
+	in->mParam.mAfterShowType = param.mShowType;
+
+	in->mParam.mActionType = 1;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void SettingDialog::OnSelectCopyClipboard()
+{
+	// ダイアログ用のパラメータに変換
+	CopyToClipboardDialog::Param param;
+	param.mCommandParam = in->mParam.mAfterCommandParam;
+
+	// ダイアログを表示
+	CopyToClipboardDialog dlg(_T("SimpleDictCopyToClipboard"), this);
+	dlg.SetParam(param);
+	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+	param = dlg.GetParam();
+
+	// ダイアログの設定値を取得
+	in->mParam.mAfterCommandParam = param.mCommandParam;
+
+	in->mParam.mActionType = 2;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
 
 
 

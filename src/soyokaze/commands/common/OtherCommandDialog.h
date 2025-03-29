@@ -2,20 +2,27 @@
 
 #include "gui/SinglePageDialog.h"
 #include <memory>
-#include "commands/filter/FilterCommandParam.h"
 
 namespace launcherapp {
 namespace commands {
-namespace filter {
+namespace common {
 
-class AfterCommandDialog : public launcherapp::gui::SinglePageDialog
+class OtherCommandDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	AfterCommandDialog(CWnd* parentWnd = nullptr);
-	virtual ~AfterCommandDialog();
+	struct Param {
+		CString mCommandName;
+		CString mCommandParam;
+	};
 
-	void SetParam(const CommandParam& param);
-	const CommandParam& GetParam();
+public:
+	OtherCommandDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	virtual ~OtherCommandDialog();
+
+	void SetParam(const Param& param);
+	const Param& GetParam();
+
+	void SetVariableDescription(LPCTSTR text);
 
 	bool UpdateStatus();
 
@@ -27,7 +34,8 @@ protected:
 	CString mMessage;
 
 public:
-	CommandParam mParam;
+	Param mParam;
+	CString mVariableText;
 	int mCommandSelIndex;
 
 // 実装
@@ -38,7 +46,7 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
 
-} // end of namespace filter
+} // end of namespace common
 } // end of namespace commands
 } // end of namespace launcherapp
 

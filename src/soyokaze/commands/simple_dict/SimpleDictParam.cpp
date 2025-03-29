@@ -14,7 +14,8 @@ SimpleDictParam::SimpleDictParam() :
 	mIsNotifyUpdate(FALSE),
 	mIsExpandMacro(FALSE),
 	mActionType(2),
-	mAfterCommandParam(_T("$value"))
+	mAfterCommandParam(_T("$value")),
+	mAfterShowType(0)
 {
 }
 
@@ -45,8 +46,24 @@ bool SimpleDictParam::operator == (const SimpleDictParam& rhs) const
 	       mActionType == rhs.mActionType &&
 	       mAfterCommandName == rhs.mAfterCommandName &&
 	       mAfterFilePath == rhs.mAfterFilePath &&
-	       mAfterCommandParam == rhs.mAfterCommandParam;
+	       mAfterCommandParam == rhs.mAfterCommandParam &&
+				 mAfterDir == rhs.mAfterDir &&
+				 mAfterShowType == rhs.mAfterShowType;
 }
+
+int SimpleDictParam::GetAfterShowType() const
+{
+	if (mAfterShowType == 1) {
+		return SW_MAXIMIZE;
+	}
+	else if (mAfterShowType == 2) {
+		return SW_SHOWMINIMIZED;
+	}
+	else {
+		return SW_NORMAL;
+	}
+}
+
 
 bool SimpleDictParam::Save(CommandEntryIF* entry)
 {
@@ -70,6 +87,8 @@ bool SimpleDictParam::Save(CommandEntryIF* entry)
 	entry->Set(_T("aftercommand"), mAfterCommandName);
 	entry->Set(_T("afterfilepath"), mAfterFilePath);
 	entry->Set(_T("afterparam"), mAfterCommandParam);
+	entry->Set(_T("afterdir"), mAfterDir);
+	entry->Set(_T("aftershowtype"), mAfterShowType);
 
 	return true;
 }
@@ -98,6 +117,8 @@ bool SimpleDictParam::Load(CommandEntryIF* entry)
 	mAfterCommandName = entry->Get(_T("aftercommand"), _T(""));
 	mAfterFilePath = entry->Get(_T("afterfilepath"), _T(""));
 	mAfterCommandParam = entry->Get(_T("afterparam"), _T("$value"));
+	mAfterDir = entry->Get(_T("afterdir"), _T(""));
+	mAfterShowType = entry->Get(_T("aftershowtype"), 0);
 
 	return true;
 }
@@ -131,6 +152,8 @@ void SimpleDictParam::swap(SimpleDictParam& rhs)
 	std::swap(mAfterCommandName, rhs.mAfterCommandName);
 	std::swap(mAfterFilePath, rhs.mAfterFilePath);
 	std::swap(mAfterCommandParam, rhs.mAfterCommandParam);
+	std::swap(mAfterDir, rhs.mAfterDir);
+	std::swap(mAfterShowType, rhs.mAfterShowType);
 }
 
 }

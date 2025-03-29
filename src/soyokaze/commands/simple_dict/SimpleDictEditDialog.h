@@ -26,8 +26,6 @@ public:
 
 	bool UpdateStatus();
 
-	bool Overlap(CWnd* dstWnd, CWnd* srcWnd);
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
@@ -48,11 +46,13 @@ protected:
 	afx_msg void OnButtonFrontRange();
 	afx_msg void OnButtonBackRange();
 	afx_msg void OnButtonValue2Range();
-	afx_msg void OnButtonBrowseAfterCommandFile();
-	afx_msg void OnButtonBrowseAfterCommandDir();
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnNotifyLinkOpenMacro(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyLinkOpenTebiki(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnTypeMenuBtnClicked();
+	afx_msg void OnSelectExecOtherCommand();
+	afx_msg void OnSelectSubProcess();
+	afx_msg void OnSelectCopyClipboard();
 };
 
 } // end of namespace simple_dict

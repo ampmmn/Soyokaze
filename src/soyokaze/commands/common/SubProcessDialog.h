@@ -9,17 +9,27 @@ class IconLabel;
 
 namespace launcherapp {
 namespace commands {
-namespace filter {
+namespace common {
 
 
-class AfterSubProcessDialog : public launcherapp::gui::SinglePageDialog
+class SubProcessDialog : public launcherapp::gui::SinglePageDialog
 {
 public:
-	AfterSubProcessDialog(CWnd* parentWnd = nullptr);
-	virtual ~AfterSubProcessDialog();
+	struct Param {
+		CString mFilePath;
+		CString mCommandParam;
+		CString mWorkDir;
+		int mShowType = SW_SHOW;
+	};
 
-	void SetParam(const CommandParam& param);
-	const CommandParam& GetParam();
+public:
+	SubProcessDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	virtual ~SubProcessDialog();
+
+	void SetParam(const Param& param);
+	const Param& GetParam();
+
+	void SetVariableDescription(LPCTSTR text);
 
 	bool UpdateStatus();
 	void OpenTarget();
@@ -31,7 +41,8 @@ protected:
 	virtual BOOL OnInitDialog();
 
 public:
-	CommandParam mParam;
+	Param mParam;
+	CString mVariableText;
 
 	CMFCMenuButton mPathMenuBtn;
 	CMenu mMenuForPathBtn;

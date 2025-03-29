@@ -203,7 +203,7 @@ CString ExcelApplication::GetActiveSheetName()
 	DispWrapper activeSheet;
 	if (excelApp.GetPropertyObject(L"ActiveSheet", activeSheet) == false) {
 		SPDLOG_ERROR(_T("Failed to get active sheet"));
-		return false;
+		return _T("");
 	}
 
 	return activeSheet.GetPropertyString(L"Name");

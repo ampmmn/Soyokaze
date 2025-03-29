@@ -1359,15 +1359,6 @@
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
       <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
-    <ClInclude Include="commands\filter\AfterSubProcessDialog.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\filter\AfterCommandDialog.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\filter\AfterCopyDialog.h">
-      <Filter>commands\filter</Filter>
-    </ClInclude>
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -1445,6 +1436,15 @@
     </ClInclude>
     <ClInclude Include="utility\StringUtil.h">
       <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\SubProcessDialog.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\CopyToClipboardDialog.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\OtherCommandDialog.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2480,15 +2480,6 @@
     <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="commands\filter\AfterSubProcessDialog.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\filter\AfterCommandDialog.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\filter\AfterCopyDialog.cpp">
-      <Filter>commands\filter</Filter>
-    </ClCompile>
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -2557,6 +2548,15 @@
     </ClCompile>
     <ClCompile Include="utility\StringUtil.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\SubProcessDialog.cpp">
+      <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\CopyToClipboardDialog.cpp">
+      <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\OtherCommandDialog.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

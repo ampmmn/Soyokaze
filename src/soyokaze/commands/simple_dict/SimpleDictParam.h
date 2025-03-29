@@ -18,6 +18,8 @@ public:
 
 	bool operator == (const SimpleDictParam& rhs) const;
 
+	int GetAfterShowType() const;
+
 	bool Save(CommandEntryIF* entry);
 	bool Load(CommandEntryIF* entry);
 
@@ -51,12 +53,16 @@ public:
 	BOOL mIsExpandMacro;
 	// 後段の処理の種類
 	int mActionType;
-	// 後段のコマンド(mPostFilterType=0の場合)
+	// 後段のコマンド(mActionType=0の場合)
 	CString mAfterCommandName;
-	// 後段のファイルorURL(mPostFilterType=1の場合)
+	// 後段のファイルorURL(mActionType=1の場合)
 	CString mAfterFilePath;
 	// 後段のコマンドに渡すパラメータ
 	CString mAfterCommandParam;
+	// 後段の作業ディレクトリ(mActionType=1の場合)
+	CString mAfterDir;
+	// 後段のファイルの表示方法(mActionType=1の場合)
+	int mAfterShowType;
 
 	CommandHotKeyAttribute mHotKeyAttr;
 };
