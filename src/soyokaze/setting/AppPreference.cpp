@@ -973,12 +973,12 @@ int AppPreference::GetClipboardHistoryNumberOfResults()
 
 int AppPreference::GetClipboardHistorySizeLimit()
 {
-	return in->Get(_T("ClipboardHistory:SizeLimit"), 64);
+	return in->Get(_T("ClipboardHistory:SizeLimit"), 4);
 }
 
 int AppPreference::GetClipboardHistoryCountLimit()
 {
-	return in->Get(_T("ClipboardHistory:CountLimit"), 1000);
+	return in->Get(_T("ClipboardHistory:CountLimit"), 1024);
 }
 
 int AppPreference::GetClipboardHistoryInterval()

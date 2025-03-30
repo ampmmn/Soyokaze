@@ -37,7 +37,7 @@ public:
 	BOOL mIsEnable = FALSE;
 	CString mPrefix{_T("cb")};
 	int mNumOfResults = 16;
-	int mSizeLimit = 64;
+	int mSizeLimit = 4;
 	int mCountLimit = 1024;
 	int mInterval = 500;
 	CString mExcludePattern;
@@ -158,7 +158,7 @@ void AppSettingPage::OnEnterSettings(Settings* settingsPtr)
 	mIsEnable = settingsPtr->Get(_T("ClipboardHistory:IsEnable"), false);
 	mPrefix = settingsPtr->Get(_T("ClipboardHistory:Prefix"), _T("cb"));
 	mNumOfResults = settingsPtr->Get(_T("ClipboardHistory:NumOfResults"), 16);
-	mSizeLimit = settingsPtr->Get(_T("ClipboardHistory:SizeLimit"), 64);
+	mSizeLimit = settingsPtr->Get(_T("ClipboardHistory:SizeLimit"), 4);
 	mCountLimit = settingsPtr->Get(_T("ClipboardHistory:CountLimit"), 1024);
 	mInterval = settingsPtr->Get(_T("ClipboardHistory:Interval"), 500);
 	mExcludePattern = settingsPtr->Get(_T("ClipboardHistory:ExcludePattern"), _T(""));
