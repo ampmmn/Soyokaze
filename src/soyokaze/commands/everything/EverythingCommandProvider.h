@@ -26,9 +26,6 @@ public:
 	// コマンド新規作成ダイアログ
 	bool NewDialog(CommandParameter* param) override;
 
-	// 設定ページを取得する
-	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
-
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	bool IsPrivate() const override;
 

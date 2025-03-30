@@ -18,9 +18,29 @@ enum POSITIONTYPE {
 };
 
 
-struct BasicSettingDialog::PImpl
+class BasicSettingDialog : public CDialog
 {
-	// ランチャー呼び出しキー（表示用)
+public:
+	BasicSettingDialog();
+	virtual ~BasicSettingDialog();
+
+	bool UpdateStatus();
+
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
+
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+	virtual void OnOK();
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnButtonHotKey();
+
+private:
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
 
@@ -46,19 +66,12 @@ struct BasicSettingDialog::PImpl
 	// マウスカーソル位置に入力欄を表示する
 	BOOL mIsShowMainWindowOnCursor = FALSE;
 
-
-	
+	Settings* mSettingsPtr = nullptr;
 };
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 
-
-BasicSettingDialog::BasicSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("基本"), IDD_BASICSETTING, parentWnd),
-	in(new PImpl)
+BasicSettingDialog::BasicSettingDialog()
 {
 }
 
@@ -66,61 +79,93 @@ BasicSettingDialog::~BasicSettingDialog()
 {
 }
 
-BOOL BasicSettingDialog::OnKillActive()
+void BasicSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	if (UpdateData() == FALSE) {
-		return FALSE;
+	mSettingsPtr = settingsPtr;
+	mHotKeyAttr = HOTKEY_ATTR(settingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
+		                        settingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
+	mHotKey = mHotKeyAttr.ToString();
+
+	mIsEnableHotKey = settingsPtr->Get(_T("HotKey:IsEnableHotKey"), true);
+	mIsEnableModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
+	mIsEnableModifierHotKeyOnRD = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKeyOnRD"), false);
+	mModifierFirstVK = settingsPtr->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
+	mModifierSecondVK = settingsPtr->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
+
+	mIsShowToggle = settingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
+	mIsKeepTextWhenDlgHide = settingsPtr->Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
+	mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
+	mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
+	mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
+
+	bool isShowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
+	bool isShowOnActWin = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), false);
+	if (isShowOnCursor) {
+		mShowPositionType = POSTYPE_MOUSECURSOR;
 	}
-	return TRUE;
+	else if (isShowOnActWin) {
+		mShowPositionType = POSTYPE_ACTIVEWINDOWCENTER;
+	}
+	else {
+		mShowPositionType = POSTYPE_KEEPLAST;
+	}
 }
 
-BOOL BasicSettingDialog::OnSetActive()
+bool BasicSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
+}
+
+bool BasicSettingDialog::OnKillActive()
+{
+	if (UpdateData() == FALSE) {
+		return false;
+	}
+	return true;
 }
 
 void BasicSettingDialog::OnOK()
 {
-	auto settingsPtr = (Settings*)GetParam();
+	auto settingsPtr = mSettingsPtr;
 
-	settingsPtr->Set(_T("HotKey:Modifiers"), (int)in->mHotKeyAttr.GetModifiers());
-	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)in->mHotKeyAttr.GetVKCode());
-	settingsPtr->Set(_T("HotKey:IsEnableHotKey"), in->mIsEnableHotKey);
-	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), in->mIsEnableModifierHotKey);
-	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKeyOnRD"), in->mIsEnableModifierHotKeyOnRD);
-	settingsPtr->Set(_T("HotKey:FirstModifierVirtualKeyCode"), (int)in->mModifierFirstVK);
-	settingsPtr->Set(_T("HotKey:SecondModifierVirtualKeyCode"),(int) in->mModifierSecondVK);
+	settingsPtr->Set(_T("HotKey:Modifiers"), (int)mHotKeyAttr.GetModifiers());
+	settingsPtr->Set(_T("HotKey:VirtualKeyCode"), (int)mHotKeyAttr.GetVKCode());
+	settingsPtr->Set(_T("HotKey:IsEnableHotKey"), mIsEnableHotKey);
+	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKey"), mIsEnableModifierHotKey);
+	settingsPtr->Set(_T("HotKey:IsEnableModifierHotKeyOnRD"), mIsEnableModifierHotKeyOnRD);
+	settingsPtr->Set(_T("HotKey:FirstModifierVirtualKeyCode"), (int)mModifierFirstVK);
+	settingsPtr->Set(_T("HotKey:SecondModifierVirtualKeyCode"),(int) mModifierSecondVK);
 
-	settingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)in->mIsShowToggle);
-	settingsPtr->Set(_T("Soyokaze:IsIKeepTextWhenDlgHide"), (bool)in->mIsKeepTextWhenDlgHide);
-	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)in->mIsHideOnRun);
-	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)in->mIsTopMost);
-	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)in->mIsHideOnInactive);
+	settingsPtr->Set(_T("Soyokaze:ShowToggle"), (bool)mIsShowToggle);
+	settingsPtr->Set(_T("Soyokaze:IsIKeepTextWhenDlgHide"), (bool)mIsKeepTextWhenDlgHide);
+	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
+	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)mIsTopMost);
+	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)mIsHideOnInactive);
 
-	bool isShowOnActWin = (in->mShowPositionType == POSTYPE_MOUSECURSOR);
+	bool isShowOnActWin = (mShowPositionType == POSTYPE_MOUSECURSOR);
 	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), isShowOnActWin);
-	bool isShowOnCursor = (in->mShowPositionType == POSTYPE_ACTIVEWINDOWCENTER);
+	bool isShowOnCursor = (mShowPositionType == POSTYPE_ACTIVEWINDOWCENTER);
 	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), isShowOnCursor);
 
-	__super::OnOK();
+	CDialog::OnOK();
 }
 
 void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
-	DDX_Check(pDX, IDC_CHECK_SHOWTOGGLE, in->mIsShowToggle);
-	DDX_Check(pDX, IDC_CHECK_KEEPTEXTWHENDLGHIDE, in->mIsKeepTextWhenDlgHide);
-	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, in->mIsHideOnRun);
-	DDX_Check(pDX, IDC_CHECK_TOPMOST, in->mIsTopMost);
-	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, in->mIsHideOnInactive);
-	DDX_CBIndex(pDX, IDC_COMBO_POSITION, in->mShowPositionType);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_SHOWTOGGLE, mIsShowToggle);
+	DDX_Check(pDX, IDC_CHECK_KEEPTEXTWHENDLGHIDE, mIsKeepTextWhenDlgHide);
+	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, mIsHideOnRun);
+	DDX_Check(pDX, IDC_CHECK_TOPMOST, mIsTopMost);
+	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, mIsHideOnInactive);
+	DDX_CBIndex(pDX, IDC_COMBO_POSITION, mShowPositionType);
 }
 
-BEGIN_MESSAGE_MAP(BasicSettingDialog, SettingPage)
+BEGIN_MESSAGE_MAP(BasicSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 END_MESSAGE_MAP()
 
@@ -138,16 +183,16 @@ BOOL BasicSettingDialog::OnInitDialog()
 bool BasicSettingDialog::UpdateStatus()
 {
 	CString text;
-	if (in->mIsEnableHotKey) {
-		text = in->mHotKeyAttr.ToString();
+	if (mIsEnableHotKey) {
+		text = mHotKeyAttr.ToString();
 	}
-	if (in->mIsEnableModifierHotKey) {
+	if (mIsEnableModifierHotKey) {
 		if (text.IsEmpty() == FALSE) {
 			text += _T(" / ");
 		}
-		text += AppHotKeyDialog::ToString(in->mModifierFirstVK, in->mModifierSecondVK);
+		text += AppHotKeyDialog::ToString(mModifierFirstVK, mModifierSecondVK);
 	}
-	in->mHotKey = text;
+	mHotKey = text;
 
 	return true;
 }
@@ -156,63 +201,92 @@ void BasicSettingDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	AppHotKeyDialog dlg(in->mHotKeyAttr, this);
-	dlg.SetEnableHotKey(in->mIsEnableHotKey);
-	dlg.SetEnableModifierHotKey(in->mIsEnableModifierHotKey);
-	dlg.SetEnableModifierHotKeyOnRD(in->mIsEnableModifierHotKeyOnRD);
-	dlg.SetModifierFirstVK(in->mModifierFirstVK);
-	dlg.SetModifierSecondVK(in->mModifierSecondVK);
+	AppHotKeyDialog dlg(mHotKeyAttr, this);
+	dlg.SetEnableHotKey(mIsEnableHotKey);
+	dlg.SetEnableModifierHotKey(mIsEnableModifierHotKey);
+	dlg.SetEnableModifierHotKeyOnRD(mIsEnableModifierHotKeyOnRD);
+	dlg.SetModifierFirstVK(mModifierFirstVK);
+	dlg.SetModifierSecondVK(mModifierSecondVK);
 
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
-	dlg.GetAttribute(in->mHotKeyAttr);
-	in->mIsEnableHotKey = dlg.IsEnableHotKey();
-	in->mIsEnableModifierHotKey = dlg.IsEnableModifierHotKey();
-	in->mIsEnableModifierHotKeyOnRD = dlg.IsEnableModifierHotKeyOnRD();
-	in->mModifierFirstVK = dlg.GetModifierFirstVK();
-	in->mModifierSecondVK = dlg.GetModifierSecondVK();
+	dlg.GetAttribute(mHotKeyAttr);
+	mIsEnableHotKey = dlg.IsEnableHotKey();
+	mIsEnableModifierHotKey = dlg.IsEnableModifierHotKey();
+	mIsEnableModifierHotKeyOnRD = dlg.IsEnableModifierHotKeyOnRD();
+	mModifierFirstVK = dlg.GetModifierFirstVK();
+	mModifierSecondVK = dlg.GetModifierSecondVK();
 
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void BasicSettingDialog::OnEnterSettings()
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageBasic::PImpl
 {
-	auto settingsPtr = (Settings*)GetParam();
+	BasicSettingDialog mWindow;
+};
 
-	in->mHotKeyAttr = HOTKEY_ATTR(settingsPtr->Get(_T("HotKey:Modifiers"), MOD_ALT),
-		                        settingsPtr->Get(_T("HotKey:VirtualKeyCode"), VK_SPACE));
-	in->mHotKey = in->mHotKeyAttr.ToString();
+REGISTER_APPSETTINGPAGE(AppSettingPageBasic)
 
-	in->mIsEnableHotKey = settingsPtr->Get(_T("HotKey:IsEnableHotKey"), true);
-	in->mIsEnableModifierHotKey = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKey"), false);
-	in->mIsEnableModifierHotKeyOnRD = settingsPtr->Get(_T("HotKey:IsEnableModifierHotKeyOnRD"), false);
-	in->mModifierFirstVK = settingsPtr->Get(_T("HotKey:FirstModifierVirtualKeyCode"), VK_CONTROL);
-	in->mModifierSecondVK = settingsPtr->Get(_T("HotKey:SecondModifierVirtualKeyCode"), VK_CONTROL);
-
-	in->mIsShowToggle = settingsPtr->Get(_T("Soyokaze:ShowToggle"), true);
-	in->mIsKeepTextWhenDlgHide = settingsPtr->Get(_T("Soyokaze:IsIKeepTextWhenDlgHide"), false);
-	in->mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
-	in->mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
-	in->mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
-
-	bool isShowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
-	bool isShowOnActWin = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), false);
-	if (isShowOnCursor) {
-		in->mShowPositionType = POSTYPE_MOUSECURSOR;
-	}
-	else if (isShowOnActWin) {
-		in->mShowPositionType = POSTYPE_ACTIVEWINDOWCENTER;
-	}
-	else {
-		in->mShowPositionType = POSTYPE_KEEPLAST;
-	}
-
-
+AppSettingPageBasic::AppSettingPageBasic() : 
+	AppSettingPageBase(_T(""), _T("基本")),
+	in(new PImpl)
+{
 }
 
-bool BasicSettingDialog::GetHelpPageId(CString& id)
+AppSettingPageBasic::~AppSettingPageBasic()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageBasic::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_BASICSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageBasic::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageBasic::GetOrder()
+{
+	return 10;
+}
+// 
+bool AppSettingPageBasic::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageBasic::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageBasic::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageBasic::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageBasic::GetHelpPageId(CString& id)
 {
 	id = _T("GeneralSetting");
 	return true;

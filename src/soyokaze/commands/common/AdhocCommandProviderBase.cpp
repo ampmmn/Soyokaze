@@ -78,24 +78,6 @@ uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::GetOrder() const
 	return 1500;
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool AdhocCommandProviderBase::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
-{
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-
-	// 必要に応じて実装する
-	return true;
-}
-
 uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::AddRef()
 {
 	return ++mRefCount;

@@ -22,8 +22,27 @@ static int SPDLOGLEVEL[] = {
 	1,   // Debug
 };
 
-struct AppSettingPageOther::PImpl
+// 
+class OtherSettingDialog : public CDialog
 {
+public:
+	bool UpdateStatus();
+
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnCbnTransparencyChanged();
+	afx_msg void OnCheckWarnLongTime();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+
 	// 長時間の連続稼働を警告する
 	BOOL mIsWarnLongOperation = FALSE;
 	// 警告までの時間(分単位)
@@ -32,72 +51,64 @@ struct AppSettingPageOther::PImpl
 	int mLogLevel = 0;
 	// 性能ログを出力する
 	BOOL mIsEnablePerfLog = FALSE;
+
+	Settings* mSettingsPtr = nullptr;
 };
 
-AppSettingPageOther::AppSettingPageOther(CWnd* parentWnd) : 
-	SettingPage(_T("その他"), IDD_APPSETTING_OTHER, parentWnd),
-	in(std::make_unique<PImpl>())
-{
-}
-
-AppSettingPageOther::~AppSettingPageOther()
-{
-}
-
-BOOL AppSettingPageOther::OnKillActive()
+bool OtherSettingDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingPageOther::OnSetActive()
+bool OtherSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingPageOther::OnOK()
+void OtherSettingDialog::OnOK()
 {
 	if (UpdateData() == FALSE) {
 		return;
 	}
 
-	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("Health:IsWarnLongOperation"), (bool)in->mIsWarnLongOperation);
-	settingsPtr->Set(_T("Health:TimeToWarn"), in->mTimeToWarnLongOperation);
+	auto settingsPtr = mSettingsPtr;
+	settingsPtr->Set(_T("Health:IsWarnLongOperation"), (bool)mIsWarnLongOperation);
+	settingsPtr->Set(_T("Health:TimeToWarn"), mTimeToWarnLongOperation);
 
 	// ログレベルを変換
 	int spdLogLevel = 0;
-	if (0 <= in->mLogLevel && in->mLogLevel < sizeof(SPDLOGLEVEL) / sizeof(*SPDLOGLEVEL)) {
-		spdLogLevel = SPDLOGLEVEL[in->mLogLevel];
+	if (0 <= mLogLevel && mLogLevel < sizeof(SPDLOGLEVEL) / sizeof(*SPDLOGLEVEL)) {
+		spdLogLevel = SPDLOGLEVEL[mLogLevel];
 	}
 	settingsPtr->Set(_T("Logging:Level"), spdLogLevel);
-	settingsPtr->Set(_T("Logging:UsePerformanceLog"), in->mIsEnablePerfLog != FALSE);
+	settingsPtr->Set(_T("Logging:UsePerformanceLog"), mIsEnablePerfLog != FALSE);
 
 	__super::OnOK();
 }
 
-void AppSettingPageOther::DoDataExchange(CDataExchange* pDX)
+void OtherSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_WARNLONGWORKING, in->mIsWarnLongOperation);
-	DDX_Text(pDX, IDC_EDIT_TIME, in->mTimeToWarnLongOperation);
-	DDV_MinMaxInt(pDX, in->mTimeToWarnLongOperation, 1, 1440);
-	DDX_CBIndex(pDX, IDC_COMBO_LEVEL, in->mLogLevel);
-	DDX_Check(pDX, IDC_CHECK_ENABLEPERFLOG, in->mIsEnablePerfLog);
+	DDX_Check(pDX, IDC_CHECK_WARNLONGWORKING, mIsWarnLongOperation);
+	DDX_Text(pDX, IDC_EDIT_TIME, mTimeToWarnLongOperation);
+	DDV_MinMaxInt(pDX, mTimeToWarnLongOperation, 1, 1440);
+	DDX_CBIndex(pDX, IDC_COMBO_LEVEL, mLogLevel);
+	DDX_Check(pDX, IDC_CHECK_ENABLEPERFLOG, mIsEnablePerfLog);
 }
 
-BEGIN_MESSAGE_MAP(AppSettingPageOther, SettingPage)
+BEGIN_MESSAGE_MAP(OtherSettingDialog, CDialog)
 	ON_COMMAND(IDC_CHECK_WARNLONGWORKING, OnCheckWarnLongTime)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_LOGDIR, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 
-BOOL AppSettingPageOther::OnInitDialog()
+BOOL OtherSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -115,13 +126,13 @@ BOOL AppSettingPageOther::OnInitDialog()
 	return TRUE;
 }
 
-bool AppSettingPageOther::UpdateStatus()
+bool OtherSettingDialog::UpdateStatus()
 {
-	GetDlgItem(IDC_EDIT_TIME)->EnableWindow(in->mIsWarnLongOperation);
-	if (in->mIsWarnLongOperation == FALSE) {
+	GetDlgItem(IDC_EDIT_TIME)->EnableWindow(mIsWarnLongOperation);
+	if (mIsWarnLongOperation == FALSE) {
 		return true;
 	}
-	if (in->mIsWarnLongOperation && in->mTimeToWarnLongOperation <= 0) {
+	if (mIsWarnLongOperation && mTimeToWarnLongOperation <= 0) {
 		AfxMessageBox(_T("警告までの時間は0より大きい値を指定してください"));
 		return false;
 	}
@@ -129,38 +140,32 @@ bool AppSettingPageOther::UpdateStatus()
 }
 
 
-void AppSettingPageOther::OnEnterSettings()
+void OtherSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
-	in->mIsWarnLongOperation = (BOOL)settingsPtr->Get(_T("Health:IsWarnLongOperation"), false);
-	in->mTimeToWarnLongOperation = settingsPtr->Get(_T("Health:TimeToWarn"), 90);
+	mSettingsPtr = settingsPtr;
+	mIsWarnLongOperation = (BOOL)settingsPtr->Get(_T("Health:IsWarnLongOperation"), false);
+	mTimeToWarnLongOperation = settingsPtr->Get(_T("Health:TimeToWarn"), 90);
 
 	int spdLogLevel = settingsPtr->Get(_T("Logging:Level"), 6);
 	for (int i = 0; i < sizeof(SPDLOGLEVEL) / sizeof(*SPDLOGLEVEL); ++i) {
 		if (spdLogLevel != SPDLOGLEVEL[i]) {
 			continue;
 		}
-		in->mLogLevel = i;
+		mLogLevel = i;
 		break;
 	}
-	in->mIsEnablePerfLog = settingsPtr->Get(_T("Logging:UsePerformanceLog"), false);
-}
-
-bool AppSettingPageOther::GetHelpPageId(CString& id)
-{
-	id = _T("OtherSetting");
-	return true;
+	mIsEnablePerfLog = settingsPtr->Get(_T("Logging:UsePerformanceLog"), false);
 }
 
 
-void AppSettingPageOther::OnCheckWarnLongTime()
+void OtherSettingDialog::OnCheckWarnLongTime()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
-void AppSettingPageOther::OnNotifyLinkOpen(
+void OtherSettingDialog::OnNotifyLinkOpen(
 	NMHDR *pNMHDR,
  	LRESULT *pResult
 )
@@ -178,3 +183,74 @@ void AppSettingPageOther::OnNotifyLinkOpen(
 	}
 	*pResult = 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageOther::PImpl
+{
+	OtherSettingDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageOther)
+
+AppSettingPageOther::AppSettingPageOther() : 
+	AppSettingPageBase(_T(""), _T("その他")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageOther::~AppSettingPageOther()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageOther::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_OTHER, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageOther::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageOther::GetOrder()
+{
+	return 110;
+}
+// 
+bool AppSettingPageOther::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageOther::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageOther::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageOther::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageOther::GetHelpPageId(CString& id)
+{
+	id = _T("OtherSetting");
+	return true;
+}
+

@@ -9,32 +9,56 @@
 #define new DEBUG_NEW
 #endif
 
-
-ExtensionSettingDialog::ExtensionSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("拡張機能"), IDD_EXTENSIONSETTING, parentWnd),
-	mIsEnableCalc(FALSE),
-	mIsEnableWindowTitle(FALSE),
-	mIsEnableWorksheet(FALSE),
-	mIsEnableSlide(FALSE),
-	mIsEnableControlPanel(FALSE),
-	mIsEnableSpecialFolder(FALSE),
-	mIsEnableUWP(FALSE),
-	mIsEnableMMCSnapin(FALSE),
-	mIsEnableMSSettings(FALSE),
-	mIsEnableOutlookMail(FALSE)
+class ExtensionSettingDialog : public CDialog
 {
-}
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
 
-ExtensionSettingDialog::~ExtensionSettingDialog()
-{
-}
+	bool UpdateStatus();
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnBrowsePyhonDLLPath();
+	afx_msg void OnCheckEnableCalculator();
+
+public:
+	BOOL mIsEnableCalc = FALSE;
+	CString mPythonDLLPath;
+
+	// ウインドウタイトルによるウインドウ切り替え機能
+	BOOL mIsEnableWindowTitle = FALSE;
+	// Excelワークシート名によるウインドウ切り替え機能
+	BOOL mIsEnableWorksheet = FALSE;
+	// PowerPointスライド名によるウインドウ切り替え機能
+	BOOL mIsEnableSlide = FALSE;
+	// コントロールパネル選択機能
+	BOOL mIsEnableControlPanel = FALSE;
+	// スタートメニュー/最近使ったファイル選択機能
+	BOOL mIsEnableSpecialFolder = FALSE;
+	// UWPアプリ選択機能
+	BOOL mIsEnableUWP = FALSE;
+	// MMCスナップイン選択機能
+	BOOL mIsEnableMMCSnapin = FALSE;
+	// Windowsの設定(ms-settings)選択機能
+	BOOL mIsEnableMSSettings = FALSE;
+	// Outlookメール選択機能(Inboxのみ)
+	BOOL mIsEnableOutlookMail = FALSE;
+
+	Settings* mSettingsPtr = nullptr;
+};
 
 void ExtensionSettingDialog::OnOK()
 {
 	UpdateData();
 
-
-	auto settingsPtr = (Settings*)GetParam();
+	auto settingsPtr = mSettingsPtr;
 
 	settingsPtr->Set(_T("Calculator:Enable"), (bool)mIsEnableCalc);
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
@@ -67,7 +91,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	
 }
 
-BEGIN_MESSAGE_MAP(ExtensionSettingDialog, SettingPage)
+BEGIN_MESSAGE_MAP(ExtensionSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSE, OnBrowsePyhonDLLPath)
 	ON_COMMAND(IDC_CHECK_ENABLECALCULATOR, OnCheckEnableCalculator)
 END_MESSAGE_MAP()
@@ -83,29 +107,29 @@ BOOL ExtensionSettingDialog::OnInitDialog()
 	return TRUE;
 }
 
-BOOL ExtensionSettingDialog::OnKillActive()
+bool ExtensionSettingDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
 	if (mIsEnableCalc && Path::FileExists(mPythonDLLPath) == FALSE) {
 		AfxMessageBox(_T("Python(DLL)のパスを設定してください\n(ファイルが存在しません)"));
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL ExtensionSettingDialog::OnSetActive()
+bool ExtensionSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void ExtensionSettingDialog::OnEnterSettings()
+void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
+	mSettingsPtr = settingsPtr;
 
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
@@ -120,13 +144,6 @@ void ExtensionSettingDialog::OnEnterSettings()
 	mIsEnableMSSettings = settingsPtr->Get(_T("Soyokaze:IsEnableMSSettings"), true);
 	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
-
-bool ExtensionSettingDialog::GetHelpPageId(CString& id)
-{
-	id = _T("ExtensionSetting");
-	return true;
-}
-
 
 bool ExtensionSettingDialog::UpdateStatus()
 {
@@ -156,3 +173,74 @@ void ExtensionSettingDialog::OnCheckEnableCalculator()
 	UpdateData();
 	UpdateStatus();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageExtension::PImpl
+{
+	ExtensionSettingDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageExtension)
+
+AppSettingPageExtension::AppSettingPageExtension() : 
+	AppSettingPageBase(_T(""), _T("拡張機能")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageExtension::~AppSettingPageExtension()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageExtension::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_EXTENSIONSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageExtension::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageExtension::GetOrder()
+{
+	return 90;
+}
+// 
+bool AppSettingPageExtension::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageExtension::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageExtension::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageExtension::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageExtension::GetHelpPageId(CString& id)
+{
+	id = _T("ExtensionSetting");
+	return true;
+}
+

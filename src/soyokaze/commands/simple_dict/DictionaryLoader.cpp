@@ -281,6 +281,8 @@ static bool CheckSchemaVersion(SQLite3Database& db, int64_t version)
 {
 	struct local_callback_version {
 		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
 			auto param = (local_callback_version*)p;
 			param->mVersion = std::stoull(argv[0]);
 			return 1;  // 一つだけ取得できればOK
@@ -333,6 +335,8 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 
 	struct local_callback_updatetime {
 		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
 			auto param = (local_callback_updatetime*)p;
 			param->mUpdateTime = std::stoull(argv[0]);
 			return 1;  // 一つだけ取得できればOK
@@ -359,6 +363,8 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 	// 7. 3のハッシュに対応するデータを読む select * from items where id=..
 	struct local_callback_entry {
 		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
 			auto param = (local_callback_entry*)p;
 
 			param->conv.Convert(argv[0], param->mTmpStr);

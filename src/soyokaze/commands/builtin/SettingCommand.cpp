@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingCommand.h"
-#include "settingwindow/SettingDialog.h"
+#include "settingwindow/AppSettingDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
@@ -72,7 +72,7 @@ LRESULT SettingCommand::CallbackExecute(LPARAM lparam)
 
 LRESULT SettingCommand::OnCallbackExecute()
 {
-	SettingDialog dlg;
+	AppSettingDialog dlg;
 
 	// 前回表示していたページを復元する
 	dlg.SetBreadCrumbsString(mLastBreakCrumbs);

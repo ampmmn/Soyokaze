@@ -152,7 +152,7 @@ void PathWatcher::PImpl::NotifyPath(
 {
 	LPCTSTR msg = message.IsEmpty() == FALSE? (LPCTSTR)message : _T("更新を検知");
 
-	if (ShortcutSettingPage::IsStartMenuExists()) {
+	if (AppSettingPageShortcut::IsStartMenuExists()) {
 		// スタートメニューにショートカットが登録されている場合はトーストを使う
 		Toast toast;
 		toast.SetCommandName(cmdName);

@@ -133,23 +133,6 @@ void PathConvertProvider::QueryAdhocCommands(
 	}
 }
 
-/**
- 	設定ページを取得する
- 	@return true 成功  false失敗
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  設定ページリスト
-*/
-bool PathConvertProvider::CreateSettingPages(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
-{
-	// 必要に応じて実装する
-	pages.push_back(new AppSettingPathConvertPage(parent));
-	return true;
-}
-
-
 } // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace launcherapp

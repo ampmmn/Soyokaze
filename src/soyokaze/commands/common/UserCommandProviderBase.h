@@ -30,8 +30,6 @@ public:
 
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
-	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
-
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

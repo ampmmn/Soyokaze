@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShortcutSettingPage.h"
+#include "setting/Settings.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Path.h"
 #include "app/AppName.h"
@@ -10,21 +11,128 @@
 #define new DEBUG_NEW
 #endif
 
+class AppSettingPageShortcut::SettingPage : public CDialog
+{
+public:
+	static void CreateStartMenuPath(CString& pathToMenu);
+	static bool CreateStartMenu();
 
-ShortcutSettingPage::ShortcutSettingPage(CWnd* parentWnd) : 
-	SettingPage(_T("ショートカット登録"), IDD_SHORTCUTSETTING, parentWnd),
-	mSendTo(FALSE),
-	mStartMenu(FALSE),
-	mDesktop(FALSE),
-	mStartup(FALSE)
+public:
+	CString mAppPath;
+
+	// 各種ショートカットのパス
+	CString mSendToPath;
+	CString mStartMenuDir;
+	CString mStartMenuPath;
+	CString mDesktopPath;
+	CString mStartupPath;
+
+	BOOL mSendTo = FALSE;
+	BOOL mStartMenu = FALSE;
+	BOOL mDesktop = FALSE;
+	BOOL mStartup = FALSE;
+
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+	void UpdateStatus();
+
+	bool MakeShortcutSendToPath();
+	bool MakeShortcutStartMenu();
+	bool MakeShortcutDesktop();
+	bool MakeShortcutStartup();
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnButtonDelete();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+struct AppSettingPageShortcut::PImpl
+{
+	SettingPage mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageShortcut)
+
+AppSettingPageShortcut::AppSettingPageShortcut() : 
+	AppSettingPageBase(_T("基本"), _T("ショートカット登録")),
+	in(new PImpl)
 {
 }
 
-ShortcutSettingPage::~ShortcutSettingPage()
+AppSettingPageShortcut::~AppSettingPageShortcut()
 {
 }
 
-void ShortcutSettingPage::OnOK()
+// スタートメニューは登録済か?
+bool AppSettingPageShortcut::IsStartMenuExists()
+{
+	CString path;
+	SettingPage::CreateStartMenuPath(path);
+	return Path::FileExists(path) != FALSE;
+}
+
+
+// ウインドウを作成する
+bool AppSettingPageShortcut::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_SHORTCUTSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageShortcut::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageShortcut::GetOrder()
+{
+	return 10;
+}
+// 
+bool AppSettingPageShortcut::OnEnterSettings()
+{
+	// このページは設定への読み書きをしない
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageShortcut::OnSetActive()
+{
+	return true;
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageShortcut::OnKillActive()
+{
+	return true;
+}
+//
+void AppSettingPageShortcut::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageShortcut::GetHelpPageId(CString& id)
+{
+	id = _T("ShortcutSetting");
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+void AppSettingPageShortcut::SettingPage::OnOK()
 {
 	MakeShortcutSendToPath();
 	MakeShortcutStartMenu();
@@ -34,7 +142,7 @@ void ShortcutSettingPage::OnOK()
 	__super::OnOK();
 }
 
-bool ShortcutSettingPage::MakeShortcutSendToPath()
+bool AppSettingPageShortcut::SettingPage::MakeShortcutSendToPath()
 {
 	if (mSendTo == FALSE && Path::FileExists(mSendToPath)) {
 		if (DeleteFile(mSendToPath) == FALSE) {
@@ -50,7 +158,7 @@ bool ShortcutSettingPage::MakeShortcutSendToPath()
 	return true;
 }
 
-bool ShortcutSettingPage::MakeShortcutStartMenu()
+bool AppSettingPageShortcut::SettingPage::MakeShortcutStartMenu()
 {
 	if (mStartMenu == FALSE && Path::FileExists(mStartMenuPath)) {
 		// スタートメニューを作成しない、かつ、存在する場合は消す
@@ -68,7 +176,7 @@ bool ShortcutSettingPage::MakeShortcutStartMenu()
 	return true;
 }
 
-bool ShortcutSettingPage::MakeShortcutDesktop()
+bool AppSettingPageShortcut::SettingPage::MakeShortcutDesktop()
 {
 	if (mDesktop == FALSE && Path::FileExists(mDesktopPath)) {
 		// デスクトップにアイコンを作成しない、かつ、存在する場合は消す
@@ -87,7 +195,7 @@ bool ShortcutSettingPage::MakeShortcutDesktop()
 	return true;
 }
 
-bool ShortcutSettingPage::MakeShortcutStartup()
+bool AppSettingPageShortcut::SettingPage::MakeShortcutStartup()
 {
 	if (mStartup == FALSE && Path::FileExists(mStartupPath)) {
 		if (DeleteFile(mStartupPath) == FALSE) {
@@ -104,7 +212,7 @@ bool ShortcutSettingPage::MakeShortcutStartup()
 }
 
 
-void ShortcutSettingPage::DoDataExchange(CDataExchange* pDX)
+void AppSettingPageShortcut::SettingPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_SENDTO, mSendTo);
@@ -113,11 +221,11 @@ void ShortcutSettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_STARTUP, mStartup);
 }
 
-BEGIN_MESSAGE_MAP(ShortcutSettingPage, SettingPage)
+BEGIN_MESSAGE_MAP(AppSettingPageShortcut::SettingPage, CDialog)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
 END_MESSAGE_MAP()
 
-BOOL ShortcutSettingPage::OnInitDialog()
+BOOL AppSettingPageShortcut::SettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -148,20 +256,8 @@ BOOL ShortcutSettingPage::OnInitDialog()
 	return TRUE;
 }
 
-BOOL ShortcutSettingPage::OnKillActive()
-{
-	if (UpdateData() == FALSE) {
-		return FALSE;
-	}
-	return TRUE;
-}
 
-BOOL ShortcutSettingPage::OnSetActive()
-{
-	return TRUE;
-}
-
-void ShortcutSettingPage::UpdateStatus()
+void AppSettingPageShortcut::SettingPage::UpdateStatus()
 {
 	mSendTo = Path::FileExists(mSendToPath);
 	mStartMenu = Path::FileExists(mStartMenuPath);
@@ -170,7 +266,7 @@ void ShortcutSettingPage::UpdateStatus()
 	UpdateData(FALSE);
 }
 
-void ShortcutSettingPage::OnButtonDelete()
+void AppSettingPageShortcut::SettingPage::OnButtonDelete()
 {
 	LPCTSTR exeName = PathFindFileName(mAppPath);
 
@@ -195,12 +291,8 @@ void ShortcutSettingPage::OnButtonDelete()
 	UpdateStatus();
 }
 
-void ShortcutSettingPage::OnEnterSettings()
-{
-}
-
 // スタートメニューのパス生成
-void ShortcutSettingPage::CreateStartMenuPath(CString& pathToMenu)
+void AppSettingPageShortcut::SettingPage::CreateStartMenuPath(CString& pathToMenu)
 {
 	Path appPath(Path::MODULEFILEPATH);
 
@@ -215,15 +307,7 @@ void ShortcutSettingPage::CreateStartMenuPath(CString& pathToMenu)
 	ShortcutFile::MakeSpecialFolderPath(pathToMenu, CSIDL_PROGRAMS, linkNameForStartMenu);
 }
 
-// スタートメニューは登録済か?
-bool ShortcutSettingPage::IsStartMenuExists()
-{
-	CString path;
-	CreateStartMenuPath(path);
-	return Path::FileExists(path) != FALSE;
-}
-
-bool ShortcutSettingPage::CreateStartMenu()
+bool AppSettingPageShortcut::SettingPage::CreateStartMenu()
 {
 	CString pathToStartMenu;
 	CreateStartMenuPath(pathToStartMenu);
@@ -243,12 +327,6 @@ bool ShortcutSettingPage::CreateStartMenu()
 	link.SetToastCallbackGUID(LAUNCHER_TOAST_CALLBACK_GUID);
 	link.Save(pathToStartMenu);
 
-	return true;
-}
-
-bool ShortcutSettingPage::GetHelpPageId(CString& id)
-{
-	id = _T("ShortcutSetting");
 	return true;
 }
 

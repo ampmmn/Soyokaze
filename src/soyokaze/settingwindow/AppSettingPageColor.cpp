@@ -14,10 +14,12 @@
 #define new DEBUG_NEW
 #endif
 
-
-struct AppSettingPageColor::PImpl
+class ColorSettingDialog : public CDialog
 {
-	BOOL mIsUseSystemSettings = TRUE;
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
 
 	COLORREF GetWindowTextColor();
 	COLORREF GetWindowBkColor();
@@ -29,6 +31,22 @@ struct AppSettingPageColor::PImpl
 	COLORREF GetListTextHLColor();
 	COLORREF GetListBkHLColor();
 
+	void DisableAllControls();
+	bool UpdateStatus();
+	void ApplyToCtrl();
+	void DrawPreview();
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	void OnButtonRestore();
+	void OnUpdateStatus();
+
+	BOOL mIsUseSystemSettings = TRUE;
 
 	COLORREF mWindowTextColor = 0;
 	COLORREF mWindowBkColor = 0;
@@ -44,120 +62,109 @@ struct AppSettingPageColor::PImpl
 
 	SystemColorScheme mSysScheme;
 
+	Settings* mSettingsPtr = nullptr;
 };
 
-COLORREF AppSettingPageColor::PImpl::GetWindowTextColor()
+COLORREF ColorSettingDialog::GetWindowTextColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetTextColor() : mWindowTextColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetWindowBkColor()
+COLORREF ColorSettingDialog::GetWindowBkColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetBackgroundColor() : mWindowBkColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetEditTextColor()
+COLORREF ColorSettingDialog::GetEditTextColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetEditTextColor() : mEditTextColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetEditBkColor()
+COLORREF ColorSettingDialog::GetEditBkColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetEditBackgroundColor() : mEditBkColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetListTextColor()
+COLORREF ColorSettingDialog::GetListTextColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListTextColor() : mListTextColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetListBkColor()
+COLORREF ColorSettingDialog::GetListBkColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListBackgroundColor() : mListBkColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetListBkAltColor()
+COLORREF ColorSettingDialog::GetListBkAltColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListBackgroundAltColor() : mListBkAltColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetListTextHLColor()
+COLORREF ColorSettingDialog::GetListTextHLColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListHighlightTextColor() : mListTextHLColor;
 }
 
-COLORREF AppSettingPageColor::PImpl::GetListBkHLColor()
+COLORREF ColorSettingDialog::GetListBkHLColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListHighlightBackgroundColor() : mListBkHLColor;
 }
 
-
-
-
-AppSettingPageColor::AppSettingPageColor(CWnd* parentWnd) : 
-	SettingPage(_T("配色"), IDD_APPSETTING_COLOR, parentWnd),
-	in(new PImpl)
-{
-}
-
-AppSettingPageColor::~AppSettingPageColor()
-{
-}
-
-BOOL AppSettingPageColor::OnKillActive()
+bool ColorSettingDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingPageColor::OnSetActive()
+bool ColorSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingPageColor::OnOK()
+void ColorSettingDialog::OnOK()
 {
+	auto settingsPtr = mSettingsPtr;
+
 	UpdateData();
 
-	in->mWindowTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->GetColor();
-	in->mWindowBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->GetColor();
-	in->mEditTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->GetColor();
-	in->mEditBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->GetColor();
-	in->mListTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->GetColor();
-	in->mListBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->GetColor();
-	in->mListBkAltColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->GetColor();
-	in->mListTextHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->GetColor();
-	in->mListBkHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->GetColor();
+	mWindowTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->GetColor();
+	mWindowBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->GetColor();
+	mEditTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->GetColor();
+	mEditBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->GetColor();
+	mListTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->GetColor();
+	mListBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->GetColor();
+	mListBkAltColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->GetColor();
+	mListTextHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->GetColor();
+	mListBkHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->GetColor();
 
-	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("ColorSettings:UseSystemColor"), in->mIsUseSystemSettings ? true : false);
-	settingsPtr->Set(_T("CurrentColor:WindowText"), (int)in->mWindowTextColor);
-	settingsPtr->Set(_T("CurrentColor:WindowBackground"), (int)in->mWindowBkColor);
-	settingsPtr->Set(_T("CurrentColor:EditText"), (int)in->mEditTextColor);
-	settingsPtr->Set(_T("CurrentColor:EditBackground"), (int)in->mEditBkColor);
-	settingsPtr->Set(_T("CurrentColor:ListText"), (int)in->mListTextColor);
-	settingsPtr->Set(_T("CurrentColor:ListBackground"), (int)in->mListBkColor);
-	settingsPtr->Set(_T("CurrentColor:ListBackgroundAlt"), (int)in->mListBkAltColor);
-	settingsPtr->Set(_T("CurrentColor:ListHighlightText"), (int)in->mListTextHLColor);
-	settingsPtr->Set(_T("CurrentColor:ListHighlightBackground"), (int)in->mListBkHLColor);
+	settingsPtr->Set(_T("ColorSettings:UseSystemColor"), mIsUseSystemSettings ? true : false);
+	settingsPtr->Set(_T("CurrentColor:WindowText"), (int)mWindowTextColor);
+	settingsPtr->Set(_T("CurrentColor:WindowBackground"), (int)mWindowBkColor);
+	settingsPtr->Set(_T("CurrentColor:EditText"), (int)mEditTextColor);
+	settingsPtr->Set(_T("CurrentColor:EditBackground"), (int)mEditBkColor);
+	settingsPtr->Set(_T("CurrentColor:ListText"), (int)mListTextColor);
+	settingsPtr->Set(_T("CurrentColor:ListBackground"), (int)mListBkColor);
+	settingsPtr->Set(_T("CurrentColor:ListBackgroundAlt"), (int)mListBkAltColor);
+	settingsPtr->Set(_T("CurrentColor:ListHighlightText"), (int)mListTextHLColor);
+	settingsPtr->Set(_T("CurrentColor:ListHighlightBackground"), (int)mListBkHLColor);
 
 	__super::OnOK();
 }
 
-void AppSettingPageColor::DoDataExchange(CDataExchange* pDX)
+void ColorSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_CHECK_USEDEFAULT, in->mIsUseSystemSettings);
+	DDX_Check(pDX, IDC_CHECK_USEDEFAULT, mIsUseSystemSettings);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AppSettingPageColor, SettingPage)
+BEGIN_MESSAGE_MAP(ColorSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_RESTORE, OnButtonRestore)
 	ON_COMMAND(IDC_CHECK_USEDEFAULT, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_WINDOWTEXT, OnUpdateStatus)
@@ -173,11 +180,11 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AppSettingPageColor::OnInitDialog()
+BOOL ColorSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mPreview.SubclassDlgItem(IDC_STATIC_PREVIEW, this);
+	mPreview.SubclassDlgItem(IDC_STATIC_PREVIEW, this);
 
 	if (utility::IsHighContrastMode()) {
 		DisableAllControls();
@@ -189,7 +196,7 @@ BOOL AppSettingPageColor::OnInitDialog()
 	return TRUE;
 }
 
-void AppSettingPageColor::DisableAllControls()
+void ColorSettingDialog::DisableAllControls()
 {
 	::ShowWindow(GetDlgItem(IDC_STATIC_WARNING)->GetSafeHwnd(), SW_SHOW);
 
@@ -212,9 +219,9 @@ void AppSettingPageColor::DisableAllControls()
 	}
 }
 
-bool AppSettingPageColor::UpdateStatus()
+bool ColorSettingDialog::UpdateStatus()
 {
-	BOOL isEnableColor = in->mIsUseSystemSettings == FALSE;
+	BOOL isEnableColor = mIsUseSystemSettings == FALSE;
 	spdlog::debug("enablecolor {}", isEnableColor != FALSE);
 
 	// システム設定を使わない場合はカラー設定できるようにする
@@ -229,22 +236,22 @@ bool AppSettingPageColor::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT)->EnableWindow(isEnableColor);
 	GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT)->EnableWindow(isEnableColor);
 
-	in->mWindowTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->GetColor();
-	in->mWindowBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->GetColor();
-	in->mEditTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->GetColor();
-	in->mEditBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->GetColor();
-	in->mListTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->GetColor();
-	in->mListBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->GetColor();
-	in->mListBkAltColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->GetColor();
-	in->mListTextHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->GetColor();
-	in->mListBkHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->GetColor();
+	mWindowTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->GetColor();
+	mWindowBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->GetColor();
+	mEditTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->GetColor();
+	mEditBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->GetColor();
+	mListTextColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->GetColor();
+	mListBkColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->GetColor();
+	mListBkAltColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->GetColor();
+	mListTextHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->GetColor();
+	mListBkHLColor = ((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->GetColor();
 
 	// プレビューを更新
 	DrawPreview();
 	return true;
 }
 
-void AppSettingPageColor::DrawPreview()
+void ColorSettingDialog::DrawPreview()
 {
 	auto pref = AppPreference::Get();
 
@@ -258,13 +265,13 @@ void AppSettingPageColor::DrawPreview()
 	}
 	font.CreateFontIndirectW(&lf);
 
-	CBitmap* bmp = in->mPreview.GetBitmap();
+	CBitmap* bmp = mPreview.GetBitmap();
 
 	CRect rc;
-	in->mPreview.GetClientRect(&rc);
+	mPreview.GetClientRect(&rc);
 
 	CBrush brBk;
-	brBk.CreateSolidBrush(in->GetWindowBkColor());
+	brBk.CreateSolidBrush(GetWindowBkColor());
 
 	CClientDC dc(this);
 
@@ -283,46 +290,46 @@ void AppSettingPageColor::DrawPreview()
 
 	// コメント欄のテキスト描画
 	CRect rcItem(CPoint(32, 8), CSize(rc.Width(), itemHeight));
-	dcMem.SetBkColor(in->GetWindowBkColor());
-	dcMem.SetTextColor(in->GetWindowTextColor());
+	dcMem.SetBkColor(GetWindowBkColor());
+	dcMem.SetTextColor(GetWindowTextColor());
 	dcMem.DrawText(pref->GetDefaultComment(), rcItem, DT_LEFT);
 ;
 	offset += itemHeight;
 
 	// テキスト領域描画
 	CBrush brEditBk;
-	brEditBk.CreateSolidBrush(in->GetEditBkColor());
+	brEditBk.CreateSolidBrush(GetEditBkColor());
 	dcMem.SelectObject(&brEditBk);
 	dcMem.PatBlt(0, offset, rc.Width(), itemHeight, PATCOPY);
 
 	// テキスト描画
 	rcItem = CRect(CPoint(8, offset + 8), CSize(rc.Width(), itemHeight));
-	dcMem.SetBkColor(in->GetEditBkColor());
-	dcMem.SetTextColor(in->GetEditTextColor());
+	dcMem.SetBkColor(GetEditBkColor());
+	dcMem.SetTextColor(GetEditTextColor());
 	dcMem.DrawText(_T("(入力欄)"), rcItem, DT_LEFT);
 
 	offset += itemHeight;
 
 	// リスト領域描画
 	CBrush brListBk;
-	brListBk.CreateSolidBrush(in->GetListBkColor());
+	brListBk.CreateSolidBrush(GetListBkColor());
 	CBrush brListBkAlt;
-	brListBkAlt.CreateSolidBrush(in->GetListBkAltColor());
+	brListBkAlt.CreateSolidBrush(GetListBkAltColor());
 	CBrush brListBkHL;
-	brListBkHL.CreateSolidBrush(in->GetListBkHLColor());
+	brListBkHL.CreateSolidBrush(GetListBkHLColor());
 
 	CString labelText;
 	int i = 0;
 	while (offset < rc.bottom) {
 		if (i == 0) {
 			dcMem.SelectObject(&brListBkHL);
-			dcMem.SetBkColor(in->GetListBkHLColor());
-			dcMem.SetTextColor(in->GetListTextHLColor());
+			dcMem.SetBkColor(GetListBkHLColor());
+			dcMem.SetTextColor(GetListTextHLColor());
 		}
 		else {
 			dcMem.SelectObject((i % 2) ? &brListBkAlt : &brListBk);
-			dcMem.SetBkColor((i % 2) ? in->GetListBkAltColor() : in->GetListBkColor());
-			dcMem.SetTextColor(in->GetListTextColor());
+			dcMem.SetBkColor((i % 2) ? GetListBkAltColor() : GetListBkColor());
+			dcMem.SetTextColor(GetListTextColor());
 		}
 		dcMem.PatBlt(0, offset, rc.Width(), itemHeight, PATCOPY);
 
@@ -346,26 +353,26 @@ void AppSettingPageColor::DrawPreview()
 	dcMem.SelectObject(orgBr);
 	dcMem.SelectObject(orgBmp);
 
-	in->mPreview.InvalidateRect(nullptr);
+	mPreview.InvalidateRect(nullptr);
 }
 
-void AppSettingPageColor::OnEnterSettings()
+void ColorSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
+	mSettingsPtr = settingsPtr;
 
-	in->mIsUseSystemSettings = settingsPtr->Get(_T("ColorSettings:UseSystemColor"), true) ? TRUE : FALSE;
+	mIsUseSystemSettings = settingsPtr->Get(_T("ColorSettings:UseSystemColor"), true) ? TRUE : FALSE;
 
 	SystemColorScheme sysColor;
 
-	in->mWindowTextColor = settingsPtr->Get(_T("CurrentColor:WindowText"), (int)sysColor.GetTextColor());
-	in->mWindowBkColor = settingsPtr->Get(_T("CurrentColor:WindowBackground"), (int)sysColor.GetBackgroundColor());
-	in->mEditTextColor = settingsPtr->Get(_T("CurrentColor:EditText"), (int)sysColor.GetEditTextColor());
-	in->mEditBkColor = settingsPtr->Get(_T("CurrentColor:EditBackground"), (int)sysColor.GetEditBackgroundColor());
-	in->mListTextColor = settingsPtr->Get(_T("CurrentColor:ListText"), (int)sysColor.GetListTextColor());
-	in->mListBkColor = settingsPtr->Get(_T("CurrentColor:ListBackground"), (int)sysColor.GetListBackgroundColor());
-	in->mListBkAltColor = settingsPtr->Get(_T("CurrentColor:ListBackgroundAlt"), (int)sysColor.GetListBackgroundAltColor());
-	in->mListTextHLColor = settingsPtr->Get(_T("CurrentColor:ListHighlightText"), (int)sysColor.GetListHighlightTextColor());
-	in->mListBkHLColor = settingsPtr->Get(_T("CurrentColor:ListHighlightBackground"), (int)sysColor.GetListHighlightBackgroundColor());
+	mWindowTextColor = settingsPtr->Get(_T("CurrentColor:WindowText"), (int)sysColor.GetTextColor());
+	mWindowBkColor = settingsPtr->Get(_T("CurrentColor:WindowBackground"), (int)sysColor.GetBackgroundColor());
+	mEditTextColor = settingsPtr->Get(_T("CurrentColor:EditText"), (int)sysColor.GetEditTextColor());
+	mEditBkColor = settingsPtr->Get(_T("CurrentColor:EditBackground"), (int)sysColor.GetEditBackgroundColor());
+	mListTextColor = settingsPtr->Get(_T("CurrentColor:ListText"), (int)sysColor.GetListTextColor());
+	mListBkColor = settingsPtr->Get(_T("CurrentColor:ListBackground"), (int)sysColor.GetListBackgroundColor());
+	mListBkAltColor = settingsPtr->Get(_T("CurrentColor:ListBackgroundAlt"), (int)sysColor.GetListBackgroundAltColor());
+	mListTextHLColor = settingsPtr->Get(_T("CurrentColor:ListHighlightText"), (int)sysColor.GetListHighlightTextColor());
+	mListBkHLColor = settingsPtr->Get(_T("CurrentColor:ListHighlightBackground"), (int)sysColor.GetListHighlightBackgroundColor());
 
 
 	// カラーをコントロールに設定する
@@ -376,46 +383,110 @@ void AppSettingPageColor::OnEnterSettings()
 	UpdateData(FALSE);
 }
 
-void AppSettingPageColor::ApplyToCtrl()
+void ColorSettingDialog::ApplyToCtrl()
 {
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->SetColor(in->mWindowTextColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->SetColor(in->mWindowBkColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->SetColor(in->mEditTextColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->SetColor(in->mEditBkColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->SetColor(in->mListTextColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->SetColor(in->mListBkColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->SetColor(in->mListBkAltColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->SetColor(in->mListTextHLColor);
-	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->SetColor(in->mListBkHLColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWTEXT))->SetColor(mWindowTextColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_WINDOWBACKGROUND))->SetColor(mWindowBkColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT))->SetColor(mEditTextColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND))->SetColor(mEditBkColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT))->SetColor(mListTextColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND))->SetColor(mListBkColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT))->SetColor(mListBkAltColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT))->SetColor(mListTextHLColor);
+	((CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT))->SetColor(mListBkHLColor);
 }
 
-bool AppSettingPageColor::GetHelpPageId(CString& id)
+void ColorSettingDialog::OnButtonRestore()
 {
-	id = _T("ColorSetting");
-	return true;
-}
-
-void AppSettingPageColor::OnButtonRestore()
-{
-	in->mWindowTextColor = in->mSysScheme.GetTextColor();
-	in->mWindowBkColor = in->mSysScheme.GetBackgroundColor();
-	in->mEditTextColor = in->mSysScheme.GetEditTextColor();
-	in->mEditBkColor = in->mSysScheme.GetEditBackgroundColor();
-	in->mListTextColor = in->mSysScheme.GetListTextColor();
-	in->mListBkColor = in->mSysScheme.GetListBackgroundColor();
-	in->mListBkAltColor = in->mSysScheme.GetListBackgroundAltColor();
-	in->mListTextHLColor = in->mSysScheme.GetListHighlightTextColor();
-	in->mListBkHLColor = in->mSysScheme.GetListHighlightBackgroundColor();
+	mWindowTextColor = mSysScheme.GetTextColor();
+	mWindowBkColor = mSysScheme.GetBackgroundColor();
+	mEditTextColor = mSysScheme.GetEditTextColor();
+	mEditBkColor = mSysScheme.GetEditBackgroundColor();
+	mListTextColor = mSysScheme.GetListTextColor();
+	mListBkColor = mSysScheme.GetListBackgroundColor();
+	mListBkAltColor = mSysScheme.GetListBackgroundAltColor();
+	mListTextHLColor = mSysScheme.GetListHighlightTextColor();
+	mListBkHLColor = mSysScheme.GetListHighlightBackgroundColor();
 
 	ApplyToCtrl();
 
 	UpdateStatus();
 }
 
-void AppSettingPageColor::OnUpdateStatus()
+void ColorSettingDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageColor::PImpl
+{
+	ColorSettingDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageColor)
+
+AppSettingPageColor::AppSettingPageColor() : 
+	AppSettingPageBase(_T("表示"), _T("配色")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageColor::~AppSettingPageColor()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageColor::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_COLOR, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageColor::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageColor::GetOrder()
+{
+	return 50;
+}
+// 
+bool AppSettingPageColor::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageColor::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageColor::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageColor::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageColor::GetHelpPageId(CString& id)
+{
+	id = _T("ColorSetting");
+	return true;
 }
 

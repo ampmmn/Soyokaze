@@ -1,35 +1,41 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "settingwindow/AppSettingPageBase.h"
+#include "settingwindow/AppSettingPageRepository.h"
+#include <memory>
 
-class InputSettingDialog : public SettingPage
+class AppSettingPageInput :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	InputSettingDialog(CWnd* parentWnd);
-	virtual ~InputSettingDialog();
+	AppSettingPageInput();
+	~AppSettingPageInput();
 
-	// 入力画面を表示するときにIMEをオフにする
-	BOOL mIsIMEOff;
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
 
-	// ネットワークパスを無視する
-	BOOL mIsIgnoreUNC;
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(CString& helpPageId) override;
 
-	// C/Migemo検索を有効にする
-	BOOL mIsEnableMigemo;
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPageInput(); }
 
-protected:
-	bool UpdateStatus();
-
-	BOOL OnKillActive() override;
-	BOOL OnSetActive() override;
-	void OnOK() override;
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
-// 実装
-protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	DECLARE_APPSETTINGPAGE(AppSettingPageInput)
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
+
 

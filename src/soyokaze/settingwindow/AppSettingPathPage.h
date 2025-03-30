@@ -1,38 +1,40 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "settingwindow/AppSettingPageBase.h"
+#include "settingwindow/AppSettingPageRepository.h"
+#include <memory>
 
-// 
-class AppSettingPathPage : public SettingPage
+class AppSettingPagePathPage :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingPathPage(CWnd* parentWnd);
-	virtual ~AppSettingPathPage();
+	AppSettingPagePathPage();
+	~AppSettingPagePathPage();
 
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
+
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(CString& helpPageId) override;
+
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPagePathPage(); }
+
+	DECLARE_APPSETTINGPAGE(AppSettingPagePathPage)
+private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
-
-protected:
-	void SwapItem(int srcIndex, int dstIndex);
-	bool UpdateStatus();
-
-	BOOL OnKillActive() override;
-	BOOL OnSetActive() override;
-	void OnOK() override;
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
-
-// 実装
-protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnButtonAdd();
-	afx_msg void OnButtonEdit();
-	afx_msg void OnButtonDelete();
-	afx_msg void OnButtonUp();
-	afx_msg void OnButtonDown();
-	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

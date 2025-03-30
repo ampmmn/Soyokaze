@@ -76,11 +76,38 @@ enum {
 	SORT_DESCEND_PRIORITY,  // 説明-降順
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-struct AppSettingPageCommandPriority::PImpl
+class CommandPriorityPageDialog : public CDialog
 {
+public:
+	virtual ~CommandPriorityPageDialog();
+
+	bool OnSetActive();
+	bool OnKillActive();
+
+	void UpdateListItems();
+	bool UpdateStatus();
 	void SortCommands();
 	void SelectItem(Command* command, bool isRedraw);
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnEditFilterChanged();
+	afx_msg void OnButtonEdit();
+	afx_msg void OnButtonResetAll();
+	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
 
 	CommandRanking* mCommandPriority = nullptr;
 
@@ -97,13 +124,19 @@ struct AppSettingPageCommandPriority::PImpl
 	int mSortType = SORT_ASCEND_NAME;
 	//! フィルター欄の文字列
 	CString mFilterStr;
-
 };
+
+CommandPriorityPageDialog::~CommandPriorityPageDialog()
+{
+	if (mCommandPriority) {
+		mCommandPriority->Release();
+	}
+}
 
 /**
 	コマンドをソートする
 */
-void AppSettingPageCommandPriority::PImpl::SortCommands()
+void CommandPriorityPageDialog::SortCommands()
 {
 	if (mSortType == SORT_ASCEND_NAME) {
 		// 名前昇順
@@ -144,7 +177,7 @@ void AppSettingPageCommandPriority::PImpl::SortCommands()
 	@param[in] command 選択対象コマンド
 	@param[in] isRedraw     再描画するか?
 */
-void AppSettingPageCommandPriority::PImpl::SelectItem(
+void CommandPriorityPageDialog::SelectItem(
 	Command* command,
 	bool isRedraw
 )
@@ -169,46 +202,26 @@ void AppSettingPageCommandPriority::PImpl::SelectItem(
 	}
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-
-AppSettingPageCommandPriority::AppSettingPageCommandPriority(CWnd* parentWnd) : 
-	SettingPage(_T("優先度"), IDD_APPSETTING_COMMANDPRIORITY, parentWnd),
-	in(std::make_unique<PImpl>())
-{
-}
-
-AppSettingPageCommandPriority::~AppSettingPageCommandPriority()
-{
-	if (in->mCommandPriority) {
-		in->mCommandPriority->Release();
-	}
-}
-
-BOOL AppSettingPageCommandPriority::OnKillActive()
+bool CommandPriorityPageDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingPageCommandPriority::OnSetActive()
+bool CommandPriorityPageDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingPageCommandPriority::OnOK()
+void CommandPriorityPageDialog::OnOK()
 {
 	// 設定を書き戻す
-	ASSERT(in->mCommandPriority);
-	in->mCommandPriority->CopyTo(CommandRanking::GetInstance());
+	ASSERT(mCommandPriority);
+	mCommandPriority->CopyTo(CommandRanking::GetInstance());
 
 	// 優先度情報をファイルに保存する
 	CommandRanking::GetInstance()->Save();
@@ -216,16 +229,16 @@ void AppSettingPageCommandPriority::OnOK()
 	__super::OnOK();
 }
 
-void AppSettingPageCommandPriority::DoDataExchange(CDataExchange* pDX)
+void CommandPriorityPageDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_FILTER, in->mFilterStr);
+	DDX_Text(pDX, IDC_EDIT_FILTER, mFilterStr);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AppSettingPageCommandPriority, SettingPage)
+BEGIN_MESSAGE_MAP(CommandPriorityPageDialog, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_RESET, OnButtonResetAll)
@@ -238,18 +251,18 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AppSettingPageCommandPriority::OnInitDialog()
+BOOL CommandPriorityPageDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
 	// 優先度情報を複製する
 	// (OKで画面を閉じるときに確定するため、一時的な領域に情報を保持しておく)
-	in->mCommandPriority = CommandRanking::GetInstance()->CloneTemporarily();
+	mCommandPriority = CommandRanking::GetInstance()->CloneTemporarily();
 
-	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
+	mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
 
 	// リスト　スタイル変更
-	in->mListCtrl.SetExtendedStyle(in->mListCtrl.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+	mListCtrl.SetExtendedStyle(mListCtrl.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 
 	// ヘッダー追加
 	LVCOLUMN lvc;
@@ -261,20 +274,20 @@ BOOL AppSettingPageCommandPriority::OnInitDialog()
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;
-	in->mListCtrl.InsertColumn(0,&lvc);
+	mListCtrl.InsertColumn(0,&lvc);
 
 	strHeader = _T("優先度");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 100;
 	lvc.fmt = LVCFMT_LEFT;
-	in->mListCtrl.InsertColumn(1,&lvc);
+	mListCtrl.InsertColumn(1,&lvc);
 
 	// コマンド一覧を取得する
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepoPtr->EnumCommands(in->mCommands);
+	cmdRepoPtr->EnumCommands(mCommands);
 
 	// 現在のソート方法に従って要素をソート
-	in->SortCommands();
+	SortCommands();
 
 	UpdateListItems();
 
@@ -283,47 +296,33 @@ BOOL AppSettingPageCommandPriority::OnInitDialog()
 	return TRUE;
 }
 
-bool AppSettingPageCommandPriority::UpdateStatus()
+bool CommandPriorityPageDialog::UpdateStatus()
 {
-	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
+	POSITION pos = mListCtrl.GetFirstSelectedItemPosition();
 	if (pos) {
-		int selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
-		in->mSelCommand = in->mShowCommands[selItemIndex];
+		int selItemIndex = mListCtrl.GetNextSelectedItem(pos);
+		mSelCommand = mShowCommands[selItemIndex];
 	}
 	else {
-		in->mSelCommand = nullptr;
+		mSelCommand = nullptr;
 	}
 
 	// 選択項目がなければ編集ボタンを無効化する
-	bool canEdit = in->mSelCommand != nullptr;
+	bool canEdit = mSelCommand != nullptr;
 	GetDlgItem(IDC_BUTTON_EDIT)->EnableWindow(canEdit);
 
 	return true;
 }
 
-
-void AppSettingPageCommandPriority::OnEnterSettings()
-{
-	// auto settingsPtr = (Settings*)GetParam();
-	// in->mIsWarnLongOperation = (BOOL)settingsPtr->Get(_T("Health:IsWarnLongOperation"), false);
-}
-
-bool AppSettingPageCommandPriority::GetHelpPageId(CString& id)
-{
-	id = _T("CommandPrioritySetting");
-	return true;
-}
-
-
-void AppSettingPageCommandPriority::UpdateListItems()
+void CommandPriorityPageDialog::UpdateListItems()
 {
 	// フィルタ欄が空でない場合は絞り込みを行う
-	if (in->mFilterStr.IsEmpty() == FALSE) {
+	if (mFilterStr.IsEmpty() == FALSE) {
 		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
-		pattern->SetWholeText(in->mFilterStr);
+		pattern->SetWholeText(mFilterStr);
 
-		in->mShowCommands.clear();
-		for (auto& cmd : in->mCommands) {
+		mShowCommands.clear();
+		for (auto& cmd : mCommands) {
 
 			auto name = cmd->GetName();
 			auto desc = cmd->GetDescription();
@@ -334,23 +333,23 @@ void AppSettingPageCommandPriority::UpdateListItems()
 			    pattern->Match(typeName) == Pattern::Mismatch)  {
 				continue;
 			}
-			in->mShowCommands.push_back(cmd);
+			mShowCommands.push_back(cmd);
 		}
 	}
 	else {
-		in->mShowCommands = in->mCommands;
+		mShowCommands = mCommands;
 	}
 
 	// アイテム数を設定
-	int visibleItems = (int)(in->mShowCommands.size());
-	in->mListCtrl.SetItemCountEx(visibleItems);
+	int visibleItems = (int)(mShowCommands.size());
+	mListCtrl.SetItemCountEx(visibleItems);
 
 	// 選択状態の更新
-	in->SelectItem(in->mSelCommand, true);
+	SelectItem(mSelCommand, true);
 }
 
 // フィルター欄の文字列が更新されたときの処理
-void AppSettingPageCommandPriority::OnEditFilterChanged()
+void CommandPriorityPageDialog::OnEditFilterChanged()
 {
 	UpdateData();
 	UpdateListItems();
@@ -359,17 +358,17 @@ void AppSettingPageCommandPriority::OnEditFilterChanged()
 
 
 // 編集ボタンが押下されたときの処理
-void AppSettingPageCommandPriority::OnButtonEdit()
+void CommandPriorityPageDialog::OnButtonEdit()
 {
-	auto rank = in->mCommandPriority;
+	auto rank = mCommandPriority;
 
 	PriorityDialog dlg(this);
 
 	// 選択されている要素の優先度を得て、優先度入力画面に渡す
 	int itemIndex = 0;
-	for (auto& cmd : in->mShowCommands) {
+	for (auto& cmd : mShowCommands) {
 
-		int state = in->mListCtrl.GetItemState(itemIndex++, LVIS_SELECTED);
+		int state = mListCtrl.GetItemState(itemIndex++, LVIS_SELECTED);
 		if (state == 0) {
 			continue;
 		}
@@ -387,10 +386,10 @@ void AppSettingPageCommandPriority::OnButtonEdit()
 	int newPriority = dlg.mPriority;
 
 	itemIndex = 0;
-	for (auto& cmd : in->mShowCommands) {
+	for (auto& cmd : mShowCommands) {
 
 		// 選択されている要素を探し、優先度を更新する
-		int state = in->mListCtrl.GetItemState(itemIndex++, LVIS_SELECTED);
+		int state = mListCtrl.GetItemState(itemIndex++, LVIS_SELECTED);
 		if (state == 0) {
 			continue;
 		}
@@ -399,19 +398,19 @@ void AppSettingPageCommandPriority::OnButtonEdit()
 	}
 
 	// 画面の再描画
-	in->mListCtrl.Invalidate();
+	mListCtrl.Invalidate();
 }
 
 // すべてリセット ボタン押下時の処理
-void AppSettingPageCommandPriority::OnButtonResetAll()
+void CommandPriorityPageDialog::OnButtonResetAll()
 {
-	in->mCommandPriority->ResetAll();
+	mCommandPriority->ResetAll();
 
 	// 画面の再描画
-	in->mListCtrl.Invalidate();
+	mListCtrl.Invalidate();
 }
 
-void AppSettingPageCommandPriority::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
+void CommandPriorityPageDialog::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	UNREFERENCED_PARAMETER(pNMHDR);
 
@@ -420,7 +419,7 @@ void AppSettingPageCommandPriority::OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pRes
 }
 
 // リスト要素をダブルクリックしたときの処理
-void AppSettingPageCommandPriority::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+void CommandPriorityPageDialog::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	UNREFERENCED_PARAMETER(pNMHDR);
 
@@ -433,7 +432,7 @@ void AppSettingPageCommandPriority::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 /**
  *  リスト欄のヘッダクリック時の処理
  */
-void AppSettingPageCommandPriority::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
+void CommandPriorityPageDialog::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	NM_LISTVIEW* pNMLV = (NM_LISTVIEW*)pNMHDR;
@@ -444,14 +443,14 @@ void AppSettingPageCommandPriority::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pRes
 
 	if(clickedCol == COL_CMDNAME) {
 		// ソート方法の変更(コマンド名でソート)
-		in->mSortType = in->mSortType == SORT_ASCEND_NAME ? SORT_DESCEND_NAME : SORT_ASCEND_NAME;
+		mSortType = mSortType == SORT_ASCEND_NAME ? SORT_DESCEND_NAME : SORT_ASCEND_NAME;
 	}
 	else if (clickedCol == COL_PRIORITY) {
 		// ソート方法の変更(説明でソート)
-		in->mSortType = in->mSortType == SORT_ASCEND_PRIORITY ? SORT_DESCEND_PRIORITY : SORT_ASCEND_PRIORITY;
+		mSortType = mSortType == SORT_ASCEND_PRIORITY ? SORT_DESCEND_PRIORITY : SORT_ASCEND_PRIORITY;
 	}
 	// ソート実施
-	in->SortCommands();
+	SortCommands();
 
 	// 選択状態の更新
 	UpdateListItems();
@@ -460,7 +459,7 @@ void AppSettingPageCommandPriority::OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pRes
 /**
  *  リスト欄のオーナーデータ周りの処理
  */
-void AppSettingPageCommandPriority::OnGetDispInfo(
+void CommandPriorityPageDialog::OnGetDispInfo(
 	NMHDR *pNMHDR,
 	LRESULT *pResult
 )
@@ -475,18 +474,18 @@ void AppSettingPageCommandPriority::OnGetDispInfo(
 		int itemIndex = pDispInfo->item.iItem;
 		if (pDispInfo->item.iSubItem == COL_CMDNAME) {
 			// 1列目(コマンド名)のデータをコピー
-			if (0 <= itemIndex && itemIndex < in->mShowCommands.size()) {
-				auto cmd = in->mShowCommands[itemIndex];
+			if (0 <= itemIndex && itemIndex < mShowCommands.size()) {
+				auto cmd = mShowCommands[itemIndex];
 				_tcsncpy_s(pItem->pszText, pItem->cchTextMax, cmd->GetName(), _TRUNCATE);
 			}
 		}
 		else if (pDispInfo->item.iSubItem == COL_PRIORITY) {
 			// 優先度列のデータをコピー
 
-			const CommandRanking* rankPtr = in->mCommandPriority;
+			const CommandRanking* rankPtr = mCommandPriority;
 
-			if (0 <= itemIndex && itemIndex < in->mShowCommands.size()) {
-				auto cmd = in->mShowCommands[itemIndex];
+			if (0 <= itemIndex && itemIndex < mShowCommands.size()) {
+				auto cmd = mShowCommands[itemIndex];
 				int priority = rankPtr->Get(cmd);
 				TCHAR priorityStr[32] = {};
 				_stprintf_s(priorityStr, _T("%d"),priority);
@@ -499,7 +498,7 @@ void AppSettingPageCommandPriority::OnGetDispInfo(
 /**
  *  オーナーデータリストの検索処理
  */
-void AppSettingPageCommandPriority::OnFindCommand(
+void CommandPriorityPageDialog::OnFindCommand(
 	NMHDR* pNMHDR,
 	LRESULT* pResult
 )
@@ -516,16 +515,16 @@ void AppSettingPageCommandPriority::OnFindCommand(
 	searchStr.MakeLower();
 
 	int startPos = pFindInfo->iStart;
-	if (startPos >= in->mShowCommands.size()) {
+	if (startPos >= mShowCommands.size()) {
 		startPos = 0;
 	}
 
 	// 検索開始位置からリスト末尾までを探す
-	int commandCount = (int)in->mShowCommands.size();
+	int commandCount = (int)mShowCommands.size();
 	for (int i = startPos; i < commandCount; ++i) {
 
 		// コマンド名を小文字に変換したうえで前方一致比較をする
-		CString item = in->mShowCommands[i]->GetName();
+		CString item = mShowCommands[i]->GetName();
 		item.MakeLower();
 		if (item.Find(searchStr) == 0) {
 			*pResult = i;
@@ -535,7 +534,7 @@ void AppSettingPageCommandPriority::OnFindCommand(
 	// 末尾まで行ってヒットしなかった場合は先頭から検索開始位置までを探す
 	for (int i = 0; i < startPos; ++i) {
 
-		CString item = in->mCommands[i]->GetName();
+		CString item = mCommands[i]->GetName();
 		item.MakeLower();
 
 		if (item.Find(searchStr) == 0) {
@@ -544,3 +543,73 @@ void AppSettingPageCommandPriority::OnFindCommand(
 		}
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageCommandPriority::PImpl
+{
+	CommandPriorityPageDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageCommandPriority)
+
+AppSettingPageCommandPriority::AppSettingPageCommandPriority() : 
+	AppSettingPageBase(_T("実行"), _T("優先度")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageCommandPriority::~AppSettingPageCommandPriority()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageCommandPriority::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_COMMANDPRIORITY, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageCommandPriority::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageCommandPriority::GetOrder()
+{
+	return 50;
+}
+// 
+bool AppSettingPageCommandPriority::OnEnterSettings()
+{
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageCommandPriority::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageCommandPriority::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageCommandPriority::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageCommandPriority::GetHelpPageId(CString& id)
+{
+	id = _T("CommandPrioritySetting");
+	return true;
+}
+

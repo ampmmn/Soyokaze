@@ -206,18 +206,6 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	}
 }
 
-/**
- * @brief 設定ページを取得する
- * @param parent 親ウィンドウ
- * @param pages 設定ページのリスト
- * @return 設定ページの作成に成功した場合は true、失敗した場合は false
- */
-bool ClipboardHistoryProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
-{
-	pages.push_back(new AppSettingClipboardHistoryPage(parent));
-	return true;
-}
-
 } // end of namespace clipboardhistory
 } // end of namespace commands
 } // end of namespace launcherapp

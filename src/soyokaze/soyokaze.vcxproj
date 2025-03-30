@@ -714,9 +714,12 @@
     <ClInclude Include="mainwindow\WindowAppearanceIF.h" />
     <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="setting/AppPreference.h" />
+    <ClInclude Include="settingwindow\AppSettingDialog.h" />
+    <ClInclude Include="settingwindow\AppSettingPageBase.h" />
     <ClInclude Include="settingwindow\AppSettingPageColor.h" />
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
     <ClInclude Include="settingwindow\AppSettingPageOther.h" />
+    <ClInclude Include="settingwindow\AppSettingPageRepository.h" />
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
     <ClInclude Include="settingwindow\BasicSettingDialog.h" />
     <ClInclude Include="mainwindow\CandidateListCtrl.h" />
@@ -777,7 +780,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="gui/SelectFilesDialog.h" />
-    <ClInclude Include="settingwindow/SettingDialog.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tasktray/TaskTray.h" />
     <ClInclude Include="utility\Accessibility.h" />
@@ -1109,9 +1111,12 @@
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
+    <ClCompile Include="settingwindow\AppSettingDialog.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageColor.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageRepository.cpp" />
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />
@@ -1177,7 +1182,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="gui/SelectFilesDialog.cpp" />
-    <ClCompile Include="settingwindow/SettingDialog.cpp" />
     <ClCompile Include="tasktray/TaskTray.cpp" />
     <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\AES.cpp" />

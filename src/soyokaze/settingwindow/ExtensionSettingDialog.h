@@ -1,51 +1,41 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "settingwindow/AppSettingPageBase.h"
+#include "settingwindow/AppSettingPageRepository.h"
+#include <memory>
 
-// 
-class ExtensionSettingDialog : public SettingPage
+class AppSettingPageExtension :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	ExtensionSettingDialog(CWnd* parentWnd);
-	virtual ~ExtensionSettingDialog();
+	AppSettingPageExtension();
+	~AppSettingPageExtension();
 
-	BOOL mIsEnableCalc;
-	CString mPythonDLLPath;
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
 
-	// ウインドウタイトルによるウインドウ切り替え機能
-	BOOL mIsEnableWindowTitle;
-	// Excelワークシート名によるウインドウ切り替え機能
-	BOOL mIsEnableWorksheet;
-	// PowerPointスライド名によるウインドウ切り替え機能
-	BOOL mIsEnableSlide;
-	// コントロールパネル選択機能
-	BOOL mIsEnableControlPanel;
-	// スタートメニュー/最近使ったファイル選択機能
-	BOOL mIsEnableSpecialFolder;
-	// UWPアプリ選択機能
-	BOOL mIsEnableUWP;
-	// MMCスナップイン選択機能
-	BOOL mIsEnableMMCSnapin;
-	// Windowsの設定(ms-settings)選択機能
-	BOOL mIsEnableMSSettings;
-	// Outlookメール選択機能(Inboxのみ)
-	BOOL mIsEnableOutlookMail;
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(CString& helpPageId) override;
 
-protected:
-	bool UpdateStatus();
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPageExtension(); }
 
-	void OnOK() override;
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	BOOL OnKillActive() override;
-	BOOL OnSetActive() override;
-	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
-
-// 実装
-protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnBrowsePyhonDLLPath();
-	afx_msg void OnCheckEnableCalculator();
+	DECLARE_APPSETTINGPAGE(AppSettingPageExtension)
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
+
 

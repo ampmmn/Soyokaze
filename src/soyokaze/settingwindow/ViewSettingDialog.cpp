@@ -17,8 +17,32 @@ using namespace launcherapp::icon;
 
 constexpr LPCTSTR DEFAULTFONTNAME = _T("Tahoma");
 
-struct ViewSettingDialog::PImpl
+class ViewSettingDialog : public CDialog
 {
+public:
+	~ViewSettingDialog();
+
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
+
+	void SetIconPath(const CString& appIconPath);
+	bool UpdateStatus();
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnUpdateStatus();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnButtonBrowse();
+	afx_msg void OnButtonResetIcon();
+	afx_msg void OnButtonResetFont();
+	afx_msg void OnCbnKillfocusFontSize();
+
 	// 入力欄のアイコンを表示する
 	BOOL mIsDrawIcon = TRUE;
 	// 入力欄のプレースホルダーを表示する
@@ -52,35 +76,31 @@ struct ViewSettingDialog::PImpl
 	CString mAppIconFilePath;
 	IconLabelForApp mIconLabelPtr;
 	bool mIsIconReset = false;
-};
 
-ViewSettingDialog::ViewSettingDialog(CWnd* parentWnd) : 
-	SettingPage(_T("表示"), IDD_VIEWSETTING, parentWnd),
-	in(std::make_unique<PImpl>())
-{
-}
+	Settings* mSettingsPtr = nullptr;
+};
 
 ViewSettingDialog::~ViewSettingDialog()
 {
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-		in->mIcon = nullptr;
+	if (mIcon) {
+		DestroyIcon(mIcon);
+		mIcon = nullptr;
 	}
 }
 
-BOOL ViewSettingDialog::OnKillActive()
+bool ViewSettingDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL ViewSettingDialog::OnSetActive()
+bool ViewSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
 void ViewSettingDialog::OnOK()
@@ -89,15 +109,15 @@ void ViewSettingDialog::OnOK()
 		return;
 	}
 
-	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)in->mIsDrawIcon);
-	settingsPtr->Set(_T("ViewSetting:IsDrawPlaceHolder"), (bool)in->mIsDrawPlaceHolder);
+	auto settingsPtr = mSettingsPtr;
+	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)mIsDrawIcon);
+	settingsPtr->Set(_T("ViewSetting:IsDrawPlaceHolder"), (bool)mIsDrawPlaceHolder);
 
-	if (in->mTransparencyType == 0) {
+	if (mTransparencyType == 0) {
 		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
 		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
-	else if (in->mTransparencyType == 1) {
+	else if (mTransparencyType == 1) {
 		settingsPtr->Set(_T("WindowTransparency:Enable"), true);
 		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), false);
 	}
@@ -106,14 +126,14 @@ void ViewSettingDialog::OnOK()
 		settingsPtr->Set(_T("WindowTransparency:InactiveOnly"), true);
 	}
 
-	settingsPtr->Set(_T("WindowTransparency:Alpha"), (int)in->mAlpha);
+	settingsPtr->Set(_T("WindowTransparency:Alpha"), (int)mAlpha);
 
-	settingsPtr->Set(_T("Soyokaze:DefaultComment"), in->mDefaultComment);
+	settingsPtr->Set(_T("Soyokaze:DefaultComment"), mDefaultComment);
 
-	settingsPtr->Set(_T("Soyokaze:IsShowCommandType"), (bool)in->mIsShowCommandType);
-	settingsPtr->Set(_T("Soyokaze:IsShowGuide"), (bool)in->mIsShowGuide);
-	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)in->mIsAlternateColor);
-	settingsPtr->Set(_T("Soyokaze:IsDrawIconOnCandidate"), (bool)in->mIsDrawIconOnCandidate);
+	settingsPtr->Set(_T("Soyokaze:IsShowCommandType"), (bool)mIsShowCommandType);
+	settingsPtr->Set(_T("Soyokaze:IsShowGuide"), (bool)mIsShowGuide);
+	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)mIsAlternateColor);
+	settingsPtr->Set(_T("Soyokaze:IsDrawIconOnCandidate"), (bool)mIsDrawIconOnCandidate);
 
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
@@ -121,17 +141,17 @@ void ViewSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("MainWindow:FontName"), fontInfo->m_strName);
 
-	if (in->mFontSize < 6) { in->mFontSize = 6; }
-	else if (in->mFontSize > 128) { in->mFontSize = 128; }
+	if (mFontSize < 6) { mFontSize = 6; }
+	else if (mFontSize > 128) { mFontSize = 128; }
 
-	settingsPtr->Set(_T("MainWindow:FontSize"), in->mFontSize);
+	settingsPtr->Set(_T("MainWindow:FontSize"), mFontSize);
 
 	// アプリアイコンが設定(変更)された場合は上書き
-	Path icon(in->mAppIconFilePath);
-	if (in->mIsIconReset == false && icon.FileExists()) {
-		AppIcon::Get()->Import(in->mAppIconFilePath);
+	Path icon(mAppIconFilePath);
+	if (mIsIconReset == false && icon.FileExists()) {
+		AppIcon::Get()->Import(mAppIconFilePath);
 	}
-	else if (in->mIsIconReset) {
+	else if (mIsIconReset) {
 		AppIcon::Get()->Reset();
 	}
 
@@ -143,23 +163,23 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_DRAWICON, in->mIsDrawIcon);
-	DDX_Check(pDX, IDC_CHECK_DRAWPLACEHOLDER, in->mIsDrawPlaceHolder);
-	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, in->mTransparencyType);
-	DDX_Text(pDX, IDC_EDIT_ALPHA, in->mAlpha);
-	DDV_MinMaxInt(pDX, in->mAlpha, 0, 255);
-	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, in->mDefaultComment);
-	DDX_Check(pDX, IDC_CHECK_SHOWCOMMANDTYPE, in->mIsShowCommandType);
-	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, in->mIsShowGuide);
-	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, in->mIsAlternateColor);
-	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, in->mIsDrawIconOnCandidate);
-	DDX_Text(pDX, IDC_COMBO_FONTSIZE, in->mFontSize);
+	DDX_Check(pDX, IDC_CHECK_DRAWICON, mIsDrawIcon);
+	DDX_Check(pDX, IDC_CHECK_DRAWPLACEHOLDER, mIsDrawPlaceHolder);
+	DDX_CBIndex(pDX, IDC_COMBO_TRANSPARENCY, mTransparencyType);
+	DDX_Text(pDX, IDC_EDIT_ALPHA, mAlpha);
+	DDV_MinMaxInt(pDX, mAlpha, 0, 255);
+	DDX_Text(pDX, IDC_EDIT_DEFAULTCOMMENT, mDefaultComment);
+	DDX_Check(pDX, IDC_CHECK_SHOWCOMMANDTYPE, mIsShowCommandType);
+	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, mIsShowGuide);
+	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, mIsAlternateColor);
+	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, mIsDrawIconOnCandidate);
+	DDX_Text(pDX, IDC_COMBO_FONTSIZE, mFontSize);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(ViewSettingDialog, SettingPage)
+BEGIN_MESSAGE_MAP(ViewSettingDialog, CDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_TRANSPARENCY, OnUpdateStatus)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
@@ -176,8 +196,8 @@ BOOL ViewSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mIconLabelPtr.SubclassDlgItem(IDC_STATIC_ICON, this);
-	in->mIconLabelPtr.DisableIconChange();
+	mIconLabelPtr.SubclassDlgItem(IDC_STATIC_ICON, this);
+	mIconLabelPtr.DisableIconChange();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -194,36 +214,36 @@ void ViewSettingDialog::SetIconPath(const CString& appIconPath)
 		return ;
 	}
 
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
+	if (mIcon) {
+		DestroyIcon(mIcon);
 	}
-	in->mIcon = h;
-	in->mAppIconFilePath = appIconPath;
-	in->mIsIconReset = false;
+	mIcon = h;
+	mAppIconFilePath = appIconPath;
+	mIsIconReset = false;
 
 	// 再描画
-	in->mIconLabelPtr.DrawIcon(in->mIcon);
+	mIconLabelPtr.DrawIcon(mIcon);
 }
 
 bool ViewSettingDialog::UpdateStatus()
 {
-	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(in->mTransparencyType != 2);
+	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(mTransparencyType != 2);
 
 	// フォントサイズの有効範囲を超えていたら範囲内に丸める
-	if (in->mFontSize < 6) { in->mFontSize = 6; }
-	else if (in->mFontSize > 128) { in->mFontSize = 128; }
+	if (mFontSize < 6) { mFontSize = 6; }
+	else if (mFontSize > 128) { mFontSize = 128; }
 
-	bool isDrawIcon = in->mIsDrawIcon != FALSE;
+	bool isDrawIcon = mIsDrawIcon != FALSE;
 	GetDlgItem(IDC_BUTTON_BROWSE)->EnableWindow(isDrawIcon);
 	GetDlgItem(IDC_BUTTON_RESETICON)->EnableWindow(isDrawIcon);
 
-	if (in->mIcon) {
-		in->mIconLabelPtr.DrawIcon(in->mIcon);
+	if (mIcon) {
+		mIconLabelPtr.DrawIcon(mIcon);
 	}
 	else {
 		auto appIcon = AppIcon::Get();
-		auto iconHandle = (in->mIsIconReset) ? appIcon->DefaultIconHandle() : appIcon->IconHandle();
-		in->mIconLabelPtr.DrawIcon(iconHandle);
+		auto iconHandle = (mIsIconReset) ? appIcon->DefaultIconHandle() : appIcon->IconHandle();
+		mIconLabelPtr.DrawIcon(iconHandle);
 	}
 
 	return true;
@@ -236,45 +256,39 @@ void ViewSettingDialog::OnUpdateStatus()
 	UpdateStatus();
 }
 
-void ViewSettingDialog::OnEnterSettings()
+void ViewSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
+	mSettingsPtr = settingsPtr;
 
-	in->mIsDrawIcon = settingsPtr->Get(_T("ViewSetting:IsDrawIcon"), true);
-	in->mIsDrawPlaceHolder = settingsPtr->Get(_T("ViewSetting:IsDrawPlaceHolder"), true);
+	mIsDrawIcon = settingsPtr->Get(_T("ViewSetting:IsDrawIcon"), true);
+	mIsDrawPlaceHolder = settingsPtr->Get(_T("ViewSetting:IsDrawPlaceHolder"), true);
 
 	if (settingsPtr->Get(_T("WindowTransparency:Enable"), false) == false) {
-		in->mTransparencyType = 2;
+		mTransparencyType = 2;
 	}
 	else if (settingsPtr->Get(_T("WindowTransparency:InactiveOnly"), true)) {
-		in->mTransparencyType = 0;
+		mTransparencyType = 0;
 	}
 	else {
-		in->mTransparencyType = 1;
+		mTransparencyType = 1;
 	}
 
-	in->mAlpha = settingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
-	if (in->mAlpha < 0) { in->mAlpha = 0; }
-	if (in->mAlpha > 255) { in->mAlpha = 255; }
+	mAlpha = settingsPtr->Get(_T("WindowTransparency:Alpha"), 128);
+	if (mAlpha < 0) { mAlpha = 0; }
+	if (mAlpha > 255) { mAlpha = 255; }
 
 	CString defStr((LPCTSTR)ID_STRING_DEFAULTDESCRIPTION);
-	in->mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
-	in->mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
-	in->mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
-	in->mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
-	in->mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
+	mDefaultComment = settingsPtr->Get(_T("Soyokaze:DefaultComment"), defStr);
+	mIsShowCommandType = settingsPtr->Get(_T("Soyokaze:IsShowCommandType"), true);
+	mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
+	mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
+	mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 
 	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), DEFAULTFONTNAME);
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(fontName);
-	in->mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 9);
-}
-
-bool ViewSettingDialog::GetHelpPageId(CString& id)
-{
-	id = _T("InputWindowSetting");
-	return true;
+	mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 9);
 }
 
 // マニュアル表示
@@ -300,8 +314,8 @@ void ViewSettingDialog::OnButtonBrowse()
 	Path iconPath(Path::MODULEFILEPATH);
 	iconPath.Shrink();
 
-	if (in->mAppIconFilePath.IsEmpty() == FALSE) {
-		iconPath = in->mAppIconFilePath;
+	if (mAppIconFilePath.IsEmpty() == FALSE) {
+		iconPath = mAppIconFilePath;
 	}
 
 	CFileDialog dlg(TRUE, NULL, iconPath, OFN_FILEMUSTEXIST, filterStr, this);
@@ -318,12 +332,12 @@ void ViewSettingDialog::OnButtonResetIcon()
 	UpdateData();
 
 	// アイコンを初期状態に戻す
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-		in->mIcon = nullptr;
+	if (mIcon) {
+		DestroyIcon(mIcon);
+		mIcon = nullptr;
 	}
-	in->mAppIconFilePath.Empty();
-	in->mIsIconReset = true;
+	mAppIconFilePath.Empty();
+	mIsIconReset = true;
 
 	UpdateStatus();
 
@@ -333,7 +347,7 @@ void ViewSettingDialog::OnButtonResetFont()
 {
 	UpdateData();
 
-	in->mFontSize = 9;
+	mFontSize = 9;
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(DEFAULTFONTNAME);
@@ -348,3 +362,74 @@ void ViewSettingDialog::OnCbnKillfocusFontSize()
 	UpdateStatus();
 	UpdateData(FALSE);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageView::PImpl
+{
+	ViewSettingDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageView)
+
+AppSettingPageView::AppSettingPageView() : 
+	AppSettingPageBase(_T(""), _T("表示")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageView::~AppSettingPageView()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageView::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_VIEWSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageView::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageView::GetOrder()
+{
+	return 70;
+}
+// 
+bool AppSettingPageView::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageView::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageView::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageView::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageView::GetHelpPageId(CString& id)
+{
+	id = _T("InputWindowSetting");
+	return true;
+}
+

@@ -40,7 +40,7 @@ void Toast::SetThreshold(int th)
 
 void Toast::Show()
 {
-	if (ShortcutSettingPage::IsStartMenuExists() == false) {
+	if (AppSettingPageShortcut::IsStartMenuExists() == false) {
 		// スタートメニューにショートカットが登録されていない場合はShell_NotifyIconのメッセージで代替する
 		CString notifyMsg;
 		notifyMsg.Format(_T("%d分以上の連続稼働を検知\n健康のため、適宜休憩を入れるが吉"), in->mTh);

@@ -25,9 +25,6 @@ public:
 	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 
-	// 設定ページを取得する
-	bool CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages) override;
-
 	DECLARE_COMMANDPROVIDER(PathConvertProvider)
 
 private:

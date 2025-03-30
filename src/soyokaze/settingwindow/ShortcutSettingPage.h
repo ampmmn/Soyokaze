@@ -1,52 +1,44 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "settingwindow/AppSettingPageBase.h"
+#include "settingwindow/AppSettingPageRepository.h"
+#include <memory>
 
-class ShortcutSettingPage : public SettingPage
+class AppSettingPageShortcut :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
+	class SettingPage;
 public:
-	ShortcutSettingPage(CWnd* parentWnd);
-	virtual ~ShortcutSettingPage();
+	AppSettingPageShortcut();
+	~AppSettingPageShortcut();
 
-
-	static void CreateStartMenuPath(CString& pathToMenu);
 	static bool IsStartMenuExists();
-	static bool CreateStartMenu();
 
-public:
-	CString mAppPath;
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
 
-	// 各種ショートカットのパス
-	CString mSendToPath;
-	CString mStartMenuDir;
-	CString mStartMenuPath;
-	CString mDesktopPath;
-	CString mStartupPath;
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(CString& helpPageId) override;
 
-	BOOL mSendTo;
-	BOOL mStartMenu;
-	BOOL mDesktop;
-	BOOL mStartup;
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPageShortcut(); }
 
-
-protected:
-	void OnOK() override;
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	BOOL OnKillActive() override;
-	BOOL OnSetActive() override;
-	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
-
-	void UpdateStatus();
-
-	bool MakeShortcutSendToPath();
-	bool MakeShortcutStartMenu();
-	bool MakeShortcutDesktop();
-	bool MakeShortcutStartup();
-// 実装
-protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnButtonDelete();
+	DECLARE_APPSETTINGPAGE(AppSettingPageShortcut)
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
+
 

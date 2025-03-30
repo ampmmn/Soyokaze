@@ -67,15 +67,6 @@ bool EverythingCommandProvider::NewDialog(CommandParameter* param)
 	return true;
 }
 
-// 設定ページを取得する
-bool EverythingCommandProvider::CreateSettingPages(CWnd* parent, std::vector<SettingPage*>& pages)
-{
-	UNREFERENCED_PARAMETER(parent);
-	UNREFERENCED_PARAMETER(pages);
-	//pages.push_back(new AppSettingEverythingPage(parent));
-	return true;
-}
-
 // 非公開コマンドかどうか(新規作成対象にしない)
 bool EverythingCommandProvider::IsPrivate() const
 {

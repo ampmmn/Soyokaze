@@ -11,30 +11,46 @@
 #define new DEBUG_NEW
 #endif
 
-
-struct AppSettingPathPage::PImpl
+// 
+class PathSettingDialog : public CDialog
 {
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
+
+	void SwapItem(int srcIndex, int dstIndex);
+	bool UpdateStatus();
+
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
 	CListCtrl* GetPathListWnd() {
 		ASSERT(mListPath);
 		return mListPath;
 	}
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnButtonAdd();
+	afx_msg void OnButtonEdit();
+	afx_msg void OnButtonDelete();
+	afx_msg void OnButtonUp();
+	afx_msg void OnButtonDown();
+	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
+
+public:
 	CListCtrl* mListPath = nullptr;
 	std::vector<CString> mAdditionalPaths;
+	Settings* mSettingsPtr = nullptr;
 };
 
-AppSettingPathPage::AppSettingPathPage(CWnd* parentWnd) : 
-	SettingPage(_T("パス"), IDD_APPSETTING_PATH, parentWnd),
-	in(new PImpl)
+void PathSettingDialog::SwapItem(int srcIndex, int dstIndex)
 {
-}
-
-AppSettingPathPage::~AppSettingPathPage()
-{
-}
-
-void AppSettingPathPage::SwapItem(int srcIndex, int dstIndex)
-{
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 
 	CString srcText = listPath->GetItemText(srcIndex, 0);
 	CString dstText = listPath->GetItemText(dstIndex, 0);
@@ -45,33 +61,33 @@ void AppSettingPathPage::SwapItem(int srcIndex, int dstIndex)
 	listPath->SetItemState(srcIndex, 0, LVIS_SELECTED);
 	listPath->SetItemState(dstIndex, LVIS_SELECTED, LVIS_SELECTED);
 
-	std::swap(in->mAdditionalPaths[srcIndex], in->mAdditionalPaths[dstIndex]);
+	std::swap(mAdditionalPaths[srcIndex], mAdditionalPaths[dstIndex]);
 }
 
-BOOL AppSettingPathPage::OnKillActive()
+bool PathSettingDialog::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingPathPage::OnSetActive()
+bool PathSettingDialog::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingPathPage::OnOK()
+void PathSettingDialog::OnOK()
 {
-	auto settingsPtr = (Settings*)GetParam();
+	auto settingsPtr = mSettingsPtr;
 
 	TCHAR key[64];
 	int index = 1;
 
-	settingsPtr->Set(_T("Soyokaze:AdditionalPathCount"), (int)in->mAdditionalPaths.size());
-	for (const auto& path : in->mAdditionalPaths) {
+	settingsPtr->Set(_T("Soyokaze:AdditionalPathCount"), (int)mAdditionalPaths.size());
+	for (const auto& path : mAdditionalPaths) {
 
 		_stprintf_s(key, _T("Soyokaze:AdditionalPath%d"), index++);
 		settingsPtr->Set(key, path);
@@ -80,7 +96,7 @@ void AppSettingPathPage::OnOK()
 	__super::OnOK();
 }
 
-void AppSettingPathPage::DoDataExchange(CDataExchange* pDX)
+void PathSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 }
@@ -88,7 +104,7 @@ void AppSettingPathPage::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AppSettingPathPage, SettingPage)
+BEGIN_MESSAGE_MAP(PathSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -100,17 +116,17 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AppSettingPathPage::OnInitDialog()
+BOOL PathSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mListPath = (CListCtrl*)GetDlgItem(IDC_LIST_PATH);
+	mListPath = (CListCtrl*)GetDlgItem(IDC_LIST_PATH);
 
 	auto listSysPath = (CListCtrl*)GetDlgItem(IDC_LIST_ENVPATH);
 	ASSERT(listSysPath);
 	listSysPath->SetExtendedStyle(listSysPath->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 	listPath->SetExtendedStyle(listPath->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 
 	CString strHeader(_T("Directory"));
@@ -139,9 +155,9 @@ BOOL AppSettingPathPage::OnInitDialog()
 	return TRUE;
 }
 
-bool AppSettingPathPage::UpdateStatus()
+bool PathSettingDialog::UpdateStatus()
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
 	bool hasSelect = pos != NULL;
@@ -161,12 +177,11 @@ bool AppSettingPathPage::UpdateStatus()
 	return true;
 }
 
-void AppSettingPathPage::OnEnterSettings()
+void PathSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
-	auto listPath = in->GetPathListWnd();
+	mSettingsPtr = settingsPtr;
+	auto listPath = GetPathListWnd();
 	listPath->DeleteAllItems();
-
-	auto settingsPtr = (Settings*)GetParam();
 
 	std::vector<CString> paths;
 
@@ -180,19 +195,12 @@ void AppSettingPathPage::OnEnterSettings()
 		listPath->InsertItem(index++, path);
 	}
 
-	in->mAdditionalPaths.swap(paths);
+	mAdditionalPaths.swap(paths);
 
 
 }
 
-bool AppSettingPathPage::GetHelpPageId(CString& id)
-{
-	id = _T("ExecutePathSetting");
-	return true;
-}
-
-
-void AppSettingPathPage::OnButtonAdd()
+void PathSettingDialog::OnButtonAdd()
 {
 	Path path(Path::MODULEFILEDIR);
 	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
@@ -200,20 +208,20 @@ void AppSettingPathPage::OnButtonAdd()
 		return ;
 	}
 
-	auto listPath = in->GetPathListWnd();
-	in->mAdditionalPaths.push_back(dlg.GetPathName());
+	auto listPath = GetPathListWnd();
+	mAdditionalPaths.push_back(dlg.GetPathName());
 	listPath->InsertItem(listPath->GetItemCount(), dlg.GetPathName());
 }
 
-void AppSettingPathPage::OnButtonEdit()
+void PathSettingDialog::OnButtonEdit()
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
 	if (pos == nullptr) {
 		return ;
 	}
 	int itemIndex = listPath->GetNextSelectedItem(pos);
-	auto& path = in->mAdditionalPaths[itemIndex];
+	auto& path = mAdditionalPaths[itemIndex];
 
 	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
 	if (dlg.DoModal() != IDOK) {
@@ -223,9 +231,9 @@ void AppSettingPathPage::OnButtonEdit()
 	listPath->SetItemText(itemIndex, 0, path);
 }
 
-void AppSettingPathPage::OnButtonDelete()
+void PathSettingDialog::OnButtonDelete()
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
 	if (pos == NULL) {
 		return;
@@ -233,7 +241,7 @@ void AppSettingPathPage::OnButtonDelete()
 
 	int itemIndex = listPath->GetNextSelectedItem(pos);
 	listPath->DeleteItem(itemIndex);
-	in->mAdditionalPaths.erase(in->mAdditionalPaths.begin() + itemIndex);
+	mAdditionalPaths.erase(mAdditionalPaths.begin() + itemIndex);
 
 	if (itemIndex < listPath->GetItemCount()) {
 		listPath->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
@@ -249,9 +257,9 @@ void AppSettingPathPage::OnButtonDelete()
 	UpdateData(FALSE);
 }
 
-void AppSettingPathPage::OnButtonUp()
+void PathSettingDialog::OnButtonUp()
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
 	if (pos == NULL) {
 		return;
@@ -267,9 +275,9 @@ void AppSettingPathPage::OnButtonUp()
 	UpdateData(FALSE);
 }
 
-void AppSettingPathPage::OnButtonDown()
+void PathSettingDialog::OnButtonDown()
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
 	if (pos == NULL) {
 		return;
@@ -285,7 +293,7 @@ void AppSettingPathPage::OnButtonDown()
 	UpdateData(FALSE);
 }
 
-void AppSettingPathPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
+void PathSettingDialog::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	UNREFERENCED_PARAMETER(pNMHDR);
 
@@ -294,23 +302,23 @@ void AppSettingPathPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-void AppSettingPathPage::OnNotifyItemDblClk(
+void PathSettingDialog::OnNotifyItemDblClk(
 		NMHDR *pNMHDR,
 	 	LRESULT *pResult
 )
 {
-	auto listPath = in->GetPathListWnd();
+	auto listPath = GetPathListWnd();
 
 	*pResult = 0;
 
 	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
 
 	int index = nm->iItem;
-	if (index < 0 || (int)in->mAdditionalPaths.size() <= index) {
+	if (index < 0 || (int)mAdditionalPaths.size() <= index) {
 		return;
 	}
 
-	auto& path = in->mAdditionalPaths[index];
+	auto& path = mAdditionalPaths[index];
 
 	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
 
@@ -320,5 +328,75 @@ void AppSettingPathPage::OnNotifyItemDblClk(
 
 	path = dlg.GetPathName();
 	listPath->SetItemText(index, 0, path);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPagePathPage::PImpl
+{
+	PathSettingDialog mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPagePathPage)
+
+AppSettingPagePathPage::AppSettingPagePathPage() : 
+	AppSettingPageBase(_T("実行"), _T("パス")),
+	in(new PImpl)
+{
+}
+
+AppSettingPagePathPage::~AppSettingPagePathPage()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPagePathPage::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_PATH, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPagePathPage::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPagePathPage::GetOrder()
+{
+	return 10;
+}
+// 
+bool AppSettingPagePathPage::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPagePathPage::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPagePathPage::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPagePathPage::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPagePathPage::GetHelpPageId(CString& id)
+{
+	id = _T("ExecutePathSetting");
+	return true;
 }
 

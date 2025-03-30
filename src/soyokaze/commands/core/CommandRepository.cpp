@@ -330,25 +330,6 @@ void CommandRepository::RegisterProvider(
 	          [](const CommandProvider* l, const CommandProvider* r) { return l->GetOrder() < r->GetOrder(); });
 }
 
-/**
- 	コマンドプロバイダの設定ページを列挙する
-	@remarks 取得したインスタンスは呼び出し側で解放すること
- 	@param[in]  parent 親ウインドウ
- 	@param[out] pages  SettingPagesの一覧
-*/
-void CommandRepository::EnumProviderSettingDialogs(
-	CWnd* parent,
-	std::vector<SettingPage*>& pages
-)
-{
-	CSingleLock sl(&in->mCS, TRUE);
-
-	for (auto& provider : in->mProviders) {
-		provider->CreateSettingPages(parent, pages);
-	}
-}
-
-
 // コマンドを登録
 // このコマンドは参照カウントを+1しない
 int CommandRepository::RegisterCommand(Command* command, bool isNotify)

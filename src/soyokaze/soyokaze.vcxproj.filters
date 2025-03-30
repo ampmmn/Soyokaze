@@ -717,9 +717,6 @@
     <ClInclude Include="settingwindow\SoundSettingDialog.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow/SettingDialog.h">
-      <Filter>settingwindow</Filter>
-    </ClInclude>
     <ClInclude Include="settingwindow\AppSettingPathPage.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
@@ -1446,6 +1443,15 @@
     <ClInclude Include="commands\common\OtherCommandDialog.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingDialog.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageRepository.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageBase.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1914,9 +1920,6 @@
       <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="settingwindow\ViewSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="settingwindow/SettingDialog.cpp">
       <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp">
@@ -2557,6 +2560,15 @@
     </ClCompile>
     <ClCompile Include="commands\common\OtherCommandDialog.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingDialog.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageRepository.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageBase.cpp">
+      <Filter>settingwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

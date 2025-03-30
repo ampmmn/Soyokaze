@@ -15,34 +15,49 @@ namespace launcherapp {
 namespace commands {
 namespace clipboardhistory {
 
-AppSettingClipboardHistoryPage::AppSettingClipboardHistoryPage(CWnd* parentWnd) : 
-	SettingPage(_T("クリップボード履歴"), IDD_APPSETTING_CLIPBOARD, parentWnd),
-	mIsEnable(FALSE),
-	mPrefix(_T("cb")),
-	mNumOfResults(16),
-	mSizeLimit(64),
-	mCountLimit(1024),
-	mInterval(500)
+class AppSettingPage : public CDialog
 {
-}
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
 
-AppSettingClipboardHistoryPage::~AppSettingClipboardHistoryPage()
-{
-}
+	bool UpdateStatus();
 
-BOOL AppSettingClipboardHistoryPage::OnKillActive()
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnUpdateStatus();
+
+public:
+	BOOL mIsEnable = FALSE;
+	CString mPrefix{_T("cb")};
+	int mNumOfResults = 16;
+	int mSizeLimit = 64;
+	int mCountLimit = 1024;
+	int mInterval = 500;
+	CString mExcludePattern;
+	
+	Settings* mSettingsPtr = nullptr;
+};
+
+bool AppSettingPage::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
 
 	if (mIsEnable == FALSE) {
-		return TRUE;
+		return true;
 	}
 
 	if (mPrefix.IsEmpty()) {
 		AfxMessageBox(_T("プレフィックスを入力してください"));
-		return FALSE;
+		return false;
 	}
 
 	// 正規表現として有効化をチェックする
@@ -60,23 +75,23 @@ BOOL AppSettingClipboardHistoryPage::OnKillActive()
 			msg += _T("\n");
 			msg += mExcludePattern;
 			AfxMessageBox(msg);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingClipboardHistoryPage::OnSetActive()
+bool AppSettingPage::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingClipboardHistoryPage::OnOK()
+void AppSettingPage::OnOK()
 {
-	auto settingsPtr = (Settings*)GetParam();
+	auto settingsPtr = mSettingsPtr;
 	settingsPtr->Set(_T("ClipboardHistory:IsEnable"), (bool)mIsEnable);
 	settingsPtr->Set(_T("ClipboardHistory:Prefix"), mPrefix);
 	settingsPtr->Set(_T("ClipboardHistory:NumOfResults"), mNumOfResults);
@@ -88,7 +103,7 @@ void AppSettingClipboardHistoryPage::OnOK()
 	__super::OnOK();
 }
 
-void AppSettingClipboardHistoryPage::DoDataExchange(CDataExchange* pDX)
+void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
@@ -108,13 +123,13 @@ void AppSettingClipboardHistoryPage::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AppSettingClipboardHistoryPage, SettingPage)
+BEGIN_MESSAGE_MAP(AppSettingPage, CDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AppSettingClipboardHistoryPage::OnInitDialog()
+BOOL AppSettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 	UpdateStatus();
@@ -123,7 +138,7 @@ BOOL AppSettingClipboardHistoryPage::OnInitDialog()
 	return TRUE;
 }
 
-bool AppSettingClipboardHistoryPage::UpdateStatus()
+bool AppSettingPage::UpdateStatus()
 {
 	BOOL isEnable = (mIsEnable == 1) ? TRUE : FALSE;
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
@@ -136,9 +151,9 @@ bool AppSettingClipboardHistoryPage::UpdateStatus()
 	return true;
 }
 
-void AppSettingClipboardHistoryPage::OnEnterSettings()
+void AppSettingPage::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
+	mSettingsPtr = settingsPtr;
 
 	mIsEnable = settingsPtr->Get(_T("ClipboardHistory:IsEnable"), false);
 	mPrefix = settingsPtr->Get(_T("ClipboardHistory:Prefix"), _T("cb"));
@@ -149,18 +164,82 @@ void AppSettingClipboardHistoryPage::OnEnterSettings()
 	mExcludePattern = settingsPtr->Get(_T("ClipboardHistory:ExcludePattern"), _T(""));
 }
 
-bool AppSettingClipboardHistoryPage::GetHelpPageId(CString& id)
+void AppSettingPage::OnUpdateStatus()
+{
+	UpdateData();
+	UpdateStatus();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+struct AppSettingPageClipboardHistory::PImpl
+{
+	AppSettingPage mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageClipboardHistory)
+
+AppSettingPageClipboardHistory::AppSettingPageClipboardHistory() : 
+	AppSettingPageBase(_T("拡張機能"), _T("クリップボード履歴")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageClipboardHistory::~AppSettingPageClipboardHistory()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageClipboardHistory::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_CLIPBOARD, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageClipboardHistory::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageClipboardHistory::GetOrder()
+{
+	return 100;
+}
+// 
+bool AppSettingPageClipboardHistory::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageClipboardHistory::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageClipboardHistory::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageClipboardHistory::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageClipboardHistory::GetHelpPageId(CString& id)
 {
 	id = _T("ClipboardHistorySetting");
 	return true;
 }
 
-
-void AppSettingClipboardHistoryPage::OnUpdateStatus()
-{
-	UpdateData();
-	UpdateStatus();
-}
 
 } // end of namespace clipboardhistory
 } // end of namespace commands

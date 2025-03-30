@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "InputWindowKeySettingPage.h"
+#include "hotkey/HotKeyDialog.h"
 #include "setting/Settings.h"
 #include "resource.h"
 
@@ -8,33 +9,72 @@
 #define new DEBUG_NEW
 #endif
 
-InputWindowKeySettingPage::InputWindowKeySettingPage(CWnd* parentWnd) : 
-	SettingPage(_T("キー割り当て"), IDD_APPSETTING_KEY, parentWnd)
+class InputWindowKeySettingPage : public CDialog
 {
-}
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
 
-InputWindowKeySettingPage::~InputWindowKeySettingPage()
-{
-}
+	bool UpdateStatus();
 
-BOOL InputWindowKeySettingPage::OnKillActive()
+	BOOL OnInitDialog() override;
+	void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnButtonHotKeyUp();
+	afx_msg void OnButtonHotKeyDown();
+	afx_msg void OnButtonHotKeyEnter();
+	afx_msg void OnButtonHotKeyCompl();
+	afx_msg void OnButtonHotKeyContextMenu();
+	afx_msg void OnButtonHotKeyCopy();
+	afx_msg void OnButtonReset();
+
+public:
+	// 上へ
+	CString mHotKeyUp;
+	HOTKEY_ATTR mHotKeyAttrUp;
+	// 下へ
+	CString mHotKeyDown;
+	HOTKEY_ATTR mHotKeyAttrDown;
+	// 決定
+	CString mHotKeyEnter;
+	HOTKEY_ATTR mHotKeyAttrEnter;
+	// 補完
+	CString mHotKeyCompl;
+	HOTKEY_ATTR mHotKeyAttrCompl;
+	// コンテキストメニュー表示
+	CString mHotKeyContextMenu;
+	HOTKEY_ATTR mHotKeyAttrContextMenu;
+	// コピー
+	CString mHotKeyCopy;
+	HOTKEY_ATTR mHotKeyAttrCopy;
+	Settings* mSettingsPtr = nullptr;
+
+};
+
+
+bool InputWindowKeySettingPage::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL InputWindowKeySettingPage::OnSetActive()
+bool InputWindowKeySettingPage::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
 void InputWindowKeySettingPage::OnOK()
 {
-	auto settingsPtr = (Settings*)GetParam();
+	auto settingsPtr = mSettingsPtr;
 	settingsPtr->Set(_T("MainWindowKey:Up-Modifiers"), (int)mHotKeyAttrUp.GetModifiers());
 	settingsPtr->Set(_T("MainWindowKey:Up-VirtualKeyCode"), (int)mHotKeyAttrUp.GetVKCode());
 
@@ -67,7 +107,7 @@ void InputWindowKeySettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_COPY, mHotKeyCopy);
 }
 
-BEGIN_MESSAGE_MAP(InputWindowKeySettingPage, SettingPage)
+BEGIN_MESSAGE_MAP(InputWindowKeySettingPage, CDialog)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_UP, OnButtonHotKeyUp)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_DOWN, OnButtonHotKeyDown)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_ENTER, OnButtonHotKeyEnter)
@@ -99,9 +139,9 @@ bool InputWindowKeySettingPage::UpdateStatus()
 	return true;
 }
 
-void InputWindowKeySettingPage::OnEnterSettings()
+void InputWindowKeySettingPage::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
+	mSettingsPtr = settingsPtr;
 
 	mHotKeyAttrUp = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Up-VirtualKeyCode"), -1));
@@ -127,13 +167,6 @@ void InputWindowKeySettingPage::OnEnterSettings()
 	                            settingsPtr->Get(_T("MainWindowKey:Copy-VirtualKeyCode"), -1));
 	mHotKeyCopy = mHotKeyAttrCopy.ToString();
 }
-
-bool InputWindowKeySettingPage::GetHelpPageId(CString& id)
-{
-	id = _T("InputKeySetting");
-	return true;
-}
-
 
 void InputWindowKeySettingPage::OnButtonHotKeyUp()
 {
@@ -244,4 +277,72 @@ void InputWindowKeySettingPage::OnButtonReset()
 	UpdateData(FALSE);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+struct AppSettingPageInputWindowKey::PImpl
+{
+	InputWindowKeySettingPage mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageInputWindowKey)
+
+AppSettingPageInputWindowKey::AppSettingPageInputWindowKey() : 
+	AppSettingPageBase(_T("入力"), _T("キー割り当て")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageInputWindowKey::~AppSettingPageInputWindowKey()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageInputWindowKey::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_KEY, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageInputWindowKey::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageInputWindowKey::GetOrder()
+{
+	return 10;
+}
+// 
+bool AppSettingPageInputWindowKey::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageInputWindowKey::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageInputWindowKey::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageInputWindowKey::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageInputWindowKey::GetHelpPageId(CString& id)
+{
+	id = _T("InputKeySetting");
+	return true;
+}
 
