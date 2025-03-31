@@ -14,7 +14,6 @@ CString EncodeBase64(const std::vector<uint8_t>& stm)
 	// 長さを調べる
 	DWORD dstLen = 0;
 	if (stm.size() == 0) {
-		spdlog::error("EncodeBase64 : empty");
 		return CString();
 	}
 	if (CryptBinaryToString( &stm.front(), (int)stm.size(), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &dstLen) == FALSE) {
@@ -36,7 +35,7 @@ bool DecodeBase64(const CString& src, std::vector<uint8_t>& stm)
 {
 	DWORD dstLen = 0;
 	if (CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, nullptr, &dstLen, nullptr, nullptr ) == FALSE) {
-		spdlog::error("DecodeBase64 : failed to get size");
+		spdlog::debug("DecodeBase64 : failed to get size");
 		return false;
 	}
 
