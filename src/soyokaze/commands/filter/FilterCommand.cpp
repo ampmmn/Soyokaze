@@ -265,10 +265,6 @@ bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 	if (newCmd) {
 		*newCmd = cmd.get();
 	}
-
-	constexpr bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(cmd.release(), isReloadHotKey);
-
 	return true;
 }
 
