@@ -59,9 +59,11 @@ constexpr int MAX_PATH_NTFS = (32767+1);
 #ifdef _UNICODE
 using tregex = std::wregex;
 using tstring = std::wstring;
+using tsmatch = std::wsmatch;
 #else
 using tregex = std::regex;
 using tstring = std::string;
+using tsmatch = std::smatch;
 #endif
 
 

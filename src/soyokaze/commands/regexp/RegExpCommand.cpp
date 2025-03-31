@@ -167,8 +167,19 @@ int RegExpCommand::Match(Pattern* pattern)
 {
 	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
 	if (in->mParam.mPatternStr.IsEmpty() == FALSE) {
-		if (std::regex_match((tstring)pattern->GetWholeString(), in->mRegex)) {
+		tstring str = (tstring)pattern->GetWholeString();
+		tsmatch match_result;
+		if (std::regex_match(str, in->mRegex)) {
+			// regex_matchで一致するなら完全一致
 			return Pattern::WholeMatch;
+		}
+		else if (std::regex_search(str, match_result, in->mRegex)) {
+			if (match_result.position() == 0) {
+				return Pattern::FrontMatch;
+			}
+			else {
+				return Pattern::PartialMatch;
+			}
 		}
 	}
 	return Pattern::Mismatch;
