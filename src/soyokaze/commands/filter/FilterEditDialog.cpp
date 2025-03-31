@@ -401,6 +401,7 @@ void FilterEditDialog::OnSelectAfterExecOtherCommand()
 	param = dlg.GetParam();
 	mParam.mAfterCommandName = param.mCommandName;
 	mParam.mAfterCommandParam = param.mCommandParam;
+	mParam.mPostFilterType = POSTFILTER_COMMAND;
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -429,6 +430,7 @@ void FilterEditDialog::OnSelectAfterSubProcess()
 	mParam.mAfterCommandParam = param.mCommandParam;
 	mParam.mAfterDir = param.mWorkDir;
 	mParam.mAfterShowType = param.mShowType;
+	mParam.mPostFilterType = POSTFILTER_SUBPROCESS;
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -450,6 +452,7 @@ void FilterEditDialog::OnSelectAfterCopyClipboard()
 
 	// ダイアログの設定値を取得
 	mParam.mAfterCommandParam = param.mCommandParam;
+	mParam.mPostFilterType = POSTFILTER_CLIPBOARD;
 
 	UpdateStatus();
 	UpdateData(FALSE);
