@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true'
+        submodules: recursive
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -42,6 +42,14 @@ jobs:
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Set up Cache for spdlog
+      uses: actions/cache@v3
+      with:
+        path: externals/spdlog/build
+        key: ${{ runner.os }}-spdlog-${{ hashFiles('**/externals/spdlog/**') }}
+        restore-keys: |
+          ${{ runner.os }}-spdlog-
 
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}
