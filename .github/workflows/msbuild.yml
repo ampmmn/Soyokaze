@@ -54,10 +54,19 @@ jobs:
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        mkdir -p externals/spdlog/build
-        cd externals/spdlog/build
+        cd externals/spdlog
+        cmd /c "if not exist build mkdir -p build"
+        cd build
         cmake ..
         msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
+
+    - name: Set up Cache for tidy-html5
+      uses: actions/cache@v3
+      with:
+        path: externals/tidy-html5/build
+        key: ${{ runner.os }}-tidy-html5-${{ hashFiles('**/externals/tidy-html5/**') }}
+        restore-keys: |
+          ${{ runner.os }}-tidy-html5-
 
     - name: Build tidy-html5
       working-directory: ${{env.GITHUB_WORKSPACE}}
