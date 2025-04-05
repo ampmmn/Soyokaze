@@ -48,6 +48,7 @@
 
 #include "logger/Logger.h"
 #include "utility/RefPtr.h"
+#include "utility/CharConverter.h"
 
 constexpr int MAX_PATH_NTFS = (32767+1);
 
@@ -66,4 +67,18 @@ using tstring = std::string;
 using tsmatch = std::smatch;
 #endif
 
+inline std::string& UTF2UTF(const CStringW& src, std::string& dst) {
+	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
+}
+inline CStringW& UTF2UTF(const std::string& src, CStringW& dst) {
+	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
+}
 
+
+// 構造体サイズ調査用
+// https://oshiete.goo.ne.jp/qa/1823289.html
+template <typename T, int> struct type_;
+#define PRINT_SIZEOF(type) inline void size_of_(type_<type, sizeof(type)>) {}
+
+// 以下のマクロをソースファイルに記述すると構造体のサイズが表示される(ビルド自体はエラーになる)
+// PRINT_SIZEOF(BITMAPINFOHEADER)

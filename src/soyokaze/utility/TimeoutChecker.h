@@ -1,6 +1,6 @@
 #pragma once
 
-namespace utility {
+namespace launcherapp { namespace utility {
 
 class TimeoutChecker
 {
@@ -18,5 +18,5 @@ public:
 
 };
 
-}
+}}
 

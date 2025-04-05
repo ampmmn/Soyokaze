@@ -6,7 +6,6 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
-#include "utility/CharConverter.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -78,15 +77,13 @@ void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>
 	try {
 		std::vector<MSSettingsCommand*> tmp;
 
-		utility::CharConverter conv;
-
 		std::ifstream f((LPCTSTR)settingsFilePath);
 		json j = json::parse(f);
 		for (auto it = j.begin(); it != j.end(); ++it) {
 
 			std::string s(it.key());
 			CString scheme;
-			conv.Convert(s.c_str(), scheme);
+			UTF2UTF(s, scheme);
 
 			auto value = it.value();
 			if (value.contains("Enable") && value["Enable"] == false) {
@@ -98,10 +95,10 @@ void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>
 
 			s = value["Category"];	
 			CString category;
-			conv.Convert(s.c_str(), category);
+			UTF2UTF(s, category);
 			s = value["Page"];	
 			CString pageName;
-			conv.Convert(s.c_str(), pageName);
+			UTF2UTF(s, pageName);
 
 			tmp.push_back(new MSSettingsCommand(scheme, category, pageName));
 		}

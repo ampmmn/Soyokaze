@@ -15,7 +15,6 @@
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
-#include "utility/CharConverter.h"
 #include "utility/AES.h"
 
 #include <deque>
@@ -118,8 +117,6 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	LinkItems& items
 )
 {
-	launcherapp::utility::CharConverter conv;
-
  	TidyDoc doc = tidyCreate();
 	tidyOptSetBool(doc, TidyForceOutput, yes);
 
@@ -164,7 +161,7 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 					auto attrName = tidyAttrName(attr);
 					auto attrValue = tidyAttrValue(attr);
 					if (isA && stricmp(attrName, "href") == 0) {
-						conv.Convert(attrValue, href);
+						UTF2UTF(attrValue, href);
 					}
 				}
 				stk.push_back(childNode);
@@ -192,7 +189,7 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 				tidyNodeGetText(doc, textNode, &buf);
 
 				CString displayName;
-				conv.Convert((const char*)buf.bp, displayName);
+				UTF2UTF((const char*)buf.bp, displayName);
 				if (isA) {
 					displayName.Trim();
 
@@ -233,7 +230,7 @@ bool URLDirectoryIndexCommand::QueryInterface(const launcherapp::core::IFID& ifi
 
 std::vector<uint8_t>& URLDirectoryIndexCommand::PImpl::Encode(const CString& str, std::vector<uint8_t>& buf)
 {
-	::utility::aes::AES aes;
+	utility::aes::AES aes;
 	aes.SetPassphrase("aiueo");  // てきとうa
 
 	int len = str.GetLength() + 1;
@@ -246,7 +243,7 @@ std::vector<uint8_t>& URLDirectoryIndexCommand::PImpl::Encode(const CString& str
 
 CString URLDirectoryIndexCommand::PImpl::Decode(const std::vector<uint8_t>& src)
 {
-	::utility::aes::AES aes;
+	utility::aes::AES aes;
 	aes.SetPassphrase("aiueo");  // てきとう
 
 	std::vector<uint8_t> plainData;

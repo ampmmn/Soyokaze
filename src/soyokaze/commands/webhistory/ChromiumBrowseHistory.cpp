@@ -2,7 +2,6 @@
 #include "ChromiumBrowseHistory.h"
 #include "matcher/Pattern.h"
 #include "utility/Path.h"
-#include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"
 
 #ifdef _DEBUG
@@ -13,7 +12,6 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-using CharConverter = launcherapp::utility::CharConverter;
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
 struct ChromiumBrowseHistory::PImpl
@@ -184,14 +182,13 @@ bool ChromiumBrowseHistory::PImpl::Query(
 			}
 
 			ITEM item;
-			param->conv.Convert(argv[0], item.mUrl);
-			param->conv.Convert(argv[1], item.mTitle);
+			UTF2UTF(argv[0], item.mUrl);
+			UTF2UTF(argv[1], item.mTitle);
 			param->mItems.push_back(item);
 			return 0;
 		}
 
 		std::vector<ITEM> mItems;
-		CharConverter conv;
 		uint64_t mStart = GetTickCount64();
 		DWORD mTimeout = 150;
 	};

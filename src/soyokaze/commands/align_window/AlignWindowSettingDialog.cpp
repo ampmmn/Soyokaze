@@ -467,7 +467,7 @@ void SettingDialog::SetItemToList(int index, const Param::ITEM& item)
 HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
-	if (utility::IsHighContrastMode()) {
+	if (::utility::IsHighContrastMode()) {
 		return br;
 	}
 

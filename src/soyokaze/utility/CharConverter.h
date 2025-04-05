@@ -21,6 +21,12 @@ public:
 	CString& Convert(const char* src, CString& dst, bool isFailIfInvalidChars = false);
 	CStringA& Convert(const CString& src, CStringA& dst);
 	std::string& Convert(const CString& src, std::string& dst);
+	
+	static std::string UTF2UTF(const CStringW& src); 
+	static std::string& UTF2UTF(const CStringW& src, std::string& dst); 
+	
+	static CStringW UTF2UTF(const std::string& src); 
+	static CStringW& UTF2UTF(const std::string& src, CStringW& dst); 
 
 	static int ScalarToUTF8(uint32_t scalar, char* dst);
 

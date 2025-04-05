@@ -154,7 +154,7 @@ HBRUSH MainWindowAppearance::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HB
 	UNREFERENCED_PARAMETER(pWnd);
 
 	// ハイコントラストモードの場合はシステム設定をそのまま使う
-	if (utility::IsHighContrastMode()) {
+	if (::utility::IsHighContrastMode()) {
 		return defBr;
 	}
 

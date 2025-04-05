@@ -308,7 +308,7 @@ HBRUSH AppSettingDialog::OnCtlColor(
 	UINT nCtlColor
 )
 {
-	if (utility::IsHighContrastMode()) {
+	if (::utility::IsHighContrastMode()) {
 		HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 		return br;
 	}

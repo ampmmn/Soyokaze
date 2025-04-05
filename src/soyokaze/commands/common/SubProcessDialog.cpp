@@ -127,7 +127,7 @@ void SubProcessDialog::OnUpdateStatus()
 HBRUSH SubProcessDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH br = __super::OnCtlColor(pDC, pWnd, nCtlColor);
-	if (utility::IsHighContrastMode()) {
+	if (::utility::IsHighContrastMode()) {
 		return br;
 	}
 

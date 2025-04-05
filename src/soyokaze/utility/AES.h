@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace utility {
-namespace aes {
+namespace launcherapp { namespace utility { namespace aes {
 
 class AES
 {
@@ -23,5 +22,4 @@ private:
 };
 
 
-} // end of namespace aes
-} // end of namespace utility
+}}}  // end of namespace launcherapp::utility::aes

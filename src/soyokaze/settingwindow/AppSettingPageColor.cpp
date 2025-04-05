@@ -186,7 +186,7 @@ BOOL ColorSettingDialog::OnInitDialog()
 
 	mPreview.SubclassDlgItem(IDC_STATIC_PREVIEW, this);
 
-	if (utility::IsHighContrastMode()) {
+	if (::utility::IsHighContrastMode()) {
 		DisableAllControls();
 	}
 

@@ -3,7 +3,6 @@
 
 #include "commands/clipboardhistory/ClipboardHistoryCommand.h"
 #include "matcher/PatternInternal.h"
-#include "utility/CharConverter.h"
 #include "utility/SQLite3Database.h"
 #include "utility/SHA1.h"
 #include "utility/Path.h"
@@ -19,7 +18,6 @@ namespace clipboardhistory {
 
 constexpr int64_t DBVERSION = 1; ///< データベースバージョン
 
-using CharConverter = launcherapp::utility::CharConverter;
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
 /**
@@ -92,14 +90,13 @@ void ClipboardHistoryDB::PImpl::Query(
 
 			ITEM item;
 			item.mAppendTime = std::stoull(argv[0]);
-			param->conv.Convert(argv[1], item.mData);
+			UTF2UTF(argv[1], item.mData);
 
 			param->mResultList->push_back(item);
 			return 0;
 		}
 
 		ResultList* mResultList = nullptr;
-		CharConverter conv;
 	};
 
 	// 問い合わせを行う

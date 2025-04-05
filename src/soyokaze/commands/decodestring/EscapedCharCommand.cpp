@@ -220,10 +220,8 @@ int EscapedCharCommand::Match(Pattern* pattern)
 {
 	CString cmdline = pattern->GetWholeString();
 
-	CharConverter conv;
-
 	std::string s;
-	conv.Convert(cmdline, s);
+	UTF2UTF(cmdline, s);
 
 	bool isMatched = false;
 
@@ -305,7 +303,7 @@ int EscapedCharCommand::Match(Pattern* pattern)
 		return Pattern::Mismatch;
 	}
 
-	conv.Convert(dst.c_str(), mName);
+	UTF2UTF(dst, mName);
 
 	return Pattern::PartialMatch;
 }

@@ -3,7 +3,6 @@
 #include "DecodeUriCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
-#include "utility/CharConverter.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -78,10 +77,8 @@ int DecodeUriCommand::Match(Pattern* pattern)
 {
 	CString cmdline = pattern->GetWholeString();
 
-	launcherapp::utility::CharConverter conv;
-
 	std::string s;
-	conv.Convert(cmdline, s);
+	UTF2UTF(cmdline, s);
 
 	// static std::regex reg("^.*%[0-9a-fA-F][0-9a-fA-F].*$");
 	// if (std::regex_match(s, reg) == false) {
@@ -133,7 +130,7 @@ int DecodeUriCommand::Match(Pattern* pattern)
 		return Pattern::Mismatch;
 	}
 
-	conv.Convert(dst.c_str(), mName);
+	UTF2UTF(dst, mName);
 
 	return Pattern::PartialMatch;
 }

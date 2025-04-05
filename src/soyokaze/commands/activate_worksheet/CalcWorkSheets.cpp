@@ -2,7 +2,6 @@
 #include "CalcWorkSheets.h"
 #include "commands/common/AutoWrap.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "utility/CharConverter.h"
 #include "utility/Path.h"
 #include <mutex>
 #include <thread>
@@ -305,10 +304,7 @@ static CString DecodeURI(const CString& src)
 	}
 
 	CString out;
-	launcherapp::utility::CharConverter conv;
-	conv.Convert(buf.c_str(), out);
-
-	return out;
+	return UTF2UTF(buf, out);
 }
 
 /**

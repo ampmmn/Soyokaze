@@ -3,8 +3,7 @@
 #include <wincrypt.h>
 #pragma comment(lib, "Advapi32.lib")
 
-namespace utility {
-namespace aes {
+namespace launcherapp { namespace utility { namespace aes {
 
 constexpr size_t EXPECTED_SIZE_HASH = 32;
 constexpr size_t KEY_SIZE = 16;
@@ -224,6 +223,5 @@ bool AES::Decrypt(
 }
  
  
-} // end of namespace aes
-} // end of namespace utility
+}}} // end of namespace launcherapp::utility::aes
 

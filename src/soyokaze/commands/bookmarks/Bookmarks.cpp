@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Bookmarks.h"
-#include "utility/CharConverter.h" 
 #include "utility/Path.h" 
 #include <fstream>
 #include <vector>
@@ -15,7 +14,6 @@
 #endif
 
 using json = nlohmann::json;
-using CharConverter = launcherapp::utility::CharConverter;
 
 
 namespace launcherapp {
@@ -86,9 +84,8 @@ static void parseJSONObject(json& j, std::vector<Bookmark>& items)
 
 
 		auto name = j["name"].get<std::string>();
-		CharConverter conv;
 		// UTF-8に変換
-		conv.Convert(name.c_str(), item.mName);
+		UTF2UTF(name, item.mName);
 
 		item.mUrl = CString(CStringA(j["url"].get<std::string>().c_str()));
 		items.push_back(item);

@@ -124,10 +124,8 @@ HICON FileProtocolConvertAdhocCommand::GetIcon()
 
 static void DecodeUri(CString& str)
 {
-	launcherapp::utility::CharConverter conv;
-
 	std::string s;
-	conv.Convert(str, s);
+	UTF2UTF(str, s);
 
 	std::string dst;
 	for (auto it = s.begin(); it != s.end(); ++it) {
@@ -166,8 +164,7 @@ static void DecodeUri(CString& str)
 		it += 2;
 	}
 
-	conv.Convert(dst.c_str(), str);
-
+	UTF2UTF(dst, str);
 }
 
 int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
