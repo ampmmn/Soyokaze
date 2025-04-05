@@ -8,7 +8,17 @@
 
 ユニットテストフレームワークとしてgoogletest(1.13.0)を用いている。
 
+## ソースコードを取得する
+
+```
+git clone --recursive https://github.com/ampmmn/Soyokaze.git
+```
+
 ## ビルド時に必要な外部ライブラリ
+
+以下のライブラリに依存している。  
+`git submoudle`で管理しているので、前述の`git clone --recursive`により、
+本アプリのソースコードと合わせて、一括で取得できる。
 
 - [nlohmann-json](https://github.com/nlohmann/json)
   - JSONを読むために利用している。  
