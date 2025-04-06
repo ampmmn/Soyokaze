@@ -26,6 +26,8 @@ typedef void* (*PYIMPORT_IMPORTMODULE)(const char*);
 typedef int (*PYMAPPING_SETITEMSTRING)(void*, const char*, void*);
 typedef void* (*PY_COMPILESTRING)(const char *, const char *, int);
 typedef void* (*PYOBJECT_GETATTRSTRING)(void* o, const char *attr_name);
+typedef int (*PYDICT_MERGE)(void*, void*, int);
+typedef void* (*PYEVAL_GetGlobals)(void);
 
 struct PythonDLL::PImpl
 {
@@ -55,6 +57,8 @@ struct PythonDLL::PImpl
 	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString = nullptr;
 	PY_COMPILESTRING mPy_CompileString = nullptr;
   PYOBJECT_GETATTRSTRING mPyObject_GetAttrString = nullptr;
+	PYDICT_MERGE mPyDict_Merge = nullptr;
+	PYEVAL_GetGlobals mPyEval_GetGlobals = nullptr;
 };
 
 bool PythonDLL::PImpl::Initialize()
@@ -96,7 +100,8 @@ bool PythonDLL::PImpl::Initialize()
 	mPyImport_ImportModule = (PYIMPORT_IMPORTMODULE)GetProcAddress(mDll, "PyImport_ImportModule");
 	mPyMapping_SetItemString = (PYMAPPING_SETITEMSTRING)GetProcAddress(mDll, "PyMapping_SetItemString");
 	mPy_CompileString = (PY_COMPILESTRING)GetProcAddress(mDll, "Py_CompileString");
-	mPyObject_GetAttrString = (PYOBJECT_GETATTRSTRING)GetProcAddress(mDll, "PyObject_GetAttrString");
+	mPyDict_Merge = (PYDICT_MERGE)GetProcAddress(mDll, "PyDict_Merge");
+	mPyEval_GetGlobals = (PYEVAL_GetGlobals)GetProcAddress(mDll, "PyEval_GetGlobals");
 
 	// 初期化
 	mPy_Initialize();
@@ -106,7 +111,9 @@ bool PythonDLL::PImpl::Initialize()
   mDict = mPyModule_GetDict(mModule);
 
 	void* pyMathModule = mPyImport_ImportModule("math");
-	mPyMapping_SetItemString(mDict, "math", pyMathModule);
+	void* matchDict = mPyModule_GetDict(pyMathModule);
+	mPyDict_Merge(mDict, matchDict, 1);
+
 	mPy_DecRef(pyMathModule);
 	return true;
 }

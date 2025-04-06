@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+## Changed
+
+- #50【電卓機能】mathモジュールの関数を`from math import *`でインポートする
 
 ## 0.37.1 - 2025-04-06
 
