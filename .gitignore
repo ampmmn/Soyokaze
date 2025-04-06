@@ -16,4 +16,5 @@ packages/
 *.zip
 tags
 packages.config
+externals/
 
