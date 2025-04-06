@@ -683,6 +683,11 @@ bool AppPreference::IsEnableWindowSwitch()
 	return in->Get(_T("WindowSwitch:EnableWindowSwitch"), true);
 }
 
+CString AppPreference::GetWindowSwitchPrefix()
+{
+	return in->Get(_T("WindowSwitch:Prefix"), _T("wl"));
+}
+
 bool AppPreference::IsEnableBookmark()
 {
 	return in->Get(_T("Bookmarks:EnableBookmarks"), true);

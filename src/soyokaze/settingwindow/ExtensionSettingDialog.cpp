@@ -32,12 +32,6 @@ public:
 	BOOL mIsEnableCalc = FALSE;
 	CString mPythonDLLPath;
 
-	// ウインドウタイトルによるウインドウ切り替え機能
-	BOOL mIsEnableWindowTitle = FALSE;
-	// Excelワークシート名によるウインドウ切り替え機能
-	BOOL mIsEnableWorksheet = FALSE;
-	// PowerPointスライド名によるウインドウ切り替え機能
-	BOOL mIsEnableSlide = FALSE;
 	// コントロールパネル選択機能
 	BOOL mIsEnableControlPanel = FALSE;
 	// スタートメニュー/最近使ったファイル選択機能
@@ -48,8 +42,6 @@ public:
 	BOOL mIsEnableMMCSnapin = FALSE;
 	// Windowsの設定(ms-settings)選択機能
 	BOOL mIsEnableMSSettings = FALSE;
-	// Outlookメール選択機能(Inboxのみ)
-	BOOL mIsEnableOutlookMail = FALSE;
 
 	Settings* mSettingsPtr = nullptr;
 };
@@ -62,15 +54,11 @@ void ExtensionSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("Calculator:Enable"), (bool)mIsEnableCalc);
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
-	settingsPtr->Set(_T("WindowSwitch:EnableWindowSwitch"), (bool)mIsEnableWindowTitle);
-	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
-	settingsPtr->Set(_T("PowerPoint:EnableSlide"), (bool)mIsEnableSlide);
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMMCSnapin"), (bool)mIsEnableMMCSnapin);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMSSettings"), (bool)mIsEnableMSSettings);
-	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
 	__super::OnOK();
 }
 
@@ -79,15 +67,11 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_ENABLECALCULATOR, mIsEnableCalc);
 	DDX_Text(pDX, IDC_EDIT_PYTHONDLLPATH, mPythonDLLPath);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_WINDOWTITLE, mIsEnableWindowTitle);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_SLIDE, mIsEnableSlide);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MMCSNAPINS, mIsEnableMMCSnapin);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MSSETTINGS, mIsEnableMSSettings);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
 	
 }
 
@@ -134,15 +118,11 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 
-	mIsEnableWindowTitle = settingsPtr->Get(_T("WindowSwitch:EnableWindowSwitch"), true);
-	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), true);
-	mIsEnableSlide = settingsPtr->Get(_T("PowerPoint:EnableSlide"), false);
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 	mIsEnableMMCSnapin = settingsPtr->Get(_T("Soyokaze:IsEnableMMCSnapin"), true);
 	mIsEnableMSSettings = settingsPtr->Get(_T("Soyokaze:IsEnableMSSettings"), true);
-	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
 bool ExtensionSettingDialog::UpdateStatus()

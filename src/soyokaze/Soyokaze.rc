@@ -245,26 +245,17 @@ BEGIN
     EDITTEXT        IDC_EDIT_PYTHONDLLPATH,95,33,143,14,ES_AUTOHSCROLL
     PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,241,33,31,14
     LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,53,180,19
-    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,79,282,70
-    CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,92,243,10
-    CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,106,253,10
-    CONTROL         "PowerPointのスライドタイトルによる選択を有効にする(&T)",IDC_CHECK_ENABLE_SLIDE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,119,253,10
-    CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,132,253,10
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,151,282,96
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,84,282,96
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,165,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,181,206,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,114,206,10
     CONTROL         "アプリケーション(UWPアプリなど)を候補として表示する(&W)",IDC_CHECK_ENABLE_UWPAPPS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,197,192,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,130,192,10
     CONTROL         "MMCスナップインを候補として表示する(&S)",IDC_CHECK_ENABLE_MMCSNAPINS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,213,144,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,146,144,10
     CONTROL         "Windowsの設定を候補として表示する(&I)",IDC_CHECK_ENABLE_MSSETTINGS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,229,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,162,143,10
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140
@@ -1376,6 +1367,22 @@ BEGIN
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,188,8
 END
 
+IDD_APPSETTING_SWITCHWINDOW DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,8,282,143
+    CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,21,243,10
+    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,35,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_WINDOWTITLE,88,32,52,14,ES_AUTOHSCROLL
+    CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,53,253,10
+    CONTROL         "PowerPointのスライドタイトルによる選択を有効にする(&T)",IDC_CHECK_ENABLE_SLIDE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,69,253,10
+    CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,85,253,10
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1899,6 +1906,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 128
+    END
+
+    IDD_APPSETTING_SWITCHWINDOW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2758,6 +2773,10 @@ BEGIN
     0, 0, 100, 0
 END
 
+IDD_APPSETTING_SWITCHWINDOW AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

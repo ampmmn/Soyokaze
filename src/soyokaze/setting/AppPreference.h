@@ -89,6 +89,8 @@ public:
 
 	// ウインドウの切り替え機能を有効にするか?
 	bool IsEnableWindowSwitch();
+	// ウインドウの切り替え機能のプレフィックス
+	CString GetWindowSwitchPrefix();
 
 	bool IsEnableBookmark();
 	bool IsUseURLForBookmarkSearch();

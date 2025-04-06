@@ -35,14 +35,18 @@ struct ActivateWindowProvider::PImpl :
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
+	void Reload() {
+		auto pref = AppPreference::Get();
+		mIsEnableWindowSwitch = pref->IsEnableWindowSwitch();
+		mPrefix = pref->GetWindowSwitchPrefix();
+	}
+
 // AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-		mIsEnableWindowSwitch = pref->IsEnableWindowSwitch();
-
+		Reload();
 	}
 	void OnAppExit() override {}
 
@@ -83,6 +87,7 @@ struct ActivateWindowProvider::PImpl :
 	bool mIsEnableWindowSwitch = false;
 	bool mIsFirstCall = true;
 	WindowList mWndList;
+	CString mPrefix;
 
 	std::map<HWND, CString> mAdhocNameMap;
 };
@@ -145,19 +150,26 @@ void ActivateWindowProvider::QueryAdhocCommands(
 {
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnableWindowSwitch = pref->IsEnableWindowSwitch();
+		in->Reload();
 		in->mIsFirstCall = false;
 	}
 
+	// 機能を利用しない場合は抜ける
 	if (in->mIsEnableWindowSwitch == false) {
 		return ;
 	}
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mPrefix;
+	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
+
+	int offset = prefix.IsEmpty() ? 0 : 1;
 
 	auto it = in->mAdhocNameMap.begin();
 	while(it != in->mAdhocNameMap.end()) { 
 		auto& name = it->second;
-		int level = pattern->Match(name);
+		int level = pattern->Match(name, offset);
 		if (level == Pattern::Mismatch) {
 			it++;
 			continue;
@@ -178,6 +190,10 @@ void ActivateWindowProvider::QueryAdhocCommands(
 	in->mWndList.EnumWindowHandles(windowHandles);
 	SPDLOG_DEBUG(_T("Window count : {}"), windowHandles.size());
 
+
+	// プレフィックスあり、かつ、後続キーワードなしの場合は全て列挙
+	bool shouldEnumAll = pattern->GetWordCount() == 1;
+
 	TCHAR caption[256];
 	for (auto hwnd : windowHandles) {
 		GetWindowText(hwnd, caption, 256);
@@ -187,9 +203,13 @@ void ActivateWindowProvider::QueryAdhocCommands(
 			continue;
 		}
 
-		int level = pattern->Match(caption);
-		if (level == Pattern::Mismatch) {
-			continue;
+		int level = Pattern::FrontMatch;
+
+		if (shouldEnumAll == false) {
+			level = pattern->Match(caption, offset);
+			if (level == Pattern::Mismatch) {
+				continue;
+			}
 		}
 		auto cmd = new WindowActivateAdhocCommand(hwnd);
 		cmd->SetListener(in.get());

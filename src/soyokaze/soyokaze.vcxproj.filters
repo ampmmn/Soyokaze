@@ -1455,6 +1455,9 @@
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h">
       <Filter>commands\unitconvert</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageSwitchWindow.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2575,6 +2578,9 @@
     </ClCompile>
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp">
       <Filter>commands\unitconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageSwitchWindow.cpp">
+      <Filter>settingwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

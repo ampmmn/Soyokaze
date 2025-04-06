@@ -72,25 +72,25 @@ static BOOL CALLBACK OnEnumWindows(HWND hwnd, LPARAM lParam)
 
 void WindowList::EnumWindowHandles(std::vector<HWND>& handles)
 {
-	// 一定時間内の再実行の場合は過去の結果を再利用する
-	if (GetTickCount64() - in->mLastHwndUpdate < HWNDUPDATE_INTERVAL) {
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		handles = in->mHandles;
-		return ;
+	// 一定時間を経過後した場合はリストを更新する
+	if (GetTickCount64() - in->mLastHwndUpdate >= HWNDUPDATE_INTERVAL) {
+
+		in->mEvent.ResetEvent();
+
+		std::thread th([&]() {
+			std::vector<HWND> handles;
+			EnumWindows(OnEnumWindows, (LPARAM)&handles);
+
+			std::lock_guard<std::mutex> lock(in->mMutex);
+			in->mHandles.swap(handles);
+			in->mEvent.SetEvent();
+			in->mLastHwndUpdate = GetTickCount64();
+		});
+		th.detach();
 	}
 
-	in->mEvent.ResetEvent();
-
-	std::thread th([&]() {
-		std::vector<HWND> handles;
-		EnumWindows(OnEnumWindows, (LPARAM)&handles);
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		in->mHandles.swap(handles);
-		in->mEvent.SetEvent();
-		in->mLastHwndUpdate = GetTickCount64();
-	});
-	th.detach();
-
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	handles = in->mHandles;
 }
 
 

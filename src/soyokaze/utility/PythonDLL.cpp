@@ -11,6 +11,7 @@ static const int Py_eval_input = 258;    // defined in compile.h
 
 typedef void (*PY_INITIALIZE)(void);
 typedef int (*PY_FINALIZEEX)(void);
+typedef void (*PYEVAL_INITTHREADS)(void);
 typedef int (*PYGILSTATE_ENSURE)(void);
 typedef void* (*PYRUN_STRING)(const char*, int, void*, void*);
 typedef char* (*PYSTRING_ASSTRING)(void*);
@@ -42,6 +43,7 @@ struct PythonDLL::PImpl
 
 	PY_INITIALIZE mPy_Initialize = nullptr;
 	PY_FINALIZEEX mPy_FinalizeEx = nullptr;
+	PYEVAL_INITTHREADS mPyEval_InitThreads = nullptr;
 	PYGILSTATE_ENSURE mPyGILState_Ensure = nullptr;
 	PYRUN_STRING mPyRun_String = nullptr;
 	PYSTRING_ASSTRING mPyString_AsString = nullptr;
@@ -86,6 +88,8 @@ bool PythonDLL::PImpl::Initialize()
 		return false;
 	}
 	mPy_FinalizeEx = (PY_FINALIZEEX)GetProcAddress(mDll, "Py_FinalizeEx");
+	mPyEval_InitThreads = (PYEVAL_INITTHREADS)GetProcAddress(mDll, "PyEval_InitThreads");
+
 	mPyGILState_Ensure = (PYGILSTATE_ENSURE)GetProcAddress(mDll, "PyGILState_Ensure");
 	mPyRun_String = (PYRUN_STRING)GetProcAddress(mDll, "PyRun_String");
 	mPyString_AsString = (PYSTRING_ASSTRING)GetProcAddress(mDll, "PyBytes_AsString");
@@ -105,6 +109,7 @@ bool PythonDLL::PImpl::Initialize()
 
 	// 初期化
 	mPy_Initialize();
+	mPyEval_InitThreads();
 
 	// 辞書生成
 	mModule = mPyImport_AddModule("__main__");
