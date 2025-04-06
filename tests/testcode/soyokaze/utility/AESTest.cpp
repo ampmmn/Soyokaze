@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "utility/AES.h"
 
-using AES = utility::aes::AES;
+using AES = launcherapp::utility::aes::AES;
 
 TEST(AES, testInit)
 {
