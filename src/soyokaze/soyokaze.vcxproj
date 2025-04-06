@@ -506,6 +506,7 @@
     <ClInclude Include="commands\snippetgroup\SnippetGroupProvider.h" />
     <ClInclude Include="commands\snippet\SnippetCommandEditor.h" />
     <ClInclude Include="commands\snippet\SnippetCommandParam.h" />
+    <ClInclude Include="commands\unitconvert\EraNameWJCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommand.h" />
@@ -915,6 +916,7 @@
     <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />
+    <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MultiProcessorCompilation>

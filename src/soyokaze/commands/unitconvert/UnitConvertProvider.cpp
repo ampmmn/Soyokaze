@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UnitConvertProvider.h"
 #include "commands/unitconvert/InchAdhocCommand.h"
+#include "commands/unitconvert/EraNameWJCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -16,8 +17,8 @@ namespace launcherapp {
 namespace commands {
 namespace unitconvert {
 
-
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandPtr = RefPtr<launcherapp::core::Command>;
 
 struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -42,7 +43,7 @@ struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
-	InchAdhocCommand* mInchCmdPtr = nullptr;
+	std::list<CommandPtr> mConverterCommands;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
 	bool mIsFirstCall = true;
 
@@ -57,14 +58,12 @@ REGISTER_COMMANDPROVIDER(UnitConvertProvider)
 
 UnitConvertProvider::UnitConvertProvider() : in(std::make_unique<PImpl>())
 {
-	in->mInchCmdPtr = new InchAdhocCommand();
+	in->mConverterCommands.push_back(CommandPtr(new InchAdhocCommand()));
+	in->mConverterCommands.push_back(CommandPtr(new EraNameWJCommand()));
 }
 
 UnitConvertProvider::~UnitConvertProvider()
 {
-	if (in->mInchCmdPtr) {
-		in->mInchCmdPtr->Release();
-	}
 }
 
 CString UnitConvertProvider::GetName()
@@ -84,11 +83,13 @@ void UnitConvertProvider::QueryAdhocCommands(
 		in->mIsFirstCall = false;
 	}
 
-	int level = in->mInchCmdPtr->Match(pattern);
-	if (level != Pattern::Mismatch) {
-		in->mInchCmdPtr->AddRef();
-		commands.Add(CommandQueryItem(level, in->mInchCmdPtr));
-		return;
+	for (auto& cmdPtr : in->mConverterCommands) {
+		int level = cmdPtr->Match(pattern);
+		if (level == Pattern::Mismatch) {
+			continue;
+		}
+		cmdPtr->AddRef();
+		commands.Add(CommandQueryItem(level, cmdPtr.get()));
 	}
 }
 

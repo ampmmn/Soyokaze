@@ -31,6 +31,7 @@ public:
 	HICON GetImageResIcon(int index);
 	HICON GetWMPlocIcon(int index);
 	HICON GetMMCndMgrIcon(int index);
+	HICON GetMSSvpIcon(int index);
 
 	HICON LoadFolderIcon();
 	HICON LoadWebIcon();
