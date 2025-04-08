@@ -245,7 +245,7 @@ BEGIN
     EDITTEXT        IDC_EDIT_PYTHONDLLPATH,95,33,143,14,ES_AUTOHSCROLL
     PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,241,33,31,14
     LTEXT           "python3xx.dllのパスを指定してください\n※xxはバージョン",IDC_STATIC,24,53,180,19
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,84,282,96
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,84,282,137
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
@@ -256,6 +256,9 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,146,144,10
     CONTROL         "Windowsの設定を候補として表示する(&I)",IDC_CHECK_ENABLE_MSSETTINGS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,162,143,10
+    CONTROL         "環境変数を候補として表示する(&E)",IDC_CHECK_ENABLE_ENVIRONMENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,178,125,10
+    LTEXT           "プレフィックス(&R):",IDC_STATIC,33,194,52,8
+    EDITTEXT        IDC_EDIT_PREFIX_ENVIRONMENT,88,191,52,14,ES_AUTOHSCROLL
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140

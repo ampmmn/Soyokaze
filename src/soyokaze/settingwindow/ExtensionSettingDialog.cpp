@@ -26,7 +26,7 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnBrowsePyhonDLLPath();
-	afx_msg void OnCheckEnableCalculator();
+	afx_msg void OnUpdateStatus();
 
 public:
 	BOOL mIsEnableCalc = FALSE;
@@ -42,6 +42,10 @@ public:
 	BOOL mIsEnableMMCSnapin = FALSE;
 	// Windowsの設定(ms-settings)選択機能
 	BOOL mIsEnableMSSettings = FALSE;
+	// 環境変数選択機能
+	BOOL mIsEnableEnvironment = FALSE;
+	// 環境変数のプレフィックス
+	CString mPrefixEnvironment;
 
 	Settings* mSettingsPtr = nullptr;
 };
@@ -59,6 +63,9 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMMCSnapin"), (bool)mIsEnableMMCSnapin);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMSSettings"), (bool)mIsEnableMSSettings);
+	settingsPtr->Set(_T("Environment:IsEnable"), (bool)mIsEnableEnvironment);
+	settingsPtr->Set(_T("Environment:Prefix"), mPrefixEnvironment);
+
 	__super::OnOK();
 }
 
@@ -72,12 +79,14 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MMCSNAPINS, mIsEnableMMCSnapin);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MSSETTINGS, mIsEnableMSSettings);
-	
+	DDX_Check(pDX, IDC_CHECK_ENABLE_ENVIRONMENT, mIsEnableEnvironment);
+	DDX_Text(pDX, IDC_EDIT_PREFIX_ENVIRONMENT, mPrefixEnvironment);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSE, OnBrowsePyhonDLLPath)
-	ON_COMMAND(IDC_CHECK_ENABLECALCULATOR, OnCheckEnableCalculator)
+	ON_COMMAND(IDC_CHECK_ENABLECALCULATOR, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_ENVIRONMENT, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 
@@ -98,6 +107,10 @@ bool ExtensionSettingDialog::OnKillActive()
 	}
 	if (mIsEnableCalc && Path::FileExists(mPythonDLLPath) == FALSE) {
 		AfxMessageBox(_T("Python(DLL)のパスを設定してください\n(ファイルが存在しません)"));
+		return false;
+	}
+	if (mPrefixEnvironment.IsEmpty()) {
+		AfxMessageBox(_T("環境変数のプレフィックスを入力してください"));
 		return false;
 	}
 
@@ -123,12 +136,16 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 	mIsEnableMMCSnapin = settingsPtr->Get(_T("Soyokaze:IsEnableMMCSnapin"), true);
 	mIsEnableMSSettings = settingsPtr->Get(_T("Soyokaze:IsEnableMSSettings"), true);
+	mIsEnableEnvironment = settingsPtr->Get(_T("Environment:IsEnable"), true);
+	mPrefixEnvironment = settingsPtr->Get(_T("Environment:Prefix"), _T("env"));
 }
 
 bool ExtensionSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_PYTHONDLLPATH)->EnableWindow(mIsEnableCalc);
 	GetDlgItem(IDC_BUTTON_BROWSE)->EnableWindow(mIsEnableCalc);
+
+	GetDlgItem(IDC_EDIT_PREFIX_ENVIRONMENT)->EnableWindow(mIsEnableEnvironment);
 
 	return true;
 }
@@ -148,7 +165,7 @@ void ExtensionSettingDialog::OnBrowsePyhonDLLPath()
 	UpdateData(FALSE);
 }
 
-void ExtensionSettingDialog::OnCheckEnableCalculator()
+void ExtensionSettingDialog::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();

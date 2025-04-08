@@ -456,6 +456,7 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommandEditor.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h" />
+    <ClInclude Include="commands\env\EnvAppSettings.h" />
     <ClInclude Include="commands\everything\AppSettingEverythingPage.h" />
     <ClInclude Include="commands\everything\Everything-SDK\include\Everything.h" />
     <ClInclude Include="commands\everything\Everything-SDK\ipc\everything_ipc.h" />
@@ -864,6 +865,7 @@
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommandEditor.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp" />
+    <ClCompile Include="commands\env\EnvAppSettings.cpp" />
     <ClCompile Include="commands\everything\AppSettingEverythingPage.cpp" />
     <ClCompile Include="commands\everything\Everything-SDK\src\Everything.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

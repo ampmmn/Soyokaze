@@ -57,7 +57,7 @@ BOOL EnvCommand::Execute(Parameter* param)
 
 HICON EnvCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadDefaultIcon();
+	return IconLoader::Get()->GetImageResIcon(-149);
 }
 
 launcherapp::core::Command*

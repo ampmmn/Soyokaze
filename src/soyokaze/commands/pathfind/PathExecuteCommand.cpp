@@ -135,7 +135,8 @@ BOOL PathExecuteCommand::Execute(Parameter* param)
 	}
 
 	// 履歴に追加
-	ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
+	//ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
+	ExecuteHistory::GetInstance()->Add(_T("pathfind"), param->GetWholeString());
 
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;

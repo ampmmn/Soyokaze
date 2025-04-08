@@ -361,6 +361,7 @@
 #define IDC_CHECK_ENABLE_MSSETTINGS     1118
 #define IDC_CHECK_REGEXP2               1119
 #define IDC_EDIT_AUTHUSER               1119
+#define IDC_CHECK_ENABLE_ENVIRONMENT    1119
 #define IDC_CHECK_NOTIFYIFNOTEXIST      1120
 #define IDC_EDIT_AUTHPASSWORD           1120
 #define IDC_CHECK_ENABLE_CONTROLPANEL2  1121
@@ -491,6 +492,7 @@
 #define IDC_EDIT_PREFIX_WINDOWTITLE     1213
 #define IDC_EDIT_PREFIX2                1214
 #define IDC_EDIT_NUMOFRESULTS           1214
+#define IDC_EDIT_PREFIX_ENVIRONMENT     1214
 #define IDC_STATIC_VARIABLE             1215
 #define ID_VIEW_HELP                    32775
 
@@ -500,7 +502,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1214
+#define _APS_NEXT_CONTROL_VALUE         1215
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

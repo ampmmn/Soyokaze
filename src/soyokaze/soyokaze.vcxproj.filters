@@ -1458,6 +1458,9 @@
     <ClInclude Include="settingwindow\AppSettingPageSwitchWindow.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
+    <ClInclude Include="commands\env\EnvAppSettings.h">
+      <Filter>commands\env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2581,6 +2584,9 @@
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPageSwitchWindow.cpp">
       <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\env\EnvAppSettings.cpp">
+      <Filter>commands\env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
