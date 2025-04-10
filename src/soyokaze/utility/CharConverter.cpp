@@ -108,7 +108,8 @@ CStringW& CharConverter::UTF2UTF(const std::string& src, CStringW& dst)
 
 	int requiredLen = MultiByteToWideChar(cp, flags, src.c_str(), -1, NULL, 0);
 	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
-		throw Exception();
+		dst.Empty();
+		return dst;
 	}
 
 	MultiByteToWideChar(cp, flags, src.c_str(), -1, dst.GetBuffer(requiredLen), requiredLen);
