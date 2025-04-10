@@ -21,20 +21,29 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 本アプリのソースコードと合わせて、一括で取得できる。
 
 - [nlohmann-json](https://github.com/nlohmann/json)
-  - JSONを読むために利用している。  
-ヘッダファイルベースのライブラリなので、このライブラリをビルドする必要はなく、配置するだけでよい。
+  - JSONを読むために利用している。
+  - ヘッダファイルベースのライブラリなので、このライブラリをビルドする必要はなく、配置するだけでよい。
+
+- [fmt](https://github.com/fmtlib/fmt)
+  - 便利な汎用の文字列フォーマットライブラリ
+  - VisualStudio2022でビルドする分にはC++20の標準ライブラリを使えばよいのだけれど、VisualStudio2017でもビルドしたいのでこちらを利用する
+  - ヘッダファイルベースのライブラリなので、このライブラリをビルドする必要はなく、配置するだけでよい。
 
 - [spdlog](https://github.com/gabime/spdlog)
-  - ログ出力ライブラリ  
-要ビルド
+  - ログ出力ライブラリ
+  - このライブラリは内部でfmtを利用しているが、ライブラリ自身が内包している方を使う構成としている
+  - 要ビルド
 
 - [tidy-html5](https://github.com/htacg/tidy-html5)
   - HTML文書を修正するためのライブラリであるが、HTMLをパースしてノードの情報を取得することもできるので、その用途で利用している
-  - ライブラリ部(libtidy)を利用している  
-要ビルド
+  - ライブラリ部(libtidy)を利用している
+  - 要ビルド
 
 ### 外部ライブラリの配置
 
+- fmt
+  - https://github.com/fmtlib/fmt からソース一式を取得する
+    - `externals`ディレクトリに`fmt`を配置する
 - nlohmann-json
   - https://github.com/nlohmann/json からソース一式を取得する
     - `externals`ディレクトリに`nlohmann-json`を配置する
@@ -53,6 +62,8 @@ soyokaze-src/
   src/
      Soyokaze.sln
   externals/
+    fmt/
+      include/
     json/
       include/
         nlohmann/

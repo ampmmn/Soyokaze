@@ -1844,7 +1844,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)soyokaze</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -1878,7 +1878,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)soyokaze</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -1928,7 +1928,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)soyokaze</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -1946,7 +1946,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)soyokaze</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>

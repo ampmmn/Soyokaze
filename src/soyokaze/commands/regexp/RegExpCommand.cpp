@@ -51,16 +51,11 @@ bool RegExpCommand::PImpl::GetRegex(tregex& regexObject)
 			return true;
 		}
 		if (mMatchLevel == Pattern::FrontMatch) {
-			tstring str((LPCTSTR)mParam.mPatternStr);
-			str += _T(".*$");
-			regexObject = tregex(str);
+			regexObject = tregex(fmt::format(_T("{}.*$"), (LPCTSTR)mParam.mPatternStr));
 			return true;
 		}
 		if (mMatchLevel == Pattern::PartialMatch) {
-			tstring str(_T("^.*"));
-			str += (LPCTSTR)mParam.mPatternStr;
-			str += _T(".*$");
-			regexObject = tregex(str);
+			regexObject = tregex(fmt::format(_T("^.*{}.*$"), (LPCTSTR)mParam.mPatternStr));
 			return true;
 		}
 		return false;
