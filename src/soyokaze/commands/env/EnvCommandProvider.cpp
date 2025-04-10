@@ -112,16 +112,20 @@ void EnvCommandProvider::QueryAdhocCommands(
 	CString cmdline = pattern->GetWholeString();
 	cmdline = cmdline.Trim();
 	if (cmdline.IsEmpty()) {
+		// キーワードが空なら何もしない
 		return;
 	}
 
 	const auto& prefix = in->mSettings.mPrefix;
 	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) == 0) {
+		// プレフィックスが一致するケース
 
 		if (in->mIsLoaded == false) {
+			// 初回はロード
 			in->Reload();
 		}
 
+		// 機能を利用しない場合は抜ける
 		if (in->mSettings.mIsEnable == false) {
 			return ;
 		}
@@ -139,10 +143,11 @@ void EnvCommandProvider::QueryAdhocCommands(
 			queryStr += _T(" ");
 		}
 
-		// "edit "の後に入力したキーワードのみで別のPartialMatchPatternを生成しておく
+		// (prfix)の後に入力したキーワードのみで別のPartialMatchPatternを生成しておく
 		RefPtr<PartialMatchPattern> patTmp(PartialMatchPattern::Create());
 		patTmp->SetWholeText(queryStr);
 
+		bool isMatched = false;
 		for (auto item : in->mEnvMap) {
 			auto& key = item.first;
 			auto& value = item.second;
@@ -150,8 +155,16 @@ void EnvCommandProvider::QueryAdhocCommands(
 			int level = patTmp->Match(key);
 			if (level != Pattern::Mismatch) {
 				commands.Add(CommandQueryItem(level, new EnvCommand(key, value)));
+				isMatched = true;
 			}
 		}
+
+		if (isMatched == false) {
+			// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
+			commands.Add(CommandQueryItem(Pattern::HiddenMatch, new EnvCommand(_T(""), _T(""))));
+			return;
+		}
+
 	}
 	else if (cmdline.GetLength() >= 3 && cmdline[0] == _T('%') && cmdline[cmdline.GetLength()-1] == _T('%')) {
 		// %...% の場合は該当する変数を表示
