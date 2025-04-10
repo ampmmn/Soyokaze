@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SQLite3Wrapper.h"
 #include "utility/CharConverter.h"
+#include "utility/Path.h"
 #include <regex>
 
 namespace launcherapp {
@@ -58,7 +59,9 @@ struct SQLite3Wrapper::PImpl
 
 SQLite3Wrapper::SQLite3Wrapper() : in(new PImpl)
 {
-	HMODULE lib = LoadLibrary(_T("winsqlite3.dll"));
+	Path dllPath(Path::SYSTEMDIR, _T("winsqlite3.dll"));
+
+	HMODULE lib = LoadLibrary(dllPath);
 	in->mModule = lib;
 
 	if (lib) {

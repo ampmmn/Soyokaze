@@ -190,6 +190,14 @@ Path::Path(APPPROFILE_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 	}
 }
 
+Path::Path(SYSTEMDIRECTORY_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
+{
+	GetSystemDirectory(data(), (DWORD)size());
+	if (extraPath != nullptr) {
+		Append(extraPath);
+	}
+}
+
 Path::~Path()
 {
 }

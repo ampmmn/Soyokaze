@@ -19,12 +19,16 @@ public:
 		APPDIR,
 		APPDIRPERMACHINE,
 	};
+	enum SYSTEMDIRECTORY_TAG {
+		SYSTEMDIR,
+	};
 
 public:
 	Path();
 	Path(LPCTSTR initPath);
 	Path(MODULEFILEPATH_TAG tag, LPCTSTR extraPath = nullptr);
 	Path(APPPROFILE_TAG tag, LPCTSTR extraPath = nullptr);
+	Path(SYSTEMDIRECTORY_TAG tag, LPCTSTR extraPath = nullptr);
 	~Path();
 
 	Path& operator = (const CString& path);
