@@ -33,13 +33,43 @@ using CommandRepository = launcherapp::core::CommandRepository;
 
 struct RegExpCommand::PImpl
 {
+	bool GetRegex(tregex& regexObject);
 	CommandParam mParam;
 	tregex mRegex;
 
 	HICON mIcon = nullptr;
 
 	CString mErrMsg;
+	int mMatchLevel = Pattern::Mismatch;
 };
+
+bool RegExpCommand::PImpl::GetRegex(tregex& regexObject)
+{
+	try {
+		if (mMatchLevel == Pattern::WholeMatch) {
+			regexObject = mRegex;
+			return true;
+		}
+		if (mMatchLevel == Pattern::FrontMatch) {
+			tstring str((LPCTSTR)mParam.mPatternStr);
+			str += _T(".*$");
+			regexObject = tregex(str);
+			return true;
+		}
+		if (mMatchLevel == Pattern::PartialMatch) {
+			tstring str(_T("^.*"));
+			str += (LPCTSTR)mParam.mPatternStr;
+			str += _T(".*$");
+			regexObject = tregex(str);
+			return true;
+		}
+		return false;
+	}
+	catch(std::regex_error&) {
+		spdlog::error("invalid regex pattern.");
+		return false;
+	}
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -89,12 +119,17 @@ BOOL RegExpCommand::Execute(Parameter* param)
 	CString path;
 	CString paramStr;
 	try {
-		LPCTSTR wholeText = param->GetWholeString();
+		tstring wholeText = tstring(param->GetWholeString());
 
-		tstring paramStr_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)attr.mParam);
+		tregex regexObject;
+		if (in->GetRegex(regexObject) == FALSE) {
+			return FALSE;
+		}
+
+		tstring paramStr_ = std::regex_replace(wholeText, regexObject, (tstring)attr.mParam);
 		paramStr = paramStr_.c_str();
 
-		tstring path_ = std::regex_replace((tstring)wholeText, in->mRegex, (tstring)attr.mPath);
+		tstring path_ = std::regex_replace(wholeText, regexObject, (tstring)attr.mPath);
 		path = path_.c_str();
 	}
 	catch(std::regex_error&) {
@@ -165,24 +200,25 @@ HICON RegExpCommand::GetIcon()
 
 int RegExpCommand::Match(Pattern* pattern)
 {
-	// パターンが指定されている場合はパターンによる正規表現マッチングを優先する
-	if (in->mParam.mPatternStr.IsEmpty() == FALSE) {
-		tstring str = (tstring)pattern->GetWholeString();
-		tsmatch match_result;
-		if (std::regex_match(str, in->mRegex)) {
-			// regex_matchで一致するなら完全一致
-			return Pattern::WholeMatch;
+	tstring str = (tstring)pattern->GetWholeString();
+
+	tsmatch match_result;
+	if (std::regex_match(str, in->mRegex)) {
+		// regex_matchで一致するなら完全一致
+		in->mMatchLevel = Pattern::WholeMatch;
+	}
+	else if (std::regex_search(str, match_result, in->mRegex)) {
+		if (match_result.position() == 0) {
+			in->mMatchLevel = Pattern::FrontMatch;
 		}
-		else if (std::regex_search(str, match_result, in->mRegex)) {
-			if (match_result.position() == 0) {
-				return Pattern::FrontMatch;
-			}
-			else {
-				return Pattern::PartialMatch;
-			}
+		else {
+			in->mMatchLevel = Pattern::PartialMatch;
 		}
 	}
-	return Pattern::Mismatch;
+	else {
+		in->mMatchLevel = Pattern::Mismatch;
+	}
+	return in->mMatchLevel;
 }
 
 bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
