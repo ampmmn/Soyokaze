@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class IconLabel : public CStatic
 {
 public:
@@ -17,14 +19,8 @@ private:
 	void DrawIcon(CDC* pDC, HICON iconHandle);
 
 protected:
-	CBitmap mBuffer;
-	std::map<HICON,int> mIconIndexMap;
-	CImageList mIconList;
-	CSize mCtrlSize;
-
-	bool mCanIconChange;
-	bool mIsUseBackgroundColor;
-	COLORREF mBackgroundColor;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 // 実装
 protected:

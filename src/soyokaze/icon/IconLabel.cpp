@@ -4,12 +4,27 @@
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-IconLabel::IconLabel() : mCanIconChange(false), mIsUseBackgroundColor(false), mBackgroundColor(RGB(0,0,0))
+
+struct IconLabel::PImpl
+{
+	CBitmap mBuffer;
+	std::map<HICON,int> mIconIndexMap;
+	CImageList mIconList;
+	CSize mCtrlSize;
+
+	bool mCanIconChange = false;
+	bool mIsUseBackgroundColor = false;
+	COLORREF mBackgroundColor = RGB(0,0,0);
+};
+
+
+IconLabel::IconLabel() : in(new PImpl)
 {
 }
 
@@ -24,7 +39,7 @@ END_MESSAGE_MAP()
 
 void IconLabel::EnableIconChange()
 {
-	mCanIconChange = true;
+	in->mCanIconChange = true;
 }
 
 void IconLabel::DrawIcon(HICON iconHandle)
@@ -43,10 +58,10 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	dcMem.CreateCompatibleDC(pDC);
 	ASSERT(dcMem.GetSafeHdc() != NULL);
 
-	COLORREF crBr = mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : mBackgroundColor;
+	COLORREF crBr = in->mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : in->mBackgroundColor;
 
 	// 初回またはサイズが変わってたらビットマップ作り直し
-	CBitmap& memBmp = mBuffer;
+	CBitmap& memBmp = in->mBuffer;
 	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
 
 		if (memBmp != (HBITMAP)nullptr) {
@@ -55,21 +70,26 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 
 		memBmp.CreateCompatibleBitmap(pDC, rc.Width(), rc.Height());
 	}
+
+	auto& iconList = in->mIconList;
+	auto& iconIndexMap = in->mIconIndexMap;
+	auto& ctrlSize = in->mCtrlSize;
+
 	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
-	if (mIconList.m_hImageList == nullptr || mCtrlSize != rc.Size()) {
-		mIconList.DeleteImageList();
-		mIconList.Create(rc.Width(), rc.Height(), ILC_COLOR24 | ILC_MASK, 0, 0);
-		mIconList.SetBkColor(crBr);
-		mCtrlSize = rc.Size();
-		mIconIndexMap.clear();
+	if (iconList.m_hImageList == nullptr || ctrlSize != rc.Size()) {
+		iconList.DeleteImageList();
+		iconList.Create(rc.Width(), rc.Height(), ILC_COLOR24 | ILC_MASK, 0, 0);
+		iconList.SetBkColor(crBr);
+		ctrlSize = rc.Size();
+		iconIndexMap.clear();
 	}
 
 	int index = -1;
 
-	auto it = mIconIndexMap.find(iconHandle);
-	if (it == mIconIndexMap.end()) {
-		index = mIconList.Add(iconHandle);
-		mIconIndexMap[iconHandle] = index;
+	auto it = iconIndexMap.find(iconHandle);
+	if (it == iconIndexMap.end()) {
+		index = iconList.Add(iconHandle);
+		iconIndexMap[iconHandle] = index;
 	}
 	else {
 		index = it->second;
@@ -81,8 +101,8 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	dcMem.PatBlt(0,0,rc.Width(), rc.Height(), PATCOPY);
 
 	if (index != -1) {
-		mIconList.DrawEx(&dcMem, index, CPoint(0, 0), mCtrlSize, CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
-		pDC->BitBlt(0, 0, mCtrlSize.cx, mCtrlSize.cy, &dcMem, 0, 0, SRCCOPY);
+		iconList.DrawEx(&dcMem, index, CPoint(0, 0), ctrlSize, CLR_NONE,  CLR_DEFAULT, ILD_NORMAL);
+		pDC->BitBlt(0, 0, ctrlSize.cx, ctrlSize.cy, &dcMem, 0, 0, SRCCOPY);
 	}
 	dcMem.SelectObject(orgBr);
 	dcMem.SelectObject(orgBmp);
@@ -96,15 +116,15 @@ void IconLabel::DrawDefaultIcon()
 
 void IconLabel::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
 {
-	mIsUseBackgroundColor = !isUseSystemSetting;
-	mBackgroundColor = cr;
+	in->mIsUseBackgroundColor = !isUseSystemSetting;
+	in->mBackgroundColor = cr;
 }
 
 void IconLabel::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
-	CBitmap& bmp = mBuffer;
+	CBitmap& bmp = in->mBuffer;
 	if  (bmp == (HBITMAP)nullptr) {
 		// 初回はデフォルトアイコンを描画
 		DrawIcon(&dc, IconLoader::Get()->LoadDefaultIcon());
@@ -159,7 +179,7 @@ void IconLabel::OnContextMenu(
 {
 	UNREFERENCED_PARAMETER(pWnd);
 
-	if (mCanIconChange == false) {
+	if (in->mCanIconChange == false) {
 		return;
 	}
 

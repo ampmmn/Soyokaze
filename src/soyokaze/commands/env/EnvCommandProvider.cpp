@@ -7,6 +7,7 @@
 #include "matcher/PartialMatchPattern.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

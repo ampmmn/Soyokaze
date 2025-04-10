@@ -7,6 +7,7 @@
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

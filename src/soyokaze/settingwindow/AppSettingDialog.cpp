@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <set>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
