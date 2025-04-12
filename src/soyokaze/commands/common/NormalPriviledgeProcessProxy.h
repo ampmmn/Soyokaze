@@ -15,6 +15,7 @@ class NormalPriviledgeProcessProxy
 public:
 	static NormalPriviledgeProcessProxy* GetInstance();
 
+	// 通常権限でコマンドを実行する
 	bool StartProcess(SHELLEXECUTEINFO* si, const std::map<CString, CString>& envMap);
 
 private:

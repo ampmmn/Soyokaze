@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/builtin/AfxChangeDirectoryCommand.h"
-#include "macros/afxw/AfxWWrapper.h"
+#include "commands/share/AfxWWrapper.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Path.h"
@@ -55,7 +55,7 @@ BOOL AfxChangeDirectoryCommand::Execute(Parameter* param)
 
 	// あふw上のカレントディレクトリ変更
 	AfxWWrapper afxw;
-	afxw.SetCurrentDir(path);
+	afxw.SetCurrentDir((LPCTSTR)path);
 
 	// あふwをアクティブにする
 	HWND hwndApp = FindWindow(_T("TAfxWForm"), nullptr);

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ExecSettingDialog.h"
 #include "setting/Settings.h"
+#include "utility/DemotedProcessToken.h"  // for IsRunningAsAdmin()
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -112,26 +113,6 @@ BEGIN_MESSAGE_MAP(ExecSettingDialog, CDialog)
 	ON_COMMAND(IDC_CHECK_USEFILER, OnCheckUseFilter)
 END_MESSAGE_MAP()
 
-// 管理者権限で実行されているか?
-static bool IsRunningAsAdmin()
-{
-	static bool isRunAsAdmin = []() {
-		PSID grp;
-		SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-		BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
-		if (result == FALSE) {
-			return false;
-		}
-
-		BOOL isMember = FALSE;
-		result = CheckTokenMembership(nullptr, grp, &isMember);
-		FreeSid(grp);
-
-		return result && isMember;
-	}();
-	return isRunAsAdmin;
-}
-
 BOOL ExecSettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
@@ -140,7 +121,7 @@ BOOL ExecSettingDialog::OnInitDialog()
 	GetDlgItem(IDC_BUTTON_BROWSEFILE)->SetWindowTextW(L"\U0001F4C4");
 
 	// 管理者特権のときに通常ユーザー権限で実行
-	if (IsRunningAsAdmin()) {
+	if (DemotedProcessToken::IsRunningAsAdmin()) {
 		GetDlgItem(IDC_STATIC_RUNASONLY)->ShowWindow(SW_HIDE);
 	}
 
@@ -160,7 +141,7 @@ bool ExecSettingDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_BROWSEFILE)->EnableWindow(hasExternFilter);
 
 	// 管理者特権のときに通常ユーザー権限で実行
-	GetDlgItem(IDC_CHECK_ENABLEDEMOTEPRIVILEDGE)->EnableWindow(IsRunningAsAdmin());
+	GetDlgItem(IDC_CHECK_ENABLEDEMOTEPRIVILEDGE)->EnableWindow(DemotedProcessToken::IsRunningAsAdmin());
 
 	return true;
 }

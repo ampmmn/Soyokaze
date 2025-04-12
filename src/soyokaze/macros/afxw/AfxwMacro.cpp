@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AfxwMacro.h"
-#include "macros/afxw/AfxWWrapper.h"
+#include "commands/share/AfxWWrapper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,11 +29,16 @@ bool AfxwMacro::Evaluate(const std::vector<CString>& args, CString& result)
 
 	CString command = args[0];
 
-	if (command.CompareNoCase(_T("currentdir")) == 0) {
-		AfxWWrapper afxw;
-		result = afxw.GetCurrentDir();
+	if (command.CompareNoCase(_T("currentdir")) != 0) {
+		return false;
 	}
 
+	AfxWWrapper afxw;
+	std::wstring curDir;
+	if (afxw.GetCurrentDir(curDir) == false) {
+		return false;
+	}
+	result = curDir.c_str();
 	return true;
 }
 

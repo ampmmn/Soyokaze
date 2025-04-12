@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-
+#include <string>
 
 // あふw(afxw)情報取得用のラッパークラス
 class AfxWWrapper
@@ -12,9 +12,9 @@ public:
 
 public:
 	// あふの自窓のディレクトリパスを取得
-	CString GetCurrentDir();
+	bool GetCurrentDir(std::wstring& curDir);
 	// あふの自窓のディレクトリパスを変更
-	bool SetCurrentDir(const CString& path);
+	bool SetCurrentDir(const std::wstring& path);
 
 private:
 	struct PImpl;

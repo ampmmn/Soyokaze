@@ -1,8 +1,7 @@
+// NormalPriviledgeAgent.cpp : 本体が管理者権限で動作している状況において、通常権限でコマンドを実行するための代理実行をする
 #include "pch.h"
 #include "NormalPriviledgeProcessProxy.h"
 #include "SharedHwnd.h"
-#include "commands/share/NormalPriviledgeCopyData.h"
-#include "commands/share/ProcessIDSharedMemory.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
 #include <mutex>
@@ -27,60 +26,6 @@ constexpr int TIMERID_HEARTBEAT = 1;
 namespace launcherapp {
 namespace commands {
 namespace common {
-
-static void CreateFrom(int indexPID, const SHELLEXECUTEINFO* si, std::vector<uint8_t>& stm)
-{
-	// 文字列系データの合計長を求める
-	size_t dataLen = _tcslen(si->lpFile) + 1;
-
-	if (si->lpParameters) {
-		dataLen += (_tcslen(si->lpParameters) + 1);
-	}
-	if (si->lpDirectory) {
-		dataLen += (_tcslen(si->lpDirectory) + 1);
-	}
-
-	// 求めた合計長を踏まえてデータ領域を確保する
-	stm.resize(sizeof(COPYDATA_SHELLEXEC) + sizeof(TCHAR) * (dataLen));
-
-	auto p = (COPYDATA_SHELLEXEC*)stm.data();
-
-
-	p->mVersion = 1;
-	p->mShowType = si->nShow;
-	p->mIndexPID = indexPID;
-	p->mParamOffset = -1;
-	p->mWorkDirOffset = -1;
-
-
-	// 文字列系データ(パス,パラメータ,作業ディレクトリ)をコピーするとともに、
-	// オフセット値を計算してセットする
-	int offset = 0;
-
-	// パスをコピー
-	size_t len = _tcslen(si->lpFile);
-	memcpy(p->mData + offset, si->lpFile, sizeof(TCHAR) * (len + 1));
-	p->mPathOffset = offset;
-	offset += (int)(len + 1);
-
-	// パラメータをコピー
-	if (si->lpParameters) {
-		len = _tcslen(si->lpParameters);
-		memcpy(p->mData + offset, si->lpParameters, sizeof(TCHAR) * (len + 1));
-		p->mParamOffset = offset;
-		offset += (int)(len + 1);
-	}
-
-	// 作業ディレクトリのパスをコピー
-	if (si->lpDirectory) {
-		len = _tcslen(si->lpDirectory);
-		memcpy(p->mData + offset, si->lpDirectory, sizeof(TCHAR) * (len + 1));
-		p->mWorkDirOffset = offset;
-		offset += (int)(len + 1);
-	}
-}
-
-
 
 struct NormalPriviledgeProcessProxy::PImpl
 {

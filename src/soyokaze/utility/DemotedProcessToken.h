@@ -8,6 +8,8 @@ public:
 
 	HANDLE FetchPrimaryToken();
 
+	static bool IsRunningAsAdmin();
+
 private:
 	HANDLE mPrimaryToken;
 	HANDLE mShellProcessHandle;

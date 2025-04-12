@@ -9,7 +9,6 @@
 #include <spdlog/spdlog.h>
 #include "NormalPriviledgeAgent.h"
 #include "SharedHwnd.h"
-#include "commands/share/NormalPriviledgeCopyData.h"
 #include <servprov.h>
 #include <shobjidl_core.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
@@ -27,16 +26,29 @@ constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer
 // 親の生存チェック用タイマー
 constexpr int TIMERID_HEARTBEAT = 1;
 
+/**
+ * @brief 環境変数を設定するためのクラス
+ */
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
 {
 public:
 
+	/**
+	 * @brief 環境変数を設定する
+	 * @param vals 環境変数のキーと値のマップ
+	 */
 	void SetEnvironmentVariables(const std::map<std::wstring, std::wstring>& vals) {
 		mEnvMap = vals;
 	}
 
-
+	/**
+	 * @brief サービスをクエリする
+	 * @param service サービスの GUID
+	 * @param riid インターフェース ID
+	 * @param ppv インターフェースへのポインタ
+	 * @return 実装されていない場合は E_NOTIMPL
+	 */
 	IFACEMETHOD(QueryService)(REFGUID service, REFIID riid, void** ppv) {
 		if (service != SID_ExecuteCreatingProcess) {
 			*ppv = nullptr;
@@ -45,8 +57,12 @@ public:
 		return this->QueryInterface(riid, ppv);
 	}
 
+	/**
+	 * @brief プロセス作成時に呼び出される
+	 * @param inputs プロセス作成の入力
+	 * @return 成功時は S_OK
+	 */
 	IFACEMETHOD(OnCreating)(ICreateProcessInputs* inputs) {
-
 		for (auto& item : mEnvMap) {
 			HRESULT hr = inputs->SetEnvironmentVariable(item.first.c_str(), item.second.c_str());
 			if (hr != S_OK) {
@@ -54,46 +70,55 @@ public:
 				break;
 			}
 		}
-
 		return S_OK;
 	}
 
 private:
-	std::map<std::wstring, std::wstring> mEnvMap;
+	std::map<std::wstring, std::wstring> mEnvMap; ///< 環境変数のマップ
 };
 
-
-
+/**
+ * @brief NormalPriviledgeAgent の内部実装クラス
+ */
 struct NormalPriviledgeAgent::PImpl
 {
+	/**
+	 * @brief ShellExecute リクエストを処理する
+	 * @param json_req リクエストの JSON データ
+	 */
 	void ProcShellExecuteRequest(json& json_req);
 
-	HANDLE mPipeHandle = nullptr;
-
+	HANDLE mPipeHandle = nullptr; ///< 名前付きパイプのハンドル
 };
 
+/**
+ * @brief UTF-8 文字列を UTF-16 文字列に変換する
+ * @param src UTF-8 文字列
+ * @param dst UTF-16 文字列
+ * @return 変換後の UTF-16 文字列
+ */
 static std::wstring& utf2utf(const std::string& src, std::wstring& dst)
 {
 	int cp = CP_UTF8;
-
 	DWORD flags = MB_ERR_INVALID_CHARS;
 
+	// 必要なバッファサイズを計算
 	int requiredLen = MultiByteToWideChar(cp, flags, src.c_str(), -1, NULL, 0);
 	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
 		dst.clear();
 		return dst;
 	}
 
+	// バッファを確保して変換
 	dst.resize(requiredLen);
-
 	MultiByteToWideChar(cp, flags, src.c_str(), -1, const_cast<wchar_t*>(dst.data()), requiredLen);
 	return dst;
 }
 
 /**
- 	通常ユーザ権限でプロセスを起動する
- 	@param[in] json_req 起動するプロセスの情報
-*/
+ * @brief ShellExecute リクエストを処理する
+ * @param json_req リクエストの JSON データ
+ */
 void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 {
 	SHELLEXECUTEINFO si = {};
@@ -101,21 +126,25 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	si.nShow = json_req["show_type"];
 	si.fMask = json_req["mask"];
 
+	// 実行ファイルのパスを設定
 	std::wstring file;
 	si.lpFile = utf2utf(json_req["file"], file).c_str();
 
+	// パラメータを設定
 	std::wstring parameters;
 	if (json_req.find("parameters") != json_req.end()) {
 		std::string src = json_req["parameters"];
 		si.lpParameters = utf2utf(src, parameters).c_str();
 	}
 
+	// 作業ディレクトリを設定
 	std::wstring directory;
 	if (json_req.find("directory") != json_req.end()) {
 		std::string src = json_req["directory"];
 		si.lpParameters = utf2utf(src, directory).c_str();
 	}
 
+	// 環境変数を設定
 	std::map<std::wstring, std::wstring> env_map;
 	if (json_req.find("environment") != json_req.end()) {
 		std::wstring dst_key;
@@ -126,18 +155,18 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 		}
 	}
 
-	// 追加の環境変数が設定されているか
+	// 追加の環境変数が設定されている場合
 	auto site = winrt::make_self<AdditionalEnvVariableSite>();
 	site->SetEnvironmentVariables(env_map);
 	if (env_map.empty() == false) {
 		si.fMask |= SEE_MASK_FLAG_HINST_IS_SITE;
-    si.hInstApp = reinterpret_cast<HINSTANCE>(site.get());
+		si.hInstApp = reinterpret_cast<HINSTANCE>(site.get());
 	}
 
-	// 実行
+	// ShellExecuteEx を実行
 	BOOL isRun = ShellExecuteEx(&si);
 
-	// 起動したプロセスIDを呼び出し元に返す
+	// 起動したプロセス ID を取得
 	DWORD pid = 0xFFFFFFFF;
 	if (si.hProcess) {
 		pid = GetProcessId(si.hProcess);
@@ -145,8 +174,7 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 		si.hProcess = nullptr;
 	}
 
-
-	// 結果を親プロセスに戻す
+	// 結果を JSON 形式で親プロセスに返す
 	json json_response;
 	json_response["result"] = isRun != FALSE;
 	json_response["pid"] = (int)pid;
@@ -155,8 +183,9 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	response_str += "\n";
 	size_t len = response_str.size() + 1;
 
+	// 名前付きパイプに書き込む
 	DWORD totalWrittenBytes = 0;
-	while(totalWrittenBytes < len) {
+	while (totalWrittenBytes < len) {
 		DWORD written = 0;
 		if (WriteFile(mPipeHandle, response_str.c_str() + totalWrittenBytes, 
 		              (DWORD)(len - totalWrittenBytes), 
@@ -168,24 +197,28 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-
+/**
+ * @brief コンストラクタ
+ */
 NormalPriviledgeAgent::NormalPriviledgeAgent() : in(new PImpl)
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 NormalPriviledgeAgent::~NormalPriviledgeAgent()
 {
 }
 
-// 通常権限で起動するための待ち受けサーバを起動する
+/**
+ * @brief 通常権限で起動するための待ち受けサーバを起動する
+ * @param hInst インスタンスハンドル
+ * @return 実行結果
+ */
 int NormalPriviledgeAgent::Run(HINSTANCE hInst)
 {
-	// 内部のmessage処理用の不可視のウインドウを作っておく
+	// 内部のメッセージ処理用の不可視ウィンドウを作成
 	HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("LncrNormalProviledgeProcessProxy"), 0, 
 	                           0, 0, 0, 0,
 	                           NULL, NULL, hInst, NULL);
@@ -207,12 +240,13 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst)
 
 	in->mPipeHandle = pipeHandle;
 
-	// 作成したウインドウのハンドルをサーバウインドウとして登録
+	// 作成したウィンドウのハンドルをサーバウィンドウとして登録
 	SharedHwnd serverHwnd(hwnd, NAME_NORMALPRIV_SERVER);
 	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
 	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
 	SetTimer(hwnd, TIMERID_HEARTBEAT, 50, 0);
 
+	// メッセージループ
 	for (;;) {
 		MSG msg;
 		int n = GetMessage(&msg, NULL, 0, 0); 
@@ -226,6 +260,14 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst)
 	return 0;
 }
 
+/**
+ * @brief ウィンドウプロシージャ
+ * @param hwnd ウィンドウハンドル
+ * @param msg メッセージ
+ * @param wp WPARAM
+ * @param lp LPARAM
+ * @return 処理結果
+ */
 LRESULT CALLBACK
 NormalPriviledgeAgent::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -242,20 +284,25 @@ NormalPriviledgeAgent::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	return DefWindowProc(hwnd, msg, wp, lp);
 }
 
+/**
+ * @brief リクエストを処理する
+ */
 void NormalPriviledgeAgent::ProcRequest()
 {
 	auto pipe = in->mPipeHandle;
 
+	// パイプにデータがあるか確認
 	DWORD len = 0;
 	PeekNamedPipe(pipe, nullptr, 0, nullptr, nullptr, &len);
 	if (len == 0) {
 		return;
 	}
 
+	// リクエストを読み取る
 	std::string request;
 	char buff[512];
 
-	for(;;) {
+	for (;;) {
 		DWORD read = 0;
 		if (ReadFile(pipe, buff, 512, &read, nullptr) == FALSE) {
 			return;
@@ -265,17 +312,17 @@ void NormalPriviledgeAgent::ProcRequest()
 			continue;
 		}
 
+		// JSON リクエストを解析
 		json json_req = json::parse(request);
 		if (json_req.find("command") == json_req.end()) {
 			// 不正なリクエスト
 			return;
 		}
 
+		// ShellExecute コマンドを処理
 		if (json_req["command"] == "shellexecute") {
 			in->ProcShellExecuteRequest(json_req);
 			break;
 		}
 	}
-
 }
-

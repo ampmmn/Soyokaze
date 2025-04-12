@@ -1,12 +1,17 @@
-#include "pch.h"
-#include "AfxWWrapper.h"
+#include <windows.h>
+#include <atlcomcli.h>
 
+#pragma warning( push )
+#pragma warning( disable : 26495 26437 26450 26498 26800 6285 6385)
+#include "spdlog/spdlog.h"
+#pragma warning( pop )
+
+#include "AfxWWrapper.h"
 
 struct AfxWWrapper::PImpl
 {
 	IDispatch* GetDispatch();
 	int GetCurrentWinNo();
-
 
 	IDispatch* mDispPtr;
 };
@@ -72,7 +77,7 @@ AfxWWrapper::AfxWWrapper() : in(std::make_unique<PImpl>())
 {
 	HRESULT hr = CoInitialize(NULL);
 	if (FAILED(hr)) {
-		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+		SPDLOG_ERROR("Failed to CoInitialize!");
 	}
 
 	in->mDispPtr = nullptr;
@@ -90,13 +95,13 @@ AfxWWrapper::~AfxWWrapper()
 
 /**
   自窓のディレクトリパスを取得
- 	@return 自窓のディレクトリパス
+ 	@param curDir 自窓のディレクトリパス
 */
-CString AfxWWrapper::GetCurrentDir()
+bool AfxWWrapper::GetCurrentDir(std::wstring& curDir)
 {
 	IDispatch* pDisp = in->GetDispatch();
 	if (pDisp == nullptr) {
-		return _T("");
+		return false;
 	}
 
 	CComBSTR extractStr(L"Extract");
@@ -105,11 +110,11 @@ CString AfxWWrapper::GetCurrentDir()
 	DISPID methodId;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
 	if (FAILED(hr)) {
-		return _T("");
+		return false;
 	}
 
-	CStringW cmdline(L"$P");
-	CComBSTR cmdlineBstr(cmdline);
+	
+	CComBSTR cmdlineBstr(L"$P");
 
 	DISPPARAMS params = {};
 	params.cArgs = 1;
@@ -123,16 +128,17 @@ CString AfxWWrapper::GetCurrentDir()
 	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
 	                   &params, &vResult, NULL, NULL);
 	if (FAILED(hr)) {
-		return _T("");
+		return false;
 	}
 
 	pDisp->Release();
 
-	return CString(CStringW((LPWSTR)vResult.bstrVal));
+	curDir = (LPWSTR)vResult.bstrVal;
+	return true;
 }
 
 // 自窓のカレントディレクトリを移動
-bool AfxWWrapper::SetCurrentDir(const CString& path)
+bool AfxWWrapper::SetCurrentDir(const std::wstring& path)
 {
 	IDispatch* pDisp = in->GetDispatch();
 	if (pDisp == nullptr) {
@@ -148,14 +154,11 @@ bool AfxWWrapper::SetCurrentDir(const CString& path)
 		return false;
 	}
 
-	CStringW cmdline;
-#ifdef UNICODE
-	cmdline.Format(L"&EXCD -P\"%s\"", (LPCWSTR)path);
-#else
-	cmdline.Format(L"&EXCD -P\"%s\"", (LPCWSTR)(CStringW)path);
-#endif
+	std::wstring cmdline(L"&EXCD -P\"");
+	cmdline += path;
+	cmdline += L"\"";
 
-	CComBSTR cmdlineBstr(cmdline);
+	CComBSTR cmdlineBstr(cmdline.c_str());
 
 	DISPPARAMS params = {};
 	params.cArgs = 1;

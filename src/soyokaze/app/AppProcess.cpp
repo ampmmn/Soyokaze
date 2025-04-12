@@ -2,6 +2,7 @@
 #include "AppProcess.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
+#include "utility/DemotedProcessToken.h"  // IsRunningAsAdmin
 
 static LPCTSTR PROCESS_MUTEX_NAME = _T("Global\\mutex_launcherapp_exist");
 
@@ -46,27 +47,6 @@ bool AppProcess::IsExist()
 	return false;
 }
 
-// 管理者権限で実行されているか?
-static bool IsRunningAsAdmin()
-{
-	static bool isRunAsAdmin = []() {
-		PSID grp;
-		SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-		BOOL result = AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &grp);
-		if (result == FALSE) {
-			return false;
-		}
-
-		BOOL isMember = FALSE;
-		result = CheckTokenMembership(nullptr, grp, &isMember);
-		FreeSid(grp);
-
-		return result && isMember;
-	}();
-	return isRunAsAdmin;
-}
-
-
 /**
   管理者権限で再起動が必要なら再起動する
  	@return true:実行中のプロセスを終了する(再起動をするため)  false:プロセスを終了しない
@@ -74,7 +54,7 @@ static bool IsRunningAsAdmin()
 bool AppProcess::RebootAsAdminIfNeeded()
 {
 	// 管理者権限として再起動するかどうかの判断をする
-	bool isRunAsAdmin = IsRunningAsAdmin();
+	bool isRunAsAdmin =DemotedProcessToken::IsRunningAsAdmin();
 	if (isRunAsAdmin) {
 		// すでに管理者権限で動いている
 		return false;
