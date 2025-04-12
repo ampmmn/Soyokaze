@@ -6,11 +6,19 @@
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
 #include <mutex>
+#pragma warning( push )
+#pragma warning( disable : 26800 26819 )
+#include <nlohmann/json.hpp>
+#pragma warning( pop )
+#include <sddl.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
+constexpr LPCTSTR PIPE_PATH = _T("\\\\.\\pipe\\LauncherAppNormalPriviledgePipe");
 constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer");
 
 // 親の生存チェック用タイマー
@@ -76,32 +84,50 @@ static void CreateFrom(int indexPID, const SHELLEXECUTEINFO* si, std::vector<uin
 
 struct NormalPriviledgeProcessProxy::PImpl
 {
-	bool StartAgentProcessIfNeeded(HWND& hwndServer);
+	bool StartAgentProcessIfNeeded();
 	bool StartAgentProcess();
 	bool GetServerHwnd(HWND& hwnd);
 
-	void RunAsNormalUser(COPYDATA_SHELLEXEC* param);
-
-	ProcessIDSharedMemory* GetSharedPID()
-	{
-		if (mSharedPID.get() == nullptr) {
-			mSharedPID.reset(new ProcessIDSharedMemory);
-		}
-		return mSharedPID.get(); 
-	}
-
 	std::mutex mMutex;
-	std::unique_ptr<ProcessIDSharedMemory> mSharedPID;
+	HANDLE mPipeHandle = nullptr;
 };
 
 // 通常権限で起動するためのプロセスが実行されていなかったら起動する
-bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded(HWND& hwnd)
+bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 {
 	std::lock_guard<std::mutex> lock(mMutex);
 
+	// 通信用のパイプを作成する
+	if (mPipeHandle == nullptr) {
+
+    SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES) };
+    sa.bInheritHandle = TRUE;
+
+		// セキュリティ記述子を設定
+		if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
+					L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
+					SDDL_REVISION_1,
+					&sa.lpSecurityDescriptor,
+					nullptr)) {
+
+			spdlog::error("Failed to create securitydescriptor.");
+			return false;
+		}
+
+		auto pipe = CreateNamedPipe(PIPE_PATH, PIPE_ACCESS_DUPLEX, 
+		                            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+		                            PIPE_UNLIMITED_INSTANCES, 512, 512, 0, &sa);
+		if (pipe == INVALID_HANDLE_VALUE) {
+			spdlog::error("Failed to create named pipe.");
+			return false;
+		}
+		mPipeHandle = pipe;
+	}
+
+	// 接続を待つ
 	HWND hwndServer = nullptr;
 	if (GetServerHwnd(hwndServer) == false) {
-		// 自分自身を通常権限で起動
+		// 通常権限で起動するためのエージェントプロセスを起動する
 		if (StartAgentProcess() == false) {
 			return false;
 		}
@@ -122,7 +148,6 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded(HWND& hwnd)
 		}
 	}
 
-	hwnd = hwndServer;
 	return true;
 }
 
@@ -176,38 +201,6 @@ bool NormalPriviledgeProcessProxy::PImpl::GetServerHwnd(HWND& hwnd)
 	return true;
 }
 
-/**
- 	通常ユーザ権限でプロセスを起動する
- 	@param[in] param 起動するプロセスの情報
-*/
-void NormalPriviledgeProcessProxy::PImpl::RunAsNormalUser(COPYDATA_SHELLEXEC* param)
-{
-	ASSERT(param);
-
-	// 親プロセス側からうけとった情報に基づき、SHELLEXECUTEINFOを再構成する。
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = param->mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = param->mData + param->mPathOffset;
-	if (param->mParamOffset != -1) {
-		si.lpParameters = param->mData + param->mParamOffset;
-	}
-	if (param->mWorkDirOffset != -1) {
-		si.lpDirectory = param->mData + param->mWorkDirOffset;
-	}
-
-	// 実行
-	ShellExecuteEx(&si);
-
-	// 起動したプロセスIDを呼び出し元に返す
-	DWORD pid = 0xFFFFFFFF;
-	if (si.hProcess) {
-		pid = GetProcessId(si.hProcess);
-	}
-	ProcessIDSharedMemory::RegisterPID(param->mIndexPID, pid);
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +213,10 @@ NormalPriviledgeProcessProxy::NormalPriviledgeProcessProxy() : in(new PImpl)
 
 NormalPriviledgeProcessProxy::~NormalPriviledgeProcessProxy()
 {
+	if (in->mPipeHandle) {
+		CloseHandle(in->mPipeHandle);
+		in->mPipeHandle = nullptr;
+	}
 }
 
 NormalPriviledgeProcessProxy* NormalPriviledgeProcessProxy::GetInstance()
@@ -228,66 +225,81 @@ NormalPriviledgeProcessProxy* NormalPriviledgeProcessProxy::GetInstance()
 	return &inst;
 }
 
-bool NormalPriviledgeProcessProxy::StartProcess(SHELLEXECUTEINFO* si)
+bool NormalPriviledgeProcessProxy::StartProcess(
+		SHELLEXECUTEINFO* si,
+	 	const std::map<CString, CString>& envMap
+)
 {
 	// 通常権限で起動するためのプロセスが実行されていなかったら起動する
-	HWND hwndServer = nullptr;
-	if (in->StartAgentProcessIfNeeded(hwndServer) == false) {
+	if (in->StartAgentProcessIfNeeded() == false) {
 		return false;
 	}
 
-	int indexPID = in->GetSharedPID()->IssueIndex();
+	std::string dst;
 
-	// SHELLEXECUTEINFOの情報からCOPYDATA_SHELLEXECを生成する
-	std::vector<uint8_t> stm;
-	CreateFrom(indexPID, si, stm);
+	json json_req;
+	json_req["command"] = "shellexecute";
+	json_req["show_type"] = (int)si->nShow;
+	json_req["mask"] = si->fMask;
+	json_req["file"] = si->lpFile;
+	if (si->lpParameters) {
+		json_req["parameters"] = UTF2UTF(si->lpParameters, dst);
+	}
+	if (si->lpDirectory) {
+		json_req["directory"] = UTF2UTF(si->lpDirectory, dst);
+	}
 
-	COPYDATASTRUCT copyData;
-	copyData.dwData = COPYDATA_SHELLEXEC::ID;
-	copyData.cbData = (DWORD)stm.size();
-	copyData.lpData = (void*)stm.data();
+	std::map<std::string, std::string> env_map;
+	std::string dst_key;
+	std::string dst_val;
+	for (const auto& item : envMap) {
+		env_map[UTF2UTF(item.first, dst_key)] = UTF2UTF(item.second, dst_val);
+	}
+	json_req["environment"] = env_map;
 
-	if (SendMessage(hwndServer, WM_COPYDATA, 0, (LPARAM)&copyData) == FALSE) {
+	// リクエストを送信する
+	auto request_str = json_req.dump();
+	request_str += "\n";
+	size_t len = request_str.size() + 1;   // +1:nul終端分
+
+	DWORD totalWrittenBytes = 0;
+	while(totalWrittenBytes < len) {
+		DWORD written = 0;
+		if (WriteFile(in->mPipeHandle, request_str.c_str() + totalWrittenBytes, (DWORD)(len - totalWrittenBytes), 
+		              &written, nullptr) == FALSE) {
+			spdlog::error("Failed to write err:{}", GetLastError());
+			return false;
+		}
+		totalWrittenBytes += written;
+	}
+	
+	// 応答を待つ
+	std::string response_str;
+	char buff[512];
+	for(;;) {
+		DWORD read = 0;
+		if (ReadFile(in->mPipeHandle, buff, 512, &read, nullptr) == FALSE) {
+			spdlog::error("Failed to read err:{}", GetLastError());
+			return false;
+		}
+		response_str.insert(response_str.end(), buff, buff + read);
+		if (strchr(buff, '\n') != nullptr) {
+			break;
+		}
+	}
+
+	auto json_res = json::parse(response_str);
+
+	if (json_res.find("pid") == json_res.end()) {
+		spdlog::error("unexpected response.");
 		return false;
 	}
 
-	DWORD pid = in->GetSharedPID()->GetPID(indexPID);
-	if (pid == 0xFFFFFFFF) {
-		return false;
-	}
-
-	si->hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	int pid = json_res["pid"];
+	si->hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
 
 	return true;
 }
-
-LRESULT CALLBACK NormalPriviledgeProcessProxy::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
-{
-	if (msg == WM_COPYDATA) {
-		COPYDATASTRUCT* data = (COPYDATASTRUCT*)lp;
-		auto thisPtr = (NormalPriviledgeProcessProxy*)(size_t)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		thisPtr->OnCopyData(data);
-		return TRUE;
-	}
-	else if (msg == WM_TIMER && wp == TIMERID_HEARTBEAT) {
-		SharedHwnd parentHwnd;
-		if (IsWindow(parentHwnd.GetHwnd()) == FALSE) {
-			PostQuitMessage(0);
-			return 0;
-		}
-	}
-	return DefWindowProc(hwnd, msg, wp, lp);
-}
-
-void NormalPriviledgeProcessProxy::OnCopyData(COPYDATASTRUCT* data)
-{
-	if (data->dwData == COPYDATA_SHELLEXEC::ID) {
-		// 通常権限でプロセス実行
-		auto param = (COPYDATA_SHELLEXEC*)data->lpData;
-		return in->RunAsNormalUser(param);
-	}	
-}
-
 
 }
 }

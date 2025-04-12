@@ -129,7 +129,7 @@ bool SubProcess::PImpl::StartWithLowerPermissions(CString& path, CString& param,
 	}
 
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	bool isRun = proxy->StartProcess(&si);
+	bool isRun = proxy->StartProcess(&si, mAdditionalEnv);
 
 	process = std::move(std::make_unique<Instance>(si.hProcess));
 

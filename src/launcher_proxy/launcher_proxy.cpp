@@ -25,7 +25,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return RestartApp();
 	}
 	else if (command_name == L"run-normal-priviledge-agent") {
-		return RunNormalPriviledgeAgent(hInstance);
+		NormalPriviledgeAgent agent;
+		return agent.Run(hInstance);
 	}
 
 	// Unknown command
