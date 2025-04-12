@@ -156,6 +156,9 @@
 #define IDD_APPSETTING_CLIPBOARD        249
 #define IDD_ALIAS_EDIT                  250
 #define IDD_APPSETTING_SWITCHWINDOW     251
+#define IDD_SHELLEXEC_ENV               252
+#define IDD_SHELLEXEC_ENVLIST           252
+#define IDD_SHELLEXEC_ENVEDIT           253
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -494,6 +497,7 @@
 #define IDC_EDIT_NUMOFRESULTS           1214
 #define IDC_EDIT_PREFIX_ENVIRONMENT     1214
 #define IDC_STATIC_VARIABLE             1215
+#define IDC_LIST_ENVIRON                1215
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -502,7 +506,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1215
+#define _APS_NEXT_CONTROL_VALUE         1216
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

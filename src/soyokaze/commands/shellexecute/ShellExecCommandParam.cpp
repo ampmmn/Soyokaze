@@ -7,9 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace commands {
-namespace shellexecute {
+namespace launcherapp { namespace commands { namespace shellexecute {
 
 
 int ATTRIBUTE::GetShowType() const
@@ -65,6 +63,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mIsShowArgDialog = rhs.mIsShowArgDialog;
 	mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 	mIconData = rhs.mIconData;
+	mEnviron = rhs.mEnviron;
 	mHotKeyAttr = rhs.mHotKeyAttr;
 }
 
@@ -84,6 +83,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mIsShowArgDialog = rhs.mIsShowArgDialog;
 		mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 		mIconData = rhs.mIconData;
+		mEnviron = rhs.mEnviron;
 		mHotKeyAttr = rhs.mHotKeyAttr;
 	}
 	return *this;
@@ -109,6 +109,20 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 
 	entry->SetBytes(_T("IconData"),
 	                (const uint8_t*)mIconData.data(), mIconData.size());
+
+	CString key;
+	int index = 1;
+	for (const auto& item : mEnviron) {
+		if (item.first.IsEmpty()) {
+			continue;
+		}
+		key.Format(_T("envname%d"), index);
+		entry->Set(key, item.first);
+		key.Format(_T("envvalue%d"), index);
+		entry->Set(key, item.second);
+		index++;
+	}
+
 	return true;
 }
 
@@ -138,14 +152,29 @@ bool CommandParam::Load(CommandEntryIF* entry)
 		entry->GetBytes(_T("IconData"), (uint8_t*)mIconData.data(), len);
 	}
 
-	// $B%[%C%H%-!<>pJs$N<hF@(B
+	// 環境変数
+	std::map<CString, CString> envMap;
+	CString key;
+	CString envName;
+	CString envValue;
+	for (int index = 1;; ++index) {
+		key.Format(_T("envname%d"), index);
+		envName = entry->Get(key, _T(""));
+		if (envName.IsEmpty()) {
+			break;
+		}
+		key.Format(_T("envvalue%d"), index);
+		envValue = entry->Get(key, _T(""));
+		envMap[envName] = envValue;
+	}
+	mEnviron.swap(envMap);
+
+	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(mName, &mHotKeyAttr); 
 
 	return true;
 }
 
-}
-}
-}
+}}} // end of namespace launcherapp::commands::shellexecute
 

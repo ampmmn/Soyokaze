@@ -182,12 +182,21 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	in->SelectAttribute(args, attr);
 		
 	SubProcess exec(param);
+
+	// 表示方法
 	exec.SetShowType(attr.GetShowType());
+	// 作業ディレクトリ
 	exec.SetWorkDirectory(attr.mDir);
+	// 管理者権限で実行
 	if (in->mParam.mIsRunAsAdmin) {
 		exec.SetRunAsAdmin();
 	}
+	// 追加の環境変数をセットする
+	for (auto& item : in->mParam.mEnviron) {
+		exec.SetAdditionalEnvironment(item.first, item.second);
+	}
 
+	// プロセスを実行する
 	SubProcess::ProcessPtr process;
 	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
 		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();

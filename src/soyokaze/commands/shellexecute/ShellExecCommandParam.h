@@ -2,10 +2,9 @@
 
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "commands/core/CommandEntryIF.h"
+#include <map>
 
-namespace launcherapp {
-namespace commands {
-namespace shellexecute {
+namespace launcherapp { namespace commands { namespace shellexecute {
 
 struct ATTRIBUTE {
 
@@ -54,12 +53,13 @@ public:
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)
 	std::vector<uint8_t> mIconData;
 
+	// 環境変数
+	std::map<CString, CString> mEnviron;
+
 	// ホットキー
 	CommandHotKeyAttribute mHotKeyAttr;
 };
 
 
-}
-}
-}
+}}} // end of namespace launcherapp::commands::shellexecute
 

@@ -1461,6 +1461,12 @@
     <ClInclude Include="commands\env\EnvAppSettings.h">
       <Filter>commands\env</Filter>
     </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecEnvValueEditDialog.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2587,6 +2593,12 @@
     </ClCompile>
     <ClCompile Include="commands\env\EnvAppSettings.cpp">
       <Filter>commands\env</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecEnvValueEditDialog.cpp">
+      <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

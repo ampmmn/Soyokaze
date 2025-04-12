@@ -17,7 +17,7 @@
 
 
 ShellExecEditDetailPage::ShellExecEditDetailPage(CWnd* parentWnd) : 
-	SettingPage(_T("詳細"), IDD_SHELLEXECUTECOMMAND2, parentWnd)
+	SettingPage(_T("その他"), IDD_SHELLEXECUTECOMMAND2, parentWnd)
 {
 }
 

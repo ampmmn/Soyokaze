@@ -27,6 +27,7 @@ public:
 	void SetShowType(int showType);
 	void SetRunAsAdmin();
 	void SetWorkDirectory(const CString& dir);
+	bool SetAdditionalEnvironment(const CString& name, const CString& value);
 
 	bool Run(const CString& path, ProcessPtr& process);
 	bool Run(const CString& path, const CString& paramStr, ProcessPtr& process);

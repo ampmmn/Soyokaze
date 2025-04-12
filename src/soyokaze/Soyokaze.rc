@@ -1387,6 +1387,36 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,85,253,10
 END
 
+IDD_SHELLEXEC_ENVLIST DIALOGEX 0, 0, 355, 322
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,18,7,301,8
+    LTEXT           "追加する環境変数の一覧(&L):",IDC_STATIC,14,22,96,8
+    CONTROL         "",IDC_LIST_ENVIRON,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,11,34,259,168
+    PUSHBUTTON      "追加(&A)",IDC_BUTTON_ADD,271,35,50,14
+    PUSHBUTTON      "編集(&E)",IDC_BUTTON_EDIT,271,52,50,14
+    PUSHBUTTON      "削除(&R)",IDC_BUTTON_DELETE,271,70,50,14
+END
+
+IDD_SHELLEXEC_ENVEDIT DIALOGEX 0, 0, 311, 95
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "環境変数の編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "環境変数名(&N):",IDC_STATIC,7,10,54,8
+    EDITTEXT        IDC_EDIT_NAME,72,7,229,14,ES_AUTOHSCROLL
+    LTEXT           "環境変数値(&V):",IDC_STATIC,7,30,53,8
+    EDITTEXT        IDC_EDIT_VALUE,72,27,229,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "ファイルを参照(&F)",IDC_BUTTON_BROWSEFILE,7,74,77,14
+    PUSHBUTTON      "フォルダーを参照(&D)",IDC_BUTTON_BROWSEDIR,93,74,77,14
+    DEFPUSHBUTTON   "OK",IDOK,197,74,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,251,74,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,7,47,297,21
+END
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -1917,6 +1947,22 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 278
+    END
+
+    IDD_SHELLEXEC_ENVLIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 348
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 315
+    END
+
+    IDD_SHELLEXEC_ENVEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 304
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2780,6 +2826,32 @@ IDD_APPSETTING_SWITCHWINDOW AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
+
+IDD_SHELLEXEC_ENVLIST AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+END
+
+IDD_SHELLEXEC_ENVEDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

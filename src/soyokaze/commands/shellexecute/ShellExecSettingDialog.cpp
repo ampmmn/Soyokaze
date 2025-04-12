@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShellExecSettingDialog.h"
 #include "commands/shellexecute/CommandEditDialog.h"
+#include "commands/shellexecute/ShellExecEditEnvPage.h"
 #include "commands/shellexecute/ShellExecEditDetailPage.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "resource.h"
@@ -105,6 +106,7 @@ HTREEITEM SettingDialog::OnSetupPages()
 	auto dlg1 = new CommandEditDialog(this);
 	dlg1->SetOriginalName(in->mOrgName);
 	HTREEITEM hItem = AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(dlg1)), param);
+	AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new SettingPageEnv(this))), param);
 	AddPage(TVI_ROOT, std::move(std::unique_ptr<SettingPage>(new ShellExecEditDetailPage(this))), param);
 
 	return hItem;

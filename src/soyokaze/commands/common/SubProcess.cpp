@@ -8,18 +8,64 @@
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
-#include "utility/LocalPathResolver.h"
 #include "setting/AppPreference.h"
+#include <map>
+#include <servprov.h>
+#include <shobjidl_core.h>
+#include <winrt/Windows.ApplicationModel.Core.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+
+struct AdditionalEnvVariableSite : 
+	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
+{
+public:
+
+	void SetEnvironmentVariables(const std::map<CString, CString>& vals) {
+		mEnvMap = vals;
+	}
+
+
+	IFACEMETHOD(QueryService)(REFGUID service, REFIID riid, void** ppv) {
+		if (service != SID_ExecuteCreatingProcess) {
+			*ppv = nullptr;
+			return E_NOTIMPL;
+		}
+		return this->QueryInterface(riid, ppv);
+	}
+
+	IFACEMETHOD(OnCreating)(ICreateProcessInputs* inputs) {
+
+		for (auto& item : mEnvMap) {
+			HRESULT hr = inputs->SetEnvironmentVariable((LPCWSTR)item.first, (LPCWSTR)item.second);
+			if (hr != S_OK) {
+				spdlog::error("SetEnvironmentVariable failed: {:x}", hr);
+				break;
+			}
+		}
+
+		return S_OK;
+	}
+
+private:
+	std::map<CString, CString> mEnvMap;
+};
+
 
 namespace launcherapp {
 namespace commands {
 namespace common {
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 struct SubProcess::PImpl
 {
@@ -38,6 +84,7 @@ struct SubProcess::PImpl
 	int mShowType = SW_SHOW;
 	bool mIsRunAsAdmin = false;
 	CString mWorkingDir;
+	std::map<CString, CString> mAdditionalEnv;
 };
 
 bool SubProcess::PImpl::IsRunAsKeyPressed()
@@ -97,6 +144,14 @@ bool SubProcess::PImpl::Start(CString& path, CString& param, const CString& work
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = path;
 
+	// 追加の環境変数が設定されているか
+	auto site = winrt::make_self<AdditionalEnvVariableSite>();
+	site->SetEnvironmentVariables(mAdditionalEnv);
+	if (mAdditionalEnv.empty() == false) {
+		si.fMask |= SEE_MASK_FLAG_HINST_IS_SITE;
+    si.hInstApp = reinterpret_cast<HINSTANCE>(site.get());
+	}
+
 	// 管理者として実行する指定がされているか?
 	bool isRunAsAdminSpecified = mIsRunAsAdmin || (IsRunAsKeyPressed() && CanRunAsAdmin(path) );
 	if (IsRunningAsAdmin() == false && isRunAsAdminSpecified) {
@@ -145,6 +200,17 @@ void SubProcess::SetRunAsAdmin()
 void SubProcess::SetWorkDirectory(const CString& dir)
 {
 	in->mWorkingDir = dir;
+}
+
+// 追加登録する環境変数
+bool SubProcess::SetAdditionalEnvironment(const CString& name, const CString& value)
+{
+	if (name.FindOneOf(_T(" =")) != -1) {
+		spdlog::warn(_T("Invali env name {}"), (LPCTSTR)name);
+		return false;
+	}
+	in->mAdditionalEnv[name] = value;
+	return true;
 }
 
 bool SubProcess::Run(const CString& path, ProcessPtr& process)

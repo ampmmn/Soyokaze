@@ -493,6 +493,8 @@
     <ClInclude Include="commands\share\NormalPriviledgeCopyData.h" />
     <ClInclude Include="commands\share\ProcessIDSharedMemory.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
+    <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
+    <ClInclude Include="commands\shellexecute\ShellExecEnvValueEditDialog.h" />
     <ClInclude Include="commands\simple_dict\DictionaryLoader.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommandEditor.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictionary.h" />
@@ -906,6 +908,8 @@
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
+    <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
+    <ClCompile Include="commands\shellexecute\ShellExecEnvValueEditDialog.cpp" />
     <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictCommandEditor.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp" />
