@@ -490,6 +490,7 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
+    <ClInclude Include="commands\share\AfxWFunctions.h" />
     <ClInclude Include="commands\share\AfxWWrapper.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
@@ -905,12 +906,13 @@
     <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
-    <ClCompile Include="commands\share\AfxWWrapper.cpp">
+    <ClCompile Include="commands\share\AfxWFunctions.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="commands\share\AfxWWrapper.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEnvValueEditDialog.cpp" />

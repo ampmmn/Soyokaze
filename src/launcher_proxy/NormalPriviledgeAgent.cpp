@@ -8,6 +8,7 @@
 #include <cassert>
 #include <spdlog/spdlog.h>
 #include "NormalPriviledgeAgent.h"
+#include "commands/share/AfxWFunctions.h"
 #include "SharedHwnd.h"
 #include <servprov.h>
 #include <shobjidl_core.h>
@@ -78,20 +79,6 @@ private:
 };
 
 /**
- * @brief NormalPriviledgeAgent の内部実装クラス
- */
-struct NormalPriviledgeAgent::PImpl
-{
-	/**
-	 * @brief ShellExecute リクエストを処理する
-	 * @param json_req リクエストの JSON データ
-	 */
-	void ProcShellExecuteRequest(json& json_req);
-
-	HANDLE mPipeHandle = nullptr; ///< 名前付きパイプのハンドル
-};
-
-/**
  * @brief UTF-8 文字列を UTF-16 文字列に変換する
  * @param src UTF-8 文字列
  * @param dst UTF-16 文字列
@@ -114,6 +101,37 @@ static std::wstring& utf2utf(const std::string& src, std::wstring& dst)
 	MultiByteToWideChar(cp, flags, src.c_str(), -1, const_cast<wchar_t*>(dst.data()), requiredLen);
 	return dst;
 }
+
+static std::string& utf2utf(const std::wstring& src, std::string& dst)
+{
+	int cp = CP_UTF8;
+
+	int requiredLen = WideCharToMultiByte(cp, 0, src.c_str(), -1, NULL, 0, 0, 0);
+
+	dst.resize(requiredLen);
+	WideCharToMultiByte(cp, 0, src.c_str(), -1, dst.data(), requiredLen, 0, 0);
+	return dst;
+}
+
+
+
+/**
+ * @brief NormalPriviledgeAgent の内部実装クラス
+ */
+struct NormalPriviledgeAgent::PImpl
+{
+	/**
+	 * @brief ShellExecute リクエストを処理する
+	 * @param json_req リクエストの JSON データ
+	 */
+	void ProcShellExecuteRequest(json& json_req);
+	void ProcGetCurrentAfxwDirRequest(json& json_req);
+	void ProcSetCurrentAfxwDirRequest(json& json_req);
+
+	void SendResponse(json& json_res);
+
+	HANDLE mPipeHandle = nullptr; ///< 名前付きパイプのハンドル
+};
 
 /**
  * @brief ShellExecute リクエストを処理する
@@ -141,7 +159,7 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	std::wstring directory;
 	if (json_req.find("directory") != json_req.end()) {
 		std::string src = json_req["directory"];
-		si.lpParameters = utf2utf(src, directory).c_str();
+		si.lpDirectory = utf2utf(src, directory).c_str();
 	}
 
 	// 環境変数を設定
@@ -179,7 +197,45 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	json_response["result"] = isRun != FALSE;
 	json_response["pid"] = (int)pid;
 
-	auto response_str = json_response.dump();
+	SendResponse(json_response);
+}
+
+void NormalPriviledgeAgent::PImpl::ProcGetCurrentAfxwDirRequest(json& json_req)
+{
+	std::wstring curDir;
+	bool result = AfxW_GetCurrentDir(curDir);
+
+	std::string tmp;
+
+	json json_response;
+	json_response["path"] = utf2utf(curDir, tmp);
+	json_response["result"] = result;
+
+	SendResponse(json_response);
+}
+
+void NormalPriviledgeAgent::PImpl::ProcSetCurrentAfxwDirRequest(json& json_req)
+{
+	bool result = false;
+
+	try {
+		std::string path_str = json_req["path"]; 
+		std::wstring path;
+		utf2utf(path_str, path);
+
+		result = AfxW_SetCurrentDir(path);
+	}
+	catch(...) { }
+
+	json json_response;
+	json_response["result"] = result;
+
+	SendResponse(json_response);
+}
+
+void NormalPriviledgeAgent::PImpl::SendResponse(json& json_res)
+{
+	auto response_str = json_res.dump();
 	response_str += "\n";
 	size_t len = response_str.size() + 1;
 
@@ -197,11 +253,22 @@ void NormalPriviledgeAgent::PImpl::ProcShellExecuteRequest(json& json_req)
 	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
 /**
  * @brief コンストラクタ
  */
 NormalPriviledgeAgent::NormalPriviledgeAgent() : in(new PImpl)
 {
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr)) {
+		SPDLOG_ERROR("Failed to CoInitialize!");
+	}
 }
 
 /**
@@ -209,6 +276,7 @@ NormalPriviledgeAgent::NormalPriviledgeAgent() : in(new PImpl)
  */
 NormalPriviledgeAgent::~NormalPriviledgeAgent()
 {
+	CoUninitialize();
 }
 
 /**
@@ -319,9 +387,21 @@ void NormalPriviledgeAgent::ProcRequest()
 			return;
 		}
 
+		std::string command = json_req["command"];
+
 		// ShellExecute コマンドを処理
-		if (json_req["command"] == "shellexecute") {
+		if (command == "shellexecute") {
 			in->ProcShellExecuteRequest(json_req);
+			break;
+		}
+		// getcurrentafxwdir コマンドを処理
+		if (command == "getcurrentafxwdir") {
+			in->ProcGetCurrentAfxwDirRequest(json_req);
+			break;
+		}
+		// setcurrentafxwdir コマンドを処理
+		if (command == "setcurrentafxwdir") {
+			in->ProcSetCurrentAfxwDirRequest(json_req);
 			break;
 		}
 	}

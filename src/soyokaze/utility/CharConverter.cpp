@@ -82,7 +82,7 @@ std::string CharConverter::UTF2UTF(const CStringW& src)
 	return UTF2UTF(src, dst);
 }
 
-std::string& CharConverter::UTF2UTF(const CStringW& src, std::string& dst)
+static std::string& utf2utf(const wchar_t* src, std::string& dst)
 {
 	int cp = CP_UTF8;
 
@@ -91,6 +91,16 @@ std::string& CharConverter::UTF2UTF(const CStringW& src, std::string& dst)
 	dst.resize(requiredLen);
 	WideCharToMultiByte(cp, 0, src, -1, dst.data(), requiredLen, 0, 0);
 	return dst;
+}
+
+std::string& CharConverter::UTF2UTF(const CStringW& src, std::string& dst)
+{
+	return utf2utf(src, dst);
+}
+
+std::string& CharConverter::UTF2UTF(const std::wstring& src, std::string& dst)
+{
+	return utf2utf(src.c_str(), dst);
 }
 
 // UTF-8 → UTF-16(char → wchar_t)
@@ -114,6 +124,24 @@ CStringW& CharConverter::UTF2UTF(const std::string& src, CStringW& dst)
 
 	MultiByteToWideChar(cp, flags, src.c_str(), -1, dst.GetBuffer(requiredLen), requiredLen);
 	dst.ReleaseBuffer();
+
+	return dst;
+}
+
+std::wstring& CharConverter::UTF2UTF(const std::string& src, std::wstring& dst)
+{
+	int cp = CP_UTF8;
+
+	DWORD flags = MB_ERR_INVALID_CHARS;
+
+	int requiredLen = MultiByteToWideChar(cp, flags, src.c_str(), -1, NULL, 0);
+	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
+		dst.clear();
+		return dst;
+	}
+
+	dst.resize(requiredLen);
+	MultiByteToWideChar(cp, flags, src.c_str(), -1, const_cast<wchar_t*>(dst.data()), requiredLen);
 
 	return dst;
 }

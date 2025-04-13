@@ -33,6 +33,9 @@ struct NormalPriviledgeProcessProxy::PImpl
 	bool StartAgentProcess();
 	bool GetServerHwnd(HWND& hwnd);
 
+	bool SendRequest(json& json);
+	bool ReceiveResponse(json& json);
+
 	std::mutex mMutex;
 	HANDLE mPipeHandle = nullptr;
 };
@@ -146,6 +149,59 @@ bool NormalPriviledgeProcessProxy::PImpl::GetServerHwnd(HWND& hwnd)
 	return true;
 }
 
+bool NormalPriviledgeProcessProxy::PImpl::SendRequest(json& json_req)
+{
+	auto request_str = json_req.dump();
+	request_str += "\n";
+	size_t len = request_str.size() + 1;   // +1:nul終端分
+
+	DWORD totalWrittenBytes = 0;
+	while(totalWrittenBytes < len) {
+		DWORD written = 0;
+		if (WriteFile(mPipeHandle, request_str.c_str() + totalWrittenBytes, (DWORD)(len - totalWrittenBytes), 
+		              &written, nullptr) == FALSE) {
+			spdlog::error("Failed to write err:{}", GetLastError());
+			return false;
+		}
+		totalWrittenBytes += written;
+	}
+	return true;
+}
+
+bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
+{
+	uint64_t start = GetTickCount64();
+
+	std::string response_str;
+	char buff[512];
+	for(;;) {
+
+		if (GetTickCount64()-start >= 2000) {
+			spdlog::error("NormalPriviledgeProcessProxy::ReceiveResponse timeout.");
+			return false;
+		}
+
+		DWORD read = 0;
+		if (ReadFile(mPipeHandle, buff, 512, &read, nullptr) == FALSE) {
+			spdlog::error("Failed to read err:{}", GetLastError());
+			return false;
+		}
+		response_str.insert(response_str.end(), buff, buff + read);
+		if (strchr(buff, '\n') != nullptr) {
+			break;
+		}
+	}
+
+	try {
+		json_res = json::parse(response_str);
+		return true;
+	}
+	catch(...) {
+		spdlog::error("Failed to parse response json");
+		return false;
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +228,7 @@ NormalPriviledgeProcessProxy* NormalPriviledgeProcessProxy::GetInstance()
 
 bool NormalPriviledgeProcessProxy::StartProcess(
 		SHELLEXECUTEINFO* si,
-	 	const std::map<CString, CString>& envMap
+	 	const std::map<std::wstring, std::wstring>& envMap
 )
 {
 	// 通常権限で起動するためのプロセスが実行されていなかったら起動する
@@ -188,10 +244,10 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 	json_req["mask"] = si->fMask;
 	json_req["file"] = si->lpFile;
 	if (si->lpParameters) {
-		json_req["parameters"] = UTF2UTF(si->lpParameters, dst);
+		json_req["parameters"] = UTF2UTF(CString(si->lpParameters), dst);
 	}
 	if (si->lpDirectory) {
-		json_req["directory"] = UTF2UTF(si->lpDirectory, dst);
+		json_req["directory"] = UTF2UTF(CString(si->lpDirectory), dst);
 	}
 
 	std::map<std::string, std::string> env_map;
@@ -203,38 +259,17 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 	json_req["environment"] = env_map;
 
 	// リクエストを送信する
-	auto request_str = json_req.dump();
-	request_str += "\n";
-	size_t len = request_str.size() + 1;   // +1:nul終端分
-
-	DWORD totalWrittenBytes = 0;
-	while(totalWrittenBytes < len) {
-		DWORD written = 0;
-		if (WriteFile(in->mPipeHandle, request_str.c_str() + totalWrittenBytes, (DWORD)(len - totalWrittenBytes), 
-		              &written, nullptr) == FALSE) {
-			spdlog::error("Failed to write err:{}", GetLastError());
-			return false;
-		}
-		totalWrittenBytes += written;
+	if (in->SendRequest(json_req) == false) {
+		return false;
 	}
 	
 	// 応答を待つ
-	std::string response_str;
-	char buff[512];
-	for(;;) {
-		DWORD read = 0;
-		if (ReadFile(in->mPipeHandle, buff, 512, &read, nullptr) == FALSE) {
-			spdlog::error("Failed to read err:{}", GetLastError());
-			return false;
-		}
-		response_str.insert(response_str.end(), buff, buff + read);
-		if (strchr(buff, '\n') != nullptr) {
-			break;
-		}
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
 	}
 
-	auto json_res = json::parse(response_str);
-
+	// 結果を取得する
 	if (json_res.find("pid") == json_res.end()) {
 		spdlog::error("unexpected response.");
 		return false;
@@ -242,6 +277,68 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 
 	int pid = json_res["pid"];
 	si->hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+
+	return true;
+}
+
+// あふwのカレントディレクトリを取得する
+bool NormalPriviledgeProcessProxy::GetCurrentAfxwDir(std::wstring& path)
+{
+	// 通常権限で実行するためのプロセスが実行されていなかったら起動する
+	if (in->StartAgentProcessIfNeeded() == false) {
+		return false;
+	}
+
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getcurrentafxwdir";
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	// 結果を取得
+	if (json_res.find("path") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+
+	UTF2UTF((const std::string)json_res["path"], path);
+	return true;
+}
+
+// あふwのカレントディレクトリを設定する
+bool NormalPriviledgeProcessProxy::SetCurrentAfxwDir(const std::wstring& path)
+{
+	// 通常権限で実行するためのプロセスが実行されていなかったら起動する
+	if (in->StartAgentProcessIfNeeded() == false) {
+		return false;
+	}
+
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "setcurrentafxwdir";
+	json_req["path"] = UTF2UTF(path, dst);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
 
 	return true;
 }

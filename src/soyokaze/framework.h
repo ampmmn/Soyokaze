@@ -74,6 +74,12 @@ inline std::string& UTF2UTF(const CStringW& src, std::string& dst) {
 inline CStringW& UTF2UTF(const std::string& src, CStringW& dst) {
 	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
 }
+inline std::wstring& UTF2UTF(const std::string& src, std::wstring& dst) {
+	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
+}
+inline std::string& UTF2UTF(const std::wstring& src, std::string& dst) {
+	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
+}
 
 
 // 構造体サイズ調査用

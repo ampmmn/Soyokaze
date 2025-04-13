@@ -48,7 +48,7 @@ AfxChangeDirectoryCommand::~AfxChangeDirectoryCommand()
 
 BOOL AfxChangeDirectoryCommand::Execute(Parameter* param)
 {
-	CString path = param->GetWholeString();
+	CString path = param->GetParameterString();
 	if (Path::FileExists(path) == FALSE) {
 		return TRUE;
 	}

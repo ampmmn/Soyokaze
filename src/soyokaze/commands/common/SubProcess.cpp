@@ -24,7 +24,7 @@ struct AdditionalEnvVariableSite :
 {
 public:
 
-	void SetEnvironmentVariables(const std::map<CString, CString>& vals) {
+	void SetEnvironmentVariables(const std::map<tstring, tstring>& vals) {
 		mEnvMap = vals;
 	}
 
@@ -40,7 +40,7 @@ public:
 	IFACEMETHOD(OnCreating)(ICreateProcessInputs* inputs) {
 
 		for (auto& item : mEnvMap) {
-			HRESULT hr = inputs->SetEnvironmentVariable((LPCWSTR)item.first, (LPCWSTR)item.second);
+			HRESULT hr = inputs->SetEnvironmentVariable(item.first.c_str(), item.second.c_str());
 			if (hr != S_OK) {
 				spdlog::error("SetEnvironmentVariable failed: {:x}", hr);
 				break;
@@ -51,7 +51,7 @@ public:
 	}
 
 private:
-	std::map<CString, CString> mEnvMap;
+	std::map<tstring, tstring> mEnvMap;
 };
 
 
@@ -84,7 +84,7 @@ struct SubProcess::PImpl
 	int mShowType = SW_SHOW;
 	bool mIsRunAsAdmin = false;
 	CString mWorkingDir;
-	std::map<CString, CString> mAdditionalEnv;
+	std::map<tstring, tstring> mAdditionalEnv;
 };
 
 bool SubProcess::PImpl::IsRunAsKeyPressed()
@@ -209,7 +209,7 @@ bool SubProcess::SetAdditionalEnvironment(const CString& name, const CString& va
 		spdlog::warn(_T("Invali env name {}"), (LPCTSTR)name);
 		return false;
 	}
-	in->mAdditionalEnv[name] = value;
+	in->mAdditionalEnv[tstring(name)] = tstring(value);
 	return true;
 }
 

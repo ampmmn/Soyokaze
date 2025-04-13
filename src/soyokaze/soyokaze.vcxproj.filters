@@ -1461,6 +1461,9 @@
     <ClInclude Include="commands\share\AfxWWrapper.h">
       <Filter>commands\share</Filter>
     </ClInclude>
+    <ClInclude Include="commands\share\AfxWFunctions.h">
+      <Filter>commands\share</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2592,6 +2595,9 @@
       <Filter>commands\shellexecute</Filter>
     </ClCompile>
     <ClCompile Include="commands\share\AfxWWrapper.cpp">
+      <Filter>commands\share</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\share\AfxWFunctions.cpp">
       <Filter>commands\share</Filter>
     </ClCompile>
   </ItemGroup>

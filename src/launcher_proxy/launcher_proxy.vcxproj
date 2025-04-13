@@ -1961,6 +1961,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\soyokaze\commands\share\AfxWFunctions.h" />
     <ClInclude Include="launcher_proxy.h" />
     <ClInclude Include="NormalPriviledgeAgent.h" />
     <ClInclude Include="Resource.h" />
@@ -1968,6 +1969,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\soyokaze\commands\share\AfxWFunctions.cpp" />
     <ClCompile Include="launcher_proxy.cpp" />
     <ClCompile Include="NormalPriviledgeAgent.cpp" />
     <ClCompile Include="Restart.cpp" />
