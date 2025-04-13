@@ -242,7 +242,7 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 	json_req["command"] = "shellexecute";
 	json_req["show_type"] = (int)si->nShow;
 	json_req["mask"] = si->fMask;
-	json_req["file"] = si->lpFile;
+	json_req["file"] = UTF2UTF(CString(si->lpFile), dst);
 	if (si->lpParameters) {
 		json_req["parameters"] = UTF2UTF(CString(si->lpParameters), dst);
 	}
