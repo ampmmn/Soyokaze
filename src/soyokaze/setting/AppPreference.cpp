@@ -4,6 +4,7 @@
 #include "app/AppName.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
+#include "utility/VersionInfo.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "resource.h"
@@ -93,29 +94,32 @@ void AppPreference::PImpl::Load()
 	CStdioFile file(fpIn);
 
 	CString strCurSectionName;
-
-	CString strCommandName;
-
 	CString strLine;
 	while(file.ReadString(strLine)) {
 
+		// コメントや空白を除去
 		TrimComment(strLine);
 		strLine.Trim();
 
 		if (strLine.IsEmpty()) {
+			// 空欄はスキップ
 			continue;
 		}
 
+		// セクション名かどうか
 		if (strLine[0] == _T('[')) {
+			// セクションを更新
 			strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 			continue;
 		}
 
+		// =の前後で名前と値を分ける
 		int n = strLine.Find(_T('='));
 		if (n == -1) {
 			continue;
 		}
 
+		// 名前と値を得る
 		CString strKey = strLine.Left(n);
 		strKey.Trim();
 
@@ -123,8 +127,10 @@ void AppPreference::PImpl::Load()
 		strValue.Trim();
 		std::wstring pat(strValue);
 
+		// データ上は "セクション名:名前" の形式で管理する
 		CString key(strCurSectionName + _T(":") + strKey);
 
+		// 値の内容をみて型を決定する
 		if (strValue == _T("true")) {
 			settings.Set(key, true);
 		}
@@ -149,9 +155,23 @@ void AppPreference::PImpl::Load()
 		}
 	}
 
+	// 後始末
 	file.Close();
 	fclose(fpIn);
 
+	// アプリバージョンに関する情報を含めておく
+	CString version;
+	VersionInfo::GetVersionInfo(version);
+	
+	// 初回に作成したバージョン
+	CString initialVerion = settings.Get(_T("App:InitialVersion"), _T(""));
+	if (initialVerion.IsEmpty()) {
+		settings.Set(_T("App:InitialVersion"), version);
+	}
+	// 今回のバージョン
+	settings.Set(_T("App:CurrentVersion"), version);
+
+	// 一時領域に生成したものと交換
 	mSettings.Swap(settings);
 	mIsLoaded = true;
 }
@@ -272,11 +292,13 @@ void AppPreference::Load()
 
 void AppPreference::Save()
 {
+	// 保存先のパスを得る
 	Path path;
 	CAppProfile::GetFilePath(path, path.size(), false);
 
 	FILE* fpOut = nullptr;
 	try {
+		// いったん一時ファイルに出力する
 		CString filePathTmp(path);
 		filePathTmp += _T(".tmp");
 
@@ -286,6 +308,7 @@ void AppPreference::Save()
 
 		CStdioFile file(fpOut);
 
+		// 設定キーの一覧をえる
 		std::set<CString> keys;
 		in->mSettings.EnumKeys(keys);
 
@@ -303,6 +326,7 @@ void AppPreference::Save()
 				strKey = key.Mid(pos+1);
 			}
 			else {
+				// セクション名がない場合デフォルト値を付与
 				strSection = _T("Soyokaze");
 				strKey = key;
 			}
@@ -310,32 +334,40 @@ void AppPreference::Save()
 			sectionMap[strSection].push_back(strKey);
 		}
 
+		// セクション単位でファイルに書き出す
 		CString line;
 		for (auto& item : sectionMap) {
 			const auto& section = item.first;
 			const auto& keysInSec = item.second;
 
+			// セクション名の出力
 			line.Format(_T("[%s]\n"), (LPCTSTR)section);
 			file.WriteString(line);
 
+			// セクション内の各キーの出力
 			for (auto& key : keysInSec) {
 
 				CString fullKey(section + _T(":") + key);
 
+				// 種別に応じた出力処理
 				int type = in->mSettings.GetType(fullKey);
 				if (type == Settings::TYPE_INT) {
+					// 整数値
 					int value = in->mSettings.Get(fullKey, 0);
 					line.Format(_T("%s=%d\n"), (LPCTSTR)key, value);
 				}
 				else if (type == Settings::TYPE_DOUBLE) {
+					// 実数値
 					double value = in->mSettings.Get(fullKey, 0.0);
 					line.Format(_T("%s=%g\n"), (LPCTSTR)key, value);
 				}
 				else if (type == Settings::TYPE_BOOLEAN) {
+					// 真偽値
 					bool value = in->mSettings.Get(fullKey, false);
 					line.Format(_T("%s=%s\n"), (LPCTSTR)key, value ? _T("true") : _T("false"));
 				}
 				else if (type == Settings::TYPE_STRING) {
+					// 文字列
 					auto value = in->mSettings.Get(fullKey, _T(""));
 					line.Format(_T("%s=\"%s\"\n"), (LPCTSTR)key, (LPCTSTR)value);
 				}

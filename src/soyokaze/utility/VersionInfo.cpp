@@ -3,6 +3,7 @@
 #include "utility/Path.h"
 #include <vector>
 
+#pragma comment(lib, "Version.lib")
 
 bool VersionInfo::GetVersionInfo(CString& version)
 {
