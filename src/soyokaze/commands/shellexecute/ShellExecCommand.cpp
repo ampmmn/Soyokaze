@@ -193,7 +193,9 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	}
 	// 追加の環境変数をセットする
 	for (auto& item : in->mParam.mEnviron) {
-		exec.SetAdditionalEnvironment(item.first, item.second);
+		auto value = item.second;
+		ExpandMacros(value);
+		exec.SetAdditionalEnvironment(item.first, value);
 	}
 
 	// プロセスを実行する

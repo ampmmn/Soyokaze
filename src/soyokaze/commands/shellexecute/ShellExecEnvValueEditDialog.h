@@ -37,6 +37,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonBrowseFile();
 	afx_msg void OnButtonBrowseDir();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 }}} // end of namespace launcherapp::commands::shellexecute

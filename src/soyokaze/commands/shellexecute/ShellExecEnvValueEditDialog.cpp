@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecEnvValueEditDialog.h"
+#include "app/Manual.h"
 #include "gui/FolderDialog.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
@@ -97,6 +98,8 @@ BEGIN_MESSAGE_MAP(ValueEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_VALUE, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE, OnButtonBrowseFile)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR, OnButtonBrowseDir)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -182,5 +185,19 @@ void ValueEditDialog::OnButtonBrowseDir()
 	mValue = dlg.GetPathName();
 	UpdateData(FALSE);
 }
+
+// マニュアル表示
+void ValueEditDialog::OnNotifyLinkOpen(
+	NMHDR *pNMHDR,
+ 	LRESULT *pResult
+)
+{
+	UNREFERENCED_PARAMETER(pNMHDR);
+
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate(_T("MacroList"));
+	*pResult = 0;
+}
+
 
 }}} // end of namespace launcherapp::commands::shellexecute
