@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+## Fixed
+
+- #62 CAppProfile::GetDirPath内でGetComputerNameを呼ぶときの引数が正しくない
 
 ## 0.38.0 - 2025-04-13
 

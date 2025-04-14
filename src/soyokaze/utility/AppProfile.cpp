@@ -58,8 +58,9 @@ static void GetIntermadiateDirPath(TCHAR* path, size_t len)
 */
 const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len, bool isPerMachine)
 {
-	TCHAR pcName[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD bufLen = sizeof(pcName);
+	constexpr int BUFFER_LEN = MAX_COMPUTERNAME_LENGTH + 1;
+	TCHAR pcName[BUFFER_LEN];
+	DWORD bufLen = BUFFER_LEN;
 	GetComputerName(pcName, &bufLen);
 
 	if (isPerMachine == false) {
