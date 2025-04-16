@@ -64,7 +64,7 @@ CString ClipboardHistoryCommand::GetName()
 
 CString ClipboardHistoryCommand::GetGuideString()
 {
-	return _T("Enter:コピー Shift-Enter:コピーとペースト");
+	return _T("Enter:コピー Shift-Enter:コピペ Ctrl-Enter:空白除去コピー");
 }
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()
@@ -76,36 +76,50 @@ BOOL ClipboardHistoryCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
+	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
+	bool isCtrlPressed = (state & MASK_CTRL) != 0;
+	bool isShiftPressed = (state & MASK_SHIFT) != 0;
+
+	CString data = in->mData;
+
+	if (isCtrlPressed) {
+		// 空白を除去
+		data = data.Trim();
+	}
+
 	// 値をコピー
-	Clipboard::Copy(in->mData);
+	Clipboard::Copy(data);
 
-	uint32_t state = GetModifierKeyState(param, MASK_ALL);
-
-	bool isShiftKeyPressed = state == MASK_SHIFT;
-	if (isShiftKeyPressed) {
+	if (isShiftPressed) {
 		// Shift-Insertキー押下による疑似的なペースト
-    INPUT inputs[4] = {0};
+    INPUT inputs[5] = {0};
+
+    // Ctrlキー押下
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_CONTROL; // 仮想キーコード: Ctrl
+    inputs[0].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
 
     // Shiftキー押下
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift
 
     // Insertキー押下
-    inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = VK_INSERT; // 仮想キーコード: Insert
+    inputs[2].type = INPUT_KEYBOARD;
+    inputs[2].ki.wVk = VK_INSERT; // 仮想キーコード: Insert
 
     // Insertキー離上
-    inputs[2].type = INPUT_KEYBOARD;
-    inputs[2].ki.wVk = VK_INSERT;
-    inputs[2].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
-
-    // Shiftキー離上
     inputs[3].type = INPUT_KEYBOARD;
-    inputs[3].ki.wVk = VK_SHIFT;
+    inputs[3].ki.wVk = VK_INSERT;
     inputs[3].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
 
+    // Shiftキー離上
+    inputs[4].type = INPUT_KEYBOARD;
+    inputs[4].ki.wVk = VK_SHIFT;
+    inputs[4].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
     // イベント送信
-    SendInput(4, inputs, sizeof(INPUT));
+    SendInput(5, inputs, sizeof(INPUT));
 	}
 
 	return TRUE;
