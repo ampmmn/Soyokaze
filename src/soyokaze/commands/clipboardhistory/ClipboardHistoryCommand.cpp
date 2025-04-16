@@ -99,7 +99,6 @@ BOOL ClipboardHistoryCommand::Execute(Parameter* param)
     inputs[0].ki.wVk = VK_CONTROL; // 仮想キーコード: Ctrl
     inputs[0].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
 
-
     // Shiftキー押下
     inputs[1].type = INPUT_KEYBOARD;
     inputs[1].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift

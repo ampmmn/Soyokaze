@@ -59,13 +59,13 @@ bool ValueEditDialog::ValidateNameAndValue(const CString& name, const CString& v
 
 	// 変数名の長さ
 	if (name.GetLength() >= 256) {
-		mMessage = _T("環境変数名が長すぎます。\n(このアプリでは上限を255文字としています)");
+		mMessage = _T("環境変数名が長すぎます。\n(このアプリでの上限は255文字です)");
 		return false;
 	}
 
 	// 値の長さ
-	if (value.GetLength() >= 1024) {
-		mMessage = _T("値が長すぎます。\n(このアプリでは上限を1024文字としています)");
+	if (value.GetLength() >= 4096) {
+		mMessage = _T("値が長すぎます。\n(このアプリでの上限は4095文字です)");
 		return false;
 	}
 
