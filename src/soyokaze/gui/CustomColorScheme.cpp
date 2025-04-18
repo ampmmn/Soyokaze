@@ -17,18 +17,18 @@ struct CustomColorScheme::PImpl
 	CBrush mListBackgroundAltBrush;
 	CBrush mListHighlightBackgroundBrush;
 
-	COLORREF mWindowTextColor = 0;
-	COLORREF mWindowBkColor = 0;
+	COLORREF mWindowTextColor{0};
+	COLORREF mWindowBkColor{0};
 	// 入力欄
-	COLORREF mEditTextColor = 0;
-	COLORREF mEditBkColor = 0;
+	COLORREF mEditTextColor{0};
+	COLORREF mEditBkColor{0};
 
 	// リスト
-	COLORREF mListTextColor = 0;
-	COLORREF mListBackgroundColor = 0;
-	COLORREF mListBackgroundAltColor = 0;
-	COLORREF mListTextHighlightColor = 0;
-	COLORREF mListBackgroundHighlightColor = 0;
+	COLORREF mListTextColor{0};
+	COLORREF mListBackgroundColor{0};
+	COLORREF mListBackgroundAltColor{0};
+	COLORREF mListTextHighlightColor{0};
+	COLORREF mListBackgroundHighlightColor{0};
 };
 
 CustomColorScheme::CustomColorScheme() : in(new PImpl)

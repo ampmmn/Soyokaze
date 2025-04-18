@@ -20,7 +20,7 @@ using DispWrapper = launcherapp::commands::common::DispWrapper;
 struct ExcelApplication::PImpl
 {
 	DispWrapper mApp;
-	bool mIsGetObject = false;
+	bool mIsGetObject{false};
 
 };
 

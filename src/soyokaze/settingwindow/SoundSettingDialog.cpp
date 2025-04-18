@@ -19,7 +19,7 @@ public:
 	// コマンド実行時に再生するmp3ファイル
 	CString mSoundFilePathExecute;
 	//
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 
 	void OnEnterSettings(Settings* settingsPtr);
 	bool OnSetActive();

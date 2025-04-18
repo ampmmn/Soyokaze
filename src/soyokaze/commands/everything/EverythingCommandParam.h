@@ -22,11 +22,11 @@ public:
 	// 検索対象ディレクトリ
 	CString mBaseDir;
 	// 検索対象
-	int mTargetType = 0;   // 0:ファイルとフォルダ 1:ファイルのみ 2:フォルダのみ
+	int mTargetType{0};   // 0:ファイルとフォルダ 1:ファイルのみ 2:フォルダのみ
 	// 大文字小文字を区別する
-	BOOL mIsMatchCase = FALSE;
+	BOOL mIsMatchCase{FALSE};
 	// 正規表現を使う
-	BOOL mIsRegex = FALSE;
+	BOOL mIsRegex{FALSE};
 	// その他のパラメータ
 	CString mOtherParam;
 	// ホットキー設定

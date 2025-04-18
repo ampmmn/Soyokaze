@@ -52,7 +52,7 @@ public:
 	// コピー
 	CString mHotKeyCopy;
 	HOTKEY_ATTR mHotKeyAttrCopy;
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 
 };
 

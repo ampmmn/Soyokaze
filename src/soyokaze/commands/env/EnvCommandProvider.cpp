@@ -81,7 +81,7 @@ struct EnvCommandProvider::PImpl:
 
 	AppSettings mSettings;
 	std::map<CString,CString> mEnvMap;
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

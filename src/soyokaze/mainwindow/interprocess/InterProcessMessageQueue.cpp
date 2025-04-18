@@ -13,8 +13,8 @@ constexpr LPCTSTR MAPNAME = _T("launcher_sharedmemory_command");
 constexpr LPCTSTR SYNC_NAME = _T("launcher_interprocess_read");
 
 struct ENTRY {
-	int32_t mID = 0;    // イベントID
-	int32_t mDataLen = 0;  // データ長
+	int32_t mID{0};    // イベントID
+	int32_t mDataLen{0};  // データ長
   char* mData[1];    // データ領域の先頭
 };
 

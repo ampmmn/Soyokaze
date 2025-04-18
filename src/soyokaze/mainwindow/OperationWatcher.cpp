@@ -88,13 +88,13 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 	{
 	}
 
-	bool mIsEnable = false;
-	int mTimeToWarn = 0;
+	bool mIsEnable{false};
+	int mTimeToWarn{0};
 
-	HWND mWhd = nullptr;
-	uint64_t mStartWorkTime = 0;
-	bool mIsLocking = false;
-	bool mIsWarned = false;
+	HWND mWhd{nullptr};
+	uint64_t mStartWorkTime{0};
+	bool mIsLocking{false};
+	bool mIsWarned{false};
 
 };
 

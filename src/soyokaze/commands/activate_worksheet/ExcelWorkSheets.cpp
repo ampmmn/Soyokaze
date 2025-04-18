@@ -30,7 +30,7 @@ struct WorkSheets::PImpl
 	}
 
 	// 前回の取得時のタイムスタンプ
-	uint64_t mLastUpdate = 0;
+	uint64_t mLastUpdate{0};
 	std::vector<Worksheet*> mCache;
 
 	// 生成処理の排他制御
@@ -247,7 +247,7 @@ struct Worksheet::PImpl
 	// シート名
 	CString mSheetName;
 	// 参照カウント
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 	
 };
 

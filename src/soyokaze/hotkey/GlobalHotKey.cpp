@@ -54,7 +54,7 @@ void GlobalHotKey::Unregister()
  */
 bool GlobalHotKey::IsSameKey(LPARAM lParam)
 {
-	UINT modifiers = LOWORD(lParam);
+	UINT modifiers{LOWORD(lParam)};
 	UINT vk = HIWORD(lParam);
 	return modifiers == mModifiers && vk == mVirtualKey;
 }

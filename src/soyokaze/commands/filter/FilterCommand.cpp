@@ -45,9 +45,9 @@ struct FilterCommand::PImpl
 	CommandParam mParam;
 	CString mErrMsg;
 	//
-	FilterExecutor* mExecutor = nullptr;
+	FilterExecutor* mExecutor{nullptr};
 
-	bool mIsEmpty = false;
+	bool mIsEmpty{false};
 };
 
 // 候補一覧の生成を開始する

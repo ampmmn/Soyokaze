@@ -20,9 +20,9 @@ namespace color {
 
 struct ColorCommand::PImpl
 {
-	HICON mColorIcon = nullptr;
-	COLORREF mColor = RGB(0, 0, 0);
-	int mFormatType = TYPE_HEX6;
+	HICON mColorIcon{nullptr};
+	COLORREF mColor{RGB(0, 0, 0)};
+	int mFormatType{TYPE_HEX6};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ColorCommand)

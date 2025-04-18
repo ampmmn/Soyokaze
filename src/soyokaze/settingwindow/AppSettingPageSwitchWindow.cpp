@@ -31,15 +31,15 @@ public:
 	// ウインドウタイトルによる切り替えを発動するためのプレフィックス
 	CString mPrefixWindowTitle;
 	// ウインドウタイトルによるウインドウ切り替え機能
-	BOOL mIsEnableWindowTitle = FALSE;
+	BOOL mIsEnableWindowTitle{FALSE};
 	// Excelワークシート名によるウインドウ切り替え機能
-	BOOL mIsEnableWorksheet = FALSE;
+	BOOL mIsEnableWorksheet{FALSE};
 	// PowerPointスライド名によるウインドウ切り替え機能
-	BOOL mIsEnableSlide = FALSE;
+	BOOL mIsEnableSlide{FALSE};
 	// Outlookメール選択機能(Inboxのみ)
-	BOOL mIsEnableOutlookMail = FALSE;
+	BOOL mIsEnableOutlookMail{FALSE};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 void SwitchWindowSettingDialog::OnOK()

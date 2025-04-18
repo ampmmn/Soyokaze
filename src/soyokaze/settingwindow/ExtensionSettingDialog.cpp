@@ -29,25 +29,25 @@ protected:
 	afx_msg void OnUpdateStatus();
 
 public:
-	BOOL mIsEnableCalc = FALSE;
+	BOOL mIsEnableCalc{FALSE};
 	CString mPythonDLLPath;
 
 	// コントロールパネル選択機能
-	BOOL mIsEnableControlPanel = FALSE;
+	BOOL mIsEnableControlPanel{FALSE};
 	// スタートメニュー/最近使ったファイル選択機能
-	BOOL mIsEnableSpecialFolder = FALSE;
+	BOOL mIsEnableSpecialFolder{FALSE};
 	// UWPアプリ選択機能
-	BOOL mIsEnableUWP = FALSE;
+	BOOL mIsEnableUWP{FALSE};
 	// MMCスナップイン選択機能
-	BOOL mIsEnableMMCSnapin = FALSE;
+	BOOL mIsEnableMMCSnapin{FALSE};
 	// Windowsの設定(ms-settings)選択機能
-	BOOL mIsEnableMSSettings = FALSE;
+	BOOL mIsEnableMSSettings{FALSE};
 	// 環境変数選択機能
-	BOOL mIsEnableEnvironment = FALSE;
+	BOOL mIsEnableEnvironment{FALSE};
 	// 環境変数のプレフィックス
 	CString mPrefixEnvironment;
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 void ExtensionSettingDialog::OnOK()

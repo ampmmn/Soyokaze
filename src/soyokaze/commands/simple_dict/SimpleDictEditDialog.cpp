@@ -50,7 +50,7 @@ struct SettingDialog::PImpl
 	CMenu mMenuBtn;
 
 
-	bool mIsTestPassed = false;
+	bool mIsTestPassed{false};
 
 	// ホットキー(表示用)
 	CString mHotKey;

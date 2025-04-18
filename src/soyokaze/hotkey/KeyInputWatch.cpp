@@ -169,17 +169,17 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 		return false;
 	}
 
-	HWND mHwnd = nullptr;
-	UINT mPrevVK = 0;
-	uint64_t mPrevTime = 0;
-	bool mIsOtherKeyPressed = false;
+	HWND mHwnd{nullptr};
+	UINT mPrevVK{0};
+	uint64_t mPrevTime{0};
+	bool mIsOtherKeyPressed{false};
 
-	bool mIsEnableHotKey = false;
-	bool mIsEnableOnRD = false;
+	bool mIsEnableHotKey{false};
+	bool mIsEnableOnRD{false};
 	SHORT mPrevStates[256];
 
-	UINT mFirstVK = 0;
-	UINT mSecondVK = 0;
+	UINT mFirstVK{0};
+	UINT mSecondVK{0};
 };
 
 

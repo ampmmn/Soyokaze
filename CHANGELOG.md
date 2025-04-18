@@ -6,6 +6,10 @@
 
 - #63 【クリップボード履歴】履歴をコピーする際に前後の空白を除去する機能を追加する
 
+## Changed
+
+- #65 変数の初期化をuniform initializationで行う
+
 ## Fixed
 
 - #62 CAppProfile::GetDirPath内でGetComputerNameを呼ぶときの引数が正しくない

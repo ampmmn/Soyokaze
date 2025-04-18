@@ -19,29 +19,29 @@ struct CandidateListCtrl::PImpl
 	void DrawItemIcon(CListCtrl* thisPtr, CDC* pDC, int itemId);
 	void DrawItemName(CListCtrl* thisPtr, CDC* pDC, int itemId);
 	void DrawItemCategory(CListCtrl* thisPtr, CDC* pDC, int itemId);
-	CandidateList* mCandidates = nullptr;
+	CandidateList* mCandidates{nullptr};
 
-	bool mHasCommandTypeColumn = false;
-	bool mShouldReinitColumns = true;
+	bool mHasCommandTypeColumn{false};
+	bool mShouldReinitColumns{true};
 
-	bool mIsEmpty = false;
+	bool mIsEmpty{false};
 
 	// 背景色を交互に色を変える
-	bool mIsAlternateColor = false;
+	bool mIsAlternateColor{false};
 
-	int mItemsInPage = 0;
+	int mItemsInPage{0};
 	// 
-	int mTextHeight = 16;
-	int mIconSize = 16;
+	int mTextHeight{16};
+	int mIconSize{16};
 
 	// アイコンを保持するためのイメージリスト
 	std::unique_ptr<CImageList> mIconList;
 	// アイコンを表示しない場合のイメージリスト
 	CImageList mIconListDummy;
-	bool mIsDrawIcon = true;
+	bool mIsDrawIcon{true};
 
 	// 種別を描画するか
-	bool mIsShowCommandType = false;
+	bool mIsShowCommandType{false};
 	//
 	std::map<HICON,int> mIconIndexMap;
 };

@@ -86,9 +86,9 @@ struct URLDirectoryIndexCommand::PImpl
 
 	CString mSubPath;
 
-	bool mIsEmpty = false;
-	bool mIsLoaded = false;
-	bool mIsLoadOK = false;
+	bool mIsEmpty{false};
+	bool mIsLoaded{false};
+	bool mIsLoadOK{false};
 };
 
 // 候補一覧の生成を開始する

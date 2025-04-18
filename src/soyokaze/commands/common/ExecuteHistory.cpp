@@ -32,7 +32,7 @@ struct ExecuteHistory::PImpl
 	std::map<CString, std::list<HISTORY_ITEM> > mItemMap;
 
 	// 読み込み済か?
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 };
 
 ExecuteHistory::ExecuteHistory() : in(std::make_unique<PImpl>())

@@ -32,13 +32,13 @@ struct CalcWorkSheets::PImpl
 	}
 
 	// 前回の取得時のタイムスタンプ
-	uint64_t mLastUpdate = 0;
+	uint64_t mLastUpdate{0};
 	std::vector<CalcWorksheet*> mCache;
 
 	// 生成処理の排他制御
 	std::mutex mMutex;
 
-	int mStatus = STATUS_BUSY;
+	int mStatus{STATUS_BUSY};
 };
 
 void CalcWorkSheets::PImpl::Update()
@@ -230,7 +230,7 @@ struct CalcWorksheet::PImpl
 	// シート名
 	CString mSheetName;
 	// 参照カウント
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 	
 };
 

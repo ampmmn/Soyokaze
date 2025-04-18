@@ -56,7 +56,7 @@ public:
 	}
 
 private:
-	T* mPtr = nullptr;
+	T* mPtr{nullptr};
 
 };
 

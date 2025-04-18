@@ -27,8 +27,8 @@ DefaultComponentPlacer::~DefaultComponentPlacer()
 // アイコン欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement->GetMarginLeft();
-	int MARGIN_Y = in->mPlacement->GetMarginTop();
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
 
 	// フォントサイズから入力欄(とガイド欄)の高さを求める
 	int fontH = in->mPlacement->GetFontPixelSize();
@@ -53,9 +53,9 @@ bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd)
 // 説明欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement->GetMarginLeft();
-	int MARGIN_Y = in->mPlacement->GetMarginTop();
-	int margin = 2;
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
+	int margin{2};
 
 	// アイコン欄の右側に説明欄を配置する
 	int x = MARGIN_X + in->mPlacement->GetIconWindowWidth() + margin;
@@ -79,9 +79,9 @@ bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd)
 // ガイド欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceGuide(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement->GetMarginLeft();
-	int MARGIN_Y = in->mPlacement->GetMarginTop();
-	int margin = 2;
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
+	int margin{2};
 
 	// アイコン欄の右側にガイド欄を配置する
 	int x = MARGIN_X + in->mPlacement->GetIconWindowWidth() + margin;
@@ -106,9 +106,9 @@ bool DefaultComponentPlacer::PlaceGuide(HWND elemHwnd)
 // 入力欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceEdit(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement->GetMarginLeft();
-	int MARGIN_Y = in->mPlacement->GetMarginTop();
-	int margin = 2;
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
+	int margin{2};
 
 	int x = MARGIN_X;
 
@@ -136,9 +136,9 @@ bool DefaultComponentPlacer::PlaceEdit(HWND elemHwnd)
 // 候補欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceCandidateList(HWND elemHwnd)
 {
-	int MARGIN_X = in->mPlacement->GetMarginLeft();
-	int MARGIN_Y = in->mPlacement->GetMarginTop();
-	int margin = in->mPlacement->GetMarginEditToList();
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
+	int margin{in->mPlacement->GetMarginEditToList()};
 
 	int x = MARGIN_X;
 
@@ -190,7 +190,7 @@ void DefaultComponentPlacer::Apply(HWND hwnd)
 // それより以下のリサイズを許容しない最小限の高さを取得する
 int DefaultComponentPlacer::GetMinimumHeight()
 {
-	int margin = 2;
+	int margin{2};
 	auto& p = in->mPlacement;
 	return p->GetMarginTop() + 
 	       p->GetDescriptionWindowHeight() +

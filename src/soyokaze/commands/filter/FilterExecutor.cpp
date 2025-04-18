@@ -173,9 +173,9 @@ struct FilterExecutor::PImpl
 	std::vector<HANDLE> mCompleteEvents;
 
 	// 次にスレッドに渡す候補の位置
-	size_t mCurIndex = 0;
+	size_t mCurIndex{0};
 
-	LONG mRefCount = 1;
+	LONG mRefCount{1};
 
 	// 絞り込み文字列
 	CString mKeyword;
@@ -184,10 +184,10 @@ struct FilterExecutor::PImpl
 	std::mutex mMutex;
 
 	// 完了フラグ
-	bool mIsAbort = false;
+	bool mIsAbort{false};
 
 	// 候補生成済フラグ
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 
 	// スレッドが終了済かどうかを表す真偽値の配列
 	std::vector<BOOL> mAllExited;

@@ -21,8 +21,8 @@ CBitmap* ImageLabel::GetBitmap()
 	CRect rc;
 	GetClientRect(&rc);
 
-	// $B=i2s$^$?$O%5%$%:$,JQ$o$C$F$?$i%S%C%H%^%C%W:n$jD>$7(B
-	CBitmap& memBmp = mBuffer;
+	// 初回またはサイズが変わってたらビットマップ作り直し
+	CBitmap& memBmp{mBuffer};
 	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
 
 		if (memBmp != (HBITMAP)nullptr) {

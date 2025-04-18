@@ -58,8 +58,8 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	bool mIsEnable = false;
-	bool mIsFirstCall = true;
+	bool mIsEnable{false};
+	bool mIsFirstCall{true};
 
 	std::vector<MSSettingsCommand*> mItems;
 };

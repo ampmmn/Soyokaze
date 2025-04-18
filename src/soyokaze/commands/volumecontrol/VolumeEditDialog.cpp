@@ -34,7 +34,7 @@ struct SettingDialog::PImpl
 	// メッセージ欄
 	CString mMessage;
 
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	CString mHotKey;

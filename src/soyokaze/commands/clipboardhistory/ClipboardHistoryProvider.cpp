@@ -124,14 +124,14 @@ struct ClipboardHistoryProvider::PImpl :
 		}
 	}
 
-	bool mIsEnable = false; ///< クリップボード履歴が有効かどうか
-	bool mIsFirstCall = true; ///< 初回呼び出しかどうか
+	bool mIsEnable{false}; ///< クリップボード履歴が有効かどうか
+	bool mIsFirstCall{true}; ///< 初回呼び出しかどうか
 
 	CString mPrefix; ///< クリップボード履歴のプレフィックス
-	int mNumOfResults = 16; ///< クリップボード履歴の結果数
-	int mSizeLimit = 64; ///< クリップボード履歴のサイズ制限
-	int mCountLimit = 65536; ///< クリップボード履歴のカウント制限
-	int mInterval = 500; ///< クリップボード履歴のインターバル
+	int mNumOfResults{16}; ///< クリップボード履歴の結果数
+	int mSizeLimit{64}; ///< クリップボード履歴のサイズ制限
+	int mCountLimit{65536}; ///< クリップボード履歴のカウント制限
+	int mInterval{500}; ///< クリップボード履歴のインターバル
 	CString mExcludePattern; ///< クリップボード履歴の除外パターン
 
 	ClipboardHistoryDB mHistoryDB; ///< クリップボード履歴データベース

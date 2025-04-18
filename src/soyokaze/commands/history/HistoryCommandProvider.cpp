@@ -25,8 +25,8 @@ using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 struct HistoryCommandProvider::PImpl
 {
-	bool mQuering = false;
-	uint64_t mLastCheck = 0;
+	bool mQuering{false};
+	uint64_t mLastCheck{0};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

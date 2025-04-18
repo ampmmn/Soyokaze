@@ -74,8 +74,8 @@ void Logger::InitializeDefaultLog()
 {
 	Path logPath(Path::APPDIRPERMACHINE, APPLOGNAME);
 
-	auto max_size = 1048576 * 8;
-	auto max_files = 3;
+	auto max_size{1048576 * 8};
+	auto max_files{3};
 	auto logger = spdlog::rotating_logger_mt("lancuher_logger", (LPCTSTR)logPath, max_size, max_files);
 	logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%5t] [%L]:%!:%v");
 
@@ -96,8 +96,8 @@ void Logger::InitializePerformanceLog()
 {
 	Path logPath(Path::APPDIRPERMACHINE, _T("perf.log"));
 
-	auto max_size = 1048576 * 8;
-	auto max_files = 3;
+	auto max_size{1048576 * 8};
+	auto max_files{3};
 	auto logger = spdlog::rotating_logger_mt("lancuher_perflog", (LPCTSTR)logPath, max_size, max_files);
 	logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%5t] [%L]:%!:%v");
 

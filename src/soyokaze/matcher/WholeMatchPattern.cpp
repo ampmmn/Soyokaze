@@ -13,7 +13,7 @@ struct WholeMatchPattern::PImpl
 {
 	CString mWord;
 	CString mWholeText;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
 WholeMatchPattern::WholeMatchPattern(const CString& word) : in(std::make_unique<PImpl>())

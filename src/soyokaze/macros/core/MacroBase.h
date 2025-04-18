@@ -23,7 +23,7 @@ public:
 protected:
 	CString mName;
 	CString mDescription;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 
 };
 

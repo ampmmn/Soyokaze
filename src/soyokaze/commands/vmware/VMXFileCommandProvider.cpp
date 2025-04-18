@@ -32,7 +32,7 @@ struct VMXFileCommandProvider::PImpl
 	void Reload();
 
 	CString mPrefFilePath;
-	FILETIME mPrefUpdateTime = {};
+	FILETIME mPrefUpdateTime{};
 
 	std::vector<VMXFileCommand*> mCommands;
 };

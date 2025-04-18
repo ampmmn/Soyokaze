@@ -42,9 +42,9 @@ public:
 	UINT GetNotifyMessage() { return mMsg; }
 
 private:
-	CommandParameterBuilder* mParam = nullptr;
-	HWND mHwnd = nullptr;
-	UINT mMsg = 0;
+	CommandParameterBuilder* mParam{nullptr};
+	HWND mHwnd{nullptr};
+	UINT mMsg{0};
 };
 
 

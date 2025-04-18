@@ -51,13 +51,13 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	}
 
 	CString mFullPath;
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 
-	bool mIsEnable = true;
+	bool mIsEnable{true};
 	//
-	bool mIsIgnoreUNC = false;
+	bool mIsIgnoreUNC{false};
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall = true;
+	bool mIsFirstCall{true};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(FileProtocolConvertAdhocCommand)

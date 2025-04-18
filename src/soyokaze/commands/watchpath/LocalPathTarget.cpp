@@ -184,16 +184,16 @@ struct LocalPathTarget::PImpl
 	CString mMessage;
 	//
 	CString mDetail;
-	UINT mInterval = 300 * 1000;
+	UINT mInterval{300 * 1000};
 
 	// ReadDirectoryChangesWに渡すためのファイルハンドル
-	HANDLE mDirHandle = nullptr;
+	HANDLE mDirHandle{nullptr};
 	// 更新検知を受け取るためのイベントを含むOVERLAPPED構造体
-	OVERLAPPED mOverlapped = {};
+	OVERLAPPED mOverlapped{};
 	// 変更通知受信用のバッファ
 	std::vector<BYTE> mBuffer;
 	// 最後に通知した時刻
-	uint64_t mLastNotifyTime = 0;
+	uint64_t mLastNotifyTime{0};
 	// 除外パターン
 	std::unique_ptr<tregex> mExcludePattern;
 };

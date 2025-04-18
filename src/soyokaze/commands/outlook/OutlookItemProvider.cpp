@@ -39,12 +39,12 @@ struct OutlookItemProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 	//
-	bool mIsEnableMailItem = false;
-	bool mIsFirstCall = true;
+	bool mIsEnableMailItem{false};
+	bool mIsFirstCall{true};
 
 	OutlookItems mOutlookItems;
 
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

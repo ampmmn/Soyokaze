@@ -19,7 +19,7 @@ struct WindowList::PImpl
 	PImpl() : mEvent(TRUE, TRUE)
 	{}
 
-	uint64_t mLastHwndUpdate = 0;
+	uint64_t mLastHwndUpdate{0};
 	std::mutex mMutex;
 	std::vector<HWND> mHandles;
 	CEvent mEvent;

@@ -20,15 +20,15 @@ public:
 	bool OnKillActive();
 
 	// 入力画面を表示するときにIMEをオフにする
-	BOOL mIsIMEOff = FALSE;
+	BOOL mIsIMEOff{FALSE};
 
 	// ネットワークパスを無視する
-	BOOL mIsIgnoreUNC = FALSE;
+	BOOL mIsIgnoreUNC{FALSE};
 
 	// C/Migemo検索を有効にする
-	BOOL mIsEnableMigemo = TRUE;
+	BOOL mIsEnableMigemo{TRUE};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 
 	bool UpdateStatus();
 

@@ -21,7 +21,7 @@ namespace timespan {
 struct TimespanCommand::PImpl
 {
 	CTimeSpan mTimeSpan;
-	int mUnitType = TYPE_HOUR;
+	int mUnitType{TYPE_HOUR};
 	CString mNum;
 	CString mUnit;
 };

@@ -45,7 +45,7 @@ struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 
 	std::list<CommandPtr> mConverterCommands;
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall = true;
+	bool mIsFirstCall{true};
 
 };
 

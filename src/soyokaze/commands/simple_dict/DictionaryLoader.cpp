@@ -156,9 +156,9 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	std::list<SimpleDictCommand*> mUpdatedParamQueue;
 
 	std::mutex mMutex;
-	bool mIsAbort = false;
-	bool mIsExited = true;
-	uint64_t mLastUpdateCheckTime = 0;
+	bool mIsAbort{false};
+	bool mIsExited{true};
+	uint64_t mLastUpdateCheckTime{0};
 };
 
 

@@ -208,7 +208,7 @@ CString HOTKEY_ATTR::ToString() const
 
 UINT HOTKEY_ATTR::GetModifiers() const
 {
-	UINT modifiers = 0;
+	UINT modifiers{0};
 	if (mUseShift) {
 		modifiers |= MOD_SHIFT;
 	}

@@ -37,8 +37,8 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	bool mIsEnableSpecialFolder = true;
-	bool mIsFirstCall = true;
+	bool mIsEnableSpecialFolder{true};
+	bool mIsFirstCall{true};
 	std::vector<ITEM> mRecentFileItems;
 	SpecialFolderFiles mFiles;
 

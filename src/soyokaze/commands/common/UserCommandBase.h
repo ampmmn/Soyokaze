@@ -45,7 +45,7 @@ protected:
 	static bool GetNamedParamString(Parameter* param, LPCTSTR name, CString& value);
 
 protected:
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
 }

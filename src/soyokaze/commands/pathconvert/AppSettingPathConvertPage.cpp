@@ -31,11 +31,11 @@ protected:
 
 public:
 	// git-bashパス変換を利用するか?
-	BOOL mIsEnableGitBashPath = true;
+	BOOL mIsEnableGitBashPath{true};
 	// file://プロトコル→ローカルパス変換を利用するか?
-	BOOL mIsEnableFileProtolPath = true;
+	BOOL mIsEnableFileProtolPath{true};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 bool AppSettingPage::UpdateStatus()

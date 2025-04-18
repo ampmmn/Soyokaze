@@ -112,7 +112,7 @@ struct CommandParameterBuilder::PImpl
 
 	std::map<CString, CString> mStrParamMap;
 	std::map<CString, bool> mBoolParamMap;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
 

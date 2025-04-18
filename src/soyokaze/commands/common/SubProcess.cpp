@@ -80,9 +80,9 @@ struct SubProcess::PImpl
 	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 	bool Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 
-	CommandParameter* mParam = nullptr;
-	int mShowType = SW_SHOW;
-	bool mIsRunAsAdmin = false;
+	CommandParameter* mParam{nullptr};
+	int mShowType{SW_SHOW};
+	bool mIsRunAsAdmin{false};
 	CString mWorkingDir;
 	std::map<tstring, tstring> mAdditionalEnv;
 };
@@ -315,7 +315,7 @@ bool SubProcess::IsRunningAsAdmin()
 
 struct SubProcess::Instance::PImpl
 {
-	HANDLE mProcess = nullptr;
+	HANDLE mProcess{nullptr};
 	CString mErrMsg;
 };
 

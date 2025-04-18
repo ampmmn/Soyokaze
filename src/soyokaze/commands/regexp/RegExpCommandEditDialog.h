@@ -37,9 +37,9 @@ protected:
 	CString mMessage;
 
 	// アイコン(表示用)
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 	// 表示方法
-	int mShowType = 0;
+	int mShowType{0};
 public:
 	CommandParam mParam;
 

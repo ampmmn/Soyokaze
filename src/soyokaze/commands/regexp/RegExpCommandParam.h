@@ -24,7 +24,7 @@ public:
 	CString mName;
 	CString mDescription;
 	CString mPatternStr;
-	int mRunAs = 0;
+	int mRunAs{0};
 
 	ATTRIBUTE mNormalAttr;
 

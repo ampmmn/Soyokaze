@@ -21,10 +21,10 @@ struct PreviewDialog::PImpl
 		return (int)mRecords.size();
 	}
 
-	CListCtrl* mPreviewListPtr = nullptr;
+	CListCtrl* mPreviewListPtr{nullptr};
 
 	// 全体の件数
-	int mTotalRecords = 0;
+	int mTotalRecords{0};
 	// プレビュー上表示するレコード
 	std::vector<Record> mRecords;
 	CString mRecordMsg;

@@ -109,16 +109,16 @@ struct KeywordEdit::PImpl
 		thisWnd->SetRect(&rc);
 	}
 
-	bool mIsFocus = false;
+	bool mIsFocus{false};
 
 	// IMMのハンドル
-	HIMC mImcHandle = nullptr;
+	HIMC mImcHandle{nullptr};
 	// Note: IMEの状態に応じてカーソルの色を変えるために使用する
 
 	// キャレット用のビットマップ
-	HBITMAP mCaretNormal = nullptr;
-	HBITMAP mCaretIMEON = nullptr;
-	int mFontSize = 16;
+	HBITMAP mCaretNormal{nullptr};
+	HBITMAP mCaretIMEON{nullptr};
+	int mFontSize{16};
 
 	CString mPlaceHolderText;
 
@@ -212,7 +212,7 @@ UINT KeywordEdit::OnGetDlgCode()
 {
 	UINT ret = __super::OnGetDlgCode();
 
-	const MSG* msg = CWnd::GetCurrentMessage();
+	const MSG* msg{CWnd::GetCurrentMessage()};
 	msg = (const MSG*)msg->lParam;
 
 	// Tabキーの入力もWM_KEYDOWNで処理できるようにする

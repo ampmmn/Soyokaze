@@ -37,7 +37,7 @@ struct NormalPriviledgeProcessProxy::PImpl
 	bool ReceiveResponse(json& json);
 
 	std::mutex mMutex;
-	HANDLE mPipeHandle = nullptr;
+	HANDLE mPipeHandle{nullptr};
 };
 
 // 通常権限で起動するためのプロセスが実行されていなかったら起動する

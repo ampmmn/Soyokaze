@@ -66,11 +66,11 @@ struct PartialMatchPattern::PImpl
 	std::vector<std::wregex> mRegPatternsForFM;
 
 	CString mWholeText;
-	bool mIsUseMigemoForHistory = false;
+	bool mIsUseMigemoForHistory{false};
 
 	Migemo mMigemo;
 
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
 PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())

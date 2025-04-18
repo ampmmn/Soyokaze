@@ -14,7 +14,7 @@ struct ATTRIBUTE {
 	CString mPath;
 	CString mParam;
 	CString mDir;
-	int mShowType = 0;
+	int mShowType{0};
 };
 
 class CommandParam

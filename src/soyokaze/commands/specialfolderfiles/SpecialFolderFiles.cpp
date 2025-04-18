@@ -24,12 +24,12 @@ struct SpecialFolderFiles::PImpl
 
 	std::mutex mMutex;
 	std::vector<ITEM> mItems;
-	uint64_t mElapsed = 0;
+	uint64_t mElapsed{0};
 	CEvent mEvent;
 
-	bool mIsUpdated = false;
-	bool mIsEnableRecent = true;
-	bool mIsEnableStartMenu = true;
+	bool mIsUpdated{false};
+	bool mIsEnableRecent{true};
+	bool mIsEnableStartMenu{true};
 };
 
 

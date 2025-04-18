@@ -49,7 +49,7 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 	// 実行するアクションを表す種別名
 	CString mActionType;
 	// 設定読み込み済か?
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 };
 
 DefaultCommand::DefaultCommand() : in(new PImpl)

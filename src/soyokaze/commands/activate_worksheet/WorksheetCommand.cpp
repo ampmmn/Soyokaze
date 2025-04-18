@@ -20,7 +20,7 @@ namespace activate_worksheet {
 
 struct WorksheetCommand::PImpl
 {
-	Worksheet* mWorksheet = nullptr;
+	Worksheet* mWorksheet{nullptr};
 };
 
 

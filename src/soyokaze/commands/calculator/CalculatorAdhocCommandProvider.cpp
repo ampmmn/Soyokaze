@@ -39,20 +39,20 @@ struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	bool mIsFirstCall = true;
-	bool mIsEnable = true;
+	bool mIsFirstCall{true};
+	bool mIsEnable{true};
 
 	//
 	Calculator mCalc;
 
 	// 環境変数PATHにあるexeを実行するためのコマンド
-	CalculatorCommand* mCommandPtr = nullptr;
+	CalculatorCommand* mCommandPtr{nullptr};
 	// 16進数で結果表示用のコマンド
-	CalculatorCommand* mHexResultPtr = nullptr;
+	CalculatorCommand* mHexResultPtr{nullptr};
 	// 8進数で結果表示用のコマンド
-	CalculatorCommand* mOctResultPtr = nullptr;
+	CalculatorCommand* mOctResultPtr{nullptr};
 	// 2進数で結果表示用のコマンド
-	CalculatorCommand* mBinResultPtr = nullptr;
+	CalculatorCommand* mBinResultPtr{nullptr};
 
 };
 

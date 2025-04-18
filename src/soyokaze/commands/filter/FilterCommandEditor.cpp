@@ -13,7 +13,7 @@ struct CommandEditor::PImpl
 	}
 
 	FilterEditDialog mDialog;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 	
 };
 

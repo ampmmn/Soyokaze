@@ -56,14 +56,14 @@ struct SettingDialog::PImpl
 	CommandParam mParam;
 	CString mOrgName;
 
-	int mIsEnableShortcut = false;
+	int mIsEnableShortcut{false};
 
 	// メッセージ欄
 	CString mMessage;
 
 	KeywordEdit mQueryEdit;
 
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	// URLの例

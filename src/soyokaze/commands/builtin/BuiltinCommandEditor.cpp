@@ -9,7 +9,7 @@ namespace builtin {
 struct BuiltinCommandEditor::PImpl
 {
 	std::unique_ptr<BuiltinEditDialog> mDialog;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 };
 
  BuiltinCommandEditor::BuiltinCommandEditor(

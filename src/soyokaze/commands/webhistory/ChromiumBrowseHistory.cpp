@@ -59,10 +59,10 @@ struct ChromiumBrowseHistory::PImpl
 	CString mProfileDir;
 	CString mOrgDBFilePath;
 	CString mDBFilePath;
-	bool mIsUseURL = false;
-	bool mIsUseMigemo = false;
+	bool mIsUseURL{false};
+	bool mIsUseMigemo{false};
 
-	FILETIME mLastUpdatedTime = {};
+	FILETIME mLastUpdatedTime{};
 
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };

@@ -43,9 +43,9 @@ protected:
 	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
 
 public:
-	CListCtrl* mListPath = nullptr;
+	CListCtrl* mListPath{nullptr};
 	std::vector<CString> mAdditionalPaths;
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 void PathSettingDialog::SwapItem(int srcIndex, int dstIndex)

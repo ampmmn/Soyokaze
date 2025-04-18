@@ -34,9 +34,9 @@ struct CommandRanking::PImpl
 	// 設定ファイル保存先パス
 	CString mFilePath;
 
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 
-	bool mIsTemporary = false;
+	bool mIsTemporary{false};
 };
 
 CommandRanking::CommandRanking() : in(std::make_unique<PImpl>())

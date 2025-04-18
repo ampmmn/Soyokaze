@@ -27,7 +27,7 @@ public:
 	CString mName;
 	CString mValue;
 	CString mMessage;
-	bool mCanEditName = true;
+	bool mCanEditName{true};
 
 // 実装
 protected:

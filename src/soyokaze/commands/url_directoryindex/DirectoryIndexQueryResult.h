@@ -12,7 +12,7 @@ struct QueryResult
 	CString mLinkPath;
 	CString mLinkText;
 	CString mURL;
-	int mMatchLevel = Pattern::Mismatch;
+	int mMatchLevel{Pattern::Mismatch};
 };
 
 using DirectoryIndexQueryResult = std::vector<QueryResult>;

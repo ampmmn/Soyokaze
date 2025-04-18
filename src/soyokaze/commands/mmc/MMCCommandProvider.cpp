@@ -42,8 +42,8 @@ struct MMCCommandProvider::PImpl : public AppPreferenceListenerIF
 		mIsEnable = pref->IsEnableMMCSnapin();
 	}
 
-	bool mIsFirstCall = true;
-	bool mIsEnable = true;
+	bool mIsFirstCall{true};
+	bool mIsEnable{true};
 	std::vector<MMCSnapin> mItems;
 	MMCSnapins mSnapins;
 

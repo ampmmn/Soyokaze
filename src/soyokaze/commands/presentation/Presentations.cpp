@@ -140,13 +140,13 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		mIsEnable = pref->IsEnablePowerPointSlide();
 	}
 
-	bool mIsEnable = true;
+	bool mIsEnable{true};
 
 	std::mutex mMutex;
-	bool mIsAbort = false;
-	bool mIsExited = true;
-	bool mIsAvailable = false;
-	bool mIsFirstCall = true;
+	bool mIsAbort{false};
+	bool mIsExited{true};
+	bool mIsAvailable{false};
+	bool mIsFirstCall{true};
 
 	// pptxファイルのパス(ディレクトリまで)
 	CString mFilePath;

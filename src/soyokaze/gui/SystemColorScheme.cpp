@@ -9,19 +9,19 @@
 struct SystemColorScheme::PImpl
 {
 	CBrush mWindowBkBrush;
-	COLORREF mWindowBkColor = 0;
+	COLORREF mWindowBkColor{0};
 	
 	CBrush mEditBkBrush;
-	COLORREF mEditBkColor = 0;
+	COLORREF mEditBkColor{0};
 	
 	CBrush mListBackgroundBrush;
-	COLORREF mListBackgroundColor = 0;
+	COLORREF mListBackgroundColor{0};
 	
 	CBrush mListBackgroundAltBrush;
-	COLORREF mListBackgroundAltColor = 0;
+	COLORREF mListBackgroundAltColor{0};
 	
 	CBrush mListHighlightBackgroundBrush;
-	COLORREF mListHighlightBackgroundColor = 0;
+	COLORREF mListHighlightBackgroundColor{0};
 };
 
 SystemColorScheme::SystemColorScheme() : in(new PImpl)

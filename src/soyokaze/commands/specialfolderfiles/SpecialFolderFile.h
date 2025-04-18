@@ -16,8 +16,8 @@ struct ITEM
 	CString mName;
 	CString mFullPath;
 	CString mDescription;
-	int mType = TYPE_RECENT;
-	FILETIME mWriteTime = {};
+	int mType{TYPE_RECENT};
+	FILETIME mWriteTime{};
 };
 
 } // end of namespace specialfolderfiles

@@ -28,7 +28,7 @@ namespace simple_dict {
 
 struct SimpleDictAdhocCommand::PImpl
 {
-	const SimpleDictParam* mParam = nullptr;
+	const SimpleDictParam* mParam{nullptr};
 
 	Record mRecord;
 };

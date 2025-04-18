@@ -37,10 +37,10 @@ struct RegExpCommand::PImpl
 	CommandParam mParam;
 	tregex mRegex;
 
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 
 	CString mErrMsg;
-	int mMatchLevel = Pattern::Mismatch;
+	int mMatchLevel{Pattern::Mismatch};
 };
 
 bool RegExpCommand::PImpl::GetRegex(tregex& regexObject)

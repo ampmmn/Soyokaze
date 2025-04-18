@@ -42,10 +42,10 @@ protected:
 	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
 
 public:
-	CListCtrl* mListPath = nullptr;
+	CListCtrl* mListPath{nullptr};
 	std::vector<CString> mExcludePaths;
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 void ExcludePathPage::SwapItem(int srcIndex, int dstIndex)

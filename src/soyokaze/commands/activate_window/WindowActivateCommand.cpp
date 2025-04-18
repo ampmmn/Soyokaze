@@ -29,8 +29,8 @@ struct WindowActivateCommand::PImpl
 
 	CString mErrorMsg;
 
-	HWND mCachedHwnd = nullptr;
-	uint64_t mLastUpdate = 0;
+	HWND mCachedHwnd{nullptr};
+	uint64_t mLastUpdate{0};
 };
 
 HWND WindowActivateCommand::PImpl::FindHwnd()

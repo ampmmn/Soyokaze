@@ -14,7 +14,7 @@ static LPCTSTR DEVICETYPE = _T("MPEGVideo");
 
 struct Sound::ITEM
 {
-	MCI_OPEN_PARMS mParam = {};
+	MCI_OPEN_PARMS mParam{};
 	CString mFilePath;
 	CString mAlias;
 };
@@ -29,12 +29,12 @@ struct Sound::PImpl
 	void Initialize();
 	bool GetWaitingItem(const CString& filePath, ItemPtr& item);
 
-	HWND mNotifyHwnd = nullptr;
+	HWND mNotifyHwnd{nullptr};
 
 	ItemList mPlayingItems;
 	std::map<CString, ItemList> mWaitingMap;
 
-	int mAliasIndex = 1;
+	int mAliasIndex{1};
 };
 
 bool Sound::PImpl::IsInitialized()

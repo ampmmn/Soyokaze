@@ -33,7 +33,7 @@ struct DirectoryIndexAdhocCommand::PImpl
 	bool OpenURL();
 	bool OpenParentURL();
 
-	URLDirectoryIndexCommand* mBaseCmd = nullptr;
+	URLDirectoryIndexCommand* mBaseCmd{nullptr};
 	QueryResult mResult;
 };
 

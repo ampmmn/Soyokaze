@@ -20,7 +20,7 @@ using namespace launcherapp::commands::common;
 
 struct CalcWorksheetCommand::PImpl
 {
-	CalcWorksheet* mCalcWorksheet = nullptr;
+	CalcWorksheet* mCalcWorksheet{nullptr};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(CalcWorksheetCommand)

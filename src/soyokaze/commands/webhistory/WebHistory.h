@@ -9,7 +9,7 @@ public:
 	CString mBrowserName;
 	CString mDisplayName;
 	CString mUrl;
-	int mMatchLevel = 0;
+	int mMatchLevel{0};
 };
 
 

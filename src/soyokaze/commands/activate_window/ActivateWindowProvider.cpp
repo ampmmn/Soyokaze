@@ -84,8 +84,8 @@ struct ActivateWindowProvider::PImpl :
 		mAdhocNameMap.erase(it);
 	}
 
-	bool mIsEnableWindowSwitch = false;
-	bool mIsFirstCall = true;
+	bool mIsEnableWindowSwitch{false};
+	bool mIsFirstCall{true};
 	WindowList mWndList;
 	CString mPrefix;
 
@@ -132,12 +132,12 @@ CString ActivateWindowProvider::GetDescription()
 // コマンド新規作成ダイアログ
 bool ActivateWindowProvider::NewDialog(CommandParameter* param)
 {
-	WindowActivateCommand* newCmd = nullptr;
+	WindowActivateCommand* newCmd{nullptr};
 	if (WindowActivateCommand::NewDialog(param, &newCmd) == false) {
 		return false;
 	}
 
-	constexpr bool isReloadHotKey = true;
+	constexpr bool isReloadHotKey{true};
 	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
 	return true;
 }

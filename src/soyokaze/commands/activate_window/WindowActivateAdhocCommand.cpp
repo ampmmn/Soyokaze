@@ -25,8 +25,8 @@ struct WindowActivateAdhocCommand::PImpl
 	bool GiveAdhocName();
 	bool Close();
 
-	HWND mHwnd = nullptr;
-	MenuEventListener* mMenuEventListener = nullptr;
+	HWND mHwnd{nullptr};
+	MenuEventListener* mMenuEventListener{nullptr};
 };
 
 bool WindowActivateAdhocCommand::PImpl::Maximize()

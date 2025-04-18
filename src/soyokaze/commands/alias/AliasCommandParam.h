@@ -13,7 +13,7 @@ public:
 	CString mDescription;
 	CString mText;
 	// 実行するかどうか(1:貼り付けのみ 0:実行する)
-	int mIsPasteOnly = 0;
+	int mIsPasteOnly{0};
 	CommandHotKeyAttribute mHotKeyAttr;
 };
 

@@ -216,7 +216,7 @@ public:
 	std::map<CString, DWORD, CompareName> mFiles;
 	std::map<CString, DirectoryNode*, CompareName> mChildren;
 	CString mLastChangedItem;
-	int mLastChangedAction = 0;
+	int mLastChangedAction{0};
 };
 
 
@@ -233,14 +233,14 @@ struct UNCPathTarget::PImpl
 	CString mPath;
 	CString mMessage;
 	// 間隔(ミリ秒単位)
-	UINT mInterval = 300 * 1000;
+	UINT mInterval{300 * 1000};
 	CString mDetail;
 	// 監視対象パス以下にある要素の更新日時情報
 	DirectoryNode mPrevTimeStamps;
 	// 最後にチェックした時刻
-	uint64_t mLastCheckTime = 0;
+	uint64_t mLastCheckTime{0};
 	// 最後に通知した時刻
-	uint64_t mLastNotifyTime = 0;
+	uint64_t mLastNotifyTime{0};
 	// 除外パターン
 	std::unique_ptr<tregex> mExcludeRegex;
 };

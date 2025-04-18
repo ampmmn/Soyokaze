@@ -61,7 +61,7 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	bool mIsUseAPI;
 	bool mIsRunApp;
 	CString mAppPath;
-	HICON mAppIcon = nullptr;
+	HICON mAppIcon{nullptr};
 };
 
 

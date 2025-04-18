@@ -45,7 +45,7 @@ struct WinHttp::PImpl
 		return mProxyHost;
 	}
 
-	int mProxyType = SYSTEMSETTING;
+	int mProxyType{SYSTEMSETTING};
 	CString mProxyHost;
 	CString mProxyUser;
 	CString mProxyPassword;

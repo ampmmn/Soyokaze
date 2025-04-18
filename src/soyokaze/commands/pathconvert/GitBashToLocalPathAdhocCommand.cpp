@@ -23,8 +23,8 @@ namespace pathconvert {
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	CString mFullPath;
-	HICON mIcon = nullptr;
-	bool mIsExe = false;
+	HICON mIcon{nullptr};
+	bool mIsExe{false};
 };
 
 

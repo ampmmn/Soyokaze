@@ -29,8 +29,8 @@ struct ItemDialog::PImpl
 	// ウインドウキャプチャ用アイコン
 	CaptureIconLabel mIconLabel;
 
-	int mWidth = 0;
-	int mHeight = 0;
+	int mWidth{0};
+	int mHeight{0};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

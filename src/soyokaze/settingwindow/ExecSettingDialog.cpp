@@ -29,23 +29,23 @@ protected:
 	afx_msg void OnCheckUseFilter();
 
 	// Ctrl+Enterキー実行でフォルダ表示する
-	BOOL mIsShowFolderIfCtrlPressed = TRUE;
+	BOOL mIsShowFolderIfCtrlPressed{TRUE};
 	// フォルダを開くファイラーを指定
-	BOOL mIsUseExternalFiler = FALSE;
+	BOOL mIsUseExternalFiler{FALSE};
 	// ファイル名を指定して実行を使用する
-	BOOL mIsEnablePathFind = TRUE;
+	BOOL mIsEnablePathFind{TRUE};
 	// 管理者権限で着実行時にコマンド通常権限で実行する
-	BOOL mShouldDemotePriviledge = TRUE;
+	BOOL mShouldDemotePriviledge{TRUE};
 	// 管理者権限で起動する
-	BOOL mShouldRunAsAdmin = FALSE;
+	BOOL mShouldRunAsAdmin{FALSE};
 	// ファイラーのパス
 	CString mFilerPath;
 	// ファイラーのパラメータ
 	CString mFilerParam;
 	// 未登録キーワード実行時の動作
-	int mDefaultActionIndex = 0;
+	int mDefaultActionIndex{0};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 bool ExecSettingDialog::OnKillActive()

@@ -63,7 +63,7 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
-	bool mIsAbort = false;
+	bool mIsAbort{false};
 	CEvent mWaitEvt;
 };
 

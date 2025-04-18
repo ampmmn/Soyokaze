@@ -50,10 +50,10 @@ static LPSQLITE3_FINALIZE sqlite3_finalize = nullptr;
 
 struct SQLite3Wrapper::PImpl
 {
-	HMODULE mModule = nullptr;
+	HMODULE mModule{nullptr};
 	CharConverter mConv;
 	std::regex mRegExp;
-	bool mIsFirst = true;
+	bool mIsFirst{true};
 };
 
 

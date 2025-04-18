@@ -28,7 +28,7 @@ public:
 	virtual ~PriorityDialog() {}
 
 	//! 優先度
-	int mPriority = 0;
+	int mPriority{0};
 
 	void DoDataExchange(CDataExchange* pDX) override {
 		__super::DoDataExchange(pDX);
@@ -109,19 +109,19 @@ protected:
 	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
 
-	CommandRanking* mCommandPriority = nullptr;
+	CommandRanking* mCommandPriority{nullptr};
 
 	// コマンド一覧を表示するリストコントロール
 	CListCtrl mListCtrl;
 	// すべてのコマンド
 	std::vector<Command*> mCommands;
 	// 選択中のコマンド
-	Command* mSelCommand = nullptr;
+	Command* mSelCommand{nullptr};
 	// フィルタで絞り込みされた結果、画面に表示されているコマンド一覧
 	std::vector<Command*> mShowCommands;
 
 	// 現在のソート種別
-	int mSortType = SORT_ASCEND_NAME;
+	int mSortType{SORT_ASCEND_NAME};
 	//! フィルター欄の文字列
 	CString mFilterStr;
 };

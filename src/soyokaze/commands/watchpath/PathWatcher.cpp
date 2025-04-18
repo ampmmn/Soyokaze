@@ -73,11 +73,11 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	std::map<CString, WatchTarget*> mTargets;
 
 	// 監視終了フラグ
-	bool mIsAbort = false;
+	bool mIsAbort{false};
 	// 監視スレッド終了済を表すフラグ
-	bool mIsExited = false;
+	bool mIsExited{false};
 	// 
-	bool mIsScreenLocked = false;
+	bool mIsScreenLocked{false};
 	// 監視スレッド
 	std::unique_ptr<std::thread> mTask;
 };

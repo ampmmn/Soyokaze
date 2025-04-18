@@ -39,8 +39,8 @@ struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 
-	bool mIsEnable = true;
-	bool mIsFirstCall = true;
+	bool mIsEnable{true};
+	bool mIsFirstCall{true};
 	std::vector<ItemPtr> mItems;
 	UWPApplications mUWPApps;
 

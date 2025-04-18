@@ -54,12 +54,12 @@ struct PathExecuteCommand::PImpl
 	}
 
 	LocalPathResolver mResolver;
-	ExcludePathList* mExcludeFiles = nullptr;
+	ExcludePathList* mExcludeFiles{nullptr};
 	CString mWord;
 	CString mFullPath;
-	bool mIsURL = false;
-	bool mIsFromHistory = false;
-	bool mIsExe = false;
+	bool mIsURL{false};
+	bool mIsFromHistory{false};
+	bool mIsExe{false};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)

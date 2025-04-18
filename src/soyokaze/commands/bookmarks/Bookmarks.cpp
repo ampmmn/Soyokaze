@@ -26,11 +26,11 @@ namespace bookmarks {
 struct Bookmarks::PImpl
 {
 	Path mChromeBookmarkPath;
-	FILETIME mChromeUpdateTime = {};
+	FILETIME mChromeUpdateTime{};
 	std::vector<Bookmark> mChromeItems;
 
 	Path mEdgeBookmarkPath;
-	FILETIME mEdgeUpdateTime = {};
+	FILETIME mEdgeUpdateTime{};
 	std::vector<Bookmark> mEdgeItems;
 };
 

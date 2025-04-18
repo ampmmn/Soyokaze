@@ -37,30 +37,30 @@ struct PythonDLL::PImpl
 
 	CString mDllPath;
 
-	HMODULE mDll = nullptr;
-	void* mModule = nullptr;
-	void* mDict = nullptr;
+	HMODULE mDll{nullptr};
+	void* mModule{nullptr};
+	void* mDict{nullptr};
 
-	PY_INITIALIZE mPy_Initialize = nullptr;
-	PY_FINALIZEEX mPy_FinalizeEx = nullptr;
-	PYEVAL_INITTHREADS mPyEval_InitThreads = nullptr;
-	PYGILSTATE_ENSURE mPyGILState_Ensure = nullptr;
-	PYRUN_STRING mPyRun_String = nullptr;
-	PYSTRING_ASSTRING mPyString_AsString = nullptr;
-	PYERR_OCCURRED mPyErr_Occurred = nullptr;
-	PY_DECREF mPy_DecRef = nullptr;
-	PYGILSTATE_RELEASE mPyGILState_Release = nullptr;
-	PYIMPORT_ADDMODULE mPyImport_AddModule = nullptr;
-	PYMODULE_GETDICT mPyModule_GetDict = nullptr;
-	PYERR_PRINT mPyErr_Print = nullptr;
-	PYOBJECT_REPR mPyObject_Repr = nullptr;
-	PYUNICODE_ASENCODEDSTRING mPyUnicode_AsEncodedString = nullptr;
-	PYIMPORT_IMPORTMODULE mPyImport_ImportModule = nullptr;
-	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString = nullptr;
-	PY_COMPILESTRING mPy_CompileString = nullptr;
+	PY_INITIALIZE mPy_Initialize{nullptr};
+	PY_FINALIZEEX mPy_FinalizeEx{nullptr};
+	PYEVAL_INITTHREADS mPyEval_InitThreads{nullptr};
+	PYGILSTATE_ENSURE mPyGILState_Ensure{nullptr};
+	PYRUN_STRING mPyRun_String{nullptr};
+	PYSTRING_ASSTRING mPyString_AsString{nullptr};
+	PYERR_OCCURRED mPyErr_Occurred{nullptr};
+	PY_DECREF mPy_DecRef{nullptr};
+	PYGILSTATE_RELEASE mPyGILState_Release{nullptr};
+	PYIMPORT_ADDMODULE mPyImport_AddModule{nullptr};
+	PYMODULE_GETDICT mPyModule_GetDict{nullptr};
+	PYERR_PRINT mPyErr_Print{nullptr};
+	PYOBJECT_REPR mPyObject_Repr{nullptr};
+	PYUNICODE_ASENCODEDSTRING mPyUnicode_AsEncodedString{nullptr};
+	PYIMPORT_IMPORTMODULE mPyImport_ImportModule{nullptr};
+	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString{nullptr};
+	PY_COMPILESTRING mPy_CompileString{nullptr};
   PYOBJECT_GETATTRSTRING mPyObject_GetAttrString = nullptr;
-	PYDICT_MERGE mPyDict_Merge = nullptr;
-	PYEVAL_GetGlobals mPyEval_GetGlobals = nullptr;
+	PYDICT_MERGE mPyDict_Merge{nullptr};
+	PYEVAL_GetGlobals mPyEval_GetGlobals{nullptr};
 };
 
 bool PythonDLL::PImpl::Initialize()

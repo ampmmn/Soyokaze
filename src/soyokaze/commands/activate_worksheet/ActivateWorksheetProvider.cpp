@@ -40,8 +40,8 @@ struct ActivateWorksheetProvider::PImpl : public AppPreferenceListenerIF
 
 
 	//
-	bool mIsEnableWorksheet = false;
-	bool mIsFirstCall = true;
+	bool mIsEnableWorksheet {false};
+	bool mIsFirstCall {true};
 
 	WorkSheets mWorksheets;
 	CalcWorkSheets mCalcWorksheets;

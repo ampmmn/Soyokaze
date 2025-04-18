@@ -58,15 +58,15 @@ struct MainWindowAppearance::PImpl
 		return true;
 	}
 
-	LauncherMainWindowIF* mMainWnd = nullptr;
+	LauncherMainWindowIF* mMainWnd{nullptr};
 	// 色設定をリセットするか?
-	bool mShouldColorInit = true;
+	bool mShouldColorInit{true};
 	// フォント
 	CFont mFont;
 	// ウインドウの透明度を制御するためのクラス
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 
-	bool mIsBlockDeactivateOnUnfocus =  false;
+	bool mIsBlockDeactivateOnUnfocus{ false};
 };
 
 MainWindowAppearance::MainWindowAppearance(LauncherMainWindowIF* mainWnd) : in(new PImpl)

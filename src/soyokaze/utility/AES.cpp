@@ -26,7 +26,7 @@ public:
 		return &mProvider;
 	}
 
-	HCRYPTPROV mProvider = 0;
+	HCRYPTPROV mProvider{0};
 };
 
 class CryptHash
@@ -48,7 +48,7 @@ public:
 		return &mHash;
 	}
 
-	HCRYPTHASH  mHash = 0;
+	HCRYPTHASH  mHash{0};
 };
 
 
@@ -66,7 +66,7 @@ struct AES::PImpl
 		return provider;
 	}
 
-	HCRYPTKEY mKey = 0;
+	HCRYPTKEY mKey{0};
 	CryptProvider mProvider;
 	CryptHash mHash;
 	std::vector<uint8_t> mAESKey;
@@ -97,7 +97,7 @@ bool AES::PImpl::Initialize(const std::vector<uint8_t>& keyData)
 		return false;
 	}       
 
-	DWORD mode = CRYPT_MODE_CBC;
+	DWORD mode{CRYPT_MODE_CBC};
 	if (CryptSetKeyParam(mKey, KP_MODE, (BYTE*)&mode, 0) == FALSE){
 		return false;
 	}

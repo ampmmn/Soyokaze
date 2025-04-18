@@ -44,15 +44,15 @@ protected:
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 
 	// 長時間の連続稼働を警告する
-	BOOL mIsWarnLongOperation = FALSE;
+	BOOL mIsWarnLongOperation{FALSE};
 	// 警告までの時間(分単位)
-	int mTimeToWarnLongOperation = 90;
+	int mTimeToWarnLongOperation{90};
 	// ログレベル
-	int mLogLevel = 0;
+	int mLogLevel{0};
 	// 性能ログを出力する
-	BOOL mIsEnablePerfLog = FALSE;
+	BOOL mIsEnablePerfLog{FALSE};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 bool OtherSettingDialog::OnKillActive()

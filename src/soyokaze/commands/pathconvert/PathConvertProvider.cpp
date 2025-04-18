@@ -42,13 +42,13 @@ struct PathConvertProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr = nullptr;
-	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr = nullptr;
-	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr = nullptr;
+	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr{nullptr};
+	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr{nullptr};
+	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr{nullptr};
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall = true;
+	bool mIsFirstCall{true};
 
-	bool mIsEnableGitBash = false;
+	bool mIsEnableGitBash{false};
 
 };
 

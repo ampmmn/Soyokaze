@@ -55,12 +55,12 @@ private:
 	CWnd* GetParent();
 // 
 private:
-	LauncherMainWindowIF* mMainWnd = nullptr;
-	CWnd* mIcon = nullptr;
-	CWnd* mDesc = nullptr;
-	CWnd* mGuide = nullptr;
-	CWnd* mEdit = nullptr;
-	CWnd* mCandidateList = nullptr;
+	LauncherMainWindowIF* mMainWnd{nullptr};
+	CWnd* mIcon{nullptr};
+	CWnd* mDesc{nullptr};
+	CWnd* mGuide{nullptr};
+	CWnd* mEdit{nullptr};
+	CWnd* mCandidateList{nullptr};
 };
 
 

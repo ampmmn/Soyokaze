@@ -29,7 +29,7 @@ struct WebSearchCommand::PImpl
 	int BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url);
 	CommandParam mParam;
 
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 };
 
 int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)

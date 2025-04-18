@@ -19,8 +19,8 @@ void HSL::FromRGB(BYTE r, BYTE g, BYTE b)
 {
 	BYTE rgb[] = { r, g, b };
 
-	auto maxElem = std::max_element(rgb, rgb+3);
-	auto minElem = std::min_element(rgb, rgb+3);
+	auto maxElem{std::max_element(rgb, rgb+3)};
+	auto minElem{std::min_element(rgb, rgb+3)};
 
 	// Hue
 	if (r == g && g == b && b == r) {

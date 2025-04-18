@@ -10,14 +10,14 @@
 
 struct SandSKeyState::PImpl
 {
-	HMODULE mDll = nullptr;
-	SANDS_REGISTERHOOK mRegisterHook = nullptr;
-	SANDS_UNREGISTERHOOK mUnregisterHook = nullptr;
-	SANDS_ISPRESSED mIsPressed = nullptr;
-	SANDS_RESET mReset = nullptr;
+	HMODULE mDll{nullptr};
+	SANDS_REGISTERHOOK mRegisterHook{nullptr};
+	SANDS_UNREGISTERHOOK mUnregisterHook{nullptr};
+	SANDS_ISPRESSED mIsPressed{nullptr};
+	SANDS_RESET mReset{nullptr};
 
-	bool mLastState[0x10000] = {};
-	bool mIsLogPrinted = false;
+	bool mLastState[0x10000]{{}};
+	bool mIsLogPrinted{false};
 };
 
 SandSKeyState::SandSKeyState() : in(new PImpl)

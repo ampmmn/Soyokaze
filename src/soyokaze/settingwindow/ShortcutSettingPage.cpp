@@ -27,10 +27,10 @@ public:
 	CString mDesktopPath;
 	CString mStartupPath;
 
-	BOOL mSendTo = FALSE;
-	BOOL mStartMenu = FALSE;
-	BOOL mDesktop = FALSE;
-	BOOL mStartup = FALSE;
+	BOOL mSendTo{FALSE};
+	BOOL mStartMenu{FALSE};
+	BOOL mDesktop{FALSE};
+	BOOL mStartup{FALSE};
 
 
 	void OnOK() override;

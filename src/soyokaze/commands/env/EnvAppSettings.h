@@ -8,7 +8,7 @@ public:
 	void Load();
 
 	CString mPrefix{_T("env")};
-	bool mIsEnable = true;
+	bool mIsEnable{true};
 };
 
 }}} // end of namespace launcherapp::commands::env

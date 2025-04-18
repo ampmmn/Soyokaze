@@ -31,12 +31,12 @@ struct AppSettingDialog::PImpl
 	HTREEITEM AddPage(HTREEITEM parent, AppSettingPageIF* page, void* param);
 
 	CBrush brBk;
-	CTreeCtrl* mTreeCtrl = nullptr;
+	CTreeCtrl* mTreeCtrl{nullptr};
 
 	CRect mPageRect;
 
 	// 最後に選択したツリー項目
-	HTREEITEM mLastTreeItem = nullptr;
+	HTREEITEM mLastTreeItem{nullptr};
 
 	// ページ階層を示す文字列
 	CString mBreadCrumbs;
@@ -48,7 +48,7 @@ struct AppSettingDialog::PImpl
 
 	TopMostMask mTopMostMask;
 
-	HACCEL mAccel = nullptr;
+	HACCEL mAccel{nullptr};
 
 	// 設定情報
 	Settings mSettings;

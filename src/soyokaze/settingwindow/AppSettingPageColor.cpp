@@ -46,23 +46,23 @@ protected:
 	void OnButtonRestore();
 	void OnUpdateStatus();
 
-	BOOL mIsUseSystemSettings = TRUE;
+	BOOL mIsUseSystemSettings{TRUE};
 
-	COLORREF mWindowTextColor = 0;
-	COLORREF mWindowBkColor = 0;
-	COLORREF mEditTextColor = 0;
-	COLORREF mEditBkColor = 0;
-	COLORREF mListTextColor = 0;
-	COLORREF mListBkColor = 0;
-	COLORREF mListBkAltColor = 0;
-	COLORREF mListTextHLColor = 0;
-	COLORREF mListBkHLColor = 0;
+	COLORREF mWindowTextColor{0};
+	COLORREF mWindowBkColor{0};
+	COLORREF mEditTextColor{0};
+	COLORREF mEditBkColor{0};
+	COLORREF mListTextColor{0};
+	COLORREF mListBkColor{0};
+	COLORREF mListBkAltColor{0};
+	COLORREF mListTextHLColor{0};
+	COLORREF mListBkHLColor{0};
 
 	ImageLabel mPreview;
 
 	SystemColorScheme mSysScheme;
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 COLORREF ColorSettingDialog::GetWindowTextColor()

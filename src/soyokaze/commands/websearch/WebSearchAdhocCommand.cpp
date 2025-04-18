@@ -22,7 +22,7 @@ namespace websearch {
 
 struct WebSearchAdhocCommand::PImpl
 {
-	WebSearchCommand* mBaseCommand = nullptr;
+	WebSearchCommand* mBaseCommand{nullptr};
 	CString mURL;
 	CString mErrorMsg;
 };

@@ -24,7 +24,7 @@ constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 struct HistoryCommand::PImpl
 {
 	CString mKeyword;
-	Command* mCmd = nullptr;
+	Command* mCmd{nullptr};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(HistoryCommand)

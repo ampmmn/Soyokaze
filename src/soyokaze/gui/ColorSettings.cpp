@@ -30,7 +30,7 @@ struct ColorSettings::PImpl : public AppPreferenceListenerIF
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
-	bool mIsUseSystemSettings = true;
+	bool mIsUseSystemSettings{true};
 	SystemColorScheme mSysColor;
 	CustomColorScheme mCustomColor;
 };

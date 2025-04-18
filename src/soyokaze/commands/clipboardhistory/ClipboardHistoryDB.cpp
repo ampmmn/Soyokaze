@@ -38,9 +38,9 @@ struct ClipboardHistoryDB::PImpl
 	 */
 	void FetchAll(ResultList& result);
 
-	int mNumOfResults = 16; ///< 結果の数
-	int mSizeLimit = 64; ///< サイズ制限
-	int mCountLimit = 1024; ///< カウント制限
+	int mNumOfResults{16}; ///< 結果の数
+	int mSizeLimit{64}; ///< サイズ制限
+	int mCountLimit{1024}; ///< カウント制限
 
 	std::unique_ptr<SQLite3Database> mDB; ///< SQLite3 データベース
 	std::mutex mMutex;

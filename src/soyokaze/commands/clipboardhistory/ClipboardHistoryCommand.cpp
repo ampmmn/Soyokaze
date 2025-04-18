@@ -20,7 +20,7 @@ namespace clipboardhistory {
 
 struct ClipboardHistoryCommand::PImpl
 {
-	uint64_t mAppendDate = 0;
+	uint64_t mAppendDate{0};
 	CString mPrefix;
 	CString mData;
 };

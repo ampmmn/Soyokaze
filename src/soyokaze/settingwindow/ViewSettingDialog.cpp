@@ -44,40 +44,40 @@ protected:
 	afx_msg void OnCbnKillfocusFontSize();
 
 	// 入力欄のアイコンを表示する
-	BOOL mIsDrawIcon = TRUE;
+	BOOL mIsDrawIcon{TRUE};
 	// 入力欄のプレースホルダーを表示する
-	BOOL mIsDrawPlaceHolder = TRUE;
+	BOOL mIsDrawPlaceHolder{TRUE};
 
 	// 半透明の表示方法
-	int mTransparencyType = 0;
+	int mTransparencyType{0};
 	// 半透明表示の透明度
-	UINT mAlpha = 128;
+	UINT mAlpha{128};
 
 	// コマンド種別を表示するか?
-	BOOL mIsShowCommandType = TRUE;
+	BOOL mIsShowCommandType{TRUE};
 
 	// 操作ガイドを表示するか?
-	BOOL mIsShowGuide = TRUE;
+	BOOL mIsShowGuide{TRUE};
 
 	// 候補欄の背景色を交互に変える
-	BOOL mIsAlternateColor = TRUE;
+	BOOL mIsAlternateColor{TRUE};
 
 	// 候補欄の各項目にアイコンを描画するか
-	BOOL mIsDrawIconOnCandidate = TRUE;
+	BOOL mIsDrawIconOnCandidate{TRUE};
 
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
 
 	// フォントサイズ
-	int mFontSize = 9;
+	int mFontSize{9};
 
 	// アプリアイコン
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 	CString mAppIconFilePath;
 	IconLabelForApp mIconLabelPtr;
-	bool mIsIconReset = false;
+	bool mIsIconReset{false};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 ViewSettingDialog::~ViewSettingDialog()

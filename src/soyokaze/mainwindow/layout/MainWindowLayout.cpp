@@ -109,19 +109,19 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 		}
 	}
 
-	LauncherMainWindowIF* mMainWnd = nullptr;
-	MainWindowLayout* mThisPtr = nullptr;
-	bool mIsFirstCall = true;
-	bool mIsShowGuide = false;
-	bool mIsDrawIcon = true;
+	LauncherMainWindowIF* mMainWnd{nullptr};
+	MainWindowLayout* mThisPtr{nullptr};
+	bool mIsFirstCall{true};
+	bool mIsShowGuide{false};
+	bool mIsDrawIcon{true};
 
 	std::unique_ptr<ComponentPlacer> mPlacer;
 
 	// ウインドウ位置を保存するためのクラス
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
 
-	bool mIsFirstUpdate = true;
-	bool mIsPrevHasKeyword = false;
+	bool mIsFirstUpdate{true};
+	bool mIsPrevHasKeyword{false};
 };
 
 MainWindowLayout::MainWindowLayout(LauncherMainWindowIF* mainWnd) : in(new PImpl)
@@ -153,7 +153,7 @@ void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpda
 
 	in->mIsFirstUpdate = false;
 
-	HWND mainWndHandle = in->mMainWnd->GetWindowObject()->GetSafeHwnd();
+	HWND mainWndHandle{in->mMainWnd->GetWindowObject()->GetSafeHwnd()};
 
 	if (status->HasKeyword()) {
 		// キーワードが入力されているため、候補欄を表示する
@@ -211,6 +211,9 @@ static bool IsRectInMonitors(const CRect& rc)
 {
 	struct local_param {
 		static BOOL CALLBACK EnumProc(HMONITOR hmon, HDC hdcMon, LPRECT lprcMon, LPARAM dwData) {
+			UNREFERENCED_PARAMETER(lprcMon);
+			UNREFERENCED_PARAMETER(hdcMon);
+
 			auto thisPtr = (local_param*)dwData;
 
 			MONITORINFO mi = { sizeof(MONITORINFO) };

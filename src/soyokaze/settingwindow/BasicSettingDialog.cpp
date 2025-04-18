@@ -44,29 +44,29 @@ private:
 	CString mHotKey;
 	HOTKEY_ATTR mHotKeyAttr;
 
-	bool mIsEnableHotKey = true;
-	bool mIsEnableModifierHotKey = false;
-	bool mIsEnableModifierHotKeyOnRD = false;
-	UINT mModifierFirstVK = VK_CONTROL;
-	UINT mModifierSecondVK = VK_CONTROL;
+	bool mIsEnableHotKey{true};
+	bool mIsEnableModifierHotKey{false};
+	bool mIsEnableModifierHotKeyOnRD{false};
+	UINT mModifierFirstVK{VK_CONTROL};
+	UINT mModifierSecondVK{VK_CONTROL};
 
 	// 入力画面の表示位置
-	int mShowPositionType = POSTYPE_KEEPLAST;
+	int mShowPositionType{POSTYPE_KEEPLAST};
 
 	// 表示中にホットキーを押したら隠れる
-	BOOL mIsShowToggle = true;
+	BOOL mIsShowToggle{true};
 	// 入力画面を非表示にするときに入力文字列を消去しない
-	BOOL mIsKeepTextWhenDlgHide = false;
+	BOOL mIsKeepTextWhenDlgHide{false};
 	// 起動直後は入力画面を非表示にする
-	BOOL mIsHideOnRun = false;
+	BOOL mIsHideOnRun{false};
 	// 入力画面を常に最前面に表示
-	BOOL mIsTopMost = FALSE;
+	BOOL mIsTopMost{FALSE};
 	// アクティブ状態でなくなったらウインドウを隠す
-	BOOL mIsHideOnInactive = FALSE;
+	BOOL mIsHideOnInactive{FALSE};
 	// マウスカーソル位置に入力欄を表示する
-	BOOL mIsShowMainWindowOnCursor = FALSE;
+	BOOL mIsShowMainWindowOnCursor{FALSE};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 

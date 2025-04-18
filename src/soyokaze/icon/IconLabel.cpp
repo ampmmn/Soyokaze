@@ -18,9 +18,9 @@ struct IconLabel::PImpl
 	CImageList mIconList;
 	CSize mCtrlSize;
 
-	bool mCanIconChange = false;
-	bool mIsUseBackgroundColor = false;
-	COLORREF mBackgroundColor = RGB(0,0,0);
+	bool mCanIconChange{false};
+	bool mIsUseBackgroundColor{false};
+	COLORREF mBackgroundColor{RGB(0,0,0)};
 };
 
 
@@ -61,7 +61,7 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	COLORREF crBr = in->mIsUseBackgroundColor == false ? GetSysColor(COLOR_3DFACE) : in->mBackgroundColor;
 
 	// 初回またはサイズが変わってたらビットマップ作り直し
-	CBitmap& memBmp = in->mBuffer;
+	CBitmap& memBmp{in->mBuffer};
 	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
 
 		if (memBmp != (HBITMAP)nullptr) {

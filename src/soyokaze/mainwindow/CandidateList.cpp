@@ -22,7 +22,7 @@ struct CandidateList::PImpl
 	// 一覧
 	std::vector<launcherapp::core::Command*> mCandidates;
 	// 選択中のもの
-	int mSelIndex = -1;
+	int mSelIndex{-1};
 
 	// リスナー一覧
 	std::set<CandidateListListenerIF*> mListeners;

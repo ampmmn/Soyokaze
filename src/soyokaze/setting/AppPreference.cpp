@@ -48,7 +48,7 @@ struct AppPreference::PImpl
 	std::unique_ptr<NotifyWindow> mNotifyWindow;
 
 	Settings mSettings;
-	bool mIsLoaded = false;
+	bool mIsLoaded{false};
 
 	// 設定変更時(正確にはSave時)に通知を受け取る
 	std::set<AppPreferenceListenerIF*> mListeners;

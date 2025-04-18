@@ -30,11 +30,11 @@ public:
 
 public:
 	// 履歴機能を使う
-	BOOL mIsUseHistory = FALSE;
+	BOOL mIsUseHistory{FALSE};
 	// 履歴件数
-	int mHistoryLimit = 128;
+	int mHistoryLimit{128};
 
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 bool InputHistorySettingPage::OnKillActive()

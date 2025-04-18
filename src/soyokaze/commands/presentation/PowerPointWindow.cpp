@@ -26,7 +26,7 @@ struct PowerPointWindow::PImpl
 	}
 
 	DispWrapper mApp;
-	HWND mHwnd = nullptr;
+	HWND mHwnd{nullptr};
 };
 
 

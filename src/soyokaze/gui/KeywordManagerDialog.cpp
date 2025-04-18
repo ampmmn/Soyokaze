@@ -60,7 +60,7 @@ struct KeywordManagerDialog::PImpl
 	CString mFilterStr;
 
 	std::vector<Command*> mCommands;
-	Command* mSelCommand = nullptr;
+	Command* mSelCommand{nullptr};
 	std::vector<Command*> mShowCommands;
 
 	CListCtrl mListCtrl;
@@ -69,7 +69,7 @@ struct KeywordManagerDialog::PImpl
 
 	CommandHotKeyMappings mKeyMapping;
 
-	int mSortType = SORT_ASCEND_NAME;
+	int mSortType{SORT_ASCEND_NAME};
 };
 
 void KeywordManagerDialog::PImpl::SortCommands()

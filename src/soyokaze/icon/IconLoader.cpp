@@ -171,9 +171,9 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 
 	LocalPathResolver mResolver;
 
-	int mCleanCount = CLEARCACHE_INTERVAL;
+	int mCleanCount{CLEARCACHE_INTERVAL};
 
-	bool mIsScreenLocked = false;
+	bool mIsScreenLocked{false};
 
 	std::mutex mAppIconMapMutex;
 };
@@ -261,7 +261,7 @@ void IconLoader::PImpl::ClearCache()
 bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
 {
 	int n = 0;
-	CString modulePath = path.Tokenize(_T(","), n);
+	CString modulePath{path.Tokenize(_T(","), n)};
 	if (modulePath.IsEmpty()) {
 		return false;
 	}

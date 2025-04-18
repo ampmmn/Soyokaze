@@ -87,13 +87,13 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 	bool QueryCandidatesWithoutName(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
 	int MatchRecord(Pattern* pattern, const Record& record, int offset);
 
-	SimpleDictCommand* mThisPtr = nullptr;
+	SimpleDictCommand* mThisPtr{nullptr};
 	SimpleDictParam mParam;
 
 	std::mutex mMutex;
 	Dictionary mDictData;
-	FILETIME mLastUpdated = {};
-	uint64_t mLastUpdate = 0;
+	FILETIME mLastUpdated{};
+	uint64_t mLastUpdate{0};
 };
 
 /**

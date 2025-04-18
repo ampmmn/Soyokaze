@@ -31,7 +31,7 @@ struct SettingDialog::PImpl
 	CString mMessage;
 
 	// ウインドウ一覧リスト
-	CListCtrl* mListPtr = nullptr;
+	CListCtrl* mListPtr{nullptr};
 
 	// ホットキー(表示用)
 	CString mHotKey;

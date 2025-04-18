@@ -16,8 +16,8 @@ struct Bookmark
 {
 	CString mName;
 	CString mUrl;
-	int mBrowser = 0;
-	int mMatchLevel = 0;
+	int mBrowser{0};
+	int mMatchLevel{0};
 };
 
 class Bookmarks

@@ -34,15 +34,15 @@ protected:
 	afx_msg void OnUpdateStatus();
 
 public:
-	BOOL mIsEnable = FALSE;
+	BOOL mIsEnable{FALSE};
 	CString mPrefix{_T("cb")};
-	int mNumOfResults = 16;
-	int mSizeLimit = 4;
-	int mCountLimit = 1024;
-	int mInterval = 500;
+	int mNumOfResults{16};
+	int mSizeLimit{4};
+	int mCountLimit{1024};
+	int mInterval{500};
 	CString mExcludePattern;
 	
-	Settings* mSettingsPtr = nullptr;
+	Settings* mSettingsPtr{nullptr};
 };
 
 bool AppSettingPage::OnKillActive()

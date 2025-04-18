@@ -54,7 +54,7 @@ void IconLabelForApp::DrawIcon(CDC* pDC, HICON iconHandle)
 	ASSERT(dcMem.GetSafeHdc() != NULL);
 
 	// 初回またはサイズが変わってたらビットマップ作り直し
-	CBitmap& memBmp = mBuffer;
+	CBitmap& memBmp{mBuffer};
 	if (memBmp == (HBITMAP)nullptr || memBmp.GetBitmapDimension() != rc.Size()) {
 
 		if (memBmp != (HBITMAP)nullptr) {

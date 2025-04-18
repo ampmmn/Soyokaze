@@ -21,15 +21,15 @@ public:
 	CString mDescription;
 
 	// 音量を変更するか?
-	BOOL mIsSetVolume = FALSE;   // DDXの都合でBOOL
+	BOOL mIsSetVolume{FALSE};   // DDXの都合でBOOL
 
 	// 変更する場合の音量(絶対値の場合は0-100)
-	int mVolume = 0;
+	int mVolume{0};
 	// 音量の設定値は相対値か?
-	bool mIsRelative = false;
+	bool mIsRelative{false};
 
 	// ミュート(消音)状態の変更方法(0:変更しない 1:ミュート 2:非ミュート 3:トグル)
-	int mMuteControl = 0;
+	int mMuteControl{0};
 
 	CommandHotKeyAttribute mHotKeyAttr;
 

@@ -144,16 +144,16 @@ struct CommandRepository::PImpl
 
 	
 	// 編集中フラグ
-	bool mIsNewDialog = false;
-	bool mIsEditDialog = false;
-	KeywordManagerDialog* mManagerDlgPtr = nullptr;
-	bool mIsRegisteFromFileDialog = false;
+	bool mIsNewDialog{false};
+	bool mIsEditDialog{false};
+	KeywordManagerDialog* mManagerDlgPtr{nullptr};
+	bool mIsRegisteFromFileDialog{false};
 
 	//
 
 	std::mutex mMutex;
-	bool mIsExit = false;
-	bool mIsThreadInitialized = false;
+	bool mIsExit{false};
+	bool mIsThreadInitialized{false};
 	CEvent mQueryRequestEvt;
 	std::vector<QueryRequest> mQueryRequestQueue;
 };

@@ -20,8 +20,8 @@ struct AppIcon::PImpl
 
 	std::unique_ptr<Path> mDefIconPath;
 
-	HICON mIconHandle = nullptr;
-	bool mIsLoaded = false;
+	HICON mIconHandle{nullptr};
+	bool mIsLoaded{false};
 	
 };
 

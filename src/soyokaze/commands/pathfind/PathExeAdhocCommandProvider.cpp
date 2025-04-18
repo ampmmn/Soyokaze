@@ -48,14 +48,14 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 	// 環境変数PATHにあるexeを実行するためのコマンド
-	PathExecuteCommand* mExeCommandPtr = nullptr;
+	PathExecuteCommand* mExeCommandPtr{nullptr};
 	//
 	ExcludePathList mExcludeFiles;
 	//
-	bool mIsIgnoreUNC = false;
-	bool mIsEnable = true;
+	bool mIsIgnoreUNC{false};
+	bool mIsEnable{true};
 	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall = true;
+	bool mIsFirstCall{true};
 
 };
 

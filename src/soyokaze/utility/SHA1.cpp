@@ -6,8 +6,8 @@
 
 struct SHA1::PImpl
 {
-	BCRYPT_ALG_HANDLE mAlgHandle = nullptr;
-	BCRYPT_HASH_HANDLE mHashHandle = nullptr;
+	BCRYPT_ALG_HANDLE mAlgHandle{nullptr};
+	BCRYPT_HASH_HANDLE mHashHandle{nullptr};
 	std::vector<uint8_t> mHashObj;
 	std::vector<uint8_t> mHashData;
 };

@@ -15,7 +15,7 @@ static const GUID GUIDEmpty =
 
 struct AudioSessionVolume::PImpl
 {
-	IAudioEndpointVolume* mVol = nullptr;
+	IAudioEndpointVolume* mVol{nullptr};
 };
 
 AudioSessionVolume::AudioSessionVolume() : in(new PImpl)

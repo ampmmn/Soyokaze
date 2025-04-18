@@ -74,7 +74,7 @@ struct LauncherMainWindow::PImpl
 	CandidateList mCandidates;
 
 // キーワード検索状態
-	bool mIsQueryDoing = false;
+	bool mIsQueryDoing{false};
 
 	// ウインドウハンドル(共有メモリに保存する用)
 	std::unique_ptr<SharedHwnd> mSharedHwnd;

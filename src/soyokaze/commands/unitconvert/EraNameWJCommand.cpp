@@ -45,7 +45,7 @@ struct EraNameWJCommand::PImpl
 	std::map<tstring, int> mMapJ2W;
 	std::map<int, tstring> mMapW2J;
 	CString mName;
-	int mVal = 0;
+	int mVal{0};
 };
 
 

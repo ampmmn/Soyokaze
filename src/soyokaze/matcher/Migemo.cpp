@@ -18,15 +18,15 @@ typedef void (*MIGEMO_RELEASE)(void*, unsigned char*);
 
 struct Migemo::PImpl
 {
-	void* mMigemoObj = nullptr;
-	bool mIsDictLoaded = false;
+	void* mMigemoObj{nullptr};
+	bool mIsDictLoaded{false};
 
-	HMODULE mMigemoDll = nullptr;
-	MIGEMO_OPEN mMigemoOpen = nullptr;
-	MIGEMO_LOAD mMigemoLoad = nullptr;
-	MIGEMO_CLOSE mMigemoClose = nullptr;
-	MIGEMO_QUERY mMigemoQuery = nullptr;
-	MIGEMO_RELEASE mMigemoRelease = nullptr;
+	HMODULE mMigemoDll{nullptr};
+	MIGEMO_OPEN mMigemoOpen{nullptr};
+	MIGEMO_LOAD mMigemoLoad{nullptr};
+	MIGEMO_CLOSE mMigemoClose{nullptr};
+	MIGEMO_QUERY mMigemoQuery{nullptr};
+	MIGEMO_RELEASE mMigemoRelease{nullptr};
 
 };
 

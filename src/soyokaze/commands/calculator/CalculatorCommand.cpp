@@ -20,7 +20,7 @@ namespace calculator {
 struct CalculatorCommand::PImpl
 {
 	// 基数(0以外の値が指定されたら基数を表示する)
-	int mBase = 0;
+	int mBase{0};
 	// 基数込みで表示する場合の種別名
 	CString mTypeDisplayName;
 	// 計算結果

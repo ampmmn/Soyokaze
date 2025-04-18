@@ -21,12 +21,12 @@ struct ClipboardHistoryEventReceiver::PImpl
 	 */
 	int OnUpdateClipboard();
 
-	HWND mReceiverWindow = nullptr; ///< クリップボードイベントを受信するウィンドウのハンドル
+	HWND mReceiverWindow{nullptr}; ///< クリップボードイベントを受信するウィンドウのハンドル
 	std::set<ClipboardHistoryEventListener*> mListeners; ///< クリップボードイベントリスナーのセット
-	int mInterval = 500; ///< クリップボード更新のインターバル
+	int mInterval{500}; ///< クリップボード更新のインターバル
 	std::unique_ptr<tregex> mExcludePattern; ///< 除外パターンの正規表現
-	uint64_t mLastUpdated = 0; ///< 最後に更新された時刻
-	bool mIsUpdating = false; ///< 更新中かどうかのフラグ
+	uint64_t mLastUpdated{0}; ///< 最後に更新された時刻
+	bool mIsUpdating{false}; ///< 更新中かどうかのフラグ
 };
 
 /**

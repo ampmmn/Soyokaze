@@ -14,7 +14,7 @@ struct CommandEditor::PImpl
 
 	CommandEditDialog mDialog;
 	CString mOrgName;
-	uint32_t mRefCount = 1;
+	uint32_t mRefCount{1};
 	
 };
 

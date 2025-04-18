@@ -21,7 +21,7 @@ struct NameMapValue {
 
 	NameMapValue(const NameMapValue&) = default;
 	CommandHotKeyAttribute mAttr;
-	void* mOwner = nullptr;
+	void* mOwner{nullptr};
 };
 
 using NameMap = std::map<CString, NameMapValue>;
@@ -57,11 +57,11 @@ struct CommandHotKeyManager::PImpl
 
 	CCriticalSection mCS;
 
-	HWND mReceiverWindow = nullptr;
+	HWND mReceiverWindow{nullptr};
 
-	HACCEL mAccel = nullptr;
-	bool mIsChanged = false;
-	bool mIsSandSInvoked = false;
+	HACCEL mAccel{nullptr};
+	bool mIsChanged{false};
+	bool mIsSandSInvoked{false};
 
 	// 関連付けられた名前からキー割り当てを引くためのmap
 	NameMap mNameKeyMap;

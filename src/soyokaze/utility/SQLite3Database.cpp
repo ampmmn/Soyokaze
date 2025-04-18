@@ -8,7 +8,7 @@ namespace utility {
 
 struct SQLite3Statement::PImpl
 {
-	void* mStmt = nullptr;
+	void* mStmt{nullptr};
 	CharConverter mConv;
 };
 
@@ -61,7 +61,7 @@ void SQLite3Statement::SetStatement(void* stmt)
 
 struct SQLite3Database::PImpl
 {
-	void* mDB = nullptr;
+	void* mDB{nullptr};
 };
 
 SQLite3Database::SQLite3Database(LPCTSTR filePath) : in(new PImpl)

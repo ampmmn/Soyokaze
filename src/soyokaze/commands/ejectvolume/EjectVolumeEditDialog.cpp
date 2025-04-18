@@ -26,7 +26,7 @@ struct SettingDialog::PImpl
 
 	// 設定情報
 	CommandParam mParam;
-	int mDriveLetterIndex = 0;
+	int mDriveLetterIndex{0};
 
 	CString mOrgName;
 
@@ -35,7 +35,7 @@ struct SettingDialog::PImpl
 	// 選択したドライブレターの情報を表示
 	CString mDriveLetterMsg;
 
-	HICON mIcon = nullptr;
+	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	CString mHotKey;

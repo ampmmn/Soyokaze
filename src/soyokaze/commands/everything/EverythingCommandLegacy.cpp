@@ -31,8 +31,8 @@ struct EverythingCommandLegacy::PImpl
 {
 	CommandParam mParam;
 
-	bool mShouldComletion = false;
-	LONG mRefCount = 1;
+	bool mShouldComletion{false};
+	LONG mRefCount{1};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
