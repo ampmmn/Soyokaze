@@ -48,23 +48,31 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 	// 通信用のパイプを作成する
 	if (mPipeHandle == nullptr) {
 
-    SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES) };
-    sa.bInheritHandle = TRUE;
+		std::unique_ptr<SECURITY_ATTRIBUTES> sa;
 
-		// セキュリティ記述子を設定
-		if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
-					L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
-					SDDL_REVISION_1,
-					&sa.lpSecurityDescriptor,
-					nullptr)) {
+		if (DemotedProcessToken::IsRunningAsAdmin()) {
+			// 管理者権限で実行している場合は、
+			// 通常権限で動作する子プロセスからパイプにアクセスできるようにするため、
+			// セキュリティ記述子を設定する
 
-			spdlog::error("Failed to create securitydescriptor.");
-			return false;
+			sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
+			sa->bInheritHandle = TRUE;
+
+			// セキュリティ記述子を設定
+			if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
+						L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
+						SDDL_REVISION_1,
+						&(sa->lpSecurityDescriptor),
+						nullptr)) {
+
+				spdlog::error("Failed to create securitydescriptor.");
+				return false;
+			}
 		}
 
 		auto pipe = CreateNamedPipe(PIPE_PATH, PIPE_ACCESS_DUPLEX, 
 		                            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-		                            PIPE_UNLIMITED_INSTANCES, 512, 512, 0, &sa);
+		                            PIPE_UNLIMITED_INSTANCES, 512, 512, 0, sa.get());
 		if (pipe == INVALID_HANDLE_VALUE) {
 			spdlog::error("Failed to create named pipe.");
 			return false;
@@ -73,7 +81,7 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 	}
 
 	// 接続を待つ
-	HWND hwndServer = nullptr;
+	HWND hwndServer{nullptr};
 	if (GetServerHwnd(hwndServer) == false) {
 		// 通常権限で起動するためのエージェントプロセスを起動する
 		if (StartAgentProcess() == false) {
@@ -114,18 +122,22 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 
 	CString cmdline(_T("launcher_proxy.exe run-normal-priviledge-agent"));
 
-	DemotedProcessToken tok;
-	HANDLE htok = tok.FetchPrimaryToken();
-	spdlog::debug(_T("primary token  {}"), (void*)htok);
+	bool isRun = false;
+	if (DemotedProcessToken::IsRunningAsAdmin()) {
+		// 管理者権限でアプリを場合は権限を降格させてプロセスを起動する
+		DemotedProcessToken tok;
+		HANDLE htok = tok.FetchPrimaryToken();
+		spdlog::debug(_T("primary token  {}"), (void*)htok);
 
-	bool isRun = CreateProcessWithTokenW(htok, 0, pathSelf, cmdline.GetBuffer(MAX_PATH_NTFS), 0, nullptr, nullptr, &si, &pi);
-	cmdline.ReleaseBuffer();
-
-	if (pi.hThread) {
-		CloseHandle(pi.hThread);
+		isRun = CreateProcessWithTokenW(htok, 0, pathSelf, cmdline.GetBuffer(MAX_PATH_NTFS), 0, nullptr, nullptr, &si, &pi);
+		cmdline.ReleaseBuffer();
 	}
-	if (pi.hProcess) {
-		CloseHandle(pi.hProcess);
+	else {
+		// 通常権限でアプリを場合はそのままプロセスを起動する
+		// (GetActiveObjectを使う機能を常にlauncher_proxy.exe経由で実行するため、
+		//  通常権限でアプリを起動している場合もlaucnher_proxyを用いる)
+		isRun = CreateProcess(pathSelf, cmdline.GetBuffer(MAX_PATH_NTFS), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+		cmdline.ReleaseBuffer();
 	}
 
 	if (isRun) {
@@ -133,6 +145,13 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 	}
 	else {
 		SPDLOG_ERROR(_T("Failed to run normal priviledge agent process!"));
+	}
+
+	if (pi.hThread) {
+		CloseHandle(pi.hThread);
+	}
+	if (pi.hProcess) {
+		CloseHandle(pi.hProcess);
 	}
 
 	return isRun;

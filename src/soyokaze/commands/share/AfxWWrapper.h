@@ -15,10 +15,5 @@ public:
 	bool GetCurrentDir(std::wstring& curDir);
 	// あふの自窓のディレクトリパスを変更
 	bool SetCurrentDir(const std::wstring& path);
-
-private:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
-
 };
 
