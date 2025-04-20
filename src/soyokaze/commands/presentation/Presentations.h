@@ -25,6 +25,8 @@ public:
 
 	// 指定したパターンに合致するウインドウを探す
 	void Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int limit);
+	// ファイル名を取得する
+	CString GetFilePath();
 
 	static bool ParseTextAsPageNo(LPCTSTR text, int& pageNo);
 

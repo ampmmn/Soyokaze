@@ -20,20 +20,23 @@ struct PptJumpCommand::PImpl
 {
 	int mPage{0};
 	CString mTitle;
+	CString mFilePath;
 };
 
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(PptJumpCommand)
 
 PptJumpCommand::PptJumpCommand(
+		const CString& filePath,
 		int page,
 	 	const CString& title
 ) : in(std::make_unique<PImpl>())
 {
 	in->mPage = page;
 	in->mTitle = title;
+	in->mFilePath = filePath;
 
-	this->mName = title;
+	this->mName.Format(_T("%s (%s)"), (LPCTSTR)title, PathFindFileName(filePath));
 	this->mDescription.Format(_T("スライド%d: %s"), page, (LPCTSTR)title);
 }
 
@@ -78,7 +81,7 @@ HICON PptJumpCommand::GetIcon()
 launcherapp::core::Command*
 PptJumpCommand::Clone()
 {
-	return new PptJumpCommand(in->mPage, in->mTitle);
+	return new PptJumpCommand(in->mFilePath, in->mPage, in->mTitle);
 }
 
 } // end of namespace presentation

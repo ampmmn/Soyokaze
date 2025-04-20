@@ -602,6 +602,52 @@ bool NormalPriviledgeProcessProxy::GoToSlide(int16_t pageIndex)
 	return json_res["result"];
 }
 
+// オープンされているPowerpointスライドの一覧を取得する
+bool NormalPriviledgeProcessProxy::EnumPresentationSlides(
+		std::wstring& filePath,
+	 	std::vector<std::wstring>& slideTitles
+)
+{
+	try {
+		std::string dst;
+
+		json json_req;
+		json_req["command"] = "enumpresentationslides";
+
+		std::lock_guard<std::mutex> lock(in->mMutex);
+
+		// リクエストを送信する
+		if (in->SendRequest(json_req) == false) {
+			return false;
+		}
+		
+		// 応答を待つ
+		json json_res;
+		if (in->ReceiveResponse(json_res) == false) {
+			return false;
+		}
+
+		if (json_res["result"] == false) {
+			return false;
+		}
+
+		UTF2UTF(json_res["file_path"].get<std::string>(), filePath);
+
+		std::wstring tmp;
+
+		auto items = json_res["slides"];
+		for (auto& item : items) {
+			slideTitles.push_back(UTF2UTF(item["title"].get<std::string>(), tmp));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumPresentationSlides] Unexpected exception occurred.");
+		return false;
+	}
+}
+
 
 }}  // end of namespace launcherapp::processproxy
 

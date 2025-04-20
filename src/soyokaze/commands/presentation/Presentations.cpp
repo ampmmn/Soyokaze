@@ -3,6 +3,7 @@
 #include "commands/common/AutoWrap.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 #include <thread>
 #include <mutex>
 
@@ -15,6 +16,7 @@ namespace commands {
 namespace presentation {
 
 using DispWrapper = launcherapp::commands::common::DispWrapper;
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 struct Presentations::PImpl : public AppPreferenceListenerIF
 {
@@ -27,7 +29,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
-	void WatchPresentations();
+	bool FetchPresentations(std::vector<SLIDE_ITEM>& items);
 
 	bool IsAvailable() {
 		// PowerPointのCLSIDを得る
@@ -36,92 +38,10 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		return !(FAILED(hr));
 	}
 
-	bool IsAbort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAbort;
-	}
-	void Abort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		mIsAbort = true;
-	}
-
-
-	void UpdateCurrentSlide(DispWrapper& activeWindow, DispWrapper& activePresentation);
-	void UpdateAllSlides(DispWrapper& activePresentation);
-	
 	CString GetSlideTitle(DispWrapper& slide);
 
-
-	void ClearSlides()
-	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		mItems.clear();
-	}
-
-	void SetSlideCount(int count)
-	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		mItems.resize(count);
-	}
-
-	void SetSlide(int page, const CString& title)
-	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		int index = page-1;
-		if (0 <= index && index < (int)mItems.size()) {
-			mItems[index].mPage = page;
-			mItems[index].mTitle = title;
-		}
-	}
-
-	bool IsPathChanged(const CString& path, const CString& name)
-	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		return path != mFilePath || name != mFileName;
-	}
-	bool IsSlideCountChanged(DispWrapper& presentation)
-	{
-		// Slidesを取得
-		DispWrapper slides;
-		presentation.GetPropertyObject(L"Slides", slides);
-
-		// Count
-		int slideCount = slides.GetPropertyInt(L"Count");
-
-		std::lock_guard<std::mutex> lock(mMutex);
-		return slideCount != (int)mItems.size();
-	}
-
-	void RunWatchThread()
-	{
-		mIsExited = false;
-		// 監視スレッドを実行する
-		std::thread th([&]() {
-			int count = 0;
-			while(IsAbort() == false) {
-				try {
-					if (count++ >= 20) {
-						WatchPresentations();
-						count = 0;
-					}
-						Sleep(50);
-				}
-				catch(...) {
-				}
-			}
-			mIsExited = true;
-		});
-		th.detach();
-	}
-
-	void OnAppFirstBoot() override
- 	{
-		OnAppNormalBoot();
-	}
-	void OnAppNormalBoot() override 
-	{
-		RunWatchThread();
-	}
+	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
 		Load();
@@ -142,136 +62,74 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 
 	bool mIsEnable{true};
 
+	// 前回の取得時のタイムスタンプ
+	uint64_t mLastUpdate{0};
+
 	std::mutex mMutex;
-	bool mIsAbort{false};
 	bool mIsExited{true};
 	bool mIsAvailable{false};
 	bool mIsFirstCall{true};
 
-	// pptxファイルのパス(ディレクトリまで)
-	CString mFilePath;
-	// pptxファイルのファイル名
-	CString mFileName;
-
 	std::vector<SLIDE_ITEM> mItems;
+	CString mFilePath;
 };
 
-void Presentations::PImpl::WatchPresentations()
+// この時間以内に再実行されたら、前回の結果を再利用する
+constexpr int INTERVAL_REUSE = 5000;
+
+bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 {
-	if (IsEnable() == false) {
-		// 機能は無効
-		return;
-	}
+	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
+	uint64_t elapsed = GetTickCount64() - mLastUpdate;
+	if (elapsed < INTERVAL_REUSE) {
 
-	CLSID clsid;
-	HRESULT hr = CLSIDFromProgID(L"PowerPoint.Application", &clsid);
-	if (FAILED(hr)) {
-		// インストールされていない
-		ClearSlides();
-		return;
-	}
-
-	// アプリケーションを取得
-	CComPtr<IUnknown> unkPtr;
-	hr = GetActiveObject(clsid, NULL, &unkPtr);
-	if(FAILED(hr)) {
-		// 起動してない
-		ClearSlides();
-		return;
-	}
-
-	DispWrapper pptApp;
-	unkPtr->QueryInterface(&pptApp);
-
-	// アクティブなPresentationを取得
-	DispWrapper activePresentation;
-	if (pptApp.GetPropertyObject(L"ActivePresentation", activePresentation) == false) {
-		// アプリは起動してるけど何も表示してない(初期画面とか)
-		return;
-	}
-
-	DispWrapper activeWindow;
-	if (pptApp.GetPropertyObject(L"ActiveWindow", activeWindow) == false) {
-		// アプリは起動してるけど何も表示してない(初期画面とか)
-		return;
-	}
-
-	// アクティブなPresentationのパスとファイル名を取得
-	CString fileDir = activePresentation.GetPropertyString(L"Path");
-	CString fileName = activePresentation.GetPropertyString(L"Name");
-
-	if (IsPathChanged(fileDir, fileName) || IsSlideCountChanged(activePresentation)) {
-		// 別のスライドに代わっていたら前回の内容を破棄する
-		UpdateAllSlides(activePresentation);
-	}
-	else {
-		// 同じだったら現在のスライドだけ更新する
-		UpdateCurrentSlide(activeWindow, activePresentation);
-	}
-}
-
-void Presentations::PImpl::UpdateCurrentSlide(DispWrapper& activeWindow, DispWrapper& activePresentation)
-{
-	// ActiveWindow.Selection.SlideRange.SlideIndex
-
-	DispWrapper selection;
-	activeWindow.GetPropertyObject(L"Selection", selection);
-
-	DispWrapper slideRange;
-	selection.GetPropertyObject(L"SlideRange", slideRange);
-
-	int16_t slideIndex = (int16_t)slideRange.GetPropertyInt(L"SlideIndex");
-	
-	// Slidesを取得
-	DispWrapper slides;
-	activePresentation.GetPropertyObject(L"Slides", slides);
-
-	// スライドを取得
-	DispWrapper slide;
-	slides.CallObjectMethod(L"Item", slideIndex, slide);
-
-	CString titleString = GetSlideTitle(slide);
-	// 取得したタイトル,indexを登録
-	SetSlide(slideIndex, titleString);
-}
-
-// 全てのスライドの情報を更新
-void Presentations::PImpl::UpdateAllSlides(DispWrapper& activePresentation)
-{
-	ClearSlides();
-
-	CString fileDir = activePresentation.GetPropertyString(L"Path");
-	CString fileName = activePresentation.GetPropertyString(L"Name");
-
-	{
 		std::lock_guard<std::mutex> lock(mMutex);
-		mFilePath = fileDir;
-		mFileName = fileName;
+		items.insert(items.end(), mItems.begin(), mItems.end());
+		return true;
 	}
 
-	// Slidesを取得
-	DispWrapper slides;
-	activePresentation.GetPropertyObject(L"Slides", slides);
+	auto threadFunc = [&]() {
 
-	// Count
-	int slideCount = slides.GetPropertyInt(L"Count");
-	SetSlideCount(slideCount);
+		struct scope_flag {
+			scope_flag(bool& flg) : mFlg(flg) {}
+			~scope_flag() { mFlg = true; }
+			bool& mFlg;
+		} _scope_flag_(mIsExited);
 
-	for (int16_t i = 1; i <= (int16_t)slideCount; ++i) {
 
-		if (IsAbort()) {
-			return;
+		std::wstring filePath;
+		std::vector<std::wstring> slideTitles;
+
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		proxy->EnumPresentationSlides(filePath, slideTitles);
+
+		std::vector<SLIDE_ITEM> tmpItems;
+		tmpItems.reserve(slideTitles.size());
+		for (int16_t i = 0; i < (int16_t)slideTitles.size(); ++i) {
+			// 取得したタイトル,indexを登録
+			tmpItems.emplace_back(SLIDE_ITEM{ i+1, Pattern::Mismatch, slideTitles[i].c_str() });
 		}
 
-		// スライドを取得
-		DispWrapper slide;
-		slides.CallObjectMethod(L"Item", i, slide);
+		std::lock_guard<std::mutex> lock(mMutex);
+		mItems.swap(tmpItems);
+		mFilePath = filePath.c_str();
+		mLastUpdate = GetTickCount64();
+	};
 
-		CString titleString = GetSlideTitle(slide);
-		// 取得したタイトル,indexを登録
-		SetSlide(i, titleString);
-		Sleep(0);
+	if (mLastUpdate == 0) {
+		// 初回は同期で取得
+		threadFunc();
+		return true;
 	}
+
+	// 2回目以降は非同期で取得
+	mIsExited = false;
+	std::thread th(threadFunc);
+	th.detach();
+
+	std::lock_guard<std::mutex> lock(mMutex);
+	items.insert(items.end(), mItems.begin(), mItems.end());
+	return true;
 }
 
 CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
@@ -324,12 +182,7 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 
 Presentations::Presentations() : in(new PImpl)
 {
-	in->mIsAbort = false;
 	in->mIsAvailable = in->IsAvailable();
-	if (in->mIsAvailable == false) {
-		// PowerPointが利用できない
-		return ;
-	}
 }
 
 Presentations::~Presentations()
@@ -339,9 +192,7 @@ Presentations::~Presentations()
 
 void Presentations::Abort()
 {
-	in->Abort();
-
-	// 監視スレッドの終了を待つ(最大3秒)
+	// 更新スレッドの終了を待つ(最大3秒)
 	uint64_t start = GetTickCount64();
 	while(GetTickCount64() - start < 3000) {
 		if (in->mIsExited) {
@@ -366,11 +217,19 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 	int pageNo = -1;
 	ParseTextAsPageNo(pattern->GetWholeString(), pageNo);
 
-	std::lock_guard<std::mutex> lock(in->mMutex);
+	std::vector<SLIDE_ITEM> allItems;
+	in->FetchPresentations(allItems);
 
-	for (auto& item : in->mItems) {
+	if (allItems.empty()) {
+		return;
+	}
+
+	auto fileName = PathFindFileName(in->mFilePath);
+
+	for (const auto& item : allItems) {
 
 		int level = Pattern::Mismatch;
+		int level2 = Pattern::Mismatch;
 
 		bool isMatchPageNo = pageNo != -1 && pageNo == item.mPage;
 		if (isMatchPageNo) {
@@ -378,21 +237,30 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 			level = Pattern::WholeMatch;
 		}
 		else {
+			auto str = item.mTitle + _T(" ") + fileName;
 			// スライド番号として一致しなかった場合、キーワードでのマッチングを行う
 			level = pattern->Match(item.mTitle);
-			if (level == Pattern::Mismatch) {
+			// ファイル名でもマッチングする
+			level2 = pattern->Match(str);
+
+			if (level == Pattern::Mismatch && level2 == Pattern::Mismatch) {
 				continue;
 			}
 		}
 
 		auto itemCopy(item);
-		itemCopy.mMatchLevel = level;
+		itemCopy.mMatchLevel = (std::max)(level, level2);
 		items.push_back(itemCopy);
 
 		if ((int)items.size() >= limit) {
 			break;
 		}
 	}
+}
+
+CString Presentations::GetFilePath()
+{
+	return in->mFilePath;
 }
 
 bool Presentations::ParseTextAsPageNo(LPCTSTR text, int& pageNo)

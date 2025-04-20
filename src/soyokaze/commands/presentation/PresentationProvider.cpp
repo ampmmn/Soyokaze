@@ -52,11 +52,17 @@ void PresentationProvider::QueryAdhocCommands(
 )
 {
 	std::vector<SLIDE_ITEM> items;
-	in->mPresentations.Query(pattern, items, 10);
+	in->mPresentations.Query(pattern, items, 16);
+
+	if (items.empty()) {
+		return;
+	}
+
+	CString filePath = in->mPresentations.GetFilePath();
 
 	for (auto& item : items) {
 		int level = item.mMatchLevel;
-		commands.Add(CommandQueryItem(level, new PptJumpCommand(item.mPage, item.mTitle)));
+		commands.Add(CommandQueryItem(level, new PptJumpCommand(filePath, item.mPage, item.mTitle)));
 	}
 }
 

@@ -10,7 +10,7 @@ namespace presentation {
 class PptJumpCommand : public launcherapp::commands::common::AdhocCommandBase
 {
 public:
-	PptJumpCommand(int page, const CString& title);
+	PptJumpCommand(const CString& filePath, int page, const CString& title);
 	virtual ~PptJumpCommand();
 
 	CString GetGuideString() override;

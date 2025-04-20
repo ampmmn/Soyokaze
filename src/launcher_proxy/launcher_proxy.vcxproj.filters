@@ -81,6 +81,9 @@
     <ClInclude Include="proxycommands\GetExcelCurrentSelectionProxyCommand.h">
       <Filter>proxycommands</Filter>
     </ClInclude>
+    <ClInclude Include="proxycommands\EnumPresentationSlidesProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -132,6 +135,9 @@
       <Filter>proxycommands</Filter>
     </ClCompile>
     <ClCompile Include="proxycommands\GetExcelCurrentSelectionProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\EnumPresentationSlidesProxyCommand.cpp">
       <Filter>proxycommands</Filter>
     </ClCompile>
   </ItemGroup>

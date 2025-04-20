@@ -39,6 +39,8 @@ public:
 	bool GetActivePowerPointWindow(HWND& hwnd);
 	// アクティブなPowerpoint上の表示スライドを指定ページに移動する
 	bool GoToSlide(int16_t pageIndex);
+	// オープンされているPowerpointスライドの一覧を取得する
+	bool EnumPresentationSlides(std::wstring& filePath, std::vector<std::wstring>& slideTitles);
 
 private:
 	struct PImpl;
