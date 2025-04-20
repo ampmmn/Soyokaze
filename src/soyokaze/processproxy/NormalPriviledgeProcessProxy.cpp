@@ -23,9 +23,7 @@ constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer
 // 親の生存チェック用タイマー
 constexpr int TIMERID_HEARTBEAT = 1;
 
-namespace launcherapp {
-namespace commands {
-namespace common {
+namespace launcherapp { namespace processproxy {
 
 struct NormalPriviledgeProcessProxy::PImpl
 {
@@ -43,8 +41,6 @@ struct NormalPriviledgeProcessProxy::PImpl
 // 通常権限で起動するためのプロセスが実行されていなかったら起動する
 bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 {
-	std::lock_guard<std::mutex> lock(mMutex);
-
 	// 通信用のパイプを作成する
 	if (mPipeHandle == nullptr) {
 
@@ -170,6 +166,11 @@ bool NormalPriviledgeProcessProxy::PImpl::GetServerHwnd(HWND& hwnd)
 
 bool NormalPriviledgeProcessProxy::PImpl::SendRequest(json& json_req)
 {
+	// 通常権限で起動するためのプロセスが実行されていなかったら起動する
+	if (StartAgentProcessIfNeeded() == false) {
+		return false;
+	}
+
 	auto request_str = json_req.dump();
 	request_str += "\n";
 	size_t len = request_str.size() + 1;   // +1:nul終端分
@@ -202,8 +203,14 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 
 		DWORD read = 0;
 		if (ReadFile(mPipeHandle, buff, 512, &read, nullptr) == FALSE) {
-			spdlog::error("Failed to read err:{}", GetLastError());
-			return false;
+			DWORD err = GetLastError();
+			if (err != 234) {
+				spdlog::error("Failed to read err:{}", err);
+				return false;
+			}
+			else {
+				spdlog::debug("read more data read:{}", read);
+			}
 		}
 		response_str.insert(response_str.end(), buff, buff + read);
 		if (strchr(buff, '\n') != nullptr) {
@@ -250,10 +257,6 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 	 	const std::map<std::wstring, std::wstring>& envMap
 )
 {
-	// 通常権限で起動するためのプロセスが実行されていなかったら起動する
-	if (in->StartAgentProcessIfNeeded() == false) {
-		return false;
-	}
 
 	std::string dst;
 
@@ -276,6 +279,8 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 		env_map[UTF2UTF(item.first, dst_key)] = UTF2UTF(item.second, dst_val);
 	}
 	json_req["environment"] = env_map;
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
 
 	// リクエストを送信する
 	if (in->SendRequest(json_req) == false) {
@@ -303,15 +308,12 @@ bool NormalPriviledgeProcessProxy::StartProcess(
 // あふwのカレントディレクトリを取得する
 bool NormalPriviledgeProcessProxy::GetCurrentAfxwDir(std::wstring& path)
 {
-	// 通常権限で実行するためのプロセスが実行されていなかったら起動する
-	if (in->StartAgentProcessIfNeeded() == false) {
-		return false;
-	}
-
 	std::string dst;
 
 	json json_req;
 	json_req["command"] = "getcurrentafxwdir";
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
 
 	// リクエストを送信する
 	if (in->SendRequest(json_req) == false) {
@@ -337,16 +339,13 @@ bool NormalPriviledgeProcessProxy::GetCurrentAfxwDir(std::wstring& path)
 // あふwのカレントディレクトリを設定する
 bool NormalPriviledgeProcessProxy::SetCurrentAfxwDir(const std::wstring& path)
 {
-	// 通常権限で実行するためのプロセスが実行されていなかったら起動する
-	if (in->StartAgentProcessIfNeeded() == false) {
-		return false;
-	}
-
 	std::string dst;
 
 	json json_req;
 	json_req["command"] = "setcurrentafxwdir";
 	json_req["path"] = UTF2UTF(path, dst);
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
 
 	// リクエストを送信する
 	if (in->SendRequest(json_req) == false) {
@@ -362,9 +361,213 @@ bool NormalPriviledgeProcessProxy::SetCurrentAfxwDir(const std::wstring& path)
 	return true;
 }
 
+// オープンされているExcelのシート一覧を取得する
+bool NormalPriviledgeProcessProxy::EnumExcelSheets(
+		std::vector<std::pair<std::wstring, std::wstring> >& sheets
+)
+{
+	try {
+		std::string dst;
+
+		json json_req;
+		json_req["command"] = "enumexcelsheets";
+
+		std::lock_guard<std::mutex> lock(in->mMutex);
+
+		// リクエストを送信する
+		if (in->SendRequest(json_req) == false) {
+			return false;
+		}
+		
+		// 応答を待つ
+		json json_res;
+		if (in->ReceiveResponse(json_res) == false) {
+			return false;
+		}
+
+		if (json_res["result"] == false) {
+			return false;
+		}
+
+		std::wstring tmp_wb;
+		std::wstring tmp_ws;
+
+		auto items = json_res["items"];
+		for (auto& item : items) {
+			auto workbook = item["workbook"].get<std::string>();
+			auto worksheet = item["worksheet"].get<std::string>();
+			sheets.push_back(std::make_pair(UTF2UTF(workbook, tmp_wb), UTF2UTF(worksheet, tmp_ws)));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumExcelSheets] Unexpected exception occurred.");
+		return false;
+	}
 }
+
+// Excelシートをアクティブにする
+bool NormalPriviledgeProcessProxy::ActiveExcelSheet(
+	const std::wstring& workbook,
+	const std::wstring& worksheet,
+	bool isShowMaximize
+)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "activeexcelsheet";
+	json_req["workbook"] = UTF2UTF(workbook, dst);
+	json_req["worksheet"] = UTF2UTF(worksheet, dst);
+	json_req["maximize"] = isShowMaximize;
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+	return json_res["result"];
 }
+
+// オープンされているCalcのシート一覧を取得する
+bool NormalPriviledgeProcessProxy::EnumCalcSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets)
+{
+	try {
+		std::string dst;
+
+		json json_req;
+		json_req["command"] = "enumcalcsheets";
+
+		std::lock_guard<std::mutex> lock(in->mMutex);
+
+		// リクエストを送信する
+		if (in->SendRequest(json_req) == false) {
+			SPDLOG_ERROR("Failed to send request.");
+			return false;
+		}
+		
+		// 応答を待つ
+		json json_res;
+		if (in->ReceiveResponse(json_res) == false) {
+			SPDLOG_ERROR("Failed to receive response.");
+			return false;
+		}
+
+		if (json_res["result"] == false) {
+			SPDLOG_WARN("agent returned result:false");
+			return false;
+		}
+
+		std::wstring tmp_wb;
+		std::wstring tmp_ws;
+
+		auto items = json_res["items"];
+		for (auto& item : items) {
+			auto workbook = item["workbook"].get<std::string>();
+			auto worksheet = item["worksheet"].get<std::string>();
+			sheets.push_back(std::make_pair(UTF2UTF(workbook, tmp_wb), UTF2UTF(worksheet, tmp_ws)));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumExcelSheets] Unexpected exception occurred.");
+		return false;
+	}
+}
+
+// Calcシートをアクティブにする
+bool NormalPriviledgeProcessProxy::ActiveCalcSheet(
+		const std::wstring& workbook,
+	 	const std::wstring& worksheet,
+	 	bool isShowMaximize
+)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "activecalcsheet";
+	json_req["workbook"] = UTF2UTF(workbook, dst);
+	json_req["worksheet"] = UTF2UTF(worksheet, dst);
+	json_req["maximize"] = isShowMaximize;
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+	return json_res["result"];
+}
+
+// アクティブなPowerpointのウインドウを取得する
+bool NormalPriviledgeProcessProxy::GetActivePowerPointWindow(HWND& hwnd)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getactivepointerpointwindow";
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	if (json_res["result"] == false) {
+		return false;
+	}
+
+	hwnd = (HWND)json_res["hwnd"].get<uint64_t>();
+	return true;
+}
+
+// アクティブなPowerpoint上の表示スライドを指定ページに移動する
+bool NormalPriviledgeProcessProxy::GoToSlide(int16_t pageIndex)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "gotoslide";
+	json_req["pageIndex"] = pageIndex;
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	return json_res["result"];
 }
 
 
+}}  // end of namespace launcherapp::processproxy
 

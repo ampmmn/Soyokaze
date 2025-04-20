@@ -1,31 +1,19 @@
 #include "pch.h"
 #include "PowerPointWindow.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "commands/common/AutoWrap.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace commands {
-namespace presentation {
+namespace launcherapp { namespace commands { namespace presentation {
 
-using DispWrapper = launcherapp::commands::common::DispWrapper;
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 struct PowerPointWindow::PImpl
 {
-	void GetView(DispWrapper& view)
-	{
-		// アクティブなPresentationを取得
-		DispWrapper window;
-		mApp.GetPropertyObject(L"ActiveWindow", window);
-
-		window.GetPropertyObject(L"View", view);
-	}
-
-	DispWrapper mApp;
 	HWND mHwnd{nullptr};
 };
 
@@ -66,35 +54,14 @@ bool PowerPointWindow::Activate(bool isShowMaximize)
 
 bool PowerPointWindow::GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr)
 {
-	// PointPointのCLSIDを取得
-	CLSID clsid;
-	HRESULT hr = CLSIDFromProgID(L"PowerPoint.Application", &clsid);
-	if (hr != S_OK) {
-		// インストールされていない
+	// PowerPointアプリのウインドウハンドルを取得する
+	HWND hwnd = nullptr;
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	if (proxy->GetActivePowerPointWindow(hwnd) == false || IsWindow(hwnd) == FALSE) {
 		return false;
 	}
 
 	std::unique_ptr<PowerPointWindow> obj(new PowerPointWindow);
-
-	// アプリケーションを取得
-	CComPtr<IUnknown> unkPtr;
-	hr = GetActiveObject(clsid, NULL, &unkPtr);
-	if(FAILED(hr)) {
-		return TRUE;
-	}
-
-	unkPtr->QueryInterface(&obj->in->mApp);
-
-	CString caption = obj->in->mApp.GetPropertyString(L"Caption");
-	if (caption.IsEmpty()) {
-		return TRUE;
-	}
-
-	HWND hwnd = FindPresentaionWindowHwnd(caption);
-	if (hwnd == nullptr) {
-		return false;
-	}
-		
 	obj->in->mHwnd = hwnd;
 	ptr.reset(obj.release());
 
@@ -103,54 +70,13 @@ bool PowerPointWindow::GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr)
 
 bool PowerPointWindow::GoToSlide(int16_t pageIndex)
 {
-	// アクティブなPresentationを取得
-	DispWrapper view;
-	in->GetView(view);
-
-	view.CallVoidMethod(L"GoToSlide", pageIndex);
-	return true;
-}
-
-HWND PowerPointWindow::FindPresentaionWindowHwnd(const CString& caption)
-{
-	struct local_param {
-		static BOOL CALLBACK OnEnumWindows(HWND hwnd, LPARAM lParam) {
-
-			LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
-			LONG_PTR styleRequired = (WS_VISIBLE);
-			if ((style & styleRequired) != styleRequired) {
-				// 非表示のウインドウと、タイトルを持たないウインドウは対象外
-				return TRUE;
-			}
-			auto param = (local_param*)lParam;
-
-			TCHAR caption[1024];
-			GetWindowText(hwnd, caption, 1024);
-			if (std::regex_match(caption, param->pat)) {
-				param->hwndFound = hwnd;
-				return FALSE;
-			}
-			return TRUE;
-		}
-
-		HWND hwndFound = nullptr;
-		tregex pat;
-	} findParam;
-
-	// 指定したキャプションを持つウインドウハンドルを探す
-	tstring patternStr(_T("^.*"));
-	patternStr += (LPCTSTR)caption;
-	patternStr += _T(".+$");
-
-	findParam.pat = tregex(patternStr);
-
-	EnumWindows(local_param::OnEnumWindows, (LPARAM)&findParam);
-
-	return findParam.hwndFound;
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	return proxy->GoToSlide(pageIndex); 
 }
 
 HICON PowerPointWindow::ResolveIcon()
 {
+	// 既に取得済の場合はそのアイコンを返す
 	static HICON sIcon = nullptr;
 	if (sIcon) {
 		return sIcon;
@@ -158,39 +84,16 @@ HICON PowerPointWindow::ResolveIcon()
 
 	auto iconLoader = IconLoader::Get();
 
-	// PointPointのCLSIDを取得
-	CLSID clsid;
-	HRESULT hr = CLSIDFromProgID(L"PowerPoint.Application", &clsid);
-	if (hr != S_OK) {
-		// インストールされていない
+	// PowerPointアプリのウインドウハンとるを取得する
+	HWND hwnd = nullptr;
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	if (proxy->GetActivePowerPointWindow(hwnd) == false || IsWindow(hwnd) == FALSE) {
 		return iconLoader->LoadUnknownIcon();
 	}
 
-	// アプリケーションを取得
-	CComPtr<IUnknown> unkPtr;
-	hr = GetActiveObject(clsid, NULL, &unkPtr);
-	if(FAILED(hr)) {
-		return iconLoader->LoadUnknownIcon();
-	}
-
-	DispWrapper app;
-	unkPtr->QueryInterface(&app);
-
-	CString caption = app.GetPropertyString(L"Caption");
-	if (caption.IsEmpty()) {
-		return iconLoader->LoadUnknownIcon();
-	}
-
-	HWND hwnd = FindPresentaionWindowHwnd(caption);
-	if (IsWindow(hwnd) == FALSE) {
-		return iconLoader->LoadUnknownIcon();
-	}
-
+	// ウインドウハンドルからアイコンを取得する
 	sIcon = iconLoader->LoadIconFromHwnd(hwnd);
 	return sIcon;
 }
 
-} // end of namespace presentation
-} // end of namespace commands
-} // end of namespace launcherapp
-
+}}} // end of namespace launcherapp::commands::presentation

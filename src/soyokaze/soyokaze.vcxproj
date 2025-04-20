@@ -440,7 +440,6 @@
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
-    <ClInclude Include="commands\common\NormalPriviledgeProcessProxy.h" />
     <ClInclude Include="commands\common\OtherCommandDialog.h" />
     <ClInclude Include="commands\common\SubProcessDialog.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
@@ -490,7 +489,6 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
-    <ClInclude Include="commands\share\AfxWFunctions.h" />
     <ClInclude Include="commands\share\AfxWWrapper.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
@@ -716,6 +714,8 @@
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
     <ClInclude Include="mainwindow\WindowAppearanceIF.h" />
     <ClInclude Include="matcher\CommandToken.h" />
+    <ClInclude Include="processproxy\NormalPriviledgeProcessProxy.h" />
+    <ClInclude Include="processproxy\share\AfxWFunctions.h" />
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingDialog.h" />
     <ClInclude Include="settingwindow\AppSettingPageBase.h" />
@@ -853,7 +853,6 @@
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
-    <ClCompile Include="commands\common\NormalPriviledgeProcessProxy.cpp" />
     <ClCompile Include="commands\common\OtherCommandDialog.cpp" />
     <ClCompile Include="commands\common\SubProcessDialog.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
@@ -906,12 +905,6 @@
     <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
-    <ClCompile Include="commands\share\AfxWFunctions.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
@@ -1124,6 +1117,13 @@
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />
+    <ClCompile Include="processproxy\NormalPriviledgeProcessProxy.cpp" />
+    <ClCompile Include="processproxy\share\AfxWFunctions.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingDialog.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />

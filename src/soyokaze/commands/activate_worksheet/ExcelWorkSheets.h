@@ -32,12 +32,11 @@ private:
 class Worksheet
 {
 public:
-	Worksheet(const CString& appPath, const CString& workbookName, const CString& sheetName);
+	Worksheet(const std::wstring& workbookName, const std::wstring& sheetName);
 	~Worksheet();
 
-	const CString& GetAppPath();
-	const CString& GetWorkbookName();
-	const CString& GetSheetName();
+	const std::wstring& GetWorkbookName();
+	const std::wstring& GetSheetName();
 
 	BOOL Activate(bool isShowMaximize = false);
 

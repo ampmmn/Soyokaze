@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "AfxWWrapper.h"
-#include "commands/common/NormalPriviledgeProcessProxy.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 
-using NormalPriviledgeProcessProxy = launcherapp::commands::common::NormalPriviledgeProcessProxy;
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

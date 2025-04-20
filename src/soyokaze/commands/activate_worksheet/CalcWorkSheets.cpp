@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CalcWorkSheets.h"
-#include "commands/common/AutoWrap.h"
-#include "utility/ScopeAttachThreadInput.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "utility/Path.h"
 #include <mutex>
 #include <thread>
@@ -14,8 +13,7 @@ namespace launcherapp {
 namespace commands {
 namespace activate_worksheet {
 
-using DispWrapper = commands::common::DispWrapper;
-
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 enum {
 	STATUS_READY,   // 待機状態
@@ -49,113 +47,17 @@ void CalcWorkSheets::PImpl::Update()
 	}
 
 	std::thread th([&]() {
-		HRESULT hr = CoInitialize(nullptr);
-		if (FAILED(hr)) {
-			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
-
-			std::lock_guard<std::mutex> lock(mMutex);
-			mLastUpdate = GetTickCount64();
-			mStatus = STATUS_READY;
-			return ;
-		}
-
-		struct scope_uninit {
-			~scope_uninit() {
-				CoUninitialize();
-			}
-		};
-
-		// ExcelのCLSIDを得る
-		CLSID clsid;
-		hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
-		if (FAILED(hr)) {
-			// 取得できなかった(インストールされていないとか)
-			std::lock_guard<std::mutex> lock(mMutex);
-			mLastUpdate = GetTickCount64();
-			mStatus = STATUS_READY;
-			return ;
-		}
-
-		// ServiceManagerを生成する
-		CComPtr<IUnknown> unkPtr;
-		hr = CoCreateInstance(clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER, IID_IUnknown, (void**)&unkPtr);
-		if(FAILED(hr)) {
-			// 取得できなかった
-			std::lock_guard<std::mutex> lock(mMutex);
-
-			for (auto& item : mCache) {
-				item->Release();
-			}
-			mCache.clear();
-
-			mLastUpdate = GetTickCount64();
-			mStatus = STATUS_READY;
-			return ;
-		}
-
-		DispWrapper serviceManager;
-		unkPtr->QueryInterface(&serviceManager);
-
-		// Desktopを生成する
-		DispWrapper desktop;
-		serviceManager.CallObjectMethod(L"createInstance", L"com.sun.star.frame.Desktop", desktop);
-
-		// ドキュメントのリスト取得
-		DispWrapper components;
-		desktop.CallObjectMethod(L"getComponents", components);
-
-		// Enum取得
-		DispWrapper enumelation;
-		components.CallObjectMethod(L"createEnumeration", enumelation);
+		std::vector<std::pair<std::wstring, std::wstring> > sheets;
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		proxy->EnumCalcSheets(sheets);
 
 		std::vector<CalcWorksheet*> tmpList;
-
-		bool isLoop = true;
-		while(isLoop) {
-
-			// 要素がなければ終了
-			if (enumelation.CallBooleanMethod(L"hasMoreElements", false) == false) {
-				break;
-			}
-
-			DispWrapper doc;
-			enumelation.CallObjectMethod(L"nextElement", doc);
-
-			// ドキュメントのパスを取得
-			CString url = doc.CallStringMethod(L"getURL", _T(""));
-
-			// 拡張子でファイル種別を判別する
-			CString fileExt = PathFindExtension(url);
-			if (fileExt != _T(".xlsx") && fileExt != _T(".xls") && fileExt != _T(".xlsm") && fileExt != _T(".ods")) {
-				continue;
-			}
-
-			// シートオブジェクトを取得
-			DispWrapper sheets;
-			doc.CallObjectMethod(L"getSheets", sheets);
-
-			// シート数を得る
-			int sheetCount = sheets.CallIntMethod(L"getCount", 0);
-
-			CComBSTR bstrVal;
-
-			// シート名を列挙する
-			for (int i = 0; i < sheetCount; ++i) {
-
-				Sleep(0);
-
-				// シートオブジェクトを得る
-				DispWrapper sheet;
-				sheets.CallObjectMethod(L"getByIndex", i, sheet);
-
-				// シート名を得る
-				CString sheetName = sheet.GetPropertyString(L"name");
-
-				tmpList.push_back(new CalcWorksheet(url, sheetName));
-			}
+		for (auto& item : sheets) {
+			tmpList.push_back(new CalcWorksheet(item.first, item.second));
 		}
 
 		std::lock_guard<std::mutex> lock(mMutex);
+
 		mCache.swap(tmpList);
 		mLastUpdate = GetTickCount64();
 		mStatus = STATUS_READY;
@@ -223,59 +125,32 @@ bool CalcWorkSheets::GetWorksheets(std::vector<CalcWorksheet*>& worksheets)
 
 struct CalcWorksheet::PImpl
 {
-	HWND FindWindowHandle();
 	// ブック名
-	CString mBookName;
-	CString mBookLocalName;
+	std::wstring mBookName;
+	std::wstring mBookLocalName;
 	// シート名
-	CString mSheetName;
+	std::wstring mSheetName;
 	// 参照カウント
 	uint32_t mRefCount{1};
 	
 };
 
-HWND CalcWorksheet::PImpl::FindWindowHandle()
-{
-	struct local_param {
-		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
-			auto param = (local_param*)lp;
 
-			CString buf;
-			GetWindowText(h, buf.GetBuffer(256), 256);
-			buf.ReleaseBuffer();
-
-			if  (buf.Find(param->mFileName) != -1) {
-				param->mHwnd = h;
-				return FALSE;
-			}
-			return TRUE;
-		}
-
-		HWND mHwnd = nullptr;
-		CString mFileName;
-	} param;
-	param.mFileName = PathFindFileName(mBookLocalName);
-
-	EnumWindows(local_param::callback, (LPARAM)&param);
-
-	return param.mHwnd;
-}
-
-
-static CString DecodeURI(const CString& src)
+static std::wstring DecodeURI(const std::wstring& src)
 {
 	static tregex reg(_T("^.*%[0-9a-fA-F][0-9a-fA-F].*$"));
-	if (std::regex_match(tstring(src), reg) == false) {
+	if (std::regex_match(src, reg) == false) {
 		// エンコード表現を含まない場合は何もしない
 		return src;
 	}
 
-	CStringA srcA(src);
+	std::string srcA;
+	UTF2UTF(src, srcA);
 
 	std::string buf;
 
-	int len = srcA.GetLength();
-	for (int i = 0; i < len; ++i) {
+	size_t len = srcA.size();
+	for (size_t i = 0; i < len; ++i) {
 		char c = srcA[i];
 
 		if (c != '%') {
@@ -303,7 +178,7 @@ static CString DecodeURI(const CString& src)
 		i+=2;
 	}
 
-	CString out;
+	std::wstring out;
 	return UTF2UTF(buf, out);
 }
 
@@ -313,16 +188,16 @@ static CString DecodeURI(const CString& src)
  	@param[in] sheetName    シート名
 */
  CalcWorksheet::CalcWorksheet(
-	const CString& workbookName,
-	const CString& sheetName
+	const std::wstring& workbookName,
+	const std::wstring& sheetName
 ) : 
 	in(std::make_unique<PImpl>())
 {
 	in->mBookName = workbookName;
 
-	CString decoded = DecodeURI(workbookName);
+	std::wstring decoded{DecodeURI(workbookName)};
 	Path localPath;
-	localPath.CreateFromUrl(decoded, 0);
+	localPath.CreateFromUrl(decoded.c_str(), 0);
 	in->mBookLocalName = localPath;
 
 	in->mSheetName = sheetName;
@@ -334,12 +209,12 @@ CalcWorksheet::~CalcWorksheet()
 
 
 
-const CString& CalcWorksheet::GetWorkbookName()
+const std::wstring& CalcWorksheet::GetWorkbookName()
 {
 	return in->mBookLocalName;
 }
 
-const CString& CalcWorksheet::GetSheetName()
+const std::wstring& CalcWorksheet::GetSheetName()
 {
 	return in->mSheetName;
 }
@@ -350,115 +225,8 @@ const CString& CalcWorksheet::GetSheetName()
 */
 BOOL CalcWorksheet::Activate(bool isShowMaximize)
 {
-	CLSID clsid;
-	HRESULT hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
-
-	if (FAILED(hr)) {
-		// 初期化できなかった(たぶん起こらない。このオブジェクト作れてる時点でEXCELは入ってるはずなので)
-		return FALSE;
-	}
-
-	// ServiceManagerを生成する
-	CComPtr<IUnknown> unkPtr;
-	hr = CoCreateInstance(clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER, IID_IUnknown, (void**)&unkPtr);
-	if(FAILED(hr)) {
-		return FALSE;
-	}
-
-	DispWrapper serviceManager;
-	unkPtr->QueryInterface(&serviceManager);
-
-	// Desktopを生成する
-	DispWrapper desktop;
-	serviceManager.CallObjectMethod(L"createInstance", L"com.sun.star.frame.Desktop", desktop);
-
-	// ドキュメントのリスト取得
-	DispWrapper components;
-	desktop.CallObjectMethod(L"getComponents", components);
-
-	// Enum取得
-	DispWrapper enumeration;
-	components.CallObjectMethod(L"createEnumeration",enumeration); 
-
-	std::vector<CalcWorksheet*> tmpList;
-
-	DispWrapper sheet;
-	DispWrapper controller;
-
-	// 該当するシートを探す
-	bool isFoundSheet = false;
-
-	bool isLoop = true;
-	while(isLoop) {
-		if (enumeration.CallBooleanMethod(L"hasMoreElements", false) == false) {
-			break;
-		}
-
-		// 次の要素を取得
-		DispWrapper doc;
-		enumeration.CallObjectMethod(L"nextElement", doc);
-
-		// ドキュメントのパスを取得
-		CString url = doc.CallStringMethod(L"getURL", _T(""));
-
-		// 探しているブックかどうか
-		if (url != in->mBookName) {
-			continue;
-		}
-
-		// シートオブジェクトを取得
-		DispWrapper sheets;
-		doc.CallObjectMethod(L"getSheets", sheets);
-
-		// シート数を得る
-		int sheetCount = sheets.CallIntMethod(L"getCount", 0);
-
-		// シート名を列挙する
-		for (int i = 0; i < sheetCount; ++i) {
-
-			sheets.CallObjectMethod(L"getByIndex", i, sheet);
-
-			// シート名を得る
-			CString sheetName = sheet.GetPropertyString(L"name");
-			if (sheetName != in->mSheetName) {
-				continue;
-			}
-
-			// コントローラを得る
-			doc.CallObjectMethod(L"getCurrentController", controller);
-
-			isFoundSheet = true;
-			isLoop = false;
-			break;
-		}
-	}
-
-	if (isFoundSheet == false) {
-		return FALSE;
-	}
-
-	// アクティブなワークシートを変える
-	controller.CallVoidMethod(L"setActiveSheet", sheet);
-
-	HWND hwndApp = in->FindWindowHandle();
-
-	// アプリのウインドウを全面に出す
-	if (IsWindow(hwndApp)) {
-		ScopeAttachThreadInput scope;
-		LONG_PTR style = GetWindowLongPtr(hwndApp, GWL_STYLE);
-
-		if (isShowMaximize && (style & WS_MAXIMIZE) == 0) {
-			// 最大化表示する
-			PostMessage(hwndApp, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-		}
-		if (style & WS_MINIMIZE) {
-			// 最小化されていたら元に戻す
-			PostMessage(hwndApp, WM_SYSCOMMAND, SC_RESTORE, 0);
-		}
-		SetForegroundWindow(hwndApp);
-	}
-
-	return TRUE;
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	return proxy->ActiveCalcSheet(in->mBookName, in->mSheetName, isShowMaximize);
 }
 
 uint32_t CalcWorksheet::AddRef()

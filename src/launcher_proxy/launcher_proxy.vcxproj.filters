@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="proxycommands">
+      <UniqueIdentifier>{d1a61d7d-ea0e-4edf-b699-576de0d44fd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logger">
+      <UniqueIdentifier>{2240114a-b397-4295-b098-f169582d34b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -30,8 +36,47 @@
     <ClInclude Include="NormalPriviledgeAgent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\soyokaze\commands\share\AfxWFunctions.h">
+    <ClInclude Include="..\soyokaze\processproxy\share\AfxWFunctions.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ProxyCommand.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ProxyCommandRepository.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\GetCurrentAfxwDirProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoWrap.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\EnumExcelSheetsProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\ActiveExcelSheetProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\EnumCalcSheetsProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="logger\Logger.h">
+      <Filter>logger</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\ActiveCalcSheetProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\GetActivePointPointWindowProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\GoToSlideProxyCommand.h">
+      <Filter>proxycommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,8 +89,44 @@
     <ClCompile Include="NormalPriviledgeAgent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\soyokaze\commands\share\AfxWFunctions.cpp">
+    <ClCompile Include="..\soyokaze\processproxy\share\AfxWFunctions.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ProxyCommandRepository.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GetCurrentAfxwDirProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoWrap.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\EnumExcelSheetsProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\ActiveExcelSheetProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\EnumCalcSheetsProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="logger\Logger.cpp">
+      <Filter>logger</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\ActiveCalcSheetProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GetActivePointPointWindowProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

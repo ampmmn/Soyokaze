@@ -95,11 +95,11 @@ void ActivateWorksheetProvider::QueryAdhocCommandsForWorksheets(
 	in->mWorksheets.GetWorksheets(sheets);
 
 	for (auto& sheet : sheets) {
-		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-		int level = pattern->Match(str);
-		if (level != Pattern::Mismatch) {
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str());
+		int levels = pattern->Match(sheet->GetSheetName().c_str());
+		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
-			commands.Add(CommandQueryItem(level, new WorksheetCommand(sheet)));
+			commands.Add(CommandQueryItem((std::max)(levelw, levels), new WorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}
@@ -108,11 +108,11 @@ void ActivateWorksheetProvider::QueryAdhocCommandsForWorksheets(
 	in->mCalcWorksheets.GetWorksheets(calcSheets);
 
 	for (auto& sheet : calcSheets) {
-		CString str = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-		int level = pattern->Match(str);
-		if (level != Pattern::Mismatch) {
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str());
+		int levels = pattern->Match(sheet->GetSheetName().c_str());
+		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
-			commands.Add(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
+			commands.Add(CommandQueryItem((std::max)(levelw, levels), new CalcWorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}

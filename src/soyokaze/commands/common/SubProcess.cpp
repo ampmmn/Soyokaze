@@ -3,7 +3,7 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
-#include "commands/common/NormalPriviledgeProcessProxy.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "commands/core/CommandParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -18,6 +18,7 @@
 #define new DEBUG_NEW
 #endif
 
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>

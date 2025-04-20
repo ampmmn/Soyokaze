@@ -67,7 +67,7 @@ std::string& CharConverter::Convert(const CString& src, std::string& dst)
 
 	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
 
-	dst.resize(requiredLen);
+	dst.resize(requiredLen - 1);
 	char* p = &dst.front();
 	WideCharToMultiByte(cp, 0, src, -1, p, requiredLen, 0, 0);
 	dst.pop_back();
@@ -88,7 +88,7 @@ static std::string& utf2utf(const wchar_t* src, std::string& dst)
 
 	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
 
-	dst.resize(requiredLen);
+	dst.resize(requiredLen - 1);
 	WideCharToMultiByte(cp, 0, src, -1, dst.data(), requiredLen, 0, 0);
 	return dst;
 }
@@ -140,7 +140,7 @@ std::wstring& CharConverter::UTF2UTF(const std::string& src, std::wstring& dst)
 		return dst;
 	}
 
-	dst.resize(requiredLen);
+	dst.resize(requiredLen-1);
 	MultiByteToWideChar(cp, flags, src.c_str(), -1, const_cast<wchar_t*>(dst.data()), requiredLen);
 
 	return dst;

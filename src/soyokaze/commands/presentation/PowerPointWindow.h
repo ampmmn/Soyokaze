@@ -2,9 +2,7 @@
 
 #include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace presentation {
+namespace launcherapp { namespace commands { namespace presentation {
 
 class PowerPointWindow
 {
@@ -18,7 +16,6 @@ public:
 	bool GoToSlide(int16_t pageIndex);
 
 	static bool GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr);
-	static HWND FindPresentaionWindowHwnd(const CString& caption);
 
 	static HICON ResolveIcon();
 
@@ -28,7 +25,5 @@ private:
 };
 
 
-} // end of namespace presentation
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::presentation
 

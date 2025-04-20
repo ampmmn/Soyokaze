@@ -220,6 +220,12 @@
     <Filter Include="commands\alias">
       <UniqueIdentifier>{bd0dc010-33c2-4e47-8f2f-4c99f8ffac88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="processproxy">
+      <UniqueIdentifier>{5cd6d979-4fe3-47a8-856c-10e8be0c0646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="processproxy\share">
+      <UniqueIdentifier>{219415d4-bd39-44df-b3b9-98b87491bca4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1371,9 +1377,6 @@
     <ClInclude Include="utility\DemotedProcessToken.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="commands\common\NormalPriviledgeProcessProxy.h">
-      <Filter>commands\common</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h">
       <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
@@ -1461,8 +1464,11 @@
     <ClInclude Include="commands\share\AfxWWrapper.h">
       <Filter>commands\share</Filter>
     </ClInclude>
-    <ClInclude Include="commands\share\AfxWFunctions.h">
-      <Filter>commands\share</Filter>
+    <ClInclude Include="processproxy\NormalPriviledgeProcessProxy.h">
+      <Filter>processproxy</Filter>
+    </ClInclude>
+    <ClInclude Include="processproxy\share\AfxWFunctions.h">
+      <Filter>processproxy\share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2513,9 +2519,6 @@
     <ClCompile Include="utility\DemotedProcessToken.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\NormalPriviledgeProcessProxy.cpp">
-      <Filter>commands\common</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp">
       <Filter>mainwindow\interprocess</Filter>
     </ClCompile>
@@ -2597,8 +2600,11 @@
     <ClCompile Include="commands\share\AfxWWrapper.cpp">
       <Filter>commands\share</Filter>
     </ClCompile>
-    <ClCompile Include="commands\share\AfxWFunctions.cpp">
-      <Filter>commands\share</Filter>
+    <ClCompile Include="processproxy\NormalPriviledgeProcessProxy.cpp">
+      <Filter>processproxy</Filter>
+    </ClCompile>
+    <ClCompile Include="processproxy\share\AfxWFunctions.cpp">
+      <Filter>processproxy\share</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

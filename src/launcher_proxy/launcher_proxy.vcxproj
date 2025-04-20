@@ -1843,10 +1843,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
+      <ConformanceMode>Default</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -1859,7 +1860,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -1875,13 +1876,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -1929,10 +1932,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
+      <ConformanceMode>Default</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -1948,10 +1952,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
+      <ConformanceMode>Default</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)soyokaze;</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -1961,17 +1966,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\soyokaze\commands\share\AfxWFunctions.h" />
+    <ClInclude Include="..\soyokaze\processproxy\share\AfxWFunctions.h" />
+    <ClInclude Include="AutoWrap.h" />
     <ClInclude Include="launcher_proxy.h" />
+    <ClInclude Include="logger\Logger.h" />
     <ClInclude Include="NormalPriviledgeAgent.h" />
+    <ClInclude Include="ProxyCommand.h" />
+    <ClInclude Include="ProxyCommandRepository.h" />
+    <ClInclude Include="proxycommands\ActiveCalcSheetProxyCommand.h" />
+    <ClInclude Include="proxycommands\ActiveExcelSheetProxyCommand.h" />
+    <ClInclude Include="proxycommands\EnumCalcSheetsProxyCommand.h" />
+    <ClInclude Include="proxycommands\EnumExcelSheetsProxyCommand.h" />
+    <ClInclude Include="proxycommands\GetActivePointPointWindowProxyCommand.h" />
+    <ClInclude Include="proxycommands\GetCurrentAfxwDirProxyCommand.h" />
+    <ClInclude Include="proxycommands\GoToSlideProxyCommand.h" />
+    <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h" />
+    <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Restart.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\soyokaze\commands\share\AfxWFunctions.cpp" />
+    <ClCompile Include="..\soyokaze\processproxy\share\AfxWFunctions.cpp" />
+    <ClCompile Include="AutoWrap.cpp" />
     <ClCompile Include="launcher_proxy.cpp" />
+    <ClCompile Include="logger\Logger.cpp" />
     <ClCompile Include="NormalPriviledgeAgent.cpp" />
+    <ClCompile Include="ProxyCommandRepository.cpp" />
+    <ClCompile Include="proxycommands\ActiveCalcSheetProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\ActiveExcelSheetProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\EnumCalcSheetsProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\EnumExcelSheetsProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GetActivePointPointWindowProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GetCurrentAfxwDirProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp" />
     <ClCompile Include="Restart.cpp" />
   </ItemGroup>
   <ItemGroup>

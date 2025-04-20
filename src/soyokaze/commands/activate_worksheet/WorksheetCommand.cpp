@@ -33,8 +33,8 @@ WorksheetCommand::WorksheetCommand(
 	in->mWorksheet = sheet;
 	sheet->AddRef();
 
-	this->mName = sheet->GetWorkbookName() + _T(" - ") + sheet->GetSheetName();
-	this->mDescription = sheet->GetSheetName();
+	this->mName = fmt::format(_T("{} ({})"), sheet->GetSheetName(), sheet->GetWorkbookName()).c_str();
+	this->mDescription = sheet->GetSheetName().c_str();
 
 }
 
@@ -47,7 +47,7 @@ WorksheetCommand::~WorksheetCommand()
 
 CString WorksheetCommand::GetGuideString()
 {
-	return _T("Enter:シートをアクティブにする");
+	return _T("Enter:表示 Ctrl-Enter:最大化表示");
 }
 
 CString WorksheetCommand::GetTypeDisplayName()
@@ -70,7 +70,7 @@ BOOL WorksheetCommand::Execute(Parameter* param)
 HICON WorksheetCommand::GetIcon()
 {
 	// 拡張子に関連付けられたアイコンを取得
-	LPCTSTR fileExt = PathFindExtension(in->mWorksheet->GetWorkbookName());
+	LPCTSTR fileExt = PathFindExtension(in->mWorksheet->GetWorkbookName().c_str());
 	if (_tcslen(fileExt) == 0) {
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
