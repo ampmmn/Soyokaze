@@ -34,6 +34,7 @@ struct ActivateWorksheetProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
+		mPrefix = pref->GetWorksheetSwitchPrefix();
 
 	}
 	void OnAppExit() override {}
@@ -42,6 +43,7 @@ struct ActivateWorksheetProvider::PImpl : public AppPreferenceListenerIF
 	//
 	bool mIsEnableWorksheet {false};
 	bool mIsFirstCall {true};
+	CString mPrefix;
 
 	WorkSheets mWorksheets;
 	CalcWorkSheets mCalcWorksheets;
@@ -76,6 +78,7 @@ void ActivateWorksheetProvider::QueryAdhocCommands(
 		// 初回呼び出し時に設定よみこみ
 		auto pref = AppPreference::Get();
 		in->mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
+		in->mPrefix = pref->GetWorksheetSwitchPrefix();
 		in->mIsFirstCall = false;
 	}
 
@@ -87,19 +90,34 @@ void ActivateWorksheetProvider::QueryAdhocCommandsForWorksheets(
 	launcherapp::CommandQueryItemList& commands
 )
 {
+	// 機能を利用しない場合は抜ける
 	if (in->mIsEnableWorksheet == false) {
 		return ;
 	}
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mPrefix;
+	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
+
+	bool hasPrefix =  prefix.IsEmpty() == FALSE;
+	int offset = hasPrefix ? 1 : 0;
 
 	std::vector<Worksheet*> sheets;
 	in->mWorksheets.GetWorksheets(sheets);
 
 	for (auto& sheet : sheets) {
-		int levelw = pattern->Match(sheet->GetWorkbookName().c_str());
-		int levels = pattern->Match(sheet->GetSheetName().c_str());
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), offset);
+		int levels = pattern->Match(sheet->GetSheetName().c_str(), offset);
 		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
-			commands.Add(CommandQueryItem((std::max)(levelw, levels), new WorksheetCommand(sheet)));
+			int level = (std::max)(levelw, levels);
+			// プレフィックスがある場合は最低でも前方一致とする
+			if (hasPrefix && level == Pattern::PartialMatch) {
+				level = Pattern::FrontMatch;
+			}
+
+			commands.Add(CommandQueryItem(level, new WorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}
@@ -108,11 +126,17 @@ void ActivateWorksheetProvider::QueryAdhocCommandsForWorksheets(
 	in->mCalcWorksheets.GetWorksheets(calcSheets);
 
 	for (auto& sheet : calcSheets) {
-		int levelw = pattern->Match(sheet->GetWorkbookName().c_str());
-		int levels = pattern->Match(sheet->GetSheetName().c_str());
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), offset);
+		int levels = pattern->Match(sheet->GetSheetName().c_str(), offset);
 		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
-			commands.Add(CommandQueryItem((std::max)(levelw, levels), new CalcWorksheetCommand(sheet)));
+			int level = (std::max)(levelw, levels);
+			// プレフィックスがある場合は最低でも前方一致とする
+			if (hasPrefix && level == Pattern::PartialMatch) {
+				level = Pattern::FrontMatch;
+			}
+
+			commands.Add(CommandQueryItem(level, new CalcWorksheetCommand(sheet)));
 		}
 		sheet->Release();
 	}

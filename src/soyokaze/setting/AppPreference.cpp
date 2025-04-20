@@ -704,9 +704,21 @@ bool AppPreference::IsEnableExcelWorksheet()
 	return in->Get(_T("Excel:EnableWorkSheet"), true);
 }
 
+// ワークシート名による切り替え機能のプレフィックス
+CString AppPreference::GetWorksheetSwitchPrefix()
+{
+	return in->Get(_T("Excel:Prefix"), _T("xj"));
+}
+
 bool AppPreference::IsEnablePowerPointSlide()
 {
 	return in->Get(_T("PowerPoint:EnableSlide"), false);
+}
+
+// PowerPointシート名による切り替え機能のプレフィックス
+CString AppPreference::GetPresentationSwitchPrefix()
+{
+	return in->Get(_T("PowerPoint:Prefix"), _T("pj"));
 }
 
 // ウインドウの切り替え機能を有効にするか?

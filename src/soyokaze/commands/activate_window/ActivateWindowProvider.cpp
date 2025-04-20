@@ -164,7 +164,8 @@ void ActivateWindowProvider::QueryAdhocCommands(
 		return;
 	}
 
-	int offset = prefix.IsEmpty() ? 0 : 1;
+	bool hasPrefix =  prefix.IsEmpty() == FALSE;
+	int offset = hasPrefix ? 1 : 0;
 
 	auto it = in->mAdhocNameMap.begin();
 	while(it != in->mAdhocNameMap.end()) { 
@@ -180,6 +181,12 @@ void ActivateWindowProvider::QueryAdhocCommands(
 			it = in->mAdhocNameMap.erase(it);
 			continue;
 		}
+
+		// プレフィックスがある場合は最低でも前方一致とする
+		if (hasPrefix && level == Pattern::PartialMatch) {
+			level = Pattern::FrontMatch;
+		}
+
 		auto cmd = new WindowActivateAdhocCommand(hwnd);
 		cmd->SetListener(in.get());
 		commands.Add(CommandQueryItem(level, cmd));

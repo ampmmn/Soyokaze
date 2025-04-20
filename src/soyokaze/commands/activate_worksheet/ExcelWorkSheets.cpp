@@ -41,12 +41,17 @@ struct WorkSheets::PImpl
 
 void WorkSheets::PImpl::Update()
 {
+	if (IsBusy()) {
+		// 既に実行中
+		return;
+	}
+
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
 		mStatus = STATUS_BUSY;
 	}
 
-	std::thread th([&]() {
+	auto threadFunc= [&]() {
 
 		std::vector<std::pair<std::wstring, std::wstring> > sheets;
 		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
@@ -66,8 +71,18 @@ void WorkSheets::PImpl::Update()
 		for (auto& item : tmpList) {
 			item->Release();
 		}
-	});
-	th.detach();
+	};
+
+	if (mLastUpdate == 0) {
+		// 初回は同期で取得
+		threadFunc();
+		return;
+	}
+	else {
+		// 2回目以降は非同期で取得
+		std::thread th(threadFunc);
+		th.detach();
+	}
 }
 
 WorkSheets::WorkSheets() : in(std::make_unique<PImpl>())
@@ -99,24 +114,18 @@ bool WorkSheets::GetWorksheets(std::vector<Worksheet*>& worksheets)
 {
 	// 前回取得時から一定時間経過していない場合は前回の結果を再利用する
 	uint64_t elapsed = GetTickCount64() - in->mLastUpdate;
-	if (elapsed < INTERVAL_REUSE) {
-
-		std::lock_guard<std::mutex> lock(in->mMutex);
-
-		worksheets = in->mCache;
-		for (auto& elem : worksheets) {
-			elem->AddRef();
-		}
-		return true;
+	if (INTERVAL_REUSE <= elapsed) {
+		// Excelのシート一覧を更新する
+		in->Update();
 	}
 
-	if (in->IsBusy()) {
-		return false;
-	}
+	std::lock_guard<std::mutex> lock(in->mMutex);
 
-	// Excelのシート一覧を更新する
-	in->Update();
-	return false;
+	worksheets = in->mCache;
+	for (auto& elem : worksheets) {
+		elem->AddRef();
+	}
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

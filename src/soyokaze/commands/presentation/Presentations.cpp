@@ -58,9 +58,11 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 		auto pref = AppPreference::Get();
 		std::lock_guard<std::mutex> lock(mMutex);
 		mIsEnable = pref->IsEnablePowerPointSlide();
+		mPrefix = pref->GetPresentationSwitchPrefix();
 	}
 
 	bool mIsEnable{true};
+	CString mPrefix;
 
 	// 前回の取得時のタイムスタンプ
 	uint64_t mLastUpdate{0};
@@ -209,9 +211,18 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 		in->mIsFirstCall = false;
 	}
 
+	// 機能を利用しない場合は抜ける
 	if (in->mIsAvailable == false || in->IsEnable() == false) {
 		return;
 	}
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mPrefix;
+	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
+
+	bool hasPrefix =  prefix.IsEmpty() == FALSE;
+	int offset = hasPrefix ? 1 : 0;
 
 	// キーワードが数値として解釈できる場合、ページ番号でのマッチングを行うため、数値として拾っておく
 	int pageNo = -1;
@@ -229,7 +240,6 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 	for (const auto& item : allItems) {
 
 		int level = Pattern::Mismatch;
-		int level2 = Pattern::Mismatch;
 
 		bool isMatchPageNo = pageNo != -1 && pageNo == item.mPage;
 		if (isMatchPageNo) {
@@ -239,17 +249,24 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 		else {
 			auto str = item.mTitle + _T(" ") + fileName;
 			// スライド番号として一致しなかった場合、キーワードでのマッチングを行う
-			level = pattern->Match(item.mTitle);
+			int level_t = pattern->Match(item.mTitle, offset);
 			// ファイル名でもマッチングする
-			level2 = pattern->Match(str);
+			int level_w = pattern->Match(str, offset);
 
-			if (level == Pattern::Mismatch && level2 == Pattern::Mismatch) {
+			if (level_t == Pattern::Mismatch && level_w == Pattern::Mismatch) {
 				continue;
 			}
+
+			level = (std::max)(level_t, level_w);
+		}
+
+		// プレフィックスがある場合は最低でも前方一致とする
+		if (hasPrefix && level == Pattern::PartialMatch) {
+			level = Pattern::FrontMatch;
 		}
 
 		auto itemCopy(item);
-		itemCopy.mMatchLevel = (std::max)(level, level2);
+		itemCopy.mMatchLevel = level;
 		items.push_back(itemCopy);
 
 		if ((int)items.size() >= limit) {

@@ -84,8 +84,14 @@ public:
 	bool IsEnableCalculator();
 	CString GetPythonDLLPath();
 
+	// ワークシート名による切り替え機能
 	bool IsEnableExcelWorksheet();
+	// ワークシート名による切り替え機能のプレフィックス
+	CString GetWorksheetSwitchPrefix();
+	// 
 	bool IsEnablePowerPointSlide();
+	// PowerPointシート名による切り替え機能のプレフィックス
+	CString GetPresentationSwitchPrefix();
 
 	// ウインドウの切り替え機能を有効にするか?
 	bool IsEnableWindowSwitch();

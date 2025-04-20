@@ -30,6 +30,10 @@ protected:
 public:
 	// ウインドウタイトルによる切り替えを発動するためのプレフィックス
 	CString mPrefixWindowTitle;
+	// ワークシート名による切り替えを発動するためのプレフィックス
+	CString mPrefixWorksheet;
+	// Powerpointスライド名による切り替えを発動するためのプレフィックス
+	CString mPrefixPresentation;
 	// ウインドウタイトルによるウインドウ切り替え機能
 	BOOL mIsEnableWindowTitle{FALSE};
 	// Excelワークシート名によるウインドウ切り替え機能
@@ -50,7 +54,9 @@ void SwitchWindowSettingDialog::OnOK()
 
 	settingsPtr->Set(_T("WindowSwitch:Prefix"), mPrefixWindowTitle);
 	settingsPtr->Set(_T("WindowSwitch:EnableWindowSwitch"), (bool)mIsEnableWindowTitle);
+	settingsPtr->Set(_T("Excel:Prefix"), mPrefixWorksheet);
 	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
+	settingsPtr->Set(_T("PowerPoint:Prefix"), mPrefixPresentation);
 	settingsPtr->Set(_T("PowerPoint:EnableSlide"), (bool)mIsEnableSlide);
 	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
 	__super::OnOK();
@@ -61,7 +67,9 @@ void SwitchWindowSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_PREFIX_WINDOWTITLE, mPrefixWindowTitle);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WINDOWTITLE, mIsEnableWindowTitle);
+	DDX_Text(pDX, IDC_EDIT_PREFIX_WORKSHEET, mPrefixWorksheet);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
+	DDX_Text(pDX, IDC_EDIT_PREFIX_PRESENTATION, mPrefixPresentation);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SLIDE, mIsEnableSlide);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
 	
@@ -69,6 +77,8 @@ void SwitchWindowSettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(SwitchWindowSettingDialog, CDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE_WINDOWTITLE, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_WORKSHEET, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_SLIDE, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 
@@ -107,7 +117,9 @@ void SwitchWindowSettingDialog::OnEnterSettings(Settings* settingsPtr)
 
 	mPrefixWindowTitle = settingsPtr->Get(_T("WindowSwitch:Prefix"), _T("wl"));
 	mIsEnableWindowTitle = settingsPtr->Get(_T("WindowSwitch:EnableWindowSwitch"), true);
+	mPrefixWorksheet = settingsPtr->Get(_T("Excel:Prefix"), _T("xj"));
 	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), true);
+	mPrefixPresentation = settingsPtr->Get(_T("PowerPoint:Prefix"), _T("pj"));
 	mIsEnableSlide = settingsPtr->Get(_T("PowerPoint:EnableSlide"), false);
 	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
@@ -121,8 +133,9 @@ void SwitchWindowSettingDialog::OnUpdateStatus()
 
 bool SwitchWindowSettingDialog::UpdateStatus()
 {
-	BOOL isEnable = (mIsEnableWindowTitle == 1) ? TRUE : FALSE;
-	GetDlgItem(IDC_EDIT_PREFIX_WINDOWTITLE)->EnableWindow(isEnable);
+	GetDlgItem(IDC_EDIT_PREFIX_WINDOWTITLE)->EnableWindow(mIsEnableWindowTitle != 0);
+	GetDlgItem(IDC_EDIT_PREFIX_WORKSHEET)->EnableWindow(mIsEnableWorksheet != 0);
+	GetDlgItem(IDC_EDIT_PREFIX_PRESENTATION)->EnableWindow(mIsEnableSlide != 0);
 
 	return true;
 }

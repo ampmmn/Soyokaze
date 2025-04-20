@@ -1377,14 +1377,18 @@ BEGIN
     GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,8,282,143
     CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,21,243,10
-    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,35,51,8
-    EDITTEXT        IDC_EDIT_PREFIX_WINDOWTITLE,88,32,52,14,ES_AUTOHSCROLL
+    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,37,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_WINDOWTITLE,88,34,52,14,ES_AUTOHSCROLL
     CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,53,253,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,51,253,10
+    LTEXT           "プレフィックス(&R):",IDC_STATIC,33,67,52,8
+    EDITTEXT        IDC_EDIT_PREFIX_WORKSHEET,87,64,52,14,ES_AUTOHSCROLL
     CONTROL         "PowerPointのスライドタイトルによる選択を有効にする(&T)",IDC_CHECK_ENABLE_SLIDE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,69,253,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,81,253,10
+    LTEXT           "プレフィックス(&F):",IDC_STATIC,33,97,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_PRESENTATION,87,94,52,14,ES_AUTOHSCROLL
     CONTROL         "【試作】Outlookの受信トレイにあるメール選択を有効にする(&M)",IDC_CHECK_ENABLE_OUTLOOKMAIL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,85,253,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,111,253,10
 END
 
 IDD_SHELLEXEC_ENVLIST DIALOGEX 0, 0, 355, 322

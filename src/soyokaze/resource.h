@@ -496,8 +496,11 @@
 #define IDC_EDIT_PREFIX2                1214
 #define IDC_EDIT_NUMOFRESULTS           1214
 #define IDC_EDIT_PREFIX_ENVIRONMENT     1214
+#define IDC_EDIT_PREFIX_WORKSHEET       1214
 #define IDC_STATIC_VARIABLE             1215
 #define IDC_LIST_ENVIRON                1215
+#define IDC_EDIT_PREFIX_WORKSHEET2      1215
+#define IDC_EDIT_PREFIX_PRESENTATION    1215
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
