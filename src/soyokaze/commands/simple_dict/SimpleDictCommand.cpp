@@ -397,8 +397,7 @@ bool SimpleDictCommand::NewDialog(
 	// パラメータ指定には対応していない
 	UNREFERENCED_PARAMETER(param);
 
-	ExcelApplication app;
-	if (app.IsInstalled() == false) {
+	if (ExcelApplication::IsInstalled() == false) {
 		AfxMessageBox(_T("簡易辞書コマンドを利用するにはExcelがインストールされている必要がありまず"));
 		return false;
 	}

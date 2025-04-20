@@ -23,6 +23,9 @@ public:
 	// あふwのカレントディレクトリを設定する
 	bool SetCurrentAfxwDir(const std::wstring& path);
 
+	// Excelで現在選択中のワークシート等の情報を取得する
+	bool GetExcelCurrentSelection(std::wstring& workbook, std::wstring& sheet, std::wstring& address);
+
 	// オープンされているExcelのシート一覧を取得する
 	bool EnumExcelSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets);
 	// Excelシートをアクティブにする

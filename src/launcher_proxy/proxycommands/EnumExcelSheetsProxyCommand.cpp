@@ -1,6 +1,5 @@
 #include "EnumExcelSheetsProxyCommand.h"
 #include <windows.h>
-#include "processproxy/share/AfxWFunctions.h"
 #include "StringUtil.h"
 #include "AutoWrap.h"
 #include <oleauto.h>

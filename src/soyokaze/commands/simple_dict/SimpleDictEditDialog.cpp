@@ -287,8 +287,7 @@ void SettingDialog::OnButtonFilePath()
 {
 	// 現在開いているExcelシートからワークシートのパスを得る
 	CString filePath;
-	ExcelApplication app;
-	if (app.GetFilePath(filePath) == false) {
+	if (ExcelApplication::GetSelection(&filePath, nullptr, nullptr) == false) {
 		AfxMessageBox(_T("ファイルパスを取得するにはExcelでファイルを開いておく必要があります"));
 		return;
 	}
@@ -370,28 +369,23 @@ void SettingDialog::OnButtonFrontRange()
 {
 	UpdateData();
 
-	ExcelApplication app(true);
-	CString sheetName = app.GetActiveSheetName();
-	if (sheetName.IsEmpty()) {
+	CString filePath;
+	CString sheetName;
+	CString address;
+
+	if (ExcelApplication::GetSelection(&filePath, &sheetName, &address) == false) {
 		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));
 		return;
 	}
-	in->mParam.mSheetName = sheetName;
-
-	int col,row;
-	CString address = app.GetSelectionAddress(col, row);
-
 	if (address.Find(_T(',')) != -1) {
 		AfxMessageBox(_T("Ctrlキーによる複数領域選択については非対応です"));
 		return;
 	}
 
+	in->mParam.mSheetName = sheetName;
 	in->mParam.mRangeFront = address;
+	in->mParam.mFilePath = filePath;
 
-	CString filePath;
-	if (app.GetFilePath(filePath)) {
-		in->mParam.mFilePath = filePath;
-	}
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -400,28 +394,23 @@ void SettingDialog::OnButtonBackRange()
 {
 	UpdateData();
 
-	ExcelApplication app(true);
-	CString sheetName = app.GetActiveSheetName();
-	if (sheetName.IsEmpty()) {
+	CString filePath;
+	CString sheetName;
+	CString address;
+
+	if (ExcelApplication::GetSelection(&filePath, &sheetName, &address) == false) {
 		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));
 		return;
 	}
-	in->mParam.mSheetName = sheetName;
-
-	int col,row;
-	CString address = app.GetSelectionAddress(col, row);
-
 	if (address.Find(_T(',')) != -1) {
 		AfxMessageBox(_T("Ctrlキーによる複数領域選択については非対応です"));
 		return;
 	}
 
+	in->mParam.mSheetName = sheetName;
 	in->mParam.mRangeBack = address;
+	in->mParam.mFilePath = filePath;
 
-	CString filePath;
-	if (app.GetFilePath(filePath)) {
-		in->mParam.mFilePath = filePath;
-	}
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -430,28 +419,23 @@ void SettingDialog::OnButtonValue2Range()
 {
 	UpdateData();
 
-	ExcelApplication app(true);
-	CString sheetName = app.GetActiveSheetName();
-	if (sheetName.IsEmpty()) {
+	CString filePath;
+	CString sheetName;
+	CString address;
+
+	if (ExcelApplication::GetSelection(&filePath, &sheetName, &address) == false) {
 		AfxMessageBox(_T("Excelでファイルを開いておく必要があります"));
 		return;
 	}
-	in->mParam.mSheetName = sheetName;
-
-	int col,row;
-	CString address = app.GetSelectionAddress(col, row);
-
 	if (address.Find(_T(',')) != -1) {
 		AfxMessageBox(_T("Ctrlキーによる複数領域選択については非対応です"));
 		return;
 	}
 
+	in->mParam.mSheetName = sheetName;
 	in->mParam.mRangeValue2 = address;
+	in->mParam.mFilePath = filePath;
 
-	CString filePath;
-	if (app.GetFilePath(filePath)) {
-		in->mParam.mFilePath = filePath;
-	}
 	UpdateStatus();
 	UpdateData(FALSE);
 }

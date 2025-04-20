@@ -361,6 +361,40 @@ bool NormalPriviledgeProcessProxy::SetCurrentAfxwDir(const std::wstring& path)
 	return true;
 }
 
+// Excelで現在選択中のワークシート等の情報を取得する
+bool NormalPriviledgeProcessProxy::GetExcelCurrentSelection(
+		std::wstring& workbook,
+	 	std::wstring& sheet,
+	 	std::wstring& address
+)
+{
+	json json_req;
+	json_req["command"] = "getexcelcurrentselection";
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	if (json_res["result"] == false) {
+		return false;
+	}
+
+	UTF2UTF(json_res["workbook"].get<std::string>(), workbook);
+	UTF2UTF(json_res["worksheet"].get<std::string>(), sheet);
+	UTF2UTF(json_res["address"].get<std::string>(), address);
+
+	return true;
+}
+
 // オープンされているExcelのシート一覧を取得する
 bool NormalPriviledgeProcessProxy::EnumExcelSheets(
 		std::vector<std::pair<std::wstring, std::wstring> >& sheets

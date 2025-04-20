@@ -10,18 +10,13 @@ class ExcelApplication
 {
 public:
 	ExcelApplication();
-	ExcelApplication(bool isGetObject);
 	~ExcelApplication();
 
 public:
-	bool IsInstalled();
-	bool IsAvailable();
-
-	bool GetFilePath(CString& filePath);
-	CString GetActiveSheetName();
-	CString GetSelectionAddress(int& cols, int& rows);
-
 	int GetCellText(const CString wbPath, const CString& sheetName, const CString& address, std::vector<CString>& texts);
+
+	static bool IsInstalled();
+	static bool GetSelection(CString* wbPath, CString* sheetName, CString* address);
 
 private:
 	void Quit();

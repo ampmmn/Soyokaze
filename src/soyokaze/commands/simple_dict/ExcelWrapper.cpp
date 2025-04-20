@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ExcelWrapper.h"
 #include "commands/common/AutoWrap.h"
-#include "utility/ScopeAttachThreadInput.h"
+#include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "utility/TimeoutChecker.h"
 #include <thread>
 
@@ -16,57 +16,17 @@ namespace simple_dict {
 constexpr int EMPTY_LIMIT = 20;   // この数だけ空白が連続で続いたら検索を打ち切る
 
 using DispWrapper = launcherapp::commands::common::DispWrapper;
+using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 
 struct ExcelApplication::PImpl
 {
 	DispWrapper mApp;
-	bool mIsGetObject{false};
 
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-static bool GetExcelApplication(DispWrapper& excelApp)
-{
-		// ExcelのCLSIDを得る
-		CLSID clsid;
-		HRESULT hr = CLSIDFromProgID(L"Excel.Application", &clsid);
-
-		if (FAILED(hr)) {
-			// 取得できなかった(インストールされていないとか)
-			spdlog::warn(_T("Excel is not installed."));
-			return false;
-		}
-
-		// 既存のExcel.Applicationインスタンスを取得する
-		CComPtr<IUnknown> unkPtr;
-		hr = GetActiveObject(clsid, NULL, &unkPtr);
-		if(FAILED(hr)) {
-			// 起動してない
-			spdlog::warn(_T("Excel is not running."));
-			return false;
-		}
-
-		hr = unkPtr->QueryInterface(&excelApp);
-		if (FAILED(hr)) {
-			spdlog::error(_T("Excel is not running."));
-			return false;
-		}
-
-		// デバッグ用にPIDを出力しておく
-		HWND hwndApp = (HWND)excelApp.GetPropertyInt64(L"Hwnd");
-		if (IsWindow(hwndApp)) {
-			DWORD pid;
-			GetWindowThreadProcessId(hwndApp, &pid);
-			spdlog::debug(_T("Excel PID is {}"), pid);
-		}
-		else {
-			spdlog::debug(_T("Excel HWND is invalid {}"), (int64_t)hwndApp);
-		}
-		return true;
-}
 
 static bool CreateExcelApplication(DispWrapper& excelApp)
 {
@@ -114,38 +74,14 @@ ExcelApplication::ExcelApplication() : in(new PImpl)
 	}
 }
 
-ExcelApplication::ExcelApplication(bool isGetObject) : in(new PImpl)
-{
-	HRESULT hr = CoInitialize(NULL);
-	if (FAILED(hr)) {
-		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
-	}
-
-	if (isGetObject) {
-		GetExcelApplication(in->mApp);
-		in->mIsGetObject = true;
-	}
-}
-
 
 ExcelApplication::~ExcelApplication()
 {
-	bool isExist = (((IDispatch*)in->mApp) != nullptr);
-	if (isExist == false) {
-		CoUninitialize();
-		return;
-	}
-
-	// GetObjectで確保したインスタンスでない(→自分でCreateInstanceした)場合はQuitで終了する
-	if (in->mIsGetObject == false) {
-		Quit();
-	}
+	Quit();
 
 	in->mApp.Release();
 	CoUninitialize();
-
 }
-
 
 bool ExcelApplication::IsInstalled()
 {
@@ -157,88 +93,6 @@ bool ExcelApplication::IsInstalled()
 	spdlog::info(_T("Excel isInstalled:{}"), isInstalled);
 
 	return isInstalled;
-}
-
-bool ExcelApplication::IsAvailable()
-{
-	SPDLOG_DEBUG(_T("start"));
-
-	DispWrapper excelApp;
-	if (GetExcelApplication(excelApp) == false) {
-		SPDLOG_DEBUG(_T("unavailable"));
-		return false;
-	}
-
-	DispWrapper activeSheet; 
-	return excelApp.GetPropertyObject(L"ActiveSheet", activeSheet);
-}
-
-bool ExcelApplication::GetFilePath(CString& filePath)
-{
-	DispWrapper& excelApp = in->mApp;
-
-	DispWrapper activeSheet;
-	if (excelApp.GetPropertyObject(L"ActiveSheet", activeSheet) == false) {
-		SPDLOG_ERROR(_T("Failed to get Active sheet"));
-		return false;
-	}
-
-	DispWrapper wb;
-	if (activeSheet.GetPropertyObject(L"Parent", wb) == false) {
-		SPDLOG_ERROR(_T("Failed to get Parent"));
-		return false;
-	}
-
-	filePath = wb.GetPropertyString(L"Path");
-	filePath += _T("\\");
-	filePath += wb.GetPropertyString(L"Name");
-
-	return true;
-}
-
-CString ExcelApplication::GetActiveSheetName()
-{
-	DispWrapper& excelApp = in->mApp;
-
-	DispWrapper activeSheet;
-	if (excelApp.GetPropertyObject(L"ActiveSheet", activeSheet) == false) {
-		SPDLOG_ERROR(_T("Failed to get active sheet"));
-		return _T("");
-	}
-
-	return activeSheet.GetPropertyString(L"Name");
-}
-
-CString ExcelApplication::GetSelectionAddress(int& cols, int& rows)
-{
-	DispWrapper& excelApp = in->mApp;
-
-	DispWrapper selection;
-	if (excelApp.GetPropertyObject(L"Selection", selection) == false) {
-		return _T("");
-	}
-
-	// 選択範囲を表すテキストを取得
-	CString addressStr = selection.GetPropertyString(L"Address");
-
-	// 選択範囲の行数・列数を取得する
-	DispWrapper rowsObj;
-	if (selection.GetPropertyObject(L"Rows", rowsObj) == false) {
-		return _T("");
-	}
-
-	DispWrapper columnsObj;
-	if (selection.GetPropertyObject(L"Columns", columnsObj) == false) {
-		return _T("");
-	}
-
-	rows = rowsObj.GetPropertyInt(L"Count");
-	cols = columnsObj.GetPropertyInt(L"Count");
-
-
-	addressStr.Replace(_T("$"), _T(""));
-
-	return addressStr;
 }
 
 /**
@@ -398,6 +252,12 @@ int ExcelApplication::GetCellText(
 
 void ExcelApplication::Quit()
 {
+	bool isExist = (((IDispatch*)in->mApp) != nullptr);
+	if (isExist == false) {
+		// 終了不要
+		return;
+	}
+			
 	// Quitしても終わらないときは強制終了させるので、プロセスIDを取得しておく
 	DWORD pid = 0;
 	HWND hwndApp = (HWND)in->mApp.GetPropertyInt64(L"Hwnd");
@@ -427,6 +287,29 @@ void ExcelApplication::Quit()
 			TerminateProcess(h, 0);
 			});
 	th.detach();
+}
+
+bool ExcelApplication::GetSelection(CString* wbPath, CString* sheetName, CString* address)
+{
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+
+	std::wstring workbook;
+	std::wstring worksheet;
+	std::wstring address_str;
+	if (proxy->GetExcelCurrentSelection(workbook, worksheet, address_str) == false) {
+		return false;
+	}
+
+	if (wbPath) {
+		*wbPath = workbook.c_str();
+	}
+	if (sheetName) {
+		*sheetName = worksheet.c_str();
+	}
+	if (address) {
+		*address = address_str.c_str();
+	}
+	return true;
 }
 
 } // end of namespace simple_dict
