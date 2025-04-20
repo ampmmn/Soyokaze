@@ -70,7 +70,6 @@ std::string& CharConverter::Convert(const CString& src, std::string& dst)
 	dst.resize(requiredLen - 1);
 	char* p = &dst.front();
 	WideCharToMultiByte(cp, 0, src, -1, p, requiredLen, 0, 0);
-	dst.pop_back();
 
 	return dst;
 }
