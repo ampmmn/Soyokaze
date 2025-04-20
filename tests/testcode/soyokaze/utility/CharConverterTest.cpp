@@ -99,3 +99,89 @@ TEST_F(CharConverterTest, ScalarToUTF8_FourBytes) {
 }
 
 
+TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_ValidInput) {
+    CStringW utf16Input = L"テスト";
+    std::string utf8Output;
+
+    EXPECT_NO_THROW({
+        utf8Output = CharConverter::UTF2UTF(utf16Input);
+    });
+
+    EXPECT_EQ(utf8Output, u8"テスト");
+}
+
+TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithDst_ValidInput) {
+    CStringW utf16Input = L"テスト";
+    std::string utf8Output;
+
+    EXPECT_NO_THROW({
+        CharConverter::UTF2UTF(utf16Input, utf8Output);
+    });
+
+    EXPECT_EQ(utf8Output, u8"テスト");
+}
+
+TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithWString_ValidInput) {
+    std::wstring utf16Input = L"テスト";
+    std::string utf8Output;
+
+    EXPECT_NO_THROW({
+        CharConverter::UTF2UTF(utf16Input, utf8Output);
+    });
+
+    EXPECT_EQ(utf8Output, u8"テスト");
+}
+
+TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_ValidInput) {
+    std::string utf8Input = u8"テスト";
+    CStringW utf16Output;
+
+    EXPECT_NO_THROW({
+        utf16Output = CharConverter::UTF2UTF(utf8Input);
+    });
+
+    EXPECT_EQ(utf16Output, L"テスト");
+}
+
+TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_WithDst_ValidInput) {
+    std::string utf8Input = u8"テスト";
+    CStringW utf16Output;
+
+    EXPECT_NO_THROW({
+        CharConverter::UTF2UTF(utf8Input, utf16Output);
+    });
+
+    EXPECT_EQ(utf16Output, L"テスト");
+}
+
+TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_WithWString_ValidInput) {
+    std::string utf8Input = u8"テスト";
+    std::wstring utf16Output;
+
+    EXPECT_NO_THROW({
+        CharConverter::UTF2UTF(utf8Input, utf16Output);
+    });
+
+    EXPECT_EQ(utf16Output, L"テスト");
+}
+
+TEST_F(CharConverterTest, UTF16ToUTF8_InvalidInput) {
+    CStringW utf16Input = L"\xD800"; // 不正なサロゲートペア
+    std::string utf8Output;
+
+    // 文字列が不正でもとくに実装上は例外を発生させていない
+    EXPECT_NO_THROW({
+        CharConverter::UTF2UTF(utf16Input);
+    });
+}
+
+TEST_F(CharConverterTest, UTF8ToUTF16_InvalidInput) {
+    std::string utf8Input = "\xFF"; // 不正なUTF-8シーケンス
+    CStringW utf16Output;
+
+    EXPECT_NO_THROW({
+        utf16Output = CharConverter::UTF2UTF(utf8Input);
+    });
+
+    EXPECT_EQ(utf16Output, L""); // 不正な入力は空文字列を返す
+}
