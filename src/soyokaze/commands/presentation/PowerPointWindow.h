@@ -17,8 +17,6 @@ public:
 
 	static bool GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr);
 
-	static HICON ResolveIcon();
-
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

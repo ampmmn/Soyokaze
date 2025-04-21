@@ -74,8 +74,12 @@ BOOL PptJumpCommand::Execute(Parameter* param)
 
 HICON PptJumpCommand::GetIcon()
 {
-	// ToDo: 実装
-	return PowerPointWindow::ResolveIcon();
+	// 拡張子に関連付けられたアイコンを取得
+	LPCTSTR fileExt = PathFindExtension(in->mFilePath);
+	if (_tcslen(fileExt) == 0) {
+		return IconLoader::Get()->LoadUnknownIcon();
+	}
+	return IconLoader::Get()->LoadExtensionIcon(fileExt);
 }
 
 launcherapp::core::Command*

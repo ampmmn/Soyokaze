@@ -125,6 +125,8 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 
 	HICON LoadIconFromImage(LPCTSTR path);
 	HICON LoadIconForID1(LPCTSTR dllPath);
+	HICON LoadIconFromDefaultValue(const CString& fileExt);
+	HICON LoadIconFromOpenWithProgIDs(const CString& fileExt);
 
 	void ClearCache();
 	bool GetDefaultIcon(const CString& path, HICON& icon);
@@ -380,6 +382,63 @@ HICON IconLoader::PImpl::LoadIconForID1(LPCTSTR dllPath)
 	return icon;
 }
 
+HICON IconLoader::PImpl::LoadIconFromDefaultValue(const CString& fileExt)
+{
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+
+	CString value;
+	if (HKCR.GetValue(fileExt, _T(""), value) == false) {
+		return nullptr;
+	}
+
+	CString iconPath;
+	CString subKey = value + _T("\\DefaultIcon");
+	if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+		return nullptr;
+	}
+
+	HICON icon = nullptr;
+	if (GetDefaultIcon(iconPath, icon) == false) {
+		return nullptr;
+	}
+	// 次回以降は再利用できるよう保持しておく
+	mFileExtIconCache[fileExt] = ICONITEM(icon);
+	return icon;
+}
+
+HICON IconLoader::PImpl::LoadIconFromOpenWithProgIDs(const CString& fileExt)
+{
+	CString iconPath;
+	CString subKey = fileExt;
+	subKey += _T("\\OpenWithProgIDs");
+	RegistryKey HKCR(HKEY_CLASSES_ROOT);
+	std::vector<CString> valueNames;
+	if (HKCR.EnumValueNames(subKey, valueNames) == false) {
+		return nullptr;
+	}
+
+	for (auto& valueName : valueNames) {
+		if (valueName.IsEmpty()) {
+			continue;
+		}
+
+		subKey = valueName + _T("\\DefaultIcon");
+		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
+			return nullptr;
+		}
+
+		HICON icon = nullptr;
+		if (GetDefaultIcon(iconPath, icon) == false) {
+			continue;
+		}
+		// 次回以降は再利用できるよう保持しておく
+		mFileExtIconCache[fileExt] = ICONITEM(icon);
+		return icon;
+	}
+
+	return nullptr;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -486,40 +545,19 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 
 HICON IconLoader::LoadExtensionIcon(const CString& fileExt)
 {
+	// キャッシュに存在する場合はそれを返す
 	auto it = in->mFileExtIconCache.find(fileExt);
 	if (it != in->mFileExtIconCache.end()) {
 		return it->second.IconHandle();
 	}
 
-	CString iconPath;
-	CString subKey = fileExt;
-	subKey += _T("\\OpenWithProgIDs");
-	RegistryKey HKCR(HKEY_CLASSES_ROOT);
-	std::vector<CString> valueNames;
-	if (HKCR.EnumValueNames(subKey, valueNames) == false) {
-		return nullptr;
-	}
-
-	for (auto& valueName : valueNames) {
-		if (valueName.IsEmpty()) {
-			continue;
-		}
-
-		subKey = valueName + _T("\\DefaultIcon");
-		if (HKCR.GetValue(subKey, _T(""), iconPath) == false) {
-			return nullptr;
-		}
-
-		// 次回以降は再利用
-		HICON icon = nullptr;
-		if (in->GetDefaultIcon(iconPath, icon) == false) {
-			continue;
-		}
-		in->mFileExtIconCache[fileExt] = ICONITEM(icon);
+	// HKCR/(拡張子)/(既定)からアイコン取得を試みる
+	auto icon = in->LoadIconFromDefaultValue(fileExt);
+	if (icon) {
 		return icon;
 	}
-
-	return nullptr;
+	// 取得できない場合はHKCR/(拡張子)/OpenWithProgIDsからアイコン取得を試みる
+	return in->LoadIconFromOpenWithProgIDs(fileExt);
 }
 
 HICON IconLoader::GetDefaultIcon(const CString& path)

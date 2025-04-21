@@ -74,26 +74,4 @@ bool PowerPointWindow::GoToSlide(int16_t pageIndex)
 	return proxy->GoToSlide(pageIndex); 
 }
 
-HICON PowerPointWindow::ResolveIcon()
-{
-	// 既に取得済の場合はそのアイコンを返す
-	static HICON sIcon = nullptr;
-	if (sIcon) {
-		return sIcon;
-	}
-
-	auto iconLoader = IconLoader::Get();
-
-	// PowerPointアプリのウインドウハンとるを取得する
-	HWND hwnd = nullptr;
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	if (proxy->GetActivePowerPointWindow(hwnd) == false || IsWindow(hwnd) == FALSE) {
-		return iconLoader->LoadUnknownIcon();
-	}
-
-	// ウインドウハンドルからアイコンを取得する
-	sIcon = iconLoader->LoadIconFromHwnd(hwnd);
-	return sIcon;
-}
-
 }}} // end of namespace launcherapp::commands::presentation
