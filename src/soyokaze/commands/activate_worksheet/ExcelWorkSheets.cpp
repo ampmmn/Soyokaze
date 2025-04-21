@@ -51,7 +51,7 @@ void WorkSheets::PImpl::Update()
 		mStatus = STATUS_BUSY;
 	}
 
-	auto threadFunc= [&]() {
+	auto threadFunc = [&]() {
 
 		std::vector<std::pair<std::wstring, std::wstring> > sheets;
 		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
