@@ -35,6 +35,7 @@ protected:
 	afx_msg void OnButtonAdd();
 	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonDelete();
+	afx_msg void OnButtonBulkAdd();
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyItemClick(NMHDR *pNMHDR, LRESULT *pResult);

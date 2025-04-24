@@ -1470,6 +1470,9 @@
     <ClInclude Include="processproxy\share\AfxWFunctions.h">
       <Filter>processproxy\share</Filter>
     </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecEnvBulkAddDialog.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2605,6 +2608,9 @@
     </ClCompile>
     <ClCompile Include="processproxy\share\AfxWFunctions.cpp">
       <Filter>processproxy\share</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecEnvBulkAddDialog.cpp">
+      <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 #include "ShellExecEditEnvPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "commands/shellexecute/ShellExecEnvValueEditDialog.h"
+#include "commands/shellexecute/ShellExecEnvBulkAddDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
@@ -47,6 +48,7 @@ BEGIN_MESSAGE_MAP(SettingPageEnv, SettingPage)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
+	ON_COMMAND(IDC_BUTTON_BULKADD, OnButtonBulkAdd)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_ENVIRON, OnNotifyItemChanged)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_ENVIRON, OnNotifyItemClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_ENVIRON, OnNotifyItemDblClk)
@@ -285,6 +287,50 @@ void SettingPageEnv::OnButtonDelete()
 	auto it = in->mEnviron.find(name);
 	if (it != in->mEnviron.end()) {
 		in->mEnviron.erase(it);
+	}
+}
+
+void SettingPageEnv::OnButtonBulkAdd()
+{
+	// 追加のための編集ダイアログを表示
+	BulkAddDialog dlg(this);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	// 追加された名前と値を取得
+	BulkAddDialog::ItemList items;
+	dlg.GetItems(items);
+
+	CListCtrl* listWnd = (CListCtrl*)GetDlgItem(IDC_LIST_ENVIRON);
+	int count = listWnd->GetItemCount();
+
+	// 名前と位置の対応表を作成する
+	std::map<CString, int> itemIndexMap;
+	for (int i = 0; i < count; ++i) {
+		auto name = listWnd->GetItemText(i, 0);
+		itemIndexMap[name] = i;
+	}
+
+	for (const auto& item : items) {
+		const auto& name = item.first;
+		const auto& value = item.second;
+
+		auto it = itemIndexMap.find(name);
+		bool isExist = it != itemIndexMap.end();
+
+		// 値が存在する場合は上書き、存在しない場合は末尾に追加
+		if (isExist) {
+			int itemIndex = it->second;
+			listWnd->SetItemText(itemIndex, 0, name);
+			listWnd->SetItemText(itemIndex, 1, value);
+		}
+		else {
+			int itemIndex = count++;
+			listWnd->InsertItem(itemIndex, name);
+			listWnd->SetItemText(itemIndex, 1, value);
+		}
+		in->mEnviron[name] = value;
 	}
 }
 

@@ -159,6 +159,7 @@
 #define IDD_SHELLEXEC_ENV               252
 #define IDD_SHELLEXEC_ENVLIST           252
 #define IDD_SHELLEXEC_ENVEDIT           253
+#define IDD_SHELLEXEC_ENVBULKADD        254
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -247,6 +248,7 @@
 #define IDC_BUTTON_EDIT3                1037
 #define IDC_BUTTON_DELETE               1038
 #define IDC_BUTTON_EDIT4                1039
+#define IDC_BUTTON_BULKADD              1039
 #define IDC_CHECK_USEFILER              1040
 #define IDC_BUTTON_UP                   1041
 #define IDC_CHECK_TOPMOST               1043
