@@ -124,6 +124,8 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	// ユーザ設定ディレクトリを作成する
 	GetProfileDirRoot(path, MAX_PATH_NTFS);
 	if (Path::IsDirectory(path) == FALSE) {
+		// Note: 現状、Logger::InitializeDefaultLog内でログファイルを初期化する際にディレクトリが作成されてしまうため、
+		//       ここに到達することはない
 		if (CreateDirectory(path, NULL) == FALSE) {
 			return false;
 		}
@@ -131,7 +133,12 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 
 	if (isNewCreated) {
 		// ディレクトリは新規に作成されたものかどうか?
-		*isNewCreated = IsDirectoryEmpty(path);
+		bool is_new = IsDirectoryEmpty(path);
+		if (is_new) {
+			// 新規作成時は隠しファイル属性を付与する
+			SetFileAttributes(path, FILE_ATTRIBUTE_HIDDEN);
+		}
+		*isNewCreated = is_new;
 	}
 
 	// PC固有のユーザ設定を置くための中間ディレクトリを作成する
