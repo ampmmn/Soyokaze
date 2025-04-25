@@ -79,9 +79,6 @@
     <Filter Include="commands\uwp">
       <UniqueIdentifier>{c363a251-f52b-4690-8e0e-bfed0db7cd08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands\outlook">
-      <UniqueIdentifier>{7dcc6232-f4d4-4547-87f2-e6e0c65c1d55}</UniqueIdentifier>
-    </Filter>
     <Filter Include="commands\decodestring">
       <UniqueIdentifier>{bdfa4983-1c39-4ead-8acb-70825c844131}</UniqueIdentifier>
     </Filter>
@@ -518,15 +515,6 @@
     </ClInclude>
     <ClInclude Include="commands\common\SubProcess.h">
       <Filter>commands\common</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\outlook\MailCommand.h">
-      <Filter>commands\outlook</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\outlook\OutlookItemProvider.h">
-      <Filter>commands\outlook</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\outlook\OutlookItems.h">
-      <Filter>commands\outlook</Filter>
     </ClInclude>
     <ClInclude Include="commands\decodestring\DecodeStringCommandProvider.h">
       <Filter>commands\decodestring</Filter>
@@ -1747,15 +1735,6 @@
     </ClCompile>
     <ClCompile Include="commands\common\SubProcess.cpp">
       <Filter>commands\common</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\outlook\MailCommand.cpp">
-      <Filter>commands\outlook</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\outlook\OutlookItemProvider.cpp">
-      <Filter>commands\outlook</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\outlook\OutlookItems.cpp">
-      <Filter>commands\outlook</Filter>
     </ClCompile>
     <ClCompile Include="commands\decodestring\DecodeStringCommandProvider.cpp">
       <Filter>commands\decodestring</Filter>

@@ -12,6 +12,7 @@
 ## Changed
 
 - #65 変数の初期化をuniform initializationで行う
+- #71 【Outlookメール表示】機能を削除
 
 ## Fixed
 

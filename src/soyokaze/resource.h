@@ -361,7 +361,6 @@
 #define IDC_CHECK_REGEXP                1116
 #define IDC_CHECK_ENABLE_UWPAPPS2       1116
 #define IDC_CHECK_ENABLE_MMCSNAPINS     1116
-#define IDC_CHECK_ENABLE_OUTLOOKMAIL    1117
 #define IDC_EDIT_URL                    1118
 #define IDC_CHECK_ENABLE_MSSETTINGS     1118
 #define IDC_CHECK_REGEXP2               1119

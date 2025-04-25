@@ -632,9 +632,6 @@
     <ClInclude Include="commands\history\HistoryCommandProvider.h" />
     <ClInclude Include="commands\mailto\MailToCommand.h" />
     <ClInclude Include="commands\mailto\MailToCommandProvider.h" />
-    <ClInclude Include="commands\outlook\MailCommand.h" />
-    <ClInclude Include="commands\outlook\OutlookItemProvider.h" />
-    <ClInclude Include="commands\outlook\OutlookItems.h" />
     <ClInclude Include="commands\pathconvert\AppSettingPathConvertPage.h" />
     <ClInclude Include="commands\pathconvert\FileProtocolConvertAdhocCommand.h" />
     <ClInclude Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.h" />
@@ -1044,9 +1041,6 @@
     <ClCompile Include="commands\history\HistoryCommandProvider.cpp" />
     <ClCompile Include="commands\mailto\MailToCommand.cpp" />
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp" />
-    <ClCompile Include="commands\outlook\MailCommand.cpp" />
-    <ClCompile Include="commands\outlook\OutlookItemProvider.cpp" />
-    <ClCompile Include="commands\outlook\OutlookItems.cpp" />
     <ClCompile Include="commands\pathconvert\AppSettingPathConvertPage.cpp" />
     <ClCompile Include="commands\pathconvert\FileProtocolConvertAdhocCommand.cpp" />
     <ClCompile Include="commands\pathconvert\GitBashToLocalPathAdhocCommand.cpp" />

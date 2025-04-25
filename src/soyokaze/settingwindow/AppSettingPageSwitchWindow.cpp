@@ -40,8 +40,6 @@ public:
 	BOOL mIsEnableWorksheet{FALSE};
 	// PowerPointスライド名によるウインドウ切り替え機能
 	BOOL mIsEnableSlide{FALSE};
-	// Outlookメール選択機能(Inboxのみ)
-	BOOL mIsEnableOutlookMail{FALSE};
 
 	Settings* mSettingsPtr{nullptr};
 };
@@ -58,7 +56,6 @@ void SwitchWindowSettingDialog::OnOK()
 	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
 	settingsPtr->Set(_T("PowerPoint:Prefix"), mPrefixPresentation);
 	settingsPtr->Set(_T("PowerPoint:EnableSlide"), (bool)mIsEnableSlide);
-	settingsPtr->Set(_T("Soyokaze:IsEnableOutlookMailItem"), (bool)mIsEnableOutlookMail);
 	__super::OnOK();
 }
 
@@ -71,7 +68,6 @@ void SwitchWindowSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
 	DDX_Text(pDX, IDC_EDIT_PREFIX_PRESENTATION, mPrefixPresentation);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SLIDE, mIsEnableSlide);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOKMAIL, mIsEnableOutlookMail);
 	
 }
 
@@ -121,7 +117,6 @@ void SwitchWindowSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), true);
 	mPrefixPresentation = settingsPtr->Get(_T("PowerPoint:Prefix"), _T("pj"));
 	mIsEnableSlide = settingsPtr->Get(_T("PowerPoint:EnableSlide"), false);
-	mIsEnableOutlookMail = settingsPtr->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
 }
 
 void SwitchWindowSettingDialog::OnUpdateStatus()

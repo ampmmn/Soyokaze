@@ -142,9 +142,6 @@ public:
 	// MMCスナップインの検索を使用するか
 	bool IsEnableMMCSnapin();
 
-	// Outlookのメール(受信トレイ)の検索を使用するか
-	bool IsEnableOutlookMailItem();
-
 	// GitBashパス変換機能を使用するか
 	bool IsEnableGitBashPath();
 // fileプロトコルパス変換機能を使用するか

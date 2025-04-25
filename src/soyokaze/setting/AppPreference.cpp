@@ -850,12 +850,6 @@ bool AppPreference::IsEnableMMCSnapin()
 	return in->Get(_T("Soyokaze:IsEnableMMCSnapin"), true);
 }
 
-// Outlookのメール(受信トレイ)の検索を使用するか
-bool AppPreference::IsEnableOutlookMailItem()
-{
-	return in->Get(_T("Soyokaze:IsEnableOutlookMailItem"), false);
-}
-
 // GitBashパス変換機能を使用するか
 bool AppPreference::IsEnableGitBashPath()
 {
