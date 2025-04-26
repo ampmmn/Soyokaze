@@ -114,6 +114,7 @@ struct ClipboardHistoryProvider::PImpl :
 		if (mIsEnable) {
 			// クリップボード履歴を有効にする
 			mHistoryDB.Load(mNumOfResults, mSizeLimit, mCountLimit);
+			mHistoryDB.UseRegExpSearch(pref->IsDisableMigemoForClipboardHistory() == false);
 			mReceiver.Activate(mInterval, mExcludePattern);
 			mReceiver.AddListener(&mHistoryDB);
 		}

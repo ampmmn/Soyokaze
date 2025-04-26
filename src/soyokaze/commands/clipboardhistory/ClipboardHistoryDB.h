@@ -27,7 +27,9 @@ public:
 
 	bool Load(int numResults, int sizeLimit, int countLimit);
 	bool Unload();
+	void UseRegExpSearch(bool useRegExp);
 	void Query(Pattern* pattern, ResultList& result);
+
 
 	//! クリップボードが更新された
 	void UpdateClipboard(LPCTSTR data) override;

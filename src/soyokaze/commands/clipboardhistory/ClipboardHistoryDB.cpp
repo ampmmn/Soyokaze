@@ -6,6 +6,7 @@
 #include "utility/SQLite3Database.h"
 #include "utility/SHA1.h"
 #include "utility/Path.h"
+#include "utility/CharConverter.h"
 #include <mutex>
 
 #ifdef _DEBUG
@@ -16,9 +17,10 @@ namespace launcherapp {
 namespace commands {
 namespace clipboardhistory {
 
-constexpr int64_t DBVERSION = 1; ///< データベースバージョン
+constexpr int64_t DBVERSION = 2; ///< データベースバージョン
 
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
+using CharConverter = launcherapp::utility::CharConverter;
 
 /**
  * @brief ClipboardHistoryDB の内部実装クラス
@@ -38,9 +40,13 @@ struct ClipboardHistoryDB::PImpl
 	 */
 	void FetchAll(ResultList& result);
 
+	// UTF-8表現で2byte以上になる文字を取得
+	void ExtractMultiByteWords(LPCTSTR data, std::wstring& words);
+
 	int mNumOfResults{16}; ///< 結果の数
 	int mSizeLimit{64}; ///< サイズ制限
 	int mCountLimit{1024}; ///< カウント制限
+	bool mIsUseRegExp{true}; // 正規表現検索を使うか?
 
 	std::unique_ptr<SQLite3Database> mDB; ///< SQLite3 データベース
 	std::mutex mMutex;
@@ -62,14 +68,17 @@ void ClipboardHistoryDB::PImpl::Query(
 	static LPCTSTR basePart = _T("SELECT DISTINCT APPENDDATE,DATA from TBL_CLIPHISTORY where ");
 	CString queryStr(basePart);
 
+	bool isUseRegExp = mIsUseRegExp;
+
 	bool isFirst = true;
 	CString token;
 	for(const auto& word : words) {
-		if (word.mMethod == PatternInternal::RegExp) {
-			token.Format(_T("%s (data regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
+		if (isUseRegExp && word.mMethod == PatternInternal::RegExp) {
+			token.Format(_T("%s (DATA like '%%%s%%' OR WORDS_MB regexp '%s') "), isFirst ? _T("") : _T("and"),
+			             (LPCTSTR)word.mRawWord, (LPCTSTR)word.mWord);
 		}
 		else {
-			token.Format(_T("%s data like '%%%s%%' "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord);
+			token.Format(_T("%s data like '%%%s%%' "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mRawWord);
 		}
 		queryStr += token;
 		isFirst = false;
@@ -111,8 +120,51 @@ void ClipboardHistoryDB::PImpl::Query(
  */
 void ClipboardHistoryDB::PImpl::FetchAll(std::vector<ITEM>& result)
 {
-	std::vector<PatternInternal::WORD> words = { { _T("."),  PatternInternal::RegExp} };
+	std::vector<PatternInternal::WORD> words = { { _T("."),  _T(""), PatternInternal::RegExp}};
 	Query(words, result);
+}
+
+// UTF-8表現で2byte以上になる文字列を空白区切りで生成する
+void ClipboardHistoryDB::PImpl::ExtractMultiByteWords(LPCTSTR data, std::wstring& words)
+{
+	std::string str_utf8;
+	UTF2UTF(std::wstring{data}, str_utf8);
+
+	std::string dst;
+
+	size_t i =0;
+	size_t len = str_utf8.size();
+
+	for (i = 0; i < len; ++i) {
+		int n = CharConverter::GetUTF8CharSize(str_utf8[i]);
+		if (n == 1 || n == -1) {
+			continue;
+		}
+
+		bool is_inserted = false;
+
+		size_t j = 0;
+		for (j = i + n; j < len; ++j) {
+			int n2 = CharConverter::GetUTF8CharSize(str_utf8[j]);
+			if (n2 > 1) {
+				j += n2 - 1;
+				continue;
+			}
+
+			dst.insert(dst.end(), &str_utf8[i], &str_utf8[j]);
+			i=j;
+			is_inserted= true;
+			break;
+		}
+
+		if (is_inserted) {
+			continue;
+		}
+		dst.insert(dst.end(), &str_utf8[i], &str_utf8[j]);
+		i = j;
+	}
+
+	UTF2UTF(dst, words);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +185,29 @@ ClipboardHistoryDB::~ClipboardHistoryDB()
 {
 }
 
+static bool CheckSchemaVersion(SQLite3Database& db, int64_t version)
+{
+	struct local_callback_version {
+		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
+			auto param = (local_callback_version*)p;
+			param->mVersion = std::stoull(argv[0]);
+			return 1;  // 一つだけ取得できればOK
+		}
+		int64_t mVersion = 0;   // DBから取得したバージョン
+	} callback;
+
+	db.Query(_T("SELECT APPENDDATE FROM TBL_CLIPHISTORY WHERE ID = '__VERSION__';"), local_callback_version::Callback, &callback);
+
+	bool isSameVersion = (version == callback.mVersion);
+	if (isSameVersion == false) {
+		SPDLOG_DEBUG(_T("Scheme version differ. expect:{0} actual:{1}"), version, callback.mVersion);
+	}
+	return isSameVersion;
+}
+
+
 /**
  * @brief データベースをロードする
  * @param numResults 結果の数
@@ -152,20 +227,26 @@ bool ClipboardHistoryDB::Load(int numResults, int sizeLimit, int countLimit)
 	Path dbPath(Path::APPDIRPERMACHINE, _T("clipboardhistory.db"));
 	in->mDB.reset(new SQLite3Database(dbPath));
 
-	auto& db = *in->mDB.get();
+	// スキーマバージョンを調べて違っていたらファイル削除して作り直す
+	if (CheckSchemaVersion(*in->mDB.get(), DBVERSION) == false) {
+		in->mDB->Close();
+		DeleteFile(dbPath);
+		in->mDB.reset(new SQLite3Database(dbPath));
+	}
 
-	// FIXME: スキーマバージョンを調べて違っていたらファイル削除
+	auto& db = *in->mDB.get();
 
 	// 初回の場合はテーブルを作成する
 	CString queryStr;
 
 	if (in->mDB->TableExists(_T("TBL_CLIPHISTORY")) == false) {
 		// 4.1 更新日時情報テーブルがなければ新規作成
-		db.Query(_T("CREATE TABLE IF NOT EXISTS TBL_CLIPHISTORY(ID TEXT PRIMARY KEY NOT NULL, APPENDDATE INTEGER NOT NULL, DATA TEXT);"), nullptr, nullptr);
+		db.Query(_T("CREATE TABLE IF NOT EXISTS TBL_CLIPHISTORY(ID TEXT PRIMARY KEY NOT NULL, APPENDDATE INTEGER NOT NULL, DATA TEXT, WORDS_MB TEXT);"), nullptr, nullptr);
 		// スキーマバージョンを設定
-		queryStr.Format(_T("INSERT INTO TBL_CLIPHISTORY (ID, APPENDDATE, DATA) VALUES ('__VERSION__', %d, '');"), (int)DBVERSION);
+		queryStr.Format(_T("INSERT INTO TBL_CLIPHISTORY (ID, APPENDDATE, DATA, WORDS_MB) VALUES ('__VERSION__', %d, '', '');"), (int)DBVERSION);
 		db.Query(queryStr, nullptr, nullptr);
 	}
+
 
 	// トリガー設定して上限を設ける
 	db.Query(_T("DROP TRIGGER limit_clip_history_count;"), nullptr, nullptr);
@@ -189,6 +270,15 @@ bool ClipboardHistoryDB::Unload()
 		in->mDB.reset();
 	}
 	return true;
+}
+
+/**
+ 	@brief 正規表現検索を使うか?
+ 	@param[in] useRegExp 正規表現検索を使うか?
+*/
+void ClipboardHistoryDB::UseRegExpSearch(bool useRegExp)
+{
+	in->mIsUseRegExp = useRegExp;
 }
 
 /**
@@ -235,6 +325,9 @@ void ClipboardHistoryDB::UpdateClipboard(LPCTSTR data)
 		spdlog::debug("copy data is too large.");
 		return ;
 	}
+	
+	std::wstring multiByteWords;
+	in->ExtractMultiByteWords(data, multiByteWords);
 
 	// 重複チェック用のキーを生成
 	SHA1 id;
@@ -243,6 +336,8 @@ void ClipboardHistoryDB::UpdateClipboard(LPCTSTR data)
 	// エスケープ
 	CString escapedData(data);
 	escapedData.Replace(_T("'"), _T("''"));
+
+	// Note: multiByteWordsはマルチバイト文字限定のはずだから、"'"のエスケープは不要
 		
 	// 現在時刻
 	FILETIME ft;
@@ -252,8 +347,8 @@ void ClipboardHistoryDB::UpdateClipboard(LPCTSTR data)
 	CString idStr = id.Finish();
 
 	CString queryStr;
-	queryStr.Format(_T("INSERT INTO TBL_CLIPHISTORY (ID, APPENDDATE, DATA) VALUES ('%s', %lld, '%s');"),
-	                (LPCTSTR)idStr, timeVal, (LPCTSTR)escapedData);
+	queryStr.Format(_T("INSERT INTO TBL_CLIPHISTORY (ID, APPENDDATE, DATA, WORDS_MB) VALUES ('%s', %lld, '%s', '%s');"),
+	                (LPCTSTR)idStr, timeVal, (LPCTSTR)escapedData, multiByteWords.c_str());
 
 	// データベースに挿入
 	std::lock_guard<std::mutex> lock(in->mMutex);

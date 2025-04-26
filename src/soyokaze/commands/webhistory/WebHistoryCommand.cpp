@@ -376,7 +376,7 @@ bool WebHistoryCommand::QueryCandidates(
 		CString tok = extraKeyword.Tokenize(_T(" "), n);
 		while(tok.IsEmpty() == FALSE) {
 
-			words.push_back(PatternInternal::WORD(tok, PatternInternal::FixString));
+			words.push_back(PatternInternal::WORD(tok));
 			tok = extraKeyword.Tokenize(_T(" "), n);
 		}
 	}

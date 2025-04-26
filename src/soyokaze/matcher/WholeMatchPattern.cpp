@@ -107,7 +107,7 @@ bool WholeMatchPattern::shouldWholeMatch()
 
 void WholeMatchPattern::GetWords(std::vector<WORD>& words)
 {
-	words.push_back(WORD(in->mWholeText, PatternInternal::FixString));
+	words.push_back(WORD(in->mWholeText));
 }
 
 void WholeMatchPattern::GetRawWords(std::vector<CString>& words)

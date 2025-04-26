@@ -1347,6 +1347,8 @@ BEGIN
     LTEXT           "無視するパターン(&E):",IDC_STATIC,33,135,66,8
     EDITTEXT        IDC_EDIT_EXCLUDE,38,147,211,52,ES_AUTOHSCROLL
     LTEXT           "(正規表現で指定します)",IDC_STATIC,117,135,89,8
+    CONTROL         "クリップボード履歴ではC/Migemoを使用しない(&M)",IDC_CHECK_DISABLEMIGEMO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,206,228,10
 END
 
 IDD_ALIAS_EDIT DIALOGEX 0, 0, 307, 135

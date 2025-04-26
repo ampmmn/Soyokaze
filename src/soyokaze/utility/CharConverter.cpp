@@ -9,8 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace utility {
+namespace launcherapp { namespace utility {
 
 CharConverter::Exception::Exception() :
  	std::runtime_error("Character conversion error")
@@ -174,7 +173,32 @@ int CharConverter::ScalarToUTF8(uint32_t scalar, char* dst)
 	return 0;
 }
 
+// UTF-8文字のバイト数を判定する関数
+int CharConverter::GetUTF8CharSize(const char* str)
+{
+	if (str == nullptr || *str == '\0') {
+		return 0;
+	}
 
-} // end of namespace utility
-} // end of namespace launcherapp
+	auto leadByte = static_cast<unsigned char>(str[0]);
+
+	// UTF-8の先頭バイトの形式に基づいて判定
+	if ((leadByte & 0x80) == 0x00) { // 1バイト文字 (ASCII)
+		return 1;
+	} else if ((leadByte & 0xE0) == 0xC0) { // 2バイト文字
+		return 2;
+	} else if ((leadByte & 0xF0) == 0xE0) { // 3バイト文字
+		return 3;
+	} else if ((leadByte & 0xF8) == 0xF0) { // 4バイト文字
+		return 4;
+	}
+	return -1;
+}
+
+int CharConverter::GetUTF8CharSize(char c)
+{
+	return GetUTF8CharSize(&c);
+}
+
+}} // end of namespace launcherapp::utility
 

@@ -3,8 +3,13 @@
 #include "PatternInternal.h"
 
 
-PatternInternal::WORD::WORD(const CString& word, MatchMethod method) :
- 	mWord(word), mMethod(method)
+PatternInternal::WORD::WORD(const CString& word, const CString& rawWord, MatchMethod method) :
+ 	mWord(word), mRawWord(rawWord), mMethod(method)
+{
+}
+
+PatternInternal::WORD::WORD(const CString& word) :
+ 	mWord(word), mRawWord(word), mMethod(PatternInternal::FixString)
 {
 }
 

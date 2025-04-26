@@ -245,10 +245,10 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 				// ↓ChromiumBrowseHistory用のデータ。
 				if (in->mIsUseMigemoForHistory) {
-					words.push_back(WORD(migemoExpr, PatternInternal::RegExp));
+					words.push_back(WORD(migemoExpr, token, PatternInternal::RegExp));
 				}
 				else {
-					words.push_back(WORD(token, PatternInternal::FixString));
+					words.push_back(WORD(token));
 				}
 			}
 			else {
@@ -256,7 +256,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 					std::wstring escapedPat = StripEscapeChars(token);
 					patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
 				}
-				words.push_back(WORD(token, PatternInternal::FixString));
+				words.push_back(WORD(token));
 			}
 		}
 		catch (std::regex_error& e) {
@@ -267,7 +267,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 			std::wstring escapedPat = StripEscapeChars(token);
 			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
-			words.push_back(WORD(token, PatternInternal::FixString));
+			words.push_back(WORD(token));
 			break;
 		}
 

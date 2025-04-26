@@ -13,9 +13,11 @@ public:
 	};
 
 	struct WORD {
-		WORD(const CString& word, MatchMethod method);
+		WORD(const CString& word, const CString& rawWords, MatchMethod method);
+		WORD(const CString& word);
 
-		CString mWord;    // パターン
+		CString mWord;       // パターン
+		CString mRawWord;    // 元の文字
 		MatchMethod mMethod; // 比較方法
 	};
 

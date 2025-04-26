@@ -3,8 +3,7 @@
 #include <string>
 #include <stdexcept>
 
-namespace launcherapp {
-namespace utility {
+namespace launcherapp { namespace utility {
 
 class CharConverter
 {
@@ -31,6 +30,8 @@ public:
 	static std::wstring& UTF2UTF(const std::string& src, std::wstring& dst); 
 
 	static int ScalarToUTF8(uint32_t scalar, char* dst);
+	static int GetUTF8CharSize(const char* str);
+	static int GetUTF8CharSize(char c);
 
 
 protected:
@@ -38,6 +39,5 @@ protected:
 };
 
 
-} // end of namespace utility
-} // end of namespace launcherapp
+}} // end of namespace launcherapp::utility
 

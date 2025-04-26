@@ -198,6 +198,7 @@ public:
 	int GetClipboardHistoryCountLimit();
 	int GetClipboardHistoryInterval();
 	CString GetClipboardHistoryExcludePattern();
+	bool IsDisableMigemoForClipboardHistory();
 
 	// ログレベル
 	int GetLogLevel();

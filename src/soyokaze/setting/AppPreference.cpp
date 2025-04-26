@@ -1034,6 +1034,10 @@ CString AppPreference::GetClipboardHistoryExcludePattern()
 	return in->Get(_T("ClipboardHistory:ExcludePattern"), _T(""));
 }
 
+bool AppPreference::IsDisableMigemoForClipboardHistory()
+{
+	return in->Get(_T("ClipboardHistory:IsDisableMigemo"), true);
+}
 
 // ログレベル
 int AppPreference::GetLogLevel()

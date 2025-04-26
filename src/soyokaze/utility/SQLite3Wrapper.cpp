@@ -105,8 +105,12 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 	char* reg = (char*)sqlite3_value_text(values[0]);
 	char* text = (char*)sqlite3_value_text(values[1]);
 
-	if ( argc != 2 || reg == 0 || text == 0) {
+	if ( argc != 2 || reg == 0) {
 		sqlite3_result_error(ctx, "SQL function regexp() called with invalid arguments.\n", -1);
+		return;
+	}
+	if (text == 0) {
+		sqlite3_result_int(ctx, 0);
 		return;
 	}
 
