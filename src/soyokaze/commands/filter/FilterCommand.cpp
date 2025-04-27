@@ -338,6 +338,7 @@ bool FilterCommand::QueryCandidates(
 		return false;
 	}
 
+	// 先頭のコマンド名を除いた検索文字列を生成する
 	RefPtr<PatternInternal> pat2;
 	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
 		return false;
@@ -351,13 +352,15 @@ bool FilterCommand::QueryCandidates(
 		queryStr += _T(" ");
 	}
 
+	// 候補を取得する
 	std::vector<FilterResult> results;
 	in->mExecutor->Query(queryStr, results);
 
+	// 取得した一覧を呼び出し元に渡す
 	for (auto& result : results) {
 		int level = result.mMatchLevel;
 		if (level == Pattern::PartialMatch) {
-			// コマンド名が一致しているので少なくとも前方一致
+			// コマンド名が一致しているので少なくとも前方一致とする
 			level = Pattern::FrontMatch;
 		}
 		commands.Add(CommandQueryItem(level, new FilterAdhocCommand(in->mParam, result)));

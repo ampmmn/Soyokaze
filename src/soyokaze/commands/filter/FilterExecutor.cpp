@@ -226,6 +226,9 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 		StripDoubleQuate(workDirStr);
 	}
 
+	PERFLOG(_T("LoadCandidatesFromSubProcess (1/4) command:{}"), (LPCTSTR)commandLine);
+	spdlog::stopwatch sw;
+
 	LPCTSTR workDir = workDirStr.IsEmpty() ? nullptr : (LPCTSTR)workDirStr;
 	BOOL isOK = CreateProcess(path, commandLine.GetBuffer(commandLine.GetLength()), NULL, NULL, TRUE, 0, NULL, workDir, &si, &pi);
 	commandLine.ReleaseBuffer();
@@ -235,6 +238,10 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 		spdlog::error(_T("Failed to run process ErrString:{}"), (LPCTSTR)errStr);
 		return false;
 	}
+
+	PERFLOG("LoadCandidatesFromSubProcess (2/4) time:{}", sw);
+	sw.reset();
+
 
 	CloseHandle(pi.hThread);
 
@@ -272,8 +279,12 @@ bool FilterExecutor::PImpl::LoadCandidatesFromSubProcess(const CommandParam& par
 
 	CloseHandle(pi.hProcess);
 
+	PERFLOG("LoadCandidatesFromSubProcess (3/4) time:{}", sw);
+	sw.reset();
 
 	MakeCandidatesFromString(src);
+
+	PERFLOG("LoadCandidatesFromSubProcess (4/4) time:{}", sw);
 	return true;
 }
 
@@ -471,9 +482,14 @@ size_t FilterExecutor::GetCandidatesCount()
 	return in->mAllCandidates.size();
 }
 
-void FilterExecutor::Query(const CString& keyword, FilterResultList& result)
+/**
+ 	検索文字列に対応した候補一覧を得る
+ 	@param[in]  query 検索文字列
+ 	@param[out] result  
+*/
+void FilterExecutor::Query(const CString& query, FilterResultList& result)
 {
-	if (keyword.IsEmpty()) {
+	if (query.IsEmpty()) {
 		// 入力キーワードが空文字の場合は全てを候補に追加する
 		std::lock_guard<std::mutex> lock(in->mMutex);
 		for (auto& value: in->mAllCandidates) {
@@ -485,7 +501,7 @@ void FilterExecutor::Query(const CString& keyword, FilterResultList& result)
 
 	// 入力キーワードによる絞り込みを開始する
 	// (コンストラクタで作成したスレッド側で行う)
-	in->StartQuery(keyword);
+	in->StartQuery(query);
 
 	// スレッドの作業完了を待つ
 	WaitForMultipleObjects((int)in->mCompleteEvents.size(), &in->mCompleteEvents.front(), TRUE, INFINITE);
