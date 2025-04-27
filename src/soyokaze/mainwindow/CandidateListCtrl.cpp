@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CandidateListCtrl.h"
 #include "CandidateList.h"
+#include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "utility/Accessibility.h"
 #include "gui/ColorSettings.h"
@@ -11,6 +12,9 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using CommandRepository = launcherapp::core::CommandRepository;
+using Command = launcherapp::core::Command;
 
 constexpr int ITEM_MARGIN = 4;
 
@@ -192,21 +196,33 @@ static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 
 	auto orgFont = SelectObject(hdc, hf);
 
-	// 24個ぶんのスペースを描画できるだけの幅を種別描画用の列幅として確保する
-	LPCTSTR text = _T("                        ");
 
-	CSize size;
-  GetTextExtentPoint32(hdc, text, (int)_tcslen(text), &size);
+	std::vector<Command*> commands;
+	auto cmdRepo = CommandRepository::GetInstance();
+	cmdRepo->EnumCommands(commands);
+
+	int maxWidth = 0;
+
+	// コマンド種別テキストをすべて取得して、最大のものを得る
+	for (auto& cmd : commands) {
+		CString typeName = cmd->GetTypeDisplayName();
+		CSize size;
+		GetTextExtentPoint32(hdc, typeName, typeName.GetLength(), &size);
+		maxWidth = (std::max)(maxWidth, (int)size.cx);
+
+		cmd->Release();
+	}
+
 	TEXTMETRIC tm;
 	GetTextMetrics(hdc, &tm);
 
-	spdlog::debug("typecol len:{}", size.cx);
+	spdlog::debug("typecol len:{}", maxWidth);
 
 	SelectObject(hdc, orgFont);
 	ReleaseDC(hwnd, hdc);
 
 
-	typeColWidth = size.cx;
+	typeColWidth = maxWidth;
 	textHeight = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
 }
 
