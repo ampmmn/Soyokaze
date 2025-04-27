@@ -111,7 +111,7 @@ void CandidateListCtrl::PImpl::DrawItemName(
 	name.Replace(_T("\n"), _T("\\n"));
 	name.Replace(_T("\t"), _T("  "));
 
-	pDC->DrawText(name, rcItem, DT_LEFT | DT_END_ELLIPSIS);
+	pDC->DrawText(name, rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS);
 }
 
 /**
@@ -132,7 +132,7 @@ void CandidateListCtrl::PImpl::DrawItemCategory(
 	CRect rcItem;
 	thisPtr->GetSubItemRect(itemId, 1, LVIR_LABEL, rcItem);
 	auto cmd = mCandidates->GetCommand(itemId);
-	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, DT_LEFT | DT_END_ELLIPSIS);
+	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 
 
 	typeColWidth = maxWidth;
-	textHeight = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
+	textHeight = tm.tmHeight;
 }
 
 
