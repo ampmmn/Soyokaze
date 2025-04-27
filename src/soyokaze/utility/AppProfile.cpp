@@ -18,13 +18,14 @@
 
 constexpr LPCTSTR INTERMADIATE_DIRNAME = _T("per_machine");
 
-static void GetProfileDirRoot(TCHAR* path, size_t len)
+static void GetProfileDirRoot(TCHAR* path, size_t len, bool& isPortable)
 {
 	GetModuleFileName(NULL, path, (DWORD)len);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("profile"));
 	if (Path::IsDirectory(path)) {
 		// exeと同じディレクトリにprofileフォルダが存在する場合は、ポータブル版として動作する
+		isPortable = true;
 		return;
 	}
 	else {
@@ -39,13 +40,15 @@ static void GetProfileDirRoot(TCHAR* path, size_t len)
 
 		PathAppend(path, APP_PROFILE_DIRNAME);
 
+		isPortable = false;
 		return;
 	}
 }
 
 static void GetIntermadiateDirPath(TCHAR* path, size_t len)
 {
-	GetProfileDirRoot(path, len);
+	bool isPortable{false};
+	GetProfileDirRoot(path, len, isPortable);
 	PathAppend(path, INTERMADIATE_DIRNAME);
 }
 
@@ -64,7 +67,8 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len, bool isPerMachine)
 	GetComputerName(pcName, &bufLen);
 
 	if (isPerMachine == false) {
-		GetProfileDirRoot(path, len);
+		bool isPortable = false;
+		GetProfileDirRoot(path, len, isPortable);
 		return path;
 	}
 	else {
@@ -122,7 +126,8 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	LPTSTR path = pathBuf.data();
 
 	// ユーザ設定ディレクトリを作成する
-	GetProfileDirRoot(path, MAX_PATH_NTFS);
+	bool is_portable = false;
+	GetProfileDirRoot(path, MAX_PATH_NTFS, is_portable);
 	if (Path::IsDirectory(path) == FALSE) {
 		// Note: 現状、Logger::InitializeDefaultLog内でログファイルを初期化する際にディレクトリが作成されてしまうため、
 		//       ここに到達することはない
@@ -134,8 +139,9 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	if (isNewCreated) {
 		// ディレクトリは新規に作成されたものかどうか?
 		bool is_new = IsDirectoryEmpty(path);
-		if (is_new) {
+		if (is_new && is_portable == false) {
 			// 新規作成時は隠しファイル属性を付与する
+			// (ポータブル版の場合はポータブル版であることを識別しやすくするため隠しファイルにしない)
 			SetFileAttributes(path, FILE_ATTRIBUTE_HIDDEN);
 		}
 		*isNewCreated = is_new;
