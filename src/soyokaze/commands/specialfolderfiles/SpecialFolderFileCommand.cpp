@@ -2,8 +2,10 @@
 #include "framework.h"
 #include "SpecialFolderFileCommand.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -11,6 +13,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
 
 namespace launcherapp {
 namespace commands {
@@ -79,6 +82,84 @@ SpecialFolderFileCommand::Clone()
 {
 	return new SpecialFolderFileCommand(in->mItem);
 }
+
+// メニューの項目数を取得する
+int SpecialFolderFileCommand::GetMenuItemCount()
+{
+	return in->mItem.mType == TYPE_RECENT ? 3 : 2;
+}
+
+// メニューの表示名を取得する
+bool SpecialFolderFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+{
+	if (index == 0) {
+		static LPCWSTR name = L"実行(&E)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 1) {
+		static LPCWSTR name = L"パスを開く(&O)";
+		*displayNamePtr= name;
+		return true;
+	}
+	else if (index == 2) {
+		static LPCWSTR name = L"最近使ったファイルから削除する(&M)";
+		*displayNamePtr= name;
+		return true;
+	}
+	return false;
+}
+
+// メニュー選択時の処理を実行する
+bool SpecialFolderFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+{
+	if (index < 0 || 2 < index) {
+		return false;
+	}
+
+	if (index == 0) {
+		return Execute(param) != FALSE;
+	}
+
+	RefPtr<CommandNamedParameter> namedParam;
+	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+		return false;
+	}
+
+	if (index == 1) {
+		// パスを開くため、疑似的にCtrl押下で実行したことにする
+		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		return Execute(param) != FALSE;
+	}
+	else  {
+		// 削除する管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
+		if (in->mItem.mType != TYPE_RECENT) {
+			// 削除できるのは履歴のみ
+			return true;
+		}
+
+		if (Path::FileExists(in->mItem.mLinkPath) == FALSE) {
+			return true;
+		}
+		DeleteFile(in->mItem.mLinkPath);
+		return true;
+	}
+}
+
+bool SpecialFolderFileCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	return false;
+}
+
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands

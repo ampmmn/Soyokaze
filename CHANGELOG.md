@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- #80 「最近使ったファイル」を候補から削除する機能を追加
+
 ### Changed
 
 - #77 メインウインドウに直接SendMessage/PostMessageしない

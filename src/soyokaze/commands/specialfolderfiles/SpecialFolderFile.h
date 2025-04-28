@@ -16,6 +16,7 @@ struct ITEM
 	CString mName;
 	CString mFullPath;
 	CString mDescription;
+	CString mLinkPath;
 	int mType{TYPE_RECENT};
 	FILETIME mWriteTime{};
 };

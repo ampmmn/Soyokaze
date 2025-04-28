@@ -4104,7 +4104,7 @@ BEGIN
     IDS_ERR_GROUPITEMEMPTY  "グループとして実行するコマンドを追加してください"
     ID_STRING_MISMATCH      "(一致候補なし)"
     ID_STRING_DEFAULTDESCRIPTION "${app}"
-    IDS_MENUTEXT_SHOW       "表示(&U)"
+    IDS_MENUTEXT_SHOW       "入力画面を表示(&U)"
     IDS_TITLE_CONFIRMRUNGROUP "グループ実行の確認"
     IDS_ERR_NAMEISEMPTY     "名前を入力してください"
     IDS_ERR_ILLEGALCHARCONTAINS "使用できない文字が含まれています"
@@ -4124,7 +4124,7 @@ BEGIN
     IDS_ERR_HOTKEYALREADYUSE "指定したホットキーはすでに使用されています"
     IDS_ERR_HELPDOESNOTEXIST "ヘルプファイル(help.html)がありません"
     IDS_CONFIRM_DELETESHORTCUT " すべての $APPNAME へのショートカットを削除します。\nよろしいですか?"
-    IDS_MENUTEXT_HIDE       "隠す"
+    IDS_MENUTEXT_HIDE       "入力画面を隠す"
     IDS_FILTERCOMMAND       "フィルター"
     IDS_ERR_GETNEXTWINDOW   "アクティブウインドウを取得できませんでした"
     IDS_ERR_QUERYPROCESSINFO 

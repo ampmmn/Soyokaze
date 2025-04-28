@@ -174,6 +174,7 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 			PathRemoveExtension(item.mName.GetBuffer(item.mName.GetLength()));   // .lnkを抜く
 			item.mName.ReleaseBuffer();
 			item.mFullPath = ShortcutFile::ResolvePath(f.GetFilePath(), &item.mDescription);
+			item.mLinkPath = f.GetFilePath();
 
 			if (item.mFullPath.IsEmpty()) {
 				continue;
