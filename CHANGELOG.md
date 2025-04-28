@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+### Changed
+
+- #77 メインウインドウに直接SendMessage/PostMessageしない
 
 ## 0.39.0 - 2025-04-27
 

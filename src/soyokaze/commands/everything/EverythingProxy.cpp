@@ -8,7 +8,6 @@
 #include "icon/IconLoader.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "mainwindow/MainWindowDeactivateBlocker.h"
-#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

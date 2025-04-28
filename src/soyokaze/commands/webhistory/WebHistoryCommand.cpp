@@ -14,7 +14,7 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
 
@@ -166,12 +166,13 @@ BOOL WebHistoryCommand::Execute(Parameter* param_)
 {
 	UNREFERENCED_PARAMETER(param_);
 
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	bool isToggle = false;
+	mainWnd->ActivateWindow(isToggle);
 
 	auto cmdline = GetName();
 	cmdline += _T(" ");
-	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+	mainWnd->SetText(cmdline);
 	return TRUE;
 }
 

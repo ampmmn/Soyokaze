@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExitCommand.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -45,11 +45,8 @@ BOOL ExitCommand::Execute(Parameter* param)
 	// 別スレッド経由でコマンドが実行される場合があるので、
 	// PostMessageでメインウインドウに配送することにより
 	// メインウインドウ側スレッドの処理として終了処理を行う
-	SharedHwnd sharedHwnd;
-	HWND hwnd = sharedHwnd.GetHwnd();
-	if (hwnd) {
-		PostMessage(hwnd, WM_APP+8, 0, 0);
-	}
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->QuitApplication();
 	return TRUE;
 }
 

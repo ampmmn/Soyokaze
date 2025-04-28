@@ -6,7 +6,6 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
 

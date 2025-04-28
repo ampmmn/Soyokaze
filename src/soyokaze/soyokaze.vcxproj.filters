@@ -223,6 +223,9 @@
     <Filter Include="processproxy\share">
       <UniqueIdentifier>{219415d4-bd39-44df-b3b9-98b87491bca4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\controller">
+      <UniqueIdentifier>{40b0f3be-ef54-425d-a331-fd81d571efe8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1461,6 +1464,15 @@
     <ClInclude Include="commands\shellexecute\ShellExecEnvBulkAddDialog.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\controller\LauncherMainWindowController.h">
+      <Filter>mainwindow\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\controller\MainWindowController.h">
+      <Filter>mainwindow\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\controller\MainWindowControllerIF.h">
+      <Filter>mainwindow\controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2590,6 +2602,12 @@
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecEnvBulkAddDialog.cpp">
       <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\controller\LauncherMainWindowController.cpp">
+      <Filter>mainwindow\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\controller\MainWindowController.cpp">
+      <Filter>mainwindow\controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

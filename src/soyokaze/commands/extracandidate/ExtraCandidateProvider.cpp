@@ -90,6 +90,7 @@ struct ExtraCandidateProvider::PImpl : public AppPreferenceListenerIF, public Co
 	}
 	void OnLancuherActivate() override
 	{
+		// 入力欄が表示されるタイミングでキャッシュをリセット
 		for (auto source : mSources) {
 			source->ClearCache();
 		}

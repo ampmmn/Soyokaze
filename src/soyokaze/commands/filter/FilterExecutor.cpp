@@ -10,7 +10,7 @@
 #include "utility/LastErrorString.h"
 #include "utility/Pipe.h"
 #include "utility/RefPtr.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -299,8 +299,8 @@ bool FilterExecutor::PImpl::LoadCandidatesFromClipboard(const CommandParam& para
 	UNREFERENCED_PARAMETER(param);
 
 	CString src;
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&src);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->GetClipboardString(src);
 
 	if (src.IsEmpty()) {
 		spdlog::info(_T("Clipboard is empty."));
@@ -450,8 +450,8 @@ void FilterExecutor::LoadCandidates(const CommandParam& param)
 		in->SetLoaded();
 
 		// 候補の抽出が完了したことを通知
-		SharedHwnd sharedWnd;
-		PostMessage(sharedWnd.GetHwnd(), WM_APP+15, 0, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->UpdateCandidateRequest();
 
 		Release();
 	});

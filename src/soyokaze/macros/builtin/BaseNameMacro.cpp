@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "BaseNameMacro.h"
-#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

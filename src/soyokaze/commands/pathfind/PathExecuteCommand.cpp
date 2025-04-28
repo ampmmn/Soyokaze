@@ -11,7 +11,7 @@
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -331,9 +331,9 @@ bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandPar
 			CString cmdStr;
 			cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
 
-			SharedHwnd sharedHwnd;
-			HWND hwnd = sharedHwnd.GetHwnd();
-			::SendMessage(hwnd, WM_APP+3, 0, (LPARAM)(LPCTSTR)cmdStr);
+			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+			bool isWaitSync = false;
+			mainWnd->RunCommand((LPCTSTR)cmdStr, isWaitSync);
 			return true;
 		}
 		else {

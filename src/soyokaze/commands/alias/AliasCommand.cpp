@@ -8,7 +8,7 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -77,15 +77,13 @@ BOOL AliasCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	SharedHwnd sharedHwnd;
-	HWND h = sharedHwnd.GetHwnd();
-	// Note: PostMessageはメッセージキューが処理されるまで実行されない。
-	//       この関数を抜けた後に実行されるが、mParam.mTextはその間に変化する可能性はまずないため、問題ない
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	if (in->mParam.mIsPasteOnly) {
-		::PostMessage(h, WM_APP+11, 0, (LPARAM)(LPCTSTR)in->mParam.mText);
+		mainWnd->SetText((LPCTSTR)in->mParam.mText);
 	}
 	else {
-		::PostMessage(h, WM_APP+3, 1, (LPARAM)(LPCTSTR)in->mParam.mText);
+		bool isWaitSync = true;
+		mainWnd->RunCommand((LPCTSTR)in->mParam.mText, isWaitSync);
 	}
 
 	return TRUE;

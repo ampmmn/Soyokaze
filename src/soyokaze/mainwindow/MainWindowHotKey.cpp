@@ -3,7 +3,7 @@
 #include "setting/AppPreference.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyHandlerIF.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,8 +16,8 @@ public:
 	virtual ~UpHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_up"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_APP+1, VK_UP, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->InputKey(VK_UP);
 		return true;
 	}
 };
@@ -29,8 +29,8 @@ public:
 	virtual ~DownHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_down"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_APP+1, VK_DOWN, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->InputKey(VK_DOWN);
 		return true;
 	}
 };
@@ -41,8 +41,8 @@ public:
 	virtual ~EnterHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_enter"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_APP+1, VK_RETURN, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->InputKey(VK_RETURN);
 		return true;
 	}
 };
@@ -53,8 +53,8 @@ public:
 	virtual ~ComplHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_compl"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_APP+1, VK_TAB, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->InputKey(VK_TAB);
 		return true;
 	}
 };
@@ -65,8 +65,8 @@ public:
 	virtual ~ContextMenuHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_contextmenu"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_CONTEXTMENU, 0, MAKELPARAM(-1, -1));
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->ShowContextMenu();
 		return true;
 	}
 };
@@ -77,8 +77,9 @@ public:
 	virtual ~CopyHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_copy"); }
 	bool Invoke() override {
-		SharedHwnd h;
-		PostMessage(h.GetHwnd(), WM_APP+16, 0, 0);
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->CopyInputText();
+		mainWnd->HideWindow();
 		return true;
 	}
 };

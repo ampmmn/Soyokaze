@@ -6,7 +6,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -50,13 +50,14 @@ bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
 	mBaseCmd->SetSubPath(mResult.mLinkPath);
 
 	// ウインドウを強制的に前面に出す
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	bool isShowToggle = false;
+	mainWnd->ActivateWindow(isShowToggle);
 
 	// 入力欄に"コマンド名 "のテキストを入力した状態にする
 	auto cmdline = mBaseCmd->GetName();
 	cmdline += _T(" ");
-	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+	mainWnd->SetText(cmdline);
 
 	// 次のパスをロードする
 	bool isHTML = false;
@@ -68,7 +69,7 @@ bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
 	}
 
 	// 候補の抽出が完了したことを通知
-	PostMessage(sharedWnd.GetHwnd(), WM_APP+15, 0, 0);
+	mainWnd->UpdateCandidateRequest();
 
 	return true;
 }

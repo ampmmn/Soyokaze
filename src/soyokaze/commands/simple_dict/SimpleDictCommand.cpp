@@ -17,7 +17,7 @@
 #include "commands/common/Message.h" // for PopupMessage
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include <mutex>
 
 namespace launcherapp {
@@ -291,12 +291,14 @@ BOOL SimpleDictCommand::Execute(Parameter* param)
 
 	// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
 
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 2, 1, 0);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	bool isShowToggle = false;
+	mainWnd->ActivateWindow(isShowToggle);
 
 	auto cmdline = GetName();
 	cmdline += _T(" ");
-	SendMessage(sharedWnd.GetHwnd(), WM_APP+11, 0, (LPARAM)(LPCTSTR)cmdline);
+	mainWnd->SetText(cmdline);
+
 	return TRUE;
 }
 

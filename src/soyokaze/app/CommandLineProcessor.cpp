@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CommandLineProcessor.h"
 #include "app/StartupParam.h"
-#include "SharedHwnd.h"
 
 namespace launcherapp {
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Clipboard.h"
 #include "utility/GlobalAllocMemory.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 
 namespace launcherapp {
 namespace commands {
@@ -17,8 +17,8 @@ bool Clipboard::Copy(const CString& text)
 	mem.Unlock();
 
 	BOOL isSet=FALSE;
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 9, (WPARAM)&isSet, (LPARAM)(HGLOBAL)mem);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->SetClipboardString(mem, &isSet);
 
 	if (isSet) {
 		// セットされた場合はクリップボードが所有権を持つため、

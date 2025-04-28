@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "SandSKeyState.h"
-#include "SharedHwnd.h"
 #include "utility/Path.h"
 #include "sandshook/sandshook.h"
 

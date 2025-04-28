@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "SecondProcessProxy.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/interprocess/InterProcessMessageQueue.h"

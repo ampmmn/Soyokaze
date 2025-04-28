@@ -3,7 +3,7 @@
 #include "RegisterSnippetCommand.h"
 #include "commands/snippet/SnippetCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -47,8 +47,8 @@ BOOL RegisterSnippetCommand::Execute(Parameter* param)
 
 	// ウインドウ経由でクリップボードのテキストを取得
 	CString clipboardText;
-	SharedHwnd sharedWnd;
-	SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&clipboardText);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->GetClipboardString(clipboardText);
 
 	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
 	inParam->SetNamedParamString(_T("TEXT"), clipboardText);

@@ -4,7 +4,6 @@
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
 

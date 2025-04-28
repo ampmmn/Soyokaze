@@ -4,7 +4,7 @@
 #include "settingwindow/AppSettingDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -59,15 +59,13 @@ BOOL SettingCommand::Execute(Parameter* param)
 	} _local(mIsExecuting);
 
 
-	SharedHwnd sharedHwnd;
-	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+17, (WPARAM)CallbackExecute, (LPARAM)this);
-	return TRUE;
-}
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->RequestCallback([](LPARAM param) {
+		SettingCommand* pThis = (SettingCommand*)param;
+		return pThis->OnCallbackExecute();
+	}, this);
 
-LRESULT SettingCommand::CallbackExecute(LPARAM lparam)
-{
-	SettingCommand* pThis = (SettingCommand*)lparam;
-	return pThis->OnCallbackExecute();
+	return TRUE;
 }
 
 LRESULT SettingCommand::OnCallbackExecute()
@@ -96,13 +94,14 @@ LRESULT SettingCommand::OnCallbackExecute()
 	pref->Save();
 
 	// 
-	SharedHwnd sharedHwnd;
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	// 状態クリア
-	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+18, 0, 0);
+	mainWnd->ClearContent();
 	// ウインドウ非表示
-	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+7, 0, 0);
+	mainWnd->HideWindow();
 	// ウインドウ再表示
-	::SendMessage(sharedHwnd.GetHwnd(), WM_APP+2, 0, 0);
+	bool isShowToggle = true;
+	mainWnd->ActivateWindow(isShowToggle);
 
 	return 0;
 }

@@ -11,6 +11,7 @@
 #include "mainwindow/layout/MainWindowLayout.h"
 #include "mainwindow/MainWindowAppearance.h"
 #include "mainwindow/MainWindowInput.h"
+#include "mainwindow/controller/LauncherMainWindowController.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
@@ -48,6 +49,7 @@
 
 using namespace launcherapp;
 using namespace launcherapp::mainwindow;
+using namespace launcherapp::mainwindow::controller;
 
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
@@ -190,29 +192,29 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_WM_NCHITTEST()
 	ON_WM_ACTIVATE()
-	ON_MESSAGE(WM_APP+1, OnKeywordEditNotify)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_CANDIDATE, OnNMClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
 	ON_WM_SIZING()
 	ON_WM_SIZE()
 	ON_WM_MOVE()
-	ON_MESSAGE(WM_APP+2, OnUserMessageActiveWindow)
-	ON_MESSAGE(WM_APP+3, OnUserMessageRunCommand)
+	ON_MESSAGE(LauncherMainWindowMessageID::INPUTKEY, OnKeywordEditNotify)
+	ON_MESSAGE(LauncherMainWindowMessageID::ACTIVATEWINDOW, OnUserMessageActiveWindow)
+	ON_MESSAGE(LauncherMainWindowMessageID::RUNCOMMAND, OnUserMessageRunCommand)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
 	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
-	ON_MESSAGE(WM_APP+7, OnUserMessageHide)
-	ON_MESSAGE(WM_APP+8, OnUserMessageAppQuit)
-	ON_MESSAGE(WM_APP+9, OnUserMessageSetClipboardString)
-	ON_MESSAGE(WM_APP+10, OnUserMessageGetClipboardString)
-	ON_MESSAGE(WM_APP+11, OnUserMessageSetText)
+	ON_MESSAGE(LauncherMainWindowMessageID::HIDEWINDOW, OnUserMessageHide)
+	ON_MESSAGE(LauncherMainWindowMessageID::QUITAPPLICATION, OnUserMessageAppQuit)
+	ON_MESSAGE(LauncherMainWindowMessageID::SETCLIPBOARDSTRING, OnUserMessageSetClipboardString)
+	ON_MESSAGE(LauncherMainWindowMessageID::GETCLIPBOARDSTRING, OnUserMessageGetClipboardString)
+	ON_MESSAGE(LauncherMainWindowMessageID::SETTEXT, OnUserMessageSetText)
 	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
 	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
-	ON_MESSAGE(WM_APP+14, OnUserMessageBlockDeactivateOnUnfocus)
-	ON_MESSAGE(WM_APP+15, OnUserMessageUpdateCandidate)
-	ON_MESSAGE(WM_APP+16, OnUserMessageCopyText)
-	ON_MESSAGE(WM_APP+17, OnUserMessageRequestCallback)
+	ON_MESSAGE(LauncherMainWindowMessageID::BLOCKDEACTIVATE, OnUserMessageBlockDeactivateOnUnfocus)
+	ON_MESSAGE(LauncherMainWindowMessageID::UPDATECANDIDATE, OnUserMessageUpdateCandidate)
+	ON_MESSAGE(LauncherMainWindowMessageID::COPYINPUTTEXT, OnUserMessageCopyText)
+	ON_MESSAGE(LauncherMainWindowMessageID::REQUESTCALLBACK, OnUserMessageRequestCallback)
 	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
@@ -450,9 +452,6 @@ LRESULT LauncherMainWindow::OnUserMessageCopyText(WPARAM wParam, LPARAM lParam)
 
 	// 入力欄のテキストをコピー
 	launcherapp::commands::common::Clipboard::Copy(in->mInput.GetKeyword());
-
-	// コピーした後は非表示にする
-	HideWindow();
 	return 0;
 }
 

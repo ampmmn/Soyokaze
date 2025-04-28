@@ -3,7 +3,7 @@
 #include "hotkey/AppHotKey.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -282,8 +282,8 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 				break;
 			}
 
-			SharedHwnd sharedHwnd;
-			PostMessage(sharedHwnd.GetHwnd(), WM_APP+2, 0, 0);
+			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+			mainWnd->ActivateWindow(true);
 
 			continue;
 		}

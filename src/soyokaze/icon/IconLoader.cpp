@@ -10,7 +10,6 @@
 #include "utility/SHA1.h"
 #include "utility/ProcessPath.h"
 #include "utility/Path.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
 #include <atlimage.h>

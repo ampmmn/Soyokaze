@@ -4,7 +4,6 @@
 #include "commands/core/IFIDDefine.h"
 #include "commands/common/SubProcess.h"
 #include "icon/IconLoader.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
 

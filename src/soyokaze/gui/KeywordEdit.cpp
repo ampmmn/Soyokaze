@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordEdit.h"
-#include "SharedHwnd.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "gui/ColorSettings.h"
 #include <imm.h>
 
@@ -268,10 +268,10 @@ void KeywordEdit::OnPaste()
 {
 	// 複数行のテキストが入力欄にペーストされたときに、先頭行のテキストだけを取得するようにする
 
-	// ウインドウ経由でクリップボードのテキストを取得
+	// クリップボードのテキストを取得
 	CString text;
-	SharedHwnd sharedWnd;
-	::SendMessage(sharedWnd.GetHwnd(), WM_APP + 10, 0, (LPARAM)&text);
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	mainWnd->GetClipboardString(text);
 
 	// 先頭行のみにする
 	int pos = text.FindOneOf(_T("\r\n"));

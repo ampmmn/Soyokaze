@@ -4,7 +4,6 @@
 #include "commands/activate_worksheet/CalcWorksheets.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
-#include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
 

@@ -6,7 +6,6 @@
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
-#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
