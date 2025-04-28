@@ -154,7 +154,7 @@ CString WebHistoryCommand::GetDescription()
 
 CString WebHistoryCommand::GetGuideString()
 {
-	return _T("Enter:ページを表示する");
+	return _T("⏎:ページを表示する");
 }
 
 CString WebHistoryCommand::GetTypeDisplayName()

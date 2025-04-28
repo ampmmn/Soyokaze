@@ -42,7 +42,7 @@ CString InchAdhocCommand::GetName()
 
 CString InchAdhocCommand::GetGuideString()
 {
-	return _T("Enter:クリップボードにコピー");
+	return _T("⏎:クリップボードにコピー");
 }
 
 CString InchAdhocCommand::GetTypeDisplayName()

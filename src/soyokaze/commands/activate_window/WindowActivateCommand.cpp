@@ -71,7 +71,7 @@ CString WindowActivateCommand::GetDescription()
 
 CString WindowActivateCommand::GetGuideString()
 {
-	return _T("Enter:ウインドウをアクティブにする");
+	return _T("⏎:ウインドウをアクティブにする");
 }
 
 CString WindowActivateCommand::GetTypeDisplayName()

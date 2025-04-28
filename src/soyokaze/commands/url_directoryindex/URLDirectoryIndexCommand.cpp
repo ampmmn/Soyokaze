@@ -346,7 +346,7 @@ CString URLDirectoryIndexCommand::GetDescription()
 
 CString URLDirectoryIndexCommand::GetGuideString()
 {
-	return _T("Enter:候補を表示する");
+	return _T("⏎:候補を表示する");
 }
 
 CString URLDirectoryIndexCommand::GetTypeDisplayName()

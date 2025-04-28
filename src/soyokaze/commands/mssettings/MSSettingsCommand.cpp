@@ -47,7 +47,7 @@ MSSettingsCommand::~MSSettingsCommand()
 
 CString MSSettingsCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("⏎:開く");
 }
 
 CString MSSettingsCommand::GetTypeDisplayName()

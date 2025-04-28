@@ -64,7 +64,7 @@ CString SnippetCommand::GetDescription()
 
 CString SnippetCommand::GetGuideString()
 {
-	return _T("Enter:定型文をクリップボードにコピー");
+	return _T("⏎:定型文をクリップボードにコピー");
 }
 
 CString SnippetCommand::GetTypeDisplayName()

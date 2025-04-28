@@ -59,7 +59,7 @@ HistoryCommand::~HistoryCommand()
 CString HistoryCommand::GetGuideString()
 {
 	if (in->mCmd == nullptr) {
-		return _T("Enter:開く");
+		return _T("⏎:開く");
 	}
 
 	return in->mCmd->GetGuideString();

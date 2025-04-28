@@ -55,7 +55,7 @@ void CalculatorCommand::SetResult(const CString& result)
 
 CString CalculatorCommand::GetGuideString()
 {
-	return _T("Enter:クリップボードにコピー");
+	return _T("⏎:クリップボードにコピー");
 }
 
 CString CalculatorCommand::GetTypeDisplayName()

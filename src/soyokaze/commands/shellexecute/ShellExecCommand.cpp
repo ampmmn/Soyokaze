@@ -123,17 +123,17 @@ CString ShellExecCommand::GetGuideString()
 {
 	const auto& attr = in->GetNormalAttr();
 	if (attr.mPath.Find(_T("http"))==0) {
-		return _T("Enter:ブラウザで開く");
+		return _T("⏎:ブラウザで開く");
 	}
 	else {
-		CString guideStr(_T("Enter:実行"));
+		CString guideStr(_T("⏎:実行"));
 
 		if (Path::FileExists(attr.mPath)) {
-			guideStr += _T(" Ctrl-Enter:フォルダを開く");
+			guideStr += _T(" C-⏎:フォルダを開く");
 
 			CString ext(PathFindExtension(attr.mPath));
 			if (ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0) {
-				guideStr += _T(" Ctrl-Shift-Enter:管理者権限で実行");
+				guideStr += _T(" C-S-⏎:管理者権限で実行");
 			}
 		}
 

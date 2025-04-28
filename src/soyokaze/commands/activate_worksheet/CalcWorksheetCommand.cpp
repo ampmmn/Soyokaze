@@ -45,7 +45,7 @@ CalcWorksheetCommand::~CalcWorksheetCommand()
 
 CString CalcWorksheetCommand::GetGuideString()
 {
-	return _T("Enter:表示 Ctrl-Enter:最大化表示");
+	return _T("⏎:表示 C-⏎:最大化表示");
 }
 
 CString CalcWorksheetCommand::GetTypeDisplayName()

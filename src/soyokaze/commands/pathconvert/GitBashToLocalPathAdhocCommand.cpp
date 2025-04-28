@@ -50,7 +50,7 @@ CString GitBashToLocalPathAdhocCommand::GetName()
 
 CString GitBashToLocalPathAdhocCommand::GetGuideString()
 {
-	return _T("Enter:パスをコピー Ctrl-Enter:フォルダを開く Shift-Enter:開く");
+	return _T("⏎:パスをコピー C-⏎:フォルダを開く S-⏎:開く");
 }
 
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()

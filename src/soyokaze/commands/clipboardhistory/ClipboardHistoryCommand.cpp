@@ -64,7 +64,7 @@ CString ClipboardHistoryCommand::GetName()
 
 CString ClipboardHistoryCommand::GetGuideString()
 {
-	return _T("Enter:コピー Shift-Enter:コピペ Ctrl-Enter:空白除去コピー");
+	return _T("⏎:コピー S-⏎:コピペ C-⏎:空白除去コピー");
 }
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()

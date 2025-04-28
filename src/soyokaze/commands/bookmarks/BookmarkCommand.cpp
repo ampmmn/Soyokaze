@@ -102,7 +102,7 @@ CString BookmarkCommand::GetDescription()
 
 CString BookmarkCommand::GetGuideString()
 {
-	return _T("Enter:ページを表示する");
+	return _T("⏎:ページを表示する");
 }
 
 CString BookmarkCommand::GetTypeDisplayName()

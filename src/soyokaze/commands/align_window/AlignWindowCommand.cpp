@@ -65,7 +65,7 @@ CString AlignWindowCommand::GetDescription()
 */
 CString AlignWindowCommand::GetGuideString()
 {
-	return _T("Enter:ウインドウを整列する");
+	return _T("⏎:ウインドウを整列する");
 }
 
 /**

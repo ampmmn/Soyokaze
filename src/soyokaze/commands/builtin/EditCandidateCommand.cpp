@@ -42,7 +42,7 @@ EditCandidateCommand::~EditCandidateCommand()
 
 CString EditCandidateCommand::GetGuideString()
 {
-	return _T("Enter:編集");
+	return _T("⏎:編集");
 }
 
 CString EditCandidateCommand::GetTypeDisplayName()

@@ -45,7 +45,7 @@ DeleteCandidateCommand::~DeleteCandidateCommand()
 
 CString DeleteCandidateCommand::GetGuideString()
 {
-	return _T("Enter:コマンドを削除");
+	return _T("⏎:コマンドを削除");
 }
 
 CString DeleteCandidateCommand::GetTypeDisplayName()

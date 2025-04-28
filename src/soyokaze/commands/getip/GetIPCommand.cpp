@@ -47,7 +47,7 @@ CString GetIPCommand::GetDescription()
 
 CString GetIPCommand::GetGuideString()
 {
-	return _T("Enter:IPアドレスをコピー");
+	return _T("⏎:IPアドレスをコピー");
 }
 
 CString GetIPCommand::GetTypeDisplayName()

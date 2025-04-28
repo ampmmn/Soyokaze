@@ -160,7 +160,7 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 
 CString DirectoryIndexAdhocCommand::GetGuideString()
 {
-	return _T("Enter:開く Shift-Enter:ブラウザで開く Ctrl-Enter:URLをコピー");
+	return _T("⏎:開く S-⏎:ブラウザで開く C-⏎:URLをコピー");
 }
 
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()

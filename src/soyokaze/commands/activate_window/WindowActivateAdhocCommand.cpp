@@ -85,7 +85,7 @@ void WindowActivateAdhocCommand::SetListener(MenuEventListener* listener)
 
 CString WindowActivateAdhocCommand::GetGuideString()
 {
-	return _T("Enter:ウインドウをアクティブにする");
+	return _T("⏎:ウインドウをアクティブにする");
 }
 
 CString WindowActivateAdhocCommand::GetTypeDisplayName()

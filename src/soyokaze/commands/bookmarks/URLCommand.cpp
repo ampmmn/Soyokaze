@@ -86,7 +86,7 @@ URLCommand::~URLCommand()
 
 CString URLCommand::GetGuideString()
 {
-	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
+	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
 }
 
 CString URLCommand::GetTypeDisplayName()

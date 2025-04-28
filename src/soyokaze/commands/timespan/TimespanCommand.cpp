@@ -55,7 +55,7 @@ TimespanCommand::~TimespanCommand()
 
 CString TimespanCommand::GetGuideString()
 {
-	return _T("Enter:数値のみコピー Ctrl-Enter:単位含めてコピー");
+	return _T("⏎:数値のみコピー C-⏎:単位含めてコピー");
 }
 
 CString TimespanCommand::GetTypeDisplayName()

@@ -63,9 +63,9 @@ CString EverythingAdhocCommand::GetDescription()
 
 CString EverythingAdhocCommand::GetGuideString()
 {
-	CString guideStr(_T("Enter:実行"));
-	guideStr += _T(" Shift-Enter:パスをコピー");
-	guideStr += _T(" Ctrl-Enter:フォルダを開く");
+	CString guideStr(_T("⏎:実行"));
+	guideStr += _T(" S-⏎:パスをコピー");
+	guideStr += _T(" C-⏎:フォルダを開く");
 
 	return guideStr;
 }

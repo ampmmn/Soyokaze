@@ -82,7 +82,7 @@ CString FileProtocolConvertAdhocCommand::GetName()
 
 CString FileProtocolConvertAdhocCommand::GetGuideString()
 {
-	return _T("Enter:パスをコピー Shift-Enter:開く Ctrl-Enter:フォルダを開く");
+	return _T("⏎:パスをコピー S-⏎:開く C-⏎:フォルダを開く");
 }
 
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()

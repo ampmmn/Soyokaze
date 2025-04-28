@@ -35,7 +35,7 @@ MMCCommand::~MMCCommand()
 
 CString MMCCommand::GetGuideString()
 {
-	return _T("Enter:実行");
+	return _T("⏎:実行");
 }
 
 CString MMCCommand::GetTypeDisplayName()

@@ -64,7 +64,7 @@ CString AliasCommand::GetDescription()
 
 CString AliasCommand::GetGuideString()
 {
-	return _T("Enter:実行");
+	return _T("⏎:実行");
 }
 
 CString AliasCommand::GetTypeDisplayName()

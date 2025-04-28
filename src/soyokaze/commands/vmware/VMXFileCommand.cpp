@@ -104,7 +104,7 @@ VMXFileCommand::~VMXFileCommand()
 
 CString VMXFileCommand::GetGuideString()
 {
-	return _T("Enter:ファイルを開く Ctrl-Enter:パスを開く");
+	return _T("⏎:ファイルを開く C-⏎:パスを開く");
 }
 
 CString VMXFileCommand::GetTypeDisplayName()

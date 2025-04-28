@@ -69,7 +69,7 @@ CString EraNameWJCommand::GetName()
 CString EraNameWJCommand::GetGuideString()
 {
 	CString str;
-	str.Format(_T("Enter:\"%s\"をコピー Shift-Enter:\"%d\"をコピー"), (LPCTSTR)in->mName, in->mVal);
+	str.Format(_T("⏎:\"%s\"をコピー S-⏎:\"%d\"をコピー"), (LPCTSTR)in->mName, in->mVal);
 	return str;
 }
 

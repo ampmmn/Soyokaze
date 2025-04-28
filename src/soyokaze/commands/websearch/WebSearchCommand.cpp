@@ -144,7 +144,7 @@ CString WebSearchCommand::GetDescription()
 
 CString WebSearchCommand::GetGuideString()
 {
-	return _T("Enter:検索を実行");
+	return _T("⏎:検索を実行");
 }
 
 CString WebSearchCommand::GetTypeDisplayName()

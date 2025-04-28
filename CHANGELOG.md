@@ -5,6 +5,7 @@
 ### Changed
 
 - #77 メインウインドウに直接SendMessage/PostMessageしない
+- #78 ガイド欄上の"Enter"の表記を"⏎"に変更する
 
 ## 0.39.0 - 2025-04-27
 

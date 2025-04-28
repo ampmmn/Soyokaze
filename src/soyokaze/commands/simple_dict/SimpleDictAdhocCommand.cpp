@@ -83,9 +83,9 @@ SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 
 CString SimpleDictAdhocCommand::GetGuideString()
 {
-	CString guideStr(_T("Enter:実行"));
-	guideStr += _T(" Shift-Enter:キーをコピー");
-	guideStr += _T(" Ctrl-Enter:値をコピー");
+	CString guideStr(_T("⏎:実行"));
+	guideStr += _T(" S-⏎:キーをコピー");
+	guideStr += _T(" C-⏎:値をコピー");
 
 	return guideStr;
 }

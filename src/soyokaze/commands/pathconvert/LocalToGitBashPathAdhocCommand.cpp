@@ -48,7 +48,7 @@ CString LocalToGitBashPathAdhocCommand::GetName()
 
 CString LocalToGitBashPathAdhocCommand::GetGuideString()
 {
-	return _T("Enter:パスをコピー");
+	return _T("⏎:パスをコピー");
 }
 
 CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()

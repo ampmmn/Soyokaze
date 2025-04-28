@@ -59,7 +59,7 @@ CString SnippetGroupAdhocCommand::GetDescription()
 
 CString SnippetGroupAdhocCommand::GetGuideString()
 {
-	CString guideStr(_T("Enter:コピー"));
+	CString guideStr(_T("⏎:コピー"));
 	return guideStr;
 }
 

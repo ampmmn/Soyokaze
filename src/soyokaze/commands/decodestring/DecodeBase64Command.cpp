@@ -63,7 +63,7 @@ CString DecodeBase64Command::GetDescription()
 
 CString DecodeBase64Command::GetGuideString()
 {
-	return _T("Enter:デコード後データをコピー");
+	return _T("⏎:デコード後データをコピー");
 }
 
 

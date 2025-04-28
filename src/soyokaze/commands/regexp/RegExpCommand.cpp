@@ -94,7 +94,7 @@ CString RegExpCommand::GetDescription()
 
 CString RegExpCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("⏎:開く");
 }
 
 CString RegExpCommand::GetTypeDisplayName()

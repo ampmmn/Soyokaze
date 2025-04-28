@@ -40,7 +40,7 @@ SpecialFolderFileCommand::~SpecialFolderFileCommand()
 
 CString SpecialFolderFileCommand::GetGuideString()
 {
-	return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+	return _T("⏎:開く C-⏎:フォルダを開く");
 }
 
 

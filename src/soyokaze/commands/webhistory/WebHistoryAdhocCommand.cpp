@@ -91,7 +91,7 @@ CString WebHistoryAdhocCommand::GetName()
 
 CString WebHistoryAdhocCommand::GetGuideString()
 {
-	return _T("Enter:ブラウザで開く Shift-Enter:URLをクリップボードにコピー");
+	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
 }
 
 CString WebHistoryAdhocCommand::GetTypeDisplayName()

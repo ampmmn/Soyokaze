@@ -72,7 +72,7 @@ CString FilterAdhocCommand::GetDescription()
 
 CString FilterAdhocCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("⏎:開く");
 }
 
 CString FilterAdhocCommand::GetTypeDisplayName()

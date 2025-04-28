@@ -63,7 +63,7 @@ CString VolumeCommand::GetDescription()
 
 CString VolumeCommand::GetGuideString()
 {
-	return _T("Enter:音量設定を変更");
+	return _T("⏎:音量設定を変更");
 }
 
 CString VolumeCommand::GetTypeDisplayName()

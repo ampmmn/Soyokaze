@@ -110,13 +110,13 @@ CString PathExecuteCommand::GetName()
 CString PathExecuteCommand::GetGuideString()
 {
 	if (in->mIsURL) {
-		return _T("Enter:ブラウザで開く");
+		return _T("⏎:ブラウザで開く");
 	}
 	else if (in->mIsExe) {
-		return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+		return _T("⏎:開く C-⏎:フォルダを開く");
 	}
 	else {
-		return _T("Enter:開く Ctrl-Enter:フォルダを開く");
+		return _T("⏎:開く C-⏎:フォルダを開く");
 	}
 }
 

@@ -160,7 +160,7 @@ CString GroupCommand::GetDescription()
 
 CString GroupCommand::GetGuideString()
 {
-	return _T("Enter:開く");
+	return _T("⏎:開く");
 }
 
 CString GroupCommand::GetTypeDisplayName()

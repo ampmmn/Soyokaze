@@ -46,7 +46,7 @@ PptJumpCommand::~PptJumpCommand()
 
 CString PptJumpCommand::GetGuideString()
 {
-	return _T("Enter:スライドを表示する Ctrl-Enter:最大化表示");
+	return _T("⏎:スライドを表示する C-⏎:最大化表示");
 }
 
 

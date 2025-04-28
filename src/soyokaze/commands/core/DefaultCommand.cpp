@@ -96,10 +96,10 @@ CString DefaultCommand::GetGuideString()
 	}
 
 	if (in->mActionType == _T("copy")) {
-		return _T("Enter: クリップボードにコピー");
+		return _T("⏎: クリップボードにコピー");
 	}
 	else if (in->mActionType == _T("register")) {
-		return _T("Enter: コマンドを登録");
+		return _T("⏎: コマンドを登録");
 	}
 	return _T("");
 }
