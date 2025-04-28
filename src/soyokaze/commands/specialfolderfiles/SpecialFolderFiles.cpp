@@ -22,6 +22,16 @@ struct SpecialFolderFiles::PImpl
 	PImpl() : mEvent(TRUE, TRUE)
 	{}
 
+	void SetAbort() {
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsAborted = true;
+	}
+	bool IsAbort() {
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mIsAborted;
+	}
+
+
 	std::mutex mMutex;
 	std::vector<ITEM> mItems;
 	uint64_t mElapsed{0};
@@ -30,6 +40,7 @@ struct SpecialFolderFiles::PImpl
 	bool mIsUpdated{false};
 	bool mIsEnableRecent{true};
 	bool mIsEnableStartMenu{true};
+	bool mIsAborted{false};
 };
 
 
@@ -39,6 +50,8 @@ SpecialFolderFiles::SpecialFolderFiles() : in(std::make_unique<PImpl>())
 
 SpecialFolderFiles::~SpecialFolderFiles()
 {
+	in->SetAbort();
+
 	WaitForSingleObject(in->mEvent, 3000);
 }
 
@@ -54,6 +67,9 @@ void SpecialFolderFiles::EnableRecent(bool isEnable)
 
 bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 {
+	if (in->IsAbort()) {
+		return false;
+	}
 	{
 		std::lock_guard<std::mutex> lock(in->mMutex);
 		uint64_t elapsed = GetTickCount64() - in->mElapsed;
@@ -78,15 +94,33 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 
 		std::vector<ITEM> tmp;
 
+		if (in->IsAbort()) {
+			return;
+		}
+
 		if (in->mIsEnableRecent) {
 			// 最近使ったファイルを得る
 			GetLnkFiles(tmp, CSIDL_RECENT);
 		}
+
+		if (in->IsAbort()) {
+			return;
+		}
+
 		if (in->mIsEnableStartMenu) {
 			// ユーザのスタートメニュー
 			GetLnkFiles(tmp, CSIDL_STARTMENU);
+
+			if (in->IsAbort()) {
+				return;
+			}
+
 			// すべてのユーザのスタートメニュー
 			GetLnkFiles(tmp, CSIDL_COMMON_STARTMENU);
+		}
+
+		if (in->IsAbort()) {
+			return;
 		}
 
 		CoUninitialize();
@@ -133,6 +167,10 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 	std::vector<ITEM> tmp;
 	while(stk.empty() == false) {
 
+		if (in->IsAbort()) {
+			break;
+		}
+
 		CString curDir = stk.front();
 		stk.pop_front();
 
@@ -141,6 +179,10 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 		while (isLoop) {
 
 			Sleep(0);
+
+			if (in->IsAbort()) {
+				break;
+			}
 
 			isLoop = f.FindNextFile();
 
@@ -188,6 +230,11 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 		}
 		f.Close();
 	}
+
+	if (in->IsAbort()) {
+		return;
+	}
+
 	for (auto& item : tmp) {
 		GetLastWriteTime(item.mFullPath, item.mWriteTime);
 	}

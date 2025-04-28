@@ -12,6 +12,10 @@
 - #78 ガイド欄上の"Enter"の表記を"⏎"に変更する
 - #79 初期フォントを`Noto Sans JP`に変更
 
+### Fixed
+
+- #81 プログラム終了時にSpecialFolderFiles::GetShortcutFiles内でAccessViolationがたまに起こる問題を修正
+
 ## 0.39.0 - 2025-04-27
 
 ## Added
