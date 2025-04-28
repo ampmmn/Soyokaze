@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppPreference.h"
+#include "setting/InitialFont.h"
 #include "app/AppName.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
@@ -44,6 +45,7 @@ struct AppPreference::PImpl
 	}
 
 	void Load();
+	InitialFont* LoadInitialFontSettings();
 
 	std::unique_ptr<NotifyWindow> mNotifyWindow;
 
@@ -52,6 +54,8 @@ struct AppPreference::PImpl
 
 	// 設定変更時(正確にはSave時)に通知を受け取る
 	std::set<AppPreferenceListenerIF*> mListeners;
+	// 初期フォント設定
+	std::unique_ptr<InitialFont> mInitialFont;
 };
 
 static void TrimComment(CString& s)
@@ -176,6 +180,14 @@ void AppPreference::PImpl::Load()
 	mIsLoaded = true;
 }
 
+// フォント初期設定を読み込む(初回だけ)
+InitialFont* AppPreference::PImpl::LoadInitialFontSettings()
+{
+	if (mInitialFont.get() == nullptr) {
+		mInitialFont.reset(new InitialFont());
+	}
+	return mInitialFont.get();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -903,16 +915,25 @@ int AppPreference::GetTimeToWarnLongOperation()
 bool AppPreference::GetMainWindowFontName(CString& fontName)
 {
 	auto name = in->Get(_T("MainWindow:FontName"), _T(""));
-	if (name.IsEmpty()) {
-		return false;
+	if (name.IsEmpty() == FALSE) {
+		fontName = name;
+		return true;
 	}
-	fontName = name;
+
+	auto initialFont = in->LoadInitialFontSettings();
+	initialFont->GetFontName(fontName);
 	return true;
 }
 
 int AppPreference::GetMainWindowFontSize()
 {
-	return in->Get(_T("MainWindow:FontSize"), 9);
+	int size = in->Get(_T("MainWindow:FontSize"), 0);
+	if (size > 0) {
+		return size;
+	}
+
+	auto initialFont = in->LoadInitialFontSettings();
+	return initialFont->GetFontSize();
 }
 
 // Everything検索コマンドでEverything APIを使うか?

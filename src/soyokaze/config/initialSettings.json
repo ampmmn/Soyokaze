@@ -1,0 +1,7 @@
+{
+  "font-settings":{
+		"ja": {"FontName":"Noto Sans JP", "FontSize":9},
+		"default": { "FontName":"Tahoma", "FontSize":9}
+  }
+}
+

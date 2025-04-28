@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ViewSettingDialog.h"
 #include "setting/Settings.h"
+#include "setting/InitialFont.h"
 #include "app/Manual.h"
 #include "icon/IconLoader.h"
 #include "icon/IconLabelForApp.h"
@@ -14,8 +15,6 @@
 #endif
 
 using namespace launcherapp::icon;
-
-constexpr LPCTSTR DEFAULTFONTNAME = _T("Tahoma");
 
 class ViewSettingDialog : public CDialog
 {
@@ -284,11 +283,22 @@ void ViewSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
 	mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 
-	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), DEFAULTFONTNAME);
+
+	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), _T(""));
+	bool hasFontSettings = fontName.IsEmpty() == FALSE;
+	if (hasFontSettings == false) {
+		// アプリ設定としてフォント設定が保存されていなければ、初期設定から情報を取得する
+		InitialFont initFont;
+		initFont.GetFontName(fontName);
+		mFontSize = initFont.GetFontSize();
+	}
+	else {
+		mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 9);
+	}
+
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
 	fontCombo->SelectFont(fontName);
-	mFontSize = settingsPtr->Get(_T("MainWindow:FontSize"), 9);
 }
 
 // マニュアル表示
@@ -347,10 +357,15 @@ void ViewSettingDialog::OnButtonResetFont()
 {
 	UpdateData();
 
-	mFontSize = 9;
+
+	CString fontName;
+
+	InitialFont initFont;
+	initFont.GetFontName(fontName);
+	mFontSize = initFont.GetFontSize();
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
-	fontCombo->SelectFont(DEFAULTFONTNAME);
+	fontCombo->SelectFont(fontName);
 
 
 	UpdateData(FALSE);

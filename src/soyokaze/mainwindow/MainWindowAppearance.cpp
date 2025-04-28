@@ -193,6 +193,7 @@ void MainWindowAppearance::OnAppNormalBoot()
 void MainWindowAppearance::OnAppPreferenceUpdated()
 {
 	in->UpdateFont();
+	// 色を再設定する
 	in->mShouldColorInit = true;
 }
 

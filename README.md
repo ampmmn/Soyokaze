@@ -74,9 +74,11 @@ bluewindの使用感を維持しつつ、現行のWindows環境でも動作す�
 - help.html
 - LICENSE
 - files/
+- config/
 - migemo.dll
 - sandshook.dll
 - launcher_proxy.exe
+
 
 ## マニュアル
 

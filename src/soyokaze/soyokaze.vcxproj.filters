@@ -1473,6 +1473,9 @@
     <ClInclude Include="mainwindow\controller\MainWindowControllerIF.h">
       <Filter>mainwindow\controller</Filter>
     </ClInclude>
+    <ClInclude Include="setting\InitialFont.h">
+      <Filter>setting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2608,6 +2611,9 @@
     </ClCompile>
     <ClCompile Include="mainwindow\controller\MainWindowController.cpp">
       <Filter>mainwindow\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="setting\InitialFont.cpp">
+      <Filter>setting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -747,6 +747,7 @@
     <ClInclude Include="hotkey/NamedCommandHotKeyHandler.h" />
     <ClInclude Include="setting/Settings.h" />
     <ClInclude Include="app/StartupParam.h" />
+    <ClInclude Include="setting\InitialFont.h" />
     <ClInclude Include="utility/AppProfile.h" />
     <ClInclude Include="app/Arguments.h" />
     <ClInclude Include="app/LauncherApp.h" />
@@ -1155,6 +1156,7 @@
     <ClCompile Include="hotkey/NamedCommandHotKeyHandler.cpp" />
     <ClCompile Include="setting/Settings.cpp" />
     <ClCompile Include="app/StartupParam.cpp" />
+    <ClCompile Include="setting\InitialFont.cpp" />
     <ClCompile Include="utility/AppProfile.cpp" />
     <ClCompile Include="app/Arguments.cpp" />
     <ClCompile Include="app/LauncherApp.cpp" />
