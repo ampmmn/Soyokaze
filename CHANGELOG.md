@@ -11,6 +11,7 @@
 - #77 メインウインドウに直接SendMessage/PostMessageしない
 - #78 ガイド欄上の"Enter"の表記を"⏎"に変更する
 - #79 初期フォントを`Noto Sans JP`に変更
+- #82 `launcher_proxy.exe`をコンソールアプリケーションに変更する
 
 ### Fixed
 

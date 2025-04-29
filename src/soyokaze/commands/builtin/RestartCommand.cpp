@@ -64,6 +64,7 @@ BOOL RestartCommand::Execute(Parameter* param)
 
 	SubProcess::ProcessPtr process;
 	SubProcess exec(param);
+	exec.SetShowType(SW_HIDE);
 
 	// 管理者権限で実行している場合は、launcher_proxyも管理者権限で実行する
 	// (でないと、再起動に必要な情報をlauncher_proxy側で取得できないため)

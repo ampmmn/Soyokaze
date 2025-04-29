@@ -134,6 +134,9 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst)
 		::DispatchMessage(&msg);
 	}
 
+	CloseHandle(pipeHandle);
+	in->mPipeHandle = nullptr;
+
 	return 0;
 }
 

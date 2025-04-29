@@ -5,30 +5,28 @@
 #define WIN32_LEAN_AND_MEAN             // Windows ヘッダーからほとんど使用されていない部分を除外する
 
 #include <windows.h>
+#include <locale.h>
 #include <string>
 #include "Restart.h"
 #include "NormalPriviledgeAgent.h"
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
-{
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+int wmain(int argc, wchar_t* argv[]) {
 
-	if (__argc == 1) {
+	_wsetlocale(LC_ALL, L"");
+
+	if (argc == 1) {
 		return 1;
 	}
-	std::wstring command_name(__wargv[1]);
+	std::wstring command_name(argv[1]);
 	if (command_name == L"restart") {
 		return RestartApp();
 	}
 	else if (command_name == L"run-normal-priviledge-agent") {
 		NormalPriviledgeAgent agent;
-		return agent.Run(hInstance);
+		return agent.Run(GetModuleHandle(nullptr));
 	}
 
 	// Unknown command
+	fwprintf(stderr, L"Unknown command: %s\n", command_name.c_str());
 	return 1;
 }

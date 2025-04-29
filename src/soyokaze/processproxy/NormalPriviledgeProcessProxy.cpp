@@ -106,12 +106,12 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 // 通常権限で起動するための処理をするためのプロセスを実行する
 bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 {
-	// 自分自身を起動
-	Path pathSelf(Path::MODULEFILEDIR, _T("launcher_proxy.exe"));
+	// プロキシを起動
+	Path pathProxy(Path::MODULEFILEDIR, _T("launcher_proxy.exe"));
 
 	STARTUPINFO si = {};
 	si.cb = sizeof(si);
-	si.dwFlags = 0;
+	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_HIDE;
 
 	PROCESS_INFORMATION pi = {};
@@ -125,14 +125,14 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 		HANDLE htok = tok.FetchPrimaryToken();
 		spdlog::debug(_T("primary token  {}"), (void*)htok);
 
-		isRun = CreateProcessWithTokenW(htok, 0, pathSelf, cmdline.GetBuffer(MAX_PATH_NTFS), 0, nullptr, nullptr, &si, &pi);
+		isRun = CreateProcessWithTokenW(htok, 0, pathProxy, cmdline.GetBuffer(MAX_PATH_NTFS), 0, nullptr, nullptr, &si, &pi);
 		cmdline.ReleaseBuffer();
 	}
 	else {
 		// 通常権限でアプリを場合はそのままプロセスを起動する
 		// (GetActiveObjectを使う機能を常にlauncher_proxy.exe経由で実行するため、
 		//  通常権限でアプリを起動している場合もlaucnher_proxyを用いる)
-		isRun = CreateProcess(pathSelf, cmdline.GetBuffer(MAX_PATH_NTFS), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+		isRun = CreateProcess(pathProxy, cmdline.GetBuffer(MAX_PATH_NTFS), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 		cmdline.ReleaseBuffer();
 	}
 
