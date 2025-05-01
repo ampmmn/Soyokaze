@@ -170,7 +170,7 @@ void ExcludePathPage::OnEnterSettings(Settings* settingsPtr)
 		CString path = settingsPtr->Get(key, _T(""));
 		paths.push_back(path);
 
-		listPath->InsertItem(index++, path);
+		listPath->InsertItem(index, path);
 	}
 
 	mExcludePaths.swap(paths);
