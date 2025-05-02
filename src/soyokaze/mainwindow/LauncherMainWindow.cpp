@@ -243,7 +243,9 @@ void LauncherMainWindow::ActivateWindow()
 
 void LauncherMainWindow::HideWindow()
 {
-	GetCommandRepository()->Unactivate();
+	LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+		listener->OnLancuherUnactivate();
+	});
 	::ShowWindow(GetSafeHwnd(), SW_HIDE);
 }
 
@@ -290,7 +292,9 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 			in->mKeywordEdit.SetIMEOff();
 		}
 
-		GetCommandRepository()->Activate();
+		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+			listener->OnLancuherActivate();
+		});
 	}
 	else {
 		// 表示状態ではあるが、非アクティブならアクティブにする

@@ -14,9 +14,6 @@ public:
 	virtual void OnBeforeLoad() = 0;
 	virtual void OnNewCommand(Command* command) = 0;
 	virtual void OnDeleteCommand(Command* command) = 0;
-	virtual void OnLancuherActivate() = 0;
-	virtual void OnLancuherUnactivate() = 0;
-
 };
 
 }

@@ -149,6 +149,12 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 			mCleanCount = CLEARCACHE_INTERVAL;
 		}
 	}
+	void OnLancuherActivate() override
+	{
+	}
+	void OnLancuherUnactivate() override
+	{
+	}
 
 
 	Path mImgResDll;

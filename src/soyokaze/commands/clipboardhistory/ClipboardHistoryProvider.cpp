@@ -96,6 +96,12 @@ struct ClipboardHistoryProvider::PImpl :
 			mIsFirstCall = false;
 		}
 	}
+	void OnLancuherActivate() override
+	{
+	}
+	void OnLancuherUnactivate() override
+	{
+	}
 
 	/**
 	 * @brief 設定をリロードする

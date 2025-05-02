@@ -5,6 +5,8 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "commands/core/IFIDDefine.h"
 
 #ifdef _DEBUG
@@ -15,16 +17,19 @@ using CommandRepository = launcherapp::core::CommandRepository;
 using CommandRepositoryListenerIF = launcherapp::core::CommandRepositoryListenerIF;
 using ExtraCandidateSource = launcherapp::commands::core::ExtraCandidateSource;
 
-namespace launcherapp {
-namespace commands {
-namespace extracandidate {
+namespace launcherapp { namespace commands { namespace extracandidate {
 
 
-struct ExtraCandidateProvider::PImpl : public AppPreferenceListenerIF, public CommandRepositoryListenerIF
+struct ExtraCandidateProvider::PImpl :
+ 	public AppPreferenceListenerIF,
+ 	public CommandRepositoryListenerIF,
+	public LauncherWindowEventListenerIF
+
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this);
+		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
@@ -54,6 +59,8 @@ struct ExtraCandidateProvider::PImpl : public AppPreferenceListenerIF, public Co
 	}
 	void OnAppExit() override
 	{
+		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+
 		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 		cmdRepo->UnregisterListener(this);
 	}
@@ -88,6 +95,12 @@ struct ExtraCandidateProvider::PImpl : public AppPreferenceListenerIF, public Co
 			command->Release();
 		}
 	}
+
+// LauncherWindowEventListenerIF
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+
 	void OnLancuherActivate() override
 	{
 		// 入力欄が表示されるタイミングでキャッシュをリセット
@@ -145,7 +158,5 @@ void ExtraCandidateProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIt
 }
 
 
-} // end of namespace extracandidate
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::extracandidate
 

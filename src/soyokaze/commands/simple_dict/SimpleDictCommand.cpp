@@ -69,6 +69,12 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 		GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
 		mLastUpdate = GetTickCount64();
 	}
+	void OnLancuherActivate() override
+	{
+	}
+	void OnLancuherUnactivate() override
+	{
+	}
 
 	// 辞書データをリロードすべきか?
 	bool shouldReload()
