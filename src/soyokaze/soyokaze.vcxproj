@@ -706,7 +706,7 @@
     <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\WindowPosition.h" />
-    <ClInclude Include="mainwindow\MainWindowAppearance.h" />
+    <ClInclude Include="mainwindow\layout\MainWindowAppearance.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\MainWindowInput.h" />
@@ -753,7 +753,7 @@
     <ClInclude Include="app/LauncherApp.h" />
     <ClInclude Include="mainwindow/LauncherMainWindow.h" />
     <ClInclude Include="mainwindow/LauncherDropTarget.h" />
-    <ClInclude Include="mainwindow/CmdReceiveEdit.h" />
+		<ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
@@ -810,7 +810,7 @@
     <ClInclude Include="utility\StringUtil.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
-    <ClInclude Include="mainwindow/WindowTransparency.h" />
+		<ClInclude Include="mainwindow\layout\WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
     <ClInclude Include="utility\WinHttp.h" />
     <ClInclude Include="utility\WinHttpHandle.h" />
@@ -1112,7 +1112,7 @@
     <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
-    <ClCompile Include="mainwindow\MainWindowAppearance.cpp" />
+    <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\MainWindowInput.cpp" />
@@ -1162,7 +1162,7 @@
     <ClCompile Include="app/LauncherApp.cpp" />
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />
-    <ClCompile Include="mainwindow/CmdReceiveEdit.cpp" />
+		<ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp" />
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
@@ -1219,7 +1219,7 @@
     <ClCompile Include="utility\SQLite3Database.cpp" />
     <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
-    <ClCompile Include="mainwindow/WindowTransparency.cpp" />
+		<ClCompile Include="mainwindow\layout\WindowTransparency.cpp" />
     <ClCompile Include="utility\StringUtil.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />

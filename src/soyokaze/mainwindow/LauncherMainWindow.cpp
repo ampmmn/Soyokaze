@@ -9,7 +9,7 @@
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "mainwindow/layout/MainWindowLayout.h"
-#include "mainwindow/MainWindowAppearance.h"
+#include "mainwindow/layout/MainWindowAppearance.h"
 #include "mainwindow/MainWindowInput.h"
 #include "mainwindow/controller/LauncherMainWindowController.h"
 #include "commands/core/CommandRepository.h"
@@ -1372,7 +1372,6 @@ LRESULT LauncherMainWindow::OnNcHitTest(
 	CPoint point
 )
 {
-
 	RECT rect;
 	GetClientRect (&rect);
 
@@ -1395,9 +1394,11 @@ void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 		return;
 	}
 
+	// 音を鳴らす
 	AppSound::Get()->PlaySelectSound();
-
+	// 選択された項目に対応するコマンドを現在のコマンドに変更する
 	in->mCandidates.SetCurrentSelect(nm->iItem);
+
 	UpdateData(FALSE);
 
 }

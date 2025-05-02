@@ -17,6 +17,7 @@
 
 - #81 プログラム終了時にSpecialFolderFiles::GetShortcutFiles内でAccessViolationがたまに起こる問題を修正
 - #83 「除外するファイル」設定の読み取りができない
+- #84 proxyを起動しなおすときに前のパイプを閉じる
 
 ## 0.39.0 - 2025-04-27
 

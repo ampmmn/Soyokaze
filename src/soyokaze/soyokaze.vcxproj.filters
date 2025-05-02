@@ -276,9 +276,6 @@
     <ClInclude Include="commands\shellexecute\ShellExecCommand.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
-    <ClInclude Include="commands\builtin\BuiltinCommandProvider.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="commands\builtin\EditCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
@@ -690,9 +687,6 @@
     <ClInclude Include="mainwindow\CandidateListCtrl.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/CmdReceiveEdit.h">
-      <Filter>mainwindow</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow/LauncherDropTarget.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -830,9 +824,6 @@
     </ClInclude>
     <ClInclude Include="setting/Settings.h">
       <Filter>setting</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow/WindowTransparency.h">
-      <Filter>mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="settingwindow\InputWindowKeySettingPage.h">
       <Filter>settingwindow</Filter>
@@ -1254,9 +1245,6 @@
     <ClInclude Include="mainwindow\WindowAppearanceIF.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowAppearance.h">
-      <Filter>mainwindow</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\LauncherInputStatusIF.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -1349,9 +1337,6 @@
     </ClInclude>
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
       <Filter>mainwindow\interprocess</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h">
       <Filter>commands\filter</Filter>
@@ -1475,6 +1460,21 @@
     </ClInclude>
     <ClInclude Include="setting\InitialFont.h">
       <Filter>setting</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\WindowTransparency.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\MainWindowAppearance.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\BuiltinCommandProvider.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
+      <Filter>commands\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow/CmdReceiveEdit.h">
+      <Filter>mainwindow\interprocess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1916,9 +1916,6 @@
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/CmdReceiveEdit.cpp">
-      <Filter>mainwindow</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
@@ -2041,9 +2038,6 @@
     </ClCompile>
     <ClCompile Include="setting/Settings.cpp">
       <Filter>setting</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow/WindowTransparency.cpp">
-      <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp">
       <Filter>settingwindow</Filter>
@@ -2414,9 +2408,6 @@
     <ClCompile Include="utility\WinHttp.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowAppearance.cpp">
-      <Filter>mainwindow</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp">
       <Filter>mainwindow\layout</Filter>
     </ClCompile>
@@ -2494,9 +2485,6 @@
     </ClCompile>
     <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp">
       <Filter>commands\filter</Filter>
@@ -2614,6 +2602,18 @@
     </ClCompile>
     <ClCompile Include="setting\InitialFont.cpp">
       <Filter>setting</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\WindowTransparency.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
+      <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/CmdReceiveEdit.cpp">
+      <Filter>mainwindow\interprocess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

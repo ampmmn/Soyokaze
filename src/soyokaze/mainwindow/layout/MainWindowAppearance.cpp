@@ -3,7 +3,7 @@
 #include "setting/AppPreference.h"
 #include "gui/ColorSettings.h"
 #include "icon/IconLabel.h"
-#include "mainwindow/WindowTransparency.h"
+#include "mainwindow/layout/WindowTransparency.h"
 #include "utility/Accessibility.h"
 
 #if _MSC_VER < 1920
