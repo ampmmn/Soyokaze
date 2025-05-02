@@ -187,6 +187,7 @@ void IconLoader::PImpl::ClearCache()
 	spdlog::debug(_T("ClearCache in."));
 
 	int clearedItemCount = 0;
+	int totalIcons = 0;
 
 	auto now = GetTickCount64();
 
@@ -205,6 +206,7 @@ void IconLoader::PImpl::ClearCache()
 			clearedItemCount++;
 		}
 	}
+	totalIcons += (int)mIconIndexCache.size();
 
 	auto it = mDefaultIconCache.begin();
 	while (it != mDefaultIconCache.end()) {
@@ -217,18 +219,7 @@ void IconLoader::PImpl::ClearCache()
 		it = mDefaultIconCache.erase(it);
 		clearedItemCount++;
 	}
-
-	it = mDefaultIconCache.begin();
-	while (it != mDefaultIconCache.end()) {
-		auto& iconItem = it->second;
-		if (iconItem.IsTimeout(now) == false) {
-			++it;
-			continue;
-		}
-		iconItem.Destroy();
-		it = mDefaultIconCache.erase(it);
-		clearedItemCount++;
-	}
+	totalIcons += (int)mDefaultIconCache.size();
 
 	it = mFileExtIconCache.begin();
 	while (it != mFileExtIconCache.end()) {
@@ -241,6 +232,7 @@ void IconLoader::PImpl::ClearCache()
 		it = mFileExtIconCache.erase(it);
 		clearedItemCount++;
 	}
+	totalIcons += (int)mFileExtIconCache.size();
 
 
 	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
@@ -256,7 +248,11 @@ void IconLoader::PImpl::ClearCache()
 		it = mAppIconMap.erase(it);
 		clearedItemCount++;
 	}
-	spdlog::info(_T("IconLoader ClearCache {} icons cleared."), clearedItemCount);
+	totalIcons += (int)mAppIconMap.size();
+
+	if (clearedItemCount > 0) {
+		spdlog::info(_T("IconLoader ClearCache {0} icons cleared.(existing icons:{1})"), clearedItemCount, totalIcons);
+	}
 }
 
 bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)

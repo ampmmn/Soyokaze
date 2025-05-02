@@ -1,3 +1,4 @@
+// あ
 #pragma once
 
 #include <memory>

@@ -138,7 +138,7 @@ bool MacroRepository::Evaluate(CString& text)
 
 				MacroIF* macro = in->FindMacro(name); 
 				if (macro == nullptr) {
-					SPDLOG_WARN(_T("macro {} does not found."), (LPCTSTR)name);
+					SPDLOG_WARN(_T("macro name:'{}' does not found."), (LPCTSTR)name);
 					continue;
 				}
 
@@ -181,7 +181,7 @@ bool MacroRepository::Evaluate(CString& text)
 
 			MacroIF* macro = in->FindMacro(name); 
 			if (macro == nullptr) {
-				SPDLOG_WARN(_T("macro {} does not found."), (LPCTSTR)name);
+				SPDLOG_WARN(_T("macro name:'{}' does not found."), (LPCTSTR)name);
 				continue;
 			}
 

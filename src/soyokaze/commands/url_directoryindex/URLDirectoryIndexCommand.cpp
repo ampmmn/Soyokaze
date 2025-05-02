@@ -613,12 +613,12 @@ bool URLDirectoryIndexCommand::QueryCandidates(Pattern* pattern, CommandQueryIte
 	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
 		in->Reset();
 		in->mSubPath.Empty();
-		spdlog::info(_T("clear state"));
 		return false;
 	}
 
 	RefPtr<PatternInternal> pat2;
 	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		spdlog::info(_T("failed to get IFID_PATTERNINTERNAL ptr."));
 		return false;
 	}
 
