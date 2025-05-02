@@ -27,6 +27,7 @@ namespace launcherapp { namespace processproxy {
 
 struct NormalPriviledgeProcessProxy::PImpl
 {
+	bool ReopenPipe();
 	bool StartAgentProcessIfNeeded();
 	bool StartAgentProcess();
 	bool GetServerHwnd(HWND& hwnd);
@@ -38,47 +39,62 @@ struct NormalPriviledgeProcessProxy::PImpl
 	HANDLE mPipeHandle{nullptr};
 };
 
+// proxyと通信用のパイプを作成する
+bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
+{
+	if (mPipeHandle) {
+		// 前のものがある場合は閉じる
+		DisconnectNamedPipe(mPipeHandle);
+		CloseHandle(mPipeHandle);
+		mPipeHandle = nullptr;
+	}
+
+	std::unique_ptr<SECURITY_ATTRIBUTES> sa;
+
+	if (DemotedProcessToken::IsRunningAsAdmin()) {
+
+		// 管理者権限で実行している場合は、
+		// 通常権限で動作する子プロセスからパイプにアクセスできるようにするため、
+		// セキュリティ記述子を設定する
+
+		sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
+		sa->bInheritHandle = TRUE;
+
+		// セキュリティ記述子を設定
+		if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
+					L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
+					SDDL_REVISION_1,
+					&(sa->lpSecurityDescriptor),
+					nullptr)) {
+
+			spdlog::error("Failed to create securitydescriptor.");
+			return false;
+		}
+	}
+
+	auto pipe = CreateNamedPipe(PIPE_PATH, PIPE_ACCESS_DUPLEX, 
+			                        PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+			                        PIPE_UNLIMITED_INSTANCES, 512, 512, 0, sa.get());
+	if (pipe == INVALID_HANDLE_VALUE) {
+		spdlog::error("Failed to create named pipe.");
+		return false;
+	}
+
+	mPipeHandle = pipe;
+	SPDLOG_INFO("pipe for proxy created.");
+	return true;
+}
+
 // 通常権限で起動するためのプロセスが実行されていなかったら起動する
 bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 {
-	// 通信用のパイプを作成する
-	if (mPipeHandle == nullptr) {
-
-		std::unique_ptr<SECURITY_ATTRIBUTES> sa;
-
-		if (DemotedProcessToken::IsRunningAsAdmin()) {
-			// 管理者権限で実行している場合は、
-			// 通常権限で動作する子プロセスからパイプにアクセスできるようにするため、
-			// セキュリティ記述子を設定する
-
-			sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
-			sa->bInheritHandle = TRUE;
-
-			// セキュリティ記述子を設定
-			if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
-						L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
-						SDDL_REVISION_1,
-						&(sa->lpSecurityDescriptor),
-						nullptr)) {
-
-				spdlog::error("Failed to create securitydescriptor.");
-				return false;
-			}
-		}
-
-		auto pipe = CreateNamedPipe(PIPE_PATH, PIPE_ACCESS_DUPLEX, 
-		                            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-		                            PIPE_UNLIMITED_INSTANCES, 512, 512, 0, sa.get());
-		if (pipe == INVALID_HANDLE_VALUE) {
-			spdlog::error("Failed to create named pipe.");
-			return false;
-		}
-		mPipeHandle = pipe;
-	}
-
 	// 接続を待つ
 	HWND hwndServer{nullptr};
 	if (GetServerHwnd(hwndServer) == false) {
+
+		// ウインドウがないということはパイプの接続がないはずなのでパイプの接続状態を初期化する
+		ReopenPipe();
+
 		// 通常権限で起動するためのエージェントプロセスを起動する
 		if (StartAgentProcess() == false) {
 			return false;
