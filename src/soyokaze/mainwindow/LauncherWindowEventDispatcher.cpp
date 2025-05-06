@@ -39,7 +39,10 @@ void LauncherWindowEventDispatcher::RemoveListener(Listener* listener)
 
 void LauncherWindowEventDispatcher::Dispatch(std::function<void(Listener*)> callback)
 {
-	for (auto& listener : in->mListeners) {
+	// 通知先でリスナー解除する可能性があるため、コピーを取る
+	auto listeners = in->mListeners;
+
+	for (auto& listener : listeners) {
 		callback(listener);
 	}
 }

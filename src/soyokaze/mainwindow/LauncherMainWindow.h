@@ -49,7 +49,6 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV サポート
 
-	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
 	void ClearContent();
 	void Complement();
@@ -120,6 +119,7 @@ protected:
 	LRESULT OnUserMessageCopyText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageSetLauncher(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 

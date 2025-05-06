@@ -6,34 +6,35 @@
 #include "framework.h"
 #include "app/LauncherApp.h"
 #include "app/Manual.h"
+#include "afxdialogex.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "mainwindow/layout/MainWindowLayout.h"
 #include "mainwindow/layout/MainWindowAppearance.h"
 #include "mainwindow/MainWindowInput.h"
 #include "mainwindow/controller/LauncherMainWindowController.h"
-#include "commands/core/CommandRepository.h"
+#include "mainwindow/LocalCommandLauncher.h"
+#include "mainwindow/AppSound.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "mainwindow/MainWindowHotKey.h"
+#include "mainwindow/OperationWatcher.h"
+#include "mainwindow/CandidateList.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
-#include "afxdialogex.h"
-#include "utility/Path.h"
+#include "remote/RemoteServer.h"
 #include "SharedHwnd.h"
 #include "hotkey/AppHotKey.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/KeyInputWatch.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/AppSound.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "utility/Path.h"
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
-#include "mainwindow/MainWindowHotKey.h"
-#include "mainwindow/OperationWatcher.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
-#include "mainwindow/CandidateList.h"
 #include <algorithm>
 #include <thread>
 
@@ -82,6 +83,9 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<SharedHwnd> mSharedHwnd;
 	   // 後で起動したプロセスから有効化するために共有メモリに保存している
 
+	// コマンドを実行する貯めのオブジェクト
+	std::unique_ptr<CommandLauncher> mLauncher;
+
 // ウインドウ上に配置する部品
 	// キーワード入力エディットボックス
 	KeywordEdit mKeywordEdit;
@@ -102,6 +106,9 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<MainWindowHotKey> mMainWindowHotKeyPtr;
 	// キー入力監視(修飾キー入力によるホットキー機能用)
 	KeyInputWatch mKeyInputWatch;
+
+// リモート機能
+	launcherapp::remote::RemoteServer mRemoteServer;
 
 // 外部との連携用
 	// 外部からのコマンド受付用エディットボックス
@@ -162,6 +169,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MAIN, pParent),
 	in(std::make_unique<PImpl>(this))
 {
+	in->mLauncher = std::make_unique<LocalCommandLauncher>();
 	in->mLayout = std::make_unique<MainWindowLayout>(this);
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
@@ -215,7 +223,8 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::UPDATECANDIDATE, OnUserMessageUpdateCandidate)
 	ON_MESSAGE(LauncherMainWindowMessageID::COPYINPUTTEXT, OnUserMessageCopyText)
 	ON_MESSAGE(LauncherMainWindowMessageID::REQUESTCALLBACK, OnUserMessageRequestCallback)
-	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
+	ON_MESSAGE(LauncherMainWindowMessageID::CLEARCONTENT, OnUserMessageClearContent)
+	ON_MESSAGE(LauncherMainWindowMessageID::SETLAUNCHER, OnUserMessageSetLauncher)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -475,6 +484,21 @@ LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lPar
 	return 0;
 }
 
+LRESULT LauncherMainWindow::OnUserMessageSetLauncher(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	auto launcher = (CommandLauncher*)lParam;
+
+	if (launcher == nullptr) {
+		in->mLauncher = std::make_unique<LocalCommandLauncher>();
+	}
+	else {
+		in->mLauncher.reset(launcher);
+	}
+	return 0;
+}
+
 
 LRESULT 
 LauncherMainWindow::OnUserMessageDragOverObject(
@@ -528,7 +552,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 		if (wnd == this) {
 			// ファイル登録
-			GetCommandRepository()->RegisterCommandFromFiles(files);
+			in->mLauncher->DropFiles(files);
 		}
 		else if (wnd == &in->mKeywordEdit) {
 			// キーワードのEdit欄にドロップされた場合はパスをコピー
@@ -550,13 +574,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				auto param = launcherapp::core::CommandParameterBuilder::Create();
-				param->SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
-				param->SetNamedParamString(_T("PATH"), urlString);
-
-				GetCommandRepository()->NewCommandDialog(param);
-
-				param->Release();
+				in->mLauncher->DropURL(urlString);
 			}
 			else if (wnd == &in->mKeywordEdit) {
 				in->mInput.AddArgument(urlString);
@@ -579,45 +597,10 @@ LRESULT
 LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(wParam);
-
 	SPDLOG_DEBUG(_T("start"));
-
 	HWND hTargetWnd = (HWND)lParam;
-	if (IsWindow(hTargetWnd) == FALSE) {
-		return 0;
-	}
-
-	ProcessPath processPath(hTargetWnd);
-
-	// 自プロセスのウインドウなら何もしない
-	if (GetCurrentProcessId() == processPath.GetProcessId()) {
-		return 0;
-	}
-
-	// 
-	try {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
-		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
-		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
-		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
-		param->SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
-		param->SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
-
-		GetCommandRepository()->NewCommandDialog(param);
-
-		param->Release();
-		return 0;
-	}
-	catch(ProcessPath::Exception& e) {
-		CString errMsg((LPCTSTR)IDS_ERR_QUERYPROCESSINFO);
-		CString pid;
-		pid.Format(_T(" (PID:%d)"), e.GetPID());
-		errMsg += pid;
-
-		AfxMessageBox(errMsg);
-		SPDLOG_ERROR((LPCTSTR)errMsg);
-		return 0;
-	}
+	in->mLauncher->CaptureWindow(hTargetWnd);
+	return 0;
 }
 
 
@@ -706,26 +689,7 @@ LRESULT LauncherMainWindow::OnUserMessageGetClipboardString(
 
 bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
-	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
-
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
-
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam->GetCommandString(), true);
-	if (cmd == nullptr) {
-		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam->GetCommandString());
-
-		commandParam->Release();
-		return false;
-	}
-
-	std::thread th([cmd, commandParam]() {
-		cmd->Execute(commandParam);
-		commandParam->Release();
-		cmd->Release();
-	});
-	th.detach();
-
-	return true;
+	return in->mLauncher->Execute(str);
 }
 
 // タスクトレイのダブルクリック時通知
@@ -863,9 +827,12 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mMainWindowHotKeyPtr->Register();
 	
 	// 設定値の読み込み
-	GetCommandRepository()->Load();
+	in->mLauncher->Load();
 
 	UpdateData(FALSE);
+
+	// リモートサーバ機能
+	in->mRemoteServer.Start();
 
 	in->mDropTargetDialog.Register(this);
 	in->mDropTargetEdit.Register(&in->mKeywordEdit);
@@ -919,12 +886,6 @@ void LauncherMainWindow::OnPaint()
 HCURSOR LauncherMainWindow::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(IconLoader::Get()->LoadDefaultIcon());
-}
-
-LauncherMainWindow::CommandRepository*
-LauncherMainWindow::GetCommandRepository()
-{
-	return CommandRepository::GetInstance();
 }
 
 void LauncherMainWindow::SetDescription(const CString& msg)
@@ -1047,7 +1008,8 @@ void LauncherMainWindow::QueryAsync()
 	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
-	GetCommandRepository()->Query(req);
+
+	in->mLauncher->Query(req);
 
 	commandParam->Release();
 
@@ -1063,7 +1025,8 @@ void LauncherMainWindow::QuerySync()
 	// キーワードによる絞り込みを実施
 	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
-	GetCommandRepository()->Query(req);
+
+	in->mLauncher->Query(req);
 
 	commandParam->Release();
 
@@ -1221,6 +1184,10 @@ void LauncherMainWindow::OnOK()
 	// 問い合わせの結果として得られた選択中の候補を取得する
 	auto cmd = GetCurrentCommand();
 	if (cmd) {
+		// コマンドが(これから)実行されることを通知
+		LauncherWindowEventDispatcher::Get()->Dispatch([cmd](LauncherWindowEventListenerIF* listener) {
+			listener->OnRunningCommand(cmd);
+		});
 		// コマンドを実行する
 		RunCommand(cmd);
 	}
@@ -1230,6 +1197,7 @@ void LauncherMainWindow::OnOK()
 			ExecuteCommand(_T("manager"));
 		}
 	}
+
 	// 実行したら、入力文字列を消して、入力ウインドウも非表示にする
 	ClearContent();
 	HideWindow();
@@ -1243,6 +1211,10 @@ void LauncherMainWindow::OnCancel()
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 	}
 	else {
+		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+			listener->OnCancel();
+		});
+
 		HideWindow();
 	}
 }

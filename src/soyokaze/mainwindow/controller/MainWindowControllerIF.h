@@ -1,5 +1,9 @@
 #pragma once
 
+namespace launcherapp { namespace mainwindow {
+class CommandLauncher;
+}}
+
 namespace launcherapp { namespace mainwindow { namespace controller {
 	
 class MainWindowControllerIF
@@ -37,7 +41,8 @@ public:
 	virtual void ClearContent() = 0;
 	// コンテキストメニューを表示する
 	virtual void ShowContextMenu() = 0;
+	// ランチャーを変更する(nullを指定したら初期状態に戻す)
+	virtual void SetLauncher(launcherapp::mainwindow::CommandLauncher* launcher) = 0;
 };
-
 
 }}} // end of namespace launcherapp::mainwindow::controller

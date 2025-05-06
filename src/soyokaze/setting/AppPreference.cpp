@@ -1060,6 +1060,16 @@ bool AppPreference::IsDisableMigemoForClipboardHistory()
 	return in->Get(_T("ClipboardHistory:IsDisableMigemo"), true);
 }
 
+bool AppPreference::IsEnableRemoteServer()
+{
+	return in->Get(_T("Remote:IsEnableServer"), false);
+}
+
+bool AppPreference::IsEnableRemoteClient()
+{
+	return in->Get(_T("Remote:IsEnableClient"), false);
+}
+
 // ログレベル
 int AppPreference::GetLogLevel()
 {

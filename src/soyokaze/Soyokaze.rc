@@ -1435,6 +1435,38 @@ BEGIN
                     "SysLink",WS_TABSTOP,232,45,67,9
 END
 
+IDD_APPSETTING_REMOTE DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "リモートサーバー機能を有効にする(&S)",IDC_CHECK_ENABLE_REMOTESERVER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,21,243,10
+    CONTROL         "リモートクライアント機能を有効にする(&C)",IDC_CHECK_ENABLE_REMOTECLIENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,39,253,10
+    GROUPBOX        "【試作】リモート機能",IDC_STATIC,11,8,282,50
+END
+
+IDD_REMOTECLIENT DIALOGEX 0, 0, 337, 155
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "リモートコマンドの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,13,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,120,21,199,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",IDC_STATIC,13,44,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,120,41,199,14,ES_AUTOHSCROLL
+    LTEXT           "接続先のホスト(&H):",IDC_STATIC,13,66,65,8
+    EDITTEXT        IDC_EDIT_HOST,120,63,199,14,ES_AUTOHSCROLL
+    LTEXT           "接続先におけるアプリのパス(&D):",IDC_STATIC,14,86,112,8
+    EDITTEXT        IDC_EDIT_LAUNCHERAPPDIR,120,83,199,14,ES_AUTOHSCROLL
+    LTEXT           "ホットキー(K):",IDC_STATIC,20,114,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,111,111,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,111,21,14
+    DEFPUSHBUTTON   "OK",IDOK,226,134,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,280,134,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,213,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1990,6 +2022,22 @@ BEGIN
         RIGHTMARGIN, 304
         TOPMARGIN, 7
         BOTTOMMARGIN, 99
+    END
+
+    IDD_APPSETTING_REMOTE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+
+    IDD_REMOTECLIENT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 148
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2889,6 +2937,30 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0
+END
+
+IDD_APPSETTING_REMOTE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_REMOTECLIENT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    0, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
 END
 
 

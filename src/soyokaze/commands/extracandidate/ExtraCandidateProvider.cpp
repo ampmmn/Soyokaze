@@ -111,6 +111,12 @@ struct ExtraCandidateProvider::PImpl :
 	void OnLancuherUnactivate() override
 	{
 	}
+	void OnRunningCommand(launcherapp::core::Command*) override 
+	{
+	}
+	void OnCancel() override
+	{
+	}
 
 	std::vector<ExtraCandidateSource*> mSources;
 };

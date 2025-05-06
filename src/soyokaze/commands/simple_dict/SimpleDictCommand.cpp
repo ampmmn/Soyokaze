@@ -78,6 +78,12 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 	void OnLancuherUnactivate() override
 	{
 	}
+	void OnRunningCommand(launcherapp::core::Command*) override
+ 	{
+	}
+	void OnCancel() override
+	{
+	}
 
 	// 辞書データをリロードすべきか?
 	bool shouldReload()

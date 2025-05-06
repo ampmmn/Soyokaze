@@ -103,7 +103,7 @@ void LauncherMainWindowController::RequestCallback(CALLBACKFUNC func, void* para
 void LauncherMainWindowController::ClearContent()
 {
 	SharedHwnd sharedWnd;
-	::SendMessage(sharedWnd.GetHwnd(), WM_APP+18, 0, 0);
+	::SendMessage(sharedWnd.GetHwnd(), CLEARCONTENT, 0, 0);
 }
 
 // コンテキストメニューを表示する
@@ -111,6 +111,13 @@ void LauncherMainWindowController::ShowContextMenu()
 {
 	SharedHwnd sharedWnd;
 	::SendMessage(sharedWnd.GetHwnd(), WM_CONTEXTMENU, 0, MAKELPARAM(-1, -1));
+}
+
+// ランチャーを変更する
+void LauncherMainWindowController::SetLauncher(launcherapp::mainwindow::CommandLauncher* launcher)
+{
+	SharedHwnd sharedWnd;
+	::SendMessage(sharedWnd.GetHwnd(), SETLAUNCHER, 0, (LPARAM)launcher);
 }
 
 

@@ -19,6 +19,9 @@
     <Filter Include="logger">
       <UniqueIdentifier>{2240114a-b397-4295-b098-f169582d34b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="remote">
+      <UniqueIdentifier>{6e2a49cb-185a-4ace-aa15-a7bd9f37b789}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -84,6 +87,12 @@
     <ClInclude Include="proxycommands\EnumPresentationSlidesProxyCommand.h">
       <Filter>proxycommands</Filter>
     </ClInclude>
+    <ClInclude Include="remote\RemoteClient.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\ClientPipe.h">
+      <Filter>remote</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -139,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="proxycommands\EnumPresentationSlidesProxyCommand.cpp">
       <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\RemoteClient.cpp">
+      <Filter>remote</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\ClientPipe.cpp">
+      <Filter>remote</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
