@@ -155,6 +155,12 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	void OnLancuherUnactivate() override
 	{
 	}
+	void OnRunningCommand(launcherapp::core::Command*) override 
+	{
+	}
+	void OnCancel() override
+	{
+	}
 
 
 	Path mImgResDll;

@@ -9,6 +9,7 @@
 #include <string>
 #include "Restart.h"
 #include "NormalPriviledgeAgent.h"
+#include "remote/RemoteClient.h"
 
 int wmain(int argc, wchar_t* argv[]) {
 
@@ -20,6 +21,10 @@ int wmain(int argc, wchar_t* argv[]) {
 	std::wstring command_name(argv[1]);
 	if (command_name == L"restart") {
 		return RestartApp();
+	}
+	else if (command_name == L"run-remote-client") {
+		launcherproxy::remote::RemoteClient client;
+		return client.Run(GetModuleHandle(nullptr));
 	}
 	else if (command_name == L"run-normal-priviledge-agent") {
 		NormalPriviledgeAgent agent;

@@ -229,6 +229,13 @@
     <Filter Include="commands\error">
       <UniqueIdentifier>{e2b6c120-49c4-455f-8168-572eb8227f01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="remote">
+      <UniqueIdentifier>{9133f1da-4883-4833-be1c-59ab3db97408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\remote">
+      <UniqueIdentifier>{5570fcc7-bc4f-4cdd-bdd0-7396af428f8d}</UniqueIdentifier>
+    </Filter>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1484,6 +1491,50 @@
     </ClInclude>
     <ClInclude Include="commands\common\ExecutablePath.h">
       <Filter>commands\common</Filter>
+    <ClInclude Include="mainwindow\LocalCommandLauncher.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowCommandLauncher.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\CommandQueryReceiver.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\RemoteServer.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\RemoteServerSetting.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\AppSettingPageRemote.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\ServerPipe.h">
+      <Filter>remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClientCommand.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClientCommandEditDialog.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClientCommandEditor.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClientCommandParam.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClientCommandProvider.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteClient.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteCommandLauncher.h">
+      <Filter>commands\remote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\remote\RemoteAdhocCommand.h">
+      <Filter>commands\remote</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2629,6 +2680,42 @@
     </ClCompile>
     <ClCompile Include="commands\common\ExecutablePath.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\LocalCommandLauncher.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\CommandQueryReceiver.cpp">
+      <Filter>remote</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\RemoteServer.cpp">
+      <Filter>remote</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\AppSettingPageRemote.cpp">
+      <Filter>remote</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\ServerPipe.cpp">
+      <Filter>remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteClientCommand.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteClientCommandEditDialog.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteClientCommandEditor.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteClientCommandProvider.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteClient.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteCommandLauncher.cpp">
+      <Filter>commands\remote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\remote\RemoteAdhocCommand.cpp">
+      <Filter>commands\remote</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -160,6 +160,8 @@
 #define IDD_SHELLEXEC_ENVLIST           252
 #define IDD_SHELLEXEC_ENVEDIT           253
 #define IDD_SHELLEXEC_ENVBULKADD        254
+#define IDD_APPSETTING_REMOTE           255
+#define IDD_REMOTECLIENT                256
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -174,11 +176,14 @@
 #define IDC_EDIT_FILEPATH               1009
 #define IDC_EDIT_OTHERPARAM             1009
 #define IDC_EDIT_REGPATTERN             1009
+#define IDC_EDIT_HOST                   1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_EDIT_FRONT                  1010
 #define IDC_EDIT_SUBSTITUTE             1010
 #define IDC_EDIT_REPLACE                1010
+#define IDC_EDIT_DESCRIPTION3           1010
+#define IDC_EDIT_LAUNCHERAPPDIR         1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_CHECK_SHOWARGINPUT          1011
 #define IDC_EDIT_BACK                   1011
@@ -503,6 +508,8 @@
 #define IDC_EDIT_PREFIX_WORKSHEET2      1215
 #define IDC_EDIT_PREFIX_PRESENTATION    1215
 #define IDC_CHECK_DISABLEMIGEMO         1216
+#define IDC_CHECK_ENABLE_REMOTESERVER   1217
+#define IDC_CHECK_ENABLE_REMOTECLIENT   1218
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -511,7 +518,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        250
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1217
+#define _APS_NEXT_CONTROL_VALUE         1219
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

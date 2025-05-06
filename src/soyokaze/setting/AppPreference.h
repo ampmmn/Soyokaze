@@ -200,6 +200,10 @@ public:
 	CString GetClipboardHistoryExcludePattern();
 	bool IsDisableMigemoForClipboardHistory();
 
+	// リモート機能
+	bool IsEnableRemoteServer();
+	bool IsEnableRemoteClient();
+
 	// ログレベル
 	int GetLogLevel();
 	// 性能ログを出力するか?

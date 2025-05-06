@@ -76,6 +76,12 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 	void OnLancuherUnactivate() override
 	{
 	}
+	void OnRunningCommand(launcherapp::core::Command*) override
+	{
+	}
+	void OnCancel() override
+	{
+	}
 
 
 	void OnAppFirstBoot() override

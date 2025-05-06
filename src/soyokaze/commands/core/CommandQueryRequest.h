@@ -37,9 +37,9 @@ public:
 		return *this;
 	}
 
-	const CommandParameterBuilder* GetCommandParameter() { return mParam; }
-	HWND GetNotifyWindow() { return mHwnd; }
-	UINT GetNotifyMessage() { return mMsg; }
+	const CommandParameterBuilder* GetCommandParameter() const { return mParam; }
+	HWND GetNotifyWindow() const { return mHwnd; }
+	UINT GetNotifyMessage() const { return mMsg; }
 
 private:
 	CommandParameterBuilder* mParam{nullptr};

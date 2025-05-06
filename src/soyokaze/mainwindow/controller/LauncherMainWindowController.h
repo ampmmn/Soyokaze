@@ -18,6 +18,7 @@ enum LauncherMainWindowMessageID  {
 	UPDATECANDIDATE = WM_APP + 15,
 	REQUESTCALLBACK = WM_APP+17,
 	CLEARCONTENT = WM_APP + 18,
+	SETLAUNCHER = WM_APP + 19,
 };
 	
 class LauncherMainWindowController : public MainWindowControllerIF
@@ -54,6 +55,8 @@ public:
 	void ClearContent() override;
 	// コンテキストメニューを表示する
 	void ShowContextMenu() override;
+	// ランチャーを変更する
+	void SetLauncher(launcherapp::mainwindow::CommandLauncher* launcher) override;
 
 };
 

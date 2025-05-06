@@ -6,7 +6,6 @@
 #include <shellapi.h>
 #include <objbase.h>
 #include <string>
-#include <spdlog/spdlog.h>
 #include "NormalPriviledgeAgent.h"
 #include "logger/Logger.h"
 #include "ProxyCommandRepository.h"

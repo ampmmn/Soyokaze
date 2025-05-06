@@ -102,6 +102,12 @@ struct ClipboardHistoryProvider::PImpl :
 	void OnLancuherUnactivate() override
 	{
 	}
+	void OnRunningCommand(launcherapp::core::Command*) override 
+	{
+	}
+	void OnCancel() override
+	{
+	}
 
 	/**
 	 * @brief 設定をリロードする

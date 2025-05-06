@@ -491,6 +491,14 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
+    <ClInclude Include="commands\remote\RemoteAdhocCommand.h" />
+    <ClInclude Include="commands\remote\RemoteClient.h" />
+    <ClInclude Include="commands\remote\RemoteClientCommand.h" />
+    <ClInclude Include="commands\remote\RemoteClientCommandEditDialog.h" />
+    <ClInclude Include="commands\remote\RemoteClientCommandEditor.h" />
+    <ClInclude Include="commands\remote\RemoteClientCommandParam.h" />
+    <ClInclude Include="commands\remote\RemoteClientCommandProvider.h" />
+    <ClInclude Include="commands\remote\RemoteCommandLauncher.h" />
     <ClInclude Include="commands\share\AfxWWrapper.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
@@ -709,6 +717,8 @@
     <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\WindowPosition.h" />
     <ClInclude Include="mainwindow\layout\MainWindowAppearance.h" />
+    <ClInclude Include="mainwindow\LocalCommandLauncher.h" />
+    <ClInclude Include="mainwindow\MainWindowCommandLauncher.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\MainWindowInput.h" />
@@ -719,6 +729,11 @@
     <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="processproxy\NormalPriviledgeProcessProxy.h" />
     <ClInclude Include="processproxy\share\AfxWFunctions.h" />
+    <ClInclude Include="remote\AppSettingPageRemote.h" />
+    <ClInclude Include="remote\CommandQueryReceiver.h" />
+    <ClInclude Include="remote\RemoteServer.h" />
+    <ClInclude Include="remote\RemoteServerSetting.h" />
+    <ClInclude Include="remote\ServerPipe.h" />
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingDialog.h" />
     <ClInclude Include="settingwindow\AppSettingPageBase.h" />
@@ -911,6 +926,13 @@
     <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
+    <ClCompile Include="commands\remote\RemoteAdhocCommand.cpp" />
+    <ClCompile Include="commands\remote\RemoteClient.cpp" />
+    <ClCompile Include="commands\remote\RemoteClientCommand.cpp" />
+    <ClCompile Include="commands\remote\RemoteClientCommandEditDialog.cpp" />
+    <ClCompile Include="commands\remote\RemoteClientCommandEditor.cpp" />
+    <ClCompile Include="commands\remote\RemoteClientCommandProvider.cpp" />
+    <ClCompile Include="commands\remote\RemoteCommandLauncher.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
@@ -1117,6 +1139,7 @@
     <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp" />
+    <ClCompile Include="mainwindow\LocalCommandLauncher.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\MainWindowInput.cpp" />
@@ -1130,6 +1153,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="remote\AppSettingPageRemote.cpp" />
+    <ClCompile Include="remote\CommandQueryReceiver.cpp" />
+    <ClCompile Include="remote\RemoteServer.cpp" />
+    <ClCompile Include="remote\ServerPipe.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingDialog.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />

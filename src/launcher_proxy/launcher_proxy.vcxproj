@@ -1984,6 +1984,8 @@
     <ClInclude Include="proxycommands\GoToSlideProxyCommand.h" />
     <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h" />
+    <ClInclude Include="remote\ClientPipe.h" />
+    <ClInclude Include="remote\RemoteClient.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Restart.h" />
     <ClInclude Include="targetver.h" />
@@ -2006,6 +2008,8 @@
     <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp" />
     <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp" />
+    <ClCompile Include="remote\ClientPipe.cpp" />
+    <ClCompile Include="remote\RemoteClient.cpp" />
     <ClCompile Include="Restart.cpp" />
   </ItemGroup>
   <ItemGroup>
