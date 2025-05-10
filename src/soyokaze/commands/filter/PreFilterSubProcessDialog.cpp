@@ -3,6 +3,7 @@
 #include "PreFilterSubProcessDialog.h"
 #include "gui/FolderDialog.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecutablePath.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "app/Manual.h"
@@ -96,6 +97,12 @@ bool PreFilterSubProcessDialog::UpdateStatus()
 {
 	if (mParam.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+	ExecutablePath path(mParam.mPath);
+	if (path.IsExecutable() == false) {
+		mMessage = _T("ファイルが存在しません。");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

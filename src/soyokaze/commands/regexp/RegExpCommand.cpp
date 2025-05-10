@@ -6,6 +6,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/ExecutablePath.h"
 #include "commands/regexp/RegExpCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/LastErrorString.h"
@@ -102,6 +103,18 @@ CString RegExpCommand::GetTypeDisplayName()
 	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);
 	return TEXT_TYPE;
 }
+
+bool RegExpCommand::CanExecute()
+{
+	const ATTRIBUTE& attr = in->mParam.mNormalAttr;
+	ExecutablePath path(attr.mPath);
+	if (path.IsExecutable() == false) {
+		in->mErrMsg = _T("！リンク切れ！");
+		return false;
+	}
+	return true;
+}
+
 
 BOOL RegExpCommand::Execute(Parameter* param)
 {

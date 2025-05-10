@@ -440,6 +440,7 @@
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
+    <ClInclude Include="commands\common\ExecutablePath.h" />
     <ClInclude Include="commands\common\OtherCommandDialog.h" />
     <ClInclude Include="commands\common\SubProcessDialog.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
@@ -456,6 +457,7 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h" />
     <ClInclude Include="commands\env\EnvAppSettings.h" />
+    <ClInclude Include="commands\error\ErrorIndicatorCommand.h" />
     <ClInclude Include="commands\everything\AppSettingEverythingPage.h" />
     <ClInclude Include="commands\everything\Everything-SDK\include\Everything.h" />
     <ClInclude Include="commands\everything\Everything-SDK\ipc\everything_ipc.h" />
@@ -753,7 +755,7 @@
     <ClInclude Include="app/LauncherApp.h" />
     <ClInclude Include="mainwindow/LauncherMainWindow.h" />
     <ClInclude Include="mainwindow/LauncherDropTarget.h" />
-		<ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h" />
+    <ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
@@ -810,7 +812,7 @@
     <ClInclude Include="utility\StringUtil.h" />
     <ClInclude Include="utility\TopMostMask.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
-		<ClInclude Include="mainwindow\layout\WindowTransparency.h" />
+    <ClInclude Include="mainwindow\layout\WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
     <ClInclude Include="utility\WinHttp.h" />
     <ClInclude Include="utility\WinHttpHandle.h" />
@@ -855,6 +857,7 @@
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
+    <ClCompile Include="commands\common\ExecutablePath.cpp" />
     <ClCompile Include="commands\common\OtherCommandDialog.cpp" />
     <ClCompile Include="commands\common\SubProcessDialog.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
@@ -868,6 +871,7 @@
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp" />
     <ClCompile Include="commands\env\EnvAppSettings.cpp" />
+    <ClCompile Include="commands\error\ErrorIndicatorCommand.cpp" />
     <ClCompile Include="commands\everything\AppSettingEverythingPage.cpp" />
     <ClCompile Include="commands\everything\Everything-SDK\src\Everything.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -1162,7 +1166,7 @@
     <ClCompile Include="app/LauncherApp.cpp" />
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />
-		<ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp" />
+    <ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp" />
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
@@ -1219,7 +1223,7 @@
     <ClCompile Include="utility\SQLite3Database.cpp" />
     <ClCompile Include="utility\SQLite3Wrapper.cpp" />
     <ClCompile Include="matcher/WholeMatchPattern.cpp" />
-		<ClCompile Include="mainwindow\layout\WindowTransparency.cpp" />
+    <ClCompile Include="mainwindow\layout\WindowTransparency.cpp" />
     <ClCompile Include="utility\StringUtil.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />

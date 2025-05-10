@@ -11,6 +11,7 @@
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
+#include "utility/LocalPathResolver.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
 #include "resource.h"
@@ -22,6 +23,29 @@
 
 
 using namespace launcherapp::commands::common;
+using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+
+struct CommandEditDialog::PImpl
+{
+	// 編集開始時のコマンド名
+	CString mOrgName;
+	// メッセージ欄
+	CString mMessage;
+
+	CommandParam mParam;
+
+	std::unique_ptr<IconLabel> mIconLabelPtr{std::make_unique<IconLabel>()};
+
+	// ホットキー(表示用)
+	CString mHotKey;
+
+	// アイコン(表示用)
+	HICON mIcon{nullptr};
+
+	// 
+	CMFCMenuButton mPathMenuBtn;
+	CMenu mMenuForPathBtn;
+};
 
 static const tregex& GetRegexForArgument()
 {
@@ -32,7 +56,7 @@ static const tregex& GetRegexForArgument()
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
-	mIconLabelPtr(std::make_unique<IconLabel>()), mIcon(nullptr)
+	in(new PImpl)
 {
 }
 
@@ -42,25 +66,26 @@ CommandEditDialog::~CommandEditDialog()
 
 void CommandEditDialog::SetOriginalName(const CString& name)
 {
-	mOrgName = name;
+	in->mOrgName = name;
 }
 
 void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 {
+	auto& param = in->mParam;
 	__super::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
-	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
-	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, mParam.mIsRunAsAdmin);
-	DDX_Text(pDX, IDC_EDIT_PATH, mParam.mNormalAttr.mPath);
-	DDX_Text(pDX, IDC_EDIT_PARAM, mParam.mNormalAttr.mParam);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
-	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, mParam.mIsShowArgDialog);
-	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, mParam.mIsUseDescriptionForMatching);
-	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
+	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
+	DDX_Text(pDX, IDC_EDIT_NAME, param.mName);
+	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, param.mDescription);
+	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, param.mIsRunAsAdmin);
+	DDX_Text(pDX, IDC_EDIT_PATH, param.mNormalAttr.mPath);
+	DDX_Text(pDX, IDC_EDIT_PARAM, param.mNormalAttr.mParam);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
+	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, param.mIsShowArgDialog);
+	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, param.mIsUseDescriptionForMatching);
+	DDX_Control(pDX, IDC_BUTTON_MENU, in->mPathMenuBtn);
 	// 以下のパラメータは通常と引数なし版で兼用
-	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, mParam.mNormalAttr.mShowType);
-	DDX_Text(pDX, IDC_EDIT_DIR, mParam.mNormalAttr.mDir);
+	DDX_CBIndex(pDX, IDC_COMBO_SHOWTYPE, param.mNormalAttr.mShowType);
+	DDX_Text(pDX, IDC_EDIT_DIR, param.mNormalAttr.mDir);
 }
 
 #pragma warning( push )
@@ -88,13 +113,13 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
-	mMenuForPathBtn.CreatePopupMenu();
-	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));
-	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 2, _T("フォルダ選択"));
-	mPathMenuBtn.m_hMenu = (HMENU)mMenuForPathBtn;
+	in->mMenuForPathBtn.CreatePopupMenu();
+	in->mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));
+	in->mMenuForPathBtn.InsertMenu((UINT)-1, 0, 2, _T("フォルダ選択"));
+	in->mPathMenuBtn.m_hMenu = (HMENU)in->mMenuForPathBtn;
 
-	mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
-	mIconLabelPtr->EnableIconChange();
+	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mIconLabelPtr->EnableIconChange();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -104,12 +129,24 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
+	auto& param = in->mParam;
+
+	in->mHotKey = param.mHotKeyAttr.ToString();
+	if (in->mHotKey.IsEmpty()) {
+		in->mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	const CString& targetPath = mParam.mNormalAttr.mPath;
+	CString targetPath = param.mNormalAttr.mPath;
+	ExpandMacros(targetPath);
+
+	// 相対パスの場合はパス解決をする
+	if (PathIsRelative(targetPath)) {
+		LocalPathResolver resolver;
+		CString resolvedPath;
+		if (resolver.Resolve(targetPath, resolvedPath)) {
+			targetPath = resolvedPath;
+		}
+	}
 
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 
@@ -117,14 +154,14 @@ bool CommandEditDialog::UpdateStatus()
 	const tregex& regArg = GetRegexForArgument();
 
 	bool hasArg = std::regex_search((LPCTSTR)targetPath, regArg) ||
-		            std::regex_search((LPCTSTR)mParam.mNormalAttr.mParam, regArg);
+		            std::regex_search((LPCTSTR)param.mNormalAttr.mParam, regArg);
 
 	GetDlgItem(IDC_CHECK_SHOWARGINPUT)->ShowWindow(hasArg? SW_SHOW : SW_HIDE);
 
 	// パスが有効なファイルだったら編集メニューを表示する
-	mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);
+	in->mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);
 	if (IsEditableFileType(targetPath)) {
-			mMenuForPathBtn.InsertMenu((UINT)-1, 0, 3, _T("編集"));
+			in->mMenuForPathBtn.InsertMenu((UINT)-1, 0, 3, _T("編集"));
 	}
 
 	// .lnkだったらショートカット解決ボタンを表示する
@@ -135,35 +172,40 @@ bool CommandEditDialog::UpdateStatus()
 	                    CString(_T(".bat")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 	GetDlgItem(IDC_CHECK_RUNASADMIN)->EnableWindow(isExecutable);
 	if (isExecutable == FALSE) {
-		mParam.mIsRunAsAdmin = FALSE;
+		param.mIsRunAsAdmin = FALSE;
 	}
 
-	if (mParam.mIconData.empty()) {
-		CString resolvedPath(targetPath);
-		ExpandMacros(resolvedPath);
-		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
+	if (param.mIconData.empty()) {
+		in->mIcon = IconLoader::Get()->LoadIconFromPath(targetPath);
 	}
 
-	if (mIcon) {
-		mIconLabelPtr->DrawIcon(mIcon);
+	if (in->mIcon) {
+		in->mIconLabelPtr->DrawIcon(in->mIcon);
 	}
 
 	
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	 	launcherapp::commands::common::IsValidCommandName(param.mName, in->mOrgName, in->mMessage);
 	if (isNameValid == false) {
 		DisalbleOKButton();
 		return false;
 	}
 
+	// パスの妥当性チェック
 	if (targetPath.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
+		// パスが空
+		in->mMessage.LoadString(IDS_ERR_PATHISEMPTY);
+		DisalbleOKButton();
+		return false;
+	}
+	if (PathIsURL(targetPath) == FALSE && Path::FileExists(targetPath) == false) {
+		in->mMessage = _T("ファイルまたはディレクトリが存在しません。");
 		DisalbleOKButton();
 		return false;
 	}
 
-	mMessage.Empty();
+	in->mMessage.Empty();
 	EnalbleOKButton();
 
 	return true;
@@ -180,12 +222,12 @@ void CommandEditDialog::OnUpdateStatus()
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
 {
 	UpdateData();
-	CFileDialog dlg(TRUE, NULL, mParam.mNormalAttr.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
+	CFileDialog dlg(TRUE, NULL, in->mParam.mNormalAttr.mPath, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mNormalAttr.mPath = dlg.GetPathName();
+	in->mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -193,20 +235,20 @@ void CommandEditDialog::OnButtonBrowseFile1Clicked()
 void CommandEditDialog::OnButtonBrowseDir1Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mPath, this);
+	CFolderDialog dlg(_T(""), in->mParam.mNormalAttr.mPath, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mNormalAttr.mPath = dlg.GetPathName();
+	in->mParam.mNormalAttr.mPath = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
 void CommandEditDialog::OpenTarget()
 {
-	CString path(mParam.mNormalAttr.mPath);
+	CString path(in->mParam.mNormalAttr.mPath);
 	ExpandMacros(path);
 
 	auto p = path.GetBuffer(path.GetLength() + 1);
@@ -237,7 +279,7 @@ HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
-		COLORREF crTxt = mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
+		COLORREF crTxt = in->mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
 		pDC->SetTextColor(crTxt);
 	}
 
@@ -261,26 +303,26 @@ BOOL CommandEditDialog::OnSetActive()
 
 void CommandEditDialog::OnEnterSettings()
 {
-	auto param = (CommandParam*)GetParam();
+	auto& param = in->mParam;
 
-	mParam = *param;
+	param = *(CommandParam*)GetParam();
 
 	CString caption;
   GetWindowText(caption);
 
 	CString suffix;
-	suffix.Format(_T("【%s】"), mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)mOrgName);
+	suffix.Format(_T("【%s】"), in->mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)in->mOrgName);
 
 	caption += suffix;
 	SetWindowText(caption);
 
-	if (mParam.mIconData.empty()) {
-		CString resolvedPath(mParam.mNormalAttr.mPath);
+	if (param.mIconData.empty()) {
+		CString resolvedPath(param.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
-		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
+		in->mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
 	}
 	else {
-		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+		in->mIcon = IconLoader::Get()->LoadIconFromStream(param.mIconData);
 	}
 
 }
@@ -300,31 +342,33 @@ void CommandEditDialog::OnOK()
 		return ;
 	}
 
+	auto& paramSrc = in->mParam;
+
 	// Note : このページで設定するパラメータだけ書き戻す
 	auto param = (CommandParam*)GetParam();
 
-	param->mName = mParam.mName;
-	param->mDescription = mParam.mDescription;
+	param->mName = paramSrc.mName;
+	param->mDescription = paramSrc.mDescription;
 
-	param->mNormalAttr.mPath = mParam.mNormalAttr.mPath;
-	param->mNormalAttr.mParam = mParam.mNormalAttr.mParam;
+	param->mNormalAttr.mPath = paramSrc.mNormalAttr.mPath;
+	param->mNormalAttr.mParam = paramSrc.mNormalAttr.mParam;
 
-	param->mIsRunAsAdmin = mParam.mIsRunAsAdmin;
-	param->mIsShowArgDialog = mParam.mIsShowArgDialog;
-	param->mIsUseDescriptionForMatching = mParam.mIsUseDescriptionForMatching;
-	param->mIconData = mParam.mIconData;
-	param->mHotKeyAttr = mParam.mHotKeyAttr;
+	param->mIsRunAsAdmin = paramSrc.mIsRunAsAdmin;
+	param->mIsShowArgDialog = paramSrc.mIsShowArgDialog;
+	param->mIsUseDescriptionForMatching = paramSrc.mIsUseDescriptionForMatching;
+	param->mIconData = paramSrc.mIconData;
+	param->mHotKeyAttr = paramSrc.mHotKeyAttr;
 
 	// 以下、兼用パラメータ
-	param->mNormalAttr.mShowType = mParam.mNormalAttr.mShowType;
-	param->mNoParamAttr.mShowType = mParam.mNormalAttr.mShowType;
-	param->mNormalAttr.mDir = mParam.mNormalAttr.mDir;
-	param->mNoParamAttr.mDir = mParam.mNormalAttr.mDir;
+	param->mNormalAttr.mShowType = paramSrc.mNormalAttr.mShowType;
+	param->mNoParamAttr.mShowType = paramSrc.mNormalAttr.mShowType;
+	param->mNormalAttr.mDir = paramSrc.mNormalAttr.mDir;
+	param->mNoParamAttr.mDir = paramSrc.mNormalAttr.mDir;
 
 	// 引数展開のキーワードが含まれていない場合は、引数入力ダイアログの表示を無効化する
 	const tregex& regArg = GetRegexForArgument();
-	bool hasArg = std::regex_search((LPCTSTR)mParam.mNormalAttr.mPath, regArg) ||
-		            std::regex_search((LPCTSTR)mParam.mNormalAttr.mParam, regArg);
+	bool hasArg = std::regex_search((LPCTSTR)paramSrc.mNormalAttr.mPath, regArg) ||
+		          std::regex_search((LPCTSTR)paramSrc.mNormalAttr.mParam, regArg);
 	if (hasArg == false) {
 		param->mIsShowArgDialog = false;
 	}
@@ -337,7 +381,7 @@ void CommandEditDialog::OnButtonHotKey()
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();
@@ -382,32 +426,34 @@ bool CommandEditDialog::IsEditableFileType(CString pathStr)
 
 void CommandEditDialog::OnButtonResolveShortcut()
 {
-	ResolveShortcut(mParam.mNormalAttr.mPath);
+	ResolveShortcut(in->mParam.mNormalAttr.mPath);
 }
 
 LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 {
+	auto& param = in->mParam;
+
 	if (wp != 0) {
 		// 変更
 		LPCTSTR iconPath = (LPCTSTR)lp;
-		if (IconLoader::GetStreamFromPath(iconPath, mParam.mIconData) == false) {
+		if (IconLoader::GetStreamFromPath(iconPath, param.mIconData) == false) {
 			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
 			return 0;
 		}
 
-		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+		in->mIcon = IconLoader::Get()->LoadIconFromStream(param.mIconData);
 	}
 	else {
 		// デフォルトに戻す
-		CString resolvedPath(mParam.mNormalAttr.mPath);
+		CString resolvedPath(param.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
-		mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
-		mParam.mIconData.clear();
+		in->mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
+		param.mIconData.clear();
 	}
 
 	// 再描画
-	if (mIcon) {
-		mIconLabelPtr->DrawIcon(mIcon);
+	if (in->mIcon) {
+		in->mIconLabelPtr->DrawIcon(in->mIcon);
 	}
 
 	return 0;
@@ -428,7 +474,7 @@ void CommandEditDialog::OnNotifyLinkOpen(
 
 void CommandEditDialog::OnPathMenuBtnClicked()
 {
-	switch (mPathMenuBtn.m_nMenuResult) {
+	switch (in->mPathMenuBtn.m_nMenuResult) {
 		case 1:
 			OnButtonBrowseFile1Clicked();
 			break;
@@ -444,13 +490,13 @@ void CommandEditDialog::OnPathMenuBtnClicked()
 void CommandEditDialog::OnButtonBrowseDir3Clicked()
 {
 	UpdateData();
-	CFolderDialog dlg(_T(""), mParam.mNormalAttr.mDir, this);
+	CFolderDialog dlg(_T(""), in->mParam.mNormalAttr.mDir, this);
 
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mParam.mNormalAttr.mDir = dlg.GetPathName();
+	in->mParam.mNormalAttr.mDir = dlg.GetPathName();
 	UpdateStatus();
 	UpdateData(FALSE);
 }

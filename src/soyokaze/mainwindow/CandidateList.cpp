@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CandidateList.h"
+#include "commands/error/ErrorIndicatorCommand.h"
 #include <vector>
 #include <set>
 
@@ -8,6 +9,7 @@
 #endif
 
 using Command = launcherapp::core::Command;
+using ErrorIndicatorCommand = launcherapp::commands::error::ErrorIndicatorCommand;
 
 struct CandidateList::PImpl
 {
@@ -23,6 +25,9 @@ struct CandidateList::PImpl
 	std::vector<launcherapp::core::Command*> mCandidates;
 	// 選択中のもの
 	int mSelIndex{-1};
+
+	// 選択したコマンドが「実行不可」の場合に代替で表示するコマンド
+	RefPtr<ErrorIndicatorCommand> mErrorCommand;
 
 	// リスナー一覧
 	std::set<CandidateListListenerIF*> mListeners;
@@ -122,7 +127,19 @@ Command* CandidateList::GetCommand(int index)
 
 Command* CandidateList::GetCurrentCommand()
 {
-	return GetCommand(in->mSelIndex);
+	auto cmd = GetCommand(in->mSelIndex); 
+	if (cmd == nullptr || cmd->CanExecute()) {
+		return cmd;
+	}
+
+
+	// 実行できない場合はダミーのコマンドで置き換える
+	if (in->mErrorCommand.get() == nullptr) {
+		in->mErrorCommand.reset(new ErrorIndicatorCommand());
+	}
+
+	in->mErrorCommand->SetTarget(cmd);
+	return in->mErrorCommand.get();
 }
 
 void CandidateList::Clear()

@@ -5,6 +5,7 @@
 #include "icon/IconLabel.h"
 #include "commands/common/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecutablePath.h"
 #include "utility/ShortcutFile.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -165,6 +166,14 @@ bool CommandEditDialog::UpdateStatus()
 		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
 		canPressOK = false;
 	}
+
+	// パスチェック
+	ExecutablePath path(mParam.mNormalAttr.mPath);
+	if (path.IsExecutable() == false) {
+		mMessage = _T("ファイルまたはディレクトリが存在しません。");
+		canPressOK = false;
+	}
+
 
 	// 変換
 	if (mShowType == 1) {

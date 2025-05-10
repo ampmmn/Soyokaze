@@ -73,6 +73,11 @@ bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void**
 	return false;
 }
 
+bool UserCommandBase::CanExecute()
+{
+	return true;
+}
+
 CString UserCommandBase::GetErrorString()
 {
 	return _T("");

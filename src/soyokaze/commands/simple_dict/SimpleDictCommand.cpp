@@ -6,6 +6,7 @@
 #include "commands/simple_dict/SimpleDictionary.h"
 #include "commands/simple_dict/SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/ExcelWrapper.h"
+#include "commands/common/ExecutablePath.h"
 #include "commands/core/CommandRepository.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -19,6 +20,8 @@
 #include "hotkey/CommandHotKeyMappings.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include <mutex>
+
+using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
@@ -62,7 +65,7 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 				// 更新を通知する
 				CString msg;
 				msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
-				launcherapp::commands::common::PopupMessage(msg);
+				PopupMessage(msg);
 			}
 		}
 
@@ -100,6 +103,7 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 	Dictionary mDictData;
 	FILETIME mLastUpdated{};
 	uint64_t mLastUpdate{0};
+	CString mErrMsg;
 };
 
 /**
@@ -118,6 +122,14 @@ bool SimpleDictCommand::PImpl::QueryCandidates(
 	if (mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		// コマンド名が一致しない場合は検索対象外
 		return false;
+	}
+	// 実行する処理の種別が「プログラム実行」で、そのパスが存在しない場合は追加の候補を出さない
+	// (どうせ実行できないので)
+	if (mParam.mActionType == 1) {
+		ExecutablePath path(mParam.mAfterFilePath);
+		if (path.IsExecutable() == false) {
+			return false;
+		}
 	}
 
 	int hitCount = 0;
@@ -162,6 +174,15 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 	utility::TimeoutChecker& tm
 )
 {
+	// 実行する処理の種別が「プログラム実行」で、そのパスが存在しない場合は追加の候補を出さない
+	// (どうせ実行できないので)
+	if (mParam.mActionType == 1) {
+		ExecutablePath path(mParam.mAfterFilePath);
+		if (path.IsExecutable() == false) {
+			return false;
+		}
+	}
+
 	int hitCount = 0;
 	int limit = 20;
 
@@ -291,6 +312,19 @@ CString SimpleDictCommand::GetTypeDisplayName()
 	return _T("簡易辞書コマンド");
 }
 
+bool SimpleDictCommand::CanExecute()
+{
+	if (in->mParam.mActionType == 1) {
+		ExecutablePath path(in->mParam.mAfterFilePath);
+		if (path.IsExecutable() == false) {
+			in->mErrMsg = _T("！リンク切れ！");
+			return false;
+		}
+	}
+	return true;
+}
+
+
 BOOL SimpleDictCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
@@ -310,7 +344,7 @@ BOOL SimpleDictCommand::Execute(Parameter* param)
 
 CString SimpleDictCommand::GetErrorString()
 {
-	return _T("");
+	return in->mErrMsg;
 }
 
 HICON SimpleDictCommand::GetIcon()

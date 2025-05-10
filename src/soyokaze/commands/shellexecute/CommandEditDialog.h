@@ -25,27 +25,9 @@ protected:
 	void ResolveShortcut(CString& path);
 	bool IsEditableFileType(CString path);
 
-	// 編集開始時のコマンド名
-	CString mOrgName;
-
-	// メッセージ欄
-	CString mMessage;
-
 public:
-	CommandParam mParam;
-
-	std::unique_ptr<IconLabel> mIconLabelPtr;
-
-	// ホットキー(表示用)
-	CString mHotKey;
-
-	// アイコン(表示用)
-	HICON mIcon;
-
-	// 
-	CMFCMenuButton mPathMenuBtn;
-	CMenu mMenuForPathBtn;
-
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 // 実装
 protected:
 	BOOL OnKillActive() override;

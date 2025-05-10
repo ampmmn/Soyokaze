@@ -9,6 +9,7 @@
 #include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/ExecutablePath.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -145,6 +146,18 @@ CString ShellExecCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_NORMALCOMMAND);
 	return TEXT_TYPE;
+}
+
+// コマンドを実行可能かどうか調べる
+bool ShellExecCommand::CanExecute()
+{
+	const auto& attr = in->GetNormalAttr();
+	ExecutablePath path(attr.mPath);
+	if (path.IsExecutable() == false) {
+		in->mErrMsg = _T("！リンク切れ！");
+		return false;
+	}
+	return true;
 }
 
 BOOL ShellExecCommand::Execute(Parameter* param_)

@@ -1,22 +1,19 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
-#include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace core {
+namespace launcherapp { namespace commands { namespace error {
 
-// 未登録キーワードだったときのアクションを実装したコマンド
-// このコマンドは特殊で、CommandRepositoryが直接保持する
-// Providerを持たない
-class DefaultCommand : public launcherapp::core::Command
+
+// コマンドが実行不可である場合のアクションを実装したコマンド
+// このコマンドは特殊でProviderを持たない
+class ErrorIndicatorCommand : public launcherapp::core::Command
 {
 public:
-	DefaultCommand();
-	virtual ~DefaultCommand();
+	ErrorIndicatorCommand();
+	virtual ~ErrorIndicatorCommand();
 
-	void SetName(const CString& word);
+	void SetTarget(launcherapp::core::Command* cmd);
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
@@ -41,6 +38,7 @@ private:
 	std::unique_ptr<PImpl> in;
 };
 
-}
-}
-}
+
+
+}}} // end of namespace launcherapp::commands::error
+

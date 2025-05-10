@@ -226,6 +226,9 @@
     <Filter Include="mainwindow\controller">
       <UniqueIdentifier>{40b0f3be-ef54-425d-a331-fd81d571efe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\error">
+      <UniqueIdentifier>{e2b6c120-49c4-455f-8168-572eb8227f01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1473,8 +1476,14 @@
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/CmdReceiveEdit.h">
-      <Filter>mainwindow\interprocess</Filter>
+    <ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\error\ErrorIndicatorCommand.h">
+      <Filter>commands\error</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\ExecutablePath.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2612,8 +2621,14 @@
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/CmdReceiveEdit.cpp">
-      <Filter>mainwindow\interprocess</Filter>
+    <ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\error\ErrorIndicatorCommand.cpp">
+      <Filter>commands\error</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\ExecutablePath.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

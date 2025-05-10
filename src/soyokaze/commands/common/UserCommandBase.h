@@ -21,6 +21,7 @@ public:
 	virtual ~UserCommandBase();
 
 // Command
+	bool CanExecute() override;
 	CString GetErrorString() override;
 
 // Editable

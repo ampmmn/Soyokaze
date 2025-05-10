@@ -48,6 +48,11 @@ CString AdhocCommandBase::GetGuideString()
 	return _T("");
 }
 
+bool AdhocCommandBase::CanExecute()
+{
+	return true;
+}
+
 BOOL AdhocCommandBase::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);

@@ -7,6 +7,7 @@
 #include "commands/filter/FilterCommandEditor.h"
 #include "commands/filter/FilterExecutor.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/ExecutablePath.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -108,6 +109,26 @@ CString FilterCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
+bool FilterCommand::CanExecute()
+{
+	if (in->mParam.mPreFilterType == FILTER_SUBPROCESS) {
+		ExecutablePath path(in->mParam.mPath);
+		if (path.IsExecutable() == false) {
+			in->mErrMsg = _T("！【前段の処理】リンク切れ！");
+			return false;
+		}
+	}
+	if (in->mParam.mPostFilterType == POSTFILTER_SUBPROCESS) {
+		ExecutablePath path(in->mParam.mAfterFilePath);
+		if (path.IsExecutable() == false) {
+			in->mErrMsg = _T("！【後段の処理】リンク切れ！");
+			return false;
+		}
+	}
+	return true;
+}
+
+
 BOOL FilterCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
@@ -191,7 +212,9 @@ int FilterCommand::Match(Pattern* pattern)
 			}
 
 			// このタイミングで候補一覧の生成を行う
-			in->LoadCandidates();
+			if (CanExecute()) {
+				in->LoadCandidates();
+			}
 			return Pattern::WholeMatch;
 		}
 	}
@@ -337,6 +360,15 @@ bool FilterCommand::QueryCandidates(
 	// コマンド名が一致しなければ候補を表示しない
 	if (GetName().CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return false;
+	}
+
+	// 後段の処理が「プログラム実行」で、そのパスが存在しない場合は追加の候補を出さない
+	// (どうせ実行できないので)
+	if (in->mParam.mPostFilterType == POSTFILTER_SUBPROCESS) {
+		ExecutablePath path(in->mParam.mAfterFilePath);
+		if (path.IsExecutable() == false) {
+			return false;
+		}
 	}
 
 	// 先頭のコマンド名を除いた検索文字列を生成する

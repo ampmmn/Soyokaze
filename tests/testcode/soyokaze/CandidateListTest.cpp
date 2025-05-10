@@ -44,6 +44,11 @@ struct DummyCommand : public launcherapp::core::Command
 		return _T("");
 	}
 
+	bool CanExecute() override
+	{
+		return true;
+	}
+
 	BOOL Execute(Parameter* param) override
 	{
 		return TRUE;

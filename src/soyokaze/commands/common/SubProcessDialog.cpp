@@ -4,6 +4,7 @@
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecutablePath.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "app/Manual.h"
@@ -91,6 +92,12 @@ bool SubProcessDialog::UpdateStatus()
 {
 	if (mParam.mFilePath.IsEmpty()) {
 		mMessage = _T("実行するファイルまたはURLを入力してください");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+	ExecutablePath path(mParam.mFilePath);
+	if (path.IsExecutable() == false) {
+		mMessage = _T("ファイルまたはディレクトリが存在しません。");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}

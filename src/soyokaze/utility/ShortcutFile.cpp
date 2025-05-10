@@ -5,6 +5,8 @@
 #include <propkey.h>
 #include <propvarutil.h>
 
+#pragma comment(lib, "Propsys.lib")
+
 ShortcutFile::ShortcutFile()
 {
 }

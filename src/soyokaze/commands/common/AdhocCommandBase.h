@@ -20,6 +20,7 @@ public:
 	CString GetDescription() override;
 	CString GetGuideString() override;
 	//CString GetTypeDisplayName() override;
+	bool CanExecute() override;
 	BOOL Execute(Parameter* param) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;

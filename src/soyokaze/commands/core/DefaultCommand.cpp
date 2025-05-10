@@ -109,6 +109,11 @@ CString DefaultCommand::GetTypeDisplayName()
 	return _T("");
 }
 
+bool DefaultCommand::CanExecute()
+{
+	return true;
+}
+
 BOOL DefaultCommand::Execute(Parameter* param)
 {
 	if (in->mIsLoaded == false) {

@@ -71,6 +71,11 @@ CString BuiltinCommandBase::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
+bool BuiltinCommandBase::CanExecute()
+{
+	return true;
+}
+
 CString BuiltinCommandBase::GetErrorString()
 {
 	return mError;
