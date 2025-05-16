@@ -15,6 +15,8 @@ class ClipboardHistoryDB : public ClipboardHistoryEventListener
 public:
 	// 検索結果
 	struct ITEM {
+		// 一致レベル
+		int mMatchLevel = -1;
 		// 追加時刻
 		uint64_t mAppendTime = 0;
 		// データ

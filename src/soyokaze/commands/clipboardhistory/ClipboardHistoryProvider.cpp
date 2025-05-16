@@ -208,8 +208,9 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 
 	// 結果をコマンドリストに追加
 	for (auto& item : result) {
-		commands.Add(CommandQueryItem(Pattern::FrontMatch, 
-					new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData)));
+		// 最低でも前方一致扱いとする
+		int level = (std::max)(item.mMatchLevel, (int)Pattern::FrontMatch);
+		commands.Add(CommandQueryItem(level, new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData)));
 	}
 }
 

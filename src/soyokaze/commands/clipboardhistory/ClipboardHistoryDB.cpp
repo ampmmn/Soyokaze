@@ -311,6 +311,14 @@ void ClipboardHistoryDB::Query(Pattern* pattern, ResultList& result)
 	}
 
 	in->Query(words, result);
+
+	// 優先順位が高い順序にソートする
+	for (auto& item : result) {
+		item.mMatchLevel = pattern->Match(item.mData, 1);
+	}
+	std::stable_sort(result.begin(), result.end(), [](const ITEM& l, const ITEM& r) {
+		return r.mMatchLevel < l.mMatchLevel;
+	});
 }
 
 /**
