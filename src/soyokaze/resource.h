@@ -180,7 +180,6 @@
 #define IDC_EDIT_SUBSTITUTE             1010
 #define IDC_EDIT_REPLACE                1010
 #define IDC_CHECK_USE0                  1011
-#define IDC_CHECK_SHOWARGINPUT          1011
 #define IDC_EDIT_BACK                   1011
 #define IDC_EDIT_FRONT2                 1011
 #define IDC_BUTTON_BROWSEFILE1          1012
@@ -189,7 +188,6 @@
 #define IDC_BUTTON_BROWSEFILE3          1013
 #define IDC_BUTTON_BROWSEFILE2          1014
 #define IDC_BUTTON_BROWSEDIR4           1014
-#define IDC_CHECK_SHOWARGINPUT2         1014
 #define IDC_CHECK_USEDESCRIPTIONFORMATCHING 1014
 #define IDC_BUTTON_BROWSEDIR2           1015
 #define IDC_EDIT_FRONT3                 1015

@@ -134,8 +134,6 @@ BEGIN
     LTEXT           "パラメータ(&P):",IDC_STATIC_PARAM,34,97,65,8
     EDITTEXT        IDC_EDIT_PARAM,125,97,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "リンク先に置換(&R)",IDC_BUTTON_RESOLVESHORTCUT,279,96,64,17
-    CONTROL         "引数が指定されなかった場合に入力欄を続けて表示する(&I)",IDC_CHECK_SHOWARGINPUT,
-                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,126,148,201,10
     CONTROL         "<A HREF=""https://sample.com/sample"">その他利用可能なマクロ</A>",IDC_SYSLINK_MACRO,
                     "SysLink",WS_TABSTOP,125,135,147,12
     LTEXT           "作業フォルダ(&W):",IDC_STATIC,34,164,65,8

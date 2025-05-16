@@ -6,7 +6,6 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommandEditor.h"
-#include "commands/shellexecute/ArgumentDialog.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
@@ -163,18 +162,6 @@ bool ShellExecCommand::CanExecute()
 BOOL ShellExecCommand::Execute(Parameter* param_)
 {
 	RefPtr<Parameter> param(param_->Clone());
-
-	if (param->HasParameter() == false && in->mParam.mIsShowArgDialog) {
-		// 実行時引数がなく、かつ、引数無しの場合に追加入力を促す設定の場合はダイアログを表示する
-		SharedHwnd hwnd;
-		ArgumentDialog dlg(GetName(), CWnd::FromHandle(hwnd.GetHwnd()));
-		if (dlg.DoModal() != IDOK) {
-			return TRUE;
-		}
-		param->SetParameterString(dlg.GetArguments());
-	}
-
-
 
 	// 実行時引数が与えられた場合は履歴に登録しておく
 	if (param->HasParameter()) {

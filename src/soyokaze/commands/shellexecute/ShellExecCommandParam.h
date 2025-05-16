@@ -44,9 +44,6 @@ public:
 	// 引数なし版を使うか?
 	BOOL mIsUse0;
 
-	// 引数が与えられなかった場合に引数入力用のダイアログを追加で表示する
-	BOOL mIsShowArgDialog;
-
 	// 説明欄の文字列をマッチングに利用するか?
 	BOOL mIsUseDescriptionForMatching;
 

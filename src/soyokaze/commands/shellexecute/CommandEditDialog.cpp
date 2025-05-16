@@ -80,7 +80,6 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATH, param.mNormalAttr.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, param.mNormalAttr.mParam);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
-	DDX_Check(pDX, IDC_CHECK_SHOWARGINPUT, param.mIsShowArgDialog);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, param.mIsUseDescriptionForMatching);
 	DDX_Control(pDX, IDC_BUTTON_MENU, in->mPathMenuBtn);
 	// 以下のパラメータは通常と引数なし版で兼用
@@ -152,11 +151,6 @@ bool CommandEditDialog::UpdateStatus()
 
 	// $1,2,3... または $*の指定がある場合は、引数必須を選択するチェックを表示
 	const tregex& regArg = GetRegexForArgument();
-
-	bool hasArg = std::regex_search((LPCTSTR)targetPath, regArg) ||
-		            std::regex_search((LPCTSTR)param.mNormalAttr.mParam, regArg);
-
-	GetDlgItem(IDC_CHECK_SHOWARGINPUT)->ShowWindow(hasArg? SW_SHOW : SW_HIDE);
 
 	// パスが有効なファイルだったら編集メニューを表示する
 	in->mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);
@@ -354,7 +348,6 @@ void CommandEditDialog::OnOK()
 	param->mNormalAttr.mParam = paramSrc.mNormalAttr.mParam;
 
 	param->mIsRunAsAdmin = paramSrc.mIsRunAsAdmin;
-	param->mIsShowArgDialog = paramSrc.mIsShowArgDialog;
 	param->mIsUseDescriptionForMatching = paramSrc.mIsUseDescriptionForMatching;
 	param->mIconData = paramSrc.mIconData;
 	param->mHotKeyAttr = paramSrc.mHotKeyAttr;
@@ -364,14 +357,6 @@ void CommandEditDialog::OnOK()
 	param->mNoParamAttr.mShowType = paramSrc.mNormalAttr.mShowType;
 	param->mNormalAttr.mDir = paramSrc.mNormalAttr.mDir;
 	param->mNoParamAttr.mDir = paramSrc.mNormalAttr.mDir;
-
-	// 引数展開のキーワードが含まれていない場合は、引数入力ダイアログの表示を無効化する
-	const tregex& regArg = GetRegexForArgument();
-	bool hasArg = std::regex_search((LPCTSTR)paramSrc.mNormalAttr.mPath, regArg) ||
-		          std::regex_search((LPCTSTR)paramSrc.mNormalAttr.mParam, regArg);
-	if (hasArg == false) {
-		param->mIsShowArgDialog = false;
-	}
 
 	__super::OnOK();
 }

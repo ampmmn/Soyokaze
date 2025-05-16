@@ -46,7 +46,6 @@ void ATTRIBUTE::SetShowType(int type)
 CommandParam::CommandParam() :
 	mIsRunAsAdmin(FALSE),
 	mIsUse0(FALSE),
-	mIsShowArgDialog(FALSE),
 	mIsUseDescriptionForMatching(FALSE)
 {
 }
@@ -60,7 +59,6 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mNoParamAttr = rhs.mNoParamAttr;
 	mIsRunAsAdmin = rhs.mIsRunAsAdmin;
 	mIsUse0 = rhs.mIsUse0;
-	mIsShowArgDialog = rhs.mIsShowArgDialog;
 	mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 	mIconData = rhs.mIconData;
 	mEnviron = rhs.mEnviron;
@@ -80,7 +78,6 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mNoParamAttr = rhs.mNoParamAttr;
 		mIsRunAsAdmin = rhs.mIsRunAsAdmin;
 		mIsUse0 = rhs.mIsUse0;
-		mIsShowArgDialog = rhs.mIsShowArgDialog;
 		mIsUseDescriptionForMatching = rhs.mIsUseDescriptionForMatching;
 		mIconData = rhs.mIconData;
 		mEnviron = rhs.mEnviron;
@@ -95,7 +92,6 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 
 	entry->Set(_T("description"), mDescription);
 	entry->Set(_T("runas"), mIsRunAsAdmin ? 1 : 0);
-	entry->Set(_T("isShowArgInput"), mIsShowArgDialog);
 
 	entry->Set(_T("path"), mNormalAttr.mPath);
 	entry->Set(_T("dir"), mNormalAttr.mDir);
@@ -144,7 +140,6 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mNoParamAttr.mDir = entry->Get(_T("dir0"), _T(""));
 	mNoParamAttr.mParam = entry->Get(_T("parameter0"), _T(""));
 	mNoParamAttr.SetShowType(entry->Get(_T("show0"), SW_SHOW));
-	mIsShowArgDialog = entry->Get(_T("isShowArgInput"), 0);
 
 	size_t len = entry->GetBytesLength(_T("IconData"));
 	if (len != CommandEntryIF::NO_ENTRY) {
