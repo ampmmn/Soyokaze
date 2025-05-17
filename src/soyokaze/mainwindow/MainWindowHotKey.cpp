@@ -10,10 +10,10 @@
 #endif
 
 
-class MainWindowHotKey::UpHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::SelectUpHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
-	virtual ~UpHandler() {}
+	virtual ~SelectUpHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_up"); }
 	bool Invoke() override {
 		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
@@ -23,10 +23,10 @@ public:
 };
 
 
-class MainWindowHotKey::DownHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::SelectDownHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
-	virtual ~DownHandler() {}
+	virtual ~SelectDownHandler() {}
 	CString GetDisplayName() override { return _T("__mainwindow_down"); }
 	bool Invoke() override {
 		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
@@ -84,6 +84,54 @@ public:
 	}
 };
 
+class MainWindowHotKey::MoveUpHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~MoveUpHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_moveup"); }
+	bool Invoke() override {
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->MoveTemporary(VK_UP);
+		return true;
+	}
+};
+
+class MainWindowHotKey::MoveDownHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~MoveDownHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_movedown"); }
+	bool Invoke() override {
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->MoveTemporary(VK_DOWN);
+		return true;
+	}
+};
+
+class MainWindowHotKey::MoveLeftHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~MoveLeftHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_moveleft"); }
+	bool Invoke() override {
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->MoveTemporary(VK_LEFT);
+		return true;
+	}
+};
+
+class MainWindowHotKey::MoveRightHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~MoveRightHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_moveright"); }
+	bool Invoke() override {
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->MoveTemporary(VK_RIGHT);
+		return true;
+	}
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,13 +175,13 @@ bool MainWindowHotKey::Register()
 	auto hotKeyAttrUp = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:Up-VirtualKeyCode"), -1));
 	if (hotKeyAttrUp.GetVKCode() != -1) {
-		manager->Register(this, new UpHandler, hotKeyAttrUp);
+		manager->Register(this, new SelectUpHandler, hotKeyAttrUp);
 	}
 
 	auto hotKeyAttrDown = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Down-Modifiers"), 0),
 	                                 settingsPtr->Get(_T("MainWindowKey:Down-VirtualKeyCode"), -1));
 	if (hotKeyAttrDown.GetVKCode() != -1) {
-		manager->Register(this, new DownHandler, hotKeyAttrDown);
+		manager->Register(this, new SelectDownHandler, hotKeyAttrDown);
 	}
 
 	auto hotKeyAttrEnter = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Enter-Modifiers"), 0),
@@ -159,6 +207,31 @@ bool MainWindowHotKey::Register()
 	if (hotKeyAttrCopy.GetVKCode() != -1) {
 		manager->Register(this, new CopyHandler, hotKeyAttrCopy);
 	}
+
+	auto hotKeyAttrMoveUp = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveUp-Modifiers"), 0),
+	                                settingsPtr->Get(_T("MainWindowKey:MoveUp-VirtualKeyCode"), -1));
+	if (hotKeyAttrMoveUp.GetVKCode() != -1) {
+		manager->Register(this, new MoveUpHandler, hotKeyAttrMoveUp);
+	}
+
+	auto hotKeyAttrMoveDown = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveDown-Modifiers"), 0),
+	                                settingsPtr->Get(_T("MainWindowKey:MoveDown-VirtualKeyCode"), -1));
+	if (hotKeyAttrMoveDown.GetVKCode() != -1) {
+		manager->Register(this, new MoveDownHandler, hotKeyAttrMoveDown);
+	}
+
+	auto hotKeyAttrMoveLeft = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveLeft-Modifiers"), 0),
+	                                settingsPtr->Get(_T("MainWindowKey:MoveLeft-VirtualKeyCode"), -1));
+	if (hotKeyAttrMoveLeft.GetVKCode() != -1) {
+		manager->Register(this, new MoveLeftHandler, hotKeyAttrMoveLeft);
+	}
+
+	auto hotKeyAttrMoveRight = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveRight-Modifiers"), 0),
+	                                settingsPtr->Get(_T("MainWindowKey:MoveRight-VirtualKeyCode"), -1));
+	if (hotKeyAttrMoveRight.GetVKCode() != -1) {
+		manager->Register(this, new MoveRightHandler, hotKeyAttrMoveRight);
+	}
+
 	return true;
 }
 

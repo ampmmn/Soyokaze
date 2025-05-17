@@ -113,6 +113,14 @@ void LauncherMainWindowController::ShowContextMenu()
 	::SendMessage(sharedWnd.GetHwnd(), WM_CONTEXTMENU, 0, MAKELPARAM(-1, -1));
 }
 
+// ウインドウを一時的に移動する
+bool LauncherMainWindowController::MoveTemporary(int vk)
+{
+	SharedHwnd sharedWnd;
+	return ::SendMessage(sharedWnd.GetHwnd(), MOVETEMPORARY, (WPARAM)vk, 0) == 0;
+}
+
+
 
 }}} // end of namespace launcherapp::mainwindow::controller
 

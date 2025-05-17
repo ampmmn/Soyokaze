@@ -7,12 +7,16 @@
 // 入力画面上の基本操作用ホットキーの登録・解除を行うクラス
 class MainWindowHotKey : public AppPreferenceListenerIF
 {
-	class UpHandler;
-	class DownHandler;
+	class SelectUpHandler;
+	class SelectDownHandler;
 	class EnterHandler;
 	class ComplHandler;
 	class ContextMenuHandler;
 	class CopyHandler;
+	class MoveUpHandler;
+	class MoveDownHandler;
+	class MoveLeftHandler;
+	class MoveRightHandler;
 public:
 	MainWindowHotKey();
 	virtual ~MainWindowHotKey();

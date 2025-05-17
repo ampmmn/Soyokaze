@@ -18,6 +18,7 @@ enum LauncherMainWindowMessageID  {
 	UPDATECANDIDATE = WM_APP + 15,
 	REQUESTCALLBACK = WM_APP+17,
 	CLEARCONTENT = WM_APP + 18,
+	MOVETEMPORARY = WM_APP + 19,
 };
 	
 class LauncherMainWindowController : public MainWindowControllerIF
@@ -54,6 +55,8 @@ public:
 	void ClearContent() override;
 	// コンテキストメニューを表示する
 	void ShowContextMenu() override;
+	// ウインドウを一時的に移動する
+	bool MoveTemporary(int vk) override;
 
 };
 

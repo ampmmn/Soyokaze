@@ -114,6 +114,8 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	bool mIsFirstCall{true};
 	bool mIsShowGuide{false};
 	bool mIsDrawIcon{true};
+	bool mIsMoveTemporary{false};
+	CPoint mPositionToRestore{0,0};
 
 	std::unique_ptr<ComponentPlacer> mPlacer;
 
@@ -241,8 +243,10 @@ static bool IsRectInMonitors(const CRect& rc)
 
 
 // ウインドウがアクティブになるときのウインドウ位置を決める
-bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt)
+bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 {
+	CPoint newPt{0,0};
+
 	AppPreference* pref = AppPreference::Get();
 	if (pref->IsShowMainWindowOnCurorPos()) {
 		// マウスカーソル位置に入力欄ウインドウを表示する
@@ -251,10 +255,10 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt)
 		::GetCursorPos(&cursorPos);
 		newPt.x = cursorPos.x + offset.x;
 		newPt.y = cursorPos.y + offset.y;
+		wnd->SetWindowPos(nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 		return true;
 	}
-
-	if (pref->IsShowMainWindowOnActiveWindowCenter()) {
+	else if (pref->IsShowMainWindowOnActiveWindowCenter()) {
 		// アクティブなウインドウの中央位置に入力欄ウインドウを表示する
 		HWND fgWindow = ::GetForegroundWindow();
 		if (IsValidForegroundWindow(fgWindow) == false) {
@@ -281,9 +285,17 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd, CPoint& newPt)
 
 		newPt.x = newRect.left;
 		newPt.y = newRect.top;
+		wnd->SetWindowPos(nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 		return true;
 	}
-	return false;
+	else {
+		if (in->mIsMoveTemporary) {
+			CPoint newPt = in->mPositionToRestore;
+			wnd->SetWindowPos(nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+			in->mIsMoveTemporary = false;
+		}
+		return true;
+	}
 }
 
 void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
@@ -358,6 +370,73 @@ void MainWindowLayout::RecalcWindowSize(HWND hwnd, LauncherInput* status, UINT s
 			}
 		}
 	}
+}
+
+// ウインドウを非表示にする
+void MainWindowLayout::HideWindow()
+{
+	CWnd* mainWnd = in->mMainWnd->GetWindowObject();
+	if (mainWnd == nullptr) {
+		return;
+	}
+
+	auto h = mainWnd->GetSafeHwnd();
+	if (IsWindow(h)) {
+		::ShowWindow(h, SW_HIDE);
+	}
+}
+
+// ウインドウを一時的に移動する
+bool MainWindowLayout::MoveTemporary(int vk)
+{
+	// 上下左右以外は無視
+	if (vk != VK_UP && vk != VK_DOWN && vk != VK_LEFT && vk != VK_RIGHT) {
+		return false;
+	}
+
+	HWND mainWndHandle{ in->mMainWnd->GetWindowObject()->GetSafeHwnd() };
+
+	// モニタの枠を超えた移動をできないようにするため、モニタ座標を取得する
+	HMONITOR mon = MonitorFromWindow(mainWndHandle, MONITOR_DEFAULTTONEAREST);
+	MONITORINFO mi = { sizeof(MONITORINFO) };
+	GetMonitorInfo(mon, &mi);
+	const CRect& rcMon = mi.rcWork;
+
+	CRect rc;
+	GetWindowRect(mainWndHandle, &rc);
+
+	CPoint newPt = rc.TopLeft();
+
+	// 移動量
+	int offset = 200;
+
+	// 向きに応じた移動後の座標値を決定する
+	if (vk == VK_UP) {
+		newPt.y -= offset;
+		newPt.y = (std::max)(newPt.y, rcMon.top);
+	}
+	else if (vk == VK_DOWN) {
+		newPt.y += offset;
+		newPt.y = (std::min)(newPt.y, rcMon.bottom - rc.Height());
+	}
+	else if (vk == VK_LEFT) {
+		newPt.x -= offset;
+		newPt.x = (std::max)(newPt.x, rcMon.left);
+	}
+	else { // VK_RIGHT
+		newPt.x += offset;
+		newPt.x = (std::min)(newPt.x, rcMon.right - rc.Width());
+	}
+	
+	// 移動
+	SetWindowPos(mainWndHandle, nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+
+	// 次回は元の位置に戻すので、復元用の位置を覚えておく
+	if (in->mIsMoveTemporary == false) {
+		in->mPositionToRestore = rc.TopLeft();
+		in->mIsMoveTemporary = true;
+	}
+	return true;
 }
 
 void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)

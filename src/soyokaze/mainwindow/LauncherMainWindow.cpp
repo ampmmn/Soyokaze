@@ -216,6 +216,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::COPYINPUTTEXT, OnUserMessageCopyText)
 	ON_MESSAGE(LauncherMainWindowMessageID::REQUESTCALLBACK, OnUserMessageRequestCallback)
 	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
+	ON_MESSAGE(LauncherMainWindowMessageID::MOVETEMPORARY, OnUserMessageMoveTemporary)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -246,7 +247,7 @@ void LauncherMainWindow::HideWindow()
 	LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
 		listener->OnLancuherUnactivate();
 	});
-	::ShowWindow(GetSafeHwnd(), SW_HIDE);
+	in->mLayout->HideWindow();
 }
 
 
@@ -272,11 +273,8 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 		// 非表示状態なら表示
 		ScopeAttachThreadInput scope;
 
-		// 表示する際の位置を決定する
-		CPoint newPt;
-		if (in->mLayout->RecalcWindowOnActivate(this, newPt)) {
-			::SetWindowPos(hwnd, nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-		}
+		// 表示する際の位置を決定(移動)する
+		in->mLayout->RecalcWindowOnActivate(this);
 
 		// プレースホルダー設定
 		AppPreference* pref= AppPreference::Get();
@@ -473,6 +471,13 @@ LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lPar
 
 	ClearContent();
 	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam)
+{
+	// VK_UP/DOWN/LEFT/RIGHTを移動の方向として使う(手抜き)
+	int vk = (int)wParam;
+	return in->mLayout->MoveTemporary(vk) ? 0 : 1;
 }
 
 

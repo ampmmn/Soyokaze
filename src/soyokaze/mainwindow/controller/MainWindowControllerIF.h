@@ -37,6 +37,8 @@ public:
 	virtual void ClearContent() = 0;
 	// コンテキストメニューを表示する
 	virtual void ShowContextMenu() = 0;
+	// ウインドウを一時的に移動する
+	virtual bool MoveTemporary(int vk) = 0;
 };
 
 

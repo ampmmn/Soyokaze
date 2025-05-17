@@ -120,6 +120,7 @@ protected:
 	LRESULT OnUserMessageCopyText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 
