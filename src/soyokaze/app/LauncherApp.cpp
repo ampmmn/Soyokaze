@@ -12,6 +12,7 @@
 #include "app/StartupParam.h"
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
+#include "app/LocalDirectoryWatcherService.h"
 #include "logger/Logger.h"
 #include <locale.h>
 
@@ -129,6 +130,9 @@ BOOL LauncherApp::InitFirstInstance()
 
 	// MFC コントロールでテーマを有効にするために、"Windows ネイティブ" のビジュアル マネージャーをアクティブ化
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
+
+	// 
+	LocalDirectoryWatcherService::Start();
 
 	LauncherMainWindow dlg;
 	m_pMainWnd = &dlg;

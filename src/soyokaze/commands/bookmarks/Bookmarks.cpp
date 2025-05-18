@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Bookmarks.h"
 #include "utility/Path.h" 
+#include "utility/LocalDirectoryWatcher.h" 
 #include <fstream>
 #include <vector>
+#include <mutex>
 
 #pragma warning( push )
 #pragma warning( disable : 26800 26819 )
@@ -19,54 +21,6 @@ using json = nlohmann::json;
 namespace launcherapp {
 namespace commands {
 namespace bookmarks {
-
-// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
-// Edge $USERPROFILE/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks
-
-struct Bookmarks::PImpl
-{
-	Path mChromeBookmarkPath;
-	FILETIME mChromeUpdateTime{};
-	std::vector<Bookmark> mChromeItems;
-
-	Path mEdgeBookmarkPath;
-	FILETIME mEdgeUpdateTime{};
-	std::vector<Bookmark> mEdgeItems;
-};
-
-Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
-{
-	size_t reqLen = 0;
-
-	// Chrome
-	_tgetenv_s(&reqLen, in->mChromeBookmarkPath, in->mChromeBookmarkPath.size(), _T("USERPROFILE"));
-	in->mChromeBookmarkPath.Append(_T("AppData/Local/Google/Chrome/User Data/Default/Bookmarks"));
-	in->mChromeBookmarkPath.Shrink();
-
-	memset(&in->mChromeUpdateTime, 0, sizeof(FILETIME));
-
-	// Edge
-	_tgetenv_s(&reqLen, in->mEdgeBookmarkPath, in->mEdgeBookmarkPath.size(), _T("USERPROFILE"));
-	in->mEdgeBookmarkPath.Append(_T("AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks"));
-	in->mEdgeBookmarkPath.Shrink();
-	memset(&in->mEdgeUpdateTime, 0, sizeof(FILETIME));
-
-}
-
-Bookmarks::~Bookmarks()
-{
-}
-
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
 
 static void parseJSONObject(json& j, std::vector<Bookmark>& items)
 {
@@ -93,24 +47,32 @@ static void parseJSONObject(json& j, std::vector<Bookmark>& items)
 }
 
 
-bool Bookmarks::LoadChromeBookmarks(std::vector<Bookmark>& items)
+
+// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
+// Edge $USERPROFILE/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks
+
+struct Bookmarks::PImpl
 {
-	FILETIME lastUpdate;
-	if (GetLastUpdateTime(in->mChromeBookmarkPath, lastUpdate) == false) {
-		return false;
-	}
+	bool LoadChromeBookmarks();
+	bool LoadEdgeBookmarks();
 
-	if (memcmp(&in->mChromeUpdateTime, &lastUpdate, sizeof(FILETIME)) == 0) {
-		// 前回から更新はないため、前回の情報を返す
-		items = in->mChromeItems;
-		return true;
-	}
+	std::mutex mMutex;
 
+	Path mChromeBookmarkPath{Path::USERPROFILE, _T("AppData\\Local\\Google\\Chrome\\User Data\\Default\\Bookmarks")};
+	std::vector<Bookmark> mChromeItems;
+	bool mIsChromeLoaded{false};
+
+	Path mEdgeBookmarkPath{Path::USERPROFILE, _T("AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Bookmarks")};
+	std::vector<Bookmark> mEdgeItems;
+	bool mIsEdgeLoaded{false};
+};
+
+bool Bookmarks::PImpl::LoadChromeBookmarks()
+{
 	// 読み直す
 	std::vector<Bookmark> tmp;
-
 	try {
-		std::ifstream f(in->mChromeBookmarkPath);
+		std::ifstream f(mChromeBookmarkPath);
 		json bookmarks = json::parse(f);
 		auto roots = bookmarks["roots"];
 		for (auto it = roots.begin(); it != roots.end(); ++it) {
@@ -119,32 +81,23 @@ bool Bookmarks::LoadChromeBookmarks(std::vector<Bookmark>& items)
 		}
 	}
 	catch(std::exception&) {
+		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mChromeBookmarkPath);
 		return false;
 	}
 
-	in->mChromeItems.swap(tmp);
-	in->mChromeUpdateTime = lastUpdate;
+	std::lock_guard<std::mutex> lock(mMutex);
+	spdlog::debug("chrome bookmark item count {0} -> {1}", mChromeItems.size(), tmp.size());
+	mChromeItems.swap(tmp);
 	return true;
 }
 
-bool Bookmarks::LoadEdgeBookmarks(std::vector<Bookmark>& items)
+bool Bookmarks::PImpl::LoadEdgeBookmarks()
 {
-	FILETIME lastUpdate;
-	if (GetLastUpdateTime(in->mEdgeBookmarkPath, lastUpdate) == false) {
-		return false;
-	}
-
-	if (memcmp(&in->mEdgeUpdateTime, &lastUpdate, sizeof(FILETIME)) == 0) {
-		// 前回から更新はないため、前回の情報を返す
-		items = in->mEdgeItems;
-		return true;
-	}
-
 	// 読み直す
 	std::vector<Bookmark> tmp;
 
 	try {
-		std::ifstream f(in->mEdgeBookmarkPath);
+		std::ifstream f(mEdgeBookmarkPath);
 		json bookmarks = json::parse(f);
 		auto roots = bookmarks["roots"];
 		for (auto it = roots.begin(); it != roots.end(); ++it) {
@@ -152,14 +105,83 @@ bool Bookmarks::LoadEdgeBookmarks(std::vector<Bookmark>& items)
 		}
 	}
 	catch(std::exception&) {
+		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mEdgeBookmarkPath);
 		return false;
 	}
 
-	in->mEdgeItems.swap(tmp);
-	in->mEdgeUpdateTime = lastUpdate;
+	std::lock_guard<std::mutex> lock(mMutex);
+	spdlog::debug("edge bookmark item count {0} -> {1}", mEdgeItems.size(), tmp.size());
+	mEdgeItems.swap(tmp);
 	return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
+{
+}
+
+Bookmarks::~Bookmarks()
+{
+}
+
+bool Bookmarks::LoadChromeBookmarks(std::vector<Bookmark>& items)
+{
+	if (in->mIsChromeLoaded == false) {
+		// 初回の処理
+
+		// 変更通知登録を行い
+		auto watcher = LocalDirectoryWatcher::GetInstance();
+		watcher->Register((LPCTSTR)in->mChromeBookmarkPath, [](void* p) {
+				spdlog::info("Chrome bookmarks updated.");
+				// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
+				Sleep(250);
+				auto thisPtr = (PImpl*)p;
+				thisPtr->LoadChromeBookmarks();
+		}, in.get());
+
+		// ブックマークを直接ロードする。次回以降はファイル更新時に変更通知を通じて再ロードをおこなう
+		in->LoadChromeBookmarks();
+
+		in->mIsChromeLoaded = true;
+	}
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	items = in->mChromeItems;
+
+	return true;
+}
+
+bool Bookmarks::LoadEdgeBookmarks(std::vector<Bookmark>& items)
+{
+	if (in->mIsEdgeLoaded == false) {
+		// 初回の処理
+
+		// 変更通知登録を行い
+		auto watcher = LocalDirectoryWatcher::GetInstance();
+		watcher->Register((LPCTSTR)in->mEdgeBookmarkPath, [](void* p) {
+				spdlog::info("Edge bookmarks updated.");
+				// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
+				Sleep(250);
+				auto thisPtr = (PImpl*)p;
+				thisPtr->LoadEdgeBookmarks();
+		}, in.get());
+
+		// ブックマークを直接ロードする。次回以降はファイル更新時に変更通知を通じて再ロードをおこなう
+		in->LoadEdgeBookmarks();
+
+		in->mIsEdgeLoaded = true;
+	}
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	items = in->mEdgeItems;
+
+	return true;
+}
 
 } // end of namespace bookmarks
 } // end of namespace commands

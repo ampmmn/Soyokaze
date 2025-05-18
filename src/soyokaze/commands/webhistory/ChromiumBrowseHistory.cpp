@@ -3,6 +3,7 @@
 #include "matcher/Pattern.h"
 #include "utility/Path.h"
 #include "utility/SQLite3Database.h"
+#include "utility/LocalDirectoryWatcher.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,7 +17,7 @@ using SQLite3Database = launcherapp::utility::SQLite3Database;
 
 struct ChromiumBrowseHistory::PImpl
 {
-	PImpl() : mLastUpdatedTime({})
+	PImpl()
 	{
 	}
 	virtual ~PImpl()
@@ -39,19 +40,15 @@ struct ChromiumBrowseHistory::PImpl
 			}
 		}
 
-		// 退避先のファイル名にPC名を含める(UserDirをOneDrive共有フォルダで運用している環境向けの処理)
-		TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
-		DWORD bufLen = MAX_COMPUTERNAME_LENGTH + 1;
-		GetComputerName(computerName, &bufLen);
-
 		CString fileName;
-		fileName.Format(_T("%s-history-%s"), computerName, (LPCTSTR)mId);
+		fileName.Format(_T("history-%s"), (LPCTSTR)mId);
 
 		dbDstPath.Append(fileName);
 		mDBFilePath = dbDstPath;
 	}
 
 	void UpdateDatabase();
+	void Reload();
 
 	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
 
@@ -61,58 +58,43 @@ struct ChromiumBrowseHistory::PImpl
 	CString mDBFilePath;
 	bool mIsUseURL{false};
 	bool mIsUseMigemo{false};
-
-	FILETIME mLastUpdatedTime{};
+	bool mIsFirstCall{true};
+	std::mutex mMutex;
 
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };
 
 
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
-
 void ChromiumBrowseHistory::PImpl::UpdateDatabase()
 {
-	const auto& dbDstPath = mDBFilePath;
-
-	// ファイルがなければコピー
-	bool shouldCopy = false;
-	if (Path::FileExists(dbDstPath) == FALSE) {
-		shouldCopy = true;
-	}
-	else {
-		// ファイルがある場合は更新日時を比較し、異なっていたらコピー
-		FILETIME ftSrc;
-		GetLastUpdateTime(mOrgDBFilePath, ftSrc);
-		shouldCopy = (memcmp(&ftSrc, &mLastUpdatedTime, sizeof(FILETIME)) != 0);
-	}
-
-	// 更新が必要と判断したら、既存のDBを破棄し、コピーしなおし
-	if (shouldCopy == false && mHistoryDB.get()) {
-		// リロード不要
+	if (mIsFirstCall == false) {
 		return;
 	}
 
+	mIsFirstCall = false;
+
+	Reload();
+
+	LocalDirectoryWatcher::GetInstance()->Register(mOrgDBFilePath, [](void* p) {
+			auto thisPtr = (PImpl*)p;
+			thisPtr->Reload();
+	}, this);
+}
+
+void ChromiumBrowseHistory::PImpl::Reload()
+{
+	std::lock_guard<std::mutex> lock(mMutex);
+	spdlog::info(_T("Reload webhistory {}"), (LPCTSTR)mId);
+
 	mHistoryDB.reset();
 
-	if (CopyFile(mOrgDBFilePath, dbDstPath, FALSE) == FALSE) {
+	if (CopyFile(mOrgDBFilePath, mDBFilePath, FALSE) == FALSE) {
 		spdlog::warn(_T("Failed to copy history database."));
 	}
-	// コピー元ファイルの更新日時を覚えておく
-	// (次回以降に更新があったかどうかの判断に用いる)
-	GetLastUpdateTime(mOrgDBFilePath, mLastUpdatedTime);
 
 	try {
 		// データベースファイルをロード
-		auto db = std::make_unique<SQLite3Database>(dbDstPath);
+		auto db = std::make_unique<SQLite3Database>(mDBFilePath);
 
 		// 専用のviewを作成しておく
 		db->Query(_T("create view hoge (url, title) as select distinct urls.url,urls.title from visits inner join urls on visits.url = urls.id where urls.title is not null and urls.title is not '' and urls.url not like '%google.com/search%' order by visits.visit_time desc ;"), nullptr, nullptr);
@@ -145,7 +127,7 @@ bool ChromiumBrowseHistory::PImpl::Query(
 	bool isFirst = true;
 	CString token;
 	for(const auto& word : words) {
-		if (word.mMethod == PatternInternal::RegExp) {
+		if (word.mMethod == PatternInternal::RegExp && mIsUseMigemo) {
 			if (mIsUseURL) {
 				token.Format(_T("%s (title regexp '%s' or url regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
 			}
@@ -194,6 +176,8 @@ bool ChromiumBrowseHistory::PImpl::Query(
 	};
 
 	// mHistoryDBに対し、問い合わせを行う
+	std::lock_guard<std::mutex> lock(mMutex);
+
 	local_param param;
 	param.mTimeout = timeout;
 	mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);

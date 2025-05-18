@@ -244,8 +244,6 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& co
 		return false;
 	}
 
-	// ToDo: 階層をコマンド設定で指定できるようにする
-
 	std::vector<Bookmark> bookmarks;
 
 	// Chromeのブックマークを取得し、キーワードで絞り込み

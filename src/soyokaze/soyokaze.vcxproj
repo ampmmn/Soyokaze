@@ -400,6 +400,7 @@
   <ItemGroup>
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
+    <ClInclude Include="app\LocalDirectoryWatcherService.h" />
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
@@ -796,6 +797,7 @@
     <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
     <ClInclude Include="utility\LastErrorString.h" />
+    <ClInclude Include="utility\LocalDirectoryWatcher.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
@@ -819,6 +821,7 @@
   <ItemGroup>
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
+    <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp" />
@@ -1209,6 +1212,7 @@
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\DemotedProcessToken.cpp" />
     <ClCompile Include="utility\HWNDRect.cpp" />
+    <ClCompile Include="utility\LocalDirectoryWatcher.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />

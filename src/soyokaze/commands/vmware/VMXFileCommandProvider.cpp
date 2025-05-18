@@ -3,8 +3,10 @@
 #include "commands/vmware/VMXFileCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Path.h"
+#include "utility/LocalDirectoryWatcher.h"
 #include <vector>
 #include <regex>
+#include <mutex>
 #include <map>
 
 #ifdef _DEBUG
@@ -24,6 +26,8 @@ struct VMXFileCommandProvider::PImpl
 	}
 	virtual ~PImpl()
 	{
+		std::lock_guard<std::mutex> lock(mMutex);
+
 		for (auto& cmd : mCommands) {
 			cmd->Release();
 		}
@@ -31,10 +35,11 @@ struct VMXFileCommandProvider::PImpl
 
 	void Reload();
 
+	bool mIsFirstCall{true};
 	CString mPrefFilePath;
-	FILETIME mPrefUpdateTime{};
 
 	std::vector<VMXFileCommand*> mCommands;
+	std::mutex mMutex;
 };
 
 /**
@@ -42,11 +47,6 @@ struct VMXFileCommandProvider::PImpl
 */
 void VMXFileCommandProvider::PImpl::Reload()
 {
-	for (auto& cmd : mCommands) {
-		cmd->Release();
-	}
-	mCommands.clear();
-
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0 || fpIn == nullptr) {
 		return;
@@ -84,19 +84,28 @@ void VMXFileCommandProvider::PImpl::Reload()
 			items[_ttoi(indexStr.c_str())].displayName = displayName.c_str();
 		}
 	}
+	file.Close();
+	fclose(fpIn);
 
+	// ロードしたファイルの内容に基づき、コマンドを生成する
+	std::vector<VMXFileCommand*> commands;
 	for (auto& entry : items) {
 		auto item = entry.second;
 		if (Path::FileExists(item.filePath) == FALSE) {
 			// 存在しない.vmxファイルは除外する
 			continue;
 		}
-		mCommands.push_back(new VMXFileCommand(item.displayName, item.filePath));
+		commands.push_back(new VMXFileCommand(item.displayName, item.filePath));
 	}
 
-	file.Close();
-	fclose(fpIn);
+	// 前回のコマンドと今回ロードしたコマンドを入れ替える
+	std::lock_guard<std::mutex> lock(mMutex);
+	mCommands.swap(commands);
 
+	// 前回のコマンドは不要なので解放する
+	for (auto& cmd : commands) {
+		cmd->Release();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,12 +117,8 @@ REGISTER_COMMANDPROVIDER(VMXFileCommandProvider)
 
 VMXFileCommandProvider::VMXFileCommandProvider() : in(std::make_unique<PImpl>())
 {
-	size_t reqLen = 0;
-	LPTSTR p = in->mPrefFilePath.GetBuffer(MAX_PATH_NTFS);
-	_tgetenv_s(&reqLen, p, MAX_PATH_NTFS, _T("APPDATA"));
-	PathAppend(p, _T("VMWare/preferences.ini"));
-	memset(&in->mPrefUpdateTime,0 , sizeof(in->mPrefUpdateTime));
-	in->mPrefFilePath.ReleaseBuffer();
+	Path path(Path::APPDATA, _T("VMWare/preferences.ini"));
+	in->mPrefFilePath = (LPCTSTR)path;
 }
 
 VMXFileCommandProvider::~VMXFileCommandProvider()
@@ -125,35 +130,28 @@ CString VMXFileCommandProvider::GetName()
 	return _T("VMXFile");
 }
 
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
-
-
 // 一時的なコマンドを必要に応じて提供する
 void VMXFileCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	FILETIME lastUpdate;
-	if (GetLastUpdateTime(in->mPrefFilePath, lastUpdate) == false) {
-		return;
-	}
-	if (memcmp(&in->mPrefUpdateTime, &lastUpdate, sizeof(FILETIME)) != 0) {
-		// 前回から更新されたためファイルを再読み込みする
+	if (in->mIsFirstCall) {
 
+		// ファイルをロードしてVMXFileCommandを生成
 		in->Reload();
-	}
-	in->mPrefUpdateTime = lastUpdate;
 
+		// ファイルが更新されたら通知を受け取るための登録をする
+		LocalDirectoryWatcher::GetInstance()->Register(in->mPrefFilePath, [](void* p) {
+				// ファイルをロードしてVMXFileCommandを生成
+				auto thisPtr = (VMXFileCommandProvider*)p;
+				thisPtr->in->Reload();
+		}, this);
+
+		in->mIsFirstCall = false;
+	}
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	for (auto& cmd : in->mCommands) {
 
 		int level = cmd->Match(pattern);

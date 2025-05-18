@@ -8,9 +8,9 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/core/CommandRepository.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TimeoutChecker.h"
+#include "utility/LocalDirectoryWatcher.h"
 #include "utility/Path.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
@@ -27,69 +27,21 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
+struct SimpleDictCommand::PImpl
 {
-	if (PathIsURL(path)) {
-		// URLパスは非対応(ここでチェックしなくても後段のCreateFileで失敗するはずではあるが..)
-		return false;
-	}
-
-	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
-
-struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
-{
-	void OnLockScreenOccurred() override { }
-	void OnUnlockScreenOccurred() override { }
-	void OnTimer() override
+	void Reload()
 	{
-		if (mLastUpdate == 0) {
-			GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
-			mLastUpdate = GetTickCount64();
+		spdlog::info(_T("SimpleDictCommand: reload db. command name:{}"), (LPCTSTR)mParam.mName);
+
+	 	// データ更新を予約する
+		DictionaryLoader::Get()->AddWaitingQueue(mThisPtr);
+
+		// 更新を通知する
+		if (mParam.mIsNotifyUpdate) {
+			CString msg;
+			msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
+			PopupMessage(msg);
 		}
-
-		if (GetTickCount64() - mLastUpdate <= 5000) {  // 更新チェック間隔は5秒に1回
-			return;
-		}
-
-		if (shouldReload()) {
-			// データ更新を予約する
-			DictionaryLoader::Get()->AddWaitingQueue(mThisPtr);
-			if (mParam.mIsNotifyUpdate) {
-				// 更新を通知する
-				CString msg;
-				msg.Format(_T("【%s】ファイルが更新されました\n%s"), (LPCTSTR)mParam.mName, (LPCTSTR)mParam.mFilePath);
-				PopupMessage(msg);
-			}
-		}
-
-		GetLastUpdateTime(mParam.mFilePath, mLastUpdated);
-		mLastUpdate = GetTickCount64();
-	}
-	void OnLancuherActivate() override
-	{
-	}
-	void OnLancuherUnactivate() override
-	{
-	}
-
-	// 辞書データをリロードすべきか?
-	bool shouldReload()
-	{
-		// ファイルがなければリロードしない
-		if (Path::FileExists(mParam.mFilePath) == FALSE) {
-			return false;
-		}
-
-		// 更新日時が変化したらリロード
-		FILETIME ft;
-		return GetLastUpdateTime(mParam.mFilePath, ft) && memcmp(&ft, &mLastUpdated, sizeof(ft)) != 0;
 	}
 
 	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
@@ -101,9 +53,8 @@ struct SimpleDictCommand::PImpl : public LauncherWindowEventListenerIF
 
 	std::mutex mMutex;
 	Dictionary mDictData;
-	FILETIME mLastUpdated{};
-	uint64_t mLastUpdate{0};
 	CString mErrMsg;
+	uint32_t mWatcherId{0};
 };
 
 /**
@@ -253,12 +204,10 @@ CString SimpleDictCommand::GetType() { return _T("SimpleDict"); }
 SimpleDictCommand::SimpleDictCommand() : in(std::make_unique<PImpl>())
 {
 	in->mThisPtr = this;
-	LauncherWindowEventDispatcher::Get()->AddListener(in.get());
 }
 
 SimpleDictCommand::~SimpleDictCommand()
 {
-	LauncherWindowEventDispatcher::Get()->RemoveListener(in.get());
 }
 
 bool SimpleDictCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -425,7 +374,7 @@ bool SimpleDictCommand::Load(CommandEntryIF* entry)
 	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
 
 	// データ更新を予約する
-	DictionaryLoader::Get()->AddWaitingQueue(this);
+	ReserveUpdate();
 
 	return true;
 }
@@ -456,7 +405,7 @@ bool SimpleDictCommand::NewDialog(
 	newCmd->in->mParam = commandParam;
 
 	// データ更新を予約する
-	DictionaryLoader::Get()->AddWaitingQueue(newCmd.get());
+	newCmd->ReserveUpdate();
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
@@ -487,10 +436,13 @@ bool SimpleDictCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	auto param = cmdEditor->GetParam();
+	bool isPathChanged = in->mParam.mFilePath != param.mFilePath;
+
+	in->mParam = param;
 
 	// データ更新を予約する
-	DictionaryLoader::Get()->AddWaitingQueue(this);
+	ReserveUpdate(isPathChanged);
 
 	return true;
 }
@@ -508,7 +460,7 @@ bool SimpleDictCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* 
 	newCmd->SetParam(cmdEditor->GetParam());
 
 	// データ更新を予約する
-	DictionaryLoader::Get()->AddWaitingQueue(newCmd.get());
+	newCmd->ReserveUpdate();
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
@@ -544,6 +496,29 @@ bool SimpleDictCommand::QueryCandidates(
 */
 void SimpleDictCommand::ClearCache()
 {
+}
+
+
+void SimpleDictCommand::ReserveUpdate(bool isResiterWatcher)
+{
+	// データ更新を予約する
+	DictionaryLoader::Get()->AddWaitingQueue(this);
+
+	if (isResiterWatcher == false) {
+		return;
+	}
+
+	// ファイル変更通知を受け取るための登録
+	if (in->mWatcherId != 0) {
+		LocalDirectoryWatcher::GetInstance()->Unregister(in->mWatcherId);
+		in->mWatcherId = 0;
+	}
+
+	in->mWatcherId = 
+		LocalDirectoryWatcher::GetInstance()->Register(in->mParam.mFilePath, [](void* p) {
+		auto thisPtr = (PImpl*)p;
+		thisPtr->Reload();
+	}, in.get());
 }
 
 

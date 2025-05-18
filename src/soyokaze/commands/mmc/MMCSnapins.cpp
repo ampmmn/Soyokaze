@@ -74,9 +74,8 @@ void MMCSnapins::PImpl::RunCollectTask()
 void MMCSnapins::PImpl::EnumItems(std::vector<MMCSnapin>& items)
 {
 	spdlog::info(_T("start Enum MMC snapins."));
-	// windows/system32のパスを得る
-	Path pattern;
-	GetSystemDirectory(pattern, (DWORD)pattern.size()); 
+
+	Path pattern(Path::SYSTEMDIR);
 	pattern.Append(_T("*.msc"));
 
 	std::vector<MMCSnapin> tmpItems;

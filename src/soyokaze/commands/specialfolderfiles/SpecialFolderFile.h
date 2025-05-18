@@ -11,8 +11,6 @@ enum {
 
 struct ITEM
 {
-	static int GetTypeFromCSIDL(int csidl);
-
 	CString mName;
 	CString mFullPath;
 	CString mDescription;

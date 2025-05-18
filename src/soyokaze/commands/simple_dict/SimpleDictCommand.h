@@ -64,6 +64,9 @@ public:
 	void SetParam(const SimpleDictParam& param);
 	const SimpleDictParam& GetParam();
 
+private:
+	void ReserveUpdate(bool isRegisterWather = true);
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

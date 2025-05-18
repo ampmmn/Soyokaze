@@ -192,7 +192,17 @@ Path::Path(APPPROFILE_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 
 Path::Path(SYSTEMDIRECTORY_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 {
-	GetSystemDirectory(data(), (DWORD)size());
+	if (tag == SYSTEMDIR) {
+		GetSystemDirectory(data(), (DWORD)size());
+	}
+	else if (tag == APPDATA) {
+		size_t reqLen = 0;
+		_tgetenv_s(&reqLen, data(), size(), _T("APPDATA"));
+	}
+	else if (tag == USERPROFILE) {
+		size_t reqLen = 0;
+		_tgetenv_s(&reqLen, data(), size(), _T("USERPROFILE"));
+	}
 	if (extraPath != nullptr) {
 		Append(extraPath);
 	}

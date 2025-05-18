@@ -21,6 +21,8 @@ public:
 	};
 	enum SYSTEMDIRECTORY_TAG {
 		SYSTEMDIR,
+		APPDATA,
+		USERPROFILE,
 	};
 
 public:

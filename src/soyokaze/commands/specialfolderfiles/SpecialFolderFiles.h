@@ -22,9 +22,6 @@ public:
 	void EnableRecent(bool isEnable);
 
 private:
-	void GetLnkFiles(std::vector<ITEM>& items, int csidl);
-
-private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 

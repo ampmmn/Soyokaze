@@ -2,144 +2,93 @@
 #include "SpecialFolderFiles.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Path.h"
+#include "utility/LocalDirectoryWatcher.h"
 #include <mutex>
-#include <thread>
 #include <deque>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
 namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
-static const int INTERVAL = 5000;
-
 struct SpecialFolderFiles::PImpl
 {
-	PImpl() : mEvent(TRUE, TRUE)
-	{}
-
-	void SetAbort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		mIsAborted = true;
-	}
-	bool IsAbort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAborted;
-	}
-
+	void RegisterWatcher();
+	void GetLnkFiles(std::vector<ITEM>& items, const CString& directoryPath, int type);
 
 	std::mutex mMutex;
-	std::vector<ITEM> mItems;
-	uint64_t mElapsed{0};
-	CEvent mEvent;
 
-	bool mIsUpdated{false};
+	std::vector<ITEM> mRecentItems;
+	std::vector<ITEM> mStartMenuItems;
+	std::vector<ITEM> mCommonStartMenuItems;
+
+	// 最近使ったファイル
+	CString mRecentPath;
+	// スタートメニュー
+	CString mStartMenuPath;
+	// すべてのユーザーのスタートメニュー
+	CString mCommonStartMenuPath;
+
+	bool mIsFirstCall{true};
 	bool mIsEnableRecent{true};
 	bool mIsEnableStartMenu{true};
-	bool mIsAborted{false};
 };
 
-
-SpecialFolderFiles::SpecialFolderFiles() : in(std::make_unique<PImpl>())
+void SpecialFolderFiles::PImpl::RegisterWatcher()
 {
-}
+	auto watcher = LocalDirectoryWatcher::GetInstance();
 
-SpecialFolderFiles::~SpecialFolderFiles()
-{
-	in->SetAbort();
+	Path path;
 
-	WaitForSingleObject(in->mEvent, 3000);
-}
-
-void SpecialFolderFiles::EnableStartMenu(bool isEnable)
-{
-	in->mIsEnableStartMenu = isEnable;
-}
-
-void SpecialFolderFiles::EnableRecent(bool isEnable)
-{
-	in->mIsEnableRecent = isEnable;
-}
-
-bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
-{
-	if (in->IsAbort()) {
-		return false;
-	}
-	{
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		uint64_t elapsed = GetTickCount64() - in->mElapsed;
-		if (elapsed <= INTERVAL) {
-			if (in->mIsUpdated) {
-				items = in->mItems;
-				in->mIsUpdated = false;
-				return true;
-			}
-			return false;
-		}
-	}
-
-	in->mEvent.ResetEvent();
-
-	std::thread th([&]() {
-		
-		HRESULT hr = CoInitialize(NULL);
-		if (FAILED(hr)) {
-			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
-		}
-
-		std::vector<ITEM> tmp;
-
-		if (in->IsAbort()) {
-			return;
-		}
-
-		if (in->mIsEnableRecent) {
-			// 最近使ったファイルを得る
-			GetLnkFiles(tmp, CSIDL_RECENT);
-		}
-
-		if (in->IsAbort()) {
-			return;
-		}
-
-		if (in->mIsEnableStartMenu) {
-			// ユーザのスタートメニュー
-			GetLnkFiles(tmp, CSIDL_STARTMENU);
-
-			if (in->IsAbort()) {
+	// 最近使ったファイルのフォルダが更新されたら通知を受け取るための登録をする
+	SHGetSpecialFolderPath(NULL, (LPTSTR)path, CSIDL_RECENT, 0);
+	mRecentPath = path;
+	watcher->Register(mRecentPath, [](void* p) {
+			auto thisPtr = (PImpl*)p;
+			if (thisPtr->mIsEnableRecent == false) {
 				return;
 			}
+			std::vector<ITEM> items;
+			thisPtr->GetLnkFiles(items, thisPtr->mRecentPath, TYPE_RECENT);
 
-			// すべてのユーザのスタートメニュー
-			GetLnkFiles(tmp, CSIDL_COMMON_STARTMENU);
-		}
+			std::lock_guard<std::mutex> lock(thisPtr->mMutex);
+			thisPtr->mRecentItems.swap(items);
+	}, this);
 
-		if (in->IsAbort()) {
-			return;
-		}
+	// スタートメニューフォルダが更新されたら通知を受け取るための登録をする
+	SHGetSpecialFolderPath(NULL, (LPTSTR)path, CSIDL_STARTMENU, 0);
+	mStartMenuPath = path;
+	watcher->Register(mStartMenuPath, [](void* p) {
+			auto thisPtr = (PImpl*)p;
+			if (thisPtr->mIsEnableStartMenu == false) {
+				return;
+			}
+			std::vector<ITEM> items;
+			thisPtr->GetLnkFiles(items, thisPtr->mStartMenuPath, TYPE_STARTMENU);
 
-		CoUninitialize();
+			std::lock_guard<std::mutex> lock(thisPtr->mMutex);
+			thisPtr->mStartMenuItems.swap(items);
+	}, this);
 
-		std::lock_guard<std::mutex> lock(in->mMutex);
-		in->mItems.swap(tmp);
-		in->mElapsed = GetTickCount64();
-		in->mIsUpdated = true;
-		in->mEvent.SetEvent();
-	});
-	th.detach();
 
-	std::lock_guard<std::mutex> lock(in->mMutex);
-	if (in->mIsUpdated) {
-		items = in->mItems;
-		in->mIsUpdated = false;
-		return true;
-	}
-	return false;
+	// すべてのユーザーのスタートメニューフォルダが更新されたら通知を受け取るための登録をする
+	SHGetSpecialFolderPath(NULL, (LPTSTR)path, CSIDL_COMMON_STARTMENU, 0);
+	mCommonStartMenuPath = path;
+	watcher->Register(mCommonStartMenuPath, [](void* p) {
+			auto thisPtr = (PImpl*)p;
+			if (thisPtr->mIsEnableStartMenu == false) {
+				return;
+			}
+			std::vector<ITEM> items;
+			thisPtr->GetLnkFiles(items, thisPtr->mCommonStartMenuPath, TYPE_STARTMENU);
+
+			std::lock_guard<std::mutex> lock(thisPtr->mMutex);
+			thisPtr->mCommonStartMenuItems.swap(items);
+	}, this);
+
 }
 
 static bool GetLastWriteTime(const CString& path, FILETIME& tm)
@@ -154,22 +103,17 @@ static bool GetLastWriteTime(const CString& path, FILETIME& tm)
 	return isOK != FALSE;
 }
 
-void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
+void SpecialFolderFiles::PImpl::GetLnkFiles(std::vector<ITEM>& items, const CString& directoryPath, int type)
 {
-	std::vector<TCHAR> path(MAX_PATH_NTFS);
-	SHGetSpecialFolderPath(NULL, path.data(), csidl, 0);
-	PathAppend(path.data(), _T("*.*"));
+	Path path(directoryPath);
+	path.Append(_T("*.*"));
 
 	// フォルダ内のファイル列挙
 	std::deque<CString> stk;
-	stk.push_back(path.data());
+	stk.push_back((LPTSTR)path);
 
 	std::vector<ITEM> tmp;
 	while(stk.empty() == false) {
-
-		if (in->IsAbort()) {
-			break;
-		}
 
 		CString curDir = stk.front();
 		stk.pop_front();
@@ -179,10 +123,6 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 		while (isLoop) {
 
 			Sleep(0);
-
-			if (in->IsAbort()) {
-				break;
-			}
 
 			isLoop = f.FindNextFile();
 
@@ -210,7 +150,7 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 			}
 
 			ITEM item;
-			item.mType = ITEM::GetTypeFromCSIDL(csidl);
+			item.mType = type;
 			item.mName = PathFindFileName(fileName);
 
 			PathRemoveExtension(item.mName.GetBuffer(item.mName.GetLength()));   // .lnkを抜く
@@ -231,10 +171,6 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 		f.Close();
 	}
 
-	if (in->IsAbort()) {
-		return;
-	}
-
 	for (auto& item : tmp) {
 		GetLastWriteTime(item.mFullPath, item.mWriteTime);
 	}
@@ -249,6 +185,65 @@ void SpecialFolderFiles::GetLnkFiles(std::vector<ITEM>& items, int csidl)
 	});
 
 	items.insert(items.end(), tmp.begin(), tmp.end());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+SpecialFolderFiles::SpecialFolderFiles() : in(std::make_unique<PImpl>())
+{
+}
+
+SpecialFolderFiles::~SpecialFolderFiles()
+{
+}
+
+void SpecialFolderFiles::EnableStartMenu(bool isEnable)
+{
+	in->mIsEnableStartMenu = isEnable;
+}
+
+void SpecialFolderFiles::EnableRecent(bool isEnable)
+{
+	in->mIsEnableRecent = isEnable;
+}
+
+bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
+{
+	if (in->mIsFirstCall) {
+
+		// 変更通知を受け取るための登録
+		in->RegisterWatcher();
+
+		// 初回はショートカット一覧を直接取得する。以降は変更通知経由で更新する
+		if (in->mIsEnableRecent) {
+			std::lock_guard<std::mutex> lock(in->mMutex);
+			in->GetLnkFiles(in->mRecentItems, in->mRecentPath, TYPE_RECENT);
+		}
+		if (in->mIsEnableStartMenu) {
+			std::lock_guard<std::mutex> lock(in->mMutex);
+			in->GetLnkFiles(in->mStartMenuItems, in->mStartMenuPath, TYPE_STARTMENU);
+			in->GetLnkFiles(in->mCommonStartMenuItems, in->mCommonStartMenuPath, TYPE_STARTMENU);
+		}
+
+		in->mIsFirstCall = false;
+	}
+
+	items.clear();
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	if (in->mIsEnableRecent) {
+		items.insert(items.end(), in->mRecentItems.begin(), in->mRecentItems.end());
+	}
+	if (in->mIsEnableStartMenu) {
+		items.insert(items.end(), in->mStartMenuItems.begin(), in->mStartMenuItems.end());
+		items.insert(items.end(), in->mCommonStartMenuItems.begin(), in->mCommonStartMenuItems.end());
+	}
+	return true;
 }
 
 } // end of namespace specialfolderfiles
