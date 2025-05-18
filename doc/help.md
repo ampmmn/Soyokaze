@@ -905,6 +905,9 @@ Ctrl+A
 ![](../image/shellexec-envedit.png){ width=37% }
 - `削除`
   - クリックすると、リスト上で選択している変数を削除する
+- `一括追加`
+  - クリックすると、環境変数を一括で追加するための画面(下記)を表示する  
+![](../image/shellexec-envbulkadd.png){ width=40% }
 
 
 #### 通常コマンド その他
