@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+### Fixed
+
+- #92 【簡易電卓】`<built-in function xxx>`と表示されないようにする
 
 ## 0.40.0 - 2025-05-18
 

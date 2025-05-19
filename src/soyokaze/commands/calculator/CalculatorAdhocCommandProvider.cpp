@@ -122,7 +122,8 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	// 10進数としての結果を追加
 	// ただし、入力文字列と結果が全く同じ場合は表示しない
 	// 例: 1 -> 1 のようなケース
-	if (cmdline != result) {
+	bool isBuiltinFunction = result.GetLength() > 0 && result[0] == _T('<');
+	if (isBuiltinFunction == false && cmdline != result) {
 		in->mCommandPtr->SetResult(result);
 		in->mCommandPtr->AddRef();
 		commands.Add(CommandQueryItem(Pattern::PartialMatch, in->mCommandPtr));
