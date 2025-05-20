@@ -94,6 +94,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_REGEXP, in->mParam.mIsUseRegExp);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYIFNOTEXIST, in->mParam.mIsNotifyIfWindowNotFound);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
+	DDX_Check(pDX, IDC_CHECK_HOTKEYONLY, in->mParam.mIsHotKeyOnly);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
@@ -148,6 +149,8 @@ void SettingDialog::OnButtonHotKey()
 		in->mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
+	UpdateStatus();
+
 	UpdateData(FALSE);
 }
 
@@ -184,6 +187,9 @@ bool SettingDialog::UpdateStatus()
 {
 	bool canTest = in->mParam.mCaptionStr.IsEmpty() == FALSE || in->mParam.mClassStr.IsEmpty() == FALSE;
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
+
+	bool isHotKeySet = in->mParam.mHotKeyAttr.IsValid();
+	GetDlgItem(IDC_CHECK_HOTKEYONLY)->EnableWindow(isHotKeySet);
 
 	// 名前チェック
 	bool isNameValid =

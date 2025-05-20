@@ -318,7 +318,6 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFR
 CAPTION "ウインドウ切替コマンドの設定"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "指定したタイトル／クラスに合致するウインドウをアクティブにします\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較で検索します。",IDC_STATIC_PARAMHELP,21,180,311,27
     LTEXT           "コマンドの名前(&N):",IDC_STATIC,34,46,65,8
     EDITTEXT        IDC_EDIT_NAME,125,46,206,14,ES_AUTOHSCROLL
     LTEXT           "コマンドの説明(&D):",IDC_STATIC,34,66,65,8
@@ -328,17 +327,19 @@ BEGIN
     LTEXT           "ウインドウクラス(&L):",IDC_STATIC,34,117,65,8
     EDITTEXT        IDC_EDIT_CLASS,125,117,206,14,ES_AUTOHSCROLL
     CONTROL         "正規表現(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,138,58,10
+    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,276,138,55,14
     CONTROL         "条件に合致するウインドウが見つからなかった場合に通知する(&N)",IDC_CHECK_NOTIFYIFNOTEXIST,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,155,230,10
-    LTEXT           "ホットキー(K):",IDC_STATIC,34,217,43,8
-    EDITTEXT        IDC_EDIT_HOTKEY,125,214,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,250,214,21,14
+    LTEXT           "ホットキー(K):",IDC_STATIC,34,211,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,125,208,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,250,208,21,14
+    CONTROL         "ホットキーからの実行専用にする(&H)",IDC_CHECK_HOTKEYONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,225,194,9
     DEFPUSHBUTTON   "OK",IDOK,237,234,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,290,234,50,14
+    LTEXT           "指定したタイトル／クラスに合致するウインドウをアクティブにします\n正規表現をチェックした場合は正規表現マッチングで、\nチェックしない場合は文字列の完全一致比較で検索します。",IDC_STATIC_PARAMHELP,21,180,311,27
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
     LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
     GROUPBOX        "検索条件",IDC_STATIC,14,81,322,93
-    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,276,138,55,14
     LTEXT           "左のアイコンをドラッグして切り替えたいウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,27,299,17
 END
 
@@ -2150,7 +2151,6 @@ IDD_WINDOWACTIVATEEDIT AFX_DIALOG_LAYOUT
 BEGIN
     0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
@@ -2158,6 +2158,8 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
@@ -2166,9 +2168,9 @@ BEGIN
     100, 0, 0, 0,
     100, 0, 0, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0,
     0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
     0, 0, 100, 0
 END
 

@@ -6,16 +6,6 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-CommandParam::CommandParam() :
-	mIsUseRegExp(FALSE),
-	mIsNotifyIfWindowNotFound(FALSE)
-{
-}
-
-CommandParam::~CommandParam()
-{
-}
-
 HWND CommandParam::FindHwnd()
 {
 	struct local_param {

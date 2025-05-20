@@ -125,6 +125,11 @@ HICON WindowActivateCommand::GetIcon()
 
 int WindowActivateCommand::Match(Pattern* pattern)
 {
+	if (pattern->shouldWholeMatch() == false && in->mParam.mIsHotKeyOnly) {
+		// ホットキーからの実行専用の場合は候補に表示させない
+		return Pattern::Mismatch;
+	}
+
 	return pattern->Match(GetName());
 }
 
@@ -156,6 +161,7 @@ bool WindowActivateCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("ClassStr"), in->mParam.mClassStr);
 	entry->Set(_T("IsUseRegExp"), in->mParam.mIsUseRegExp != FALSE);
 	entry->Set(_T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
+	entry->Set(_T("IsHotKeyOnly"), in->mParam.mIsHotKeyOnly != FALSE);
 
 	return true;
 }
@@ -176,6 +182,7 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 	CString classStr = entry->Get(_T("ClassStr"), _T(""));
 	BOOL isUseRegExp = entry->Get(_T("IsUseRegExp"), false) ? TRUE : FALSE;
 	BOOL isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
+	BOOL isHotKeyOnly = entry->Get(_T("IsHotKeyOnly"), false) ? TRUE : FALSE;
 
 	in->mParam.mName = name;
 	in->mParam.mDescription = descriptionStr;
@@ -183,6 +190,7 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 	in->mParam.mClassStr = classStr;
 	in->mParam.mIsUseRegExp = isUseRegExp;
 	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
+	in->mParam.mIsHotKeyOnly = isHotKeyOnly;
 
 	if (in->mParam.BuildRegExp() == false) {
 		return false;

@@ -10,9 +10,6 @@ namespace activate_window {
 class CommandParam
 {
 public:
-	CommandParam();
-	~CommandParam();
-
 	HWND FindHwnd();
 
 	bool BuildRegExp(CString* errMsg = nullptr);
@@ -38,10 +35,12 @@ public:
 
 	CString mCaptionStr;
 	CString mClassStr;
-	BOOL mIsUseRegExp;
+	BOOL mIsUseRegExp{FALSE};
 
 	// ウインドウが見つからなかった場合に通知
-	BOOL mIsNotifyIfWindowNotFound;
+	BOOL mIsNotifyIfWindowNotFound{FALSE};
+
+	BOOL mIsHotKeyOnly{FALSE};
 };
 
 
