@@ -70,6 +70,8 @@ bool ErrorIndicatorCommand::CanExecute()
 
 BOOL ErrorIndicatorCommand::Execute(Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (in->mTarget.get() == nullptr) {
 		return TRUE;
 	}

@@ -65,10 +65,10 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	void OnTimer() override
 	{
 	}
-	void OnLancuherActivate() override
+	void OnLauncherActivate() override
 	{
 	}
-	void OnLancuherUnactivate() override
+	void OnLauncherUnactivate() override
 	{
 	}
 

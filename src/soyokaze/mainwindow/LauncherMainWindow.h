@@ -21,6 +21,7 @@ namespace core {
 	class Command;
 	class CommandHotKeyManager;
 	class CommandRepository;
+	class CommandParameterBuilder;
 }
 }
 
@@ -58,6 +59,8 @@ protected:
 	void UpdateCandidates();
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
+	void RunCommand(launcherapp::core::Command* cmd, launcherapp::core::CommandParameterBuilder* commandParam);
+
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 
 	// 現在選択中のコマンドを取得

@@ -150,7 +150,6 @@ bool CommandEditDialog::UpdateStatus()
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 
 	// $1,2,3... または $*の指定がある場合は、引数必須を選択するチェックを表示
-	const tregex& regArg = GetRegexForArgument();
 
 	// パスが有効なファイルだったら編集メニューを表示する
 	in->mMenuForPathBtn.DeleteMenu(3, MF_BYCOMMAND);

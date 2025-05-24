@@ -9,8 +9,11 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "resource.h"
 #include <map>
+#include <set>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -24,14 +27,17 @@ using CommandRepository = launcherapp::core::CommandRepository;
 
 struct ActivateWindowProvider::PImpl :
  	public AppPreferenceListenerIF,
- 	public MenuEventListener
+ 	public MenuEventListener,
+	public LauncherWindowEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this);
+		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
+		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -83,6 +89,19 @@ struct ActivateWindowProvider::PImpl :
 		}
 		mAdhocNameMap.erase(it);
 	}
+
+	// 
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+	void OnLauncherActivate() override
+	{
+	}
+	void OnLauncherUnactivate() override
+	{
+		mWndList.Clear();
+	}
+
 
 	bool mIsEnableWindowSwitch{false};
 	bool mIsFirstCall{true};
@@ -167,6 +186,8 @@ void ActivateWindowProvider::QueryAdhocCommands(
 	bool hasPrefix =  prefix.IsEmpty() == FALSE;
 	int offset = hasPrefix ? 1 : 0;
 
+	std::set<HWND> hit;
+
 	auto it = in->mAdhocNameMap.begin();
 	while(it != in->mAdhocNameMap.end()) { 
 		auto& name = it->second;
@@ -187,10 +208,12 @@ void ActivateWindowProvider::QueryAdhocCommands(
 			level = Pattern::FrontMatch;
 		}
 
-		auto cmd = new WindowActivateAdhocCommand(hwnd);
+		auto cmd = new WindowActivateAdhocCommand(hwnd, prefix);
 		cmd->SetListener(in.get());
 		commands.Add(CommandQueryItem(level, cmd));
 		it++;
+
+		hit.insert(hwnd);
 	}
 
 	std::vector<HWND> windowHandles;
@@ -199,7 +222,7 @@ void ActivateWindowProvider::QueryAdhocCommands(
 
 
 	// プレフィックスあり、かつ、後続キーワードなしの場合は全て列挙
-	bool shouldEnumAll = pattern->GetWordCount() == 1;
+	bool shouldEnumAll = hasPrefix && pattern->GetWordCount() == 1;
 
 	TCHAR caption[256];
 	for (auto hwnd : windowHandles) {
@@ -207,6 +230,11 @@ void ActivateWindowProvider::QueryAdhocCommands(
 
 		// ウインドウテキストを持たないものを除外する
 		if (caption[0] == _T('\0')) {
+			continue;
+		}
+
+		// 既に結果に含めたものは除外
+		if (hit.find(hwnd) != hit.end()) {
 			continue;
 		}
 
@@ -218,9 +246,11 @@ void ActivateWindowProvider::QueryAdhocCommands(
 				continue;
 			}
 		}
-		auto cmd = new WindowActivateAdhocCommand(hwnd);
+
+		auto cmd = new WindowActivateAdhocCommand(hwnd, prefix);
 		cmd->SetListener(in.get());
 		commands.Add(CommandQueryItem(level, cmd));
+		hit.insert(hwnd);
 	}
 }
 

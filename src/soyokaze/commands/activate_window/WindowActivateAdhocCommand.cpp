@@ -5,6 +5,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
 
@@ -25,8 +26,24 @@ struct WindowActivateAdhocCommand::PImpl
 	bool GiveAdhocName();
 	bool Close();
 
+	// 選択を解除
+	void Unselect() {
+		if (IsWindow(mHwnd) == FALSE || IsWindowVisible(mHwnd) == FALSE) {
+			return;
+		}
+
+		// OnSelectで強調したウインドウをもとに戻す
+		SetWindowPos(mHwnd, mPrevZOrder, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+		RedrawWindow(mHwnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ALLCHILDREN | RDW_ERASE);
+
+		mPrevZOrder = nullptr;
+	}
+
+
 	HWND mHwnd{nullptr};
+	HWND mPrevZOrder{nullptr};
 	MenuEventListener* mMenuEventListener{nullptr};
+	CString mPrefix;
 };
 
 bool WindowActivateAdhocCommand::PImpl::Maximize()
@@ -63,7 +80,8 @@ bool WindowActivateAdhocCommand::PImpl::Close()
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WindowActivateAdhocCommand)
 
 WindowActivateAdhocCommand::WindowActivateAdhocCommand(
-	HWND hwnd
+	HWND hwnd,
+	LPCTSTR prefix
 ) : in(std::make_unique<PImpl>())
 {
 	in->mHwnd = hwnd;
@@ -72,6 +90,7 @@ WindowActivateAdhocCommand::WindowActivateAdhocCommand(
 	GetWindowText(hwnd, caption, 256);
 	this->mName = caption;
 	this->mDescription = caption;
+	in->mPrefix = prefix;
 }
 
 WindowActivateAdhocCommand::~WindowActivateAdhocCommand()
@@ -81,6 +100,16 @@ WindowActivateAdhocCommand::~WindowActivateAdhocCommand()
 void WindowActivateAdhocCommand::SetListener(MenuEventListener* listener)
 {
 	in->mMenuEventListener = listener;
+}
+
+CString WindowActivateAdhocCommand::GetName()
+{
+	CString name;
+	if (in->mPrefix.IsEmpty() == FALSE) {
+		name = in->mPrefix + _T(" ");
+	}
+	name += __super::GetName();
+	return name;
 }
 
 CString WindowActivateAdhocCommand::GetGuideString()
@@ -111,6 +140,8 @@ BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
 	}
 
 	SetForegroundWindow(in->mHwnd);
+
+	in->mPrevZOrder = nullptr;
 	return TRUE;
 }
 
@@ -122,7 +153,7 @@ HICON WindowActivateAdhocCommand::GetIcon()
 launcherapp::core::Command*
 WindowActivateAdhocCommand::Clone()
 {
-	return new WindowActivateAdhocCommand(in->mHwnd);
+	return new WindowActivateAdhocCommand(in->mHwnd, in->mPrefix);
 }
 
 // メニューの項目数を取得する
@@ -186,6 +217,80 @@ bool WindowActivateAdhocCommand::SelectMenuItem(int index, launcherapp::core::Co
 	}
 }
 
+// 選択された
+void WindowActivateAdhocCommand::OnSelect(Command* prior)
+{
+	UNREFERENCED_PARAMETER(prior);
+
+	if (IsWindow(in->mHwnd) == FALSE || IsWindowVisible(in->mHwnd) == FALSE) {
+		return;
+	}
+
+	//対象のウインドウを強調表示する
+
+	// ランチャーウインドウの後ろに表示するため、現在ランチャーウインドウの直後にあるウインドウを取得
+	in->mPrevZOrder = GetWindow(in->mHwnd, GW_HWNDPREV);
+
+	SharedHwnd mainWnd;
+	auto hwndPrev = GetWindow(mainWnd.GetHwnd(), GW_HWNDNEXT);
+
+	// SetWindowPosでZOrderを変更すると、WS_EX_TOPMOST属性がつくことがあるので復元できるよう属性を保持する
+	bool hasTopMost1 = (GetWindowLongPtr(in->mHwnd, GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
+
+	// ランチャーの直後にあるウインドウの前に対象ウインドウをZOrderのみ移動する
+	SetWindowPos(in->mHwnd, hwndPrev, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+
+	bool hasTopMost2 = (GetWindowLongPtr(in->mHwnd, GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
+	if (hasTopMost1 != hasTopMost2) {
+		// WS_EX_TOPMOST属性をもとに戻す
+		SetWindowPos(in->mHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+	}
+
+	// 枠を強調表示するためクライアント領域をGetWindowDCの座標系で求める
+	CRect rcWindow;
+	GetWindowRect(in->mHwnd, &rcWindow);
+	CRect rc;
+	GetClientRect(in->mHwnd, &rc);
+
+	CRect rcClientScrren(rc);
+	MapWindowPoints(in->mHwnd, nullptr, (POINT*)&rcClientScrren, 2);
+
+	rc.OffsetRect(rcClientScrren.TopLeft() - rcWindow.TopLeft());
+	rc.DeflateRect(2, 2, 3, 3);
+
+	// 枠を描画
+	HDC dc = GetWindowDC(in->mHwnd);
+
+	HPEN pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+	HBRUSH br = (HBRUSH)GetStockObject(NULL_BRUSH);
+	auto oldPen = SelectObject(dc, pen);
+	auto oldBr = SelectObject(dc, br);
+
+	Rectangle(dc, rc.left, rc.top, rc.right, rc.bottom);
+
+	// 後始末
+	SelectObject(dc, oldBr);
+	SelectObject(dc, oldPen);
+	ReleaseDC(in->mHwnd, dc);
+
+}
+
+// 選択解除された
+void WindowActivateAdhocCommand::OnUnselect(Command* next)
+{
+	UNREFERENCED_PARAMETER(next);
+
+	// OnSelectで強調表示したものをもとに戻す
+	in->Unselect();
+}
+
+// 実行後のウインドウを閉じる方法を決定する
+launcherapp::core::SelectionBehavior::CloseWindowPolicy
+WindowActivateAdhocCommand::GetCloseWindowPolicy()
+{
+	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+}
+
 bool WindowActivateAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -195,6 +300,11 @@ bool WindowActivateAdhocCommand::QueryInterface(const launcherapp::core::IFID& i
 	if (ifid == IFID_CONTEXTMENUSOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
+		return true;
+	}
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
 		return true;
 	}
 	return false;

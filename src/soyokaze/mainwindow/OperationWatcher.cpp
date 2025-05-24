@@ -70,10 +70,10 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 		// 一回警告したら休憩入れるまでは警告しない
 		mIsWarned = true;
 	}
-	void OnLancuherActivate() override
+	void OnLauncherActivate() override
 	{
 	}
-	void OnLancuherUnactivate() override
+	void OnLauncherUnactivate() override
 	{
 	}
 

@@ -96,10 +96,10 @@ struct ClipboardHistoryProvider::PImpl :
 			mIsFirstCall = false;
 		}
 	}
-	void OnLancuherActivate() override
+	void OnLauncherActivate() override
 	{
 	}
-	void OnLancuherUnactivate() override
+	void OnLauncherUnactivate() override
 	{
 	}
 

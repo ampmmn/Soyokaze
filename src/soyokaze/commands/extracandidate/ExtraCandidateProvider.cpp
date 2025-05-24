@@ -101,14 +101,14 @@ struct ExtraCandidateProvider::PImpl :
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {}
 
-	void OnLancuherActivate() override
+	void OnLauncherActivate() override
 	{
 		// 入力欄が表示されるタイミングでキャッシュをリセット
 		for (auto source : mSources) {
 			source->ClearCache();
 		}
 	}
-	void OnLancuherUnactivate() override
+	void OnLauncherUnactivate() override
 	{
 	}
 

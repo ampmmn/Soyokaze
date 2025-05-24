@@ -290,7 +290,7 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 	}
 	else {
 		if (in->mIsMoveTemporary) {
-			CPoint newPt = in->mPositionToRestore;
+			newPt = in->mPositionToRestore;
 			wnd->SetWindowPos(nullptr, newPt.x, newPt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 			in->mIsMoveTemporary = false;
 		}

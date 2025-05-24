@@ -51,7 +51,7 @@ struct LocalDirectoryWatcher::PImpl
 
 	void StartWatch()
 	{
-		HRESULT hr = CoInitialize(NULL);
+		CoInitialize(NULL);
 
 		while(IsAbort() == false) {
 
@@ -178,7 +178,6 @@ struct LocalDirectoryWatcher::PImpl
 			return true;
 		}
 
-		bool isMatch = false;
 		tstring fileName;
 		for (;;) {
 

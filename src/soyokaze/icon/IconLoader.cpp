@@ -149,10 +149,10 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 			mCleanCount = CLEARCACHE_INTERVAL;
 		}
 	}
-	void OnLancuherActivate() override
+	void OnLauncherActivate() override
 	{
 	}
-	void OnLancuherUnactivate() override
+	void OnLauncherUnactivate() override
 	{
 	}
 

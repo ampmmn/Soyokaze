@@ -2,9 +2,7 @@
 
 #include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace activate_window {
+namespace launcherapp { namespace commands { namespace activate_window {
 
 class WindowList
 {
@@ -13,6 +11,7 @@ public:
 	~WindowList();
 
 public:
+	void Clear();
 	void EnumWindowHandles(std::vector<HWND>& handles);
 
 private:
@@ -21,7 +20,6 @@ private:
 
 };
 
-}
-}
-}
+}}}
+
 

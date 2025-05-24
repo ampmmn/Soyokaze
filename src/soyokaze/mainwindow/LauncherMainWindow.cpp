@@ -15,6 +15,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/SelectionBehavior.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
 #include "afxdialogex.h"
@@ -245,7 +246,7 @@ void LauncherMainWindow::ActivateWindow()
 void LauncherMainWindow::HideWindow()
 {
 	LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-		listener->OnLancuherUnactivate();
+		listener->OnLauncherUnactivate();
 	});
 	in->mLayout->HideWindow();
 }
@@ -291,7 +292,7 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 		}
 
 		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-			listener->OnLancuherActivate();
+			listener->OnLauncherActivate();
 		});
 	}
 	else {
@@ -475,6 +476,8 @@ LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lPar
 
 LRESULT LauncherMainWindow::OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	// VK_UP/DOWN/LEFT/RIGHTを移動の方向として使う(手抜き)
 	int vk = (int)wParam;
 	return in->mLayout->MoveTemporary(vk) ? 0 : 1;
@@ -723,13 +726,7 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 		return false;
 	}
 
-	std::thread th([cmd, commandParam]() {
-		cmd->Execute(commandParam);
-		commandParam->Release();
-		cmd->Release();
-	});
-	th.detach();
-
+	RunCommand(cmd, commandParam);
 	return true;
 }
 
@@ -1122,6 +1119,54 @@ void LauncherMainWindow::WaitQueryRequest()
 	}
 }
 
+void
+LauncherMainWindow::RunCommand(
+	launcherapp::core::Command* cmd,
+	launcherapp::core::CommandParameterBuilder* commandParam
+)
+{
+	// コマンド実行後のクローズ方法
+	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+
+	// コマンド実行後のクローズ方法を取得する
+	RefPtr<launcherapp::core::SelectionBehavior> behavior;
+	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
+		closePolicy = behavior->GetCloseWindowPolicy();
+	}
+
+	auto hwnd = GetSafeHwnd();
+
+	std::thread th([cmd, commandParam, hwnd, closePolicy]() {
+
+		if (cmd->Execute(commandParam) == FALSE) {
+			auto errMsg = cmd->GetErrorString();
+			if (errMsg.IsEmpty() == FALSE) {
+				auto app = (LauncherApp*)AfxGetApp();
+				app->PopupMessage(errMsg);
+			}
+		}
+
+		commandParam->Release();
+
+		// コマンドの参照カウントを下げる
+		cmd->Release();
+
+		if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC) {
+			// コマンドの実行を待ってウインドウを非表示する場合
+			::SendMessage(hwnd, WM_APP+18, 0, 0);   // ClearContent
+			::SendMessage(hwnd, LauncherMainWindowMessageID::HIDEWINDOW, 0, 0);
+		}
+
+	});
+	th.detach();
+
+	if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC) {
+		// コマンドの実行を待たずにウインドウを非表示する場合
+		ClearContent();
+		HideWindow();
+	}
+}
+
 /**
  	コマンドを実行する
  	@param[in] cmd 実行対象のコマンドオブジェクト
@@ -1139,38 +1184,24 @@ void LauncherMainWindow::RunCommand(
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	std::thread th([cmd, str]() {
+	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
 
-		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+	// Ctrlキーが押されているかを設定
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+		commandParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+	}
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+		commandParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+	}
+	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+		commandParam->SetNamedParamBool(_T("WinKeyPressed"), true);
+	}
+	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+		commandParam->SetNamedParamBool(_T("AltKeyPressed"), true);
+	}
 
-		// Ctrlキーが押されているかを設定
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			commandParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-			commandParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-			commandParam->SetNamedParamBool(_T("WinKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-			commandParam->SetNamedParamBool(_T("AltKeyPressed"), true);
-		}
-
-		if (cmd->Execute(commandParam) == FALSE) {
-			auto errMsg = cmd->GetErrorString();
-			if (errMsg.IsEmpty() == FALSE) {
-				auto app = (LauncherApp*)AfxGetApp();
-				app->PopupMessage(errMsg);
-			}
-		}
-
-		commandParam->Release();
-
-		// コマンドの参照カウントを下げる
-		cmd->Release();
-	});
-	th.detach();
+	// 実行
+	RunCommand(cmd, commandParam);
 }
 
 /**
@@ -1235,9 +1266,6 @@ void LauncherMainWindow::OnOK()
 			ExecuteCommand(_T("manager"));
 		}
 	}
-	// 実行したら、入力文字列を消して、入力ウインドウも非表示にする
-	ClearContent();
-	HideWindow();
 }
 
 void LauncherMainWindow::OnCancel()
