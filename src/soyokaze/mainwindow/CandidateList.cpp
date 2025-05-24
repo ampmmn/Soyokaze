@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CandidateList.h"
 #include "commands/error/ErrorIndicatorCommand.h"
+#include "commands/core/SelectionBehavior.h"
+#include "commands/core/IFIDDefine.h"
 #include <vector>
 #include <set>
 
@@ -21,8 +23,28 @@ struct CandidateList::PImpl
 		mCandidates.clear();
 	}
 
+	void Unselect()
+	{
+		size_t index = (size_t)mSelIndex;
+		if (index < mCandidates.size()) {
+			NotifySelect(mCandidates[index], nullptr);
+		}
+	}
+
+	void NotifySelect(Command* prior, Command* next)
+	{
+		RefPtr<launcherapp::core::SelectionBehavior> behaviorP;
+		if (prior && prior->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behaviorP)) {
+			behaviorP->OnUnselect(next);
+		}
+		RefPtr<launcherapp::core::SelectionBehavior> behaviorN;
+		if (next && next->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behaviorN)) {
+			behaviorN->OnSelect(prior);
+		}
+	}
+
 	// 一覧
-	std::vector<launcherapp::core::Command*> mCandidates;
+	std::vector<Command*> mCandidates;
 	// 選択中のもの
 	int mSelIndex{-1};
 
@@ -44,9 +66,15 @@ CandidateList::~CandidateList()
 
 void CandidateList::SetItems(std::vector<launcherapp::core::Command*>& items)
 {
+	in->Unselect();
 	in->ClearItems();
 	in->mCandidates.swap(items);
+
 	in->mSelIndex = 0;
+
+	// 次に選択されるコマンドに対して通知を行う
+	auto nextCmd = GetCommand(0);
+	in->NotifySelect(nullptr, nextCmd);
 
 	for (auto& listener : in->mListeners) {
 		listener->OnUpdateItems((void*)this);
@@ -60,9 +88,15 @@ int CandidateList::GetCurrentSelect()
 
 bool CandidateList::SetCurrentSelect(int index)
 {
+	// 変化しない場合は何もしない
 	if (in->mSelIndex == index) {
 		return true;
 	}
+
+	// 選択が解除されるコマンドと次に選択されるコマンドに対して通知を行う
+	auto priorCmd = GetCommand(in->mSelIndex);
+	auto nextCmd = GetCommand(index);
+	in->NotifySelect(priorCmd, nextCmd);
 
 	in->mSelIndex = index;
 
@@ -75,23 +109,20 @@ bool CandidateList::SetCurrentSelect(int index)
 
 bool CandidateList::OffsetCurrentSelect(int offset, bool isLoop)
 {
-	if (offset == 0) {
-		return true;
+	// 選択位置を移動
+	int nextIndex = in->mSelIndex + offset;
+
+	// 範囲外にでる場合は飽和 or ループさせる
+	if (nextIndex >= (int)in->mCandidates.size()) {
+		// 末尾に達した場合
+		nextIndex = isLoop ? 0 : (int)(in->mCandidates.size() - 1);
+	}
+	else if (nextIndex < 0) {
+		// 先頭に達した場合
+		nextIndex = isLoop ? (int)(in->mCandidates.size()-1) : 0;
 	}
 
-	in->mSelIndex += offset;
-	if (in->mSelIndex >= (int)in->mCandidates.size()) {
-		in->mSelIndex = isLoop ? 0 : (int)(in->mCandidates.size() - 1);
-	}
-	else if (in->mSelIndex < 0) {
-		in->mSelIndex = isLoop ? (int)(in->mCandidates.size()-1) : 0;
-	}
-
-	for (auto& listener : in->mListeners) {
-		listener->OnUpdateSelect((void*)this);
-	}
-
-	return true;
+	return SetCurrentSelect(nextIndex);
 }
 
 bool CandidateList::IsEmpty()
@@ -144,6 +175,7 @@ Command* CandidateList::GetCurrentCommand()
 
 void CandidateList::Clear()
 {
+	in->Unselect();
 	in->ClearItems();
 	for (auto& listener : in->mListeners) {
 		listener->OnUpdateItems((void*)this);
