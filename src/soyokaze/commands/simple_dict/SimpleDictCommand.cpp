@@ -264,8 +264,15 @@ CString SimpleDictCommand::GetTypeDisplayName()
 bool SimpleDictCommand::CanExecute()
 {
 	if (in->mParam.mActionType == 1) {
-		ExecutablePath path(in->mParam.mAfterFilePath);
-		if (path.IsExecutable() == false) {
+		// mAfterFilePathに$key $value($value2) を含む場合、選択するまで結果が確定しないため、
+		// リンク切れチェックはできない
+		const auto& filePath = in->mParam.mAfterFilePath;
+
+		bool hasKey = filePath.Find(_T("$key")) != -1;
+		bool hasValue = filePath.Find(_T("$value")) != -1;
+
+		ExecutablePath path(filePath);
+		if (hasKey == false && hasValue == false && path.IsExecutable() == false) {
 			in->mErrMsg = _T("！リンク切れ！");
 			return false;
 		}

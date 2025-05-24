@@ -119,8 +119,11 @@ bool FilterCommand::CanExecute()
 		}
 	}
 	if (in->mParam.mPostFilterType == POSTFILTER_SUBPROCESS) {
+		// パスに"$select"を含む場合、選択するまで結果が確定しないため、リンク切れの判断ができない
+		bool hasSelect = in->mParam.mAfterFilePath.Find(_T("$select")) != -1;
+
 		ExecutablePath path(in->mParam.mAfterFilePath);
-		if (path.IsExecutable() == false) {
+		if (hasSelect == false && path.IsExecutable() == false) {
 			in->mErrMsg = _T("！【後段の処理】リンク切れ！");
 			return false;
 		}
