@@ -220,16 +220,18 @@ bool SpecialFolderFiles::GetShortcutFiles(std::vector<ITEM>& items)
 		in->RegisterWatcher();
 
 		// 初回はショートカット一覧を直接取得する。以降は変更通知経由で更新する
-		if (in->mIsEnableRecent) {
-			std::lock_guard<std::mutex> lock(in->mMutex);
-			in->GetLnkFiles(in->mRecentItems, in->mRecentPath, TYPE_RECENT);
-		}
-		if (in->mIsEnableStartMenu) {
-			std::lock_guard<std::mutex> lock(in->mMutex);
-			in->GetLnkFiles(in->mStartMenuItems, in->mStartMenuPath, TYPE_STARTMENU);
-			in->GetLnkFiles(in->mCommonStartMenuItems, in->mCommonStartMenuPath, TYPE_STARTMENU);
-		}
-
+		std::thread th([&](){
+			if (in->mIsEnableRecent) {
+				std::lock_guard<std::mutex> lock(in->mMutex);
+				in->GetLnkFiles(in->mRecentItems, in->mRecentPath, TYPE_RECENT);
+			}
+			if (in->mIsEnableStartMenu) {
+				std::lock_guard<std::mutex> lock(in->mMutex);
+				in->GetLnkFiles(in->mStartMenuItems, in->mStartMenuPath, TYPE_STARTMENU);
+				in->GetLnkFiles(in->mCommonStartMenuItems, in->mCommonStartMenuPath, TYPE_STARTMENU);
+			}
+		});
+		th.detach();
 		in->mIsFirstCall = false;
 	}
 
