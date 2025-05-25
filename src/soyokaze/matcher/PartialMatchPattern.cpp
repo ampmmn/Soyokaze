@@ -62,8 +62,6 @@ struct PartialMatchPattern::PImpl
 
 	// 比較用のデータ(WORDには文字列or正規表現のどちらかが入る)
 	std::vector<WORD> mWords;
-	// 前方一致用のパターン
-	std::vector<std::wregex> mRegPatternsForFM;
 
 	CString mWholeText;
 	bool mIsUseMigemoForHistory{false};
@@ -222,7 +220,6 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 	std::vector<WORD> words;
 	std::vector<std::wregex> patterns;
-	std::vector<std::wregex> patternsForFM;
 	patterns.reserve(in->mTokens.size());
 
 	// tokensに分解したキーワードをregexに変換してpatternsに入れる
@@ -270,19 +267,8 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			words.push_back(WORD(token));
 			break;
 		}
-
-		try {
-			// 前方一致比較用にパターンを生成しておく
-			std::wstring escapedPat = StripEscapeChars(in->mTokens[i]);
-			patternsForFM.push_back(std::wregex(L"^" + escapedPat, std::regex_constants::icase));
-		}
-		catch (std::regex_error& e) {
-			tstring reason = tostring(e.code());
-			spdlog::warn(_T("Failed to build regex for frontmatch. reason={0} "), reason.c_str());
-		}
 	}
 	in->mRegPatterns.swap(patterns);
-	in->mRegPatternsForFM.swap(patternsForFM);
 	in->mWords.swap(words);
 }
 
@@ -310,26 +296,27 @@ int PartialMatchPattern::Match(
 		return WholeMatch;
 	}
 
+	tstring str_(str);
+
+	int level = PartialMatch;
+
+	tsmatch match_result;
+
 	size_t regPatCount = in->mRegPatterns.size();
 	for (size_t i = offset; i < regPatCount; ++i) {
-		auto& pat = in->mRegPatterns[i];
+		const auto& pat = in->mRegPatterns[i];
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
-		if (std::regex_search(str, pat) == false) {
+		if (std::regex_search(str_, match_result, pat) == false) {
 			return Mismatch;
 		}
-	}
 
-	// 先頭のキーワードに前方一致する場合は前方一致とみなす
-	if (offset < in->mRegPatternsForFM.size()) {
-		auto& patForFM = in->mRegPatternsForFM[offset];
-		if (std::regex_search(str, patForFM)) {
-			return FrontMatch;
+		// 先頭でマッチしたものがある場合は前方一致とみなす
+		if (match_result.position() == 0) {
+			level = FrontMatch;
 		}
 	}
-
-	// そうでなければ部分一致
-	return PartialMatch;
+	return level;
 }
 
 LPCTSTR PartialMatchPattern::GetFirstWord()
