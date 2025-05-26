@@ -66,15 +66,22 @@ CandidateList::~CandidateList()
 
 void CandidateList::SetItems(std::vector<launcherapp::core::Command*>& items)
 {
-	in->Unselect();
+	auto priorCmd = GetCommand(in->mSelIndex);
+	bool willChangeItem = items.empty() == false && priorCmd != items[0];
+
+	if (willChangeItem){
+		in->Unselect();
+	}
 	in->ClearItems();
 	in->mCandidates.swap(items);
 
 	in->mSelIndex = 0;
 
 	// 次に選択されるコマンドに対して通知を行う
-	auto nextCmd = GetCommand(0);
-	in->NotifySelect(nullptr, nextCmd);
+	if (willChangeItem) {
+		auto nextCmd = GetCommand(0);
+		in->NotifySelect(nullptr, nextCmd);
+	}
 
 	for (auto& listener : in->mListeners) {
 		listener->OnUpdateItems((void*)this);

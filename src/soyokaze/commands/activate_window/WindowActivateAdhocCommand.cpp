@@ -44,6 +44,7 @@ struct WindowActivateAdhocCommand::PImpl
 	HWND mPrevZOrder{nullptr};
 	MenuEventListener* mMenuEventListener{nullptr};
 	CString mPrefix;
+	bool mIsMinimized{false};
 };
 
 bool WindowActivateAdhocCommand::PImpl::Maximize()
@@ -91,6 +92,9 @@ WindowActivateAdhocCommand::WindowActivateAdhocCommand(
 	this->mName = caption;
 	this->mDescription = caption;
 	in->mPrefix = prefix;
+
+	auto style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	in->mIsMinimized = (style & WS_MINIMIZE) != 0;
 }
 
 WindowActivateAdhocCommand::~WindowActivateAdhocCommand()
@@ -109,6 +113,11 @@ CString WindowActivateAdhocCommand::GetName()
 		name = in->mPrefix + _T(" ");
 	}
 	name += __super::GetName();
+
+	if (in->mIsMinimized) {
+		name += _T(" (最小化)");
+	}
+
 	return name;
 }
 

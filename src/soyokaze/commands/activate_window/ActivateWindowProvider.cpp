@@ -37,6 +37,11 @@ struct ActivateWindowProvider::PImpl :
 	}
 	virtual ~PImpl()
 	{
+		for (auto item : mCommands) {
+			item.second->Release();
+		}
+		mCommands.clear();
+
 		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
@@ -100,6 +105,10 @@ struct ActivateWindowProvider::PImpl :
 	void OnLauncherUnactivate() override
 	{
 		mWndList.Clear();
+		for (auto item : mCommands) {
+			item.second->Release();
+		}
+		mCommands.clear();
 	}
 
 
@@ -109,6 +118,7 @@ struct ActivateWindowProvider::PImpl :
 	CString mPrefix;
 
 	std::map<HWND, CString> mAdhocNameMap;
+	std::map<HWND, WindowActivateAdhocCommand*> mCommands;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -247,10 +257,21 @@ void ActivateWindowProvider::QueryAdhocCommands(
 			}
 		}
 
-		auto cmd = new WindowActivateAdhocCommand(hwnd, prefix);
-		cmd->SetListener(in.get());
-		commands.Add(CommandQueryItem(level, cmd));
 		hit.insert(hwnd);
+
+		WindowActivateAdhocCommand* cmd = nullptr;
+
+		auto it2 = in->mCommands.find(hwnd);
+		if (it2 != in->mCommands.end()) {
+			cmd = it2->second;
+		}
+		else {
+			cmd = new WindowActivateAdhocCommand(hwnd, prefix);
+			cmd->SetListener(in.get());
+			in->mCommands[hwnd] = cmd;
+		}
+		cmd->AddRef();
+		commands.Add(CommandQueryItem(level, cmd));
 	}
 }
 
