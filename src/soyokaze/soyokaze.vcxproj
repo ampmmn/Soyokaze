@@ -511,6 +511,7 @@
     <ClInclude Include="commands\snippetgroup\SnippetGroupProvider.h" />
     <ClInclude Include="commands\snippet\SnippetCommandEditor.h" />
     <ClInclude Include="commands\snippet\SnippetCommandParam.h" />
+    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileFind.h" />
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h" />
@@ -665,7 +666,6 @@
     <ClInclude Include="commands\snippet\SnippetCommandEditDialog.h" />
     <ClInclude Include="commands\snippet\SnippetCommandProvider.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileCommand.h" />
-    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFiles.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h" />
     <ClInclude Include="commands\timespan\TimespanCommand.h" />
     <ClInclude Include="commands\timespan\TimespanCommandProvider.h" />
@@ -931,6 +931,7 @@
     <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp" />
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
@@ -1081,7 +1082,6 @@
     <ClCompile Include="commands\snippet\SnippetCommandProvider.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFile.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp" />
-    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommand.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp" />

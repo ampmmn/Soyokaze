@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SpecialFolderFilesCommandProvider.h"
 #include "commands/specialfolderfiles/SpecialFolderFileCommand.h"
-#include "commands/specialfolderfiles/SpecialFolderFiles.h"
+#include "commands/specialfolderfiles/SpecialFolderFileFind.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -32,15 +32,22 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-		mIsEnableSpecialFolder = pref->IsEnableSpecialFolder();
+		Reload();
 	}
 	void OnAppExit() override {}
 
-	bool mIsEnableSpecialFolder{true};
+	void Reload()
+	{
+		auto pref = AppPreference::Get();
+		bool isEnable = pref->IsEnableSpecialFolder();
+		mFileFind.EnableStartMenu(isEnable);
+		mFileFind.EnableRecent(isEnable);
+	}
+
+	// 初回呼び出しフラグ
 	bool mIsFirstCall{true};
-	std::vector<ITEM> mRecentFileItems;
-	SpecialFolderFiles mFiles;
+	// 一覧
+	SpecialFolderFileFind mFileFind;
 
 };
 
@@ -71,20 +78,16 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 )
 {
 	if (in->mIsFirstCall) {
-		auto pref = AppPreference::Get();
-		in->mIsEnableSpecialFolder = pref->IsEnableSpecialFolder();
+		in->Reload();
 		in->mIsFirstCall = false;
 	}
 
-	if (in->mIsEnableSpecialFolder == false) {
+	std::vector<ITEM> recentFileItems;
+	if (in->mFileFind.FindShortcutFiles(recentFileItems) == false) {
 		return ;
 	}
 
-	in->mFiles.EnableStartMenu(in->mIsEnableSpecialFolder);
-	in->mFiles.EnableRecent(in->mIsEnableSpecialFolder);
-	in->mFiles.GetShortcutFiles(in->mRecentFileItems);
-
-	for (auto& item : in->mRecentFileItems) {
+	for (auto& item : recentFileItems) {
 
 		int level = pattern->Match(item.mName);
 		if (level == Pattern::Mismatch) {

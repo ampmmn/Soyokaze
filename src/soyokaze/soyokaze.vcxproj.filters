@@ -492,9 +492,6 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileCommand.h">
       <Filter>commands\specialfolderfiles</Filter>
     </ClInclude>
-    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFiles.h">
-      <Filter>commands\specialfolderfiles</Filter>
-    </ClInclude>
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.h">
       <Filter>commands\specialfolderfiles</Filter>
     </ClInclude>
@@ -1488,6 +1485,9 @@
     <ClInclude Include="app\LocalDirectoryWatcherService.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileFind.h">
+      <Filter>commands\specialfolderfiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1734,9 +1734,6 @@
       <Filter>commands\color</Filter>
     </ClCompile>
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileCommand.cpp">
-      <Filter>commands\specialfolderfiles</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFiles.cpp">
       <Filter>commands\specialfolderfiles</Filter>
     </ClCompile>
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp">
@@ -2635,6 +2632,9 @@
     </ClCompile>
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp">
+      <Filter>commands\specialfolderfiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

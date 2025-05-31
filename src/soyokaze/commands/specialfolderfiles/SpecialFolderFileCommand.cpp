@@ -141,6 +141,7 @@ bool SpecialFolderFileCommand::SelectMenuItem(int index, launcherapp::core::Comm
 		if (Path::FileExists(in->mItem.mLinkPath) == FALSE) {
 			return true;
 		}
+		// ショートカットを削除
 		DeleteFile(in->mItem.mLinkPath);
 		return true;
 	}

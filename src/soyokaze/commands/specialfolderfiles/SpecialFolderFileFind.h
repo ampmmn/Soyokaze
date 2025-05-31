@@ -9,14 +9,14 @@ namespace launcherapp {
 namespace commands {
 namespace specialfolderfiles {
 
-class SpecialFolderFiles
+class SpecialFolderFileFind
 {
 public:
-	SpecialFolderFiles();
-	~SpecialFolderFiles();
+	SpecialFolderFileFind();
+	~SpecialFolderFileFind();
 
 public:
-	bool GetShortcutFiles(std::vector<ITEM>& items);
+	bool FindShortcutFiles(std::vector<ITEM>& items);
 
 	void EnableStartMenu(bool isEnable);
 	void EnableRecent(bool isEnable);
