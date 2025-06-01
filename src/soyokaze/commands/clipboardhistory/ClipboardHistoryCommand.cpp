@@ -3,6 +3,7 @@
 #include "ClipboardHistoryCommand.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "utility/StringUtil.h"
 #include "resource.h"
@@ -64,7 +65,7 @@ CString ClipboardHistoryCommand::GetName()
 
 CString ClipboardHistoryCommand::GetGuideString()
 {
-	return _T("⏎:コピー S-⏎:コピペ C-⏎:空白除去コピー");
+	return _T("⏎:コピー S-⏎:コピペ C-⏎:入力欄に貼り付け");
 }
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()
@@ -81,11 +82,6 @@ BOOL ClipboardHistoryCommand::Execute(Parameter* param)
 	bool isShiftPressed = (state & MASK_SHIFT) != 0;
 
 	CString data = in->mData;
-
-	if (isCtrlPressed) {
-		// 空白を除去
-		data = data.Trim();
-	}
 
 	// 値をコピー
 	Clipboard::Copy(data);
@@ -119,6 +115,15 @@ BOOL ClipboardHistoryCommand::Execute(Parameter* param)
 
     // イベント送信
     SendInput(5, inputs, sizeof(INPUT));
+	}
+	else if (isCtrlPressed) {
+		// Ctrl-Enterで、入力欄にテキスト貼り付け
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		bool isToggle = false;
+		mainWnd->ActivateWindow(isToggle);
+
+		mainWnd->SetText(data);
+
 	}
 
 	return TRUE;
