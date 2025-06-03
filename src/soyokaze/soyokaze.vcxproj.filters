@@ -1488,6 +1488,9 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileFind.h">
       <Filter>commands\specialfolderfiles</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2635,6 +2638,9 @@
     </ClCompile>
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp">
       <Filter>commands\specialfolderfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

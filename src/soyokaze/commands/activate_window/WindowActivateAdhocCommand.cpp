@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WindowActivateAdhocCommand.h"
 #include "commands/core/IFIDDefine.h"
+#include "commands/activate_window/ActivateIndicatorWindow.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
@@ -32,9 +33,8 @@ struct WindowActivateAdhocCommand::PImpl
 			return;
 		}
 
-		// OnSelectで強調したウインドウをもとに戻す
-		SetWindowPos(mHwnd, mPrevZOrder, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
-		RedrawWindow(mHwnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ALLCHILDREN | RDW_ERASE);
+		// 対象を強調表示
+		ActivateIndicatorWindow::GetInstance()->Uncover();
 
 		mPrevZOrder = nullptr;
 	}
@@ -255,33 +255,8 @@ void WindowActivateAdhocCommand::OnSelect(Command* prior)
 		SetWindowPos(in->mHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 	}
 
-	// 枠を強調表示するためクライアント領域をGetWindowDCの座標系で求める
-	CRect rcWindow;
-	GetWindowRect(in->mHwnd, &rcWindow);
-	CRect rc;
-	GetClientRect(in->mHwnd, &rc);
-
-	CRect rcClientScrren(rc);
-	MapWindowPoints(in->mHwnd, nullptr, (POINT*)&rcClientScrren, 2);
-
-	rc.OffsetRect(rcClientScrren.TopLeft() - rcWindow.TopLeft());
-	rc.DeflateRect(2, 2, 3, 3);
-
-	// 枠を描画
-	HDC dc = GetWindowDC(in->mHwnd);
-
-	HPEN pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
-	HBRUSH br = (HBRUSH)GetStockObject(NULL_BRUSH);
-	auto oldPen = SelectObject(dc, pen);
-	auto oldBr = SelectObject(dc, br);
-
-	Rectangle(dc, rc.left, rc.top, rc.right, rc.bottom);
-
-	// 後始末
-	SelectObject(dc, oldBr);
-	SelectObject(dc, oldPen);
-	ReleaseDC(in->mHwnd, dc);
-
+	// 対象を強調表示
+	ActivateIndicatorWindow::GetInstance()->Cover(in->mHwnd);
 }
 
 // 選択解除された
