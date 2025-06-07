@@ -146,12 +146,13 @@ void CommandHotKeyDialog::UpdateStatus()
 	// 表示状態の制御
 	BOOL isHotKeySelected = (mHotKeyType == TYPE_LOCAL || mHotKeyType == TYPE_GLOBAL);
 	BOOL isSandSSelected = !isHotKeySelected;
+	BOOL isLocal = mHotKeyType == TYPE_LOCAL;
 
 	UpdateCtrlState(IDC_STATIC_FRAME, isHotKeySelected, mIsUseHotKey != FALSE);
 	UpdateCtrlState(IDC_CHECK_SHIFT, isHotKeySelected, mIsUseHotKey != FALSE);
 	UpdateCtrlState(IDC_CHECK_ALT, isHotKeySelected, mIsUseHotKey != FALSE);
 	UpdateCtrlState(IDC_CHECK_CTRL, isHotKeySelected, mIsUseHotKey != FALSE);
-	UpdateCtrlState(IDC_CHECK_WIN, isHotKeySelected, mIsUseHotKey != FALSE);
+	UpdateCtrlState(IDC_CHECK_WIN, isHotKeySelected, mIsUseHotKey != FALSE && isLocal == FALSE);
 
 	UpdateCtrlState(IDC_STATIC_MODSANDS, isSandSSelected, mIsUseHotKey != FALSE);
 	UpdateCtrlState(IDC_COMBO_SANDSMOD, isSandSSelected, mIsUseHotKey != FALSE);
