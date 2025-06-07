@@ -24,7 +24,10 @@ MainWindowInput::~MainWindowInput()
 
 bool MainWindowInput::HasKeyword()
 {
-	return in->mCommandStr.IsEmpty() == FALSE;
+	if (in->mCommandStr.IsEmpty() || in->mCommandStr == _T("\r\n")) {
+		return false;
+	}
+	return true;
 }
 
 int MainWindowInput::GetLength()
@@ -68,6 +71,8 @@ void MainWindowInput::RemoveLastWord()
 
 void MainWindowInput::SetKeyword(const CString& wholeText, bool withSpace)
 {
+	spdlog::debug("MainWindowInput::SetKeyword start");
+
 	in->mCommandStr = wholeText;
 	if (withSpace) {
 		in->mCommandStr += _T(" ");
@@ -83,6 +88,8 @@ const CString& MainWindowInput::GetKeyword()
 // キーワード文字列に(空白区切りで)引数を追加
 void MainWindowInput::AddArgument(const CString& arg)
 {
+	spdlog::debug("MainWindowInput::AddArgument start");
+
 	int len = in->mCommandStr.GetLength();
 	if (len > 0 && in->mCommandStr[len-1] != _T(' ')) {
 		in->mCommandStr += _T(" ");
@@ -93,6 +100,8 @@ void MainWindowInput::AddArgument(const CString& arg)
 // Ctrl-Backspaceを押下時に入力される不可視文字(0x7E→Backspace)を消す
 bool MainWindowInput::ReplaceInvisibleChars()
 {
+	spdlog::debug("MainWindowInput::ReplaceInvisibleChars start");
+
 	if (in->mCommandStr.Find((TCHAR)0x7F) == -1) {
 		return false;
 	}

@@ -245,6 +245,8 @@ static bool IsRectInMonitors(const CRect& rc)
 // ウインドウがアクティブになるときのウインドウ位置を決める
 bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 {
+	spdlog::debug("MainWindowLayout::RecalcWindowOnActivate start");
+
 	CPoint newPt{0,0};
 
 	AppPreference* pref = AppPreference::Get();
@@ -300,6 +302,8 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 
 void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
 {
+	spdlog::debug("MainWindowLayout::RestoreWindowPosition");
+
 	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
 
 	bool isSucceededToRestore = in->mWindowPositionPtr->Restore(wnd->GetSafeHwnd());

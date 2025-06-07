@@ -83,6 +83,7 @@ bool WindowTransparency::ToggleAlphaState(bool isTransparency)
 
 void WindowTransparency::UpdateStyle()
 {
+	spdlog::debug("WindowTransparency::UpdateStyle start");
 	auto* pref = AppPreference::Get();
 	mIsEnable = pref->IsWindowTransparencyEnable();
 	mAlpha = (uint8_t)pref->GetAlpha();

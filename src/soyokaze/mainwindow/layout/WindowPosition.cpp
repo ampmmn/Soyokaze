@@ -160,6 +160,8 @@ WINDOWPLACEMENT WindowPosition::GetPosition() const
 
 bool WindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
 {
+	spdlog::debug("WindowPosition::SetPositionTemporary start");
+
 	auto wp = mPosition;
 	wp.rcNormalPosition = rc;
 
@@ -173,6 +175,8 @@ bool WindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
 
 bool WindowPosition::SyncPosition(HWND hwnd)
 {
+	spdlog::debug("WindowPosition::SyncPosition start");
+
 	if (mIsLoaded == false) {
 		GetWindowRect(hwnd, &mPosition.rcNormalPosition);
 		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;

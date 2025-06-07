@@ -120,6 +120,8 @@ struct LauncherMainWindow::PImpl
 // 候補欄の選択変更により、新しく選択されたコマンドの名前で選択欄のテキストを置き換える
 void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
 {
+	spdlog::debug("UpdateCommandString");
+
 	// コマンド名
 	auto cmdName = cmd->GetName();
 
@@ -1075,6 +1077,8 @@ void LauncherMainWindow::QuerySync()
 // 候補欄を更新
 void LauncherMainWindow::UpdateCandidates()
 {
+	spdlog::debug("LauncherMainWindow::UpdateCandidates start");
+
 	// 入力テキストが空文字列の場合はデフォルト表示に戻す
 	if (in->mInput.HasKeyword() == false) {
 		ClearContent();
@@ -1127,6 +1131,7 @@ LauncherMainWindow::RunCommand(
 {
 	// コマンド実行後のクローズ方法
 	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+	spdlog::debug("closePolicy: {}", (int)closePolicy);
 
 	// コマンド実行後のクローズ方法を取得する
 	RefPtr<launcherapp::core::SelectionBehavior> behavior;
