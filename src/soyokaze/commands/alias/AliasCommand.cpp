@@ -80,6 +80,10 @@ BOOL AliasCommand::Execute(Parameter* param)
 	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	if (in->mParam.mIsPasteOnly) {
 		mainWnd->SetText((LPCTSTR)in->mParam.mText);
+
+		// フォーカスをメインウインドウに移す
+		bool isToggle = false;
+		mainWnd->ActivateWindow(isToggle);
 	}
 	else {
 		bool isWaitSync = true;
