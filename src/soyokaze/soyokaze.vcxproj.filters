@@ -253,6 +253,9 @@
     <Filter Include="externaltool\webbrowser">
       <UniqueIdentifier>{49744c8b-0b75-46cf-9281-4bd8c446b4fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\uiautomation">
+      <UniqueIdentifier>{0015df85-e72c-4ee0-8fa9-b85fbc57fd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1608,6 +1611,18 @@
     <ClInclude Include="commands\bookmarks\BookmarkItem.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\WindowUIElements.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2836,6 +2851,18 @@
     </ClCompile>
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp">
       <Filter>externaltool\webbrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\WindowUIElements.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp">
+      <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
