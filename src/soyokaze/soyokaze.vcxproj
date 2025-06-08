@@ -560,6 +560,10 @@
     <ClInclude Include="commands\snippet\SnippetCommandEditor.h" />
     <ClInclude Include="commands\snippet\SnippetCommandParam.h" />
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileFind.h" />
+    <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h" />
+    <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h" />
+    <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h" />
+    <ClInclude Include="commands\uiautomation\WindowUIElements.h" />
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h" />
@@ -1055,6 +1059,10 @@
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp" />
+    <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp" />
+    <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp" />
+    <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp" />
+    <ClCompile Include="commands\uiautomation\WindowUIElements.cpp" />
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommand.cpp">
