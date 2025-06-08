@@ -229,6 +229,9 @@
     <Filter Include="commands\error">
       <UniqueIdentifier>{e2b6c120-49c4-455f-8168-572eb8227f01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\uiautomation">
+      <UniqueIdentifier>{0015df85-e72c-4ee0-8fa9-b85fbc57fd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1491,6 +1494,18 @@
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\WindowUIElements.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2641,6 +2656,18 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\WindowUIElements.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp">
+      <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
