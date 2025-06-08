@@ -280,6 +280,9 @@
     <Filter Include="actions\vmware">
       <UniqueIdentifier>{6f71133a-6969-45dd-ab22-f7c116d4e990}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\uiautomation">
+      <UniqueIdentifier>{0015df85-e72c-4ee0-8fa9-b85fbc57fd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1670,7 +1673,6 @@
     </ClInclude>
     <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
       <Filter>commands\activate_window</Filter>
->>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
     </ClInclude>
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
       <Filter>commands\activate_window</Filter>
@@ -1716,6 +1718,18 @@
     </ClInclude>
     <ClInclude Include="actions\builtin\ShowPropertiesAction.h">
       <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\WindowUIElements.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h">
+      <Filter>commands\uiautomation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2969,7 +2983,6 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
       <Filter>commands\activate_window</Filter>
->>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
     </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
       <Filter>commands\activate_window</Filter>
@@ -3015,6 +3028,18 @@
     </ClCompile>
     <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp">
       <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\WindowUIElements.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp">
+      <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
