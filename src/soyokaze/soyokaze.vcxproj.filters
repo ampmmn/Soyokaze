@@ -295,6 +295,9 @@
     <Filter Include="commands\explorepath">
       <UniqueIdentifier>{3ca17de4-3587-4db9-ae50-c0fcbb3944c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\uiautomation">
+      <UniqueIdentifier>{0015df85-e72c-4ee0-8fa9-b85fbc57fd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1812,6 +1815,18 @@
     <ClInclude Include="commands\explorepath\ExplorePathCommandProvider.h">
       <Filter>commands\explorepath</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\WindowUIElements.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3187,6 +3202,18 @@
     </ClCompile>
     <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp">
       <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\WindowUIElements.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp">
+      <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
