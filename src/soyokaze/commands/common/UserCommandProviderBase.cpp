@@ -67,6 +67,12 @@ bool UserCommandProviderBase::IsPrivate() const
 	return false;
 }
 
+// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+void UserCommandProviderBase::PrepareAdhocCommands()
+{
+	// なにもしない。派生クラス側で必要に応じて実装する
+}
+
 void UserCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {
 	UNREFERENCED_PARAMETER(pattern);

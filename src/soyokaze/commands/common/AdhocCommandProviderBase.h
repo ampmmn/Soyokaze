@@ -42,6 +42,9 @@ public:
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	bool IsPrivate() const override;
 
+	// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+	void PrepareAdhocCommands() override;
+
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
 

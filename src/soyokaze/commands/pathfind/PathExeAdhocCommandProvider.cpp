@@ -39,13 +39,18 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
+		Load();
+	}
+	void OnAppExit() override {}
+
+	void Load()
+	{
 		auto pref = AppPreference::Get();
 		mIsIgnoreUNC = pref->IsIgnoreUNC();
 		mIsEnable = pref->IsEnablePathFind();
 		mExcludeFiles.Load();
 		mExeCommandPtr->Reload();
 	}
-	void OnAppExit() override {}
 
 	// 環境変数PATHにあるexeを実行するためのコマンド
 	PathExecuteCommand* mExeCommandPtr{nullptr};
@@ -54,9 +59,6 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	//
 	bool mIsIgnoreUNC{false};
 	bool mIsEnable{true};
-	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall{true};
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,22 +98,19 @@ CString PathExeAdhocCommandProvider::GetName()
 	return _T("PathExeAdhocCommand");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void PathExeAdhocCommandProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsIgnoreUNC = pref->IsIgnoreUNC();
-		in->mIsFirstCall = false;
-		in->mIsEnable = pref->IsEnablePathFind();
-		in->mExcludeFiles.Load();
-		in->mExeCommandPtr->Reload();
-	}
-
 	if (in->mIsEnable == false) {
 		// 機能は無効化されている
 		return ;

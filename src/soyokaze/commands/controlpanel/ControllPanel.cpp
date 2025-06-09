@@ -56,7 +56,6 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppExit() override {}
 
 	bool mIsEnable{false};
-	bool mIsFirstCall{true};
 
 	std::vector<ControlPanelCommand*> mPanelItems;
 };
@@ -128,24 +127,26 @@ CString ControlPanelProvider::GetName()
 	return _T("ControlPanelCommand");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void ControlPanelProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	auto pref = AppPreference::Get();
+	in->mIsEnable = pref->IsEnableControlPanel();
+
+	// 初回呼び出し時(と有効/無効切り替え時)に一覧生成を行う
+	if (in->mIsEnable == false) {
+		return;
+	}
+	in->EnumItems(in->mPanelItems);
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void ControlPanelProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnable = pref->IsEnableControlPanel();
-		in->mIsFirstCall = false;
-
-		// 初回呼び出し時(と有効/無効切り替え時)に一覧生成を行う
-		if (in->mIsEnable) {
-			in->EnumItems(in->mPanelItems);
-		}
-	}
-
 	for (auto& command : in->mPanelItems) {
 		int level = command->Match(pattern);
 		if (level == Pattern::Mismatch) {

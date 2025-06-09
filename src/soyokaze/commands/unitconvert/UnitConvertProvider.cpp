@@ -41,12 +41,10 @@ struct UnitConvertProvider::PImpl : public AppPreferenceListenerIF
 
 	void Reload()
 	{
+		// FIXME:必要に応じて実装
 	}
 
 	std::list<CommandPtr> mConverterCommands;
-	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall{true};
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,18 +69,19 @@ CString UnitConvertProvider::GetName()
 	return _T("UnitConvert");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void UnitConvertProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Reload();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void UnitConvertProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		in->Reload();
-		in->mIsFirstCall = false;
-	}
-
 	for (auto& cmdPtr : in->mConverterCommands) {
 		int level = cmdPtr->Match(pattern);
 		if (level == Pattern::Mismatch) {

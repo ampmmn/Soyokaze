@@ -17,14 +17,12 @@ private:
 public:
 	CString GetName() override;
 
+	// 一時的なコマンドの準備を行うための初期化
+	void PrepareAdhocCommands() override;
 	// 一時的なコマンドを必要に応じて提供する
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 	DECLARE_COMMANDPROVIDER(ActivateWorksheetProvider)
-
-protected:
-	// Excelシート切り替え用コマンド生成
-	void QueryAdhocCommandsForWorksheets(Pattern* pattern, CommandQueryItemList& commands);
 
 private:
 	struct PImpl;

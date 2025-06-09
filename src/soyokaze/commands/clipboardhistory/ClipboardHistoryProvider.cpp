@@ -89,11 +89,11 @@ struct ClipboardHistoryProvider::PImpl :
 	 */
 	void OnTimer() override
 	{
-		if (mIsFirstCall) {
+		if (mIsInitialized) {
 			// 初回呼び出し時に初期化とリロードを行う
 			mReceiver.Initialize();
 			Reload();
-			mIsFirstCall = false;
+			mIsInitialized = false;
 		}
 	}
 	void OnLauncherActivate() override
@@ -132,7 +132,7 @@ struct ClipboardHistoryProvider::PImpl :
 	}
 
 	bool mIsEnable{false}; ///< クリップボード履歴が有効かどうか
-	bool mIsFirstCall{true}; ///< 初回呼び出しかどうか
+	bool mIsInitialized{true}; ///< 初期化済かどうか
 
 	CString mPrefix; ///< クリップボード履歴のプレフィックス
 	int mNumOfResults{16}; ///< クリップボード履歴の結果数

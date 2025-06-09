@@ -42,6 +42,12 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
+		Load();
+	}
+	void OnAppExit() override {}
+
+	void Load()
+	{
 		auto pref = AppPreference::Get();
 		mIsEnable = pref->IsEnableMSSettings();
 
@@ -54,12 +60,9 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 			}
 			mItems.clear();
 		}
-
 	}
-	void OnAppExit() override {}
 
 	bool mIsEnable{false};
-	bool mIsFirstCall{true};
 
 	std::vector<MSSettingsCommand*> mItems;
 };
@@ -133,24 +136,19 @@ CString MSSettingsCommandProvider::GetName()
 	return _T("MSSettingsCommand");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void MSSettingsCommandProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void MSSettingsCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnable = pref->IsEnableMSSettings();
-		in->mIsFirstCall = false;
-
-		// 初回呼び出し時(と有効/無効切り替え時)に一覧生成を行う
-		if (in->mIsEnable) {
-			in->EnumItems(in->mItems);
-		}
-	}
-
 	for (auto& command : in->mItems) {
 		int level = command->Match(pattern);
 		if (level == Pattern::Mismatch) {
@@ -160,7 +158,6 @@ void MSSettingsCommandProvider::QueryAdhocCommands(
 		command->AddRef();
 		commands.Add(CommandQueryItem(level, command));
 	}
-
 }
 
 

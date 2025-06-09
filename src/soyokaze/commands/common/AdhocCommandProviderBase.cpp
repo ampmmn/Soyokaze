@@ -72,6 +72,12 @@ bool AdhocCommandProviderBase::IsPrivate() const
 	return true;
 }
 
+// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+void AdhocCommandProviderBase::PrepareAdhocCommands()
+{
+	// なにもしない。派生クラス側で必要に応じて実装する
+}
+
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::GetOrder() const
 {

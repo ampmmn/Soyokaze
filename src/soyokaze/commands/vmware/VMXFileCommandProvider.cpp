@@ -35,7 +35,6 @@ struct VMXFileCommandProvider::PImpl
 
 	void Reload();
 
-	bool mIsFirstCall{true};
 	CString mPrefFilePath;
 
 	std::vector<VMXFileCommand*> mCommands;
@@ -130,27 +129,26 @@ CString VMXFileCommandProvider::GetName()
 	return _T("VMXFile");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void VMXFileCommandProvider::PrepareAdhocCommands()
+{
+	// ファイルをロードしてVMXFileCommandを生成
+	in->Reload();
+	
+	// ファイルが更新されたら通知を受け取るための登録をする
+	LocalDirectoryWatcher::GetInstance()->Register(in->mPrefFilePath, [](void* p) {
+			// ファイルをロードしてVMXFileCommandを生成
+			auto thisPtr = (VMXFileCommandProvider*)p;
+			thisPtr->in->Reload();
+	}, this);
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void VMXFileCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-
-		// ファイルをロードしてVMXFileCommandを生成
-		in->Reload();
-
-		// ファイルが更新されたら通知を受け取るための登録をする
-		LocalDirectoryWatcher::GetInstance()->Register(in->mPrefFilePath, [](void* p) {
-				// ファイルをロードしてVMXFileCommandを生成
-				auto thisPtr = (VMXFileCommandProvider*)p;
-				thisPtr->in->Reload();
-		}, this);
-
-		in->mIsFirstCall = false;
-	}
-
 	std::lock_guard<std::mutex> lock(in->mMutex);
 	for (auto& cmd : in->mCommands) {
 

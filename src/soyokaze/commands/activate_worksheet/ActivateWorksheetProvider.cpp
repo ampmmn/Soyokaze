@@ -42,7 +42,6 @@ struct ActivateWorksheetProvider::PImpl : public AppPreferenceListenerIF
 
 	//
 	bool mIsEnableWorksheet {false};
-	bool mIsFirstCall {true};
 	CString mPrefix;
 
 	WorkSheets mWorksheets;
@@ -68,26 +67,19 @@ CString ActivateWorksheetProvider::GetName()
 	return _T("ActiveWorksheetCommand");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void ActivateWorksheetProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	auto pref = AppPreference::Get();
+	in->mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
+	in->mPrefix = pref->GetWorksheetSwitchPrefix();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void ActivateWorksheetProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	launcherapp::CommandQueryItemList& commands
-)
-{
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
-		in->mPrefix = pref->GetWorksheetSwitchPrefix();
-		in->mIsFirstCall = false;
-	}
-
-	QueryAdhocCommandsForWorksheets(pattern, commands);
-}
-
-void ActivateWorksheetProvider::QueryAdhocCommandsForWorksheets(
-	Pattern* pattern,
-	launcherapp::CommandQueryItemList& commands
 )
 {
 	// 機能を利用しない場合は抜ける

@@ -37,16 +37,19 @@ struct PathConvertProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
+		Load();
+	}
+	void OnAppExit() override {}
+
+	void Load()
+	{
 		auto pref = AppPreference::Get();
 		mIsEnableGitBash = pref->IsEnableGitBashPath();
 	}
-	void OnAppExit() override {}
 
 	GitBashToLocalPathAdhocCommand* mGitBashToLocalPathCmdPtr{nullptr};
 	LocalToGitBashPathAdhocCommand* mLocalToGitBashPathCmdPtr{nullptr};
 	FileProtocolConvertAdhocCommand* mFileProtocolCmdPtr{nullptr};
-	// 初回呼び出しフラグ(初回呼び出し時に設定をロードするため)
-	bool mIsFirstCall{true};
 
 	bool mIsEnableGitBash{false};
 
@@ -93,19 +96,19 @@ CString PathConvertProvider::GetName()
 	return _T("PathConvert");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void PathConvertProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void PathConvertProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsFirstCall = false;
-		in->mIsEnableGitBash = pref->IsEnableGitBashPath();
-	}
-
 	int level = in->mFileProtocolCmdPtr->Match(pattern);
 	if (level != Pattern::Mismatch) {
 		in->mFileProtocolCmdPtr->AddRef();

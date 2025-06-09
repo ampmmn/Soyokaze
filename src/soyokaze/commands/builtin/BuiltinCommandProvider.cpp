@@ -166,6 +166,12 @@ bool BuiltinCommandProvider::IsPrivate() const
 	return true;
 }
 
+// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+void BuiltinCommandProvider::PrepareAdhocCommands()
+{
+	// なにもしない
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void BuiltinCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands)
 {

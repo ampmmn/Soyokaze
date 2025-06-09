@@ -33,14 +33,17 @@ struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableUWP();
+		Load();
 	}
 	void OnAppExit() override {}
 
+	void Load()
+	{
+		auto pref = AppPreference::Get();
+		mIsEnable = pref->IsEnableUWP();
+	}
 
 	bool mIsEnable{true};
-	bool mIsFirstCall{true};
 	std::vector<ItemPtr> mItems;
 	UWPApplications mUWPApps;
 
@@ -66,19 +69,19 @@ CString UWPCommandProvider::GetName()
 	return _T("UWPApps");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void UWPCommandProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void UWPCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		auto pref = AppPreference::Get();
-		in->mIsEnable = pref->IsEnableUWP();
-		in->mIsFirstCall = false;
-	}
-
 	if (in->mIsEnable == false) {
 		return;
 	}

@@ -113,7 +113,6 @@ struct ActivateWindowProvider::PImpl :
 
 
 	bool mIsEnableWindowSwitch{false};
-	bool mIsFirstCall{true};
 	WindowList mWndList;
 	CString mPrefix;
 
@@ -171,18 +170,19 @@ bool ActivateWindowProvider::NewDialog(CommandParameter* param)
 	return true;
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void ActivateWindowProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Reload();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void ActivateWindowProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	launcherapp::CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		in->Reload();
-		in->mIsFirstCall = false;
-	}
-
 	// 機能を利用しない場合は抜ける
 	if (in->mIsEnableWindowSwitch == false) {
 		return ;

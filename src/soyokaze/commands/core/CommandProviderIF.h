@@ -42,6 +42,9 @@ public:
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const = 0;
 
+	// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+	virtual void PrepareAdhocCommands() = 0;
+
 	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) = 0;
 

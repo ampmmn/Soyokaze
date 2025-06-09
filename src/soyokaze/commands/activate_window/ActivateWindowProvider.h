@@ -26,6 +26,8 @@ public:
 	// コマンド新規作成ダイアログ
 	bool NewDialog(CommandParameter* param) override;
 
+	// 一時的なコマンドの準備を行うための初期化
+	void PrepareAdhocCommands() override;
 	// 一時的なコマンドを必要に応じて提供する
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 

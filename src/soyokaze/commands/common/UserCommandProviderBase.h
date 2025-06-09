@@ -28,6 +28,9 @@ public:
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	bool IsPrivate() const override;
 
+	// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+	void PrepareAdhocCommands() override;
+
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 	uint32_t AddRef() override;

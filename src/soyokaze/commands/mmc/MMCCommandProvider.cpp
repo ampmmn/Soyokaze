@@ -42,7 +42,6 @@ struct MMCCommandProvider::PImpl : public AppPreferenceListenerIF
 		mIsEnable = pref->IsEnableMMCSnapin();
 	}
 
-	bool mIsFirstCall{true};
 	bool mIsEnable{true};
 	std::vector<MMCSnapin> mItems;
 	MMCSnapins mSnapins;
@@ -69,18 +68,19 @@ CString MMCCommandProvider::GetName()
 	return _T("MMCSnapins");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void MMCCommandProvider::PrepareAdhocCommands()
+{
+	// 初回呼び出し時に設定よみこみ
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void MMCCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		// 初回呼び出し時に設定よみこみ
-		in->Load();
-		in->mIsFirstCall = false;
-	}
-
 	if (in->mIsEnable == false) {
 		return;
 	}

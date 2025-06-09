@@ -45,6 +45,12 @@ CString PresentationProvider::GetName()
 	return _T("Presentation");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void PresentationProvider::PrepareAdhocCommands()
+{
+	in->mPresentations.Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void PresentationProvider::QueryAdhocCommands(
 	Pattern* pattern,

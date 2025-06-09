@@ -19,6 +19,8 @@ private:
 public:
 	virtual CString GetName();
 
+	// 一時的なコマンドの準備を行うための初期化
+	void PrepareAdhocCommands() override;
 	// 一時的なコマンドを必要に応じて提供する
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 

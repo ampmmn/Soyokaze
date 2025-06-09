@@ -44,8 +44,6 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 		mFileFind.EnableRecent(isEnable);
 	}
 
-	// 初回呼び出しフラグ
-	bool mIsFirstCall{true};
 	// 一覧
 	SpecialFolderFileFind mFileFind;
 
@@ -71,17 +69,18 @@ CString SpecialFolderFilesCommandProvider::GetName()
 	return _T("SpecialFolderFiles");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void SpecialFolderFilesCommandProvider::PrepareAdhocCommands()
+{
+	in->Reload();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		in->Reload();
-		in->mIsFirstCall = false;
-	}
-
 	std::vector<ITEM> recentFileItems;
 	if (in->mFileFind.FindShortcutFiles(recentFileItems) == false) {
 		return ;

@@ -39,7 +39,6 @@ struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppExit() override {}
 
-	bool mIsFirstCall{true};
 	bool mIsEnable{true};
 
 	//
@@ -65,7 +64,6 @@ REGISTER_COMMANDPROVIDER(CalculatorAdhocCommandProvider)
 
 CalculatorAdhocCommandProvider::CalculatorAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mIsFirstCall = true;
 	in->mIsEnable = false;
 	in->mCommandPtr = new CalculatorCommand();
 	in->mHexResultPtr = new CalculatorCommand(16);
@@ -94,18 +92,20 @@ CString CalculatorAdhocCommandProvider::GetName()
 	return _T("Calculator");
 }
 
+// 一時的なコマンドの準備を行うための初期化
+void CalculatorAdhocCommandProvider::PrepareAdhocCommands()
+{
+	auto pref = AppPreference::Get();
+	in->mCalc.SetPythonDLLPath(pref->GetPythonDLLPath());
+	in->mIsEnable = pref->IsEnableCalculator();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
-	if (in->mIsFirstCall) {
-		auto pref = AppPreference::Get();
-		in->mCalc.SetPythonDLLPath(pref->GetPythonDLLPath());
-		in->mIsEnable = pref->IsEnableCalculator();
-		in->mIsFirstCall = false;
-	}
 	CString cmdline = pattern->GetWholeString();
 
 

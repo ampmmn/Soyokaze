@@ -124,6 +124,21 @@ struct CommandRepository::PImpl
 		return mDefaultCommand.get();
 	}
 
+	void PrepareAdhocCommands()
+	{
+		if (mIsPrepared) {
+			return;
+		}
+
+		PERFLOG("PrepareAdhocCommands start.");
+		for (auto& provider : mProviders) {
+			provider->PrepareAdhocCommands();
+		}
+		PERFLOG("PrepareAdhocCommands end.");
+
+		mIsPrepared = true;
+	}
+
 	CCriticalSection mCS;
 
 	std::vector<CommandProvider*> mProviders;
@@ -152,8 +167,12 @@ struct CommandRepository::PImpl
 	//
 
 	std::mutex mMutex;
+	// 終了フラグ
 	bool mIsExit{false};
+	// スレッド初期化済フラグ
 	bool mIsThreadInitialized{false};
+	// ProviderのPrepareAdhocCommand呼び出し済フラグ
+	bool mIsPrepared{false};
 	CEvent mQueryRequestEvt;
 	std::vector<QueryRequest> mQueryRequestQueue;
 };
@@ -255,6 +274,9 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	mCommands.Query(mPattern.get(), matchedItems);
 	PERFLOG("CommandMap.Query end. {0:.6f} s num:{1}", sw, (int)matchedItems.GetItemCount());
 	  // Note: ここで+1した参照カウントは CommandRepository::Query 呼び出し元で-1する必要あり
+
+	// コマンドプロバイダー側で一時的なコマンドの初期化を行う(初回のみ)
+	PrepareAdhocCommands();
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	int prevCount = (int)matchedItems.GetItemCount();
@@ -469,6 +491,8 @@ BOOL CommandRepository::Load()
 	}
 
 	CommandRanking::GetInstance()->Load();
+
+	in->mIsPrepared = false;
 
 	return TRUE;
 }
@@ -773,6 +797,9 @@ CommandRepository::QueryAsWholeMatch(
 	if (isIncludeAdhocCommand == false) {
 		return nullptr;
 	}
+
+	// コマンドプロバイダー側で一時的なコマンドの初期化を行う(初回のみ)
+	in->PrepareAdhocCommands();
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	launcherapp::CommandQueryItemList matchedItems;

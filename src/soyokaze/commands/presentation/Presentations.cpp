@@ -70,7 +70,6 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 	std::mutex mMutex;
 	bool mIsExited{true};
 	bool mIsAvailable{false};
-	bool mIsFirstCall{true};
 
 	std::vector<SLIDE_ITEM> mItems;
 	CString mFilePath;
@@ -204,13 +203,13 @@ void Presentations::Abort()
 	}
 }
 
+void Presentations::Load()
+{
+	in->Load();
+}
+
 void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int limit)
 {
-	if (in->mIsFirstCall) {
-		in->Load();
-		in->mIsFirstCall = false;
-	}
-
 	// 機能を利用しない場合は抜ける
 	if (in->mIsAvailable == false || in->IsEnable() == false) {
 		return;
