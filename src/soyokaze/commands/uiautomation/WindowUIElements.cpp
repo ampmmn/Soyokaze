@@ -150,6 +150,7 @@ bool WindowUIElements::FetchElements(std::vector<WindowUIElement>& items)
 	std::list<QUEUE_ITEM> queue;
 	queue.push_back(QUEUE_ITEM{windowElement, {0,0,0,0}, true});
 	while (queue.empty() == false) {
+		spdlog::debug("queue size : {}", queue.size());
 
 		auto item = queue.front();
 		queue.pop_front();
@@ -165,6 +166,7 @@ bool WindowUIElements::FetchElements(std::vector<WindowUIElement>& items)
 
 		int numOfChildren = 0;
 		pElementArray->get_Length(&numOfChildren);
+		spdlog::debug("numOfChildren : {}", numOfChildren);
 
 
 		for (int i = 0; i < numOfChildren; ++i) {
