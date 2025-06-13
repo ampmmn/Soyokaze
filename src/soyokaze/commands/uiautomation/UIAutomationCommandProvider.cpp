@@ -16,6 +16,50 @@
 
 namespace launcherapp { namespace commands { namespace uiautomation {
 
+static bool IsToplevelWindow(HWND hwnd)
+{
+	if (IsWindow(hwnd) == FALSE) {
+		return false;
+	}
+
+	TCHAR clsName[256];
+	GetClassName(hwnd, clsName, 256);
+	if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0 || _tcscmp(clsName, _T("Shell_SecondaryTrayWnd")) == 0 || 
+	    _tcscmp(clsName, _T("Progman")) == 0 || _tcscmp(clsName, _T("#32769")) == 0) {
+		return false;
+	}
+
+	CRect rc;
+	GetClientRect(hwnd, &rc);
+	if (rc.Width() < 10 || rc.Height() < 10) {
+		// 小さすぎ
+		return false;
+	}
+	if (IsWindowVisible(hwnd) == FALSE) {
+		// 不可視
+		return false;
+	}
+
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	bool isMinimized = (style & WS_MINIMIZE) != 0;
+	bool isTopLevel = (style & (WS_POPUP | WS_OVERLAPPED)) != 0;
+	if (isMinimized) {
+		return false;
+	}
+
+	LONG_PTR style_ex = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+	if (style_ex & WS_EX_NOACTIVATE) {
+		// 有効化しないウインドウ
+		return false;
+	}
+	if (style_ex & WS_EX_NOREDIRECTIONBITMAP) {
+		// 有効化しないウインドウ
+		return false;
+	}
+			
+	return true;
+}
+
 /**
  * @brief 直前に前面にでていたウインドウハンドルを得る
  * @return ウインドウハンドルまたはNULL
@@ -24,26 +68,25 @@ static HWND GetNextHwnd()
 {
 	SharedHwnd mainWnd;
 	HWND hwndSelf = mainWnd.GetHwnd(); 
-	HWND hwnd = hwndSelf;
+	HWND hwnd = FindWindow(nullptr, nullptr);
 	while (IsWindow(hwnd)) {
-
-		TCHAR clsName[256];
-		GetClassName(hwnd, clsName, 256);
-
-		bool isProgman = false;
-		if (_tcscmp(clsName, _T("Shell_TrayWnd")) == 0 || _tcscmp(clsName, _T("Progman")) == 0) {
-			isProgman = true;
-		}
-
-		LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
-		bool isMinimized = (style & WS_MINIMIZE) != 0;
-		if (isProgman == false && hwnd != hwndSelf && IsWindowVisible(hwnd) && isMinimized == false) {
+		if (IsToplevelWindow(hwnd) && hwnd != hwndSelf) {
 			break;
 		}
 		hwnd = GetNextWindow(hwnd, GW_HWNDNEXT);
 	}
 
-	spdlog::debug("YMGW hwnd:{}",(void*)hwnd);
+	if (IsWindow(hwnd)) {
+		TCHAR clsName[256];
+		GetClassName(hwnd, clsName, 256);
+		TCHAR caption[256];
+		GetWindowText(hwnd, caption, 256);
+		spdlog::debug(_T("GetNextHwnd hwnd:{0}, text:{1}, class:{2}"),(void*)hwnd, caption, clsName);
+	}
+	else {
+		spdlog::debug("GetNextHwnd : window not found.");
+	}
+
 	return hwnd;
 }
 
@@ -89,6 +132,7 @@ struct UIAutomationCommandProvider::PImpl :
 			// ランチャーのウインドウの背面にあるウインドウを取得する
 			HWND hwnd = GetNextHwnd();
 			if (IsWindow(hwnd) == FALSE) {
+				spdlog::debug("IsWindow returned false.");
 				return;
 			}
 
@@ -166,6 +210,8 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
+	int matchCount = 0;
+
 	HWND hwnd{nullptr};
 	std::vector<WindowUIElement> elems;
 	in->GetUIElements(hwnd, elems);
@@ -180,7 +226,12 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 			level = Pattern::FrontMatch;
 		}
 
-		commands.Add(CommandQueryItem(level, new UIAutomationAdhocCommand(hwnd, elem.mName.c_str(), elem.mRect, in->mPrefix)));
+		commands.Add(CommandQueryItem(level, new UIAutomationAdhocCommand(hwnd, elem.mName.c_str(), elem.mRect, prefix)));
+		matchCount++;
+	}
+
+	if (matchCount == 0 && prefix.IsEmpty() == FALSE) {
+		commands.Add(CommandQueryItem(Pattern::HiddenMatch, new UIAutomationAdhocCommand(nullptr, _T(""), CRect(0,0,0,0), prefix)));
 	}
 }
 
