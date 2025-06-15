@@ -83,22 +83,20 @@ jobs:
         cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}}
         cmake --build . --config Release
 
-    - name: Build absl-cpp
+    - name: Build abseil-cpp
       working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
       run: |
-        cd externals/absl-cpp
-        # setup build directory
+        cd externals/abseil-cpp
         cmd /c "if not exist build mkdir -p build"
         cd build
-        # setup cmake
         cmake -DCMAKE_INSTALL_PREFIX=install -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} ..
-        # build
         cmake --build . --config Release
-        # install to build/install
         cmake --install . --config Release
         cd install/lib
-        # concatenate all .lib files.
-        cmd /c "lib.exe /out:absl_all${{env.STATICLIB_POSTFIX}}.lib *${{env.STATICLIB_POSTFIX}}.lib"
+        for /f "usebackq delims=" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set InstallDir=%%i
+        call "%InstallDir%\VC\Auxiliary\Build\vcvarsall.bat" x64
+        lib.exe /out:absl_all%STATICLIB_POSTFIX%.lib *%STATICLIB_POSTFIX%.lib
 
     - name: Build re2
       working-directory: ${{env.GITHUB_WORKSPACE}}
