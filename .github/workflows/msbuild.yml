@@ -103,6 +103,21 @@ jobs:
         call "%InstallDir%\VC\Auxiliary\Build\vcvarsall.bat" x64
         lib.exe /out:absl_all%STATICLIB_POSTFIX%.lib *%STATICLIB_POSTFIX%.lib
 
+    - name: Build abseil-cpp debug
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: cmd
+      run: |
+        cd externals/abseil-cpp
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DABSL_ENABLE_INSTALL=ON -DABSL_MSVC_STATIC_RUNTIME=OFF -DCMAKE_DEBUG_POSTFIX=_d -DCMAKE_EXPORT_PACKAGE_REGISTRY=ON -DCMAKE_POLICY_DEFAULT_CMP0090=NEW ..
+        cmake --build . --config Debug --clean-first
+        cmake --install . --config Debug
+        cd install/lib
+        for /f "usebackq delims=" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set InstallDir=%%i
+        call "%InstallDir%\VC\Auxiliary\Build\vcvarsall.bat" x64
+        lib.exe /out:absl_all_d.lib *_d.lib
+
     - name: Build re2
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
@@ -112,11 +127,26 @@ jobs:
         cd build
         # setup cmake
         $abseil_dir_path = (Resolve-Path "..\..\abseil-cpp\build\install\lib\cmake\absl").Path
-        cmake -DCMAKE_INSTALL_PREFIX=install -Dabsl_DIR="$abseil_dir_path" -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" -DCMAKE_FIND_DEBUG_MODE=ON ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -Dabsl_DIR="$abseil_dir_path" -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
         # build
         cmake --build . --config Release
         # install to build/install
         cmake --install . --config Release
+
+    - name: Build re2 debug
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/re2
+        # setup build directory
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        # setup cmake
+        $abseil_dir_path = (Resolve-Path "..\..\abseil-cpp\build\install\lib\cmake\absl").Path
+        cmake -DCMAKE_INSTALL_PREFIX=install -Dabsl_DIR="$abseil_dir_path" -DCMAKE_DEBUG_POSTFIX=_d -DCMAKE_CXX_FLAGS_DEBUG:STRING="/Od /Ob0 /EHsc /RTC1 /MDd" ..
+        # build
+        cmake --build . --config Debug
+        # install to build/install
+        cmake --install . --config Debug
 
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}
