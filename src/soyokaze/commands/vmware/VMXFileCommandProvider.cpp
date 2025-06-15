@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "utility/Path.h"
 #include "utility/LocalDirectoryWatcher.h"
+#include "utility/SHA1.h"
 #include <vector>
 #include <regex>
 #include <mutex>
@@ -36,16 +37,49 @@ struct VMXFileCommandProvider::PImpl
 	void Reload();
 
 	CString mPrefFilePath;
+	CString mSHA1;
 
 	std::vector<VMXFileCommand*> mCommands;
 	std::mutex mMutex;
 };
+
+static CString GetSHA1(const CString& filePath)
+{
+    HANDLE hFile = CreateFileW(filePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
+		                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (hFile == INVALID_HANDLE_VALUE) {
+			spdlog::error(_T("Failed to open file {}"), (LPCTSTR)filePath);
+			return _T("");
+    }
+
+    LARGE_INTEGER fileSize;
+    GetFileSizeEx(hFile, &fileSize);
+
+		std::vector<uint8_t> data;
+    data.resize(static_cast<size_t>(fileSize.QuadPart));
+
+    DWORD bytesRead = 0;
+    ReadFile(hFile, data.data(), static_cast<DWORD>(data.size()), &bytesRead, nullptr);
+
+    CloseHandle(hFile);
+
+		SHA1 sha1;
+		sha1.Add(data);
+
+		return sha1.Finish();
+}
 
 /**
 	preference.iniを読み、.vmxファイルのMRU一覧を生成する
 */
 void VMXFileCommandProvider::PImpl::Reload()
 {
+	auto sha1 = GetSHA1(mPrefFilePath);
+	if (sha1 == mSHA1) {
+		// ファイル内容に変化がなければ読み込まない
+	 	return;
+	}
+
 	FILE* fpIn = nullptr;
 	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0 || fpIn == nullptr) {
 		return;
@@ -100,6 +134,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 	// 前回のコマンドと今回ロードしたコマンドを入れ替える
 	std::lock_guard<std::mutex> lock(mMutex);
 	mCommands.swap(commands);
+	mSHA1 = sha1;
 
 	// 前回のコマンドは不要なので解放する
 	for (auto& cmd : commands) {
@@ -116,7 +151,7 @@ REGISTER_COMMANDPROVIDER(VMXFileCommandProvider)
 
 VMXFileCommandProvider::VMXFileCommandProvider() : in(std::make_unique<PImpl>())
 {
-	Path path(Path::APPDATA, _T("VMWare/preferences.ini"));
+	Path path(Path::APPDATA, _T("VMWare\\preferences.ini"));
 	in->mPrefFilePath = (LPCTSTR)path;
 }
 
