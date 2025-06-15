@@ -106,7 +106,7 @@ jobs:
         cmd /c "if not exist build mkdir -p build"
         cd build
         # setup cmake
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=..\abseil-cpp\build\install -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=..\..\abseil-cpp\build\install -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
         # build
         cmake --build . --config Release
         # install to build/install
