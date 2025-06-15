@@ -154,12 +154,17 @@ void EnvCommandProvider::QueryAdhocCommands(
 			auto& value = item.second;
 
 			int level = patTmp->Match(key);
-			if (level != Pattern::Mismatch) {
-				commands.Add(CommandQueryItem(level, new EnvCommand(key, value)));
-				isMatched = true;
+			if (level == Pattern::Mismatch) {
+				continue;
 			}
-		}
 
+			if (level == Pattern::PartialMatch) {
+				// プレフィックスが一致しているので最低でも前方一致とする
+				level = Pattern::FrontMatch;
+			}
+			commands.Add(CommandQueryItem(level, new EnvCommand(key, value)));
+			isMatched = true;
+		}
 		if (isMatched == false) {
 			// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
 			commands.Add(CommandQueryItem(Pattern::HiddenMatch, new EnvCommand(_T(""), _T(""))));
