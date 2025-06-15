@@ -3,6 +3,7 @@
 #include "utility/CharConverter.h"
 #include "utility/Path.h"
 #include <regex>
+#include <re2/re2.h>
 
 namespace launcherapp {
 namespace utility {
@@ -52,7 +53,7 @@ struct SQLite3Wrapper::PImpl
 {
 	HMODULE mModule{nullptr};
 	CharConverter mConv;
-	std::regex mRegExp;
+	std::unique_ptr<RE2> mRegExp;
 	bool mIsFirst{true};
 };
 
@@ -115,11 +116,13 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 	}
 
 	if (in->mIsFirst) {
-		in->mRegExp = std::regex(reg, std::regex_constants::icase);
+		RE2::Options options;
+		options.set_case_sensitive(false);
+		in->mRegExp.reset(new RE2(reg, options));
 		in->mIsFirst = false;
 	}
 
-	bool isMatch = std::regex_search(text, in->mRegExp);
+	bool isMatch = RE2::PartialMatch(text, *in->mRegExp.get());
 	sqlite3_result_int(ctx, isMatch ? 1 : 0);
 }
 
@@ -138,7 +141,7 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx)
 
 int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err)
 {
-	in->mRegExp = std::regex();
+	in->mRegExp.reset();
 	in->mIsFirst = true;
 
 	CStringA queryStrA;
