@@ -7,9 +7,9 @@ name: MSBuild
 
 on:
   push:
-    branches: [ "main", "logger" ]
+    branches: [ "main", "logger", "re2" ]
   pull_request:
-    branches: [ "main", "logger" ]
+    branches: [ "main", "logger", "re2" ]
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -21,7 +21,7 @@ env:
   BUILD_CONFIGURATION: ReleaseStatic
   BUILD_CONFIGURATION_TEST: UnitTest
   TIDYLIB_STATICRUNTIME: ON
-  TIDYLIB_POSTFIX: rtst
+  STATICLIB_POSTFIX: rtst
 
 
 permissions:
@@ -80,8 +80,39 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd externals/tidy-html5/build/cmake
-        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.TIDYLIB_POSTFIX}}
+        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}}
         cmake --build . --config Release
+
+    - name: Build absl-cpp
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/absl-cpp
+        # setup build directory
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        # setup cmake
+        cmake -DCMAKE_INSTALL_PREFIX=install -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} ..
+        # build
+        cmake --build . --config Release
+        # install to build/install
+        cmake --install . --config Release
+        cd install/lib
+        # concatenate all .lib files.
+        cmd /c "lib.exe /out:absl_all${{env.STATICLIB_POSTFIX}}.lib *${{env.STATICLIB_POSTFIX}}.lib"
+
+    - name: Build re2
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/re2
+        # setup build directory
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        # setup cmake
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=..\abseil-cpp\build\install -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
+        # build
+        cmake --build . --config Release
+        # install to build/install
+        cmake --install . --config Release
 
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}

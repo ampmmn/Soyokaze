@@ -51,7 +51,10 @@ struct LocalDirectoryWatcher::PImpl
 
 	void StartWatch()
 	{
-		CoInitialize(NULL);
+		HRESULT hr = CoInitialize(NULL);
+		if (FAILED(hr)) {
+			spdlog::error("Failed to initialize COM library. hr:{}", hr);
+		}
 
 		while(IsAbort() == false) {
 

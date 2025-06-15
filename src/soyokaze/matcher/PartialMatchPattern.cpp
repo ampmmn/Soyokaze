@@ -8,6 +8,7 @@
 #include "utility/Path.h"
 #include <vector>
 #include <regex>
+#include <re2/re2.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,7 +26,7 @@ struct PartialMatchPattern::PImpl
 	}
 
 	// Migemoを使うかどうか
-	bool shouldUseMigemo(size_t index, const CString& token)
+	bool shouldUseMigemo(const CString& token)
  	{
 		// Migemoが初期化されていないなら使わない(使えない)
 		if (mMigemo.IsInitialized() == false) {
@@ -58,10 +59,12 @@ struct PartialMatchPattern::PImpl
 	// 入力文字列をばらした配列
 	std::vector<CString> mTokens;
 
-	std::vector<std::wregex> mRegPatterns;
+	std::vector<RE2*> mRegPatterns;
 
 	// 比較用のデータ(WORDには文字列or正規表現のどちらかが入る)
 	std::vector<WORD> mWords;
+	// 前方一致用のパターン
+	std::vector<RE2*> mRegPatternsForFM;
 
 	CString mWholeText;
 	bool mIsUseMigemoForHistory{false};
@@ -87,6 +90,14 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 
 PartialMatchPattern::~PartialMatchPattern()
 {
+	for (auto pat : in->mRegPatterns) {
+		delete pat;
+	}
+	in->mRegPatterns.clear();
+	for (auto pat : in->mRegPatternsForFM) {
+		delete pat;
+	}
+	in->mRegPatternsForFM.clear();
 }
 
 PartialMatchPattern* PartialMatchPattern::Create()
@@ -219,8 +230,13 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 	in->mTokens.swap(tokens);
 
 	std::vector<WORD> words;
-	std::vector<std::wregex> patterns;
+	std::vector<RE2*> patterns;
 	patterns.reserve(in->mTokens.size());
+	std::vector<RE2*> patternsForFM;
+	patternsForFM.reserve(in->mTokens.size());
+
+	RE2::Options options;
+	options.set_case_sensitive(false);
 
 	// tokensに分解したキーワードをregexに変換してpatternsに入れる
 	for (size_t i = 0; i < in->mTokens.size(); ++i) {
@@ -232,43 +248,41 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			continue;
 		}
 
-		try {
-			if (in->shouldUseMigemo(i, token)) {
+		std::string tmp;
 
-				// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
-				CString migemoExpr;
-				in->mMigemo.Query(token, migemoExpr);
-				patterns.push_back(std::wregex(std::wstring((const wchar_t*)migemoExpr), std::regex_constants::icase));
-
-				// ↓ChromiumBrowseHistory用のデータ。
-				if (in->mIsUseMigemoForHistory) {
-					words.push_back(WORD(migemoExpr, token, PatternInternal::RegExp));
-				}
-				else {
-					words.push_back(WORD(token));
-				}
+		if (in->shouldUseMigemo(token) == false) {
+			if (token.IsEmpty() == FALSE) {
+				std::wstring escapedPat = StripEscapeChars(token);
+				patterns.push_back(new RE2(UTF2UTF(escapedPat, tmp), options));
 			}
-			else {
-				if (token.IsEmpty() == FALSE) {
-					std::wstring escapedPat = StripEscapeChars(token);
-					patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
-				}
-				words.push_back(WORD(token));
-			}
-		}
-		catch (std::regex_error& e) {
-
-			tstring reason = tostring(e.code());
-			spdlog::debug(_T("Failed to build regex from Migemo. reason={0} input={1}"),
-			              reason.c_str(), (LPCTSTR)token);
-
-			std::wstring escapedPat = StripEscapeChars(token);
-			patterns.push_back(std::wregex(escapedPat, std::regex_constants::icase));
 			words.push_back(WORD(token));
-			break;
+			continue;
 		}
+
+		// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
+		CString migemoExpr;
+		in->mMigemo.Query(token, migemoExpr);
+		patterns.push_back(new RE2(UTF2UTF(migemoExpr, tmp), options));
+
+		// ↓ChromiumBrowseHistory用のデータ。
+		if (in->mIsUseMigemoForHistory) {
+			words.push_back(WORD(migemoExpr, token, PatternInternal::RegExp));
+		}
+		else {
+			words.push_back(WORD(token));
+		}
+
+		// 前方一致比較用にパターンを生成しておく
+		patternsForFM.push_back(new RE2(UTF2UTF(_T("^") + migemoExpr, tmp), options));
 	}
 	in->mRegPatterns.swap(patterns);
+	for (auto pat : patterns) {
+		delete pat;
+	}
+	in->mRegPatternsForFM.swap(patternsForFM);
+	for (auto pat : patternsForFM) {
+		delete pat;
+	}
 	in->mWords.swap(words);
 }
 
@@ -291,32 +305,33 @@ int PartialMatchPattern::Match(
 
 	// 入力されたキーワードに完全一致するかどうかの判断
 	CString keyword;
-	if (in->GetKeyword(offset, keyword) &&
-	    keyword.CompareNoCase(str) == 0) {
+	if (in->GetKeyword(offset, keyword) && keyword.CompareNoCase(str) == 0) {
 		return WholeMatch;
 	}
 
-	tstring str_(str);
-
-	int level = PartialMatch;
-
-	tsmatch match_result;
+	std::string str_;
+	UTF2UTF(std::wstring(str), str_);
 
 	size_t regPatCount = in->mRegPatterns.size();
 	for (size_t i = offset; i < regPatCount; ++i) {
-		const auto& pat = in->mRegPatterns[i];
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
-		if (std::regex_search(str_, match_result, pat) == false) {
+		auto& pattern = *in->mRegPatterns[i];
+		if (RE2::PartialMatch(str_, pattern) == false) {
 			return Mismatch;
 		}
+	}
 
-		// 先頭でマッチしたものがある場合は前方一致とみなす
-		if (match_result.position() == 0) {
-			level = FrontMatch;
+	// 先頭のキーワードに前方一致する場合は前方一致とみなす
+	if (offset < in->mRegPatternsForFM.size()) {
+		auto& patForFM = *in->mRegPatternsForFM[offset];
+		if (RE2::PartialMatch(str_, patForFM)) {
+			return FrontMatch;
 		}
 	}
-	return level;
+
+	// そうでなければ部分一致
+	return PartialMatch;
 }
 
 LPCTSTR PartialMatchPattern::GetFirstWord()
