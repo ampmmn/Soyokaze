@@ -26,7 +26,7 @@ struct PartialMatchPattern::PImpl
 	}
 
 	// Migemoを使うかどうか
-	bool shouldUseMigemo(size_t index, const CString& token)
+	bool shouldUseMigemo(const CString& token)
  	{
 		// Migemoが初期化されていないなら使わない(使えない)
 		if (mMigemo.IsInitialized() == false) {
@@ -46,13 +46,6 @@ struct PartialMatchPattern::PImpl
 				return false;
 			}
 		}
-
-		// 先頭2ワードまではMigemoを使う
-		bool is1stOr2ndWord = (index == 0 || index == 1);
-		if (is1stOr2ndWord == false) {
-		 return false;
-		}
-
 		return true;
 	};
 
@@ -250,7 +243,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 		std::string tmp;
 
-		if (in->shouldUseMigemo(i, token) == false) {
+		if (in->shouldUseMigemo(token) == false) {
 			if (token.IsEmpty() == FALSE) {
 				std::wstring escapedPat = StripEscapeChars(token);
 				patterns.push_back(new RE2(UTF2UTF(escapedPat, tmp), options));
