@@ -83,6 +83,11 @@ jobs:
         cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}}
         cmake --build . --config Release
 
+    - name: Patch absl options
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        powershell -Command "(Get-Content externals/abseil-cpp/absl/base/options.h) -replace '#define ABSL_OPTION_USE_STD_STRING_VIEW 0', '#define ABSL_OPTION_USE_STD_STRING_VIEW 1' | Set-Content externals/abseil-cpp/absl/base/options.h"
+
     - name: Build abseil-cpp
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
@@ -90,8 +95,8 @@ jobs:
         cd externals/abseil-cpp
         cmd /c "if not exist build mkdir -p build"
         cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} ..
-        cmake --build . --config Release
+        cmake -DCMAKE_INSTALL_PREFIX=install -DABSL_ENABLE_INSTALL=ON -DABSL_MSVC_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} -DCMAKE_EXPORT_PACKAGE_REGISTRY=ON -DCMAKE_POLICY_DEFAULT_CMP0090=NEW ..
+        cmake --build . --config Release --clean-first
         cmake --install . --config Release
         cd install/lib
         for /f "usebackq delims=" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set InstallDir=%%i
@@ -106,7 +111,8 @@ jobs:
         cmd /c "if not exist build mkdir -p build"
         cd build
         # setup cmake
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=..\..\abseil-cpp\build\install -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}} -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
+        $abseil_dir_path = (Resolve-Path "..\..\abseil-cpp\build\install\lib\cmake\absl").Path
+        cmake -DCMAKE_INSTALL_PREFIX=install -Dabsl_DIR="$abseil_dir_path" -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" -DCMAKE_FIND_DEBUG_MODE=ON ..
         # build
         cmake --build . --config Release
         # install to build/install
