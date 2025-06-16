@@ -79,67 +79,76 @@ void VMXFileCommandProvider::PImpl::Reload()
 		// ファイル内容に変化がなければ読み込まない
 	 	return;
 	}
-
-	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, mPrefFilePath, _T("r")) != 0 || fpIn == nullptr) {
-		return;
-	}
-
-	tregex regFileName(_T("^pref\\.mruVM(\\d+)\\.filename *= *\"(.+)\"$"));
-	tregex regDisplayName(_T("^pref\\.mruVM(\\d+)\\.displayName *= *\"(.+)\"$"));
-
-	struct ITEM {
-		CString filePath;
-		CString displayName;
-	};
-
-	std::map<int, ITEM> items;
-
-	// ファイルを読む
-	CStdioFile file(fpIn);
-	CString strLine;
-	while(file.ReadString(strLine)) {
-
-		strLine.Trim();
-		if (strLine.IsEmpty()) {
-			continue;
-		}
-
-		std::wstring pat(strLine);
-		if (std::regex_match(pat, regFileName)) {
-			tstring indexStr = std::regex_replace(pat, regFileName,  _T("$1"));
-			tstring filePath = std::regex_replace(pat, regFileName,  _T("$2"));
-			items[_ttoi(indexStr.c_str())].filePath = filePath.c_str();
-		}
-		else if (std::regex_match(pat, regDisplayName)) {
-			tstring indexStr = std::regex_replace(pat, regDisplayName,  _T("$1"));
-			tstring displayName = std::regex_replace(pat, regDisplayName,  _T("$2"));
-			items[_ttoi(indexStr.c_str())].displayName = displayName.c_str();
-		}
-	}
-	file.Close();
-	fclose(fpIn);
-
-	// ロードしたファイルの内容に基づき、コマンドを生成する
-	std::vector<VMXFileCommand*> commands;
-	for (auto& entry : items) {
-		auto item = entry.second;
-		if (Path::FileExists(item.filePath) == FALSE) {
-			// 存在しない.vmxファイルは除外する
-			continue;
-		}
-		commands.push_back(new VMXFileCommand(item.displayName, item.filePath));
-	}
-
-	// 前回のコマンドと今回ロードしたコマンドを入れ替える
-	std::lock_guard<std::mutex> lock(mMutex);
-	mCommands.swap(commands);
 	mSHA1 = sha1;
 
-	// 前回のコマンドは不要なので解放する
-	for (auto& cmd : commands) {
-		cmd->Release();
-	}
+	Path tmpPath(Path::APPDIRPERMACHINE, _T("preference.ini"));
+	CString tmpPathStr(tmpPath);
+	CopyFile(mPrefFilePath, tmpPathStr, FALSE);
+
+	std::thread th([&, tmpPathStr]() {
+
+		FILE* fpIn = nullptr;
+		if (_tfopen_s(&fpIn, tmpPathStr, _T("r")) != 0 || fpIn == nullptr) {
+			return;
+		}
+
+		tregex regFileName(_T("^pref\\.mruVM(\\d+)\\.filename *= *\"(.+)\"$"));
+		tregex regDisplayName(_T("^pref\\.mruVM(\\d+)\\.displayName *= *\"(.+)\"$"));
+
+		struct ITEM {
+			CString filePath;
+			CString displayName;
+		};
+
+		std::map<int, ITEM> items;
+
+		// ファイルを読む
+		CStdioFile file(fpIn);
+		CString strLine;
+		while(file.ReadString(strLine)) {
+
+			strLine.Trim();
+			if (strLine.IsEmpty()) {
+				continue;
+			}
+
+			std::wstring pat(strLine);
+			if (std::regex_match(pat, regFileName)) {
+				tstring indexStr = std::regex_replace(pat, regFileName,  _T("$1"));
+				tstring filePath = std::regex_replace(pat, regFileName,  _T("$2"));
+				items[_ttoi(indexStr.c_str())].filePath = filePath.c_str();
+			}
+			else if (std::regex_match(pat, regDisplayName)) {
+				tstring indexStr = std::regex_replace(pat, regDisplayName,  _T("$1"));
+				tstring displayName = std::regex_replace(pat, regDisplayName,  _T("$2"));
+				items[_ttoi(indexStr.c_str())].displayName = displayName.c_str();
+			}
+		}
+		file.Close();
+		fclose(fpIn);
+		DeleteFile(tmpPathStr);
+
+		// ロードしたファイルの内容に基づき、コマンドを生成する
+		std::vector<VMXFileCommand*> commands;
+		for (auto& entry : items) {
+			auto item = entry.second;
+			if (Path::FileExists(item.filePath) == FALSE) {
+				// 存在しない.vmxファイルは除外する
+				continue;
+			}
+			commands.push_back(new VMXFileCommand(item.displayName, item.filePath));
+		}
+
+		// 前回のコマンドと今回ロードしたコマンドを入れ替える
+		std::lock_guard<std::mutex> lock(mMutex);
+		mCommands.swap(commands);
+
+		// 前回のコマンドは不要なので解放する
+		for (auto& cmd : commands) {
+			cmd->Release();
+		}
+	});
+	th.detach();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
