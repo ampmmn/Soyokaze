@@ -198,8 +198,7 @@ bool WatchPathCommand::NewDialog(Parameter* param)
 		PathWatcher::Get()->RegisterPath(paramNew.mName, item);
 	}
 
-	bool isReloadHotKey = false;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 }

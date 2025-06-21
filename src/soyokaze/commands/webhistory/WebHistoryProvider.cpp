@@ -62,8 +62,7 @@ bool WebHistoryProvider::NewDialog(CommandParameter* param)
 	if (WebHistoryCommand::NewDialog(param, newCmd) == false) {
 		return false;
 	}
-	bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 	return true;
 }
 

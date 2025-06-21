@@ -58,6 +58,27 @@ void CommandMap::Clear()
 	mMap.clear();
 }
 
+// コマンドオブジェクトに紐づけられた名前を問い合わせる
+bool CommandMap::QueryRegisteredNameFor(launcherapp::core::Command* targetCmd, CString& registeredName)
+{
+	auto it = mMap.begin();
+	for (;it != mMap.end(); ++it) {
+		auto& name = it->first;
+		auto& cmd = it->second;
+
+		// 変更対象のオブジェクトを探す
+		if (targetCmd != cmd) {
+			continue;
+		}
+
+		registeredName = name;
+		return true;
+	}
+
+	// 該当なし
+	return false;
+}
+
 bool CommandMap::Has(const CString& name) const
 {
 	return mMap.find(name) != mMap.end();

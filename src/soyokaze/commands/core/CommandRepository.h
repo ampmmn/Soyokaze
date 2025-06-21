@@ -28,7 +28,7 @@ public:
 	void RegisterProvider(CommandProvider* provider);
 
 	// コマンドを登録
-	int RegisterCommand(Command* command, bool isNotify = false);
+	int RegisterCommand(Command* command);
 	// コマンドの登録を解除
 	int UnregisterCommand(Command* command);
 	// 名前変更による登録しなおし
@@ -62,6 +62,9 @@ public:
 	CString IssueClonedCommandName(const CString& baseName); 
 
 protected:
+	void RegisterHotKey(Command* command);
+
+// AppPreferenceListenerIF
 	void OnAppFirstBoot() override;
 	void OnAppNormalBoot() override;
 	void OnAppPreferenceUpdated() override;

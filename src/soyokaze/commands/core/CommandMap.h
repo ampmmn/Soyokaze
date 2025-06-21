@@ -23,6 +23,9 @@ public:
 
 	void Clear();
 
+	// コマンドオブジェクトに紐づけられた名前を問い合わせる
+	bool QueryRegisteredNameFor(launcherapp::core::Command* targetCmd, CString& registeredName);
+
 	bool Has(const CString& name) const;
 	launcherapp::core::Command* Get(const CString& name);
 

@@ -354,7 +354,7 @@ void CommandRepository::RegisterProvider(
 
 // コマンドを登録
 // このコマンドは参照カウントを+1しない
-int CommandRepository::RegisterCommand(Command* command, bool isNotify)
+int CommandRepository::RegisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 	in->mCommands.Register(command);
@@ -365,29 +365,40 @@ int CommandRepository::RegisterCommand(Command* command, bool isNotify)
 	}
 
 	// ホットキーの登録
-	CommandHotKeyAttribute hotKeyAttr;
-	if (command->GetHotKeyAttribute(hotKeyAttr)) {
-		if (hotKeyAttr.IsValid() || hotKeyAttr.IsValidSandS()) {
-
-			auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-
-			// マネージャーから管理しているコマンドホットキーの一覧を取得
-			CommandHotKeyMappings hotKeyMap;
-			hotKeyManager->GetMappings(hotKeyMap);
-
-			// 取得したホットキーの一覧をAppPreferenceに設定
-			auto pref = AppPreference::Get();
-			pref->SetCommandKeyMappings(hotKeyMap);
-
-			if (isNotify) {
-				// このタイミングで設定ファイルに反映される
-				// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
-				pref->Save();
-			}
-		}
-	}
+	RegisterHotKey(command);
 
 	return 0;
+}
+
+void CommandRepository::RegisterHotKey(Command* command)
+{
+	// ホットキーの再登録
+	CommandHotKeyAttribute hotKeyAttr;
+	if (command->GetHotKeyAttribute(hotKeyAttr) == false) {
+		return ;
+	}
+
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+
+	CommandHotKeyMappings hotKeyMap;
+	hotKeyManager->GetMappings(hotKeyMap);
+
+	// 以前の設定を消して、新しい設定を登録する
+	CString oldName;
+	if (in->mCommands.QueryRegisteredNameFor(command, oldName)) {
+		// 以前の名前での設定を削除(名前が変わってなくてもいったん削除)
+		hotKeyMap.RemoveItem(oldName);
+	}
+	if (hotKeyAttr.IsValid() || hotKeyAttr.IsValidSandS()) {
+		// 現在の名前で改めて登録
+		hotKeyMap.AddItem(command->GetName(), hotKeyAttr);
+	}
+
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(hotKeyMap);
+
+	// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
+	pref->Save();
 }
 
 // コマンドの登録を解除
@@ -427,31 +438,11 @@ int CommandRepository::ReregisterCommand(Command* command)
 {
 	CSingleLock sl(&in->mCS, TRUE);
 
-	// 再登録
+	// コマンドの再登録
 	in->mCommands.Reregister(command);
 
 	// ホットキーの再登録
-	CommandHotKeyAttribute hotKeyAttr;
-	if (command->GetHotKeyAttribute(hotKeyAttr)) {
-
-		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-
-		CommandHotKeyMappings hotKeyMap;
-		hotKeyManager->GetMappings(hotKeyMap);
-
-		// 以前の設定を消して、新しい設定を登録する
-		auto name = command->GetName();
-		hotKeyMap.RemoveItem(name);
-		if (hotKeyAttr.IsValid() || hotKeyAttr.IsValidSandS()) {
-			hotKeyMap.AddItem(name, hotKeyAttr);
-		}
-
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
-		pref->Save();
-	}
+	RegisterHotKey(command);
 
 	return 0;
 }
@@ -650,8 +641,7 @@ int CommandRepository::EditCommandDialog(const CString& cmdName, bool isClone)
 		}
 
 		// 複製したコマンドを登録する
-		constexpr bool isReloadHotKey = true;
-		RegisterCommand(newCmd.release(), isReloadHotKey);
+		RegisterCommand(newCmd.release());
 	}
 
 	// コマンドファイルに保存

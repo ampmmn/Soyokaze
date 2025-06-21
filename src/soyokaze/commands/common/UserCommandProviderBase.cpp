@@ -53,8 +53,7 @@ void UserCommandProviderBase::LoadCommands(
 		}
 
 		// 登録
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command.release(), isReloadHotKey);
+		cmdRepo->RegisterCommand(command.release());
 
 		// 使用済みとしてマークする
 		cmdFile->MarkAsUsed(entry);

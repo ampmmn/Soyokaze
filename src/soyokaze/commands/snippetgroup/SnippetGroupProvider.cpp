@@ -56,8 +56,7 @@ bool SnippetGroupProvider::NewDialog(CommandParameter* param)
 		return false;
 	}
 
-	bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd);
 	return true;
 }
 

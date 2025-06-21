@@ -68,8 +68,7 @@ bool GroupCommandProvider::NewDialog(CommandParameter* param)
 	auto newCmd = make_refptr<GroupCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
-	constexpr bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 }

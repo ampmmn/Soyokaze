@@ -264,8 +264,7 @@ bool KeySplitterCommand::NewDialog(Parameter* param)
 	auto newCmd = make_refptr<KeySplitterCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 		
-	bool isReloadHotKey = false;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 

@@ -62,8 +62,7 @@ void BuiltinCommandProvider::OnFirstBoot()
 			continue;
 		}
 
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(cmd, isReloadHotKey);
+		cmdRepo->RegisterCommand(cmd);
 	}
 }
 
@@ -104,8 +103,7 @@ void BuiltinCommandProvider::LoadCommands(
 		auto cmdName = command->GetName();
 
 		// 生成したコマンドのインスタンスを登録
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(command, isReloadHotKey);
+		cmdRepo->RegisterCommand(command);
 
 		// システムコマンドとして登場した種別を記憶しておく
 		existingTypes.insert(typeStr);
@@ -129,8 +127,7 @@ void BuiltinCommandProvider::LoadCommands(
 			continue;
 		}
 
-		constexpr bool isReloadHotKey = false;
-		cmdRepo->RegisterCommand(cmd.release(), isReloadHotKey);
+		cmdRepo->RegisterCommand(cmd.release());
 	}
 }
 

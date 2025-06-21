@@ -170,8 +170,7 @@ bool EjectVolumeCommand::NewDialog(Parameter* param)
 	auto newCmd = make_refptr<EjectVolumeCommand>();
 	newCmd->SetParam(paramNew);
 
-	constexpr bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 

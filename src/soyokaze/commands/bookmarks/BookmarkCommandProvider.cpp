@@ -59,8 +59,7 @@ bool BookmarkCommandProvider::NewDialog(CommandParameter* param)
 		return false;
 	}
 
-	bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 	return true;
 }
 

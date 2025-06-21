@@ -192,8 +192,7 @@ bool VolumeCommand::NewDialog(Parameter* param)
 	auto newCmd = make_refptr<VolumeCommand>();
 	newCmd->SetParam(cmdEditor->GetParam());
 
-	bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release(), isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 

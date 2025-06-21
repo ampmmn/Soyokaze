@@ -354,7 +354,7 @@ bool ShellExecCommand::NewCommand(const CString& filePath)
 	ATTRIBUTE& normalAttr = newCmd->in->mParam.mNormalAttr;
 	normalAttr.mPath = filePath;
 
-	cmdRepos->RegisterCommand(newCmd.release(), false);
+	cmdRepos->RegisterCommand(newCmd.release());
 
 	return true;
 }

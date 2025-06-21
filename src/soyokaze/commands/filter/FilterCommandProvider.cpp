@@ -56,8 +56,7 @@ bool FilterCommandProvider::NewDialog(CommandParameter* param)
 		return false;
 	}
 
-	constexpr bool isReloadHotKey = true;
-	CommandRepository::GetInstance()->RegisterCommand(newCmd, isReloadHotKey);
+	CommandRepository::GetInstance()->RegisterCommand(newCmd);
 
 	return true;
 }
