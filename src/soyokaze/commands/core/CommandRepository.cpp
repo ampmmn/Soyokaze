@@ -175,23 +175,23 @@ struct CommandRepository::PImpl
 	std::unique_ptr<DefaultCommand> mDefaultCommand;
 
 	
+	std::mutex mMutex;
+	CEvent mQueryRequestEvt;
+	std::vector<QueryRequest> mQueryRequestQueue;
 	// 編集中フラグ
 	bool mIsNewDialog{false};
 	bool mIsEditDialog{false};
 	KeywordManagerDialog* mManagerDlgPtr{nullptr};
 	bool mIsRegisteFromFileDialog{false};
-
-	//
-
-	std::mutex mMutex;
+	// ProviderのPrepareAdhocCommand呼び出し済フラグ
+	bool mIsPrepared{false};
 	// 終了フラグ
 	bool mIsExit{false};
 	// スレッド初期化済フラグ
 	bool mIsThreadInitialized{false};
-	// ProviderのPrepareAdhocCommand呼び出し済フラグ
-	bool mIsPrepared{false};
-	CEvent mQueryRequestEvt;
-	std::vector<QueryRequest> mQueryRequestQueue;
+	// コマンドはロード済かどうか
+	bool mIsCommandLoaded{false};
+
 };
 
 void CommandRepository::PImpl::RunQueryThread()
@@ -414,6 +414,11 @@ void CommandRepository::RegisterHotKey(Command* command)
 	auto pref = AppPreference::Get();
 	pref->SetCommandKeyMappings(hotKeyMap);
 
+	if (in->mIsCommandLoaded == false) {
+		// コマンドのロードが完了していない(ロード中の)間は、設定ファイルの更新とホットキーのリロードをしない
+		return;
+	}
+
 	// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
 	pref->Save();
 }
@@ -478,6 +483,8 @@ BOOL CommandRepository::Load()
 	// 既存の内容を破棄
 	in->mCommands.Clear();
 
+	in->mIsCommandLoaded = false;
+
 	// キーワード比較処理の生成
 	in->ReloadPatternObject();
 
@@ -501,6 +508,10 @@ BOOL CommandRepository::Load()
 	CommandRanking::GetInstance()->Load();
 
 	in->mIsPrepared = false;
+	in->mIsCommandLoaded = true;
+
+	// ホットキーのリロード
+	in->ReloadHotKey();
 
 	return TRUE;
 }
@@ -686,26 +697,33 @@ int CommandRepository::ManagerDialog()
 	} _scope(in->mManagerDlgPtr);
 
 
-	// キャンセル時用のバックアップ
+	// キャンセル時に状態を戻せるようにするため、現在のコマンド状態をとっておく
 	CommandMap::Settings bkup;
 	in->mCommands.LoadSettings(bkup);
 
-	// ホットキー設定のバックアップ
+	// ホットキー設定も同様に現在の状態をとっておく
 	CommandHotKeyMappings hotKeyMapBkup;
 	auto pref = AppPreference::Get();
 	pref->GetCommandKeyMappings(hotKeyMapBkup);
 
+	// キーワードマネージャ画面を表示
 	KeywordManagerDialog dlg;
 	in->mManagerDlgPtr = &dlg;
-	if (dlg.DoModal() != IDOK) {
+	auto retId = dlg.DoModal();
 
-		// OKではないので結果を反映しない(バックアップした内容に戻す)
+	bool isCancelled = (retId != IDOK);
+
+	if (isCancelled) {
+		// キャンセル時はコマンド状態をダイアログ表示前にバックアップした内容に戻す
 		in->mCommands.RestoreSettings(bkup);
-		in->ReloadHotKey(hotKeyMapBkup);
 	}
-
-	// ファイルに保存
 	in->SaveCommands();
+
+	if (isCancelled) {
+		// キャンセル時はホットキー設定をダイアログ表示前にバックアップした内容に戻す
+		pref->SetCommandKeyMappings(hotKeyMapBkup);
+		pref->Save();
+	}
 
 	return 0;
 }
