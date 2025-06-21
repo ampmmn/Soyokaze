@@ -43,38 +43,13 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Set up Cache for spdlog
-      uses: actions/cache@v3
-      with:
-        path: externals/spdlog/build
-        key: ${{ runner.os }}-spdlog-${{ hashFiles('**/externals/spdlog/**') }}
-        restore-keys: |
-          ${{ runner.os }}-spdlog-
-
-    - name: CMake spdlog
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      continue-on-error: true
-      shell: cmd
-      run: |
-        cd externals/spdlog
-        cmd /c "if not exist build mkdir -p build"
-        cd build
-        cmake ..
-        if errorlevel 1 cmake --refresh ..
-
     - name: Build spdlog
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
+        cmd /c "if not exist build mkdir -p externals\spdlog\build"
         cd externals/spdlog/build
+        cmake ..
         msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
-
-    - name: Set up Cache for tidy-html5
-      uses: actions/cache@v3
-      with:
-        path: externals/tidy-html5/build
-        key: ${{ runner.os }}-tidy-html5-${{ hashFiles('**/externals/tidy-html5/**') }}
-        restore-keys: |
-          ${{ runner.os }}-tidy-html5-
 
     - name: Build tidy-html5
       working-directory: ${{env.GITHUB_WORKSPACE}}
