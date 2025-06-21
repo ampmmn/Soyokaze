@@ -2863,6 +2863,13 @@ exeと同じフォルダ階層に`profile`というフォルダが存在する�
 
 - [Everything SDK](https://www.voidtools.com/support/everything/sdk/)
   - `Everything`が公開しているSDKのソースコードをそのままランチャー本体に組み込んでいる
+  - 現在はEverything関連機能を無効化している。そのうち再実装するつもり
+
+- [RE2](https://github.com/google/re2)
+  - コマンドの絞り込みの際の正規表現エンジンとして利用している
+
+- [Abseil](https://github.com/abseil/abseil-cpp)
+  - `RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。
 
 ## 免責事項
 
