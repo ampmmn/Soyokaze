@@ -14,6 +14,7 @@ public:
 	virtual void OnBeforeLoad() = 0;
 	virtual void OnNewCommand(Command* command) = 0;
 	virtual void OnDeleteCommand(Command* command) = 0;
+	virtual void OnPatternReloaded() = 0;
 };
 
 }

@@ -95,6 +95,7 @@ struct ExtraCandidateProvider::PImpl :
 			command->Release();
 		}
 	}
+	void OnPatternReloaded() override {}
 
 // LauncherWindowEventListenerIF
 	void OnLockScreenOccurred() override {}

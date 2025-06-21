@@ -4,6 +4,7 @@
 #include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/IFIDDefine.h"
 #include "commands/core/EditableIF.h"
 #include "matcher/PartialMatchPattern.h"
@@ -41,7 +42,7 @@ enum {
 };
 
 
-struct KeywordManagerDialog::PImpl
+struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 {
 	void SortCommands();
 	void SelectItem(Command* command, bool isRedraw);
@@ -53,6 +54,17 @@ struct KeywordManagerDialog::PImpl
 
 	bool IsEditable();
 	bool IsDeletable();
+
+// CommandRepositoryListenerIF
+	void OnBeforeLoad() override {}
+	void OnNewCommand(Command*) override {}
+	void OnDeleteCommand(Command*) override {}
+	void OnPatternReloaded()
+	{
+		// ウインドウメッセージ経由で設定をリロードする
+		::PostMessage(mHwnd, WM_APP+2, 0, 0);
+	}
+
 
 	CString mName;
 	CString mDescription;
@@ -70,6 +82,7 @@ struct KeywordManagerDialog::PImpl
 	CommandHotKeyMappings mKeyMapping;
 
 	int mSortType{SORT_ASCEND_NAME};
+	HWND mHwnd{nullptr};
 };
 
 void KeywordManagerDialog::PImpl::SortCommands()
@@ -188,10 +201,16 @@ KeywordManagerDialog::KeywordManagerDialog() :
 
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 	in->mSortType = SORT_ASCEND_NAME;
+
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+	cmdRepoPtr->RegisterListener(in.get());
 }
 
 KeywordManagerDialog::~KeywordManagerDialog()
 {
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+	cmdRepoPtr->UnregisterListener(in.get());
+
 	for (auto& cmd : in->mCommands) {
 		cmd->Release();
 	}
@@ -219,7 +238,8 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST_COMMANDS, OnHeaderClicked)
 	ON_NOTIFY(LVN_GETDISPINFO, IDC_LIST_COMMANDS, OnGetDispInfo)
 	ON_NOTIFY(LVN_ODFINDITEM , IDC_LIST_COMMANDS, OnFindCommand)
-	ON_MESSAGE(WM_APP+1, OnKeywrodEditKeyDown)
+	ON_MESSAGE(WM_APP+1, OnUserMessageKeywrodEditKeyDown)
+	ON_MESSAGE(WM_APP+2, OnUserMessageResetContent)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -227,6 +247,8 @@ END_MESSAGE_MAP()
 BOOL KeywordManagerDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHwnd = GetSafeHwnd();
 
 	SetIcon(IconLoader::Get()->LoadKeywordManagerIcon(), FALSE);
 
@@ -406,8 +428,6 @@ void KeywordManagerDialog::OnButtonEdit()
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->EditCommandDialog(name, false);
 
-	ResetContents();
-
 	// 編集画面を閉じた後はキーワードマネージャー画面を操作できる状態にする
 	SetForegroundWindow();
 }
@@ -423,8 +443,6 @@ void KeywordManagerDialog::OnButtonClone()
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->EditCommandDialog(name, true);
-
-	ResetContents();
 
 	// 編集画面を閉じた後はキーワードマネージャー画面を操作できる状態にする
 	SetForegroundWindow();
@@ -610,7 +628,7 @@ void KeywordManagerDialog::OnFindCommand(
 	}
 }
 
-LRESULT KeywordManagerDialog::OnKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
+LRESULT KeywordManagerDialog::OnUserMessageKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
 
@@ -638,6 +656,17 @@ LRESULT KeywordManagerDialog::OnKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam)
 		in->mListCtrl.SetFocus();
 		return 1;
 	}
+	return 0;
+}
+
+LRESULT KeywordManagerDialog::OnUserMessageResetContent(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	ResetContents();
+	spdlog::info("KeywordManager content updated.");
+
 	return 0;
 }
 

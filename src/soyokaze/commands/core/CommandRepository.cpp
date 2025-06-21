@@ -57,11 +57,29 @@ struct CommandRepository::PImpl
 		mPattern.reset(PartialMatchPattern::Create());
 
 		// コマンドのホットキー設定のリロード
+		ReloadHotKey();
+
+		// パターンがリロードされた(+ホットキーがリロードされた)ことをリスナーに通知
+		for (auto& listener : mListeners) {
+			listener->OnPatternReloaded();
+		}
+
+		SPDLOG_DEBUG(_T("end"));
+	}
+	void ReloadHotKey()
+	{
 		CommandHotKeyMappings hotKeyMap;
 
+		// ホットキー設定を読み込む
 		auto pref = AppPreference::Get();
 		pref->GetCommandKeyMappings(hotKeyMap);
 
+		// 読み込んだホットキー設定を適用する
+		ReloadHotKey(hotKeyMap);
+	}
+
+	void ReloadHotKey(CommandHotKeyMappings& hotKeyMap)
+	{
 		auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 		hotKeyManager->Clear(this);
 
@@ -76,7 +94,6 @@ struct CommandRepository::PImpl
 
 			hotKeyManager->Register(this, handler.release(), attr);
 		}
-		SPDLOG_DEBUG(_T("end"));
 	}
 
 	void SaveCommands()
@@ -673,12 +690,18 @@ int CommandRepository::ManagerDialog()
 	CommandMap::Settings bkup;
 	in->mCommands.LoadSettings(bkup);
 
+	// ホットキー設定のバックアップ
+	CommandHotKeyMappings hotKeyMapBkup;
+	auto pref = AppPreference::Get();
+	pref->GetCommandKeyMappings(hotKeyMapBkup);
+
 	KeywordManagerDialog dlg;
 	in->mManagerDlgPtr = &dlg;
 	if (dlg.DoModal() != IDOK) {
 
 		// OKではないので結果を反映しない(バックアップした内容に戻す)
 		in->mCommands.RestoreSettings(bkup);
+		in->ReloadHotKey(hotKeyMapBkup);
 	}
 
 	// ファイルに保存
