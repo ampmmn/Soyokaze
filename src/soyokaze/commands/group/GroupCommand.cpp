@@ -171,7 +171,8 @@ CString GroupCommand::GetTypeDisplayName()
 
 BOOL GroupCommand::Execute(Parameter* param)
 {
-	if (param->HasParameter()) {
+	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
+	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
 

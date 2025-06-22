@@ -2,8 +2,11 @@
 #include "ExecuteHistory.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
+#include <nlohmann/json.hpp>
 #include <map>
 #include <list>
+#include <algorithm>
+#include <fstream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,6 +17,9 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
+using ItemMap = std::map<CString, std::list<HISTORY_ITEM> >;
+using nlohmann::json;
+
 struct ExecuteHistory::PImpl
 {
 	const CString& GetFilePath() {
@@ -21,7 +27,7 @@ struct ExecuteHistory::PImpl
 			return mFilePath;
 		}
 
-		Path path(Path::APPDIRPERMACHINE, _T("history.txt"));
+		Path path(Path::APPDIRPERMACHINE, _T("history.json"));
 		mFilePath = path;
 
 		return mFilePath;
@@ -29,7 +35,7 @@ struct ExecuteHistory::PImpl
 
 	CString mFilePath;
 
-	std::map<CString, std::list<HISTORY_ITEM> > mItemMap;
+	ItemMap mItemMap;
 
 	// 読み込み済か?
 	bool mIsLoaded{false};
@@ -51,49 +57,6 @@ ExecuteHistory* ExecuteHistory::GetInstance()
 
 /**
  * 履歴情報の追加
- * @param[in] type     種別
- * @param[in] word     コマンド実行時に入力された文字列
- * @param[in] fullPath コマンド実行時に実際に実行するフルパス
- */
-void ExecuteHistory::Add(
-	const CString& type,
-	const CString& word,
-	const CString& fullPath
-)
-{
-	auto pref = AppPreference::Get();
-	if (pref->IsUseInputHistory() == false) {
-		// 履歴機能を使用しない場合
-		return;
-	}
-
-	HISTORY_ITEM item;
-	item.mWord = word;
-	item.mFullPath = fullPath;
-
-	auto& items = in->mItemMap[type];
-	for (auto it = items.begin(); it != items.end(); ++it) {
-
-		if (it->mFullPath != fullPath) {
-			continue;
-		}
-
-		item = *it;
-		items.erase(it);
-		items.push_front(item);
-		return;
-	}
-
-	items.push_front(item);
-	int limit = pref->GetHistoryLimit();
-	ASSERT(limit >= 0);
-	if (items.size() > limit) {
-		items.resize(limit);
-	}
-}
-
-/**
- * 履歴情報の追加
  */
 void ExecuteHistory::Add(
 	const CString& type,
@@ -105,16 +68,14 @@ void ExecuteHistory::Add(
 		// 履歴機能を使用しない場合
 		return;
 	}
-	HISTORY_ITEM item;
-	item.mWord = word;
+	HISTORY_ITEM item{word};
 
 	auto& items = in->mItemMap[type];
-	for (auto it = items.begin(); it != items.end(); ++it) {
-		if (it->mWord != word) {
-			continue;
-		}
-
-		item = *it;
+	auto it = std::find_if(items.begin(), items.end(),
+		 	[word](auto item) { return item.mWholeWord == word; });
+	if (it != items.end()) {
+		// 同じものがあったら先頭に移動
+		auto item = *it;
 		items.erase(it);
 		items.push_front(item);
 		return;
@@ -168,7 +129,7 @@ int ExecuteHistory::EraseItems(const CString& type, const std::set<CString>& wor
 	for (auto& word : words) {
 
 		for (auto it = itemList.begin(); it != itemList.end(); ) {
-			if (word != it->mWord) {
+			if (word != it->mWholeWord) {
 				it++;
 				continue;
 			}
@@ -191,123 +152,77 @@ void ExecuteHistory::Save()
 		return;
 	}
 
-	FILE* fpOut = nullptr;
+	// JSONオブジェクトを生成
 	try {
-		auto& path = in->GetFilePath();
-		CString filePathTmp(path);
-		filePathTmp += _T(".tmp");
+		std::string tmp;
 
-		if (_tfopen_s(&fpOut, filePathTmp, _T("w,ccs=UTF-8")) != 0 || fpOut == nullptr) {
-			return ;
-		}
+		json root;
+		for (auto it = in->mItemMap.begin(); it != in->mItemMap.end(); ++it) {
 
-		CString line;
-		CStdioFile file(fpOut);
+			const auto& type = it->first;
+			auto& histories = it->second;
 
-		for (auto& elem : in->mItemMap) {
-
-			auto& type = elem.first;
-			auto& items = elem.second;
-
-			line.Format(_T("[%s]\n"), (LPCTSTR)type);
-			file.WriteString(line);
-			int i = 1;
-			for (auto& item : items) {
-				line.Format(_T("Item%d=%s\t%s\n"), i, (LPCTSTR)item.mWord, (LPCTSTR)item.mFullPath);
-				file.WriteString(line);
-				i++;
+			auto json_histories = json::array();
+			for (auto& item : histories)  {
+				json_histories.push_back(UTF2UTF(item.mWholeWord, tmp));
 			}
+
+			root[UTF2UTF(type, tmp)] = json_histories;
 		}
 
-		file.Close();
-		fclose(fpOut);
+		// 一時ファイルにJSONを出力
+		CString filePathTmp(in->GetFilePath());
+		filePathTmp += _T(".tmp");
+		std::ofstream ofs(filePathTmp);
+		ofs << root.dump(4);
+		ofs.close();
 
 		// 最後に一時ファイルを書き戻す
-		if (CopyFile(filePathTmp, path, FALSE)) {
+		if (CopyFile(filePathTmp, in->GetFilePath(), FALSE)) {
 			// 一時ファイルを消す
 			DeleteFile(filePathTmp);
 		}
 	}
-	catch(CFileException* e) {
-		e->Delete();
-		fclose(fpOut);
+	catch(...) {
+		spdlog::warn(_T("Failed to save history {}"), (LPCTSTR)in->GetFilePath());
 	}
 }
 
 void ExecuteHistory::Load()
 {
-	in->mIsLoaded = true;
-
-	auto& path = in->GetFilePath();
-
-	FILE* fpIn = nullptr;
-	if (_tfopen_s(&fpIn, path, _T("r,ccs=UTF-8")) != 0 || fpIn == nullptr) {
+	if (Path::FileExists(in->GetFilePath()) == false) {
+		// 初回起動時はファイルが存在しないので読み込み処理をしない
+		in->mIsLoaded = true;
 		return;
 	}
 
-	// ファイルを読む
-	CStdioFile file(fpIn);
+	try {
+		CString tmp;
 
-	CString strCurSectionName;
+		ItemMap tmpMap;
 
-	std::map<CString, std::list<HISTORY_ITEM> > itemMap;
-	std::list<HISTORY_ITEM> items;
+		std::ifstream f(in->GetFilePath());
+		json history_dict = json::parse(f);
+		for (auto it = history_dict.begin(); it != history_dict.end(); ++it) {
+			std::string key = it.key();
 
-	CString line;
-	while(file.ReadString(line)) {
+			std::list<HISTORY_ITEM> items;
 
-		line.Trim();
+			auto histories = it.value();
+			for (auto it2 = histories.begin(); it2 != histories.end(); ++it2) {
 
-		if (line.IsEmpty()) {
-			continue;
-		}
-
-		if (line[0] == _T('[')) {
-
-			if (strCurSectionName.IsEmpty() == FALSE) {
-				itemMap[strCurSectionName] = items;
+				auto path = it2->get<std::string>();
+				items.push_back(HISTORY_ITEM{UTF2UTF(path, tmp)});
 			}
-
-			strCurSectionName = line.Mid(1, line.GetLength()-2);
-			items.clear();
-			continue;
+			tmpMap[UTF2UTF(key, tmp)] = items;
 		}
-
-		int n = line.Find(_T('='));
-		if (n == -1) {
-			continue;
-		}
-
-		CString strKey = line.Left(n);
-		strKey.Trim();
-
-		CString strValue = line.Mid(n+1);
-		strValue.Trim();
-
-		n = 0;
-		CString word = strValue.Tokenize(_T("\t"), n);
-		if (word.IsEmpty()) {
-			continue;
-		}
-
-		CString fullPath = strValue.Tokenize(_T("\t"), n);
-
-		HISTORY_ITEM newItem;
-		newItem.mWord = word;
-		newItem.mFullPath = fullPath;
-
-		items.push_back(newItem);
+		in->mItemMap.swap(tmpMap);
+		in->mIsLoaded = true;
+	}
+	catch(...) {
+		return ;
 	}
 
-	if (strCurSectionName.IsEmpty() == FALSE) {
-		itemMap[strCurSectionName] = items;
-		items.clear();
-	}
-
-	file.Close();
-	fclose(fpIn);
-
-	in->mItemMap.swap(itemMap);
 }
 
 

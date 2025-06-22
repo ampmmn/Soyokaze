@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "HistoryCommand.h"
+#include "commands/history/HistoryCommandQueryRequest.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -23,6 +25,52 @@ constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
 struct HistoryCommand::PImpl
 {
+	Command* GetCommand() {
+
+		if (mCmd) {
+			return mCmd;
+		}
+
+		// 履歴キーワードによる絞り込みを実施
+		auto req = new CommandQueryRequest(mKeyword);
+		CommandRepository::GetInstance()->Query(req);
+
+		// 検索完了を待つ
+		if (req->WaitComplete(2000) == false) {
+			spdlog::error(_T("HISTORY: query timeout occurred. keyword:{}"), (LPCTSTR)mKeyword);
+			req->Release();
+			return nullptr;
+		}
+
+		BOOL result = TRUE;
+
+		std::vector<launcherapp::core::Command*> items;
+
+		// 結果を取得し、先頭の候補を実行する
+		if (req->GetResult(items) && items.empty() == false) {
+
+			// 履歴コマンドは除外
+			auto thisTypeName = mThisPtr->GetTypeDisplayName();
+			for (auto cmd : items) {
+				if (cmd->GetTypeDisplayName() == thisTypeName) {
+					continue;
+				}
+				mCmd = cmd;
+				mCmd->AddRef();
+				break;
+			}
+
+			for (auto cmd : items) {
+				cmd->Release();
+			}
+		}
+
+		req->Release();
+
+		return mCmd;
+	}
+
+	Command* mThisPtr{nullptr};
 	CString mKeyword;
 	Command* mCmd{nullptr};
 };
@@ -33,20 +81,8 @@ HistoryCommand::HistoryCommand(const CString& keyword) : in(std::make_unique<PIm
 {
 	this->mName = keyword;
 
+	in->mThisPtr = this;
 	in->mKeyword = keyword;
-
-	RefPtr<CommandParameterBuilder> paramTmp(CommandParameterBuilder::Create(keyword), false);
-	auto commandPart = paramTmp->GetCommandString();
-
-	auto cmdRepo = CommandRepository::GetInstance();
-	auto cmd = cmdRepo->QueryAsWholeMatch(commandPart, true);
-	if (cmd == nullptr) {
-		return;
-	}
-
-	in->mCmd = cmd;
-
-	this->mDescription = cmd->GetDescription();
 }
 
 HistoryCommand::~HistoryCommand()
@@ -56,13 +92,23 @@ HistoryCommand::~HistoryCommand()
 	}
 }
 
+CString HistoryCommand::GetDescription()
+{
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
+		return GetName();
+	}
+	return cmd->GetDescription();
+}
+
 CString HistoryCommand::GetGuideString()
 {
-	if (in->mCmd == nullptr) {
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
 		return _T("⏎:開く");
 	}
 
-	return in->mCmd->GetGuideString();
+	return cmd->GetGuideString();
 }
 
 CString HistoryCommand::GetTypeDisplayName()
@@ -73,25 +119,31 @@ CString HistoryCommand::GetTypeDisplayName()
 
 BOOL HistoryCommand::Execute(Parameter* param)
 {
-	if (in->mCmd == nullptr) {
-		return FALSE;
+	auto cmd = in->GetCommand();
+
+	BOOL result = TRUE;
+	if (cmd) {
+		auto builder = CommandParameterBuilder::Create(in->mKeyword);
+		bool hasParameter = builder->HasParameter();
+		builder->Release();
+
+		RefPtr<Parameter> paramTmp(param->Clone(), false);
+		if (hasParameter) {
+			// 履歴がパラメータを持つ場合は、履歴の方を優先する
+			paramTmp->SetWholeString(in->mKeyword);
+		}
+
+		auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(paramTmp);
+		namedParam->SetNamedParamBool(_T("RunAsHistory"), true);
+
+		result = cmd->Execute(paramTmp);
 	}
-
-	RefPtr<Parameter> paramTmp(param->Clone(), false);
-	paramTmp->SetWholeString(in->mKeyword);
-
-	BOOL result = in->mCmd->Execute(paramTmp);
-
 	return result;
 }
 
 HICON HistoryCommand::GetIcon()
 {
-	if (in->mCmd) {
-		return in->mCmd->GetIcon();
-	}
-	HICON h =IconLoader::Get()->LoadUnknownIcon();
-	return h;
+	return IconLoader::Get()->LoadHistoryIcon();
 }
 
 launcherapp::core::Command*

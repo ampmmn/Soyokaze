@@ -12,6 +12,7 @@
 #include "mainwindow/layout/MainWindowAppearance.h"
 #include "mainwindow/MainWindowInput.h"
 #include "mainwindow/controller/LauncherMainWindowController.h"
+#include "mainwindow/MainWindowCommandQueryRequest.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
@@ -1048,12 +1049,10 @@ void LauncherMainWindow::QueryAsync()
 	spdlog::stopwatch sw;
 
 	// 検索リクエスト
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
-	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
+	auto req = new MainWindowCommandQueryRequest(in->mInput.GetKeyword(), GetSafeHwnd(), WM_APP+13);
 	GetCommandRepository()->Query(req);
-
-	commandParam->Release();
+	req->Release();
 
 	PERFLOG("QueryAsync End {0:.6f} s.", sw);
 }
@@ -1062,14 +1061,11 @@ void LauncherMainWindow::QueryAsync()
 // 入力キーワードで検索をリクエストを出し、完了を待つ
 void LauncherMainWindow::QuerySync()
 {
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(in->mInput.GetKeyword());
-
 	// キーワードによる絞り込みを実施
-	launcherapp::commands::core::CommandQueryRequest req(commandParam, GetSafeHwnd(), WM_APP+13);
 	in->mIsQueryDoing = true;
+	auto req = new MainWindowCommandQueryRequest(in->mInput.GetKeyword(), GetSafeHwnd(), WM_APP+13);
 	GetCommandRepository()->Query(req);
-
-	commandParam->Release();
+	req->Release();
 
 	WaitQueryRequest();
 }

@@ -5,6 +5,7 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
@@ -135,8 +136,10 @@ BOOL PathExecuteCommand::Execute(Parameter* param)
 	}
 
 	// 履歴に追加
-	//ExecuteHistory::GetInstance()->Add(_T("pathfind"), in->mWord, in->mFullPath);
-	ExecuteHistory::GetInstance()->Add(_T("pathfind"), param->GetWholeString());
+	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
+	if (namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
+		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	}
 
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;

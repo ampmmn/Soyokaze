@@ -49,7 +49,7 @@ public:
 
 	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
 
-	void Query(const launcherapp::commands::core::CommandQueryRequest& req);
+	void Query(launcherapp::commands::core::CommandQueryRequest* req);
 	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);
 	bool HasCommand(const CString& strQueryStr);
 

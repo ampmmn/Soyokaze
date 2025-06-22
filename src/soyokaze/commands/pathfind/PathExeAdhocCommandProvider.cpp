@@ -2,7 +2,6 @@
 #include "PathExeAdhocCommandProvider.h"
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
-#include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -14,8 +13,6 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
 namespace launcherapp {
 namespace commands {
@@ -78,8 +75,6 @@ PathExeAdhocCommandProvider::~PathExeAdhocCommandProvider()
 	if (in->mExeCommandPtr) {
 		in->mExeCommandPtr->Release();
 	}
-
-	ExecuteHistory::GetInstance()->Save();
 }
 
 // コマンドの読み込み
@@ -88,9 +83,6 @@ void PathExeAdhocCommandProvider::LoadCommands(
 )
 {
 	UNREFERENCED_PARAMETER(cmdFile);
-
-	// 内部でもつ履歴データを読み込む
-	ExecuteHistory::GetInstance()->Load();
 }
 
 CString PathExeAdhocCommandProvider::GetName()
@@ -130,28 +122,6 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		in->mExeCommandPtr->AddRef();
 		commands.Add(CommandQueryItem(level, in->mExeCommandPtr));
 	}
-
-	// ToDo: HistoryCommandに責務を移動
-	ExecuteHistory::ItemList items;
-	ExecuteHistory::GetInstance()->GetItems(_T("pathfind"), items);
-	for (auto& item : items) {
-		level = pattern->Match(item.mWord);
-		if (level == Pattern::Mismatch) {
-			continue;
-		}
-		if (Path::FileExists(item.mFullPath) == FALSE) {
-			// 存在しないファイルは除外
-			continue;
-		}
-		if (in->mExcludeFiles.Contains(item.mFullPath)) {
-			// 除外対象のファイル
-			continue;
-		}
-		auto cmdHist = make_refptr<PathExecuteCommand>();
-		cmdHist->SetFullPath(item.mFullPath, true);
-		commands.Add(CommandQueryItem(level, cmdHist.release()));
-	}
-
 }
 
 } // end of namespace pathfind

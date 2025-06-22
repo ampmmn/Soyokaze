@@ -3,9 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace history {
+namespace launcherapp { namespace commands { namespace history {
 
 class HistoryCommand : public launcherapp::commands::common::AdhocCommandBase
 {
@@ -13,6 +11,7 @@ public:
 	HistoryCommand(const CString& keyword);
 	virtual ~HistoryCommand();
 
+	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(Parameter* param) override;
@@ -26,7 +25,5 @@ protected:
 };
 
 
-} // end of namespace history
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::history
 

@@ -1491,6 +1491,12 @@
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="commands\history\HistoryCommandQueryRequest.h">
+      <Filter>commands\history</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2641,6 +2647,12 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\history\HistoryCommandQueryRequest.cpp">
+      <Filter>commands\history</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp">
+      <Filter>mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

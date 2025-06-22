@@ -164,7 +164,8 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	RefPtr<Parameter> param(param_->Clone());
 
 	// 実行時引数が与えられた場合は履歴に登録しておく
-	if (param->HasParameter()) {
+	auto namedParam = GetCommandNamedParameter(param);
+	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
 
@@ -206,7 +207,6 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	}
 
 	// もしwaitするようにするのであればここで待つ
-	auto namedParam = GetCommandNamedParameter(param);
 	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);

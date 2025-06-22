@@ -21,9 +21,12 @@ public:
 	void AddHistory(const CString& word, const CString& fullPath);
 
 public:
-	virtual CString GetName();
+	CString GetName() override;
+
+	// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+	void PrepareAdhocCommands() override;
 	// 一時的なコマンドを必要に応じて提供する
-	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
+	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
 	DECLARE_COMMANDPROVIDER(HistoryCommandProvider)
 

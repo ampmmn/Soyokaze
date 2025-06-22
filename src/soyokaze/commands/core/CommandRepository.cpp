@@ -128,10 +128,10 @@ struct CommandRepository::PImpl
 		mIsExit = true;
 		mQueryRequestEvt.SetEvent();
 	}
-	void AddRequest(const QueryRequest& req);
-	bool WaitForRequest(QueryRequest& req);
+	void AddRequest(QueryRequest* req);
+	bool WaitForRequest(QueryRequest** req);
 	bool HasSubsequentRequest();
-	void Query(QueryRequest& req);
+	void Query(QueryRequest* req);
 
 	DefaultCommand* GetDefaultCommand()
 	{
@@ -177,7 +177,7 @@ struct CommandRepository::PImpl
 	
 	std::mutex mMutex;
 	CEvent mQueryRequestEvt;
-	std::vector<QueryRequest> mQueryRequestQueue;
+	std::vector<QueryRequest*> mQueryRequestQueue;
 	// 編集中フラグ
 	bool mIsNewDialog{false};
 	bool mIsEditDialog{false};
@@ -209,11 +209,13 @@ void CommandRepository::PImpl::RunQueryThread()
 			spdlog::info("Enter RunQueryThread.");
 
 			while (IsRunning()) {
-				QueryRequest req;
-				if (WaitForRequest(req) == false) {
+				QueryRequest* req = nullptr;
+				if (WaitForRequest(&req) == false) {
 					continue;
 				}
 				Query(req);
+
+				req->Release();
 			}
 			spdlog::info("Exit RunQueryThread.");
 
@@ -223,7 +225,7 @@ void CommandRepository::PImpl::RunQueryThread()
 	mIsThreadInitialized = true;
 }
 
-void CommandRepository::PImpl::AddRequest(const QueryRequest& req)
+void CommandRepository::PImpl::AddRequest(QueryRequest* req)
 {
 	{
 		PERFLOG("AddRequest lock start.");
@@ -231,13 +233,14 @@ void CommandRepository::PImpl::AddRequest(const QueryRequest& req)
 
 		std::lock_guard<std::mutex> lock(mMutex);
 		mQueryRequestQueue.push_back(req);
+		req->AddRef();
 
 		PERFLOG("AddRequest lock end. {0:.6f} s.", sw);
 	}
 	mQueryRequestEvt.SetEvent();
 }
 
-bool CommandRepository::PImpl::WaitForRequest(QueryRequest& req)
+bool CommandRepository::PImpl::WaitForRequest(QueryRequest** req)
 {
 	PERFLOG("WaitForRequest wait start.");
 	spdlog::stopwatch sw;
@@ -252,7 +255,7 @@ bool CommandRepository::PImpl::WaitForRequest(QueryRequest& req)
 		return false;
 	}
 
-	req = mQueryRequestQueue.back();
+	*req = mQueryRequestQueue.back();
 	mQueryRequestQueue.clear();
 
 	return true;
@@ -264,16 +267,15 @@ bool CommandRepository::PImpl::HasSubsequentRequest()
 	return mQueryRequestQueue.size() > 0;
 }
 
-void CommandRepository::PImpl::Query(QueryRequest& req)
+void CommandRepository::PImpl::Query(QueryRequest* req)
 {
-	const auto param = req.GetCommandParameter();
-	HWND hwndNotify = req.GetNotifyWindow();
-	UINT notifyMsg = req.GetNotifyMessage();
+	const auto param = req->GetCommandParameter();
 
 	// パラメータが空の場合は検索しない
-	if (param->IsEmpty()) {
+	if (param.IsEmpty()) {
 		// 結果なし
-		PostMessage(hwndNotify, notifyMsg, 0, 0);
+		bool isCancelled = false;
+		req->NotifyQueryComplete(isCancelled, nullptr);
 		return;
 	}
 
@@ -282,7 +284,7 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	spdlog::stopwatch swAll;
 
 	// 入力文字列をを設定
-	mPattern->SetWholeText(param->GetWholeString());
+	mPattern->SetWholeText(param);
 
 	CommandMap::CommandQueryItemList matchedItems;
 
@@ -301,7 +303,8 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 		sw.reset();
 		if (HasSubsequentRequest()) {
 			// キャンセル通知
-			PostMessage(hwndNotify, notifyMsg, 1, 0);
+			bool isCancelled = true;
+			req->NotifyQueryComplete(isCancelled, nullptr);
 			break;
 		}
 		PERFLOG(_T("QueryAdhocCommands start. name:{0}"), (LPCTSTR)provider->GetName());
@@ -329,13 +332,14 @@ void CommandRepository::PImpl::Query(QueryRequest& req)
 	}
 	else {
 		auto defaultCmd = GetDefaultCommand();
-		defaultCmd->SetName(param->GetWholeString());
+		defaultCmd->SetName(param);
 		items->push_back(defaultCmd);
 	}
 
 	PERFLOG("Query total processsing time: {:.6f} s.", swAll);
 
-	PostMessage(hwndNotify, notifyMsg, 0, (LPARAM)items);
+	bool isCancelled = false;
+	req->NotifyQueryComplete(isCancelled, items);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -798,7 +802,7 @@ void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& e
 
 void
 CommandRepository::Query(
-	const QueryRequest& newRequest
+	QueryRequest* newRequest
 )
 {
 	// 問い合わせリクエストをキューに追加

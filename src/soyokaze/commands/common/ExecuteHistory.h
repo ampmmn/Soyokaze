@@ -9,8 +9,7 @@ namespace common {
 
 struct HISTORY_ITEM
 {
-	CString mWord;
-	CString mFullPath;
+	CString mWholeWord;
 };
 
 class ExecuteHistory
@@ -25,7 +24,6 @@ private:
 public:
 	static ExecuteHistory* GetInstance();
 
-	void Add(const CString& type, const CString& word, const CString& fullPath);
 	void Add(const CString& type, const CString& word);
 	void GetItems(const CString& type, ItemList& items) const;
 	int EraseItems(const CString& type, const std::set<CString>& words);

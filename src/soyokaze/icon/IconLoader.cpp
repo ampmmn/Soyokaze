@@ -854,6 +854,11 @@ HICON IconLoader::LoadConvertIcon()
 	return GetWMPlocIcon(-29608);
 }
 
+HICON IconLoader::LoadHistoryIcon()
+{
+	return GetImageResIcon(-5353);
+}
+
 static bool GetTempFilePath(Path& userDataPath)
 {
 	userDataPath.Append(_T("tmp"));

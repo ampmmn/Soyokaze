@@ -477,6 +477,7 @@
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h" />
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h" />
     <ClInclude Include="commands\group\GroupCommandEditor.h" />
+    <ClInclude Include="commands\history\HistoryCommandQueryRequest.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommand.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommandEditor.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h" />
@@ -710,6 +711,7 @@
     <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\WindowPosition.h" />
     <ClInclude Include="mainwindow\layout\MainWindowAppearance.h" />
+    <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\MainWindowInput.h" />
@@ -896,6 +898,7 @@
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp" />
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp" />
     <ClCompile Include="commands\group\GroupCommandEditor.cpp" />
+    <ClCompile Include="commands\history\HistoryCommandQueryRequest.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommand.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommandEditor.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp" />
@@ -1120,6 +1123,7 @@
     <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp" />
+    <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\MainWindowInput.cpp" />

@@ -4,6 +4,8 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
+#include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include "resource.h"
 #include <list>
 
@@ -23,10 +25,29 @@ using CommandRepository = launcherapp::core::CommandRepository;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 
-struct HistoryCommandProvider::PImpl
+struct HistoryCommandProvider::PImpl : public AppPreferenceListenerIF
 {
+	void Load()
+	{
+		auto pref = AppPreference::Get();
+		mIsEnable = pref->IsUseInputHistory();
+	}
+
+	// AppPreferenceListenerIF
+	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
+	void OnAppPreferenceUpdated() override 
+	{
+		Load();
+	}
+	void OnAppExit()
+	{
+		ExecuteHistory::GetInstance()->Save();
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
 	bool mQuering{false};
-	uint64_t mLastCheck{0};
+	bool mIsEnable{false};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +59,7 @@ REGISTER_COMMANDPROVIDER(HistoryCommandProvider)
 
 HistoryCommandProvider::HistoryCommandProvider() : in(std::make_unique<PImpl>())
 {
+	AppPreference::Get()->RegisterListener(in.get());
 }
 
 HistoryCommandProvider::~HistoryCommandProvider()
@@ -49,16 +71,28 @@ CString HistoryCommandProvider::GetName()
 	return _T("HistoryCommand");
 }
 
+// 一時的なコマンドの準備を行うための初期化。初回のQueryAdhocCommand前に呼ばれる。
+void HistoryCommandProvider::PrepareAdhocCommands()
+{
+	ExecuteHistory::GetInstance()->Load();
+	in->Load();
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void HistoryCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	CommandQueryItemList& commands
 )
 {
+	if (in->mIsEnable == false) {
+		return;
+	}
+
 	// 再入しない
 	if (in->mQuering) {
 		return;
 	}
+
 	struct scope_quering {
 		scope_quering(bool& f) : mFlag(f) { mFlag = true; }
 		~scope_quering() { mFlag = false; }
@@ -69,46 +103,11 @@ void HistoryCommandProvider::QueryAdhocCommands(
 	auto history = ExecuteHistory::GetInstance();
 	history->GetItems(_T("history"), items);
 
-	if (GetTickCount64() - in->mLastCheck > CHECK_INTERVAL) {
-		// 一定間隔でコマンドが存在するかどうかをチェックする
-
-		std::set<CString> missingWords;
-		std::set<CString> existingCmds;
-
-		auto repos = CommandRepository::GetInstance();
-		for (auto it = items.begin(); it != items.end(); ) {
-
-			auto& item = *it;
-
-			RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(item.mWord), false);
-			auto cmdName = param->GetCommandString();
-
-			if (existingCmds.find(item.mWord) != existingCmds.end()) {
-				++it;
-				continue;
-			}
-
-			RefPtr<launcherapp::core::Command> cmd(repos->QueryAsWholeMatch(cmdName, true));
-			if (cmd != nullptr) {
-				existingCmds.insert(cmdName);
-				it++;
-				continue;
-			}
-
-			missingWords.insert(item.mWord);
-			it = items.erase(it);
-		}
-
-		history->EraseItems(_T("history"), missingWords);
-
-		in->mLastCheck = GetTickCount64();
-	}
-
 	for (const auto& item : items) {
 
-		int level = pattern->Match(item.mWord);
+		int level = pattern->Match(item.mWholeWord);
 		if (level != Pattern::Mismatch) {
-			commands.Add(CommandQueryItem(level, new HistoryCommand(item.mWord)));
+			commands.Add(CommandQueryItem(level, new HistoryCommand(item.mWholeWord)));
 		}
 	}
 }
