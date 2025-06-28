@@ -18,14 +18,28 @@
 
 constexpr LPCTSTR INTERMADIATE_DIRNAME = _T("per_machine");
 
+// ポータブル版として動作しているか?
+enum PROFILE_TYPE {
+	PROFILE_UNINITIALIZED = -1,
+	PROFILE_NORMAL = 0,
+	PROFILE_PORTABLE = 1,
+};
+static PROFILE_TYPE sProfileType{PROFILE_UNINITIALIZED};
+
+
 static void GetProfileDirRoot(TCHAR* path, size_t len, bool& isPortable)
 {
 	GetModuleFileName(NULL, path, (DWORD)len);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("profile"));
-	if (Path::IsDirectory(path)) {
+
+	// 一度(通常版orポータブル版)を判定したら、以降の呼び出しでは判断を変えない
+	bool hasProfileDir = (sProfileType == PROFILE_UNINITIALIZED && Path::IsDirectory(path)) ||
+	                      sProfileType == PROFILE_PORTABLE;
+	if (hasProfileDir) {
 		// exeと同じディレクトリにprofileフォルダが存在する場合は、ポータブル版として動作する
 		isPortable = true;
+		sProfileType = PROFILE_PORTABLE;
 		return;
 	}
 	else {
@@ -41,6 +55,7 @@ static void GetProfileDirRoot(TCHAR* path, size_t len, bool& isPortable)
 		PathAppend(path, APP_PROFILE_DIRNAME);
 
 		isPortable = false;
+		sProfileType = PROFILE_NORMAL;
 		return;
 	}
 }
@@ -166,10 +181,16 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	return true;
 }
 
+//! ポータブル版として動作しているか?
+bool CAppProfile::IsRunAsPortable()
+{
+	return sProfileType == PROFILE_PORTABLE;
+}
+
 /*!
  *	@brief デフォルトコンストラクタ
 */
- CAppProfile::CAppProfile() : m_entity(std::make_unique<CIniFile>())
+CAppProfile::CAppProfile() : m_entity(std::make_unique<CIniFile>())
 {
 	std::vector<TCHAR> path(MAX_PATH_NTFS);
 	GetFilePath(path.data(), path.size(), false);

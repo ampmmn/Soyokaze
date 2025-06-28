@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "app/AppName.h"
 #include "AboutDlg.h"
+#include "utility/AppProfile.h"
 #include "utility/VersionInfo.h"
 #include "resource.h"
 #include <vector>
@@ -60,6 +61,11 @@ BOOL CAboutDlg::OnInitDialog()
 	ASSERT(parts);
 	parts->GetWindowText(str);
 	str.Replace(_T("$APPNAME"), APPNAME);
+
+	if (CAppProfile::IsRunAsPortable()) {
+		str += _T(" (ポータブル版)");
+	}
+
 	parts->SetWindowText(str);
 
 

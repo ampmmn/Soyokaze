@@ -12,6 +12,7 @@ class CAppProfile
 	// コピー禁止
 	CAppProfile(const CAppProfile&);
 	CAppProfile& operator = (const CAppProfile& );
+
 public:
 
 	//! ディレクトリパスを取得
@@ -20,6 +21,9 @@ public:
 	static const TCHAR* GetFilePath(TCHAR* path, size_t len, bool isPerMachine);
 	//! 設定フォルダの初期化
 	static bool InitializeProfileDir(bool* isNewCreated);
+
+	//! ポータブル版として動作しているか?
+	static bool IsRunAsPortable();
 
 	//! インスタンスの生成・取得
 	static CAppProfile* Get();
