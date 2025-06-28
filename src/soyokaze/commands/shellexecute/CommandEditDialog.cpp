@@ -4,6 +4,7 @@
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "commands/common/ExpandFunctions.h"
 #include "gui/FolderDialog.h"
+#include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/common/CommandEditValidation.h"
@@ -45,6 +46,8 @@ struct CommandEditDialog::PImpl
 	// 
 	CMFCMenuButton mPathMenuBtn;
 	CMenu mMenuForPathBtn;
+
+	KeywordEdit mPathEdit;
 };
 
 static const tregex& GetRegexForArgument()
@@ -111,6 +114,10 @@ BOOL CommandEditDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
+
+	in->mPathEdit.SubclassDlgItem(IDC_EDIT_PATH, this);
+	in->mPathEdit.SetNotifyKeyEvent(false);
+	in->mPathEdit.SetPlaceHolder(_T("ファイルのパスやURLなどを入力します"));
 
 	in->mMenuForPathBtn.CreatePopupMenu();
 	in->mMenuForPathBtn.InsertMenu((UINT)-1, 0, 1, _T("ファイル選択"));

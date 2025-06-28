@@ -11,6 +11,7 @@ public:
 	void SetCaretToEnd();
 	void SetIMEOff();
 	void SetPlaceHolder(const CString& text);
+	void SetNotifyKeyEvent(bool isNotify);
 
 protected:
 	struct PImpl;

@@ -110,6 +110,7 @@ struct KeywordEdit::PImpl
 	}
 
 	bool mIsFocus{false};
+	bool mIsNotify{true};
 
 	// IMMのハンドル
 	HIMC mImcHandle{nullptr};
@@ -196,14 +197,20 @@ void KeywordEdit::SetPlaceHolder(const CString& text)
 {
 	in->mPlaceHolderText = text;
 	SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)text);
+}
 
+void KeywordEdit::SetNotifyKeyEvent(bool isNotify)
+{
+	in->mIsNotify = isNotify;
 }
 
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 {
-	// 親ウインドウ(LauncherMainWindow)にキー入力を通知
-	if (GetParent()->SendMessage(WM_APP + 1, nChar, 0) != 0) {
-		return ;
+	if (in->mIsNotify) {
+		// 親ウインドウ(LauncherMainWindow)にキー入力を通知
+		if (GetParent()->SendMessage(WM_APP + 1, nChar, 0) != 0) {
+			return ;
+		}
 	}
 	__super::OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -212,12 +219,14 @@ UINT KeywordEdit::OnGetDlgCode()
 {
 	UINT ret = __super::OnGetDlgCode();
 
-	const MSG* msg{CWnd::GetCurrentMessage()};
-	msg = (const MSG*)msg->lParam;
+	if (in->mIsNotify) {
+		const MSG* msg{CWnd::GetCurrentMessage()};
+		msg = (const MSG*)msg->lParam;
 
-	// Tabキーの入力もWM_KEYDOWNで処理できるようにする
-	if (msg && msg->message == WM_KEYDOWN && msg->wParam == VK_TAB) {
-		ret |= DLGC_WANTMESSAGE;
+		// Tabキーの入力もWM_KEYDOWNで処理できるようにする
+		if (msg && msg->message == WM_KEYDOWN && msg->wParam == VK_TAB) {
+			ret |= DLGC_WANTMESSAGE;
+		}
 	}
 
 	return ret;

@@ -154,6 +154,7 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->EnableIconChange();
 
 	in->mQueryEdit.SubclassDlgItem(IDC_EDIT_URL, this);
+	in->mQueryEdit.SetNotifyKeyEvent(false);
 	in->mQueryEdit.SetPlaceHolder(_T("例:https://www.google.com/search?q=$*"));
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
