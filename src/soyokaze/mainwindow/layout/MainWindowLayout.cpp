@@ -4,9 +4,6 @@
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "mainwindow/layout/DefaultComponentPlacer.h"
-#include "mainwindow/layout/NoGuideComponentPlacer.h"
-#include "mainwindow/layout/NoIconComponentPlacer.h"
-#include "mainwindow/layout/NoGuideNoIconComponentPlacer.h"
 #include "mainwindow/layout/WindowPosition.h"
 #include "mainwindow/layout/MainWindowPlacement.h"
 
@@ -58,20 +55,9 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
-	bool IsShowGuide()
-	{
-		return mIsShowGuide;
-	}
-	bool IsDrawIcon()
-	{
-		return mIsDrawIcon;
-	}
-
 	void LoadSettings()
 	{
 			AppPreference* pref = AppPreference::Get();
-			mIsShowGuide = pref->IsShowGuide();
-			mIsDrawIcon = pref->IsDrawIcon();
 
 	}
 
@@ -91,29 +77,12 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 		}
 
 		auto placement = new launcherapp::mainwindow::layout::MainWindowPlacement(mMainWnd);
-
-		if (mIsShowGuide == false && mIsDrawIcon) {
-			// ガイドなし、アイコンあり
-			return new launcherapp::mainwindow::layout::NoGuideComponentPlacer(placement);
-		}
-		if (mIsShowGuide && mIsDrawIcon == false) {
-			// ガイドあり、アイコンなし
-			return new launcherapp::mainwindow::layout::NoIconComponentPlacer(placement);
-		}
-		if (mIsShowGuide == false && mIsDrawIcon == false) {
-			// ガイドなし、アイコンなし
-			return new launcherapp::mainwindow::layout::NoGuideNoIconComponentPlacer(placement);
-		}
-		else {
-			return new launcherapp::mainwindow::layout::DefaultComponentPlacer(placement);
-		}
+		return new launcherapp::mainwindow::layout::DefaultComponentPlacer(placement);
 	}
 
 	LauncherMainWindowIF* mMainWnd{nullptr};
 	MainWindowLayout* mThisPtr{nullptr};
 	bool mIsFirstCall{true};
-	bool mIsShowGuide{false};
-	bool mIsDrawIcon{true};
 	bool mIsMoveTemporary{false};
 	CPoint mPositionToRestore{0,0};
 
@@ -456,21 +425,21 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 	ComponentPlacer* placer = in->CreateComponentPlacer();
 
 	// アイコン欄
-	placer->PlaceIcon(iconLabel->GetSafeHwnd());
+	placer->PlaceIcon(iconLabel->GetSafeHwnd(), status);
 	// 説明欄
 	auto comment = mainWnd->GetDlgItem(IDC_STATIC_DESCRIPTION);
-	placer->PlaceDescription(comment->GetSafeHwnd());
+	placer->PlaceDescription(comment->GetSafeHwnd(), status);
 	// ガイド欄
 	auto guide = mainWnd->GetDlgItem(IDC_STATIC_GUIDE);
-	placer->PlaceGuide(guide->GetSafeHwnd());
+	placer->PlaceGuide(guide->GetSafeHwnd(), status);
 	// 入力欄
 	auto edit = mainWnd->GetDlgItem(IDC_EDIT_COMMAND);
-	placer->PlaceEdit(edit->GetSafeHwnd());
+	placer->PlaceEdit(edit->GetSafeHwnd(), status);
 	// 候補欄
 	auto listCtrl = mainWnd->GetDlgItem(IDC_LIST_CANDIDATE);
-	placer->PlaceCandidateList(listCtrl->GetSafeHwnd());
+	placer->PlaceCandidateList(listCtrl->GetSafeHwnd(), status);
 
-	placer->Apply(hwnd);
+	placer->Apply(hwnd, status);
 
 
 	// 何かしら入力がある状態であったら、位置情報を保持しておく

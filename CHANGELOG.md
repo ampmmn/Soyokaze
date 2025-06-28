@@ -9,6 +9,7 @@
 ### Changed
 
 - #113 履歴ファイルのファイル名/形式を変更(`history.txt`→`history.json`)
+- #118 ガイド欄をウインドウの下端に移動する
 
 ### Fixed
 

@@ -19,21 +19,25 @@ public:
 	~DefaultComponentPlacer() override;
 
 	// アイコン欄のサイズ計算と配置
-	bool PlaceIcon(HWND elemHwnd) override;
+	bool PlaceIcon(HWND elemHwnd, LauncherInput* status) override;
 	// 説明欄のサイズ計算と配置
-	bool PlaceDescription(HWND elemHwnd) override;
+	bool PlaceDescription(HWND elemHwnd, LauncherInput* status) override;
 	// ガイド欄のサイズ計算と配置
-	bool PlaceGuide(HWND elemHwnd) override;
+	bool PlaceGuide(HWND elemHwnd, LauncherInput* status) override;
 	// 入力欄のサイズ計算と配置
-	bool PlaceEdit(HWND elemHwnd) override;
+	bool PlaceEdit(HWND elemHwnd, LauncherInput* status) override;
 	// 候補欄のサイズ計算と配置
-	bool PlaceCandidateList(HWND elemHwnd) override;
+	bool PlaceCandidateList(HWND elemHwnd, LauncherInput* status) override;
 	// 適用
-	void Apply(HWND hwnd) override;
+	void Apply(HWND hwnd, LauncherInput* status) override;
 	// それより以下のリサイズを許容しない最小限の高さを取得する
 	int GetMinimumHeight() override;
 	// 最低限の候補欄の高さを取得する
 	int GetMinimumCandidateHeight() override;
+
+protected:
+	void GetGuideRect(CRect& rc);
+	void GetEditRect(CRect& rc);
 
 private:
 	struct PImpl;

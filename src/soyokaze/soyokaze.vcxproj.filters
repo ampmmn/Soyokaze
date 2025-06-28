@@ -1224,15 +1224,6 @@
     <ClInclude Include="mainwindow\layout\MainWindowPlacement.h">
       <Filter>mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\NoGuideComponentPlacer.h">
-      <Filter>mainwindow\layout</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h">
-      <Filter>mainwindow\layout</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h">
-      <Filter>mainwindow\layout</Filter>
-    </ClInclude>
     <ClInclude Include="utility\WinHttp.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -2409,15 +2400,6 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp">
-      <Filter>mainwindow\layout</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp">
-      <Filter>mainwindow\layout</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp">
-      <Filter>mainwindow\layout</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp">
       <Filter>mainwindow\layout</Filter>
     </ClCompile>
     <ClCompile Include="utility\WinHttp.cpp">

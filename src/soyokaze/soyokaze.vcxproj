@@ -706,9 +706,6 @@
     <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\MainWindowLayout.h" />
     <ClInclude Include="mainwindow\layout\MainWindowPlacement.h" />
-    <ClInclude Include="mainwindow\layout\NoGuideComponentPlacer.h" />
-    <ClInclude Include="mainwindow\layout\NoGuideNoIconComponentPlacer.h" />
-    <ClInclude Include="mainwindow\layout\NoIconComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\WindowPosition.h" />
     <ClInclude Include="mainwindow\layout\MainWindowAppearance.h" />
     <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h" />
@@ -1118,9 +1115,6 @@
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp" />
-    <ClCompile Include="mainwindow\layout\NoGuideComponentPlacer.cpp" />
-    <ClCompile Include="mainwindow\layout\NoGuideNoIconComponentPlacer.cpp" />
-    <ClCompile Include="mainwindow\layout\NoIconComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp" />
     <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp" />
