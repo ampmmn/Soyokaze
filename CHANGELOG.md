@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- #117 【通常コマンド】設定画面で「絶対パスに置換」ボタンを追加する
+
 ### Changed
 
 - #113 履歴ファイルのファイル名/形式を変更(`history.txt`→`history.json`)

@@ -214,6 +214,7 @@
 #define IDC_EDIT_MESSAGE2               1023
 #define IDC_EDIT_EXCLUDEFILTER          1023
 #define IDC_EDIT_EXCLUDE                1023
+#define IDC_BUTTON_RESOLVEABSPATH       1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_SOUNDEXECUTE           1024
 #define IDC_EDIT_HOTKEY_ENTER           1024

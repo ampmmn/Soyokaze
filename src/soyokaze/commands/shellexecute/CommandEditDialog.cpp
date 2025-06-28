@@ -98,6 +98,7 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PARAM, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_COMMAND(IDC_BUTTON_RESOLVEABSPATH, OnButtonResolveAbsolutePath)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
@@ -145,14 +146,19 @@ bool CommandEditDialog::UpdateStatus()
 	CString targetPath = param.mNormalAttr.mPath;
 	ExpandMacros(targetPath);
 
+	bool isMacroExpaned = targetPath != param.mNormalAttr.mPath; 
+
+
 	// 相対パスの場合はパス解決をする
-	if (PathIsRelative(targetPath)) {
-		LocalPathResolver resolver;
-		CString resolvedPath;
-		if (resolver.Resolve(targetPath, resolvedPath)) {
-			targetPath = resolvedPath;
-		}
+	BOOL isRelative = PathIsRelative(targetPath); 
+	if (isRelative) {
+		ResolvePath(targetPath);
 	}
+	// 相対パス(かつマクロが使われていない)の場合は「絶対パスに変換」ボタンを表示する
+	bool shouldShowResolveAbsBtn = targetPath.IsEmpty() == FALSE &&
+	                               PathIsURL(targetPath) == FALSE &&
+	                               isMacroExpaned == false && isRelative;
+	GetDlgItem(IDC_BUTTON_RESOLVEABSPATH)->ShowWindow(shouldShowResolveAbsBtn? SW_SHOW : SW_HIDE);
 
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 
@@ -379,20 +385,30 @@ void CommandEditDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::ResolveShortcut(CString& path)
+bool CommandEditDialog::ResolvePath(CString& targetPath)
 {
-	UpdateData();
+	LocalPathResolver resolver;
+	CString resolvedPath;
+
+	bool isResolved = resolver.Resolve(targetPath, resolvedPath);
+	if (isResolved) {
+		targetPath = resolvedPath;
+	}
+	return isResolved;
+}
+
+bool CommandEditDialog::ResolveShortcut(CString& path)
+{
 	auto resolvedPath = ShortcutFile::ResolvePath(path);
 	if (resolvedPath.IsEmpty()) {
 		CString msg((LPCTSTR)IDS_ERR_INVALIDSHORTCUT);
 		msg += _T("\n");
 		msg += path;
-		AfxMessageBox(msg);
-		return;
+		MessageBox(msg, nullptr, MB_OK | MB_ICONWARNING);
+		return false;
 	}
 	path = resolvedPath;
-	UpdateStatus();
-	UpdateData(FALSE);
+	return true;
 }
 
 // (テキストエディタなどで)編集するようなファイルタイプか?
@@ -415,9 +431,25 @@ bool CommandEditDialog::IsEditableFileType(CString pathStr)
 	return true;
 }
 
+void CommandEditDialog::OnButtonResolveAbsolutePath()
+{
+	UpdateData();
+	if (ResolvePath(in->mParam.mNormalAttr.mPath) == false) {
+		MessageBox(_T("該当するファイルが見つかりませんでした。"), nullptr, MB_OK | MB_ICONWARNING);
+		return;
+	}
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 void CommandEditDialog::OnButtonResolveShortcut()
 {
-	ResolveShortcut(in->mParam.mNormalAttr.mPath);
+	UpdateData();
+	if (ResolveShortcut(in->mParam.mNormalAttr.mPath) == false) {
+		return;
+	}
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
@@ -428,7 +460,7 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 		// 変更
 		LPCTSTR iconPath = (LPCTSTR)lp;
 		if (IconLoader::GetStreamFromPath(iconPath, param.mIconData) == false) {
-			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
+			MessageBox(_T("指定されたファイルは有効なイメージファイルではありません"), nullptr, MB_OK | MB_ICONWARNING);
 			return 0;
 		}
 
