@@ -75,9 +75,9 @@ void ExecuteHistory::Add(
 		 	[word](auto item) { return item.mWholeWord == word; });
 	if (it != items.end()) {
 		// 同じものがあったら先頭に移動
-		auto item = *it;
+		auto item_to_move = *it;
 		items.erase(it);
-		items.push_front(item);
+		items.push_front(item_to_move);
 		return;
 	}
 

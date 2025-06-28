@@ -57,6 +57,8 @@ void CommandQueryRequest::NotifyQueryComplete(
 	std::vector<launcherapp::core::Command*>* result
 )
 {
+	UNREFERENCED_PARAMETER(isCancelled);
+
 	mResult = result;
 	SetEvent(mEventHandle);
 }

@@ -42,8 +42,6 @@ struct HistoryCommand::PImpl
 			return nullptr;
 		}
 
-		BOOL result = TRUE;
-
 		std::vector<launcherapp::core::Command*> items;
 
 		// 結果を取得し、先頭の候補を実行する
