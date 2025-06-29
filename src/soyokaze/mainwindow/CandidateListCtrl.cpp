@@ -275,7 +275,7 @@ void CandidateListCtrl::InitColumns()
 	if (in->mIsShowCommandType) {
 		strHeader.LoadString(IDS_COMMANDTYPE);
 		lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-		lvc.cx = typeColWidth;  //  #dummy-col-width
+		lvc.cx = typeColWidth;
 		lvc.fmt = LVCFMT_LEFT;
 		InsertColumn(1,&lvc);
 		in->mHasCommandTypeColumn = true;

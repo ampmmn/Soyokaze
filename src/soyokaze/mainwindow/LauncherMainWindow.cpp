@@ -861,7 +861,13 @@ BOOL LauncherMainWindow::OnInitDialog()
 	if (in->mHotKeyPtr->Register() == false) {
 		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
 		msg += in->mHotKeyPtr->ToString();
+
+		// この時点ではメインウインドウのサイズが未計算状態なので、ここでメッセージボックスを出すと
+		// メインウインドウがおかしなサイズで表示されてしまう。
+		// それを回避するため、メッセージボックスを出している間はメインウインドウを隠す
+		ShowWindow(SW_HIDE);
 		AfxMessageBox(msg);
+		ShowWindow(SW_SHOW);
 		SPDLOG_ERROR(_T("Failed to restiser app hot key!"));
 	}
 	in->mMainWindowHotKeyPtr = std::make_unique<MainWindowHotKey>();

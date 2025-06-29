@@ -155,9 +155,8 @@ void DefaultComponentPlacer::GetEditRect(CRect& rc)
 
 	int x = MARGIN_X + iconXOffset;
 
-	int iconBottom = MARGIN_Y + in->mPlacement->GetIconWindowHeight();
-
-	int y =	iconBottom + margin;
+	// 説明欄の下に配置
+	int y =	MARGIN_Y + in->mPlacement->GetDescriptionWindowHeight() + margin;
 
 	// 親ウインドウの幅と、説明欄の配置した位置をもとに幅を決定
 	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;
@@ -219,7 +218,8 @@ void DefaultComponentPlacer::Apply(HWND hwnd, LauncherInput* status)
 	descLabel->UpdateWindow();
 
 	auto guideLabel = in->mPlacement->GetGuideLabel();
-	if (in->mIsShowGuide) {
+	bool isShowGuide = in->mIsShowGuide && (status && status->HasKeyword());
+	if (isShowGuide) {
 		guideLabel->ShowWindow(SW_SHOW);
 		guideLabel->InvalidateRect(nullptr);
 		guideLabel->UpdateWindow();
