@@ -92,6 +92,14 @@ void UnitConvertProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t UnitConvertProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(InchAdhocCommand::TypeDisplayName());
+	displayNames.push_back(EraNameWJCommand::TypeDisplayName());
+	return 2;
+}
+
 } // end of namespace unitconvert
 } // end of namespace commands
 } // end of namespace launcherapp

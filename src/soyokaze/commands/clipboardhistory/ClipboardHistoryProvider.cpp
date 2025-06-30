@@ -214,6 +214,13 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ClipboardHistoryProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(ClipboardHistoryCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace clipboardhistory
 } // end of namespace commands
 } // end of namespace launcherapp

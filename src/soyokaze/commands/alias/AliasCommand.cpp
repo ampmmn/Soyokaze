@@ -43,6 +43,12 @@ struct AliasCommand::PImpl
 
 CString AliasCommand::GetType() { return _T("Alias"); }
 
+CString AliasCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("エイリアスコマンド"));
+	return TEXT_TYPE;
+}
+
 AliasCommand::AliasCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -69,8 +75,7 @@ CString AliasCommand::GetGuideString()
 
 CString AliasCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("エイリアスコマンド"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL AliasCommand::Execute(Parameter* param)

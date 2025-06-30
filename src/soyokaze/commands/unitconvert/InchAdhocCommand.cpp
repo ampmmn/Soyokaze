@@ -47,7 +47,7 @@ CString InchAdhocCommand::GetGuideString()
 
 CString InchAdhocCommand::GetTypeDisplayName()
 {
-	return _T("単位変換(inch)");
+	return TypeDisplayName();
 }
 
 
@@ -108,6 +108,10 @@ InchAdhocCommand::Clone()
 	return clonedObj.release();
 }
 
+CString InchAdhocCommand::TypeDisplayName()
+{
+	return _T("単位変換(inch)");
+}
 
 } // end of namespace unitconvert
 } // end of namespace commands

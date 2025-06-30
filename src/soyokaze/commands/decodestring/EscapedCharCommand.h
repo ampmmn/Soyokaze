@@ -32,6 +32,9 @@ public:
 	static bool ScanAsOctal(std::string::iterator& it, std::string::iterator itEnd, std::string& dst);
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(EscapedCharCommand)
+
+public:
+	static CString TypeDisplayName();
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

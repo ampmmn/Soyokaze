@@ -49,6 +49,7 @@ public:
 	// 
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param, std::unique_ptr<WebHistoryCommand>& newCmd);
 

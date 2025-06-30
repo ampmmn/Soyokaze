@@ -55,7 +55,7 @@ CString GitBashToLocalPathAdhocCommand::GetGuideString()
 
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 {
-	return _T("git-bash To Local Path");
+	return TypeDisplayName();
 }
 
 bool GitBashToLocalPathAdhocCommand::ShouldCopy(Parameter* param)
@@ -138,6 +138,11 @@ bool GitBashToLocalPathAdhocCommand::IsGitBashPath(const CString& path)
 {
 	static tregex pat(_T("^ */[a-zA-Z]/.*$"));
 	return std::regex_match(tstring(path), pat);
+}
+
+CString GitBashToLocalPathAdhocCommand::TypeDisplayName()
+{
+	return _T("git-bash To Local Path");
 }
 
 

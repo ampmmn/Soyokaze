@@ -42,10 +42,12 @@ public:
 
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewInstance(launcherapp::core::CommandEditor* editor, Command** newCmdPtr);
 	static bool NewDialog(Parameter* param, WindowActivateCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, WindowActivateCommand** newCmdPtr);
+
 
 protected:
 	struct PImpl;

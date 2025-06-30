@@ -124,6 +124,13 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t PathExeAdhocCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(PathExecuteCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace pathfind
 } // end of namespace commands
 } // end of namespace launcherapp

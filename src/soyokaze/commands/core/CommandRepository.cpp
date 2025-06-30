@@ -800,6 +800,17 @@ void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& e
 	in->mCommands.Enumerate(enumCommands);
 }
 
+void CommandRepository::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+
+	std::vector<CString> tmpNames;
+	for (auto& provider : in->mProviders) {
+		provider->EnumCommandDisplayNames(tmpNames);
+	}
+	displayNames.swap(tmpNames);
+}
+
 void
 CommandRepository::Query(
 	QueryRequest* newRequest

@@ -280,6 +280,14 @@ uint32_t ActivateWindowProvider::GetOrder() const
 	return 500;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ActivateWindowProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(WindowActivateCommand::TypeDisplayName());
+	displayNames.push_back(WindowActivateAdhocCommand::TypeDisplayName());
+	return 2;
+}
+
 } // end of namespace activate_window
 } // end of namespace commands
 } // end of namespace launcherapp

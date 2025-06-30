@@ -69,6 +69,11 @@ void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std
 
 CString BookmarkCommand::GetType() { return _T("Bookmark"); }
 
+CString BookmarkCommand::TypeDisplayName()
+{
+	return _T("ブックマーク検索");
+}
+
 BookmarkCommand::BookmarkCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -107,7 +112,7 @@ CString BookmarkCommand::GetGuideString()
 
 CString BookmarkCommand::GetTypeDisplayName()
 {
-	return _T("ブックマーク検索");
+	return BookmarkCommand::TypeDisplayName();
 }
 
 BOOL BookmarkCommand::Execute(Parameter* param_)

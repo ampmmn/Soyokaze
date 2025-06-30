@@ -41,6 +41,7 @@ public:
 	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
 
 	static CString GroupCommand::GetType();
+	static CString TypeDisplayName();
 
 public:
 	void SetParam(const CommandParam& param);

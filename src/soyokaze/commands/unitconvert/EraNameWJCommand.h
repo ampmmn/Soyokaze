@@ -23,6 +23,9 @@ public:
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(EraNameWJCommand)
 
+public:
+	static CString TypeDisplayName();
+
 protected:
 
 	struct PImpl;

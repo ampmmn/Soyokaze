@@ -40,6 +40,7 @@ public:
 	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param);
 

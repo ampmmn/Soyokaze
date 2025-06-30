@@ -35,6 +35,8 @@ public:
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
+public:
+	static CString TypeDisplayName(int index);
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(SpecialFolderFileCommand)
 protected:

@@ -67,8 +67,7 @@ CString BuiltinCommandBase::GetGuideString()
 
 CString BuiltinCommandBase::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 bool BuiltinCommandBase::CanExecute()
@@ -192,6 +191,12 @@ uint32_t BuiltinCommandBase::Release()
 void BuiltinCommandBase::LoadFrom(Entry* entry)
 {
 	Load(entry);
+}
+
+CString BuiltinCommandBase::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_BUILTIN);
+	return TEXT_TYPE;
 }
 
 }

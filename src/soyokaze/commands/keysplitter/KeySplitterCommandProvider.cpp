@@ -62,6 +62,13 @@ uint32_t KeySplitterCommandProvider::KeySplitterCommandProvider::GetOrder() cons
 	return 5000;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t KeySplitterCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(KeySplitterCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace keysplitter
 } // end of namespace commands
 } // end of namespace launcherapp

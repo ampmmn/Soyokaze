@@ -34,6 +34,7 @@ public:
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
+	static CString TypeDisplayName();
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(MMCCommand)
 protected:

@@ -61,6 +61,13 @@ void MailToCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t MailToCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(MailToCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace mailto
 } // end of namespace commands
 } // end of namespace launcherapp

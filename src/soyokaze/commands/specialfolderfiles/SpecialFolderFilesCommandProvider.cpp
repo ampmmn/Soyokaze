@@ -98,6 +98,14 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t SpecialFolderFilesCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(SpecialFolderFileCommand::TypeDisplayName(TYPE_RECENT));
+	displayNames.push_back(SpecialFolderFileCommand::TypeDisplayName(TYPE_STARTMENU));
+	return 2;
+}
+
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands

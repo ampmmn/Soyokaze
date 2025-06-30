@@ -136,6 +136,15 @@ void PathConvertProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t PathConvertProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(FileProtocolConvertAdhocCommand::TypeDisplayName());
+	displayNames.push_back(GitBashToLocalPathAdhocCommand::TypeDisplayName());
+	displayNames.push_back(LocalToGitBashPathAdhocCommand::TypeDisplayName());
+	return 3;
+}
+
 } // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace launcherapp

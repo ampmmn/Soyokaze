@@ -74,6 +74,12 @@ bool RegExpCommand::PImpl::GetRegex(tregex& regexObject)
 
 CString RegExpCommand::GetType() { return _T("RegExp"); }
 
+CString RegExpCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);
+	return TEXT_TYPE;
+}
+
 RegExpCommand::RegExpCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -100,8 +106,7 @@ CString RegExpCommand::GetGuideString()
 
 CString RegExpCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_REGEXPCOMMAND);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 bool RegExpCommand::CanExecute()

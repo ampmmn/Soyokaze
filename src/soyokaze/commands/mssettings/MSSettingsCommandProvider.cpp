@@ -160,6 +160,13 @@ void MSSettingsCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t MSSettingsCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(MSSettingsCommand::TypeDisplayName());
+	return 1;
+}
+
 
 }
 }

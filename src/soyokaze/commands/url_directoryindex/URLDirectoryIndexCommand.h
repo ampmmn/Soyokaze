@@ -55,6 +55,7 @@ public:
 	void ClearCache() override;
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param, URLDirectoryIndexCommand** newCmd);
 	

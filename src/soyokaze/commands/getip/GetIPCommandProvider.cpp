@@ -98,6 +98,13 @@ void GetIPCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t GetIPCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(GetIPCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace getip
 } // end of namespace commands

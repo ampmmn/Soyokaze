@@ -48,6 +48,7 @@ public:
 	int RegisterCommandFromFiles(const std::vector<CString>& files);
 
 	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
+	void EnumCommandDisplayNames(std::vector<CString>& displayNames);
 
 	void Query(launcherapp::commands::core::CommandQueryRequest* req);
 	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);

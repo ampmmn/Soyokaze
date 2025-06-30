@@ -51,8 +51,7 @@ CString WorksheetCommand::GetGuideString()
 
 CString WorksheetCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL WorksheetCommand::Execute(Parameter* param)
@@ -80,6 +79,12 @@ launcherapp::core::Command*
 WorksheetCommand::Clone()
 {
 	return new WorksheetCommand(in->mWorksheet);
+}
+
+CString WorksheetCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WORKSHEET);
+	return TEXT_TYPE;
 }
 
 } // end of namespace activate_worksheet

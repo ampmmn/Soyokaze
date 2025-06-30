@@ -56,8 +56,7 @@ CString EscapedCharCommand::GetGuideString()
 
 CString EscapedCharCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("EscapedChar"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL EscapedCharCommand::Execute(Parameter* param)
@@ -312,6 +311,12 @@ launcherapp::core::Command*
 EscapedCharCommand::Clone()
 {
 	return new EscapedCharCommand();
+}
+
+CString EscapedCharCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("EscapedChar"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace decodestring

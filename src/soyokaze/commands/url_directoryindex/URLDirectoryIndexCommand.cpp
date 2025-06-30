@@ -351,8 +351,7 @@ CString URLDirectoryIndexCommand::GetGuideString()
 
 CString URLDirectoryIndexCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("DirectiryIndex"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL URLDirectoryIndexCommand::Execute(Parameter* param)
@@ -668,6 +667,12 @@ bool URLDirectoryIndexCommand::QueryCandidates(Pattern* pattern, CommandQueryIte
 void URLDirectoryIndexCommand::ClearCache()
 {
 	in->ClearCache();
+}
+
+CString URLDirectoryIndexCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("DirectiryIndex"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace url_directoryindex

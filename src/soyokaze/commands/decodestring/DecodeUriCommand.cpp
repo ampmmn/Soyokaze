@@ -54,8 +54,7 @@ CString DecodeUriCommand::GetGuideString()
 
 CString DecodeUriCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("DecodeURI"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL DecodeUriCommand::Execute(Parameter* param)
@@ -139,6 +138,12 @@ launcherapp::core::Command*
 DecodeUriCommand::Clone()
 {
 	return new DecodeUriCommand();
+}
+
+CString DecodeUriCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("DecodeURI"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace decodestring

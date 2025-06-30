@@ -72,8 +72,7 @@ CString EjectVolumeCommand::GetGuideString()
 
 CString EjectVolumeCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("取リ外しコマンド"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL EjectVolumeCommand::Execute(Parameter* param_)
@@ -226,6 +225,12 @@ bool EjectVolumeCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 	}
 
 	return true;
+}
+
+CString EjectVolumeCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("取リ外しコマンド"));
+	return TEXT_TYPE;
 }
 
 }

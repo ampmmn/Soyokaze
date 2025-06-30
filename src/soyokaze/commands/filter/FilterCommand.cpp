@@ -66,6 +66,12 @@ void FilterCommand::PImpl::LoadCandidates()
 
 CString FilterCommand::GetType() { return _T("Filter"); }
 
+CString FilterCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
+	return TEXT_TYPE;
+}
+
 FilterCommand::FilterCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -105,8 +111,7 @@ CString FilterCommand::GetGuideString()
 
 CString FilterCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 bool FilterCommand::CanExecute()

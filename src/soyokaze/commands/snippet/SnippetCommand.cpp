@@ -43,6 +43,12 @@ struct SnippetCommand::PImpl
 
 CString SnippetCommand::GetType() { return _T("Snippet"); }
 
+CString SnippetCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_SNIPPETCOMMAND);
+	return TEXT_TYPE;
+}
+
 SnippetCommand::SnippetCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -69,8 +75,7 @@ CString SnippetCommand::GetGuideString()
 
 CString SnippetCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_SNIPPETCOMMAND);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL SnippetCommand::Execute(Parameter* param)

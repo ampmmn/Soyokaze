@@ -33,6 +33,9 @@ public:
 
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 
+	// Providerが扱うコマンド種別(表示名)を列挙
+	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
+
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

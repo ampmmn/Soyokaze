@@ -50,6 +50,11 @@ HWND WindowActivateCommand::PImpl::FindHwnd()
 
 CString WindowActivateCommand::GetType() { return _T("WindowActivate"); }
 
+CString WindowActivateCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);
+	return TEXT_TYPE;
+}
 
 WindowActivateCommand::WindowActivateCommand() : in(std::make_unique<PImpl>())
 {
@@ -76,8 +81,7 @@ CString WindowActivateCommand::GetGuideString()
 
 CString WindowActivateCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WINDOWACTIVATE);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL WindowActivateCommand::Execute(Parameter* param)

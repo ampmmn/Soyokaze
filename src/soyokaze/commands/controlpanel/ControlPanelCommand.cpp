@@ -47,8 +47,7 @@ CString ControlPanelCommand::GetGuideString()
 
 CString ControlPanelCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CONTROLPANEL);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL ControlPanelCommand::Execute(Parameter* param)
@@ -110,6 +109,12 @@ bool ControlPanelCommand::QueryInterface(const launcherapp::core::IFID& ifid, vo
 		return true;
 	}
 	return false;
+}
+
+CString ControlPanelCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CONTROLPANEL);
+	return TEXT_TYPE;
 }
 
 

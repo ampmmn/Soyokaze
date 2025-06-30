@@ -69,6 +69,13 @@ uint32_t BookmarkCommandProvider::GetOrder() const
 	return 145;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t BookmarkCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(BookmarkCommand::TypeDisplayName());
+	return 1;
+}
+
 void BookmarkCommandProvider::OnBeforeLoad()
 {
 }

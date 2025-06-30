@@ -26,6 +26,9 @@ public:
 	launcherapp::core::Command* Clone() override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(DecodeBase64Command)
+
+public:
+	static CString TypeDisplayName();
 };
 
 

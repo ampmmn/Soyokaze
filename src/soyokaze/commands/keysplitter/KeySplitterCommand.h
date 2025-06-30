@@ -45,6 +45,7 @@ public:
 	
 public:
 	void SetParam(const CommandParam& param);
+	static CString TypeDisplayName();
 
 protected:
 	struct PImpl;

@@ -75,7 +75,7 @@ CString EraNameWJCommand::GetGuideString()
 
 CString EraNameWJCommand::GetTypeDisplayName()
 {
-	return _T("元号変換(西暦<->和暦)");
+	return TypeDisplayName();
 }
 
 
@@ -172,6 +172,11 @@ EraNameWJCommand::Clone()
 	clonedObj->in->mName = in->mName;
 
 	return clonedObj.release();
+}
+
+CString EraNameWJCommand::TypeDisplayName()
+{
+	return _T("元号変換(西暦<->和暦)");
 }
 
 

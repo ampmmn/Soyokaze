@@ -77,6 +77,15 @@ void DecodeStringCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t DecodeStringCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(DecodeBase64Command::TypeDisplayName());
+	displayNames.push_back(DecodeUriCommand::TypeDisplayName());
+	displayNames.push_back(EscapedCharCommand::TypeDisplayName());
+	return 3;
+}
+
 
 } // end of namespace decodestring
 } // end of namespace commands

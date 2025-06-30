@@ -52,8 +52,7 @@ CString PptJumpCommand::GetGuideString()
 
 CString PptJumpCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)_T("スライド検索"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL PptJumpCommand::Execute(Parameter* param)
@@ -86,6 +85,12 @@ launcherapp::core::Command*
 PptJumpCommand::Clone()
 {
 	return new PptJumpCommand(in->mFilePath, in->mPage, in->mTitle);
+}
+
+CString PptJumpCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)_T("スライド検索"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace presentation

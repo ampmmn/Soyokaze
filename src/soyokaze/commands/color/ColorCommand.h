@@ -30,6 +30,9 @@ public:
 	launcherapp::core::Command* Clone() override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(ColorCommand)
+
+public:
+	static CString TypeDisplayName();
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

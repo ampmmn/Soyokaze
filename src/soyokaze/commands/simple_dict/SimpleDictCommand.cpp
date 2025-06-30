@@ -258,7 +258,7 @@ CString SimpleDictCommand::GetGuideString()
 CString SimpleDictCommand::GetTypeDisplayName()
 {
 	// コマンドとしてマッチしないが、キーワードマネージャに表示する文字列として使用する
-	return _T("簡易辞書コマンド");
+	return TypeDisplayName();
 }
 
 bool SimpleDictCommand::CanExecute()
@@ -526,6 +526,11 @@ void SimpleDictCommand::ReserveUpdate(bool isResiterWatcher)
 		auto thisPtr = (PImpl*)p;
 		thisPtr->Reload();
 	}, in.get());
+}
+
+CString SimpleDictCommand::TypeDisplayName()
+{
+	return _T("簡易辞書コマンド");
 }
 
 

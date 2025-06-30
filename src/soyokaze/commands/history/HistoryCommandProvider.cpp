@@ -112,6 +112,13 @@ void HistoryCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t HistoryCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(HistoryCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace history
 } // end of namespace commands

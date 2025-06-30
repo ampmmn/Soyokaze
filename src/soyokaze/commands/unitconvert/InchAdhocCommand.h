@@ -23,6 +23,8 @@ public:
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(InchAdhocCommand)
 
+public:
+	static CString TypeDisplayName();
 protected:
 
 	struct PImpl;

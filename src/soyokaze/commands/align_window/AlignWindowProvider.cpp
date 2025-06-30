@@ -72,6 +72,13 @@ uint32_t AlignWindowProvider::GetOrder() const
 	return 1500;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t AlignWindowProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(AlignWindowCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace align_window
 } // end of namespace commands
 } // end of namespace launcherapp

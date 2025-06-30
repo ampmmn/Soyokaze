@@ -59,7 +59,6 @@ struct PathExecuteCommand::PImpl
 	CString mWord;
 	CString mFullPath;
 	bool mIsURL{false};
-	bool mIsFromHistory{false};
 	bool mIsExe{false};
 };
 
@@ -74,20 +73,6 @@ PathExecuteCommand::PathExecuteCommand(
 
 PathExecuteCommand::~PathExecuteCommand()
 {
-}
-
-void PathExecuteCommand::SetFullPath(const CString& path, bool isFromHistory)
-{
-	this->mDescription = path;
-
-	in->mFullPath = path;
-
-	const tregex& regURL = GetURLRegex();
-	in->mIsURL = (std::regex_search((LPCTSTR)path, regURL));
-	in->mIsFromHistory = isFromHistory;
-	if (in->mIsURL == false) {
-		in->mIsExe = EXE_EXT.CompareNoCase(PathFindExtension(path)) == 0;
-	}
 }
 
 void PathExecuteCommand::Reload()
@@ -123,10 +108,7 @@ CString PathExecuteCommand::GetGuideString()
 
 CString PathExecuteCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
-	static CString TEXT_TYPE_HISTORY((LPCTSTR)IDS_COMMAND_PATHEXEC_HISTORY);
-
-	return in->mIsFromHistory ? TEXT_TYPE_HISTORY : TEXT_TYPE_ADHOC;
+	return TypeDisplayName();
 }
 
 BOOL PathExecuteCommand::Execute(Parameter* param)
@@ -177,7 +159,6 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		in->mWord = wholeWord;
 		in->mFullPath = wholeWord;
 		in->mIsURL = true;
-		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
@@ -214,7 +195,6 @@ int PathExecuteCommand::Match(Pattern* pattern)
 
 		in->mWord = filePart;
 		in->mFullPath = filePart;
-		in->mIsFromHistory = false;
 		return Pattern::WholeMatch;
 	}
 
@@ -238,7 +218,6 @@ int PathExecuteCommand::Match(Pattern* pattern)
 
 			in->mWord = word;
 			in->mFullPath = resolvedPath;
-			in->mIsFromHistory = false;
 			return Pattern::WholeMatch;
 		}
 	}
@@ -380,6 +359,12 @@ bool PathExecuteCommand::QueryInterface(const launcherapp::core::IFID& ifid, voi
 		return true;
 	}
 	return false;
+}
+
+CString PathExecuteCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE_ADHOC((LPCTSTR)IDS_COMMAND_PATHEXEC);
+	return TEXT_TYPE_ADHOC;
 }
 
 

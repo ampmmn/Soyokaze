@@ -85,6 +85,13 @@ void TimespanCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t TimespanCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(TimespanCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace timespan
 } // end of namespace commands

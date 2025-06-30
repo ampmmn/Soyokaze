@@ -19,7 +19,6 @@ public:
 	PathExecuteCommand(ExcludePathList* excludeList = nullptr);
 	virtual ~PathExecuteCommand();
 
-	void SetFullPath(const CString& path, bool isFromHistory);
 	void Reload();
 
 	CString GetName() override;
@@ -40,6 +39,8 @@ public:
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
+
+	static CString TypeDisplayName();
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)
 

@@ -36,8 +36,7 @@ CString MailToCommand::GetGuideString()
 
 CString MailToCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_MAILTO);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL MailToCommand::Execute(Parameter* param)
@@ -85,6 +84,12 @@ launcherapp::core::Command*
 MailToCommand::Clone()
 {
 	return new MailToCommand();
+}
+
+CString MailToCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_MAILTO);
+	return TEXT_TYPE;
 }
 
 } // end of namespace mailto

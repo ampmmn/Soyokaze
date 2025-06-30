@@ -97,6 +97,13 @@ void MMCCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t MMCCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(MMCCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace mmc
 } // end of namespace commands

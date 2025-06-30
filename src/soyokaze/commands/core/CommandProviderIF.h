@@ -51,6 +51,9 @@ public:
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const = 0;
 
+	// Providerが扱うコマンド種別(表示名)を列挙
+	virtual uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) = 0;
+
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;
 

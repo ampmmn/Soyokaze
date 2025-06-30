@@ -48,6 +48,7 @@ public:
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param, std::unique_ptr<BookmarkCommand>& newCmd);
 

@@ -62,6 +62,13 @@ uint32_t WatchPathCommandProvider::WatchPathCommandProvider::GetOrder() const
 	return 2100;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t WatchPathCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(WatchPathCommand::TypeDisplayName());
+	return 1;
+}
+
 }
 }
 }

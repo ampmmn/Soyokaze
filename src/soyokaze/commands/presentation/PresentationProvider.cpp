@@ -72,6 +72,13 @@ void PresentationProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t PresentationProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(PptJumpCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace presentation
 } // end of namespace commands
 } // end of namespace launcherapp

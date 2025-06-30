@@ -52,8 +52,7 @@ CString GetIPCommand::GetGuideString()
 
 CString GetIPCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("IP Address"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL GetIPCommand::Execute(Parameter* param)
@@ -75,6 +74,12 @@ launcherapp::core::Command*
 GetIPCommand::Clone()
 {
 	return new GetIPCommand(in->mDisplayName, in->mAddress);
+}
+
+CString GetIPCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("IP Address"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace getip

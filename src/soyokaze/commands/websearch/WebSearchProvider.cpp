@@ -87,6 +87,13 @@ bool WebSearchProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
 	return true;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t WebSearchProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(WebSearchCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace websearch
 } // end of namespace commands

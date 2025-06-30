@@ -76,7 +76,7 @@ CString SnippetGroupCommand::GetGuideString()
 
 CString SnippetGroupCommand::GetTypeDisplayName()
 {
-	return _T("定型文グループ");
+	return TypeDisplayName();
 }
 
 BOOL SnippetGroupCommand::Execute(Parameter* param)
@@ -300,6 +300,11 @@ bool SnippetGroupCommand::QueryCandidates(
 */
 void SnippetGroupCommand::ClearCache()
 {
+}
+
+CString SnippetGroupCommand::TypeDisplayName()
+{
+	return _T("定型文グループ");
 }
 
 

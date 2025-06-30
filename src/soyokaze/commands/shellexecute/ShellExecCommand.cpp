@@ -143,8 +143,7 @@ CString ShellExecCommand::GetGuideString()
 
 CString ShellExecCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_NORMALCOMMAND);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 // コマンドを実行可能かどうか調べる
@@ -531,6 +530,12 @@ bool ShellExecCommand::QueryInterface(const launcherapp::core::IFID& ifid, void*
 		return true;
 	}
 	return false;
+}
+
+CString ShellExecCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_NORMALCOMMAND);
+	return TEXT_TYPE;
 }
 
 }

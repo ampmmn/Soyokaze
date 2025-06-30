@@ -89,8 +89,7 @@ CString KeySplitterCommand::GetGuideString()
 
 CString KeySplitterCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("振り分け"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL KeySplitterCommand::Execute(Parameter* param)
@@ -318,6 +317,12 @@ bool KeySplitterCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 	}
 
 	return true;
+}
+
+CString KeySplitterCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("振り分け"));
+	return TEXT_TYPE;
 }
 
 

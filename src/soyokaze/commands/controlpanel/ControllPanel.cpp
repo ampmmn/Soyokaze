@@ -159,6 +159,13 @@ void ControlPanelProvider::QueryAdhocCommands(
 
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ControlPanelProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(ControlPanelCommand::TypeDisplayName());
+	return 1;
+}
+
 
 }
 }

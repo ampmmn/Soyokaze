@@ -159,7 +159,7 @@ CString WebHistoryCommand::GetGuideString()
 
 CString WebHistoryCommand::GetTypeDisplayName()
 {
-	return _T("ブラウザ履歴検索");
+	return TypeDisplayName();
 }
 
 BOOL WebHistoryCommand::Execute(Parameter* param_)
@@ -400,6 +400,10 @@ void WebHistoryCommand::ClearCache()
 	// ない
 }
 
+CString WebHistoryCommand::TypeDisplayName()
+{
+	return _T("ブラウザ履歴検索");
+}
 
 
 } // end of namespace webhistory

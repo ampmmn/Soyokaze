@@ -139,6 +139,12 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 
 CString GroupCommand::GetType() { return _T("Group"); }
 
+CString GroupCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_GROUPCOMMAND);
+	return TEXT_TYPE;
+}
+
 GroupCommand::GroupCommand() : in(std::make_unique<PImpl>())
 {
 }
@@ -165,8 +171,7 @@ CString GroupCommand::GetGuideString()
 
 CString GroupCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_GROUPCOMMAND);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL GroupCommand::Execute(Parameter* param)

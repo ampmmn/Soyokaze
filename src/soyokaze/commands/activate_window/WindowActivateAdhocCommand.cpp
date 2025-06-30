@@ -128,8 +128,7 @@ CString WindowActivateAdhocCommand::GetGuideString()
 
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WINDOWACTIVATE);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
@@ -292,6 +291,12 @@ bool WindowActivateAdhocCommand::QueryInterface(const launcherapp::core::IFID& i
 		return true;
 	}
 	return false;
+}
+
+CString WindowActivateAdhocCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_WINDOWACTIVATE);
+	return TEXT_TYPE;
 }
 
 

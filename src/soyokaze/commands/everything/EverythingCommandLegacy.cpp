@@ -43,6 +43,10 @@ struct EverythingCommandLegacy::PImpl
 
 CString EverythingCommandLegacy::GetType() { return _T("EverythingCommand"); }
 
+CString EverythingCommandLegacy::TypeDisplayName()
+{
+	return _T("Everything検索");
+}
 
 EverythingCommandLegacy::EverythingCommandLegacy() : in(std::make_unique<PImpl>())
 {
@@ -92,7 +96,7 @@ CString EverythingCommandLegacy::GetGuideString()
 
 CString EverythingCommandLegacy::GetTypeDisplayName()
 {
-	return _T("Everything検索");
+	return TypeDisplayName();
 }
 
 BOOL EverythingCommandLegacy::Execute(Parameter* param)

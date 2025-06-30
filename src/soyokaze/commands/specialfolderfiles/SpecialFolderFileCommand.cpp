@@ -49,14 +49,7 @@ CString SpecialFolderFileCommand::GetGuideString()
 
 CString SpecialFolderFileCommand::GetTypeDisplayName()
 {
-	if (in->mItem.mType == TYPE_RECENT) {
-		static CString TEXT_TYPE_RECENT((LPCTSTR)IDS_COMMAND_RECENTFILES);
-		return TEXT_TYPE_RECENT;
-	}
-	//else if (in->mItem.mType == TYPE_STARTMENU) {
-		static CString TEXT_TYPE_STARTMENU((LPCTSTR)IDS_COMMAND_STARTMENU);
-		return TEXT_TYPE_STARTMENU;
-	//}
+	return TypeDisplayName((int)in->mItem.mType);
 }
 
 BOOL SpecialFolderFileCommand::Execute(Parameter* param)
@@ -161,6 +154,17 @@ bool SpecialFolderFileCommand::QueryInterface(const launcherapp::core::IFID& ifi
 	return false;
 }
 
+CString SpecialFolderFileCommand::TypeDisplayName(int type)
+{
+	if (type == TYPE_RECENT) {
+		static CString TEXT_TYPE_RECENT((LPCTSTR)IDS_COMMAND_RECENTFILES);
+		return TEXT_TYPE_RECENT;
+	}
+	else { // if (type == TYPE_STARTMENU)
+		static CString TEXT_TYPE_STARTMENU((LPCTSTR)IDS_COMMAND_STARTMENU);
+		return TEXT_TYPE_STARTMENU;
+	}
+}
 
 } // end of namespace specialfolderfiles
 } // end of namespace commands

@@ -52,6 +52,7 @@ public:
 	void ClearCache() override;
 
 	static CString GetType();
+	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param, EverythingCommandLegacy** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, EverythingCommandLegacy** newCmdPtr);

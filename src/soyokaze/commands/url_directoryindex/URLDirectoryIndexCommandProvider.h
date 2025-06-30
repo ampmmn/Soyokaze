@@ -29,6 +29,8 @@ public:
 
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	virtual uint32_t GetOrder() const;
+	// Providerが扱うコマンド種別(表示名)を列挙
+	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
 
 	DECLARE_COMMANDPROVIDER(URLDirectoryIndexCommandProvider)
 

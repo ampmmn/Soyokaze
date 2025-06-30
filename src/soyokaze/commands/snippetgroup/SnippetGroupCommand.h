@@ -59,6 +59,7 @@ public:
 	void SetParam(const SnippetGroupParam& param);
 	const SnippetGroupParam& GetParam();
 
+	static CString TypeDisplayName();
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

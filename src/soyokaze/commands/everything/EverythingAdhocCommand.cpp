@@ -72,7 +72,7 @@ CString EverythingAdhocCommand::GetGuideString()
 
 CString EverythingAdhocCommand::GetTypeDisplayName()
 {
-	return _T("Everything検索");
+	return TypeDisplayName();
 }
 
 BOOL EverythingAdhocCommand::Execute(Parameter* param)
@@ -124,6 +124,11 @@ bool EverythingAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid,
 		return true;
 	}
 	return false;
+}
+
+CString EverythingAdhocCommand::TypeDisplayName()
+{
+	return _T("Everything検索");
 }
 
 } // end of namespace everything

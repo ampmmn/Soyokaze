@@ -100,6 +100,13 @@ void UWPCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t UWPCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(UWPCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace uwp
 } // end of namespace commands

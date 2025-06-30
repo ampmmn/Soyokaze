@@ -64,6 +64,8 @@ public:
 	void SetParam(const SimpleDictParam& param);
 	const SimpleDictParam& GetParam();
 
+	static CString TypeDisplayName();
+
 private:
 	void ReserveUpdate(bool isRegisterWather = true);
 

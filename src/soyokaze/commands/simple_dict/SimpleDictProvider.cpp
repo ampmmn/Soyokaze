@@ -69,6 +69,13 @@ uint32_t SimpleDictProvider::GetOrder() const
 	return 2000;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t SimpleDictProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(SimpleDictCommand::TypeDisplayName());
+	return 1;
+}
+
 void SimpleDictProvider::OnBeforeLoad()
 {
 }

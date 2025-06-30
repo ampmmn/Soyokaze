@@ -79,6 +79,13 @@ uint32_t GroupCommandProvider::GroupCommandProvider::GetOrder() const
 	return 300;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t GroupCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(GroupCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace group
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -155,8 +155,7 @@ CString ColorCommand::GetGuideString()
 
 CString ColorCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_COLOR);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL ColorCommand::Execute(Parameter* param)
@@ -178,6 +177,12 @@ launcherapp::core::Command*
 ColorCommand::Clone()
 {
 	return new ColorCommand(in->mColor, in->mFormatType);
+}
+
+CString ColorCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_COLOR);
+	return TEXT_TYPE;
 }
 
 } // end of namespace color

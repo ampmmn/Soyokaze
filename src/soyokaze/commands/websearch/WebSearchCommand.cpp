@@ -149,8 +149,7 @@ CString WebSearchCommand::GetGuideString()
 
 CString WebSearchCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL WebSearchCommand::Execute(Parameter* param_)
@@ -390,6 +389,12 @@ bool WebSearchCommand::QueryCandidates(
 void WebSearchCommand::ClearCache()
 {
 	// なし
+}
+
+CString WebSearchCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);
+	return TEXT_TYPE;
 }
 
 

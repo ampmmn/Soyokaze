@@ -109,8 +109,7 @@ CString VMXFileCommand::GetGuideString()
 
 CString VMXFileCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_VMXFILE);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL VMXFileCommand::Execute(Parameter* param)
@@ -191,6 +190,12 @@ bool VMXFileCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** 
 		return true;
 	}
 	return false;
+}
+
+CString VMXFileCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_VMXFILE);
+	return TEXT_TYPE;
 }
 
 

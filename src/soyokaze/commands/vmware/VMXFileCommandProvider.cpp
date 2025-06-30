@@ -206,6 +206,13 @@ void VMXFileCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t VMXFileCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(VMXFileCommand::TypeDisplayName());
+	return 1;
+}
+
 
 } // end of namespace vmware
 } // end of namespace commands

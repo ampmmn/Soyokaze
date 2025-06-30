@@ -76,6 +76,13 @@ uint32_t URLDirectoryIndexCommandProvider::URLDirectoryIndexCommandProvider::Get
 	return 400;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t URLDirectoryIndexCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(URLDirectoryIndexCommand::TypeDisplayName());
+	return 1;
+}
+
 void URLDirectoryIndexCommandProvider::OnBeforeLoad()
 {
 }

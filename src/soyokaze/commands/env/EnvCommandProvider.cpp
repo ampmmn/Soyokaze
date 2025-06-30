@@ -193,6 +193,13 @@ void EnvCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t EnvCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(EnvCommand::TypeDisplayName());
+	return 0;
+}
+
 
 } // end of namespace env
 } // end of namespace commands

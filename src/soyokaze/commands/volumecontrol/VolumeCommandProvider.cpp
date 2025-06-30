@@ -63,6 +63,13 @@ uint32_t VolumeCommandProvider::VolumeCommandProvider::GetOrder() const
 	return 2500;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t VolumeCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(VolumeCommand::TypeDisplayName());
+	return 1;
+}
+
 } // end of namespace volumecontrol
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -42,8 +42,7 @@ CString UWPCommand::GetGuideString()
 
 CString UWPCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_APP);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL UWPCommand::Execute(Parameter* param)
@@ -77,6 +76,12 @@ launcherapp::core::Command*
 UWPCommand::Clone()
 {
 	return new UWPCommand(in->mItem);
+}
+
+CString UWPCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_APP);
+	return TEXT_TYPE;
 }
 
 } // end of namespace uwp

@@ -80,6 +80,14 @@ void UserCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQueryI
 	// 基本は何もしない
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t UserCommandProviderBase::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	UNREFERENCED_PARAMETER(displayNames);
+	spdlog::error("A provider implementation class must implement EnumCommandDisplayNames method!");
+	return 0;
+}
+
 uint32_t UserCommandProviderBase::AddRef()
 {
 	return (uint32_t)InterlockedIncrement(&mRefCount);

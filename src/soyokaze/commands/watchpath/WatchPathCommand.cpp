@@ -72,7 +72,7 @@ CString WatchPathCommand::GetGuideString()
 
 CString WatchPathCommand::GetTypeDisplayName()
 {
-	return _T("フォルダ更新検知");
+	return TypeDisplayName();
 }
 
 BOOL WatchPathCommand::Execute(Parameter* param)
@@ -275,6 +275,11 @@ bool WatchPathCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 	}
 
 	return true;
+}
+
+CString WatchPathCommand::TypeDisplayName()
+{
+	return _T("フォルダ更新検知");
 }
 
 }

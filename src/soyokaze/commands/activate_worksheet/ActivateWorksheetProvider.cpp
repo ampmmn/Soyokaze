@@ -134,6 +134,14 @@ void ActivateWorksheetProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ActivateWorksheetProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(WorksheetCommand::TypeDisplayName());
+	displayNames.push_back(CalcWorksheetCommand::TypeDisplayName());
+	return 2;
+}
+
 } // end of namespace activate_worksheet
 } // end of namespace commands
 } // end of namespace launcherapp

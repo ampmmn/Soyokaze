@@ -84,6 +84,15 @@ uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::GetOrder() const
 	return 1500;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t AdhocCommandProviderBase::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	UNREFERENCED_PARAMETER(displayNames);
+	spdlog::error("A provider implementation class must implement EnumCommandDisplayNames method!");
+	return 0;
+}
+
+
 uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::AddRef()
 {
 	return ++mRefCount;

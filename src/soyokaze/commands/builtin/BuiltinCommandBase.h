@@ -55,6 +55,9 @@ public:
 	virtual CString GetType() = 0;
 	virtual void LoadFrom(Entry* entry);
 
+public:
+	static CString TypeDisplayName();
+
 protected:
 	CString mName;
 	CString mDescription;

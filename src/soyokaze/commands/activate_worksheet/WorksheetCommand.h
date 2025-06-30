@@ -23,6 +23,8 @@ public:
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(WorksheetCommand)
 
+public:
+	static CString TypeDisplayName();
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

@@ -52,7 +52,7 @@ CString MSSettingsCommand::GetGuideString()
 
 CString MSSettingsCommand::GetTypeDisplayName()
 {
-	return _T("Windowsの設定");
+	return TypeDisplayName();
 }
 
 BOOL MSSettingsCommand::Execute(Parameter* param)
@@ -111,6 +111,11 @@ bool MSSettingsCommand::QueryInterface(const launcherapp::core::IFID& ifid, void
 		return true;
 	}
 	return false;
+}
+
+CString MSSettingsCommand::TypeDisplayName()
+{
+	return _T("Windowsの設定");
 }
 
 

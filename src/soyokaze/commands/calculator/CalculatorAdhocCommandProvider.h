@@ -27,6 +27,9 @@ public:
 
 	DECLARE_COMMANDPROVIDER(CalculatorAdhocCommandProvider)
 
+	// Providerが扱うコマンド種別(表示名)を列挙
+	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
+
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

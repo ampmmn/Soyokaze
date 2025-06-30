@@ -66,6 +66,13 @@ uint32_t RegExpCommandProvider::RegExpCommandProvider::GetOrder() const
 	return 150;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t RegExpCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(RegExpCommand::TypeDisplayName());
+	return 1;
+}
+
 }
 }
 }

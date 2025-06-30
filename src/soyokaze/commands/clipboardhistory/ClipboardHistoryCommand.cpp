@@ -49,9 +49,8 @@ ClipboardHistoryCommand::ClipboardHistoryCommand(
 	FileTimeToLocalFileTime(&sysFt, &ft);
 	FileTimeToSystemTime(&ft, &st);
 
-	this->mDescription.Format(_T("%04d-%02d-%02d %02d:%02d %s"), 
-			st.wYear,  st.wMonth, st.wDay, st.wHour, st.wMinute,
-			(LPCTSTR)launcherapp::utility::GetFirstLine(data));
+	this->mDescription.Format(_T("%04d-%02d-%02d %02d:%02d"), 
+			st.wYear,  st.wMonth, st.wDay, st.wHour, st.wMinute);
 }
 
 ClipboardHistoryCommand::~ClipboardHistoryCommand()
@@ -70,7 +69,7 @@ CString ClipboardHistoryCommand::GetGuideString()
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()
 {
-	return _T("クリップボード履歴");
+	return TypeDisplayName();
 }
 
 BOOL ClipboardHistoryCommand::Execute(Parameter* param)
@@ -138,6 +137,11 @@ launcherapp::core::Command*
 ClipboardHistoryCommand::Clone()
 {
 	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData);
+}
+
+CString ClipboardHistoryCommand::TypeDisplayName()
+{
+	return _T("クリップボード履歴");
 }
 
 

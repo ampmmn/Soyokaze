@@ -197,20 +197,17 @@ static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 	auto orgFont = SelectObject(hdc, hf);
 
 
-	std::vector<Command*> commands;
+	std::vector<CString> displayNames;
 	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->EnumCommands(commands);
+	cmdRepo->EnumCommandDisplayNames(displayNames);
 
 	int maxWidth = 0;
 
 	// コマンド種別テキストをすべて取得して、最大のものを得る
-	for (auto& cmd : commands) {
-		CString typeName = cmd->GetTypeDisplayName();
+	for (auto& typeName : displayNames) {
 		CSize size;
 		GetTextExtentPoint32(hdc, typeName, typeName.GetLength(), &size);
 		maxWidth = (std::max)(maxWidth, (int)size.cx);
-
-		cmd->Release();
 	}
 
 	TEXTMETRIC tm;

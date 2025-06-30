@@ -40,8 +40,7 @@ CString MMCCommand::GetGuideString()
 
 CString MMCCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("MMCスナップイン"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL MMCCommand::Execute(Parameter* param)
@@ -110,6 +109,12 @@ bool MMCCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 		return true;
 	}
 	return false;
+}
+
+CString MMCCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("MMCスナップイン"));
+	return TEXT_TYPE;
 }
 
 

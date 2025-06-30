@@ -87,7 +87,7 @@ CString FileProtocolConvertAdhocCommand::GetGuideString()
 
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 {
-	return _T("パス変換(file://)");
+	return TypeDisplayName();
 }
 
 BOOL FileProtocolConvertAdhocCommand::Execute(Parameter* param)
@@ -228,6 +228,11 @@ FileProtocolConvertAdhocCommand::Clone()
 	clonedObj->in->mFullPath = in->mFullPath;
 
 	return clonedObj.release();
+}
+
+CString FileProtocolConvertAdhocCommand::TypeDisplayName()
+{
+	return _T("パス変換(file://)");
 }
 
 } // end of namespace pathconvert

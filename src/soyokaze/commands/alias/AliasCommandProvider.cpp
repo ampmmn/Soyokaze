@@ -62,6 +62,13 @@ uint32_t AliasCommandProvider::AliasCommandProvider::GetOrder() const
 	return 5100;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t AliasCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(AliasCommand::TypeDisplayName());
+	return 1;
+}
+
 }
 }
 }

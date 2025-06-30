@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BuiltinCommandProvider.h"
 #include "commands/builtin/BuiltinCommandFactory.h"
+#include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -182,6 +183,13 @@ void BuiltinCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIt
 uint32_t BuiltinCommandProvider::BuiltinCommandProvider::GetOrder() const
 {
 	return 200;
+}
+
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t BuiltinCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(BuiltinCommandBase::TypeDisplayName());
+	return 1;
 }
 
 uint32_t BuiltinCommandProvider::BuiltinCommandProvider::AddRef()

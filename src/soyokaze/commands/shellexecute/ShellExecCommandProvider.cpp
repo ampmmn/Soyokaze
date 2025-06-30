@@ -70,6 +70,13 @@ uint32_t ShellExecCommandProvider::GetOrder() const
 	return 100;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ShellExecCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(ShellExecCommand::TypeDisplayName());
+	return 1;
+}
+
 
 }
 }

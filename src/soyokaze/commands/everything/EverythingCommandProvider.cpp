@@ -79,6 +79,13 @@ uint32_t EverythingCommandProvider::GetOrder() const
 	return 2050;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t EverythingCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(EverythingCommandLegacy::TypeDisplayName());
+	return 1;
+}
+
 void EverythingCommandProvider::OnBeforeLoad()
 {
 }

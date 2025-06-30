@@ -60,8 +60,7 @@ CString TimespanCommand::GetGuideString()
 
 CString TimespanCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)_T("時間"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL TimespanCommand::Execute(Parameter* param)
@@ -86,6 +85,12 @@ launcherapp::core::Command*
 TimespanCommand::Clone()
 {
 	return new TimespanCommand(in->mTimeSpan, in->mUnitType);
+}
+
+CString TimespanCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)_T("時間"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace timespan

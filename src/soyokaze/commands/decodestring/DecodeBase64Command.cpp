@@ -69,8 +69,7 @@ CString DecodeBase64Command::GetGuideString()
 
 CString DecodeBase64Command::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("DecodeBase64"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL DecodeBase64Command::Execute(Parameter* param)
@@ -190,6 +189,12 @@ launcherapp::core::Command*
 DecodeBase64Command::Clone()
 {
 	return new DecodeBase64Command();
+}
+
+CString DecodeBase64Command::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("DecodeBase64"));
+	return TEXT_TYPE;
 }
 
 } // end of namespace decodestring

@@ -60,7 +60,7 @@ CString CalculatorCommand::GetGuideString()
 
 CString CalculatorCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CALCULATOR);
+	static CString TEXT_TYPE(TypeDisplayName());
 
 	if (in->mBase == 0) {
 		return TEXT_TYPE;
@@ -117,6 +117,12 @@ bool CalculatorCommand::GetCalcExePath(LPTSTR path, size_t len)
 	PathAppend(path, _T("calc.exe"));
 
 	return true;
+}
+
+CString CalculatorCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_CALCULATOR);
+	return TEXT_TYPE;
 }
 
 } // end of namespace calculator

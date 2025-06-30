@@ -42,8 +42,7 @@ CString EnvCommand::GetGuideString()
 
 CString EnvCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_ENVIRON);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL EnvCommand::Execute(Parameter* param)
@@ -64,6 +63,12 @@ launcherapp::core::Command*
 EnvCommand::Clone()
 {
 	return new EnvCommand(this->mName, in->mValue);
+}
+
+CString EnvCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_ENVIRON);
+	return TEXT_TYPE;
 }
 
 } // end of namespace env

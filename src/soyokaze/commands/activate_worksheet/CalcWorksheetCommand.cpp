@@ -50,7 +50,7 @@ CString CalcWorksheetCommand::GetGuideString()
 
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {
-	return _T("Calcワークシート");
+	return TypeDisplayName();
 }
 
 BOOL CalcWorksheetCommand::Execute(Parameter* param)
@@ -78,6 +78,11 @@ launcherapp::core::Command*
 CalcWorksheetCommand::Clone()
 {
 	return new CalcWorksheetCommand(in->mCalcWorksheet);
+}
+
+CString CalcWorksheetCommand::TypeDisplayName()
+{
+	return _T("Calcワークシート");
 }
 
 } // end of namespace activate_worksheet

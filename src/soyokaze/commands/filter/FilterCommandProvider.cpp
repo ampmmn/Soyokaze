@@ -67,6 +67,13 @@ uint32_t FilterCommandProvider::FilterCommandProvider::GetOrder() const
 	return 400;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t FilterCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(FilterCommand::TypeDisplayName());
+	return 1;
+}
+
 void FilterCommandProvider::OnBeforeLoad()
 {
 }

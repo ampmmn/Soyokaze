@@ -68,8 +68,7 @@ CString VolumeCommand::GetGuideString()
 
 CString VolumeCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("音量設定"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL VolumeCommand::Execute(Parameter* param_)
@@ -250,6 +249,11 @@ bool VolumeCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edit
 	return true;
 }
 
+CString VolumeCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("音量設定"));
+	return TEXT_TYPE;
+}
 
 }
 }

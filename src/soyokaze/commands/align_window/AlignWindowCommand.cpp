@@ -26,6 +26,12 @@ struct AlignWindowCommand::PImpl
 
 CString AlignWindowCommand::GetType() { return _T("AlignWindow"); }
 
+CString AlignWindowCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("ウインドウ整列"));
+	return TEXT_TYPE;
+}
+
 
 /**
  	コンストラクタ
@@ -74,8 +80,7 @@ CString AlignWindowCommand::GetGuideString()
 */
 CString AlignWindowCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE(_T("ウインドウ整列"));
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 /**

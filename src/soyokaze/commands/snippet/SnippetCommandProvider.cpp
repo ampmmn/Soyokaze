@@ -60,6 +60,13 @@ uint32_t SnippetCommandProvider::SnippetCommandProvider::GetOrder() const
 	return 120;
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t SnippetCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(SnippetCommand::TypeDisplayName());
+	return 1;
+}
+
 }
 }
 }

@@ -111,8 +111,7 @@ CString HistoryCommand::GetGuideString()
 
 CString HistoryCommand::GetTypeDisplayName()
 {
-	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_HISTORY);
-	return TEXT_TYPE;
+	return TypeDisplayName();
 }
 
 BOOL HistoryCommand::Execute(Parameter* param)
@@ -148,6 +147,12 @@ launcherapp::core::Command*
 HistoryCommand::Clone()
 {
 	return new HistoryCommand(in->mKeyword);
+}
+
+CString HistoryCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_HISTORY);
+	return TEXT_TYPE;
 }
 
 } // end of namespace history
