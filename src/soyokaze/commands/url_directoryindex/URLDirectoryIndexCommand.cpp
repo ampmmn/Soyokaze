@@ -408,8 +408,8 @@ int URLDirectoryIndexCommand::Match(Pattern* pattern)
 
 		// 入力欄からの入力で、前方一致するときは候補に出す
 		int level = pattern->Match(GetName());
-		if (level == Pattern::FrontMatch) {
-			return Pattern::FrontMatch;
+		if (level == Pattern::FrontMatch || level == Pattern::PartialMatch) {
+			return level;
 		}
 		if (level == Pattern::WholeMatch) {
 

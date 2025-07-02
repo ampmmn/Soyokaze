@@ -317,8 +317,8 @@ int SimpleDictCommand::Match(Pattern* pattern)
 	}
 	else if (pattern->shouldWholeMatch() == false) {
 		int level = pattern->Match(GetName());
-		if (level == Pattern::FrontMatch) {
-			return Pattern::FrontMatch;
+		if (level == Pattern::FrontMatch || level == Pattern::PartialMatch) {
+			return level;
 		}
 
 		if (level == Pattern::WholeMatch) {
