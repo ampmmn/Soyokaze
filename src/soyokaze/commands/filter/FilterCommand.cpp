@@ -295,7 +295,7 @@ bool FilterCommand::NewDialog(Parameter* param, FilterCommand** newCmd)
 	cmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmd) {
-		*newCmd = cmd.get();
+		*newCmd = cmd.release();
 	}
 	return true;
 }
