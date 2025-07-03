@@ -168,6 +168,7 @@ Path::Path() : mPath(MAX_PATH_NTFS)
 Path::Path(LPCTSTR initPath) : mPath(MAX_PATH_NTFS)
 {
 	_tcsncpy_s(mPath.data(), (DWORD)mPath.size(), initPath, _TRUNCATE);
+	std::replace(mPath.begin(), mPath.end(), _T('/'), _T('\\'));
 }
 
 Path::Path(MODULEFILEPATH_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
@@ -241,7 +242,11 @@ size_t Path::size() const
 
 bool Path::Append(LPCTSTR path)
 {
-	return PathAppend(data(), path) != FALSE;
+	if (PathAppend(data(), path) == FALSE) {
+		return false;
+	}
+	std::replace(mPath.begin(), mPath.end(), _T('/'), _T('\\'));
+	return true;
 }
 
 bool Path::AddExtension(LPCTSTR ext)

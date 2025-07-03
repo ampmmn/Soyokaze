@@ -9,12 +9,16 @@ bool VersionInfo::GetVersionInfo(CString& version)
 {
 	// バージョン情報を取得
 	Path modulePath(Path::MODULEFILEPATH);
+	return GetVersionInfo((LPCTSTR)modulePath, version);
+}
 
-	DWORD size = GetFileVersionInfoSize(modulePath, NULL);
+bool VersionInfo::GetVersionInfo(const CString& targetPath, CString& version)
+{
+	DWORD size = GetFileVersionInfoSize(targetPath, NULL);
 	std::vector<BYTE> versionData(size);
 
 	BYTE* pVersion = &(versionData.front());
-	if (GetFileVersionInfo(modulePath, NULL, size, pVersion) == FALSE) {
+	if (GetFileVersionInfo(targetPath, NULL, size, pVersion) == FALSE) {
 		return false;
 	}
 
@@ -29,6 +33,7 @@ bool VersionInfo::GetVersionInfo(CString& version)
 
 	return true;
 }
+
 
 
 bool VersionInfo::GetBuildDateTime(CTime& tmBuildDate)
