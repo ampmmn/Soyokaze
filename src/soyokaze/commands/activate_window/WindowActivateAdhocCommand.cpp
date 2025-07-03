@@ -123,7 +123,7 @@ CString WindowActivateAdhocCommand::GetName()
 
 CString WindowActivateAdhocCommand::GetGuideString()
 {
-	return _T("⏎:ウインドウをアクティブにする");
+	return _T("⏎:ウインドウ切替え S-⏎:最大化 C-⏎::最小化 S-C-⏎:閉じる");
 }
 
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
@@ -136,18 +136,27 @@ BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
 	ScopeAttachThreadInput scope;
 
 	bool isCtrlKeyPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
+	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
 
 	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
-	if (isCtrlKeyPressed && (style & WS_MAXIMIZE) == 0) {
-		// Ctrlキーが押されていたら最大化表示する
-		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+	if (isShiftKeyPressed && isCtrlKeyPressed == false && (style & WS_MAXIMIZE) == 0) {
+		// Shiftキーが押されていたら最大化表示する
+		in->Maximize();
+	}
+	else if (isCtrlKeyPressed && isShiftKeyPressed == false && (style & WS_MINIMIZE) == 0) {
+		// Ctrlキーが押されていたら最小化表示する
+		in->Minimize();
+	}
+	else if (isCtrlKeyPressed && isShiftKeyPressed) {
+		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
+		in->Close();
 	}
 	else if (style & WS_MINIMIZE) {
 		// 最小化されていたら元に戻す
 		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+		SetForegroundWindow(in->mHwnd);
 	}
 
-	SetForegroundWindow(in->mHwnd);
 
 	in->mPrevZOrder = nullptr;
 	return TRUE;
