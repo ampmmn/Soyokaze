@@ -93,6 +93,9 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 	entry->Set(_T("description"), mDescription);
 	entry->Set(_T("runas"), mIsRunAsAdmin ? 1 : 0);
 
+	entry->Set(_T("isuse0"), mIsUse0);
+	entry->Set(_T("isusedescriptionformatching"), mIsUseDescriptionForMatching);
+
 	entry->Set(_T("path"), mNormalAttr.mPath);
 	entry->Set(_T("dir"), mNormalAttr.mDir);
 	entry->Set(_T("parameter"), mNormalAttr.mParam);
@@ -130,6 +133,9 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mDescription = entry->Get(_T("description"), _T(""));
 
 	mIsRunAsAdmin = (entry->Get(_T("runas"), 0) != 0);
+
+	mIsUse0 = entry->Get(_T("isuse0"), FALSE);
+	mIsUseDescriptionForMatching = entry->Get(_T("isusedescriptionformatching"), FALSE);
 
 	mNormalAttr.mPath = entry->Get(_T("path"), _T(""));
 	mNormalAttr.mDir = entry->Get(_T("dir"), _T(""));
