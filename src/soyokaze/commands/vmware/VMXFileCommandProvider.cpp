@@ -74,16 +74,16 @@ static CString GetSHA1(const CString& filePath)
 */
 void VMXFileCommandProvider::PImpl::Reload()
 {
-	auto sha1 = GetSHA1(mPrefFilePath);
+	Path tmpPath(Path::APPDIRPERMACHINE, _T("preference.ini"));
+	CString tmpPathStr(tmpPath);
+	CopyFile(mPrefFilePath, tmpPathStr, FALSE);
+
+	auto sha1 = GetSHA1(tmpPathStr);
 	if (sha1 == mSHA1) {
 		// ファイル内容に変化がなければ読み込まない
 	 	return;
 	}
 	mSHA1 = sha1;
-
-	Path tmpPath(Path::APPDIRPERMACHINE, _T("preference.ini"));
-	CString tmpPathStr(tmpPath);
-	CopyFile(mPrefFilePath, tmpPathStr, FALSE);
 
 	std::thread th([&, tmpPathStr]() {
 
@@ -181,6 +181,11 @@ void VMXFileCommandProvider::PrepareAdhocCommands()
 	
 	// ファイルが更新されたら通知を受け取るための登録をする
 	LocalDirectoryWatcher::GetInstance()->Register(in->mPrefFilePath, [](void* p) {
+
+			// 更新通知をうけてすぐにpreference.iniにアクセスすると、
+			// vmxファイルを開いたときにエラーがでることがあったのですこし遅延を入れてみる
+			Sleep(3000);
+
 			// ファイルをロードしてVMXFileCommandを生成
 			auto thisPtr = (VMXFileCommandProvider*)p;
 			thisPtr->in->Reload();
