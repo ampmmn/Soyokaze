@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tasktray/TaskTrayEventListenerIF.h"
+#include <memory>
 
 class TaskTray : public CWnd
 {
@@ -14,13 +15,8 @@ public:
 	void ShowMessage(const CString& msg, const CString& title);
 
 protected:
-	// タスクトレイウインドウ
-	HWND mTaskTrayWindow;
-	// タスクトレイ関連イベント通知先
-	TaskTrayEventListenerIF* mListenerPtr;
-
-	// タスクトレイに登録用の情報
-	NOTIFYICONDATA mNotifyIconData;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 public:
 	BOOL Create();

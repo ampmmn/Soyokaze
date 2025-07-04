@@ -3,7 +3,12 @@
 #include "framework.h"
 #include "TaskTray.h"
 #include "icon/IconLoader.h"
+#include "app/AppName.h"
+#include "hotkey/HotKeyAttribute.h"
+#include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 #include "utility/Path.h"
+#include "utility/VersionInfo.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -14,15 +19,82 @@ const int ID_LAUNCHER_TASKTRAY = 1000;
 
 IMPLEMENT_DYNAMIC(TaskTray, CWnd)
 
-TaskTray::TaskTray(TaskTrayEventListenerIF* listener) : 
-	mTaskTrayWindow(nullptr), mListenerPtr(listener)
+struct TaskTray::PImpl : public AppPreferenceListenerIF
 {
-	memset(&mNotifyIconData, 0, sizeof(mNotifyIconData));
+// AppPreferenceListenerIF
+	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
+	void OnAppPreferenceUpdated() override {
+		// 設定が更新されたらタスクトレイのツールチップ文言を更新
+		UpdateTips();
+	}
+	void OnAppExit() override {
+	}
+
+	CString MakeTipsText();
+	void UpdateTips();
+
+	// タスクトレイウインドウ
+	HWND mTaskTrayWindow {nullptr};
+	// タスクトレイ関連イベント通知先
+	TaskTrayEventListenerIF* mListenerPtr{nullptr};
+
+	// タスクトレイに登録用の情報
+	NOTIFYICONDATA mNotifyIconData{};
+};
+
+CString TaskTray::PImpl::MakeTipsText()
+{
+	Path modulePath(Path::MODULEFILEPATH);
+
+	CString tipsStr{APPNAME};
+
+	CString versionStr;
+	VersionInfo::GetVersionInfo(versionStr);
+
+	tipsStr += _T(" ");
+	tipsStr += versionStr;
+	tipsStr += _T("\n");
+	tipsStr += _T("表示:[");
+
+	auto pref= AppPreference::Get();
+	UINT mod = pref->GetModifiers();
+	UINT vk = pref->GetVirtualKeyCode();
+	tipsStr += HOTKEY_ATTR(mod, vk).ToString();
+	tipsStr += _T("]");
+
+	return tipsStr;
+}
+
+void TaskTray::PImpl::UpdateTips()
+{
+	if (IsWindow(mTaskTrayWindow) == FALSE) {
+		return ;
+	}
+
+	// タスクトレイテキストの更新
+	NOTIFYICONDATA nid;
+	nid.cbSize           = sizeof(NOTIFYICONDATA);
+	nid.hWnd             = mTaskTrayWindow;
+	nid.uID              = ID_LAUNCHER_TASKTRAY;
+	nid.uFlags           = NIF_TIP;
+
+	auto tipsStr = MakeTipsText();
+	_tcsncpy_s(nid.szTip, NELEMENTS(nid.szTip), tipsStr, _TRUNCATE);
+
+	Shell_NotifyIcon(NIM_MODIFY, &nid);
+}
+
+TaskTray::TaskTray(TaskTrayEventListenerIF* listener) : in(new PImpl)
+{
+	in->mListenerPtr = listener;
+	memset(&in->mNotifyIconData, 0, sizeof(in->mNotifyIconData));
 }
 
 TaskTray::~TaskTray()
 {
-	Shell_NotifyIcon(NIM_DELETE, &mNotifyIconData);
+	AppPreference::Get()->UnregisterListener(in.get());
+	Shell_NotifyIcon(NIM_DELETE, &in->mNotifyIconData);
 }
 
 
@@ -41,11 +113,11 @@ BOOL TaskTray::Create()
 		return FALSE;
 	}
 
+	AppPreference::Get()->RegisterListener(in.get());
 
-	mTaskTrayWindow = GetSafeHwnd();
+	in->mTaskTrayWindow = GetSafeHwnd();
 
 	// タスクトレイ登録
-
 	NOTIFYICONDATA nid;
 	nid.cbSize           = sizeof(NOTIFYICONDATA);
 	nid.hWnd             = GetSafeHwnd();
@@ -56,23 +128,20 @@ BOOL TaskTray::Create()
 	nid.uFlags |= NIF_ICON;
 	nid.hIcon   = IconLoader::Get()->LoadTasktrayIcon();
 
-	Path moduleName(Path::MODULEFILEDIR);
-
-	CString tipsStr;
-	tipsStr = moduleName.FindFileName();
+	auto tipsStr = in->MakeTipsText();
 
 	nid.uFlags |= NIF_TIP;
 	_tcsncpy_s(nid.szTip, NELEMENTS(nid.szTip), tipsStr, _TRUNCATE);
 
-	mNotifyIconData = nid;
+	in->mNotifyIconData = nid;
 
-	return Shell_NotifyIcon(NIM_ADD, &mNotifyIconData);
+	return Shell_NotifyIcon(NIM_ADD, &in->mNotifyIconData);
 
 }
 
 void TaskTray::ShowMessage(const CString& msg)
 {
-	NOTIFYICONDATA nid = mNotifyIconData;
+	NOTIFYICONDATA nid = in->mNotifyIconData;
 
 	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
 	nid.uFlags |= NIF_INFO;
@@ -90,7 +159,7 @@ void TaskTray::ShowMessage(const CString& msg)
 
 void TaskTray::ShowMessage(const CString& msg, const CString& title)
 {
-	NOTIFYICONDATA nid = mNotifyIconData;
+	NOTIFYICONDATA nid = in->mNotifyIconData;
 	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
 	nid.uFlags |= NIF_INFO;
 	_tcsncpy_s(nid.szInfoTitle, title, _TRUNCATE);
@@ -113,7 +182,7 @@ LRESULT TaskTray::OnNotifyTrakTray(WPARAM wp, LPARAM lp)
 	}
 
 	if (msg == WM_LBUTTONDBLCLK) {
-		mListenerPtr->OnTaskTrayLButtonDblclk();
+		in->mListenerPtr->OnTaskTrayLButtonDblclk();
 	}
 	else if (msg == WM_RBUTTONDOWN) {
 		OnContextMenu();
@@ -126,6 +195,6 @@ void TaskTray::OnContextMenu()
 {
 	CPoint pos;
 	GetCursorPos(&pos);
-	mListenerPtr->OnTaskTrayContextMenu(this, pos);
+	in->mListenerPtr->OnTaskTrayContextMenu(this, pos);
 }
 
