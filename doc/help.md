@@ -2490,6 +2490,7 @@ Windowsの設定アプリの各ページ要素を候補として表示し、実�
 - [clipboard](#clipboard)
 - [date](#date)
 - [env](#env)
+- [explorer](#explorer)
 - [random](#random)
 - [afxw](#afxw)
 - [powerstatus](#powerstatus)
@@ -2689,6 +2690,43 @@ ${env USERPROFILE}
 # ユーザー名を取得する
 ${env USERNAME}
  → username
+```
+
+-----------
+
+#### explorer
+
+表示中のエクスプローラの現在パスや選択中のファイルパスを取得・展開することができる。
+
+##### 記法
+
+- エクスプローラで表示中のフォルダパスに展開する場合は
+`${explorer location_path}`と記載する。
+
+- エクスプローラで選択している項目のファイルパスを展開したい場合は
+`${explorer selection_path [index]}`と記載する。  
+`index`を指定した場合、`index`番目のパスに置き換える(0～)。  
+`index`を指定しなかった場合、選択中のすべての要素に置き換える。
+
+- 該当する要素が存在しない場合は空文字列に置換される
+  - 例: エクスプローラを開いていない、ファイルを選択していない、等
+- 表示中のエクスプローラのウインドウが複数ある場合は、最も前面にあるウインドウの情報を取得する。
+
+
+##### 例
+
+```
+# エクスプローラで現在表示しているフォルダパスを取得する
+${explorer location_path}
+ → "C:\Program Files(x86)"
+
+# エクスプローラで選択している一つ目のファイルパスを取得する
+${explorer selection_path 0}
+ → "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe"
+
+# エクスプローラで選択している全てのファイルパスを取得する
+${explorer selection_path}
+ → "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\ms-teams.exe" "C:\Users\usename\AppData\Local\Microsoft\WindowsApps\mspaint.exe"
 ```
 
 -----------

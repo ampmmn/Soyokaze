@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ExcelWrapper.h"
 #include "commands/common/AutoWrap.h"
+#include "commands/common/DispWrapper.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "utility/TimeoutChecker.h"
 #include <thread>

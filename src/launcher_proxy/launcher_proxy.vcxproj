@@ -1968,6 +1968,7 @@
   <ItemGroup>
     <ClInclude Include="..\soyokaze\processproxy\share\AfxWFunctions.h" />
     <ClInclude Include="AutoWrap.h" />
+    <ClInclude Include="ExplorerFunctions.h" />
     <ClInclude Include="launcher_proxy.h" />
     <ClInclude Include="logger\Logger.h" />
     <ClInclude Include="NormalPriviledgeAgent.h" />
@@ -1981,6 +1982,8 @@
     <ClInclude Include="proxycommands\GetActivePointPointWindowProxyCommand.h" />
     <ClInclude Include="proxycommands\GetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\GetExcelCurrentSelectionProxyCommand.h" />
+    <ClInclude Include="proxycommands\GetExplorerCurrentPathProxyCommand.h" />
+    <ClInclude Include="proxycommands\GetExplorerSelectionPathProxyCommand.h" />
     <ClInclude Include="proxycommands\GoToSlideProxyCommand.h" />
     <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h" />
@@ -1991,6 +1994,7 @@
   <ItemGroup>
     <ClCompile Include="..\soyokaze\processproxy\share\AfxWFunctions.cpp" />
     <ClCompile Include="AutoWrap.cpp" />
+    <ClCompile Include="ExplorerFunctions.cpp" />
     <ClCompile Include="launcher_proxy.cpp" />
     <ClCompile Include="logger\Logger.cpp" />
     <ClCompile Include="NormalPriviledgeAgent.cpp" />
@@ -2003,6 +2007,8 @@
     <ClCompile Include="proxycommands\GetActivePointPointWindowProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetExcelCurrentSelectionProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GetExplorerCurrentPathProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GetExplorerSelectionPathProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp" />
     <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp" />

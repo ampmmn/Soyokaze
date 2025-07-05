@@ -23,6 +23,11 @@ public:
 	// あふwのカレントディレクトリを設定する
 	bool SetCurrentAfxwDir(const std::wstring& path);
 
+	// エクスプローラのカレントディレクトリパスを取得する
+	bool GetExplorerCurrentDir(std::wstring& path);
+	// エクスプローラの選択要素のパスを取得する
+	bool GetExplorerSelectionDir(std::wstring& path, int index);
+
 	// Excelで現在選択中のワークシート等の情報を取得する
 	bool GetExcelCurrentSelection(std::wstring& workbook, std::wstring& sheet, std::wstring& address);
 

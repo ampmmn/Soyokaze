@@ -229,6 +229,9 @@
     <Filter Include="commands\error">
       <UniqueIdentifier>{e2b6c120-49c4-455f-8168-572eb8227f01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="macros\explorer">
+      <UniqueIdentifier>{ff7cee4b-9a5c-43e5-9aab-6c31988b9dc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1308,9 +1311,6 @@
     <ClInclude Include="commands\activate_worksheet\WorksheetCommand.h">
       <Filter>commands\activate_worksheet</Filter>
     </ClInclude>
-    <ClInclude Include="commands\common\AutoWrap.h">
-      <Filter>commands\common</Filter>
-    </ClInclude>
     <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
@@ -1487,6 +1487,15 @@
     </ClInclude>
     <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h">
       <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="macros\explorer\ExplorerMacro.h">
+      <Filter>macros\explorer</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\DispWrapper.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\common\AutoWrap.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2471,9 +2480,6 @@
     <ClCompile Include="commands\activate_worksheet\WorksheetCommand.cpp">
       <Filter>commands\activate_worksheet</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\AutoWrap.cpp">
-      <Filter>commands\common</Filter>
-    </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
@@ -2635,6 +2641,15 @@
     </ClCompile>
     <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\explorer\ExplorerMacro.cpp">
+      <Filter>macros\explorer</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\DispWrapper.cpp">
+      <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\AutoWrap.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

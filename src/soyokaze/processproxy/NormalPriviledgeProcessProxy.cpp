@@ -377,6 +377,84 @@ bool NormalPriviledgeProcessProxy::SetCurrentAfxwDir(const std::wstring& path)
 	return true;
 }
 
+// エクスプローラのカレントディレクトリパスを取得する
+bool NormalPriviledgeProcessProxy::GetExplorerCurrentDir(std::wstring& path)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getexplorercurrentdir";
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	// 結果を取得
+	if (json_res.find("path") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+
+	std::wstring ret_path;
+	UTF2UTF((const std::string)json_res["path"], ret_path);
+
+	path += _T("\"");
+	path += ret_path;
+	path += _T("\"");
+
+	return true;
+}
+
+// エクスプローラの選択要素のパスを取得する
+bool NormalPriviledgeProcessProxy::GetExplorerSelectionDir(std::wstring& path, int index)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getexplorerselectiondir";
+	json_req["index"] = index;
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
+	// リクエストを送信する
+	if (in->SendRequest(json_req) == false) {
+		return false;
+	}
+	
+	// 応答を待つ
+	json json_res;
+	if (in->ReceiveResponse(json_res) == false) {
+		return false;
+	}
+
+	// 結果を取得
+	if (json_res.find("items") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+	std::wstring tmp;
+
+	auto items = json_res["items"];
+	for (auto& item : items) {
+		auto& ret_path = UTF2UTF(item["path"].get<std::string>(), tmp);
+
+		path += path.empty() ? _T("\"") : _T(" \"");
+		path += ret_path;
+		path += _T("\"");
+	}
+
+	return true;
+}
+
 // Excelで現在選択中のワークシート等の情報を取得する
 bool NormalPriviledgeProcessProxy::GetExcelCurrentSelection(
 		std::wstring& workbook,

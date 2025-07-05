@@ -442,6 +442,7 @@
     <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
+    <ClInclude Include="commands\common\DispWrapper.h" />
     <ClInclude Include="commands\common\ExecutablePath.h" />
     <ClInclude Include="commands\common\OtherCommandDialog.h" />
     <ClInclude Include="commands\common\SubProcessDialog.h" />
@@ -569,6 +570,7 @@
     <ClInclude Include="macros\core\MacroIF.h" />
     <ClInclude Include="macros\core\MacroRepository.h" />
     <ClInclude Include="macros\core\Token.h" />
+    <ClInclude Include="macros\explorer\ExplorerMacro.h" />
     <ClInclude Include="macros\powerstatus\PowerStatusMacro.h" />
     <ClInclude Include="macros\random\RandomMacro.h" />
     <ClInclude Include="mainwindow/AppSound.h" />
@@ -860,6 +862,7 @@
     <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
+    <ClCompile Include="commands\common\DispWrapper.cpp" />
     <ClCompile Include="commands\common\ExecutablePath.cpp" />
     <ClCompile Include="commands\common\OtherCommandDialog.cpp" />
     <ClCompile Include="commands\common\SubProcessDialog.cpp" />
@@ -988,6 +991,7 @@
     <ClCompile Include="macros\builtin\EnvMacro.cpp" />
     <ClCompile Include="macros\core\MacroBase.cpp" />
     <ClCompile Include="macros\core\MacroRepository.cpp" />
+    <ClCompile Include="macros\explorer\ExplorerMacro.cpp" />
     <ClCompile Include="macros\powerstatus\PowerStatusMacro.cpp" />
     <ClCompile Include="macros\random\RandomMacro.cpp" />
     <ClCompile Include="mainwindow/AppSound.cpp" />

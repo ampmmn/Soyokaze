@@ -84,6 +84,15 @@
     <ClInclude Include="proxycommands\EnumPresentationSlidesProxyCommand.h">
       <Filter>proxycommands</Filter>
     </ClInclude>
+    <ClInclude Include="proxycommands\GetExplorerSelectionPathProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\GetExplorerCurrentPathProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplorerFunctions.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -139,6 +148,15 @@
     </ClCompile>
     <ClCompile Include="proxycommands\EnumPresentationSlidesProxyCommand.cpp">
       <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GetExplorerCurrentPathProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GetExplorerSelectionPathProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplorerFunctions.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

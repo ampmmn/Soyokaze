@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Presentations.h"
-#include "commands/common/AutoWrap.h"
+#include "commands/common/DispWrapper.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
