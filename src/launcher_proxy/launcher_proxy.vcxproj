@@ -1980,6 +1980,7 @@
     <ClInclude Include="proxycommands\EnumExcelSheetsProxyCommand.h" />
     <ClInclude Include="proxycommands\EnumPresentationSlidesProxyCommand.h" />
     <ClInclude Include="proxycommands\GetActivePointPointWindowProxyCommand.h" />
+    <ClInclude Include="proxycommands\GetAfxwSelectionPathProxyCommand.h" />
     <ClInclude Include="proxycommands\GetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\GetExcelCurrentSelectionProxyCommand.h" />
     <ClInclude Include="proxycommands\GetExplorerCurrentPathProxyCommand.h" />
@@ -2005,6 +2006,7 @@
     <ClCompile Include="proxycommands\EnumExcelSheetsProxyCommand.cpp" />
     <ClCompile Include="proxycommands\EnumPresentationSlidesProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetActivePointPointWindowProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\GetAfxwSelectionPathProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetExcelCurrentSelectionProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetExplorerCurrentPathProxyCommand.cpp" />

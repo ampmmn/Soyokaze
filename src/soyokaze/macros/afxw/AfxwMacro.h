@@ -14,6 +14,9 @@ class AfxwMacro : public launcherapp::macros::core::MacroBase
 public:
 	bool Evaluate(const std::vector<CString>& args, CString& result) override;
 
+	bool ExpandLocationPath(const std::vector<CString>& args, CString& result);
+	bool ExpandSelectionPath(const std::vector<CString>& args, CString& result);
+
 	DECLARE_LAUNCHERMACRO(AfxwMacro)
 };
 

@@ -39,4 +39,11 @@ bool AfxWWrapper::SetCurrentDir(const std::wstring& path)
 	return proxy->SetCurrentAfxwDir(path);
 }
 
+// あふの自窓の選択ファイルパスを取得
+bool AfxWWrapper::GetSelectionPath(std::wstring& path, int index)
+{
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	return proxy->GetAfxSelectionPath(path, index);
+}
+
 

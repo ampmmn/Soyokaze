@@ -93,6 +93,9 @@
     <ClInclude Include="ExplorerFunctions.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="proxycommands\GetAfxwSelectionPathProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="ExplorerFunctions.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\GetAfxwSelectionPathProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

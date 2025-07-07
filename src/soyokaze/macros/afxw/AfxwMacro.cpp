@@ -28,11 +28,17 @@ bool AfxwMacro::Evaluate(const std::vector<CString>& args, CString& result)
 	}
 
 	CString command = args[0];
-
-	if (command.CompareNoCase(_T("currentdir")) != 0) {
-		return false;
+	if (command.CompareNoCase(_T("currentdir")) == 0 || command.CompareNoCase(_T("location_path")) == 0) {
+		return ExpandLocationPath(args, result);
 	}
+	if (command.CompareNoCase(_T("selection_path")) == 0) {
+		return ExpandSelectionPath(args, result);
+	}
+	return false;
+}
 
+bool AfxwMacro::ExpandLocationPath(const std::vector<CString>& args, CString& result)
+{
 	AfxWWrapper afxw;
 	std::wstring curDir;
 	if (afxw.GetCurrentDir(curDir) == false) {
@@ -41,6 +47,23 @@ bool AfxwMacro::Evaluate(const std::vector<CString>& args, CString& result)
 	result = curDir.c_str();
 	return true;
 }
+
+bool AfxwMacro::ExpandSelectionPath(const std::vector<CString>& args, CString& result)
+{
+	int index = -1;
+	if (args.size() > 1) {
+		index = std::stoi(tstring((LPCTSTR)args[1]));
+	}
+
+	AfxWWrapper afxw;
+	std::wstring path;
+	if (afxw.GetSelectionPath(path, index) == false) {
+		return false;
+	}
+	result = path.c_str();
+	return true;
+}
+
 
 
 }

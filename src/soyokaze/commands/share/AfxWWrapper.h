@@ -15,5 +15,7 @@ public:
 	bool GetCurrentDir(std::wstring& curDir);
 	// あふの自窓のディレクトリパスを変更
 	bool SetCurrentDir(const std::wstring& path);
+	// あふの自窓の選択ファイルパスを取得
+	bool GetSelectionPath(std::wstring& path, int index);
 };
 

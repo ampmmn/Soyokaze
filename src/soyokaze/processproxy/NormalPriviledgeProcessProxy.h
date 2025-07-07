@@ -22,6 +22,8 @@ public:
 	bool GetCurrentAfxwDir(std::wstring& path);
 	// あふwのカレントディレクトリを設定する
 	bool SetCurrentAfxwDir(const std::wstring& path);
+	// あふw側で選択中のファイル一覧を取得する
+	bool GetAfxSelectionPath(std::wstring& path, int index);
 
 	// エクスプローラのカレントディレクトリパスを取得する
 	bool GetExplorerCurrentDir(std::wstring& path);
