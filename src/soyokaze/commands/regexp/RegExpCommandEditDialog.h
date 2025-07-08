@@ -49,9 +49,6 @@ public:
 protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnEditNameChanged();
-	afx_msg void OnEditPathChanged();
-	afx_msg void OnEditPath0Changed();
 	afx_msg void OnButtonBrowseFile1Clicked();
 	afx_msg void OnButtonBrowseDir1Clicked();
 	afx_msg void OnButtonBrowseDir3Clicked();

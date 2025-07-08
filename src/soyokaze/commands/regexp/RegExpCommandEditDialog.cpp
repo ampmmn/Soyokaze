@@ -74,8 +74,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( disable : 26454 )
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
-	ON_EN_CHANGE(IDC_EDIT_NAME, OnEditNameChanged)
-	ON_EN_CHANGE(IDC_EDIT_PATH, OnEditPathChanged)
+	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PATTERNSTR, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR1, OnButtonBrowseDir1Clicked)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR3, OnButtonBrowseDir3Clicked)
@@ -158,23 +159,6 @@ bool CommandEditDialog::UpdateStatus()
 		mIconLabelPtr->DrawIcon(mIcon);
 	}
 
-	// 名前チェック
-	bool canPressOK =
-	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
-	//
-	if (canPressOK && mParam.mNormalAttr.mPath.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
-		canPressOK = false;
-	}
-
-	// パスチェック
-	ExecutablePath path(mParam.mNormalAttr.mPath);
-	if (path.IsExecutable() == false) {
-		mMessage = _T("ファイルまたはディレクトリが存在しません。");
-		canPressOK = false;
-	}
-
-
 	// 変換
 	if (mShowType == 1) {
 		mParam.mNormalAttr.mShowType = SW_MAXIMIZE;
@@ -186,30 +170,37 @@ bool CommandEditDialog::UpdateStatus()
 		mParam.mNormalAttr.mShowType = SW_NORMAL;
 	}
 
+
+	// 名前チェック
+	bool isNameValid =
+	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	if (isNameValid == false) {
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+
+	if (mParam.mPatternStr.IsEmpty()) {
+		mMessage = _T("パターンを入力してください");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+
+	bool canPressOK = true;
+	if (mParam.mNormalAttr.mPath.IsEmpty()) {
+		mMessage.LoadString(IDS_ERR_PATHISEMPTY);
+		canPressOK = false;
+	}
+
+	// パスチェック
+	ExecutablePath path(mParam.mNormalAttr.mPath);
+	if (path.IsExecutable() == false) {
+		mMessage = _T("ファイルまたはディレクトリが存在しません。");
+		canPressOK = false;
+	}
+
 	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
 
 	return true;
-}
-
-void CommandEditDialog::OnEditNameChanged()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnEditPathChanged()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
-void CommandEditDialog::OnEditPath0Changed()
-{
-	UpdateData();
-	UpdateStatus();
-	UpdateData(FALSE);
 }
 
 void CommandEditDialog::OnButtonBrowseFile1Clicked()
