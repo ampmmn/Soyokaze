@@ -349,7 +349,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/tidy-html5/build\cmake\Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>spdlog.lib;tidy_static.lib;re2.lib;absl_all.lib</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;spdlog.lib;tidy_static.lib;re2.lib;absl_all.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -384,7 +384,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/tidy-html5/build\cmake\Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>spdlog.lib;tidy_staticrtst.lib;re2rtst.lib;absl_allrtst.lib</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;spdlog.lib;tidy_staticrtst.lib;re2rtst.lib;absl_allrtst.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

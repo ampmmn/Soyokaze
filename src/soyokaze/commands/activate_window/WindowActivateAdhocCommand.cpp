@@ -150,13 +150,15 @@ BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
 	else if (isCtrlKeyPressed && isShiftKeyPressed) {
 		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
 		in->Close();
+		in->mPrevZOrder = nullptr;
+		return TRUE;
 	}
 	else if (style & WS_MINIMIZE) {
 		// 最小化されていたら元に戻す
 		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-		SetForegroundWindow(in->mHwnd);
 	}
 
+	SetForegroundWindow(in->mHwnd);
 
 	in->mPrevZOrder = nullptr;
 	return TRUE;

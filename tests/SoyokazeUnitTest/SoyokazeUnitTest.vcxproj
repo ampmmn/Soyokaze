@@ -312,7 +312,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/tidy-html5/build\cmake\Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soyokaze.lib;googletest.lib;spdlog.lib;re2_d.lib;absl_all_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;googletest.lib;spdlog.lib;re2_d.lib;absl_all_d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
