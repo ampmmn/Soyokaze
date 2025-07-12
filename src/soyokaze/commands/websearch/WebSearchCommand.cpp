@@ -13,11 +13,13 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
+#include "icon/CommandIcon.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
 
 using namespace launcherapp::commands::common;
+using CommandIcon = launcherapp::icon::CommandIcon;
 
 namespace launcherapp {
 namespace commands {
@@ -29,7 +31,7 @@ struct WebSearchCommand::PImpl
 	int BuildSearchUrlStringAsShortcut(Pattern* pattern, CString& displayName, CString& url);
 	CommandParam mParam;
 
-	HICON mIcon{nullptr};
+	CommandIcon mIcon;
 };
 
 int WebSearchCommand::PImpl::BuildSearchUrlString(Pattern* pattern, CString& displayName, CString& url)
@@ -174,9 +176,8 @@ HICON WebSearchCommand::GetIcon()
 		return IconLoader::Get()->LoadWebIcon();
 	}
 	else {
-		if (in->mIcon == nullptr) {
-			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
-			// mIconの解放はIconLoaderが行うので、ここでは行わない
+		if (in->mIcon.IsNull()) {
+			in->mIcon.LoadFromStream(in->mParam.mIconData);
 		}
 		return in->mIcon;
 	}
@@ -315,7 +316,7 @@ bool WebSearchCommand::Apply(launcherapp::core::CommandEditor* editor)
 	}
 
 	in->mParam = cmdEditor->GetParam();
-	in->mIcon = nullptr;
+	in->mIcon.Reset();
 	return true;
 }
 

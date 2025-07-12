@@ -52,6 +52,9 @@
     <Filter Include="soyokaze\commands\watchpath">
       <UniqueIdentifier>{69ddaea5-6216-4d9b-adc2-bee23ece6645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\icon">
+      <UniqueIdentifier>{48f76244-fbaf-4e44-8789-1d69be88c34a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -70,9 +73,6 @@
       <Filter>soyokaze\commands</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp">
-      <Filter>soyokaze</Filter>
-    </ClCompile>
-    <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp">
@@ -123,5 +123,29 @@
     <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\icon\IconLoaderTest.cpp">
+      <Filter>soyokaze\icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp">
+      <Filter>soyokaze\icon</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SoyokazeUnitTest.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

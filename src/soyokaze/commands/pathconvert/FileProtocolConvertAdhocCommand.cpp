@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
+#include "commands/pathconvert/Icon.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "commands/common/CommandParameterFunctions.h"
@@ -51,7 +52,7 @@ struct FileProtocolConvertAdhocCommand::PImpl : public AppPreferenceListenerIF
 	}
 
 	CString mFullPath;
-	HICON mIcon{nullptr};
+	Icon mIcon;
 
 	bool mIsEnable{true};
 	//
@@ -68,10 +69,6 @@ FileProtocolConvertAdhocCommand::FileProtocolConvertAdhocCommand() : in(std::mak
 
 FileProtocolConvertAdhocCommand::~FileProtocolConvertAdhocCommand()
 {
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-		in->mIcon = nullptr;
-	}
 }
 
 
@@ -114,12 +111,7 @@ HICON FileProtocolConvertAdhocCommand::GetIcon()
 		// dummy
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
-	if (in->mIcon == nullptr) {
-		SHFILEINFO sfi = {};
-		SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
-		in->mIcon = sfi.hIcon;
-	}
-	return in->mIcon;
+	return in->mIcon.Load(in->mFullPath);
 }
 
 static void DecodeUri(CString& str)
@@ -213,10 +205,7 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 
 	DecodeUri(in->mFullPath);
 
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-		in->mIcon = nullptr;
-	}
+	in->mIcon.Reset();
 
 	return Pattern::WholeMatch;
 }

@@ -6,6 +6,7 @@
 #include "gui/FolderDialog.h"
 #include "gui/KeywordEdit.h"
 #include "icon/IconLabel.h"
+#include "icon/CommandIcon.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/common/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
@@ -25,6 +26,7 @@
 
 using namespace launcherapp::commands::common;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
+using CommandIcon = launcherapp::icon::CommandIcon;
 
 struct CommandEditDialog::PImpl
 {
@@ -41,7 +43,7 @@ struct CommandEditDialog::PImpl
 	CString mHotKey;
 
 	// アイコン(表示用)
-	HICON mIcon{nullptr};
+	CommandIcon mIcon;
 
 	// 
 	CMFCMenuButton mPathMenuBtn;
@@ -181,14 +183,12 @@ bool CommandEditDialog::UpdateStatus()
 		param.mIsRunAsAdmin = FALSE;
 	}
 
+	// 独自のアイコンが設定されていない場合は、登録されたパスからアイコンを取得する
 	if (param.mIconData.empty()) {
-		in->mIcon = IconLoader::Get()->LoadIconFromPath(targetPath);
+		in->mIcon.LoadFromPath(targetPath);
 	}
 
-	if (in->mIcon) {
-		in->mIconLabelPtr->DrawIcon(in->mIcon);
-	}
-
+	in->mIconLabelPtr->DrawIcon(in->mIcon);
 	
 	// 名前チェック
 	bool isNameValid =
@@ -215,6 +215,14 @@ bool CommandEditDialog::UpdateStatus()
 	EnalbleOKButton();
 
 	return true;
+}
+
+void CommandEditDialog::OnUpdatePath()
+{
+	UpdateData();
+
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 void CommandEditDialog::OnUpdateStatus()
@@ -273,7 +281,9 @@ void CommandEditDialog::OpenTarget()
 
 	path.ReleaseBuffer();
 
-	CloseHandle(si.hProcess);
+	if (si.hProcess) {
+		CloseHandle(si.hProcess);
+	}
 }
 
 
@@ -325,10 +335,10 @@ void CommandEditDialog::OnEnterSettings()
 	if (param.mIconData.empty()) {
 		CString resolvedPath(param.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
-		in->mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
+		in->mIcon.LoadFromPath(resolvedPath);
 	}
 	else {
-		in->mIcon = IconLoader::Get()->LoadIconFromStream(param.mIconData);
+		in->mIcon.LoadFromStream(param.mIconData);
 	}
 
 }
@@ -464,20 +474,19 @@ LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 			return 0;
 		}
 
-		in->mIcon = IconLoader::Get()->LoadIconFromStream(param.mIconData);
+		in->mIcon.LoadFromStream(param.mIconData);
 	}
 	else {
 		// デフォルトに戻す
+		param.mIconData.clear();
+
 		CString resolvedPath(param.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);
-		in->mIcon = IconLoader::Get()->LoadIconFromPath(resolvedPath);
-		param.mIconData.clear();
+		in->mIcon.LoadFromPath(resolvedPath);
 	}
 
 	// 再描画
-	if (in->mIcon) {
-		in->mIconLabelPtr->DrawIcon(in->mIcon);
-	}
+	in->mIconLabelPtr->DrawIcon(in->mIcon);
 
 	return 0;
 }

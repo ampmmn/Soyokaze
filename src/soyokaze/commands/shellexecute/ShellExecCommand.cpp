@@ -17,6 +17,7 @@
 #include "commands/core/CommandFile.h"
 #include "SharedHwnd.h"
 #include "icon/IconLoader.h"
+#include "icon/CommandIcon.h"
 #include "resource.h"
 #include <assert.h>
 
@@ -28,6 +29,7 @@ using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandIcon = launcherapp::icon::CommandIcon;
 
 namespace launcherapp {
 namespace commands {
@@ -40,14 +42,6 @@ namespace shellexecute {
 
 struct ShellExecCommand::PImpl
 {
-	PImpl() :
-		mIcon(nullptr)
-	{
-	}
-	~PImpl()
-	{
-	}
-
 	ATTRIBUTE& GetNormalAttr() { return mParam.mNormalAttr; }
 	ATTRIBUTE& GetNoParamAttr() { return mParam.mNoParamAttr; }
 
@@ -56,7 +50,7 @@ struct ShellExecCommand::PImpl
 	CommandParam mParam;
 
 	CString mErrMsg;
-	HICON mIcon;
+	CommandIcon mIcon;
 };
 
 // パラメータの有無などでATTRIBUTEを切り替える
@@ -252,16 +246,14 @@ HICON ShellExecCommand::GetIcon()
 	if (in->mParam.mIconData.empty()) {
 		CString path = in->GetNormalAttr().mPath;
 		ExpandMacros(path);
-
-		return IconLoader::Get()->LoadIconFromPath(path);
+		in->mIcon.LoadFromPath(path);
 	}
 	else {
-		if (in->mIcon == nullptr) {
-			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
-			// mIconの解放はIconLoaderが行うので、ここでは行わない
+		if (in->mIcon.IsNull()) {
+			in->mIcon.LoadFromStream(in->mParam.mIconData);
 		}
-		return in->mIcon;
 	}
+	return in->mIcon;
 }
 
 int ShellExecCommand::Match(Pattern* pattern)
@@ -437,9 +429,8 @@ bool ShellExecCommand::Apply(launcherapp::core::CommandEditor* editor)
 	}
 
 	in->mParam = cmdEditor->GetParam();
-
 	// 設定変更によりアイコンが変わる可能性があるためクリアする
-	in->mIcon = nullptr;
+	in->mIcon.Reset();
 
 	return true;
 }

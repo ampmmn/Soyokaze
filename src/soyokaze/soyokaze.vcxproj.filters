@@ -1497,6 +1497,12 @@
     <ClInclude Include="commands\common\AutoWrap.h">
       <Filter>commands\common</Filter>
     </ClInclude>
+    <ClInclude Include="icon\CommandIcon.h">
+      <Filter>icon</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\pathconvert\Icon.h">
+      <Filter>commands\pathconvert</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2650,6 +2656,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\AutoWrap.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\CommandIcon.cpp">
+      <Filter>icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

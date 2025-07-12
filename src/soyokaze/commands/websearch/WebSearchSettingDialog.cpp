@@ -172,6 +172,10 @@ BOOL SettingDialog::OnInitDialog()
 
 	in->mIsEnableShortcut = in->mParam.mIsEnableShortcut;
 
+	if (in->mParam.mIconData.empty() == false) {
+		SetIcon(IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData));
+	}
+
 	UpdateStatus();
 	UpdateData(FALSE);
 

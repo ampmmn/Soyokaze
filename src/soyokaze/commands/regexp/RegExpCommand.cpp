@@ -13,6 +13,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
+#include "icon/CommandIcon.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -26,6 +27,7 @@ namespace commands {
 namespace regexp {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CommandIcon = launcherapp::icon::CommandIcon;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +40,7 @@ struct RegExpCommand::PImpl
 	CommandParam mParam;
 	tregex mRegex;
 
-	HICON mIcon{nullptr};
+	CommandIcon mIcon;
 
 	CString mErrMsg;
 	int mMatchLevel{Pattern::Mismatch};
@@ -196,19 +198,18 @@ void RegExpCommand::SetParam(const CommandParam& param)
 
 HICON RegExpCommand::GetIcon()
 {
-	if (in->mParam.mIconData.empty()) {
-		CString path = in->mParam.mNormalAttr.mPath;
-		ExpandMacros(path);
-
-		return IconLoader::Get()->LoadIconFromPath(path);
-	}
-	else {
-		if (in->mIcon == nullptr) {
-			in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
-			// mIconの解放はIconLoaderが行うので、ここでは行わない
+	if (in->mIcon.IsNull()) {
+		// アイコンのリロード
+		if (in->mParam.mIconData.empty()) {
+			CString path = in->mParam.mNormalAttr.mPath;
+			ExpandMacros(path);
+			in->mIcon.LoadFromPath(path);
 		}
-		return in->mIcon;
+		else {
+			in->mIcon.LoadFromStream(in->mParam.mIconData);
+		}
 	}
+	return in->mIcon;
 }
 
 int RegExpCommand::Match(Pattern* pattern)
@@ -359,7 +360,7 @@ bool RegExpCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mIcon = nullptr;
+	in->mIcon.Reset();
 	SetParam(cmdEditor->GetParam());
 
 	return true;

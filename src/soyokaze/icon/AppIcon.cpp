@@ -37,10 +37,7 @@ AppIcon::AppIcon() : in(new PImpl)
 
 AppIcon::~AppIcon()
 {
-	if (in->mIconHandle) {
-		DestroyIcon(in->mIconHandle);
-		in->mIconHandle = nullptr;
-	}
+	Cleanup();
 }
 
 AppIcon* AppIcon::Get()
@@ -55,7 +52,8 @@ AppIcon* AppIcon::Get()
 */
 HICON AppIcon::DefaultIconHandle()
 {
-	return AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	HINSTANCE h = GetModuleHandle(nullptr);
+	return LoadIcon(h, MAKEINTRESOURCE(IDR_MAINFRAME));
 }
 
 
@@ -157,10 +155,8 @@ void AppIcon::Reset()
 		return;
 	}
 
-	if (in->mIconHandle) {
-		DestroyIcon(in->mIconHandle);
-		in->mIconHandle = nullptr;
-	}
+	Cleanup();
+
 	Path& appIconPath = in->GetAppIconPath();
 	if (appIconPath.FileExists()) {
 		DeleteFile((LPCTSTR)appIconPath);
@@ -169,6 +165,13 @@ void AppIcon::Reset()
 	in->mIsLoaded = false;
 }
 
+void AppIcon::Cleanup()
+{
+	if (in->mIconHandle) {
+		DestroyIcon(in->mIconHandle);
+		in->mIconHandle = nullptr;
+	}
+}
 
 
 }

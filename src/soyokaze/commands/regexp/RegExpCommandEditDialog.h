@@ -2,6 +2,7 @@
 
 #include "commands/regexp/RegExpCommandParam.h"
 #include "gui/SinglePageDialog.h"
+
 #include <memory>
 
 class IconLabel;
@@ -30,20 +31,8 @@ protected:
 
 	void ResolveShortcut(CString& path);
 
-	// 編集開始時のコマンド名
-	CString mOrgName;
-
-	// メッセージ欄
-	CString mMessage;
-
-	// アイコン(表示用)
-	HICON mIcon{nullptr};
-	// 表示方法
-	int mShowType{0};
-public:
-	CommandParam mParam;
-
-	std::unique_ptr<IconLabel> mIconLabelPtr;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 
 // 実装
 protected:
@@ -53,6 +42,7 @@ protected:
 	afx_msg void OnButtonBrowseDir1Clicked();
 	afx_msg void OnButtonBrowseDir3Clicked();
 	afx_msg void OnUpdateStatus();
+	afx_msg void OnUpdatePath();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonResolveShortcut();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);

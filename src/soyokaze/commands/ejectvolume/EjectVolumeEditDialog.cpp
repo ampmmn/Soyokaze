@@ -19,11 +19,6 @@ namespace ejectvolume {
 
 struct SettingDialog::PImpl
 {
-	void SetIcon(HICON hIcon)
-	{
-		mIcon = hIcon;
-	}
-
 	// 設定情報
 	CommandParam mParam;
 	int mDriveLetterIndex{0};
@@ -35,7 +30,6 @@ struct SettingDialog::PImpl
 	// 選択したドライブレターの情報を表示
 	CString mDriveLetterMsg;
 
-	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	CString mHotKey;
@@ -109,8 +103,6 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->SetIcon(IconLoader::Get()->GetImageResIcon(-5328));
-
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
@@ -142,8 +134,9 @@ void SettingDialog::UpdateStatus()
 {
 	in->mMessage.Empty();
 
-	if (in->mIcon) {
-		in->mIconLabelPtr->DrawIcon(in->mIcon);
+	auto icon = IconLoader::Get()->GetImageResIcon(-5328);
+	if (icon) {
+		in->mIconLabelPtr->DrawIcon(icon);
 	}
 
 	TCHAR letter = (TCHAR)(in->mDriveLetterIndex + _T('A'));

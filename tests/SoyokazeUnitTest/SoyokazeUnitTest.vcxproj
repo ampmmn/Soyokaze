@@ -46,6 +46,8 @@
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\icon\IconLoaderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
@@ -61,6 +63,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SoyokazeUnitTest.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -292,7 +303,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>

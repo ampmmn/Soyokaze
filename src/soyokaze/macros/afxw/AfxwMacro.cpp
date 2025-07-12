@@ -39,6 +39,8 @@ bool AfxwMacro::Evaluate(const std::vector<CString>& args, CString& result)
 
 bool AfxwMacro::ExpandLocationPath(const std::vector<CString>& args, CString& result)
 {
+	UNREFERENCED_PARAMETER(args);
+
 	AfxWWrapper afxw;
 	std::wstring curDir;
 	if (afxw.GetCurrentDir(curDir) == false) {

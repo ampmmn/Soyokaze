@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/pathconvert/GitBashToLocalPathAdhocCommand.h"
+#include "commands/pathconvert/Icon.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
@@ -23,7 +24,7 @@ namespace pathconvert {
 struct GitBashToLocalPathAdhocCommand::PImpl
 {
 	CString mFullPath;
-	HICON mIcon{nullptr};
+	Icon mIcon;
 	bool mIsExe{false};
 };
 
@@ -36,10 +37,6 @@ GitBashToLocalPathAdhocCommand::GitBashToLocalPathAdhocCommand() : in(std::make_
 
 GitBashToLocalPathAdhocCommand::~GitBashToLocalPathAdhocCommand()
 {
-	if (in->mIcon) {
-		DestroyIcon(in->mIcon);
-		in->mIcon = nullptr;
-	}
 }
 
 
@@ -95,13 +92,7 @@ HICON GitBashToLocalPathAdhocCommand::GetIcon()
 		return IconLoader::Get()->LoadUnknownIcon();
 	}
 
-	if (in->mIcon == nullptr) {
-		SHFILEINFO sfi = {};
-		SHGetFileInfo(in->mFullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
-		in->mIcon = sfi.hIcon;
-	}
-
-	return in->mIcon;
+	return in->mIcon.Load(in->mFullPath);
 }
 
 int GitBashToLocalPathAdhocCommand::Match(Pattern* pattern)

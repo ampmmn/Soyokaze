@@ -39,7 +39,7 @@ const CommandParam& CommandEditor::GetParam()
 // 名前を上書きする
 void CommandEditor::OverrideName(LPCTSTR name) 
 {
-	in->mDialog.mParam.mName = name;
+	in->mDialog.SetName(name);
 }
 
 // 元のコマンド名を設定する(そのコマンド名と同じ場合は「コマンド名重複」とみなさない)

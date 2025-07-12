@@ -19,6 +19,9 @@ public:
 	bool Import(const CString& iconFilePath);
 	void Reset();
 
+	// テスト用
+	void Cleanup();
+
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

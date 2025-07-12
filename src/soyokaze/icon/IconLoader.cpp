@@ -12,6 +12,7 @@
 #include "utility/Path.h"
 #include "resource.h"
 #include <map>
+#include <set>
 #include <atlimage.h>
 #include <mutex>
 #include <thread>
@@ -104,6 +105,10 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 	}
 
+	// アイコンを登録する
+	void RegisterIcon(const CString& path, HICON icon);
+
+	// shell32.dllのアイコンをロードする
 	HICON GetShell32Icon(int index)
 	{
 		HICON icon[1];
@@ -127,8 +132,16 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	HICON LoadIconFromDefaultValue(const CString& fileExt);
 	HICON LoadIconFromOpenWithProgIDs(const CString& fileExt);
 
+	// キャッシュをクリアする
 	void ClearCache();
+	// 内部の特定mapのキャッシュをクリアする
+	int ClearCache(std::map<CString, ICONITEM>& indexMap, uint64_t now);
+
+	HICON GetAppIcon(const CString& key);
+
 	bool GetDefaultIcon(const CString& path, HICON& icon);
+
+	void Register(HICON icon);
 
 	void OnLockScreenOccurred() override
 	{
@@ -176,6 +189,9 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	// 音量変更(ミュート)のアイコン
 	HICON mVolumeMuteIcon;
 
+	//
+	std::set<HICON> mIconSet;
+
 	LocalPathResolver mResolver;
 
 	int mCleanCount{CLEARCACHE_INTERVAL};
@@ -185,15 +201,29 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 	std::mutex mAppIconMapMutex;
 };
 
+void IconLoader::PImpl::RegisterIcon(const CString& appId, HICON icon)
+{
+	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
+
+	auto it = mAppIconMap.find(appId);
+	if (it != mAppIconMap.end()) {
+		it->second.Destroy();
+		mAppIconMap.erase(it);
+	}
+	mAppIconMap[appId] = ICONITEM(icon);
+	Register(icon);
+}
+
+
 void IconLoader::PImpl::ClearCache()
 {
 	if (mIsScreenLocked) {
 		return;
 	}
 	spdlog::debug(_T("ClearCache in."));
+	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
 
 	int clearedItemCount = 0;
-	int totalIcons = 0;
 
 	auto now = GetTickCount64();
 
@@ -202,63 +232,56 @@ void IconLoader::PImpl::ClearCache()
 
 		auto it = indexMap.begin();
 		while (it != indexMap.end()) {
-			auto& iconItem = it->second;
-			if (iconItem.IsTimeout(now) == false) {
+			auto& item2 = it->second;
+			if (item2.IsTimeout(now) == false) {
 				++it;
 				continue;
 			}
-			iconItem.Destroy();
+
+			HICON h = item2.IconHandle();
+			auto itSet = mIconSet.find(h);
+			if (itSet != mIconSet.end()) {
+				mIconSet.erase(itSet);
+			}
+
+			item2.Destroy();
 			it = indexMap.erase(it);
 			clearedItemCount++;
 		}
 	}
-	totalIcons += (int)mIconIndexCache.size();
 
-	auto it = mDefaultIconCache.begin();
-	while (it != mDefaultIconCache.end()) {
-		auto& iconItem = it->second;
-		if (iconItem.IsTimeout(now) == false) {
-			++it;
-			continue;
-		}
-		iconItem.Destroy();
-		it = mDefaultIconCache.erase(it);
-		clearedItemCount++;
-	}
-	totalIcons += (int)mDefaultIconCache.size();
+	clearedItemCount += ClearCache(mDefaultIconCache, now);
+	clearedItemCount += ClearCache(mFileExtIconCache, now);
 
-	it = mFileExtIconCache.begin();
-	while (it != mFileExtIconCache.end()) {
-		auto& iconItem = it->second;
-		if (iconItem.IsTimeout(now) == false) {
-			++it;
-			continue;
-		}
-		iconItem.Destroy();
-		it = mFileExtIconCache.erase(it);
-		clearedItemCount++;
-	}
-	totalIcons += (int)mFileExtIconCache.size();
-
-
-	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
-
-	it = mAppIconMap.begin();
-	while (it != mAppIconMap.end()) {
-		auto& iconItem = it->second;
-		if (iconItem.IsTimeout(now) == false) {
-			++it;
-			continue;
-		}
-		iconItem.Destroy();
-		it = mAppIconMap.erase(it);
-		clearedItemCount++;
-	}
-	totalIcons += (int)mAppIconMap.size();
+	clearedItemCount += ClearCache(mAppIconMap, now);
 
 	if (clearedItemCount > 0) {
-		spdlog::info(_T("IconLoader ClearCache {0} icons cleared.(existing icons:{1})"), clearedItemCount, totalIcons);
+		spdlog::info(_T("IconLoader ClearCache {0} icons cleared."), clearedItemCount);
 	}
+}
+
+int IconLoader::PImpl::ClearCache(std::map<CString, ICONITEM>& indexMap, uint64_t now)
+{
+	int clearedCount = 0;
+	auto it = indexMap.begin();
+	while (it != indexMap.end()) {
+		auto& item = it->second;
+		if (item.IsTimeout(now) == false) {
+			++it;
+			continue;
+		}
+
+		HICON h = item.IconHandle();
+		auto itSet = mIconSet.find(h);
+		if (itSet != mIconSet.end()) {
+			mIconSet.erase(itSet);
+		}
+
+		item.Destroy();
+		it = indexMap.erase(it);
+		clearedCount++;
+	}
+	return clearedCount;
 }
 
 bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
@@ -294,6 +317,25 @@ bool IconLoader::PImpl::GetDefaultIcon(const CString& path, HICON& icon)
 	}
 
 	return true;
+}
+
+// mAppIconMapに登録されたアイコンを取得する
+HICON IconLoader::PImpl::GetAppIcon(const CString& key)
+{
+	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
+	auto it = mAppIconMap.find(key);
+	if (it != mAppIconMap.end()) {
+		auto& item = it->second;
+		return item.IconHandle();
+	}
+	return nullptr;
+}
+
+// IconLoaderが管理しているアイコンであることを登録する
+void IconLoader::PImpl::Register(HICON icon)
+{
+	// ここにあるアイコンはこのクラス内のどこかで保持されている
+	mIconSet.insert(icon);
 }
 
 
@@ -403,7 +445,9 @@ HICON IconLoader::PImpl::LoadIconFromDefaultValue(const CString& fileExt)
 		return nullptr;
 	}
 	// 次回以降は再利用できるよう保持しておく
+	std::lock_guard<std::mutex> lock(mAppIconMapMutex);
 	mFileExtIconCache[fileExt] = ICONITEM(icon);
+	Register(icon);
 	return icon;
 }
 
@@ -433,7 +477,9 @@ HICON IconLoader::PImpl::LoadIconFromOpenWithProgIDs(const CString& fileExt)
 			continue;
 		}
 		// 次回以降は再利用できるよう保持しておく
+		std::lock_guard<std::mutex> lock(mAppIconMapMutex);
 		mFileExtIconCache[fileExt] = ICONITEM(icon);
+		Register(icon);
 		return icon;
 	}
 
@@ -474,6 +520,8 @@ IconLoader::~IconLoader()
 		auto& item = elem.second;
 		item.Destroy();
 	}
+
+	in->mIconSet.clear();
 
 	if (in->mVolumeIcon) {
 		DestroyIcon(in->mVolumeIcon);
@@ -529,18 +577,31 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	// SHGetFileInfoは環境により、呼び出しが返るのに時間がかかる(ブロックする)場合がある
 	// このためバックグラウンドで実行し、初回はUnknownアイコンを返す
 	// 解決後はmAppIconMap経由のキャッシュを返すようにする
+	auto waitEventHandle = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 
-	std::thread th([&, fullPath]() {
+	std::thread th([&]() {
 		DWORD tid  = GetCurrentThreadId();
 		spdlog::debug(_T("SHGetFileInfo thread start. {0} file:{1}"), tid, (LPCTSTR)fullPath);
 		SHFILEINFO sfi = {};
 		::SHGetFileInfo(fullPath, 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
 		HICON hIcon = sfi.hIcon;
-		RegisterIcon(fullPath, hIcon);
+		in->RegisterIcon(fullPath, hIcon);
+
+		// 完了した旨をイベント経由で通知する
+		SetEvent(waitEventHandle);
+		CloseHandle(waitEventHandle);
+
 		spdlog::debug("SHGetFileInfo thread end. {}", tid);
 	});
 	th.detach();
 
+	// バックグラウンドで実行しているロード処理を最大250msec待つ
+	WaitForSingleObject(waitEventHandle, 250);
+
+	auto h = in->GetAppIcon(fullPath);
+	if (h != nullptr) {
+		return h;
+	}
 	return LoadUnknownIcon();
 }
 
@@ -574,6 +635,7 @@ HICON IconLoader::GetDefaultIcon(const CString& path)
 	}
 
 	in->mDefaultIconCache[path] = ICONITEM(icon);
+	in->Register(icon);
 
 	return icon;
 }
@@ -608,6 +670,8 @@ HICON IconLoader::GetMSSvpIcon(int index)
 // ファイルがリソースとして保持するアイコンを取得
 HICON IconLoader::LoadIconResource(const CString& path, int index)
 {
+	std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+
 	IconIndexMap& idxMap = in->GetIconIndexMap(path);
 
 	auto it = idxMap.find(index);
@@ -623,6 +687,7 @@ HICON IconLoader::LoadIconResource(const CString& path, int index)
 	}
 
 	idxMap[index] = ICONITEM(h);
+	in->Register(h);
 	return h;
 }
 
@@ -658,17 +723,22 @@ HICON IconLoader::LoadIconFromImageFile(
 
 	if (isShared) {
 		// アイコンを登録
-		RegisterIcon(imageFilePath, iconHandle);
+		in->RegisterIcon(imageFilePath, iconHandle);
 	}
 	return iconHandle;
 }
 
-// (LoadIconFromImageFileで取得した)アイコンを破棄する
-void IconLoader::Destroy(HICON iconHandle)
+// 指定したアイコンはIconLoaderが管理しているものか?
+bool IconLoader::HasIcon(HICON icon)
 {
-	::DestroyIcon(iconHandle);
+	if (icon == LoadDefaultIcon()) {
+		return true;
+	}
+	if (icon == in->mVolumeIcon || icon == in->mVolumeMuteIcon) {
+		return true;
+	}
+	return in->mIconSet.find(icon) != in->mIconSet.end();
 }
-
 
 HICON IconLoader::LoadFolderIcon()
 {
@@ -739,18 +809,6 @@ HICON IconLoader::LoadIconFromHwnd(HWND hwnd)
 	catch (ProcessPath::Exception&) {
 		return LoadWindowIcon();
 	}
-}
-
-void IconLoader::RegisterIcon(const CString& appId, HICON icon)
-{
-	std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
-
-	auto it = in->mAppIconMap.find(appId);
-	if (it != in->mAppIconMap.end()) {
-		it->second.Destroy();
-		in->mAppIconMap.erase(it);
-	}
-	in->mAppIconMap[appId] = ICONITEM(icon);
 }
 
 HICON IconLoader::LoadEditIcon()
@@ -884,10 +942,13 @@ HICON IconLoader::LoadIconFromStream(
 	sha.Add(strm);
 	auto str = sha.Finish();
 
-	auto it = in->mAppIconMap.find(str);
-	if (it != in->mAppIconMap.end()) {
-		// すでに作成済
-		return it->second.IconHandle();
+	{
+		std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+		auto it = in->mAppIconMap.find(str);
+		if (it != in->mAppIconMap.end()) {
+			// すでに作成済
+			return it->second.IconHandle();
+		}
 	}
 
 	// アイコンを一時ファイルに書き出す
@@ -905,7 +966,7 @@ HICON IconLoader::LoadIconFromStream(
 	CloseHandle(h);
 
 	HICON hIcon = in->LoadIconFromImage(userDataPath);
-	RegisterIcon(str, hIcon);
+	in->RegisterIcon(str, hIcon);
 
 	return hIcon;
 }
