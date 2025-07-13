@@ -59,7 +59,6 @@ struct PathExecuteCommand::PImpl
 	CString mWord;
 	CString mFullPath;
 	bool mIsURL{false};
-	bool mIsExe{false};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)
@@ -98,11 +97,8 @@ CString PathExecuteCommand::GetGuideString()
 	if (in->mIsURL) {
 		return _T("⏎:ブラウザで開く");
 	}
-	else if (in->mIsExe) {
-		return _T("⏎:開く C-⏎:フォルダを開く");
-	}
 	else {
-		return _T("⏎:開く C-⏎:フォルダを開く");
+		return _T("⏎:開く C-⏎:フォルダを開く C-S-⏎:管理者権限で実行");
 	}
 }
 
