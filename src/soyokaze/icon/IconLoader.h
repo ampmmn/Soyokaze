@@ -79,6 +79,8 @@ public:
 	HICON LoadConvertIcon();
 	// 履歴を示すアイコンを取得する
 	HICON LoadHistoryIcon();
+	// コピーを表すアイコンを取得する
+	HICON LoadCopyIcon();
 
 	// アイコンファイルのデータ列からアイコンを生成する
 	HICON LoadIconFromStream(const std::vector<uint8_t>& strm);

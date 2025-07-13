@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "commands/common/Clipboard.h"
 #include "commands/builtin/NewCommand.h"
+#include "icon/IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -147,6 +148,17 @@ CString DefaultCommand::GetErrorString()
 
 HICON DefaultCommand::GetIcon()
 {
+	auto iconLoader = IconLoader::Get();
+	const auto& type = in->mActionType;
+	if (type == _T("copy")) {
+		return iconLoader->LoadCopyIcon();
+	}
+	else if (type == _T("register")) {
+		return iconLoader->LoadNewIcon();
+	}
+	else {
+		return iconLoader->LoadUnknownIcon();
+	}
 	return nullptr;
 }
 

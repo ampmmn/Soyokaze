@@ -234,6 +234,7 @@ void ActivateWindowProvider::QueryAdhocCommands(
 	bool shouldEnumAll = hasPrefix && pattern->GetWordCount() == 1;
 
 	TCHAR caption[256];
+	bool isMatched = false;
 	for (auto hwnd : windowHandles) {
 		GetWindowText(hwnd, caption, 256);
 
@@ -271,6 +272,13 @@ void ActivateWindowProvider::QueryAdhocCommands(
 		}
 		cmd->AddRef();
 		commands.Add(CommandQueryItem(level, cmd));
+		isMatched = true;
+	}
+
+	if (isMatched == false) {
+		// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
+		commands.Add(CommandQueryItem(Pattern::HiddenMatch, new WindowActivateAdhocCommand(nullptr, _T(""))));
+		return;
 	}
 }
 
