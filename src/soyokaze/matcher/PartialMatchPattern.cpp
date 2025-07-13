@@ -247,6 +247,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			if (token.IsEmpty() == FALSE) {
 				std::wstring escapedPat = StripEscapeChars(token);
 				patterns.push_back(new RE2(UTF2UTF(escapedPat, tmp), options));
+				patternsForFM.push_back(new RE2(UTF2UTF(_T("^") + escapedPat, tmp), options));
 			}
 			words.push_back(WORD(token));
 			continue;
@@ -304,6 +305,9 @@ int PartialMatchPattern::Match(
 
 	std::string str_;
 	UTF2UTF(std::wstring(str), str_);
+	if (str_ == "cmd") {
+		int a = 0;
+	}
 
 	size_t regPatCount = in->mRegPatterns.size();
 	for (size_t i = offset; i < regPatCount; ++i) {
