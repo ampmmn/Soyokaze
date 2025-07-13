@@ -2673,6 +2673,7 @@
     <None Include="res\CAPTURE.cur">
       <Filter>リソース ファイル</Filter>
     </None>
+    <None Include="..\..\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icon.ico">

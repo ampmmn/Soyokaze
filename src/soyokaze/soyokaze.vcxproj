@@ -1242,6 +1242,7 @@
     <ResourceCompile Include="Soyokaze.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\README.md" />
     <None Include="res\CAPTURE.cur" />
     <None Include="res\Soyokaze.rc2" />
   </ItemGroup>
