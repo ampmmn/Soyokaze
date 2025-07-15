@@ -164,6 +164,9 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	bool isRetryProxyAuth = (in->mProxyType == DIRECTPROXY);
 		// 指摘したプロキシを使う設定の場合だけ、407が返ったら認証情報をセットしてリトライを試みる
 
+	bool hasRetriedHttpAuth = false;
+		// HTTP認証は一度だけリトライする
+
 	DWORD stsCode = 0;
 
 	bool isIncomplete = true;
@@ -205,6 +208,13 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 		// サーバ認証が必要
 		if (stsCode == 401) {
+
+			if (hasRetriedHttpAuth) {
+				// リトライ済の場合はあきらめる
+				spdlog::error("401 : authentication failed.");
+				return false;
+			}
+
 			DWORD supporteScheme;
 			DWORD firstScheme;
 			DWORD target;
@@ -219,6 +229,8 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 			}
 			// 認証情報を設定
 			isOK = WinHttpSetCredentials(req, target, selectedScheme, in->mServerUser, in->mServerPassword, nullptr);
+
+			hasRetriedHttpAuth = true;
 			continue;
 		}
 		// プロキシ認証が必要

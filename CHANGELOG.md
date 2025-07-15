@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+### Fixed
+
+- #136 【DirectoryIndexコマンド】接続先がHTTP認証に失敗する場合にフリーズする
 
 ## 0.42.2 - 2025-07-14
 
