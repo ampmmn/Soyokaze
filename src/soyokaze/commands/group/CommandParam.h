@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 #include <vector>
 
 namespace launcherapp {
@@ -23,19 +24,24 @@ public:
 
 	CommandParam& operator = (const CommandParam& rhs);
 
+	bool Save(CommandEntryIF* entry) const;
+	bool Load(CommandEntryIF* entry);
+
 public:
 	CString mName;
 	CString mDescription;
 	std::vector<GroupItem> mItems;
 
 	// パラメータを渡すか
-	BOOL mIsPassParam;
+	bool mIsPassParam;
 	// 繰り返し実行するか
-	BOOL mIsRepeat;
+	bool mIsRepeat;
 	// 繰り返し実行する場合の繰り返し数(繰り返さない場合は1)
 	int mRepeats;
 	// 確認ダイアログを出す
-	BOOL mIsConfirm;
+	bool mIsConfirm;
+	// 自動実行を許可するか?
+	bool mIsAllowAutoExecute;
 
 	CommandHotKeyAttribute mHotKeyAttr;
 };

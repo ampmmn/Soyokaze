@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandIF.h"
-#include "commands/core/CommandQueryItem.h"
+#include "commands/core/CommandQueryItemList.h"
 #include <map>
 #include <vector>
 

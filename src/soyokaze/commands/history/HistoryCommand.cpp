@@ -20,6 +20,7 @@ namespace history {
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
@@ -42,27 +43,29 @@ struct HistoryCommand::PImpl
 			return nullptr;
 		}
 
-		std::vector<launcherapp::core::Command*> items;
+		CommandQueryResult* items = nullptr;
 
 		// 結果を取得し、先頭の候補を実行する
-		if (req->GetResult(items) && items.empty() == false) {
+		if (req->GetResult(&items) && items->IsEmpty() == false) {
 
 			// 履歴コマンドは除外
+			size_t count = items->GetCount();
 			auto thisTypeName = mThisPtr->GetTypeDisplayName();
-			for (auto cmd : items) {
+			for (size_t i = 0; i < count; ++i) {
+				auto cmd = items->GetItem(i);
 				if (cmd->GetTypeDisplayName() == thisTypeName) {
+					cmd->Release();
 					continue;
 				}
 				mCmd = cmd;
-				mCmd->AddRef();
+				// mCmd->AddRef();   / GetItemによりコマンドの参照カウントが+1されるため、ここでは不要
 				break;
-			}
-
-			for (auto cmd : items) {
-				cmd->Release();
 			}
 		}
 
+		if (items) {
+			items->Release();
+		}
 		req->Release();
 
 		return mCmd;

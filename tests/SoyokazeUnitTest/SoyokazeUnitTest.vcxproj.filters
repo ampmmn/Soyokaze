@@ -55,6 +55,9 @@
     <Filter Include="soyokaze\icon">
       <UniqueIdentifier>{48f76244-fbaf-4e44-8789-1d69be88c34a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\core">
+      <UniqueIdentifier>{4e9a9243-2bf2-4deb-9de8-17f3a628425c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -131,6 +134,15 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp">
       <Filter>soyokaze\icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemTest.cpp">
+      <Filter>soyokaze\commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemListTest.cpp">
+      <Filter>soyokaze\commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp">
+      <Filter>soyokaze\commands\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

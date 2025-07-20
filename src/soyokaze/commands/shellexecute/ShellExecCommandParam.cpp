@@ -46,7 +46,8 @@ void ATTRIBUTE::SetShowType(int type)
 CommandParam::CommandParam() :
 	mIsRunAsAdmin(FALSE),
 	mIsUse0(FALSE),
-	mIsUseDescriptionForMatching(FALSE)
+	mIsUseDescriptionForMatching(FALSE),
+	mIsAllowAutoExecute(FALSE)
 {
 }
 
@@ -63,6 +64,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mIconData = rhs.mIconData;
 	mEnviron = rhs.mEnviron;
 	mHotKeyAttr = rhs.mHotKeyAttr;
+	mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
 }
 
 CommandParam::~CommandParam()
@@ -82,6 +84,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mIconData = rhs.mIconData;
 		mEnviron = rhs.mEnviron;
 		mHotKeyAttr = rhs.mHotKeyAttr;
+		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
 	}
 	return *this;
 }
@@ -121,6 +124,8 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 		entry->Set(key, item.second);
 		index++;
 	}
+
+	entry->Set(_T("allow_auto_execute"), mIsAllowAutoExecute ? true : false);
 
 	return true;
 }
@@ -169,6 +174,8 @@ bool CommandParam::Load(CommandEntryIF* entry)
 		envMap[envName] = envValue;
 	}
 	mEnviron.swap(envMap);
+
+	mIsAllowAutoExecute = entry->Get(_T("allow_auto_execute"), false) ? TRUE : FALSE;
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

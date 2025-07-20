@@ -100,6 +100,12 @@ int ErrorIndicatorCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
+bool ErrorIndicatorCommand::IsAllowAutoExecute()
+{
+	return false;
+}
+
+
 bool ErrorIndicatorCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

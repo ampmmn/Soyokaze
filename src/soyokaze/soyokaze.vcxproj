@@ -451,6 +451,8 @@
     <ClInclude Include="commands\core\CommandEditDialogIF.h" />
     <ClInclude Include="commands\core\CommandEntryIF.h" />
     <ClInclude Include="commands\core\CommandFileEntry.h" />
+    <ClInclude Include="commands\core\CommandQueryDefaultResult.h" />
+    <ClInclude Include="commands\core\CommandQueryItemList.h" />
     <ClInclude Include="commands\core\DefaultCommand.h" />
     <ClInclude Include="commands\core\EditableIF.h" />
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h" />
@@ -840,6 +842,7 @@
     <ClCompile Include="commands\alias\AliasCommand.cpp" />
     <ClCompile Include="commands\alias\AliasCommandEditDialog.cpp" />
     <ClCompile Include="commands\alias\AliasCommandEditor.cpp" />
+    <ClCompile Include="commands\alias\AliasCommandParam.cpp" />
     <ClCompile Include="commands\alias\AliasCommandProvider.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandEditor.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
@@ -871,6 +874,8 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp" />
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
+    <ClCompile Include="commands\core\CommandQueryDefaultResult.cpp" />
+    <ClCompile Include="commands\core\CommandQueryItemList.cpp" />
     <ClCompile Include="commands\core\DefaultCommand.cpp" />
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />

@@ -184,6 +184,7 @@
 #define IDC_EDIT_FRONT2                 1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_EDIT_SHEETNAME              1012
+#define IDC_CHECK_ALLOWAUTOEXEC         1012
 #define IDC_BUTTON_BROWSEDIR1           1013
 #define IDC_BUTTON_BROWSEFILE3          1013
 #define IDC_BUTTON_BROWSEFILE2          1014

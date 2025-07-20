@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
 #include "mainwindow/CandidateList.h"
+#include "helper/DummyCommand.h"
 #include <regex>
 
 #ifdef _DEBUG
@@ -9,99 +10,6 @@
 
 namespace CandidateListTest_local {
 
-struct DummyCommand : public launcherapp::core::Command
-{
-	DummyCommand() : mDesc(_T("dummy description"))
-	{
-	}
-	DummyCommand(LPCTSTR p) : mDesc(p)
-	{
-	}
-
-	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override
-	{
-		return false;
-	}
-
-
-	CString GetName() override
-	{
-		return _T("Dummy name");
-	}
-
-	CString GetDescription() override
-	{
-		return mDesc;
-	}
-
-	CString GetTypeDisplayName() override
-	{
-		return _T("");
-	}
-
-	CString GetGuideString() override
-	{
-		return _T("");
-	}
-
-	bool CanExecute() override
-	{
-		return true;
-	}
-
-	BOOL Execute(Parameter* param) override
-	{
-		return TRUE;
-	}
-
-	CString GetErrorString() override
-	{
-		return _T("");
-	}
-
-	HICON GetIcon() override
-	{
-		return nullptr;
-	}
-
-	int Match(Pattern* pattern) override
-	{
-		return Pattern::WholeMatch;
-	}
-
-	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override
-	{
-		return false;
-	}
-
-	Command* Clone() override
-	{
-		return new DummyCommand();
-	}
-
-	bool Save(CommandEntryIF* entry) override
-	{
-		return false;
-	}
-
-	bool Load(CommandEntryIF* entry) override
-	{
-		return false;
-	}
-
-	uint32_t AddRef() override
-	{
-		return 1;
-	}
-
-	uint32_t Release() override
-	{
-		delete this;
-		return 0;
-	}
-
-	CString mDesc;
-};
 
 struct DummyListener : public CandidateListListenerIF
 {

@@ -120,6 +120,11 @@ int AliasCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool AliasCommand::IsAllowAutoExecute()
+{
+	return in->mParam.mIsAllowAutoExecute;
+}
+
 bool AliasCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -139,11 +144,7 @@ bool AliasCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("text"), in->mParam.mText);
-	entry->Set(_T("pasteonly"), in->mParam.mIsPasteOnly);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool AliasCommand::Load(CommandEntryIF* entry)
@@ -154,17 +155,7 @@ bool AliasCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != GetType()) {
 		return false;
 	}
-
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mText = entry->Get(_T("text"), _T(""));
-	in->mParam.mIsPasteOnly = entry->Get(_T("pasteonly"), 0);
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
-
-	return true;
+	return in->mParam.Load(entry);
 }
 
 bool AliasCommand::NewDialog(Parameter* param)

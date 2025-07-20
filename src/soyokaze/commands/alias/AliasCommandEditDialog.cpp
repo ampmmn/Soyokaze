@@ -59,6 +59,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_TEXT, mParam.mText);
 	DDX_CBIndex(pDX, IDC_COMBO_ACTION, mParam.mIsPasteOnly);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
 #pragma warning( push )

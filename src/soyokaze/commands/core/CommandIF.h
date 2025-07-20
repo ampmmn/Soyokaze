@@ -26,6 +26,8 @@ public:
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
+	// 完全一致かつ候補が一つのときに自動実行を許すか
+	virtual bool IsAllowAutoExecute() = 0;
 
 	// ホットキー設定を取得する
 	// 戻り値は ホットキーを設定する機能を有する場合はtrue、そうでなければfalse

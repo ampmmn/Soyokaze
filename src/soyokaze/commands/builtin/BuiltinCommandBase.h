@@ -29,6 +29,7 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
+	bool IsAllowAutoExecute() override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 
 	bool Save(CommandEntryIF* entry) override;

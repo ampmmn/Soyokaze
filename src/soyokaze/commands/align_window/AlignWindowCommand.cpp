@@ -186,6 +186,12 @@ int AlignWindowCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool AlignWindowCommand::IsAllowAutoExecute()
+{
+	return in->mParam.mIsAllowAutoExecute;
+}
+
+
 bool AlignWindowCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -208,36 +214,7 @@ bool AlignWindowCommand::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("Type"), GetType());
 
-	entry->Set(_T("description"), GetDescription());
-
-	entry->Set(_T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
-	entry->Set(_T("IsKeepActiveWindow"), (bool)(in->mParam.mIsKeepActiveWindow != FALSE));
-	entry->Set(_T("ItemCount"), (int)in->mParam.mItems.size());
-
-	CString key;
-
-	int index = 1;
-	for (auto& item : in->mParam.mItems) {
-
-		key.Format(_T("CaptionStr%d"), index);
-		entry->Set(key, item.mCaptionStr);
-		key.Format(_T("ClassStr%d"), index);
-		entry->Set(key, item.mClassStr);
-		key.Format(_T("IsUseRegExp%d"), index);
-		entry->Set(key, item.mIsUseRegExp != FALSE);
-		key.Format(_T("IsApplyAll%d"), index);
-		entry->Set(key, item.mIsApplyAll != FALSE);
-
-		key.Format(_T("Action%d"), index);
-		entry->Set(key, item.mAction);
-
-		key.Format(_T("Placement%d"), index);
-		entry->SetBytes(key, (uint8_t*)&item.mPlacement, sizeof(item.mPlacement));
-
-		index++;
-	}
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool AlignWindowCommand::Load(CommandEntryIF* entry)
@@ -246,54 +223,7 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != AlignWindowCommand::GetType()) {
 		return false;
 	}
-
-	CString name = entry->GetName();
-	CString descriptionStr = entry->Get(_T("description"), _T(""));
-
-	BOOL isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
-	BOOL isKeepActive = entry->Get(_T("IsKeepActiveWindow"), true) ? TRUE : FALSE;
-
-	CString key;
-
-	std::vector<CommandParam::ITEM> items;
-
-	int itemCount = entry->Get(_T("ItemCount"), 0);
-	for (int i = 1; i <= itemCount; ++i) {
-
-		CommandParam::ITEM item;
-
-		key.Format(_T("CaptionStr%d"), i);
-		item.mCaptionStr = entry->Get(key, _T(""));
-		key.Format(_T("ClassStr%d"), i);
-		item.mClassStr = entry->Get(key, _T(""));
-		key.Format(_T("IsUseRegExp%d"), i);
-		item.mIsUseRegExp = entry->Get(key, false) ? TRUE : FALSE;
-		key.Format(_T("IsApplyAll%d"), i);
-		item.mIsApplyAll = entry->Get(key, false) ? TRUE : FALSE;
-
-		key.Format(_T("Action%d"), i);
-		item.mAction = entry->Get(key, 0);
-
-		key.Format(_T("Placement%d"), i);
-		if (entry->GetBytes(key, (uint8_t*)&item.mPlacement, sizeof(WINDOWPLACEMENT)) == false) {
-			continue;
-		}
-		item.BuildRegExp();
-
-		items.push_back(item);
-	}
-
-	in->mParam.mName = name;
-	in->mParam.mDescription = descriptionStr;
-	in->mParam.mItems.swap(items);
-	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
-	in->mParam.mIsKeepActiveWindow = isKeepActive;
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
-
-	return true;
+	return in->mParam.Load(entry);
 }
 
 bool AlignWindowCommand::NewDialog(

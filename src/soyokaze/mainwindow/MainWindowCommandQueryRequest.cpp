@@ -21,9 +21,13 @@ CString MainWindowCommandQueryRequest::GetCommandParameter()
 
 void MainWindowCommandQueryRequest::NotifyQueryComplete(
 	bool isCancelled,
-	std::vector<launcherapp::core::Command*>* result
+	CommandQueryResult* result
 )
 {
+	// Note: ここで上げた参照カウントを下げるのは受け取り側の責務
+	if (result) {
+		result->AddRef();
+	}
 	PostMessage(mHwnd, mMsg, isCancelled ? 1 : 0, (LPARAM)result);
 }
 

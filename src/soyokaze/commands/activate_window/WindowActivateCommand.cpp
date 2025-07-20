@@ -137,6 +137,12 @@ int WindowActivateCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool WindowActivateCommand::IsAllowAutoExecute()
+{
+	return in->mParam.mIsAllowAutoExecute;
+}
+
+
 bool WindowActivateCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -158,16 +164,7 @@ bool WindowActivateCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-
-	entry->Set(_T("description"), GetDescription());
-
-	entry->Set(_T("CaptionStr"), in->mParam.mCaptionStr);
-	entry->Set(_T("ClassStr"), in->mParam.mClassStr);
-	entry->Set(_T("IsUseRegExp"), in->mParam.mIsUseRegExp != FALSE);
-	entry->Set(_T("IsNotifyIfWindowNotExist"), in->mParam.mIsNotifyIfWindowNotFound != FALSE);
-	entry->Set(_T("IsHotKeyOnly"), in->mParam.mIsHotKeyOnly != FALSE);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool WindowActivateCommand::Load(CommandEntryIF* entry)
@@ -178,32 +175,7 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != WindowActivateCommand::GetType()) {
 		return false;
 	}
-
-	CString name = entry->GetName();
-	CString descriptionStr = entry->Get(_T("description"), _T(""));
-
-	CString captionStr = entry->Get(_T("CaptionStr"), _T(""));
-	CString classStr = entry->Get(_T("ClassStr"), _T(""));
-	BOOL isUseRegExp = entry->Get(_T("IsUseRegExp"), false) ? TRUE : FALSE;
-	BOOL isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false) ? TRUE : FALSE;
-	BOOL isHotKeyOnly = entry->Get(_T("IsHotKeyOnly"), false) ? TRUE : FALSE;
-
-	in->mParam.mName = name;
-	in->mParam.mDescription = descriptionStr;
-	in->mParam.mCaptionStr = captionStr;
-	in->mParam.mClassStr = classStr;
-	in->mParam.mIsUseRegExp = isUseRegExp;
-	in->mParam.mIsNotifyIfWindowNotFound = isNotify;
-	in->mParam.mIsHotKeyOnly = isHotKeyOnly;
-
-	if (in->mParam.BuildRegExp() == false) {
-		return false;
-	}
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
-	return true;
+	return in->mParam.Load(entry);
 }
 
 // ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する

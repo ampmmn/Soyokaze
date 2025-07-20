@@ -78,6 +78,11 @@ int AdhocCommandBase::Match(Pattern* pattern)
 	return pattern->Match(this->mName);
 }
 
+bool AdhocCommandBase::IsAllowAutoExecute()
+{
+	return false;
+}
+
 bool AdhocCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

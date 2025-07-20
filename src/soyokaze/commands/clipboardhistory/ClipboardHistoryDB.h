@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "commands/core/CommandQueryItem.h"
+#include "commands/core/CommandQueryItemList.h"
 #include "commands/clipboardhistory/ClipboardHistoryEventListener.h"
 #include "matcher/Pattern.h"
 

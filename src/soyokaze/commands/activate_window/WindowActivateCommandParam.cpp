@@ -1,10 +1,54 @@
 #include "pch.h"
 #include "WindowActivateCommandParam.h"
+#include "hotkey/CommandHotKeyManager.h"
 #include "resource.h"
 
-namespace launcherapp {
-namespace commands {
-namespace activate_window {
+namespace launcherapp { namespace commands { namespace activate_window {
+
+bool CommandParam::Save(CommandEntryIF* entry) const
+{
+	entry->Set(_T("description"), mDescription);
+
+	entry->Set(_T("CaptionStr"), mCaptionStr);
+	entry->Set(_T("ClassStr"), mClassStr);
+	entry->Set(_T("IsUseRegExp"), mIsUseRegExp);
+	entry->Set(_T("IsNotifyIfWindowNotExist"), mIsNotifyIfWindowNotFound);
+	entry->Set(_T("IsAllowAutoExecute"), mIsAllowAutoExecute);
+	entry->Set(_T("IsHotKeyOnly"), mIsHotKeyOnly);
+
+	return true;
+}
+
+bool CommandParam::Load(CommandEntryIF* entry)
+{
+	CString name = entry->GetName();
+	CString descriptionStr = entry->Get(_T("description"), _T(""));
+
+	CString captionStr = entry->Get(_T("CaptionStr"), _T(""));
+	CString classStr = entry->Get(_T("ClassStr"), _T(""));
+	bool isUseRegExp = entry->Get(_T("IsUseRegExp"), false);
+	bool isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false);
+	bool isAutoExec = entry->Get(_T("IsAllowAutoExecute"), false);
+	bool isHotKeyOnly = entry->Get(_T("IsHotKeyOnly"), false);
+
+	mName = name;
+	mDescription = descriptionStr;
+	mCaptionStr = captionStr;
+	mClassStr = classStr;
+	mIsUseRegExp = isUseRegExp;
+	mIsNotifyIfWindowNotFound = isNotify;
+	mIsAllowAutoExecute = isAutoExec;
+	mIsHotKeyOnly = isHotKeyOnly;
+
+	if (BuildRegExp() == false) {
+		return false;
+	}
+
+	// ホットキー情報の取得
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetKeyBinding(mName, &mHotKeyAttr); 
+	return true;
+}
 
 HWND CommandParam::FindHwnd()
 {
@@ -122,7 +166,7 @@ bool CommandParam::IsMatchClass(LPCTSTR className)
 
 bool CommandParam::IsUseRegExp() const
 {
-	return mIsUseRegExp != FALSE;
+	return mIsUseRegExp;
 }
 
 bool CommandParam::HasCaptionRegExpr() const
@@ -137,10 +181,8 @@ bool CommandParam::HasClassRegExpr() const
 
 bool CommandParam::IsNotifyIfWindowNotFound() const
 {
-	return mIsUseRegExp != FALSE;
+	return mIsNotifyIfWindowNotFound;
 }
 
-}
-}
-}
+}}}
 

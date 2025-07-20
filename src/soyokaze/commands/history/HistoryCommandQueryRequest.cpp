@@ -17,12 +17,7 @@ CommandQueryRequest::~CommandQueryRequest()
 		mEventHandle = nullptr;
 	}
 	if (mResult){
-
-		for (auto cmd : *mResult) {
-			cmd->Release();
-		}
-
-		delete mResult;
+		mResult->Release();
 		mResult = nullptr;
 	}
 }
@@ -32,7 +27,7 @@ bool CommandQueryRequest::WaitComplete(DWORD timeout)
 	return WaitForSingleObject(mEventHandle, timeout) == WAIT_OBJECT_0;
 }
 
-bool CommandQueryRequest::GetResult(std::vector<launcherapp::core::Command*>& result)
+bool CommandQueryRequest::GetResult(CommandQueryResult** result)
 {
 	std::lock_guard<std::mutex> lock(mMutex);
 
@@ -40,10 +35,9 @@ bool CommandQueryRequest::GetResult(std::vector<launcherapp::core::Command*>& re
 		return false;
 	}
 
-	for (auto cmd : *mResult) {
-		cmd->AddRef();
-	}
-	result = *mResult;
+	mResult->AddRef();
+	*result = mResult;
+
 	return true;
 }
 
@@ -54,12 +48,13 @@ CString CommandQueryRequest::GetCommandParameter()
 
 void CommandQueryRequest::NotifyQueryComplete(
 	bool isCancelled,
-	std::vector<launcherapp::core::Command*>* result
+	CommandQueryResult* result
 )
 {
 	UNREFERENCED_PARAMETER(isCancelled);
 
 	mResult = result;
+	mResult->AddRef();
 	SetEvent(mEventHandle);
 }
 

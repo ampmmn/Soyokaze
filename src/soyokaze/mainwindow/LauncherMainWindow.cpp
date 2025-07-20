@@ -413,10 +413,32 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 	UNREFERENCED_PARAMETER(wParam);
 
 	in->mIsQueryDoing = false;
-	auto commands = (std::vector<launcherapp::core::Command*>*)lParam;
-	if (commands != nullptr) {
-		in->mCandidates.SetItems(*commands);
-		delete commands;
+	auto result = (launcherapp::commands::core::CommandQueryResult*)lParam;
+	if (result != nullptr) {
+
+		int matchLevel = Pattern::Mismatch;
+
+		std::vector<launcherapp::core::Command*> commands;
+		size_t count = result->GetCount();
+		for (size_t i = 0; i < count; ++i) {
+			matchLevel = Pattern::Mismatch;
+			launcherapp::core::Command* cmd = nullptr;
+			if (result->Get(i, &cmd, &matchLevel) == false) {
+				continue;
+			}
+			//cmd->AddRef();  // Getにより参照カウントは+1されるため、ここでは不要
+			commands.push_back(cmd);
+		}
+		result->Release();
+
+		// 自動実行を許可する場合は実行する
+		bool canAutoExecute = commands.size() == 1 && matchLevel == Pattern::WholeMatch;		if (canAutoExecute && commands[0]->IsAllowAutoExecute()) {
+			RunCommand(commands[0]);
+			return 0;
+		}
+
+		in->mCandidates.SetItems(commands);
+
 	}
 	else {
 		in->mCandidates.Clear();

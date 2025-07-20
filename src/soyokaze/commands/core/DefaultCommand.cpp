@@ -168,6 +168,12 @@ int DefaultCommand::Match(Pattern* pattern)
 	return Pattern::Mismatch;
 }
 
+bool DefaultCommand::IsAllowAutoExecute()
+{
+	return false;
+}
+
+
 bool DefaultCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

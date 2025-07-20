@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
 #include "commands/core/CommandQueryRequest.h"
+#include "commands/core/CommandQueryDefaultResult.h"
 #include "commands/core/DefaultCommand.h"
 #include "commands/core/IFIDDefine.h"
 #include "utility/Path.h"
@@ -40,6 +41,7 @@ using ShellExecCommand  = launcherapp::commands::shellexecute::ShellExecCommand;
 using DefaultCommand = launcherapp::commands::core::DefaultCommand;
 using CommandRanking = launcherapp::commands::core::CommandRanking;
 using QueryRequest = launcherapp::commands::core::CommandQueryRequest;
+using CommandQueryDefaultResult = launcherapp::commands::core::CommandQueryDefaultResult;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -322,24 +324,29 @@ void CommandRepository::PImpl::Query(QueryRequest* req)
 	int itemCount = (int)matchedItems.GetItemCount();
 	PERFLOG("sort candidates start num:{0}", itemCount);
 	matchedItems.Sort();
-	PERFLOG("sort candidates end {1:.6f} s.", sw);
+	PERFLOG("sort candidates end {0:.6f} s.", sw);
 
-	std::vector<launcherapp::core::Command*>* items = new std::vector<launcherapp::core::Command*>();
+	CommandQueryDefaultResult* resultItems = CommandQueryDefaultResult::Create();
 	
 	if (itemCount > 0) {
-		items->resize(itemCount);
-		matchedItems.GetItems(&(items->front()), items->size());
+		for (size_t i = 0; i < itemCount; ++i) {
+			CommandQueryItem item;
+			matchedItems.GetItem(i, &item);
+			resultItems->Add(item);
+		}
 	}
 	else {
 		auto defaultCmd = GetDefaultCommand();
 		defaultCmd->SetName(param);
-		items->push_back(defaultCmd);
+		CommandQueryItem item(Pattern::WholeMatch, defaultCmd);
+		resultItems->Add(item);
 	}
 
 	PERFLOG("Query total processsing time: {:.6f} s.", swAll);
 
 	bool isCancelled = false;
-	req->NotifyQueryComplete(isCancelled, items);
+	req->NotifyQueryComplete(isCancelled, resultItems);
+	resultItems->Release();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -851,10 +858,6 @@ CommandRepository::QueryAsWholeMatch(
 	launcherapp::CommandQueryItemList matchedItems;
 	for (auto& provider : in->mProviders) {
 		provider->QueryAdhocCommands(pat.get(), matchedItems);
-
-		if (matchedItems.IsEmpty()) {
-			continue;
-		}
 
 		// 完全一致のものを探す
 		command = nullptr;

@@ -223,6 +223,12 @@ int GroupCommand::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool GroupCommand::IsAllowAutoExecute()
+{
+	return in->mParam.mIsAllowAutoExecute;
+}
+
+
 bool GroupCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;
@@ -245,29 +251,7 @@ bool GroupCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 	entry->Set(_T("Type"), GetType());
 
-	const CommandParam& param = in->mParam;
-
-	entry->Set(_T("Description"), GetDescription());
-	entry->Set(_T("IsPassParam"), (bool)param.mIsPassParam);
-	entry->Set(_T("IsRepeat"), (bool)param.mIsRepeat);
-	entry->Set(_T("Repeats"), param.mRepeats);
-	entry->Set(_T("IsConfirm"), (bool)param.mIsConfirm);
-
-	entry->Set(_T("CommandCount"), (int)param.mItems.size());
-	int index = 1;
-
-	TCHAR key[128];
-	for (auto& item : param.mItems) {
-
-		_stprintf_s(key, _T("ItemName%d"), index);
-		entry->Set(key, item.mItemName);
-		_stprintf_s(key, _T("IsWait%d"), index);
-		entry->Set(key, item.mIsWait);
-
-		index++;
-	}
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool GroupCommand::Load(CommandEntryIF* entry)
@@ -277,42 +261,7 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 	if (GetType() != entry->Get(_T("Type"), _T(""))) {
 		return false;
 	}
-
-	CommandParam& param = in->mParam;
-
-	param.mName = entry->GetName();
-	param.mDescription = entry->Get(_T("Description"), _T(""));
-	param.mIsPassParam = entry->Get(_T("IsPassParam"), false) ? TRUE : FALSE;
-	param.mIsRepeat = entry->Get(_T("IsRepeat"), false) ? TRUE : FALSE;
-	param.mRepeats = entry->Get(_T("Repeats"), 1);
-	param.mIsConfirm = entry->Get(_T("IsConfirm"), true) ? TRUE : FALSE;
-
-	int nItems = entry->Get(_T("CommandCount"), 0);
-	if (nItems > 32) {  // 32を上限とする
-		nItems = 32;
-	}
-
-	std::vector<GroupItem> items;
-
-	TCHAR key[128];
-	for (int i = 1; i <= nItems; ++i) {
-
-		GroupItem item;
-
-		_stprintf_s(key, _T("ItemName%d"), i);
-		item.mItemName = entry->Get(key, _T(""));
-		_stprintf_s(key, _T("IsWait%d"), i);
-		item.mIsWait = entry->Get(key, false);
-
-		items.push_back(item);
-	}
-	param.mItems.swap(items);
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr); 
-
-	return true;
+	return in->mParam.Load(entry);
 }
 
 // コマンドを編集するためのダイアログを作成/取得する

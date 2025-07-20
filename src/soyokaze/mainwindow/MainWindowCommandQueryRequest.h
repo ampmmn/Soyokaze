@@ -3,10 +3,11 @@
 #include "commands/core/CommandQueryRequest.h"
 #include <vector>
 
-// $B%a%$%s%&%$%s%I%&$+$i%3%^%s%I0lMw$NLd$$9g$o$;$r9T$&$?$a$N%j%/%(%9%H%/%i%9(B
-// $B8!:w$,40N;$7$?$H$-$K%&%$%s%I%&%a%C%;!<%8%Y!<%9$GDLCN$r9T$&(B
+// メインウインドウからコマンド一覧の問い合わせを行うためのリクエストクラス
+// 検索が完了したときにウインドウメッセージベースで通知を行う
 class MainWindowCommandQueryRequest : public launcherapp::commands::core::CommandQueryRequest
 {
+	using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
 	using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 public:
@@ -14,7 +15,7 @@ public:
 	~MainWindowCommandQueryRequest();
 
 	CString GetCommandParameter() override;
-	void NotifyQueryComplete(bool isCancelled, std::vector<launcherapp::core::Command*>* result) override;
+	void NotifyQueryComplete(bool isCancelled, CommandQueryResult* result) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/align_window/AlignWindowCommandParamItem.h"
+#include "commands/core/CommandEntryIF.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include <regex>
 #include <vector>
@@ -19,6 +20,9 @@ public:
 	CommandParam();
 	~CommandParam();
 
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
+
 public:
 	std::vector<ITEM> mItems;
 
@@ -30,6 +34,8 @@ public:
 	bool mIsNotifyIfWindowNotFound;
 	// アクティブなウインドウを実行後も変えない
 	bool mIsKeepActiveWindow;
+	// 自動実行を許可するか?
+	bool mIsAllowAutoExecute;
 };
 
 

@@ -214,7 +214,7 @@ bool CommandHotKeyManager::PImpl::RegisterHotKeyAttr(CommandHotKeyHandler* handl
 	else {
 		item.mGlobalHotKey.reset();
 
-		spdlog::info(_T("A local key registered. Modifier:{1} VKCode:{2}"), key.GetModifiers(), key.GetVKCode());
+		spdlog::info(_T("A local key registered. Modifier:{0} VKCode:{1}"), key.GetModifiers(), key.GetVKCode());
 	}
 
 	// Delete older one.

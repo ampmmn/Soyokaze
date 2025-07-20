@@ -1503,6 +1503,12 @@
     <ClInclude Include="commands\pathconvert\Icon.h">
       <Filter>commands\pathconvert</Filter>
     </ClInclude>
+    <ClInclude Include="commands\core\CommandQueryDefaultResult.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\CommandQueryItemList.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2659,6 +2665,15 @@
     </ClCompile>
     <ClCompile Include="icon\CommandIcon.cpp">
       <Filter>icon</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\CommandQueryDefaultResult.cpp">
+      <Filter>commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\CommandQueryItemList.cpp">
+      <Filter>commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\alias\AliasCommandParam.cpp">
+      <Filter>commands\alias</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

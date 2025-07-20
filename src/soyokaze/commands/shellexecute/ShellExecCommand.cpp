@@ -270,6 +270,11 @@ int ShellExecCommand::Match(Pattern* pattern)
 	return pattern->Match(GetDescription());
 }
 
+bool ShellExecCommand::IsAllowAutoExecute()
+{
+	return in->mParam.mIsAllowAutoExecute;
+}
+
 bool ShellExecCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	attr = in->mParam.mHotKeyAttr;

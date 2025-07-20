@@ -33,6 +33,7 @@ void ShellExecEditDetailPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PATH0, mParam.mNoParamAttr.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM0, mParam.mNoParamAttr.mParam);
 	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
+	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
 BEGIN_MESSAGE_MAP(ShellExecEditDetailPage, SettingPage)
@@ -183,6 +184,7 @@ void ShellExecEditDetailPage::OnOK()
 	param->mNoParamAttr.mPath = mParam.mNoParamAttr.mPath;
 	param->mNoParamAttr.mParam = mParam.mNoParamAttr.mParam;
 	param->mIsUse0 = mParam.mIsUse0;
+	param->mIsAllowAutoExecute = mParam.mIsAllowAutoExecute;
 
 	__super::OnOK();
 }

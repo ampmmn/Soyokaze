@@ -64,6 +64,7 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, mParam.mRepeats, 1, 0x7fffffff);
 	DDX_Check(pDX, IDC_CHECK_CONFIRM, mParam.mIsConfirm);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
+	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
 #pragma warning( push )

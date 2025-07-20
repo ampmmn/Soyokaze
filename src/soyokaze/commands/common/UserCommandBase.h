@@ -23,6 +23,7 @@ public:
 // Command
 	bool CanExecute() override;
 	CString GetErrorString() override;
+	bool IsAllowAutoExecute() override;
 
 // Editable
 	// コマンドは編集可能か?

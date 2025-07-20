@@ -30,6 +30,7 @@ public:
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
+	bool IsAllowAutoExecute() override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;
 	launcherapp::core::Command* Clone() override;
 

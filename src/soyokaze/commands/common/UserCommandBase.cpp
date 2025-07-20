@@ -83,6 +83,12 @@ CString UserCommandBase::GetErrorString()
 	return _T("");
 }
 
+bool UserCommandBase::IsAllowAutoExecute()
+{
+	return false;
+}
+
+
 uint32_t UserCommandBase::AddRef()
 {
 	return ++mRefCount;

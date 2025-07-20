@@ -91,6 +91,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYIFNOTEXIST, in->mParam.mIsNotifyIfWindowNotFound);
 	DDX_Check(pDX, IDC_CHECK_KEEPACTIVEWINDOW, in->mParam.mIsKeepActiveWindow);
+	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, in->mParam.mIsAllowAutoExecute);
 }
 
 #pragma warning( push )

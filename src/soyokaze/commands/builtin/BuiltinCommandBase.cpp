@@ -93,6 +93,12 @@ int BuiltinCommandBase::Match(Pattern* pattern)
 	return pattern->Match(GetName());
 }
 
+bool BuiltinCommandBase::IsAllowAutoExecute()
+{
+	return false;
+}
+
+
 bool BuiltinCommandBase::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
 {
 	UNREFERENCED_PARAMETER(attr);

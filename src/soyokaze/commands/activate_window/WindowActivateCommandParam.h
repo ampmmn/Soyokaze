@@ -1,15 +1,17 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 #include <regex>
 
-namespace launcherapp {
-namespace commands {
-namespace activate_window {
+namespace launcherapp { namespace commands { namespace activate_window {
 
 class CommandParam
 {
 public:
+	bool Save(CommandEntryIF* entry) const;
+	bool Load(CommandEntryIF* entry);
+
 	HWND FindHwnd();
 
 	bool BuildRegExp(CString* errMsg = nullptr);
@@ -35,17 +37,17 @@ public:
 
 	CString mCaptionStr;
 	CString mClassStr;
-	BOOL mIsUseRegExp{FALSE};
+	bool mIsUseRegExp{false};
 
 	// ウインドウが見つからなかった場合に通知
-	BOOL mIsNotifyIfWindowNotFound{FALSE};
+	bool mIsNotifyIfWindowNotFound{false};
+	// 自動実行を許可するか?
+	bool mIsAllowAutoExecute{false};
 
-	BOOL mIsHotKeyOnly{FALSE};
+	bool mIsHotKeyOnly{false};
 };
 
 
 
-}
-}
-}
+}}}
 
