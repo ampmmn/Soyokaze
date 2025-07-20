@@ -128,6 +128,10 @@ protected:
 
 CommandPriorityPageDialog::~CommandPriorityPageDialog()
 {
+	for (auto cmd : mCommands) {
+		cmd->Release();
+	}
+
 	if (mCommandPriority) {
 		mCommandPriority->Release();
 	}
