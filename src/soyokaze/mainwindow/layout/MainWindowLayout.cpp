@@ -38,8 +38,6 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	{
 		mPlacer.reset();
 
-		LoadSettings();
-
 		if (mMainWnd) {
 			HWND hwnd = mMainWnd->GetWindowObject()->GetSafeHwnd();
 			mThisPtr->RecalcControls(hwnd, nullptr);
@@ -55,12 +53,6 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	{
 	}
 
-	void LoadSettings()
-	{
-			AppPreference* pref = AppPreference::Get();
-
-	}
-
 	ComponentPlacer* CreateComponentPlacer()
 	{
 		if (mPlacer.get() == nullptr) {
@@ -71,18 +63,12 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 
 	ComponentPlacer* CreateComponentPlacerIn()
 	{
-		if (mIsFirstCall) {
-			LoadSettings();
-			mIsFirstCall = false;
-		}
-
 		auto placement = new launcherapp::mainwindow::layout::MainWindowPlacement(mMainWnd);
 		return new launcherapp::mainwindow::layout::DefaultComponentPlacer(placement);
 	}
 
 	LauncherMainWindowIF* mMainWnd{nullptr};
 	MainWindowLayout* mThisPtr{nullptr};
-	bool mIsFirstCall{true};
 	bool mIsMoveTemporary{false};
 	CPoint mPositionToRestore{0,0};
 
