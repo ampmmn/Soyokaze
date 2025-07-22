@@ -424,6 +424,9 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 	// 候補欄
 	auto listCtrl = mainWnd->GetDlgItem(IDC_LIST_CANDIDATE);
 	placer->PlaceCandidateList(listCtrl->GetSafeHwnd(), status);
+	// オプションボタン
+	auto optionButton = mainWnd->GetDlgItem(IDC_BUTTON_OPTION);
+	placer->PlaceOptionButton(optionButton->GetSafeHwnd(), status);
 
 	placer->Apply(hwnd, status);
 

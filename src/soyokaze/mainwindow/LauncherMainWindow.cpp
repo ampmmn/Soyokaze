@@ -13,6 +13,7 @@
 #include "mainwindow/MainWindowInput.h"
 #include "mainwindow/controller/LauncherMainWindowController.h"
 #include "mainwindow/MainWindowCommandQueryRequest.h"
+#include "mainwindow/optionbutton/MainWindowOptionButton.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
@@ -91,6 +92,8 @@ struct LauncherMainWindow::PImpl
 	CaptureIconLabel mIconLabel;
 	// 候補一覧表示用リストボックス
 	CandidateListCtrl mCandidateListBox;
+	// オプションボタン
+	MainWindowOptionButton mOptionButton;
 
 // ウインドウ状態管理
 	// 位置・サイズ・コンポーネントの配置を管理するクラス
@@ -228,6 +231,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
 	ON_WM_CTLCOLOR()
 	ON_WM_MEASUREITEM()
+	ON_BN_CLICKED(IDC_BUTTON_OPTION, OnButtonOptionClicked)
 	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
 	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
 END_MESSAGE_MAP()
@@ -508,6 +512,10 @@ LRESULT LauncherMainWindow::OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lPa
 	return in->mLayout->MoveTemporary(vk) ? 0 : 1;
 }
 
+void LauncherMainWindow::OnButtonOptionClicked()
+{
+	ExecuteCommand(_T("setting"));
+}
 
 LRESULT 
 LauncherMainWindow::OnUserMessageDragOverObject(
@@ -840,6 +848,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 	in->mCandidateListBox.InitColumns();
 
+	in->mOptionButton.SubclassDlgItem(IDC_BUTTON_OPTION, this);
 
 	// "バージョン情報..." メニューをシステム メニューに追加します。
 

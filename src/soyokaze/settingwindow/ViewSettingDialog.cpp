@@ -64,6 +64,9 @@ protected:
 	// 候補欄の各項目にアイコンを描画するか
 	BOOL mIsDrawIconOnCandidate{TRUE};
 
+	// オプションボタンを表示するか
+	BOOL mIsShowOptionButton{FALSE};
+
 	// 入力画面の初期状態時にコメント表示欄に表示する文字列
 	CString mDefaultComment;
 
@@ -133,6 +136,7 @@ void ViewSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsShowGuide"), (bool)mIsShowGuide);
 	settingsPtr->Set(_T("Soyokaze:IsAlternateColor"), (bool)mIsAlternateColor);
 	settingsPtr->Set(_T("Soyokaze:IsDrawIconOnCandidate"), (bool)mIsDrawIconOnCandidate);
+	settingsPtr->Set(_T("ViewSetting:IsShowOptionButton"), (bool)mIsShowOptionButton);
 
 	CMFCFontComboBox* fontCombo = (CMFCFontComboBox*)GetDlgItem(IDC_MFCFONTCOMBO_MAIN);
 	ASSERT(fontCombo);
@@ -172,6 +176,7 @@ void ViewSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SHOWGUIDE, mIsShowGuide);
 	DDX_Check(pDX, IDC_CHECK_ALTERNATELISTCOLOR, mIsAlternateColor);
 	DDX_Check(pDX, IDC_CHECK_DRAWICONONCANDIDATE, mIsDrawIconOnCandidate);
+	DDX_Check(pDX, IDC_CHECK_SHOWOPTIONBUTTON, mIsShowOptionButton);
 	DDX_Text(pDX, IDC_COMBO_FONTSIZE, mFontSize);
 }
 
@@ -282,6 +287,7 @@ void ViewSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
 	mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
 	mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
+	mIsShowOptionButton = settingsPtr->Get(_T("ViewSetting:IsShowOptionButton"), false);
 
 
 	CString fontName = settingsPtr->Get(_T("MainWindow:FontName"), _T(""));

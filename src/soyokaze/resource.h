@@ -289,6 +289,7 @@
 #define IDC_CHECK_USEFILER2             1062
 #define IDC_BUTTON_HOTKEY_MOVE_DOWN3    1062
 #define IDC_BUTTON_HOTKEY_MOVE_RIGHT    1062
+#define IDC_CHECK_SHOWOPTIONBUTTON      1062
 #define IDC_CHECK_SHOWGUIDE             1063
 #define IDC_CHECK_SHOWTOGGLE            1064
 #define IDC_CHECK_SHOWGUIDE2            1064
@@ -388,6 +389,7 @@
 #define IDC_BUTTON1                     1126
 #define IDC_BUTTON_RESTORE              1126
 #define IDC_BUTTON_RESETICON            1126
+#define IDC_BUTTON_OPTION               1126
 #define IDC_BUTTON_TEST                 1127
 #define IDC_BUTTON_RESETICON2           1127
 #define IDC_BUTTON_RESETFONT            1127

@@ -15,6 +15,7 @@ struct DefaultComponentPlacer::PImpl
 	std::unique_ptr<MainWindowPlacement> mPlacement;
 	bool mIsShowGuide{true};
 	bool mIsShowIcon{true};
+	bool mIsShowOption{false};
 
 };
 
@@ -25,6 +26,7 @@ DefaultComponentPlacer::DefaultComponentPlacer(MainWindowPlacement* placement) :
 	AppPreference* pref = AppPreference::Get();
 	in->mIsShowGuide = pref->IsShowGuide();
 	in->mIsShowIcon = pref->IsDrawIcon();
+	in->mIsShowOption = pref->IsShowOptionButton();
 }
 
 DefaultComponentPlacer::~DefaultComponentPlacer()
@@ -80,8 +82,13 @@ bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd, LauncherInput* stat
 	// 親ウインドウの幅と、説明欄の配置した位置をもとに幅を決定
 	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;
 
-	// フォントサイズに応じて高さを決定する
 	int fontH = in->mPlacement->GetFontPixelSize();
+	if (in->mIsShowOption) {
+		// オプションボタンのぶんを確保する
+		cx -= fontH;
+	}	
+
+	// フォントサイズに応じて高さを決定する
 	int cy = fontH + 4;
 
 	// 説明欄の位置・サイズを移動
@@ -211,6 +218,30 @@ bool DefaultComponentPlacer::PlaceCandidateList(HWND elemHwnd, LauncherInput* st
 	return true;
 }
 
+// オプションボタンのサイズ計算と配置
+bool DefaultComponentPlacer::PlaceOptionButton(HWND elemHwnd, LauncherInput* status)
+{
+	UNREFERENCED_PARAMETER(status);
+
+	// フォントサイズに応じて幅と高さを決定する
+	int fontH = in->mPlacement->GetFontPixelSize();
+
+	int MARGIN_X{in->mPlacement->GetMarginLeft()};
+	int MARGIN_Y{in->mPlacement->GetMarginTop()};
+
+	int cx = fontH;
+	int cy = fontH;
+
+	int x = in->mPlacement->GetMainWindowWidth() - cx - MARGIN_X;
+	int y =	MARGIN_Y;
+
+	// オプションボタン欄の位置・サイズを移動
+	spdlog::debug("desc xywh=({},{},{},{})", x, y, cx, cy);
+
+	SetWindowPos(elemHwnd, nullptr, x, y, cx, cy, SWP_NOZORDER);
+
+	return true;
+}
 
 // 適用
 void DefaultComponentPlacer::Apply(HWND hwnd, LauncherInput* status)
@@ -233,6 +264,9 @@ void DefaultComponentPlacer::Apply(HWND hwnd, LauncherInput* status)
 	else {
 		guideLabel->ShowWindow(SW_HIDE);
 	}
+
+	auto optionButton = in->mPlacement->GetOptionButton();
+	optionButton->ShowWindow(in->mIsShowOption ? SW_SHOW : SW_HIDE);
 
 	auto edit = in->mPlacement->GetEdit();
 	edit->InvalidateRect(nullptr);

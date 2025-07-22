@@ -775,7 +775,7 @@ HICON IconLoader::LoadNewIcon()
 
 HICON IconLoader::LoadSettingIcon()
 {
-	return GetImageResIcon(-114);
+	return GetShell32Icon(-16826);
 }
 
 HICON IconLoader::LoadExitIcon()

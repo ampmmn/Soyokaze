@@ -28,6 +28,8 @@ public:
 	bool PlaceEdit(HWND elemHwnd, LauncherInput* status) override;
 	// 候補欄のサイズ計算と配置
 	bool PlaceCandidateList(HWND elemHwnd, LauncherInput* status) override;
+	// オプションボタンのサイズ計算と配置
+	bool PlaceOptionButton(HWND elemHwnd, LauncherInput* status) override;
 	// 適用
 	void Apply(HWND hwnd, LauncherInput* status) override;
 	// それより以下のリサイズを許容しない最小限の高さを取得する

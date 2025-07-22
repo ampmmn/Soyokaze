@@ -90,6 +90,10 @@ int MainWindowPlacement::GetDescriptionWindowHeight()
 	return rc.Height();
 }
 
+CWnd* MainWindowPlacement::GetOptionButton()
+{
+	return GetParent()->GetDlgItem(IDC_BUTTON_OPTION);
+}
 
 // ガイド欄
 CWnd* MainWindowPlacement::GetGuideLabel()

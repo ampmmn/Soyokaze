@@ -27,6 +27,9 @@ public:
 	int GetDescriptionWindowWidth();
 	int GetDescriptionWindowHeight();
 
+// オプションボタン
+	CWnd* GetOptionButton();
+
 // ガイド欄
 	CWnd* GetGuideLabel();
 	int GetGuideWindowWidth();

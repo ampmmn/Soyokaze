@@ -472,6 +472,12 @@ bool AppPreference::IsDrawPlaceHolder()
 	return in->Get(_T("ViewSetting:IsDrawPlaceHolder"), true);
 }
 
+// 入力画面にアプリケーション設定ボタンを表示するか?
+bool AppPreference::IsShowOptionButton()
+{
+	return in->Get(_T("ViewSetting:IsShowOptionButton"), false);
+}
+
 bool AppPreference::IsTopMost()
 {
 	return in->Get(_T("Soyokaze:TopMost"), false);

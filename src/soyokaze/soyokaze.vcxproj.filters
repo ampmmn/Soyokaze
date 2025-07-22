@@ -232,6 +232,9 @@
     <Filter Include="macros\explorer">
       <UniqueIdentifier>{ff7cee4b-9a5c-43e5-9aab-6c31988b9dc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\optionbutton">
+      <UniqueIdentifier>{85c5ad05-cfcc-4d64-b2c5-595020563344}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1509,6 +1512,9 @@
     <ClInclude Include="commands\core\CommandQueryItemList.h">
       <Filter>commands\core</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\optionbutton\MainWindowOptionButton.h">
+      <Filter>mainwindow\optionbutton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2677,6 +2683,9 @@
     </ClCompile>
     <ClCompile Include="commands\bookmarks\BookmarkItem.cpp">
       <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp">
+      <Filter>mainwindow\optionbutton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,8 @@ public:
 	bool IsDrawIcon();
 	// 入力欄にプレースホルダーを表示するか
 	bool IsDrawPlaceHolder();
+	// 入力画面にアプリケーション設定ボタンを表示するか?
+	bool IsShowOptionButton();
 
 	bool IsTopMost();
 	bool IsShowToggle();
