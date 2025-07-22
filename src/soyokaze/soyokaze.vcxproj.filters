@@ -2675,6 +2675,9 @@
     <ClCompile Include="commands\alias\AliasCommandParam.cpp">
       <Filter>commands\alias</Filter>
     </ClCompile>
+    <ClCompile Include="commands\bookmarks\BookmarkItem.cpp">
+      <Filter>commands\bookmarks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">

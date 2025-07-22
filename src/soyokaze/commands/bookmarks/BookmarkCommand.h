@@ -37,11 +37,11 @@ public:
 	void ClearCache() override;
 
 // Editable
-	// $B%3%^%s%I$rJT=8$9$k$?$a$N%@%$%"%m%0$r:n@.(B/$B<hF@$9$k(B
+	// コマンドを編集するためのダイアログを作成/取得する
 	virtual bool CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor) override;
-	// $B%@%$%"%m%0>e$G$NJT=87k2L$r%3%^%s%I$KE,MQ$9$k(B
+	// ダイアログ上での編集結果をコマンドに適用する
 	virtual bool Apply(launcherapp::core::CommandEditor* editor) override;
-	// $B%@%$%"%m%0>e$G$NJT=87k2L$K4p$E$-!"?7$7$$%3%^%s%I$r:n@.(B($BJ#@=(B)$B$9$k(B
+	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
 	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
 
 // UnknownIF

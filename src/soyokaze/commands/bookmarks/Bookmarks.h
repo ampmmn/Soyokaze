@@ -1,24 +1,11 @@
 #pragma once
 
 #include <memory>
+#include "commands/bookmarks/BookmarkItem.h"
 
 namespace launcherapp {
 namespace commands {
 namespace bookmarks {
-
-enum BrowserType {
-	Chrome,
-	Edge,
-};
-
-
-struct Bookmark
-{
-	CString mName;
-	CString mUrl;
-	int mBrowser{0};
-	int mMatchLevel{0};
-};
 
 class Bookmarks
 {

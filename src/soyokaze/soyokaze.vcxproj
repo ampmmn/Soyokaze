@@ -849,6 +849,7 @@
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandEditor.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp" />
+    <ClCompile Include="commands\bookmarks\BookmarkItem.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />

@@ -2,6 +2,7 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ExtraCandidateIF.h"
+#include "commands/bookmarks/BookmarkItem.h"
 #include <memory>
 
 namespace launcherapp {
@@ -14,9 +15,10 @@ class URLCommand :
 {
 public:
 public:
-	URLCommand(const CString& browserName, const CString& name, const CString& url);
+	URLCommand(const Bookmark& item);
 	virtual ~URLCommand();
 
+	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	BOOL Execute(Parameter* param) override;

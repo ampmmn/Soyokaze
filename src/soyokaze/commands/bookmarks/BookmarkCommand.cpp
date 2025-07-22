@@ -24,33 +24,20 @@ namespace bookmarks {
 struct BookmarkCommand::PImpl
 {
 	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out);
-
+	int MatchBookmarkItem(Pattern* pattern, const Bookmark& item);
 
 	CommandParam mParam;
 	Bookmarks mBookmarks;
 };
 
+
 void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out)
 {
 	for (auto& item : items) {
 
-		if (item.mUrl.Find(_T("javascript:")) == 0) {
-			// ブックマークレットは対象外
-			continue;
-		}
-
-		int level = pattern->Match(item.mName, 1);
+		int level = MatchBookmarkItem(pattern, item);
 		if (level == Pattern::Mismatch) {
-
-			if (mParam.mIsUseURL == false) {
-				// URLを絞り込みに使わない場合はここではじく
-				continue;
-			}
-
-			level = pattern->Match(item.mUrl, 1);
-			if (level == Pattern::Mismatch) {
-				continue;
-			}
+			continue;
 		}
 
 		Bookmark newItem(item);
@@ -60,6 +47,35 @@ void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std
 		out.push_back(newItem);
 	}
 }
+
+int BookmarkCommand::PImpl::MatchBookmarkItem(Pattern* pattern, const Bookmark& item)
+{
+	if (item.mUrl.Find(_T("javascript:")) == 0) {
+		// ブックマークレットは対象外
+		return Pattern::Mismatch;
+	}
+
+	// まずは名前で比較
+	int level = pattern->Match(item.mName, 1);
+	if (level != Pattern::Mismatch) {
+		return level;
+	}
+
+	// 次にフォルダパスで比較
+	if (item.mFolderPath.IsEmpty() == FALSE) {
+		level = pattern->Match(item.mFolderPath, 1);
+		if (level != Pattern::Mismatch) {
+			return level;
+		}
+	}
+
+	if (mParam.mIsUseURL == false) {
+		// URLを絞り込みに使わない場合はここではじく
+		return Pattern::Mismatch;
+	}
+	return pattern->Match(item.mUrl, 1);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -263,8 +279,14 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& co
 	}
 
 	for (auto& bkm : bookmarks) {
-		LPCTSTR brwoserType = bkm.mBrowser == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
-		commands.Add(CommandQueryItem(bkm.mMatchLevel, new URLCommand(brwoserType, bkm.mName, bkm.mUrl)));
+
+		// コマンド名がマッチしているので少なくとも前方一致扱いとする
+		int matchLevel = bkm.mMatchLevel;
+		if (matchLevel == Pattern::PartialMatch) {
+			matchLevel = Pattern::FrontMatch;
+		}
+
+		commands.Add(CommandQueryItem(matchLevel, new URLCommand(bkm)));
 	}
 
 	return true;

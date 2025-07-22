@@ -19,69 +19,34 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-static bool GetChromeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-	_tgetenv_s(&reqLen, path, len, _T("PROGRAMFILES"));
-	PathAppend(path, _T("Google\\Chrome\\Application\\chrome.exe"));
-
-	return true;
-}
-
-static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-#ifndef _WIN64
-	_tgetenv_s(&reqLen, path, len, _T("ProgramFiles"));
-#else
-	_tgetenv_s(&reqLen, path, len, _T("ProgramFiles(x86)"));
-#endif
-	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
-
-	return true;
-}
-
 struct URLCommand::PImpl
 {
-	bool GetExecutablePath(LPTSTR path, size_t len);
-
-	CString mBrowserName;    // ブラウザ種類を表す文字列
-	CString mUrl;
+	Bookmark mBookmarkItem;
 };
 
-bool URLCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
-{
-	if (mBrowserName == _T("Chrome")) {
-		return GetChromeExecutablePath(path, len);
-	}
-	else if (mBrowserName == _T("Edge")) {
-		return GetEdgeExecutablePath(path, len);
-	}
-	else {
-		return false;
-	}
-}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
 
 URLCommand::URLCommand(
-	const CString& browserName,
-	const CString& name,
-	const CString& url
+	const Bookmark& item
 ) : 
-	AdhocCommandBase(name, name),
+	AdhocCommandBase(item.mName, item.mName),
 	in(std::make_unique<PImpl>())
 {
-	in->mBrowserName = browserName;
-	in->mUrl = url;
+	in->mBookmarkItem = item;
 }
 
 URLCommand::~URLCommand()
 {
+}
+
+CString URLCommand::GetDescription()
+{
+	return in->mBookmarkItem.mFolderPath;
 }
 
 CString URLCommand::GetGuideString()
@@ -94,7 +59,7 @@ CString URLCommand::GetTypeDisplayName()
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
 
 	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)in->mBrowserName, (LPCTSTR)TEXT_BOOKMARK);
+	str.Format(_T("%s %s"), (LPCTSTR)in->mBookmarkItem.GetBrowserName(), (LPCTSTR)TEXT_BOOKMARK);
 
 	return str;
 }
@@ -103,13 +68,13 @@ BOOL URLCommand::Execute(Parameter* param)
 {
 	if (GetModifierKeyState(param, MASK_SHIFT) != 0) {
 		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mUrl);
+		Clipboard::Copy(in->mBookmarkItem.mUrl);
 		return TRUE;
 	}
 
 	// URLをブラウザで開く
 	Path path;
-	if (in->GetExecutablePath(path, path.size()) == false) {
+	if (in->mBookmarkItem.GetExecutablePath(path, path.size()) == false) {
 		return FALSE;
 	}
 
@@ -123,7 +88,7 @@ BOOL URLCommand::Execute(Parameter* param)
 
 	SubProcess::ProcessPtr process;
 	SubProcess exec(param);
-	exec.Run((LPCTSTR)path, in->mUrl, process);
+	exec.Run((LPCTSTR)path, in->mBookmarkItem.mUrl, process);
 
 	return TRUE;
 }
@@ -132,14 +97,14 @@ HICON URLCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
 	Path path;
-	in->GetExecutablePath(path, path.size());
+	in->mBookmarkItem.GetExecutablePath(path, path.size());
 	return IconLoader::Get()->LoadIconFromPath((LPCTSTR)path);
 }
 
 launcherapp::core::Command*
 URLCommand::Clone()
 {
-	return new URLCommand(in->mBrowserName, this->mName, in->mUrl);
+	return new URLCommand(in->mBookmarkItem);
 }
 
 CString URLCommand::GetSourceName()

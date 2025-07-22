@@ -22,26 +22,33 @@ namespace launcherapp {
 namespace commands {
 namespace bookmarks {
 
-static void parseJSONObject(json& j, std::vector<Bookmark>& items)
+static void parseJSONObject(json& j, const std::string& parentFolderPath, std::vector<Bookmark>& items)
 {
 	if (j["type"] == "folder") {
 		auto children_array = j["children"];
 		if (children_array.is_array() == false) {
 			return;
 		}
+
+		std::string folderPath(parentFolderPath);
+		if (folderPath.empty() == false) {
+			folderPath += "/";
+		}
+		folderPath += j["name"].get<std::string>();
+
 		for (auto it = children_array.begin(); it != children_array.end(); ++it) {
-			parseJSONObject(*it, items);
+			parseJSONObject(*it, folderPath, items);
 		}
 	}
 	else if (j["type"] == "url") {
 		Bookmark item;
 
-
 		auto name = j["name"].get<std::string>();
-		// UTF-8に変換
-		UTF2UTF(name, item.mName);
 
-		item.mUrl = CString(CStringA(j["url"].get<std::string>().c_str()));
+		UTF2UTF(name, item.mName);
+		UTF2UTF(parentFolderPath, item.mFolderPath);
+		UTF2UTF(j["url"].get<std::string>(), item.mUrl);
+
 		items.push_back(item);
 	}
 }
@@ -77,7 +84,7 @@ bool Bookmarks::PImpl::LoadChromeBookmarks()
 		auto roots = bookmarks["roots"];
 		for (auto it = roots.begin(); it != roots.end(); ++it) {
 			std::string key = it.key();
-			parseJSONObject(it.value(), tmp);
+			parseJSONObject(it.value(), "", tmp);
 		}
 	}
 	catch(std::exception&) {
@@ -101,7 +108,7 @@ bool Bookmarks::PImpl::LoadEdgeBookmarks()
 		json bookmarks = json::parse(f);
 		auto roots = bookmarks["roots"];
 		for (auto it = roots.begin(); it != roots.end(); ++it) {
-			parseJSONObject(it.value(), tmp);
+			parseJSONObject(it.value(), "", tmp);
 		}
 	}
 	catch(std::exception&) {

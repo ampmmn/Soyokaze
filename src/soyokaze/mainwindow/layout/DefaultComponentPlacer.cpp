@@ -35,6 +35,8 @@ DefaultComponentPlacer::~DefaultComponentPlacer()
 // アイコン欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd, LauncherInput* status)
 {
+	UNREFERENCED_PARAMETER(status);
+
 	if (in->mIsShowIcon == false) {
 		return true;
 	}
@@ -64,6 +66,7 @@ bool DefaultComponentPlacer::PlaceIcon(HWND elemHwnd, LauncherInput* status)
 // 説明欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceDescription(HWND elemHwnd, LauncherInput* status)
 {
+	UNREFERENCED_PARAMETER(status);
 	int MARGIN_X{in->mPlacement->GetMarginLeft()};
 	int MARGIN_Y{in->mPlacement->GetMarginTop()};
 	int margin{2};
@@ -135,6 +138,9 @@ void DefaultComponentPlacer::GetGuideRect(CRect& rc)
 // 入力欄のサイズ計算と配置
 bool DefaultComponentPlacer::PlaceEdit(HWND elemHwnd, LauncherInput* status)
 {
+	UNREFERENCED_PARAMETER(status);
+
+
 	CRect rc;
 	GetEditRect(rc);
 
