@@ -439,7 +439,6 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
-    <ClInclude Include="commands\common\CommandEditValidation.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
     <ClInclude Include="commands\common\DispWrapper.h" />
@@ -526,6 +525,8 @@
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.h" />
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.h" />
+    <ClInclude Include="commands\validation\CommandEditValidation.h" />
+    <ClInclude Include="commands\validation\CommandParamErrorCode.h" />
     <ClInclude Include="commands\volumecontrol\AudioSessionVolume.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommand.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommandEditor.h" />
@@ -866,7 +867,6 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
-    <ClCompile Include="commands\common\CommandEditValidation.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
     <ClCompile Include="commands\common\DispWrapper.cpp" />
@@ -958,6 +958,8 @@
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandParam.cpp" />
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandProvider.cpp" />
+    <ClCompile Include="commands\validation\CommandEditValidation.cpp" />
+    <ClCompile Include="commands\validation\CommandParamError.cpp" />
     <ClCompile Include="commands\volumecontrol\AudioSessionVolume.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommand.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommandEditor.cpp" />

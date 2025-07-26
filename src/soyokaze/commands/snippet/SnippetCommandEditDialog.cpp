@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "SnippetCommandEditDialog.h"
 #include "hotkey/CommandHotKeyDialog.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "setting/AppPreference.h"
@@ -107,7 +107,7 @@ bool CommandEditDialog::UpdateStatus()
 
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;

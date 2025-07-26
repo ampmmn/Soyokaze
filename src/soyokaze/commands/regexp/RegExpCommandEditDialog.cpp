@@ -3,7 +3,7 @@
 #include "RegExpCommandEditDialog.h"
 #include "gui/FolderDialog.h"
 #include "icon/IconLabel.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"
 #include "utility/ShortcutFile.h"
@@ -193,7 +193,7 @@ bool CommandEditDialog::UpdateStatus()
 
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(param.mName, in->mOrgName, in->mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(param.mName, in->mOrgName, in->mMessage);
 	if (isNameValid == false) {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;

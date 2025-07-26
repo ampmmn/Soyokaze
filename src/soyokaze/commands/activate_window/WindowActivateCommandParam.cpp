@@ -1,9 +1,88 @@
 #include "pch.h"
 #include "WindowActivateCommandParam.h"
 #include "hotkey/CommandHotKeyManager.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "resource.h"
 
+
+using CommandParamErrorCode = launcherapp::commands::validation::CommandParamErrorCode;
+
 namespace launcherapp { namespace commands { namespace activate_window {
+
+CommandParam::CommandParam(const CommandParam& rhs) : 
+	mName(rhs.mName),
+	mDescription(rhs.mDescription),
+	mHotKeyAttr(rhs.mHotKeyAttr),
+	mCaptionStr(rhs.mCaptionStr),
+	mClassStr(rhs.mClassStr),
+	mIsUseRegExp(rhs.mIsUseRegExp),
+	mIsNotifyIfWindowNotFound(rhs.mIsNotifyIfWindowNotFound),
+	mIsAllowAutoExecute(rhs.mIsAllowAutoExecute),
+	mIsHotKeyOnly(rhs.mIsHotKeyOnly)
+{
+	auto regCls = rhs.mRegClass.get();
+	mRegClass.reset(regCls ? new tregex(*regCls) : nullptr);
+	auto regCaption = rhs.mRegCaption.get();
+	mRegCaption.reset(regCaption ? new tregex(*regCaption) : nullptr);
+}
+
+CommandParam::~CommandParam()
+{
+}
+
+CommandParam& CommandParam::operator = (const CommandParam& rhs)
+{
+	if (this != &rhs) {
+		mName = rhs.mName;
+		mDescription = rhs.mDescription;
+		mHotKeyAttr = rhs.mHotKeyAttr;
+		mCaptionStr = rhs.mCaptionStr;
+		mClassStr = rhs.mClassStr;
+		mIsUseRegExp = rhs.mIsUseRegExp;
+		mIsNotifyIfWindowNotFound = rhs.mIsNotifyIfWindowNotFound;
+		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
+		mIsHotKeyOnly = rhs.mIsHotKeyOnly;
+		auto regCls = rhs.mRegClass.get();
+		mRegClass.reset(regCls ? new tregex(*regCls) : nullptr);
+		auto regCaption = rhs.mRegCaption.get();
+		mRegCaption.reset(regCaption ? new tregex(*regCaption) : nullptr);
+	}
+	return *this;
+}
+
+bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
+{
+	ASSERT(errCode);
+
+	// 名前チェック
+	if (launcherapp::commands::validation::IsValidCommandName(mName, orgName, errCode) == false) {
+		return false;
+	}
+
+	// 
+	if (mCaptionStr.IsEmpty() && mClassStr.IsEmpty()) {
+		*errCode = CommandParamErrorCode::ActivateWindow_CaptionAndClassBothEmpty;
+		return false;
+	}
+
+	if (mIsUseRegExp) {
+		tregex regExp;
+		CString msg;
+		if (TryBuildCaptionRegExp(regExp, &msg)  == false) {
+			*errCode = CommandParamErrorCode::ActivateWindow_CaptionIsInvalid;
+			return false;
+		}
+
+		if (TryBuildClassRegExp(regExp, &msg)  == false) {
+			*errCode = CommandParamErrorCode::ActivateWindow_ClassIsInvalid;
+			return false;
+		}
+	}
+
+	*errCode = CommandParamErrorCode::Common_NoError;
+
+	return true;
+}
 
 bool CommandParam::Save(CommandEntryIF* entry) const
 {
@@ -44,10 +123,15 @@ bool CommandParam::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	// $B%[%C%H%-!<>pJs$N<hF@(B
+	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(mName, &mHotKeyAttr); 
 	return true;
+}
+
+bool CommandParam::CanFindHwnd() const
+{
+	return mCaptionStr.IsEmpty() == FALSE || mClassStr.IsEmpty() == FALSE;
 }
 
 HWND CommandParam::FindHwnd()
@@ -94,17 +178,43 @@ bool CommandParam::BuildRegExp(CString* errMsg)
 	return true;
 }
 
+
+bool CommandParam::TryBuildRegExp(CString* errMsg) const
+{
+	tregex regExp;
+	if (TryBuildCaptionRegExp(regExp, errMsg) == false) {
+		return false;
+	}
+	if (TryBuildClassRegExp(regExp, errMsg) == false) {
+		return false;
+	}
+	return true;
+}
+
 bool CommandParam::BuildCaptionRegExp(CString* errMsg)
+{
+	auto regExp = std::make_unique<tregex>();
+	if (TryBuildCaptionRegExp(*regExp.get(), errMsg) == false) {
+		return false;
+	}
+
+	mRegCaption.swap(regExp);
+	return true;
+}
+
+bool CommandParam::TryBuildCaptionRegExp(tregex& regExp, CString* errMsg) const
 {
 	try {
 		if (mIsUseRegExp) {
-			mRegCaption = tregex(tstring(mCaptionStr));
+			regExp = tregex(tstring(mCaptionStr));
 		}
 	}
 	catch(std::regex_error& e) {
-		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
-		msg += _T("\n");
 
+		CString msg;
+		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
+			msg += _T("\n");
+		}
 		CStringA what(e.what());
 		msg += _T("\n");
 		msg += (CString)what;
@@ -121,9 +231,19 @@ bool CommandParam::BuildCaptionRegExp(CString* errMsg)
 
 bool CommandParam::BuildClassRegExp(CString* errMsg)
 {
+	auto regExp = std::make_unique<tregex>();
+	if (TryBuildClassRegExp(*regExp.get(), errMsg) == false) {
+		return false;
+	}
+	mRegClass.swap(regExp);
+	return true;
+}
+
+bool CommandParam::TryBuildClassRegExp(tregex& regExp, CString* errMsg) const
+{
 	try {
 		if (mIsUseRegExp) {
-			mRegClass = tregex(tstring(mClassStr));
+			regExp = tregex(tstring(mClassStr));
 		}
 	}
 	catch(std::regex_error& e) {
@@ -147,7 +267,10 @@ bool CommandParam::BuildClassRegExp(CString* errMsg)
 bool CommandParam::IsMatchCaption(LPCTSTR caption)
 {
 	if (IsUseRegExp()) {
-		return std::regex_match(tstring(caption), mRegCaption);
+		if (BuildCaptionRegExp(nullptr) == false) {
+			return false;
+		}
+		return std::regex_match(tstring(caption), *mRegCaption.get());
 	}
 	else {
 		return mCaptionStr == caption;
@@ -157,7 +280,12 @@ bool CommandParam::IsMatchCaption(LPCTSTR caption)
 bool CommandParam::IsMatchClass(LPCTSTR className)
 {
 	if (IsUseRegExp()) {
-		return std::regex_match(tstring(className), mRegClass);
+		if (mRegClass.get() == nullptr) {
+			if (BuildCaptionRegExp(nullptr) == false) {
+				return false;
+			}
+		}
+		return std::regex_match(tstring(className), *mRegClass.get());
 	}
 	else {
 		return mClassStr == className;

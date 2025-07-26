@@ -3,7 +3,7 @@
 #include "commands/snippetgroup/SnippetGroupItemDialog.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>
@@ -164,7 +164,7 @@ bool SettingDialog::UpdateStatus()
 	}
 	// 名前チェック
 	bool canPressOK =
-	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 
 	if (canPressOK && mParam.mItems.empty()) {
 		mMessage = _T("定型文を登録してください");

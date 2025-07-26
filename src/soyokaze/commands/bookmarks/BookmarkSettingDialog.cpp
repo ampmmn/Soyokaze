@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "BookmarkSettingDialog.h"
 #include "commands/bookmarks/BookmarkCommandParam.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -128,7 +128,7 @@ void SettingDialog::UpdateStatus()
 	                      in->mParam.mIsEnableEdge == false;
 
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
 	if (isNameValid == false) {
 		canPressOK = false;
 	}

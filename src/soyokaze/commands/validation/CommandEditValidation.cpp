@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp { namespace commands { namespace common {
+namespace launcherapp { namespace commands { namespace validation {
 
 bool IsValidCommandName(const CString& name, const CString& orgName, CString& errMsg)
 {

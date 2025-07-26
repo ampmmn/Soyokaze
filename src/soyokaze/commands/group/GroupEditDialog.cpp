@@ -3,7 +3,7 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "gui/ModalComboBox.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>
@@ -189,7 +189,7 @@ bool GroupEditDialog::UpdateStatus()
 
 	// 名前チェック
 	bool canPressOK =
-	 	launcherapp::commands::common::IsValidCommandName(mParam.mName, mOrgName, mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(mParam.mName, mOrgName, mMessage);
 
 	if (canPressOK && mParam.mItems.empty()) {
 		mMessage.LoadString(IDS_ERR_GROUPITEMEMPTY);

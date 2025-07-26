@@ -3,7 +3,7 @@
 #include "commands/everything/EverythingCommandParam.h"
 #include "gui/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "resource.h"
@@ -140,7 +140,7 @@ bool SettingDialog::UpdateStatus()
 
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
 	GetDlgItem(IDOK)->EnableWindow(isNameValid ? TRUE : FALSE);
 
 	return isNameValid;

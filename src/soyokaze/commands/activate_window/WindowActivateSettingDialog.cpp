@@ -8,10 +8,11 @@
 #include "utility/ProcessPath.h"
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "resource.h"
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::commands::validation;
 
 namespace launcherapp {
 namespace commands {
@@ -105,6 +106,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_CLASS, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_REGEXP, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -181,48 +183,54 @@ void SettingDialog::OnButtonTest()
 void SettingDialog::OnOK()
 {
 	UpdateData();
-	__super::OnOK();
+
+	int errCode;
+	if (in->mParam.IsValid(in->mOrgName, &errCode)) {
+		__super::OnOK();
+		return ;
+	}
+
+	CommandParamError paramErr(errCode);
+	AfxMessageBox(paramErr.ToString());
+
+	// 特定のエラーの場合は強制的にフォーカスを設定する
+	static std::map<int, UINT> errFocusMap = {
+		{ CommandParamErrorCode::ActivateWindow_CaptionIsInvalid, IDC_EDIT_CAPTION },
+		{ CommandParamErrorCode::ActivateWindow_ClassIsInvalid, IDC_EDIT_CLASS },
+	};
+
+	auto it = errFocusMap.find(errCode);
+	if (it != errFocusMap.end()) {
+		GetDlgItem(it->second)->SetFocus();
+	}
 }
 
 bool SettingDialog::UpdateStatus()
 {
-	bool canTest = in->mParam.mCaptionStr.IsEmpty() == FALSE || in->mParam.mClassStr.IsEmpty() == FALSE;
+	int errCode;
+	bool isValid = in->mParam.IsValid(in->mOrgName, &errCode);
+
+	// ウインドウを探すテストか可能な状態か?
+	bool canTest = in->mParam.CanFindHwnd();
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest);
 
+	// ホットキーは設定されているか?
 	bool isHotKeySet = in->mParam.mHotKeyAttr.IsValid();
 	GetDlgItem(IDC_CHECK_HOTKEYONLY)->EnableWindow(isHotKeySet);
 
-	// 名前チェック
-	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
-	if (isNameValid == false) {
+	// 状態に応じてOKボタンとステータス欄の表示を変える
+	if (isValid) {
+		GetDlgItem(IDOK)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(TRUE);
+		in->mMessage.Empty();
+		return true;
+	}
+	else {
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		CommandParamError paramErr(errCode);
+		in->mMessage = paramErr.ToString();
 		return false;
 	}
-	if (canTest == false) {
-		in->mMessage = _T("ウインドウタイトルかウインドウクラスを入力してください");
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	CString msg;
-	if (in->mParam.BuildCaptionRegExp(&msg)  == false) {
-		AfxMessageBox(msg);
-		GetDlgItem(IDC_EDIT_CAPTION)->SetFocus();
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	if (in->mParam.BuildClassRegExp(&msg)  == false) {
-		AfxMessageBox(msg);
-		GetDlgItem(IDC_EDIT_CLASS)->SetFocus();
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	in->mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
-	return true;
 }
 
 LRESULT

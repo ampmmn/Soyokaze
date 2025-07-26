@@ -39,6 +39,7 @@
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\validation\CommandParamErrorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />

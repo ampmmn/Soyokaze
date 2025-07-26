@@ -3,7 +3,7 @@
 #include "commands/volumecontrol/VolumeCommandParam.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -165,7 +165,7 @@ void SettingDialog::UpdateStatus()
 
 	// 名前チェック
 	bool canPressOK =
-	 	launcherapp::commands::common::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(in->mParam.mName, in->mOrgName, in->mMessage);
 
 	// 音量値のvalidation
 	static tregex regVolume(_T("^ *[+-]?\\d+ *$"));

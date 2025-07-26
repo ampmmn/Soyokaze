@@ -8,7 +8,7 @@
 #include "icon/IconLabel.h"
 #include "icon/CommandIcon.h"
 #include "hotkey/CommandHotKeyDialog.h"
-#include "commands/common/CommandEditValidation.h"
+#include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
@@ -192,7 +192,7 @@ bool CommandEditDialog::UpdateStatus()
 	
 	// 名前チェック
 	bool isNameValid =
-	 	launcherapp::commands::common::IsValidCommandName(param.mName, in->mOrgName, in->mMessage);
+	 	launcherapp::commands::validation::IsValidCommandName(param.mName, in->mOrgName, in->mMessage);
 	if (isNameValid == false) {
 		DisalbleOKButton();
 		return false;

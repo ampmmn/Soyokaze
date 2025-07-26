@@ -235,6 +235,9 @@
     <Filter Include="mainwindow\optionbutton">
       <UniqueIdentifier>{85c5ad05-cfcc-4d64-b2c5-595020563344}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\validation">
+      <UniqueIdentifier>{49c0ec39-ea97-4106-91ba-e76384fdc1a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -957,9 +960,6 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h">
       <Filter>commands\ejectvolume</Filter>
     </ClInclude>
-    <ClInclude Include="commands\common\CommandEditValidation.h">
-      <Filter>commands\common</Filter>
-    </ClInclude>
     <ClInclude Include="commands\everything\Everything-SDK\include\Everything.h">
       <Filter>commands\everything\Everything-SDK\include</Filter>
     </ClInclude>
@@ -1514,6 +1514,12 @@
     </ClInclude>
     <ClInclude Include="mainwindow\optionbutton\MainWindowOptionButton.h">
       <Filter>mainwindow\optionbutton</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\validation\CommandEditValidation.h">
+      <Filter>commands\validation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\validation\CommandParamErrorCode.h">
+      <Filter>commands\validation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2189,9 +2195,6 @@
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp">
       <Filter>commands\ejectvolume</Filter>
     </ClCompile>
-    <ClCompile Include="commands\common\CommandEditValidation.cpp">
-      <Filter>commands\common</Filter>
-    </ClCompile>
     <ClCompile Include="commands\everything\Everything-SDK\src\Everything.c">
       <Filter>commands\everything\Everything-SDK\src</Filter>
     </ClCompile>
@@ -2686,6 +2689,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp">
       <Filter>mainwindow\optionbutton</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\validation\CommandEditValidation.cpp">
+      <Filter>commands\validation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\validation\CommandParamError.cpp">
+      <Filter>commands\validation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -58,6 +58,12 @@
     <Filter Include="soyokaze\commands\core">
       <UniqueIdentifier>{4e9a9243-2bf2-4deb-9de8-17f3a628425c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\validation">
+      <UniqueIdentifier>{f88c0a68-1a96-47d8-aeab-d5d6056cad96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\activate_window">
+      <UniqueIdentifier>{63dac24d-54c7-4c64-8422-55ae0f84a450}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -143,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp">
       <Filter>soyokaze\commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\validation\CommandParamErrorTest.cpp">
+      <Filter>soyokaze\commands\validation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp">
+      <Filter>soyokaze\commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
