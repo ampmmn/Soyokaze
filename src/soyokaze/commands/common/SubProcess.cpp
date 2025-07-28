@@ -97,11 +97,6 @@ bool SubProcess::PImpl::IsRunAsKeyPressed()
 
 bool SubProcess::PImpl::IsOpenPathKeyPressed()
 {
-	auto pref = AppPreference::Get();
-	if (pref->IsShowFolderIfCtrlKeyIsPressed() == false) {
-		return false;
-	}
-
 	// Ctrlキーのみが押されていたら
 	uint32_t state = GetModifierKeyState(mParam, MASK_ALL);
 	return state == MASK_CTRL;

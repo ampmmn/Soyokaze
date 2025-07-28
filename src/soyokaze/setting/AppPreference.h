@@ -109,8 +109,6 @@ public:
 	bool IsUseMigemoForBrowserHistory();
 	bool IsUseURLForBrowserHistory();
 
-	bool IsShowFolderIfCtrlKeyIsPressed();
-
 	// 入力欄ウインドウをマウスカーソル位置に表示するか
 	bool IsShowMainWindowOnCurorPos();
 	// 入力欄ウインドウをアクティブなウインドウの中央に表示するか

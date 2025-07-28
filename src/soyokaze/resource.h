@@ -254,7 +254,6 @@
 #define IDC_BUTTON_UP                   1041
 #define IDC_CHECK_TOPMOST               1043
 #define IDC_CHECK_ENABLEPATHFIND        1043
-#define IDC_CHECK_SHOWDIR               1044
 #define IDC_BUTTON_NEW4                 1045
 #define IDC_CHECK_ENABLEDEMOTEPRIVILEDGE 1045
 #define IDC_CHECK_HIDEONINACTIVE        1046

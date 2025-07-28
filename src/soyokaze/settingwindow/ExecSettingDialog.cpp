@@ -28,8 +28,6 @@ protected:
 	afx_msg void OnButtonBrowseFile();
 	afx_msg void OnCheckUseFilter();
 
-	// Ctrl+Enterキー実行でフォルダ表示する
-	BOOL mIsShowFolderIfCtrlPressed{TRUE};
 	// フォルダを開くファイラーを指定
 	BOOL mIsUseExternalFiler{FALSE};
 	// ファイル名を指定して実行を使用する
@@ -73,7 +71,6 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:FilerParam"), mFilerParam);
 	settingsPtr->Set(_T("Soyokaze:ShouldDemotePriviledge"), (bool)mShouldDemotePriviledge);
 	settingsPtr->Set(_T("Soyokaze:ShouldRunAsAdmin"), (bool)mShouldRunAsAdmin);
-	settingsPtr->Set(_T("Soyokaze:IsShowFolderIfCtrlPressed"), (bool)mIsShowFolderIfCtrlPressed);
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
 
 	CString defAction;
@@ -104,7 +101,6 @@ void ExecSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLEPATHFIND, mIsEnablePathFind);
 	DDX_Check(pDX, IDC_CHECK_ENABLEDEMOTEPRIVILEDGE, mShouldDemotePriviledge);
 	DDX_Check(pDX, IDC_CHECK_RUNAS, mShouldRunAsAdmin);
-	DDX_Check(pDX, IDC_CHECK_SHOWDIR, mIsShowFolderIfCtrlPressed);
 	DDX_CBIndex(pDX, IDC_COMBO_DEFAULTACTION, mDefaultActionIndex);
 }
 
@@ -175,7 +171,6 @@ void ExecSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mFilerParam = settingsPtr->Get(_T("Soyokaze:FilerParam"), _T(""));
 	mShouldDemotePriviledge = settingsPtr->Get(_T("Soyokaze:ShouldDemotePriviledge"), true);
 	mShouldRunAsAdmin = settingsPtr->Get(_T("Soyokaze:ShouldRunAsAdmin"), false);
-	mIsShowFolderIfCtrlPressed = settingsPtr->Get(_T("Soyokaze:IsShowFolderIfCtrlPressed"), true);
 	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 
 	CString defAction = settingsPtr->Get(_T("Launcher:DefaultActionType"), _T("register")); 
