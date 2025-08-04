@@ -17,4 +17,5 @@ packages/
 tags
 packages.config
 externals/
+doc/manuals/build/
 
