@@ -85,14 +85,13 @@ bluewindのUIを参考にして作成している。
 
 ## 詳しい使い方・マニュアル
 
-- [マニュアル](doc/help.md)
+- [マニュアル](https://ampmmn.github.io/Soyokaze/)
 - [変更履歴](./CHANGELOG.md)
 
 
 ## 開発・貢献ガイド
 
 - バグ報告・機能要望などあったら[Issue](https://github.com/ampmmn/Soyokaze/issues)へ
-  - 対応するかは謎
 
 - 手元の環境でビルドする方法はこちら
   - [ビルド方法](./HowToBuild.md)
