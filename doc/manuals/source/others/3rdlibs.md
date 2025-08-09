@@ -1,4 +1,4 @@
-# 利用ライブラリ
+# Third Party Libraries
 
 ```{only} soyokaze
 - [fmt](https://github.com/fmtlib/fmt)

@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/base64-decode.md:1
+msgid "Base64 Decode"
+msgstr "Base64デコード"
+
+#: ../../source/adhoc-command/base64-decode.md:3
+msgid "Base64形式の文字列をデコードして表示する。 コマンドを実行するとデコード後の文字列をクリップボードにコピーする。"
+msgstr ""
+
+#: ../../source/adhoc-command/base64-decode.md:6
+msgid "例: `44GT44KT44Gr44Gh44Gv77yB` → `こんにちは！`"
+msgstr ""
+
+#: ../../source/adhoc-command/base64-decode.md:8
+msgid "![](../image/base64-decode-sample.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/base64-decode.md:10
+msgid "このコマンドではデコード後のデータをUTF-8形式の文字列として解釈する。 UTF-8形式の文字列として解釈できないものは表示しない。"
+msgstr ""
+
+#: ../../source/adhoc-command/base64-decode.md:13
+msgid "なお、誤発動を軽減するため、入力キーワードが16文字未満の場合には変換を行わない。"
+msgstr ""
+

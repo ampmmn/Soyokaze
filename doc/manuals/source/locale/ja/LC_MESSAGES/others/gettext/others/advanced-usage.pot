@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/others/advanced-usage.md:1
+msgid "Advanced Usage"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:3
+msgid "Use HotKey"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:5
+msgid "コマンドに対して任意のキーを割り当てておき、そのキーを押したときにコマンドを実行することができる。"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:7
+msgid "コマンド設定画面の`ホットキー`設定からキー割り当てを行うことができる。"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:9
+msgid "![](../image/hotkeyForCommand.png)"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:12
+msgid "Use External Filer"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:14
+msgid "エクスプローラ以外のファイラーソフト(例:[あふw](https://afxw.sakura.ne.jp/akt_afxw.html) )を使っている場合、 アプリケーション設定の`実行`>`フォルダーを開くファイラーを指定`を指定することにより、 コマンドからフォルダーを開くときに使用するアプリを変更することができる。"
+msgstr ""
+
+#: ../../source/others/advanced-usage.md:18
+msgid "![](image/advanced/use-external-filer.png)"
+msgstr ""

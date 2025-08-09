@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/index.md:10
+msgid "Get started"
+msgstr ""
+
+#: ../../source/index.md:19
+msgid "Settings"
+msgstr ""
+
+#: ../../source/index.md:27
+msgid "Commands"
+msgstr ""
+
+#: ../../source/index.md:37
+msgid "Macros"
+msgstr ""
+
+#: ../../source/index.md:45
+msgid "Miscellaneous"
+msgstr ""
+
+#: ../../source/index.md:1
+msgid "{{ project }} {{ version }} Manual"
+msgstr ""
+
+#: ../../source/index.md:59
+msgid "License"
+msgstr ""
+
+#: ../../source/index.md:62
+msgid "フリーソフト"
+msgstr ""
+
+#: ../../source/index.md:64
+msgid "本体のライセンス : [MIT License](./LICENSE)"
+msgstr ""
+
+#: ../../source/index.md:65
+msgid "利用ライブラリのライセンスについては [利用ライブラリ](#利用ライブラリ) に記載の各リンク先を参照のこと"
+msgstr ""
+
+#: ../../source/index.md:69
+msgid "内部で使う分には自己責任で好きにつかってください"
+msgstr ""
+
+#: ../../source/index.md:75
+msgid "Source code"
+msgstr ""
+
+#: ../../source/index.md:78
+msgid "[https://github.com/ampmmn/Soyokaze](https://github.com/ampmmn/Soyokaze/)"
+msgstr ""
+
+#: ../../source/index.md:82
+#: ../../source/index.md:97
+msgid "非開示"
+msgstr ""
+
+#: ../../source/index.md:85
+msgid "Disclaimer"
+msgstr ""
+
+#: ../../source/index.md:87
+msgid "このツールは無保証です。"
+msgstr ""
+
+#: ../../source/index.md:91
+msgid "Contact"
+msgstr ""
+
+#: ../../source/index.md:94
+msgid "htmnymgw@gmail.com"
+msgstr ""

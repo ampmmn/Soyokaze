@@ -1,0 +1,181 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/shellexecute.md:1
+msgid "Shell Execute Command"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:3
+msgid "通常コマンドはファイルやURLを関連付けられたプログラムで表示するためのコマンドである。   よく使うプログラムやファイル、URLに対して任意の名前を設定し、その名前で実行することができる。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:6
+msgid "General"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:8
+msgid "![](../image/edit.png){ width=50% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:10
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:12
+msgid "`コマンドの説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:14
+msgid "`コメント表示欄のテキストを検索に使用する`   チェックすると、`コマンドの説明`に入力したテキストもコマンドの絞り込みに使用する   例えば上の図の場合、「起動」と入力した場合にも、コマンドが候補にあがるようになる"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:17
+msgid "`実行ファイル・URLなど`   実行ファイル(`*.exe`)を指定すると、その実行ファイルが実行される   URL(`http://...` `https://...`)を指定すると、ブラウザでそのURLを表示する   その他の拡張子のファイルを指定した場合、拡張子に関連付けられたプログラムでそのファイルを開く"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:21
+msgid "`パラメータ`   実行ファイル(.exe)を指定したときに、実行ファイルに渡すパラメータを指定する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:23
+msgid "`$*` : 入力欄でコマンド名の後にスペース区切りで入力した全ての文字列に置換する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:24
+msgid "`$1`/`$2`/`$3` ... : 入力欄でコマンド名の後にスペース区切りで入力した1番目/2番目/3番目...の文字列に置換する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:25
+msgid "そのほかに[マクロ](#マクロ機能)を利用することが可能"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:27
+msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:29
+msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶことができる   起動するプログラムによっては指定が効かないこともある"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:32
+msgid "`管理者権限で実行`   チェックすると、管理者権限でプロセスを起動する   `.exe`、`.bat`のときのみ選択可能"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:35
+msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、コマンドを実行できる。   ![](../image/hotkeyForCommand.png)"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:39
+msgid "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/websearchcommand-contextmenu.png)"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:42
+msgid "`アイコンを変更する`   選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:45
+msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:48
+msgid "Environment"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:50
+msgid "![](../image/shellexec-envlist.png){ width=50% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:52
+msgid "起動するプログラムに対して環境変数を追加定義することができる。   既存の環境変数と同じ名前を定義した場合は値を上書きする。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:55
+msgid "`追加する環境変数の一覧`     追加する環境変数のリスト"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:57
+msgid "`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/shellexec-envadd.png){ width=37% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:60
+msgid "`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/shellexec-envedit.png){ width=37% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:63
+msgid "`削除`   クリックすると、リスト上で選択している変数を削除する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:65
+msgid "`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/shellexec-envbulkadd.png){ width=40% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:69
+msgid "Others"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:71
+msgid "![](../image/edit-detail.png){ width=50% }"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:73
+msgid "`実行時引数あり/なしで起動するファイルを分ける`   入力欄で、コマンド名の後に文字列を入力した場合とそうでない場合とで、実行するファイルを分けるときにチェックする   【実行時引数なし】直下に、コマンド名のみを入力した場合に実行するファイル(やパラメータ)を指定する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:76
+msgid "想定する使い方   パラメータがある場合→検索、ない場合→検索サイトのトップページを表示"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:78
+msgid "`キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する`   入力欄に入力したキーワードがコマンド名に完全一致し、他の候補がない場合に、コマンド実行を自動確定(実行)する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:81
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "ファイルを実行する or ディレクトリを開く or URLを開く"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "パス(ファイルが存在するディレクトリ)を開く"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "`Shift-Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:0
+msgid "管理者権限で実行する"
+msgstr ""

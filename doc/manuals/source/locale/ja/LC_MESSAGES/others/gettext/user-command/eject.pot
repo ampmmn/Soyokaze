@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/eject.md:1
+msgid "Eject Command"
+msgstr ""
+
+#: ../../source/user-command/eject.md:3
+msgid "CD/DVD等ディスクドライブのトレイを開いたり、USBメモリのようなリムーバブルドライブの取り外しを行うためのコマンド"
+msgstr ""
+
+#: ../../source/user-command/eject.md:5
+msgid "コマンド作成時点であらかじめ対象とするドライブ(`A:`～`Z:`)を設定しておき、 コマンド実行時点においての当該ドライブに対して、取り外し操作を試みる。"
+msgstr ""
+
+#: ../../source/user-command/eject.md:8
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/eject.md:10
+msgid "![](../image/edit-ejectvolumecommand.png)"
+msgstr ""
+
+#: ../../source/user-command/eject.md:12
+msgid "`コマンドの名前`"
+msgstr ""
+
+#: ../../source/user-command/eject.md:13
+msgid "入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/eject.md:14
+msgid "`コマンドの説明`"
+msgstr ""
+
+#: ../../source/user-command/eject.md:15
+msgid "コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/eject.md:16
+msgid "`ドライブ`"
+msgstr ""
+
+#: ../../source/user-command/eject.md:17
+msgid "取り外し対象とするドライブレターを選択する"
+msgstr ""
+
+#: ../../source/user-command/eject.md:18
+msgid "選択すると、現在の実行環境におけるドライブの種別を右側に表示する"
+msgstr ""
+
+#: ../../source/user-command/eject.md:19
+msgid "`ホットキー`"
+msgstr ""
+
+#: ../../source/user-command/eject.md:20
+msgid "コマンドを呼び出すキーバインドを設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgstr ""
+
+#: ../../source/user-command/eject.md:22
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/eject.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/eject.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/eject.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/eject.md:0
+msgid "設定した内容に基づき取り外し操作を行う"
+msgstr ""

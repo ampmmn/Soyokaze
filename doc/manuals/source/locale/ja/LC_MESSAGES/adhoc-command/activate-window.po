@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/activate-window.md:1
+msgid "Switch Window Dynamically"
+msgstr "ウインドウ選択切替"
+
+#: ../../source/adhoc-command/activate-window.md:3
+msgid "入力画面を表示した時点で表示しているウインドウタイトルの一覧を候補として表示する。   該当する候補を実行すると、対応ウインドウをアクティブにする。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:6
+msgid "`Ctrl-Enter`キーを押して実行すると、最大化表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:8
+msgid ""
+"登録型のコマンドである[ウインドウ切替コマンド](#ウインドウ切替コマンド)とは別物。   "
+"`ウインドウ選択切替`はキーワードを入力した時点で存在しているウインドウのうち、合致するタイトルを持つウインドウを候補として表示する。   "
+"一方、`ウインドウ切替コマンド`はよく使うウインドウを指定して、任意のキーワードやホットキーで切り替えられるようにするためのもの。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:12
+msgid "Temporary Naming For Window"
+msgstr "ウインドウに一時的な名前を付ける"
+
+#: ../../source/adhoc-command/activate-window.md:14
+msgid "コンテキストメニューから`ウインドウに一時的な名前を付ける`を選択すると、ウインドウに対して一時的な名前を付与することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:16
+msgid "![](../image/window-assigntemporaryname.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:18
+msgid "![](../image/window-assigntemporaryname-dlg.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:20
+msgid "名前を付けると、付与した名前でウインドウを切り替えることができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:22
+msgid "![](../image/window-assigntemporaryname2.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:24
+msgid "なお、付与した名前とウインドウの紐づけは本アプリを終了するか、ウインドウが破棄されると失われる。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:26
+msgid "Use Cases"
+msgstr "想定用途"
+
+#: ../../source/adhoc-command/activate-window.md:28
+msgid ""
+"同じアプリのウインドウを異なる目的で複数表示しているような状況において、ウインドウごとにわかりやすい名前をつけて、その名前で呼び出せるようにする、みたいなものを想定"
+"    例えば、複数のテキストエディタをコード表示用/メモとり用で分けている、のような・・"
+msgstr ""
+

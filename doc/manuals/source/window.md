@@ -1,10 +1,9 @@
-# 画面の説明
+# Application Settings
 
 ```{toctree}
 ---
 maxdepth: 1
 ---
-window/input.md
 window/keyword-manager.md
 ```
 

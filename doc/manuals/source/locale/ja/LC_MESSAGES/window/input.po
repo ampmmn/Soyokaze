@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/input.md:1
+msgid "入力画面"
+msgstr ""
+
+#: ../../source/window/input.md:3
+msgid ""
+"ランチャーアプリを実行すると表示される画面。   "
+"この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。   "
+"また、Tabキーを押すと、入力中のキーワードを補完することができる。"
+msgstr ""
+
+#: ../../source/window/input.md:7
+msgid "![](../image/soyokaze-window2.png)"
+msgstr ""
+
+#: ../../source/window/input.md:9
+msgid "① アイコン表示欄"
+msgstr ""
+
+#: ../../source/window/input.md:10
+msgid "選択している候補に関連付けられたアイコンを表示する"
+msgstr ""
+
+#: ../../source/window/input.md:11
+msgid "② コメント表示欄"
+msgstr ""
+
+#: ../../source/window/input.md:12
+msgid "選択している候補の説明を表示する"
+msgstr ""
+
+#: ../../source/window/input.md:13
+msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
+msgstr ""
+
+#: ../../source/window/input.md:14
+msgid "③ 入力欄"
+msgstr ""
+
+#: ../../source/window/input.md:15
+msgid "ここにキーワード(やパラメータ)を入力する。"
+msgstr ""
+
+#: ../../source/window/input.md:16
+msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
+msgstr ""
+
+#: ../../source/window/input.md:17
+msgid "`Tab`キーを押下するとキーワードを補完する"
+msgstr ""
+
+#: ../../source/window/input.md:18
+msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
+msgstr ""
+
+#: ../../source/window/input.md:20
+msgid "④ 候補リスト"
+msgstr ""
+
+#: ../../source/window/input.md:21
+msgid "入力欄のキーワードに該当する候補の一覧を表示する"
+msgstr ""
+
+#: ../../source/window/input.md:22
+msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
+msgstr ""
+
+#: ../../source/window/input.md:23
+msgid "入力欄に文字が入力されていると表示される"
+msgstr ""
+
+#: ../../source/window/input.md:24
+msgid "⑤ ガイド"
+msgstr ""
+
+#: ../../source/window/input.md:25
+msgid "コマンドを実行したときに実行される動作をキー別に表示する"
+msgstr ""
+
+#: ../../source/window/input.md:27
+msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
+msgstr ""
+

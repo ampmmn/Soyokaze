@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/keyword-manager.md:1
+msgid "Keyword Manager"
+msgstr "キーワードマネージャ"
+
+#: ../../source/window/keyword-manager.md:3
+msgid "Overview"
+msgstr "概要"
+
+#: ../../source/window/keyword-manager.md:5
+msgid "本アプリに登録したコマンドの管理(追加/編集/削除)をするための画面。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:7
+msgid "下記のいずれかの操作を行うと、キーワードマネージャーを表示することができる。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:9
+msgid "入力画面で`edit`コマンドを実行する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:10
+msgid "入力画面で空欄のままEnterキーを押下する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:11
+msgid "タスクトレイのアイコンを右クリックし、`キーワードマネージャ`を選択する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:13
+msgid "Description"
+msgstr "画面の説明"
+
+#: ../../source/window/keyword-manager.md:15
+msgid "![](../image/keywordmanager.png)"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:17
+msgid "`リスト`   登録済のコマンド一覧が表示される"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:19
+msgid "`フィルター`   入力した文字列でリストの表示項目を絞り込める   空白区切りで複数ワードを指定できる(AND検索)"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:22
+msgid "`新規作成`   コマンドを新規登録する。[コマンドの種別を選択する画面](#コマンド種類選択)を表示する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:24
+msgid "`編集`   リスト上で選択したコマンドを設定を変更する。編集画面が表示される。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:26
+msgid "`複製`   リスト上で選択したコマンドを複製する   (選択中のコマンドの設定内容をもとに、別のコマンドを作ることができる)"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:29
+msgid "`削除`   リスト上で選択したコマンドを削除する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:32
+msgid "Command Type"
+msgstr "コマンド種類選択"
+
+#: ../../source/window/keyword-manager.md:34
+msgid "作成するコマンドの種類を選択するための画面。   コマンドの種類を選択して、OKボタンを押下すると、選択したコマンドの新規作成画面を表示する。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:37
+msgid "各コマンドの説明については [コマンドの説明](#コマンドの説明) を参照のこと"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:39
+msgid "![](../image/commandtype.png)"
+msgstr ""
+

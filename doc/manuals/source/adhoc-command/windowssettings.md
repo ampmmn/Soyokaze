@@ -1,4 +1,4 @@
-# Windowsの設定
+# Windows Settings
 
 Windowsの設定アプリの各ページ要素を候補として表示し、実行することができる。
 

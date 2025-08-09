@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/websearch.md:1
+msgid "Web Search Command"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:3
+msgid "Web検索を行うためのコマンド。   GoogleやTwitterなどの検索に対して名前を付けて、その名前で検索サイトを使い分けることができる。   例えば、Google検索に`g`という名前を付けて、`g (検索ワード)` で検索を実行できる。"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:7
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:9
+msgid "![](../image/new-websearchcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:11
+msgid "`コマンドの名前`   入力画面からWeb検索コマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:13
+msgid "`説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:15
+msgid "`検索URL`   検索するためのURLを指定する。   `$*`を含めると、その部分が検索キーワードに置換される。"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:18
+msgid "例えばGoogle検索を行う場合は、`https://www.google.com/search?q=$*`と指定すればよい"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:19
+msgid "`▼`   主要な検索エンジンのURLを選択し、入力することができる   Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:22
+msgid "`常に検索候補として表示する`   チェックすると、コマンド名を入力しなくても、検索ワードを入れるだけで候補として表示されるようになる   ![](../image/shortcut-search.png)"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:25
+msgid "この場合[弱一致](#一致度の区分)扱いとなる"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:26
+msgid "検索URLに`$*`を入力したときだけ表示される"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:27
+msgid "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。   設定したキーを押下すると、入力欄が表示され、コマンド名が入力された(キーワードで絞り込みができる）状態になる"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:30
+msgid "他のコマンドにおけるホットキーはコマンド実行として作用するが、このコマンドに関しては短縮入力みたいな位置づけ"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:31
+msgid "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/websearchcommand-contextmenu.png)"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:34
+msgid "`アイコンを変更する`   選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:36
+msgid "PNG/JPG/GIF/BMP形式のファイルが利用可能"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:37
+msgid "検索サイトごとにアイコンを変えると視認性が高まるのでおすすめ"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:38
+msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:41
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/websearch.md:0
+msgid "ブラウザで検索を実行する"
+msgstr ""

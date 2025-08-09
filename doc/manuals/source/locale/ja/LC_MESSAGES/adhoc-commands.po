@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-commands.md:1
+msgid "Implicitly Executable Features"
+msgstr "コマンドとして登録していなくても実行できる機能"
+
+#: ../../source/adhoc-commands.md:3
+msgid ""
+"利用者があらかじめコマンドを登録しておき、 入力画面からキーワード入力して実行するのが本アプリのメイン機能であるが、 "
+"コマンドとして登録していなくても使える機能がある。"
+msgstr ""
+
+#: ../../source/adhoc-commands.md:39
+msgid "Other Features"
+msgstr "その他の機能"
+
+#: ../../source/adhoc-commands.md:41
+msgid "Logging"
+msgstr "ログ出力"
+
+#: ../../source/adhoc-commands.md:43
+msgid "ログファイルに出力するメッセージのレベルを選択する。"
+msgstr ""
+
+#: ../../source/adhoc-commands.md:45
+msgid ""
+"ログファイルは[設定ファイルの保存先](#設定ファイルの保存先)フォルダ内に`<アプリ名>.log`というファイル名で出力する。   "
+"アプリケーション設定の[その他](#その他)で出力対象とするログレベルを設定することができる。"
+msgstr ""
+
+#: ../../source/adhoc-commands.md:48
+msgid "Continuous Worktime Warning"
+msgstr "【試作】連続稼働を警告する"
+
+#: ../../source/adhoc-commands.md:50
+msgid ""
+"休憩を挟まずに連続して作業を続けていた場合に、その旨をトースト通知する機能。   休憩を促す目的。   "
+"スクリーンロックを休憩(離席)とみなし、連続稼働時間をリセットする。"
+msgstr ""
+
+#: ../../source/adhoc-commands.md:54
+msgid "アプリケーション設定の[その他](#その他)で有効化することにより利用できる。"
+msgstr ""
+

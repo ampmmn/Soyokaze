@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/window/command-hotkey.md:1
+msgid "Command HotKey"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:3
+msgid "コマンド設定画面の`ホットキー`設定のボタンを押すと下記の画面が表示される。"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:5
+msgid "![](../image/hotkeyForCommand.png)"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:7
+msgid "`ホットキーを設定する`   コマンドに対してキー割り当てを行う場合はチェックする"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:10
+msgid "種別"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:11
+msgid "以下の3つのいずれかを選択する。   `アクティブ時のみ有効` or `アクティブ時のみ有効(SandS)`  or `常駐時いつでも有効`"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:13
+msgid "種別の説明は[ホットキーの種別について](#ホットキーの種別について)を参照"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:14
+msgid "`修飾キー`"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:15
+msgid "修飾キーを選択するためのもの。"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:16
+msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合 → Ctrl+A"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:17
+msgid "種別として`アクティブ時のみ有効(SandS)`を選択した場合は以下の5つのいずれかを選択することができる。   `Space` `CapsLock` `変換` `無変換` `かな`"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:19
+msgid "`キー`"
+msgstr ""
+
+#: ../../source/window/command-hotkey.md:20
+msgid "修飾キーと組み合わせる文字を選択する"
+msgstr ""

@@ -1,11 +1,11 @@
-# fileプロトコルをローカルパスに変換
+# Convert file URL to local path
 
 `file://...`で始まるパスをローカルパスやUNC形式のパスに変換し、変換したパスに対して下記の操作を行うことができる。
 
 - fileプロトコルの例  
 `file:///C:/Windows/WindowsUpdate.log` → `C:\Windows\WindowsUpdate.log`
 
-## 実行時の動作
+## Per-Key Behavior
 
 |押下キー|動作|
 |--|--|

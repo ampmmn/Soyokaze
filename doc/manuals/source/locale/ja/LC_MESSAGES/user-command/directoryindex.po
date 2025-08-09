@@ -1,0 +1,155 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user-command/directoryindex.md:1
+msgid "DirectoryIndex Command"
+msgstr "DirectoryIndexコマンド"
+
+#: ../../source/user-command/directoryindex.md:3
+msgid "(試作)"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:5
+msgid ""
+"Directory Index(Webサーバーのインデックスページ)上のディレクトリやファイルを表示するコマンド   "
+"ランチャーのUI上からディレクトリやファイルをインクリメンタルに絞り込んで、階層をたどることができる"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:8
+msgid "例:"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:9
+msgid "ブラウザで表示したときに下記のように表示される階層に対して・・"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:13
+msgid "DirectoryIndexコマンドを使うと下記のような表示をすることができる"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:17
+msgid "ディレクトリを選択すると、そのディレクトリ階層に移動した状態で再度一覧を表示する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:19
+msgid "Description"
+msgstr "設定画面"
+
+#: ../../source/user-command/directoryindex.md:21
+msgid "![](../image/edit-directoryindexcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:24
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:26
+msgid "`コマンドの説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:29
+msgid "`起点URL`   コマンドを実行したときに起点となるURLを指定する   ここで指定したURLから得られたハイパーリンクの一覧を候補として表示する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:33
+msgid "`サーバー認証`   `起点URL`でアクセスするページが認証を必要とする場合の認証情報を指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:35
+msgid "`ユーザー名`   認証情報(ユーザー名)を指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:37
+msgid "`パスワード`   認証情報(パスワード)を指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:39
+msgid ""
+"`プロキシ`   `起点URL`でアクセスするためにプロキシを経由する必要がある場合にプロキシの設定を行う -`プロキシの利用方法`   "
+"以下の3つを選択できる"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:43
+msgid "`システム設定を使う`   インターネットオプションで設定したプロキシ設定を用いる"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:45
+msgid "`プロキシを指定する`   プロキシサーバを明示的に指定する。"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:47
+msgid "`プロキシを使わない`   プロキシを経由せず、`起点URL`に直接をアクセスする"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:50
+msgid ""
+"`プロキシサーバ`   `プロキシを指定する`を選択した場合の、プロキシサーバのホスト名とポート番号を指定する   "
+"ホスト名とポート番号をコロン(:)で区切って指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:53
+msgid "`ユーザ名`   指定したプロキシサーバが認証を必要とする場合のユーザー名を指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:55
+msgid "`パスワード`   指定したプロキシサーバが認証を必要とする場合のパスワードを指定する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:57
+msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:60
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "選択した候補のリンク先へ遷移する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "選択した候補のリンク先をブラウザで開く"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:14
+msgid "選択した候補のリンク先URLをクリップボードにコピーする"
+msgstr ""
+

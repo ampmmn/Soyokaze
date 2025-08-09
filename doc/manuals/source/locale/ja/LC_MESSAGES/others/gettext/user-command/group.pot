@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/group.md:1
+msgid "Group Command"
+msgstr ""
+
+#: ../../source/user-command/group.md:3
+msgid "本アプリに登録済のコマンドを複数まとめて実行するためのコマンド   決まった順序で実行する複数の操作を呼び出す用途で使うことができる。"
+msgstr ""
+
+#: ../../source/user-command/group.md:6
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/group.md:8
+msgid "![](../image/edit-groupcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/group.md:9
+msgid "上の図の場合、`xxx`→`vim`→`twitter`という順にコマンドを順次実行する、という意味"
+msgstr ""
+
+#: ../../source/user-command/group.md:10
+msgid "完了するまで待つにチェックすると、そのコマンドが完了するのを待つ"
+msgstr ""
+
+#: ../../source/user-command/group.md:13
+msgid "`グループの名前`   入力画面からグループコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/group.md:15
+msgid "`説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/group.md:18
+msgid "`グループとして実行するコマンド`   グループに含まれるコマンドの一覧が表示される"
+msgstr ""
+
+#: ../../source/user-command/group.md:21
+msgid "`追加`   一覧にコマンドを追加する"
+msgstr ""
+
+#: ../../source/user-command/group.md:23
+msgid "`削除`   一覧からコマンドを削除する"
+msgstr ""
+
+#: ../../source/user-command/group.md:25
+msgid "`上へ移動`   一覧で選択した項目を一つ上に移動する"
+msgstr ""
+
+#: ../../source/user-command/group.md:27
+msgid "`下へ移動`   一覧で選択した項目を一つ下に移動する"
+msgstr ""
+
+#: ../../source/user-command/group.md:30
+msgid "`完了するまで待つ`"
+msgstr ""
+
+#: ../../source/user-command/group.md:31
+msgid "チェックすると、そのコマンドの実行が完了するまで次のコマンドを実行しない"
+msgstr ""
+
+#: ../../source/user-command/group.md:32
+msgid "チェックしない場合、コマンドを実行したあと、完了を待たずに次のコマンドを実行する"
+msgstr ""
+
+#: ../../source/user-command/group.md:34
+msgid "`全てのコマンドに同じパラメータを渡す`   コマンド実行時に、入力欄にパラメータを指定した場合、そのパラメータをグループ内の各コマンドに渡す"
+msgstr ""
+
+#: ../../source/user-command/group.md:37
+msgid "`繰り返し実行する`   指定した回数分だけグループ内のコマンドを繰り返し実行する"
+msgstr ""
+
+#: ../../source/user-command/group.md:40
+msgid "`実行前に確認ダイアログを出す`   グループ実行時に確認するかどうかのダイアログを表示する"
+msgstr ""
+
+#: ../../source/user-command/group.md:43
+msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgstr ""
+
+#: ../../source/user-command/group.md:46
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/group.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/group.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/group.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/group.md:0
+msgid "登録された内容を実行する"
+msgstr ""

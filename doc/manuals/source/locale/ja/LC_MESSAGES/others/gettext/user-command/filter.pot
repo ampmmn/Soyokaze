@@ -1,0 +1,255 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/filter.md:1
+msgid "Filter Command"
+msgstr ""
+
+#: ../../source/user-command/filter.md:3
+msgid "ファジーファインダー風なことをするためのコマンド。以下のようなことを行う。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:5
+msgid "前段の処理を実行する   ↓   前段の処理が標準出力に出力した内容を行単位に分けて候補とする   ↓   候補の一覧を候補欄に表示する(利用者は絞り込み・選択を行う)   ↓   選択した結果をもとに後段の処理を実行する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:13
+msgid "![](../image/filtercommand.svg)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:15
+msgid "登録したコマンド名を入力欄に入力すると、外部プログラムの実行を行い、得られた出力を候補欄に表示する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:17
+msgid "![](../image/sample-filtercommand.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:19
+msgid "コマンド名(上の例だと`folderselect`)をタイプした時点で、前段の処理を実行し、候補の一覧を生成・表示する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:21
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/filter.md:23
+msgid "![](../image/edit-filtercommand.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:25
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/filter.md:27
+msgid "`コマンドの説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:30
+msgid "`前段の処理`"
+msgstr ""
+
+#: ../../source/user-command/filter.md:31
+msgid "`候補の生成方法`   絞り込み対象候補の生成方法を選択する。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:33
+msgid "[プログラムを実行する](#候補の生成方法---プログラムを実行する)   任意のプログラムを実行し、そのプログラムの標準出力の内容を行単位で区切ったものを候補とする"
+msgstr ""
+
+#: ../../source/user-command/filter.md:35
+msgid "`クリップボードの内容を使用する`   コマンド実行時のクリップボードの内容を行単位で区切ったものを候補とする"
+msgstr ""
+
+#: ../../source/user-command/filter.md:37
+msgid "[候補を定義する](#候補の生成方法---候補を定義する)   候補とするテキストを直接定義する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:39
+msgid "`表示文字列の内容を置換する`   チェックすると、候補欄に表示する文字列をカスタマイズすることができる(正規表現置換)   なお、ここで置換したテキストは候補欄の表示のみに用いられる。候補の絞り込みや後段の処理には影響しない。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:42
+msgid "`検索パターン`   正規表現の検索パターンを指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:44
+msgid "`置換する内容`   置換後の文字列を指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:46
+msgid "例: `\\`以降の文字列だけを表示したい場合   検索パターン: `^.*\\\\(.*)$`   置換する内容: `$1`"
+msgstr ""
+
+#: ../../source/user-command/filter.md:50
+msgid "`後段の処理`"
+msgstr ""
+
+#: ../../source/user-command/filter.md:51
+msgid "`実行する処理`   候補を選択した後に実行する処理の実行方法を選択する   以下の3つから選ぶことができる"
+msgstr ""
+
+#: ../../source/user-command/filter.md:54
+msgid "[他のコマンドを実行する](#実行する処理---他のコマンドを実行する)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:55
+msgid "[プログラムを実行する](#実行する処理---プログラムを実行する)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:56
+msgid "[クリップボードにコピーする](#実行する処理---クリップボードにコピーする)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:58
+msgid "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:61
+msgid "Candidate Enumeration"
+msgstr ""
+
+#: ../../source/user-command/filter.md:63
+#: ../../source/user-command/filter.md:102
+msgid "Run Program"
+msgstr ""
+
+#: ../../source/user-command/filter.md:65
+msgid "![](../image/edit-filtercommand-prefilter-subprocess.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:67
+#: ../../source/user-command/filter.md:106
+msgid "`実行ファイル`   実行するプログラムのパスを指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:69
+msgid "`パラメータ`   実行するプログラムに渡す引数を指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:71
+msgid "`作業フォルダ`   実行するプログラムのカレントディレクトリを指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:73
+msgid "`文字コード`   実行したプログラムが標準出力に出力したバイト列を、本アプリが文字列として解釈するときの文字コードを指定する   `UTF-8`または`ShiftJIS`を選択可能"
+msgstr ""
+
+#: ../../source/user-command/filter.md:76
+msgid "`一度生成した候補一覧を次回も再利用する`   次回以降のコマンド実行時にプログラムを実行せずに前回の結果を再利用するかどうかを指定する。"
+msgstr ""
+
+#: ../../source/user-command/filter.md:78
+msgid "チェックした場合、候補をひとたび生成した後は再生成をしない   アプリ終了まで継続する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:80
+msgid "チェックしなかった場合、候補の生成(プログラム実行)を毎回行う"
+msgstr ""
+
+#: ../../source/user-command/filter.md:82
+msgid "Define Items Directly"
+msgstr ""
+
+#: ../../source/user-command/filter.md:84
+msgid "![](../image/edit-filtercommand-prefilter-constant.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:86
+msgid "`候補の一覧`"
+msgstr ""
+
+#: ../../source/user-command/filter.md:87
+msgid "候補として表示する文字列を記述する。   上図の場合、`A` `B` `C` という3つの候補が表示される"
+msgstr ""
+
+#: ../../source/user-command/filter.md:90
+msgid "Post Actions"
+msgstr ""
+
+#: ../../source/user-command/filter.md:92
+msgid "Run Command"
+msgstr ""
+
+#: ../../source/user-command/filter.md:94
+msgid "![](../image/edit-filtercommand-postfilter-command.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:96
+msgid "`コマンド`   実行するコマンドを選択する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:98
+msgid "`パラメータ`   コマンドに渡すパラメータを指定する   `$select`というキーワードを指定すると、選択した候補のテキストに置換される"
+msgstr ""
+
+#: ../../source/user-command/filter.md:104
+msgid "![](../image/edit-filtercommand-postfilter-subprocess.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:108
+msgid "`パラメータ`   プログラムに渡すパラメータを指定する   `$select`というキーワードを指定すると、選択した候補のテキストに置換される"
+msgstr ""
+
+#: ../../source/user-command/filter.md:111
+msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
+msgstr ""
+
+#: ../../source/user-command/filter.md:113
+msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶことができる   起動するプログラムによっては指定が効かないこともある"
+msgstr ""
+
+#: ../../source/user-command/filter.md:117
+msgid "Copy To Clipboard"
+msgstr ""
+
+#: ../../source/user-command/filter.md:119
+msgid "![](../image/edit-filtercommand-postfilter-copy.png)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:121
+msgid "`パラメータ`   クリップボードにコピーするテキストの書式を指定する   `$select`というキーワードを指定すると、選択した候補のテキストに置換される"
+msgstr ""
+
+#: ../../source/user-command/filter.md:125
+msgid "Restrictions"
+msgstr ""
+
+#: ../../source/user-command/filter.md:127
+msgid "コマンドの設定次第で、候補の数が多くなる可能性がある。   その場合において、大量のデータを高速に絞り込むことを意識した実装などは全くしてないので、大量データを扱うならしかるべきツールを使うのが吉   (このコマンドはインクリメンタルな絞り込みをする手段をお手軽に提供するためのものなので..)"
+msgstr ""
+
+#: ../../source/user-command/filter.md:131
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/filter.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/filter.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/filter.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/filter.md:0
+msgid "選択した候補を使って、コマンド設定で指定した後段の処理を実行する"
+msgstr ""

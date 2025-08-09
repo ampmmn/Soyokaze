@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user-command/align-window.md:1
+msgid "Align Window Command"
+msgstr "ウインドウ整列コマンド"
+
+#: ../../source/user-command/align-window.md:3
+msgid "ウインドウの位置とサイズを指定しておいて、一括設定するためのコマンド。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:5
+msgid "複数のウインドウの位置・サイズを指定することができるので、 普段よく使うアプリの「いつもの配置」を登録しておけば、それをすぐに再現することができる。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:8
+msgid ""
+"任意のウインドウに対し、位置・サイズ、表示状態(通常表示/最大化/最小化/非表示)を設定することができる。   "
+"非表示にすることもできるので、バックグラウンドで実行する必要がある一方で表示しておきたくないウインドウを隠す、という用途で使うこともできる。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:11
+#: ../../source/user-command/align-window.md:55
+msgid "Description"
+msgstr "設定画面"
+
+#: ../../source/user-command/align-window.md:13
+msgid "![](../image/edit-alignwindowcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:15
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:17
+msgid "`コマンドの説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:19
+msgid "`整列するウインドウの一覧`   整列する対象とするウインドウの一覧を表示する   対象を追加・編集・削除したい場合は、右側にあるボタンから行う"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:22
+msgid "`追加`   クリックすると、検索対象とするウインドウを[登録するための画面](#整列対象とするウインドウを登録する)を表示する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:24
+msgid ""
+"`編集`   "
+"クリックすると、`整列するウインドウの一覧`で選択した項目の[登録内容を変更するための画面](#整列対象とするウインドウを登録する)を表示する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:26
+msgid "`追加`   クリックすると、`整列するウインドウの一覧`で選択した項目を削除する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:28
+msgid "`上へ`   クリックすると、`整列するウインドウの一覧`で選択した項目を一つ上に移動する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:30
+msgid "`下へ`   クリックすると、`整列するウインドウの一覧`で選択した項目を一つ下に移動する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:32
+msgid ""
+"`条件に合致するウインドウが見つからなかった場合に通知する`   "
+"チェックすると、コマンド実行時に登録したウインドウが見つからなかった場合にその旨を知らせるメッセージをポップアップ表示する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:34
+msgid ""
+"`アクティブなウインドウを変更しない`   チェックすると、コマンド実行前にアクティブだったウインドウが、コマンド実行後もアクティブなままになる。"
+"   チェックしない場合は、一覧の最も下にあるウインドウがアクティブになる。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:37
+msgid "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:40
+msgid "Example"
+msgstr "例"
+
+#: ../../source/user-command/align-window.md:42
+msgid "電卓とペイントをあらかじめ決めた位置に並べる"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:48
+msgid "Register Windows for Alignment"
+msgstr "整列対象とするウインドウを登録する"
+
+#: ../../source/user-command/align-window.md:50
+msgid "[ウインドウ整列コマンド](#ウインドウ整列コマンド)に登録するためのウインドウの情報を入力するための画面。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:52
+msgid ""
+"タイトルとウインドウクラス名でウインドウを識別する。   "
+"対象とするウインドウのタイトルとウインドウクラス名を手入力するのは難しいので、画面上のアイコンを対象ウインドウにドラッグするのがおすすめ。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:57
+msgid "![](../image/edit-alignwindowitemcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:59
+msgid ""
+"`検索条件`   整列対象とするウインドウの`ウインドウタイトル`と`ウインドウクラス`を入力する。   "
+"画面左上にあるアイコンを整列対象としたいウインドウにドラッグすると、そのウインドウの`ウインドウタイトル`と`ウインドウクラス`を取得することができる。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:62
+msgid "`ウインドウタイトル`"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:63
+msgid "検索対象とするウインドウのタイトルを指定する。   空欄にした場合は`ウインドウクラス`のみで検索を行う"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:65
+msgid ""
+"`ウインドウクラス`   検索対象とするウインドウクラスを指定する。   空欄にした場合は`ウインドウタイトル`のみで検索を行う   "
+"`ウインドウタイトル`と`ウインドウクラス`のどちらかを指定する必要がある"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:69
+msgid ""
+"`正規表現`   チェックした場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列を正規表現として扱う   "
+"チェックしない場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列の完全一致で探す"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:72
+msgid ""
+"`整列設定`   整列対象とするウインドウの整列動作を入力する。   "
+"`現在の状態を取得`ボタンを押下すると、`検索条件`欄に指定した条件に合致するウインドウから、現在の状態(最大化 or 最小化 or "
+"位置とサイズ)を取得する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:75
+msgid "`動作`   以下のいずれかを選択する"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:77
+msgid "`位置・サイズを変更` : ウインドウを指定した位置・サイズに移動&リサイズする"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:78
+msgid "`最大化` : ウインドウを最大化する"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:79
+msgid "`最小化` : ウインドウを最小化する"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:80
+msgid "`非表示` : ウインドウを非表示にする"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:81
+msgid "非表示にした場合、一般的な操作で表示状態に戻すことはできないので注意すること"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:82
+msgid "`位置(X,Y)`   (`位置・サイズを変更`時)ウインドウの位置を指定する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:84
+msgid "`サイズ(幅,高さ)`   (`位置・サイズを変更`時)ウインドウのサイズを指定する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:86
+msgid "`現在の状態を取得`   `検索条件`欄に指定した条件に合致するウインドウの状態(最大化 or 最小化 or 位置とサイズ)を取得する。"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:88
+msgid ""
+"`複数のウインドウが該当するときはすべてに対して適用する`   "
+"チェックすると、`検索条件`欄に指定した条件に合致するウインドウが複数あった場合に、すべてのウインドウに対して適用する"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:91
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/user-command/align-window.md:44
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:44
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:44
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/align-window.md:44
+msgid "ウインドウの整列を実行する"
+msgstr ""
+

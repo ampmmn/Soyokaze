@@ -14,9 +14,11 @@ config.read('conf.ini', encoding='utf-8')
 
 project = config.get('config', 'project', fallback='Soyokaze')
 author = config.get('config', 'author', fallback='ymgw')
-author = config.get('config', 'copyright', fallback='2023, ymgw')
+copyright = config.get('config', 'copyright', fallback='2023, ymgw')
 
 html_title = f'{project} {version}'
+
+html_show_sourcelink = False
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -24,6 +26,8 @@ html_title = f'{project} {version}'
 extensions = [
         'myst_parser',
         'sphinxcontrib.plantuml',
+        'sphinx_rtd_theme',
+        'sphinx_fontawesome',
 ]
 
 myst_enable_extensions = [
@@ -42,12 +46,17 @@ myst_substitutions = {
 templates_path = ['_templates']
 exclude_patterns = []
 
-language = 'ja'
+language = 'en'
+
+gettext_compact = False
+
+locale_dirs = ['locale/']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
+#html_theme = 'furo'
+html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 from sphinx.application import Sphinx

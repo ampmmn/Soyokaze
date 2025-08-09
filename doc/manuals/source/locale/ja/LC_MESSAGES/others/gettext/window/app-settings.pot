@@ -1,0 +1,1481 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/window/app-settings.md:1
+msgid "Application Settings"
+msgstr ""
+
+#: ../../source/window/app-settings.md:3
+msgid "アプリケーションの動作に関する設定を行うための画面。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:5
+msgid "下記のいずれかの操作を行うと、アプリケーション設定を表示することができる。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:7
+msgid "入力画面で`setting`コマンドを実行する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:8
+msgid "タスクトレイのアイコンを右クリックし、`アプリケーションの設定`を選択する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:10
+msgid "App"
+msgstr ""
+
+#: ../../source/window/app-settings.md:12
+msgid "ランチャーの基本動作にかかわる設定をする画面   主に入力画面を表示する際の動作の設定を行う。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:15
+msgid "![](../image/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:17
+msgid "`ランチャー呼び出しキー`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:18
+msgid "入力画面を表示するためのホットキーを設定することができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:19
+msgid "`入力画面を非表示にして起動する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:20
+msgid "チェックすると、起動直後に入力画面を表示しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:21
+msgid "`入力画面を最前面に表示`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:22
+msgid "入力画面を表示するとき、入力画面を他のウインドウより前面に表示するようにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:23
+msgid "`入力画面の表示位置`   入力画面を表示するときの位置を以下の3つから選択できる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:25
+msgid "`前回の表示位置`   前回と同じ位置に入力画面を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:27
+msgid "`マウスカーソル位置`   入力画面を表示するタイミングでのマウスカーソル位置に入力画面を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:29
+msgid "`アクティブウインドウの中央`   アクティブなウインドウの中央に表示する   ただし、アクティブなウインドウがない場合は前回と同じ位置に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:32
+msgid "`すでにアクティブなときに呼び出しキーを押したら隠れる`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:33
+msgid "チェックすると、ランチャー呼び出しキーを押すたびに入力画面の表示/非表示が切り替わる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:34
+msgid "`フォーカスを失ったらウインドウを隠す`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:35
+msgid "チェックすると、入力画面がフォーカスを失ったときに、入力画面を非表示にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:36
+msgid "`隠れるときに入力文字列を消去しない`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:37
+msgid "チェックすると、コマンドを実行せずに入力画面を非表示にする際に入力文字列を消去しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:38
+msgid "入力画面を次回再表示した際に、前回入力していた内容が維持される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:40
+msgid "App HotKey"
+msgstr ""
+
+#: ../../source/window/app-settings.md:42
+#: ../../source/window/app-settings.md:511
+msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
+msgstr ""
+
+#: ../../source/window/app-settings.md:44
+#: ../../source/window/app-settings.md:513
+msgid "![](../image/hotkeyForApp.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:46
+#: ../../source/window/app-settings.md:515
+msgid "`ホットキーを設定する`   修飾キー(`Alt` `Ctrl` `Shift` `Win`) + 任意のキーを同時押しすることによりアプリを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:48
+#: ../../source/window/app-settings.md:517
+msgid "`修飾キー`   修飾キーを選択するためのもの。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:50
+#: ../../source/window/app-settings.md:519
+msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合   Ctrl+A"
+msgstr ""
+
+#: ../../source/window/app-settings.md:52
+#: ../../source/window/app-settings.md:521
+msgid "`キー`   文字を選択する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:54
+#: ../../source/window/app-settings.md:523
+msgid "`修飾キーの組み合わせ入力`   修飾キー(`Alt` `Ctrl` `Shift` `Win`)を二つ組み合わせ入力することによりアプリを表示する方式   同じキーを2回押す、あるいは、異なるキーを同時押しすることでアプリを起動することができる   例: `Ctrl`キーの2回押し、あるいは、`Ctrl`+`Alt`キーの同時押し"
+msgstr ""
+
+#: ../../source/window/app-settings.md:58
+#: ../../source/window/app-settings.md:527
+msgid "`一つ目の入力`   一つ目に入力する修飾キーを選択する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:60
+#: ../../source/window/app-settings.md:529
+msgid "`二つ目の入力`   二つ目に入力する修飾キーを選択する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:66
+msgid "App > Shortcut"
+msgstr ""
+
+#: ../../source/window/app-settings.md:68
+msgid "各種ショートカット登録をするための画面   いずれもチェックすると登録され、チェックを外すと登録が解除される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:71
+msgid "![](../image/setting2.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:73
+msgid "`「送る」から登録できるようにする`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:74
+msgid "チェックすると、本アプリにコマンドを登録するためのメニューが、エクスプローラのコンテキストメニューの「送る」に追加される ![](../image/sendto.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:77
+msgid "`スタートメニューに登録する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:78
+msgid "チェックすると、本アプリを起動するためのメニューがスタートメニューに登録される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:80
+msgid "`デスクトップに登録する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:81
+msgid "チェックすると、本アプリを起動するためのショートカットがデスクトップに配置される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:83
+msgid "`スタートアップに登録する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:84
+msgid "チェックすると、Windowsにログオン(サインイン)した後に自動で本アプリを起動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:86
+msgid "`作成したショートカットをすべて削除する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:87
+msgid "上記で作成したショートカットをすべて削除する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:91
+msgid "App > Sound Effects"
+msgstr ""
+
+#: ../../source/window/app-settings.md:93
+msgid "画面操作時に効果音を鳴らす設定をするための画面   もし、音を鳴らせる環境で作業しているのであれば、気分が上がる効果音を設定すると、作業効率がアップするかもしれない。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:96
+msgid "mp3ファイルのみ指定可能(他の音声ファイルには非対応)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:98
+msgid "![](../image/setting7.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:100
+msgid "`入力欄への文字入力`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:101
+msgid "入力欄に文字を入力したときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:102
+msgid "`候補欄の選択項目変更`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:103
+msgid "候補欄の選択項目を変更したときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:104
+msgid "`コマンド実行`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:105
+msgid "コマンドを実行するときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:107
+msgid "Keyword Input"
+msgstr ""
+
+#: ../../source/window/app-settings.md:109
+msgid "入力画面のキーワード入力回りの動作に影響する設定を行うための画面"
+msgstr ""
+
+#: ../../source/window/app-settings.md:111
+msgid "![](../image/setting3.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:113
+msgid "`入力画面を表示するときにIMEをオフにする`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:114
+msgid "チェックすると、入力画面を表示したタイミングでIMEをオフにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:116
+msgid "`ネットワークパスを無視する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:117
+msgid "チェックすると、`\\\\(コンピュータ名)`で始まるパスを本アプリでは開かないようにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:118
+msgid "環境によっては、ネットワークパスの情報を参照したときに数十秒ほど固まることがあるため"
+msgstr ""
+
+#: ../../source/window/app-settings.md:120
+msgid "`C/Migemoによるローマ字検索を有効にする`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:121
+msgid "[C/Migemo](https://www.kaoriya.net/software/cmigemo/) という外部ライブラリを用いて、ローマ字でのキーワード絞り込みをできるようにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:122
+msgid "たとえば、`jikoku`というキーワードで`時刻`や`自国`という文言にマッチするようになる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:123
+msgid "配布元(上記リンク先)からライブラリを入手し、配置する必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:124
+msgid "下記のような構成になるように配置する。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:133
+msgid "なお、バージョン{{version}}現在、migemo.dllと辞書データは本アプリに同梱しているため、上記の配置作業は不要。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:135
+msgid "Keyword Input > Key Config"
+msgstr ""
+
+#: ../../source/window/app-settings.md:137
+msgid "入力画面の操作に関するキーを設定する画面   独自のキーバインドで上下左右の移動や決定操作を行うアプリケーションがある。(例: Emacsの`Ctrl-N` `Ctr-P` `Ctrl-M`など）。   それらのアプリの使用感に寄せるための設定"
+msgstr ""
+
+#: ../../source/window/app-settings.md:141
+msgid "![](../image/appsetting-key.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:143
+msgid "`入力キーの画面割り当て`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:144
+#: ../../source/window/app-settings.md:239
+msgid "`上へ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:145
+msgid "候補欄の選択項目を一つ上へ移動するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:146
+#: ../../source/window/app-settings.md:241
+msgid "`下へ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:147
+msgid "候補欄の選択項目を一つ下へ移動するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:148
+msgid "`決定`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:149
+msgid "入力画面での入力内容を確定させるキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:150
+msgid "`補完`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:151
+msgid "入力画面での入力内容を補完するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:152
+msgid "`メニュー表示`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:153
+msgid "選択している候補のコンテキストメニューを表示するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:154
+msgid "`テキストをコピー`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:155
+msgid "入力欄に入力された文字列をクリップボードにコピーする   コピーした後、入力欄は非表示になる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:157
+msgid "`入力画面のウインドウ移動`   入力画面を一時的に上下左右に移動するキーの割り当てを行う(次回表示時は元の位置に戻る)。   入力画面の後ろにあるテキストをランチャーに手入力するにあたり、入力画面を一時的に移動したい、というケースで使う"
+msgstr ""
+
+#: ../../source/window/app-settings.md:160
+msgid "`上へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:161
+msgid "入力画面を上方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:162
+msgid "`下へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:163
+msgid "入力画面を下方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:164
+msgid "`左へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:165
+msgid "入力画面を左方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:166
+msgid "`右へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:167
+msgid "入力画面を右方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:170
+msgid "`初期設定に戻す`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:171
+msgid "上記のキー割り当てをすべて解除する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:173
+msgid "Keyword Input > History"
+msgstr ""
+
+#: ../../source/window/app-settings.md:175
+msgid "![](../image/appsetting-inputhistory.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:177
+msgid "`履歴機能を使う`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:178
+msgid "[履歴](#履歴)機能の有無を設定できる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:179
+msgid "`履歴件数`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:180
+msgid "履歴として登録する件数の上限を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:181
+msgid "`履歴の削除`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:182
+msgid "ボタンをクリックすると全ての履歴をクリアする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:184
+msgid "Comand Execute"
+msgstr ""
+
+#: ../../source/window/app-settings.md:186
+msgid "![](../image/setting4.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:188
+msgid "`Ctrl-Enterキーで実行した場合にフォルダを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:189
+msgid "チェックすると、実行するコマンドに関連付けられたファイルをファイラーで表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:190
+msgid "[通常コマンド](#通常コマンド)のみ有効"
+msgstr ""
+
+#: ../../source/window/app-settings.md:192
+msgid "`フォルダを開くファイラーを指定`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:193
+msgid "チェックすると、エクスプローラ以外のファイラーを使うことができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:194
+msgid "`ファイラーのパス`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:195
+msgid "起動する外部ファイラーの実行ファイルのパスを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:196
+msgid "`パラメータ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:197
+msgid "`ファイラーのパス`で指定したファイラーを起動するときのパラメータを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:198
+msgid "`$target`が実際に開かれる対象(ファイルやフォルダ)のパスに置き換えられる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:200
+msgid "`「ファイル名を指定して実行」機能を使用する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:201
+msgid "チェックすると、 [`ファイル名を指定して実行`](#ファイル名を指定して実行) コマンドを有効にする。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:203
+msgid "`未登録キーワード入力時の動作`   コマンドとして登録されていない（かつ、[コマンドとして登録していなくても実行できる機能](#コマンドとして登録していなくても実行できる機能) として作用しない） キーワードを入力したときの動作を指定する   以下の3つから選択できる。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:206
+msgid "何もしない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:207
+msgid "クリップボードにコピー"
+msgstr ""
+
+#: ../../source/window/app-settings.md:208
+msgid "キーワードをコマンド登録"
+msgstr ""
+
+#: ../../source/window/app-settings.md:210
+msgid "`管理者特権で起動する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:211
+msgid "ランチャーアプリを起動するときに管理者権限で起動する   管理者権限で実行することにより、他の管理者権限プロセスがアクティブな状況でもランチャーのホットキーが効くようになる。   (ランチャーを通常ユーザー権限で実行している場合、管理者権限で動作するプロセス(のウインドウ)がアクティブになっている状況においてホットキーが効かない)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:214
+msgid "`【管理者特権で実行時】コマンドを通常ユーザ権限で起動する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:215
+msgid "管理者特権でアプリケーションを実行している状況において、ランチャーから起動するコマンドを一般ユーザー権限で実行する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:216
+msgid "ランチャー自体は管理者権限で実行したいけれど、一方で、(セキュリティ上の理由により)コマンド実行により起動するアプリケーションを管理者権限で動かしたくない場合に使う"
+msgstr ""
+
+#: ../../source/window/app-settings.md:218
+msgid "Comand Execute > Path"
+msgstr ""
+
+#: ../../source/window/app-settings.md:220
+msgid "[`ファイル名を指定して実行`](#ファイル名を指定して実行) コマンドにおける、実行ファイルを検索するフォルダを追加で指定することができる。   検索の優先順位としては環境変数PATHで設定されたフォルダ、次に追加のディレクトリ、の順で検索を行う。   リストの上にある項目が優先される。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:224
+msgid "![](../image/appsetting-path.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:226
+msgid "`環境変数PATHで設定されたディレクトリ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:227
+msgid "システムの環境設定で指定されたディレクトリが表示される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:228
+msgid "このリストは参照専用"
+msgstr ""
+
+#: ../../source/window/app-settings.md:230
+msgid "`追加のディレクトリ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:231
+msgid "システム設定で指定されたもの以外に検索したいディレクトリを登録する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:233
+#: ../../source/window/app-settings.md:254
+msgid "`追加`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:234
+msgid "クリックすると、ディレクトリ選択ダイアログが表示される。選択したディレクトリが`追加のディレクトリ`に追加される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:235
+#: ../../source/window/app-settings.md:256
+msgid "`編集`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:236
+#: ../../source/window/app-settings.md:257
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目のパスを変更することができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:237
+#: ../../source/window/app-settings.md:258
+msgid "`削除`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:238
+#: ../../source/window/app-settings.md:259
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を削除することができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:240
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を一つ上に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:242
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を一つ下に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:244
+msgid "Command Execute > Exclude Files"
+msgstr ""
+
+#: ../../source/window/app-settings.md:246
+msgid "[`ファイル名を指定して実行`](#ファイル名を指定して実行) コマンドにおいて、対象外とするファイルを指定することができる。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:249
+msgid "![](../image/appsetting-excludefile.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:251
+msgid "`除外するファイル`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:252
+msgid "ここで登録したファイルが候補としてマッチした場合でも、候補に表示しないようにする。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:255
+msgid "クリックすると、ファイル選択ダイアログが表示される。選択したファイルが`除外するファイル`に追加される"
+msgstr ""
+
+#: ../../source/window/app-settings.md:261
+msgid "Command Execute > Priority"
+msgstr ""
+
+#: ../../source/window/app-settings.md:263
+msgid "コマンドの優先度を設定することにより、候補欄に表示されるコマンドの順序を制御するための画面。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:265
+msgid "![](../image/appsetting-commandpriority.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:267
+msgid "`コマンドの優先度`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:268
+msgid "コマンドごとの優先度が表示されたリスト"
+msgstr ""
+
+#: ../../source/window/app-settings.md:269
+msgid "優先度の数値が高いものほど先に表示される。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:270
+msgid "`フィルター`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:271
+msgid "リスト上に表示するコマンドの絞り込みを行うことができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:272
+msgid "`優先度変更`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:273
+msgid "`コマンドの優先度`リストで選択した項目の優先度を変更する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:274
+msgid "`すべてリセット`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:275
+msgid "`コマンドの優先度`リスト上に表示されたすべての項目の優先度を0にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:277
+msgid "Example"
+msgstr ""
+
+#: ../../source/window/app-settings.md:279
+msgid "たとえば、下記の設定がされていた場合、 入力欄に「b」と打った場合に、`bookmark` `blog-hatena` `board` の順に表示される。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "コマンド"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "優先度"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "blog-hatena"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "5"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "board"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "0"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "bookmark"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "10"
+msgstr ""
+
+#: ../../source/window/app-settings.md:289
+msgid "Restrictions"
+msgstr ""
+
+#: ../../source/window/app-settings.md:291
+msgid "利用者が[登録したコマンド](#コマンドの登録方法)に対してのみ、コマンドの優先度を設定することができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:292
+msgid "[コマンドとして登録していなくても実行できる機能](#コマンドとして登録していなくても実行できる機能) に由来するコマンドに対して優先度を設定することはできない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:294
+msgid "Appearance"
+msgstr ""
+
+#: ../../source/window/app-settings.md:296
+msgid "入力画面の外観にかかわる設定を行う。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:298
+msgid "![](../image/setting5.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:300
+msgid "`入力画面のフォント`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:301
+msgid "入力画面のフォントを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:302
+msgid "初期値は`Noto Sans JP`フォント(利用できない場合は`Tahoma`)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:303
+msgid "`サイズ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:304
+msgid "入力画面のフォントサイズをポイント単位で指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:305
+msgid "初期値は9"
+msgstr ""
+
+#: ../../source/window/app-settings.md:306
+msgid "設定できる範囲は6～128"
+msgstr ""
+
+#: ../../source/window/app-settings.md:307
+msgid "`既定値を使用`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:308
+msgid "入力画面のフォント/フォントサイズを初期値に戻す"
+msgstr ""
+
+#: ../../source/window/app-settings.md:310
+msgid "`コメント表示欄の初期表示テキスト`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:311
+msgid "入力画面を表示した直後のコメント欄のテキストを設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:312
+msgid "テキストに[マクロ](#マクロ機能)を使うことができる   ![](../image/defaultcomment.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:314
+msgid "`入力画面のアイコンを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:315
+msgid "入力画面上のアイコン表示欄を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:316
+msgid "アイコン欄"
+msgstr ""
+
+#: ../../source/window/app-settings.md:317
+msgid "アイコン欄をダブルクリック、または、右クリックからコンテキストメニュー`アイコンを変更する`を選択すると、ファイル選択ダイアログを表示する。ファイルを選択すると、初期表示アイコンを変更することかできる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:318
+msgid "使用可能なファイル形式は`.ico`のみ"
+msgstr ""
+
+#: ../../source/window/app-settings.md:319
+msgid "`デフォルトのアイコンに戻す`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:320
+msgid "変更した初期表示アイコンをアプリ本来のアイコンに戻す"
+msgstr ""
+
+#: ../../source/window/app-settings.md:321
+msgid "`入力画面のプレースホルダーを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:322
+msgid "入力欄に何も文字を入力していない状態のときにテキストを表示する   ![](../image/placeholder.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:324
+msgid "`操作ガイド欄を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:325
+msgid "チェックすると、コメント表示欄の下に操作ガイド欄を表示する   ![](../image/guidelabel.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:327
+msgid "`候補欄にコマンド種別を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:328
+msgid "チェックすると、コマンドの種別を候補リストに表示する   ![](../image/showcmdtype.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:330
+msgid "`候補欄の背景色を交互に変える`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:331
+msgid "チェックすると、候補欄の奇数行と偶数行の背景色を変えて表示を行う   ![](../image/alternatecolor.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:333
+msgid "`候補欄の各項目のアイコンを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:334
+msgid "チェックすると、候補欄の項目ごとにアイコンを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:335
+msgid "左: アイコンを表示する場合  右:表示しない場合   ![](../image/showicon.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:337
+msgid "`入力欄の透過表示`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:338
+msgid "`半透明`   入力画面を半透明にするタイミングの設定。以下の3つから選択する。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:340
+msgid "`非アクティブなときに半透明`   入力画面がフォーカスを失ったときに半透明表示にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:342
+msgid "`いつでも半透明`   フォーカスの有無にかかわらず常に入力画面を半透明表示にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:344
+msgid "`半透明にしない`   フォーカスの有無にかかわらず常に入力画面を半透明表示にしない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:346
+msgid "`透明度`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:347
+msgid "入力画面を透過表示するときの透明度を0～255の範囲で指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:348
+msgid "0は完全に透明"
+msgstr ""
+
+#: ../../source/window/app-settings.md:349
+msgid "255は完全に不透明"
+msgstr ""
+
+#: ../../source/window/app-settings.md:351
+msgid "Appearance > Colors"
+msgstr ""
+
+#: ../../source/window/app-settings.md:353
+msgid "![](../image/appsetting-color.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:355
+msgid "`システムの色設定を使用する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:356
+msgid "チェックすると、Windowsのシステム設定の配色でウインドウを描画する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:357
+msgid "チェックしない場合は、アプリで独自設定した色を使用する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:359
+msgid "`システムの色設定に戻す`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:360
+msgid "色設定を初期値に戻す"
+msgstr ""
+
+#: ../../source/window/app-settings.md:363
+msgid "`ウインドウ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:364
+msgid "`テキスト`   ウインドウのコメント欄、ガイド欄の文字色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:366
+msgid "`背景`   ウインドウの背景色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:368
+msgid "`入力欄`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:369
+msgid "`テキスト`   入力欄の文字色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:371
+msgid "`背景`   入力欄の背景色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:373
+msgid "`候補欄`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:374
+msgid "`テキスト`   候補欄の文字色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:376
+msgid "`背景`   候補欄の背景色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:378
+msgid "`背景(交互)`   `候補欄の背景色を交互に変える`をチェックしたときの候補欄の偶数行目の背景色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:380
+msgid "`選択テキスト`   候補欄の選択行の文字色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:382
+msgid "`選択背景`   候補欄の選択行の背景色を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:385
+msgid "Extensions"
+msgstr ""
+
+#: ../../source/window/app-settings.md:387
+msgid "![](../image/setting6.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:389
+msgid "`簡易電卓機能`>`有効にする`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:390
+msgid "チェックすると、入力画面に入力したテキストを数式として評価して、その計算結果を表示する   ![](../image/calculator.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:392
+msgid "`Enter`キーを押すと、計算結果をクリップボードにコピーする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:393
+msgid "[Python3](https://www.python.org/)が必要"
+msgstr ""
+
+#: ../../source/window/app-settings.md:394
+msgid "`簡易電卓機能`>`Python DLLのパス`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:395
+msgid "PCにインストールした`Python3`の本体DLLへのパスを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:397
+msgid "`システム関連の機能`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:398
+msgid "`コントロールパネル項目を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:399
+msgid "チェックすると、コントロールパネル項目を候補として表示し、それを実行したら、該当するコントロールパネル項目を開く   ![](../image/controlpanel-command.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:401
+msgid "`スタートメニュー／最近使ったファイルを候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:402
+msgid "チェックすると、ファイルを候補として表示・実行する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:403
+msgid "スタートメニューに登録されたプログラム"
+msgstr ""
+
+#: ../../source/window/app-settings.md:404
+msgid "Windowsの`最近使ったファイル`に登録されたファイル"
+msgstr ""
+
+#: ../../source/window/app-settings.md:405
+msgid "`アプリケーション(UWPアプリなど)を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:406
+msgid "チェックすると、実行環境にインストールされているアプリケーション(UWPアプリを含む)を候補として表示・実行する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:407
+msgid "`MMCスナップインを候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:408
+msgid "チェックすると、実行環境にインストールされている[MMCスナップイン](#mmcスナップイン)を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:409
+msgid "`Windowsの設定を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:410
+msgid "チェックすると、[Windows設定](#windowsの設定)の各ページ項目を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:411
+msgid "`環境変数を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:412
+msgid "チェックすると、[環境変数](#環境変数の値を見る)の一覧を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:414
+msgid "Extensions > Switch Window"
+msgstr ""
+
+#: ../../source/window/app-settings.md:416
+msgid "ウインドウ切替関連機能に関する設定を行う画面"
+msgstr ""
+
+#: ../../source/window/app-settings.md:418
+msgid "![](../image/appsetting-switchwindow.png){ width=50% }"
+msgstr ""
+
+#: ../../source/window/app-settings.md:420
+msgid "`ウインドウタイトルによる選択を有効にする`   画面に表示されているウインドウのタイトルを候補として表示し、それを実行したら該当するウインドウをアクティブにする   ![](../image/activate_window.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:423
+msgid "`プレフィックス`   `ウインドウタイトルによる選択を有効にする`の候補を表示するためキーワードを指定する   キーワードを入力した時点で、ウインドウの一覧が表示される(上図参照)   初期値は`wl` (`w`indow`l`ist の略)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:428
+msgid "`ExcelやLibreOffice Calcのシート名による選択を有効にする`   入力画面を表示した時点で開いているExcel / LibreOffice Calcのシート名の一覧を候補として検索し、それを実行したら該当するシートをアクティブにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:430
+msgid "機能を利用するためにはExcel(デスクトップ版) または LibreOfficeがインストールされている必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:431
+msgid "`プレフィックス`   `ExcelやLibreOffice Calcのシート名による選択を有効にする`の候補を表示するためキーワードを指定する   キーワードを入力した時点で、シートの一覧が表示される 初期値は`xj` (e`x`cel `j`ump の略)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:435
+msgid "`PowerPointのスライドタイトルによる選択を有効にする`   入力画面を表示した時点でアクティブなPowerPointプレゼンテーションのスライドタイトルを候補として検索し、それを実行したら該当するシートをアクティブにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:437
+msgid "機能を利用するためにはPowerPoint(デスクトップ版)がインストールされている必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:438
+msgid "`プレフィックス`   `PowerPointのスライドタイトルによる選択を有効にする`の候補を表示するためキーワードを指定する   キーワードを入力した時点で、スライドの一覧が表示される 初期値は`pj` (`p`owerpoint `j`ump の略)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:444
+msgid "Extensions > Clipboard History"
+msgstr ""
+
+#: ../../source/window/app-settings.md:446
+msgid "[クリップボード履歴](#クリップボード履歴)機能に関する設定を行う画面"
+msgstr ""
+
+#: ../../source/window/app-settings.md:448
+msgid "![](../image/appsetting-clipboardhistory.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:450
+msgid "`有効にする`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:451
+msgid "チェックすると、[クリップボード履歴](#クリップボード履歴)機能を有効にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:452
+msgid "`プレフィックス`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:453
+msgid "クリップボード履歴を候補として表示するためのキーワードを指定する   ![](../image/clipboardhistory-prefix.png){ width=75% }"
+msgstr ""
+
+#: ../../source/window/app-settings.md:455
+msgid "`検索結果表示件数`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:456
+msgid "候補に表示する件数の上限を指定する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:457
+msgid "`登録時の1件あたり上限サイズ`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:458
+msgid "クリップボードが更新されたとき、テキストのサイズが指定サイズを超過する場合は履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:459
+msgid "`履歴件数の上限`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:460
+msgid "履歴の件数が上限を超過したら、古いものから履歴を削除する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:461
+msgid "`次の記録を有効にするまでの間隔`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:462
+msgid "前回のクリップボード更新から、指定した時間が経過しないうちに更新が再度行われた場合は履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:463
+msgid "`無視するパターン`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:464
+msgid "指定した正規表現パターンに合致するテキストを履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:465
+msgid "`クリップボード履歴ではC/Migemoを使用しない`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:466
+msgid "チェックすると、クリップボード履歴の候補の絞り込みにおいて、C/Migemoによる正規表現マッチングを使用しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:467
+msgid "現状のアプリの実装だと、クリップボード履歴の絞り込みにおいてC/Migemoが生成した正規表現を使ってマッチングをすると、すこし遅い感じがあるため無効化できるようにする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:468
+msgid "チェックを外した場合は[入力](#入力)設定に従う"
+msgstr ""
+
+#: ../../source/window/app-settings.md:470
+msgid "Extension > Path Conversion"
+msgstr ""
+
+#: ../../source/window/app-settings.md:472
+msgid "![](../image/appsetting-pathconvert.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:474
+msgid "`git-bashパスをローカルパス表記に変換する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:475
+msgid "チェックすると、[git-bashパス変換](#git-bashパス変換)を有効にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:476
+msgid "`file://...をローカルパス表記に変換する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:477
+msgid "チェックすると、[fileプロトコルをローカルパスに変換](#fileプロトコルをローカルパスに変換)を有効にする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:480
+msgid "Logging"
+msgstr ""
+
+#: ../../source/window/app-settings.md:482
+msgid "![](../image/appsetting-other.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:485
+msgid "`ログ出力レベル`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:486
+msgid "デバッグ用機能。デバッグ用ログファイルへの出力対象とするログ種別を選択することができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:487
+msgid "下のものほど情報量が多くなる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:488
+msgid "ログファイルの出力先は`<設定ファイルの保存先>/per_machine/<PC名>/<アプリ名>.log`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "選択肢"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "説明"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "なし"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "ログを一切出力しない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "エラー"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "エラーログのみ出力する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "警告"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "エラーと警告ログを出力する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "通常"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "エラーと警告と通常ログを出力する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "デバッグ"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "デバッグ用出力も含めたすべてのログを出力する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:498
+msgid "`性能ログを出力する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:499
+msgid "デバッグ用機能。内部処理の処理時間に関するログを専用のログファイルに出力する。   出力先は`<設定ファイルの保存先>/per_machine/<PC名>/perf.log`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:502
+msgid "`連続で作業していたら警告する`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:503
+msgid "チェックすると、`警告を表示するまでの時間`で設定した時刻を超えて連続稼働(スクリーンロックを挟まずにPCを起動)した場合に警告メッセージを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:504
+msgid "`警告を表示するまでの時間`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:505
+msgid "警告を表示するまでの時間を分数で指定する(デフォルトは90分)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:507
+msgid "Others"
+msgstr ""
+
+#: ../../source/window/app-settings.md:509
+msgid "Application HotKey"
+msgstr ""
+
+#: ../../source/window/app-settings.md:534
+msgid "Key Assignment"
+msgstr ""
+
+#: ../../source/window/app-settings.md:536
+msgid "コマンドに対するキー割り当てを行うための画面。   割り当てたキーを押すとコマンドを実行することができる。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:539
+msgid "![](../image/hotkeyForCommand.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:541
+msgid "`ホットキーを設定する`   コマンドに対してキー割り当てを行う場合はチェックする"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+#: ../../source/window/app-settings.md:544
+msgid "種別"
+msgstr ""
+
+#: ../../source/window/app-settings.md:545
+msgid "以下の3つのいずれかを選択する。   `アクティブ時のみ有効` or `アクティブ時のみ有効(SandS)`  or `常駐時いつでも有効`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:547
+msgid "種別の説明は[ホットキーの種別について](#ホットキーの種別について)を参照"
+msgstr ""
+
+#: ../../source/window/app-settings.md:548
+msgid "`修飾キー`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:549
+msgid "修飾キーを選択するためのもの。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:550
+msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合 → Ctrl+A"
+msgstr ""
+
+#: ../../source/window/app-settings.md:551
+msgid "種別として`アクティブ時のみ有効(SandS)`を選択した場合は以下の5つのいずれかを選択することができる。   `Space` `CapsLock` `変換` `無変換` `かな`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:553
+msgid "`キー`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:554
+msgid "修飾キーと組み合わせる文字を選択する"
+msgstr ""
+
+#: ../../source/window/app-settings.md:556
+msgid "HotKey Type"
+msgstr ""
+
+#: ../../source/window/app-settings.md:558
+msgid "ホットキーの種別として以下の3つを選択できる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+#: ../../source/window/app-settings.md:559
+msgid "`アクティブ時のみ有効`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+#: ../../source/window/app-settings.md:560
+msgid "`アクティブ時のみ有効(SandS)`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+#: ../../source/window/app-settings.md:561
+msgid "`常駐時いつでも有効`"
+msgstr ""
+
+#: ../../source/window/app-settings.md:563
+msgid "`アクティブ時のみ有効`と`アクティブ時のみ有効(SandS)`は入力画面が表示されているときだけ機能する。 一方、`常駐時いつでも有効`は入力画面が表示されていないときでも機能する。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:566
+msgid "`アクティブ時のみ有効(SandS)`の`SandS`は「Space and Shift」の略で、単体でキーを押したときは文字キー(→Space)として機能し、   他のキーと同時押ししたときは修飾キー(→Shift)として機能する、という概念のこと"
+msgstr ""
+
+#: ../../source/window/app-settings.md:568
+msgid "ランチャー呼び出しキーの修飾キーと`SandS`の修飾キーを同じキーとして設定することにより、スムーズにコマンドを呼び出すことができる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:569
+msgid "例:   ランチャー呼び出しのホットキーを`CapsLock`にして、コマンドのホットキーを`CapsLock`+`J`に設定していたとすると、以下のような動きになる   ![](../image/sands-example.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:572
+msgid "つまり、他アプリとのキー割り当ての干渉をあまり気にすることなく、グローバルホットキー的な機能が実現できる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:574
+msgid "HotKey Type Comparison"
+msgstr ""
+
+#: ../../source/window/app-settings.md:576
+msgid "それぞれ実現している仕組みが異なる。   `常駐時いつでも有効`はシステムのホットキーに登録するため、登録したキーを使って、いつでも呼び出せる一方で、ほかのアプリ内においてそのキーを使うことができなくなる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "メリット"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "デメリット"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "他アプリに干渉しない<br>他アプリへの干渉を気にする必要がないのでキー選択の幅が広い"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "まずアクティブにする(入力画面を表示する)必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "SandSの修飾キーを[ランチャー呼び出しキー](#基本)の修飾キーと合わせることにより、スムーズな運指が実現できる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "いつでも呼び出せる"
+msgstr ""
+
+#: ../../source/window/app-settings.md:0
+msgid "登録したキーを他アプリで使えなくなってしまう<br>他アプリに干渉することをふまえて割り当てるキーを慎重に選択する必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:585
+msgid "Constraints Related to SandS"
+msgstr ""
+
+#: ../../source/window/app-settings.md:587
+msgid "SandSの修飾キーとして選択したキーを押しっぱなしにした場合、普通の文字入力としてキーリピートする。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:588
+msgid "`Shift` `Ctrl` `Alt` `Win`などのような純粋な修飾キーのような動きにはならない"
+msgstr ""
+
+#: ../../source/window/app-settings.md:589
+msgid "SandSを実現するためにキーフックを利用している。キーフックの仕組みを用いた別のソフトが同時に動いている場合、競合してうまく動作しない場合がある"
+msgstr ""

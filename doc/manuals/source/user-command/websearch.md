@@ -1,10 +1,10 @@
-# Web検索コマンド
+# Web Search Command
 
 Web検索を行うためのコマンド。  
 GoogleやTwitterなどの検索に対して名前を付けて、その名前で検索サイトを使い分けることができる。  
 例えば、Google検索に`g`という名前を付けて、`g (検索ワード)` で検索を実行できる。
 
-## 設定画面
+## Description
 
 ![](../image/new-websearchcommand.png)
 
@@ -22,7 +22,7 @@ Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる
 - `常に検索候補として表示する`  
 チェックすると、コマンド名を入力しなくても、検索ワードを入れるだけで候補として表示されるようになる  
 ![](../image/shortcut-search.png)
-  - この場合[弱一致](#一致度の区分)扱いとなる  
+  - この場合[弱一致](/others/about-matching.md#weak-match)扱いとなる  
   - 検索URLに`$*`を入力したときだけ表示される  
 - `ホットキー`  
 コマンドを呼び出すキーバインドを設定できる。  
@@ -38,7 +38,7 @@ Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる
   - `アイコンを初期状態に戻す`  
 選択すると、変更したアイコンを元に戻すことができる
 
-## 実行時の動作
+## Per-Key Behavior
 
 |押下キー|動作|
 |--|--|

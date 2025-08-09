@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/alias.md:1
+msgid "Alias Command"
+msgstr ""
+
+#: ../../source/user-command/alias.md:3
+msgid "入力欄に任意の文字列を入力(+実行）することができるコマンド。"
+msgstr ""
+
+#: ../../source/user-command/alias.md:5
+msgid "このコマンドを使うと、[コントロールパネル](#コントロールパネル表示)や[UWPアプリ](#uwpアプリ)など、 実行環境に入っているものに対して任意の名前をつけたり、ホットキーを割り当てて実行したりできる。"
+msgstr ""
+
+#: ../../source/user-command/alias.md:8
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/alias.md:10
+msgid "![](../image/edit-aliascommand.png)"
+msgstr ""
+
+#: ../../source/user-command/alias.md:12
+msgid "`コマンドの名前`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:13
+msgid "入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/alias.md:14
+msgid "`説明`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:15
+msgid "コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/alias.md:16
+msgid "`テキスト`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:17
+msgid "入力欄への入力内容として用いる文字列を指定する"
+msgstr ""
+
+#: ../../source/user-command/alias.md:18
+msgid "`動作`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:19
+msgid "`テキストに記述した内容を実行する`   入力したテキストをそのまま実行する"
+msgstr ""
+
+#: ../../source/user-command/alias.md:21
+msgid "`テキストに記述した内容を入力欄に貼り付ける`   入力したテキストをそのまま実行せず、単に貼り付ける。   追加で候補を表示する系のコマンドに対して用いる。"
+msgstr ""
+
+#: ../../source/user-command/alias.md:24
+msgid "`ホットキー`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:25
+msgid "[コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、コマンドを実行できる。"
+msgstr ""
+
+#: ../../source/user-command/alias.md:27
+msgid "Example"
+msgstr ""
+
+#: ../../source/user-command/alias.md:29
+msgid "例えば、前セクションの設定画面の場合、`\"Windows Update > Windows Update\"`という文字列が入力欄に入力・実行される。   すると、`Windows Update`の設定画面を表示することができる。([Windowsの設定コマンド](#windowsの設定) を有効にしている必要あり)   ↓この画面   ![](../image/windows11-update.png)"
+msgstr ""
+
+#: ../../source/user-command/alias.md:34
+msgid "Remarks"
+msgstr ""
+
+#: ../../source/user-command/alias.md:36
+msgid "このコマンドは`テキスト`に指定した内容を入力するが、その結果としてなんのコマンドが実行されるかは、実行時に決まる   このため、実行環境の変化により、実行されるコマンドが変わったり、以前は実行できていたものが実行できなくなったりする可能性があるのでご注意"
+msgstr ""
+
+#: ../../source/user-command/alias.md:39
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/alias.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/alias.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/alias.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/alias.md:0
+msgid "コマンドを実行する"
+msgstr ""

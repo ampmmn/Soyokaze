@@ -1,0 +1,37 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/mmcsnapin.md:1
+msgid "MMC Snap-in"
+msgstr ""
+
+#: ../../source/adhoc-command/mmcsnapin.md:3
+msgid "MMC(Microsoft管理コンソール)の要素を候補として表示し、実行することができる。   入力欄にMMCスナップインのアプリケーションタイトルを入力すると、該当するMMCスナップインを実行することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/mmcsnapin.md:6
+msgid "例: ディスクの管理"
+msgstr ""
+
+#: ../../source/adhoc-command/mmcsnapin.md:8
+msgid "![](../image/input-mmcsnapin.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/mmcsnapin.md:10
+msgid "![](../image/window-diskmgr.png)"
+msgstr ""

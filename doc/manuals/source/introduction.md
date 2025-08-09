@@ -1,6 +1,6 @@
-# はじめに
+# Introduction
 
-## {{ project }} について
+## What is this app.
 
 ```{only} soyokaze
 {{ project }} は`bluewind`というコマンドラインランチャーを参考に作成しているツール  
@@ -13,15 +13,8 @@ bluewindの使用感を維持しつつ、現行のWindows環境でも動作す�
 
 ```
 
-![](image/soyokaze-window.gif)
+![](image/introduction.gif)
 
 ファイルやフォルダ、URLなどをコマンドとして登録して、手軽に開くことができる。  
 
-
-## 動作環境
-
-Windows環境で動作する。以下の環境で動作確認済
-
-- Windows11 64bit
-- Windows10 64bit
 

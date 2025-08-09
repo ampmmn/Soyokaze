@@ -1,0 +1,73 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/others/about-matching.md:1
+msgid "Command Suggestion Priority"
+msgstr ""
+
+#: ../../source/others/about-matching.md:3
+msgid "候補欄のコマンド表示順序をコマンドの一致度と優先度に基づき決定している。   入力キーワードと各コマンド名を比較し、どのように一致するかをみる。"
+msgstr ""
+
+#: ../../source/others/about-matching.md:6
+msgid "一致度が高いものを優先して表示する。   一致度が同じ場合はコマンドの[優先度](#実行優先度)に従う。"
+msgstr ""
+
+#: ../../source/others/about-matching.md:10
+msgid "スペース区切りで複数キーワード指定された場合、個々のキーワードごとに候補の名前と部分一致比較を行い、すべてマッチするものを対象とする"
+msgstr ""
+
+#: ../../source/others/about-matching.md:12
+msgid "Match Types"
+msgstr ""
+
+#: ../../source/others/about-matching.md:14
+msgid "一致の度合いに応じて、候補欄での表示順序を変えている。一致度の区分として以下の4種類を設けている。 先に挙げたほうが優先順位が高い(先に表示する)"
+msgstr ""
+
+#: ../../source/others/about-matching.md:18
+msgid "Whole Match"
+msgstr ""
+
+#: ../../source/others/about-matching.md:20
+msgid "キーワードのいずれかが、候補と完全一致する"
+msgstr ""
+
+#: ../../source/others/about-matching.md:22
+msgid "Front Match"
+msgstr ""
+
+#: ../../source/others/about-matching.md:24
+msgid "先頭のキーワードと候補が前方一致する"
+msgstr ""
+
+#: ../../source/others/about-matching.md:26
+msgid "Partial Match"
+msgstr ""
+
+#: ../../source/others/about-matching.md:28
+msgid "与えられたキーワードが候補に部分的に一致する"
+msgstr ""
+
+#: ../../source/others/about-matching.md:30
+msgid "Weak Match"
+msgstr ""
+
+#: ../../source/others/about-matching.md:32
+msgid "他の区分の候補がない場合に表示対象とする、特殊な区分   [Web検索コマンド](#web検索コマンド)や[簡易辞書コマンド](#簡易辞書コマンド)などにおいて、コマンド名がなくても候補として表示するものを`弱一致`としている。"
+msgstr ""

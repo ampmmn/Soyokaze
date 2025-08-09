@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/windowssettings.md:1
+msgid "Windows Settings"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:3
+msgid "Windowsの設定アプリの各ページ要素を候補として表示し、実行することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:5
+msgid "例: Windows Updateを表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:7
+msgid "![](../image/input-windowsupdate.png)   ↓   ![](../image/windowsupdate.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:11
+msgid "注意"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:13
+msgid "この機能は正式なAPIを用いて一覧やページ名称を動的に取得していものではなく、アプリが独自に一覧やページ名の対応表を静的に保持して、それに従っているものである。   このため、将来のWindowsの更新による変更に追従できない可能性がある(ページ追加、廃止、ページ名変更など)"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:15
+msgid "一部の設定ページは開くために特定の要件を満たす必要があるものがあるが、そのあたりはとくに考慮していない"
+msgstr ""
+
+#: ../../source/adhoc-command/windowssettings.md:16
+msgid "ページ一覧は下記URLから取得したもの   [https://learn.microsoft.com/ja-jp/windows/apps/develop/launch/launch-settings-app](https://learn.microsoft.com/ja-jp/windows/apps/develop/launch/launch-settings-app)"
+msgstr ""

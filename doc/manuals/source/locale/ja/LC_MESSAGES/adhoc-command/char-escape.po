@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/char-escape.md:1
+msgid "Octal / Hexadecimal / Unicode Escape Sequences"
+msgstr "8進数/16進数/Unicodeエスケープシーケンス"
+
+#: ../../source/adhoc-command/char-escape.md:3
+msgid ""
+"8進数/16進数/Unicodeエスケープシーケンスで記述された文字列をデコードして表示する。 "
+"(8進数/16進数でエスケープされたものについてはUTF-8のバイトシーケンスとして解釈する)   "
+"コマンドを実行するとデコード後の文字列をクリップボードにコピーする。"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:7
+msgid "例"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:8
+msgid "`\\117\\143\\164\\141\\154` → Octal"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:9
+msgid "`\\x48\\x65\\x78` → Hex"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:10
+msgid ""
+"`\\u30ed\\u30b0\\u30a4\\u30f3\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044` "
+"→ ログインしてください"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:11
+msgid "`\\U000030A2` → ア"
+msgstr ""
+
+#: ../../source/adhoc-command/char-escape.md:13
+msgid "![](../image/escapesequence.png)"
+msgstr ""
+

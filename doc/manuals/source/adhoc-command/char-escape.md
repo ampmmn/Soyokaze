@@ -1,4 +1,4 @@
-# 8進数/16進数/Unicodeエスケープシーケンス
+# Octal / Hexadecimal / Unicode Escape Sequences
 
 8進数/16進数/Unicodeエスケープシーケンスで記述された文字列をデコードして表示する。
 (8進数/16進数でエスケープされたものについてはUTF-8のバイトシーケンスとして解釈する)  

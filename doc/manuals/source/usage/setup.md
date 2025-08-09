@@ -1,23 +1,33 @@
-# セットアップ
+# Installation
 
-## ダウンロード
+## Requirements
+
+{{ project}}はWindows環境で動作する。
+以下の環境で動作確認済。
+
+- Windows11 64bit
+- Windows10 64bit
+
+
+## Doanload
 
 ```{only} soyokaze
 GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/releases/latest)から入手することができる  
+Assets欄にある`.7z`形式のファイルが実行ファイル一式をダウンロードする
 ```
 
 ```{only} not soyokaze
-下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得してください  
+下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得する
 
 {{distribution_url}}
 ```
 
 ----
 
-## インストール
+## Installation
 
 ```{only} soyokaze
-1. zipをファイルを展開して任意のフォルダに展開する
+1. zip(7z)をファイルを展開して任意のフォルダに展開する
 1. 展開先フォルダにある{{ project_lower }}.exeを実行する
 1. 設定はユーザーフォルダ(たいていは C:/Users/(ユーザー名))直下の .{{ project_lower }} フォルダに保存される  
 初回実行時に .{{project_lower}}フォルダを作成する
@@ -29,18 +39,18 @@ GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/rel
 
 ----
 
-## アンインストール
+## Uninstallation
 
 アンインストーラはないため、以下すべてを手動で行う。
 
 1. タスクトレイ上のコンテキストメニュー-`アプリケーションの設定`-`基本`-`ショートカット設定`を表示し、`作成したショートカットをすべてを削除する`を押下する
 1. アプリを終了する
 1. インストール時に展開したフォルダごと削除する
-1. [設定フォルダ](#設定ファイルの保存先) (C:/Users/(ユーザー名)/.{{project_lower}})を削除する
+1. [設定フォルダ](#configuration-directory) (C:/Users/(ユーザー名)/.{{project_lower}})を削除する
 
 ----
 
-## バージョンアップ
+## Update Procedure
 
 ```{only} soyokaze
 1. 本アプリを実行している場合は終了する
@@ -52,15 +62,13 @@ GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/rel
 もし、コンフリクトが生じた場合は、`git fetch` → `git reset --hard origin:main` でOK
 ```
 
-アプリケーションの設定情報の保存先については[設定ファイルの保存先](#設定ファイルの保存先)を参照のこと。
-
 ----
 
-## アプリデータの保存フォルダ
+## Configuration Directory
 
 アプリ初回起動時に ユーザーフォルダ直下(通常は `C:\Users\<ユーザー名>`)に .{{project_lower}} フォルダを作成し、このフォルダ内に設定ファイル一式を保存する。
 
-### ポータブル版
+### Portable Mode
 
 exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。  
 この場合、設定ファイル一式を`profile`フォルダ内に作成する。

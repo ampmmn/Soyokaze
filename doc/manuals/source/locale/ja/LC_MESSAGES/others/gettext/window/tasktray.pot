@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/window/tasktray.md:1
+msgid "Task Tray"
+msgstr ""
+
+#: ../../source/window/tasktray.md:3
+msgid "本アプリを起動すると、タスクトレイにアイコンが表示される"
+msgstr ""
+
+#: ../../source/window/tasktray.md:5
+msgid "![](../image/tasktray-icon.png)"
+msgstr ""
+
+#: ../../source/window/tasktray.md:8
+msgid "アイコンを右クリックするか、入力画面のコメント表示欄を右クリックすると、メニューが表示される"
+msgstr ""
+
+#: ../../source/window/tasktray.md:10
+msgid "タスクトレイアイコンを右クリック   ![](../image/tasktray-menu.png)"
+msgstr ""
+
+#: ../../source/window/tasktray.md:13
+msgid "入力画面のコメント表示欄を右クリック     ![](../image/tasktray-menu2.png)"
+msgstr ""
+
+#: ../../source/window/tasktray.md:17
+msgid "`入力画面を表示`/`入力画面を隠す`   入力画面を表示する/非表示にする"
+msgstr ""
+
+#: ../../source/window/tasktray.md:19
+msgid "`アプリケーションの設定`   アプリケーション設定画面を表示する"
+msgstr ""
+
+#: ../../source/window/tasktray.md:21
+msgid "`新規作成`   コマンド登録画面を表示する"
+msgstr ""
+
+#: ../../source/window/tasktray.md:23
+msgid "`キーワードマネージャ`   キーワードマネージャを表示する"
+msgstr ""
+
+#: ../../source/window/tasktray.md:25
+msgid "`設定フォルダを開く`   本アプリのユーザー設定が保存されたフォルダをひらく"
+msgstr ""
+
+#: ../../source/window/tasktray.md:27
+msgid "`ウインドウ位置をリセット`   入力画面の位置・サイズを初期状態に戻す   マルチモニタ環境にて別モニターで表示したまま、モニターの構成が変化して表示できなくなったときの復旧用"
+msgstr ""
+
+#: ../../source/window/tasktray.md:30
+msgid "`ヘルプ`   このファイルを開く"
+msgstr ""
+
+#: ../../source/window/tasktray.md:32
+msgid "`バージョン情報`   バージョン情報を表示する"
+msgstr ""
+
+#: ../../source/window/tasktray.md:34
+msgid "`終了`   このアプリケーションを終了する"
+msgstr ""

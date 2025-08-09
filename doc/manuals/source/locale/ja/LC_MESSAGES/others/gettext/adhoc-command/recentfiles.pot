@@ -1,0 +1,33 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/recentfiles.md:1
+msgid "File Recently Used"
+msgstr ""
+
+#: ../../source/adhoc-command/recentfiles.md:3
+msgid "システムの`最近使ったファイル`に登録されたファイル名を候補として表示する。実行すると、ファイルを開くことができる。 (拡張子に関連付けたアプリケーションで開く)"
+msgstr ""
+
+#: ../../source/adhoc-command/recentfiles.md:6
+msgid "例:"
+msgstr ""
+
+#: ../../source/adhoc-command/recentfiles.md:8
+msgid "![](../image/input-recentfiles.png)"
+msgstr ""

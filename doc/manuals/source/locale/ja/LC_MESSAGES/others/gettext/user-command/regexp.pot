@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/regexp.md:1
+msgid "RegExp Command"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:3
+msgid "入力したキーワードが指定した正規表現パターンに合致する場合に、その内容に応じてコマンドを実行するためのコマンド"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:5
+msgid "他のコマンド種類と異なり、登録した名前(キーワード)でマッチングを行うのではなく、`パターン`で指定した正規表現によるマッチングを行う。   正規表現パターンでキャプチャしたグループを`$1` `$2`...で参照し、起動するコマンドに渡すことができる。"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:8
+msgid "活用例"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:9
+msgid "Webベースの課題追跡システムや障害管理システムを使ってたとして、そのIssueの識別子を正規表現パターンとして登録しておく → その識別子を含むテキストをランチャーに入力して、当該Issue画面を開く"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:10
+msgid "メールやテキストファイルに書かれたIssus識別子を入力欄にコピペするだけでそのIssue画面を呼び出せる"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:12
+msgid "Description"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:14
+msgid "![](../image/edit-regexpcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:16
+msgid "`コマンドの名前`   コマンドを識別するための名前。   正規表現コマンドは`パターン`に基づいてマッチングするため、コマンドの名前がマッチングに使用されることはない"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:19
+msgid "`パターン`   コマンドを実行するための正規表現パターンを定義する   比較処理のなかで完全一致か前方一致か部分一致かを区別しているので、先頭に一致させるために`^`をつかったり、部分一致させるためにパターン前方や後方で`.*`を使う必要はない"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:22
+msgid "`コマンドの説明`   コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:24
+msgid "`実行ファイル・URLなど`"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:25
+msgid "実行ファイル(`*.exe`)を指定すると、その実行ファイルが実行される"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:26
+msgid "URL(`http://...` `https://...`)を指定すると、ブラウザでそのURLを表示する"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:27
+msgid "その他のファイルを指定した場合、拡張子に関連付けられたプログラムでそのファイルを開く"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:28
+msgid "`パラメータ`"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:29
+msgid "実行ファイル(.exe)を指定したときに、実行ファイルに渡すパラメータを指定する"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:30
+msgid "`$1`/`$2`/`$3` ... : 正規表現でキャプチャされた文字列に置換する"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:31
+msgid "そのほかに[マクロ](#マクロ機能)を利用することが可能"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:32
+msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:35
+msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶことができる   起動するプログラムによっては指定が効かないこともある"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:39
+msgid "`管理者権限で実行`   チェックすると、管理者権限でプロセスを起動する   `.exe`、`.bat`のときのみ選択可能"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:43
+msgid "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/websearchcommand-contextmenu.png)"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:46
+msgid "`アイコンを変更する`   選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   PNG/JPG/GIF/BMP形式のファイルが利用可能"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:49
+msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:52
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:0
+msgid "コマンドで設定したファイルを実行する"
+msgstr ""

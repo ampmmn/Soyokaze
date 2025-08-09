@@ -1,0 +1,125 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/others/commandline-options.md:1
+msgid "Command Line Options"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:3
+msgid "/ChangeDir=_ディレクトリ_"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:4
+msgid "カレントディレクトリを指定したディレクトリに変更する"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:6
+msgid "/Runcommand=_コマンド名_ または -c _コマンド名_"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:7
+msgid "指定したコマンドを実行する(複数指定可能)"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:8
+msgid "例: `/Runcommand=chrome` または `-c chrome`"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:10
+msgid "/Hide"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:11
+msgid "起動中(かつ表示中)の入力画面を非表示にする"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:12
+msgid "bluewindにはこのオプションの対となる`/Activate`というのがあったが、`/Activate`はとくに実装していない"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:13
+msgid "というのも、そもそも何も指定せずにアプリを実行すると`/Activate`相当の動作になるので"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:15
+msgid "_ファイルパス_"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:16
+msgid "そのファイルを登録する(コマンド登録画面を表示する)"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:18
+msgid "/Paste"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:19
+msgid "後続のパラメータを入力欄に入力した状態で起動する"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:20
+msgid "例 : `/Paste c:\\`   →入力欄に `c:\\`という文字列が入力される"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:23
+msgid "/SelStart="
+msgstr ""
+
+#: ../../source/others/commandline-options.md:24
+msgid "カーソル位置を指定する。"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:25
+msgid "例 : `/SelStart=2`"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:26
+msgid "`/Paste`や`/SelLength`と組み合わせ使う"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:27
+msgid "/SelLength="
+msgstr ""
+
+#: ../../source/others/commandline-options.md:28
+msgid "選択範囲の長さを指定する。"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:29
+msgid "例 : `/SelLength=2`"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:30
+msgid "`/Paste`や`/SelStart`と組み合わせ使う"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:31
+msgid "負の値を指定すると、先頭方向に向かって選択する"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:32
+msgid "`/SelStart`なし、かつ、`/SelLength`が負の値の場合、テキスト末尾からの選択を行う"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:33
+msgid "例: `/Paste home /SelLength=-3` → \"ome\"部分が選択される"
+msgstr ""
+
+#: ../../source/others/commandline-options.md:36
+msgid "なお、上記のコマンドラインオプションによる実行は、事前に本アプリが起動している状態で行う必要がある   (起動していない状態で実行した場合、単にアプリが起動するだけ)"
+msgstr ""

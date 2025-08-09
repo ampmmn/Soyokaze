@@ -1,0 +1,832 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/macros.md:1
+msgid "Macros"
+msgstr "マクロ"
+
+#: ../../source/macros.md:3
+msgid ""
+"コマンドのパラメータとしてマクロを使用することができる。   "
+"マクロを使うと、クリップボード/時刻/環境変数の値など、その時々や環境に応じて変化する動的な値に置き換えることができる。"
+msgstr ""
+
+#: ../../source/macros.md:6
+#, python-brace-format
+msgid "マクロは`${macroName arg1 arg2 ...}` のような書式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:8
+msgid "引数がないマクロの場合は`$macroName`という書式も可能"
+msgstr ""
+
+#: ../../source/macros.md:10
+msgid "マクロの一覧"
+msgstr ""
+
+#: ../../source/macros.md:11
+msgid "[app](#app)"
+msgstr ""
+
+#: ../../source/macros.md:12
+msgid "[basename](#basename)"
+msgstr ""
+
+#: ../../source/macros.md:13
+msgid "[clipboard](#clipboard)"
+msgstr ""
+
+#: ../../source/macros.md:14
+msgid "[date](#date)"
+msgstr ""
+
+#: ../../source/macros.md:15
+msgid "[env](#env)"
+msgstr ""
+
+#: ../../source/macros.md:16
+msgid "[explorer](#explorer)"
+msgstr ""
+
+#: ../../source/macros.md:17
+msgid "[random](#random)"
+msgstr ""
+
+#: ../../source/macros.md:18
+msgid "[afxw](#afxw)"
+msgstr ""
+
+#: ../../source/macros.md:19
+msgid "[powerstatus](#powerstatus)"
+msgstr ""
+
+#: ../../source/macros.md:23
+msgid "app"
+msgstr ""
+
+#: ../../source/macros.md:25
+msgid "アプリケーション名やアプリケーションのバージョン、ビルド日時を得る"
+msgstr ""
+
+#: ../../source/macros.md:27 ../../source/macros.md:62
+#: ../../source/macros.md:80 ../../source/macros.md:92
+#: ../../source/macros.md:202 ../../source/macros.md:224
+#: ../../source/macros.md:262 ../../source/macros.md:282
+#: ../../source/macros.md:293
+msgid "Syntax"
+msgstr "記法"
+
+#: ../../source/macros.md:29
+msgid "以下のいずれかを指定できる。"
+msgstr ""
+
+#: ../../source/macros.md:31
+#, python-brace-format
+msgid "`${app}`"
+msgstr ""
+
+#: ../../source/macros.md:32 ../../source/macros.md:34
+msgid "アプリ名を得る"
+msgstr ""
+
+#: ../../source/macros.md:33
+#, python-brace-format
+msgid "`${app name}`"
+msgstr ""
+
+#: ../../source/macros.md:35
+#, python-brace-format
+msgid "`${app version}`"
+msgstr ""
+
+#: ../../source/macros.md:36
+msgid "バージョン番号を得る"
+msgstr ""
+
+#: ../../source/macros.md:37
+#, python-brace-format
+msgid "`${app builddate}`"
+msgstr ""
+
+#: ../../source/macros.md:38
+msgid "ビルド日を得る"
+msgstr ""
+
+#: ../../source/macros.md:39
+#, python-brace-format
+msgid "`${app buildtime}`"
+msgstr ""
+
+#: ../../source/macros.md:40
+msgid "ビルド時刻を得る"
+msgstr ""
+
+#: ../../source/macros.md:42 ../../source/macros.md:66
+#: ../../source/macros.md:176 ../../source/macros.md:206
+#: ../../source/macros.md:239 ../../source/macros.md:266
+msgid "Example"
+msgstr "例"
+
+#: ../../source/macros.md:58
+msgid "basename"
+msgstr ""
+
+#: ../../source/macros.md:60
+msgid "引数で与えたパスからファイル名を除去する"
+msgstr ""
+
+#: ../../source/macros.md:64
+#, python-brace-format
+msgid "`${basename パス文字列}`の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:76
+msgid "clipboard"
+msgstr ""
+
+#: ../../source/macros.md:78
+msgid "クリップボードに入っている値に置き換えることができる。"
+msgstr ""
+
+#: ../../source/macros.md:82
+#, python-brace-format
+msgid "`${clipboard}`の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:86
+msgid "date"
+msgstr ""
+
+#: ../../source/macros.md:88
+msgid "現在の日付・時刻に置き換えることができる。"
+msgstr ""
+
+#: ../../source/macros.md:90
+msgid "日付・時刻に置き換える際の書式を指定したり、現在時刻に対して任意のオフセット(時間差分)を指定できる。"
+msgstr ""
+
+#: ../../source/macros.md:94
+#, python-brace-format
+msgid "`${date [format [offset]]}`の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:96
+msgid "`format`で日付の書式を指定できる。"
+msgstr ""
+
+#: ../../source/macros.md:98
+msgid "書式を指定しない場合は、時分秒(`%H:%M:%S`)を表示する"
+msgstr ""
+
+#: ../../source/macros.md:100
+msgid "`offset`でオフセットを指定する。"
+msgstr ""
+
+#: ../../source/macros.md:102
+msgid "オフセットを指定しない場合は現在時刻を表示する。"
+msgstr ""
+
+#: ../../source/macros.md:104
+msgid "Format"
+msgstr "日付の書式"
+
+#: ../../source/macros.md:106
+msgid "strftimeの書式をそのまま指定する。"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "コード"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "意味"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "例"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%a`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの曜日"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "火"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%A`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの曜日(完全)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "火曜日"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%b`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの月"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "11"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%B`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの月(完全)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "11月"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%c`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの日付と時刻"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "2024/11/19 12:34:45"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%C`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "西暦上二桁"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "20"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%d`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "月の日付(1-31)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "19"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%D`"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "%m/%d/%y"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "11/19/24"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%e`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "月の日付、右寄せ二桁"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "9"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%F`"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "%Y-%m-%d"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "2024-11-19"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%g`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "西暦の年の下二桁"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "24"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%G`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "西暦の年"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "2024"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%h`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%b`と同じ"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%H`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "24 時間形式の時(00-23)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "14"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%I`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "12 時間形式の時(01-12)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "2"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%j`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "年の通算日 (001 - 366)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "324"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%m`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "月 (01 - 12)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%M`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "分 (00 - 59)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "25"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%n`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "改行文字"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "-"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%p`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの午前/午後表記"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "午前"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%r`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでのAM/PM形式の時刻"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "xxx"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%R`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%H:%M`と同じ"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "14:09"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%S`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "秒(00 - 59)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "48"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%t`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "タブ文字"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%T`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%H:%M:%S`と同じ"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "14:10:59"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%u`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "曜日を表す数値(1 - 7、月曜日が 1)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%U`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "年の週数(0-53)。週の初日は日曜"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "46"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%V`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "年の週数(1-53)。週の初日は日曜"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%w`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "曜日を表す数値(0 - 6、日曜日が 0)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%W`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "年の週数(00-53)、週の初日は月曜"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%x`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの日付表現"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "2024/11/19"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%X`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでの時刻表現"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "14:43:56"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%y`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "西暦下二桁(00 - 99)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%Y`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "西暦四桁(00 - 99)"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%z`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "時差。UTCからのオフセット"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "+0900"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%Z`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "ロケールでのタイム ゾーン名称"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "東京(標準時)"
+msgstr ""
+
+#: ../../source/macros.md
+#, python-format
+msgid "`%%`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "パーセント記号"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "%"
+msgstr ""
+
+#: ../../source/macros.md:150
+msgid "Offset"
+msgstr "オフセット"
+
+#: ../../source/macros.md:152
+msgid "以下の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:158
+msgid "先頭に`S`を指定した場合、その週の日曜日をベースにオフセット計算をする"
+msgstr ""
+
+#: ../../source/macros.md:159
+msgid "符号`+`を指定すると、ベース時刻に対して`オフセット値`ぶんの時間を進める   逆に、符号`-`を指定すると、時間を戻す"
+msgstr ""
+
+#: ../../source/macros.md:162
+msgid "単位"
+msgstr ""
+
+#: ../../source/macros.md:163
+msgid "`Y`:年"
+msgstr ""
+
+#: ../../source/macros.md:164
+msgid "`M`:月"
+msgstr ""
+
+#: ../../source/macros.md:165
+msgid "`D`:日"
+msgstr ""
+
+#: ../../source/macros.md:166
+msgid "`h`:時"
+msgstr ""
+
+#: ../../source/macros.md:167
+msgid "`m`:分"
+msgstr ""
+
+#: ../../source/macros.md:168
+msgid "`s`:秒"
+msgstr ""
+
+#: ../../source/macros.md:170
+msgid "`+1d` → 1日後"
+msgstr ""
+
+#: ../../source/macros.md:171
+msgid "`-5h` → 5時間前"
+msgstr ""
+
+#: ../../source/macros.md:172
+msgid "`+30s` → 30秒後"
+msgstr ""
+
+#: ../../source/macros.md:173
+msgid "`+3M` → 3カ月後"
+msgstr ""
+
+#: ../../source/macros.md:174
+msgid "`-1Y` → 1年前"
+msgstr ""
+
+#: ../../source/macros.md:191
+msgid "Restrictions"
+msgstr "制限"
+
+#: ../../source/macros.md:193
+msgid "オフセットで日付を計算する際にうるう年を考慮していない(手抜き)"
+msgstr ""
+
+#: ../../source/macros.md:194
+msgid "オフセットの複数単位の同時指定には対応していない(例: 1.5日`+1d+12h`)"
+msgstr ""
+
+#: ../../source/macros.md:198
+msgid "env"
+msgstr ""
+
+#: ../../source/macros.md:200
+msgid "環境変数の値に置き換えることができる。"
+msgstr ""
+
+#: ../../source/macros.md:204
+#, python-brace-format
+msgid "`${env 環境変数名}`の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:220
+msgid "explorer"
+msgstr ""
+
+#: ../../source/macros.md:222
+msgid "表示中のエクスプローラの現在パスや選択中のファイルパスを取得・展開することができる。"
+msgstr ""
+
+#: ../../source/macros.md:226
+#, python-brace-format
+msgid "エクスプローラで表示中のフォルダパスに展開する場合は `${explorer location_path}`と記載する。"
+msgstr ""
+
+#: ../../source/macros.md:229
+#, python-brace-format
+msgid ""
+"エクスプローラで選択している項目のファイルパスを展開したい場合は `${explorer selection_path "
+"[index]}`と記載する。   `index`を指定した場合、`index`番目のパスに置き換える(0～)。   "
+"`index`を指定しなかった場合、選択中のすべての要素に置き換える。"
+msgstr ""
+
+#: ../../source/macros.md:234
+msgid "該当する要素が存在しない場合は空文字列に置換される"
+msgstr ""
+
+#: ../../source/macros.md:235
+msgid "例: エクスプローラを開いていない、ファイルを選択していない、等"
+msgstr ""
+
+#: ../../source/macros.md:236
+msgid "表示中のエクスプローラのウインドウが複数ある場合は、最も前面にあるウインドウの情報を取得する。"
+msgstr ""
+
+#: ../../source/macros.md:257
+msgid "random"
+msgstr ""
+
+#: ../../source/macros.md:259
+msgid "乱数を生成する系の処理を行うためのマクロ。   現在はuuidの生成のみをサポートする。"
+msgstr ""
+
+#: ../../source/macros.md:264
+#, python-brace-format
+msgid "`${random 種類}`の形式で指定する。"
+msgstr ""
+
+#: ../../source/macros.md:276
+msgid "afxw"
+msgstr ""
+
+#: ../../source/macros.md:278
+msgid "外部ファイラとして[あふw](https://afxw.sakura.ne.jp/akt_afxw.html)を利用している場合に、あふw側で表示しているカレントディレクトリを取得することができる。"
+msgstr ""
+
+#: ../../source/macros.md:280
+msgid "このマクロを使うにあたり、あふw側の設定でオートメーションサーバ登録しておく必要がある。"
+msgstr ""
+
+#: ../../source/macros.md:284
+#, python-brace-format
+msgid "`${afxw currentdir}`と記述する。"
+msgstr ""
+
+#: ../../source/macros.md:288
+msgid "powerstatus"
+msgstr ""
+
+#: ../../source/macros.md:290
+msgid "【試作】   電源状態に関する情報を取得し表示することができる。"
+msgstr ""
+
+#: ../../source/macros.md:295
+#, python-brace-format
+msgid "`${powerstatus format}`の形式で記述する。"
+msgstr ""
+
+#: ../../source/macros.md:297
+msgid "`format`部分に表示する情報を表す指定子のいずれかを記述する。"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "指定子"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "`%l`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "バッテリー残量を表すパーセント(`0-100%`)、バッテリー駆動でない場合は`(不明)`"
+msgstr ""
+
+#: ../../source/macros.md
+msgid "AC電源に接続されているかの状態 `オンライン`、`オフライン`、`不明`のいずれか"
+msgstr ""
+

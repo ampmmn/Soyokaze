@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/usage/setup.md:1
+#: ../../source/usage/setup.md:27
+msgid "Installation"
+msgstr ""
+
+#: ../../source/usage/setup.md:3
+msgid "Requirements"
+msgstr ""
+
+#: ../../source/usage/setup.md:5
+msgid "{{ project}}はWindows環境で動作する。 以下の環境で動作確認済。"
+msgstr ""
+
+#: ../../source/usage/setup.md:8
+msgid "Windows11 64bit"
+msgstr ""
+
+#: ../../source/usage/setup.md:9
+msgid "Windows10 64bit"
+msgstr ""
+
+#: ../../source/usage/setup.md:12
+msgid "Doanload"
+msgstr ""
+
+#: ../../source/usage/setup.md:15
+msgid "GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/releases/latest)から入手することができる   Assets欄にある`.7z`形式のファイルが実行ファイル一式をダウンロードする"
+msgstr ""
+
+#: ../../source/usage/setup.md:20
+msgid "下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得してください"
+msgstr ""
+
+#: ../../source/usage/setup.md:23
+msgid "https://github.com/ampmmn/Soyokaze/releases/latest"
+msgstr ""
+
+#: ../../source/usage/setup.md:30
+msgid "zip(7z)をファイルを展開して任意のフォルダに展開する"
+msgstr ""
+
+#: ../../source/usage/setup.md:31
+msgid "展開先フォルダにある{{ project_lower }}.exeを実行する"
+msgstr ""
+
+#: ../../source/usage/setup.md:32
+msgid "設定はユーザーフォルダ(たいていは C:/Users/(ユーザー名))直下の .{{ project_lower }} フォルダに保存される   初回実行時に .{{project_lower}}フォルダを作成する"
+msgstr ""
+
+#: ../../source/usage/setup.md:37
+msgid "任意のパスで`git clone`すればインストール完了"
+msgstr ""
+
+#: ../../source/usage/setup.md:42
+msgid "Uninstallation"
+msgstr ""
+
+#: ../../source/usage/setup.md:44
+msgid "アンインストーラはないため、以下すべてを手動で行う。"
+msgstr ""
+
+#: ../../source/usage/setup.md:46
+msgid "タスクトレイ上のコンテキストメニュー-`アプリケーションの設定`-`基本`-`ショートカット設定`を表示し、`作成したショートカットをすべてを削除する`を押下する"
+msgstr ""
+
+#: ../../source/usage/setup.md:47
+msgid "アプリを終了する"
+msgstr ""
+
+#: ../../source/usage/setup.md:48
+msgid "インストール時に展開したフォルダごと削除する"
+msgstr ""
+
+#: ../../source/usage/setup.md:49
+msgid "[設定フォルダ](#設定ファイルの保存先) (C:/Users/(ユーザー名)/.{{project_lower}})を削除する"
+msgstr ""
+
+#: ../../source/usage/setup.md:53
+msgid "Update Procedure"
+msgstr ""
+
+#: ../../source/usage/setup.md:56
+msgid "本アプリを実行している場合は終了する"
+msgstr ""
+
+#: ../../source/usage/setup.md:57
+msgid "実行ファイルを置いたフォルダ内のファイルをすべて上書きする"
+msgstr ""
+
+#: ../../source/usage/setup.md:61
+msgid "アプリを終了して、`git pull`すれば最新版に更新できる。   もし、コンフリクトが生じた場合は、`git fetch` → `git reset --hard origin:main` でOK"
+msgstr ""
+
+#: ../../source/usage/setup.md:65
+msgid "アプリケーションの設定情報の保存先については[設定ファイルの保存先](#設定ファイルの保存先)を参照のこと。"
+msgstr ""
+
+#: ../../source/usage/setup.md:69
+msgid "Configuration Directory"
+msgstr ""
+
+#: ../../source/usage/setup.md:71
+msgid "アプリ初回起動時に ユーザーフォルダ直下(通常は `C:\\Users\\<ユーザー名>`)に .{{project_lower}} フォルダを作成し、このフォルダ内に設定ファイル一式を保存する。"
+msgstr ""
+
+#: ../../source/usage/setup.md:73
+msgid "Portable Mode"
+msgstr ""
+
+#: ../../source/usage/setup.md:75
+msgid "exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。   この場合、設定ファイル一式を`profile`フォルダ内に作成する。"
+msgstr ""

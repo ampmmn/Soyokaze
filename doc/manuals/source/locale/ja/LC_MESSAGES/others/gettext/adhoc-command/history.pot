@@ -1,0 +1,33 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/history.md:1
+msgid "History"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:3
+msgid "コマンドとして登録していないURL、プログラム実行、実行時引数を伴うコマンド実行は履歴として登録される。 履歴として登録されたものは、次回以降のキーワード入力の際に部分一致で候補にあがるようになる。"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:6
+msgid "![](../image/history.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:8
+msgid "なお、この機能は履歴を登録したときの「文字列」を登録するだけなので、 この機能により、後で実行したときに前回と同じコマンドが実行される保証はない。    (実行環境の変化により、「文字列」に対して別のコマンドがマッチする可能性がある）"
+msgstr ""

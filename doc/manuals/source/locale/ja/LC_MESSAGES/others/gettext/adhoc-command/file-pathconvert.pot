@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/file-pathconvert.md:1
+msgid "Convert file URL to local path"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:3
+msgid "`file://...`で始まるパスをローカルパスやUNC形式のパスに変換し、変換したパスに対して下記の操作を行うことができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:5
+msgid "fileプロトコルの例   `file:///C:/Windows/WindowsUpdate.log` → `C:\\Windows\\WindowsUpdate.log`"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:8
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "変換後のパスをクリップボードにコピー"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "開く(ファイルを実行する)"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/file-pathconvert.md:0
+msgid "パスを開く(パスが存在するフォルダをファイラーで開く)"
+msgstr ""

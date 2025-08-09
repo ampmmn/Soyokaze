@@ -1,20 +1,16 @@
 pushd %~dp0
 
-if not exist html mkdir html
+set SPHINXOPTS=-D language=ja
 
-call :CONVERT help
-REM call :CONVERT window-input
-REM call :CONVERT top
-REM call :CONVERT faq
+pushd "%~dp0manuals\"
+
+pushd source
+rmdir image
+mklink /j image ..\..\..\image
+popd
+
+call make.bat html
 
 popd
 goto :EOF
-
-:CONVERT
-  set INPUT=%1
-	set OUTPUT=%INPUT%
-	shift
-  pandoc -c "%~dp0github-markdown.css" -s --embed-resources --standalone --toc --toc-depth=4 -f markdown -t html  %~dp0%INPUT%.md -o %OUTPUT%.html
-REM  pandoc -c "%~dp0github-markdown.css" -s --embed-resources --standalone --toc --toc-depth=4 -f markdown -t html  %~dp0%INPUT%.md --filter=pandoc-include --filter=%~dp0convertlink.py -o html\%OUTPUT%.html
-
 

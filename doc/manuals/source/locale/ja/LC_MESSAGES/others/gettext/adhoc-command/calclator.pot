@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/adhoc-command/calclator.md:1
+msgid "Calculator"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:3
+msgid "入力欄に数式を入れると、計算結果をコメント欄に表示する。   Enterキーを押下すると、計算結果をクリップボードにコピーできる。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:6
+msgid "利用するにはPythonが必要。   Pythonを使っているので、演算子もPythonのものを使うことができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:9
+msgid "![](../image/adhoc-command/calculator1.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:11
+msgid "Radix-Based Number Display"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:13
+msgid "計算結果が整数になる場合は、2進数/8進数/10進数/16進数それぞれの結果が表示される。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:15
+msgid "![](../image/adhoc-command/calculator2.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:17
+msgid "Function"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:19
+msgid "その他、Python標準関数のうち、計算結果が文字列/数値になるものと、[math](https://docs.python.org/ja/3/library/math.html)モジュールの関数を使用することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:21
+msgid "![](../image/calculator2.png)"
+msgstr ""

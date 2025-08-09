@@ -1,0 +1,480 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user-command/simple-dict.md:1
+msgid "Excel Dict Command"
+msgstr "簡易辞書コマンド"
+
+#: ../../source/user-command/simple-dict.md:3
+msgid ""
+"Excelワークブックファイル(`*.xlsx,*.xls`)の任意の範囲のデータを簡易的な辞書データ(キーと値のペアの集合)として利用するコマンド。"
+"   辞書データ(キー、値)をインクリメンタルに検索することができる。"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:6
+msgid "Excelファイルをデータソースにできるので、データのメンテナンスをExcelでお手軽にできるのがメリット"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:8
+msgid "Excelを利用するため、実行環境にExcelがインストールされている必要がある。"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:10
+msgid "Use Cases"
+msgstr "用途・活用例"
+
+#: ../../source/user-command/simple-dict.md:12
+msgid "お使いの環境(組織)にて使われる、何らかの対応表の相互変換"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:13
+msgid "Excelで台帳管理されているものがあれば、それをそのままデータソースとして活用できる可能性がある"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:14
+msgid "あるいはPowerQueryを使って、加工したうえで使うとか..."
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:15
+msgid "製品開発の現場における、製品の正式名称(外向け)と開発名称(内向け)の相互変換とか"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:16
+msgid "([定型文グループコマンド](#定型文グループ)と被るが)定型文をExcelで管理して、定型文として呼び出すような使い方ができる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:17
+msgid "定型文に対して任意の名前を付けて、名前で定型文を呼び出す、みたいな"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:18
+msgid "その他、一般的な変換"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:19
+msgid "例: 郵便番号と地名、MACアドレスとベンダー、企業名と企業コード"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:22
+msgid "Description"
+msgstr "設定画面"
+
+#: ../../source/user-command/simple-dict.md:24
+msgid "![](../image/edit-simpledictcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:26
+msgid "`コマンド名`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:27
+msgid "入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:28
+msgid "`説明`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:29
+msgid "何のためのコマンドかを記載しておくための説明欄"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:30
+msgid "`データの取得元`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:31
+msgid "`Excelファイル`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:32
+msgid "辞書データとして利用したいExcelワークブックファイルのパスを指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:33
+msgid "`シート名`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:34
+msgid "辞書データとして利用したいデータを含むシート名を指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:35
+msgid "`キーのデータ範囲`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:36
+msgid "辞書データの「キー」として利用したいデータの範囲を指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:37
+#: ../../source/user-command/simple-dict.md:41
+#: ../../source/user-command/simple-dict.md:46
+msgid "`取得`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:38
+msgid "クリックすると、現在Excelで表示・選択している範囲の情報を、`Excelファイル`、`シート名`、`キーのデータ範囲`に反映する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:39
+msgid "`値のデータ範囲`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:40
+msgid "辞書データの「値」として利用したいデータの範囲を指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:42
+#: ../../source/user-command/simple-dict.md:47
+msgid "クリックすると、現在Excelで表示・選択している範囲の情報を、`Excelファイル`、`シート名`、`値のデータ範囲`に反映する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:43
+msgid "`値2のデータ範囲`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:44
+msgid "辞書データの「値2」として利用したいデータの範囲を指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:45
+msgid "`値2`は補助用の領域。設定は任意。"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:48
+msgid "`一行目をヘッダ行として扱う`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:49
+msgid "チェックすると、選択範囲の先頭行をヘッダとみなし、辞書データに含めない"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:50
+msgid "`ファイル更新時に通知を行う`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:51
+msgid "チェックすると、`Excelファイル`で指定したファイルが更新されたときに、トースト通知する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:52
+msgid "ファイルサーバ上で他の人と共有しているExcelファイルを使っている場合に、他者によるファイル更新に気づくことができる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:53
+msgid "ただし、ファイルがURL経由である場合は更新検知できない"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:54
+msgid "`取得内容確認`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:55
+msgid "クリックすると、`Excelファイル`/`シート名`/`キーのデータ範囲`/`値のデータ範囲`の内容に基づいて辞書データを読み込み、プレビュー欄に表示する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:57
+msgid "`候補の表示・マッチング`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:58
+msgid "`説明欄の書式`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:59
+msgid "候補を選択したときに説明欄に表示するテキストの書式を設定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:60
+msgid "`候補欄の書式`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:61
+msgid "候補欄に表示するテキストの書式を設定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:62
+msgid "`コマンド名を入力しなくても候補を表示する`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:63
+msgid "チェックすると、コマンド名を入力しなくても、入力ワードにマッチする値を候補欄に表示する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:64
+msgid "この場合[弱一致](#一致度の区分)扱いとなる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:65
+msgid "`値でのマッチングも行う`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:66
+msgid "チェックすると、キーと値を逆転したマッチングを有効にする(値でマッチングし、キーを結果とする）"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:68
+msgid "`選択後の処理`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:69
+msgid "`実行する処理`   選択後に実行する処理の実行方法を選択する   以下の3つから選ぶことができる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:72
+msgid "`他のコマンドを実行する`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:73
+msgid "`他のプログラムを実行する`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:74
+msgid "`クリップボードにコピーする`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:75
+msgid "`マクロを展開する`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:76
+msgid "コマンド実行時に[マクロ](#マクロ機能)を展開する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:78
+msgid "なお、逆引き検索でヒットした場合、`$key`と`$value`も逆になる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:80
+msgid "`ホットキー`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:81
+msgid ""
+"コマンドを呼び出すキーバインドを設定できる。   "
+"設定したキーを押下すると、入力欄が表示され、コマンド名が入力された(キーワードで絞り込みができる）状態になる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:83
+msgid "他のコマンドにおけるホットキーはコマンド実行として作用するが、このコマンドに関しては短縮入力みたいな位置づけ"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:85
+msgid "Post Action :: Run Command"
+msgstr "実行する処理 - 他のコマンドを実行する"
+
+#: ../../source/user-command/simple-dict.md:87
+msgid "![](../image/edit-simpledictcommand-postfilter-command.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:89
+msgid "`コマンド`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:90
+msgid "実行するコマンドを選択する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:91
+#: ../../source/user-command/simple-dict.md:100
+#: ../../source/user-command/simple-dict.md:112
+msgid "`パラメータ`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:92
+msgid "コマンドに渡すパラメータを指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:94
+msgid "Post Action :: Run Program"
+msgstr "実行する処理 - プログラムを実行する"
+
+#: ../../source/user-command/simple-dict.md:96
+msgid "![](../image/edit-simpledictcommand-postfilter-subprocess.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:98
+msgid "`実行ファイル`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:99
+msgid "実行するプログラムのパスを指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:101
+msgid "プログラムに渡すパラメータを指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:102
+msgid "`作業フォルダ`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:103
+msgid "実行するときのカレントディレクトリを指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:104
+msgid "`表示方法`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:105
+msgid "通常表示/最大表示/最小表示 を選ぶことができる"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:106
+msgid "起動するプログラムによっては指定が効かないこともある"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:108
+msgid "Post Action :: Copy to Clipboard"
+msgstr "実行する処理 - クリップボードにコピーする"
+
+#: ../../source/user-command/simple-dict.md:110
+msgid "![](../image/edit-simpledictcommand-postfilter-clipboard.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:113
+msgid "クリップボードにコピーするテキストの書式を指定する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:115
+msgid "Setup Guide"
+msgstr "設定の手引き"
+
+#: ../../source/user-command/simple-dict.md:117
+msgid ""
+"Excelアプリケーションを起動し、辞書として利用したいワークシートを選択しておく   "
+"![](../image/simpledict_tebiki_step1.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:119
+msgid ""
+"Excel側でキーとして使うセル範囲を選択する。次に、本アプリ側でキー範囲取得ボタンを押す   "
+"![](../image/simpledict_tebiki_step2.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:121
+msgid ""
+"Excel側で値として使うセル範囲を選択する。次に、本アプリ側で値範囲取得ボタンを押す   "
+"![](../image/simpledict_tebiki_step3.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:123
+msgid ""
+"`取得内容確認`ボタンを押下し、取得されるキーと値の内容を確認する   "
+"![](../image/simpledict_tebiki_step4.png)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:125
+msgid "キーと値の内容に問題なければ、`選択後の処理`の設定をして、`OK`ボタンを押下してコマンドを作成する"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:127
+msgid "Remarks"
+msgstr "動作の説明"
+
+#: ../../source/user-command/simple-dict.md:129
+msgid "アプリ起動後にバックグラウンドで辞書データの読み込みを行う"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:130
+msgid "読み込みが完了するまでは候補に表示されない"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:131
+msgid "データソースとなるExcelファイルが更新された場合、自動で再読み込みを行う"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:133
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/user-command/simple-dict.md:135
+msgid "クエリのタイムアウトを100msecとしている"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:136
+msgid "設定したデータの規模によっては検索に時間がかかる可能性があり、操作性に影響する可能性があるため"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:137
+msgid "表示する候補の上限は20件"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:138
+msgid "これも操作性への影響を考慮して件数を絞っている"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:139
+msgid "最終的にはキーワード入力で1件に絞り込むので途中の候補としては20件もあれば足りるでしょう、という考え"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:141
+msgid "Example"
+msgstr "例"
+
+#: ../../source/user-command/simple-dict.md:143
+msgid "日本の上場企業の会社名をキー、証券コードを値にする"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:148
+msgid ""
+"「せいてつ」というキーワードで会社名での絞り込みを行い、証券コードをクリップボードにコピーする "
+"![](../image/simple_dict_example2.gif)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:152
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "コマンド設定画面で指定したアクションを実行する<br>(コピー or 他のコマンド実行 or プログラム実行)"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "キーをコピー"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:145
+msgid "値をコピー"
+msgstr ""
+

@@ -1,0 +1,161 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/user-command/watch-path.md:1
+msgid "Watch Path Command"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:3
+msgid "任意のフォルダを監視し、フォルダ内のファイルの変更を検知したときに通知してくれるコマンド。"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:5
+msgid "ファイルサーバ上にあるフォルダに何らかの変更があったときに、それを知ることができる。"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:7
+msgid "更新通知のイメージ   ![](../image/notify_watchpath.png)"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:10
+msgid "設定画面"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:12
+msgid "![](../image/edit-watchpathcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:14
+msgid "`コマンドの名前`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:15
+msgid "入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:16
+msgid "`説明`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:17
+msgid "コメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:18
+msgid "`フォルダのパス`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:19
+msgid "更新を検知したいフォルダのパス"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:20
+msgid "`通知時のメッセージ`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:21
+msgid "更新検知通知に表示する文言を指定する"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:22
+msgid "`更新検知の間隔`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:23
+msgid "指定した秒数が経過するまで、更新を検知しても次の通知を行わない   共有フォルダ上のファイルを誰かが直接編集作業をしていることにより頻繁に通知が来るのを避けるための設定"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:25
+msgid "`除外フィルタ`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:26
+msgid "変更があっても無視したいファイル名を指定する"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:27
+msgid "カンマ(,)区切りで複数指定することができる"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:28
+msgid "ワイルドカード指定が可能(`*`→0文字以上の任意の文字列、 `?`→任意の1文字)"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:29
+msgid "例: `thumbs.db, *.txt`  → `thumbs.db`とすべての`.txt`が変更されても通知しない"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:30
+msgid "`コマンドを無効化する`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:31
+msgid "チェックすると更新検知を行わない   機能を一時的に無効化したいがコマンドを残しておきたい、というときのための設定"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:34
+msgid "Remarks"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:36
+msgid "アプリ起動中の状態しか見ない(前回実行時の状態を保持することはしていない)ため、アプリを終了している間のフォルダ更新を検知することはできない"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:38
+msgid "監視対象パスがローカルパスかネットワークパスかで実装方法を分けている"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:39
+msgid "ローカルパスの場合は`ReadDirectoryChangesW` APIを用いて対象フォルダの更新を検知する"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:40
+msgid "ネットワークパスの場合は独自の処理で検知する"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:41
+msgid "手元で試した感じ、`ReadDirectoryChangesW`はネットワークパスの場合に安定して検知できなかっため"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:42
+msgid "ツール作成者本人が想定する用途としてはファイルサーバ上の特定フォルダの更新検知であり、ネットワークパスで使えないと意味ないので・・"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:44
+msgid "[スタートメニューに登録](#基本ショートカット登録)してある場合は、トーストをクリックすると、監視対象フォルダを開くことができる"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:46
+msgid "Per-Key Behavior"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:0
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:0
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:0
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/watch-path.md:0
+msgid "更新検知対象のパスを開く"
+msgstr ""

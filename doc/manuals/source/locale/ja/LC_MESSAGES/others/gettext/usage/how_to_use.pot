@@ -1,0 +1,257 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/usage/how_to_use.md:1
+msgid "First Steps"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:3
+msgid "Run Application"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:5
+msgid "{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は[入力画面](#入力画面) が表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:8
+msgid "![](../image/usage/firstscreen.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:10
+msgid "また、タスクトレイにアイコンが表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:12
+msgid "![](../image/tasktray-icon.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:14
+msgid "Exit Application"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:16
+msgid "入力画面で[exit](#exit)コマンドを実行するか、[タスクトレイ](#タスクトレイ)から`終了`を選択する。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:18
+msgid "`exit`コマンドを実行   ![](../image/exit-app1.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:21
+msgid "タスクトレイからの終了   ![](../image/exit-app2.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:25
+msgid "Open Input Window"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:27
+msgid "アプリが起動している状態でランチャー呼び出しキー(デフォルト設定:`Alt`-`Space`)を押下すると、入力画面が表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:29
+msgid "![](../image/soyokaze-window2.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:31
+msgid "この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。   また、Tabキーを押すと、入力中のキーワードを補完することができる。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:34
+msgid "① アイコン表示欄"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:35
+msgid "選択している候補に関連付けられたアイコンを表示する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:36
+msgid "② コメント表示欄"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:37
+msgid "選択している候補の説明を表示する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:38
+msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:39
+msgid "③ 入力欄"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:40
+msgid "ここにキーワード(やパラメータ)を入力する。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:41
+msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:42
+msgid "`Tab`キーを押下するとキーワードを補完する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:43
+msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:45
+msgid "④ 候補リスト"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:46
+msgid "入力欄のキーワードに該当する候補の一覧を表示する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:47
+msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:48
+msgid "入力欄に文字が入力されていると表示される"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:49
+msgid "⑤ ガイド"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:50
+msgid "コマンドを実行したときに実行される動作をキー別に表示する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:52
+msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:56
+msgid "Run Command"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:58
+msgid "入力画面にキーワードを入力して`Enter⏎`キーを押下すると、キーワードに応じてコマンドを実行することができる。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:60
+msgid "![](../image/usage-run-keyword.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:62
+msgid "Register Command"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:64
+msgid "セットアップ直後はコマンドが何も登録されていないため、 [次セクションに記載する方法](#コマンドの登録方法)によりコマンドを登録する必要がある。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:67
+msgid "[コマンドとして登録していなくても実行できる機能](#コマンドとして登録していなくても実行できる機能)もある。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:69
+msgid "本アプリでは以下の方法でコマンドを登録することができる"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:71
+msgid "[`new`コマンドで登録する](#newコマンドで登録する)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:72
+msgid "[`registwin`コマンドで登録する](#registwinコマンドで登録する)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:73
+msgid "[対象ウインドウをDrag&Dropする](#対象ウインドウをdragdropする)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:74
+msgid "[コンテキストメニューの`送る`>`コマンドとして登録する`](#コンテキストメニューの送るコマンドとして登録する)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:75
+msgid "[エクスプローラのアイコンをDrag&Dropする](#エクスプローラのアイコンをdragdropする)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:77
+msgid "各方法の詳細について後述する。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:79
+msgid "Use new Command"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:81
+msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](#コマンドの説明)を選択する画面が表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:83
+msgid "![](../image/input-new.png)   ↓   ![](../image/commandtype.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:87
+msgid "コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。   ↓※ 通常コマンドのコマンド編集画面   ![](../image/new-normalcommand.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:91
+msgid "コマンド編集画面で新規登録キーワードや紐づけるプログラムへのパスなどの情報を入力し、OKを押すと、コマンドとして登録される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:93
+msgid "Use registwin Command"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:95
+msgid "入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。   ↓   ![](../image/registwin.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:99
+msgid "Capture Window"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:101
+msgid "入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。   ↓   ![](../image/registringDragDrop.gif)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:105
+msgid "SendTo"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:107
+msgid "アプリケーション設定の[基本＞ショートカット登録](#基本ショートカット登録) から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:109
+msgid "登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される   ↓   ![](../image/sendto.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:113
+msgid "Drag&Drop File and Folders."
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:115
+msgid "エクスプローラ上のファイルやフォルダのアイコンをドラッグして、入力画面上にドロップすると、 該当するファイルやフォルダをコマンドとして登録することができる。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:118
+msgid "Restrictions"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:120
+msgid "ランチャーが管理者権限で動作している場合に、一般権限で動作しているプロセスのアイコンをこの方法で登録することはできない。"
+msgstr ""

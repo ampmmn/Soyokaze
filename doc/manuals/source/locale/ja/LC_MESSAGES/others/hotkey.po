@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/others/hotkey.md:1
+msgid "HotKey Types"
+msgstr "ホットキーの種別"
+
+#: ../../source/others/hotkey.md:3
+msgid "ホットキーの種別として以下の3つを選択できる"
+msgstr ""
+
+#: ../../source/others/hotkey.md ../../source/others/hotkey.md:5
+msgid "`アクティブ時のみ有効`"
+msgstr ""
+
+#: ../../source/others/hotkey.md ../../source/others/hotkey.md:6
+msgid "`アクティブ時のみ有効(SandS)`"
+msgstr ""
+
+#: ../../source/others/hotkey.md ../../source/others/hotkey.md:7
+msgid "`常駐時いつでも有効`"
+msgstr ""
+
+#: ../../source/others/hotkey.md:9
+msgid ""
+"`アクティブ時のみ有効`と`アクティブ時のみ有効(SandS)`は入力画面が表示されているときだけ機能する。   "
+"一方、`常駐時いつでも有効`は入力画面が表示されていないときでも機能する。"
+msgstr ""
+
+#: ../../source/others/hotkey.md:12
+msgid "SanS"
+msgstr "SandSについて"
+
+#: ../../source/others/hotkey.md:14
+msgid ""
+"`アクティブ時のみ有効(SandS)`の`SandS`は「Space and "
+"Shift」の略で、単体でキーを押したときは文字キー(→Space)として機能し、   "
+"他のキーと同時押ししたときは修飾キー(→Shift)として機能する、という概念のこと"
+msgstr ""
+
+#: ../../source/others/hotkey.md:17
+msgid "ランチャー呼び出しキーの修飾キーと`SandS`の修飾キーを同じキーとして設定することにより、スムーズにコマンドを呼び出すことができる"
+msgstr ""
+
+#: ../../source/others/hotkey.md:19
+msgid ""
+"例:   "
+"ランチャー呼び出しのホットキーを`CapsLock`にして、コマンドのホットキーを`CapsLock`+`J`に設定していたとすると、以下のような動きになる"
+"   ![](../image/sands-example.png)"
+msgstr ""
+
+#: ../../source/others/hotkey.md:23
+msgid "結果として、他アプリとのキー割り当ての干渉をあまり気にすることなく、グローバルホットキー的な機能が実現できる"
+msgstr ""
+
+#: ../../source/others/hotkey.md:25
+msgid "Restrictions Related to SandS"
+msgstr "SandSに関する制限事項"
+
+#: ../../source/others/hotkey.md:27
+msgid "SandSの修飾キーとして選択したキーを押しっぱなしにした場合、普通の文字入力としてキーリピートする。"
+msgstr ""
+
+#: ../../source/others/hotkey.md:28
+msgid "`Shift` `Ctrl` `Alt` `Win`などのような純粋な修飾キーのような動きにはならない"
+msgstr ""
+
+#: ../../source/others/hotkey.md:29
+msgid "SandSを実現するためにキーフックを利用している。キーフックの仕組みを用いた別のソフトが同時に動いている場合、競合してうまく動作しない場合がある"
+msgstr ""
+
+#: ../../source/others/hotkey.md:32
+msgid "HotKey Types Comparison"
+msgstr "ホットキーの種別の比較"
+
+#: ../../source/others/hotkey.md:34
+msgid "種別ごとに実現している仕組みが異なる。"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "種別"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "実現方式"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "メリット"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "デメリット"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "キーアクセラレータ"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "他アプリに干渉しない<br>他アプリへの干渉を気にする必要がないのでキー選択の幅が広い"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "まずアクティブにする(入力画面を表示する)必要がある"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "キーフックによる独自実装"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "SandSの修飾キーと[ランチャー呼び出しキー](#基本)の組み合わせにより、スムーズな運指が実現できる"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "グローバルホットキー"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "いつでも呼び出せる"
+msgstr ""
+
+#: ../../source/others/hotkey.md
+msgid "登録したキーを他アプリで使えなくなってしまう<br>他アプリに干渉することをふまえて割り当てるキーを慎重に選択する必要がある"
+msgstr ""
+
+#: ../../source/others/hotkey.md:42
+msgid "`常駐時いつでも有効`はシステムのホットキーに登録するため、登録したキーを使って、いつでも呼び出せる一方で、ほかのアプリ内においてそのキーを使うことができなくなる"
+msgstr ""
+
+#: ../../source/others/hotkey.md:44
+msgid "なお、`常駐時いつでも有効`で設定した場合でも、本アプリが一般権限で動作している状況において、管理者権限で動作しているアプリが前面にある状況ではホットキーは機能しない。"
+msgstr ""
+

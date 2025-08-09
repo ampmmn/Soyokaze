@@ -1,20 +1,33 @@
-# {{ project }} {{ version }} マニュアル
+# {{ project }} {{ version }} Manual
 
 ```{toctree}
 ---
 maxdepth: 2
-caption: 使い方
 ---
 ./introduction.md
+```
+
+```{toctree}
+---
+maxdepth: 2
+caption: Get started
+---
 usage/setup.md
 usage/how_to_use.md
+```
+
+```{toctree}
+---
+maxdepth: 2
+caption: Settings
+---
 ./window.md
 ```
 
 ```{toctree}
 ---
 maxdepth: 2
-caption: コマンド
+caption: Commands
 ---
 ./user-commands.md
 ./adhoc-commands.md
@@ -24,7 +37,7 @@ caption: コマンド
 ```{toctree}
 ---
 maxdepth: 2
-caption: マクロ
+caption: Macros
 ---
 ./macros.md
 ```
@@ -32,7 +45,7 @@ caption: マクロ
 ```{toctree}
 ---
 maxdepth: 2
-caption: その他
+caption: Miscellaneous
 ---
 others/advanced-usage.md
 others/hotkey.md
@@ -43,13 +56,13 @@ others/3rdlibs.md
 
 ----
 
-## 取り扱い種別、ライセンス
+## License
 
 ```{only} soyokaze
 フリーソフト
 
-- 本体のライセンス : [MIT License](./LICENSE)
-- 利用ライブラリのライセンスについては [利用ライブラリ](#利用ライブラリ) に記載の各リンク先を参照のこと
+- 本体のライセンス : [MIT License](https://github.com/ampmmn/Soyokaze/blob/main/LICENSE)
+- 利用ライブラリのライセンスについては [利用ライブラリ](others/3rdlibs) に記載の各リンク先を参照のこと
 ```
 
 ```{only} not soyokaze
@@ -59,7 +72,7 @@ others/3rdlibs.md
 ----
 
 
-## ソースコード
+## Source code
 
 ```{only} soyokaze
 [https://github.com/ampmmn/Soyokaze](https://github.com/ampmmn/Soyokaze/)
@@ -69,13 +82,13 @@ others/3rdlibs.md
 非開示
 ```
 
-## 免責事項
+## Disclaimer
 
 このツールは無保証です。
 
 ----
 
-## 連絡先
+## Contact
 
 ```{only} soyokaze
 htmnymgw@gmail.com

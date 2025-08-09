@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.42.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user-command/snippet.md:1
+msgid "Snippet Command"
+msgstr "定型文コマンド"
+
+#: ../../source/user-command/snippet.md:3
+msgid ""
+"あらかじめ登録しておいた定型文をクリップボードにコピーするためのコマンド   "
+"よく使う言い回し(定型文)に名前を付けて、その名前で定型文を呼び出すことができる。"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:6
+msgid "Description"
+msgstr "設定画面"
+
+#: ../../source/user-command/snippet.md:8
+msgid "![](../image/new-snippetcommand.png)"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:10
+msgid "`コマンドの名前`   入力画面から定型文コマンドを実行するためのキーワード   コマンドを実行すると、定型文がクリップボードにコピーされる。"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:13
+msgid "`説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:15
+msgid "`テキスト`   定型文を指定する。   定型文のテキストとして、[マクロ](#マクロ機能)を利用することが可能"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:18
+msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、定型文をクリップボードにコピーできる。"
+msgstr ""
+
+#: ../../source/user-command/snippet.md:21
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/user-command/snippet.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/snippet.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/snippet.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/snippet.md
+msgid "設定されたテキストをクリップボードにコピーする"
+msgstr ""
+

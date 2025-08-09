@@ -7,7 +7,7 @@
 bluewindのUIを参考にして作成している。  
 現行のWindows環境で「bluewind」の使い心地を再現しつつも、様々な機能を実装している。
 
-![画面](image/soyokaze-window.gif)
+![画面](image/introduction.gif)
 
 - ホットキーを押すと、検索ウインドウが表示される。ウインドウ上でキーワードを入力することにより、様々な操作を素早く行うことができる。
 
@@ -68,7 +68,7 @@ bluewindのUIを参考にして作成している。
 
 ### 入力画面
 
-![](image/soyokaze-window.png)
+![](image/input-window.png)
 
 ### キーワードマネージャ
 
