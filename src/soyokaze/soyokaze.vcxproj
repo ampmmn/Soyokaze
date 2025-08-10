@@ -727,6 +727,8 @@
     <ClInclude Include="matcher\CommandToken.h" />
     <ClInclude Include="processproxy\NormalPriviledgeProcessProxy.h" />
     <ClInclude Include="processproxy\share\AfxWFunctions.h" />
+    <ClInclude Include="python\PythonDLL.h" />
+    <ClInclude Include="python\PythonDLLLoader.h" />
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingDialog.h" />
     <ClInclude Include="settingwindow\AppSettingPageBase.h" />
@@ -810,7 +812,6 @@
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
-    <ClInclude Include="utility\PythonDLL.h" />
     <ClInclude Include="utility\RegistryKey.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
     <ClInclude Include="utility\SHA1.h" />
@@ -1148,6 +1149,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="python\PythonDLL.cpp" />
+    <ClCompile Include="python\PythonDLLLoader.cpp" />
     <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingDialog.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />
@@ -1234,7 +1237,6 @@
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />
-    <ClCompile Include="utility\PythonDLL.cpp" />
     <ClCompile Include="utility\RegistryKey.cpp" />
     <ClCompile Include="utility\SHA1.cpp" />
     <ClCompile Include="utility\ShortcutFile.cpp" />

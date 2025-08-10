@@ -238,6 +238,9 @@
     <Filter Include="commands\validation">
       <UniqueIdentifier>{49c0ec39-ea97-4106-91ba-e76384fdc1a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="python">
+      <UniqueIdentifier>{d95507f6-af1c-47ca-a732-f0ec2fdc9feb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -560,9 +563,6 @@
     </ClInclude>
     <ClInclude Include="commands\timespan\TimespanCommandProvider.h">
       <Filter>commands\timespan</Filter>
-    </ClInclude>
-    <ClInclude Include="utility\PythonDLL.h">
-      <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowCommand.h">
       <Filter>commands\align_window</Filter>
@@ -1521,6 +1521,12 @@
     <ClInclude Include="commands\validation\CommandParamErrorCode.h">
       <Filter>commands\validation</Filter>
     </ClInclude>
+    <ClInclude Include="python\PythonDLL.h">
+      <Filter>python</Filter>
+    </ClInclude>
+    <ClInclude Include="python\PythonDLLLoader.h">
+      <Filter>python</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1828,9 +1834,6 @@
     </ClCompile>
     <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp">
       <Filter>commands\timespan</Filter>
-    </ClCompile>
-    <ClCompile Include="utility\PythonDLL.cpp">
-      <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommand.cpp">
       <Filter>commands\align_window</Filter>
@@ -2695,6 +2698,12 @@
     </ClCompile>
     <ClCompile Include="commands\validation\CommandParamError.cpp">
       <Filter>commands\validation</Filter>
+    </ClCompile>
+    <ClCompile Include="python\PythonDLL.cpp">
+      <Filter>python</Filter>
+    </ClCompile>
+    <ClCompile Include="python\PythonDLLLoader.cpp">
+      <Filter>python</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

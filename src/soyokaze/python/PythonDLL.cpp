@@ -11,6 +11,7 @@ static const int Py_eval_input = 258;    // defined in compile.h
 
 typedef void (*PY_INITIALIZE)(void);
 typedef int (*PY_FINALIZEEX)(void);
+typedef void* (*PY_NEWINTERPRETER)(void);
 typedef void (*PYEVAL_INITTHREADS)(void);
 typedef int (*PYGILSTATE_ENSURE)(void);
 typedef void* (*PYRUN_STRING)(const char*, int, void*, void*);
@@ -26,7 +27,6 @@ typedef void* (*PYUNICODE_ASENCODEDSTRING)(void*, const char*, const char*);
 typedef void* (*PYIMPORT_IMPORTMODULE)(const char*);
 typedef int (*PYMAPPING_SETITEMSTRING)(void*, const char*, void*);
 typedef void* (*PY_COMPILESTRING)(const char *, const char *, int);
-typedef void* (*PYOBJECT_GETATTRSTRING)(void* o, const char *attr_name);
 typedef int (*PYDICT_MERGE)(void*, void*, int);
 typedef void* (*PYEVAL_GetGlobals)(void);
 
@@ -43,6 +43,7 @@ struct PythonDLL::PImpl
 
 	PY_INITIALIZE mPy_Initialize{nullptr};
 	PY_FINALIZEEX mPy_FinalizeEx{nullptr};
+	PY_NEWINTERPRETER mPy_NewInterpreter{nullptr};
 	PYEVAL_INITTHREADS mPyEval_InitThreads{nullptr};
 	PYGILSTATE_ENSURE mPyGILState_Ensure{nullptr};
 	PYRUN_STRING mPyRun_String{nullptr};
@@ -58,9 +59,7 @@ struct PythonDLL::PImpl
 	PYIMPORT_IMPORTMODULE mPyImport_ImportModule{nullptr};
 	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString{nullptr};
 	PY_COMPILESTRING mPy_CompileString{nullptr};
-  PYOBJECT_GETATTRSTRING mPyObject_GetAttrString = nullptr;
 	PYDICT_MERGE mPyDict_Merge{nullptr};
-	PYEVAL_GetGlobals mPyEval_GetGlobals{nullptr};
 };
 
 bool PythonDLL::PImpl::Initialize()
@@ -88,8 +87,8 @@ bool PythonDLL::PImpl::Initialize()
 		return false;
 	}
 	mPy_FinalizeEx = (PY_FINALIZEEX)GetProcAddress(mDll, "Py_FinalizeEx");
+	mPy_NewInterpreter = (PY_NEWINTERPRETER)GetProcAddress(mDll, "Py_NewInterpreter");
 	mPyEval_InitThreads = (PYEVAL_INITTHREADS)GetProcAddress(mDll, "PyEval_InitThreads");
-
 	mPyGILState_Ensure = (PYGILSTATE_ENSURE)GetProcAddress(mDll, "PyGILState_Ensure");
 	mPyRun_String = (PYRUN_STRING)GetProcAddress(mDll, "PyRun_String");
 	mPyString_AsString = (PYSTRING_ASSTRING)GetProcAddress(mDll, "PyBytes_AsString");
@@ -105,7 +104,6 @@ bool PythonDLL::PImpl::Initialize()
 	mPyMapping_SetItemString = (PYMAPPING_SETITEMSTRING)GetProcAddress(mDll, "PyMapping_SetItemString");
 	mPy_CompileString = (PY_COMPILESTRING)GetProcAddress(mDll, "Py_CompileString");
 	mPyDict_Merge = (PYDICT_MERGE)GetProcAddress(mDll, "PyDict_Merge");
-	mPyEval_GetGlobals = (PYEVAL_GetGlobals)GetProcAddress(mDll, "PyEval_GetGlobals");
 
 	// 初期化
 	mPy_Initialize();
@@ -125,14 +123,6 @@ bool PythonDLL::PImpl::Initialize()
 
 void PythonDLL::PImpl::Finalize()
 {
-	if (mDict) {
-		mPy_DecRef(mDict);
-		mDict = nullptr;
-	}
-	if (mModule) {
-		mPy_DecRef(mModule);
-		mModule = nullptr;
-	}
 	if (mPy_FinalizeEx) {
 		mPy_FinalizeEx();
 	}
@@ -187,133 +177,92 @@ PythonDLL::~PythonDLL()
 bool PythonDLL::SetDLLPath(const CString& dllPath)
 {
 	in->mDllPath = dllPath;
-	in->Finalize();
-	return true;
+	return in->Initialize();
 }
 
 bool PythonDLL::Evaluate(const CString& src, CString& result)
 {
-	if (in->Initialize() == false) {
-		return false;
-	}
-
-	int gstate = in->mPyGILState_Ensure();
+	int gstate = EnsureGILState();
 
 	CStringA srcA(src);
-	void* pyObject = in->mPyRun_String((LPCSTR)srcA, Py_eval_input, in->mDict, in->mDict);
+	void* pyObject = RunString((LPCSTR)srcA);
 
 	// 文をインタープリタ側で評価した結果エラーだった場合
-	void* errObj = in->mPyErr_Occurred();
-	if (errObj != nullptr) {
+	if (IsErrorOccurred()) {
 
 		// for debug
-		in->mPyErr_Print();
+		PrintError();
 
-		if (pyObject) {
-			in->mPy_DecRef(pyObject);
-		}
+		DecRef(pyObject);
 
-		in->mPyGILState_Release(gstate);
+		ReleaseGILState(gstate);
 		return false;
 	}
 
 	if (pyObject == nullptr) {
-		in->mPyGILState_Release(gstate);
+		ReleaseGILState(gstate);
 		return false;
 	}
 
-	void* repr = in->mPyObject_Repr(pyObject);
-	void* str = in->mPyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-	const char* s = in->mPyString_AsString(str);
+	void* repr = ReprObject(pyObject);
+	void* str = AsEncodedString(repr, "utf-8", "~E~");
+	const char* s = AsString(str);
 	result = CStringA(s);
 
-	if (repr) {
-		in->mPy_DecRef(repr);
-	}
-	if (str) {
-		in->mPy_DecRef(str);
-	}
-	if (pyObject) {
-		in->mPy_DecRef(pyObject);
-	}
-
-	in->mPyGILState_Release(gstate);
+	DecRef(repr);
+	DecRef(str);
+	DecRef(pyObject);
+	ReleaseGILState(gstate);
 
 	return true;
 }
 
 
-bool PythonDLL::SingleInput(const CString& src, CString& result)
+bool PythonDLL::IsErrorOccurred()
 {
-	if (in->Initialize() == false) {
-		return false;
-	}
-
-	int gstate = in->mPyGILState_Ensure();
-
-	CStringA srcA(src);
-	void* pyObject = in->mPyRun_String((LPCSTR)srcA, Py_file_input, in->mDict, in->mDict);
-
-	// 文をインタープリタ側で評価した結果エラーだった場合
-	void* errObj = in->mPyErr_Occurred();
-	if (errObj != nullptr) {
-
-		// for debug
-		in->mPyErr_Print();
-
-		if (pyObject) {
-			in->mPy_DecRef(pyObject);
-		}
-
-		in->mPyGILState_Release(gstate);
-		return false;
-	}
-
-	if (pyObject == nullptr) {
-		in->mPyGILState_Release(gstate);
-		return false;
-	}
-
-	void* pyObj2 = in->mPyObject_GetAttrString(in->mModule, "_");
-
-	void* repr = in->mPyObject_Repr(pyObj2);
-	void* str = in->mPyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-
-	const char* s = in->mPyString_AsString(str);
-	result = CStringA(s);
-
-	if (repr) {
-		in->mPy_DecRef(repr);
-	}
-	if (str) {
-		in->mPy_DecRef(str);
-	}
-	if (pyObject) {
-		in->mPy_DecRef(pyObject);
-	}
-
-	in->mPyGILState_Release(gstate);
-
-	return true;
+	return in->mPyErr_Occurred() != nullptr;
 }
 
-bool PythonDLL::CanCompile(const CString& src)
+void PythonDLL::PrintError()
 {
-	if (in->Initialize() == false) {
-		return false;
-	}
-
-	int gstate = in->mPyGILState_Ensure();
-
-	CStringA srcA(src);
-
-	void* pyObject = in->mPy_CompileString(srcA, "", Py_file_input);
-	if (pyObject) {
-		in->mPy_DecRef(pyObject);
-	}
-
-	in->mPyGILState_Release(gstate);
-
-	return pyObject != nullptr;
+	in->mPyErr_Print();
 }
+
+void PythonDLL::DecRef(void* obj)
+{
+	if (obj) {
+		in->mPy_DecRef(obj);
+	}
+}
+
+int PythonDLL::EnsureGILState()
+{
+	return in->mPyGILState_Ensure();
+}
+
+void PythonDLL::ReleaseGILState(int gstate)
+{
+	in->mPyGILState_Release(gstate);
+}
+
+void* PythonDLL::RunString(LPCSTR script)
+{
+	return in->mPyRun_String(script, Py_eval_input, in->mDict, in->mDict);
+}
+
+void* PythonDLL::ReprObject(void* obj)
+{
+	return in->mPyObject_Repr(obj);
+}
+
+void* PythonDLL::AsEncodedString(void* obj, const char* encoding, const char* errors)
+{
+	return in->mPyUnicode_AsEncodedString(obj, encoding, errors);
+}
+
+const char* PythonDLL::AsString(void* obj)
+{
+	return in->mPyString_AsString(obj);
+}
+
 
