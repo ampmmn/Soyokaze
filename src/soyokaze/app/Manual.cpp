@@ -38,7 +38,7 @@ bool Manual::Navigate(const CString& pageId)
 
 	// ヘルプの有無を確認
 	Path filePath(Path::MODULEFILEDIR);
-	filePath.Append(_T("help.html"));
+	filePath.Append(_T("files\\manuals\\index.html"));
 	if (filePath.FileExists() == FALSE) {
 		CString msg((LPCTSTR)IDS_ERR_HELPDOESNOTEXIST);
 		msg += _T("\n");
