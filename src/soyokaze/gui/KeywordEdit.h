@@ -8,6 +8,8 @@ public:
 	KeywordEdit(CWnd* pParent = nullptr);	// 標準コンストラクター
 	virtual ~KeywordEdit();
 
+	void Paste();
+
 	void SetCaretToEnd();
 	void SetIMEOff();
 	void SetPlaceHolder(const CString& text);
@@ -34,6 +36,7 @@ protected:
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	afx_msg void OnPaste();
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnMButtonUp(UINT flags, CPoint point);
 
 	DECLARE_MESSAGE_MAP()
 };

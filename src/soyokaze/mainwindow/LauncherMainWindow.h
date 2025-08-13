@@ -105,6 +105,7 @@ protected:
 	afx_msg void OnSizing(UINT side, LPRECT rect);
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	afx_msg void OnMove(int x, int y);
+	afx_msg void OnMButtonUp(UINT flags, CPoint point);
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);

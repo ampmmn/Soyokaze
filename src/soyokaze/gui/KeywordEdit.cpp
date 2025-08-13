@@ -154,7 +154,14 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_SIZE()
 	ON_WM_PASTE()
 	ON_WM_CONTEXTMENU()
+	ON_WM_MBUTTONUP()
 END_MESSAGE_MAP()
+
+
+void KeywordEdit::Paste()
+{
+	PostMessage(WM_PASTE, 0, 0);
+}
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -332,3 +339,10 @@ void KeywordEdit::OnContextMenu(CWnd* pWnd, CPoint point)
 		parent->SendMessage(WM_CONTEXTMENU, wp, lp);
 	}
 }
+
+void KeywordEdit::OnMButtonUp(UINT flags, CPoint point)
+{
+	__super::OnMButtonUp(flags, point);
+	Paste();
+}
+

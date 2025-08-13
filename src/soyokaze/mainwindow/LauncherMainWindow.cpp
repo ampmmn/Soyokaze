@@ -205,6 +205,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_SIZING()
 	ON_WM_SIZE()
 	ON_WM_MOVE()
+	ON_WM_MBUTTONUP()
 	ON_MESSAGE(LauncherMainWindowMessageID::INPUTKEY, OnKeywordEditNotify)
 	ON_MESSAGE(LauncherMainWindowMessageID::ACTIVATEWINDOW, OnUserMessageActiveWindow)
 	ON_MESSAGE(LauncherMainWindowMessageID::RUNCOMMAND, OnUserMessageRunCommand)
@@ -1537,6 +1538,12 @@ void LauncherMainWindow::OnMove(int x, int y)
 {
 	__super::OnMove(x, y);
 	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+}
+
+void LauncherMainWindow::OnMButtonUp(UINT flags, CPoint point)
+{
+	__super::OnMButtonUp(flags, point);
+	in->mKeywordEdit.Paste();
 }
 
 /**
