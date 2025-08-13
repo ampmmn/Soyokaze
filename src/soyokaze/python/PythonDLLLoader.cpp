@@ -2,14 +2,51 @@
 #include "PythonDLLLoader.h"
 #include "python/PythonDLL.h"
 #include "setting/AppPreference.h"
+#include "setting/AppPreferenceListenerIF.h"
 
-struct PythonDLLLoader::PImpl
+static PythonDLLLoader* s_initialized = PythonDLLLoader::Get();
+
+
+struct PythonDLLLoader::PImpl : public AppPreferenceListenerIF
 {
+	void OnAppFirstBoot() override
+	{
+	}
+
+	void OnAppNormalBoot() override
+	{
+		mThisPtr->Initialize();
+	}
+
+	void OnAppPreferenceUpdated() override
+	{
+		mThisPtr->Initialize();
+	}
+
+	void OnAppExit() override
+	{
+		mThisPtr->Finalize();
+
+		auto pref = AppPreference::Get();
+		pref->UnregisterListener(this);
+	}
+
+	PythonDLLLoader* mThisPtr{nullptr};
 	std::unique_ptr<PythonDLL> mDll;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
 PythonDLLLoader::PythonDLLLoader() : in(new PImpl)
 {
+	in->mThisPtr = this;
+
+	auto pref = AppPreference::Get();
+	pref->RegisterListener(in.get());
 }
 
 PythonDLLLoader::~PythonDLLLoader()
@@ -22,7 +59,7 @@ PythonDLLLoader* PythonDLLLoader::Get()
 	return &inst;
 }
 
-bool PythonDLLLoader::Load()
+bool PythonDLLLoader::Initialize()
 {
 	auto pref = AppPreference::Get();
 	auto dllPath = pref->GetPythonDLLPath();
@@ -32,7 +69,19 @@ bool PythonDLLLoader::Load()
 	}
 
 	in->mDll.reset(new PythonDLL());
-	return in->mDll->SetDLLPath(dllPath);
+	if (in->mDll->LoadDLL(dllPath) == false) {
+		return false;
+	}
+	return true;
 }
 
+bool PythonDLLLoader::Finalize()
+{
+	in->mDll.reset();
+	return true;
+}
 
+PythonDLL* PythonDLLLoader::GetLibrary()
+{
+	return in->mDll.get();
+}

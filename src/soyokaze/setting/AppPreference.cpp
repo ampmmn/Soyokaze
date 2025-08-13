@@ -410,8 +410,10 @@ void AppPreference::Save()
 
 void AppPreference::OnExit()
 {
-	// リスナーへ終了を通知
+	// 通知中にリスナー登録解除が呼ばれてもforeachに影響しないよう、複製を作成する
 	auto cloned = in->mListeners;
+
+	// リスナーへ終了を通知
 	for (auto& listener : cloned) {
 		listener->OnAppExit();
 	}

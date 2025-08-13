@@ -18,6 +18,8 @@ tags
 packages.config
 externals/
 doc/manuals/build/
+doc/manuals/source/image/
 *.mo
 *.doctree
 *.pickle
+

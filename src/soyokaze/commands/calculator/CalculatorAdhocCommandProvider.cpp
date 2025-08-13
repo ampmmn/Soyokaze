@@ -34,7 +34,6 @@ struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();
-		mCalc.SetPythonDLLPath(pref->GetPythonDLLPath());
 		mIsEnable = pref->IsEnableCalculator();
 	}
 	void OnAppExit() override {}
@@ -96,7 +95,6 @@ CString CalculatorAdhocCommandProvider::GetName()
 void CalculatorAdhocCommandProvider::PrepareAdhocCommands()
 {
 	auto pref = AppPreference::Get();
-	in->mCalc.SetPythonDLLPath(pref->GetPythonDLLPath());
 	in->mIsEnable = pref->IsEnableCalculator();
 }
 

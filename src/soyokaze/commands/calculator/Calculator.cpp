@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Calculator.h"
 #include "python/PythonDLL.h"
+#include "python/PythonDLLLoader.h"
 #include <regex>
 
 #ifdef _DEBUG
@@ -62,7 +63,6 @@ struct Calculator::PImpl
 		return mRegSysFuncs;
 	}
 
-	PythonDLL mPython;
 	tregex mRegSysFuncs;
 };
 
@@ -78,13 +78,6 @@ Calculator::Calculator() : in(std::make_unique<PImpl>())
 
 Calculator::~Calculator()
 {
-}
-
-
-// python.dllのパスを設定する
-void Calculator::SetPythonDLLPath(const CString& dllPath)
-{
-	in->mPython.SetDLLPath(dllPath);
 }
 
 bool Calculator::Evaluate(const CString& src_, CString& result)
@@ -113,7 +106,10 @@ bool Calculator::Evaluate(const CString& src_, CString& result)
 	src.Replace(_T("credits"), _T(""));
 	src.Replace(_T("license"), _T(""));
 
-	return in->mPython.Evaluate(src, result);
+	auto loader = PythonDLLLoader::Get();
+	auto pythonLib = loader->GetLibrary();
+
+	return pythonLib->Evaluate(src, result);
 }
 
 

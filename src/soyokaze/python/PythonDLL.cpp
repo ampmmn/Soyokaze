@@ -9,26 +9,24 @@
 static const int Py_file_input = 257;      // defined in compile.h
 static const int Py_eval_input = 258;    // defined in compile.h
 
-typedef void (*PY_INITIALIZE)(void);
-typedef int (*PY_FINALIZEEX)(void);
-typedef void* (*PY_NEWINTERPRETER)(void);
-typedef void (*PYEVAL_INITTHREADS)(void);
-typedef int (*PYGILSTATE_ENSURE)(void);
-typedef void* (*PYRUN_STRING)(const char*, int, void*, void*);
-typedef char* (*PYSTRING_ASSTRING)(void*);
-typedef void* (*PYERR_OCCURRED)(void);
-typedef void (*PY_DECREF)(void*);
-typedef void (*PYGILSTATE_RELEASE)(int);
-typedef void* (*PYIMPORT_ADDMODULE)(const char*);
-typedef void* (*PYMODULE_GETDICT)(void*);
-typedef void (*PYERR_PRINT)(void);
-typedef void* (*PYOBJECT_REPR)(void*);
-typedef void* (*PYUNICODE_ASENCODEDSTRING)(void*, const char*, const char*);
-typedef void* (*PYIMPORT_IMPORTMODULE)(const char*);
-typedef int (*PYMAPPING_SETITEMSTRING)(void*, const char*, void*);
-typedef void* (*PY_COMPILESTRING)(const char *, const char *, int);
-typedef int (*PYDICT_MERGE)(void*, void*, int);
-typedef void* (*PYEVAL_GetGlobals)(void);
+using PYBYTES_ASSTRING = char*(*)(void*);
+using PYDICT_MERGE = int (*)(void*, void*, int);
+using PYERR_OCCURRED = void*(*)(void);
+using PYERR_PRINT = void (*)(void);
+using PYEVAL_INITTHREADS = void(*)(void);
+using PYEVAL_RESTORETHREAD = void(*)(void*);
+using PYEVAL_SAVETHREAD = void*(*)(void);
+using PYIMPORT_ADDMODULE = void* (*)(const char*);
+using PYIMPORT_IMPORTMODULE = void* (*)(const char*);
+using PYMAPPING_SETITEMSTRING = int (*)(void*, const char*, void*);
+using PYMODULE_GETDICT = void* (*)(void*);
+using PYOBJECT_REPR = void* (*)(void*);
+using PYRUN_STRING = void*(*)(const char*, int, void*, void*);
+using PYUNICODE_ASENCODEDSTRING = void* (*)(void*, const char*, const char*);
+using PY_DECREF = void(*)(void*);
+using PY_FINALIZEEX = int(*)(void);
+using PY_INITIALIZE = void(*)(void);
+using PY_NEWINTERPRETER = void*(*)(void); 
 
 struct PythonDLL::PImpl
 {
@@ -41,26 +39,37 @@ struct PythonDLL::PImpl
 	void* mModule{nullptr};
 	void* mDict{nullptr};
 
-	PY_INITIALIZE mPy_Initialize{nullptr};
-	PY_FINALIZEEX mPy_FinalizeEx{nullptr};
-	PY_NEWINTERPRETER mPy_NewInterpreter{nullptr};
-	PYEVAL_INITTHREADS mPyEval_InitThreads{nullptr};
-	PYGILSTATE_ENSURE mPyGILState_Ensure{nullptr};
-	PYRUN_STRING mPyRun_String{nullptr};
-	PYSTRING_ASSTRING mPyString_AsString{nullptr};
+	void* mBaseThreadState{nullptr};
+	void* mInterpreter{nullptr};
+
+	PYBYTES_ASSTRING mPyBytes_AsString{nullptr};
+	PYDICT_MERGE mPyDict_Merge{nullptr};
 	PYERR_OCCURRED mPyErr_Occurred{nullptr};
-	PY_DECREF mPy_DecRef{nullptr};
-	PYGILSTATE_RELEASE mPyGILState_Release{nullptr};
-	PYIMPORT_ADDMODULE mPyImport_AddModule{nullptr};
-	PYMODULE_GETDICT mPyModule_GetDict{nullptr};
 	PYERR_PRINT mPyErr_Print{nullptr};
-	PYOBJECT_REPR mPyObject_Repr{nullptr};
-	PYUNICODE_ASENCODEDSTRING mPyUnicode_AsEncodedString{nullptr};
+	PYEVAL_INITTHREADS mPyEval_InitThreads{nullptr};
+	PYEVAL_RESTORETHREAD mPyEval_RestoreThread{nullptr};
+	PYEVAL_SAVETHREAD mPyEval_SaveThread{nullptr};
+	PYIMPORT_ADDMODULE mPyImport_AddModule{nullptr};
 	PYIMPORT_IMPORTMODULE mPyImport_ImportModule{nullptr};
 	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString{nullptr};
-	PY_COMPILESTRING mPy_CompileString{nullptr};
-	PYDICT_MERGE mPyDict_Merge{nullptr};
+	PYMODULE_GETDICT mPyModule_GetDict{nullptr};
+	PYOBJECT_REPR mPyObject_Repr{nullptr};
+	PYRUN_STRING mPyRun_String{nullptr};
+	PYUNICODE_ASENCODEDSTRING mPyUnicode_AsEncodedString{nullptr};
+	PY_DECREF mPy_DecRef{nullptr};
+	PY_FINALIZEEX mPy_FinalizeEx{nullptr};
+	PY_INITIALIZE mPy_Initialize{nullptr};
+	PY_NEWINTERPRETER mPy_NewInterpreter{nullptr};
 };
+
+#define TRY_GET_PROC(dll_handle_ref, type_name, function_name) \
+	m##function_name = (type_name)GetProcAddress(dll_handle_ref, #function_name); \
+	if (m##function_name == nullptr) { \
+		FreeLibrary(dll_handle_ref); dll_handle_ref = nullptr; \
+		m##function_name = nullptr; \
+		spdlog::error("Failed to get proc {}", #function_name); \
+		return false; \
+	}
 
 bool PythonDLL::PImpl::Initialize()
 {
@@ -74,36 +83,29 @@ bool PythonDLL::PImpl::Initialize()
 	}
 
 	if (mPy_Initialize) {
-		// Py_Initializeロード墨
+		// ロード済
 		return true;
 	}
 
-	// クラス内で使用するAPIを取得
-
-	mPy_Initialize = (PY_INITIALIZE)GetProcAddress(mDll, "Py_Initialize");
-	if (mPy_Initialize == nullptr) {
-		FreeLibrary(mDll);
-		mPy_Initialize = nullptr;
-		return false;
-	}
-	mPy_FinalizeEx = (PY_FINALIZEEX)GetProcAddress(mDll, "Py_FinalizeEx");
-	mPy_NewInterpreter = (PY_NEWINTERPRETER)GetProcAddress(mDll, "Py_NewInterpreter");
-	mPyEval_InitThreads = (PYEVAL_INITTHREADS)GetProcAddress(mDll, "PyEval_InitThreads");
-	mPyGILState_Ensure = (PYGILSTATE_ENSURE)GetProcAddress(mDll, "PyGILState_Ensure");
-	mPyRun_String = (PYRUN_STRING)GetProcAddress(mDll, "PyRun_String");
-	mPyString_AsString = (PYSTRING_ASSTRING)GetProcAddress(mDll, "PyBytes_AsString");
-	mPyErr_Occurred = (PYERR_OCCURRED)GetProcAddress(mDll, "PyErr_Occurred");
-	mPy_DecRef = (PY_DECREF)GetProcAddress(mDll, "Py_DecRef");
-	mPyGILState_Release = (PYGILSTATE_RELEASE)GetProcAddress(mDll, "PyGILState_Release");
-	mPyImport_AddModule = (PYIMPORT_ADDMODULE)GetProcAddress(mDll, "PyImport_AddModule");
-	mPyModule_GetDict = (PYMODULE_GETDICT)GetProcAddress(mDll, "PyModule_GetDict");
-	mPyErr_Print = (PYERR_PRINT)GetProcAddress(mDll, "PyErr_Print");
-	mPyObject_Repr = (PYOBJECT_REPR)GetProcAddress(mDll, "PyObject_Repr");
-	mPyUnicode_AsEncodedString = (PYUNICODE_ASENCODEDSTRING)GetProcAddress(mDll, "PyUnicode_AsEncodedString");
-	mPyImport_ImportModule = (PYIMPORT_IMPORTMODULE)GetProcAddress(mDll, "PyImport_ImportModule");
-	mPyMapping_SetItemString = (PYMAPPING_SETITEMSTRING)GetProcAddress(mDll, "PyMapping_SetItemString");
-	mPy_CompileString = (PY_COMPILESTRING)GetProcAddress(mDll, "Py_CompileString");
-	mPyDict_Merge = (PYDICT_MERGE)GetProcAddress(mDll, "PyDict_Merge");
+	// 使用するAPIを取得
+	TRY_GET_PROC(mDll, PYBYTES_ASSTRING, PyBytes_AsString);
+	TRY_GET_PROC(mDll, PYDICT_MERGE, PyDict_Merge);
+	TRY_GET_PROC(mDll, PYERR_OCCURRED, PyErr_Occurred);
+	TRY_GET_PROC(mDll, PYERR_PRINT, PyErr_Print);
+	TRY_GET_PROC(mDll, PYEVAL_INITTHREADS, PyEval_InitThreads);
+	TRY_GET_PROC(mDll, PYEVAL_RESTORETHREAD, PyEval_RestoreThread);
+	TRY_GET_PROC(mDll, PYEVAL_SAVETHREAD, PyEval_SaveThread);
+	TRY_GET_PROC(mDll, PYIMPORT_ADDMODULE, PyImport_AddModule);
+	TRY_GET_PROC(mDll, PYIMPORT_IMPORTMODULE, PyImport_ImportModule);
+	TRY_GET_PROC(mDll, PYMAPPING_SETITEMSTRING, PyMapping_SetItemString);
+	TRY_GET_PROC(mDll, PYMODULE_GETDICT, PyModule_GetDict);
+	TRY_GET_PROC(mDll, PYOBJECT_REPR, PyObject_Repr);
+	TRY_GET_PROC(mDll, PYRUN_STRING, PyRun_String);
+	TRY_GET_PROC(mDll, PYUNICODE_ASENCODEDSTRING, PyUnicode_AsEncodedString);
+	TRY_GET_PROC(mDll, PY_DECREF, Py_DecRef);
+	TRY_GET_PROC(mDll, PY_FINALIZEEX, Py_FinalizeEx);
+	TRY_GET_PROC(mDll, PY_INITIALIZE, Py_Initialize);
+	TRY_GET_PROC(mDll, PY_NEWINTERPRETER, Py_NewInterpreter);
 
 	// 初期化
 	mPy_Initialize();
@@ -111,62 +113,61 @@ bool PythonDLL::PImpl::Initialize()
 
 	// 辞書生成
 	mModule = mPyImport_AddModule("__main__");
-  mDict = mPyModule_GetDict(mModule);
+	mDict = mPyModule_GetDict(mModule);
 
 	void* pyMathModule = mPyImport_ImportModule("math");
 	void* matchDict = mPyModule_GetDict(pyMathModule);
 	mPyDict_Merge(mDict, matchDict, 1);
 
 	mPy_DecRef(pyMathModule);
+
+	// サブインタープリターを作成する
+	mBaseThreadState = mPy_NewInterpreter();
+
+	// GILを解放し、threadstateをnullにしておく
+	mPyEval_SaveThread();
+
 	return true;
 }
 
 void PythonDLL::PImpl::Finalize()
 {
-	if (mPy_FinalizeEx) {
-		mPy_FinalizeEx();
+	if (mDll == nullptr) {
+		return;
 	}
 
-	if (mDll) {
-		FreeLibrary(mDll);
-		mDll = nullptr;
+	// GILを取得する
+	mPyEval_RestoreThread(mBaseThreadState);
+	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する) 
+	mPy_FinalizeEx();
 
-		mPy_Initialize = nullptr;
-		mPy_FinalizeEx = nullptr;
-		mPyGILState_Ensure = nullptr;
-		mPyRun_String = nullptr;
-		mPyString_AsString = nullptr;
-		mPyErr_Occurred = nullptr;
-		mPy_DecRef = nullptr;
-		mPyGILState_Release = nullptr;
-		mPyImport_AddModule = nullptr;
-		mPyModule_GetDict = nullptr;
-		mPyErr_Print = nullptr;
-		mPyObject_Repr = nullptr;
-		mPyUnicode_AsEncodedString = nullptr;
-	}
+	// ライブラリをアンロード
+	FreeLibrary(mDll);
+	mDll = nullptr;
+
+	mPyBytes_AsString = nullptr;
+	mPyDict_Merge = nullptr;
+	mPyErr_Occurred = nullptr;
+	mPyErr_Print = nullptr;
+	mPyEval_InitThreads = nullptr;
+	mPyEval_RestoreThread = nullptr;
+	mPyEval_SaveThread = nullptr;
+	mPyImport_AddModule = nullptr;
+	mPyImport_ImportModule = nullptr;
+	mPyMapping_SetItemString = nullptr;
+	mPyModule_GetDict = nullptr;
+	mPyObject_Repr = nullptr;
+	mPyRun_String = nullptr;
+	mPyUnicode_AsEncodedString = nullptr;
+	mPy_DecRef = nullptr;
+	mPy_FinalizeEx = nullptr;
+	mPy_Initialize = nullptr;
+	mPy_NewInterpreter = nullptr;
 }
 
 
 PythonDLL::PythonDLL() : in(new PImpl)
 {
-	in->mDll = nullptr;
-	in->mModule = nullptr;
-	in->mDict = nullptr;
-
-	in->mPy_Initialize = nullptr;
-	in->mPy_FinalizeEx = nullptr;
-	in->mPyGILState_Ensure = nullptr;
-	in->mPyRun_String = nullptr;
-	in->mPyString_AsString = nullptr;
-	in->mPyErr_Occurred = nullptr;
-	in->mPy_DecRef = nullptr;
-	in->mPyGILState_Release = nullptr;
-	in->mPyImport_AddModule = nullptr;
-	in->mPyModule_GetDict = nullptr;
-	in->mPyErr_Print = nullptr;
-	in->mPyObject_Repr = nullptr;
-	in->mPyUnicode_AsEncodedString = nullptr;
 }
 
 PythonDLL::~PythonDLL()
@@ -174,7 +175,7 @@ PythonDLL::~PythonDLL()
 	in->Finalize();
 }
 
-bool PythonDLL::SetDLLPath(const CString& dllPath)
+bool PythonDLL::LoadDLL(const CString& dllPath)
 {
 	in->mDllPath = dllPath;
 	return in->Initialize();
@@ -182,25 +183,28 @@ bool PythonDLL::SetDLLPath(const CString& dllPath)
 
 bool PythonDLL::Evaluate(const CString& src, CString& result)
 {
-	int gstate = EnsureGILState();
+	if (in->mDll == nullptr) {
+		return false;
+	}
+	// GILを取得する
+	in->mPyEval_RestoreThread(in->mBaseThreadState);
 
 	CStringA srcA(src);
 	void* pyObject = RunString((LPCSTR)srcA);
 
 	// 文をインタープリタ側で評価した結果エラーだった場合
 	if (IsErrorOccurred()) {
-
 		// for debug
 		PrintError();
 
 		DecRef(pyObject);
 
-		ReleaseGILState(gstate);
+		in->mPyEval_SaveThread();
 		return false;
 	}
 
 	if (pyObject == nullptr) {
-		ReleaseGILState(gstate);
+		in->mPyEval_SaveThread();
 		return false;
 	}
 
@@ -212,7 +216,9 @@ bool PythonDLL::Evaluate(const CString& src, CString& result)
 	DecRef(repr);
 	DecRef(str);
 	DecRef(pyObject);
-	ReleaseGILState(gstate);
+
+	// GILを解放する
+	in->mPyEval_SaveThread();
 
 	return true;
 }
@@ -235,16 +241,6 @@ void PythonDLL::DecRef(void* obj)
 	}
 }
 
-int PythonDLL::EnsureGILState()
-{
-	return in->mPyGILState_Ensure();
-}
-
-void PythonDLL::ReleaseGILState(int gstate)
-{
-	in->mPyGILState_Release(gstate);
-}
-
 void* PythonDLL::RunString(LPCSTR script)
 {
 	return in->mPyRun_String(script, Py_eval_input, in->mDict, in->mDict);
@@ -262,7 +258,7 @@ void* PythonDLL::AsEncodedString(void* obj, const char* encoding, const char* er
 
 const char* PythonDLL::AsString(void* obj)
 {
-	return in->mPyString_AsString(obj);
+	return in->mPyBytes_AsString(obj);
 }
 
 
