@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,11 +34,12 @@ msgstr ""
 #: ../../source/system-commands.md:7
 msgid ""
 "削除することはできないが、名前を変更することはできる。   また、一部のコマンドについては無効化することができる。   "
-"無効化すると、[入力画面](#入力画面)でキーワードを入力しても候補として表示されず実行もできなくなる。"
+"無効化すると、[入力画面](/usage/how_to_use.md#open-input-"
+"window)でキーワードを入力しても候補として表示されず実行もできなくなる。"
 msgstr ""
 
 #: ../../source/system-commands.md:11
-msgid "名前の変更や無効化は[キーワードマネージャ](#キーワードマネージャ)で設定することができる。"
+msgid "名前の変更や無効化は[キーワードマネージャ](/window/keyword-manager)で設定することができる。"
 msgstr ""
 
 #: ../../source/system-commands.md:15
@@ -141,7 +142,9 @@ msgid "本アプリの実行ファイルが置かれているフォルダをエ�
 msgstr ""
 
 #: ../../source/system-commands.md:85 ../../source/system-commands.md:166
-msgid "[アプリケーション設定](#実行) で外部ファイラーを設定している場合は外部ファイラーで開く。   設定していない場合はエクスプローラーで開く。"
+msgid ""
+"[アプリケーション設定](/window/app-settings.md#comand-execute) "
+"で外部ファイラーを設定している場合は外部ファイラーで開く。   設定していない場合はエクスプローラーで開く。"
 msgstr ""
 
 #: ../../source/system-commands.md:90
@@ -249,7 +252,9 @@ msgid "設定ファイルの保存先フォルダをエクスプローラーま�
 msgstr ""
 
 #: ../../source/system-commands.md:169
-msgid "設定ファイルの保存先については [設定ファイルの保存先](#設定ファイルの保存先) を参照のこと"
+msgid ""
+"設定ファイルの保存先については [アプリデータの保存フォルダ](/usage/setup.md#configuration-directory) "
+"を参照のこと"
 msgstr ""
 
 #: ../../source/system-commands.md:173
@@ -265,9 +270,7 @@ msgid "Edit System Command"
 msgstr "システムコマンドの編集"
 
 #: ../../source/system-commands.md:180
-msgid ""
-"一部の[システムコマンド](#システムコマンド)は機能を無効化することができる。   "
-"無効化すると、入力欄にコマンド名を入力しても候補として表示されなくなる。"
+msgid "一部の[システムコマンド](#)は機能を無効化することができる。   無効化すると、入力欄にコマンド名を入力しても候補として表示されなくなる。"
 msgstr ""
 
 #: ../../source/system-commands.md:183

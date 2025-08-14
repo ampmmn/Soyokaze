@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -64,7 +64,9 @@ msgid "`フィルター`   入力した文字列でリストの表示項目を�
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:22
-msgid "`新規作成`   コマンドを新規登録する。[コマンドの種別を選択する画面](#コマンド種類選択)を表示する"
+msgid ""
+"`新規作成`   コマンドを新規登録する。[コマンドの種別を選択する画面](/window/keyword-manager.md#command-"
+"type)を表示する"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:24
@@ -88,7 +90,7 @@ msgid "作成するコマンドの種類を選択するための画面。   コ�
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:37
-msgid "各コマンドの説明については [コマンドの説明](#コマンドの説明) を参照のこと"
+msgid "各コマンドの説明については [登録型のコマンド](/user-commands) を参照のこと"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:39

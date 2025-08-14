@@ -241,6 +241,9 @@
     <Filter Include="python">
       <UniqueIdentifier>{d95507f6-af1c-47ca-a732-f0ec2fdc9feb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\winscp">
+      <UniqueIdentifier>{4c8b71bf-2679-46a5-a679-518582d88a0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1527,6 +1530,18 @@
     <ClInclude Include="python\PythonDLLLoader.h">
       <Filter>python</Filter>
     </ClInclude>
+    <ClInclude Include="commands\winscp\AppSettingWinScpPage.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\winscp\WinScpCommand.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\winscp\WinScpCommandParam.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\winscp\WinScpCommandProvider.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2704,6 +2719,18 @@
     </ClCompile>
     <ClCompile Include="python\PythonDLLLoader.cpp">
       <Filter>python</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\AppSettingWinScpPage.cpp">
+      <Filter>commands\winscp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\WinScpCommand.cpp">
+      <Filter>commands\winscp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\WinScpCommandParam.cpp">
+      <Filter>commands\winscp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp">
+      <Filter>commands\winscp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

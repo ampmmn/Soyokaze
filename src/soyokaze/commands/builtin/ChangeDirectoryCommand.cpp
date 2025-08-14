@@ -54,8 +54,6 @@ ChangeDirectoryCommand::~ChangeDirectoryCommand()
 
 BOOL ChangeDirectoryCommand::Execute(Parameter* param)
 {
-	auto pref = AppPreference::Get();
-
 	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示
 	bool isOpenPath = GetModifierKeyState(param, MASK_CTRL) != 0;
 	if (isOpenPath) {

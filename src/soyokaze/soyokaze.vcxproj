@@ -549,6 +549,10 @@
     <ClInclude Include="commands\webhistory\WebHistorySettingDialog.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h" />
+    <ClInclude Include="commands\winscp\AppSettingWinScpPage.h" />
+    <ClInclude Include="commands\winscp\WinScpCommand.h" />
+    <ClInclude Include="commands\winscp\WinScpCommandParam.h" />
+    <ClInclude Include="commands\winscp\WinScpCommandProvider.h" />
     <ClInclude Include="gui\ColorScheme.h" />
     <ClInclude Include="gui\ColorSettings.h" />
     <ClInclude Include="gui\CustomColorScheme.h" />
@@ -981,6 +985,10 @@
     <ClCompile Include="commands\webhistory\WebHistorySettingDialog.cpp" />
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp" />
+    <ClCompile Include="commands\winscp\AppSettingWinScpPage.cpp" />
+    <ClCompile Include="commands\winscp\WinScpCommand.cpp" />
+    <ClCompile Include="commands\winscp\WinScpCommandParam.cpp" />
+    <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />
     <ClCompile Include="gui\ColorSettings.cpp" />
     <ClCompile Include="gui\CustomColorScheme.cpp" />
     <ClCompile Include="gui\DDXWrapper.cpp" />

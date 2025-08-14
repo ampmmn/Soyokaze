@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,9 @@ msgid "Run Application"
 msgstr "アプリを起動する"
 
 #: ../../source/usage/how_to_use.md:5
-msgid "{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は[入力画面](#入力画面) が表示される。"
+msgid ""
+"{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は[入力画面](#open-input-window) "
+"が表示される。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:8
@@ -48,7 +50,9 @@ msgid "Exit Application"
 msgstr "アプリを終了する"
 
 #: ../../source/usage/how_to_use.md:16
-msgid "入力画面で[exit](#exit)コマンドを実行するか、[タスクトレイ](#タスクトレイ)から`終了`を選択する。"
+msgid ""
+"入力画面で[exit](/system-"
+"commands.md#exit)コマンドを実行するか、[タスクトレイ](/window/tasktray)から`終了`を選択する。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:18
@@ -68,7 +72,7 @@ msgid "アプリが起動している状態でランチャー呼び出しキー(
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:29
-msgid "![](../image/soyokaze-window2.png)"
+msgid "![](../image/input-window-parts.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:31
@@ -162,114 +166,112 @@ msgid "Register Command"
 msgstr "コマンドを登録する"
 
 #: ../../source/usage/how_to_use.md:64
-msgid "セットアップ直後はコマンドが何も登録されていないため、 [次セクションに記載する方法](#コマンドの登録方法)によりコマンドを登録する必要がある。"
+msgid ""
+"セットアップ直後はコマンドが何も登録されていないため、 後述の方法によりコマンドを登録する必要がある。   "
+"なお、[コマンドとして登録していなくても実行できる機能](/adhoc-commands)もある。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:67
-msgid "[コマンドとして登録していなくても実行できる機能](#コマンドとして登録していなくても実行できる機能)もある。"
+#: ../../source/usage/how_to_use.md:68
+msgid "本アプリでは以下の方法でコマンドを登録することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:69
-msgid "本アプリでは以下の方法でコマンドを登録することができる"
+#: ../../source/usage/how_to_use.md:70
+msgid "[`new`コマンドで登録する](#use-new-command)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:71
-msgid "[`new`コマンドで登録する](#newコマンドで登録する)"
+msgid "[`registwin`コマンドで登録する](#use-registwin-command)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:72
-msgid "[`registwin`コマンドで登録する](#registwinコマンドで登録する)"
+msgid "[対象ウインドウをDrag&Dropする](#capture-window)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:73
-msgid "[対象ウインドウをDrag&Dropする](#対象ウインドウをdragdropする)"
+msgid "[コンテキストメニューの`送る`>`コマンドとして登録する`](#sendto)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:74
-msgid "[コンテキストメニューの`送る`>`コマンドとして登録する`](#コンテキストメニューの送るコマンドとして登録する)"
+msgid "[エクスプローラのアイコンをDrag&Dropする](#drag-drop-file-and-folders)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:75
-msgid "[エクスプローラのアイコンをDrag&Dropする](#エクスプローラのアイコンをdragdropする)"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:77
+#: ../../source/usage/how_to_use.md:76
 msgid "各方法の詳細について後述する。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:79
+#: ../../source/usage/how_to_use.md:78
 msgid "Use new Command"
 msgstr "newコマンドで登録する"
 
-#: ../../source/usage/how_to_use.md:81
-msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](#コマンドの説明)を選択する画面が表示される。"
+#: ../../source/usage/how_to_use.md:80
+msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](/user-commands)を選択する画面が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:83
+#: ../../source/usage/how_to_use.md:82
 msgid "![](../image/input-new.png)   ↓   ![](../image/commandtype.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:87
+#: ../../source/usage/how_to_use.md:86
 msgid ""
 "コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。   ↓※ 通常コマンドのコマンド編集画面"
 "   ![](../image/new-normalcommand.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:91
+#: ../../source/usage/how_to_use.md:90
 msgid "コマンド編集画面で新規登録キーワードや紐づけるプログラムへのパスなどの情報を入力し、OKを押すと、コマンドとして登録される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:93
+#: ../../source/usage/how_to_use.md:92
 msgid "Use registwin Command"
 msgstr "registerwinコマンドで登録する"
 
-#: ../../source/usage/how_to_use.md:95
+#: ../../source/usage/how_to_use.md:94
 msgid ""
 "入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。   ↓"
 "   ![](../image/registwin.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:99
+#: ../../source/usage/how_to_use.md:98
 msgid "Capture Window"
 msgstr "対象ウインドウをキャプチャして登録する"
 
-#: ../../source/usage/how_to_use.md:101
+#: ../../source/usage/how_to_use.md:100
 msgid ""
 "入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。   ↓   "
 "![](../image/registringDragDrop.gif)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:105
+#: ../../source/usage/how_to_use.md:104
 msgid "SendTo"
 msgstr "コンテキストメニューの`送る`>`コマンドとして登録する`"
 
-#: ../../source/usage/how_to_use.md:107
+#: ../../source/usage/how_to_use.md:106
 msgid ""
-"アプリケーション設定の[基本＞ショートカット登録](#基本ショートカット登録) "
+"アプリケーション設定の[基本＞ショートカット登録](/window/app-settings.md#app-shortcut) "
 "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:109
+#: ../../source/usage/how_to_use.md:108
 msgid ""
 "登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される"
 "   ↓   ![](../image/sendto.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:113
+#: ../../source/usage/how_to_use.md:112
 msgid "Drag&Drop File and Folders."
 msgstr "ファイルやフォルダをDrag&Dropして登録する"
 
-#: ../../source/usage/how_to_use.md:115
+#: ../../source/usage/how_to_use.md:114
 msgid ""
 "エクスプローラ上のファイルやフォルダのアイコンをドラッグして、入力画面上にドロップすると、 "
 "該当するファイルやフォルダをコマンドとして登録することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:118
+#: ../../source/usage/how_to_use.md:117
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/usage/how_to_use.md:120
+#: ../../source/usage/how_to_use.md:119
 msgid "ランチャーが管理者権限で動作している場合に、一般権限で動作しているプロセスのアイコンをこの方法で登録することはできない。"
 msgstr ""
 

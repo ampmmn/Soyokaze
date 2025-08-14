@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -75,7 +75,7 @@ msgstr ""
 
 #: ../../source/user-command/filter.md:33
 msgid ""
-"[プログラムを実行する](#候補の生成方法---プログラムを実行する)   "
+"[プログラムを実行する](/user-command/filter.md#run-program)   "
 "任意のプログラムを実行し、そのプログラムの標準出力の内容を行単位で区切ったものを候補とする"
 msgstr ""
 
@@ -84,7 +84,9 @@ msgid "`クリップボードの内容を使用する`   コマンド実行時�
 msgstr ""
 
 #: ../../source/user-command/filter.md:37
-msgid "[候補を定義する](#候補の生成方法---候補を定義する)   候補とするテキストを直接定義する"
+msgid ""
+"[候補を定義する](/user-command/filter.md#define-items-directly)   "
+"候補とするテキストを直接定義する"
 msgstr ""
 
 #: ../../source/user-command/filter.md:39
@@ -114,143 +116,146 @@ msgid "`実行する処理`   候補を選択した後に実行する処理の�
 msgstr ""
 
 #: ../../source/user-command/filter.md:54
-msgid "[他のコマンドを実行する](#実行する処理---他のコマンドを実行する)"
+msgid "[他のコマンドを実行する](/user-command/filter.md#run-command)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:55
-msgid "[プログラムを実行する](#実行する処理---プログラムを実行する)"
+msgid "[プログラムを実行する](/user-command/filter.md#id1)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:56
-msgid "[クリップボードにコピーする](#実行する処理---クリップボードにコピーする)"
+msgid "[クリップボードにコピーする](/user-command/filter.md#copy-to-clipboard)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:58
-msgid "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgid ""
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   "
+"![](../image/hotkeyForCommand.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:61
+#: ../../source/user-command/filter.md:62
 msgid "Candidate Enumeration"
 msgstr "候補の生成方法"
 
-#: ../../source/user-command/filter.md:63
-#: ../../source/user-command/filter.md:102
+#: ../../source/user-command/filter.md:64
+#: ../../source/user-command/filter.md:103
 msgid "Run Program"
 msgstr "プログラムを実行する"
 
-#: ../../source/user-command/filter.md:65
+#: ../../source/user-command/filter.md:66
 msgid "![](../image/edit-filtercommand-prefilter-subprocess.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:67
-#: ../../source/user-command/filter.md:106
+#: ../../source/user-command/filter.md:68
+#: ../../source/user-command/filter.md:107
 msgid "`実行ファイル`   実行するプログラムのパスを指定する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:69
+#: ../../source/user-command/filter.md:70
 msgid "`パラメータ`   実行するプログラムに渡す引数を指定する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:71
+#: ../../source/user-command/filter.md:72
 msgid "`作業フォルダ`   実行するプログラムのカレントディレクトリを指定する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:73
+#: ../../source/user-command/filter.md:74
 msgid ""
 "`文字コード`   実行したプログラムが標準出力に出力したバイト列を、本アプリが文字列として解釈するときの文字コードを指定する   "
 "`UTF-8`または`ShiftJIS`を選択可能"
 msgstr ""
 
-#: ../../source/user-command/filter.md:76
+#: ../../source/user-command/filter.md:77
 msgid "`一度生成した候補一覧を次回も再利用する`   次回以降のコマンド実行時にプログラムを実行せずに前回の結果を再利用するかどうかを指定する。"
 msgstr ""
 
-#: ../../source/user-command/filter.md:78
+#: ../../source/user-command/filter.md:79
 msgid "チェックした場合、候補をひとたび生成した後は再生成をしない   アプリ終了まで継続する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:80
+#: ../../source/user-command/filter.md:81
 msgid "チェックしなかった場合、候補の生成(プログラム実行)を毎回行う"
 msgstr ""
 
-#: ../../source/user-command/filter.md:82
+#: ../../source/user-command/filter.md:83
 msgid "Define Items Directly"
 msgstr "候補を定義する"
 
-#: ../../source/user-command/filter.md:84
+#: ../../source/user-command/filter.md:85
 msgid "![](../image/edit-filtercommand-prefilter-constant.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:86
+#: ../../source/user-command/filter.md:87
 msgid "`候補の一覧`"
 msgstr ""
 
-#: ../../source/user-command/filter.md:87
+#: ../../source/user-command/filter.md:88
 msgid "候補として表示する文字列を記述する。   上図の場合、`A` `B` `C` という3つの候補が表示される"
 msgstr ""
 
-#: ../../source/user-command/filter.md:90
+#: ../../source/user-command/filter.md:91
 msgid "Post Actions"
 msgstr "実行する処理"
 
-#: ../../source/user-command/filter.md:92
+#: ../../source/user-command/filter.md:93
 msgid "Run Command"
 msgstr "他のコマンドを実行する"
 
-#: ../../source/user-command/filter.md:94
+#: ../../source/user-command/filter.md:95
 msgid "![](../image/edit-filtercommand-postfilter-command.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:96
+#: ../../source/user-command/filter.md:97
 msgid "`コマンド`   実行するコマンドを選択する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:98
+#: ../../source/user-command/filter.md:99
 msgid "`パラメータ`   コマンドに渡すパラメータを指定する   `$select`というキーワードを指定すると、選択した候補のテキストに置換される"
 msgstr ""
 
-#: ../../source/user-command/filter.md:104
+#: ../../source/user-command/filter.md:105
 msgid "![](../image/edit-filtercommand-postfilter-subprocess.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:108
+#: ../../source/user-command/filter.md:109
 msgid "`パラメータ`   プログラムに渡すパラメータを指定する   `$select`というキーワードを指定すると、選択した候補のテキストに置換される"
 msgstr ""
 
-#: ../../source/user-command/filter.md:111
+#: ../../source/user-command/filter.md:112
 msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
 msgstr ""
 
-#: ../../source/user-command/filter.md:113
+#: ../../source/user-command/filter.md:114
 msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶことができる   起動するプログラムによっては指定が効かないこともある"
 msgstr ""
 
-#: ../../source/user-command/filter.md:117
+#: ../../source/user-command/filter.md:118
 msgid "Copy To Clipboard"
 msgstr "クリップボードにコピーする"
 
-#: ../../source/user-command/filter.md:119
+#: ../../source/user-command/filter.md:120
 msgid "![](../image/edit-filtercommand-postfilter-copy.png)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:121
+#: ../../source/user-command/filter.md:122
 msgid ""
 "`パラメータ`   クリップボードにコピーするテキストの書式を指定する   "
 "`$select`というキーワードを指定すると、選択した候補のテキストに置換される"
 msgstr ""
 
-#: ../../source/user-command/filter.md:125
+#: ../../source/user-command/filter.md:126
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/user-command/filter.md:127
+#: ../../source/user-command/filter.md:128
 msgid ""
 "コマンドの設定次第で、候補の数が多くなる可能性がある。   "
 "その場合において、大量のデータを高速に絞り込むことを意識した実装などは全くしてないので、大量データを扱うならしかるべきツールを使うのが吉   "
 "(このコマンドはインクリメンタルな絞り込みをする手段をお手軽に提供するためのものなので..)"
 msgstr ""
 
-#: ../../source/user-command/filter.md:131
+#: ../../source/user-command/filter.md:132
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

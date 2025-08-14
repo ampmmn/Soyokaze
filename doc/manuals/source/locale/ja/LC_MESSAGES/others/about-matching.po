@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,9 @@ msgid "候補欄のコマンド表示順序をコマンドの一致度と優先�
 msgstr ""
 
 #: ../../source/others/about-matching.md:6
-msgid "一致度が高いものを優先して表示する。   一致度が同じ場合はコマンドの[優先度](#実行優先度)に従う。"
+msgid ""
+"一致度が高いものを優先して表示する。   一致度が同じ場合はコマンドの[優先度](/window/app-settings.md#command-"
+"execute-priority)に従う。"
 msgstr ""
 
 #: ../../source/others/about-matching.md:10
@@ -73,7 +75,8 @@ msgstr "弱一致"
 
 #: ../../source/others/about-matching.md:32
 msgid ""
-"他の区分の候補がない場合に表示対象とする、特殊な区分   "
-"[Web検索コマンド](#web検索コマンド)や[簡易辞書コマンド](#簡易辞書コマンド)などにおいて、コマンド名がなくても候補として表示するものを`弱一致`としている。"
+"他の区分の候補がない場合に表示対象とする、特殊な区分   [Web検索コマンド](/user-"
+"command/websearch)や[簡易辞書コマンド](/user-command/simple-"
+"dict)などにおいて、コマンド名がなくても候補として表示するものを`弱一致`としている。"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -50,7 +50,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/usage/setup.md:20
-msgid "下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得してください"
+msgid "下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得する"
 msgstr ""
 
 #: ../../source/usage/setup.md:23
@@ -96,7 +96,9 @@ msgid "インストール時に展開したフォルダごと削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:49
-msgid "[設定フォルダ](#設定ファイルの保存先) (C:/Users/(ユーザー名)/.{{project_lower}})を削除する"
+msgid ""
+"[設定フォルダ](#configuration-directory) "
+"(C:/Users/(ユーザー名)/.{{project_lower}})を削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:53
@@ -117,25 +119,21 @@ msgid ""
 "reset --hard origin:main` でOK"
 msgstr ""
 
-#: ../../source/usage/setup.md:65
-msgid "アプリケーションの設定情報の保存先については[設定ファイルの保存先](#設定ファイルの保存先)を参照のこと。"
-msgstr ""
-
-#: ../../source/usage/setup.md:69
+#: ../../source/usage/setup.md:67
 msgid "Configuration Directory"
 msgstr "アプリデータの保存フォルダ"
 
-#: ../../source/usage/setup.md:71
+#: ../../source/usage/setup.md:69
 msgid ""
 "アプリ初回起動時に ユーザーフォルダ直下(通常は `C:\\Users\\<ユーザー名>`)に .{{project_lower}} "
 "フォルダを作成し、このフォルダ内に設定ファイル一式を保存する。"
 msgstr ""
 
-#: ../../source/usage/setup.md:73
+#: ../../source/usage/setup.md:71
 msgid "Portable Mode"
 msgstr "ポータブル版"
 
-#: ../../source/usage/setup.md:75
+#: ../../source/usage/setup.md:73
 msgid ""
 "exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。   "
 "この場合、設定ファイル一式を`profile`フォルダ内に作成する。"

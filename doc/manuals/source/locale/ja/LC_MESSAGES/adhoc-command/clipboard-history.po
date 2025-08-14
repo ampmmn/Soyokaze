@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -38,7 +38,9 @@ msgid "プレフィックスとなる文字列を入力すると、クリップ�
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:11
-msgid "各種設定は[アプリ設定](#拡張機能クリップボード履歴)から設定することができる。"
+msgid ""
+"各種設定は[アプリ設定](/window/app-settings.md#extensions-clipboard-"
+"history)から設定することができる。"
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:13

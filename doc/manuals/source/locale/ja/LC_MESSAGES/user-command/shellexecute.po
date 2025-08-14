@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,8 +34,7 @@ msgid "General"
 msgstr "基本"
 
 #: ../../source/user-command/shellexecute.md:8
-#, python-brace-format
-msgid "![](../image/edit.png){ width=50% }"
+msgid "![](../image/edit.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:10
@@ -72,7 +71,7 @@ msgid "`$1`/`$2`/`$3` ... : 入力欄でコマンド名の後にスペース区�
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:25
-msgid "そのほかに[マクロ](#マクロ機能)を利用することが可能"
+msgid "そのほかに[マクロ](/macros)を利用することが可能"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:27
@@ -89,7 +88,8 @@ msgstr ""
 
 #: ../../source/user-command/shellexecute.md:35
 msgid ""
-"`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、コマンドを実行できる。   "
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   "
 "![](../image/hotkeyForCommand.png)"
 msgstr ""
 
@@ -115,8 +115,7 @@ msgid "Environment"
 msgstr "環境変数"
 
 #: ../../source/user-command/shellexecute.md:50
-#, python-brace-format
-msgid "![](../image/shellexec-envlist.png){ width=50% }"
+msgid "![](../image/shellexec-envlist.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:52
@@ -128,17 +127,13 @@ msgid "`追加する環境変数の一覧`     追加する環境変数のリス
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:57
-#, python-brace-format
-msgid ""
-"`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/shellexec-envadd.png){ "
-"width=37% }"
+msgid "`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/shellexec-envadd.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:60
-#, python-brace-format
 msgid ""
 "`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/shellexec-"
-"envedit.png){ width=37% }"
+"envedit.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:63
@@ -146,10 +141,9 @@ msgid "`削除`   クリックすると、リスト上で選択している変�
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:65
-#, python-brace-format
 msgid ""
 "`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/shellexec-"
-"envbulkadd.png){ width=40% }"
+"envbulkadd.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:69
@@ -157,8 +151,7 @@ msgid "Others"
 msgstr "その他"
 
 #: ../../source/user-command/shellexecute.md:71
-#, python-brace-format
-msgid "![](../image/edit-detail.png){ width=50% }"
+msgid "![](../image/edit-detail.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:73

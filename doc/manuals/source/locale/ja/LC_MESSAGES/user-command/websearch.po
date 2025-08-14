@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -66,7 +66,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/websearch.md:25
-msgid "この場合[弱一致](#一致度の区分)扱いとなる"
+msgid "この場合[弱一致](/others/about-matching.md#weak-match)扱いとなる"
 msgstr ""
 
 #: ../../source/user-command/websearch.md:26

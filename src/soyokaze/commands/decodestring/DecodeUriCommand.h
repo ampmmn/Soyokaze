@@ -30,6 +30,8 @@ public:
 
 public:
 	static CString TypeDisplayName();
+	static bool DecodeURI(std::string& src, CString& decoded);
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

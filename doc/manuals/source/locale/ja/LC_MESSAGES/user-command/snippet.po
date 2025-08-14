@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -46,11 +46,13 @@ msgid "`説明`   入力画面でのキーワード入力時にコメント表�
 msgstr ""
 
 #: ../../source/user-command/snippet.md:15
-msgid "`テキスト`   定型文を指定する。   定型文のテキストとして、[マクロ](#マクロ機能)を利用することが可能"
+msgid "`テキスト`   定型文を指定する。   定型文のテキストとして、[マクロ](/macros)を利用することが可能"
 msgstr ""
 
 #: ../../source/user-command/snippet.md:18
-msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、定型文をクリップボードにコピーできる。"
+msgid ""
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下すると、定型文をクリップボードにコピーできる。"
 msgstr ""
 
 #: ../../source/user-command/snippet.md:21

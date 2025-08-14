@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -59,13 +59,15 @@ msgid "`整列するウインドウの一覧`   整列する対象とするウ�
 msgstr ""
 
 #: ../../source/user-command/align-window.md:22
-msgid "`追加`   クリックすると、検索対象とするウインドウを[登録するための画面](#整列対象とするウインドウを登録する)を表示する。"
+msgid ""
+"`追加`   クリックすると、検索対象とするウインドウを[登録するための画面](/user-command/align-window.md"
+"#register-windows-for-alignment)を表示する。"
 msgstr ""
 
 #: ../../source/user-command/align-window.md:24
 msgid ""
-"`編集`   "
-"クリックすると、`整列するウインドウの一覧`で選択した項目の[登録内容を変更するための画面](#整列対象とするウインドウを登録する)を表示する。"
+"`編集`   クリックすると、`整列するウインドウの一覧`で選択した項目の[登録内容を変更するための画面](/user-command"
+"/align-window.md#register-windows-for-alignment)を表示する。"
 msgstr ""
 
 #: ../../source/user-command/align-window.md:26
@@ -109,7 +111,7 @@ msgid "Register Windows for Alignment"
 msgstr "整列対象とするウインドウを登録する"
 
 #: ../../source/user-command/align-window.md:50
-msgid "[ウインドウ整列コマンド](#ウインドウ整列コマンド)に登録するためのウインドウの情報を入力するための画面。"
+msgid "[ウインドウ整列コマンド](#)に登録するためのウインドウの情報を入力するための画面。"
 msgstr ""
 
 #: ../../source/user-command/align-window.md:52

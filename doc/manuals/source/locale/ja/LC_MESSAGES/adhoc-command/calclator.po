@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,34 +28,134 @@ msgid "入力欄に数式を入れると、計算結果をコメント欄に表�
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:6
-msgid "利用するにはPythonが必要。   Pythonを使っているので、演算子もPythonのものを使うことができる。"
+msgid "利用するにはPythonが必要。([設定画面](/window/app-settings.md#extensions))"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:9
+#: ../../source/adhoc-command/calclator.md:8
 msgid "![](../image/adhoc-command/calculator1.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:11
-msgid "Radix-Based Number Display"
-msgstr "基数別表示"
-
-#: ../../source/adhoc-command/calclator.md:13
-msgid "計算結果が整数になる場合は、2進数/8進数/10進数/16進数それぞれの結果が表示される。"
+#: ../../source/adhoc-command/calclator.md:10
+msgid "利用可能な演算子"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:15
-msgid "![](../image/adhoc-command/calculator2.png)"
+#: ../../source/adhoc-command/calclator.md
+msgid "演算子"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:17
+#: ../../source/adhoc-command/calclator.md
+msgid "意味"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "+"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "加算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "-"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "減算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "*"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "乗算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "/"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "除算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "//"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "切り捨て除算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "**"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "べき乗"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "<<,>>"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "シフト演算"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "%"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "剰余"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "&"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "AND"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "|"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "OR"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "^"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md
+msgid "XOR"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:26
 msgid "Function"
 msgstr "関数"
 
-#: ../../source/adhoc-command/calclator.md:19
+#: ../../source/adhoc-command/calclator.md:28
 msgid "その他、Python標準関数のうち、計算結果が文字列/数値になるものと、[math](https://docs.python.org/ja/3/library/math.html)モジュールの関数を使用することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:21
+#: ../../source/adhoc-command/calclator.md:30
 msgid "![](../image/calculator2.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:32
+msgid "Radix-Based Number Display"
+msgstr "基数別表示"
+
+#: ../../source/adhoc-command/calclator.md:34
+msgid "計算結果が整数になる場合は、2進数/8進数/10進数/16進数それぞれの結果が表示される。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:36
+msgid "![](../image/adhoc-command/calculator2.png)"
 msgstr ""
 

@@ -472,6 +472,17 @@ mp3ファイルのみ指定可能(他の音声ファイルには非対応)
 - `file://...をローカルパス表記に変換する`
   - チェックすると、[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする
 
+## Extension > WinSCP
+
+![](../image/adhoc-command/winscp-appsetting.png)
+
+- `機能を有効にする`  
+チェックすると、[WinSCPのセッション一覧を表示する](/adhoc-command/winscp)機能が有効になる。
+- `ポータブル版のWinSCPを利用する`  
+インストール版のWinSCPではなく、ポータブル版のWinSCPを使用している場合に使用する設定。  
+チェックすると、`WinSCP.exeのパス`欄が有効になる。  
+- `WinSCP.exeのパス`  
+ポータブル版のWinSCPを使用している場合の`WinSCP.exe`のパスを指定する。
 
 ## Logging
 

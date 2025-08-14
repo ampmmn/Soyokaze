@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -121,7 +121,23 @@ msgstr ""
 msgid "`RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。"
 msgstr ""
 
+#: ../../source/others/3rdlibs.md:38
+msgid "[Sphinx](https://www.sphinx-doc.org/)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:39
+msgid "マニュアル生成で利用している"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:40
+msgid "[sphinx_rtd_theme](https://github.com/readthedocs/sphinx_rtd_theme)"
+msgstr ""
+
 #: ../../source/others/3rdlibs.md:41
+msgid "マニュアル生成の際のテーマ"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:46
 msgid "非開示"
 msgstr ""
 

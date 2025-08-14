@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -96,7 +96,9 @@ msgid "`実行前に確認ダイアログを出す`   グループ実行時に�
 msgstr ""
 
 #: ../../source/user-command/group.md:43
-msgid "`ホットキー`   [コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
+msgid ""
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
 msgstr ""
 
 #: ../../source/user-command/group.md:46

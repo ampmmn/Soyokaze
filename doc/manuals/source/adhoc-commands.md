@@ -34,6 +34,7 @@ adhoc-command/windowssettings.md
 adhoc-command/clipboard-history.md
 adhoc-command/git-bash-pashconvert.md
 adhoc-command/file-pathconvert.md
+adhoc-command/winscp.md
 ```
 
 ## Other Features

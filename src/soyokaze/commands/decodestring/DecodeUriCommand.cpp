@@ -79,6 +79,23 @@ int DecodeUriCommand::Match(Pattern* pattern)
 	std::string s;
 	UTF2UTF(cmdline, s);
 
+	return DecodeURI(s, mName) ? Pattern::PartialMatch : Pattern::Mismatch;
+}
+
+launcherapp::core::Command*
+DecodeUriCommand::Clone()
+{
+	return new DecodeUriCommand();
+}
+
+CString DecodeUriCommand::TypeDisplayName()
+{
+	static CString TEXT_TYPE(_T("DecodeURI"));
+	return TEXT_TYPE;
+}
+
+bool DecodeUriCommand::DecodeURI(std::string& src, CString& decoded)
+{
 	// static std::regex reg("^.*%[0-9a-fA-F][0-9a-fA-F].*$");
 	// if (std::regex_match(s, reg) == false) {
 	// 	return Pattern::Mismatch;
@@ -87,14 +104,14 @@ int DecodeUriCommand::Match(Pattern* pattern)
 	bool isMatched = false;
 
 	std::string dst;
-	for (auto it = s.begin(); it != s.end(); ++it) {
+	for (auto it = src.begin(); it != src.end(); ++it) {
 
 		if (*it != '%') {
 			dst.append(1, *it);
 			continue;
 	 	}
 
-		if (it+1 == s.end()) {
+		if (it+1 == src.end()) {
 			dst.append(1, *it);
 			break;
 		}
@@ -104,7 +121,7 @@ int DecodeUriCommand::Match(Pattern* pattern)
 			continue;
 		}
 
-		if (it+2 == s.end()) {
+		if (it+2 == src.end()) {
 			dst.append(it, it + 2);
 			break;
 		}
@@ -126,24 +143,11 @@ int DecodeUriCommand::Match(Pattern* pattern)
 	}
 
 	if (isMatched == false) {
-		return Pattern::Mismatch;
+		return false;
 	}
 
-	UTF2UTF(dst, mName);
-
-	return Pattern::PartialMatch;
-}
-
-launcherapp::core::Command*
-DecodeUriCommand::Clone()
-{
-	return new DecodeUriCommand();
-}
-
-CString DecodeUriCommand::TypeDisplayName()
-{
-	static CString TEXT_TYPE(_T("DecodeURI"));
-	return TEXT_TYPE;
+	UTF2UTF(dst, decoded);
+	return true;
 }
 
 } // end of namespace decodestring

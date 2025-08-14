@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -44,7 +44,7 @@ msgid "以下の3つのいずれかを選択する。   `アクティブ時の�
 msgstr ""
 
 #: ../../source/window/command-hotkey.md:13
-msgid "種別の説明は[ホットキーの種別について](#ホットキーの種別について)を参照"
+msgid "種別の説明は[ホットキーの種別について](/others/hotkey)を参照"
 msgstr ""
 
 #: ../../source/window/command-hotkey.md:14

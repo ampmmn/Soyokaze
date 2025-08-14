@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -29,7 +29,8 @@ msgstr ""
 
 #: ../../source/user-command/alias.md:5
 msgid ""
-"このコマンドを使うと、[コントロールパネル](#コントロールパネル表示)や[UWPアプリ](#uwpアプリ)など、 "
+"このコマンドを使うと、[コントロールパネル](/adhoc-command/controlpanel)や[UWPアプリ](/adhoc-"
+"command/uwpapplication)など、 "
 "実行環境に入っているものに対して任意の名前をつけたり、ホットキーを割り当てて実行したりできる。"
 msgstr ""
 
@@ -84,7 +85,7 @@ msgid "`ホットキー`"
 msgstr ""
 
 #: ../../source/user-command/alias.md:25
-msgid "[コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、コマンドを実行できる。"
+msgid "[コマンドを呼び出すキー](/window/command-hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。"
 msgstr ""
 
 #: ../../source/user-command/alias.md:27
@@ -95,8 +96,8 @@ msgstr "例"
 msgid ""
 "例えば、前セクションの設定画面の場合、`\"Windows Update > Windows "
 "Update\"`という文字列が入力欄に入力・実行される。   すると、`Windows "
-"Update`の設定画面を表示することができる。([Windowsの設定コマンド](#windowsの設定) を有効にしている必要あり)   "
-"↓この画面   ![](../image/windows11-update.png)"
+"Update`の設定画面を表示することができる。([Windowsの設定コマンド](/adhoc-command/windowssettings)"
+" を有効にしている必要あり)   ↓この画面   ![](../image/windows11-update.png)"
 msgstr ""
 
 #: ../../source/user-command/alias.md:34

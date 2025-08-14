@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -60,11 +60,11 @@ msgid "`定型文の一覧`   グループに属する定型文の一覧が表�
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:23
-msgid "`追加`   グループに定型文を追加する。   [定型文編集画面](#定型文の編集画面)が表示される"
+msgid "`追加`   グループに定型文を追加する。   [定型文編集画面](#edit-snippets)が表示される"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:26
-msgid "`編集`   `定型文の一覧`上のリスト上で選択した定型文の内容を編集する。   [定型文編集画面](#定型文の編集画面)が表示される"
+msgid "`編集`   `定型文の一覧`上のリスト上で選択した定型文の内容を編集する。   [定型文編集画面](#edit-snippets)が表示される"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:29
@@ -81,8 +81,9 @@ msgstr ""
 
 #: ../../source/user-command/snippet-group.md:35
 msgid ""
-"`ホットキー`   "
-"[コマンドを呼び出すキー](#キー割り当て)を設定できる。設定したキーを押下すると、[入力画面](#入力画面)が表示され、グループの定型文の一覧が表示された状態になる"
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下すると、[入力画面](/usage/how_to_use.md#open-input-"
+"window)が表示され、グループの定型文の一覧が表示された状態になる"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:39

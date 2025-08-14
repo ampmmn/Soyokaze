@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -142,7 +142,9 @@ msgid "ツール作成者本人が想定する用途としてはファイルサ�
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:44
-msgid "[スタートメニューに登録](#基本ショートカット登録)してある場合は、トーストをクリックすると、監視対象フォルダを開くことができる"
+msgid ""
+"[スタートメニューに登録](/window/app-settings.md#app-"
+"shortcut)してある場合は、トーストをクリックすると、監視対象フォルダを開くことができる"
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:46

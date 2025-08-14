@@ -1459,6 +1459,17 @@ BEGIN
                     "SysLink",WS_TABSTOP,232,45,67,9
 END
 
+IDD_APPSETTING_WINSCP DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "機能を有効にする(&E)",IDC_CHECK_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,22,82,10
+    CONTROL         "ポータブル版のWinSCPを利用する(&P)",IDC_CHECK_USEPORTABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,39,129,10
+    LTEXT           "WinSCP.exeのパス(&F):",-1,23,56,70,8
+    EDITTEXT        IDC_EDIT_FILEPATH,96,53,143,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,242,53,31,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2014,6 +2025,14 @@ BEGIN
         RIGHTMARGIN, 304
         TOPMARGIN, 7
         BOTTOMMARGIN, 99
+    END
+
+    IDD_APPSETTING_WINSCP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2907,6 +2926,11 @@ BEGIN
     100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0
+END
+
+IDD_APPSETTING_WINSCP AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2025-08-14 13:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -58,7 +58,9 @@ msgid "製品開発の現場における、製品の正式名称(外向け)と�
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:16
-msgid "([定型文グループコマンド](#定型文グループ)と被るが)定型文をExcelで管理して、定型文として呼び出すような使い方ができる"
+msgid ""
+"([定型文グループコマンド](/user-command/snippet-"
+"group)と被るが)定型文をExcelで管理して、定型文として呼び出すような使い方ができる"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:17
@@ -221,7 +223,7 @@ msgid "チェックすると、コマンド名を入力しなくても、入力�
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:64
-msgid "この場合[弱一致](#一致度の区分)扱いとなる"
+msgid "この場合[弱一致](/others/about-matching.md#weak-match)扱いとなる"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:65
@@ -257,7 +259,7 @@ msgid "`マクロを展開する`"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:76
-msgid "コマンド実行時に[マクロ](#マクロ機能)を展開する"
+msgid "コマンド実行時に[マクロ](/macros)を展開する"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:78
