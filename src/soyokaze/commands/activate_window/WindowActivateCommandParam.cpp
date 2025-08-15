@@ -140,6 +140,13 @@ HWND CommandParam::FindHwnd()
 		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
 			auto thisPtr = (local_param*)lp;
 
+			// 自プロセスのウインドウは対象外
+			DWORD pid{0};
+			GetWindowThreadProcessId(h, &pid);
+			if (GetCurrentProcessId() == pid) {
+				return TRUE;
+			}
+
 			if (thisPtr->mParam->mCaptionStr.IsEmpty() == FALSE) {
 				TCHAR caption[256];
 				::GetWindowText(h, caption, 256);

@@ -61,7 +61,7 @@ static bool IsTopLevelWindow(HWND hwnd)
 	}
 
 	LONG_PTR styleEx = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
-	if (styleEx & (WS_EX_NOACTIVATE|WS_EX_NOREDIRECTIONBITMAP)) {
+	if (styleEx & (WS_EX_NOACTIVATE)) {
 		return false;
 	}
 
