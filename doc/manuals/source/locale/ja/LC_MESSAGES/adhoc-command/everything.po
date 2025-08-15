@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.43.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-15 17:18+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/everything.md:1
+msgid "Everything"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:3
+msgid "[Everything](https://www.voidtools.com/)の検索機能を利用して、フォルダやファイルを検索する。"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:5
+msgid "プレフィックス(初期設定は`et`)のあとにキーワードを指定すると、 Everythingでのキーワード検索結果を候補として表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:8
+msgid "![](../image/adhoc-command/everything-introduction.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:10
+msgid "Settings"
+msgstr "設定"
+
+#: ../../source/adhoc-command/everything.md:12
+msgid "アプリケーション設定の `拡張機能` > `Everything` から設定を変更できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:14
+msgid "![](../image/adhoc-command/everything-appsetting.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:16
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/adhoc-command/everything.md:18
+msgid "一度に表示する候補件数の上限は32件"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:19
+msgid "ファイル更新日時が新しい順に候補を表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:20
+msgid "この機能ではMigemo検索は適用されない"
+msgstr ""
+

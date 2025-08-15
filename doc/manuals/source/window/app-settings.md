@@ -472,6 +472,21 @@ mp3ファイルのみ指定可能(他の音声ファイルには非対応)
 - `file://...をローカルパス表記に変換する`
   - チェックすると、[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする
 
+## Extension > Everything
+
+![](../image/adhoc-command/everything-appsetting.png)
+
+- `機能を有効にする`  
+チェックすると、[Everything検索](/adhoc-command/everything)機能が有効になる。
+- `プレフィックス`  
+検索を開始するためのキーワードを指定する。  
+空欄にすると、Everything検索が常に有効になる。
+- `Everythingが起動していなかった場合に起動する`  
+チェックした場合、Everythingのアプリが起動していなかった場合に起動を試みる。  
+(Everything検索を行うためにはEverythingのアプリが起動している必要がある)
+- `Everything.exe`のパス  
+アプリを起動する際の実行ファイルのパスを指定する。
+
 ## Extension > WinSCP
 
 ![](../image/adhoc-command/winscp-appsetting.png)
