@@ -1,22 +1,55 @@
 #include "pch.h"
 #include "EverythingCommandProvider.h"
-#include "commands/everything/EverythingCommandLegacy.h"
-#include "commands/everything/AppSettingEverythingPage.h"
+#include "commands/everything/EverythingAdhocCommand.h"
+#include "commands/everything/EverythingCommandParam.h"
+#include "commands/everything/EverythingResult.h"
+#include "commands/everything/EverythingProxy.h"
+#include "matcher/PatternInternal.h"
+#include "setting/AppPreferenceListenerIF.h"
+#include "setting/AppPreference.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
-#include "commands/core/CommandFile.h"
 #include "resource.h"
-#include <list>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace commands {
-namespace everything {
+namespace launcherapp { namespace commands { namespace everything {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+
+struct EverythingCommandProvider::PImpl : 
+	public AppPreferenceListenerIF
+{
+	PImpl()
+	{
+		AppPreference::Get()->RegisterListener(this);
+	}
+	virtual ~PImpl()
+	{
+		AppPreference::Get()->UnregisterListener(this);
+	}
+
+
+// AppPreferenceListenerIF
+	void OnAppFirstBoot() override {}
+	void OnAppNormalBoot() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		Reload();
+	}
+	void OnAppExit() override {}
+
+	void Reload(); 
+
+	CommandParam mParam;
+};
+
+void EverythingCommandProvider::PImpl::Reload()
+{
+	auto pref = AppPreference::Get();
+	mParam.Load((Settings&)pref->GetSettings());
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +58,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 REGISTER_COMMANDPROVIDER(EverythingCommandProvider)
 
 
-EverythingCommandProvider::EverythingCommandProvider()
+EverythingCommandProvider::EverythingCommandProvider() : in(new PImpl)
 {
 }
 
@@ -38,70 +71,75 @@ CString EverythingCommandProvider::GetName()
 	return _T("EverythingCommand");
 }
 
-// 作成できるコマンドの種類を表す文字列を取得
-CString EverythingCommandProvider::GetDisplayName()
+// 一時的なコマンドの準備を行うための初期化
+void EverythingCommandProvider::PrepareAdhocCommands()
 {
-	return CString((LPCTSTR)_T("Everything検索"));
+	in->Reload();
 }
 
-// コマンドの種類の説明を示す文字列を取得
-CString EverythingCommandProvider::GetDescription()
+// 一時的なコマンドを必要に応じて提供する
+void EverythingCommandProvider::QueryAdhocCommands(
+	Pattern* pattern,
+ 	CommandQueryItemList& commands
+)
 {
-	CString description(_T("Everything検索を定義します。\n"));
-	description += _T("条件をプリセットした状態でEverything検索を行い、検索結果を得ることができます。\n");
-	description += _T("(Everythingを起動しておく必要があります)");
-	return description;
-}
-
-// コマンド新規作成ダイアログ
-bool EverythingCommandProvider::NewDialog(CommandParameter* param)
-{
-	EverythingCommandLegacy* newCmd = nullptr;
-	if (EverythingCommandLegacy::NewDialog(param, &newCmd) == false) {
-		return false;
+	// 機能を利用しない場合は抜ける
+	if (in->mParam.mIsEnable == false) {
+		return;
 	}
 
-	CommandRepository::GetInstance()->RegisterCommand(newCmd);
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mParam.mPrefix;
+	bool hasPrefix = prefix.IsEmpty() == FALSE;
+	if (hasPrefix && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return;
+	}
 
-	return true;
-}
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		return;
+	}
 
-// 非公開コマンドかどうか(新規作成対象にしない)
-bool EverythingCommandProvider::IsPrivate() const
-{
-	// 0.36.0で、登録型コマンドを廃止
-	return true;
-}
+	CString queryStr;
 
-// Provider間の優先順位を表す値を返す。小さいほど優先
-uint32_t EverythingCommandProvider::GetOrder() const
-{
-	return 2050;
+	// Everythingに問い合わせるための文字列を生成
+ 	std::vector<PatternInternal::WORD> words;
+	pat2->GetWords(words);
+	for (size_t i = hasPrefix ? 1 : 0; i < words.size(); ++i) {
+		auto& word = words[i];
+		//if (word.mMethod == PatternInternal::RegExp) {
+		//	queryStr += word.mWord;
+		//}
+		//else {
+			queryStr += word.mRawWord;
+		//}
+		queryStr += _T(" ");
+	}
+
+	spdlog::debug(_T("Everything QueryStr:{}"), (LPCTSTR)queryStr);
+
+	std::vector<EverythingResult> results;
+	EverythingProxy::Get()->Query(queryStr, results);
+
+	for (auto& result : results) {
+		int level = result.mMatchLevel;
+		if (hasPrefix && level == Pattern::PartialMatch) {
+			level = Pattern::FrontMatch;
+		}
+		commands.Add(CommandQueryItem(level, new EverythingAdhocCommand(in->mParam, result)));
+	}
+
+	if (hasPrefix && results.empty()) {
+			// 件数0件の場合に、弱一致の候補表示を抑制するためにダミーの項目を追加する
+			commands.Add(CommandQueryItem(Pattern::HiddenMatch, new EverythingAdhocCommand()));
+	}
 }
 
 // Providerが扱うコマンド種別(表示名)を列挙
 uint32_t EverythingCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
-	displayNames.push_back(EverythingCommandLegacy::TypeDisplayName());
+	displayNames.push_back(_T("Everything検索"));
 	return 1;
 }
 
-void EverythingCommandProvider::OnBeforeLoad()
-{
-}
-
-bool EverythingCommandProvider::LoadFrom(CommandEntryIF* entry, Command** retCommand)
-{
-	std::unique_ptr<EverythingCommandLegacy> command(new EverythingCommandLegacy);
-	if (command->Load(entry) == false) {
-		return false;
-	}
-	ASSERT(retCommand);
-	*retCommand = command.release();
-	return true;
-}
-
-} // end of namespace everything
-} // end of namespace commands
-} // end of namespace launcherapp
-
+}}} // end of namespace launcherapp::commands::everything

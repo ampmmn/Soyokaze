@@ -2,8 +2,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingEverythingPage.h"
+#include "commands/everything/EverythingCommandParam.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
+#include "gui\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 
@@ -15,62 +17,76 @@ namespace launcherapp {
 namespace commands {
 namespace everything {
 
-AppSettingEverythingPage::AppSettingEverythingPage(CWnd* parentWnd) : 
-	SettingPage(_T("Everything"), IDD_APPSETTING_EVERYTHING, parentWnd),
-	mIsUseAPI(FALSE), mIsRunApp(FALSE)
+class AppSettingPage : public CDialog
 {
-}
+public:
+	void OnEnterSettings(Settings* settingsPtr);
+	bool OnSetActive();
+	bool OnKillActive();
 
-AppSettingEverythingPage::~AppSettingEverythingPage()
-{
-}
+	void OnOK() override;
+protected:
+	bool UpdateStatus();
 
-BOOL AppSettingEverythingPage::OnKillActive()
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+
+// 実装
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnUpdateStatus();
+	afx_msg void OnButtonBrowse();
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+
+public:
+	CommandParam mParam;
+	Settings* mSettingsPtr{nullptr};
+};
+
+bool AppSettingPage::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
-		return FALSE;
+		return false;
 	}
 
-	if (mIsRunApp == 1 && Path::FileExists(mEverythingExePath) == FALSE) {
+	if (mParam.mIsRunApp && Path::FileExists(mParam.mEverythingExePath) == FALSE) {
 		CString msg;
-		msg.Format(_T("%sは有効なパスではありません"), (LPCTSTR)mEverythingExePath);
+		msg.Format(_T("%sは有効なパスではありません"), (LPCTSTR)mParam.mEverythingExePath);
 		AfxMessageBox(msg);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL AppSettingEverythingPage::OnSetActive()
+bool AppSettingPage::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
-	return TRUE;
+	return true;
 }
 
-void AppSettingEverythingPage::OnOK()
+void AppSettingPage::OnOK()
 {
-	auto settingsPtr = (Settings*)GetParam();
-	settingsPtr->Set(_T("Everything:IsUseAPI"), mIsUseAPI != FALSE);
-	settingsPtr->Set(_T("Everything:IsRunApp"), mIsRunApp != FALSE);
-	settingsPtr->Set(_T("Everything:EverythingExePath"), mEverythingExePath);
-
+	mParam.Save(*mSettingsPtr);
 	__super::OnOK();
 }
 
-void AppSettingEverythingPage::DoDataExchange(CDataExchange* pDX)
+void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_USEAPI, mIsUseAPI);
-	DDX_Check(pDX, IDC_CHECK_RUNEVERYTHING, mIsRunApp);
-	DDX_Text(pDX, IDC_EDIT_EVERYTHINGEXEPATH, mEverythingExePath);
+	DDX_Check(pDX, IDC_CHECK_ENABLE, mParam.mIsEnable);
+	DDX_Text(pDX, IDC_EDIT_PREFIX, mParam.mPrefix);
+	DDX_Check(pDX, IDC_CHECK_RUNEVERYTHING, mParam.mIsRunApp);
+	DDX_Text(pDX, IDC_EDIT_EVERYTHINGEXEPATH, mParam.mEverythingExePath);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(AppSettingEverythingPage, SettingPage)
+BEGIN_MESSAGE_MAP(AppSettingPage, CDialog)
+	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_RUNEVERYTHING, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowse)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_COMMAND, OnNotifyLinkOpen)
@@ -79,7 +95,7 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL AppSettingEverythingPage::OnInitDialog()
+BOOL AppSettingPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 	UpdateStatus();
@@ -88,53 +104,47 @@ BOOL AppSettingEverythingPage::OnInitDialog()
 	return TRUE;
 }
 
-bool AppSettingEverythingPage::UpdateStatus()
+bool AppSettingPage::UpdateStatus()
 {
-	BOOL isRunApp = (mIsRunApp == 1) ? TRUE : FALSE;
-	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->EnableWindow(isRunApp);
-	GetDlgItem(IDC_EDIT_EVERYTHINGEXEPATH)->EnableWindow(isRunApp);
+	bool isEnable = mParam.mIsEnable;
+	BOOL isRunApp = mParam.mIsRunApp ? TRUE : FALSE;
+
+	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
+	GetDlgItem(IDC_CHECK_RUNEVERYTHING)->EnableWindow(isEnable);
+	GetDlgItem(IDC_EDIT_EVERYTHINGEXEPATH)->EnableWindow(isEnable && isRunApp);
+	GetDlgItem(IDC_BUTTON_BROWSEFILE1)->EnableWindow(isEnable && isRunApp);
 
 	return true;
 }
 
-void AppSettingEverythingPage::OnEnterSettings()
+void AppSettingPage::OnEnterSettings(Settings* settingsPtr)
 {
-	auto settingsPtr = (Settings*)GetParam();
-
-	mIsUseAPI = settingsPtr->Get(_T("Everything:IsUseAPI"), true);
-	mIsRunApp = settingsPtr->Get(_T("Everything:IsRunApp"), false);
-	mEverythingExePath = settingsPtr->Get(_T("Everything:EverythingExePath"), _T(""));
+	mSettingsPtr = settingsPtr;
+	mParam.Load(*mSettingsPtr);
 }
 
-bool AppSettingEverythingPage::GetHelpPageId(CString& id)
-{
-	id = _T("EverythingSetting");
-	return true;
-}
-
-
-void AppSettingEverythingPage::OnUpdateStatus()
+void AppSettingPage::OnUpdateStatus()
 {
 	UpdateData();
 	UpdateStatus();
 }
 
-void AppSettingEverythingPage::OnButtonBrowse()
+void AppSettingPage::OnButtonBrowse()
 {
 	UpdateData();
 
 	CString filterStr(_T("Everything.exe|Everything.exe|実行ファイル(*.exe)|*.exe||"));
-	CFileDialog dlg(TRUE, NULL, mEverythingExePath, OFN_FILEMUSTEXIST, filterStr, this);
+	CFileDialog dlg(TRUE, NULL, mParam.mEverythingExePath, OFN_FILEMUSTEXIST, filterStr, this);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
-	mEverythingExePath = dlg.GetPathName();
+	mParam.mEverythingExePath = dlg.GetPathName();
 	UpdateData(FALSE);
 }
 
 // マニュアル表示
-void AppSettingEverythingPage::OnNotifyLinkOpen(
+void AppSettingPage::OnNotifyLinkOpen(
 	NMHDR *,
  	LRESULT *pResult
 )
@@ -143,6 +153,77 @@ void AppSettingEverythingPage::OnNotifyLinkOpen(
 	manual->Navigate(_T("EverythingEdit"));
 	*pResult = 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+struct AppSettingPageEverything::PImpl
+{
+	AppSettingPage mWindow;
+};
+
+REGISTER_APPSETTINGPAGE(AppSettingPageEverything)
+
+AppSettingPageEverything::AppSettingPageEverything() : 
+	AppSettingPageBase(_T("拡張機能"), _T("Everything")),
+	in(new PImpl)
+{
+}
+
+AppSettingPageEverything::~AppSettingPageEverything()
+{
+}
+
+// ウインドウを作成する
+bool AppSettingPageEverything::Create(HWND parentWindow)
+{
+	return in->mWindow.Create(IDD_APPSETTING_EVERYTHING, CWnd::FromHandle(parentWindow)) != FALSE;
+}
+
+// ウインドウハンドルを取得する
+HWND AppSettingPageEverything::GetHwnd()
+{
+	return in->mWindow.GetSafeHwnd();
+}
+
+// 同じ親の中で表示する順序(低いほど先に表示)
+int AppSettingPageEverything::GetOrder()
+{
+	return 250;
+}
+// 
+bool AppSettingPageEverything::OnEnterSettings()
+{
+	in->mWindow.OnEnterSettings((Settings*)GetParam());
+	return true;
+}
+
+// ページがアクティブになるときに呼ばれる
+bool AppSettingPageEverything::OnSetActive()
+{
+	return in->mWindow.OnSetActive();
+}
+
+// ページが非アクティブになるときに呼ばれる
+bool AppSettingPageEverything::OnKillActive()
+{
+	return in->mWindow.OnKillActive();
+}
+//
+void AppSettingPageEverything::OnOKCall()
+{
+	in->mWindow.OnOK();
+}
+
+// ページに関連付けられたヘルプページIDを取得する
+bool AppSettingPageEverything::GetHelpPageId(CString& id)
+{
+	id = _T("EverythingSetting");
+	return true;
+}
+
+
 
 
 

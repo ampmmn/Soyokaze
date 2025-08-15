@@ -1,10 +1,8 @@
 #pragma once
 
-#include "hotkey/CommandHotKeyAttribute.h"
+#include "setting/Settings.h"
 
-namespace launcherapp {
-namespace commands {
-namespace everything {
+namespace launcherapp { namespace commands { namespace everything {
 
 class CommandParam
 {
@@ -13,28 +11,22 @@ public:
 	CommandParam(const CommandParam&) = default;
 	~CommandParam();
 
-	CString BuildQueryString(const CString& queryStr);
+	CommandParam& operator = (const CommandParam& rhs);
+
+	bool Save(Settings& settings) const;
+	bool Load(Settings& settings);
 
 public:
-	CString mName;
-	CString mDescription;
+	CString mPrefix;
 
-	// 検索対象ディレクトリ
-	CString mBaseDir;
-	// 検索対象
-	int mTargetType{0};   // 0:ファイルとフォルダ 1:ファイルのみ 2:フォルダのみ
-	// 大文字小文字を区別する
-	BOOL mIsMatchCase{FALSE};
-	// 正規表現を使う
-	BOOL mIsRegex{FALSE};
-	// その他のパラメータ
-	CString mOtherParam;
-	// ホットキー設定
-	CommandHotKeyAttribute mHotKeyAttr;
+	// 機能を利用するか?
+	bool mIsEnable{false};
+	// Everythingアプリが起動していない場合に起動するか?
+	bool mIsRunApp{false};
+	// コマンドライン経由で使用する場合のEverything.exeのパス
+	CString mEverythingExePath;
+
 };
 
 
-} // end of namespace everything
-} // end of namespace commands
-} // end of namespace launcherapp
-
+}}} // end of namespace launcherapp::commands::everything

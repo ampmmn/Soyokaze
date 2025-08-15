@@ -969,9 +969,6 @@
     <ClInclude Include="commands\everything\Everything-SDK\ipc\everything_ipc.h">
       <Filter>commands\everything\Everything-SDK\ipc</Filter>
     </ClInclude>
-    <ClInclude Include="commands\everything\EverythingCommandEditDialog.h">
-      <Filter>commands\everything</Filter>
-    </ClInclude>
     <ClInclude Include="commands\everything\EverythingCommandParam.h">
       <Filter>commands\everything</Filter>
     </ClInclude>
@@ -1167,9 +1164,6 @@
     <ClInclude Include="commands\keysplitter\KeySplitterCommandEditor.h">
       <Filter>commands\keysplitter</Filter>
     </ClInclude>
-    <ClInclude Include="commands\everything\EverythingCommandEditor.h">
-      <Filter>commands\everything</Filter>
-    </ClInclude>
     <ClInclude Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.h">
       <Filter>commands\url_directoryindex</Filter>
     </ClInclude>
@@ -1340,9 +1334,6 @@
     </ClInclude>
     <ClInclude Include="icon\AppIcon.h">
       <Filter>icon</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\everything\EverythingCommandLegacy.h">
-      <Filter>commands\everything</Filter>
     </ClInclude>
     <ClInclude Include="utility\DemotedProcessToken.h">
       <Filter>utility</Filter>
@@ -2216,9 +2207,6 @@
     <ClCompile Include="commands\everything\Everything-SDK\src\Everything.c">
       <Filter>commands\everything\Everything-SDK\src</Filter>
     </ClCompile>
-    <ClCompile Include="commands\everything\EverythingCommandEditDialog.cpp">
-      <Filter>commands\everything</Filter>
-    </ClCompile>
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp">
       <Filter>commands\everything</Filter>
     </ClCompile>
@@ -2393,9 +2381,6 @@
     <ClCompile Include="commands\keysplitter\KeySplitterCommandEditor.cpp">
       <Filter>commands\keysplitter</Filter>
     </ClCompile>
-    <ClCompile Include="commands\everything\EverythingCommandEditor.cpp">
-      <Filter>commands\everything</Filter>
-    </ClCompile>
     <ClCompile Include="commands\url_directoryindex\URLDirectoryIndexCommandEditor.cpp">
       <Filter>commands\url_directoryindex</Filter>
     </ClCompile>
@@ -2539,9 +2524,6 @@
     </ClCompile>
     <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp">
       <Filter>mainwindow\layout</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\everything\EverythingCommandLegacy.cpp">
-      <Filter>commands\everything</Filter>
     </ClCompile>
     <ClCompile Include="utility\DemotedProcessToken.cpp">
       <Filter>utility</Filter>

@@ -16,6 +16,7 @@ class EverythingAdhocCommand :
 	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
+	EverythingAdhocCommand();
 	EverythingAdhocCommand(const CommandParam& param, const EverythingResult& result);
 	virtual ~EverythingAdhocCommand();
 

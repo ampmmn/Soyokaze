@@ -466,9 +466,6 @@
     <ClInclude Include="commands\everything\Everything-SDK\include\Everything.h" />
     <ClInclude Include="commands\everything\Everything-SDK\ipc\everything_ipc.h" />
     <ClInclude Include="commands\everything\EverythingAdhocCommand.h" />
-    <ClInclude Include="commands\everything\EverythingCommandEditDialog.h" />
-    <ClInclude Include="commands\everything\EverythingCommandEditor.h" />
-    <ClInclude Include="commands\everything\EverythingCommandLegacy.h" />
     <ClInclude Include="commands\everything\EverythingCommandParam.h" />
     <ClInclude Include="commands\everything\EverythingCommandProvider.h" />
     <ClInclude Include="commands\everything\EverythingProxy.h" />
@@ -900,9 +897,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="commands\everything\EverythingAdhocCommand.cpp" />
-    <ClCompile Include="commands\everything\EverythingCommandEditDialog.cpp" />
-    <ClCompile Include="commands\everything\EverythingCommandEditor.cpp" />
-    <ClCompile Include="commands\everything\EverythingCommandLegacy.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandParam.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />

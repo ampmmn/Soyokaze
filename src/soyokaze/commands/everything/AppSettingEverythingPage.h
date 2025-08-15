@@ -1,43 +1,44 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "settingwindow/AppSettingPageBase.h"
+#include "settingwindow/AppSettingPageRepository.h"
+#include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace everything {
+namespace launcherapp { namespace commands { namespace everything {
 
-class AppSettingEverythingPage : public SettingPage
+class AppSettingPageEverything :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingEverythingPage(CWnd* parentWnd);
-	virtual ~AppSettingEverythingPage();
+	AppSettingPageEverything();
+	~AppSettingPageEverything();
 
-	BOOL mIsUseAPI;
-	BOOL mIsRunApp;
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
 
-	// コマンドライン経由で使用する場合のEverything.exeのパス
-	CString mEverythingExePath;
-	
-protected:
-	bool UpdateStatus();
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(CString& helpPageId) override;
 
-	BOOL OnKillActive() override;
-	BOOL OnSetActive() override;
-	void OnOK() override;
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
-// 実装
-protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnUpdateStatus();
-	afx_msg void OnButtonBrowse();
-	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPageEverything(); }
+
+	DECLARE_APPSETTINGPAGE(AppSettingPageEverything)
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
-
-} // end of namespace everything
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::everything
 

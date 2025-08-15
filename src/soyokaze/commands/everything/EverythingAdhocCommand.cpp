@@ -33,6 +33,13 @@ struct EverythingAdhocCommand::PImpl
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(EverythingAdhocCommand)
 
+EverythingAdhocCommand::EverythingAdhocCommand() : 
+	AdhocCommandBase(_T(""), _T("")),
+	in(std::make_unique<PImpl>())
+{
+}
+
+
 EverythingAdhocCommand::EverythingAdhocCommand(
 	const CommandParam& param,
  	const EverythingResult& result
@@ -50,13 +57,13 @@ EverythingAdhocCommand::~EverythingAdhocCommand()
 
 CString EverythingAdhocCommand::GetName()
 {
-	return in->mParam.mName + _T(" ") + PathFindFileName(in->mResult.mFullPath);
+	return in->mResult.mFullPath;
 }
 
 CString EverythingAdhocCommand::GetDescription()
 {
 	CString str;
-	str.Format(_T("%s"), (LPCTSTR)in->mResult.mFullPath);
+	str.Format(_T("%s"), (LPCTSTR)PathFindFileName(in->mResult.mFullPath));
 	return str;
 
 }
@@ -109,7 +116,7 @@ EverythingAdhocCommand::Clone()
 
 CString EverythingAdhocCommand::GetSourceName()
 {
-	return in->mParam.mName;
+	return in->mParam.mPrefix;
 }
 
 bool EverythingAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

@@ -18,9 +18,7 @@ private:
 public:
 	static EverythingProxy* Get();
 
-	void Query(const CString& queryStr, std::vector<EverythingResult>& results);
-
-	bool IsUseAPI();
+	bool Query(const CString& queryStr, std::vector<EverythingResult>& results);
 
 	HICON GetIcon();
 

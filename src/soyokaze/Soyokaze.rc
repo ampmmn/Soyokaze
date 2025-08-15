@@ -1004,16 +1004,14 @@ IDD_APPSETTING_EVERYTHING DIALOGEX 0, 0, 309, 285
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Everyhing SDKが提供するAPIを利用して検索を行う(&S)",IDC_CHECK_USEAPI,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,34,187,10
+    CONTROL         "機能を有効にする(&E)",IDC_CHECK_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,22,82,10
+    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,37,51,8
+    EDITTEXT        IDC_EDIT_PREFIX,88,34,52,14,ES_AUTOHSCROLL
     CONTROL         "Everythingが起動していなかった場合に起動する(&R)",IDC_CHECK_RUNEVERYTHING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,71,177,10
-    LTEXT           "&Everything.exeのパス:",-1,28,89,81,8
-    EDITTEXT        IDC_EDIT_EVERYTHINGEXEPATH,115,86,149,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "&...",IDC_BUTTON_BROWSEFILE1,263,86,20,14
-    LTEXT           "Everything SDKのAPIを使って検索を行います\nインクリメンタル検索ができ、結果は候補欄に表示されます。",-1,29,47,257,24
-    CONTROL         "<A HREF=""https://sample.com/sample"">Everything検索コマンド</A>実行に関する設定",IDC_SYSLINK_COMMAND,
-                    "SysLink",WS_TABSTOP,15,15,179,9
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,57,177,10
+    LTEXT           "&Everything.exeのパス:",IDC_STATIC,33,75,81,8
+    EDITTEXT        IDC_EDIT_EVERYTHINGEXEPATH,115,72,149,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&...",IDC_BUTTON_BROWSEFILE1,263,72,20,14
 END
 
 IDD_WEBHISTORYEDIT DIALOGEX 0, 0, 347, 287
