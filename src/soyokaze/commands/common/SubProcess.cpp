@@ -244,18 +244,30 @@ bool SubProcess::Run(
 	// 「パスを開く」指定の場合はファイラで経由でパスを表示する形に差し替える
 	bool isDir = Path::IsDirectory(path);
 	if ((in->IsOpenPathKeyPressed() && Path::FileExists(path)) || isDir) {
+
+		bool isFilerAvailable = false;
+
 		if (pref->IsUseFiler()) {
 			// ファイラ経由でパスを表示する形に差し替える
 			paramStr = pref->GetFilerParam();
 			paramStr.Replace(_T("$target"), path);
 
-			path = pref->GetFilerPath();
-			ExpandArguments(path, args);
-			ExpandMacros(path);
+			auto filerPath = pref->GetFilerPath();
+			ExpandArguments(filerPath, args);
+			ExpandMacros(filerPath);
 
+			isFilerAvailable = Path::FileExists(filerPath);
+			if (isFilerAvailable) {
+				path = filerPath;
+			}
+			else {
+				// ファイラーが見つからない旨をログにだす
+				spdlog::warn(_T("Failed to locate the specified file manager. {}"), (LPCTSTR)filerPath);
+			}
 		}
-		else {
-			// 登録されたファイラーがない場合はエクスプローラで開く
+
+		if (isFilerAvailable == false) {
+			// 登録されたファイラーがない、または、利用できない場合はエクスプローラで開く
 			if (isDir == FALSE) {
 				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
 				path.ReleaseBuffer();
