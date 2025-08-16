@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ClipboardHistoryCommand.h"
+#include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "mainwindow/controller/MainWindowController.h"
@@ -18,6 +19,10 @@ using namespace launcherapp::commands::common;
 namespace launcherapp {
 namespace commands {
 namespace clipboardhistory {
+
+
+constexpr LAUNCHER_IFID IFID_CLIPBOARDHISTORYCOMMAND = 
+{ 0x98d6ea5b, 0xfa57, 0x48d4, { 0xbf, 0x60, 0x4a, 0x1e, 0x39, 0xf1, 0x96, 0xda } };
 
 struct ClipboardHistoryCommand::PImpl
 {
@@ -137,6 +142,63 @@ launcherapp::core::Command*
 ClipboardHistoryCommand::Clone()
 {
 	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData);
+}
+
+// 選択された
+void ClipboardHistoryCommand::OnSelect(Command* prior)
+{
+	UNREFERENCED_PARAMETER(prior);
+	auto previewWindow = PreviewWindow::Get();
+	previewWindow->Show();
+	previewWindow->SetPreviewText(in->mData, in->mAppendDate);
+}
+
+// 選択解除された
+void ClipboardHistoryCommand::OnUnselect(Command* next)
+{
+	bool shouldHidePreview = true;
+	if (next) {
+		ClipboardHistoryCommand* ptr = nullptr;
+		if (next->QueryInterface(IFID_CLIPBOARDHISTORYCOMMAND, (void**)&ptr)) {
+			ptr->Release();
+			shouldHidePreview = false;
+		}
+	}
+
+	if (shouldHidePreview == false) {
+		return;
+	}
+
+	auto previewWindow = PreviewWindow::Get();
+	previewWindow->Hide();
+}
+
+// 実行後のウインドウを閉じる方法を決定する
+launcherapp::core::SelectionBehavior::CloseWindowPolicy
+ClipboardHistoryCommand::GetCloseWindowPolicy()
+{
+	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+}
+
+// UnknownIF
+bool ClipboardHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
+		return true;
+	}
+	else if (ifid == IFID_CLIPBOARDHISTORYCOMMAND) {
+		AddRef();
+		*cmd = (ClipboardHistoryCommand*)this;
+		return true;
+	}
+
+	return false;
 }
 
 CString ClipboardHistoryCommand::TypeDisplayName()

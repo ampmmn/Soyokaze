@@ -1242,9 +1242,6 @@
     <ClInclude Include="mainwindow\LauncherMainWindowIF.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\WindowPosition.h">
-      <Filter>mainwindow\layout</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\MainWindowInput.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -1532,6 +1529,15 @@
     </ClInclude>
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h">
       <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\layout\MainWindowPosition.h">
+      <Filter>mainwindow\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\WindowPosition.h">
+      <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2438,9 +2444,6 @@
     <ClCompile Include="utility\WinHttp.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\WindowPosition.cpp">
-      <Filter>mainwindow\layout</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\MainWindowInput.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
@@ -2713,6 +2716,15 @@
     </ClCompile>
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp">
       <Filter>commands\winscp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\layout\MainWindowPosition.cpp">
+      <Filter>mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\WindowPosition.cpp">
+      <Filter>gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

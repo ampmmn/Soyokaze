@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "ClipboardHistoryProvider.h"
 #include "commands/clipboardhistory/ClipboardHistoryCommand.h"
+#include "commands/clipboardhistory/ClipboardHistoryParam.h"
 #include "commands/clipboardhistory/ClipboardHistoryDB.h"
 #include "commands/clipboardhistory/ClipboardHistoryEventReceiver.h"
 #include "commands/clipboardhistory/AppSettingClipboardHistoryPage.h"
+#include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
@@ -72,7 +74,9 @@ struct ClipboardHistoryProvider::PImpl :
 	/**
 	 * @brief アプリケーションの終了時に呼ばれる
 	 */
-	void OnAppExit() override {}
+	void OnAppExit() override {
+		PreviewWindow::Get()->Destroy();
+	}
 
 	/**
 	 * @brief ロックスクリーンが発生したときに呼ばれる
@@ -109,37 +113,26 @@ struct ClipboardHistoryProvider::PImpl :
 	void Reload()
 	{
 		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableClipboardHistory();
-		mPrefix = pref->GetClipboardHistoryPrefix();
-		mNumOfResults = pref->GetClipboardHistoryNumberOfResults();
-		mSizeLimit = pref->GetClipboardHistorySizeLimit();
-		mCountLimit = pref->GetClipboardHistoryCountLimit();
-		mInterval = pref->GetClipboardHistoryInterval();
-		mExcludePattern = pref->GetClipboardHistoryExcludePattern();
+		mParam.Load((Settings&)pref->GetSettings());
 
-		if (mIsEnable) {
+		if (mParam.mIsEnable) {
 			// クリップボード履歴を有効にする
-			mHistoryDB.Load(mNumOfResults, mSizeLimit, mCountLimit);
-			mHistoryDB.UseRegExpSearch(pref->IsDisableMigemoForClipboardHistory() == false);
-			mReceiver.Activate(mInterval, mExcludePattern);
+			mHistoryDB.Load(mParam.mNumOfResults, mParam.mSizeLimit, mParam.mCountLimit);
+			mHistoryDB.UseRegExpSearch(mParam.mIsDisableMigemo == false);
+			mReceiver.Activate(mParam.mInterval, mParam.mExcludePattern);
 			mReceiver.AddListener(&mHistoryDB);
+			PreviewWindow::Get()->SetEnable(mParam.mUsePreview);
 		}
 		else {
 			// クリップボード履歴を無効にする
 			mReceiver.Deactivate();
 			mHistoryDB.Unload();
+			PreviewWindow::Get()->Disable();
 		}
 	}
 
-	bool mIsEnable{false}; ///< クリップボード履歴が有効かどうか
+	Param mParam;
 	bool mIsInitialized{true}; ///< 初期化済かどうか
-
-	CString mPrefix; ///< クリップボード履歴のプレフィックス
-	int mNumOfResults{16}; ///< クリップボード履歴の結果数
-	int mSizeLimit{64}; ///< クリップボード履歴のサイズ制限
-	int mCountLimit{65536}; ///< クリップボード履歴のカウント制限
-	int mInterval{500}; ///< クリップボード履歴のインターバル
-	CString mExcludePattern; ///< クリップボード履歴の除外パターン
 
 	ClipboardHistoryDB mHistoryDB; ///< クリップボード履歴データベース
 	ClipboardHistoryEventReceiver mReceiver; ///< クリップボード履歴イベントレシーバー
@@ -185,12 +178,12 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 )
 {
 	// 機能を利用しない場合は抜ける
-	if (in->mIsEnable == false) {
+	if (in->mParam.mIsEnable == false) {
 		return;
 	}
 
 	// プレフィックスが一致しない場合は抜ける
-	const auto& prefix = in->mPrefix;
+	const auto& prefix = in->mParam.mPrefix;
 	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return;
 	}

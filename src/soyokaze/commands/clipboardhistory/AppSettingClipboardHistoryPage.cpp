@@ -2,8 +2,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingClipboardHistoryPage.h"
+#include "commands/clipboardhistory/ClipboardHistoryParam.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
+#include "gui/DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 
@@ -34,15 +36,7 @@ protected:
 	afx_msg void OnUpdateStatus();
 
 public:
-	CString mPrefix{_T("cb")};
-	CString mExcludePattern;
-	int mNumOfResults{16};
-	int mSizeLimit{4};
-	int mCountLimit{1024};
-	int mInterval{500};
-	BOOL mIsEnable{FALSE};
-	BOOL mIsDisableMigemo{TRUE};
-	
+	Param mParam;
 	Settings* mSettingsPtr{nullptr};
 };
 
@@ -52,19 +46,19 @@ bool AppSettingPage::OnKillActive()
 		return false;
 	}
 
-	if (mIsEnable == FALSE) {
+	if (mParam.mIsEnable == false) {
 		return true;
 	}
 
-	if (mPrefix.IsEmpty()) {
+	if (mParam.mPrefix.IsEmpty()) {
 		AfxMessageBox(_T("プレフィックスを入力してください"));
 		return false;
 	}
 
 	// 正規表現として有効化をチェックする
-	if (mExcludePattern.IsEmpty() == FALSE) {
+	if (mParam.mExcludePattern.IsEmpty() == FALSE) {
 		try {
-			tregex regTmp((LPCTSTR)mExcludePattern);
+			tregex regTmp((LPCTSTR)mParam.mExcludePattern);
 		}
 		catch(std::regex_error& e) {
 			CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
@@ -74,7 +68,7 @@ bool AppSettingPage::OnKillActive()
 			msg += _T("\n");
 			msg += (CString)what;
 			msg += _T("\n");
-			msg += mExcludePattern;
+			msg += mParam.mExcludePattern;
 			AfxMessageBox(msg);
 			return false;
 		}
@@ -92,16 +86,7 @@ bool AppSettingPage::OnSetActive()
 
 void AppSettingPage::OnOK()
 {
-	auto settingsPtr = mSettingsPtr;
-	settingsPtr->Set(_T("ClipboardHistory:IsEnable"), (bool)mIsEnable);
-	settingsPtr->Set(_T("ClipboardHistory:Prefix"), mPrefix);
-	settingsPtr->Set(_T("ClipboardHistory:NumOfResults"), mNumOfResults);
-	settingsPtr->Set(_T("ClipboardHistory:SizeLimit"), mSizeLimit);
-	settingsPtr->Set(_T("ClipboardHistory:CountLimit"), mCountLimit);
-	settingsPtr->Set(_T("ClipboardHistory:Interval"), mInterval);
-	settingsPtr->Set(_T("ClipboardHistory:ExcludePattern"), mExcludePattern);
-	settingsPtr->Set(_T("ClipboardHistory:IsDisableMigemo"), (bool)mIsDisableMigemo);
-
+	mParam.Save(*mSettingsPtr);
 	__super::OnOK();
 }
 
@@ -109,18 +94,19 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 
-	DDX_Check(pDX, IDC_CHECK_ENABLE, mIsEnable);
-	DDX_Text(pDX, IDC_EDIT_PREFIX, mPrefix);
-	DDX_Text(pDX, IDC_EDIT_NUMOFRESULTS, mNumOfResults);
-	DDV_MinMaxInt(pDX, mNumOfResults, 1, 128);
-	DDX_Text(pDX, IDC_EDIT_SIZELIMIT, mSizeLimit);
-	DDV_MinMaxInt(pDX, mSizeLimit, 1, 128);
-	DDX_Text(pDX, IDC_EDIT_COUNTLIMIT, mCountLimit);
-	DDV_MinMaxInt(pDX, mCountLimit, 1, 131072);
-	DDX_Text(pDX, IDC_EDIT_INTERVAL, mInterval);
-	DDV_MinMaxInt(pDX, mInterval, 0, 5000);
-	DDX_Text(pDX, IDC_EDIT_EXCLUDE, mExcludePattern);
-	DDX_Check(pDX, IDC_CHECK_DISABLEMIGEMO, mIsDisableMigemo);
+	DDX_Check(pDX, IDC_CHECK_ENABLE, mParam.mIsEnable);
+	DDX_Text(pDX, IDC_EDIT_PREFIX,  mParam.mPrefix);
+	DDX_Text(pDX, IDC_EDIT_NUMOFRESULTS,  mParam.mNumOfResults);
+	DDV_MinMaxInt(pDX,  mParam.mNumOfResults, 1, 128);
+	DDX_Text(pDX, IDC_EDIT_SIZELIMIT,  mParam.mSizeLimit);
+	DDV_MinMaxInt(pDX, mParam.mSizeLimit, 1, 128);
+	DDX_Text(pDX, IDC_EDIT_COUNTLIMIT, mParam.mCountLimit);
+	DDV_MinMaxInt(pDX, mParam.mCountLimit, 1, 131072);
+	DDX_Text(pDX, IDC_EDIT_INTERVAL, mParam.mInterval);
+	DDV_MinMaxInt(pDX, mParam.mInterval, 0, 5000);
+	DDX_Text(pDX, IDC_EDIT_EXCLUDE, mParam.mExcludePattern);
+	DDX_Check(pDX, IDC_CHECK_DISABLEMIGEMO, mParam.mIsDisableMigemo);
+	DDX_Check(pDX, IDC_CHECK_PREVIEW, mParam.mUsePreview);
 }
 
 #pragma warning( push )
@@ -143,7 +129,7 @@ BOOL AppSettingPage::OnInitDialog()
 
 bool AppSettingPage::UpdateStatus()
 {
-	BOOL isEnable = (mIsEnable == 1) ? TRUE : FALSE;
+	BOOL isEnable = (mParam.mIsEnable == 1) ? TRUE : FALSE;
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_NUMOFRESULTS)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_SIZELIMIT)->EnableWindow(isEnable);
@@ -151,22 +137,14 @@ bool AppSettingPage::UpdateStatus()
 	GetDlgItem(IDC_EDIT_INTERVAL)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_EXCLUDE)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_DISABLEMIGEMO)->EnableWindow(isEnable);
-
+	GetDlgItem(IDC_CHECK_PREVIEW)->EnableWindow(isEnable);
 	return true;
 }
 
 void AppSettingPage::OnEnterSettings(Settings* settingsPtr)
 {
 	mSettingsPtr = settingsPtr;
-
-	mIsEnable = settingsPtr->Get(_T("ClipboardHistory:IsEnable"), false);
-	mPrefix = settingsPtr->Get(_T("ClipboardHistory:Prefix"), _T("cb"));
-	mNumOfResults = settingsPtr->Get(_T("ClipboardHistory:NumOfResults"), 16);
-	mSizeLimit = settingsPtr->Get(_T("ClipboardHistory:SizeLimit"), 4);
-	mCountLimit = settingsPtr->Get(_T("ClipboardHistory:CountLimit"), 1024);
-	mInterval = settingsPtr->Get(_T("ClipboardHistory:Interval"), 500);
-	mExcludePattern = settingsPtr->Get(_T("ClipboardHistory:ExcludePattern"), _T(""));
-	mIsDisableMigemo = settingsPtr->Get(_T("ClipboardHistory:IsDisableMigemo"), true);
+	mParam.Load(*settingsPtr);
 }
 
 void AppSettingPage::OnUpdateStatus()

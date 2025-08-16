@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-15 17:18+0900\n"
+"POT-Creation-Date: 2025-08-16 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,38 +28,58 @@ msgid "[Everything](https://www.voidtools.com/)の検索機能を利用して、
 msgstr ""
 
 #: ../../source/adhoc-command/everything.md:5
-msgid "プレフィックス(初期設定は`et`)のあとにキーワードを指定すると、 Everythingでのキーワード検索結果を候補として表示する。"
-msgstr ""
-
-#: ../../source/adhoc-command/everything.md:8
 msgid "![](../image/adhoc-command/everything-introduction.png)"
 msgstr ""
 
+#: ../../source/adhoc-command/everything.md:7
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../source/adhoc-command/everything.md:9
+msgid "実行環境にEverythingがインストール済で、実行中であること"
+msgstr ""
+
 #: ../../source/adhoc-command/everything.md:10
+msgid "Everything Liteは不可"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:11
+msgid "キーワードを入力すると、Everythingでの検索結果を候補として表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:12
+msgid "Everythingが実行されている状態では自動で機能が発動する"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:13
+msgid "アプリケーション設定でプレフィックスを設定すると、そのプレフィックスを入力したときだけ機能が発動するようになる"
+msgstr ""
+
+#: ../../source/adhoc-command/everything.md:15
 msgid "Settings"
 msgstr "設定"
 
-#: ../../source/adhoc-command/everything.md:12
+#: ../../source/adhoc-command/everything.md:17
 msgid "アプリケーション設定の `拡張機能` > `Everything` から設定を変更できる。"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:14
+#: ../../source/adhoc-command/everything.md:19
 msgid "![](../image/adhoc-command/everything-appsetting.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:16
+#: ../../source/adhoc-command/everything.md:21
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/adhoc-command/everything.md:18
+#: ../../source/adhoc-command/everything.md:23
 msgid "一度に表示する候補件数の上限は32件"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:19
+#: ../../source/adhoc-command/everything.md:24
 msgid "ファイル更新日時が新しい順に候補を表示する"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:20
+#: ../../source/adhoc-command/everything.md:25
 msgid "この機能ではMigemo検索は適用されない"
 msgstr ""
 

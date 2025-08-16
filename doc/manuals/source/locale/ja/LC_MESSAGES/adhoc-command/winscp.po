@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:54+0900\n"
+"POT-Creation-Date: 2025-08-16 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,7 +24,7 @@ msgid "WinSCP"
 msgstr "WinSCPセッション"
 
 #: ../../source/adhoc-command/winscp.md:3
-msgid "WinSCPのセッション一覧を候補として表示する。"
+msgid "WinSCPのサイトマネージャに登録されているセッション一覧を候補として表示する。"
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:5
@@ -39,19 +39,40 @@ msgstr ""
 msgid "実行すると、WinScpアプリケーションを起動し、接続を開始する。"
 msgstr ""
 
-#: ../../source/adhoc-command/winscp.md:12
-msgid "Settings"
-msgstr "設定"
+#: ../../source/adhoc-command/winscp.md:11
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../source/adhoc-command/winscp.md:13
+msgid "WinSCPがインストールされていること"
+msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:14
-msgid "初期状態では無効になっている。"
+msgid "ポータブル版の場合、どこに実行ファイルがあるかを検出できないため、アプリケーション設定でパスを指定する必要がある"
+msgstr ""
+
+#: ../../source/adhoc-command/winscp.md:15
+msgid "WinSCPのサイトマネージャに登録された接続先の情報を候補として表示する"
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:16
+msgid "発動のためのキーワード(プレフィックス)は無い   サイトマネージャーに登録した名前を入力すると、該当するセッションが候補に表示される"
+msgstr ""
+
+#: ../../source/adhoc-command/winscp.md:19
+msgid "Settings"
+msgstr "設定"
+
+#: ../../source/adhoc-command/winscp.md:21
+msgid "初期状態では無効になっている。"
+msgstr ""
+
+#: ../../source/adhoc-command/winscp.md:23
 msgid "アプリケーション設定の `拡張機能` > `WinSCP` から機能を有効化することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/winscp.md:18
+#: ../../source/adhoc-command/winscp.md:25
 msgid "![](../image/adhoc-command/winscp-appsetting.png)"
 msgstr ""
+
 

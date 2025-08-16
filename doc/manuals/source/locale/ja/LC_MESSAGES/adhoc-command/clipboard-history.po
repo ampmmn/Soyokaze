@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-08-16 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,16 +34,36 @@ msgid "![](../image/clipboardhistory-prefix.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:8
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../source/adhoc-command/clipboard-history.md:10
 msgid "プレフィックスとなる文字列を入力すると、クリップボードに保存されたテキストが候補として表示される。 (上記の例だと、`cb`がプレフィックス)"
 msgstr ""
 
-#: ../../source/adhoc-command/clipboard-history.md:11
+#: ../../source/adhoc-command/clipboard-history.md:13
+msgid "初期状態では本機能は無効化されている。利用するには、アプリ設定から有効化する必要がある。"
+msgstr ""
+
+#: ../../source/adhoc-command/clipboard-history.md:16
+msgid "Setting"
+msgstr "設定"
+
+#: ../../source/adhoc-command/clipboard-history.md:18
 msgid ""
 "各種設定は[アプリ設定](/window/app-settings.md#extensions-clipboard-"
 "history)から設定することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/clipboard-history.md:13
-msgid "デフォルトでこの機能は無効化されており、利用するには、アプリ設定から有効化する必要がある。"
+#: ../../source/adhoc-command/clipboard-history.md:21
+msgid "Preview"
+msgstr "プレビューウインドウ"
+
+#: ../../source/adhoc-command/clipboard-history.md:23
+msgid "アプリ設定でプレビューウインドウの機能を有効にしている場合、 候補欄で選択したクリップボード履歴のテキスト内容を表示するウインドウが表示される。"
+msgstr ""
+
+#: ../../source/adhoc-command/clipboard-history.md:26
+msgid "![](../image/adhoc-command/clipboardhistory-preview.png)"
 msgstr ""
 

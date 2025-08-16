@@ -438,6 +438,7 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventListener.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
@@ -557,6 +558,7 @@
     <ClInclude Include="gui\ImageLabel.h" />
     <ClInclude Include="gui\SinglePageDialog.h" />
     <ClInclude Include="gui\SystemColorScheme.h" />
+    <ClInclude Include="gui\WindowPosition.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
@@ -714,8 +716,8 @@
     <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\MainWindowLayout.h" />
     <ClInclude Include="mainwindow\layout\MainWindowPlacement.h" />
-    <ClInclude Include="mainwindow\layout\WindowPosition.h" />
     <ClInclude Include="mainwindow\layout\MainWindowAppearance.h" />
+    <ClInclude Include="mainwindow\layout\MainWindowPosition.h" />
     <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h" />
     <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h" />
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
@@ -868,6 +870,7 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryDB.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
@@ -989,6 +992,7 @@
     <ClCompile Include="gui\ImageLabel.cpp" />
     <ClCompile Include="gui\SinglePageDialog.cpp" />
     <ClCompile Include="gui\SystemColorScheme.cpp" />
+    <ClCompile Include="gui\WindowPosition.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
@@ -1134,8 +1138,8 @@
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp" />
-    <ClCompile Include="mainwindow\layout\WindowPosition.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp" />
+    <ClCompile Include="mainwindow\layout\MainWindowPosition.cpp" />
     <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp" />
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />

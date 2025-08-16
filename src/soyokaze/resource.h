@@ -161,6 +161,7 @@
 #define IDD_SHELLEXEC_ENVEDIT           253
 #define IDD_SHELLEXEC_ENVBULKADD        254
 #define IDD_APPSETTING_WINSCP           255
+#define IDD_CLIPBOARD_PREVIEW           256
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -516,15 +517,19 @@
 #define IDC_EDIT_PREFIX_PRESENTATION    1215
 #define IDC_CHECK_DISABLEMIGEMO         1216
 #define IDC_CHECK_USEPORTABLE           1217
+#define IDC_CHECK_DISABLEMIGEMO2        1217
+#define IDC_CHECK_PREVIEW               1217
+#define IDC_EDIT_PREVIEW                1218
+#define IDC_STATIC_INFO                 1219
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        250
+#define _APS_NEXT_RESOURCE_VALUE        258
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1218
+#define _APS_NEXT_CONTROL_VALUE         1220
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

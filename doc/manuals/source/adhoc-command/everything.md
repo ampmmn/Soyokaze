@@ -2,10 +2,15 @@
 
 [Everything](https://www.voidtools.com/)の検索機能を利用して、フォルダやファイルを検索する。
 
-プレフィックス(初期設定は`et`)のあとにキーワードを指定すると、
-Everythingでのキーワード検索結果を候補として表示する。
-
 ![](../image/adhoc-command/everything-introduction.png)
+
+## Usage
+
+- 実行環境にEverythingがインストール済で、実行中であること
+  - Everything Liteは不可
+- キーワードを入力すると、Everythingでの検索結果を候補として表示する
+- Everythingが実行されている状態では自動で機能が発動する
+  - アプリケーション設定でプレフィックスを設定すると、そのプレフィックスを入力したときだけ機能が発動するようになる
 
 ## Settings
 

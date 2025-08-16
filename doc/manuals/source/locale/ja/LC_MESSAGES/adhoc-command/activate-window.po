@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-08-16 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,53 +24,81 @@ msgid "Switch Window Dynamically"
 msgstr "ウインドウ選択切替"
 
 #: ../../source/adhoc-command/activate-window.md:3
-msgid "入力画面を表示した時点で表示しているウインドウタイトルの一覧を候補として表示する。   該当する候補を実行すると、対応ウインドウをアクティブにする。"
+msgid "画面上に表示されているウインドウを選択して切り替えるための機能。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:6
-msgid "`Ctrl-Enter`キーを押して実行すると、最大化表示する。"
-msgstr ""
-
-#: ../../source/adhoc-command/activate-window.md:8
+#: ../../source/adhoc-command/activate-window.md:7
 msgid ""
 "登録型のコマンドである[ウインドウ切替コマンド](/user-command/activate-window)とは別物。   "
 "`ウインドウ選択切替`はキーワードを入力した時点で存在しているウインドウのうち、合致するタイトルを持つウインドウを候補として表示する。   "
 "一方、`ウインドウ切替コマンド`はよく使うウインドウを指定して、任意のキーワードやホットキーで切り替えられるようにするためのもの。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:12
-msgid "Temporary Naming For Window"
-msgstr "ウインドウに一時的な名前を付ける"
+#: ../../source/adhoc-command/activate-window.md:11
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../source/adhoc-command/activate-window.md:13
+msgid "プレフィックス(初期値は`wl`)を入力すると、画面上に表示されているウインドウの一覧を候補として表示する"
+msgstr ""
 
 #: ../../source/adhoc-command/activate-window.md:14
-msgid "コンテキストメニューから`ウインドウに一時的な名前を付ける`を選択すると、ウインドウに対して一時的な名前を付与することができる。"
+msgid "該当する候補を選択して実行すると、対応するウインドウに対して操作を行う"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:15
+msgid "`⏎`キーを押して実行すると、ウインドウ切替"
 msgstr ""
 
 #: ../../source/adhoc-command/activate-window.md:16
-msgid "![](../image/window-assigntemporaryname.png)"
+msgid "`Shift-⏎`キーを押して実行すると、最大化して切替"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:17
+msgid "`Ctrl-⏎`キーを押して実行すると、最小化"
 msgstr ""
 
 #: ../../source/adhoc-command/activate-window.md:18
+msgid "`Shift-Ctrl-⏎`キーを押して実行すると、該当するウインドウを閉じる"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:19
+msgid "候補を選択すると、該当するウインドウを前面に出し、外枠を強調表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:21
+msgid "Temporary Naming For Window"
+msgstr "ウインドウに一時的な名前を付ける"
+
+#: ../../source/adhoc-command/activate-window.md:23
+msgid "コンテキストメニューから`ウインドウに一時的な名前を付ける`を選択すると、ウインドウに対して一時的な名前を付与することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:25
+msgid "![](../image/window-assigntemporaryname.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/activate-window.md:27
 msgid "![](../image/window-assigntemporaryname-dlg.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:20
+#: ../../source/adhoc-command/activate-window.md:29
 msgid "名前を付けると、付与した名前でウインドウを切り替えることができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:22
+#: ../../source/adhoc-command/activate-window.md:31
 msgid "![](../image/window-assigntemporaryname2.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:24
+#: ../../source/adhoc-command/activate-window.md:33
 msgid "なお、付与した名前とウインドウの紐づけは本アプリを終了するか、ウインドウが破棄されると失われる。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:26
+#: ../../source/adhoc-command/activate-window.md:35
 msgid "Use Cases"
 msgstr "想定用途"
 
-#: ../../source/adhoc-command/activate-window.md:28
+#: ../../source/adhoc-command/activate-window.md:37
 msgid ""
 "同じアプリのウインドウを異なる目的で複数表示しているような状況において、ウインドウごとにわかりやすい名前をつけて、その名前で呼び出せるようにする、みたいなものを想定"
 "    例えば、複数のテキストエディタをコード表示用/メモとり用で分けている、のような・・"

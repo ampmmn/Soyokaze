@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-15 17:18+0900\n"
+"POT-Creation-Date: 2025-08-16 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -124,39 +124,39 @@ msgid "App HotKey"
 msgstr "ランチャー呼び出しキー 設定画面"
 
 #: ../../source/window/app-settings.md:42
-#: ../../source/window/app-settings.md:533
+#: ../../source/window/app-settings.md:535
 msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
 msgstr ""
 
 #: ../../source/window/app-settings.md:44
-#: ../../source/window/app-settings.md:535
+#: ../../source/window/app-settings.md:537
 msgid "![](../image/hotkeyForApp.png)"
 msgstr ""
 
 #: ../../source/window/app-settings.md:46
-#: ../../source/window/app-settings.md:537
+#: ../../source/window/app-settings.md:539
 msgid ""
 "`ホットキーを設定する`   修飾キー(`Alt` `Ctrl` `Shift` `Win`) + "
 "任意のキーを同時押しすることによりアプリを表示する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:48
-#: ../../source/window/app-settings.md:539
+#: ../../source/window/app-settings.md:541
 msgid "`修飾キー`   修飾キーを選択するためのもの。"
 msgstr ""
 
 #: ../../source/window/app-settings.md:50
-#: ../../source/window/app-settings.md:541
+#: ../../source/window/app-settings.md:543
 msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合   Ctrl+A"
 msgstr ""
 
 #: ../../source/window/app-settings.md:52
-#: ../../source/window/app-settings.md:543
+#: ../../source/window/app-settings.md:545
 msgid "`キー`   文字を選択する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:54
-#: ../../source/window/app-settings.md:545
+#: ../../source/window/app-settings.md:547
 msgid ""
 "`修飾キーの組み合わせ入力`   修飾キー(`Alt` `Ctrl` `Shift` "
 "`Win`)を二つ組み合わせ入力することによりアプリを表示する方式   "
@@ -165,12 +165,12 @@ msgid ""
 msgstr ""
 
 #: ../../source/window/app-settings.md:58
-#: ../../source/window/app-settings.md:549
+#: ../../source/window/app-settings.md:551
 msgid "`一つ目の入力`   一つ目に入力する修飾キーを選択する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:60
-#: ../../source/window/app-settings.md:551
+#: ../../source/window/app-settings.md:553
 msgid "`二つ目の入力`   二つ目に入力する修飾キーを選択する"
 msgstr ""
 
@@ -1240,100 +1240,108 @@ msgstr ""
 msgid "チェックを外した場合は[入力](/window/app-settings.md#keyword-input)設定に従う"
 msgstr ""
 
+#: ../../source/window/app-settings.md:465
+msgid "`プレビューウインドウを表示する`"
+msgstr ""
+
 #: ../../source/window/app-settings.md:466
+msgid "チェックすると、候補欄で選択したクリップボード履歴のテキスト内容を確認するためのプレビューウインドウを表示する。"
+msgstr ""
+
+#: ../../source/window/app-settings.md:468
 msgid "Extension > Path Conversion"
 msgstr "拡張機能＞パス変換"
 
-#: ../../source/window/app-settings.md:468
+#: ../../source/window/app-settings.md:470
 msgid "![](../image/appsetting-pathconvert.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:470
+#: ../../source/window/app-settings.md:472
 msgid "`git-bashパスをローカルパス表記に変換する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:471
+#: ../../source/window/app-settings.md:473
 msgid "チェックすると、[git-bashパス変換](/adhoc-command/git-bash-pashconvert)を有効にする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:472
+#: ../../source/window/app-settings.md:474
 msgid "`file://...をローカルパス表記に変換する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:473
+#: ../../source/window/app-settings.md:475
 msgid "チェックすると、[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:475
+#: ../../source/window/app-settings.md:477
 msgid "Extension > Everything"
 msgstr "拡張機能＞Everything"
 
-#: ../../source/window/app-settings.md:477
+#: ../../source/window/app-settings.md:479
 msgid "![](../image/adhoc-command/everything-appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:479
+#: ../../source/window/app-settings.md:481
 msgid "`機能を有効にする`   チェックすると、[Everything検索](/adhoc-command/everything)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:481
+#: ../../source/window/app-settings.md:483
 msgid "`プレフィックス`   検索を開始するためのキーワードを指定する。   空欄にすると、Everything検索が常に有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:484
+#: ../../source/window/app-settings.md:486
 msgid ""
 "`Everythingが起動していなかった場合に起動する`   "
 "チェックした場合、Everythingのアプリが起動していなかった場合に起動を試みる。   "
 "(Everything検索を行うためにはEverythingのアプリが起動している必要がある)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:487
+#: ../../source/window/app-settings.md:489
 msgid "`Everything.exe`のパス   アプリを起動する際の実行ファイルのパスを指定する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:490
+#: ../../source/window/app-settings.md:492
 msgid "Extension > WinSCP"
 msgstr "拡張機能＞WinSCP"
 
-#: ../../source/window/app-settings.md:492
+#: ../../source/window/app-settings.md:494
 msgid "![](../image/adhoc-command/winscp-appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:494
+#: ../../source/window/app-settings.md:496
 msgid "`機能を有効にする`   チェックすると、[WinSCPのセッション一覧を表示する](/adhoc-command/winscp)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:496
+#: ../../source/window/app-settings.md:498
 msgid ""
 "`ポータブル版のWinSCPを利用する`   インストール版のWinSCPではなく、ポータブル版のWinSCPを使用している場合に使用する設定。"
 "   チェックすると、`WinSCP.exeのパス`欄が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:499
+#: ../../source/window/app-settings.md:501
 msgid "`WinSCP.exeのパス`   ポータブル版のWinSCPを使用している場合の`WinSCP.exe`のパスを指定する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:502
+#: ../../source/window/app-settings.md:504
 msgid "Logging"
 msgstr "その他"
 
-#: ../../source/window/app-settings.md:504
+#: ../../source/window/app-settings.md:506
 msgid "![](../image/appsetting-other.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:507
+#: ../../source/window/app-settings.md:509
 msgid "`ログ出力レベル`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:508
+#: ../../source/window/app-settings.md:510
 msgid "デバッグ用機能。デバッグ用ログファイルへの出力対象とするログ種別を選択することができる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:509
+#: ../../source/window/app-settings.md:511
 msgid "下のものほど情報量が多くなる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:510
+#: ../../source/window/app-settings.md:512
 msgid "ログファイルの出力先は`<設定ファイルの保存先>/per_machine/<PC名>/<アプリ名>.log`"
 msgstr ""
 
@@ -1385,147 +1393,147 @@ msgstr ""
 msgid "デバッグ用出力も含めたすべてのログを出力する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:520
+#: ../../source/window/app-settings.md:522
 msgid "`性能ログを出力する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:521
+#: ../../source/window/app-settings.md:523
 msgid ""
 "デバッグ用機能。内部処理の処理時間に関するログを専用のログファイルに出力する。   "
 "出力先は`<設定ファイルの保存先>/per_machine/<PC名>/perf.log`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:524
+#: ../../source/window/app-settings.md:526
 msgid "`連続で作業していたら警告する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:525
+#: ../../source/window/app-settings.md:527
 msgid "チェックすると、`警告を表示するまでの時間`で設定した時刻を超えて連続稼働(スクリーンロックを挟まずにPCを起動)した場合に警告メッセージを表示する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:526
+#: ../../source/window/app-settings.md:528
 msgid "`警告を表示するまでの時間`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:527
+#: ../../source/window/app-settings.md:529
 msgid "警告を表示するまでの時間を分数で指定する(デフォルトは90分)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:529
+#: ../../source/window/app-settings.md:531
 msgid "Others"
 msgstr "その他の設定画面"
 
-#: ../../source/window/app-settings.md:531
+#: ../../source/window/app-settings.md:533
 msgid "Application HotKey"
 msgstr "アプリ表示用ホットキー"
 
-#: ../../source/window/app-settings.md:556
+#: ../../source/window/app-settings.md:558
 msgid "Key Assignment"
 msgstr "キー割り当て"
 
-#: ../../source/window/app-settings.md:558
+#: ../../source/window/app-settings.md:560
 msgid "コマンドに対するキー割り当てを行うための画面。   割り当てたキーを押すとコマンドを実行することができる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:561
+#: ../../source/window/app-settings.md:563
 msgid "![](../image/hotkeyForCommand.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:563
+#: ../../source/window/app-settings.md:565
 msgid "`ホットキーを設定する`   コマンドに対してキー割り当てを行う場合はチェックする"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:566
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:568
 msgid "種別"
 msgstr ""
 
-#: ../../source/window/app-settings.md:567
+#: ../../source/window/app-settings.md:569
 msgid "以下の3つのいずれかを選択する。   `アクティブ時のみ有効` or `アクティブ時のみ有効(SandS)`  or `常駐時いつでも有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:569
+#: ../../source/window/app-settings.md:571
 msgid "種別の説明は[ホットキーの種別について](/others/hotkey)を参照"
 msgstr ""
 
-#: ../../source/window/app-settings.md:570
+#: ../../source/window/app-settings.md:572
 msgid "`修飾キー`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:571
+#: ../../source/window/app-settings.md:573
 msgid "修飾キーを選択するためのもの。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:572
+#: ../../source/window/app-settings.md:574
 msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合 → Ctrl+A"
 msgstr ""
 
-#: ../../source/window/app-settings.md:573
+#: ../../source/window/app-settings.md:575
 msgid ""
 "種別として`アクティブ時のみ有効(SandS)`を選択した場合は以下の5つのいずれかを選択することができる。   `Space` "
 "`CapsLock` `変換` `無変換` `かな`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:575
+#: ../../source/window/app-settings.md:577
 msgid "`キー`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:576
+#: ../../source/window/app-settings.md:578
 msgid "修飾キーと組み合わせる文字を選択する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:578
+#: ../../source/window/app-settings.md:580
 msgid "HotKey Type"
 msgstr "ホットキーの種別"
 
-#: ../../source/window/app-settings.md:580
+#: ../../source/window/app-settings.md:582
 msgid "ホットキーの種別として以下の3つを選択できる"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:581
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:583
 msgid "`アクティブ時のみ有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:582
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:584
 msgid "`アクティブ時のみ有効(SandS)`"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:583
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:585
 msgid "`常駐時いつでも有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:585
+#: ../../source/window/app-settings.md:587
 msgid ""
 "`アクティブ時のみ有効`と`アクティブ時のみ有効(SandS)`は入力画面が表示されているときだけ機能する。 "
 "一方、`常駐時いつでも有効`は入力画面が表示されていないときでも機能する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:588
+#: ../../source/window/app-settings.md:590
 msgid ""
 "`アクティブ時のみ有効(SandS)`の`SandS`は「Space and "
 "Shift」の略で、単体でキーを押したときは文字キー(→Space)として機能し、   "
 "他のキーと同時押ししたときは修飾キー(→Shift)として機能する、という概念のこと"
 msgstr ""
 
-#: ../../source/window/app-settings.md:590
+#: ../../source/window/app-settings.md:592
 msgid "ランチャー呼び出しキーの修飾キーと`SandS`の修飾キーを同じキーとして設定することにより、スムーズにコマンドを呼び出すことができる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:591
+#: ../../source/window/app-settings.md:593
 msgid ""
 "例:   "
 "ランチャー呼び出しのホットキーを`CapsLock`にして、コマンドのホットキーを`CapsLock`+`J`に設定していたとすると、以下のような動きになる"
 "   ![](../image/sands-example.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:594
+#: ../../source/window/app-settings.md:596
 msgid "つまり、他アプリとのキー割り当ての干渉をあまり気にすることなく、グローバルホットキー的な機能が実現できる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:596
+#: ../../source/window/app-settings.md:598
 msgid "HotKey Type Comparison"
 msgstr "ホットキー種別の比較"
 
-#: ../../source/window/app-settings.md:598
+#: ../../source/window/app-settings.md:600
 msgid ""
 "それぞれ実現している仕組みが異なる。   "
 "`常駐時いつでも有効`はシステムのホットキーに登録するため、登録したキーを使って、いつでも呼び出せる一方で、ほかのアプリ内においてそのキーを使うことができなくなる"
@@ -1561,19 +1569,19 @@ msgstr ""
 msgid "登録したキーを他アプリで使えなくなってしまう<br>他アプリに干渉することをふまえて割り当てるキーを慎重に選択する必要がある"
 msgstr ""
 
-#: ../../source/window/app-settings.md:607
+#: ../../source/window/app-settings.md:609
 msgid "Constraints Related to SandS"
 msgstr "SandSに関する制限事項"
 
-#: ../../source/window/app-settings.md:609
+#: ../../source/window/app-settings.md:611
 msgid "SandSの修飾キーとして選択したキーを押しっぱなしにした場合、普通の文字入力としてキーリピートする。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:610
+#: ../../source/window/app-settings.md:612
 msgid "`Shift` `Ctrl` `Alt` `Win`などのような純粋な修飾キーのような動きにはならない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:611
+#: ../../source/window/app-settings.md:613
 msgid "SandSを実現するためにキーフックを利用している。キーフックの仕組みを用いた別のソフトが同時に動いている場合、競合してうまく動作しない場合がある"
 msgstr ""
 

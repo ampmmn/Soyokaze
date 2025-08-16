@@ -4,7 +4,7 @@
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "mainwindow/layout/DefaultComponentPlacer.h"
-#include "mainwindow/layout/WindowPosition.h"
+#include "mainwindow/layout/MainWindowPosition.h"
 #include "mainwindow/layout/MainWindowPlacement.h"
 
 
@@ -75,7 +75,7 @@ struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
 	std::unique_ptr<ComponentPlacer> mPlacer;
 
 	// ウインドウ位置を保存するためのクラス
-	std::unique_ptr<WindowPosition> mWindowPositionPtr;
+	std::unique_ptr<MainWindowPosition> mWindowPositionPtr;
 
 	bool mIsFirstUpdate{true};
 	bool mIsPrevHasKeyword{false};
@@ -259,7 +259,7 @@ void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
 {
 	spdlog::debug("MainWindowLayout::RestoreWindowPosition");
 
-	in->mWindowPositionPtr = std::make_unique<WindowPosition>();
+	in->mWindowPositionPtr = std::make_unique<MainWindowPosition>();
 
 	bool isSucceededToRestore = in->mWindowPositionPtr->Restore(wnd->GetSafeHwnd());
 	if (isForceReset || isSucceededToRestore == false) {

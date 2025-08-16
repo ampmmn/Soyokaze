@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/AdhocCommandBase.h"
+#include "commands/core/SelectionBehavior.h"
 #include <memory>
 
 namespace launcherapp {
@@ -8,7 +9,8 @@ namespace commands {
 namespace clipboardhistory {
 
 class ClipboardHistoryCommand :
-	virtual	public launcherapp::commands::common::AdhocCommandBase
+	virtual	public launcherapp::commands::common::AdhocCommandBase,
+	virtual public launcherapp::core::SelectionBehavior
 {
 public:
 	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data);
@@ -20,6 +22,17 @@ public:
 	BOOL Execute(Parameter* param) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
+
+// SelectionBehavior
+	// 選択された
+	void OnSelect(Command* prior) override;
+	// 選択解除された
+	void OnUnselect(Command* next) override;
+	// 実行後のウインドウを閉じる方法を決定する
+	CloseWindowPolicy GetCloseWindowPolicy() override;
+
+// UnknownIF
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(ClipboardHistoryCommand)
 

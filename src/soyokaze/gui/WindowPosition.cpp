@@ -1,16 +1,12 @@
 #include "pch.h"
-#include "framework.h"
 #include "WindowPosition.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
 #include "app/AppName.h"
-#include <utility> // for std::pair
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-constexpr int DEFAULT_HEIGHT = 480;
 
 WindowPosition::WindowPosition() : mPosition({}), mIsLoaded(false)
 {
@@ -114,22 +110,6 @@ bool WindowPosition::Update(HWND hwnd)
 	return true;
 }
 
-bool WindowPosition::UpdateExceptHeight(HWND hwnd)
-{
-	WINDOWPLACEMENT wp;
-	wp.length = sizeof(wp);
-	if (GetWindowPlacement(hwnd, &wp) == false) {
-		return false;
-	}
-
-	int orgHeight = mPosition.rcNormalPosition.bottom - mPosition.rcNormalPosition.top; 
-
-	wp.rcNormalPosition.bottom = wp.rcNormalPosition.top + orgHeight;
-
-	mPosition = wp;
-	return true;
-}
-
 bool WindowPosition::Save()
 {
 	try {
@@ -156,32 +136,5 @@ void WindowPosition::GetFilePath(LPCTSTR baseName, Path& path)
 WINDOWPLACEMENT WindowPosition::GetPosition() const
 {
 	return mPosition;
-}
-
-bool WindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
-{
-	spdlog::debug("WindowPosition::SetPositionTemporary start");
-
-	auto wp = mPosition;
-	wp.rcNormalPosition = rc;
-
-	if (IsZoomed(hwnd) == FALSE && IsIconic(hwnd) == FALSE) {
-		SetWindowPos(hwnd, nullptr,rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
-	}
-	return true;
-
-	//return SetWindowPlacement(hwnd, &wp) != FALSE;
-}
-
-bool WindowPosition::SyncPosition(HWND hwnd)
-{
-	spdlog::debug("WindowPosition::SyncPosition start");
-
-	if (mIsLoaded == false) {
-		GetWindowRect(hwnd, &mPosition.rcNormalPosition);
-		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;
-
-	}
-	return SetWindowPlacement(hwnd, &mPosition) != FALSE;  // ToDo これの先にClearContent
 }
 
