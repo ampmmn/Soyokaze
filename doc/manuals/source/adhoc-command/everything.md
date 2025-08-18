@@ -14,7 +14,8 @@
 
 ## Settings
 
-アプリケーション設定の `拡張機能` > `Everything` から設定を変更できる。
+初期状態は機能は有効になっている。
+機能を使用しない場合はアプリケーション設定の `拡張機能` > `Everything` から無効化できる。
 
 ![](../image/adhoc-command/everything-appsetting.png)
 
