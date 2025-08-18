@@ -122,8 +122,18 @@ void EverythingCommandProvider::QueryAdhocCommands(
 	EverythingProxy::Get()->Query(queryStr, results);
 
 	for (auto& result : results) {
-		int level = result.mMatchLevel;
+
+		// ファイルパス、ファイル名それぞれで一致レベルを見る
+		int level = pattern->Match(result.mFullPath);
+		if (level == Pattern::PartialMatch) {
+			int levelFileName = pattern->Match(PathFindFileName(result.mFullPath));
+			if (levelFileName >= Pattern::FrontMatch) {
+				// ファイル名が完全一致/前方一致するときは少し一致レベルをよくする
+				level = Pattern::FrontMatch;
+			}
+		}
 		if (hasPrefix && level == Pattern::PartialMatch) {
+			// プレフィックスありの場合は最低でも前方一致扱いにする
 			level = Pattern::FrontMatch;
 		}
 		commands.Add(CommandQueryItem(level, new EverythingAdhocCommand(in->mParam, result)));

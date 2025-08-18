@@ -9,7 +9,6 @@ class EverythingResult
 {
 public:
 	CString mFullPath;
-	int mMatchLevel{0};
 };
 
 } // end of namespace everything

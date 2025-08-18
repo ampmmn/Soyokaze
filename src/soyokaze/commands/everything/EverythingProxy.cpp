@@ -264,7 +264,6 @@ bool EverythingProxy::Query(const CString& queryStr, std::vector<EverythingResul
 
 		EverythingResult result;
 		result.mFullPath = path.data();
-		result.mMatchLevel = Pattern::PartialMatch;
 
 		tmp.push_back(result);
 	}
