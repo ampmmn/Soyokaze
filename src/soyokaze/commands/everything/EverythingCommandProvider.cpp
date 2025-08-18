@@ -123,14 +123,11 @@ void EverythingCommandProvider::QueryAdhocCommands(
 
 	for (auto& result : results) {
 
-		// ファイルパス、ファイル名それぞれで一致レベルを見る
+		// ファイルパスで優先順位を見る
 		int level = pattern->Match(result.mFullPath);
-		if (level == Pattern::PartialMatch) {
-			int levelFileName = pattern->Match(PathFindFileName(result.mFullPath));
-			if (levelFileName >= Pattern::FrontMatch) {
-				// ファイル名が完全一致/前方一致するときは少し一致レベルをよくする
-				level = Pattern::FrontMatch;
-			}
+		if (level == Pattern::Mismatch) {
+			// Everythingが結果を返してきているので最低でも部分一致扱いとする
+			level = Pattern::PartialMatch;
 		}
 		if (hasPrefix && level == Pattern::PartialMatch) {
 			// プレフィックスありの場合は最低でも前方一致扱いにする
