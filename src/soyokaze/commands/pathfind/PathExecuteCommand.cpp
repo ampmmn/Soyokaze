@@ -158,6 +158,14 @@ int PathExecuteCommand::Match(Pattern* pattern)
 		return Pattern::WholeMatch;
 	}
 
+	// %が含まれている場合は環境変数が使われている可能性があるので展開を試みる
+	if (wholeWord.Find(_T('%')) != -1) {
+		DWORD sizeNeeded = ExpandEnvironmentStrings(wholeWord, nullptr, 0);
+		std::vector<TCHAR> buf(sizeNeeded);
+		ExpandEnvironmentStrings(wholeWord, buf.data(), sizeNeeded);
+		wholeWord = buf.data();
+	}
+
 	CString filePart;
 
 	int pos = 0;
