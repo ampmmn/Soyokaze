@@ -2,6 +2,7 @@
 #include "IniWinScpSessionStorage.h"
 #include "commands/winscp/WinScpCommandParam.h"
 #include "commands/decodestring/DecodeUriCommand.h"
+#include "commands/common/FileTime.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
 #include "utility/RegistryKey.h"
@@ -12,6 +13,7 @@
 namespace launcherapp { namespace commands { namespace winscp {
 
 using DecodeUriCommand = launcherapp::commands::decodestring::DecodeUriCommand;
+using namespace launcherapp::commands::common;
 
 constexpr LPCTSTR INI_PATH_IN_APPDATA = _T("%APPDATA%\\WinSCP.ini");
 constexpr LPCTSTR SUBKEY_CUSTIMINIPATH = _T("Software\\Martin Prikryl\\WinSCP 2 Override");
@@ -22,17 +24,6 @@ IniSessionStorage::IniSessionStorage()
 
 IniSessionStorage::~IniSessionStorage()
 {
-}
-
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
 }
 
 bool IniSessionStorage::HasUpdate()
@@ -46,7 +37,7 @@ bool IniSessionStorage::HasUpdate()
 		isFirstCall = true;
 	}
 
-	FILETIME ft;
+	time_t ft;
 	if (GetLastUpdateTime(mIniFilePath, ft) == false) {
 		return false;
 	}
@@ -54,10 +45,10 @@ bool IniSessionStorage::HasUpdate()
 	// 前回からファイルが更新されているかどうか
 	bool hasUpdate = false;
 	if (isFirstCall == false) {
-		hasUpdate = memcmp(&mLastUpdateFt, &ft, sizeof(FILETIME)) == 0;
+		hasUpdate = memcmp(&mLastUpdate, &ft, sizeof(mLastUpdate)) == 0;
 	}
 
-	mLastUpdateFt = ft;
+	mLastUpdate = ft;
 
 	return isFirstCall || hasUpdate;
 }

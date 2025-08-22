@@ -3,6 +3,7 @@
 #include "commands/simple_dict/SimpleDictCommand.h"
 #include "commands/simple_dict/SimpleDictionary.h"
 #include "commands/simple_dict/ExcelWrapper.h"
+#include "commands/common/FileTime.h"
 #include "utility/TimeoutChecker.h"
 #include "utility/SQLite3Database.h"
 #include "utility/Path.h"
@@ -18,6 +19,8 @@
 using CharConverter = launcherapp::utility::CharConverter;
 using SQLite3Database = launcherapp::utility::SQLite3Database;
 using SQLite3Statement = launcherapp::utility::SQLite3Statement;
+
+using namespace launcherapp::commands::common;
 
 namespace launcherapp {
 namespace commands {
@@ -265,18 +268,6 @@ bool DictionaryLoader::PImpl::LoadFromExcelApp(
 	}
 }
 
-
-static bool GetLastUpdateTime(LPCTSTR path, FILETIME& ftime)
-{
-	HANDLE h = CreateFile(path, FILE_READ_ATTRIBUTES, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (h == INVALID_HANDLE_VALUE) {
-		return false;
-	}
-	GetFileTime(h, nullptr, nullptr, &ftime);
-	CloseHandle(h);
-	return true;
-}
-
 static bool CheckSchemaVersion(SQLite3Database& db, int64_t version)
 {
 	struct local_callback_version {
@@ -348,12 +339,12 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 	db.Query(queryStr, local_callback_updatetime::Callback, &callback);
 
 	// 5. ファイルから更新日時情報を得る
-	FILETIME ft;
+	time_t ft;
 	if (GetLastUpdateTime(param.mFilePath, ft) == FALSE) {
 		spdlog::warn(_T("Failed to get filetime {}"), (LPCTSTR)param.mFilePath);
 		return false;
 	}
-	uint64_t lastWriteTime = ((uint64_t)ft.dwLowDateTime) | (((uint64_t)ft.dwHighDateTime) << 32);
+	uint64_t lastWriteTime = ft;
 
 	// 6. 4と5を比較し、差異がある場合はfalseを返す
 	if (lastWriteTime != callback.mUpdateTime) {
@@ -416,12 +407,12 @@ bool DictionaryLoader::PImpl::SaveCacheFile(
 	CString idStr = param.GetIdentifier();
 
 	// 4. ファイルから更新日時情報を得る
-	FILETIME ft;
+	time_t ft;
 	if (GetLastUpdateTime(param.mFilePath, ft) == FALSE) {
 		spdlog::warn(_T("Failed to get filetime {}"), (LPCTSTR)param.mFilePath);
 		return false;
 	}
-	uint64_t lastWriteTime = ((uint64_t)ft.dwLowDateTime) | (((uint64_t)ft.dwHighDateTime) << 32);
+	uint64_t lastWriteTime = ft;
 
 	// 5. テーブルがなければ作成する
 	if (db.TableExists(_T("TBL_ENTRIES")) == false) {

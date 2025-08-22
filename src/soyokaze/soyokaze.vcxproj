@@ -444,6 +444,7 @@
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
     <ClInclude Include="commands\common\DispWrapper.h" />
     <ClInclude Include="commands\common\ExecutablePath.h" />
+    <ClInclude Include="commands\common\FileTime.h" />
     <ClInclude Include="commands\common\OtherCommandDialog.h" />
     <ClInclude Include="commands\common\SubProcessDialog.h" />
     <ClInclude Include="commands\common\UserCommandBase.h" />
@@ -879,6 +880,7 @@
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
     <ClCompile Include="commands\common\DispWrapper.cpp" />
     <ClCompile Include="commands\common\ExecutablePath.cpp" />
+    <ClCompile Include="commands\common\FileTime.cpp" />
     <ClCompile Include="commands\common\OtherCommandDialog.cpp" />
     <ClCompile Include="commands\common\SubProcessDialog.cpp" />
     <ClCompile Include="commands\common\UserCommandBase.cpp" />

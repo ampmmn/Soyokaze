@@ -23,7 +23,7 @@ protected:
 
 protected:
 	CString mIniFilePath;
-	FILETIME mLastUpdateFt{0,0};
+	time_t mLastUpdate{0};
 
 };
 
