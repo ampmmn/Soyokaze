@@ -2,13 +2,13 @@
 #include "WinScpCommandProvider.h"
 #include "commands/winscp/WinScpCommandParam.h"
 #include "commands/winscp/WinScpCommand.h"
-#include "commands/decodestring/DecodeUriCommand.h"
+#include "commands/winscp/RegistryWinScpSessionStorage.h"
+#include "commands/winscp/IniWinScpSessionStorage.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
-#include "utility/RegistryKey.h"
 #include <vector>
 #include <mutex>
 
@@ -18,9 +18,6 @@
 
 namespace launcherapp { namespace commands { namespace winscp {
 
-using DecodeUriCommand = launcherapp::commands::decodestring::DecodeUriCommand;
-
-constexpr LPCWSTR SUBKEY_SESSIONS = L"Software\\Martin Prikryl\\WinSCP 2\\Sessions";
 
 
 struct WinScpCommandProvider::PImpl : 
@@ -36,13 +33,6 @@ struct WinScpCommandProvider::PImpl :
 	{
 		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
-
-		if (mEventForNotify) {
-			CloseHandle(mEventForNotify);
-		}
-		if (mSubKeyForWatch) {
-			RegCloseKey(mSubKeyForWatch);
-		}
 	}
 
 // AppPreferenceListenerIF
@@ -50,7 +40,7 @@ struct WinScpCommandProvider::PImpl :
 	void OnAppNormalBoot() override {}
 	void OnAppPreferenceUpdated() override
 	{
-		Reload();
+		Load();
 	}
 	void OnAppExit() override {}
 
@@ -61,17 +51,17 @@ struct WinScpCommandProvider::PImpl :
 		if (mParam.mIsEnable == false) {
 			return ;
 		}
-
-		if (OpenSubKeyIfNotOpened() == false) {
-			return;
-		}
-
-		if (WaitForSingleObject(mEventForNotify, 0) == WAIT_TIMEOUT) {
+		if (mSessionStorage.get() == nullptr) {
 			return ;
 		}
 
-		RegisterNotifyChangeKeyValue();
-		ReloadSessions();
+		if (mSessionStorage->HasUpdate() == false) {
+			// 変更なし
+			return ;
+		}
+
+		// 再読み込み
+		LoadSessions();
 	}
 
 	void OnLauncherActivate() override
@@ -82,83 +72,39 @@ struct WinScpCommandProvider::PImpl :
 	}
 
 
-	void Reload();
-	void ReloadSessions();
-
-	bool OpenSubKeyIfNotOpened() {
-
-		if (mSubKeyForWatch) {
-			return true;
-		}
-
-		HKEY hKey{nullptr};
-		LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, SUBKEY_SESSIONS, 0, KEY_READ, &hKey);
-		if (result != ERROR_SUCCESS) {
-			spdlog::error(_T("Failed to open registry key {0} result:{1}"), SUBKEY_SESSIONS, result);
-			return false;
-		}
-
-		HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-
-		mSubKeyForWatch = hKey;
-		mEventForNotify = hEvent;
-
-		return RegisterNotifyChangeKeyValue();
-
-	}
-
-	bool RegisterNotifyChangeKeyValue()
-	{
-		HKEY hKey = mSubKeyForWatch;
-		HANDLE hEvent = mEventForNotify;
-
-		ResetEvent(hEvent);
-		LONG result = RegNotifyChangeKeyValue(hKey, TRUE, REG_NOTIFY_CHANGE_NAME, hEvent, TRUE);
-		if (result != ERROR_SUCCESS) {
-			spdlog::error(_T("Failed to notify {}"), result);
-			return false;
-    }
-		return true;
-	}
+	void Load();
+	void LoadSessions();
 
 	CommandParam mParam;
 	std::vector<CString> mSessionNames;
-	HKEY mSubKeyForWatch{nullptr};
-	HANDLE mEventForNotify{nullptr};
+	std::unique_ptr<SessionStrage> mSessionStorage;
 	std::mutex mMutex;
 };
 
 /**
 	レジストリを参照し、保存されたセッション名の一覧を取得する
 */
-void WinScpCommandProvider::PImpl::Reload()
+void WinScpCommandProvider::PImpl::Load()
 {
 	auto pref = AppPreference::Get();
 	mParam.Load((Settings&)pref->GetSettings());
 
-	ReloadSessions();
-}
-
-void WinScpCommandProvider::PImpl::ReloadSessions()
-{
-	std::vector<CString> sessionNames;
-
-	RegistryKey keySessions;
-
-	RegistryKey HKCU(HKEY_CURRENT_USER);
-	HKCU.OpenSubKey(SUBKEY_SESSIONS, keySessions);
-
-	keySessions.EnumSubKeyNames(sessionNames);
-
-	// URIデコードする
-	std::string tmp;
-	for (auto& sessionName : sessionNames) {
-		UTF2UTF(sessionName, tmp);
-		DecodeUriCommand::DecodeURI(tmp, sessionName);
+	if (IniSessionStorage::Exists()) {
+		// INIファイル(自動 or カスタム)の設定情報があったらそれを使用する
+		mSessionStorage.reset(new IniSessionStorage());
+	}
+	else {
+		// なければ、レジストリの設定情報を使用する
+		mSessionStorage.reset(new RegistrySessionStorage());
 	}
 
+	LoadSessions();
+}
+
+void WinScpCommandProvider::PImpl::LoadSessions()
+{
 	std::lock_guard<std::mutex> lock(mMutex); 
-	mSessionNames.swap(sessionNames);
+	mSessionStorage->LoadSessions(mSessionNames);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +131,7 @@ CString WinScpCommandProvider::GetName()
 void WinScpCommandProvider::PrepareAdhocCommands()
 {
 	// セッション名の一覧を取得
-	in->Reload();
+	in->Load();
 }
 
 // 一時的なコマンドを必要に応じて提供する

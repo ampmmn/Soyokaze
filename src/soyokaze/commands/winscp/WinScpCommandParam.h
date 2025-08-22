@@ -22,7 +22,7 @@ public:
 
 public:
 	// 機能を利用するか?
-	bool mIsEnable{false};
+	bool mIsEnable{true};
 	// ポータブル版WinScpを利用するか?
 	bool mIsUsePortable{false};
 	// ポータブル版を利用する場合の実行ファイルのパス

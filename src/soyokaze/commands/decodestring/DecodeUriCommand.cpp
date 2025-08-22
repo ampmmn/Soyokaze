@@ -101,7 +101,7 @@ bool DecodeUriCommand::DecodeURI(std::string& src, CString& decoded)
 	// 	return Pattern::Mismatch;
 	// }
 
-	bool isMatched = false;
+	bool hasEscapedChar = false;
 
 	std::string dst;
 	for (auto it = src.begin(); it != src.end(); ++it) {
@@ -139,15 +139,12 @@ bool DecodeUriCommand::DecodeURI(std::string& src, CString& decoded)
 		dst.append(1, (char)hex);
 		it += 2;
 
-		isMatched = true;
-	}
-
-	if (isMatched == false) {
-		return false;
+		hasEscapedChar = true;
 	}
 
 	UTF2UTF(dst, decoded);
-	return true;
+
+	return hasEscapedChar;
 }
 
 } // end of namespace decodestring

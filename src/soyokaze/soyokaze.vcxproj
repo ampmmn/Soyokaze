@@ -548,9 +548,12 @@
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h" />
     <ClInclude Include="commands\winscp\AppSettingWinScpPage.h" />
+    <ClInclude Include="commands\winscp\IniWinScpSessionStorage.h" />
+    <ClInclude Include="commands\winscp\RegistryWinScpSessionStorage.h" />
     <ClInclude Include="commands\winscp\WinScpCommand.h" />
     <ClInclude Include="commands\winscp\WinScpCommandParam.h" />
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h" />
+    <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
     <ClInclude Include="gui\ColorScheme.h" />
     <ClInclude Include="gui\ColorSettings.h" />
     <ClInclude Include="gui\CustomColorScheme.h" />
@@ -983,6 +986,8 @@
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp" />
     <ClCompile Include="commands\winscp\AppSettingWinScpPage.cpp" />
+    <ClCompile Include="commands\winscp\IniWinScpSessionStorage.cpp" />
+    <ClCompile Include="commands\winscp\RegistryWinScpSessionStorage.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommand.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandParam.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />

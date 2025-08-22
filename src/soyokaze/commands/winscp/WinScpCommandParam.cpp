@@ -86,7 +86,7 @@ bool CommandParam::Save(Settings& settings) const
 
 bool CommandParam::Load(Settings& settings)
 {
-	mIsEnable = settings.Get(_T("WinScpSetting:IsEnable"), false);
+	mIsEnable = settings.Get(_T("WinScpSetting:IsEnable"), true);
 	mIsUsePortable = settings.Get(_T("WinScpSetting:IsUsePortable"), false);
 	mWinScpExeFilePath = settings.Get(_T("WinScpSetting:ExecutbleFilePath"), _T(""));
 	mCachedWinExpFilePath.Empty();

@@ -1539,6 +1539,15 @@
     <ClInclude Include="gui\WindowPosition.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="commands\winscp\WinScpSessionStorage.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\winscp\RegistryWinScpSessionStorage.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\winscp\IniWinScpSessionStorage.h">
+      <Filter>commands\winscp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2725,6 +2734,12 @@
     </ClCompile>
     <ClCompile Include="gui\WindowPosition.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\RegistryWinScpSessionStorage.cpp">
+      <Filter>commands\winscp</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\winscp\IniWinScpSessionStorage.cpp">
+      <Filter>commands\winscp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
