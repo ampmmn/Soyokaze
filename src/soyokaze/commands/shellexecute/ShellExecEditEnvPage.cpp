@@ -317,10 +317,10 @@ void SettingPageEnv::OnButtonBulkAdd()
 		const auto& value = item.second;
 
 		auto it = itemIndexMap.find(name);
-		bool isExist = it != itemIndexMap.end();
+		bool isValueExists = it != itemIndexMap.end();
 
 		// 値が存在する場合は上書き、存在しない場合は末尾に追加
-		if (isExist) {
+		if (isValueExists) {
 			int itemIndex = it->second;
 			listWnd->SetItemText(itemIndex, 0, name);
 			listWnd->SetItemText(itemIndex, 1, value);

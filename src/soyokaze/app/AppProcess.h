@@ -11,7 +11,7 @@ public:
 	AppProcess();
 	~AppProcess();
 
-	bool IsExist();
+	bool Exists();
 	bool RebootAsAdminIfNeeded();
 
 // for test

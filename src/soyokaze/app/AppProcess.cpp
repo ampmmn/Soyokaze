@@ -18,14 +18,14 @@ AppProcess::~AppProcess()
 	}
 }
 
-bool AppProcess::IsExist()
+bool AppProcess::Exists()
 {
 	// 多重起動検知のための名前付きミューテックスの有無により、先行プロセスの有無を調べる
 	HANDLE h = OpenMutex(MUTEX_ALL_ACCESS, FALSE, PROCESS_MUTEX_NAME);
 	if (h != nullptr) {
 		mIsFirstProcess = false;
 		CloseHandle(h);
-		SPDLOG_DEBUG("isExists=true");
+		SPDLOG_DEBUG("Exists=true");
 		return true;
 	}
 
@@ -33,7 +33,7 @@ bool AppProcess::IsExist()
 	if (m_hMutexRun == NULL) {
 		if (GetLastError() == ERROR_ACCESS_DENIED) {
 			mIsFirstProcess = false;
-			SPDLOG_DEBUG("isExists=true");
+			SPDLOG_DEBUG("Exists=true");
 			return true;
 		}
 

@@ -64,7 +64,7 @@ BOOL LauncherApp::InitInstance()
 
 	try {
 		AppProcess appProcess;
-		if (appProcess.IsExist() == false) {
+		if (appProcess.Exists() == false) {
 
 			// 管理者権限として起動する場合は再起動
 			if (appProcess.RebootAsAdminIfNeeded() == false) {

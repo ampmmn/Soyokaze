@@ -253,8 +253,8 @@ int ExcelApplication::GetCellText(
 
 void ExcelApplication::Quit()
 {
-	bool isExist = (((IDispatch*)in->mApp) != nullptr);
-	if (isExist == false) {
+	bool isInitialized = (((IDispatch*)in->mApp) != nullptr);
+	if (iInitialized == false) {
 		// 終了不要
 		return;
 	}
