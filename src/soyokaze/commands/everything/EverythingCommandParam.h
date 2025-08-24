@@ -20,7 +20,7 @@ public:
 	CString mPrefix;
 
 	// 機能を利用するか?
-	bool mIsEnable{false};
+	bool mIsEnable{true};
 	// Everythingアプリが起動していない場合に起動するか?
 	bool mIsRunApp{false};
 	// コマンドライン経由で使用する場合のEverything.exeのパス

@@ -39,7 +39,7 @@ bool CommandParam::Save(Settings& settings) const
 bool CommandParam::Load(Settings& settings)
 {
 	mPrefix = settings.Get(_T("Everything:Prefix"), _T(""));
-	mIsEnable = settings.Get(_T("Everything:IsEnable"), false);
+	mIsEnable = settings.Get(_T("Everything:IsEnable"), true);
 	mIsRunApp = settings.Get(_T("Everything:IsRunApp"), false);
 	mEverythingExePath = settings.Get(_T("Everything:EverythingExePath"), _T(""));
 
