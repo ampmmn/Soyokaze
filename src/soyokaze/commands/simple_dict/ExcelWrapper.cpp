@@ -254,7 +254,7 @@ int ExcelApplication::GetCellText(
 void ExcelApplication::Quit()
 {
 	bool isInitialized = (((IDispatch*)in->mApp) != nullptr);
-	if (iInitialized == false) {
+	if (isInitialized == false) {
 		// 終了不要
 		return;
 	}
