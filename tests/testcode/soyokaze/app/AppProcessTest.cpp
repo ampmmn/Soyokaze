@@ -15,16 +15,16 @@ TEST(AppProcess, IsExistSingle)
 {
 	AppProcess::SetSyncObjectName(PROCESS_MUTEX_NAME);
 	AppProcess p;
-	EXPECT_FALSE(p.IsExist());
+	EXPECT_FALSE(p.Exists());
 }
 
 TEST(AppProcess, IsExistDouble)
 {
 	AppProcess::SetSyncObjectName(PROCESS_MUTEX_NAME);
 	AppProcess p;
-	EXPECT_FALSE(p.IsExist());
+	EXPECT_FALSE(p.Exists());
 	AppProcess p2;
-	EXPECT_TRUE(p2.IsExist());
+	EXPECT_TRUE(p2.Exists());
 }
 
 TEST(AppProcess, Fail1)
@@ -33,7 +33,7 @@ TEST(AppProcess, Fail1)
 	try {
 		CEvent ev(FALSE, FALSE,PROCESS_MUTEX_NAME);
 		AppProcess p;
-		p.IsExist();
+		p.Exists();
 		FAIL();
 	}
 	catch(AppProcess::exception&) {
