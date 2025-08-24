@@ -4,7 +4,7 @@
 
 namespace launcherapp { namespace commands { namespace winscp {
 
-// INI$B%U%!%$%k$+$i$N@_Dj>pJsFI$_9~$_(B
+// INIファイルからの設定情報読み込み
 class IniSessionStorage : public SessionStrage
 {
 public:
@@ -21,9 +21,14 @@ protected:
 	static bool FindAutomaticIniFilePath(CString& iniFilePath);
 	static bool FindCustomIniFilePath(CString& iniFilePath);
 
+	static void OnReload(void* p);
+
 protected:
 	CString mIniFilePath;
-	time_t mLastUpdate{0};
+	uint64_t mLastUpdate{0};
+	uint32_t mListenerId{0};
+	bool mHasUpdate{false};
+
 
 };
 

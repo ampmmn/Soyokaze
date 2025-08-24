@@ -6,6 +6,7 @@
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
 #include "utility/RegistryKey.h"
+#include "utility/LocalDirectoryWatcher.h"
 #include <fstream>
 #include <ostream>
 #include <vector>
@@ -24,38 +25,28 @@ IniSessionStorage::IniSessionStorage()
 
 IniSessionStorage::~IniSessionStorage()
 {
+	if (mListenerId != 0) {
+		LocalDirectoryWatcher::GetInstance()->Unregister(mListenerId);
+		mListenerId = 0;
+	}
 }
 
 bool IniSessionStorage::HasUpdate()
 {
-	bool isFirstCall = false;
 	if (mIniFilePath.IsEmpty()) {
 		// 設定ファイルのパスを取得する
 		if (FindIniFilePath(mIniFilePath) == false) {
 			return false;
 		}
-		isFirstCall = true;
+		LocalDirectoryWatcher::GetInstance()->Register((LPCTSTR)mIniFilePath, OnReload, this);
+		mHasUpdate = true;
 	}
-
-	time_t ft;
-	if (GetLastUpdateTime(mIniFilePath, ft) == false) {
-		return false;
-	}
-
-	// 前回からファイルが更新されているかどうか
-	bool hasUpdate = false;
-	if (isFirstCall == false) {
-		hasUpdate = memcmp(&mLastUpdate, &ft, sizeof(mLastUpdate)) == 0;
-	}
-
-	mLastUpdate = ft;
-
-	return isFirstCall || hasUpdate;
+	return mHasUpdate;
 }
 
 bool IniSessionStorage::LoadSessions(std::vector<CString>& sessionNames)
 {
-	if (Path::FileExists(mIniFilePath) == false) {
+	if (mHasUpdate== false || Path::FileExists(mIniFilePath) == false) {
 		return false;
 	}
 
@@ -160,5 +151,23 @@ bool IniSessionStorage::FindCustomIniFilePath(CString& iniFilePath)
 	return true;
 }
 
+void IniSessionStorage::OnReload(void* p)
+{
+	auto thisptr = (IniSessionStorage*)p;
+
+
+	// 通知が短期間のうちに複数回きた場合にはじく
+	auto now = GetTickCount64();
+	if (now - thisptr->mLastUpdate < 1000) {
+		return;
+	}
+
+	spdlog::info("WinSCP storage file updated.");
+	
+	thisptr->mHasUpdate = true;
+
+	// 最終更新時刻を更新
+	thisptr->mLastUpdate = now;
+}
 
 }}} // end of namespace launcherapp::commands::winscp
