@@ -1204,6 +1204,10 @@ LauncherMainWindow::RunCommand(
 		ClearContent();
 		HideWindow();
 	}
+	else if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE) {
+		// ウインドウを閉じない
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+	}
 }
 
 /**

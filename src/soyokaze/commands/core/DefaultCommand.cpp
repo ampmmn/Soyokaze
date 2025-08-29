@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "commands/common/Clipboard.h"
 #include "commands/builtin/NewCommand.h"
+#include "commands/core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -17,6 +18,7 @@ namespace core {
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::builtin;
 using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using SelectionBehavior = launcherapp::core::SelectionBehavior;
 
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 {
@@ -42,6 +44,7 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mActionType = pref->GetDefaultActionType();
+		mCloseWindowPolicy = pref->GetDefaultActionCloseBehavior();
 		mIsLoaded = true;
 	}
 
@@ -51,6 +54,8 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 	CString mActionType;
 	// 設定読み込み済か?
 	bool mIsLoaded{false};
+	// コマンド実行時のウインドウクローズ方法
+	int mCloseWindowPolicy{SelectionBehavior::CLOSEWINDOW_SYNC};
 };
 
 DefaultCommand::DefaultCommand() : in(new PImpl)
@@ -65,14 +70,6 @@ DefaultCommand::~DefaultCommand()
 void DefaultCommand::SetName(const CString& word)
 {
 	in->mName = word;
-}
-
-bool DefaultCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
-{
-	UNREFERENCED_PARAMETER(ifid);
-	UNREFERENCED_PARAMETER(cmd);
-	// 未実装
-	return false;
 }
 
 CString DefaultCommand::GetName()
@@ -196,6 +193,37 @@ bool DefaultCommand::Load(CommandEntryIF* entry)
 {
 	UNREFERENCED_PARAMETER(entry);
 	// 実装しない
+	return false;
+}
+
+// 選択された
+void DefaultCommand::OnSelect(Command* prior)
+{
+	// 何もしない
+	UNREFERENCED_PARAMETER(prior);
+}
+
+// 選択解除された
+void DefaultCommand::OnUnselect(Command* next)
+{
+	// 何もしない
+	UNREFERENCED_PARAMETER(next);
+}
+
+// 実行後のウインドウを閉じる方法
+SelectionBehavior::CloseWindowPolicy
+DefaultCommand::GetCloseWindowPolicy()
+{
+	return (SelectionBehavior::CloseWindowPolicy)in->mCloseWindowPolicy;
+}
+
+bool DefaultCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
+		return true;
+	}
 	return false;
 }
 

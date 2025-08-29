@@ -177,6 +177,8 @@ public:
 
 	// キーワード未登録時のアクション
 	CString GetDefaultActionType();
+	// キーワード未登録時のウインドクローズ方法
+	int GetDefaultActionCloseBehavior();
 
 	// システム設定の色を使用するか?
 	bool IsUseSystemColorSettings();

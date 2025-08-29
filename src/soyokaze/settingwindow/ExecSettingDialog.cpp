@@ -3,11 +3,14 @@
 #include "ExecSettingDialog.h"
 #include "setting/Settings.h"
 #include "utility/DemotedProcessToken.h"  // for IsRunningAsAdmin()
+#include "commands/core/SelectionBehavior.h" // for SelectionBehavior::CloseWindowPolicy
 #include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace launcherapp::core;
 
 // 
 class ExecSettingDialog : public CDialog
@@ -74,19 +77,25 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
 
 	CString defAction;
-	if (mDefaultActionIndex == 1) {
+	int closeBehavior = SelectionBehavior::CLOSEWINDOW_SYNC;
+	if (mDefaultActionIndex == 1) {  // 何もしない(ウインドウを閉じない)
 		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
+		defAction = _T("");
+		closeBehavior = SelectionBehavior::CLOSEWINDOW_NOCLOSE;
+	}
+	else if (mDefaultActionIndex == 2) {  // クリップボードにコピー
 		defAction = _T("copy");
 	}
-	else if (mDefaultActionIndex == 2) {
+	else if (mDefaultActionIndex == 3) {  // コマンドを登録する
 		defAction = _T("register");
 	}
 	else {
-		// 何もしない
+		// 何もしない(ウインドウを閉じる)
 		defAction = _T("");
 	}
 
 	settingsPtr->Set(_T("Launcher:DefaultActionType"), defAction); 
+	settingsPtr->Set(_T("Launcher:DefaultActionCloseBehavior"), closeBehavior); 
 
 	__super::OnOK();
 }
@@ -174,18 +183,25 @@ void ExecSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnablePathFind = settingsPtr->Get(_T("Soyokaze:IsEnablePathFind"), true);
 
 	CString defAction = settingsPtr->Get(_T("Launcher:DefaultActionType"), _T("register")); 
+	int closeBehavior = settingsPtr->Get(_T("Launcher:DefaultActionCloseBehavior"), 1); 
 	if (defAction == _T("copy")) {
 		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
-		mDefaultActionIndex = 1;
+		mDefaultActionIndex = 2;
 	}
 	else if (defAction == _T("register")) {
-		mDefaultActionIndex = 2;
+		mDefaultActionIndex = 3;
 	}
 	else {
 		// なにもしない
-		mDefaultActionIndex = 0;
+		if (closeBehavior == SelectionBehavior::CLOSEWINDOW_NOCLOSE) {
+			// なにもしない(ウインドウを閉じない)
+			mDefaultActionIndex = 1;
+		}
+		else {
+			// なにもしない(ウインドウを閉じる)
+			mDefaultActionIndex = 0;
+		}
 	}
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////

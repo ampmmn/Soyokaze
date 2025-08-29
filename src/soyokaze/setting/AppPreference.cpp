@@ -971,6 +971,12 @@ CString AppPreference::GetDefaultActionType()
 	return in->Get(_T("Launcher:DefaultActionType"), _T("register"));
 }
 
+// キーワード未登録時のウインドクローズ方法
+int AppPreference::GetDefaultActionCloseBehavior()
+{
+	return in->Get(_T("Launcher:DefaultActionCloseBehavior"), 0);
+}
+
 // システム設定の色を使用するか?
 bool AppPreference::IsUseSystemColorSettings()
 {
