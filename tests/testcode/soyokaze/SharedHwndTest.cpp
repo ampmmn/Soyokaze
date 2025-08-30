@@ -9,7 +9,7 @@ TEST(SharedHwnd, canShareHandleInitializedByConstructor)
 	{
 		// アプリ起動中にユニットテストを実行すると、このテストによって共有メモリが上書きため、元の値をとっておく
 		SharedHwnd org_hwnd;
-		org = h.GetHwnd();
+		org = org_hwnd.GetHwnd();
 	}
 
 	HWND hwnd = (HWND)(size_t)0xdeadbeef;
