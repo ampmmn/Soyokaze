@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "AliasCommandParam.h"
 #include "hotkey/CommandHotKeyManager.h"
+#include "commands/validation/CommandEditValidation.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +32,27 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(mName, &mHotKeyAttr); 
 
+	return true;
+}
+
+bool CommandParam::Validate(LPCTSTR orgName, CString& errMsg)
+{
+	// 名前チェック
+	bool isNameValid =
+	 	launcherapp::commands::validation::IsValidCommandName(mName, orgName, errMsg);
+	if (isNameValid == false) {
+		return false;
+	}
+
+	if (mText.IsEmpty()) {
+		BOOL isOK = errMsg.LoadString(IDS_ERR_TEXTISEMPTY);
+		if (isOK == FALSE) {
+			spdlog::error("Failed to load string IDS_ERR_TEXTISEMPTY");
+		}
+		return false;
+	}
+
+	errMsg.Empty();
 	return true;
 }
 

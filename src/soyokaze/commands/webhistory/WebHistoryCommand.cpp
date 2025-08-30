@@ -101,7 +101,7 @@ void WebHistoryCommand::PImpl::QueryHistory(
 			// タイトルが空の場合は表示しない
 			continue;
 		}
-		commands.Add(CommandQueryItem(history.mMatchLevel, 
+		commands.Add(CommandQueryItem(Pattern::FrontMatch,
 		                              new WebHistoryAdhocCommand(mParam.mName, HISTORY{appName, item.mTitle, item.mUrl,Pattern::FrontMatch})));
 	}
 }

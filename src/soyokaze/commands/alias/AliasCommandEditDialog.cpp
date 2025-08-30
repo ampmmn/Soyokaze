@@ -107,25 +107,9 @@ bool CommandEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	// 名前チェック
-	bool isNameValid =
-	 	launcherapp::commands::validation::IsValidCommandName(mParam.mName, mOrgName, mMessage);
-	if (isNameValid == false) {
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-	if (mParam.mText.IsEmpty()) {
-		mMessage.LoadString(IDS_ERR_TEXTISEMPTY);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return false;
-	}
-
-
-	mMessage.Empty();
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
-
-	return true;
+	bool isValid = mParam.Validate(mOrgName, mMessage);
+	GetDlgItem(IDOK)->EnableWindow(isValid);
+	return isValid;
 }
 
 void CommandEditDialog::OnUpdateStatus()
