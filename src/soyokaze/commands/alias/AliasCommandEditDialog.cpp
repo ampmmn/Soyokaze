@@ -19,6 +19,8 @@ namespace launcherapp {
 namespace commands {
 namespace alias {
 
+using namespace launcherapp::commands::validation;
+
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_ALIAS_EDIT, parentWnd)
@@ -107,7 +109,11 @@ bool CommandEditDialog::UpdateStatus()
 		mHotKey.LoadString(IDS_NOHOTKEY);
 	}
 
-	bool isValid = mParam.Validate(mOrgName, mMessage);
+	int errCode;
+	bool isValid = mParam.IsValid(mOrgName, &errCode); 
+
+	CommandParamError paramErr(errCode);
+	mMessage = paramErr.ToString();
 	GetDlgItem(IDOK)->EnableWindow(isValid);
 	return isValid;
 }

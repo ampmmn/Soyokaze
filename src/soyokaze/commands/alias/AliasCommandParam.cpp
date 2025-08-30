@@ -10,6 +10,8 @@
 
 namespace launcherapp { namespace commands { namespace alias {
 
+using CommandParamErrorCode = launcherapp::commands::validation::CommandParamErrorCode;
+
 bool CommandParam::Save(CommandEntryIF* entry) const
 {
 	entry->Set(_T("description"), mDescription);
@@ -35,24 +37,19 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	return true;
 }
 
-bool CommandParam::Validate(LPCTSTR orgName, CString& errMsg)
+bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 {
 	// 名前チェック
-	bool isNameValid =
-	 	launcherapp::commands::validation::IsValidCommandName(mName, orgName, errMsg);
-	if (isNameValid == false) {
+	if (launcherapp::commands::validation::IsValidCommandName(mName, orgName, errCode) == false) {
 		return false;
 	}
 
 	if (mText.IsEmpty()) {
-		BOOL isOK = errMsg.LoadString(IDS_ERR_TEXTISEMPTY);
-		if (isOK == FALSE) {
-			spdlog::error("Failed to load string IDS_ERR_TEXTISEMPTY");
-		}
+		*errCode = CommandParamErrorCode::Alias_TextIsEmpty;
 		return false;
 	}
 
-	errMsg.Empty();
+	*errCode = CommandParamErrorCode::Common_NoError;
 	return true;
 }
 

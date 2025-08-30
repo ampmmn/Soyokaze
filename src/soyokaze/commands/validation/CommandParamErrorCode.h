@@ -20,7 +20,8 @@ enum CommandParamErrorCode
 	ActivateWindow_CaptionIsInvalid,
 	// [activate_window] ウインドウクラスの指定が不正
 	ActivateWindow_ClassIsInvalid,
-	// 
+	// [alias] テキストが空
+	Alias_TextIsEmpty,
 };
 
 

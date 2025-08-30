@@ -16,12 +16,14 @@ namespace launcherapp { namespace commands { namespace validation {
 #define END_ERR_MESSGAGE_MAP() } return false; }
 
 BEGIN_ERR_MESSAGE_MAP()
+	DECLARE_ERR_MESSAGE(Common_NoError, _T(""))
 	DECLARE_ERR_MESSAGE_ID(Common_NoName, IDS_ERR_NAMEISEMPTY)
 	DECLARE_ERR_MESSAGE_ID(Common_NameAlreadyExists, IDS_ERR_NAMEALREADYEXISTS)
 	DECLARE_ERR_MESSAGE_ID(Common_NameContainsIllegalChar, IDS_ERR_ILLEGALCHARCONTAINS)
 	DECLARE_ERR_MESSAGE(ActivateWindow_CaptionAndClassBothEmpty, _T("ウインドウタイトルかウインドウクラスを入力してください"))
 	DECLARE_ERR_MESSAGE(ActivateWindow_CaptionIsInvalid, _T("ウインドウタイトルの指定パターンが正しくありません"))
 	DECLARE_ERR_MESSAGE(ActivateWindow_ClassIsInvalid, _T("ウインドウクラスの指定パターンが正しくありません"))
+	DECLARE_ERR_MESSAGE(Alias_TextIsEmpty, _T("テキストを入力してください"))
 END_ERR_MESSGAGE_MAP()
 
 CommandParamError::CommandParamError() : mErrCode(0)
