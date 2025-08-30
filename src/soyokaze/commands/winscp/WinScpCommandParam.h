@@ -1,6 +1,5 @@
 #pragma once
 
-#include "hotkey/CommandHotKeyAttribute.h"
 #include "setting/Settings.h"
 #include <map>
 

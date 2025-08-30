@@ -407,7 +407,6 @@
 #define IDC_LIST_PATH                   1138
 #define IDC_LIST_ENVPATH2               1138
 #define IDC_EDIT_TIMEOUT                1140
-#define IDC_EDIT2                       1141
 #define IDC_EDIT_CANDIDATES             1141
 #define IDC_BUTTON_IMPORTFRONT          1141
 #define IDC_BUTTON_IMPORTBACK           1142
@@ -521,6 +520,7 @@
 #define IDC_CHECK_PREVIEW               1217
 #define IDC_EDIT_PREVIEW                1218
 #define IDC_STATIC_INFO                 1219
+#define IDD_APPSETTING_WEBHISTORY       1220
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects

@@ -8,7 +8,7 @@ namespace launcherapp { namespace commands { namespace winscp {
 
 
 class WinScpCommand :
- 	virtual public launcherapp::commands::common::AdhocCommandBase
+	virtual public launcherapp::commands::common::AdhocCommandBase
 {
 public:
 	WinScpCommand(CommandParam* param, const CString& sessionName);
