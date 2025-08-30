@@ -101,13 +101,8 @@ void WebHistoryCommand::PImpl::QueryHistory(
 			// タイトルが空の場合は表示しない
 			continue;
 		}
-
-		HISTORY history;
-		history.mMatchLevel = Pattern::PartialMatch;
-		history.mBrowserName = appName;
-		history.mDisplayName = item.mTitle;
-		history.mUrl = item.mUrl;
-		commands.Add(CommandQueryItem(history.mMatchLevel, new WebHistoryAdhocCommand(mParam.mName, history)));
+		commands.Add(CommandQueryItem(history.mMatchLevel, 
+		                              new WebHistoryAdhocCommand(mParam.mName, HISTORY{appName, item.mTitle, item.mUrl,Pattern::FrontMatch})));
 	}
 }
 
