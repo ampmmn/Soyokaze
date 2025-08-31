@@ -33,6 +33,9 @@ struct PythonDLLLoader::PImpl : public AppPreferenceListenerIF
 
 	PythonDLLLoader* mThisPtr{nullptr};
 	std::unique_ptr<PythonDLL> mDll;
+
+	// 利用可能か?
+	bool mIsAvailable{false};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,13 +68,17 @@ bool PythonDLLLoader::Initialize()
 	auto dllPath = pref->GetPythonDLLPath();
 	if (dllPath.IsEmpty()) {
 		in->mDll.reset();
+		in->mIsAvailable = false;
 		return false;
 	}
 
 	in->mDll.reset(new PythonDLL());
 	if (in->mDll->LoadDLL(dllPath) == false) {
+		in->mIsAvailable = false;
 		return false;
 	}
+
+	in->mIsAvailable = true;
 	return true;
 }
 
@@ -79,6 +86,11 @@ bool PythonDLLLoader::Finalize()
 {
 	in->mDll.reset();
 	return true;
+}
+
+bool PythonDLLLoader::IsAvailable()
+{
+	return in->mIsAvailable;
 }
 
 PythonDLL* PythonDLLLoader::GetLibrary()

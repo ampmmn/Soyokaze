@@ -13,6 +13,7 @@ public:
 	static PythonDLLLoader* Get();
 	bool Initialize();
 	bool Finalize();
+	bool IsAvailable();
 
 	PythonDLL* GetLibrary();
 private:

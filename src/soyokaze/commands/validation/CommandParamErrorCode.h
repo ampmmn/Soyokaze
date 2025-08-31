@@ -22,6 +22,8 @@ enum CommandParamErrorCode
 	ActivateWindow_ClassIsInvalid,
 	// [alias] テキストが空
 	Alias_TextIsEmpty,
+	// [py_extension] スクリプトが空
+	PyExtension_ScriptIsEmpty,
 };
 
 

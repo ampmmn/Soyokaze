@@ -161,6 +161,7 @@
 #define IDD_APPSETTING_WINSCP           255
 #define IDD_CLIPBOARD_PREVIEW           256
 #define IDD_APPSETTING_BOOKMARK         257
+#define IDD_PYEXTENSION_EDIT            257
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -530,6 +531,7 @@
 #define IDD_APPSETTING_VSCODE           1223
 #define IDC_CHECK_OPENURLINOTHERBROWSER 1224
 #define IDC_CHECK_FULLPATH              1224
+#define IDC_EDIT_SCRIPT                 1220
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects

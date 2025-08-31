@@ -1511,6 +1511,25 @@ BEGIN
     CONTROL         "候補にフルパスを表示する(&F)",IDC_CHECK_FULLPATH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,79,129,10
 END
 
+IDD_PYEXTENSION_EDIT DIALOGEX 0, 0, 380, 287
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Python拡張コマンドの編集"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "コマンドの名前(&N):",-1,13,19,65,8
+    EDITTEXT        IDC_EDIT_NAME,29,34,79,14,ES_AUTOHSCROLL
+    LTEXT           "説明(&D):",-1,113,20,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,123,33,215,14,ES_AUTOHSCROLL
+    LTEXT           "スクリプト(&S):",-1,13,62,65,8
+    EDITTEXT        IDC_EDIT_SCRIPT,21,74,347,127,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "ホットキー(K):",-1,17,251,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,83,248,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,206,248,21,14
+    DEFPUSHBUTTON   "OK",IDOK,266,266,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,320,266,50,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,105,8,188,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2105,6 +2124,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 278
+    END
+
+    IDD_PYEXTENSION_EDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 375
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 280
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2987,6 +3014,23 @@ END
 IDD_APPSETTING_VSCODE AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_PYEXTENSION_EDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0
 END
 
 
