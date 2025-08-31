@@ -504,6 +504,7 @@
 #define IDC_EDIT_PREFIX                 1211
 #define IDC_EDIT_SIZELIMIT              1212
 #define IDC_BUTTON_TYPE                 1212
+#define IDC_EDIT_MINTRIGGERLENGTH       1212
 #define IDC_EDIT_COUNTLIMIT             1213
 #define IDC_EDIT_PREFIX_WINDOWTITLE     1213
 #define IDC_EDIT_PREFIX2                1214

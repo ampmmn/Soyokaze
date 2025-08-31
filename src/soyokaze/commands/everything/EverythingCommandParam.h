@@ -18,7 +18,8 @@ public:
 
 public:
 	CString mPrefix;
-
+	// 検索を有効にする最小文字数
+	int mMinTriggerLength{5};
 	// 機能を利用するか?
 	bool mIsEnable{true};
 	// Everythingアプリが起動していない場合に起動するか?

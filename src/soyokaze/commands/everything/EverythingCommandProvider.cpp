@@ -106,6 +106,11 @@ void EverythingCommandProvider::QueryAdhocCommands(
  	std::vector<PatternInternal::WORD> words;
 	pat2->GetWords(words);
 	for (size_t i = hasPrefix ? 1 : 0; i < words.size(); ++i) {
+
+		if (queryStr.IsEmpty() == FALSE) {
+			queryStr += _T(" ");
+		}
+
 		auto& word = words[i];
 		//if (word.mMethod == PatternInternal::RegExp) {
 		//	queryStr += word.mWord;
@@ -113,7 +118,11 @@ void EverythingCommandProvider::QueryAdhocCommands(
 		//else {
 			queryStr += word.mRawWord;
 		//}
-		queryStr += _T(" ");
+	}
+
+	// 問い合わせ文字列の長さが閾値を下回る場合は機能を発動しない
+	if (queryStr.GetLength() < in->mParam.mMinTriggerLength) {
+		return;
 	}
 
 	spdlog::debug(_T("Everything QueryStr:{}"), (LPCTSTR)queryStr);

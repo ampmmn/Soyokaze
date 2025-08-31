@@ -80,6 +80,8 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PREFIX, mParam.mPrefix);
 	DDX_Check(pDX, IDC_CHECK_RUNEVERYTHING, mParam.mIsRunApp);
 	DDX_Text(pDX, IDC_EDIT_EVERYTHINGEXEPATH, mParam.mEverythingExePath);
+	DDX_Text(pDX, IDC_EDIT_MINTRIGGERLENGTH, mParam.mMinTriggerLength);
+	DDV_MinMaxInt(pDX,  mParam.mMinTriggerLength, 0, 32);
 }
 
 #pragma warning( push )
