@@ -121,9 +121,9 @@ void AppSettingPageShortcut::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageShortcut::GetHelpPageId(CString& id)
+bool AppSettingPageShortcut::GetHelpPageId(String& id)
 {
-	id = _T("ShortcutSetting");
+	id = "ShortcutSetting";
 	return true;
 }
 

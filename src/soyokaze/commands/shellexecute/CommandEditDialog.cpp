@@ -343,9 +343,9 @@ void CommandEditDialog::OnEnterSettings()
 
 }
 
-bool CommandEditDialog::GetHelpPageId(CString& id)
+bool CommandEditDialog::GetHelpPageId(String& id)
 {
-	id = _T("ShellExecute_Basic");
+	id = "ShellExecute_Basic";
 	return true;
 }
 
@@ -500,7 +500,7 @@ void CommandEditDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 

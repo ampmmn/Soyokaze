@@ -40,7 +40,7 @@ FilterEditDialog::FilterEditDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>())
 {
-	SetHelpPageId(_T("FilterEdit"));
+	SetHelpPageId("FilterEdit");
 }
 
 FilterEditDialog::~FilterEditDialog()
@@ -390,7 +390,7 @@ void FilterEditDialog::OnSelectAfterExecOtherCommand()
 	param.mCommandParam = mParam.mAfterCommandParam;
 
 	// ダイアログを表示
-	OtherCommandDialog dlg(_T("PostFilterCommand"), this);
+	OtherCommandDialog dlg("PostFilterCommand", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {
@@ -417,7 +417,7 @@ void FilterEditDialog::OnSelectAfterSubProcess()
 	param.mShowType = mParam.mAfterShowType;
 
 	// ダイアログを表示
-	SubProcessDialog dlg(_T("PostFilterSubProcess"), this);
+	SubProcessDialog dlg("PostFilterSubProcess", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {
@@ -443,7 +443,7 @@ void FilterEditDialog::OnSelectAfterCopyClipboard()
 	param.mCommandParam = mParam.mAfterCommandParam;
 
 	// ダイアログを表示
-	CopyToClipboardDialog dlg(_T("PostFilterCopy"), this);
+	CopyToClipboardDialog dlg("PostFilterCopy", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$select:選択されたテキスト"));
 	if (dlg.DoModal() != IDOK) {

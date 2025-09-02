@@ -316,7 +316,7 @@ void ViewSettingDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 
@@ -448,9 +448,9 @@ void AppSettingPageView::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageView::GetHelpPageId(CString& id)
+bool AppSettingPageView::GetHelpPageId(String& id)
 {
-	id = _T("InputWindowSetting");
+	id = "InputWindowSetting";
 	return true;
 }
 

@@ -160,9 +160,9 @@ void AppSettingPagePathConvert::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPagePathConvert::GetHelpPageId(CString& id)
+bool AppSettingPagePathConvert::GetHelpPageId(String& id)
 {
-	id = _T("PathConvertSetting");
+	id = "PathConvertSetting";
 	return true;
 }
 

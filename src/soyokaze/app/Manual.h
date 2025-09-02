@@ -13,7 +13,7 @@ class Manual
 public:
 	static Manual* GetInstance();
 
-	bool Navigate(const CString& pageId);
+	bool Navigate(const char* pageId);
 
 private:
 	struct PImpl;

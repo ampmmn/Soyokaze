@@ -62,7 +62,7 @@ void PreviewDialog::PImpl::UpdateListCtrlItems()
 PreviewDialog::PreviewDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT_TEST, parentWnd), in(new PImpl)
 {
-	SetHelpPageId(_T("SimpleDictPreview"));
+	SetHelpPageId("SimpleDictPreview");
 }
 
 PreviewDialog::~PreviewDialog()

@@ -286,9 +286,9 @@ void AppSettingPageBasic::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageBasic::GetHelpPageId(CString& id)
+bool AppSettingPageBasic::GetHelpPageId(String& id)
 {
-	id = _T("GeneralSetting");
+	id = "GeneralSetting";
 	return true;
 }
 

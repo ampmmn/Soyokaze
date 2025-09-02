@@ -34,7 +34,7 @@ public:
 	virtual void SetParam(void* param) = 0;
 
 	// ページに関連付けられたヘルプページIDを取得する
-	virtual bool GetHelpPageId(CString& helpPageId) = 0;
+	virtual bool GetHelpPageId(String& helpPageId) = 0;
 
 	// インスタンスを複製する
 	virtual AppSettingPageIF* Clone() = 0;

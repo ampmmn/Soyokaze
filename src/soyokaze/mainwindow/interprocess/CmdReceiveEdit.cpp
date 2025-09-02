@@ -33,13 +33,16 @@ void CmdReceiveEdit::Init()
 
 BOOL CmdReceiveEdit::OnSendCommand(SEND_COMMAND_PARAM* param)
 {
+	CString tmp;
+	UTF2UTF(param->mText, tmp);
+
 	if (param->mIsPasteOnly) {
 		// テキスト設定のみ
-		GetParent()->SendMessage(WM_APP + 11, 0, (LPARAM)param->mText);
+		GetParent()->SendMessage(WM_APP + 11, 0, (LPARAM)(LPCTSTR)tmp);
 	}
 	else {
 		// コマンド実行
-		GetParent()->SendMessage(WM_APP + 3, 0, (LPARAM)param->mText);
+		GetParent()->SendMessage(WM_APP + 3, 0, (LPARAM)(LPCTSTR)tmp);
 	}
 	return TRUE;
 }
@@ -52,8 +55,9 @@ BOOL CmdReceiveEdit::OnSetCaretRange(SET_CARETRANGE_PARAM* param)
 
 BOOL CmdReceiveEdit::OnChangeDirectory(CHANGE_DIRECTORY_PARAM* param)
 {
-	SPDLOG_DEBUG(_T("path:{}"), (LPCTSTR)param->mDirPath);
-	return SetCurrentDirectory(param->mDirPath);
+	SPDLOG_DEBUG("path:{}", param->mDirPath);
+	CString tmp;
+	return SetCurrentDirectory(UTF2UTF(param->mDirPath, tmp));
 }
 
 void CmdReceiveEdit::OnTimer(UINT_PTR timerId)

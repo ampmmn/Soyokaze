@@ -10,10 +10,10 @@ public:
 	SecondProcessProxy();
 	~SecondProcessProxy();
 
-	bool SendCommandString(const CString& commandStr, bool isPasteOnly) override;
+	bool SendCommandString(const String& commandStr, bool isPasteOnly) override;
 	bool SendCaretRange(int startPos, int length) override;
-	bool RegisterPath(const CString& pathStr) override;
-	bool ChangeDirectory(const CString& pathStr) override;
+	bool RegisterPath(const String& pathStr) override;
+	bool ChangeDirectory(const String& pathStr) override;
 	bool Hide() override;
 	bool Show() override;
 };

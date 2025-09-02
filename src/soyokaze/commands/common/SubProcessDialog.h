@@ -23,7 +23,7 @@ public:
 	};
 
 public:
-	SubProcessDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	SubProcessDialog(LPCSTR helpId, CWnd* parentWnd = nullptr);
 	virtual ~SubProcessDialog();
 
 	void SetParam(const Param& param);

@@ -19,12 +19,12 @@ namespace commands {
 namespace common {
 
 
-OtherCommandDialog::OtherCommandDialog(LPCTSTR helpId, CWnd* parentWnd) : 
+OtherCommandDialog::OtherCommandDialog(LPCSTR helpId, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_COMMAND, parentWnd),
 	mCommandSelIndex(-1)
 {
 	SetHelpPageId(helpId);
-	//SetHelpPageId(_T("PostFilterCommand"));
+	//SetHelpPageId("PostFilterCommand");
 }
 
 OtherCommandDialog::~OtherCommandDialog()

@@ -156,6 +156,9 @@
     <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp">
       <Filter>soyokaze\commands\activate_window</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\StringWrapperTest.cpp">
+      <Filter>soyokaze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

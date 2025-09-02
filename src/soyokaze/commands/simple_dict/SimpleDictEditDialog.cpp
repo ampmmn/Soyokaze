@@ -61,7 +61,7 @@ struct SettingDialog::PImpl
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
 {
-	SetHelpPageId(_T("SimpleDictEdit"));
+	SetHelpPageId("SimpleDictEdit");
 	in->mIsTestPassed = false;
 }
 
@@ -468,7 +468,7 @@ void SettingDialog::OnNotifyLinkOpenMacro(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 
@@ -480,7 +480,7 @@ void SettingDialog::OnNotifyLinkOpenTebiki(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("SimpleDictTebiki"));
+	manual->Navigate("SimpleDictTebiki");
 	*pResult = 0;
 }
 
@@ -519,7 +519,7 @@ void SettingDialog::OnSelectExecOtherCommand()
 	param.mCommandParam = in->mParam.mAfterCommandParam;
 
 	// ダイアログを表示
-	OtherCommandDialog dlg(_T("SimpleDictAfterOtherCommand"), this);
+	OtherCommandDialog dlg("SimpleDictAfterOtherCommand", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
 	if (dlg.DoModal() != IDOK) {
@@ -547,7 +547,7 @@ void SettingDialog::OnSelectSubProcess()
 	param.mShowType = in->mParam.mAfterShowType;
 
 	// ダイアログを表示
-	SubProcessDialog dlg(_T("SimpleDictAfterSubProcess"), this);
+	SubProcessDialog dlg("SimpleDictAfterSubProcess", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
 	if (dlg.DoModal() != IDOK) {
@@ -574,7 +574,7 @@ void SettingDialog::OnSelectCopyClipboard()
 	param.mCommandParam = in->mParam.mAfterCommandParam;
 
 	// ダイアログを表示
-	CopyToClipboardDialog dlg(_T("SimpleDictCopyToClipboard"), this);
+	CopyToClipboardDialog dlg("SimpleDictCopyToClipboard", this);
 	dlg.SetParam(param);
 	dlg.SetVariableDescription(_T("$key:キー $value:値 $value2:値2"));
 	if (dlg.DoModal() != IDOK) {

@@ -262,9 +262,9 @@ void LauncherMainWindow::HideWindow()
 
 void LauncherMainWindow::ShowHelpTop()
 {
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("Top"));
+	manual->Navigate("Top");
 }
 
 /**
@@ -1708,15 +1708,15 @@ void LauncherMainWindow::OnEndSession(BOOL isEnding)
 void LauncherMainWindow::OnCommandHelp()
 {
 	// 入力ウインドウのヘルプ表示
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("InputWindow"));
+	manual->Navigate("InputWindow");
 }
 
 void LauncherMainWindow::OnCommandHotKey(UINT id)
 {
 	// ローカルホットキーに対応されたコマンドを実行する
-	SPDLOG_DEBUG(_T("args id:{}"), id);
+	SPDLOG_DEBUG("args id:{}", id);
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
 }
 

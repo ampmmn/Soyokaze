@@ -14,11 +14,11 @@ public:
 	virtual ~SinglePageDialog();
 
 protected:
-	void SetHelpPageId(const CString& id);
+	void SetHelpPageId(const String& id);
 	virtual bool ShowHelp();
 private:
 	// ヘルプページを表す識別子
-	CString mHelpPageId;
+	String mHelpPageId;
 
 	TopMostMask mTopMostMask;
 	HACCEL mAccel;

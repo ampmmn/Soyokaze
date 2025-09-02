@@ -11,7 +11,7 @@ SelectCommandTypeDialog::SelectCommandTypeDialog() :
 	launcherapp::gui::SinglePageDialog(IDD_SELECTCOMMANDTYPE),
 	mSelIndex(-1)
 {
-	SetHelpPageId(_T("SelectCommandType"));
+	SetHelpPageId("SelectCommandType");
 }
 
 SelectCommandTypeDialog::~SelectCommandTypeDialog()

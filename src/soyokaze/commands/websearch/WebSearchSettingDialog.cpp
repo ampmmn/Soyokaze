@@ -83,7 +83,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_WEBSEARCHEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("WebSearchSetting"));
+	SetHelpPageId("WebSearchSetting");
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 }
 

@@ -611,9 +611,9 @@ void AppSettingPageCommandPriority::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageCommandPriority::GetHelpPageId(CString& id)
+bool AppSettingPageCommandPriority::GetHelpPageId(String& id)
 {
-	id = _T("CommandPrioritySetting");
+	id = "CommandPrioritySetting";
 	return true;
 }
 

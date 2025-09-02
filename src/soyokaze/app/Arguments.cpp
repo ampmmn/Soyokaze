@@ -21,7 +21,7 @@ int Arguments::GetCount()
 	return mArgC;
 }
 
-CString Arguments::Get(int index)
+String Arguments::Get(int index)
 {
 	return mArgV[index];
 }
@@ -36,13 +36,13 @@ bool Arguments::Erase(int index)
 	return true;
 }
 
-bool Arguments::Has(LPCTSTR optName)
+bool Arguments::Has(const char* optName)
 {
-	CString optLower(optName);
+	String optLower(optName);
 	optLower.MakeLower();
 
 	for (size_t i = 0; i < mArgV.size(); ++i) {
-		auto arg = mArgV[i]; 
+		auto arg = mArgV[i];
 		arg.TrimLeft();
 		arg.MakeLower();
 		if (arg.Find(optLower) == 0) {
@@ -52,7 +52,7 @@ bool Arguments::Has(LPCTSTR optName)
 	return false;
 }
 
-bool Arguments::GetValue(LPCTSTR optName, CString& value)
+bool Arguments::GetValue(const char* optName, String& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {
 		if (mArgV[i].CompareNoCase(optName)== 0 && i+1 < mArgV.size()) {
@@ -64,17 +64,17 @@ bool Arguments::GetValue(LPCTSTR optName, CString& value)
 }
 
 // bluewindと互換性があるオプション形式(/xxx=)で指定された値を取得
-bool Arguments::GetBWOptValue(LPCTSTR optName, CString& value)
+bool Arguments::GetBWOptValue(const char* optName, String& value)
 {
 	for (size_t i = 0; i < mArgV.size(); ++i) {
 
-		auto argPart = mArgV[i].Left((int)_tcslen(optName));
-		if (_tcsicmp(optName, argPart) != 0) {
+		String argPart = mArgV[i].Left((int)strlen(optName));
+		if (argPart.CompareNoCase(optName) != 0) {
 			continue;
 		}
 
 		auto arg = mArgV[i];
-		int sepPos = arg.Find(_T("="));
+		int sepPos = arg.Find("=");
 		if (sepPos == -1) {
 			continue;
 		}

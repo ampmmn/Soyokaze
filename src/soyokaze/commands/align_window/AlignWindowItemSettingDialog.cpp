@@ -43,7 +43,7 @@ ItemDialog::ItemDialog(CWnd* parentWnd) :
 {
 	UNREFERENCED_PARAMETER(parentWnd);
 
-	SetHelpPageId(_T("AlignWindowItemSetting"));
+	SetHelpPageId("AlignWindowItemSetting");
 }
 
 ItemDialog::~ItemDialog()

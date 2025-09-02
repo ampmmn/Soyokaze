@@ -467,9 +467,9 @@ void AppSettingPageInputWindowKey::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageInputWindowKey::GetHelpPageId(CString& id)
+bool AppSettingPageInputWindowKey::GetHelpPageId(String& id)
 {
-	id = _T("InputKeySetting");
+	id = "InputKeySetting";
 	return true;
 }
 

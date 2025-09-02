@@ -81,6 +81,7 @@ inline std::string& UTF2UTF(const std::wstring& src, std::string& dst) {
 	return launcherapp::utility::CharConverter::UTF2UTF(src, dst);
 }
 
+#include "launcherapp_string.h"
 
 // 構造体サイズ調査用
 // https://oshiete.goo.ne.jp/qa/1823289.html

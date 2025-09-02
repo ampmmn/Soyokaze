@@ -34,7 +34,8 @@ public:
 	BOOL InitSecondInstance();
 
 	// バルーンメッセージを表示
-	bool PopupMessage(const CString& message);
+	bool PopupMessage(const wchar_t* message);
+	bool PopupMessage(const char* message);
 
 // 実装
 protected:

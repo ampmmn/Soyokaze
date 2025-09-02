@@ -16,7 +16,7 @@ namespace launcherapp { namespace commands { namespace shellexecute {
 ValueEditDialog::ValueEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SHELLEXEC_ENVEDIT, parentWnd)
 {
-	SetHelpPageId(_T("ShellExecEnvEdit"));
+	SetHelpPageId("ShellExecEnvEdit");
 }
 
 ValueEditDialog::~ValueEditDialog()
@@ -195,7 +195,7 @@ void ValueEditDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 

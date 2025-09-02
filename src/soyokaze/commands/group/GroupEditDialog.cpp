@@ -25,7 +25,7 @@ GroupEditDialog::GroupEditDialog(CWnd* parentWnd) :
 	mCommandListPtr(nullptr),
 	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {
-	SetHelpPageId(_T("GroupEdit"));
+	SetHelpPageId("GroupEdit");
 }
 
 GroupEditDialog::~GroupEditDialog()

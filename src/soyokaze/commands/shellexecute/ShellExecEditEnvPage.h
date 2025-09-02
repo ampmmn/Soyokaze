@@ -28,7 +28,7 @@ protected:
 	BOOL OnKillActive() override;
 	BOOL OnSetActive() override;
 	void OnEnterSettings() override;
-	bool GetHelpPageId(CString& id) override;
+	bool GetHelpPageId(String& id) override;
 
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()

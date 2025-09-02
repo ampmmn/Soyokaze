@@ -33,7 +33,7 @@ BEGIN_MESSAGE_MAP(SinglePageDialog, CDialogEx)
 	ON_COMMAND(ID_VIEW_HELP, OnCommandHelp)
 END_MESSAGE_MAP()
 
-void SinglePageDialog::SetHelpPageId(const CString& id)
+void SinglePageDialog::SetHelpPageId(const String& id)
 {
 	mHelpPageId = id;
 }
@@ -44,7 +44,7 @@ bool SinglePageDialog::ShowHelp()
 		SPDLOG_WARN(_T("Help id is empty."));
 		return false;
 	}
-	return launcherapp::app::Manual::GetInstance()->Navigate(mHelpPageId);
+	return launcherapp::app::Manual::GetInstance()->Navigate(mHelpPageId.c_str());
 }
 
 

@@ -4,8 +4,8 @@ class AppProcess
 {
 public:
 	struct exception {
-		exception(const CString& msg) : mMessage(msg) {}
-		CString mMessage;
+		exception(const std::string& msg) : mMessage(msg) {}
+		std::string mMessage;
 	};
 public:
 	AppProcess();

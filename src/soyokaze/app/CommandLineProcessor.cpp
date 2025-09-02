@@ -9,7 +9,7 @@ bool CommandLineProcessor::Run(int argc, TCHAR* argv[], SecondProcessProxyIF* pr
 	StartupParam startupParam(argc, argv);
 
 	bool hasRunCommand = false;
-	CString value;
+	String value;
 
 	if (startupParam.HasChangeDirectoryOption(value)) {
 		proxy->ChangeDirectory(value);
@@ -44,7 +44,7 @@ bool CommandLineProcessor::Run(int argc, TCHAR* argv[], SecondProcessProxyIF* pr
 	if (startupParam.HasPasteOption(value)) {
 		// /pasteオプションでコマンドが与えられた場合、既存プロセス側にテキストを送る
 		// 直前で実行したproxy.Show()により、入力欄のクリアが走るため、テキストを送る処理をあとに行っている
-		spdlog::debug(_T("HasPaste value:{}"), (LPCTSTR)value);
+		spdlog::debug("HasPaste value:{}", value.c_str());
 
 		bool isPasteOnly = true;
 		proxy->SendCommandString(value, isPasteOnly);

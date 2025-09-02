@@ -9,18 +9,18 @@ public:
 	~Arguments() = default;
 
 	int GetCount();
-	CString Get(int index);
+	String Get(int index);
 	bool Erase(int index);
 
 
-	bool Has(LPCTSTR optName);
+	bool Has(const char* optName);
 
-	bool GetValue(LPCTSTR optName, CString& value);
-	bool GetBWOptValue(LPCTSTR optName, CString& value);
+	bool GetValue(const char* optName, String& value);
+	bool GetBWOptValue(const char* optName, String& value);
 
 protected:
 	int mArgC;
-	std::vector<CString> mArgV;
+	std::vector<String> mArgV;
 
 };
 

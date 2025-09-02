@@ -46,7 +46,7 @@ BuiltinEditDialog::BuiltinEditDialog(
 	launcherapp::gui::SinglePageDialog(IDD_BUILTINEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("BuiltinCommandEdit"));
+	SetHelpPageId("BuiltinCommandEdit");
 	in->mName = name;
 	in->mDescription = description;
 	in->mCanEditEnable = canEditEnable;

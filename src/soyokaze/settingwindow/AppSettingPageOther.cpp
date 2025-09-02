@@ -248,9 +248,9 @@ void AppSettingPageOther::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageOther::GetHelpPageId(CString& id)
+bool AppSettingPageOther::GetHelpPageId(String& id)
 {
-	id = _T("OtherSetting");
+	id = "OtherSetting";
 	return true;
 }
 

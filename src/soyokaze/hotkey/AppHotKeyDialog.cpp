@@ -19,7 +19,7 @@ AppHotKeyDialog::AppHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) :
 	mFirstVKIndex(-1),
 	mSecondVKIndex(-1)
 {
-	SetHelpPageId(_T("AppHotKey"));
+	SetHelpPageId("AppHotKey");
 }
 
 AppHotKeyDialog::~AppHotKeyDialog()

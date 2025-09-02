@@ -335,9 +335,9 @@ void AppSettingPageExcludePath::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageExcludePath::GetHelpPageId(CString& id)
+bool AppSettingPageExcludePath::GetHelpPageId(String& id)
 {
-	id = _T("ExcludeFileSetting");
+	id = "ExcludeFileSetting";
 	return true;
 }
 

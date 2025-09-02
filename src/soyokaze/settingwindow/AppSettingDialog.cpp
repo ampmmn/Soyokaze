@@ -272,13 +272,13 @@ bool AppSettingDialog::ShowHelp()
 		return false;
 	}
 
-	CString helpPageId;
+	String helpPageId;
 	if (newPagePtr->GetHelpPageId(helpPageId) == false) {
 		return false;
 	}
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(helpPageId);
+	manual->Navigate(helpPageId.c_str());
 	return true;
 }
 

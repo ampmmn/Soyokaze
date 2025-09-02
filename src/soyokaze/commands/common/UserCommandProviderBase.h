@@ -44,7 +44,7 @@ public:
 	virtual bool LoadFrom(CommandEntryIF* entry, Command** command);
 
 private:
-	ULONGLONG mRefCount;
+	uint64_t mRefCount;
 };
 
 } // end of namespace common

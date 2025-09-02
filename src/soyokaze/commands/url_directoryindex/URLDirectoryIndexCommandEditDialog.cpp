@@ -25,7 +25,7 @@ namespace url_directoryindex {
 URLDirectoryIndexCommandEditDialog::URLDirectoryIndexCommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_URLDIRECTORYINDEXEDIT, parentWnd)
 {
-	SetHelpPageId(_T("DirectoryIndexEdit"));
+	SetHelpPageId("DirectoryIndexEdit");
 }
 
 URLDirectoryIndexCommandEditDialog::~URLDirectoryIndexCommandEditDialog()

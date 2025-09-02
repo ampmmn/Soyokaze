@@ -16,7 +16,7 @@ namespace filter {
 PreFilterConstantDialog::PreFilterConstantDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_PRE_CONSTANT, parentWnd)
 {
-	SetHelpPageId(_T("PreFilterConstant"));
+	SetHelpPageId("PreFilterConstant");
 }
 
 PreFilterConstantDialog::~PreFilterConstantDialog()

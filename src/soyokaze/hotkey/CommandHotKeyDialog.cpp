@@ -20,7 +20,7 @@ CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWn
 	launcherapp::gui::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
 	mHotKeyType(TYPE_LOCAL), mHotKeyAttr(attr)
 {
-	SetHelpPageId(_T("HotKey"));
+	SetHelpPageId("HotKey");
 
 	mIsUseHotKey = TRUE;
 	if (attr.IsValid()) {

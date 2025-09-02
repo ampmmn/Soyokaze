@@ -45,7 +45,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_EJECTVOLUMEEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("EjectVolumeSetting"));
+	SetHelpPageId("EjectVolumeSetting");
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 }
 

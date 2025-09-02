@@ -187,9 +187,9 @@ void SettingPageEnv::OnEnterSettings()
 	}
 }
 
-bool SettingPageEnv::GetHelpPageId(CString& id)
+bool SettingPageEnv::GetHelpPageId(String& id)
 {
-	id = _T("ShellExecEnvList");
+	id = "ShellExecEnvList";
 	return true;
 }
 

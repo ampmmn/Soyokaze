@@ -27,7 +27,7 @@ public:
 	void OnOKCall() override;
 
 	// ページに関連付けられたヘルプページIDを取得する
-	bool GetHelpPageId(CString& helpPageId) override;
+	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
 	AppSettingPageIF* Clone() override { return new AppSettingPageExcludePath(); }

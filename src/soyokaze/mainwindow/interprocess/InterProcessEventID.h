@@ -21,7 +21,7 @@ enum EVENT_ID
 struct SEND_COMMAND_PARAM
 {
 	bool mIsPasteOnly;
-	TCHAR mText[1];
+	char mText[1];
 };
 
 struct SET_CARETRANGE_PARAM
@@ -32,7 +32,7 @@ struct SET_CARETRANGE_PARAM
 
 struct CHANGE_DIRECTORY_PARAM
 {
-	TCHAR mDirPath[1];
+	char mDirPath[1];
 };
 
 

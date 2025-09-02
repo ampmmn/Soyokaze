@@ -16,7 +16,7 @@ public:
 	};
 
 public:
-	OtherCommandDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	OtherCommandDialog(LPCSTR helpId, CWnd* parentWnd = nullptr);
 	virtual ~OtherCommandDialog();
 
 	void SetParam(const Param& param);

@@ -23,7 +23,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	mCommandListPtr(nullptr),
 	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {
-	SetHelpPageId(_T("KeySplitterEdit"));
+	SetHelpPageId("KeySplitterEdit");
 }
 
 SettingDialog::~SettingDialog()

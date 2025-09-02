@@ -191,9 +191,9 @@ void AppSettingPageWinScp::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageWinScp::GetHelpPageId(CString& id)
+bool AppSettingPageWinScp::GetHelpPageId(String& id)
 {
-	id = _T("WinScpSetting");
+	id = "WinScpSetting";
 	return true;
 }
 

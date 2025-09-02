@@ -50,7 +50,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("ActivateWindowSetting"));
+	SetHelpPageId("ActivateWindowSetting");
 }
 
 SettingDialog::~SettingDialog()

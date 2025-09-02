@@ -14,7 +14,7 @@ namespace app {
 
 struct Manual::PImpl
 {
-	std::map<CString, CString> mPageMapping;
+	std::map<String, CString> mPageMapping;
 };
 
 
@@ -32,27 +32,27 @@ Manual* Manual::GetInstance()
 	return &inst;
 }
 
-bool Manual::Navigate(const CString& pageId)
+bool Manual::Navigate(const char* pageId)
 {
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 
 	// ヘルプの有無を確認
 	Path filePath(Path::MODULEFILEDIR);
-	filePath.Append(_T("files\\manuals\\index.html"));
+	filePath.Append(L"files\\manuals\\index.html");
 	if (filePath.FileExists() == FALSE) {
 		CString msg((LPCTSTR)IDS_ERR_HELPDOESNOTEXIST);
 		msg += _T("\n");
 		msg += filePath;
 		AfxMessageBox(msg);
 
-		SPDLOG_WARN(_T("help file does not exist. filePath:{}"), (LPCTSTR)filePath);
+		SPDLOG_WARN(L"help file does not exist. filePath:{}", (LPCWSTR)filePath);
 		return false;
 	}
 
 	// クッションページ?のパス生成
 	Path dirPath(Path::MODULEFILEDIR);
-	dirPath.Append(_T("files\\fragment"));
-	SPDLOG_DEBUG(_T("dirPath:{}"), (LPCTSTR)dirPath);
+	dirPath.Append(L"files\\fragment");
+	SPDLOG_DEBUG(L"dirPath:{}", (LPCWSTR)dirPath);
 
 	// 指定されたIDに対応するページの有無を確認
 	CString pagePath;
@@ -61,30 +61,30 @@ bool Manual::Navigate(const CString& pageId)
 		pagePath = it->second;
 	}
 	else {
-		pagePath = pageId;
+		UTF2UTF(pageId, pagePath);
 	}
 
-	CString uri;
-	uri.Format(_T("file:///%s/%s.html"), (LPCTSTR)dirPath, (LPCTSTR)pagePath);
-	uri.Replace(_T('\\'), _T('/'));
+	CStringW uri;
+	uri.Format(L"file:///%s/%s.html", (LPCWSTR)dirPath, (LPCWSTR)pagePath);
+	uri.Replace(L'\\', L'/');
 
 	auto p = uri.GetBuffer(uri.GetLength() + 1);
 
-	SHELLEXECUTEINFO si = {};
+	SHELLEXECUTEINFOW si = {};
 	si.cbSize = sizeof(si);
 	si.nShow = SW_NORMAL;
 	si.fMask = SEE_MASK_NOCLOSEPROCESS;
 	si.lpFile = p;
 
-	ShellExecuteEx(&si);
+	ShellExecuteExW(&si);
 
 	uri.ReleaseBuffer();
 
 	if (si.hProcess == nullptr) {
-		SPDLOG_WARN(_T("Failed to launch help: {}"), (LPCTSTR)pagePath);
+		SPDLOG_WARN(L"Failed to launch help: {}", (LPCWSTR)pagePath);
 	}
 	else {
-		SPDLOG_DEBUG(_T("launch help PID:{}"), GetProcessId(si.hProcess));
+		SPDLOG_DEBUG(L"launch help PID:{}", GetProcessId(si.hProcess));
 		CloseHandle(si.hProcess);
 	}
 

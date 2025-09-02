@@ -394,9 +394,9 @@ void AppSettingPagePathPage::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPagePathPage::GetHelpPageId(CString& id)
+bool AppSettingPagePathPage::GetHelpPageId(String& id)
 {
-	id = _T("ExecutePathSetting");
+	id = "ExecutePathSetting";
 	return true;
 }
 

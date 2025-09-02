@@ -235,9 +235,9 @@ void AppSettingPageExtension::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageExtension::GetHelpPageId(CString& id)
+bool AppSettingPageExtension::GetHelpPageId(String& id)
 {
-	id = _T("ExtensionSetting");
+	id = "ExtensionSetting";
 	return true;
 }
 

@@ -572,6 +572,7 @@
     <ClInclude Include="icon\AppIcon.h" />
     <ClInclude Include="icon\CommandIcon.h" />
     <ClInclude Include="icon\IconLabelForApp.h" />
+    <ClInclude Include="launcherapp_string.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\builtin\AppNameMacro.h" />
     <ClInclude Include="macros\builtin\BaseNameMacro.h" />

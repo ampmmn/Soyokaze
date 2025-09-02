@@ -197,7 +197,7 @@ KeywordManagerDialog::KeywordManagerDialog() :
 	launcherapp::gui::SinglePageDialog(IDD_KEYWORDMANAGER),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("KeywordManager"));
+	SetHelpPageId("KeywordManager");
 
 	in->mIconLabelPtr = std::make_unique<IconLabel>();
 	in->mSortType = SORT_ASCEND_NAME;

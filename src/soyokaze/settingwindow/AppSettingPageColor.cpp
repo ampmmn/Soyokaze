@@ -484,9 +484,9 @@ void AppSettingPageColor::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageColor::GetHelpPageId(CString& id)
+bool AppSettingPageColor::GetHelpPageId(String& id)
 {
-	id = _T("ColorSetting");
+	id = "ColorSetting";
 	return true;
 }
 

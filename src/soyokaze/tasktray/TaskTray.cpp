@@ -139,14 +139,14 @@ BOOL TaskTray::Create()
 
 }
 
-void TaskTray::ShowMessage(const CString& msg)
+void TaskTray::ShowMessage(const wchar_t* msg, const wchar_t* title)
 {
-	NOTIFYICONDATA nid = in->mNotifyIconData;
+	NOTIFYICONDATAW nid = in->mNotifyIconData;
 
 	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
 	nid.uFlags |= NIF_INFO;
-	_tcsncpy_s(nid.szInfoTitle, _T(""), _TRUNCATE);
-	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
+	wcsncpy_s(nid.szInfoTitle, title, _TRUNCATE);
+	wcsncpy_s(nid.szInfo, msg, _TRUNCATE);
 	nid.uFlags |= NIF_ICON;
 	nid.hIcon  = IconLoader::Get()->LoadTasktrayIcon();
 	nid.dwInfoFlags = NIIF_INFO;
@@ -154,21 +154,31 @@ void TaskTray::ShowMessage(const CString& msg)
 	// nid.dwInfoFlags = NIIF_USER;
 	// nid.hBalloonIcon = IconLoader::Get()->LoadTasktrayIcon();   // ここで任意のアイコン
 
-	Shell_NotifyIcon(NIM_MODIFY, &nid);
+	Shell_NotifyIconW(NIM_MODIFY, &nid);
 }
 
-void TaskTray::ShowMessage(const CString& msg, const CString& title)
+void TaskTray::ShowMessage(const char* msg, const char* title)
 {
-	NOTIFYICONDATA nid = in->mNotifyIconData;
+	std::wstring tmp;
+
+	NOTIFYICONDATAW nid = in->mNotifyIconData;
+
 	nid.cbSize = NOTIFYICONDATA_V3_SIZE;
 	nid.uFlags |= NIF_INFO;
-	_tcsncpy_s(nid.szInfoTitle, title, _TRUNCATE);
-	_tcsncpy_s(nid.szInfo, msg, _TRUNCATE);
+
+	UTF2UTF(title, tmp);
+	wcsncpy_s(nid.szInfoTitle, tmp.c_str(), _TRUNCATE);
+	UTF2UTF(msg, tmp);
+	wcsncpy_s(nid.szInfo, tmp.c_str(), _TRUNCATE);
 	nid.uFlags |= NIF_ICON;
 	nid.hIcon  = IconLoader::Get()->LoadTasktrayIcon();
 	nid.dwInfoFlags = NIIF_INFO;
 
-	Shell_NotifyIcon(NIM_MODIFY, &nid);
+	// Note: 任意のアイコンを表示する場合は下記
+	// nid.dwInfoFlags = NIIF_USER;
+	// nid.hBalloonIcon = IconLoader::Get()->LoadTasktrayIcon();   // ここで任意のアイコン
+
+	Shell_NotifyIconW(NIM_MODIFY, &nid);
 }
 
 

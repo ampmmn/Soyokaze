@@ -25,7 +25,7 @@ using namespace launcherapp::commands::validation;
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_ALIAS_EDIT, parentWnd)
 {
-	SetHelpPageId(_T("AliasEdit"));
+	SetHelpPageId("AliasEdit");
 }
 
 CommandEditDialog::~CommandEditDialog()

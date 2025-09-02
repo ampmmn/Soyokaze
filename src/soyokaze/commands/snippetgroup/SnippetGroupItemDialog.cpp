@@ -14,7 +14,7 @@ namespace snippetgroup {
 SnippetGroupItemDialog::SnippetGroupItemDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SNIPPETGROUP_ITEM, parentWnd)
 {
-	SetHelpPageId(_T("SnippetGroupItem"));
+	SetHelpPageId("SnippetGroupItem");
 }
 
 SnippetGroupItemDialog::~SnippetGroupItemDialog()

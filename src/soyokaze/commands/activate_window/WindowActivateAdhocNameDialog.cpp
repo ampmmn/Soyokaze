@@ -15,7 +15,7 @@ namespace activate_window {
 AdhocNameDialog::AdhocNameDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEADHOCNAME, parentWnd)
 {
-	SetHelpPageId(_T("ActivateWindowAdhocName"));
+	SetHelpPageId("ActivateWindowAdhocName");
 }
 
 const CString& AdhocNameDialog::GetName()

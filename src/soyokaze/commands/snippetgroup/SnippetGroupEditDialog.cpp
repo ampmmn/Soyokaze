@@ -24,7 +24,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_SNIPPETGROUP, parentWnd),
 	mCommandListPtr(nullptr)
 {
-	SetHelpPageId(_T("SnippetGroupEdit"));
+	SetHelpPageId("SnippetGroupEdit");
 }
 
 SettingDialog::~SettingDialog()

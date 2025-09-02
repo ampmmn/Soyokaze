@@ -21,7 +21,7 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
-SubProcessDialog::SubProcessDialog(LPCTSTR helpId, CWnd* parentWnd) : 
+SubProcessDialog::SubProcessDialog(LPCSTR helpId, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_SUBPROCESS, parentWnd)
 {
 	SetHelpPageId(helpId);

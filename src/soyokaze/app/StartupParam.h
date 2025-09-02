@@ -10,21 +10,21 @@ public:
 	~StartupParam();
 
 	// 実行コマンドを指定するオプションが指定されたか?
-	bool HasRunCommand(CString& commands);
+	bool HasRunCommand(String& commands);
 	//
 	void ShiftRunCommand();
 
 	// 登録するパスが指定されたか?
-	bool HasPathToRegister(CString& pathToRegister);
+	bool HasPathToRegister(String& pathToRegister);
 	//
 	bool HasHideOption();
 	//
-	bool HasPasteOption(CString& value);
+	bool HasPasteOption(String& value);
 	//
 	bool GetSelectRange(int& startPos, int& selLength);
 
 	// ディレクトリ変更するオプションが指定されたか?
-	bool HasChangeDirectoryOption(CString& dirPath);
+	bool HasChangeDirectoryOption(String& dirPath);
 
 private:
 	struct PImpl;

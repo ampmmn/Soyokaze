@@ -40,7 +40,7 @@ bool AppProcess::Exists()
 		if (m_hMutexRun == NULL) {
 			DWORD lastErr = GetLastError();
 			spdlog::error(_T("Failed to create mutex. err:{0:x}"), lastErr);
-			throw exception(_T("Failed to init."));
+			throw exception("Failed to init.");
 		}
 	}
 

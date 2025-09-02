@@ -14,7 +14,7 @@ namespace commands {
 namespace common {
 
 
-CopyToClipboardDialog::CopyToClipboardDialog(LPCTSTR helpId, CWnd* parentWnd) : 
+CopyToClipboardDialog::CopyToClipboardDialog(LPCSTR helpId, CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_CLIPBOARD, parentWnd)
 {
 	SetHelpPageId(helpId);

@@ -163,9 +163,9 @@ void ShellExecEditDetailPage::OnEnterSettings()
 	mParam = *param;
 }
 
-bool ShellExecEditDetailPage::GetHelpPageId(CString& id)
+bool ShellExecEditDetailPage::GetHelpPageId(String& id)
 {
-	id = _T("ShellExecute_Detail");
+	id = "ShellExecute_Detail";
 	return true;
 }
 

@@ -87,7 +87,7 @@ void AppSettingPageBase::SetParam(void* param)
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageBase::GetHelpPageId(CString& helpPageId)
+bool AppSettingPageBase::GetHelpPageId(String& helpPageId)
 {
 	UNREFERENCED_PARAMETER(helpPageId);
 

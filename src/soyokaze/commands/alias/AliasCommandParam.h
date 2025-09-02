@@ -11,7 +11,6 @@ public:
 	bool Save(CommandEntryIF* entry) const;
 	bool Load(CommandEntryIF* entry);
 
-	bool Validate(LPCTSTR orgName, CString& errMsg);
 	bool IsValid(LPCTSTR orgName, int* errCode) const;
 
 public:

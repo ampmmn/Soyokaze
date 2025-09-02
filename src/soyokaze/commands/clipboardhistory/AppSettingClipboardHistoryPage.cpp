@@ -217,9 +217,9 @@ void AppSettingPageClipboardHistory::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageClipboardHistory::GetHelpPageId(CString& id)
+bool AppSettingPageClipboardHistory::GetHelpPageId(String& id)
 {
-	id = _T("ClipboardHistorySetting");
+	id = "ClipboardHistorySetting";
 	return true;
 }
 

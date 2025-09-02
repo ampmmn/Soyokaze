@@ -24,7 +24,7 @@ PreFilterSubProcessDialog::PreFilterSubProcessDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_FILTER_SUBPROCESS, parentWnd),
 	mPreFilterCodePageIndex(0)
 {
-	SetHelpPageId(_T("PreFilterSubprocess"));
+	SetHelpPageId("PreFilterSubprocess");
 }
 
 PreFilterSubProcessDialog::~PreFilterSubProcessDialog()
@@ -203,7 +203,7 @@ void PreFilterSubProcessDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 

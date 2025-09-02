@@ -49,7 +49,7 @@ CommandEditDialog::CommandEditDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
 	in(new PImpl)
 {
-	SetHelpPageId(_T("RegExpEdit"));
+	SetHelpPageId("RegExpEdit");
 }
 
 CommandEditDialog::~CommandEditDialog()
@@ -372,7 +372,7 @@ void CommandEditDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 

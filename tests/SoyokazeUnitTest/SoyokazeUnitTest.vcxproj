@@ -57,6 +57,7 @@
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\StringWrapperTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp" />

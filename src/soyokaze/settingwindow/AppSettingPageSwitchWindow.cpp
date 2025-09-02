@@ -199,9 +199,9 @@ void AppSettingPageSwitchWindow::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageSwitchWindow::GetHelpPageId(CString& id)
+bool AppSettingPageSwitchWindow::GetHelpPageId(String& id)
 {
-	id = _T("AppSettingSwitchWindow");
+	id = "AppSettingSwitchWindow";
 	return true;
 }
 

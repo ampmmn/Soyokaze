@@ -17,7 +17,7 @@ public:
 	};
 
 public:
-	CopyToClipboardDialog(LPCTSTR helpId, CWnd* parentWnd = nullptr);
+	CopyToClipboardDialog(LPCSTR helpId, CWnd* parentWnd = nullptr);
 	virtual ~CopyToClipboardDialog();
 
 	void SetParam(const Param& param);

@@ -23,7 +23,7 @@ namespace snippet {
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SNIPPET_EDIT, parentWnd)
 {
-	SetHelpPageId(_T("SnippetEdit"));
+	SetHelpPageId("SnippetEdit");
 }
 
 CommandEditDialog::~CommandEditDialog()
@@ -177,7 +177,7 @@ void CommandEditDialog::OnNotifyLinkOpen(
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("MacroList"));
+	manual->Navigate("MacroList");
 	*pResult = 0;
 }
 

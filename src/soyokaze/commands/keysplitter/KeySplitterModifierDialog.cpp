@@ -17,7 +17,7 @@ ModifierDialog::ModifierDialog(CWnd* parentWnd) :
 	mIsPressAlt(FALSE),
 	mIsPressWin(FALSE)
 {
-	SetHelpPageId(_T("KeySplitterEdit"));
+	SetHelpPageId("KeySplitterEdit");
 }
 
 ModifierDialog::~ModifierDialog()

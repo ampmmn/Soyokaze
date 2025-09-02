@@ -19,7 +19,7 @@ public:
 	void DisalbleOKButton();
 
 	virtual void OnEnterSettings() = 0;
-	virtual bool GetHelpPageId(CString& id);
+	virtual bool GetHelpPageId(String& id);
 
 protected:
 	CWnd* mParentWnd;

@@ -268,9 +268,9 @@ void AppSettingPageExec::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageExec::GetHelpPageId(CString& id)
+bool AppSettingPageExec::GetHelpPageId(String& id)
 {
-	id = _T("ExecuteSetting");
+	id = "ExecuteSetting";
 	return true;
 }
 

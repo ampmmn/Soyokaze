@@ -39,7 +39,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_WEBHISTORYEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("WebHistorySetting"));
+	SetHelpPageId("WebHistorySetting");
 }
 
 SettingDialog::~SettingDialog()

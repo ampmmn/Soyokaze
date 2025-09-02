@@ -49,7 +49,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
-	SetHelpPageId(_T("AlignWindowSetting"));
+	SetHelpPageId("AlignWindowSetting");
 }
 
 SettingDialog::~SettingDialog()

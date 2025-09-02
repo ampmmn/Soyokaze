@@ -4,24 +4,24 @@
 namespace launcherapp {
 
 /**
- *  $B8eH/%W%m%;%9$,@h9T%W%m%;%9$KBP$7$F%3%^%s%I$rAw?.$9$k=hM}$H$7$F$N(BI/F
+ *  後発プロセスが先行プロセスに対してコマンドを送信する処理としてのI/F
  */
 class SecondProcessProxyIF
 {
 public:
 	virtual ~SecondProcessProxyIF() {}
 
-	// $B%3%^%s%IJ8;zNs$rDLCN$9$k(B
-	virtual bool SendCommandString(const CString& commandStr, bool isPasteOnly) = 0;
-	// $BA*BrHO0O$rDLCN$9$k(B
+	// コマンド文字列を通知する
+	virtual bool SendCommandString(const String& commandStr, bool isPasteOnly) = 0;
+	// 選択範囲を通知する
 	virtual bool SendCaretRange(int startPos, int length) = 0;
-	// $B%Q%9EPO?(B
-	virtual bool RegisterPath(const CString& pathStr) = 0;
-	// $B%+%l%s%H%G%#%l%/%H%j$rJQ99$9$k(B
-	virtual bool ChangeDirectory(const CString& pathStr) = 0;
-	// $B%&%$%s%I%&$r>C$9(B
+	// パス登録
+	virtual bool RegisterPath(const String& pathStr) = 0;
+	// カレントディレクトリを変更する
+	virtual bool ChangeDirectory(const String& pathStr) = 0;
+	// ウインドウを消す
 	virtual bool Hide() = 0;
-	// $B%&%$%s%I%&$rI=<($9$k(B
+	// ウインドウを表示する
 	virtual bool Show() = 0;
 };
 

@@ -322,15 +322,38 @@ LPTSTR Path::data()
 	return mPath.data();
 }
 
-bool Path::FileExists(LPCTSTR pathStr)
+bool Path::FileExists(LPCWSTR pathStr)
 {
-	if (PathIsUNC(pathStr) == FALSE) {
+	if (PathIsUNCW(pathStr) == FALSE) {
 		// UNC形式でなければ単にAPIをよぶ
-		return PathFileExists(pathStr) != FALSE;
+		return PathFileExistsW(pathStr) != FALSE;
 	}
 	else {
 		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
-		tstring path(pathStr);
+		std::wstring path(pathStr);
+
+		auto queryData = QueryDataHost::Get()->RequestFileExists(path);
+		if (queryData == nullptr) {
+			return false;
+		}
+
+		bool result = queryData->TryGet(100);
+		queryData->Release();
+
+		return result;
+	}
+}
+
+bool Path::FileExists(LPCSTR pathStr)
+{
+	if (PathIsUNCA(pathStr) == FALSE) {
+		// UNC形式でなければ単にAPIをよぶ
+		return PathFileExistsA(pathStr) != FALSE;
+	}
+	else {
+		// UNC形式で無効化パスの場合、しばらく応答が返らなくなるので、バックグラウンドで実行してタイムアウト処理を入れる
+		std::wstring path;
+		UTF2UTF(pathStr, path);
 
 		auto queryData = QueryDataHost::Get()->RequestFileExists(path);
 		if (queryData == nullptr) {

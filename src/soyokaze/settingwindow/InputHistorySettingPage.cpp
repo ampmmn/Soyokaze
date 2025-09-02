@@ -177,9 +177,9 @@ void AppSettingPageInputHistory::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageInputHistory::GetHelpPageId(CString& id)
+bool AppSettingPageInputHistory::GetHelpPageId(String& id)
 {
-	id = _T("InputHistorySetting");
+	id = "InputHistorySetting";
 	return true;
 }
 

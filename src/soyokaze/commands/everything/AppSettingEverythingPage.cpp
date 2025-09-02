@@ -152,7 +152,7 @@ void AppSettingPage::OnNotifyLinkOpen(
 )
 {
 	auto manual = launcherapp::app::Manual::GetInstance();
-	manual->Navigate(_T("EverythingEdit"));
+	manual->Navigate("EverythingEdit");
 	*pResult = 0;
 }
 
@@ -219,9 +219,9 @@ void AppSettingPageEverything::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageEverything::GetHelpPageId(CString& id)
+bool AppSettingPageEverything::GetHelpPageId(String& id)
 {
-	id = _T("EverythingSetting");
+	id = "EverythingSetting";
 	return true;
 }
 

@@ -14,7 +14,7 @@ HotKeyDialog::HotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) :
 	launcherapp::gui::SinglePageDialog(IDD_HOTKEY, parent),
 	mHotKeyAttr(attr)
 {
-	SetHelpPageId(_T("HotKey"));
+	SetHelpPageId("HotKey");
 }
 
 HotKeyDialog::~HotKeyDialog()

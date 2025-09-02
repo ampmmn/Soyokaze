@@ -202,9 +202,9 @@ void AppSettingPageSound::OnOKCall()
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageSound::GetHelpPageId(CString& id)
+bool AppSettingPageSound::GetHelpPageId(String& id)
 {
-	id = _T("SoundSetting");
+	id = "SoundSetting";
 	return true;
 }
 

@@ -20,14 +20,14 @@ SecondProcessProxy::~SecondProcessProxy()
  *  先行プロセスに対しコマンド文字列を送る
  *  (先行プロセス側でコマンドを実行する)
  */
-bool SecondProcessProxy::SendCommandString(const CString& commandStr, bool isPasteOnly)
+bool SecondProcessProxy::SendCommandString(const String& commandStr, bool isPasteOnly)
 {
-	SPDLOG_DEBUG(_T("args commandStr:{0}"), (LPCTSTR)commandStr);
+	SPDLOG_DEBUG("args commandStr:{}", commandStr.c_str());
 
-	std::vector<uint8_t> stm(sizeof(SEND_COMMAND_PARAM) + sizeof(TCHAR) * commandStr.GetLength());
+	std::vector<uint8_t> stm(sizeof(SEND_COMMAND_PARAM) + sizeof(char) * commandStr.size());
 	auto p = (SEND_COMMAND_PARAM*)stm.data();
 	p->mIsPasteOnly = isPasteOnly;
-	memcpy(p->mText, (LPCTSTR)commandStr, sizeof(TCHAR) * commandStr.GetLength());
+	memcpy(p->mText, commandStr.data(), sizeof(char) * commandStr.size());
 
 	auto queue = InterProcessMessageQueue::GetInstance();
 	return queue->Enqueue(EVENT_ID::SEND_COMMAND, stm.data(), stm.size());
@@ -35,7 +35,7 @@ bool SecondProcessProxy::SendCommandString(const CString& commandStr, bool isPas
 
 bool SecondProcessProxy::SendCaretRange(int startPos, int length)
 {
-	SPDLOG_DEBUG(_T("args startPos:{0} length:{1}"), startPos, length);
+	SPDLOG_DEBUG("args startPos:{0} length:{1}", startPos, length);
 
 	std::vector<uint8_t> stm(sizeof(SET_CARETRANGE_PARAM));
 	auto p = (SET_CARETRANGE_PARAM*)stm.data();
@@ -51,29 +51,27 @@ bool SecondProcessProxy::SendCaretRange(int startPos, int length)
  *  @return true: 成功 false:失敗
  *  @param pathStr  登録対象のファイルパス
  */
-bool SecondProcessProxy::RegisterPath(const CString& pathStr)
+bool SecondProcessProxy::RegisterPath(const String& pathStr)
 {
-	SPDLOG_DEBUG(_T("args path:{0}"), (LPCTSTR)pathStr);
+	SPDLOG_DEBUG("args path:{}", pathStr.c_str());
 
-	CString name = PathFindFileName(pathStr);
-	PathRemoveExtension(name.GetBuffer(name.GetLength()));
-	name.ReleaseBuffer();
+	String name = PathFindFileNameA(pathStr.c_str());
+
+	static const std::regex ext_pattern(R"(^(.*?)(\.[^.]*$))");
+	auto ret = std::regex_replace(name, ext_pattern, "$1");
 
 	// 空白を置換
-	name.Replace(_T(' '), _T('_'));
-
-	CString commandStr(_T("new "));
-	commandStr += _T("\"") + name + _T("\" \"") + pathStr + _T("\"");
-	return SendCommandString(commandStr, false);
+	name.Replace(' ', '_');
+	return SendCommandString(fmt::format("new \"{0}\" \"{1}\"", ret, pathStr), false);
 }
 
-bool SecondProcessProxy::ChangeDirectory(const CString& pathStr)
+bool SecondProcessProxy::ChangeDirectory(const String& pathStr)
 {
-	SPDLOG_DEBUG(_T("args startPos:{}"), (LPCTSTR)pathStr);
+	SPDLOG_DEBUG("args startPos:{}", pathStr);
 
-	std::vector<uint8_t> stm(sizeof(CHANGE_DIRECTORY_PARAM) + sizeof(TCHAR) * pathStr.GetLength());
+	std::vector<uint8_t> stm(sizeof(CHANGE_DIRECTORY_PARAM) + sizeof(char) * pathStr.GetLength());
 	auto p = (CHANGE_DIRECTORY_PARAM*)stm.data();
-	memcpy(p->mDirPath, (LPCTSTR)pathStr, sizeof(TCHAR) * pathStr.GetLength());
+	memcpy(p->mDirPath, pathStr.data(), sizeof(char) * pathStr.GetLength());
 
 	auto queue = InterProcessMessageQueue::GetInstance();
 	return queue->Enqueue(EVENT_ID::CHANGE_DIRECTORY, stm.data(), stm.size());
@@ -82,7 +80,7 @@ bool SecondProcessProxy::ChangeDirectory(const CString& pathStr)
 bool SecondProcessProxy::Hide()
 {
 	auto queue = InterProcessMessageQueue::GetInstance();
-	return queue->Enqueue(EVENT_ID::HIDE, _T(""), 0);
+	return queue->Enqueue(EVENT_ID::HIDE, "", 0);
 }
 
 /**
@@ -90,11 +88,11 @@ bool SecondProcessProxy::Hide()
  */
 bool SecondProcessProxy::Show()
 {
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 
 	// 先行プロセスを有効化する
 	auto queue = InterProcessMessageQueue::GetInstance();
-	return queue->Enqueue(EVENT_ID::ACTIVATE_WINDOW, _T(""), 0);
+	return queue->Enqueue(EVENT_ID::ACTIVATE_WINDOW, "", 0);
 }
 
 

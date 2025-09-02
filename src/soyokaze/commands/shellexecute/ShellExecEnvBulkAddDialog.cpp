@@ -12,7 +12,7 @@ namespace launcherapp { namespace commands { namespace shellexecute {
 BulkAddDialog::BulkAddDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_SHELLEXEC_ENVBULKADD, parentWnd)
 {
-	SetHelpPageId(_T("ShellExecEnvBulkAdd"));
+	SetHelpPageId("ShellExecEnvBulkAdd");
 }
 
 BulkAddDialog::~BulkAddDialog()

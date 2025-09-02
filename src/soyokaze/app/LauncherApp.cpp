@@ -55,11 +55,11 @@ BOOL LauncherApp::InitInstance()
 
 	// ログ初期化
 	Logger::Get()->Initialize();
-	spdlog::info(_T("==== Start App ===="));
+	spdlog::info("==== Start App ====");
 
 	HRESULT hr = CoInitialize(nullptr);
 	if (FAILED(hr)) {
-		SPDLOG_ERROR(_T("Failed to CoInitialize!"));
+		SPDLOG_ERROR("Failed to CoInitialize!");
 	}
 
 	try {
@@ -78,14 +78,15 @@ BOOL LauncherApp::InitInstance()
 		}
 	}
 	catch(AppProcess::exception& e) {
-		AfxMessageBox(e.mMessage);
+		CString msg;
+		AfxMessageBox(UTF2UTF(e.mMessage, msg));
 	}
 
 	AppPreference::Get()->OnExit();
 
 	CoUninitialize();
 
-	spdlog::info(_T("==== Exit App ===="));
+	spdlog::info("==== Exit App ====");
 	return FALSE;
 }
 
@@ -94,18 +95,18 @@ BOOL LauncherApp::InitInstance()
  */
 BOOL LauncherApp::InitFirstInstance()
 {
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 
 	if (!AfxOleInit()) {
 		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
-		spdlog::error(_T("Failed to init(AfxOleInit)."));
+		spdlog::error("Failed to init(AfxOleInit).");
 		return FALSE;
 	}
 
 	// 設定ファイル作成用のフォルダをつくる
 	if (AppPreference::Get()->CreateUserDirectory() == false) {
 		AfxMessageBox(_T("Warning: Failed to init profile folder."));
-		spdlog::error(_T("Warning: Failed to init profile folder."));
+		spdlog::error("Warning: Failed to init profile folder.");
 	}
 
 
@@ -159,7 +160,7 @@ BOOL LauncherApp::InitFirstInstance()
  */
 BOOL LauncherApp::InitSecondInstance()
 {
-	SPDLOG_DEBUG(_T("start"));
+	SPDLOG_DEBUG("start");
 
 	launcherapp::SecondProcessProxy proxy;
 
@@ -168,9 +169,9 @@ BOOL LauncherApp::InitSecondInstance()
 }
 
 // バルーンメッセージを表示
-bool LauncherApp::PopupMessage(const CString& message)
+bool LauncherApp::PopupMessage(const wchar_t* message)
 {
-	SPDLOG_DEBUG(_T("args msg:{0}"), (LPCTSTR)message);
+	SPDLOG_DEBUG(L"args msg:{0}", message);
 	if (!mTaskTray) {
 		return false;
 	}
@@ -179,3 +180,13 @@ bool LauncherApp::PopupMessage(const CString& message)
 	return true;
 }
 
+bool LauncherApp::PopupMessage(const char* message)
+{
+	SPDLOG_DEBUG("args msg:{0}", message);
+	if (!mTaskTray) {
+		return false;
+	}
+
+	mTaskTray->ShowMessage(message);
+	return true;
+}

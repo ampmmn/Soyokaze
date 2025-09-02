@@ -11,8 +11,8 @@ public:
 
 	DECLARE_DYNAMIC(TaskTray)
 
-	void ShowMessage(const CString& msg);
-	void ShowMessage(const CString& msg, const CString& title);
+	void ShowMessage(const wchar_t* msg, const wchar_t* title = L"");
+	void ShowMessage(const char* msg, const char* title = "");
 
 protected:
 	struct PImpl;
