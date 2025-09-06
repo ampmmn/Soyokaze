@@ -43,7 +43,13 @@ static void parseJSONObject(json& j, const std::string& parentFolderPath, std::v
 		auto name = j["name"].get<std::string>();
 
 		UTF2UTF(name, item.mName);
+
+		// フォルダ名は <フォルダ名>/<名前> の形で連結しておく
+		// Queryでフォルダパスとブックマーク名を含む複数キーワードを指定されたときにヒットさせるようにしたいので
 		UTF2UTF(parentFolderPath, item.mFolderPath);
+		item.mFolderPath += _T("/");
+		item.mFolderPath += item.mName;;
+
 		UTF2UTF(j["url"].get<std::string>(), item.mUrl);
 
 		items.push_back(item);
