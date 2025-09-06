@@ -1,19 +1,10 @@
 #include "pch.h"
 #include "BookmarkCommand.h"
-#include "commands/core/IFIDDefine.h"
-#include "commands/bookmarks/BookmarkCommandEditor.h"
 #include "commands/bookmarks/BookmarkCommandParam.h"
 #include "commands/bookmarks/URLCommand.h"
 #include "commands/bookmarks/Bookmarks.h"
-#include "commands/core/CommandRepository.h"
-#include "commands/core/CommandFile.h"
-#include "hotkey/CommandHotKeyManager.h"
-#include "hotkey/CommandHotKeyMappings.h"
-#include "icon/IconLoader.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "setting/AppPreference.h"
 #include "utility/Path.h"
-#include "resource.h"
-#include <assert.h>
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
@@ -64,17 +55,21 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 		mLoadThread.join();
 	}
 
+	int numOfKeywordShift = mParam.mPrefix.IsEmpty() ? 0 : 1;
+
 	// 別スレッドでブックマークのロードを実行する
-	std::thread th([&]() {
+	std::thread th([&, numOfKeywordShift]() {
 		auto chromeBookmarks = GetChromeBookmarks();
 		if (chromeBookmarks) {
 			Path chromeFilePath{Path::USERPROFILE, CHROME_BOOKMARK_PATH};
 			chromeBookmarks->Initialize(chromeFilePath);
+			chromeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
 		}
 		auto edgeBookmarks = GetEdgeBookmarks();
 		if (edgeBookmarks) {
 			Path edgeFilePath{Path::USERPROFILE, EDGE_BOOKMARK_PATH};
 			edgeBookmarks->Initialize(edgeFilePath);
+			edgeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
 		}
 	});
 	mLoadThread.swap(th);
@@ -87,6 +82,8 @@ void BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQuery
 		return;
 	}
 
+	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
+
 	// 指定されたキーワードでブックマークの検索を行う
 	std::vector<Bookmark> bkmItems;
  	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
@@ -94,7 +91,7 @@ void BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQuery
 
 		// コマンド名がマッチしているので少なくとも前方一致扱いとする
 		int matchLevel = item.mMatchLevel;
-		if (matchLevel == Pattern::PartialMatch) {
+		if (hasPrefix && matchLevel == Pattern::PartialMatch) {
 			matchLevel = Pattern::FrontMatch;
 		}
 		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Chrome)));
@@ -108,6 +105,8 @@ void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryIt
 		return;
 	}
 
+	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
+
 	// 指定されたキーワードでブックマークの検索を行う
 	std::vector<Bookmark> bkmItems;
 	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
@@ -115,7 +114,7 @@ void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryIt
 
 		// コマンド名がマッチしているので少なくとも前方一致扱いとする
 		int matchLevel = item.mMatchLevel;
-		if (matchLevel == Pattern::PartialMatch) {
+		if (hasPrefix && matchLevel == Pattern::PartialMatch) {
 			matchLevel = Pattern::FrontMatch;
 		}
 		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Edge)));
@@ -126,14 +125,6 @@ void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryIt
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-
-
-CString BookmarkCommand::GetType() { return _T("Bookmark"); }
-
-CString BookmarkCommand::TypeDisplayName()
-{
-	return _T("ブックマーク検索");
-}
 
 BookmarkCommand::BookmarkCommand() : in(std::make_unique<PImpl>())
 {
@@ -147,161 +138,31 @@ BookmarkCommand::~BookmarkCommand()
 	}
 }
 
-bool BookmarkCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+bool BookmarkCommand::Load()
 {
-	if (UserCommandBase::QueryInterface(ifid, cmd)) {
-		return true;
-	}
-	if (ifid == IFID_EXTRACANDIDATESOURCE) {
-		AddRef();
-		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
-		return true;
-	}
-	return false;
-}
-
-CString BookmarkCommand::GetName()
-{
-	return in->mParam.mName;
-}
-
-CString BookmarkCommand::GetDescription()
-{
-	return in->mParam.mDescription;
-}
-
-CString BookmarkCommand::GetGuideString()
-{
-	return _T("⏎:ページを表示する");
-}
-
-CString BookmarkCommand::GetTypeDisplayName()
-{
-	return BookmarkCommand::TypeDisplayName();
-}
-
-BOOL BookmarkCommand::Execute(Parameter* param_)
-{
-	UNREFERENCED_PARAMETER(param_);
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isToggle = false;
-	mainWnd->ActivateWindow(isToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
-}
-
-HICON BookmarkCommand::GetIcon()
-{
-	return IconLoader::Get()->LoadWebIcon();
-}
-
-int BookmarkCommand::Match(Pattern* pattern)
-{
-	bool shouldWholeMatch = pattern->shouldWholeMatch();
-	if (shouldWholeMatch && pattern->Match(GetName()) == Pattern::WholeMatch) {
-		// 内部のコマンド名マッチング用の判定(完全一致するかどうか)
-		return Pattern::WholeMatch;
-	}
-	else if (shouldWholeMatch == false) {
-
-		// 入力欄からの入力で、前方一致するときは候補に出す
-		int level = pattern->Match(GetName());
-		if (level == Pattern::FrontMatch || level == Pattern::PartialMatch) {
-			return level;
-		}
-		if (level == Pattern::WholeMatch) {
-			// 後続のキーワードが存在する場合は非表示
-			return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
-		}
-	}
-	// 通常はこちら
-	return Pattern::Mismatch;
-}
-
-bool BookmarkCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
-{
-	attr = in->mParam.mHotKeyAttr;
-	return true;
-}
-
-launcherapp::core::Command*
-BookmarkCommand::Clone()
-{
-	auto clonedCmd = make_refptr<BookmarkCommand>();
-
-	clonedCmd->in->mParam = in->mParam;
-
-	return clonedCmd.release();
-}
-
-bool BookmarkCommand::Save(CommandEntryIF* entry)
-{
-	ASSERT(entry);
-
-	entry->Set(_T("Type"), GetType());
-	in->mParam.Save(entry);
-
-	return true;
-}
-
-bool BookmarkCommand::Load(CommandEntryIF* entry)
-{
-	ASSERT(entry);
-
-	CString typeStr = entry->Get(_T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr !=GetType()) {
-		return false;
-	}
-	in->mParam.Load(entry);
+	auto pref = AppPreference::Get();
+	in->mParam.Load((Settings&)pref->GetSettings());
 
 	in->LoadBookmarks();
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr);
-
 	return true;
 }
 
-
-bool BookmarkCommand::NewDialog(
-	Parameter* param,
-	std::unique_ptr<BookmarkCommand>& newCmd
-)
+bool BookmarkCommand::QueryCandidates(Pattern* pattern, launcherapp::CommandQueryItemList& commands)
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
-
-	// 新規作成ダイアログを表示
-	BookmarkCommandEditor editor;
-	if (editor.DoModal() == false) {
+	// 機能を利用しない場合は抜ける
+	if (in->mParam.mIsEnable == false) {
 		return false;
 	}
 
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = editor.GetParam();
-	auto command = std::make_unique<BookmarkCommand>();
-	command->in->mParam = commandParam;
-	command->in->LoadBookmarks();
-
-	newCmd = std::move(command);
-
-	return true;
-}
-
-bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
-{
-	// コマンド名が一致しなければ候補を表示しない
-	if (in->mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mParam.mPrefix;
+	bool hasPrefix = prefix.IsEmpty() == FALSE;
+	if (hasPrefix && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return false;
 	}
 
-	// 完全一致検索の場合は検索ワード補完をしない
-	if (pattern->shouldWholeMatch()) {
+	// 問い合わせ文字列の長さが閾値を下回る場合は機能を発動しない
+	if (_tcslen(pattern->GetWholeString()) < in->mParam.mMinTriggerLength) {
 		return false;
 	}
 
@@ -311,56 +172,6 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& co
 	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
 	in->QueryEdgeBookmarks(pattern, commands);
 
-	return true;
-}
-
-void BookmarkCommand::ClearCache()
-{
-}
-
-// コマンドを編集するためのダイアログを作成/取得する
-bool BookmarkCommand::CreateEditor(HWND parent, CommandEditor** editor)
-{
-	if (editor == nullptr) {
-		return false;
-	}
-
-	auto cmdEditor = new BookmarkCommandEditor(CWnd::FromHandle(parent));
-	cmdEditor->SetParam(in->mParam);
-
-	*editor = cmdEditor;
-	return true;
-}
-
-// ダイアログ上での編集結果をコマンドに適用する
-bool BookmarkCommand::Apply(CommandEditor* editor)
-{
-	RefPtr<BookmarkCommandEditor> cmdEditor;
-	if (editor->QueryInterface(IFID_BOOKMARKCOMMANDEDITOR, (void**)&cmdEditor) == false) {
-		return false;
-	}
-	in->mParam = cmdEditor->GetParam();
-	in->LoadBookmarks();
-	return true;
-}
-
-// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
-bool BookmarkCommand::CreateNewInstanceFrom(CommandEditor* editor, Command** newCmd)
-{
-	RefPtr<BookmarkCommandEditor> cmdEditor;
-	if (editor->QueryInterface(IFID_BOOKMARKCOMMANDEDITOR, (void**)&cmdEditor) == false) {
-		return false;
-	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = cmdEditor->GetParam();
-	auto command = make_refptr<BookmarkCommand>();
-	command->in->mParam = commandParam;
-	command->in->LoadBookmarks();
-
-	if (newCmd) {
-		*newCmd = command.release();
-	}
 	return true;
 }
 

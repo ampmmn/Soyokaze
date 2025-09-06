@@ -1049,28 +1049,6 @@ BEGIN
     LTEXT           "※非力なPCでは結果が出る前にタイムアウトになる可能性があります。\nタイムアウト時間を長くすると、入力画面のレスポンスが悪くなる可能性があります。",IDC_STATIC,33,189,257,22
 END
 
-IDD_BOOKMARKEDIT DIALOGEX 0, 0, 347, 175
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "ブックマーク検索コマンドの設定"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "コマンドの名前(&N):",-1,23,24,65,8
-    EDITTEXT        IDC_EDIT_NAME,114,24,205,14,ES_AUTOHSCROLL
-    LTEXT           "コマンドの説明(&D):",-1,23,44,65,8
-    EDITTEXT        IDC_EDIT_DESCRIPTION,114,44,205,14,ES_AUTOHSCROLL
-    CONTROL         "Chromeのブックマークを候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,66,159,10
-    CONTROL         "Edgeのブックマークを候補として表示する(&E)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,82,150,10
-    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,129,10
-    LTEXT           "ホットキー(K):",-1,33,134,58,8
-    EDITTEXT        IDC_EDIT_HOTKEY,94,131,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,217,131,21,14
-    DEFPUSHBUTTON   "OK",IDOK,237,154,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,290,154,50,14
-    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,136,8,204,8
-    LTEXT           "※使わない場合、ブックマークのタイトルのみで絞り込みを行う",-1,34,112,190,8
-END
-
 IDD_URLDIRECTORYINDEXEDIT DIALOGEX 0, 0, 347, 296
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "DirectoryIndexコマンドの設定"
@@ -1479,6 +1457,22 @@ BEGIN
     LTEXT           "スタティック",IDC_STATIC_INFO,7,0,296,8
 END
 
+IDD_APPSETTING_BOOKMARK DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "機能を有効にする(&E)",IDC_CHECK_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,15,82,10
+    LTEXT           "プレフィックス(&P):",IDC_STATIC,23,41,51,8
+    EDITTEXT        IDC_EDIT_PREFIX,78,38,52,14,ES_AUTOHSCROLL
+    LTEXT           "検索を実行する最小文字数(&M):",IDC_STATIC,23,58,118,8
+    EDITTEXT        IDC_EDIT_MINTRIGGERLENGTH,138,56,52,14,ES_AUTOHSCROLL
+    CONTROL         "Chromeのブックマークを候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,75,159,10
+    CONTROL         "Edgeのブックマークを候補として表示する(&E)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,94,150,10
+    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,113,129,10
+    LTEXT           "※使わない場合、ブックマークのタイトルのみで絞り込みを行う",IDC_STATIC,33,128,190,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1868,14 +1862,6 @@ BEGIN
         BOTTOMMARGIN, 280
     END
 
-    IDD_BOOKMARKEDIT, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 340
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 168
-    END
-
     IDD_URLDIRECTORYINDEXEDIT, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -2049,6 +2035,14 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 303
         BOTTOMMARGIN, 170
+    END
+
+    IDD_APPSETTING_BOOKMARK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2671,25 +2665,6 @@ BEGIN
     0, 0, 0, 0
 END
 
-IDD_BOOKMARKEDIT AFX_DIALOG_LAYOUT
-BEGIN
-    0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 100, 0, 0,
-    0, 100, 0, 0,
-    0, 100, 0, 0,
-    100, 0, 0, 0,
-    100, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0
-END
-
 IDD_URLDIRECTORYINDEXEDIT AFX_DIALOG_LAYOUT
 BEGIN
     0,
@@ -2954,6 +2929,11 @@ BEGIN
     0,
     0, 0, 100, 100,
     0, 0, 100, 0
+END
+
+IDD_APPSETTING_BOOKMARK AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

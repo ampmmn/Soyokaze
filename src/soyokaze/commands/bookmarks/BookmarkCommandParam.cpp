@@ -1,34 +1,30 @@
 #include "pch.h"
 #include "BookmarkCommandParam.h"
-#include "resource.h"
 
 namespace launcherapp { namespace commands { namespace bookmarks {
 
-CommandParam::CommandParam() : 
-	mIsEnableEdge(true), mIsEnableChrome(true), mIsUseURL(false)
+bool CommandParam::Save(Settings& settings) const
 {
+	settings.Set(_T("Bookmarks:EnableBookmarks"), mIsEnable);
+	settings.Set(_T("Bookmarks:Prefix"), mPrefix);
+	settings.Set(_T("Bookmarks:MinTriggerLength"), mMinTriggerLength);
+	settings.Set(_T("Bookmarks:EnableChrome"), mIsEnableChrome);
+	settings.Set(_T("Bookmarks:EnableEdge"), mIsEnableEdge);
+	settings.Set(_T("Bookmarks:UseURL"), mIsUseURL);
+
+	return true;
 }
 
-CommandParam::~CommandParam()
+bool CommandParam::Load(Settings& settings)
 {
-}
+	mIsEnable = settings.Get(_T("Bookmarks:EnableBookmarks"), true);
+	mPrefix = settings.Get(_T("Bookmarks:Prefix"), _T(""));
+	mMinTriggerLength = settings.Get(_T("Bookmarks:MinTriggerLength"), 5);
+	mIsEnableChrome = settings.Get(_T("Bookmarks:EnableChrome"), true);
+	mIsEnableEdge = settings.Get(_T("Bookmarks:EnableEdge"), true);
+	mIsUseURL = settings.Get(_T("Bookmarks:UseURL"), false);
 
-void CommandParam::Save(CommandEntryIF* entry)
-{
-	entry->Set(_T("description"), mDescription);
-	entry->Set(_T("EnableChrome"), mIsEnableChrome);
-	entry->Set(_T("EnableEdge"), mIsEnableEdge);
-	entry->Set(_T("UseURL"), mIsUseURL);
-}
-
-void CommandParam::Load(CommandEntryIF* entry)
-{
-	mName = entry->GetName();
-	mDescription = entry->Get(_T("description"), _T(""));
-
-	mIsEnableChrome = entry->Get(_T("EnableChrome"), true);
-	mIsEnableEdge = entry->Get(_T("EnableEdge"), true);
-	mIsUseURL = entry->Get(_T("UseURL"), false);
+	return true;
 }
 
 }}} // end of namespace launcherapp::commands::bookmarks

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-16 16:49+0900\n"
+"POT-Creation-Date: 2025-09-07 07:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -64,14 +64,12 @@ msgid "Settings"
 msgstr "設定"
 
 #: ../../source/adhoc-command/winscp.md:21
-msgid "初期状態では無効になっている。"
+msgid ""
+"機能は初期状態で有効になっている。 機能を使わない場合は、アプリケーション設定の `拡張機能` > `WinSCP` "
+"から機能を無効化することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/winscp.md:23
-msgid "アプリケーション設定の `拡張機能` > `WinSCP` から機能を有効化することができる。"
-msgstr ""
-
-#: ../../source/adhoc-command/winscp.md:25
+#: ../../source/adhoc-command/winscp.md:24
 msgid "![](../image/adhoc-command/winscp-appsetting.png)"
 msgstr ""
 

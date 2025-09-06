@@ -420,10 +420,9 @@
     <ClInclude Include="commands\alias\AliasCommandProvider.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandEditor.h" />
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h" />
+    <ClInclude Include="commands\bookmarks\AppSettingPageBookmark.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
-    <ClInclude Include="commands\bookmarks\BookmarkCommandEditor.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h" />
-    <ClInclude Include="commands\bookmarks\BookmarkSettingDialog.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandEditor.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
@@ -857,11 +856,10 @@
     <ClCompile Include="commands\alias\AliasCommandProvider.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandEditor.cpp" />
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp" />
+    <ClCompile Include="commands\bookmarks\AppSettingPageBookmark.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
-    <ClCompile Include="commands\bookmarks\BookmarkCommandEditor.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkItem.cpp" />
-    <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />

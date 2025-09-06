@@ -127,7 +127,6 @@
 #define IDD_EVERYTHINGEDIT              223
 #define IDD_APPSETTING_EVERYTHING       224
 #define IDD_WEBHISTORYEDIT              225
-#define IDD_BOOKMARKEDIT                226
 #define IDD_URLDIRECTORYINDEXEDIT       227
 #define IDD_KEYSPLITTER                 228
 #define IDD_KEYSPLITTERMODIFIER         229
@@ -162,6 +161,7 @@
 #define IDD_SHELLEXEC_ENVBULKADD        254
 #define IDD_APPSETTING_WINSCP           255
 #define IDD_CLIPBOARD_PREVIEW           256
+#define IDD_APPSETTING_BOOKMARK         257
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002

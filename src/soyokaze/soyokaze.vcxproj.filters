@@ -1044,9 +1044,6 @@
     <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
-    <ClInclude Include="commands\bookmarks\BookmarkSettingDialog.h">
-      <Filter>commands\bookmarks</Filter>
-    </ClInclude>
     <ClInclude Include="utility\VersionInfo.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -1205,9 +1202,6 @@
     </ClInclude>
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h">
       <Filter>commands\shellexecute</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\bookmarks\BookmarkCommandEditor.h">
-      <Filter>commands\bookmarks</Filter>
     </ClInclude>
     <ClInclude Include="commands\builtin\BuiltinCommandEditor.h">
       <Filter>commands\builtin</Filter>
@@ -1553,6 +1547,9 @@
     </ClInclude>
     <ClInclude Include="launcherapp_string.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\AppSettingPageBookmark.h">
+      <Filter>commands\bookmarks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2297,9 +2294,6 @@
     <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp">
       <Filter>commands\bookmarks</Filter>
     </ClCompile>
-    <ClCompile Include="commands\bookmarks\BookmarkSettingDialog.cpp">
-      <Filter>commands\bookmarks</Filter>
-    </ClCompile>
     <ClCompile Include="utility\VersionInfo.cpp">
       <Filter>utility</Filter>
     </ClCompile>
@@ -2434,9 +2428,6 @@
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp">
       <Filter>commands\shellexecute</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\bookmarks\BookmarkCommandEditor.cpp">
-      <Filter>commands\bookmarks</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp">
       <Filter>commands\builtin</Filter>
@@ -2749,6 +2740,9 @@
     </ClCompile>
     <ClCompile Include="commands\common\FileTime.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\AppSettingPageBookmark.cpp">
+      <Filter>commands\bookmarks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

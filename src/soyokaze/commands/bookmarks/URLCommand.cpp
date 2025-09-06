@@ -57,12 +57,7 @@ CString URLCommand::GetGuideString()
 
 CString URLCommand::GetTypeDisplayName()
 {
-	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
-
-	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)Bookmark::GetBrowserName(in->mBrowserType), (LPCTSTR)TEXT_BOOKMARK);
-
-	return str;
+	return TypeDisplayName(in->mBrowserType);
 }
 
 BOOL URLCommand::Execute(Parameter* param)
@@ -126,5 +121,16 @@ bool URLCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 	}
 	return false;
 }
+
+CString URLCommand::TypeDisplayName(int type)
+{
+	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
+
+	CString str;
+	str.Format(_T("%s %s"), (LPCTSTR)Bookmark::GetBrowserName((BrowserType)type), (LPCTSTR)TEXT_BOOKMARK);
+
+	return str;
+}
+
 
 }}} // end of namespace launcherapp::commands::bookmarks

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-16 16:49+0900\n"
+"POT-Creation-Date: 2025-09-07 07:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -60,26 +60,29 @@ msgid "Settings"
 msgstr "設定"
 
 #: ../../source/adhoc-command/everything.md:17
-msgid "アプリケーション設定の `拡張機能` > `Everything` から設定を変更できる。"
+msgid "初期状態は機能は有効になっている。 機能を使用しない場合はアプリケーション設定の `拡張機能` > `Everything` から無効化できる。"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:19
+#: ../../source/adhoc-command/everything.md:20
 msgid "![](../image/adhoc-command/everything-appsetting.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:21
+#: ../../source/adhoc-command/everything.md:22
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/adhoc-command/everything.md:23
+#: ../../source/adhoc-command/everything.md:24
 msgid "一度に表示する候補件数の上限は32件"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:24
+#: ../../source/adhoc-command/everything.md:25
 msgid "ファイル更新日時が新しい順に候補を表示する"
 msgstr ""
 
-#: ../../source/adhoc-command/everything.md:25
+#: ../../source/adhoc-command/everything.md:26
 msgid "この機能ではMigemo検索は適用されない"
 msgstr ""
+
+#~ msgid "アプリケーション設定の `拡張機能` > `Everything` から設定を変更できる。"
+#~ msgstr ""
 

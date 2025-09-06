@@ -73,6 +73,8 @@ struct Bookmarks::PImpl
 	bool mIsLoaded{false};
 	// ブックマークファイルの変更を検知するLocalDirectoryWatcherの登録ID
 	uint32_t mId{0};
+	// キーワードをずらす数(0 or 1)
+	int mNumOfKeywordShift{0};
 };
 
 bool Bookmarks::PImpl::LoadBookmarks()
@@ -107,14 +109,14 @@ int Bookmarks::PImpl::MatchBookmarkItem(Pattern* pattern, const Bookmark& item, 
 	}
 
 	// まずは名前で比較
-	int level = pattern->Match(item.mName, 1);
+	int level = pattern->Match(item.mName, mNumOfKeywordShift);
 	if (level != Pattern::Mismatch) {
 		return level;
 	}
 
 	// 次にフォルダパスで比較
 	if (item.mFolderPath.IsEmpty() == FALSE) {
-		level = pattern->Match(item.mFolderPath, 1);
+		level = pattern->Match(item.mFolderPath, mNumOfKeywordShift);
 		if (level != Pattern::Mismatch) {
 			return level;
 		}
@@ -124,7 +126,7 @@ int Bookmarks::PImpl::MatchBookmarkItem(Pattern* pattern, const Bookmark& item, 
 		// URLを絞り込みに使わない場合はここではじく
 		return Pattern::Mismatch;
 	}
-	return pattern->Match(item.mUrl, 1);
+	return pattern->Match(item.mUrl, mNumOfKeywordShift);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +174,11 @@ bool Bookmarks::Initialize(LPCTSTR bookmarkPath)
 
 	in->mIsLoaded = true;
 	return true;
+}
+
+void Bookmarks::SetNumOfKeywordShift(int num)
+{
+	in->mNumOfKeywordShift = num;
 }
 
 void Bookmarks::Query(Pattern* pattern, std::vector<Bookmark>& items, bool isUseURL)

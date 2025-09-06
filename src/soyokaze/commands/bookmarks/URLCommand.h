@@ -30,6 +30,9 @@ public:
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
+
+public:
+	static CString TypeDisplayName(int type);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
