@@ -13,7 +13,7 @@ TEST(StartupParam, HasRunComandReturnsFalse)
 	TCHAR* argv[] = { (TCHAR*)_T("") };
 	StartupParam param(1, argv);
 
-	CString value;
+	String value;
 	EXPECT_FALSE(param.HasRunCommand(value));
 	EXPECT_FALSE(param.HasPathToRegister(value));
 	EXPECT_FALSE(param.HasHideOption());
@@ -25,9 +25,9 @@ TEST(StartupParam, HasRunComandReturnsTrue)
 	const TCHAR* argv[] = { _T(""), _T("-c"),  _T("aiueo") };
 	StartupParam param(3, (TCHAR**)argv);
 
-	CString value;
+	String value;
 	EXPECT_TRUE(param.HasRunCommand(value));
-	EXPECT_EQ(CString(_T("aiueo")), value);
+	EXPECT_EQ("aiueo", value);
 }
 
 TEST(StartupParam, HasRunComandReturnsTrue2)
@@ -36,9 +36,9 @@ TEST(StartupParam, HasRunComandReturnsTrue2)
 	const TCHAR* argv[] = { _T(""), _T("/Runcommand=aiueo") };
 	StartupParam param(2, (TCHAR**)argv);
 
-	CString value;
+	String value;
 	EXPECT_TRUE(param.HasRunCommand(value));
-	EXPECT_EQ(CString(_T("aiueo")), value);
+	EXPECT_EQ("aiueo", value);
 }
 
 TEST(StartupParam, HasPathToRegisterReturnsTrue)
@@ -51,7 +51,7 @@ TEST(StartupParam, HasPathToRegisterReturnsTrue)
 	const TCHAR* argv[] = { _T(""), path };
 	StartupParam param(2, (TCHAR**)argv);
 
-	CString value;
+	String value;
 	EXPECT_TRUE(param.HasPathToRegister(value));
 }
 

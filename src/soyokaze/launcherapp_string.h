@@ -9,6 +9,10 @@ class String : public std::string
 public:
 	using std::string::string;
 
+	String() : std::string()
+	{
+	}
+
 	String(const std::string& s) : std::string(s)
 	{
 	}
