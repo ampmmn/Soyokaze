@@ -93,21 +93,18 @@ LRESULT SettingCommand::OnCallbackExecute()
 	// パンくずリストを取得(次回表示時にページを復元するため)
 	mLastBreakCrumbs = dlg.GetBreadCrumbsString();
 
-	if (response != IDOK) {
-		return 0;
+	if (response == IDOK) {
+		// 設定変更を反映する
+		pref->SetSettings(dlg.GetSettings());
+		pref->Save();
 	}
 
-	// 設定変更を反映する
-	pref->SetSettings(dlg.GetSettings());
-	pref->Save();
-
-	// 
 	// 状態クリア
 	mainWnd->ClearContent();
 	// ウインドウ非表示
 	mainWnd->HideWindow();
 	// ウインドウ再表示
-	bool isShowToggle = true;
+	bool isShowToggle = false;
 	mainWnd->ActivateWindow(isShowToggle);
 
 	return 0;
