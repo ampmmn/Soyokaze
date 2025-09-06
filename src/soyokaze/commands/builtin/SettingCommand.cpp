@@ -80,7 +80,15 @@ LRESULT SettingCommand::OnCallbackExecute()
 	// 現在の設定をセット
 	dlg.SetSettings(pref->GetSettings());
 
+	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+
+	// 設定画面の表示中はメインウインドウの表示を抑制する
+	// (DoModal表示が終わったら抑制を解除する)
+	mainWnd->BlockWindowDisplay(true);
+
 	INT_PTR response = dlg.DoModal();
+
+	mainWnd->BlockWindowDisplay(false);
 
 	// パンくずリストを取得(次回表示時にページを復元するため)
 	mLastBreakCrumbs = dlg.GetBreadCrumbsString();
@@ -94,7 +102,6 @@ LRESULT SettingCommand::OnCallbackExecute()
 	pref->Save();
 
 	// 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	// 状態クリア
 	mainWnd->ClearContent();
 	// ウインドウ非表示

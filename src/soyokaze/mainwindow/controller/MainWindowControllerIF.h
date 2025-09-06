@@ -39,6 +39,8 @@ public:
 	virtual void ShowContextMenu() = 0;
 	// ウインドウを一時的に移動する
 	virtual bool MoveTemporary(int vk) = 0;
+	// メインウインドウの表示を抑制する
+	virtual void BlockWindowDisplay(bool isBlock) = 0;
 };
 
 

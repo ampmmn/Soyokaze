@@ -19,6 +19,7 @@ enum LauncherMainWindowMessageID  {
 	REQUESTCALLBACK = WM_APP+17,
 	CLEARCONTENT = WM_APP + 18,
 	MOVETEMPORARY = WM_APP + 19,
+	BLOCKWINDOWDIAPLAY =WM_APP + 20, 
 };
 	
 class LauncherMainWindowController : public MainWindowControllerIF
@@ -57,6 +58,8 @@ public:
 	void ShowContextMenu() override;
 	// ウインドウを一時的に移動する
 	bool MoveTemporary(int vk) override;
+	// メインウインドウの表示を抑制する
+	void BlockWindowDisplay(bool isBlock) override;
 
 };
 

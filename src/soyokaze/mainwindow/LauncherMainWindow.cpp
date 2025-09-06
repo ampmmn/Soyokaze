@@ -100,6 +100,8 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<MainWindowLayout> mLayout;
 	// 外観(色、フォント)などを管理するクラス
 	std::unique_ptr<MainWindowAppearance> mAppearance;
+	// 表示を抑制中か
+	bool mIsWindowDisplayBlocked{false};
 
 // ホットキー関連
 	// 入力画面を呼び出すホットキー関連の処理をする
@@ -225,6 +227,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::REQUESTCALLBACK, OnUserMessageRequestCallback)
 	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
 	ON_MESSAGE(LauncherMainWindowMessageID::MOVETEMPORARY, OnUserMessageMoveTemporary)
+	ON_MESSAGE(LauncherMainWindowMessageID::BLOCKWINDOWDIAPLAY, OnUserMessageBlockWindowDiaplay)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -267,6 +270,32 @@ void LauncherMainWindow::ShowHelpTop()
 	manual->Navigate("Top");
 }
 
+
+// 現在のスレッドのウインドウで最も前面にあるウインドウハンドルを取得する
+static HWND GetTopMostWindowInCurrentThread()
+{
+	HWND hTopMost = nullptr;
+	EnumThreadWindows(GetCurrentThreadId(), [](HWND h, LPARAM param) -> BOOL {
+		if (IsWindowVisible(h) == FALSE) {
+			return TRUE;
+		}
+
+		HWND* pTopMost = reinterpret_cast<HWND*>(param);
+		if (*pTopMost == nullptr) {
+			// 初回はとりあえず拾っておく
+			*pTopMost = h;
+			return TRUE;
+		}
+	 	if (GetWindow(h, GW_HWNDPREV) == nullptr) {
+			*pTopMost = h;
+			return FALSE; // 最前面が見つかったので列挙終了
+		}
+		return TRUE;
+	}, reinterpret_cast<LPARAM>(&hTopMost));
+
+	return hTopMost;
+}
+
 /**
  * ActiveWindow経由の処理
  * (後続プロセスから処理できるようにするためウインドウメッセージ経由で処理している)
@@ -279,8 +308,18 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 
 	HWND hwnd = GetSafeHwnd();
 	if (isShowForce || ::IsWindowVisible(hwnd) == FALSE) {
-		// 非表示状態なら表示
+
 		ScopeAttachThreadInput scope;
+
+		// もし外部からメインウインドウの表示が抑制状態である場合は表示しない
+		// (現在、設定画面表示中のみ抑制する)
+		if (in->mIsWindowDisplayBlocked) {
+			auto h = GetTopMostWindowInCurrentThread();
+			::SetForegroundWindow(h);
+			return 0;
+		}
+
+		// 非表示状態なら表示
 
 		// 表示する際の位置を決定(移動)する
 		in->mLayout->RecalcWindowOnActivate(this);
@@ -511,6 +550,14 @@ LRESULT LauncherMainWindow::OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lPa
 	// VK_UP/DOWN/LEFT/RIGHTを移動の方向として使う(手抜き)
 	int vk = (int)wParam;
 	return in->mLayout->MoveTemporary(vk) ? 0 : 1;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageBlockWindowDiaplay(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	bool isBlock = wParam != 0;
+	in->mIsWindowDisplayBlocked = isBlock;
+	return 0;
 }
 
 void LauncherMainWindow::OnButtonOptionClicked()

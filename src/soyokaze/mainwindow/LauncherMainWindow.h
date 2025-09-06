@@ -125,6 +125,7 @@ protected:
 	LRESULT OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageBlockWindowDiaplay(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnButtonOptionClicked();
 
 	DECLARE_MESSAGE_MAP()

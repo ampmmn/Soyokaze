@@ -120,6 +120,12 @@ bool LauncherMainWindowController::MoveTemporary(int vk)
 	return ::SendMessage(sharedWnd.GetHwnd(), MOVETEMPORARY, (WPARAM)vk, 0) == 0;
 }
 
+// メインウインドウの表示を抑制する
+void LauncherMainWindowController::BlockWindowDisplay(bool isBlock)
+{
+	SharedHwnd sharedWnd;
+	::SendMessage(sharedWnd.GetHwnd(), BLOCKWINDOWDIAPLAY, (WPARAM)isBlock ? 1 : 0, 0);
+}
 
 
 }}} // end of namespace launcherapp::mainwindow::controller
