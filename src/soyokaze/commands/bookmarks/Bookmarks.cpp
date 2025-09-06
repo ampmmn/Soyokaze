@@ -17,10 +17,7 @@
 
 using json = nlohmann::json;
 
-
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
 
 static void parseJSONObject(json& j, const std::string& parentFolderPath, std::vector<Bookmark>& items)
 {
@@ -53,33 +50,31 @@ static void parseJSONObject(json& j, const std::string& parentFolderPath, std::v
 	}
 }
 
-
-
-// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
-// Edge $USERPROFILE/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks
-
 struct Bookmarks::PImpl
 {
-	bool LoadChromeBookmarks();
-	bool LoadEdgeBookmarks();
+	// ブックマークデータを読み込む
+	bool LoadBookmarks();
+	// ブックマーク要素がパターンと合致するかを判定
+	int MatchBookmarkItem(Pattern* pattern, const Bookmark& item, bool isUseURL);
 
 	std::mutex mMutex;
 
-	Path mChromeBookmarkPath{Path::USERPROFILE, _T("AppData\\Local\\Google\\Chrome\\User Data\\Default\\Bookmarks")};
-	std::vector<Bookmark> mChromeItems;
-	bool mIsChromeLoaded{false};
-
-	Path mEdgeBookmarkPath{Path::USERPROFILE, _T("AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Bookmarks")};
-	std::vector<Bookmark> mEdgeItems;
-	bool mIsEdgeLoaded{false};
+	// ブックマークファイルのパス
+	CString mFilePath;
+	// ファイルから読み込まれたブックマーク要素
+	std::vector<Bookmark> mItems;
+	// ブックマーク要素が読み込み済か?
+	bool mIsLoaded{false};
+	// ブックマークファイルの変更を検知するLocalDirectoryWatcherの登録ID
+	uint32_t mId{0};
 };
 
-bool Bookmarks::PImpl::LoadChromeBookmarks()
+bool Bookmarks::PImpl::LoadBookmarks()
 {
 	// 読み直す
 	std::vector<Bookmark> tmp;
 	try {
-		std::ifstream f(mChromeBookmarkPath);
+		std::ifstream f(mFilePath);
 		json bookmarks = json::parse(f);
 		auto roots = bookmarks["roots"];
 		for (auto it = roots.begin(); it != roots.end(); ++it) {
@@ -88,44 +83,47 @@ bool Bookmarks::PImpl::LoadChromeBookmarks()
 		}
 	}
 	catch(std::exception&) {
-		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mChromeBookmarkPath);
+		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mFilePath);
 		return false;
 	}
 
 	std::lock_guard<std::mutex> lock(mMutex);
-	spdlog::debug("chrome bookmark item count {0} -> {1}", mChromeItems.size(), tmp.size());
-	mChromeItems.swap(tmp);
+	spdlog::debug("chrome bookmark item count {0} -> {1}", mItems.size(), tmp.size());
+	mItems.swap(tmp);
 	return true;
 }
 
-bool Bookmarks::PImpl::LoadEdgeBookmarks()
+int Bookmarks::PImpl::MatchBookmarkItem(Pattern* pattern, const Bookmark& item, bool isUseURL)
 {
-	// 読み直す
-	std::vector<Bookmark> tmp;
+	if (item.mUrl.Find(_T("javascript:")) == 0) {
+		// ブックマークレットは対象外
+		return Pattern::Mismatch;
+	}
 
-	try {
-		std::ifstream f(mEdgeBookmarkPath);
-		json bookmarks = json::parse(f);
-		auto roots = bookmarks["roots"];
-		for (auto it = roots.begin(); it != roots.end(); ++it) {
-			parseJSONObject(it.value(), "", tmp);
+	// まずは名前で比較
+	int level = pattern->Match(item.mName, 1);
+	if (level != Pattern::Mismatch) {
+		return level;
+	}
+
+	// 次にフォルダパスで比較
+	if (item.mFolderPath.IsEmpty() == FALSE) {
+		level = pattern->Match(item.mFolderPath, 1);
+		if (level != Pattern::Mismatch) {
+			return level;
 		}
 	}
-	catch(std::exception&) {
-		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mEdgeBookmarkPath);
-		return false;
-	}
 
-	std::lock_guard<std::mutex> lock(mMutex);
-	spdlog::debug("edge bookmark item count {0} -> {1}", mEdgeItems.size(), tmp.size());
-	mEdgeItems.swap(tmp);
-	return true;
+	if (isUseURL == false) {
+		// URLを絞り込みに使わない場合はここではじく
+		return Pattern::Mismatch;
+	}
+	return pattern->Match(item.mUrl, 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 
 
 Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
@@ -134,63 +132,65 @@ Bookmarks::Bookmarks() : in(std::make_unique<PImpl>())
 
 Bookmarks::~Bookmarks()
 {
+	// LocalDirectoryWatcherの登録を解除する
+	if (in->mId != 0) {
+		auto watcher = LocalDirectoryWatcher::GetInstance();
+		watcher->Unregister(in->mId);
+		in->mId = 0;
+	}
 }
 
-bool Bookmarks::LoadChromeBookmarks(std::vector<Bookmark>& items)
+bool Bookmarks::Initialize(LPCTSTR bookmarkPath)
 {
-	if (in->mIsChromeLoaded == false) {
-		// 初回の処理
-
-		// 変更通知登録を行い
-		auto watcher = LocalDirectoryWatcher::GetInstance();
-		watcher->Register((LPCTSTR)in->mChromeBookmarkPath, [](void* p) {
-				spdlog::info("Chrome bookmarks updated.");
-				// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
-				Sleep(250);
-				auto thisPtr = (PImpl*)p;
-				thisPtr->LoadChromeBookmarks();
-		}, in.get());
-
-		// ブックマークを直接ロードする。次回以降はファイル更新時に変更通知を通じて再ロードをおこなう
-		in->LoadChromeBookmarks();
-
-		in->mIsChromeLoaded = true;
+	// LocalDirectoryWatcherに登録済の場合は解除する
+	auto watcher = LocalDirectoryWatcher::GetInstance();
+	if (in->mId != 0) {
+		watcher->Unregister(in->mId);
+		in->mId = 0;
 	}
 
-	std::lock_guard<std::mutex> lock(in->mMutex);
-	items = in->mChromeItems;
+	// 初回の処理
+	in->mFilePath = bookmarkPath;
 
+	// LocalDirectoryWatcherに対し変更通知登録を行い
+	in->mId = watcher->Register((LPCTSTR)in->mFilePath, [](void* p) {
+			spdlog::info("bookmarks updated.");
+			// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
+			Sleep(250);
+			auto thisPtr = (PImpl*)p;
+			thisPtr->LoadBookmarks();
+			}, in.get());
+
+	// ブックマークを直接ロードする。次回以降はファイル更新時に変更通知を通じて再ロードをおこなう
+	in->LoadBookmarks();
+
+	in->mIsLoaded = true;
 	return true;
 }
 
-bool Bookmarks::LoadEdgeBookmarks(std::vector<Bookmark>& items)
+void Bookmarks::Query(Pattern* pattern, std::vector<Bookmark>& items, bool isUseURL)
 {
-	if (in->mIsEdgeLoaded == false) {
-		// 初回の処理
+	std::lock_guard<std::mutex> lock(in->mMutex);
 
-		// 変更通知登録を行い
-		auto watcher = LocalDirectoryWatcher::GetInstance();
-		watcher->Register((LPCTSTR)in->mEdgeBookmarkPath, [](void* p) {
-				spdlog::info("Edge bookmarks updated.");
-				// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
-				Sleep(250);
-				auto thisPtr = (PImpl*)p;
-				thisPtr->LoadEdgeBookmarks();
-		}, in.get());
-
-		// ブックマークを直接ロードする。次回以降はファイル更新時に変更通知を通じて再ロードをおこなう
-		in->LoadEdgeBookmarks();
-
-		in->mIsEdgeLoaded = true;
+	if (in->mIsLoaded == false) {
+		// まだ準備できてない
+		return ;
 	}
 
-	std::lock_guard<std::mutex> lock(in->mMutex);
-	items = in->mEdgeItems;
+	for (auto& item : in->mItems) {
 
-	return true;
+		int level = in->MatchBookmarkItem(pattern, item, isUseURL);
+		if (level == Pattern::Mismatch) {
+			continue;
+		}
+
+		Bookmark newItem(item);
+		newItem.mMatchLevel = level;
+
+		items.push_back(newItem);
+	}
 }
 
-} // end of namespace bookmarks
-} // end of namespace commands
-} // end of namespace launcherapp
+
+}}} // end of namespace launcherapp::commands::bookmarks
 

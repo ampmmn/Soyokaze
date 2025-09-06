@@ -11,71 +11,116 @@
 #include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
 #include "mainwindow/controller/MainWindowController.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <assert.h>
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
 
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
+
+// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
+constexpr LPCTSTR CHROME_BOOKMARK_PATH = _T("AppData\\Local\\Google\\Chrome\\User Data\\Default\\Bookmarks");
+// Edge $USERPROFILE/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks
+constexpr LPCTSTR EDGE_BOOKMARK_PATH = _T("AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Bookmarks");
 
 struct BookmarkCommand::PImpl
 {
-	void Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out);
-	int MatchBookmarkItem(Pattern* pattern, const Bookmark& item);
+	void LoadBookmarks();
+	void QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
+	void QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
 
+	Bookmarks* GetChromeBookmarks()
+	{
+		if (mParam.mIsEnableChrome == false) {
+		 return nullptr;
+		}
+		return &mChromeBookmarks;
+	}
+
+	Bookmarks* GetEdgeBookmarks()
+	{
+		if (mParam.mIsEnableEdge == false) {
+		 return nullptr;
+		}
+		return &mEdgeBookmarks;
+	}
+
+	// コマンドパラメータ
 	CommandParam mParam;
-	Bookmarks mBookmarks;
+	// Chromeのブックマークデータ
+	Bookmarks mChromeBookmarks;
+	// Edgeのブックマークデータ
+	Bookmarks mEdgeBookmarks;
+	// ブックマーク読み込みスレッド
+	std::thread mLoadThread;
 };
 
-
-void BookmarkCommand::PImpl::Query(BrowserType type, Pattern* pattern, const std::vector<Bookmark>& items, std::vector<Bookmark>& out)
+void BookmarkCommand::PImpl::LoadBookmarks()
 {
-	for (auto& item : items) {
+	// 前回のロードが実行中のばあいは完了を待つ
+	if (mLoadThread.joinable()) {
+		mLoadThread.join();
+	}
 
-		int level = MatchBookmarkItem(pattern, item);
-		if (level == Pattern::Mismatch) {
-			continue;
+	// 別スレッドでブックマークのロードを実行する
+	std::thread th([&]() {
+		auto chromeBookmarks = GetChromeBookmarks();
+		if (chromeBookmarks) {
+			Path chromeFilePath{Path::USERPROFILE, CHROME_BOOKMARK_PATH};
+			chromeBookmarks->Initialize(chromeFilePath);
 		}
+		auto edgeBookmarks = GetEdgeBookmarks();
+		if (edgeBookmarks) {
+			Path edgeFilePath{Path::USERPROFILE, EDGE_BOOKMARK_PATH};
+			edgeBookmarks->Initialize(edgeFilePath);
+		}
+	});
+	mLoadThread.swap(th);
+}
 
-		Bookmark newItem(item);
-		newItem.mMatchLevel = level;
-		newItem.mBrowser = type;
+void BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
+{
+	auto bookmarks = GetChromeBookmarks();
+	if (bookmarks == nullptr) {
+		return;
+	}
 
-		out.push_back(newItem);
+	// 指定されたキーワードでブックマークの検索を行う
+	std::vector<Bookmark> bkmItems;
+ 	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
+	for (auto& item : bkmItems) {
+
+		// コマンド名がマッチしているので少なくとも前方一致扱いとする
+		int matchLevel = item.mMatchLevel;
+		if (matchLevel == Pattern::PartialMatch) {
+			matchLevel = Pattern::FrontMatch;
+		}
+		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Chrome)));
 	}
 }
 
-int BookmarkCommand::PImpl::MatchBookmarkItem(Pattern* pattern, const Bookmark& item)
+void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
 {
-	if (item.mUrl.Find(_T("javascript:")) == 0) {
-		// ブックマークレットは対象外
-		return Pattern::Mismatch;
+	auto bookmarks = GetEdgeBookmarks();
+	if (bookmarks == nullptr) {
+		return;
 	}
 
-	// まずは名前で比較
-	int level = pattern->Match(item.mName, 1);
-	if (level != Pattern::Mismatch) {
-		return level;
-	}
+	// 指定されたキーワードでブックマークの検索を行う
+	std::vector<Bookmark> bkmItems;
+	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
+	for (auto& item : bkmItems) {
 
-	// 次にフォルダパスで比較
-	if (item.mFolderPath.IsEmpty() == FALSE) {
-		level = pattern->Match(item.mFolderPath, 1);
-		if (level != Pattern::Mismatch) {
-			return level;
+		// コマンド名がマッチしているので少なくとも前方一致扱いとする
+		int matchLevel = item.mMatchLevel;
+		if (matchLevel == Pattern::PartialMatch) {
+			matchLevel = Pattern::FrontMatch;
 		}
+		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Edge)));
 	}
-
-	if (mParam.mIsUseURL == false) {
-		// URLを絞り込みに使わない場合はここではじく
-		return Pattern::Mismatch;
-	}
-	return pattern->Match(item.mUrl, 1);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +141,10 @@ BookmarkCommand::BookmarkCommand() : in(std::make_unique<PImpl>())
 
 BookmarkCommand::~BookmarkCommand()
 {
+	// 終了フラグを立ててスレッド完了を待つ
+	if (in->mLoadThread.joinable()) {
+		in->mLoadThread.join();
+	}
 }
 
 bool BookmarkCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -194,13 +243,7 @@ bool BookmarkCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-
-	entry->Set(_T("EnableChrome"), (bool)in->mParam.mIsEnableChrome);
-	entry->Set(_T("EnableEdge"), (bool)in->mParam.mIsEnableEdge);
-	entry->Set(_T("UseURL"), (bool)in->mParam.mIsUseURL);
-
-	// ToDo: フォルダ階層指定対応
+	in->mParam.Save(entry);
 
 	return true;
 }
@@ -213,13 +256,9 @@ bool BookmarkCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr !=GetType()) {
 		return false;
 	}
+	in->mParam.Load(entry);
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-
-	in->mParam.mIsEnableChrome = entry->Get(_T("EnableChrome"), true);
-	in->mParam.mIsEnableEdge = entry->Get(_T("EnableEdge"), true);
-	in->mParam.mIsUseURL = entry->Get(_T("UseURL"), false);
+	in->LoadBookmarks();
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
@@ -247,6 +286,7 @@ bool BookmarkCommand::NewDialog(
 	auto commandParam = editor.GetParam();
 	auto command = std::make_unique<BookmarkCommand>();
 	command->in->mParam = commandParam;
+	command->in->LoadBookmarks();
 
 	newCmd = std::move(command);
 
@@ -265,29 +305,11 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& co
 		return false;
 	}
 
-	std::vector<Bookmark> bookmarks;
-
 	// Chromeのブックマークを取得し、キーワードで絞り込み
-	std::vector<Bookmark> items;
-	if (in->mParam.mIsEnableChrome && in->mBookmarks.LoadChromeBookmarks(items)) {
-		in->Query(BrowserType::Chrome, pattern, items, bookmarks);
-	}
+	in->QueryChromeBookmarks(pattern, commands);
 
 	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
-	if (in->mParam.mIsEnableEdge && in->mBookmarks.LoadEdgeBookmarks(items)) {
-		in->Query(BrowserType::Edge, pattern, items, bookmarks);
-	}
-
-	for (auto& bkm : bookmarks) {
-
-		// コマンド名がマッチしているので少なくとも前方一致扱いとする
-		int matchLevel = bkm.mMatchLevel;
-		if (matchLevel == Pattern::PartialMatch) {
-			matchLevel = Pattern::FrontMatch;
-		}
-
-		commands.Add(CommandQueryItem(matchLevel, new URLCommand(bkm)));
-	}
+	in->QueryEdgeBookmarks(pattern, commands);
 
 	return true;
 }
@@ -318,6 +340,7 @@ bool BookmarkCommand::Apply(CommandEditor* editor)
 		return false;
 	}
 	in->mParam = cmdEditor->GetParam();
+	in->LoadBookmarks();
 	return true;
 }
 
@@ -333,6 +356,7 @@ bool BookmarkCommand::CreateNewInstanceFrom(CommandEditor* editor, Command** new
 	auto commandParam = cmdEditor->GetParam();
 	auto command = make_refptr<BookmarkCommand>();
 	command->in->mParam = commandParam;
+	command->in->LoadBookmarks();
 
 	if (newCmd) {
 		*newCmd = command.release();
@@ -340,9 +364,5 @@ bool BookmarkCommand::CreateNewInstanceFrom(CommandEditor* editor, Command** new
 	return true;
 }
 
-
-
-} // end of namespace bookmarks
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::bookmarks
 

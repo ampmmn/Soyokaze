@@ -5,9 +5,7 @@
 #include "commands/bookmarks/Bookmarks.h"
 #include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
 
 class BookmarkCommand :
  	virtual public launcherapp::commands::common::UserCommandBase,
@@ -58,7 +56,5 @@ protected:
 };
 
 
-} // end of namespace bookmarks
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::bookmarks
 

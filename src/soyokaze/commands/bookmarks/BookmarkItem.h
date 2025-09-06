@@ -5,14 +5,15 @@ namespace launcherapp { namespace commands { namespace bookmarks {
 enum BrowserType {
 	Chrome,
 	Edge,
+	Unknown,
 };
 
 struct Bookmark
 {
-	// ブラウザ種別からブラウザ名を得る
-	CString GetBrowserName();
 	// ブラウザ種別に対応するブラウザexeのパスを得る
-	bool GetExecutablePath(LPTSTR path, size_t len);
+	static bool GetExecutablePath(BrowserType type, LPTSTR path, size_t len);
+	// ブラウザ種別からブラウザ名を得る
+	static CString GetBrowserName(BrowserType type);
 
 	// 表示名
 	CString mName;
@@ -20,8 +21,6 @@ struct Bookmark
 	CString mFolderPath;
 	// URL
 	CString mUrl;
-	// ブラウザ種別
-	int mBrowser{0};
 	// 一致レベル(これは別にすべきでは?
 	int mMatchLevel{0};
 };

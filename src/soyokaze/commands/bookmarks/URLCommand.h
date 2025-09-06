@@ -5,9 +5,7 @@
 #include "commands/bookmarks/BookmarkItem.h"
 #include <memory>
 
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
 
 class URLCommand :
 	virtual public launcherapp::commands::common::AdhocCommandBase,
@@ -15,7 +13,7 @@ class URLCommand :
 {
 public:
 public:
-	URLCommand(const Bookmark& item);
+	URLCommand(const Bookmark& item, BrowserType browserType);
 	virtual ~URLCommand();
 
 	CString GetDescription() override;
@@ -38,7 +36,4 @@ protected:
 };
 
 
-} // end of namespace bookmarks
-} // end of namespace commands
-} // end of namespace launcherapp
-
+}}} // end of namespace launcherapp::commands::bookmarks

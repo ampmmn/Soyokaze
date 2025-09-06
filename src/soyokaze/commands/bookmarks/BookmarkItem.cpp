@@ -7,9 +7,9 @@
 
 namespace launcherapp { namespace commands { namespace bookmarks {
 
-CString Bookmark::GetBrowserName()
+CString Bookmark::GetBrowserName(BrowserType type)
 {
-	return mBrowser == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
+	return type == BrowserType::Chrome ? _T("Chrome") : _T("Edge");
 }
 
 static bool GetChromeExecutablePath(LPTSTR path, size_t len)
@@ -38,12 +38,12 @@ static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
 	return true;
 }
 
-bool Bookmark::GetExecutablePath(LPTSTR path, size_t len)
+bool Bookmark::GetExecutablePath(BrowserType type, LPTSTR path, size_t len)
 {
-	if (mBrowser == BrowserType::Chrome) {
+	if (type == BrowserType::Chrome) {
 		return GetChromeExecutablePath(path, len);
 	}
-	else if (mBrowser == BrowserType::Edge) {
+	else if (type == BrowserType::Edge) {
 		return GetEdgeExecutablePath(path, len);
 	}
 	else {

@@ -15,13 +15,12 @@
 
 using namespace launcherapp::commands::common;
 
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
 
 struct URLCommand::PImpl
 {
 	Bookmark mBookmarkItem;
+	BrowserType mBrowserType{BrowserType::Unknown};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,12 +31,14 @@ struct URLCommand::PImpl
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
 
 URLCommand::URLCommand(
-	const Bookmark& item
+	const Bookmark& item,
+	BrowserType browserType
 ) : 
 	AdhocCommandBase(item.mName, item.mName),
 	in(std::make_unique<PImpl>())
 {
 	in->mBookmarkItem = item;
+	in->mBrowserType = browserType;
 }
 
 URLCommand::~URLCommand()
@@ -59,7 +60,7 @@ CString URLCommand::GetTypeDisplayName()
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
 
 	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)in->mBookmarkItem.GetBrowserName(), (LPCTSTR)TEXT_BOOKMARK);
+	str.Format(_T("%s %s"), (LPCTSTR)Bookmark::GetBrowserName(in->mBrowserType), (LPCTSTR)TEXT_BOOKMARK);
 
 	return str;
 }
@@ -74,7 +75,7 @@ BOOL URLCommand::Execute(Parameter* param)
 
 	// URLをブラウザで開く
 	Path path;
-	if (in->mBookmarkItem.GetExecutablePath(path, path.size()) == false) {
+	if (Bookmark::GetExecutablePath(in->mBrowserType, path, path.size()) == false) {
 		return FALSE;
 	}
 
@@ -97,14 +98,14 @@ HICON URLCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
 	Path path;
-	in->mBookmarkItem.GetExecutablePath(path, path.size());
+	Bookmark::GetExecutablePath(in->mBrowserType, path, path.size());
 	return IconLoader::Get()->LoadIconFromPath((LPCTSTR)path);
 }
 
 launcherapp::core::Command*
 URLCommand::Clone()
 {
-	return new URLCommand(in->mBookmarkItem);
+	return new URLCommand(in->mBookmarkItem, in->mBrowserType);
 }
 
 CString URLCommand::GetSourceName()
@@ -126,7 +127,4 @@ bool URLCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 	return false;
 }
 
-} // end of namespace bookmarks
-} // end of namespace commands
-} // end of namespace launcherapp
-
+}}} // end of namespace launcherapp::commands::bookmarks

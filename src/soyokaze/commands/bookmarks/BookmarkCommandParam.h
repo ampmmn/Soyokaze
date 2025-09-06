@@ -1,16 +1,18 @@
 #pragma once
 
+#include "commands/core/CommandEntryIF.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 
-namespace launcherapp {
-namespace commands {
-namespace bookmarks {
+namespace launcherapp { namespace commands { namespace bookmarks {
 
 class CommandParam
 {
 public:
 	CommandParam();
 	~CommandParam();
+
+	void Save(CommandEntryIF* entry);
+	void Load(CommandEntryIF* entry);
 
 public:
 	CString mName;
@@ -22,8 +24,5 @@ public:
 };
 
 
-
-}
-}
-}
+}}} // end of namespace launcherapp::commands::bookmarks
 
