@@ -9,11 +9,15 @@ namespace launcherapp {
 namespace commands {
 namespace align_window {
 
+class CommandParam;
+
 class AlignWindowCommand : public launcherapp::commands::common::UserCommandBase
 {
 public:
 	AlignWindowCommand();
 	virtual ~AlignWindowCommand();
+
+	void SetParam(const CommandParam& param);
 
 // Command
 	CString GetName() override;

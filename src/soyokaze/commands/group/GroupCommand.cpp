@@ -206,7 +206,20 @@ HICON GroupCommand::GetIcon()
 
 void GroupCommand::SetParam(const CommandParam& param)
 {
+	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
+	// 以前の名前で登録していた、履歴の除外ワードを解除する
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->RemoveExcludeWord(in->mParam.mName);
+	}
+
+	// パラメータを上書き
 	in->mParam = param;
+
+	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
+	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->AddExcludeWord(in->mParam.mName);
+	}
 }
 
 void GroupCommand::AddItem(LPCTSTR itemName, bool isWait)
@@ -261,7 +274,14 @@ bool GroupCommand::Load(CommandEntryIF* entry)
 	if (GetType() != entry->Get(_T("Type"), _T(""))) {
 		return false;
 	}
-	return in->mParam.Load(entry);
+
+	CommandParam param;
+	if (param.Load(entry) == false) {
+		return false;
+	}
+
+	SetParam(param);
+	return true;
 }
 
 // コマンドを編集するためのダイアログを作成/取得する
@@ -286,7 +306,7 @@ bool GroupCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 	return true;
 }
 

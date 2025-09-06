@@ -5,6 +5,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/alias/AliasCommandEditor.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/ExecuteHistory.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -106,7 +107,20 @@ CString AliasCommand::GetErrorString()
 
 void AliasCommand::SetParam(const CommandParam& param)
 {
+	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
+	// 以前の名前で登録していた、履歴の除外ワードを解除する
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->RemoveExcludeWord(in->mParam.mName);
+	}
+
+	// パラメータを上書き
 	in->mParam = param;
+
+	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
+	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->AddExcludeWord(in->mParam.mName);
+	}
 }
 
 HICON AliasCommand::GetIcon()
@@ -135,7 +149,7 @@ launcherapp::core::Command*
 AliasCommand::Clone()
 {
 	auto clonedObj = make_refptr<AliasCommand>();
-	clonedObj->in->mParam = in->mParam;
+	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
 
@@ -155,7 +169,15 @@ bool AliasCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != GetType()) {
 		return false;
 	}
-	return in->mParam.Load(entry);
+
+	CommandParam param;
+	if (param.Load(entry) == false) {
+		return false;
+	}
+
+	SetParam(param);
+
+	return true;
 }
 
 bool AliasCommand::NewDialog(Parameter* param)
@@ -211,7 +233,8 @@ bool AliasCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
+
 	return true;
 }
 

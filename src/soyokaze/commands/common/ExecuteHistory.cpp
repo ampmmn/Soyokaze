@@ -37,6 +37,8 @@ struct ExecuteHistory::PImpl
 
 	ItemMap mItemMap;
 
+	std::map<CString, uint32_t> mExcludeWordMap;
+
 	// 読み込み済か?
 	bool mIsLoaded{false};
 };
@@ -68,6 +70,17 @@ void ExecuteHistory::Add(
 		// 履歴機能を使用しない場合
 		return;
 	}
+
+	// 除外リストに含まれる場合は追加しない
+	for (const auto& item : in->mExcludeWordMap) {
+		const auto& excludeWord = item.first;
+
+		if (word.Find(excludeWord) != -1) {
+			// 除外リストに該当した
+			return;
+		}
+	}
+
 	HISTORY_ITEM item{word};
 
 	auto& items = in->mItemMap[type];
@@ -140,6 +153,29 @@ int ExecuteHistory::EraseItems(const CString& type, const std::set<CString>& wor
 	return n;
 }
 
+// 指定ワードを含む場合に履歴に追加しないようにする
+uint32_t ExecuteHistory::AddExcludeWord(const CString& excludeWord)
+{
+	auto it = in->mExcludeWordMap.find(excludeWord);
+	if (it == in->mExcludeWordMap.end()) {
+		it = in->mExcludeWordMap.insert(std::make_pair(excludeWord, uint32_t(0))).first;
+	}
+	return ++it->second;
+}
+
+uint32_t ExecuteHistory::RemoveExcludeWord(const CString& excludeWord)
+{
+	auto it = in->mExcludeWordMap.find(excludeWord);
+	if (it == in->mExcludeWordMap.end()) {
+		return 0;
+	}
+	uint32_t n = --it->second;
+	if (n == 0) {
+		in->mExcludeWordMap.erase(it);
+	}
+	return n;
+}
+
 void ExecuteHistory::ClearAllItems()
 {
 	in->mItemMap.clear();
@@ -197,7 +233,7 @@ void ExecuteHistory::Load()
 	}
 
 	try {
-		CString tmp;
+		CString path;
 
 		ItemMap tmpMap;
 
@@ -211,10 +247,28 @@ void ExecuteHistory::Load()
 			auto histories = it.value();
 			for (auto it2 = histories.begin(); it2 != histories.end(); ++it2) {
 
-				auto path = it2->get<std::string>();
-				items.push_back(HISTORY_ITEM{UTF2UTF(path, tmp)});
+				UTF2UTF(it2->get<std::string>(), path);
+
+				// 除外リストに含まれる場合は追加しない
+				bool shouldExclude = false;
+				for (const auto& item : in->mExcludeWordMap) {
+					const auto& excludeWord = item.first;
+
+					if (path.Find(excludeWord) == -1) {
+						continue;
+					}
+					// 除外リストに該当した
+					shouldExclude = true;
+					break;
+				}
+
+				if (shouldExclude) {
+					continue;
+				}
+				items.push_back(HISTORY_ITEM{path});
 			}
-			tmpMap[UTF2UTF(key, tmp)] = items;
+			CString tmpKey;
+			tmpMap[UTF2UTF(key, tmpKey)] = items;
 		}
 		in->mItemMap.swap(tmpMap);
 		in->mIsLoaded = true;

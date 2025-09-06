@@ -2,6 +2,7 @@
 #include "AlignWindowCommand.h"
 #include "commands/align_window/AlignWindowCommandParam.h"
 #include "commands/align_window/AlignWindowCommandEditor.h"
+#include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -18,6 +19,8 @@ using namespace launcherapp::core;
 namespace launcherapp {
 namespace commands {
 namespace align_window {
+
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
 struct AlignWindowCommand::PImpl
 {
@@ -46,6 +49,25 @@ CString AlignWindowCommand::TypeDisplayName()
  AlignWindowCommand::~AlignWindowCommand()
 {
 }
+
+void  AlignWindowCommand::SetParam(const CommandParam& param)
+{
+	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
+	// 以前の名前で登録していた、履歴の除外ワードを解除する
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->RemoveExcludeWord(in->mParam.mName);
+	}
+
+	// パラメータを上書き
+	in->mParam = param;
+
+	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
+	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->AddExcludeWord(in->mParam.mName);
+	}
+}
+
 
 /**
  	コマンド名を取得する
@@ -203,7 +225,7 @@ AlignWindowCommand::Clone()
 {
 	auto clonedCmd = make_refptr<AlignWindowCommand>();
 
-	clonedCmd->in->mParam = in->mParam;
+	clonedCmd->SetParam(in->mParam);
 
 	return clonedCmd.release();
 }
@@ -223,7 +245,14 @@ bool AlignWindowCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != AlignWindowCommand::GetType()) {
 		return false;
 	}
-	return in->mParam.Load(entry);
+
+	CommandParam param;
+	if (param.Load(entry) == false) {
+		return false;
+	}
+
+	SetParam(param);
+	return true;
 }
 
 bool AlignWindowCommand::NewDialog(
@@ -243,9 +272,8 @@ bool AlignWindowCommand::NewDialog(
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = editor.GetParam();
 	auto newCmd = make_refptr<AlignWindowCommand>();
-	newCmd->in->mParam = commandParam;
+	newCmd->SetParam(editor.GetParam());
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
@@ -293,7 +321,7 @@ bool AlignWindowCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 	return true;
 }
 
@@ -306,9 +334,8 @@ bool AlignWindowCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor*
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = make_refptr<AlignWindowCommand>();
-	newCmd->in->mParam = commandParam;
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();

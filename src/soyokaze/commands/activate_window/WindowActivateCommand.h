@@ -9,12 +9,16 @@ namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
+class CommandParam;
+
 class WindowActivateCommand : 
 	virtual public launcherapp::commands::common::UserCommandBase
 {
 public:
 	WindowActivateCommand();
 	virtual ~WindowActivateCommand();
+
+	void SetParam(const CommandParam& param);
 
 // Command
 	CString GetName() override;

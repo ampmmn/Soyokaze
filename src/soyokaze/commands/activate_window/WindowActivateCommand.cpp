@@ -3,6 +3,7 @@
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateCommandEditor.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -62,6 +63,24 @@ WindowActivateCommand::WindowActivateCommand() : in(std::make_unique<PImpl>())
 
 WindowActivateCommand::~WindowActivateCommand()
 {
+}
+
+void WindowActivateCommand::SetParam(const CommandParam& param)
+{
+	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
+	// 以前の名前で登録していた、履歴の除外ワードを解除する
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->RemoveExcludeWord(in->mParam.mName);
+	}
+
+	// パラメータを上書き
+	in->mParam = param;
+
+	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
+	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->AddExcludeWord(in->mParam.mName);
+	}
 }
 
 CString WindowActivateCommand::GetName()
@@ -154,7 +173,7 @@ WindowActivateCommand::Clone()
 {
 	auto clonedCmd = make_refptr<WindowActivateCommand>();
 
-	clonedCmd->in->mParam = in->mParam;
+	clonedCmd->SetParam(in->mParam);
 
 	return clonedCmd.release();
 }
@@ -175,7 +194,15 @@ bool WindowActivateCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != WindowActivateCommand::GetType()) {
 		return false;
 	}
-	return in->mParam.Load(entry);
+
+	CommandParam param;
+	if (param.Load(entry) == false) {
+		return false;
+	}
+
+	SetParam(param);
+
+	return true;
 }
 
 // ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
@@ -191,9 +218,8 @@ bool WindowActivateCommand::NewInstance(launcherapp::core::CommandEditor* editor
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = make_refptr<WindowActivateCommand>();
-	newCmd->in->mParam = commandParam;
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
@@ -217,7 +243,7 @@ bool WindowActivateCommand::NewDialog(
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
 	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = make_refptr<WindowActivateCommand>();
-	newCmd->in->mParam = commandParam;
+	newCmd->SetParam(commandParam);
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
@@ -266,7 +292,7 @@ bool WindowActivateCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 	return true;
 }
 
@@ -279,9 +305,8 @@ bool WindowActivateCommand::CreateNewInstanceFrom(launcherapp::core::CommandEdit
 	}
 
 	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto commandParam = cmdEditor->GetParam();
 	auto newCmd = make_refptr<WindowActivateCommand>();
-	newCmd->in->mParam = commandParam;
+	newCmd->SetParam(cmdEditor->GetParam());
 
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();

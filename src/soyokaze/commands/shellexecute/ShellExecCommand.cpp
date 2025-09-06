@@ -237,7 +237,20 @@ void ShellExecCommand::SetShowType(int showType)
 
 void ShellExecCommand::SetParam(const CommandParam& param)
 {
+	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
+	// 以前の名前で登録していた、履歴の除外ワードを解除する
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->RemoveExcludeWord(in->mParam.mName);
+	}
+
+	// パラメータを上書き
 	in->mParam = param;
+
+	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
+	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
+	if (in->mParam.mName.IsEmpty() == FALSE && IsAllowAutoExecute()) {
+		ExecuteHistory::GetInstance()->AddExcludeWord(in->mParam.mName);
+	}
 }
 
 
@@ -285,7 +298,7 @@ launcherapp::core::Command*
 ShellExecCommand::Clone()
 {
 	auto clonedObj = make_refptr<ShellExecCommand>();
-	clonedObj->in->mParam = in->mParam;
+	clonedObj->SetParam(in->mParam);
 	return clonedObj.release();
 }
 
@@ -408,7 +421,14 @@ bool ShellExecCommand::Load(CommandEntryIF* entry)
 	if (typeStr.IsEmpty() == FALSE && typeStr != ShellExecCommand::GetType()) {
 		return false;
 	}
-	return in->mParam.Load(entry);
+
+	CommandParam param;
+	if (param.Load(entry) == false) {
+		return false;
+	}
+
+	SetParam(param);
+	return true;
 }
 
 // コマンドを編集するためのダイアログを作成/取得する
@@ -433,7 +453,7 @@ bool ShellExecCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 	// 設定変更によりアイコンが変わる可能性があるためクリアする
 	in->mIcon.Reset();
 
