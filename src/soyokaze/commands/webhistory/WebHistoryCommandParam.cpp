@@ -5,28 +5,29 @@ namespace launcherapp { namespace commands { namespace webhistory {
 
 bool CommandParam::Save(Settings& settings) const
 {
-	settings.Set(_T("WebHistory:Enable"), mIsEnable);
-	settings.Set(_T("WebHistory:Prefix"), mPrefix);
-	settings.Set(_T("WebHistory:Limit"), mLimit);
-	settings.Set(_T("WebHistory:MinTriggerLength"), mMinTriggerLength);
-	settings.Set(_T("WebHistory:EnableEdge"), mIsEnableEdge);
-	settings.Set(_T("WebHistory:EnableChrome"), mIsEnableChrome);
-	settings.Set(_T("WebHistory:UseMigemo"), mIsUseMigemo);
-	settings.Set(_T("WebHistory:UseURL"), mIsUseURL);
+	// Note: AppPreferenceにもGetterがあるのでキーを合わせること!
+	settings.Set(_T("Browser:EnableWebHistory"), mIsEnable);
+	settings.Set(_T("Browser:PrefixWebHistory"), mPrefix);
+	settings.Set(_T("Browser::Candidates"), mLimit);
+	settings.Set(_T("Browser:WebHistoryMinTriggerLength"), mMinTriggerLength);
+	settings.Set(_T("Browser::EnableHistoryEdge"), mIsEnableEdge);
+	settings.Set(_T("Browser::EnableHistoryChrome"), mIsEnableChrome);
+	settings.Set(_T("Browser::UseMigemo"), mIsUseMigemo);
+	settings.Set(_T("Browser::UseURL"), mIsUseURL);
 
 	return true;
 }
 
 bool CommandParam::Load(Settings& settings)
 {
-	mIsEnable = settings.Get(_T("WebHistory:EnableBookmarks"), true);
-	mPrefix = settings.Get(_T("WebHistory:Prefix"), _T(""));
-	mLimit = settings.Get(_T("WebHistory:Limit"), 20);
-	mMinTriggerLength = settings.Get(_T("WebHistory:MinTriggerLength"), 5);
-	mIsEnableEdge = settings.Get(_T("WebHistory:EnableEdge"), true);
-	mIsEnableChrome = settings.Get(_T("WebHistory:EnableChrome"), true);
-	mIsUseMigemo = settings.Get(_T("WebHistory:UseMigemo"), true);
-	mIsUseURL = settings.Get(_T("WebHistory:UseURL"), false);
+	mIsEnable = settings.Get(_T("Browser:EnableWebHistory"), true);
+	mPrefix = settings.Get(_T("Browser:PrefixWebHistory"), _T(""));
+	mLimit = settings.Get(_T("Browser::Candidates"), 20);
+	mMinTriggerLength = settings.Get(_T("WebHistoryMinTriggerLength"), 5);
+	mIsEnableEdge = settings.Get(_T("Browser::EnableHistoryEdge"), true);
+	mIsEnableChrome = settings.Get(_T("Browser::EnableHistoryChrome"), true);
+	mIsUseMigemo = settings.Get(_T("Browser::UseMigemo"), true);
+	mIsUseURL = settings.Get(_T("Browser::UseURL"), false);
 
 	return true;
 }

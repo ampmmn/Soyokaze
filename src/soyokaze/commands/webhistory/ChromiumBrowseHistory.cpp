@@ -64,7 +64,7 @@ struct ChromiumBrowseHistory::PImpl
 	CString mOrgDBFilePath;
 	CString mDBFilePath;
 	bool mIsUseURL{false};
-	bool mIsUseMigemo{false};
+	bool mIsUseMigemo{true};
 	std::mutex mMutex;
 	uint32_t mWatchId{0};
 
@@ -138,6 +138,8 @@ bool ChromiumBrowseHistory::PImpl::Query(
 	// 得た検索ワードからsqlite3のクエリ文字列を生成する
 	static LPCTSTR basePart = _T("select distinct url,title from hoge2 where ");
 	CString queryStr(basePart);
+
+	spdlog::debug("ChromiumBrowseHistory::Query isUseMigemo : {}", mIsUseMigemo);
 
 	bool isFirst = true;
 	CString token;

@@ -765,33 +765,33 @@ bool AppPreference::IsUseURLForBookmarkSearch()
 // Chromeの履歴を検索するか
 bool AppPreference::IsEnableHistoryChrome()
 {
-	return in->Get(_T("Browser::EnableHistoryChrome"), false);
+	return in->Get(_T("Browser:EnableHistoryChrome"), true);
 }
 
 // Edgeの履歴を検索するか
 bool AppPreference::IsEnableHistoryEdge()
 {
-	return in->Get(_T("Browser::EnableHistoryEdge"), false);
+	return in->Get(_T("Browser:EnableHistoryEdge"), true);
 }
 
 int AppPreference::GetBrowserHistoryTimeout()
 {
-	return in->Get(_T("Browser::Timeout"), 150);
+	return in->Get(_T("Browser:Timeout"), 150);
 }
 
 int AppPreference::GetBrowserHistoryCandidates()
 {
-	return in->Get(_T("Browser::Candidates"), 8);
+	return in->Get(_T("Browser:Candidates"), 20);
 }
 
 bool AppPreference::IsUseMigemoForBrowserHistory()
 {
-	return in->Get(_T("Browser::UseMigemo"), false);
+	return in->Get(_T("Browser:UseMigemo"), true);
 }
 
 bool AppPreference::IsUseURLForBrowserHistory()
 {
-	return in->Get(_T("Browser::UseURL"), true);
+	return in->Get(_T("Browser:UseURL"), false);
 }
 
 // 入力欄ウインドウをマウスカーソル位置に表示するか

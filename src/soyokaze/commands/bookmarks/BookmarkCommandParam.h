@@ -15,9 +15,9 @@ public:
 
 public:
 	CString mPrefix;
-	// $B8!:w$rM-8z$K$9$k:G>.J8;z?t(B
+	// 検索を有効にする最小文字数
 	int mMinTriggerLength{5};
-	// $B5!G=$rMxMQ$9$k$+(B?
+	// 機能を利用するか?
 	bool mIsEnable{true};
 	bool mIsEnableChrome{true};
 	bool mIsEnableEdge{true};
