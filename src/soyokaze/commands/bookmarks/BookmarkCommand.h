@@ -1,6 +1,5 @@
 #pragma once
 
-#include "commands/bookmarks/Bookmarks.h"
 #include "commands/core/CommandQueryItemList.h"
 #include <memory>
 

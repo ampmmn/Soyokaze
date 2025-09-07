@@ -96,12 +96,7 @@ CString WebHistoryAdhocCommand::GetGuideString()
 
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
-	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
-
-	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)in->mHistory.mBrowserName, (LPCTSTR)TEXT_HISTORY);
-
-	return str;
+	return WebHistoryAdhocCommand::TypeDisplayName((LPCTSTR)in->mHistory.mBrowserName);
 }
 
 BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
@@ -165,6 +160,16 @@ bool WebHistoryAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid,
 		return true;
 	}
 	return false;
+}
+
+CString WebHistoryAdhocCommand::TypeDisplayName(LPCTSTR browserName)
+{
+	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
+
+	CString str;
+	str.Format(_T("%s %s"), browserName, (LPCTSTR)TEXT_HISTORY);
+
+	return str;
 }
 
 

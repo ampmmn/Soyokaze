@@ -34,6 +34,7 @@ adhoc-command/unit-converter.md
 adhoc-command/uri-decode.md
 adhoc-command/uwpapplication.md
 adhoc-command/vmware-player-mru.md
+adhoc-command/webhistory.md
 adhoc-command/windowssettings.md
 adhoc-command/winscp.md
 adhoc-command/worksheet-jump.md

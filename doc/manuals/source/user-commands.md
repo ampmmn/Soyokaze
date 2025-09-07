@@ -12,7 +12,6 @@ user-command/shellexecute.md
 user-command/snippet.md
 user-command/snippet-group.md
 user-command/websearch.md
-user-command/webhistory.md
 user-command/group.md
 user-command/directoryindex.md
 user-command/regexp.md

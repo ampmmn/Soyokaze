@@ -1,19 +1,12 @@
 #include "pch.h"
 #include "WebHistoryCommand.h"
-#include "commands/core/IFIDDefine.h"
 #include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
-#include "commands/webhistory/WebHistoryCommandEditor.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
-#include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
-#include "commands/core/CommandFile.h"
-#include "hotkey/CommandHotKeyManager.h"
-#include "hotkey/CommandHotKeyMappings.h"
-#include "icon/IconLoader.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
@@ -21,55 +14,66 @@
 using namespace launcherapp::commands::common;
 using ChromiumBrowseHistory = launcherapp::commands::webhistory::ChromiumBrowseHistory;
 
-namespace launcherapp {
-namespace commands {
-namespace webhistory {
+namespace launcherapp { namespace commands { namespace webhistory {
 
 struct WebHistoryCommand::PImpl
 {
-	CommandParam mParam;
-
 	ChromiumBrowseHistory* GetChromeHistory()
 	{
-		if (mParam.mIsEnableHistoryChrome == false) {
+		if (mParam.mIsEnableChrome == false) {
 			return nullptr;
 		}
-		if (mChromeHistory.get() == nullptr) {
-
-			// Chromeブラウザのパスを得る
-			Path profilePath;
-			size_t reqLen = 0;
-			_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
-			profilePath.Append(_T("Google\\Chrome\\User Data\\Default"));
-
-			mChromeHistory.reset(new ChromiumBrowseHistory(_T("chrome"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
-		}
-		return mChromeHistory.get();
+		return &mChromeHistory;
 	}
 
 	ChromiumBrowseHistory* GetEdgeHistory()
 	{
-		if (mParam.mIsEnableHistoryEdge == false) {
+		if (mParam.mIsEnableEdge == false) {
 			return nullptr;
 		}
-		if (mEdgeHistory.get() == nullptr) {
+		return &mEdgeHistory;
+	}
 
-			// Edgeブラウザのパスを得る
-			Path profilePath;
-			size_t reqLen = 0;
-			_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
-			profilePath.Append(_T("Microsoft\\Edge\\User Data\\Default"));
-
-			mEdgeHistory.reset(new ChromiumBrowseHistory(_T("edge"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo));
+	bool LoadHistories()
+	{
+		// 前回のロードが実行中のばあいは完了を待つ
+		if (mLoadThread.joinable()) {
+			mLoadThread.join();
 		}
-		return mEdgeHistory.get();
+
+		// 別スレッドで履歴データのロードを実行する
+		std::thread th([&]() {
+				auto chromeHistories = GetChromeHistory();
+				if (chromeHistories) {
+					Path profilePath;
+					size_t reqLen = 0;
+					_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
+					profilePath.Append(_T("Google\\Chrome\\User Data\\Default"));
+					chromeHistories->Initialize(_T("chrome"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo);
+				}
+				auto edgeHistories = GetEdgeHistory();
+				if (edgeHistories) {
+					// Edgeブラウザのパスを得る
+					Path profilePath;
+					size_t reqLen = 0;
+					_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
+					profilePath.Append(_T("Microsoft\\Edge\\User Data\\Default"));
+					edgeHistories->Initialize(_T("edge"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo);
+				}
+		});
+		mLoadThread.swap(th);
+
+		return true;
 	}
 
 	void QueryHistory(ChromiumBrowseHistory* historyDB, LPCTSTR appName, const std::vector<PatternInternal::WORD>& words, CommandQueryItemList& commands);
 
 
-	std::unique_ptr<ChromiumBrowseHistory> mChromeHistory;
-	std::unique_ptr<ChromiumBrowseHistory> mEdgeHistory;
+	CommandParam mParam;
+	ChromiumBrowseHistory mChromeHistory;
+	ChromiumBrowseHistory mEdgeHistory;
+	// ブックマーク読み込みスレッド
+	std::thread mLoadThread;
 };
 
 /**
@@ -92,7 +96,9 @@ void WebHistoryCommand::PImpl::QueryHistory(
 
 	// 条件に該当するブラウザ履歴項目一覧を取得する
 	std::vector<ChromiumBrowseHistory::ITEM> items;
-	historyDB->Query(words, items, mParam.mLimit, mParam.mTimeout);
+	historyDB->Query(words, items, mParam.mLimit);
+
+	int matchLevel = mParam.mPrefix.IsEmpty() ? Pattern::PartialMatch : Pattern::FrontMatch;
 
 	// 取得した項目を候補として登録する
 	for (auto& item : items) {
@@ -101,8 +107,8 @@ void WebHistoryCommand::PImpl::QueryHistory(
 			// タイトルが空の場合は表示しない
 			continue;
 		}
-		commands.Add(CommandQueryItem(Pattern::FrontMatch,
-		                              new WebHistoryAdhocCommand(mParam.mName, HISTORY{appName, item.mTitle, item.mUrl,Pattern::FrontMatch})));
+		commands.Add(CommandQueryItem(matchLevel,
+		                              new WebHistoryAdhocCommand(mParam.mPrefix, HISTORY{appName, item.mTitle, item.mUrl, matchLevel})));
 	}
 }
 
@@ -112,8 +118,6 @@ void WebHistoryCommand::PImpl::QueryHistory(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-CString WebHistoryCommand::GetType() { return _T("WebHistory"); }
 
 WebHistoryCommand::WebHistoryCommand() : in(std::make_unique<PImpl>())
 {
@@ -121,214 +125,17 @@ WebHistoryCommand::WebHistoryCommand() : in(std::make_unique<PImpl>())
 
 WebHistoryCommand::~WebHistoryCommand()
 {
-}
-
-bool WebHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
-{
-	if (UserCommandBase::QueryInterface(ifid, cmd)) {
-		return true;
+	if (in->mLoadThread.joinable()) {
+		in->mLoadThread.join();
 	}
-	if (ifid == IFID_EXTRACANDIDATESOURCE) {
-		AddRef();
-		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
-		return true;
-	}
-	return false;
 }
 
-
-CString WebHistoryCommand::GetName()
+bool WebHistoryCommand::Load()
 {
-	return in->mParam.mName;
-}
+	auto pref = AppPreference::Get();
+	in->mParam.Load((Settings&)pref->GetSettings());
 
-CString WebHistoryCommand::GetDescription()
-{
-	return in->mParam.mDescription;
-}
-
-CString WebHistoryCommand::GetGuideString()
-{
-	return _T("⏎:ページを表示する");
-}
-
-CString WebHistoryCommand::GetTypeDisplayName()
-{
-	return TypeDisplayName();
-}
-
-BOOL WebHistoryCommand::Execute(Parameter* param_)
-{
-	UNREFERENCED_PARAMETER(param_);
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isToggle = false;
-	mainWnd->ActivateWindow(isToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
-}
-
-HICON WebHistoryCommand::GetIcon()
-{
-	return IconLoader::Get()->LoadWebIcon();
-}
-
-int WebHistoryCommand::Match(Pattern* pattern)
-{
-	bool isWholeMatch = pattern->shouldWholeMatch();
-	if (isWholeMatch && pattern->Match(GetName()) == Pattern::WholeMatch) {
-		// 内部のコマンド名マッチング用の判定
-		return Pattern::WholeMatch;
-	}
-	else if (isWholeMatch == false) {
-
-		// 入力欄からの入力で、前方一致するときは候補に出す
-		int level = pattern->Match(GetName());
-		if (level == Pattern::FrontMatch || level == Pattern::PartialMatch) {
-			return level;
-		}
-
-		if (level == Pattern::WholeMatch) {
-			// 後続のキーワードが存在する場合は非表示
-			return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
-		}
-	}
-	// 通常はこちら
-	return Pattern::Mismatch;
-}
-
-bool WebHistoryCommand::IsEditable()
-{
-	return true;
-}
-
-bool WebHistoryCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
-{
-	attr = in->mParam.mHotKeyAttr;
-	return true;
-}
-
-launcherapp::core::Command*
-WebHistoryCommand::Clone()
-{
-	auto clonedCmd = make_refptr<WebHistoryCommand>();
-
-	clonedCmd->in->mParam = in->mParam;
-
-	return clonedCmd.release();
-}
-
-bool WebHistoryCommand::Save(CommandEntryIF* entry)
-{
-	ASSERT(entry);
-
-	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("Keyword"), in->mParam.mKeyword);
-	entry->Set(_T("IsEnableHistoryEdge"), in->mParam.mIsEnableHistoryEdge);
-	entry->Set(_T("IsEnableHistoryChrome"), in->mParam.mIsEnableHistoryChrome);
-	entry->Set(_T("Timeout"), in->mParam.mTimeout);
-	entry->Set(_T("Limit"), in->mParam.mLimit);
-	entry->Set(_T("UseMigemo"), in->mParam.mIsUseMigemo);
-	entry->Set(_T("UseURL"), in->mParam.mIsUseURL);
-
-	return true;
-}
-
-bool WebHistoryCommand::Load(CommandEntryIF* entry)
-{
-	ASSERT(entry);
-
-	CString typeStr = entry->Get(_T("Type"), _T(""));
-	if (typeStr.IsEmpty() == FALSE && typeStr !=GetType()) {
-		return false;
-	}
-
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mKeyword = entry->Get(_T("Keyword"), _T(""));
-	in->mParam.mIsEnableHistoryEdge = entry->Get(_T("IsEnableHistoryEdge"), true);
-	in->mParam.mIsEnableHistoryChrome = entry->Get(_T("IsEnableHistoryChrome"), true);
-	in->mParam.mTimeout = entry->Get(_T("Timeout"), 250);
-	in->mParam.mLimit = entry->Get(_T("Limit"), 20);
-	in->mParam.mIsUseMigemo = entry->Get(_T("UseMigemo"), true);
-	in->mParam.mIsUseURL = entry->Get(_T("UseURL"), false);
-
-	// ホットキー情報の取得
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-	hotKeyManager->GetKeyBinding(in->mParam.mName, &in->mParam.mHotKeyAttr);
-
-	return true;
-}
-
-
-bool WebHistoryCommand::NewDialog(
-	Parameter* param,
-	std::unique_ptr<WebHistoryCommand>& newCmd
-)
-{
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
-
-	// 新規作成ダイアログを表示
-	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
-	if (cmdEditor->DoModal() == false) {
-		return false;
-	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto command = std::make_unique<WebHistoryCommand>();
-	command->in->mParam = cmdEditor->GetParam();
-
-	newCmd = std::move(command);
-
-	return true;
-}
-
-// コマンドを編集するためのダイアログを作成/取得する
-bool WebHistoryCommand::CreateEditor(HWND parent, launcherapp::core::CommandEditor** editor)
-{
-	if (editor == nullptr) {
-		return false;
-	}
-
-	auto cmdEditor = new CommandEditor(CWnd::FromHandle(parent));
-	cmdEditor->SetParam(in->mParam);
-
-	*editor = cmdEditor;
-	return true;
-}
-
-// ダイアログ上での編集結果をコマンドに適用する
-bool WebHistoryCommand::Apply(launcherapp::core::CommandEditor* editor)
-{
-	RefPtr<CommandEditor> cmdEditor;
-	if (editor->QueryInterface(IFID_WEBHISTORYCOMMANDEDITOR, (void**)&cmdEditor) == false) {
-		return false;
-	}
-
-	in->mParam = cmdEditor->GetParam();
-	return true;
-}
-
-// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
-bool WebHistoryCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmdPtr)
-{
-	RefPtr<CommandEditor> cmdEditor;
-	if (editor->QueryInterface(IFID_WEBHISTORYCOMMANDEDITOR, (void**)&cmdEditor) == false) {
-		return false;
-	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = make_refptr<WebHistoryCommand>();
-	newCmd->in->mParam = cmdEditor->GetParam();
-
-	if (newCmdPtr) {
-		*newCmdPtr = newCmd.release();
-	}
+	in->LoadHistories();
 
 	return true;
 }
@@ -344,9 +151,20 @@ bool WebHistoryCommand::QueryCandidates(
 	CommandQueryItemList& commands
 )
 {
-	const auto& cmdName = in->mParam.mName;
-	// コマンド名が一致しなければ候補を表示しない
-	if (cmdName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+	// 機能を利用しない場合は抜ける
+	if (in->mParam.mIsEnable == false) {
+		return false;
+	}
+
+	// プレフィックスが一致しない場合は抜ける
+	const auto& prefix = in->mParam.mPrefix;
+	bool hasPrefix = prefix.IsEmpty() == FALSE;
+	if (hasPrefix && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		return false;
+	}
+
+	// 問い合わせ文字列の長さが閾値を下回る場合は機能を発動しない
+	if (_tcslen(pattern->GetWholeString()) < in->mParam.mMinTriggerLength) {
 		return false;
 	}
 
@@ -359,22 +177,10 @@ bool WebHistoryCommand::QueryCandidates(
 	std::vector<PatternInternal::WORD> words;
 	pat2->GetWords(words);
 
-	std::reverse(words.begin(), words.end());
-
-	// コマンド名を除外
-	words.pop_back();
-
-	// コマンド設定で指定されたキーワードを追加
-	const auto& extraKeyword = in->mParam.mKeyword;
-	if (extraKeyword.IsEmpty() == FALSE) {
-
-		int n = 0;
-		CString tok = extraKeyword.Tokenize(_T(" "), n);
-		while(tok.IsEmpty() == FALSE) {
-
-			words.push_back(PatternInternal::WORD(tok));
-			tok = extraKeyword.Tokenize(_T(" "), n);
-		}
+	if (hasPrefix) {
+		// コマンド名を除外
+		std::reverse(words.begin(), words.end());
+		words.pop_back();
 	}
 
 	// Chromeの履歴を検索する
@@ -386,22 +192,11 @@ bool WebHistoryCommand::QueryCandidates(
 	return true;
 }
 
-
-/**
- 	追加候補を表示するために内部でキャッシュしているものがあれば、それを削除する
-*/
-void WebHistoryCommand::ClearCache()
+uint32_t WebHistoryCommand::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
-	// ない
+	displayNames.push_back(WebHistoryAdhocCommand::TypeDisplayName(_T("chrome")));
+	return 1;
 }
 
-CString WebHistoryCommand::TypeDisplayName()
-{
-	return _T("ブラウザ履歴検索");
-}
-
-
-} // end of namespace webhistory
-} // end of namespace commands
-} // end of namespace launcherapp
+}}} // end of namespace launcherapp::commands::webhistory
 

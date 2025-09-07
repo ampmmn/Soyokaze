@@ -126,7 +126,6 @@
 #define IDD_EJECTVOLUMEEDIT             222
 #define IDD_EVERYTHINGEDIT              223
 #define IDD_APPSETTING_EVERYTHING       224
-#define IDD_WEBHISTORYEDIT              225
 #define IDD_URLDIRECTORYINDEXEDIT       227
 #define IDD_KEYSPLITTER                 228
 #define IDD_KEYSPLITTERMODIFIER         229
@@ -351,10 +350,8 @@
 #define IDC_EDIT_SOUNDINPUT             1106
 #define IDC_CHECK_ENABLE_BOOKMARKS2     1106
 #define IDC_CHECK_ENABLE_WINDOWTITLE    1107
-#define IDC_CHECK_ENABLE_HISTORY_CHROME 1107
 #define IDC_EDIT_SOUNDSELECT            1108
 #define IDC_CHECK_ENABLE_HISTORY_CHROME2 1108
-#define IDC_CHECK_ENABLE_HISTORY_EDGE   1108
 #define IDC_CHECK_ENABLE_CONTROLPANEL   1109
 #define USE_MIGEMO                      1109
 #define IDC_CHECK_USE_MIGEMO            1109
@@ -406,7 +403,6 @@
 #define IDC_LIST_ENVPATH                1137
 #define IDC_LIST_PATH                   1138
 #define IDC_LIST_ENVPATH2               1138
-#define IDC_EDIT_TIMEOUT                1140
 #define IDC_EDIT_CANDIDATES             1141
 #define IDC_BUTTON_IMPORTFRONT          1141
 #define IDC_BUTTON_IMPORTBACK           1142
@@ -467,7 +463,6 @@
 #define IDC_STATIC_PREVIEW              1176
 #define IDC_SYSLINK_OPTION              1177
 #define IDC_CHECK_HOTKEY2               1178
-#define IDC_EDIT_KEYWORD                1179
 #define IDC_CHECK_HOTKEY3               1179
 #define IDC_CHECK_ENABLE_ON_RD          1179
 #define IDC_CHECK_ENABLE_CHROME         1180

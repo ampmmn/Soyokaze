@@ -13,6 +13,9 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
+// クエリのタイムアウト時間
+constexpr uint64_t QUERY_TIMEOUT_MSEC = 150;
+
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
 struct ChromiumBrowseHistory::PImpl
@@ -30,27 +33,31 @@ struct ChromiumBrowseHistory::PImpl
 		mOrgDBFilePath = mProfileDir;
 		PathAppend(mOrgDBFilePath.GetBuffer(MAX_PATH_NTFS), _T("History"));
 		mOrgDBFilePath.ReleaseBuffer();
-
-		// 退避先のパスを生成
-		Path dbDstPath(Path::APPDIRPERMACHINE, _T("tmp"));
-		if (dbDstPath.IsDirectory() == false) {
-			if (CreateDirectory(dbDstPath, nullptr) == FALSE) {
-				spdlog::warn(_T("Failed to create directory {}"), (LPCTSTR)dbDstPath);
-				return;
-			}
-		}
-
-		CString fileName;
-		fileName.Format(_T("history-%s"), (LPCTSTR)mId);
-
-		dbDstPath.Append(fileName);
-		mDBFilePath = dbDstPath;
 	}
 
 	void UpdateDatabase();
 	void Reload();
 
-	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit, DWORD timeout);
+	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit);
+
+	bool MakeTempFilePath(CString& path)
+	{
+		CString fileName;
+		fileName.Format(_T("history-%s-%I64x"), (LPCTSTR)mId, GetTickCount64());
+
+		// 退避先のディレクトリを生成しておく
+		Path dbDstPath(Path::APPDIRPERMACHINE, _T("tmp"));
+		if (dbDstPath.IsDirectory() == false) {
+			if (CreateDirectory(dbDstPath, nullptr) == FALSE) {
+				spdlog::warn(_T("Failed to create directory {}"), (LPCTSTR)dbDstPath);
+				return false;
+			}
+		}
+
+		dbDstPath.Append(fileName);
+		path = dbDstPath;
+		return true;
+	}
 
 	CString mId;
 	CString mProfileDir;
@@ -58,8 +65,8 @@ struct ChromiumBrowseHistory::PImpl
 	CString mDBFilePath;
 	bool mIsUseURL{false};
 	bool mIsUseMigemo{false};
-	bool mIsFirstCall{true};
 	std::mutex mMutex;
+	uint32_t mWatchId{0};
 
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };
@@ -67,34 +74,36 @@ struct ChromiumBrowseHistory::PImpl
 
 void ChromiumBrowseHistory::PImpl::UpdateDatabase()
 {
-	if (mIsFirstCall == false) {
-		return;
+	// 以前の更新通知の登録があれば登録解除する
+	if (mWatchId != 0) {
+		LocalDirectoryWatcher::GetInstance()->Unregister(mWatchId);
+		mWatchId = 0;
 	}
 
-	mIsFirstCall = false;
-
-	Reload();
-
-	LocalDirectoryWatcher::GetInstance()->Register(mOrgDBFilePath, [](void* p) {
+	// オリジナルの履歴データベースファイルが更新されたら通知をもらうための登録をする
+	mWatchId = LocalDirectoryWatcher::GetInstance()->Register(mOrgDBFilePath, [](void* p) {
 			auto thisPtr = (PImpl*)p;
+			// 更新があったときもリロード
 			thisPtr->Reload();
 	}, this);
+
+	// リロード
+	Reload();
 }
 
 void ChromiumBrowseHistory::PImpl::Reload()
 {
-	std::lock_guard<std::mutex> lock(mMutex);
 	spdlog::info(_T("Reload webhistory {}"), (LPCTSTR)mId);
 
-	mHistoryDB.reset();
-
-	if (CopyFile(mOrgDBFilePath, mDBFilePath, FALSE) == FALSE) {
+	CString dbFilePath;
+	MakeTempFilePath(dbFilePath);
+	if (CopyFile(mOrgDBFilePath, dbFilePath, FALSE) == FALSE) {
 		spdlog::warn(_T("Failed to copy history database."));
 	}
 
 	try {
 		// データベースファイルをロード
-		auto db = std::make_unique<SQLite3Database>(mDBFilePath);
+		auto db = std::make_unique<SQLite3Database>(dbFilePath);
 
 		// 専用のviewを作成しておく
 		db->Query(_T("create view hoge (url, title) as select distinct urls.url,urls.title from visits inner join urls on visits.url = urls.id where urls.title is not null and urls.title is not '' and urls.url not like '%google.com/search%' order by visits.visit_time desc ;"), nullptr, nullptr);
@@ -102,7 +111,14 @@ void ChromiumBrowseHistory::PImpl::Reload()
 		db->Query(_T("PRAGMA synchronous = OFF;vacuum;reindex;"), nullptr, nullptr);
 
 		// 新しくロードした方に置き換える
+		std::lock_guard<std::mutex> lock(mMutex);
 		mHistoryDB.reset(db.release());
+
+		// 前のコピーを消し、新しいファイルバスを記憶しておく
+		if (Path::FileExists(mDBFilePath)) {
+			DeleteFile(mDBFilePath);
+		}
+		mDBFilePath = dbFilePath;
 	}
 	catch(...) {
 		spdlog::warn(_T("An exception occurred!"));
@@ -112,12 +128,11 @@ void ChromiumBrowseHistory::PImpl::Reload()
 bool ChromiumBrowseHistory::PImpl::Query(
 		const std::vector<PatternInternal::WORD>& words,
 	 	std::vector<ITEM>& items,
-	 	int limit,
-	 	DWORD timeout
+	 	int limit
 )
 {
-	if (mHistoryDB.get() == nullptr) {
-		return false;
+	if(words.empty()) {
+		return true;
 	}
 
 	// 得た検索ワードからsqlite3のクエリ文字列を生成する
@@ -152,6 +167,8 @@ bool ChromiumBrowseHistory::PImpl::Query(
 	footer.Format(_T(" limit %d ;"), limit);
 	queryStr += footer;
 
+	spdlog::debug(_T("query str : {}"), (LPCTSTR)queryStr);
+
 	struct local_param {
 		static int Callback(void* p, int argc, char** argv, char**colName) {
 			UNREFERENCED_PARAMETER(argc);
@@ -159,7 +176,7 @@ bool ChromiumBrowseHistory::PImpl::Query(
 
 			auto param = (local_param*)p;
 
-			if (GetTickCount64() - param->mStart > param->mTimeout) {
+			if (GetTickCount64()  > param->mTimeout) {
 				return 1;
 			}
 
@@ -169,17 +186,17 @@ bool ChromiumBrowseHistory::PImpl::Query(
 			param->mItems.push_back(item);
 			return 0;
 		}
-
-		std::vector<ITEM> mItems;
-		uint64_t mStart = GetTickCount64();
-		DWORD mTimeout = 150;
+		uint64_t mTimeout{0};
+	 	std::vector<ITEM> mItems;
 	};
 
 	// mHistoryDBに対し、問い合わせを行う
 	std::lock_guard<std::mutex> lock(mMutex);
+	if (mHistoryDB.get() == nullptr) {
+		return false;
+	}
 
-	local_param param;
-	param.mTimeout = timeout;
+	local_param param{ GetTickCount64() + QUERY_TIMEOUT_MSEC };
 	mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
 
 	items.swap(param.mItems);
@@ -192,13 +209,21 @@ bool ChromiumBrowseHistory::PImpl::Query(
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-ChromiumBrowseHistory::ChromiumBrowseHistory(
+ChromiumBrowseHistory::ChromiumBrowseHistory() : 
+	in(new PImpl)
+{
+}
+
+ChromiumBrowseHistory::~ChromiumBrowseHistory()
+{
+}
+
+bool ChromiumBrowseHistory::Initialize(
 		const CString& id,
 	 	const CString& profileDir,
 		bool isUseURL,
 	 	bool isUseMigemo
-) : 
-	in(new PImpl)
+)
 {
 	in->mId = id;
 	in->mProfileDir = profileDir;
@@ -206,26 +231,19 @@ ChromiumBrowseHistory::ChromiumBrowseHistory(
 	in->mIsUseMigemo = isUseMigemo;
 
 	in->InitFilePath();
+	in->UpdateDatabase();
+
+	return true;
 }
 
-ChromiumBrowseHistory::~ChromiumBrowseHistory()
-{
-}
 
 bool ChromiumBrowseHistory::Query(
 		const std::vector<PatternInternal::WORD>& words,
 	 	std::vector<ITEM>& items,
-	 	int limit,
-	 	DWORD timeout
+	 	int limit
 )
 {
-		if(words.empty()) {
-			return true;
-		}
-
-		in->UpdateDatabase();
-
-		return in->Query(words, items, limit, timeout);
+		return in->Query(words, items, limit);
 }
 
 }

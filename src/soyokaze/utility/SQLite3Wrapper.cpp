@@ -3,6 +3,7 @@
 #include "utility/CharConverter.h"
 #include "utility/Path.h"
 #include <regex>
+#include <unordered_map>
 #include <re2/re2.h>
 
 namespace launcherapp {
@@ -54,7 +55,7 @@ struct SQLite3Wrapper::PImpl
 	HMODULE mModule{nullptr};
 	CharConverter mConv;
 	std::unique_ptr<RE2> mRegExp;
-	bool mIsFirst{true};
+	std::unordered_map<std::string, std::unique_ptr<RE2> > mRegMap;
 };
 
 
@@ -115,14 +116,20 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 		return;
 	}
 
-	if (in->mIsFirst) {
+	std::string key(reg);
+	RE2* regexp = nullptr;
+	auto it = in->mRegMap.find(key);
+	if (it == in->mRegMap.end()) {
 		RE2::Options options;
 		options.set_case_sensitive(false);
-		in->mRegExp.reset(new RE2(reg, options));
-		in->mIsFirst = false;
+		regexp = new RE2(reg, options);
+		in->mRegMap[key].reset(regexp);
+	}
+	else {
+		regexp = it->second.get();
 	}
 
-	bool isMatch = RE2::PartialMatch(text, *in->mRegExp.get());
+	bool isMatch = RE2::PartialMatch(text, *regexp);
 	sqlite3_result_int(ctx, isMatch ? 1 : 0);
 }
 
@@ -142,7 +149,6 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx)
 int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err)
 {
 	in->mRegExp.reset();
-	in->mIsFirst = true;
 
 	CStringA queryStrA;
 

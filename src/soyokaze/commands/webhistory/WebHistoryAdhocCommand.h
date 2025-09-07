@@ -31,6 +31,9 @@ public:
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(WebHistoryAdhocCommand)
+
+public:
+	static CString TypeDisplayName(LPCTSTR browserName);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.43.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-07 14:18+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/webhistory.md:1
+msgid "Browser History Command"
+msgstr "Web履歴検索"
+
+#: ../../source/adhoc-command/webhistory.md:3
+msgid "Webブラウザの閲覧履歴を検索するためのコマンド。   検索ワードを含むタイトルやURLの履歴を候補として表示できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:6
+msgid "![](../image/adhoc-command/webhistory/sample-without-prefix.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:8
+msgid "該当する項目を選択して実行すると、履歴のページをブラウザで開く。"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:10
+msgid "Edge/Chromeに対応している。"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:12
+msgid "Usage"
+msgstr "使い方"
+
+#: ../../source/adhoc-command/webhistory.md:14
+msgid "入力欄にキーワードを入力すると、そのキーワードをタイトルに含むWeb履歴を表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:15
+msgid "アプリケーション設定でプレフィックスが設定されている場合、そのプレフィックスを入力すると機能が発動する"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:16
+msgid ""
+"以下はプレフィックスを`h`としている場合の例 ![](../image/adhoc-command/webhistory/sample-"
+"with-prefix.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:18
+msgid "アプリケーション設定で`検索を実行する最小文字数`を設定している場合、その文字数以上のキーワードを入力したときに機能が発動する"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:20
+msgid "Settings"
+msgstr "設定方法"
+
+#: ../../source/adhoc-command/webhistory.md:22
+msgid ""
+"機能は初期状態で有効になっている。 機能を使わない場合は、アプリケーション設定の `拡張機能` > `Web履歴検索` "
+"から機能を無効化することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:25
+msgid "![](../image/adhoc-command/webhistory/appsetting.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:28
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/adhoc-command/webhistory.md:30
+msgid ""
+"タイムアウトについて   履歴を探すためのQuery処理の際、指定した時間が経過したら処理を打ち切る。(150msec固定)   "
+"打ち切るまでに見つかった候補を表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md:34
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "該当するページをブラウザで開く"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/webhistory.md
+msgid "URLをクリップボードにコピーする"
+msgstr ""
+

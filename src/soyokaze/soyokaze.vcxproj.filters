@@ -1029,9 +1029,6 @@
     <ClInclude Include="commands\webhistory\WebHistoryProvider.h">
       <Filter>commands\webhistory</Filter>
     </ClInclude>
-    <ClInclude Include="commands\webhistory\WebHistorySettingDialog.h">
-      <Filter>commands\webhistory</Filter>
-    </ClInclude>
     <ClInclude Include="commands\webhistory\WebHistoryAdhocCommand.h">
       <Filter>commands\webhistory</Filter>
     </ClInclude>
@@ -1169,9 +1166,6 @@
     </ClInclude>
     <ClInclude Include="commands\volumecontrol\VolumeCommandEditor.h">
       <Filter>commands\volumecontrol</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\webhistory\WebHistoryCommandEditor.h">
-      <Filter>commands\webhistory</Filter>
     </ClInclude>
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h">
       <Filter>commands\websearch</Filter>
@@ -1550,6 +1544,9 @@
     </ClInclude>
     <ClInclude Include="commands\bookmarks\AppSettingPageBookmark.h">
       <Filter>commands\bookmarks</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\webhistory\AppSettingPageWebHistory.h">
+      <Filter>commands\webhistory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2279,9 +2276,6 @@
     <ClCompile Include="commands\webhistory\WebHistoryProvider.cpp">
       <Filter>commands\webhistory</Filter>
     </ClCompile>
-    <ClCompile Include="commands\webhistory\WebHistorySettingDialog.cpp">
-      <Filter>commands\webhistory</Filter>
-    </ClCompile>
     <ClCompile Include="commands\webhistory\WebHistoryAdhocCommand.cpp">
       <Filter>commands\webhistory</Filter>
     </ClCompile>
@@ -2404,9 +2398,6 @@
     </ClCompile>
     <ClCompile Include="commands\volumecontrol\VolumeCommandEditor.cpp">
       <Filter>commands\volumecontrol</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\webhistory\WebHistoryCommandEditor.cpp">
-      <Filter>commands\webhistory</Filter>
     </ClCompile>
     <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp">
       <Filter>commands\websearch</Filter>
@@ -2743,6 +2734,9 @@
     </ClCompile>
     <ClCompile Include="commands\bookmarks\AppSettingPageBookmark.cpp">
       <Filter>commands\bookmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\AppSettingPageWebHistory.cpp">
+      <Filter>commands\webhistory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
