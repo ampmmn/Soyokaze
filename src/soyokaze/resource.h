@@ -517,6 +517,8 @@
 #define IDC_EDIT_PREVIEW                1218
 #define IDC_STATIC_INFO                 1219
 #define IDD_APPSETTING_WEBHISTORY       1220
+#define IDD_APPSETTING_EVERYTHING1      1221
+#define IDD_APPSETTING_ONENOTE          1221
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects

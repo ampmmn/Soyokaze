@@ -26,6 +26,7 @@ public:
 	virtual LPCTSTR GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;
 	virtual int GetWordCount() = 0;
+	virtual int GetWholeTextLength() = 0;
 
 };
 

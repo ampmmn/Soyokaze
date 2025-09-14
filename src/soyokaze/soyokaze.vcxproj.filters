@@ -244,6 +244,9 @@
     <Filter Include="commands\winscp">
       <UniqueIdentifier>{4c8b71bf-2679-46a5-a679-518582d88a0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\onenote">
+      <UniqueIdentifier>{276bb0d0-8b11-4d5e-a24e-398895391330}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1548,6 +1551,21 @@
     <ClInclude Include="commands\webhistory\AppSettingPageWebHistory.h">
       <Filter>commands\webhistory</Filter>
     </ClInclude>
+    <ClInclude Include="commands\onenote\OneNoteCommandParam.h">
+      <Filter>commands\onenote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\onenote\OneNoteCommandProvider.h">
+      <Filter>commands\onenote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\onenote\OneNoteAppProxy.h">
+      <Filter>commands\onenote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\onenote\OneNoteCommand.h">
+      <Filter>commands\onenote</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\onenote\AppSettingPageOneNote.h">
+      <Filter>commands\onenote</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2737,6 +2755,21 @@
     </ClCompile>
     <ClCompile Include="commands\webhistory\AppSettingPageWebHistory.cpp">
       <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\onenote\OneNoteCommandParam.cpp">
+      <Filter>commands\onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\onenote\OneNoteCommandProvider.cpp">
+      <Filter>commands\onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\onenote\OneNoteAppProxy.cpp">
+      <Filter>commands\onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\onenote\OneNoteCommand.cpp">
+      <Filter>commands\onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\onenote\AppSettingPageOneNote.cpp">
+      <Filter>commands\onenote</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

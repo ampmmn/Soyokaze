@@ -120,4 +120,8 @@ int WholeMatchPattern::GetWordCount()
 	return 1;
 }
 
+int WholeMatchPattern::GetWholeTextLength()
+{
+	return in->mWholeText.GetLength();
+}
 

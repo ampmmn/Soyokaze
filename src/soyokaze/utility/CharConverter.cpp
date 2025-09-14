@@ -101,6 +101,11 @@ std::string& CharConverter::UTF2UTF(const std::wstring& src, std::string& dst)
 	return utf2utf(src.c_str(), dst);
 }
 
+std::string& UTF2UTF(const wchar_t* src, std::string& dst)
+{
+	return utf2utf(src, dst);
+}
+
 // UTF-8 → UTF-16(char → wchar_t)
 CStringW CharConverter::UTF2UTF(const std::string& src) 
 {

@@ -29,6 +29,7 @@ public:
 	void GetWords(std::vector<WORD>& words) override;
 	void GetRawWords(std::vector<CString>& words) override;
 	int GetWordCount() override;
+	int GetWholeTextLength() override;
 
 protected:
 	struct PImpl;

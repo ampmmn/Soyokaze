@@ -491,6 +491,11 @@
     <ClInclude Include="commands\mmc\MMCSnapins.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommand.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommandProvider.h" />
+    <ClInclude Include="commands\onenote\AppSettingPageOneNote.h" />
+    <ClInclude Include="commands\onenote\OneNoteAppProxy.h" />
+    <ClInclude Include="commands\onenote\OneNoteCommand.h" />
+    <ClInclude Include="commands\onenote\OneNoteCommandParam.h" />
+    <ClInclude Include="commands\onenote\OneNoteCommandProvider.h" />
     <ClInclude Include="commands\pathconvert\Icon.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
@@ -930,6 +935,11 @@
     </ClCompile>
     <ClCompile Include="commands\mssettings\MSSettingsCommand.cpp" />
     <ClCompile Include="commands\mssettings\MSSettingsCommandProvider.cpp" />
+    <ClCompile Include="commands\onenote\AppSettingPageOneNote.cpp" />
+    <ClCompile Include="commands\onenote\OneNoteAppProxy.cpp" />
+    <ClCompile Include="commands\onenote\OneNoteCommand.cpp" />
+    <ClCompile Include="commands\onenote\OneNoteCommandParam.cpp" />
+    <ClCompile Include="commands\onenote\OneNoteCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />

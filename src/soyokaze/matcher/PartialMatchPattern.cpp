@@ -358,6 +358,11 @@ int PartialMatchPattern::GetWordCount()
 	return (int)in->mWords.size();
 }
 
+int PartialMatchPattern::GetWholeTextLength()
+{
+	return in->mWholeText.GetLength();
+}
+
 
 CString PartialMatchPattern::StripEscapeChars(const CString& pattern)
 {

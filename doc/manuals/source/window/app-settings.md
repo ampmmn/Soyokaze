@@ -475,6 +475,18 @@ mp3ファイルのみ指定可能(他の音声ファイルには非対応)
 - `file://...をローカルパス表記に変換する`
   - チェックすると、[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする
 
+## Extension > OneNote
+
+![](../image/adhoc-command/onenote/appsetting.png)
+
+- `機能を有効にする`  
+チェックすると、[OneNoteページ検索](/adhoc-command/onenote)機能が有効になる。
+- `プレフィックス`  
+検索を開始するためのキーワードを指定する。  
+空欄にすると、検索が常に有効になる。
+- `検索を実行する最小文字数`  
+その文字数以上のキーワードを入力したときに検索を行う。0を指定すると常に検索を行う。
+
 ## Extension > Bookmarks
 
 ![](../image/adhoc-command/bookmarks/appsetting.png)
