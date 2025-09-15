@@ -1,5 +1,6 @@
 #pragma once
 
+#include "actions/activate_window/ActivateWindowTarget.h"
 #include "actions/core/ActionBase.h"
 #include <memory>
 
@@ -10,6 +11,7 @@ class RestoreWindowAction : virtual public launcherapp::actions::core::ActionBas
 public:
 	RestoreWindowAction();
 	RestoreWindowAction(HWND hwnd);
+	RestoreWindowAction(WindowTarget* target);
 	~RestoreWindowAction();
 
 // Action

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "actions/activate_window/ActivateWindowTarget.h"
 #include "actions/core/ActionBase.h"
 #include <memory>
 
@@ -10,6 +11,7 @@ class MaximizeWindowAction : virtual public launcherapp::actions::core::ActionBa
 public:
 	MaximizeWindowAction();
 	MaximizeWindowAction(HWND hwnd);
+	MaximizeWindowAction(WindowTarget* target);
 	~MaximizeWindowAction();
 
 // Action

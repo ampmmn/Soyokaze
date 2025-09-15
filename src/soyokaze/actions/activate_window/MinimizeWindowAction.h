@@ -1,5 +1,6 @@
 #pragma once
 
+#include "actions/activate_window/ActivateWindowTarget.h"
 #include "actions/core/ActionBase.h"
 #include <memory>
 
@@ -10,6 +11,7 @@ class MinimizeWindowAction : virtual public launcherapp::actions::core::ActionBa
 public:
 	MinimizeWindowAction();
 	MinimizeWindowAction(HWND hwnd);
+	MinimizeWindowAction(WindowTarget* target);
 	~MinimizeWindowAction();
 
 // Action

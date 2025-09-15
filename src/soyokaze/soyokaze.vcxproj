@@ -413,6 +413,7 @@
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h" />
+    <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h" />
     <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h" />
     <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h" />
     <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h" />
@@ -876,6 +877,7 @@
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />
+    <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp" />
     <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp" />
     <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp" />

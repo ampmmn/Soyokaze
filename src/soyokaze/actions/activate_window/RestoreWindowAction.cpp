@@ -6,7 +6,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 
 struct RestoreWindowAction::PImpl
 {
-	HWND mHwnd{nullptr};
+	std::unique_ptr<WindowTarget> mTarget;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +20,14 @@ RestoreWindowAction::RestoreWindowAction() : in(new PImpl)
 
 RestoreWindowAction::RestoreWindowAction(HWND hwnd) : in(new PImpl)
 {
-	in->mHwnd = hwnd;
+	in->mTarget.reset(new SimpleWindowTarget(hwnd));
 }
+
+RestoreWindowAction::RestoreWindowAction(WindowTarget* target) : in(new PImpl)
+{
+	in->mTarget.reset(target);
+}
+
 
 RestoreWindowAction::~RestoreWindowAction()
 {
@@ -39,15 +45,23 @@ bool RestoreWindowAction::Perform(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
+	if (in->mTarget.get() == nullptr) {
+		return true;
+	}
+	auto hwnd = in->mTarget->GetHandle();
+	if (IsWindow(hwnd) == FALSE) {
+		return true;
+	}
+
 	ScopeAttachThreadInput scope;
-	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 
 	if (style & WS_MINIMIZE) {
 		// 最小化されていたら元に戻す
-		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+		PostMessage(hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
 	}
 
-	SetForegroundWindow(in->mHwnd);
+	SetForegroundWindow(hwnd);
 	return true;
 }
 
