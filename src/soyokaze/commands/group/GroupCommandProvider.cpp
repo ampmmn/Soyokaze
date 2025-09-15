@@ -2,7 +2,6 @@
 #include "GroupCommandProvider.h"
 #include "commands/group/GroupCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/group/GroupCommandEditor.h"
 #include "setting/AppPreference.h"
@@ -54,7 +53,7 @@ CString GroupCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool GroupCommandProvider::NewDialog(CommandParameter* param)
+bool GroupCommandProvider::NewDialog(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

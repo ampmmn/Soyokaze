@@ -20,9 +20,9 @@ CString CloseWindowActionWrapper::GetDisplayName()
 }
 
 // アクションを実行する
-bool CloseWindowActionWrapper::Perform(Parameter* param)
+bool CloseWindowActionWrapper::Perform(Parameter* param, String* errMsg)
 {
-	bool result = mRealAction.Perform(param);
+	bool result = mRealAction.Perform(param, errMsg);
 
 	if (mListener) {
 		mListener->OnRequestClose(mHwnd);

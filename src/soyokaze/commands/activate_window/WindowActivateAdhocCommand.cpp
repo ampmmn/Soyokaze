@@ -108,22 +108,22 @@ BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
 	if (isShiftKeyPressed && isCtrlKeyPressed == false) {
 		// Shiftキーが押されていたら最大化表示する
 		MaximizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else if (isCtrlKeyPressed && isShiftKeyPressed == false) {
 		// Ctrlキーが押されていたら最小化表示する
 		MinimizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else if (isCtrlKeyPressed && isShiftKeyPressed) {
 		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
 		CloseWindowActionWrapper action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else {
 		// 最小化されていたら元に戻す
 		RestoreWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 }
 
@@ -203,7 +203,7 @@ bool WindowActivateAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayName
 }
 
 // メニュー選択時の処理を実行する
-bool WindowActivateAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool WindowActivateAdhocCommand::SelectMenuItem(int index, Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
@@ -213,23 +213,23 @@ bool WindowActivateAdhocCommand::SelectMenuItem(int index, launcherapp::core::Co
 
 	if (index == 0) {
 		RestoreWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else if (index == 1) {
 		MaximizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else if (index == 2) {
 		MinimizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else if (index == 3) {
 		TemporaryWindowNameAction action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else { // if (index == 4)
 		CloseWindowActionWrapper action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 }
 

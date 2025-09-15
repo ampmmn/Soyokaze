@@ -18,7 +18,7 @@ public:
 	// アクションの内容を示す名称
 	CString GetDisplayName() override;
 	// アクションを実行する
-	bool Perform(Parameter* param) override;
+	bool Perform(Parameter* param, String* errMsg) override;
 
 private:
 	struct PImpl;

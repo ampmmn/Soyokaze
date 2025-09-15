@@ -7,6 +7,7 @@
 #endif
 
 using namespace launcherapp::core;
+using namespace launcherapp::actions::core;
 
 namespace launcherapp {
 namespace commands {
@@ -95,8 +96,7 @@ bool UserCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 	UNREFERENCED_PARAMETER(action);
 
 	// 派生側で実装する
-	ASSERT(0);
-	return true;
+	return false;
 }
 
 
@@ -121,7 +121,7 @@ bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CStrin
 		return false;
 	}
 
-	RefPtr<launcherapp::core::CommandNamedParameter> namedParam;
+	RefPtr<NamedParameter> namedParam;
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}

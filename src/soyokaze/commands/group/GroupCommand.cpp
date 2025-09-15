@@ -6,6 +6,7 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -25,7 +26,7 @@ namespace group {
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 // もしグループ実行を止めるような機構をいれる場合は
@@ -57,7 +58,7 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 	CString cmdName = mParam.mName;
 
 	// 初回に(必要に応じて)実行確認を行う
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	bool isConfirmed = namedParam->GetNamedParamBool(_T("CONFIRMED"));
 	if (round == 0 && isConfirmed == false) {
 
@@ -114,7 +115,7 @@ BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
 			continue;
 		}
 
-		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
+		RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 		if (mParam.mIsPassParam) {
 			paramSub->SetParameterString(param->GetParameterString());
 		}
@@ -176,7 +177,7 @@ CString GroupCommand::GetTypeDisplayName()
 
 BOOL GroupCommand::Execute(Parameter* param)
 {
-	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
+	auto namedParam = launcherapp::commands::common::GetNamedParameter(param);
 	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}

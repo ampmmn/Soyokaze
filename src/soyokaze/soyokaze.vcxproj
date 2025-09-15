@@ -804,7 +804,6 @@
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
     <ClInclude Include="commands/core/CommandRepository.h" />
-    <ClInclude Include="commands/core/CommandParameter.h" />
     <ClInclude Include="commands\builtin\EditCommand.h" />
     <ClInclude Include="commands\pathfind\PathExecuteCommand.h" />
     <ClInclude Include="commands\builtin\ExitCommand.h" />
@@ -1253,7 +1252,6 @@
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
-    <ClCompile Include="commands/core/CommandParameter.cpp" />
     <ClCompile Include="commands\builtin\EditCommand.cpp" />
     <ClCompile Include="commands\pathfind\PathExecuteCommand.cpp" />
     <ClCompile Include="commands\builtin\ExitCommand.cpp" />

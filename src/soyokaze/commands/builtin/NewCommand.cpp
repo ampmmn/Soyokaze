@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "NewCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -13,7 +14,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 CString NewCommand::TYPE(_T("Builtin-New"));
@@ -43,7 +44,7 @@ NewCommand::~NewCommand()
 
 BOOL NewCommand::Execute(Parameter* param)
 {
-	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
+	RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
 
 	bool hasParam = false;
 

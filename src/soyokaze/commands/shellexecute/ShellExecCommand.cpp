@@ -27,7 +27,7 @@
 
 using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 using CommandRepository = launcherapp::core::CommandRepository;
 using CommandIcon = launcherapp::icon::CommandIcon;
 
@@ -160,7 +160,7 @@ BOOL ShellExecCommand::Execute(Parameter* param_)
 	RefPtr<Parameter> param(param_->Clone());
 
 	// 実行時引数が与えられた場合は履歴に登録しておく
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
@@ -509,7 +509,7 @@ bool ShellExecCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 }
 
 // メニュー選択時の処理を実行する
-bool ShellExecCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool ShellExecCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index < 0 || 2 < index) {
 		return false;
@@ -519,7 +519,7 @@ bool ShellExecCommand::SelectMenuItem(int index, launcherapp::core::CommandParam
 		return Execute(param) != FALSE;
 	}
 
-	RefPtr<CommandNamedParameter> namedParam;
+	RefPtr<NamedParameter> namedParam;
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}

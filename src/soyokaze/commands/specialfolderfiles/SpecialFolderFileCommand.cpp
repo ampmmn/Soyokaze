@@ -3,6 +3,7 @@
 #include "SpecialFolderFileCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
@@ -13,7 +14,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 
 namespace launcherapp {
 namespace commands {
@@ -104,7 +105,7 @@ bool SpecialFolderFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePt
 }
 
 // メニュー選択時の処理を実行する
-bool SpecialFolderFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool SpecialFolderFileCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index < 0 || 2 < index) {
 		return false;
@@ -114,7 +115,7 @@ bool SpecialFolderFileCommand::SelectMenuItem(int index, launcherapp::core::Comm
 		return Execute(param) != FALSE;
 	}
 
-	RefPtr<CommandNamedParameter> namedParam;
+	RefPtr<NamedParameter> namedParam;
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}

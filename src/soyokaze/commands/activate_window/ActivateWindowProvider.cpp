@@ -6,7 +6,6 @@
 #include "commands/activate_window/WindowActivateAdhocNameDialog.h"
 #include "commands/activate_window/WindowActivateMenuEventListener.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -159,7 +158,7 @@ CString ActivateWindowProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool ActivateWindowProvider::NewDialog(CommandParameter* param)
+bool ActivateWindowProvider::NewDialog(Parameter* param)
 {
 	WindowActivateCommand* newCmd{nullptr};
 	if (WindowActivateCommand::NewDialog(param, &newCmd) == false) {

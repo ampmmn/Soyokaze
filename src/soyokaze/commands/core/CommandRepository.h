@@ -17,6 +17,7 @@ class CommandRepositoryListenerIF;
 
 class CommandRepository : public AppPreferenceListenerIF
 {
+	using Parameter = launcherapp::actions::core::Parameter;
 private:
 	CommandRepository();
 	virtual ~CommandRepository();
@@ -38,7 +39,7 @@ public:
 	BOOL Load();
 
 	// 新規登録ダイアログの表示
-	int NewCommandDialog(CommandParameter* param = nullptr);
+	int NewCommandDialog(Parameter* param = nullptr);
 
 	// コマンド編集ダイアログの表示
 	int EditCommandDialog(const CString& cmdName, bool isClone);

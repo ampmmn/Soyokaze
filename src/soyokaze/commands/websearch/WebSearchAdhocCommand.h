@@ -32,7 +32,7 @@ public:
 	// メニューの表示名を取得する
 	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
 	// メニュー選択時の処理を実行する
-	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+	bool SelectMenuItem(int index, Parameter* param) override;
 
 // ExtraCandidate
 	CString GetSourceName() override;

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "AppSettingPageOther.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/Settings.h"
 #include "logger/Logger.h"
 #include "resource.h"
@@ -11,7 +12,7 @@
 #endif
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 static int SPDLOGLEVEL[] = { 
@@ -179,7 +180,7 @@ void OtherSettingDialog::OnNotifyLinkOpen(
 
 		ShellExecCommand cmd;
 		cmd.SetPath((LPCTSTR)logDir);
-		cmd.Execute(CommandParameterBuilder::EmptyParam());
+		cmd.Execute(ParameterBuilder::EmptyParam());
 	}
 	*pResult = 0;
 }

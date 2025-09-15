@@ -6,7 +6,7 @@ namespace launcherapp {
 namespace commands {
 namespace volumecontrol {
 
-// $B2;NLD4@a%3%^%s%I$r@8@.$9$k$?$a$N%/%i%9(B
+// 音量調節コマンドを生成するためのクラス
 class VolumeCommandProvider :
 	public launcherapp::commands::common::UserCommandProviderBase
 {
@@ -17,18 +17,18 @@ private:
 public:
 	CString GetName() override;
 
-	// $B:n@.$G$-$k%3%^%s%I$N<oN`$rI=$9J8;zNs$r<hF@(B
+	// 作成できるコマンドの種類を表す文字列を取得
 	CString GetDisplayName() override;
 
-	// $B%3%^%s%I$N<oN`$N@bL@$r<($9J8;zNs$r<hF@(B
+	// コマンドの種類の説明を示す文字列を取得
 	CString GetDescription() override;
 
-	// $B%3%^%s%I?75,:n@.%@%$%"%m%0(B
-	bool NewDialog(CommandParameter* param) override;
+	// コマンド新規作成ダイアログ
+	bool NewDialog(Parameter* param) override;
 
-	// Provider$B4V$NM%@h=g0L$rI=$9CM$rJV$9!#>.$5$$$[$IM%@h(B
+	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
-	// Provider$B$,07$&%3%^%s%I<oJL(B($BI=<(L>(B)$B$rNs5s(B
+	// Providerが扱うコマンド種別(表示名)を列挙
 	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
 
 	DECLARE_COMMANDPROVIDER(VolumeCommandProvider)

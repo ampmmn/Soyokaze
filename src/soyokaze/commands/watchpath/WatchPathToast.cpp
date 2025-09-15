@@ -2,7 +2,7 @@
 #include "WatchPathToast.h"
 #include "app/AppName.h"
 #include "commands/common/SubProcess.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/Path.h"
 
 #include <winrt/Windows.UI.Notifications.h>
@@ -12,6 +12,7 @@
 using namespace winrt;
 using namespace winrt::Windows::UI::Notifications;
 using namespace winrt::Windows::Data::Xml::Dom;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,7 +58,7 @@ struct callback : winrt::implements<callback, INotificationActivationCallback>
 			}
 
 			// フォルダを開く
-			SubProcess exec(launcherapp::core::CommandParameterBuilder::EmptyParam());
+			SubProcess exec(ParameterBuilder::EmptyParam());
 			SubProcess::ProcessPtr process;
 			exec.Run(path, _T(""), process);
 

@@ -6,6 +6,7 @@
 #include "commands/keysplitter/KeySplitterCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -19,7 +20,7 @@ namespace commands {
 namespace keysplitter {
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 struct KeySplitterCommand::PImpl
@@ -139,7 +140,7 @@ BOOL KeySplitterCommand::Execute(Parameter* param)
 	}
 	parents += cmdName;
 
-	RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
+	RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 	paramSub->SetParameterString(param->GetParameterString());
 	paramSub->SetNamedParamString(_T("PARENTS"), parents);
 

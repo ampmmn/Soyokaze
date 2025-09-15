@@ -11,7 +11,7 @@ public:
 	// アクションの内容を示す名称
 	virtual CString GetDisplayName() = 0;
 	// アクションを実行する
-	virtual bool Perform(Parameter* param) = 0;
+	virtual bool Perform(Parameter* param, String* errMsg = nullptr) = 0;
 };
 
 

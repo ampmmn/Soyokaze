@@ -7,6 +7,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -18,7 +19,7 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SubProcess = launcherapp::commands::common::SubProcess;
 
 
@@ -135,7 +136,7 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		auto cmdRepo = CommandRepository::GetInstance();
 		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam->mAfterCommandName, false));
 		if (command) {
-			RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
+			RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 
 			paramSub->AddArgument(argSub);
 			command->Execute(paramSub);
@@ -144,7 +145,7 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 	else if (actionType == 1) {
 
 		// 他のファイルを実行/URLを開く
-		SubProcess exec(CommandParameterBuilder::EmptyParam());
+		SubProcess exec(ParameterBuilder::EmptyParam());
 
 		CString path = in->mParam->mAfterFilePath;
 		path.Replace(_T("$key"), in->mRecord.mKey);

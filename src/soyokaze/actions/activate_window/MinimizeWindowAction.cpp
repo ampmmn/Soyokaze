@@ -41,7 +41,7 @@ CString MinimizeWindowAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool MinimizeWindowAction::Perform(Parameter* param)
+bool MinimizeWindowAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
 

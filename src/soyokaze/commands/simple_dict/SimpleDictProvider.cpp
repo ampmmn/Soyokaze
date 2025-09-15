@@ -2,7 +2,6 @@
 #include "SimpleDictProvider.h"
 #include "commands/simple_dict/SimpleDictCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
@@ -52,7 +51,7 @@ CString SimpleDictProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool SimpleDictProvider::NewDialog(CommandParameter* param)
+bool SimpleDictProvider::NewDialog(Parameter* param)
 {
 	SimpleDictCommand* newCmd = nullptr;
 	if (SimpleDictCommand::NewDialog(param, &newCmd) == false) {

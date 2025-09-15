@@ -92,11 +92,11 @@ BOOL WindowActivateCommand::Execute(Parameter* param)
 	if (isCtrlPressed) {
 		// Ctrlキーが押されていたら最大化表示する
 		MaximizeWindowAction action(in->mTarget.Clone());
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 	else {
 		RestoreWindowAction action(in->mTarget.Clone());
-		return action.Perform(nullptr);
+		return action.Perform(nullptr, nullptr);
 	}
 }
 
@@ -107,10 +107,12 @@ bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	bool isCtrlPressed = modifierFlags & Command::MODIFIER_CTRL;
 	if (isCtrlPressed) {
-		return new MaximizeWindowAction(in->mTarget.Clone());
+		*action = new MaximizeWindowAction(in->mTarget.Clone());
+		return true;
 	}
 	else {
-		return new RestoreWindowAction(in->mTarget.Clone());
+		*action = new RestoreWindowAction(in->mTarget.Clone());
+		return true;
 	}
 }
 

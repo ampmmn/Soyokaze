@@ -4,6 +4,15 @@
 
 namespace launcherapp { namespace actions { namespace core {
 
+
+ActionBase::ActionBase()
+{
+}
+
+ActionBase::~ActionBase()
+{
+}
+
 // アクションの内容を示す名称
 CString ActionBase::GetDisplayName()
 {
@@ -12,11 +21,13 @@ CString ActionBase::GetDisplayName()
 }
 
 // アクションを実行する
-bool ActionBase::Perform(Parameter* param)
+bool ActionBase::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	ASSERT(0);
+	if (errMsg) {
+		*errMsg = "(Performメソッド未実装)";
+	}
 	spdlog::error("ActionBase::Perform called!");
 	return false;
 }

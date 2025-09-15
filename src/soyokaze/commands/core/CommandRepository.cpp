@@ -36,6 +36,7 @@ namespace launcherapp {
 namespace core {
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::core;
 
 using ShellExecCommand  = launcherapp::commands::shellexecute::ShellExecCommand;
 using DefaultCommand = launcherapp::commands::core::DefaultCommand;
@@ -553,7 +554,7 @@ public:
  *  新規キーワード作成
  *  @param paramr パラメータ
  */
-int CommandRepository::NewCommandDialog(CommandParameter* param)
+int CommandRepository::NewCommandDialog(Parameter* param)
 {
 	if (in->mIsNewDialog) {
 		// 編集操作中の再入はしない
@@ -567,7 +568,7 @@ int CommandRepository::NewCommandDialog(CommandParameter* param)
 	// 種類選択ダイアログを表示
 	CString typeStr;
 	if (param) {
-		auto namedParam = GetCommandNamedParameter(param);
+		auto namedParam = GetNamedParameter(param);
 		int len = namedParam->GetNamedParamStringLength(_T("TYPE"));
 		if (len > 0) {
 			namedParam->GetNamedParamString(_T("TYPE"), typeStr.GetBuffer(len), len);
@@ -796,7 +797,7 @@ int CommandRepository::RegisterCommandFromFiles(
 		PathRemoveExtension(name.GetBuffer(name.GetLength()));
 		name.ReleaseBuffer();
 
-		RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
+		RefPtr<ParameterBuilder> param(ParameterBuilder::Create(), false);
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), name);
 		param->SetNamedParamString(_T("PATH"), filePath);

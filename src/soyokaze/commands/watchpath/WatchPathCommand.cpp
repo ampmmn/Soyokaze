@@ -7,6 +7,7 @@
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
@@ -25,7 +26,7 @@ using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 struct WatchPathCommand::PImpl
@@ -89,7 +90,7 @@ BOOL WatchPathCommand::Execute(Parameter* param)
 	ShellExecCommand cmd;
 	cmd.SetPath(path);
 
-	return cmd.Execute(CommandParameterBuilder::EmptyParam());
+	return cmd.Execute(ParameterBuilder::EmptyParam());
 }
 
 CString WatchPathCommand::GetErrorString()

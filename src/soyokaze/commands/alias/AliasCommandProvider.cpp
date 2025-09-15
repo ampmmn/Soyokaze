@@ -2,7 +2,6 @@
 #include "AliasCommandProvider.h"
 #include "commands/alias/AliasCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 
@@ -51,7 +50,7 @@ CString AliasCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool AliasCommandProvider::NewDialog(CommandParameter* param)
+bool AliasCommandProvider::NewDialog(Parameter* param)
 {
 	return AliasCommand::NewDialog(param);
 }

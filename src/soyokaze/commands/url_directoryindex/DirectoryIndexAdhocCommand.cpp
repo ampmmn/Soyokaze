@@ -6,6 +6,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -18,7 +19,7 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 namespace launcherapp {
@@ -104,7 +105,7 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenParentURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
+	RefPtr<ParameterBuilder> param(ParameterBuilder::Create(), false);
 
 	SubProcess exec(param);
 	SubProcess::ProcessPtr process;
@@ -251,7 +252,7 @@ bool DirectoryIndexAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayName
 }
 
 // メニュー選択時の処理を実行する
-bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

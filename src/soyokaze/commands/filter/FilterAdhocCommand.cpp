@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FilterAdhocCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "commands/filter/FilterCommandParam.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
@@ -21,7 +21,7 @@ using namespace launcherapp::commands::common;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 namespace launcherapp {
@@ -87,7 +87,7 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 	argSub.Replace(_T("$select"), in->mResult.mDisplayName);
 	ExpandMacros(argSub);
 
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 
 	CString parents;
 	int len = namedParam->GetNamedParamStringLength(_T("PARENTS"));
@@ -105,7 +105,7 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 	int type = in->mParam.mPostFilterType;
 	if (type == POSTFILTER_COMMAND) {
 
-		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
+		RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 		paramSub->AddArgument(argSub);
 		paramSub->SetNamedParamString(_T("PARENTS"), parents);
 
@@ -149,7 +149,7 @@ BOOL FilterAdhocCommand::Execute(Parameter* param)
 		cmd.SetWorkDir(path);
 		cmd.SetShowType(in->mParam.GetAfterShowType());
 
-		return cmd.Execute(CommandParameterBuilder::EmptyParam());
+		return cmd.Execute(ParameterBuilder::EmptyParam());
 	}
 
 	if (type == POSTFILTER_CLIPBOARD) {

@@ -4,7 +4,6 @@
 #include "commands/url_directoryindex/DirectoryIndexAdhocCommand.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -58,7 +57,7 @@ CString URLDirectoryIndexCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool URLDirectoryIndexCommandProvider::NewDialog(CommandParameter* param)
+bool URLDirectoryIndexCommandProvider::NewDialog(Parameter* param)
 {
 	URLDirectoryIndexCommand* newCmd = nullptr;
 	if (URLDirectoryIndexCommand::NewDialog(param, &newCmd) == false) {

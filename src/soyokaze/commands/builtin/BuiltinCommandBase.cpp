@@ -82,8 +82,7 @@ bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 	UNREFERENCED_PARAMETER(action);
 
 	// 派生側で実装する
-	ASSERT(0);
-	return true;
+	return false;
 }
 
 CString BuiltinCommandBase::GetErrorString()

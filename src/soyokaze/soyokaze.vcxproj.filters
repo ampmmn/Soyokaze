@@ -822,9 +822,6 @@
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="commands/core/CommandParameter.h">
-      <Filter>commands\core</Filter>
-    </ClInclude>
     <ClInclude Include="commands/core\CommandRanking.h">
       <Filter>commands\core</Filter>
     </ClInclude>
@@ -2185,9 +2182,6 @@
       <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandRepository.cpp">
-      <Filter>commands\core</Filter>
-    </ClCompile>
-    <ClCompile Include="commands/core/CommandParameter.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
     <ClCompile Include="commands/core\CommandRanking.cpp">

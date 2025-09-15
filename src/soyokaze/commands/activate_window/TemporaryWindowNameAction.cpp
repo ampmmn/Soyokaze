@@ -20,9 +20,10 @@ CString TemporaryWindowNameAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool TemporaryWindowNameAction::Perform(Parameter* param)
+bool TemporaryWindowNameAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(errMsg);
 
 	if (mListener) {
 		mListener->OnRequestPutName(mHwnd);

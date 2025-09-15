@@ -4,8 +4,8 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
-#include "commands/core/CommandParameter.h"
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
@@ -21,6 +21,7 @@
 
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
+using namespace launcherapp::actions::core;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
@@ -72,7 +73,7 @@ namespace common {
 
 struct SubProcess::PImpl
 {
-	PImpl(launcherapp::core::CommandParameter* param) : mParam(param)
+	PImpl(Parameter* param) : mParam(param)
 	{
 	}
 
@@ -85,7 +86,7 @@ struct SubProcess::PImpl
 
 	bool SetupShellExecuteInfo(CString& path, CString& param, const CString& workDir, SHELLEXECUTEINFO& si);
 
-	CommandParameter* mParam{nullptr};
+	Parameter* mParam{nullptr};
 	int mShowType{SW_SHOW};
 	bool mIsRunAsAdmin{false};
 	CString mWorkingDir;
@@ -209,7 +210,7 @@ bool SubProcess::PImpl::SetupShellExecuteInfo(CString& path, CString& param, con
 ////////////////////////////////////////////////////////////////////////////////
 
 
-SubProcess::SubProcess(CommandParameter* param) : 
+SubProcess::SubProcess(Parameter* param) : 
 	in(std::make_unique<PImpl>(param))
 {
 }

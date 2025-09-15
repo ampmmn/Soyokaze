@@ -8,7 +8,6 @@
 class MainWindowCommandQueryRequest : public launcherapp::commands::core::CommandQueryRequest
 {
 	using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
-	using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
 
 public:
 	MainWindowCommandQueryRequest(const CString& keyword, HWND hwndNotify, UINT notifyMsg);

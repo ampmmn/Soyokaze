@@ -4,9 +4,11 @@
 
 namespace launcherapp {
 
+namespace actions {
 namespace core {
-	class CommandParameter;
-	class CommandNamedParameter;
+	class Parameter;
+	class NamedParameter;
+}
 }
 
 namespace commands {
@@ -20,14 +22,15 @@ enum {
 	MASK_ALL = 15,
 };
 
-RefPtr<launcherapp::core::CommandNamedParameter> GetCommandNamedParameter(launcherapp::core::CommandParameter * param);
+RefPtr<launcherapp::actions::core::NamedParameter> GetNamedParameter(launcherapp::actions::core::Parameter* param);
+RefPtr<launcherapp::actions::core::NamedParameter> GetNamedParameter(launcherapp::actions::core::Parameter* param);
 
-bool IsCtrlKeyPressed(launcherapp::core::CommandParameter* param);
-bool IsShiftKeyPressed(launcherapp::core::CommandParameter* param);
-bool IsAltKeyPressed(launcherapp::core::CommandParameter* param);
-bool IsWinKeyPressed(launcherapp::core::CommandParameter* param);
+bool IsCtrlKeyPressed(launcherapp::actions::core::Parameter* param);
+bool IsShiftKeyPressed(launcherapp::actions::core::Parameter* param);
+bool IsAltKeyPressed(launcherapp::actions::core::Parameter* param);
+bool IsWinKeyPressed(launcherapp::actions::core::Parameter* param);
 
-uint32_t GetModifierKeyState(launcherapp::core::CommandParameter* param, uint32_t mask);
+uint32_t GetModifierKeyState(launcherapp::actions::core::Parameter* param, uint32_t mask);
 
 }
 }

@@ -40,7 +40,7 @@ CString CloseWindowAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool CloseWindowAction::Perform(Parameter* param)
+bool CloseWindowAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
 

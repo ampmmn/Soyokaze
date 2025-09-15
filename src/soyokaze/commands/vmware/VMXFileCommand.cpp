@@ -161,7 +161,7 @@ bool VMXFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 }
 
 // メニュー選択時の処理を実行する
-bool VMXFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool VMXFileCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index < 0 || 2 < index) {
 		return false;
