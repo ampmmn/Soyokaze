@@ -86,20 +86,6 @@ CString WindowActivateCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL WindowActivateCommand::Execute(Parameter* param)
-{
-	bool isCtrlPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
-	if (isCtrlPressed) {
-		// Ctrlキーが押されていたら最大化表示する
-		MaximizeWindowAction action(in->mTarget.Clone());
-		return action.Perform(nullptr, nullptr);
-	}
-	else {
-		RestoreWindowAction action(in->mTarget.Clone());
-		return action.Perform(nullptr, nullptr);
-	}
-}
-
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {

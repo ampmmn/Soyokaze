@@ -79,6 +79,12 @@ bool UserCommandBase::CanExecute()
 	return true;
 }
 
+BOOL UserCommandBase::Execute(Parameter* param)
+{
+	spdlog::error("Execute is unimplemented.");
+	return false;
+}
+
 CString UserCommandBase::GetErrorString()
 {
 	return _T("");

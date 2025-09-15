@@ -26,7 +26,6 @@ public:
 	CString GetName() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
 	// 修飾キー押下状態に対応した実行アクションを取得する
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
