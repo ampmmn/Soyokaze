@@ -98,35 +98,6 @@ CString WindowActivateAdhocCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
-{
-	ScopeAttachThreadInput scope;
-
-	bool isCtrlKeyPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-
-	if (isShiftKeyPressed && isCtrlKeyPressed == false) {
-		// Shiftキーが押されていたら最大化表示する
-		MaximizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
-	}
-	else if (isCtrlKeyPressed && isShiftKeyPressed == false) {
-		// Ctrlキーが押されていたら最小化表示する
-		MinimizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
-	}
-	else if (isCtrlKeyPressed && isShiftKeyPressed) {
-		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
-		CloseWindowActionWrapper action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr, nullptr);
-	}
-	else {
-		// 最小化されていたら元に戻す
-		RestoreWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
-	}
-}
-
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool WindowActivateAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
