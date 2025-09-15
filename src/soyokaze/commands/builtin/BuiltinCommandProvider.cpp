@@ -150,7 +150,7 @@ CString BuiltinCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool BuiltinCommandProvider::NewDialog(CommandParameter* param)
+bool BuiltinCommandProvider::NewDialog(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

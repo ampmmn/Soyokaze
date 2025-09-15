@@ -4,7 +4,7 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
@@ -19,6 +19,7 @@
 #endif
 
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
+using namespace launcherapp::actions::core;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
@@ -70,7 +71,7 @@ namespace common {
 
 struct SubProcess::PImpl
 {
-	PImpl(launcherapp::core::CommandParameter* param) : mParam(param)
+	PImpl(Parameter* param) : mParam(param)
 	{
 	}
 
@@ -81,7 +82,7 @@ struct SubProcess::PImpl
 	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 	bool Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
 
-	CommandParameter* mParam{nullptr};
+	Parameter* mParam{nullptr};
 	int mShowType{SW_SHOW};
 	bool mIsRunAsAdmin{false};
 	CString mWorkingDir;
@@ -174,7 +175,7 @@ bool SubProcess::PImpl::Start(CString& path, CString& param, const CString& work
 ////////////////////////////////////////////////////////////////////////////////
 
 
-SubProcess::SubProcess(CommandParameter* param) : 
+SubProcess::SubProcess(Parameter* param) : 
 	in(std::make_unique<PImpl>(param))
 {
 }

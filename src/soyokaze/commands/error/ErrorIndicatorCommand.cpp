@@ -91,8 +91,7 @@ bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 	UNREFERENCED_PARAMETER(action);
 
 	// ToDo: 実装する
-	ASSERT(0);
-	return true;
+	return false;
 }
 
 

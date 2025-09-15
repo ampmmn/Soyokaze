@@ -2,7 +2,7 @@
 
 #include "core/UnknownIF.h"
 
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 
 namespace launcherapp {
 namespace commands {
@@ -16,7 +16,7 @@ public:
 	// メニューの表示名を取得する
 	virtual bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) = 0;
 	// メニュー選択時の処理を実行する
-	virtual bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) = 0;
+	virtual bool SelectMenuItem(int index, launcherapp::actions::core::Parameter* param) = 0;
 };
 
 } // end of namespace core

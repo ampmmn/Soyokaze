@@ -2,7 +2,6 @@
 #include "KeySplitterCommandProvider.h"
 #include "commands/keysplitter/KeySplitterCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 
@@ -51,7 +50,7 @@ CString KeySplitterCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool KeySplitterCommandProvider::NewDialog(CommandParameter* param)
+bool KeySplitterCommandProvider::NewDialog(Parameter* param)
 {
 	return KeySplitterCommand::NewDialog(param);
 }

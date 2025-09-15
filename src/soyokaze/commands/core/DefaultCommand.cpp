@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "commands/common/Clipboard.h"
 #include "commands/builtin/NewCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 
@@ -17,7 +18,7 @@ namespace core {
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::builtin;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SelectionBehavior = launcherapp::core::SelectionBehavior;
 
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
@@ -128,7 +129,7 @@ BOOL DefaultCommand::Execute(Parameter* param)
 	else if (type == _T("register")) {
 		// コマンドを登録
 		CString str = param->GetWholeString();
-		RefPtr<CommandParameterBuilder> commandParam(CommandParameterBuilder::Create(_T("new ") + str), false);
+		RefPtr<ParameterBuilder> commandParam(ParameterBuilder::Create(_T("new ") + str), false);
 
 		NewCommand cmd;
 		BOOL result = cmd.Execute(commandParam);
@@ -145,8 +146,7 @@ bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
 	UNREFERENCED_PARAMETER(action);
 
 	// ToDo: 実装する
-	ASSERT(0);
-	return true;
+	return false;
 }
 
 

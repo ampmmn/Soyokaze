@@ -64,7 +64,7 @@ void WholeMatchPattern::SetWholeText(
 	LPCTSTR wholeText
 )
 {
-	auto param = launcherapp::core::CommandParameterBuilder::Create(wholeText);
+	auto param = launcherapp::actions::core::ParameterBuilder::Create(wholeText);
 
 	in->mWord = param->GetCommandString();
 	in->mWholeText = param->GetWholeString();

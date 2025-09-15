@@ -40,7 +40,7 @@ CString MaximizeWindowAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool MaximizeWindowAction::Perform(Parameter* param)
+bool MaximizeWindowAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
 

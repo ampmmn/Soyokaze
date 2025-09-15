@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "InputSettingDialog.h"
 #include "commands/builtin/MainDirCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -129,7 +130,7 @@ void InputSettingDialog::OnNotifyLinkOpen(
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
 	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		auto param = launcherapp::actions::core::ParameterBuilder::Create();
 		MainDirCommand cmd(_T("tmp"));
 		cmd.Execute(param);
 

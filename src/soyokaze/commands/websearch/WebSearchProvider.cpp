@@ -2,7 +2,6 @@
 #include "WebSearchProvider.h"
 #include "commands/websearch/WebSearchCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 #include <list>
@@ -55,7 +54,7 @@ CString WebSearchProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool WebSearchProvider::NewDialog(CommandParameter* param)
+bool WebSearchProvider::NewDialog(Parameter* param)
 {
 	std::unique_ptr<WebSearchCommand> newCmd;
 	if (WebSearchCommand::NewDialog(param, newCmd) == false) {

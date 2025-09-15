@@ -16,7 +16,8 @@
 #include "mainwindow/optionbutton/MainWindowOptionButton.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
 #include "commands/common/Clipboard.h"
@@ -53,6 +54,7 @@
 using namespace launcherapp;
 using namespace launcherapp::mainwindow;
 using namespace launcherapp::mainwindow::controller;
+using namespace launcherapp::actions::core;
 
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
@@ -639,7 +641,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				auto param = launcherapp::core::CommandParameterBuilder::Create();
+				auto param = launcherapp::actions::core::ParameterBuilder::Create();
 				param->SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
 				param->SetNamedParamString(_T("PATH"), urlString);
 
@@ -685,7 +687,7 @@ LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 
 	// 
 	try {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		auto param = launcherapp::actions::core::ParameterBuilder::Create();
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
@@ -797,17 +799,15 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
 	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
 
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
 
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam->GetCommandString(), true);
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(actionParam->GetCommandString(), true);
 	if (cmd == nullptr) {
-		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam->GetCommandString());
-
-		commandParam->Release();
+		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)actionParam->GetCommandString());
 		return false;
 	}
 
-	RunCommand(cmd, commandParam);
+	RunCommand(cmd, actionParam.release());
 	return true;
 }
 
@@ -1207,7 +1207,7 @@ void LauncherMainWindow::WaitQueryRequest()
 void
 LauncherMainWindow::RunCommand(
 	launcherapp::core::Command* cmd,
-	launcherapp::core::CommandParameterBuilder* commandParam
+	ParameterBuilder* actionParam
 )
 {
 	// コマンド実行後のクローズ方法
@@ -1220,19 +1220,53 @@ LauncherMainWindow::RunCommand(
 		closePolicy = behavior->GetCloseWindowPolicy();
 	}
 
+	// Ctrlキーが押されているかを設定
+	using Command = launcherapp::core::Command;
+	uint32_t modifierMask = 0;
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+		modifierMask |= Command::MODIFIER_CTRL;
+	}
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+		modifierMask |= Command::MODIFIER_SHIFT;
+	}
+	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+		modifierMask |= Command::MODIFIER_WIN;
+	}
+	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+		modifierMask |= Command::MODIFIER_ALT;
+	}
+
 	auto hwnd = GetSafeHwnd();
 
-	std::thread th([cmd, commandParam, hwnd, closePolicy]() {
+	std::thread th([cmd, modifierMask, actionParam, hwnd, closePolicy]() {
 
-		if (cmd->Execute(commandParam) == FALSE) {
-			auto errMsg = cmd->GetErrorString();
-			if (errMsg.IsEmpty() == FALSE) {
-				auto app = (LauncherApp*)AfxGetApp();
-				app->PopupMessage(errMsg);
+		RefPtr<Action> action;
+		cmd->GetAction(modifierMask, &action);
+		if (action.get() == nullptr) {
+			spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
+		}
+
+		if (action.get()) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				if (errMsg.IsEmpty() == FALSE) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
+			}
+		}
+		else {
+			if (cmd->Execute(actionParam) == FALSE) {
+				auto errMsg = cmd->GetErrorString();
+				if (errMsg.IsEmpty() == FALSE) {
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(errMsg);
+				}
 			}
 		}
 
-		commandParam->Release();
+		actionParam->Release();
 
 		// コマンドの参照カウントを下げる
 		cmd->Release();
@@ -1274,24 +1308,24 @@ void LauncherMainWindow::RunCommand(
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
 
 	// Ctrlキーが押されているかを設定
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("WinKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("WinKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("AltKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("AltKeyPressed"), true);
 	}
 
 	// 実行
-	RunCommand(cmd, commandParam);
+	RunCommand(cmd, actionParam.release());
 }
 
 /**
@@ -1321,16 +1355,16 @@ void LauncherMainWindow::SelectCommandContextMenu(
 			return;
 		}
 
-		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+		auto actionParam = launcherapp::actions::core::ParameterBuilder::Create(str);
 
-		if (menuSrc->SelectMenuItem(index, commandParam) == false) {
+		if (menuSrc->SelectMenuItem(index, actionParam) == false) {
 			auto errMsg = cmd->GetErrorString();
 			if (errMsg.IsEmpty() == FALSE) {
 				auto app = (LauncherApp*)AfxGetApp();
 				app->PopupMessage(errMsg);
 			}
 		}
-		commandParam->Release();
+		actionParam->Release();
 		cmd->Release();
 	});
 	th.detach();

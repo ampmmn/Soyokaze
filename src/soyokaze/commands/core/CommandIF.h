@@ -3,7 +3,7 @@
 
 #include "core/UnknownIF.h"
 #include "commands/core/CommandEntryIF.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameterIF.h"
 #include "actions/core/Action.h"
 #include "matcher/Pattern.h"
 
@@ -16,7 +16,7 @@ namespace core {
 class Command : virtual public UnknownIF
 {
 protected:
-	using Parameter = launcherapp::core::CommandParameter;
+	using Parameter = launcherapp::actions::core::Parameter;
 	using Action = launcherapp::actions::core::Action;
 
 public:

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UserDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/AppProfile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -14,7 +15,7 @@ namespace commands {
 namespace builtin {
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
 
@@ -52,7 +53,7 @@ BOOL UserDirCommand::Execute(Parameter* param)
 	ShellExecCommand cmd;
 	cmd.SetPath(userDirPath.data());
 
-	return cmd.Execute(CommandParameterBuilder::EmptyParam());
+	return cmd.Execute(ParameterBuilder::EmptyParam());
 }
 
 HICON UserDirCommand::GetIcon()

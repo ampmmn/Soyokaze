@@ -101,7 +101,7 @@ bool WebSearchAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 }
 
 // メニュー選択時の処理を実行する
-bool WebSearchAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool WebSearchAdhocCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index == 0) {
 		return Execute(param) != FALSE;

@@ -41,7 +41,7 @@ CString RestoreWindowAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool RestoreWindowAction::Perform(Parameter* param)
+bool RestoreWindowAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
 

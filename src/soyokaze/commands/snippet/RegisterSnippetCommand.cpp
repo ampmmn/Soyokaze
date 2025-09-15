@@ -3,6 +3,7 @@
 #include "RegisterSnippetCommand.h"
 #include "commands/snippet/SnippetCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -15,7 +16,7 @@ namespace launcherapp {
 namespace commands {
 namespace snippet {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 CString RegisterSnippetCommand::TYPE(_T("Builtin-RegisterSnippet"));
@@ -50,7 +51,7 @@ BOOL RegisterSnippetCommand::Execute(Parameter* param)
 	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	mainWnd->GetClipboardString(clipboardText);
 
-	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
+	RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
 	inParam->SetNamedParamString(_T("TEXT"), clipboardText);
 	SnippetCommand::NewDialog(inParam);
 

@@ -2,8 +2,8 @@
 #include "HistoryCommand.h"
 #include "commands/history/HistoryCommandQueryRequest.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -19,7 +19,7 @@ namespace history {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
@@ -123,7 +123,7 @@ BOOL HistoryCommand::Execute(Parameter* param)
 
 	BOOL result = TRUE;
 	if (cmd) {
-		auto builder = CommandParameterBuilder::Create(in->mKeyword);
+		auto builder = ParameterBuilder::Create(in->mKeyword);
 		bool hasParameter = builder->HasParameter();
 		builder->Release();
 
@@ -133,7 +133,7 @@ BOOL HistoryCommand::Execute(Parameter* param)
 			paramTmp->SetWholeString(in->mKeyword);
 		}
 
-		auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(paramTmp);
+		auto namedParam = launcherapp::commands::common::GetNamedParameter(paramTmp);
 		namedParam->SetNamedParamBool(_T("RunAsHistory"), true);
 
 		result = cmd->Execute(paramTmp);

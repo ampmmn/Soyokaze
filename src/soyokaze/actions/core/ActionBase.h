@@ -9,11 +9,14 @@ class ActionBase : virtual public Action
 protected:
 	using Parameter = launcherapp::actions::core::Parameter;
 public:
+	ActionBase();
+	virtual ~ActionBase();
+
 // Action
 	// アクションの内容を示す名称
 	CString GetDisplayName() override;
 	// アクションを実行する
-	bool Perform(Parameter* param) override;
+	bool Perform(Parameter* param, String* errMsg) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** obj) override;

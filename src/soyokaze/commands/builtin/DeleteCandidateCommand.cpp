@@ -15,6 +15,7 @@
 using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
 using CommandRepository = launcherapp::core::CommandRepository;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 namespace launcherapp {
 namespace commands {
@@ -58,7 +59,7 @@ BOOL DeleteCandidateCommand::Execute(Parameter* param)
 	UNREFERENCED_PARAMETER(param);
 
 	DeleteCommand cmd;
-	RefPtr<CommandParameterBuilder> paramTmp(CommandParameterBuilder::Create(_T("delete")));
+	RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(_T("delete")));
 	paramTmp->AddArgument(in->mCmdName);
 	return cmd.Execute(paramTmp.get());
 }

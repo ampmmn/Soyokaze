@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "MainDirCommand.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -16,7 +17,7 @@ namespace builtin {
 
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 CString MainDirCommand::TYPE(_T("Builtin-MainDir"));
@@ -54,7 +55,7 @@ BOOL MainDirCommand::Execute(Parameter* param)
 	ShellExecCommand cmd;
 	cmd.SetPath((LPCTSTR)mainDirPath);
 
-	return cmd.Execute(CommandParameterBuilder::EmptyParam());
+	return cmd.Execute(ParameterBuilder::EmptyParam());
 }
 
 HICON MainDirCommand::GetIcon()

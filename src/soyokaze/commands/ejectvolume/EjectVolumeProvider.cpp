@@ -2,7 +2,6 @@
 #include "EjectVolumeProvider.h"
 #include "commands/ejectvolume/EjectVolumeCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
@@ -50,7 +49,7 @@ CString EjectVolumeProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool EjectVolumeProvider::NewDialog(CommandParameter* param)
+bool EjectVolumeProvider::NewDialog(Parameter* param)
 {
 	return EjectVolumeCommand::NewDialog(param);
 }

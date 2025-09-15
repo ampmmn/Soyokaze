@@ -7,6 +7,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
@@ -19,7 +20,7 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 using SubProcess = launcherapp::commands::common::SubProcess;
@@ -114,7 +115,7 @@ BOOL PathExecuteCommand::Execute(Parameter* param)
 	}
 
 	// 履歴に追加
-	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
+	auto namedParam = launcherapp::commands::common::GetNamedParameter(param);
 	if (namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
 		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 	}
@@ -294,7 +295,7 @@ bool PathExecuteCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 }
 
 // メニュー選択時の処理を実行する
-bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index < 0 || 4 < index) {
 		return false;
@@ -304,7 +305,7 @@ bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandPar
 		return Execute(param) != FALSE;
 	}
 
-	RefPtr<CommandNamedParameter> namedParam;
+	RefPtr<NamedParameter> namedParam;
 	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}

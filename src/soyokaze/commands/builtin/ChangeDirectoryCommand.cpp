@@ -6,6 +6,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -21,7 +22,7 @@ namespace builtin {
 using namespace launcherapp::commands::common;
 
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 CString ChangeDirectoryCommand::TYPE(_T("Builtin-CD"));
@@ -64,7 +65,7 @@ BOOL ChangeDirectoryCommand::Execute(Parameter* param)
 		ShellExecCommand cmd;
 		cmd.SetPath(&currentDir.front());
 
-		return cmd.Execute(CommandParameterBuilder::EmptyParam());
+		return cmd.Execute(ParameterBuilder::EmptyParam());
 	}
 
 

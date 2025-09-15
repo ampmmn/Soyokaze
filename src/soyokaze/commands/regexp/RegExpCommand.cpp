@@ -166,7 +166,7 @@ BOOL RegExpCommand::Execute(Parameter* param)
 	}
 
 	// もしwaitするようにするのであればここで待つ
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
 		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
 		process->Wait(WAIT_LIMIT);

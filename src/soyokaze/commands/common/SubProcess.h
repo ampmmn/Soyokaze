@@ -1,12 +1,7 @@
 #pragma once
 
 #include <memory>
-
-namespace launcherapp {
-namespace core {
-	class CommandParameter;
-}
-}
+#include "actions/core/ActionParameterIF.h"
 
 namespace launcherapp {
 namespace commands {
@@ -14,14 +9,14 @@ namespace common {
 
 class SubProcess
 {
-	using CommandParameter = launcherapp::core::CommandParameter;
+	using Parameter = launcherapp::actions::core::Parameter;
 
 public:
 	class Instance;
 	using ProcessPtr = std::unique_ptr<Instance>;
 
 public:
-	SubProcess(CommandParameter* param);
+	SubProcess(Parameter* param);
 	~SubProcess();
 
 	void SetShowType(int showType);

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MailToCommand.h"
 #include "commands/common/SubProcess.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -15,7 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace mailto {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SubProcess = launcherapp::commands::common::SubProcess;
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MailToCommand)
@@ -51,7 +51,7 @@ BOOL MailToCommand::Execute(Parameter* param)
 	}
 
 	SubProcess::ProcessPtr process;
-	SubProcess exec(CommandParameterBuilder::EmptyParam());
+	SubProcess exec(ParameterBuilder::EmptyParam());
 
 	CString arg = _T("/c start \"\" mailto:" + recipient);
 	exec.SetShowType(SW_HIDE);
