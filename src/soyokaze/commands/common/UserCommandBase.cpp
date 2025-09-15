@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "UserCommandBase.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -87,6 +87,18 @@ bool UserCommandBase::IsAllowAutoExecute()
 {
 	return false;
 }
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool UserCommandBase::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(action);
+
+	// 派生側で実装する
+	ASSERT(0);
+	return true;
+}
+
 
 
 uint32_t UserCommandBase::AddRef()

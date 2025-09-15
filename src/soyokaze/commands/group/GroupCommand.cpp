@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GroupCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/group/CommandParam.h"
 #include "commands/group/GroupCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"

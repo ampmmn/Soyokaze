@@ -4,7 +4,7 @@
 #include "setting/AppPreference.h"
 #include "commands/common/Clipboard.h"
 #include "commands/builtin/NewCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -137,6 +137,18 @@ BOOL DefaultCommand::Execute(Parameter* param)
 	}
 	return TRUE;
 }
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(action);
+
+	// ToDo: 実装する
+	ASSERT(0);
+	return true;
+}
+
 
 CString DefaultCommand::GetErrorString()
 {

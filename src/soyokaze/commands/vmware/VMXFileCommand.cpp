@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "VMXFileCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/SubProcess.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

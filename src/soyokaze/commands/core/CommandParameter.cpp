@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "CommandParameter.h"
 #include "commands/core/CommandParameterIF.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "utility/Path.h"
 #include <map>
 

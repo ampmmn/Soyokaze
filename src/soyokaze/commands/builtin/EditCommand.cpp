@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "commands/builtin/EditCommand.h"
 #include "commands/builtin/EditCandidateCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PartialMatchPattern.h"
 #include "icon/IconLoader.h"

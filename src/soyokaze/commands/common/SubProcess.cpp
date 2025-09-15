@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SubProcess.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"

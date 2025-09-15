@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SnippetCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
 #include "commands/snippet/SnippetCommandEditor.h"
 #include "commands/core/CommandRepository.h"

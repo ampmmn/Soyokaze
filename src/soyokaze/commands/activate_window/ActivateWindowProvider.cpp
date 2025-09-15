@@ -4,6 +4,7 @@
 #include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommand.h"
 #include "commands/activate_window/WindowActivateAdhocNameDialog.h"
+#include "commands/activate_window/WindowActivateMenuEventListener.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"

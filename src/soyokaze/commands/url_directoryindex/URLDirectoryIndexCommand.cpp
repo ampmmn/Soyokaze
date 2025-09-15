@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "URLDirectoryIndexCommand.h"
 #include "commands/url_directoryindex/DirectoryIndexAdhocCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
 #include "utility/WinHttp.h"

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WatchPathCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/watchpath/WatchPathCommandEditor.h"
 #include "commands/watchpath/PathWatcher.h"
 #include "commands/shellexecute/ShellExecCommand.h"

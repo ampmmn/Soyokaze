@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "EjectVolumeCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/ejectvolume/EjectVolumeCommandParam.h"
 #include "commands/ejectvolume/EjectVolumeCommandEditor.h"
 #include "commands/ejectvolume/EjectVolume.h"

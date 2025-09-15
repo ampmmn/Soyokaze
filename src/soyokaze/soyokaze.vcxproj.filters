@@ -253,6 +253,18 @@
     <Filter Include="externaltool\webbrowser">
       <UniqueIdentifier>{49744c8b-0b75-46cf-9281-4bd8c446b4fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{c104d509-326c-4ec2-96df-4020ce56aa10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions">
+      <UniqueIdentifier>{16be0f57-b3ad-487e-b123-a37b05ffca60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\core">
+      <UniqueIdentifier>{572c6fa2-a8c2-4470-91b4-f57db6bf5b89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\activate_window">
+      <UniqueIdentifier>{2dabf99c-0f2f-4c81-86fb-4dcc91d7bf7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1611,6 +1623,43 @@
     <ClInclude Include="utility\MessageExchangeWindow.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="core\IFID.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\UnknownIF.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\Action.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionBase.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionParameter.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionParameterIF.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\RestoreWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\MaximizeWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\CloseWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\MinimizeWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
+      <Filter>commands\activate_window</Filter>
+>>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2842,6 +2891,31 @@
     </ClCompile>
     <ClCompile Include="utility\MessageExchangeWindow.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\core\ActionBase.cpp">
+      <Filter>actions\core</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\core\ActionParameter.cpp">
+      <Filter>actions\core</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\RestoreWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\MaximizeWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\CloseWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
+      <Filter>commands\activate_window</Filter>
+>>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

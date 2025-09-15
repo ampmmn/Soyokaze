@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SnippetGroupCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/snippetgroup/SnippetGroupCommandEditor.h"
 #include "commands/snippetgroup/SnippetGroupAdhocCommand.h"
 #include "commands/core/CommandRepository.h"

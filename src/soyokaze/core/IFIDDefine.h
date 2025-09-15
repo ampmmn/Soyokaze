@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IFID.h"
+#include "core/IFID.h"
 
 #define LAUNCHER_IFID launcherapp::core::IFID
 
@@ -43,3 +43,7 @@ constexpr LAUNCHER_IFID IFID_EXTRACANDIDATE =
 // {2B9771FA-9220-4C76-94D6-2FADD4C9B6DC}
 constexpr LAUNCHER_IFID IFID_SELECTIONBEHAVIOR =
 { 0x2b9771fa, 0x9220, 0x4c76, { 0x94, 0xd6, 0x2f, 0xad, 0xd4, 0xc9, 0xb6, 0xdc } };
+
+// {53FF831B-0786-4E0D-B951-3F69F3F0BE81}
+constexpr LAUNCHER_IFID IFID_ACTION =
+{ 0x53ff831b, 0x786, 0x4e0d, { 0xb9, 0x51, 0x3f, 0x69, 0xf3, 0xf0, 0xbe, 0x81 } };

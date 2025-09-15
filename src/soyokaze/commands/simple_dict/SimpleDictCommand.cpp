@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SimpleDictCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/simple_dict/DictionaryLoader.h"
 #include "commands/simple_dict/SimpleDictCommandEditor.h"
 #include "commands/simple_dict/SimpleDictionary.h"
