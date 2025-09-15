@@ -6,7 +6,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 
 struct MaximizeWindowAction::PImpl
 {
-	HWND mHwnd{nullptr};
+	std::unique_ptr<WindowTarget> mTarget;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,12 @@ MaximizeWindowAction::MaximizeWindowAction() : in(new PImpl)
 
 MaximizeWindowAction::MaximizeWindowAction(HWND hwnd) : in(new PImpl)
 {
-	in->mHwnd = hwnd;
+	in->mTarget.reset(new SimpleWindowTarget(hwnd));
+}
+
+MaximizeWindowAction::MaximizeWindowAction(WindowTarget* target) : in(new PImpl)
+{
+	in->mTarget.reset(target);
 }
 
 MaximizeWindowAction::~MaximizeWindowAction()
@@ -39,13 +44,21 @@ bool MaximizeWindowAction::Perform(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
+	if (in->mTarget.get() == nullptr) {
+		return true;
+	}
+	auto hwnd = in->mTarget->GetHandle();
+	if (IsWindow(hwnd) == FALSE) {
+		return true;
+	}
+
 	ScopeAttachThreadInput scope;
-	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 
 	if ((style & WS_MAXIMIZE) == 0) {
-		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		PostMessage(hwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 	}
-	SetForegroundWindow(in->mHwnd);
+	SetForegroundWindow(hwnd);
 	return true;
 }
 

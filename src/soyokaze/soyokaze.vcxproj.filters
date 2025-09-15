@@ -1632,6 +1632,9 @@
     <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2874,6 +2877,9 @@
       <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>

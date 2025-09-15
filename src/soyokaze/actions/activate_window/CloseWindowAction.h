@@ -1,5 +1,6 @@
 #pragma once
 
+#include "actions/activate_window/ActivateWindowTarget.h"
 #include "actions/core/ActionBase.h"
 #include <memory>
 
@@ -10,6 +11,7 @@ class CloseWindowAction : virtual public launcherapp::actions::core::ActionBase
 public:
 	CloseWindowAction();
 	CloseWindowAction(HWND hwnd);
+	CloseWindowAction(WindowTarget* target);
 	~CloseWindowAction();
 
 // Action

@@ -6,7 +6,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 
 struct CloseWindowAction::PImpl
 {
-	HWND mHwnd{nullptr};
+	std::unique_ptr<WindowTarget> mTarget;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,12 @@ CloseWindowAction::CloseWindowAction() : in(new PImpl)
 
 CloseWindowAction::CloseWindowAction(HWND hwnd) : in(new PImpl)
 {
-	in->mHwnd = hwnd;
+	in->mTarget.reset(new SimpleWindowTarget(hwnd));
+}
+
+CloseWindowAction::CloseWindowAction(WindowTarget* target) : in(new PImpl)
+{
+	in->mTarget.reset(target);
 }
 
 CloseWindowAction::~CloseWindowAction()
@@ -39,7 +44,15 @@ bool CloseWindowAction::Perform(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
-	PostMessage(in->mHwnd, WM_CLOSE, 0, 0);
+	if (in->mTarget.get() == nullptr) {
+		return true;
+	}
+	auto hwnd = in->mTarget->GetHandle();
+	if (IsWindow(hwnd) == FALSE) {
+		return true;
+	}
+
+	PostMessage(hwnd, WM_CLOSE, 0, 0);
 	return true;
 }
 

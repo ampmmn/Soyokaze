@@ -6,7 +6,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 
 struct MinimizeWindowAction::PImpl
 {
-	HWND mHwnd{nullptr};
+	std::unique_ptr<WindowTarget> mTarget;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +20,14 @@ MinimizeWindowAction::MinimizeWindowAction() : in(new PImpl)
 
 MinimizeWindowAction::MinimizeWindowAction(HWND hwnd) : in(new PImpl)
 {
-	in->mHwnd = hwnd;
+	in->mTarget.reset(new SimpleWindowTarget(hwnd));
 }
+
+MinimizeWindowAction::MinimizeWindowAction(WindowTarget* target) : in(new PImpl)
+{
+	in->mTarget.reset(target);
+}
+
 
 MinimizeWindowAction::~MinimizeWindowAction()
 {
@@ -39,11 +45,19 @@ bool MinimizeWindowAction::Perform(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 
+	if (in->mTarget.get() == nullptr) {
+		return true;
+	}
+	auto hwnd = in->mTarget->GetHandle();
+	if (IsWindow(hwnd) == FALSE) {
+		return true;
+	}
+
 	ScopeAttachThreadInput scope;
-	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 
 	if ((style & WS_MINIMIZE) == 0) {
-		ShowWindow(in->mHwnd, SW_MINIMIZE);
+		ShowWindow(hwnd, SW_MINIMIZE);
 	}
 	return true;
 }

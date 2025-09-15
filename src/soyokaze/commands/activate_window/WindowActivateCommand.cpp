@@ -2,9 +2,12 @@
 #include "WindowActivateCommand.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateCommandEditor.h"
+#include "commands/activate_window/ActivateWindowFindTarget.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/activate_window/MaximizeWindowAction.h"
+#include "actions/activate_window/RestoreWindowAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"
@@ -16,38 +19,17 @@
 #include <regex>
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::activate_window;
 
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-constexpr int UPDATE_INTERVAL = 5000;
-
 struct WindowActivateCommand::PImpl
 {
-	HWND FindHwnd();
 	CommandParam mParam;
-
-	CString mErrorMsg;
-
-	HWND mCachedHwnd{nullptr};
-	uint64_t mLastUpdate{0};
+	ActivateWindowFindTarget mTarget;
 };
-
-HWND WindowActivateCommand::PImpl::FindHwnd()
-{
-	if (IsWindow(mCachedHwnd) && GetTickCount64() - mLastUpdate < UPDATE_INTERVAL) {
-		return mCachedHwnd;
-	}
-	mCachedHwnd = nullptr;
-
-	HWND hwnd = mParam.FindHwnd();
-	if (hwnd) {
-		mCachedHwnd = hwnd;
-		mLastUpdate = GetTickCount64();
-	}
-	return mCachedHwnd;
-}
 
 CString WindowActivateCommand::GetType() { return _T("WindowActivate"); }
 
@@ -75,6 +57,7 @@ void WindowActivateCommand::SetParam(const CommandParam& param)
 
 	// パラメータを上書き
 	in->mParam = param;
+	in->mTarget.SetParam(param);
 
 	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
 	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
@@ -105,45 +88,41 @@ CString WindowActivateCommand::GetTypeDisplayName()
 
 BOOL WindowActivateCommand::Execute(Parameter* param)
 {
-	// ここで該当するウインドウを探す
-	HWND hwndTarget = in->FindHwnd();
-
-	if (IsWindow(hwndTarget) == FALSE) {
-		if (in->mParam.IsNotifyIfWindowNotFound()) {
-			launcherapp::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
-		}
-		return TRUE;
-	}
-	in->mErrorMsg.Empty();
-
-	ScopeAttachThreadInput scope;
-
-	if (IsWindowVisible(hwndTarget) == FALSE) {
-		ShowWindow(hwndTarget, SW_SHOW);
-	}
-
-	LONG_PTR style = GetWindowLongPtr(hwndTarget, GWL_STYLE);
-	if (GetModifierKeyState(param, MASK_CTRL) != 0 && (style & WS_MAXIMIZE) == 0) {
+	bool isCtrlPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
+	if (isCtrlPressed) {
 		// Ctrlキーが押されていたら最大化表示する
-		PostMessage(hwndTarget, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		MaximizeWindowAction action(in->mTarget.Clone());
+		return action.Perform(nullptr);
 	}
-	else if (style & WS_MINIMIZE) {
-		// 最小化されていたら元に戻す
-		PostMessage(hwndTarget, WM_SYSCOMMAND, SC_RESTORE, 0);
+	else {
+		RestoreWindowAction action(in->mTarget.Clone());
+		return action.Perform(nullptr);
 	}
+}
 
-	SetForegroundWindow(hwndTarget);
-	return TRUE;
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(action);
+
+	bool isCtrlPressed = modifierFlags & Command::MODIFIER_CTRL;
+	if (isCtrlPressed) {
+		return new MaximizeWindowAction(in->mTarget.Clone());
+	}
+	else {
+		return new RestoreWindowAction(in->mTarget.Clone());
+	}
 }
 
 CString WindowActivateCommand::GetErrorString()
 {
-	return in->mErrorMsg;
+	return _T("");
 }
 
 HICON WindowActivateCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadIconFromHwnd(in->FindHwnd());
+	bool isShowErrMsg = false;
+	return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.FindHwnd(isShowErrMsg));
 }
 
 int WindowActivateCommand::Match(Pattern* pattern)
