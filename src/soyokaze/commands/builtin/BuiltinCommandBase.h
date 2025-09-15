@@ -26,6 +26,7 @@ public:
 	CString GetTypeDisplayName() override;
 	bool CanExecute() override;
 	//BOOL Execute(const Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;

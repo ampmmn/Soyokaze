@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeySplitterCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/keysplitter/KeySplitterParam.h"
 #include "commands/keysplitter/KeySplitterCommandEditor.h"
 #include "commands/core/CommandRepository.h"

@@ -6,7 +6,7 @@
 #include "commands/core/CommandQueryRequest.h"
 #include "commands/core/CommandQueryDefaultResult.h"
 #include "commands/core/DefaultCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"

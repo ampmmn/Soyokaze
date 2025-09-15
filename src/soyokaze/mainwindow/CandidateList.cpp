@@ -2,7 +2,7 @@
 #include "CandidateList.h"
 #include "commands/error/ErrorIndicatorCommand.h"
 #include "commands/core/SelectionBehavior.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include <vector>
 #include <set>
 

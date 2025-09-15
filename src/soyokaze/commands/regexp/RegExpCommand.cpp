@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "RegExpCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"

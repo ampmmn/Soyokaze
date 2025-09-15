@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "WholeMatchPattern.h"
 #include "commands/core/CommandParameter.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include <vector>
 
 #ifdef _DEBUG

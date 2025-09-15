@@ -1,9 +1,10 @@
 // あ
 #pragma once
 
-#include "commands/core/UnknownIF.h"
+#include "core/UnknownIF.h"
 #include "commands/core/CommandEntryIF.h"
 #include "commands/core/CommandParameter.h"
+#include "actions/core/Action.h"
 #include "matcher/Pattern.h"
 
 class CommandHotKeyAttribute;
@@ -11,18 +12,34 @@ class CommandHotKeyAttribute;
 namespace launcherapp {
 namespace core {
 
+
 class Command : virtual public UnknownIF
 {
 protected:
 	using Parameter = launcherapp::core::CommandParameter;
+	using Action = launcherapp::actions::core::Action;
+
+public:
+	// 修飾キー押下状態を示すビットフラグ
+	enum {
+		MODIFIER_SHIFT = 1,
+		MODIFIER_CTRL = 2,
+		MODIFIER_ALT = 4,
+		MODIFIER_WIN = 8,
+	};
+
 public:
 	virtual CString GetName() = 0;
 	virtual CString GetDescription() = 0;
-	virtual CString GetGuideString() = 0;
 	// コマンド種類を表す表示名称
 	virtual CString GetTypeDisplayName() = 0;
 	virtual bool CanExecute() = 0;
+
+	virtual CString GetGuideString() = 0;
 	virtual BOOL Execute(Parameter* param) = 0;
+	// 修飾キー押下状態に対応した実行アクションを取得する
+	virtual bool GetAction(uint32_t modifierFlags, Action** action) = 0;
+
 	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;

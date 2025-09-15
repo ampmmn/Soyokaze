@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/filter/FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterCommandEditor.h"

@@ -3,9 +3,9 @@
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/builtin/BuiltinCommandEditor.h"
 #include "setting/AppPreference.h"
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandFile.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -72,6 +72,17 @@ CString BuiltinCommandBase::GetTypeDisplayName()
 
 bool BuiltinCommandBase::CanExecute()
 {
+	return true;
+}
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(action);
+
+	// 派生側で実装する
+	ASSERT(0);
 	return true;
 }
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "VolumeCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/volumecontrol/VolumeCommandParam.h"
 #include "commands/volumecontrol/VolumeCommandEditor.h"
 #include "commands/volumecontrol/AudioSessionVolume.h"

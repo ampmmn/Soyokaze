@@ -1,7 +1,7 @@
 #pragma once
 
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandIF.h"
-#include "commands/core/IFIDDefine.h"
 #include "utility/RefPtr.h"
 #include <memory>
 
@@ -22,6 +22,8 @@ public:
 	//CString GetTypeDisplayName() override;
 	bool CanExecute() override;
 	BOOL Execute(Parameter* param) override;
+	// 修飾キー押下状態に対応した実行アクションを取得する
+	bool GetAction(uint32_t modifierFlags, Action** action);
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;

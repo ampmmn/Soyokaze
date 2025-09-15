@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WebSearchCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchCommandEditor.h"

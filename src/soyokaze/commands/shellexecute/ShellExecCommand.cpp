@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"

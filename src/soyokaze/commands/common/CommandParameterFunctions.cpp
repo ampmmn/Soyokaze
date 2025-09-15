@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CommandParameterFunctions.h"
 #include "commands/core/CommandParameterIF.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

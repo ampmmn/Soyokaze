@@ -84,6 +84,18 @@ BOOL ErrorIndicatorCommand::Execute(Parameter* param)
 	return TRUE;
 }
 
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(action);
+
+	// ToDo: 実装する
+	ASSERT(0);
+	return true;
+}
+
+
 CString ErrorIndicatorCommand::GetErrorString()
 {
 	return _T("");
