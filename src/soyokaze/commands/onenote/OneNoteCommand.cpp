@@ -3,9 +3,11 @@
 #include "OneNoteCommand.h"
 #include "commands/onenote/OneNoteCommandParam.h"
 #include "commands/onenote/OneNoteAppProxy.h"
+#include "utility/ScopeAttachThreadInput.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
+#include <tlhelp32.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -80,6 +82,67 @@ CString OneNoteCommand::GetTypeDisplayName()
 	return TypeDisplayName() + _T("(") + in->mNotebookName + _T(")");
 }
 
+// OneNoteのメインウインドウを探す
+static HWND FindOneNoteWindow()
+{
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		return nullptr;
+	}
+
+	struct local_param {
+		static BOOL CALLBACK EnumWindowProc(HWND h, LPARAM lp) {
+
+			if (IsWindowVisible(h) == FALSE) {
+				return TRUE;
+			}
+
+			// 所望のプロセスに属するウインドウを探す
+			DWORD pid=0;
+			GetWindowThreadProcessId(h, &pid);
+			auto thisPtr = (local_param*)lp;
+			if (pid != thisPtr->mPID) {
+				return TRUE;
+			}
+
+			// 所望のプロセスに属するウインドウが見つかったら探索終了
+			thisPtr->mHwnd = h;
+			return FALSE;
+		}
+		DWORD mPID;
+		HWND mHwnd{nullptr};
+	};
+
+	PROCESSENTRY32W pe { sizeof(PROCESSENTRY32W) };
+
+	// "onenote.exe"というプロセス名のPIDを探す
+	// (たまたま同名のexeファイル名が存在する場合には誤検知する)
+	HWND oneNoteWindow = nullptr;
+	if (Process32FirstW(snapshot, &pe)) {
+		do {
+			if (_wcsicmp(pe.szExeFile, L"onenote.exe") != 0) {
+				continue;
+			}
+
+			// 得られたPIDから、同じプロセスに属するトップレベルウインドウを探す
+			local_param param{ pe.th32ProcessID };
+
+			EnumWindows(local_param::EnumWindowProc, (LPARAM)& param);
+
+			if (IsWindow(param.mHwnd)) {
+				// 見つかったら、そのウインドウハンドルを返す
+				oneNoteWindow = param.mHwnd;
+				break;
+			}
+
+		} while (Process32NextW(snapshot, &pe));
+	}
+
+	CloseHandle(snapshot);
+	return oneNoteWindow;
+}
+
+
 BOOL OneNoteCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
@@ -88,6 +151,16 @@ BOOL OneNoteCommand::Execute(Parameter* param)
 	if (app.NavigateTo(in->mNavigateID) == false) {
 		spdlog::error(L"Failed to NavigateTo id:{}", (LPCWSTR)in->mNavigateID);
 	}
+
+	// OneNoteのウインドウを探して前面に出す
+	HWND h = FindOneNoteWindow();
+	if (h == nullptr) {
+		return TRUE;
+	}
+
+	ScopeAttachThreadInput scope;
+	SetForegroundWindow(h);
+
 	return TRUE;
 }
 
