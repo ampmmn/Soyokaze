@@ -3,7 +3,6 @@
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"

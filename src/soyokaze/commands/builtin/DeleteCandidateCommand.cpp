@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "DeleteCandidateCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "commands/builtin/DeleteCommand.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

@@ -2,7 +2,6 @@
 #include "MSSettingsCommandProvider.h"
 #include "commands/mssettings/MSSettingsCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"

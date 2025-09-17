@@ -14,6 +14,8 @@ public:
 	MinimizeWindowAction(WindowTarget* target);
 	~MinimizeWindowAction();
 
+	void SetSilent(bool isSilent);
+
 // Action
 	// アクションの内容を示す名称
 	CString GetDisplayName() override;

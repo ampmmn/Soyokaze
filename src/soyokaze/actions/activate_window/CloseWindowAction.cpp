@@ -7,6 +7,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 struct CloseWindowAction::PImpl
 {
 	std::unique_ptr<WindowTarget> mTarget;
+	bool mIsSilent{false};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +33,11 @@ CloseWindowAction::~CloseWindowAction()
 {
 }
 
+void CloseWindowAction::SetSilent(bool isSilent)
+{
+	in->mIsSilent = isSilent;
+}
+
 // Action
 // アクションの内容を示す名称
 CString CloseWindowAction::GetDisplayName()
@@ -49,7 +55,12 @@ bool CloseWindowAction::Perform(Parameter* param, String* errMsg)
 	}
 	auto hwnd = in->mTarget->GetHandle();
 	if (IsWindow(hwnd) == FALSE) {
-		return true;
+
+		if (in->mIsSilent == false && errMsg) {
+			*errMsg = "指定されたウインドウが見つかりません";
+		}
+
+		return false;
 	}
 
 	PostMessage(hwnd, WM_CLOSE, 0, 0);

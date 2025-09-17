@@ -5,7 +5,6 @@
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"

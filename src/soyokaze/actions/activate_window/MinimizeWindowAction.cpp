@@ -7,6 +7,7 @@ namespace launcherapp { namespace actions { namespace activate_window {
 struct MinimizeWindowAction::PImpl
 {
 	std::unique_ptr<WindowTarget> mTarget;
+	bool mIsSilent{false};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,12 @@ MinimizeWindowAction::~MinimizeWindowAction()
 {
 }
 
+void MinimizeWindowAction::SetSilent(bool isSilent)
+{
+	in->mIsSilent = isSilent;
+}
+
+
 // Action
 // アクションの内容を示す名称
 CString MinimizeWindowAction::GetDisplayName()
@@ -50,7 +57,12 @@ bool MinimizeWindowAction::Perform(Parameter* param, String* errMsg)
 	}
 	auto hwnd = in->mTarget->GetHandle();
 	if (IsWindow(hwnd) == FALSE) {
-		return true;
+
+		if (in->mIsSilent == false && errMsg) {
+			*errMsg = "指定されたウインドウが見つかりません";
+		}
+
+		return false;
 	}
 
 	ScopeAttachThreadInput scope;

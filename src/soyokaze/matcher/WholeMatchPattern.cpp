@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "WholeMatchPattern.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "core/IFIDDefine.h"
 #include <vector>
 

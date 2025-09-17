@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ActivateWindowFindTarget.h"
-#include "commands/common/Message.h"
 
 namespace launcherapp { namespace commands { namespace activate_window {
 
@@ -29,7 +28,7 @@ ActivateWindowFindTarget* ActivateWindowFindTarget::Clone()
 	return new ActivateWindowFindTarget(mParam);
 }
 
-HWND ActivateWindowFindTarget::FindHwnd(bool isShowErrMsg)
+HWND ActivateWindowFindTarget::GetHandle()
 {
 	if (IsWindow(mCachedHwnd) && GetTickCount64() - mLastUpdate < UPDATE_INTERVAL) {
 		return mCachedHwnd;
@@ -38,21 +37,12 @@ HWND ActivateWindowFindTarget::FindHwnd(bool isShowErrMsg)
 
 	HWND hwnd = mParam.FindHwnd();
 	if (IsWindow(hwnd) == FALSE) {
-
-		if (isShowErrMsg) {
-			launcherapp::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
-		}
 		return nullptr;
 	}
 
 	mCachedHwnd = hwnd;
 	mLastUpdate = GetTickCount64();
 	return mCachedHwnd;
-}
-
-HWND ActivateWindowFindTarget::GetHandle()
-{
-	return FindHwnd(mParam.mIsNotifyIfWindowNotFound);
 }
 
 }}}

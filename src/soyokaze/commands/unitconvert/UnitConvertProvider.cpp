@@ -3,7 +3,6 @@
 #include "commands/unitconvert/InchAdhocCommand.h"
 #include "commands/unitconvert/EraNameWJCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"

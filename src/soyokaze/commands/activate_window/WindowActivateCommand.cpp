@@ -93,11 +93,15 @@ bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	bool isCtrlPressed = modifierFlags & Command::MODIFIER_CTRL;
 	if (isCtrlPressed) {
-		*action = new MaximizeWindowAction(in->mTarget.Clone());
+		auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
+		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+		*action = action_;
 		return true;
 	}
 	else {
-		*action = new RestoreWindowAction(in->mTarget.Clone());
+		auto action_ = new RestoreWindowAction(in->mTarget.Clone());
+		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+		*action = action_;
 		return true;
 	}
 }
@@ -109,8 +113,7 @@ CString WindowActivateCommand::GetErrorString()
 
 HICON WindowActivateCommand::GetIcon()
 {
-	bool isShowErrMsg = false;
-	return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.FindHwnd(isShowErrMsg));
+	return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.GetHandle());
 }
 
 int WindowActivateCommand::Match(Pattern* pattern)

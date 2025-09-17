@@ -14,6 +14,8 @@ public:
 	CloseWindowAction(WindowTarget* target);
 	~CloseWindowAction();
 
+	void SetSilent(bool isSilent);
+
 // Action
 	// アクションの内容を示す名称
 	CString GetDisplayName() override;
