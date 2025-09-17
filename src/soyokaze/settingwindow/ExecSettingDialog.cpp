@@ -77,7 +77,7 @@ void ExecSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnablePathFind"), (bool)mIsEnablePathFind);
 
 	CString defAction;
-	int closeBehavior = SelectionBehavior::CLOSEWINDOW_SYNC;
+	int closeBehavior = SelectionBehavior::CLOSEWINDOW_ASYNC;
 	if (mDefaultActionIndex == 1) {  // 何もしない(ウインドウを閉じない)
 		// FIXME: 今後機能を拡張するようなことがあれば別クラスに処理を移すこと
 		defAction = _T("");

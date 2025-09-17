@@ -402,6 +402,9 @@
     <ClInclude Include="actions\activate_window\MaximizeWindowAction.h" />
     <ClInclude Include="actions\activate_window\MinimizeWindowAction.h" />
     <ClInclude Include="actions\activate_window\RestoreWindowAction.h" />
+    <ClInclude Include="actions\builtin\NullAction.h" />
+    <ClInclude Include="actions\builtin\RegisterNewCommandAction.h" />
+    <ClInclude Include="actions\clipboard\CopyClipboardAction.h" />
     <ClInclude Include="actions\core\Action.h" />
     <ClInclude Include="actions\core\ActionBase.h" />
     <ClInclude Include="actions\core\ActionParameter.h" />
@@ -868,6 +871,9 @@
     <ClCompile Include="actions\activate_window\MaximizeWindowAction.cpp" />
     <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp" />
     <ClCompile Include="actions\activate_window\RestoreWindowAction.cpp" />
+    <ClCompile Include="actions\builtin\NullAction.cpp" />
+    <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp" />
+    <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp" />
     <ClCompile Include="actions\core\ActionBase.cpp" />
     <ClCompile Include="actions\core\ActionParameter.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />

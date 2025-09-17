@@ -265,6 +265,12 @@
     <Filter Include="actions\activate_window">
       <UniqueIdentifier>{2dabf99c-0f2f-4c81-86fb-4dcc91d7bf7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="actions\builtin">
+      <UniqueIdentifier>{5d4fd70b-b54d-4b5a-9dba-3e3af4ef11ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\clipboard">
+      <UniqueIdentifier>{e7cdbce4-3450-4e29-a011-4e6e04deb0d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1660,6 +1666,15 @@
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="actions\clipboard\CopyClipboardAction.h">
+      <Filter>actions\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\NullAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\RegisterNewCommandAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2916,6 +2931,15 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp">
+      <Filter>actions\clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\NullAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp">
+      <Filter>actions\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
