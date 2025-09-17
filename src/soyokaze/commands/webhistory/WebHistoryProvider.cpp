@@ -2,7 +2,6 @@
 #include "WebHistoryProvider.h"
 #include "commands/webhistory/WebHistoryCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"

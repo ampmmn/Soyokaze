@@ -13,9 +13,6 @@ public:
 	void SetParam(const CommandParam& param);
 	ActivateWindowFindTarget* Clone();
 
-	HWND FindHwnd(bool isShowErrMsg);
-
-
 	HWND GetHandle() override;
 
 	CommandParam mParam;

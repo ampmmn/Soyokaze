@@ -6,6 +6,7 @@
 
 namespace launcherapp { namespace commands { namespace activate_window {
 
+// クローズしたことをMenuEventListener経由でProviderに通知するためのラッパークラス
 class CloseWindowActionWrapper : virtual public launcherapp::actions::core::ActionBase
 {
 public:

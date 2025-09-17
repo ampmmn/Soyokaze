@@ -3,7 +3,6 @@
 #include "commands/builtin/BuiltinCommandFactory.h"
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
