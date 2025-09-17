@@ -2,8 +2,9 @@
 #include "DefaultCommand.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "commands/common/Clipboard.h"
-#include "commands/builtin/NewCommand.h"
+#include "actions/clipboard/CopyClipboardAction.h"
+#include "actions/builtin/RegisterNewCommandAction.h"
+#include "actions/builtin/NullAction.h"
 #include "actions/core/ActionParameter.h"
 #include "core/IFIDDefine.h"
 #include "icon/IconLoader.h"
@@ -16,8 +17,6 @@ namespace launcherapp {
 namespace commands {
 namespace core {
 
-using namespace launcherapp::commands::common;
-using namespace launcherapp::commands::builtin;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SelectionBehavior = launcherapp::core::SelectionBehavior;
 
@@ -56,7 +55,7 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 	// 設定読み込み済か?
 	bool mIsLoaded{false};
 	// コマンド実行時のウインドウクローズ方法
-	int mCloseWindowPolicy{SelectionBehavior::CLOSEWINDOW_SYNC};
+	int mCloseWindowPolicy{SelectionBehavior::CLOSEWINDOW_ASYNC};
 };
 
 DefaultCommand::DefaultCommand() : in(new PImpl)
@@ -115,6 +114,15 @@ bool DefaultCommand::CanExecute()
 
 BOOL DefaultCommand::Execute(Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
+	return FALSE;
+}
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+
 	if (in->mIsLoaded == false) {
 		in->Load();
 	}
@@ -122,31 +130,19 @@ BOOL DefaultCommand::Execute(Parameter* param)
 	const auto& type = in->mActionType;
 	if (type == _T("copy")) {
 		// クリップボードにコピー
-		auto str = param->GetWholeString();
-		Clipboard::Copy(str);
-		return TRUE;
+		*action = new launcherapp::actions::clipboard::CopyAction();
+		return true;
 	}
 	else if (type == _T("register")) {
 		// コマンドを登録
-		CString str = param->GetWholeString();
-		RefPtr<ParameterBuilder> commandParam(ParameterBuilder::Create(_T("new ") + str), false);
-
-		NewCommand cmd;
-		BOOL result = cmd.Execute(commandParam);
-
-		return result;
+		*action = new launcherapp::actions::builtin::RegisterNewCommandAction();
+		return true;
 	}
-	return TRUE;
-}
+	else {
+		*action = new launcherapp::actions::builtin::NullAction();
+		return true;
+	}
 
-// 修飾キー押下状態に対応した実行アクションを取得する
-bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
-{
-	UNREFERENCED_PARAMETER(modifierFlags);
-	UNREFERENCED_PARAMETER(action);
-
-	// ToDo: 実装する
-	return false;
 }
 
 
