@@ -4,6 +4,9 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenInChromeAction.h"
+#include "actions/web/OpenInEdgeAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -99,35 +102,28 @@ CString WebHistoryAdhocCommand::GetTypeDisplayName()
 	return WebHistoryAdhocCommand::TypeDisplayName((LPCTSTR)in->mHistory.mBrowserName);
 }
 
-BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
+bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-	if (isShiftKeyPressed) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mHistory.mUrl);
-		return TRUE;
+	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
+	if (isShiftPressed) {
+		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
+		return true;
 	}
-
-	// URLをブラウザで開く
-	std::vector<TCHAR> path(MAX_PATH_NTFS);
-	if (in->GetExecutablePath(path.data(), MAX_PATH_NTFS) == false) {
-		return FALSE;
+	else {
+		if (in->mHistory.mBrowserName == _T("Chrome")) {
+		*action = new actions::web::OpenInChromeAction(in->mHistory.mUrl);
+		return true;
+		}
+		else if (in->mHistory.mBrowserName == _T("Edge")) {
+		*action = new actions::web::OpenInEdgeAction(in->mHistory.mUrl);
+		return true;
+		}
+		else {
+			return false;
+		}
 	}
-
-	if (Path::FileExists(path.data()) == FALSE) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += path.data();
-		AfxMessageBox(msg);
-		return TRUE;
-	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run(path.data(), in->mHistory.mUrl, process);
-
-	return TRUE;
 }
+
 
 HICON WebHistoryAdhocCommand::GetIcon()
 {
