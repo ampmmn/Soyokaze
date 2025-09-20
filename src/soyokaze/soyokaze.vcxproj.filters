@@ -1647,6 +1647,9 @@
     <ClInclude Include="actions\builtin\RegisterNewCommandAction.h">
       <Filter>actions\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="actions\builtin\CallbackAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2898,6 +2901,9 @@
       <Filter>actions\builtin</Filter>
     </ClCompile>
     <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\CallbackAction.cpp">
       <Filter>actions\builtin</Filter>
     </ClCompile>
   </ItemGroup>
