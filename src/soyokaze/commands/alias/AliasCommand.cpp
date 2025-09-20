@@ -83,6 +83,8 @@ CString AliasCommand::GetTypeDisplayName()
 
 bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	UNREFERENCED_PARAMETER(modifierFlags);
+
 	*action = new CallbackAction(_T("実行"), [&](Parameter*, String*) -> bool {
 
 			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
