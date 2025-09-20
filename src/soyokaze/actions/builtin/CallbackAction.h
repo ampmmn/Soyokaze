@@ -2,6 +2,7 @@
 
 #include "actions/core/ActionBase.h"
 #include <memory>
+#include <functional>
 
 // 指定された関数ポインタ経由で関数をよぶアクション
 namespace launcherapp { namespace actions { namespace builtin {
@@ -9,10 +10,10 @@ namespace launcherapp { namespace actions { namespace builtin {
 class CallbackAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	typedef bool (*LPCALLBACKFUNC)(Parameter* param, String* errMsg, void*);
+	typedef std::function<bool(Parameter*, String*)> LPCALLBACKFUNC;
 
 public:
-	CallbackAction(LPCTSTR dispName, LPCALLBACKFUNC func, void* param);
+	CallbackAction(LPCTSTR dispName, LPCALLBACKFUNC func);
 	~CallbackAction();
 
 // Action

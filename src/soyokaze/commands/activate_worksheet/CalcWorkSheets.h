@@ -37,6 +37,7 @@ public:
 
 	const std::wstring& GetWorkbookName();
 	const std::wstring& GetSheetName();
+	const String& GetErrorMessage();
 
 	BOOL Activate(bool isShowMaximize = false);
 

@@ -5,16 +5,14 @@ namespace launcherapp { namespace actions { namespace builtin {
 
 	struct CallbackAction::PImpl
 	{
-		LPCALLBACKFUNC mCallbackFunction{ nullptr };
+		LPCALLBACKFUNC mCallbackFunction;
 		CString mDisplayName;
-		void* mUserParam{ nullptr };
 	};
 
-CallbackAction::CallbackAction(LPCTSTR dispName, LPCALLBACKFUNC func, void* userParam) : in(new PImpl())
+CallbackAction::CallbackAction(LPCTSTR dispName, LPCALLBACKFUNC func) : in(new PImpl())
 {
 	in->mDisplayName = dispName;
 	in->mCallbackFunction = func;
-	in->mUserParam = userParam;
 }
 
 CallbackAction::~CallbackAction()
@@ -34,7 +32,7 @@ bool CallbackAction::Perform(Parameter* param, String* errMsg)
 	if (in->mCallbackFunction == nullptr) {
 		return false;
 	}
-	return in->mCallbackFunction(param, errMsg, in->mUserParam);
+	return in->mCallbackFunction(param, errMsg);
 }
 
 }}}

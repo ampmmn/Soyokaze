@@ -59,16 +59,14 @@ CString WorksheetCommand::GetTypeDisplayName()
 bool WorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	if (modifierFlags & Command::MODIFIER_CTRL) {
-		*action = new CallbackAction(_T("最大化表示"), [](Parameter*, String*, void* userParam) -> bool {
-			auto pThisPtr = (WorksheetCommand*)userParam;
-			return pThisPtr->in->mWorksheet->Activate(true);
-		}, this);
+		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String*) -> bool {
+			return in->mWorksheet->Activate(true);
+		});
 	}
 	else {
-		*action = new CallbackAction(_T("表示"), [](Parameter*, String*, void* userParam) -> bool {
-			auto pThisPtr = (WorksheetCommand*)userParam;
-			return pThisPtr->in->mWorksheet->Activate(false);
-		}, this);
+		*action = new CallbackAction(_T("表示"), [&](Parameter*, String*) -> bool {
+			return in->mWorksheet->Activate(false);
+		});
 	}
 	return true;
 }
