@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/builtin/BuiltinCommandEditor.h"
+#include "actions/builtin/CallbackAction.h"
 #include "setting/AppPreference.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandFile.h"
@@ -14,6 +15,7 @@
 #endif
 
 using namespace launcherapp::core;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -86,10 +88,18 @@ BOOL BuiltinCommandBase::Execute(Parameter* param)
 bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 {
 	UNREFERENCED_PARAMETER(modifierFlags);
-	UNREFERENCED_PARAMETER(action);
 
-	// 派生側で実装する
-	return false;
+	*action = new CallbackAction(_T("実行"), [&](Parameter* param, String* errMsg) -> bool {
+		mError.Empty();
+		if (Execute(param) == false) {
+			if (errMsg && mError.IsEmpty() == FALSE) {
+				UTF2UTF(mError, *errMsg);
+			}
+			return false;
+		}
+		return true;
+	});
+	return true;
 }
 
 CString BuiltinCommandBase::GetErrorString()
