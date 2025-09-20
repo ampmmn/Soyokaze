@@ -83,13 +83,12 @@ CString AliasCommand::GetTypeDisplayName()
 
 bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	*action = new CallbackAction(_T("実行"), [](Parameter*, String*, void* userParam) -> bool {
+	*action = new CallbackAction(_T("実行"), [&](Parameter*, String*) -> bool {
 
-			auto commandParam = (const CommandParam*)userParam;
 			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 
-			if (commandParam->mIsPasteOnly) {
-				mainWnd->SetText((LPCTSTR)commandParam->mText);
+			if (in->mParam.mIsPasteOnly) {
+				mainWnd->SetText((LPCTSTR)in->mParam.mText);
 
 				// フォーカスをメインウインドウに移す
 				bool isToggle = false;
@@ -97,10 +96,10 @@ bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 			}
 			else {
 				bool isWaitSync = true;
-				mainWnd->RunCommand((LPCTSTR)commandParam->mText, isWaitSync);
+				mainWnd->RunCommand((LPCTSTR)in->mParam.mText, isWaitSync);
 			}
 			return true;
-	}, &in->mParam);
+	});
 
 	return true;
 }

@@ -1249,6 +1249,7 @@ LauncherMainWindow::RunCommand(
 		if (action.get()) {
 			String errMsg;
 			if (action->Perform(actionParam, &errMsg) == false) {
+				spdlog::debug(_T("command {} Action::Perform returned false."), (LPCTSTR)cmd->GetName());
 				if (errMsg.IsEmpty() == FALSE) {
 					CString tmp;
 					auto app = (LauncherApp*)AfxGetApp();
