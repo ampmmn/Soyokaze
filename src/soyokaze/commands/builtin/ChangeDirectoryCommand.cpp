@@ -55,20 +55,6 @@ ChangeDirectoryCommand::~ChangeDirectoryCommand()
 
 BOOL ChangeDirectoryCommand::Execute(Parameter* param)
 {
-	// Ctrlキーがおされていた場合はカレントディレクトリをファイラで表示
-	bool isOpenPath = GetModifierKeyState(param, MASK_CTRL) != 0;
-	if (isOpenPath) {
-		std::vector<TCHAR> currentDir(MAX_PATH_NTFS);
-		GetCurrentDirectory(MAX_PATH_NTFS, &currentDir.front());
-		_tcscat_s(&currentDir.front(), currentDir.size(), _T("\\"));
-
-		ShellExecCommand cmd;
-		cmd.SetPath(&currentDir.front());
-
-		return cmd.Execute(ParameterBuilder::EmptyParam());
-	}
-
-
 	if (param->HasParameter() == false) {
 		return TRUE;
 	}
