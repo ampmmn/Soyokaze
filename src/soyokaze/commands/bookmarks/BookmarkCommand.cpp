@@ -3,6 +3,7 @@
 #include "commands/bookmarks/BookmarkCommandParam.h"
 #include "commands/bookmarks/URLCommand.h"
 #include "commands/bookmarks/Bookmarks.h"
+#include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
 
@@ -19,8 +20,8 @@ constexpr LPCTSTR EDGE_BOOKMARK_PATH = _T("AppData\\Local\\Microsoft\\Edge\\User
 struct BookmarkCommand::PImpl
 {
 	void LoadBookmarks();
-	void QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
-	void QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
+	bool QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
+	bool QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
 
 	Bookmarks* GetChromeBookmarks()
 	{
@@ -75,19 +76,26 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 	mLoadThread.swap(th);
 }
 
-void BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
+bool BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
 {
 	auto bookmarks = GetChromeBookmarks();
 	if (bookmarks == nullptr) {
-		return;
+		return true;
 	}
 
 	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
+
+	auto repos = CommandRepository::GetInstance();
 
 	// 指定されたキーワードでブックマークの検索を行う
 	std::vector<Bookmark> bkmItems;
  	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
 	for (auto& item : bkmItems) {
+
+		// 後続の検索要求が来ている場合は打ち切り
+		if (repos->HasQueryRequest()) {
+			return false;
+		}
 
 		// コマンド名がマッチしているので少なくとも前方一致扱いとする
 		int matchLevel = item.mMatchLevel;
@@ -96,21 +104,29 @@ void BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQuery
 		}
 		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Chrome)));
 	}
+	return true;
 }
 
-void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
+bool BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
 {
 	auto bookmarks = GetEdgeBookmarks();
 	if (bookmarks == nullptr) {
-		return;
+		return true;
 	}
 
 	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
+
+	auto repos = CommandRepository::GetInstance();
 
 	// 指定されたキーワードでブックマークの検索を行う
 	std::vector<Bookmark> bkmItems;
 	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
 	for (auto& item : bkmItems) {
+
+		// 後続の検索要求が来ている場合は打ち切り
+		if (repos->HasQueryRequest()) {
+			return false;
+		}
 
 		// コマンド名がマッチしているので少なくとも前方一致扱いとする
 		int matchLevel = item.mMatchLevel;
@@ -119,6 +135,7 @@ void BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryIt
 		}
 		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Edge)));
 	}
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,10 +184,14 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, launcherapp::CommandQuer
 	}
 
 	// Chromeのブックマークを取得し、キーワードで絞り込み
-	in->QueryChromeBookmarks(pattern, commands);
+	if (in->QueryChromeBookmarks(pattern, commands) == false) {
+		return false;
+	}
 
 	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
-	in->QueryEdgeBookmarks(pattern, commands);
+	if (in->QueryEdgeBookmarks(pattern, commands) == false) {
+		return false;
+	}
 
 	return true;
 }

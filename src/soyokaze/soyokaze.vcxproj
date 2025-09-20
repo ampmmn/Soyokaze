@@ -437,6 +437,7 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventListener.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryProvider.h" />
+    <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
@@ -475,6 +476,7 @@
     <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h" />
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandEditor.h" />
+    <ClInclude Include="commands\filter\FilterQueryCancellationToken.h" />
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h" />
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h" />
     <ClInclude Include="commands\group\GroupCommandEditor.h" />
@@ -550,6 +552,7 @@
     <ClInclude Include="commands\webhistory\WebHistoryCommand.h" />
     <ClInclude Include="commands\webhistory\WebHistoryCommandParam.h" />
     <ClInclude Include="commands\webhistory\WebHistoryProvider.h" />
+    <ClInclude Include="commands\webhistory\WebHistoryQueryCancellationToken.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h" />
     <ClInclude Include="commands\winscp\AppSettingWinScpPage.h" />
@@ -880,6 +883,7 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryDB.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryEventReceiver.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryProvider.cpp" />
+    <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
@@ -918,6 +922,7 @@
     <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp" />
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandEditor.cpp" />
+    <ClCompile Include="commands\filter\FilterQueryCancellationToken.cpp" />
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp" />
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp" />
     <ClCompile Include="commands\group\GroupCommandEditor.cpp" />
@@ -996,6 +1001,7 @@
     <ClCompile Include="commands\webhistory\WebHistoryCommand.cpp" />
     <ClCompile Include="commands\webhistory\WebHistoryCommandParam.cpp" />
     <ClCompile Include="commands\webhistory\WebHistoryProvider.cpp" />
+    <ClCompile Include="commands\webhistory\WebHistoryQueryCancellationToken.cpp" />
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp" />
     <ClCompile Include="commands\winscp\AppSettingWinScpPage.cpp" />

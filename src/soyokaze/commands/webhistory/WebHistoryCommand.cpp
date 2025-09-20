@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WebHistoryCommand.h"
+#include "commands/webhistory/WebHistoryQueryCancellationToken.h"
 #include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
@@ -72,6 +73,7 @@ struct WebHistoryCommand::PImpl
 	CommandParam mParam;
 	ChromiumBrowseHistory mChromeHistory;
 	ChromiumBrowseHistory mEdgeHistory;
+	QueryCancellationToken mCancelToken;
 	// ブックマーク読み込みスレッド
 	std::thread mLoadThread;
 };
@@ -96,7 +98,7 @@ void WebHistoryCommand::PImpl::QueryHistory(
 
 	// 条件に該当するブラウザ履歴項目一覧を取得する
 	std::vector<ChromiumBrowseHistory::ITEM> items;
-	historyDB->Query(words, items, mParam.mLimit);
+	historyDB->Query(words, mParam.mLimit, &mCancelToken, items);
 
 	int matchLevel = mParam.mPrefix.IsEmpty() ? Pattern::PartialMatch : Pattern::FrontMatch;
 
@@ -182,6 +184,9 @@ bool WebHistoryCommand::QueryCandidates(
 		std::reverse(words.begin(), words.end());
 		words.pop_back();
 	}
+
+	// キャンセルチェック処理の状態を初期化
+	in->mCancelToken.ResetState();
 
 	// Chromeの履歴を検索する
 	in->QueryHistory(in->GetChromeHistory(),_T("Chrome"), words, commands); 

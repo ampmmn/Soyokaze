@@ -98,6 +98,13 @@ bool SQLite3Database::TableExists(LPCTSTR tableName)
 	return SQLite3Wrapper::Get()->TableExists(in->mDB, tableName);
 }
 
+void SQLite3Database::SetProgressHandler(int n, LPPROGRESSHANDLER handler, void* param)
+{
+	if (in->mDB) {
+		SQLite3Wrapper::Get()->SetProgressHandler(in->mDB, n, handler, param);
+	}
+}
+
 void SQLite3Database::Close()
 {
 	if (in->mDB) {

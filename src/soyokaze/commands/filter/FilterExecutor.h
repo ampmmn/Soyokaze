@@ -9,6 +9,17 @@ namespace filter {
 
 class CommandParam;
 
+// キャンセルされたかどうかのフラグ管理
+class CancellationToken
+{
+public:
+	virtual ~CancellationToken() = default;
+	// キャンセルが発生したか
+	virtual bool IsCancellationRequested() = 0;
+
+};
+
+
 class FilterExecutor
 {
 public:
@@ -16,6 +27,7 @@ public:
 	~FilterExecutor();
 
 public:
+	void SetCancellationToken(CancellationToken* cancelToken);
 	void LoadCandidates(const CommandParam& param);
 	bool IsLoaded();
 

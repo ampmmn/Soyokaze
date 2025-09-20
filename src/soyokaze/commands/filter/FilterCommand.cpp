@@ -6,6 +6,7 @@
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterCommandEditor.h"
 #include "commands/filter/FilterExecutor.h"
+#include "commands/filter/FilterQueryCancellationToken.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
 #include "matcher/PatternInternal.h"
@@ -47,6 +48,7 @@ struct FilterCommand::PImpl
 	CString mErrMsg;
 	//
 	FilterExecutor* mExecutor{nullptr};
+	QueryCancellationToken mCancelToken;
 
 	bool mIsEmpty{false};
 };
@@ -57,6 +59,7 @@ void FilterCommand::PImpl::LoadCandidates()
 	if (mExecutor == nullptr) {
 		mExecutor = new FilterExecutor();
 		mExecutor->LoadCandidates(mParam);
+		mExecutor->SetCancellationToken(&mCancelToken);
 	}
 }
 

@@ -34,6 +34,8 @@ struct ClipboardHistoryDB::PImpl
 	 */
 	void Query(const std::vector<PatternInternal::WORD>& words, ResultList& result);
 
+	bool MakeQueryString(const std::vector<PatternInternal::WORD>& words, CString& queryStr);
+
 	/**
 	 * @brief 全ての結果を取得する
 	 * @param result 結果を格納するリスト
@@ -47,7 +49,7 @@ struct ClipboardHistoryDB::PImpl
 	int mSizeLimit{64}; ///< サイズ制限
 	int mCountLimit{1024}; ///< カウント制限
 	bool mIsUseRegExp{true}; // 正規表現検索を使うか?
-
+	CancellationToken* mCancelToken{nullptr};
 	std::unique_ptr<SQLite3Database> mDB; ///< SQLite3 データベース
 	std::mutex mMutex;
 };
@@ -65,8 +67,53 @@ void ClipboardHistoryDB::PImpl::Query(
 	std::lock_guard<std::mutex> lock(mMutex);
 
 	// 得た検索ワードからsqlite3のクエリ文字列を生成する
+	CString queryStr;
+	if (MakeQueryString(words, queryStr) == false) {
+		return;
+	}
+
+	struct local_param {
+
+		// 結果が見つかったときの通知
+		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
+
+			auto param = (local_param*)p;
+
+			ITEM item;
+			item.mAppendTime = std::stoull(argv[0]);
+			UTF2UTF(argv[1], item.mData);
+
+			param->mResultList->push_back(item);
+			return 0;
+		}
+
+		// 一定間隔で呼ばれる進捗チェック
+		static int OnProgress(void* p) {
+			auto param = (local_param*)p;
+			if (param->mCancelToken->IsCancellationRequested()) {
+				return 1;
+			}
+			return 0;
+		}
+
+		CancellationToken* mCancelToken{nullptr};
+		ResultList* mResultList = nullptr;
+	};
+
+	// 問い合わせを行う
+	local_param param{ mCancelToken, &result };
+	if (mCancelToken) {
+		mDB->SetProgressHandler(1000, local_param::OnProgress, (void*)&param);
+	}
+	mDB->Query(queryStr, local_param::Callback, (void*)&param);
+}
+
+bool ClipboardHistoryDB::PImpl::MakeQueryString(const std::vector<PatternInternal::WORD>& words, CString& queryStr)
+{
 	static LPCTSTR basePart = _T("SELECT DISTINCT APPENDDATE,DATA from TBL_CLIPHISTORY where ");
-	CString queryStr(basePart);
+	queryStr =basePart;
 
 	bool isUseRegExp = mIsUseRegExp;
 
@@ -89,29 +136,7 @@ void ClipboardHistoryDB::PImpl::Query(
 
 	footer.Format(_T(" limit %d;"), mNumOfResults);
 	queryStr += footer;
-
-	struct local_param {
-		static int Callback(void* p, int argc, char** argv, char**colName) {
-			UNREFERENCED_PARAMETER(argc);
-			UNREFERENCED_PARAMETER(colName);
-
-			auto param = (local_param*)p;
-
-			ITEM item;
-			item.mAppendTime = std::stoull(argv[0]);
-			UTF2UTF(argv[1], item.mData);
-
-			param->mResultList->push_back(item);
-			return 0;
-		}
-
-		ResultList* mResultList = nullptr;
-	};
-
-	// 問い合わせを行う
-	local_param param;
-	param.mResultList = &result;
-	mDB->Query(queryStr, local_param::Callback, (void*)&param);
+	return true;
 }
 
 /**
@@ -279,6 +304,15 @@ bool ClipboardHistoryDB::Unload()
 void ClipboardHistoryDB::UseRegExpSearch(bool useRegExp)
 {
 	in->mIsUseRegExp = useRegExp;
+}
+
+/**
+ * @brief キャンセル状態を問い合わせるためのオブジェクトを設定する
+ * @param token キャンセル状態問い合わせオブジェクト
+ */
+void ClipboardHistoryDB::SetCancellationToken(CancellationToken* token)
+{
+	in->mCancelToken = token;
 }
 
 /**

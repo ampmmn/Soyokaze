@@ -137,6 +137,8 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 	int hitCount = 0;
 	int limit = 20;
 
+	auto repos = launcherapp::core::CommandRepository::GetInstance();
+
 	// 辞書データをひとつずつ比較する
 	std::lock_guard<std::mutex> lock(mMutex);
 	for (const auto& record : mDictData.mRecords) {
@@ -144,6 +146,11 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 		if (tm.IsTimeout()) {
 			// 一定時間たっても終わらなかったらあきらめる
 			break;
+		}
+
+		if (repos->HasQueryRequest()) {
+			// 後続の検索要求がある場合はただちにとめる
+			return 0;
 		}
 
 		int level = Pattern::Mismatch;

@@ -191,6 +191,8 @@ struct FilterExecutor::PImpl
 
 	// スレッドが終了済かどうかを表す真偽値の配列
 	std::vector<BOOL> mAllExited;
+	//
+	CancellationToken* mCancelToken{nullptr};
 };
 
 // 子プロセスの出力から候補一覧を生成する
@@ -386,9 +388,17 @@ FilterExecutor::FilterExecutor() : in(new PImpl)
 				// 検索条件
 				pattern->SetWholeText(in->mKeyword);
 
+				auto cancelToken = in->mCancelToken;
 				// 担当ぶんの要素を処理する
 				CandidateList matchedItems;
+				uint32_t checkCounter = 0;
 				for (auto& candidate : candidates) {
+
+					if ((checkCounter % 100) == 0 && cancelToken && cancelToken->IsCancellationRequested()) {
+						// 後続の検索要求がある場合はただちにとめる
+						break;
+					}
+					++checkCounter;
 
 					int level = pattern->Match(candidate.mDisplayName);
 					if (level == Pattern::Mismatch) {
@@ -426,6 +436,11 @@ FilterExecutor::~FilterExecutor()
 	for (auto& h : in->mWaitEvents) {
 		CloseHandle(h);
 	}
+}
+
+void FilterExecutor::SetCancellationToken(CancellationToken* cancelToken)
+{
+	in->mCancelToken = cancelToken;
 }
 
 void FilterExecutor::LoadCandidates(const CommandParam& param)

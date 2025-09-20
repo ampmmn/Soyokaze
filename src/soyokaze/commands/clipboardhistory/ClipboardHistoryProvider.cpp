@@ -3,6 +3,7 @@
 #include "commands/clipboardhistory/ClipboardHistoryCommand.h"
 #include "commands/clipboardhistory/ClipboardHistoryParam.h"
 #include "commands/clipboardhistory/ClipboardHistoryDB.h"
+#include "commands/clipboardhistory/ClipboardHistoryQueryCancellationToken.h"
 #include "commands/clipboardhistory/ClipboardHistoryEventReceiver.h"
 #include "commands/clipboardhistory/AppSettingClipboardHistoryPage.h"
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
@@ -118,6 +119,7 @@ struct ClipboardHistoryProvider::PImpl :
 		if (mParam.mIsEnable) {
 			// クリップボード履歴を有効にする
 			mHistoryDB.Load(mParam.mNumOfResults, mParam.mSizeLimit, mParam.mCountLimit);
+			mHistoryDB.SetCancellationToken(&mCancelToken);
 			mHistoryDB.UseRegExpSearch(mParam.mIsDisableMigemo == false);
 			mReceiver.Activate(mParam.mInterval, mParam.mExcludePattern);
 			mReceiver.AddListener(&mHistoryDB);
@@ -135,6 +137,7 @@ struct ClipboardHistoryProvider::PImpl :
 	bool mIsInitialized{true}; ///< 初期化済かどうか
 
 	ClipboardHistoryDB mHistoryDB; ///< クリップボード履歴データベース
+	QueryCancellationToken mCancelToken;   ///< キャンセル状態問い合わせ用オブジェクト
 	ClipboardHistoryEventReceiver mReceiver; ///< クリップボード履歴イベントレシーバー
 };
 

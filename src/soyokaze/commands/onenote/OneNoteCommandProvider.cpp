@@ -17,6 +17,8 @@
 #define new DEBUG_NEW
 #endif
 
+using CommandRepository = launcherapp::core::CommandRepository;
+
 namespace launcherapp { namespace commands { namespace onenote {
 
 constexpr int SEARCH_LIMIT = 24;
@@ -183,6 +185,8 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
+	auto repos = CommandRepository::GetInstance();
+
 	int matchCount = 0;
 
 	CString pathStr;
@@ -195,6 +199,11 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 			for (auto& page : section.GetPages()) {
 
 				if (matchCount >= SEARCH_LIMIT) {
+					return;
+				}
+
+				if (repos->HasQueryRequest()) {
+					// 後続のリクエストが来ている場合は検索を打ち切る
 					return;
 				}
 

@@ -883,8 +883,7 @@ bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 // クエリ要求の有無を返す
 bool CommandRepository::HasQueryRequest()
 {
-	std::lock_guard<std::mutex> lock(in->mMutex);
-	return in->mQueryRequestQueue.empty() == false;
+	return in->HasSubsequentRequest();
 }
 
 void CommandRepository::RegisterListener(CommandRepositoryListenerIF* listener)

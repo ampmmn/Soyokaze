@@ -28,7 +28,7 @@ typedef int (__stdcall * LPSQLITE3_BIND_TEXT)(void*,int,const char*,int,void(__s
 
 typedef int (__stdcall * LPSQLITE3_RESET)(void*);
 typedef int (__stdcall * LPSQLITE3_FINALIZE)(void*);
-
+typedef void (__stdcall *LPSQLITE3_PROGRESS_HANDLER)(void*, int, int(__stdcall*)(void*), void*);
 
 static LPSQLITE3_OPEN sqlite3_open = nullptr;
 static LPSQLITE3_EXEC sqlite3_exec = nullptr;
@@ -45,6 +45,7 @@ static LPSQLITE3_STEP sqlite3_step = nullptr;
 static LPSQLITE3_BIND_TEXT sqlite3_bind_text = nullptr;
 static LPSQLITE3_RESET sqlite3_reset = nullptr;
 static LPSQLITE3_FINALIZE sqlite3_finalize = nullptr;
+static LPSQLITE3_PROGRESS_HANDLER sqlite3_progress_handler = nullptr;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +83,7 @@ SQLite3Wrapper::SQLite3Wrapper() : in(new PImpl)
 		sqlite3_bind_text = (LPSQLITE3_BIND_TEXT)GetProcAddress(lib, "sqlite3_bind_text");
 		sqlite3_reset = (LPSQLITE3_RESET)GetProcAddress(lib, "sqlite3_reset");
 		sqlite3_finalize = (LPSQLITE3_FINALIZE)GetProcAddress(lib, "sqlite3_finalize");
+		sqlite3_progress_handler = (LPSQLITE3_PROGRESS_HANDLER)GetProcAddress(lib, "sqlite3_progress_handler");
 	}
 	else {
 		spdlog::error(_T("Failed to load winsqlite3.dll!"));
@@ -160,6 +162,11 @@ int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, voi
 int SQLite3Wrapper::Prepare(void* ctx, const char* sql, void** stmt)
 {
 	return sqlite3_prepare_v2(ctx, sql, -1, stmt, nullptr);
+}
+
+void SQLite3Wrapper::SetProgressHandler(void* ctx, int n, int(__stdcall* handler)(void*), void* param)
+{
+	sqlite3_progress_handler(ctx, n, handler, param);
 }
 
 int SQLite3Wrapper::Close(void *ctx)

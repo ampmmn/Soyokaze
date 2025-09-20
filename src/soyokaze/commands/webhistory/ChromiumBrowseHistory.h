@@ -8,6 +8,15 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
+// キャンセルされたかどうかのフラグ管理
+class CancellationToken
+{
+public:
+	virtual ~CancellationToken() = default;
+	// キャンセルが発生したか
+	virtual bool IsCancellationRequested() = 0;
+};
+
 class ChromiumBrowseHistory
 {
 public:
@@ -23,7 +32,7 @@ public:
 
 public:
 	bool Initialize(const CString& id, const CString& profileDir, bool isUseURL, bool isUseMigemo);
-	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit);
+	bool Query(const std::vector<PatternInternal::WORD>& words, int limit, CancellationToken* cancelToken, std::vector<ITEM>& items);
 
 private:
 	struct PImpl;

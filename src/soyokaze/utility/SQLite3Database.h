@@ -27,6 +27,7 @@ class SQLite3Database
 {
 public:
 	typedef int (*LPQUERYCALLBACK)(void *data, int argc, char **argv, char **colName);
+	typedef int (__stdcall*LPPROGRESSHANDLER)(void* param);
 
 public:
 	SQLite3Database(LPCTSTR filePath);
@@ -36,6 +37,7 @@ public:
 	int Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* param);
 	int Prepare(LPCSTR sql, SQLite3Statement* stmt);
 	bool TableExists(LPCTSTR tableName);
+	void SetProgressHandler(int n, LPPROGRESSHANDLER handler, void* param);
 	void Close();
 
 private:

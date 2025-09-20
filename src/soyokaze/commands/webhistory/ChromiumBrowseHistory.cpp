@@ -9,12 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace commands {
-namespace webhistory {
-
-// クエリのタイムアウト時間
-constexpr uint64_t QUERY_TIMEOUT_MSEC = 150;
+namespace launcherapp { namespace commands { namespace webhistory {
 
 using SQLite3Database = launcherapp::utility::SQLite3Database; 
 
@@ -35,10 +30,10 @@ struct ChromiumBrowseHistory::PImpl
 		mOrgDBFilePath.ReleaseBuffer();
 	}
 
+	bool MakeQueryString(const std::vector<PatternInternal::WORD>& words, int limit, CString& queryStr);
+
 	void UpdateDatabase();
 	void Reload();
-
-	bool Query(const std::vector<PatternInternal::WORD>& words, std::vector<ITEM>& items, int limit);
 
 	bool MakeTempFilePath(CString& path)
 	{
@@ -71,6 +66,45 @@ struct ChromiumBrowseHistory::PImpl
 	std::unique_ptr<SQLite3Database> mHistoryDB;
 };
 
+// 得た検索ワードからsqlite3のクエリ文字列を生成する
+bool ChromiumBrowseHistory::PImpl::MakeQueryString(const std::vector<PatternInternal::WORD>& words, int limit, CString& queryStr)
+{
+	static LPCTSTR basePart = _T("select distinct url,title from hoge2 where ");
+	queryStr = basePart;
+
+	spdlog::debug("ChromiumBrowseHistory::Query isUseMigemo : {}", mIsUseMigemo);
+
+	bool isFirst = true;
+	CString token;
+	for(const auto& word : words) {
+		if (word.mMethod == PatternInternal::RegExp && mIsUseMigemo) {
+			if (mIsUseURL) {
+				token.Format(_T("%s (title regexp '%s' or url regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
+			}
+			else {
+				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
+			}
+		}
+		else {
+			if (mIsUseURL) {
+				token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
+			}
+			else {
+				token.Format(_T("%s title like '%%%s%%' "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord);
+			}
+		}
+		queryStr += token;
+		isFirst = false;
+	}
+
+	// 検索件数の上限を設定
+	CString footer;
+	footer.Format(_T(" limit %d ;"), limit);
+	queryStr += footer;
+
+	spdlog::debug(_T("query str : {}"), (LPCTSTR)queryStr);
+	return true;
+}
 
 void ChromiumBrowseHistory::PImpl::UpdateDatabase()
 {
@@ -125,88 +159,6 @@ void ChromiumBrowseHistory::PImpl::Reload()
 	}
 }
 
-bool ChromiumBrowseHistory::PImpl::Query(
-		const std::vector<PatternInternal::WORD>& words,
-	 	std::vector<ITEM>& items,
-	 	int limit
-)
-{
-	if(words.empty()) {
-		return true;
-	}
-
-	// 得た検索ワードからsqlite3のクエリ文字列を生成する
-	static LPCTSTR basePart = _T("select distinct url,title from hoge2 where ");
-	CString queryStr(basePart);
-
-	spdlog::debug("ChromiumBrowseHistory::Query isUseMigemo : {}", mIsUseMigemo);
-
-	bool isFirst = true;
-	CString token;
-	for(const auto& word : words) {
-		if (word.mMethod == PatternInternal::RegExp && mIsUseMigemo) {
-			if (mIsUseURL) {
-				token.Format(_T("%s (title regexp '%s' or url regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
-			}
-			else {
-				token.Format(_T("%s (title regexp '%s') "), isFirst ? _T("") : _T("and"), (LPCTSTR)word.mWord);
-			}
-		}
-		else {
-			if (mIsUseURL) {
-				token.Format(_T("%s (title like '%%%s%%' or url like '%%%s%%') "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord, (LPCTSTR)word.mWord);
-			}
-			else {
-				token.Format(_T("%s title like '%%%s%%' "), isFirst ? _T(""): _T("and"), (LPCTSTR)word.mWord);
-			}
-		}
-		queryStr += token;
-		isFirst = false;
-	}
-
-	// 検索件数の上限を設定
-	CString footer;
-	footer.Format(_T(" limit %d ;"), limit);
-	queryStr += footer;
-
-	spdlog::debug(_T("query str : {}"), (LPCTSTR)queryStr);
-
-	struct local_param {
-		static int Callback(void* p, int argc, char** argv, char**colName) {
-			UNREFERENCED_PARAMETER(argc);
-			UNREFERENCED_PARAMETER(colName);
-
-			auto param = (local_param*)p;
-
-			if (GetTickCount64()  > param->mTimeout) {
-				return 1;
-			}
-
-			ITEM item;
-			UTF2UTF(argv[0], item.mUrl);
-			UTF2UTF(argv[1], item.mTitle);
-			param->mItems.push_back(item);
-			return 0;
-		}
-		uint64_t mTimeout{0};
-	 	std::vector<ITEM> mItems;
-	};
-
-	// mHistoryDBに対し、問い合わせを行う
-	std::lock_guard<std::mutex> lock(mMutex);
-	if (mHistoryDB.get() == nullptr) {
-		return false;
-	}
-
-	local_param param{ GetTickCount64() + QUERY_TIMEOUT_MSEC };
-	mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
-
-	items.swap(param.mItems);
-
-	return true;
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,14 +193,65 @@ bool ChromiumBrowseHistory::Initialize(
 
 bool ChromiumBrowseHistory::Query(
 		const std::vector<PatternInternal::WORD>& words,
-	 	std::vector<ITEM>& items,
-	 	int limit
+	 	int limit,
+	 	CancellationToken* cancelToken,
+	 	std::vector<ITEM>& items
 )
 {
-		return in->Query(words, items, limit);
+	if(words.empty()) {
+		// キーワードがなければ検索しない
+		return true;
+	}
+
+	// 検索用のSQL文を生成
+	CString queryStr;
+	if (in->MakeQueryString(words, limit, queryStr) == false) {
+		return false;
+	}
+
+	struct local_param {
+
+		// 結果が見つかったときの通知
+		static int Callback(void* p, int argc, char** argv, char**colName) {
+			UNREFERENCED_PARAMETER(argc);
+			UNREFERENCED_PARAMETER(colName);
+
+			auto param = (local_param*)p;
+
+			ITEM item;
+			UTF2UTF(argv[0], item.mUrl);
+			UTF2UTF(argv[1], item.mTitle);
+			param->mItems.push_back(item);
+			return 0;
+		}
+
+		// 一定間隔で呼ばれる進捗チェック
+		static int OnProgress(void* p) {
+			auto param = (local_param*)p;
+			if (param->mCancelToken->IsCancellationRequested()) {
+				return 1;
+			}
+			return 0;
+		}
+		CancellationToken* mCancelToken{nullptr};
+	 	std::vector<ITEM> mItems;
+	};
+
+	// mHistoryDBに対し、問い合わせを行う
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	if (in->mHistoryDB.get() == nullptr) {
+		return false;
+	}
+
+	local_param param{ cancelToken };
+	param.mItems.reserve((std::max)(limit, 16));
+	in->mHistoryDB->SetProgressHandler(1000, local_param::OnProgress, (void*)&param);
+	in->mHistoryDB->Query(queryStr, local_param::Callback, (void*)&param);
+
+	items.swap(param.mItems);
+
+	return true;
 }
 
-}
-}
-}
+}}}
 

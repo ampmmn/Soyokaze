@@ -14,6 +14,7 @@ public:
 	int Open(const CString& filePath, void** ctx);
 	int Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err);
 	int Prepare(void* ctx, const char* sql, void** stmt);
+	void SetProgressHandler(void* ctx, int n, int(__stdcall* handler)(void*), void* param);
 	int Close(void *ctx);
 
 	int BindText(void* stmt, int index, const CStringA& text);
