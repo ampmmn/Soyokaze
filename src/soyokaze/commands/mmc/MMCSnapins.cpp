@@ -3,6 +3,8 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
+#include "utility/ManualEvent.h"
+#include "utility/ScopedResetEvent.h"
 #include <thread>
 
 #import "msxml6.dll" exclude("ISequentialStream","_FILETIME")named_guids
@@ -36,7 +38,7 @@ struct MMCSnapins::PImpl : public AppPreferenceListenerIF
 	}
 	void OnAppNormalBoot() override
  	{
-		mWaitEvt.SetEvent();
+		mWaitEvt.Set();
 		RunCollectTask();
 	}
 	void OnAppPreferenceUpdated() override {}
@@ -44,14 +46,14 @@ struct MMCSnapins::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	std::vector<MMCSnapin> mItems;
-	CEvent mWaitEvt;
+	ManualEvent mWaitEvt;
 };
 
 void MMCSnapins::PImpl::RunCollectTask()
 {
 	std::thread th([&]() {
 
-			mWaitEvt.ResetEvent();
+			ScopedResetEvent scoped_event(mWaitEvt, true);
 
 			Sleep(500);
 			HRESULT hr = CoInitialize(NULL);
@@ -66,7 +68,6 @@ void MMCSnapins::PImpl::RunCollectTask()
 			mItems.swap(items);
 
 			CoUninitialize();
-			mWaitEvt.SetEvent();
 			});
 	th.detach();
 }
@@ -522,13 +523,13 @@ bool MMCSnapins::PImpl::LoadItem(
 
 MMCSnapins::MMCSnapins() : in(new PImpl)
 {
-	in->mWaitEvt.SetEvent();
+	in->mWaitEvt.Set();
 }
 
 MMCSnapins::~MMCSnapins()
 {
 	// 更新をするタスクの完了を待つ
-	WaitForSingleObject(in->mWaitEvt, 5000);
+	in->mWaitEvt.WaitFor(5000);
 }
 
 void MMCSnapins::GetSnapins(

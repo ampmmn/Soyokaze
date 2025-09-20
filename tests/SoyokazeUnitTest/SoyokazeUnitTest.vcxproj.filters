@@ -159,6 +159,9 @@
     <ClCompile Include="..\testcode\soyokaze\StringWrapperTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

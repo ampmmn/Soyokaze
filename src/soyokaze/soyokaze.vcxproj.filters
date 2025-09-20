@@ -1566,6 +1566,15 @@
     <ClInclude Include="commands\onenote\AppSettingPageOneNote.h">
       <Filter>commands\onenote</Filter>
     </ClInclude>
+    <ClInclude Include="utility\ManualEvent.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\ScopedResetEvent.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\everything\EverythingQueryCancellationToken.h">
+      <Filter>commands\everything</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2770,6 +2779,12 @@
     </ClCompile>
     <ClCompile Include="commands\onenote\AppSettingPageOneNote.cpp">
       <Filter>commands\onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\ManualEvent.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\everything\EverythingQueryCancellationToken.cpp">
+      <Filter>commands\everything</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,16 @@ namespace launcherapp {
 namespace commands {
 namespace everything {
 
+// キャンセルされたかどうかのフラグ管理
+class CancellationToken
+{
+public:
+	virtual ~CancellationToken() = default;
+	// キャンセルが発生したか
+	virtual bool IsCancellationRequested() = 0;
+
+};
+
 class EverythingProxy
 {
 private:
@@ -18,7 +28,7 @@ private:
 public:
 	static EverythingProxy* Get();
 
-	bool Query(const CString& queryStr, std::vector<EverythingResult>& results);
+	bool Query(const CString& queryStr, CancellationToken* cancelToken, std::vector<EverythingResult>& results);
 
 	HICON GetIcon();
 

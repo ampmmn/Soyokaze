@@ -62,6 +62,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp" />

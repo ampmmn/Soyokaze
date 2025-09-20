@@ -8,6 +8,9 @@ namespace everything {
 class EverythingResult
 {
 public:
+	EverythingResult() {}
+	EverythingResult(LPCTSTR fullPath) : mFullPath(fullPath) {}
+
 	CString mFullPath;
 };
 

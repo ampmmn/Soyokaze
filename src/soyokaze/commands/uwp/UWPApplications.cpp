@@ -5,6 +5,8 @@
 #include "SharedHwnd.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#include "utility/ManualEvent.h"
+#include "utility/ScopedResetEvent.h"
 #include <atlbase.h>
 #include <propvarutil.h>
 #include <mutex>
@@ -64,14 +66,14 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
 	bool mIsAbort{false};
-	CEvent mWaitEvt;
+	ManualEvent mWaitEvt;
 };
 
 void UWPApplications::PImpl::RunUpdateTask()
 {
 	std::thread th([&]() {
 
-		mWaitEvt.ResetEvent();
+		ScopedResetEvent scope_event(mWaitEvt, true);
 
 		Sleep(2000);
 		HRESULT hr = CoInitialize(NULL);
@@ -110,7 +112,6 @@ void UWPApplications::PImpl::RunUpdateTask()
 			mItems = tmp;
 		}
 
-		mWaitEvt.SetEvent();
 		CoUninitialize();
 	});
 	th.detach();
@@ -220,14 +221,14 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 
 UWPApplications::UWPApplications() : in(std::make_unique<PImpl>())
 {
-	in->mWaitEvt.SetEvent();
+	in->mWaitEvt.Set();
 }
 
 UWPApplications::~UWPApplications()
 {
 	// 更新をするタスクの完了を待つ
 	in->SetAbort();
-	WaitForSingleObject(in->mWaitEvt, 5000);
+	in->mWaitEvt.WaitFor(5000);
 }
 
 bool UWPApplications::GetApplications(std::vector<ItemPtr>& items)

@@ -176,7 +176,6 @@ struct CommandRepository::PImpl
 	// 一致したコマンドがなかったときのコマンド
 	std::unique_ptr<DefaultCommand> mDefaultCommand;
 
-	
 	std::mutex mMutex;
 	CEvent mQueryRequestEvt;
 	std::vector<QueryRequest*> mQueryRequestQueue;
@@ -878,6 +877,14 @@ bool CommandRepository::HasCommand(const CString& strQueryStr)
 bool CommandRepository::IsValidAsName(const CString& strQueryStr)
 {
 	return strQueryStr.FindOneOf(_T(" !\"\\/*;:[]|&<>,")) == -1;
+}
+
+
+// クエリ要求の有無を返す
+bool CommandRepository::HasQueryRequest()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	return in->mQueryRequestQueue.empty() == false;
 }
 
 void CommandRepository::RegisterListener(CommandRepositoryListenerIF* listener)

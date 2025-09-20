@@ -56,6 +56,9 @@ public:
 
 	bool IsValidAsName(const CString& strQueryStr);
 
+	// クエリ要求の有無を返す
+	bool HasQueryRequest();
+
 	// リスナー登録
 	void RegisterListener(CommandRepositoryListenerIF* listener);
 	void UnregisterListener(CommandRepositoryListenerIF* listener);

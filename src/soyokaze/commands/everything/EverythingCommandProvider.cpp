@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "EverythingCommandProvider.h"
+#include "commands/everything/EverythingQueryCancellationToken.h"
 #include "commands/everything/EverythingAdhocCommand.h"
 #include "commands/everything/EverythingCommandParam.h"
 #include "commands/everything/EverythingResult.h"
@@ -43,6 +44,7 @@ struct EverythingCommandProvider::PImpl :
 	void Reload(); 
 
 	CommandParam mParam;
+	EverythingQueryCancellationToken mCancelToken;
 };
 
 void EverythingCommandProvider::PImpl::Reload()
@@ -127,8 +129,13 @@ void EverythingCommandProvider::QueryAdhocCommands(
 
 	spdlog::debug(_T("Everything QueryStr:{}"), (LPCTSTR)queryStr);
 
+	in->mCancelToken.ResetState();
+
 	std::vector<EverythingResult> results;
-	EverythingProxy::Get()->Query(queryStr, results);
+	if (EverythingProxy::Get()->Query(queryStr, &in->mCancelToken, results) == false) {
+		// キャンセル
+		return;
+	}
 
 	for (auto& result : results) {
 

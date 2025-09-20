@@ -470,6 +470,7 @@
     <ClInclude Include="commands\everything\EverythingCommandParam.h" />
     <ClInclude Include="commands\everything\EverythingCommandProvider.h" />
     <ClInclude Include="commands\everything\EverythingProxy.h" />
+    <ClInclude Include="commands\everything\EverythingQueryCancellationToken.h" />
     <ClInclude Include="commands\everything\EverythingResult.h" />
     <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h" />
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
@@ -820,11 +821,13 @@
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalDirectoryWatcher.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
+    <ClInclude Include="utility\ManualEvent.h" />
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
     <ClInclude Include="utility\RegistryKey.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
+    <ClInclude Include="utility\ScopedResetEvent.h" />
     <ClInclude Include="utility\SHA1.h" />
     <ClInclude Include="utility\ShortcutFile.h" />
     <ClInclude Include="utility\Sound.h" />
@@ -911,6 +914,7 @@
     <ClCompile Include="commands\everything\EverythingCommandParam.cpp" />
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />
+    <ClCompile Include="commands\everything\EverythingQueryCancellationToken.cpp" />
     <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp" />
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandEditor.cpp" />
@@ -1254,6 +1258,7 @@
     <ClCompile Include="utility\HWNDRect.cpp" />
     <ClCompile Include="utility\LocalDirectoryWatcher.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
+    <ClCompile Include="utility\ManualEvent.cpp" />
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />

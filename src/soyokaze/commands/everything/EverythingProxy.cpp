@@ -7,6 +7,8 @@
 #include "matcher/Pattern.h"
 #include "icon/IconLoader.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "utility/ManualEvent.h"
+#include "utility/ScopedResetEvent.h"
 #include "mainwindow/MainWindowDeactivateBlocker.h"
 #include <mutex>
 
@@ -19,7 +21,6 @@ namespace commands {
 namespace everything {
 
 constexpr DWORD REPLY_ID = 0xDEAD;
-constexpr int LIMIT_TIME = 250;   // 結果取得にかける時間(これを超過したら打ち切り)
 
 struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 {
@@ -27,11 +28,10 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	{
 		AppPreference::Get()->RegisterListener(this);
 		Load();
-		mQueryEvent = CreateEvent(nullptr, TRUE, TRUE, nullptr);
+		mQueryEvent.Set();
 	}
 	virtual ~PImpl()
 	{
-		CloseHandle(mQueryEvent);
 	}
 
 // AppPreferenceListenerIF
@@ -61,22 +61,6 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	bool IsEverythingActive();
 	bool RunApp();
 
-	bool IsCanceled()
-	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsCanceled;
-	}
-	bool WaitPreviousQueryDone()
-	{
-		if (WaitForSingleObject(mQueryEvent, 0) == WAIT_TIMEOUT) {
-			std::lock_guard<std::mutex> lock(mMutex);
-			mIsCanceled = true;
-		}
-		if (WaitForSingleObject(mQueryEvent, 2500) == WAIT_TIMEOUT) {
-			return false;
-		}
-		return true;
-	}
 
 	// EverythingのQuery完了通知を受け取るためのウインドウを取得する(なければ作成する)
 	HWND GetReplyWindowHandle()
@@ -105,11 +89,10 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 	std::mutex mMutex;
 	bool mIsRunApp{false};
 	bool mIsResultReceived{false};
-	bool mIsCanceled{false};
 	CString mAppPath;
 	HICON mAppIcon{nullptr};
 	HWND mReceiverWindow{nullptr};
-	HANDLE mQueryEvent{nullptr};
+	ManualEvent mQueryEvent;
 };
 
 
@@ -187,19 +170,39 @@ EverythingProxy* EverythingProxy::Get()
 	return &inst;
 }
 
-bool EverythingProxy::Query(const CString& queryStr, std::vector<EverythingResult>& results)
+/**
+  Everything検索を実行する
+ 	@return true:成功 false:失敗
+ 	@param[in]  queryStr    検索ワード
+ 	@param[in]  cancelToken キャンセル
+ 	@param[out] results     県が
+*/
+bool EverythingProxy::Query(
+	const CString& queryStr,
+	CancellationToken* cancelToken,
+	std::vector<EverythingResult>& results
+)
 {
-	if (in->WaitPreviousQueryDone() == false) {
+	// ## 前回のクエリの完了を待機する
+	if (in->mQueryEvent.WaitFor(2500) == false) {
 		spdlog::error("Failed to wait for the previous query to complete.");
 		return false;
 	}
-
-	ResetEvent(in->mQueryEvent);
-	in->mIsCanceled = false;
+	ScopedResetEvent scoped_event(in->mQueryEvent, true);  // スコープを抜けるときにSetEventを呼ぶ
 
 	PERFLOG("EverythingProxy::Query Start");
 	spdlog::stopwatch sw;
 
+	// ## Everythingが起動していない場合は起動する
+	if (in->IsEverythingActive() == false) {
+		if (in->RunApp() == false) {
+			return false;
+		}
+	}
+	PERFLOG("EverythingProxy::Query RunCheck:{0:.6f} s.", sw); sw.reset();
+
+	// ## 検索条件の設定
+	// 検索文言
 	Everything_SetSearch(queryStr);
 	// 日付降順で得る
 	Everything_SetSort(EVERYTHING_SORT_DATE_MODIFIED_DESCENDING);
@@ -208,31 +211,27 @@ bool EverythingProxy::Query(const CString& queryStr, std::vector<EverythingResul
 
 	PERFLOG("EverythingProxy::Query Everything_SetSearch:{0:.6f} s.", sw); sw.reset();
 
-
-	// Everythingが起動していない
-	if (in->IsEverythingActive() == false) {
-		if (in->RunApp() == false) {
-			SetEvent(in->mQueryEvent);
-			return false;
-		}
-	}
-	PERFLOG("EverythingProxy::Query RunCheck:{0:.6f} s.", sw); sw.reset();
-
+	// ## クエリ結果を受け取るための準備
 	in->mIsResultReceived = false;
-
-	// クエリ結果を受け取るためのハンドルを設定する
 	Everything_SetReplyWindow(in->GetReplyWindowHandle());
 	Everything_SetReplyID(REPLY_ID);
 
+	// ## Everything検索を実行する
  	if (Everything_Query(FALSE) == FALSE) {
-		SetEvent(in->mQueryEvent);
 		return false;
 	}
 
-	uint64_t start = GetTickCount64();
-
+	// ## 検索完了を待つ
 	MSG msg;
-	while(in->IsCanceled() == false && in->mIsResultReceived == false && GetTickCount64() - start < LIMIT_TIME) {
+	while(in->mIsResultReceived == false) {
+
+		if (cancelToken->IsCancellationRequested()) {
+			// 検索キャンセルが発生した
+			spdlog::debug("Everything_Query cancel.");
+			return false;
+		}
+
+		// メッセージ処理
 		if (PeekMessage(&msg, nullptr, 0, 0, 0) == FALSE) {
 			continue;
 		}
@@ -241,36 +240,25 @@ bool EverythingProxy::Query(const CString& queryStr, std::vector<EverythingResul
 		DispatchMessage(&msg);
 	}
 
-	if (in->IsCanceled() || in->mIsResultReceived == false) {
-		SetEvent(in->mQueryEvent);
-		return false;
-	}
-
-
+	// ## 検索結果を取り出す
 	DWORD dwNumResults = Everything_GetNumResults();
 
 	PERFLOG("EverythingProxy::Query Everything_GetNumResults:{0:.6f} s.", sw); sw.reset();
 
 	std::vector<EverythingResult> tmp;
 
-
 	std::vector<TCHAR> path(MAX_PATH_NTFS);
 
 	for (DWORD i = 0; i < dwNumResults; ++i) {
 
-		if (Everything_GetResultFullPathName(i, path.data(), MAX_PATH_NTFS) == EVERYTHING_ERROR_INVALIDCALL) {
+		if (Everything_GetResultFullPathName(i, path.data(), (DWORD)path.size()) == EVERYTHING_ERROR_INVALIDCALL) {
 			break;
 		}
-
-		EverythingResult result;
-		result.mFullPath = path.data();
-
-		tmp.push_back(result);
+		tmp.emplace_back(path.data());
 	}
 	results.swap(tmp);
 	PERFLOG("EverythingProxy::Query GetResult:{0:.6f} s.", sw); sw.reset();
 
-	SetEvent(in->mQueryEvent);
 	return true;
 }
 
