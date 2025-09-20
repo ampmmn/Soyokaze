@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CalculatorCommand.h"
-#include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -73,17 +73,16 @@ CString CalculatorCommand::GetTypeDisplayName()
 	}
 }
 
-BOOL CalculatorCommand::Execute(Parameter* param)
+bool CalculatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
 	// Calculatorといいつつ、ここに処理が及ぶ時点で計算はおわっていて、
 	// ここでは単にクリップボードに結果をコピーするのみ
 
 	// クリップボードにコピー
-	Clipboard::Copy(in->mResult);
-
-	return TRUE;
+	*action = new actions::clipboard::CopyTextAction(in->mResult);
+	return true;
 }
 
 HICON CalculatorCommand::GetIcon()
