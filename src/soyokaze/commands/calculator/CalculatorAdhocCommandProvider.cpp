@@ -117,13 +117,13 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	// 10進数としての結果を追加
-	// ただし、入力文字列と結果が全く同じ場合は表示しない
-	// 例: 1 -> 1 のようなケース
 	bool isBuiltinFunction = result.GetLength() > 0 && result[0] == _T('<');
-	if (isBuiltinFunction == false && cmdline != result) {
-		in->mDecResultPtr->SetResult(result);
+	if (isBuiltinFunction) {
+		return;
 	}
+
+	// 10進数としての結果を追加
+	in->mDecResultPtr->SetResult(result);
 
 	static tregex regexInt(_T("^-?[0-9]+$"));
 	if (std::regex_match(tstring(result), regexInt) == false) {
