@@ -4,6 +4,8 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenURLAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -62,29 +64,17 @@ CString URLCommand::GetTypeDisplayName()
 	return TypeDisplayName(product);
 }
 
-BOOL URLCommand::Execute(Parameter* param)
+bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (GetModifierKeyState(param, MASK_SHIFT) != 0) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mBookmarkItem.mUrl);
-		return TRUE;
+	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
+	if (isShiftPressed) {
+		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
+		return true;
 	}
-
-	// URLをブラウザで開く
-	CString path;
-	if (in->mEnv->GetInstalledExePath(path) == false) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += (LPCTSTR)path;
-		AfxMessageBox(msg);
-		return FALSE;
+	else {
+		*action = new actions::web::OpenURLAction(in->mBookmarkItem.mUrl, in->mEnv);
+		return true;
 	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run((LPCTSTR)path, in->mBookmarkItem.mUrl, process);
-
-	return TRUE;
 }
 
 HICON URLCommand::GetIcon()

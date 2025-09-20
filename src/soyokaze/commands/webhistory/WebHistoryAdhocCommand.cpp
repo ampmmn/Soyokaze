@@ -17,6 +17,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::web;
 
 namespace launcherapp {
 namespace commands {

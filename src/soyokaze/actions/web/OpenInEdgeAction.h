@@ -16,6 +16,7 @@ public:
 	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
 
+	static bool GetEdgeExecutablePath(LPTSTR path, size_t len);
 private:
 	CString mURL;
 };

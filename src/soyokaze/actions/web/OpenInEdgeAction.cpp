@@ -8,22 +8,6 @@ namespace launcherapp { namespace actions { namespace web {
 
 using namespace launcherapp::commands::common;
 
-static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-#ifndef _WIN64
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
-#else
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles(x86)"));
-#endif
-	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
-
-	return true;
-}
-
-
 OpenInEdgeAction::OpenInEdgeAction(const CString& url) : mURL(url)
 {
 }
@@ -62,6 +46,23 @@ bool OpenInEdgeAction::Perform(Parameter* param, String* errMsg)
 
 	return true;
 }
+
+bool OpenInEdgeAction::GetEdgeExecutablePath(LPTSTR path, size_t len)
+{
+	UNREFERENCED_PARAMETER(len);
+
+	size_t reqLen = 0;
+#ifndef _WIN64
+	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
+#else
+	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles(x86)"));
+#endif
+	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
+
+	return true;
+}
+
+
 
 }}}
 
