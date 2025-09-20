@@ -75,6 +75,13 @@ bool BuiltinCommandBase::CanExecute()
 	return true;
 }
 
+BOOL BuiltinCommandBase::Execute(Parameter* param)
+{
+	UNREFERENCED_PARAMETER(param);
+	// 派生側で実装する
+	return false;
+}
+
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 {

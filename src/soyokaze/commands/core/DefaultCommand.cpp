@@ -80,8 +80,9 @@ CString DefaultCommand::GetName()
 CString DefaultCommand::GetDescription()
 {
 	if (in->mActionType == _T("register")) {
+		RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(in->mName));
 		CString text;
-		text.Format(_T("\"%s\"を登録"), (LPCTSTR)in->mName);
+		text.Format(_T("\"%s\"を登録"), (LPCTSTR)paramTmp->GetCommandString());
 		return text;
 	}
 	return _T("(一致候補なし)");
@@ -135,7 +136,7 @@ bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 	else if (type == _T("register")) {
 		// コマンドを登録
-		*action = new launcherapp::actions::builtin::RegisterNewCommandAction();
+		*action = new launcherapp::actions::builtin::RegisterNewCommandAction(true);
 		return true;
 	}
 	else {

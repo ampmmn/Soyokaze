@@ -260,13 +260,19 @@ bool AlignWindowCommand::NewDialog(
 	AlignWindowCommand** newCmdPtr
 )
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// パラメータ指定には対応していない
-	// param;
-
 	// 新規作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
 	CommandEditor editor;
+	editor.SetParam(paramTmp);
 	if (editor.DoModal() == false) {
 		return false;
 	}

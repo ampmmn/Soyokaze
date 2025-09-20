@@ -8,6 +8,12 @@ namespace launcherapp { namespace actions { namespace builtin {
 
 using namespace launcherapp::actions::core;
 
+
+RegisterNewCommandAction::RegisterNewCommandAction(bool useFirstTokenOnly) :
+	mUseFirstTonenOnly(useFirstTokenOnly)
+{
+}
+
 // Action
 // アクションの内容を示す名称
 CString RegisterNewCommandAction::GetDisplayName()
@@ -22,20 +28,25 @@ bool RegisterNewCommandAction::Perform(Parameter* param, String* errMsg)
 
 	RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
 
-	bool hasParam = false;
-
-	int paramCount = param->GetParamCount();
-	if (paramCount > 0) {
-		inParam->SetNamedParamString(_T("COMMAND"), param->GetParam(0));
-		hasParam = true;
+	if (mUseFirstTonenOnly) {
+			inParam->SetNamedParamString(_T("COMMAND"), param->GetCommandString());
 	}
+	else {
+		bool hasParam = false;
 
-	if (paramCount > 1) {
-		inParam->SetNamedParamString(_T("PATH"), param->GetParam(1));
-		hasParam = true;
-	}
-	if (hasParam) {
-		inParam->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		int paramCount = param->GetParamCount();
+		if (paramCount > 0) {
+			inParam->SetNamedParamString(_T("COMMAND"), param->GetParam(0));
+			hasParam = true;
+		}
+
+		if (paramCount > 1) {
+			inParam->SetNamedParamString(_T("PATH"), param->GetParam(1));
+			hasParam = true;
+		}
+		if (hasParam) {
+			inParam->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		}
 	}
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();

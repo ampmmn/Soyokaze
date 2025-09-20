@@ -156,9 +156,18 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 
 bool EjectVolumeCommand::NewDialog(Parameter* param)
 {
-	param;  // 非サポート
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	RefPtr<EjectVolumeCommandEditor> cmdEditor(new EjectVolumeCommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

@@ -13,6 +13,9 @@ CString NullAction::GetDisplayName()
 // アクションを実行する
 bool NullAction::Perform(Parameter* param, String* errMsg)
 {
+	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(errMsg);
+
 	// なにもしない
 	return true;
 }
