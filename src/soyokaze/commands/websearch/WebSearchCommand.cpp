@@ -275,11 +275,19 @@ bool WebSearchCommand::NewDialog(
 	std::unique_ptr<WebSearchCommand>& newCmd
 )
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
-
 	// 新規作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
 	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

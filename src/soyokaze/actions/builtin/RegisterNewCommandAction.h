@@ -7,7 +7,7 @@ namespace launcherapp { namespace actions { namespace builtin {
 class RegisterNewCommandAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	RegisterNewCommandAction() = default;
+	RegisterNewCommandAction(bool useFirstTokenOnly);
 	~RegisterNewCommandAction() = default;
 
 // Action
@@ -15,6 +15,9 @@ public:
 	CString GetDisplayName() override;
 	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
+
+private:
+	bool mUseFirstTonenOnly;
 };
 
 

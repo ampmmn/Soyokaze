@@ -181,11 +181,20 @@ bool SnippetGroupCommand::NewDialog(
 	SnippetGroupCommand** newCmdPtr
 )
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
+	// 新規作成ダイアログを表示
+	CString value;
+	SnippetGroupParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	// 新規作成ダイアログを表示
 	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

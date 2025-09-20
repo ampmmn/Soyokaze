@@ -81,6 +81,7 @@ bool UserCommandBase::CanExecute()
 
 BOOL UserCommandBase::Execute(Parameter* param)
 {
+	UNREFERENCED_PARAMETER(param);
 	spdlog::error("Execute is unimplemented.");
 	return false;
 }

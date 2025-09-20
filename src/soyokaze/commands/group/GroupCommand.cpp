@@ -330,6 +330,35 @@ bool GroupCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edito
 	return true;
 }
 
+// コマンド新規作成ダイアログ
+bool GroupCommand::NewDialog(Parameter* param)
+{
+	// グループ作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
+	if (cmdEditor->DoModal() == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = make_refptr<GroupCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
+
+	return true;
+}
+
 } // end of namespace group
 } // end of namespace commands
 } // end of namespace launcherapp

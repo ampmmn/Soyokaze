@@ -44,6 +44,7 @@ public:
 	static CString GroupCommand::GetType();
 	static CString TypeDisplayName();
 
+	static bool NewDialog(Parameter* param);
 public:
 	void SetParam(const CommandParam& param);
 

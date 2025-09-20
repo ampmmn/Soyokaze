@@ -203,9 +203,18 @@ bool WindowActivateCommand::NewDialog(
 )
 {
 	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	RefPtr<WindowActivateCommandEditor> cmdEditor(new WindowActivateCommandEditor);
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}
