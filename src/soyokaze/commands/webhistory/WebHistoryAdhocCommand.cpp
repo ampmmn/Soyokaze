@@ -18,36 +18,11 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::web;
 
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
-
-static bool GetChromeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("PROGRAMFILES"));
-	PathAppend(path, _T("Google\\Chrome\\Application\\chrome.exe"));
-
-	return true;
-}
-
-static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-#ifndef _WIN64
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
-#else
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles(x86)"));
-#endif
-	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
-
-	return true;
-}
 
 struct WebHistoryAdhocCommand::PImpl
 {
@@ -60,10 +35,10 @@ struct WebHistoryAdhocCommand::PImpl
 bool WebHistoryAdhocCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 {
 	if (mHistory.mBrowserName == _T("Chrome")) {
-		return GetChromeExecutablePath(path, len);
+		return OpenInChromeAction::GetChromeExecutablePath(path, len);
 	}
 	else if (mHistory.mBrowserName == _T("Edge")) {
-		return GetEdgeExecutablePath(path, len);
+		return OpenInEdgeAction::GetEdgeExecutablePath(path, len);
 	}
 	else {
 		return false;
@@ -111,11 +86,11 @@ bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 	else {
 		if (in->mHistory.mBrowserName == _T("Chrome")) {
-		*action = new actions::web::OpenInChromeAction(in->mHistory.mUrl);
+		*action = new OpenInChromeAction(in->mHistory.mUrl);
 		return true;
 		}
 		else if (in->mHistory.mBrowserName == _T("Edge")) {
-		*action = new actions::web::OpenInEdgeAction(in->mHistory.mUrl);
+		*action = new OpenInEdgeAction(in->mHistory.mUrl);
 		return true;
 		}
 		else {
