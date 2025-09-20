@@ -6,6 +6,7 @@
 #include "commands/alias/AliasCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecuteHistory.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -24,6 +25,7 @@ namespace commands {
 namespace alias {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using namespace launcherapp::actions::builtin;
 
 struct AliasCommand::PImpl
 {
@@ -79,24 +81,28 @@ CString AliasCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL AliasCommand::Execute(Parameter* param)
+bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	*action = new CallbackAction(_T("実行"), [](Parameter*, String*, void* userParam) -> bool {
 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	if (in->mParam.mIsPasteOnly) {
-		mainWnd->SetText((LPCTSTR)in->mParam.mText);
+			auto commandParam = (const CommandParam*)userParam;
+			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 
-		// フォーカスをメインウインドウに移す
-		bool isToggle = false;
-		mainWnd->ActivateWindow(isToggle);
-	}
-	else {
-		bool isWaitSync = true;
-		mainWnd->RunCommand((LPCTSTR)in->mParam.mText, isWaitSync);
-	}
+			if (commandParam->mIsPasteOnly) {
+				mainWnd->SetText((LPCTSTR)commandParam->mText);
 
-	return TRUE;
+				// フォーカスをメインウインドウに移す
+				bool isToggle = false;
+				mainWnd->ActivateWindow(isToggle);
+			}
+			else {
+				bool isWaitSync = true;
+				mainWnd->RunCommand((LPCTSTR)commandParam->mText, isWaitSync);
+			}
+			return true;
+	}, &in->mParam);
+
+	return true;
 }
 
 CString AliasCommand::GetErrorString()
