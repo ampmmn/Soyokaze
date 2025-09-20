@@ -271,6 +271,9 @@
     <Filter Include="actions\clipboard">
       <UniqueIdentifier>{e7cdbce4-3450-4e29-a011-4e6e04deb0d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="actions\web">
+      <UniqueIdentifier>{4069b523-f08f-49fc-aa23-1102ad3200e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1678,6 +1681,15 @@
     <ClInclude Include="actions\builtin\CallbackAction.h">
       <Filter>actions\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="actions\web\OpenInChromeAction.h">
+      <Filter>actions\web</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\web\OpenInEdgeAction.h">
+      <Filter>actions\web</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\web\OpenURLAction.h">
+      <Filter>actions\web</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2946,6 +2958,15 @@
     </ClCompile>
     <ClCompile Include="actions\builtin\CallbackAction.cpp">
       <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\web\OpenInChromeAction.cpp">
+      <Filter>actions\web</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\web\OpenInEdgeAction.cpp">
+      <Filter>actions\web</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\web\OpenURLAction.cpp">
+      <Filter>actions\web</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

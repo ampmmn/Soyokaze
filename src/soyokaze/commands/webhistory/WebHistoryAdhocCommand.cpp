@@ -4,6 +4,8 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenURLAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -60,32 +62,19 @@ CString WebHistoryAdhocCommand::GetTypeDisplayName()
 	return WebHistoryAdhocCommand::TypeDisplayName(in->mProductName);
 }
 
-BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
+bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-	if (isShiftKeyPressed) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mHistory.mUrl);
-		return TRUE;
+	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
+	if (isShiftPressed) {
+		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
+		return true;
 	}
-
-	auto& history = in->mHistory;
-	// URLをブラウザで開く
-	CString path;
-	if (history.mEnv->GetInstalledExePath(path) == false) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += path;
-		AfxMessageBox(msg);
-		return TRUE;
+	else {
+		*action = new actions::web::OpenURLAction(in->mHistory.mUrl, in->mHistory.mEnv);
+		return true;
 	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run(path, history.mUrl, process);
-
-	return TRUE;
 }
+
 
 HICON WebHistoryAdhocCommand::GetIcon()
 {

@@ -33,5 +33,38 @@ bool CopyAction::Perform(Parameter* param, String* errMsg)
 	return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+CopyTextAction::CopyTextAction(const CString& text) : mText(text)
+{
+}
+
+CopyTextAction::~CopyTextAction()
+{
+}
+
+// Action
+// アクションの内容を示す名称
+CString CopyTextAction::GetDisplayName()
+{
+	return _T("クリップボードにコピー");
+}
+
+// アクションを実行する
+bool CopyTextAction::Perform(Parameter* param, String* errMsg)
+{
+	UNREFERENCED_PARAMETER(param);
+
+	// クリップボードにコピー
+	bool isOK = Clipboard::Copy(mText);
+	if (isOK == false && errMsg) {
+		*errMsg = "クリップボードのコピーに失敗しました";
+		return false;
+	}
+	return true;
+}
+
 }}}
 
