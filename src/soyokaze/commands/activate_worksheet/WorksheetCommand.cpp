@@ -3,6 +3,7 @@
 #include "WorksheetCommand.h"
 #include "commands/activate_worksheet/ExcelWorksheets.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -12,6 +13,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::builtin;
 
 namespace launcherapp {
 namespace commands {
@@ -54,15 +56,21 @@ CString WorksheetCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL WorksheetCommand::Execute(Parameter* param)
+bool WorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// Ctrlキーが押されていたら最大化表示する
-	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
-
-	if (in->mWorksheet) {
-		return in->mWorksheet->Activate(isShowMaximize);
+	if (modifierFlags & Command::MODIFIER_CTRL) {
+		*action = new CallbackAction(_T("最大化表示"), [](Parameter*, String*, void* userParam) -> bool {
+			auto pThisPtr = (WorksheetCommand*)userParam;
+			return pThisPtr->in->mWorksheet->Activate(true);
+		}, this);
 	}
-	return FALSE;
+	else {
+		*action = new CallbackAction(_T("表示"), [](Parameter*, String*, void* userParam) -> bool {
+			auto pThisPtr = (WorksheetCommand*)userParam;
+			return pThisPtr->in->mWorksheet->Activate(false);
+		}, this);
+	}
+	return true;
 }
 
 HICON WorksheetCommand::GetIcon()
