@@ -1684,12 +1684,6 @@
     <ClInclude Include="actions\builtin\CallbackAction.h">
       <Filter>actions\builtin</Filter>
     </ClInclude>
-    <ClInclude Include="actions\web\OpenInChromeAction.h">
-      <Filter>actions\web</Filter>
-    </ClInclude>
-    <ClInclude Include="actions\web\OpenInEdgeAction.h">
-      <Filter>actions\web</Filter>
-    </ClInclude>
     <ClInclude Include="actions\web\OpenURLAction.h">
       <Filter>actions\web</Filter>
     </ClInclude>
@@ -2964,12 +2958,6 @@
     </ClCompile>
     <ClCompile Include="actions\builtin\CallbackAction.cpp">
       <Filter>actions\builtin</Filter>
-    </ClCompile>
-    <ClCompile Include="actions\web\OpenInChromeAction.cpp">
-      <Filter>actions\web</Filter>
-    </ClCompile>
-    <ClCompile Include="actions\web\OpenInEdgeAction.cpp">
-      <Filter>actions\web</Filter>
     </ClCompile>
     <ClCompile Include="actions\web\OpenURLAction.cpp">
       <Filter>actions\web</Filter>
