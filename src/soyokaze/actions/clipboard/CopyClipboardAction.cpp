@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CopyClipboardAction.h"
 #include "commands/common/Clipboard.h"
+#include "SharedHwnd.h"
 
 namespace launcherapp { namespace actions { namespace clipboard {
 
@@ -37,13 +38,20 @@ bool CopyAction::Perform(Parameter* param, String* errMsg)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CopyTextAction::CopyTextAction(const CString& text) : mText(text)
+CopyTextAction::CopyTextAction(const CString& text, bool enablePaste) :
+ 	mText(text), mEnablePaste(enablePaste)
 {
 }
 
 CopyTextAction::~CopyTextAction()
 {
 }
+
+void CopyTextAction::EnablePasteAfterCopy(bool isEnabled)
+{
+	mEnablePaste = isEnabled;
+}
+
 
 // Action
 // アクションの内容を示す名称
@@ -63,6 +71,47 @@ bool CopyTextAction::Perform(Parameter* param, String* errMsg)
 		*errMsg = "クリップボードのコピーに失敗しました";
 		return false;
 	}
+
+	//
+	if (mEnablePaste) {
+
+		// ランチャーアプリのウインドウが消えるのを待つ
+		SharedHwnd h;
+		while(IsWindowVisible(h.GetHwnd())) {
+			Sleep(50);
+		}
+
+		// Shift-Insertキー押下による疑似的なペースト
+		INPUT inputs[5] = {0};
+
+		// Ctrlキー押下
+		inputs[0].type = INPUT_KEYBOARD;
+		inputs[0].ki.wVk = VK_CONTROL; // 仮想キーコード: Ctrl
+		inputs[0].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
+		// Shiftキー押下
+		inputs[1].type = INPUT_KEYBOARD;
+		inputs[1].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift
+
+		// Insertキー押下
+		inputs[2].type = INPUT_KEYBOARD;
+		inputs[2].ki.wVk = VK_INSERT; // 仮想キーコード: Insert
+
+		// Insertキー離上
+		inputs[3].type = INPUT_KEYBOARD;
+		inputs[3].ki.wVk = VK_INSERT;
+		inputs[3].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
+		// Shiftキー離上
+		inputs[4].type = INPUT_KEYBOARD;
+		inputs[4].ki.wVk = VK_SHIFT;
+		inputs[4].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
+
+		// イベント送信
+		SendInput(5, inputs, sizeof(INPUT));
+
+	}
+
 	return true;
 }
 

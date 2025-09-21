@@ -22,8 +22,10 @@ public:
 class CopyTextAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	CopyTextAction(const CString& text);
+	CopyTextAction(const CString& text, bool enablePaste = false);
 	~CopyTextAction();
+
+	void EnablePasteAfterCopy(bool isEnabled);
 
 // Action
 	// アクションの内容を示す名称
@@ -32,7 +34,10 @@ public:
 	bool Perform(Parameter* param, String* errMsg) override;
 
 private:
+	// コピーするテキスト
 	CString mText;
+	// コピーのあと、貼り付けをする
+	bool mEnablePaste;
 };
 
 

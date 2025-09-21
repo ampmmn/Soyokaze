@@ -4,6 +4,7 @@
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "utility/StringUtil.h"
@@ -15,6 +16,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::clipboard;
 
 namespace launcherapp {
 namespace commands {
@@ -69,7 +71,7 @@ CString ClipboardHistoryCommand::GetName()
 
 CString ClipboardHistoryCommand::GetGuideString()
 {
-	return _T("⏎:コピー S-⏎:コピペ C-⏎:入力欄に貼り付け");
+	return _T("⏎:コピー S-⏎:コピペ");
 }
 
 CString ClipboardHistoryCommand::GetTypeDisplayName()
@@ -77,60 +79,30 @@ CString ClipboardHistoryCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL ClipboardHistoryCommand::Execute(Parameter* param)
+bool ClipboardHistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
-	bool isCtrlPressed = (state & MASK_CTRL) != 0;
-	bool isShiftPressed = (state & MASK_SHIFT) != 0;
-
-	CString data = in->mData;
-
-	// 値をコピー
-	Clipboard::Copy(data);
-
-	if (isShiftPressed) {
-		// Shift-Insertキー押下による疑似的なペースト
-    INPUT inputs[5] = {0};
-
-    // Ctrlキー押下
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = VK_CONTROL; // 仮想キーコード: Ctrl
-    inputs[0].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
-
-    // Shiftキー押下
-    inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = VK_SHIFT; // 仮想キーコード: Shift
-
-    // Insertキー押下
-    inputs[2].type = INPUT_KEYBOARD;
-    inputs[2].ki.wVk = VK_INSERT; // 仮想キーコード: Insert
-
-    // Insertキー離上
-    inputs[3].type = INPUT_KEYBOARD;
-    inputs[3].ki.wVk = VK_INSERT;
-    inputs[3].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
-
-    // Shiftキー離上
-    inputs[4].type = INPUT_KEYBOARD;
-    inputs[4].ki.wVk = VK_SHIFT;
-    inputs[4].ki.dwFlags = KEYEVENTF_KEYUP; // 離上イベント
-
-    // イベント送信
-    SendInput(5, inputs, sizeof(INPUT));
+	if (modifierFlags & Command::MODIFIER_SHIFT) {
+		// コピー&ペースト
+		bool enablePaste = true;
+		*action = new CopyTextAction(in->mData, enablePaste);
+		return true;
 	}
-	else if (isCtrlPressed) {
-		// Ctrl-Enterで、入力欄にテキスト貼り付け
-		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-		bool isToggle = false;
-		mainWnd->ActivateWindow(isToggle);
-
-		mainWnd->SetText(data);
-
+	else {
+		// コピーのみ
+		*action = new CopyTextAction(in->mData);
+		return true;
 	}
 
-	return TRUE;
+	// 以下、無効化したコード
+	// else if (isCtrlPressed) {
+	// 	// Ctrl-Enterで、入力欄にテキスト貼り付け
+	// 	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+	// 	bool isToggle = false;
+	// 	mainWnd->ActivateWindow(isToggle);
+
+	// 	mainWnd->SetText(data);
+
+	// }
 }
 
 HICON ClipboardHistoryCommand::GetIcon()
@@ -177,7 +149,7 @@ void ClipboardHistoryCommand::OnUnselect(Command* next)
 launcherapp::core::SelectionBehavior::CloseWindowPolicy
 ClipboardHistoryCommand::GetCloseWindowPolicy()
 {
-	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 
 // UnknownIF
