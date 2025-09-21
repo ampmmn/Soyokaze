@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UserDirCommand.h"
-#include "commands/shellexecute/ShellExecCommand.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "utility/AppProfile.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -14,8 +14,8 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 
 CString UserDirCommand::TYPE(_T("Builtin-UserDir"));
 
@@ -50,10 +50,8 @@ BOOL UserDirCommand::Execute(Parameter* param)
 	CAppProfile::GetDirPath(userDirPath.data(), userDirPath.size(), false);
 	_tcscat_s(userDirPath.data(), userDirPath.size(), _T("\\"));
 
-	ShellExecCommand cmd;
-	cmd.SetPath(userDirPath.data());
-
-	return cmd.Execute(ParameterBuilder::EmptyParam());
+	OpenPathInFilerAction action(userDirPath.data());
+	return action.Perform(ParameterBuilder::EmptyParam(), nullptr);
 }
 
 HICON UserDirCommand::GetIcon()

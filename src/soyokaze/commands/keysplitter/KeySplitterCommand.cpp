@@ -7,6 +7,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -21,6 +22,7 @@ namespace keysplitter {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 
 struct KeySplitterCommand::PImpl
@@ -77,7 +79,7 @@ CString KeySplitterCommand::GetGuideString()
 			}
 
 			if (tmp.IsEmpty() == FALSE) {
-				tmp += _T(",");
+				tmp += _T(" ");
 			}
 			tmp += state.ToString();
 			tmp += _T(":");
@@ -93,66 +95,80 @@ CString KeySplitterCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL KeySplitterCommand::Execute(Parameter* param)
+bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	// Ctrlキーが押されているかを設定
 	ModifierState state;
-	state.SetPressCtrl((GetAsyncKeyState(VK_CONTROL) & 0x8000));
-	state.SetPressShift((GetAsyncKeyState(VK_SHIFT) & 0x8000));
-	state.SetPressAlt((GetAsyncKeyState(VK_MENU) & 0x8000));
-	state.SetPressWin((GetAsyncKeyState(VK_LWIN) & 0x8000));
+	if (modifierFlags & Command::MODIFIER_CTRL) { state.SetPressCtrl(true); }
+	if (modifierFlags & Command::MODIFIER_SHIFT) { state.SetPressShift(true); }
+	if (modifierFlags & Command::MODIFIER_ALT) { state.SetPressAlt(true); }
+	if (modifierFlags & Command::MODIFIER_WIN) { state.SetPressWin(true); }
 
 	ITEM item;
 	if (in->mParam.GetMapping(state, item) == false) {
 		// 割り当てがない場合は、無印Enterの扱い
-		ModifierState state2;
-		if (in->mParam.GetMapping(state2, item) == false) {
+		ModifierState stateNoModifier;
+		if (in->mParam.GetMapping(stateNoModifier, item) == false) {
 			// それもなければ何もしない
-			return TRUE;
+			return false;
 		}
 	}
-
-	CString parents;
-	GetNamedParamString(param, _T("PARENTS"), parents);
 
 	CString cmdName = in->mParam.mName;
 
-	// 循環参照チェック
-	int depth = 0;
-	int n = 0;
-	CString token = parents.Tokenize(_T("/"), n);
-	while(token.IsEmpty() == FALSE) {
+	*action = new CallbackAction(item.mCommandName, [item, cmdName](Parameter* param, String* errMsg) -> bool {
 
-		if (depth >= 8) {
-			// 深さは8まで
-			return FALSE;
+		CString parents;
+		GetNamedParamString(param, _T("PARENTS"), parents);
+
+		// 循環参照チェック
+		int depth = 0;
+		int n = 0;
+		CString token = parents.Tokenize(_T("/"), n);
+		while(token.IsEmpty() == FALSE) {
+	
+			if (depth >= 8) {
+				// 深さは8まで
+				return false;
+			}
+			if (token == cmdName) {
+				// 呼び出し元に自分自身がいる(循環参照)
+				return false;
+			}
+			token = parents.Tokenize(_T("/"), n);
+			depth++;
 		}
-		if (token == cmdName) {
-			// 呼び出し元に自分自身がいる(循環参照)
-			return FALSE;
+		// 呼び出し元に自分自身を追加
+		if (parents.IsEmpty() == FALSE) {
+			parents += _T("/");
 		}
-		token = parents.Tokenize(_T("/"), n);
-		depth++;
-	}
-	// 呼び出し元に自分自身を追加
-	if (parents.IsEmpty() == FALSE) {
-		parents += _T("/");
-	}
-	parents += cmdName;
+		parents += cmdName;
+	
+		// 実行時引数を複製する
+		RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
+		paramSub->SetParameterString(param->GetParameterString());
+		paramSub->SetNamedParamString(_T("PARENTS"), parents);
+	
+		// 振り分け先のコマンドを実行する
+		auto cmdRepo = CommandRepository::GetInstance();
+		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(item.mCommandName, false));
+		if (command == nullptr) {
+			if (errMsg) {
+				std::string tmp;
+				*errMsg = fmt::format("コマンドが見つかりません {}", UTF2UTF(item.mCommandName, tmp));
+			}
+			return false;
+		}
 
-	RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
-	paramSub->SetParameterString(param->GetParameterString());
-	paramSub->SetNamedParamString(_T("PARENTS"), parents);
+		RefPtr<actions::core::Action> action;
+		if (command->GetAction(0, &action) == false) {
+			spdlog::error("Failed to get action.");
+			return false;
+		}
+		return action->Perform(paramSub, errMsg);
+	});
 
-
-	// 振り分け先のコマンドを実行する
-	auto cmdRepo = CommandRepository::GetInstance();
-	RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(item.mCommandName, false));
-	if (command == nullptr) {
-		return TRUE;
-	}
-
-	return command->Execute(paramSub);
+	return true;
 }
 
 CString KeySplitterCommand::GetErrorString()

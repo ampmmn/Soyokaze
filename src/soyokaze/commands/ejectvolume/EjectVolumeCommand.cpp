@@ -7,6 +7,7 @@
 #include "commands/ejectvolume/EjectVolume.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -22,6 +23,7 @@ namespace commands {
 namespace ejectvolume {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 constexpr LPCTSTR TYPENAME = _T("EjectVolumeCommand");
 
@@ -75,16 +77,23 @@ CString EjectVolumeCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL EjectVolumeCommand::Execute(Parameter* param_)
+bool EjectVolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNUSED(param_);
-	const auto& param = in->mParam;
-	if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
-		spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
-		return TRUE;
-	}
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	return TRUE;
+	*action = new CallbackAction(_T("ドライブを取り外す"), [&](Parameter*, String* errMsg) -> bool {
+		const auto& param = in->mParam;
+		if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
+			spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
+			if (errMsg) {
+				*errMsg = fmt::format("ドライブの取り外しに失敗しました err:{}", GetLastError());
+			}
+			return false;
+		}
+		return true;
+	});
+
+	return true;
 }
 
 CString EjectVolumeCommand::GetErrorString()

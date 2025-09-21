@@ -61,8 +61,7 @@ bool UWPCommand::GetAction(uint32_t modifierFlags, Action** action)
 		paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mItem->mAppID);
 	}
 
-	auto a = new ExecuteAction((LPCTSTR)cmdExePath, paramStr);
-	a->SetShowType(SW_HIDE);
+	auto a = new ExecuteAction((LPCTSTR)cmdExePath, paramStr, _T(""), SW_HIDE);
 	*action = a;
 
 	return true;

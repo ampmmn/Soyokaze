@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ErrorIndicatorCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -8,6 +9,7 @@
 #endif
 
 using Command = launcherapp::core::Command;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp { namespace commands { namespace error {
 
@@ -71,27 +73,30 @@ bool ErrorIndicatorCommand::CanExecute()
 BOOL ErrorIndicatorCommand::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
+	// GetActionに移行済
+	return FALSE;
 
-	if (in->mTarget.get() == nullptr) {
-		return TRUE;
-	}
-
-	// 編集
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	constexpr bool isClone = false;
-	cmdRepoPtr->EditCommandDialog(in->mTarget->GetName(), isClone);
-
-	return TRUE;
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	UNREFERENCED_PARAMETER(modifierFlags);
-	UNREFERENCED_PARAMETER(action);
 
-	// ToDo: 実装する
-	return false;
+	*action = new CallbackAction(_T("コマンドを編集"), [&](Parameter*, String*) -> bool {
+		if (in->mTarget.get() == nullptr) {
+			return false;
+		}
+
+		// 編集
+		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+		constexpr bool isClone = false;
+		cmdRepoPtr->EditCommandDialog(in->mTarget->GetName(), isClone);
+
+		return true;
+
+	});
+	return true;
 }
 
 

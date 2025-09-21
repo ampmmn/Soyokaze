@@ -78,6 +78,8 @@ bool VolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 	UNREFERENCED_PARAMETER(modifierFlags);
 
 	*action = new CallbackAction(_T("音量設定を変更"), [&](Parameter*,String* errMsg) -> bool {
+		UNREFERENCED_PARAMETER(errMsg);
+
 		AudioSessionVolume vol;
 	
 		const auto& param = in->mParam;

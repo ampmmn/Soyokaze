@@ -9,6 +9,7 @@
 #include "commands/filter/FilterQueryCancellationToken.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -23,6 +24,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
@@ -140,23 +142,18 @@ bool FilterCommand::CanExecute()
 }
 
 
-BOOL FilterCommand::Execute(Parameter* param)
+bool FilterCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	if (in->mIsEmpty) {
 		// 候補が存在しないとわかっている場合は何もしない
-		return TRUE;
+		return false;
 	}
 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
+	if (modifierFlags == 0) {
+		*action = new SetTextAction(_T("候補を表示する"), GetName() + _T(" "));
+		return true;
+	}
+	return false;
 }
 
 CString FilterCommand::GetErrorString()

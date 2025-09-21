@@ -3,6 +3,7 @@
 #include "EscapedCharCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/CharConverter.h"
 #include "resource.h"
 
@@ -13,6 +14,7 @@
 using namespace launcherapp::commands::common;
 
 using CharConverter = launcherapp::utility::CharConverter;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -59,13 +61,13 @@ CString EscapedCharCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL EscapedCharCommand::Execute(Parameter* param)
+bool EscapedCharCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
 	// クリップボードにコピー
-	Clipboard::Copy(mName);
-	return TRUE;
+	*action = new CopyTextAction(mName);
+	return true;
 }
 
 

@@ -144,6 +144,12 @@ uint32_t PathConvertProvider::EnumCommandDisplayNames(std::vector<CString>& disp
 	return 3;
 }
 
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t PathConvertProvider::GetOrder() const
+{
+	return 1600;
+}
+
 } // end of namespace pathconvert
 } // end of namespace commands
 } // end of namespace launcherapp

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "MSSettingsCommand.h"
 #include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -55,11 +57,12 @@ CString MSSettingsCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL MSSettingsCommand::Execute(Parameter* param)
+bool MSSettingsCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	return exec.Run(in->mScheme, process);
+	UNREFERENCED_PARAMETER(modifierFlags);
+
+	*action = new ExecuteAction(in->mScheme);
+	return true;
 }
 
 HICON MSSettingsCommand::GetIcon()

@@ -26,7 +26,7 @@ public:
 	CString GetTypeDisplayName() override;
 
 	bool CanExecute() override;
-	BOOL Execute(Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
@@ -63,6 +63,10 @@ public:
 	static bool LoadFrom(CommandFile* cmdFile, void* entry,ShellExecCommand** newCmdPtr);
 
 private:
+	bool CreateExecuteAction(Action** action, bool isForceRunAs);
+	bool CreateOpenPathAction(Action** action);
+
+
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);
 	

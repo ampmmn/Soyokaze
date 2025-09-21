@@ -16,7 +16,7 @@ public:
 	CString GetName() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;
@@ -28,8 +28,6 @@ public:
 	static bool IsGitBashPath(const CString& path);
 
 protected:
-	static bool ShouldCopy(Parameter* param);
-
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };

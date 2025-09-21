@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "MainDirCommand.h"
-#include "commands/shellexecute/ShellExecCommand.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -16,8 +16,8 @@ namespace commands {
 namespace builtin {
 
 
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 
 
 CString MainDirCommand::TYPE(_T("Builtin-MainDir"));
@@ -52,10 +52,8 @@ BOOL MainDirCommand::Execute(Parameter* param)
 	Path mainDirPath(Path::MODULEFILEDIR);
 	_tcscat_s(mainDirPath, mainDirPath.size(), _T("\\"));
 
-	ShellExecCommand cmd;
-	cmd.SetPath((LPCTSTR)mainDirPath);
-
-	return cmd.Execute(ParameterBuilder::EmptyParam());
+	OpenPathInFilerAction action((LPCTSTR)mainDirPath);
+	return action.Perform(ParameterBuilder::EmptyParam(), nullptr);
 }
 
 HICON MainDirCommand::GetIcon()

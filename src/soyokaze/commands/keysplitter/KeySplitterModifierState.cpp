@@ -49,11 +49,11 @@ CString ModifierState::ToString() const
 	};
 
 	CString ret;
-	ret += f(IsPressShift(), _T("Shift"));
-	ret += f(IsPressCtrl(), _T("Ctrl"));
-	ret += f(IsPressAlt(), _T("Alt"));
-	ret += f(IsPressWin(), _T("Win"));
-	ret += _T("Enter");
+	ret += f(IsPressShift(), _T("S"));
+	ret += f(IsPressCtrl(), _T("C"));
+	ret += f(IsPressAlt(), _T("A"));
+	ret += f(IsPressWin(), _T("W"));
+	ret += _T("⏎");
 	return ret;
 }
 

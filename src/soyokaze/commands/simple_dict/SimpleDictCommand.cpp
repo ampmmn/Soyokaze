@@ -8,6 +8,7 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TimeoutChecker.h"
 #include "utility/LocalDirectoryWatcher.h"
@@ -22,6 +23,7 @@
 #include <mutex>
 
 using namespace launcherapp::commands::common;
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -288,21 +290,15 @@ bool SimpleDictCommand::CanExecute()
 }
 
 
-BOOL SimpleDictCommand::Execute(Parameter* param)
+bool SimpleDictCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-
-	return TRUE;
+	if (modifierFlags == 0) {
+		// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
+		LPCTSTR guideStr = _T("キーワード入力すると候補を絞り込むことができます");
+		*action = new SetTextAction(guideStr, GetName() + _T(" "));
+		return true;
+	}
+	return false;
 }
 
 CString SimpleDictCommand::GetErrorString()
