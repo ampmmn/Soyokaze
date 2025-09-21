@@ -9,7 +9,7 @@
 #include "actions/core/ActionParameter.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "actions/web/URLAction.h"
-#include "actions/buildin/CallbackAciton.h"
+#include "actions/builtin/CallbackAction.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -213,7 +213,8 @@ bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 	else {
 		// ランチャーでリンク先に遷移する
 		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
-				in->EnterURL();
+			in->EnterURL();
+			return true;
 		});
 		return true;
 	}
