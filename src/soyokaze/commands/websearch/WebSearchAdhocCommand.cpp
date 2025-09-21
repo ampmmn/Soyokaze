@@ -2,10 +2,9 @@
 #include "framework.h"
 #include "WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommand.h"
-#include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
+#include "actions/web/URLAction.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/common/SubProcess.h"
 #include "resource.h"
 #include <vector>
 
@@ -60,16 +59,11 @@ CString WebSearchAdhocCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL WebSearchAdhocCommand::Execute(Parameter* param)
+bool WebSearchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mURL, process) == FALSE) {
-		in->mErrorMsg = process->GetErrorMessage();
-		return FALSE;
-	}
-	return TRUE;
+	UNREFERENCED_PARAMETER(modifierFlags);
+	*action = new actions::web::URLAction(_T("検索を実行"), in->mURL);
+	return true;
 }
 
 HICON WebSearchAdhocCommand::GetIcon()
@@ -104,7 +98,8 @@ bool WebSearchAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 bool WebSearchAdhocCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		actions::web::URLAction action(_T("検索を実行"), in->mURL);
+		return action.Perform(param, nullptr);
 	}
 	return false;
 }

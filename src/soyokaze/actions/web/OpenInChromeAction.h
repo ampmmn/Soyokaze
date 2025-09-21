@@ -4,6 +4,7 @@
 
 namespace launcherapp { namespace actions { namespace web {
 
+// 指定されたURLをGoogle Chromeで開くアクション
 class OpenInChromeAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:

@@ -413,6 +413,7 @@
     <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h" />
     <ClInclude Include="actions\web\OpenInChromeAction.h" />
     <ClInclude Include="actions\web\OpenInEdgeAction.h" />
+    <ClInclude Include="actions\web\URLAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
@@ -877,6 +878,7 @@
     <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp" />
     <ClCompile Include="actions\web\OpenInChromeAction.cpp" />
     <ClCompile Include="actions\web\OpenInEdgeAction.cpp" />
+    <ClCompile Include="actions\web\URLAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />

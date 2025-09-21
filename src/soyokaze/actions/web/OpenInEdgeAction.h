@@ -4,6 +4,7 @@
 
 namespace launcherapp { namespace actions { namespace web {
 
+// 指定されたURLをMicrosoft Edgeで開くアクション
 class OpenInEdgeAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:

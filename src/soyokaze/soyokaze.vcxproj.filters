@@ -1665,6 +1665,9 @@
     <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h">
       <Filter>actions\mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="actions\web\URLAction.h">
+      <Filter>actions\web</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2929,6 +2932,9 @@
     </ClCompile>
     <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp">
       <Filter>actions\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\web\URLAction.cpp">
+      <Filter>actions\web</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
