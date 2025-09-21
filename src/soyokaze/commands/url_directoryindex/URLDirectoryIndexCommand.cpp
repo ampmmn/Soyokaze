@@ -5,6 +5,7 @@
 #include "core/IFIDDefine.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/WinHttp.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
@@ -70,7 +71,6 @@ struct URLDirectoryIndexCommand::PImpl
 	void Reset()
 	{
 		mLinkItems.clear();
-		mIsEmpty = false;
 		mIsLoaded = false;
 		mIsLoadOK = false;
 	}
@@ -86,7 +86,6 @@ struct URLDirectoryIndexCommand::PImpl
 
 	CString mSubPath;
 
-	bool mIsEmpty{false};
 	bool mIsLoaded{false};
 	bool mIsLoadOK{false};
 };
@@ -354,23 +353,14 @@ CString URLDirectoryIndexCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL URLDirectoryIndexCommand::Execute(Parameter* param)
+bool URLDirectoryIndexCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	if (in->mIsEmpty) {
-		// 候補が存在しないとわかっている場合は何もしない
-		return TRUE;
-	}
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
+	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
+	auto cmdline(GetName()+ _T(" "));
+	*action = new launcherapp::actions::mainwindow::SetTextAction(_T("候補を表示する"), cmdline);
+	return true;
 }
 
 CString URLDirectoryIndexCommand::GetErrorString()
@@ -398,8 +388,6 @@ HICON URLDirectoryIndexCommand::GetIcon()
 
 int URLDirectoryIndexCommand::Match(Pattern* pattern)
 {
-	in->mIsEmpty = false;
-
 	if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
 		// 内部のコマンド名マッチング用の判定
 		return Pattern::WholeMatch;
@@ -425,9 +413,6 @@ int URLDirectoryIndexCommand::Match(Pattern* pattern)
 					// 候補一覧生成済の場合は表示しない
 					return Pattern::Mismatch;
 				}
-
-				// 候補件数が0の場合、その旨をURLDirectoryIndexCommand自身が表示する
-				in->mIsEmpty = true;
 
 				return Pattern::WholeMatch;
 			}

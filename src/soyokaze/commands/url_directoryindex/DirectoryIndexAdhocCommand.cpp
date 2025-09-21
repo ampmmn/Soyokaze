@@ -7,6 +7,9 @@
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/clipboard/CopyClipboardAction.h"
+#include "actions/web/URLAction.h"
+#include "actions/buildin/CallbackAciton.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -20,7 +23,9 @@ using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
-
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
+using URLAction = launcherapp::actions::web::URLAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -28,6 +33,9 @@ namespace url_directoryindex {
 
 struct DirectoryIndexAdhocCommand::PImpl
 {
+	CString GetCurrentURL();
+	CString GetParentURL();
+
 	bool EnterURL();
 	bool CopyURL();
 	bool OpenURL(const CString& url);
@@ -37,6 +45,25 @@ struct DirectoryIndexAdhocCommand::PImpl
 	URLDirectoryIndexCommand* mBaseCmd{nullptr};
 	QueryResult mResult;
 };
+
+CString DirectoryIndexAdhocCommand::PImpl::GetCurrentURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	return param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+}
+
+CString DirectoryIndexAdhocCommand::PImpl::GetParentURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+	int pos = url.ReverseFind(_T('/'));
+	if (pos != -1) {
+		url = url.Left(pos);
+	}
+	return url;
+}
 
 
 bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
@@ -171,26 +198,25 @@ CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 }
 
 
-BOOL DirectoryIndexAdhocCommand::Execute(Parameter* param)
+bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	uint32_t state = GetModifierKeyState(param, MASK_ALL);
-
-	bool isCtrlKeyPressed = state == MASK_CTRL;
-	bool isShiftKeyPressed = state == MASK_SHIFT;
-
-	if (isCtrlKeyPressed) {
+	if (modifierFlags & Command::MODIFIER_CTRL) {
 		// URLをコピー
-		in->CopyURL();
+		*action = new CopyTextAction(in->GetCurrentURL());
+		return true;
 	}
-	else if (isShiftKeyPressed) {
+	else if (modifierFlags & Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
-		in->OpenURL();
+		*action = new URLAction(in->GetCurrentURL());
+		return true;
 	}
 	else {
 		// ランチャーでリンク先に遷移する
-		in->EnterURL();
+		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+				in->EnterURL();
+		});
+		return true;
 	}
-	return TRUE;
 }
 
 HICON DirectoryIndexAdhocCommand::GetIcon()
@@ -264,13 +290,16 @@ bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, Parameter* param)
 		return in->EnterURL();
 	}
 	else if (index == 1) {
-		return in->CopyURL();
+		CopyTextAction action(in->GetCurrentURL());
+		return action.Perform(param, nullptr);
 	}
 	else if (index == 2) {
-		return in->OpenURL();
+		URLAction action(in->GetCurrentURL());
+		return action.Perform(param, nullptr);
 	}
 	else if (index == 3) {
-		return in->OpenParentURL();
+		URLAction action(in->GetParentURL());
+		return action.Perform(param, nullptr);
 	}
 	return false;
 }
