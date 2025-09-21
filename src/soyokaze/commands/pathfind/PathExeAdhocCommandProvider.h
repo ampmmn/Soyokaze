@@ -28,6 +28,8 @@ public:
 	virtual void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands);
 	// Providerが扱うコマンド種別(表示名)を列挙
 	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
+	// Provider間の優先順位を表す値を返す。小さいほど優先
+	uint32_t GetOrder() const override;
 
 	DECLARE_COMMANDPROVIDER(PathExeAdhocCommandProvider)
 

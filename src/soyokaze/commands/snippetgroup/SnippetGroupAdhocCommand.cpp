@@ -2,21 +2,16 @@
 #include "framework.h"
 #include "SnippetGroupAdhocCommand.h"
 #include "commands/snippetgroup/SnippetGroupParam.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
-#include "commands/common/Clipboard.h"
-#include "commands/common/CommandParameterFunctions.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
-#include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using namespace launcherapp::commands::common;
-
-using SubProcess = launcherapp::commands::common::SubProcess;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -68,15 +63,16 @@ CString SnippetGroupAdhocCommand::GetTypeDisplayName()
 	return _T("定型文グループ");
 }
 
-BOOL SnippetGroupAdhocCommand::Execute(Parameter* param)
+bool SnippetGroupAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// 値をコピー
-	auto value = in->mItem.mText;
-	ExpandMacros(value);
-	Clipboard::Copy(value);
-	return TRUE;
+	if (modifierFlags == 0) {
+		// 値をコピー
+		auto value = in->mItem.mText;
+		ExpandMacros(value);
+		*action = new CopyTextAction(value);
+		return true;
+	}
+	return false;
 }
 
 HICON SnippetGroupAdhocCommand::GetIcon()

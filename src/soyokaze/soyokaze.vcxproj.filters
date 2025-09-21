@@ -1702,6 +1702,18 @@
     <ClInclude Include="actions\builtin\ExecuteAction.h">
       <Filter>actions\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpExecutionTarget.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\RunCommandAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\GroupAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecTarget.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2985,6 +2997,18 @@
     </ClCompile>
     <ClCompile Include="actions\builtin\ExecuteAction.cpp">
       <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp">
+      <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\RunCommandAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\GroupAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecTarget.cpp">
+      <Filter>commands\shellexecute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

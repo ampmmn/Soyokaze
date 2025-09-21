@@ -4,6 +4,7 @@
 #include "commands/snippet/SnippetCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -17,7 +18,7 @@ namespace commands {
 namespace snippet {
 
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
-
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 CString RegisterSnippetCommand::TYPE(_T("Builtin-RegisterSnippet"));
 CString RegisterSnippetCommand::DEFAULT_NAME(_T("newsnippet"));
@@ -42,21 +43,24 @@ RegisterSnippetCommand::~RegisterSnippetCommand()
 {
 }
 
-BOOL RegisterSnippetCommand::Execute(Parameter* param)
+bool RegisterSnippetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	// ウインドウ経由でクリップボードのテキストを取得
-	CString clipboardText;
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	mainWnd->GetClipboardString(clipboardText);
-
-	RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
-	inParam->SetNamedParamString(_T("TEXT"), clipboardText);
-	SnippetCommand::NewDialog(inParam);
-
-	// キャンセルされてもエラーダイアログを出さないようにするため、常にTRUEをかえす
-	return TRUE;
+	*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+		// ウインドウ経由でクリップボードのテキストを取得
+		CString clipboardText;
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->GetClipboardString(clipboardText);
+	
+		RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
+		inParam->SetNamedParamString(_T("TEXT"), clipboardText);
+		SnippetCommand::NewDialog(inParam);
+	
+		// キャンセルされてもエラーダイアログを出さないようにするため、常にTRUEをかえす
+		return true;
+	});
+	return true;
 }
 
 HICON RegisterSnippetCommand::GetIcon()

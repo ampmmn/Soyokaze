@@ -90,7 +90,7 @@ BOOL EditCommand::Execute(Parameter* param)
 		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
 		msgStr += _T("\n\n");
 		msgStr += editName;
-		AfxMessageBox(msgStr);
+		mError = msgStr;
 		return TRUE;
 	}
 

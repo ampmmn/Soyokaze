@@ -52,12 +52,21 @@ void CopyTextAction::EnablePasteAfterCopy(bool isEnabled)
 	mEnablePaste = isEnabled;
 }
 
+void CopyTextAction::SetDisplayName(const CString& name)
+{
+	mDisplayName = name;
+}
 
 // Action
 // アクションの内容を示す名称
 CString CopyTextAction::GetDisplayName()
 {
-	return _T("クリップボードにコピー");
+	if (mDisplayName.IsEmpty()) {
+		return _T("クリップボードにコピー");
+	}
+	else {
+		return mDisplayName;
+	}
 }
 
 // アクションを実行する

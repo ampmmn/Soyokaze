@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ShellExecCommand.h"
 #include "core/IFIDDefine.h"
+#include "commands/shellexecute/ShellExecTarget.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
@@ -9,6 +10,8 @@
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -30,6 +33,8 @@ using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 using NamedParameter = launcherapp::actions::core::NamedParameter;
 using CommandRepository = launcherapp::core::CommandRepository;
 using CommandIcon = launcherapp::icon::CommandIcon;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 
 namespace launcherapp {
 namespace commands {
@@ -155,59 +160,44 @@ bool ShellExecCommand::CanExecute()
 	return true;
 }
 
-BOOL ShellExecCommand::Execute(Parameter* param_)
+bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	RefPtr<Parameter> param(param_->Clone());
-
-	// 実行時引数が与えられた場合は履歴に登録しておく
-	auto namedParam = GetNamedParameter(param);
-	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	if (modifierFlags == 0) {
+		return CreateExecuteAction(action, false);
 	}
-
-	in->mErrMsg.Empty();
-
-	int paramCount = param->GetParamCount();
-	std::vector<CString> args;
-	args.reserve(paramCount);
-	for (int i = 0; i < paramCount; ++i) {
-		args.push_back(param->GetParam(i));
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		return CreateOpenPathAction(action);
 	}
+	else if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
+		return CreateExecuteAction(action, true);
+	}
+	return false;
+}
 
-	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
-	ATTRIBUTE attr;
-	in->SelectAttribute(args, attr);
-		
-	SubProcess exec(param);
+bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
+{
+	auto a = new ExecuteAction(new ShellExecTarget(in->mParam));
+	a->SetHistoryPolicy(ExecuteAction::HISTORY_HASPARAMONLY);
 
-	// 表示方法
-	exec.SetShowType(attr.GetShowType());
-	// 作業ディレクトリ
-	exec.SetWorkDirectory(attr.mDir);
 	// 管理者権限で実行
-	if (in->mParam.mIsRunAsAdmin) {
-		exec.SetRunAsAdmin();
+	if (isForceRunAs || in->mParam.mIsRunAsAdmin) {
+		a->SetRunAsAdmin();
 	}
 	// 追加の環境変数をセットする
 	for (auto& item : in->mParam.mEnviron) {
 		auto value = item.second;
 		ExpandMacros(value);
-		exec.SetAdditionalEnvironment(item.first, value);
+		a->SetAdditionalEnvironment(item.first, value);
 	}
 
-	// プロセスを実行する
-	SubProcess::ProcessPtr process;
-	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
-		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
-	}
+	*action = a;
+	return true;
+}
 
-	// もしwaitするようにするのであればここで待つ
-	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
-		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		process->Wait(WAIT_LIMIT);
-	}
-	return TRUE;
+bool ShellExecCommand::CreateOpenPathAction(Action** action)
+{
+	*action = new OpenPathInFilerAction(new ShellExecTarget(in->mParam));
+	return true;
 }
 
 CString ShellExecCommand::GetErrorString()

@@ -12,10 +12,45 @@ namespace launcherapp { namespace actions { namespace builtin {
 using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::core;
 
-
-OpenPathInFilerAction::OpenPathInFilerAction(const CString fullPath) :
- 	mFullPath(fullPath)
+class OpenPathInFilerTarget : public ExecutionTarget
 {
+public:
+	OpenPathInFilerTarget(const CString& path) : mFullPath(path) {}
+
+	CString GetPath(Parameter*) override { return mFullPath; }
+
+	// 以下は使用しない
+	CString GetParameter(Parameter*) override { return _T(""); }
+	CString GetWorkDir(Parameter*) override { return _T(""); }
+	int GetShowType(Parameter* args) override { return SW_SHOW; }
+
+	CString mFullPath;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+struct OpenPathInFilerAction::PImpl
+{
+	std::unique_ptr<ExecutionTarget> mTarget;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+OpenPathInFilerAction::OpenPathInFilerAction(const CString fullPath) : in(new PImpl)
+{
+	in->mTarget.reset(new OpenPathInFilerTarget(fullPath));
+}
+
+OpenPathInFilerAction::OpenPathInFilerAction(ExecutionTarget* target) : in(new PImpl)
+{
+	in->mTarget.reset(target);
 }
 
 OpenPathInFilerAction::~OpenPathInFilerAction()
@@ -26,12 +61,7 @@ OpenPathInFilerAction::~OpenPathInFilerAction()
 // アクションの内容を示す名称
 CString OpenPathInFilerAction::GetDisplayName()
 {
-	if (Path::IsDirectory(mFullPath)) {
-		return _T("フォルダを開く");
-	}
-	else {
-		return _T("パスを開く");
-	}
+	return _T("パスを開く");
 }
 
 // アクションを実行する
@@ -54,7 +84,7 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 	if (pref->IsUseFiler()) {
 		// 外部ファイラを使う場合はファイラ経由でパスを表示する形に差し替える
 		param = pref->GetFilerParam();
-		param.Replace(_T("$target"), path);
+		param.Replace(_T("$target"), in->mTarget->GetPath(args_));
 
 		auto filerPath = pref->GetFilerPath();
 		ExpandArguments(filerPath, args);
@@ -72,12 +102,10 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 
 	// 登録されたファイラーがない、または、利用できない場合はエクスプローラで開く
 	if (isFilerAvailable == false) {
-		if (Path::IsDirectory(mFullPath) == false) {
+		path = in->mTarget->GetPath(args_);
+		if (Path::IsDirectory(path) == false) {
 			PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
 			path.ReleaseBuffer();
-		}
-		else {
-			path = mFullPath;
 		}
 		param = _T("open");
 	}
@@ -92,7 +120,6 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 	}
 	return true;
 }
-
 
 }}}
 

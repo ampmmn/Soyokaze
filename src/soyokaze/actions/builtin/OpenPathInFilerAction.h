@@ -1,6 +1,8 @@
 #pragma once
 
 #include "actions/core/ActionBase.h"
+#include "actions/builtin/ExecutionTarget.h"
+#include <memory>
 
 namespace launcherapp { namespace actions { namespace builtin {
 
@@ -9,6 +11,7 @@ class OpenPathInFilerAction : virtual public launcherapp::actions::core::ActionB
 {
 public:
 	OpenPathInFilerAction(const CString fullPath);
+	OpenPathInFilerAction(ExecutionTarget* target);
 	~OpenPathInFilerAction();
 
 // Action
@@ -18,7 +21,8 @@ public:
 	bool Perform(Parameter* param, String* errMsg) override;
 
 private:
-	CString mFullPath;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
 

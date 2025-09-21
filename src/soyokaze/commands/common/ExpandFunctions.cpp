@@ -58,6 +58,45 @@ void ExpandArguments(
 	}
 }
 
+void ExpandArguments(
+	CString& target,
+	const launcherapp::actions::core::Parameter* param
+)
+{
+	CString argAll;
+
+	// $1...$nを置換する
+	TCHAR key[32];
+	for (int i = 0; i < param->GetParamCount(); ++i) {
+
+		CString arg(param->GetParam(i));
+
+		bool hasSpace = HasSpace(arg);
+		if (hasSpace) {
+			arg = _T("\"");
+			arg += param->GetParam(i);
+			arg += _T("\"");
+		}
+
+		_stprintf_s(key, _T("$%d"), i+1);
+
+		target.Replace(key, arg);
+
+		// あわせて、$*用の置換後の文字列を生成する
+		if (i != 0) {
+			argAll += _T(" ");
+		}
+
+		argAll += arg;
+	}
+
+
+	// $*を置換する
+	if (target.Find(_T("$*")) != -1) {
+		target.Replace(_T("$*"), argAll);
+	}
+}
+
 // ランチャーのマクロ機能による置換
 bool ExpandMacros(CString& target)
 {

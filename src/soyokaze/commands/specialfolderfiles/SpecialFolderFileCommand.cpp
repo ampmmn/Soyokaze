@@ -4,6 +4,8 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
@@ -15,6 +17,8 @@
 
 using namespace launcherapp::commands::common;
 using NamedParameter = launcherapp::actions::core::NamedParameter;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 
 namespace launcherapp {
 namespace commands {
@@ -53,17 +57,15 @@ CString SpecialFolderFileCommand::GetTypeDisplayName()
 	return TypeDisplayName((int)in->mItem.mType);
 }
 
-BOOL SpecialFolderFileCommand::Execute(Parameter* param)
+bool SpecialFolderFileCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess::ProcessPtr process;
-
-	SubProcess exec(param);
-	if (exec.Run(in->mItem.mFullPath, process) == false) {
-		this->mErrMsg = process->GetErrorMessage();
-		return FALSE;
+	if (modifierFlags & Command::MODIFIER_CTRL) {
+		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
 	}
-
-	return TRUE;
+	else {
+		*action = new ExecuteAction(in->mItem.mFullPath);
+	}
+	return true;
 }
 
 HICON SpecialFolderFileCommand::GetIcon()

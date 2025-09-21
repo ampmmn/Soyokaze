@@ -26,6 +26,7 @@ public:
 	~CopyTextAction();
 
 	void EnablePasteAfterCopy(bool isEnabled);
+	void SetDisplayName(const CString& name);
 
 // Action
 	// アクションの内容を示す名称
@@ -38,6 +39,8 @@ private:
 	CString mText;
 	// コピーのあと、貼り付けをする
 	bool mEnablePaste;
+	// アクションの内容を示す名称
+	CString mDisplayName;
 };
 
 

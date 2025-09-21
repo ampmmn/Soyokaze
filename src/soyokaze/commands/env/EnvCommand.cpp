@@ -3,6 +3,7 @@
 #include "EnvCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "resource.h"
 #include <vector>
 
@@ -12,6 +13,7 @@
 
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -45,12 +47,12 @@ CString EnvCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL EnvCommand::Execute(Parameter* param)
+bool EnvCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
 	// クリップボードにコピー
-	Clipboard::Copy(in->mValue);
+	*action = new CopyTextAction(in->mValue);
 	return TRUE;
 }
 

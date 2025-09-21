@@ -8,6 +8,9 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/RunCommandAction.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/RefPtr.h"
 #include "resource.h"
@@ -23,6 +26,9 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
+using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -81,82 +87,60 @@ CString FilterAdhocCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-BOOL FilterAdhocCommand::Execute(Parameter* param)
+bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	CString argSub = in->mParam.mAfterCommandParam;
-	argSub.Replace(_T("$select"), in->mResult.mDisplayName);
-	ExpandMacros(argSub);
-
-	auto namedParam = GetNamedParameter(param);
-
-	CString parents;
-	int len = namedParam->GetNamedParamStringLength(_T("PARENTS"));
-	if (len > 0) {
-		namedParam->GetNamedParamString(_T("PARENTS"), parents.GetBuffer(len), len);
-		parents.ReleaseBuffer();
-	}
-
-	// 呼び出し元に自分自身を追加
-	if (parents.IsEmpty() == FALSE) {
-		parents += _T("/");
-	}
-	parents += in->mParam.mName;
-
 	int type = in->mParam.mPostFilterType;
 	if (type == POSTFILTER_COMMAND) {
-
-		RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
-		paramSub->AddArgument(argSub);
-		paramSub->SetNamedParamString(_T("PARENTS"), parents);
-
-		// Ctrlキーが押されているかを設定
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("WinKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("AltKeyPressed"), true);
-		}
-
-		// 他のコマンドを実行
-		auto cmdRepo = CommandRepository::GetInstance();
-		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false));
-		if (command) {
-			command->Execute(paramSub);
-		}
-		return true;
+		return CreatePostFilterCommandAction(modifierFlags, action);
 	}
-
-	if (type == POSTFILTER_SUBPROCESS) {
-		// 他のファイルを実行/URLを開く
-		ShellExecCommand cmd;
-
-		CString path = in->mParam.mAfterFilePath;
-		path.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(path);
-		cmd.SetPath(path);
-
-		cmd.SetArgument(argSub);
-
-		path = in->mParam.mAfterDir;
-		path.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(path);
-		cmd.SetWorkDir(path);
-		cmd.SetShowType(in->mParam.GetAfterShowType());
-
-		return cmd.Execute(ParameterBuilder::EmptyParam());
+	else if (type == POSTFILTER_SUBPROCESS) {
+		return CreatePostFilterSubprocessAction(modifierFlags, action);
 	}
-
-	if (type == POSTFILTER_CLIPBOARD) {
-		// クリップボードにコピー
-		Clipboard::Copy(argSub);
-		return true;
+	else if (type == POSTFILTER_CLIPBOARD) {
+		return CreatePostFilterCopyAction(modifierFlags, action);
 	}
+	return false;
+}
+
+bool FilterAdhocCommand::CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action)
+{
+	auto a = new RunCommandAction(in->mParam.mName, in->mParam.mAfterCommandName, modifierFlags);
+	*action = a;
+	return true;
+}
+
+bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action)
+{
+	// コマンド実行時に起動するファイルパス上の"$select"を選択値に置換
+	CString path = in->mParam.mAfterFilePath;
+	path.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(path);
+
+	// コマンドパラメータ上の"$select"を選択値に置換
+	CString param = in->mParam.mAfterCommandParam;
+	param.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(param);
+
+	// コマンド実行時のカレントディレクトリも同様に置換
+	CString workDir = in->mParam.mAfterDir;
+	workDir.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(workDir);
+
+	// 他のファイルを実行/URLを開く
+	*action = new ExecuteAction(path, param, workDir, in->mParam.GetAfterShowType());
+	return true;
+}
+
+bool FilterAdhocCommand::CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action)
+{
+	// コマンドパラメータに基づき、選択値を置換
+	CString param = in->mParam.mAfterCommandParam;
+	param.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(param);
+
+	// 置換した値をクリップボードにコピー
+	*action = new CopyTextAction(param);
+
 	return true;
 }
 

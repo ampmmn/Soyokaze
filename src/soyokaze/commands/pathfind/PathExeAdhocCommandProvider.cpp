@@ -130,6 +130,12 @@ uint32_t PathExeAdhocCommandProvider::EnumCommandDisplayNames(std::vector<CStrin
 	return 1;
 }
 
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t PathExeAdhocCommandProvider::GetOrder() const
+{
+	return 1400;
+}
+
 } // end of namespace pathfind
 } // end of namespace commands
 } // end of namespace launcherapp

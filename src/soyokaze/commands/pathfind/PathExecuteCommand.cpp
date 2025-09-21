@@ -2,19 +2,18 @@
 #include "framework.h"
 #include "PathExecuteCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
-#include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
-#include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "mainwindow/controller/MainWindowController.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,8 +21,9 @@
 
 using NamedParameter = launcherapp::actions::core::NamedParameter;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
-using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
-using SubProcess = launcherapp::commands::common::SubProcess;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -108,26 +108,33 @@ CString PathExecuteCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL PathExecuteCommand::Execute(Parameter* param)
+bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	if (in->mIsURL == false && Path::FileExists(in->mFullPath) == FALSE) {
-		return FALSE;
+		return false;
 	}
 
-	// 履歴に追加
-	auto namedParam = launcherapp::commands::common::GetNamedParameter(param);
-	if (namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	if (modifierFlags == 0) {
+		// 実行
+		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		*action = a;
+		return true;
 	}
-
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mFullPath, param->GetParameterString(), process) == FALSE) {
-		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
+	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+		// 管理者権限で実行
+		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetRunAsAdmin();
+		*action = a;
+		return true;
 	}
-
-	return TRUE;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// パスを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON PathExecuteCommand::GetIcon()
@@ -302,7 +309,11 @@ bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
 	}
 
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		RefPtr<Action> action;
+		if (GetAction(0, &action) == false) {
+			return false;
+		}
+		return action->Perform(param, nullptr);
 	}
 
 	RefPtr<NamedParameter> namedParam;
@@ -329,20 +340,20 @@ bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
 	}
 	else {
 		if (index == 1) {
-			// パスを開くため、疑似的にCtrl押下で実行したことにする
-			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-			return Execute(param) != FALSE;
+			OpenPathInFilerAction action(in->mFullPath);
+			return action.Perform(param, nullptr);
 		}
 		else if (index == 2)  {
-			// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
-			namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-			return Execute(param) != FALSE;
+			// 管理者権限で実行
+			ExecuteAction action(in->mFullPath, param->GetParameterString());
+			action.SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+			action.SetRunAsAdmin();
+			return action.Perform(param, nullptr);
 		}
 		else if (index == 3) {
 			// クリップボードにコピー
-			launcherapp::commands::common::Clipboard::Copy(in->mFullPath);
-			return true;
+			CopyTextAction action(in->mFullPath);
+			return action.Perform(param, nullptr);
 		}
 		else { // if (index == 4)
 			// プロパティダイアログを表示

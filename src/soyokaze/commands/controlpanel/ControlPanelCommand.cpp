@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "ControlPanelCommand.h"
-#include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -50,11 +52,12 @@ CString ControlPanelCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL ControlPanelCommand::Execute(Parameter* param)
+bool ControlPanelCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	return exec.Run(_T("control.exe"), _T("/name ") + in->mAppName, process);
+	UNREFERENCED_PARAMETER(modifierFlags);
+	Path controlExecPath(Path::SYSTEMDIR, _T("control.exe"));
+	*action = new ExecuteAction((LPCTSTR)controlExecPath, _T("/name ") + in->mAppName);
+	return true;
 }
 
 HICON ControlPanelCommand::GetIcon()

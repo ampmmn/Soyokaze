@@ -3,11 +3,12 @@
 #include "EverythingAdhocCommand.h"
 #include "commands/everything/EverythingCommandParam.h"
 #include "commands/everything/EverythingResult.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
-#include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -19,6 +20,9 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -73,6 +77,7 @@ CString EverythingAdhocCommand::GetGuideString()
 	CString guideStr(_T("⏎:実行"));
 	guideStr += _T(" S-⏎:パスをコピー");
 	guideStr += _T(" C-⏎:フォルダを開く");
+	guideStr += _T(" C-S-⏎:管理者権限で実行");
 
 	return guideStr;
 }
@@ -82,25 +87,31 @@ CString EverythingAdhocCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL EverythingAdhocCommand::Execute(Parameter* param)
+bool EverythingAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
-	bool isCtrlPressed = (state & MASK_CTRL) != 0;
-	bool isShiftPressed = (state & MASK_SHIFT) != 0;
-	if (isCtrlPressed == false && isShiftPressed != false) {
-		// クリップボードにコピー
-		Clipboard::Copy(in->mResult.mFullPath);
-		return TRUE;
+	if (modifierFlags == 0) {
+		// 実行
+		*action = new ExecuteAction(in->mResult.mFullPath);
+		return true;
 	}
-
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mResult.mFullPath, param->GetParameterString(), process) == FALSE) {
-		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		// パスをコピー
+		*action = new CopyTextAction(in->mResult.mFullPath);
+		return true;
 	}
-
-	return TRUE;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// フォルダを開く
+		*action = new OpenPathInFilerAction(in->mResult.mFullPath);
+		return true;
+	}
+	else if (modifierFlags == (Command::MODIFIER_CTRL|Command::MODIFIER_SHIFT)) {
+		// 管理者権限で実行
+		auto a = new ExecuteAction(in->mResult.mFullPath);
+		a->SetRunAsAdmin();
+		*action = a;
+		return true;
+	}
+	return false;
 }
 
 HICON EverythingAdhocCommand::GetIcon()

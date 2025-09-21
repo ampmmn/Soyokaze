@@ -2,6 +2,8 @@
 #include "MailToCommand.h"
 #include "commands/common/SubProcess.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -17,6 +19,7 @@ namespace mailto {
 
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SubProcess = launcherapp::commands::common::SubProcess;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MailToCommand)
 
@@ -39,25 +42,34 @@ CString MailToCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL MailToCommand::Execute(Parameter* param)
+bool MailToCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	CString recipient;
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	CString str = param->GetCommandString();
-	int n = str.Find(_T("mailto:"));
-	if (n != -1) {
-		recipient = str.Mid(n + 7);
-		recipient.Trim();
-	}
+	*action = new CallbackAction(_T("あて先を指定してメール"), [&](Parameter* param, String*) -> bool {
 
-	SubProcess::ProcessPtr process;
-	SubProcess exec(ParameterBuilder::EmptyParam());
+		CString recipient;
 
-	CString arg = _T("/c start \"\" mailto:" + recipient);
-	exec.SetShowType(SW_HIDE);
-	exec.Run(_T("cmd.exe"), arg, process);
+		CString str = param->GetCommandString();
+		int n = str.Find(_T("mailto:"));
+		if (n != -1) {
+			recipient = str.Mid(n + 7);
+			recipient.Trim();
+		}
 
-	return TRUE;
+		Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
+
+		SubProcess::ProcessPtr process;
+		SubProcess exec(ParameterBuilder::EmptyParam());
+
+
+		CString arg = _T("/c start \"\" mailto:" + recipient);
+		exec.SetShowType(SW_HIDE);
+		exec.Run((LPCTSTR)cmdExePath, arg, process);
+		return true;
+	});
+
+	return true;
 }
 
 HICON MailToCommand::GetIcon()

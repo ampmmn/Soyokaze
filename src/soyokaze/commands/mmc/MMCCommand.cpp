@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "MMCCommand.h"
 #include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -10,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -43,21 +46,17 @@ CString MMCCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL MMCCommand::Execute(Parameter* param)
+bool MMCCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	UNREFERENCED_PARAMETER(modifierFlags);
+
+	Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
+
 	CString paramStr;
 	paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mSnapin.mMscFilePath);
 
-	SubProcess::ProcessPtr process;
-
-	SubProcess exec(param);
-	exec.SetShowType(SW_HIDE);
-	if (exec.Run(_T("cmd.exe"), paramStr, process) == false) {
-		mErrMsg = process->GetErrorMessage();
-		return FALSE;
-	}
-
-	return TRUE;
+	*action = new ExecuteAction((LPCTSTR)cmdExePath, paramStr, _T(""), SW_HIDE);
+	return true;
 }
 
 HICON MMCCommand::GetIcon()
