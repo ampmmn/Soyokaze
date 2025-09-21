@@ -4,6 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -14,6 +15,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -79,23 +81,19 @@ CString EraNameWJCommand::GetTypeDisplayName()
 }
 
 
-BOOL EraNameWJCommand::Execute(Parameter* param)
+bool EraNameWJCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	// クリップボードにコピー
-	uint32_t state = GetModifierKeyState(param, MASK_SHIFT);
-	bool isShiftKeyPressed = (state & MASK_SHIFT) != 0;
-	if (isShiftKeyPressed == false) {
-		Clipboard::Copy(in->mName);
-	}
-	else {
+	if (modifierFlags & Command::MODIFIER_SHIFT) {
 		CString str;
 		str.Format(_T("%d"), in->mVal);
-		Clipboard::Copy(str);
+		*action = new CopyTextAction(str);
+		return true;
 	}
-
-	return TRUE;
+	else {
+		*action = new CopyTextAction(in->mName);
+		return true;
+	}
 }
 
 HICON EraNameWJCommand::GetIcon()
