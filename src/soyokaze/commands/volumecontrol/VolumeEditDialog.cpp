@@ -6,6 +6,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
+#include "gui/DDXWrapper.h"
 #include "resource.h"
 
 namespace launcherapp {

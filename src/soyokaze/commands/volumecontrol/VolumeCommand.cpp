@@ -7,6 +7,7 @@
 #include "commands/volumecontrol/AudioSessionVolume.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -22,6 +23,7 @@ namespace commands {
 namespace volumecontrol {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 struct VolumeCommand::PImpl
 {
@@ -71,41 +73,42 @@ CString VolumeCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL VolumeCommand::Execute(Parameter* param_)
+bool VolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param_);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	AudioSessionVolume vol;
-
-	const auto& param = in->mParam;
-
-	if (param.mIsSetVolume) {
-
-		if (param.mIsRelative == FALSE) {
-			vol.SetVolume(param.GetVolumeLevel());
+	*action = new CallbackAction(_T("音量設定を変更"), [&](Parameter*,String* errMsg) -> bool {
+		AudioSessionVolume vol;
+	
+		const auto& param = in->mParam;
+	
+		if (param.mIsSetVolume) {
+	
+			if (param.mIsRelative == FALSE) {
+				vol.SetVolume(param.GetVolumeLevel());
+			}
+			else {
+				int level = 0;
+				vol.GetVolume(&level);
+				level += param.GetVolumeLevel();
+				vol.SetVolume(level);
+			}
 		}
-		else {
-			int level = 0;
-			vol.GetVolume(&level);
-			level += param.GetVolumeLevel();
-			vol.SetVolume(level);
+	
+		if (param.mMuteControl == 1) { // ミュート解除
+			vol.SetMute(FALSE);
 		}
-	}
-
-	if (param.mMuteControl == 1) { // ミュート解除
-		vol.SetMute(FALSE);
-	}
-	else if (param.mMuteControl == 2) { // ミュート
-		vol.SetMute(TRUE);
-	}
-	else if (param.mMuteControl == 3) { // トグル
-		BOOL isMute = FALSE;
-		vol.GetMute(&isMute);
-		vol.SetMute(!isMute);
-	}
-
-	// ToDo: 実装
-	return TRUE;
+		else if (param.mMuteControl == 2) { // ミュート
+			vol.SetMute(TRUE);
+		}
+		else if (param.mMuteControl == 3) { // トグル
+			BOOL isMute = FALSE;
+			vol.GetMute(&isMute);
+			vol.SetMute(!isMute);
+		}
+		return true;
+	});
+	return true;
 }
 
 CString VolumeCommand::GetErrorString()
@@ -146,7 +149,7 @@ bool VolumeCommand::Save(CommandEntryIF* entry)
 	entry->Set(_T("Type"), GetType());
 
 	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("IsSetVolume"), in->mParam.mIsSetVolume? true : false);
+	entry->Set(_T("IsSetVolume"), in->mParam.mIsSetVolume);
 	entry->Set(_T("VolumeLevel"), in->mParam.mVolume);
 	entry->Set(_T("IsVolumeRelative"), in->mParam.mIsRelative);
 	entry->Set(_T("MuteControlType"), in->mParam.mMuteControl);
@@ -166,7 +169,7 @@ bool VolumeCommand::Load(CommandEntryIF* entry)
 	in->mParam.mName = entry->GetName();
 	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
 
-	in->mParam.mIsSetVolume = entry->Get(_T("IsSetVolume"), false) ? TRUE : FALSE;
+	in->mParam.mIsSetVolume = entry->Get(_T("IsSetVolume"), false);
 	in->mParam.mVolume = entry->Get(_T("VolumeLevel") , 0); 
 	in->mParam.mIsRelative = entry->Get(_T("VolumeLevel") , false); 
 	in->mParam.mMuteControl = entry->Get(_T("MuteControlType") , 0); 
