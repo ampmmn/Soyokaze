@@ -4,17 +4,11 @@
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchCommandEditor.h"
-#include "commands/common/ExpandFunctions.h"
-#include "commands/core/CommandRepository.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "matcher/PatternInternal.h"
-#include "utility/LastErrorString.h"
-#include "setting/AppPreference.h"
-#include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyManager.h"
-#include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
 #include "icon/CommandIcon.h"
-#include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
 
@@ -154,20 +148,15 @@ CString WebSearchCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL WebSearchCommand::Execute(Parameter* param_)
+bool WebSearchCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param_);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-
-	return TRUE;
+	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
+	// (実際の検索アクションの実行はWebSearchAdhocCommandが担う)
+	auto cmdline(GetName()+ _T(" "));
+	*action = new launcherapp::actions::mainwindow::SetTextAction(_T("検索を実行"), cmdline);
+	return true;
 }
 
 HICON WebSearchCommand::GetIcon()

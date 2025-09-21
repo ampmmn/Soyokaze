@@ -274,6 +274,9 @@
     <Filter Include="actions\web">
       <UniqueIdentifier>{4069b523-f08f-49fc-aa23-1102ad3200e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="actions\mainwindow">
+      <UniqueIdentifier>{e12d1141-03f1-4fa6-8923-63c9622c0627}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1690,6 +1693,9 @@
     <ClInclude Include="actions\web\OpenURLAction.h">
       <Filter>actions\web</Filter>
     </ClInclude>
+    <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h">
+      <Filter>actions\mainwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2967,6 +2973,9 @@
     </ClCompile>
     <ClCompile Include="actions\web\OpenURLAction.cpp">
       <Filter>actions\web</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp">
+      <Filter>actions\mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

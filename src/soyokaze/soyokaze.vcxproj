@@ -410,6 +410,7 @@
     <ClInclude Include="actions\core\ActionBase.h" />
     <ClInclude Include="actions\core\ActionParameter.h" />
     <ClInclude Include="actions\core\ActionParameterIF.h" />
+    <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h" />
     <ClInclude Include="actions\web\OpenInChromeAction.h" />
     <ClInclude Include="actions\web\OpenInEdgeAction.h" />
     <ClInclude Include="actions\web\OpenURLAction.h" />
@@ -881,6 +882,7 @@
     <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp" />
     <ClCompile Include="actions\core\ActionBase.cpp" />
     <ClCompile Include="actions\core\ActionParameter.cpp" />
+    <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp" />
     <ClCompile Include="actions\web\OpenInChromeAction.cpp" />
     <ClCompile Include="actions\web\OpenInEdgeAction.cpp" />
     <ClCompile Include="actions\web\OpenURLAction.cpp" />
