@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "WinScpCommand.h"
 #include "commands/common/SubProcess.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::builtin;
 
 namespace launcherapp { namespace commands { namespace winscp {
 
@@ -18,7 +20,6 @@ struct WinScpCommand::PImpl
 {
 	CommandParam* mParam{nullptr};
 	CString mSessionName;
-	CString mErrorMsg;
 };
 
 
@@ -53,32 +54,41 @@ CString WinScpCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL WinScpCommand::Execute(Parameter* param)
+bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	CString exeFilePath;
-	if (in->mParam->ResolveExecutablePath(exeFilePath) == false) {
-		spdlog::error("Failed to get winscp executable path");
-		return TRUE;
-	}
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	SubProcess exec(param);
+	*action = new CallbackAction(_T("セッションを開く"), [&](Parameter* param, String* errMsg) -> bool {
 
-	CString argStr;
-	argStr.Format(_T("\"%s\""), (LPCTSTR)in->mSessionName);
+		CString exeFilePath;
+		if (in->mParam->ResolveExecutablePath(exeFilePath) == false) {
+			spdlog::error("Failed to get winscp executable path");
+			if (errMsg) { errMsg->assign("WinSCPの実行ファイルが見つかりません。"); }
+			return false;
+		}
 
-	// プロセスを実行する
-	SubProcess::ProcessPtr process;
-	if (exec.Run(exeFilePath, argStr, process) == FALSE) {
-		in->mErrorMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
-	}
+		SubProcess exec(param);
+
+		CString argStr;
+		argStr.Format(_T("\"%s\""), (LPCTSTR)in->mSessionName);
+
+		// プロセスを実行する
+		SubProcess::ProcessPtr process;
+		if (exec.Run(exeFilePath, argStr, process) == FALSE) {
+			if (errMsg) {
+				UTF2UTF(process->GetErrorMessage(), *errMsg);
+			}
+			return false;
+		}
+		return true;
+	});
 
 	return TRUE;
 }
 
 CString WinScpCommand::GetErrorString()
 {
-	return in->mErrorMsg;
+	return _T("");
 }
 
 HICON WinScpCommand::GetIcon()
