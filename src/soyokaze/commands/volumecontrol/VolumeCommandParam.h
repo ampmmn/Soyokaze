@@ -21,7 +21,7 @@ public:
 	CString mDescription;
 
 	// 音量を変更するか?
-	BOOL mIsSetVolume{FALSE};   // DDXの都合でBOOL
+	bool mIsSetVolume{false};
 
 	// 変更する場合の音量(絶対値の場合は0-100)
 	int mVolume{0};
