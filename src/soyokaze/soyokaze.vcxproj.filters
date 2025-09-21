@@ -277,6 +277,9 @@
     <Filter Include="actions\mainwindow">
       <UniqueIdentifier>{e12d1141-03f1-4fa6-8923-63c9622c0627}</UniqueIdentifier>
     </Filter>
+    <Filter Include="actions\vmware">
+      <UniqueIdentifier>{6f71133a-6969-45dd-ab22-f7c116d4e990}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1690,6 +1693,15 @@
     <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h">
       <Filter>actions\mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="actions\vmware\RunVMXAction.h">
+      <Filter>actions\vmware</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\OpenPathInFilerAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\ExecuteAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2964,6 +2976,15 @@
     </ClCompile>
     <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp">
       <Filter>actions\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\vmware\RunVMXAction.cpp">
+      <Filter>actions\vmware</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\ExecuteAction.cpp">
+      <Filter>actions\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

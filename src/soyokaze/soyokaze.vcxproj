@@ -403,7 +403,9 @@
     <ClInclude Include="actions\activate_window\MinimizeWindowAction.h" />
     <ClInclude Include="actions\activate_window\RestoreWindowAction.h" />
     <ClInclude Include="actions\builtin\CallbackAction.h" />
+    <ClInclude Include="actions\builtin\ExecuteAction.h" />
     <ClInclude Include="actions\builtin\NullAction.h" />
+    <ClInclude Include="actions\builtin\OpenPathInFilerAction.h" />
     <ClInclude Include="actions\builtin\RegisterNewCommandAction.h" />
     <ClInclude Include="actions\clipboard\CopyClipboardAction.h" />
     <ClInclude Include="actions\core\Action.h" />
@@ -412,6 +414,7 @@
     <ClInclude Include="actions\core\ActionParameterIF.h" />
     <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h" />
     <ClInclude Include="actions\web\OpenURLAction.h" />
+    <ClInclude Include="actions\vmware\RunVMXAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
@@ -875,13 +878,16 @@
     <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp" />
     <ClCompile Include="actions\activate_window\RestoreWindowAction.cpp" />
     <ClCompile Include="actions\builtin\CallbackAction.cpp" />
+    <ClCompile Include="actions\builtin\ExecuteAction.cpp" />
     <ClCompile Include="actions\builtin\NullAction.cpp" />
+    <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp" />
     <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp" />
     <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp" />
     <ClCompile Include="actions\core\ActionBase.cpp" />
     <ClCompile Include="actions\core\ActionParameter.cpp" />
     <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp" />
     <ClCompile Include="actions\web\OpenURLAction.cpp" />
+    <ClCompile Include="actions\vmware\RunVMXAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />

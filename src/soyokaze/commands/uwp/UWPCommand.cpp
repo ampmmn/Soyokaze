@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "UWPCommand.h"
-#include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -10,6 +11,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -45,8 +47,12 @@ CString UWPCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-BOOL UWPCommand::Execute(Parameter* param)
+bool UWPCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	UNREFERENCED_PARAMETER(modifierFlags);
+
+	Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
+
 	CString paramStr;
 	if (in->mItem->mIsUWP) {
 		paramStr.Format(_T("/c start shell:AppsFolder\\%s:"), (LPCTSTR)in->mItem->mAppID);
@@ -55,16 +61,11 @@ BOOL UWPCommand::Execute(Parameter* param)
 		paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mItem->mAppID);
 	}
 
-	SubProcess::ProcessPtr process;
+	auto a = new ExecuteAction((LPCTSTR)cmdExePath, paramStr);
+	a->SetShowType(SW_HIDE);
+	*action = a;
 
-	SubProcess exec(param);
-	exec.SetShowType(SW_HIDE);
-	if (exec.Run(_T("cmd.exe"), paramStr, process) == false) {
-		mErrMsg = process->GetErrorMessage();
-		return FALSE;
-	}
-
-	return TRUE;
+	return true;
 }
 
 HICON UWPCommand::GetIcon()
