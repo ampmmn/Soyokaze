@@ -113,6 +113,10 @@ void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>
 
 		// 結果を返す
 		out.swap(tmp);
+
+		for (auto cmd : tmp) {
+			cmd->Release();
+		}
 	}
 	catch(...) {
 		spdlog::error(_T("Failed to parse json. {}"), (LPCTSTR)settingsFilePath);

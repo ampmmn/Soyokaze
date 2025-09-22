@@ -256,7 +256,14 @@ bool CommandRepository::PImpl::WaitForRequest(QueryRequest** req)
 		return false;
 	}
 
+	// 直近のリクエストだけ取得する
 	*req = mQueryRequestQueue.back();
+	mQueryRequestQueue.pop_back();
+
+	// 中間のリクエストを破棄
+	for (auto intermediateRequest : mQueryRequestQueue) {
+		intermediateRequest->Release();
+	}
 	mQueryRequestQueue.clear();
 
 	return true;
