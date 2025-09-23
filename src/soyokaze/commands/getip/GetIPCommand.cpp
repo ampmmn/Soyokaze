@@ -59,7 +59,9 @@ CString GetIPCommand::GetTypeDisplayName()
 
 bool GetIPCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// クリップボードにコピー
 	*action = new CopyTextAction(in->mAddress);

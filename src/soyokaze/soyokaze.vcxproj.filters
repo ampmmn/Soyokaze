@@ -1692,6 +1692,9 @@
     <ClInclude Include="commands\shellexecute\ShellExecTarget.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
+    <ClInclude Include="actions\builtin\ShowPropertiesAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2980,6 +2983,9 @@
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecTarget.cpp">
       <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp">
+      <Filter>actions\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

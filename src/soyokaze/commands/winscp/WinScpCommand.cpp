@@ -58,7 +58,9 @@ CString WinScpCommand::GetTypeDisplayName()
 
 bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("セッションを開く"), [&](Parameter* param, String* errMsg) -> bool {
 
@@ -85,7 +87,7 @@ bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	});
 
-	return TRUE;
+	return true;
 }
 
 HICON WinScpCommand::GetIcon()

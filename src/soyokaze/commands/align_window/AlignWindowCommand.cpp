@@ -132,7 +132,9 @@ static HWND GetNextHwnd()
 
 bool AlignWindowCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("ウインドウを整列する"), [&](Parameter*,String* errMsg) -> bool {
 			HWND prevHwnd{nullptr};

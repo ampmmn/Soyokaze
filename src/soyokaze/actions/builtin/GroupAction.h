@@ -22,6 +22,8 @@ public:
 	CString GetDisplayName() override;
 	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
+	// ガイド欄などに表示するかどうか
+	bool IsVisible() override;
 
 private:
 	bool Confirm(Parameter* param);

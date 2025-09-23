@@ -58,13 +58,15 @@ CString SpecialFolderFileCommand::GetTypeDisplayName()
 
 bool SpecialFolderFileCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_CTRL) {
-		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
-	}
-	else {
+	if (modifierFlags == 0) {
 		*action = new ExecuteAction(in->mItem.mFullPath);
+		return true;
 	}
-	return true;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON SpecialFolderFileCommand::GetIcon()

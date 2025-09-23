@@ -12,11 +12,15 @@ public:
 	ActionBase();
 	virtual ~ActionBase();
 
+	void SetVisible(bool isVisible);
+
 // Action
 	// アクションの内容を示す名称
 	CString GetDisplayName() override;
 	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
+	// ガイド欄などに表示するかどうか
+	bool IsVisible() override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** obj) override;
@@ -25,6 +29,7 @@ public:
 
 protected:
 	uint32_t mRefCount{1};
+	bool mIsVisible{true};
 };
 
 

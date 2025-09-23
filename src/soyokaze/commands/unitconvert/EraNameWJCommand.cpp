@@ -84,16 +84,29 @@ CString EraNameWJCommand::GetTypeDisplayName()
 bool EraNameWJCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	// クリップボードにコピー
-	if (modifierFlags & Command::MODIFIER_SHIFT) {
+	if (modifierFlags == 0) {
+		auto a = new CopyTextAction(in->mName);
+
+		CString displayName;
+		displayName.Format(_T("\"%s\"をコピー"), (LPCTSTR)in->mName);
+		a->SetDisplayName(displayName);
+
+		*action = a;
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		CString str;
 		str.Format(_T("%d"), in->mVal);
-		*action = new CopyTextAction(str);
+		auto a = new CopyTextAction(str);
+
+		CString displayName;
+		displayName.Format(_T("\"%s\"をコピー"), (LPCTSTR)str);
+		a->SetDisplayName(displayName);
+
+		*action = a;
 		return true;
 	}
-	else {
-		*action = new CopyTextAction(in->mName);
-		return true;
-	}
+	return false;
 }
 
 HICON EraNameWJCommand::GetIcon()

@@ -91,19 +91,19 @@ bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	UNREFERENCED_PARAMETER(action);
 
-	bool isCtrlPressed = modifierFlags & Command::MODIFIER_CTRL;
-	if (isCtrlPressed) {
+	if (modifierFlags == Command::MODIFIER_CTRL) {
 		auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
 		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
 		*action = action_;
 		return true;
 	}
-	else {
+	else if (modifierFlags == 0) {
 		auto action_ = new RestoreWindowAction(in->mTarget.Clone());
 		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
 		*action = action_;
 		return true;
 	}
+	return false;
 }
 
 HICON WindowActivateCommand::GetIcon()

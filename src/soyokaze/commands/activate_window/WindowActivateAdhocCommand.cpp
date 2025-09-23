@@ -119,10 +119,11 @@ bool WindowActivateAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
 		return true;
 	}
-	else {
+	else if (modifierFlags == 0) {
 		*action = new RestoreWindowAction(in->mHwnd);
 		return true;
 	}
+	return false;
 }
 
 HICON WindowActivateAdhocCommand::GetIcon()

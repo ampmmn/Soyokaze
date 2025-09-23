@@ -81,6 +81,10 @@ bool WatchPathCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	UNREFERENCED_PARAMETER(modifierFlags);
 
+	if (modifierFlags != 0) {
+		return false;
+	}
+
 	*action = new CallbackAction(_T("更新検知対象パスを開く"), [&](Parameter*,String* errMsg) -> bool {
 
 		if (in->mParam.mIsDisabled) {

@@ -78,12 +78,7 @@ CString WebHistoryAdhocCommand::GetTypeDisplayName()
 
 bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
-	if (isShiftPressed) {
-		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
-		return true;
-	}
-	else {
+	if (modifierFlags == 0) {
 		if (in->mHistory.mBrowserName == _T("Chrome")) {
 		*action = new OpenInChromeAction(in->mHistory.mUrl);
 		return true;
@@ -96,6 +91,11 @@ bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 			return false;
 		}
 	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
+		return true;
+	}
+	return false;
 }
 
 

@@ -115,7 +115,9 @@ bool SimpleDictAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(key);
 		}
-		*action = new CopyTextAction(key);
+		auto a = new CopyTextAction(key);
+		a->SetDisplayName(_T("キーをコピー"));
+		*action = a;
 		return true;
 	}
 	else if (modifierFlags == Command::MODIFIER_CTRL) {
@@ -124,7 +126,9 @@ bool SimpleDictAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(value);
 		}
-		*action = new CopyTextAction(value);
+		auto a = new CopyTextAction(value);
+		a->SetDisplayName(_T("値をコピー"));
+		*action = a;
 		return true;
 	}
 	return false;

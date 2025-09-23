@@ -75,7 +75,9 @@ bool ErrorIndicatorCommand::CanExecute(String*)
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("コマンドを編集"), [&](Parameter*, String*) -> bool {
 		if (in->mTarget.get() == nullptr) {

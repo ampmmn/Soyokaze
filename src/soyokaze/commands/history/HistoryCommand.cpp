@@ -121,7 +121,7 @@ CString HistoryCommand::GetTypeDisplayName()
 
 bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	*action = new CallbackAction(_T("開く"), [&, modifierFlags](Parameter* param, String* errMsg) -> bool {
+	auto a = new CallbackAction(_T("開く"), [&, modifierFlags](Parameter* param, String* errMsg) -> bool {
 
 		auto cmd = in->GetCommand();
 
@@ -153,6 +153,9 @@ bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return action->Perform(paramTmp, errMsg);
 	});
 
+	a->SetVisible(modifierFlags == 0);
+
+	*action = a;
 	return true;
 }
 

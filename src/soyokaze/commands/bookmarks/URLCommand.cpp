@@ -64,12 +64,7 @@ CString URLCommand::GetTypeDisplayName()
 
 bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
-	if (isShiftPressed) {
-		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
-		return true;
-	}
-	else {
+	if (modifierFlags == 0) {
 		if (in->mBrowserType == BrowserType::Chrome) {
 			*action = new actions::web::OpenInChromeAction(in->mBookmarkItem.mUrl);
 			return true;
@@ -82,6 +77,11 @@ bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 			return false;
 		}
 	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
+		return true;
+	}
+	return false;
 }
 
 HICON URLCommand::GetIcon()

@@ -81,15 +81,15 @@ CString ClipboardHistoryCommand::GetTypeDisplayName()
 
 bool ClipboardHistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_SHIFT) {
+	if (modifierFlags == 0) {
+		// コピーのみ
+		*action = new CopyTextAction(in->mData);
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// コピー&ペースト
 		bool enablePaste = true;
 		*action = new CopyTextAction(in->mData, enablePaste);
-		return true;
-	}
-	else {
-		// コピーのみ
-		*action = new CopyTextAction(in->mData);
 		return true;
 	}
 
@@ -103,6 +103,8 @@ bool ClipboardHistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 	// 	mainWnd->SetText(data);
 
 	// }
+
+	return false;
 }
 
 HICON ClipboardHistoryCommand::GetIcon()

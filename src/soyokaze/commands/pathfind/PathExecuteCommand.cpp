@@ -7,6 +7,7 @@
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
@@ -22,6 +23,7 @@
 using NamedParameter = launcherapp::actions::core::NamedParameter;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
@@ -357,8 +359,8 @@ bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
 		}
 		else { // if (index == 4)
 			// プロパティダイアログを表示
-			SHObjectProperties(nullptr, SHOP_FILEPATH, in->mFullPath, nullptr);
-			return true;
+			ShowPropertiesAction action(in->mFullPath);
+			return action.Perform(param, nullptr);
 		}
 	}
 }

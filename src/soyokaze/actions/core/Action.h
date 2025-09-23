@@ -12,6 +12,8 @@ public:
 	virtual CString GetDisplayName() = 0;
 	// アクションを実行する
 	virtual bool Perform(Parameter* param, String* errMsg = nullptr) = 0;
+	// ガイド欄などに表示するかどうか
+	virtual bool IsVisible() = 0;
 };
 
 

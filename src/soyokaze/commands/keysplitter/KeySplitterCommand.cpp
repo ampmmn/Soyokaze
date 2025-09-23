@@ -104,9 +104,12 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 	if (modifierFlags & Command::MODIFIER_ALT) { state.SetPressAlt(true); }
 	if (modifierFlags & Command::MODIFIER_WIN) { state.SetPressWin(true); }
 
+	bool isVisible = true;
 	ITEM item;
 	if (in->mParam.GetMapping(state, item) == false) {
 		// 割り当てがない場合は、無印Enterの扱い
+		isVisible = false;
+
 		ModifierState stateNoModifier;
 		if (in->mParam.GetMapping(stateNoModifier, item) == false) {
 			// それもなければ何もしない
@@ -116,7 +119,7 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	CString cmdName = in->mParam.mName;
 
-	*action = new CallbackAction(item.mCommandName, [item, cmdName](Parameter* param, String* errMsg) -> bool {
+	auto a = new CallbackAction(item.mCommandName, [item, cmdName](Parameter* param, String* errMsg) -> bool {
 
 		CString parents;
 		GetNamedParamString(param, _T("PARENTS"), parents);
@@ -167,6 +170,11 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 		}
 		return action->Perform(paramSub, errMsg);
 	});
+
+	// 無印Enterのガイドのみを表示する
+	a->SetVisible(isVisible);
+
+	*action = a;
 
 	return true;
 }

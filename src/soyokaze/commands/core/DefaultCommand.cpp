@@ -116,7 +116,9 @@ bool DefaultCommand::CanExecute(String*)
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	if (in->mIsLoaded == false) {
 		in->Load();
