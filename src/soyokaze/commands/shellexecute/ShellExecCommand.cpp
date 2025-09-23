@@ -11,6 +11,7 @@
 #include "commands/common/ExecutablePath.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -34,6 +35,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 using CommandIcon = launcherapp::icon::CommandIcon;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
 namespace launcherapp {
 namespace commands {
@@ -146,6 +148,9 @@ bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 	else if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
 		return CreateExecuteAction(action, true);
 	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		return CreateShowPropertiesAction(action);
+	}
 	return false;
 }
 
@@ -172,6 +177,12 @@ bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
 bool ShellExecCommand::CreateOpenPathAction(Action** action)
 {
 	*action = new OpenPathInFilerAction(new ShellExecTarget(in->mParam));
+	return true;
+}
+
+bool ShellExecCommand::CreateShowPropertiesAction(Action** action)
+{
+	*action = new ShowPropertiesAction(new ShellExecTarget(in->mParam));
 	return true;
 }
 
@@ -444,13 +455,13 @@ bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 // メニューの項目数を取得する
 int ShellExecCommand::GetMenuItemCount()
 {
-	return 3;
+	return 4;
 }
 
 // メニューの表示名を取得する
 bool ShellExecCommand::GetMenuItem(int index, Action** action)
 {
-	if (index < 0 || 2 < index) {
+	if (index < 0 || 3 < index) {
 		return false;
 	}
 
@@ -460,8 +471,11 @@ bool ShellExecCommand::GetMenuItem(int index, Action** action)
 	else if (index == 1) {
 		return CreateOpenPathAction(action);
 	}
-	else {
+	else if (index == 2) {
 		return CreateExecuteAction(action, true);
+	}
+	else {
+		return CreateShowPropertiesAction(action);
 	}
 }
 

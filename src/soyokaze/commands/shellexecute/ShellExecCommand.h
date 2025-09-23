@@ -61,6 +61,7 @@ public:
 private:
 	bool CreateExecuteAction(Action** action, bool isForceRunAs);
 	bool CreateOpenPathAction(Action** action);
+	bool CreateShowPropertiesAction(Action** action);
 
 
 	// ShellExecCommandのコマンド名として許可しない文字を置換する

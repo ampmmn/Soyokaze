@@ -9,6 +9,7 @@
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/builtin/CallbackAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
@@ -28,6 +29,7 @@ using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
 namespace launcherapp {
 namespace commands {
@@ -126,6 +128,11 @@ bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 	else if (modifierFlags == Command::MODIFIER_CTRL) {
 		// パスを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		// パスを開く
+		*action = new ShowPropertiesAction(in->mFullPath);
 		return true;
 	}
 	return false;

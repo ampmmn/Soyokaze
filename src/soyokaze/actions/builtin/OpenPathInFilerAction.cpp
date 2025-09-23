@@ -22,7 +22,7 @@ public:
 	// 以下は使用しない
 	CString GetParameter(Parameter*) override { return _T(""); }
 	CString GetWorkDir(Parameter*) override { return _T(""); }
-	int GetShowType(Parameter* args) override { return SW_SHOW; }
+	int GetShowType(Parameter*) override { return SW_SHOW; }
 
 	CString mFullPath;
 };
