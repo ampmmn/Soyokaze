@@ -48,11 +48,6 @@ WebSearchAdhocCommand::~WebSearchAdhocCommand()
 	}
 }
 
-CString WebSearchAdhocCommand::GetGuideString()
-{
-	return _T("⏎:検索を実行");
-}
-
 CString WebSearchAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);

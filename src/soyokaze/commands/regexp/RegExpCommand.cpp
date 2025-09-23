@@ -101,11 +101,6 @@ CString RegExpCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString RegExpCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString RegExpCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

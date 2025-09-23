@@ -46,11 +46,6 @@ WinScpCommand::~WinScpCommand()
 {
 }
 
-CString WinScpCommand::GetGuideString()
-{
-	return _T("⏎:セッションを開く");
-}
-
 CString WinScpCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

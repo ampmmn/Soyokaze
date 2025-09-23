@@ -46,11 +46,6 @@ DeleteCandidateCommand::~DeleteCandidateCommand()
 {
 }
 
-CString DeleteCandidateCommand::GetGuideString()
-{
-	return _T("⏎:コマンドを削除");
-}
-
 CString DeleteCandidateCommand::GetTypeDisplayName()
 {
 	return _T("システムコマンド");
@@ -58,6 +53,10 @@ CString DeleteCandidateCommand::GetTypeDisplayName()
 
 bool DeleteCandidateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
+
 	*action = new CallbackAction(_T("コマンドを削除"), [&](Parameter*, String*) -> bool {
 		DeleteCommand cmd;
 		RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(_T("delete")));

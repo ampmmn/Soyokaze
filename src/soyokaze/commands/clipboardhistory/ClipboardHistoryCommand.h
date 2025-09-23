@@ -17,7 +17,6 @@ public:
 	virtual ~ClipboardHistoryCommand();
 
 	CString GetName() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;

@@ -149,11 +149,6 @@ ColorCommand::~ColorCommand()
 	}
 }
 
-CString ColorCommand::GetGuideString()
-{
-	return _T("⏎:クリップボードにコピー");
-}
-
 CString ColorCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

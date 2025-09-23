@@ -138,11 +138,6 @@ CString WebSearchCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WebSearchCommand::GetGuideString()
-{
-	return _T("⏎:検索を実行");
-}
-
 CString WebSearchCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

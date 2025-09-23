@@ -74,11 +74,6 @@ CString OneNoteCommand::GetDescription()
 	return in->mNotebookName;
 }
 
-CString OneNoteCommand::GetGuideString()
-{
-	return _T("⏎:ページをOneNoteで開く");
-}
-
 CString OneNoteCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName() + _T("(") + in->mNotebookName + _T(")");

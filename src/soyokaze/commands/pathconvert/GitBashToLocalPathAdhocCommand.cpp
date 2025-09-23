@@ -45,11 +45,6 @@ CString GitBashToLocalPathAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString GitBashToLocalPathAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー C-⏎:フォルダを開く S-⏎:開く");
-}
-
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

@@ -76,11 +76,6 @@ CString WindowActivateCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WindowActivateCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウをアクティブにする");
-}
-
 CString WindowActivateCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

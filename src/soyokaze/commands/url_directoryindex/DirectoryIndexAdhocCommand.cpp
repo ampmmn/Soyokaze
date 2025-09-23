@@ -184,11 +184,6 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 
 }
 
-CString DirectoryIndexAdhocCommand::GetGuideString()
-{
-	return _T("⏎:開く S-⏎:ブラウザで開く C-⏎:URLをコピー");
-}
-
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 {
 	ASSERT(in->mBaseCmd);

@@ -45,11 +45,6 @@ VMXFileCommand::~VMXFileCommand()
 {
 }
 
-CString VMXFileCommand::GetGuideString()
-{
-	return _T("⏎:ファイルを開く C-⏎:パスを開く");
-}
-
 CString VMXFileCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

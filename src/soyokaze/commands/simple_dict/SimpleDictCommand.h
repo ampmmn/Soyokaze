@@ -30,7 +30,6 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 
 	bool CanExecute(String*) override;

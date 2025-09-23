@@ -15,7 +15,6 @@ public:
 	UWPCommand(ItemPtr& item);
 	virtual ~UWPCommand();
 
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;

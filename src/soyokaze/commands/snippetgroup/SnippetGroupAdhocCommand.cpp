@@ -52,12 +52,6 @@ CString SnippetGroupAdhocCommand::GetDescription()
 
 }
 
-CString SnippetGroupAdhocCommand::GetGuideString()
-{
-	CString guideStr(_T("⏎:コピー"));
-	return guideStr;
-}
-
 CString SnippetGroupAdhocCommand::GetTypeDisplayName()
 {
 	return _T("定型文グループ");

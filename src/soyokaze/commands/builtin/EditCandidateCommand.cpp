@@ -42,11 +42,6 @@ EditCandidateCommand::~EditCandidateCommand()
 {
 }
 
-CString EditCandidateCommand::GetGuideString()
-{
-	return _T("⏎:編集");
-}
-
 CString EditCandidateCommand::GetTypeDisplayName()
 {
 	return _T("システムコマンド");
@@ -55,7 +50,7 @@ CString EditCandidateCommand::GetTypeDisplayName()
 bool EditCandidateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	if (modifierFlags == 0) {
-		*action = new CallbackAction(_T("実行"), [&](Parameter*, String* errMsg) -> bool {
+		*action = new CallbackAction(_T("編集"), [&](Parameter*, String* errMsg) -> bool {
 
 			auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
@@ -74,9 +69,10 @@ bool EditCandidateCommand::GetAction(uint32_t modifierFlags, Action** action)
 			cmdRepoPtr->EditCommandDialog(in->mCmdName, isClone);
 			return true;
 		});
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 HICON EditCandidateCommand::GetIcon()

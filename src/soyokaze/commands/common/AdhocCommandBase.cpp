@@ -43,11 +43,6 @@ CString AdhocCommandBase::GetDescription()
 	return mDescription;
 }
 
-CString AdhocCommandBase::GetGuideString()
-{
-	return _T("");
-}
-
 bool AdhocCommandBase::CanExecute(String*)
 {
 	return true;

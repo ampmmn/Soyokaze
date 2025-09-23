@@ -104,16 +104,6 @@ CString HistoryCommand::GetDescription()
 	return cmd->GetDescription();
 }
 
-CString HistoryCommand::GetGuideString()
-{
-	auto cmd = in->GetCommand();
-	if (cmd == nullptr) {
-		return _T("⏎:開く");
-	}
-
-	return cmd->GetGuideString();
-}
-
 CString HistoryCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

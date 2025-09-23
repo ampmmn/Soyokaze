@@ -258,11 +258,6 @@ CString SimpleDictCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SimpleDictCommand::GetGuideString()
-{
-	return _T("キーワード入力すると候補を絞り込むことができます");
-}
-
 CString SimpleDictCommand::GetTypeDisplayName()
 {
 	// コマンドとしてマッチしないが、キーワードマネージャに表示する文字列として使用する
