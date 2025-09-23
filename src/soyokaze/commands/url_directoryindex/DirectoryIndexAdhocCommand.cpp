@@ -59,6 +59,10 @@ CString DirectoryIndexAdhocCommand::PImpl::GetParentURL()
 	mBaseCmd->GetParam(param);
 	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
 	int pos = url.ReverseFind(_T('/'));
+	if (pos == url.GetLength()-1) {
+		url = url.Left(url.GetLength()-1);
+		pos = url.ReverseFind(_T('/'));
+	}
 	if (pos != -1) {
 		url = url.Left(pos);
 	}
@@ -200,7 +204,12 @@ bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 	}
 	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
-		*action = new URLAction(in->GetCurrentURL());
+		*action = new URLAction(_T("リンク先をブラウザで開く"), in->GetCurrentURL());
+		return true;
+	}
+	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+		// ディレクトリをブラウザで開く
+		*action = new URLAction(_T("現在の階層をブラウザで開く"), in->GetParentURL());
 		return true;
 	}
 	else if (modifierFlags == 0) {
@@ -264,11 +273,11 @@ bool DirectoryIndexAdhocCommand::GetMenuItem(int index, Action** action)
 		return true;
 	}
 	else if (index == 2) {
-		*action = new URLAction(in->GetCurrentURL());
+		*action = new URLAction(_T("リンク先をブラウザで開く"), in->GetCurrentURL());
 		return true;
 	}
 	else if (index == 3) {
-		*action = new URLAction(in->GetParentURL());
+		*action = new URLAction(_T("現在の階層をブラウザで開く"), in->GetParentURL());
 		return true;
 	}
 	return false;
