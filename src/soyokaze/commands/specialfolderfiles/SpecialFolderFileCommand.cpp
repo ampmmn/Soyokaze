@@ -5,6 +5,9 @@
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/builtin/NullAction.h"
+
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
@@ -18,6 +21,8 @@ using namespace launcherapp::commands::common;
 using NamedParameter = launcherapp::actions::core::NamedParameter;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+using NullAction = launcherapp::actions::builtin::NullAction;
 
 namespace launcherapp {
 namespace commands {
@@ -81,59 +86,38 @@ int SpecialFolderFileCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool SpecialFolderFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (index == 0) {
-		static LPCWSTR name = L"実行(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"パスを開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"最近使ったファイルから削除する(&M)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool SpecialFolderFileCommand::SelectMenuItem(int index, Parameter* param)
+bool SpecialFolderFileCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 2 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		ExecuteAction action(in->mItem.mFullPath);
-		return action.Perform(param, nullptr);
-	}
-
-	RefPtr<NamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return false;
+		*action = new ExecuteAction(in->mItem.mFullPath);
+		return true;
 	}
 
 	if (index == 1) {
-		OpenPathInFilerAction action(in->mItem.mFullPath);
-		return action.Perform(param, nullptr);
+		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
+		return true;
 	}
 	else  {
-		// 削除する管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
+		// 削除
 		if (in->mItem.mType != TYPE_RECENT) {
 			// 削除できるのは履歴のみ
+			*action = new NullAction();
 			return true;
 		}
+		
+		*action = new CallbackAction(_T("最近使ったファイルから削除する"), [&](Parameter*, String*) -> bool {
 
-		if (Path::FileExists(in->mItem.mLinkPath) == FALSE) {
+			if (Path::FileExists(in->mItem.mLinkPath) == FALSE) {
+				return true;
+			}
+			// ショートカットを削除
+			DeleteFile(in->mItem.mLinkPath);
 			return true;
-		}
-		// ショートカットを削除
-		DeleteFile(in->mItem.mLinkPath);
+		});
 		return true;
 	}
 }

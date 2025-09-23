@@ -139,64 +139,31 @@ int WindowActivateAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool WindowActivateAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool WindowActivateAdhocCommand::GetMenuItem(int index, Action** action)
 {
-	if (index == 0) {
-		static LPCWSTR name = L"ウインドウ切替(&A)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"最大化(&X)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"最小化(&M)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"ウインドウに一時的な名前を付ける(&T)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 4) {
-		static LPCWSTR name = L"ウインドウを閉じる(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool WindowActivateAdhocCommand::SelectMenuItem(int index, Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-
 	if (index < 0 || 5 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		RestoreWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
+		*action = new RestoreWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 1) {
-		MaximizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
+		*action = new MaximizeWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 2) {
-		MinimizeWindowAction action(in->mHwnd);
-		return action.Perform(nullptr, nullptr);
+		*action = new MinimizeWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 3) {
-		TemporaryWindowNameAction action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr, nullptr);
+		*action = new TemporaryWindowNameAction(in->mHwnd, in->mMenuEventListener);
+		return true;
 	}
 	else { // if (index == 4)
-		CloseWindowActionWrapper action(in->mHwnd, in->mMenuEventListener);
-		return action.Perform(nullptr, nullptr);
+		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
+		return true;
 	}
 }
 

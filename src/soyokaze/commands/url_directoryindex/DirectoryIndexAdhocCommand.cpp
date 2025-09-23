@@ -58,6 +58,13 @@ CString DirectoryIndexAdhocCommand::PImpl::GetParentURL()
 	CommandParam param;
 	mBaseCmd->GetParam(param);
 	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+
+  // 末尾が '/' の場合は除去
+	if (!url.IsEmpty() && url.Right(1) == _T("/")) {
+		url = url.Left(url.GetLength() - 1);
+	}
+
+	// 最後の '/' の位置を検索して除去
 	int pos = url.ReverseFind(_T('/'));
 	if (pos != -1) {
 		url = url.Left(pos);
@@ -247,54 +254,33 @@ int DirectoryIndexAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool DirectoryIndexAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool DirectoryIndexAdhocCommand::GetMenuItem(int index, Action** action)
 {
-	if (index == 0) {
-		static LPCWSTR name = L"開く(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"URLをクリップボードにコピー(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"ブラウザで開く(&B)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"ディレクトリをブラウザで開く(&P)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-
 	if (index < 0 || GetMenuItemCount() < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return in->EnterURL();
+		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+			return in->EnterURL();
+		});
+		return true;
 	}
 	else if (index == 1) {
-		CopyTextAction action(in->GetCurrentURL());
-		return action.Perform(param, nullptr);
+		*action = new CopyTextAction(in->GetCurrentURL());
+		return true;
 	}
 	else if (index == 2) {
-		OpenURLAction action(in->GetCurrentURL());
-		return action.Perform(param, nullptr);
+		auto a = new OpenURLAction(in->GetCurrentURL());
+		a->SetDisplayName(_T("ブラウザで開く"));
+		*action = a;
+		return true;
 	}
 	else if (index == 3) {
-		OpenURLAction action(in->GetParentURL());
-		return action.Perform(param, nullptr);
+		auto a = new OpenURLAction(in->GetParentURL());
+		a->SetDisplayName(_T("ディレクトリをブラウザで開く"));
+		*action = a;
+		return true;
 	}
 	return false;
 }

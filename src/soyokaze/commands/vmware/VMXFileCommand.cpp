@@ -83,44 +83,23 @@ int VMXFileCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool VMXFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (index == 0) {
-		static LPCWSTR name = L"実行(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"最大化状態で実行(&X)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"最小化状態で実行(&M)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool VMXFileCommand::SelectMenuItem(int index, Parameter* param)
+bool VMXFileCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 2 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		RunVMXAction action(in->mName, in->mFullPath, SW_SHOW);
-		return action.Perform(param, nullptr);
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_SHOW);
+		return true;
 	}
 	else if (index == 1) {
-		RunVMXAction action(in->mName, in->mFullPath, SW_MAXIMIZE);
-		return action.Perform(param, nullptr);
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_MAXIMIZE);
+		return true;
 	}
 	else {
-		RunVMXAction action(in->mName, in->mFullPath, SW_MINIMIZE);
-		return action.Perform(param, nullptr);
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_MINIMIZE);
+		return true;
 	}
 }
 

@@ -83,23 +83,13 @@ int WebSearchAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool WebSearchAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool WebSearchAdhocCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"検索(&E)";
-		*displayNamePtr= name;
+		auto a = new actions::web::OpenURLAction(in->mURL);
+		a->SetDisplayName(_T("検索を実行"));
+		*action = a;
 		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool WebSearchAdhocCommand::SelectMenuItem(int index, Parameter* param)
-{
-	if (index == 0) {
-		actions::web::OpenURLAction action(in->mURL);
-		action.SetDisplayName(_T("検索を実行"));
-		return action.Perform(param, nullptr);
 	}
 	return false;
 }
