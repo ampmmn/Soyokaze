@@ -113,7 +113,8 @@ bool SpecialFolderFileCommand::SelectMenuItem(int index, Parameter* param)
 	}
 
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		ExecuteAction action(in->mItem.mFullPath);
+		return action.Perform(param, nullptr);
 	}
 
 	RefPtr<NamedParameter> namedParam;
@@ -122,9 +123,8 @@ bool SpecialFolderFileCommand::SelectMenuItem(int index, Parameter* param)
 	}
 
 	if (index == 1) {
-		// パスを開くため、疑似的にCtrl押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
+		OpenPathInFilerAction action(in->mItem.mFullPath);
+		return action.Perform(param, nullptr);
 	}
 	else  {
 		// 削除する管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
