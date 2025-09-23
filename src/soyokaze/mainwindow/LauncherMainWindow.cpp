@@ -1716,6 +1716,10 @@ void LauncherMainWindow::OnContextMenu(
 	menu.CreatePopupMenu();
 
 	const UINT ID_COMMAND_TOP = 1;
+
+	// コマンド固有のメニューがあったら取得する
+	SetupCurrentCommandMenuItems(menu, ID_COMMAND_TOP);
+
 	const UINT ID_COMMAND_LAST = 1000;
 	const UINT ID_SHOW = 1001;
 	const UINT ID_HIDE = 1002;
@@ -1728,28 +1732,9 @@ void LauncherMainWindow::OnContextMenu(
 	const UINT ID_VERSIONINFO = 1009;
 	const UINT ID_EXIT = 1019;
 
+
 	BOOL isVisible = IsWindowVisible();
 	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
-
-	// コマンド固有のメニューがあったら取得する
-	auto cmd = GetCurrentCommand();
-	if (cmd) {
-		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
-		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc)) {
-			int count = menuSrc->GetMenuItemCount();
-			for (int i = 0; i < count; ++i) {
-				RefPtr<Action> action;
-				bool isOK = menuSrc->GetMenuItem(i, &action);
-				if (isOK == false) {
-					menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
-					continue;
-				}
-				menu.InsertMenu((UINT)-1, 0, ID_COMMAND_TOP + i, action->GetDisplayName());
-			}
-			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
-		}
-	}
-
 	menu.InsertMenu((UINT)-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
 	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu((UINT)-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
@@ -1769,6 +1754,8 @@ void LauncherMainWindow::OnContextMenu(
 	// TrackPopupMenuをよぶ時点でSetForegroundWindowでウインドウをアクティブにしておかないと
 	// ポップアップメニュー以外の領域をクリックしたときにメニューが閉じないので、ここで呼んでおく
 	SetForegroundWindow();
+
+	auto cmd = GetCurrentCommand();
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	spdlog::debug(_T("selected menu id:{}"), n);
@@ -1819,6 +1806,43 @@ void LauncherMainWindow::OnContextMenu(
 	// 選択後はウインドウを隠す
 	ClearContent();
 	HideWindow();
+}
+
+void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst)
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		return;
+	}
+
+	RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+		// コマンド固有のメニューなし
+		return;
+	}
+
+	CString postFix;
+
+	int index = 1;
+	int count = menuSrc->GetMenuItemCount();
+	for (int i = 0; i < count; ++i) {
+
+		// メニュー項目に対応するアクションを得る
+		RefPtr<Action> action;
+		bool isOK = menuSrc->GetMenuItem(i, &action);
+		if (isOK == false) {
+			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+			continue;
+		}
+
+		postFix.Format(_T("(&%d)"), index++);
+
+		auto menuText = action->GetDisplayName();
+		menuText += postFix;
+
+		menu.InsertMenu((UINT)-1, 0, menuIDFirst + i, menuText);
+	}
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 }
 
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)

@@ -67,6 +67,7 @@ protected:
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
+	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();
