@@ -5,6 +5,7 @@
 ### Added
 
 - #169 OneNoteのページ表示機能
+- #175 Alt-Enterキー入力を扱えるようにする
 
 ### Changed
 

@@ -146,6 +146,7 @@ KeywordEdit::~KeywordEdit()
 BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_PAINT()
 	ON_WM_KEYDOWN()
+	ON_WM_SYSKEYDOWN()
 	ON_WM_GETDLGCODE()
 	ON_WM_SETFOCUS()
 	ON_WM_KILLFOCUS()
@@ -220,6 +221,17 @@ void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 		}
 	}
 	__super::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void KeywordEdit::OnSysKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
+{
+	if (in->mIsNotify) {
+		// 親ウインドウ(LauncherMainWindow)にキー入力を通知
+		if (GetParent()->SendMessage(WM_APP + 1, nChar, 0) != 0) {
+			return ;
+		}
+	}
+	__super::OnSysKeyDown(nChar, nRepCnt, nFlags);
 }
 
 UINT KeywordEdit::OnGetDlgCode()

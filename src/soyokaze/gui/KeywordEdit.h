@@ -28,6 +28,7 @@ protected:
 	
 	afx_msg void OnPaint();
 	afx_msg void OnKeyDown(UINT,UINT,UINT);
+	afx_msg void OnSysKeyDown(UINT,UINT,UINT);
 	afx_msg UINT OnGetDlgCode();
 	afx_msg void OnSetFocus(CWnd* oldWindow);
 	afx_msg void OnKillFocus(CWnd* newWindow);
