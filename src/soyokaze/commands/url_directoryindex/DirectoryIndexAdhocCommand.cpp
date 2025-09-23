@@ -66,6 +66,10 @@ CString DirectoryIndexAdhocCommand::PImpl::GetParentURL()
 
 	// 最後の '/' の位置を検索して除去
 	int pos = url.ReverseFind(_T('/'));
+	if (pos == url.GetLength()-1) {
+		url = url.Left(url.GetLength()-1);
+		pos = url.ReverseFind(_T('/'));
+	}
 	if (pos != -1) {
 		url = url.Left(pos);
 	}
@@ -207,7 +211,16 @@ bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 	}
 	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
-		*action = new OpenURLAction(in->GetCurrentURL());
+		auto a = new OpenURLAction(in->GetCurrentURL());;
+		a->SetDisplayName(_T("リンク先をブラウザで開く"));
+		*action = a;
+		return true;
+	}
+	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+		// ディレクトリをブラウザで開く
+		auto a = new OpenURLAction(in->GetParentURL());
+		a->SetDisplayName(_T("現在の階層をブラウザで開く"));
+		*action = a;
 		return true;
 	}
 	else if (modifierFlags == 0) {
@@ -272,13 +285,13 @@ bool DirectoryIndexAdhocCommand::GetMenuItem(int index, Action** action)
 	}
 	else if (index == 2) {
 		auto a = new OpenURLAction(in->GetCurrentURL());
-		a->SetDisplayName(_T("ブラウザで開く"));
+		a->SetDisplayName(_T("リンク先をブラウザで開く"));
 		*action = a;
 		return true;
 	}
 	else if (index == 3) {
 		auto a = new OpenURLAction(in->GetParentURL());
-		a->SetDisplayName(_T("ディレクトリをブラウザで開く"));
+		a->SetDisplayName(_T("現在の階層をブラウザで開く"));
 		*action = a;
 		return true;
 	}
