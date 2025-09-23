@@ -147,7 +147,9 @@ static HWND FindOneNoteWindow()
 
 bool OneNoteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("ページをOneNoteで開く"), [&](Parameter*, String*) -> bool {
 		OneNoteAppProxy app;

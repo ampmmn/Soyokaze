@@ -75,7 +75,9 @@ CString CalculatorCommand::GetTypeDisplayName()
 
 bool CalculatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// Calculatorといいつつ、ここに処理が及ぶ時点で計算はおわっていて、
 	// ここでは単にクリップボードに結果をコピーするのみ

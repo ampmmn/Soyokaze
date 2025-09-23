@@ -47,7 +47,9 @@ CString MMCCommand::GetTypeDisplayName()
 
 bool MMCCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
 

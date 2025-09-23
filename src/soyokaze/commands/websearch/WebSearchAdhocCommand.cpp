@@ -61,7 +61,9 @@ CString WebSearchAdhocCommand::GetTypeDisplayName()
 
 bool WebSearchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 	auto a = new actions::web::OpenURLAction(in->mURL);
 	a->SetDisplayName(_T("検索を実行"));
 	*action = a;

@@ -62,12 +62,12 @@ bool GitBashToLocalPathAdhocCommand::GetAction(uint32_t modifierFlags, Action** 
 		*action = new CopyTextAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags & Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// 実行
 		*action = new ExecuteAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags & Command::MODIFIER_CTRL) {
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
 		// パスを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;

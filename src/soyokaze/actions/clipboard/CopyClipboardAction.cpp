@@ -62,7 +62,7 @@ void CopyTextAction::SetDisplayName(const CString& name)
 CString CopyTextAction::GetDisplayName()
 {
 	if (mDisplayName.IsEmpty()) {
-		return _T("クリップボードにコピー");
+		return mEnablePaste ? _T("コピーして貼り付け") : _T("クリップボードにコピー");
 	}
 	else {
 		return mDisplayName;

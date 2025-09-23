@@ -57,16 +57,7 @@ CString CalcWorksheetCommand::GetTypeDisplayName()
 
 bool CalcWorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_CTRL) {
-		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String* errMsg) -> bool {
-			bool result = in->mCalcWorksheet->Activate(true);
-			if (result == false && errMsg) {
-				*errMsg = in->mCalcWorksheet->GetErrorMessage();
-			}
-			return result;
-		});
-	}
-	else {
+	if (modifierFlags == 0) {
 		*action = new CallbackAction(_T("表示"), [&](Parameter*, String* errMsg) -> bool {
 			bool result = in->mCalcWorksheet->Activate(false);
 			if (result == false && errMsg) {
@@ -74,8 +65,19 @@ bool CalcWorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 			}
 			return result;
 		});
+		return true;
 	}
-	return true;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String* errMsg) -> bool {
+			bool result = in->mCalcWorksheet->Activate(true);
+			if (result == false && errMsg) {
+				*errMsg = in->mCalcWorksheet->GetErrorMessage();
+			}
+			return result;
+		});
+		return true;
+	}
+	return false;
 }
 
 

@@ -65,15 +65,15 @@ CString URLCommand::GetTypeDisplayName()
 
 bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftPressed = modifierFlags & Command::MODIFIER_SHIFT;
-	if (isShiftPressed) {
-		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
-		return true;
-	}
-	else {
+	if (modifierFlags == 0) {
 		*action = new actions::web::OpenURLAction(in->mBookmarkItem.mUrl, in->mEnv);
 		return true;
 	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
+		return true;
+	}
+	return false;
 }
 
 HICON URLCommand::GetIcon()

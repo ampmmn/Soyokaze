@@ -50,8 +50,9 @@ CString InchAdhocCommand::GetTypeDisplayName()
 
 bool InchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
-
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// クリップボードにコピー
 	*action = new actions::clipboard::CopyTextAction(in->mName);
 	return true;

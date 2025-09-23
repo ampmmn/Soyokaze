@@ -57,16 +57,17 @@ CString VMXFileCommand::GetTypeDisplayName()
 
 bool VMXFileCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_CTRL) {
-		// パスを開く
-		*action = new OpenPathInFilerAction(in->mFullPath);
-		return true;
-	}
-	else {
+	if (modifierFlags == 0) {
 		// VMを実行する
 		*action = new RunVMXAction(in->mName, in->mFullPath, SW_SHOW);
 		return true;
 	}
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// パスを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON VMXFileCommand::GetIcon()

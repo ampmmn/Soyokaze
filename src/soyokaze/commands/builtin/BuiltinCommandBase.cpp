@@ -87,7 +87,9 @@ BOOL BuiltinCommandBase::Execute(Parameter* param)
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("実行"), [&](Parameter* param, String* errMsg) -> bool {
 		mError.Empty();

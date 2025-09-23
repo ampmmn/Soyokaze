@@ -44,7 +44,9 @@ CString MailToCommand::GetTypeDisplayName()
 
 bool MailToCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("あて先を指定してメール"), [&](Parameter* param, String*) -> bool {
 

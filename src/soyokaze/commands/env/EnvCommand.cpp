@@ -49,11 +49,13 @@ CString EnvCommand::GetTypeDisplayName()
 
 bool EnvCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// クリップボードにコピー
 	*action = new CopyTextAction(in->mValue);
-	return TRUE;
+	return true;
 }
 
 HICON EnvCommand::GetIcon()

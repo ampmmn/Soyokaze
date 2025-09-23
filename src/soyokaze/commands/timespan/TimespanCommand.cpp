@@ -68,13 +68,19 @@ CString TimespanCommand::GetTypeDisplayName()
 bool TimespanCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	// クリップボードにコピー
-	if (modifierFlags & Command::MODIFIER_CTRL) {
-		*action = new actions::clipboard::CopyTextAction(mName);
+	if (modifierFlags == 0) {
+		auto a = new actions::clipboard::CopyTextAction(in->mNum);
+		a->SetDisplayName(_T("数値のみコピー"));
+		*action = a;
+		return true;
 	}
-	else {
-		*action = new actions::clipboard::CopyTextAction(in->mNum);
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		auto a = new actions::clipboard::CopyTextAction(mName);
+		a->SetDisplayName(_T("単位含めてコピー"));
+		*action = a;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 

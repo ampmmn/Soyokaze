@@ -198,17 +198,17 @@ CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 
 bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_CTRL) {
+	if (modifierFlags == Command::MODIFIER_CTRL) {
 		// URLをコピー
 		*action = new CopyTextAction(in->GetCurrentURL());
 		return true;
 	}
-	else if (modifierFlags & Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
 		*action = new OpenURLAction(in->GetCurrentURL());
 		return true;
 	}
-	else {
+	else if (modifierFlags == 0) {
 		// ランチャーでリンク先に遷移する
 		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
 			in->EnterURL();
@@ -216,6 +216,7 @@ bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 		});
 		return true;
 	}
+	return false;
 }
 
 HICON DirectoryIndexAdhocCommand::GetIcon()

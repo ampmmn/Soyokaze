@@ -13,6 +13,11 @@ ActionBase::~ActionBase()
 {
 }
 
+void ActionBase::SetVisible(bool isVisible)
+{
+	mIsVisible = isVisible;
+}
+
 // アクションの内容を示す名称
 CString ActionBase::GetDisplayName()
 {
@@ -30,6 +35,12 @@ bool ActionBase::Perform(Parameter* param, String* errMsg)
 	}
 	spdlog::error("ActionBase::Perform called!");
 	return false;
+}
+
+// ガイド欄などに表示するかどうか
+bool ActionBase::IsVisible()
+{
+	return mIsVisible;
 }
 
 bool ActionBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

@@ -68,6 +68,7 @@ struct LauncherMainWindow::PImpl
 	}
 
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
+	void UpdateGuideString(core::Command* cmd);
 
 // 入力データ
 	// 入力欄のテキスト情報
@@ -156,10 +157,64 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 	}
 
 	// ガイド文字列の更新
-	mGuideStr = cmd->GetGuideString();
+	UpdateGuideString(cmd);
 
 	// アイコン更新
 	mIconLabel.DrawIcon(cmd->GetIcon());
+}
+
+// ガイド欄に表示する文字列を生成する
+void LauncherMainWindow::PImpl::UpdateGuideString(core::Command* cmd)
+{
+	if (cmd == nullptr) {
+		mGuideStr.Empty();
+		return;
+	}
+
+	using Command = core::Command;
+	using Action = launcherapp::actions::core::Action;
+
+	static std::map<uint32_t, LPCTSTR> entries ={
+		{ 0, _T("⏎") },
+		{ Command::MODIFIER_SHIFT, _T("S-⏎") },
+		{ Command::MODIFIER_CTRL, _T("C-⏎") },
+		{ Command::MODIFIER_ALT, _T("A-⏎") },
+		{ Command::MODIFIER_WIN, _T("W-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, _T("S-C-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_ALT, _T("S-A-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_WIN, _T("S-W-⏎") },
+		{ Command::MODIFIER_CTRL | Command::MODIFIER_ALT, _T("C-A-⏎") },
+		{ Command::MODIFIER_CTRL | Command::MODIFIER_WIN, _T("C-W-⏎") },
+		{ Command::MODIFIER_ALT | Command::MODIFIER_WIN, _T("A-W-⏎") },
+	};
+
+	CString guideStr;
+
+	int count = 0;
+	for (auto item : entries) {
+		RefPtr<Action> action;
+		auto modifierFlags = item.first;
+		if (cmd->GetAction(modifierFlags, &action) == false) {
+			continue;
+		}
+		if (action->IsVisible() == false) {
+			continue;
+		}
+
+		if (guideStr.IsEmpty() == FALSE) {
+			guideStr += _T(" ");
+		}
+		auto& keyStr = item.second;
+		guideStr += keyStr;
+		guideStr += _T(":");
+		guideStr += action->GetDisplayName();
+	
+		if (++count >= 4) {
+			break;
+		}
+	}
+
+	mGuideStr = guideStr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1184,7 +1239,7 @@ void LauncherMainWindow::UpdateCandidates()
 		in->mIconLabel.DrawIcon(pCmd->GetIcon());
 
 		// ガイド欄
-		in->mGuideStr = pCmd->GetGuideString();
+		in->UpdateGuideString(pCmd);
 
 		// 説明欄の更新
 		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
@@ -1243,7 +1298,11 @@ LauncherMainWindow::RunCommand(
 		RefPtr<Action> action;
 		cmd->GetAction(modifierMask, &action);
 		if (action.get() == nullptr) {
-			spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
+			// 取得できなかった場合は修飾子なしのアクションを取得する
+			cmd->GetAction(0, &action);
+			if (action.get() == nullptr) {
+				spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
+			}
 		}
 
 		if (action.get()) {

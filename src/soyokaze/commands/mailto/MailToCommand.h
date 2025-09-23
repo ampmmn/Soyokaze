@@ -6,8 +6,6 @@ namespace launcherapp {
 namespace commands {
 namespace mailto {
 
-class ExecuteHistory;
-
 
 class MailToCommand : public launcherapp::commands::common::AdhocCommandBase
 {

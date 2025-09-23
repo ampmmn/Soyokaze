@@ -88,6 +88,10 @@ CString FilterAdhocCommand::GetTypeDisplayName()
 
 bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
+
 	int type = in->mParam.mPostFilterType;
 	if (type == POSTFILTER_COMMAND) {
 		return CreatePostFilterCommandAction(modifierFlags, action);

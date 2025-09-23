@@ -112,6 +112,12 @@ bool GroupAction::Perform(Parameter* param, String* errMsg)
 	return isOK;
 }
 
+// ガイド欄などに表示するかどうか
+bool GroupAction::IsVisible()
+{
+	return in->mModifierKeyState == 0;
+}
+
 bool GroupAction::Confirm(Parameter* param)
 {
 	if (in->mShouldConfirm == false) {

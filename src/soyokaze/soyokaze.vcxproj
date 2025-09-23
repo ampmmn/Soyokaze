@@ -409,6 +409,7 @@
     <ClInclude Include="actions\builtin\OpenPathInFilerAction.h" />
     <ClInclude Include="actions\builtin\RegisterNewCommandAction.h" />
     <ClInclude Include="actions\builtin\RunCommandAction.h" />
+    <ClInclude Include="actions\builtin\ShowPropertiesAction.h" />
     <ClInclude Include="actions\clipboard\CopyClipboardAction.h" />
     <ClInclude Include="actions\core\Action.h" />
     <ClInclude Include="actions\core\ActionBase.h" />
@@ -888,6 +889,7 @@
     <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp" />
     <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp" />
     <ClCompile Include="actions\builtin\RunCommandAction.cpp" />
+    <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp" />
     <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp" />
     <ClCompile Include="actions\core\ActionBase.cpp" />
     <ClCompile Include="actions\core\ActionParameter.cpp" />

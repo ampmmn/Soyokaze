@@ -87,19 +87,22 @@ CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 
 bool FileProtocolConvertAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags & Command::MODIFIER_CTRL) {
+	if (modifierFlags == Command::MODIFIER_CTRL) {
 		// フォルダを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
 	}
-	else if (modifierFlags & Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// 開く
 		*action = new ExecuteAction(in->mFullPath);
+		return true;
 	}
-	else {
+	else if (modifierFlags == 0) {
 		// パスをコピー
 		*action = new CopyTextAction(in->mFullPath);
+		return true;
 	}
-	return true;
+	return false;
 }
 
 HICON FileProtocolConvertAdhocCommand::GetIcon()

@@ -150,7 +150,9 @@ CString WebSearchCommand::GetTypeDisplayName()
 
 bool WebSearchCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
 	// (実際の検索アクションの実行はWebSearchAdhocCommandが担う)

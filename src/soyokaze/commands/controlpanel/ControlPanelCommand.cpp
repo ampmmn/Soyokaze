@@ -54,7 +54,9 @@ CString ControlPanelCommand::GetTypeDisplayName()
 
 bool ControlPanelCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 	Path controlExecPath(Path::SYSTEMDIR, _T("control.exe"));
 	*action = new ExecuteAction((LPCTSTR)controlExecPath, _T("/name ") + in->mAppName);
 	return true;

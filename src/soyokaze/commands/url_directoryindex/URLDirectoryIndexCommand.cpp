@@ -354,7 +354,9 @@ CString URLDirectoryIndexCommand::GetTypeDisplayName()
 
 bool URLDirectoryIndexCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
 	auto cmdline(GetName()+ _T(" "));
