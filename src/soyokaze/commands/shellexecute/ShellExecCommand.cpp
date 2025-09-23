@@ -505,7 +505,11 @@ bool ShellExecCommand::SelectMenuItem(int index, Parameter* param)
 	}
 
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		RefPtr<Action> action;
+		if (CreateExecuteAction(&action, false) == false) {
+			return false;
+		}
+		return action->Perform(param, nullptr);
 	}
 
 	RefPtr<NamedParameter> namedParam;
@@ -514,15 +518,18 @@ bool ShellExecCommand::SelectMenuItem(int index, Parameter* param)
 	}
 
 	if (index == 1) {
-		// パスを開くため、疑似的にCtrl押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
+		RefPtr<Action> action;
+		if (CreateOpenPathAction(&action) == false) {
+			return false;
+		}
+		return action->Perform(param, nullptr);
 	}
 	else  {
-		// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
+		RefPtr<Action> action;
+		if (CreateExecuteAction(&action, true) == false) {
+			return false;
+		}
+		return action->Perform(param, nullptr);
 	}
 }
 

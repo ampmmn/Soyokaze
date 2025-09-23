@@ -90,7 +90,11 @@ bool MMCCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
 bool MMCCommand::SelectMenuItem(int index, Parameter* param)
 {
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		RefPtr<Action> action;
+		if (GetAction(0, &action) == false) {
+			return false;
+		}
+		return action->Perform(param, nullptr);
 	}
 	return false;
 }
