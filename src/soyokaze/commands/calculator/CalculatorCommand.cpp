@@ -53,11 +53,6 @@ void CalculatorCommand::SetResult(const CString& result)
 	this->mDescription = result;
 }
 
-CString CalculatorCommand::GetGuideString()
-{
-	return _T("⏎:クリップボードにコピー");
-}
-
 CString CalculatorCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE(TypeDisplayName());

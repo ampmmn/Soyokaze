@@ -55,11 +55,6 @@ TimespanCommand::~TimespanCommand()
 {
 }
 
-CString TimespanCommand::GetGuideString()
-{
-	return _T("⏎:数値のみコピー C-⏎:単位含めてコピー");
-}
-
 CString TimespanCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

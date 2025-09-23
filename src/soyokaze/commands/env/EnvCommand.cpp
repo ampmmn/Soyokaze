@@ -37,11 +37,6 @@ EnvCommand::~EnvCommand()
 {
 }
 
-CString EnvCommand::GetGuideString()
-{
-	return _T("⏎:クリップボードにコピー");
-}
-
 CString EnvCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

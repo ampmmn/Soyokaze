@@ -69,11 +69,6 @@ CString ClipboardHistoryCommand::GetName()
 	return in->mPrefix + _T(" ") + in->mData;
 }
 
-CString ClipboardHistoryCommand::GetGuideString()
-{
-	return _T("⏎:コピー S-⏎:コピペ");
-}
-
 CString ClipboardHistoryCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

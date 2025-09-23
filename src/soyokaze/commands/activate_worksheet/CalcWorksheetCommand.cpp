@@ -45,11 +45,6 @@ CalcWorksheetCommand::~CalcWorksheetCommand()
 	}
 }
 
-CString CalcWorksheetCommand::GetGuideString()
-{
-	return _T("⏎:表示 C-⏎:最大化表示");
-}
-
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

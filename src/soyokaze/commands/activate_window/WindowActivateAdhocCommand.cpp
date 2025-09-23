@@ -88,11 +88,6 @@ CString WindowActivateAdhocCommand::GetName()
 	return name;
 }
 
-CString WindowActivateAdhocCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウ切替え S-⏎:最大化 C-⏎::最小化 S-C-⏎:閉じる");
-}
-
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

@@ -342,11 +342,6 @@ CString URLDirectoryIndexCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString URLDirectoryIndexCommand::GetGuideString()
-{
-	return _T("⏎:候補を表示する");
-}
-
 CString URLDirectoryIndexCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

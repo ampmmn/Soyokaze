@@ -54,14 +54,6 @@ CString ErrorIndicatorCommand::GetDescription()
 	return UTF2UTF(in->mReason, description);
 }
 
-CString ErrorIndicatorCommand::GetGuideString()
-{
-	if (in->mTarget.get() == nullptr) {
-		return _T("");
-	}
-	return _T("⏎: コマンドを編集");
-}
-
 CString ErrorIndicatorCommand::GetTypeDisplayName()
 {
 	return in->mTarget->GetTypeDisplayName();

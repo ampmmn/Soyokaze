@@ -81,11 +81,6 @@ CString GroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString GroupCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString GroupCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

@@ -85,15 +85,6 @@ SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 {
 }
 
-CString SimpleDictAdhocCommand::GetGuideString()
-{
-	CString guideStr(_T("⏎:実行"));
-	guideStr += _T(" S-⏎:キーをコピー");
-	guideStr += _T(" C-⏎:値をコピー");
-
-	return guideStr;
-}
-
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
 {
 	return _T("簡易辞書");

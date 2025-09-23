@@ -75,11 +75,6 @@ CString FileProtocolConvertAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString FileProtocolConvertAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー S-⏎:開く C-⏎:フォルダを開く");
-}
-
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

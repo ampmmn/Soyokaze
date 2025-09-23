@@ -68,13 +68,6 @@ CString EraNameWJCommand::GetName()
 	return in->mName;
 }
 
-CString EraNameWJCommand::GetGuideString()
-{
-	CString str;
-	str.Format(_T("⏎:\"%s\"をコピー S-⏎:\"%d\"をコピー"), (LPCTSTR)in->mName, in->mVal);
-	return str;
-}
-
 CString EraNameWJCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

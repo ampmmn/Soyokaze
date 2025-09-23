@@ -52,11 +52,6 @@ CString WebHistoryAdhocCommand::GetName()
 	return in->mName + _T(" ") + in->mHistory.mDisplayName;
 }
 
-CString WebHistoryAdhocCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
 	return WebHistoryAdhocCommand::TypeDisplayName(in->mProductName);

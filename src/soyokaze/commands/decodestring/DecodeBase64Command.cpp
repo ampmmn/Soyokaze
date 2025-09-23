@@ -63,11 +63,6 @@ CString DecodeBase64Command::GetDescription()
 	return name;
 }
 
-CString DecodeBase64Command::GetGuideString()
-{
-	return _T("⏎:デコード後データをコピー");
-}
-
 
 CString DecodeBase64Command::GetTypeDisplayName()
 {

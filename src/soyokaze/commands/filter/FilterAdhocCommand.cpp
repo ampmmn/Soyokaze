@@ -75,11 +75,6 @@ CString FilterAdhocCommand::GetDescription()
 
 }
 
-CString FilterAdhocCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString FilterAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);

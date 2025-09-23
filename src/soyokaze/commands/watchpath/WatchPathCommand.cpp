@@ -67,11 +67,6 @@ CString WatchPathCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WatchPathCommand::GetGuideString()
-{
-	return _T("⏎:更新検知対象パスを開く");
-}
-
 CString WatchPathCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

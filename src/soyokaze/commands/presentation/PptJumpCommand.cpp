@@ -46,11 +46,6 @@ PptJumpCommand::~PptJumpCommand()
 {
 }
 
-CString PptJumpCommand::GetGuideString()
-{
-	return _T("⏎:スライドを表示する C-⏎:最大化表示");
-}
-
 
 CString PptJumpCommand::GetTypeDisplayName()
 {

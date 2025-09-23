@@ -49,11 +49,6 @@ CString DecodeUriCommand::GetDescription()
 	return name;
 }
 
-CString DecodeUriCommand::GetGuideString()
-{
-	return _T("⏎:デコード後の文字列をコピー");
-}
-
 CString DecodeUriCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

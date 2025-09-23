@@ -51,11 +51,6 @@ CString EscapedCharCommand::GetDescription()
 	return name;
 }
 
-CString EscapedCharCommand::GetGuideString()
-{
-	return _T("⏎:デコード後の文字列をコピー");
-}
-
 CString EscapedCharCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

@@ -108,11 +108,6 @@ CString FilterCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString FilterCommand::GetGuideString()
-{
-	return _T("⏎:候補を表示する");
-}
-
 CString FilterCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

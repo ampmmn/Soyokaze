@@ -116,31 +116,6 @@ CString ShellExecCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString ShellExecCommand::GetGuideString()
-{
-	const auto& attr = in->GetNormalAttr();
-	CString targetPath = attr.mPath;
-	ExpandMacros(targetPath);
-
-	if (targetPath.Find(_T("http"))==0) {
-		return _T("⏎:ブラウザで開く");
-	}
-	else {
-		CString guideStr(_T("⏎:実行"));
-
-		if (Path::FileExists(targetPath)) {
-			guideStr += _T(" C-⏎:フォルダを開く");
-
-			CString ext(PathFindExtension(targetPath));
-			if (ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0) {
-				guideStr += _T(" C-S-⏎:管理者権限で実行");
-			}
-		}
-
-		return guideStr;
-	}
-}
-
 CString ShellExecCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

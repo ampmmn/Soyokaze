@@ -95,16 +95,6 @@ CString PathExecuteCommand::GetName()
 	return PathFindFileName(in->mFullPath);
 }
 
-CString PathExecuteCommand::GetGuideString()
-{
-	if (in->mIsURL) {
-		return _T("⏎:ブラウザで開く");
-	}
-	else {
-		return _T("⏎:開く C-⏎:フォルダを開く C-S-⏎:管理者権限で実行");
-	}
-}
-
 CString PathExecuteCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

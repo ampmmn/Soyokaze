@@ -90,15 +90,6 @@ CString AlignWindowCommand::GetDescription()
 }
 
 /**
- 	ガイド欄文字列を取得する
- 	@return ガイド欄文字列
-*/
-CString AlignWindowCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウを整列する");
-}
-
-/**
  	コマンド種別を表す文字列を取得する
  	@return コマンド種別
 */

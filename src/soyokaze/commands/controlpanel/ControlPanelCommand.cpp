@@ -42,11 +42,6 @@ ControlPanelCommand::~ControlPanelCommand()
 {
 }
 
-CString ControlPanelCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString ControlPanelCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

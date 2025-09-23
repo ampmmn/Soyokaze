@@ -35,11 +35,6 @@ MMCCommand::~MMCCommand()
 {
 }
 
-CString MMCCommand::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString MMCCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

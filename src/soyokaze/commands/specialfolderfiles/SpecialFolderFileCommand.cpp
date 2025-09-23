@@ -45,12 +45,6 @@ SpecialFolderFileCommand::~SpecialFolderFileCommand()
 {
 }
 
-CString SpecialFolderFileCommand::GetGuideString()
-{
-	return _T("⏎:開く C-⏎:フォルダを開く");
-}
-
-
 CString SpecialFolderFileCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName((int)in->mItem.mType);

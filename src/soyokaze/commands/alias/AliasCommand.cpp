@@ -71,11 +71,6 @@ CString AliasCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString AliasCommand::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString AliasCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

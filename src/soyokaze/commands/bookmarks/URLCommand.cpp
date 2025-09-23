@@ -51,11 +51,6 @@ CString URLCommand::GetDescription()
 	return in->mBookmarkItem.mFolderPath;
 }
 
-CString URLCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString URLCommand::GetTypeDisplayName()
 {
 	CString product;

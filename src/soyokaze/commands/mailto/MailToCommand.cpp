@@ -32,11 +32,6 @@ MailToCommand::~MailToCommand()
 {
 }
 
-CString MailToCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString MailToCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

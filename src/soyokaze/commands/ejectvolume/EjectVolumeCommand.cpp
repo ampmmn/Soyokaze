@@ -65,13 +65,6 @@ CString EjectVolumeCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString EjectVolumeCommand::GetGuideString()
-{
-	CString guideStr;
-	guideStr.Format(_T("⏎:%c:ドライブを取り外す"), in->mParam.mDriveLetter);
-	return guideStr; 
-}
-
 CString EjectVolumeCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

@@ -88,21 +88,6 @@ CString DefaultCommand::GetDescription()
 	return _T("(一致候補なし)");
 }
 
-CString DefaultCommand::GetGuideString()
-{
-	if (in->mIsLoaded == false) {
-		in->Load();
-	}
-
-	if (in->mActionType == _T("copy")) {
-		return _T("⏎: クリップボードにコピー");
-	}
-	else if (in->mActionType == _T("register")) {
-		return _T("⏎: コマンドを登録");
-	}
-	return _T("");
-}
-
 CString DefaultCommand::GetTypeDisplayName()
 {
 	return _T("");

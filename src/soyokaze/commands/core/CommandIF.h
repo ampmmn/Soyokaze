@@ -35,7 +35,6 @@ public:
 	virtual CString GetTypeDisplayName() = 0;
 	virtual bool CanExecute(String* reasonMsg) = 0;
 
-	virtual CString GetGuideString() = 0;
 	// 修飾キー押下状態に対応した実行アクションを取得する
 	virtual bool GetAction(uint32_t modifierFlags, Action** action) = 0;
 

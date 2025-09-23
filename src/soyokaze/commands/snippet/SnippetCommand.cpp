@@ -69,11 +69,6 @@ CString SnippetCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SnippetCommand::GetGuideString()
-{
-	return _T("⏎:定型文をクリップボードにコピー");
-}
-
 CString SnippetCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

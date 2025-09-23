@@ -62,11 +62,6 @@ CString BuiltinCommandBase::GetDescription()
 	return mDescription;
 }
 
-CString BuiltinCommandBase::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString BuiltinCommandBase::GetTypeDisplayName()
 {
 	return TypeDisplayName();

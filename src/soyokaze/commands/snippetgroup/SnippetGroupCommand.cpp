@@ -72,11 +72,6 @@ CString SnippetGroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SnippetGroupCommand::GetGuideString()
-{
-	return _T("キーワード入力すると候補を絞り込むことができます");
-}
-
 CString SnippetGroupCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

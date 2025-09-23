@@ -39,11 +39,6 @@ CString LocalToGitBashPathAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString LocalToGitBashPathAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー");
-}
-
 CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

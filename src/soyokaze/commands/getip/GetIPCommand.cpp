@@ -47,11 +47,6 @@ CString GetIPCommand::GetDescription()
 	return in->mDisplayName + _T(" : ") + in->mAddress;
 }
 
-CString GetIPCommand::GetGuideString()
-{
-	return _T("⏎:IPアドレスをコピー");
-}
-
 CString GetIPCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

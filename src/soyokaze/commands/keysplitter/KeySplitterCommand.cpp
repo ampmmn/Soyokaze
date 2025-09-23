@@ -64,32 +64,6 @@ CString KeySplitterCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString KeySplitterCommand::GetGuideString()
-{
-	if (in->mGuideStr.IsEmpty()) {
-
-		CString tmp;
-
-		for (int i = 0; i < 16; ++i) {
-			ModifierState state(i);
-
-			ITEM item;
-			if (in->mParam.GetMapping(state, item) == false) {
-				continue;
-			}
-
-			if (tmp.IsEmpty() == FALSE) {
-				tmp += _T(" ");
-			}
-			tmp += state.ToString();
-			tmp += _T(":");
-			tmp += item.mCommandName;
-		}
-		in->mGuideStr= tmp;
-	}
-	return in->mGuideStr;
-}
-
 CString KeySplitterCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

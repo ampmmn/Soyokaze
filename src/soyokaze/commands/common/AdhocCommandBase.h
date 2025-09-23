@@ -18,7 +18,6 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	//CString GetTypeDisplayName() override;
 	bool CanExecute(String*) override;
 	// 修飾キー押下状態に対応した実行アクションを取得する

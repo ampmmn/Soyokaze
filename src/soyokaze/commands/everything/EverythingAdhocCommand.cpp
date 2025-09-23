@@ -72,16 +72,6 @@ CString EverythingAdhocCommand::GetDescription()
 
 }
 
-CString EverythingAdhocCommand::GetGuideString()
-{
-	CString guideStr(_T("⏎:実行"));
-	guideStr += _T(" S-⏎:パスをコピー");
-	guideStr += _T(" C-⏎:フォルダを開く");
-	guideStr += _T(" C-S-⏎:管理者権限で実行");
-
-	return guideStr;
-}
-
 CString EverythingAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();

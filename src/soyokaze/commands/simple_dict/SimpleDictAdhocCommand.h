@@ -21,7 +21,6 @@ public:
 	SimpleDictAdhocCommand(const SimpleDictParam& param, const Record& record);
 	virtual ~SimpleDictAdhocCommand();
 
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;

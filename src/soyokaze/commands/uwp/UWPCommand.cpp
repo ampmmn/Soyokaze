@@ -37,11 +37,6 @@ UWPCommand::~UWPCommand()
 {
 }
 
-CString UWPCommand::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString UWPCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
