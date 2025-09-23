@@ -53,7 +53,6 @@ struct ShellExecCommand::PImpl
 
 	CommandParam mParam;
 
-	CString mErrMsg;
 	CommandIcon mIcon;
 };
 
@@ -148,12 +147,14 @@ CString ShellExecCommand::GetTypeDisplayName()
 }
 
 // コマンドを実行可能かどうか調べる
-bool ShellExecCommand::CanExecute()
+bool ShellExecCommand::CanExecute(String* reasonMsg)
 {
 	const auto& attr = in->GetNormalAttr();
 	ExecutablePath path(attr.mPath);
 	if (path.IsExecutable() == false) {
-		in->mErrMsg = _T("！リンク切れ！");
+		if (reasonMsg) {
+			*reasonMsg = "！リンク切れ！";
+		}
 		return false;
 	}
 	return true;
@@ -197,11 +198,6 @@ bool ShellExecCommand::CreateOpenPathAction(Action** action)
 {
 	*action = new OpenPathInFilerAction(new ShellExecTarget(in->mParam));
 	return true;
-}
-
-CString ShellExecCommand::GetErrorString()
-{
-	return in->mErrMsg;
 }
 
 void ShellExecCommand::SetPath(const CString& path)

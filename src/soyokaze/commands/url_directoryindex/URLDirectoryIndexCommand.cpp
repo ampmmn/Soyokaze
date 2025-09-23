@@ -79,7 +79,6 @@ struct URLDirectoryIndexCommand::PImpl
 	CString Decode(const std::vector<uint8_t>& buf);
 
 	CommandParam mParam;
-	CString mErrMsg;
 
 	LinkItems mLinkItems;
 	std::map<CString, LinkItems> mLinkCache;
@@ -361,11 +360,6 @@ bool URLDirectoryIndexCommand::GetAction(uint32_t modifierFlags, Action** action
 	auto cmdline(GetName()+ _T(" "));
 	*action = new launcherapp::actions::mainwindow::SetTextAction(_T("候補を表示する"), cmdline);
 	return true;
-}
-
-CString URLDirectoryIndexCommand::GetErrorString()
-{
-	return in->mErrMsg;
 }
 
 URLDirectoryIndexCommand& URLDirectoryIndexCommand::SetParam(const CommandParam& param)

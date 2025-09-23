@@ -88,11 +88,6 @@ bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return TRUE;
 }
 
-CString WinScpCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON WinScpCommand::GetIcon()
 {
 	CString exeFilePath;

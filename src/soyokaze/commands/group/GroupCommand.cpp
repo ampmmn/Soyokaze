@@ -47,7 +47,6 @@ class GroupCommand::Exception
 struct GroupCommand::PImpl
 {
 	CommandParam mParam;
-	CString mErrMsg;
 };
 
 
@@ -110,12 +109,6 @@ bool GroupCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return true;
 }
 
-
-CString GroupCommand::GetErrorString()
-{
-	return in->mErrMsg;
-}
-
 HICON GroupCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadGroupIcon();
@@ -172,7 +165,6 @@ GroupCommand::Clone()
 	auto clonedObj = make_refptr<GroupCommand>();
 
 	clonedObj->in->mParam = in->mParam;
-	clonedObj->in->mErrMsg = in->mErrMsg;
 
 	return clonedObj.release();
 }

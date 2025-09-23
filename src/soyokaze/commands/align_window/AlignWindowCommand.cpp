@@ -219,11 +219,6 @@ bool AlignWindowCommand::SetForeground(HWND prevForegroundHwnd, String* errMsg)
 	return true;
 }
 
-CString AlignWindowCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON AlignWindowCommand::GetIcon()
 {
 	//return IconLoader::Get()->GetImageResIcon(-5310);

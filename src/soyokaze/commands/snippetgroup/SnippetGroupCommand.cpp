@@ -92,11 +92,6 @@ bool SnippetGroupCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return false;
 }
 
-CString SnippetGroupCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON SnippetGroupCommand::GetIcon()
 {
 	// バインダーに矢印みたいなアイコン

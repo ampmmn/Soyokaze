@@ -44,7 +44,6 @@ struct RegExpCommand::PImpl
 
 	CommandIcon mIcon;
 
-	CString mErrMsg;
 	int mMatchLevel{Pattern::Mismatch};
 };
 
@@ -113,12 +112,14 @@ CString RegExpCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool RegExpCommand::CanExecute()
+bool RegExpCommand::CanExecute(String* reasonMsg)
 {
 	const ATTRIBUTE& attr = in->mParam.mNormalAttr;
 	ExecutablePath path(attr.mPath);
 	if (path.IsExecutable() == false) {
-		in->mErrMsg = _T("！リンク切れ！");
+		if (reasonMsg) {
+			*reasonMsg = "！リンク切れ！";
+		}
 		return false;
 	}
 	return true;
@@ -139,10 +140,6 @@ bool RegExpCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 }
 
-CString RegExpCommand::GetErrorString()
-{
-	return in->mErrMsg;
-}
 void RegExpCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;

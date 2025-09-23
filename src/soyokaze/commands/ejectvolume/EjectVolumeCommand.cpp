@@ -96,11 +96,6 @@ bool EjectVolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return true;
 }
 
-CString EjectVolumeCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON EjectVolumeCommand::GetIcon()
 {
 	return IconLoader::Get()->GetImageResIcon(-5328);

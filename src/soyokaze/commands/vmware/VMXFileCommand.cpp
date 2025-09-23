@@ -69,11 +69,6 @@ bool VMXFileCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 }
 
-CString VMXFileCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON VMXFileCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadIconFromPath(in->mFullPath);

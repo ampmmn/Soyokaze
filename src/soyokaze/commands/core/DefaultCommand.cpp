@@ -108,15 +108,9 @@ CString DefaultCommand::GetTypeDisplayName()
 	return _T("");
 }
 
-bool DefaultCommand::CanExecute()
+bool DefaultCommand::CanExecute(String*)
 {
 	return true;
-}
-
-BOOL DefaultCommand::Execute(Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-	return FALSE;
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
@@ -144,12 +138,6 @@ bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 
-}
-
-
-CString DefaultCommand::GetErrorString()
-{
-	return _T("");
 }
 
 HICON DefaultCommand::GetIcon()

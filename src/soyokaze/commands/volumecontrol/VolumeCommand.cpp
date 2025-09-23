@@ -113,11 +113,6 @@ bool VolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return true;
 }
 
-CString VolumeCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON VolumeCommand::GetIcon()
 {
 	return IconLoader::Get()->LoadVolumeIcon(false);
