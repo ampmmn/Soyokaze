@@ -8,7 +8,7 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/clipboard/CopyClipboardAction.h"
-#include "actions/web/URLAction.h"
+#include "actions/web/OpenURLAction.h"
 #include "actions/builtin/CallbackAction.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
@@ -24,7 +24,7 @@ using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
-using URLAction = launcherapp::actions::web::URLAction;
+using OpenURLAction = launcherapp::actions::web::OpenURLAction;
 using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
@@ -132,11 +132,9 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenParentURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	RefPtr<ParameterBuilder> param(ParameterBuilder::Create(), false);
-
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	SubProcess::ProcessPtr process;
-	exec.Run(url, param->GetParameterString(), process);
+	exec.Run(url, process);
 
 	return true;
 }
@@ -207,7 +205,7 @@ bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** acti
 	}
 	else if (modifierFlags & Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
-		*action = new URLAction(in->GetCurrentURL());
+		*action = new OpenURLAction(in->GetCurrentURL());
 		return true;
 	}
 	else {
@@ -295,11 +293,11 @@ bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, Parameter* param)
 		return action.Perform(param, nullptr);
 	}
 	else if (index == 2) {
-		URLAction action(in->GetCurrentURL());
+		OpenURLAction action(in->GetCurrentURL());
 		return action.Perform(param, nullptr);
 	}
 	else if (index == 3) {
-		URLAction action(in->GetParentURL());
+		OpenURLAction action(in->GetParentURL());
 		return action.Perform(param, nullptr);
 	}
 	return false;

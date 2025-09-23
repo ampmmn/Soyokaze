@@ -3,7 +3,6 @@
 #include "actions/core/ActionParameter.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/shellexecute/ShellExecCommand.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"

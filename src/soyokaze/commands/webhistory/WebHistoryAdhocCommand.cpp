@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "WebHistoryAdhocCommand.h"
 #include "commands/core/ContextMenuSourceIF.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/web/OpenURLAction.h"

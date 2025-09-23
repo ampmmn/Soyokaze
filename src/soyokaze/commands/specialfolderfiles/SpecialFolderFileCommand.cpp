@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "SpecialFolderFileCommand.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
