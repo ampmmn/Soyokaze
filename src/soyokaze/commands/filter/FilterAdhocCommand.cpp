@@ -109,6 +109,9 @@ bool FilterAdhocCommand::CreatePostFilterCommandAction(uint32_t modifierFlags, A
 
 bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// コマンド実行時に起動するファイルパス上の"$select"を選択値に置換
 	CString path = in->mParam.mAfterFilePath;
 	path.Replace(_T("$select"), in->mResult.mDisplayName);
@@ -131,6 +134,10 @@ bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags
 
 bool FilterAdhocCommand::CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
+
 	// コマンドパラメータに基づき、選択値を置換
 	CString param = in->mParam.mAfterCommandParam;
 	param.Replace(_T("$select"), in->mResult.mDisplayName);

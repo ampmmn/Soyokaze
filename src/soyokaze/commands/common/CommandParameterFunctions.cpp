@@ -21,7 +21,7 @@ RefPtr<NamedParameter> GetNamedParameter(Parameter* param)
 	}
 
 	NamedParameter* namedParam = nullptr;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+	if (param->QueryInterface(IFID_ACTIONNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return std::move(RefPtr<NamedParameter>());
 	}
 	return RefPtr<NamedParameter>(namedParam, false);

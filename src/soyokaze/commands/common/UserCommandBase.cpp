@@ -117,7 +117,7 @@ bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CStrin
 	}
 
 	RefPtr<NamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+	if (param->QueryInterface(IFID_ACTIONNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}
 

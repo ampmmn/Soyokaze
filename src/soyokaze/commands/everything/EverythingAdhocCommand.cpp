@@ -8,6 +8,7 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -23,6 +24,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
 namespace launcherapp {
 namespace commands {
@@ -92,6 +94,11 @@ bool EverythingAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 	else if (modifierFlags == Command::MODIFIER_CTRL) {
 		// フォルダを開く
 		*action = new OpenPathInFilerAction(in->mResult.mFullPath);
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		// フォルダを開く
+		*action = new ShowPropertiesAction(in->mResult.mFullPath);
 		return true;
 	}
 	else if (modifierFlags == (Command::MODIFIER_CTRL|Command::MODIFIER_SHIFT)) {

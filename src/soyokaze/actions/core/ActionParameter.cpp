@@ -378,12 +378,12 @@ void ParameterBuilder::SetNamedParamBool(
 
 bool ParameterBuilder::QueryInterface(const IFID& ifid, void** cmd)
 {
-	if (ifid == IFID_COMMANDPARAMETER) {
+	if (ifid == IFID_ACTIONPARAMETER) {
 		AddRef();
 		*cmd = (Parameter*)this;
 		return true;
 	}
-	else if (ifid == IFID_COMMANDNAMEDPARAMETER) {
+	else if (ifid == IFID_ACTIONNAMEDPARAMETER) {
 		AddRef();
 		*cmd = (NamedParameter*)this;
 		return true;
