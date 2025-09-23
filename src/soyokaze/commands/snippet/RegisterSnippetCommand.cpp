@@ -45,7 +45,9 @@ RegisterSnippetCommand::~RegisterSnippetCommand()
 
 bool RegisterSnippetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
 		// ウインドウ経由でクリップボードのテキストを取得
