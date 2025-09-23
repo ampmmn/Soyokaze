@@ -30,7 +30,6 @@ public:
 	CString GetTypeDisplayName() override;
 
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool GetHotKeyAttribute(CommandHotKeyAttribute& attr) override;

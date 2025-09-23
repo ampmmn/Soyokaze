@@ -94,12 +94,6 @@ bool SnippetCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return false;
 }
 
-CString SnippetCommand::GetErrorString()
-{
-	return _T("");
-}
-
-
 void SnippetCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;

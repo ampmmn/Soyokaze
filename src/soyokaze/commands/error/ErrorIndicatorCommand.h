@@ -13,7 +13,7 @@ public:
 	ErrorIndicatorCommand();
 	virtual ~ErrorIndicatorCommand();
 
-	void SetTarget(launcherapp::core::Command* cmd);
+	void SetTarget(launcherapp::core::Command* cmd, const String& reason);
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
@@ -21,10 +21,8 @@ public:
 	CString GetDescription() override;
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	bool CanExecute() override;
-	BOOL Execute(Parameter* param) override;
+	bool CanExecute(String*) override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsAllowAutoExecute() override;

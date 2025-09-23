@@ -48,18 +48,9 @@ CString AdhocCommandBase::GetGuideString()
 	return _T("");
 }
 
-bool AdhocCommandBase::CanExecute()
+bool AdhocCommandBase::CanExecute(String*)
 {
 	return true;
-}
-
-BOOL AdhocCommandBase::Execute(Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-
-	// 派生側で実装する
-	ASSERT(0);
-	return TRUE;
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
@@ -70,11 +61,6 @@ bool AdhocCommandBase::GetAction(uint32_t modifierFlags, Action** action)
 
 	// 派生側で実装する
 	return false;
-}
-
-CString AdhocCommandBase::GetErrorString()
-{
-	return mErrMsg;
 }
 
 HICON AdhocCommandBase::GetIcon()

@@ -74,21 +74,9 @@ bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void**
 	return false;
 }
 
-bool UserCommandBase::CanExecute()
+bool UserCommandBase::CanExecute(String*)
 {
 	return true;
-}
-
-BOOL UserCommandBase::Execute(Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-	spdlog::error("Execute is unimplemented.");
-	return false;
-}
-
-CString UserCommandBase::GetErrorString()
-{
-	return _T("");
 }
 
 bool UserCommandBase::IsAllowAutoExecute()

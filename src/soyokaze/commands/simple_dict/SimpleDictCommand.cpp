@@ -55,7 +55,6 @@ struct SimpleDictCommand::PImpl
 
 	std::mutex mMutex;
 	Dictionary mDictData;
-	CString mErrMsg;
 	uint32_t mWatcherId{0};
 };
 
@@ -270,7 +269,7 @@ CString SimpleDictCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool SimpleDictCommand::CanExecute()
+bool SimpleDictCommand::CanExecute(String* reasonMsg)
 {
 	if (in->mParam.mActionType == 1) {
 		// mAfterFilePathに$key $value($value2) を含む場合、選択するまで結果が確定しないため、
@@ -282,7 +281,9 @@ bool SimpleDictCommand::CanExecute()
 
 		ExecutablePath path(filePath);
 		if (hasKey == false && hasValue == false && path.IsExecutable() == false) {
-			in->mErrMsg = _T("！リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -299,11 +300,6 @@ bool SimpleDictCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 	return false;
-}
-
-CString SimpleDictCommand::GetErrorString()
-{
-	return in->mErrMsg;
 }
 
 HICON SimpleDictCommand::GetIcon()

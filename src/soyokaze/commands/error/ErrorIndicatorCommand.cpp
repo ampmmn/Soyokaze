@@ -16,22 +16,23 @@ namespace launcherapp { namespace commands { namespace error {
 struct ErrorIndicatorCommand::PImpl
 {
 	RefPtr<Command> mTarget;
+	String mReason;
 	uint32_t mRefCount{1};
 };
 
 ErrorIndicatorCommand::ErrorIndicatorCommand() : in(new PImpl)
 {
-	
 }
 
 ErrorIndicatorCommand::~ErrorIndicatorCommand()
 {
 }
 
-void ErrorIndicatorCommand::SetTarget(Command* cmd)
+void ErrorIndicatorCommand::SetTarget(Command* cmd, const String& reason)
 {
 	in->mTarget.reset(cmd);
 	in->mTarget->AddRef();
+	in->mReason = reason;
 }
 
 bool ErrorIndicatorCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -49,7 +50,8 @@ CString ErrorIndicatorCommand::GetName()
 
 CString ErrorIndicatorCommand::GetDescription()
 {
-	return in->mTarget->GetErrorString();
+	CString description;
+	return UTF2UTF(in->mReason, description);
 }
 
 CString ErrorIndicatorCommand::GetGuideString()
@@ -65,17 +67,9 @@ CString ErrorIndicatorCommand::GetTypeDisplayName()
 	return in->mTarget->GetTypeDisplayName();
 }
 
-bool ErrorIndicatorCommand::CanExecute()
+bool ErrorIndicatorCommand::CanExecute(String*)
 {
 	return false;
-}
-
-BOOL ErrorIndicatorCommand::Execute(Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-	// GetActionに移行済
-	return FALSE;
-
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
@@ -97,12 +91,6 @@ bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	});
 	return true;
-}
-
-
-CString ErrorIndicatorCommand::GetErrorString()
-{
-	return _T("");
 }
 
 HICON ErrorIndicatorCommand::GetIcon()

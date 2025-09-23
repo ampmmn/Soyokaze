@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingPageOther.h"
-#include "commands/shellexecute/ShellExecCommand.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/ExecuteAction.h"
 #include "setting/Settings.h"
 #include "logger/Logger.h"
 #include "resource.h"
@@ -11,9 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
-
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 static int SPDLOGLEVEL[] = { 
 	6,   // Off
@@ -178,9 +177,8 @@ void OtherSettingDialog::OnNotifyLinkOpen(
 		auto logDir = Logger::Get()->GetLogDirectory();
 		logDir += _T("\\");
 
-		ShellExecCommand cmd;
-		cmd.SetPath((LPCTSTR)logDir);
-		cmd.Execute(ParameterBuilder::EmptyParam());
+		ExecuteAction action((LPCTSTR)logDir);
+		action.Perform(ParameterBuilder::EmptyParam(), nullptr);
 	}
 	*pResult = 0;
 }

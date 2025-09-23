@@ -3,6 +3,7 @@
 #include "DeleteCandidateCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
 #include "commands/builtin/DeleteCommand.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -16,6 +17,7 @@ using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -54,14 +56,15 @@ CString DeleteCandidateCommand::GetTypeDisplayName()
 	return _T("システムコマンド");
 }
 
-BOOL DeleteCandidateCommand::Execute(Parameter* param)
+bool DeleteCandidateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	DeleteCommand cmd;
-	RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(_T("delete")));
-	paramTmp->AddArgument(in->mCmdName);
-	return cmd.Execute(paramTmp.get());
+	*action = new CallbackAction(_T("コマンドを削除"), [&](Parameter*, String*) -> bool {
+		DeleteCommand cmd;
+		RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(_T("delete")));
+		paramTmp->AddArgument(in->mCmdName);
+		return cmd.Execute(paramTmp.get());
+	});
+	return true;
 }
 
 HICON DeleteCandidateCommand::GetIcon()

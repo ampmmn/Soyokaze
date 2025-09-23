@@ -1257,16 +1257,6 @@ LauncherMainWindow::RunCommand(
 				}
 			}
 		}
-		else {
-			if (cmd->Execute(actionParam) == FALSE) {
-				auto errMsg = cmd->GetErrorString();
-				if (errMsg.IsEmpty() == FALSE) {
-					auto app = (LauncherApp*)AfxGetApp();
-					app->PopupMessage(errMsg);
-				}
-			}
-		}
-
 		actionParam->Release();
 
 		// コマンドの参照カウントを下げる
@@ -1359,11 +1349,12 @@ void LauncherMainWindow::SelectCommandContextMenu(
 		auto actionParam = launcherapp::actions::core::ParameterBuilder::Create(str);
 
 		if (menuSrc->SelectMenuItem(index, actionParam) == false) {
-			auto errMsg = cmd->GetErrorString();
-			if (errMsg.IsEmpty() == FALSE) {
-				auto app = (LauncherApp*)AfxGetApp();
-				app->PopupMessage(errMsg);
-			}
+			// ToDo: インタフェースを変える
+			//auto errMsg = cmd->GetErrorString();
+			//if (errMsg.IsEmpty() == FALSE) {
+			//	auto app = (LauncherApp*)AfxGetApp();
+			//	app->PopupMessage(errMsg);
+			//}
 		}
 		actionParam->Release();
 		cmd->Release();

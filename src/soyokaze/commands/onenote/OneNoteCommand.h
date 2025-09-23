@@ -23,7 +23,6 @@ public:
 	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
-	CString GetErrorString() override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

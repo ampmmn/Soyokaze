@@ -21,9 +21,7 @@ public:
 	virtual ~UserCommandBase();
 
 // Command
-	bool CanExecute() override;
-	BOOL Execute(Parameter* param) override;
-	CString GetErrorString() override;
+	bool CanExecute(String*) override;
 	bool IsAllowAutoExecute() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;
 

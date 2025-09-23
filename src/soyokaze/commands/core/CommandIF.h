@@ -33,14 +33,12 @@ public:
 	virtual CString GetDescription() = 0;
 	// コマンド種類を表す表示名称
 	virtual CString GetTypeDisplayName() = 0;
-	virtual bool CanExecute() = 0;
+	virtual bool CanExecute(String* reasonMsg) = 0;
 
 	virtual CString GetGuideString() = 0;
-	virtual BOOL Execute(Parameter* param) = 0;
 	// 修飾キー押下状態に対応した実行アクションを取得する
 	virtual bool GetAction(uint32_t modifierFlags, Action** action) = 0;
 
-	virtual CString GetErrorString() = 0;
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;
 	// 完全一致かつ候補が一つのときに自動実行を許すか

@@ -104,11 +104,6 @@ bool WatchPathCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return true;
 }
 
-CString WatchPathCommand::GetErrorString()
-{
-	return _T("");
-}
-
 HICON WatchPathCommand::GetIcon()
 {
 	CString path = in->mParam.mPath;

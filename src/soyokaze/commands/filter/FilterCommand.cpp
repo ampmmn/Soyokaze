@@ -47,7 +47,6 @@ struct FilterCommand::PImpl
 	void LoadCandidates();
 
 	CommandParam mParam;
-	CString mErrMsg;
 	//
 	FilterExecutor* mExecutor{nullptr};
 	QueryCancellationToken mCancelToken;
@@ -119,12 +118,14 @@ CString FilterCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool FilterCommand::CanExecute()
+bool FilterCommand::CanExecute(String* reasonMsg)
 {
 	if (in->mParam.mPreFilterType == FILTER_SUBPROCESS) {
 		ExecutablePath path(in->mParam.mPath);
 		if (path.IsExecutable() == false) {
-			in->mErrMsg = _T("！【前段の処理】リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！【前段の処理】リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -134,7 +135,9 @@ bool FilterCommand::CanExecute()
 
 		ExecutablePath path(in->mParam.mAfterFilePath);
 		if (hasSelect == false && path.IsExecutable() == false) {
-			in->mErrMsg = _T("！【後段の処理】リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！【後段の処理】リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -154,11 +157,6 @@ bool FilterCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 	return false;
-}
-
-CString FilterCommand::GetErrorString()
-{
-	return in->mErrMsg;
 }
 
 FilterCommand& FilterCommand::SetParam(const CommandParam& param)
@@ -220,7 +218,7 @@ int FilterCommand::Match(Pattern* pattern)
 			}
 
 			// このタイミングで候補一覧の生成を行う
-			if (CanExecute()) {
+			if (CanExecute(nullptr)) {
 				in->LoadCandidates();
 			}
 			return Pattern::WholeMatch;

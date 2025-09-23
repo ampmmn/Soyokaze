@@ -72,7 +72,7 @@ CString BuiltinCommandBase::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool BuiltinCommandBase::CanExecute()
+bool BuiltinCommandBase::CanExecute(String*)
 {
 	return true;
 }

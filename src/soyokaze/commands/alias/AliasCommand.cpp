@@ -106,12 +106,6 @@ bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 	return true;
 }
 
-CString AliasCommand::GetErrorString()
-{
-	return _T("");
-}
-
-
 void AliasCommand::SetParam(const CommandParam& param)
 {
 	// 更新前に有効パラメータが存在し，かつ、自動実行を許可する場合は
