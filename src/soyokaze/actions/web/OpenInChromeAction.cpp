@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "OpenInChromeAction.h"
 #include "commands/common/SubProcess.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/Path.h"
 
 namespace launcherapp { namespace actions { namespace web {
 
 
 using namespace launcherapp::commands::common;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 OpenInChromeAction::OpenInChromeAction(const CString& url) : mURL(url)
 {
@@ -26,6 +28,8 @@ CString OpenInChromeAction::GetDisplayName()
 // アクションを実行する
 bool OpenInChromeAction::Perform(Parameter* param, String* errMsg)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	// chrome.exeのパスを取得(初回のみ)
 	static Path chromePath;
 	if (chromePath.IsEmptyPath()) {
@@ -41,7 +45,7 @@ bool OpenInChromeAction::Perform(Parameter* param, String* errMsg)
 	}
 
 	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	exec.Run((LPCTSTR)chromePath, mURL, process);
 
 	return true;

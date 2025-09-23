@@ -8,7 +8,6 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"

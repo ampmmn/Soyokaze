@@ -6,7 +6,6 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/regexp/RegExpCommandEditor.h"
 #include "commands/core/CommandRepository.h"

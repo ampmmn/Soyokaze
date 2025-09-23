@@ -3,6 +3,7 @@
 #include "RestartCommand.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/SubProcess.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -11,11 +12,13 @@
 #define new DEBUG_NEW
 #endif
 
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using SubProcess = launcherapp::commands::common::SubProcess;
+
 namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using SubProcess = launcherapp::commands::common::SubProcess;
 
 CString RestartCommand::TYPE(_T("Builtin-Restart"));
 
@@ -63,7 +66,7 @@ BOOL RestartCommand::Execute(Parameter* param)
 	}
 
 	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	exec.SetShowType(SW_HIDE);
 
 	// 管理者権限で実行している場合は、launcher_proxyも管理者権限で実行する

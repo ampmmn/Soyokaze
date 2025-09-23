@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "RunVMXAction.h"
 #include "commands/common/SubProcess.h"
+#include "actions/core/ActionParameter.h"
 #include "resource.h"
 
 namespace launcherapp { namespace actions { namespace vmware {
 
 
 using namespace launcherapp::commands::common;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 RunVMXAction::RunVMXAction(const CString& vmName, const CString& vmxFilePath, int showType) :
 	mVMDisplayName(vmName), mVMXFilePath(vmxFilePath), mShowType(showType)
@@ -27,6 +29,8 @@ CString RunVMXAction::GetDisplayName()
 // アクションを実行する
 bool RunVMXAction::Perform(Parameter* param, String* errMsg)
 {
+	UNREFERENCED_PARAMETER(param);
+
 	if (IsVMLocked()) {
 		// ロックされている旨を表示
 		CString msg;
@@ -39,7 +43,7 @@ bool RunVMXAction::Perform(Parameter* param, String* errMsg)
 
 	SubProcess::ProcessPtr process;
 
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	exec.SetShowType(mShowType);
 	if (exec.Run(mVMXFilePath, process) == FALSE) {
 		if (errMsg) {

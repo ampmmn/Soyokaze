@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "MSSettingsCommand.h"
-#include "commands/common/SubProcess.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

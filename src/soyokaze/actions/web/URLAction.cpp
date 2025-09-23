@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "URLAction.h"
 #include "commands/common/SubProcess.h"
-
-namespace launcherapp { namespace actions { namespace web {
-
+#include "actions/core/ActionParameter.h"
 
 using namespace launcherapp::commands::common;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+
+namespace launcherapp { namespace actions { namespace web {
 
 URLAction::URLAction(const CString& url) :
  	mDisplayName(_T("URLを開く")), mURL(url)
@@ -31,7 +32,9 @@ CString URLAction::GetDisplayName()
 // アクションを実行する
 bool URLAction::Perform(Parameter* param, String* errMsg)
 {
-	SubProcess exec(param);
+	UNREFERENCED_PARAMETER(param);
+
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	SubProcess::ProcessPtr process;
 	if (exec.Run(mURL, process) == FALSE) {
 		if (errMsg) {

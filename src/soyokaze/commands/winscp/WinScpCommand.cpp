@@ -3,6 +3,7 @@
 #include "WinScpCommand.h"
 #include "commands/common/SubProcess.h"
 #include "actions/builtin/CallbackAction.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -13,6 +14,7 @@
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::builtin;
+using namespace launcherapp::actions::core;
 
 namespace launcherapp { namespace commands { namespace winscp {
 
@@ -67,7 +69,7 @@ bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 			return false;
 		}
 
-		SubProcess exec(param);
+		SubProcess exec(ParameterBuilder::EmptyParam());
 
 		CString argStr;
 		argStr.Format(_T("\"%s\""), (LPCTSTR)in->mSessionName);

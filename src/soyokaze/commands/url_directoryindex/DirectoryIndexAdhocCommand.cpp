@@ -132,11 +132,9 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenParentURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	RefPtr<ParameterBuilder> param(ParameterBuilder::Create(), false);
-
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	SubProcess::ProcessPtr process;
-	exec.Run(url, param->GetParameterString(), process);
+	exec.Run(url, process);
 
 	return true;
 }
