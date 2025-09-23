@@ -73,25 +73,10 @@ int MMCCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool MMCCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool MMCCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool MMCCommand::SelectMenuItem(int index, Parameter* param)
-{
-	if (index == 0) {
-		RefPtr<Action> action;
-		if (GetAction(0, &action) == false) {
-			return false;
-		}
-		return action->Perform(param, nullptr);
+		return GetAction(0, action);
 	}
 	return false;
 }

@@ -247,54 +247,29 @@ int DirectoryIndexAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool DirectoryIndexAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool DirectoryIndexAdhocCommand::GetMenuItem(int index, Action** action)
 {
-	if (index == 0) {
-		static LPCWSTR name = L"開く(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"URLをクリップボードにコピー(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"ブラウザで開く(&B)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"ディレクトリをブラウザで開く(&P)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, Parameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-
 	if (index < 0 || GetMenuItemCount() < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return in->EnterURL();
+		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+			return in->EnterURL();
+		});
+		return true;
 	}
 	else if (index == 1) {
-		CopyTextAction action(in->GetCurrentURL());
-		return action.Perform(param, nullptr);
+		*action = new CopyTextAction(in->GetCurrentURL());
+		return true;
 	}
 	else if (index == 2) {
-		URLAction action(in->GetCurrentURL());
-		return action.Perform(param, nullptr);
+		*action = new URLAction(in->GetCurrentURL());
+		return true;
 	}
 	else if (index == 3) {
-		URLAction action(in->GetParentURL());
-		return action.Perform(param, nullptr);
+		*action = new URLAction(in->GetParentURL());
+		return true;
 	}
 	return false;
 }

@@ -448,59 +448,20 @@ int ShellExecCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool ShellExecCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (index == 0) {
-		static LPCWSTR name = L"実行(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"パスを開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"管理者権限で実行(&A)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool ShellExecCommand::SelectMenuItem(int index, Parameter* param)
+bool ShellExecCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 2 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		RefPtr<Action> action;
-		if (CreateExecuteAction(&action, false) == false) {
-			return false;
-		}
-		return action->Perform(param, nullptr);
+		return CreateExecuteAction(action, false);
 	}
-
-	RefPtr<NamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return false;
+	else if (index == 1) {
+		return CreateOpenPathAction(action);
 	}
-
-	if (index == 1) {
-		RefPtr<Action> action;
-		if (CreateOpenPathAction(&action) == false) {
-			return false;
-		}
-		return action->Perform(param, nullptr);
-	}
-	else  {
-		RefPtr<Action> action;
-		if (CreateExecuteAction(&action, true) == false) {
-			return false;
-		}
-		return action->Perform(param, nullptr);
+	else {
+		return CreateExecuteAction(action, true);
 	}
 }
 

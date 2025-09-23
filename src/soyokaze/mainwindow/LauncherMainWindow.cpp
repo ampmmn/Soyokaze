@@ -1407,13 +1407,16 @@ void LauncherMainWindow::SelectCommandContextMenu(
 
 		auto actionParam = launcherapp::actions::core::ParameterBuilder::Create(str);
 
-		if (menuSrc->SelectMenuItem(index, actionParam) == false) {
-			// ToDo: インタフェースを変える
-			//auto errMsg = cmd->GetErrorString();
-			//if (errMsg.IsEmpty() == FALSE) {
-			//	auto app = (LauncherApp*)AfxGetApp();
-			//	app->PopupMessage(errMsg);
-			//}
+		RefPtr<Action> action;
+		if (menuSrc->GetMenuItem(index, &action)) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				if (errMsg.empty() == false) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
+			}
 		}
 		actionParam->Release();
 		cmd->Release();
@@ -1735,13 +1738,13 @@ void LauncherMainWindow::OnContextMenu(
 		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc)) {
 			int count = menuSrc->GetMenuItemCount();
 			for (int i = 0; i < count; ++i) {
-				LPCTSTR displayName = nullptr;
-				menuSrc->GetMenuItemName(i, &displayName);
-				if (displayName == nullptr) {
+				RefPtr<Action> action;
+				bool isOK = menuSrc->GetMenuItem(i, &action);
+				if (isOK == false) {
 					menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 					continue;
 				}
-				menu.InsertMenu((UINT)-1, 0, ID_COMMAND_TOP + i, displayName);
+				menu.InsertMenu((UINT)-1, 0, ID_COMMAND_TOP + i, action->GetDisplayName());
 			}
 			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 		}

@@ -8,6 +8,7 @@
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/builtin/ShowPropertiesAction.h"
+#include "actions/builtin/CallbackAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
@@ -26,6 +27,7 @@ using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -249,81 +251,30 @@ int PathExecuteCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool PathExecuteCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (in->mIsURL) {
-		if (index == 0) {
-			static LPCWSTR name = L"ブラウザで開く(&O)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 1) {
-			static LPCWSTR name = L"URLをコマンドとして登録する(&U)";
-			*displayNamePtr= name;
-			return true;
-		}
-	}
-	else {
-		if (index == 0) {
-			static LPCWSTR name = L"開く(&O)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 1) {
-			static LPCWSTR name = L"フォルダを開く(&P)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 2) {
-			static LPCWSTR name = L"管理者権限で実行(&A)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 3) {
-			static LPCWSTR name = L"フルパスをコピー(&C)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 4) {
-			static LPCWSTR name = L"プロパティ(&T)";
-			*displayNamePtr= name;
-			return true;
-		}
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
+bool PathExecuteCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 4 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		RefPtr<Action> action;
-		if (GetAction(0, &action) == false) {
-			return false;
-		}
-		return action->Perform(param, nullptr);
-	}
-
-	RefPtr<NamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return false;
+		return GetAction(0, action);
 	}
 
 	if (in->mIsURL) {
 		if (index == 1) {
-			// URLをコマンドとして登録
+			*action = new CallbackAction(_T("URLをコマンドとして登録する"), [&](Parameter*, String*) -> bool {
+				// URLをコマンドとして登録
 
-			// 登録用のコマンド文字列を生成
-			CString cmdStr;
-			cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
+				// 登録用のコマンド文字列を生成
+				CString cmdStr;
+				cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
 
-			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-			bool isWaitSync = false;
-			mainWnd->RunCommand((LPCTSTR)cmdStr, isWaitSync);
+				auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+				bool isWaitSync = false;
+				mainWnd->RunCommand((LPCTSTR)cmdStr, isWaitSync);
+				return true;
+			});
 			return true;
 		}
 		else {
@@ -332,25 +283,26 @@ bool PathExecuteCommand::SelectMenuItem(int index, Parameter* param)
 	}
 	else {
 		if (index == 1) {
-			OpenPathInFilerAction action(in->mFullPath);
-			return action.Perform(param, nullptr);
+			*action = new OpenPathInFilerAction(in->mFullPath);
+			return true;
 		}
 		else if (index == 2)  {
 			// 管理者権限で実行
-			ExecuteAction action(in->mFullPath, param->GetParameterString());
-			action.SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
-			action.SetRunAsAdmin();
-			return action.Perform(param, nullptr);
+			auto a = new ExecuteAction(in->mFullPath);
+			a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+			a->SetRunAsAdmin();
+			*action = a;
+			return true;
 		}
 		else if (index == 3) {
 			// クリップボードにコピー
-			CopyTextAction action(in->mFullPath);
-			return action.Perform(param, nullptr);
+			*action = new CopyTextAction(in->mFullPath);
+			return true;
 		}
 		else { // if (index == 4)
 			// プロパティダイアログを表示
-			ShowPropertiesAction action(in->mFullPath);
-			return action.Perform(param, nullptr);
+			*action = new ShowPropertiesAction(in->mFullPath);
+			return true;
 		}
 	}
 }
