@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "ColorCommand.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "commands/color/HSL.h"
 #include "icon/IconLoader.h"
-#include "commands/common/Clipboard.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
@@ -13,6 +13,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::clipboard;
 
 namespace launcherapp {
 namespace commands {
@@ -148,23 +149,20 @@ ColorCommand::~ColorCommand()
 	}
 }
 
-CString ColorCommand::GetGuideString()
-{
-	return _T("⏎:クリップボードにコピー");
-}
-
 CString ColorCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL ColorCommand::Execute(Parameter* param)
+bool ColorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// クリップボードにコピー
-	Clipboard::Copy(mName);
-	return TRUE;
+	*action = new CopyTextAction(mName);
+
+	return true;
 }
 
 

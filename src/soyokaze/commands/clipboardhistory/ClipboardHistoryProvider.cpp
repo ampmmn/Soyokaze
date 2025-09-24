@@ -8,7 +8,6 @@
 #include "commands/clipboardhistory/AppSettingClipboardHistoryPage.h"
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "setting/AppPreferenceListenerIF.h"

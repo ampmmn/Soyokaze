@@ -2,24 +2,22 @@
 #include "framework.h"
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
 #include "commands/pathconvert/Icon.h"
-#include "commands/common/Clipboard.h"
-#include "commands/common/Message.h"
-#include "commands/common/CommandParameterFunctions.h"
-#include "commands/shellexecute/ShellExecCommand.h"
-#include "utility/CharConverter.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
-#include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using namespace launcherapp::commands::common;
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -77,32 +75,29 @@ CString FileProtocolConvertAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString FileProtocolConvertAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー S-⏎:開く C-⏎:フォルダを開く");
-}
-
 CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL FileProtocolConvertAdhocCommand::Execute(Parameter* param)
+bool FileProtocolConvertAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
-	bool isCtrlPressed = (state &  MASK_CTRL) != 0;
-	bool isShiftPressed = (state & MASK_SHIFT) != 0;
-	if (isCtrlPressed != false || isShiftPressed != false) {
-		// フォルダを開く or 開く
-		ShellExecCommand cmd;
-		cmd.SetPath(in->mFullPath);
-		return cmd.Execute(param);
+	if (modifierFlags == Command::MODIFIER_CTRL) {
+		// フォルダを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
 	}
-	else {
-		// クリップボードにコピー
-		Clipboard::Copy(in->mFullPath);
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		// 開く
+		*action = new ExecuteAction(in->mFullPath);
+		return true;
 	}
-	return TRUE;
+	else if (modifierFlags == 0) {
+		// パスをコピー
+		*action = new CopyTextAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON FileProtocolConvertAdhocCommand::GetIcon()

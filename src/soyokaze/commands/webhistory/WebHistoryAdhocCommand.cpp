@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "WebHistoryAdhocCommand.h"
 #include "commands/core/ContextMenuSourceIF.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenInChromeAction.h"
+#include "actions/web/OpenInEdgeAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -15,36 +17,11 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::web;
 
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
-
-static bool GetChromeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("PROGRAMFILES"));
-	PathAppend(path, _T("Google\\Chrome\\Application\\chrome.exe"));
-
-	return true;
-}
-
-static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-#ifndef _WIN64
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
-#else
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles(x86)"));
-#endif
-	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
-
-	return true;
-}
 
 struct WebHistoryAdhocCommand::PImpl
 {
@@ -57,10 +34,10 @@ struct WebHistoryAdhocCommand::PImpl
 bool WebHistoryAdhocCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
 {
 	if (mHistory.mBrowserName == _T("Chrome")) {
-		return GetChromeExecutablePath(path, len);
+		return OpenInChromeAction::GetChromeExecutablePath(path, len);
 	}
 	else if (mHistory.mBrowserName == _T("Edge")) {
-		return GetEdgeExecutablePath(path, len);
+		return OpenInEdgeAction::GetEdgeExecutablePath(path, len);
 	}
 	else {
 		return false;
@@ -89,45 +66,33 @@ CString WebHistoryAdhocCommand::GetName()
 	return in->mName + _T(" ") + in->mHistory.mDisplayName;
 }
 
-CString WebHistoryAdhocCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
 	return WebHistoryAdhocCommand::TypeDisplayName((LPCTSTR)in->mHistory.mBrowserName);
 }
 
-BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
+bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-	if (isShiftKeyPressed) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mHistory.mUrl);
-		return TRUE;
+	if (modifierFlags == 0) {
+		if (in->mHistory.mBrowserName == _T("Chrome")) {
+		*action = new OpenInChromeAction(in->mHistory.mUrl);
+		return true;
+		}
+		else if (in->mHistory.mBrowserName == _T("Edge")) {
+		*action = new OpenInEdgeAction(in->mHistory.mUrl);
+		return true;
+		}
+		else {
+			return false;
+		}
 	}
-
-	// URLをブラウザで開く
-	std::vector<TCHAR> path(MAX_PATH_NTFS);
-	if (in->GetExecutablePath(path.data(), MAX_PATH_NTFS) == false) {
-		return FALSE;
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
+		return true;
 	}
-
-	if (Path::FileExists(path.data()) == FALSE) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += path.data();
-		AfxMessageBox(msg);
-		return TRUE;
-	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run(path.data(), in->mHistory.mUrl, process);
-
-	return TRUE;
+	return false;
 }
+
 
 HICON WebHistoryAdhocCommand::GetIcon()
 {

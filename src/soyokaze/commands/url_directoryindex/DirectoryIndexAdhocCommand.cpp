@@ -6,6 +6,10 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/clipboard/CopyClipboardAction.h"
+#include "actions/web/URLAction.h"
+#include "actions/builtin/CallbackAction.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -18,8 +22,10 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
-
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
+using URLAction = launcherapp::actions::web::URLAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -27,6 +33,9 @@ namespace url_directoryindex {
 
 struct DirectoryIndexAdhocCommand::PImpl
 {
+	CString GetCurrentURL();
+	CString GetParentURL();
+
 	bool EnterURL();
 	bool CopyURL();
 	bool OpenURL(const CString& url);
@@ -36,6 +45,29 @@ struct DirectoryIndexAdhocCommand::PImpl
 	URLDirectoryIndexCommand* mBaseCmd{nullptr};
 	QueryResult mResult;
 };
+
+CString DirectoryIndexAdhocCommand::PImpl::GetCurrentURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	return param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+}
+
+CString DirectoryIndexAdhocCommand::PImpl::GetParentURL()
+{
+	CommandParam param;
+	mBaseCmd->GetParam(param);
+	CString url = param.CombineURL(mBaseCmd->GetSubPath(), mResult.mLinkPath);
+	int pos = url.ReverseFind(_T('/'));
+	if (pos == url.GetLength()-1) {
+		url = url.Left(url.GetLength()-1);
+		pos = url.ReverseFind(_T('/'));
+	}
+	if (pos != -1) {
+		url = url.Left(pos);
+	}
+	return url;
+}
 
 
 bool DirectoryIndexAdhocCommand::PImpl::EnterURL()
@@ -104,11 +136,9 @@ bool DirectoryIndexAdhocCommand::PImpl::OpenParentURL()
 
 bool DirectoryIndexAdhocCommand::PImpl::OpenURL(const CString& url)
 {
-	RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
-
-	SubProcess exec(param);
+	SubProcess exec(ParameterBuilder::EmptyParam());
 	SubProcess::ProcessPtr process;
-	exec.Run(url, param->GetParameterString(), process);
+	exec.Run(url, process);
 
 	return true;
 }
@@ -158,11 +188,6 @@ CString DirectoryIndexAdhocCommand::GetDescription()
 
 }
 
-CString DirectoryIndexAdhocCommand::GetGuideString()
-{
-	return _T("⏎:開く S-⏎:ブラウザで開く C-⏎:URLをコピー");
-}
-
 CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 {
 	ASSERT(in->mBaseCmd);
@@ -170,26 +195,32 @@ CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 }
 
 
-BOOL DirectoryIndexAdhocCommand::Execute(Parameter* param)
+bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	uint32_t state = GetModifierKeyState(param, MASK_ALL);
-
-	bool isCtrlKeyPressed = state == MASK_CTRL;
-	bool isShiftKeyPressed = state == MASK_SHIFT;
-
-	if (isCtrlKeyPressed) {
+	if (modifierFlags == Command::MODIFIER_CTRL) {
 		// URLをコピー
-		in->CopyURL();
+		*action = new CopyTextAction(in->GetCurrentURL());
+		return true;
 	}
-	else if (isShiftKeyPressed) {
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		// URLをブラウザで開く
-		in->OpenURL();
+		*action = new URLAction(_T("リンク先をブラウザで開く"), in->GetCurrentURL());
+		return true;
 	}
-	else {
+	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+		// ディレクトリをブラウザで開く
+		*action = new URLAction(_T("現在の階層をブラウザで開く"), in->GetParentURL());
+		return true;
+	}
+	else if (modifierFlags == 0) {
 		// ランチャーでリンク先に遷移する
-		in->EnterURL();
+		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+			in->EnterURL();
+			return true;
+		});
+		return true;
 	}
-	return TRUE;
+	return false;
 }
 
 HICON DirectoryIndexAdhocCommand::GetIcon()
@@ -225,51 +256,29 @@ int DirectoryIndexAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool DirectoryIndexAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool DirectoryIndexAdhocCommand::GetMenuItem(int index, Action** action)
 {
-	if (index == 0) {
-		static LPCWSTR name = L"開く(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"URLをクリップボードにコピー(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"ブラウザで開く(&B)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"ディレクトリをブラウザで開く(&P)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool DirectoryIndexAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	UNREFERENCED_PARAMETER(param);
-
 	if (index < 0 || GetMenuItemCount() < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return in->EnterURL();
+		*action = new CallbackAction(_T("開く"), [&](Parameter*, String*) -> bool {
+			return in->EnterURL();
+		});
+		return true;
 	}
 	else if (index == 1) {
-		return in->CopyURL();
+		*action = new CopyTextAction(in->GetCurrentURL());
+		return true;
 	}
 	else if (index == 2) {
-		return in->OpenURL();
+		*action = new URLAction(_T("リンク先をブラウザで開く"), in->GetCurrentURL());
+		return true;
 	}
 	else if (index == 3) {
-		return in->OpenParentURL();
+		*action = new URLAction(_T("現在の階層をブラウザで開く"), in->GetParentURL());
+		return true;
 	}
 	return false;
 }

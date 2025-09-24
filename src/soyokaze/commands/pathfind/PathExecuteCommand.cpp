@@ -2,27 +2,34 @@
 #include "framework.h"
 #include "PathExecuteCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
-#include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
-#include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommand.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "mainwindow/controller/MainWindowController.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
-using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
-using SubProcess = launcherapp::commands::common::SubProcess;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
 namespace launcherapp {
 namespace commands {
@@ -92,41 +99,43 @@ CString PathExecuteCommand::GetName()
 	return PathFindFileName(in->mFullPath);
 }
 
-CString PathExecuteCommand::GetGuideString()
-{
-	if (in->mIsURL) {
-		return _T("⏎:ブラウザで開く");
-	}
-	else {
-		return _T("⏎:開く C-⏎:フォルダを開く C-S-⏎:管理者権限で実行");
-	}
-}
-
 CString PathExecuteCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL PathExecuteCommand::Execute(Parameter* param)
+bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	if (in->mIsURL == false && Path::FileExists(in->mFullPath) == FALSE) {
-		return FALSE;
+		return false;
 	}
 
-	// 履歴に追加
-	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
-	if (namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	if (modifierFlags == 0) {
+		// 実行
+		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		*action = a;
+		return true;
 	}
-
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mFullPath, param->GetParameterString(), process) == FALSE) {
-		//in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
+	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+		// 管理者権限で実行
+		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetRunAsAdmin();
+		*action = a;
+		return true;
 	}
-
-	return TRUE;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// パスを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		// パスを開く
+		*action = new ShowPropertiesAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON PathExecuteCommand::GetIcon()
@@ -249,77 +258,30 @@ int PathExecuteCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool PathExecuteCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (in->mIsURL) {
-		if (index == 0) {
-			static LPCWSTR name = L"ブラウザで開く(&O)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 1) {
-			static LPCWSTR name = L"URLをコマンドとして登録する(&U)";
-			*displayNamePtr= name;
-			return true;
-		}
-	}
-	else {
-		if (index == 0) {
-			static LPCWSTR name = L"開く(&O)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 1) {
-			static LPCWSTR name = L"フォルダを開く(&P)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 2) {
-			static LPCWSTR name = L"管理者権限で実行(&A)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 3) {
-			static LPCWSTR name = L"フルパスをコピー(&C)";
-			*displayNamePtr= name;
-			return true;
-		}
-		else if (index == 4) {
-			static LPCWSTR name = L"プロパティ(&T)";
-			*displayNamePtr= name;
-			return true;
-		}
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool PathExecuteCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 4 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return Execute(param) != FALSE;
-	}
-
-	RefPtr<CommandNamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return false;
+		return GetAction(0, action);
 	}
 
 	if (in->mIsURL) {
 		if (index == 1) {
-			// URLをコマンドとして登録
+			*action = new CallbackAction(_T("URLをコマンドとして登録する"), [&](Parameter*, String*) -> bool {
+				// URLをコマンドとして登録
 
-			// 登録用のコマンド文字列を生成
-			CString cmdStr;
-			cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
+				// 登録用のコマンド文字列を生成
+				CString cmdStr;
+				cmdStr.Format(_T("new \"\" %s"), (LPCTSTR)in->mFullPath);
 
-			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-			bool isWaitSync = false;
-			mainWnd->RunCommand((LPCTSTR)cmdStr, isWaitSync);
+				auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+				bool isWaitSync = false;
+				mainWnd->RunCommand((LPCTSTR)cmdStr, isWaitSync);
+				return true;
+			});
 			return true;
 		}
 		else {
@@ -328,24 +290,25 @@ bool PathExecuteCommand::SelectMenuItem(int index, launcherapp::core::CommandPar
 	}
 	else {
 		if (index == 1) {
-			// パスを開くため、疑似的にCtrl押下で実行したことにする
-			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-			return Execute(param) != FALSE;
+			*action = new OpenPathInFilerAction(in->mFullPath);
+			return true;
 		}
 		else if (index == 2)  {
-			// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
-			namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-			namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-			return Execute(param) != FALSE;
+			// 管理者権限で実行
+			auto a = new ExecuteAction(in->mFullPath);
+			a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+			a->SetRunAsAdmin();
+			*action = a;
+			return true;
 		}
 		else if (index == 3) {
 			// クリップボードにコピー
-			launcherapp::commands::common::Clipboard::Copy(in->mFullPath);
+			*action = new CopyTextAction(in->mFullPath);
 			return true;
 		}
 		else { // if (index == 4)
 			// プロパティダイアログを表示
-			SHObjectProperties(nullptr, SHOP_FILEPATH, in->mFullPath, nullptr);
+			*action = new ShowPropertiesAction(in->mFullPath);
 			return true;
 		}
 	}

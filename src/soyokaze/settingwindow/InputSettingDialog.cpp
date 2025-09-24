@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "InputSettingDialog.h"
 #include "commands/builtin/MainDirCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -11,6 +12,8 @@
 #endif
 
 using MainDirCommand = launcherapp::commands::builtin::MainDirCommand;
+using Action = launcherapp::actions::core::Action;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 class InputSettingDialog : public CDialog
 {
@@ -129,11 +132,10 @@ void InputSettingDialog::OnNotifyLinkOpen(
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
 	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		RefPtr<Action> action;
 		MainDirCommand cmd(_T("tmp"));
-		cmd.Execute(param);
-
-		param->Release();
+		cmd.GetAction(0, &action);
+		action->Perform(ParameterBuilder::EmptyParam(), nullptr);
 	}
 	else {
 		ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);

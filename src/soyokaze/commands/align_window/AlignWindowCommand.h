@@ -22,11 +22,9 @@ public:
 // Command
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 
-	BOOL Execute(Parameter* param) override;
-	CString GetErrorString() override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsAllowAutoExecute() override;
@@ -49,6 +47,12 @@ public:
 
 	static bool NewDialog(Parameter* param, AlignWindowCommand** newCmd);
 	static bool LoadFrom(CommandFile* cmdFile, void* entry, AlignWindowCommand** newCmdPtr);
+
+private:
+	// 対象のウインドウを整列
+	bool AlignTarget(HWND& prevForegroundHwnd, String* errMsg);
+	// 対象を前面にセット
+	bool SetForeground(HWND prevForegroundHwnd, String* errMsg);
 
 protected:
 	struct PImpl;

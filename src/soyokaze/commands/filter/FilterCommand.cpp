@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "FilterCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/filter/FilterAdhocCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterCommandEditor.h"
@@ -9,6 +9,7 @@
 #include "commands/filter/FilterQueryCancellationToken.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -23,6 +24,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
@@ -45,7 +47,6 @@ struct FilterCommand::PImpl
 	void LoadCandidates();
 
 	CommandParam mParam;
-	CString mErrMsg;
 	//
 	FilterExecutor* mExecutor{nullptr};
 	QueryCancellationToken mCancelToken;
@@ -107,22 +108,19 @@ CString FilterCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString FilterCommand::GetGuideString()
-{
-	return _T("⏎:候補を表示する");
-}
-
 CString FilterCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-bool FilterCommand::CanExecute()
+bool FilterCommand::CanExecute(String* reasonMsg)
 {
 	if (in->mParam.mPreFilterType == FILTER_SUBPROCESS) {
 		ExecutablePath path(in->mParam.mPath);
 		if (path.IsExecutable() == false) {
-			in->mErrMsg = _T("！【前段の処理】リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！【前段の処理】リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -132,7 +130,9 @@ bool FilterCommand::CanExecute()
 
 		ExecutablePath path(in->mParam.mAfterFilePath);
 		if (hasSelect == false && path.IsExecutable() == false) {
-			in->mErrMsg = _T("！【後段の処理】リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！【後段の処理】リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -140,28 +140,18 @@ bool FilterCommand::CanExecute()
 }
 
 
-BOOL FilterCommand::Execute(Parameter* param)
+bool FilterCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	if (in->mIsEmpty) {
 		// 候補が存在しないとわかっている場合は何もしない
-		return TRUE;
+		return false;
 	}
 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
-}
-
-CString FilterCommand::GetErrorString()
-{
-	return in->mErrMsg;
+	if (modifierFlags == 0) {
+		*action = new SetTextAction(_T("候補を表示する"), GetName() + _T(" "));
+		return true;
+	}
+	return false;
 }
 
 FilterCommand& FilterCommand::SetParam(const CommandParam& param)
@@ -223,7 +213,7 @@ int FilterCommand::Match(Pattern* pattern)
 			}
 
 			// このタイミングで候補一覧の生成を行う
-			if (CanExecute()) {
+			if (CanExecute(nullptr)) {
 				in->LoadCandidates();
 			}
 			return Pattern::WholeMatch;

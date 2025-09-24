@@ -22,9 +22,8 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
@@ -35,6 +34,11 @@ public:
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(FilterAdhocCommand)
+
+private:
+		bool CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action);
+		bool CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action);
+		bool CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

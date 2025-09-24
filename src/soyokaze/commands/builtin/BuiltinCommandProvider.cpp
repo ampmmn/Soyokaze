@@ -3,7 +3,6 @@
 #include "commands/builtin/BuiltinCommandFactory.h"
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -150,7 +149,7 @@ CString BuiltinCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool BuiltinCommandProvider::NewDialog(CommandParameter* param)
+bool BuiltinCommandProvider::NewDialog(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

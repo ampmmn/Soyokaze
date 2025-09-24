@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "EditCandidateCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -12,6 +13,7 @@
 
 using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -40,34 +42,37 @@ EditCandidateCommand::~EditCandidateCommand()
 {
 }
 
-CString EditCandidateCommand::GetGuideString()
-{
-	return _T("⏎:編集");
-}
-
 CString EditCandidateCommand::GetTypeDisplayName()
 {
 	return _T("システムコマンド");
 }
 
-BOOL EditCandidateCommand::Execute(Parameter* param)
+bool EditCandidateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	if (modifierFlags == 0) {
+		*action = new CallbackAction(_T("編集"), [&](Parameter*, String* errMsg) -> bool {
 
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+			auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 
-	RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(in->mCmdName));
-	if (cmd == nullptr) {
-		CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
-		msgStr += _T("\n\n");
-		msgStr += in->mCmdName;
-		AfxMessageBox(msgStr);
-		return TRUE;
+			RefPtr<launcherapp::core::Command> cmd(cmdRepoPtr->QueryAsWholeMatch(in->mCmdName));
+			if (cmd == nullptr) {
+				CString msgStr((LPCTSTR)IDS_ERR_NAMEDOESNOTEXIST);
+				msgStr += _T("\n\n");
+				msgStr += in->mCmdName;
+				if (errMsg) {
+					UTF2UTF(msgStr, *errMsg);
+				}
+				return false;
+			}
+
+			constexpr bool isClone = false;
+			cmdRepoPtr->EditCommandDialog(in->mCmdName, isClone);
+			return true;
+		});
+		return true;
 	}
 
-	constexpr bool isClone = false;
-	cmdRepoPtr->EditCommandDialog(in->mCmdName, isClone);
-	return TRUE;
+	return false;
 }
 
 HICON EditCandidateCommand::GetIcon()

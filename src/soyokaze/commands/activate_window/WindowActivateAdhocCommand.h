@@ -3,19 +3,12 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
+#include "commands/activate_window/WindowActivateMenuEventListener.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
-
-class MenuEventListener
-{
-public:
-	virtual ~MenuEventListener() {}
-	virtual void OnRequestPutName(HWND hwnd) = 0;
-	virtual void OnRequestClose(HWND hwnd) = 0;
-};
 
 class WindowActivateAdhocCommand :
 	virtual public launcherapp::commands::common::AdhocCommandBase,
@@ -31,19 +24,17 @@ public:
 	void SetListener(MenuEventListener* listener);
 
 	CString GetName() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
+	// 修飾キー押下状態に対応した実行アクションを取得する
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
 // ContextMenuSource
 	// メニューの項目数を取得する
 	int GetMenuItemCount() override;
-	// メニューの表示名を取得する
-	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
-	// メニュー選択時の処理を実行する
-	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+	// メニューに対応するアクションを取得する
+	bool GetMenuItem(int index, Action** action) override;
 
 // SelectionBehavior
 	// 選択された

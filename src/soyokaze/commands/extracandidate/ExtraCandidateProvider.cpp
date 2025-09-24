@@ -7,7 +7,7 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -2,7 +2,6 @@
 #include "AlignWindowProvider.h"
 #include "commands/align_window/AlignWindowCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
@@ -55,7 +54,7 @@ CString AlignWindowProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool AlignWindowProvider::NewDialog(CommandParameter* param)
+bool AlignWindowProvider::NewDialog(Parameter* param)
 {
 	AlignWindowCommand* newCmd = nullptr;
 	if (AlignWindowCommand::NewDialog(param, &newCmd) == false) {

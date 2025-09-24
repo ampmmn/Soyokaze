@@ -11,7 +11,7 @@ class BuiltinCommandProvider :
 	public launcherapp::core::CommandProvider
 {
 	using Command = launcherapp::core::Command;
-	using CommandParameter = launcherapp::core::CommandParameter;
+	using Parameter = launcherapp::actions::core::Parameter;
 
 private:
 	BuiltinCommandProvider();
@@ -33,7 +33,7 @@ public:
 	virtual CString GetDescription();
 
 	// コマンド新規作成ダイアログ
-	virtual bool NewDialog(CommandParameter* param);
+	virtual bool NewDialog(Parameter* param);
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const;

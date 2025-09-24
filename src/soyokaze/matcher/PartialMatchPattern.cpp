@@ -3,8 +3,7 @@
 #include "matcher/PartialMatchPattern.h"
 #include "setting/AppPreference.h"
 #include "matcher/Migemo.h"
-#include "commands/core/CommandParameter.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "utility/Path.h"
 #include <vector>
 #include <regex>

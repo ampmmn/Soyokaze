@@ -2,9 +2,12 @@
 #include "WindowActivateCommand.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateCommandEditor.h"
+#include "commands/activate_window/ActivateWindowFindTarget.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/activate_window/MaximizeWindowAction.h"
+#include "actions/activate_window/RestoreWindowAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"
@@ -16,38 +19,17 @@
 #include <regex>
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::activate_window;
 
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-constexpr int UPDATE_INTERVAL = 5000;
-
 struct WindowActivateCommand::PImpl
 {
-	HWND FindHwnd();
 	CommandParam mParam;
-
-	CString mErrorMsg;
-
-	HWND mCachedHwnd{nullptr};
-	uint64_t mLastUpdate{0};
+	ActivateWindowFindTarget mTarget;
 };
-
-HWND WindowActivateCommand::PImpl::FindHwnd()
-{
-	if (IsWindow(mCachedHwnd) && GetTickCount64() - mLastUpdate < UPDATE_INTERVAL) {
-		return mCachedHwnd;
-	}
-	mCachedHwnd = nullptr;
-
-	HWND hwnd = mParam.FindHwnd();
-	if (hwnd) {
-		mCachedHwnd = hwnd;
-		mLastUpdate = GetTickCount64();
-	}
-	return mCachedHwnd;
-}
 
 CString WindowActivateCommand::GetType() { return _T("WindowActivate"); }
 
@@ -75,6 +57,7 @@ void WindowActivateCommand::SetParam(const CommandParam& param)
 
 	// パラメータを上書き
 	in->mParam = param;
+	in->mTarget.SetParam(param);
 
 	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
 	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
@@ -93,57 +76,34 @@ CString WindowActivateCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WindowActivateCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウをアクティブにする");
-}
-
 CString WindowActivateCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL WindowActivateCommand::Execute(Parameter* param)
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// ここで該当するウインドウを探す
-	HWND hwndTarget = in->FindHwnd();
+	UNREFERENCED_PARAMETER(action);
 
-	if (IsWindow(hwndTarget) == FALSE) {
-		if (in->mParam.IsNotifyIfWindowNotFound()) {
-			launcherapp::commands::common::PopupMessage(_T("指定されたウインドウが見つかりません"));
-		}
-		return TRUE;
+	if (modifierFlags == Command::MODIFIER_CTRL) {
+		auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
+		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+		*action = action_;
+		return true;
 	}
-	in->mErrorMsg.Empty();
-
-	ScopeAttachThreadInput scope;
-
-	if (IsWindowVisible(hwndTarget) == FALSE) {
-		ShowWindow(hwndTarget, SW_SHOW);
+	else if (modifierFlags == 0) {
+		auto action_ = new RestoreWindowAction(in->mTarget.Clone());
+		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+		*action = action_;
+		return true;
 	}
-
-	LONG_PTR style = GetWindowLongPtr(hwndTarget, GWL_STYLE);
-	if (GetModifierKeyState(param, MASK_CTRL) != 0 && (style & WS_MAXIMIZE) == 0) {
-		// Ctrlキーが押されていたら最大化表示する
-		PostMessage(hwndTarget, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-	}
-	else if (style & WS_MINIMIZE) {
-		// 最小化されていたら元に戻す
-		PostMessage(hwndTarget, WM_SYSCOMMAND, SC_RESTORE, 0);
-	}
-
-	SetForegroundWindow(hwndTarget);
-	return TRUE;
-}
-
-CString WindowActivateCommand::GetErrorString()
-{
-	return in->mErrorMsg;
+	return false;
 }
 
 HICON WindowActivateCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadIconFromHwnd(in->FindHwnd());
+	return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.GetHandle());
 }
 
 int WindowActivateCommand::Match(Pattern* pattern)
@@ -233,9 +193,18 @@ bool WindowActivateCommand::NewDialog(
 )
 {
 	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	RefPtr<WindowActivateCommandEditor> cmdEditor(new WindowActivateCommandEditor);
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

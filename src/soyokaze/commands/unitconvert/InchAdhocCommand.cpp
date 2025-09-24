@@ -1,17 +1,14 @@
 #include "pch.h"
 #include "framework.h"
 #include "InchAdhocCommand.h"
-#include "commands/common/Clipboard.h"
-#include "commands/common/Message.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
-#include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-using Clipboard = launcherapp::commands::common::Clipboard;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 
 namespace launcherapp {
@@ -40,24 +37,20 @@ CString InchAdhocCommand::GetName()
 	return in->mName;
 }
 
-CString InchAdhocCommand::GetGuideString()
-{
-	return _T("⏎:クリップボードにコピー");
-}
-
 CString InchAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
 
-BOOL InchAdhocCommand::Execute(Parameter* param)
+bool InchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// クリップボードにコピー
-	Clipboard::Copy(in->mName);
-	return TRUE;
+	*action = new actions::clipboard::CopyTextAction(in->mName);
+	return true;
 }
 
 HICON InchAdhocCommand::GetIcon()

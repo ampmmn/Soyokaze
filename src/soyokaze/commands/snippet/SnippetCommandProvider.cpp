@@ -2,7 +2,6 @@
 #include "SnippetCommandProvider.h"
 #include "commands/snippet/SnippetCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 
@@ -49,7 +48,7 @@ CString SnippetCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool SnippetCommandProvider::NewDialog(CommandParameter* param)
+bool SnippetCommandProvider::NewDialog(Parameter* param)
 {
 	return SnippetCommand::NewDialog(param);
 }

@@ -1,11 +1,10 @@
 #pragma once
 
-#include "commands/core/UnknownIF.h"
+#include "core/UnknownIF.h"
 
-namespace launcherapp {
-namespace core {
+namespace launcherapp { namespace actions { namespace core {
 
-class CommandParameter : virtual public UnknownIF
+class Parameter : virtual public launcherapp::core::UnknownIF
 {
 public:
 	virtual bool IsEmpty() const = 0;
@@ -17,10 +16,10 @@ public:
 	virtual LPCTSTR GetParam(int index) const = 0;
 	virtual void SetWholeString(LPCTSTR param) = 0;
 	virtual void SetParameterString(LPCTSTR param) = 0;
-	virtual CommandParameter* Clone() const = 0;
+	virtual Parameter* Clone() const = 0;
 };
 
-class CommandNamedParameter : virtual public UnknownIF
+class NamedParameter : virtual public launcherapp::core::UnknownIF
 {
 public:
 	virtual int GetNamedParamStringLength(LPCTSTR name) const = 0;
@@ -30,6 +29,4 @@ public:
 	virtual void SetNamedParamBool(LPCTSTR name, bool value) = 0;
 };
 
-}
-}
-
+}}}

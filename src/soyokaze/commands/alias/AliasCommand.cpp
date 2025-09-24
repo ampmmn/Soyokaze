@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "framework.h"
 #include "AliasCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
 #include "commands/alias/AliasCommandEditor.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecuteHistory.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -24,6 +25,7 @@ namespace commands {
 namespace alias {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using namespace launcherapp::actions::builtin;
 
 struct AliasCommand::PImpl
 {
@@ -69,41 +71,37 @@ CString AliasCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString AliasCommand::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString AliasCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL AliasCommand::Execute(Parameter* param)
+bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	if (in->mParam.mIsPasteOnly) {
-		mainWnd->SetText((LPCTSTR)in->mParam.mText);
-
-		// フォーカスをメインウインドウに移す
-		bool isToggle = false;
-		mainWnd->ActivateWindow(isToggle);
-	}
-	else {
-		bool isWaitSync = true;
-		mainWnd->RunCommand((LPCTSTR)in->mParam.mText, isWaitSync);
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	return TRUE;
-}
+	*action = new CallbackAction(_T("実行"), [&](Parameter*, String*) -> bool {
 
-CString AliasCommand::GetErrorString()
-{
-	return _T("");
-}
+			auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 
+			if (in->mParam.mIsPasteOnly) {
+				mainWnd->SetText((LPCTSTR)in->mParam.mText);
+
+				// フォーカスをメインウインドウに移す
+				bool isToggle = false;
+				mainWnd->ActivateWindow(isToggle);
+			}
+			else {
+				bool isWaitSync = true;
+				mainWnd->RunCommand((LPCTSTR)in->mParam.mText, isWaitSync);
+			}
+			return true;
+	});
+
+	return true;
+}
 
 void AliasCommand::SetParam(const CommandParam& param)
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/core/UnknownIF.h"
+#include "core/UnknownIF.h"
 
 // キーワード比較処理のためのインタフェース
 class Pattern : virtual public launcherapp::core::UnknownIF

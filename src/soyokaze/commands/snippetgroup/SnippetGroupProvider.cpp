@@ -2,7 +2,6 @@
 #include "SnippetGroupProvider.h"
 #include "commands/snippetgroup/SnippetGroupCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
 
@@ -49,7 +48,7 @@ CString SnippetGroupProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool SnippetGroupProvider::NewDialog(CommandParameter* param)
+bool SnippetGroupProvider::NewDialog(Parameter* param)
 {
 	SnippetGroupCommand* newCmd = nullptr;
 	if (SnippetGroupCommand::NewDialog(param, &newCmd) == false) {

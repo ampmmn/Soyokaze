@@ -1,14 +1,17 @@
 #include "pch.h"
 #include "SnippetGroupCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/snippetgroup/SnippetGroupCommandEditor.h"
 #include "commands/snippetgroup/SnippetGroupAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/TimeoutChecker.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "mainwindow/controller/MainWindowController.h"
+
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -69,35 +72,19 @@ CString SnippetGroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SnippetGroupCommand::GetGuideString()
-{
-	return _T("キーワード入力すると候補を絞り込むことができます");
-}
-
 CString SnippetGroupCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL SnippetGroupCommand::Execute(Parameter* param)
+bool SnippetGroupCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// コマンド名単体(後続のパラメータなし)で実行したときはグループ内の候補一覧を列挙させる
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-	return TRUE;
-}
-
-CString SnippetGroupCommand::GetErrorString()
-{
-	return _T("");
+	if (modifierFlags == 0) {
+		// コマンド名単体(後続のパラメータなし)で実行したときはグループ内の候補一覧を列挙させる
+		*action = new SetTextAction(_T("キーワード入力すると候補を絞り込むことができます"), GetName() + _T(" "));
+		return true;
+	}
+	return false;
 }
 
 HICON SnippetGroupCommand::GetIcon()
@@ -181,11 +168,20 @@ bool SnippetGroupCommand::NewDialog(
 	SnippetGroupCommand** newCmdPtr
 )
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
+	// 新規作成ダイアログを表示
+	CString value;
+	SnippetGroupParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	// 新規作成ダイアログを表示
 	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

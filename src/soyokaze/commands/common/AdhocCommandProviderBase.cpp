@@ -58,7 +58,7 @@ CString AdhocCommandProviderBase::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool AdhocCommandProviderBase::NewDialog(CommandParameter* param)
+bool AdhocCommandProviderBase::NewDialog(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);
 

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "VMXFileCommand.h"
-#include "commands/core/IFIDDefine.h"
-#include "commands/common/SubProcess.h"
+#include "core/IFIDDefine.h"
+#include "actions/vmware/RunVMXAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -12,6 +13,8 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using RunVMXAction = launcherapp::actions::vmware::RunVMXAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 
 namespace launcherapp {
 namespace commands {
@@ -19,69 +22,9 @@ namespace vmware {
 
 struct VMXFileCommand::PImpl
 {
-	bool Execute(Parameter* param, int showType);
-	bool IsLocked();
-
 	CString mName;
 	CString mFullPath;
-	CString mErrorMsg;
 };
-
-bool VMXFileCommand::PImpl::Execute(Parameter* param, int showType)
-{
-	mErrorMsg.Empty();
-
-	// .lckファイルの確認
-	if (IsLocked()) {
-		CString msg;
-		msg.Format(IDS_CONFIRM_VMXLOCKED, (LPCTSTR)this->mName);
-		int sel = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
-		if (sel != IDYES) {
-			return TRUE;
-		}
-	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.SetShowType(showType);
-	if (exec.Run(mFullPath, process) == false) {
-		mErrorMsg = process->GetErrorMessage();
-		return false;
-	}
-	return true;
-}
-
-bool VMXFileCommand::PImpl::IsLocked()
-{
-	std::vector<TCHAR> pattern(MAX_PATH_NTFS);
-	_tcscpy_s(pattern.data(), pattern.size(), mFullPath);
-	PathRemoveFileSpec(pattern.data());
-
-	PathAppend(pattern.data(), _T("*.*"));
-
-	CString extLck(_T(".lck"));
-	bool isLocked = false;
-
-	CFileFind f;
-	BOOL isLoop = f.FindFile(pattern.data(), 0);
-	while (isLoop) {
-		isLoop = f.FindNextFile();
-		if (f.IsDots()) {
-			continue;
-		}
-
-		CString name(f.GetFileName());
-		if (extLck.CompareNoCase(PathFindExtension(name)) == 0) {
-			isLocked = true;
-			break;
-		}
-	}
-
-	f.Close();
-
-	return isLocked;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,24 +45,24 @@ VMXFileCommand::~VMXFileCommand()
 {
 }
 
-CString VMXFileCommand::GetGuideString()
-{
-	return _T("⏎:ファイルを開く C-⏎:パスを開く");
-}
-
 CString VMXFileCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL VMXFileCommand::Execute(Parameter* param)
+bool VMXFileCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	return in->Execute(param, SW_SHOW) ? TRUE : FALSE;
-}
-
-CString VMXFileCommand::GetErrorString()
-{
-	return in->mErrorMsg;
+	if (modifierFlags == 0) {
+		// VMを実行する
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_SHOW);
+		return true;
+	}
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// パスを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON VMXFileCommand::GetIcon()
@@ -140,41 +83,23 @@ int VMXFileCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool VMXFileCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (index == 0) {
-		static LPCWSTR name = L"実行(&E)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"最大化状態で実行(&X)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"最小化状態で実行(&M)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool VMXFileCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool VMXFileCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 2 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return in->Execute(param, SW_SHOW) != FALSE;
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_SHOW);
+		return true;
 	}
 	else if (index == 1) {
-		return in->Execute(param, SW_MAXIMIZE) != FALSE;
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_MAXIMIZE);
+		return true;
 	}
 	else {
-		return in->Execute(param, SW_MINIMIZE) != FALSE;
+		*action = new RunVMXAction(in->mName, in->mFullPath, SW_MINIMIZE);
+		return true;
 	}
 }
 

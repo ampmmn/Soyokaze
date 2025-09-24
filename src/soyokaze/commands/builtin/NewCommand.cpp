@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "NewCommand.h"
+#include "actions/builtin/RegisterNewCommandAction.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -13,7 +15,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 
 CString NewCommand::TYPE(_T("Builtin-New"));
@@ -41,30 +43,13 @@ NewCommand::~NewCommand()
 {
 }
 
-BOOL NewCommand::Execute(Parameter* param)
+bool NewCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	RefPtr<CommandParameterBuilder> inParam(CommandParameterBuilder::Create(), false);
-
-	bool hasParam = false;
-
-	int paramCount = param->GetParamCount();
-	if (paramCount > 0) {
-		inParam->SetNamedParamString(_T("COMMAND"), param->GetParam(0));
-		hasParam = true;
+	if (modifierFlags != 0) {
+		return false;
 	}
-
-	if (paramCount > 1) {
-		inParam->SetNamedParamString(_T("PATH"), param->GetParam(1));
-		hasParam = true;
-	}
-	if (hasParam) {
-		inParam->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
-	}
-
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepoPtr->NewCommandDialog(inParam);
-
-	return TRUE;
+	*action = new launcherapp::actions::builtin::RegisterNewCommandAction(false);
+	return true;
 }
 
 HICON NewCommand::GetIcon()

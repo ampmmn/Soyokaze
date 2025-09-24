@@ -3,7 +3,6 @@
 #include "commands/history/HistoryCommand.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "resource.h"
@@ -22,8 +21,6 @@ namespace history {
 constexpr DWORD CHECK_INTERVAL = 1000;  // 10秒
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
-
 
 struct HistoryCommandProvider::PImpl : public AppPreferenceListenerIF
 {

@@ -1,7 +1,7 @@
 // あ
 #pragma once
 
-#include "commands/core/UnknownIF.h"
+#include "core/UnknownIF.h"
 #include "commands/core/CommandIF.h"
 
 namespace launcherapp { namespace core {

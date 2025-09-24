@@ -2,7 +2,6 @@
 #include "GroupCommandProvider.h"
 #include "commands/group/GroupCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/group/GroupCommandEditor.h"
 #include "setting/AppPreference.h"
@@ -54,23 +53,9 @@ CString GroupCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool GroupCommandProvider::NewDialog(CommandParameter* param)
+bool GroupCommandProvider::NewDialog(Parameter* param)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// グループ作成ダイアログを表示
-	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
-	if (cmdEditor->DoModal() == false) {
-		return false;
-	}
-
-	// ダイアログで入力された内容に基づき、コマンドを新規作成する
-	auto newCmd = make_refptr<GroupCommand>();
-	newCmd->SetParam(cmdEditor->GetParam());
-
-	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
-
-	return true;
+	return GroupCommand::NewDialog(param);
 }
 
 // Provider間の優先順位を表す値を返す。小さいほど優先

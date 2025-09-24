@@ -2,19 +2,15 @@
 #include "framework.h"
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/pathconvert/Icon.h"
-#include "commands/common/Clipboard.h"
-#include "commands/common/Message.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
-#include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
-using Clipboard = launcherapp::commands::common::Clipboard;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -43,23 +39,19 @@ CString LocalToGitBashPathAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString LocalToGitBashPathAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー");
-}
-
 CString LocalToGitBashPathAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL LocalToGitBashPathAdhocCommand::Execute(Parameter* param)
+bool LocalToGitBashPathAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// クリップボードにコピー
-	Clipboard::Copy(in->mFullPath);
-	return TRUE;
+	if (modifierFlags == 0) {
+		// クリップボードにコピー
+		*action = new CopyTextAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON LocalToGitBashPathAdhocCommand::GetIcon()

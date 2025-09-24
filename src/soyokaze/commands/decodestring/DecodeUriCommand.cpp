@@ -3,6 +3,7 @@
 #include "DecodeUriCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -10,6 +11,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -47,23 +49,19 @@ CString DecodeUriCommand::GetDescription()
 	return name;
 }
 
-CString DecodeUriCommand::GetGuideString()
-{
-	return _T("⏎:デコード後の文字列をコピー");
-}
-
 CString DecodeUriCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL DecodeUriCommand::Execute(Parameter* param)
+bool DecodeUriCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// クリップボードにコピー
-	Clipboard::Copy(mName);
-	return TRUE;
+	*action = new CopyTextAction(mName);
+	return true;
 }
 
 

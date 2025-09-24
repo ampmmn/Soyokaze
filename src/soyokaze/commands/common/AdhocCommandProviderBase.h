@@ -15,7 +15,7 @@ class AdhocCommandProviderBase :
 {
 protected:
 	using Command = launcherapp::core::Command;
-	using CommandParameter = launcherapp::core::CommandParameter;
+	using Parameter = launcherapp::actions::core::Parameter;
 
 protected:
 	AdhocCommandProviderBase();
@@ -37,7 +37,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(CommandParameter* param) override;
+	bool NewDialog(Parameter* param) override;
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	bool IsPrivate() const override;

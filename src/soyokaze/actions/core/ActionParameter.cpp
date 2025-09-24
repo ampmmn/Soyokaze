@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "framework.h"
-#include "CommandParameter.h"
-#include "commands/core/CommandParameterIF.h"
-#include "commands/core/IFIDDefine.h"
+#include "ActionParameter.h"
+#include "core/IFIDDefine.h"
 #include "utility/Path.h"
 #include <map>
 
@@ -10,8 +9,9 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp {
-namespace core {
+using IFID = launcherapp::core::IFID;
+
+namespace launcherapp { namespace actions { namespace core {
 
 static void GetParameters(
 	const CString& paramStr,
@@ -87,7 +87,7 @@ static void GetParameters(
 	args.swap(argsTmp);
 }
 
-struct CommandParameterBuilder::PImpl
+struct ParameterBuilder::PImpl
 {
 	PImpl() : 
 		mWholeText(),
@@ -120,11 +120,11 @@ struct CommandParameterBuilder::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CommandParameterBuilder::CommandParameterBuilder() : in(std::make_unique<PImpl>())
+ParameterBuilder::ParameterBuilder() : in(std::make_unique<PImpl>())
 {
 }
 
-CommandParameterBuilder::CommandParameterBuilder(const CommandParameterBuilder& rhs) :
+ParameterBuilder::ParameterBuilder(const ParameterBuilder& rhs) :
 	in(std::make_unique<PImpl>())
 {
 	in->mWholeText = rhs.in->mWholeText;
@@ -135,18 +135,18 @@ CommandParameterBuilder::CommandParameterBuilder(const CommandParameterBuilder& 
 	in->mBoolParamMap = rhs.in->mBoolParamMap;
 }
 
-CommandParameterBuilder::CommandParameterBuilder(
+ParameterBuilder::ParameterBuilder(
 	const CString& str
 ) : in(std::make_unique<PImpl>())
 {
 	SetWholeString(str);
 }
 
-CommandParameterBuilder::~CommandParameterBuilder()
+ParameterBuilder::~ParameterBuilder()
 {
 }
 
-CommandParameterBuilder& CommandParameterBuilder::operator = (const CommandParameterBuilder& rhs)
+ParameterBuilder& ParameterBuilder::operator = (const ParameterBuilder& rhs)
 {
 	if (&rhs != this) {
 		in->mWholeText = rhs.in->mWholeText;
@@ -159,39 +159,39 @@ CommandParameterBuilder& CommandParameterBuilder::operator = (const CommandParam
 	return *this;
 }
 
-CommandParameterBuilder* CommandParameterBuilder::Create()
+ParameterBuilder* ParameterBuilder::Create()
 {
-	return new CommandParameterBuilder();
+	return new ParameterBuilder();
 }
 
-CommandParameterBuilder* CommandParameterBuilder::Create(const CString& str)
+ParameterBuilder* ParameterBuilder::Create(const CString& str)
 {
-	return new CommandParameterBuilder(str);
+	return new ParameterBuilder(str);
 }
 
-CommandParameterBuilder* CommandParameterBuilder::Clone_() const
+ParameterBuilder* ParameterBuilder::Clone_() const
 {
-	return new CommandParameterBuilder(*this); 
+	return new ParameterBuilder(*this); 
 }
 
-CommandParameterBuilder* CommandParameterBuilder::EmptyParam()
+ParameterBuilder* ParameterBuilder::EmptyParam()
 {
-	static CommandParameterBuilder paramEmpty;
+	static ParameterBuilder paramEmpty;
 	return &paramEmpty;
 }
 
 
-bool CommandParameterBuilder::IsEmpty() const
+bool ParameterBuilder::IsEmpty() const
 {
 	return in->mWholeText.IsEmpty() != FALSE;
 }
 
-bool CommandParameterBuilder::HasParameter() const
+bool ParameterBuilder::HasParameter() const
 {
 	return in->mParamPart.IsEmpty() == FALSE;
 }
 
-void CommandParameterBuilder::AddArgument(const CString& arg)
+void ParameterBuilder::AddArgument(const CString& arg)
 {
 	if (in->mParamPart.IsEmpty() == FALSE) {
 		in->SetParamPart(in->mParamPart + _T(" ") + arg);
@@ -204,22 +204,22 @@ void CommandParameterBuilder::AddArgument(const CString& arg)
 	in->mWholeText += arg;
 }
 
-LPCTSTR CommandParameterBuilder::GetWholeString() const
+LPCTSTR ParameterBuilder::GetWholeString() const
 {
 	return in->mWholeText;
 }
 
-LPCTSTR CommandParameterBuilder::GetCommandString() const
+LPCTSTR ParameterBuilder::GetCommandString() const
 {
 	return in->mCommandPart;
 }
 
-LPCTSTR CommandParameterBuilder::GetParameterString() const
+LPCTSTR ParameterBuilder::GetParameterString() const
 {
 	return in->mParamPart;
 }
 
-void CommandParameterBuilder::CopyParamTo(CommandParameterBuilder& rhs) const
+void ParameterBuilder::CopyParamTo(ParameterBuilder& rhs) const
 {
 	rhs.in->SetParamPart(in->mParamPart);
 	rhs.in->mHasSpace = in->mHasSpace;
@@ -229,24 +229,24 @@ void CommandParameterBuilder::CopyParamTo(CommandParameterBuilder& rhs) const
 	//rhs.in->mBoolParamMap = in->mBoolParamMap;
 }
 
-void CommandParameterBuilder::CopyNamedParamTo(CommandParameterBuilder& rhs) const
+void ParameterBuilder::CopyNamedParamTo(ParameterBuilder& rhs) const
 {
 	// 内部用のパラメータのみコピー
 	rhs.in->mStrParamMap = in->mStrParamMap;
 	rhs.in->mBoolParamMap = in->mBoolParamMap;
 }
 
-int CommandParameterBuilder::GetParamCount() const
+int ParameterBuilder::GetParamCount() const
 {
 	return (int)in->mParamArray.size();
 }
 
-LPCTSTR CommandParameterBuilder::GetParam(int index) const
+LPCTSTR ParameterBuilder::GetParam(int index) const
 {
 	return in->mParamArray[index];
 }
 
-void CommandParameterBuilder::SetWholeString(LPCTSTR str)
+void ParameterBuilder::SetWholeString(LPCTSTR str)
 {
 	in->mWholeText = str;
 
@@ -290,20 +290,20 @@ void CommandParameterBuilder::SetWholeString(LPCTSTR str)
 	}
 }
 
-void CommandParameterBuilder::SetParameterString(LPCTSTR param)
+void ParameterBuilder::SetParameterString(LPCTSTR param)
 {
 	in->SetParamPart(param);
 	in->mWholeText = in->mCommandPart + _T(" ") + param;
 	in->mHasSpace = (param[0] != _T('\0'));
 }
 
-CommandParameter* CommandParameterBuilder::Clone() const
+Parameter* ParameterBuilder::Clone() const
 {
-	return new CommandParameterBuilder(*this); 
+	return new ParameterBuilder(*this); 
 }
 
 // 補完
-bool CommandParameterBuilder::ComplementCommand(
+bool ParameterBuilder::ComplementCommand(
 	const CString& commandName,
  	CString& comlementedStr
 ) const
@@ -331,7 +331,7 @@ bool CommandParameterBuilder::ComplementCommand(
  	@return 文字列の長さ(\0終端分含む。パラメータが存在しない場合は0)
  	@param[in] name 名前
 */
-int CommandParameterBuilder::GetNamedParamStringLength(
+int ParameterBuilder::GetNamedParamStringLength(
 	LPCTSTR name
 ) const
 {
@@ -342,7 +342,7 @@ int CommandParameterBuilder::GetNamedParamStringLength(
 	return itFind->second.GetLength() + 1;
 }
 
-LPCTSTR CommandParameterBuilder::GetNamedParamString(LPCTSTR name, LPTSTR buf, int bufLen) const
+LPCTSTR ParameterBuilder::GetNamedParamString(LPCTSTR name, LPTSTR buf, int bufLen) const
 {
 	auto itFind = in->mStrParamMap.find(name);
 	if (itFind == in->mStrParamMap.end()) {
@@ -353,12 +353,12 @@ LPCTSTR CommandParameterBuilder::GetNamedParamString(LPCTSTR name, LPTSTR buf, i
 	return buf;
 }
 
-void CommandParameterBuilder::SetNamedParamString(LPCTSTR name, LPCTSTR value)
+void ParameterBuilder::SetNamedParamString(LPCTSTR name, LPCTSTR value)
 {
 	in->mStrParamMap[name] = value;
 }
 
-bool CommandParameterBuilder::GetNamedParamBool(LPCTSTR name) const
+bool ParameterBuilder::GetNamedParamBool(LPCTSTR name) const
 {
 	auto itFind = in->mBoolParamMap.find(name);
 	if (itFind == in->mBoolParamMap.end()) {
@@ -367,7 +367,7 @@ bool CommandParameterBuilder::GetNamedParamBool(LPCTSTR name) const
 	return itFind->second;
 }
 
-void CommandParameterBuilder::SetNamedParamBool(
+void ParameterBuilder::SetNamedParamBool(
 	LPCTSTR name,
 	bool value
 )
@@ -376,26 +376,26 @@ void CommandParameterBuilder::SetNamedParamBool(
 }
 
 
-bool CommandParameterBuilder::QueryInterface(const IFID& ifid, void** cmd)
+bool ParameterBuilder::QueryInterface(const IFID& ifid, void** cmd)
 {
-	if (ifid == IFID_COMMANDPARAMETER) {
+	if (ifid == IFID_ACTIONPARAMETER) {
 		AddRef();
-		*cmd = (launcherapp::core::CommandParameter*)this;
+		*cmd = (Parameter*)this;
 		return true;
 	}
-	else if (ifid == IFID_COMMANDNAMEDPARAMETER) {
+	else if (ifid == IFID_ACTIONNAMEDPARAMETER) {
 		AddRef();
-		*cmd = (launcherapp::core::CommandNamedParameter*)this;
+		*cmd = (NamedParameter*)this;
 		return true;
 	}
 	return false;
 }
-uint32_t CommandParameterBuilder::AddRef()
+uint32_t ParameterBuilder::AddRef()
 {
 	return (uint32_t)InterlockedIncrement(&in->mRefCount);
 }
 
-uint32_t CommandParameterBuilder::Release()
+uint32_t ParameterBuilder::Release()
 {
 	auto n = InterlockedDecrement(&in->mRefCount);
 	if (n == 0) {
@@ -404,5 +404,4 @@ uint32_t CommandParameterBuilder::Release()
 	return (uint32_t)n;
 }
 
-}
-}
+}}}

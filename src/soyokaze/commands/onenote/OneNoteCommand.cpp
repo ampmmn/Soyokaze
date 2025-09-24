@@ -3,6 +3,7 @@
 #include "OneNoteCommand.h"
 #include "commands/onenote/OneNoteCommandParam.h"
 #include "commands/onenote/OneNoteAppProxy.h"
+#include "actions/builtin/CallbackAction.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -14,6 +15,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp { namespace commands { namespace onenote {
 
@@ -70,11 +72,6 @@ CString OneNoteCommand::GetName()
 CString OneNoteCommand::GetDescription()
 {
 	return in->mNotebookName;
-}
-
-CString OneNoteCommand::GetGuideString()
-{
-	return _T("⏎:ページをOneNoteで開く");
 }
 
 CString OneNoteCommand::GetTypeDisplayName()
@@ -143,30 +140,31 @@ static HWND FindOneNoteWindow()
 }
 
 
-BOOL OneNoteCommand::Execute(Parameter* param)
+bool OneNoteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	OneNoteAppProxy app;
-	if (app.NavigateTo(in->mNavigateID) == false) {
-		spdlog::error(L"Failed to NavigateTo id:{}", (LPCWSTR)in->mNavigateID);
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	// OneNoteのウインドウを探して前面に出す
-	HWND h = FindOneNoteWindow();
-	if (h == nullptr) {
-		return TRUE;
-	}
+	*action = new CallbackAction(_T("ページをOneNoteで開く"), [&](Parameter*, String*) -> bool {
+		OneNoteAppProxy app;
+		if (app.NavigateTo(in->mNavigateID) == false) {
+			spdlog::error(L"Failed to NavigateTo id:{}", (LPCWSTR)in->mNavigateID);
+		}
+	
+		// OneNoteのウインドウを探して前面に出す
+		HWND h = FindOneNoteWindow();
+		if (h == nullptr) {
+			spdlog::warn("Failed to find onenote window.");
+			return true;
+		}
+	
+		ScopeAttachThreadInput scope;
+		SetForegroundWindow(h);
+		return true;
+	});
 
-	ScopeAttachThreadInput scope;
-	SetForegroundWindow(h);
-
-	return TRUE;
-}
-
-CString OneNoteCommand::GetErrorString()
-{
-	return _T("");
+	return true;
 }
 
 HICON OneNoteCommand::GetIcon()

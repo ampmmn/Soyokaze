@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "URLCommand.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenInChromeAction.h"
+#include "actions/web/OpenInEdgeAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -50,43 +52,31 @@ CString URLCommand::GetDescription()
 	return in->mBookmarkItem.mFolderPath;
 }
 
-CString URLCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString URLCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName(in->mBrowserType);
 }
 
-BOOL URLCommand::Execute(Parameter* param)
+bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (GetModifierKeyState(param, MASK_SHIFT) != 0) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mBookmarkItem.mUrl);
-		return TRUE;
+	if (modifierFlags == 0) {
+		if (in->mBrowserType == BrowserType::Chrome) {
+			*action = new actions::web::OpenInChromeAction(in->mBookmarkItem.mUrl);
+			return true;
+		}
+		else if (in->mBrowserType == BrowserType::Edge) {
+			*action = new actions::web::OpenInEdgeAction(in->mBookmarkItem.mUrl);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-
-	// URLをブラウザで開く
-	Path path;
-	if (Bookmark::GetExecutablePath(in->mBrowserType, path, path.size()) == false) {
-		return FALSE;
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
+		return true;
 	}
-
-	if (path.FileExists() == false) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += (LPCTSTR)path;
-		AfxMessageBox(msg);
-		return TRUE;
-	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run((LPCTSTR)path, in->mBookmarkItem.mUrl, process);
-
-	return TRUE;
+	return false;
 }
 
 HICON URLCommand::GetIcon()

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CommandParameterFunctions.h"
-#include "commands/core/CommandParameterIF.h"
-#include "commands/core/IFIDDefine.h"
+#include "actions/core/ActionParameterIF.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -11,61 +11,61 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
-using CommandParameter = launcherapp::core::CommandParameter;
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using Parameter = launcherapp::actions::core::Parameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 
-RefPtr<CommandNamedParameter> GetCommandNamedParameter(CommandParameter* param)
+RefPtr<NamedParameter> GetNamedParameter(Parameter* param)
 {
 	if (param == nullptr) {
-		return std::move(RefPtr<CommandNamedParameter>());
+		return std::move(RefPtr<NamedParameter>());
 	}
 
-	CommandNamedParameter* namedParam = nullptr;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return std::move(RefPtr<CommandNamedParameter>());
+	NamedParameter* namedParam = nullptr;
+	if (param->QueryInterface(IFID_ACTIONNAMEDPARAMETER, (void**)&namedParam) == false) {
+		return std::move(RefPtr<NamedParameter>());
 	}
-	return RefPtr<CommandNamedParameter>(namedParam, false);
+	return RefPtr<NamedParameter>(namedParam, false);
 }
 
 
-bool IsCtrlKeyPressed(launcherapp::core::CommandParameter* param)
+bool IsCtrlKeyPressed(Parameter* param)
 {
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param == nullptr) {
 		return false;
 	}
 	return namedParam->GetNamedParamBool(_T("CtrlKeyPressed"));
 }
 
-bool IsShiftKeyPressed(launcherapp::core::CommandParameter* param)
+bool IsShiftKeyPressed(Parameter* param)
 {
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param == nullptr) {
 		return false;
 	}
 	return namedParam->GetNamedParamBool(_T("ShiftKeyPressed"));
 }
-bool IsAltKeyPressed(launcherapp::core::CommandParameter* param)
+bool IsAltKeyPressed(Parameter* param)
 {
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param == nullptr) {
 		return false;
 	}
 	return namedParam->GetNamedParamBool(_T("AltKeyPressed"));
 }
 
-bool IsWinKeyPressed(launcherapp::core::CommandParameter* param)
+bool IsWinKeyPressed(Parameter* param)
 {
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param == nullptr) {
 		return false;
 	}
 	return namedParam->GetNamedParamBool(_T("WinKeyPressed"));
 }
 
-uint32_t GetModifierKeyState(launcherapp::core::CommandParameter* param, uint32_t mask)
+uint32_t GetModifierKeyState(Parameter* param, uint32_t mask)
 {
-	auto namedParam = GetCommandNamedParameter(param);
+	auto namedParam = GetNamedParameter(param);
 	if (param == nullptr) {
 		return false;
 	}

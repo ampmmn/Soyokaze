@@ -17,18 +17,17 @@ public:
 	virtual ~ClipboardHistoryCommand();
 
 	CString GetName() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
 // SelectionBehavior
-	// $BA*Br$5$l$?(B
+	// 選択された
 	void OnSelect(Command* prior) override;
-	// $BA*Br2r=|$5$l$?(B
+	// 選択解除された
 	void OnUnselect(Command* next) override;
-	// $B<B9T8e$N%&%$%s%I%&$rJD$8$kJ}K!$r7hDj$9$k(B
+	// 実行後のウインドウを閉じる方法を決定する
 	CloseWindowPolicy GetCloseWindowPolicy() override;
 
 // UnknownIF

@@ -2,20 +2,20 @@
 #include "framework.h"
 #include "commands/pathconvert/GitBashToLocalPathAdhocCommand.h"
 #include "commands/pathconvert/Icon.h"
-#include "commands/common/SubProcess.h"
-#include "commands/common/Clipboard.h"
-#include "commands/common/Message.h"
-#include "commands/common/CommandParameterFunctions.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
-#include "resource.h"
-#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -45,44 +45,29 @@ CString GitBashToLocalPathAdhocCommand::GetName()
 	return in->mFullPath;
 }
 
-CString GitBashToLocalPathAdhocCommand::GetGuideString()
-{
-	return _T("⏎:パスをコピー C-⏎:フォルダを開く S-⏎:開く");
-}
-
 CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-bool GitBashToLocalPathAdhocCommand::ShouldCopy(Parameter* param)
+bool GitBashToLocalPathAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// 何も修飾キーがおされてないならコピー操作をする
-	return GetModifierKeyState(param, MASK_ALL) == 0;
-}
-
-BOOL GitBashToLocalPathAdhocCommand::Execute(Parameter* param)
-{
-	if (ShouldCopy(param)) {
-		// クリップボードにコピー
-		Clipboard::Copy(in->mFullPath);
-		return TRUE;
+	if (modifierFlags == 0) {
+		// パスをクリップボードにコピー
+		*action = new CopyTextAction(in->mFullPath);
+		return true;
 	}
-	else {
-		// フォルダを開く or 開く
-		if (Path::FileExists(in->mFullPath) == FALSE) {
-			launcherapp::commands::common::PopupMessage(_T("パスは存在しません"));
-			return TRUE;
-		}
-
-		SubProcess exec(param);
-		SubProcess::ProcessPtr process;
-		if (exec.Run(in->mFullPath, param->GetParameterString(), process) == FALSE) {
-			this->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-			return FALSE;
-		}
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		// 実行
+		*action = new ExecuteAction(in->mFullPath);
+		return true;
 	}
-	return TRUE;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		// パスを開く
+		*action = new OpenPathInFilerAction(in->mFullPath);
+		return true;
+	}
+	return false;
 }
 
 HICON GitBashToLocalPathAdhocCommand::GetIcon()

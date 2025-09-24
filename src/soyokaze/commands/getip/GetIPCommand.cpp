@@ -3,6 +3,7 @@
 #include "GetIPCommand.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "resource.h"
 #include <vector>
 
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -45,23 +47,20 @@ CString GetIPCommand::GetDescription()
 	return in->mDisplayName + _T(" : ") + in->mAddress;
 }
 
-CString GetIPCommand::GetGuideString()
-{
-	return _T("⏎:IPアドレスをコピー");
-}
-
 CString GetIPCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL GetIPCommand::Execute(Parameter* param)
+bool GetIPCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
 	// クリップボードにコピー
-	Clipboard::Copy(in->mAddress);
-	return TRUE;
+	*action = new CopyTextAction(in->mAddress);
+	return true;
 }
 
 

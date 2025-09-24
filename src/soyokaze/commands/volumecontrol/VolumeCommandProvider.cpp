@@ -2,7 +2,6 @@
 #include "VolumeCommandProvider.h"
 #include "commands/volumecontrol/VolumeCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
@@ -52,7 +51,7 @@ CString VolumeCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool VolumeCommandProvider::NewDialog(CommandParameter* param)
+bool VolumeCommandProvider::NewDialog(Parameter* param)
 {
 	return VolumeCommand::NewDialog(param);
 }

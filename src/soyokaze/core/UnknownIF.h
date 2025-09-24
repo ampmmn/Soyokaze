@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/core/IFID.h"
+#include "core/IFID.h"
 
 namespace launcherapp {
 namespace core {

@@ -3,6 +3,7 @@
 #include "DecodeBase64Command.h"
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/CharConverter.h"
 #include "resource.h"
 
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -61,24 +63,20 @@ CString DecodeBase64Command::GetDescription()
 	return name;
 }
 
-CString DecodeBase64Command::GetGuideString()
-{
-	return _T("⏎:デコード後データをコピー");
-}
-
 
 CString DecodeBase64Command::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL DecodeBase64Command::Execute(Parameter* param)
+bool DecodeBase64Command::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
+	if (modifierFlags != 0) {
+		return false;
+	}
 	// クリップボードにコピー
-	Clipboard::Copy(mName);
-	return TRUE;
+	*action = new CopyTextAction(mName);
+	return true;
 }
 
 

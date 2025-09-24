@@ -3,7 +3,6 @@
 #include "commands/bookmarks/BookmarkCommand.h"
 #include "commands/bookmarks/URLCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"

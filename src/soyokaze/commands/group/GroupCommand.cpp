@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "GroupCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/group/CommandParam.h"
 #include "commands/group/GroupCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/GroupAction.h"
+#include "actions/builtin/RunCommandAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -25,8 +28,9 @@ namespace group {
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
-
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using GroupAction = launcherapp::actions::builtin::GroupAction;
+using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
 
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
@@ -42,96 +46,9 @@ class GroupCommand::Exception
 
 struct GroupCommand::PImpl
 {
-	BOOL Execute(Parameter* param, int round);
-
 	CommandParam mParam;
-	CString mErrMsg;
 };
 
-
-BOOL GroupCommand::PImpl::Execute(Parameter* param, int round)
-{
-	auto cmdRepo = CommandRepository::GetInstance();
-	ASSERT(cmdRepo);
-
-	CString cmdName = mParam.mName;
-
-	// 初回に(必要に応じて)実行確認を行う
-	auto namedParam = GetCommandNamedParameter(param);
-	bool isConfirmed = namedParam->GetNamedParamBool(_T("CONFIRMED"));
-	if (round == 0 && isConfirmed == false) {
-
-		if (mParam.mIsConfirm) {
-			CString msg;
-			msg.Format(IDS_CONFIRMRUNGROUP, (LPCTSTR)cmdName);
-
-			SharedHwnd sharedHwnd;
-
-			CString caption((LPCTSTR)IDS_TITLE_CONFIRMRUNGROUP);
-			int n = MessageBox(sharedHwnd.GetHwnd(), msg, caption, MB_YESNO);
-			if (n != IDYES) {
-				throw Exception();
-			}
-
-			// ひとたび確認を実施した場合は下位のグループで再度確認を実施しない。
-			// (後でマークをつける)
-			isConfirmed = true;
-		}
-	}
-
-
-	CString parents;
-	GetNamedParamString(param, _T("PARENTS"), parents);
-
-	// 循環参照チェック
-	int depth = 0;
-	int n = 0;
-	CString token = parents.Tokenize(_T("/"), n);
-	while(token.IsEmpty() == FALSE) {
-
-		if (depth >= 8) {
-			// 深さは8まで
-			return FALSE;
-		}
-		if (token == cmdName) {
-			// 呼び出し元に自分自身がいる(循環参照)
-			return FALSE;
-		}
-		token = parents.Tokenize(_T("/"), n);
-		depth++;
-	}
-
-	// 呼び出し元に自分自身を追加
-	if (parents.IsEmpty() == FALSE) {
-		parents += _T("/");
-	}
-	parents += cmdName;
-
-	for (auto& item : mParam.mItems) {
-
-		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(item.mItemName, false));
-		if (command == nullptr) {
-			continue;
-		}
-
-		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
-		if (mParam.mIsPassParam) {
-			paramSub->SetParameterString(param->GetParameterString());
-		}
-
-		if (item.mIsWait) {
-			paramSub->SetNamedParamBool(_T("WAIT"), true);
-		}
-		if (isConfirmed) {
-			paramSub->SetNamedParamBool(_T("CONFIRMED"), true);
-		}
-		paramSub->SetNamedParamString(_T("PARENTS"), parents);
-
-		command->Execute(paramSub);
-	}
-
-	return TRUE;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -164,38 +81,27 @@ CString GroupCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString GroupCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString GroupCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL GroupCommand::Execute(Parameter* param)
+bool GroupCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(param);
-	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	auto groupAction = new GroupAction(in->mParam.mName, modifierFlags);
+	groupAction->EnableConfirm(in->mParam.mIsConfirm);
+	groupAction->SetRepeats(in->mParam.mIsRepeat ? in->mParam.mRepeats : 1);
+	groupAction->EnablePassParam(in->mParam.mIsPassParam);
+
+	for (auto& item : in->mParam.mItems) {
+		RefPtr<RunCommandAction> subAction(new RunCommandAction(in->mParam.mName, item.mItemName, modifierFlags));
+		subAction->EnableWait(item.mIsWait);
+		groupAction->AddAction(subAction.get());
 	}
 
-	try {
-		int nRepeats = in->mParam.mIsRepeat ? in->mParam.mRepeats : 1;
-		for (int round = 0; round < nRepeats; ++round) {
-			in->Execute(param, round);
-		}
-		return TRUE;
-	}
-	catch(GroupCommand::Exception&) {
-		return TRUE;
-	}
-}
+	*action = groupAction;
 
-CString GroupCommand::GetErrorString()
-{
-	return in->mErrMsg;
+	return true;
 }
 
 HICON GroupCommand::GetIcon()
@@ -254,7 +160,6 @@ GroupCommand::Clone()
 	auto clonedObj = make_refptr<GroupCommand>();
 
 	clonedObj->in->mParam = in->mParam;
-	clonedObj->in->mErrMsg = in->mErrMsg;
 
 	return clonedObj.release();
 }
@@ -325,6 +230,35 @@ bool GroupCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* edito
 	if (newCmdPtr) {
 		*newCmdPtr = newCmd.release();
 	}
+
+	return true;
+}
+
+// コマンド新規作成ダイアログ
+bool GroupCommand::NewDialog(Parameter* param)
+{
+	// グループ作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
+	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
+	if (cmdEditor->DoModal() == false) {
+		return false;
+	}
+
+	// ダイアログで入力された内容に基づき、コマンドを新規作成する
+	auto newCmd = make_refptr<GroupCommand>();
+	newCmd->SetParam(cmdEditor->GetParam());
+
+	CommandRepository::GetInstance()->RegisterCommand(newCmd.release());
 
 	return true;
 }

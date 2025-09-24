@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "framework.h"
 #include "WindowActivateAdhocCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/activate_window/ActivateIndicatorWindow.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/activate_window/RestoreWindowAction.h"
+#include "actions/activate_window/MaximizeWindowAction.h"
+#include "actions/activate_window/MinimizeWindowAction.h"
+#include "commands/activate_window/TemporaryWindowNameAction.h"
+#include "commands/activate_window/CloseWindowActionWrapper.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -19,14 +24,10 @@ namespace commands {
 namespace activate_window {
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::activate_window;
 
 struct WindowActivateAdhocCommand::PImpl
 {
-	bool Maximize();
-	bool Minimize();
-	bool GiveAdhocName();
-	bool Close();
-
 	// 選択を解除
 	void Unselect() {
 		if (IsWindow(mHwnd) == FALSE || IsWindowVisible(mHwnd) == FALSE) {
@@ -35,48 +36,14 @@ struct WindowActivateAdhocCommand::PImpl
 
 		// 対象を強調表示
 		ActivateIndicatorWindow::GetInstance()->Uncover();
-
-		mPrevZOrder = nullptr;
 	}
 
 
 	HWND mHwnd{nullptr};
-	HWND mPrevZOrder{nullptr};
 	MenuEventListener* mMenuEventListener{nullptr};
 	CString mPrefix;
 	bool mIsMinimized{false};
 };
-
-bool WindowActivateAdhocCommand::PImpl::Maximize()
-{
-	PostMessage(mHwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-	SetForegroundWindow(mHwnd);
-	return true;
-}
-
-bool WindowActivateAdhocCommand::PImpl::Minimize()
-{
-	ShowWindow(mHwnd, SW_MINIMIZE);
-	return true;
-}
-
-bool WindowActivateAdhocCommand::PImpl::GiveAdhocName()
-{
-	if (mMenuEventListener) {
-		mMenuEventListener->OnRequestPutName(mHwnd);
-	}
-	return true;
-}
-
-bool WindowActivateAdhocCommand::PImpl::Close()
-{
-	PostMessage(mHwnd, WM_CLOSE, 0, 0);
-	if (mMenuEventListener) {
-		mMenuEventListener->OnRequestClose(mHwnd);
-	}
-	return true;
-}
-
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WindowActivateAdhocCommand)
 
@@ -121,47 +88,37 @@ CString WindowActivateAdhocCommand::GetName()
 	return name;
 }
 
-CString WindowActivateAdhocCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウ切替え S-⏎:最大化 C-⏎::最小化 S-C-⏎:閉じる");
-}
-
 CString WindowActivateAdhocCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL WindowActivateAdhocCommand::Execute(Parameter* param)
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool WindowActivateAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	ScopeAttachThreadInput scope;
+	bool isCtrlKeyPressed = modifierFlags & Command::MODIFIER_CTRL;
+	bool isShiftKeyPressed = modifierFlags & Command::MODIFIER_SHIFT;
 
-	bool isCtrlKeyPressed = GetModifierKeyState(param, MASK_CTRL) != 0;
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-
-	LONG_PTR style = GetWindowLongPtr(in->mHwnd, GWL_STYLE);
-	if (isShiftKeyPressed && isCtrlKeyPressed == false && (style & WS_MAXIMIZE) == 0) {
+	if (isShiftKeyPressed && isCtrlKeyPressed == false) {
 		// Shiftキーが押されていたら最大化表示する
-		in->Maximize();
+		*action = new MaximizeWindowAction(in->mHwnd);
+		return true;
 	}
-	else if (isCtrlKeyPressed && isShiftKeyPressed == false && (style & WS_MINIMIZE) == 0) {
+	else if (isCtrlKeyPressed && isShiftKeyPressed == false) {
 		// Ctrlキーが押されていたら最小化表示する
-		in->Minimize();
+		*action = new MinimizeWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (isCtrlKeyPressed && isShiftKeyPressed) {
 		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
-		in->Close();
-		in->mPrevZOrder = nullptr;
-		return TRUE;
+		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
+		return true;
 	}
-	else if (style & WS_MINIMIZE) {
-		// 最小化されていたら元に戻す
-		PostMessage(in->mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+	else if (modifierFlags == 0) {
+		*action = new RestoreWindowAction(in->mHwnd);
+		return true;
 	}
-
-	SetForegroundWindow(in->mHwnd);
-
-	in->mPrevZOrder = nullptr;
-	return TRUE;
+	return false;
 }
 
 HICON WindowActivateAdhocCommand::GetIcon()
@@ -182,57 +139,31 @@ int WindowActivateAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool WindowActivateAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
-{
-	if (index == 0) {
-		static LPCWSTR name = L"ウインドウ切替(&A)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 1) {
-		static LPCWSTR name = L"最大化(&X)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 2) {
-		static LPCWSTR name = L"最小化(&M)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 3) {
-		static LPCWSTR name = L"ウインドウに一時的な名前を付ける(&T)";
-		*displayNamePtr= name;
-		return true;
-	}
-	else if (index == 4) {
-		static LPCWSTR name = L"ウインドウを閉じる(&C)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool WindowActivateAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
+bool WindowActivateAdhocCommand::GetMenuItem(int index, Action** action)
 {
 	if (index < 0 || 5 < index) {
 		return false;
 	}
 
 	if (index == 0) {
-		return Execute(param) != FALSE;
+		*action = new RestoreWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 1) {
-		return in->Maximize();
+		*action = new MaximizeWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 2) {
-		return in->Minimize();
+		*action = new MinimizeWindowAction(in->mHwnd);
+		return true;
 	}
 	else if (index == 3) {
-		return in->GiveAdhocName();
+		*action = new TemporaryWindowNameAction(in->mHwnd, in->mMenuEventListener);
+		return true;
 	}
 	else { // if (index == 4)
-		return in->Close();
+		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
+		return true;
 	}
 }
 
@@ -248,8 +179,6 @@ void WindowActivateAdhocCommand::OnSelect(Command* prior)
 	//対象のウインドウを強調表示する
 
 	// ランチャーウインドウの後ろに表示するため、現在ランチャーウインドウの直後にあるウインドウを取得
-	in->mPrevZOrder = GetWindow(in->mHwnd, GW_HWNDPREV);
-
 	SharedHwnd mainWnd;
 	auto hwndPrev = GetWindow(mainWnd.GetHwnd(), GW_HWNDNEXT);
 

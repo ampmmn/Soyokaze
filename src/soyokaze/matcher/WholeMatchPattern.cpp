@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "WholeMatchPattern.h"
-#include "commands/core/CommandParameter.h"
-#include "commands/core/IFIDDefine.h"
+#include "actions/core/ActionParameter.h"
+#include "core/IFIDDefine.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -64,7 +64,7 @@ void WholeMatchPattern::SetWholeText(
 	LPCTSTR wholeText
 )
 {
-	auto param = launcherapp::core::CommandParameterBuilder::Create(wholeText);
+	auto param = launcherapp::actions::core::ParameterBuilder::Create(wholeText);
 
 	in->mWord = param->GetCommandString();
 	in->mWholeText = param->GetWholeString();

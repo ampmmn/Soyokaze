@@ -3,6 +3,7 @@
 #include "CalcWorksheetCommand.h"
 #include "commands/activate_worksheet/CalcWorksheets.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -16,6 +17,7 @@ namespace commands {
 namespace activate_worksheet {
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::builtin;
 
 struct CalcWorksheetCommand::PImpl
 {
@@ -43,26 +45,36 @@ CalcWorksheetCommand::~CalcWorksheetCommand()
 	}
 }
 
-CString CalcWorksheetCommand::GetGuideString()
-{
-	return _T("⏎:表示 C-⏎:最大化表示");
-}
-
 CString CalcWorksheetCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL CalcWorksheetCommand::Execute(Parameter* param)
+bool CalcWorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// Ctrlキーが押されていたら最大化表示する
-	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
-
-	if (in->mCalcWorksheet) {
-		return in->mCalcWorksheet->Activate(isShowMaximize);
+	if (modifierFlags == 0) {
+		*action = new CallbackAction(_T("表示"), [&](Parameter*, String* errMsg) -> bool {
+			bool result = in->mCalcWorksheet->Activate(false);
+			if (result == false && errMsg) {
+				*errMsg = in->mCalcWorksheet->GetErrorMessage();
+			}
+			return result;
+		});
+		return true;
 	}
-	return FALSE;
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String* errMsg) -> bool {
+			bool result = in->mCalcWorksheet->Activate(true);
+			if (result == false && errMsg) {
+				*errMsg = in->mCalcWorksheet->GetErrorMessage();
+			}
+			return result;
+		});
+		return true;
+	}
+	return false;
 }
+
 
 HICON CalcWorksheetCommand::GetIcon()
 {

@@ -2,7 +2,6 @@
 #include "FilterExecutor.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "matcher/PartialMatchPattern.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "utility/LocalPathResolver.h"

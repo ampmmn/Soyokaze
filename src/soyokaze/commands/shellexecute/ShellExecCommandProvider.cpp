@@ -2,7 +2,6 @@
 #include "ShellExecCommandProvider.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "commands/shellexecute/ShellExecSettingDialog.h"
 #include "hotkey/CommandHotKeyMappings.h"
@@ -53,7 +52,7 @@ CString ShellExecCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool ShellExecCommandProvider::NewDialog(CommandParameter* param)
+bool ShellExecCommandProvider::NewDialog(Parameter* param)
 {
 	ShellExecCommand* newCmd = nullptr;
 	if (ShellExecCommand::NewDialog(param, &newCmd) == false) {

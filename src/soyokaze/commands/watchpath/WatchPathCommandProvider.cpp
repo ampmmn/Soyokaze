@@ -2,7 +2,6 @@
 #include "WatchPathCommandProvider.h"
 #include "commands/watchpath/WatchPathCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
@@ -51,7 +50,7 @@ CString WatchPathCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool WatchPathCommandProvider::NewDialog(CommandParameter* param)
+bool WatchPathCommandProvider::NewDialog(Parameter* param)
 {
 	return WatchPathCommand::NewDialog(param);
 }

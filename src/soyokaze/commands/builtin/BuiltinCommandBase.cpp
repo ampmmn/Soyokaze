@@ -2,10 +2,11 @@
 #include "framework.h"
 #include "commands/builtin/BuiltinCommandBase.h"
 #include "commands/builtin/BuiltinCommandEditor.h"
+#include "actions/builtin/CallbackAction.h"
 #include "setting/AppPreference.h"
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandFile.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -14,6 +15,7 @@
 #endif
 
 using namespace launcherapp::core;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -60,18 +62,40 @@ CString BuiltinCommandBase::GetDescription()
 	return mDescription;
 }
 
-CString BuiltinCommandBase::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString BuiltinCommandBase::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-bool BuiltinCommandBase::CanExecute()
+bool BuiltinCommandBase::CanExecute(String*)
 {
+	return true;
+}
+
+BOOL BuiltinCommandBase::Execute(Parameter* param)
+{
+	UNREFERENCED_PARAMETER(param);
+	// 派生側で実装する
+	return false;
+}
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool BuiltinCommandBase::GetAction(uint32_t modifierFlags, Action** action)
+{
+	if (modifierFlags != 0) {
+		return false;
+	}
+
+	*action = new CallbackAction(_T("実行"), [&](Parameter* param, String* errMsg) -> bool {
+		mError.Empty();
+		if (Execute(param) == false) {
+			if (errMsg && mError.IsEmpty() == FALSE) {
+				UTF2UTF(mError, *errMsg);
+			}
+			return false;
+		}
+		return true;
+	});
 	return true;
 }
 

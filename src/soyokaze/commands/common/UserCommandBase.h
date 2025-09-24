@@ -21,9 +21,9 @@ public:
 	virtual ~UserCommandBase();
 
 // Command
-	bool CanExecute() override;
-	CString GetErrorString() override;
+	bool CanExecute(String*) override;
 	bool IsAllowAutoExecute() override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 
 // Editable
 	// コマンドは編集可能か?

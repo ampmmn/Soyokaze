@@ -34,24 +34,14 @@ struct DummyCommand : public launcherapp::core::Command
 		return _T("");
 	}
 
-	CString GetGuideString() override
-	{
-		return _T("");
-	}
-
-	bool CanExecute() override
+	bool CanExecute(String* reasonMsg) override
 	{
 		return true;
 	}
 
-	BOOL Execute(Parameter* param) override
+	bool GetAction(uint32_t modifierFlags, Action** action)
 	{
-		return TRUE;
-	}
-
-	CString GetErrorString() override
-	{
-		return _T("");
+		return true;
 	}
 
 	HICON GetIcon() override

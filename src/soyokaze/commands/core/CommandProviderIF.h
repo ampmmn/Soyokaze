@@ -11,12 +11,11 @@ class SettingPage;
 namespace launcherapp {
 namespace core {
 
-class CommandParameter;
-
 class CommandProvider
 {
 public:
 	using CommandQueryItemList = launcherapp::CommandQueryItemList;
+	using Parameter = launcherapp::actions::core::Parameter;
 
 public:
 	virtual ~CommandProvider() {}
@@ -37,7 +36,7 @@ public:
 	virtual CString GetDescription() = 0;
 
 	// コマンド新規作成ダイアログを表示する
-	virtual bool NewDialog(CommandParameter* param = nullptr) = 0;
+	virtual bool NewDialog(Parameter* param = nullptr) = 0;
 
 	// 非公開コマンドかどうか(新規作成対象にしない)
 	virtual bool IsPrivate() const = 0;
