@@ -1,4 +1,7 @@
 #pragma once
+
+#include "externaltool/webbrowser/BrowserEnvironment.h"
+
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
@@ -6,7 +9,7 @@ namespace webhistory {
 struct HISTORY
 {
 public:
-	CString mBrowserName;
+	externaltool::webbrowser::BrowserEnvironment* mEnv{nullptr};
 	CString mDisplayName;
 	CString mUrl;
 	int mMatchLevel{0};

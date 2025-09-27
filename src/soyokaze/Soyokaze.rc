@@ -1433,11 +1433,12 @@ BEGIN
     EDITTEXT        IDC_EDIT_PREFIX,78,38,52,14,ES_AUTOHSCROLL
     LTEXT           "検索を実行する最小文字数(&M):",IDC_STATIC,23,58,118,8
     EDITTEXT        IDC_EDIT_MINTRIGGERLENGTH,138,56,52,14,ES_AUTOHSCROLL
-    CONTROL         "Chromeのブックマークを候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,75,159,10
-    CONTROL         "Edgeのブックマークを候補として表示する(&E)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,94,150,10
-    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,113,129,10
-    LTEXT           "※使わない場合、ブックマークのタイトルのみで絞り込みを行う",IDC_STATIC,33,128,190,8
+    CONTROL         "Edgeのお気に入りを候補として表示する(&F)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,77,160,10
+    CONTROL         "(外部ツール名)のブックマークを候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,96,269,10
+    CONTROL         "&URL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,124,129,10
+    LTEXT           "※使わない場合、ブックマークのタイトルのみで絞り込みを行う",IDC_STATIC,33,139,190,8
+    LTEXT           "※外部ツール設定でWebブラウザを設定する必要があります",IDC_STATIC,33,110,187,8
 END
 
 IDD_APPSETTING_WEBHISTORY DIALOGEX 0, 0, 309, 285
@@ -1449,14 +1450,16 @@ BEGIN
     EDITTEXT        IDC_EDIT_PREFIX,78,38,52,14,ES_AUTOHSCROLL
     LTEXT           "検索を実行する最小文字数(&M):",IDC_STATIC,23,58,118,8
     EDITTEXT        IDC_EDIT_MINTRIGGERLENGTH,138,56,52,14,ES_AUTOHSCROLL
-    CONTROL         "Chromeの履歴を候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,79,141,10
-    CONTROL         "Edgeの履歴を候補として表示する(&E)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,95,132,10
-    LTEXT           "検索の上限件数(&L):",IDC_STATIC,23,117,85,8
-    EDITTEXT        IDC_EDIT_CANDIDATES,116,117,51,14,ES_AUTOHSCROLL
-    CONTROL         "&Migemo検索を利用する",IDC_CHECK_USE_MIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,135,91,10
-    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,163,129,10
-    LTEXT           "※使わない場合、履歴のタイトルのみで絞り込みを行います",IDC_STATIC,33,177,186,8
-    LTEXT           "※非力なPCでは結果が出る前にタイムアウトになる可能性があります",IDC_STATIC,31,147,257,12
+    CONTROL         "Edgeの履歴を候補として表示する(&E)",IDC_CHECK_ENABLE_EDGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,77,132,10
+    CONTROL         "(外部ツール名)の履歴を候補として表示する(&C)",IDC_CHECK_ENABLE_CHROME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,95,270,10
+    LTEXT           "※外部ツール設定でWebブラウザを設定する必要があります",IDC_STATIC,31,110,187,8
+    LTEXT           "検索の上限件数(&L):",IDC_STATIC,23,128,85,8
+    EDITTEXT        IDC_EDIT_CANDIDATES,116,128,51,14,ES_AUTOHSCROLL
+    CONTROL         "&Migemo検索を利用する",IDC_CHECK_USE_MIGEMO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,146,91,10
+    LTEXT           "※非力なPCでは結果が出る前にタイムアウトになる可能性があります",IDC_STATIC,31,158,257,12
+    CONTROL         "U&RL文字列を候補の絞り込みに使う",IDC_CHECK_USEURL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,174,129,10
+    LTEXT           "※使わない場合、履歴のタイトルのみで絞り込みを行います",IDC_STATIC,31,188,186,8
 END
 
 IDD_APPSETTING_ONENOTE DIALOGEX 0, 0, 309, 285
@@ -1468,6 +1471,32 @@ BEGIN
     EDITTEXT        IDC_EDIT_PREFIX,80,34,52,14,ES_AUTOHSCROLL
     LTEXT           "検索を実行する最小文字数(&M):",-1,14,54,118,8
     EDITTEXT        IDC_EDIT_MINTRIGGERLENGTH,130,51,52,14,ES_AUTOHSCROLL
+END
+
+IDD_APPSETTING_EXTERNALTOOL DIALOGEX 0, 0, 309, 285
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Webブラウザ",IDC_STATIC,8,5,294,204
+    CONTROL         "ブックマーク検索／Web検索機能においてEdge以外のWebブラウザも利用する(&E)",IDC_CHECK_USEEXTERNAL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,19,277,10
+    CONTROL         "&Chromeを使う",IDC_RADIO_USECHROME,"Button",BS_AUTORADIOBUTTON | WS_GROUP,17,36,59,10
+    CONTROL         "別のWebブラウザを指定する(&O)",IDC_RADIO_USEOTHER,"Button",BS_AUTORADIOBUTTON,17,52,184,10
+    LTEXT           "アプリ表示名(&N):",IDC_STATIC,27,68,70,8
+    EDITTEXT        IDC_EDIT_DISPLAYNAME,105,65,66,14,ES_AUTOHSCROLL
+    LTEXT           "実行ファイルパス(&F):",IDC_STATIC,27,86,70,8
+    EDITTEXT        IDC_EDIT_FILEPATH,105,83,150,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,255,83,31,14
+    LTEXT           "パラメータ(&P):",IDC_STATIC,27,103,70,8
+    EDITTEXT        IDC_EDIT_PARAMETER,105,100,150,14,ES_AUTOHSCROLL
+    LTEXT           "$targetと指定するとURLに置き換えます",IDC_STATIC,108,117,163,8
+    LTEXT           "設定データフォルダ(&D):",IDC_STATIC,27,135,77,8
+    EDITTEXT        IDC_EDIT_DATADIR,105,132,150,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照(&W)",IDC_BUTTON_BROWSE2,255,132,31,14
+    LTEXT           "ブックマークや履歴の情報が保存されるフォルダを指定します\n※「Default」という名前のフォルダがあるパスを指定します",IDC_STATIC,106,150,188,20
+    CONTROL         "コマンドからURLを開くとき、既定のブラウザではなく、上記のWebブラウザを使う(&D)",IDC_CHECK_OPENURLINOTHERBROWSER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,277,10
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,17,194,270,8
 END
 
 
@@ -2043,6 +2072,14 @@ BEGIN
     END
 
     IDD_APPSETTING_ONENOTE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+
+    IDD_APPSETTING_EXTERNALTOOL, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
@@ -2918,6 +2955,11 @@ BEGIN
 END
 
 IDD_APPSETTING_ONENOTE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_APPSETTING_EXTERNALTOOL AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

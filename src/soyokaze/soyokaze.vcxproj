@@ -423,6 +423,7 @@
     <ClInclude Include="commands\bookmarks\AppSettingPageBookmark.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommand.h" />
     <ClInclude Include="commands\bookmarks\BookmarkCommandParam.h" />
+    <ClInclude Include="commands\bookmarks\BookmarkItem.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandEditor.h" />
     <ClInclude Include="commands\builtin\BuiltinCommandFactory.h" />
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h" />
@@ -562,6 +563,10 @@
     <ClInclude Include="commands\winscp\WinScpCommandParam.h" />
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h" />
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
+    <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
+    <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
+    <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h" />
+    <ClInclude Include="externaltool\webbrowser\EdgeEnvironment.h" />
     <ClInclude Include="gui\ColorScheme.h" />
     <ClInclude Include="gui\ColorSettings.h" />
     <ClInclude Include="gui\CustomColorScheme.h" />
@@ -749,6 +754,7 @@
     <ClInclude Include="settingwindow\AppSettingPageBase.h" />
     <ClInclude Include="settingwindow\AppSettingPageColor.h" />
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
+    <ClInclude Include="settingwindow\AppSettingPageExternalTool.h" />
     <ClInclude Include="settingwindow\AppSettingPageOther.h" />
     <ClInclude Include="settingwindow\AppSettingPageRepository.h" />
     <ClInclude Include="settingwindow\AppSettingPageSwitchWindow.h" />
@@ -869,7 +875,6 @@
     <ClCompile Include="commands\bookmarks\AppSettingPageBookmark.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommand.cpp" />
     <ClCompile Include="commands\bookmarks\BookmarkCommandParam.cpp" />
-    <ClCompile Include="commands\bookmarks\BookmarkItem.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandEditor.cpp" />
     <ClCompile Include="commands\builtin\BuiltinCommandFactory.cpp" />
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp" />
@@ -1010,6 +1015,9 @@
     <ClCompile Include="commands\winscp\WinScpCommand.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandParam.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />
+    <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp" />
+    <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp" />
+    <ClCompile Include="externaltool\webbrowser\EdgeEnvironment.cpp" />
     <ClCompile Include="gui\ColorSettings.cpp" />
     <ClCompile Include="gui\CustomColorScheme.cpp" />
     <ClCompile Include="gui\DDXWrapper.cpp" />
@@ -1186,6 +1194,7 @@
     <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageColor.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageExternalTool.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageRepository.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageSwitchWindow.cpp" />

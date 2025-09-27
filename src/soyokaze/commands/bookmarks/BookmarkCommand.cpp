@@ -4,32 +4,24 @@
 #include "commands/bookmarks/URLCommand.h"
 #include "commands/bookmarks/Bookmarks.h"
 #include "commands/core/CommandRepository.h"
+#include "externaltool/webbrowser/EdgeEnvironment.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
+using BrowserEnvironment = launcherapp::externaltool::webbrowser::BrowserEnvironment;
+using EdgeEnvironment = launcherapp::externaltool::webbrowser::EdgeEnvironment;
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 namespace launcherapp { namespace commands { namespace bookmarks {
-
-// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
-constexpr LPCTSTR CHROME_BOOKMARK_PATH = _T("AppData\\Local\\Google\\Chrome\\User Data\\Default\\Bookmarks");
-// Edge $USERPROFILE/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks
-constexpr LPCTSTR EDGE_BOOKMARK_PATH = _T("AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Bookmarks");
 
 struct BookmarkCommand::PImpl
 {
 	void LoadBookmarks();
-	bool QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
-	bool QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands);
 
-	Bookmarks* GetChromeBookmarks()
-	{
-		if (mParam.mIsEnableChrome == false) {
-		 return nullptr;
-		}
-		return &mChromeBookmarks;
-	}
+	bool QueryBookmarks(BrowserEnvironment* brwsEnv, Bookmarks* bookmarks, Pattern* pattern, CommandQueryItemList& commands);
 
 	Bookmarks* GetEdgeBookmarks()
 	{
@@ -39,10 +31,18 @@ struct BookmarkCommand::PImpl
 		return &mEdgeBookmarks;
 	}
 
+	Bookmarks* GetAlternativeBookmarks()
+	{
+		if (mParam.mIsEnableAltBrowser == false) {
+		 return nullptr;
+		}
+		return &mAltBrowserBookmarks;
+	}
+
 	// コマンドパラメータ
 	CommandParam mParam;
-	// Chromeのブックマークデータ
-	Bookmarks mChromeBookmarks;
+	// Webブラウザ(外部ツール)のブックマークデータ
+	Bookmarks mAltBrowserBookmarks;
 	// Edgeのブックマークデータ
 	Bookmarks mEdgeBookmarks;
 	// ブックマーク読み込みスレッド
@@ -60,58 +60,44 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 
 	// 別スレッドでブックマークのロードを実行する
 	std::thread th([&, numOfKeywordShift]() {
-		auto chromeBookmarks = GetChromeBookmarks();
-		if (chromeBookmarks) {
-			Path chromeFilePath{Path::USERPROFILE, CHROME_BOOKMARK_PATH};
-			chromeBookmarks->Initialize(chromeFilePath);
-			chromeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
-		}
+
+		CString bkmPath;
+
 		auto edgeBookmarks = GetEdgeBookmarks();
 		if (edgeBookmarks) {
-			Path edgeFilePath{Path::USERPROFILE, EDGE_BOOKMARK_PATH};
-			edgeBookmarks->Initialize(edgeFilePath);
-			edgeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
+			auto edge = EdgeEnvironment::GetInstance();
+			if (edge->GetBookmarkFilePath(bkmPath)) {
+				edgeBookmarks->Initialize(bkmPath);
+				edgeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
+			}
+		}
+		auto altBookmarks = GetAlternativeBookmarks();
+		if (altBookmarks) {
+			auto altBrws = ConfiguredBrowserEnvironment::GetInstance();
+			altBrws->Load();
+			if (altBrws->GetBookmarkFilePath(bkmPath)) {
+				altBookmarks->Initialize(bkmPath);
+				altBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
+			}
 		}
 	});
 	mLoadThread.swap(th);
 }
 
-bool BookmarkCommand::PImpl::QueryChromeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
+bool BookmarkCommand::PImpl::QueryBookmarks(
+	BrowserEnvironment* brwsEnv,
+ 	Bookmarks* bookmarks,
+ 	Pattern* pattern,
+ 	CommandQueryItemList& commands
+)
 {
-	auto bookmarks = GetChromeBookmarks();
 	if (bookmarks == nullptr) {
+		// ブックマーク検索設定で該当するブラウザを使う設定になっていない
 		return true;
 	}
-
-	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
-
-	auto repos = CommandRepository::GetInstance();
-
-	// 指定されたキーワードでブックマークの検索を行う
-	std::vector<Bookmark> bkmItems;
- 	bookmarks->Query(pattern, bkmItems, mParam.mIsUseURL);
-	for (auto& item : bkmItems) {
-
-		// 後続の検索要求が来ている場合は打ち切り
-		if (repos->HasQueryRequest()) {
-			return false;
-		}
-
-		// コマンド名がマッチしているので少なくとも前方一致扱いとする
-		int matchLevel = item.mMatchLevel;
-		if (hasPrefix && matchLevel == Pattern::PartialMatch) {
-			matchLevel = Pattern::FrontMatch;
-		}
-		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Chrome)));
-	}
-	return true;
-}
-
-bool BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryItemList& commands)
-{
-	auto bookmarks = GetEdgeBookmarks();
-	if (bookmarks == nullptr) {
-		return true;
+	if (brwsEnv->IsAvailable() == false) {
+		// 外部ツール設定でブラウザを使う設定になっていない(または利用できない)
+		return false;
 	}
 
 	bool hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
@@ -133,7 +119,7 @@ bool BookmarkCommand::PImpl::QueryEdgeBookmarks(Pattern* pattern, CommandQueryIt
 		if (hasPrefix && matchLevel == Pattern::PartialMatch) {
 			matchLevel = Pattern::FrontMatch;
 		}
-		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, BrowserType::Edge)));
+		commands.Add(CommandQueryItem(matchLevel, new URLCommand(item, brwsEnv)));
 	}
 	return true;
 }
@@ -183,13 +169,13 @@ bool BookmarkCommand::QueryCandidates(Pattern* pattern, launcherapp::CommandQuer
 		return false;
 	}
 
-	// Chromeのブックマークを取得し、キーワードで絞り込み
-	if (in->QueryChromeBookmarks(pattern, commands) == false) {
+	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
+	if (in->QueryBookmarks(EdgeEnvironment::GetInstance(), in->GetEdgeBookmarks(), pattern, commands) == false) {
 		return false;
 	}
 
-	// Edgeのブックマーク一覧を取得し、キーワードで絞り込み
-	if (in->QueryEdgeBookmarks(pattern, commands) == false) {
+	// Webブラウザ(外部ツール)のブックマークを取得し、キーワードで絞り込み
+	if (in->QueryBookmarks(ConfiguredBrowserEnvironment::GetInstance(), in->GetAlternativeBookmarks(), pattern, commands) == false) {
 		return false;
 	}
 

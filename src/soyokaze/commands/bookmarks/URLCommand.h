@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ExtraCandidateIF.h"
 #include "commands/bookmarks/BookmarkItem.h"
+#include "externaltool/webbrowser/BrowserEnvironment.h"
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace bookmarks {
@@ -12,8 +13,9 @@ class URLCommand :
 	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
+	using BrowserEnvironment = launcherapp::externaltool::webbrowser::BrowserEnvironment;
 public:
-	URLCommand(const Bookmark& item, BrowserType browserType);
+	URLCommand(const Bookmark& item, BrowserEnvironment* brwsEnv);
 	virtual ~URLCommand();
 
 	CString GetDescription() override;
@@ -32,7 +34,7 @@ public:
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
 
 public:
-	static CString TypeDisplayName(int type);
+	static CString TypeDisplayName(LPCTSTR productName);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

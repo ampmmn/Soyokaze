@@ -73,8 +73,8 @@ CString BookmarkCommandProvider::GetName()
 // Providerが扱うコマンド種別(表示名)を列挙
 uint32_t BookmarkCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
-	displayNames.push_back(URLCommand::TypeDisplayName(0));  // Chrome
-	displayNames.push_back(URLCommand::TypeDisplayName(1));  // Edge
+	displayNames.push_back(URLCommand::TypeDisplayName(_T("Chrome")));
+	displayNames.push_back(URLCommand::TypeDisplayName(_T("Edge")));
 	return 2;
 }
 

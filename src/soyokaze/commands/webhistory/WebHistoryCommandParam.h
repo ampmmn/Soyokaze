@@ -21,7 +21,7 @@ public:
 	int mMinTriggerLength{5};
 	bool mIsEnable{true};
 	bool mIsEnableEdge{true};
-	bool mIsEnableChrome{true};
+	bool mIsEnableAltBrowser{true};
 	bool mIsUseMigemo{true};
 	bool mIsUseURL{false};
 };

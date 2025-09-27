@@ -180,12 +180,15 @@
 #define IDC_EDIT_FRONT                  1010
 #define IDC_EDIT_SUBSTITUTE             1010
 #define IDC_EDIT_REPLACE                1010
+#define IDC_EDIT_PARAMETER              1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_EDIT_BACK                   1011
 #define IDC_EDIT_FRONT2                 1011
+#define IDC_EDIT_DATADIR                1011
 #define IDC_BUTTON_BROWSEFILE1          1012
 #define IDC_EDIT_SHEETNAME              1012
 #define IDC_CHECK_ALLOWAUTOEXEC         1012
+#define IDC_EDIT_DISPLAYNAME            1012
 #define IDC_BUTTON_BROWSEDIR1           1013
 #define IDC_BUTTON_BROWSEFILE3          1013
 #define IDC_BUTTON_BROWSEFILE2          1014
@@ -345,6 +348,7 @@
 #define IDC_CHECK_ENABLECALCULATOR      1101
 #define IDC_BUTTON_BROWSE               1102
 #define IDC_CHECK_ENABLE_WORKSHEET      1103
+#define IDC_BUTTON_BROWSE2              1103
 #define IDC_BUTTON_CLEAR                1104
 #define IDC_CHECK_ENABLE_SLIDE          1104
 #define IDC_EDIT_SOUNDINPUT             1106
@@ -519,6 +523,11 @@
 #define IDD_APPSETTING_WEBHISTORY       1220
 #define IDD_APPSETTING_EVERYTHING1      1221
 #define IDD_APPSETTING_ONENOTE          1221
+#define IDC_RADIO_USECHROME             1221
+#define IDD_APPSETTING_EXTERNALTOOL     1222
+#define IDC_RADIO_USEOTHER              1222
+#define IDC_CHECK_USEEXTERNAL           1223
+#define IDC_CHECK_OPENURLINOTHERBROWSER 1224
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -527,7 +536,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        258
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1220
+#define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

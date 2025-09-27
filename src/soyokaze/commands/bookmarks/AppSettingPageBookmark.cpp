@@ -64,7 +64,7 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_ENABLE, mParam.mIsEnable);
-	DDX_Check(pDX, IDC_CHECK_ENABLE_CHROME, mParam.mIsEnableChrome);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_CHROME, mParam.mIsEnableAltBrowser);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_EDGE, mParam.mIsEnableEdge);
 	DDX_Check(pDX, IDC_CHECK_USEURL2, mParam.mIsUseURL);
 	DDX_Text(pDX, IDC_EDIT_PREFIX, mParam.mPrefix);
@@ -93,7 +93,25 @@ bool AppSettingPage::UpdateStatus()
 {
 	bool isEnable = mParam.mIsEnable;
 
-	GetDlgItem(IDC_CHECK_ENABLE_CHROME)->EnableWindow(isEnable);
+	auto checkUseOther = GetDlgItem(IDC_CHECK_ENABLE_CHROME);
+	ASSERT(checkUseOther);
+
+	// Webブラウザ(外部ツール)の表記を変える
+	if (mSettingsPtr) {
+		CString otherBrowserName;
+
+		bool useChrome = mSettingsPtr->Get(_T("ExternalTool:BrowserUseChrome"), true);
+		if (useChrome) {
+			otherBrowserName = _T("Chrome");
+		}
+		else {
+			otherBrowserName = _T("Webブラウザ(外部ツール)");
+		}
+		checkUseOther->SetWindowText(fmt::format(_T("{}の履歴を候補として表示する(&C)"), (LPCTSTR)otherBrowserName).c_str());
+	}
+
+	// 機能を無効にする場合はコントロールをグレーアウトする
+	checkUseOther->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_ENABLE_EDGE)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_USEURL2)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);

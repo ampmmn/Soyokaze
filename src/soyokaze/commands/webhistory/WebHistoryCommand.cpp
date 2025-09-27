@@ -4,6 +4,8 @@
 #include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
+#include "externaltool/webbrowser/EdgeEnvironment.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "matcher/PatternInternal.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -14,17 +16,20 @@
 
 using namespace launcherapp::commands::common;
 using ChromiumBrowseHistory = launcherapp::commands::webhistory::ChromiumBrowseHistory;
+using BrowserEnvironment = launcherapp::externaltool::webbrowser::BrowserEnvironment;
+using EdgeEnvironment = launcherapp::externaltool::webbrowser::EdgeEnvironment;
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 namespace launcherapp { namespace commands { namespace webhistory {
 
 struct WebHistoryCommand::PImpl
 {
-	ChromiumBrowseHistory* GetChromeHistory()
+	ChromiumBrowseHistory* GetAltBrowserHistory()
 	{
-		if (mParam.mIsEnableChrome == false) {
+		if (mParam.mIsEnableAltBrowser == false) {
 			return nullptr;
 		}
-		return &mChromeHistory;
+		return &mAltBrowserHistory;
 	}
 
 	ChromiumBrowseHistory* GetEdgeHistory()
@@ -44,22 +49,21 @@ struct WebHistoryCommand::PImpl
 
 		// 別スレッドで履歴データのロードを実行する
 		std::thread th([&]() {
-				auto chromeHistories = GetChromeHistory();
-				if (chromeHistories) {
-					Path profilePath;
-					size_t reqLen = 0;
-					_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
-					profilePath.Append(_T("Google\\Chrome\\User Data\\Default"));
-					chromeHistories->Initialize(_T("chrome"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo);
-				}
+
+				CString historyPath;
+
 				auto edgeHistories = GetEdgeHistory();
 				if (edgeHistories) {
-					// Edgeブラウザのパスを得る
-					Path profilePath;
-					size_t reqLen = 0;
-					_tgetenv_s(&reqLen, profilePath, profilePath.size(), _T("LOCALAPPDATA"));
-					profilePath.Append(_T("Microsoft\\Edge\\User Data\\Default"));
-					edgeHistories->Initialize(_T("edge"), (LPCTSTR)profilePath, mParam.mIsUseURL, mParam.mIsUseMigemo);
+					// Edgeブラウザの履歴ファイルのパスを得る
+					auto edge = EdgeEnvironment::GetInstance();
+					edge->GetHistoryFilePath(historyPath);
+					edgeHistories->Initialize(_T("edge"), historyPath, mParam.mIsUseURL, mParam.mIsUseMigemo);
+				}
+				auto altHistories = GetAltBrowserHistory();
+				if (altHistories) {
+					auto altBrowser = ConfiguredBrowserEnvironment::GetInstance();
+					altBrowser->GetHistoryFilePath(historyPath);
+					altHistories->Initialize(_T("extbrws"), historyPath, mParam.mIsUseURL, mParam.mIsUseMigemo);
 				}
 		});
 		mLoadThread.swap(th);
@@ -67,12 +71,12 @@ struct WebHistoryCommand::PImpl
 		return true;
 	}
 
-	void QueryHistory(ChromiumBrowseHistory* historyDB, LPCTSTR appName, const std::vector<PatternInternal::WORD>& words, CommandQueryItemList& commands);
+	void QueryHistory(BrowserEnvironment* brwsEnv, ChromiumBrowseHistory* historyDB, const std::vector<PatternInternal::WORD>& words, CommandQueryItemList& commands);
 
 
 	CommandParam mParam;
-	ChromiumBrowseHistory mChromeHistory;
 	ChromiumBrowseHistory mEdgeHistory;
+	ChromiumBrowseHistory mAltBrowserHistory;
 	QueryCancellationToken mCancelToken;
 	// ブックマーク読み込みスレッド
 	std::thread mLoadThread;
@@ -80,19 +84,24 @@ struct WebHistoryCommand::PImpl
 
 /**
  	履歴を問い合わせる
+ 	@param[in]     brwsEnv   ブラウザ情報
  	@param[in]     historyDB 履歴を保持するDB的なもの
- 	@param[in]     appName   アプリ名
  	@param[in]     words     検索ワード
  	@param[out]    commands  取得した履歴から生成された候補
 */
 void WebHistoryCommand::PImpl::QueryHistory(
+	BrowserEnvironment* brwsEnv,
 	ChromiumBrowseHistory* historyDB,
-	LPCTSTR appName,
 	const std::vector<PatternInternal::WORD>& words,
 	CommandQueryItemList& commands
 )
 {
 	if (historyDB == nullptr) {
+		// Web履歴検索設定で該当するブラウザを使う設定になっていない
+		return;
+	}
+	if (brwsEnv->IsAvailable() == false) {
+		// 外部ツール設定でブラウザを使う設定になっていない(または利用できない)
 		return;
 	}
 
@@ -110,7 +119,7 @@ void WebHistoryCommand::PImpl::QueryHistory(
 			continue;
 		}
 		commands.Add(CommandQueryItem(matchLevel,
-		                              new WebHistoryAdhocCommand(mParam.mPrefix, HISTORY{appName, item.mTitle, item.mUrl, matchLevel})));
+		                              new WebHistoryAdhocCommand(mParam.mPrefix, HISTORY{brwsEnv, item.mTitle, item.mUrl, matchLevel})));
 	}
 }
 
@@ -188,11 +197,11 @@ bool WebHistoryCommand::QueryCandidates(
 	// キャンセルチェック処理の状態を初期化
 	in->mCancelToken.ResetState();
 
-	// Chromeの履歴を検索する
-	in->QueryHistory(in->GetChromeHistory(),_T("Chrome"), words, commands); 
-
 	// Edgeの履歴を検索する
-	in->QueryHistory(in->GetEdgeHistory(),_T("Edge"), words, commands); 
+	in->QueryHistory(EdgeEnvironment::GetInstance(), in->GetEdgeHistory(), words, commands); 
+
+	// Webブラウザ(外部ツール)の履歴を検索する
+	in->QueryHistory(ConfiguredBrowserEnvironment::GetInstance(), in->GetAltBrowserHistory(), words, commands); 
 
 	return true;
 }

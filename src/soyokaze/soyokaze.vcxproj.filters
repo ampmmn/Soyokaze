@@ -247,6 +247,12 @@
     <Filter Include="commands\onenote">
       <UniqueIdentifier>{276bb0d0-8b11-4d5e-a24e-398895391330}</UniqueIdentifier>
     </Filter>
+    <Filter Include="externaltool">
+      <UniqueIdentifier>{d6c1942a-e1e2-4bed-aab4-e0f7316f4b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externaltool\webbrowser">
+      <UniqueIdentifier>{49744c8b-0b75-46cf-9281-4bd8c446b4fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1584,6 +1590,24 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h">
       <Filter>commands\clipboardhistory</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageExternalTool.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="externaltool\webbrowser\EdgeEnvironment.h">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\BookmarkItem.h">
+      <Filter>commands\bookmarks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2720,9 +2744,6 @@
     <ClCompile Include="commands\alias\AliasCommandParam.cpp">
       <Filter>commands\alias</Filter>
     </ClCompile>
-    <ClCompile Include="commands\bookmarks\BookmarkItem.cpp">
-      <Filter>commands\bookmarks</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp">
       <Filter>mainwindow\optionbutton</Filter>
     </ClCompile>
@@ -2803,6 +2824,18 @@
     </ClCompile>
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp">
       <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageExternalTool.cpp">
+      <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="externaltool\webbrowser\EdgeEnvironment.cpp">
+      <Filter>externaltool\webbrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp">
+      <Filter>externaltool\webbrowser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

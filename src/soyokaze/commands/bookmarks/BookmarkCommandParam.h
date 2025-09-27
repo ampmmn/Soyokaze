@@ -19,7 +19,7 @@ public:
 	int mMinTriggerLength{5};
 	// 機能を利用するか?
 	bool mIsEnable{true};
-	bool mIsEnableChrome{true};
+	bool mIsEnableAltBrowser{true};
 	bool mIsEnableEdge{true};
 	bool mIsUseURL{false};
 };

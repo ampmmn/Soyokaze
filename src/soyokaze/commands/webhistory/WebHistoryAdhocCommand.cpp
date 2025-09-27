@@ -20,52 +20,12 @@ namespace launcherapp {
 namespace commands {
 namespace webhistory {
 
-static bool GetChromeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("PROGRAMFILES"));
-	PathAppend(path, _T("Google\\Chrome\\Application\\chrome.exe"));
-
-	return true;
-}
-
-static bool GetEdgeExecutablePath(LPTSTR path, size_t len)
-{
-	UNREFERENCED_PARAMETER(len);
-
-	size_t reqLen = 0;
-#ifndef _WIN64
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles"));
-#else
-	_tgetenv_s(&reqLen, path, MAX_PATH_NTFS, _T("ProgramFiles(x86)"));
-#endif
-	PathAppend(path, _T("Microsoft\\Edge\\Application\\msedge.exe"));
-
-	return true;
-}
-
 struct WebHistoryAdhocCommand::PImpl
 {
-	bool GetExecutablePath(LPTSTR path, size_t len);
-
 	CString mName;
 	HISTORY mHistory;
+	CString mProductName;
 };
-
-bool WebHistoryAdhocCommand::PImpl::GetExecutablePath(LPTSTR path, size_t len)
-{
-	if (mHistory.mBrowserName == _T("Chrome")) {
-		return GetChromeExecutablePath(path, len);
-	}
-	else if (mHistory.mBrowserName == _T("Edge")) {
-		return GetEdgeExecutablePath(path, len);
-	}
-	else {
-		return false;
-	}
-}
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WebHistoryAdhocCommand)
 
@@ -78,6 +38,7 @@ WebHistoryAdhocCommand::WebHistoryAdhocCommand(
 {
 	in->mName = name;
 	in->mHistory = item;
+	item.mEnv->GetProductName(in->mProductName);
 }
 
 WebHistoryAdhocCommand::~WebHistoryAdhocCommand()
@@ -96,7 +57,7 @@ CString WebHistoryAdhocCommand::GetGuideString()
 
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
-	return WebHistoryAdhocCommand::TypeDisplayName((LPCTSTR)in->mHistory.mBrowserName);
+	return WebHistoryAdhocCommand::TypeDisplayName(in->mProductName);
 }
 
 BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
@@ -108,23 +69,20 @@ BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
 		return TRUE;
 	}
 
+	auto& history = in->mHistory;
 	// URLをブラウザで開く
-	std::vector<TCHAR> path(MAX_PATH_NTFS);
-	if (in->GetExecutablePath(path.data(), MAX_PATH_NTFS) == false) {
-		return FALSE;
-	}
-
-	if (Path::FileExists(path.data()) == FALSE) {
+	CString path;
+	if (history.mEnv->GetInstalledExePath(path) == false) {
 		CString msg(_T("Browser executable not found."));
 		msg += _T("\n");
-		msg += path.data();
+		msg += path;
 		AfxMessageBox(msg);
 		return TRUE;
 	}
 
 	SubProcess::ProcessPtr process;
 	SubProcess exec(param);
-	exec.Run(path.data(), in->mHistory.mUrl, process);
+	exec.Run(path, history.mUrl, process);
 
 	return TRUE;
 }
@@ -132,9 +90,9 @@ BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
 HICON WebHistoryAdhocCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
-	std::vector<TCHAR> path(MAX_PATH_NTFS);
-	in->GetExecutablePath(path.data(), MAX_PATH_NTFS);
-	return IconLoader::Get()->LoadIconFromPath(path.data());
+	CString path;
+	in->mHistory.mEnv->GetInstalledExePath(path);
+	return IconLoader::Get()->LoadIconFromPath(path);
 }
 
 launcherapp::core::Command*
@@ -167,7 +125,7 @@ CString WebHistoryAdhocCommand::TypeDisplayName(LPCTSTR browserName)
 	static CString TEXT_HISTORY((LPCTSTR)IDS_COMMAND_HISTORY);
 
 	CString str;
-	str.Format(_T("%s %s"), browserName, (LPCTSTR)TEXT_HISTORY);
+	str.Format(_T("%s %s"), (LPCTSTR)TEXT_HISTORY, browserName);
 
 	return str;
 }

@@ -6,6 +6,7 @@
 
 - #169 OneNoteのページ表示機能
 - #175 Alt-Enterキー入力を扱えるようにする
+- #177 Chrome以外のWebブラウザを使えるようにする
 
 ### Changed
 

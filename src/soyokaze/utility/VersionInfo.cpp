@@ -99,3 +99,41 @@ bool VersionInfo::GetBuildDateTime(CTime& tmBuildDate)
 	return true;
 }
 
+bool VersionInfo::GetProductName(const CString& targetPath, CString& productName)
+{
+	DWORD size = GetFileVersionInfoSize(targetPath, NULL);
+	if (size == 0) {
+		return false;
+	}
+
+	std::vector<BYTE> buffer(size);
+	if (GetFileVersionInfo(targetPath, 0, size, buffer.data()) == FALSE) {
+		return false;
+	}
+
+	// 言語とコードページを取得
+	struct LANGANDCODEPAGE {
+		WORD wLanguage;
+		WORD wCodePage;
+	} *trans;
+
+
+	UINT cbTranslate = 0;
+	if (!VerQueryValue(buffer.data(), _T("\\VarFileInfo\\Translation"), (void**)&trans, &cbTranslate)) {
+		return false;
+	}
+
+	// 製品名を取得
+	TCHAR subBlock[256];
+	_stprintf_s(subBlock, _T("\\StringFileInfo\\%04x%04x\\ProductName"), trans[0].wLanguage, trans[0].wCodePage);
+
+	void* name = nullptr;
+	UINT sizeProductName = 0;
+	if (VerQueryValue(buffer.data(), subBlock, &name, &sizeProductName) == FALSE) {
+		return false;
+	}
+
+	productName = (LPCTSTR)name;
+	return true;
+}
+

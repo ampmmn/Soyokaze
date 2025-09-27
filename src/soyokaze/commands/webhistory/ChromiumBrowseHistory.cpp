@@ -22,14 +22,6 @@ struct ChromiumBrowseHistory::PImpl
 	{
 	}
 
-	void InitFilePath()
-	{
-		// 元の履歴ファイルのパスを生成
-		mOrgDBFilePath = mProfileDir;
-		PathAppend(mOrgDBFilePath.GetBuffer(MAX_PATH_NTFS), _T("History"));
-		mOrgDBFilePath.ReleaseBuffer();
-	}
-
 	bool MakeQueryString(const std::vector<PatternInternal::WORD>& words, int limit, CString& queryStr);
 
 	void UpdateDatabase();
@@ -55,7 +47,6 @@ struct ChromiumBrowseHistory::PImpl
 	}
 
 	CString mId;
-	CString mProfileDir;
 	CString mOrgDBFilePath;
 	CString mDBFilePath;
 	bool mIsUseURL{false};
@@ -174,17 +165,16 @@ ChromiumBrowseHistory::~ChromiumBrowseHistory()
 
 bool ChromiumBrowseHistory::Initialize(
 		const CString& id,
-	 	const CString& profileDir,
+	 	const CString& historyFile,
 		bool isUseURL,
 	 	bool isUseMigemo
 )
 {
 	in->mId = id;
-	in->mProfileDir = profileDir;
+	in->mOrgDBFilePath = historyFile;
 	in->mIsUseURL = isUseURL;
 	in->mIsUseMigemo = isUseMigemo;
 
-	in->InitFilePath();
 	in->UpdateDatabase();
 
 	return true;

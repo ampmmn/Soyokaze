@@ -11,7 +11,9 @@ bool CommandParam::Save(Settings& settings) const
 	settings.Set(_T("Browser:Candidates"), mLimit);
 	settings.Set(_T("Browser:WebHistoryMinTriggerLength"), mMinTriggerLength);
 	settings.Set(_T("Browser:EnableHistoryEdge"), mIsEnableEdge);
-	settings.Set(_T("Browser:EnableHistoryChrome"), mIsEnableChrome);
+	// Note: 初期実装との互換性を保つためキー名はEnableHistoryChromeのまま
+	//       (ある時点でChromeを「外部ツール」という位置づけに変更した)
+	settings.Set(_T("Browser:EnableHistoryChrome"), mIsEnableAltBrowser);
 	settings.Set(_T("Browser:UseMigemo"), mIsUseMigemo);
 	settings.Set(_T("Browser:UseURL"), mIsUseURL);
 
@@ -25,7 +27,9 @@ bool CommandParam::Load(Settings& settings)
 	mLimit = settings.Get(_T("Browser:Candidates"), 20);
 	mMinTriggerLength = settings.Get(_T("Browser:WebHistoryMinTriggerLength"), 5);
 	mIsEnableEdge = settings.Get(_T("Browser:EnableHistoryEdge"), true);
-	mIsEnableChrome = settings.Get(_T("Browser:EnableHistoryChrome"), true);
+	// Note: 初期実装との互換性を保つためキー名はEnableHistoryChromeのまま
+	//       (ある時点でChromeを「外部ツール」という位置づけに変更した)
+	mIsEnableAltBrowser = settings.Get(_T("Browser:EnableHistoryChrome"), true);
 	mIsUseMigemo = settings.Get(_T("Browser:UseMigemo"), true);
 	mIsUseURL = settings.Get(_T("Browser:UseURL"), false);
 

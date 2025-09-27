@@ -200,6 +200,10 @@ Path::Path(SYSTEMDIRECTORY_TAG tag, LPCTSTR extraPath) : mPath(MAX_PATH_NTFS)
 		size_t reqLen = 0;
 		_tgetenv_s(&reqLen, data(), size(), _T("APPDATA"));
 	}
+	else if (tag == LOCALAPPDATA) {
+		size_t reqLen = 0;
+		_tgetenv_s(&reqLen, data(), size(), _T("LOCALAPPDATA"));
+	}
 	else if (tag == USERPROFILE) {
 		size_t reqLen = 0;
 		_tgetenv_s(&reqLen, data(), size(), _T("USERPROFILE"));

@@ -31,7 +31,7 @@ public:
 	~ChromiumBrowseHistory();
 
 public:
-	bool Initialize(const CString& id, const CString& profileDir, bool isUseURL, bool isUseMigemo);
+	bool Initialize(const CString& id, const CString& historyFile, bool isUseURL, bool isUseMigemo);
 	bool Query(const std::vector<PatternInternal::WORD>& words, int limit, CancellationToken* cancelToken, std::vector<ITEM>& items);
 
 private:

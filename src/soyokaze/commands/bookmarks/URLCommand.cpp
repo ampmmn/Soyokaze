@@ -20,7 +20,7 @@ namespace launcherapp { namespace commands { namespace bookmarks {
 struct URLCommand::PImpl
 {
 	Bookmark mBookmarkItem;
-	BrowserType mBrowserType{BrowserType::Unknown};
+	BrowserEnvironment* mEnv{nullptr};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,13 +32,13 @@ IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(URLCommand)
 
 URLCommand::URLCommand(
 	const Bookmark& item,
-	BrowserType browserType
+	BrowserEnvironment* brwsEnv
 ) : 
 	AdhocCommandBase(item.mName, item.mName),
 	in(std::make_unique<PImpl>())
 {
 	in->mBookmarkItem = item;
-	in->mBrowserType = browserType;
+	in->mEnv = brwsEnv;
 }
 
 URLCommand::~URLCommand()
@@ -57,7 +57,9 @@ CString URLCommand::GetGuideString()
 
 CString URLCommand::GetTypeDisplayName()
 {
-	return TypeDisplayName(in->mBrowserType);
+	CString product;
+	in->mEnv->GetProductName(product);
+	return TypeDisplayName(product);
 }
 
 BOOL URLCommand::Execute(Parameter* param)
@@ -69,17 +71,13 @@ BOOL URLCommand::Execute(Parameter* param)
 	}
 
 	// URLをブラウザで開く
-	Path path;
-	if (Bookmark::GetExecutablePath(in->mBrowserType, path, path.size()) == false) {
-		return FALSE;
-	}
-
-	if (path.FileExists() == false) {
+	CString path;
+	if (in->mEnv->GetInstalledExePath(path) == false) {
 		CString msg(_T("Browser executable not found."));
 		msg += _T("\n");
 		msg += (LPCTSTR)path;
 		AfxMessageBox(msg);
-		return TRUE;
+		return FALSE;
 	}
 
 	SubProcess::ProcessPtr process;
@@ -92,15 +90,19 @@ BOOL URLCommand::Execute(Parameter* param)
 HICON URLCommand::GetIcon()
 {
 	// ブラウザに応じたアイコンを取得
-	Path path;
-	Bookmark::GetExecutablePath(in->mBrowserType, path, path.size());
-	return IconLoader::Get()->LoadIconFromPath((LPCTSTR)path);
+	CString path;
+	if (in->mEnv->GetInstalledExePath(path)) {
+		return IconLoader::Get()->LoadIconFromPath(path);
+	}
+	else {
+		return IconLoader::Get()->LoadWebIcon();
+	}
 }
 
 launcherapp::core::Command*
 URLCommand::Clone()
 {
-	return new URLCommand(in->mBookmarkItem, in->mBrowserType);
+	return new URLCommand(in->mBookmarkItem, in->mEnv);
 }
 
 CString URLCommand::GetSourceName()
@@ -122,12 +124,12 @@ bool URLCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 	return false;
 }
 
-CString URLCommand::TypeDisplayName(int type)
+CString URLCommand::TypeDisplayName(LPCTSTR productName)
 {
 	static CString TEXT_BOOKMARK((LPCTSTR)IDS_COMMAND_BOOKMARK);
 
 	CString str;
-	str.Format(_T("%s %s"), (LPCTSTR)Bookmark::GetBrowserName((BrowserType)type), (LPCTSTR)TEXT_BOOKMARK);
+	str.Format(_T("%s %s"), (LPCTSTR)TEXT_BOOKMARK, productName);
 
 	return str;
 }
