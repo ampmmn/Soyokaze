@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.44.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-14 14:13+0900\n"
+"POT-Creation-Date: 2025-09-27 15:57+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -32,36 +32,44 @@ msgid "![](../image/adhoc-command/onenote/introduction.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/onenote.md:7
-msgid "Usage"
-msgstr "使用方法"
-
-#: ../../source/adhoc-command/onenote.md:9
-msgid "OneNoteのページ名を入力欄に入力すると、該当するページを候補欄に表示する"
+msgid "候補を選択し実行すると、該当のOneNoteページを表示できる"
 msgstr ""
 
-#: ../../source/adhoc-command/onenote.md:10
-msgid "候補を選択し、実行すると該当するページをOneNoteアプリで表示する。"
+#: ../../source/adhoc-command/onenote.md:9
+msgid "![](../image/adhoc-command/onenote/introduction2.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/onenote.md:11
-msgid "この機能を利用するにはOfficeに含まれる有償版のOneNoteデスクトップアプリがインストールされている必要がある"
-msgstr ""
+msgid "Usage"
+msgstr "使用方法"
 
-#: ../../source/adhoc-command/onenote.md:12
-msgid "無料版やWeb版では利用不可"
+#: ../../source/adhoc-command/onenote.md:13
+msgid "入力欄に文字列を入力すると、セクション名やページ名にその文字列が含まれるページの一覧を候補欄に表示する"
 msgstr ""
 
 #: ../../source/adhoc-command/onenote.md:14
+msgid "候補を選択し、実行すると該当するページをOneNoteアプリで表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/onenote.md:15
+msgid "この機能を利用するにはOfficeに含まれる有償版のOneNoteデスクトップアプリがインストールされている必要がある"
+msgstr ""
+
+#: ../../source/adhoc-command/onenote.md:16
+msgid "無料版やWeb版では利用不可"
+msgstr ""
+
+#: ../../source/adhoc-command/onenote.md:18
 msgid "Settings"
 msgstr "設定"
 
-#: ../../source/adhoc-command/onenote.md:16
+#: ../../source/adhoc-command/onenote.md:20
 msgid ""
 "機能は初期状態で有効になっている。 機能を使わない場合は、アプリケーション設定の `拡張機能` > `OneNote` "
 "から機能を無効化することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/onenote.md:19
+#: ../../source/adhoc-command/onenote.md:23
 msgid "![](../image/adhoc-command/onenote/appsetting.png)"
 msgstr ""
 

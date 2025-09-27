@@ -1478,7 +1478,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Webブラウザ",IDC_STATIC,8,5,294,204
-    CONTROL         "ブックマーク検索／Web検索機能においてEdge以外のWebブラウザも利用する(&E)",IDC_CHECK_USEEXTERNAL,
+    CONTROL         "ブックマーク検索／Web履歴検索においてEdge以外のWebブラウザも利用する(&E)",IDC_CHECK_USEEXTERNAL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,19,277,10
     CONTROL         "&Chromeを使う",IDC_RADIO_USECHROME,"Button",BS_AUTORADIOBUTTON | WS_GROUP,17,36,59,10
     CONTROL         "別のWebブラウザを指定する(&O)",IDC_RADIO_USEOTHER,"Button",BS_AUTORADIOBUTTON,17,52,184,10
@@ -1506,8 +1506,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,44,1,1
- PRODUCTVERSION 0,44,1,1
+ FILEVERSION 0,45,0,1
+ PRODUCTVERSION 0,45,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1523,12 +1523,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", APPNAME_
-            VALUE "FileVersion", "0.44.1.1"
+            VALUE "FileVersion", "0.45.0.1"
             VALUE "InternalName", APP_EXENAME_
             VALUE "LegalCopyright", COPYRIGHT_STR
             VALUE "OriginalFilename", APP_EXENAME_
             VALUE "ProductName", APPNAME_
-            VALUE "ProductVersion", "0.44.1.1"
+            VALUE "ProductVersion", "0.45.0.1"
         END
     END
     BLOCK "VarFileInfo"

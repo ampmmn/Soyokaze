@@ -107,7 +107,7 @@ bool AppSettingPage::UpdateStatus()
 		else {
 			otherBrowserName = _T("Webブラウザ(外部ツール)");
 		}
-		checkUseOther->SetWindowText(fmt::format(_T("{}の履歴を候補として表示する(&C)"), (LPCTSTR)otherBrowserName).c_str());
+		checkUseOther->SetWindowText(fmt::format(_T("{}のブックマークを候補として表示する(&C)"), (LPCTSTR)otherBrowserName).c_str());
 	}
 
 	// 機能を無効にする場合はコントロールをグレーアウトする
