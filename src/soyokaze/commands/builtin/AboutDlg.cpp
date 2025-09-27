@@ -4,6 +4,7 @@
 #include "AboutDlg.h"
 #include "utility/AppProfile.h"
 #include "utility/VersionInfo.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "resource.h"
 #include <vector>
 
@@ -13,6 +14,7 @@
 #define new DEBUG_NEW
 #endif
 
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
 {
@@ -88,7 +90,10 @@ void CAboutDlg::OnNotifyLinkOpen(
 {
 	NMLINK* linkPtr = (NMLINK*)pNMHDR;
 
-	ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);
+	// アプリ設定の 外部ツール > Webブラウザ の設定でURLを開く
+	auto brwsEnv = ConfiguredBrowserEnvironment::GetInstance();
+	brwsEnv->OpenURL(linkPtr->item.szUrl);
+
 	*pResult = 0;
 }
 

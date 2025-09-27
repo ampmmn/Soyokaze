@@ -4,6 +4,7 @@
 #include "commands/builtin/MainDirCommand.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -11,6 +12,7 @@
 #endif
 
 using MainDirCommand = launcherapp::commands::builtin::MainDirCommand;
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 class InputSettingDialog : public CDialog
 {
@@ -136,7 +138,8 @@ void InputSettingDialog::OnNotifyLinkOpen(
 		param->Release();
 	}
 	else {
-		ShellExecute(0, _T("open"), linkPtr->item.szUrl,  0, 0,SW_NORMAL);
+		// アプリ設定の 外部ツール > Webブラウザ の設定でURLを開く
+		ConfiguredBrowserEnvironment::GetInstance()->OpenURL(linkPtr->item.szUrl);
 	}
 	*pResult = 0;
 }

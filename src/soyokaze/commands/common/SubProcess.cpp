@@ -5,6 +5,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "commands/core/CommandParameter.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
@@ -19,6 +20,7 @@
 #endif
 
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
@@ -78,8 +80,10 @@ struct SubProcess::PImpl
 	bool IsOpenPathKeyPressed();
 	bool CanRunAsAdmin(const CString& path);
 
-	bool StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
-	bool Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process);
+	bool StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process);
+	bool Start(SHELLEXECUTEINFO si, ProcessPtr& process);
+
+	bool SetupShellExecuteInfo(CString& path, CString& param, const CString& workDir, SHELLEXECUTEINFO& si);
 
 	CommandParameter* mParam{nullptr};
 	int mShowType{SW_SHOW};
@@ -110,20 +114,8 @@ bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 	return ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0;
 }
 
-bool SubProcess::PImpl::StartWithLowerPermissions(CString& path, CString& param, const CString& workDir, ProcessPtr& process)
+bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process)
 {
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-	if (param.IsEmpty() == FALSE) {
-		si.lpParameters = param;
-	}
-	if (workDir.IsEmpty() == FALSE) {
-		si.lpDirectory = workDir;
-	}
-
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 	bool isRun = proxy->StartProcess(&si, mAdditionalEnv);
 
@@ -132,14 +124,8 @@ bool SubProcess::PImpl::StartWithLowerPermissions(CString& path, CString& param,
 	return isRun;
 }
 
-bool SubProcess::PImpl::Start(CString& path, CString& param, const CString& workDir, ProcessPtr& process)
+bool SubProcess::PImpl::Start(SHELLEXECUTEINFO si, ProcessPtr& process)
 {
-	SHELLEXECUTEINFO si = {};
-	si.cbSize = sizeof(si);
-	si.nShow = mShowType;
-	si.fMask = SEE_MASK_NOCLOSEPROCESS;
-	si.lpFile = path;
-
 	// 追加の環境変数が設定されているか
 	auto site = winrt::make_self<AdditionalEnvVariableSite>();
 	site->SetEnvironmentVariables(mAdditionalEnv);
@@ -149,24 +135,73 @@ bool SubProcess::PImpl::Start(CString& path, CString& param, const CString& work
 	}
 
 	// 管理者として実行する指定がされているか?
-	bool isRunAsAdminSpecified = mIsRunAsAdmin || (IsRunAsKeyPressed() && CanRunAsAdmin(path) );
+	bool isRunAsAdminSpecified = mIsRunAsAdmin || (IsRunAsKeyPressed() && CanRunAsAdmin(si.lpFile) );
 	if (IsRunningAsAdmin() == false && isRunAsAdminSpecified) {
 		si.lpVerb = _T("runas");
 	}
 
-	if (param.IsEmpty() == FALSE) {
-		si.lpParameters = param;
-	}
 
-	if (workDir.IsEmpty() == FALSE) {
-		si.lpDirectory = workDir;
-	}
 
 	BOOL isRun = ShellExecuteEx(&si);
 
 	process = std::move(std::make_unique<SubProcess::Instance>(si.hProcess));
 
 	return isRun != FALSE;
+}
+
+bool SubProcess::PImpl::SetupShellExecuteInfo(CString& path, CString& param, const CString& workDir, SHELLEXECUTEINFO& si)
+{
+	// Webブラウザ(外部ツール)経由で起動すべきかどうかを判断する
+	auto brwsEnv = ConfiguredBrowserEnvironment::GetInstance();
+	if (brwsEnv->ShouldUseThisFor(path)) {
+
+		CString url(path);
+
+		// Webブラウザ経由
+		CString browserPath;
+		CString parameter;
+		if (brwsEnv->GetInstalledExePath(browserPath) == false || brwsEnv->GetCommandlineParameter(parameter) == false) {
+			// 無効なパスが設定されている
+			return false;
+		}
+
+		// パスに空白を含む場合はダブルクォーテーションで囲む
+		if (url.Find(_T(" ")) != -1) {
+			url = _T("\"") + url + _T("\"");
+		}
+
+		// 置換後のパラメータを引数paramに書き戻す
+		param = parameter;
+		param.Replace(_T("$target"), url);
+
+		si.cbSize = sizeof(si);
+		si.nShow = mShowType;
+		si.fMask = SEE_MASK_NOCLOSEPROCESS;
+
+		// ConfiguredBrowserEnvironmentから得たWebブラウザ(外部ツール)のパスを引数pathに戻す
+		path = browserPath;
+		si.lpFile = path.GetBuffer(path.GetLength() + 1);
+
+		si.lpParameters = param;
+
+		if (workDir.IsEmpty() == FALSE) {
+			si.lpDirectory = workDir;
+		}
+		return true;
+	}
+	else {
+		si.cbSize = sizeof(si);
+		si.nShow = mShowType;
+		si.fMask = SEE_MASK_NOCLOSEPROCESS;
+		si.lpFile = path;
+		if (param.IsEmpty() == FALSE) {
+			si.lpParameters = param;
+		}
+		if (workDir.IsEmpty() == FALSE) {
+			si.lpDirectory = workDir;
+		}
+		return true;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -294,14 +329,17 @@ bool SubProcess::Run(
 	// 管理者として実行する指定がされているか?
 	bool isRunAsAdminSpecified = in->mIsRunAsAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path));
 
+	SHELLEXECUTEINFO si = {};
+	in->SetupShellExecuteInfo(path, paramStr, workDir, si);
+
 	bool isRun = false;
 	if (IsRunningAsAdmin() && isRunAsAdminSpecified == false && pref->ShouldDemotePriviledge()) {
 		// ランチャーを管理者権限で実行していて、かつ、コマンドを管理者権限で起動しない場合は、
 		// 降格した権限で起動する
-		isRun = in->StartWithLowerPermissions(path, paramStr, workDir, process);
+		isRun = in->StartWithLowerPermissions(si, process);
 	}
 	else {
-		isRun = in->Start(path, paramStr, workDir, process);
+		isRun = in->Start(si, process);
 	}
 
 	if (isRun == false) {

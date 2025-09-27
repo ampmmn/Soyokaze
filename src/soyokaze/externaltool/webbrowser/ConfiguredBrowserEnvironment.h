@@ -16,6 +16,9 @@ public:
 
 	void Load();
 	bool ShouldUseThisFor(const CString& url);
+	// 外部ツール設定に従いURLを開く(利用できない場合は既定のアプリで開く)
+	bool OpenURL(LPCWSTR url);
+	bool OpenURL(const String& url);
 
 	// 外部ツールで設定したWebブラウザは利用可能か?
 	bool IsAvailable() override;
@@ -30,6 +33,9 @@ public:
 	// 製品名を取得
 	bool GetProductName(CString& name) override;
 
+private:
+	bool OpenURLWithSystemBrowser(LPCWSTR url);
+	bool OpenURLWithExternalBrowser(LPCWSTR url);
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

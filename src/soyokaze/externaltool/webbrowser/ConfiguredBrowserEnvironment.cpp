@@ -92,8 +92,35 @@ void ConfiguredBrowserEnvironment::Load()
 bool ConfiguredBrowserEnvironment::ShouldUseThisFor(const CString& url)
 {
 	UNREFERENCED_PARAMETER(url);
-	
-	return in->mShouleOpenUrlWithSystem == false;
+
+	if (in->mIsEnable == false) {
+		// 外部ツールを使う設定になっていない(ので既定のブラウザで開く)
+		return false;
+	}
+	if (in->mShouleOpenUrlWithSystem) {
+		// 既定のブラウザで開く設定になっている
+		return false;
+	}
+
+	if (PathIsURL(url) == FALSE) {
+		// URLではないのでWebブラウザを使う必要はない
+		return false;
+	}
+	return true;
+}
+
+bool ConfiguredBrowserEnvironment::OpenURL(LPCWSTR url)
+{
+	if (OpenURLWithExternalBrowser(url) == false) {
+		// 既定のブラウザで開く
+		return OpenURLWithSystemBrowser(url);
+	}
+	return true;
+}
+bool ConfiguredBrowserEnvironment::OpenURL(const String& url)
+{
+	CString tmp;
+	return OpenURL(UTF2UTF(url, tmp));
 }
 
 bool ConfiguredBrowserEnvironment::IsAvailable()
@@ -216,6 +243,75 @@ bool ConfiguredBrowserEnvironment::GetProductName(CString& name)
 	}
 	return VersionInfo::GetProductName(path, name);
 }
+
+bool ConfiguredBrowserEnvironment::OpenURLWithSystemBrowser(LPCWSTR url_)
+{
+	CString url(url_);
+
+	SHELLEXECUTEINFOW si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = SW_NORMAL;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+	si.lpFile = url.GetBuffer(url.GetLength() + 1);
+	ShellExecuteExW(&si);
+	url.ReleaseBuffer();
+
+	if (si.hProcess == nullptr) {
+		return false;
+	}
+
+	SPDLOG_DEBUG(L"launch url PID:{}", GetProcessId(si.hProcess));
+	CloseHandle(si.hProcess);
+
+	return true;
+}
+
+bool ConfiguredBrowserEnvironment::OpenURLWithExternalBrowser(LPCWSTR url_)
+{
+	if (in->mIsEnable == false) {
+		// 外部ツールを使う設定になっていない(ので既定のブラウザで開く)
+		return false;
+	}
+	if (in->mShouleOpenUrlWithSystem) {
+		// 既定のブラウザで開く設定になっている
+		return false;
+	}
+
+	CString browserPath;
+	CString parameter;
+	if (GetInstalledExePath(browserPath) == false || GetCommandlineParameter(parameter) == false) {
+		// 無効なパスが設定されている
+		return false;
+	}
+
+	// パスに空白を含む場合はダブルクォーテーションで囲む
+	CString url(url_);
+	if (url.Find(_T(" ")) != -1) {
+		url = _T("\"") + url + _T("\"");
+	}
+	CStringW params(parameter);
+	params.Replace(_T("$target"), url);
+
+	SHELLEXECUTEINFOW si = {};
+	si.cbSize = sizeof(si);
+	si.nShow = SW_NORMAL;
+	si.fMask = SEE_MASK_NOCLOSEPROCESS;
+
+	si.lpFile = browserPath.GetBuffer(browserPath.GetLength() + 1);
+	si.lpParameters = params;
+	ShellExecuteExW(&si);
+	browserPath.ReleaseBuffer();
+
+	if (si.hProcess == nullptr) {
+		return false;
+	}
+
+	SPDLOG_DEBUG(L"launch url PID:{}", GetProcessId(si.hProcess));
+	CloseHandle(si.hProcess);
+
+	return true;
+}
+
 
 }}}
 
