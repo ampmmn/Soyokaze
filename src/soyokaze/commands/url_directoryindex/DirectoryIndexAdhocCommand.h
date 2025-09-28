@@ -24,19 +24,16 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
-	BOOL Execute(Parameter* param) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
 // ContextMenuSource
-	// $B%a%K%e!<$N9`L\?t$r<hF@$9$k(B
+	// メニューの項目数を取得する
 	int GetMenuItemCount() override;
-	// $B%a%K%e!<$NI=<(L>$r<hF@$9$k(B
-	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
-	// $B%a%K%e!<A*Br;~$N=hM}$r<B9T$9$k(B
-	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+	// メニューに対応するアクションを取得する
+	bool GetMenuItem(int index, Action** action) override;
 
 // ExtraCandidate
 	CString GetSourceName() override;

@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "WebHistoryAdhocCommand.h"
 #include "commands/core/ContextMenuSourceIF.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenURLAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -15,6 +16,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using namespace launcherapp::actions::web;
 
 namespace launcherapp {
 namespace commands {
@@ -50,42 +52,24 @@ CString WebHistoryAdhocCommand::GetName()
 	return in->mName + _T(" ") + in->mHistory.mDisplayName;
 }
 
-CString WebHistoryAdhocCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString WebHistoryAdhocCommand::GetTypeDisplayName()
 {
 	return WebHistoryAdhocCommand::TypeDisplayName(in->mProductName);
 }
 
-BOOL WebHistoryAdhocCommand::Execute(Parameter* param)
+bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	bool isShiftKeyPressed = GetModifierKeyState(param, MASK_SHIFT) != 0;
-	if (isShiftKeyPressed) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mHistory.mUrl);
-		return TRUE;
+	if (modifierFlags == 0) {
+		*action = new actions::web::OpenURLAction(in->mHistory.mUrl, in->mHistory.mEnv);
+		return true;
 	}
-
-	auto& history = in->mHistory;
-	// URLをブラウザで開く
-	CString path;
-	if (history.mEnv->GetInstalledExePath(path) == false) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += path;
-		AfxMessageBox(msg);
-		return TRUE;
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
+		return true;
 	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run(path, history.mUrl, process);
-
-	return TRUE;
+	return false;
 }
+
 
 HICON WebHistoryAdhocCommand::GetIcon()
 {

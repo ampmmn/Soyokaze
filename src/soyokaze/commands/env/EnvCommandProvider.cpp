@@ -3,7 +3,7 @@
 #include "commands/env/EnvCommand.h"
 #include "commands/env/EnvAppSettings.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "matcher/PartialMatchPattern.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"

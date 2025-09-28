@@ -3,7 +3,6 @@
 #include "commands/calculator/CalculatorCommand.h"
 #include "commands/calculator/Calculator.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 

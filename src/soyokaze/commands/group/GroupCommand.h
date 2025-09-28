@@ -19,11 +19,9 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 
-	BOOL Execute(Parameter* param) override;
-	CString GetErrorString() override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsAllowAutoExecute() override;
@@ -44,6 +42,7 @@ public:
 	static CString GroupCommand::GetType();
 	static CString TypeDisplayName();
 
+	static bool NewDialog(Parameter* param);
 public:
 	void SetParam(const CommandParam& param);
 

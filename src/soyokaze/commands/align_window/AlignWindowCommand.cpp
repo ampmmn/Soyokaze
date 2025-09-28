@@ -4,6 +4,7 @@
 #include "commands/align_window/AlignWindowCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"
@@ -21,6 +22,7 @@ namespace commands {
 namespace align_window {
 
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 struct AlignWindowCommand::PImpl
 {
@@ -88,15 +90,6 @@ CString AlignWindowCommand::GetDescription()
 }
 
 /**
- 	ガイド欄文字列を取得する
- 	@return ガイド欄文字列
-*/
-CString AlignWindowCommand::GetGuideString()
-{
-	return _T("⏎:ウインドウを整列する");
-}
-
-/**
  	コマンド種別を表す文字列を取得する
  	@return コマンド種別
 */
@@ -128,22 +121,31 @@ static HWND GetNextHwnd()
 	return hwnd;
 }
 
-/**
- 	コマンド(ウインドウ整列処理)を実行する
- 	@return TRUE:成功 FALSE:失敗
- 	@param[in] param コマンド実行時パラメータ
-*/
-BOOL AlignWindowCommand::Execute(
-	Parameter* param
-)
+bool AlignWindowCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
-	CString missingTitles;
+	*action = new CallbackAction(_T("ウインドウを整列する"), [&](Parameter*,String* errMsg) -> bool {
+			HWND prevHwnd{nullptr};
+			// 対象のウインドウを整列する
+			bool isAlignOK = AlignTarget(prevHwnd, errMsg);
+			// 整列後に特定のウインドウを前面に設定する
+			bool isForegroundOK = SetForeground(prevHwnd, errMsg);
+			return isAlignOK && isForegroundOK;
+	});
 
-	ScopeAttachThreadInput scope;
+	return true;
+}
+
+// 対象のウインドウを整列
+bool AlignWindowCommand::AlignTarget(HWND& prevForegroundHwnd, String* errMsg)
+{
+	String missingTitles;
 
 	HWND hwndForeground = GetNextHwnd();
+	prevForegroundHwnd = hwndForeground; 
 
 	std::vector<HWND> targets;
 	for (auto& item : in->mParam.mItems) {
@@ -152,10 +154,11 @@ BOOL AlignWindowCommand::Execute(
 		item.FindHwnd(targets);
 
 		if (targets.empty()) {
-			if (missingTitles.IsEmpty() == FALSE) {
-				missingTitles += _T(" / ");
+			if (missingTitles.empty() == false) {
+				missingTitles += " / ";
 			}
-			missingTitles += item.mCaptionStr;
+			std::string tmp;
+			missingTitles += UTF2UTF(item.mCaptionStr, tmp);
 			continue;
 		}
 
@@ -170,31 +173,43 @@ BOOL AlignWindowCommand::Execute(
 		}
 	}
 
-	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.IsEmpty() == FALSE) {
-		CString msg;
-		msg.Format(_T("以下のウインドウは見つかりませんでした。\n%s"), (LPCTSTR)missingTitles);
-		launcherapp::commands::common::PopupMessage(msg);
-	}
-
-	if (in->mParam.mIsKeepActiveWindow) {
-		SetForegroundWindow(hwndForeground);
-	}
-	else {
-		if (in->mParam.mItems.size() > 0) {
-			targets.clear();
-			in->mParam.mItems.back().FindHwnd(targets);
-			if (targets.size() > 0) {
-				SetForegroundWindow(targets[0]);
-			}
+	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.empty() == false ) {
+		if (errMsg) {
+			*errMsg = fmt::format("以下のウインドウは見つかりませんでした。\n{0}", missingTitles);
 		}
+		return false;
 	}
-
-	return TRUE;
+	return true;
 }
 
-CString AlignWindowCommand::GetErrorString()
+// 対象を前面にセット
+bool AlignWindowCommand::SetForeground(HWND prevForegroundHwnd, String* errMsg)
 {
-	return _T("");
+	UNREFERENCED_PARAMETER(errMsg);
+
+	ScopeAttachThreadInput scope;
+	if (in->mParam.mIsKeepActiveWindow) {
+		// 整列前に前面にあったウインドウを保つ
+		SetForegroundWindow(prevForegroundHwnd);
+		return true;
+	}
+
+	// 整列した対象のうち、末尾の要素を前面に出す
+
+	if (in->mParam.mItems.empty()) {
+		// 対象がないので何もしない
+		return true;
+	}
+
+	std::vector<HWND> targets;
+	in->mParam.mItems.back().FindHwnd(targets);
+	if (targets.empty()) {
+		// 対象がないので何もしない
+		return true;
+	}
+
+	SetForegroundWindow(targets[0]);
+	return true;
 }
 
 HICON AlignWindowCommand::GetIcon()
@@ -260,13 +275,19 @@ bool AlignWindowCommand::NewDialog(
 	AlignWindowCommand** newCmdPtr
 )
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// パラメータ指定には対応していない
-	// param;
-
 	// 新規作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
 	CommandEditor editor;
+	editor.SetParam(paramTmp);
 	if (editor.DoModal() == false) {
 		return false;
 	}

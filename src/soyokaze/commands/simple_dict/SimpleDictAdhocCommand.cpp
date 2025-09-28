@@ -2,11 +2,14 @@
 #include "framework.h"
 #include "SimpleDictAdhocCommand.h"
 #include "commands/simple_dict/SimpleDictParam.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -18,9 +21,10 @@
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
-using SubProcess = launcherapp::commands::common::SubProcess;
-
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -81,46 +85,50 @@ SimpleDictAdhocCommand::~SimpleDictAdhocCommand()
 {
 }
 
-CString SimpleDictAdhocCommand::GetGuideString()
-{
-	CString guideStr(_T("⏎:実行"));
-	guideStr += _T(" S-⏎:キーをコピー");
-	guideStr += _T(" C-⏎:値をコピー");
-
-	return guideStr;
-}
-
 CString SimpleDictAdhocCommand::GetTypeDisplayName()
 {
 	return _T("簡易辞書");
 }
 
-BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
+
+#pragma warning( push )
+#pragma warning( disable : 26813 )
+
+bool SimpleDictAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// Shift-Enterでキーをコピー、Ctrl-Enterで値をコピー
-	// Enterキーのみ押下の場合は設定したアクションを実行
-	uint32_t state = GetModifierKeyState(param, MASK_CTRL | MASK_SHIFT);
-	bool isCtrlKeyPressed = (state & MASK_CTRL) != 0;
-	bool isShiftKeyPressed = (state & MASK_SHIFT) != 0;
-	if (isCtrlKeyPressed && isShiftKeyPressed == false) {
-		// 値をコピー
-		auto value = in->mRecord.mValue;
-		if (in->mParam->mIsExpandMacro) {
-			ExpandMacros(value);
-		}
-		Clipboard::Copy(value);
-		return true;
+	if (modifierFlags == 0) {
+		// Enterキーのみ押下の場合は設定したアクションを実行
+		return CreateAction(action);
 	}
-	if (isCtrlKeyPressed == false && isShiftKeyPressed) {
-		// キーをコピー
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		// Shift-Enterでキーをコピー
 		auto key = in->mRecord.mKey;
 		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(key);
 		}
-		Clipboard::Copy(key);
+		auto a = new CopyTextAction(key);
+		a->SetDisplayName(_T("キーをコピー"));
+		*action = a;
 		return true;
 	}
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	// Ctrl-Enterで値をコピー
+		auto value = in->mRecord.mValue;
+		if (in->mParam->mIsExpandMacro) {
+			ExpandMacros(value);
+		}
+		auto a = new CopyTextAction(value);
+		a->SetDisplayName(_T("値をコピー"));
+		*action = a;
+		return true;
+	}
+	return false;
+}
 
+#pragma warning( pop )
+
+bool SimpleDictAdhocCommand::CreateAction(Action** action)
+{
 	CString argSub = in->mParam->mAfterCommandParam;
 	argSub.Replace(_T("$key"), in->mRecord.mKey);
 	argSub.Replace(_T("$value2"), in->mRecord.mValue2);
@@ -131,21 +139,34 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 
 	int actionType = in->mParam->mActionType;
 	if (actionType == 0) {
-		// 他のコマンドを実行
-		auto cmdRepo = CommandRepository::GetInstance();
-		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam->mAfterCommandName, false));
-		if (command) {
-			RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
 
+		// 他のコマンドを実行
+		*action = new CallbackAction(_T("実行"), [&, argSub](Parameter*, String* errMsg) -> bool {
+
+			auto cmdRepo = CommandRepository::GetInstance();
+			RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam->mAfterCommandName, false));
+			if (command.get() == nullptr) {
+				if (errMsg) {
+					*errMsg = "コマンドが見つかりません";
+				}
+				return false;
+			}
+
+			RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 			paramSub->AddArgument(argSub);
-			command->Execute(paramSub);
-		}
+
+			RefPtr<Action> a;
+			if (command->GetAction(0, &a) == false) {
+				spdlog::error("Failed to get action.");
+				return false;
+			}
+			return a->Perform(paramSub, errMsg);
+		});
+		return true;
 	}
 	else if (actionType == 1) {
-
+		
 		// 他のファイルを実行/URLを開く
-		SubProcess exec(CommandParameterBuilder::EmptyParam());
-
 		CString path = in->mParam->mAfterFilePath;
 		path.Replace(_T("$key"), in->mRecord.mKey);
 		path.Replace(_T("$value2"), in->mRecord.mValue2);
@@ -153,18 +174,17 @@ BOOL SimpleDictAdhocCommand::Execute(Parameter* param)
 		if (in->mParam->mIsExpandMacro) {
 			ExpandMacros(path);
 		}
-		exec.SetShowType(in->mParam->GetAfterShowType());
-		exec.SetWorkDirectory(in->mParam->mAfterDir);
 
-		SubProcess::ProcessPtr process;
-		exec.Run(path, argSub, process);
+		*action = new ExecuteAction(path, argSub, in->mParam->mAfterDir, in->mParam->GetAfterShowType());
+		return true;
+
 	}
 	else {
 		// クリップボードにコピー
-		Clipboard::Copy(argSub);
+		*action = new CopyTextAction(argSub);
+		return true;
 	}
-
-	return TRUE;
+	return false;
 }
 
 HICON SimpleDictAdhocCommand::GetIcon()

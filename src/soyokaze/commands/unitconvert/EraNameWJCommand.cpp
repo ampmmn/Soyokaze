@@ -4,6 +4,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/Message.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -14,6 +15,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -66,36 +68,38 @@ CString EraNameWJCommand::GetName()
 	return in->mName;
 }
 
-CString EraNameWJCommand::GetGuideString()
-{
-	CString str;
-	str.Format(_T("⏎:\"%s\"をコピー S-⏎:\"%d\"をコピー"), (LPCTSTR)in->mName, in->mVal);
-	return str;
-}
-
 CString EraNameWJCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
 
-BOOL EraNameWJCommand::Execute(Parameter* param)
+bool EraNameWJCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
 	// クリップボードにコピー
-	uint32_t state = GetModifierKeyState(param, MASK_SHIFT);
-	bool isShiftKeyPressed = (state & MASK_SHIFT) != 0;
-	if (isShiftKeyPressed == false) {
-		Clipboard::Copy(in->mName);
+	if (modifierFlags == 0) {
+		auto a = new CopyTextAction(in->mName);
+
+		CString displayName;
+		displayName.Format(_T("\"%s\"をコピー"), (LPCTSTR)in->mName);
+		a->SetDisplayName(displayName);
+
+		*action = a;
+		return true;
 	}
-	else {
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
 		CString str;
 		str.Format(_T("%d"), in->mVal);
-		Clipboard::Copy(str);
-	}
+		auto a = new CopyTextAction(str);
 
-	return TRUE;
+		CString displayName;
+		displayName.Format(_T("\"%s\"をコピー"), (LPCTSTR)str);
+		a->SetDisplayName(displayName);
+
+		*action = a;
+		return true;
+	}
+	return false;
 }
 
 HICON EraNameWJCommand::GetIcon()

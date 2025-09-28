@@ -7,11 +7,14 @@
 #include <oleauto.h>
 #include <atlbase.h>
 #include <spdlog/spdlog.h>
+#include <regex>
 
 using json = nlohmann::json;
 
 namespace launcherproxy { 
 
+
+static std::wstring DecodeURI(const std::wstring& src);
 
 static HWND FindWindowHandle(const wchar_t* filePath)
 {
@@ -154,12 +157,12 @@ bool ActiveCalcSheetProxyCommand::Execute(json& json_req, json& json_res)
 	// アクティブなワークシートを変える
 	controller.CallVoidMethod(L"setActiveSheet", sheet);
 
-	HWND hwndApp = FindWindowHandle(target_workbook.c_str());
+	HWND hwndApp = FindWindowHandle(DecodeURI(target_workbook).c_str());
 
 	// アプリのウインドウを全面に出す
 	if (IsWindow(hwndApp) == FALSE) {
 		json_res["result"] = false;
-		json_res["reason"] = "App window does not found.";
+		json_res["reason"] = fmt::format("App window does not found. {0}", json_req["workbook"].get<std::string>());
 		return true;
 	}
 
@@ -178,6 +181,53 @@ bool ActiveCalcSheetProxyCommand::Execute(json& json_req, json& json_res)
 
 	json_res["result"] = true;
 	return true;
+}
+
+
+std::wstring DecodeURI(const std::wstring& src)
+{
+	static std::wregex reg(L"^.*%[0-9a-fA-F][0-9a-fA-F].*$");
+	if (std::regex_match(src, reg) == false) {
+		// エンコード表現を含まない場合は何もしない
+		return src;
+	}
+
+	std::string srcA;
+	utf2utf(src, srcA);
+
+	std::string buf;
+
+	size_t len = srcA.size();
+	for (size_t i = 0; i < len; ++i) {
+		char c = srcA[i];
+
+		if (c != '%') {
+			buf.push_back(c);
+			continue;
+		}
+
+		if (i +2 >= len) {
+			buf.push_back(c);
+			continue;
+		}
+
+		char num[3] = { srcA[i+1], srcA[i+2], 0x00 };
+		char& c2 = num[0];
+		char& c3 = num[1];
+
+		if (_istxdigit(c2) == 0 || _istxdigit(c3) == 0) {
+			continue;
+		}
+
+		uint32_t n;
+		sscanf_s(num, "%02x", &n);
+		buf.push_back((char)n);
+
+		i+=2;
+	}
+
+	std::wstring out;
+	return utf2utf(buf, out);
 }
 
 } // end of namespace 

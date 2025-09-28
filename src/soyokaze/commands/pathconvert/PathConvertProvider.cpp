@@ -5,7 +5,6 @@
 #include "commands/pathconvert/LocalToGitBashPathAdhocCommand.h"
 #include "commands/pathconvert/FileProtocolConvertAdhocCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"
@@ -143,6 +142,12 @@ uint32_t PathConvertProvider::EnumCommandDisplayNames(std::vector<CString>& disp
 	displayNames.push_back(GitBashToLocalPathAdhocCommand::TypeDisplayName());
 	displayNames.push_back(LocalToGitBashPathAdhocCommand::TypeDisplayName());
 	return 3;
+}
+
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t PathConvertProvider::GetOrder() const
+{
+	return 1600;
 }
 
 } // end of namespace pathconvert

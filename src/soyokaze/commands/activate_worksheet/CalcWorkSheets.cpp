@@ -140,6 +140,8 @@ struct CalcWorksheet::PImpl
 	std::wstring mBookLocalName;
 	// シート名
 	std::wstring mSheetName;
+	//
+	String mErrMsg;
 	// 参照カウント
 	uint32_t mRefCount{1};
 	
@@ -229,6 +231,12 @@ const std::wstring& CalcWorksheet::GetSheetName()
 	return in->mSheetName;
 }
 
+const String& CalcWorksheet::GetErrorMessage()
+{
+	return in->mErrMsg;
+}
+
+
 /**
  	オブジェクトに紐づけられたワークシートを有効にする
  	@return 処理の成否
@@ -236,7 +244,7 @@ const std::wstring& CalcWorksheet::GetSheetName()
 BOOL CalcWorksheet::Activate(bool isShowMaximize)
 {
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	return proxy->ActiveCalcSheet(in->mBookName, in->mSheetName, isShowMaximize);
+	return  proxy->ActiveCalcSheet(in->mBookName, in->mSheetName, isShowMaximize, in->mErrMsg);
 }
 
 uint32_t CalcWorksheet::AddRef()

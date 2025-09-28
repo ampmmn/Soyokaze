@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "framework.h"
 #include "RegExpCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "commands/regexp/RegExpExecutionTarget.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
-#include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/regexp/RegExpCommandEditor.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/ExecuteAction.h"
 #include "utility/LastErrorString.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -21,6 +21,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -42,7 +43,6 @@ struct RegExpCommand::PImpl
 
 	CommandIcon mIcon;
 
-	CString mErrMsg;
 	int mMatchLevel{Pattern::Mismatch};
 };
 
@@ -101,83 +101,39 @@ CString RegExpCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString RegExpCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString RegExpCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-bool RegExpCommand::CanExecute()
+bool RegExpCommand::CanExecute(String* reasonMsg)
 {
 	const ATTRIBUTE& attr = in->mParam.mNormalAttr;
 	ExecutablePath path(attr.mPath);
 	if (path.IsExecutable() == false) {
-		in->mErrMsg = _T("！リンク切れ！");
+		if (reasonMsg) {
+			*reasonMsg = "！リンク切れ！";
+		}
 		return false;
 	}
 	return true;
 }
 
 
-BOOL RegExpCommand::Execute(Parameter* param)
+bool RegExpCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	in->mErrMsg.Empty();
-
-	ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
-
-	const ATTRIBUTE& attr = in->mParam.mNormalAttr;
-
-	CString path;
-	CString paramStr;
-	try {
-		tstring wholeText = tstring(param->GetWholeString());
-
-		tregex regexObject;
-		if (in->GetRegex(regexObject) == FALSE) {
-			return FALSE;
+	if (modifierFlags == 0) {
+		auto a = new ExecuteAction(new RegExpExecutionTarget(in->mMatchLevel, in->mParam));
+		if (in->mParam.mRunAs != 0) {
+			a->SetRunAsAdmin();
 		}
-
-		tstring paramStr_ = std::regex_replace(wholeText, regexObject, (tstring)attr.mParam);
-		paramStr = paramStr_.c_str();
-
-		tstring path_ = std::regex_replace(wholeText, regexObject, (tstring)attr.mPath);
-		path = path_.c_str();
+		*action = a;
+		return true;
 	}
-	catch(std::regex_error&) {
-		return FALSE;
-	}
+	return false;
 
-	SubProcess::ProcessPtr process;
-
-	SubProcess exec(param);
-	if (in->mParam.mRunAs != 0) {
-		exec.SetRunAsAdmin();
-	}
-	exec.SetShowType(attr.mShowType);
-	exec.SetWorkDirectory(attr.mDir);
-
-	if (exec.Run(path, paramStr, process) == false) {
-		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
-	}
-
-	// もしwaitするようにするのであればここで待つ
-	auto namedParam = GetCommandNamedParameter(param);
-	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
-		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		process->Wait(WAIT_LIMIT);
-	}
-	return TRUE;
 }
 
-CString RegExpCommand::GetErrorString()
-{
-	return in->mErrMsg;
-}
 void RegExpCommand::SetParam(const CommandParam& param)
 {
 	in->mParam = param;

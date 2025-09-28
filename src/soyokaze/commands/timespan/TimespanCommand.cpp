@@ -4,6 +4,7 @@
 #include "icon/IconLoader.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "resource.h"
 #include <vector>
 
@@ -12,6 +13,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -53,26 +55,27 @@ TimespanCommand::~TimespanCommand()
 {
 }
 
-CString TimespanCommand::GetGuideString()
-{
-	return _T("⏎:数値のみコピー C-⏎:単位含めてコピー");
-}
-
 CString TimespanCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL TimespanCommand::Execute(Parameter* param)
+bool TimespanCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	// クリップボードにコピー
-	if (GetModifierKeyState(param, MASK_CTRL) != 0) {
-		Clipboard::Copy(mName);
+	if (modifierFlags == 0) {
+		auto a = new actions::clipboard::CopyTextAction(in->mNum);
+		a->SetDisplayName(_T("数値のみコピー"));
+		*action = a;
+		return true;
 	}
-	else {
-		Clipboard::Copy(in->mNum);
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		auto a = new actions::clipboard::CopyTextAction(mName);
+		a->SetDisplayName(_T("単位含めてコピー"));
+		*action = a;
+		return true;
 	}
-	return TRUE;
+	return false;
 }
 
 

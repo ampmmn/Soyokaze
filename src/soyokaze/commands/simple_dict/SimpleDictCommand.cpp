@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SimpleDictCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/simple_dict/DictionaryLoader.h"
 #include "commands/simple_dict/SimpleDictCommandEditor.h"
 #include "commands/simple_dict/SimpleDictionary.h"
@@ -8,6 +8,7 @@
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/TimeoutChecker.h"
 #include "utility/LocalDirectoryWatcher.h"
@@ -22,6 +23,7 @@
 #include <mutex>
 
 using namespace launcherapp::commands::common;
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -53,7 +55,6 @@ struct SimpleDictCommand::PImpl
 
 	std::mutex mMutex;
 	Dictionary mDictData;
-	CString mErrMsg;
 	uint32_t mWatcherId{0};
 };
 
@@ -257,18 +258,13 @@ CString SimpleDictCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SimpleDictCommand::GetGuideString()
-{
-	return _T("キーワード入力すると候補を絞り込むことができます");
-}
-
 CString SimpleDictCommand::GetTypeDisplayName()
 {
 	// コマンドとしてマッチしないが、キーワードマネージャに表示する文字列として使用する
 	return TypeDisplayName();
 }
 
-bool SimpleDictCommand::CanExecute()
+bool SimpleDictCommand::CanExecute(String* reasonMsg)
 {
 	if (in->mParam.mActionType == 1) {
 		// mAfterFilePathに$key $value($value2) を含む場合、選択するまで結果が確定しないため、
@@ -280,7 +276,9 @@ bool SimpleDictCommand::CanExecute()
 
 		ExecutablePath path(filePath);
 		if (hasKey == false && hasValue == false && path.IsExecutable() == false) {
-			in->mErrMsg = _T("！リンク切れ！");
+			if (reasonMsg) {
+				*reasonMsg = "！リンク切れ！";
+			}
 			return false;
 		}
 	}
@@ -288,26 +286,15 @@ bool SimpleDictCommand::CanExecute()
 }
 
 
-BOOL SimpleDictCommand::Execute(Parameter* param)
+bool SimpleDictCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
-
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-
-	return TRUE;
-}
-
-CString SimpleDictCommand::GetErrorString()
-{
-	return in->mErrMsg;
+	if (modifierFlags == 0) {
+		// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
+		LPCTSTR guideStr = _T("キーワード入力すると候補を絞り込むことができます");
+		*action = new SetTextAction(guideStr, GetName() + _T(" "));
+		return true;
+	}
+	return false;
 }
 
 HICON SimpleDictCommand::GetIcon()
@@ -399,16 +386,24 @@ bool SimpleDictCommand::NewDialog(
 	SimpleDictCommand** newCmdPtr
 )
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
-
 	if (ExcelApplication::IsInstalled() == false) {
 		AfxMessageBox(_T("簡易辞書コマンドを利用するにはExcelがインストールされている必要がありまず"));
 		return false;
 	}
 
 	// 新規作成ダイアログを表示
+	CString value;
+	SimpleDictParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
 	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

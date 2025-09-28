@@ -1,13 +1,15 @@
 #include "pch.h"
 #include "FilterAdhocCommand.h"
+#include "actions/core/ActionParameter.h"
 #include "commands/filter/FilterCommandParam.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/shellexecute/ShellExecCommand.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/RunCommandAction.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/RefPtr.h"
 #include "resource.h"
@@ -21,8 +23,11 @@ using namespace launcherapp::commands::common;
 using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
+using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -70,93 +75,77 @@ CString FilterAdhocCommand::GetDescription()
 
 }
 
-CString FilterAdhocCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString FilterAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_FILTERCOMMAND);
 	return TEXT_TYPE;
 }
 
-BOOL FilterAdhocCommand::Execute(Parameter* param)
+bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	CString argSub = in->mParam.mAfterCommandParam;
-	argSub.Replace(_T("$select"), in->mResult.mDisplayName);
-	ExpandMacros(argSub);
-
-	auto namedParam = GetCommandNamedParameter(param);
-
-	CString parents;
-	int len = namedParam->GetNamedParamStringLength(_T("PARENTS"));
-	if (len > 0) {
-		namedParam->GetNamedParamString(_T("PARENTS"), parents.GetBuffer(len), len);
-		parents.ReleaseBuffer();
+	if (modifierFlags != 0) {
+		return false;
 	}
-
-	// 呼び出し元に自分自身を追加
-	if (parents.IsEmpty() == FALSE) {
-		parents += _T("/");
-	}
-	parents += in->mParam.mName;
 
 	int type = in->mParam.mPostFilterType;
 	if (type == POSTFILTER_COMMAND) {
+		return CreatePostFilterCommandAction(modifierFlags, action);
+	}
+	else if (type == POSTFILTER_SUBPROCESS) {
+		return CreatePostFilterSubprocessAction(modifierFlags, action);
+	}
+	else if (type == POSTFILTER_CLIPBOARD) {
+		return CreatePostFilterCopyAction(modifierFlags, action);
+	}
+	return false;
+}
 
-		RefPtr<CommandParameterBuilder> paramSub(CommandParameterBuilder::Create(), false);
-		paramSub->AddArgument(argSub);
-		paramSub->SetNamedParamString(_T("PARENTS"), parents);
+bool FilterAdhocCommand::CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action)
+{
+	auto a = new RunCommandAction(in->mParam.mName, in->mParam.mAfterCommandName, modifierFlags);
+	*action = a;
+	return true;
+}
 
-		// Ctrlキーが押されているかを設定
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("WinKeyPressed"), true);
-		}
-		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-			paramSub->SetNamedParamBool(_T("AltKeyPressed"), true);
-		}
+bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action)
+{
+	if (modifierFlags != 0) {
+		return false;
+	}
+	// コマンド実行時に起動するファイルパス上の"$select"を選択値に置換
+	CString path = in->mParam.mAfterFilePath;
+	path.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(path);
 
-		// 他のコマンドを実行
-		auto cmdRepo = CommandRepository::GetInstance();
-		RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(in->mParam.mAfterCommandName, false));
-		if (command) {
-			command->Execute(paramSub);
-		}
-		return true;
+	// コマンドパラメータ上の"$select"を選択値に置換
+	CString param = in->mParam.mAfterCommandParam;
+	param.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(param);
+
+	// コマンド実行時のカレントディレクトリも同様に置換
+	CString workDir = in->mParam.mAfterDir;
+	workDir.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(workDir);
+
+	// 他のファイルを実行/URLを開く
+	*action = new ExecuteAction(path, param, workDir, in->mParam.GetAfterShowType());
+	return true;
+}
+
+bool FilterAdhocCommand::CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action)
+{
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	if (type == POSTFILTER_SUBPROCESS) {
-		// 他のファイルを実行/URLを開く
-		ShellExecCommand cmd;
+	// コマンドパラメータに基づき、選択値を置換
+	CString param = in->mParam.mAfterCommandParam;
+	param.Replace(_T("$select"), in->mResult.mDisplayName);
+	ExpandMacros(param);
 
-		CString path = in->mParam.mAfterFilePath;
-		path.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(path);
-		cmd.SetPath(path);
+	// 置換した値をクリップボードにコピー
+	*action = new CopyTextAction(param);
 
-		cmd.SetArgument(argSub);
-
-		path = in->mParam.mAfterDir;
-		path.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(path);
-		cmd.SetWorkDir(path);
-		cmd.SetShowType(in->mParam.GetAfterShowType());
-
-		return cmd.Execute(CommandParameterBuilder::EmptyParam());
-	}
-
-	if (type == POSTFILTER_CLIPBOARD) {
-		// クリップボードにコピー
-		Clipboard::Copy(argSub);
-		return true;
-	}
 	return true;
 }
 

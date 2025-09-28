@@ -1,20 +1,14 @@
 #include "pch.h"
 #include "WebSearchCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchCommandEditor.h"
-#include "commands/common/ExpandFunctions.h"
-#include "commands/core/CommandRepository.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "matcher/PatternInternal.h"
-#include "utility/LastErrorString.h"
-#include "setting/AppPreference.h"
-#include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyManager.h"
-#include "hotkey/CommandHotKeyMappings.h"
 #include "icon/IconLoader.h"
 #include "icon/CommandIcon.h"
-#include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
 
@@ -144,30 +138,22 @@ CString WebSearchCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WebSearchCommand::GetGuideString()
-{
-	return _T("⏎:検索を実行");
-}
-
 CString WebSearchCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL WebSearchCommand::Execute(Parameter* param_)
+bool WebSearchCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param_);
+	if (modifierFlags != 0) {
+		return false;
+	}
 
-	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
-
-	bool isShowToggle = false;
-	mainWnd->ActivateWindow(isShowToggle);
-
-	auto cmdline = GetName();
-	cmdline += _T(" ");
-	mainWnd->SetText(cmdline);
-
-	return TRUE;
+	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
+	// (実際の検索アクションの実行はWebSearchAdhocCommandが担う)
+	auto cmdline(GetName()+ _T(" "));
+	*action = new launcherapp::actions::mainwindow::SetTextAction(_T("検索を実行"), cmdline);
+	return true;
 }
 
 HICON WebSearchCommand::GetIcon()
@@ -275,11 +261,19 @@ bool WebSearchCommand::NewDialog(
 	std::unique_ptr<WebSearchCommand>& newCmd
 )
 {
-	// パラメータ指定には対応していない
-	UNREFERENCED_PARAMETER(param);
-
 	// 新規作成ダイアログを表示
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
+
 	RefPtr<CommandEditor> cmdEditor(new CommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

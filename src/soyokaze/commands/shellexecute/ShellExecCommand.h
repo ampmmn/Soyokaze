@@ -22,12 +22,10 @@ public:
 
 	CString GetName() override;
 	CString GetDescription() override;
-	CString GetGuideString() override;
 	CString GetTypeDisplayName() override;
 
-	bool CanExecute() override;
-	BOOL Execute(Parameter* param) override;
-	CString GetErrorString() override;
+	bool CanExecute(String*) override;
+	bool GetAction(uint32_t modifierFlags, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsAllowAutoExecute() override;
@@ -48,10 +46,8 @@ public:
 // ContextMenuSource
 	// メニューの項目数を取得する
 	int GetMenuItemCount() override;
-	// メニューの表示名を取得する
-	bool GetMenuItemName(int index, LPCWSTR* displayNamePtr) override;
-	// メニュー選択時の処理を実行する
-	bool SelectMenuItem(int index, launcherapp::core::CommandParameter* param) override;
+	// メニューに対応するアクションを取得する
+	bool GetMenuItem(int index, Action** action) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
@@ -63,6 +59,11 @@ public:
 	static bool LoadFrom(CommandFile* cmdFile, void* entry,ShellExecCommand** newCmdPtr);
 
 private:
+	bool CreateExecuteAction(Action** action, bool isForceRunAs);
+	bool CreateOpenPathAction(Action** action);
+	bool CreateShowPropertiesAction(Action** action);
+
+
 	// ShellExecCommandのコマンド名として許可しない文字を置換する
 	static CString& SanitizeName(CString& str);
 	

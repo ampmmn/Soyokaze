@@ -2,8 +2,9 @@
 #include "HistoryCommand.h"
 #include "commands/history/HistoryCommandQueryRequest.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -19,8 +20,9 @@ namespace history {
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
@@ -102,28 +104,25 @@ CString HistoryCommand::GetDescription()
 	return cmd->GetDescription();
 }
 
-CString HistoryCommand::GetGuideString()
-{
-	auto cmd = in->GetCommand();
-	if (cmd == nullptr) {
-		return _T("⏎:開く");
-	}
-
-	return cmd->GetGuideString();
-}
-
 CString HistoryCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL HistoryCommand::Execute(Parameter* param)
+bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	auto cmd = in->GetCommand();
+	auto a = new CallbackAction(_T("開く"), [&, modifierFlags](Parameter* param, String* errMsg) -> bool {
 
-	BOOL result = TRUE;
-	if (cmd) {
-		auto builder = CommandParameterBuilder::Create(in->mKeyword);
+		auto cmd = in->GetCommand();
+
+		if (cmd == nullptr) {
+			if (errMsg) {
+				*errMsg = "コマンドが見つかりません";
+			}
+			return false;
+		}
+
+		auto builder = ParameterBuilder::Create(in->mKeyword);
 		bool hasParameter = builder->HasParameter();
 		builder->Release();
 
@@ -133,12 +132,21 @@ BOOL HistoryCommand::Execute(Parameter* param)
 			paramTmp->SetWholeString(in->mKeyword);
 		}
 
-		auto namedParam = launcherapp::commands::common::GetCommandNamedParameter(paramTmp);
+		auto namedParam = launcherapp::commands::common::GetNamedParameter(paramTmp);
 		namedParam->SetNamedParamBool(_T("RunAsHistory"), true);
 
-		result = cmd->Execute(paramTmp);
-	}
-	return result;
+		RefPtr<launcherapp::actions::core::Action> action;
+		if (cmd->GetAction(modifierFlags, &action) == false) {
+			spdlog::error("Failed to get action");
+			return false;
+		}
+		return action->Perform(paramTmp, errMsg);
+	});
+
+	a->SetVisible(modifierFlags == 0);
+
+	*action = a;
+	return true;
 }
 
 HICON HistoryCommand::GetIcon()

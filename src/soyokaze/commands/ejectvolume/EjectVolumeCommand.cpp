@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "framework.h"
 #include "EjectVolumeCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/ejectvolume/EjectVolumeCommandParam.h"
 #include "commands/ejectvolume/EjectVolumeCommandEditor.h"
 #include "commands/ejectvolume/EjectVolume.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
+#include "actions/builtin/CallbackAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -22,6 +23,7 @@ namespace commands {
 namespace ejectvolume {
 
 using CommandRepository = launcherapp::core::CommandRepository;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 constexpr LPCTSTR TYPENAME = _T("EjectVolumeCommand");
 
@@ -63,33 +65,30 @@ CString EjectVolumeCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString EjectVolumeCommand::GetGuideString()
-{
-	CString guideStr;
-	guideStr.Format(_T("⏎:%c:ドライブを取り外す"), in->mParam.mDriveLetter);
-	return guideStr; 
-}
-
 CString EjectVolumeCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL EjectVolumeCommand::Execute(Parameter* param_)
+bool EjectVolumeCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNUSED(param_);
-	const auto& param = in->mParam;
-	if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
-		spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
-		return TRUE;
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	return TRUE;
-}
+	*action = new CallbackAction(_T("ドライブを取り外す"), [&](Parameter*, String* errMsg) -> bool {
+		const auto& param = in->mParam;
+		if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
+			spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
+			if (errMsg) {
+				*errMsg = fmt::format("ドライブの取り外しに失敗しました err:{}", GetLastError());
+			}
+			return false;
+		}
+		return true;
+	});
 
-CString EjectVolumeCommand::GetErrorString()
-{
-	return _T("");
+	return true;
 }
 
 HICON EjectVolumeCommand::GetIcon()
@@ -156,9 +155,18 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 
 bool EjectVolumeCommand::NewDialog(Parameter* param)
 {
-	param;  // 非サポート
+	CString value;
+	CommandParam paramTmp;
+
+	if (GetNamedParamString(param, _T("COMMAND"), value)) {
+		paramTmp.mName = value;
+	}
+	if (GetNamedParamString(param, _T("DESCRIPTION"), value)) {
+		paramTmp.mDescription = value;
+	}
 
 	RefPtr<EjectVolumeCommandEditor> cmdEditor(new EjectVolumeCommandEditor());
+	cmdEditor->SetParam(paramTmp);
 	if (cmdEditor->DoModal() == false) {
 		return false;
 	}

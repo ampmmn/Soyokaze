@@ -14,11 +14,12 @@
 #include "mainwindow/controller/LauncherMainWindowController.h"
 #include "mainwindow/MainWindowCommandQueryRequest.h"
 #include "mainwindow/optionbutton/MainWindowOptionButton.h"
+#include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/core/ActionParameter.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
-#include "commands/core/IFIDDefine.h"
 #include "commands/common/Clipboard.h"
 #include "afxdialogex.h"
 #include "utility/Path.h"
@@ -53,6 +54,7 @@
 using namespace launcherapp;
 using namespace launcherapp::mainwindow;
 using namespace launcherapp::mainwindow::controller;
+using namespace launcherapp::actions::core;
 
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
@@ -66,6 +68,7 @@ struct LauncherMainWindow::PImpl
 	}
 
 	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
+	void UpdateGuideString(core::Command* cmd);
 
 // 入力データ
 	// 入力欄のテキスト情報
@@ -154,10 +157,64 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 	}
 
 	// ガイド文字列の更新
-	mGuideStr = cmd->GetGuideString();
+	UpdateGuideString(cmd);
 
 	// アイコン更新
 	mIconLabel.DrawIcon(cmd->GetIcon());
+}
+
+// ガイド欄に表示する文字列を生成する
+void LauncherMainWindow::PImpl::UpdateGuideString(core::Command* cmd)
+{
+	if (cmd == nullptr) {
+		mGuideStr.Empty();
+		return;
+	}
+
+	using Command = core::Command;
+	using Action = launcherapp::actions::core::Action;
+
+	static std::map<uint32_t, LPCTSTR> entries ={
+		{ 0, _T("⏎") },
+		{ Command::MODIFIER_SHIFT, _T("S-⏎") },
+		{ Command::MODIFIER_CTRL, _T("C-⏎") },
+		{ Command::MODIFIER_ALT, _T("A-⏎") },
+		{ Command::MODIFIER_WIN, _T("W-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, _T("S-C-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_ALT, _T("S-A-⏎") },
+		{ Command::MODIFIER_SHIFT | Command::MODIFIER_WIN, _T("S-W-⏎") },
+		{ Command::MODIFIER_CTRL | Command::MODIFIER_ALT, _T("C-A-⏎") },
+		{ Command::MODIFIER_CTRL | Command::MODIFIER_WIN, _T("C-W-⏎") },
+		{ Command::MODIFIER_ALT | Command::MODIFIER_WIN, _T("A-W-⏎") },
+	};
+
+	CString guideStr;
+
+	int count = 0;
+	for (auto item : entries) {
+		RefPtr<Action> action;
+		auto modifierFlags = item.first;
+		if (cmd->GetAction(modifierFlags, &action) == false) {
+			continue;
+		}
+		if (action->IsVisible() == false) {
+			continue;
+		}
+
+		if (guideStr.IsEmpty() == FALSE) {
+			guideStr += _T(" ");
+		}
+		auto& keyStr = item.second;
+		guideStr += keyStr;
+		guideStr += _T(":");
+		guideStr += action->GetDisplayName();
+	
+		if (++count >= 4) {
+			break;
+		}
+	}
+
+	mGuideStr = guideStr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -639,7 +696,7 @@ LauncherMainWindow::OnUserMessageDropObject(
 
 			if (wnd == this) {
 				// URL登録
-				auto param = launcherapp::core::CommandParameterBuilder::Create();
+				auto param = launcherapp::actions::core::ParameterBuilder::Create();
 				param->SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
 				param->SetNamedParamString(_T("PATH"), urlString);
 
@@ -685,7 +742,7 @@ LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
 
 	// 
 	try {
-		auto param = launcherapp::core::CommandParameterBuilder::Create();
+		auto param = launcherapp::actions::core::ParameterBuilder::Create();
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
@@ -797,17 +854,15 @@ bool LauncherMainWindow::ExecuteCommand(const CString& str)
 {
 	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
 
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
 
-	auto cmd = GetCommandRepository()->QueryAsWholeMatch(commandParam->GetCommandString(), true);
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(actionParam->GetCommandString(), true);
 	if (cmd == nullptr) {
-		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)commandParam->GetCommandString());
-
-		commandParam->Release();
+		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)actionParam->GetCommandString());
 		return false;
 	}
 
-	RunCommand(cmd, commandParam);
+	RunCommand(cmd, actionParam.release());
 	return true;
 }
 
@@ -1184,7 +1239,7 @@ void LauncherMainWindow::UpdateCandidates()
 		in->mIconLabel.DrawIcon(pCmd->GetIcon());
 
 		// ガイド欄
-		in->mGuideStr = pCmd->GetGuideString();
+		in->UpdateGuideString(pCmd);
 
 		// 説明欄の更新
 		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
@@ -1207,7 +1262,7 @@ void LauncherMainWindow::WaitQueryRequest()
 void
 LauncherMainWindow::RunCommand(
 	launcherapp::core::Command* cmd,
-	launcherapp::core::CommandParameterBuilder* commandParam
+	ParameterBuilder* actionParam
 )
 {
 	// コマンド実行後のクローズ方法
@@ -1220,19 +1275,48 @@ LauncherMainWindow::RunCommand(
 		closePolicy = behavior->GetCloseWindowPolicy();
 	}
 
+	// Ctrlキーが押されているかを設定
+	using Command = launcherapp::core::Command;
+	uint32_t modifierMask = 0;
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+		modifierMask |= Command::MODIFIER_CTRL;
+	}
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+		modifierMask |= Command::MODIFIER_SHIFT;
+	}
+	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+		modifierMask |= Command::MODIFIER_WIN;
+	}
+	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+		modifierMask |= Command::MODIFIER_ALT;
+	}
+
 	auto hwnd = GetSafeHwnd();
 
-	std::thread th([cmd, commandParam, hwnd, closePolicy]() {
+	std::thread th([cmd, modifierMask, actionParam, hwnd, closePolicy]() {
 
-		if (cmd->Execute(commandParam) == FALSE) {
-			auto errMsg = cmd->GetErrorString();
-			if (errMsg.IsEmpty() == FALSE) {
-				auto app = (LauncherApp*)AfxGetApp();
-				app->PopupMessage(errMsg);
+		RefPtr<Action> action;
+		cmd->GetAction(modifierMask, &action);
+		if (action.get() == nullptr) {
+			// 取得できなかった場合は修飾子なしのアクションを取得する
+			cmd->GetAction(0, &action);
+			if (action.get() == nullptr) {
+				spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
 			}
 		}
 
-		commandParam->Release();
+		if (action.get()) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				spdlog::debug(_T("command {} Action::Perform returned false."), (LPCTSTR)cmd->GetName());
+				if (errMsg.IsEmpty() == FALSE) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
+			}
+		}
+		actionParam->Release();
 
 		// コマンドの参照カウントを下げる
 		cmd->Release();
@@ -1274,24 +1358,24 @@ void LauncherMainWindow::RunCommand(
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
 
 	// Ctrlキーが押されているかを設定
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("WinKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("WinKeyPressed"), true);
 	}
 	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		commandParam->SetNamedParamBool(_T("AltKeyPressed"), true);
+		actionParam->SetNamedParamBool(_T("AltKeyPressed"), true);
 	}
 
 	// 実行
-	RunCommand(cmd, commandParam);
+	RunCommand(cmd, actionParam.release());
 }
 
 /**
@@ -1321,16 +1405,20 @@ void LauncherMainWindow::SelectCommandContextMenu(
 			return;
 		}
 
-		auto commandParam = launcherapp::core::CommandParameterBuilder::Create(str);
+		auto actionParam = launcherapp::actions::core::ParameterBuilder::Create(str);
 
-		if (menuSrc->SelectMenuItem(index, commandParam) == false) {
-			auto errMsg = cmd->GetErrorString();
-			if (errMsg.IsEmpty() == FALSE) {
-				auto app = (LauncherApp*)AfxGetApp();
-				app->PopupMessage(errMsg);
+		RefPtr<Action> action;
+		if (menuSrc->GetMenuItem(index, &action)) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				if (errMsg.empty() == false) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
 			}
 		}
-		commandParam->Release();
+		actionParam->Release();
 		cmd->Release();
 	});
 	th.detach();
@@ -1628,6 +1716,10 @@ void LauncherMainWindow::OnContextMenu(
 	menu.CreatePopupMenu();
 
 	const UINT ID_COMMAND_TOP = 1;
+
+	// コマンド固有のメニューがあったら取得する
+	SetupCurrentCommandMenuItems(menu, ID_COMMAND_TOP);
+
 	const UINT ID_COMMAND_LAST = 1000;
 	const UINT ID_SHOW = 1001;
 	const UINT ID_HIDE = 1002;
@@ -1640,28 +1732,9 @@ void LauncherMainWindow::OnContextMenu(
 	const UINT ID_VERSIONINFO = 1009;
 	const UINT ID_EXIT = 1019;
 
+
 	BOOL isVisible = IsWindowVisible();
 	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
-
-	// コマンド固有のメニューがあったら取得する
-	auto cmd = GetCurrentCommand();
-	if (cmd) {
-		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
-		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc)) {
-			int count = menuSrc->GetMenuItemCount();
-			for (int i = 0; i < count; ++i) {
-				LPCTSTR displayName = nullptr;
-				menuSrc->GetMenuItemName(i, &displayName);
-				if (displayName == nullptr) {
-					menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
-					continue;
-				}
-				menu.InsertMenu((UINT)-1, 0, ID_COMMAND_TOP + i, displayName);
-			}
-			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
-		}
-	}
-
 	menu.InsertMenu((UINT)-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
 	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 	menu.InsertMenu((UINT)-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
@@ -1681,6 +1754,8 @@ void LauncherMainWindow::OnContextMenu(
 	// TrackPopupMenuをよぶ時点でSetForegroundWindowでウインドウをアクティブにしておかないと
 	// ポップアップメニュー以外の領域をクリックしたときにメニューが閉じないので、ここで呼んでおく
 	SetForegroundWindow();
+
+	auto cmd = GetCurrentCommand();
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	spdlog::debug(_T("selected menu id:{}"), n);
@@ -1731,6 +1806,43 @@ void LauncherMainWindow::OnContextMenu(
 	// 選択後はウインドウを隠す
 	ClearContent();
 	HideWindow();
+}
+
+void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst)
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		return;
+	}
+
+	RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+		// コマンド固有のメニューなし
+		return;
+	}
+
+	CString postFix;
+
+	int index = 1;
+	int count = menuSrc->GetMenuItemCount();
+	for (int i = 0; i < count; ++i) {
+
+		// メニュー項目に対応するアクションを得る
+		RefPtr<Action> action;
+		bool isOK = menuSrc->GetMenuItem(i, &action);
+		if (isOK == false) {
+			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+			continue;
+		}
+
+		postFix.Format(_T("(&%d)"), index++);
+
+		auto menuText = action->GetDisplayName();
+		menuText += postFix;
+
+		menu.InsertMenu((UINT)-1, 0, menuIDFirst + i, menuText);
+	}
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
 }
 
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)

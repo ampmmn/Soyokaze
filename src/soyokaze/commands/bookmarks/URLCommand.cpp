@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "URLCommand.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/web/OpenURLAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -50,11 +51,6 @@ CString URLCommand::GetDescription()
 	return in->mBookmarkItem.mFolderPath;
 }
 
-CString URLCommand::GetGuideString()
-{
-	return _T("⏎:ブラウザで開く S-⏎:URLをクリップボードにコピー");
-}
-
 CString URLCommand::GetTypeDisplayName()
 {
 	CString product;
@@ -62,29 +58,17 @@ CString URLCommand::GetTypeDisplayName()
 	return TypeDisplayName(product);
 }
 
-BOOL URLCommand::Execute(Parameter* param)
+bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (GetModifierKeyState(param, MASK_SHIFT) != 0) {
-		// URLをクリップボードにコピー
-		Clipboard::Copy(in->mBookmarkItem.mUrl);
-		return TRUE;
+	if (modifierFlags == 0) {
+		*action = new actions::web::OpenURLAction(in->mBookmarkItem.mUrl, in->mEnv);
+		return true;
 	}
-
-	// URLをブラウザで開く
-	CString path;
-	if (in->mEnv->GetInstalledExePath(path) == false) {
-		CString msg(_T("Browser executable not found."));
-		msg += _T("\n");
-		msg += (LPCTSTR)path;
-		AfxMessageBox(msg);
-		return FALSE;
+	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
+		return true;
 	}
-
-	SubProcess::ProcessPtr process;
-	SubProcess exec(param);
-	exec.Run((LPCTSTR)path, in->mBookmarkItem.mUrl, process);
-
-	return TRUE;
+	return false;
 }
 
 HICON URLCommand::GetIcon()

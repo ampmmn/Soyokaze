@@ -657,9 +657,12 @@ bool NormalPriviledgeProcessProxy::EnumCalcSheets(std::vector<std::pair<std::wst
 bool NormalPriviledgeProcessProxy::ActiveCalcSheet(
 		const std::wstring& workbook,
 	 	const std::wstring& worksheet,
-	 	bool isShowMaximize
+	 	bool isShowMaximize,
+		String& errMsg
 )
 {
+	errMsg.clear();
+
 	std::string dst;
 
 	json json_req;
@@ -680,7 +683,12 @@ bool NormalPriviledgeProcessProxy::ActiveCalcSheet(
 	if (in->ReceiveResponse(json_res) == false) {
 		return false;
 	}
-	return json_res["result"];
+
+	bool isOK = json_res["result"];
+	if (isOK == false) {
+		errMsg = json_res["reason"];
+	}
+	return isOK;
 }
 
 // アクティブなPowerpointのウインドウを取得する

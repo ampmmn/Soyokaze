@@ -2,7 +2,7 @@
 #include "CandidateList.h"
 #include "commands/error/ErrorIndicatorCommand.h"
 #include "commands/core/SelectionBehavior.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include <vector>
 #include <set>
 
@@ -165,8 +165,9 @@ Command* CandidateList::GetCommand(int index)
 
 Command* CandidateList::GetCurrentCommand()
 {
+	String reasonMsg;
 	auto cmd = GetCommand(in->mSelIndex); 
-	if (cmd == nullptr || cmd->CanExecute()) {
+	if (cmd == nullptr || cmd->CanExecute(&reasonMsg)) {
 		return cmd;
 	}
 
@@ -176,7 +177,7 @@ Command* CandidateList::GetCurrentCommand()
 		in->mErrorCommand.reset(new ErrorIndicatorCommand());
 	}
 
-	in->mErrorCommand->SetTarget(cmd);
+	in->mErrorCommand->SetTarget(cmd, reasonMsg);
 	return in->mErrorCommand.get();
 }
 

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "MMCCommand.h"
-#include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -10,6 +11,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -33,31 +35,24 @@ MMCCommand::~MMCCommand()
 {
 }
 
-CString MMCCommand::GetGuideString()
-{
-	return _T("⏎:実行");
-}
-
 CString MMCCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL MMCCommand::Execute(Parameter* param)
+bool MMCCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
+
+	Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
+
 	CString paramStr;
 	paramStr.Format(_T("/c start \"\" \"%s\""), (LPCTSTR)in->mSnapin.mMscFilePath);
 
-	SubProcess::ProcessPtr process;
-
-	SubProcess exec(param);
-	exec.SetShowType(SW_HIDE);
-	if (exec.Run(_T("cmd.exe"), paramStr, process) == false) {
-		mErrMsg = process->GetErrorMessage();
-		return FALSE;
-	}
-
-	return TRUE;
+	*action = new ExecuteAction((LPCTSTR)cmdExePath, paramStr, _T(""), SW_HIDE);
+	return true;
 }
 
 HICON MMCCommand::GetIcon()
@@ -78,21 +73,10 @@ int MMCCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool MMCCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool MMCCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool MMCCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	if (index == 0) {
-		return Execute(param) != FALSE;
+		return GetAction(0, action);
 	}
 	return false;
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ErrorIndicatorCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -8,28 +9,30 @@
 #endif
 
 using Command = launcherapp::core::Command;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp { namespace commands { namespace error {
 
 struct ErrorIndicatorCommand::PImpl
 {
 	RefPtr<Command> mTarget;
+	String mReason;
 	uint32_t mRefCount{1};
 };
 
 ErrorIndicatorCommand::ErrorIndicatorCommand() : in(new PImpl)
 {
-	
 }
 
 ErrorIndicatorCommand::~ErrorIndicatorCommand()
 {
 }
 
-void ErrorIndicatorCommand::SetTarget(Command* cmd)
+void ErrorIndicatorCommand::SetTarget(Command* cmd, const String& reason)
 {
 	in->mTarget.reset(cmd);
 	in->mTarget->AddRef();
+	in->mReason = reason;
 }
 
 bool ErrorIndicatorCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -47,15 +50,8 @@ CString ErrorIndicatorCommand::GetName()
 
 CString ErrorIndicatorCommand::GetDescription()
 {
-	return in->mTarget->GetErrorString();
-}
-
-CString ErrorIndicatorCommand::GetGuideString()
-{
-	if (in->mTarget.get() == nullptr) {
-		return _T("");
-	}
-	return _T("⏎: コマンドを編集");
+	CString description;
+	return UTF2UTF(in->mReason, description);
 }
 
 CString ErrorIndicatorCommand::GetTypeDisplayName()
@@ -63,30 +59,32 @@ CString ErrorIndicatorCommand::GetTypeDisplayName()
 	return in->mTarget->GetTypeDisplayName();
 }
 
-bool ErrorIndicatorCommand::CanExecute()
+bool ErrorIndicatorCommand::CanExecute(String*)
 {
 	return false;
 }
 
-BOOL ErrorIndicatorCommand::Execute(Parameter* param)
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool ErrorIndicatorCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	if (in->mTarget.get() == nullptr) {
-		return TRUE;
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	// 編集
-	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	constexpr bool isClone = false;
-	cmdRepoPtr->EditCommandDialog(in->mTarget->GetName(), isClone);
+	*action = new CallbackAction(_T("コマンドを編集"), [&](Parameter*, String*) -> bool {
+		if (in->mTarget.get() == nullptr) {
+			return false;
+		}
 
-	return TRUE;
-}
+		// 編集
+		auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+		constexpr bool isClone = false;
+		cmdRepoPtr->EditCommandDialog(in->mTarget->GetName(), isClone);
 
-CString ErrorIndicatorCommand::GetErrorString()
-{
-	return _T("");
+		return true;
+
+	});
+	return true;
 }
 
 HICON ErrorIndicatorCommand::GetIcon()

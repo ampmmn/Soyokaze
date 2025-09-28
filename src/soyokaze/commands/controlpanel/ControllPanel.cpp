@@ -4,7 +4,6 @@
 #include "utility/RegistryKey.h"
 #include "utility/Path.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 

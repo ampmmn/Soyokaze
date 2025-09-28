@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "commands/builtin/RegistWinCommand.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
 #include "icon/IconLoader.h"
 #include "utility/ProcessPath.h"
 #include "SharedHwnd.h"
@@ -16,7 +17,7 @@ namespace launcherapp {
 namespace commands {
 namespace builtin {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 static HWND GetTargetWindow(HWND startHwnd)
 {
@@ -94,7 +95,7 @@ BOOL RegistWinCommand::Execute(Parameter*)
 	ProcessPath processPath(hNextWindow);
 
 	try {
-		RefPtr<CommandParameterBuilder> param(CommandParameterBuilder::Create(), false);
+		RefPtr<ParameterBuilder> param(ParameterBuilder::Create(), false);
 		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
 		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
 		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());

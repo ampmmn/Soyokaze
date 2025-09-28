@@ -253,6 +253,33 @@
     <Filter Include="externaltool\webbrowser">
       <UniqueIdentifier>{49744c8b-0b75-46cf-9281-4bd8c446b4fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{c104d509-326c-4ec2-96df-4020ce56aa10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions">
+      <UniqueIdentifier>{16be0f57-b3ad-487e-b123-a37b05ffca60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\core">
+      <UniqueIdentifier>{572c6fa2-a8c2-4470-91b4-f57db6bf5b89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\activate_window">
+      <UniqueIdentifier>{2dabf99c-0f2f-4c81-86fb-4dcc91d7bf7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\builtin">
+      <UniqueIdentifier>{5d4fd70b-b54d-4b5a-9dba-3e3af4ef11ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\clipboard">
+      <UniqueIdentifier>{e7cdbce4-3450-4e29-a011-4e6e04deb0d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\web">
+      <UniqueIdentifier>{4069b523-f08f-49fc-aa23-1102ad3200e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\mainwindow">
+      <UniqueIdentifier>{e12d1141-03f1-4fa6-8923-63c9622c0627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="actions\vmware">
+      <UniqueIdentifier>{6f71133a-6969-45dd-ab22-f7c116d4e990}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -808,9 +835,6 @@
       <Filter>commands\core</Filter>
     </ClInclude>
     <ClInclude Include="commands\core\CommandRepositoryListenerIF.h">
-      <Filter>commands\core</Filter>
-    </ClInclude>
-    <ClInclude Include="commands/core/CommandParameter.h">
       <Filter>commands\core</Filter>
     </ClInclude>
     <ClInclude Include="commands/core\CommandRanking.h">
@@ -1611,6 +1635,88 @@
     <ClInclude Include="utility\MessageExchangeWindow.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="core\IFID.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\UnknownIF.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\Action.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionBase.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionParameter.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\core\ActionParameterIF.h">
+      <Filter>actions\core</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\RestoreWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\MaximizeWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\CloseWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\activate_window\MinimizeWindowAction.h">
+      <Filter>actions\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
+      <Filter>commands\activate_window</Filter>
+>>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
+    </ClInclude>
+    <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
+      <Filter>commands\activate_window</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\clipboard\CopyClipboardAction.h">
+      <Filter>actions\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\NullAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\RegisterNewCommandAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\CallbackAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\web\OpenURLAction.h">
+      <Filter>actions\web</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h">
+      <Filter>actions\mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\vmware\RunVMXAction.h">
+      <Filter>actions\vmware</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\OpenPathInFilerAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\ExecuteAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\regexp\RegExpExecutionTarget.h">
+      <Filter>commands\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\RunCommandAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\GroupAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ShellExecTarget.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\ShowPropertiesAction.h">
+      <Filter>actions\builtin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2133,9 +2239,6 @@
       <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandRepository.cpp">
-      <Filter>commands\core</Filter>
-    </ClCompile>
-    <ClCompile Include="commands/core/CommandParameter.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
     <ClCompile Include="commands/core\CommandRanking.cpp">
@@ -2842,6 +2945,76 @@
     </ClCompile>
     <ClCompile Include="utility\MessageExchangeWindow.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\core\ActionBase.cpp">
+      <Filter>actions\core</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\core\ActionParameter.cpp">
+      <Filter>actions\core</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\RestoreWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\MaximizeWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\CloseWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp">
+      <Filter>actions\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
+      <Filter>commands\activate_window</Filter>
+>>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
+    </ClCompile>
+    <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
+      <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp">
+      <Filter>actions\clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\NullAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\CallbackAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\web\OpenURLAction.cpp">
+      <Filter>actions\web</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp">
+      <Filter>actions\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\vmware\RunVMXAction.cpp">
+      <Filter>actions\vmware</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\ExecuteAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp">
+      <Filter>commands\regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\RunCommandAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\GroupAction.cpp">
+      <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ShellExecTarget.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp">
+      <Filter>actions\builtin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

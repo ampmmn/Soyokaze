@@ -1,14 +1,16 @@
 #include "pch.h"
 #include "framework.h"
 #include "WatchPathCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/watchpath/WatchPathCommandEditor.h"
 #include "commands/watchpath/PathWatcher.h"
-#include "commands/shellexecute/ShellExecCommand.h"
-#include "commands/common/ExpandFunctions.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/ExpandFunctions.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/core/ActionParameter.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
+#include "commands/common/SubProcess.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -24,8 +26,8 @@ namespace watchpath {
 using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
-using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 
 struct WatchPathCommand::PImpl
@@ -65,36 +67,40 @@ CString WatchPathCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString WatchPathCommand::GetGuideString()
-{
-	return _T("⏎:更新検知対象パスを開く");
-}
-
 CString WatchPathCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL WatchPathCommand::Execute(Parameter* param)
+bool WatchPathCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
+	UNREFERENCED_PARAMETER(modifierFlags);
 
-	if (in->mParam.mIsDisabled) {
-		return TRUE;
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	auto path = in->mParam.mPath;
-	path += _T("\\");
+	*action = new CallbackAction(_T("更新検知対象パスを開く"), [&](Parameter*,String* errMsg) -> bool {
 
-	ShellExecCommand cmd;
-	cmd.SetPath(path);
+		if (in->mParam.mIsDisabled) {
+			return true;
+		}
+	
+		auto path = in->mParam.mPath;
+		path += _T("\\");
 
-	return cmd.Execute(CommandParameterBuilder::EmptyParam());
-}
+		SubProcess exec(ParameterBuilder::EmptyParam());
+		SubProcess::ProcessPtr process;
+		if (exec.Run(path, process) == FALSE) {
+			if (errMsg) {
+				UTF2UTF(process->GetErrorMessage(), *errMsg);
+			}
+			return false;
+		}
+		return true;
+	});
 
-CString WatchPathCommand::GetErrorString()
-{
-	return _T("");
+	return true;
 }
 
 HICON WatchPathCommand::GetIcon()

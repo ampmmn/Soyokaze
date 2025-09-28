@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "SubProcess.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
-#include "commands/core/CommandParameter.h"
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
+#include "actions/core/ActionParameter.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
@@ -21,6 +21,7 @@
 
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
+using namespace launcherapp::actions::core;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
@@ -72,12 +73,10 @@ namespace common {
 
 struct SubProcess::PImpl
 {
-	PImpl(launcherapp::core::CommandParameter* param) : mParam(param)
+	PImpl(Parameter* param) : mParam(param)
 	{
 	}
 
-	bool IsRunAsKeyPressed();
-	bool IsOpenPathKeyPressed();
 	bool CanRunAsAdmin(const CString& path);
 
 	bool StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process);
@@ -85,27 +84,12 @@ struct SubProcess::PImpl
 
 	bool SetupShellExecuteInfo(CString& path, CString& param, const CString& workDir, SHELLEXECUTEINFO& si);
 
-	CommandParameter* mParam{nullptr};
+	Parameter* mParam{nullptr};
 	int mShowType{SW_SHOW};
 	bool mIsRunAsAdmin{false};
 	CString mWorkingDir;
 	std::map<tstring, tstring> mAdditionalEnv;
 };
-
-bool SubProcess::PImpl::IsRunAsKeyPressed()
-{
-	// Ctrl-Shiftキーが押されていたら
-	uint32_t state = GetModifierKeyState(mParam, MASK_ALL);
-	return state == (MASK_CTRL | MASK_SHIFT);
-}
-
-bool SubProcess::PImpl::IsOpenPathKeyPressed()
-{
-	// Ctrlキーのみが押されていたら
-	uint32_t state = GetModifierKeyState(mParam, MASK_ALL);
-	return state == MASK_CTRL;
-}
-
 
 // 管理者権限で実行可能なファイルタイプか?
 bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
@@ -135,7 +119,7 @@ bool SubProcess::PImpl::Start(SHELLEXECUTEINFO si, ProcessPtr& process)
 	}
 
 	// 管理者として実行する指定がされているか?
-	bool isRunAsAdminSpecified = mIsRunAsAdmin || (IsRunAsKeyPressed() && CanRunAsAdmin(si.lpFile) );
+	bool isRunAsAdminSpecified = mIsRunAsAdmin && CanRunAsAdmin(si.lpFile);
 	if (IsRunningAsAdmin() == false && isRunAsAdminSpecified) {
 		si.lpVerb = _T("runas");
 	}
@@ -209,7 +193,7 @@ bool SubProcess::PImpl::SetupShellExecuteInfo(CString& path, CString& param, con
 ////////////////////////////////////////////////////////////////////////////////
 
 
-SubProcess::SubProcess(CommandParameter* param) : 
+SubProcess::SubProcess(Parameter* param) : 
 	in(std::make_unique<PImpl>(param))
 {
 }
@@ -276,9 +260,8 @@ bool SubProcess::Run(
 
 	auto pref = AppPreference::Get();
 
-	// 「パスを開く」指定の場合はファイラで経由でパスを表示する形に差し替える
-	bool isDir = Path::IsDirectory(path);
-	if ((in->IsOpenPathKeyPressed() && Path::FileExists(path)) || isDir) {
+	// ディレクトリの場合はファイラで経由でパスを表示する形に差し替える
+	if (Path::IsDirectory(path)) {
 
 		bool isFilerAvailable = false;
 
@@ -303,10 +286,6 @@ bool SubProcess::Run(
 
 		if (isFilerAvailable == false) {
 			// 登録されたファイラーがない、または、利用できない場合はエクスプローラで開く
-			if (isDir == FALSE) {
-				PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
-				path.ReleaseBuffer();
-			}
 			paramStr = _T("open");
 		}
 	}
@@ -327,7 +306,7 @@ bool SubProcess::Run(
 	}
 
 	// 管理者として実行する指定がされているか?
-	bool isRunAsAdminSpecified = in->mIsRunAsAdmin || (in->IsRunAsKeyPressed() && in->CanRunAsAdmin(path));
+	bool isRunAsAdminSpecified = in->mIsRunAsAdmin && in->CanRunAsAdmin(path);
 
 	SHELLEXECUTEINFO si = {};
 	in->SetupShellExecuteInfo(path, paramStr, workDir, si);

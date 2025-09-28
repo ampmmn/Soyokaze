@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "commands/core/CommandRanking.h"
-#include "commands/core/IFIDDefine.h"
 #include "commands/core/CommandIF.h"
 #include "commands/core/ExtraCandidateIF.h"
+#include "core/IFIDDefine.h"
 #include "utility/Path.h"
 #include <map>
 

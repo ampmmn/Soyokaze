@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "ControlPanelCommand.h"
-#include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -40,21 +42,19 @@ ControlPanelCommand::~ControlPanelCommand()
 {
 }
 
-CString ControlPanelCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString ControlPanelCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL ControlPanelCommand::Execute(Parameter* param)
+bool ControlPanelCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	return exec.Run(_T("control.exe"), _T("/name ") + in->mAppName, process);
+	if (modifierFlags != 0) {
+		return false;
+	}
+	Path controlExecPath(Path::SYSTEMDIR, _T("control.exe"));
+	*action = new ExecuteAction((LPCTSTR)controlExecPath, _T("/name ") + in->mAppName);
+	return true;
 }
 
 HICON ControlPanelCommand::GetIcon()
@@ -78,21 +78,10 @@ int ControlPanelCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool ControlPanelCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool ControlPanelCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool ControlPanelCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	if (index == 0) {
-		return Execute(param) != FALSE;
+		return GetAction(0, action);
 	}
 	return false;
 }

@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "MailToCommand.h"
 #include "commands/common/SubProcess.h"
-#include "commands/core/CommandParameter.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/CallbackAction.h"
+#include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -15,8 +17,9 @@ namespace launcherapp {
 namespace commands {
 namespace mailto {
 
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SubProcess = launcherapp::commands::common::SubProcess;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(MailToCommand)
 
@@ -29,35 +32,41 @@ MailToCommand::~MailToCommand()
 {
 }
 
-CString MailToCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString MailToCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL MailToCommand::Execute(Parameter* param)
+bool MailToCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	CString recipient;
-
-	CString str = param->GetCommandString();
-	int n = str.Find(_T("mailto:"));
-	if (n != -1) {
-		recipient = str.Mid(n + 7);
-		recipient.Trim();
+	if (modifierFlags != 0) {
+		return false;
 	}
 
-	SubProcess::ProcessPtr process;
-	SubProcess exec(CommandParameterBuilder::EmptyParam());
+	*action = new CallbackAction(_T("あて先を指定してメール"), [&](Parameter* param, String*) -> bool {
 
-	CString arg = _T("/c start \"\" mailto:" + recipient);
-	exec.SetShowType(SW_HIDE);
-	exec.Run(_T("cmd.exe"), arg, process);
+		CString recipient;
 
-	return TRUE;
+		CString str = param->GetCommandString();
+		int n = str.Find(_T("mailto:"));
+		if (n != -1) {
+			recipient = str.Mid(n + 7);
+			recipient.Trim();
+		}
+
+		Path cmdExePath(Path::SYSTEMDIR, _T("cmd.exe"));
+
+		SubProcess::ProcessPtr process;
+		SubProcess exec(ParameterBuilder::EmptyParam());
+
+
+		CString arg = _T("/c start \"\" mailto:" + recipient);
+		exec.SetShowType(SW_HIDE);
+		exec.Run((LPCTSTR)cmdExePath, arg, process);
+		return true;
+	});
+
+	return true;
 }
 
 HICON MailToCommand::GetIcon()

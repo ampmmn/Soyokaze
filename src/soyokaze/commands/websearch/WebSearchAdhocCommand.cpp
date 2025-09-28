@@ -2,10 +2,9 @@
 #include "framework.h"
 #include "WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommand.h"
-#include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
+#include "actions/web/OpenURLAction.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/common/SubProcess.h"
 #include "resource.h"
 #include <vector>
 
@@ -49,27 +48,21 @@ WebSearchAdhocCommand::~WebSearchAdhocCommand()
 	}
 }
 
-CString WebSearchAdhocCommand::GetGuideString()
-{
-	return _T("⏎:検索を実行");
-}
-
 CString WebSearchAdhocCommand::GetTypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMANDNAME_WEBSEARCH);
 	return TEXT_TYPE;
 }
 
-BOOL WebSearchAdhocCommand::Execute(Parameter* param)
+bool WebSearchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-
-	SubProcess::ProcessPtr process;
-	if (exec.Run(in->mURL, process) == FALSE) {
-		in->mErrorMsg = process->GetErrorMessage();
-		return FALSE;
+	if (modifierFlags != 0) {
+		return false;
 	}
-	return TRUE;
+	auto a = new actions::web::OpenURLAction(in->mURL);
+	a->SetDisplayName(_T("検索を実行"));
+	*action = a;
+	return true;
 }
 
 HICON WebSearchAdhocCommand::GetIcon()
@@ -90,21 +83,13 @@ int WebSearchAdhocCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool WebSearchAdhocCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool WebSearchAdhocCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"検索(&E)";
-		*displayNamePtr= name;
+		auto a = new actions::web::OpenURLAction(in->mURL);
+		a->SetDisplayName(_T("検索を実行"));
+		*action = a;
 		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool WebSearchAdhocCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	if (index == 0) {
-		return Execute(param) != FALSE;
 	}
 	return false;
 }

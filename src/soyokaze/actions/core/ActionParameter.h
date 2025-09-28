@@ -1,47 +1,47 @@
 #pragma once
 
-#include "commands/core/CommandParameterIF.h"
+#include "core/UnknownIF.h"
+#include "actions/core/ActionParameterIF.h"
 
 #include <vector>
 #include <memory>
 
-namespace launcherapp {
-namespace core {
+namespace launcherapp { namespace actions { namespace core {
 
-class CommandParameterBuilder : 
-	virtual public CommandParameter,
-	virtual public CommandNamedParameter
+class ParameterBuilder : 
+	virtual public Parameter,
+	virtual public NamedParameter
 {
 private:
-	CommandParameterBuilder();
-	CommandParameterBuilder(const CommandParameterBuilder& rhs);
-	CommandParameterBuilder(const CString& str);
-	~CommandParameterBuilder();
+	ParameterBuilder();
+	ParameterBuilder(const ParameterBuilder& rhs);
+	ParameterBuilder(const CString& str);
+	~ParameterBuilder();
 
-	CommandParameterBuilder& operator = (const CommandParameterBuilder& rhs);
+	ParameterBuilder& operator = (const ParameterBuilder& rhs);
 
 public:
-	static CommandParameterBuilder* Create();
-	static CommandParameterBuilder* Create(const CString& str);
-	CommandParameterBuilder* Clone_() const;
+	static ParameterBuilder* Create();
+	static ParameterBuilder* Create(const CString& str);
+	ParameterBuilder* Clone_() const;
 
 	// EmptyParamは毎回同じインスタンスを返す。変更したり削除しないこと
-	static CommandParameterBuilder* EmptyParam();
+	static ParameterBuilder* EmptyParam();
 
 public:
 	void AddArgument(const CString& arg);
-	void CopyParamTo(CommandParameterBuilder& rhs) const;
-	void CopyNamedParamTo(CommandParameterBuilder& rhs) const;
+	void CopyParamTo(ParameterBuilder& rhs) const;
+	void CopyNamedParamTo(ParameterBuilder& rhs) const;
 
 	// 補完
 	bool ComplementCommand(const CString& commandName, CString& comlementedStr) const;
 
 // UnknownIF
-	bool QueryInterface(const IFID& ifid, void** cmd) override;
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-// CommandParameter
+// Parameter
 	bool IsEmpty() const override;
 	bool HasParameter() const override;
 	LPCTSTR GetWholeString() const override;
@@ -51,7 +51,7 @@ public:
 	LPCTSTR GetParam(int index) const override;
 	void SetWholeString(LPCTSTR param) override;
 	void SetParameterString(LPCTSTR param) override;
-	CommandParameter* Clone() const override;
+	Parameter* Clone() const override;
 
 // CommandNamedParameter
 	int GetNamedParamStringLength(LPCTSTR name) const override;
@@ -65,6 +65,5 @@ protected:
 	std::unique_ptr<PImpl> in;
 };
 
-}
-}
+}}}
 

@@ -12,7 +12,6 @@ class UserCommandProviderBase :
 {
 protected:
 	using Command = launcherapp::core::Command;
-	using CommandParameter = launcherapp::core::CommandParameter;
 
 protected:
 	UserCommandProviderBase();

@@ -3,6 +3,7 @@
 #include "PptJumpCommand.h"
 #include "commands/presentation/PowerPointWindow.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 
@@ -11,6 +12,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
@@ -44,31 +46,37 @@ PptJumpCommand::~PptJumpCommand()
 {
 }
 
-CString PptJumpCommand::GetGuideString()
-{
-	return _T("⏎:スライドを表示する C-⏎:最大化表示");
-}
-
 
 CString PptJumpCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL PptJumpCommand::Execute(Parameter* param)
+bool PptJumpCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	// 現在表示中のパワポを取得
-	std::unique_ptr<PowerPointWindow> pptWnd;
-	PowerPointWindow::GetAcitveWindow(pptWnd);
+	if (modifierFlags == 0 || modifierFlags == Command::MODIFIER_CTRL) {
 
-	// スライドにジャンプ
-	pptWnd->GoToSlide((int16_t)in->mPage);
+		auto slideNo = (uint16_t)in->mPage;
+		bool isShowMaximize = (modifierFlags == Command::MODIFIER_CTRL);
 
-	// 表示しているパワポのウインドウをアクティブにする
-	bool isShowMaximize = GetModifierKeyState(param, MASK_CTRL) != 0;
-	pptWnd->Activate(isShowMaximize);
+		LPCTSTR guideText = isShowMaximize == false ? _T("スライドを表示する") : _T("最大化表示");
 
-	return TRUE;
+		*action = new CallbackAction(guideText, [slideNo, isShowMaximize](Parameter*, String*) -> bool {
+
+			// 現在表示中のパワポを取得
+			std::unique_ptr<PowerPointWindow> pptWnd;
+			PowerPointWindow::GetAcitveWindow(pptWnd);
+	
+			// スライドにジャンプ
+			pptWnd->GoToSlide(slideNo);
+	
+			// 表示しているパワポのウインドウをアクティブにする
+			pptWnd->Activate(isShowMaximize);
+			return true;
+		});
+		return true;
+	}
+	return false;
 }
 
 HICON PptJumpCommand::GetIcon()

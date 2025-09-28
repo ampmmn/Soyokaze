@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "UserCommandBase.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 using namespace launcherapp::core;
+using namespace launcherapp::actions::core;
 
 namespace launcherapp {
 namespace commands {
@@ -73,20 +74,26 @@ bool UserCommandBase::QueryInterface(const launcherapp::core::IFID& ifid, void**
 	return false;
 }
 
-bool UserCommandBase::CanExecute()
+bool UserCommandBase::CanExecute(String*)
 {
 	return true;
-}
-
-CString UserCommandBase::GetErrorString()
-{
-	return _T("");
 }
 
 bool UserCommandBase::IsAllowAutoExecute()
 {
 	return false;
 }
+
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool UserCommandBase::GetAction(uint32_t modifierFlags, Action** action)
+{
+	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(action);
+
+	// 派生側で実装する
+	return false;
+}
+
 
 
 uint32_t UserCommandBase::AddRef()
@@ -109,8 +116,8 @@ bool UserCommandBase::GetNamedParamString(Parameter* param, LPCTSTR name, CStrin
 		return false;
 	}
 
-	RefPtr<launcherapp::core::CommandNamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
+	RefPtr<NamedParameter> namedParam;
+	if (param->QueryInterface(IFID_ACTIONNAMEDPARAMETER, (void**)&namedParam) == false) {
 		return false;
 	}
 

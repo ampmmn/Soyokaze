@@ -24,7 +24,7 @@ public:
 	CString GetDescription() override;
 
 	// コマンド新規作成ダイアログ
-	bool NewDialog(CommandParameter* param) override;
+	bool NewDialog(Parameter* param) override;
 
 	// 一時的なコマンドの準備を行うための初期化
 	void PrepareAdhocCommands() override;

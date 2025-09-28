@@ -398,6 +398,26 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="actions\activate_window\CloseWindowAction.h" />
+    <ClInclude Include="actions\activate_window\MaximizeWindowAction.h" />
+    <ClInclude Include="actions\activate_window\MinimizeWindowAction.h" />
+    <ClInclude Include="actions\activate_window\RestoreWindowAction.h" />
+    <ClInclude Include="actions\builtin\CallbackAction.h" />
+    <ClInclude Include="actions\builtin\ExecuteAction.h" />
+    <ClInclude Include="actions\builtin\GroupAction.h" />
+    <ClInclude Include="actions\builtin\NullAction.h" />
+    <ClInclude Include="actions\builtin\OpenPathInFilerAction.h" />
+    <ClInclude Include="actions\builtin\RegisterNewCommandAction.h" />
+    <ClInclude Include="actions\builtin\RunCommandAction.h" />
+    <ClInclude Include="actions\builtin\ShowPropertiesAction.h" />
+    <ClInclude Include="actions\clipboard\CopyClipboardAction.h" />
+    <ClInclude Include="actions\core\Action.h" />
+    <ClInclude Include="actions\core\ActionBase.h" />
+    <ClInclude Include="actions\core\ActionParameter.h" />
+    <ClInclude Include="actions\core\ActionParameterIF.h" />
+    <ClInclude Include="actions\mainwindow\MainWindowSetTextAction.h" />
+    <ClInclude Include="actions\web\OpenURLAction.h" />
+    <ClInclude Include="actions\vmware\RunVMXAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
@@ -405,6 +425,9 @@
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h" />
+    <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h" />
+    <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h" />
+    <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h" />
     <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h" />
     <ClInclude Include="commands\activate_window\WindowActivateCommandEditor.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
@@ -504,11 +527,13 @@
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
+    <ClInclude Include="commands\regexp\RegExpExecutionTarget.h" />
     <ClInclude Include="commands\share\AfxWWrapper.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEnvBulkAddDialog.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEnvValueEditDialog.h" />
+    <ClInclude Include="commands\shellexecute\ShellExecTarget.h" />
     <ClInclude Include="commands\simple_dict\DictionaryLoader.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictCommandEditor.h" />
     <ClInclude Include="commands\simple_dict\SimpleDictionary.h" />
@@ -567,6 +592,8 @@
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\EdgeEnvironment.h" />
+    <ClInclude Include="core\IFID.h" />
+    <ClInclude Include="core\UnknownIF.h" />
     <ClInclude Include="gui\ColorScheme.h" />
     <ClInclude Include="gui\ColorSettings.h" />
     <ClInclude Include="gui\CustomColorScheme.h" />
@@ -791,7 +818,6 @@
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
     <ClInclude Include="commands/core/CommandRepository.h" />
-    <ClInclude Include="commands/core/CommandParameter.h" />
     <ClInclude Include="commands\builtin\EditCommand.h" />
     <ClInclude Include="commands\pathfind\PathExecuteCommand.h" />
     <ClInclude Include="commands\builtin\ExitCommand.h" />
@@ -852,12 +878,33 @@
     <ClInclude Include="utility\WinHttpHandle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="actions\activate_window\CloseWindowAction.cpp" />
+    <ClCompile Include="actions\activate_window\MaximizeWindowAction.cpp" />
+    <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp" />
+    <ClCompile Include="actions\activate_window\RestoreWindowAction.cpp" />
+    <ClCompile Include="actions\builtin\CallbackAction.cpp" />
+    <ClCompile Include="actions\builtin\ExecuteAction.cpp" />
+    <ClCompile Include="actions\builtin\GroupAction.cpp" />
+    <ClCompile Include="actions\builtin\NullAction.cpp" />
+    <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp" />
+    <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp" />
+    <ClCompile Include="actions\builtin\RunCommandAction.cpp" />
+    <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp" />
+    <ClCompile Include="actions\clipboard\CopyClipboardAction.cpp" />
+    <ClCompile Include="actions\core\ActionBase.cpp" />
+    <ClCompile Include="actions\core\ActionParameter.cpp" />
+    <ClCompile Include="actions\mainwindow\MainWindowSetTextAction.cpp" />
+    <ClCompile Include="actions\web\OpenURLAction.cpp" />
+    <ClCompile Include="actions\vmware\RunVMXAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />
+    <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp" />
+    <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp" />
+    <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateCommandEditor.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
@@ -957,11 +1004,13 @@
     <ClCompile Include="commands\onenote\OneNoteCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
+    <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEnvBulkAddDialog.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEnvValueEditDialog.cpp" />
+    <ClCompile Include="commands\shellexecute\ShellExecTarget.cpp" />
     <ClCompile Include="commands\simple_dict\DictionaryLoader.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictCommandEditor.cpp" />
     <ClCompile Include="commands\simple_dict\SimpleDictParam.cpp" />
@@ -1231,7 +1280,6 @@
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
-    <ClCompile Include="commands/core/CommandParameter.cpp" />
     <ClCompile Include="commands\builtin\EditCommand.cpp" />
     <ClCompile Include="commands\pathfind\PathExecuteCommand.cpp" />
     <ClCompile Include="commands\builtin\ExitCommand.cpp" />

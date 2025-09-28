@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "MSSettingsCommand.h"
-#include "commands/common/SubProcess.h"
+#include "actions/builtin/ExecuteAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -11,6 +11,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 
 namespace launcherapp {
 namespace commands {
@@ -45,21 +46,21 @@ MSSettingsCommand::~MSSettingsCommand()
 {
 }
 
-CString MSSettingsCommand::GetGuideString()
-{
-	return _T("⏎:開く");
-}
-
 CString MSSettingsCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL MSSettingsCommand::Execute(Parameter* param)
+bool MSSettingsCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	SubProcess exec(param);
-	SubProcess::ProcessPtr process;
-	return exec.Run(in->mScheme, process);
+	UNREFERENCED_PARAMETER(modifierFlags);
+
+	if (modifierFlags != 0) {
+		return false;
+	}
+
+	*action = new ExecuteAction(in->mScheme);
+	return true;
 }
 
 HICON MSSettingsCommand::GetIcon()
@@ -80,21 +81,10 @@ int MSSettingsCommand::GetMenuItemCount()
 }
 
 // メニューの表示名を取得する
-bool MSSettingsCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool MSSettingsCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		static LPCWSTR name = L"開く(&O)";
-		*displayNamePtr= name;
-		return true;
-	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool MSSettingsCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	if (index == 0) {
-		return Execute(param) != FALSE;
+		return  GetAction(0, action);
 	}
 	return false;
 }

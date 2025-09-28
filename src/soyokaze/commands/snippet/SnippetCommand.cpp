@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "SnippetCommand.h"
-#include "commands/core/IFIDDefine.h"
-#include "commands/common/Clipboard.h"
+#include "core/IFIDDefine.h"
 #include "commands/snippet/SnippetCommandEditor.h"
 #include "commands/core/CommandRepository.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
@@ -17,6 +17,7 @@
 #endif
 
 using namespace launcherapp::commands::common;
+using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
 namespace commands {
@@ -68,35 +69,25 @@ CString SnippetCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString SnippetCommand::GetGuideString()
-{
-	return _T("⏎:定型文をクリップボードにコピー");
-}
-
 CString SnippetCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
-BOOL SnippetCommand::Execute(Parameter* param)
+bool SnippetCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	UNREFERENCED_PARAMETER(param);
-
-	// 定型文をマクロ置換
-	CString text = in->mParam.mText;
-	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
-
-	// クリップボードにコピー
-	Clipboard::Copy(text);
-
-	return TRUE;
+	if (modifierFlags == 0) {
+		// 定型文をマクロ置換
+		CString text = in->mParam.mText;
+		launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
+		// クリップボードにコピー
+		auto a = new CopyTextAction(text);
+		a->SetDisplayName(_T("定型文をクリップボードにコピー"));
+		*action = a;
+		return true;
+	}
+	return false;
 }
-
-CString SnippetCommand::GetErrorString()
-{
-	return _T("");
-}
-
 
 void SnippetCommand::SetParam(const CommandParam& param)
 {

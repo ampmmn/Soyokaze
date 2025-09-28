@@ -40,7 +40,7 @@ public:
 	// オープンされているCalcのシート一覧を取得する
 	bool EnumCalcSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets);
 	// Calcシートをアクティブにする
-	bool ActiveCalcSheet(const std::wstring& workbook, const std::wstring& worksheet, bool isShowMaximize);
+	bool ActiveCalcSheet(const std::wstring& workbook, const std::wstring& worksheet, bool isShowMaximize, String& errMsg);
 
 	// アクティブなPowerpointのウインドウを取得する
 	bool GetActivePowerPointWindow(HWND& hwnd);

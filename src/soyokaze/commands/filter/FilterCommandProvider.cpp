@@ -49,7 +49,7 @@ CString FilterCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool FilterCommandProvider::NewDialog(CommandParameter* param)
+bool FilterCommandProvider::NewDialog(Parameter* param)
 {
 	FilterCommand* newCmd = nullptr;
 	if (FilterCommand::NewDialog(param, &newCmd) == false) {

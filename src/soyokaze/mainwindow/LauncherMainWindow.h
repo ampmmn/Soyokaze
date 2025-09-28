@@ -16,12 +16,17 @@
 
 
 namespace launcherapp {
+namespace actions {
+namespace core {
+	class ParameterBuilder;
+}
+}
+
 namespace core {
 	class AppHotKey;
 	class Command;
 	class CommandHotKeyManager;
 	class CommandRepository;
-	class CommandParameterBuilder;
 }
 }
 
@@ -59,9 +64,10 @@ protected:
 	void UpdateCandidates();
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
-	void RunCommand(launcherapp::core::Command* cmd, launcherapp::core::CommandParameterBuilder* commandParam);
+	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
+	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);
 
 	// 現在選択中のコマンドを取得
 	launcherapp::core::Command* GetCurrentCommand();

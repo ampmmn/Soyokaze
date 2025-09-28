@@ -1,14 +1,17 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "core/IFIDDefine.h"
+#include "commands/shellexecute/ShellExecTarget.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommandEditor.h"
 #include "commands/common/ExecuteHistory.h"
-#include "commands/common/SubProcess.h"
 #include "commands/common/ExecutablePath.h"
+#include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -27,9 +30,12 @@
 
 using namespace launcherapp::commands::common;
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
-using CommandNamedParameter = launcherapp::core::CommandNamedParameter;
+using NamedParameter = launcherapp::actions::core::NamedParameter;
 using CommandRepository = launcherapp::core::CommandRepository;
 using CommandIcon = launcherapp::icon::CommandIcon;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
 namespace launcherapp {
 namespace commands {
@@ -49,7 +55,6 @@ struct ShellExecCommand::PImpl
 
 	CommandParam mParam;
 
-	CString mErrMsg;
 	CommandIcon mIcon;
 };
 
@@ -113,106 +118,72 @@ CString ShellExecCommand::GetDescription()
 	return in->mParam.mDescription;
 }
 
-CString ShellExecCommand::GetGuideString()
-{
-	const auto& attr = in->GetNormalAttr();
-	CString targetPath = attr.mPath;
-	ExpandMacros(targetPath);
-
-	if (targetPath.Find(_T("http"))==0) {
-		return _T("⏎:ブラウザで開く");
-	}
-	else {
-		CString guideStr(_T("⏎:実行"));
-
-		if (Path::FileExists(targetPath)) {
-			guideStr += _T(" C-⏎:フォルダを開く");
-
-			CString ext(PathFindExtension(targetPath));
-			if (ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0) {
-				guideStr += _T(" C-S-⏎:管理者権限で実行");
-			}
-		}
-
-		return guideStr;
-	}
-}
-
 CString ShellExecCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
 }
 
 // コマンドを実行可能かどうか調べる
-bool ShellExecCommand::CanExecute()
+bool ShellExecCommand::CanExecute(String* reasonMsg)
 {
 	const auto& attr = in->GetNormalAttr();
 	ExecutablePath path(attr.mPath);
 	if (path.IsExecutable() == false) {
-		in->mErrMsg = _T("！リンク切れ！");
+		if (reasonMsg) {
+			*reasonMsg = "！リンク切れ！";
+		}
 		return false;
 	}
 	return true;
 }
 
-BOOL ShellExecCommand::Execute(Parameter* param_)
+bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	RefPtr<Parameter> param(param_->Clone());
-
-	// 実行時引数が与えられた場合は履歴に登録しておく
-	auto namedParam = GetCommandNamedParameter(param);
-	if (param->HasParameter() && namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
-		ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
+	if (modifierFlags == 0) {
+		return CreateExecuteAction(action, false);
 	}
-
-	in->mErrMsg.Empty();
-
-	int paramCount = param->GetParamCount();
-	std::vector<CString> args;
-	args.reserve(paramCount);
-	for (int i = 0; i < paramCount; ++i) {
-		args.push_back(param->GetParam(i));
+	else if (modifierFlags == Command::MODIFIER_CTRL) {
+		return CreateOpenPathAction(action);
 	}
+	else if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
+		return CreateExecuteAction(action, true);
+	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		return CreateShowPropertiesAction(action);
+	}
+	return false;
+}
 
-	// パラメータあり/なしで、mNormalAttr/mNoParamAttrを切り替える
-	ATTRIBUTE attr;
-	in->SelectAttribute(args, attr);
-		
-	SubProcess exec(param);
+bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
+{
+	auto a = new ExecuteAction(new ShellExecTarget(in->mParam));
+	a->SetHistoryPolicy(ExecuteAction::HISTORY_HASPARAMONLY);
 
-	// 表示方法
-	exec.SetShowType(attr.GetShowType());
-	// 作業ディレクトリ
-	exec.SetWorkDirectory(attr.mDir);
 	// 管理者権限で実行
-	if (in->mParam.mIsRunAsAdmin) {
-		exec.SetRunAsAdmin();
+	if (isForceRunAs || in->mParam.mIsRunAsAdmin) {
+		a->SetRunAsAdmin();
 	}
 	// 追加の環境変数をセットする
 	for (auto& item : in->mParam.mEnviron) {
 		auto value = item.second;
 		ExpandMacros(value);
-		exec.SetAdditionalEnvironment(item.first, value);
+		a->SetAdditionalEnvironment(item.first, value);
 	}
 
-	// プロセスを実行する
-	SubProcess::ProcessPtr process;
-	if (exec.Run(attr.mPath, attr.mParam, process) == FALSE) {
-		in->mErrMsg = (LPCTSTR)process->GetErrorMessage();
-		return FALSE;
-	}
-
-	// もしwaitするようにするのであればここで待つ
-	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
-		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		process->Wait(WAIT_LIMIT);
-	}
-	return TRUE;
+	*action = a;
+	return true;
 }
 
-CString ShellExecCommand::GetErrorString()
+bool ShellExecCommand::CreateOpenPathAction(Action** action)
 {
-	return in->mErrMsg;
+	*action = new OpenPathInFilerAction(new ShellExecTarget(in->mParam));
+	return true;
+}
+
+bool ShellExecCommand::CreateShowPropertiesAction(Action** action)
+{
+	*action = new ShowPropertiesAction(new ShellExecTarget(in->mParam));
+	return true;
 }
 
 void ShellExecCommand::SetPath(const CString& path)
@@ -484,56 +455,27 @@ bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 // メニューの項目数を取得する
 int ShellExecCommand::GetMenuItemCount()
 {
-	return 3;
+	return 4;
 }
 
 // メニューの表示名を取得する
-bool ShellExecCommand::GetMenuItemName(int index, LPCWSTR* displayNamePtr)
+bool ShellExecCommand::GetMenuItem(int index, Action** action)
 {
+	if (index < 0 || 3 < index) {
+		return false;
+	}
+
 	if (index == 0) {
-		static LPCWSTR name = L"実行(&E)";
-		*displayNamePtr= name;
-		return true;
+		return CreateExecuteAction(action, false);
 	}
 	else if (index == 1) {
-		static LPCWSTR name = L"パスを開く(&O)";
-		*displayNamePtr= name;
-		return true;
+		return CreateOpenPathAction(action);
 	}
 	else if (index == 2) {
-		static LPCWSTR name = L"管理者権限で実行(&A)";
-		*displayNamePtr= name;
-		return true;
+		return CreateExecuteAction(action, true);
 	}
-	return false;
-}
-
-// メニュー選択時の処理を実行する
-bool ShellExecCommand::SelectMenuItem(int index, launcherapp::core::CommandParameter* param)
-{
-	if (index < 0 || 2 < index) {
-		return false;
-	}
-
-	if (index == 0) {
-		return Execute(param) != FALSE;
-	}
-
-	RefPtr<CommandNamedParameter> namedParam;
-	if (param->QueryInterface(IFID_COMMANDNAMEDPARAMETER, (void**)&namedParam) == false) {
-		return false;
-	}
-
-	if (index == 1) {
-		// パスを開くため、疑似的にCtrl押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
-	}
-	else  {
-		// 管理者権限で実行するため、疑似的にCtrl-Shift押下で実行したことにする
-		namedParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-		namedParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-		return Execute(param) != FALSE;
+	else {
+		return CreateShowPropertiesAction(action);
 	}
 }
 

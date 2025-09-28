@@ -2,7 +2,6 @@
 #include "RegExpCommandProvider.h"
 #include "commands/regexp/RegExpCommand.h"
 #include "commands/core/CommandRepository.h"
-#include "commands/core/CommandParameter.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "resource.h"
@@ -55,7 +54,7 @@ CString RegExpCommandProvider::GetDescription()
 }
 
 // コマンド新規作成ダイアログ
-bool RegExpCommandProvider::NewDialog(CommandParameter* param)
+bool RegExpCommandProvider::NewDialog(Parameter* param)
 {
 	return RegExpCommand::NewDialog(param);
 }

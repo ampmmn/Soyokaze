@@ -2,9 +2,11 @@
 #include "DefaultCommand.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "commands/common/Clipboard.h"
-#include "commands/builtin/NewCommand.h"
-#include "commands/core/IFIDDefine.h"
+#include "actions/clipboard/CopyClipboardAction.h"
+#include "actions/builtin/RegisterNewCommandAction.h"
+#include "actions/builtin/NullAction.h"
+#include "actions/core/ActionParameter.h"
+#include "core/IFIDDefine.h"
 #include "icon/IconLoader.h"
 
 #ifdef _DEBUG
@@ -15,9 +17,7 @@ namespace launcherapp {
 namespace commands {
 namespace core {
 
-using namespace launcherapp::commands::common;
-using namespace launcherapp::commands::builtin;
-using CommandParameterBuilder = launcherapp::core::CommandParameterBuilder;
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using SelectionBehavior = launcherapp::core::SelectionBehavior;
 
 struct DefaultCommand::PImpl : public AppPreferenceListenerIF
@@ -55,7 +55,7 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 	// 設定読み込み済か?
 	bool mIsLoaded{false};
 	// コマンド実行時のウインドウクローズ方法
-	int mCloseWindowPolicy{SelectionBehavior::CLOSEWINDOW_SYNC};
+	int mCloseWindowPolicy{SelectionBehavior::CLOSEWINDOW_ASYNC};
 };
 
 DefaultCommand::DefaultCommand() : in(new PImpl)
@@ -80,26 +80,12 @@ CString DefaultCommand::GetName()
 CString DefaultCommand::GetDescription()
 {
 	if (in->mActionType == _T("register")) {
+		RefPtr<ParameterBuilder> paramTmp(ParameterBuilder::Create(in->mName));
 		CString text;
-		text.Format(_T("\"%s\"を登録"), (LPCTSTR)in->mName);
+		text.Format(_T("\"%s\"を登録"), (LPCTSTR)paramTmp->GetCommandString());
 		return text;
 	}
 	return _T("(一致候補なし)");
-}
-
-CString DefaultCommand::GetGuideString()
-{
-	if (in->mIsLoaded == false) {
-		in->Load();
-	}
-
-	if (in->mActionType == _T("copy")) {
-		return _T("⏎: クリップボードにコピー");
-	}
-	else if (in->mActionType == _T("register")) {
-		return _T("⏎: コマンドを登録");
-	}
-	return _T("");
 }
 
 CString DefaultCommand::GetTypeDisplayName()
@@ -107,13 +93,18 @@ CString DefaultCommand::GetTypeDisplayName()
 	return _T("");
 }
 
-bool DefaultCommand::CanExecute()
+bool DefaultCommand::CanExecute(String*)
 {
 	return true;
 }
 
-BOOL DefaultCommand::Execute(Parameter* param)
+// 修飾キー押下状態に対応した実行アクションを取得する
+bool DefaultCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	if (modifierFlags != 0) {
+		return false;
+	}
+
 	if (in->mIsLoaded == false) {
 		in->Load();
 	}
@@ -121,26 +112,19 @@ BOOL DefaultCommand::Execute(Parameter* param)
 	const auto& type = in->mActionType;
 	if (type == _T("copy")) {
 		// クリップボードにコピー
-		auto str = param->GetWholeString();
-		Clipboard::Copy(str);
-		return TRUE;
+		*action = new launcherapp::actions::clipboard::CopyAction();
+		return true;
 	}
 	else if (type == _T("register")) {
 		// コマンドを登録
-		CString str = param->GetWholeString();
-		RefPtr<CommandParameterBuilder> commandParam(CommandParameterBuilder::Create(_T("new ") + str), false);
-
-		NewCommand cmd;
-		BOOL result = cmd.Execute(commandParam);
-
-		return result;
+		*action = new launcherapp::actions::builtin::RegisterNewCommandAction(true);
+		return true;
 	}
-	return TRUE;
-}
+	else {
+		*action = new launcherapp::actions::builtin::NullAction();
+		return true;
+	}
 
-CString DefaultCommand::GetErrorString()
-{
-	return _T("");
 }
 
 HICON DefaultCommand::GetIcon()
