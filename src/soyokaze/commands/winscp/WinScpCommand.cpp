@@ -57,7 +57,7 @@ bool WinScpCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return false;
 	}
 
-	*action = new CallbackAction(_T("セッションを開く"), [&](Parameter* param, String* errMsg) -> bool {
+	*action = new CallbackAction(_T("セッションを開く"), [&](Parameter*, String* errMsg) -> bool {
 
 		CString exeFilePath;
 		if (in->mParam->ResolveExecutablePath(exeFilePath) == false) {

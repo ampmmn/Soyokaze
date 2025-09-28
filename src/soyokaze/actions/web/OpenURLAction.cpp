@@ -45,7 +45,7 @@ CString OpenURLAction::GetDisplayName()
 }
 
 // アクションを実行する
-bool OpenURLAction::Perform(Parameter* param, String* errMsg)
+bool OpenURLAction::Perform(Parameter* param, String*)
 {
 	CString browserPath;
 	CString parameter;

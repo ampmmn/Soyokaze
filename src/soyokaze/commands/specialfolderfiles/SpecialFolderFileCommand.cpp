@@ -5,6 +5,7 @@
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
+#include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/builtin/CallbackAction.h"
 #include "actions/builtin/NullAction.h"
 
@@ -20,6 +21,7 @@
 using namespace launcherapp::commands::common;
 using NamedParameter = launcherapp::actions::core::NamedParameter;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 using NullAction = launcherapp::actions::builtin::NullAction;
@@ -65,6 +67,10 @@ bool SpecialFolderFileCommand::GetAction(uint32_t modifierFlags, Action** action
 		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
 		return true;
 	}
+	else if (modifierFlags == Command::MODIFIER_ALT) {
+		*action = new ShowPropertiesAction(in->mItem.mFullPath);
+		return true;
+	}
 	return false;
 }
 
@@ -82,26 +88,26 @@ SpecialFolderFileCommand::Clone()
 // メニューの項目数を取得する
 int SpecialFolderFileCommand::GetMenuItemCount()
 {
-	return in->mItem.mType == TYPE_RECENT ? 3 : 2;
+	return in->mItem.mType == TYPE_RECENT ? 4 : 3;
 }
 
 // メニューの表示名を取得する
 bool SpecialFolderFileCommand::GetMenuItem(int index, Action** action)
 {
-	if (index < 0 || 2 < index) {
-		return false;
-	}
-
 	if (index == 0) {
 		*action = new ExecuteAction(in->mItem.mFullPath);
 		return true;
 	}
 
-	if (index == 1) {
+	else if (index == 1) {
 		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
 		return true;
 	}
-	else  {
+	else if (index == 2) {
+		*action = new ShowPropertiesAction(in->mItem.mFullPath);
+		return true;
+	}
+	else if (index == 3) {
 		// 削除
 		if (in->mItem.mType != TYPE_RECENT) {
 			// 削除できるのは履歴のみ
@@ -120,6 +126,8 @@ bool SpecialFolderFileCommand::GetMenuItem(int index, Action** action)
 		});
 		return true;
 	}
+
+	return false;
 }
 
 bool SpecialFolderFileCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

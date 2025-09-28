@@ -107,6 +107,7 @@ CString PathExecuteCommand::GetTypeDisplayName()
 bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
 	if (in->mIsURL == false && Path::FileExists(in->mFullPath) == FALSE) {
+		// URLでなく、存在しないパスの場合は何も実行しない
 		return false;
 	}
 
@@ -117,23 +118,28 @@ bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
-		// 管理者権限で実行
-		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
-		a->SetRunAsAdmin();
-		*action = a;
-		return true;
-	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
-		// パスを開く
-		*action = new OpenPathInFilerAction(in->mFullPath);
-		return true;
-	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
-		// パスを開く
-		*action = new ShowPropertiesAction(in->mFullPath);
-		return true;
+
+	// URLでない場合はキー押下状態により別のアクションができる
+	if (in->mIsURL == false) {
+
+		if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+			// 管理者権限で実行
+			auto a = new ExecuteAction(in->mFullPath, _T("$*"));
+			a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+			a->SetRunAsAdmin();
+			*action = a;
+			return true;
+		}
+		else if (modifierFlags == Command::MODIFIER_CTRL) {
+			// パスを開く
+			*action = new OpenPathInFilerAction(in->mFullPath);
+			return true;
+		}
+		else if (modifierFlags == Command::MODIFIER_ALT) {
+			// プロパティ表示
+			*action = new ShowPropertiesAction(in->mFullPath);
+			return true;
+		}
 	}
 	return false;
 }
