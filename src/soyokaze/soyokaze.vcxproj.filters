@@ -1608,6 +1608,9 @@
     <ClInclude Include="commands\bookmarks\BookmarkItem.h">
       <Filter>commands\bookmarks</Filter>
     </ClInclude>
+    <ClInclude Include="utility\MessageExchangeWindow.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2836,6 +2839,9 @@
     </ClCompile>
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp">
       <Filter>externaltool\webbrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\MessageExchangeWindow.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

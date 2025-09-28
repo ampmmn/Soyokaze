@@ -831,6 +831,7 @@
     <ClInclude Include="utility\LocalDirectoryWatcher.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\ManualEvent.h" />
+    <ClInclude Include="utility\MessageExchangeWindow.h" />
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
@@ -1274,6 +1275,7 @@
     <ClCompile Include="utility\LocalDirectoryWatcher.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\ManualEvent.cpp" />
+    <ClCompile Include="utility\MessageExchangeWindow.cpp" />
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />

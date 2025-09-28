@@ -2,6 +2,7 @@
 #include "Sound.h"
 #include "SharedHwnd.h"
 #include "utility/Path.h"
+#include "utility/MessageExchangeWindow.h"
 #include <mmsystem.h>
 #include <list>
 #include <map>
@@ -25,39 +26,16 @@ using ItemList = std::list<ItemPtr>;
 
 struct Sound::PImpl
 {
-	bool IsInitialized();
-	void Initialize();
 	bool GetWaitingItem(const CString& filePath, ItemPtr& item);
+	void OnPlaySoundCompleted(MCIDEVICEID deviceID);
 
-	HWND mNotifyHwnd{nullptr};
+	MessageExchangeWindow mNotifyHwnd;
 
 	ItemList mPlayingItems;
 	std::map<CString, ItemList> mWaitingMap;
 
 	int mAliasIndex{1};
 };
-
-bool Sound::PImpl::IsInitialized()
-{
-	return IsWindow(mNotifyHwnd);
-}
-
-void Sound::PImpl::Initialize()
-{
-	SharedHwnd sharedWnd;
-	HWND hParent = sharedWnd.GetHwnd();
-	if (IsWindow(hParent) == FALSE) {
-		return;
-	}
-
-	HINSTANCE hInst = (HINSTANCE)GetWindowLongPtr(hParent, GWLP_HINSTANCE);
-
-	mNotifyHwnd = CreateWindow(_T("Static"), _T(""), WS_CHILD, 0, 0, 0, 0, hParent, NULL, hInst, 0);
-	ASSERT(mNotifyHwnd);
-
-	SetWindowLongPtr(mNotifyHwnd, GWLP_WNDPROC, (DWORD_PTR)OnPlayCallbackProc);
-}
-
 
 bool Sound::PImpl::GetWaitingItem(const CString& filePath, ItemPtr& itemRet)
 {
@@ -79,6 +57,26 @@ bool Sound::PImpl::GetWaitingItem(const CString& filePath, ItemPtr& itemRet)
 	return true;
 }
 
+void Sound::PImpl::OnPlaySoundCompleted(MCIDEVICEID deviceID)
+{
+	// 再生中のデバイスIDを先頭に戻し、待機リストに戻す
+	for (auto it = mPlayingItems.begin(); it != mPlayingItems.end(); ++it) {
+		auto& item = *it;
+		if (deviceID != item->mParam.wDeviceID) {
+			continue;
+		}
+
+		mciSendCommand(deviceID, MCI_SEEK, MCI_SEEK_TO_START, 0);
+
+		// 待機リストに追加
+		mWaitingMap[item->mFilePath].push_back(std::move(item));
+
+		// 再生中リストから除外
+		mPlayingItems.erase(it);
+		return;
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +85,14 @@ bool Sound::PImpl::GetWaitingItem(const CString& filePath, ItemPtr& itemRet)
 
 Sound::Sound() : in(std::make_unique<PImpl>())
 {
+	// サウンドの再生が完了した通知を受け取り、処理するためのコールバック関数
+	in->mNotifyHwnd.SetCallback([&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+		if (msg != MM_MCINOTIFY || wp != MCI_NOTIFY_SUCCESSFUL) {
+			return DefWindowProc(h, msg, wp, lp);
+		}
+		in->OnPlaySoundCompleted((MCIDEVICEID)lp);
+		return 0;
+	});
 }
 
 Sound::~Sound()
@@ -96,44 +102,6 @@ Sound::~Sound()
 			mciSendCommand(item->mParam.wDeviceID, MCI_CLOSE, 0, 0);
 		}
 	}
-
-	if (IsWindow(in->mNotifyHwnd)) {
-		DestroyWindow(in->mNotifyHwnd);
-	}
-}
-
-LRESULT CALLBACK
-Sound::OnPlayCallbackProc(HWND h, UINT msg, WPARAM wp, LPARAM lp)
-{
-	if (msg == MM_MCINOTIFY && wp == MCI_NOTIFY_SUCCESSFUL) {
-
-		auto inst = Sound::Get();
-
-		MCIDEVICEID deviceID = (MCIDEVICEID)lp;
-
-		// 再生中のデバイスIDを先頭に戻し、待機リストに戻す
-		auto& playingItems = inst->in->mPlayingItems;
-		for (auto it = playingItems.begin(); it != playingItems.end(); ++it) {
-			auto& item = *it;
-			if (deviceID != item->mParam.wDeviceID) {
-				continue;
-			}
-
-			mciSendCommand(deviceID, MCI_SEEK, MCI_SEEK_TO_START, 0);
-
-			// 待機リストに追加
-			inst->in->mWaitingMap[item->mFilePath].push_back(std::move(item));
-
-			// 再生中リストから除外
-			playingItems.erase(it);
-
-			// TRACE(_T("Sound: deviceid %d stopped.\n"), deviceID);
-			break;
-		}
-		return 0;
-	}
-
-	return DefWindowProc(h, msg, wp, lp);
 }
 
 Sound* Sound::Get()
@@ -147,8 +115,8 @@ bool Sound::PlayAsync(LPCTSTR filePath)
 	if (Path::FileExists(filePath) == FALSE) {
 		return false;
 	}
-	if (in->IsInitialized() == false) {
-		in->Initialize();
+	if (in->mNotifyHwnd.Exists() == false) {
+		in->mNotifyHwnd.Create();
 	}
 
 	ItemPtr playItem;
@@ -180,7 +148,7 @@ bool Sound::PlayAsync(LPCTSTR filePath)
 	}
 
 	MCI_PLAY_PARMS playParam;
-	playParam.dwCallback= (DWORD_PTR)in->mNotifyHwnd;
+	playParam.dwCallback= (DWORD_PTR)in->mNotifyHwnd.GetHwnd();
 	mciSendCommand(playItem->mParam.wDeviceID, MCI_PLAY, MCI_NOTIFY, (DWORD_PTR)&playParam);
 
 	//size_t waitingCount = in->mWaitingMap[playItem->mFilePath].size();

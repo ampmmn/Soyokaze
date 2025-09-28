@@ -9,6 +9,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/ManualEvent.h"
 #include "utility/ScopedResetEvent.h"
+#include "utility/MessageExchangeWindow.h"
 #include "mainwindow/MainWindowDeactivateBlocker.h"
 #include <mutex>
 
@@ -29,6 +30,19 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 		AppPreference::Get()->RegisterListener(this);
 		Load();
 		mQueryEvent.Set();
+
+		// Everythingの検索が完了したかの状態を問い合わせるためのコールバック関数を設定しておく
+		mReceiverWindow.SetCallback([&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+
+			if (Everything_IsQueryReply(msg, wp, lp, REPLY_ID) == false) {
+				return DefWindowProc(h, msg, wp ,lp);
+			}
+
+			// 受け取った旨のフラグを立てる
+			mIsResultReceived = true;
+			return 0;
+		});
+
 	}
 	virtual ~PImpl()
 	{
@@ -68,30 +82,16 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 		DWORD tid = GetCurrentThreadId();
 		spdlog::debug("tid is {}", tid);
 
-		if (mReceiverWindow) {
-			return mReceiverWindow;
-		}
-		// 未作成の場合は作成する。
-		HINSTANCE hInst = GetModuleHandle(nullptr);
-		HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("LncrEveryingEventReceive"), 0, 
-				                       0, 0, 1, 1,
-				                       NULL, NULL, hInst, NULL);
-		ASSERT(hwnd);
-
-		SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
-		SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-
-		mReceiverWindow = hwnd;
-		return hwnd;
+		mReceiverWindow.Create(_T("LncrEveryingEventReceive"));
+		return mReceiverWindow.GetHwnd();
 	}
-	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	std::mutex mMutex;
 	bool mIsRunApp{false};
 	bool mIsResultReceived{false};
 	CString mAppPath;
 	HICON mAppIcon{nullptr};
-	HWND mReceiverWindow{nullptr};
+	MessageExchangeWindow mReceiverWindow;
 	ManualEvent mQueryEvent;
 };
 
@@ -121,33 +121,6 @@ bool EverythingProxy::PImpl::RunApp()
 		return true;
 	}
 	return false;
-}
-
-
-/**
- * @brief ウィンドウプロシージャ
- * @param hwnd ウィンドウハンドル
- * @param msg メッセージ
- * @param wparam WPARAM
- * @param lparam LPARAM
- * @return メッセージの処理結果
- */
-LRESULT CALLBACK EverythingProxy::PImpl::OnWindowProc(
-	HWND hwnd,
-	UINT msg,
-	WPARAM wparam,
-	LPARAM lparam
-)
-{
-	if (Everything_IsQueryReply(msg, wparam, lparam, REPLY_ID) == false) {
-		return DefWindowProc(hwnd, msg, wparam ,lparam);
-	}
-
-	// 受け取った旨のフラグを立てる
-	auto thisPtr = (EverythingProxy::PImpl*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-	thisPtr->mIsResultReceived = true;
-
-	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

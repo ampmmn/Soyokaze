@@ -4,6 +4,7 @@
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "mainwindow/controller/MainWindowController.h"
+#include "utility/MessageExchangeWindow.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -134,12 +135,14 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 		mFirstVK = pref->GetFirstModifierVirtualKeyCode();
 		mSecondVK = pref->GetSecondModifierVirtualKeyCode();
 
-		if (mHwnd == nullptr) {
+		if (mWindow.Exists() == false) {
 			return;
 		}
 
+		HWND h = mWindow.GetHwnd();
+
 		if (prevEnable && mIsEnableHotKey == false) {
-			KillTimer(mHwnd, TIMERID_HOTKEY);
+			KillTimer(h, TIMERID_HOTKEY);
 		}
 		else if (prevEnable && mIsEnableHotKey) {
 			// なにもしない
@@ -148,7 +151,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 			// なにもしない
 		}
 		else if (prevEnable == false && mIsEnableHotKey) {
-			SetTimer(mHwnd, TIMERID_HOTKEY, 50, 0);
+			SetTimer(h, TIMERID_HOTKEY, 50, 0);
 		}
 	}
 
@@ -169,7 +172,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 		return false;
 	}
 
-	HWND mHwnd{nullptr};
+	MessageExchangeWindow mWindow;
 	UINT mPrevVK{0};
 	uint64_t mPrevTime{0};
 	bool mIsOtherKeyPressed{false};
@@ -190,9 +193,6 @@ KeyInputWatch::KeyInputWatch() : in(new PImpl)
 
 KeyInputWatch::~KeyInputWatch()
 {
-	if (IsWindow(in->mHwnd)) {
-		DestroyWindow(in->mHwnd);
-	}
 }
 
 LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
@@ -298,19 +298,11 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 
 bool KeyInputWatch::Create()
 {
-	CRect rc(0, 0, 0, 0);
-	HINSTANCE hInst = AfxGetInstanceHandle();
-
 	// 内部のmessage処理用の不可視のウインドウを作っておく
-	HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("LncrModifierHotKey"), 0, 
-	                           rc.left, rc.top, rc.Width(), rc.Height(),
-	                           NULL, NULL, hInst, NULL);
-	ASSERT(hwnd);
-
-	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-
-	in->mHwnd = hwnd;
+	bool isOK = in->mWindow.Create(_T("LncrModifierHotKey"), OnWindowProc);
+	if (isOK == false) {
+		return false;
+	}
 
 	in->LoadSettings();
 

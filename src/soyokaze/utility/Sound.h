@@ -16,10 +16,6 @@ public:
 
 	// 非同期で音声ファイルを再生する
 	bool PlayAsync(LPCTSTR filePath);
-
-private:
-	static LRESULT CALLBACK OnPlayCallbackProc(HWND h, UINT msg, WPARAM wp, LPARAM lp);
-
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

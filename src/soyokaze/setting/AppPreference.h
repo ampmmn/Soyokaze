@@ -8,8 +8,6 @@ class CommandHotKeyMappings;
 
 class AppPreference
 {
-	class NotifyWindow;
-
 public:
 	static AppPreference* Get();
 

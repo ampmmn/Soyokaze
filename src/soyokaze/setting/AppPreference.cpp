@@ -6,6 +6,7 @@
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"
+#include "utility/MessageExchangeWindow.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "resource.h"
@@ -47,7 +48,7 @@ struct AppPreference::PImpl
 	void Load();
 	InitialFont* LoadInitialFontSettings();
 
-	std::unique_ptr<NotifyWindow> mNotifyWindow;
+	MessageExchangeWindow mNotifyWindow;
 
 	Settings mSettings;
 	bool mIsLoaded{false};
@@ -194,65 +195,7 @@ InitialFont* AppPreference::PImpl::LoadInitialFontSettings()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-class AppPreference::NotifyWindow
-{
-public:
-	NotifyWindow() : mHwnd(nullptr)
-	{
-	}
-	~NotifyWindow()
-	{
-		if (mHwnd) {
-			DestroyWindow(mHwnd);
-			mHwnd = nullptr;
-		}
-	}
-
-	HWND GetHwnd() {
-		return mHwnd;
-	}
-
-	bool Create() {
-
-		CRect rc(0, 0, 0, 0);
-		HINSTANCE hInst = AfxGetInstanceHandle();
-
-		// 内部のmessage処理用の不可視のウインドウを作っておく
-		HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("NotifyWindow"), 0, 
-		                           rc.left, rc.top, rc.Width(), rc.Height(),
-		                           NULL, NULL, hInst, NULL);
-		ASSERT(hwnd);
-
-		SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
-
-		mHwnd = hwnd;
-		return true;
-	}
-
-	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
-
-		if (msg == WM_APP+1) {
-			// 設定が更新されたことをリスナーに通知する
-			AppPreference::PImpl* in = (AppPreference::PImpl*)lp;
-			in->OnAppPreferenceUpdated();
-			return 0;
-		}
-
-		return DefWindowProc(hwnd, msg, wp, lp);
-	}
-
-private:
-	HWND mHwnd;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-AppPreference::PImpl::PImpl() : mNotifyWindow(std::make_unique<NotifyWindow>())
+AppPreference::PImpl::PImpl()
 {
 }
 
@@ -291,7 +234,16 @@ AppPreference* AppPreference::Get()
 
 void AppPreference::Init()
 {
-	in->mNotifyWindow->Create();
+	// リスナー通知用の処理を登録しておく
+	in->mNotifyWindow.SetCallback([&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+		if (msg == WM_APP+1) {
+			// 設定が更新されたことをリスナーに通知する
+			in->OnAppPreferenceUpdated();
+			return 0;
+		}
+
+		return DefWindowProc(h, msg, wp, lp);
+	});
 }
 
 /**
@@ -397,8 +349,11 @@ void AppPreference::Save()
 		}
 
 		// リスナーへ通知
-		ASSERT(in->mNotifyWindow->GetHwnd());
-		PostMessage(in->mNotifyWindow->GetHwnd(), WM_APP+1, 0 ,(LPARAM)in.get());
+		if (in->mNotifyWindow.Exists() == false) {
+			// 通知用のウインドウがなければ作成
+			in->mNotifyWindow.Create(_T("NotifyWindow"));
+		}
+		in->mNotifyWindow.Post(WM_APP+1, 0 ,(LPARAM)in.get());
 		// Saveは異なるスレッドが呼ばれうるが、通知先の処理の都合上、メインスレッドで通知をしたいので、
 		// イベント投げる用のウインドウ経由でイベント通知する
 	}

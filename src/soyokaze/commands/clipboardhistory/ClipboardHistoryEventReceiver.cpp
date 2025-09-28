@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ClipboardHistoryEventReceiver.h"
+#include "utility/MessageExchangeWindow.h"
 #include <set>
 
 #ifdef _DEBUG
@@ -21,7 +22,7 @@ struct ClipboardHistoryEventReceiver::PImpl
 	 */
 	int OnUpdateClipboard();
 
-	HWND mReceiverWindow{nullptr}; ///< クリップボードイベントを受信するウィンドウのハンドル
+	MessageExchangeWindow mReceiverWindow; ///< クリップボードイベントを受信するウィンドウのハンドル
 	std::set<ClipboardHistoryEventListener*> mListeners; ///< クリップボードイベントリスナーのセット
 	int mInterval{500}; ///< クリップボード更新のインターバル
 	std::unique_ptr<tregex> mExcludePattern; ///< 除外パターンの正規表現
@@ -115,10 +116,6 @@ ClipboardHistoryEventReceiver::ClipboardHistoryEventReceiver() : in(new PImpl)
  */
 ClipboardHistoryEventReceiver::~ClipboardHistoryEventReceiver()
 {
-	if (in->mReceiverWindow) {
-		::DestroyWindow(in->mReceiverWindow);
-		in->mReceiverWindow = nullptr;
-	}
 }
 
 /**
@@ -127,19 +124,14 @@ ClipboardHistoryEventReceiver::~ClipboardHistoryEventReceiver()
  */
 bool ClipboardHistoryEventReceiver::Initialize()
 {
-	if (in->mReceiverWindow == nullptr) {
-		// クリップボードイベントを受信するためのウィンドウを作成する
-		HINSTANCE hInst = AfxGetInstanceHandle();
-		HWND hwnd = CreateWindowEx(0, _T("STATIC"), _T("LncrClipboardReceiver"), 0, 
-		                           0, 0, 0, 0, nullptr, nullptr, hInst, nullptr);
-		ASSERT(hwnd);
-
-		SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OnWindowProc);
-		SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
-
-		in->mReceiverWindow = hwnd;
-	}
-	return true;
+	// クリップボードイベントを受信するためのウィンドウを作成する
+	return in->mReceiverWindow.Create(_T("LncrClipboardReceiver"), [&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+		if (msg == WM_CLIPBOARDUPDATE) {
+			// クリップボード更新通知
+			return in->OnUpdateClipboard();
+		}
+		return DefWindowProc(h, msg, wp,lp);
+	});
 }
 
 /**
@@ -150,7 +142,7 @@ bool ClipboardHistoryEventReceiver::Initialize()
  */
 bool ClipboardHistoryEventReceiver::Activate(int interval, const CString& excludePattern)
 {
-	if (AddClipboardFormatListener(in->mReceiverWindow) == FALSE) {
+	if (AddClipboardFormatListener(in->mReceiverWindow.GetHwnd()) == FALSE) {
 		spdlog::warn("Failed to AddClipboardFormatListener. errCode:{:x}", GetLastError());
 	}
 
@@ -176,8 +168,8 @@ bool ClipboardHistoryEventReceiver::Activate(int interval, const CString& exclud
  */
 void ClipboardHistoryEventReceiver::Deactivate()
 {
-	if (in->mReceiverWindow) {
-		RemoveClipboardFormatListener(in->mReceiverWindow);
+	if (in->mReceiverWindow.Exists()) {
+		RemoveClipboardFormatListener(in->mReceiverWindow.GetHwnd());
 	}
 	in->mListeners.clear();
 }
@@ -189,30 +181,6 @@ void ClipboardHistoryEventReceiver::Deactivate()
 void ClipboardHistoryEventReceiver::AddListener(ClipboardHistoryEventListener* listener)
 {
 	in->mListeners.insert(listener);
-}
-
-/**
- * @brief ウィンドウプロシージャ
- * @param hwnd ウィンドウハンドル
- * @param msg メッセージ
- * @param wparam WPARAM
- * @param lparam LPARAM
- * @return メッセージの処理結果
- */
-LRESULT CALLBACK ClipboardHistoryEventReceiver::OnWindowProc(
-	HWND hwnd,
-	UINT msg,
-	WPARAM wparam,
-	LPARAM lparam
-)
-{
-	if (msg == WM_CLIPBOARDUPDATE) {
-		// クリップボード更新通知
-		auto thisPtr = (ClipboardHistoryEventReceiver*)(size_t)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		return thisPtr->in->OnUpdateClipboard();
-	}
-
-	return DefWindowProc(hwnd, msg, wparam ,lparam);
 }
 
 } // end of namespace clipboardhistory

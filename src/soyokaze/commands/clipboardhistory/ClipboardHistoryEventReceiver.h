@@ -20,8 +20,6 @@ public:
 	void AddListener(ClipboardHistoryEventListener* listener);
 
 private:
-	static LRESULT CALLBACK OnWindowProc(HWND,UINT,WPARAM,LPARAM);
-private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
