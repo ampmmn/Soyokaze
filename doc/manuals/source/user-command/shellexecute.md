@@ -84,5 +84,6 @@ PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能
 |--|--|
 |`Enter`|ファイルを実行する or ディレクトリを開く or URLを開く|
 |`Ctrl-Enter`|パス(ファイルが存在するディレクトリ)を開く|
+|`Alt-Ctrl-Enter`|プロパティを開く|
 |`Shift-Ctrl-Enter`|管理者権限で実行する|
 
