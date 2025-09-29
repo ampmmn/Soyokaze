@@ -3,6 +3,7 @@
 #include "commands/common/Clipboard.h"
 #include "actions/core/ActionParameter.h"
 #include "commands/core/CommandRepository.h"
+#include "utility/Path.h"
 #include "utility/LastErrorString.h"
 
 namespace launcherapp { namespace actions { namespace builtin {
@@ -58,8 +59,13 @@ CString ShowPropertiesAction::GetDisplayName()
 bool ShowPropertiesAction::Perform(Parameter* param, String* errMsg)
 {
 	UNREFERENCED_PARAMETER(param);
+
+	auto path = in->mTarget->GetPath(param);
+	if (PathIsURL(path) || Path::FileExists(path) == false) {
+		return false;
+	}
 	
-	if (SHObjectProperties(nullptr, SHOP_FILEPATH, in->mTarget->GetPath(param), nullptr) == FALSE) {
+	if (SHObjectProperties(nullptr, SHOP_FILEPATH, path, nullptr) == FALSE) {
 		if (errMsg) {
 			LastErrorString msg(GetLastError());
 			UTF2UTF((CString)(LPCTSTR)msg, *errMsg);

@@ -29,6 +29,9 @@ public:
 	bool Save(CommandEntryIF* entry) const;
 	bool Load(CommandEntryIF* entry);
 
+	// 実行対象のパスはURLか?
+	bool IsPathURL() const;
+
 public:
 	// コマンド名
 	CString mName;

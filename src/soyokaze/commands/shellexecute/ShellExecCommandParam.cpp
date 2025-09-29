@@ -184,5 +184,17 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	return true;
 }
 
+// 
+bool CommandParam::IsPathURL() const
+{
+	if (PathIsURL(mNormalAttr.mPath)) {
+		return true;
+	}
+	if (mIsUse0 == false) {
+		return false;
+	}
+	return PathIsURL(mNoParamAttr.mPath) != FALSE;
+}
+
 }}} // end of namespace launcherapp::commands::shellexecute
 

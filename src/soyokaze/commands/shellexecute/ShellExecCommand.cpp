@@ -156,6 +156,11 @@ bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
 {
+	if (isForceRunAs && in->mParam.IsPathURL()) {
+		// URLに対して管理者権限の実行はできない
+		return false;
+	}
+
 	auto a = new ExecuteAction(new ShellExecTarget(in->mParam));
 	a->SetHistoryPolicy(ExecuteAction::HISTORY_HASPARAMONLY);
 
@@ -176,12 +181,21 @@ bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
 
 bool ShellExecCommand::CreateOpenPathAction(Action** action)
 {
+	if (in->mParam.IsPathURL()) {
+		// URLに対してパスを開くはできない
+		return false;
+	}
 	*action = new OpenPathInFilerAction(new ShellExecTarget(in->mParam));
 	return true;
 }
 
 bool ShellExecCommand::CreateShowPropertiesAction(Action** action)
 {
+	if (in->mParam.IsPathURL()) {
+		// URLに対してプロパティの表示はできない
+		return false;
+	}
+
 	*action = new ShowPropertiesAction(new ShellExecTarget(in->mParam));
 	return true;
 }
@@ -455,7 +469,7 @@ bool ShellExecCommand::CreateNewInstanceFrom(launcherapp::core::CommandEditor* e
 // メニューの項目数を取得する
 int ShellExecCommand::GetMenuItemCount()
 {
-	return 4;
+	return in->mParam.IsPathURL() ? 1 : 4;
 }
 
 // メニューの表示名を取得する

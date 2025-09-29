@@ -26,8 +26,6 @@ CString ShellExecTarget::GetParameter(Parameter* args)
 	ExpandArguments(param, args);
 	ExpandMacros(param);
 	return param;
-
-	return args->HasParameter() ? mParam.mNormalAttr.mParam : mParam.mNoParamAttr.mParam;
 }
 
 CString ShellExecTarget::GetWorkDir(Parameter* args)
