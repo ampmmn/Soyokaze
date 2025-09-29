@@ -11,14 +11,13 @@ namespace pathfind {
 class ExcludePathList;
 
 
-class PathExecuteCommand :
+class PathURLCommand :
  	virtual public launcherapp::commands::common::AdhocCommandBase,
 	virtual public launcherapp::commands::core::ContextMenuSource
 {
 public:
-	PathExecuteCommand(const CString& fullPath);
-	PathExecuteCommand(const CString& name, const CString& fullPath);
-	virtual ~PathExecuteCommand();
+	PathURLCommand(const CString& url);
+	virtual ~PathURLCommand();
 
 	CString GetName() override;
 	CString GetTypeDisplayName() override;
@@ -37,8 +36,7 @@ public:
 
 	static CString TypeDisplayName();
 
-	DECLARE_ADHOCCOMMAND_UNKNOWNIF(PathExecuteCommand)
-
+	DECLARE_ADHOCCOMMAND_UNKNOWNIF(PathURLCommand)
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

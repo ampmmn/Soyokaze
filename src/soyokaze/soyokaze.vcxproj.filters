@@ -1719,6 +1719,9 @@
     <ClInclude Include="commands\history\HistoryAction.h">
       <Filter>commands\history</Filter>
     </ClInclude>
+    <ClInclude Include="commands\pathfind\PathURLCommand.h">
+      <Filter>commands\pathfind</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3019,6 +3022,9 @@
     </ClCompile>
     <ClCompile Include="commands\history\HistoryAction.cpp">
       <Filter>commands\history</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\pathfind\PathURLCommand.cpp">
+      <Filter>commands\pathfind</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

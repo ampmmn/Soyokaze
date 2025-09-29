@@ -526,6 +526,7 @@
     <ClInclude Include="commands\onenote\OneNoteCommandProvider.h" />
     <ClInclude Include="commands\pathconvert\Icon.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
+    <ClInclude Include="commands\pathfind\PathURLCommand.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
     <ClInclude Include="commands\regexp\RegExpExecutionTarget.h" />
@@ -1005,6 +1006,7 @@
     <ClCompile Include="commands\onenote\OneNoteCommandParam.cpp" />
     <ClCompile Include="commands\onenote\OneNoteCommandProvider.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
+    <ClCompile Include="commands\pathfind\PathURLCommand.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />
