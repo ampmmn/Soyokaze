@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "HistoryCommand.h"
+#include "commands/history/HistoryAction.h"
+#include "core/IFIDDefine.h"
 #include "commands/history/HistoryCommandQueryRequest.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/core/ActionParameter.h"
-#include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
@@ -22,7 +23,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 using Command = launcherapp::core::Command;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using CommandQueryResult = launcherapp::commands::core::CommandQueryResult;
-using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+using ContextMenuSource = launcherapp::commands::core::ContextMenuSource;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
@@ -111,47 +112,27 @@ CString HistoryCommand::GetTypeDisplayName()
 
 bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	auto a = new CallbackAction(_T("開く"), [&, modifierFlags](Parameter* param, String* errMsg) -> bool {
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
+		return false;
+	}
 
-		auto cmd = in->GetCommand();
+	RefPtr<Action> realAction;
+	if (cmd->GetAction(modifierFlags, &realAction) == false) {
+		return false;
+	}
 
-		if (cmd == nullptr) {
-			if (errMsg) {
-				*errMsg = "コマンドが見つかりません";
-			}
-			return false;
-		}
-
-		auto builder = ParameterBuilder::Create(in->mKeyword);
-		bool hasParameter = builder->HasParameter();
-		builder->Release();
-
-		RefPtr<Parameter> paramTmp(param->Clone(), false);
-		if (hasParameter) {
-			// 履歴がパラメータを持つ場合は、履歴の方を優先する
-			paramTmp->SetWholeString(in->mKeyword);
-		}
-
-		auto namedParam = launcherapp::commands::common::GetNamedParameter(paramTmp);
-		namedParam->SetNamedParamBool(_T("RunAsHistory"), true);
-
-		RefPtr<launcherapp::actions::core::Action> action;
-		if (cmd->GetAction(modifierFlags, &action) == false) {
-			spdlog::error("Failed to get action");
-			return false;
-		}
-		return action->Perform(paramTmp, errMsg);
-	});
-
-	a->SetVisible(modifierFlags == 0);
-
-	*action = a;
+	*action = new HistoryAction(realAction.get(), in->mKeyword);
 	return true;
 }
 
 HICON HistoryCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadHistoryIcon();
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
+		return IconLoader::Get()->LoadHistoryIcon();
+	}
+	return cmd->GetIcon();
 }
 
 launcherapp::core::Command*
@@ -164,6 +145,50 @@ CString HistoryCommand::TypeDisplayName()
 {
 	static CString TEXT_TYPE((LPCTSTR)IDS_COMMAND_HISTORY);
 	return TEXT_TYPE;
+}
+
+// メニューの項目数を取得する
+int HistoryCommand::GetMenuItemCount()
+{
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
+		return 0;
+	}
+
+	RefPtr<ContextMenuSource> menuSrc;
+	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+		return 0;
+	}
+	return menuSrc->GetMenuItemCount();
+}
+
+// メニューに対応するアクションを取得する
+bool HistoryCommand::GetMenuItem(int index, Action** action)
+{
+	auto cmd = in->GetCommand();
+	if (cmd == nullptr) {
+		return false;
+	}
+
+	RefPtr<ContextMenuSource> menuSrc;
+	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+		return false;
+	}
+	return menuSrc->GetMenuItem(index, action);
+}
+
+bool HistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (ContextMenuSource*)this;
+		return true;
+	}
+	return false;
 }
 
 } // end of namespace history

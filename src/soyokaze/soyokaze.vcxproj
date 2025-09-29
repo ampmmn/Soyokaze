@@ -504,6 +504,7 @@
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h" />
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h" />
     <ClInclude Include="commands\group\GroupCommandEditor.h" />
+    <ClInclude Include="commands\history\HistoryAction.h" />
     <ClInclude Include="commands\history\HistoryCommandQueryRequest.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommand.h" />
     <ClInclude Include="commands\keysplitter\KeySplitterCommandEditor.h" />
@@ -979,6 +980,7 @@
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp" />
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp" />
     <ClCompile Include="commands\group\GroupCommandEditor.cpp" />
+    <ClCompile Include="commands\history\HistoryAction.cpp" />
     <ClCompile Include="commands\history\HistoryCommandQueryRequest.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommand.cpp" />
     <ClCompile Include="commands\keysplitter\KeySplitterCommandEditor.cpp" />

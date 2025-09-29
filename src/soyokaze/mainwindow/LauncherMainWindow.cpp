@@ -1817,14 +1817,17 @@ void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFi
 
 	RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
 	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
-		// コマンド固有のメニューなし
+		// コマンドは固有のメニューを実装していない
+		return;
+	}
+	int count = menuSrc->GetMenuItemCount();
+	if (count == 0) {
+		// コマンド固有のメニュー項目なし
 		return;
 	}
 
 	CString postFix;
-
 	int index = 1;
-	int count = menuSrc->GetMenuItemCount();
 	for (int i = 0; i < count; ++i) {
 
 		// メニュー項目に対応するアクションを得る

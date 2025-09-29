@@ -1670,7 +1670,6 @@
     </ClInclude>
     <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
       <Filter>commands\activate_window</Filter>
->>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
     </ClInclude>
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
       <Filter>commands\activate_window</Filter>
@@ -1716,6 +1715,9 @@
     </ClInclude>
     <ClInclude Include="actions\builtin\ShowPropertiesAction.h">
       <Filter>actions\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\history\HistoryAction.h">
+      <Filter>commands\history</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2969,7 +2971,6 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
       <Filter>commands\activate_window</Filter>
->>>>>>> 2bcf4aac (refactor :  WindowActivateAdhocCommandの処理をActionクラスに切り出し)
     </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
       <Filter>commands\activate_window</Filter>
@@ -3015,6 +3016,9 @@
     </ClCompile>
     <ClCompile Include="actions\builtin\ShowPropertiesAction.cpp">
       <Filter>actions\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\history\HistoryAction.cpp">
+      <Filter>commands\history</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
