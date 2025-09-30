@@ -15,6 +15,7 @@ public:
 	bool OpenSubKey(LPCTSTR subKeyName, RegistryKey& subKey);
 
 	bool GetValue(LPCTSTR subKey, LPCTSTR valueName, CString& value);
+	bool GetValue(LPCTSTR subKey, LPCTSTR valueName, DWORD& value);
 	bool GetValue(LPCTSTR valueName, CString& value);
 
 private:

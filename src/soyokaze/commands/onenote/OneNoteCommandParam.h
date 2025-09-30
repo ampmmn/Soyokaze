@@ -16,6 +16,9 @@ public:
 	bool Save(Settings& settings) const;
 	bool Load(Settings& settings);
 
+
+	static bool IsOneNoteSetupVerified();
+
 public:
 	// 検索を有効化するためのプレフィックス
 	CString mPrefix;

@@ -175,6 +175,23 @@ bool RegistryKey::GetValue(LPCTSTR subKey, LPCTSTR valueName, CString& value)
 }
 
 /**
+ * @brief レジストリ値を取得する
+ * @param subKey サブキーの名前
+ * @param valueName 値の名前
+ * @param value 取得した値を格納するDWORD
+ * @return 取得に成功した場合は true、失敗した場合は false
+ */
+bool RegistryKey::GetValue(LPCTSTR subKey, LPCTSTR valueName, DWORD& value)
+{
+	DWORD len = sizeof(value);
+	// レジストリ値を取得
+	if (RegGetValue(mKey, subKey, valueName, RRF_RT_REG_DWORD, nullptr, &value, &len) != ERROR_SUCCESS) {
+		return false;
+	}
+	return true;
+}
+
+/**
  * @brief レジストリ値を取得する（オーバーロード）
  * @param valueName 値の名前
  * @param value 取得した値を格納する CString オブジェクト
@@ -184,3 +201,4 @@ bool RegistryKey::GetValue(LPCTSTR valueName, CString& value)
 {
 	return GetValue(nullptr, valueName, value);
 }
+
