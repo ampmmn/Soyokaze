@@ -195,15 +195,8 @@ KeyInputWatch::~KeyInputWatch()
 {
 }
 
-LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+LRESULT KeyInputWatch::OnTimerProc()
 {
-	if (msg != WM_TIMER || wp != TIMERID_HOTKEY) {
-		return DefWindowProc(hwnd, msg, wp, lp);
-	}
-
-	auto thisPtr = (KeyInputWatch*)(size_t)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-	auto& in = thisPtr->in;
-
 	std::vector<KEYEVENT> events;
 	in->GetKeyEvents(events);
 
@@ -291,15 +284,19 @@ LRESULT CALLBACK KeyInputWatch::OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 		in->mPrevVK = curVK;
 		in->mPrevTime = time;
 	}
-	return DefWindowProc(hwnd, msg, wp, lp);
+	return 0;
 }
-
 
 
 bool KeyInputWatch::Create()
 {
 	// 内部のmessage処理用の不可視のウインドウを作っておく
-	bool isOK = in->mWindow.Create(_T("LncrModifierHotKey"), OnWindowProc);
+	bool isOK = in->mWindow.Create(_T("LncrModifierHotKey"), [&](HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+		if (msg != WM_TIMER || wp != TIMERID_HOTKEY) {
+			return DefWindowProc(hwnd, msg, wp, lp);
+		}
+		return OnTimerProc();
+	});
 	if (isOK == false) {
 		return false;
 	}

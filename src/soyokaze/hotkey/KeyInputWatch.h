@@ -13,7 +13,7 @@ public:
 	bool Create();
 
 private:
-	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+	LRESULT OnTimerProc();
 
 private:
 	struct PImpl;
