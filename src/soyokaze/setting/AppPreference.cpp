@@ -235,13 +235,12 @@ AppPreference* AppPreference::Get()
 void AppPreference::Init()
 {
 	// リスナー通知用の処理を登録しておく
-	in->mNotifyWindow.SetCallback([&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+	in->mNotifyWindow.Create(_T("NotifyWindow"), [&](HWND h, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
 		if (msg == WM_APP+1) {
 			// 設定が更新されたことをリスナーに通知する
 			in->OnAppPreferenceUpdated();
 			return 0;
 		}
-
 		return DefWindowProc(h, msg, wp, lp);
 	});
 }
@@ -350,8 +349,7 @@ void AppPreference::Save()
 
 		// リスナーへ通知
 		if (in->mNotifyWindow.Exists() == false) {
-			// 通知用のウインドウがなければ作成
-			in->mNotifyWindow.Create(_T("NotifyWindow"));
+			return;
 		}
 		in->mNotifyWindow.Post(WM_APP+1, 0 ,(LPARAM)in.get());
 		// Saveは異なるスレッドが呼ばれうるが、通知先の処理の都合上、メインスレッドで通知をしたいので、

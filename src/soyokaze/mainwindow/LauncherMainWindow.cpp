@@ -926,6 +926,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	SPDLOG_DEBUG(_T("start"));
 
 	CDialogEx::OnInitDialog();
+	spdlog::debug("main thread TID:{}", GetCurrentThreadId());
 
 	in->mAppearance = std::make_unique<MainWindowAppearance>(this);
 	in->mKeyInputWatch.Create();
