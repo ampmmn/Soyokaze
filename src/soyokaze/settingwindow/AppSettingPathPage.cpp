@@ -202,15 +202,21 @@ void PathSettingDialog::OnEnterSettings(Settings* settingsPtr)
 
 void PathSettingDialog::OnButtonAdd()
 {
-	Path path(Path::MODULEFILEDIR);
-	CFolderDialog dlg(_T("ディレクトリの選択"), path, this);
+	Path modulePath(Path::MODULEFILEDIR);
+	CFolderDialog dlg(_T("ディレクトリの選択"), modulePath, this);
 	if (dlg.DoModal() != IDOK) {
 		return ;
 	}
 
+	auto path = dlg.GetPathName();
+	if (PathIsUNC(path)) {
+		AfxMessageBox(_T("ネットワークパスは追加できません。"));
+		return;
+	}
+
 	auto listPath = GetPathListWnd();
-	mAdditionalPaths.push_back(dlg.GetPathName());
-	listPath->InsertItem(listPath->GetItemCount(), dlg.GetPathName());
+	mAdditionalPaths.push_back(path);
+	listPath->InsertItem(listPath->GetItemCount(), path);
 }
 
 void PathSettingDialog::OnButtonEdit()

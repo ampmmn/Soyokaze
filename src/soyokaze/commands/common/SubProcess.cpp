@@ -15,6 +15,8 @@
 #include <shobjidl_core.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
 
+#pragma comment(lib, "Mpr.lib")
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -259,6 +261,24 @@ bool SubProcess::Run(
 	ExpandMacros(path);
 
 	auto pref = AppPreference::Get();
+
+	if (PathIsUNC(path) && Path::FileExists(path) == false) {
+		// パスがUNC形式で、かつ、接続できないときは
+		// ネットワーク接続先ホストへの認証が未実施の可能性があるため、認証を試みる
+
+		NETRESOURCE nr = { 0 };
+		nr.dwType = RESOURCETYPE_DISK;
+		CString buf(path);
+		nr.lpRemoteName = buf.GetBuffer();
+		DWORD result = WNetAddConnection2(&nr, NULL, NULL, CONNECT_INTERACTIVE);
+		buf.ReleaseBuffer();
+		if (result != NO_ERROR) {
+			LastErrorString errStr(result);
+			process = std::move(std::make_unique<SubProcess::Instance>(nullptr));
+			process->SetErrorMessage((LPCTSTR)errStr);
+			return false;
+		}
+	}
 
 	// ディレクトリの場合はファイラで経由でパスを表示する形に差し替える
 	if (Path::IsDirectory(path)) {
