@@ -265,6 +265,7 @@ bool SubProcess::Run(
 	if (PathIsUNC(path) && Path::FileExists(path) == false) {
 		// パスがUNC形式で、かつ、接続できないときは
 		// ネットワーク接続先ホストへの認証が未実施の可能性があるため、認証を試みる
+		spdlog::debug(_T("try WNetAddConnection2 path:{}"), (LPCTSTR)path);
 
 		NETRESOURCE nr = { 0 };
 		nr.dwType = RESOURCETYPE_DISK;
@@ -276,6 +277,7 @@ bool SubProcess::Run(
 			LastErrorString errStr(result);
 			process = std::move(std::make_unique<SubProcess::Instance>(nullptr));
 			process->SetErrorMessage((LPCTSTR)errStr);
+			spdlog::warn(_T("failed to connection."), (LPCTSTR)path);
 			return false;
 		}
 	}

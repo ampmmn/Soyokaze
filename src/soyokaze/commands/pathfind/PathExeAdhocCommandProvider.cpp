@@ -185,6 +185,12 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
 		return ;
 	}
+	// UNCの場合、接続先が未認証の場合パスの有無を判断できないため、候補として表示
+	// (実行時に認証を試みる)
+	if (PathIsUNC(filePart)) {
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
+		return ;
+	}
 
 	CString word = pattern->GetFirstWord();
 	if (EXE_EXT.CompareNoCase(PathFindExtension(word)) != 0) {

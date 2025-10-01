@@ -69,7 +69,7 @@ CString PathExecuteCommand::GetTypeDisplayName()
 
 bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (Path::FileExists(in->mFullPath) == FALSE) {
+	if (PathIsUNC(in->mFullPath) == FALSE && Path::FileExists(in->mFullPath) == FALSE) {
 		// 存在しないパスの場合は何も実行しない
 		return false;
 	}
