@@ -24,8 +24,8 @@ bool ExecutablePath::IsExecutable() const
 	CString path{mPath};
 	ExpandMacros(path);
 
-	if (PathIsURL(path)) {
-		// URLの場合はOK
+	if (PathIsURL(path) || PathIsUNC(path)) {
+		// URL or UNCの場合はOK
 		return true;
 	}
 

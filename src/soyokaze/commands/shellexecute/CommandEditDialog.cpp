@@ -205,7 +205,10 @@ bool CommandEditDialog::UpdateStatus()
 		DisalbleOKButton();
 		return false;
 	}
-	if (PathIsURL(targetPath) == FALSE && Path::FileExists(targetPath) == false) {
+
+	bool isURL = PathIsURL(targetPath) != FALSE;
+	bool isUNC = PathIsUNC(targetPath) != FALSE;
+	if (isURL == false && isUNC == false && Path::FileExists(targetPath) == false) {
 		in->mMessage = _T("ファイルまたはディレクトリが存在しません。");
 		DisalbleOKButton();
 		return false;
