@@ -100,8 +100,6 @@ struct OneNoteCommandProvider::PImpl :
 		std::vector<OneNoteBook> books;
 		OneNoteAppProxy app;
 		if (app.GetHierarchy(books) == false) {
-			// GetHierarchyに失敗する状況では機能を無効化する
-			mParam.mIsEnable = false;
 			return;
 		}
 
