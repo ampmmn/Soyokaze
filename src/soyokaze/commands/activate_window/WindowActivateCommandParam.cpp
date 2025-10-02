@@ -277,7 +277,13 @@ bool CommandParam::IsMatchCaption(LPCTSTR caption)
 		if (BuildCaptionRegExp(nullptr) == false) {
 			return false;
 		}
-		return std::regex_match(tstring(caption), *mRegCaption.get());
+		try {
+			return std::regex_match(tstring(caption), *mRegCaption.get());
+		}
+		catch(std::regex_error&) {
+			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
+			return false;
+		}
 	}
 	else {
 		return mCaptionStr == caption;
@@ -292,7 +298,13 @@ bool CommandParam::IsMatchClass(LPCTSTR className)
 				return false;
 			}
 		}
-		return std::regex_match(tstring(className), *mRegClass.get());
+		try {
+			return std::regex_match(tstring(className), *mRegClass.get());
+		}
+		catch(std::regex_error&) {
+			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
+			return false;
+		}
 	}
 	else {
 		return mClassStr == className;

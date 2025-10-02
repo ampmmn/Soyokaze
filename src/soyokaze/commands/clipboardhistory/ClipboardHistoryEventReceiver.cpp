@@ -90,7 +90,11 @@ int ClipboardHistoryEventReceiver::PImpl::OnUpdateClipboard()
 	}
 
 	// 無視するパターンに合致する場合は通知しない
-	if (mExcludePattern.get() && std::regex_match(newData, *mExcludePattern.get())) {
+	try {
+		if (mExcludePattern.get() && std::regex_match(newData, *mExcludePattern.get())) {
+			return 0;
+		}
+	} catch(std::regex_error&) {
 		return 0;
 	}
 

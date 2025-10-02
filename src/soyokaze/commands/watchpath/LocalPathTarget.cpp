@@ -117,9 +117,15 @@ struct LocalPathTarget::PImpl
 				fileName.assign(data->FileName, lenInStrCount);
 
 				// 除外パターンにマッチする場合は除外
-				if (mExcludePattern.get() && std::regex_match(fileName, *mExcludePattern.get())) {
-						continue;
+				try {
+					if (mExcludePattern.get() && std::regex_match(fileName, *mExcludePattern.get())) {
+							continue;
+					}
 				}
+				catch(std::regex_error&) {
+					spdlog::warn("PrepareInformation regexp is invalid.");
+				}
+			
 
 				actionFirst = action;
 				filePathFirst = fileName.c_str();

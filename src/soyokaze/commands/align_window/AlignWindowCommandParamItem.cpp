@@ -159,7 +159,12 @@ bool ITEM::IsMatchClass(LPCTSTR className)
 		return true;
 	}
 	if (mIsUseRegExp) {
-		return std::regex_match(tstring(className), mRegClass);
+		try {
+			return std::regex_match(tstring(className), mRegClass);
+		}
+		catch(std::regex_error&) {
+			return false;
+		}
 	}
 	else {
 		return mClassStr == className;

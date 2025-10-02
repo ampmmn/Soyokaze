@@ -99,8 +99,13 @@ struct DirectoryNode
 
 				// ファイル名が除外パターンにマッチする場合はリストに含めない
 				tstring fileName((LPCTSTR)f.GetFileName());
-				if (excludePat.get() && std::regex_match(fileName, *excludePat)) {
-					continue;
+				try {
+					if (excludePat.get() && std::regex_match(fileName, *excludePat)) {
+						continue;
+					}
+				}
+				catch(std::regex_error&) {
+					spdlog::warn("DirectoryNode::Build regexp is invalid.");
 				}
 
 				auto filePath = f.GetFilePath();

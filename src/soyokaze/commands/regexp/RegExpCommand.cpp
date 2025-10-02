@@ -170,25 +170,32 @@ HICON RegExpCommand::GetIcon()
 
 int RegExpCommand::Match(Pattern* pattern)
 {
-	tstring str = (tstring)pattern->GetWholeString();
+	try {
+		tstring str = (tstring)pattern->GetWholeString();
 
-	tsmatch match_result;
-	if (std::regex_match(str, in->mRegex)) {
-		// regex_matchで一致するなら完全一致
-		in->mMatchLevel = Pattern::WholeMatch;
-	}
-	else if (std::regex_search(str, match_result, in->mRegex)) {
-		if (match_result.position() == 0) {
-			in->mMatchLevel = Pattern::FrontMatch;
+		tsmatch match_result;
+		if (std::regex_match(str, in->mRegex)) {
+			// regex_matchで一致するなら完全一致
+			in->mMatchLevel = Pattern::WholeMatch;
+		}
+		else if (std::regex_search(str, match_result, in->mRegex)) {
+			if (match_result.position() == 0) {
+				in->mMatchLevel = Pattern::FrontMatch;
+			}
+			else {
+				in->mMatchLevel = Pattern::PartialMatch;
+			}
 		}
 		else {
-			in->mMatchLevel = Pattern::PartialMatch;
+			in->mMatchLevel = Pattern::Mismatch;
 		}
+		return in->mMatchLevel;
 	}
-	else {
+	catch(std::regex_error&) {
+		spdlog::warn("RegExpCommand::Match regexp is invalid.");
 		in->mMatchLevel = Pattern::Mismatch;
+		return in->mMatchLevel;
 	}
-	return in->mMatchLevel;
 }
 
 bool RegExpCommand::GetHotKeyAttribute(CommandHotKeyAttribute& attr)
