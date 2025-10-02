@@ -9,6 +9,7 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/builtin/RunCommandAction.h"
 #include "actions/builtin/ExecuteAction.h"
+#include "actions/builtin/CallbackAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/RefPtr.h"
@@ -27,6 +28,7 @@ using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
@@ -102,8 +104,18 @@ bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 bool FilterAdhocCommand::CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action)
 {
-	auto a = new RunCommandAction(in->mParam.mName, in->mParam.mAfterCommandName, modifierFlags);
-	*action = a;
+	*action = new CallbackAction(_T("実行"), [&](Parameter* param, String* errMsg) -> bool {
+
+		CString argSub = in->mParam.mAfterCommandParam;
+		argSub.Replace(_T("$select"), in->mResult.mDisplayName);
+		ExpandMacros(argSub);
+
+		RefPtr<Parameter> paramSub(param->Clone(), false);
+		paramSub->SetParameterString(argSub);
+
+		RunCommandAction action(in->mParam.mName, in->mParam.mAfterCommandName, modifierFlags);
+		return action.Perform(paramSub.get(), errMsg);
+	});
 	return true;
 }
 
