@@ -4,6 +4,9 @@
 #include <thread>
 #include <mutex>
 #include <map>
+#include <lm.h>
+
+#pragma comment(lib, "Netapi32.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -393,3 +396,50 @@ bool Path::IsDirectory(LPCTSTR pathStr)
 	}
 }
 
+// 指定したホストに対する接続が確立しているかを確認する
+bool Path::IsHostConnected(const CString& targetHost)
+{
+	LPBYTE buffer = nullptr;
+	DWORD entriesRead = 0;
+	DWORD totalEntries = 0;
+	DWORD resumeHandle = 0;
+
+	// ローカル コンピューターとリモート サーバー上のリソース間のすべての現在の接続を一覧を取得
+	NET_API_STATUS status = NetUseEnum(nullptr, 2, &buffer, MAX_PREFERRED_LENGTH,
+	                                   &entriesRead, &totalEntries, &resumeHandle);
+	if (status != NERR_Success || buffer == nullptr) {
+		return false;
+	}
+
+	struct scope_free {
+		scope_free(LPBYTE buf) : mBuffer(buf) {}
+		~scope_free() { NetApiBufferFree(mBuffer); }
+		LPBYTE mBuffer{nullptr};
+	} _scope(buffer);
+
+	USE_INFO_2* useInfo = (USE_INFO_2*)buffer;
+
+	for (DWORD i = 0; i < entriesRead; ++i) {
+
+		// UNCパスかどうかを判断
+		// 例: remoteName = "\\\\server\\share"
+		std::wstring remoteName(useInfo[i].ui2_remote ? useInfo[i].ui2_remote : L"");
+		if (remoteName.find(L"\\\\") != 0) {
+			continue;
+		}
+
+		// ホスト名を取り出す
+		size_t end = remoteName.find(L'\\', 2);
+		std::wstring host = remoteName.substr(0, end);
+
+		// ホスト名が所望のものかを判断する
+		if (_wcsicmp(host.c_str(), targetHost) != 0) {
+			continue;
+		}
+
+		// 発見
+		return true;
+	}
+
+	return false;
+}

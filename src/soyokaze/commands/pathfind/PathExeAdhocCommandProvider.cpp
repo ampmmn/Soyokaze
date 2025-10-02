@@ -4,6 +4,7 @@
 #include "commands/pathfind/PathURLCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/ExecutablePath.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/LocalPathResolver.h"
@@ -19,6 +20,7 @@ namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
+using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
@@ -180,25 +182,23 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		filePart = wholeWord;
 	}
 
-	// 絶対パス指定、かつ、存在するパスの場合は候補として表示
-	if (PathIsRelative(filePart) == FALSE && Path::FileExists(filePart)) {
-		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
-		return ;
-	}
-	// UNCの場合、接続先が未認証の場合パスの有無を判断できないため、候補として表示
-	// (実行時に認証を試みる)
-	if (PathIsUNC(filePart)) {
+	// 候補として扱うべきパス文字列かどうか
+	ExecutablePath path(filePart);
+	if (path.IsExecutable(false)) {
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
 		return ;
 	}
 
 	CString word = pattern->GetFirstWord();
-	if (EXE_EXT.CompareNoCase(PathFindExtension(word)) != 0) {
-		word += _T(".exe");
-	}
 
+	// 相対パスだったら、.exeを補完してパス解決を試みる
 	if (PathIsRelative(word) == FALSE) {
 		return;
+	}
+
+	// ".exe"がなければ付与
+	if (EXE_EXT.CompareNoCase(PathFindExtension(word)) != 0) {
+		word += _T(".exe");
 	}
 
 	// 相対パスを解決する
