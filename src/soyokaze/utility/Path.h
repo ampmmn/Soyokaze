@@ -64,6 +64,9 @@ public:
 	static bool FileExists(LPCSTR path);
 	static bool IsDirectory(LPCTSTR path);
 
+	// 指定したホストに対する接続が確立しているかを確認する
+	static bool IsHostConnected(const CString& targetHost);
+
 protected:
 	LPCTSTR cdata() const;
 	LPTSTR data();

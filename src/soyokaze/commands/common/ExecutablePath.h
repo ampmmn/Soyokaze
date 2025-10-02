@@ -8,7 +8,7 @@ public:
 	ExecutablePath(const CString& path);
 	~ExecutablePath();
 
-	bool IsExecutable() const;
+	bool IsExecutable(bool includeRelative = true) const;
 
 private:
 	CString mPath;

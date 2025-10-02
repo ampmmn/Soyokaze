@@ -10,6 +10,7 @@
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
+#include "commands/common/ExecutablePath.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
@@ -206,9 +207,9 @@ bool CommandEditDialog::UpdateStatus()
 		return false;
 	}
 
-	bool isURL = PathIsURL(targetPath) != FALSE;
-	bool isUNC = PathIsUNC(targetPath) != FALSE;
-	if (isURL == false && isUNC == false && Path::FileExists(targetPath) == false) {
+
+	ExecutablePath path(targetPath);
+	if (path.IsExecutable(false) == false) {
 		in->mMessage = _T("ファイルまたはディレクトリが存在しません。");
 		DisalbleOKButton();
 		return false;
