@@ -8,10 +8,13 @@ public:
 	ExecutablePath(const CString& path);
 	~ExecutablePath();
 
+	void EnableMacros(bool enable);
+
 	bool IsExecutable(bool includeRelative = true) const;
 
 private:
 	CString mPath;
+	bool mIsEnableMacros{true};
 };
 
 }}} // end of namespace launcherapp::commands::common;

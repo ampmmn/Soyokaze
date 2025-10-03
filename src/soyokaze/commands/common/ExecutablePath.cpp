@@ -18,11 +18,18 @@ ExecutablePath::~ExecutablePath()
 {
 }
 
+void ExecutablePath::EnableMacros(bool enable)
+{
+	mIsEnableMacros = enable;
+}
+
 bool ExecutablePath::IsExecutable(bool includeRelative) const
 {
 	// マクロを展開する
 	CString path{mPath};
-	ExpandMacros(path);
+	if (mIsEnableMacros) {
+		ExpandMacros(path);
+	}
 
 	if (PathIsURL(path)) {
 		// URLの場合はOK
@@ -35,26 +42,8 @@ bool ExecutablePath::IsExecutable(bool includeRelative) const
 	}
 
 	if (PathIsUNC(path)) {
-		// UNCの場合はホスト名を取り出す
-		int end = path.Find(L'\\', 2);
-		CString hostName(end == -1 ? path : path.Left(end));
-
-		if (Path::IsHostConnected(hostName) == false) {
-			// 接続が確立していないホストの場合、パスが有効かどうかをこの時点では判断できないため、候補として表示する
-			// (コマンド実行時に接続を試みる)
-			return true;
-		}
-
-		// パスで指定された文字列がホスト名そのものの場合、PathFileExistsではひっかからないため、候補として表示する
-		if (end == -1) {
-			return true;
-		}
-
-		// "\\hostname\"も同様
-		hostName += _T("\\");
-		if (path == hostName) {
-			return true;
-		}
+		// UNCの場合、接続が確立されていない可能性があるので、ここでは判断をしない
+		return true;
 	}
 
 	if (includeRelative && PathIsRelative(path)) {

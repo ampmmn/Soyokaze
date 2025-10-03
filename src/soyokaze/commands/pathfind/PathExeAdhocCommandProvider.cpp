@@ -184,6 +184,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 
 	// 候補として扱うべきパス文字列かどうか
 	ExecutablePath path(filePart);
+	path.EnableMacros(false);
 	if (path.IsExecutable(false)) {
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
 		return ;
