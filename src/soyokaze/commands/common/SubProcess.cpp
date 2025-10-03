@@ -272,8 +272,9 @@ bool SubProcess::Run(
 		CString buf(path);
 		nr.lpRemoteName = buf.GetBuffer();
 		DWORD result = WNetAddConnection2(&nr, NULL, NULL, CONNECT_INTERACTIVE);
+		spdlog::info("WNetAddConnection2 result : {}", result);
 		buf.ReleaseBuffer();
-		if (result != NO_ERROR) {
+		if (result == ERROR_CANCELLED) {  // キャンセル以外は続行
 			LastErrorString errStr(result);
 			process = std::move(std::make_unique<SubProcess::Instance>(nullptr));
 			process->SetErrorMessage((LPCTSTR)errStr);
