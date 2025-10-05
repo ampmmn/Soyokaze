@@ -161,7 +161,7 @@ void ExecuteAction::RegisterHistory(Parameter* param)
 	}
 
 	auto namedParam = GetNamedParameter(param);
-	if (namedParam->GetNamedParamBool(_T("RunAsHistory")) == false) {
+	if (namedParam->GetNamedParamBool(_T("RunAsHistory"))) {
 		// アクションが履歴経由で実行されているときは再登録しない
 		return;
 	}
