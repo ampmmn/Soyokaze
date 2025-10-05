@@ -52,7 +52,7 @@ bool PathURLCommand::GetAction(uint32_t modifierFlags, Action** action)
 	if (modifierFlags == 0) {
 		// 実行
 		auto a = new ExecuteAction(in->mURL, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
 		*action = a;
 		return true;
 	}
