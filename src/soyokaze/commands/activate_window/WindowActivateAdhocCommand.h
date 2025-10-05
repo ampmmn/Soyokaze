@@ -42,7 +42,7 @@ public:
 	// 選択解除された
 	void OnUnselect(Command* next) override;
 	// 実行後のウインドウを閉じる方法を決定する
-	CloseWindowPolicy GetCloseWindowPolicy() override;
+	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

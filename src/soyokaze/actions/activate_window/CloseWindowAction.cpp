@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CloseWindowAction.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "utility/TimeoutChecker.h"
 
 namespace launcherapp { namespace actions { namespace activate_window {
 
@@ -63,7 +64,14 @@ bool CloseWindowAction::Perform(Parameter* param, String* errMsg)
 		return false;
 	}
 
-	PostMessage(hwnd, WM_CLOSE, 0, 0);
+	SendMessage(hwnd, WM_CLOSE, 0, 0);
+
+	// ウインドウが閉じるまでまつ
+	launcherapp::utility::TimeoutChecker tm(500);
+	while(IsWindow(hwnd) && tm.IsTimeout() == false) {
+		Sleep(50);
+	}
+
 	return true;
 }
 

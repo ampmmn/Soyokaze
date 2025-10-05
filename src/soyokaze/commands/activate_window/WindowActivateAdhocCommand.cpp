@@ -129,7 +129,10 @@ HICON WindowActivateAdhocCommand::GetIcon()
 launcherapp::core::Command*
 WindowActivateAdhocCommand::Clone()
 {
-	return new WindowActivateAdhocCommand(in->mHwnd, in->mPrefix);
+	auto cmd = new WindowActivateAdhocCommand(in->mHwnd, in->mPrefix);
+	cmd->in->mMenuEventListener = in->mMenuEventListener;
+
+	return cmd;
 }
 
 // メニューの項目数を取得する
@@ -209,9 +212,14 @@ void WindowActivateAdhocCommand::OnUnselect(Command* next)
 
 // 実行後のウインドウを閉じる方法を決定する
 launcherapp::core::SelectionBehavior::CloseWindowPolicy
-WindowActivateAdhocCommand::GetCloseWindowPolicy()
+WindowActivateAdhocCommand::GetCloseWindowPolicy(uint32_t modifierFlags)
 {
-	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+	if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
+		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE;
+	}
+	else {
+		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+	}
 }
 
 bool WindowActivateAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

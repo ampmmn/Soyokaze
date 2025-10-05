@@ -570,7 +570,7 @@ LRESULT LauncherMainWindow::OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM l
 	}
 
 	// 候補欄を更新するため、再度検索リクエストを出す
-	QueryAsync();
+	QueryAsync(in->mLastInputStr);
 	return 0;
 }
 
@@ -1186,12 +1186,17 @@ void LauncherMainWindow::OnEditCommandChanged()
 // 入力キーワードで検索をリクエストを出す(完了をまたない)
 void LauncherMainWindow::QueryAsync()
 {
+	QueryAsync(in->mInput.GetKeyword());
+}
+
+void LauncherMainWindow::QueryAsync(const CString& keyword)
+{
 	PERFLOG("QueryAsync Start");
 	spdlog::stopwatch sw;
 
 	// 検索リクエスト
 	in->mIsQueryDoing = true;
-	auto req = new MainWindowCommandQueryRequest(in->mInput.GetKeyword(), GetSafeHwnd(), WM_APP+13);
+	auto req = new MainWindowCommandQueryRequest(keyword, GetSafeHwnd(), WM_APP+13);
 	GetCommandRepository()->Query(req);
 	req->Release();
 
@@ -1266,15 +1271,6 @@ LauncherMainWindow::RunCommand(
 	ParameterBuilder* actionParam
 )
 {
-	// コマンド実行後のクローズ方法
-	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
-	spdlog::debug("closePolicy: {}", (int)closePolicy);
-
-	// コマンド実行後のクローズ方法を取得する
-	RefPtr<launcherapp::core::SelectionBehavior> behavior;
-	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
-		closePolicy = behavior->GetCloseWindowPolicy();
-	}
 
 	// Ctrlキーが押されているかを設定
 	using Command = launcherapp::core::Command;
@@ -1291,6 +1287,15 @@ LauncherMainWindow::RunCommand(
 	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
 		modifierMask |= Command::MODIFIER_ALT;
 	}
+
+	// コマンド実行後のクローズ方法
+	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+	// コマンド実行後のクローズ方法を取得する
+	RefPtr<launcherapp::core::SelectionBehavior> behavior;
+	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
+		closePolicy = behavior->GetCloseWindowPolicy(modifierMask);
+	}
+	spdlog::debug("closePolicy: {}", (int)closePolicy);
 
 	auto hwnd = GetSafeHwnd();
 

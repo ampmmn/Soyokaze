@@ -60,6 +60,7 @@ protected:
 	void ClearContent();
 	void Complement();
 	void QueryAsync();
+	void QueryAsync(const CString& keyword);
 	void QuerySync();
 	void UpdateCandidates();
 	void WaitQueryRequest();

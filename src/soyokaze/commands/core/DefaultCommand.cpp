@@ -196,7 +196,7 @@ void DefaultCommand::OnUnselect(Command* next)
 
 // 実行後のウインドウを閉じる方法
 SelectionBehavior::CloseWindowPolicy
-DefaultCommand::GetCloseWindowPolicy()
+DefaultCommand::GetCloseWindowPolicy(uint32_t)
 {
 	return (SelectionBehavior::CloseWindowPolicy)in->mCloseWindowPolicy;
 }

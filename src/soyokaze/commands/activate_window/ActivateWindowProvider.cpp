@@ -11,6 +11,7 @@
 #include "commands/core/CommandFile.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <map>
 #include <set>
@@ -88,11 +89,18 @@ struct ActivateWindowProvider::PImpl :
 	}
 	void OnRequestClose(HWND hwnd)
 	{
+		// クローズされたウインドウが一時的な名前を付けたものであるなら関連付けを破棄する
 		auto it = mAdhocNameMap.find(hwnd);
-		if (it == mAdhocNameMap.end()) {
-			return;
+		if (it != mAdhocNameMap.end()) {
+			mAdhocNameMap.erase(it);
 		}
-		mAdhocNameMap.erase(it);
+
+		// キャッシュをクリア
+		OnLauncherUnactivate();
+
+		// 候補を更新
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->UpdateCandidateRequest();
 	}
 
 	// 

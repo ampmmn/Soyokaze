@@ -144,7 +144,7 @@ void ClipboardHistoryCommand::OnUnselect(Command* next)
 
 // 実行後のウインドウを閉じる方法を決定する
 launcherapp::core::SelectionBehavior::CloseWindowPolicy
-ClipboardHistoryCommand::GetCloseWindowPolicy()
+ClipboardHistoryCommand::GetCloseWindowPolicy(uint32_t )
 {
 	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
 }

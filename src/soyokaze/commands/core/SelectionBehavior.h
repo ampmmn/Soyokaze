@@ -24,7 +24,7 @@ public:
 	// 選択解除された
 	virtual void OnUnselect(Command* next) = 0;
 	// 実行後のウインドウを閉じる方法
-	virtual CloseWindowPolicy GetCloseWindowPolicy() = 0;
+	virtual CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) = 0;
 };
 
 
