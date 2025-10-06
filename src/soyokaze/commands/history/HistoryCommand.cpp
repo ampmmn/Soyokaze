@@ -34,6 +34,10 @@ struct HistoryCommand::PImpl
 		if (mCmd) {
 			return mCmd;
 		}
+		if (mIsCommandUnavailable) {
+			// コマンドが見つからなかった場合は以後は探さない
+			return nullptr;
+		}
 
 		// 履歴キーワードによる絞り込みを実施
 		auto req = new CommandQueryRequest(mKeyword);
@@ -58,6 +62,7 @@ struct HistoryCommand::PImpl
 				auto cmd = items->GetItem(i);
 				if (cmd->GetTypeDisplayName() == thisTypeName) {
 					cmd->Release();
+					mIsCommandUnavailable = true;
 					continue;
 				}
 				mCmd = cmd;
@@ -71,12 +76,18 @@ struct HistoryCommand::PImpl
 		}
 		req->Release();
 
+		if (mCmd == nullptr) {
+			mIsCommandUnavailable = true;
+		}
+
+
 		return mCmd;
 	}
 
 	Command* mThisPtr{nullptr};
 	CString mKeyword;
 	Command* mCmd{nullptr};
+	bool mIsCommandUnavailable{false};
 };
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(HistoryCommand)
