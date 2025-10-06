@@ -53,6 +53,13 @@ static bool IsTopLevelWindow(HWND hwnd)
 		return false;
 	}
 
+	TCHAR clsName[32] = {};
+	GetClassName(hwnd, clsName, 32);
+	if (_tcscmp(clsName, _T("Progman")) == 0) {
+		// 特定のウインドウは対象外
+		return false;
+	}
+
 	TCHAR c[4] = {};
 	GetWindowText(hwnd, c, 4);
 	if (c[0] == _T('\0')) {
