@@ -25,13 +25,6 @@ enum {
 RefPtr<launcherapp::actions::core::NamedParameter> GetNamedParameter(launcherapp::actions::core::Parameter* param);
 RefPtr<launcherapp::actions::core::NamedParameter> GetNamedParameter(launcherapp::actions::core::Parameter* param);
 
-bool IsCtrlKeyPressed(launcherapp::actions::core::Parameter* param);
-bool IsShiftKeyPressed(launcherapp::actions::core::Parameter* param);
-bool IsAltKeyPressed(launcherapp::actions::core::Parameter* param);
-bool IsWinKeyPressed(launcherapp::actions::core::Parameter* param);
-
-uint32_t GetModifierKeyState(launcherapp::actions::core::Parameter* param, uint32_t mask);
-
 }
 }
 }
