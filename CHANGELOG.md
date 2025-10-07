@@ -4,6 +4,10 @@
 
 なし
 
+### Fixed
+
+- #189 IconLoader::LoadIconFromPath内のラムダ関数で参照しているwaitEventHandleをコピーキャプチャする
+
 ## 0.45.2 - 2025-10-06
 
 ### Changed

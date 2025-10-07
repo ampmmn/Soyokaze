@@ -579,7 +579,7 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	// 解決後はmAppIconMap経由のキャッシュを返すようにする
 	auto waitEventHandle = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 
-	std::thread th([&, fullPath]() {
+	std::thread th([&, waitEventHandle, fullPath]() {
 		DWORD tid  = GetCurrentThreadId();
 		spdlog::debug(_T("SHGetFileInfo thread start. {0} file:{1}"), tid, (LPCTSTR)fullPath);
 		SHFILEINFO sfi = {};
