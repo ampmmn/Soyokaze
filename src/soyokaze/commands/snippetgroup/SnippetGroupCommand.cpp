@@ -3,14 +3,20 @@
 #include "core/IFIDDefine.h"
 #include "commands/snippetgroup/SnippetGroupCommandEditor.h"
 #include "commands/snippetgroup/SnippetGroupAdhocCommand.h"
+#include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/ExpandFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/mainwindow/MainWindowSetTextAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/web/OpenURLAction.h"
+#include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/TimeoutChecker.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "mainwindow/controller/MainWindowController.h"
 
+using namespace launcherapp::commands::common;
 using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
 
 namespace launcherapp {
@@ -79,12 +85,45 @@ CString SnippetGroupCommand::GetTypeDisplayName()
 
 bool SnippetGroupCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags == 0) {
-		// コマンド名単体(後続のパラメータなし)で実行したときはグループ内の候補一覧を列挙させる
-		*action = new SetTextAction(_T("キーワード入力すると候補を絞り込むことができます"), GetName() + _T(" "));
-		return true;
+	if (modifierFlags != 0) {
+		return false;
 	}
-	return false;
+
+	LPCTSTR dispName = _T("キーワード入力すると候補を絞り込むことができます");
+	*action = new launcherapp::actions::builtin::CallbackAction(dispName, [&](Parameter* param, String* errMsg) -> bool {
+
+		auto namedParam = GetNamedParameter(param);
+		if (namedParam->GetNamedParamBool(_T("RUN_AS_BATCH"))) {
+			// グループコマンド経由で実行したときはパラメータで与えられた定型文を選択
+
+			auto queryWord = param->GetParameterString();
+
+			// 辞書データをひとつずつ比較する
+			for (const auto& item : in->mParam.mItems) {
+
+				if (item.mName != queryWord) {
+					continue;
+				}
+
+				// 値をコピー
+				auto value = item.mText;
+				ExpandMacros(value);
+				launcherapp::actions::clipboard::CopyTextAction action(value);
+				return action.Perform(param, errMsg);
+			}
+
+			if (errMsg) { *errMsg = _T("定型文なし"); }
+			return false;
+		}
+		else {
+			// コマンド名単体(後続のパラメータなし)で実行したときはグループ内の候補一覧を列挙させる
+			auto cmdline(GetName() + _T(" "));
+			launcherapp::actions::mainwindow::SetTextAction action(_T(""), cmdline);
+			return action.Perform(param, errMsg);
+		}
+	});
+
+	return true;
 }
 
 HICON SnippetGroupCommand::GetIcon()

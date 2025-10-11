@@ -154,6 +154,7 @@ bool GroupAction::BuildSubParameter(Parameter* param, Parameter** paramOut)
 	RefPtr<Parameter> paramSub(param->Clone(), false);
 	auto namedParam = GetNamedParameter(paramSub);
 	namedParam->SetNamedParamBool(_T("CONFIRMED"), true);
+	namedParam->SetNamedParamBool(_T("RUN_AS_BATCH"), true);
 
 	*paramOut = paramSub.release();
 	return true;

@@ -9,6 +9,7 @@
 ### Fixed
 
 - #189 IconLoader::LoadIconFromPath内のラムダ関数で参照しているwaitEventHandleをコピーキャプチャする
+- #192 グループコマンドからWeb検索コマンドを実行したときにキーワード検索できない
 
 ## 0.45.2 - 2025-10-06
 

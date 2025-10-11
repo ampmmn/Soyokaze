@@ -4,7 +4,10 @@
 #include "commands/websearch/WebSearchAdhocCommand.h"
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "commands/websearch/WebSearchCommandEditor.h"
+#include "commands/common/CommandParameterFunctions.h"
 #include "actions/mainwindow/MainWindowSetTextAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "actions/web/OpenURLAction.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
@@ -151,8 +154,24 @@ bool WebSearchCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	// 入力欄を表示し、コマンド名+ " " が入力された状態にする
 	// (実際の検索アクションの実行はWebSearchAdhocCommandが担う)
-	auto cmdline(GetName()+ _T(" "));
-	*action = new launcherapp::actions::mainwindow::SetTextAction(_T("検索を実行"), cmdline);
+	*action = new launcherapp::actions::builtin::CallbackAction(_T("検索を実行"), [&](Parameter* param, String* errMsg) -> bool {
+
+		auto namedParam = GetNamedParameter(param);
+		if (namedParam->GetNamedParamBool(_T("RUN_AS_BATCH"))) {
+
+			// URLを生成
+			auto url = in->mParam.mURL;
+			url.Replace(_T("$*"), param->GetParameterString());
+
+			launcherapp::actions::web::OpenURLAction action(url);
+			return action.Perform(param, errMsg);
+		}
+		else {
+			auto cmdline(GetName() + _T(" "));
+			launcherapp::actions::mainwindow::SetTextAction action(_T("検索を実行"), cmdline);
+			return action.Perform(param, errMsg);
+		}
+	});
 	return true;
 }
 
