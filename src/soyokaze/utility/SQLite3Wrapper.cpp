@@ -9,10 +9,12 @@
 namespace launcherapp {
 namespace utility {
 
+#define SQLITE_OPEN_READONLY         0x00000001
+#define SQLITE_OPEN_READWRITE        0x00000002
 
 typedef void (__stdcall *SQLITE3_DESTRUCTOR_TYPE)(void*);
 
-typedef int (__stdcall * LPSQLITE3_OPEN)(const char *, void **);
+typedef int (__stdcall * LPSQLITE3_OPEN_V2)(const char *, void **, int , const char*);
 typedef int (__stdcall * LPSQLITE3_EXEC)(void *, const char *, void*, void *, char **);
 typedef int (__stdcall * LPSQLITE3_GET_TABLE)(void *, const char *, char ***, int *, int *, char **);
 typedef int (__stdcall * LPSQLITE3_FREE_TABLE)(char **);
@@ -30,7 +32,7 @@ typedef int (__stdcall * LPSQLITE3_RESET)(void*);
 typedef int (__stdcall * LPSQLITE3_FINALIZE)(void*);
 typedef void (__stdcall *LPSQLITE3_PROGRESS_HANDLER)(void*, int, int(__stdcall*)(void*), void*);
 
-static LPSQLITE3_OPEN sqlite3_open = nullptr;
+static LPSQLITE3_OPEN_V2 sqlite3_open_v2 = nullptr;
 static LPSQLITE3_EXEC sqlite3_exec = nullptr;
 static LPSQLITE3_GET_TABLE sqlite3_get_table = nullptr;
 static LPSQLITE3_FREE_TABLE sqlite3_free_table = nullptr;
@@ -68,7 +70,7 @@ SQLite3Wrapper::SQLite3Wrapper() : in(new PImpl)
 	in->mModule = lib;
 
 	if (lib) {
-		sqlite3_open = (LPSQLITE3_OPEN)GetProcAddress(lib, "sqlite3_open");
+		sqlite3_open_v2 = (LPSQLITE3_OPEN_V2)GetProcAddress(lib, "sqlite3_open_v2");
 		sqlite3_exec = (LPSQLITE3_EXEC)GetProcAddress(lib, "sqlite3_exec");
 		sqlite3_get_table = (LPSQLITE3_GET_TABLE)GetProcAddress(lib, "sqlite3_get_table");
 		sqlite3_free_table = (LPSQLITE3_FREE_TABLE)GetProcAddress(lib, "sqlite3_free_table");
@@ -135,13 +137,15 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 	sqlite3_result_int(ctx, isMatch ? 1 : 0);
 }
 
-int SQLite3Wrapper::Open(const CString& filePath, void** ctx)
+int SQLite3Wrapper::Open(const CString& filePath, void** ctx, bool isReadOnly)
 {
 	CStringA filePathA;
 	CharConverter conv(CP_ACP);
 	conv.Convert(filePath, filePathA);
 
-	int n = sqlite3_open(filePathA, ctx);
+	int flag = isReadOnly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE;
+
+	int n = sqlite3_open_v2(filePathA, ctx, flag, nullptr);
 	if (*ctx != nullptr) {
 		sqlite3_create_function(*ctx, "regexp", 2, 5, this, &CallbackRegexp,0,0);
 	}

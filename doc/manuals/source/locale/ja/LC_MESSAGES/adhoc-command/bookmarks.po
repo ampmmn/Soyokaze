@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-07 07:39+0900\n"
+"POT-Creation-Date: 2025-10-11 12:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -38,7 +38,7 @@ msgid "該当する候補を選択して実行すると、ブックマークに�
 msgstr ""
 
 #: ../../source/adhoc-command/bookmarks.md:10
-msgid "Edge/Chromeに対応している。"
+msgid "Edge/Chrome/一部のChromiumベースのブラウザに対応している。"
 msgstr ""
 
 #: ../../source/adhoc-command/bookmarks.md:12

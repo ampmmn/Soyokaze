@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-11 12:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,22 +24,32 @@ msgid "History"
 msgstr "履歴"
 
 #: ../../source/adhoc-command/history.md:3
-msgid ""
-"コマンドとして登録していないURL、プログラム実行、実行時引数を伴うコマンド実行は履歴として登録される。 "
-"履歴として登録されたものは、次回以降のキーワード入力の際に部分一致で候補にあがるようになる。"
+msgid "以下のコマンド実行は履歴として登録される。"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:5
+msgid "実行時引数を伴うコマンド実行"
 msgstr ""
 
 #: ../../source/adhoc-command/history.md:6
+msgid "[ファイル名を指定して実行](/adhoc-command/pathfind.md)で実行されたファイル"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:8
+msgid "履歴として登録されたものは、次回以降のキーワード入力の際に部分一致で候補として表示される。"
+msgstr ""
+
+#: ../../source/adhoc-command/history.md:10
 msgid ""
 "機能を利用するには、[アプリ設定](/window/app-settings.md#keyword-input-"
 "history)で機能を有効にする必要がある。"
 msgstr ""
 
-#: ../../source/adhoc-command/history.md:8
+#: ../../source/adhoc-command/history.md:12
 msgid "![](../image/history.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/history.md:10
+#: ../../source/adhoc-command/history.md:14
 msgid ""
 "なお、この機能は履歴を登録したときの「文字列」を登録するだけなので、 この機能により、後で実行したときに前回と同じコマンドが実行される保証はない。"
 "    (実行環境の変化により、「文字列」に対して別のコマンドがマッチする可能性がある）"

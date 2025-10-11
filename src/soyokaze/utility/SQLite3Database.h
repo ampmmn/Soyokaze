@@ -30,7 +30,7 @@ public:
 	typedef int (__stdcall*LPPROGRESSHANDLER)(void* param);
 
 public:
-	SQLite3Database(LPCTSTR filePath);
+	SQLite3Database(LPCTSTR filePath, bool isReadOnly = false);
 	~SQLite3Database();
 
 public:

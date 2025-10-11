@@ -11,7 +11,7 @@ private:
 	~SQLite3Wrapper();
 
 public:
-	int Open(const CString& filePath, void** ctx);
+	int Open(const CString& filePath, void** ctx, bool isReadOnly = false);
 	int Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err);
 	int Prepare(void* ctx, const char* sql, void** stmt);
 	void SetProgressHandler(void* ctx, int n, int(__stdcall* handler)(void*), void* param);

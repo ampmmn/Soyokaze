@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+### Added
+
+- #191 Visual Studio Codeの最近使用した項目を表示する
 
 ### Fixed
 

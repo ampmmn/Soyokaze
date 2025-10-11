@@ -227,6 +227,30 @@ Path& Path::operator = (const CString& path)
 	return *this;
 }
 
+bool Path::FileUriToLocalPath(const String& uri)
+{
+	static std::string prefix("file:///");
+	if (uri.find(prefix) != 0) {
+		return false;
+	}
+
+	std::string path(uri.substr(prefix.length()));
+	HRESULT result = UrlUnescapeA((char*)path.data(), nullptr, nullptr, URL_UNESCAPE_AS_UTF8 | URL_UNESCAPE_INPLACE);
+	if (result != S_OK) {
+		return false;
+	}
+
+	for (auto& c : path) {
+		if (c == '/') { c = '\\'; }
+	}
+
+	CString tmp;
+	UTF2UTF(path, tmp);
+	(*this) = tmp;
+
+	return true;
+}
+
 bool Path::IsEmptyPath() const
 {
 	return mPath.empty() || mPath[0] == _T('\0');

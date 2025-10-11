@@ -11,7 +11,7 @@ public:
 	CandidateList();
 	~CandidateList();
 
-	void SetItems(std::vector<launcherapp::core::Command*>& items);
+	void SetItems(std::vector<RefPtr<launcherapp::core::Command> >& items);
 
 	int GetCurrentSelect();
 

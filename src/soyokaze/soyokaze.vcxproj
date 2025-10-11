@@ -567,6 +567,14 @@
     <ClInclude Include="commands\volumecontrol\VolumeCommandParam.h" />
     <ClInclude Include="commands\volumecontrol\VolumeCommandProvider.h" />
     <ClInclude Include="commands\volumecontrol\VolumeEditDialog.h" />
+    <ClInclude Include="commands\vscode\AppSettingVSCodePage.h" />
+    <ClInclude Include="commands\vscode\VSCodeCommand.h" />
+    <ClInclude Include="commands\vscode\VSCodeCommandParam.h" />
+    <ClInclude Include="commands\vscode\VSCodeExecuteAction.h" />
+    <ClInclude Include="commands\vscode\VSCodeFileCommand.h" />
+    <ClInclude Include="commands\vscode\VSCodeFolderCommand.h" />
+    <ClInclude Include="commands\vscode\VSCodeProvider.h" />
+    <ClInclude Include="commands\vscode\VSCodeWorkspaceCommand.h" />
     <ClInclude Include="commands\watchpath\LocalPathTarget.h" />
     <ClInclude Include="commands\watchpath\PathWatcherItem.h" />
     <ClInclude Include="commands\watchpath\UNCPathTarget.h" />
@@ -863,6 +871,7 @@
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
+    <ClInclude Include="utility\RefPtr.h" />
     <ClInclude Include="utility\RegistryKey.h" />
     <ClInclude Include="utility\ScopeAttachThreadInput.h" />
     <ClInclude Include="utility\ScopedResetEvent.h" />
@@ -1048,6 +1057,14 @@
     <ClCompile Include="commands\volumecontrol\VolumeCommandEditor.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeCommandProvider.cpp" />
     <ClCompile Include="commands\volumecontrol\VolumeEditDialog.cpp" />
+    <ClCompile Include="commands\vscode\AppSettingVSCodePage.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeCommand.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeCommandParam.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeExecuteAction.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeFileCommand.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeFolderCommand.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeProvider.cpp" />
+    <ClCompile Include="commands\vscode\VSCodeWorkspaceCommand.cpp" />
     <ClCompile Include="commands\watchpath\LocalPathTarget.cpp" />
     <ClCompile Include="commands\watchpath\PathWatcherItem.cpp" />
     <ClCompile Include="commands\watchpath\UNCPathTarget.cpp" />

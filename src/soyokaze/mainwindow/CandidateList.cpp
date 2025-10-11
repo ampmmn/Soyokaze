@@ -17,9 +17,6 @@ struct CandidateList::PImpl
 {
 	void ClearItems()
 	{
-		for (auto& command : mCandidates) {
-			command->Release();
-		}
 		mCandidates.clear();
 	}
 
@@ -27,7 +24,7 @@ struct CandidateList::PImpl
 	{
 		size_t index = (size_t)mSelIndex;
 		if (index < mCandidates.size()) {
-			NotifySelect(mCandidates[index], nullptr);
+			NotifySelect(mCandidates[index].get(), nullptr);
 		}
 	}
 
@@ -44,7 +41,7 @@ struct CandidateList::PImpl
 	}
 
 	// 一覧
-	std::vector<Command*> mCandidates;
+	std::vector<RefPtr<Command> > mCandidates;
 	// 選択中のもの
 	int mSelIndex{-1};
 
@@ -64,7 +61,7 @@ CandidateList::~CandidateList()
 	in->ClearItems();
 }
 
-void CandidateList::SetItems(std::vector<launcherapp::core::Command*>& items)
+void CandidateList::SetItems(std::vector<RefPtr<launcherapp::core::Command> >& items)
 {
 	auto priorCmd = GetCommand(in->mSelIndex);
 	bool willChangeItem = items.empty() == false && priorCmd != items[0];
@@ -144,8 +141,8 @@ bool CandidateList::IsEmpty()
 
 	// 候補数が1で、名前が空文字の場合はデフォルトコマンドとして扱う
 	// (デフォルトコマンドは「コマンドがある」とみなさない)
-	auto cmd = in->mCandidates[0];
-	ASSERT(cmd);
+	auto& cmd = in->mCandidates[0];
+	ASSERT(cmd.get());
 	return cmd->GetName().IsEmpty() != FALSE;
 }
 
@@ -159,7 +156,7 @@ Command* CandidateList::GetCommand(int index)
 	if (index < 0 || in->mCandidates.size() <= (size_t)index) {
 		return nullptr;
 	}
-	return in->mCandidates[index];
+	return in->mCandidates[index].get();
 }
 
 

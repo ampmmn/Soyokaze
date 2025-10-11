@@ -527,7 +527,9 @@
 #define IDD_APPSETTING_EXTERNALTOOL     1222
 #define IDC_RADIO_USEOTHER              1222
 #define IDC_CHECK_USEEXTERNAL           1223
+#define IDD_APPSETTING_VSCODE           1223
 #define IDC_CHECK_OPENURLINOTHERBROWSER 1224
+#define IDC_CHECK_FULLPATH              1224
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -536,7 +538,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        258
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1224
+#define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

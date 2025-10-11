@@ -36,6 +36,9 @@ public:
 
 	Path& operator = (const CString& path);
 
+	bool FileUriToLocalPath(const String& uri);
+	HRESULT CreateFromUrl(LPCTSTR url, DWORD flags = 0);
+
 	bool IsEmptyPath() const;
 	operator LPCTSTR() const;
 	operator LPTSTR();
@@ -55,7 +58,6 @@ public:
 	bool IsURL() const;
 
 	bool IsRelative() const;
-	HRESULT CreateFromUrl(LPCTSTR url, DWORD flags = 0);
 
 	// 実際のパスの長さにbufferを切り詰める
 	void Shrink();

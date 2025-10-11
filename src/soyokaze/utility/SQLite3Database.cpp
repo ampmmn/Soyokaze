@@ -64,9 +64,9 @@ struct SQLite3Database::PImpl
 	void* mDB{nullptr};
 };
 
-SQLite3Database::SQLite3Database(LPCTSTR filePath) : in(new PImpl)
+SQLite3Database::SQLite3Database(LPCTSTR filePath, bool isReadOnly) : in(new PImpl)
 {
-	SQLite3Wrapper::Get()->Open(filePath, &in->mDB);
+	SQLite3Wrapper::Get()->Open(filePath, &in->mDB, isReadOnly);
 }
 
 SQLite3Database::~SQLite3Database()

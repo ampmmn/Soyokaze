@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-11 12:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -197,6 +197,14 @@ msgstr ""
 
 #: ../../source/user-command/shellexecute.md
 msgid "パス(ファイルが存在するディレクトリ)を開く"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md
+msgid "`Alt-Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md
+msgid "プロパティを開く"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md

@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.45.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-11 12:54+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/vscode.md:1
+msgid "Visual Studio Code履歴"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:3
+msgid ""
+"[Visual Studio "
+"Code](https://code.visualstudio.com/)で最近開いた項目(ワークスペース/フォルダ/ファイル)を候補として表示する。"
+"   実行すると、該当する項目をVisual Studio Codeで開く。"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:6
+msgid "![](../image/adhoc-command/vscode/introduction.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:9
+msgid "Usage"
+msgstr "使い方"
+
+#: ../../source/adhoc-command/vscode.md:11
+msgid "この機能を利用する場合、実行環境にVisual Studio Codeがインストールされている必要がある"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:12
+msgid "この機能が扱えるのはVisual Studio Codeの標準機能で利用できる`ワークスペース` `フォルダ` `ファイル` のみ"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:13
+msgid "拡張機能などで追加で扱えるようになった要素は対象外   (そういうものがあるかはわからないが)"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:16
+msgid "Settings"
+msgstr "設定方法"
+
+#: ../../source/adhoc-command/vscode.md:18
+msgid ""
+"機能は初期状態で有効になっている。 機能を使わない場合は、アプリケーション設定の `拡張機能` > `Visual Studio Code` "
+"から機能を無効化することができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:21
+msgid "![](../image/adhoc-command/vscode/appsetting.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md:23
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/adhoc-command/vscode.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "VSCode上で項目を開く<br>(既存のウインドウがある場合はそれを使って開く)"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "新しいVSCodeのウインドウを作成して項目を開く"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/vscode.md
+msgid "パスをクリップボードにコピーする"
+msgstr ""
+

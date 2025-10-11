@@ -519,15 +519,14 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 
 		int matchLevel = Pattern::Mismatch;
 
-		std::vector<launcherapp::core::Command*> commands;
+		std::vector<RefPtr<launcherapp::core::Command> > commands;
 		size_t count = result->GetCount();
 		for (size_t i = 0; i < count; ++i) {
 			matchLevel = Pattern::Mismatch;
-			launcherapp::core::Command* cmd = nullptr;
+			RefPtr<launcherapp::core::Command> cmd;
 			if (result->Get(i, &cmd, &matchLevel) == false) {
 				continue;
 			}
-			//cmd->AddRef();  // Getにより参照カウントは+1されるため、ここでは不要
 			commands.push_back(cmd);
 		}
 		result->Release();

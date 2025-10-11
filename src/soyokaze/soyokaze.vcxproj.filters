@@ -280,6 +280,9 @@
     <Filter Include="actions\vmware">
       <UniqueIdentifier>{6f71133a-6969-45dd-ab22-f7c116d4e990}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\vscode">
+      <UniqueIdentifier>{36d7edcd-d7a1-40f4-97ec-6423f6998918}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1722,6 +1725,33 @@
     <ClInclude Include="commands\pathfind\PathURLCommand.h">
       <Filter>commands\pathfind</Filter>
     </ClInclude>
+    <ClInclude Include="commands\vscode\AppSettingVSCodePage.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeCommandParam.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeWorkspaceCommand.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeCommand.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeProvider.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\RefPtr.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeFolderCommand.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeFileCommand.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\vscode\VSCodeExecuteAction.h">
+      <Filter>commands\vscode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3025,6 +3055,30 @@
     </ClCompile>
     <ClCompile Include="commands\pathfind\PathURLCommand.cpp">
       <Filter>commands\pathfind</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\AppSettingVSCodePage.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeCommandParam.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeWorkspaceCommand.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeCommand.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeProvider.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeFolderCommand.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeFileCommand.cpp">
+      <Filter>commands\vscode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\vscode\VSCodeExecuteAction.cpp">
+      <Filter>commands\vscode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

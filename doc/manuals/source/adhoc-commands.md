@@ -39,6 +39,7 @@ adhoc-command/webhistory.md
 adhoc-command/windowssettings.md
 adhoc-command/winscp.md
 adhoc-command/worksheet-jump.md
+adhoc-command/vscode.md
 ```
 
 ## Other Features
