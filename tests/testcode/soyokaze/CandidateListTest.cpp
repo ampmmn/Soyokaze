@@ -42,7 +42,7 @@ TEST(CandidateList, CanConstructAndDestruct)
 
 TEST(CandidateList, CanSetItems)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -62,7 +62,7 @@ TEST(CandidateList, CanSetItems)
 
 TEST(CandidateList, GetCommandTest)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -77,7 +77,7 @@ TEST(CandidateList, GetCommandTest)
 
 TEST(CandidateList, CanClear)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -89,7 +89,7 @@ TEST(CandidateList, CanClear)
 
 TEST(CandidateList, GetCurrentCommandDescritpionTest)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand(_T("")));
 
@@ -114,7 +114,7 @@ TEST(CandidateList, GetCurrentCommandDescritpionTest2)
 
 TEST(CandidateList, OffsetCurrentSelect)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -132,7 +132,7 @@ TEST(CandidateList, OffsetCurrentSelect)
 
 TEST(CandidateList, AddListenerTest1)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 
 	CandidateList candidates;
@@ -149,7 +149,7 @@ TEST(CandidateList, AddListenerTest1)
 
 TEST(CandidateList, AddListenerTest2)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -169,7 +169,7 @@ TEST(CandidateList, AddListenerTest2)
 
 TEST(CandidateList, AddListenerTest3)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -190,7 +190,7 @@ TEST(CandidateList, AddListenerTest3)
 
 TEST(CandidateList, AddListenerTest4)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
@@ -212,7 +212,7 @@ TEST(CandidateList, AddListenerTest4)
 
 TEST(CandidateList, AddListenerTest5)
 {
-	std::vector<launcherapp::core::Command*> commands;
+	std::vector<RefPtr<launcherapp::core::Command> > commands;
 	commands.push_back(new DummyCommand());
 	commands.push_back(new DummyCommand());
 
