@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Calculator.h"
-#include "python/PythonDLL.h"
 #include "python/PythonDLLLoader.h"
 #include <regex>
 
@@ -108,8 +107,21 @@ bool Calculator::Evaluate(const CString& src_, CString& result)
 
 	auto loader = PythonDLLLoader::Get();
 	auto pythonLib = loader->GetLibrary();
+	if (pythonLib == nullptr) {
+		return false;
+	}
 
-	return pythonLib->Evaluate(src, result);
+	char* tmpResult = nullptr;
+	bool isOK = pythonLib->Evaluate(src, &tmpResult);
+
+	if (tmpResult) {
+		UTF2UTF(tmpResult, result);
+		pythonLib->ReleaseBuffer(tmpResult);
+	}
+	else {
+		result.Empty();
+	}
+	return isOK;
 }
 
 

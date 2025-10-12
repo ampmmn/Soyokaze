@@ -22,4 +22,4 @@ doc/manuals/source/image/
 *.mo
 *.doctree
 *.pickle
-
+work/

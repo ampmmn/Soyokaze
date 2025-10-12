@@ -161,7 +161,7 @@
 #define IDD_APPSETTING_WINSCP           255
 #define IDD_CLIPBOARD_PREVIEW           256
 #define IDD_APPSETTING_BOOKMARK         257
-#define IDD_PYEXTENSION_EDIT            257
+#define IDD_PYEXTENSION_EDIT            258
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -221,6 +221,7 @@
 #define IDC_EDIT_EXCLUDEFILTER          1023
 #define IDC_EDIT_EXCLUDE                1023
 #define IDC_BUTTON_RESOLVEABSPATH       1023
+#define IDC_EDIT_HOTKEY3                1023
 #define IDC_EDIT_PARAM0                 1024
 #define IDC_EDIT_SOUNDEXECUTE           1024
 #define IDC_EDIT_HOTKEY_ENTER           1024
@@ -522,6 +523,7 @@
 #define IDC_EDIT_PREVIEW                1218
 #define IDC_STATIC_INFO                 1219
 #define IDD_APPSETTING_WEBHISTORY       1220
+#define IDC_EDIT_SCRIPT                 1220
 #define IDD_APPSETTING_EVERYTHING1      1221
 #define IDD_APPSETTING_ONENOTE          1221
 #define IDC_RADIO_USECHROME             1221
@@ -531,14 +533,13 @@
 #define IDD_APPSETTING_VSCODE           1223
 #define IDC_CHECK_OPENURLINOTHERBROWSER 1224
 #define IDC_CHECK_FULLPATH              1224
-#define IDC_EDIT_SCRIPT                 1220
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        258
+#define _APS_NEXT_RESOURCE_VALUE        259
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101

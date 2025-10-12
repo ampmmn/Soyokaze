@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "PythonDLLLoader.h"
-#include "python/PythonDLL.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#include "utility/Path.h"
 
 static PythonDLLLoader* s_initialized = PythonDLLLoader::Get();
 
@@ -31,8 +31,8 @@ struct PythonDLLLoader::PImpl : public AppPreferenceListenerIF
 		pref->UnregisterListener(this);
 	}
 
+	HMODULE mProxyDLL{nullptr};
 	PythonDLLLoader* mThisPtr{nullptr};
-	std::unique_ptr<PythonDLL> mDll;
 
 	// 利用可能か?
 	bool mIsAvailable{false};
@@ -54,6 +54,7 @@ PythonDLLLoader::PythonDLLLoader() : in(new PImpl)
 
 PythonDLLLoader::~PythonDLLLoader()
 {
+	Finalize();
 }
 
 PythonDLLLoader* PythonDLLLoader::Get()
@@ -65,26 +66,44 @@ PythonDLLLoader* PythonDLLLoader::Get()
 bool PythonDLLLoader::Initialize()
 {
 	auto pref = AppPreference::Get();
-	auto dllPath = pref->GetPythonDLLPath();
-	if (dllPath.IsEmpty()) {
-		in->mDll.reset();
+	Path dllPath(pref->GetPythonDLLPath());
+	if (dllPath.IsEmptyPath()|| dllPath.FileExists() == false) {
 		in->mIsAvailable = false;
+		spdlog::info("python_proxy dll path empty.");
 		return false;
 	}
 
-	in->mDll.reset(new PythonDLL());
-	if (in->mDll->LoadDLL(dllPath) == false) {
-		in->mIsAvailable = false;
+	if (dllPath.IsDirectory() == false) {
+		dllPath.RemoveFileSpec();
+		if (dllPath.IsDirectory() == false) {
+			in->mIsAvailable = false;
+			spdlog::warn("python_proxy dll path does not exist.");
+			return false;
+		}
+	}
+
+	// 初期化
+	auto cookie = AddDllDirectory((LPCTSTR)dllPath);
+	Path proxy_path(Path::MODULEFILEDIR, _T("python_proxy.dll"));
+	HMODULE h = LoadLibraryEx((LPCTSTR)proxy_path, nullptr, LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | LOAD_LIBRARY_SEARCH_USER_DIRS);
+	BOOL isOK = RemoveDllDirectory(cookie);
+
+	if (h == nullptr) {
+		spdlog::error("Failed to load python_proxy.dll");
 		return false;
 	}
 
+	in->mProxyDLL = h;
 	in->mIsAvailable = true;
 	return true;
 }
 
 bool PythonDLLLoader::Finalize()
 {
-	in->mDll.reset();
+	if (in->mProxyDLL) {
+		FreeLibrary(in->mProxyDLL);
+		in->mProxyDLL = nullptr;
+	}
 	return true;
 }
 
@@ -93,7 +112,21 @@ bool PythonDLLLoader::IsAvailable()
 	return in->mIsAvailable;
 }
 
-PythonDLL* PythonDLLLoader::GetLibrary()
+PythonProxyIF* PythonDLLLoader::GetLibrary()
 {
-	return in->mDll.get();
+	if (in->mProxyDLL == nullptr) {
+		return nullptr;
+	}
+
+	using LPFUNCGETPROXY = int(*)(void**);
+	auto pythonproxy_GetProxyObject = (LPFUNCGETPROXY)GetProcAddress(in->mProxyDLL, "pythonproxy_GetProxyObject");
+	if (pythonproxy_GetProxyObject == nullptr) {
+		return nullptr;
+	}
+
+	PythonProxyIF* proxy = nullptr;
+	pythonproxy_GetProxyObject((void**)&proxy);
+
+	return proxy;
 }
+

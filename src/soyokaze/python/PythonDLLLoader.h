@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "python/PythonDLL.h"
+#include "python_proxy/PythonProxyIF.h"
 
 class PythonDLLLoader
 {
@@ -15,7 +15,7 @@ public:
 	bool Finalize();
 	bool IsAvailable();
 
-	PythonDLL* GetLibrary();
+	PythonProxyIF* GetLibrary();
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
