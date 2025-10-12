@@ -21,7 +21,8 @@ using PYIMPORT_IMPORTMODULE = void* (*)(const char*);
 using PYMAPPING_SETITEMSTRING = int (*)(void*, const char*, void*);
 using PYMODULE_GETDICT = void* (*)(void*);
 using PYOBJECT_REPR = void* (*)(void*);
-using PYRUN_STRING = void*(*)(const char*, int, void*, void*);
+using PY_COMPILESTRING = void*(*)(const char *, const char *, int);
+using PYEVAL_EVALCODE = void*(*)(void*, void*,void*);
 using PYUNICODE_ASENCODEDSTRING = void* (*)(void*, const char*, const char*);
 using PY_DECREF = void(*)(void*);
 using PY_FINALIZEEX = int(*)(void);
@@ -54,7 +55,8 @@ struct PythonDLL::PImpl
 	PYMAPPING_SETITEMSTRING mPyMapping_SetItemString{nullptr};
 	PYMODULE_GETDICT mPyModule_GetDict{nullptr};
 	PYOBJECT_REPR mPyObject_Repr{nullptr};
-	PYRUN_STRING mPyRun_String{nullptr};
+	PY_COMPILESTRING mPy_CompileString{nullptr};
+	PYEVAL_EVALCODE mPyEval_EvalCode{nullptr};
 	PYUNICODE_ASENCODEDSTRING mPyUnicode_AsEncodedString{nullptr};
 	PY_DECREF mPy_DecRef{nullptr};
 	PY_FINALIZEEX mPy_FinalizeEx{nullptr};
@@ -100,7 +102,8 @@ bool PythonDLL::PImpl::Initialize()
 	TRY_GET_PROC(mDll, PYMAPPING_SETITEMSTRING, PyMapping_SetItemString);
 	TRY_GET_PROC(mDll, PYMODULE_GETDICT, PyModule_GetDict);
 	TRY_GET_PROC(mDll, PYOBJECT_REPR, PyObject_Repr);
-	TRY_GET_PROC(mDll, PYRUN_STRING, PyRun_String);
+	TRY_GET_PROC(mDll, PY_COMPILESTRING, Py_CompileString);
+	TRY_GET_PROC(mDll, PYEVAL_EVALCODE, PyEval_EvalCode);
 	TRY_GET_PROC(mDll, PYUNICODE_ASENCODEDSTRING, PyUnicode_AsEncodedString);
 	TRY_GET_PROC(mDll, PY_DECREF, Py_DecRef);
 	TRY_GET_PROC(mDll, PY_FINALIZEEX, Py_FinalizeEx);
@@ -157,7 +160,8 @@ void PythonDLL::PImpl::Finalize()
 	mPyMapping_SetItemString = nullptr;
 	mPyModule_GetDict = nullptr;
 	mPyObject_Repr = nullptr;
-	mPyRun_String = nullptr;
+	mPy_CompileString = nullptr;
+	mPyEval_EvalCode = nullptr;
 	mPyUnicode_AsEncodedString = nullptr;
 	mPy_DecRef = nullptr;
 	mPy_FinalizeEx = nullptr;
@@ -243,7 +247,15 @@ void PythonDLL::DecRef(void* obj)
 
 void* PythonDLL::RunString(LPCSTR script)
 {
-	return in->mPyRun_String(script, Py_eval_input, in->mDict, in->mDict);
+	void* codeObj = in->mPy_CompileString(script, "<string>", Py_eval_input);
+	if (codeObj == nullptr) {
+		return nullptr;
+	}
+
+	void* ret = in->mPyEval_EvalCode(codeObj, in->mDict, in->mDict);
+	in->mPy_DecRef(codeObj);
+
+	return ret;
 }
 
 void* PythonDLL::ReprObject(void* obj)
