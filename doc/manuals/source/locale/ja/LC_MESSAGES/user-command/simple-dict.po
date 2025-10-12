@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-12 09:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -406,77 +406,81 @@ msgstr ""
 msgid "データソースとなるExcelファイルが更新された場合、自動で再読み込みを行う"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:133
+#: ../../source/user-command/simple-dict.md:132
+msgid "キーが空の行は候補から除外される"
+msgstr ""
+
+#: ../../source/user-command/simple-dict.md:134
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/user-command/simple-dict.md:135
+#: ../../source/user-command/simple-dict.md:136
 msgid "クエリのタイムアウトを100msecとしている"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:136
+#: ../../source/user-command/simple-dict.md:137
 msgid "設定したデータの規模によっては検索に時間がかかる可能性があり、操作性に影響する可能性があるため"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:137
+#: ../../source/user-command/simple-dict.md:138
 msgid "表示する候補の上限は20件"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:138
+#: ../../source/user-command/simple-dict.md:139
 msgid "これも操作性への影響を考慮して件数を絞っている"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:139
+#: ../../source/user-command/simple-dict.md:140
 msgid "最終的にはキーワード入力で1件に絞り込むので途中の候補としては20件もあれば足りるでしょう、という考え"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:141
+#: ../../source/user-command/simple-dict.md:142
 msgid "Example"
 msgstr "例"
 
-#: ../../source/user-command/simple-dict.md:143
+#: ../../source/user-command/simple-dict.md:144
 msgid "日本の上場企業の会社名をキー、証券コードを値にする"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:148
+#: ../../source/user-command/simple-dict.md:149
 msgid ""
 "「せいてつ」というキーワードで会社名での絞り込みを行い、証券コードをクリップボードにコピーする "
 "![](../image/simple_dict_example2.gif)"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:152
+#: ../../source/user-command/simple-dict.md:153
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "押下キー"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "動作"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "`Enter`"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "コマンド設定画面で指定したアクションを実行する<br>(コピー or 他のコマンド実行 or プログラム実行)"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "`Shift-Enter`"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "キーをコピー"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "`Ctrl-Enter`"
 msgstr ""
 
-#: ../../source/user-command/simple-dict.md:145
+#: ../../source/user-command/simple-dict.md:146
 msgid "値をコピー"
 msgstr ""
 

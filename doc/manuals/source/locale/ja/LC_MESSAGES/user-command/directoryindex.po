@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-12 09:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,28 +24,25 @@ msgid "DirectoryIndex Command"
 msgstr "DirectoryIndexコマンド"
 
 #: ../../source/user-command/directoryindex.md:3
-msgid "(試作)"
-msgstr ""
-
-#: ../../source/user-command/directoryindex.md:5
 msgid ""
-"Directory Index(Webサーバーのインデックスページ)上のディレクトリやファイルを表示するコマンド   "
-"ランチャーのUI上からディレクトリやファイルをインクリメンタルに絞り込んで、階層をたどることができる"
+"Directory Index(Webサーバーのインデックスページ)上のディレクトリやファイルを表示するコマンド。   "
+"ディレクトリやファイルをアプリのUI上からインクリメンタルに絞り込んで、階層をたどることができる。   "
+"操作に慣れると、ブラウザで階層をたどるよりも所望のコンテンツのパスに早く到達できる。"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:8
+#: ../../source/user-command/directoryindex.md:7
 msgid "例:"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:9
+#: ../../source/user-command/directoryindex.md:8
 msgid "ブラウザで表示したときに下記のように表示される階層に対して・・"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:13
+#: ../../source/user-command/directoryindex.md:12
 msgid "DirectoryIndexコマンドを使うと下記のような表示をすることができる"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:17
+#: ../../source/user-command/directoryindex.md:16
 msgid "ディレクトリを選択すると、そのディレクトリ階層に移動した状態で再度一覧を表示する"
 msgstr ""
 
@@ -120,38 +117,86 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/directoryindex.md:60
+msgid "How Candidates Are Enumerated"
+msgstr "コマンドの動作"
+
+#: ../../source/user-command/directoryindex.md:62
+msgid "このコマンドではURLから得られたHTMLコンテンツを解析して、以下の方法で候補を抽出する。"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:64
+msgid "コンテンツの`<a>`要素に含まれる`href`属性(リンク先)の値を候補として列挙する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:65
+msgid "リンク先は相対パスである必要がある。絶対URLを除外する。"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:66
+msgid "同じページの階層を辿ることを目的としたコマンドであるため、別ドメインへの遷移を許可しない"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:67
+msgid "候補が選択されたら、その候補が示すURLに起動して再度HTMLを取得/解析する"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:68
+msgid "このコマンドは「現在位置」という状態を持つ"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:69
+msgid "入力欄がクローズされたとき、状態はリセットされる"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:71
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/user-command/directoryindex.md:73
+msgid "`起点URL`としてDirectory Indexではなく通常のコンテンツを返すURLを指定することもできるが、その際の結果がどうなるかは無保証"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:75
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "押下キー"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "動作"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "`Enter`"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "選択した候補のリンク先へ遷移する"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "`Shift-Enter`"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "選択した候補のリンク先をブラウザで開く"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "`Ctrl-Enter`"
 msgstr ""
 
-#: ../../source/user-command/directoryindex.md:14
+#: ../../source/user-command/directoryindex.md:13
 msgid "選択した候補のリンク先URLをクリップボードにコピーする"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:13
+msgid "`Shift-Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/user-command/directoryindex.md:13
+msgid "現在の階層をブラウザで開く"
 msgstr ""
 

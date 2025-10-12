@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-12 09:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -157,5 +157,9 @@ msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:36
 msgid "![](../image/adhoc-command/calculator2.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:38
+msgid "一つ目の項の基数を優先して表示する。   例えば、`0x10+1`という式の場合、16進数の結果(`0x11`)が先に表示される。"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.45.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 12:54+0900\n"
+"POT-Creation-Date: 2025-10-12 09:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -39,7 +39,7 @@ msgid "Usage"
 msgstr "使い方"
 
 #: ../../source/adhoc-command/vscode.md:11
-msgid "この機能を利用する場合、実行環境にVisual Studio Codeがインストールされている必要がある"
+msgid "この機能を利用するためには、実行環境にVisual Studio Codeがインストールされている必要がある"
 msgstr ""
 
 #: ../../source/adhoc-command/vscode.md:12
