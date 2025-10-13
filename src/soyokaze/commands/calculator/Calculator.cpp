@@ -111,8 +111,9 @@ bool Calculator::Evaluate(const CString& src_, CString& result)
 		return false;
 	}
 
+	std::string tmpSrc;
 	char* tmpResult = nullptr;
-	bool isOK = pythonLib->Evaluate(src, &tmpResult);
+	bool isOK = pythonLib->EvalForCalculate(UTF2UTF(src, tmpSrc).c_str(), &tmpResult);
 
 	if (tmpResult) {
 		UTF2UTF(tmpResult, result);

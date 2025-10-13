@@ -3,7 +3,7 @@
 入力欄に数式を入れると、計算結果をコメント欄に表示する。  
 Enterキーを押下すると、計算結果をクリップボードにコピーできる。
 
-利用するにはPythonが必要。([設定画面](/window/app-settings.md#extensions))  
+利用するにはPython(3.12以降)が必要。([設定画面](/window/app-settings.md#extensions))  
 
 ![](../image/adhoc-command/calculator1.png)
 

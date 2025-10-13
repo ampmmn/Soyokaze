@@ -64,6 +64,12 @@
     <Filter Include="soyokaze\commands\activate_window">
       <UniqueIdentifier>{63dac24d-54c7-4c64-8422-55ae0f84a450}</UniqueIdentifier>
     </Filter>
+    <Filter Include="python_module">
+      <UniqueIdentifier>{19e79fa4-d0f9-4401-8939-8fad5014fd81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="python_module\key">
+      <UniqueIdentifier>{a0fe76f9-c338-4583-9c8e-818bd998d62c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -161,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp">
       <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp">
+      <Filter>python_module\key</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

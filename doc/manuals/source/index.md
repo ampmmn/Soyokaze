@@ -63,6 +63,7 @@ others/3rdlibs.md
 
 - 本体のライセンス : [MIT License](https://github.com/ampmmn/Soyokaze/blob/main/LICENSE)
 - 利用ライブラリのライセンスについては [利用ライブラリ](others/3rdlibs) に記載の各リンク先を参照のこと
+  - 各ライブラリのライセンス文言の原文を本体exeと同じディレクトリの`notice.txt`にも記載している
 ```
 
 ```{only} not soyokaze

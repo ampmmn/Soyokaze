@@ -283,6 +283,9 @@
     <Filter Include="commands\vscode">
       <UniqueIdentifier>{36d7edcd-d7a1-40f4-97ec-6423f6998918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\py_extension">
+      <UniqueIdentifier>{9dff90b9-fd72-4b5f-8d0a-cfcf24f88bf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1752,6 +1755,24 @@
     <ClInclude Include="commands\history\HistoryCommandResolver.h">
       <Filter>commands\history</Filter>
     </ClInclude>
+    <ClInclude Include="commands\py_extension\PyExtensionCommand.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\py_extension\PyExtensionCommandEditDialog.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\py_extension\PyExtensionCommandEditor.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\py_extension\PyExtensionCommandParam.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\py_extension\PyExtensionCommandProvider.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\py_extension\PyEvalAction.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3079,6 +3100,24 @@
     </ClCompile>
     <ClCompile Include="commands\history\HistoryCommandResolver.cpp">
       <Filter>commands\history</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyExtensionCommand.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyExtensionCommandEditDialog.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyExtensionCommandEditor.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyExtensionCommandParam.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyExtensionCommandProvider.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\PyEvalAction.cpp">
+      <Filter>commands\py_extension</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

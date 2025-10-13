@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\app\AppProcessTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
@@ -312,7 +313,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -320,7 +321,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/tidy-html5/build\cmake\Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;googletest.lib;spdlog.lib;re2_d.lib;absl_all_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;key.lib;googletest.lib;spdlog.lib;re2_d.lib;absl_all_d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

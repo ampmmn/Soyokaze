@@ -5,6 +5,7 @@
 ### Added
 
 - #191 Visual Studio Codeの最近使用した項目を表示する
+- #194 Pythonで処理を定義できるコマンドを追加する
 
 ### Fixed
 

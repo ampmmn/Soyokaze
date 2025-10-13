@@ -35,10 +35,14 @@
 
 - [Abseil](https://github.com/abseil/abseil-cpp)
   - `RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。
+
 - [Sphinx](https://www.sphinx-doc.org/)
   - マニュアル生成で利用している
 - [sphinx_rtd_theme](https://github.com/readthedocs/sphinx_rtd_theme)
   - マニュアル生成の際のテーマ
+
+- [nanobind](https://github.com/wjakob/nanobind)
+  - Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。
 
 ```
 

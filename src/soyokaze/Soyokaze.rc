@@ -243,7 +243,7 @@ BEGIN
     LTEXT           "Python DLLのパス(&D):",IDC_STATIC,22,37,69,8
     EDITTEXT        IDC_EDIT_PYTHONDLLPATH,95,33,143,14,ES_AUTOHSCROLL
     PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,241,33,31,14
-    LTEXT           "python3.dllのパスを指定してください\n",IDC_STATIC,24,53,180,19
+    LTEXT           "python3.dllのパスを指定してください ※Python3.12以降\n",IDC_STATIC,24,53,180,19
     GROUPBOX        "システム関連の機能",IDC_STATIC,11,84,282,137
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,165,10

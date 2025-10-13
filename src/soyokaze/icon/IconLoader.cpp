@@ -596,7 +596,9 @@ HICON IconLoader::LoadIconFromPath(const CString& path)
 	th.detach();
 
 	// バックグラウンドで実行しているロード処理を最大250msec待つ
-	WaitForSingleObject(waitEventHandle, 250);
+	if (waitEventHandle) {
+		WaitForSingleObject(waitEventHandle, 250);
+	}
 
 	auto h = in->GetAppIcon(fullPath);
 	if (h != nullptr) {

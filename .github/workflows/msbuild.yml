@@ -7,9 +7,9 @@ name: MSBuild
 
 on:
   push:
-    branches: [ "main", "logger", "re2" ]
+    branches: [ "main", "py_extension" ]
   pull_request:
-    branches: [ "main", "logger", "re2" ]
+    branches: [ "main" ]
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -38,6 +38,11 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -122,6 +127,22 @@ jobs:
         cmake --build . --config Debug
         # install to build/install
         cmake --install . --config Debug
+
+    - name: Build nanobind
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/nanobind
+        # setup build directory
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        # setup cmakefor Debug configuration.
+        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" ..
+        # build(Debug)
+        cmake --build . --config Debug -t nanobind-static
+        # setup cmake for Release configuration.
+        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" -DCMAKE_RELEASE_POSTFIX=rtst ..
+        # build(Release)
+        cmake --build . --config Release -t nanobind-static
 
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}

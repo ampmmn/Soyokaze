@@ -16,3 +16,6 @@
 [submodule "externals/abseil-cpp"]
 	path = externals/abseil-cpp
 	url = https://github.com/abseil/abseil-cpp.git
+[submodule "externals/nanobind"]
+	path = externals/nanobind
+	url = https://github.com/wjakob/nanobind.git

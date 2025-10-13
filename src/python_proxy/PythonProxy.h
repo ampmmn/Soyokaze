@@ -9,7 +9,9 @@ public:
 	PythonProxy();
 	virtual ~PythonProxy();
 
-	bool Evaluate(const wchar_t* src, char** result) override;
+	virtual bool CompileTest(const char* src, char** result) override;
+	bool Evaluate(const char* src, char** errMsg) override;
+	bool EvalForCalculate(const char* src, char** result) override;
 	void ReleaseBuffer(char* result) override;
 
 private:

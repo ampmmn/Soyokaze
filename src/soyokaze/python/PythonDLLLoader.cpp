@@ -87,6 +87,7 @@ bool PythonDLLLoader::Initialize()
 	Path proxy_path(Path::MODULEFILEDIR, _T("python_proxy.dll"));
 	HMODULE h = LoadLibraryEx((LPCTSTR)proxy_path, nullptr, LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | LOAD_LIBRARY_SEARCH_USER_DIRS);
 	BOOL isOK = RemoveDllDirectory(cookie);
+	spdlog::debug("RemoveDllDirectory result: {}", isOK != FALSE);
 
 	if (h == nullptr) {
 		spdlog::error("Failed to load python_proxy.dll");

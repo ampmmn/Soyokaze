@@ -23,10 +23,15 @@ struct PythonProxy::PImpl
 	bool Initialize();
 	void Finalize();
 
-	PyObject* mModule{nullptr};
-	PyObject* mDict{nullptr};
+	bool InitializeForCalc();
+	bool InitializeForPyCmd();
 
-	PyThreadState* mBaseThreadState{nullptr};
+	PyObject* mModule{nullptr};
+	PyObject* mGlobalDictForCalc{nullptr};
+	PyObject* mGlobalDictForPyCmd{nullptr};
+
+	PyThreadState* mThreadStateForCalc{nullptr};
+	PyThreadState* mThreadStateForPyCmd{nullptr};
 	void* mInterpreter{nullptr};
 };
 
@@ -40,16 +45,15 @@ bool PythonProxy::PImpl::Initialize()
 
 	// 辞書生成
 	mModule = PyImport_AddModule("__main__");
-	mDict = PyModule_GetDict(mModule);
+	mGlobalDictForCalc = PyModule_GetDict(mModule);
+	mGlobalDictForPyCmd = PyDict_Copy(mGlobalDictForCalc);
 
-	PyObject* pyMathModule = PyImport_ImportModule("math");
-	PyObject* matchDict = PyModule_GetDict(pyMathModule);
-	PyDict_Merge(mDict, matchDict, 1);
-
-	Py_DecRef(pyMathModule);
+	InitializeForCalc();
+	InitializeForPyCmd();
 
 	// サブインタープリターを作成する
-	mBaseThreadState = Py_NewInterpreter();
+	mThreadStateForCalc = Py_NewInterpreter();
+	mThreadStateForPyCmd = Py_NewInterpreter();
 
 	// GILを解放し、threadstateをnullにしておく
 	PyEval_SaveThread();
@@ -57,11 +61,39 @@ bool PythonProxy::PImpl::Initialize()
 	return true;
 }
 
+// 電卓機能向けの初期化
+bool PythonProxy::PImpl::InitializeForCalc()
+{
+	PyObject* pyMathModule = PyImport_ImportModule("math");
+	PyObject* matchDict = PyModule_GetDict(pyMathModule);
+	PyDict_Merge(mGlobalDictForCalc, matchDict, 1);
+
+	Py_DecRef(pyMathModule);
+	return true;
+}
+
+// Python拡張コマンド向けの初期化
+bool PythonProxy::PImpl::InitializeForPyCmd()
+{
+	PyObject* key_module = PyImport_ImportModule("key");
+	if (key_module == nullptr) {
+		//spdlog::error("pycmd : Failed to load key module.");
+		return false;
+	}
+
+	PyDict_SetItemString(mGlobalDictForPyCmd, "__builtins__", PyEval_GetBuiltins());
+	PyDict_SetItemString(mGlobalDictForPyCmd, "key", key_module);
+
+	return true;
+}
+
 void PythonProxy::PImpl::Finalize()
 {
 	// GILを取得する
-	PyEval_RestoreThread(mBaseThreadState);
-	mBaseThreadState = nullptr;
+	PyEval_RestoreThread(mThreadStateForCalc);
+	mThreadStateForCalc = nullptr;
+	PyEval_RestoreThread(mThreadStateForPyCmd);
+	mThreadStateForPyCmd = nullptr;
 	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する) 
 	Py_Finalize();
 }
@@ -77,20 +109,71 @@ PythonProxy::~PythonProxy()
 	in->Finalize();
 }
 
-bool PythonProxy::Evaluate(const wchar_t* src, char** result)
+bool PythonProxy::CompileTest(const char* src, char** errMsg)
 {
 	// GILを取得する
-	PyEval_RestoreThread(in->mBaseThreadState);
+	PyEval_RestoreThread(in->mThreadStateForPyCmd);
 
-	CStringA srcA(src);
-	PyObject* codeObj = Py_CompileString((LPCSTR)srcA, "<string>", Py_eval_input);
+	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
+	if (codeObj == nullptr) {
+		// FIXME: エラー詳細をerrMsgにつめて返す
+		PyErr_Clear();
+		PyEval_SaveThread();
+		return false;
+	}
+
+	Py_DecRef(codeObj);
+	PyEval_SaveThread();
+
+	return true;
+
+}
+
+bool PythonProxy::Evaluate(const char* src, char** errMsg)
+{
+	// GILを取得する
+	PyEval_RestoreThread(in->mThreadStateForPyCmd);
+
+	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
+	if (codeObj == nullptr) {
+		// FIXME: エラー詳細をerrMsgにつめて返す
+		PyErr_Clear();
+		PyEval_SaveThread();
+		return false;
+	}
+	PyObject* localDict = PyDict_New();
+
+	PyObject* pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForPyCmd, localDict);
+
+	Py_DecRef(localDict);
+	Py_DecRef(codeObj);
+
+	if (pyObject) {
+		Py_DecRef(pyObject);
+	}
+
+	PyEval_SaveThread();
+
+	return true;
+}
+
+bool PythonProxy::EvalForCalculate(const char* src, char** result)
+{
+	// GILを取得する
+	PyEval_RestoreThread(in->mThreadStateForCalc);
+
+	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_eval_input);
 	if (codeObj == nullptr) {
 		PyErr_Clear();
 		PyEval_SaveThread();
 		return false;
 	}
 
-	PyObject* pyObject = PyEval_EvalCode(codeObj, in->mDict, in->mDict);
+	PyObject* localDict = PyDict_New();
+
+	PyObject* pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, localDict);
+
+	Py_DecRef(localDict);
 	Py_DecRef(codeObj);
 
 	// 文をインタープリタ側で評価した結果エラーだった場合
