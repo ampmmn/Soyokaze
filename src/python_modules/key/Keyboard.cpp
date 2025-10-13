@@ -103,6 +103,6 @@ int press(nanobind::handle input, int repeat, float interval)
 
 NB_MODULE(key, m) {
 	m.def("press", &press, nanobind::arg("input"), nanobind::arg("repeat") = 1, nanobind::arg("interval") = 0.0, "キーを押す");
-	m.def("key_down", &key_down, "キーを押す");
-	m.def("key_up", &key_up, "キーを放す");
+	m.def("down", &key_down, "キーを押す");
+	m.def("up", &key_up, "キーを放す");
 }

@@ -111,7 +111,7 @@ bool CommandEditDialog::UpdateStatus()
 
 	if (isValid) {
 		if (mErrMsg.IsEmpty() == FALSE) {
-			mMessage = _T("スクリプトを修正してエラーを解消してください");
+			mMessage = _T("スクリプトを修正してエラーを解消してください。修正したら構文チェックボタンを押してください");
 		}
 		else if (mIsTested == false) {
 			mMessage = _T("チェックボタンを押してスクリプトが実行可能か確認してください");

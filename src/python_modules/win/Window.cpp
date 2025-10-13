@@ -4,6 +4,7 @@
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/list.h>
 #include <atlstr.h>
+#include "StringUtil.h"
 
 class ScopeAttachThreadInput
 {
@@ -96,21 +97,21 @@ public:
 
 Window find_window(nanobind::object clsName, nanobind::object caption)
 {
-	const char* cls = nullptr;
-	std::string clsNameTmp;
+	const wchar_t* cls = nullptr;
+	std::wstring clsNameTmp;
 	if (clsName.is_none() == false) {
-		clsNameTmp = nanobind::cast<std::string>(clsName);
+		clsNameTmp = utf2utf(nanobind::cast<std::string>(clsName), clsNameTmp);
 		cls = clsNameTmp.c_str();
 	}
 
-	const char* cap = nullptr;
-	std::string captionTmp;
+	const wchar_t* cap = nullptr;
+	std::wstring captionTmp;
 	if (caption.is_none() == false) {
-		captionTmp = nanobind::cast<std::string>(caption);
+		captionTmp = utf2utf(nanobind::cast<std::string>(caption), captionTmp);
 		cap = captionTmp.c_str();
 	}
 
-	HWND h = FindWindowA(cls, cap);
+	HWND h = FindWindowW(cls, cap);
 	Window w;
 	w.mHwnd = h;
 	return w;

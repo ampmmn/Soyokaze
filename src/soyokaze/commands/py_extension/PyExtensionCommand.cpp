@@ -95,8 +95,8 @@ void PyExtensionCommand::SetParam(const CommandParam& param)
 
 HICON PyExtensionCommand::GetIcon()
 {
-	// ToDo: アイコン設定
-	return IconLoader::Get()->GetImageResIcon(-5301);
+	auto loader = PythonDLLLoader::Get();
+	return IconLoader::Get()->LoadIconFromPath(loader->GetPythonExePath());
 }
 
 int PyExtensionCommand::Match(Pattern* pattern)

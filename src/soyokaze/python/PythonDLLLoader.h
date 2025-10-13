@@ -16,6 +16,7 @@ public:
 	bool IsAvailable();
 
 	PythonProxyIF* GetLibrary();
+	CString GetPythonExePath();
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

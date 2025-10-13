@@ -136,3 +136,16 @@ PythonProxyIF* PythonDLLLoader::GetLibrary()
 	return proxy;
 }
 
+CString PythonDLLLoader::GetPythonExePath()
+{
+	auto pref = AppPreference::Get();
+	Path dllPath(pref->GetPythonDLLPath());
+	if (dllPath.IsEmptyPath()|| dllPath.FileExists() == false) {
+		return _T("");
+	}
+
+	dllPath.RemoveFileSpec();
+	dllPath.Append(_T("python.exe"));
+	return (LPCTSTR)dllPath;
+}
+
