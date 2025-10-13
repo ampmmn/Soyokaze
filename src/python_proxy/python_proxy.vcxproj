@@ -288,7 +288,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(pythonLocation)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python3.lib;nanobind-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python3.lib;nanobind-staticrtst.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
