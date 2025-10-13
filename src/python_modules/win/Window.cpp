@@ -91,9 +91,63 @@ public:
 		return true;
 	}
 
+	// ウインドウのクライアント領域からの相対座標指定によるクリック
+	bool click(nanobind::object x_, nanobind::object y_)
+	{
+		if (IsWindow(mHwnd) == FALSE) { return false; }
+		if (x_.is_none() || y_.is_none()) {
+			return false;
+		}
+
+		try {
+			// クライアント領域をスクリーン領域座標に変換
+			POINT pos{ nanobind::cast<int>(x_),nanobind::cast<int>(y_) };
+			ClientToScreen(mHwnd, &pos);
+
+			// 疑似的なクリック
+			return ClickScreen(pos, false);
+		}
+		catch(std::exception&) {
+			return false;
+		}
+	}
+
+	bool ClickScreen(const POINT& pt, bool isDbl)
+	{
+		// 現在位置を覚えておく
+		POINT curPos;
+		if (GetCursorPos(&curPos) == FALSE) {
+			return false;
+		}
+
+		// カーソル位置を一時的に変更
+		SetCursorPos(pt.x, pt.y);
+
+		INPUT inputs[2] = {};
+
+		// マウス左ボタン押下
+		inputs[0].type = INPUT_MOUSE;
+		inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+
+		// マウス左ボタン解放
+		inputs[1].type = INPUT_MOUSE;
+		inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+
+		// イベント送信
+		SendInput(2, inputs, sizeof(INPUT));
+		if (isDbl) {
+			SendInput(2, inputs, sizeof(INPUT));
+		}
+
+		// カーソル位置を戻す
+		SetCursorPos(curPos.x, curPos.y);
+
+		return true;
+	}
 
 	HWND mHwnd{nullptr};
 };
+
 
 Window find_window(nanobind::object clsName, nanobind::object caption)
 {
@@ -129,7 +183,8 @@ NB_MODULE(win, m) {
 		.def("activate", &Window::activate)
 		.def("move", &Window::move, nanobind::arg("x"), nanobind::arg("y"))
 		.def("resize", &Window::resize, nanobind::arg("width"), nanobind::arg("height"))
-		.def("set_position", &Window::set_position, nanobind::arg("insert_after"), nanobind::arg("x"), nanobind::arg("y"), nanobind::arg("width"), nanobind::arg("height"));
+		.def("set_position", &Window::set_position, nanobind::arg("insert_after"), nanobind::arg("x"), nanobind::arg("y"), nanobind::arg("width"), nanobind::arg("height"))
+		.def("click", &Window::click, nanobind::arg("x"), nanobind::arg("y"));
 
 	m.def("find", &find_window, nanobind::arg("class_name") = nanobind::none(), nanobind::arg("caption") = nanobind::none(), "ウインドウを探す");
 
