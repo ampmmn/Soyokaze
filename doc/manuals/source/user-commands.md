@@ -24,5 +24,6 @@ user-command/volume.md
 user-command/eject.md
 user-command/split.md
 user-command/alias.md
+user-command/py_extension.md
 ```
 

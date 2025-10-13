@@ -21,14 +21,13 @@
   - アプリ実行時に上記ライブラリを直接利用するものではない
 
 - [Python3](https://www.python.org/)
-  - 簡易電卓機能を実現するために使用している
+  - Python拡張コマンド/簡易電卓機能を実現するために使用している
 
 - [SQLite3](https://www.sqlite.org/)
   - Windows標準搭載の`winsqlite3.dll`を利用している
 
 - [Everything SDK](https://www.voidtools.com/support/everything/sdk/)
   - `Everything`が公開しているSDKのソースコードをそのままランチャー本体に組み込んでいる
-  - 現在はEverything関連機能を無効化している。そのうち再実装するつもり
 
 - [RE2](https://github.com/google/re2)
   - コマンドの絞り込みの際の正規表現エンジンとして利用している
