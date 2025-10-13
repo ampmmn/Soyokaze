@@ -46,6 +46,10 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - [Abseil](https://github.com/abseil/abseil-cpp)
   - Google製のC++ライブラリ群。re2がこれに依存している。
 
+- [nanobind](https://github.com/wjakob/nanobind)
+  - C++/Pythonバインディングライブラリ
+  - Python拡張コマンドにおいて、アプリ機能をPythonスクリプト側から利用できるようにするために利用している
+
 ### 外部ライブラリの配置
 
 - fmt
@@ -66,6 +70,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - Abseil
   - https://github.com/abseil/abseil-cpp からソース一式を取得する
     - `externals`ディレクトリに`abseil-cpp`を配置する
+- nanobind
+  - https://github.com/wjakob/nanobind からソース一式を取得する
+    - `externals`ディレクトリに`nanobind`を配置する
 
 - `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -87,6 +94,7 @@ soyokaze-src/
       include/
     re2/
     abseil-cpp/
+    nanobind/
 ```
 
 ### spdlogのビルド
@@ -185,7 +193,31 @@ cmake --build . --config Debug --clean-first
 cmake --install . --config Debug
 ```
 
+### nanobindのビルド
+
+配置した`nanobind`を下記コマンドでビルドする。  
+
+```
+cd externals/nanobind
+mkdir -p build
+cd build
+
+# ランチャー側の「Release」構成で利用するモジュールのビルド
+cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" ..
+cmake --build . --config Release
+
+# ランチャー側の「Debug」「UnitTest」構成で利用するモジュールのビルド
+cmake --build . --config Debug
+
+# ランチャー側の「ReleaseStatic」構成で利用するモジュールのビルド
+cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" -DCMAKE_RELEASE_POSTFIX=rtst ..
+cmake --build . --config Release -t nanobind-static
+
 ## ビルド方法
+
+- 環境変数`pythonLocation`を設定しておく
+  - 値はPythonがインストールされているディレクトリへのパス  
+例: `C:\Users\(ユーザ名)\AppData\Local\Programs\Python\Python313`
 
 - VisualStudioでソリューションファイル`src/Soyokaze.sln`を開く
   - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
