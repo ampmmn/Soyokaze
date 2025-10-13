@@ -45,8 +45,6 @@ bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 		return false;
 	}
 
-	// ToDo: 構文チェック
-
 	*errCode = CommandParamErrorCode::Common_NoError;
 	return true;
 }

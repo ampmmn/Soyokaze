@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "PythonProxy.h"
 #include <atlstr.h>
+#include <string>
 
 #ifdef _DEBUG
 #undef _DEBUG
-#define Py_LIMITED_API
+#define Py_LIMITED_API 0x03120000
 #include <Python.h>
 #undef _DEBUG
 #else
-#define Py_LIMITED_API
+#define Py_LIMITED_API 0x03120000
 #include <Python.h>
 #endif
 
@@ -109,6 +110,41 @@ PythonProxy::~PythonProxy()
 	in->Finalize();
 }
 
+static std::string py2str(PyObject* obj)
+{
+	PyObject* repr = PyObject_Repr(obj);
+	PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
+
+	std::string ret(PyBytes_AsString(str));
+
+	DecRef(str);
+	DecRef(repr);
+
+	return ret;
+}
+
+static void FetchErrMsg(char** errMsg)
+{
+	PyObject* ptype;
+	PyObject* pvalue;
+	PyObject* ptraceback;
+	PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+
+	std::string exc_type(py2str(ptype));
+	std::string exc_value(py2str(pvalue));
+	if (errMsg) {
+		std::string buf(exc_type + "\r\n" + exc_value);
+		*errMsg = new char[buf.size()+1];
+		memcpy(*errMsg, buf.data(), buf.size() + 1);
+
+	}
+	Py_DecRef(ptraceback);
+	Py_DecRef(pvalue);
+	Py_DecRef(ptype);
+
+}
+
+
 bool PythonProxy::CompileTest(const char* src, char** errMsg)
 {
 	// GILを取得する
@@ -116,7 +152,9 @@ bool PythonProxy::CompileTest(const char* src, char** errMsg)
 
 	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
 	if (codeObj == nullptr) {
-		// FIXME: エラー詳細をerrMsgにつめて返す
+		// エラー詳細をerrMsgにつめて返す
+		FetchErrMsg(errMsg);
+
 		PyErr_Clear();
 		PyEval_SaveThread();
 		return false;
@@ -136,7 +174,9 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 
 	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
 	if (codeObj == nullptr) {
-		// FIXME: エラー詳細をerrMsgにつめて返す
+		// エラー詳細をerrMsgにつめて返す
+		FetchErrMsg(errMsg);
+
 		PyErr_Clear();
 		PyEval_SaveThread();
 		return false;
@@ -150,6 +190,15 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 
 	if (pyObject) {
 		Py_DecRef(pyObject);
+	}
+
+	if (PyErr_Occurred() != nullptr) {
+		// エラー詳細をerrMsgにつめて返す
+		FetchErrMsg(errMsg);
+
+		PyErr_Clear();
+		PyEval_SaveThread();
+		return false;
 	}
 
 	PyEval_SaveThread();
@@ -183,6 +232,7 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 
 		DecRef(pyObject);
 
+		PyErr_Clear();
 		PyEval_SaveThread();
 		return false;
 	}
@@ -192,16 +242,12 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 		return false;
 	}
 
-	PyObject* repr = PyObject_Repr(pyObject);
-	PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-	const char* s = PyBytes_AsString(str);
+	std::string s(py2str(pyObject));
 
-	size_t len = strlen(s) + 1;
+	size_t len = s.size() + 1;
 	*result = new char[len];
-	memcpy(*result, s, len);
+	memcpy(*result, s.c_str(), len);
 
-	DecRef(repr);
-	DecRef(str);
 	DecRef(pyObject);
 
 	// GILを解放する

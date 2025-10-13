@@ -65,6 +65,11 @@ PythonDLLLoader* PythonDLLLoader::Get()
 
 bool PythonDLLLoader::Initialize()
 {
+	if (in->mIsAvailable) {
+		// 既に初期化済
+		return true;
+	}
+
 	auto pref = AppPreference::Get();
 	Path dllPath(pref->GetPythonDLLPath());
 	if (dllPath.IsEmptyPath()|| dllPath.FileExists() == false) {

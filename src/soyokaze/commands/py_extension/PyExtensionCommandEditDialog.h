@@ -34,6 +34,11 @@ protected:
 
 	// メッセージ欄
 	CString mMessage;
+	bool mIsTested{true};
+	bool mHasError{false};
+
+	//
+	CString mErrMsg;
 	// ホットキー(表示用)
 	CString mHotKey;
 
@@ -45,8 +50,10 @@ protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
+	afx_msg void OnScriptChanged();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
+	afx_msg void OnButtonTest();
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

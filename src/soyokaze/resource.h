@@ -527,6 +527,8 @@
 #define IDD_APPSETTING_EVERYTHING1      1221
 #define IDD_APPSETTING_ONENOTE          1221
 #define IDC_RADIO_USECHROME             1221
+#define IDC_EDIT_SCRIPT2                1221
+#define IDC_EDIT_RESULT                 1221
 #define IDD_APPSETTING_EXTERNALTOOL     1222
 #define IDC_RADIO_USEOTHER              1222
 #define IDC_CHECK_USEEXTERNAL           1223

@@ -213,14 +213,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(pythonLocation)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(PYTHON_ROOT)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(pythonLocation)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;nanobind-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -233,7 +233,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(pythonLocation)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -253,7 +253,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(pythonLocation)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -262,7 +262,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(PYTHON_ROOT)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(pythonLocation)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;nanobind-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -278,7 +278,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(pythonLocation)\include;$(ProjectDir)include;$(SolutionDir)..\externals\nanobind\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -287,7 +287,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(PYTHON_ROOT)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(pythonLocation)\libs;$(SolutionDir)..\externals\nanobind\build\tests\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;nanobind-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

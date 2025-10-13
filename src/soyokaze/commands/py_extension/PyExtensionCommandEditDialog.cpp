@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "PyExtensionCommandEditDialog.h"
 #include "hotkey/CommandHotKeyDialog.h"
+#include "python/PythonDLLLoader.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -58,6 +59,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT, mParam.mScript);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
+	DDX_Text(pDX, IDC_EDIT_RESULT, mErrMsg);
 }
 
 #pragma warning( push )
@@ -65,8 +67,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
-	ON_EN_CHANGE(IDC_EDIT_SCRIPT, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_SCRIPT, OnScriptChanged)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -106,15 +109,37 @@ bool CommandEditDialog::UpdateStatus()
 	int errCode;
 	bool isValid = mParam.IsValid(mOrgName, &errCode); 
 
-	CommandParamError paramErr(errCode);
-	mMessage = paramErr.ToString();
-	GetDlgItem(IDOK)->EnableWindow(isValid);
+	if (isValid) {
+		if (mErrMsg.IsEmpty() == FALSE) {
+			mMessage = _T("スクリプトを修正してエラーを解消してください");
+		}
+		else if (mIsTested == false) {
+			mMessage = _T("チェックボタンを押してスクリプトが実行可能か確認してください");
+		}
+		else {
+			mMessage.Empty();
+		}
+	}
+	else {
+		CommandParamError paramErr(errCode);
+		mMessage = paramErr.ToString();
+	}
+
+	GetDlgItem(IDOK)->EnableWindow(isValid && mIsTested);
 	return isValid;
 }
 
 void CommandEditDialog::OnUpdateStatus()
 {
 	UpdateData();
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void CommandEditDialog::OnScriptChanged()
+{
+	UpdateData();
+	mIsTested = false;
 	UpdateStatus();
 	UpdateData(FALSE);
 }
@@ -149,6 +174,32 @@ void CommandEditDialog::OnButtonHotKey()
 
 	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
+	}
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void CommandEditDialog::OnButtonTest()
+{
+	UpdateData();
+
+	auto loader = PythonDLLLoader::Get();
+	if (loader->Initialize() == false) {
+		return ;
+	}
+	auto proxy = loader->GetLibrary();
+
+	std::string src;
+	UTF2UTF(mParam.mScript, src);
+	char* errMsg= nullptr;
+	if (proxy->CompileTest(src.c_str(), &errMsg) == false) {
+		UTF2UTF(errMsg, mErrMsg);
+		proxy->ReleaseBuffer(errMsg);
+		mIsTested = false;
+	}
+	else {
+		mErrMsg.Empty();
+		mIsTested = true;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
