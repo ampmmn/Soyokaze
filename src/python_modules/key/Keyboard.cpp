@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "VKScanner.h"
-# define Py_LIMITED_API 0x03100000
+# define Py_LIMITED_API 0x030c0000
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/list.h>

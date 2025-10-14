@@ -136,11 +136,11 @@ jobs:
         cmd /c "if not exist build mkdir -p build"
         cd build
         # setup cmakefor Debug configuration.
-        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" ..
+        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" ..
         # build(Debug)
         cmake --build . --config Debug -t nanobind-static
         # setup cmake for Release configuration.
-        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" -DCMAKE_RELEASE_POSTFIX=rtst ..
+        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" -DCMAKE_RELEASE_POSTFIX=rtst ..
         # build(Release)
         cmake --build . --config Release -t nanobind-static
 

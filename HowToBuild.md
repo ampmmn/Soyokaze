@@ -203,14 +203,14 @@ mkdir -p build
 cd build
 
 # ランチャー側の「Release」構成で利用するモジュールのビルド
-cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" ..
-cmake --build . --config Release
+cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" ..
+cmake --build . --config Release -t nanobind-static
 
 # ランチャー側の「Debug」「UnitTest」構成で利用するモジュールのビルド
-cmake --build . --config Debug
+cmake --build . --config Debug -t nanobind-static
 
 # ランチャー側の「ReleaseStatic」構成で利用するモジュールのビルド
-cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x03120000" -DCMAKE_RELEASE_POSTFIX=rtst ..
+cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" -DCMAKE_RELEASE_POSTFIX=rtst ..
 cmake --build . --config Release -t nanobind-static
 
 ## ビルド方法

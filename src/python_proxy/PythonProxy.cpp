@@ -5,11 +5,11 @@
 
 #ifdef _DEBUG
 #undef _DEBUG
-#define Py_LIMITED_API 0x03120000
+#define Py_LIMITED_API 0x030c0000
 #include <Python.h>
 #undef _DEBUG
 #else
-#define Py_LIMITED_API 0x03120000
+#define Py_LIMITED_API 0x030c0000
 #include <Python.h>
 #endif
 
