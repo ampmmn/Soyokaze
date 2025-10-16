@@ -2,6 +2,8 @@
 #include "PythonProxy.h"
 #include <atlstr.h>
 #include <string>
+#include <regex>
+#include <mutex>
 
 #ifdef _DEBUG
 #undef _DEBUG
@@ -26,20 +28,28 @@ struct PythonProxy::PImpl
 
 	bool InitializeForPyCmd(PyObject* globalDict);
 
+	bool IsBusy() {
+		std::lock_guard<std::mutex> lock(mMutex);
+		return mIsBusy;
+	}
+	void SetBusy(bool busy) {
+		std::lock_guard<std::mutex> lock(mMutex);
+		mIsBusy = busy;
+	}
+
 	PyObject* mModule{nullptr};
 	PyObject* mGlobalDictForCalc{nullptr};
 
 	PyThreadState* mThreadStateForCalc{nullptr};
 	void* mInterpreter{nullptr};
+	std::mutex mMutex;
+	bool mIsBusy{false};
 };
 
 bool PythonProxy::PImpl::Initialize()
 {
 	// 初期化
 	Py_Initialize();
-#if PY_VERSION_HEX < 0x030A0000
-	PyEval_InitThreads();
-#endif
 
 	// 辞書生成
 	mModule = PyImport_AddModule("__main__");
@@ -64,10 +74,20 @@ bool PythonProxy::PImpl::Initialize()
 // Python拡張コマンド向けの初期化
 bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 {
+	// exeがあるディレクトリを検索パスとして追加
+	std::vector<wchar_t> exeDir(MAX_PATH_NTFS);
+	GetModuleFileName(nullptr, exeDir.data(), MAX_PATH_NTFS);
+	PathRemoveFileSpec(exeDir.data());
+	PyObject* libPath = PyUnicode_FromWideChar(exeDir.data(), -1);
+	PyObject* sysPath = PySys_GetObject("path");
+	PyList_Append(sysPath, libPath);
+	DecRef(libPath);
+	auto len = PyList_Size(sysPath);
+
 	auto builtins = PyEval_GetBuiltins();
 	PyDict_SetItemString(globalDict, "__builtins__", builtins);
-	DecRef(builtins);
 
+	// アプリ専用の組み込みライブラリを暗黙的にインポート
 	PyObject* key_module = PyImport_ImportModule("key");
 	if (key_module != nullptr) {
 		PyDict_SetItemString(globalDict, "key", key_module);
@@ -84,11 +104,16 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 
 void PythonProxy::PImpl::Finalize()
 {
-	// GILを取得する
+	if (mThreadStateForCalc == nullptr) {
+		return;
+	}
 	PyEval_RestoreThread(mThreadStateForCalc);
-	mThreadStateForCalc = nullptr;
 	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する) 
 	Py_Finalize();
+
+	mThreadStateForCalc = nullptr;
+	mGlobalDictForCalc = nullptr;
+	mModule = nullptr;
 }
 
 
@@ -98,6 +123,11 @@ PythonProxy::PythonProxy() : in(new PImpl)
 }
 
 PythonProxy::~PythonProxy()
+{
+	in->Finalize();
+}
+
+void PythonProxy::Finalize()
 {
 	in->Finalize();
 }
@@ -117,6 +147,10 @@ static std::string py2str(PyObject* obj)
 
 static void FetchErrMsg(char** errMsg)
 {
+	if (errMsg == nullptr) {
+		return;
+	}
+
 	PyObject* ptype;
 	PyObject* pvalue;
 	PyObject* ptraceback;
@@ -124,12 +158,11 @@ static void FetchErrMsg(char** errMsg)
 
 	std::string exc_type(py2str(ptype));
 	std::string exc_value(py2str(pvalue));
-	if (errMsg) {
-		std::string buf(exc_type + "\r\n" + exc_value);
-		*errMsg = new char[buf.size()+1];
-		memcpy(*errMsg, buf.data(), buf.size() + 1);
 
-	}
+	std::string buf(exc_type + "\r\n" + exc_value);
+	*errMsg = new char[buf.size()+1];
+	memcpy(*errMsg, buf.data(), buf.size() + 1);
+
 	Py_DecRef(ptraceback);
 	Py_DecRef(pvalue);
 	Py_DecRef(ptype);
@@ -139,6 +172,11 @@ static void FetchErrMsg(char** errMsg)
 
 bool PythonProxy::CompileTest(const char* src, char** errMsg)
 {
+	if (in->IsBusy()) {
+		return false;
+	}
+	in->SetBusy(true);
+
 	PyThreadState* state = Py_NewInterpreter();
 
 	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
@@ -146,19 +184,23 @@ bool PythonProxy::CompileTest(const char* src, char** errMsg)
 		// エラー詳細をerrMsgにつめて返す
 		FetchErrMsg(errMsg);
 		PyErr_Clear();
-
-		Py_EndInterpreter(state);
-		return false;
 	}
 
-	Py_DecRef(codeObj);
+	DecRef(codeObj);
 	Py_EndInterpreter(state);
+
+	in->SetBusy(false);
 	return true;
 
 }
 
 bool PythonProxy::Evaluate(const char* src, char** errMsg)
 {
+	if (in->IsBusy()) {
+		return false;
+	}
+	in->SetBusy(true);
+
 	PyThreadState* state = Py_NewInterpreter();
 
 	// GILを取得する
@@ -168,9 +210,10 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 		FetchErrMsg(errMsg);
 
 		PyErr_Clear();
-		PyEval_SaveThread();
 
 		Py_EndInterpreter(state);
+
+		in->SetBusy(false);
 		return false;
 	}
 
@@ -183,13 +226,10 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 
 	PyObject* pyObject = PyEval_EvalCode(codeObj, globalDict, localDict);
 
-	Py_DecRef(localDict);
-	Py_DecRef(codeObj);
-	Py_DecRef(globalDict);
-
-	if (pyObject) {
-		Py_DecRef(pyObject);
-	}
+	DecRef(codeObj);
+	DecRef(localDict);
+	DecRef(globalDict);
+	DecRef(pyObject);
 
 	bool isOK = PyErr_Occurred() == nullptr;
 	if (isOK == false) {
@@ -201,11 +241,17 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 
 	Py_EndInterpreter(state);
 
+	in->SetBusy(false);
 	return isOK;
 }
 
 bool PythonProxy::EvalForCalculate(const char* src, char** result)
 {
+	if (in->IsBusy()) {
+		return false;
+	}
+	in->SetBusy(true);
+
 	// GILを取得する
 	PyEval_RestoreThread(in->mThreadStateForCalc);
 
@@ -213,6 +259,7 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 	if (codeObj == nullptr) {
 		PyErr_Clear();
 		PyEval_SaveThread();
+		in->SetBusy(false);
 		return false;
 	}
 
@@ -232,11 +279,13 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 
 		PyErr_Clear();
 		PyEval_SaveThread();
+		in->SetBusy(false);
 		return false;
 	}
 
 	if (pyObject == nullptr) {
 		PyEval_SaveThread();
+		in->SetBusy(false);
 		return false;
 	}
 
@@ -251,12 +300,33 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 	// GILを解放する
 	PyEval_SaveThread();
 
+	in->SetBusy(false);
 	return true;
 }
 
 void PythonProxy::ReleaseBuffer(char* result)
 {
 	delete [] result;
+}
+
+bool PythonProxy::IsPyCmdAvailable()
+{
+	const char* ver = Py_GetVersion();
+	static const std::regex pat("^(\\d+)\\.(\\d+).+$");
+	if (std::regex_match(ver, pat) == false) {
+		return false;
+	}
+	auto major = std::stoi(std::regex_replace(ver, pat, "$1"));
+	auto minor = std::stoi(std::regex_replace(ver, pat, "$2"));
+	if (major < 3 || minor < 12) {
+		return false;
+	}
+	return true;
+}
+
+bool PythonProxy::IsBusy()
+{
+	return in->IsBusy();
 }
 
 void DecRef(PyObject* obj)

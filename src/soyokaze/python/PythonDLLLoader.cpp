@@ -107,8 +107,17 @@ bool PythonDLLLoader::Initialize()
 bool PythonDLLLoader::Finalize()
 {
 	if (in->mProxyDLL) {
+		using LPFUNCFINALIZE = int(*)();
+		auto pythonproxy_Finalize = (LPFUNCFINALIZE)GetProcAddress(in->mProxyDLL, "pythonproxy_Finalize");
+		if (pythonproxy_Finalize == nullptr) {
+			return nullptr;
+		}
+
+		pythonproxy_Finalize();
+
 		FreeLibrary(in->mProxyDLL);
 		in->mProxyDLL = nullptr;
+		in->mIsAvailable = false;
 	}
 	return true;
 }

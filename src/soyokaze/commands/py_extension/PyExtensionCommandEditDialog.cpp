@@ -99,6 +99,22 @@ BOOL CommandEditDialog::OnInitDialog()
 	return TRUE;
 }
 
+BOOL CommandEditDialog::PreTranslateMessage(MSG* msg)
+{
+	if (msg->message != WM_KEYDOWN || msg->wParam != VK_TAB) {
+		return __super::PreTranslateMessage(msg);
+	}
+
+	CEdit* scriptEditCtrl = (CEdit*)GetDlgItem(IDC_EDIT_SCRIPT);
+	if (scriptEditCtrl && scriptEditCtrl == GetFocus()) {
+		// タブ文字を挿入しフォーカス移動を抑制
+		scriptEditCtrl->ReplaceSel(_T("\t"));
+		return TRUE;
+	}
+
+	return __super::PreTranslateMessage(msg);
+}
+
 bool CommandEditDialog::UpdateStatus()
 {
 	mHotKey = mParam.mHotKeyAttr.ToString();
@@ -188,6 +204,10 @@ void CommandEditDialog::OnButtonTest()
 		return ;
 	}
 	auto proxy = loader->GetLibrary();
+	if (proxy->IsPyCmdAvailable() == false) {
+		mErrMsg = _T("設定されたPythonのバージョンはサポートしていません\n(3.12以降を指定してください)");
+		mIsTested = false;
+	}
 
 	std::string src;
 	UTF2UTF(mParam.mScript, src);

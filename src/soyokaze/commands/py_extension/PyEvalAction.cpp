@@ -44,6 +44,16 @@ bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 	}
 
 	auto proxy = dllLoader->GetLibrary();
+	if (proxy->IsPyCmdAvailable() == false) {
+		if (errMsg) { *errMsg = _T("コマンドを実行できません。\n(Python3.12以降が必要です)"); }
+		return false;
+	}
+
+	if (proxy->IsBusy()) {
+		if (errMsg) { *errMsg = _T("コマンドを実行できません。\n(先に実行したPython拡張コマンドが完了していない)"); }
+		return false;
+	}
+
 
 	std::string tmpSrc;
 

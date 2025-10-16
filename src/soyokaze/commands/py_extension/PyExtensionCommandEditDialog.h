@@ -26,6 +26,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
+	virtual BOOL PreTranslateMessage(MSG* msg);
 
 	void ResolveShortcut(CString& path);
 

@@ -6,6 +6,8 @@
 #include <atlstr.h>
 #include "StringUtil.h"
 
+namespace nb = nanobind;
+
 class ScopeAttachThreadInput
 {
 public:
@@ -84,7 +86,7 @@ public:
 		SetWindowPos(mHwnd, nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 		return true;
 	}
-	bool set_position(nanobind::handle insert_after, int x, int y, int width, int height) {
+	bool set_position(nb::handle insert_after, int x, int y, int width, int height) {
 		if (IsWindow(mHwnd) == FALSE) { return false; }
 
 		SetWindowPos(mHwnd, nullptr, x, y, width, height, SWP_NOACTIVATE | SWP_NOOWNERZORDER);
@@ -92,7 +94,7 @@ public:
 	}
 
 	// ウインドウのクライアント領域からの相対座標指定によるクリック
-	bool click(nanobind::object x_, nanobind::object y_)
+	bool click(nb::object x_, nb::object y_)
 	{
 		if (IsWindow(mHwnd) == FALSE) { return false; }
 		if (x_.is_none() || y_.is_none()) {
@@ -101,7 +103,7 @@ public:
 
 		try {
 			// クライアント領域をスクリーン領域座標に変換
-			POINT pos{ nanobind::cast<int>(x_),nanobind::cast<int>(y_) };
+			POINT pos{ nb::cast<int>(x_),nb::cast<int>(y_) };
 			ClientToScreen(mHwnd, &pos);
 
 			// 疑似的なクリック
@@ -149,44 +151,63 @@ public:
 };
 
 
-Window find_window(nanobind::object clsName, nanobind::object caption)
+Window find_window(nb::object clsName, nb::object caption, nb::object timeout)
 {
 	const wchar_t* cls = nullptr;
 	std::wstring clsNameTmp;
-	if (clsName.is_none() == false) {
-		clsNameTmp = utf2utf(nanobind::cast<std::string>(clsName), clsNameTmp);
+	if (nb::isinstance<nb::str>(clsName)) {
+			clsNameTmp = utf2utf(nb::cast<std::string>(clsName), clsNameTmp);
 		cls = clsNameTmp.c_str();
 	}
 
 	const wchar_t* cap = nullptr;
 	std::wstring captionTmp;
-	if (caption.is_none() == false) {
-		captionTmp = utf2utf(nanobind::cast<std::string>(caption), captionTmp);
+	if (nb::isinstance<nb::str>(caption)) {
+		captionTmp = utf2utf(nb::cast<std::string>(caption), captionTmp);
 		cap = captionTmp.c_str();
 	}
 
-	HWND h = FindWindowW(cls, cap);
+	uint64_t timeout_ms = 0;
+	if (nb::isinstance<nb::int_>(timeout) || nb::isinstance<nb::float_>(timeout)) {
+		double f = nb::cast<float>(timeout);
+		if (f < 0.0) { f = 0.0; }
+		timeout_ms = (uint64_t)(f * 1000);
+	}
+
+	auto s = GetTickCount64();
 	Window w;
-	w.mHwnd = h;
+	do {
+		w.mHwnd = FindWindowW(cls, cap);
+		if (w.mHwnd) {
+			break;
+		}
+		Sleep(50);
+	}
+	while (GetTickCount64() - s < timeout_ms);
+
 	return w;
 }
 
 NB_MODULE(win, m) {
 
-	nanobind::class_<Window>(m, "Window")
-		.def(nanobind::init<>())
+	nb::class_<Window>(m, "Window")
+		.def(nb::init<>())
 		.def("maximize", &Window::maximize)
 		.def("minimize", &Window::minimize)
 		.def("show", &Window::show)
 		.def("hide", &Window::hide)
 		.def("restore", &Window::restore)
 		.def("activate", &Window::activate)
-		.def("move", &Window::move, nanobind::arg("x"), nanobind::arg("y"))
-		.def("resize", &Window::resize, nanobind::arg("width"), nanobind::arg("height"))
-		.def("set_position", &Window::set_position, nanobind::arg("insert_after"), nanobind::arg("x"), nanobind::arg("y"), nanobind::arg("width"), nanobind::arg("height"))
-		.def("click", &Window::click, nanobind::arg("x"), nanobind::arg("y"));
+		.def("move", &Window::move, nb::arg("x"), nb::arg("y"))
+		.def("resize", &Window::resize, nb::arg("width"), nb::arg("height"))
+		.def("set_position", &Window::set_position, nb::arg("insert_after"), nb::arg("x"), nb::arg("y"), nb::arg("width"), nb::arg("height"))
+		.def("click", &Window::click, nb::arg("x"), nb::arg("y"));
 
-	m.def("find", &find_window, nanobind::arg("class_name") = nanobind::none(), nanobind::arg("caption") = nanobind::none(), "ウインドウを探す");
+	m.def("find", &find_window,
+	      nb::arg("class_name") = nb::none(),
+	      nb::arg("caption") = nb::none(),
+	      nb::arg("timeout") = nb::none(),
+	      "ウインドウを探す");
 
 }
 

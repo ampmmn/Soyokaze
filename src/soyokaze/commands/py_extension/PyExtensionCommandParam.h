@@ -17,6 +17,7 @@ public:
 	CString mName;
 	CString mDescription;
 	CString mScript;
+	CString mWorkDir;
 	CommandHotKeyAttribute mHotKeyAttr;
 };
 

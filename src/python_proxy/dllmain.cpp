@@ -14,8 +14,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+        DisableThreadLibraryCalls(hModule);
+        break;
     case DLL_THREAD_ATTACH:
+        break;
     case DLL_THREAD_DETACH:
+        break;
     case DLL_PROCESS_DETACH:
         break;
     }
@@ -31,15 +35,28 @@ pythonproxy_Initialize()
 	return 0;
 }
 
+static PythonProxy* GetProxyObj()
+{
+    static PythonProxy inst;
+    return &inst;
+}
+
 extern "C"
 __declspec(dllexport) 
 int
 pythonproxy_GetProxyObject(PythonProxyIF** proxy)
 {
-	static PythonProxy inst;
-	*proxy = &inst;
-
+    *proxy = GetProxyObj();
 	return 0;
+}
+
+extern "C"
+__declspec(dllexport)
+int
+pythonproxy_Finalize()
+{
+    GetProxyObj()->Finalize();
+    return 0;
 }
 
 
