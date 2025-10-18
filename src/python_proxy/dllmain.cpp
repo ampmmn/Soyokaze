@@ -5,6 +5,7 @@
 #pragma comment(lib, "shlwapi.lib")
 
 #include "PythonProxy.h"
+#include "ProxyWindow.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -32,7 +33,7 @@ __declspec(dllexport)
 int
 pythonproxy_Initialize()
 {
-	return 0;
+	return ProxyWindow::GetInstance()->Initialize();
 }
 
 static PythonProxy* GetProxyObj()
@@ -46,7 +47,7 @@ __declspec(dllexport)
 int
 pythonproxy_GetProxyObject(PythonProxyIF** proxy)
 {
-    *proxy = GetProxyObj();
+	*proxy = GetProxyObj();
 	return 0;
 }
 
@@ -55,8 +56,10 @@ __declspec(dllexport)
 int
 pythonproxy_Finalize()
 {
-    GetProxyObj()->Finalize();
-    return 0;
+	ProxyWindow::GetInstance()->Abort();
+	GetProxyObj()->Finalize();
+	ProxyWindow::GetInstance()->Finalize();
+	return 0;
 }
 
 

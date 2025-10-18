@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "PythonProxy.h"
+#include "ProxyWindow.h"
 #include <atlstr.h>
 #include <string>
 #include <regex>
-#include <mutex>
+#include <atomic>
+#include <thread>
 
 #ifdef _DEBUG
 #undef _DEBUG
@@ -15,36 +17,70 @@
 #include <Python.h>
 #endif
 
+// Python拡張コマンドでの実行時間のタイムアウト
+constexpr uint64_t TIMEOUT_IN_MSEC = 10 * 1000; // 10秒
+
 using CStringA = ATL::CStringA;
 using CStringW = ATL::CStringW;
 using CString = ATL::CString;
 
-static void DecRef(PyObject* obj);
+struct scope_pyobject
+{
+	scope_pyobject() {}
+	scope_pyobject(PyObject* obj) : mObj(obj) {}
+	~scope_pyobject() {
+		if (mObj) {
+			Py_DecRef(mObj);
+			mObj = nullptr;
+		}
+	}
+	bool operator == (void* p) const { return mObj == p; }
+	operator PyObject*() { return mObj; }
+	PyObject** operator &() { return &mObj; }
+
+	PyObject* mObj{nullptr};
+};
 
 struct PythonProxy::PImpl
 {
+	struct scope_state
+	{
+		scope_state(PImpl* in_, PyThreadState* state_) : in(in_), state(state_) {
+			in->SetBusy(true);
+			// GILを取得する
+			PyEval_RestoreThread(state);
+	 	}
+		~scope_state() {
+			// GILを解放する
+			PyEval_SaveThread();
+			in->SetBusy(false);
+		}
+		PImpl* in;
+		PyThreadState* state;
+	};
+
 	bool Initialize();
 	void Finalize();
 
 	bool InitializeForPyCmd(PyObject* globalDict);
 
 	bool IsBusy() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsBusy;
+		return mIsBusy.load();
 	}
 	void SetBusy(bool busy) {
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsBusy = busy;
 	}
 
 	PyObject* mModule{nullptr};
 	PyObject* mGlobalDictForCalc{nullptr};
 
+	PyThreadState* mThreadStateForPyCmd{nullptr};
 	PyThreadState* mThreadStateForCalc{nullptr};
 	void* mInterpreter{nullptr};
-	std::mutex mMutex;
-	bool mIsBusy{false};
+	std::atomic<bool> mIsBusy{false};
 };
+
+using scope_state = PythonProxy::PImpl::scope_state;
 
 bool PythonProxy::PImpl::Initialize()
 {
@@ -62,6 +98,8 @@ bool PythonProxy::PImpl::Initialize()
 
 	Py_DecRef(pyMathModule);
 
+	mThreadStateForPyCmd = PyThreadState_Get();
+
 	// サブインタープリターを作成する
 	mThreadStateForCalc = Py_NewInterpreter();
 
@@ -74,29 +112,27 @@ bool PythonProxy::PImpl::Initialize()
 // Python拡張コマンド向けの初期化
 bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 {
-	// exeがあるディレクトリを検索パスとして追加
+	// key.pyd, win.pydを読み込むためのディレクトリパス生成
 	std::vector<wchar_t> exeDir(MAX_PATH_NTFS);
 	GetModuleFileName(nullptr, exeDir.data(), MAX_PATH_NTFS);
 	PathRemoveFileSpec(exeDir.data());
-	PyObject* libPath = PyUnicode_FromWideChar(exeDir.data(), -1);
+
+	// ディレクトリパスをモジュール検索対象として追加
+	scope_pyobject libPath = PyUnicode_FromWideChar(exeDir.data(), -1);
 	PyObject* sysPath = PySys_GetObject("path");
 	PyList_Append(sysPath, libPath);
-	DecRef(libPath);
-	auto len = PyList_Size(sysPath);
 
 	auto builtins = PyEval_GetBuiltins();
 	PyDict_SetItemString(globalDict, "__builtins__", builtins);
 
 	// アプリ専用の組み込みライブラリを暗黙的にインポート
-	PyObject* key_module = PyImport_ImportModule("key");
+	scope_pyobject key_module = PyImport_ImportModule("key");
 	if (key_module != nullptr) {
 		PyDict_SetItemString(globalDict, "key", key_module);
-		DecRef(key_module);
 	}
-	PyObject* win_module = PyImport_ImportModule("win");
+	scope_pyobject win_module = PyImport_ImportModule("win");
 	if (win_module != nullptr) {
 		PyDict_SetItemString(globalDict, "win", win_module);
-		DecRef(win_module);
 	}
 
 	return key_module != nullptr && win_module != nullptr;
@@ -107,10 +143,12 @@ void PythonProxy::PImpl::Finalize()
 	if (mThreadStateForCalc == nullptr) {
 		return;
 	}
+
 	PyEval_RestoreThread(mThreadStateForCalc);
-	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する) 
+	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する)
 	Py_Finalize();
 
+	mThreadStateForPyCmd = nullptr;
 	mThreadStateForCalc = nullptr;
 	mGlobalDictForCalc = nullptr;
 	mModule = nullptr;
@@ -119,31 +157,40 @@ void PythonProxy::PImpl::Finalize()
 
 PythonProxy::PythonProxy() : in(new PImpl)
 {
-	in->Initialize();
+	ProxyWindow::GetInstance()->RequestCallback([&]() {
+		return in->Initialize();
+	});
 }
 
 PythonProxy::~PythonProxy()
 {
-	in->Finalize();
+	Finalize();
 }
 
 void PythonProxy::Finalize()
 {
-	in->Finalize();
+	ProxyWindow::GetInstance()->RequestCallback([&]() {
+		in->Finalize();
+		return true;
+	});
 }
 
 static std::string py2str(PyObject* obj)
 {
-	PyObject* repr = PyObject_Repr(obj);
-	PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-
-	std::string ret(PyBytes_AsString(str));
-
-	DecRef(str);
-	DecRef(repr);
-
-	return ret;
+	scope_pyobject repr = PyObject_Repr(obj);
+	scope_pyobject str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
+	return std::string(PyBytes_AsString(str));
 }
+
+static void MakeErrMsg(char** errMsg, const std::string& msgstr)
+{
+	if (errMsg == nullptr) {
+		return;
+	}
+	*errMsg = new char[msgstr.size()+1];
+	memcpy(*errMsg, msgstr.data(), msgstr.size() + 1);
+}
+
 
 static void FetchErrMsg(char** errMsg)
 {
@@ -151,98 +198,111 @@ static void FetchErrMsg(char** errMsg)
 		return;
 	}
 
-	PyObject* ptype;
-	PyObject* pvalue;
-	PyObject* ptraceback;
+	scope_pyobject ptype;
+	scope_pyobject pvalue;
+	scope_pyobject ptraceback;
 	PyErr_Fetch(&ptype, &pvalue, &ptraceback);
 
 	std::string exc_type(py2str(ptype));
 	std::string exc_value(py2str(pvalue));
 
 	std::string buf(exc_type + "\r\n" + exc_value);
-	*errMsg = new char[buf.size()+1];
-	memcpy(*errMsg, buf.data(), buf.size() + 1);
-
-	Py_DecRef(ptraceback);
-	Py_DecRef(pvalue);
-	Py_DecRef(ptype);
-
+	MakeErrMsg(errMsg, buf);
 }
-
 
 bool PythonProxy::CompileTest(const char* src, char** errMsg)
 {
-	if (in->IsBusy()) {
-		return false;
-	}
-	in->SetBusy(true);
+	return ProxyWindow::GetInstance()->RequestCallback([&]() {
 
-	PyThreadState* state = Py_NewInterpreter();
+		scope_state _scope_state(in.get(), in->mThreadStateForPyCmd);
 
-	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
-	if (codeObj == nullptr) {
-		// エラー詳細をerrMsgにつめて返す
-		FetchErrMsg(errMsg);
-		PyErr_Clear();
-	}
-
-	DecRef(codeObj);
-	Py_EndInterpreter(state);
-
-	in->SetBusy(false);
-	return true;
-
+		scope_pyobject codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
+		if (codeObj == nullptr) {
+			// エラー詳細をerrMsgにつめて返す
+			FetchErrMsg(errMsg);
+			PyErr_Clear();
+			return false;
+		}
+		return true;
+	});
 }
 
 bool PythonProxy::Evaluate(const char* src, char** errMsg)
 {
-	if (in->IsBusy()) {
-		return false;
-	}
-	in->SetBusy(true);
+	return ProxyWindow::GetInstance()->RequestCallback([&]() {
 
-	PyThreadState* state = Py_NewInterpreter();
+		// 実行中である状態にセットする
+		// (電卓機能の方から利用できなくするため)
+		scope_state _scope_state(in.get(), in->mThreadStateForPyCmd);
 
-	// GILを取得する
-	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
-	if (codeObj == nullptr) {
-		// エラー詳細をerrMsgにつめて返す
-		FetchErrMsg(errMsg);
+		// スクリプトをコンパイル
+		scope_pyobject codeMain = Py_CompileString((LPCSTR)src, "<string>", Py_file_input);
+		if (codeMain == nullptr) {
+			// コンパイルに失敗したら、エラー詳細をerrMsgにつめて返す
+			FetchErrMsg(errMsg);
+			PyErr_Clear();
+			return false;
+		}
 
-		PyErr_Clear();
+		auto window = ProxyWindow::GetInstance();
 
-		Py_EndInterpreter(state);
+		scope_pyobject globalDict = PyDict_New();
+		in->InitializeForPyCmd(globalDict);
 
-		in->SetBusy(false);
-		return false;
-	}
+		// タイムアウト監視スレッド側でスクリプト実行完了を検知するためのイベント
+		HANDLE eval_event = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 
+		bool isTimeout = false;
+		std::thread th([&isTimeout, window, eval_event]() {
 
+			// 一定時間待ってもスクリプト評価が完了しない場合は強制終了させる
+			auto s = GetTickCount64();
+			while(GetTickCount64() - s < TIMEOUT_IN_MSEC && window->IsAbort() == false) {
 
-	PyObject* globalDict = PyDict_New();
-	in->InitializeForPyCmd(globalDict);
+				Sleep(50);
 
-	PyObject* localDict = PyDict_New();
+				if (WaitForSingleObject(eval_event, 0) == WAIT_OBJECT_0) {
+					// スクリプト側の評価が終わったので監視をやめる
+					return;
+				}
+			}
 
-	PyObject* pyObject = PyEval_EvalCode(codeObj, globalDict, localDict);
+			// 中止するために例外を発行する
+			PyErr_SetInterrupt();
 
-	DecRef(codeObj);
-	DecRef(localDict);
-	DecRef(globalDict);
-	DecRef(pyObject);
+			if (window->IsAbort() == false) {
+				isTimeout = true;
+			}
+		});
 
-	bool isOK = PyErr_Occurred() == nullptr;
-	if (isOK == false) {
-		// エラー詳細をerrMsgにつめて返す
-		FetchErrMsg(errMsg);
-		PyErr_Clear();
-	}
+		// スクリプトを実行
+		scope_pyobject localDict = PyDict_New();
+		scope_pyobject pyRetObject = PyEval_EvalCode(codeMain, globalDict, localDict);
+		SetEvent(eval_event);
 
+		// タイムアウト監視スレッドの完了を待つ
+		th.join();
+		CloseHandle(eval_event);
 
-	Py_EndInterpreter(state);
+		bool isOK = PyErr_Occurred() == nullptr;
+		if (isOK == false) {
 
-	in->SetBusy(false);
-	return isOK;
+			// IsAbort() == アプリ終了時はエラー状態を返さないようにする
+			// (proxyインスタンスが破棄されてReleaseBufferをよべない可能性があるため)
+			if (window->IsAbort() == false) {
+				if (isTimeout == false) {
+					// エラー詳細をerrMsgにつめて返す
+					FetchErrMsg(errMsg);
+				}
+				else {
+					// 時間がかかりすぎ
+					MakeErrMsg(errMsg, u8"時間がかかるためスクリプトの実行を停止しました");
+				}
+			}
+			PyErr_Clear();
+		}
+		return isOK;
+	});
 }
 
 bool PythonProxy::EvalForCalculate(const char* src, char** result)
@@ -250,58 +310,44 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 	if (in->IsBusy()) {
 		return false;
 	}
-	in->SetBusy(true);
 
-	// GILを取得する
-	PyEval_RestoreThread(in->mThreadStateForCalc);
+	return ProxyWindow::GetInstance()->RequestCallback([&]() {
 
-	PyObject* codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_eval_input);
-	if (codeObj == nullptr) {
-		PyErr_Clear();
-		PyEval_SaveThread();
-		in->SetBusy(false);
-		return false;
-	}
+		if (in->IsBusy()) {
+			// Py拡張コマンドの方でPython実行中
+			// (ブロックするのを避けるため即時リターンする)
+			return false;
+		}
 
-	PyObject* localDict = PyDict_New();
+		scope_state _scope_state(in.get(), in->mThreadStateForCalc);
 
-	PyObject* pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, localDict);
+		scope_pyobject codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_eval_input);
+		if (codeObj == nullptr) {
+			PyErr_Clear();
+			return false;
+		}
 
-	Py_DecRef(localDict);
-	Py_DecRef(codeObj);
+		scope_pyobject localDict = PyDict_New();
+		scope_pyobject pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, localDict);
 
-	// 文をインタープリタ側で評価した結果エラーだった場合
-	if (PyErr_Occurred() != nullptr) {
-		// for debug
-		PyErr_Print();
+		// 文をインタープリタ側で評価した結果エラーだった場合
+		if (PyErr_Occurred() != nullptr) {
+			PyErr_Clear();
+			return false;
+		}
 
-		DecRef(pyObject);
+		if (pyObject == nullptr) {
+			return false;
+		}
 
-		PyErr_Clear();
-		PyEval_SaveThread();
-		in->SetBusy(false);
-		return false;
-	}
+		std::string s(py2str(pyObject));
 
-	if (pyObject == nullptr) {
-		PyEval_SaveThread();
-		in->SetBusy(false);
-		return false;
-	}
+		size_t len = s.size() + 1;
+		*result = new char[len];
+		memcpy(*result, s.c_str(), len);
 
-	std::string s(py2str(pyObject));
-
-	size_t len = s.size() + 1;
-	*result = new char[len];
-	memcpy(*result, s.c_str(), len);
-
-	DecRef(pyObject);
-
-	// GILを解放する
-	PyEval_SaveThread();
-
-	in->SetBusy(false);
-	return true;
+		return true;
+	});
 }
 
 void PythonProxy::ReleaseBuffer(char* result)
@@ -318,7 +364,7 @@ bool PythonProxy::IsPyCmdAvailable()
 	}
 	auto major = std::stoi(std::regex_replace(ver, pat, "$1"));
 	auto minor = std::stoi(std::regex_replace(ver, pat, "$2"));
-	if (major < 3 || minor < 12) {
+	if (major != 3 || minor < 12) {
 		return false;
 	}
 	return true;
@@ -327,12 +373,5 @@ bool PythonProxy::IsPyCmdAvailable()
 bool PythonProxy::IsBusy()
 {
 	return in->IsBusy();
-}
-
-void DecRef(PyObject* obj)
-{
-	if (obj) {
-		Py_DecRef(obj);
-	}
 }
 

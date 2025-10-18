@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "PyEvalAction.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/Message.h"
 #include "python/PythonDLLLoader.h"
 #include <map>
+#include <thread>
 
 namespace launcherapp { namespace commands { namespace py_extension  {
 
@@ -37,6 +39,8 @@ CString PyEvalAction::GetDisplayName()
 // アクションを実行する
 bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 {
+	UNREFERENCED_PARAMETER(args_);
+
 	auto dllLoader = PythonDLLLoader::Get();
 	if (dllLoader->IsAvailable() == false) {
 		if (errMsg) { *errMsg = _T("Pythonを利用できません"); }
@@ -49,20 +53,29 @@ bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 		return false;
 	}
 
-	if (proxy->IsBusy()) {
-		if (errMsg) { *errMsg = _T("コマンドを実行できません。\n(先に実行したPython拡張コマンドが完了していない)"); }
-		return false;
-	}
+	String name;
+	UTF2UTF(in->mParam->mName, name);
+	String script;
+	UTF2UTF(in->mParam->mScript, script);
 
+	std::thread th([proxy, name, script]() {
 
-	std::string tmpSrc;
+		char* pyErrMsg{nullptr};
+ 		if (proxy->Evaluate(script.c_str(), &pyErrMsg) == false) {
+			if (pyErrMsg) {
+				String error(name);
+				error += "\r\n";
+				error += pyErrMsg;
+				PopupMessage(error);
+			}
+			proxy->ReleaseBuffer(pyErrMsg);
+			return false;
+		}
+		return true;
+	});
 
-	char* pyErrMsg{nullptr};
-	if (proxy->Evaluate(UTF2UTF(in->mParam->mScript, tmpSrc).c_str(), &pyErrMsg) == false) {
-		if (errMsg && pyErrMsg) { *errMsg = pyErrMsg; }
-		proxy->ReleaseBuffer(pyErrMsg);
-		return false;
-	}
+	th.detach();
+
 	return true;
 }
 

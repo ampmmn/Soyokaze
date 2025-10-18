@@ -16,6 +16,14 @@ void PopupMessage(const CString& msg)
 	app->PopupMessage(msg);
 }
 
+void PopupMessage(const String& msg)
+{
+	auto app = (LauncherApp*)AfxGetApp();
+
+	CString tmpStr;
+	app->PopupMessage(UTF2UTF(msg, tmpStr));
+}
+
 }
 }
 }

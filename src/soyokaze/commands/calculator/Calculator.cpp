@@ -106,6 +106,7 @@ bool Calculator::Evaluate(const CString& src_, CString& result)
 	src.Replace(_T("license"), _T(""));
 
 	auto loader = PythonDLLLoader::Get();
+	loader->Initialize();
 	auto pythonLib = loader->GetLibrary();
 	if (pythonLib == nullptr) {
 		return false;

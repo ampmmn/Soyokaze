@@ -99,6 +99,15 @@ bool PythonDLLLoader::Initialize()
 		return false;
 	}
 
+	using LPFUNCINITIALIZE = int(*)();
+	auto pythonproxy_Initialize = (LPFUNCINITIALIZE)GetProcAddress(h, "pythonproxy_Initialize");
+	if (pythonproxy_Initialize == nullptr) {
+		return false;
+	}
+
+	pythonproxy_Initialize();
+
+
 	in->mProxyDLL = h;
 	in->mIsAvailable = true;
 	return true;

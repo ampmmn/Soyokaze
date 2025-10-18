@@ -167,7 +167,7 @@ void SettingDialog::OnButtonTest()
 
 	HWND hwnd = in->mParam.FindHwnd();
 	if (IsWindow(hwnd) == FALSE) {
-		PopupMessage(_T("ウインドウは見つかりませんでした"));
+		PopupMessage("ウインドウは見つかりませんでした");
 		return;
 	}
 

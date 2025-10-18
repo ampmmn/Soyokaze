@@ -398,6 +398,7 @@
 #define IDC_BUTTON_RESETICON2           1127
 #define IDC_BUTTON_RESETFONT            1127
 #define IDC_EDIT_TEXT                   1128
+#define IDC_BUTTON_RUN                  1128
 #define IDC_BUTTON_UPDATE               1129
 #define IDC_EDIT_X                      1130
 #define IDC_EDIT_Y                      1131
@@ -535,6 +536,7 @@
 #define IDD_APPSETTING_VSCODE           1223
 #define IDC_CHECK_OPENURLINOTHERBROWSER 1224
 #define IDC_CHECK_FULLPATH              1224
+#define IDC_BUTTON_SYNTAXCHECK          1225
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
@@ -543,7 +545,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        259
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1225
+#define _APS_NEXT_CONTROL_VALUE         1226
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

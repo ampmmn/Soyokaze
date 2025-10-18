@@ -69,7 +69,8 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_SCRIPT, OnScriptChanged)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
-	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
+	ON_COMMAND(IDC_BUTTON_SYNTAXCHECK, OnButtonSyntaxCheck)
+	ON_COMMAND(IDC_BUTTON_RUN, OnButtonRun)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -81,14 +82,7 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
-	CString caption;
-  GetWindowText(caption);
-
-	CString suffix;
-	suffix.Format(_T("【%s】"), mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)mOrgName);
-
-	caption += suffix;
-	SetWindowText(caption);
+	UpdateTitle();
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -127,10 +121,7 @@ bool CommandEditDialog::UpdateStatus()
 
 	if (isValid) {
 		if (mErrMsg.IsEmpty() == FALSE) {
-			mMessage = _T("スクリプトを修正してエラーを解消してください。修正したら構文チェックボタンを押してください");
-		}
-		else if (mIsTested == false) {
-			mMessage = _T("チェックボタンを押してスクリプトが実行可能か確認してください");
+			mMessage = _T("スクリプトを修正して問題を解消してください。修正したら構文チェックボタンを押してください");
 		}
 		else {
 			mMessage.Empty();
@@ -141,6 +132,7 @@ bool CommandEditDialog::UpdateStatus()
 		mMessage = paramErr.ToString();
 	}
 
+	UpdateTitle();
 	GetDlgItem(IDOK)->EnableWindow(isValid && mIsTested);
 	return isValid;
 }
@@ -154,10 +146,10 @@ void CommandEditDialog::OnUpdateStatus()
 
 void CommandEditDialog::OnScriptChanged()
 {
-	UpdateData();
-	mIsTested = false;
-	UpdateStatus();
-	UpdateData(FALSE);
+	if (mIsTested) {
+		mIsTested = false;
+		UpdateTitle();
+	}
 }
 
 HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -177,6 +169,11 @@ HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CommandEditDialog::OnOK()
 {
 	UpdateData();
+	if (TestSyntax() == false) {
+		UpdateStatus();
+		UpdateData(FALSE);
+		return ;
+	}
 	if (UpdateStatus() == false) {
 		return ;
 	}
@@ -195,18 +192,27 @@ void CommandEditDialog::OnButtonHotKey()
 	UpdateData(FALSE);
 }
 
-void CommandEditDialog::OnButtonTest()
+void CommandEditDialog::UpdateTitle()
 {
-	UpdateData();
+	CString caption;
+	caption.Format(_T("Python拡張コマンドの編集【%s】%s"), 
+	               mOrgName.IsEmpty() ? _T("新規作成") : (LPCTSTR)mOrgName, mIsTested ? _T("") : _T("*"));
+	SetWindowText(caption);
 
+}
+
+bool CommandEditDialog::TestSyntax()
+{
 	auto loader = PythonDLLLoader::Get();
 	if (loader->Initialize() == false) {
-		return ;
+		mErrMsg = _T("Pythonを利用できません");
+		return false;
 	}
 	auto proxy = loader->GetLibrary();
 	if (proxy->IsPyCmdAvailable() == false) {
 		mErrMsg = _T("設定されたPythonのバージョンはサポートしていません\n(3.12以降を指定してください)");
 		mIsTested = false;
+		return false;
 	}
 
 	std::string src;
@@ -216,12 +222,51 @@ void CommandEditDialog::OnButtonTest()
 		UTF2UTF(errMsg, mErrMsg);
 		proxy->ReleaseBuffer(errMsg);
 		mIsTested = false;
+		return false;
 	}
 	else {
 		mErrMsg.Empty();
 		mIsTested = true;
+		return true;
 	}
+}
+
+void CommandEditDialog::OnButtonSyntaxCheck()
+{
+	UpdateData();
+
+	TestSyntax();
 	UpdateStatus();
+
+	UpdateData(FALSE);
+}
+
+void CommandEditDialog::OnButtonRun()
+{
+	UpdateData();
+
+	if (TestSyntax() == false) {
+		UpdateStatus();
+		UpdateData(FALSE);
+		return;
+	}
+
+	auto loader = PythonDLLLoader::Get();
+	auto proxy = loader->GetLibrary();
+
+
+	std::string src;
+	UTF2UTF(mParam.mScript, src);
+	char* errMsg= nullptr;
+	CWaitCursor wc;
+	if (proxy->Evaluate(src.c_str(), &errMsg) == false) {
+		UTF2UTF(errMsg, mErrMsg);
+		proxy->ReleaseBuffer(errMsg);
+	}
+	else {
+		mErrMsg.Empty();
+	}
+
 	UpdateData(FALSE);
 }
 

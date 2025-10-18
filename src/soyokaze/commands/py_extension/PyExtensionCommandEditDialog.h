@@ -28,6 +28,8 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* msg);
 
+	void UpdateTitle();
+	bool TestSyntax();
 	void ResolveShortcut(CString& path);
 
 	// 編集開始時のコマンド名
@@ -54,7 +56,8 @@ protected:
 	afx_msg void OnScriptChanged();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
-	afx_msg void OnButtonTest();
+	afx_msg void OnButtonSyntaxCheck();
+	afx_msg void OnButtonRun();
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 };
 

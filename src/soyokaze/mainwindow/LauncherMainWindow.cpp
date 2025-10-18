@@ -40,6 +40,7 @@
 #include "mainwindow/CandidateList.h"
 #include <algorithm>
 #include <thread>
+#include <map>
 
 #include <wtsapi32.h>
 #pragma comment(lib, "Wtsapi32.lib")
