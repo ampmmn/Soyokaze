@@ -133,6 +133,10 @@ protected:
 	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageBlockWindowDiaplay(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessagePopupMessage(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageExpandMacro(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM lParam);
+
 	afx_msg void OnButtonOptionClicked();
 
 	DECLARE_MESSAGE_MAP()

@@ -20,6 +20,9 @@ enum LauncherMainWindowMessageID  {
 	CLEARCONTENT = WM_APP + 18,
 	MOVETEMPORARY = WM_APP + 19,
 	BLOCKWINDOWDIAPLAY =WM_APP + 20, 
+	POPUPMESSAGE =WM_APP + 21, 
+	EXPANDMACRO =WM_APP + 22, 
+	RELEASEMACROSTR =WM_APP + 23, 
 };
 	
 class LauncherMainWindowController : public MainWindowControllerIF

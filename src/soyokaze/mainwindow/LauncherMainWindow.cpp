@@ -286,6 +286,9 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
 	ON_MESSAGE(LauncherMainWindowMessageID::MOVETEMPORARY, OnUserMessageMoveTemporary)
 	ON_MESSAGE(LauncherMainWindowMessageID::BLOCKWINDOWDIAPLAY, OnUserMessageBlockWindowDiaplay)
+	ON_MESSAGE(LauncherMainWindowMessageID::POPUPMESSAGE, OnUserMessagePopupMessage)
+	ON_MESSAGE(LauncherMainWindowMessageID::EXPANDMACRO, OnUserMessageExpandMacro)
+	ON_MESSAGE(LauncherMainWindowMessageID::RELEASEMACROSTR, OnUserMessageReleaseMacroStr)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -614,6 +617,59 @@ LRESULT LauncherMainWindow::OnUserMessageBlockWindowDiaplay(WPARAM wParam, LPARA
 	UNREFERENCED_PARAMETER(lParam);
 	bool isBlock = wParam != 0;
 	in->mIsWindowDisplayBlocked = isBlock;
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessagePopupMessage(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	// utf-8文字列
+	LPCSTR msg = (LPCSTR)lParam;
+
+	CString msgW;
+	UTF2UTF(msg, msgW);
+
+	auto app = (LauncherApp*)AfxGetApp();
+	app->PopupMessage(msgW);
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageExpandMacro(WPARAM wParam, LPARAM lParam)
+{
+	auto input = (const wchar_t*)wParam;
+	if (input == nullptr) {
+		return 1;
+	}
+
+	// マクロを展開
+	CString buff(input);
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(buff);
+
+	wchar_t** result = (wchar_t**)lParam;
+	if (result == nullptr) {
+		return 1;
+	}
+
+	// バッファを割り当てて呼び出し元に返す
+	// (使い終わったものはOnUserMessageReleaseMacroStrで解放する)
+	size_t bufLen = buff.GetLength()+1;
+	auto p = new wchar_t[bufLen];
+	memcpy(p, (LPCTSTR)buff, sizeof(wchar_t) * bufLen);
+
+	*result = p;
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	wchar_t* p = (wchar_t*)lParam;
+	delete [] p;
+
 	return 0;
 }
 

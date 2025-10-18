@@ -112,7 +112,7 @@ bool PythonProxy::PImpl::Initialize()
 // Python拡張コマンド向けの初期化
 bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 {
-	// key.pyd, win.pydを読み込むためのディレクトリパス生成
+	// app.pyd, key.pyd, win.pydを読み込むためのディレクトリパス生成
 	std::vector<wchar_t> exeDir(MAX_PATH_NTFS);
 	GetModuleFileName(nullptr, exeDir.data(), MAX_PATH_NTFS);
 	PathRemoveFileSpec(exeDir.data());
@@ -126,6 +126,10 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 	PyDict_SetItemString(globalDict, "__builtins__", builtins);
 
 	// アプリ専用の組み込みライブラリを暗黙的にインポート
+	scope_pyobject app_module = PyImport_ImportModule("app");
+	if (app_module != nullptr) {
+		PyDict_SetItemString(globalDict, "app", app_module);
+	}
 	scope_pyobject key_module = PyImport_ImportModule("key");
 	if (key_module != nullptr) {
 		PyDict_SetItemString(globalDict, "key", key_module);
@@ -135,7 +139,7 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 		PyDict_SetItemString(globalDict, "win", win_module);
 	}
 
-	return key_module != nullptr && win_module != nullptr;
+	return app_module != nullptr && key_module != nullptr && win_module != nullptr;
 }
 
 void PythonProxy::PImpl::Finalize()
