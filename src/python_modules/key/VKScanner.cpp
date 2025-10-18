@@ -105,7 +105,7 @@ static KEY_DEFINE keyDefines[] = {
 	{ "\\t", VK_TAB, 0 },
 	{ "\\r\\n", VK_RETURN, 0 },
 	{ "\\n", VK_RETURN, 0 },
-	{ "\\", 0xDC, 0 },
+	{ "\\", 0xE2, 0 },
 	{ "\"", 0x32, VK_SHIFT },
 	{ "[", 0xDB, 0 },
 	{ "@", 0xC0, 0 },

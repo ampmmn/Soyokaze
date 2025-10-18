@@ -59,7 +59,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT, mParam.mScript);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
-	DDX_Text(pDX, IDC_EDIT_RESULT, mErrMsg);
+	DDX_Text(pDX, IDC_EDIT_RESULT, mResultMsg);
 }
 
 #pragma warning( push )
@@ -120,11 +120,9 @@ bool CommandEditDialog::UpdateStatus()
 	bool isValid = mParam.IsValid(mOrgName, &errCode); 
 
 	if (isValid) {
-		if (mErrMsg.IsEmpty() == FALSE) {
-			mMessage = _T("スクリプトを修正して問題を解消してください。修正したら構文チェックボタンを押してください");
-		}
-		else {
+		if (mIsError == false) {
 			mMessage.Empty();
+			mIsError = false;
 		}
 	}
 	else {
@@ -160,7 +158,7 @@ HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATUSMSG) {
-		COLORREF crTxt = mMessage.IsEmpty() ? RGB(0,0,0) : RGB(255, 0, 0);
+		COLORREF crTxt = mIsError ? RGB(255,0,0) : RGB(0, 0, 0);
 		pDC->SetTextColor(crTxt);
 	}
 	return br;
@@ -205,13 +203,15 @@ bool CommandEditDialog::TestSyntax()
 {
 	auto loader = PythonDLLLoader::Get();
 	if (loader->Initialize() == false) {
-		mErrMsg = _T("Pythonを利用できません");
+		mResultMsg = _T("Pythonを利用できません");
+		mIsError = true;
 		return false;
 	}
 	auto proxy = loader->GetLibrary();
 	if (proxy->IsPyCmdAvailable() == false) {
-		mErrMsg = _T("設定されたPythonのバージョンはサポートしていません\n(3.12以降を指定してください)");
+		mResultMsg = _T("設定されたPythonのバージョンはサポートしていません\n(3.12以降を指定してください)");
 		mIsTested = false;
+		mIsError = true;
 		return false;
 	}
 
@@ -219,14 +219,18 @@ bool CommandEditDialog::TestSyntax()
 	UTF2UTF(mParam.mScript, src);
 	char* errMsg= nullptr;
 	if (proxy->CompileTest(src.c_str(), &errMsg) == false) {
-		UTF2UTF(errMsg, mErrMsg);
+		UTF2UTF(errMsg, mResultMsg);
 		proxy->ReleaseBuffer(errMsg);
+		mMessage = _T("スクリプトを修正して問題を解消してください。修正したら構文チェックボタンを押してください");
 		mIsTested = false;
+		mIsError = true;
 		return false;
 	}
 	else {
-		mErrMsg.Empty();
+		mResultMsg.Empty();
+		mResultMsg = _T("構文チェックOK");
 		mIsTested = true;
+		mIsError = false;
 		return true;
 	}
 }
@@ -260,11 +264,12 @@ void CommandEditDialog::OnButtonRun()
 	char* errMsg= nullptr;
 	CWaitCursor wc;
 	if (proxy->Evaluate(src.c_str(), &errMsg) == false) {
-		UTF2UTF(errMsg, mErrMsg);
+		UTF2UTF(errMsg, mResultMsg);
 		proxy->ReleaseBuffer(errMsg);
 	}
 	else {
-		mErrMsg.Empty();
+		mResultMsg.Empty();
+		mIsError = false;
 	}
 
 	UpdateData(FALSE);

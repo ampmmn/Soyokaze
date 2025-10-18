@@ -38,10 +38,10 @@ protected:
 	// メッセージ欄
 	CString mMessage;
 	bool mIsTested{true};
-	bool mHasError{false};
+	bool mIsError{false};
 
 	//
-	CString mErrMsg;
+	CString mResultMsg;
 	// ホットキー(表示用)
 	CString mHotKey;
 
