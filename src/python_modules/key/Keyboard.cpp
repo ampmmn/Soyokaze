@@ -141,7 +141,7 @@ int write_key(nb::handle input, float interval)
 
 int hotkey(nb::args args)
 {
-	std::vector<std::string> keys;
+	std::vector<INPUT> inputs;
 
 	// キーを順に押す
 	for (auto arg : args) {
@@ -150,15 +150,41 @@ int hotkey(nb::args args)
 			continue;
 		}
 
-		std::string key = nb::cast<std::string>(arg);
-		key_down(key.c_str());
+		std::string keystr = nb::cast<std::string>(arg);
 
-		keys.push_back(key);
+		VKScanner scanner(keystr.c_str());
+
+		KEY_DEFINE key;
+		while(scanner.Get(&key)) {
+
+			INPUT input;
+			if (key.mVK2 != 0) {
+				input.type = INPUT_KEYBOARD;
+				input.ki.wVk = key.mVK2;
+				input.ki.dwFlags = 0;
+				inputs.push_back(input);
+			}
+
+			input.type = INPUT_KEYBOARD;
+			input.ki.wVk = key.mVK;
+			input.ki.dwFlags = 0;
+			inputs.push_back(input);
+
+			scanner.Next(nullptr);
+		}
 	}
 	// 逆順にキーを放す
-	for (auto it = keys.rbegin(); it != keys.rend(); ++it) {
-		key_up((*it).c_str());
+	std::vector<INPUT> reverse_inputs;
+
+	for (auto it = inputs.rbegin(); it != inputs.rend(); ++it) {
+		auto input = *it;
+		input.ki.dwFlags = KEYEVENTF_KEYUP;
+		reverse_inputs.push_back(input);
 	}
+
+	inputs.insert(inputs.end(), reverse_inputs.begin(), reverse_inputs.end());
+
+	SendInput((UINT)inputs.size(), inputs.data(), sizeof(INPUT));
 
 	return 0;
 }

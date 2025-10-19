@@ -116,7 +116,7 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 	std::vector<wchar_t> exeDir(MAX_PATH_NTFS);
 	GetModuleFileName(nullptr, exeDir.data(), MAX_PATH_NTFS);
 	PathRemoveFileSpec(exeDir.data());
-	PathAppend(exeDir.data(), _T("pylib"));
+	//PathAppend(exeDir.data(), _T("pylib"));
 
 	// ディレクトリパスをモジュール検索対象として追加
 	scope_pyobject libPath = PyUnicode_FromWideChar(exeDir.data(), -1);

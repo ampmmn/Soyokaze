@@ -94,17 +94,65 @@ public:
 	}
 
 	// ウインドウのクライアント領域からの相対座標指定によるクリック
-	bool click(nb::object x_, nb::object y_)
+	bool click(nb::object x_, nb::object y_, nb::object label_)
 	{
 		if (IsWindow(mHwnd) == FALSE) { return false; }
-		if (x_.is_none() || y_.is_none()) {
+
+		bool hasLabel = label_.is_none() == false;
+		bool hasXY = x_.is_none() == false && y_.is_none() == false;
+		if (hasLabel == false && hasXY == false) {
 			return false;
 		}
 
 		try {
-			// クライアント領域をスクリーン領域座標に変換
-			POINT pos{ nb::cast<int>(x_),nb::cast<int>(y_) };
-			ClientToScreen(mHwnd, &pos);
+			POINT pos;
+			if (hasLabel) {
+				// ラベル名から要素を探す
+				struct local_param {
+					HWND hwnd{nullptr};
+					wchar_t buff[1024];
+					std::wstring label;
+				} param;
+				utf2utf(nb::cast<std::string>(label_), param.label);
+
+				// 子ウインドウを列挙してlabelと同じタイトルをもつ要素を探す
+				EnumChildWindows(mHwnd, [](HWND h, LPARAM lp) -> BOOL {
+					auto param = (local_param*)lp;
+
+					// 子ウインドウのタイトルを取得し、比較
+					GetWindowText(h, param->buff, 1024);
+					if (param->label != param->buff) {
+						// 異なる
+						return TRUE;
+					}
+
+					// タイトルが一致したのでそれを返す(検索を打ち切る)
+					param->hwnd = h;
+					return FALSE;
+				}, (LPARAM)&param);
+
+				if (IsWindow(param.hwnd) == FALSE) {
+					// 見つからなかった
+					return false;
+				}
+
+				// 子ウインドウの領域を取得
+				RECT rcChild;
+				GetClientRect(param.hwnd, &rcChild);
+
+				// 中心座標を計算（子ウインドウのクライアント座標系）
+				pos.x = (rcChild.right - rcChild.left) / 2;
+				pos.y = (rcChild.bottom - rcChild.top) / 2;
+
+				// 子ウインドウのクライアント座標 → スクリーン座標
+				ClientToScreen(param.hwnd, &pos);
+			}
+			else {
+				// クライアント領域をスクリーン領域座標に変換
+				pos.x = nb::cast<int>(x_);
+				pos.y = nb::cast<int>(y_);
+				ClientToScreen(mHwnd, &pos);
+			}
 
 			// 疑似的なクリック
 			return ClickScreen(pos, false);
@@ -201,7 +249,7 @@ NB_MODULE(win, m) {
 		.def("move", &Window::move, nb::arg("x"), nb::arg("y"))
 		.def("resize", &Window::resize, nb::arg("width"), nb::arg("height"))
 		.def("set_position", &Window::set_position, nb::arg("insert_after"), nb::arg("x"), nb::arg("y"), nb::arg("width"), nb::arg("height"))
-		.def("click", &Window::click, nb::arg("x"), nb::arg("y"));
+		.def("click", &Window::click, nb::arg("x") = nb::none(), nb::arg("y") = nb::none(), nb::arg("label") = nb::none());
 
 	m.def("find", &find_window,
 	      nb::arg("class_name") = nb::none(),

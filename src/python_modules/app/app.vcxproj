@@ -125,15 +125,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">
@@ -292,6 +292,7 @@
       <AdditionalIncludeDirectories>$(pythonLocation)\include;$(SolutionDir)..\externals\nanobind\include;$(SolutionDir)soyokaze;$(ProjectDir)../common;$(SolutionDir)../externals/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
