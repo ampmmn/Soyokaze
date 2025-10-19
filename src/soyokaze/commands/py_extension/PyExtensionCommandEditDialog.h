@@ -30,7 +30,7 @@ protected:
 
 	void UpdateTitle();
 	bool TestSyntax();
-	void ResolveShortcut(CString& path);
+	BOOL UpdateDataWrapper(BOOL bSaveAndValidate = TRUE);
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

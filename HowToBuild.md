@@ -50,6 +50,11 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
   - C++/Pythonバインディングライブラリ
   - Python拡張コマンドにおいて、アプリ機能をPythonスクリプト側から利用できるようにするために利用している
 
+- [scintilla/lexilla](https://www.scintilla.org/)
+  - 埋め込み可能なテキスト編集コントロールライブラリ
+  - Python拡張コマンドにおいて、スクリプト編集欄のために利用している
+  - ヘッダファイルのみを参照しており、ビルドは不要
+
 ### 外部ライブラリの配置
 
 - fmt
@@ -73,6 +78,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - nanobind
   - https://github.com/wjakob/nanobind からソース一式を取得する
     - `externals`ディレクトリに`nanobind`を配置する
+- scintilla/lexilla
+  - https://www.scintilla.org/ からソース一式を取得する
+    - リポジトリにヘッダファイルを同梱しているため、作業は不要
 
 - `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -95,6 +103,8 @@ soyokaze-src/
     re2/
     abseil-cpp/
     nanobind/
+    scintilla/
+    lexilla/
 ```
 
 ### spdlogのビルド
@@ -233,6 +243,8 @@ cmake --build . --config Release -t nanobind-static
   - `dist`/`x64`/(`Debug` or `Release` or `ReleaseStatic`)
     - 64bit版モジュールの場合
     - 32bit版モジュールのビルドは非サポート
+
+- Scintila/LexillaLは自前でビルドしない。配布サイトからダウンロードしたバイナリ(Scintilla.dll/Lexilla.dll)を使用する。
 
 ## ソリューション構成
 

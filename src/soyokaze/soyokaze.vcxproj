@@ -222,7 +222,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -252,7 +252,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -338,7 +338,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -372,7 +372,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)sandshook/include;$(SolutionDir)python_proxy/include;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -534,6 +534,7 @@
     <ClInclude Include="commands\py_extension\PyExtensionCommandEditor.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommandParam.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommandProvider.h" />
+    <ClInclude Include="commands\py_extension\ScintillaDLLLoader.h" />
     <ClInclude Include="commands\regexp\RegExpCommandEditor.h" />
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
     <ClInclude Include="commands\regexp\RegExpExecutionTarget.h" />
@@ -1029,6 +1030,7 @@
     <ClCompile Include="commands\py_extension\PyExtensionCommandEditor.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommandParam.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommandProvider.cpp" />
+    <ClCompile Include="commands\py_extension\ScintillaDLLLoader.cpp" />
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />

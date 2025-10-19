@@ -313,7 +313,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

@@ -1773,6 +1773,9 @@
     <ClInclude Include="commands\py_extension\PyEvalAction.h">
       <Filter>commands\py_extension</Filter>
     </ClInclude>
+    <ClInclude Include="commands\py_extension\ScintillaDLLLoader.h">
+      <Filter>commands\py_extension</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3117,6 +3120,9 @@
       <Filter>commands\py_extension</Filter>
     </ClCompile>
     <ClCompile Include="commands\py_extension\PyEvalAction.cpp">
+      <Filter>commands\py_extension</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\py_extension\ScintillaDLLLoader.cpp">
       <Filter>commands\py_extension</Filter>
     </ClCompile>
   </ItemGroup>

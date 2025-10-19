@@ -1,16 +1,20 @@
 #include "pch.h"
 #include "framework.h"
 #include "PyExtensionCommandEditDialog.h"
+#include "commands/py_extension/ScintillaDLLLoader.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "python/PythonDLLLoader.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
+#include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
 #include "resource.h"
 #include <vector>
+#include "Scintilla.h"
+#include "SciLexer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,7 +61,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT, mParam.mScript);
+	//DDX_Text(pDX, IDC_EDIT_SCRIPT, mParam.mScript);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Text(pDX, IDC_EDIT_RESULT, mResultMsg);
 }
@@ -80,12 +84,61 @@ BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	auto editCtrl = GetDlgItem(IDC_EDIT_SCRIPT);
+
+	// pythonのシンタックスハイライト
+	auto pyLexer = ScintillaDLLLoader::GetInstance()->CreateLexer("python");
+	editCtrl->SendMessage(SCI_SETILEXER, 0, (LPARAM)pyLexer);
+
+	editCtrl->SendMessage(SCI_SETKEYWORDS, 0, (LPARAM)
+			"and as assert break class continue def del elif else except "
+			"False finally for from global if import in is lambda None "
+			"nonlocal not or pass raise return True try while with yield");
+
+	editCtrl->SendMessage(SCI_STYLESETFORE, SCE_P_WORD, (LPARAM)RGB(0,0,255));
+	editCtrl->SendMessage(SCI_STYLESETFORE, SCE_P_STRING, (LPARAM)RGB(226,31,31));
+	editCtrl->SendMessage(SCI_STYLESETFORE, SCE_P_COMMENTLINE, (LPARAM)RGB(0,100,0));
+	editCtrl->SendMessage(SCI_STYLESETFORE, SCE_P_COMMENTBLOCK, (LPARAM)RGB(0,100,0));
+	editCtrl->SendMessage(SCI_SETINDENTATIONGUIDES, SC_IV_LOOKBOTH, 0);
+
+	// タブ幅を4スペース分に設定
+	editCtrl->SendMessage(SCI_SETTABWIDTH, 4, 0);
+
+	// マージン0を行番号表示用に設定
+	editCtrl->SendMessage(SCI_SETMARGINTYPEN, 0, SC_MARGIN_NUMBER);
+
+	// 行番号の幅（ピクセル単位）を設定
+	editCtrl->SendMessage(SCI_SETMARGINWIDTHN, 0, 40);
+
+	// 行番号の文字色を設定（例：グレー）
+	editCtrl->SendMessage(SCI_STYLESETFORE, STYLE_LINENUMBER, RGB(128, 128, 128));
+
+	// 行番号の背景色を設定（例：白）
+	editCtrl->SendMessage(SCI_STYLESETBACK, STYLE_LINENUMBER, RGB(255, 255, 255));
+
+	// 水平スクロールバーを非表示にする
+	editCtrl->SendMessage(SCI_SETHSCROLLBAR, FALSE, 0);
+	// ワードラップを有効にする
+	editCtrl->SendMessage(SCI_SETWRAPMODE, SC_WRAP_CHAR, 0);
+
+	// フォント名とサイズを設定
+	editCtrl->SendMessage(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Consolas");
+	editCtrl->SendMessage(SCI_STYLESETSIZE, STYLE_DEFAULT, 12);
+
+	// タブ文字を可視化
+	editCtrl->SendMessage(SCI_SETVIEWWS, SCWS_VISIBLEONLYININDENT, 0);
+	editCtrl->SendMessage(SCI_SETWHITESPACEFORE, TRUE, RGB(192, 192, 192)); // 前景色
+
+	//editCtrl->StyleClearAll();
+
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
-	UpdateTitle();
 
 	UpdateStatus();
-	UpdateData(FALSE);
+	UpdateDataWrapper(FALSE);
+
+	mIsTested = true;
+	UpdateTitle();
 
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
@@ -137,9 +190,9 @@ bool CommandEditDialog::UpdateStatus()
 
 void CommandEditDialog::OnUpdateStatus()
 {
-	UpdateData();
+	UpdateDataWrapper();
 	UpdateStatus();
-	UpdateData(FALSE);
+	UpdateDataWrapper(FALSE);
 }
 
 void CommandEditDialog::OnScriptChanged()
@@ -166,10 +219,10 @@ HBRUSH CommandEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void CommandEditDialog::OnOK()
 {
-	UpdateData();
+	UpdateDataWrapper();
 	if (TestSyntax() == false) {
 		UpdateStatus();
-		UpdateData(FALSE);
+		UpdateDataWrapper(FALSE);
 		return ;
 	}
 	if (UpdateStatus() == false) {
@@ -181,13 +234,13 @@ void CommandEditDialog::OnOK()
 
 void CommandEditDialog::OnButtonHotKey()
 {
-	UpdateData();
+	UpdateDataWrapper();
 
 	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
 		return ;
 	}
 	UpdateStatus();
-	UpdateData(FALSE);
+	UpdateDataWrapper(FALSE);
 }
 
 void CommandEditDialog::UpdateTitle()
@@ -235,23 +288,47 @@ bool CommandEditDialog::TestSyntax()
 	}
 }
 
+BOOL CommandEditDialog::UpdateDataWrapper(BOOL bSaveAndValidate)
+{
+	BOOL result = UpdateData(bSaveAndValidate);
+
+	auto editCtrl = GetDlgItem(IDC_EDIT_SCRIPT);
+
+	if (bSaveAndValidate) {
+		// テキストを取得
+		int length = (int)editCtrl->SendMessage(SCI_GETTEXTLENGTH, 0, 0);
+		std::string buffer(length + 1, '\0');
+
+		editCtrl->SendMessage(SCI_GETTEXT, length + 1, (LPARAM)buffer.data());
+		UTF2UTF(buffer, mParam.mScript);
+	}
+	else {
+		// テキストを設定
+		std::string scriptA;
+		UTF2UTF(mParam.mScript, scriptA);
+		editCtrl->SendMessage(SCI_SETTEXT, 0, (LPARAM)(LPCSTR)scriptA.c_str());
+	}
+
+	return result;
+}
+
 void CommandEditDialog::OnButtonSyntaxCheck()
 {
-	UpdateData();
+	UpdateDataWrapper();
 
 	TestSyntax();
 	UpdateStatus();
 
-	UpdateData(FALSE);
+	UpdateDataWrapper(FALSE);
 }
 
 void CommandEditDialog::OnButtonRun()
 {
-	UpdateData();
+	UpdateDataWrapper();
 
 	if (TestSyntax() == false) {
 		UpdateStatus();
-		UpdateData(FALSE);
+		UpdateDataWrapper(FALSE);
 		return;
 	}
 
@@ -272,7 +349,7 @@ void CommandEditDialog::OnButtonRun()
 		mIsError = false;
 	}
 
-	UpdateData(FALSE);
+	UpdateDataWrapper(FALSE);
 }
 
 // マニュアル表示

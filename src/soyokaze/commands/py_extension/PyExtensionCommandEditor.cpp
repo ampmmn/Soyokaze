@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PyExtensionCommandEditor.h"
 #include "commands/py_extension/PyExtensionCommandEditDialog.h"
+#include "commands/py_extension/ScintillaDLLLoader.h"
 #include "python/PythonDLLLoader.h"
 
 namespace launcherapp {
@@ -56,6 +57,10 @@ bool CommandEditor::DoModal()
 	if (PythonDLLLoader::Get()->IsAvailable() == false) {
 		AfxMessageBox(_T("Python拡張コマンドを利用するには、Python(3.12以降)のパスを設定する必要があります。\n")
 		              _T("アプリケーション設定からpython3.dllのパスを設定してください。"));
+		return false;
+	}
+	if (ScintillaDLLLoader::GetInstance()->Initialize() == false) {
+		AfxMessageBox(_T("Scintilla.dllがないためコマンド設定画面を表示できません。"));
 		return false;
 	}
 
