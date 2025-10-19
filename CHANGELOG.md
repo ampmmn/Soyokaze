@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+なし
+
+## 0.46.0 - 2025-10-19
+
 ### Added
 
 - #191 Visual Studio Codeの最近使用した項目を表示する
