@@ -181,6 +181,7 @@ bool CommandEditDialog::UpdateStatus()
 	else {
 		CommandParamError paramErr(errCode);
 		mMessage = paramErr.ToString();
+		mIsError = true;
 	}
 
 	UpdateTitle();

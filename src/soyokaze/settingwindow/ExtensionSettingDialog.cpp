@@ -142,9 +142,6 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 
 bool ExtensionSettingDialog::UpdateStatus()
 {
-	GetDlgItem(IDC_EDIT_PYTHONDLLPATH)->EnableWindow(mIsEnableCalc);
-	GetDlgItem(IDC_BUTTON_BROWSE)->EnableWindow(mIsEnableCalc);
-
 	GetDlgItem(IDC_EDIT_PREFIX_ENVIRONMENT)->EnableWindow(mIsEnableEnvironment);
 
 	return true;
