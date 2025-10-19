@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-19 10:47+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -82,7 +82,7 @@ msgid "[Python3](https://www.python.org/)"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:24
-msgid "簡易電卓機能を実現するために使用している"
+msgid "Python拡張コマンド/簡易電卓機能を実現するために使用している"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:26
@@ -101,23 +101,19 @@ msgstr ""
 msgid "`Everything`が公開しているSDKのソースコードをそのままランチャー本体に組み込んでいる"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:31
-msgid "現在はEverything関連機能を無効化している。そのうち再実装するつもり"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:33
+#: ../../source/others/3rdlibs.md:32
 msgid "[RE2](https://github.com/google/re2)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:34
+#: ../../source/others/3rdlibs.md:33
 msgid "コマンドの絞り込みの際の正規表現エンジンとして利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:36
+#: ../../source/others/3rdlibs.md:35
 msgid "[Abseil](https://github.com/abseil/abseil-cpp)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:37
+#: ../../source/others/3rdlibs.md:36
 msgid "`RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。"
 msgstr ""
 
@@ -137,7 +133,15 @@ msgstr ""
 msgid "マニュアル生成の際のテーマ"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:46
+#: ../../source/others/3rdlibs.md:43
+msgid "[nanobind](https://github.com/wjakob/nanobind)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:44
+msgid "Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:49
 msgid "非開示"
 msgstr ""
 

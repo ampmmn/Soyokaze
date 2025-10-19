@@ -43,6 +43,9 @@
 - [nanobind](https://github.com/wjakob/nanobind)
   - Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。
 
+- [Snintilla,Lexilla](https://www.scintilla.org/)
+  - Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している
+
 ```
 
 ```{only} not soyokaze

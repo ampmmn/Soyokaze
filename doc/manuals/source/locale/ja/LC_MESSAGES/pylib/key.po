@@ -1,0 +1,712 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.46.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-19 16:59+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/pylib/key.md:1
+msgid "Key Module"
+msgstr "Keyモジュール"
+
+#: ../../source/pylib/key.md:3
+msgid "キーボード入力に関する機能を提供するモジュール。  importしなくても使うことができる。"
+msgstr ""
+
+#: ../../source/pylib/key.md:6
+msgid "Methods"
+msgstr "メソッド"
+
+#: ../../source/pylib/key.md:8
+msgid "down"
+msgstr ""
+
+#: ../../source/pylib/key.md:10
+msgid "キーを押す。"
+msgstr ""
+
+#: ../../source/pylib/key.md:19 ../../source/pylib/key.md:40
+#: ../../source/pylib/key.md:68 ../../source/pylib/key.md:91
+#: ../../source/pylib/key.md:114
+msgid "Arguments"
+msgstr "引数"
+
+#: ../../source/pylib/key.md:21
+msgid "chars(文字列)   押すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](key strings)を参照のこと"
+msgstr ""
+
+#: ../../source/pylib/key.md:24 ../../source/pylib/key.md:45
+#: ../../source/pylib/key.md:77 ../../source/pylib/key.md:98
+#: ../../source/pylib/key.md:121
+msgid "Return Value"
+msgstr "戻り値"
+
+#: ../../source/pylib/key.md:26 ../../source/pylib/key.md:47
+#: ../../source/pylib/key.md:79 ../../source/pylib/key.md:100
+msgid "常に0"
+msgstr ""
+
+#: ../../source/pylib/key.md:29
+msgid "up"
+msgstr ""
+
+#: ../../source/pylib/key.md:31
+msgid "キーを放す。"
+msgstr ""
+
+#: ../../source/pylib/key.md:42
+msgid "chars(文字列)   放すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](key strings)を参照のこと"
+msgstr ""
+
+#: ../../source/pylib/key.md:49
+msgid "press"
+msgstr ""
+
+#: ../../source/pylib/key.md:51
+msgid ""
+"キー入力をする(押して放す)。   文字列を指定すると、単一のキー入力をする。    リストを指定すると、リストの要素で指定したキー入力をする。"
+"   また、繰り返し回数や間隔を指定することができる。"
+msgstr ""
+
+#: ../../source/pylib/key.md:70
+msgid ""
+"input(文字列またはリスト)   放すキーを表す文字または文字列のリスト。指定可能な文字列は[利用可能なキー文字列](key "
+"strings)を参照のこと"
+msgstr ""
+
+#: ../../source/pylib/key.md:72
+msgid "repeat(整数値)   繰り返し回数。省略時は1"
+msgstr ""
+
+#: ../../source/pylib/key.md:74
+msgid "interval(Float) 秒単位の間隔。省略時は0.0"
+msgstr ""
+
+#: ../../source/pylib/key.md:81
+msgid "hotkey"
+msgstr ""
+
+#: ../../source/pylib/key.md:83
+msgid "キーを同時押しする。   ホットキー入力するのに使うことができる。"
+msgstr ""
+
+#: ../../source/pylib/key.md:93
+msgid "この関数は可変長引数で任意の数の文字列を指定できる。   (入力するキーを表す文字列を指定する)"
+msgstr ""
+
+#: ../../source/pylib/key.md:96
+msgid "文字列でない引数、認識できない文字は無視される。"
+msgstr ""
+
+#: ../../source/pylib/key.md:102
+msgid "write"
+msgstr ""
+
+#: ../../source/pylib/key.md:104
+msgid "文字列を入力する。   この関数で指定できるのは1バイト文字のみ。"
+msgstr ""
+
+#: ../../source/pylib/key.md:107
+msgid ""
+"なお、writeメソッドで入力できるのは1バイトの文字のみ。全角文字は不可。また、ファンクションキーや修飾キーなどの入力もできない。   "
+"扱えない文字は無視される。"
+msgstr ""
+
+#: ../../source/pylib/key.md:116
+msgid "input(文字列)   入力する文字列"
+msgstr ""
+
+#: ../../source/pylib/key.md:118
+msgid "interval(float)   文字を入力する感覚を秒単位で指定する。省略時の値は0.0"
+msgstr ""
+
+#: ../../source/pylib/key.md:123
+msgid "正常終了時は0、エラー時は1(第一引数が文字列でない場合)"
+msgstr ""
+
+#: ../../source/pylib/key.md:126
+msgid "key strings"
+msgstr "利用可能なキー文字列"
+
+#: ../../source/pylib/key.md:128
+msgid "` `"
+msgstr ""
+
+#: ../../source/pylib/key.md:129
+msgid "スペース"
+msgstr ""
+
+#: ../../source/pylib/key.md:130
+msgid "`!`"
+msgstr ""
+
+#: ../../source/pylib/key.md:131
+msgid "`#`"
+msgstr ""
+
+#: ../../source/pylib/key.md:132
+msgid "`$`"
+msgstr ""
+
+#: ../../source/pylib/key.md:133
+msgid "`%`"
+msgstr ""
+
+#: ../../source/pylib/key.md:134
+msgid "`&`"
+msgstr ""
+
+#: ../../source/pylib/key.md:135
+msgid "`'`"
+msgstr ""
+
+#: ../../source/pylib/key.md:136
+msgid "`(`"
+msgstr ""
+
+#: ../../source/pylib/key.md:137
+msgid "`)`"
+msgstr ""
+
+#: ../../source/pylib/key.md:138
+msgid "`*`"
+msgstr ""
+
+#: ../../source/pylib/key.md:139
+msgid "`+`"
+msgstr ""
+
+#: ../../source/pylib/key.md:140
+msgid "`,`"
+msgstr ""
+
+#: ../../source/pylib/key.md:141
+msgid "`-`"
+msgstr ""
+
+#: ../../source/pylib/key.md:142
+msgid "`.`"
+msgstr ""
+
+#: ../../source/pylib/key.md:143
+msgid "`/`"
+msgstr ""
+
+#: ../../source/pylib/key.md:144
+msgid "`0`"
+msgstr ""
+
+#: ../../source/pylib/key.md:145
+msgid "`1`"
+msgstr ""
+
+#: ../../source/pylib/key.md:146
+msgid "`2`"
+msgstr ""
+
+#: ../../source/pylib/key.md:147
+msgid "`3`"
+msgstr ""
+
+#: ../../source/pylib/key.md:148
+msgid "`4`"
+msgstr ""
+
+#: ../../source/pylib/key.md:149
+msgid "`5`"
+msgstr ""
+
+#: ../../source/pylib/key.md:150
+msgid "`6`"
+msgstr ""
+
+#: ../../source/pylib/key.md:151
+msgid "`7`"
+msgstr ""
+
+#: ../../source/pylib/key.md:152
+msgid "`8`"
+msgstr ""
+
+#: ../../source/pylib/key.md:153
+msgid "`9`"
+msgstr ""
+
+#: ../../source/pylib/key.md:154
+msgid "`:`"
+msgstr ""
+
+#: ../../source/pylib/key.md:155
+msgid "`;`"
+msgstr ""
+
+#: ../../source/pylib/key.md:156
+msgid "`<`"
+msgstr ""
+
+#: ../../source/pylib/key.md:157
+msgid "`=`"
+msgstr ""
+
+#: ../../source/pylib/key.md:158
+msgid "`>`"
+msgstr ""
+
+#: ../../source/pylib/key.md:159
+msgid "`?`"
+msgstr ""
+
+#: ../../source/pylib/key.md:160
+msgid "`@`"
+msgstr ""
+
+#: ../../source/pylib/key.md:161
+msgid "`[`"
+msgstr ""
+
+#: ../../source/pylib/key.md:162
+msgid "`\\\"`"
+msgstr ""
+
+#: ../../source/pylib/key.md:163
+msgid "`\\\\`"
+msgstr ""
+
+#: ../../source/pylib/key.md:164
+msgid "`\\\\n`"
+msgstr ""
+
+#: ../../source/pylib/key.md:165
+msgid "`\\\\r\\\\n`"
+msgstr ""
+
+#: ../../source/pylib/key.md:166
+msgid "`\\\\t`"
+msgstr ""
+
+#: ../../source/pylib/key.md:167
+msgid "`]`"
+msgstr ""
+
+#: ../../source/pylib/key.md:168
+msgid "`^`"
+msgstr ""
+
+#: ../../source/pylib/key.md:169
+msgid "`_`"
+msgstr ""
+
+#: ../../source/pylib/key.md:170
+msgid "`` ` ``"
+msgstr ""
+
+#: ../../source/pylib/key.md:171
+msgid "`a`"
+msgstr ""
+
+#: ../../source/pylib/key.md:172
+msgid "`alt`"
+msgstr ""
+
+#: ../../source/pylib/key.md:173
+msgid "`apps`"
+msgstr ""
+
+#: ../../source/pylib/key.md:174
+msgid "`b`"
+msgstr ""
+
+#: ../../source/pylib/key.md:175
+msgid "`backspace`"
+msgstr ""
+
+#: ../../source/pylib/key.md:176
+msgid "`c`"
+msgstr ""
+
+#: ../../source/pylib/key.md:177
+msgid "`capslock`"
+msgstr ""
+
+#: ../../source/pylib/key.md:178
+msgid "`convert`"
+msgstr ""
+
+#: ../../source/pylib/key.md:179
+msgid "`ctrl`"
+msgstr ""
+
+#: ../../source/pylib/key.md:180
+msgid "`d`"
+msgstr ""
+
+#: ../../source/pylib/key.md:181
+msgid "`del`"
+msgstr ""
+
+#: ../../source/pylib/key.md:182
+msgid "`delete`"
+msgstr ""
+
+#: ../../source/pylib/key.md:183
+msgid "`down`"
+msgstr ""
+
+#: ../../source/pylib/key.md:184
+msgid "`e`"
+msgstr ""
+
+#: ../../source/pylib/key.md:185
+msgid "`end`"
+msgstr ""
+
+#: ../../source/pylib/key.md:186
+msgid "`enter`"
+msgstr ""
+
+#: ../../source/pylib/key.md:187
+msgid "`esc`"
+msgstr ""
+
+#: ../../source/pylib/key.md:188
+msgid "`escape`"
+msgstr ""
+
+#: ../../source/pylib/key.md:189
+msgid "`f10`"
+msgstr ""
+
+#: ../../source/pylib/key.md:190
+msgid "`f11`"
+msgstr ""
+
+#: ../../source/pylib/key.md:191
+msgid "`f12`"
+msgstr ""
+
+#: ../../source/pylib/key.md:192
+msgid "`f13`"
+msgstr ""
+
+#: ../../source/pylib/key.md:193
+msgid "`f14`"
+msgstr ""
+
+#: ../../source/pylib/key.md:194
+msgid "`f15`"
+msgstr ""
+
+#: ../../source/pylib/key.md:195
+msgid "`f16`"
+msgstr ""
+
+#: ../../source/pylib/key.md:196
+msgid "`f17`"
+msgstr ""
+
+#: ../../source/pylib/key.md:197
+msgid "`f18`"
+msgstr ""
+
+#: ../../source/pylib/key.md:198
+msgid "`f19`"
+msgstr ""
+
+#: ../../source/pylib/key.md:199
+msgid "`f20`"
+msgstr ""
+
+#: ../../source/pylib/key.md:200
+msgid "`f21`"
+msgstr ""
+
+#: ../../source/pylib/key.md:201
+msgid "`f22`"
+msgstr ""
+
+#: ../../source/pylib/key.md:202
+msgid "`f23`"
+msgstr ""
+
+#: ../../source/pylib/key.md:203
+msgid "`f24`"
+msgstr ""
+
+#: ../../source/pylib/key.md:204
+msgid "`f2`"
+msgstr ""
+
+#: ../../source/pylib/key.md:205
+msgid "`f3`"
+msgstr ""
+
+#: ../../source/pylib/key.md:206
+msgid "`f4`"
+msgstr ""
+
+#: ../../source/pylib/key.md:207
+msgid "`f5`"
+msgstr ""
+
+#: ../../source/pylib/key.md:208
+msgid "`f6`"
+msgstr ""
+
+#: ../../source/pylib/key.md:209
+msgid "`f7`"
+msgstr ""
+
+#: ../../source/pylib/key.md:210
+msgid "`f8`"
+msgstr ""
+
+#: ../../source/pylib/key.md:211
+msgid "`f9`"
+msgstr ""
+
+#: ../../source/pylib/key.md:212
+msgid "`f`"
+msgstr ""
+
+#: ../../source/pylib/key.md:213
+msgid "`g`"
+msgstr ""
+
+#: ../../source/pylib/key.md:214
+msgid "`h`"
+msgstr ""
+
+#: ../../source/pylib/key.md:215
+msgid "`home`"
+msgstr ""
+
+#: ../../source/pylib/key.md:216
+msgid "`i`"
+msgstr ""
+
+#: ../../source/pylib/key.md:217
+msgid "`insert`"
+msgstr ""
+
+#: ../../source/pylib/key.md:218
+msgid "`j`"
+msgstr ""
+
+#: ../../source/pylib/key.md:219
+msgid "`k`"
+msgstr ""
+
+#: ../../source/pylib/key.md:220
+msgid "`kana`"
+msgstr ""
+
+#: ../../source/pylib/key.md:221
+msgid "`kanji`"
+msgstr ""
+
+#: ../../source/pylib/key.md:222
+msgid "`l`"
+msgstr ""
+
+#: ../../source/pylib/key.md:223
+msgid "`left`"
+msgstr ""
+
+#: ../../source/pylib/key.md:224
+msgid "`m`"
+msgstr ""
+
+#: ../../source/pylib/key.md:225
+msgid "`n`"
+msgstr ""
+
+#: ../../source/pylib/key.md:226
+msgid "`nonconvert`"
+msgstr ""
+
+#: ../../source/pylib/key.md:227
+msgid "`num0`"
+msgstr ""
+
+#: ../../source/pylib/key.md:228
+msgid "`num1`"
+msgstr ""
+
+#: ../../source/pylib/key.md:229
+msgid "`num2`"
+msgstr ""
+
+#: ../../source/pylib/key.md:230
+msgid "`num3`"
+msgstr ""
+
+#: ../../source/pylib/key.md:231
+msgid "`num4`"
+msgstr ""
+
+#: ../../source/pylib/key.md:232
+msgid "`num5`"
+msgstr ""
+
+#: ../../source/pylib/key.md:233
+msgid "`num6`"
+msgstr ""
+
+#: ../../source/pylib/key.md:234
+msgid "`num7`"
+msgstr ""
+
+#: ../../source/pylib/key.md:235
+msgid "`num8`"
+msgstr ""
+
+#: ../../source/pylib/key.md:236
+msgid "`num9`"
+msgstr ""
+
+#: ../../source/pylib/key.md:237
+msgid "`numlock`"
+msgstr ""
+
+#: ../../source/pylib/key.md:238
+msgid "`o`"
+msgstr ""
+
+#: ../../source/pylib/key.md:239
+msgid "`p`"
+msgstr ""
+
+#: ../../source/pylib/key.md:240
+msgid "`pagedown`"
+msgstr ""
+
+#: ../../source/pylib/key.md:241
+msgid "`pageup`"
+msgstr ""
+
+#: ../../source/pylib/key.md:242
+msgid "`pause`"
+msgstr ""
+
+#: ../../source/pylib/key.md:243
+msgid "`printscreen`"
+msgstr ""
+
+#: ../../source/pylib/key.md:244
+msgid "`q`"
+msgstr ""
+
+#: ../../source/pylib/key.md:245
+msgid "`r`"
+msgstr ""
+
+#: ../../source/pylib/key.md:246
+msgid "`return`"
+msgstr ""
+
+#: ../../source/pylib/key.md:247
+msgid "`right`"
+msgstr ""
+
+#: ../../source/pylib/key.md:248
+msgid "`s`"
+msgstr ""
+
+#: ../../source/pylib/key.md:249
+msgid "`scrolllock`"
+msgstr ""
+
+#: ../../source/pylib/key.md:250
+msgid "`shift`"
+msgstr ""
+
+#: ../../source/pylib/key.md:251
+msgid "`t`"
+msgstr ""
+
+#: ../../source/pylib/key.md:252
+msgid "`tab`"
+msgstr ""
+
+#: ../../source/pylib/key.md:253
+msgid "`u`"
+msgstr ""
+
+#: ../../source/pylib/key.md:254
+msgid "`up`"
+msgstr ""
+
+#: ../../source/pylib/key.md:255
+msgid "`v`"
+msgstr ""
+
+#: ../../source/pylib/key.md:256
+msgid "`w`"
+msgstr ""
+
+#: ../../source/pylib/key.md:257
+msgid "`win`"
+msgstr ""
+
+#: ../../source/pylib/key.md:258
+msgid "`x`"
+msgstr ""
+
+#: ../../source/pylib/key.md:259
+msgid "`y`"
+msgstr ""
+
+#: ../../source/pylib/key.md:260
+msgid "`z`"
+msgstr ""
+
+#: ../../source/pylib/key.md:261
+msgid "`{`"
+msgstr ""
+
+#: ../../source/pylib/key.md:262
+msgid "`|`"
+msgstr ""
+
+#: ../../source/pylib/key.md:263
+msgid "`}`"
+msgstr ""
+
+#: ../../source/pylib/key.md:264
+msgid "`~`"
+msgstr ""
+
+#: ../../source/pylib/key.md:266
+msgid "Example"
+msgstr "例"
+
+#: ../../source/pylib/key.md:268
+msgid "例:Win+Shift-Sキーを押下する(結果、スクリーンキャプチャが起動する)"
+msgstr ""
+
+#: ../../source/pylib/key.md:280
+msgid "`hotkey`メソッドを使うと、上記の操作が1回の呼び出しで済む"
+msgstr ""
+
+#: ../../source/pylib/key.md:286
+msgid "例:'hello'を入力する"
+msgstr ""
+
+#: ../../source/pylib/key.md:291
+msgid "writeメソッドを使うと文字列の形で入力できる"
+msgstr ""
+

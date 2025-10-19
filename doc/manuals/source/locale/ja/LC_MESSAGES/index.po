@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-19 16:59+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -36,6 +36,10 @@ msgid "Macros"
 msgstr "マクロ"
 
 #: ../../source/index.md:45
+msgid "Python Libraries"
+msgstr "Python用モジュールのリファレンス"
+
+#: ../../source/index.md:53
 msgid "Miscellaneous"
 msgstr "その他"
 
@@ -43,51 +47,58 @@ msgstr "その他"
 msgid "{{ project }} {{ version }} Manual"
 msgstr "{{ project }} {{ version }} マニュアル"
 
-#: ../../source/index.md:59
+#: ../../source/index.md:67
 msgid "License"
 msgstr "ライセンス"
 
-#: ../../source/index.md:62
+#: ../../source/index.md:70
 msgid "フリーソフト"
 msgstr "フリーソフト"
 
-#: ../../source/index.md:64
-msgid "本体のライセンス : [MIT License](./LICENSE)"
+#: ../../source/index.md:72
+#, fuzzy
+msgid ""
+"本体のライセンス : [MIT "
+"License](https://github.com/ampmmn/Soyokaze/blob/main/LICENSE)"
 msgstr "本体のライセンス : [MIT License](./LICENSE)"
 
-#: ../../source/index.md:65
+#: ../../source/index.md:73
 msgid "利用ライブラリのライセンスについては [利用ライブラリ](#利用ライブラリ) に記載の各リンク先を参照のこと"
 msgstr "利用ライブラリのライセンスについては [利用ライブラリ](#利用ライブラリ) に記載の各リンク先を参照のこと"
 
-#: ../../source/index.md:69
+#: ../../source/index.md:74
+msgid "各ライブラリのライセンス文言の原文を本体exeと同じディレクトリの`notice.txt`にも記載している"
+msgstr ""
+
+#: ../../source/index.md:78
 msgid "内部で使う分には自己責任で好きにつかってください"
 msgstr "内部で使う分には自己責任で好きにつかってください"
 
-#: ../../source/index.md:75
+#: ../../source/index.md:84
 msgid "Source code"
 msgstr "ソースコード"
 
-#: ../../source/index.md:78
+#: ../../source/index.md:87
 msgid "[https://github.com/ampmmn/Soyokaze](https://github.com/ampmmn/Soyokaze/)"
 msgstr "[https://github.com/ampmmn/Soyokaze](https://github.com/ampmmn/Soyokaze/)"
 
-#: ../../source/index.md:82 ../../source/index.md:97
+#: ../../source/index.md:91 ../../source/index.md:106
 msgid "非開示"
 msgstr "非開示"
 
-#: ../../source/index.md:85
+#: ../../source/index.md:94
 msgid "Disclaimer"
 msgstr "免責事項"
 
-#: ../../source/index.md:87
+#: ../../source/index.md:96
 msgid "このツールは無保証です。"
 msgstr "このツールは無保証です。"
 
-#: ../../source/index.md:91
+#: ../../source/index.md:100
 msgid "Contact"
 msgstr "連絡先"
 
-#: ../../source/index.md:94
+#: ../../source/index.md:103
 msgid "htmnymgw@gmail.com"
 msgstr "htmnymgw@gmail.com"
 

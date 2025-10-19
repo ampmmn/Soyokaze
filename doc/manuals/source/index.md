@@ -45,6 +45,14 @@ caption: Macros
 ```{toctree}
 ---
 maxdepth: 2
+caption: Python Libraries
+---
+./pylib.md
+```
+
+```{toctree}
+---
+maxdepth: 2
 caption: Miscellaneous
 ---
 others/advanced-usage.md

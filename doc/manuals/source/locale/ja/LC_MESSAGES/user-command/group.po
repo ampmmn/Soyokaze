@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-12 09:53+0900\n"
+"POT-Creation-Date: 2025-10-19 10:47+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -137,12 +137,14 @@ msgid "[簡易辞書コマンド](/user-command/simple-dict.md)"
 msgstr ""
 
 #: ../../source/user-command/group.md:58
-msgid ""
-"[DirectoryIndexコマンド](/user-command/directoryindex) "
-"グループコマンドによる一括実行する動作と組みあわせることができない。"
+msgid "[DirectoryIndexコマンド](/user-command/directoryindex)"
 msgstr ""
 
-#: ../../source/user-command/group.md:62
+#: ../../source/user-command/group.md:60
+msgid "上記のコマンド種別はコマンドを実行したタイミングで追加の入力を要するものであるため、グループコマンドによる一括実行する動作と組みあわせることができない。"
+msgstr ""
+
+#: ../../source/user-command/group.md:63
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

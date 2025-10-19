@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-16 16:49+0900\n"
+"POT-Creation-Date: 2025-10-19 10:47+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -39,7 +39,9 @@ msgid "Usage"
 msgstr "使用方法"
 
 #: ../../source/adhoc-command/activate-window.md:13
-msgid "プレフィックス(初期値は`wl`)を入力すると、画面上に表示されているウインドウの一覧を候補として表示する"
+msgid ""
+"プレフィックス(初期値は`wl`。**w**indow "
+"**l**istの略)を入力すると、画面上に表示されているウインドウの一覧を候補として表示する"
 msgstr ""
 
 #: ../../source/adhoc-command/activate-window.md:14

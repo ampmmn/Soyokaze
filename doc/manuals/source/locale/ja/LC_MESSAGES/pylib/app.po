@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.46.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-19 16:59+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/pylib/app.md:1
+msgid "App Module"
+msgstr "Appモジュール"
+
+#: ../../source/pylib/app.md:3
+msgid "アプリ本体の機能にアクセスする機能を提供するモジュール。 importしなくても使うことができる。"
+msgstr ""
+
+#: ../../source/pylib/app.md:6
+msgid "Methods"
+msgstr "メソッド"
+
+#: ../../source/pylib/app.md:8
+msgid "popup_message"
+msgstr ""
+
+#: ../../source/pylib/app.md:10
+msgid "メッセージを表示する"
+msgstr ""
+
+#: ../../source/pylib/app.md:16 ../../source/pylib/app.md:35
+#: ../../source/pylib/app.md:53
+msgid "Arguments"
+msgstr "引数"
+
+#: ../../source/pylib/app.md:18
+msgid "messsage(String)   表示するメッセージ"
+msgstr ""
+
+#: ../../source/pylib/app.md:21 ../../source/pylib/app.md:40
+#: ../../source/pylib/app.md:59
+msgid "Return Value"
+msgstr "戻り値"
+
+#: ../../source/pylib/app.md:23 ../../source/pylib/app.md:42
+msgid "正常終了時0、エラー時1(引数が不正)"
+msgstr ""
+
+#: ../../source/pylib/app.md:25
+msgid "run_command"
+msgstr ""
+
+#: ../../source/pylib/app.md:27
+msgid "ランチャーアプリのコマンドを実行する   入力欄に文字列を入力して実行したときの動作をPythonスクリプトから呼び出すことができる。"
+msgstr ""
+
+#: ../../source/pylib/app.md:37 ../../source/pylib/app.md:55
+msgid "input_text(String)   コマンド文字列"
+msgstr ""
+
+#: ../../source/pylib/app.md:44
+msgid "expand_macro"
+msgstr ""
+
+#: ../../source/pylib/app.md:46
+msgid "アプリ内の[マクロ](/macros)を展開して文字列として返す。"
+msgstr ""
+
+#: ../../source/pylib/app.md:61
+msgid "マクロの展開結果(文字列)。   引数が不正な場合は空文字を返す"
+msgstr ""
+

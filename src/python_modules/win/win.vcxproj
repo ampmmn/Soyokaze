@@ -125,15 +125,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">
-    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\dist\$(Platform)\$(Configuration)\pylib\</OutDir>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">

@@ -1,0 +1,177 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.45.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-19 17:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user-command/py_extension.md:1
+msgid "Python Extension Command"
+msgstr "Python拡張コマンド"
+
+#: ../../source/user-command/py_extension.md:3
+msgid "コマンドを実行時の動作をPythonスクリプトで記述できるコマンド。"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:5
+msgid "スクリプトの内容をコマンドの設定としてアプリケーション内に保存できる(一元管理できる)。"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:7
+msgid "Python 3.12以降が必要"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:9
+msgid "UseCase"
+msgstr "できること"
+
+#: ../../source/user-command/py_extension.md:11
+msgid "アプリ独自の機能として、画面操作に関するAPIを提供しており、ちょっとした自動操作の用途で使うことができる"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:12
+msgid "現在はキーボード入力のみ。マウス入力も今後実装予定"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:13
+msgid "アプリ設定で指定したPython環境でのライブラリのAPIを呼び出すことができるので、それらを利用して様々な処理を実行できる"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:15
+msgid "Description"
+msgstr "設定画面"
+
+#: ../../source/user-command/py_extension.md:17
+msgid "![](../image/user-command/py_extension/commandsetting.png)"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:20
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:22
+msgid "`説明`   何のためのコマンドかを記載しておくための説明欄"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:24
+msgid "`スクリプト`  実行する処理の内容をPythonスクリプトとして記述する"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:26
+msgid "`テスト実行`    動作確認のためにスクリプトを実行する"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:28
+msgid "`構文チェック`    `スクリプト`に入力した内容が構文的に正しいかをチェックする   (チェックして正しいことを確認しないと設定を保存できない)"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:31
+msgid "`ホットキー`   コマンドを呼び出すホットキーを定義する"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:34
+msgid "Remarks"
+msgstr "動作の説明"
+
+#: ../../source/user-command/py_extension.md:36
+msgid "アプリ設定の`拡張機能`>`Pythonを利用する拡張機能の設定`で設定したPython環境の機能が利用できる"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:37
+msgid "その環境に入っているライブラリを利用することが可能"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:39
+msgid "そのほかにアプリ独自のライブラリを提供する(後述)"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:40
+msgid "キー入力やウインドウ関連の機能を提供する"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:41
+msgid "もちろん、他のPythonライブラリを使うこともできる"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:43
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/user-command/py_extension.md:45
+msgid "Pythonスクリプトを並列で実行することはできない"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:46
+msgid ""
+"先行するPython拡張コマンドの実行が完了しないうちに後続のPython拡張コマンドが実行された場合、 "
+"先行のスクリプトが完了するまで、後続のスクリプトの実行は開始されない"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:48
+msgid "その間、[簡易電卓機能](/adhoc-command/calclator)も利用できない"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:49
+msgid "Python拡張コマンドが実行中かどうかを確認する機能や、実行を止める機能は提供していない"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:51
+msgid "スクリプト実行の上限は10秒まで"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:52
+msgid "実行開始後に10秒が経過したら、割り込みを発生させてスクリプトの実行をとめる"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:53
+msgid ""
+"スクリプトの中でKeyboardInterruptを捕捉することにより継続させることはできる   "
+"しかし、その状況で無限ループが発生した場合、アプリ本体を強制終了する以外にスクリプト実行を止めるすべはない"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:56
+msgid "Pythom Modules"
+msgstr "Python用モジュール"
+
+#: ../../source/user-command/py_extension.md:58
+msgid "アプリ独自のモジュールを提供している。   これらは`import`しなくても利用できる。"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:61
+msgid "詳細は[Python用モジュールのリファレンス](/pylib)を参照のこと。"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md:63
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/user-command/py_extension.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/user-command/py_extension.md
+msgid "スクリプトを実行する"
+msgstr ""
+
