@@ -17,8 +17,8 @@ struct CACHE_ITEM
 	uint64_t mLastUsedTime{0};
 };
 
-// キャッシュを保持する期間(20分)
-constexpr uint64_t CACHE_EXPIRED_PERIOD = 20 * 60 * 1000;
+// キャッシュを保持する期間(2時間)
+constexpr uint64_t CACHE_EXPIRED_PERIOD = 2 * 60 * 60 * 1000;
 
 struct HistoryCommandResolver::PImpl
 {

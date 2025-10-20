@@ -22,7 +22,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
 namespace launcherapp { namespace commands { namespace onenote {
 
 constexpr int SEARCH_LIMIT = 24;
-const uint64_t UPDATE_INTERVAL = 10 * 1000;
+const uint64_t UPDATE_INTERVAL = 5 * 60 * 1000;  // 5分
 
 struct OneNoteCommandProvider::PImpl : 
 	public AppPreferenceListenerIF,
