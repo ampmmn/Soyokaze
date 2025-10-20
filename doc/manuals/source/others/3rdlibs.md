@@ -46,6 +46,10 @@
 - [Snintilla,Lexilla](https://www.scintilla.org/)
   - Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している
 
+- [upx/upx](https://github.com/upx/upx)
+  - ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している
+  - UPX自体はGPLであるが、UPXを使って生成したバイナリはGPLにはならない(認識)
+
 ```
 
 ```{only} not soyokaze
