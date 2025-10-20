@@ -60,7 +60,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd externals/tidy-html5/build/cmake
-        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=OFF -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF -DCMAKE_RELEASE_POSTFIX=${{env.STATICLIB_POSTFIX}}
+        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=ON -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF
         cmake --build . --config Release
 
     - name: Patch absl options
