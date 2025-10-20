@@ -7,7 +7,7 @@ name: MSBuild
 
 on:
   push:
-    branches: [ "main", "py_extension" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -140,7 +140,7 @@ jobs:
         # build(Debug)
         cmake --build . --config Debug -t nanobind-static
         # setup cmake for Release configuration.
-        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /O2 /Ob2 /DNDEBUG" ..
+        cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
         # build(Release)
         cmake --build . --config Release -t nanobind-static
 
