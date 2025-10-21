@@ -20,6 +20,8 @@ public:
 	ModifierState(const ModifierState& rhs);
 
 	ModifierState& operator = (const ModifierState&) = default;
+	bool operator == (const ModifierState& rhs) const;
+	bool operator != (const ModifierState& rhs) const;
 	bool operator < (const ModifierState& rhs) const;
 
 	bool IsPressShift() const;
@@ -32,8 +34,12 @@ public:
 	void SetPressWin(bool isPressWin);
 
 	CString ToString() const;
+	int ToBits() const;
 
-	int mStateBits;
+	bool mIsPressShift{false};
+	bool mIsPressCtrl{false};
+	bool mIsPressAlt{false};
+	bool mIsPressWin{false};
 };
 
 

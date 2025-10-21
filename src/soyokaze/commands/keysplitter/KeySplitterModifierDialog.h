@@ -3,6 +3,7 @@
 #include "gui/SinglePageDialog.h"
 #include <memory>
 #include "commands/keysplitter/KeySplitterModifierState.h"
+#include "commands/keysplitter/KeySplitterParam.h"
 
 class ModalComboBox;
 
@@ -16,17 +17,30 @@ public:
 	ModifierDialog(CWnd* parentWnd = nullptr);
 	~ModifierDialog() override;
 
-	void SetParam(const ModifierState& state);
-	void GetParam(ModifierState& state) const;
+	void SetParam(const CommandParam& param);
+
+	void SetItem(const ITEM& item);
+	void GetItem(ITEM& item);
+	void SetModifierState(const ModifierState& state);
+	void GetModifierState(ModifierState& state) const;
+
+protected:
+	bool UpdateStatus();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
 
-	BOOL mIsPressShift;
-	BOOL mIsPressCtrl;
-	BOOL mIsPressAlt;
-	BOOL mIsPressWin;
+	void OnUpdateStatus();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
+	ITEM mItem;
+	const CommandParam* mParamPtr{nullptr};
+
+	ModifierState mOrgState;
+	ModifierState mState;
+	int mCommandSelIndex{-1};
+	CString mMessage;
 
 // 実装
 protected:

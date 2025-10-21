@@ -12,6 +12,7 @@ namespace keysplitter {
 struct ITEM
 {
 	CString mCommandName;
+	CString mActionName;
 };
 
 class CommandParam
@@ -25,6 +26,8 @@ public:
 
 	bool GetMapping(const ModifierState& stae, ITEM& item);
 	void SetMapping(const ModifierState& stae, const ITEM& item);
+	bool EraseMapping(const ModifierState& state);
+	bool IsStateExists(const ModifierState& state) const;
 	bool IsEmptyMapping() const;
 	bool DeleteMapping(const ModifierState& stae);
 

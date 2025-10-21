@@ -5,12 +5,23 @@ namespace launcherapp {
 namespace commands {
 namespace keysplitter {
 
-ModifierState::ModifierState() : mStateBits(0) {}
+ModifierState::ModifierState() 
+{
+}
 
-ModifierState::ModifierState(int stateBits) : mStateBits(stateBits) {}
+ModifierState::ModifierState(int stateBits)  : 
+	mIsPressShift((stateBits & SHIFT) != 0),
+	mIsPressCtrl((stateBits & CONTROL) != 0),
+	mIsPressAlt((stateBits & ALT) != 0),
+	mIsPressWin((stateBits & WIN) != 0)
+{
+}
 
 ModifierState::ModifierState(bool isPressShift, bool isPressCtrl, bool isPressAlt, bool isPressWin) : 
-	mStateBits(0)
+	mIsPressShift(isPressShift),
+	mIsPressCtrl(isPressCtrl),
+	mIsPressAlt(isPressAlt),
+	mIsPressWin(isPressWin)
 {
 	SetPressShift(isPressShift);
 	SetPressCtrl(isPressCtrl);
@@ -18,24 +29,68 @@ ModifierState::ModifierState(bool isPressShift, bool isPressCtrl, bool isPressAl
 	SetPressWin(isPressWin);
 }
 
-ModifierState::ModifierState(const ModifierState& rhs) : mStateBits(rhs.mStateBits) {}
+ModifierState::ModifierState(const ModifierState& rhs) : 
+	mIsPressShift(rhs.mIsPressShift),
+	mIsPressCtrl(rhs.mIsPressCtrl),
+	mIsPressAlt(rhs.mIsPressAlt),
+	mIsPressWin(rhs.mIsPressWin)
+{
+}
+
+bool ModifierState::operator == (const ModifierState& rhs) const
+{
+	return ToBits() == rhs.ToBits();
+}
+
+bool ModifierState::operator != (const ModifierState& rhs) const
+{
+	return ToBits() != rhs.ToBits();
+}
 
 bool ModifierState::operator < (const ModifierState& rhs) const
 {
-	return mStateBits < rhs.mStateBits;
+	return ToBits() < rhs.ToBits();
 }
 
-bool ModifierState::IsPressShift() const { return (mStateBits & SHIFT) != 0; }
-void ModifierState::SetPressShift(bool isPressShift) { mStateBits |= (isPressShift ? SHIFT : 0); }
+bool ModifierState::IsPressShift() const
+{
+ 	return mIsPressShift;
+}
 
-bool ModifierState::IsPressCtrl() const { return (mStateBits & CONTROL) != 0; }
-void ModifierState::SetPressCtrl(bool isPressCtrl) { mStateBits |= (isPressCtrl ? CONTROL : 0); }
+void ModifierState::SetPressShift(bool isPressShift)
+{
+ 	mIsPressShift= isPressShift;
+}
 
-bool ModifierState::IsPressAlt() const { return (mStateBits & ALT) != 0; }
-void ModifierState::SetPressAlt(bool isPressAlt) { mStateBits |= (isPressAlt ? ALT : 0); }
+bool ModifierState::IsPressCtrl() const
+{
+ 	return mIsPressCtrl;
+}
 
-bool ModifierState::IsPressWin() const { return (mStateBits & WIN) != 0; }
-void ModifierState::SetPressWin(bool isPressWin) { mStateBits |= (isPressWin ? WIN : 0); }
+void ModifierState::SetPressCtrl(bool isPressCtrl)
+{
+ 	mIsPressCtrl= isPressCtrl;
+}
+
+bool ModifierState::IsPressAlt() const
+{
+ 	return mIsPressAlt;
+}
+
+void ModifierState::SetPressAlt(bool isPressAlt)
+{
+ 	mIsPressAlt= isPressAlt;
+}
+
+bool ModifierState::IsPressWin() const
+{
+ 	return mIsPressWin;
+}
+
+void ModifierState::SetPressWin(bool isPressWin)
+{
+ 	mIsPressWin= isPressWin;
+}
 
 CString ModifierState::ToString() const
 {
@@ -55,6 +110,16 @@ CString ModifierState::ToString() const
 	ret += f(IsPressWin(), _T("W"));
 	ret += _T("⏎");
 	return ret;
+}
+
+int ModifierState::ToBits() const
+{
+	int state = 0;
+	state |= (IsPressShift() ? SHIFT : 0);
+	state |= (IsPressCtrl() ? CONTROL : 0);
+	state |= (IsPressAlt() ? ALT : 0);
+	state |= (IsPressWin() ? WIN : 0);
+	return state;
 }
 
 } // end of namespace group

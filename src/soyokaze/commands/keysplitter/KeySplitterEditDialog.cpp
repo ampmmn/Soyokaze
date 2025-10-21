@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "KeySplitterEditDialog.h"
 #include "commands/keysplitter/KeySplitterModifierDialog.h"
-#include "gui/ModalComboBox.h"
-#include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -12,16 +10,13 @@
 #define new DEBUG_NEW
 #endif
 
-using Command =  launcherapp::core::Command;
-
 namespace launcherapp {
 namespace commands {
 namespace keysplitter {
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
 	launcherapp::gui::SinglePageDialog(IDD_KEYSPLITTER, parentWnd),
-	mCommandListPtr(nullptr),
-	mCommandSelectBox(std::make_unique<ModalComboBox>())
+	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("KeySplitterEdit");
 }
@@ -65,6 +60,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
+	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnNotifyItemChanged)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNotifyItemDblClk)
@@ -81,23 +77,6 @@ BOOL SettingDialog::OnInitDialog()
 	ASSERT(mCommandListPtr);
 
 	mCommandListPtr->SetExtendedStyle(mCommandListPtr->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-
-	// コマンド一覧コンボボックスを作っておく
-	mCommandSelectBox->Create(mCommandListPtr, WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL | CBS_NOINTEGRALHEIGHT);
-	mCommandSelectBox->SetMinVisibleItems(10);
-	std::vector<Command*> commands;
-	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commands);
-	for (auto& cmd : commands) {
-
-		auto name = cmd->GetName();
-
-		if (mOrgName == name) {
-			// 自分自身は追加しない
-			continue;
-		}
-
-		mCommandSelectBox->AddString(name);
-	}
 
 	CString caption;
   GetWindowText(caption);
@@ -118,15 +97,21 @@ BOOL SettingDialog::OnInitDialog()
 	CString strHeader;
 	strHeader = _T("キー");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 150;
+	lvc.cx = 50;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(0,&lvc);
 
 	strHeader = _T("コマンド");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 200;
+	lvc.cx = 150;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(1,&lvc);
+
+	strHeader = _T("ガイド");
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 150;
+	lvc.fmt = LVCFMT_LEFT;
+	mCommandListPtr->InsertColumn(2,&lvc);
 
 	ITEM item;
 
@@ -156,6 +141,7 @@ bool SettingDialog::UpdateStatus()
 	POSITION pos = mCommandListPtr->GetFirstSelectedItemPosition();
 	bool hasSelect = pos != NULL;
 
+	GetDlgItem(IDC_BUTTON_EDIT)->EnableWindow(hasSelect);
 	GetDlgItem(IDC_BUTTON_DELETE)->EnableWindow(hasSelect);
 
 	// 名前チェック
@@ -186,13 +172,14 @@ void SettingDialog::SetItemToList(
 
 	if (index == mCommandListPtr->GetItemCount()) {
 		mCommandListPtr->InsertItem(index, state.ToString());
-		mCommandListPtr->SetItemData(index, state.mStateBits);
+		mCommandListPtr->SetItemData(index, state.ToBits());
 	}
 	else {
 		mCommandListPtr->SetItemText(index, 0, state.ToString());
 	}
 
 	mCommandListPtr->SetItemText(index, 1, item.mCommandName);
+	mCommandListPtr->SetItemText(index, 2, item.mActionName);
 }
 
 
@@ -227,29 +214,32 @@ void SettingDialog::OnOK()
 	__super::OnOK();
 }
 
-bool SettingDialog::SelectCommand(int index)
+bool SettingDialog::EditItem(int index)
 {
-	// コンボボックスを表示
-	ModalComboBox* cmbBox = mCommandSelectBox.get();
-	if (cmbBox->DoModalOverListItem(mCommandListPtr, index, 1) != IDOK) {
-		return false;
-	}
-
-	if (cmbBox->GetCurSel() == -1) {
-		return false;
-	}
-
 	ModifierState state((int)mCommandListPtr->GetItemData(index));
 
-	// 選択したテキストでセルを更新
-	CString cmdName;
-	cmbBox->GetLBText(cmbBox->GetCurSel(), cmdName);
-
 	ITEM item;
-	item.mCommandName = cmdName;
-	mParam.SetMapping(state, item);
+	mParam.GetMapping(state, item);
 
-	SetItemToList(index, state, item);
+	ModifierDialog dlg(this);
+	dlg.SetModifierState(state);
+	dlg.SetItem(item);
+	dlg.SetParam(mParam);
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+
+	// 更新後の状態を取得
+	dlg.GetItem(item);
+	ModifierState newState;
+	dlg.GetModifierState(newState);
+
+	if (state != newState) {
+		mParam.EraseMapping(state);
+	}
+	mParam.SetMapping(newState, item);
+
+	SetItemToList(index, newState, item);
 	return true;
 }
 
@@ -257,34 +247,23 @@ bool SettingDialog::SelectCommand(int index)
 void SettingDialog::OnButtonAdd()
 {
 	ASSERT(mCommandListPtr);
+	UpdateData();
 
 	ModifierDialog dlg(this);
+	dlg.SetParam(mParam);
 	if (dlg.DoModal() != IDOK) {
 		return;
 	}
 
 	ModifierState state;
-	dlg.GetParam(state);
-
-	int nItemCount = mCommandListPtr->GetItemCount();
-
-
+	dlg.GetModifierState(state);
 	ITEM item;
-	if (mParam.GetMapping(state, item)) {
-		// 既存のリスト項目を選択状態にする
-		for (int i = 0; i < nItemCount; ++i) {
+	dlg.GetItem(item);
 
-			int stateBits = (int)mCommandListPtr->GetItemData(i);
-			
-			if (state.mStateBits != stateBits) {
-				continue;
-			}
-			mCommandListPtr->SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
-			return;
-		}
-	}
+	mParam.SetMapping(state, item);
 
 	// 項目を追加する
+	int nItemCount = mCommandListPtr->GetItemCount();
 
 	CRect rc;
 	mCommandListPtr->GetItemRect(0, &rc, LVIR_BOUNDS);
@@ -295,17 +274,35 @@ void SettingDialog::OnButtonAdd()
 	if (offset) {
 		mCommandListPtr->Scroll(cs);
 	}
-	int index = mCommandListPtr->InsertItem(nItemCount, state.ToString());
-	mCommandListPtr->SetItemData(index, state.mStateBits);
 
-	if (SelectCommand(index) == false) {
-		mCommandListPtr->DeleteItem(nItemCount);
-		return ;
+	SetItemToList(nItemCount, state, item);
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void SettingDialog::OnButtonEdit()
+{
+	UpdateData();
+
+	POSITION pos = mCommandListPtr->GetFirstSelectedItemPosition();
+	if (pos == nullptr) {
+		return;
 	}
+
+	int itemIndex = mCommandListPtr->GetNextSelectedItem(pos);
+	if (EditItem(itemIndex) == false) {
+		return;
+	}
+
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 void SettingDialog::OnButtonDelete()
 {
+	UpdateData();
+
 	POSITION pos = mCommandListPtr->GetFirstSelectedItemPosition();
 	if (pos == NULL) {
 		return;
@@ -356,16 +353,11 @@ void SettingDialog::OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 
-	if (nm->iSubItem == 1) {
-		if (SelectCommand(index) == false) {
-			return;
-		}
-		UpdateStatus();
-		UpdateData(FALSE);
-	}
-	else {
+	if (EditItem(index) == false) {
 		return;
 	}
+	UpdateStatus();
+	UpdateData(FALSE);
 }
 
 } // end of namespace keysplitter

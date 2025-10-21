@@ -56,6 +56,21 @@ void CommandParam::SetMapping(
 	mMapping[state] = item;
 }
 
+bool CommandParam::EraseMapping(const ModifierState& state)
+{
+	auto it = mMapping.find(state);
+	if (it == mMapping.end()) {
+		return false;
+	}
+	mMapping.erase(it);
+	return true;
+}
+
+bool CommandParam::IsStateExists(const ModifierState& state) const
+{
+	return mMapping.count(state) != 0;
+}
+
 bool CommandParam::IsEmptyMapping() const
 {
 	return mMapping.empty();

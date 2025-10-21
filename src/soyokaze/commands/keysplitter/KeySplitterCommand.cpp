@@ -93,7 +93,9 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 
 	CString cmdName = in->mParam.mName;
 
-	auto a = new CallbackAction(item.mCommandName, [item, cmdName](Parameter* param, String* errMsg) -> bool {
+	CString labelText(item.mActionName.IsEmpty() ? item.mCommandName : item.mActionName);
+
+	auto a = new CallbackAction(labelText, [item, cmdName](Parameter* param, String* errMsg) -> bool {
 
 		CString parents;
 		GetNamedParamString(param, _T("PARENTS"), parents);
@@ -203,6 +205,8 @@ bool KeySplitterCommand::Save(CommandEntryIF* entry)
 
 		key.Format(_T("Command%d"), i);
 		entry->Set(key, item.mCommandName);
+		key.Format(_T("ActionName%d"), i);
+		entry->Set(key, item.mActionName);
 	}
 
 	return true;
@@ -237,6 +241,8 @@ bool KeySplitterCommand::Load(CommandEntryIF* entry)
 
 		key.Format(_T("Command%d"), i);
 		item.mCommandName = entry->Get(key, _T(""));
+		key.Format(_T("ActionName%d"), i);
+		item.mActionName = entry->Get(key, _T(""));
 
 		in->mParam.SetMapping(state, item);
 	}

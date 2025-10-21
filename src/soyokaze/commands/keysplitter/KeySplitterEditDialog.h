@@ -27,12 +27,10 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	void SetItemToList(int index, const ModifierState& state, const ITEM& item);
-	bool SelectCommand(int index);
+	bool EditItem(int index);
 
 	//
 	CListCtrl* mCommandListPtr;
-
-	std::unique_ptr<ModalComboBox> mCommandSelectBox;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;
@@ -52,6 +50,7 @@ protected:
 	afx_msg void OnUpdate();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonAdd();
+	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);

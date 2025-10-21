@@ -453,6 +453,7 @@
 #define IDC_COMBO_PROXY                 1163
 #define IDC_COMBO_POSITION              1163
 #define IDC_COMBO_FONTSIZE              1163
+#define IDC_COMBO_COMMANDS              1163
 #define IDC_CHECK_VOLUME                1164
 #define IDC_CHECK_EXPANDMACRO           1165
 #define IDC_CHECK_USEAPI                1166
@@ -545,7 +546,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        259
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1226
+#define _APS_NEXT_CONTROL_VALUE         1227
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
