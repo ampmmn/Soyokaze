@@ -103,13 +103,13 @@ BOOL SettingDialog::OnInitDialog()
 
 	strHeader = _T("コマンド");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 150;
+	lvc.cx = 140;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(1,&lvc);
 
 	strHeader = _T("ガイド");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 150;
+	lvc.cx = 140;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(2,&lvc);
 

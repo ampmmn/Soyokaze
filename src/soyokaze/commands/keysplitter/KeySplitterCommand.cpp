@@ -127,6 +127,8 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 		RefPtr<ParameterBuilder> paramSub(ParameterBuilder::Create(), false);
 		paramSub->SetParameterString(param->GetParameterString());
 		paramSub->SetNamedParamString(_T("PARENTS"), parents);
+
+		paramSub->SetNamedParamBool(_T("RUN_AS_BATCH"), true);
 	
 		// 振り分け先のコマンドを実行する
 		auto cmdRepo = CommandRepository::GetInstance();
