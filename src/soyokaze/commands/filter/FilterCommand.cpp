@@ -3,6 +3,7 @@
 #include "FilterCommand.h"
 #include "core/IFIDDefine.h"
 #include "commands/filter/FilterAdhocCommand.h"
+#include "commands/filter/PostFilterCommand.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/filter/FilterCommandEditor.h"
 #include "commands/filter/FilterExecutor.h"
@@ -45,6 +46,16 @@ struct FilterCommand::PImpl
 		}
 	}
 	void LoadCandidates();
+
+	bool CreatePostCommand(const FilterResult& result, launcherapp::core::Command** cmd) {
+		int type = mParam.mPostFilterType;
+		if (type == POSTFILTER_COMMAND) {
+			*cmd = new PostFilterCommand(mParam, result);
+			return true;
+		}
+		*cmd = new FilterAdhocCommand(mParam, result);
+		return true;
+	}
 
 	CommandParam mParam;
 	//
@@ -397,7 +408,11 @@ bool FilterCommand::QueryCandidates(
 			// コマンド名が一致しているので少なくとも前方一致とする
 			level = Pattern::FrontMatch;
 		}
-		commands.Add(CommandQueryItem(level, new FilterAdhocCommand(in->mParam, result)));
+
+		RefPtr<launcherapp::core::Command> postCommand;
+		in->CreatePostCommand(result, &postCommand);
+
+		commands.Add(CommandQueryItem(level, postCommand.release()));
 	}
 
 	return true;

@@ -7,9 +7,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Clipboard.h"
 #include "commands/core/CommandRepository.h"
-#include "actions/builtin/RunCommandAction.h"
 #include "actions/builtin/ExecuteAction.h"
-#include "actions/builtin/CallbackAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/RefPtr.h"
@@ -26,9 +24,7 @@ using ShellExecCommand = launcherapp::commands::shellexecute::ShellExecCommand;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
-using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
-using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 
 namespace launcherapp {
@@ -85,38 +81,14 @@ CString FilterAdhocCommand::GetTypeDisplayName()
 
 bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
-	if (modifierFlags != 0) {
-		return false;
-	}
-
 	int type = in->mParam.mPostFilterType;
-	if (type == POSTFILTER_COMMAND) {
-		return CreatePostFilterCommandAction(modifierFlags, action);
-	}
-	else if (type == POSTFILTER_SUBPROCESS) {
+	if (type == POSTFILTER_SUBPROCESS) {
 		return CreatePostFilterSubprocessAction(modifierFlags, action);
 	}
 	else if (type == POSTFILTER_CLIPBOARD) {
 		return CreatePostFilterCopyAction(modifierFlags, action);
 	}
 	return false;
-}
-
-bool FilterAdhocCommand::CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action)
-{
-	*action = new CallbackAction(_T("実行"), [&](Parameter* param, String* errMsg) -> bool {
-
-		CString argSub = in->mParam.mAfterCommandParam;
-		argSub.Replace(_T("$select"), in->mResult.mDisplayName);
-		ExpandMacros(argSub);
-
-		RefPtr<Parameter> paramSub(param->Clone(), false);
-		paramSub->SetParameterString(argSub);
-
-		RunCommandAction action(in->mParam.mName, in->mParam.mAfterCommandName, modifierFlags);
-		return action.Perform(paramSub.get(), errMsg);
-	});
-	return true;
 }
 
 bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action)

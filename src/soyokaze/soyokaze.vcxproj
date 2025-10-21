@@ -501,6 +501,7 @@
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandEditor.h" />
     <ClInclude Include="commands\filter\FilterQueryCancellationToken.h" />
+    <ClInclude Include="commands\filter\PostFilterCommand.h" />
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h" />
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h" />
     <ClInclude Include="commands\group\GroupCommandEditor.h" />
@@ -994,6 +995,7 @@
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandEditor.cpp" />
     <ClCompile Include="commands\filter\FilterQueryCancellationToken.cpp" />
+    <ClCompile Include="commands\filter\PostFilterCommand.cpp" />
     <ClCompile Include="commands\filter\PreFilterConstantDialog.cpp" />
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp" />
     <ClCompile Include="commands\group\GroupCommandEditor.cpp" />

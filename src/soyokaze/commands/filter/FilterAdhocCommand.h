@@ -36,7 +36,6 @@ public:
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(FilterAdhocCommand)
 
 private:
-		bool CreatePostFilterCommandAction(uint32_t modifierFlags, Action** action);
 		bool CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action);
 		bool CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action);
 protected:
