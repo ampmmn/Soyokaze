@@ -38,6 +38,12 @@ struct scope_pyobject
 	operator PyObject*() { return mObj; }
 	PyObject** operator &() { return &mObj; }
 
+	PyObject* release() {
+		auto p = mObj;
+		mObj = nullptr;
+		return p;
+	}
+
 	PyObject* mObj{nullptr};
 };
 
@@ -232,8 +238,9 @@ bool PythonProxy::CompileTest(const char* src, char** errMsg)
 	});
 }
 
-bool PythonProxy::Evaluate(const char* src, char** errMsg)
+bool PythonProxy::Evaluate(const char* src, const char** args, char** errMsg)
 {
+	// ウインドウを作成した側のスレッドでラムダ関数を同期実行する
 	return ProxyWindow::GetInstance()->RequestCallback([&]() {
 
 		// 実行中である状態にセットする
@@ -283,6 +290,33 @@ bool PythonProxy::Evaluate(const char* src, char** errMsg)
 		// スクリプトを実行
 		scope_pyobject localDict = PyDict_New();
 		scope_pyobject pyRetObject = PyEval_EvalCode(codeMain, globalDict, localDict);
+
+		// funcObjは借用参照
+		PyObject* pyFuncObj = PyDict_GetItemString(localDict, "call");
+
+		// スクリプトがcallという名前の定義を定義していたらそれを呼ぶ
+		if (pyFuncObj && PyCallable_Check(pyFuncObj)) {
+
+			// call関数に対して渡す引数の数をカウントする
+			auto a = args;
+			size_t nArgs = 0;
+			while(a && *a != nullptr) {
+				nArgs++;
+				a++;
+			}
+
+			// call関数に渡すための引数オブジェクトを生成する
+			scope_pyobject pyArgsTuple(PyTuple_New(nArgs));
+			for (int i = 0; i < nArgs; ++i) {
+				PyTuple_SetItem(pyArgsTuple, i, PyUnicode_FromString(args[i]));
+			}
+
+			scope_pyobject pyArgs(PyTuple_Pack(1, pyArgsTuple.release()));
+
+			// call関数をよぶ
+			scope_pyobject result = PyObject_CallObject(pyFuncObj, pyArgs);
+		}
+
 		SetEvent(eval_event);
 
 		// タイムアウト監視スレッドの完了を待つ

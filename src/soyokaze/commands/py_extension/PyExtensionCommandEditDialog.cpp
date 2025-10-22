@@ -341,7 +341,7 @@ void CommandEditDialog::OnButtonRun()
 	UTF2UTF(mParam.mScript, src);
 	char* errMsg= nullptr;
 	CWaitCursor wc;
-	if (proxy->Evaluate(src.c_str(), &errMsg) == false) {
+	if (proxy->Evaluate(src.c_str(), nullptr, &errMsg) == false) {
 		UTF2UTF(errMsg, mResultMsg);
 		proxy->ReleaseBuffer(errMsg);
 	}

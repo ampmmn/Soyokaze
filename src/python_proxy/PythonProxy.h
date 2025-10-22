@@ -12,7 +12,7 @@ public:
 	void Finalize();
 
 	virtual bool CompileTest(const char* src, char** result) override;
-	bool Evaluate(const char* src, char** errMsg) override;
+	bool Evaluate(const char* src, const char** argv, char** errMsg) override;
 	bool EvalForCalculate(const char* src, char** result) override;
 	void ReleaseBuffer(char* result) override;
 	bool IsPyCmdAvailable() override;
