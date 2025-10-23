@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PyEvalAction.h"
+#include "commands/py_extension/PyEvalArgument.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/Message.h"
 #include "python/PythonDLLLoader.h"
@@ -58,36 +59,14 @@ bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 	String script;
 	UTF2UTF(in->mParam->mScript, script);
 
-	// 引数用の配列を生成
-	CString tmpW;
-	std::string tmpA;
+	PyEvalArgument args(args_);
+	char** argsPtr = args.release();
+	std::thread th([proxy, name, script, argsPtr]() {
 
-	std::vector<char*> args;
-	int paramCount = args_->GetParamCount();
-	args.reserve(paramCount + 1);
-	for (int i = 0; i < paramCount; ++i) {
-		tmpW = args_->GetParam(i);
-		UTF2UTF(tmpW, tmpA);
-		auto p = new char[tmpA.size()+1];
-		memcpy(p, tmpA.data(), tmpA.size()+1);
-		args.push_back(p);
-	}
-	// 終端としての目印となるnullを追加
-	args.push_back(nullptr);
-
-	std::thread th([proxy, name, script, args]() {
+		PyEvalArgument args(argsPtr);
 
 		char* pyErrMsg{nullptr};
-
-		auto argsPtr = &(*(args.begin()));
-		bool result = proxy->Evaluate(script.c_str(), (const char**)argsPtr, &pyErrMsg);
-
-		// ラムダ関数の外で生成したメモリを解放
-		for (auto p : args) {
-			delete [] p;
-		}
-
- 		if (result == false) {
+ 		if (proxy->Evaluate(script.c_str(), (const char**)args.get(), &pyErrMsg) == false) {
 			if (pyErrMsg) {
 				String error(name);
 				error += "\r\n";

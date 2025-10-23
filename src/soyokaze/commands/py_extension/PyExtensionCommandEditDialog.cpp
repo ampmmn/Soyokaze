@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "PyExtensionCommandEditDialog.h"
 #include "commands/py_extension/ScintillaDLLLoader.h"
+#include "commands/py_extension/PyEvalArgument.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "python/PythonDLLLoader.h"
 #include "commands/validation/CommandEditValidation.h"
@@ -61,9 +62,9 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	//DDX_Text(pDX, IDC_EDIT_SCRIPT, mParam.mScript);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Text(pDX, IDC_EDIT_RESULT, mResultMsg);
+	DDX_Text(pDX, IDC_EDIT_ARGUMENTS, mArguments);
 }
 
 #pragma warning( push )
@@ -336,12 +337,13 @@ void CommandEditDialog::OnButtonRun()
 	auto loader = PythonDLLLoader::Get();
 	auto proxy = loader->GetLibrary();
 
+	PyEvalArgument args(mArguments);
 
 	std::string src;
 	UTF2UTF(mParam.mScript, src);
 	char* errMsg= nullptr;
 	CWaitCursor wc;
-	if (proxy->Evaluate(src.c_str(), nullptr, &errMsg) == false) {
+	if (proxy->Evaluate(src.c_str(), (const char**)args.get(), &errMsg) == false) {
 		UTF2UTF(errMsg, mResultMsg);
 		proxy->ReleaseBuffer(errMsg);
 	}

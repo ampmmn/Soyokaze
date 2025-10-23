@@ -35,6 +35,8 @@ protected:
 	// 編集開始時のコマンド名
 	CString mOrgName;
 
+	CString mArguments;
+
 	// メッセージ欄
 	CString mMessage;
 	bool mIsTested{true};
