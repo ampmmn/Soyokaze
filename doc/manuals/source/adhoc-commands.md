@@ -26,6 +26,7 @@ adhoc-command/ipaddress.md
 adhoc-command/mailto.md
 adhoc-command/mmcsnapin.md
 adhoc-command/onenote.md
+adhoc-command/outlook-folder.md
 adhoc-command/pathfind.md
 adhoc-command/recentfiles.md
 adhoc-command/slide-jump.md
