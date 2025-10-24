@@ -122,10 +122,7 @@ bool EjectVolumeCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("DriveLetter"), (int)in->mParam.mDriveLetter);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool EjectVolumeCommand::Load(CommandEntryIF* entry)
@@ -137,14 +134,9 @@ bool EjectVolumeCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-
-	TCHAR letter = (TCHAR)entry->Get(_T("DriveLetter"), 0);
-	if (letter < _T('A') || _T('Z') < letter) {
+	if (in->mParam.Load(entry) == false) {
 		return false;
 	}
-	in->mParam.mDriveLetter = letter;
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

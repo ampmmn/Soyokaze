@@ -189,29 +189,8 @@ bool KeySplitterCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
 
-	CString key;
-
-	for (int i = 0; i < 16; ++i) {
-
-		ModifierState state(i);
-		ITEM item;
-		bool hasItem = in->mParam.GetMapping(state, item);
-		key.Format(_T("Use%d"), i);
-		entry->Set(key, hasItem);
-
-		if (hasItem == false) {
-			continue;
-		}
-
-		key.Format(_T("Command%d"), i);
-		entry->Set(key, item.mCommandName);
-		key.Format(_T("ActionName%d"), i);
-		entry->Set(key, item.mActionName);
-	}
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool KeySplitterCommand::Load(CommandEntryIF* entry)
@@ -223,33 +202,7 @@ bool KeySplitterCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-
-	CString key;
-	for (int i = 0; i < 16; ++i) {
-
-		ModifierState state(i);
-		key.Format(_T("Use%d"), i);
-		bool hasEntry = entry->Get(key, false);
-
-		if (hasEntry == false) {
-			in->mParam.DeleteMapping(state);
-			continue;
-		}
-
-		ITEM item;
-		 
-
-		key.Format(_T("Command%d"), i);
-		item.mCommandName = entry->Get(key, _T(""));
-		key.Format(_T("ActionName%d"), i);
-		item.mActionName = entry->Get(key, _T(""));
-
-		in->mParam.SetMapping(state, item);
-	}
-
-	return true;
+	return in->mParam.Load(entry);
 }
 
 bool KeySplitterCommand::NewDialog(Parameter* param)

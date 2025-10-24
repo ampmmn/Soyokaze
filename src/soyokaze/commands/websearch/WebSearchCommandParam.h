@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 #include <regex>
 
 namespace launcherapp {
@@ -12,6 +13,10 @@ class CommandParam
 public:
 	CommandParam();
 	~CommandParam();
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
+
 
 	bool IsEnableShortcutSearch() const;
 

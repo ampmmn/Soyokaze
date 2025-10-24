@@ -1,11 +1,16 @@
 #include "pch.h"
 #include "URLDirectoryIndexCommandParam.h"
+#include "utility/AES.h"
 #include <winhttp.h>
 #include <array>
+#include <vector>
 
 namespace launcherapp {
 namespace commands {
 namespace url_directoryindex {
+
+static std::vector<uint8_t>& Encode(const CString& str, std::vector<uint8_t>& buf);
+static CString Decode(const std::vector<uint8_t>& src);
 
 CommandParam::CommandParam() : mProxyType(0)
 {
@@ -45,6 +50,56 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 	}
 	return *this;
 
+}
+
+bool CommandParam::Save(CommandEntryIF* entry)
+{
+	entry->Set(_T("description"), mDescription);
+
+	entry->Set(_T("url"), mURL);
+
+	entry->Set(_T("serveruser"), mServerUser);
+	std::vector<uint8_t> buf;
+	auto& stm = Encode(mServerPassword, buf);
+	entry->SetBytes(_T("serverpassword"), stm.data(), stm.size());
+
+	entry->Set(_T("proxytype"), mProxyType);
+	entry->Set(_T("proxyhost"), mProxyHost);
+	entry->Set(_T("proxyuser"), mProxyUser);
+
+	auto& stm2 = Encode(mProxyPassword, buf);
+	entry->SetBytes(_T("proxypassword"), stm2.data(), stm2.size());
+
+	return true;
+}
+
+bool CommandParam::Load(CommandEntryIF* entry)
+{
+	mName = entry->GetName();
+	mDescription = entry->Get(_T("description"), _T(""));
+	mURL = entry->Get(_T("url"), _T(""));
+
+	mServerUser = entry->Get(_T("serveruser"), _T(""));
+
+	size_t len = entry->GetBytesLength(_T("serverpassword"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		std::vector<uint8_t> buf(len);
+		entry->GetBytes(_T("serverpassword"), buf.data(), len);
+		mServerPassword = Decode(buf);
+	}
+
+	mProxyType = entry->Get(_T("proxytype"), 0);
+	mProxyHost = entry->Get(_T("proxyhost"), _T(""));
+	mProxyUser = entry->Get(_T("proxyuser"), _T(""));
+
+	len = entry->GetBytesLength(_T("proxypassword"));
+	if (len != CommandEntryIF::NO_ENTRY) {
+		std::vector<uint8_t> buf(len);
+		entry->GetBytes(_T("proxypassword"), buf.data(), len);
+		mProxyPassword = Decode(buf);
+	}
+
+	return true;
 }
 
 // サブパスを連結
@@ -143,6 +198,39 @@ void CommandParam::SimplifyURL(CString& url)
 
 	url = (host + path).c_str();
 }
+
+std::vector<uint8_t>& Encode(const CString& str, std::vector<uint8_t>& buf)
+{
+	utility::aes::AES aes;
+	aes.SetPassphrase("aiueo");  // てきとうa
+
+	int len = str.GetLength() + 1;
+	std::vector<uint8_t> plainData(len * sizeof(TCHAR));
+	memcpy(plainData.data(), (LPCTSTR)str, plainData.size());
+
+	aes.Encrypt(plainData, buf);
+	return buf;
+}
+
+CString Decode(const std::vector<uint8_t>& src)
+{
+	utility::aes::AES aes;
+	aes.SetPassphrase("aiueo");  // てきとう
+
+	std::vector<uint8_t> plainData;
+	if (aes.Decrypt(src, plainData) == false) {
+		return _T("");
+	}
+
+	int len = (int)plainData.size();
+	CString str;
+	memcpy(str.GetBuffer(len), plainData.data(), len);
+	str.ReleaseBuffer();
+
+	return str;
+}
+
+
 
 } // end of namespace url_directoryindex
 } // end of namespace commands

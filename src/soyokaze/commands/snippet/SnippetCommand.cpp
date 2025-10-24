@@ -123,10 +123,7 @@ bool SnippetCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-	entry->Set(_T("description"), GetDescription());
-	entry->Set(_T("text"), in->mParam.mText);
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool SnippetCommand::Load(CommandEntryIF* entry)
@@ -138,9 +135,7 @@ bool SnippetCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mText = entry->Get(_T("text"), _T(""));
+	in->mParam.Load(entry);
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

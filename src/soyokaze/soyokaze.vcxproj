@@ -484,6 +484,7 @@
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommandEditor.h" />
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommandParam.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeEditDialog.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeProvider.h" />
     <ClInclude Include="commands\env\EnvAppSettings.h" />
@@ -975,6 +976,7 @@
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommandEditor.cpp" />
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommandParam.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeEditDialog.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeProvider.cpp" />
     <ClCompile Include="commands\env\EnvAppSettings.cpp" />
@@ -1054,6 +1056,7 @@
     <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />
+    <ClCompile Include="commands\snippet\SnippetCommandParam.cpp" />
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp" />
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />

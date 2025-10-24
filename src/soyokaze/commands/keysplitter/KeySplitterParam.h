@@ -4,6 +4,7 @@
 #include <map>
 
 #include "KeySplitterModifierState.h"
+#include "commands/core/CommandEntryIF.h"
 
 namespace launcherapp {
 namespace commands {
@@ -23,6 +24,9 @@ public:
 	~CommandParam();
 
 	CommandParam& operator = (const CommandParam& rhs);
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
 
 	bool GetMapping(const ModifierState& stae, ITEM& item);
 	void SetMapping(const ModifierState& stae, const ITEM& item);

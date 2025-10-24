@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 
 namespace launcherapp {
 namespace commands {
@@ -14,6 +15,9 @@ public:
 	~CommandParam();
 
 	CommandParam& operator = (const CommandParam& rhs);
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
 
 	CString CombineURL(const CString& subPath) const;
 	CString CombineURL(const CString& subPath1, const CString& subPath2) const;

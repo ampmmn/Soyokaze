@@ -1779,6 +1779,9 @@
     <ClInclude Include="commands\filter\PostFilterCommand.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
+    <ClInclude Include="commands\ejectvolume\EjectVolumeCommandParam.h">
+      <Filter>commands\ejectvolume</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3130,6 +3133,12 @@
     </ClCompile>
     <ClCompile Include="commands\filter\PostFilterCommand.cpp">
       <Filter>commands\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\ejectvolume\EjectVolumeCommandParam.cpp">
+      <Filter>commands\ejectvolume</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\snippet\SnippetCommandParam.cpp">
+      <Filter>commands\snippet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

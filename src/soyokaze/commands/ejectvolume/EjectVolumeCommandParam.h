@@ -1,10 +1,9 @@
 #pragma once
 
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "commands/core/CommandEntryIF.h"
 
-namespace launcherapp {
-namespace commands {
-namespace ejectvolume {
+namespace launcherapp { namespace commands { namespace ejectvolume {
 
 class CommandParam
 {
@@ -14,6 +13,9 @@ public:
 	~CommandParam() {}
 
 	CommandParam& operator = (const CommandParam&) = default;
+
+	bool Save(CommandEntryIF* entry);
+	bool Load(CommandEntryIF* entry);
 
 public:
 	CString mName;
@@ -25,7 +27,5 @@ public:
 };
 
 
-}
-}
-}
+}}}
 

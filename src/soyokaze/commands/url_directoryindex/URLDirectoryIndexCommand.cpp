@@ -16,7 +16,6 @@
 #include "icon/IconLoader.h"
 #include "mainwindow/controller/MainWindowController.h"
 #include "resource.h"
-#include "utility/AES.h"
 
 #include <deque>
 #include <map>
@@ -74,9 +73,6 @@ struct URLDirectoryIndexCommand::PImpl
 		mIsLoaded = false;
 		mIsLoadOK = false;
 	}
-
-	std::vector<uint8_t>& Encode(const CString& str, std::vector<uint8_t>& buf);
-	CString Decode(const std::vector<uint8_t>& buf);
 
 	CommandParam mParam;
 
@@ -225,37 +221,6 @@ bool URLDirectoryIndexCommand::QueryInterface(const launcherapp::core::IFID& ifi
 }
 
 
-
-std::vector<uint8_t>& URLDirectoryIndexCommand::PImpl::Encode(const CString& str, std::vector<uint8_t>& buf)
-{
-	utility::aes::AES aes;
-	aes.SetPassphrase("aiueo");  // てきとうa
-
-	int len = str.GetLength() + 1;
-	std::vector<uint8_t> plainData(len * sizeof(TCHAR));
-	memcpy(plainData.data(), (LPCTSTR)str, plainData.size());
-
-	aes.Encrypt(plainData, buf);
-	return buf;
-}
-
-CString URLDirectoryIndexCommand::PImpl::Decode(const std::vector<uint8_t>& src)
-{
-	utility::aes::AES aes;
-	aes.SetPassphrase("aiueo");  // てきとう
-
-	std::vector<uint8_t> plainData;
-	if (aes.Decrypt(src, plainData) == false) {
-		return _T("");
-	}
-
-	int len = (int)plainData.size();
-	CString str;
-	memcpy(str.GetBuffer(len), plainData.data(), len);
-	str.ReleaseBuffer();
-
-	return str;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -439,25 +404,7 @@ bool URLDirectoryIndexCommand::Save(CommandEntryIF* entry)
 	ASSERT(entry);
 
 	entry->Set(_T("Type"), GetType());
-
-	entry->Set(_T("description"), GetDescription());
-
-	entry->Set(_T("url"), in->mParam.mURL);
-
-	entry->Set(_T("serveruser"), in->mParam.mServerUser);
-	std::vector<uint8_t> buf;
-	auto& stm = in->Encode(in->mParam.mServerPassword, buf);
-	entry->SetBytes(_T("serverpassword"), stm.data(), stm.size());
-
-	entry->Set(_T("proxytype"), in->mParam.mProxyType);
-	entry->Set(_T("proxyhost"), in->mParam.mProxyHost);
-	entry->Set(_T("proxyuser"), in->mParam.mProxyUser);
-
-	auto& stm2 = in->Encode(in->mParam.mProxyPassword, buf);
-	entry->SetBytes(_T("proxypassword"), stm2.data(), stm2.size());
-
-
-	return true;
+	return in->mParam.Save(entry);
 }
 
 bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
@@ -469,29 +416,7 @@ bool URLDirectoryIndexCommand::Load(CommandEntryIF* entry)
 		return false;
 	}
 
-	in->mParam.mName = entry->GetName();
-	in->mParam.mDescription = entry->Get(_T("description"), _T(""));
-	in->mParam.mURL = entry->Get(_T("url"), _T(""));
-
-	in->mParam.mServerUser = entry->Get(_T("serveruser"), _T(""));
-
-	size_t len = entry->GetBytesLength(_T("serverpassword"));
-	if (len != CommandEntryIF::NO_ENTRY) {
-		std::vector<uint8_t> buf(len);
-		entry->GetBytes(_T("serverpassword"), buf.data(), len);
-		in->mParam.mServerPassword = in->Decode(buf);
-	}
-
-	in->mParam.mProxyType = entry->Get(_T("proxytype"), 0);
-	in->mParam.mProxyHost = entry->Get(_T("proxyhost"), _T(""));
-	in->mParam.mProxyUser = entry->Get(_T("proxyuser"), _T(""));
-
-	len = entry->GetBytesLength(_T("proxypassword"));
-	if (len != CommandEntryIF::NO_ENTRY) {
-		std::vector<uint8_t> buf(len);
-		entry->GetBytes(_T("proxypassword"), buf.data(), len);
-		in->mParam.mProxyPassword = in->Decode(buf);
-	}
+	in->mParam.Load(entry);
 
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
 	hotKeyManager->GetKeyBinding(GetName(), &in->mParam.mHotKeyAttr);
