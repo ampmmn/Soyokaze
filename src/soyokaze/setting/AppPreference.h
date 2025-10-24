@@ -92,6 +92,10 @@ public:
 	bool IsEnablePowerPointSlide();
 	// PowerPointシート名による切り替え機能のプレフィックス
 	CString GetPresentationSwitchPrefix();
+	// 
+	bool IsEnableOutlookFolder();
+	CString GetOutlookFolderSwitchPrefix();
+
 
 	// ウインドウの切り替え機能を有効にするか?
 	bool IsEnableWindowSwitch();

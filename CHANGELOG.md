@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- #200 Outlookフォルダ選択機能
+
 ### Changed
 
 - #195 tidy-html5を静的リンクではなくDLLとして利用するようにする

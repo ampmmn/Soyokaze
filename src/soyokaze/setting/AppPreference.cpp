@@ -694,6 +694,16 @@ CString AppPreference::GetPresentationSwitchPrefix()
 	return in->Get(_T("PowerPoint:Prefix"), _T("pj"));
 }
 
+bool AppPreference::IsEnableOutlookFolder()
+{
+	return in->Get(_T("Outlook:EnableFolderName"), false);
+}
+
+CString AppPreference::GetOutlookFolderSwitchPrefix()
+{
+	return in->Get(_T("Outlook:Prefix"), _T("ol"));
+}
+
 // ウインドウの切り替え機能を有効にするか?
 bool AppPreference::IsEnableWindowSwitch()
 {

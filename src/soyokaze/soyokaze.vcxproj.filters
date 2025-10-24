@@ -286,6 +286,9 @@
     <Filter Include="commands\py_extension">
       <UniqueIdentifier>{9dff90b9-fd72-4b5f-8d0a-cfcf24f88bf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\outlook">
+      <UniqueIdentifier>{2e55f220-41df-4b76-9cc4-df4e3a062291}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1782,6 +1785,18 @@
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommandParam.h">
       <Filter>commands\ejectvolume</Filter>
     </ClInclude>
+    <ClInclude Include="commands\outlook\OutlookFolderCommand.h">
+      <Filter>commands\outlook</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\outlook\OutlookFolderProvider.h">
+      <Filter>commands\outlook</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\outlook\OutlookFolderQueryResult.h">
+      <Filter>commands\outlook</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\outlook\OutlookProxy.h">
+      <Filter>commands\outlook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3139,6 +3154,15 @@
     </ClCompile>
     <ClCompile Include="commands\snippet\SnippetCommandParam.cpp">
       <Filter>commands\snippet</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\outlook\OutlookFolderCommand.cpp">
+      <Filter>commands\outlook</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\outlook\OutlookFolderProvider.cpp">
+      <Filter>commands\outlook</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\outlook\OutlookProxy.cpp">
+      <Filter>commands\outlook</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

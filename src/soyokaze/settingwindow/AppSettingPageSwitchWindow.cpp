@@ -34,12 +34,16 @@ public:
 	CString mPrefixWorksheet;
 	// Powerpointスライド名による切り替えを発動するためのプレフィックス
 	CString mPrefixPresentation;
+	// Outlookのフォルダ名による切り替えを発動するためのプレフィックス
+	CString mPrefixOutlook;
 	// ウインドウタイトルによるウインドウ切り替え機能
 	BOOL mIsEnableWindowTitle{FALSE};
 	// Excelワークシート名によるウインドウ切り替え機能
 	BOOL mIsEnableWorksheet{FALSE};
 	// PowerPointスライド名によるウインドウ切り替え機能
 	BOOL mIsEnableSlide{FALSE};
+	// Outlookフォルダ名によるウインドウ切り替え機能
+	BOOL mIsEnableOutlook{FALSE};
 
 	Settings* mSettingsPtr{nullptr};
 };
@@ -56,6 +60,8 @@ void SwitchWindowSettingDialog::OnOK()
 	settingsPtr->Set(_T("Excel:EnableWorkSheet"), (bool)mIsEnableWorksheet);
 	settingsPtr->Set(_T("PowerPoint:Prefix"), mPrefixPresentation);
 	settingsPtr->Set(_T("PowerPoint:EnableSlide"), (bool)mIsEnableSlide);
+	settingsPtr->Set(_T("Outlook:Prefix"), mPrefixOutlook);
+	settingsPtr->Set(_T("Outlook:EnableFolderName"), (bool)mIsEnableOutlook);
 	__super::OnOK();
 }
 
@@ -68,6 +74,8 @@ void SwitchWindowSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_WORKSHEET, mIsEnableWorksheet);
 	DDX_Text(pDX, IDC_EDIT_PREFIX_PRESENTATION, mPrefixPresentation);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SLIDE, mIsEnableSlide);
+	DDX_Text(pDX, IDC_EDIT_PREFIX_OUTLOOK, mPrefixOutlook);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_OUTLOOK, mIsEnableOutlook);
 	
 }
 
@@ -75,6 +83,7 @@ BEGIN_MESSAGE_MAP(SwitchWindowSettingDialog, CDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE_WINDOWTITLE, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLE_WORKSHEET, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLE_SLIDE, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_OUTLOOK, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 
@@ -117,6 +126,8 @@ void SwitchWindowSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnableWorksheet = settingsPtr->Get(_T("Excel:EnableWorkSheet"), true);
 	mPrefixPresentation = settingsPtr->Get(_T("PowerPoint:Prefix"), _T("pj"));
 	mIsEnableSlide = settingsPtr->Get(_T("PowerPoint:EnableSlide"), false);
+	mPrefixOutlook = settingsPtr->Get(_T("Outlook:Prefix"), _T("ol"));
+	mIsEnableOutlook = settingsPtr->Get(_T("Outlook:EnableFolderName"), false);
 }
 
 void SwitchWindowSettingDialog::OnUpdateStatus()
