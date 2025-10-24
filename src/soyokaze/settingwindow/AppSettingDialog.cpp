@@ -193,6 +193,9 @@ BOOL AppSettingDialog::OnInitDialog()
 //	in->mTreeCtrl->SetFocus();
 
 	UpdateData(FALSE);
+
+	SetForegroundWindow();
+
 	return TRUE;
 }
 
