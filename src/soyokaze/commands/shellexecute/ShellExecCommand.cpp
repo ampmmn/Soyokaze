@@ -12,6 +12,7 @@
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/builtin/ShowPropertiesAction.h"
+#include "actions/activate_window/RestoreWindowAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
@@ -139,7 +140,21 @@ bool ShellExecCommand::CanExecute(String* reasonMsg)
 
 bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 {
+	// 条件に合致するウインドウが存在する場合はウインドウ切替を行う
+	HWND hwndTarget = in->mParam.mActivateWindowParam.FindHwnd();
+	bool shouldSwitchWindow = in->mParam.mActivateWindowParam.mIsEnable && IsWindow(hwndTarget);
+
 	if (modifierFlags == 0) {
+		if (shouldSwitchWindow) {
+			*action = new launcherapp::actions::activate_window::RestoreWindowAction(hwndTarget);
+			return true;
+		}
+		else {
+			return CreateExecuteAction(action, false);
+		}
+	}
+	else if (modifierFlags == Command::MODIFIER_SHIFT && shouldSwitchWindow) {
+		// 「条件に合致するウインドウが存在する場合はウインドウ切替を行う」場合でも、Shift-Enterで通常起動もできるようにする
 		return CreateExecuteAction(action, false);
 	}
 	else if (modifierFlags == Command::MODIFIER_CTRL) {
@@ -161,6 +176,7 @@ bool ShellExecCommand::CreateExecuteAction(Action** action, bool isForceRunAs)
 		return false;
 	}
 
+	// パスを実行する
 	auto a = new ExecuteAction(new ShellExecTarget(in->mParam));
 	a->SetHistoryPolicy(ExecuteAction::HISTORY_HASPARAMONLY);
 

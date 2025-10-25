@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShellExecCommandParam.h"
 #include "hotkey/CommandHotKeyManager.h"
+#include "resource.h"
 
 
 #ifdef _DEBUG
@@ -42,6 +43,184 @@ void ATTRIBUTE::SetShowType(int type)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+ActivateWindowParam& ActivateWindowParam::operator = (const ActivateWindowParam& rhs)
+{
+	if (this != &rhs) {
+		mCaptionStr = rhs.mCaptionStr;
+		mClassStr = rhs.mClassStr;
+		mIsEnable = rhs.mIsEnable;
+		mIsUseRegExp = rhs.mIsUseRegExp;
+	}
+	return *this;
+}
+
+HWND ActivateWindowParam::FindHwnd()
+{
+	struct local_param {
+		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
+			auto thisPtr = (local_param*)lp;
+
+			// 自プロセスのウインドウは対象外
+			DWORD pid{0};
+			GetWindowThreadProcessId(h, &pid);
+			if (GetCurrentProcessId() == pid) {
+				return TRUE;
+			}
+
+			if (thisPtr->mParam->mCaptionStr.IsEmpty() == FALSE) {
+				TCHAR caption[256];
+				::GetWindowText(h, caption, 256);
+				if (thisPtr->mParam->IsMatchCaption(caption) == FALSE) {
+					return TRUE;
+				}
+			}
+			if (thisPtr->mParam->mClassStr.IsEmpty() == FALSE) {
+				TCHAR clsName[256];
+				::GetClassName(h, clsName, 256);
+				if (thisPtr->mParam->IsMatchClass(clsName) == FALSE) {
+					return TRUE;
+				}
+			}
+
+			thisPtr->mHwnd = h;
+			return FALSE;
+		}
+		ActivateWindowParam* mParam = nullptr;
+		HWND mHwnd = nullptr;
+	} param;
+	param.mParam = this;
+	EnumWindows(local_param::callback, (LPARAM)&param);
+
+	return param.mHwnd;
+}
+
+bool ActivateWindowParam::IsMatchCaption(LPCTSTR caption)
+{
+	if (mIsUseRegExp) {
+		if (BuildCaptionRegExp(nullptr) == false) {
+			return false;
+		}
+		try {
+			return std::regex_match(tstring(caption), *mRegCaption.get());
+		}
+		catch(std::regex_error&) {
+			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
+			return false;
+		}
+	}
+	else {
+		return mCaptionStr == caption;
+	}
+}
+
+bool ActivateWindowParam::IsMatchClass(LPCTSTR clsName)
+{
+	if (mIsUseRegExp) {
+		if (BuildClassRegExp(nullptr) == false) {
+			return false;
+		}
+		try {
+			return std::regex_match(tstring(clsName), *mRegClass.get());
+		}
+		catch(std::regex_error&) {
+			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
+			return false;
+		}
+	}
+	else {
+		return mClassStr == clsName;
+	}
+}
+
+bool ActivateWindowParam::BuildCaptionRegExp(CString* errMsg)
+{
+	try {
+		if (mIsUseRegExp) {
+			auto regExp = std::make_unique<tregex>();
+			*regExp = tregex(tstring(mCaptionStr));
+			mRegCaption.swap(regExp);
+		}
+		return true;
+	}
+	catch(std::regex_error& e) {
+
+		CString msg;
+		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
+			msg += _T("\n");
+		}
+		CStringA what(e.what());
+		msg += _T("\n");
+		msg += (CString)what;
+		msg += _T("\n");
+		msg += mCaptionStr;
+
+		if (errMsg) {
+			*errMsg = msg;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool ActivateWindowParam::BuildClassRegExp(CString* errMsg)
+{
+	try {
+		if (mIsUseRegExp) {
+			auto regExp = std::make_unique<tregex>();
+			*regExp = tregex(tstring(mClassStr));
+			mRegClass.swap(regExp);
+		}
+		return true;
+	}
+	catch(std::regex_error& e) {
+
+		CString msg;
+		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
+			msg += _T("\n");
+		}
+		CStringA what(e.what());
+		msg += _T("\n");
+		msg += (CString)what;
+		msg += _T("\n");
+		msg += mClassStr;
+
+		if (errMsg) {
+			*errMsg = msg;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool ActivateWindowParam::Save(CommandEntryIF* entry) const
+{
+	entry->Set(_T("CaptionStr"), mCaptionStr);
+	entry->Set(_T("ClassStr"), mClassStr);
+	entry->Set(_T("IsEnableWindowActivate"), mIsEnable);
+	entry->Set(_T("IsUseRegExp"), mIsUseRegExp);
+
+	return true;
+}
+
+bool ActivateWindowParam::Load(CommandEntryIF* entry)
+{
+	CString captionStr = entry->Get(_T("CaptionStr"), _T(""));
+	CString classStr = entry->Get(_T("ClassStr"), _T(""));
+	bool isEnable = entry->Get(_T("IsEnableWindowActivate"), false);
+	bool isUseRegExp = entry->Get(_T("IsUseRegExp"), false);
+
+	mCaptionStr = captionStr;
+	mClassStr = classStr;
+	mIsEnable = isEnable;
+	mIsUseRegExp = isUseRegExp;
+
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 
 CommandParam::CommandParam() :
 	mIsRunAsAdmin(FALSE),
@@ -65,6 +244,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mEnviron = rhs.mEnviron;
 	mHotKeyAttr = rhs.mHotKeyAttr;
 	mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
+	mActivateWindowParam = rhs.mActivateWindowParam;
 }
 
 CommandParam::~CommandParam()
@@ -85,6 +265,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mEnviron = rhs.mEnviron;
 		mHotKeyAttr = rhs.mHotKeyAttr;
 		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
+		mActivateWindowParam = rhs.mActivateWindowParam;
 	}
 	return *this;
 }
@@ -126,6 +307,8 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 	}
 
 	entry->Set(_T("allow_auto_execute"), mIsAllowAutoExecute ? true : false);
+
+	mActivateWindowParam.Save(entry);
 
 	return true;
 }
@@ -176,6 +359,8 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mEnviron.swap(envMap);
 
 	mIsAllowAutoExecute = entry->Get(_T("allow_auto_execute"), false) ? TRUE : FALSE;
+
+	mActivateWindowParam.Load(entry);
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();

@@ -165,6 +165,12 @@ void SettingDialog::OnButtonTest()
 		return ;
 	}
 
+	CString errMsg;
+	if (in->mParam.BuildRegExp(&errMsg) == false) {
+		PopupMessage(errMsg);
+		return;
+	}
+
 	HWND hwnd = in->mParam.FindHwnd();
 	if (IsWindow(hwnd) == FALSE) {
 		PopupMessage("ウインドウは見つかりませんでした");

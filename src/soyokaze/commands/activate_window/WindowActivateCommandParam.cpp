@@ -274,8 +274,10 @@ bool CommandParam::TryBuildClassRegExp(tregex& regExp, CString* errMsg) const
 bool CommandParam::IsMatchCaption(LPCTSTR caption)
 {
 	if (IsUseRegExp()) {
-		if (BuildCaptionRegExp(nullptr) == false) {
-			return false;
+		if (mRegCaption.get() == nullptr) {
+			if (BuildCaptionRegExp(nullptr) == false) {
+				return false;
+			}
 		}
 		try {
 			return std::regex_match(tstring(caption), *mRegCaption.get());
@@ -294,7 +296,7 @@ bool CommandParam::IsMatchClass(LPCTSTR className)
 {
 	if (IsUseRegExp()) {
 		if (mRegClass.get() == nullptr) {
-			if (BuildCaptionRegExp(nullptr) == false) {
+			if (BuildClassRegExp(nullptr) == false) {
 				return false;
 			}
 		}

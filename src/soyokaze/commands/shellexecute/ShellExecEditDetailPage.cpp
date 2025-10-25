@@ -2,12 +2,15 @@
 #include "framework.h"
 #include "ShellExecEditDetailPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
-#include "gui/FolderDialog.h"
-#include "icon/IconLabel.h"
+#include "commands/common/Message.h"
 #include "commands/core/CommandRepository.h"
+#include "gui/FolderDialog.h"
+#include "gui/DDXWrapper.h"
+#include "icon/IconLabel.h"
+#include "icon/IconLoader.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
-#include "icon/IconLoader.h"
+#include "utility/ProcessPath.h"
 #include "resource.h"
 #include <vector>
 
@@ -15,6 +18,7 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
 
 ShellExecEditDetailPage::ShellExecEditDetailPage(CWnd* parentWnd) : 
 	SettingPage(_T("その他"), IDD_SHELLEXECUTECOMMAND2, parentWnd)
@@ -34,14 +38,26 @@ void ShellExecEditDetailPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PARAM0, mParam.mNoParamAttr.mParam);
 	DDX_Control(pDX, IDC_BUTTON_MENU, mPathMenuBtn);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
+
+	DDX_Check(pDX, IDC_CHECK_ACTIVATEWINDOW, mParam.mActivateWindowParam.mIsEnable);
+	DDX_Text(pDX, IDC_EDIT_CAPTION, mParam.mActivateWindowParam.mCaptionStr);
+	DDX_Text(pDX, IDC_EDIT_CLASS, mParam.mActivateWindowParam.mClassStr);
+	DDX_Check(pDX, IDC_CHECK_REGEXP, mParam.mActivateWindowParam.mIsUseRegExp);
 }
 
 BEGIN_MESSAGE_MAP(ShellExecEditDetailPage, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_PATH0, OnEditPath0Changed)
 	ON_COMMAND(IDC_CHECK_USE0, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ACTIVATEWINDOW, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT2, OnButtonResolveShortcut0)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)
+	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
+	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_CLASS, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_REGEXP, OnUpdateStatus)
+	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
+
 END_MESSAGE_MAP()
 
 
@@ -54,6 +70,8 @@ BOOL ShellExecEditDetailPage::OnInitDialog()
 	mMenuForPathBtn.InsertMenu((UINT)-1, 0, 2, _T("フォルダ選択"));
 	mPathMenuBtn.m_hMenu = (HMENU)mMenuForPathBtn;
 
+	mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+	mIconLabel.DrawIcon(IconLoader::Get()->LoadWindowIcon());
 
 	UpdateStatus();
 	UpdateData(FALSE);
@@ -63,14 +81,23 @@ BOOL ShellExecEditDetailPage::OnInitDialog()
 
 bool ShellExecEditDetailPage::UpdateStatus()
 {
+	// 引数あり/なしの制御
 	GetDlgItem(IDC_STATIC_PATH0)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_STATIC_PARAM00)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_EDIT_PATH0)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_EDIT_PARAM0)->EnableWindow(mParam.mIsUse0);
 	GetDlgItem(IDC_BUTTON_MENU)->EnableWindow(mParam.mIsUse0);
 
+	// ウインドウ切替の制御
+	GetDlgItem(IDC_EDIT_CAPTION)->EnableWindow(mParam.mActivateWindowParam.mIsEnable);
+	GetDlgItem(IDC_EDIT_CLASS)->EnableWindow(mParam.mActivateWindowParam.mIsEnable);
+	GetDlgItem(IDC_CHECK_REGEXP)->EnableWindow(mParam.mActivateWindowParam.mIsEnable);
+	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(mParam.mActivateWindowParam.mIsEnable);
+	GetDlgItem(IDC_STATIC_ICON)->EnableWindow(mParam.mActivateWindowParam.mIsEnable);
+
 	BOOL isShortcut0 = CString(_T(".lnk")).CompareNoCase(PathFindExtension(mParam.mNoParamAttr.mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT2)->ShowWindow(isShortcut0? SW_SHOW : SW_HIDE);
+
 
 	if (mParam.mIsUse0 && mParam.mNoParamAttr.mPath.IsEmpty()) {
 		mMessage.LoadString(IDS_ERR_PATH0ISEMPTY);
@@ -185,6 +212,7 @@ void ShellExecEditDetailPage::OnOK()
 	param->mNoParamAttr.mParam = mParam.mNoParamAttr.mParam;
 	param->mIsUse0 = mParam.mIsUse0;
 	param->mIsAllowAutoExecute = mParam.mIsAllowAutoExecute;
+	param->mActivateWindowParam = mParam.mActivateWindowParam;
 
 	__super::OnOK();
 }
@@ -223,4 +251,79 @@ void ShellExecEditDetailPage::OnPathMenuBtnClicked()
 	}
 }
 
+void ShellExecEditDetailPage::OnButtonTest()
+{
+	UpdateData();
+
+	if (UpdateStatus() == false) {
+		return ;
+	}
+
+	if (mParam.mActivateWindowParam.mIsEnable == false) {
+		return;
+	}
+
+	// 正規表現として入力された文字列が正しいかを確認
+	CString errMsg;
+	if (mParam.mActivateWindowParam.BuildCaptionRegExp(&errMsg) == false || 
+	    mParam.mActivateWindowParam.BuildClassRegExp(&errMsg) == false) {
+		PopupMessage(errMsg);
+		return;
+	}
+
+	// ウインドウを探す
+	HWND hwnd = mParam.mActivateWindowParam.FindHwnd();
+	if (IsWindow(hwnd) == FALSE) {
+		PopupMessage("ウインドウは見つかりませんでした");
+		return;
+	}
+
+	FLASHWINFO fi;
+	fi.cbSize = sizeof(fi);
+	fi.hwnd = hwnd;
+	fi.dwFlags = FLASHW_ALL;
+	fi.uCount = 2;
+	fi.dwTimeout = 500;
+	::FlashWindowEx(&fi);
+}
+
+LRESULT
+ShellExecEditDetailPage::OnUserMessageCaptureWindow(WPARAM pParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(pParam);
+
+	HWND hTargetWnd = (HWND)lParam;
+	if (IsWindow(hTargetWnd) == FALSE) {
+		return 0;
+	}
+	ProcessPath processPath(hTargetWnd);
+
+	// 自プロセスのウインドウなら何もしない
+	if (GetCurrentProcessId() == processPath.GetProcessId()) {
+		return 0;
+	}
+
+	HWND hwndRoot = ::GetAncestor(hTargetWnd, GA_ROOT);
+
+	TCHAR caption[256];
+	::GetWindowText(hwndRoot, caption, 256);
+	TCHAR clsName[256];
+	::GetClassName(hwndRoot, clsName, 256);
+
+	mParam.mActivateWindowParam.mCaptionStr = caption;
+	mParam.mActivateWindowParam.mClassStr = clsName;
+	mParam.mActivateWindowParam.mIsUseRegExp = false;
+
+	UpdateStatus();
+	UpdateData(FALSE);
+
+	try {
+		CString path = processPath.GetProcessPath();
+		mIconLabel.DrawIcon(IconLoader::Get()->GetDefaultIcon(path));
+	}
+	catch (ProcessPath::Exception&) {
+		mIconLabel.DrawIcon(IconLoader::Get()->LoadWindowIcon());
+	}
+	return 0;
+}
 

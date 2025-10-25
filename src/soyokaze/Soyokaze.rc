@@ -468,12 +468,23 @@ BEGIN
     LTEXT           "パラメータ(&B):",IDC_STATIC_PARAM00,29,71,65,8
     EDITTEXT        IDC_EDIT_PARAM0,120,72,154,14,ES_AUTOHSCROLL
     PUSHBUTTON      "リンク先に置換(&O)",IDC_BUTTON_RESOLVESHORTCUT2,275,71,64,17
-    PUSHBUTTON      "F2",IDC_BUTTON_BROWSEFILE2,276,118,21,17,NOT WS_VISIBLE
-    PUSHBUTTON      "D2",IDC_BUTTON_BROWSEDIR2,299,118,21,17,NOT WS_VISIBLE
-    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,18,7,301,8
-    LTEXT           "【実行時引数なし】",IDC_STATIC_PARAM0,25,39,65,8
+    PUSHBUTTON      "F2",IDC_BUTTON_BROWSEFILE2,294,26,21,17,NOT WS_VISIBLE
+    PUSHBUTTON      "D2",IDC_BUTTON_BROWSEDIR2,317,26,21,17,NOT WS_VISIBLE
     CONTROL         "キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する(&A)",IDC_CHECK_ALLOWAUTOEXEC,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,267,10
+    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,33,173,75,8
+    EDITTEXT        IDC_EDIT_CAPTION,120,170,206,14,ES_AUTOHSCROLL
+    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,33,193,65,8
+    EDITTEXT        IDC_EDIT_CLASS,120,189,206,14,ES_AUTOHSCROLL
+    CONTROL         "正規表現を使用する(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,32,211,93,10
+    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,271,209,55,14
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,18,7,301,8
+    LTEXT           "【実行時引数なし】",IDC_STATIC_PARAM0,25,39,65,8
+    LTEXT           "指定したタイトル／クラスに合致するウインドウをアクティブにします\n←をウインドウにドラッグ&&ドロップすると、タイトルとクラスを取得できます",IDC_STATIC_PARAMHELP,53,147,284,20
+    GROUPBOX        "検索条件",IDC_STATIC,20,132,320,99
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,28,147,18,16
+    CONTROL         "条件に合致するウインドウが存在する場合にパスを起動せずにウインドウをアクティブにする(&S)",IDC_CHECK_ACTIVATEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,118,300,10
 END
 
 IDD_ARGUMENTS DIALOGEX 0, 0, 209, 57
@@ -2352,6 +2363,16 @@ BEGIN
     0, 0, 0, 0,
     100, 0, 0, 0,
     100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 0, 0

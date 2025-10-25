@@ -2,6 +2,7 @@
 
 #include "gui/SettingPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
+#include "icon/CaptureIconLabel.h"
 
 class IconLabel;
 
@@ -27,6 +28,8 @@ protected:
 	// 
 	CMFCMenuButton mPathMenuBtn;
 	CMenu mMenuForPathBtn;
+	// ウインドウキャプチャ用アイコン
+	CaptureIconLabel mIconLabel;
 public:
 	CommandParam mParam;
 
@@ -46,5 +49,7 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonResolveShortcut0();
 	afx_msg void OnPathMenuBtnClicked();
+	afx_msg void OnButtonTest();
+	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
 };
 
