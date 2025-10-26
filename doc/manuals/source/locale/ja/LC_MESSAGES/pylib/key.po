@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.46.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 16:59+0900\n"
+"POT-Creation-Date: 2025-10-26 12:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -46,7 +46,7 @@ msgid "Arguments"
 msgstr "引数"
 
 #: ../../source/pylib/key.md:21
-msgid "chars(文字列)   押すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](key strings)を参照のこと"
+msgid "chars(文字列)   押すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](#key-strings)を参照のこと"
 msgstr ""
 
 #: ../../source/pylib/key.md:24 ../../source/pylib/key.md:45
@@ -69,7 +69,7 @@ msgid "キーを放す。"
 msgstr ""
 
 #: ../../source/pylib/key.md:42
-msgid "chars(文字列)   放すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](key strings)を参照のこと"
+msgid "chars(文字列)   放すキーを表す文字。指定可能な文字列は[利用可能なキー文字列](#key-strings)を参照のこと"
 msgstr ""
 
 #: ../../source/pylib/key.md:49
@@ -84,7 +84,7 @@ msgstr ""
 
 #: ../../source/pylib/key.md:70
 msgid ""
-"input(文字列またはリスト)   放すキーを表す文字または文字列のリスト。指定可能な文字列は[利用可能なキー文字列](key "
+"input(文字列またはリスト)   放すキーを表す文字または文字列のリスト。指定可能な文字列は[利用可能なキー文字列](#key-"
 "strings)を参照のこと"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2025-10-26 12:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,96 +24,102 @@ msgid "Split Command"
 msgstr "振り分けコマンド"
 
 #: ../../source/user-command/split.md:3
-msgid "コマンドを実行したときの`Enter`キーの押下状態(修飾キーの組み合わせ)に応じて、異なるコマンドを実行できるようにする"
+msgid "コマンドを実行したときの`⏎`キーの押下状態(修飾キーの組み合わせ)に応じて、異なるコマンドを実行できるようにする"
 msgstr ""
 
 #: ../../source/user-command/split.md:5
-msgid ""
-"このコマンドを使うと、`Enter`キーのみを押してコマンドを実行した場合と、`Shift-Enter`キーや`Ctrl-"
-"Enter`キーを押した場合で異なるコマンドを実行させることができる"
+msgid "![](../image/user-command/keysplitter/introduction.png)"
 msgstr ""
 
 #: ../../source/user-command/split.md:7
-msgid "![](../image/splitter.svg)"
+msgid "このコマンドを使うと、`⏎`キーのみを押してコマンドを実行した場合と、`Shift-⏎`キーや`Ctrl-⏎`キーを押した場合で異なるコマンドを実行させることができる"
 msgstr ""
 
 #: ../../source/user-command/split.md:9
-msgid ""
-"[フィルタコマンド](/user-command/filter) と組み合わせて使用することを想定している。   "
-"一つのフィルタコマンドに対して、キーの押し方によって異なるアクションを割り当てることができる。"
+msgid "![](../image/user-command/keysplitter/splitter.svg)"
+msgstr ""
+
+#: ../../source/user-command/split.md:11
+msgid "主な用途"
 msgstr ""
 
 #: ../../source/user-command/split.md:12
-msgid "Description"
-msgstr "設定画面"
-
-#: ../../source/user-command/split.md:14
-msgid "![](../image/edit-keysplittercommand.png)"
+msgid ""
+"[フィルタコマンド](/user-command/filter) の後段のアクションとして使う   "
+"一つのフィルタコマンドに対して、キーの押し方によって異なるアクションを割り当てることができる。"
 msgstr ""
 
-#: ../../source/user-command/split.md:16
-msgid "`コマンドの名前`"
+#: ../../source/user-command/split.md:14
+msgid "[Web検索コマンド](/user-command/websearch)と組み合わせる 押したキーに応じて異なる検索を行う"
 msgstr ""
 
 #: ../../source/user-command/split.md:17
-msgid "入力画面からコマンドを実行するためのキーワード"
-msgstr ""
-
-#: ../../source/user-command/split.md:18
-msgid "`コマンドの説明`"
-msgstr ""
+msgid "Description"
+msgstr "設定画面"
 
 #: ../../source/user-command/split.md:19
-msgid "コメント表示欄に記載される文字列。"
-msgstr ""
-
-#: ../../source/user-command/split.md:20
-msgid "`キー別割り当てコマンド`"
+msgid "![](../image/user-command/keysplitter/edit-keysplittercommand.png)"
 msgstr ""
 
 #: ../../source/user-command/split.md:21
-msgid "`Enter`や`Shift-Enter`など、キー操作ごとに割り当てるコマンドの一覧が表示されるリスト"
+msgid "`コマンドの名前`"
 msgstr ""
 
 #: ../../source/user-command/split.md:22
-msgid "`追加`"
+msgid "入力画面からコマンドを実行するためのキーワード"
 msgstr ""
 
 #: ../../source/user-command/split.md:23
-msgid "キーとコマンドの関連付けを追加するボタン"
+msgid "`コマンドの説明`"
 msgstr ""
 
 #: ../../source/user-command/split.md:24
-msgid "`削除`"
+msgid "コメント表示欄に記載される文字列。"
 msgstr ""
 
 #: ../../source/user-command/split.md:25
-msgid "既存のキーとコマンドの関連付けを削除するためのボタン"
+msgid "`キー別割り当てコマンド`"
+msgstr ""
+
+#: ../../source/user-command/split.md:26
+msgid "`⏎`や`Shift-⏎`など、キー操作ごとに割り当てるコマンドの一覧が表示されるリスト"
 msgstr ""
 
 #: ../../source/user-command/split.md:27
+msgid "`追加`   キーとコマンドの関連付けを追加するボタン"
+msgstr ""
+
+#: ../../source/user-command/split.md:29
+msgid "`編集`   既存の関連付けを編集するボタン"
+msgstr ""
+
+#: ../../source/user-command/split.md:31
+msgid "`削除`   既存のキーとコマンドの関連付けを削除するためのボタン"
+msgstr ""
+
+#: ../../source/user-command/split.md:34
 msgid "Remarks"
 msgstr "補足説明"
 
-#: ../../source/user-command/split.md:29
+#: ../../source/user-command/split.md:36
 msgid "コマンド実行時に与えられた後続パラメータをすべて後段のコマンドにそのまま渡す"
 msgstr ""
 
-#: ../../source/user-command/split.md:30
+#: ../../source/user-command/split.md:37
 msgid ""
 "コマンド種別によっては、ShiftキーやCtrlキーを組み合わせて実行した場合に異なる動作をするものがあるが、 "
 "振り分けコマンド経由で起動された後段のコマンドはすべて、修飾キーが押されていない状態として実行される"
 msgstr ""
 
-#: ../../source/user-command/split.md:32
+#: ../../source/user-command/split.md:39
 msgid "コマンド実行時のキー押下状態をみて振り分けるためのコマンドであるため、ホットキーを設定することはできない"
 msgstr ""
 
-#: ../../source/user-command/split.md:34
+#: ../../source/user-command/split.md:41
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 
-#: ../../source/user-command/split.md:36
+#: ../../source/user-command/split.md:43
 msgid "割り当てたキーとコマンドの関連付けに従う"
 msgstr ""
 

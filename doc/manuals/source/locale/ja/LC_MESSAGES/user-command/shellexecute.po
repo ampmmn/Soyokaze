@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 12:54+0900\n"
+"POT-Creation-Date: 2025-10-26 12:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -171,7 +171,33 @@ msgid ""
 "入力欄に入力したキーワードがコマンド名に完全一致し、他の候補がない場合に、コマンド実行を自動確定(実行)する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:81
+#: ../../source/user-command/shellexecute.md:80
+msgid ""
+"`条件に合致するウインドウが存在する場合にパスを起動せずにウインドウをアクティブにする`   "
+"指定条件(ウインドウクラス名/ウインドウタイトル)に該当するウインドウが存在する場合に、それをアクティブにして、`パス`で設定したファイルを実行しない。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:82
+msgid "想定用途: アプリを複数起動させずに使いたい場合に用いる。(アプリがすでに起動済の場合は新しいプロセスを起動せずに、既存のウインドウに切り替える)"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:83
+msgid "`ウインドウタイトル`   ウインドウのタイトルを指定する。指定しなかった場合はウインドウクラスのみで判断する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:85
+msgid "`ウインドウクラス`   ウインドウクラス名を指定する。指定しなかった場合はウインドウタイトルのみで判断する"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:87
+msgid "`正規表現を使用する`   チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:89
+msgid "`テスト`   指定した条件に該当するウインドウを探す。ウインドウが見つかると、そのプログラムのタスクバージョンのアイコンが点滅する。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:92
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

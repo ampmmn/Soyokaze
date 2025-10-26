@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 10:47+0900\n"
+"POT-Creation-Date: 2025-10-26 12:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -124,39 +124,39 @@ msgid "App HotKey"
 msgstr "ランチャー呼び出しキー 設定画面"
 
 #: ../../source/window/app-settings.md:42
-#: ../../source/window/app-settings.md:649
+#: ../../source/window/app-settings.md:655
 msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
 msgstr ""
 
 #: ../../source/window/app-settings.md:44
-#: ../../source/window/app-settings.md:651
+#: ../../source/window/app-settings.md:657
 msgid "![](../image/hotkeyForApp.png)"
 msgstr ""
 
 #: ../../source/window/app-settings.md:46
-#: ../../source/window/app-settings.md:653
+#: ../../source/window/app-settings.md:659
 msgid ""
 "`ホットキーを設定する`   修飾キー(`Alt` `Ctrl` `Shift` `Win`) + "
 "任意のキーを同時押しすることによりアプリを表示する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:48
-#: ../../source/window/app-settings.md:655
+#: ../../source/window/app-settings.md:661
 msgid "`修飾キー`   修飾キーを選択するためのもの。"
 msgstr ""
 
 #: ../../source/window/app-settings.md:50
-#: ../../source/window/app-settings.md:657
+#: ../../source/window/app-settings.md:663
 msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合   Ctrl+A"
 msgstr ""
 
 #: ../../source/window/app-settings.md:52
-#: ../../source/window/app-settings.md:659
+#: ../../source/window/app-settings.md:665
 msgid "`キー`   文字を選択する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:54
-#: ../../source/window/app-settings.md:661
+#: ../../source/window/app-settings.md:667
 msgid ""
 "`修飾キーの組み合わせ入力`   修飾キー(`Alt` `Ctrl` `Shift` "
 "`Win`)を二つ組み合わせ入力することによりアプリを表示する方式   "
@@ -165,12 +165,12 @@ msgid ""
 msgstr ""
 
 #: ../../source/window/app-settings.md:58
-#: ../../source/window/app-settings.md:665
+#: ../../source/window/app-settings.md:671
 msgid "`一つ目の入力`   一つ目に入力する修飾キーを選択する"
 msgstr ""
 
 #: ../../source/window/app-settings.md:60
-#: ../../source/window/app-settings.md:667
+#: ../../source/window/app-settings.md:673
 msgid "`二つ目の入力`   二つ目に入力する修飾キーを選択する"
 msgstr ""
 
@@ -1194,7 +1194,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/window/app-settings.md:467
-msgid "機能を利用するためにはExcel(デスクトップ版) または LibreOfficeがインストールされている必要がある"
+msgid "機能を利用するためには製品版Excel(デスクトップ版) または LibreOfficeがインストールされている必要がある"
 msgstr ""
 
 #: ../../source/window/app-settings.md:468
@@ -1210,7 +1210,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/window/app-settings.md:474
-msgid "機能を利用するためにはPowerPoint(デスクトップ版)がインストールされている必要がある"
+msgid "機能を利用するためには製品版PowerPoint(デスクトップ版)がインストールされている必要がある"
 msgstr ""
 
 #: ../../source/window/app-settings.md:475
@@ -1219,325 +1219,341 @@ msgid ""
 "キーワードを入力した時点で、スライドの一覧が表示される 初期値は`pj` (`p`owerpoint `j`ump の略)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:481
-msgid "Extensions > Clipboard History"
-msgstr "拡張機能＞クリップボード履歴"
-
-#: ../../source/window/app-settings.md:483
-msgid "[クリップボード履歴](/adhoc-command/clipboard-history)機能に関する設定を行う画面"
+#: ../../source/window/app-settings.md:479
+msgid ""
+"`Outlookのフォルダ選択を有効にする`   "
+"入力画面を表示した時点で起動しているOutlookのメールフォルダ名の一覧を候補として検索し、それを実行したら該当するフォルダを選択する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:485
-msgid "![](../image/appsetting-clipboardhistory.png)"
+#: ../../source/window/app-settings.md:481
+msgid "機能を利用するためには製品版Outlook(デスクトップ版)がインストールされている必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings.md:482
+msgid ""
+"`プレフィックス`   `Outlookのフォルダ選択を有効にする`の候補を表示するためキーワードを指定する   "
+"キーワードを入力した時点で、フォルダの一覧が表示される 初期値は`ol` (`o`ut`l`ook の略)"
 msgstr ""
 
 #: ../../source/window/app-settings.md:487
+msgid "Extensions > Clipboard History"
+msgstr "拡張機能＞クリップボード履歴"
+
+#: ../../source/window/app-settings.md:489
+msgid "[クリップボード履歴](/adhoc-command/clipboard-history)機能に関する設定を行う画面"
+msgstr ""
+
+#: ../../source/window/app-settings.md:491
+msgid "![](../image/appsetting-clipboardhistory.png)"
+msgstr ""
+
+#: ../../source/window/app-settings.md:493
 msgid "`有効にする`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:488
+#: ../../source/window/app-settings.md:494
 msgid "チェックすると、[クリップボード履歴](/adhoc-command/clipboard-history)機能を有効にする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:489
+#: ../../source/window/app-settings.md:495
 msgid "`プレフィックス`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:490
+#: ../../source/window/app-settings.md:496
 msgid ""
 "クリップボード履歴を候補として表示するためのキーワードを指定する   ![](../image/clipboardhistory-"
 "prefix.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:492
+#: ../../source/window/app-settings.md:498
 msgid "`検索結果表示件数`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:493
+#: ../../source/window/app-settings.md:499
 msgid "候補に表示する件数の上限を指定する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:494
+#: ../../source/window/app-settings.md:500
 msgid "`登録時の1件あたり上限サイズ`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:495
+#: ../../source/window/app-settings.md:501
 msgid "クリップボードが更新されたとき、テキストのサイズが指定サイズを超過する場合は履歴に追加しない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:496
+#: ../../source/window/app-settings.md:502
 msgid "`履歴件数の上限`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:497
+#: ../../source/window/app-settings.md:503
 msgid "履歴の件数が上限を超過したら、古いものから履歴を削除する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:498
+#: ../../source/window/app-settings.md:504
 msgid "`次の記録を有効にするまでの間隔`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:499
+#: ../../source/window/app-settings.md:505
 msgid "前回のクリップボード更新から、指定した時間が経過しないうちに更新が再度行われた場合は履歴に追加しない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:500
+#: ../../source/window/app-settings.md:506
 msgid "`無視するパターン`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:501
+#: ../../source/window/app-settings.md:507
 msgid "指定した正規表現パターンに合致するテキストを履歴に追加しない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:502
+#: ../../source/window/app-settings.md:508
 msgid "`クリップボード履歴ではC/Migemoを使用しない`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:503
+#: ../../source/window/app-settings.md:509
 msgid "チェックすると、クリップボード履歴の候補の絞り込みにおいて、C/Migemoによる正規表現マッチングを使用しない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:504
+#: ../../source/window/app-settings.md:510
 msgid "現状のアプリの実装だと、クリップボード履歴の絞り込みにおいてC/Migemoが生成した正規表現を使ってマッチングをすると、すこし遅い感じがあるため無効化できるようにする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:505
+#: ../../source/window/app-settings.md:511
 msgid "チェックを外した場合は[入力](/window/app-settings.md#keyword-input)設定に従う"
 msgstr ""
 
-#: ../../source/window/app-settings.md:506
+#: ../../source/window/app-settings.md:512
 msgid "`プレビューウインドウを表示する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:507
+#: ../../source/window/app-settings.md:513
 msgid "チェックすると、候補欄で選択したクリップボード履歴のテキスト内容を確認するためのプレビューウインドウを表示する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:509
+#: ../../source/window/app-settings.md:515
 msgid "Extension > Path Conversion"
 msgstr "拡張機能＞パス変換"
 
-#: ../../source/window/app-settings.md:511
+#: ../../source/window/app-settings.md:517
 msgid "![](../image/appsetting-pathconvert.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:513
+#: ../../source/window/app-settings.md:519
 msgid "`git-bashパスをローカルパス表記に変換する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:514
+#: ../../source/window/app-settings.md:520
 msgid "チェックすると、[git-bashパス変換](/adhoc-command/git-bash-pashconvert)を有効にする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:515
+#: ../../source/window/app-settings.md:521
 msgid "`file://...をローカルパス表記に変換する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:516
+#: ../../source/window/app-settings.md:522
 msgid "チェックすると、[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:518
+#: ../../source/window/app-settings.md:524
 msgid "Extension > OneNote"
 msgstr "拡張機能＞OneNote"
 
-#: ../../source/window/app-settings.md:520
+#: ../../source/window/app-settings.md:526
 msgid "![](../image/adhoc-command/onenote/appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:522
+#: ../../source/window/app-settings.md:528
 msgid "`機能を有効にする`   チェックすると、[OneNoteページ検索](/adhoc-command/onenote)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:524
-#: ../../source/window/app-settings.md:536
-#: ../../source/window/app-settings.md:554
+#: ../../source/window/app-settings.md:530
+#: ../../source/window/app-settings.md:542
+#: ../../source/window/app-settings.md:560
 msgid "`プレフィックス`   検索を開始するためのキーワードを指定する。   空欄にすると、検索が常に有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:527
-#: ../../source/window/app-settings.md:539
-#: ../../source/window/app-settings.md:557
-#: ../../source/window/app-settings.md:584
+#: ../../source/window/app-settings.md:533
+#: ../../source/window/app-settings.md:545
+#: ../../source/window/app-settings.md:563
+#: ../../source/window/app-settings.md:590
 msgid "`検索を実行する最小文字数`   その文字数以上のキーワードを入力したときに検索を行う。0を指定すると常に検索を行う。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:530
+#: ../../source/window/app-settings.md:536
 msgid "Extension > Bookmarks"
 msgstr "拡張機能＞ブックマーク検索"
 
-#: ../../source/window/app-settings.md:532
+#: ../../source/window/app-settings.md:538
 msgid "![](../image/adhoc-command/bookmarks/appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:534
+#: ../../source/window/app-settings.md:540
 msgid "`機能を有効にする`   チェックすると、[ブックマーク検索](/adhoc-command/bookmarks)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:541
+#: ../../source/window/app-settings.md:547
 msgid "`Edgeのお気に入りを候補として表示する`   チェックすると、Edgeのお気に入りを検索対象とする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:543
+#: ../../source/window/app-settings.md:549
 msgid ""
 "`Webブラウザ(外部ツール)のブックマークを候補として表示する`   "
 "チェックすると、[外部ツール](#externaltool)で指定したWebブラウザのブックマークを検索対象とする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:545
+#: ../../source/window/app-settings.md:551
 msgid ""
 "`URL文字列を候補の絞り込みに使う`   "
 "チェックすると、URL文字列(とブックマーク名)を候補の絞り込みに使う。チェックしない場合はブックマーク名のみで絞り込みする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:548
+#: ../../source/window/app-settings.md:554
 msgid "Extension > WebHistory"
 msgstr "拡張機能＞Web履歴検索"
 
-#: ../../source/window/app-settings.md:550
+#: ../../source/window/app-settings.md:556
 msgid "![](../image/adhoc-command/webhistory/appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:552
+#: ../../source/window/app-settings.md:558
 msgid "`機能を有効にする`   チェックすると、[Web履歴検索](/adhoc-command/webhistory)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:559
+#: ../../source/window/app-settings.md:565
 msgid "`Edgeの履歴を候補として表示する`   チェックすると、Edgeの閲覧履歴から入力キーワードに該当するものを候補として表示する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:561
+#: ../../source/window/app-settings.md:567
 msgid ""
 "`Webブラウザ(外部ツール)の履歴を候補として表示する`   "
 "チェックすると、[外部ツール](#externaltool)で指定したWebブラウザの履歴を検索対象とする"
 msgstr ""
 
-#: ../../source/window/app-settings.md:563
+#: ../../source/window/app-settings.md:569
 msgid "`検索の上限件数`   候補の上限件数を設定する。多くするほどQuery処理に時間がかかる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:565
+#: ../../source/window/app-settings.md:571
 msgid ""
 "`Migemoを検索を利用する`   "
 "絞り込みの際にMigemo検索を使うかどうかを指定する。Migemo検索は(使わない場合と比べて)時間がかかるので、非力なPCだと十分な結果が得られない可能性がある。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:567
+#: ../../source/window/app-settings.md:573
 msgid ""
 "`URL文字列を候補の絞り込みに使う`   "
 "チェックすると、URL文字列も考慮した絞り込みを行う。チェックしない場合は履歴のページタイトルのみで絞り込みを行う。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:570
+#: ../../source/window/app-settings.md:576
 msgid "Extension > Everything"
 msgstr "拡張機能＞Everything"
 
-#: ../../source/window/app-settings.md:572
+#: ../../source/window/app-settings.md:578
 msgid "![](../image/adhoc-command/everything-appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:574
+#: ../../source/window/app-settings.md:580
 msgid "`機能を有効にする`   チェックすると、[Everything検索](/adhoc-command/everything)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:576
+#: ../../source/window/app-settings.md:582
 msgid "`プレフィックス`   検索を開始するためのキーワードを指定する。   空欄にすると、Everything検索が常に有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:579
+#: ../../source/window/app-settings.md:585
 msgid ""
 "`Everythingが起動していなかった場合に起動する`   "
 "チェックした場合、Everythingのアプリが起動していなかった場合に起動を試みる。   "
 "(Everything検索を行うためにはEverythingのアプリが起動している必要がある)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:582
+#: ../../source/window/app-settings.md:588
 msgid "`Everything.exeのパス`    アプリを起動する際の実行ファイルのパスを指定する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:586
+#: ../../source/window/app-settings.md:592
 msgid "少ない文字数で検索を実行したときに以下の問題がある。これを回避するための設定"
 msgstr ""
 
-#: ../../source/window/app-settings.md:587
+#: ../../source/window/app-settings.md:593
 msgid "たいていの場合ヒット件数が多くなる。結果、他の候補が隠れてしまう"
 msgstr ""
 
-#: ../../source/window/app-settings.md:588
+#: ../../source/window/app-settings.md:594
 msgid "一方で所望の結果が得られる可能性は低い"
 msgstr ""
 
-#: ../../source/window/app-settings.md:590
+#: ../../source/window/app-settings.md:596
 msgid "Extension > WinSCP"
 msgstr "拡張機能＞WinSCP"
 
-#: ../../source/window/app-settings.md:592
+#: ../../source/window/app-settings.md:598
 msgid "![](../image/adhoc-command/winscp-appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:594
+#: ../../source/window/app-settings.md:600
 msgid "`機能を有効にする`   チェックすると、[WinSCPのセッション一覧を表示する](/adhoc-command/winscp)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:596
+#: ../../source/window/app-settings.md:602
 msgid ""
 "`ポータブル版のWinSCPを利用する`   インストール版のWinSCPではなく、ポータブル版のWinSCPを使用している場合に使用する設定。"
 "   チェックすると、`WinSCP.exeのパス`欄が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:599
+#: ../../source/window/app-settings.md:605
 msgid "`WinSCP.exeのパス`   ポータブル版のWinSCPを使用している場合の`WinSCP.exe`のパスを指定する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:602
+#: ../../source/window/app-settings.md:608
 msgid "Extension > VSCode"
 msgstr "拡張機能＞Visual Studio Code"
 
-#: ../../source/window/app-settings.md:604
+#: ../../source/window/app-settings.md:610
 msgid "![](../image/adhoc-command/vscode/appsetting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:606
+#: ../../source/window/app-settings.md:612
 msgid ""
 "`機能を有効にする`   チェックすると、[Visual Studio Code履歴](/adhoc-"
 "command/vscode)機能が有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:608
+#: ../../source/window/app-settings.md:614
 msgid "`プレフィックス`   機能発動のためのキーワードを指定する。   空欄にすると、キーワードを含む要素が常に候補として表示される。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:611
+#: ../../source/window/app-settings.md:617
 msgid "`検索を実行する最小文字数`   その文字数以上のキーワードを入力したときのみ、機能が発動する。   0を指定した場合は文字数の制限をしない。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:614
+#: ../../source/window/app-settings.md:620
 msgid ""
 "`候補にフルパスを表示する`   チェックすると候補欄に表示するファイルパスをフルパスで表示する。   "
 "チェックしなかった場合はファイル名のみを表示する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:618
+#: ../../source/window/app-settings.md:624
 msgid "Logging"
 msgstr "その他"
 
-#: ../../source/window/app-settings.md:620
+#: ../../source/window/app-settings.md:626
 msgid "![](../image/appsetting-other.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:623
+#: ../../source/window/app-settings.md:629
 msgid "`ログ出力レベル`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:624
+#: ../../source/window/app-settings.md:630
 msgid "デバッグ用機能。デバッグ用ログファイルへの出力対象とするログ種別を選択することができる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:625
+#: ../../source/window/app-settings.md:631
 msgid "下のものほど情報量が多くなる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:626
+#: ../../source/window/app-settings.md:632
 msgid "ログファイルの出力先は`<設定ファイルの保存先>/per_machine/<PC名>/<アプリ名>.log`"
 msgstr ""
 
@@ -1589,147 +1605,147 @@ msgstr ""
 msgid "デバッグ用出力も含めたすべてのログを出力する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:636
+#: ../../source/window/app-settings.md:642
 msgid "`性能ログを出力する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:637
+#: ../../source/window/app-settings.md:643
 msgid ""
 "デバッグ用機能。内部処理の処理時間に関するログを専用のログファイルに出力する。   "
 "出力先は`<設定ファイルの保存先>/per_machine/<PC名>/perf.log`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:640
+#: ../../source/window/app-settings.md:646
 msgid "`連続で作業していたら警告する`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:641
+#: ../../source/window/app-settings.md:647
 msgid "チェックすると、`警告を表示するまでの時間`で設定した時刻を超えて連続稼働(スクリーンロックを挟まずにPCを起動)した場合に警告メッセージを表示する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:642
+#: ../../source/window/app-settings.md:648
 msgid "`警告を表示するまでの時間`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:643
+#: ../../source/window/app-settings.md:649
 msgid "警告を表示するまでの時間を分数で指定する(デフォルトは90分)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:645
+#: ../../source/window/app-settings.md:651
 msgid "Others"
 msgstr "その他の設定画面"
 
-#: ../../source/window/app-settings.md:647
+#: ../../source/window/app-settings.md:653
 msgid "Application HotKey"
 msgstr "アプリ表示用ホットキー"
 
-#: ../../source/window/app-settings.md:672
+#: ../../source/window/app-settings.md:678
 msgid "Key Assignment"
 msgstr "キー割り当て"
 
-#: ../../source/window/app-settings.md:674
+#: ../../source/window/app-settings.md:680
 msgid "コマンドに対するキー割り当てを行うための画面。   割り当てたキーを押すとコマンドを実行することができる。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:677
+#: ../../source/window/app-settings.md:683
 msgid "![](../image/hotkeyForCommand.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:679
+#: ../../source/window/app-settings.md:685
 msgid "`ホットキーを設定する`   コマンドに対してキー割り当てを行う場合はチェックする"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:682
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:688
 msgid "種別"
 msgstr ""
 
-#: ../../source/window/app-settings.md:683
+#: ../../source/window/app-settings.md:689
 msgid "以下の3つのいずれかを選択する。   `アクティブ時のみ有効` or `アクティブ時のみ有効(SandS)`  or `常駐時いつでも有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:685
+#: ../../source/window/app-settings.md:691
 msgid "種別の説明は[ホットキーの種別について](/others/hotkey)を参照"
 msgstr ""
 
-#: ../../source/window/app-settings.md:686
+#: ../../source/window/app-settings.md:692
 msgid "`修飾キー`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:687
+#: ../../source/window/app-settings.md:693
 msgid "修飾キーを選択するためのもの。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:688
+#: ../../source/window/app-settings.md:694
 msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合 → Ctrl+A"
 msgstr ""
 
-#: ../../source/window/app-settings.md:689
+#: ../../source/window/app-settings.md:695
 msgid ""
 "種別として`アクティブ時のみ有効(SandS)`を選択した場合は以下の5つのいずれかを選択することができる。   `Space` "
 "`CapsLock` `変換` `無変換` `かな`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:691
+#: ../../source/window/app-settings.md:697
 msgid "`キー`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:692
+#: ../../source/window/app-settings.md:698
 msgid "修飾キーと組み合わせる文字を選択する"
 msgstr ""
 
-#: ../../source/window/app-settings.md:694
+#: ../../source/window/app-settings.md:700
 msgid "HotKey Type"
 msgstr "ホットキーの種別"
 
-#: ../../source/window/app-settings.md:696
+#: ../../source/window/app-settings.md:702
 msgid "ホットキーの種別として以下の3つを選択できる"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:697
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:703
 msgid "`アクティブ時のみ有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:698
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:704
 msgid "`アクティブ時のみ有効(SandS)`"
 msgstr ""
 
-#: ../../source/window/app-settings.md ../../source/window/app-settings.md:699
+#: ../../source/window/app-settings.md ../../source/window/app-settings.md:705
 msgid "`常駐時いつでも有効`"
 msgstr ""
 
-#: ../../source/window/app-settings.md:701
+#: ../../source/window/app-settings.md:707
 msgid ""
 "`アクティブ時のみ有効`と`アクティブ時のみ有効(SandS)`は入力画面が表示されているときだけ機能する。 "
 "一方、`常駐時いつでも有効`は入力画面が表示されていないときでも機能する。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:704
+#: ../../source/window/app-settings.md:710
 msgid ""
 "`アクティブ時のみ有効(SandS)`の`SandS`は「Space and "
 "Shift」の略で、単体でキーを押したときは文字キー(→Space)として機能し、   "
 "他のキーと同時押ししたときは修飾キー(→Shift)として機能する、という概念のこと"
 msgstr ""
 
-#: ../../source/window/app-settings.md:706
+#: ../../source/window/app-settings.md:712
 msgid "ランチャー呼び出しキーの修飾キーと`SandS`の修飾キーを同じキーとして設定することにより、スムーズにコマンドを呼び出すことができる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:707
+#: ../../source/window/app-settings.md:713
 msgid ""
 "例:   "
 "ランチャー呼び出しのホットキーを`CapsLock`にして、コマンドのホットキーを`CapsLock`+`J`に設定していたとすると、以下のような動きになる"
 "   ![](../image/sands-example.png)"
 msgstr ""
 
-#: ../../source/window/app-settings.md:710
+#: ../../source/window/app-settings.md:716
 msgid "つまり、他アプリとのキー割り当ての干渉をあまり気にすることなく、グローバルホットキー的な機能が実現できる"
 msgstr ""
 
-#: ../../source/window/app-settings.md:712
+#: ../../source/window/app-settings.md:718
 msgid "HotKey Type Comparison"
 msgstr "ホットキー種別の比較"
 
-#: ../../source/window/app-settings.md:714
+#: ../../source/window/app-settings.md:720
 msgid ""
 "それぞれ実現している仕組みが異なる。   "
 "`常駐時いつでも有効`はシステムのホットキーに登録するため、登録したキーを使って、いつでも呼び出せる一方で、ほかのアプリ内においてそのキーを使うことができなくなる"
@@ -1765,19 +1781,19 @@ msgstr ""
 msgid "登録したキーを他アプリで使えなくなってしまう<br>他アプリに干渉することをふまえて割り当てるキーを慎重に選択する必要がある"
 msgstr ""
 
-#: ../../source/window/app-settings.md:723
+#: ../../source/window/app-settings.md:729
 msgid "Constraints Related to SandS"
 msgstr "SandSに関する制限事項"
 
-#: ../../source/window/app-settings.md:725
+#: ../../source/window/app-settings.md:731
 msgid "SandSの修飾キーとして選択したキーを押しっぱなしにした場合、普通の文字入力としてキーリピートする。"
 msgstr ""
 
-#: ../../source/window/app-settings.md:726
+#: ../../source/window/app-settings.md:732
 msgid "`Shift` `Ctrl` `Alt` `Win`などのような純粋な修飾キーのような動きにはならない"
 msgstr ""
 
-#: ../../source/window/app-settings.md:727
+#: ../../source/window/app-settings.md:733
 msgid "SandSを実現するためにキーフックを利用している。キーフックの仕組みを用いた別のソフトが同時に動いている場合、競合してうまく動作しない場合がある"
 msgstr ""
 

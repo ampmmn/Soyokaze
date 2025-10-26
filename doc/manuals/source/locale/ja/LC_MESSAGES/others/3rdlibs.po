@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 10:47+0900\n"
+"POT-Creation-Date: 2025-10-26 12:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -141,7 +141,27 @@ msgstr ""
 msgid "Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。"
 msgstr ""
 
+#: ../../source/others/3rdlibs.md:46
+msgid "[Snintilla,Lexilla](https://www.scintilla.org/)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:47
+msgid "Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している"
+msgstr ""
+
 #: ../../source/others/3rdlibs.md:49
+msgid "[upx/upx](https://github.com/upx/upx)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:50
+msgid "ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:51
+msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリはGPLにはならない(認識)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:56
 msgid "非開示"
 msgstr ""
 
