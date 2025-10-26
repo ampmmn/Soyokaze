@@ -50,8 +50,6 @@ public:
 		// 終端としての目印となるnullを追加
 		args[n] = nullptr;
 		mArgs = args;
-
-		param->Release();
 	}
 
 	PyEvalArgument(char** args) : mArgs(args)
