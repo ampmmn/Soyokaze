@@ -4,6 +4,7 @@
 #include "actions/core/Action.h"
 #include "mainwindow/LauncherMainWindowIF.h"
 #include "gui/ColorSettings.h"
+#include <map>
 
 using LauncherMainWindowIF= launcherapp::mainwindow::LauncherMainWindowIF;
 using Command = launcherapp::core::Command;
