@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.46.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 16:59+0900\n"
+"POT-Creation-Date: 2025-10-30 06:16+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -27,7 +27,7 @@ msgstr "Winモジュール"
 msgid "ウインドウに関する機能を提供するモジュール。   importしなくても使うことができる。"
 msgstr ""
 
-#: ../../source/pylib/win.md:6 ../../source/pylib/win.md:41
+#: ../../source/pylib/win.md:6 ../../source/pylib/win.md:58
 msgid "Methods"
 msgstr "メソッド"
 
@@ -39,12 +39,12 @@ msgstr ""
 msgid "ウインドウクラスやタイトルを指定して、条件に合致するウインドウを取得する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:21 ../../source/pylib/win.md:54
-#: ../../source/pylib/win.md:74 ../../source/pylib/win.md:94
-#: ../../source/pylib/win.md:114 ../../source/pylib/win.md:134
-#: ../../source/pylib/win.md:155 ../../source/pylib/win.md:176
-#: ../../source/pylib/win.md:200 ../../source/pylib/win.md:223
-#: ../../source/pylib/win.md:252
+#: ../../source/pylib/win.md:21 ../../source/pylib/win.md:71
+#: ../../source/pylib/win.md:91 ../../source/pylib/win.md:111
+#: ../../source/pylib/win.md:131 ../../source/pylib/win.md:151
+#: ../../source/pylib/win.md:172 ../../source/pylib/win.md:193
+#: ../../source/pylib/win.md:217 ../../source/pylib/win.md:240
+#: ../../source/pylib/win.md:269
 msgid "Arguments"
 msgstr "引数"
 
@@ -60,12 +60,12 @@ msgstr ""
 msgid "`timeout`(数値)   ウインドウが見つからなかった場合に見つかるまで待機する時間を秒単位で指定する。省略時は0.0"
 msgstr ""
 
-#: ../../source/pylib/win.md:30 ../../source/pylib/win.md:58
-#: ../../source/pylib/win.md:78 ../../source/pylib/win.md:98
-#: ../../source/pylib/win.md:118 ../../source/pylib/win.md:138
-#: ../../source/pylib/win.md:159 ../../source/pylib/win.md:183
-#: ../../source/pylib/win.md:207 ../../source/pylib/win.md:236
-#: ../../source/pylib/win.md:259
+#: ../../source/pylib/win.md:30 ../../source/pylib/win.md:75
+#: ../../source/pylib/win.md:95 ../../source/pylib/win.md:115
+#: ../../source/pylib/win.md:135 ../../source/pylib/win.md:155
+#: ../../source/pylib/win.md:176 ../../source/pylib/win.md:200
+#: ../../source/pylib/win.md:224 ../../source/pylib/win.md:253
+#: ../../source/pylib/win.md:276
 msgid "Return Value"
 msgstr "戻り値"
 
@@ -85,133 +85,145 @@ msgstr "Windowクラス"
 msgid "`win.find()`メソッドの戻り値で得られるオブジェクト。   対応するウインドウを操作する機能を提供する。"
 msgstr ""
 
+#: ../../source/pylib/win.md:41
+msgid "Properties"
+msgstr "プロパティ"
+
 #: ../../source/pylib/win.md:43
-msgid "maximize"
+msgid "exists"
 msgstr ""
 
 #: ../../source/pylib/win.md:45
+msgid "ウインドウの有無を表すBool型の値"
+msgstr ""
+
+#: ../../source/pylib/win.md:60
+msgid "maximize"
+msgstr ""
+
+#: ../../source/pylib/win.md:62
 msgid "ウインドウを最大化する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:56 ../../source/pylib/win.md:76
-#: ../../source/pylib/win.md:96 ../../source/pylib/win.md:116
-#: ../../source/pylib/win.md:136 ../../source/pylib/win.md:157
+#: ../../source/pylib/win.md:73 ../../source/pylib/win.md:93
+#: ../../source/pylib/win.md:113 ../../source/pylib/win.md:133
+#: ../../source/pylib/win.md:153 ../../source/pylib/win.md:174
 msgid "なし"
 msgstr ""
 
-#: ../../source/pylib/win.md:60 ../../source/pylib/win.md:80
-#: ../../source/pylib/win.md:100 ../../source/pylib/win.md:120
-#: ../../source/pylib/win.md:140 ../../source/pylib/win.md:161
-#: ../../source/pylib/win.md:185 ../../source/pylib/win.md:209
-#: ../../source/pylib/win.md:238 ../../source/pylib/win.md:261
+#: ../../source/pylib/win.md:77 ../../source/pylib/win.md:97
+#: ../../source/pylib/win.md:117 ../../source/pylib/win.md:137
+#: ../../source/pylib/win.md:157 ../../source/pylib/win.md:178
+#: ../../source/pylib/win.md:202 ../../source/pylib/win.md:226
+#: ../../source/pylib/win.md:255 ../../source/pylib/win.md:278
 msgid "True: 成功"
 msgstr ""
 
-#: ../../source/pylib/win.md:61 ../../source/pylib/win.md:81
-#: ../../source/pylib/win.md:101 ../../source/pylib/win.md:121
-#: ../../source/pylib/win.md:141 ../../source/pylib/win.md:162
-#: ../../source/pylib/win.md:186 ../../source/pylib/win.md:210
-#: ../../source/pylib/win.md:239 ../../source/pylib/win.md:262
+#: ../../source/pylib/win.md:78 ../../source/pylib/win.md:98
+#: ../../source/pylib/win.md:118 ../../source/pylib/win.md:138
+#: ../../source/pylib/win.md:158 ../../source/pylib/win.md:179
+#: ../../source/pylib/win.md:203 ../../source/pylib/win.md:227
+#: ../../source/pylib/win.md:256 ../../source/pylib/win.md:279
 msgid "False: 失敗"
 msgstr ""
 
-#: ../../source/pylib/win.md:63
+#: ../../source/pylib/win.md:80
 msgid "minimize"
 msgstr ""
 
-#: ../../source/pylib/win.md:65
+#: ../../source/pylib/win.md:82
 msgid "ウインドウを最小化する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:83
+#: ../../source/pylib/win.md:100
 msgid "restore"
 msgstr ""
 
-#: ../../source/pylib/win.md:85
+#: ../../source/pylib/win.md:102
 msgid "最大化/最小化状態にあるウインドウを通常表示の状態に戻す。"
 msgstr ""
 
-#: ../../source/pylib/win.md:103
+#: ../../source/pylib/win.md:120
 msgid "hide"
 msgstr ""
 
-#: ../../source/pylib/win.md:105
+#: ../../source/pylib/win.md:122
 msgid "ウインドウを非表示にする。"
 msgstr ""
 
-#: ../../source/pylib/win.md:123
+#: ../../source/pylib/win.md:140
 msgid "show"
 msgstr ""
 
-#: ../../source/pylib/win.md:125
+#: ../../source/pylib/win.md:142
 msgid "ウインドウを表示する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:144
+#: ../../source/pylib/win.md:161
 msgid "activate"
 msgstr ""
 
-#: ../../source/pylib/win.md:146
+#: ../../source/pylib/win.md:163
 msgid "ウインドウを前面に出しフォーカスを設定する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:165
+#: ../../source/pylib/win.md:182
 msgid "move"
 msgstr ""
 
-#: ../../source/pylib/win.md:167
+#: ../../source/pylib/win.md:184
 msgid "ウインドウを指定した座標値に移動する"
 msgstr ""
 
-#: ../../source/pylib/win.md:178 ../../source/pylib/win.md:227
+#: ../../source/pylib/win.md:195 ../../source/pylib/win.md:244
 msgid "x(整数値)   X座標値"
 msgstr ""
 
-#: ../../source/pylib/win.md:180 ../../source/pylib/win.md:229
+#: ../../source/pylib/win.md:197 ../../source/pylib/win.md:246
 msgid "y(整数値)   Y座標値"
 msgstr ""
 
-#: ../../source/pylib/win.md:189
+#: ../../source/pylib/win.md:206
 msgid "resize"
 msgstr ""
 
-#: ../../source/pylib/win.md:191
+#: ../../source/pylib/win.md:208
 msgid "ウインドウを指定したサイズに変更する"
 msgstr ""
 
-#: ../../source/pylib/win.md:202 ../../source/pylib/win.md:231
+#: ../../source/pylib/win.md:219 ../../source/pylib/win.md:248
 msgid "width(整数値)   ウインドウの幅"
 msgstr ""
 
-#: ../../source/pylib/win.md:204 ../../source/pylib/win.md:233
+#: ../../source/pylib/win.md:221 ../../source/pylib/win.md:250
 msgid "height(整数値)   ウインドウの高さ"
 msgstr ""
 
-#: ../../source/pylib/win.md:212
+#: ../../source/pylib/win.md:229
 msgid "setpos"
 msgstr ""
 
-#: ../../source/pylib/win.md:214
+#: ../../source/pylib/win.md:231
 msgid "ウインドウの移動とリサイズを同時に行う。"
 msgstr ""
 
-#: ../../source/pylib/win.md:225
+#: ../../source/pylib/win.md:242
 msgid "insert_after   Zオーダー変更用の引数。現在は非サポート。"
 msgstr ""
 
-#: ../../source/pylib/win.md:241
+#: ../../source/pylib/win.md:258
 msgid "click"
 msgstr ""
 
-#: ../../source/pylib/win.md:243
+#: ../../source/pylib/win.md:260
 msgid "ウインドウ上をクリックする"
 msgstr ""
 
-#: ../../source/pylib/win.md:254
+#: ../../source/pylib/win.md:271
 msgid "x(整数値)   クリック位置を表すX座標値。ウインドウのクライアント領域座標単位で指定する。"
 msgstr ""
 
-#: ../../source/pylib/win.md:256
+#: ../../source/pylib/win.md:273
 msgid "y(整数値)   クリック位置を表すY座標値。ウインドウのクライアント領域座標単位で指定する。"
 msgstr ""
 

@@ -93,6 +93,11 @@ public:
 		return true;
 	}
 
+	bool exists()
+	{
+		return IsWindow(mHwnd) != FALSE;
+	}
+
 	// ウインドウのクライアント領域からの相対座標指定によるクリック
 	bool click(nb::object x_, nb::object y_, nb::object label_)
 	{
@@ -249,7 +254,8 @@ NB_MODULE(win, m) {
 		.def("move", &Window::move, nb::arg("x"), nb::arg("y"))
 		.def("resize", &Window::resize, nb::arg("width"), nb::arg("height"))
 		.def("set_position", &Window::set_position, nb::arg("insert_after"), nb::arg("x"), nb::arg("y"), nb::arg("width"), nb::arg("height"))
-		.def("click", &Window::click, nb::arg("x") = nb::none(), nb::arg("y") = nb::none(), nb::arg("label") = nb::none());
+		.def("click", &Window::click, nb::arg("x") = nb::none(), nb::arg("y") = nb::none(), nb::arg("label") = nb::none())
+	  .def_prop_ro("exists", &Window::exists);
 
 	m.def("find", &find_window,
 	      nb::arg("class_name") = nb::none(),

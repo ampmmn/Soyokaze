@@ -38,6 +38,23 @@ w2 = win.find(caption="Hoge")
 `win.find()`メソッドの戻り値で得られるオブジェクト。  
 対応するウインドウを操作する機能を提供する。
 
+## Properties
+
+### exists
+
+ウインドウの有無を表すBool型の値
+
+```
+# メモ帳のウインドウを得る
+w = win.find(class_name="Notepad")
+if w.exists:
+    # ウインドウは存在する
+    pass
+else:
+    # ウインドウは存在しない
+    pass
+```
+
 ## Methods
 
 ### maximize
