@@ -162,6 +162,8 @@
 #define IDD_CLIPBOARD_PREVIEW           256
 #define IDD_APPSETTING_BOOKMARK         257
 #define IDD_PYEXTENSION_EDIT            258
+#define IDI_ICON2                       259
+#define IDI_ICON_GEAR                   259
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -548,7 +550,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        259
+#define _APS_NEXT_RESOURCE_VALUE        260
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1227
 #define _APS_NEXT_SYMED_VALUE           101

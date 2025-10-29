@@ -289,6 +289,9 @@
     <Filter Include="commands\outlook">
       <UniqueIdentifier>{2e55f220-41df-4b76-9cc4-df4e3a062291}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\guide">
+      <UniqueIdentifier>{9895d479-9167-40a6-8070-d5bf72397331}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1797,6 +1800,9 @@
     <ClInclude Include="commands\outlook\OutlookProxy.h">
       <Filter>commands\outlook</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\guide\GuideCtrl.h">
+      <Filter>mainwindow\guide</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3164,6 +3170,9 @@
     <ClCompile Include="commands\outlook\OutlookProxy.cpp">
       <Filter>commands\outlook</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\guide\GuideCtrl.cpp">
+      <Filter>mainwindow\guide</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -3184,6 +3193,9 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="res\icon2.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\gear.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

@@ -12,6 +12,7 @@
 #include "gui/KeywordEdit.h"
 #include "mainwindow/interprocess/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"
+#include "mainwindow/guide/GuideCtrl.h"
 #include "mainwindow/LauncherDropTarget.h"
 
 
@@ -66,6 +67,7 @@ protected:
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
+	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam, uint32_t modifierMask);
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);
@@ -85,7 +87,7 @@ protected:
 	CWnd* GetWindowObject() override;
 	IconLabel* GetIconLabel() override;
 	CStatic* GetDescriptionLabel() override;
-	CStatic* GetGuideLabel() override;
+	launcherapp::mainwindow::guide::GuideCtrl* GetGuideLabel() override;
 	KeywordEdit* GetEdit() override;
 	CandidateListCtrl* GetCandidateList() override;
 	CFont* GetMainWindowFont() override;
@@ -136,6 +138,7 @@ protected:
 	LRESULT OnUserMessagePopupMessage(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageExpandMacro(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageGuideClicked(WPARAM wParam, LPARAM lParam);
 
 	afx_msg void OnButtonOptionClicked();
 

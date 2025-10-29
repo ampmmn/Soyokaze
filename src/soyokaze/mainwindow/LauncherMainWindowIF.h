@@ -4,8 +4,11 @@ class IconLabel;
 class KeywordEdit;
 class CandidateListCtrl;
 
-namespace launcherapp {
-namespace mainwindow {
+namespace launcherapp { namespace mainwindow {
+
+namespace guide {
+class GuideCtrl;
+}
 
 	// ランチャーのメイン画面の部品を取得する機能を提供するI/F
 class LauncherMainWindowIF
@@ -24,7 +27,7 @@ public:
 	virtual CStatic* GetDescriptionLabel() = 0;
 
 	// ガイド欄
-	virtual CStatic* GetGuideLabel() = 0;
+	virtual guide::GuideCtrl* GetGuideLabel() = 0;
 
 	// 入力欄
 	virtual KeywordEdit* GetEdit() = 0;

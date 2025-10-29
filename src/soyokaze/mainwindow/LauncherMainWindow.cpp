@@ -14,6 +14,7 @@
 #include "mainwindow/controller/LauncherMainWindowController.h"
 #include "mainwindow/MainWindowCommandQueryRequest.h"
 #include "mainwindow/optionbutton/MainWindowOptionButton.h"
+#include "mainwindow/guide/GuideCtrl.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
@@ -52,10 +53,13 @@
 #define new DEBUG_NEW
 #endif
 
+using Command = launcherapp::core::Command;
+
 using namespace launcherapp;
 using namespace launcherapp::mainwindow;
 using namespace launcherapp::mainwindow::controller;
 using namespace launcherapp::actions::core;
+using GuideCtrl = launcherapp::mainwindow::guide::GuideCtrl;
 
 // ランチャーのタイマーイベントをリスナーに通知する用のタイマー
 constexpr UINT TIMERID_OPERATION = 2;
@@ -68,15 +72,14 @@ struct LauncherMainWindow::PImpl
 	{
 	}
 
-	void UpdateCommandString(core::Command* cmd, int& startPos, int& endPos);
-	void UpdateGuideString(core::Command* cmd);
+	void UpdateCommandString(Command* cmd, int& startPos, int& endPos);
+	void UpdateGuideString(Command* cmd);
 
 // 入力データ
 	// 入力欄のテキスト情報
 	MainWindowInput mInput;
 	// 最後に外部からの入力によって更新された時点での文字列
 	CString mLastInputStr;
-	CString mGuideStr;
 	// 現在選択中のコマンドの説明
 	CString mDescriptionStr;
 	// 現在の候補一覧(選択中の項目もここが管理する)
@@ -98,6 +101,8 @@ struct LauncherMainWindow::PImpl
 	CandidateListCtrl mCandidateListBox;
 	// オプションボタン
 	MainWindowOptionButton mOptionButton;
+	// ガイド欄
+	GuideCtrl mGuideCtrl;
 
 // ウインドウ状態管理
 	// 位置・サイズ・コンポーネントの配置を管理するクラス
@@ -128,7 +133,7 @@ struct LauncherMainWindow::PImpl
 };
 
 // 候補欄の選択変更により、新しく選択されたコマンドの名前で選択欄のテキストを置き換える
-void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& startPos, int& endPos)
+void LauncherMainWindow::PImpl::UpdateCommandString(Command* cmd, int& startPos, int& endPos)
 {
 	spdlog::debug("UpdateCommandString");
 
@@ -165,57 +170,9 @@ void LauncherMainWindow::PImpl::UpdateCommandString(core::Command* cmd, int& sta
 }
 
 // ガイド欄に表示する文字列を生成する
-void LauncherMainWindow::PImpl::UpdateGuideString(core::Command* cmd)
+void LauncherMainWindow::PImpl::UpdateGuideString(Command* cmd)
 {
-	if (cmd == nullptr) {
-		mGuideStr.Empty();
-		return;
-	}
-
-	using Command = core::Command;
-	using Action = launcherapp::actions::core::Action;
-
-	static std::map<uint32_t, LPCTSTR> entries ={
-		{ 0, _T("⏎") },
-		{ Command::MODIFIER_SHIFT, _T("S-⏎") },
-		{ Command::MODIFIER_CTRL, _T("C-⏎") },
-		{ Command::MODIFIER_ALT, _T("A-⏎") },
-		{ Command::MODIFIER_WIN, _T("W-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, _T("S-C-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_ALT, _T("S-A-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_WIN, _T("S-W-⏎") },
-		{ Command::MODIFIER_CTRL | Command::MODIFIER_ALT, _T("C-A-⏎") },
-		{ Command::MODIFIER_CTRL | Command::MODIFIER_WIN, _T("C-W-⏎") },
-		{ Command::MODIFIER_ALT | Command::MODIFIER_WIN, _T("A-W-⏎") },
-	};
-
-	CString guideStr;
-
-	int count = 0;
-	for (auto item : entries) {
-		RefPtr<Action> action;
-		auto modifierFlags = item.first;
-		if (cmd->GetAction(modifierFlags, &action) == false) {
-			continue;
-		}
-		if (action->IsVisible() == false) {
-			continue;
-		}
-
-		if (guideStr.IsEmpty() == FALSE) {
-			guideStr += _T(" ");
-		}
-		auto& keyStr = item.second;
-		guideStr += keyStr;
-		guideStr += _T(":");
-		guideStr += action->GetDisplayName();
-	
-		if (++count >= 4) {
-			break;
-		}
-	}
-
-	mGuideStr = guideStr;
+	mGuideCtrl.Draw(cmd);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +189,8 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	in->mLayout = std::make_unique<MainWindowLayout>(this);
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
+
+	GuideCtrl::Initialize();
 }
 
 LauncherMainWindow::~LauncherMainWindow()
@@ -245,7 +204,6 @@ void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
 
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_COMMAND, commandStr);
-	DDX_Text(pDX, IDC_STATIC_GUIDE, in->mGuideStr);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
 }
 
@@ -289,6 +247,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::POPUPMESSAGE, OnUserMessagePopupMessage)
 	ON_MESSAGE(LauncherMainWindowMessageID::EXPANDMACRO, OnUserMessageExpandMacro)
 	ON_MESSAGE(LauncherMainWindowMessageID::RELEASEMACROSTR, OnUserMessageReleaseMacroStr)
+	ON_MESSAGE(WM_APP+255, OnUserMessageGuideClicked)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
 	ON_WM_TIMER()
@@ -523,11 +482,11 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 
 		int matchLevel = Pattern::Mismatch;
 
-		std::vector<RefPtr<launcherapp::core::Command> > commands;
+		std::vector<RefPtr<Command> > commands;
 		size_t count = result->GetCount();
 		for (size_t i = 0; i < count; ++i) {
 			matchLevel = Pattern::Mismatch;
-			RefPtr<launcherapp::core::Command> cmd;
+			RefPtr<Command> cmd;
 			if (result->Get(i, &cmd, &matchLevel) == false) {
 				continue;
 			}
@@ -670,6 +629,23 @@ LRESULT LauncherMainWindow::OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM l
 	wchar_t* p = (wchar_t*)lParam;
 	delete [] p;
 
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageGuideClicked(WPARAM wParam, LPARAM lParam)
+{
+	uint32_t modifier = (uint32_t)wParam;
+
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("Comlement: bommand is null"));
+		return 0;
+	}
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	RunCommand(cmd, ParameterBuilder::Create(), modifier);
 	return 0;
 }
 
@@ -955,9 +931,9 @@ CStatic* LauncherMainWindow::GetDescriptionLabel()
 	return (CStatic*)GetDlgItem(IDC_STATIC_DESCRIPTION);
 }
 
-CStatic* LauncherMainWindow::GetGuideLabel()
+GuideCtrl* LauncherMainWindow::GetGuideLabel()
 {
-	return (CStatic*)GetDlgItem(IDC_STATIC_GUIDE);
+	return &in->mGuideCtrl;
 }
 
 KeywordEdit* LauncherMainWindow::GetEdit()
@@ -986,6 +962,10 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	in->mAppearance = std::make_unique<MainWindowAppearance>(this);
 	in->mKeyInputWatch.Create();
+
+	in->mGuideCtrl.SubclassDlgItem(IDC_STATIC_GUIDE, this);
+	in->mGuideCtrl.SetMainWindow(this);
+	in->mGuideCtrl.SetClickNotifyMessageId(WM_APP + 255);
 
 	// スクリーンロック/アンロックの通知をうけとる
 	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
@@ -1042,7 +1022,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 	auto pref = AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
-	in->mGuideStr.Empty();
 
 	// ウインドウ位置の復元
 	in->mLayout->RestoreWindowPosition(this, false);
@@ -1142,7 +1121,7 @@ void LauncherMainWindow::ClearContent()
 	AppPreference* pref= AppPreference::Get();
 	in->mDescriptionStr = pref->GetDefaultComment();
 	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
-	in->mGuideStr.Empty();
+	in->mGuideCtrl.Draw(nullptr);
 
 	in->mIconLabel.DrawDefaultIcon();
 	in->mInput.Clear();
@@ -1198,7 +1177,7 @@ void LauncherMainWindow::Complement()
 
 
 // 現在選択中のコマンドを取得
-core::Command*
+Command*
 LauncherMainWindow::GetCurrentCommand()
 {
 	return in->mCandidates.GetCurrentCommand();
@@ -1290,7 +1269,7 @@ void LauncherMainWindow::UpdateCandidates()
 		// 候補なし
 		CString strMisMatch;
 		strMisMatch.LoadString(ID_STRING_MISMATCH);
-		in->mGuideStr.Empty();
+		in->mGuideCtrl.Draw(nullptr);
 		SetDescription(strMisMatch);
 		in->mIconLabel.DrawIcon(IconLoader::Get()->LoadUnknownIcon());
 		in->mCandidateListBox.Invalidate(TRUE);
@@ -1323,13 +1302,12 @@ void LauncherMainWindow::WaitQueryRequest()
 
 void
 LauncherMainWindow::RunCommand(
-	launcherapp::core::Command* cmd,
+	Command* cmd,
 	ParameterBuilder* actionParam
 )
 {
 
 	// Ctrlキーが押されているかを設定
-	using Command = launcherapp::core::Command;
 	uint32_t modifierMask = 0;
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 		modifierMask |= Command::MODIFIER_CTRL;
@@ -1344,6 +1322,16 @@ LauncherMainWindow::RunCommand(
 		modifierMask |= Command::MODIFIER_ALT;
 	}
 
+	RunCommand(cmd, actionParam, modifierMask);
+}
+
+void
+LauncherMainWindow::RunCommand(
+	Command* cmd,
+	ParameterBuilder* actionParam,
+	uint32_t modifierMask
+)
+{
 	// コマンド実行後のクローズ方法
 	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
 	// コマンド実行後のクローズ方法を取得する
@@ -1408,7 +1396,7 @@ LauncherMainWindow::RunCommand(
  	@param[in] cmd 実行対象のコマンドオブジェクト
 */
 void LauncherMainWindow::RunCommand(
-	launcherapp::core::Command* cmd
+	Command* cmd
 )
 {
 	// 実行時の音声を再生する
@@ -1446,7 +1434,7 @@ void LauncherMainWindow::RunCommand(
  	@param[in] index メニューのインデックス
 */
 void LauncherMainWindow::SelectCommandContextMenu(
-	launcherapp::core::Command* cmd,
+	Command* cmd,
 	int index
 )
 {

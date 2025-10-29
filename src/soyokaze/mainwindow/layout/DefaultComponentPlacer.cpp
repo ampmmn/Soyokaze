@@ -111,7 +111,7 @@ bool DefaultComponentPlacer::PlaceGuide(HWND elemHwnd, LauncherInput* status)
 	GetGuideRect(rc);
 
 	// 説明欄の位置・サイズを移動
-	spdlog::debug("comment xywh=({},{},{},{})", rc.left, rc.top, rc.Width(), rc.Height());
+	spdlog::debug("guide xywh=({},{},{},{})", rc.left, rc.top, rc.Width(), rc.Height());
 	SetWindowPos(elemHwnd, nullptr, rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
 
 	return true;
@@ -131,7 +131,7 @@ void DefaultComponentPlacer::GetGuideRect(CRect& rc)
 
 	// 親ウインドウの幅と、ガイド欄を配置した位置をもとに幅を決定
 	int x = MARGIN_X;
-	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X - vscrool_w;
+	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;
 
 	// フォントサイズに応じて高さを決定する
 	int fontH = in->mPlacement->GetFontPixelSize();

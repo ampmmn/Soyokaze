@@ -775,6 +775,7 @@
     <ClInclude Include="mainwindow\controller\LauncherMainWindowController.h" />
     <ClInclude Include="mainwindow\controller\MainWindowController.h" />
     <ClInclude Include="mainwindow\controller\MainWindowControllerIF.h" />
+    <ClInclude Include="mainwindow\guide\GuideCtrl.h" />
     <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h" />
     <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h" />
     <ClInclude Include="mainwindow\LauncherInputStatusIF.h" />
@@ -1263,6 +1264,7 @@
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
     <ClCompile Include="mainwindow\controller\LauncherMainWindowController.cpp" />
     <ClCompile Include="mainwindow\controller\MainWindowController.cpp" />
+    <ClCompile Include="mainwindow\guide\GuideCtrl.cpp" />
     <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp" />
     <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
@@ -1396,6 +1398,7 @@
     <None Include="res\Soyokaze.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\gear.ico" />
     <Image Include="res\icon.ico" />
     <Image Include="res\icon2.ico" />
   </ItemGroup>
