@@ -288,11 +288,10 @@ bool PythonProxy::Evaluate(const char* src, const char** args, char** errMsg)
 		});
 
 		// スクリプトを実行
-		scope_pyobject localDict = PyDict_New();
-		scope_pyobject pyRetObject = PyEval_EvalCode(codeMain, globalDict, localDict);
+		scope_pyobject pyRetObject = PyEval_EvalCode(codeMain, globalDict, globalDict);
 
 		// funcObjは借用参照
-		PyObject* pyFuncObj = PyDict_GetItemString(localDict, "call");
+		PyObject* pyFuncObj = PyDict_GetItemString(globalDict, "call");
 
 		// スクリプトがcallという名前の定義を定義していたらそれを呼ぶ
 		if (pyFuncObj && PyCallable_Check(pyFuncObj)) {
@@ -366,8 +365,7 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 			return false;
 		}
 
-		scope_pyobject localDict = PyDict_New();
-		scope_pyobject pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, localDict);
+		scope_pyobject pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, in->mGlobalDictForCalc);
 
 		// 文をインタープリタ側で評価した結果エラーだった場合
 		if (PyErr_Occurred() != nullptr) {
