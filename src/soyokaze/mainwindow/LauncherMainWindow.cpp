@@ -1408,23 +1408,8 @@ void LauncherMainWindow::RunCommand(
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
-
-	// Ctrlキーが押されているかを設定
-	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		actionParam->SetNamedParamBool(_T("CtrlKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		actionParam->SetNamedParamBool(_T("ShiftKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		actionParam->SetNamedParamBool(_T("WinKeyPressed"), true);
-	}
-	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		actionParam->SetNamedParamBool(_T("AltKeyPressed"), true);
-	}
-
 	// 実行
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
 	RunCommand(cmd, actionParam.release());
 }
 
