@@ -1033,7 +1033,7 @@ BEGIN
 END
 
 IDD_URLDIRECTORYINDEXEDIT DIALOGEX 0, 0, 347, 296
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "DirectoryIndexコマンドの設定"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -2537,25 +2537,25 @@ IDD_SIMPLEDICT AFX_DIALOG_LAYOUT
 BEGIN
     0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
+    0, 0, 50, 0,
+    50, 0, 0, 0,
+    50, 0, 50, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    100, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -2763,34 +2763,7 @@ END
 
 IDD_URLDIRECTORYINDEXEDIT AFX_DIALOG_LAYOUT
 BEGIN
-    0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 100, 0, 0,
-    0, 100, 0, 0,
-    0, 100, 0, 0,
-    100, 0, 0, 0,
-    100, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0
+    0
 END
 
 IDD_KEYSPLITTER AFX_DIALOG_LAYOUT
@@ -2931,10 +2904,10 @@ IDD_FILTER_PRE_CONSTANT AFX_DIALOG_LAYOUT
 BEGIN
     0,
     0, 0, 0, 0,
-    0, 0, 0, 0,
-    100, 0, 0, 0,
-    100, 0, 0, 0,
-    0, 0, 100, 0
+    0, 0, 100, 100,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 100, 100, 0
 END
 
 IDD_APPSETTING_CLIPBOARD AFX_DIALOG_LAYOUT
