@@ -120,6 +120,9 @@ void SpecialFolderFileFind::PImpl::GetLnkFiles(std::vector<ITEM>& items, const C
 	std::deque<CString> stk;
 	stk.push_back((LPTSTR)path);
 
+	// ファイルパスと表示名の長さを保持するmap
+	std::map<CString, int> pathNameMap;
+
 	std::vector<ITEM> tmp;
 	while(stk.empty() == false) {
 
@@ -175,12 +178,30 @@ void SpecialFolderFileFind::PImpl::GetLnkFiles(std::vector<ITEM>& items, const C
 			}
 
 			tmp.push_back(item);
+
+			// フルパスと表示名(の長さ)の対応をmapで保持する
+			auto itFind = pathNameMap.find(item.mFullPath);
+			if (itFind != pathNameMap.end() && item.mName.GetLength() < itFind->second) {
+				// 最も短い表示名を採用する
+				itFind->second = item.mName.GetLength();
+			}
 		}
 		f.Close();
 	}
 
-	for (auto& item : tmp) {
+	auto it = tmp.begin();
+	while (it != tmp.end()) {
+		auto& item = *it;
+		auto itFind = pathNameMap.find(item.mFullPath);
+		if (itFind != pathNameMap.end() && itFind->second < item.mName.GetLength()) {
+			// 長い表示名のものを除外する
+			// (一つのフルパスに対して最も表示名が短いものだけを表示する)
+			it = tmp.erase(it);
+			continue;
+		}
+
 		GetLastWriteTime(item.mFullPath, item.mWriteTime);
+		it++;
 	}
 
 	// 更新日時降順でソート
