@@ -42,7 +42,6 @@ static bool IsToplevelWindow(HWND hwnd)
 
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
 	bool isMinimized = (style & WS_MINIMIZE) != 0;
-	bool isTopLevel = (style & (WS_POPUP | WS_OVERLAPPED)) != 0;
 	if (isMinimized) {
 		return false;
 	}
@@ -115,7 +114,7 @@ struct UIAutomationCommandProvider::PImpl :
 
 	void Reload()
 	{
-		auto pref = AppPreference::Get();
+		//auto pref = AppPreference::Get();
 		// ToDo: 設定を設ける
 		//mIsEnableWorksheet = pref->IsEnableExcelWorksheet();
 		//mPrefix = pref->GetWorksheetSwitchPrefix();

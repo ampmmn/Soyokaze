@@ -123,6 +123,8 @@ bool UIAutomationAdhocCommand::GetAction(uint32_t modifierFlags, Action** action
 
 		// カーソル位置をもとに戻す
 		//SetCursorPos(org_pos.x, org_pos.y);
+
+		return true;
 	});
 
 
@@ -179,8 +181,9 @@ void UIAutomationAdhocCommand::OnUnselect(Command* next)
 
 // 実行後のウインドウを閉じる方法を決定する
 launcherapp::core::SelectionBehavior::CloseWindowPolicy
-UIAutomationAdhocCommand::GetCloseWindowPolicy()
+UIAutomationAdhocCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 {
+	UNREFERENCED_PARAMETER(modifierMask);
 	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 
