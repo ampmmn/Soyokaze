@@ -4,6 +4,7 @@
 #include "actions/core/Action.h"
 #include "mainwindow/LauncherMainWindowIF.h"
 #include "gui/ColorSettings.h"
+#include "utility/ATLImageDC.h"
 #include <map>
 
 using LauncherMainWindowIF= launcherapp::mainwindow::LauncherMainWindowIF;
@@ -112,8 +113,7 @@ void GuideCtrl::PImpl::UpdateBuffer()
 	}
 	CSize sizeBuff(mBuffer.GetWidth(), mBuffer.GetHeight());
 
-	CDC* dc = CDC::FromHandle(mBuffer.GetDC());
-
+	ATLImageDC dc(mBuffer);
 
 	// 色設定を取得
 	auto colorSettings = ColorSettings::Get();
@@ -123,18 +123,16 @@ void GuideCtrl::PImpl::UpdateBuffer()
 	COLORREF crBr = colorScheme->GetBackgroundColor();
 	CBrush br;
 	br.CreateSolidBrush(crBr);
-	CBrush* orgBr = dc->SelectObject(&br);
+	dc->SelectObject(&br);
 	dc->PatBlt(0, 0, sizeBuff.cx, sizeBuff.cy, PATCOPY);
-	dc->SelectObject(orgBr);
 
 	// 背景色を変える要素のブラシ
 	CBrush brAlter;
 	brAlter.CreateSolidBrush(GetAlterColor(crBr));
 
 	// テキストカラー
-	auto orgTxtColor = dc->SetTextColor(colorScheme->GetTextColor());
-
-	auto orgFont = dc->SelectObject(mMainWnd->GetMainWindowFont());
+	dc->SetTextColor(colorScheme->GetTextColor());
+	dc->SelectObject(mMainWnd->GetMainWindowFont());
 
 	// フォントの高さを得る
 	TEXTMETRIC tm;
@@ -153,7 +151,7 @@ void GuideCtrl::PImpl::UpdateBuffer()
 
 	auto& keyMap = GetKeyModifierMap();
 
-	auto orgMode = dc->SetBkMode(TRANSPARENT);
+	dc->SetBkMode(TRANSPARENT);
 	for (auto it = mEntries.rbegin(); it != mEntries.rend(); ++it) {
 		auto& item = *it;
 
@@ -180,15 +178,11 @@ void GuideCtrl::PImpl::UpdateBuffer()
 		rcFrame.InflateRect(MARGIN_ITEM/2,0,MARGIN_ITEM/2,0);
 
 		// 枠描画用のペン・背景色ブラシを設定
-		auto orgPen = dc->SelectObject(isOnCursor ? GetStockObject(BLACK_PEN) : GetStockObject(NULL_PEN));
-		orgBr = dc->SelectObject(useAlterBGColor ? &brAlter : &br);
+		dc->SelectObject(isOnCursor ? GetStockObject(BLACK_PEN) : GetStockObject(NULL_PEN));
+		dc->SelectObject(useAlterBGColor ? &brAlter : &br);
 
 		// 枠を描画
 		dc->RoundRect(&rcFrame, CPoint(MARGIN_ITEM/2, MARGIN_ITEM/2));
-
-		// 元のペンとブラシに戻す
-		dc->SelectObject(orgBr);
-		dc->SelectObject(orgPen);
 
 		// ガイドテキストを描画
 		dc->DrawText(str, rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP);
@@ -196,11 +190,6 @@ void GuideCtrl::PImpl::UpdateBuffer()
 
 		rcItem.right = rcItem.left - MARGIN_ITEM;
 	}
-
-	dc->SetTextColor(orgTxtColor);
-	dc->SetBkMode(orgMode);
-	dc->SelectObject(orgFont);
-	mBuffer.ReleaseDC();
 }
 
 bool GuideCtrl::PImpl::UpdateCursorState(CPoint pos)
@@ -230,10 +219,10 @@ bool GuideCtrl::PImpl::RecreateBuffer(CWnd* wnd, CSize size)
 	mBuffer.Create(size.cx, size.cy, 24);
 
 	// デバイスコンテキスト作成
-	CDC* dc = CDC::FromHandle(mBuffer.GetDC());
+	ATLImageDC dc(mBuffer);
 
 	// GDIオブジェクトを作成、選択
-	auto orgBmp = dc->SelectObject((HBITMAP)mBuffer);
+	dc->SelectObject((HBITMAP)mBuffer);
 
 	// 色設定を取得
 	auto colorSettings = ColorSettings::Get();
@@ -241,16 +230,10 @@ bool GuideCtrl::PImpl::RecreateBuffer(CWnd* wnd, CSize size)
 
 	CBrush br;
 	br.CreateSolidBrush(colorScheme->GetBackgroundColor());
-	CBrush* orgBr = dc->SelectObject(&br);
+	dc->SelectObject(&br);
 
 	// 背景を描画
 	dc->PatBlt(0, 0, size.cx, size.cy, PATCOPY);
-
-	// 後始末
-	dc->SelectObject(orgBr);
-	dc->SelectObject(orgBmp);
-
-	mBuffer.ReleaseDC();
 
 	return true;
 }

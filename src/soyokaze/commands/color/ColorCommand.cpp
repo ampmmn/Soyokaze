@@ -4,6 +4,7 @@
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "commands/color/HSL.h"
 #include "icon/IconLoader.h"
+#include "utility/ATLImageDC.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <vector>
@@ -41,22 +42,19 @@ void ColorCommand::PImpl::CreateColorIcon(COLORREF cr)
 	colorBmp.Create(ICON_SIZE, ICON_SIZE, 24);
 
 	// カラービットマップの描画
-	HDC bmpDC = colorBmp.GetDC();
+	{
+		ATLImageDC bmpDC(colorBmp);
 
-	HBRUSH br = CreateSolidBrush(cr);
-	HGDIOBJ hOrgBr = SelectObject(bmpDC, br);
+		CBrush br;
+		br.CreateSolidBrush(cr);
+		bmpDC->SelectObject(br);
 
-	HPEN pen = (HPEN)CreatePen(PS_SOLID, 1, cr);
-	auto hOrgPen = SelectObject(bmpDC, pen);
-
-	PatBlt(bmpDC, 0, 0, ICON_SIZE, ICON_SIZE, BLACKNESS);
-	RoundRect(bmpDC, ICON_MARGIN, ICON_MARGIN, ICON_SIZE-ICON_MARGIN, ICON_SIZE-ICON_MARGIN, ROUND_SIZE, ROUND_SIZE);
-	SelectObject(bmpDC, hOrgPen);
-	DeleteObject(pen);
-	SelectObject(bmpDC, hOrgBr);
-	DeleteObject(br);
-
-	colorBmp.ReleaseDC();
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 1, cr);
+		bmpDC->SelectObject(pen);
+		bmpDC->PatBlt(0, 0, ICON_SIZE, ICON_SIZE, BLACKNESS);
+		RoundRect((HDC)bmpDC, ICON_MARGIN, ICON_MARGIN, ICON_SIZE-ICON_MARGIN, ICON_SIZE-ICON_MARGIN, ROUND_SIZE, ROUND_SIZE);
+	}
 
 	// マスクビットマップ作成
 	SharedHwnd sharedWnd;

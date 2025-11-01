@@ -4,6 +4,7 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "utility/Accessibility.h"
+#include "utility/ScopedDCState.h"
 #include "gui/ColorSettings.h"
 #include "resource.h"
 #include <algorithm>
@@ -192,10 +193,10 @@ void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
 static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 {
 	HFONT hf = (HFONT)SendMessage(hwnd, WM_GETFONT, 0, 0);
-	HDC hdc = GetDC(hwnd);
+	CClientDC dc(CWnd::FromHandle(hwnd));
+	ScopedDCState dcstate(&dc);
 
-	auto orgFont = SelectObject(hdc, hf);
-
+	dc.SelectObject(hf);
 
 	std::vector<CString> displayNames;
 	auto cmdRepo = CommandRepository::GetInstance();
@@ -206,18 +207,14 @@ static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 	// コマンド種別テキストをすべて取得して、最大のものを得る
 	for (auto& typeName : displayNames) {
 		CSize size;
-		GetTextExtentPoint32(hdc, typeName, typeName.GetLength(), &size);
+		GetTextExtentPoint32(dc.GetSafeHdc(), typeName, typeName.GetLength(), &size);
 		maxWidth = (std::max)(maxWidth, (int)size.cx);
 	}
 
 	TEXTMETRIC tm;
-	GetTextMetrics(hdc, &tm);
+	GetTextMetrics(dc.GetSafeHdc(), &tm);
 
 	spdlog::debug("typecol len:{}", maxWidth);
-
-	SelectObject(hdc, orgFont);
-	ReleaseDC(hwnd, hdc);
-
 
 	typeColWidth = maxWidth;
 	textHeight = tm.tmHeight;

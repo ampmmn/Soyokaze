@@ -2,6 +2,7 @@
 #include "MainWindowOptionButton.h"
 #include "gui/ColorSettings.h"
 #include "icon/IconLoader.h"
+#include "utility/ScopedDCState.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -46,39 +47,6 @@ struct MainWindowOptionButton::PImpl
 		size.cy = bmp.bmHeight;
 	}
 
-	void DrawIcon(CDC* dcMem, const CRect& rcItem)
-	{
-		if (mBitmap != (HBITMAP)nullptr) {
-			mBitmap.DeleteObject();
-		}
-
-		int itemW = rcItem.Width();
-		int itemH = rcItem.Height();
-		mBitmap.CreateCompatibleBitmap(dcMem, itemW, itemH);
-
-		auto oldBmp = dcMem->SelectObject(mBitmap);
-
-		auto cs = ColorSettings::Get()->GetCurrentScheme();
-		HBRUSH br = CreateSolidBrush(cs->GetBackgroundColor());
-
-		dcMem->FillRect(CRect(0, 0, itemW, itemH), CBrush::FromHandle(br));
-
-		CSize sizeIcon;
-		auto iconLoader = IconLoader::Get();
-		HICON iconHandle = iconLoader->LoadSettingIcon();
-		GetIconSize(iconHandle, sizeIcon);
-
-		int len = (std::min)(itemW, itemH);
-		int x = (len - itemW) / 2;
-		int y = (len - itemH) / 2;
-		DrawIconEx(*dcMem, x, y, iconHandle, len, len, 0, nullptr, DI_NORMAL);
-
-		dcMem->SelectObject(oldBmp);
-
-		mImageSize = CSize(itemW, itemH);
-		mIsIconInitialized = true;
-	}
-
 	void UpdateState(CWnd* wnd, CPoint pt) {
 
 		CRect rc;
@@ -100,6 +68,14 @@ struct MainWindowOptionButton::PImpl
 	bool mIsIconInitialized{false};
 	bool mIsMouseOnWindow{false};
 };
+
+static COLORREF GetHighlightBGColor(COLORREF baseColor)
+{
+		double r = GetRValue(baseColor) * 0.90;
+		double g = GetGValue(baseColor) * 0.90;
+		double b = GetBValue(baseColor) * 0.90;
+		return RGB(((BYTE)r), ((BYTE)g), ((BYTE)b));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,20 +99,13 @@ END_MESSAGE_MAP()
 
 void MainWindowOptionButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-	// 背景用のブラシ
+	// 背景用のブラシを作成
 	auto cs = ColorSettings::Get()->GetCurrentScheme();
 	COLORREF bgColor = cs->GetBackgroundColor();
+	CBrush br;
+	br.CreateSolidBrush(bgColor);
 
-	if (in->mIsMouseOnWindow) {
-		// マウスがボタン上にある場合、背景色を少し暗くする
-		double r = GetRValue(bgColor) * 0.90;
-		double g = GetGValue(bgColor) * 0.90;
-		double b = GetBValue(bgColor) * 0.90;
-		bgColor = RGB(((BYTE)r), ((BYTE)g), ((BYTE)b));
-	}
-
-	HBRUSH br = CreateSolidBrush(bgColor);
-
+	// アイコンを取得
 	CSize sizeIcon;
 	auto iconLoader = IconLoader::Get();
 	HICON iconHandle = iconLoader->LoadSettingIcon();
@@ -158,16 +127,28 @@ void MainWindowOptionButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	int y = (itemH - iconDrawSize) / 2;
 
 	HDC dc = lpDrawItemStruct->hDC;
+	ScopedDCState state(dc);
 
-	auto oldBr = SelectObject(dc, br);
+	// 背景ぬりつぶし
+	SelectObject(dc, br);
 	PatBlt(dc, 0, 0, rcItem.Width(), rcItem.Height(), PATCOPY);
-	SelectObject(dc, oldBr);
 
-	int orgMode = SetStretchBltMode(dc, HALFTONE);
+	// カーソル選択中は背景を強調表示
+	if (in->mIsMouseOnWindow) {
+		// マウスがボタン上にある場合、背景色を少し暗くする
+		CBrush brHL;
+		brHL.CreateSolidBrush(GetHighlightBGColor(bgColor));
+
+		CRect rcFrame(0, 0, rcItem.Width(), rcItem.Height());
+		int n = (std::max)(5, iconDrawSize/4);
+
+		SelectObject(dc, GetStockObject(NULL_PEN));
+		SelectObject(dc, brHL);
+		CDC::FromHandle(dc)->RoundRect(&rcFrame, CPoint(n, n));
+	}
+
+	SetStretchBltMode(dc, HALFTONE);
 	DrawIconEx(dc, x, y, iconHandle, iconDrawSize, iconDrawSize, 0, nullptr, DI_NORMAL);
-	SetStretchBltMode(dc, orgMode);
-
-	DeleteObject(br);
 }
 
 void MainWindowOptionButton::OnMouseMove(UINT flags, CPoint pt)
