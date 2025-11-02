@@ -5,6 +5,7 @@
 #include "utility/LocalDirectoryWatcher.h"
 #include <mutex>
 #include <deque>
+#include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -181,9 +182,14 @@ void SpecialFolderFileFind::PImpl::GetLnkFiles(std::vector<ITEM>& items, const C
 
 			// フルパスと表示名(の長さ)の対応をmapで保持する
 			auto itFind = pathNameMap.find(item.mFullPath);
-			if (itFind != pathNameMap.end() && item.mName.GetLength() < itFind->second) {
-				// 最も短い表示名を採用する
-				itFind->second = item.mName.GetLength();
+			if (itFind != pathNameMap.end()) {
+			 	if (item.mName.GetLength() < itFind->second) {
+					// 最も短い表示名を採用する
+					itFind->second = item.mName.GetLength();
+				}
+			}
+			else {
+				pathNameMap[item.mFullPath] = item.mName.GetLength();
 			}
 		}
 		f.Close();
