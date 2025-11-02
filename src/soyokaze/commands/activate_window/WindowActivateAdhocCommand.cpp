@@ -30,10 +30,6 @@ struct WindowActivateAdhocCommand::PImpl
 {
 	// 選択を解除
 	void Unselect() {
-		if (IsWindow(mHwnd) == FALSE || IsWindowVisible(mHwnd) == FALSE) {
-			return;
-		}
-
 		// 対象を強調表示
 		ActivateIndicatorWindow::GetInstance()->Uncover();
 	}
