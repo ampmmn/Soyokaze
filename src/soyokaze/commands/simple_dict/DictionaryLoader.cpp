@@ -11,6 +11,7 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/common/Message.h" // for PopupMessage
+#include <atomic>
 #include <thread>
 #include <mutex>
 #include <map>
@@ -49,7 +50,6 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 
 	void Abort()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
 	}
 
@@ -57,7 +57,7 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	void WaitExit() {
 		uint64_t start = GetTickCount64();
 		while (GetTickCount64() - start < 3000) {
-			if (mIsExited) {
+			if (mIsExited.load()) {
 				break;
 			}
 			Sleep(50);
@@ -65,7 +65,7 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	}
 	bool IsAbort()
 	{
-		return mIsAbort;
+		return mIsAbort.load();
 	}
 	void AddWaitingQueue(SimpleDictCommand* cmd)
 	{
@@ -159,8 +159,8 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	std::list<SimpleDictCommand*> mUpdatedParamQueue;
 
 	std::mutex mMutex;
-	bool mIsAbort{false};
-	bool mIsExited{true};
+	std::atomic<bool> mIsAbort{false};
+	std::atomic<bool> mIsExited{false};
 	uint64_t mLastUpdateCheckTime{0};
 };
 
@@ -168,6 +168,8 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 void DictionaryLoader::PImpl::StartWatch()
 {
 	spdlog::info(_T("[SimpleDict] Start Watch Thread"));
+
+	mIsExited = false;
 
 	std::vector<CString> keys;
 	std::vector<CString> values;

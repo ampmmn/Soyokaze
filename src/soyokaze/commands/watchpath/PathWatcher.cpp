@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PathWatcher.h"
 #include "utility/SHA1.h"
+#include <atomic>
 #include <map>
 #include <mutex>
 #include <thread>
@@ -29,7 +30,6 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 
 	// 監視を中止する
 	void Abort() {
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
 	}
 	// 監視スレッドの完了を待機する(最大3秒)
@@ -44,8 +44,7 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	}
 
 	bool IsAbort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAbort;
+		return mIsAbort.load();
 	}
 	bool WatchPath();
 
@@ -79,7 +78,7 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	std::map<CString, WatchTarget*> mTargets;
 
 	// 監視終了フラグ
-	bool mIsAbort{false};
+	std::atomic<bool> mIsAbort{false};
 	// 監視スレッド終了済を表すフラグ
 	bool mIsExited{false};
 	// 

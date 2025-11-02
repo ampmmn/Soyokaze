@@ -9,6 +9,7 @@
 #include "utility/ScopedResetEvent.h"
 #include <atlbase.h>
 #include <propvarutil.h>
+#include <atomic>
 #include <mutex>
 #include <thread>
 #include <deque>
@@ -40,13 +41,11 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 	void SetAbort()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
 	}
 	bool IsAbort()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAbort;
+		return mIsAbort.load();
 	}
 	void RunUpdateTask();
 	void EnumApplications(std::vector<ItemPtr>& items);
@@ -65,7 +64,7 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
-	bool mIsAbort{false};
+	std::atomic<bool> mIsAbort{false};
 	ManualEvent mWaitEvt;
 };
 

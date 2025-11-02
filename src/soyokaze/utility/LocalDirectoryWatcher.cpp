@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "LocalDirectoryWatcher.h"
 #include "utility/Path.h"
+#include <atomic>
 #include <map>
 #include <vector>
 #include <mutex>
@@ -40,13 +41,11 @@ struct LocalDirectoryWatcher::PImpl
 {
 	void Abort()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsAbort = true;
 	}
 	bool IsAbort()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAbort;
+		return mIsAbort.load();
 	}
 
 	void StartWatch()
@@ -212,7 +211,7 @@ struct LocalDirectoryWatcher::PImpl
 	// 次のID番号
 	uint32_t mNextId{1};
 	// 終了フラグ
-	bool mIsAbort{false};
+	std::atomic<bool> mIsAbort{false};
 	// 排他制御
 	std::mutex mMutex;
 	// 監視スレッドオブジェクト

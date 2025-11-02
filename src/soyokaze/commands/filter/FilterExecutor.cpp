@@ -10,6 +10,7 @@
 #include "utility/Pipe.h"
 #include "utility/RefPtr.h"
 #include "mainwindow/controller/MainWindowController.h"
+#include <atomic>
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -85,19 +86,16 @@ struct FilterExecutor::PImpl
 
 	void SetLoaded()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
 		mIsLoaded = true;
 	}
 	bool IsLoaded()
 	{
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsLoaded;
+		return mIsLoaded.load();
 	}
 
 	// 完了指示が出ているかを問い合わせる
 	bool IsAbort() {
-		std::lock_guard<std::mutex> lock(mMutex);
-		return mIsAbort;
+		return mIsAbort.load();
 	}
 
 	// スレッド側の終了を待つ
@@ -183,10 +181,10 @@ struct FilterExecutor::PImpl
 	std::mutex mMutex;
 
 	// 完了フラグ
-	bool mIsAbort{false};
+	std::atomic<bool> mIsAbort{false};
 
 	// 候補生成済フラグ
-	bool mIsLoaded{false};
+	std::atomic<bool> mIsLoaded{false};
 
 	// スレッドが終了済かどうかを表す真偽値の配列
 	std::vector<BOOL> mAllExited;
