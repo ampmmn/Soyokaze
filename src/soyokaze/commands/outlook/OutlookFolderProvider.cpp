@@ -137,7 +137,7 @@ void OutlookFolderProvider::QueryAdhocCommands(
 			level = Pattern::FrontMatch;
 		}
 
-		commands.Add(CommandQueryItem(level, new OutlookFolderCommand(result.mFullName, result.mItemCount, result.mFolder)));
+		commands.Add(CommandQueryItem(level, new OutlookFolderCommand(result.mFullName, result.mItemCount, result.mEntryID)));
 
 		if (++hitCount >= ITEM_LIMIT) {
 			break;

@@ -20,7 +20,7 @@ namespace launcherapp { namespace commands { namespace outlook {
 
 struct OutlookFolderCommand::PImpl
 {
-	CComPtr<IDispatch> mFolder;
+	CString mEntryID;
 	int mCount{0};
 };
 
@@ -35,14 +35,14 @@ IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(OutlookFolderCommand)
 OutlookFolderCommand::OutlookFolderCommand(
 	const CString& fullName,
  	int itemCount,
- 	CComPtr<IDispatch>& folder
+	const CString& entryID
 ) : in(std::make_unique<PImpl>())
 {
 	mName = fullName;
 	mDescription.Format(_T("%s(%d)"), (LPCTSTR)fullName, itemCount);
 
 	in->mCount = itemCount;
-	in->mFolder = folder;
+	in->mEntryID = entryID;
 
 }
 
@@ -62,7 +62,7 @@ bool OutlookFolderCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 
 	*action = new CallbackAction(_T("フォルダを開く"), [&](Parameter*, String*) -> bool {
-			return OutlookProxy::GetInstance()->SelectFolder(in->mFolder);
+			return OutlookProxy::GetInstance()->SelectFolder(in->mEntryID);
 	});
 
 	return true;
@@ -76,7 +76,7 @@ HICON OutlookFolderCommand::GetIcon()
 launcherapp::core::Command*
 OutlookFolderCommand::Clone()
 {
-	return new OutlookFolderCommand(mName, in->mCount, in->mFolder);
+	return new OutlookFolderCommand(mName, in->mCount, in->mEntryID);
 }
 
 CString OutlookFolderCommand::TypeDisplayName()

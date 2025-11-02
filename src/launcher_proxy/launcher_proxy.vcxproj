@@ -1990,6 +1990,9 @@
     <ClInclude Include="proxycommands\GoToSlideProxyCommand.h" />
     <ClInclude Include="proxycommands\OneNoteGetHierarchyProxyCommand.h" />
     <ClInclude Include="proxycommands\OneNoteNavigateToProxyCommand.h" />
+    <ClInclude Include="proxycommands\OutlookEnumFoldersProxyCommand.h" />
+    <ClInclude Include="proxycommands\OutlookIsAppRunningProxyCommand.h" />
+    <ClInclude Include="proxycommands\OutlookSelectFolderProxyCommand.h" />
     <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h" />
     <ClInclude Include="Resource.h" />
@@ -2018,6 +2021,9 @@
     <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp" />
     <ClCompile Include="proxycommands\OneNoteGetHierarchyProxyCommand.cpp" />
     <ClCompile Include="proxycommands\OneNoteNavigateToProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\OutlookEnumFoldersProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\OutlookIsAppRunningProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\OutlookSelectFolderProxyCommand.cpp" />
     <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp" />
     <ClCompile Include="Restart.cpp" />

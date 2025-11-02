@@ -102,6 +102,15 @@
     <ClInclude Include="proxycommands\OneNoteNavigateToProxyCommand.h">
       <Filter>proxycommands</Filter>
     </ClInclude>
+    <ClInclude Include="proxycommands\OutlookIsAppRunningProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\OutlookEnumFoldersProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
+    <ClInclude Include="proxycommands\OutlookSelectFolderProxyCommand.h">
+      <Filter>proxycommands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -174,6 +183,15 @@
       <Filter>proxycommands</Filter>
     </ClCompile>
     <ClCompile Include="proxycommands\OneNoteNavigateToProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\OutlookIsAppRunningProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\OutlookEnumFoldersProxyCommand.cpp">
+      <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="proxycommands\OutlookSelectFolderProxyCommand.cpp">
       <Filter>proxycommands</Filter>
     </ClCompile>
   </ItemGroup>

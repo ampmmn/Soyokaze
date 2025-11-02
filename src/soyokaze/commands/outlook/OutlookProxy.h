@@ -16,11 +16,7 @@ public:
 
 	bool IsAppRunning();
 	bool EnumFolders(std::vector<QueryResult>& results);
-	bool SelectFolder(CComPtr<IDispatch> folder);
-
-private:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
+	bool SelectFolder(const CString& entryID);
 };
 
 

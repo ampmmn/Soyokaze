@@ -10,7 +10,7 @@ class OutlookFolderCommand :
 	virtual public launcherapp::commands::common::AdhocCommandBase
 {
 public:
-	OutlookFolderCommand(const CString& name, int itemCount, CComPtr<IDispatch>& folder);
+	OutlookFolderCommand(const CString& name, int itemCount, const CString& entryID);
 	virtual ~OutlookFolderCommand();
 
 	CString GetTypeDisplayName() override;

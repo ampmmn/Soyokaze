@@ -7,7 +7,7 @@ class QueryResult
 public:
 	CString mFullName;
 	int mItemCount{0};
-	CComPtr<IDispatch> mFolder;
+	CString mEntryID;
 };
 
 
