@@ -9,6 +9,8 @@ using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledge
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
 namespace launcherapp { namespace macros { namespace builtin {
 
 REGISTER_LAUNCHERMACRO(ExplorerMacro)
@@ -45,12 +47,33 @@ bool ExplorerMacro::ExpandLocationPath(const std::vector<CString>& args, CString
 
 	// 管理者権限でアプリを実行していると、通常権限で実行しているインスタンスのAPI呼び出しに失敗する
 	// launcher_proxy.exeを経由することにより、常に通常権限で実行されるようにする。
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 
-	std::wstring path;
-	if (proxy->GetExplorerCurrentDir(path) == false) {
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getexplorercurrentdir";
+
+	// リクエストを送信する
+	json json_res;
+
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+	if (proxy->SendRequest(json_req, json_req) == false) {
 		return false;
 	}
+
+	// 結果を取得
+	if (json_res.find("path") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+
+	std::wstring ret_path;
+	UTF2UTF((const std::string)json_res["path"], ret_path);
+
+	std::wstring path;
+	path += _T("\"");
+	path += ret_path;
+	path += _T("\"");
 
 	result = path.c_str();
 
@@ -66,11 +89,35 @@ bool ExplorerMacro::ExpandSelectionPath(const std::vector<CString>& args, CStrin
 
 	// 管理者権限でアプリを実行していると、通常権限で実行しているインスタンスのAPI呼び出しに失敗する
 	// launcher_proxy.exeを経由することにより、常に通常権限で実行されるようにする。
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 
 	std::wstring path;
-	if (proxy->GetExplorerSelectionDir(path, index) == false) {
+
+	json json_req;
+	json_req["command"] = "getexplorerselectiondir";
+	json_req["index"] = index;
+
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
 		return false;
+	}
+	
+	// 結果を取得
+	if (json_res.find("items") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+	std::wstring tmp;
+
+	auto items = json_res["items"];
+	for (auto& item : items) {
+		auto& ret_path = UTF2UTF(item["path"].get<std::string>(), tmp);
+
+		path += path.empty() ? _T("\"") : _T(" \"");
+		path += ret_path;
+		path += _T("\"");
 	}
 
 	result = path.c_str();

@@ -24,6 +24,7 @@
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
 using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 using namespace launcherapp::actions::core;
+using json = nlohmann::json;
 
 struct AdditionalEnvVariableSite : 
 	winrt::implements<AdditionalEnvVariableSite, ::IServiceProvider, ::ICreatingProcess>
@@ -102,12 +103,49 @@ bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 
 bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process)
 {
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	bool isRun = proxy->StartProcess(&si, mAdditionalEnv);
+	const std::map<std::wstring, std::wstring>& envMap = mAdditionalEnv;
 
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "shellexecute";
+	json_req["show_type"] = (int)si.nShow;
+	json_req["mask"] = si.fMask;
+	json_req["file"] = UTF2UTF(CString(si.lpFile), dst);
+	if (si.lpParameters) {
+		json_req["parameters"] = UTF2UTF(CString(si.lpParameters), dst);
+	}
+	if (si.lpDirectory) {
+		json_req["directory"] = UTF2UTF(CString(si.lpDirectory), dst);
+	}
+
+	std::map<std::string, std::string> env_map;
+	std::string dst_key;
+	std::string dst_val;
+	for (const auto& item : envMap) {
+		env_map[UTF2UTF(item.first, dst_key)] = UTF2UTF(item.second, dst_val);
+	}
+	json_req["environment"] = env_map;
+
+	// リクエストを送信する
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
+		return false;
+	}
+
+	// 結果を取得する
+	if (json_res.find("pid") == json_res.end()) {
+		spdlog::error("unexpected response.");
+		return false;
+	}
+
+	int pid = json_res["pid"];
+	si.hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
 	process = std::move(std::make_unique<Instance>(si.hProcess));
 
-	return isRun;
+	return true;
 }
 
 bool SubProcess::PImpl::Start(SHELLEXECUTEINFO si, ProcessPtr& process)

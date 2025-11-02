@@ -8,6 +8,8 @@
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
 namespace launcherapp { namespace commands { namespace presentation {
 
 using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledgeProcessProxy;
@@ -52,12 +54,36 @@ bool PowerPointWindow::Activate(bool isShowMaximize)
 	return true;
 }
 
+// アクティブなPowerpointのウインドウを取得する
+static bool GetActivePowerPointWindow(HWND& hwnd)
+{
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "getactivepointerpointwindow";
+
+	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
+		return false;
+	}
+	
+	if (json_res["result"] == false) {
+		return false;
+	}
+
+	hwnd = (HWND)json_res["hwnd"].get<uint64_t>();
+	return true;
+}
+
+
 bool PowerPointWindow::GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr)
 {
 	// PowerPointアプリのウインドウハンドルを取得する
 	HWND hwnd = nullptr;
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	if (proxy->GetActivePowerPointWindow(hwnd) == false || IsWindow(hwnd) == FALSE) {
+	if (GetActivePowerPointWindow(hwnd) == false || IsWindow(hwnd) == FALSE) {
 		return false;
 	}
 
@@ -70,8 +96,19 @@ bool PowerPointWindow::GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr)
 
 bool PowerPointWindow::GoToSlide(int16_t pageIndex)
 {
+	json json_req;
+	json_req["command"] = "gotoslide";
+	json_req["pageIndex"] = pageIndex;
+
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	return proxy->GoToSlide(pageIndex); 
+
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
+		return false;
+	}
+	
+	return json_res["result"];
 }
 
 }}} // end of namespace launcherapp::commands::presentation

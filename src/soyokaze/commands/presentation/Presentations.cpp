@@ -11,6 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
 namespace launcherapp {
 namespace commands {
 namespace presentation {
@@ -30,6 +32,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 	}
 
 	bool FetchPresentations(std::vector<SLIDE_ITEM>& items);
+	bool EnumPresentationSlides(std::wstring& filePath, std::vector<std::wstring>& slideTitles);
 
 	bool IsAvailable() {
 		// PowerPointのCLSIDを得る
@@ -100,9 +103,7 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 
 		std::wstring filePath;
 		std::vector<std::wstring> slideTitles;
-
-		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-		proxy->EnumPresentationSlides(filePath, slideTitles);
+		EnumPresentationSlides(filePath, slideTitles);
 
 		std::vector<SLIDE_ITEM> tmpItems;
 		tmpItems.reserve(slideTitles.size());
@@ -131,6 +132,45 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 	std::lock_guard<std::mutex> lock(mMutex);
 	items.insert(items.end(), mItems.begin(), mItems.end());
 	return true;
+}
+
+// オープンされているPowerpointスライドの一覧を取得する
+bool Presentations::PImpl::EnumPresentationSlides(
+		std::wstring& filePath,
+	 	std::vector<std::wstring>& slideTitles
+)
+{
+	try {
+		json json_req;
+		json_req["command"] = "enumpresentationslides";
+
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+
+		// リクエストを送信する
+		json json_res;
+		if (proxy->SendRequest(json_req, json_res) == false) {
+			return false;
+		}
+		
+		if (json_res["result"] == false) {
+			return false;
+		}
+
+		UTF2UTF(json_res["file_path"].get<std::string>(), filePath);
+
+		std::wstring tmp;
+
+		auto items = json_res["slides"];
+		for (auto& item : items) {
+			slideTitles.push_back(UTF2UTF(item["title"].get<std::string>(), tmp));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumPresentationSlides] Unexpected exception occurred.");
+		return false;
+	}
 }
 
 CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)

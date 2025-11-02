@@ -9,6 +9,8 @@
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
 namespace launcherapp {
 namespace commands {
 namespace activate_worksheet {
@@ -23,6 +25,7 @@ enum {
 struct CalcWorkSheets::PImpl
 {
 	void Update();
+	bool EnumCalcSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets);
 
 	bool IsBusy() {
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -53,8 +56,7 @@ void CalcWorkSheets::PImpl::Update()
 
 	auto threadFunc = ([&]() {
 		std::vector<std::pair<std::wstring, std::wstring> > sheets;
-		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-		proxy->EnumCalcSheets(sheets);
+		EnumCalcSheets(sheets);
 
 		std::vector<CalcWorksheet*> tmpList;
 		for (auto& item : sheets) {
@@ -83,6 +85,50 @@ void CalcWorkSheets::PImpl::Update()
 		th.detach();
 	}
 }
+
+bool CalcWorkSheets::PImpl::EnumCalcSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets)
+{
+	try {
+		std::string dst;
+
+		json json_req;
+		json_req["command"] = "enumcalcsheets";
+		
+		json json_res;
+
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		if (proxy->SendRequest(json_req, json_res) == false) {
+			SPDLOG_ERROR("Failed to receive response.");
+			return false;
+		}
+
+		if (json_res["result"] == false) {
+			SPDLOG_WARN("agent returned result:false");
+			return false;
+		}
+
+		std::wstring tmp_wb;
+		std::wstring tmp_ws;
+
+		auto items = json_res["items"];
+		for (auto& item : items) {
+			auto workbook = item["workbook"].get<std::string>();
+			auto worksheet = item["worksheet"].get<std::string>();
+			sheets.push_back(std::make_pair(UTF2UTF(workbook, tmp_wb), UTF2UTF(worksheet, tmp_ws)));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumCalcSheets] Unexpected exception occurred.");
+		return false;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 
 CalcWorkSheets::CalcWorkSheets() : in(std::make_unique<PImpl>())
 {
@@ -243,8 +289,30 @@ const String& CalcWorksheet::GetErrorMessage()
 */
 BOOL CalcWorksheet::Activate(bool isShowMaximize)
 {
+	in->mErrMsg.clear();
+
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "activecalcsheet";
+	json_req["workbook"] = UTF2UTF(in->mBookName, dst);
+	json_req["worksheet"] = UTF2UTF(in->mSheetName, dst);
+	json_req["maximize"] = isShowMaximize;
+
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	return  proxy->ActiveCalcSheet(in->mBookName, in->mSheetName, isShowMaximize, in->mErrMsg);
+
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
+		return false;
+	}
+	
+	bool isOK = json_res["result"];
+	if (isOK == false) {
+		in->mErrMsg = json_res["reason"];
+	}
+	return isOK;
+
 }
 
 uint32_t CalcWorksheet::AddRef()

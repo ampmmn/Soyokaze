@@ -9,6 +9,8 @@
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
 namespace launcherapp {
 namespace commands {
 namespace activate_worksheet {
@@ -23,6 +25,7 @@ enum {
 struct WorkSheets::PImpl
 {
 	void Update();
+	bool EnumExcelSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets);
 
 	bool IsBusy() {
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -54,8 +57,7 @@ void WorkSheets::PImpl::Update()
 	auto threadFunc = [&]() {
 
 		std::vector<std::pair<std::wstring, std::wstring> > sheets;
-		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-		proxy->EnumExcelSheets(sheets);
+		EnumExcelSheets(sheets);
 
 		std::vector<Worksheet*> tmpList;
 		for (auto& item : sheets) {
@@ -82,6 +84,41 @@ void WorkSheets::PImpl::Update()
 		// 2回目以降は非同期で取得
 		std::thread th(threadFunc);
 		th.detach();
+	}
+}
+
+bool WorkSheets::PImpl::EnumExcelSheets(std::vector<std::pair<std::wstring, std::wstring> >& sheets)
+{
+	try {
+		json json_req;
+		json_req["command"] = "enumexcelsheets";
+
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		// リクエストを送信する
+		json json_res;
+		if (proxy->SendRequest(json_req, json_res) == false) {
+			return false;
+		}
+		
+		if (json_res["result"] == false) {
+			return false;
+		}
+
+		std::wstring tmp_wb;
+		std::wstring tmp_ws;
+
+		auto items = json_res["items"];
+		for (auto& item : items) {
+			auto workbook = item["workbook"].get<std::string>();
+			auto worksheet = item["worksheet"].get<std::string>();
+			sheets.push_back(std::make_pair(UTF2UTF(workbook, tmp_wb), UTF2UTF(worksheet, tmp_ws)));
+		}
+
+		return true;
+	}
+	catch(...) {
+		spdlog::error("[EnumExcelSheets] Unexpected exception occurred.");
+		return false;
 	}
 }
 
@@ -179,8 +216,22 @@ const std::wstring& Worksheet::GetSheetName()
 */
 BOOL Worksheet::Activate(bool isShowMaximize)
 {
+	std::string dst;
+
+	json json_req;
+	json_req["command"] = "activeexcelsheet";
+	json_req["workbook"] = UTF2UTF(in->mBookName, dst);
+	json_req["worksheet"] = UTF2UTF(in->mSheetName, dst);
+	json_req["maximize"] = isShowMaximize;
+
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	return proxy->ActiveExcelSheet(in->mBookName, in->mSheetName, isShowMaximize);
+
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
+		return false;
+	}
+	return json_res["result"];
 }
 
 

@@ -10,6 +10,9 @@
 #define new DEBUG_NEW
 #endif
 
+using json = nlohmann::json;
+
+
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {
@@ -292,14 +295,27 @@ void ExcelApplication::Quit()
 
 bool ExcelApplication::GetSelection(CString* wbPath, CString* sheetName, CString* address)
 {
+	json json_req;
+	json_req["command"] = "getexcelcurrentselection";
+
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 
-	std::wstring workbook;
-	std::wstring worksheet;
-	std::wstring address_str;
-	if (proxy->GetExcelCurrentSelection(workbook, worksheet, address_str) == false) {
+	// リクエストを送信する
+	json json_res;
+	if (proxy->SendRequest(json_req, json_res) == false) {
 		return false;
 	}
+	
+	if (json_res["result"] == false) {
+		return false;
+	}
+
+	std::wstring workbook;
+	UTF2UTF(json_res["workbook"].get<std::string>(), workbook);
+	std::wstring worksheet;
+	UTF2UTF(json_res["worksheet"].get<std::string>(), worksheet);
+	std::wstring address_str;
+	UTF2UTF(json_res["address"].get<std::string>(), address_str);
 
 	if (wbPath) {
 		*wbPath = workbook.c_str();
@@ -310,6 +326,7 @@ bool ExcelApplication::GetSelection(CString* wbPath, CString* sheetName, CString
 	if (address) {
 		*address = address_str.c_str();
 	}
+
 	return true;
 }
 
