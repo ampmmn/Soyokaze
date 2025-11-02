@@ -1988,6 +1988,8 @@
     <ClInclude Include="proxycommands\GetExplorerCurrentPathProxyCommand.h" />
     <ClInclude Include="proxycommands\GetExplorerSelectionPathProxyCommand.h" />
     <ClInclude Include="proxycommands\GoToSlideProxyCommand.h" />
+    <ClInclude Include="proxycommands\OneNoteGetHierarchyProxyCommand.h" />
+    <ClInclude Include="proxycommands\OneNoteNavigateToProxyCommand.h" />
     <ClInclude Include="proxycommands\SetCurrentAfxwDirProxyCommand.h" />
     <ClInclude Include="proxycommands\ShellExecuteProxyCommand.h" />
     <ClInclude Include="Resource.h" />
@@ -2014,6 +2016,8 @@
     <ClCompile Include="proxycommands\GetExplorerCurrentPathProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GetExplorerSelectionPathProxyCommand.cpp" />
     <ClCompile Include="proxycommands\GoToSlideProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\OneNoteGetHierarchyProxyCommand.cpp" />
+    <ClCompile Include="proxycommands\OneNoteNavigateToProxyCommand.cpp" />
     <ClCompile Include="proxycommands\SetCurrentAfxwDirProxyCommand.cpp" />
     <ClCompile Include="proxycommands\ShellExecuteProxyCommand.cpp" />
     <ClCompile Include="Restart.cpp" />

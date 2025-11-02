@@ -15,7 +15,6 @@ public:
 	OneNoteAppProxy();
 	~OneNoteAppProxy();
 
-	bool IsAvailable();
 	bool GetHierarchy(std::vector<OneNoteBook>& books);
 	bool NavigateTo(LPCWSTR id);
 
