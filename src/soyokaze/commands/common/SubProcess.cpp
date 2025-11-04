@@ -132,12 +132,14 @@ bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPt
 
 	json json_res;
 	if (proxy->SendRequest(json_req, json_res) == false) {
+		process = std::move(std::make_unique<Instance>(nullptr));
 		return false;
 	}
 
 	// 結果を取得する
 	if (json_res.find("pid") == json_res.end()) {
 		spdlog::error("unexpected response.");
+		process = std::move(std::make_unique<Instance>(nullptr));
 		return false;
 	}
 
