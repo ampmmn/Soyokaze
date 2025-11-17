@@ -57,7 +57,7 @@ bool ExplorerMacro::ExpandLocationPath(const std::vector<CString>& args, CString
 	json json_res;
 
 	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
-	if (proxy->SendRequest(json_req, json_req) == false) {
+	if (proxy->SendRequest(json_req, json_res) == false) {
 		return false;
 	}
 

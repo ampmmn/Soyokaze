@@ -32,7 +32,7 @@ bool GetExplorerCurrentPathProxyCommand::Execute(json& json_req, json& json_res)
 
 	std::string tmp;
 	json_res["path"] = utf2utf(curDir, tmp);
-	json_res["result"] = std::wstring();
+	json_res["result"] = true;
 
 	return true;
 }

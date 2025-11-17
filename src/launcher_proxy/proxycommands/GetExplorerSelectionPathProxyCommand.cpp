@@ -50,7 +50,7 @@ bool GetExplorerSelectionPathProxyCommand::Execute(json& json_req, json& json_re
 		json_items.push_back(json_item);
 	}
 	json_res["items"] = json_items;
-	json_res["result"] = std::wstring();
+	json_res["result"] = true;
 
 	return true;
 }
