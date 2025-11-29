@@ -11,6 +11,7 @@ namespace utility {
 
 #define SQLITE_OPEN_READONLY         0x00000001
 #define SQLITE_OPEN_READWRITE        0x00000002
+#define SQLITE_OPEN_CREATE           0x00000004
 
 typedef void (__stdcall *SQLITE3_DESTRUCTOR_TYPE)(void*);
 
@@ -144,6 +145,7 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx, bool isReadOnly)
 	conv.Convert(filePath, filePathA);
 
 	int flag = isReadOnly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE;
+	flag |= SQLITE_OPEN_CREATE;
 
 	int n = sqlite3_open_v2(filePathA, ctx, flag, nullptr);
 	if (*ctx != nullptr) {
