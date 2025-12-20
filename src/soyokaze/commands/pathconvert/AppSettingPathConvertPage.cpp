@@ -92,8 +92,8 @@ void AppSettingPage::OnEnterSettings(Settings* settingsPtr)
 {
 	mSettingsPtr = settingsPtr;
 
-	mIsEnableGitBashPath = settingsPtr->Get(_T("PathConvert:IsEnableGitBashPath"), true);
-	mIsEnableFileProtolPath = settingsPtr->Get(_T("PathConvert:IsEnableFileProtol"), true);
+	mIsEnableGitBashPath = settingsPtr->Get(_T("PathConvert:IsEnableGitBashPath"), false);
+	mIsEnableFileProtolPath = settingsPtr->Get(_T("PathConvert:IsEnableFileProtol"), false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

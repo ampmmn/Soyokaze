@@ -1136,6 +1136,7 @@ void LauncherMainWindow::ClearContent()
 	UpdateData(FALSE);
 }
 
+// 補完
 void LauncherMainWindow::Complement()
 {
 	WaitQueryRequest();
@@ -1146,18 +1147,39 @@ void LauncherMainWindow::Complement()
 		return ;
 	}
 
-	// 現在のキャレット位置より後ろにある文字を取得
+	CString trailing;
+	bool hasTrailing = false;
+
+	bool hasCommmandCompletion = false;
+
 	int startPos;
 	int endPos;
-	in->mKeywordEdit.GetSel(startPos, endPos);
-	SPDLOG_DEBUG(_T("endPos:{}"), endPos);
+	CString keyword = cmd->GetName();
+	// コマンドが独自の補完を実装している場合はそれを使う
+	RefPtr<launcherapp::core::SelectionBehavior> behavior;
+	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
+		hasCommmandCompletion = behavior->CompleteKeyword(keyword, startPos, endPos);
+	}
 
-	CString trailing;
-	launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
-	bool hasTrailing = tok.GetTrailingString(endPos, trailing);
+	if (hasCommmandCompletion == false) {
+		// コマンドが独自の補完を実装していない場合は既定の補完処理を行う
 
-	bool withSpace = true;
-	in->mInput.SetKeyword(cmd->GetName(), withSpace);
+		// 現在のキャレット位置より後ろにある文字を取得
+		in->mKeywordEdit.GetSel(startPos, endPos);
+
+		launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
+		bool hasTrailing = tok.GetTrailingString(endPos, trailing);
+
+	}
+	else {
+		in->mLastInputStr = keyword;
+	}
+
+
+	SPDLOG_DEBUG(_T("caret pos (start,end)=({0},{1})"), startPos, endPos);
+
+	bool withSpace = false;
+	in->mInput.SetKeyword(keyword, withSpace);
 	if (hasTrailing) {
 		in->mInput.AddArgument(trailing);
 	}
@@ -1190,6 +1212,8 @@ void LauncherMainWindow::OnEditCommandChanged()
 {
 	UpdateData();
 
+	bool isReplaced = in->mInput.ReplaceInvisibleChars();
+
 	in->mLastInputStr = in->mInput.GetKeyword();
 
 	// 音を鳴らす
@@ -1199,10 +1223,11 @@ void LauncherMainWindow::OnEditCommandChanged()
 	// (Editコントロールの通常の挙動)
 	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
 	// 入力文字列をクリアした後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
-	if (in->mInput.ReplaceInvisibleChars()) {
+	if (isReplaced) {
 
-		// FIXME: 0x7Eが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい
+		// FIXME: 0x7Fが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい
 		in->mInput.RemoveLastWord();
+		in->mLastInputStr = in->mInput.GetKeyword();
 
 		// 検索リクエスト
 		QueryAsync();
@@ -1211,11 +1236,12 @@ void LauncherMainWindow::OnEditCommandChanged()
 
 		// キャレット位置も更新する
 		in->mKeywordEdit.SetCaretToEnd();
-		return;
+	}
+	else {
+		// 検索リクエスト
+		QueryAsync();
 	}
 
-	// 検索リクエスト
-	QueryAsync();
 }
 
 // 入力キーワードで検索をリクエストを出す(完了をまたない)
@@ -1548,72 +1574,73 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 {
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (in->mCandidates.IsEmpty() == false) {
-
-		// 矢印↑キー押下
-		if (wParam == VK_UP) {
-			in->mCandidates.OffsetCurrentSelect(-1, true);
-
-			auto cmd = GetCurrentCommand();
-			if (cmd == nullptr) {
-				spdlog::debug(_T("command is null vk:{}"), wParam);
-				return 1;
-			}
-
-			AppSound::Get()->PlaySelectSound();
-
-			int startPos = 0;
-			int endPos = 0;
-			in->UpdateCommandString(cmd, startPos, endPos);
-			UpdateData(FALSE);
-
-			in->mKeywordEdit.SetSel(startPos, endPos);
-
-			return 1;
-		}
-		// 矢印↓キー押下
-		else if (wParam ==VK_DOWN) {
-			in->mCandidates.OffsetCurrentSelect(1, true);
-
-			auto cmd = GetCurrentCommand();
-			if (cmd == nullptr) {
-				spdlog::debug(_T("command is null vk:{}"), wParam);
-				return 1;
-			}
-
-			AppSound::Get()->PlaySelectSound();
-
-			int startPos = 0;
-			int endPos = 0;
-			in->UpdateCommandString(cmd, startPos, endPos);
-			UpdateData(FALSE);
-
-			in->mKeywordEdit.SetSel(startPos, endPos);
-
-			return 1;
-		}
-		else if (wParam == VK_TAB) {
-			// 補完
-			Complement();
-			return 1;
-
-		}
-		else if (wParam == VK_RETURN) {
-			OnOK();
-			return 1;
-		}
-		else if (wParam == VK_NEXT) {
-			int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
-			in->mCandidates.OffsetCurrentSelect(itemsInPage, false);
-			return 1;
-		}
-		else if (wParam == VK_PRIOR) {
-			int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
-			in->mCandidates.OffsetCurrentSelect(-itemsInPage , false);
-			return 1;
-		}
+	if (in->mCandidates.IsEmpty()) {
+		// 候補がなければ何もしない
+		return 0;
 	}
 
+	// 矢印↑キー押下
+	if (wParam == VK_UP) {
+		in->mCandidates.OffsetCurrentSelect(-1, true);
+
+		auto cmd = GetCurrentCommand();
+		if (cmd == nullptr) {
+			spdlog::debug(_T("command is null vk:{}"), wParam);
+			return 1;
+		}
+
+		AppSound::Get()->PlaySelectSound();
+
+		int startPos = 0;
+		int endPos = 0;
+		in->UpdateCommandString(cmd, startPos, endPos);
+		UpdateData(FALSE);
+
+		in->mKeywordEdit.SetSel(startPos, endPos);
+
+		return 1;
+	}
+	// 矢印↓キー押下
+	else if (wParam ==VK_DOWN) {
+		in->mCandidates.OffsetCurrentSelect(1, true);
+
+		auto cmd = GetCurrentCommand();
+		if (cmd == nullptr) {
+			spdlog::debug(_T("command is null vk:{}"), wParam);
+			return 1;
+		}
+
+		AppSound::Get()->PlaySelectSound();
+
+		int startPos = 0;
+		int endPos = 0;
+		in->UpdateCommandString(cmd, startPos, endPos);
+		UpdateData(FALSE);
+
+		in->mKeywordEdit.SetSel(startPos, endPos);
+
+		return 1;
+	}
+	else if (wParam == VK_TAB) {
+		// 補完
+		Complement();
+		return 1;
+
+	}
+	else if (wParam == VK_RETURN) {
+		OnOK();
+		return 1;
+	}
+	else if (wParam == VK_NEXT) {
+		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
+		in->mCandidates.OffsetCurrentSelect(itemsInPage, false);
+		return 1;
+	}
+	else if (wParam == VK_PRIOR) {
+		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
+		in->mCandidates.OffsetCurrentSelect(-itemsInPage , false);
+		return 1;
+	}
 	return 0;
 }
 

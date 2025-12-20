@@ -149,6 +149,12 @@ ClipboardHistoryCommand::GetCloseWindowPolicy(uint32_t )
 	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool ClipboardHistoryCommand::CompleteKeyword(CString& , int& , int& )
+{
+	return false;
+}
+
 // UnknownIF
 bool ClipboardHistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {

@@ -11,6 +11,7 @@ public:
 	void EnableMacros(bool enable);
 
 	bool IsExecutable(bool includeRelative = true) const;
+	bool IsDirectory() const;
 
 private:
 	CString mPath;

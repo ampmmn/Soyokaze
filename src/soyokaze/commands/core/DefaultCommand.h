@@ -41,6 +41,8 @@ public:
 	void OnUnselect(Command* next) override;
 	// 実行後のウインドウを閉じる方法
 	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
+	// 選択時に入力欄に設定するキーワードとキャレットを設定する
+	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 	uint32_t AddRef() override;

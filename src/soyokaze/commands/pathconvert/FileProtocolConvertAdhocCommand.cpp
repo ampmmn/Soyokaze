@@ -202,7 +202,7 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 
 	in->mIcon.Reset();
 
-	return Pattern::WholeMatch;
+	return Pattern::FrontMatch;
 }
 
 launcherapp::core::Command*

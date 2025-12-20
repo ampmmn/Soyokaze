@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BreadCrumbs.h"
 #include <deque>
+#include <tuple>
 
 BreadCrumbs::BreadCrumbs(CTreeCtrl* treeCtrl, HTREEITEM treeItem)
 {
@@ -78,11 +79,11 @@ HTREEITEM BreadCrumbs::FindTreeItem(CTreeCtrl* treeCtrl) const
 	ASSERT(treeCtrl);
 
 	using Iterator = ItemList::const_iterator;
-	std::deque<std::pair<HTREEITEM, Iterator> > stk;
+	std::deque<std::tuple<HTREEITEM, Iterator> > stk;
 
 	HTREEITEM h = treeCtrl->GetRootItem();
 	while(h) {
-		stk.push_back(std::make_pair(h, mItems.begin()));
+		stk.push_back({h, mItems.begin()});
 		h = treeCtrl->GetNextSiblingItem(h);
 	}
 
@@ -91,8 +92,8 @@ HTREEITEM BreadCrumbs::FindTreeItem(CTreeCtrl* treeCtrl) const
 		auto elem = stk.front();
 		stk.pop_front();
 
-		h = elem.first;
-		Iterator itCurrentPos = elem.second;
+		h = std::get<0>(elem);
+		Iterator itCurrentPos = std::get<1>(elem);
 		if  (IsMatch(treeCtrl, h, *itCurrentPos) == false) {
 			continue;
 		}
@@ -104,7 +105,7 @@ HTREEITEM BreadCrumbs::FindTreeItem(CTreeCtrl* treeCtrl) const
 		// 子要素を検索対象として積む
 		h = treeCtrl->GetChildItem(h);
 		while (h) {
-			stk.push_back(std::make_pair(h, itCurrentPos + 1));
+			stk.push_back({h, itCurrentPos + 1});
 			h = treeCtrl->GetNextSiblingItem(h);
 		}
 	}

@@ -201,6 +201,12 @@ DefaultCommand::GetCloseWindowPolicy(uint32_t)
 	return (SelectionBehavior::CloseWindowPolicy)in->mCloseWindowPolicy;
 }
 
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool DefaultCommand::CompleteKeyword(CString& , int& , int& )
+{
+	return false;
+}
+
 bool DefaultCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (ifid == IFID_SELECTIONBEHAVIOR) {

@@ -292,6 +292,9 @@
     <Filter Include="mainwindow\guide">
       <UniqueIdentifier>{9895d479-9167-40a6-8070-d5bf72397331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\explorepath">
+      <UniqueIdentifier>{3ca17de4-3587-4db9-ae50-c0fcbb3944c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1803,6 +1806,12 @@
     <ClInclude Include="mainwindow\guide\GuideCtrl.h">
       <Filter>mainwindow\guide</Filter>
     </ClInclude>
+    <ClInclude Include="commands\explorepath\ExplorePathCommand.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\explorepath\ExplorePathCommandProvider.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3172,6 +3181,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\guide\GuideCtrl.cpp">
       <Filter>mainwindow\guide</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\ExplorePathCommand.cpp">
+      <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp">
+      <Filter>commands\explorepath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

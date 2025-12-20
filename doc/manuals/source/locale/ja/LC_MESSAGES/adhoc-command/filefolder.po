@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.47.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-20 15:01+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/filefolder.md:1
+msgid "Files And Folders"
+msgstr "ファイルとフォルダ"
+
+#: ../../source/adhoc-command/filefolder.md:3
+msgid ""
+"入力欄にファイルまたはフォルダの絶対パスを入力して実行すると、その対象を開く。   "
+"パスがフォルダの場合、末尾にパス区切り文字（`\\`）を入力すると、そのフォルダ直下にある要素を候補として表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/filefolder.md:6
+msgid "![](../image/adhoc-command/filefolder/introduction.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/filefolder.md:8
+msgid ""
+"パスを途中まで入力した状態で `Tab` キーを押すと、パスを補完する。   "
+"フォルダを選択した状態で`Shift+Enter`キーを押下すると、そのフォルダ直下のファイルやフォルダをさらに表示する。"
+msgstr ""
+

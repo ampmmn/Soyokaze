@@ -218,6 +218,12 @@ WindowActivateAdhocCommand::GetCloseWindowPolicy(uint32_t modifierFlags)
 	}
 }
 
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool WindowActivateAdhocCommand::CompleteKeyword(CString& , int& , int& )
+{
+	return false;
+}
+
 bool WindowActivateAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {

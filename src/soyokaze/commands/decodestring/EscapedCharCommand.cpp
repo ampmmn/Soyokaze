@@ -5,6 +5,7 @@
 #include "commands/common/Clipboard.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/CharConverter.h"
+#include "utility/Path.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -217,6 +218,11 @@ bool EscapedCharCommand::ScanAsOctal(std::string::iterator& it, std::string::ite
 int EscapedCharCommand::Match(Pattern* pattern)
 {
 	CString cmdline = pattern->GetWholeString();
+
+	// パスとして有効な文字列の場合はエスケープ表現として扱わない
+	if (Path::FileExists(cmdline)) {
+		return Pattern::Mismatch;
+	}
 
 	std::string s;
 	UTF2UTF(cmdline, s);

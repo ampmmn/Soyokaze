@@ -25,6 +25,8 @@ public:
 	virtual void OnUnselect(Command* next) = 0;
 	// 実行後のウインドウを閉じる方法
 	virtual CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) = 0;
+	// 選択時に入力欄に設定するキーワードとキャレットを設定する
+	virtual bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) = 0;
 };
 
 

@@ -8,7 +8,6 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/LocalPathResolver.h"
-#include "utility/Path.h"
 #include "resource.h"
 #include <list>
 
@@ -146,47 +145,6 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	const tregex& regURL = GetURLRegex();
 	if (std::regex_search((LPCTSTR)wholeWord, regURL)) {
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathURLCommand(wholeWord)));
-		return ;
-	}
-
-	// %が含まれている場合は環境変数が使われている可能性があるので展開を試みる
-	if (wholeWord.Find(_T('%')) != -1) {
-		DWORD sizeNeeded = ExpandEnvironmentStrings(wholeWord, nullptr, 0);
-		std::vector<TCHAR> buf(sizeNeeded);
-		ExpandEnvironmentStrings(wholeWord, buf.data(), sizeNeeded);
-		wholeWord = buf.data();
-	}
-
-	CString filePart;
-
-	int pos = 0;
-	// "で始まる場合は対応する"まで切り出す
-	if (wholeWord[pos] == _T('"')) {
-		pos++;
-
-		// 対応する"を探す
-		while (pos < len) {
-			if (wholeWord[pos] != _T('"')) {
-				pos++;
-				continue;
-			}
-			break;
-		}
-		if (pos == len) {
-			// 対応する"がなかった
-			return;
-		}
-		filePart = wholeWord.Mid(1, pos-1);
-	}
-	else {
-		filePart = wholeWord;
-	}
-
-	// 候補として扱うべきパス文字列かどうか
-	ExecutablePath path(filePart);
-	path.EnableMacros(false);
-	if (path.IsExecutable(false)) {
-		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(filePart)));
 		return ;
 	}
 

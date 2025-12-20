@@ -20,6 +20,7 @@ adhoc-command/env.md
 adhoc-command/eraname-converter.md
 adhoc-command/everything.md
 adhoc-command/file-pathconvert.md
+adhoc-command/filefolder.md
 adhoc-command/git-bash-pashconvert.md
 adhoc-command/history.md
 adhoc-command/ipaddress.md

@@ -52,7 +52,12 @@ void MainWindowInput::RemoveLastWord()
 
 	int len = str.GetLength();
 	for (int i = len-1; i >= 0; --i) {
-		if (str[i] != _T(' ')) {
+
+		TCHAR c = str[i];
+
+		bool isSpace = c == _T(' ');
+		bool isPathSeparator = i != len-1 && (c == _T('\\') || c == _T('/'));
+		if (isSpace == false && isPathSeparator == false) {
 			continue;
 		}
 

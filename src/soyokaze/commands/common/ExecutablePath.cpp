@@ -59,6 +59,23 @@ bool ExecutablePath::IsExecutable(bool includeRelative) const
 	return false;
 }
 
+bool ExecutablePath::IsDirectory() const
+{
+	// マクロを展開する
+	CString path{mPath};
+	if (mIsEnableMacros) {
+		ExpandMacros(path);
+	}
+
+	if (PathIsURL(path)) {
+		// URLの場合は(実際にリクエストを出さない限りは)判定できないのでfalse
+		return false;
+	}
+
+	// 存在する絶対パスのパスの場合はファイルが存在すれば実行可能とする
+	return Path::IsDirectory(path);
+}
+
 
 }}} // end of namespace launcherapp::commands::common;
 

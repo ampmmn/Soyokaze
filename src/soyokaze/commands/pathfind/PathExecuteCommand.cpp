@@ -7,7 +7,6 @@
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/builtin/ShowPropertiesAction.h"
-#include "actions/builtin/ShowPropertiesAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
