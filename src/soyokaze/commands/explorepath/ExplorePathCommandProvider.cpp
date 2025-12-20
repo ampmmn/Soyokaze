@@ -9,6 +9,8 @@
 #include "utility/Path.h"
 #include "resource.h"
 #include <list>
+#include <vector>
+#include <tuple>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -181,7 +183,7 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 	RefPtr<PartialMatchPattern> patTmp(PartialMatchPattern::Create());
 	patTmp->SetWholeText(filePattern);
 
-	std::vector<ExplorePathCommand*> fileTargets;   // ファイル要素
+	std::vector<std::tuple<int, ExplorePathCommand*> > fileTargets;   // ファイル要素
 
 	CString findPattern(folderPath + _T("\\*.*"));
 	CFileFind f;
@@ -206,18 +208,18 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 
 		if (f.IsDirectory()) {
 			// ディレクトリ要素を先に表示
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, newCmd));
+			commands.Add(CommandQueryItem(level, newCmd));
 		}
 		else {
 			// ファイルは後ろに表示するため、いったんリストに入れる
-			fileTargets.push_back(newCmd);
+			fileTargets.push_back({level, newCmd});
 		}
 	}
 	f.Close();
 
 	// ファイル要素を後に表示
-	for (auto target : fileTargets) {
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, target));
+	for (auto elem : fileTargets) {
+			commands.Add(CommandQueryItem(std::get<0>(elem), std::get<1>(elem)));
 	}
 }
 
