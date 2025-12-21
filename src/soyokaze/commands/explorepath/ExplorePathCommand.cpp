@@ -35,6 +35,7 @@ struct ExplorePathCommand::PImpl
 	bool EnterPath();
 	CString mWord;
 	CString mFullPath;
+	CString mCompletionText;
 };
 
 bool ExplorePathCommand::PImpl::EnterPath()
@@ -75,6 +76,11 @@ ExplorePathCommand::ExplorePathCommand(const CString& displayName, const CString
 
 ExplorePathCommand::~ExplorePathCommand()
 {
+}
+
+void ExplorePathCommand::SetCompletionText(const CString& completion)
+{
+	in->mCompletionText = completion;
 }
 
 CString ExplorePathCommand::GetName()
@@ -141,6 +147,7 @@ ExplorePathCommand::Clone()
 {
 	auto clonedObj = make_refptr<ExplorePathCommand>(in->mFullPath);
 	clonedObj->in->mWord = in->mWord;
+	clonedObj->in->mCompletionText = in->mCompletionText;
 	return clonedObj.release();
 }
 
@@ -206,24 +213,34 @@ ExplorePathCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 // 選択時に入力欄に設定するキーワードとキャレットを設定する
 bool ExplorePathCommand::CompleteKeyword(CString& keyword, int& startPos, int& endPos)
 {
-	auto newWord = in->mFullPath;
-	if (Path::IsDirectory(newWord)) {
-		auto c = newWord.Right(1);
-		if (c != _T('\\') && c != _T('/')) {
-			newWord += _T('\\');
+	if (in->mCompletionText.IsEmpty() == FALSE) {
+		keyword = in->mCompletionText;		
+
+		if (Path::IsDirectory(in->mFullPath)) {
+			keyword += _T("\\");
 		}
-	}
-	if (in->mFullPath.Find(keyword) == 0) {
+
 		startPos = keyword.GetLength();
-		endPos = newWord.GetLength();
+		endPos = keyword.GetLength();
+		return true;
 	}
 	else {
+		// パス末尾に\がなければ追加
+		auto newWord = in->mFullPath;
+		if (Path::IsDirectory(newWord)) {
+			auto c = newWord.Right(1);
+			if (c != _T('\\') && c != _T('/')) {
+				newWord += _T('\\');
+			}
+		}
+
+		// 補完後のキーワードの直後にキャレットを設定する
 		startPos = newWord.GetLength();
 		endPos = newWord.GetLength();
-	}
 
-	keyword = newWord;
-	return true;
+		keyword = newWord;
+		return true;
+	}
 }
 
 bool ExplorePathCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

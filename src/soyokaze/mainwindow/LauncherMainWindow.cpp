@@ -1143,7 +1143,7 @@ void LauncherMainWindow::Complement()
 
 	auto cmd = GetCurrentCommand();
 	if (cmd == nullptr) {
-		spdlog::warn(_T("Comlement: bommand is null"));
+		spdlog::warn(_T("Comlement: command is null"));
 		return ;
 	}
 
@@ -1154,46 +1154,56 @@ void LauncherMainWindow::Complement()
 
 	int startPos;
 	int endPos;
-	CString keyword = cmd->GetName();
+	CString keyword = in->mInput.GetKeyword();
 	// コマンドが独自の補完を実装している場合はそれを使う
 	RefPtr<launcherapp::core::SelectionBehavior> behavior;
 	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
 		hasCommmandCompletion = behavior->CompleteKeyword(keyword, startPos, endPos);
+		// 末尾にキャレットを設定する
+		startPos = keyword.GetLength();
+		endPos = keyword.GetLength();
 	}
 
-	if (hasCommmandCompletion == false) {
-		// コマンドが独自の補完を実装していない場合は既定の補完処理を行う
+	if (hasCommmandCompletion) {
+		in->mLastInputStr = keyword;
+		in->mInput.SetKeyword(keyword, false);
+		SPDLOG_DEBUG(_T("caret pos (start,end)=({0},{1})"), startPos, endPos);
 
-		// 現在のキャレット位置より後ろにある文字を取得
-		in->mKeywordEdit.GetSel(startPos, endPos);
+		UpdateData(FALSE);
+		QuerySync();
 
-		launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
-		bool hasTrailing = tok.GetTrailingString(endPos, trailing);
-
+		// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
+		cmd = GetCurrentCommand();
+		if (cmd) {
+			in->mKeywordEdit.SetSel(startPos, endPos);
+		}
 	}
 	else {
-		in->mLastInputStr = keyword;
-	}
+		// コマンドが独自の補完を実装していない場合は既定の補完処理を行う
 
+		in->mKeywordEdit.GetSel(startPos, endPos);   // 現在のキャレット位置を取得
 
-	SPDLOG_DEBUG(_T("caret pos (start,end)=({0},{1})"), startPos, endPos);
+		launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
+		// 現在のキャレット末尾より後ろにある文字を取得
+		hasTrailing = tok.GetTrailingString(endPos, trailing);
 
-	bool withSpace = false;
-	in->mInput.SetKeyword(keyword, withSpace);
-	if (hasTrailing) {
-		in->mInput.AddArgument(trailing);
-	}
+		bool withSpace = false;
+		in->mInput.SetKeyword(cmd->GetName(), withSpace);
+		if (hasTrailing) {
+			in->mInput.AddArgument(trailing);
+		}
 
-	UpdateData(FALSE);
+		UpdateData(FALSE);
 
-	QuerySync();
+		QuerySync();
 
-	// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
-	cmd = GetCurrentCommand();
-	if (cmd) {
-		// コマンド名 + " " の位置にキャレットを設定する
-		int caretPos = cmd->GetName().GetLength() + 1;
-		in->mKeywordEdit.SetSel(caretPos, caretPos);
+		// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
+		cmd = GetCurrentCommand();
+		if (cmd) {
+			// コマンド名 + " " の位置にキャレットを設定する
+			int caretPos = cmd->GetName().GetLength() + 1;
+			in->mKeywordEdit.SetSel(caretPos, caretPos);
+		}
 	}
 }
 

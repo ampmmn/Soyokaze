@@ -23,6 +23,8 @@ public:
 	ExplorePathCommand(const CString& displayName, const CString& fullPath);
 	virtual ~ExplorePathCommand();
 
+	void SetCompletionText(const CString& completion);
+
 	CString GetName() override;
 	CString GetTypeDisplayName() override;
 	bool GetAction(uint32_t modifierFlags, Action** action) override;

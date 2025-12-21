@@ -1,7 +1,9 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/SelectionBehavior.h"
 #include <memory>
 
 class CommandFile;
@@ -14,7 +16,10 @@ class CommandParam;
 
 class ShellExecCommand :
 	virtual public launcherapp::commands::common::UserCommandBase,
-	virtual public launcherapp::commands::core::ContextMenuSource
+	virtual public launcherapp::commands::core::ContextMenuSource,
+ 	virtual public launcherapp::commands::core::ExtraCandidateSource,
+	virtual public launcherapp::core::SelectionBehavior
+
 {
 public:
 	ShellExecCommand();
@@ -48,6 +53,20 @@ public:
 	int GetMenuItemCount() override;
 	// メニューに対応するアクションを取得する
 	bool GetMenuItem(int index, Action** action) override;
+
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
+// SelectionBehavior
+	// 選択された
+	void OnSelect(Command* prior) override;
+	// 選択解除された
+	void OnUnselect(Command* next) override;
+	// 実行後のウインドウを閉じる方法
+	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
+	// 選択時に入力欄に設定するキーワードとキャレットを設定する
+	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

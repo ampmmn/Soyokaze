@@ -17,6 +17,8 @@ public:
 
 	// 一時的なコマンドの準備を行うための初期化
 	void PrepareAdhocCommands() override;
+	// Provider間の優先順位を表す値を返す。小さいほど優先
+	uint32_t GetOrder() const override;
 	// 一時的なコマンドを必要に応じて提供する
 	void QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& comands) override;
 	// Providerが扱うコマンド種別(表示名)を列挙

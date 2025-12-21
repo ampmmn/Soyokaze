@@ -79,6 +79,12 @@ void EverythingCommandProvider::PrepareAdhocCommands()
 	in->Reload();
 }
 
+// Provider間の優先順位を表す値を返す。小さいほど優先
+uint32_t EverythingCommandProvider::GetOrder() const
+{
+	return 2000;
+}
+
 // 一時的なコマンドを必要に応じて提供する
 void EverythingCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
