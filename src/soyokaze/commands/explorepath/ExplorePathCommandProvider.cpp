@@ -150,10 +150,9 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 		// フォルダまたはファイルのパスを示す場合
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ExplorePathCommand(filePart)));
 
-		if (Path::IsDirectory(filePart) == false || (filePart.Right(1) != _T('\\') && filePart.Right(1) != _T('/'))) {
+		if (Path::IsDirectory(filePart) == false) {
 			return;
-		}
-		// パスがディレクトリ、かつ、末尾が二重引用符の場合はディレクトリ内の要素を列挙する
+		}	
 	}
 
 	// 末尾の\で分けて、フォルダ内の要素を列挙する
@@ -203,6 +202,10 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 		}
 
 		CString filePath = f.GetFilePath();
+		if (filePath.CompareNoCase(filePart) == 0) {
+			// このループ処理の前にすでに同じパスに対するコマンドを生成済なのでスキップする
+			continue;
+		}
 
 		auto newCmd = new ExplorePathCommand(PathFindFileName(filePath), filePath);
 

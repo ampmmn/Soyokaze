@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "ExplorePathCommand.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "commands/common/ExecuteHistory.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
@@ -25,6 +26,8 @@ using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+
+using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
 namespace launcherapp {
 namespace commands {
@@ -100,11 +103,21 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return false;
 	}
 
-	if (modifierFlags == 0) {
-		// 実行
-		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
-		*action = a;
+	bool shouldRunAsAdmin = (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL));
+	if (modifierFlags == 0 || shouldRunAsAdmin) {
+		// 実行 or 管理者権限で実行
+		*action = new CallbackAction(_T("実行"), [&, shouldRunAsAdmin](Parameter* param, String* errMsg) -> bool {
+			ExecuteAction a(in->mFullPath, _T("$*"));
+			if (shouldRunAsAdmin) {
+				a.SetRunAsAdmin();
+			}
+			bool ret = a.Perform(param, errMsg);
+
+			// フルパスを実行履歴に登録する
+			ExecuteHistory::GetInstance()->Add(_T("history"), in->mFullPath);
+
+			return ret;
+		});
 		return true;
 	}
 
@@ -116,14 +129,6 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 
-	if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
-		// 管理者権限で実行
-		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
-		a->SetRunAsAdmin();
-		*action = a;
-		return true;
-	}
 	else if (modifierFlags == Command::MODIFIER_CTRL) {
 		// パスをファイラーで開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
@@ -173,11 +178,7 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 	}
 	else if (index == 2)  {
 		// 管理者権限で実行
-		auto a = new ExecuteAction(in->mFullPath);
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
-		a->SetRunAsAdmin();
-		*action = a;
-		return true;
+		return GetAction(Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, action);
 	}
 	else if (index == 3) {
 		// クリップボードにコピー
@@ -185,9 +186,8 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 		return true;
 	}
 	else { // if (index == 4)
-				 // プロパティダイアログを表示
-		*action = new ShowPropertiesAction(in->mFullPath);
-		return true;
+		// プロパティダイアログを表示
+		return GetAction(Command::MODIFIER_ALT, action);
 	}
 }
 
