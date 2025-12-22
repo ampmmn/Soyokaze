@@ -103,7 +103,7 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 	if (modifierFlags == 0) {
 		// 実行
 		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
 		*action = a;
 		return true;
 	}
@@ -119,7 +119,7 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 	if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
 		// 管理者権限で実行
 		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
 		a->SetRunAsAdmin();
 		*action = a;
 		return true;
@@ -174,7 +174,7 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 	else if (index == 2)  {
 		// 管理者権限で実行
 		auto a = new ExecuteAction(in->mFullPath);
-		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
+		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
 		a->SetRunAsAdmin();
 		*action = a;
 		return true;

@@ -1563,8 +1563,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,48,1,1
- PRODUCTVERSION 0,48,1,1
+ FILEVERSION 0,48,2,1
+ PRODUCTVERSION 0,48,2,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1580,12 +1580,12 @@ BEGIN
         BLOCK "041104b0"
         BEGIN
             VALUE "FileDescription", APPNAME_
-            VALUE "FileVersion", "0.48.1.1"
+            VALUE "FileVersion", "0.48.2.1"
             VALUE "InternalName", APP_EXENAME_
             VALUE "LegalCopyright", COPYRIGHT_STR
             VALUE "OriginalFilename", APP_EXENAME_
             VALUE "ProductName", APPNAME_
-            VALUE "ProductVersion", "0.48.1.1"
+            VALUE "ProductVersion", "0.48.2.1"
         END
     END
     BLOCK "VarFileInfo"
