@@ -1584,13 +1584,13 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 {
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (in->mCandidates.IsEmpty()) {
-		// 候補がなければ何もしない
-		return 0;
-	}
-
 	// 矢印↑キー押下
 	if (wParam == VK_UP) {
+		if (in->mCandidates.IsEmpty()) {
+			// 候補がなければ何もしない
+			return 0;
+		}
+
 		in->mCandidates.OffsetCurrentSelect(-1, true);
 
 		auto cmd = GetCurrentCommand();
@@ -1612,6 +1612,11 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 	}
 	// 矢印↓キー押下
 	else if (wParam ==VK_DOWN) {
+		if (in->mCandidates.IsEmpty()) {
+			// 候補がなければ何もしない
+			return 0;
+		}
+
 		in->mCandidates.OffsetCurrentSelect(1, true);
 
 		auto cmd = GetCurrentCommand();
@@ -1632,21 +1637,43 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 		return 1;
 	}
 	else if (wParam == VK_TAB) {
+
+		if (in->mCandidates.IsEmpty()) {
+			// Tabキーを押すとフォーカスが失われるため、設定しなおす
+			//in->mKeywordEdit.SetFocus();
+			return 1;
+		}
+
 		// 補完
 		Complement();
 		return 1;
 
 	}
 	else if (wParam == VK_RETURN) {
+		if (in->mCandidates.IsEmpty()) {
+			// 候補がなければ何もしない
+			return 0;
+		}
+
 		OnOK();
 		return 1;
 	}
 	else if (wParam == VK_NEXT) {
+		if (in->mCandidates.IsEmpty()) {
+			// 候補がなければ何もしない
+			return 0;
+		}
+
 		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
 		in->mCandidates.OffsetCurrentSelect(itemsInPage, false);
 		return 1;
 	}
 	else if (wParam == VK_PRIOR) {
+		if (in->mCandidates.IsEmpty()) {
+			// 候補がなければ何もしない
+			return 0;
+		}
+
 		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
 		in->mCandidates.OffsetCurrentSelect(-itemsInPage , false);
 		return 1;
