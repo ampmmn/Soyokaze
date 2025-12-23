@@ -1187,7 +1187,7 @@ void LauncherMainWindow::Complement()
 		// 現在のキャレット末尾より後ろにある文字を取得
 		hasTrailing = tok.GetTrailingString(endPos, trailing);
 
-		bool withSpace = false;
+		bool withSpace = true;
 		in->mInput.SetKeyword(cmd->GetName(), withSpace);
 		if (hasTrailing) {
 			in->mInput.AddArgument(trailing);
