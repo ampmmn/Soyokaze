@@ -41,6 +41,8 @@ public:
 	virtual bool MoveTemporary(int vk) = 0;
 	// メインウインドウの表示を抑制する
 	virtual void BlockWindowDisplay(bool isBlock) = 0;
+	// 単語単位の削除
+	virtual void DeleteWord() = 0;
 };
 
 

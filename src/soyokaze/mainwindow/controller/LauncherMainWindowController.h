@@ -23,6 +23,7 @@ enum LauncherMainWindowMessageID  {
 	POPUPMESSAGE =WM_APP + 21, 
 	EXPANDMACRO =WM_APP + 22, 
 	RELEASEMACROSTR =WM_APP + 23, 
+	DELETEWORD = WM_APP + 24,
 };
 	
 class LauncherMainWindowController : public MainWindowControllerIF
@@ -63,6 +64,8 @@ public:
 	bool MoveTemporary(int vk) override;
 	// メインウインドウの表示を抑制する
 	void BlockWindowDisplay(bool isBlock) override;
+	// 単語単位の削除
+	void DeleteWord() override;
 
 };
 

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- #208 単語削除するキーを設定できるようにする
+
 ### Changed
 
 - #212 ExplorePathCommandを実行したときに履歴登録する形に戻す、かつ、フルパスを履歴として表示する

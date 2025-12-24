@@ -247,6 +247,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::POPUPMESSAGE, OnUserMessagePopupMessage)
 	ON_MESSAGE(LauncherMainWindowMessageID::EXPANDMACRO, OnUserMessageExpandMacro)
 	ON_MESSAGE(LauncherMainWindowMessageID::RELEASEMACROSTR, OnUserMessageReleaseMacroStr)
+	ON_MESSAGE(LauncherMainWindowMessageID::DELETEWORD, OnUserMessageDeleteWord)
 	ON_MESSAGE(WM_APP+255, OnUserMessageGuideClicked)
 	ON_WM_CONTEXTMENU()
 	ON_WM_ENDSESSION()
@@ -628,6 +629,29 @@ LRESULT LauncherMainWindow::OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM l
 
 	wchar_t* p = (wchar_t*)lParam;
 	delete [] p;
+
+	return 0;
+}
+
+// 単語単位削除
+LRESULT LauncherMainWindow::OnUserMessageDeleteWord(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	// 音を鳴らす
+	AppSound::Get()->PlayInputSound();
+
+	in->mInput.RemoveLastWord();
+	in->mLastInputStr = in->mInput.GetKeyword();
+
+	// 検索リクエスト
+	QueryAsync();
+
+	// キャレット位置も更新する
+	in->mKeywordEdit.SetCaretToEnd();
+
+	UpdateData(FALSE);
 
 	return 0;
 }
@@ -1231,8 +1255,8 @@ void LauncherMainWindow::OnEditCommandChanged()
 
 	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
 	// (Editコントロールの通常の挙動)
-	// このアプリはCtrl-Backspaceで入力文字列を全クリアするが、一方で、上記挙動により
-	// 入力文字列をクリアした後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
+	// このアプリはCtrl-Backspaceで入力文字列を単語単位削除をするが、一方で、上記挙動により
+	// 単語単位削除した後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
 	if (isReplaced) {
 
 		// FIXME: 0x7Fが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい

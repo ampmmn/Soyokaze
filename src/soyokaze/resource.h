@@ -238,6 +238,7 @@
 #define IDC_EDIT_HOTKEY_MOVE_DOWN       1028
 #define IDC_STATIC_PARAM0               1029
 #define IDC_COMBO_AFTERCOMMAND          1029
+#define IDC_EDIT_HOTKEY_DELWORD         1029
 #define IDC_STATIC_NAME                 1030
 #define IDC_BUTTON_RESOLVESHORTCUT2     1030
 #define IDC_COMBO_AFTERTYPE             1030
@@ -299,6 +300,7 @@
 #define IDC_BUTTON_HOTKEY_MOVE_RIGHT    1062
 #define IDC_CHECK_SHOWOPTIONBUTTON      1062
 #define IDC_CHECK_SHOWGUIDE             1063
+#define IDC_BUTTON_HOTKEY_DELWORD       1063
 #define IDC_CHECK_SHOWTOGGLE            1064
 #define IDC_CHECK_SHOWGUIDE2            1064
 #define IDC_CHECK_DRAWICON              1064

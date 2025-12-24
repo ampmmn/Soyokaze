@@ -127,6 +127,12 @@ void LauncherMainWindowController::BlockWindowDisplay(bool isBlock)
 	::SendMessage(sharedWnd.GetHwnd(), BLOCKWINDOWDIAPLAY, (WPARAM)isBlock ? 1 : 0, 0);
 }
 
+// 単語単位の削除
+void LauncherMainWindowController::DeleteWord()
+{
+	SharedHwnd sharedWnd;
+	::SendMessage(sharedWnd.GetHwnd(), DELETEWORD, 0, 0);
+}
 
 }}} // end of namespace launcherapp::mainwindow::controller
 

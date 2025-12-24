@@ -59,6 +59,18 @@ public:
 	}
 };
 
+class MainWindowHotKey::DeleteWordHandler : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	virtual ~DeleteWordHandler() {}
+	CString GetDisplayName() override { return _T("__mainwindow_deleteword"); }
+	bool Invoke() override {
+		auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
+		mainWnd->DeleteWord();
+		return true;
+	}
+};
+
 class MainWindowHotKey::ContextMenuHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
@@ -194,6 +206,12 @@ bool MainWindowHotKey::Register()
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	if (hotKeyAttrCompl.GetVKCode() != -1) {
 		manager->Register(this, new ComplHandler, hotKeyAttrCompl);
+	}
+
+	auto hotKeyAttrDeleteWord = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:DeleteWord-Modifiers"), 0),
+	                                       settingsPtr->Get(_T("MainWindowKey:DeleteWord-VirtualKeyCode"), -1));
+	if (hotKeyAttrDeleteWord.GetVKCode() != -1) {
+		manager->Register(this, new DeleteWordHandler, hotKeyAttrDeleteWord);
 	}
 
 	auto hotKeyAttrContextMenu = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:ContextMenu-Modifiers"), 0),

@@ -139,6 +139,7 @@ protected:
 	LRESULT OnUserMessageExpandMacro(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageGuideClicked(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageDeleteWord(WPARAM wParam, LPARAM lParam);
 
 	afx_msg void OnButtonOptionClicked();
 

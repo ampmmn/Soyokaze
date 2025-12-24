@@ -29,6 +29,7 @@ protected:
 	afx_msg void OnButtonHotKeySelectDown();
 	afx_msg void OnButtonHotKeyEnter();
 	afx_msg void OnButtonHotKeyCompl();
+	afx_msg void OnButtonHotKeyDeleteWord();
 	afx_msg void OnButtonHotKeyContextMenu();
 	afx_msg void OnButtonHotKeyCopy();
 	afx_msg void OnButtonHotKeyMoveUp();
@@ -50,6 +51,9 @@ public:
 	// 補完
 	CString mHotKeyCompl;
 	HOTKEY_ATTR mHotKeyAttrCompl;
+	// 単語削除
+	CString mHotKeyDeleteWord;
+	HOTKEY_ATTR mHotKeyAttrDeleteWord;
 	// コンテキストメニュー表示
 	CString mHotKeyContextMenu;
 	HOTKEY_ATTR mHotKeyAttrContextMenu;
@@ -104,6 +108,9 @@ void InputWindowKeySettingPage::OnOK()
 	settingsPtr->Set(_T("MainWindowKey:Compl-Modifiers"), (int)mHotKeyAttrCompl.GetModifiers());
 	settingsPtr->Set(_T("MainWindowKey:Compl-VirtualKeyCode"), (int)mHotKeyAttrCompl.GetVKCode());
 
+	settingsPtr->Set(_T("MainWindowKey:DeleteWord-Modifiers"), (int)mHotKeyAttrDeleteWord.GetModifiers());
+	settingsPtr->Set(_T("MainWindowKey:DeleteWord-VirtualKeyCode"), (int)mHotKeyAttrDeleteWord.GetVKCode());
+
 	settingsPtr->Set(_T("MainWindowKey:ContextMenu-Modifiers"), (int)mHotKeyAttrContextMenu.GetModifiers());
 	settingsPtr->Set(_T("MainWindowKey:ContextMenu-VirtualKeyCode"), (int)mHotKeyAttrContextMenu.GetVKCode());
 
@@ -133,6 +140,7 @@ void InputWindowKeySettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_DOWN, mHotKeySelectDown);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_ENTER, mHotKeyEnter);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_COMPL, mHotKeyCompl);
+	DDX_Text(pDX, IDC_EDIT_HOTKEY_DELWORD, mHotKeyDeleteWord);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_CONTEXTMENU, mHotKeyContextMenu);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_COPY, mHotKeyCopy);
 	DDX_Text(pDX, IDC_EDIT_HOTKEY_MOVE_UP, mHotKeyMoveUp);
@@ -146,6 +154,7 @@ BEGIN_MESSAGE_MAP(InputWindowKeySettingPage, CDialog)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_DOWN, OnButtonHotKeySelectDown)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_ENTER, OnButtonHotKeyEnter)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_COMPL, OnButtonHotKeyCompl)
+	ON_COMMAND(IDC_BUTTON_HOTKEY_DELWORD, OnButtonHotKeyDeleteWord)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_CONTEXTMENU, OnButtonHotKeyContextMenu)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_COPY, OnButtonHotKeyCopy)
 	ON_COMMAND(IDC_BUTTON_HOTKEY_MOVE_UP, OnButtonHotKeyMoveUp)
@@ -172,6 +181,7 @@ bool InputWindowKeySettingPage::UpdateStatus()
 	mHotKeySelectDown = mHotKeyAttrSelectDown.ToString();
 	mHotKeyEnter = mHotKeyAttrEnter.ToString();
 	mHotKeyCompl = mHotKeyAttrCompl.ToString();
+	mHotKeyDeleteWord = mHotKeyAttrDeleteWord.ToString();
 	mHotKeyContextMenu = mHotKeyAttrContextMenu.ToString();
 	mHotKeyCopy = mHotKeyAttrCopy.ToString();
 	mHotKeyMoveUp = mHotKeyAttrMoveUp.ToString();
@@ -200,6 +210,10 @@ void InputWindowKeySettingPage::OnEnterSettings(Settings* settingsPtr)
 	mHotKeyAttrCompl = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
 	                               settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	mHotKeyCompl = mHotKeyAttrCompl.ToString();
+
+	mHotKeyAttrDeleteWord = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:DeleteWord-Modifiers"), 0),
+	                                    settingsPtr->Get(_T("MainWindowKey:DeleteWord-VirtualKeyCode"), -1));
+	mHotKeyDeleteWord = mHotKeyAttrDeleteWord.ToString();
 
 	mHotKeyAttrContextMenu = HOTKEY_ATTR(settingsPtr->Get(_T("MainWindowKey:ContextMenu-Modifiers"), 0),
 	                                     settingsPtr->Get(_T("MainWindowKey:ContextMenu-VirtualKeyCode"), -1));
@@ -289,6 +303,23 @@ void InputWindowKeySettingPage::OnButtonHotKeyCompl()
 	UpdateStatus();
 	UpdateData(FALSE);
 }
+
+void InputWindowKeySettingPage::OnButtonHotKeyDeleteWord()
+{
+	UpdateData();
+
+	HotKeyDialog dlg(mHotKeyAttrDeleteWord, this);
+	dlg.SetTargetName(_T("単語単位削除"));
+	if (dlg.DoModal() != IDOK) {
+		return ;
+	}
+
+	dlg.GetAttribute(mHotKeyAttrDeleteWord);
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 
 void InputWindowKeySettingPage::OnButtonHotKeyContextMenu()
 {
@@ -393,6 +424,7 @@ void InputWindowKeySettingPage::OnButtonReset()
 	mHotKeyAttrSelectDown = HOTKEY_ATTR();
 	mHotKeyAttrEnter = HOTKEY_ATTR();
 	mHotKeyAttrCompl = HOTKEY_ATTR();
+	mHotKeyAttrDeleteWord = HOTKEY_ATTR();
 	mHotKeyAttrContextMenu = HOTKEY_ATTR();
 	mHotKeyAttrCopy = HOTKEY_ATTR();
 	mHotKeyAttrMoveUp = HOTKEY_ATTR();
