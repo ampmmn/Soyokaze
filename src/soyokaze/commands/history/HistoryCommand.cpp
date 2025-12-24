@@ -18,6 +18,7 @@ namespace history {
 
 using Command = launcherapp::core::Command;
 using ContextMenuSource = launcherapp::commands::core::ContextMenuSource;
+using SelectionBehavior = launcherapp::core::SelectionBehavior;
 
 constexpr LPCTSTR TYPENAME = _T("HistoryCommand");
 
@@ -136,6 +137,47 @@ bool HistoryCommand::GetMenuItem(int index, Action** action)
 	return menuSrc->GetMenuItem(index, action);
 }
 
+// 選択された
+void HistoryCommand::OnSelect(Command*)
+{
+	// 何もしない
+}
+
+// 選択解除された
+void HistoryCommand::OnUnselect(Command*) 
+{
+	// 何もしない
+}
+
+// 実行後のウインドウを閉じる方法
+SelectionBehavior::CloseWindowPolicy
+HistoryCommand::GetCloseWindowPolicy(uint32_t modifierMask)
+{
+	return SelectionBehavior::CLOSEWINDOW_ASYNC;
+}
+
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool HistoryCommand::CompleteKeyword(CString& keyword, int& startPos, int& endPos)
+{
+	if (in->mKeyword.GetLength() < 3) {
+		return false;
+	}
+	bool isLocalPath = in->mKeyword[1] == _T(':') && in->mKeyword[2] == _T('\\');
+	bool isUNCPath = in->mKeyword[0] == _T('\\') && in->mKeyword[1] == _T('\\');
+	if (isLocalPath == false && isUNCPath == false) {
+		return false;
+	}
+
+	// 履歴キーワードが絶対パスを示すものだった場合、パスを補完する
+	// (既定の補完動作である末尾にスペースを入れないようにする)
+	keyword = in->mKeyword;
+	startPos = keyword.GetLength();
+	endPos = keyword.GetLength();
+
+	return true;
+}
+
+
 bool HistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -145,6 +187,11 @@ bool HistoryCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** 
 	if (ifid == IFID_CONTEXTMENUSOURCE) {
 		AddRef();
 		*cmd = (ContextMenuSource*)this;
+		return true;
+	}
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
 		return true;
 	}
 	return false;
