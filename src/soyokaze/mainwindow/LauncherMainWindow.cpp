@@ -648,10 +648,10 @@ LRESULT LauncherMainWindow::OnUserMessageDeleteWord(WPARAM wParam, LPARAM lParam
 	// 検索リクエスト
 	QueryAsync();
 
+	UpdateData(FALSE);
+
 	// キャレット位置も更新する
 	in->mKeywordEdit.SetCaretToEnd();
-
-	UpdateData(FALSE);
 
 	return 0;
 }
