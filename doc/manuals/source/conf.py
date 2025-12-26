@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-version = '0.48.1'
+version = '0.49.0'
 
 from configparser import ConfigParser
 config = ConfigParser()
