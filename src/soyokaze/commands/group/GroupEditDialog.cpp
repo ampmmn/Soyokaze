@@ -115,6 +115,11 @@ BOOL GroupEditDialog::OnInitDialog()
 		mCommandSelectBox->AddString(name);
 	}
 
+	// 後始末
+	for (auto& cmd : commands) {
+		cmd->Release();
+	}
+
 	CString caption;
   GetWindowText(caption);
 

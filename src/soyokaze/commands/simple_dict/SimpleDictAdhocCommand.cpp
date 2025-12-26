@@ -94,13 +94,14 @@ CString SimpleDictAdhocCommand::GetTypeDisplayName()
 #pragma warning( push )
 #pragma warning( disable : 26813 )
 
-bool SimpleDictAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool SimpleDictAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// Enterキーのみ押下の場合は設定したアクションを実行
 		return CreateAction(action);
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// Shift-Enterでキーをコピー
 		auto key = in->mRecord.mKey;
 		if (in->mParam->mIsExpandMacro) {
@@ -111,7 +112,7 @@ bool SimpleDictAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 	// Ctrl-Enterで値をコピー
 		auto value = in->mRecord.mValue;
 		if (in->mParam->mIsExpandMacro) {
@@ -156,7 +157,7 @@ bool SimpleDictAdhocCommand::CreateAction(Action** action)
 			paramSub->AddArgument(argSub);
 
 			RefPtr<Action> a;
-			if (command->GetAction(0, &a) == false) {
+			if (command->GetAction(HOTKEY_ATTR(0, VK_RETURN), &a) == false) {
 				spdlog::error("Failed to get action.");
 				return false;
 			}

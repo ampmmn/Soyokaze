@@ -69,14 +69,16 @@ CString KeySplitterCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool KeySplitterCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	// Ctrlキーが押されているかを設定
 	ModifierState state;
-	if (modifierFlags & Command::MODIFIER_CTRL) { state.SetPressCtrl(true); }
-	if (modifierFlags & Command::MODIFIER_SHIFT) { state.SetPressShift(true); }
-	if (modifierFlags & Command::MODIFIER_ALT) { state.SetPressAlt(true); }
-	if (modifierFlags & Command::MODIFIER_WIN) { state.SetPressWin(true); }
+
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+	if (modifierFlags & MOD_CONTROL) { state.SetPressCtrl(true); }
+	if (modifierFlags & MOD_SHIFT) { state.SetPressShift(true); }
+	if (modifierFlags & MOD_ALT) { state.SetPressAlt(true); }
+	if (modifierFlags & MOD_WIN) { state.SetPressWin(true); }
 
 	bool isVisible = true;
 	ITEM item;
@@ -142,7 +144,7 @@ bool KeySplitterCommand::GetAction(uint32_t modifierFlags, Action** action)
 		}
 
 		RefPtr<actions::core::Action> action;
-		if (command->GetAction(0, &action) == false) {
+		if (command->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action) == false) {
 			spdlog::error("Failed to get action.");
 			return false;
 		}

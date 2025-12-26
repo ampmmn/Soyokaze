@@ -79,29 +79,30 @@ CString EverythingAdhocCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool EverythingAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool EverythingAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// 実行
 		*action = new ExecuteAction(in->mResult.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// パスをコピー
 		*action = new CopyTextAction(in->mResult.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		// フォルダを開く
 		*action = new OpenPathInFilerAction(in->mResult.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
+	else if (modifierFlags == MOD_ALT) {
 		// フォルダを開く
 		*action = new ShowPropertiesAction(in->mResult.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == (Command::MODIFIER_CTRL|Command::MODIFIER_SHIFT)) {
+	else if (modifierFlags == (MOD_CONTROL|MOD_SHIFT)) {
 		// 管理者権限で実行
 		auto a = new ExecuteAction(in->mResult.mFullPath);
 		a->SetRunAsAdmin();

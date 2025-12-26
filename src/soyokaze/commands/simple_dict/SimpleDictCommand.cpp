@@ -286,9 +286,9 @@ bool SimpleDictCommand::CanExecute(String* reasonMsg)
 }
 
 
-bool SimpleDictCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool SimpleDictCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0) {
+	if (hotkeyAttr.GetModifiers() == 0) {
 		// コマンド名単体(後続のパラメータなし)で実行したときは簡易辞書の候補一覧を列挙させる
 		LPCTSTR guideStr = _T("キーワード入力すると候補を絞り込むことができます");
 		*action = new SetTextAction(guideStr, GetName() + _T(" "));

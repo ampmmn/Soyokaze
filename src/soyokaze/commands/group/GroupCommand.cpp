@@ -86,15 +86,15 @@ CString GroupCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool GroupCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool GroupCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	auto groupAction = new GroupAction(in->mParam.mName, modifierFlags);
+	auto groupAction = new GroupAction(in->mParam.mName, hotkeyAttr);
 	groupAction->EnableConfirm(in->mParam.mIsConfirm);
 	groupAction->SetRepeats(in->mParam.mIsRepeat ? in->mParam.mRepeats : 1);
 	groupAction->EnablePassParam(in->mParam.mIsPassParam);
 
 	for (auto& item : in->mParam.mItems) {
-		RefPtr<RunCommandAction> subAction(new RunCommandAction(in->mParam.mName, item.mItemName, modifierFlags));
+		RefPtr<RunCommandAction> subAction(new RunCommandAction(in->mParam.mName, item.mItemName, hotkeyAttr));
 		subAction->EnableWait(item.mIsWait);
 		groupAction->AddAction(subAction.get());
 	}

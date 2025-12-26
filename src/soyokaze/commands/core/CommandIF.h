@@ -6,6 +6,7 @@
 #include "actions/core/ActionParameterIF.h"
 #include "actions/core/Action.h"
 #include "matcher/Pattern.h"
+#include "hotkey/HotKeyAttribute.h"
 
 class CommandHotKeyAttribute;
 
@@ -29,14 +30,17 @@ public:
 	};
 
 public:
+	// コマンド名を取得
 	virtual CString GetName() = 0;
+	// コマンドの説明を取得
 	virtual CString GetDescription() = 0;
 	// コマンド種類を表す表示名称
 	virtual CString GetTypeDisplayName() = 0;
+	// コマンドが実行可能かどうかを取得
 	virtual bool CanExecute(String* reasonMsg) = 0;
 
 	// 修飾キー押下状態に対応した実行アクションを取得する
-	virtual bool GetAction(uint32_t modifierFlags, Action** action) = 0;
+	virtual bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) = 0;
 
 	virtual HICON GetIcon() = 0;
 	virtual int Match(Pattern* pattern) = 0;

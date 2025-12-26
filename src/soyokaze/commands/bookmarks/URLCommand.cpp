@@ -58,13 +58,14 @@ CString URLCommand::GetTypeDisplayName()
 	return TypeDisplayName(product);
 }
 
-bool URLCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool URLCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		*action = new actions::web::OpenURLAction(in->mBookmarkItem.mUrl, in->mEnv);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		*action = new actions::clipboard::CopyTextAction(in->mBookmarkItem.mUrl);
 		return true;
 	}

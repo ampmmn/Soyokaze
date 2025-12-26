@@ -151,14 +151,14 @@ bool FilterCommand::CanExecute(String* reasonMsg)
 }
 
 
-bool FilterCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool FilterCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (in->mIsEmpty) {
 		// 候補が存在しないとわかっている場合は何もしない
 		return false;
 	}
 
-	if (modifierFlags == 0) {
+	if (hotkeyAttr.GetModifiers() == 0) {
 		*action = new SetTextAction(_T("候補を表示する"), GetName() + _T(" "));
 		return true;
 	}

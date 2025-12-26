@@ -120,9 +120,9 @@ bool RegExpCommand::CanExecute(String* reasonMsg)
 }
 
 
-bool RegExpCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool RegExpCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0) {
+	if (hotkeyAttr.GetModifiers() == 0) {
 		auto a = new ExecuteAction(new RegExpExecutionTarget(in->mMatchLevel, in->mParam));
 		if (in->mParam.mRunAs != 0) {
 			a->SetRunAsAdmin();

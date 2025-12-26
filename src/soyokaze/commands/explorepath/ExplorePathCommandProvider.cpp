@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ExplorePathCommandProvider.h"
 #include "commands/explorepath/ExplorePathCommand.h"
+#include "commands/explorepath/ExplorePathExtraActionSettings.h"
+
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -46,10 +48,12 @@ struct ExplorePathCommandProvider::PImpl : public AppPreferenceListenerIF
 		auto pref = AppPreference::Get();
 		mIsIgnoreUNC = pref->IsIgnoreUNC();
 		mIsEnable = pref->IsEnablePathFind();
+		mExtraActionSettings.Load();
 	}
 
 	bool mIsIgnoreUNC{false};
 	bool mIsEnable{true};
+	ExtraActionSettings mExtraActionSettings;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +152,9 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 	// 
 	if (Path::FileExists(filePart)) {
 		// フォルダまたはファイルのパスを示す場合
-		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ExplorePathCommand(filePart)));
+		auto newCmd = new ExplorePathCommand(filePart);
+		newCmd->SetExtraActionSettings(&in->mExtraActionSettings);
+		commands.Add(CommandQueryItem(Pattern::WholeMatch, newCmd));
 
 		if (Path::IsDirectory(filePart) == false) {
 			return;
@@ -208,6 +214,7 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 		}
 
 		auto newCmd = new ExplorePathCommand(PathFindFileName(filePath), filePath);
+		newCmd->SetExtraActionSettings(&in->mExtraActionSettings);
 
 		if (f.IsDirectory()) {
 			// ディレクトリ要素を先に表示

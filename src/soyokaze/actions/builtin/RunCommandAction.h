@@ -1,6 +1,9 @@
 #pragma once
 
 #include "actions/core/ActionBase.h"
+#include "hotkey/HotKeyAttribute.h"
+
+class HOTKEY_ATTR;
 
 namespace launcherapp { namespace actions { namespace builtin {
 
@@ -8,7 +11,7 @@ namespace launcherapp { namespace actions { namespace builtin {
 class RunCommandAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	RunCommandAction(const CString& parentName, const CString& commandName, uint32_t modifierKeyState = 0);
+	RunCommandAction(const CString& parentName, const CString& commandName, const HOTKEY_ATTR& hotkeyAttr);
 	~RunCommandAction();
 
 	void EnableWait(bool shouldWait);

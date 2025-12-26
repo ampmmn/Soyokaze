@@ -17,7 +17,7 @@ struct GroupAction::PImpl
 {
 	CString mParentCommandName;
 	std::vector<Action*> mActions;
-	uint32_t mModifierKeyState{0};
+	HOTKEY_ATTR mHotkeyAttr;
 	uint32_t mRepeats{1};
 	bool mShouldConfirm{false};
 	bool mShouldStopIfErrorOccured{false};
@@ -27,11 +27,11 @@ struct GroupAction::PImpl
 
 GroupAction::GroupAction(
 	const CString& parentName,
-	uint32_t modifierKeyState
+	const HOTKEY_ATTR& hotkeyAttr
 ) : in(new PImpl)
 {
 	in->mParentCommandName = parentName;
-	in->mModifierKeyState = modifierKeyState;
+	in->mHotkeyAttr = hotkeyAttr;
 }
 
 GroupAction::~GroupAction()
@@ -115,7 +115,7 @@ bool GroupAction::Perform(Parameter* param, String* errMsg)
 // ガイド欄などに表示するかどうか
 bool GroupAction::IsVisible()
 {
-	return in->mModifierKeyState == 0;
+	return in->mHotkeyAttr.GetModifiers() == 0;
 }
 
 bool GroupAction::Confirm(Parameter* param)

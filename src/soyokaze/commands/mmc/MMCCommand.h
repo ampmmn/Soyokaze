@@ -18,7 +18,7 @@ public:
 	virtual ~MMCCommand();
 
 	CString GetTypeDisplayName() override;
-	bool GetAction(uint32_t modifierFlags, Action** action) override;
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 

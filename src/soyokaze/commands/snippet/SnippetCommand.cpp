@@ -74,19 +74,20 @@ CString SnippetCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool SnippetCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool SnippetCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0) {
-		// 定型文をマクロ置換
-		CString text = in->mParam.mText;
-		launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
-		// クリップボードにコピー
-		auto a = new CopyTextAction(text);
-		a->SetDisplayName(_T("定型文をクリップボードにコピー"));
-		*action = a;
-		return true;
+	if (hotkeyAttr.GetModifiers() != 0) {
+		return false;
 	}
-	return false;
+
+	// 定型文をマクロ置換
+	CString text = in->mParam.mText;
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(text);
+	// クリップボードにコピー
+	auto a = new CopyTextAction(text);
+	a->SetDisplayName(_T("定型文をクリップボードにコピー"));
+	*action = a;
+	return true;
 }
 
 void SnippetCommand::SetParam(const CommandParam& param)

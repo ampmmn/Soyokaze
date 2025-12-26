@@ -40,9 +40,9 @@ CString MMCCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool MMCCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool MMCCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 
@@ -76,7 +76,7 @@ int MMCCommand::GetMenuItemCount()
 bool MMCCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		return GetAction(0, action);
+		return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	return false;
 }

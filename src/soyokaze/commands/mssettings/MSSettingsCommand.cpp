@@ -51,11 +51,9 @@ CString MSSettingsCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool MSSettingsCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool MSSettingsCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
-
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 
@@ -84,7 +82,7 @@ int MSSettingsCommand::GetMenuItemCount()
 bool MSSettingsCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		return  GetAction(0, action);
+		return  GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	return false;
 }

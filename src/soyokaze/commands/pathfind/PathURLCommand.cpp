@@ -47,9 +47,9 @@ CString PathURLCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool PathURLCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool PathURLCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0) {
+	if (hotkeyAttr.GetModifiers() == 0) {
 		// 実行
 		auto a = new ExecuteAction(in->mURL, _T("$*"));
 		a->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
@@ -81,7 +81,7 @@ int PathURLCommand::GetMenuItemCount()
 bool PathURLCommand::GetMenuItem(int index, Action** action)
 {
 	if (index == 0) {
-		return GetAction(0, action);
+		return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	if (index == 1) {
 		*action = new CallbackAction(_T("URLをコマンドとして登録する"), [&](Parameter*, String*) -> bool {

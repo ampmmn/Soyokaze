@@ -9,8 +9,30 @@
 #define new DEBUG_NEW
 #endif
 
+class MainWindowHotKey::HandlerBase : public launcherapp::core::CommandHotKeyHandler
+{
+public:
+	bool IsTemporaryHandler() override {
+		return false;
+	}
 
-class MainWindowHotKey::SelectUpHandler : public launcherapp::core::CommandHotKeyHandler
+	uint32_t AddRef() override {
+		return (uint32_t)InterlockedIncrement(&mRefCount);
+	}
+
+	uint32_t Release() override {
+		auto n = InterlockedDecrement(&mRefCount);
+		if (n == 0) {
+			delete this;
+		}
+		return (uint32_t)n;
+	}
+
+	uint32_t mRefCount{1};
+};
+
+
+class MainWindowHotKey::SelectUpHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~SelectUpHandler() {}
@@ -23,7 +45,7 @@ public:
 };
 
 
-class MainWindowHotKey::SelectDownHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::SelectDownHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~SelectDownHandler() {}
@@ -35,7 +57,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::EnterHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::EnterHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~EnterHandler() {}
@@ -47,7 +69,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::ComplHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::ComplHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~ComplHandler() {}
@@ -59,7 +81,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::DeleteWordHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::DeleteWordHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~DeleteWordHandler() {}
@@ -71,7 +93,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::ContextMenuHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::ContextMenuHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~ContextMenuHandler() {}
@@ -83,7 +105,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::CopyHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::CopyHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~CopyHandler() {}
@@ -96,7 +118,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::MoveUpHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::MoveUpHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~MoveUpHandler() {}
@@ -108,7 +130,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::MoveDownHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::MoveDownHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~MoveDownHandler() {}
@@ -120,7 +142,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::MoveLeftHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::MoveLeftHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~MoveLeftHandler() {}
@@ -132,7 +154,7 @@ public:
 	}
 };
 
-class MainWindowHotKey::MoveRightHandler : public launcherapp::core::CommandHotKeyHandler
+class MainWindowHotKey::MoveRightHandler : public MainWindowHotKey::HandlerBase
 {
 public:
 	virtual ~MoveRightHandler() {}
@@ -187,67 +209,89 @@ bool MainWindowHotKey::Register()
 	auto hotKeyAttrUp = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Up-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:Up-VirtualKeyCode"), -1));
 	if (hotKeyAttrUp.GetVKCode() != -1) {
-		manager->Register(this, new SelectUpHandler, hotKeyAttrUp);
+		auto handler = new  SelectUpHandler();
+		manager->Register(this, handler, hotKeyAttrUp);
+		handler->Release();
 	}
 
 	auto hotKeyAttrDown = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Down-Modifiers"), 0),
 	                                 settingsPtr->Get(_T("MainWindowKey:Down-VirtualKeyCode"), -1));
 	if (hotKeyAttrDown.GetVKCode() != -1) {
-		manager->Register(this, new SelectDownHandler, hotKeyAttrDown);
+		auto handler = new SelectDownHandler();
+		manager->Register(this, handler, hotKeyAttrDown);
+		handler->Release();
 	}
 
 	auto hotKeyAttrEnter = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Enter-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Enter-VirtualKeyCode"), -1));
 	if (hotKeyAttrEnter.GetVKCode() != -1) {
-		manager->Register(this, new EnterHandler, hotKeyAttrEnter);
+		auto handler = new EnterHandler();
+		manager->Register(this, handler, hotKeyAttrEnter);
+		handler->Release();
 	}
 
 	auto hotKeyAttrCompl = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Compl-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Compl-VirtualKeyCode"), -1));
 	if (hotKeyAttrCompl.GetVKCode() != -1) {
-		manager->Register(this, new ComplHandler, hotKeyAttrCompl);
+		auto handler = new ComplHandler();
+		manager->Register(this, handler, hotKeyAttrCompl);
+		handler->Release();
 	}
 
 	auto hotKeyAttrDeleteWord = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:DeleteWord-Modifiers"), 0),
 	                                       settingsPtr->Get(_T("MainWindowKey:DeleteWord-VirtualKeyCode"), -1));
 	if (hotKeyAttrDeleteWord.GetVKCode() != -1) {
-		manager->Register(this, new DeleteWordHandler, hotKeyAttrDeleteWord);
+		auto handler = new DeleteWordHandler();
+		manager->Register(this, handler, hotKeyAttrDeleteWord);
+		handler->Release();
 	}
 
 	auto hotKeyAttrContextMenu = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:ContextMenu-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:ContextMenu-VirtualKeyCode"), -1));
 	if (hotKeyAttrContextMenu.GetVKCode() != -1) {
-		manager->Register(this, new ContextMenuHandler, hotKeyAttrContextMenu);
+		auto handler = new ContextMenuHandler();
+		manager->Register(this, handler, hotKeyAttrContextMenu);
+		handler->Release();
 	}
 
 	auto hotKeyAttrCopy = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:Copy-Modifiers"), 0),
 	                            settingsPtr->Get(_T("MainWindowKey:Copy-VirtualKeyCode"), -1));
 	if (hotKeyAttrCopy.GetVKCode() != -1) {
-		manager->Register(this, new CopyHandler, hotKeyAttrCopy);
+		auto handler = new CopyHandler();
+		manager->Register(this, handler, hotKeyAttrCopy);
+		handler->Release();
 	}
 
 	auto hotKeyAttrMoveUp = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveUp-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:MoveUp-VirtualKeyCode"), -1));
 	if (hotKeyAttrMoveUp.GetVKCode() != -1) {
-		manager->Register(this, new MoveUpHandler, hotKeyAttrMoveUp);
+		auto handler = new MoveUpHandler();
+		manager->Register(this, handler, hotKeyAttrMoveUp);
+		handler->Release();
 	}
 
 	auto hotKeyAttrMoveDown = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveDown-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:MoveDown-VirtualKeyCode"), -1));
 	if (hotKeyAttrMoveDown.GetVKCode() != -1) {
-		manager->Register(this, new MoveDownHandler, hotKeyAttrMoveDown);
+		auto handler = new MoveDownHandler();
+		manager->Register(this, handler, hotKeyAttrMoveDown);
+		handler->Release();
 	}
 
 	auto hotKeyAttrMoveLeft = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveLeft-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:MoveLeft-VirtualKeyCode"), -1));
 	if (hotKeyAttrMoveLeft.GetVKCode() != -1) {
-		manager->Register(this, new MoveLeftHandler, hotKeyAttrMoveLeft);
+		auto handler = new MoveLeftHandler();
+		manager->Register(this, handler, hotKeyAttrMoveLeft);
+		handler->Release();
 	}
 
 	auto hotKeyAttrMoveRight = HotKeyAttr(settingsPtr->Get(_T("MainWindowKey:MoveRight-Modifiers"), 0),
 	                                settingsPtr->Get(_T("MainWindowKey:MoveRight-VirtualKeyCode"), -1));
 	if (hotKeyAttrMoveRight.GetVKCode() != -1) {
-		manager->Register(this, new MoveRightHandler, hotKeyAttrMoveRight);
+		auto handler = new MoveRightHandler();
+		manager->Register(this, handler, hotKeyAttrMoveRight);
+		handler->Release();
 	}
 
 	return true;

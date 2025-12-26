@@ -5,35 +5,38 @@
 #include "mainwindow/LauncherMainWindowIF.h"
 #include "gui/ColorSettings.h"
 #include "utility/ATLImageDC.h"
+#include "core/IFIDDefine.h"
+#include "commands/core/ExtraActionHotKeySettings.h"
 #include <map>
 
 using LauncherMainWindowIF= launcherapp::mainwindow::LauncherMainWindowIF;
 using Command = launcherapp::core::Command;
 using Action = launcherapp::actions::core::Action;
+using ExtraActionHotKeySettings = launcherapp::commands::core::ExtraActionHotKeySettings;
 
 namespace launcherapp { namespace mainwindow { namespace guide {
 
 struct GUIDE_ITEM
 {
-	uint32_t mModifier{0};
+	HOTKEY_ATTR mHotkeyAttr;
 	CString mGuideStr;
 	CRect mRect;
 };
 
-static const std::map<uint32_t, LPCTSTR>& GetKeyModifierMap()
+static const std::vector<uint32_t>& GetKeyNormalModifiers()
 {
-	static std::map<uint32_t, LPCTSTR> entries ={
-		{ 0, _T("⏎") },
-		{ Command::MODIFIER_SHIFT, _T("S-⏎") },
-		{ Command::MODIFIER_CTRL, _T("C-⏎") },
-		{ Command::MODIFIER_ALT, _T("A-⏎") },
-		{ Command::MODIFIER_WIN, _T("W-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, _T("S-C-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_ALT, _T("S-A-⏎") },
-		{ Command::MODIFIER_SHIFT | Command::MODIFIER_WIN, _T("S-W-⏎") },
-		{ Command::MODIFIER_CTRL | Command::MODIFIER_ALT, _T("C-A-⏎") },
-		{ Command::MODIFIER_CTRL | Command::MODIFIER_WIN, _T("C-W-⏎") },
-		{ Command::MODIFIER_ALT | Command::MODIFIER_WIN, _T("A-W-⏎") },
+	static std::vector<uint32_t> entries ={
+		0,
+		MOD_SHIFT,
+		MOD_CONTROL,
+		MOD_ALT,
+		MOD_WIN,
+		MOD_SHIFT | MOD_CONTROL,
+		MOD_SHIFT | MOD_ALT,
+		MOD_SHIFT | MOD_WIN,
+		MOD_CONTROL | MOD_ALT,
+		MOD_CONTROL | MOD_WIN,
+		MOD_ALT | MOD_WIN,
 	};
 	return entries;
 }
@@ -51,8 +54,8 @@ struct GuideCtrl::PImpl
 	LauncherMainWindowIF* mMainWnd{nullptr};
 	std::vector<GUIDE_ITEM> mEntries;
 	ATL::CImage mBuffer;
-	uint32_t mLastModifierFlag{0};
-	uint32_t mMouseModifier{0xffffffff};
+	HOTKEY_ATTR mLastActionKey{0, VK_RETURN};
+	HOTKEY_ATTR mMouseAction{0, VK_RETURN};
 	UINT_PTR mTimerId{0};
 	UINT mNotifyMessageId{ 0 };
 };
@@ -66,20 +69,38 @@ void GuideCtrl::PImpl::UpdateEntries(Command* cmd)
 
 	// キー別のアクション名のリストを作成する
 	std::vector<GUIDE_ITEM> entries;
-	for (auto item : GetKeyModifierMap()) {
+	for (auto modifier : GetKeyNormalModifiers()) {
+		HOTKEY_ATTR hotkeyAttr(modifier, VK_RETURN);
 		RefPtr<Action> action;
-		auto modifierFlag = item.first;
-		if (cmd->GetAction(modifierFlag, &action) == false) {
+		if (cmd->GetAction(hotkeyAttr, &action) == false) {
 			continue;
 		}
 		if (action->IsVisible() == false) {
 			continue;
 		}
 
-		GUIDE_ITEM entry{ modifierFlag, action->GetDisplayName(), CRect(0,0,0,0) };
+		GUIDE_ITEM entry{ hotkeyAttr, action->GetDisplayName(), CRect(0,0,0,0) };
 		entries.push_back(entry);
 		if (entries.size() >= 4) {
 			break;
+		}
+	}
+
+	// 追加のアクションに対するガイドを生成する
+	RefPtr<ExtraActionHotKeySettings> extraActionSettings;
+	if (cmd->QueryInterface(IFID_EXTRAACTIONHOTKEYSETTINGS, (void**)&extraActionSettings)) {
+		int count = extraActionSettings->GetHotKeyCount();
+		for (int i = 0; i < count; ++i) {
+			HOTKEY_ATTR hotkeyAttr;
+			if (extraActionSettings->GetHotKeyAttribute(i, hotkeyAttr) == false) {
+				continue;
+			}
+
+			RefPtr<Action> action;
+			if (cmd->GetAction(hotkeyAttr, &action) == false) {
+				continue;
+			}
+			entries.push_back(GUIDE_ITEM{ hotkeyAttr, action->GetDisplayName(), CRect(0,0,0,0) });
 		}
 	}
 
@@ -149,18 +170,12 @@ void GuideCtrl::PImpl::UpdateBuffer()
 
 	CString str;
 
-	auto& keyMap = GetKeyModifierMap();
-
 	dc->SetBkMode(TRANSPARENT);
 	for (auto it = mEntries.rbegin(); it != mEntries.rend(); ++it) {
 		auto& item = *it;
 
 		// 描画するテキスト生成
-		auto itFind = keyMap.find(item.mModifier);
-		if (itFind == keyMap.end()) {
-			continue;
-		}
-		str.Format(_T("%s:%s"), (LPCTSTR)itFind->second, (LPCTSTR)item.mGuideStr);
+		str.Format(_T("%s:%s"), (LPCTSTR)item.mHotkeyAttr.ToString(), (LPCTSTR)item.mGuideStr);
 
 		// テキストの幅を得る
 		CSize size;
@@ -170,8 +185,8 @@ void GuideCtrl::PImpl::UpdateBuffer()
 		// ToDo: マッチするキー押下状態がない場合はデフォルト要素を強調
 
 		// キー押下状態に応じて背景色を変える
-		bool useAlterBGColor = itFind->first == mLastModifierFlag;
-		bool isOnCursor = item.mModifier == mMouseModifier;
+		bool useAlterBGColor = item.mHotkeyAttr == mLastActionKey;
+		bool isOnCursor = item.mHotkeyAttr == mMouseAction;
 
 		// 枠の領域を求める
 		CRect rcFrame(rcItem);
@@ -194,19 +209,19 @@ void GuideCtrl::PImpl::UpdateBuffer()
 
 bool GuideCtrl::PImpl::UpdateCursorState(CPoint pos)
 {
-	uint32_t modifierFlag = 0xffffffff;
+	HOTKEY_ATTR hotkey;
 	for (auto& entry : mEntries) {
 		if (entry.mRect.PtInRect(pos) == FALSE) {
 			continue;
 		}
-		modifierFlag = entry.mModifier;
+		hotkey = entry.mHotkeyAttr;
 		break;
 	}
-	if (modifierFlag == mMouseModifier) {
+	if (hotkey == mMouseAction) {
 		return false;
 	}
 
-	mMouseModifier = modifierFlag;
+	mMouseAction = hotkey;
 	return true;
 }
 
@@ -331,22 +346,20 @@ void GuideCtrl::OnTimer(UINT_PTR timerId)
 {
 	// キー押下状態を覚えておく(画面描画に反映する)
 	uint32_t modifierFlag = 0;
-	if (GetKeyState(VK_MENU) & 0x8000)  { modifierFlag |= Command::MODIFIER_ALT; }
-	if (GetKeyState(VK_SHIFT) & 0x8000) { modifierFlag |= Command::MODIFIER_SHIFT; }
-	if (GetKeyState(VK_CONTROL) & 0x8000)  { modifierFlag |= Command::MODIFIER_CTRL; }
-	if (GetKeyState(VK_LWIN) & 0x8000)   { modifierFlag |= Command::MODIFIER_WIN; }
+	if (GetKeyState(VK_MENU) & 0x8000)  { modifierFlag |= MOD_ALT; }
+	if (GetKeyState(VK_SHIFT) & 0x8000) { modifierFlag |= MOD_SHIFT; }
+	if (GetKeyState(VK_CONTROL) & 0x8000)  { modifierFlag |= MOD_CONTROL; }
+	if (GetKeyState(VK_LWIN) & 0x8000)   { modifierFlag |= MOD_WIN; }
 
-	bool isStateChanged = (modifierFlag != in->mLastModifierFlag);
-	in->mLastModifierFlag = modifierFlag;
+	bool isStateChanged = (modifierFlag != in->mLastActionKey.GetModifiers());
+	in->mLastActionKey = HOTKEY_ATTR(modifierFlag, VK_RETURN);
 
 	// カーソル状態を更新する
-	if (in->mMouseModifier != 0xffffffff) {
-		CPoint pos;
-		GetCursorPos(&pos);
-		ScreenToClient(&pos);
-		if (in->UpdateCursorState(pos)) {
-			isStateChanged = true;
-		}
+	CPoint pos;
+	GetCursorPos(&pos);
+	ScreenToClient(&pos);
+	if (in->UpdateCursorState(pos)) {
+		isStateChanged = true;
 	}
 
 	if (isStateChanged) {
@@ -368,17 +381,19 @@ void GuideCtrl::OnLButtonDown(UINT flags, CPoint pt)
 {
 	__super::OnLButtonDown(flags, pt);
 
-	uint32_t modifier = 0xffffffff;
+	bool found = false;
+	HOTKEY_ATTR hotkeyAttr;
 	for (auto& entry : in->mEntries) {
 		if (entry.mRect.PtInRect(pt) == FALSE) {
 			continue;
 		}
-		modifier = entry.mModifier;
+		hotkeyAttr = entry.mHotkeyAttr;
+		found = true;
 		break;
 	}
 
-	if (modifier != 0xffffffff && in->mNotifyMessageId != 0) {
-		GetParent()->PostMessage(in->mNotifyMessageId, (WPARAM)modifier, 0);
+	if (found && in->mNotifyMessageId != 0) {
+		GetParent()->PostMessage(in->mNotifyMessageId, (WPARAM)hotkeyAttr.GetModifiers(), 0);
 	}
 }
 

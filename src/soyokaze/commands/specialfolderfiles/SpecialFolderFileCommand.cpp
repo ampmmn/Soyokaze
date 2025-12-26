@@ -57,17 +57,18 @@ CString SpecialFolderFileCommand::GetTypeDisplayName()
 	return TypeDisplayName((int)in->mItem.mType);
 }
 
-bool SpecialFolderFileCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool SpecialFolderFileCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		*action = new ExecuteAction(in->mItem.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		*action = new OpenPathInFilerAction(in->mItem.mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
+	else if (modifierFlags == MOD_ALT) {
 		*action = new ShowPropertiesAction(in->mItem.mFullPath);
 		return true;
 	}

@@ -76,9 +76,9 @@ CString AliasCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool AliasCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool AliasCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 

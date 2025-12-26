@@ -50,14 +50,15 @@ CString VMXFileCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool VMXFileCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool VMXFileCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// VMを実行する
 		*action = new RunVMXAction(in->mName, in->mFullPath, SW_SHOW);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		// パスを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;

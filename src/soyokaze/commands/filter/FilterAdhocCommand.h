@@ -23,7 +23,7 @@ public:
 	CString GetName() override;
 	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
-	bool GetAction(uint32_t modifierFlags, Action** action) override;
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
@@ -36,8 +36,8 @@ public:
 	DECLARE_ADHOCCOMMAND_UNKNOWNIF(FilterAdhocCommand)
 
 private:
-		bool CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action);
-		bool CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action);
+		bool CreatePostFilterSubprocessAction(const HOTKEY_ATTR& hotkeyAttr, Action** action);
+		bool CreatePostFilterCopyAction(const HOTKEY_ATTR& hotkeyAttr, Action** action);
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

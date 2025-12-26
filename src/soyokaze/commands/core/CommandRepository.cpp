@@ -93,9 +93,8 @@ struct CommandRepository::PImpl
 			CommandHotKeyAttribute attr;
 			hotKeyMap.GetHotKeyAttr(i, attr);
 
-			auto handler = std::make_unique<NamedCommandHotKeyHandler>(name);
-
-			hotKeyManager->Register(this, handler.release(), attr);
+			RefPtr<NamedCommandHotKeyHandler> handler(new NamedCommandHotKeyHandler(name));
+			hotKeyManager->Register(this, handler.get(), attr);
 		}
 	}
 

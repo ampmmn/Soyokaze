@@ -39,7 +39,7 @@ struct DummyCommand : public launcherapp::core::Command
 		return true;
 	}
 
-	bool GetAction(uint32_t modifierFlags, Action** action)
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 	{
 		return true;
 	}

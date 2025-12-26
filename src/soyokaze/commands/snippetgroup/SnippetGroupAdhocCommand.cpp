@@ -57,9 +57,9 @@ CString SnippetGroupAdhocCommand::GetTypeDisplayName()
 	return _T("定型文グループ");
 }
 
-bool SnippetGroupAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool SnippetGroupAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0) {
+	if (hotkeyAttr.GetModifiers() == 0) {
 		// 値をコピー
 		auto value = in->mItem.mText;
 		ExpandMacros(value);

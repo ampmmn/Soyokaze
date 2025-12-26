@@ -498,8 +498,11 @@
     <ClInclude Include="commands\everything\EverythingProxy.h" />
     <ClInclude Include="commands\everything\EverythingQueryCancellationToken.h" />
     <ClInclude Include="commands\everything\EverythingResult.h" />
+    <ClInclude Include="commands\explorepath\AppSettingExtraActionForExplorePath.h" />
     <ClInclude Include="commands\explorepath\ExplorePathCommand.h" />
     <ClInclude Include="commands\explorepath\ExplorePathCommandProvider.h" />
+    <ClInclude Include="commands\explorepath\ExplorePathExtraActionSettings.h" />
+    <ClInclude Include="commands\explorepath\ExtraActionDialog.h" />
     <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h" />
     <ClInclude Include="commands\filter\FilterAdhocCommand.h" />
     <ClInclude Include="commands\filter\FilterCommandEditor.h" />
@@ -547,6 +550,7 @@
     <ClInclude Include="commands\regexp\RegExpCommandParam.h" />
     <ClInclude Include="commands\regexp\RegExpExecutionTarget.h" />
     <ClInclude Include="commands\share\AfxWWrapper.h" />
+    <ClInclude Include="commands\shellexecute\ExtraActionSettings.h" />
     <ClInclude Include="commands\shellexecute\ShellExecCommandEditor.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEditEnvPage.h" />
     <ClInclude Include="commands\shellexecute\ShellExecEnvBulkAddDialog.h" />
@@ -630,6 +634,8 @@
     <ClInclude Include="gui\WindowPosition.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
+    <ClInclude Include="hotkey\ExtraActionHotKeyDialog.h" />
+    <ClInclude Include="hotkey\ExtraActionHotKeyHandler.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="hotkey\SandSKeyAttribute.h" />
     <ClInclude Include="hotkey\SandSKeyState.h" />
@@ -774,6 +780,7 @@
     <ClInclude Include="commands/core\CommandRanking.h" />
     <ClInclude Include="hotkey\GlobalHotKey.h" />
     <ClInclude Include="commands/builtin/AboutDlg.h" />
+    <ClInclude Include="mainwindow\CommandActionHandlerRegistry.h" />
     <ClInclude Include="mainwindow\controller\LauncherMainWindowController.h" />
     <ClInclude Include="mainwindow\controller\MainWindowController.h" />
     <ClInclude Include="mainwindow\controller\MainWindowControllerIF.h" />
@@ -1000,8 +1007,11 @@
     <ClCompile Include="commands\everything\EverythingCommandProvider.cpp" />
     <ClCompile Include="commands\everything\EverythingProxy.cpp" />
     <ClCompile Include="commands\everything\EverythingQueryCancellationToken.cpp" />
+    <ClCompile Include="commands\explorepath\AppSettingExtraActionForExplorePath.cpp" />
     <ClCompile Include="commands\explorepath\ExplorePathCommand.cpp" />
     <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp" />
+    <ClCompile Include="commands\explorepath\ExplorePathExtraActionSettings.cpp" />
+    <ClCompile Include="commands\explorepath\ExtraActionDialog.cpp" />
     <ClCompile Include="commands\extracandidate\ExtraCandidateProvider.cpp" />
     <ClCompile Include="commands\filter\FilterAdhocCommand.cpp" />
     <ClCompile Include="commands\filter\FilterCommandEditor.cpp" />
@@ -1050,6 +1060,7 @@
     <ClCompile Include="commands\regexp\RegExpCommandEditor.cpp" />
     <ClCompile Include="commands\regexp\RegExpExecutionTarget.cpp" />
     <ClCompile Include="commands\share\AfxWWrapper.cpp" />
+    <ClCompile Include="commands\shellexecute\ExtraActionSettings.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecCommandEditor.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEditEnvPage.cpp" />
     <ClCompile Include="commands\shellexecute\ShellExecEnvBulkAddDialog.cpp" />
@@ -1130,6 +1141,8 @@
     <ClCompile Include="gui\WindowPosition.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
+    <ClCompile Include="hotkey\ExtraActionHotKeyDialog.cpp" />
+    <ClCompile Include="hotkey\ExtraActionHotKeyHandler.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
     <ClCompile Include="hotkey\SandSKeyAttribute.cpp" />
     <ClCompile Include="hotkey\SandSKeyState.cpp" />
@@ -1266,6 +1279,7 @@
     <ClCompile Include="commands/core\CommandRanking.cpp" />
     <ClCompile Include="hotkey\GlobalHotKey.cpp" />
     <ClCompile Include="commands/builtin/AboutDlg.cpp" />
+    <ClCompile Include="mainwindow\CommandActionHandlerRegistry.cpp" />
     <ClCompile Include="mainwindow\controller\LauncherMainWindowController.cpp" />
     <ClCompile Include="mainwindow\controller\MainWindowController.cpp" />
     <ClCompile Include="mainwindow\guide\GuideCtrl.cpp" />

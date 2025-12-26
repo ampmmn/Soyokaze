@@ -15,6 +15,7 @@
 #include "mainwindow/guide/GuideCtrl.h"
 #include "mainwindow/LauncherDropTarget.h"
 
+class HOTKEY_ATTR;
 
 namespace launcherapp {
 namespace actions {
@@ -67,7 +68,7 @@ protected:
 	void WaitQueryRequest();
 	void RunCommand(launcherapp::core::Command* cmd);
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
-	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam, uint32_t modifierMask);
+	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam, const HOTKEY_ATTR& hotkeyAttr);
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);

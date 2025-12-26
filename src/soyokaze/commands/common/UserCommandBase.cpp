@@ -85,9 +85,9 @@ bool UserCommandBase::IsAllowAutoExecute()
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
-bool UserCommandBase::GetAction(uint32_t modifierFlags, Action** action)
+bool UserCommandBase::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	UNREFERENCED_PARAMETER(modifierFlags);
+	UNREFERENCED_PARAMETER(hotkeyAttr);
 	UNREFERENCED_PARAMETER(action);
 
 	// 派生側で実装する

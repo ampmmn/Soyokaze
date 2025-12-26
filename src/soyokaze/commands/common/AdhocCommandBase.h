@@ -21,7 +21,7 @@ public:
 	//CString GetTypeDisplayName() override;
 	bool CanExecute(String*) override;
 	// 修飾キー押下状態に対応した実行アクションを取得する
-	bool GetAction(uint32_t modifierFlags, Action** action);
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action);
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	bool IsAllowAutoExecute() override;

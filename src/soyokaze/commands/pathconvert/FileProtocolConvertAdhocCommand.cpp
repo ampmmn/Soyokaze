@@ -80,14 +80,15 @@ CString FileProtocolConvertAdhocCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool FileProtocolConvertAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool FileProtocolConvertAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == Command::MODIFIER_CTRL) {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+	if (modifierFlags == MOD_CONTROL) {
 		// フォルダを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// 開く
 		*action = new ExecuteAction(in->mFullPath);
 		return true;

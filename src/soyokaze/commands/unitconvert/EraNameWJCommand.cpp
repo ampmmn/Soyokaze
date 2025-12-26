@@ -74,9 +74,10 @@ CString EraNameWJCommand::GetTypeDisplayName()
 }
 
 
-bool EraNameWJCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool EraNameWJCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	// クリップボードにコピー
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		auto a = new CopyTextAction(in->mName);
 
@@ -87,7 +88,7 @@ bool EraNameWJCommand::GetAction(uint32_t modifierFlags, Action** action)
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		CString str;
 		str.Format(_T("%d"), in->mVal);
 		auto a = new CopyTextAction(str);

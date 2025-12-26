@@ -57,13 +57,14 @@ CString WebHistoryAdhocCommand::GetTypeDisplayName()
 	return WebHistoryAdhocCommand::TypeDisplayName(in->mProductName);
 }
 
-bool WebHistoryAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool WebHistoryAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		*action = new actions::web::OpenURLAction(in->mHistory.mUrl, in->mHistory.mEnv);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		*action = new actions::clipboard::CopyTextAction(in->mHistory.mUrl);
 		return true;
 	}

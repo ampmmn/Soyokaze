@@ -1,14 +1,17 @@
 #pragma once
 
 #include "actions/core/ActionBase.h"
+#include "hotkey/HotKeyAttribute.h"
+
+class HOTKEY_ATTR;
 
 namespace launcherapp { namespace actions { namespace builtin {
 
-// $BB>$N%"%/%7%g%s$r$^$H$a$F<B9T$9$k%"%/%7%g%s(B
+// 他のアクションをまとめて実行するアクション
 class GroupAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	GroupAction(const CString& parentName, uint32_t modifierKeyState = 0);
+	GroupAction(const CString& parentName, const HOTKEY_ATTR& hotkeyAttr);
 	~GroupAction();
 
 	void AddAction(Action* action);
@@ -18,11 +21,11 @@ public:
 	void EnablePassParam(bool shouldPassParam);
 	
 // Action
-	// $B%"%/%7%g%s$NFbMF$r<($9L>>N(B
+	// アクションの内容を示す名称
 	CString GetDisplayName() override;
-	// $B%"%/%7%g%s$r<B9T$9$k(B
+	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
-	// $B%,%$%IMs$J$I$KI=<($9$k$+$I$&$+(B
+	// ガイド欄などに表示するかどうか
 	bool IsVisible() override;
 
 private:

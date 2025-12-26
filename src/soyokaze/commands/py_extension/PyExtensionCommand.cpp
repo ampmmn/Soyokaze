@@ -75,11 +75,11 @@ CString PyExtensionCommand::GetTypeDisplayName()
 
 
 // 修飾キー押下状態に対応した実行アクションを取得する
-bool PyExtensionCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool PyExtensionCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	UNREFERENCED_PARAMETER(action);
 
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 

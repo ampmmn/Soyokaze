@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "ExplorePathCommand.h"
+#include "commands/explorepath/ExplorePathExtraActionSettings.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
+#include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
@@ -29,6 +31,8 @@ using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 using ExecuteHistory = launcherapp::commands::common::ExecuteHistory;
 
+using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+
 namespace launcherapp {
 namespace commands {
 namespace explorepath {
@@ -39,6 +43,7 @@ struct ExplorePathCommand::PImpl
 	CString mWord;
 	CString mFullPath;
 	CString mCompletionText;
+	ExtraActionSettings* mExtraActionSettings{nullptr};
 };
 
 bool ExplorePathCommand::PImpl::EnterPath()
@@ -81,6 +86,11 @@ ExplorePathCommand::~ExplorePathCommand()
 {
 }
 
+void ExplorePathCommand::SetExtraActionSettings(ExtraActionSettings* settings)
+{
+	in->mExtraActionSettings = settings;
+}
+
 void ExplorePathCommand::SetCompletionText(const CString& completion)
 {
 	in->mCompletionText = completion;
@@ -96,15 +106,15 @@ CString ExplorePathCommand::GetTypeDisplayName()
 	return TypeDisplayName(Path::IsDirectory(in->mFullPath));
 }
 
-bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool ExplorePathCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (PathIsUNC(in->mFullPath) == FALSE && Path::FileExists(in->mFullPath) == FALSE) {
 		// コマンドに関連付けられたパスが存在しない場合は何も実行しない
 		return false;
 	}
 
-	bool shouldRunAsAdmin = (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL));
-	if (modifierFlags == 0 || shouldRunAsAdmin) {
+	bool shouldRunAsAdmin = (hotkeyAttr == HOTKEY_ATTR(MOD_SHIFT| MOD_CONTROL, VK_RETURN));
+	if (hotkeyAttr == HOTKEY_ATTR(0, VK_RETURN) || shouldRunAsAdmin) {
 		// 実行 or 管理者権限で実行
 		*action = new CallbackAction(_T("実行"), [&, shouldRunAsAdmin](Parameter* param, String* errMsg) -> bool {
 			ExecuteAction a(in->mFullPath, _T("$*"));
@@ -121,7 +131,7 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 
-	if (modifierFlags == Command::MODIFIER_SHIFT && Path::IsDirectory(in->mFullPath)) {
+	if (hotkeyAttr == HOTKEY_ATTR(MOD_SHIFT,VK_RETURN) && Path::IsDirectory(in->mFullPath)) {
 		// ランチャーでリンク先に遷移する
 		*action = new CallbackAction(_T("フォルダ内要素を列挙"), [&](Parameter*, String*) -> bool {
 			return in->EnterPath();
@@ -129,16 +139,20 @@ bool ExplorePathCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (hotkeyAttr == HOTKEY_ATTR(MOD_CONTROL, VK_RETURN)) {
 		// パスをファイラーで開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
+	else if (hotkeyAttr == HOTKEY_ATTR(MOD_ALT, VK_RETURN)) {
 		// プロパティ表示
 		*action = new ShowPropertiesAction(in->mFullPath);
 		return true;
 	}
+
+	return GetExtraAction(hotkeyAttr, action);
+
+
 	return false;
 }
 
@@ -170,7 +184,7 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 	}
 
 	if (index == 0) {
-		return GetAction(0, action);
+		return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	else if (index == 1) {
 		*action = new OpenPathInFilerAction(in->mFullPath);
@@ -178,7 +192,7 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 	}
 	else if (index == 2)  {
 		// 管理者権限で実行
-		return GetAction(Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL, action);
+		return GetAction(HOTKEY_ATTR(MOD_SHIFT | MOD_CONTROL, VK_RETURN), action);
 	}
 	else if (index == 3) {
 		// クリップボードにコピー
@@ -187,7 +201,7 @@ bool ExplorePathCommand::GetMenuItem(int index, Action** action)
 	}
 	else { // if (index == 4)
 		// プロパティダイアログを表示
-		return GetAction(Command::MODIFIER_ALT, action);
+		return GetAction(HOTKEY_ATTR(MOD_ALT, VK_RETURN), action);
 	}
 }
 
@@ -243,6 +257,28 @@ bool ExplorePathCommand::CompleteKeyword(CString& keyword, int& startPos, int& e
 	}
 }
 
+// ホットキー設定の数を取得
+int ExplorePathCommand::GetHotKeyCount()
+{
+	return in->mExtraActionSettings ? in->mExtraActionSettings->GetEntryCount() : 0;
+}
+
+// ホットキー設定を取得
+bool ExplorePathCommand::GetHotKeyAttribute(int index, HOTKEY_ATTR& hotkeyAttr)
+{
+	if (in->mExtraActionSettings == nullptr) {
+		return false;
+	}
+
+	ExtraActionSettings::Entry entry;
+	if (in->mExtraActionSettings->GetEntry(index, entry) == false) {
+		return false;
+	}
+
+	hotkeyAttr = entry.mHotkeyAttr;
+	return true;
+}
+
 bool ExplorePathCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -259,12 +295,70 @@ bool ExplorePathCommand::QueryInterface(const launcherapp::core::IFID& ifid, voi
 		*cmd = (launcherapp::core::SelectionBehavior*)this;
 		return true;
 	}
+	if (ifid == IFID_EXTRAACTIONHOTKEYSETTINGS) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraActionHotKeySettings*)this;
+		return true;
+	}
 	return false;
 }
 
 CString ExplorePathCommand::TypeDisplayName(bool isFolder)
 {
 	return isFolder? _T("フォルダ") : _T("ファイル");
+}
+
+// 追加のアクション取得
+bool ExplorePathCommand::GetExtraAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
+{
+	auto& settings = in->mExtraActionSettings;
+	if (settings == nullptr) {
+		return false;
+	}
+
+	auto& fullPath = in->mFullPath;
+
+	int num_entries = settings->GetEntryCount();
+	for (int i = 0; i < num_entries; ++i) {
+
+		ExtraActionSettings::Entry entry;
+		if (settings->GetEntry(i, entry) == false) {
+			continue;
+		}
+		if (entry.mHotkeyAttr != hotkeyAttr) {
+			continue;
+		}
+
+		*action = new CallbackAction(entry.mLabel, [fullPath, entry](Parameter* param, String* errMsg) -> bool {
+			
+			// 実行対象のコマンドを取得
+			auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
+			RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(entry.mCommand, false));
+			if (command.get() == nullptr) {
+				if (errMsg) {
+					*errMsg = "コマンドが見つかりません";
+				}
+				return false;
+			}
+
+			// 実行コマンドに渡す引数を作る
+			RefPtr<ParameterBuilder> inParam(ParameterBuilder::Create(), false);
+			inParam->AddArgument(fullPath);
+
+			// コマンドからアクションを取得
+			RefPtr<Action> action;
+			if (command->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action) == false) {
+				spdlog::error("Failed to get action.");
+				return false;
+			}
+			// アクションを実行する
+			return action->Perform(inParam.get(), errMsg);
+		});
+
+		return true;
+	}
+
+	return false;
 }
 
 

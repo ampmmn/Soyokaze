@@ -52,12 +52,13 @@ CString PptJumpCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool PptJumpCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool PptJumpCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == 0 || modifierFlags == Command::MODIFIER_CTRL) {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+	if (modifierFlags == 0 || modifierFlags == MOD_CONTROL) {
 
 		auto slideNo = (uint16_t)in->mPage;
-		bool isShowMaximize = (modifierFlags == Command::MODIFIER_CTRL);
+		bool isShowMaximize = (modifierFlags == MOD_CONTROL);
 
 		LPCTSTR guideText = isShowMaximize == false ? _T("スライドを表示する") : _T("最大化表示");
 

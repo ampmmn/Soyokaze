@@ -204,6 +204,7 @@
 #define IDC_STATIC_PATH                 1016
 #define IDC_EDIT_BACK2                  1016
 #define IDC_EDIT_NAMEFORMAT             1016
+#define IDC_CHECK_EXTRAACTION           1016
 #define IDC_STATIC_PARAM                1017
 #define IDC_EDIT_VALUE2                 1017
 #define IDC_STATIC_PATH0                1018
@@ -211,8 +212,10 @@
 #define IDC_STATIC_PARAM00              1019
 #define IDC_STATIC_PATH2                1019
 #define IDC_EDIT_PATH                   1020
+#define IDC_STATIC_PATH1                1020
 #define IDC_EDIT_PARAM                  1021
 #define IDC_EDIT_MESSAGE                1021
+#define IDC_STATIC_PATH4                1021
 #define IDC_EDIT_HOTKEY                 1022
 #define IDC_EDIT_PARAM2                 1022
 #define IDC_BUTTON_RESOLVESHORTCUT      1022
@@ -230,6 +233,7 @@
 #define IDC_EDIT_HOTKEY_ENTER           1024
 #define IDC_EDIT_DIR                    1025
 #define IDC_EDIT_HOTKEY_COMPL           1025
+#define IDC_STATIC_PATH5                1025
 #define IDC_BUTTON_BROWSEDIR3           1026
 #define IDC_EDIT_HOTKEY_COPY            1026
 #define IDC_COMBO_SHOWTYPE              1027
@@ -373,6 +377,7 @@
 #define IDC_CHECK_ENABLE_SPECIALFOLDER  1112
 #define IDC_EDIT_CLASS                  1113
 #define IDC_CHECK_ENABLE_SPECIALFOLDER2 1114
+#define IDC_EDIT_CLASS2                 1114
 #define IDC_CHECK_ENABLE_UWPAPPS        1115
 #define IDC_CHECK_REGEXP                1116
 #define IDC_CHECK_ENABLE_UWPAPPS2       1116
@@ -545,16 +550,23 @@
 #define IDD_APPSETTING_VSCODE           1223
 #define IDC_CHECK_OPENURLINOTHERBROWSER 1224
 #define IDC_CHECK_FULLPATH              1224
+#define IDD_APPSETTING_EXTRAACTION_FOR_EXPLOREPATH 1224
 #define IDC_BUTTON_SYNTAXCHECK          1225
+#define IDD_EXTRAACTION_FOR_EXPLOREPATH 1225
+#define IDD_COMMAND_HOTKEY1             1226
+#define IDD_HOTKEY_EXTRAACTION          1226
+#define IDC_LIST_ACTIONS                1227
+#define IDC_COMBO_COMMAND               1228
+#define IDC_EDIT_LABEL                  1229
 #define ID_VIEW_HELP                    32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        260
+#define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1227
+#define _APS_NEXT_CONTROL_VALUE         1230
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

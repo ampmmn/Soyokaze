@@ -51,15 +51,16 @@ CString WorksheetCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool WorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool WorksheetCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		*action = new CallbackAction(_T("表示"), [&](Parameter*, String*) -> bool {
 			return in->mWorksheet->Activate(false);
 		});
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String*) -> bool {
 			return in->mWorksheet->Activate(true);
 		});

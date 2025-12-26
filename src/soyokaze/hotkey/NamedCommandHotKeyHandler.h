@@ -6,12 +6,17 @@ class NamedCommandHotKeyHandler : public launcherapp::core::CommandHotKeyHandler
 {
 public:
 	NamedCommandHotKeyHandler(CString name);
-	virtual ~NamedCommandHotKeyHandler();
+	~NamedCommandHotKeyHandler() override;
 
-	virtual CString GetDisplayName();
-	virtual bool Invoke();
+	CString GetDisplayName() override;
+	bool Invoke() override;
+	bool IsTemporaryHandler() override;
+	uint32_t AddRef() override;
+	uint32_t Release() override;
+
 
 protected:
 	CString mName;
+	uint32_t mRefCount{1};
 };
 

@@ -50,19 +50,20 @@ CString GitBashToLocalPathAdhocCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool GitBashToLocalPathAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool GitBashToLocalPathAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// パスをクリップボードにコピー
 		*action = new CopyTextAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// 実行
 		*action = new ExecuteAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		// パスを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;

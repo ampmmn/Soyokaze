@@ -79,21 +79,21 @@ CString FilterAdhocCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-bool FilterAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool FilterAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	int type = in->mParam.mPostFilterType;
 	if (type == POSTFILTER_SUBPROCESS) {
-		return CreatePostFilterSubprocessAction(modifierFlags, action);
+		return CreatePostFilterSubprocessAction(hotkeyAttr, action);
 	}
 	else if (type == POSTFILTER_CLIPBOARD) {
-		return CreatePostFilterCopyAction(modifierFlags, action);
+		return CreatePostFilterCopyAction(hotkeyAttr, action);
 	}
 	return false;
 }
 
-bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags, Action** action)
+bool FilterAdhocCommand::CreatePostFilterSubprocessAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 	// コマンド実行時に起動するファイルパス上の"$select"を選択値に置換
@@ -116,9 +116,9 @@ bool FilterAdhocCommand::CreatePostFilterSubprocessAction(uint32_t modifierFlags
 	return true;
 }
 
-bool FilterAdhocCommand::CreatePostFilterCopyAction(uint32_t modifierFlags, Action** action)
+bool FilterAdhocCommand::CreatePostFilterCopyAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 

@@ -1812,6 +1812,27 @@
     <ClInclude Include="commands\explorepath\ExplorePathCommandProvider.h">
       <Filter>commands\explorepath</Filter>
     </ClInclude>
+    <ClInclude Include="commands\explorepath\ExplorePathExtraActionSettings.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shellexecute\ExtraActionSettings.h">
+      <Filter>commands\shellexecute</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\CommandActionHandlerRegistry.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\explorepath\AppSettingExtraActionForExplorePath.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\explorepath\ExtraActionDialog.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
+    <ClInclude Include="hotkey\ExtraActionHotKeyDialog.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
+    <ClInclude Include="hotkey\ExtraActionHotKeyHandler.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3187,6 +3208,27 @@
     </ClCompile>
     <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp">
       <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\ExplorePathExtraActionSettings.cpp">
+      <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shellexecute\ExtraActionSettings.cpp">
+      <Filter>commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\CommandActionHandlerRegistry.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\AppSettingExtraActionForExplorePath.cpp">
+      <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\ExtraActionDialog.cpp">
+      <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\ExtraActionHotKeyDialog.cpp">
+      <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\ExtraActionHotKeyHandler.cpp">
+      <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

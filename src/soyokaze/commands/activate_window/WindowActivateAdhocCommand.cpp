@@ -90,10 +90,12 @@ CString WindowActivateAdhocCommand::GetTypeDisplayName()
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
-bool WindowActivateAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool WindowActivateAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	bool isCtrlKeyPressed = modifierFlags & Command::MODIFIER_CTRL;
-	bool isShiftKeyPressed = modifierFlags & Command::MODIFIER_SHIFT;
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+
+	bool isCtrlKeyPressed = modifierFlags & MOD_CONTROL;
+	bool isShiftKeyPressed = modifierFlags & MOD_SHIFT;
 
 	if (isShiftKeyPressed && isCtrlKeyPressed == false) {
 		// Shiftキーが押されていたら最大化表示する
@@ -210,7 +212,7 @@ void WindowActivateAdhocCommand::OnUnselect(Command* next)
 launcherapp::core::SelectionBehavior::CloseWindowPolicy
 WindowActivateAdhocCommand::GetCloseWindowPolicy(uint32_t modifierFlags)
 {
-	if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
+	if (modifierFlags == (MOD_CONTROL | MOD_SHIFT)) {
 		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE;
 	}
 	else {

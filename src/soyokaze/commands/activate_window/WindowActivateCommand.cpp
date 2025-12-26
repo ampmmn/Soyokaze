@@ -82,11 +82,13 @@ CString WindowActivateCommand::GetTypeDisplayName()
 }
 
 // 修飾キー押下状態に対応した実行アクションを取得する
-bool WindowActivateCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool WindowActivateCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	UNREFERENCED_PARAMETER(action);
 
-	if (modifierFlags == Command::MODIFIER_CTRL) {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+
+	if (modifierFlags == MOD_CONTROL) {
 		auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
 		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
 		*action = action_;

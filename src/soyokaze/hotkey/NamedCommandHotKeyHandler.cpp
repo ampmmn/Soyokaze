@@ -43,7 +43,7 @@ bool NamedCommandHotKeyHandler::Invoke()
 	mainWnd->HideWindow();
 
 	RefPtr<Action> action;
-	if (cmd->GetAction(0, &action) == false) {
+	if (cmd->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action) == false) {
 		spdlog::error(_T("Failed to get action {}"), (LPCTSTR)mName);
 		return false;
 	}
@@ -57,5 +57,24 @@ bool NamedCommandHotKeyHandler::Invoke()
 		return false;
 	}
 	return true;
+}
+
+bool NamedCommandHotKeyHandler::IsTemporaryHandler()
+{
+	return false;
+}
+
+uint32_t NamedCommandHotKeyHandler::AddRef()
+{
+	return (uint32_t)InterlockedIncrement(&mRefCount);
+}
+
+uint32_t NamedCommandHotKeyHandler::Release()
+{
+	auto n = InterlockedDecrement(&mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return (uint32_t)n;
 }
 

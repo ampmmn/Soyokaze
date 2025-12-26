@@ -70,7 +70,7 @@ CString HistoryCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool HistoryCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	auto cmd = in->GetCommand();
 	if (cmd == nullptr) {
@@ -78,7 +78,7 @@ bool HistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 
 	RefPtr<Action> realAction;
-	if (cmd->GetAction(modifierFlags, &realAction) == false) {
+	if (cmd->GetAction(hotkeyAttr, &realAction) == false) {
 		return false;
 	}
 

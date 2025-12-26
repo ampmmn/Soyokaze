@@ -136,7 +136,7 @@ void InputSettingDialog::OnNotifyLinkOpen(
 	if (linkPtr->hdr.idFrom == IDC_SYSLINK_APPDIR) {
 		RefPtr<Action> action;
 		MainDirCommand cmd(_T("tmp"));
-		cmd.GetAction(0, &action);
+		cmd.GetAction(HOTKEY_ATTR(0, VK_RETURN), &action);
 		action->Perform(ParameterBuilder::EmptyParam(), nullptr);
 	}
 	else {

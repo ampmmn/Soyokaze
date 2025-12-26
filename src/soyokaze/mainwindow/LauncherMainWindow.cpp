@@ -15,6 +15,7 @@
 #include "mainwindow/MainWindowCommandQueryRequest.h"
 #include "mainwindow/optionbutton/MainWindowOptionButton.h"
 #include "mainwindow/guide/GuideCtrl.h"
+#include "mainwindow/CommandActionHandlerRegistry.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
@@ -116,6 +117,9 @@ struct LauncherMainWindow::PImpl
 	// 入力画面を呼び出すホットキー関連の処理をする
 	std::unique_ptr<AppHotKey> mHotKeyPtr;
 	std::unique_ptr<MainWindowHotKey> mMainWindowHotKeyPtr;
+	// 現在選択中のコマンドに対する追加アクションについてのホットキーを管理する
+	CommandActionHandlerRegistry mActionHandlerRegistry;
+
 	// キー入力監視(修飾キー入力によるホットキー機能用)
 	KeyInputWatch mKeyInputWatch;
 
@@ -189,12 +193,14 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 	in->mLayout = std::make_unique<MainWindowLayout>(this);
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
+	in->mActionHandlerRegistry.Initialize(&in->mCandidates);
 
 	GuideCtrl::Initialize();
 }
 
 LauncherMainWindow::~LauncherMainWindow()
 {
+	in->mActionHandlerRegistry.Finalize(&in->mCandidates);
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
 }
 
@@ -669,7 +675,7 @@ LRESULT LauncherMainWindow::OnUserMessageGuideClicked(WPARAM wParam, LPARAM lPar
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	RunCommand(cmd, ParameterBuilder::Create(), modifier);
+	RunCommand(cmd, ParameterBuilder::Create(), HOTKEY_ATTR(modifier, VK_RETURN));
 	return 0;
 }
 
@@ -1366,30 +1372,29 @@ LauncherMainWindow::RunCommand(
 	ParameterBuilder* actionParam
 )
 {
-
-	// Ctrlキーが押されているかを設定
-	uint32_t modifierMask = 0;
+	// 修飾キーの押下状態に応じてビットマスクを作成
+	UINT modifierMask = 0;
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		modifierMask |= Command::MODIFIER_CTRL;
+		modifierMask |= MOD_CONTROL;
 	}
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
-		modifierMask |= Command::MODIFIER_SHIFT;
+		modifierMask |= MOD_SHIFT;
 	}
 	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
-		modifierMask |= Command::MODIFIER_WIN;
+		modifierMask |= MOD_WIN;
 	}
 	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-		modifierMask |= Command::MODIFIER_ALT;
+		modifierMask |= MOD_ALT;
 	}
 
-	RunCommand(cmd, actionParam, modifierMask);
+	RunCommand(cmd, actionParam, HOTKEY_ATTR(modifierMask, VK_RETURN));
 }
 
 void
 LauncherMainWindow::RunCommand(
 	Command* cmd,
 	ParameterBuilder* actionParam,
-	uint32_t modifierMask
+	const HOTKEY_ATTR& hotkeyAttr
 )
 {
 	// コマンド実行後のクローズ方法
@@ -1397,19 +1402,19 @@ LauncherMainWindow::RunCommand(
 	// コマンド実行後のクローズ方法を取得する
 	RefPtr<launcherapp::core::SelectionBehavior> behavior;
 	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
-		closePolicy = behavior->GetCloseWindowPolicy(modifierMask);
+		closePolicy = behavior->GetCloseWindowPolicy(hotkeyAttr.GetModifiers());
 	}
 	spdlog::debug("closePolicy: {}", (int)closePolicy);
 
 	auto hwnd = GetSafeHwnd();
 
-	std::thread th([cmd, modifierMask, actionParam, hwnd, closePolicy]() {
+	std::thread th([cmd, hotkeyAttr, actionParam, hwnd, closePolicy]() {
 
 		RefPtr<Action> action;
-		cmd->GetAction(modifierMask, &action);
+		cmd->GetAction(hotkeyAttr, &action);
 		if (action.get() == nullptr) {
 			// 取得できなかった場合は修飾子なしのアクションを取得する
-			cmd->GetAction(0, &action);
+			cmd->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action);
 			if (action.get() == nullptr) {
 				spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
 			}
@@ -2000,7 +2005,7 @@ void LauncherMainWindow::OnCommandHelp()
 
 void LauncherMainWindow::OnCommandHotKey(UINT id)
 {
-	// ローカルホットキーに対応されたコマンドを実行する
+	// ローカルホットキーに関連付けられたコマンドを実行する
 	SPDLOG_DEBUG("args id:{}", id);
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
 }

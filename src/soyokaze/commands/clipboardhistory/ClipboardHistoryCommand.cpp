@@ -74,14 +74,15 @@ CString ClipboardHistoryCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool ClipboardHistoryCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool ClipboardHistoryCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// コピーのみ
 		*action = new CopyTextAction(in->mData);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// コピー&ペースト
 		bool enablePaste = true;
 		*action = new CopyTextAction(in->mData, enablePaste);

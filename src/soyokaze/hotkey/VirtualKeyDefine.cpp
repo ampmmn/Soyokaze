@@ -48,7 +48,7 @@ static const VirtualKeyDefine::ITEM VK_DEFINED_DATA[] = {
 	{ 0x39, _T("9"), VirtualKeyDefine::KIND_NUMBER },
 	{ 0x30, _T("0"), VirtualKeyDefine::KIND_NUMBER },
 	{ 0x20, _T("Space"), VirtualKeyDefine::KIND_CHAR },
-	{ 0x0D, _T("Enter"), VirtualKeyDefine::KIND_CHAR },
+	{ 0x0D, _T("⏎"), VirtualKeyDefine::KIND_CHAR },
 	{ 0x2E, _T("Delete"), VirtualKeyDefine::KIND_CHAR },
 	{ 0x09, _T("Tab"), VirtualKeyDefine::KIND_CHAR },
 	{ 0x26, _T("↑"), VirtualKeyDefine::KIND_MOVE },

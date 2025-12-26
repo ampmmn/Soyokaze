@@ -50,8 +50,10 @@ CString CalcWorksheetCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool CalcWorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool CalcWorksheetCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+
 	if (modifierFlags == 0) {
 		*action = new CallbackAction(_T("表示"), [&](Parameter*, String* errMsg) -> bool {
 			bool result = in->mCalcWorksheet->Activate(false);
@@ -62,7 +64,7 @@ bool CalcWorksheetCommand::GetAction(uint32_t modifierFlags, Action** action)
 		});
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		*action = new CallbackAction(_T("最大化表示"), [&](Parameter*, String* errMsg) -> bool {
 			bool result = in->mCalcWorksheet->Activate(true);
 			if (result == false && errMsg) {

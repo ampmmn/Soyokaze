@@ -94,17 +94,18 @@ CString VSCodeWorkspaceCommand::GetTypeDisplayName()
 	return VSCodeWorkspaceCommand::TypeDisplayName();
 }
 
-bool VSCodeWorkspaceCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool VSCodeWorkspaceCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		*action = new VSCodeExecuteAction(in->mParam, in->mConfigPath, false);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		*action = new VSCodeExecuteAction(in->mParam, in->mConfigPath, true);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		*action = new actions::clipboard::CopyTextAction(in->mConfigPath);
 		return true;
 	}

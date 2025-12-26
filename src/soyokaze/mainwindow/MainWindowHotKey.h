@@ -7,6 +7,7 @@
 // 入力画面上の基本操作用ホットキーの登録・解除を行うクラス
 class MainWindowHotKey : public AppPreferenceListenerIF
 {
+	class HandlerBase;
 	class SelectUpHandler;
 	class SelectDownHandler;
 	class EnterHandler;

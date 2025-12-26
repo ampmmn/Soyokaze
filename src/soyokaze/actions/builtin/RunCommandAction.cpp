@@ -14,7 +14,7 @@ struct RunCommandAction::PImpl
 {
 	CString mParentCommandName;
 	CString mRunCommandName;
-	uint32_t mModifierKeyState{0};
+	HOTKEY_ATTR mHotkeyAttr;
 	bool mShouldWait{false};
 
 };
@@ -23,12 +23,12 @@ struct RunCommandAction::PImpl
 RunCommandAction::RunCommandAction(
 	const CString& parentName,
  	const CString& commandName,
-	uint32_t modifierKeyState
+	const HOTKEY_ATTR& hotkeyAttr
 ) : in(new PImpl)
 {
 	in->mParentCommandName = parentName;
 	in->mRunCommandName = commandName;
-	in->mModifierKeyState = modifierKeyState;
+	in->mHotkeyAttr = hotkeyAttr;
 }
 
 RunCommandAction::~RunCommandAction()
@@ -85,8 +85,8 @@ bool RunCommandAction::Perform(Parameter* param, String* errMsg)
 
 	// コマンドからアクションを取得
 	RefPtr<Action> action;
-	if (command->GetAction(in->mModifierKeyState, &action) == false) {
-		if (command->GetAction(0, &action) == false) {
+	if (command->GetAction(in->mHotkeyAttr, &action) == false) {
+		if (command->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action) == false) {
 			spdlog::error("Failed to get action.");
 			return false;
 		}

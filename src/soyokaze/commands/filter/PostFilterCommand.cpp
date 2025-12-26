@@ -127,7 +127,7 @@ CString PostFilterCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-bool PostFilterCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool PostFilterCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	auto realCommand = in->GetRealCommand();
 	if (realCommand == nullptr) {
@@ -135,7 +135,7 @@ bool PostFilterCommand::GetAction(uint32_t modifierFlags, Action** action)
 	}
 
 	RefPtr<Action> realAction;
-	if (realCommand->GetAction(modifierFlags, &realAction) == false) {
+	if (realCommand->GetAction(hotkeyAttr, &realAction) == false) {
 		return false;
 	}
 

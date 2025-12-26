@@ -54,9 +54,9 @@ CString DecodeUriCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool DecodeUriCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool DecodeUriCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 	// クリップボードにコピー

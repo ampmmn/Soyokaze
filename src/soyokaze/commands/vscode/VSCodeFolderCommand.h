@@ -23,7 +23,7 @@ public:
 	static bool Create(nlohmann::json& json, CommandParam* param, Command** cmd);
 
 	CString GetTypeDisplayName() override;
-	bool GetAction(uint32_t modifierFlags, Action** action) override;
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;
 	launcherapp::core::Command* Clone() override;

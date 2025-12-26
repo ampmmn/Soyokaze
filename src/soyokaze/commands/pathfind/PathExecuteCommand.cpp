@@ -66,13 +66,14 @@ CString PathExecuteCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool PathExecuteCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (PathIsUNC(in->mFullPath) == FALSE && Path::FileExists(in->mFullPath) == FALSE) {
 		// 存在しないパスの場合は何も実行しない
 		return false;
 	}
 
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		// 実行
 		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
@@ -81,7 +82,7 @@ bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 		return true;
 	}
 
-	if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+	if (modifierFlags == (MOD_SHIFT | MOD_CONTROL)) {
 		// 管理者権限で実行
 		auto a = new ExecuteAction(in->mFullPath, _T("$*"));
 		a->SetHistoryPolicy(ExecuteAction::HISTORY_ALWAYS);
@@ -89,12 +90,12 @@ bool PathExecuteCommand::GetAction(uint32_t modifierFlags, Action** action)
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		// パスを開く
 		*action = new OpenPathInFilerAction(in->mFullPath);
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
+	else if (modifierFlags == MOD_ALT) {
 		// プロパティ表示
 		*action = new ShowPropertiesAction(in->mFullPath);
 		return true;
@@ -128,7 +129,7 @@ bool PathExecuteCommand::GetMenuItem(int index, Action** action)
 	}
 
 	if (index == 0) {
-		return GetAction(0, action);
+		return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 	}
 	else if (index == 1) {
 		*action = new OpenPathInFilerAction(in->mFullPath);

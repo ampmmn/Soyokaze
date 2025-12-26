@@ -54,9 +54,9 @@ CString WebSearchAdhocCommand::GetTypeDisplayName()
 	return TEXT_TYPE;
 }
 
-bool WebSearchAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool WebSearchAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 	auto a = new actions::web::OpenURLAction(in->mURL);

@@ -60,16 +60,17 @@ CString TimespanCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool TimespanCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool TimespanCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	// クリップボードにコピー
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		auto a = new actions::clipboard::CopyTextAction(in->mNum);
 		a->SetDisplayName(_T("数値のみコピー"));
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		auto a = new actions::clipboard::CopyTextAction(mName);
 		a->SetDisplayName(_T("単位含めてコピー"));
 		*action = a;

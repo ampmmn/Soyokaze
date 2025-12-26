@@ -202,21 +202,22 @@ CString DirectoryIndexAdhocCommand::GetTypeDisplayName()
 }
 
 
-bool DirectoryIndexAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool DirectoryIndexAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags == Command::MODIFIER_CTRL) {
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+	if (modifierFlags == MOD_CONTROL) {
 		// URLをコピー
 		*action = new CopyTextAction(in->GetCurrentURL());
 		return true;
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT) {
+	else if (modifierFlags == MOD_SHIFT) {
 		// URLをブラウザで開く
 		auto a = new OpenURLAction(in->GetCurrentURL());;
 		a->SetDisplayName(_T("リンク先をブラウザで開く"));
 		*action = a;
 		return true;
 	}
-	else if (modifierFlags == (Command::MODIFIER_SHIFT | Command::MODIFIER_CTRL)) {
+	else if (modifierFlags == (MOD_SHIFT | MOD_CONTROL)) {
 		// ディレクトリをブラウザで開く
 		auto a = new OpenURLAction(in->GetParentURL());
 		a->SetDisplayName(_T("現在の階層をブラウザで開く"));

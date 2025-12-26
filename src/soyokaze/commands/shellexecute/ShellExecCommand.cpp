@@ -7,6 +7,7 @@
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/shellexecute/ShellExecCommandEditor.h"
+#include "commands/shellexecute/ExtraActionSettings.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/ExecutablePath.h"
 #include "commands/explorepath/ExplorePathCommand.h"
@@ -154,12 +155,13 @@ bool ShellExecCommand::CanExecute(String* reasonMsg)
 	return true;
 }
 
-bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool ShellExecCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	// 条件に合致するウインドウが存在する場合はウインドウ切替を行う
 	HWND hwndTarget = in->mParam.mActivateWindowParam.FindHwnd();
 	bool shouldSwitchWindow = in->mParam.mActivateWindowParam.mIsEnable && IsWindow(hwndTarget);
 
+	auto modifierFlags = hotkeyAttr.GetModifiers();
 	if (modifierFlags == 0) {
 		if (shouldSwitchWindow) {
 			*action = new launcherapp::actions::activate_window::RestoreWindowAction(hwndTarget);
@@ -169,17 +171,17 @@ bool ShellExecCommand::GetAction(uint32_t modifierFlags, Action** action)
 			return CreateExecuteAction(action, false);
 		}
 	}
-	else if (modifierFlags == Command::MODIFIER_SHIFT && shouldSwitchWindow) {
+	else if (modifierFlags == MOD_SHIFT && shouldSwitchWindow) {
 		// 「条件に合致するウインドウが存在する場合はウインドウ切替を行う」場合でも、Shift-Enterで通常起動もできるようにする
 		return CreateExecuteAction(action, false);
 	}
-	else if (modifierFlags == Command::MODIFIER_CTRL) {
+	else if (modifierFlags == MOD_CONTROL) {
 		return CreateOpenPathAction(action);
 	}
-	else if (modifierFlags == (Command::MODIFIER_CTRL | Command::MODIFIER_SHIFT)) {
+	else if (modifierFlags == (MOD_CONTROL | MOD_SHIFT)) {
 		return CreateExecuteAction(action, true);
 	}
-	else if (modifierFlags == Command::MODIFIER_ALT) {
+	else if (modifierFlags == MOD_ALT) {
 		return CreateShowPropertiesAction(action);
 	}
 	return false;
@@ -618,6 +620,7 @@ bool ShellExecCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& c
 
 		auto newCmd = new ExplorePathCommand(PathFindFileName(filePath), filePath);
 		newCmd->SetCompletionText(completionText+_T("\\")+fileName);
+		newCmd->SetExtraActionSettings(ExtraActionSettings::Get()->GetSettings());
 
 		if (f.IsDirectory()) {
 			// ディレクトリ要素を先に表示
