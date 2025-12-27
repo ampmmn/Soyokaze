@@ -21,15 +21,6 @@ protected:
 	using Action = launcherapp::actions::core::Action;
 
 public:
-	// 修飾キー押下状態を示すビットフラグ
-	enum {
-		MODIFIER_SHIFT = 1,
-		MODIFIER_CTRL = 2,
-		MODIFIER_ALT = 4,
-		MODIFIER_WIN = 8,
-	};
-
-public:
 	// コマンド名を取得
 	virtual CString GetName() = 0;
 	// コマンドの説明を取得
