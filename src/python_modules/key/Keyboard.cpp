@@ -105,6 +105,16 @@ int press(nb::handle input, int repeat, float interval)
 	return 0;
 }
 
+static std::wstring
+utf8_to_wstring(const std::string& utf8)
+{
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), (int)utf8.size(), nullptr, 0);
+	std::wstring result(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), (int)utf8.size(), &result[0], size_needed);
+
+	return result;
+}
+
 int write_key(nb::handle input, float interval)
 {
 	DWORD interval_ms = (DWORD)(interval * 1000);
@@ -113,28 +123,49 @@ int write_key(nb::handle input, float interval)
 		return 1;
 	}
 
-	std::string text = nb::cast<std::string>(input);
+	std::wstring text(utf8_to_wstring(nb::cast<std::string>(input)));
 
-	for (auto c : text) {
+	FILE* fp;
+	fopen_s(&fp, "c:/users/htmny/out.txt", "a");
 
-		bool isUpper = (std::isupper(c) != 0);
+	for (auto ch : text) {
 
-		if (isUpper) {
-			key_down("shift");
+		INPUT input[2] = {};
+		input[0].type = INPUT_KEYBOARD;
+		input[1].type = INPUT_KEYBOARD;
+
+		if (ch != L'\n') {
+			// Key down
+			input[0].ki.wVk = 0;
+			input[0].ki.wScan = ch;
+			input[0].ki.dwFlags = KEYEVENTF_UNICODE;
+
+			// Key up
+			input[1].ki.wVk = 0;
+			input[1].ki.wScan = ch;
+			input[1].ki.dwFlags = KEYEVENTF_UNICODE | KEYEVENTF_KEYUP;
+		}
+		else {
+			// Note: Enterキーは0x0aで改行できなかったため、仮想キーコードで入力する
+
+			// Key down
+			input[0].ki.wVk = VK_RETURN;
+			input[0].ki.wScan = 0;
+			input[0].ki.dwFlags = 0;
+
+			// Key up
+			input[1].ki.wVk = VK_RETURN;
+			input[1].ki.wScan = 0;
+			input[1].ki.dwFlags = KEYEVENTF_KEYUP;
 		}
 
-		char text[] = { c, '\0' };
-		key_down(text);
-		key_up(text);
-
-		if (isUpper) {
-			key_up("shift");
-		}
+		SendInput(2, input, sizeof(INPUT));
 
 		if (interval_ms > 0) {
 			Sleep(interval_ms);
 		}
 	}
+	fclose(fp);
 
 	return 0;
 }
