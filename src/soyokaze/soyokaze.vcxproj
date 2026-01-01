@@ -565,7 +565,6 @@
     <ClInclude Include="commands\snippetgroup\SnippetGroupCommandEditor.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupEditDialog.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupItem.h" />
-    <ClInclude Include="commands\snippetgroup\SnippetGroupItemDialog.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupParam.h" />
     <ClInclude Include="commands\snippetgroup\SnippetGroupProvider.h" />
     <ClInclude Include="commands\snippet\SnippetCommandEditor.h" />
@@ -1075,7 +1074,6 @@
     <ClCompile Include="commands\snippetgroup\SnippetGroupCommandEditor.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupEditDialog.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupItem.cpp" />
-    <ClCompile Include="commands\snippetgroup\SnippetGroupItemDialog.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp" />
     <ClCompile Include="commands\snippetgroup\SnippetGroupProvider.cpp" />
     <ClCompile Include="commands\snippet\SnippetCommandEditor.cpp" />

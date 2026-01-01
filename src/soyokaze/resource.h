@@ -143,7 +143,6 @@
 #define IDD_COMMAND_HOTKEY              239
 #define IDD_SNIPPETGROUP                240
 #define IDD_SNIPPET_EDIT1               241
-#define IDD_SNIPPETGROUP_ITEM           241
 #define IDD_SIMPLEDICT_TEST             242
 #define IDD_WINDOWACTIVATEADHOCNAME     243
 #define IDD_FILTER_SUBPROCESS           244
@@ -178,12 +177,14 @@
 #define IDC_EDIT_FILEPATH               1009
 #define IDC_EDIT_OTHERPARAM             1009
 #define IDC_EDIT_REGPATTERN             1009
+#define IDC_EDIT_NAME2                  1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_EDIT_FRONT                  1010
 #define IDC_EDIT_SUBSTITUTE             1010
 #define IDC_EDIT_REPLACE                1010
 #define IDC_EDIT_PARAMETER              1010
+#define IDC_EDIT_DESCRIPTION2           1010
 #define IDC_CHECK_USE0                  1011
 #define IDC_EDIT_BACK                   1011
 #define IDC_EDIT_FRONT2                 1011
@@ -559,13 +560,17 @@
 #define IDC_COMBO_COMMAND               1228
 #define IDC_EDIT_LABEL                  1229
 #define ID_VIEW_HELP                    32775
+#define ID_VIEW_NEXT                    32776
+#define ID_VIEW_PREV                    32777
+#define ID_VIEW_UP                      32778
+#define ID_VIEW_DOWN                    32779
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
-#define _APS_NEXT_COMMAND_VALUE         32776
+#define _APS_NEXT_COMMAND_VALUE         32780
 #define _APS_NEXT_CONTROL_VALUE         1230
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -1311,9 +1311,6 @@
     <ClInclude Include="commands\snippetgroup\SnippetGroupItem.h">
       <Filter>commands\snippetgroup</Filter>
     </ClInclude>
-    <ClInclude Include="commands\snippetgroup\SnippetGroupItemDialog.h">
-      <Filter>commands\snippetgroup</Filter>
-    </ClInclude>
     <ClInclude Include="commands\snippetgroup\SnippetGroupParam.h">
       <Filter>commands\snippetgroup</Filter>
     </ClInclude>
@@ -2751,9 +2748,6 @@
       <Filter>commands\snippetgroup</Filter>
     </ClCompile>
     <ClCompile Include="commands\snippetgroup\SnippetGroupItem.cpp">
-      <Filter>commands\snippetgroup</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\snippetgroup\SnippetGroupItemDialog.cpp">
       <Filter>commands\snippetgroup</Filter>
     </ClCompile>
     <ClCompile Include="commands\snippetgroup\SnippetGroupParam.cpp">

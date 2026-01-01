@@ -26,7 +26,6 @@ public:
 
 	void SwapItem(int srcIndex, int dstIndex);
 	void SetItemToList(int index, const Item& item);
-	bool EditItem(int index);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	virtual BOOL OnInitDialog();
@@ -39,6 +38,13 @@ protected:
 	// メッセージ欄
 	CString mMessage;
 
+	// 現在選択中の定型文
+	Item* mCurItem{nullptr};
+	//
+	bool mIsItemChanging{false};
+
+	HACCEL mAccel{nullptr};
+
 public:
 	// 編集対象パラメータ
 	CommandParam mParam;
@@ -48,18 +54,23 @@ public:
 
 // 実装
 protected:
-	virtual void OnOK();
+	void OnOK() override;
+	BOOL PreTranslateMessage(MSG* pMsg) override;
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdate();
+	afx_msg void OnUpdateListItem();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonAdd();
-	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnButtonUp();
 	afx_msg void OnButtonDown();
 	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnViewPrev();
+	afx_msg void OnViewNext();
+	afx_msg void OnViewUp();
+	afx_msg void OnViewDown();
 };
 
 } // end of namespace snippetgroup
