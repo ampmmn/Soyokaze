@@ -4,6 +4,10 @@
 
 なし
 
+### Fixed
+
+- #217 AfxW_GetCurrentDirで落ちることがある
+
 ## 0.50.0 - 2026-01-04
 
 ### Added

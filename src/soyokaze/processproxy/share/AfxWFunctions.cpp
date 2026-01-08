@@ -4,37 +4,50 @@
 #include <regex>
 #include <algorithm>
 
-static IDispatch* GetDispatch()
+/**
+	あふwのオートメーションオブジェクトを取得する
+	@return true:取得成功 false:失敗
+	@param[out] dispPtr 取得したIDispatch
+*/
+static bool GetDispatch(
+	IDispatch** dispPtr
+)
 {
 	CLSID clsId;
 	HRESULT hr = CLSIDFromProgID(L"afxw.obj", &clsId);
 	if (FAILED(hr)) {
-		return nullptr;
-	}
-
-	IDispatch* dispPtr = nullptr;
-	hr = CoCreateInstance(clsId, NULL, CLSCTX_ALL, IID_IDispatch, (void**)&dispPtr);
-	if (FAILED(hr)) {
-		return nullptr;
-	}
-
-	return dispPtr;
-}
-
-bool AfxW_GetCurrentDir(std::wstring& curDir)
-{
-	IDispatch* pDisp = GetDispatch();
-	if (pDisp == nullptr) {
 		return false;
 	}
 
+	hr = CoCreateInstance(clsId, NULL, CLSCTX_ALL, IID_IDispatch, (void**)&dispPtr);
+	if (FAILED(hr)) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+	あふwのカレントディレクトリを取得する
+	@return true:取得成功  false:取得失敗
+	@param[out] curDir カレントディレクトリ
+*/
+bool AfxW_GetCurrentDir(
+	std::wstring& curDir
+)
+{
+	CComPtr<IDispatch> pDisp;
+	if (GetDispatch(&pDisp) == false) {
+		return false;
+	}
+
+	// "Extract $P"で現在の窓のパスを取得する
 	CComBSTR extractStr(L"Extract");
 	OLECHAR* p = extractStr;
 
 	DISPID methodId;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
 	if (FAILED(hr)) {
-		pDisp->Release();
 		return false;
 	}
 
@@ -52,21 +65,26 @@ bool AfxW_GetCurrentDir(std::wstring& curDir)
 	CComVariant vResult;
 	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
 	                   &params, &vResult, NULL, NULL);
-	if (FAILED(hr)) {
-		pDisp->Release();
+
+	if (FAILED(hr) || vResult.bstrVal == nullptr) {
 		return false;
 	}
-
-	pDisp->Release();
 
 	curDir = (LPWSTR)vResult.bstrVal;
 	return true;
 }
 
-bool AfxW_SetCurrentDir(const std::wstring& path)
+/**
+	あふwのカレントディレクトリを設定する
+	@return true:成功  false:失敗
+	@param[in] path 設定するカレントディレクトリ
+*/
+bool AfxW_SetCurrentDir(
+	const std::wstring& path
+)
 {
-	IDispatch* pDisp = GetDispatch();
-	if (pDisp == nullptr) {
+	CComPtr<IDispatch> pDisp;
+	if (GetDispatch(&pDisp) == false) {
 		return false;
 	}
 
@@ -76,7 +94,6 @@ bool AfxW_SetCurrentDir(const std::wstring& path)
 	DISPID methodId;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
 	if (FAILED(hr)) {
-		pDisp->Release();
 		return false;
 	}
 
@@ -97,8 +114,6 @@ bool AfxW_SetCurrentDir(const std::wstring& path)
 	CComVariant vResult;
 	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
 	                   &params, &vResult, NULL, NULL);
-	pDisp->Release();
-
 	if (FAILED(hr)) {
 		return false;
 	}
@@ -120,8 +135,8 @@ bool AfxW_GetSelectionPath(std::wstring& selPath, int index)
 // あふwの選択中のファイルパスを取得(すべて)
 bool Afxw_GetAllSelectionPath(std::vector<std::wstring>& paths)
 {
-	IDispatch* pDisp = GetDispatch();
-	if (pDisp == nullptr) {
+	CComPtr<IDispatch> pDisp;
+	if (GetDispatch(&pDisp) == false) {
 		return false;
 	}
 
@@ -131,7 +146,6 @@ bool Afxw_GetAllSelectionPath(std::vector<std::wstring>& paths)
 	DISPID methodId;
 	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &p, 1, LOCALE_USER_DEFAULT, &methodId);
 	if (FAILED(hr)) {
-		pDisp->Release();
 		return false;
 	}
 
@@ -149,12 +163,10 @@ bool Afxw_GetAllSelectionPath(std::vector<std::wstring>& paths)
 	CComVariant vResult;
 	hr = pDisp->Invoke(methodId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_METHOD, 
 	                   &params, &vResult, NULL, NULL);
-	if (FAILED(hr)) {
-		pDisp->Release();
+
+	if (FAILED(hr) || vResult.bstrVal == nullptr) {
 		return false;
 	}
-
-	pDisp->Release();
 
 	std::wstring pathStr((LPWSTR)vResult.bstrVal);
 
