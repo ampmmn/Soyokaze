@@ -125,9 +125,6 @@ int write_key(nb::handle input, float interval)
 
 	std::wstring text(utf8_to_wstring(nb::cast<std::string>(input)));
 
-	FILE* fp;
-	fopen_s(&fp, "c:/users/htmny/out.txt", "a");
-
 	for (auto ch : text) {
 
 		INPUT input[2] = {};
@@ -165,8 +162,6 @@ int write_key(nb::handle input, float interval)
 			Sleep(interval_ms);
 		}
 	}
-	fclose(fp);
-
 	return 0;
 }
 
