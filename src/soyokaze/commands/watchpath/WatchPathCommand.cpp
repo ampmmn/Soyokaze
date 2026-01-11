@@ -158,12 +158,14 @@ bool WatchPathCommand::Load(CommandEntryIF* entry)
 	in->mParam.swap(paramTmp);
 
 	// 監視対象に登録
-	PathWatcher::ITEM item;
-	item.mPath = in->mParam.mPath;
-	item.mMessage = in->mParam.mNotifyMessage;
-	item.mInterval = in->mParam.mWatchInterval;
-	item.mExcludeFilter = in->mParam.mExcludeFilter;
-	PathWatcher::Get()->RegisterPath(in->mParam.mName, item);
+	if (in->mParam.mIsDisabled == false) {
+		PathWatcher::ITEM item;
+		item.mPath = in->mParam.mPath;
+		item.mMessage = in->mParam.mNotifyMessage;
+		item.mInterval = in->mParam.mWatchInterval;
+		item.mExcludeFilter = in->mParam.mExcludeFilter;
+		PathWatcher::Get()->RegisterPath(in->mParam.mName, item);
+	}
 
 	return true;
 }
