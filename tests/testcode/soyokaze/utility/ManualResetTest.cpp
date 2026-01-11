@@ -82,3 +82,13 @@ TEST(ManualEventTest, WaitForReturnsTrueIfSet)
     EXPECT_TRUE(result);
 }
 
+TEST(ManualEventTest, WaitFor0)
+{
+    ManualEvent ev(false);
+    bool result = ev.WaitFor(0);
+		EXPECT_FALSE(result);
+		ev.Set();
+    result = ev.WaitFor(0);
+		EXPECT_TRUE(result);
+}
+
