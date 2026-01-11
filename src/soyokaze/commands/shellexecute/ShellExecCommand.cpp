@@ -264,7 +264,7 @@ void ShellExecCommand::SetParam(const CommandParam& param)
 
 	// パラメータを上書き
 	in->mParam = param;
-	in->mDirectoryState == -1
+	in->mDirectoryState = -1;
 
 	// 更新後に自動実行を許可する場合は履歴の除外ワードを登録する
 	// (自動実行したいコマンド名が履歴に含まれると、自動実行を阻害することがあるため)
