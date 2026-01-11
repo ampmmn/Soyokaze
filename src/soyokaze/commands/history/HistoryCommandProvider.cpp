@@ -5,6 +5,7 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#include "utility/ScopeExit.h"
 #include "resource.h"
 #include <list>
 
@@ -90,11 +91,8 @@ void HistoryCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	struct scope_quering {
-		scope_quering(bool& f) : mFlag(f) { mFlag = true; }
-		~scope_quering() { mFlag = false; }
-		bool& mFlag;
-	} scope(in->mQuering);
+	in->mQuering = true;
+	::utility::ScopeExit guard([&]() { in->mQuering = false; });
 
 	ExecuteHistory::ItemList items;
 	auto history = ExecuteHistory::GetInstance();

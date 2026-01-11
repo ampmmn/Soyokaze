@@ -5,6 +5,7 @@
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "mainwindow/controller/MainWindowController.h"
+#include "utility/ScopeExit.h"
 #include "resource.h"
 
 #ifdef _DEBUG
@@ -52,12 +53,8 @@ BOOL SettingCommand::Execute(Parameter* param)
 		return TRUE;
 	}
 
-	struct scope_flag {
-		scope_flag(bool& f) : mf(f) { mf= true; }
-		~scope_flag() { mf = false; }
-		bool& mf;
-	} _local(mIsExecuting);
-
+	mIsExecuting = true;
+	::utility::ScopeExit guard([&]() { mIsExecuting = false; });
 
 	auto mainWnd = launcherapp::mainwindow::controller::MainWindowController::GetInstance();
 	mainWnd->RequestCallback([](LPARAM param) {

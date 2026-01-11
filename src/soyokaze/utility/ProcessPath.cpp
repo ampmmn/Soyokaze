@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ProcessPath.h"
+#include "utility/ScopeExit.h"
 //#include <subauth.h>
 #include <winternl.h>
 #include <psapi.h>
@@ -180,19 +181,12 @@ CString ProcessPath::GetCommandLine()
 	if (hProcess == nullptr) {
 		throw Exception(pid);
 	}
+	::utility::ScopeExit guard([hProcess]() { CloseHandle(hProcess); });
 
 	HINSTANCE hNtDll = GetModuleHandleW(L"ntdll.dll");
 	if (hNtDll == nullptr) {
 		throw Exception(pid);
 	}
-
-	struct scope_freelib {
-		scope_freelib(HANDLE hProcess) : mP(hProcess) {}
-		~scope_freelib() {
-			CloseHandle(mP);
-		}
-		HANDLE mP;
-	} scope_lib(hProcess);
 
 	NtQueryInformationProcessPtr NtQueryInformationProcess = 
 		(NtQueryInformationProcessPtr)GetProcAddress(hNtDll, "NtQueryInformationProcess");

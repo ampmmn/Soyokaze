@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ClipboardHistoryEventReceiver.h"
 #include "utility/MessageExchangeWindow.h"
+#include "utility/ScopeExit.h"
 #include <set>
 
 #ifdef _DEBUG
@@ -43,11 +44,8 @@ int ClipboardHistoryEventReceiver::PImpl::OnUpdateClipboard()
 	}
 
 	// 関数をぬけるときにフラグを戻す
-	struct scope_flag {
-		scope_flag(bool& f) : mFlag(f) { f = true; }
-		~scope_flag() { mFlag = false; }
-		bool& mFlag;
-	} flag(mIsUpdating);
+	mIsUpdating= true;
+	::utility::ScopeExit guard([&]() { mIsUpdating = false; });
 
 	// 前回の通知から間が空いていない場合は無視
 	if (GetTickCount64() - mLastUpdated < mInterval) {

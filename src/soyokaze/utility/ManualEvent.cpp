@@ -43,6 +43,10 @@ void ManualEvent::Wait()
 bool ManualEvent::WaitFor(uint64_t milliseconds)
 {
 	std::unique_lock<std::mutex> lock(in->mMutex);
+	if (milliseconds == 0) {
+		// 0秒なら状態を即返すのみ
+		return in->mIsSignaled;
+	}
 	return in->mCV.wait_for(lock, std::chrono::milliseconds(milliseconds),
 	                           [&] { return in->mIsSignaled; });
 }

@@ -9,7 +9,6 @@
 #include "utility/ScopedResetEvent.h"
 #include <atlbase.h>
 #include <propvarutil.h>
-#include <atomic>
 #include <mutex>
 #include <thread>
 #include <deque>
@@ -26,8 +25,6 @@ namespace launcherapp {
 namespace commands {
 namespace uwp {
 
-static constexpr int UPDATE_INTERVAL = 3600;      // 3600回*50msec = 180,000msec → 3分
-
 struct UWPApplications::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
@@ -41,11 +38,11 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 	void SetAbort()
 	{
-		mIsAbort = true;
+		mAbortEvt.Set();
 	}
 	bool IsAbort()
 	{
-		return mIsAbort.load();
+		return mAbortEvt.WaitFor(0);
 	}
 	void RunUpdateTask();
 	void EnumApplications(std::vector<ItemPtr>& items);
@@ -64,7 +61,7 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 	std::mutex mMutex;
 	std::vector<ItemPtr> mItems;
-	std::atomic<bool> mIsAbort{false};
+	ManualEvent mAbortEvt;
 	ManualEvent mWaitEvt;
 };
 
@@ -80,36 +77,19 @@ void UWPApplications::PImpl::RunUpdateTask()
 			SPDLOG_ERROR(_T("Failed to CoInitialize!"));
 		}
 
-		bool isFirst = true;
-		int count = UPDATE_INTERVAL;
-		while(IsAbort() == false) {
-			if (count < UPDATE_INTERVAL) {
-				count++;
-				Sleep(50);
-				continue;
-			}
-
+		// 3分ごとにチェック
+		do {
 			SharedHwnd hwnd;
 			if (IsWindow(hwnd.GetHwnd()) == FALSE) {
 				// 入力欄がクローズされたら終了
 				break;
 			}
-			if (isFirst == false && IsWindowVisible(hwnd.GetHwnd())) {
-				// 入力欄が表示されているときは更新しない
-				Sleep(50);
-				continue;
-			}
-			// カウンタをリセット
-			count = 0;
-			isFirst = false;
-
 			std::vector<ItemPtr> tmp;
 			EnumApplications(tmp);
 
-
 			std::lock_guard<std::mutex> lock(mMutex);
 			mItems = tmp;
-		}
+		} while(mAbortEvt.WaitFor(3 * 60 * 1000) == false);
 
 		CoUninitialize();
 	});

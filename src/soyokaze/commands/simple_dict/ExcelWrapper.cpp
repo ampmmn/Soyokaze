@@ -276,20 +276,14 @@ void ExcelApplication::Quit()
 	}
 
 	// 2秒まってもプロセスが終了していなかったら強制的に落とす
-	HANDLE h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE, FALSE, pid);
+	HANDLE h = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, pid);
 	std::thread th([pid, h]() {
-			utility::TimeoutChecker ch(2000);
-			DWORD exitCode = 0;
-			while(ch.IsTimeout() == false) {
-			if (GetExitCodeProcess(h, &exitCode) && exitCode != STILL_ACTIVE) {
-			spdlog::debug(_T("Excel app exit PID:{}"), pid);
-			return;
-			}
-			Sleep(50);
+			if (WaitForSingleObject(h, 2000) != WAIT_TIMEOUT) {
+				return;
 			}
 			spdlog::debug(_T("Excel app terminated PID:{}"), pid);
 			TerminateProcess(h, 0);
-			});
+	});
 	th.detach();
 }
 

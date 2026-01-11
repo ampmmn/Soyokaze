@@ -12,6 +12,7 @@
 #include "commands/watchpath/LocalPathTarget.h"
 #include "commands/watchpath/UNCPathTarget.h"
 #include "commands/watchpath/WatchPathToast.h"
+#include "utility/ManualEvent.h"
 #include "settingwindow/ShortcutSettingPage.h"
 
 namespace launcherapp {
@@ -30,23 +31,17 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 
 	// 監視を中止する
 	void Abort() {
-		mIsAbort = true;
+		mAbortEvent.Set();
 	}
 	// 監視スレッドの完了を待機する(最大3秒)
 	void WaitExit() {
-		uint64_t start = GetTickCount64();
-		while (GetTickCount64() - start < 3000) {
-			if (mIsExited) {
-				break;
-			}
-			Sleep(50);
-		}
+		mExitEvent.WaitFor(3000);
 	}
 
 	bool IsAbort() {
-		return mIsAbort.load();
+		return mAbortEvent.WaitFor(0);
 	}
-	bool WatchPath();
+	bool ScanPath();
 
 	void NotifyPath(const CString& cmdName, const CString& message, const CString& detail, const CString& path);
 
@@ -75,16 +70,18 @@ struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
 	std::mutex mMutex;
 
 	// 監視対象(mapのキーはコマンド名)
-	std::map<CString, WatchTarget*> mTargets;
+	std::map<CString, std::unique_ptr<WatchTarget> > mTargets;
 
-	// 監視終了フラグ
-	std::atomic<bool> mIsAbort{false};
 	// 監視スレッド終了済を表すフラグ
-	bool mIsExited{false};
-	// 
+	ManualEvent mExitEvent;
+	// スクリーンロック中か?
 	bool mIsScreenLocked{false};
 	// 監視スレッド
 	std::unique_ptr<std::thread> mTask;
+	// 間隔
+	uint32_t mScanInterval{5000};
+	// 
+	ManualEvent mAbortEvent;
 };
 
 // 監視を開始
@@ -97,28 +94,25 @@ void PathWatcher::PImpl::StartWatch()
 		return;
 	}
 
+	// イベントの状態を初期化
+	mAbortEvent.Reset();
+	mExitEvent.Reset();
+
 	// 初回にタスクを生成する
 	mTask.reset(new std::thread([&]() {
 
-		uint64_t count = 0;
-		while(IsAbort() == false) {
-
-			// 5秒に1回(50msec * 100回)=5sec
-			if (count++ >= 100 && IsLockWorkstation() == false) {
-				WatchPath();
-				count = 0;
+		do {
+			if (IsLockWorkstation()) {
+				// スクリーンロック中に変更を検知して通知をしても通知を見れないため、ロック中はチェックしない。
+				continue;
 			}
-			Sleep(50);
-		}
+			ScanPath();
+		} while(mAbortEvent.WaitFor(mScanInterval) == false);
 
 		// 終了処理
 		std::lock_guard<std::mutex> lock(mMutex);
-		for (auto& item : mTargets) {
-			auto& target = item.second;
-			delete target;
-		}
-		mIsExited = true;
-
+		mTargets.clear();
+		mExitEvent.Set();
 	}));
 	mTask->detach();
 }
@@ -130,11 +124,11 @@ bool PathWatcher::PImpl::IsLockWorkstation()
 }
 
 // ローカルパス向けの更新検知処理
-bool PathWatcher::PImpl::WatchPath()
+bool PathWatcher::PImpl::ScanPath()
 {
 	std::lock_guard<std::mutex> lock(mMutex);
 	for (auto& item : mTargets) {
-		auto target = item.second;
+		auto& target = item.second;
 		if (target->IsUpdated() == false) {
 			continue;
 		}
@@ -176,9 +170,6 @@ void PathWatcher::PImpl::NotifyPath(
 
 PathWatcher::PathWatcher() : in(new PImpl)
 {
-	in->mIsAbort = false;
-	in->mIsExited = false;
-
 	LauncherWindowEventDispatcher::Get()->AddListener(in.get());
 }
 
@@ -203,15 +194,14 @@ void PathWatcher::RegisterPath(const CString& cmdName, const ITEM& item)
 
 		auto it = in->mTargets.find(cmdName);
 		if (it != in->mTargets.end()) {
-			delete it->second;
 			in->mTargets.erase(it);
 		}
 
 		if (PathIsUNC(item.mPath) == FALSE) {
-			in->mTargets[cmdName] = new LocalPathTarget(cmdName, item);
+			in->mTargets.insert(std::make_pair(cmdName,  new LocalPathTarget(cmdName, item)));
 		}
 		else {
-			in->mTargets[cmdName] = new UNCPathTarget(cmdName, item);
+			in->mTargets.insert(std::make_pair(cmdName, new UNCPathTarget(cmdName, item)));
 		}
 	}
 	in->StartWatch();
@@ -225,7 +215,6 @@ void PathWatcher::UnregisterPath(const CString& cmdName)
 	if (it == in->mTargets.end()) {
 		return;
 	}
-	delete it->second;
 	in->mTargets.erase(it);
 }
 

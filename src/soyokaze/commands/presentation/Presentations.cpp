@@ -4,6 +4,8 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
+#include "utility/ManualEvent.h"
+#include "utility/ScopeExit.h"
 #include <thread>
 #include <mutex>
 
@@ -22,7 +24,7 @@ using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledge
 
 struct Presentations::PImpl : public AppPreferenceListenerIF
 {
-	PImpl()
+	PImpl() : mExitEvent(false)
 	{
 		AppPreference::Get()->RegisterListener(this);
 	}
@@ -71,7 +73,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 	uint64_t mLastUpdate{0};
 
 	std::mutex mMutex;
-	bool mIsExited{true};
+	ManualEvent mExitEvent;
 	bool mIsAvailable{false};
 
 	std::vector<SLIDE_ITEM> mItems;
@@ -94,12 +96,8 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 
 	auto threadFunc = [&]() {
 
-		struct scope_flag {
-			scope_flag(bool& flg) : mFlg(flg) {}
-			~scope_flag() { mFlg = true; }
-			bool& mFlg;
-		} _scope_flag_(mIsExited);
-
+		// 処理を抜けるときにイベントを立てる
+		::utility::ScopeExit guard([&]() { mExitEvent.Set(); });
 
 		std::wstring filePath;
 		std::vector<std::wstring> slideTitles;
@@ -125,7 +123,7 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 	}
 
 	// 2回目以降は非同期で取得
-	mIsExited = false;
+	mExitEvent.Reset();
 	std::thread th(threadFunc);
 	th.detach();
 
@@ -234,13 +232,7 @@ Presentations::~Presentations()
 void Presentations::Abort()
 {
 	// 更新スレッドの終了を待つ(最大3秒)
-	uint64_t start = GetTickCount64();
-	while(GetTickCount64() - start < 3000) {
-		if (in->mIsExited) {
-			break;
-		}
-		Sleep(50);
-	}
+	in->mExitEvent.WaitFor(3000);
 }
 
 void Presentations::Load()

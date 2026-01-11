@@ -8,6 +8,7 @@
 #include "commands/core/DefaultCommand.h"
 #include "core/IFIDDefine.h"
 #include "utility/Path.h"
+#include "utility/ScopeExit.h"
 #include "setting/AppPreference.h"
 #include "matcher/PartialMatchPattern.h"
 #include "matcher/WholeMatchPattern.h"
@@ -707,12 +708,7 @@ int CommandRepository::ManagerDialog()
 		return 0;
 	}
 
-	struct scope_clear {
-		scope_clear(KeywordManagerDialog*& p) : ptr(p) {}
-		~scope_clear() { ptr = nullptr; }
-		KeywordManagerDialog*& ptr;
-	} _scope(in->mManagerDlgPtr);
-
+	::utility::ScopeExit guard([&]() { in->mManagerDlgPtr = nullptr; });
 
 	// キャンセル時に状態を戻せるようにするため、現在のコマンド状態をとっておく
 	CommandMap::Settings bkup;

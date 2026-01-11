@@ -8,6 +8,8 @@
 #include "utility/SQLite3Database.h"
 #include "utility/Path.h"
 #include "utility/CharConverter.h"
+#include "utility/ManualEvent.h"
+#include "utility/ScopeExit.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "commands/common/Message.h" // for PopupMessage
@@ -50,22 +52,16 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 
 	void Abort()
 	{
-		mIsAbort = true;
+		mAbortEvent.Set();
 	}
 
 	// 監視スレッドの完了を待機する(最大3秒)
 	void WaitExit() {
-		uint64_t start = GetTickCount64();
-		while (GetTickCount64() - start < 3000) {
-			if (mIsExited.load()) {
-				break;
-			}
-			Sleep(50);
-		}
+		mExitEvent.WaitFor(3000);
 	}
 	bool IsAbort()
 	{
-		return mIsAbort.load();
+		return mAbortEvent.WaitFor(0);
 	}
 	void AddWaitingQueue(SimpleDictCommand* cmd)
 	{
@@ -159,8 +155,8 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	std::list<SimpleDictCommand*> mUpdatedParamQueue;
 
 	std::mutex mMutex;
-	std::atomic<bool> mIsAbort{false};
-	std::atomic<bool> mIsExited{false};
+	ManualEvent mAbortEvent;
+	ManualEvent mExitEvent;
 	uint64_t mLastUpdateCheckTime{0};
 };
 
@@ -169,14 +165,13 @@ void DictionaryLoader::PImpl::StartWatch()
 {
 	spdlog::info(_T("[SimpleDict] Start Watch Thread"));
 
-	mIsExited = false;
+	mExitEvent.Reset();
+	::utility::ScopeExit guard([&]() { mExitEvent.Set(); });
 
 	std::vector<CString> keys;
 	std::vector<CString> values;
 	std::vector<CString> values2;
-	while(IsAbort() == false) {
-
-		Sleep(50);
+	while(mAbortEvent.WaitFor(50) == false) {
 
 		// 更新されたアイテムがあるまで待機
 		RefPtr<SimpleDictCommand> cmd;
@@ -217,7 +212,6 @@ void DictionaryLoader::PImpl::StartWatch()
 
 		spdlog::debug(_T("[SimpleDict]Completed loading dict data. name:{}"), (LPCTSTR)param.mName); 
 	}
-	mIsExited = true;
 	spdlog::info(_T("[SimpleDict] Exit Watch Thread"));
 }
 

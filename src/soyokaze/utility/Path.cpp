@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Path.h"
 #include "utility/AppProfile.h"
+#include "utility/ScopeExit.h"
 #include <thread>
 #include <mutex>
 #include <map>
@@ -435,11 +436,7 @@ bool Path::IsHostConnected(const CString& targetHost)
 		return false;
 	}
 
-	struct scope_free {
-		scope_free(LPBYTE buf) : mBuffer(buf) {}
-		~scope_free() { NetApiBufferFree(mBuffer); }
-		LPBYTE mBuffer{nullptr};
-	} _scope(buffer);
+	::utility::ScopeExit guard([buffer]() { NetApiBufferFree(buffer); });
 
 	USE_INFO_2* useInfo = (USE_INFO_2*)buffer;
 
