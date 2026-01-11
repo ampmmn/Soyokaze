@@ -163,37 +163,46 @@ static bool IsValidForegroundWindow(HWND hwnd)
 	return true;
 }
 
-// 指定した領域がモニターに収まっているかを判定する
-static bool IsRectInMonitors(const CRect& rc)
+// ウインドウが属する(最も面積が大きいモニターの座標を得る)
+static bool GetMonitorRect(HWND hwnd, RECT& bestRC)
 {
-	struct local_param {
-		static BOOL CALLBACK EnumProc(HMONITOR hmon, HDC hdcMon, LPRECT lprcMon, LPARAM dwData) {
-			UNREFERENCED_PARAMETER(lprcMon);
-			UNREFERENCED_PARAMETER(hdcMon);
+	RECT wndRect;
+	GetWindowRect(hwnd, &wndRect);
 
-			auto thisPtr = (local_param*)dwData;
-
-			MONITORINFO mi = { sizeof(MONITORINFO) };
-			if (GetMonitorInfo(hmon, &mi)) {
-				// モニター作業領域内に完全に収まっている領域の面積を得る
-				auto validArea = thisPtr->mTargetRect & mi.rcWork;
-				if (validArea.IsRectEmpty() == FALSE) {
-					thisPtr->mValidArea += validArea.Width() * validArea.Height();
-				}
-			}
-
+	struct MonitorInfo {
+		static BOOL CALLBACK Callback(HMONITOR hMonitor, HDC, LPRECT lprcMonitor, LPARAM dwData) {
+			auto monitors = reinterpret_cast<std::vector<MonitorInfo>*>(dwData);
+			monitors->push_back(MonitorInfo{ hMonitor, *lprcMonitor, 0 });
 			return TRUE;
 		}
+		HMONITOR hMonitor;
+		RECT rect;
+		int overlapArea;
+	};
 
-		int mValidArea = 0;
-		CRect mTargetRect;
-	} param;
+	std::vector<MonitorInfo> monitors;
+	EnumDisplayMonitors(NULL, NULL, MonitorInfo::Callback, reinterpret_cast<LPARAM>(&monitors));
 
-	param.mTargetRect = rc;
-	EnumDisplayMonitors(nullptr, nullptr, local_param::EnumProc, (LPARAM)&param);
+	// 重なり面積を計算
+	for (auto& m : monitors) {
+		RECT overlap;
+		if (IntersectRect(&overlap, &wndRect, &m.rect)) {
+			m.overlapArea = (overlap.right - overlap.left) * (overlap.bottom - overlap.top);
+		}
+	}
 
-	// 画面内に半分収まってればヨシとする
-	return param.mValidArea >= (rc.Width() * rc.Height()) / 2;
+	// 最大重なり面積のモニターを選択
+	auto bestMonitor = std::max_element(monitors.begin(), monitors.end(),
+		[](const MonitorInfo& a, const MonitorInfo& b) {
+			return a.overlapArea < b.overlapArea;
+	});
+
+
+	if (bestMonitor == monitors.end()) {
+		return false;
+	}
+	bestRC = bestMonitor->rect;
+	return true;
 }
 
 
@@ -216,7 +225,7 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 		return true;
 	}
 	else if (pref->IsShowMainWindowOnActiveWindowCenter()) {
-		// アクティブなウインドウの中央位置に入力欄ウインドウを表示する
+		// アクティブなウインドウが属するモニタ中央位置に入力欄ウインドウを表示する
 		HWND fgWindow = ::GetForegroundWindow();
 		if (IsValidForegroundWindow(fgWindow) == false) {
 			return false;
@@ -224,21 +233,22 @@ bool MainWindowLayout::RecalcWindowOnActivate(CWnd* wnd)
 
 		// 基準とするウインドウのスクリーン座標上の領域
 		CRect rc;
-		::GetWindowRect(fgWindow, &rc);
+		GetMonitorRect(fgWindow, rc);
 
 		// 自ウインドウのスクリーン座標上の領域
 		CRect rcSelf;
-		wnd->GetWindowRect(&rcSelf);
+		if (in->mWindowPositionPtr.get()) {
+			// 候補表示された状態でのウインドウサイズを取得
+			auto wp = in->mWindowPositionPtr->GetPosition(); 
+			rcSelf = wp.rcNormalPosition;
+		}
+		else {
+			wnd->GetWindowRect(&rcSelf);
+		}
 		
 		// 新しい位置を算出(基準ウインドウの中央)
 		CSize offset(rcSelf.Width() / 2, rcSelf.Height() / 2);
 		CRect newRect(rc.CenterPoint() - offset, rcSelf.Size()); 
-
-		// 新しい位置がモニター内に収まっているかを判定する
-		if (IsRectInMonitors(newRect) == false) {
-			spdlog::warn(_T("out of monitor"));
-			return false;
-		}
 
 		newPt.x = newRect.left;
 		newPt.y = newRect.top;

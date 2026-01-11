@@ -144,10 +144,10 @@ void BasicSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)mIsTopMost);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)mIsHideOnInactive);
 
-	bool isShowOnActWin = (mShowPositionType == POSTYPE_MOUSECURSOR);
-	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), isShowOnActWin);
-	bool isShowOnCursor = (mShowPositionType == POSTYPE_ACTIVEWINDOWCENTER);
-	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), isShowOnCursor);
+	bool isShowOnCursor = (mShowPositionType == POSTYPE_MOUSECURSOR);
+	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), isShowOnCursor);
+	bool isShowOnActWin = (mShowPositionType == POSTYPE_ACTIVEWINDOWCENTER);
+	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), isShowOnActWin);
 
 	CDialog::OnOK();
 }
