@@ -70,6 +70,12 @@
     <Filter Include="python_module\key">
       <UniqueIdentifier>{a0fe76f9-c338-4583-9c8e-818bd998d62c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\mainwindow">
+      <UniqueIdentifier>{f4b736ef-e1b1-4d7b-b861-48b382c363b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\mainwindow\layout">
+      <UniqueIdentifier>{d1288620-eb1a-4ebc-8d07-f26473ba54c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -170,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp">
       <Filter>python_module\key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp">
+      <Filter>soyokaze\mainwindow\layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

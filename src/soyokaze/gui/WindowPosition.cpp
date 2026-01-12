@@ -98,6 +98,7 @@ bool WindowPosition::Restore(HWND hwnd)
 	return param.second == false;
 }
 
+// 指定したウインドウハンドルでインスタンスが持つ情報を更新する
 bool WindowPosition::Update(HWND hwnd)
 {
 	WINDOWPLACEMENT wp;

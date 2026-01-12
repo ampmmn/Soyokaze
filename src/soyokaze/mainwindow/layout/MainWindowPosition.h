@@ -10,8 +10,8 @@ public:
 	~MainWindowPosition();
 
 public:
-	bool UpdateExceptHeight(HWND hwnd);
-	bool SetPositionTemporary(HWND hwnd, const CRect& rc);
+	int GetHeight();
+	void SetHeight(int h);
 	bool SyncPosition(HWND hwnd);
 
 protected:
