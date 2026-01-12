@@ -24,7 +24,7 @@ using NormalPriviledgeProcessProxy = launcherapp::processproxy::NormalPriviledge
 
 struct Presentations::PImpl : public AppPreferenceListenerIF
 {
-	PImpl() : mExitEvent(false)
+	PImpl() : mExitEvent(true)
 	{
 		AppPreference::Get()->RegisterListener(this);
 	}
@@ -116,6 +116,8 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 		mLastUpdate = GetTickCount64();
 	};
 
+	mExitEvent.Reset();
+
 	if (mLastUpdate == 0) {
 		// 初回は同期で取得
 		threadFunc();
@@ -123,7 +125,6 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 	}
 
 	// 2回目以降は非同期で取得
-	mExitEvent.Reset();
 	std::thread th(threadFunc);
 	th.detach();
 
