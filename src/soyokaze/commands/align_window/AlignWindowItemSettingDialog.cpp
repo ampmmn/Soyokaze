@@ -38,7 +38,7 @@ struct ItemDialog::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 ItemDialog::ItemDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWITEMEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_ALIGNWINDOWITEMEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	UNREFERENCED_PARAMETER(parentWnd);
@@ -76,7 +76,7 @@ void ItemDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_APPLYALL, in->mParam.mIsApplyAll);
 }
 
-BEGIN_MESSAGE_MAP(ItemDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(ItemDialog, launcherapp::control::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_UPDATE, OnButtonUpdate)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)

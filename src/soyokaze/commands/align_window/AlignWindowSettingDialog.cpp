@@ -46,7 +46,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_ALIGNWINDOWEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_ALIGNWINDOWEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("AlignWindowSetting");
@@ -97,7 +97,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)

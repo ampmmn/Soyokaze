@@ -60,7 +60,7 @@ void PreviewDialog::PImpl::UpdateListCtrlItems()
 
 
 PreviewDialog::PreviewDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT_TEST, parentWnd), in(new PImpl)
+	launcherapp::control::SinglePageDialog(IDD_SIMPLEDICT_TEST, parentWnd), in(new PImpl)
 {
 	SetHelpPageId("SimpleDictPreview");
 }
@@ -93,7 +93,7 @@ void PreviewDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(PreviewDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(PreviewDialog, launcherapp::control::SinglePageDialog)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )

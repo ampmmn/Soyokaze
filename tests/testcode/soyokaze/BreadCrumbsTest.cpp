@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "gui/BreadCrumbs.h"
+#include "control/BreadCrumbs.h"
 
 TEST(BreadCrumbs, canInit)
 {

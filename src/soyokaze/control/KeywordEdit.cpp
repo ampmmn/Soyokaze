@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "KeywordEdit.h"
 #include "mainwindow/controller/MainWindowController.h"
-#include "gui/ColorSettings.h"
+#include "control/ColorSettings.h"
 #include <imm.h>
 
 #pragma comment(lib, "imm32.lib")

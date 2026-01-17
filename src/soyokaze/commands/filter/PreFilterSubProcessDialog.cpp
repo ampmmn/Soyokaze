@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "PreFilterSubProcessDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"
 #include "utility/Accessibility.h"
@@ -21,7 +21,7 @@ namespace commands {
 namespace filter {
 
 PreFilterSubProcessDialog::PreFilterSubProcessDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTER_SUBPROCESS, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_FILTER_SUBPROCESS, parentWnd),
 	mPreFilterCodePageIndex(0)
 {
 	SetHelpPageId("PreFilterSubprocess");
@@ -55,7 +55,7 @@ void PreFilterSubProcessDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(PreFilterSubProcessDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(PreFilterSubProcessDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_DIR, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonBrowseFile1Clicked)

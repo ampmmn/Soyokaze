@@ -1,13 +1,13 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 
 namespace launcherapp {
 namespace commands {
 namespace common {
 
-class OtherCommandDialog : public launcherapp::gui::SinglePageDialog
+class OtherCommandDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	struct Param {

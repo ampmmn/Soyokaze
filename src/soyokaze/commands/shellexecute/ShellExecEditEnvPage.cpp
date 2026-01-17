@@ -4,7 +4,7 @@
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "commands/shellexecute/ShellExecEnvValueEditDialog.h"
 #include "commands/shellexecute/ShellExecEnvBulkAddDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/ShortcutFile.h"

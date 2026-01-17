@@ -8,7 +8,7 @@
 |----|--------|
 |[app](app)|アプリケーションクラスまわり|
 |[commands](commands)|コマンドごとの処理|
-|[gui](gui)|複数の処理から参照されるGUI共通部品|
+|[control](control)|複数の処理から参照されるGUI共通部品|
 |[hotkey](hotkey)|ホットキー回りの処理|
 |[icon](icon)|アイコンリソースのロード処理など|
 |[logger](logger)|ロガー|

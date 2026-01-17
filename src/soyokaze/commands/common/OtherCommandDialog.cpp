@@ -20,7 +20,7 @@ namespace common {
 
 
 OtherCommandDialog::OtherCommandDialog(LPCSTR helpId, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_COMMAND, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_FILTER_AFTER_COMMAND, parentWnd),
 	mCommandSelIndex(-1)
 {
 	SetHelpPageId(helpId);
@@ -60,7 +60,7 @@ void OtherCommandDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(OtherCommandDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(OtherCommandDialog, launcherapp::control::SinglePageDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_AFTERCOMMAND, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()

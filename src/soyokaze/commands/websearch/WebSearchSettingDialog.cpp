@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "gui/KeywordEdit.h"
+#include "control/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/validation/CommandEditValidation.h"
@@ -80,7 +80,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_WEBSEARCHEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_WEBSEARCHEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("WebSearchSetting");
@@ -134,7 +134,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_MENU, in->mSiteMenuBtn);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_WM_CTLCOLOR()

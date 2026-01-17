@@ -19,7 +19,7 @@
     <Filter Include="utility">
       <UniqueIdentifier>{b929759c-ac3e-431c-8e00-292b3dbf5119}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gui">
+    <Filter Include="control">
       <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\shellexecute">
@@ -315,23 +315,23 @@
     <ClInclude Include="utility/AppProfile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="gui/FolderDialog.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control/FolderDialog.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui/KeywordEdit.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control/KeywordEdit.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui/KeywordManagerDialog.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control/KeywordManagerDialog.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui/SelectFilesDialog.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control/SelectFilesDialog.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="utility/IniFile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="gui\SettingPage.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\SettingPage.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="utility\ProcessPath.h">
       <Filter>utility</Filter>
@@ -393,8 +393,8 @@
     <ClInclude Include="commands\group\CommandParam.h">
       <Filter>commands\group</Filter>
     </ClInclude>
-    <ClInclude Include="gui\ModalComboBox.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\ModalComboBox.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands\common\ExpandFunctions.h">
       <Filter>commands\common</Filter>
@@ -453,8 +453,8 @@
     <ClInclude Include="commands\history\HistoryCommandProvider.h">
       <Filter>commands\history</Filter>
     </ClInclude>
-    <ClInclude Include="gui\SettingDialogBase.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\SettingDialogBase.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands\shellexecute\ShellExecCommandParam.h">
       <Filter>commands\shellexecute</Filter>
@@ -789,8 +789,8 @@
     <ClInclude Include="settingwindow\ShortcutSettingPage.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="gui/BreadCrumbs.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control/BreadCrumbs.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="hotkey\AppHotKey.h">
       <Filter>hotkey</Filter>
@@ -861,8 +861,8 @@
     <ClInclude Include="commands/core\CommandQueryItem.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="gui\SelectCommandTypeDialog.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\SelectCommandTypeDialog.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands/core/CommandFile.h">
       <Filter>commands\core</Filter>
@@ -927,8 +927,8 @@
     <ClInclude Include="app\Manual.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="gui\SinglePageDialog.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\SinglePageDialog.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="macros\core\MacroIF.h">
       <Filter>macros\core</Filter>
@@ -1059,8 +1059,8 @@
     <ClInclude Include="commands\watchpath\LocalPathTarget.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
-    <ClInclude Include="gui\DDXWrapper.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\DDXWrapper.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h">
       <Filter>commands\align_window</Filter>
@@ -1143,23 +1143,23 @@
     <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h">
       <Filter>commands\keysplitter</Filter>
     </ClInclude>
-    <ClInclude Include="gui\ColorScheme.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\ColorScheme.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui\ColorSettings.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\ColorSettings.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui\SystemColorScheme.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\SystemColorScheme.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="settingwindow\AppSettingPageColor.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="gui\ImageLabel.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\ImageLabel.h">
+      <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="gui\CustomColorScheme.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\CustomColorScheme.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands\common\UserCommandProviderBase.h">
       <Filter>commands\common</Filter>
@@ -1566,8 +1566,8 @@
     <ClInclude Include="mainwindow\layout\MainWindowPosition.h">
       <Filter>mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="gui\WindowPosition.h">
-      <Filter>gui</Filter>
+    <ClInclude Include="control\WindowPosition.h">
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h">
       <Filter>commands\winscp</Filter>
@@ -1838,11 +1838,11 @@
     <ClCompile Include="utility\ShortcutFile.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="gui/FolderDialog.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control/FolderDialog.cpp">
+      <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="gui/SelectFilesDialog.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control/SelectFilesDialog.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="utility/AppProfile.cpp">
       <Filter>utility</Filter>
@@ -1850,14 +1850,14 @@
     <ClCompile Include="utility/IniFile.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="gui/KeywordEdit.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control/KeywordEdit.cpp">
+      <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="gui/KeywordManagerDialog.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control/KeywordManagerDialog.cpp">
+      <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SettingPage.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\SettingPage.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="utility\ProcessPath.cpp">
       <Filter>utility</Filter>
@@ -1919,8 +1919,8 @@
     <ClCompile Include="commands\group\CommandParam.cpp">
       <Filter>commands\group</Filter>
     </ClCompile>
-    <ClCompile Include="gui\ModalComboBox.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\ModalComboBox.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\common\ExpandFunctions.cpp">
       <Filter>commands\common</Filter>
@@ -1976,8 +1976,8 @@
     <ClCompile Include="commands\history\HistoryCommandProvider.cpp">
       <Filter>commands\history</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SettingDialogBase.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\SettingDialogBase.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecCommandParam.cpp">
       <Filter>commands\shellexecute</Filter>
@@ -2300,8 +2300,8 @@
     <ClCompile Include="icon\CaptureIconLabel.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="gui/BreadCrumbs.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control/BreadCrumbs.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\AppHotKey.cpp">
       <Filter>hotkey</Filter>
@@ -2360,8 +2360,8 @@
     <ClCompile Include="commands/core\CommandQueryItem.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SelectCommandTypeDialog.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\SelectCommandTypeDialog.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandFile.cpp">
       <Filter>commands\core</Filter>
@@ -2426,8 +2426,8 @@
     <ClCompile Include="app\Manual.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SinglePageDialog.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\SinglePageDialog.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="macros\core\MacroRepository.cpp">
       <Filter>macros\core</Filter>
@@ -2534,8 +2534,8 @@
     <ClCompile Include="commands\watchpath\LocalPathTarget.cpp">
       <Filter>commands\watchpath</Filter>
     </ClCompile>
-    <ClCompile Include="gui\DDXWrapper.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\DDXWrapper.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp">
       <Filter>commands\align_window</Filter>
@@ -2618,20 +2618,20 @@
     <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp">
       <Filter>commands\keysplitter</Filter>
     </ClCompile>
-    <ClCompile Include="gui\ColorSettings.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\ColorSettings.cpp">
+      <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SystemColorScheme.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\SystemColorScheme.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPageColor.cpp">
       <Filter>settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="gui\ImageLabel.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\ImageLabel.cpp">
+      <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="gui\CustomColorScheme.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\CustomColorScheme.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
@@ -2990,8 +2990,8 @@
     <ClCompile Include="mainwindow\layout\MainWindowPosition.cpp">
       <Filter>mainwindow\layout</Filter>
     </ClCompile>
-    <ClCompile Include="gui\WindowPosition.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="control\WindowPosition.cpp">
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\winscp\RegistryWinScpSessionStorage.cpp">
       <Filter>commands\winscp</Filter>

@@ -6,7 +6,7 @@
 #include "commands/common/SubProcessDialog.h"
 #include "commands/common/OtherCommandDialog.h"
 #include "commands/common/CopyToClipboardDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "hotkey/CommandHotKeyDialog.h"
 #include "commands/validation/CommandEditValidation.h"
@@ -37,7 +37,7 @@ constexpr int ID_POSTFILTER_SUBPROCESS = POSTFILTER_SUBPROCESS + 1;
 constexpr int ID_POSTFILTER_CLIPBOARD = POSTFILTER_CLIPBOARD + 1;
 
 FilterEditDialog::FilterEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>())
 {
 	SetHelpPageId("FilterEdit");
@@ -91,7 +91,7 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE1, OnType1MenuBtnClicked)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE2, OnType2MenuBtnClicked)

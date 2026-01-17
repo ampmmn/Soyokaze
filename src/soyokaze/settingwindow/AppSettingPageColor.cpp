@@ -5,9 +5,9 @@
 #include "setting/Settings.h"
 #include "setting/AppPreference.h"
 #include "utility/Accessibility.h"
-#include "gui/ColorSettings.h"
-#include "gui/SystemColorScheme.h"
-#include "gui/ImageLabel.h"
+#include "control/ColorSettings.h"
+#include "control/SystemColorScheme.h"
+#include "control/ImageLabel.h"
 #include "resource.h"
 #include <tuple>
 #include <map>

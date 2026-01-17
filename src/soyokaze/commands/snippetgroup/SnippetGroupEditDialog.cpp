@@ -22,7 +22,7 @@ namespace snippetgroup {
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_SNIPPETGROUP, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_SNIPPETGROUP, parentWnd),
 	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("SnippetGroupEdit");
@@ -94,7 +94,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_EN_CHANGE(IDC_EDIT_NAME2, OnUpdateListItem)
 	ON_EN_CHANGE(IDC_EDIT_DESCRIPTION2, OnUpdateListItem)

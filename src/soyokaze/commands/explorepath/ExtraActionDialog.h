@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "commands/explorepath/ExplorePathExtraActionSettings.h"
 
 namespace launcherapp { namespace commands { namespace explorepath {
 
-class ExtraActionDialog : public launcherapp::gui::SinglePageDialog
+class ExtraActionDialog : public launcherapp::control::SinglePageDialog
 {
 	using Entry = ExtraActionSettings::Entry;
 

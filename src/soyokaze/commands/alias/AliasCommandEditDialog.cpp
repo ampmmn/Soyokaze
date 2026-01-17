@@ -23,7 +23,7 @@ using namespace launcherapp::commands::validation;
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_ALIAS_EDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_ALIAS_EDIT, parentWnd)
 {
 	SetHelpPageId("AliasEdit");
 }
@@ -67,7 +67,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_TEXT, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)

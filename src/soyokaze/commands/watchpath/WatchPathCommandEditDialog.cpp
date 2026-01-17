@@ -5,7 +5,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -21,7 +21,7 @@ namespace watchpath {
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_WATCHPATH, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_WATCHPATH, parentWnd)
 {
 	SetHelpPageId("WatchPathEdit");
 }
@@ -63,7 +63,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_DISABLE, mParam.mIsDisabled);
 }
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_BROWSEFILE1, OnButtonFileBrowse)

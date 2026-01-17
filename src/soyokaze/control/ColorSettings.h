@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/ColorScheme.h"
+#include "control/ColorScheme.h"
 
 class ColorSettings
 {

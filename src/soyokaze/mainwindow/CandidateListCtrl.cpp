@@ -5,7 +5,7 @@
 #include "setting/AppPreference.h"
 #include "utility/Accessibility.h"
 #include "utility/ScopedDCState.h"
-#include "gui/ColorSettings.h"
+#include "control/ColorSettings.h"
 #include "resource.h"
 #include <algorithm>
 #include <map>

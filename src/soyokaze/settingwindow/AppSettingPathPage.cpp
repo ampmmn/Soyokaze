@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingPathPage.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "setting/Settings.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"

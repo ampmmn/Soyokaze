@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 
-class KeywordManagerDialog : public launcherapp::gui::SinglePageDialog
+class KeywordManagerDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	KeywordManagerDialog();

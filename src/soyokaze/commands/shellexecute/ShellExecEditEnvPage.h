@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SettingPage.h"
+#include "control/SettingPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include <memory>
 

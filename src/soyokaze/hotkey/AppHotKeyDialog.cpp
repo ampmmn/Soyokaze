@@ -11,7 +11,7 @@
 
 
 AppHotKeyDialog::AppHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) : 
-	launcherapp::gui::SinglePageDialog(IDD_LAUNCHER_HOTKEY, parent),
+	launcherapp::control::SinglePageDialog(IDD_LAUNCHER_HOTKEY, parent),
 	mHotKeyAttr(attr),
 	mIsEnableHotKey(TRUE),
 	mIsEnableModifieHotKey(FALSE),
@@ -43,7 +43,7 @@ void AppHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_ON_RD, mIsEnableOnRD);
 }
 
-BEGIN_MESSAGE_MAP(AppHotKeyDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(AppHotKeyDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_SHIFT, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, OnUpdateStatus)

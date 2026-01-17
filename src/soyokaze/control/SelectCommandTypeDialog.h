@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <vector>
 
-class SelectCommandTypeDialog : public launcherapp::gui::SinglePageDialog
+class SelectCommandTypeDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	SelectCommandTypeDialog();

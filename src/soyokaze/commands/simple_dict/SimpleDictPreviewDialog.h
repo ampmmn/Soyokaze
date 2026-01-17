@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 
 #include "commands/simple_dict/SimpleDictionary.h"
@@ -9,7 +9,7 @@ namespace launcherapp {
 namespace commands {
 namespace simple_dict {
 
-class PreviewDialog : public launcherapp::gui::SinglePageDialog
+class PreviewDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	PreviewDialog(CWnd* parentWnd = nullptr);

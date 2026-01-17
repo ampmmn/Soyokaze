@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/keysplitter/KeySplitterModifierState.h"
 #include "commands/keysplitter/KeySplitterParam.h"
@@ -11,7 +11,7 @@ namespace launcherapp {
 namespace commands {
 namespace keysplitter {
 
-class ModifierDialog : public launcherapp::gui::SinglePageDialog
+class ModifierDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	ModifierDialog(CWnd* parentWnd = nullptr);

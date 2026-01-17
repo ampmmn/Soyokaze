@@ -43,7 +43,7 @@ BuiltinEditDialog::BuiltinEditDialog(
 	bool canEditConfirm,
 	CWnd* parentWnd
 ) : 
-	launcherapp::gui::SinglePageDialog(IDD_BUILTINEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_BUILTINEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("BuiltinCommandEdit");
@@ -102,7 +102,7 @@ void BuiltinEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
 }
 
-BEGIN_MESSAGE_MAP(BuiltinEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(BuiltinEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
 	ON_WM_CTLCOLOR()

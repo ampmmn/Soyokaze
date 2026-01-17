@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "KeySplitterModifierDialog.h"
-#include "gui/DDXWrapper.h"
+#include "control/DDXWrapper.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -18,7 +18,7 @@ namespace commands {
 namespace keysplitter {
 
 ModifierDialog::ModifierDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_KEYSPLITTERMODIFIER, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_KEYSPLITTERMODIFIER, parentWnd)
 {
 	SetHelpPageId("KeySplitterEdit");
 }
@@ -65,7 +65,7 @@ void ModifierDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_WIN, mState.mIsPressWin);
 }
 
-BEGIN_MESSAGE_MAP(ModifierDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(ModifierDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_SHIFT, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, OnUpdateStatus)

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 
 namespace launcherapp { namespace commands { namespace shellexecute {
 
 // 環境変数を追加・編集する画面
-class ValueEditDialog : public launcherapp::gui::SinglePageDialog
+class ValueEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	ValueEditDialog(CWnd* parentWnd = nullptr);

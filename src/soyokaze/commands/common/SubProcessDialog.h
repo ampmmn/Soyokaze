@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -12,7 +12,7 @@ namespace commands {
 namespace common {
 
 
-class SubProcessDialog : public launcherapp::gui::SinglePageDialog
+class SubProcessDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	struct Param {

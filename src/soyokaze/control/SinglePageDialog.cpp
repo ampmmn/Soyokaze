@@ -8,7 +8,7 @@
 #endif
 
 namespace launcherapp {
-namespace gui {
+namespace control {
 
 
 SinglePageDialog::SinglePageDialog(UINT resId, CWnd* parent) : CDialogEx(resId, parent),

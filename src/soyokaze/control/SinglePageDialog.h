@@ -2,10 +2,10 @@
 #pragma once
 
 #include "utility/TopMostMask.h"
-#include "gui/DDXWrapper.h"
+#include "control/DDXWrapper.h"
 
 namespace launcherapp {
-namespace gui {
+namespace control {
 
 class SinglePageDialog : public CDialogEx
 {

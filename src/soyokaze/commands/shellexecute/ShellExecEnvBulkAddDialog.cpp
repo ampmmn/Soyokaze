@@ -10,7 +10,7 @@
 namespace launcherapp { namespace commands { namespace shellexecute {
 	
 BulkAddDialog::BulkAddDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_SHELLEXEC_ENVBULKADD, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_SHELLEXEC_ENVBULKADD, parentWnd)
 {
 	SetHelpPageId("ShellExecEnvBulkAdd");
 }
@@ -54,7 +54,7 @@ void BulkAddDialog::DoDataExchange(CDataExchange* pDX)
 
 #pragma warning( push )
 
-BEGIN_MESSAGE_MAP(BulkAddDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(BulkAddDialog, launcherapp::control::SinglePageDialog)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
