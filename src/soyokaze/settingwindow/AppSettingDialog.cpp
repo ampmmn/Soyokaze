@@ -6,7 +6,7 @@
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
 #include "app/Manual.h"
-#include "gui/BreadCrumbs.h"
+#include "control/BreadCrumbs.h"
 #include "resource.h"
 #include <algorithm>
 #include <vector>

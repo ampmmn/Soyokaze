@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/WindowPosition.h"
+#include "control/WindowPosition.h"
 
 class MainWindowPosition : public WindowPosition
 {

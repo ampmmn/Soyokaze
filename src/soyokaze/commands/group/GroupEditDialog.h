@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/group/CommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -13,7 +13,7 @@ namespace group {
 
 struct GroupItem;
 
-class GroupEditDialog : public launcherapp::gui::SinglePageDialog
+class GroupEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	GroupEditDialog(CWnd* parentWnd = nullptr);

@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ShellExecEnvValueEditDialog.h"
 #include "app/Manual.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -14,7 +14,7 @@
 namespace launcherapp { namespace commands { namespace shellexecute {
 
 ValueEditDialog::ValueEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_SHELLEXEC_ENVEDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_SHELLEXEC_ENVEDIT, parentWnd)
 {
 	SetHelpPageId("ShellExecEnvEdit");
 }
@@ -92,7 +92,7 @@ void ValueEditDialog::DoDataExchange(CDataExchange* pDX)
 
 #pragma warning( push )
 
-BEGIN_MESSAGE_MAP(ValueEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(ValueEditDialog, launcherapp::control::SinglePageDialog)
 	ON_WM_CTLCOLOR()
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_VALUE, OnUpdateStatus)

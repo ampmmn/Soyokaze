@@ -1,15 +1,13 @@
 #pragma once
 
-#include "gui/ColorScheme.h"
+#include "control/ColorScheme.h"
 #include <memory>
 
-class CustomColorScheme : public ColorSchemeIF
+class SystemColorScheme : public ColorSchemeIF
 {
 public:
-	CustomColorScheme();
-	~CustomColorScheme() override;
-
-	void Reload();
+	SystemColorScheme();
+	~SystemColorScheme() override;
 
 // ウインドウ
 	// ウインドウの背景ブラシ

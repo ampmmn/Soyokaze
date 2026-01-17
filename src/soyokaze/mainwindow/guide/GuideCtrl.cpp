@@ -3,7 +3,7 @@
 #include "commands/core/CommandIF.h"
 #include "actions/core/Action.h"
 #include "mainwindow/LauncherMainWindowIF.h"
-#include "gui/ColorSettings.h"
+#include "control/ColorSettings.h"
 #include "utility/ATLImageDC.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/ExtraActionHotKeySettings.h"

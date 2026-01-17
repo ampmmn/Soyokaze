@@ -4,7 +4,7 @@
 #include "AppSettingPageOneNote.h"
 #include "commands/onenote/OneNoteCommandParam.h"
 #include "setting/Settings.h"
-#include "gui\DDXWrapper.h"
+#include "control\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 

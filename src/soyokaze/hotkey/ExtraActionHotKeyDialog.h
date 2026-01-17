@@ -1,11 +1,11 @@
 // あ
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "hotkey/HotKeyAttribute.h"
 
 // 
-class ExtraActionHotKeyDialog : public launcherapp::gui::SinglePageDialog
+class ExtraActionHotKeyDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	ExtraActionHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parentWnd = nullptr);

@@ -17,7 +17,7 @@ enum {
 };
 
 CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
 	mHotKeyType(TYPE_LOCAL), mHotKeyAttr(attr)
 {
 	SetHelpPageId("HotKey");
@@ -66,7 +66,7 @@ void CommandHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 }
 
-BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(CommandHotKeyDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_HOTKEY, UpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)

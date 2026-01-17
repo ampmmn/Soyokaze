@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -12,7 +12,7 @@ namespace commands {
 namespace filter {
 
 
-class FilterEditDialog : public launcherapp::gui::SinglePageDialog
+class FilterEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	FilterEditDialog(CWnd* parentWnd = nullptr);

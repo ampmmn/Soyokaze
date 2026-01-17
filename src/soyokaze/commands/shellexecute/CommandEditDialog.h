@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "gui/SettingPage.h"
+#include "control/SettingPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 
 class IconLabel;

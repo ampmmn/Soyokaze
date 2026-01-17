@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "commands/watchpath/WatchPathCommandParam.h"
 #include <memory>
 
@@ -10,7 +10,7 @@ namespace launcherapp {
 namespace commands {
 namespace watchpath {
 
-class CommandEditDialog : public launcherapp::gui::SinglePageDialog
+class CommandEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);

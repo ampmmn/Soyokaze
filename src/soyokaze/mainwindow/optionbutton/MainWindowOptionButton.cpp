@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MainWindowOptionButton.h"
-#include "gui/ColorSettings.h"
+#include "control/ColorSettings.h"
 #include "icon/IconLoader.h"
 #include "utility/ScopedDCState.h"
 #include "resource.h"

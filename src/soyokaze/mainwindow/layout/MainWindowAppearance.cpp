@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MainWindowAppearance.h"
 #include "setting/AppPreference.h"
-#include "gui/ColorSettings.h"
+#include "control/ColorSettings.h"
 #include "icon/IconLabel.h"
 #include "mainwindow/layout/WindowTransparency.h"
 #include "utility/Accessibility.h"

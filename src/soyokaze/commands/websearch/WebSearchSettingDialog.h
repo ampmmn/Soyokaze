@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/websearch/WebSearchCommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -10,7 +10,7 @@ namespace commands {
 namespace websearch {
 
 // 
-class SettingDialog : public launcherapp::gui::SinglePageDialog
+class SettingDialog : public launcherapp::control::SinglePageDialog
 {
 protected:
 	using Param = CommandParam; 

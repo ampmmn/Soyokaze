@@ -3,7 +3,7 @@
 #include "SettingDialogBase.h"
 #include "SettingPage.h"
 #include "app/Manual.h"
-#include "gui/BreadCrumbs.h"
+#include "control/BreadCrumbs.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
 #include "resource.h"

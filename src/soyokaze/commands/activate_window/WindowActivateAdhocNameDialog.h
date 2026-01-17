@@ -1,12 +1,12 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
-class AdhocNameDialog : public launcherapp::gui::SinglePageDialog
+class AdhocNameDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	AdhocNameDialog(CWnd* parentWnd = nullptr);

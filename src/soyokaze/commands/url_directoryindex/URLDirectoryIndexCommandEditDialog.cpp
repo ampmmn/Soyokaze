@@ -23,7 +23,7 @@ namespace commands {
 namespace url_directoryindex {
 
 URLDirectoryIndexCommandEditDialog::URLDirectoryIndexCommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_URLDIRECTORYINDEXEDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_URLDIRECTORYINDEXEDIT, parentWnd)
 {
 	SetHelpPageId("DirectoryIndexEdit");
 }
@@ -71,7 +71,7 @@ void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(URLDirectoryIndexCommandEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(URLDirectoryIndexCommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PROXYHOST, OnUpdateStatus)

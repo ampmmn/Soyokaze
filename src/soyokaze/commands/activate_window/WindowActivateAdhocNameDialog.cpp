@@ -13,7 +13,7 @@ namespace activate_window {
 
 
 AdhocNameDialog::AdhocNameDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEADHOCNAME, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_WINDOWACTIVATEADHOCNAME, parentWnd)
 {
 	SetHelpPageId("ActivateWindowAdhocName");
 }
@@ -34,7 +34,7 @@ void AdhocNameDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, mName);
 }
 
-BEGIN_MESSAGE_MAP(AdhocNameDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(AdhocNameDialog, launcherapp::control::SinglePageDialog)
 END_MESSAGE_MAP()
 
 void AdhocNameDialog::OnOK()

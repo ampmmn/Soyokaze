@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
 
@@ -8,7 +8,7 @@ namespace launcherapp {
 namespace commands {
 namespace filter {
 
-class PreFilterSubProcessDialog : public launcherapp::gui::SinglePageDialog
+class PreFilterSubProcessDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	PreFilterSubProcessDialog(CWnd* parentWnd = nullptr);

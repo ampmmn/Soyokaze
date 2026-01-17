@@ -1,13 +1,13 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "commands/filter/FilterCommandParam.h"
 
 namespace launcherapp {
 namespace commands {
 namespace filter {
 
-class PreFilterConstantDialog : public launcherapp::gui::SinglePageDialog
+class PreFilterConstantDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	PreFilterConstantDialog(CWnd* parentWnd = nullptr);

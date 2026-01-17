@@ -5,7 +5,7 @@
 #include "commands/bookmarks/BookmarkCommandParam.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
-#include "gui\DDXWrapper.h"
+#include "control\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 

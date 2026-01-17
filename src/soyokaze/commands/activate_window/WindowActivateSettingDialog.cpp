@@ -47,7 +47,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_WINDOWACTIVATEEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_WINDOWACTIVATEEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("ActivateWindowSetting");
@@ -99,7 +99,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_HOTKEYONLY, in->mParam.mIsHotKeyOnly);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)

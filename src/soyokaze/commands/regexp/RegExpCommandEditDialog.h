@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/regexp/RegExpCommandParam.h"
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 
 #include <memory>
 
@@ -12,7 +12,7 @@ namespace commands {
 namespace regexp {
 
 
-class CommandEditDialog : public launcherapp::gui::SinglePageDialog
+class CommandEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);

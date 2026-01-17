@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 
 namespace launcherapp { namespace commands { namespace shellexecute {
 
 // 環境変数一括追加画面
-class BulkAddDialog : public launcherapp::gui::SinglePageDialog
+class BulkAddDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	using ItemList = std::vector<std::pair<CString, CString> >;

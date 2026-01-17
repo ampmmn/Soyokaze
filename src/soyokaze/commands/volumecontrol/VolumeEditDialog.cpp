@@ -6,7 +6,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
-#include "gui/DDXWrapper.h"
+#include "control/DDXWrapper.h"
 #include "resource.h"
 
 namespace launcherapp {
@@ -48,7 +48,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_VOLUMEEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_VOLUMEEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("VolumeSetting");
@@ -97,7 +97,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_VOLUME, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_VOLUME, OnUpdateStatus)

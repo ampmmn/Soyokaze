@@ -17,7 +17,7 @@ namespace launcherapp { namespace commands { namespace explorepath {
 
 
 ExtraActionDialog::ExtraActionDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_EXTRAACTION_FOR_EXPLOREPATH, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_EXTRAACTION_FOR_EXPLOREPATH, parentWnd)
 {
 	SetHelpPageId("ExtraActionForExplorePath");
 }
@@ -43,7 +43,7 @@ void ExtraActionDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_TARGET, mTargetIdx);
 }
 
-BEGIN_MESSAGE_MAP(ExtraActionDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(ExtraActionDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_LABEL, OnUpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_COMMAND, OnUpdateStatus)
 	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)

@@ -14,7 +14,7 @@ namespace commands {
 namespace filter {
 
 PreFilterConstantDialog::PreFilterConstantDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTER_PRE_CONSTANT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_FILTER_PRE_CONSTANT, parentWnd)
 {
 	SetHelpPageId("PreFilterConstant");
 }
@@ -43,7 +43,7 @@ void PreFilterConstantDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(PreFilterConstantDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(PreFilterConstantDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_VALUE, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()

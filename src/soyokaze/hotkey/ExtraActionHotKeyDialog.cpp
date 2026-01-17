@@ -11,7 +11,7 @@
 #endif
 
 ExtraActionHotKeyDialog::ExtraActionHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_HOTKEY_EXTRAACTION, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_HOTKEY_EXTRAACTION, parentWnd),
 	mHotKeyAttr(attr)
 {
 	SetHelpPageId("ExtraActionHotKey");
@@ -34,7 +34,7 @@ void ExtraActionHotKeyDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 }
 
-BEGIN_MESSAGE_MAP(ExtraActionHotKeyDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(ExtraActionHotKeyDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_SHIFT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, UpdateStatus)
 	ON_COMMAND(IDC_CHECK_CTRL, UpdateStatus)

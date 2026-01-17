@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "commands/alias/AliasCommandParam.h"
 
 #include <memory>
@@ -12,7 +12,7 @@ namespace commands {
 namespace alias {
 
 
-class CommandEditDialog : public launcherapp::gui::SinglePageDialog
+class CommandEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);

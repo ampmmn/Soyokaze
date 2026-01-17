@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
-#include "gui/KeywordManagerDialog.h"
-#include "gui/KeywordEdit.h"
+#include "control/KeywordManagerDialog.h"
+#include "control/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
@@ -194,7 +194,7 @@ bool KeywordManagerDialog::PImpl::IsDeletable()
 ////////////////////////////////////////////////////////////////////////////////
 
 KeywordManagerDialog::KeywordManagerDialog() : 
-	launcherapp::gui::SinglePageDialog(IDD_KEYWORDMANAGER),
+	launcherapp::control::SinglePageDialog(IDD_KEYWORDMANAGER),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("KeywordManager");
@@ -227,7 +227,7 @@ void KeywordManagerDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILTER, OnEditFilterChanged)
 	ON_COMMAND(IDC_BUTTON_NEW, OnButtonNew)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SubProcessDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"
@@ -22,7 +22,7 @@ namespace commands {
 namespace common {
 
 SubProcessDialog::SubProcessDialog(LPCSTR helpId, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_SUBPROCESS, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_FILTER_AFTER_SUBPROCESS, parentWnd)
 {
 	SetHelpPageId(helpId);
 }
@@ -62,7 +62,7 @@ void SubProcessDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SubProcessDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SubProcessDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSEDIR, OnSelectWorkDir)
 	ON_EN_CHANGE(IDC_EDIT_PATH2, OnUpdateStatus)
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnPathMenuBtnClicked)

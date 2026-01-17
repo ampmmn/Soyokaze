@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include "commands/py_extension/PyExtensionCommandParam.h"
 
 #include <memory>
@@ -10,7 +10,7 @@ class IconLabel;
 namespace launcherapp { namespace commands { namespace py_extension {
 
 
-class CommandEditDialog : public launcherapp::gui::SinglePageDialog
+class CommandEditDialog : public launcherapp::control::SinglePageDialog
 {
 public:
 	CommandEditDialog(CWnd* parentWnd = nullptr);

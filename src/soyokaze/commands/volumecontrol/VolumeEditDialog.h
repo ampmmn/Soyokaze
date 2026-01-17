@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/volumecontrol/VolumeCommandParam.h"
 #include "hotkey/CommandHotKeyDialog.h"
@@ -10,7 +10,7 @@ namespace commands {
 namespace volumecontrol {
 
 // 
-class SettingDialog : public launcherapp::gui::SinglePageDialog
+class SettingDialog : public launcherapp::control::SinglePageDialog
 {
 protected:
 	using Param = CommandParam; 

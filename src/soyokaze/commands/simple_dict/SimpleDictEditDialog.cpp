@@ -6,7 +6,7 @@
 #include "commands/common/SubProcessDialog.h"
 #include "commands/common/OtherCommandDialog.h"
 #include "commands/common/CopyToClipboardDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
@@ -59,7 +59,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
+	launcherapp::control::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
 {
 	SetHelpPageId("SimpleDictEdit");
 	in->mIsTestPassed = false;
@@ -121,7 +121,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateName)
 	ON_EN_CHANGE(IDC_EDIT_FILEPATH, OnUpdateCondition)
 	ON_EN_CHANGE(IDC_EDIT_SHEETNAME, OnUpdateCondition)

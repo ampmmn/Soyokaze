@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ClipboardPreviewWindow.h"
 #include "SharedHwnd.h"
-#include "gui/WindowPosition.h"
+#include "control/WindowPosition.h"
 #include "resource.h"
 
 #ifdef _DEBUG

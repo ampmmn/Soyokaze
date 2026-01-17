@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/SinglePageDialog.h"
+#include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/align_window/AlignWindowCommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -10,7 +10,7 @@ namespace commands {
 namespace align_window {
 
 // 
-class ItemDialog : public launcherapp::gui::SinglePageDialog
+class ItemDialog : public launcherapp::control::SinglePageDialog
 {
 protected:
 	using Param = CommandParam::ITEM; 

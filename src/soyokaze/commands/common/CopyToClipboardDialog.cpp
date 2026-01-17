@@ -15,7 +15,7 @@ namespace common {
 
 
 CopyToClipboardDialog::CopyToClipboardDialog(LPCSTR helpId, CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_FILTER_AFTER_CLIPBOARD, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_FILTER_AFTER_CLIPBOARD, parentWnd)
 {
 	SetHelpPageId(helpId);
 }
@@ -50,7 +50,7 @@ void CopyToClipboardDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(CopyToClipboardDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(CopyToClipboardDialog, launcherapp::control::SinglePageDialog)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )

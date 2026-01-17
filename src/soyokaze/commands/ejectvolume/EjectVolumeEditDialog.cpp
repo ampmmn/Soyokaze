@@ -42,7 +42,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_EJECTVOLUMEEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_EJECTVOLUMEEDIT, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("EjectVolumeSetting");
@@ -90,7 +90,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_VOLUME, OnUpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_DRIVELETTER, OnUpdateStatus)

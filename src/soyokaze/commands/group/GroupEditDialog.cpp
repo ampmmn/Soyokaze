@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GroupEditDialog.h"
 #include "hotkey/CommandHotKeyDialog.h"
-#include "gui/ModalComboBox.h"
+#include "control/ModalComboBox.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
@@ -21,7 +21,7 @@ namespace group {
 
 
 GroupEditDialog::GroupEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_GROUP, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_GROUP, parentWnd),
 	mCommandListPtr(nullptr),
 	mCommandSelectBox(std::make_unique<ModalComboBox>())
 {
@@ -70,7 +70,7 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_COMMAND(IDC_CHECK_REPEAT, OnUpdate)
 	ON_COMMAND(IDC_CHECK_CONFIRM, OnUpdate)

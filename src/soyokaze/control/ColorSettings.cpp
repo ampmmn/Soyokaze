@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ColorSettings.h"
-#include "gui/SystemColorScheme.h"
-#include "gui/CustomColorScheme.h"
+#include "control/SystemColorScheme.h"
+#include "control/CustomColorScheme.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 

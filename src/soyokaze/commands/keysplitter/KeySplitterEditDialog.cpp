@@ -15,7 +15,7 @@ namespace commands {
 namespace keysplitter {
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_KEYSPLITTER, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_KEYSPLITTER, parentWnd),
 	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("KeySplitterEdit");
@@ -56,7 +56,7 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)

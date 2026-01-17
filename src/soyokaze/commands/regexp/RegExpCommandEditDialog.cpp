@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "RegExpCommandEditDialog.h"
-#include "gui/FolderDialog.h"
+#include "control/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
@@ -46,7 +46,7 @@ struct CommandEditDialog::PImpl
 };
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::gui::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
 	in(new PImpl)
 {
 	SetHelpPageId("RegExpEdit");
@@ -93,7 +93,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::gui::SinglePageDialog)
+BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATTERNSTR, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
