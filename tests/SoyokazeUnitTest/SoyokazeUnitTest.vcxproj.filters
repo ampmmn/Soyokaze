@@ -180,6 +180,9 @@
     <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp">
       <Filter>soyokaze\mainwindow\layout</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
