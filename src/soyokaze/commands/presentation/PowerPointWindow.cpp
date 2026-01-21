@@ -59,23 +59,29 @@ static bool GetActivePowerPointWindow(HWND& hwnd)
 {
 	std::string dst;
 
-	json json_req;
-	json_req["command"] = "getactivepointerpointwindow";
+	try {
+		json json_req;
+		json_req["command"] = "getactivepointerpointwindow";
 
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 
-	// リクエストを送信する
-	json json_res;
-	if (proxy->SendRequest(json_req, json_res) == false) {
-		return false;
+		// リクエストを送信する
+		json json_res;
+		if (proxy->SendRequest(json_req, json_res) == false) {
+			return false;
+		}
+		
+		if (json_res["result"] == false) {
+			return false;
+		}
+
+		hwnd = (HWND)json_res["hwnd"].get<uint64_t>();
+		return true;
 	}
-	
-	if (json_res["result"] == false) {
-		return false;
+	catch (const json::exception& e) {
+		spdlog::error("[GetActivePowerPointWindow] Unexpected exception occurred. {}", e.what());
 	}
-
-	hwnd = (HWND)json_res["hwnd"].get<uint64_t>();
-	return true;
+	return false;
 }
 
 
@@ -96,19 +102,25 @@ bool PowerPointWindow::GetAcitveWindow(std::unique_ptr<PowerPointWindow>& ptr)
 
 bool PowerPointWindow::GoToSlide(int16_t pageIndex)
 {
-	json json_req;
-	json_req["command"] = "gotoslide";
-	json_req["pageIndex"] = pageIndex;
+	try {
+		json json_req;
+		json_req["command"] = "gotoslide";
+		json_req["pageIndex"] = pageIndex;
 
-	auto proxy = NormalPriviledgeProcessProxy::GetInstance();
+		auto proxy = NormalPriviledgeProcessProxy::GetInstance();
 
-	// リクエストを送信する
-	json json_res;
-	if (proxy->SendRequest(json_req, json_res) == false) {
-		return false;
+		// リクエストを送信する
+		json json_res;
+		if (proxy->SendRequest(json_req, json_res) == false) {
+			return false;
+		}
+		
+		return json_res["result"];
 	}
-	
-	return json_res["result"];
+	catch (const json::exception& e) {
+		spdlog::error("[PowerPointWindow::GoToSlide] Unexpected exception occurred. {}", e.what());
+	}
+	return false;
 }
 
 }}} // end of namespace launcherapp::commands::presentation
