@@ -219,8 +219,10 @@ void ExecuteHistory::Save()
 			DeleteFile(filePathTmp);
 		}
 	}
-	catch(...) {
-		spdlog::warn(_T("Failed to save history {}"), (LPCTSTR)in->GetFilePath());
+	catch(const json::exception& e) {
+		CString what;
+		UTF2UTF(e.what(), what);
+		spdlog::warn(_T("Failed to save history {0}: {1}"), (LPCTSTR)in->GetFilePath(), (LPCTSTR)what);
 	}
 }
 
@@ -273,7 +275,10 @@ void ExecuteHistory::Load()
 		in->mItemMap.swap(tmpMap);
 		in->mIsLoaded = true;
 	}
-	catch(...) {
+	catch(const json::exception& e) {
+		CString what;
+		UTF2UTF(e.what(), what);
+		spdlog::error(_T("Failed to load history {0}: {1}"), (LPCTSTR)in->GetFilePath(), (LPCTSTR)what);
 		return ;
 	}
 

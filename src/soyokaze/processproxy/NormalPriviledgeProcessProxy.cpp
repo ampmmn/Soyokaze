@@ -238,8 +238,8 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 		json_res = json::parse(response_str);
 		return true;
 	}
-	catch(...) {
-		spdlog::error("Failed to parse response json");
+	catch(const json::exception& e) {
+		spdlog::error("Failed to parse response json: {}", e.what());
 		return false;
 	}
 }
@@ -288,8 +288,8 @@ bool NormalPriviledgeProcessProxy::SendRequest(nlohmann::json& json_req, nlohman
 		}
 		return true;
 	}
-	catch(...) {
-		spdlog::error("[NormalPriviledgeProcessProxy::SendRequest] Unexpected exception occurred.");
+	catch(const json::exception& e) {
+		spdlog::error("[NormalPriviledgeProcessProxy::SendRequest] Unexpected exception occurred. {}", e.what());
 		return false;
 	}
 

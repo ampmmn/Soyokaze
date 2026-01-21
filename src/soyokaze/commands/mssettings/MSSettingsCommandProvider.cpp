@@ -117,8 +117,10 @@ void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>
 			cmd->Release();
 		}
 	}
-	catch(...) {
-		spdlog::error(_T("Failed to parse json. {}"), (LPCTSTR)settingsFilePath);
+	catch(const json::exception& e) {
+		CString what;
+		UTF2UTF(e.what(), what);
+		spdlog::error(_T("Failed to parse json. {0}: {1}"), (LPCTSTR)settingsFilePath, (LPCTSTR)what);
 		return;
 	}
 }

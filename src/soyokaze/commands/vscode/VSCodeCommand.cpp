@@ -91,8 +91,10 @@ struct VSCodeCommand::PImpl
 			std::lock_guard<std::mutex> lock(mMutex);
 			mCommands.swap(commands);
 		}
-		catch(std::exception&) {
-			spdlog::warn(_T("failed to parse state.vcsdb:{}"), (LPCTSTR)dbPath);
+		catch(const json::exception& e) {
+			CString what;
+			UTF2UTF(e.what(), what);
+			spdlog::warn(_T("failed to parse state.vcsdb:{0}, {1}"), (LPCTSTR)dbPath, (LPCTSTR)what);
 			return false;
 		}
 

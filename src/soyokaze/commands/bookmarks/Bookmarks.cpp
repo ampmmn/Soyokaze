@@ -90,8 +90,10 @@ bool Bookmarks::PImpl::LoadBookmarks()
 			parseJSONObject(it.value(), "", tmp);
 		}
 	}
-	catch(std::exception&) {
-		spdlog::warn(_T("failed to parse bookmark path:{}"), (LPCTSTR)mFilePath);
+	catch(const json::exception& e) {
+		CString what;
+		UTF2UTF(e.what(), what);
+		spdlog::warn(_T("failed to parse bookmark path:{0}, {1}"), (LPCTSTR)mFilePath, (LPCTSTR)what);
 		return false;
 	}
 
