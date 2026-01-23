@@ -617,6 +617,7 @@
     <ClInclude Include="commands\winscp\WinScpCommandParam.h" />
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h" />
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
+    <ClInclude Include="control\webbrowser\InternalBrowser.h" />
     <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h" />
@@ -1127,6 +1128,7 @@
     <ClCompile Include="commands\winscp\WinScpCommand.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandParam.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />
+    <ClCompile Include="control\webbrowser\InternalBrowser.cpp" />
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\EdgeEnvironment.cpp" />
@@ -1410,6 +1412,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README.md" />
+    <None Include="packages.config" />
     <None Include="res\CAPTURE.cur" />
     <None Include="res\Soyokaze.rc2" />
   </ItemGroup>
@@ -1420,5 +1423,14 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3650.58\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3650.58\build\native\Microsoft.Web.WebView2.targets')" />
+    <Import Project="..\packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.3650.58\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.3650.58\build\native\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets'))" />
+  </Target>
 </Project>

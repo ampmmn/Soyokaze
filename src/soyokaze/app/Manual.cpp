@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Manual.h"
 #include "utility/Path.h"
-#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
+#include "control/webbrowser/InternalBrowser.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
 
@@ -9,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
+using InternalBrowser = soyokaze::control::webbrowser::InternalBrowser;
 
 namespace launcherapp {
 namespace app {
@@ -17,6 +18,7 @@ namespace app {
 struct Manual::PImpl
 {
 	std::map<String, CString> mPageMapping;
+	std::unique_ptr<InternalBrowser> mDocWindow;
 };
 
 
@@ -70,11 +72,14 @@ bool Manual::Navigate(const char* pageId)
 	uri.Format(L"file:///%s/%s.html", (LPCWSTR)dirPath, (LPCWSTR)pagePath);
 	uri.Replace(L'\\', L'/');
 
-	auto brwsEnv = ConfiguredBrowserEnvironment::GetInstance();
-	if (brwsEnv->OpenURL(uri) == false) {
-		SPDLOG_WARN(L"Failed to launch help: {}", (LPCWSTR)uri);
-		return false;
+	if (in->mDocWindow.get() == nullptr || in->mDocWindow->GetSafeHwnd() == nullptr) {
+		CRect rect(0, 0, 800, 600);
+		in->mDocWindow.reset(new InternalBrowser());
+		int style = WS_VISIBLE | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
+		in->mDocWindow->Create(nullptr, style, rect, 0);
 	}
+
+	in->mDocWindow->Open(uri);
 	return true;
 }
 
