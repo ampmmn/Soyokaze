@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "InternalBrowser.h"
 #include "control/WindowPosition.h"
+#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include <winrt/base.h>
 #include <wrl.h>
 #include <wil/com.h>
@@ -14,6 +15,7 @@
 #endif
 
 using namespace Microsoft::WRL;
+using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 namespace soyokaze {
 namespace control {
@@ -40,6 +42,45 @@ static bool RegigsterWindowClass()
 	}
 	return true;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+class NavigationStartingHandler : 
+	public RuntimeClass<RuntimeClassFlags<ClassicCom>, ICoreWebView2NavigationStartingEventHandler>
+{
+public:
+    NavigationStartingHandler() {}
+
+    HRESULT STDMETHODCALLTYPE Invoke(
+        ICoreWebView2* sender,
+        ICoreWebView2NavigationStartingEventArgs* args) override
+    {
+        wil::unique_cotaskmem_string uri;
+        args->get_Uri(&uri);
+
+        std::wstring url(uri.get());
+
+				// 外部サイトは自アプリで開かず、ブラウザで開く
+        if (url.find(L"http", 0) == 0) {
+            args->put_Cancel(TRUE);
+
+						// アプリ設定の 外部ツール > Webブラウザ の設定でURLを開く
+						auto brwsEnv = ConfiguredBrowserEnvironment::GetInstance();
+						brwsEnv->OpenURL(url.c_str());
+        }
+        return S_OK;
+    }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 // InternalBrowser
 
@@ -183,11 +224,24 @@ void InternalBrowser::InitializeWebview()
 					RECT bounds;
 					GetClientRect(&bounds);
 					in->mWebViewCtrl->put_Bounds(bounds);
-					// 開発者ツールを無効化する
 					wil::com_ptr<ICoreWebView2Settings> settings;
 					in->mWebView->get_Settings(&settings);
-					settings->put_AreDevToolsEnabled(FALSE);
 
+					// FIXME: 現在はヘルプウインドウの用途に限定しているため、下記の設定としているが、
+					// 多用途でこのクラスを使いまわす場合は、機能を適宜整理すること
+
+					// 不要な機能を無効化する
+					settings->put_AreDevToolsEnabled(FALSE);
+					settings->put_AreHostObjectsAllowed(FALSE);
+					settings->put_IsWebMessageEnabled(FALSE);
+					settings->put_AreDefaultScriptDialogsEnabled(FALSE);
+
+					// 表示するURLを監視する(外部接続を許可しない)
+					EventRegistrationToken token;
+					auto handler = Microsoft::WRL::Make<NavigationStartingHandler>();
+					in->mWebView->add_NavigationStarting(handler.Get(), &token);
+
+					// URL表示のためのキュー処理
 					::PostMessage(in->mSelfWindow, WM_APP+1, 0, 0);
 					return S_OK;
 				}).Get());
