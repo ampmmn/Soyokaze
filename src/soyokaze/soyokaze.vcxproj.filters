@@ -1836,6 +1836,9 @@
     <ClInclude Include="control\webbrowser\InternalBrowser.h">
       <Filter>control\webbrowser</Filter>
     </ClInclude>
+    <ClInclude Include="app\ManualWindow.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3233,6 +3236,9 @@
     <ClCompile Include="control\webbrowser\InternalBrowser.cpp">
       <Filter>control\webbrowser</Filter>
     </ClCompile>
+    <ClCompile Include="app\ManualWindow.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -3259,5 +3265,9 @@
     <Image Include="res\gear.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>

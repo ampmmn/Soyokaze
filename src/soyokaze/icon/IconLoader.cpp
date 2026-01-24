@@ -925,6 +925,12 @@ HICON IconLoader::LoadCopyIcon()
 	return GetShell32Icon(-16763);
 }
 
+// ヘルプを表すアイコンを取得する
+HICON IconLoader::LoadHelpIcon()
+{
+	return GetImageResIcon(-99);
+}
+
 static bool GetTempFilePath(Path& userDataPath)
 {
 	userDataPath.Append(_T("tmp"));

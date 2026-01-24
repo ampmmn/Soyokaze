@@ -422,6 +422,7 @@
     <ClInclude Include="app\CommandLineProcessor.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
     <ClInclude Include="app\Manual.h" />
+    <ClInclude Include="app\ManualWindow.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h" />
@@ -934,6 +935,7 @@
     <ClCompile Include="app\CommandLineProcessor.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
     <ClCompile Include="app\Manual.cpp" />
+    <ClCompile Include="app\ManualWindow.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp" />

@@ -40,6 +40,9 @@ bool AfxW_GetCurrentDir(
 	if (GetDispatch(&pDisp) == false) {
 		return false;
 	}
+	if (pDisp == nullptr) {
+		return false;
+	}
 
 	// "Extract $P"で現在の窓のパスを取得する
 	CComBSTR extractStr(L"Extract");

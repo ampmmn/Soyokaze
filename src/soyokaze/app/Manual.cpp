@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Manual.h"
+#include "app/ManualWindow.h"
 #include "utility/Path.h"
-#include "control/webbrowser/InternalBrowser.h"
 #include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
@@ -10,15 +10,12 @@
 #define new DEBUG_NEW
 #endif
 
-using InternalBrowser = soyokaze::control::webbrowser::InternalBrowser;
-
 namespace launcherapp {
 namespace app {
 
 struct Manual::PImpl
 {
 	std::map<String, CString> mPageMapping;
-	std::unique_ptr<InternalBrowser> mDocWindow;
 };
 
 
@@ -72,14 +69,7 @@ bool Manual::Navigate(const char* pageId)
 	uri.Format(L"file:///%s/%s.html", (LPCWSTR)dirPath, (LPCWSTR)pagePath);
 	uri.Replace(L'\\', L'/');
 
-	if (in->mDocWindow.get() == nullptr || in->mDocWindow->GetSafeHwnd() == nullptr) {
-		CRect rect(0, 0, 800, 600);
-		in->mDocWindow.reset(new InternalBrowser());
-		int style = WS_VISIBLE | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
-		in->mDocWindow->Create(nullptr, style, rect, 0);
-	}
-
-	in->mDocWindow->Open(uri);
+	ManualWindow::GetInstance()->Open(uri);
 	return true;
 }
 
