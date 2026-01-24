@@ -78,8 +78,10 @@ struct OneNoteCommandProvider::PImpl :
 		// 別スレッドでノートブックのロードを実行する
 		spdlog::info("Reload Onenote Notebook.");
 		std::thread th([&]() {
-			CoInitialize(nullptr);
-			LoadNotebooks();
+			HRESULT hr = CoInitialize(nullptr);
+			if (SUCCEEDED(hr)) {
+				LoadNotebooks();
+			}
 			CoUninitialize();
 		});
 		mLoadThread.swap(th);
@@ -186,6 +188,7 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 	auto repos = CommandRepository::GetInstance();
 
 	int matchCount = 0;
+	int offset = hasPrefix ? 1 : 0;
 
 	CString pathStr;
 
@@ -210,7 +213,7 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 				pathStr += page.GetName();
 
 				// セッション名と入力ワードがマッチするかを判定
-				int level = pattern->Match(pathStr);
+				int level = pattern->Match(pathStr, offset);
 				if (level == Pattern::Mismatch) {
 					continue;
 				}
