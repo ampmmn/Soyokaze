@@ -19,6 +19,7 @@ public:
 	// 外部ツール設定に従いURLを開く(利用できない場合は既定のアプリで開く)
 	bool OpenURL(LPCWSTR url);
 	bool OpenURL(const String& url);
+	bool OpenURLWithInternalBrowser(LPCWSTR url);
 
 	// 外部ツールで設定したWebブラウザは利用可能か?
 	bool IsAvailable() override;

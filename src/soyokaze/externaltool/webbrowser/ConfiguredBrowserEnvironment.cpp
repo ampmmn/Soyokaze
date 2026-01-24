@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ConfiguredBrowserEnvironment.h"
+#include "control/webbrowser/InternalBrowser.h"
+#include "SharedHwnd.h"
 #include "externaltool/webbrowser/ChromeEnvironment.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -121,6 +123,36 @@ bool ConfiguredBrowserEnvironment::OpenURL(const String& url)
 {
 	CString tmp;
 	return OpenURL(UTF2UTF(url, tmp));
+}
+
+/**
+ * @brief 指定されたURLを内蔵ブラウザで開く
+ * @param[in] url URL
+ * @return true:成功 false:失敗
+*/
+bool ConfiguredBrowserEnvironment::OpenURLWithInternalBrowser(LPCWSTR url)
+{
+	SharedHwnd sharedHwnd;
+	HWND hMainWnd = sharedHwnd.GetHwnd();
+	if (hMainWnd == nullptr) {
+		return false;
+	}
+	CWnd* parent = CWnd::FromHandle(hMainWnd);
+
+	// NOTE: このウインドウは明示的に破棄されません
+	auto br = new soyokaze::control::webbrowser::InternalBrowser();
+
+	CRect cr(0, 0, 800, 600);
+	int style = WS_VISIBLE | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+	if (br->Create(parent, style, cr, 0) == FALSE) {
+		delete br;
+		return false;
+	}
+
+	br->Open(url);
+	br->ShowWindow(SW_SHOW);
+
+	return true;
 }
 
 bool ConfiguredBrowserEnvironment::IsAvailable()

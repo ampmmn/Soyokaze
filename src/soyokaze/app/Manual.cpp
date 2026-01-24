@@ -1,15 +1,14 @@
 #include "pch.h"
 #include "Manual.h"
+#include "app/ManualWindow.h"
 #include "utility/Path.h"
-#include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
+#include "SharedHwnd.h"
 #include "resource.h"
 #include <map>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 namespace launcherapp {
 namespace app {
@@ -70,11 +69,7 @@ bool Manual::Navigate(const char* pageId)
 	uri.Format(L"file:///%s/%s.html", (LPCWSTR)dirPath, (LPCWSTR)pagePath);
 	uri.Replace(L'\\', L'/');
 
-	auto brwsEnv = ConfiguredBrowserEnvironment::GetInstance();
-	if (brwsEnv->OpenURL(uri) == false) {
-		SPDLOG_WARN(L"Failed to launch help: {}", (LPCWSTR)uri);
-		return false;
-	}
+	ManualWindow::GetInstance()->Open(uri);
 	return true;
 }
 

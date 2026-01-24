@@ -295,6 +295,9 @@
     <Filter Include="commands\explorepath">
       <UniqueIdentifier>{3ca17de4-3587-4db9-ae50-c0fcbb3944c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="control\webbrowser">
+      <UniqueIdentifier>{1015f791-c78d-4000-a878-77f05336d87b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1830,6 +1833,12 @@
     <ClInclude Include="hotkey\ExtraActionHotKeyHandler.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="control\webbrowser\InternalBrowser.h">
+      <Filter>control\webbrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ManualWindow.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3224,6 +3233,12 @@
     <ClCompile Include="hotkey\ExtraActionHotKeyHandler.cpp">
       <Filter>hotkey</Filter>
     </ClCompile>
+    <ClCompile Include="control\webbrowser\InternalBrowser.cpp">
+      <Filter>control\webbrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="app\ManualWindow.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -3238,6 +3253,7 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="..\..\README.md" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icon.ico">
@@ -3249,5 +3265,9 @@
     <Image Include="res\gear.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>

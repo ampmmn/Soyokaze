@@ -19,6 +19,7 @@ copyright = config.get('config', 'copyright', fallback='2023, ymgw')
 html_title = f'{project} {version}'
 
 html_show_sourcelink = False
+html_show_sphinx = False
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
