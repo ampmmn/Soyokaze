@@ -34,5 +34,10 @@ public:
 	virtual size_t GetBytesLength(LPCTSTR key) = 0;
 	virtual bool GetBytes(LPCTSTR key, uint8_t* buf, size_t bufLen) = 0;
 	virtual void SetBytes(LPCTSTR key, const uint8_t* buf, size_t bufLen) = 0;
+
+	virtual bool DumpRawData(std::vector<uint8_t>& rawData) = 0;
+
+	virtual uint32_t AddRef() = 0;
+	virtual uint32_t Release() = 0;
 };
 

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandRepository.h"
+#include "commands/core/CommandProviderRepository.h"
 #include "commands/core/CommandFileEntry.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandMap.h"
@@ -150,8 +151,11 @@ struct CommandRepository::PImpl
 			return;
 		}
 
+		std::vector<CommandProvider*> providers;
+		CommandProviderRepository::GetInstance()->EnumProviders(providers);
+
 		PERFLOG("PrepareAdhocCommands start.");
-		for (auto& provider : mProviders) {
+		for (auto& provider : providers) {
 			provider->PrepareAdhocCommands();
 		}
 		PERFLOG("PrepareAdhocCommands end.");
@@ -160,8 +164,6 @@ struct CommandRepository::PImpl
 	}
 
 	CCriticalSection mCS;
-
-	std::vector<CommandProvider*> mProviders;
 
 	// リスナー
 	std::vector<CommandRepositoryListenerIF*> mListeners;
@@ -306,9 +308,12 @@ void CommandRepository::PImpl::Query(QueryRequest* req)
 	// コマンドプロバイダー側で一時的なコマンドの初期化を行う(初回のみ)
 	PrepareAdhocCommands();
 
+	std::vector<CommandProvider*> providers;
+	CommandProviderRepository::GetInstance()->EnumProviders(providers);
+
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	int prevCount = (int)matchedItems.GetItemCount();
-	for (auto& provider : mProviders) {
+	for (auto& provider : providers) {
 		sw.reset();
 		if (HasSubsequentRequest()) {
 			// キャンセル通知
@@ -372,19 +377,6 @@ CommandRepository::CommandRepository() : in(std::make_unique<PImpl>())
 
 CommandRepository::~CommandRepository()
 {
-}
-
-// コマンドプロバイダ登録
-void CommandRepository::RegisterProvider(
-	CommandProvider* provider
-)
-{
-	CSingleLock sl(&in->mCS, TRUE);
-
-	provider->AddRef();
-	in->mProviders.push_back(provider);
-	std::sort(in->mProviders.begin(), in->mProviders.end(),
-	          [](const CommandProvider* l, const CommandProvider* r) { return l->GetOrder() < r->GetOrder(); });
 }
 
 // コマンドを登録
@@ -505,9 +497,10 @@ BOOL CommandRepository::Load()
 
 	// キーワード比較処理の生成
 	in->ReloadPatternObject();
-
-	auto tmpProviders = in->mProviders;
 	sl.Unlock();
+
+	std::vector<CommandProvider*> tmpProviders;
+	CommandProviderRepository::GetInstance()->EnumProviders(tmpProviders);
 
 	// ロード前を通知するイベントをリスナーに通知する
 	for (auto& listener : in->mListeners) {
@@ -576,10 +569,13 @@ int CommandRepository::NewCommandDialog(Parameter* param)
 		}
 	}
 
+	std::vector<CommandProvider*> providers;
+	CommandProviderRepository::GetInstance()->EnumProviders(providers);
+
 	if (typeStr.IsEmpty()) {
 		SelectCommandTypeDialog dlgSelect;
 
-		for (auto& provider : in->mProviders) {
+		for (auto& provider : providers) {
 			if (provider->IsPrivate()) {
 				continue;
 			}
@@ -593,7 +589,7 @@ int CommandRepository::NewCommandDialog(Parameter* param)
 		selectedProvider = (CommandProvider*)dlgSelect.GetSelectedItem();
 	}
 	else {
-		for (auto& provider : in->mProviders) {
+		for (auto& provider : providers) {
 			if (typeStr != provider->GetName()) {
 				continue;
 			}
@@ -813,10 +809,11 @@ void CommandRepository::EnumCommands(std::vector<launcherapp::core::Command*>& e
 
 void CommandRepository::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
-	CSingleLock sl(&in->mCS, TRUE);
+	std::vector<CommandProvider*> providers;
+	CommandProviderRepository::GetInstance()->EnumProviders(providers);
 
 	std::vector<CString> tmpNames;
-	for (auto& provider : in->mProviders) {
+	for (auto& provider : providers) {
 		provider->EnumCommandDisplayNames(tmpNames);
 	}
 	displayNames.swap(tmpNames);
@@ -860,7 +857,10 @@ CommandRepository::QueryAsWholeMatch(
 
 	// コマンドプロバイダーから一時的なコマンドを取得する
 	launcherapp::CommandQueryItemList matchedItems;
-	for (auto& provider : in->mProviders) {
+
+	std::vector<CommandProvider*> providers;
+	CommandProviderRepository::GetInstance()->EnumProviders(providers);
+	for (auto& provider : providers) {
 		provider->QueryAdhocCommands(pat.get(), matchedItems);
 
 		// 完全一致のものを探す
@@ -907,7 +907,9 @@ void CommandRepository::UnregisterListener(CommandRepositoryListenerIF* listener
 void CommandRepository::OnAppFirstBoot()
 {
 	// 初回起動であることをコマンドプロバイダに通知
-	for (auto& provider : in->mProviders) {
+	std::vector<CommandProvider*> providers;
+	CommandProviderRepository::GetInstance()->EnumProviders(providers);
+	for (auto& provider : providers) {
 		provider->OnFirstBoot();
 	}
 
@@ -935,11 +937,7 @@ void CommandRepository::OnAppExit()
 	in->SetExit();
 
 	in->mCommands.Clear();
-
-	for (auto& provider : in->mProviders) {
-		provider->Release();
-	}
-	in->mProviders.clear();
+	CommandProviderRepository::GetInstance()->Finalize();
 
 	AppPreference::Get()->UnregisterListener(this);
 }

@@ -33,7 +33,7 @@ struct CommandFile::PImpl
 	CString mFilePath;
 
 	// エントリのリスト
-	std::vector<std::unique_ptr<CommandFileEntry> > mEntries;
+	std::vector<RefPtr<CommandFileEntry> > mEntries;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,12 +85,11 @@ CommandFile::Entry* CommandFile::NewEntry(
 	const CString& name
 )
 {
-	auto entry = std::make_unique<CommandFileEntry>();
+	auto entry = new CommandFileEntry();
 	entry->SetName(name);
 
-	auto retPtr = entry.get();
-	in->mEntries.push_back(std::move(entry));
-	return retPtr;
+	in->mEntries.push_back(RefPtr(entry));
+	return entry;
 }
 
 
@@ -213,9 +212,9 @@ bool CommandFile::Load()
 	// ファイルを読む
 	CStdioFile file(fpIn);
 
-	std::unique_ptr<CommandFileEntry> curEntry;
+	CommandFileEntry* curEntry = nullptr;
 
-	std::vector<std::unique_ptr<CommandFileEntry> > entries;
+	std::vector<RefPtr<CommandFileEntry> > entries;
 
 	static tregex regInt(_T("^ *-?[0-9]+ *$"));
 	static tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
@@ -233,12 +232,13 @@ bool CommandFile::Load()
 		if (strLine[0] == _T('[')) {
 
 			if (curEntry != nullptr) {
-				entries.push_back(std::move(curEntry));
+				entries.push_back(RefPtr(curEntry));
+				curEntry = nullptr;
 			}
 
 			CString strCurSectionName = strLine.Mid(1, strLine.GetLength()-2);
 
-			curEntry = std::make_unique<CommandFileEntry>();
+			curEntry = new CommandFileEntry();
 			curEntry->SetName(strCurSectionName);
 			continue;
 		}
@@ -292,7 +292,7 @@ bool CommandFile::Load()
 	}
 
 	if (curEntry) {
-		entries.push_back(std::move(curEntry));
+		entries.push_back(RefPtr(curEntry));
 	}
 
 	file.Close();

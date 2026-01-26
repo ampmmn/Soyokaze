@@ -7,6 +7,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "hotkey/CommandHotKeyMappings.h"
+#include "core/IFIDDefine.h"
 #include "resource.h"
 #include <map>
 #include <functional>
@@ -204,6 +205,17 @@ uint32_t BuiltinCommandProvider::Release()
 	}
 	return n;
 }
+
+bool BuiltinCommandProvider::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_COMMANDPROVIDER) {
+		*cmd = this;
+		AddRef();
+		return true;
+	}
+	return false;
+}
+
 
 }
 }

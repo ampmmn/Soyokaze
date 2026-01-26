@@ -38,6 +38,8 @@ struct CommandFileEntry::PImpl
 	std::map<CString, bool> mBoolMap;
 	std::map<CString, double> mDoubleMap;
 	std::map<CString, std::vector<uint8_t> > mStreamMap;
+
+	uint32_t mRefCount{1};
 };
 
 CommandFileEntry::CommandFileEntry() : in(new PImpl)
@@ -218,4 +220,21 @@ void CommandFileEntry::SetBytes(LPCTSTR key, const uint8_t* value, size_t len)
 	in->mTypeMap[key] = TYPE_STREAM;
 }
 
+bool CommandFileEntry::DumpRawData(std::vector<uint8_t>& rawData)
+{
+	return false;
+}
 
+uint32_t CommandFileEntry::AddRef()
+{
+	return (uint32_t)InterlockedIncrement(&in->mRefCount);
+}
+
+uint32_t CommandFileEntry::Release()
+{
+	auto n = InterlockedDecrement(&in->mRefCount);
+	if (n == 0) {
+		delete this;
+	}
+	return (uint32_t)n;
+}

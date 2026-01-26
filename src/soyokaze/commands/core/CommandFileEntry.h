@@ -38,6 +38,10 @@ public:
 	bool GetBytes(LPCTSTR key, uint8_t* buf, size_t bufLen) override;
 	void SetBytes(LPCTSTR key, const uint8_t* buf, size_t bufLen) override;
 
+	bool DumpRawData(std::vector<uint8_t>& rawData) override;
+
+	uint32_t AddRef() override;
+	uint32_t Release() override;
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

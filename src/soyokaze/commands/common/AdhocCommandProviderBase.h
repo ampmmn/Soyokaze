@@ -53,6 +53,7 @@ public:
 
 	uint32_t AddRef() override;
 	uint32_t Release() override;
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 private:
 	uint32_t mRefCount;

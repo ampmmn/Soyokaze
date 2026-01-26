@@ -13,6 +13,7 @@
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
 #include "app/LocalDirectoryWatcherService.h"
+#include "commands/transfer/CommandClipboardTransfer.h"
 #include "logger/Logger.h"
 #include <locale.h>
 
@@ -134,6 +135,9 @@ BOOL LauncherApp::InitFirstInstance()
 
 	// 
 	LocalDirectoryWatcherService::Start();
+
+	// クリップボードによるコマンドのコピペ処理の初期化
+	launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance()->Initialize();
 
 	LauncherMainWindow dlg;
 	m_pMainWnd = &dlg;

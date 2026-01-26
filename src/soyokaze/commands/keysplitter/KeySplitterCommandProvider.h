@@ -12,7 +12,7 @@ class KeySplitterCommandProvider :
 {
 private:
 	KeySplitterCommandProvider();
-	~KeySplitterCommandProvider() override;
+	~KeySplitterCommandProvider();
 
 public:
 	CString GetName() override;

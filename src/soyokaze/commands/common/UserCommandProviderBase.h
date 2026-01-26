@@ -1,21 +1,20 @@
 #pragma once
 
-#include "commands/core/CommandProviderIF.h"
+#include "commands/core/UserCommandProvider.h"
 #include "commands/core/CommandFile.h"
 
 namespace launcherapp {
 namespace commands {
 namespace common {
 
-class UserCommandProviderBase :
-	public launcherapp::core::CommandProvider
+class UserCommandProviderBase : public launcherapp::core::UserCommandProvider
 {
 protected:
 	using Command = launcherapp::core::Command;
 
 protected:
 	UserCommandProviderBase();
-	~UserCommandProviderBase() override;
+	virtual ~UserCommandProviderBase();
 
 public:
 	// 初回起動の初期化を行う
@@ -37,6 +36,7 @@ public:
 
 	uint32_t AddRef() override;
 	uint32_t Release() override;
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 	// 派生クラス側で実装する必要のあるメソッド
 	virtual void OnBeforeLoad();

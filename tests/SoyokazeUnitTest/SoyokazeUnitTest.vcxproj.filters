@@ -76,6 +76,9 @@
     <Filter Include="soyokaze\mainwindow\layout">
       <UniqueIdentifier>{d1288620-eb1a-4ebc-8d07-f26473ba54c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\transfer">
+      <UniqueIdentifier>{93a31021-2345-4334-8484-7981981bd248}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -183,6 +186,9 @@
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\transfer\CommandJSONEntryTest.cpp">
+      <Filter>soyokaze\commands\transfer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -201,5 +207,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>

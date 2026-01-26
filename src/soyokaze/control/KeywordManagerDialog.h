@@ -14,8 +14,9 @@ protected:
 	std::unique_ptr<PImpl> in;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
-	virtual BOOL OnInitDialog();
+	void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV サポート
+	BOOL OnInitDialog() override;
+	BOOL PreTranslateMessage(MSG* pMsg) override;
 
 	void ResetContents();
 	void UpdateListItems();
@@ -35,6 +36,8 @@ protected:
 	afx_msg void OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnEditCopy();
+	afx_msg void OnEditPaste();
 	afx_msg LRESULT OnUserMessageKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMessageResetContent(WPARAM wParam, LPARAM lParam);
 };

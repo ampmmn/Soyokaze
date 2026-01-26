@@ -1,7 +1,9 @@
 #pragma once
 
+#include "core/UnknownIF.h"
 #include "commands/core/CommandIF.h"
 #include "commands/core/CommandQueryItemList.h"
+#include "commands/core/CommandProviderRepository.h"
 #include "matcher/Pattern.h"
 #include <stdint.h>
 
@@ -11,15 +13,13 @@ class SettingPage;
 namespace launcherapp {
 namespace core {
 
-class CommandProvider
+class CommandProvider : virtual public UnknownIF
 {
 public:
 	using CommandQueryItemList = launcherapp::CommandQueryItemList;
 	using Parameter = launcherapp::actions::core::Parameter;
 
 public:
-	virtual ~CommandProvider() {}
-
 	// 初回起動の初期化を行う
 	virtual void OnFirstBoot() = 0;
 
@@ -52,10 +52,6 @@ public:
 
 	// Providerが扱うコマンド種別(表示名)を列挙
 	virtual uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) = 0;
-
-	virtual uint32_t AddRef() = 0;
-	virtual uint32_t Release() = 0;
-
 };
 
 }
@@ -73,7 +69,7 @@ public:
 	bool clsName::RegisterCommandProvider() { \
 		try { \
 			clsName* inst = new clsName(); \
-			launcherapp::core::CommandRepository::GetInstance()->RegisterProvider(inst); \
+			launcherapp::core::CommandProviderRepository::GetInstance()->Register(inst); \
 			inst->Release(); \
 			return true; \
 		} catch(...) { return false; } \

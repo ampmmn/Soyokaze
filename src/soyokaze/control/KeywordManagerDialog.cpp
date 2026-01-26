@@ -6,7 +6,10 @@
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
+#include "commands/core/UserCommandProvider.h"
 #include "commands/core/EditableIF.h"
+#include "commands/core/CommandProviderRepository.h"
+#include "commands/transfer/CommandClipboardTransfer.h"
 #include "matcher/PartialMatchPattern.h"
 #include "utility/RefPtr.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -83,6 +86,7 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 
 	int mSortType{SORT_ASCEND_NAME};
 	HWND mHwnd{nullptr};
+	HACCEL mAccel{nullptr};
 };
 
 void KeywordManagerDialog::PImpl::SortCommands()
@@ -204,10 +208,19 @@ KeywordManagerDialog::KeywordManagerDialog() :
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->RegisterListener(in.get());
+
+	ACCEL accels[2] = {
+		{ FCONTROL | FVIRTKEY, 'C', ID_EDIT_COPY },
+		{ FCONTROL | FVIRTKEY, 'V', ID_EDIT_PASTE },
+	};
+	in->mAccel = CreateAcceleratorTable(accels, 2);
 }
 
 KeywordManagerDialog::~KeywordManagerDialog()
 {
+	if (in->mAccel) {
+		DestroyAcceleratorTable(in->mAccel);
+	}
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
 	cmdRepoPtr->UnregisterListener(in.get());
 
@@ -233,6 +246,8 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_CLONE, OnButtonClone)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
+	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
+	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnLvnItemChange)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNMDblclk)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST_COMMANDS, OnHeaderClicked)
@@ -300,6 +315,14 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	UpdateData(FALSE);
 
 	return TRUE;
+}
+
+BOOL KeywordManagerDialog::PreTranslateMessage(MSG* pMsg)
+{
+	if (in->mAccel && TranslateAccelerator(GetSafeHwnd(), in->mAccel, pMsg)) {
+		return TRUE;
+	}
+	return __super::PreTranslateMessage(pMsg);
 }
 
 void KeywordManagerDialog::ResetContents()
@@ -473,6 +496,69 @@ void KeywordManagerDialog::OnButtonDelete()
 	ResetContents();
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+void KeywordManagerDialog::OnEditCopy()
+{
+	auto cmd = in->mSelCommand;
+	if (cmd == nullptr) {
+		// 何も選択されていなければ何もしない
+		return;
+	}
+
+	auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
+	auto entry = transfer->NewEntry(cmd->GetName());
+	if (cmd->Save(entry) == false) {
+		spdlog::error(_T("Failed to save command.{}"), (LPCTSTR)cmd->GetName());
+		entry->Release();
+		return ;
+	}
+	transfer->SendEntry(entry);
+}
+
+void KeywordManagerDialog::OnEditPaste()
+{
+	auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
+
+	CommandEntryIF* entry = nullptr;
+	if (transfer->ReceiveEntry(&entry) == false) {
+		return;
+	}
+
+	auto providerRepos = launcherapp::core::CommandProviderRepository::GetInstance();
+
+	std::vector<launcherapp::core::CommandProvider*> providers;
+	providerRepos->EnumProviders(providers);
+
+	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
+	for (auto provider : providers) {
+		RefPtr<launcherapp::core::UserCommandProvider> userCmdProvider;
+		if (provider->QueryInterface(IFID_USERCOMMANDPROVIDER, (void**)&userCmdProvider) == false) {
+			continue;
+		}
+		RefPtr<Command> newCmd;
+		if (userCmdProvider->LoadFrom(entry, &newCmd) == false) {
+			continue;
+		}
+
+		RefPtr<Command> orgCmd(cmdRepoPtr->QueryAsWholeMatch(newCmd->GetName()));
+		if (orgCmd.get() == nullptr) {
+			newCmd->AddRef();
+			cmdRepoPtr->RegisterCommand(newCmd.get());
+		}
+		else {
+			// ToDo: 上書きかリネームかを選択
+
+			// ひとまず上書きのみ
+			cmdRepoPtr->UnregisterCommand(orgCmd.get());
+
+			newCmd->AddRef();
+			cmdRepoPtr->RegisterCommand(newCmd.get());
+		}
+
+		ResetContents();
+		break;
+	}
 }
 
 /**

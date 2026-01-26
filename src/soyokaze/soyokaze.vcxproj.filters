@@ -298,6 +298,9 @@
     <Filter Include="control\webbrowser">
       <UniqueIdentifier>{1015f791-c78d-4000-a878-77f05336d87b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\transfer">
+      <UniqueIdentifier>{df431e74-af8f-4eb5-a41a-34a0b1a48d82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1839,6 +1842,15 @@
     <ClInclude Include="app\ManualWindow.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="commands\transfer\CommandJSONEntry.h">
+      <Filter>commands\transfer</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\transfer\CommandClipboardTransfer.h">
+      <Filter>commands\transfer</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\CommandProviderRepository.h">
+      <Filter>commands\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3238,6 +3250,15 @@
     </ClCompile>
     <ClCompile Include="app\ManualWindow.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\transfer\CommandJSONEntry.cpp">
+      <Filter>commands\transfer</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\transfer\CommandClipboardTransfer.cpp">
+      <Filter>commands\transfer</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\CommandProviderRepository.cpp">
+      <Filter>commands\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

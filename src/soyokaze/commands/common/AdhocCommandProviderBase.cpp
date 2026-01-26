@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "AdhocCommandProviderBase.h"
+#include "core/IFIDDefine.h"
 #include <assert.h>
 
 #ifdef _DEBUG
@@ -105,6 +106,16 @@ uint32_t AdhocCommandProviderBase::Release()
 		delete this;
 	}
 	return n;
+}
+
+bool AdhocCommandProviderBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_COMMANDPROVIDER) {
+		*cmd = this;
+		AddRef();
+		return true;
+	}
+	return false;
 }
 
 

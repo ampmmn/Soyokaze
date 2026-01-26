@@ -25,9 +25,6 @@ private:
 public:
 	static CommandRepository* GetInstance();
 
-	// コマンドプロバイダ登録
-	void RegisterProvider(CommandProvider* provider);
-
 	// コマンドを登録
 	int RegisterCommand(Command* command);
 	// コマンドの登録を解除

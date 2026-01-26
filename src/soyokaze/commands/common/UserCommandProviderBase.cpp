@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UserCommandProviderBase.h"
 #include "commands/core/CommandRepository.h"
+#include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -100,6 +101,21 @@ uint32_t UserCommandProviderBase::Release()
 		delete this;
 	}
 	return (uint32_t)n;
+}
+
+bool UserCommandProviderBase::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (ifid == IFID_COMMANDPROVIDER) {
+		*cmd = (CommandProvider*)this;
+		AddRef();
+		return true;
+	}
+	else if (ifid == IFID_USERCOMMANDPROVIDER) {
+		*cmd = (UserCommandProvider*)this;
+		AddRef();
+		return true;
+	}
+	return false;
 }
 
 void UserCommandProviderBase::OnBeforeLoad()

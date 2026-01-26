@@ -32,6 +32,7 @@ public:
     size_t GetBytesLength(LPCTSTR key) override { return 0; }
     bool GetBytes(LPCTSTR key, uint8_t* buf, size_t bufLen) override { return false; }
     void SetBytes(LPCTSTR key, const uint8_t* buf, size_t bufLen) override {}
+	bool DumpRawData(std::vector<uint8_t>& rawData) override { return false; }
 };
 
 using namespace launcherapp::commands::activate_window;
