@@ -13,10 +13,15 @@ CommandMap::CommandMap()
 {
 }
 
+// コピーコンストラクタ
+// 複製はするがコマンドオブジェクトは同じものを参照する
+// 参照カウントは+1する
 CommandMap::CommandMap(const CommandMap& rhs)
 {
 	for (auto& item : rhs.mMap) {
-		mMap[item.first] = item.second->Clone();
+		auto cmd = item.second;
+		mMap[item.first] = cmd;
+		cmd->AddRef();
 	}
 }
 

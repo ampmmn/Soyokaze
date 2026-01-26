@@ -711,8 +711,9 @@ int CommandRepository::ManagerDialog()
 	::utility::ScopeExit guard([&]() { in->mManagerDlgPtr = nullptr; });
 
 	// キャンセル時に状態を戻せるようにするため、現在のコマンド状態をとっておく
+	CommandMap mapForBkup(in->mCommands);
 	CommandMap::Settings bkup;
-	in->mCommands.LoadSettings(bkup);
+	mapForBkup.LoadSettings(bkup);
 
 	// ホットキー設定も同様に現在の状態をとっておく
 	CommandHotKeyMappings hotKeyMapBkup;
@@ -728,7 +729,8 @@ int CommandRepository::ManagerDialog()
 
 	if (isCancelled) {
 		// キャンセル時はコマンド状態をダイアログ表示前にバックアップした内容に戻す
-		in->mCommands.RestoreSettings(bkup);
+		mapForBkup.RestoreSettings(bkup);
+		in->mCommands.Swap(mapForBkup);
 	}
 	in->SaveCommands();
 
