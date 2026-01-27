@@ -118,18 +118,10 @@ void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpda
 	}
 	else {
 		// キーワードは未入力であるため、候補欄を非表示にする
-
 		CRect rc;
 		GetWindowRect(mainWndHandle, &rc);
-
-		// ウインドウサイズの再計算をする(rcが更新される)
 		RecalcWindowSize(mainWndHandle, status, WMSZ_TOP, rc); 
-
-		// 再計算後の位置とサイズをウインドウに設定する
-		if (IsWindow(mainWndHandle) && IsZoomed(mainWndHandle) == FALSE && IsIconic(mainWndHandle) == FALSE) {
-			// 位置を変えるのは最小化/最大化されていない場合のみ
-			SetWindowPos(mainWndHandle, nullptr,rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
-		}
+		in->mWindowPositionPtr->SetPositionTemporary(mainWndHandle, rc);
 	}
 	in->mIsPrevHasKeyword = isCurHasKeyword;
 }
@@ -416,7 +408,6 @@ bool MainWindowLayout::MoveTemporary(int vk)
 	return true;
 }
 
-// メイン画面に配置する部品の位置・サイズを再計算する
 void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 {
 	CWnd* mainWnd = in->mMainWnd->GetWindowObject();
@@ -453,15 +444,11 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 	// 何かしら入力がある状態であったら、位置情報を保持しておく
 	if (status) {
 		if (in->mWindowPositionPtr.get()) {
-			bool hasKeyword = status->HasKeyword();
-
-			int h = in->mWindowPositionPtr->GetHeight();
-
-			in->mWindowPositionPtr->Update(hwnd);
-
-			// キー入力がない場合はウインドウを小さい状態で表示(候補欄を表示しない)
-			if (hasKeyword == false) {
-					in->mWindowPositionPtr->SetHeight(h);
+			if (status->HasKeyword()) {
+				in->mWindowPositionPtr->Update(hwnd);
+			}
+			else {
+				in->mWindowPositionPtr->UpdateExceptHeight(hwnd);
 			}
 		}
 	}

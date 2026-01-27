@@ -22,30 +22,45 @@ MainWindowPosition::~MainWindowPosition()
 {
 }
 
-// ウインドウ高さを取得する
-int MainWindowPosition::GetHeight()
+bool MainWindowPosition::UpdateExceptHeight(HWND hwnd)
 {
-	return mPosition.rcNormalPosition.bottom - mPosition.rcNormalPosition.top;
+	WINDOWPLACEMENT wp;
+	wp.length = sizeof(wp);
+	if (GetWindowPlacement(hwnd, &wp) == false) {
+		return false;
+	}
+
+	int orgHeight = mPosition.rcNormalPosition.bottom - mPosition.rcNormalPosition.top; 
+
+	wp.rcNormalPosition.bottom = wp.rcNormalPosition.top + orgHeight;
+
+	mPosition = wp;
+	return true;
 }
 
-// ウインドウ高さのみを更新する
-void MainWindowPosition::SetHeight(int h)
+bool MainWindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
 {
-	auto& wp = mPosition;
-	wp.rcNormalPosition.bottom = wp.rcNormalPosition.top + h;
+	spdlog::debug("MainWindowPosition::SetPositionTemporary start");
+
+	auto wp = mPosition;
+	wp.rcNormalPosition = rc;
+
+	if (IsZoomed(hwnd) == FALSE && IsIconic(hwnd) == FALSE) {
+		SetWindowPos(hwnd, nullptr,rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
+	}
+	return true;
 }
 
-// インスタンスが保持する位置情報にウインドウ位置・サイズを合わせる
 bool MainWindowPosition::SyncPosition(HWND hwnd)
 {
 	spdlog::debug("MainWindowPosition::SyncPosition start");
 
 	if (mIsLoaded == false) {
-		// 情報がない場合は現状に合わせる
 		GetWindowRect(hwnd, &mPosition.rcNormalPosition);
 		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;
 
 	}
-	return SetWindowPlacement(hwnd, &mPosition) != FALSE;
+	return SetWindowPlacement(hwnd, &mPosition) != FALSE;  // ToDo これの先にClearContent
 }
+
 

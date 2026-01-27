@@ -10,11 +10,12 @@ public:
 	~MainWindowPosition();
 
 public:
-	int GetHeight();
-	void SetHeight(int h);
+	bool UpdateExceptHeight(HWND hwnd);
+	bool SetPositionTemporary(HWND hwnd, const CRect& rc);
 	bool SyncPosition(HWND hwnd);
 
 protected:
 	static void GetFilePath(LPCTSTR baseName, Path& path);
 };
+
 
