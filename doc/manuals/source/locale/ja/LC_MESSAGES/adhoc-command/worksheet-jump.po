@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -25,8 +25,8 @@ msgstr "Excel/Libre Office Calcワークシート切替"
 
 #: ../../source/adhoc-command/worksheet-jump.md:3
 msgid ""
-"入力画面を表示した時点で開いているExcel(デスクトップ版)とLibreOffice Caclのシート名一覧を候補に表示する。   "
-"該当する項目を入力画面から実行すると、対応するワークシートのウインドウをアクティブにしたうえで、シートを切り替える。"
+"入力画面を表示した時点で開いているExcel(デスクトップ版)とLibreOffice Caclのシート名一覧を候補に表示する機能。   "
+"プレフィックス(初期設定で`xj`)を入力すると、表示中のワークシート一覧が候補として表示され、シート名で候補の絞り込みができる。コマンドを実行すると、対応するワークシートのウインドウをアクティブにしたうえで、シートを切り替える。"
 msgstr ""
 
 #: ../../source/adhoc-command/worksheet-jump.md:6
@@ -34,6 +34,12 @@ msgid "![](../image/calc-sheet.gif)"
 msgstr ""
 
 #: ../../source/adhoc-command/worksheet-jump.md:8
+msgid ""
+"初期設定で機能は有効化されており、機能を利用しない場合は[アプリケーション設定](/window/app-"
+"settings)の`拡張機能`>`ウインドウ切替`から無効化できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/worksheet-jump.md:10
 msgid "`Ctrl-Enter`キーを押して実行すると、最大化表示する。"
 msgstr ""
 

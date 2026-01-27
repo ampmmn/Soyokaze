@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 10:47+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -27,16 +27,22 @@ msgstr "ウインドウ選択切替"
 msgid "画面上に表示されているウインドウを選択して切り替えるための機能。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:7
+#: ../../source/adhoc-command/activate-window.md:6
 msgid ""
 "登録型のコマンドである[ウインドウ切替コマンド](/user-command/activate-window)とは別物。   "
 "`ウインドウ選択切替`はキーワードを入力した時点で存在しているウインドウのうち、合致するタイトルを持つウインドウを候補として表示する。   "
 "一方、`ウインドウ切替コマンド`はよく使うウインドウを指定して、任意のキーワードやホットキーで切り替えられるようにするためのもの。"
 msgstr ""
 
-#: ../../source/adhoc-command/activate-window.md:11
+#: ../../source/adhoc-command/activate-window.md:10
 msgid "Usage"
 msgstr "使用方法"
+
+#: ../../source/adhoc-command/activate-window.md:12
+msgid ""
+"初期状態で機能は有効化されている。[アプリケーション設定](/window/app-"
+"settings)の`拡張機能`>`ウインドウ切替`で機能を無効化することができる。"
+msgstr ""
 
 #: ../../source/adhoc-command/activate-window.md:13
 msgid ""

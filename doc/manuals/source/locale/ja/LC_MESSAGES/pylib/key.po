@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.46.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-26 12:40+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -41,7 +41,7 @@ msgstr ""
 
 #: ../../source/pylib/key.md:19 ../../source/pylib/key.md:40
 #: ../../source/pylib/key.md:68 ../../source/pylib/key.md:91
-#: ../../source/pylib/key.md:114
+#: ../../source/pylib/key.md:112
 msgid "Arguments"
 msgstr "引数"
 
@@ -51,7 +51,7 @@ msgstr ""
 
 #: ../../source/pylib/key.md:24 ../../source/pylib/key.md:45
 #: ../../source/pylib/key.md:77 ../../source/pylib/key.md:98
-#: ../../source/pylib/key.md:121
+#: ../../source/pylib/key.md:119
 msgid "Return Value"
 msgstr "戻り値"
 
@@ -117,596 +117,592 @@ msgid "write"
 msgstr ""
 
 #: ../../source/pylib/key.md:104
-msgid "文字列を入力する。   この関数で指定できるのは1バイト文字のみ。"
-msgstr ""
-
-#: ../../source/pylib/key.md:107
 msgid ""
-"なお、writeメソッドで入力できるのは1バイトの文字のみ。全角文字は不可。また、ファンクションキーや修飾キーなどの入力もできない。   "
-"扱えない文字は無視される。"
+"文字列を入力する。   "
+"この関数で入力できるのは文字のみ。BackspaceやDelele、矢印キー、ファンクションキーや修飾キーなどの入力はできない。"
 msgstr ""
 
-#: ../../source/pylib/key.md:116
+#: ../../source/pylib/key.md:114
 msgid "input(文字列)   入力する文字列"
 msgstr ""
 
-#: ../../source/pylib/key.md:118
+#: ../../source/pylib/key.md:116
 msgid "interval(float)   文字を入力する感覚を秒単位で指定する。省略時の値は0.0"
 msgstr ""
 
-#: ../../source/pylib/key.md:123
+#: ../../source/pylib/key.md:121
 msgid "正常終了時は0、エラー時は1(第一引数が文字列でない場合)"
 msgstr ""
 
-#: ../../source/pylib/key.md:126
+#: ../../source/pylib/key.md:124
 msgid "key strings"
 msgstr "利用可能なキー文字列"
 
-#: ../../source/pylib/key.md:128
+#: ../../source/pylib/key.md:126
 msgid "` `"
 msgstr ""
 
-#: ../../source/pylib/key.md:129
+#: ../../source/pylib/key.md:127
 msgid "スペース"
 msgstr ""
 
-#: ../../source/pylib/key.md:130
+#: ../../source/pylib/key.md:128
 msgid "`!`"
 msgstr ""
 
-#: ../../source/pylib/key.md:131
+#: ../../source/pylib/key.md:129
 msgid "`#`"
 msgstr ""
 
-#: ../../source/pylib/key.md:132
+#: ../../source/pylib/key.md:130
 msgid "`$`"
 msgstr ""
 
-#: ../../source/pylib/key.md:133
+#: ../../source/pylib/key.md:131
 msgid "`%`"
 msgstr ""
 
-#: ../../source/pylib/key.md:134
+#: ../../source/pylib/key.md:132
 msgid "`&`"
 msgstr ""
 
-#: ../../source/pylib/key.md:135
+#: ../../source/pylib/key.md:133
 msgid "`'`"
 msgstr ""
 
-#: ../../source/pylib/key.md:136
+#: ../../source/pylib/key.md:134
 msgid "`(`"
 msgstr ""
 
-#: ../../source/pylib/key.md:137
+#: ../../source/pylib/key.md:135
 msgid "`)`"
 msgstr ""
 
-#: ../../source/pylib/key.md:138
+#: ../../source/pylib/key.md:136
 msgid "`*`"
 msgstr ""
 
-#: ../../source/pylib/key.md:139
+#: ../../source/pylib/key.md:137
 msgid "`+`"
 msgstr ""
 
-#: ../../source/pylib/key.md:140
+#: ../../source/pylib/key.md:138
 msgid "`,`"
 msgstr ""
 
-#: ../../source/pylib/key.md:141
+#: ../../source/pylib/key.md:139
 msgid "`-`"
 msgstr ""
 
-#: ../../source/pylib/key.md:142
+#: ../../source/pylib/key.md:140
 msgid "`.`"
 msgstr ""
 
-#: ../../source/pylib/key.md:143
+#: ../../source/pylib/key.md:141
 msgid "`/`"
 msgstr ""
 
-#: ../../source/pylib/key.md:144
+#: ../../source/pylib/key.md:142
 msgid "`0`"
 msgstr ""
 
-#: ../../source/pylib/key.md:145
+#: ../../source/pylib/key.md:143
 msgid "`1`"
 msgstr ""
 
-#: ../../source/pylib/key.md:146
+#: ../../source/pylib/key.md:144
 msgid "`2`"
 msgstr ""
 
-#: ../../source/pylib/key.md:147
+#: ../../source/pylib/key.md:145
 msgid "`3`"
 msgstr ""
 
-#: ../../source/pylib/key.md:148
+#: ../../source/pylib/key.md:146
 msgid "`4`"
 msgstr ""
 
-#: ../../source/pylib/key.md:149
+#: ../../source/pylib/key.md:147
 msgid "`5`"
 msgstr ""
 
-#: ../../source/pylib/key.md:150
+#: ../../source/pylib/key.md:148
 msgid "`6`"
 msgstr ""
 
-#: ../../source/pylib/key.md:151
+#: ../../source/pylib/key.md:149
 msgid "`7`"
 msgstr ""
 
-#: ../../source/pylib/key.md:152
+#: ../../source/pylib/key.md:150
 msgid "`8`"
 msgstr ""
 
-#: ../../source/pylib/key.md:153
+#: ../../source/pylib/key.md:151
 msgid "`9`"
 msgstr ""
 
-#: ../../source/pylib/key.md:154
+#: ../../source/pylib/key.md:152
 msgid "`:`"
 msgstr ""
 
-#: ../../source/pylib/key.md:155
+#: ../../source/pylib/key.md:153
 msgid "`;`"
 msgstr ""
 
-#: ../../source/pylib/key.md:156
+#: ../../source/pylib/key.md:154
 msgid "`<`"
 msgstr ""
 
-#: ../../source/pylib/key.md:157
+#: ../../source/pylib/key.md:155
 msgid "`=`"
 msgstr ""
 
-#: ../../source/pylib/key.md:158
+#: ../../source/pylib/key.md:156
 msgid "`>`"
 msgstr ""
 
-#: ../../source/pylib/key.md:159
+#: ../../source/pylib/key.md:157
 msgid "`?`"
 msgstr ""
 
-#: ../../source/pylib/key.md:160
+#: ../../source/pylib/key.md:158
 msgid "`@`"
 msgstr ""
 
-#: ../../source/pylib/key.md:161
+#: ../../source/pylib/key.md:159
 msgid "`[`"
 msgstr ""
 
-#: ../../source/pylib/key.md:162
+#: ../../source/pylib/key.md:160
 msgid "`\\\"`"
 msgstr ""
 
-#: ../../source/pylib/key.md:163
+#: ../../source/pylib/key.md:161
 msgid "`\\\\`"
 msgstr ""
 
-#: ../../source/pylib/key.md:164
+#: ../../source/pylib/key.md:162
 msgid "`\\\\n`"
 msgstr ""
 
-#: ../../source/pylib/key.md:165
+#: ../../source/pylib/key.md:163
 msgid "`\\\\r\\\\n`"
 msgstr ""
 
-#: ../../source/pylib/key.md:166
+#: ../../source/pylib/key.md:164
 msgid "`\\\\t`"
 msgstr ""
 
-#: ../../source/pylib/key.md:167
+#: ../../source/pylib/key.md:165
 msgid "`]`"
 msgstr ""
 
-#: ../../source/pylib/key.md:168
+#: ../../source/pylib/key.md:166
 msgid "`^`"
 msgstr ""
 
-#: ../../source/pylib/key.md:169
+#: ../../source/pylib/key.md:167
 msgid "`_`"
 msgstr ""
 
-#: ../../source/pylib/key.md:170
+#: ../../source/pylib/key.md:168
 msgid "`` ` ``"
 msgstr ""
 
-#: ../../source/pylib/key.md:171
+#: ../../source/pylib/key.md:169
 msgid "`a`"
 msgstr ""
 
-#: ../../source/pylib/key.md:172
+#: ../../source/pylib/key.md:170
 msgid "`alt`"
 msgstr ""
 
-#: ../../source/pylib/key.md:173
+#: ../../source/pylib/key.md:171
 msgid "`apps`"
 msgstr ""
 
-#: ../../source/pylib/key.md:174
+#: ../../source/pylib/key.md:172
 msgid "`b`"
 msgstr ""
 
-#: ../../source/pylib/key.md:175
+#: ../../source/pylib/key.md:173
 msgid "`backspace`"
 msgstr ""
 
-#: ../../source/pylib/key.md:176
+#: ../../source/pylib/key.md:174
 msgid "`c`"
 msgstr ""
 
-#: ../../source/pylib/key.md:177
+#: ../../source/pylib/key.md:175
 msgid "`capslock`"
 msgstr ""
 
-#: ../../source/pylib/key.md:178
+#: ../../source/pylib/key.md:176
 msgid "`convert`"
 msgstr ""
 
-#: ../../source/pylib/key.md:179
+#: ../../source/pylib/key.md:177
 msgid "`ctrl`"
 msgstr ""
 
-#: ../../source/pylib/key.md:180
+#: ../../source/pylib/key.md:178
 msgid "`d`"
 msgstr ""
 
-#: ../../source/pylib/key.md:181
+#: ../../source/pylib/key.md:179
 msgid "`del`"
 msgstr ""
 
-#: ../../source/pylib/key.md:182
+#: ../../source/pylib/key.md:180
 msgid "`delete`"
 msgstr ""
 
-#: ../../source/pylib/key.md:183
+#: ../../source/pylib/key.md:181
 msgid "`down`"
 msgstr ""
 
-#: ../../source/pylib/key.md:184
+#: ../../source/pylib/key.md:182
 msgid "`e`"
 msgstr ""
 
-#: ../../source/pylib/key.md:185
+#: ../../source/pylib/key.md:183
 msgid "`end`"
 msgstr ""
 
-#: ../../source/pylib/key.md:186
+#: ../../source/pylib/key.md:184
 msgid "`enter`"
 msgstr ""
 
-#: ../../source/pylib/key.md:187
+#: ../../source/pylib/key.md:185
 msgid "`esc`"
 msgstr ""
 
-#: ../../source/pylib/key.md:188
+#: ../../source/pylib/key.md:186
 msgid "`escape`"
 msgstr ""
 
-#: ../../source/pylib/key.md:189
+#: ../../source/pylib/key.md:187
 msgid "`f10`"
 msgstr ""
 
-#: ../../source/pylib/key.md:190
+#: ../../source/pylib/key.md:188
 msgid "`f11`"
 msgstr ""
 
-#: ../../source/pylib/key.md:191
+#: ../../source/pylib/key.md:189
 msgid "`f12`"
 msgstr ""
 
-#: ../../source/pylib/key.md:192
+#: ../../source/pylib/key.md:190
 msgid "`f13`"
 msgstr ""
 
-#: ../../source/pylib/key.md:193
+#: ../../source/pylib/key.md:191
 msgid "`f14`"
 msgstr ""
 
-#: ../../source/pylib/key.md:194
+#: ../../source/pylib/key.md:192
 msgid "`f15`"
 msgstr ""
 
-#: ../../source/pylib/key.md:195
+#: ../../source/pylib/key.md:193
 msgid "`f16`"
 msgstr ""
 
-#: ../../source/pylib/key.md:196
+#: ../../source/pylib/key.md:194
 msgid "`f17`"
 msgstr ""
 
-#: ../../source/pylib/key.md:197
+#: ../../source/pylib/key.md:195
 msgid "`f18`"
 msgstr ""
 
-#: ../../source/pylib/key.md:198
+#: ../../source/pylib/key.md:196
 msgid "`f19`"
 msgstr ""
 
-#: ../../source/pylib/key.md:199
+#: ../../source/pylib/key.md:197
 msgid "`f20`"
 msgstr ""
 
-#: ../../source/pylib/key.md:200
+#: ../../source/pylib/key.md:198
 msgid "`f21`"
 msgstr ""
 
-#: ../../source/pylib/key.md:201
+#: ../../source/pylib/key.md:199
 msgid "`f22`"
 msgstr ""
 
-#: ../../source/pylib/key.md:202
+#: ../../source/pylib/key.md:200
 msgid "`f23`"
 msgstr ""
 
-#: ../../source/pylib/key.md:203
+#: ../../source/pylib/key.md:201
 msgid "`f24`"
 msgstr ""
 
-#: ../../source/pylib/key.md:204
+#: ../../source/pylib/key.md:202
 msgid "`f2`"
 msgstr ""
 
-#: ../../source/pylib/key.md:205
+#: ../../source/pylib/key.md:203
 msgid "`f3`"
 msgstr ""
 
-#: ../../source/pylib/key.md:206
+#: ../../source/pylib/key.md:204
 msgid "`f4`"
 msgstr ""
 
-#: ../../source/pylib/key.md:207
+#: ../../source/pylib/key.md:205
 msgid "`f5`"
 msgstr ""
 
-#: ../../source/pylib/key.md:208
+#: ../../source/pylib/key.md:206
 msgid "`f6`"
 msgstr ""
 
-#: ../../source/pylib/key.md:209
+#: ../../source/pylib/key.md:207
 msgid "`f7`"
 msgstr ""
 
-#: ../../source/pylib/key.md:210
+#: ../../source/pylib/key.md:208
 msgid "`f8`"
 msgstr ""
 
-#: ../../source/pylib/key.md:211
+#: ../../source/pylib/key.md:209
 msgid "`f9`"
 msgstr ""
 
-#: ../../source/pylib/key.md:212
+#: ../../source/pylib/key.md:210
 msgid "`f`"
 msgstr ""
 
-#: ../../source/pylib/key.md:213
+#: ../../source/pylib/key.md:211
 msgid "`g`"
 msgstr ""
 
-#: ../../source/pylib/key.md:214
+#: ../../source/pylib/key.md:212
 msgid "`h`"
 msgstr ""
 
-#: ../../source/pylib/key.md:215
+#: ../../source/pylib/key.md:213
 msgid "`home`"
 msgstr ""
 
-#: ../../source/pylib/key.md:216
+#: ../../source/pylib/key.md:214
 msgid "`i`"
 msgstr ""
 
-#: ../../source/pylib/key.md:217
+#: ../../source/pylib/key.md:215
 msgid "`insert`"
 msgstr ""
 
-#: ../../source/pylib/key.md:218
+#: ../../source/pylib/key.md:216
 msgid "`j`"
 msgstr ""
 
-#: ../../source/pylib/key.md:219
+#: ../../source/pylib/key.md:217
 msgid "`k`"
 msgstr ""
 
-#: ../../source/pylib/key.md:220
+#: ../../source/pylib/key.md:218
 msgid "`kana`"
 msgstr ""
 
-#: ../../source/pylib/key.md:221
+#: ../../source/pylib/key.md:219
 msgid "`kanji`"
 msgstr ""
 
-#: ../../source/pylib/key.md:222
+#: ../../source/pylib/key.md:220
 msgid "`l`"
 msgstr ""
 
-#: ../../source/pylib/key.md:223
+#: ../../source/pylib/key.md:221
 msgid "`left`"
 msgstr ""
 
-#: ../../source/pylib/key.md:224
+#: ../../source/pylib/key.md:222
 msgid "`m`"
 msgstr ""
 
-#: ../../source/pylib/key.md:225
+#: ../../source/pylib/key.md:223
 msgid "`n`"
 msgstr ""
 
-#: ../../source/pylib/key.md:226
+#: ../../source/pylib/key.md:224
 msgid "`nonconvert`"
 msgstr ""
 
-#: ../../source/pylib/key.md:227
+#: ../../source/pylib/key.md:225
 msgid "`num0`"
 msgstr ""
 
-#: ../../source/pylib/key.md:228
+#: ../../source/pylib/key.md:226
 msgid "`num1`"
 msgstr ""
 
-#: ../../source/pylib/key.md:229
+#: ../../source/pylib/key.md:227
 msgid "`num2`"
 msgstr ""
 
-#: ../../source/pylib/key.md:230
+#: ../../source/pylib/key.md:228
 msgid "`num3`"
 msgstr ""
 
-#: ../../source/pylib/key.md:231
+#: ../../source/pylib/key.md:229
 msgid "`num4`"
 msgstr ""
 
-#: ../../source/pylib/key.md:232
+#: ../../source/pylib/key.md:230
 msgid "`num5`"
 msgstr ""
 
-#: ../../source/pylib/key.md:233
+#: ../../source/pylib/key.md:231
 msgid "`num6`"
 msgstr ""
 
-#: ../../source/pylib/key.md:234
+#: ../../source/pylib/key.md:232
 msgid "`num7`"
 msgstr ""
 
-#: ../../source/pylib/key.md:235
+#: ../../source/pylib/key.md:233
 msgid "`num8`"
 msgstr ""
 
-#: ../../source/pylib/key.md:236
+#: ../../source/pylib/key.md:234
 msgid "`num9`"
 msgstr ""
 
-#: ../../source/pylib/key.md:237
+#: ../../source/pylib/key.md:235
 msgid "`numlock`"
 msgstr ""
 
-#: ../../source/pylib/key.md:238
+#: ../../source/pylib/key.md:236
 msgid "`o`"
 msgstr ""
 
-#: ../../source/pylib/key.md:239
+#: ../../source/pylib/key.md:237
 msgid "`p`"
 msgstr ""
 
-#: ../../source/pylib/key.md:240
+#: ../../source/pylib/key.md:238
 msgid "`pagedown`"
 msgstr ""
 
-#: ../../source/pylib/key.md:241
+#: ../../source/pylib/key.md:239
 msgid "`pageup`"
 msgstr ""
 
-#: ../../source/pylib/key.md:242
+#: ../../source/pylib/key.md:240
 msgid "`pause`"
 msgstr ""
 
-#: ../../source/pylib/key.md:243
+#: ../../source/pylib/key.md:241
 msgid "`printscreen`"
 msgstr ""
 
-#: ../../source/pylib/key.md:244
+#: ../../source/pylib/key.md:242
 msgid "`q`"
 msgstr ""
 
-#: ../../source/pylib/key.md:245
+#: ../../source/pylib/key.md:243
 msgid "`r`"
 msgstr ""
 
-#: ../../source/pylib/key.md:246
+#: ../../source/pylib/key.md:244
 msgid "`return`"
 msgstr ""
 
-#: ../../source/pylib/key.md:247
+#: ../../source/pylib/key.md:245
 msgid "`right`"
 msgstr ""
 
-#: ../../source/pylib/key.md:248
+#: ../../source/pylib/key.md:246
 msgid "`s`"
 msgstr ""
 
-#: ../../source/pylib/key.md:249
+#: ../../source/pylib/key.md:247
 msgid "`scrolllock`"
 msgstr ""
 
-#: ../../source/pylib/key.md:250
+#: ../../source/pylib/key.md:248
 msgid "`shift`"
 msgstr ""
 
-#: ../../source/pylib/key.md:251
+#: ../../source/pylib/key.md:249
 msgid "`t`"
 msgstr ""
 
-#: ../../source/pylib/key.md:252
+#: ../../source/pylib/key.md:250
 msgid "`tab`"
 msgstr ""
 
-#: ../../source/pylib/key.md:253
+#: ../../source/pylib/key.md:251
 msgid "`u`"
 msgstr ""
 
-#: ../../source/pylib/key.md:254
+#: ../../source/pylib/key.md:252
 msgid "`up`"
 msgstr ""
 
-#: ../../source/pylib/key.md:255
+#: ../../source/pylib/key.md:253
 msgid "`v`"
 msgstr ""
 
-#: ../../source/pylib/key.md:256
+#: ../../source/pylib/key.md:254
 msgid "`w`"
 msgstr ""
 
-#: ../../source/pylib/key.md:257
+#: ../../source/pylib/key.md:255
 msgid "`win`"
 msgstr ""
 
-#: ../../source/pylib/key.md:258
+#: ../../source/pylib/key.md:256
 msgid "`x`"
 msgstr ""
 
-#: ../../source/pylib/key.md:259
+#: ../../source/pylib/key.md:257
 msgid "`y`"
 msgstr ""
 
-#: ../../source/pylib/key.md:260
+#: ../../source/pylib/key.md:258
 msgid "`z`"
 msgstr ""
 
-#: ../../source/pylib/key.md:261
+#: ../../source/pylib/key.md:259
 msgid "`{`"
 msgstr ""
 
-#: ../../source/pylib/key.md:262
+#: ../../source/pylib/key.md:260
 msgid "`|`"
 msgstr ""
 
-#: ../../source/pylib/key.md:263
+#: ../../source/pylib/key.md:261
 msgid "`}`"
 msgstr ""
 
-#: ../../source/pylib/key.md:264
+#: ../../source/pylib/key.md:262
 msgid "`~`"
 msgstr ""
 
-#: ../../source/pylib/key.md:266
+#: ../../source/pylib/key.md:264
 msgid "Example"
 msgstr "例"
 
-#: ../../source/pylib/key.md:268
+#: ../../source/pylib/key.md:266
 msgid "例:Win+Shift-Sキーを押下する(結果、スクリーンキャプチャが起動する)"
 msgstr ""
 
-#: ../../source/pylib/key.md:280
+#: ../../source/pylib/key.md:278
 msgid "`hotkey`メソッドを使うと、上記の操作が1回の呼び出しで済む"
 msgstr ""
 
-#: ../../source/pylib/key.md:286
+#: ../../source/pylib/key.md:284
 msgid "例:'hello'を入力する"
 msgstr ""
 
-#: ../../source/pylib/key.md:291
+#: ../../source/pylib/key.md:289
 msgid "writeメソッドを使うと文字列の形で入力できる"
 msgstr ""
 

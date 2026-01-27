@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -52,19 +52,24 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:19
-msgid "`説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
+msgid "`グループ説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:21
-msgid "`定型文の一覧`   グループに属する定型文の一覧が表示される"
+msgid ""
+"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
+"hotkey)を設定できる。設定したキーを押下すると、[入力画面](/usage/how_to_use.md#open-input-"
+"window)が表示され、グループの定型文の一覧が表示された状態になる"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:23
-msgid "`追加`   グループに定型文を追加する。   [定型文編集画面](#edit-snippets)が表示される"
+msgid ""
+"`定型文の一覧`   グループに属する定型文の一覧が表示される   "
+"`F4`キー押下で次の項目、`Shift`+`F4`キー押下で前の項目に移動することができる。"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:26
-msgid "`編集`   `定型文の一覧`上のリスト上で選択した定型文の内容を編集する。   [定型文編集画面](#edit-snippets)が表示される"
+msgid "`追加`   グループに定型文を追加する。   `定型文の一覧`に新しい項目が追加される。"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:29
@@ -80,33 +85,22 @@ msgid "`下へ移動`   クリックすると、`定型文の一覧`で選択し
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:35
-msgid ""
-"`ホットキー`   [コマンドを呼び出すキー](/window/command-"
-"hotkey)を設定できる。設定したキーを押下すると、[入力画面](/usage/how_to_use.md#open-input-"
-"window)が表示され、グループの定型文の一覧が表示された状態になる"
+msgid "`定型文の名前`   定型文の名前を設定する。ここで指定した名前が候補欄に表示される。"
+msgstr ""
+
+#: ../../source/user-command/snippet-group.md:37
+msgid "`定型文説明`   該当する定型文が候補欄で選択された状態のときにコメント表示欄に表示される文字列"
 msgstr ""
 
 #: ../../source/user-command/snippet-group.md:39
-msgid "Edit Snippets"
-msgstr "定型文の編集画面"
-
-#: ../../source/user-command/snippet-group.md:41
-msgid "![](../image/new-snippetgroupitem.png)"
-msgstr ""
-
-#: ../../source/user-command/snippet-group.md:43
-msgid "`名前`   定型文の名前を設定する。ここで指定した名前が候補欄に表示される。"
-msgstr ""
-
-#: ../../source/user-command/snippet-group.md:45
-msgid "`説明`   該当する定型文が候補欄で選択された状態のときにコメント表示欄に表示される文字列"
-msgstr ""
-
-#: ../../source/user-command/snippet-group.md:47
 msgid "`テキスト`   定型文としてのクリップボードにコピーする内容を入力する"
 msgstr ""
 
-#: ../../source/user-command/snippet-group.md:50
+#: ../../source/user-command/snippet-group.md:42
+msgid "`定型文の名前`、`定型文説明`、`テキスト`のいずれかにフォーカスがあるとき、`Alt`+`↑`、または、`Alt`+`↓`キー押下により、これらのフォーカスを移動することができる。"
+msgstr ""
+
+#: ../../source/user-command/snippet-group.md:45
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

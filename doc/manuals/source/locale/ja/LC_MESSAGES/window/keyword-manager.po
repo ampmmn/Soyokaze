@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -82,18 +82,32 @@ msgid "`削除`   リスト上で選択したコマンドを削除する"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:32
-msgid "Command Type"
-msgstr "コマンド種類選択"
+msgid "Copy And Paste"
+msgstr "クリップボードを経由したコマンドのインポートとエクスポート"
 
 #: ../../source/window/keyword-manager.md:34
-msgid "作成するコマンドの種類を選択するための画面。   コマンドの種類を選択して、OKボタンを押下すると、選択したコマンドの新規作成画面を表示する。"
+msgid "リスト上でコマンドを選択して、`Ctrl-C`でコマンドをクリップボードにコピーし、 `Ctrl-V`で貼り付けることができる。"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:37
+msgid ""
+"リモートデスクトップを経由して複数のPC間で本アプリを使用している場合、 "
+"クリップボード経由で一方のアプリ側で定義しているコマンドをもう一方のアプリ側に移すことができる。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:40
+msgid "Command Type"
+msgstr "コマンド種類選択"
+
+#: ../../source/window/keyword-manager.md:42
+msgid "作成するコマンドの種類を選択するための画面。   コマンドの種類を選択して、OKボタンを押下すると、選択したコマンドの新規作成画面を表示する。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:45
 msgid "各コマンドの説明については [登録型のコマンド](/user-commands) を参照のこと"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:39
+#: ../../source/window/keyword-manager.md:47
 msgid "![](../image/commandtype.png)"
 msgstr ""
 

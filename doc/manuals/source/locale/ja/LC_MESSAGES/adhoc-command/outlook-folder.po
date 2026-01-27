@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.46.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-26 12:40+0900\n"
+"POT-Creation-Date: 2026-01-27 22:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -26,20 +26,22 @@ msgstr "Outlookフォルダ"
 #: ../../source/adhoc-command/outlook-folder.md:3
 msgid ""
 "起動中のOutlook上にあるメールフォルダの一覧を候補として表示する。 "
-"該当する項目を入力画面から実行すると、Outlookのウインドウをアクティブにしたうえで、フォルダを選択する。"
+"プレフィックス(初期設定で`ol`)を入力すると、フォルダ一覧が候補として表示される。   "
+"コマンドを実行すると、Outlookのウインドウをアクティブにしたうえで、該当するフォルダを選択する。"
 msgstr ""
 
-#: ../../source/adhoc-command/outlook-folder.md:6
+#: ../../source/adhoc-command/outlook-folder.md:7
 msgid "![](../image/adhoc-command/outlook-folder/introduction.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/outlook-folder.md:8
+#: ../../source/adhoc-command/outlook-folder.md:9
 msgid ""
-"利用するには、 アプリケーション設定の`拡張機能`>`ウインドウ切替`>`Outlookのフォルダ選択を有効にする`をチェックする必要がある。"
-"   (初期状態では機能が無効になっている)"
+"利用するには、 [アプリケーション設定](/window/app-"
+"settings)の`拡張機能`>`ウインドウ切替`>`Outlookのフォルダ選択を有効にする`をチェックする必要がある。   "
+"(初期状態では機能が無効になっている)"
 msgstr ""
 
-#: ../../source/adhoc-command/outlook-folder.md:11
+#: ../../source/adhoc-command/outlook-folder.md:12
 msgid "![](../image/adhoc-command/outlook-folder/setting.png)"
 msgstr ""
 
