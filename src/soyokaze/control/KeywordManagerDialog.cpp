@@ -48,7 +48,7 @@ enum {
 struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 {
 	void SortCommands();
-	void SelectItem(Command* command, bool isRedraw);
+	void SelectItem(Command* command, bool isRedrawRequired);
 
 	Command* GetItem(int index) {
 		ASSERT(0 <= index && index < mShowCommands.size()); 
@@ -138,7 +138,7 @@ void KeywordManagerDialog::PImpl::SortCommands()
 }
 
 // 選択状態の更新
-void KeywordManagerDialog::PImpl::SelectItem(Command* command, bool isRedraw)
+void KeywordManagerDialog::PImpl::SelectItem(Command* command, bool isRedrawRequired)
 {
 	int selItemIndex = -1;
 
@@ -156,7 +156,7 @@ void KeywordManagerDialog::PImpl::SelectItem(Command* command, bool isRedraw)
 		mListCtrl.EnsureVisible(selItemIndex, FALSE);
 	}
 
-	if (isRedraw) {
+	if (isRedrawRequired) {
 		mListCtrl.Invalidate();
 	}
 }
@@ -520,7 +520,7 @@ void KeywordManagerDialog::OnEditPaste()
 {
 	auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
 
-	CommandEntryIF* entry = nullptr;
+	RefPtr<CommandEntryIF> entry;
 	if (transfer->ReceiveEntry(&entry) == false) {
 		return;
 	}
@@ -537,7 +537,7 @@ void KeywordManagerDialog::OnEditPaste()
 			continue;
 		}
 		RefPtr<Command> newCmd;
-		if (userCmdProvider->LoadFrom(entry, &newCmd) == false) {
+		if (userCmdProvider->LoadFrom(entry.get(), &newCmd) == false) {
 			continue;
 		}
 
@@ -547,16 +547,28 @@ void KeywordManagerDialog::OnEditPaste()
 			cmdRepoPtr->RegisterCommand(newCmd.get());
 		}
 		else {
-			// ToDo: 上書きかリネームかを選択
+			// 上書きするか確認
+			CString overwriteConfirmMsg;
+			overwriteConfirmMsg.Format(_T("コマンド %s は既に存在します。\n設定を上書きしてよろしいですか?"),
+			                           (LPCTSTR)newCmd->GetName());
+			if (AfxMessageBox(overwriteConfirmMsg, MB_OKCANCEL | MB_ICONQUESTION) != IDOK) {
+				return;
+			}
 
-			// ひとまず上書きのみ
+			// 上書きする(ので前のコマンドを削除)
 			cmdRepoPtr->UnregisterCommand(orgCmd.get());
 
+			// 新しい方のコマンドを登録
 			newCmd->AddRef();
 			cmdRepoPtr->RegisterCommand(newCmd.get());
 		}
 
+		// リスト再描画
 		ResetContents();
+
+		// インポートしたコマンドを選択状態にする
+		in->mSelCommand = newCmd.get();
+		in->SelectItem(newCmd.get(), false);
 		break;
 	}
 }

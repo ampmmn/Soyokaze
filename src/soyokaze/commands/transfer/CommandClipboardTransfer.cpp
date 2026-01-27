@@ -43,6 +43,8 @@ CommandEntryIF* CommandClipboardTransfer::NewEntry(LPCTSTR cmdName)
 	return newEntry;
 }
 
+// クリップボードにデータを書き込む
+// Send後はentryをReleaseする
 bool CommandClipboardTransfer::SendEntry(CommandEntryIF* entry)
 {
 	if (entry == nullptr) {
@@ -84,6 +86,8 @@ bool CommandClipboardTransfer::SendEntry(CommandEntryIF* entry)
 	return true;
 }
 
+// クリップボードからデータを読み、entryを生成する
+// entryを解放するのは呼び出し側の責務
 bool CommandClipboardTransfer::ReceiveEntry(CommandEntryIF** entry)
 {
 	if (entry == nullptr) {
