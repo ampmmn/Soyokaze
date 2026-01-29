@@ -25,12 +25,16 @@ public:
 	CString mStartMenuDir;
 	CString mStartMenuPath;
 	CString mDesktopPath;
+#ifndef DISABLE_STARTUP
 	CString mStartupPath;
+#endif
 
 	BOOL mSendTo{FALSE};
 	BOOL mStartMenu{FALSE};
 	BOOL mDesktop{FALSE};
+#ifndef DISABLE_STARTUP
 	BOOL mStartup{FALSE};
+#endif
 
 
 	void OnOK() override;
@@ -42,7 +46,9 @@ public:
 	bool MakeShortcutSendToPath();
 	bool MakeShortcutStartMenu();
 	bool MakeShortcutDesktop();
+#ifndef DISABLE_STARTUP
 	bool MakeShortcutStartup();
+#endif
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -137,7 +143,9 @@ void AppSettingPageShortcut::SettingPage::OnOK()
 	MakeShortcutSendToPath();
 	MakeShortcutStartMenu();
 	MakeShortcutDesktop();
+#ifndef DISABLE_STARTUP
 	MakeShortcutStartup();
+#endif
 
 	__super::OnOK();
 }
@@ -195,6 +203,7 @@ bool AppSettingPageShortcut::SettingPage::MakeShortcutDesktop()
 	return true;
 }
 
+#ifndef DISABLE_STARTUP
 bool AppSettingPageShortcut::SettingPage::MakeShortcutStartup()
 {
 	if (mStartup == FALSE && Path::FileExists(mStartupPath)) {
@@ -210,6 +219,7 @@ bool AppSettingPageShortcut::SettingPage::MakeShortcutStartup()
 	}
 	return true;
 }
+#endif
 
 
 void AppSettingPageShortcut::SettingPage::DoDataExchange(CDataExchange* pDX)
@@ -218,7 +228,9 @@ void AppSettingPageShortcut::SettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SENDTO, mSendTo);
 	DDX_Check(pDX, IDC_CHECK_STARTMENU, mStartMenu);
 	DDX_Check(pDX, IDC_CHECK_DESKTOP, mDesktop);
+#ifndef DISABLE_STARTUP
 	DDX_Check(pDX, IDC_CHECK_STARTUP, mStartup);
+#endif
 }
 
 BEGIN_MESSAGE_MAP(AppSettingPageShortcut::SettingPage, CDialog)
@@ -249,7 +261,9 @@ BOOL AppSettingPageShortcut::SettingPage::OnInitDialog()
 
 
 	ShortcutFile::MakeSpecialFolderPath(mDesktopPath, CSIDL_DESKTOP, linkName);
+#ifndef DISABLE_STARTUP
 	ShortcutFile::MakeSpecialFolderPath(mStartupPath, CSIDL_STARTUP, linkName);
+#endif
 
 	UpdateStatus();
 
@@ -262,7 +276,9 @@ void AppSettingPageShortcut::SettingPage::UpdateStatus()
 	mSendTo = Path::FileExists(mSendToPath);
 	mStartMenu = Path::FileExists(mStartMenuPath);
 	mDesktop = Path::FileExists(mDesktopPath);
+#ifndef DISABLE_STARTUP
 	mStartup = Path::FileExists(mStartupPath);
+#endif
 	UpdateData(FALSE);
 }
 
@@ -286,7 +302,10 @@ void AppSettingPageShortcut::SettingPage::OnButtonDelete()
 	DeleteFile(mStartMenuPath);
 	RemoveDirectory(mStartMenuDir);
 	DeleteFile(mDesktopPath);
+#ifndef DISABLE_STARTUP
 	DeleteFile(mStartupPath);
+#endif
+
 
 	UpdateStatus();
 }

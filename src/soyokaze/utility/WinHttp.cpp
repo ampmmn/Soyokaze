@@ -51,6 +51,7 @@ struct WinHttp::PImpl
 	CString mProxyPassword;
 	CString mServerUser;
 	CString mServerPassword;
+	CStringW mMethod{L"GET"};
 };
 
 bool WinHttp::PImpl::IsContentHTML(const std::vector<WCHAR>& content)
@@ -153,7 +154,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 	spdlog::debug("connect {:.6f} s.", sw);
 
-	WinHttpHandle req(WinHttpOpenRequest(connect, L"GET", urlPath.data(), nullptr, WINHTTP_NO_REFERER, 
+	WinHttpHandle req(WinHttpOpenRequest(connect, in->mMethod, urlPath.data(), nullptr, WINHTTP_NO_REFERER, 
 				WINHTTP_DEFAULT_ACCEPT_TYPES, (INTERNET_SCHEME_HTTPS == cmp.nScheme) ? WINHTTP_FLAG_SECURE : 0));
 
 	spdlog::debug("openrequest {:.6f} s.", sw);
@@ -332,6 +333,11 @@ void WinHttp::SetServerCredential(const CString& user, const CString& password)
 {
 	in->mServerUser = user;
 	in->mServerPassword = password;
+}
+
+void WinHttp::SetMethod(LPCWSTR method)
+{
+	in->mMethod = method;
 }
 
 } // end of namespace launcherapp

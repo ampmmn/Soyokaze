@@ -58,23 +58,6 @@ static uint8_t ScanToVK(UINT scanCode)
 }
 
 
-static void DebugDraw(bool isPressed, int x, int y)
-{
-	HDC hdc = CreateDC(_T("DISPLAY"), 0, 0, 0);
-	if (hdc) {
-		HBRUSH hbron = CreateSolidBrush(RGB(255, 255, 255));
-		HBRUSH hbroff = CreateSolidBrush(RGB(0, 0, 0));
-
-		auto def = SelectObject(hdc, isPressed ? hbron : hbroff);
-
-		PatBlt(hdc, x, y, x + 50, y + 50, PATCOPY);
-
-		SelectObject(hdc, isPressed ? hbron : def);
-
-		DeleteDC(hdc);
-	}
-}
-
 static LRESULT CALLBACK OnKeyHookProc(
 	int code,
 	WPARAM wp,
@@ -93,10 +76,6 @@ static LRESULT CALLBACK OnKeyHookProc(
 	int vkCode = ScanToVK(info->scanCode);
 	bool isPressed = (info->flags & LLKHF_UP) == 0;
 	keyState.mKeyPressed[(uint8_t)vkCode] = isPressed;
-
-	//if (vkCode == 0xF0) {
-	//	DebugDraw(isPressed, 0, 0);
-	//}
 
 	return CallNextHookEx(hHook, code, wp, lp);
 }

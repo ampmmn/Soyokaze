@@ -6,11 +6,9 @@
 #include "mainwindow/layout/WindowTransparency.h"
 #include "utility/Accessibility.h"
 
-#if _MSC_VER < 1920
 #define DWMWA_COLOR_DEFAULT  0xFFFFFFFF
 #define DWMWA_BORDER_COLOR   34
 #define DWMWA_CAPTION_COLOR  35
-#endif
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

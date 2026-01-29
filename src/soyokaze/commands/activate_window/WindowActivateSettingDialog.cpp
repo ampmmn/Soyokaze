@@ -10,6 +10,7 @@
 #include "icon/IconLoader.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "resource.h"
+#include <map>
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::commands::validation;

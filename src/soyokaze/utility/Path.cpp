@@ -356,7 +356,8 @@ LPTSTR Path::data()
 
 bool Path::FileExists(LPCWSTR pathStr)
 {
-	if (PathIsUNCW(pathStr) == FALSE) {
+	bool isStartsWithSlash = pathStr && pathStr[0] == L'/' && pathStr[1] == L'/';
+	if (PathIsUNCW(pathStr) == FALSE && isStartsWithSlash == false) {
 		// UNC形式でなければ単にAPIをよぶ
 		return PathFileExistsW(pathStr) != FALSE;
 	}
@@ -378,7 +379,8 @@ bool Path::FileExists(LPCWSTR pathStr)
 
 bool Path::FileExists(LPCSTR pathStr)
 {
-	if (PathIsUNCA(pathStr) == FALSE) {
+	bool isStartsWithSlash = pathStr && pathStr[0] == '/' && pathStr[1] == '/';
+	if (PathIsUNCA(pathStr) == FALSE && isStartsWithSlash == false) {
 		// UNC形式でなければ単にAPIをよぶ
 		return PathFileExistsA(pathStr) != FALSE;
 	}
@@ -401,7 +403,8 @@ bool Path::FileExists(LPCSTR pathStr)
 
 bool Path::IsDirectory(LPCTSTR pathStr)
 {
-	if (PathIsUNC(pathStr) == FALSE) {
+	bool isStartsWithSlash = pathStr && pathStr[0] == _T('/') && pathStr[1] == _T('/');
+	if (PathIsUNC(pathStr) == FALSE && isStartsWithSlash == false) {
 		// UNC形式でなければ単にAPIをよぶ
 		return PathIsDirectory(pathStr) != FALSE;
 	}

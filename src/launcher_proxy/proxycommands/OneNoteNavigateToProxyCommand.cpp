@@ -13,25 +13,19 @@ namespace launcherproxy {
 
 struct OneNoteNavigateToProxyCommand::PImpl
 {
-	bool InitializeApp() {
-
-		if (!(mApp == nullptr)) {
-			// 初期化済
-			return true;
-		}
+	bool InitializeApp(CComPtr<IDispatch>& app) {
 
 		CLSID CLSID_OneNote;
 		HRESULT hr = CLSIDFromProgID(L"OneNote.Application.12", &CLSID_OneNote);
 		if (FAILED(hr)) {
 			return false;
 		}
-		hr = CoCreateInstance(CLSID_OneNote, nullptr, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)&mApp);
+		hr = CoCreateInstance(CLSID_OneNote, nullptr, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)&app);
 		if (FAILED(hr)) {
 			return false;
 		}
 		return true;
 	}
-	CComPtr<IDispatch> mApp;
 };
 
 
@@ -58,8 +52,8 @@ std::string OneNoteNavigateToProxyCommand::GetName()
 
 bool OneNoteNavigateToProxyCommand::Execute(json& json_req, json& json_res)
 {
-	// mAppが未初期化なら初期化する
-	if (in->InitializeApp() == false) {
+	CComPtr<IDispatch> app;
+	if (in->InitializeApp(app) == false) {
 		json_res["reason"] = "Failed to Initialize OneNote App.";
 		return false;
 	}
@@ -82,7 +76,7 @@ bool OneNoteNavigateToProxyCommand::Execute(json& json_req, json& json_res)
 	CComBSTR argPageVal(id.c_str());
 	argPage.bstrVal = argPageVal;
 
-	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, in->mApp, L"NavigateTo", 2, &argEmptyStr, &argPage);
+	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, app, L"NavigateTo", 2, &argEmptyStr, &argPage);
 	if (FAILED(hr)) {
 		spdlog::error("OneNoteAppProxy::NavigateTo failed hr={}", hr);
 	}

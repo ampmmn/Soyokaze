@@ -20,19 +20,14 @@ namespace launcherproxy {
 
 struct OneNoteGetHierarchyProxyCommand::PImpl
 {
-	bool InitializeApp() {
-
-		if (!(mApp == nullptr)) {
-			// 初期化済
-			return true;
-		}
+	bool InitializeApp(CComPtr<IDispatch>& app) {
 
 		CLSID CLSID_OneNote;
 		HRESULT hr = CLSIDFromProgID(L"OneNote.Application.12", &CLSID_OneNote);
 		if (FAILED(hr)) {
 			return false;
 		}
-		hr = CoCreateInstance(CLSID_OneNote, nullptr, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)&mApp);
+		hr = CoCreateInstance(CLSID_OneNote, nullptr, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)&app);
 		if (FAILED(hr)) {
 			return false;
 		}
@@ -40,9 +35,7 @@ struct OneNoteGetHierarchyProxyCommand::PImpl
 	}
 
 	// OneNote.Application.GetHierarchyをよぶ
-	bool CallGetHierarchy(std::wstring& hierarchyXml) {
-
-		CComPtr<IDispatch>& oneNoteApp = mApp;
+	bool CallGetHierarchy(CComPtr<IDispatch>& oneNoteApp, std::wstring& hierarchyXml) {
 
 		VARIANT result;
 		VariantInit(&result);
@@ -180,8 +173,6 @@ struct OneNoteGetHierarchyProxyCommand::PImpl
 		oneNoteSections.push_back(oneNoteSection);
 		return true;
 	}
-
-	CComPtr<IDispatch> mApp;
 };
 
 
@@ -208,15 +199,15 @@ std::string OneNoteGetHierarchyProxyCommand::GetName()
 
 bool OneNoteGetHierarchyProxyCommand::Execute(json& json_req, json& json_res)
 {
-	// mAppが未初期化なら初期化する
-	if (in->InitializeApp() == false) {
+	CComPtr<IDispatch> app;
+	if (in->InitializeApp(app) == false) {
 		json_res["reason"] = "Failed to Initialize OneNote App.";
 		return false;
 	}
 
 	// OneNote.Application.GetHierarchyをよぶ
 	std::wstring xml;
-	if (in->CallGetHierarchy(xml) == false) {
+	if (in->CallGetHierarchy(app, xml) == false) {
 		json_res["reason"] = "Failed to GetHierarchy.";
 		return false;
 	}

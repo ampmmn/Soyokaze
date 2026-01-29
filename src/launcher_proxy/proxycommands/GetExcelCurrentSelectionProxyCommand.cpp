@@ -79,9 +79,12 @@ bool GetExcelCurrentSelectionProxyCommand::Execute(json& json_req, json& json_re
 		addressStr.erase(std::remove(addressStr.begin(), addressStr.end(), L'$'), addressStr.end());
 
 		json_res["address"] = utf2utf(addressStr, tmp);
+		json_res["result"] = true;
 	}	
+	else {
+		json_res["result"] = false;
+	}
 
-	json_res["result"] = true;
 	return true;
 }
 
