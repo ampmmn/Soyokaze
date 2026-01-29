@@ -17,6 +17,7 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV サポート
 	BOOL OnInitDialog() override;
 	BOOL PreTranslateMessage(MSG* pMsg) override;
+	void OnCancel() override;
 
 	void ResetContents();
 	void UpdateListItems();
@@ -38,6 +39,7 @@ protected:
 	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnEditCopy();
 	afx_msg void OnEditPaste();
+	afx_msg void OnTimer(UINT_PTR timerId);
 	afx_msg LRESULT OnUserMessageKeywrodEditKeyDown(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUserMessageResetContent(WPARAM wParam, LPARAM lParam);
 };

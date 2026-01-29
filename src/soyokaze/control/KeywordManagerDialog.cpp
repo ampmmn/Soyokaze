@@ -22,6 +22,8 @@
 #define new DEBUG_NEW
 #endif
 
+constexpr UINT TIMERID_FILTER = 1;
+
 using namespace launcherapp::core;
 
 // リストの列情報
@@ -87,6 +89,9 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 	int mSortType{SORT_ASCEND_NAME};
 	HWND mHwnd{nullptr};
 	HACCEL mAccel{nullptr};
+
+	// フィルター更新タイマーID
+	UINT_PTR mUpdateTimerId{0};
 };
 
 void KeywordManagerDialog::PImpl::SortCommands()
@@ -255,6 +260,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::control::SinglePageDialog)
 	ON_NOTIFY(LVN_ODFINDITEM , IDC_LIST_COMMANDS, OnFindCommand)
 	ON_MESSAGE(WM_APP+1, OnUserMessageKeywrodEditKeyDown)
 	ON_MESSAGE(WM_APP+2, OnUserMessageResetContent)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -323,6 +329,14 @@ BOOL KeywordManagerDialog::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 	return __super::PreTranslateMessage(pMsg);
+}
+
+void KeywordManagerDialog::OnCancel()
+{
+	if (in->mUpdateTimerId != 0) {
+		KillTimer(TIMERID_FILTER);
+	}
+	__super::OnCancel();
 }
 
 void KeywordManagerDialog::ResetContents()
@@ -427,6 +441,20 @@ void KeywordManagerDialog::UpdateListItems()
 
 void KeywordManagerDialog::OnEditFilterChanged()
 {
+	// フィルター欄更新のつど更新するのではなく、
+	// 最後のキー入力後の0.2秒後に更新を入れる
+
+	if (in->mUpdateTimerId != 0) {
+		KillTimer(TIMERID_FILTER);
+	}
+	in->mUpdateTimerId = SetTimer(TIMERID_FILTER, 200, 0);
+}
+
+void KeywordManagerDialog::OnTimer(UINT_PTR timerId)
+{
+	KillTimer(TIMERID_FILTER);
+	in->mUpdateTimerId = 0;
+
 	UpdateData();
 	UpdateListItems();
 	UpdateStatus();
