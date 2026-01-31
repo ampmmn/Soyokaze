@@ -3,6 +3,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/common/CommandParameterFunctions.h"
+#include "core/IFIDDefine.h"
 #include <map>
 
 namespace launcherapp { namespace actions { namespace builtin {
@@ -174,6 +175,17 @@ void ExecuteAction::RegisterHistory(Parameter* param)
 	// 実行履歴に登録する
 	ExecuteHistory::GetInstance()->Add(_T("history"), param->GetWholeString());
 }
+
+bool ExecuteAction::QueryInterface(const launcherapp::core::IFID& ifid, void** obj)
+{
+	if (ifid == IFID_EXECUTEACTION) {
+		AddRef();
+		*obj = (ExecuteAction*)this;
+		return true;
+	}
+	return __super::QueryInterface(ifid, obj);
+}
+
 
 }}}
 

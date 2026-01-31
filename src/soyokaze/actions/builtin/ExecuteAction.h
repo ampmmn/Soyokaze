@@ -33,6 +33,8 @@ public:
 	// アクションを実行する
 	bool Perform(Parameter* param, String* errMsg) override;
 
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** obj) override;
+
 private:
 	void RegisterHistory(Parameter* param);
 

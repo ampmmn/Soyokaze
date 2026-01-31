@@ -2,6 +2,7 @@
 #include "PostFilterCommand.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/core/ActionBase.h"
+#include "actions/builtin/ExecuteAction.h"
 #include "commands/filter/FilterCommandParam.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
@@ -21,6 +22,7 @@ using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 
 using Action = launcherapp::actions::core::Action;
 using ActionBase = launcherapp::actions::core::ActionBase;
+using ExecuteAction = launcherapp::actions::builtin::ExecuteAction; 
 
 namespace launcherapp { namespace commands { namespace filter {
 
@@ -49,6 +51,12 @@ public:
 
 		RefPtr<Parameter> paramSub(param->Clone(), false);
 		paramSub->SetParameterString(argSub);
+
+		RefPtr<ExecuteAction> execAction;
+		if (mRealAction->QueryInterface(IFID_EXECUTEACTION, (void**)&execAction)) {
+			// フィルタコマンド経由での実行のときは履歴登録しない
+			execAction->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
+		}
 
 		return mRealAction->Perform(paramSub.get(), errMsg);
 	}

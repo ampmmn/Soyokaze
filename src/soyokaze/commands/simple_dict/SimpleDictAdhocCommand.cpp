@@ -161,6 +161,13 @@ bool SimpleDictAdhocCommand::CreateAction(Action** action)
 				spdlog::error("Failed to get action.");
 				return false;
 			}
+
+			RefPtr<ExecuteAction> execAction;
+			if (a->QueryInterface(IFID_EXECUTEACTION, (void**)&execAction)) {
+				// 簡易辞書コマンド経由での実行のときは履歴登録しない
+				execAction->SetHistoryPolicy(ExecuteAction::HISTORY_NONE);
+			}
+
 			return a->Perform(paramSub, errMsg);
 		});
 		return true;
