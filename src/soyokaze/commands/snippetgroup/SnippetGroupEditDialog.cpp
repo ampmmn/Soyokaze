@@ -169,6 +169,12 @@ BOOL SettingDialog::OnInitDialog()
 	UpdateStatus();
 	UpdateData(FALSE);
 
+	// 新規でなく、既存コマンドの編集の場合は、リストにフォーカスを当てておく
+	if (mOrgName.IsEmpty() == FALSE) {
+		mCommandListPtr->SetFocus();
+		return FALSE;
+	}
+
 	return TRUE;
 }
 
