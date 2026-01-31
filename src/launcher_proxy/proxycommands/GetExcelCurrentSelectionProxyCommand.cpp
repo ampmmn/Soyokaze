@@ -69,6 +69,11 @@ bool GetExcelCurrentSelectionProxyCommand::Execute(json& json_req, json& json_re
 		std::wstring sheetName = activeSheet.GetPropertyString(L"Name");
 		json_res["worksheet"] = utf2utf(sheetName, tmp);
 	}
+	else {
+		json_res["result"] = false;
+		json_res["reason"] = "failed to get active sheet.";
+		return true;
+	}
 
 	// 選択範囲を表すテキストを得る
 	DispWrapper selection;
@@ -83,6 +88,7 @@ bool GetExcelCurrentSelectionProxyCommand::Execute(json& json_req, json& json_re
 	}	
 	else {
 		json_res["result"] = false;
+		json_res["reason"] = "failed to get selection.";
 	}
 
 	return true;
