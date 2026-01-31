@@ -314,7 +314,15 @@ bool SnippetGroupCommand::QueryCandidates(
 
 		int level = pattern->Match(item.mName, 1);
 		if (level == Pattern::Mismatch) {
-			continue;
+			// 名前で一致しなかった場合は説明でも比較する
+			level = pattern->Match(item.mDescription, 1);
+			if (level == Pattern::Mismatch) {
+				// 値でも比較
+				level = pattern->Match(item.mText, 1);
+				if (level == Pattern::Mismatch) {
+					continue;
+				}
+			}
 		}
 
 		if (level == Pattern::PartialMatch) {
