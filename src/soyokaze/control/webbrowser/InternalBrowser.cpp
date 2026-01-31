@@ -290,10 +290,21 @@ LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			auto& webview = thisPtr->in->mWebView;
 			if (webview) {
 				HRESULT hr = webview->Navigate(url);
+				thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 			}
 
 		}
 		return 0;
+	}
+	else if (msg == WM_ACTIVATE) {
+		if (wp != WA_INACTIVE) {
+			// ウインドウがアクティブになったらwebview側にフォーカスを設定する
+			auto thisPtr = (InternalBrowser*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			if (thisPtr) {
+				thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+			}
+			return 0;
+		}
 	}
 
 	return ::DefWindowProc(hwnd, msg, wp, lp);
