@@ -19,7 +19,7 @@ static bool GetDispatch(
 		return false;
 	}
 
-	hr = CoCreateInstance(clsId, NULL, CLSCTX_ALL, IID_IDispatch, (void**)&dispPtr);
+	hr = CoCreateInstance(clsId, NULL, CLSCTX_ALL, IID_IDispatch, (void**)dispPtr);
 	if (FAILED(hr)) {
 		return false;
 	}
