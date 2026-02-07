@@ -18,7 +18,7 @@ public:
 
 	CString GetName() override;
 	CString GetTypeDisplayName() override;
-	bool GetAction(uint32_t modifierFlags, Action** action) override;
+	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
 
@@ -35,6 +35,8 @@ public:
 	void OnUnselect(Command* next) override;
 	// 実行後のウインドウを閉じる方法を決定する
 	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
+	// 選択時に入力欄に設定するキーワードとキャレットを設定する
+	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

@@ -96,9 +96,9 @@ static void DoMouseOperation(CPoint point, bool isRight, bool isDblClk)
 	SendInput(isDblClk ? 4 : 2, inputs, sizeof(INPUT));
 }
 
-bool UIAutomationAdhocCommand::GetAction(uint32_t modifierFlags, Action** action)
+bool UIAutomationAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (modifierFlags != 0) {
+	if (hotkeyAttr.GetModifiers() != 0) {
 		return false;
 	}
 
@@ -128,7 +128,7 @@ bool UIAutomationAdhocCommand::GetAction(uint32_t modifierFlags, Action** action
 	});
 
 
-	return TRUE;
+	return true;
 }
 
 HICON UIAutomationAdhocCommand::GetIcon()
@@ -154,7 +154,7 @@ bool UIAutomationAdhocCommand::GetMenuItem(int index, Action** action)
 	if (index != 0) {
 		return false;
 	}
-	return GetAction(0, action);
+	return GetAction(HOTKEY_ATTR(0, VK_RETURN), action);
 }
 
 // 選択された
@@ -185,6 +185,12 @@ UIAutomationAdhocCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 {
 	UNREFERENCED_PARAMETER(modifierMask);
 	return launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+}
+
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool UIAutomationAdhocCommand::CompleteKeyword(CString&, int& , int& )
+{
+	return false;
 }
 
 bool UIAutomationAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
