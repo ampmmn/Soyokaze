@@ -5,8 +5,6 @@
 #include "commands/keysplitter/KeySplitterModifierState.h"
 #include "commands/keysplitter/KeySplitterParam.h"
 
-class ModalComboBox;
-
 namespace launcherapp {
 namespace commands {
 namespace keysplitter {
@@ -32,20 +30,20 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	void OnUpdateStatus();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	ITEM mItem;
 	const CommandParam* mParamPtr{nullptr};
 
 	ModifierState mOrgState;
 	ModifierState mState;
-	int mCommandSelIndex{-1};
 	CString mMessage;
 
 // 実装
 protected:
-	virtual void OnOK();
+	void OnOK() override;
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnButtonBrowse();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
 
 } // end of namespace keysplitter

@@ -4,8 +4,6 @@
 #include <memory>
 #include "commands/keysplitter/KeySplitterParam.h"
 
-class ModalComboBox;
-
 namespace launcherapp {
 namespace commands {
 namespace keysplitter {

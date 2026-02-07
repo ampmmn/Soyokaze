@@ -36,7 +36,6 @@ protected:
 public:
 	Param mParam;
 	CString mVariableText;
-	int mCommandSelIndex;
 
 // 実装
 protected:
@@ -44,6 +43,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnButtonBrowse();
 };
 
 } // end of namespace common

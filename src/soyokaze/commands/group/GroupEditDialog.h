@@ -5,8 +5,6 @@
 #include "commands/group/CommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 
-class ModalComboBox;
-
 namespace launcherapp {
 namespace commands {
 namespace group {
@@ -36,8 +34,6 @@ protected:
 
 	//
 	CListCtrl* mCommandListPtr;
-
-	std::unique_ptr<ModalComboBox> mCommandSelectBox;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;

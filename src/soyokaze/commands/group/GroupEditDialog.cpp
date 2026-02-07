@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GroupEditDialog.h"
 #include "hotkey/CommandHotKeyDialog.h"
-#include "control/ModalComboBox.h"
+#include "commands/common/CommandSelectDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
@@ -13,6 +13,7 @@
 #endif
 
 using Command =  launcherapp::core::Command;
+using CommandSelectDialog = launcherapp::commands::common::CommandSelectDialog;
 
 namespace launcherapp {
 namespace commands {
@@ -22,8 +23,7 @@ namespace group {
 
 GroupEditDialog::GroupEditDialog(CWnd* parentWnd) : 
 	launcherapp::control::SinglePageDialog(IDD_GROUP, parentWnd),
-	mCommandListPtr(nullptr),
-	mCommandSelectBox(std::make_unique<ModalComboBox>())
+	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("GroupEdit");
 }
@@ -97,28 +97,6 @@ BOOL GroupEditDialog::OnInitDialog()
 	ASSERT(mCommandListPtr);
 
 	mCommandListPtr->SetExtendedStyle(mCommandListPtr->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-
-	// コマンド一覧コンボボックスを作っておく
-	mCommandSelectBox->Create(mCommandListPtr, WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL | CBS_NOINTEGRALHEIGHT);
-	mCommandSelectBox->SetMinVisibleItems(10);
-	std::vector<Command*> commands;
-	launcherapp::core::CommandRepository::GetInstance()->EnumCommands(commands);
-	for (auto& cmd : commands) {
-
-		auto name = cmd->GetName();
-
-		if (mOrgName == name) {
-			// 自分自身は追加しない
-			continue;
-		}
-
-		mCommandSelectBox->AddString(name);
-	}
-
-	// 後始末
-	for (auto& cmd : commands) {
-		cmd->Release();
-	}
 
 	CString caption;
   GetWindowText(caption);
@@ -287,25 +265,20 @@ void GroupEditDialog::OnButtonHotKey()
 
 bool GroupEditDialog::SelectCommand(int index)
 {
-	// コンボボックスを表示
-	ModalComboBox* cmbBox = mCommandSelectBox.get();
-	if (cmbBox->DoModalOverListItem(mCommandListPtr, index) != IDOK) {
+	// コマンド選択ダイアログを表示
+	CommandSelectDialog dlg(this);
+	if (index < mParam.mItems.size()) {
+		// 既存のコマンドを選択した状態でダイアログを表示
+		dlg.SetCommandName(mParam.mItems[index].mItemName);
+	}
+	if (dlg.DoModal() != IDOK) {
 		return false;
 	}
 
-	if (cmbBox->GetCurSel() == -1) {
-		return false;
-	}
-
-	// 選択したテキストでセルを更新
-	CString cmdName;
-	cmbBox->GetLBText(cmbBox->GetCurSel(), cmdName);
-
-	// 
+	CString cmdName = dlg.GetCommandName();
 
 	CString checked;
 
-	ASSERT(index <= mParam.mItems.size());
 	if (index == mParam.mItems.size()) {
 		GroupItem item;
 		item.mItemName = cmdName;

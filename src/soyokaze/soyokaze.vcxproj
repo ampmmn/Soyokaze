@@ -466,6 +466,7 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h" />
     <ClInclude Include="commands\common\AutoWrap.h" />
     <ClInclude Include="commands\common\CommandParameterFunctions.h" />
+    <ClInclude Include="commands\common\CommandSelectDialog.h" />
     <ClInclude Include="commands\common\CopyToClipboardDialog.h" />
     <ClInclude Include="commands\common\DispWrapper.h" />
     <ClInclude Include="commands\common\ExecutablePath.h" />
@@ -832,7 +833,6 @@
     <ClInclude Include="settingwindow\ExtensionSettingDialog.h" />
     <ClInclude Include="settingwindow\InputHistorySettingPage.h" />
     <ClInclude Include="settingwindow\InputSettingDialog.h" />
-    <ClInclude Include="control\ModalComboBox.h" />
     <ClInclude Include="control\SelectCommandTypeDialog.h" />
     <ClInclude Include="control\SettingDialogBase.h" />
     <ClInclude Include="control\SettingPage.h" />
@@ -979,6 +979,7 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp" />
     <ClCompile Include="commands\common\AutoWrap.cpp" />
     <ClCompile Include="commands\common\CommandParameterFunctions.cpp" />
+    <ClCompile Include="commands\common\CommandSelectDialog.cpp" />
     <ClCompile Include="commands\common\CopyToClipboardDialog.cpp" />
     <ClCompile Include="commands\common\DispWrapper.cpp" />
     <ClCompile Include="commands\common\ExecutablePath.cpp" />
@@ -1333,7 +1334,6 @@
     <ClCompile Include="settingwindow\ExtensionSettingDialog.cpp" />
     <ClCompile Include="settingwindow\InputHistorySettingPage.cpp" />
     <ClCompile Include="settingwindow\InputSettingDialog.cpp" />
-    <ClCompile Include="control\ModalComboBox.cpp" />
     <ClCompile Include="control\SelectCommandTypeDialog.cpp" />
     <ClCompile Include="control\SettingDialogBase.cpp" />
     <ClCompile Include="control\SettingPage.cpp" />

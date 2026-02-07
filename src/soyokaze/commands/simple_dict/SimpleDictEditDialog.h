@@ -5,8 +5,6 @@
 #include "commands/simple_dict/SimpleDictParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 
-class ModalComboBox;
-
 namespace launcherapp {
 namespace commands {
 namespace simple_dict {

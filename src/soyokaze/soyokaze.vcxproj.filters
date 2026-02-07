@@ -399,9 +399,6 @@
     <ClInclude Include="commands\group\CommandParam.h">
       <Filter>commands\group</Filter>
     </ClInclude>
-    <ClInclude Include="control\ModalComboBox.h">
-      <Filter>control</Filter>
-    </ClInclude>
     <ClInclude Include="commands\common\ExpandFunctions.h">
       <Filter>commands\common</Filter>
     </ClInclude>
@@ -1851,6 +1848,9 @@
     <ClInclude Include="commands\core\CommandProviderRepository.h">
       <Filter>commands\core</Filter>
     </ClInclude>
+    <ClInclude Include="commands\common\CommandSelectDialog.h">
+      <Filter>commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -1939,9 +1939,6 @@
     </ClCompile>
     <ClCompile Include="commands\group\CommandParam.cpp">
       <Filter>commands\group</Filter>
-    </ClCompile>
-    <ClCompile Include="control\ModalComboBox.cpp">
-      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\common\ExpandFunctions.cpp">
       <Filter>commands\common</Filter>
@@ -3259,6 +3256,9 @@
     </ClCompile>
     <ClCompile Include="commands\core\CommandProviderRepository.cpp">
       <Filter>commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\common\CommandSelectDialog.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

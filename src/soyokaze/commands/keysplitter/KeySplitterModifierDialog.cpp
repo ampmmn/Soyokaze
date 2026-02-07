@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "KeySplitterModifierDialog.h"
+#include "commands/common/CommandSelectDialog.h"
 #include "control/DDXWrapper.h"
-#include "commands/core/CommandRepository.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>
@@ -10,8 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-using CommandRepository = launcherapp::core::CommandRepository;
-using Command = launcherapp::core::Command;
+using CommandSelectDialog = launcherapp::commands::common::CommandSelectDialog;
 
 namespace launcherapp {
 namespace commands {
@@ -56,8 +55,8 @@ void ModifierDialog::GetModifierState(ModifierState& state) const
 void ModifierDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
-	DDX_CBIndex(pDX, IDC_COMBO_COMMANDS, mCommandSelIndex);
-	DDX_Text(pDX, IDC_EDIT_NAME, mItem.mActionName);
+	DDX_Text(pDX, IDC_EDIT_NAME, mItem.mCommandName);
+	DDX_Text(pDX, IDC_EDIT_TITLE, mItem.mActionName);
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Check(pDX, IDC_CHECK_SHIFT, mState.mIsPressShift);
 	DDX_Check(pDX, IDC_CHECK_CTRL, mState.mIsPressCtrl);
@@ -70,6 +69,7 @@ BEGIN_MESSAGE_MAP(ModifierDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_CTRL, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ALT, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_WIN, OnUpdateStatus)
+	ON_COMMAND(IDC_BUTTON_BROWSE, OnButtonBrowse)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -78,6 +78,11 @@ bool ModifierDialog::UpdateStatus()
 {
 	if (mState != mOrgState && mParamPtr->IsStateExists(mState)) {
 		mMessage = _T("既に定義されています");
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+		return false;
+	}
+	if (mItem.mCommandName.IsEmpty()) {
+		mMessage = _T("コマンドを選択してください");
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return false;
 	}
@@ -91,28 +96,8 @@ bool ModifierDialog::UpdateStatus()
 BOOL ModifierDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
-
-	// コマンド一覧のコンボボックス
-	std::vector<Command*> commands;
-	auto cmdRepo = CommandRepository::GetInstance();
-	cmdRepo->EnumCommands(commands);
-
-	auto commandComboBox = (CComboBox*)GetDlgItem(IDC_COMBO_COMMANDS);
-	ASSERT(commandComboBox);
-
-	for (auto& cmd : commands) {
-		CString name = cmd->GetName();
-		int idx = commandComboBox->AddString(name);
-		cmd->Release();
-
-		if (name == mItem.mCommandName) {
-			mCommandSelIndex = idx;
-		}
-	}
-
+	UpdateStatus();
 	UpdateData(FALSE);
-
-
 	return TRUE;
 }
 
@@ -123,13 +108,26 @@ void ModifierDialog::OnUpdateStatus()
 	UpdateData(FALSE);
 }
 
+void ModifierDialog::OnButtonBrowse()
+{
+	CommandSelectDialog dlg(this);
+	dlg.SetCommandName(mItem.mCommandName);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+	mItem.mCommandName = dlg.GetCommandName();
+
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
 void ModifierDialog::OnOK()
 {
 	UpdateData();
 
-	auto commandComboBox = (CComboBox*)GetDlgItem(IDC_COMBO_COMMANDS);
-	ASSERT(commandComboBox);
-	commandComboBox->GetLBText(commandComboBox->GetCurSel(), mItem.mCommandName);
+	if (mItem.mCommandName.IsEmpty()) {
+		return;
+	}
 
 	__super::OnOK();
 }
