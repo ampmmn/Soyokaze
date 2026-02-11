@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
+#include "commands/uiautomation/WindowUIElement.h"
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace uiautomation {
@@ -13,7 +14,8 @@ class UIAutomationAdhocCommand :
 	virtual public launcherapp::core::SelectionBehavior
 {
 public:
-	UIAutomationAdhocCommand(HWND hwnd, LPCTSTR name, const CRect& rectWindow, LPCTSTR prefix);
+	UIAutomationAdhocCommand();
+	UIAutomationAdhocCommand(HWND hwnd, RefPtr<UIElement>& elem, LPCTSTR prefix);
 	virtual ~UIAutomationAdhocCommand();
 
 	CString GetName() override;

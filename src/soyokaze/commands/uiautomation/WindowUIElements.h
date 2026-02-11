@@ -4,23 +4,30 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <UIAutomation.h>
+
+#include "commands/uiautomation/WindowUIElement.h"
+#include "utility/RefPtr.h"
 
 namespace launcherapp { namespace commands { namespace uiautomation {
-
-class WindowUIElement
-{
-public:
-	std::wstring mName;
-	RECT mRect;
-};
 
 class WindowUIElements
 {
 public:
+	using UIElementList = std::vector<RefPtr<UIElement> >;
+
+public:
 	WindowUIElements(HWND hwnd);
 	~WindowUIElements();
 
-	bool FetchElements(std::vector<WindowUIElement>& items);
+	bool FetchElements(UIElementList& items);
+	bool FetchTabItemElements(UIElementList& items);
+	bool FetchWin32MenuItems(UIElementList& items);
+
+	void Dump();
+
+protected:
+	bool FetchElements(UIElementList& items, int findType);
 
 private:
 	struct PImpl;

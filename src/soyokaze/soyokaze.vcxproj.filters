@@ -1866,6 +1866,15 @@
     <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h">
       <Filter>commands\uiautomation</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uiautomation\AppSettingPageUIAutomation.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIAutomationParam.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\uiautomation\WindowUIElement.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3236,7 +3245,6 @@
     <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp">
       <Filter>commands\explorepath</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="commands\explorepath\ExplorePathExtraActionSettings.cpp">
       <Filter>commands\explorepath</Filter>
     </ClCompile>
@@ -3275,7 +3283,7 @@
     </ClCompile>
     <ClCompile Include="commands\common\CommandSelectDialog.cpp">
       <Filter>commands\common</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp">
       <Filter>commands\uiautomation</Filter>
     </ClCompile>
@@ -3287,7 +3295,15 @@
     </ClCompile>
     <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp">
       <Filter>commands\uiautomation</Filter>
->>>>>>> b7f8b420 (feat : #103 UIAutomationElementを使ったコマンドの試作)
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\AppSettingPageUIAutomation.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIAutomationParam.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\WindowUIElement.cpp">
+      <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3316,12 +3332,8 @@
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
-<<<<<<< HEAD
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>
-=======
-</Project>
->>>>>>> b7f8b420 (feat : #103 UIAutomationElementを使ったコマンドの試作)

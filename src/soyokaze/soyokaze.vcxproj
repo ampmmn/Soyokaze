@@ -575,9 +575,12 @@
     <ClInclude Include="commands\specialfolderfiles\SpecialFolderFileFind.h" />
     <ClInclude Include="commands\transfer\CommandClipboardTransfer.h" />
     <ClInclude Include="commands\transfer\CommandJSONEntry.h" />
+    <ClInclude Include="commands\uiautomation\AppSettingPageUIAutomation.h" />
     <ClInclude Include="commands\uiautomation\UIAutomationAdhocCommand.h" />
     <ClInclude Include="commands\uiautomation\UIAutomationCommandProvider.h" />
+    <ClInclude Include="commands\uiautomation\UIAutomationParam.h" />
     <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h" />
+    <ClInclude Include="commands\uiautomation\WindowUIElement.h" />
     <ClInclude Include="commands\uiautomation\WindowUIElements.h" />
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
@@ -1093,9 +1096,12 @@
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFileFind.cpp" />
     <ClCompile Include="commands\transfer\CommandClipboardTransfer.cpp" />
     <ClCompile Include="commands\transfer\CommandJSONEntry.cpp" />
+    <ClCompile Include="commands\uiautomation\AppSettingPageUIAutomation.cpp" />
     <ClCompile Include="commands\uiautomation\UIAutomationAdhocCommand.cpp" />
     <ClCompile Include="commands\uiautomation\UIAutomationCommandProvider.cpp" />
+    <ClCompile Include="commands\uiautomation\UIAutomationParam.cpp" />
     <ClCompile Include="commands\uiautomation\UIElementIndicatorWindow.cpp" />
+    <ClCompile Include="commands\uiautomation\WindowUIElement.cpp" />
     <ClCompile Include="commands\uiautomation\WindowUIElements.cpp" />
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp" />
     <ClCompile Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.cpp" />

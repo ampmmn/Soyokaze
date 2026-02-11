@@ -24,30 +24,31 @@ using namespace launcherapp::commands::common;
 
 struct UIAutomationAdhocCommand::PImpl
 {
-	CRect mRectWindow;
+	PImpl() {}
+	PImpl(RefPtr<UIElement>& elem) : mElem(elem) {} 
+
+	RefPtr<UIElement> mElem;
 	HWND mHwnd{nullptr};
 	CString mPrefix;
-	
 };
 
 
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(UIAutomationAdhocCommand)
 
+UIAutomationAdhocCommand::UIAutomationAdhocCommand() : in(std::make_unique<PImpl>())
+{
+}
+
 UIAutomationAdhocCommand::UIAutomationAdhocCommand(
 	HWND hwnd,
- 	LPCTSTR name,
- 	const CRect& rectWindow,
+	RefPtr<UIElement>& elem,
  	LPCTSTR prefix
-) : in(std::make_unique<PImpl>())
+) : in(std::make_unique<PImpl>(elem))
 {
-	this->mName = name;
-
+	this->mName = elem->GetName();
 	in->mHwnd = hwnd;
-	in->mRectWindow = rectWindow;
 	in->mPrefix = prefix;
-
-	this->mDescription.Format(_T("%d,%d(%d,%d)"),
-		 	rectWindow.left, rectWindow.top, rectWindow.Width(), rectWindow.Height());
+	this->mDescription = this->mName;
 }
 
 UIAutomationAdhocCommand::~UIAutomationAdhocCommand()
@@ -103,28 +104,7 @@ bool UIAutomationAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action**
 	}
 
 	*action = new CallbackAction(_T("クリック"), [&](Parameter*, String*) -> bool {
-
-		// クリック位置
-		CPoint center = in->mRectWindow.CenterPoint();
-
-		// もしクリック位置が入力画面の背後にある場合はウインドウが消えるのを待つ
-		SharedHwnd mainWnd;
-		CRect rcMainWnd;
-		GetWindowRect(mainWnd.GetHwnd(), &rcMainWnd);
-		if (rcMainWnd.PtInRect(center)) {
-			Sleep(500);
-		}
-
-		CPoint org_pos;
-		GetCursorPos(&org_pos);
-
-		// 選択した要素に対してマウスイベントを発行する
-		DoMouseOperation(center, false, false);
-
-		// カーソル位置をもとに戻す
-		//SetCursorPos(org_pos.x, org_pos.y);
-
-		return true;
+		return in->mElem->Click();
 	});
 
 
@@ -139,7 +119,7 @@ HICON UIAutomationAdhocCommand::GetIcon()
 launcherapp::core::Command*
 UIAutomationAdhocCommand::Clone()
 {
-	return new UIAutomationAdhocCommand(in->mHwnd, this->mName, in->mRectWindow, in->mPrefix);
+	return new UIAutomationAdhocCommand(in->mHwnd, in->mElem, in->mPrefix);
 }
 
 // メニューの項目数を取得する
@@ -167,7 +147,7 @@ void UIAutomationAdhocCommand::OnSelect(Command* prior)
 	}
 
 	//対象のウインドウを強調表示する
-	UIElementIndicatorWindow::GetInstance()->Indicate(in->mHwnd, in->mRectWindow);
+	UIElementIndicatorWindow::GetInstance()->Indicate(in->mHwnd, in->mElem->GetRect());
 }
 
 // 選択解除された
