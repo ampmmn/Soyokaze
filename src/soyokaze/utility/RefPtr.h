@@ -77,8 +77,8 @@ public:
 				if (mIsDebugMode) { spdlog::debug("AddRef {0}(->{1})", (void*)mPtr, n); }
 #endif
 			}
-			return *this;
 		}
+		return *this;
 	}
 
 	T* get() { return mPtr; }

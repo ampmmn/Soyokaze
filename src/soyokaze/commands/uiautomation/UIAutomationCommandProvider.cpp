@@ -127,11 +127,16 @@ struct UIAutomationCommandProvider::PImpl :
 			return;
 		}
 
+		HWND hwnd = GetNextHwnd();
+		if (mTargetWindow != hwnd) {
+			std::lock_guard<std::mutex> lock(mMutex);
+			mElements.clear();
+		}
+
 		// ランチャーの入力窓が表示されたタイミングで
-		std::thread th([&]() {
+		std::thread th([&, hwnd]() {
 
 			// ランチャーのウインドウの背面にあるウインドウを取得する
-			HWND hwnd = GetNextHwnd();
 			if (IsWindow(hwnd) == FALSE) {
 				spdlog::debug("IsWindow returned false.");
 				return;
@@ -146,10 +151,13 @@ struct UIAutomationCommandProvider::PImpl :
 			WindowUIElements windowUIElements(hwnd);
 
 			WindowUIElements::UIElementList elems;
-			windowUIElements.FetchElements(elems);
 			if (mParam.mIsEnableMenuItem) {
 				windowUIElements.FetchWin32MenuItems(elems);
+				// Win32メニュー項目をとった時点で結果を反映する
+				std::lock_guard<std::mutex> lock(mMutex);
+				mElements = elems;
 			}
+			windowUIElements.FetchElements(elems);
 			// デバッグ用出力
 			//windowUIElements.Dump();
 

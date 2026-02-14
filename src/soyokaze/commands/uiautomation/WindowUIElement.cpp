@@ -36,8 +36,12 @@ WindowUIElement::~WindowUIElement()
 CString WindowUIElement::GetName()
 {
 	// 名前を取得
-	BSTR name;
-	mElem->get_CurrentName(&name);
+	BSTR name = nullptr;
+	HRESULT hr = mElem->get_CachedName(&name);
+	if (FAILED(hr) || name == nullptr) {
+		return false;
+	}
+
 	CString elemName(name ? (const wchar_t*)name : _T(""));
 	SysFreeString(name);
 
@@ -47,7 +51,7 @@ CString WindowUIElement::GetName()
 CRect WindowUIElement::GetRect()
 {
 	CRect rc{ 0,0,0,0 };
-	mElem->get_CurrentBoundingRectangle(&rc);
+	mElem->get_CachedBoundingRectangle(&rc);
 	return rc;
 }
 
@@ -80,14 +84,14 @@ static void DoMouseOperation(CPoint point, bool isRight, bool isDblClk)
 bool WindowUIElement::Click()
 {
 	IUIAutomationInvokePattern* invoke{nullptr};
-	HRESULT hr = mElem->GetCurrentPatternAs(UIA_InvokePatternId, IID_IUIAutomationInvokePattern, (void**)&invoke);
+	HRESULT hr = mElem->GetCachedPatternAs(UIA_InvokePatternId, IID_IUIAutomationInvokePattern, (void**)&invoke);
 	if (FAILED(hr) || invoke == nullptr) {
 		CPoint center;
 		BOOL isClickable;
 		hr = mElem->GetClickablePoint(&center, &isClickable);
 		if (FAILED(hr) || isClickable == FALSE) {
 			CRect rc{ 0,0,0,0 };
-			mElem->get_CurrentBoundingRectangle(&rc);
+			mElem->get_CachedBoundingRectangle(&rc);
 			center = rc.CenterPoint();
 		}
 

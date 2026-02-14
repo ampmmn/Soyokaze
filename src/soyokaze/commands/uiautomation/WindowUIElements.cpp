@@ -18,10 +18,19 @@ enum FIND_ELEMENT_TYPE {
 	TYPE_TABCTRL,
 };
 
+static bool IsPaneOrTreeItemElement(CComPtr<IUIAutomationElement>& elem)
+{
+	// 特定アプリで、PaneコントロールがOffScreen==trueであるにもかかわらず、
+	// 子要素はOffScreen==falseであるケースがあったのでそれを識別する
+	CONTROLTYPEID typeId = 0;
+	elem->get_CachedControlType(&typeId);
+	return typeId == UIA_PaneControlTypeId || typeId == UIA_TreeItemControlTypeId || typeId == UIA_TreeControlTypeId;
+}
+
 static bool IsEndElement(CComPtr<IUIAutomationElement>& elem)
 {
-	CONTROLTYPEID typeId;
-	elem->get_CurrentControlType(&typeId);
+	CONTROLTYPEID typeId = 0;
+	elem->get_CachedControlType(&typeId);
 
 	return typeId == UIA_ButtonControlTypeId ||
 	       typeId == UIA_CheckBoxControlTypeId ||
@@ -59,8 +68,7 @@ struct WindowUIElements::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 
-constexpr uint64_t SEARCH_TIMEOUT = 2000;
-
+constexpr uint64_t SEARCH_TIMEOUT = 5000;
 
 WindowUIElements::WindowUIElements(HWND hwnd) : in(new PImpl)
 {
@@ -92,6 +100,7 @@ static std::set<UINT>& GetTargetSet(int findType)
 				UIA_TabControlTypeId,
 				UIA_TabItemControlTypeId,
 				UIA_TreeItemControlTypeId,
+				UIA_ListItemControlTypeId,
 				UIA_HeaderItemControlTypeId,
 		};
 		return targetTypeId;
@@ -107,15 +116,15 @@ static std::set<UINT>& GetTargetSet(int findType)
 static bool IsTargetElement(CComPtr<IUIAutomationElement>& elem, int findType)
 {
 	// 種別を取得
-	CONTROLTYPEID typeId;
-	elem->get_CurrentControlType(&typeId);
+	CONTROLTYPEID typeId = 0;
+	elem->get_CachedControlType(&typeId);
 	if (GetTargetSet(findType).count(typeId) == 0) {
 		return false;
 	}
 
 	// 
-	BOOL isFocusable;
-	elem->get_CurrentIsKeyboardFocusable(&isFocusable);
+	BOOL isFocusable = FALSE;
+	elem->get_CachedIsKeyboardFocusable(&isFocusable);
 	if (isFocusable == false) {
 		return false;
 	}
@@ -124,8 +133,8 @@ static bool IsTargetElement(CComPtr<IUIAutomationElement>& elem, int findType)
 
 static bool IsElementEnabled(CComPtr<IUIAutomationElement>& elem)
 {
-	BOOL isEnable;
-	elem->get_CurrentIsEnabled(&isEnable);
+	BOOL isEnable = FALSE;
+ 	elem->get_CachedIsEnabled(&isEnable);
 	if (isEnable == false) {
 		return false;
 	}
@@ -134,15 +143,15 @@ static bool IsElementEnabled(CComPtr<IUIAutomationElement>& elem)
 
 static bool IsElementVisible(CComPtr<IUIAutomationElement>& elem)
 {
-		BOOL isOffScreen;
-		elem->get_CurrentIsOffscreen(&isOffScreen);
+		BOOL isOffScreen = FALSE;
+		elem->get_CachedIsOffscreen(&isOffScreen);
 		if (isOffScreen) {
 			return false;
 		}
 
 		// 領域を取得
 		CRect rc;
-		elem->get_CurrentBoundingRectangle(&rc);
+		elem->get_CachedBoundingRectangle(&rc);
 		if(rc.IsRectEmpty()){
 			return false;
 		}
@@ -181,15 +190,49 @@ bool WindowUIElements::FetchElements(UIElementList& items, int findType)
 	HRESULT hr = in->mAutomation->ElementFromHandle(in->mHwnd, &windowElement);
 	if (FAILED(hr)) {
 		return false;
-	}
+	} 
+
+	// キャッシュリクエスト作成
+	CComPtr<IUIAutomationCacheRequest> cacheReq;
+	in->mAutomation->CreateCacheRequest(&cacheReq);
+
+	// キャッシュ対象範囲
+	cacheReq->put_TreeScope(TreeScope_Element);
+	// キャッシュ対象プロパティ
+	cacheReq->AddProperty(UIA_NamePropertyId);
+	cacheReq->AddProperty(UIA_BoundingRectanglePropertyId);
+	cacheReq->AddProperty(UIA_ControlTypePropertyId);
+	cacheReq->AddProperty(UIA_IsOffscreenPropertyId);
+	cacheReq->AddProperty(UIA_IsEnabledPropertyId);
+	cacheReq->AddProperty(UIA_IsKeyboardFocusablePropertyId);
+	cacheReq->AddProperty(UIA_ClickablePointPropertyId);
+	cacheReq->AddPattern(UIA_InvokePatternId);
+
+	CComPtr<IUIAutomationElement> windowElementCached;
+	windowElement->BuildUpdatedCache(cacheReq, &windowElementCached);
 
 	auto start = GetTickCount64();
 
-	CComPtr<IUIAutomationCondition> pCondition;
-	in->mAutomation->CreateTrueCondition(&pCondition);
+	// 条件を作成する
+	VARIANT varProp;
+	varProp.vt = VT_BOOL;
+	varProp.boolVal = VARIANT_FALSE;
+
+	// 画面上に表示されているかどうか
+	CComPtr<IUIAutomationCondition> pOffScreenCondition;
+	hr = in->mAutomation->CreatePropertyCondition(UIA_IsOffscreenPropertyId, varProp, &pOffScreenCondition);
+
+	// 有効かどうか
+	varProp.boolVal = VARIANT_TRUE;
+	CComPtr<IUIAutomationCondition> pEnableCondition;
+	hr = in->mAutomation->CreatePropertyCondition(UIA_IsEnabledPropertyId, varProp, &pEnableCondition);
+
+	// AND
+	CComPtr<IUIAutomationCondition> pAndCondition;
+	in->mAutomation->CreateAndCondition(pEnableCondition, pOffScreenCondition, &pAndCondition);
 
 	std::list<QUEUE_ITEM> queue;
-	queue.push_back(QUEUE_ITEM{windowElement, true});
+	queue.push_back(QUEUE_ITEM{windowElementCached, true});
 	while (queue.empty() == false) {
 		spdlog::debug("queue size : {}", queue.size());
 
@@ -204,8 +247,10 @@ bool WindowUIElements::FetchElements(UIElementList& items, int findType)
 		CComPtr<IUIAutomationElement>& curElement = item.mCurrentItem;
 
 		// 子要素を取得
+		auto& pCondition = IsPaneOrTreeItemElement(curElement) ? pEnableCondition : pAndCondition;
+
 		CComPtr<IUIAutomationElementArray> pElementArray;
-		curElement->FindAll(TreeScope_Children, pCondition, &pElementArray);
+		curElement->FindAllBuildCache(TreeScope_Children, pCondition, cacheReq, &pElementArray);
 		if (pElementArray == nullptr) {
 			continue;
 		}
@@ -238,8 +283,8 @@ bool WindowUIElements::FetchElements(UIElementList& items, int findType)
 			if (IsTargetElement(pChild, findType) && IsElementVisible(pChild)) {
 
 				// 名前を取得
-				BSTR name;
-				pChild->get_CurrentName(&name);
+				BSTR name = nullptr;
+				pChild->get_CachedName(&name);
 				std::wstring elemName(name ? (const wchar_t*)name : _T(""));
 				SysFreeString(name);
 
@@ -289,9 +334,9 @@ bool WindowUIElements::FetchWin32MenuItems(UIElementList& items)
 
 		int count = GetMenuItemCount(h);
 		for (int i = 0; i < count; ++i) {
-			TCHAR text[256];
+			TCHAR text[256] = { _T('\0') };
 
-			MENUITEMINFO info{ sizeof(MENUITEMINFO), MIIM_STRING | MIIM_STATE };
+			MENUITEMINFO info{ sizeof(MENUITEMINFO), MIIM_STRING | MIIM_STATE | MIIM_FTYPE };
 			info.cch = 256;
 			info.dwTypeData = text;
 
@@ -299,6 +344,10 @@ bool WindowUIElements::FetchWin32MenuItems(UIElementList& items)
 
 			if (info.fState & MFS_DISABLED) {
 				continue;
+			}
+			if ((info.fType & MFT_OWNERDRAW) || text[0] == _T('\0')) {
+				// オーナードローの項目は、名前が取れないことがあるので、インデックスを名前にする
+				_stprintf_s(text, _T("(%d)"), i + 1);
 			}
 
 			CString text_;
@@ -309,7 +358,7 @@ bool WindowUIElements::FetchWin32MenuItems(UIElementList& items)
 				text_ = text;
 			}
 			text_.Replace(_T("\t"), _T(" "));
-			text_.Replace(_T("&"), _T(" "));
+			text_.Replace(_T("&"), _T(""));
 
 			auto subMenu = GetSubMenu(h, i);
 			if (subMenu == nullptr) {
@@ -391,36 +440,36 @@ static void makeJsonObj(CComPtr<IUIAutomationElement> elem, json& json_obj, cons
 {
 	json_obj["children"] = json::array();
 
-	CRect rcCurrent{ 0,0,0,0 };
-	elem->get_CurrentBoundingRectangle(&rcCurrent);
+	CRect rc{ 0,0,0,0 };
+	elem->get_CurrentBoundingRectangle(&rc);
 
 	auto rect_array = json::array();
-	rect_array.push_back(rcCurrent.left);
-	rect_array.push_back(rcCurrent.top);
-	rect_array.push_back(rcCurrent.right);
-	rect_array.push_back(rcCurrent.bottom);
+	rect_array.push_back(rc.left);
+	rect_array.push_back(rc.top);
+	rect_array.push_back(rc.right);
+	rect_array.push_back(rc.bottom);
 
 	json_obj["rect"] = rect_array;
 
 	// 種別を取得
-	CONTROLTYPEID typeId;
+	CONTROLTYPEID typeId = 0;
 	elem->get_CurrentControlType(&typeId);
 	json_obj["control_type"] = fromControlIdToString(typeId);
 	// 
-	BOOL isOffScreen;
+	BOOL isOffScreen = FALSE;
 	elem->get_CurrentIsOffscreen(&isOffScreen);
 	json_obj["is_offscreen"] = isOffScreen != FALSE;
 
-	BOOL isEnable;
+	BOOL isEnable = FALSE;
 	elem->get_CurrentIsEnabled(&isEnable);
 	json_obj["is_enabled"] = isEnable != FALSE;
 
-	BOOL isFocusable;
+	BOOL isFocusable = FALSE;
 	elem->get_CurrentIsKeyboardFocusable(&isFocusable);
 	json_obj["is_keyboard_focusable"] = isFocusable != FALSE;
 
 	// 名前を取得
-	BSTR name;
+	BSTR name = FALSE;
 	elem->get_CurrentName(&name);
 	std::wstring elemName(name ? (const wchar_t*)name : _T(""));
 	SysFreeString(name);
