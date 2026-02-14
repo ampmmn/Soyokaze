@@ -351,7 +351,7 @@ void SettingDialog::OnButtonAdd()
 
 	// 新しい項目を追加
 	Item newItem;
-	newItem.mName.Format(_T("新しい定型文-%d"), mParam.mItems.size()+1);
+	newItem.mName.Format(_T("新しい定型文-%d"), (int)mParam.mItems.size()+1);
 	newItem.mText = _T("(ここに定型文の内容を入力します)");
 
 	int nItemCount = mCommandListPtr->GetItemCount();

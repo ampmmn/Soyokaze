@@ -310,7 +310,7 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 		// 4.1 更新日時情報テーブルがなければ新規作成
 		db.Query(_T("CREATE TABLE IF NOT EXISTS TBL_UPDATETIME(ID TEXT PRIMARY KEY NOT NULL, LASTMODIFIEDTIME INTEGER NOT NULL, COMMANDNAME TEXT);"), nullptr, nullptr);
 		// スキーマバージョンを設定
-		queryStr.Format(_T("INSERT INTO TBL_UPDATETIME (ID, LASTMODIFIEDTIME, COMMANDNAME) VALUES ('__VERSION__', %d, '');"), DBVERSION);
+		queryStr.Format(_T("INSERT INTO TBL_UPDATETIME (ID, LASTMODIFIEDTIME, COMMANDNAME) VALUES ('__VERSION__', %d, '');"), (int)DBVERSION);
 		db.Query(queryStr, nullptr, nullptr);
 	}
 
@@ -369,10 +369,10 @@ bool DictionaryLoader::PImpl::LoadCacheFile(
 		}
 		CharConverter conv;
 		CString mTmpStr;
-		std::vector<CString>* mKeys;
-		std::vector<CString>* mValues;
-		std::vector<CString>* mValues2;
-		const SimpleDictParam* mParam;
+		std::vector<CString>* mKeys{nullptr};
+		std::vector<CString>* mValues{nullptr};
+		std::vector<CString>* mValues2{nullptr};
+		const SimpleDictParam* mParam{nullptr};
 	} callback2;
 	callback2.mKeys = &keys;
 	callback2.mValues = &values;

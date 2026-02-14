@@ -352,8 +352,6 @@ void ExtraActionSettingDialog::OnNotifyItemDblClk(
 	 	LRESULT *pResult
 )
 {
-	auto listActions = GetAtionListWnd();
-
 	*pResult = 0;
 
 	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;

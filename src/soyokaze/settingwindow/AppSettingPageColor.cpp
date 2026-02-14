@@ -61,15 +61,15 @@ protected:
 
 	BOOL mIsUseSystemSettings{TRUE};
 
-	CMFCColorButton* mWindowTextColorButton;
-	CMFCColorButton* mWindowBkColorButton;
-	CMFCColorButton* mEditTextColorButton;
-	CMFCColorButton* mEditBkColorButton;
-	CMFCColorButton* mListTextColorButton;
-	CMFCColorButton* mListBkColorButton;
-	CMFCColorButton* mListBkAltColorButton;
-	CMFCColorButton* mListTextHLColorButton;
-	CMFCColorButton* mListBkHLColorButton;
+	CMFCColorButton* mWindowTextColorButton{nullptr};
+	CMFCColorButton* mWindowBkColorButton{nullptr};
+	CMFCColorButton* mEditTextColorButton{nullptr};
+	CMFCColorButton* mEditBkColorButton{nullptr};
+	CMFCColorButton* mListTextColorButton{nullptr};
+	CMFCColorButton* mListBkColorButton{nullptr};
+	CMFCColorButton* mListBkAltColorButton{nullptr};
+	CMFCColorButton* mListTextHLColorButton{nullptr};
+	CMFCColorButton* mListBkHLColorButton{nullptr};
 
 	ImageLabel mPreview;
 

@@ -127,8 +127,6 @@ void DefaultComponentPlacer::GetGuideRect(CRect& rc)
 	int MARGIN_X{in->mPlacement->GetMarginLeft()};
 	int MARGIN_Y{in->mPlacement->GetMarginTop()};
 
-	int vscrool_w = GetSystemMetrics(SM_CXVSCROLL);
-
 	// 親ウインドウの幅と、ガイド欄を配置した位置をもとに幅を決定
 	int x = MARGIN_X;
 	int cx = in->mPlacement->GetMainWindowWidth() - x - MARGIN_X;

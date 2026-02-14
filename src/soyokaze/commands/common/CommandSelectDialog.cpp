@@ -366,6 +366,9 @@ void CommandSelectDialog::OnEditFilterChanged()
 
 void CommandSelectDialog::OnTimer(UINT_PTR timerId)
 {
+	if (timerId != TIMERID_FILTER) {
+		return;
+	}
 	KillTimer(TIMERID_FILTER);
 	in->mUpdateTimerId = 0;
 

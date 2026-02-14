@@ -45,28 +45,31 @@ struct VMXFileCommandProvider::PImpl
 
 static CString GetSHA1(const CString& filePath)
 {
-    HANDLE hFile = CreateFileW(filePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
-		                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (hFile == INVALID_HANDLE_VALUE) {
-			spdlog::error(_T("Failed to open file {}"), (LPCTSTR)filePath);
-			return _T("");
-    }
+	HANDLE hFile = CreateFileW(filePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
+	                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (hFile == INVALID_HANDLE_VALUE) {
+		spdlog::error(_T("Failed to open file {}"), (LPCTSTR)filePath);
+		return _T("");
+	}
 
-    LARGE_INTEGER fileSize;
-    GetFileSizeEx(hFile, &fileSize);
+	LARGE_INTEGER fileSize;
+	GetFileSizeEx(hFile, &fileSize);
 
-		std::vector<uint8_t> data;
-    data.resize(static_cast<size_t>(fileSize.QuadPart));
+	std::vector<uint8_t> data;
+	data.resize(static_cast<size_t>(fileSize.QuadPart));
 
-    DWORD bytesRead = 0;
-    ReadFile(hFile, data.data(), static_cast<DWORD>(data.size()), &bytesRead, nullptr);
+	DWORD bytesRead = 0;
+	BOOL result = ReadFile(hFile, data.data(), static_cast<DWORD>(data.size()), &bytesRead, nullptr);
+	if (result == FALSE) {
+		spdlog::warn(_T("GetSHA1: Failed to read file {0}. error code: {1}"), (LPCTSTR)filePath, GetLastError());
+	}
 
-    CloseHandle(hFile);
+	CloseHandle(hFile);
 
-		SHA1 sha1;
-		sha1.Add(data);
+	SHA1 sha1;
+	sha1.Add(data);
 
-		return sha1.Finish();
+	return sha1.Finish();
 }
 
 /**

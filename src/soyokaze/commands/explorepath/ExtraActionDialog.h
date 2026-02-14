@@ -33,8 +33,8 @@ protected:
 	CString mMessage;
 	// ホットキー(表示用)
 	CString mHotKey;
-	int mCommandIdx;
-	int mTargetIdx;
+	int mCommandIdx{0};
+	int mTargetIdx{0};
 };
 
 }}}

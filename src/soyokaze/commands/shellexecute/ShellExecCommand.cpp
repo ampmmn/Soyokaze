@@ -662,6 +662,7 @@ void ShellExecCommand::OnUnselect(Command*)
 SelectionBehavior::CloseWindowPolicy
 ShellExecCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 {
+	UNREFERENCED_PARAMETER(modifierMask);
 	return SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 

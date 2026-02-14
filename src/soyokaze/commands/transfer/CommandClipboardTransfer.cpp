@@ -76,9 +76,10 @@ bool CommandClipboardTransfer::SendEntry(CommandEntryIF* entry)
 	}
 
 	void* p = GlobalLock(hMem);
-	memcpy(p, data.data(), data.size());
-	GlobalUnlock(p);
-
+	if (p) {
+		memcpy(p, data.data(), data.size());
+		GlobalUnlock(p);
+	}
 	SetClipboardData(in->mFormatId, hMem);
 
 	CloseClipboard();
@@ -108,8 +109,11 @@ bool CommandClipboardTransfer::ReceiveEntry(CommandEntryIF** entry)
 	void* p = GlobalLock(hMem);
 
 	std::vector<uint8_t> data(size);
-	memcpy(data.data(), p, data.size());
-	GlobalUnlock(p);
+	if (p) {
+		memcpy(data.data(), p, data.size());
+		GlobalUnlock(p);
+	}
+	
 
 	CloseClipboard();
 

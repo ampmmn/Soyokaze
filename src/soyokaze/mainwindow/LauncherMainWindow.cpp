@@ -664,6 +664,7 @@ LRESULT LauncherMainWindow::OnUserMessageDeleteWord(WPARAM wParam, LPARAM lParam
 
 LRESULT LauncherMainWindow::OnUserMessageGuideClicked(WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
 	uint32_t modifier = (uint32_t)wParam;
 
 	auto cmd = GetCurrentCommand();

@@ -221,6 +221,7 @@ void ExplorePathCommand::OnUnselect(Command*)
 SelectionBehavior::CloseWindowPolicy
 ExplorePathCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 {
+	UNREFERENCED_PARAMETER(modifierMask);
 	return SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 
@@ -331,6 +332,8 @@ bool ExplorePathCommand::GetExtraAction(const HOTKEY_ATTR& hotkeyAttr, Action** 
 
 		*action = new CallbackAction(entry.mLabel, [fullPath, entry](Parameter* param, String* errMsg) -> bool {
 			
+			UNREFERENCED_PARAMETER(param);
+
 			// 実行対象のコマンドを取得
 			auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 			RefPtr<launcherapp::core::Command> command(cmdRepo->QueryAsWholeMatch(entry.mCommand, false));

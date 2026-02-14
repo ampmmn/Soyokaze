@@ -153,6 +153,7 @@ void HistoryCommand::OnUnselect(Command*)
 SelectionBehavior::CloseWindowPolicy
 HistoryCommand::GetCloseWindowPolicy(uint32_t modifierMask)
 {
+	UNREFERENCED_PARAMETER(modifierMask);
 	return SelectionBehavior::CLOSEWINDOW_ASYNC;
 }
 
