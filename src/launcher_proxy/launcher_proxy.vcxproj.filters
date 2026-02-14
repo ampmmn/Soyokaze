@@ -19,6 +19,9 @@
     <Filter Include="logger">
       <UniqueIdentifier>{2240114a-b397-4295-b098-f169582d34b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="onenote">
+      <UniqueIdentifier>{fa74d433-d0f6-472c-b3b1-31755e16ee6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="proxycommands\OutlookSelectFolderProxyCommand.h">
       <Filter>proxycommands</Filter>
     </ClInclude>
+    <ClInclude Include="onenote\OneNoteAppProxy.h">
+      <Filter>onenote</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="proxycommands\OutlookSelectFolderProxyCommand.cpp">
       <Filter>proxycommands</Filter>
+    </ClCompile>
+    <ClCompile Include="onenote\OneNoteAppProxy.cpp">
+      <Filter>onenote</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

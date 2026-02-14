@@ -65,7 +65,7 @@ struct OneNoteCommandProvider::PImpl :
 		}
 
 
-		if (GetTickCount64() - mLastLoadTime <= UPDATE_INTERVAL) {
+		if (mLastLoadTime != 0 && GetTickCount64() - mLastLoadTime <= UPDATE_INTERVAL) {
 			// 前回の読み込みから一定時間が経過しないうちは再読み込みしない
 			return;
 		}

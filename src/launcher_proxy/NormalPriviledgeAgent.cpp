@@ -9,6 +9,7 @@
 #include <spdlog/spdlog.h>
 #include "NormalPriviledgeAgent.h"
 #include "logger/Logger.h"
+#include "onenote/OneNoteAppProxy.h"
 #include "ProxyCommandRepository.h"
 #include "ProxyCommand.h"
 #include "SharedHwnd.h"
@@ -136,6 +137,8 @@ int NormalPriviledgeAgent::Run(HINSTANCE hInst)
 
 	CloseHandle(pipeHandle);
 	in->mPipeHandle = nullptr;
+
+	launcherproxy::OneNoteAppProxy::GetInstance()->Abort();
 
 	return 0;
 }

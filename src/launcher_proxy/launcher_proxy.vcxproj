@@ -1976,6 +1976,7 @@
     <ClInclude Include="launcher_proxy.h" />
     <ClInclude Include="logger\Logger.h" />
     <ClInclude Include="NormalPriviledgeAgent.h" />
+    <ClInclude Include="onenote\OneNoteAppProxy.h" />
     <ClInclude Include="ProxyCommand.h" />
     <ClInclude Include="ProxyCommandRepository.h" />
     <ClInclude Include="proxycommands\ActiveCalcSheetProxyCommand.h" />
@@ -2008,6 +2009,7 @@
     <ClCompile Include="launcher_proxy.cpp" />
     <ClCompile Include="logger\Logger.cpp" />
     <ClCompile Include="NormalPriviledgeAgent.cpp" />
+    <ClCompile Include="onenote\OneNoteAppProxy.cpp" />
     <ClCompile Include="ProxyCommandRepository.cpp" />
     <ClCompile Include="proxycommands\ActiveCalcSheetProxyCommand.cpp" />
     <ClCompile Include="proxycommands\ActiveExcelSheetProxyCommand.cpp" />
