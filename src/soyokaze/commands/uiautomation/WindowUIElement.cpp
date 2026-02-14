@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "WindowUIElement.h"
 #include "utility/ScopeAttachThreadInput.h"
+#include "SharedHwnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,13 +51,56 @@ CRect WindowUIElement::GetRect()
 	return rc;
 }
 
+static void DoMouseOperation(CPoint point, bool isRight, bool isDblClk)
+{
+	DWORD downEvent = isRight ? MOUSEEVENTF_RIGHTDOWN : MOUSEEVENTF_LEFTDOWN;
+	DWORD upEvent = isRight ? MOUSEEVENTF_RIGHTUP : MOUSEEVENTF_LEFTUP;
+
+	SetCursorPos(point.x, point.y);
+
+	// マウスクリックイベントを作成
+	INPUT inputs[4] = {};
+	inputs[0].type = INPUT_MOUSE;
+	inputs[0].mi.dwFlags = downEvent;
+	inputs[0].mi.dx = point.x;
+	inputs[0].mi.dy = point.y;
+
+	inputs[1].type = INPUT_MOUSE;
+	inputs[1].mi.dwFlags = upEvent;
+	inputs[1].mi.dx = point.x;
+	inputs[1].mi.dy = point.y;
+
+	inputs[2] = inputs[0];
+	inputs[3] = inputs[1];
+
+	// イベントを送信
+	SendInput(isDblClk ? 4 : 2, inputs, sizeof(INPUT));
+}
+
 bool WindowUIElement::Click()
 {
 	IUIAutomationInvokePattern* invoke{nullptr};
 	HRESULT hr = mElem->GetCurrentPatternAs(UIA_InvokePatternId, IID_IUIAutomationInvokePattern, (void**)&invoke);
 	if (FAILED(hr) || invoke == nullptr) {
-		// 失敗したらきやすめにフォーカスする
-		return Focus();
+		CPoint center;
+		BOOL isClickable;
+		hr = mElem->GetClickablePoint(&center, &isClickable);
+		if (FAILED(hr) || isClickable == FALSE) {
+			CRect rc{ 0,0,0,0 };
+			mElem->get_CurrentBoundingRectangle(&rc);
+			center = rc.CenterPoint();
+		}
+
+		// もしクリック位置が入力画面の背後にある場合はウインドウが消えるのを待つ
+		SharedHwnd mainWnd;
+		CRect rcMainWnd;
+		GetWindowRect(mainWnd.GetHwnd(), &rcMainWnd);
+		if (rcMainWnd.PtInRect(center)) {
+			Sleep(500);
+		}
+		// 選択した要素に対してマウスイベントを発行する
+		DoMouseOperation(center, false, false);
+		return true;
 	}
 
 	invoke->Invoke();
