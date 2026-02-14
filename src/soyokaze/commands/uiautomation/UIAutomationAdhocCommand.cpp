@@ -99,16 +99,26 @@ static void DoMouseOperation(CPoint point, bool isRight, bool isDblClk)
 
 bool UIAutomationAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (hotkeyAttr.GetModifiers() != 0) {
+	if (!in->mElem) {
 		return false;
 	}
 
-	*action = new CallbackAction(_T("クリック"), [&](Parameter*, String*) -> bool {
-		return in->mElem->Click();
-	});
+	auto modifierFlags = hotkeyAttr.GetModifiers();
+	if (modifierFlags == 0) {
+		*action = new CallbackAction(_T("クリック"), [&](Parameter*, String*) -> bool {
+			return in->mElem->Click();
+		});
+		return true;
+	}
+	else if (modifierFlags == MOD_SHIFT && in->mElem->CanFocus()) {
+		*action = new CallbackAction(_T("フォーカス"), [&](Parameter*, String*) -> bool {
+			return in->mElem->Focus();
+		});
+		return true;
+	}
 
 
-	return true;
+	return false;
 }
 
 HICON UIAutomationAdhocCommand::GetIcon()

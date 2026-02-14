@@ -2,6 +2,7 @@
 #include "UIAutomationCommandProvider.h"
 #include "commands/uiautomation/WindowUIElements.h"
 #include "commands/uiautomation/UIAutomationAdhocCommand.h"
+#include "commands/uiautomation/UIAutomationDebugDumpCommand.h"
 #include "commands/uiautomation/UIAutomationParam.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -158,8 +159,6 @@ struct UIAutomationCommandProvider::PImpl :
 				mElements = elems;
 			}
 			windowUIElements.FetchElements(elems);
-			// デバッグ用出力
-			//windowUIElements.Dump();
 
 			PERFLOG("FetchElements End {0:.6f} s.", sw);
 
@@ -221,6 +220,8 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
  	launcherapp::CommandQueryItemList& commands
 )
 {
+	ASSERT(pattern);
+
 	if (in->mIsFirstCall) {
 		// 初回呼び出し時に設定よみこみ
 		in->Reload();
@@ -231,6 +232,15 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 	if (in->mParam.mIsEnable == false) {
 		return ;
 	}
+
+	if (in->mParam.mIsDebugDumpEnabled) {
+		// 調査用
+		static CString debugDumpCommandName = _T("uiautomation-debug-dump");
+		if (debugDumpCommandName.CompareNoCase(pattern->GetWholeString()) == 0) {
+			commands.Add(CommandQueryItem(Pattern::WholeMatch, new UIAutomationDebugDumpCommand(GetNextHwnd())));
+		}
+	}
+
 	// プレフィックスが一致しない場合は抜ける
 	const auto& prefix = in->mParam.mPrefix;
 	bool hasPrefix = prefix.IsEmpty() == FALSE;

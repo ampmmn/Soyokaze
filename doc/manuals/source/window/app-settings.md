@@ -608,6 +608,22 @@ PCにインストールした`Python3`の本体DLLへのパスを指定する
     - たいていの場合ヒット件数が多くなる。結果、他の候補が隠れてしまう
     - 一方で所望の結果が得られる可能性は低い
 
+## Extension > UIAutomation
+
+![](../image/appsetting/extensions/uiautomation/uiautomation.png)
+
+- `UI要素の検索機能を有効にする`  
+チェックすると、[UI要素](/adhoc-command/uiautomation)機能が有効になる。
+- `プレフィックス`  
+検索を開始するためのキーワードを指定する。  
+空欄にすると、UI要素検索が常に有効になる。
+- `メニュー検索を有効にする`  
+Win32アプリケーションのメニュー検索を有効にする  
+ウインドウ上部にあるメニューの各メニュー項目を検索できるようになる
+- `デバッグ出力を有効にする`  
+デバッグ用のコマンド `uiautomation-debug-dump`機能を有効にする。  
+このコマンドを実行すると、ログ出力ディレクトリに `uiautomation.json`というファイルを生成し、UIAutomationElementの階層構造を示す情報をJSON形式で保存する。
+
 ## Extension > WinSCP
 
 ![](../image/adhoc-command/winscp-appsetting.png)

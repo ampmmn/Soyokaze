@@ -66,6 +66,7 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PREFIX, mParam.mPrefix);
 	DDX_Check(pDX, IDC_CHECK_ENABLEMENUITEM, mParam.mIsEnableMenuItem);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPROPPAGES, mParam.mIsEnableTabPages);
+	DDX_Check(pDX, IDC_CHECK_DEBUGDUMPENABLED, mParam.mIsDebugDumpEnabled);
 }
 
 #pragma warning( push )
@@ -95,6 +96,7 @@ bool AppSettingPage::UpdateStatus()
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_ENABLEMENUITEM)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_ENABLEPROPPAGES)->EnableWindow(isEnable);
+	GetDlgItem(IDC_CHECK_DEBUGDUMPENABLED)->EnableWindow(isEnable);
 	return true;
 }
 

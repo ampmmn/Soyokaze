@@ -33,6 +33,7 @@ adhoc-command/recentfiles.md
 adhoc-command/slide-jump.md
 adhoc-command/startmenu.md
 adhoc-command/timespan.md
+adhoc-command/uiautomation.md
 adhoc-command/unit-converter.md
 adhoc-command/uri-decode.md
 adhoc-command/uwpapplication.md

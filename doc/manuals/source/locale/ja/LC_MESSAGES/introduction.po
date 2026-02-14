@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-02-15 08:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -27,21 +27,15 @@ msgstr "はじめに"
 msgid "What is this app."
 msgstr "{{ project }}について"
 
-#: ../../source/introduction.md:6
-msgid ""
-"{{ project }} は`bluewind`というコマンドラインランチャーを参考に作成しているツール   "
-"bluewindの使用感を維持しつつ、現行のWindows環境でも動作するコマンドラインランチャーを実現することを目的としている。"
+#: ../../source/introduction.md:6 ../../source/introduction.md:11
+msgid "{{ project }} はWindows上で動作するコマンドライン型のランチャーツール"
 msgstr ""
 
-#: ../../source/introduction.md:12
-msgid "{{ project }} はコマンドライン型のランチャーツール"
-msgstr ""
-
-#: ../../source/introduction.md:16
+#: ../../source/introduction.md:15
 msgid "![](image/introduction.gif)"
 msgstr ""
 
-#: ../../source/introduction.md:18
+#: ../../source/introduction.md:17
 msgid "ファイルやフォルダ、URLなどをコマンドとして登録して、手軽に開くことができる。"
 msgstr ""
 

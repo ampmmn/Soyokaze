@@ -20,6 +20,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mPrefix = rhs.mPrefix;
 	mIsEnableMenuItem = rhs.mIsEnableMenuItem;
 	mIsEnableTabPages = rhs.mIsEnableTabPages;
+	mIsDebugDumpEnabled = rhs.mIsDebugDumpEnabled;
 }
 
 CommandParam::~CommandParam()
@@ -33,6 +34,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mPrefix = rhs.mPrefix;
 		mIsEnableMenuItem = rhs.mIsEnableMenuItem;
 		mIsEnableTabPages = rhs.mIsEnableTabPages;
+		mIsDebugDumpEnabled = rhs.mIsDebugDumpEnabled;
 	}
 	return *this;
 }
@@ -43,6 +45,7 @@ bool CommandParam::Save(Settings& settings) const
 	settings.Set(_T("UIAutomationSetting:Prefix"), mPrefix);
 	settings.Set(_T("UIAutomationSetting:IsEnableMenuItem"), mIsEnableMenuItem);
 	settings.Set(_T("UIAutomationSetting:IsEnableTabPages"), mIsEnableTabPages);
+	settings.Set(_T("UIAutomationSetting:IsDebugDumpEnabled"), mIsDebugDumpEnabled);
 	return true;
 }
 
@@ -52,6 +55,7 @@ bool CommandParam::Load(Settings& settings)
 	mPrefix = settings.Get(_T("UIAutomationSetting:Prefix"), _T("ui"));
 	mIsEnableMenuItem = settings.Get(_T("UIAutomationSetting:IsEnableMenuItem"), false);
 	mIsEnableTabPages = settings.Get(_T("UIAutomationSetting:IsEnableTabPages"), false);
+	mIsDebugDumpEnabled = settings.Get(_T("UIAutomationSetting:IsDebugDumpEnabled"), false);
 	return true;
 }
 

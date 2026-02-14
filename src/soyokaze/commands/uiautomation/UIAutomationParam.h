@@ -26,6 +26,8 @@ public:
 	bool mIsEnableMenuItem{false};
 	// タブページ検索を使うか(非アクティブなタブのUI要素検索)
 	bool mIsEnableTabPages{false};
+	// デバッグ出力コマンドを有効にする
+	bool mIsDebugDumpEnabled{false};
 };
 
 

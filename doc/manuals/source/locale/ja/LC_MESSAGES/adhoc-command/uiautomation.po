@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.51.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-15 08:51+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/uiautomation.md:1
+msgid "UIAutomation"
+msgstr "UI要素"
+
+#: ../../source/adhoc-command/uiautomation.md:3
+msgid ""
+"UI要素をテキストで検索して選択する機能   "
+"アクティブなウインドウ上にあるクリック可能なUI要素について、テキストで要素を絞り込んでコマンドとして実行できる。   "
+"実行すると、対応するUI要素をクリックしたような動作をすることができる"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:7
+msgid "![](../image/adhoc-command/uiautomation/introduction1.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:9
+msgid "選択中の候補に対応するUI要素に対してハイライト枠を表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:11
+msgid "![](../image/adhoc-command/uiautomation/introduction3.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:13
+msgid ""
+"レガシーWin32アプリケーションに対しては、メニュー項目を検索して選択することができる。   "
+"(トップレベルのメニュー項目以下のメニュー項目を表示できる)"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:16
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../source/adhoc-command/uiautomation.md:18
+msgid "アプリケーション設定で機能を有効化しておく"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:19
+msgid "プレフィックスを設定している場合はプレフィックス文字列を入力する"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:20
+msgid "キーワードを入力すると、そのキーワードをラベルテキストに含むUI要素を候補として表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:21
+msgid "選択中のUI要素の領域をハイライト表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:22
+msgid "コマンドを実行すると、対応するUI要素をクリックする"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:25
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/adhoc-command/uiautomation.md:27
+msgid "UIAutomationElement経由で候補となるUI要素の情報を取得しているが、UIAutomationElementに非対応のコントロールについては取得できない"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:28
+msgid "アプリが独自のUIAutomationElementを実装していても、実装次第では取れない場合がある"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:29
+msgid "また、UI要素を列挙する際のタイムアウトを設けているため、複雑な画面構成の場合は取れない場合もある"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:30
+msgid ""
+"Win32アプリケーションのメニュー項目取得について、オーナードローのメニュー項目のテキストは取得できない。   "
+"このとき、メニュー位置を表すインデックスを表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:32
+msgid "UIAutomationElement経由でメソッドを呼んでいるだけなので、実行しても所望の結果が得られない場合がある"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:33
+msgid "クリックされない、フォーカスが設定されない、など"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:35
+msgid "Settings"
+msgstr "設定"
+
+#: ../../source/adhoc-command/uiautomation.md:37
+msgid "初期設定で機能は無効になっている。 本機能を使用する場合は、アプリケーション設定の `拡張機能` > `UI要素` から機能を有効化する必要がある。"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:40
+msgid "![](../image/appsetting/extensions/uiautomation/uiautomation.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:42
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "対応するUI要素をクリックする"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "`Shift-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md
+msgid "対応するUI要素にフォーカスを設定する"
+msgstr ""
+

@@ -12,6 +12,8 @@ public:
 	virtual CString GetName() = 0;
 	virtual CRect GetRect() = 0;
 	virtual bool Click() = 0;
+	virtual bool Focus() = 0;
+	virtual bool CanFocus() = 0;
 
 	virtual uint32_t AddRef() = 0;
 	virtual uint32_t Release() = 0;
@@ -27,10 +29,11 @@ public:
 	CString GetName() override;
 	CRect GetRect() override;
 	bool Click() override;
+	bool Focus() override;
+	bool CanFocus() override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 
-	bool Focus();
 
 	CComPtr<IUIAutomationElement> mElem;
 	uint32_t mRefCount{1};
@@ -46,6 +49,8 @@ public:
 	CString GetName() override;
 	CRect GetRect() override;
 	bool Click() override;
+	bool Focus() override;
+	bool CanFocus() override;
 	uint32_t AddRef() override;
 	uint32_t Release() override;
 

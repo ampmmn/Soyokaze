@@ -131,6 +131,11 @@ bool WindowUIElement::Focus()
 	return true;
 }
 
+bool WindowUIElement::CanFocus()
+{
+	return true;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +180,17 @@ bool Win32MenuItemElement::Click()
 
 	return true;
 }
+
+bool Win32MenuItemElement::Focus()
+{
+	return false;
+}
+
+bool Win32MenuItemElement::CanFocus()
+{
+	return false;
+}
+
 
 uint32_t Win32MenuItemElement::AddRef()
 {
