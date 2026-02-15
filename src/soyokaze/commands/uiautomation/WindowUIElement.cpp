@@ -133,7 +133,9 @@ bool WindowUIElement::Focus()
 
 bool WindowUIElement::CanFocus()
 {
-	return true;
+	BOOL isFocusable = FALSE;
+	mElem->get_CachedIsKeyboardFocusable(&isFocusable);
+	return isFocusable != FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

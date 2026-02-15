@@ -122,12 +122,6 @@ static bool IsTargetElement(CComPtr<IUIAutomationElement>& elem, int findType)
 		return false;
 	}
 
-	// 
-	BOOL isFocusable = FALSE;
-	elem->get_CachedIsKeyboardFocusable(&isFocusable);
-	if (isFocusable == false) {
-		return false;
-	}
 	return true;
 }
 
