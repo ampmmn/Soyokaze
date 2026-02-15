@@ -9,6 +9,8 @@
 #include "setting/AppPreference.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "core/IFIDDefine.h"
+#include "matcher/PartialMatchPattern.h"
 #include "SharedHwnd.h"
 #include <mutex>
 
@@ -184,6 +186,36 @@ struct UIAutomationCommandProvider::PImpl :
 		}
 	}
 
+	// プレフィックスがマッチするかどうかチェック
+	bool CheckPrefix(Pattern* pattern, uint32_t& ignoreMask) {
+
+		const auto& prefix = mParam.mPrefix;
+		if (prefix.IsEmpty()) {
+			// プレフィックスがない場合はチェック不要
+			ignoreMask = 0;
+			return true;
+		}
+
+		RefPtr<PatternInternal> pat2;
+		if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+			spdlog::error("Failed to get IFID_PATTERNINTERNAL interface");
+			return false;
+		}
+
+		std::vector<CString> words;
+		CString queryStr;
+		pat2->GetRawWords(words);
+		size_t n = (std::min)(words.size(), (size_t)32);
+		for (size_t i = 0; i < n; ++i) {
+			// プレフィックスと一致する引数をマッチング対象外にする(任意の位置にあってよい、という点でプレフィックスではない気がするが)
+			if (prefix.CompareNoCase(words[i]) == 0) {
+				ignoreMask = (uint32_t)(1 << i);
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	CommandParam mParam;
 
@@ -241,12 +273,14 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 		}
 	}
 
-	// プレフィックスが一致しない場合は抜ける
-	const auto& prefix = in->mParam.mPrefix;
-	bool hasPrefix = prefix.IsEmpty() == FALSE;
-	if (hasPrefix && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+	// プレフィックスが一致しない場合は検索を実施しない
+	uint32_t ignoreMask = 0;
+	if (in->CheckPrefix(pattern, ignoreMask) == false) {
+		// プレフィックス不一致
 		return;
 	}
+
+	CString prefix = in->mParam.mPrefix;
 
 	int matchCount = 0;
 
@@ -256,12 +290,12 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 	for (auto& elem : elems) {
 
 		CString name(elem->GetName());
-		auto level = pattern->Match(name, hasPrefix ? 1 : 0);
+		auto level = pattern->Match(name, ignoreMask);
 		if (level == Pattern::Mismatch) {
 			continue;
 		}
 
-		if (prefix.IsEmpty() == FALSE && level == Pattern::PartialMatch) {
+		if (ignoreMask == 1 && level == Pattern::PartialMatch) {
 			// プレフィックスがある場合は少なくとも前方一致にする
 			level = Pattern::FrontMatch;
 		}
