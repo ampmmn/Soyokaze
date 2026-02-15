@@ -3,13 +3,12 @@
 ## What is this app.
 
 ```{only} soyokaze
-{{ project }} は`bluewind`というコマンドラインランチャーを参考に作成しているツール  
-bluewindの使用感を維持しつつ、現行のWindows環境でも動作するコマンドラインランチャーを実現することを目的としている。
+{{ project }} はWindows上で動作するコマンドライン型のランチャーツール
 
 ```
 
 ```{only} not soyokaze
-{{ project }} はコマンドライン型のランチャーツール
+{{ project }} はWindows上で動作するコマンドライン型のランチャーツール
 
 ```
 
