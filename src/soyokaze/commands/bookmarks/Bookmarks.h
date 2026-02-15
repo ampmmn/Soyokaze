@@ -13,7 +13,7 @@ public:
 	~Bookmarks();
 
 	bool Initialize(LPCTSTR bookmarkPath);
-	void SetNumOfKeywordShift(int num);
+	void SetNumOfKeywordShift(uint32_t num);
 	void Query(Pattern* pattern, std::vector<Bookmark>& items, bool isUseURL);
 
 

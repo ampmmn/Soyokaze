@@ -79,11 +79,11 @@ int WholeMatchPattern::Match(
 	return in->mWord.CompareNoCase(str) == 0 ? WholeMatch : Mismatch;
 }
 
-int WholeMatchPattern::Match(LPCTSTR str, int offset)
+int WholeMatchPattern::Match(LPCTSTR str, uint32_t ignoreMask)
 {
-	UNREFERENCED_PARAMETER(offset);
+	UNREFERENCED_PARAMETER(ignoreMask);
 
-	// offsetをサポートしない
+	// ignoreMaskをサポートしない
 	return in->mWord.CompareNoCase(str) == 0 ? WholeMatch : Mismatch;
 }
 

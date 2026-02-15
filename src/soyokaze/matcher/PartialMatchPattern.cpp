@@ -288,12 +288,27 @@ int PartialMatchPattern::Match(
 
 int PartialMatchPattern::Match(
 	LPCTSTR str,
-	int offset
+	uint32_t ignoreMask
 )
 {
 	// 空文字の場合はマッチさせない
 	if (str == nullptr || str[0] == _T('\0')) {
 		return Mismatch;
+	}
+
+	uint32_t offset = 0;
+	size_t regPatCount = in->mRegPatterns.size();
+
+	for (size_t i = 0; i < regPatCount; ++i) {
+
+		// 特定の引数を使用しないビットマスク指定があったらスキップ
+		uint32_t mask = (i < 32) ? (1 << i) : 0;
+		if (ignoreMask & mask) {
+			continue;
+		}
+
+		offset = (uint32_t)i;
+		break;
 	}
 
 	// 入力されたキーワードに完全一致するかどうかの判断
@@ -305,8 +320,13 @@ int PartialMatchPattern::Match(
 	std::string str_;
 	UTF2UTF(std::wstring(str), str_);
 
-	size_t regPatCount = in->mRegPatterns.size();
-	for (size_t i = offset; i < regPatCount; ++i) {
+	for (size_t i = 0; i < regPatCount; ++i) {
+
+		// 特定の引数を使用しないビットマスク指定があったらスキップ
+		uint32_t mask = (i < 32) ? (1 << i) : 0;
+		if (ignoreMask & mask) {
+			continue;
+		}
 
 		// ひとつでもマッチしないものがあったら、ヒットしないものとみなす
 		auto& pattern = *in->mRegPatterns[i];

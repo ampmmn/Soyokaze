@@ -48,7 +48,7 @@ struct SimpleDictCommand::PImpl
 
 	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
 	bool QueryCandidatesWithoutName(Pattern* pattern, CommandQueryItemList& commands, utility::TimeoutChecker& tm);
-	int MatchRecord(Pattern* pattern, const Record& record, int offset);
+	int MatchRecord(Pattern* pattern, const Record& record, uint32_t ignoreMask);
 
 	SimpleDictCommand* mThisPtr{nullptr};
 	SimpleDictParam mParam;
@@ -185,9 +185,9 @@ bool SimpleDictCommand::PImpl::QueryCandidatesWithoutName(
 	return hitCount > 0;
 }
 
-int SimpleDictCommand::PImpl::MatchRecord(Pattern* pattern, const Record& record, int offset)
+int SimpleDictCommand::PImpl::MatchRecord(Pattern* pattern, const Record& record, uint32_t ignoreMask)
 {
-	int level = pattern->Match(record.mKey, offset);
+	int level = pattern->Match(record.mKey, ignoreMask);
 	if (level != Pattern::Mismatch) {
 		return level;
 	}
@@ -196,7 +196,7 @@ int SimpleDictCommand::PImpl::MatchRecord(Pattern* pattern, const Record& record
 	}
 
 	// 逆引きが有効なら値でのマッチングも行う
-	return pattern->Match(record.mValue, offset);
+	return pattern->Match(record.mValue, ignoreMask);
 }
 
 

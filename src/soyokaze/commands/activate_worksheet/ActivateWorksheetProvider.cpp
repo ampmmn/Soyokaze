@@ -93,14 +93,14 @@ void ActivateWorksheetProvider::QueryAdhocCommands(
 	}
 
 	bool hasPrefix =  prefix.IsEmpty() == FALSE;
-	int offset = hasPrefix ? 1 : 0;
+	uint32_t ignoreMask = hasPrefix ? 1 : 0;
 
 	std::vector<Worksheet*> sheets;
 	in->mWorksheets.GetWorksheets(sheets);
 
 	for (auto& sheet : sheets) {
-		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), offset);
-		int levels = pattern->Match(sheet->GetSheetName().c_str(), offset);
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), ignoreMask);
+		int levels = pattern->Match(sheet->GetSheetName().c_str(), ignoreMask);
 		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
 			int level = (std::max)(levelw, levels);
@@ -118,8 +118,8 @@ void ActivateWorksheetProvider::QueryAdhocCommands(
 	in->mCalcWorksheets.GetWorksheets(calcSheets);
 
 	for (auto& sheet : calcSheets) {
-		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), offset);
-		int levels = pattern->Match(sheet->GetSheetName().c_str(), offset);
+		int levelw = pattern->Match(sheet->GetWorkbookName().c_str(), ignoreMask);
+		int levels = pattern->Match(sheet->GetSheetName().c_str(), ignoreMask);
 		if (levelw != Pattern::Mismatch || levels != Pattern::Mismatch) {
 
 			int level = (std::max)(levelw, levels);

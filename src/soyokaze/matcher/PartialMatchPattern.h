@@ -26,7 +26,7 @@ public:
 // Pattern
 	void SetWholeText(LPCTSTR wholeText) override;
 	int Match(LPCTSTR str) override;
-	int Match(LPCTSTR str, int offset) override;
+	int Match(LPCTSTR str, uint32_t ignoreMask) override;
 	LPCTSTR GetFirstWord() override;
 	LPCTSTR GetWholeString() override;
 	bool shouldWholeMatch() override;

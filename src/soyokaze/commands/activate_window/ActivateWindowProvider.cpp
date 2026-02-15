@@ -201,14 +201,14 @@ void ActivateWindowProvider::QueryAdhocCommands(
 	}
 
 	bool hasPrefix =  prefix.IsEmpty() == FALSE;
-	int offset = hasPrefix ? 1 : 0;
+	uint32_t ignoreMask = hasPrefix ? 1 : 0;
 
 	std::set<HWND> hit;
 
 	auto it = in->mAdhocNameMap.begin();
 	while(it != in->mAdhocNameMap.end()) { 
 		auto& name = it->second;
-		int level = pattern->Match(name, offset);
+		int level = pattern->Match(name, ignoreMask);
 		if (level == Pattern::Mismatch) {
 			it++;
 			continue;
@@ -259,7 +259,7 @@ void ActivateWindowProvider::QueryAdhocCommands(
 		int level = Pattern::FrontMatch;
 
 		if (shouldEnumAll == false) {
-			level = pattern->Match(caption, offset);
+			level = pattern->Match(caption, ignoreMask);
 			if (level == Pattern::Mismatch) {
 				continue;
 			}

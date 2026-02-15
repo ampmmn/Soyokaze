@@ -21,7 +21,7 @@ public:
 public:
 	virtual void SetWholeText(LPCTSTR wholeText) = 0;
 	virtual int Match(LPCTSTR str) = 0;
-	virtual int Match(LPCTSTR str, int offset) = 0;
+	virtual int Match(LPCTSTR str, uint32_t ignoreMask) = 0;
 	virtual LPCTSTR GetFirstWord() = 0;
 	virtual LPCTSTR GetWholeString() = 0;
 	virtual bool shouldWholeMatch() = 0;

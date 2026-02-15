@@ -254,7 +254,7 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 	}
 
 	bool hasPrefix =  prefix.IsEmpty() == FALSE;
-	int offset = hasPrefix ? 1 : 0;
+	uint32_t ignoreMask = hasPrefix ? 1 : 0;
 
 	// キーワードが数値として解釈できる場合、ページ番号でのマッチングを行うため、数値として拾っておく
 	int pageNo = -1;
@@ -281,9 +281,9 @@ void Presentations::Query(Pattern* pattern, std::vector<SLIDE_ITEM>& items, int 
 		else {
 			auto str = item.mTitle + _T(" ") + fileName;
 			// スライド番号として一致しなかった場合、キーワードでのマッチングを行う
-			int level_t = pattern->Match(item.mTitle, offset);
+			int level_t = pattern->Match(item.mTitle, ignoreMask);
 			// ファイル名でもマッチングする
-			int level_w = pattern->Match(str, offset);
+			int level_w = pattern->Match(str, ignoreMask);
 
 			if (level_t == Pattern::Mismatch && level_w == Pattern::Mismatch) {
 				continue;

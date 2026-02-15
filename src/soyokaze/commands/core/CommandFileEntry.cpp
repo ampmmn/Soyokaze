@@ -222,6 +222,7 @@ void CommandFileEntry::SetBytes(LPCTSTR key, const uint8_t* value, size_t len)
 
 bool CommandFileEntry::DumpRawData(std::vector<uint8_t>& rawData)
 {
+	UNREFERENCED_PARAMETER(rawData);
 	return false;
 }
 

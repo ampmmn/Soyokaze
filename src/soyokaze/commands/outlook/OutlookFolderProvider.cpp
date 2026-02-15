@@ -102,7 +102,7 @@ void OutlookFolderProvider::QueryAdhocCommands(
 	}
 
 	bool hasPrefix =  prefix.IsEmpty() == FALSE;
-	int offset = hasPrefix ? 1 : 0;
+	uint32_t ignoreMask = hasPrefix ? 1 : 0;
 
 	auto proxy = OutlookProxy::GetInstance();
 
@@ -127,7 +127,7 @@ void OutlookFolderProvider::QueryAdhocCommands(
 	int hitCount = 0;
 	for (auto& result : in->mQueryCache) {
 
-		int level = pattern->Match(result.mFullName, offset);
+		int level = pattern->Match(result.mFullName, ignoreMask);
 		if (level == Pattern::Mismatch) {
 			continue;
 		}

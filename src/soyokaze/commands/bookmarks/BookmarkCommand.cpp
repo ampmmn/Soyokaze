@@ -56,10 +56,10 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 		mLoadThread.join();
 	}
 
-	int numOfKeywordShift = mParam.mPrefix.IsEmpty() ? 0 : 1;
+	uint32_t ignoreMask = mParam.mPrefix.IsEmpty() ? 0 : 1;
 
 	// 別スレッドでブックマークのロードを実行する
-	std::thread th([&, numOfKeywordShift]() {
+	std::thread th([&, ignoreMask]() {
 
 		CString bkmPath;
 
@@ -68,7 +68,7 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 			auto edge = EdgeEnvironment::GetInstance();
 			if (edge->GetBookmarkFilePath(bkmPath)) {
 				edgeBookmarks->Initialize(bkmPath);
-				edgeBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
+				edgeBookmarks->SetNumOfKeywordShift(ignoreMask);
 			}
 		}
 		auto altBookmarks = GetAlternativeBookmarks();
@@ -77,7 +77,7 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 			altBrws->Load();
 			if (altBrws->GetBookmarkFilePath(bkmPath)) {
 				altBookmarks->Initialize(bkmPath);
-				altBookmarks->SetNumOfKeywordShift(numOfKeywordShift);
+				altBookmarks->SetNumOfKeywordShift(ignoreMask);
 			}
 		}
 	});
