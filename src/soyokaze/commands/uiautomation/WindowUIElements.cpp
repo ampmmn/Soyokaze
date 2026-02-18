@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WindowUIElements.h"
+#include "commands/uiautomation/UIElementAliasMap.h"
 #include "utility/Path.h"
 #include <list>
 #include <nlohmann/json.hpp>
@@ -309,11 +310,14 @@ bool WindowUIElements::FetchWin32MenuItems(UIElementList& items)
 		return false;
 	}
 
+	// ウインドウのメインメニューを取得する
 	HMENU hTopMenu = GetMenu(in->mHwnd);
 	if (hTopMenu == nullptr) {
 		// メニュー持ってない
 		return false;
 	}
+
+	std::set<UINT> commandIds;
 
 	std::vector<std::pair<HMENU, CString> > stk;
 	stk.push_back(std::make_pair(hTopMenu, _T("")));
@@ -356,13 +360,32 @@ bool WindowUIElements::FetchWin32MenuItems(UIElementList& items)
 
 			auto subMenu = GetSubMenu(h, i);
 			if (subMenu == nullptr) {
-				items.push_back(RefPtr<UIElement>(new Win32MenuItemElement(in->mHwnd, GetMenuItemID(h, i), text_)));
+				UINT commandId = GetMenuItemID(h, i);
+				items.push_back(RefPtr<UIElement>(new Win32MenuItemElement(in->mHwnd, commandId, text_)));
+				commandIds.insert(commandId);
 			}
 			else {
 				// 子要素を探す
 				stk.push_back(std::make_pair(subMenu, text_));
 			}
 		}
+	}
+
+	// キャッシュ(uielement-menu-alias.json)にある項目を取得
+	std::vector<std::pair<UINT,CString> > cachedMenuElements;
+
+	auto aliasMap = UIElementAliasMap::GetInstance();
+	TCHAR clsName[256];
+	GetClassName(in->mHwnd, clsName, 256);
+	aliasMap->EnumElements(clsName, cachedMenuElements);
+
+	for (auto& elem : cachedMenuElements) {
+		auto& commandId = elem.first;
+		auto& name = elem.second;
+		if (commandIds.count(commandId) != 0) {
+			continue;
+		}
+		items.push_back(RefPtr<UIElement>(new Win32MenuItemElement(in->mHwnd, commandId, name)));
 	}
 
 	return true;

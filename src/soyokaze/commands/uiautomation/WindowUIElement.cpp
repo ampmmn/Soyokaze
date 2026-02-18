@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WindowUIElement.h"
+#include "commands/uiautomation/UIElementAliasMap.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "SharedHwnd.h"
 
@@ -159,7 +160,18 @@ Win32MenuItemElement::~Win32MenuItemElement()
 
 CString Win32MenuItemElement::GetName()
 {
-	return mName;
+	auto nameMap = UIElementAliasMap::GetInstance();
+
+	TCHAR clsName[256];
+	GetClassName(mHwnd, clsName, 256);
+
+	CString alias;
+	if (nameMap->GetAlias(clsName, mName, mMenuId, alias)) {
+		return alias;
+	}
+	else {
+		return mName;
+	}
 }
 
 CRect Win32MenuItemElement::GetRect()

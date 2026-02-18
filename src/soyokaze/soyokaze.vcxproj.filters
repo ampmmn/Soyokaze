@@ -1878,6 +1878,9 @@
     <ClInclude Include="commands\uiautomation\UIAutomationDebugDumpCommand.h">
       <Filter>commands\uiautomation</Filter>
     </ClInclude>
+    <ClInclude Include="commands\uiautomation\UIElementAliasMap.h">
+      <Filter>commands\uiautomation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3309,6 +3312,9 @@
       <Filter>commands\uiautomation</Filter>
     </ClCompile>
     <ClCompile Include="commands\uiautomation\UIAutomationDebugDumpCommand.cpp">
+      <Filter>commands\uiautomation</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\uiautomation\UIElementAliasMap.cpp">
       <Filter>commands\uiautomation</Filter>
     </ClCompile>
   </ItemGroup>

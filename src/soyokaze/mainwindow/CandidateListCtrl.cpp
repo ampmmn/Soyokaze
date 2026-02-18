@@ -71,6 +71,9 @@ void CandidateListCtrl::PImpl::DrawItemIcon(
 	thisPtr->GetSubItemRect(itemId, 0, LVIR_ICON, rcIcon);
 
 	auto cmd = mCandidates->GetCommand(itemId);
+	if (cmd == nullptr) {
+		return;
+	}
 
 	int index = -1;
 

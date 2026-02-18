@@ -4,6 +4,7 @@
 #include "commands/uiautomation/UIAutomationAdhocCommand.h"
 #include "commands/uiautomation/UIAutomationDebugDumpCommand.h"
 #include "commands/uiautomation/UIAutomationParam.h"
+#include "commands/uiautomation/UIElementAliasMap.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -126,7 +127,7 @@ struct UIAutomationCommandProvider::PImpl :
 	void OnLauncherActivate() override
 	{
 		if (mParam.mIsEnable == false) {
-			spdlog::debug("YMGW UIAutomation is not enabled.");
+			spdlog::debug("UIAutomation is not enabled.");
 			return;
 		}
 
@@ -173,6 +174,7 @@ struct UIAutomationCommandProvider::PImpl :
 	}
 	void OnLauncherUnactivate() override
 	{
+		UIElementAliasMap::GetInstance()->Update();
 	}
 
 
