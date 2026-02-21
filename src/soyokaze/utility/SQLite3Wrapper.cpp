@@ -144,8 +144,7 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx, bool isReadOnly)
 	CharConverter conv(CP_ACP);
 	conv.Convert(filePath, filePathA);
 
-	int flag = isReadOnly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE;
-	flag |= SQLITE_OPEN_CREATE;
+	int flag = isReadOnly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 
 	int n = sqlite3_open_v2(filePathA, ctx, flag, nullptr);
 	if (*ctx != nullptr) {
