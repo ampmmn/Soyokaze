@@ -100,6 +100,7 @@ static std::set<UINT>& GetTargetSet(int findType)
 				UIA_SplitButtonControlTypeId,
 				UIA_TabControlTypeId,
 				UIA_TabItemControlTypeId,
+				UIA_TextControlTypeId,
 				UIA_TreeItemControlTypeId,
 				UIA_ListItemControlTypeId,
 				UIA_HeaderItemControlTypeId,
