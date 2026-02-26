@@ -236,6 +236,7 @@ void CandidateListCtrl::InitColumns()
 	// 列幅、高さを計算する
 	int typeColWidth = 140;
 	GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mIconSize);
+	in->mTextHeight = in->mIconSize;
 	in->mIconSize += ITEM_MARGIN;
 
 	ModifyStyle(0, LVS_OWNERDATA);
