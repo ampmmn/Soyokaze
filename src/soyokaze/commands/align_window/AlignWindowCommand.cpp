@@ -147,6 +147,8 @@ bool AlignWindowCommand::AlignTarget(HWND& prevForegroundHwnd, String* errMsg)
 	HWND hwndForeground = GetNextHwnd();
 	prevForegroundHwnd = hwndForeground; 
 
+	ScopeAttachThreadInput scope;
+
 	std::vector<HWND> targets;
 	for (auto& item : in->mParam.mItems) {
 
@@ -168,7 +170,7 @@ bool AlignWindowCommand::AlignTarget(HWND& prevForegroundHwnd, String* errMsg)
 			SetWindowPlacement(hwnd, &placement);
 			// Zオーダーを前面に移動
 			if (in->mParam.mIsKeepActiveWindow == FALSE) {
-				SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE | SWP_NOSENDCHANGING);
+				SetForegroundWindow(hwnd);
 			}
 		}
 	}
