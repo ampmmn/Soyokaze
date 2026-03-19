@@ -14,19 +14,13 @@ using json = nlohmann::json;
 
 namespace launcherapp { namespace commands { namespace win32menu {
 
-struct Win32MenuElements::PImpl
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+Win32MenuElements::Win32MenuElements()
 {
-	HWND mHwnd{nullptr};
-};
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-Win32MenuElements::Win32MenuElements(HWND hwnd) : in(new PImpl)
-{
-	in->mHwnd = hwnd;
 }
 
 Win32MenuElements::~Win32MenuElements()
@@ -34,15 +28,15 @@ Win32MenuElements::~Win32MenuElements()
 }
 
 
-bool Win32MenuElements::FetchWin32MenuItems(Win32MenuElementList& items)
+bool Win32MenuElements::FetchWin32MenuItems(HWND hwnd, Win32MenuElementList& items)
 {
-	if (IsWindow(in->mHwnd) == FALSE) {
+	if (IsWindow(hwnd) == FALSE) {
 		// 対象ウインドウが無効
 		return false;
 	}
 
 	// ウインドウのメインメニューを取得する
-	HMENU hTopMenu = GetMenu(in->mHwnd);
+	HMENU hTopMenu = GetMenu(hwnd);
 	if (hTopMenu == nullptr) {
 		// メニュー持ってない
 		return false;
@@ -92,7 +86,7 @@ bool Win32MenuElements::FetchWin32MenuItems(Win32MenuElementList& items)
 			auto subMenu = GetSubMenu(h, i);
 			if (subMenu == nullptr) {
 				UINT commandId = GetMenuItemID(h, i);
-				items.push_back(Win32MenuItemElement(in->mHwnd, commandId, text_));
+				items.push_back(Win32MenuItemElement(hwnd, commandId, text_));
 				commandIds.insert(commandId);
 			}
 			else {
@@ -107,7 +101,7 @@ bool Win32MenuElements::FetchWin32MenuItems(Win32MenuElementList& items)
 
 	auto aliasMap = UIElementAliasMap::GetInstance();
 	TCHAR clsName[256];
-	GetClassName(in->mHwnd, clsName, 256);
+	GetClassName(hwnd, clsName, 256);
 	aliasMap->EnumElements(clsName, cachedMenuElements);
 
 	for (auto& elem : cachedMenuElements) {
@@ -116,7 +110,7 @@ bool Win32MenuElements::FetchWin32MenuItems(Win32MenuElementList& items)
 		if (commandIds.count(commandId) != 0) {
 			continue;
 		}
-		items.push_back(Win32MenuItemElement(in->mHwnd, commandId, name));
+		items.push_back(Win32MenuItemElement(hwnd, commandId, name));
 	}
 
 	return true;

@@ -114,6 +114,10 @@ void Win32MenuAdhocCommand::OnSelect(Command* prior)
 	if (IsWindow(hwnd) == FALSE || IsWindowVisible(hwnd) == FALSE) {
 		return;
 	}
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	if (style & WS_MINIMIZE) {
+		return;
+	}
 
 	//対象のウインドウを強調表示する
 	RECT rc;

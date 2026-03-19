@@ -566,6 +566,8 @@
 #define IDC_CHECK_ENABLEMENUITEM2       1232
 #define IDC_CHECK_ENABLEPROPPAGES       1232
 #define IDC_CHECK_DEBUGDUMPENABLED      1233
+#define IDC_CHECK_ENABLEMENUITEM3       1234
+#define IDC_CHECK_FINDMENUALL           1234
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777

@@ -6,7 +6,6 @@
 #include <string>
 
 #include "commands/win32menu/Win32MenuElement.h"
-#include "utility/RefPtr.h"
 
 namespace launcherapp { namespace commands { namespace win32menu {
 
@@ -16,14 +15,10 @@ public:
 	using Win32MenuElementList = std::vector<Win32MenuItemElement>;
 
 public:
-	Win32MenuElements(HWND hwnd);
+	Win32MenuElements();
 	~Win32MenuElements();
 
-	bool FetchWin32MenuItems(Win32MenuElementList& items);
-
-private:
-	struct PImpl;
-	std::unique_ptr<PImpl> in;
+	bool FetchWin32MenuItems(HWND hwnd, Win32MenuElementList& items);
 };
 
 }}} // end of namespace launcherapp::commands::win32menu

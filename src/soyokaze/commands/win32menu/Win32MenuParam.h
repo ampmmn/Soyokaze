@@ -21,6 +21,8 @@ public:
 public:
 	// 機能を利用するか?
 	bool mIsEnable{false};
+	// 全てのウインドウのメニューを検索するか?
+	bool mIsFindAllMenu{false};
 	// プレフィックス
 	CString mPrefix;
 };

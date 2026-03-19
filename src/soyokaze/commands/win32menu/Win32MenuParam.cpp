@@ -17,6 +17,7 @@ CommandParam::CommandParam()
 CommandParam::CommandParam(const CommandParam& rhs)
 {
 	mIsEnable = rhs.mIsEnable;
+	mIsFindAllMenu = rhs.mIsFindAllMenu;
 	mPrefix = rhs.mPrefix;
 }
 
@@ -28,6 +29,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 {
 	if (&rhs != this) {
 		mIsEnable = rhs.mIsEnable;
+		mIsFindAllMenu = rhs.mIsFindAllMenu;
 		mPrefix = rhs.mPrefix;
 	}
 	return *this;
@@ -36,6 +38,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 bool CommandParam::Load(Settings& settings)
 {
 	mIsEnable = settings.Get(_T("UIAutomationSetting:IsEnableMenuItem"), false);
+	mIsFindAllMenu = settings.Get(_T("UIAutomationSetting:IsFindAllMenu"), false);
 	mPrefix = settings.Get(_T("UIAutomationSetting:Prefix"), _T("ui"));
 	return true;
 }

@@ -24,6 +24,7 @@ public:
 	CString mPrefix;
 	// メニュー検索を使うか
 	bool mIsEnableMenuItem{false};
+	bool mIsFindAllMenu{false};
 	// タブページ検索を使うか(非アクティブなタブのUI要素検索)
 	bool mIsEnableTabPages{false};
 	// デバッグ出力コマンドを有効にする

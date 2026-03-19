@@ -5,6 +5,7 @@
 #include "commands/win32menu/Win32MenuParam.h"
 #include "commands/win32menu/UIElementAliasMap.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/activate_window/WindowList.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/LauncherWindowEventListenerIF.h"
@@ -17,6 +18,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using WindowList = launcherapp::commands::activate_window::WindowList;
 
 namespace {
 
@@ -135,41 +138,51 @@ struct Win32MenuCommandProvider::PImpl :
 		}
 
 		// 対象ウインドウを取得
-		HWND hwnd = GetNextHwnd();
-		if (mTargetWindow != hwnd) {
-			std::lock_guard<std::mutex> lock(mMutex);
-			mElements.clear();
-		}
+		std::vector<HWND> targetWindows;
+		GetTargetWindows(targetWindows);
 
-		// ランチャーのウインドウの背面にあるウインドウを取得する
-		if (IsWindow(hwnd) == FALSE) {
-			spdlog::debug("IsWindow returned false.");
-			return;
-		}
-
-		TCHAR caption[64];
-		GetWindowText(hwnd, caption, 64);
-
-		PERFLOG(_T("FetchWin32MenuElements Start hwnd:{0}, title:{1}"), (void*)hwnd, caption);
-		spdlog::stopwatch sw;
-
-		Win32MenuElements windowUIElements(hwnd);
 		Win32MenuElements::Win32MenuElementList elems;
+		for (auto hwnd : targetWindows) {
 
-		windowUIElements.FetchWin32MenuItems(elems);
+			if (IsWindow(hwnd) == FALSE) {
+				continue;
+			}
+
+			TCHAR caption[64];
+			GetWindowText(hwnd, caption, 64);
+
+			PERFLOG(_T("FetchWin32MenuElements Start hwnd:{0}, title:{1}"), (void*)hwnd, caption);
+			spdlog::stopwatch sw;
+
+			Win32MenuElements windowUIElements;
+			windowUIElements.FetchWin32MenuItems(hwnd, elems);
+
+			PERFLOG("FetchElements End {0:.6f} s.", sw);
+		}
+
 		// Win32メニュー項目をとった時点で結果を反映する
 		std::lock_guard<std::mutex> lock(mMutex);
 		mElements = elems;
-
-		PERFLOG("FetchElements End {0:.6f} s.", sw);
-
-		mTargetWindow = hwnd;
 	}
 	void OnLauncherUnactivate() override
 	{
 		UIElementAliasMap::GetInstance()->Update();
 	}
 
+	void GetTargetWindows(std::vector<HWND>& targetWindows)
+	{
+		if (mParam.mIsFindAllMenu == false) {
+			HWND hwnd = GetNextHwnd();
+			targetWindows.push_back(hwnd);
+			return;
+		}
+		else {
+			// 対象ウインドウを列挙
+			WindowList wndList;
+			wndList.EnumWindowHandles(targetWindows);
+		}
+
+	}
 
 	void GetElements(Win32MenuElements::Win32MenuElementList& elems)
 	{
@@ -212,8 +225,6 @@ struct Win32MenuCommandProvider::PImpl :
 
 
 	CommandParam mParam;
-
-	HWND mTargetWindow{nullptr};
 	Win32MenuElements::Win32MenuElementList mElements;
 	std::mutex mMutex;
 

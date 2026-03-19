@@ -65,6 +65,7 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE, mParam.mIsEnable);
 	DDX_Text(pDX, IDC_EDIT_PREFIX, mParam.mPrefix);
 	DDX_Check(pDX, IDC_CHECK_ENABLEMENUITEM, mParam.mIsEnableMenuItem);
+	DDX_Check(pDX, IDC_CHECK_FINDMENUALL, mParam.mIsFindAllMenu);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPROPPAGES, mParam.mIsEnableTabPages);
 	DDX_Check(pDX, IDC_CHECK_DEBUGDUMPENABLED, mParam.mIsDebugDumpEnabled);
 }
@@ -75,6 +76,7 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(AppSettingPage, CDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLEMENUITEM, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_FINDMENUALL, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLEPROPPAGES, OnUpdateStatus)
 END_MESSAGE_MAP()
 
@@ -92,9 +94,11 @@ BOOL AppSettingPage::OnInitDialog()
 bool AppSettingPage::UpdateStatus()
 {
 	bool isEnable = mParam.mIsEnable;
+	bool isEnableMenuItem = mParam.mIsEnableMenuItem;
 
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_ENABLEMENUITEM)->EnableWindow(isEnable);
+	GetDlgItem(IDC_CHECK_FINDMENUALL)->EnableWindow(isEnable && isEnableMenuItem);
 	GetDlgItem(IDC_CHECK_ENABLEPROPPAGES)->EnableWindow(isEnable);
 	GetDlgItem(IDC_CHECK_DEBUGDUMPENABLED)->EnableWindow(isEnable);
 	return true;

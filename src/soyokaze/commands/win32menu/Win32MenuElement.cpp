@@ -57,6 +57,13 @@ bool Win32MenuItemElement::Click()
 
 	// 親ウインドウを前面に出す
 	ScopeAttachThreadInput scope;
+
+	LONG_PTR style = GetWindowLongPtr(mHwnd, GWL_STYLE);
+	if (style & WS_MINIMIZE) {
+		// 最小化されていたら元に戻す
+		PostMessage(mHwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+	}
+
 	SetForegroundWindow(mHwnd);
 
 	// メニューを選択する操作
