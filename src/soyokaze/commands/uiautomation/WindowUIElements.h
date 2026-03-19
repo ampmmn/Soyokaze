@@ -22,7 +22,6 @@ public:
 
 	bool FetchElements(UIElementList& items);
 	bool FetchTabItemElements(UIElementList& items);
-	bool FetchWin32MenuItems(UIElementList& items);
 
 	void Dump();
 

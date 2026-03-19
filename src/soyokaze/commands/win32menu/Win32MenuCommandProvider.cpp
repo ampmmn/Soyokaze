@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "UIAutomationCommandProvider.h"
-#include "commands/uiautomation/WindowUIElements.h"
-#include "commands/uiautomation/UIAutomationAdhocCommand.h"
-#include "commands/uiautomation/UIAutomationDebugDumpCommand.h"
-#include "commands/uiautomation/UIAutomationParam.h"
+#include "Win32MenuCommandProvider.h"
+#include "commands/win32menu/Win32MenuElements.h"
+#include "commands/win32menu/Win32MenuAdhocCommand.h"
+#include "commands/win32menu/Win32MenuParam.h"
+#include "commands/win32menu/UIElementAliasMap.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -18,9 +18,9 @@
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp { namespace commands { namespace uiautomation {
+namespace {
 
-static bool IsToplevelWindow(HWND hwnd)
+bool IsToplevelWindow(HWND hwnd)
 {
 	if (IsWindow(hwnd) == FALSE) {
 		return false;
@@ -63,7 +63,7 @@ static bool IsToplevelWindow(HWND hwnd)
  * @brief 直前に前面にでていたウインドウハンドルを得る
  * @return ウインドウハンドルまたはNULL
  */
-static HWND GetNextHwnd()
+HWND GetNextHwnd()
 {
 	SharedHwnd mainWnd;
 	HWND hwndSelf = mainWnd.GetHwnd(); 
@@ -89,7 +89,11 @@ static HWND GetNextHwnd()
 	return hwnd;
 }
 
-struct UIAutomationCommandProvider::PImpl :
+}
+
+namespace launcherapp { namespace commands { namespace win32menu {
+
+struct Win32MenuCommandProvider::PImpl :
  	public AppPreferenceListenerIF,
 	public LauncherWindowEventListenerIF
 {
@@ -126,54 +130,50 @@ struct UIAutomationCommandProvider::PImpl :
 	void OnLauncherActivate() override
 	{
 		if (mParam.mIsEnable == false) {
-			spdlog::debug("UIAutomation is not enabled.");
+			spdlog::debug("Win32Menu feature is disabled.");
 			return;
 		}
 
+		// 対象ウインドウを取得
 		HWND hwnd = GetNextHwnd();
 		if (mTargetWindow != hwnd) {
 			std::lock_guard<std::mutex> lock(mMutex);
 			mElements.clear();
 		}
 
-		// ランチャーの入力窓が表示されたタイミングで
-		std::thread th([&, hwnd]() {
+		// ランチャーのウインドウの背面にあるウインドウを取得する
+		if (IsWindow(hwnd) == FALSE) {
+			spdlog::debug("IsWindow returned false.");
+			return;
+		}
 
-			// ランチャーのウインドウの背面にあるウインドウを取得する
-			if (IsWindow(hwnd) == FALSE) {
-				spdlog::debug("IsWindow returned false.");
-				return;
-			}
+		TCHAR caption[64];
+		GetWindowText(hwnd, caption, 64);
 
-			TCHAR caption[64];
-			GetWindowText(hwnd, caption, 64);
+		PERFLOG(_T("FetchWin32MenuElements Start hwnd:{0}, title:{1}"), (void*)hwnd, caption);
+		spdlog::stopwatch sw;
 
-			PERFLOG(_T("FetchElements Start hwnd:{0}, title:{1}"), (void*)hwnd, caption);
-			spdlog::stopwatch sw;
+		Win32MenuElements windowUIElements(hwnd);
+		Win32MenuElements::Win32MenuElementList elems;
 
-			WindowUIElements windowUIElements(hwnd);
+		windowUIElements.FetchWin32MenuItems(elems);
+		// Win32メニュー項目をとった時点で結果を反映する
+		std::lock_guard<std::mutex> lock(mMutex);
+		mElements = elems;
 
-			WindowUIElements::UIElementList elems;
-			windowUIElements.FetchElements(elems);
+		PERFLOG("FetchElements End {0:.6f} s.", sw);
 
-			PERFLOG("FetchElements End {0:.6f} s.", sw);
-
-			std::lock_guard<std::mutex> lock(mMutex);
-			mElements.swap(elems);
-
-			mTargetWindow = hwnd;
-		});
-		th.detach();
+		mTargetWindow = hwnd;
 	}
 	void OnLauncherUnactivate() override
 	{
+		UIElementAliasMap::GetInstance()->Update();
 	}
 
 
-	void GetUIElements(HWND& hwnd, WindowUIElements::UIElementList& elems)
+	void GetElements(Win32MenuElements::Win32MenuElementList& elems)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
-		hwnd = mTargetWindow;
 		elems.clear();
 		for (auto& elem : mElements) {
 			elems.push_back(elem);
@@ -214,7 +214,7 @@ struct UIAutomationCommandProvider::PImpl :
 	CommandParam mParam;
 
 	HWND mTargetWindow{nullptr};
-	WindowUIElements::UIElementList mElements;
+	Win32MenuElements::Win32MenuElementList mElements;
 	std::mutex mMutex;
 
 	bool mIsFirstCall {true};
@@ -224,24 +224,24 @@ struct UIAutomationCommandProvider::PImpl :
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-REGISTER_COMMANDPROVIDER(UIAutomationCommandProvider)
+REGISTER_COMMANDPROVIDER(Win32MenuCommandProvider)
 
-UIAutomationCommandProvider::UIAutomationCommandProvider() : in(std::make_unique<PImpl>())
+Win32MenuCommandProvider::Win32MenuCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 
-UIAutomationCommandProvider::~UIAutomationCommandProvider()
+Win32MenuCommandProvider::~Win32MenuCommandProvider()
 {
 }
 
-CString UIAutomationCommandProvider::GetName()
+CString Win32MenuCommandProvider::GetName()
 {
-	return _T("UIAutomationCommand");
+	return _T("Win32MenuCommand");
 }
 
 
 // 一時的なコマンドを必要に応じて提供する
-void UIAutomationCommandProvider::QueryAdhocCommands(
+void Win32MenuCommandProvider::QueryAdhocCommands(
 	Pattern* pattern,
  	launcherapp::CommandQueryItemList& commands
 )
@@ -259,14 +259,6 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 		return ;
 	}
 
-	if (in->mParam.mIsDebugDumpEnabled) {
-		// 調査用
-		static CString debugDumpCommandName = _T("uiautomation-debug-dump");
-		if (debugDumpCommandName.CompareNoCase(pattern->GetWholeString()) == 0) {
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, new UIAutomationDebugDumpCommand(GetNextHwnd())));
-		}
-	}
-
 	// プレフィックスが一致しない場合は検索を実施しない
 	uint32_t ignoreMask = 0;
 	if (in->CheckPrefix(pattern, ignoreMask) == false) {
@@ -279,11 +271,11 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 	int matchCount = 0;
 
 	HWND hwnd{nullptr};
-	WindowUIElements::UIElementList elems;
-	in->GetUIElements(hwnd, elems);
+	Win32MenuElements::Win32MenuElementList elems;
+	in->GetElements(elems);
 	for (auto& elem : elems) {
 
-		CString name(elem->GetName());
+		CString name(elem.GetName());
 		auto level = pattern->Match(name, ignoreMask);
 		if (level == Pattern::Mismatch) {
 			continue;
@@ -294,15 +286,15 @@ void UIAutomationCommandProvider::QueryAdhocCommands(
 			level = Pattern::FrontMatch;
 		}
 
-		commands.Add(CommandQueryItem(level, new UIAutomationAdhocCommand(hwnd, elem, prefix)));
+		commands.Add(CommandQueryItem(level, new Win32MenuAdhocCommand(elem, prefix)));
 		matchCount++;
 	}
 
 	if (matchCount == 0 && prefix.IsEmpty() == FALSE) {
-		commands.Add(CommandQueryItem(Pattern::HiddenMatch, new UIAutomationAdhocCommand()));
+		commands.Add(CommandQueryItem(Pattern::HiddenMatch, new Win32MenuAdhocCommand()));
 	}
 }
 
 
 
-}}} // end of namespace launcherapp::commands::uiautomation
+}}} // end of namespace launcherapp::commands::win32menu

@@ -39,26 +39,5 @@ public:
 	uint32_t mRefCount{1};
 };
 
-class Win32MenuItemElement : public UIElement 
-{
-public:
-	Win32MenuItemElement();
-	Win32MenuItemElement(HWND hwnd, UINT id, const CString& name);
-	~Win32MenuItemElement();
-
-	CString GetName() override;
-	CRect GetRect() override;
-	bool Click() override;
-	bool Focus() override;
-	bool CanFocus() override;
-	uint32_t AddRef() override;
-	uint32_t Release() override;
-
-	HWND mHwnd{nullptr};
-	UINT mMenuId{0};
-	CString mName;
-	uint32_t mRefCount{1};
-};
-
 }}} // end of namespace launcherapp::commands::uiautomation
 

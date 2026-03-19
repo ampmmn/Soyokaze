@@ -12,7 +12,7 @@ using json = nlohmann::json;
 #define new DEBUG_NEW
 #endif
 
-namespace launcherapp { namespace commands { namespace uiautomation {
+namespace launcherapp { namespace commands { namespace win32menu {
 
 struct UIElementAliasMap::PImpl
 {
@@ -240,6 +240,6 @@ void UIElementAliasMap::EnumElements(
 	}
 }
 
-}}} // end of namespace launcherapp::commands::uiautomation
+}}} // end of namespace launcherapp::commands::win32menu
 
 

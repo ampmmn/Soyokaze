@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-namespace launcherapp { namespace commands { namespace uiautomation {
+namespace launcherapp { namespace commands { namespace win32menu {
 
 class UIElementAliasMap
 {
@@ -25,6 +25,6 @@ private:
 
 
 
-}}} // end of namespace launcherapp::commands::uiautomation
+}}} // end of namespace launcherapp::commands::win32menu
 
 

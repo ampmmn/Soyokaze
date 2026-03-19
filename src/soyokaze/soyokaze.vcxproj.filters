@@ -304,6 +304,9 @@
     <Filter Include="commands\uiautomation">
       <UniqueIdentifier>{0015df85-e72c-4ee0-8fa9-b85fbc57fd4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\win32menu">
+      <UniqueIdentifier>{d0372a63-b59f-475c-9724-6c1d1b0554f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1878,8 +1881,23 @@
     <ClInclude Include="commands\uiautomation\UIAutomationDebugDumpCommand.h">
       <Filter>commands\uiautomation</Filter>
     </ClInclude>
-    <ClInclude Include="commands\uiautomation\UIElementAliasMap.h">
-      <Filter>commands\uiautomation</Filter>
+    <ClInclude Include="commands\win32menu\UIElementAliasMap.h">
+      <Filter>commands\win32menu</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\win32menu\Win32MenuCommandProvider.h">
+      <Filter>commands\win32menu</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\win32menu\Win32MenuElement.h">
+      <Filter>commands\win32menu</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\win32menu\Win32MenuElements.h">
+      <Filter>commands\win32menu</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\win32menu\Win32MenuParam.h">
+      <Filter>commands\win32menu</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\win32menu\Win32MenuAdhocCommand.h">
+      <Filter>commands\win32menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3314,8 +3332,23 @@
     <ClCompile Include="commands\uiautomation\UIAutomationDebugDumpCommand.cpp">
       <Filter>commands\uiautomation</Filter>
     </ClCompile>
-    <ClCompile Include="commands\uiautomation\UIElementAliasMap.cpp">
-      <Filter>commands\uiautomation</Filter>
+    <ClCompile Include="commands\win32menu\UIElementAliasMap.cpp">
+      <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\win32menu\Win32MenuCommandProvider.cpp">
+      <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\win32menu\Win32MenuElement.cpp">
+      <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\win32menu\Win32MenuElements.cpp">
+      <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\win32menu\Win32MenuParam.cpp">
+      <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\win32menu\Win32MenuAdhocCommand.cpp">
+      <Filter>commands\win32menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
