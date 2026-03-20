@@ -79,6 +79,13 @@ static bool IsTopLevelWindow(HWND hwnd)
 		return false;
 	}
 
+	// 一部のUWPアプリを除外する
+	BOOL cloaked = FALSE;
+	DwmGetWindowAttribute(hwnd, DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+	if (cloaked) {
+		return false; // 表示されていない
+	}
+
 	return true;
 }
 
