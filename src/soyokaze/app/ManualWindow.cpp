@@ -4,6 +4,7 @@
 #include "icon/IconLoader.h"
 #include "control/webbrowser/InternalBrowser.h"
 #include "utility/VersionInfo.h"
+#include "utility/ScopeAttachThreadInput.h"
 #include <thread>
 
 #ifdef _DEBUG
@@ -114,4 +115,8 @@ void ManualWindow::Open(const CString& url)
 	}
 
 	in->mBrowserWindow->Open(url);
+
+	// 前面に表示
+	ScopeAttachThreadInput scope;
+	SetForegroundWindow(h);
 }
