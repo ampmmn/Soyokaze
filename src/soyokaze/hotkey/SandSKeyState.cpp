@@ -79,7 +79,7 @@ bool SandSKeyState::IsPressed(UINT modKeyCode, UINT keyCode)
 	}
 
 	if (in->mLastState[index]) {
-	return false;
+		return false;
 	}
 
 	in->mLastState[index] = true;
