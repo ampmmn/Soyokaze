@@ -54,6 +54,13 @@ bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 		return false;
 	}
 
+	// スクリプトでkeyモジュールの機能を使っている場合にキー押下状態の影響を受けることがあるため
+	// ホットキー経由の実行の場合は少し遅延を入れる
+	auto namedParam = GetNamedParameter(args_);
+	if (namedParam && namedParam->GetNamedParamBool(_T("OnHotKey"))) {
+		Sleep(250);
+	}
+
 	String name;
 	UTF2UTF(in->mParam->mName, name);
 	String script;
