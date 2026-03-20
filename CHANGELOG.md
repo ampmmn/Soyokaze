@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+なし
+
+## 0.53.0 - 2026-03-20
+
 ### Changed
 
 - Win32メニュー項目の機能をUIAutomationから分離(クラス構成の変更)
