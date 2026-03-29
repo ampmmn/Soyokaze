@@ -42,7 +42,7 @@ bool Win32MenuElements::FetchWin32MenuItems(HWND hwnd, Win32MenuElementList& ite
 		return false;
 	}
 
-	std::set<UINT> commandIds;
+	std::set<CString> commandNames;
 
 	std::vector<std::pair<HMENU, CString> > stk;
 	stk.push_back(std::make_pair(hTopMenu, _T("")));
@@ -87,7 +87,7 @@ bool Win32MenuElements::FetchWin32MenuItems(HWND hwnd, Win32MenuElementList& ite
 			if (subMenu == nullptr) {
 				UINT commandId = GetMenuItemID(h, i);
 				items.push_back(Win32MenuItemElement(hwnd, commandId, text_));
-				commandIds.insert(commandId);
+				commandNames.insert(text_);
 			}
 			else {
 				// 子要素を探す
@@ -107,7 +107,7 @@ bool Win32MenuElements::FetchWin32MenuItems(HWND hwnd, Win32MenuElementList& ite
 	for (auto& elem : cachedMenuElements) {
 		auto& commandId = elem.first;
 		auto& name = elem.second;
-		if (commandIds.count(commandId) != 0) {
+		if (commandNames.count(name) != 0) {
 			continue;
 		}
 		items.push_back(Win32MenuItemElement(hwnd, commandId, name));
