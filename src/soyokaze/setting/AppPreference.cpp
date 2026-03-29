@@ -162,7 +162,6 @@ void AppPreference::PImpl::Load()
 
 	// 後始末
 	file.Close();
-	fclose(fpIn);
 
 	// アプリバージョンに関する情報を含めておく
 	CString version;
@@ -339,7 +338,6 @@ void AppPreference::Save()
 		}
 
 		file.Close();
-		fclose(fpOut);
 
 		// 最後に一時ファイルを書き戻す
 		if (CopyFile(filePathTmp, path, FALSE)) {
@@ -357,7 +355,6 @@ void AppPreference::Save()
 	}
 	catch(CFileException* e) {
 		e->Delete();
-		fclose(fpOut);
 	}
 }
 

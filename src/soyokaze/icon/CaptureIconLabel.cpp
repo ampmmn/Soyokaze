@@ -16,7 +16,7 @@ CaptureIconLabel::CaptureIconLabel() :
 CaptureIconLabel::~CaptureIconLabel()
 {
 	if (mCursorHandle) {
-		//DestroyCursor(mCursorHandle);
+		DestroyCursor(mCursorHandle);
 	}
 }
 

@@ -161,6 +161,7 @@ int ExcelApplication::GetCellText(
 		}
 	}
 	workBook = result.pdispVal;
+	VariantClear(&result);
 
 	struct local_close {
 		local_close(DispWrapper& dispPtr) : mDisp(dispPtr) {}
@@ -233,6 +234,7 @@ int ExcelApplication::GetCellText(
 				return -11;
 			}
 			cell = result.pdispVal;
+			VariantClear(&result);
 
 			CString text = cell.GetPropertyString(L"Text");
 
@@ -277,12 +279,13 @@ void ExcelApplication::Quit()
 
 	// 2秒まってもプロセスが終了していなかったら強制的に落とす
 	HANDLE h = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, pid);
-	std::thread th([pid, h]() {
+	auto th = std::thread([pid, h]() {
 			if (WaitForSingleObject(h, 2000) != WAIT_TIMEOUT) {
 				return;
 			}
 			spdlog::debug(_T("Excel app terminated PID:{}"), pid);
 			TerminateProcess(h, 0);
+			CloseHandle(h);
 	});
 	th.detach();
 }

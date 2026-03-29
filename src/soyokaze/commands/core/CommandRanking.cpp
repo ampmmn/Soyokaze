@@ -91,7 +91,6 @@ bool CommandRanking::Load()
 	}
 
 	file.Close();
-	fclose(fpIn);
 
 	in->mRank.swap(ranking);
 
@@ -126,7 +125,6 @@ bool CommandRanking::Save()
 		}
 
 		file.Close();
-		fclose(fpOut);
 
 		// 最後に一時ファイルを書き戻す
 		if (CopyFile(filePathTmp, filePath, FALSE)) {
@@ -137,7 +135,6 @@ bool CommandRanking::Save()
 	catch(CFileException* e) {
 		spdlog::error(_T("an exception occurred."));
 		e->Delete();
-		fclose(fpOut);
 	}
 	return true;
 }

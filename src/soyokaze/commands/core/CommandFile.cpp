@@ -295,8 +295,7 @@ bool CommandFile::Load()
 		entries.push_back(RefPtr(curEntry));
 	}
 
-	file.Close();
-	fclose(fpIn);
+	file.Close();	
 
 	in->mEntries.swap(entries);
 	return true;
@@ -320,7 +319,6 @@ bool CommandFile::Save()
 		}
 
 		file.Close();
-		fclose(fpOut);
 
 		// 最後に一時ファイルを書き戻す
 		if (CopyFile(filePathTmp, in->mFilePath, FALSE) == FALSE) {
@@ -334,7 +332,6 @@ bool CommandFile::Save()
 	}
 	catch(CFileException* e) {
 		e->Delete();
-		fclose(fpOut);
 		return false;
 	}
 }

@@ -118,6 +118,7 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	if (err < 0) {
 		mIsLoadOK = false;
 		mIsLoaded = true;
+		tidyRelease(doc);
 		return false;
 	}
 

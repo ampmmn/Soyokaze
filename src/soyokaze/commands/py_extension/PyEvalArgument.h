@@ -64,6 +64,7 @@ public:
 				delete [] *p;
 				p++;
 			}
+			delete [] mArgs;
 		}
 	}
 

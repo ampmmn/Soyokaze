@@ -88,7 +88,7 @@ void VMXFileCommandProvider::PImpl::Reload()
 	}
 	mSHA1 = sha1;
 
-	std::thread th([&, tmpPathStr]() {
+	auto th = std::thread([&, tmpPathStr]() {
 
 		FILE* fpIn = nullptr;
 		if (_tfopen_s(&fpIn, tmpPathStr, _T("r")) != 0 || fpIn == nullptr) {
@@ -128,7 +128,6 @@ void VMXFileCommandProvider::PImpl::Reload()
 			}
 		}
 		file.Close();
-		fclose(fpIn);
 		DeleteFile(tmpPathStr);
 
 		// ロードしたファイルの内容に基づき、コマンドを生成する

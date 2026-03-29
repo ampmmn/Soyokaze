@@ -97,7 +97,7 @@ public:
 		query->AddRef();
 		mQueryMap[key] = query;
 
-		std::thread th([pathStr, query]() {
+		auto th = std::thread([pathStr, query]() {
 				bool isFileExist = PathFileExists(pathStr.c_str());
 				query->Push(isFileExist);
 
@@ -129,7 +129,7 @@ public:
 		query->AddRef();
 		mQueryMap[key] = query;
 
-		std::thread th([pathStr, query]() {
+		auto th = std::thread([pathStr, query]() {
 				bool isFileExist = PathIsDirectory(pathStr.c_str());
 				query->Push(isFileExist);
 
@@ -147,11 +147,10 @@ public:
 			if (it->second != queue) {
 				continue;
 			}
-
-			it->second->Release();
 			mQueryMap.erase(it);
 			break;
 		}
+		queue->Release();
 	}
 
 private:
@@ -447,6 +446,7 @@ bool Path::IsHostConnected(const CString& targetHost)
 	NET_API_STATUS status = NetUseEnum(nullptr, 2, &buffer, MAX_PREFERRED_LENGTH,
 	                                   &entriesRead, &totalEntries, &resumeHandle);
 	if (status != NERR_Success || buffer == nullptr) {
+		if (buffer) { NetApiBufferFree(buffer); }
 		return false;
 	}
 

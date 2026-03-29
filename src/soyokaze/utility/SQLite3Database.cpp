@@ -79,6 +79,9 @@ int SQLite3Database::Query(LPCTSTR queryStr, LPQUERYCALLBACK callback, void* par
 	if (in->mDB) {
 		char* err = nullptr;
 		int n = SQLite3Wrapper::Get()->Exec(in->mDB, queryStr, callback, param, &err);
+		if (err) {
+			SQLite3Wrapper::Get()->Free(err);
+		}
 		return n;
 	}
 	return -1;

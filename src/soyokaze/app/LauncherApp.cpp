@@ -14,6 +14,7 @@
 #include "app/SecondProcessProxy.h"
 #include "app/LocalDirectoryWatcherService.h"
 #include "commands/transfer/CommandClipboardTransfer.h"
+#include "commands/core/CommandRepository.h"
 #include "logger/Logger.h"
 #include <locale.h>
 
@@ -165,6 +166,8 @@ BOOL LauncherApp::InitFirstInstance()
 BOOL LauncherApp::InitSecondInstance()
 {
 	SPDLOG_DEBUG("start");
+
+	launcherapp::core::CommandRepository::GetInstance();
 
 	launcherapp::SecondProcessProxy proxy;
 
