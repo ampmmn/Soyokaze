@@ -48,7 +48,7 @@ struct WebHistoryCommand::PImpl
 		}
 
 		// 別スレッドで履歴データのロードを実行する
-		std::thread th([&]() {
+		auto th = std::thread([&]() {
 
 				CString historyPath;
 

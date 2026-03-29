@@ -442,7 +442,7 @@ void FilterExecutor::SetCancellationToken(CancellationToken* cancelToken)
 
 void FilterExecutor::LoadCandidates(const CommandParam& param)
 {
-	std::thread th([&, param]() {
+	auto th = std::thread([&, param]() {
 
 		AddRef();
 

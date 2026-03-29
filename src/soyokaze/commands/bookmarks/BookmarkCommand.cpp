@@ -59,7 +59,7 @@ void BookmarkCommand::PImpl::LoadBookmarks()
 	uint32_t ignoreMask = mParam.mPrefix.IsEmpty() ? 0 : 1;
 
 	// 別スレッドでブックマークのロードを実行する
-	std::thread th([&, ignoreMask]() {
+	auto th = std::thread([&, ignoreMask]() {
 
 		CString bkmPath;
 

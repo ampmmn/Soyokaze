@@ -77,7 +77,7 @@ struct OneNoteCommandProvider::PImpl :
 
 		// 別スレッドでノートブックのロードを実行する
 		spdlog::info("Reload Onenote Notebook.");
-		std::thread th([&]() {
+		auto th = std::thread([&]() {
 			HRESULT hr = CoInitialize(nullptr);
 			if (SUCCEEDED(hr)) {
 				LoadNotebooks();

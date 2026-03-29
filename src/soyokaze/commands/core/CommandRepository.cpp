@@ -208,7 +208,7 @@ void CommandRepository::PImpl::RunQueryThread()
 		return ;
 	}
 
-	std::thread th([&]() {
+	auto th = std::thread([&]() {
 
 			spdlog::info("Enter RunQueryThread.");
 

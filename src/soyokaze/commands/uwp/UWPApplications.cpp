@@ -67,7 +67,7 @@ struct UWPApplications::PImpl : public AppPreferenceListenerIF
 
 void UWPApplications::PImpl::RunUpdateTask()
 {
-	std::thread th([&]() {
+	auto th = std::thread([&]() {
 
 		ScopedResetEvent scope_event(mWaitEvt, true);
 

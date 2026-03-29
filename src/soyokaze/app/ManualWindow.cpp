@@ -46,7 +46,7 @@ void ManualWindow::PImpl::CreateManualWindow()
 {
 	// ヘルプ画面をメインスレッドで作成すると、メインスレッド側でモーダルダイアログを表示しているときに
 	// ヘルプ画面を操作できなくなってしまうため、専用のスレッドでヘルプ画面を作る
-	std::thread th([&]() {
+	auto th = std::thread([&]() {
 
 		// 初回呼び出し時にウインドウクラスを登録する
 		if (sIsWndClassRegistered == false) {

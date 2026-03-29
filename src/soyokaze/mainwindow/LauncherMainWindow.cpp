@@ -1409,7 +1409,7 @@ LauncherMainWindow::RunCommand(
 
 	auto hwnd = GetSafeHwnd();
 
-	std::thread th([cmd, hotkeyAttr, actionParam, hwnd, closePolicy]() {
+	auto th = std::thread([cmd, hotkeyAttr, actionParam, hwnd, closePolicy]() {
 
 		RefPtr<Action> action;
 		cmd->GetAction(hotkeyAttr, &action);
@@ -1498,7 +1498,7 @@ void LauncherMainWindow::SelectCommandContextMenu(
 	// コマンドの参照カウントを上げる(実行完了時に下げる)
 	cmd->AddRef();
 
-	std::thread th([cmd, index, str]() {
+	auto th = std::thread([cmd, index, str]() {
 
 		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
 		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {

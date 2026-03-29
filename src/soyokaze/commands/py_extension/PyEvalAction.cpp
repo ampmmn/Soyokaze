@@ -68,7 +68,7 @@ bool PyEvalAction::Perform(Parameter* args_, String* errMsg)
 
 	PyEvalArgument args(args_);
 	char** argsPtr = args.release();
-	std::thread th([proxy, name, script, argsPtr]() {
+	auto th = std::thread([proxy, name, script, argsPtr]() {
 
 		PyEvalArgument args(argsPtr);
 

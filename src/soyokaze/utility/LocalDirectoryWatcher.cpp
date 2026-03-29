@@ -280,7 +280,7 @@ uint32_t LocalDirectoryWatcher::Register(LPCTSTR pathToDir, LPCALLBACKFUNC func,
 	std::lock_guard<std::mutex> lock(in->mMutex);
 	// 初回呼び出し時に監視スレッドを作成する
 	if (in->mIdToElementMap.empty()) {
-		std::thread th([&]() { in->StartWatch(); });
+		auto th = std::thread([&]() { in->StartWatch(); });
 		in->mWatchThread.swap(th);
 	}
 

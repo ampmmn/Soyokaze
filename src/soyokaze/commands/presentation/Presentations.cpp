@@ -125,7 +125,7 @@ bool Presentations::PImpl::FetchPresentations(std::vector<SLIDE_ITEM>& items)
 	}
 
 	// 2回目以降は非同期で取得
-	std::thread th(threadFunc);
+	auto th = std::thread(threadFunc);
 	th.detach();
 
 	std::lock_guard<std::mutex> lock(mMutex);

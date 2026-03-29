@@ -137,7 +137,7 @@ struct UIAutomationCommandProvider::PImpl :
 		}
 
 		// ランチャーの入力窓が表示されたタイミングで
-		std::thread th([&, hwnd]() {
+		auto th = std::thread([&, hwnd]() {
 
 			// ランチャーのウインドウの背面にあるウインドウを取得する
 			if (IsWindow(hwnd) == FALSE) {

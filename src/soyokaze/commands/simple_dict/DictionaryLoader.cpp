@@ -470,7 +470,7 @@ bool DictionaryLoader::PImpl::SaveCacheFile(
 
 DictionaryLoader::DictionaryLoader() : in(new PImpl)
 {
-	std::thread th([&]() {
+	auto th = std::thread([&]() {
 			in->StartWatch();
 	});
 	th.detach();

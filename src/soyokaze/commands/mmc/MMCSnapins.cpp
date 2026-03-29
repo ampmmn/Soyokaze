@@ -51,7 +51,7 @@ struct MMCSnapins::PImpl : public AppPreferenceListenerIF
 
 void MMCSnapins::PImpl::RunCollectTask()
 {
-	std::thread th([&]() {
+	auto th = std::thread([&]() {
 
 			ScopedResetEvent scoped_event(mWaitEvt, true);
 

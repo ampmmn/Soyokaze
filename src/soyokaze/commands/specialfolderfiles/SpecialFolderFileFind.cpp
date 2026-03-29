@@ -259,7 +259,7 @@ bool SpecialFolderFileFind::FindShortcutFiles(std::vector<ITEM>& items)
 		in->RegisterWatcher();
 
 		// 初回はショートカット一覧を直接取得する。以降は変更通知経由で更新する
-		std::thread th([&](){
+		auto th = std::thread([&](){
 			in->UpdateRecentItems();
 			in->UpdateStartMenuItems();
 			in->UpdateCommonStartMenuItems();

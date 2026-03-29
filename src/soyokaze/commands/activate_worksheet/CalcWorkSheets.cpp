@@ -81,7 +81,7 @@ void CalcWorkSheets::PImpl::Update()
 	}
 	else {
 		// 2回目以降は非同期で取得
-		std::thread th(threadFunc);
+		auto th = std::thread(threadFunc);
 		th.detach();
 	}
 }
