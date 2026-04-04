@@ -34,7 +34,7 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 		mItems.clear();
 	}
 
-	void MSSettingsCommandProvider::PImpl::EnumItems(std::vector<MSSettingsCommand*>& out);
+	void EnumItems(std::vector<MSSettingsCommand*>& out);
 
 
 	void OnAppFirstBoot() override {}

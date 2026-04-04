@@ -5,6 +5,7 @@
 #include "actions/core/ActionParameter.h"
 #include "utility/Path.h"
 
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.UI.Notifications.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
 #include <notificationactivationcallback.h>
@@ -13,6 +14,7 @@ using namespace winrt;
 using namespace winrt::Windows::UI::Notifications;
 using namespace winrt::Windows::Data::Xml::Dom;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
+using ToastNotificationManager = winrt::Windows::UI::Notifications::ToastNotificationManager;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,8 +192,7 @@ void Toast::Show()
 	doc.SelectSingleNode(L"//text[3]").InnerText(L"クリックするとフォルダを開きます");
 
 	winrt::Windows::UI::Notifications::ToastNotification notif(doc);
-	winrt::Windows::UI::Notifications::ToastNotificationManager toastManager{};
-	ToastNotifier toastNotifier(toastManager.CreateToastNotifier(LAUNCHER_APPID));
+	ToastNotifier toastNotifier(ToastNotificationManager::CreateToastNotifier(LAUNCHER_APPID));
 	//notif.Group(L"grp");
 	toastNotifier.Show(notif);
 

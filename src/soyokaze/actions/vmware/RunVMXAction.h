@@ -8,7 +8,7 @@ namespace launcherapp { namespace actions { namespace vmware {
 class RunVMXAction : virtual public launcherapp::actions::core::ActionBase
 {
 public:
-	RunVMXAction::RunVMXAction(const CString& vmName, const CString& vmxFilePath, int showType);
+	RunVMXAction(const CString& vmName, const CString& vmxFilePath, int showType);
 	~RunVMXAction();
 
 // Action

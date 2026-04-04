@@ -26,7 +26,7 @@ HRESULT AutoWrap(
 	int autoType,
 	VARIANT* pvResult,
 	IDispatch* pDisp,
-	LPOLESTR ptName,
+	LPCOLESTR ptName,
 	int cArgs...
 )
 {
@@ -38,7 +38,7 @@ HRESULT AutoWrap(
 	va_start(marker, cArgs);
 
 	DISPID dispID;
-	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &ptName, 1, LOCALE_USER_DEFAULT, &dispID);
+	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, (LPOLESTR*)&ptName, 1, LOCALE_USER_DEFAULT, &dispID);
 	if (FAILED(hr)) {
 		return hr;
 	}

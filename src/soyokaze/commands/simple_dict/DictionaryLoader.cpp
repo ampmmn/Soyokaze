@@ -439,8 +439,8 @@ bool DictionaryLoader::PImpl::SaveCacheFile(
 
 		stmt.BindText(1, keys[i]);
 		
-		stmt.BindText(2, i < values.size() ? values[i] : _T(""));
-		stmt.BindText(3, i < values2.size() ? values2[i] : _T(""));
+		stmt.BindText(2, i < values.size() ? (LPCTSTR)values[i] : _T(""));
+		stmt.BindText(3, i < values2.size() ? (LPCTSTR)values2[i] : _T(""));
 		stmt.BindText(4, idStr);
 
 		rc = stmt.Step();

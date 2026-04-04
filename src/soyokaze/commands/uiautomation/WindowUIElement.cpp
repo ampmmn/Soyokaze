@@ -39,7 +39,7 @@ CString WindowUIElement::GetName()
 	BSTR name = nullptr;
 	HRESULT hr = mElem->get_CachedName(&name);
 	if (FAILED(hr) || name == nullptr) {
-		return false;
+		return _T("");
 	}
 
 	CString elemName(name ? (const wchar_t*)name : _T(""));

@@ -141,7 +141,10 @@ BOOL InternalBrowser::Create(CWnd* pParentWnd, int style, const RECT& rect, UINT
 		sIsWndClassRegistered = true;
 	}
 
-	CStringW clsName(in->mHostWindowClassName.IsEmpty() == FALSE ? in->mHostWindowClassName : _T("LauncherInernalBrowser"));
+	CStringW clsName(in->mHostWindowClassName);
+	if (clsName.IsEmpty()) {
+		clsName = _T("LauncherInernalBrowser");
+	}
 
 	if (CWnd::CreateEx(0, clsName, _T("InternalBrowser"), style, rect, pParentWnd, nID) == FALSE) {
 		return FALSE;

@@ -119,7 +119,7 @@ bool PythonDLLLoader::Finalize()
 		using LPFUNCFINALIZE = int(*)();
 		auto pythonproxy_Finalize = (LPFUNCFINALIZE)GetProcAddress(in->mProxyDLL, "pythonproxy_Finalize");
 		if (pythonproxy_Finalize == nullptr) {
-			return nullptr;
+			return false;
 		}
 
 		pythonproxy_Finalize();

@@ -57,7 +57,7 @@ static IDispatch* GetTargetWindowObject()
 		VARIANT arg1{ VT_I4, 0, 0, 0, i };
 		hr = AutoWrap(DISPATCH_METHOD, &vResult, pWindowsDisp, L"Item", 1, &arg1);
 		if (FAILED(hr)) {
-			return false;
+			return nullptr;
 		}
 		CComPtr<IDispatch> pWindowItemDisp(vResult.pdispVal);
 
@@ -102,7 +102,7 @@ static IDispatch* GetTargetWindowObject()
 	VARIANT arg1{ VT_I4, 0, 0, 0, index };
 	hr = AutoWrap(DISPATCH_METHOD, &vResult, pWindowsDisp, L"Item", 1, &arg1);
 	if (FAILED(hr)) {
-		return false;
+		return nullptr;
 	}
 
 	IDispatch* pDispResult = vResult.pdispVal;

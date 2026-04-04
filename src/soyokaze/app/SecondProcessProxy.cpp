@@ -80,7 +80,7 @@ bool SecondProcessProxy::ChangeDirectory(const String& pathStr)
 bool SecondProcessProxy::Hide()
 {
 	auto queue = InterProcessMessageQueue::GetInstance();
-	return queue->Enqueue(EVENT_ID::HIDE, "", 0);
+	return queue->Enqueue(EVENT_ID::HIDE, (void*)"", 0);
 }
 
 /**
@@ -92,7 +92,7 @@ bool SecondProcessProxy::Show()
 
 	// 先行プロセスを有効化する
 	auto queue = InterProcessMessageQueue::GetInstance();
-	return queue->Enqueue(EVENT_ID::ACTIVATE_WINDOW, "", 0);
+	return queue->Enqueue(EVENT_ID::ACTIVATE_WINDOW, (void*)"", 0);
 }
 
 

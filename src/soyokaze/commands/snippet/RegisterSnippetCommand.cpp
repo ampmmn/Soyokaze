@@ -32,7 +32,7 @@ CString RegisterSnippetCommand::GetType()
 }
 
 RegisterSnippetCommand::RegisterSnippetCommand(LPCTSTR name) :
-	BuiltinCommandBase(name ? name : DEFAULT_NAME)
+	BuiltinCommandBase(name ? name : (LPCTSTR)DEFAULT_NAME)
 {
 	mDescription = _T("【クリップボードのテキストを定型文として登録】");
 	mCanSetConfirm = false;

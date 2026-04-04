@@ -7,6 +7,7 @@
 #include "utility/Path.h"
 #include <vector>
 #include <regex>
+#include <mutex>
 #include <re2/re2.h>
 
 #ifdef _DEBUG
@@ -64,6 +65,7 @@ struct PartialMatchPattern::PImpl
 	Migemo mMigemo;
 
 	uint32_t mRefCount{1};
+	std::mutex mMutex;
 };
 
 PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
@@ -82,6 +84,7 @@ PartialMatchPattern::PartialMatchPattern() : in(std::make_unique<PImpl>())
 
 PartialMatchPattern::~PartialMatchPattern()
 {
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	for (auto pat : in->mRegPatterns) {
 		delete pat;
 	}
@@ -244,7 +247,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 		if (in->shouldUseMigemo(token) == false) {
 			if (token.IsEmpty() == FALSE) {
-				std::wstring escapedPat = StripEscapeChars(token);
+				std::wstring escapedPat((LPCWSTR)StripEscapeChars(token));
 				patterns.push_back(new RE2(UTF2UTF(escapedPat, tmp), options));
 				patternsForFM.push_back(new RE2(UTF2UTF(_T("^") + escapedPat, tmp), options));
 			}
@@ -268,6 +271,8 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 		// 前方一致比較用にパターンを生成しておく
 		patternsForFM.push_back(new RE2(UTF2UTF(_T("^") + migemoExpr, tmp), options));
 	}
+
+	std::lock_guard<std::mutex> lock(in->mMutex);
 	in->mRegPatterns.swap(patterns);
 	for (auto pat : patterns) {
 		delete pat;
@@ -320,6 +325,8 @@ int PartialMatchPattern::Match(
 	std::string str_;
 	UTF2UTF(std::wstring(str), str_);
 
+	std::lock_guard<std::mutex> lock(in->mMutex);
+
 	for (size_t i = 0; i < regPatCount; ++i) {
 
 		// 特定の引数を使用しないビットマスク指定があったらスキップ
@@ -349,7 +356,7 @@ int PartialMatchPattern::Match(
 
 LPCTSTR PartialMatchPattern::GetFirstWord()
 {
-	return in->mTokens.empty() ? _T("") : in->mTokens[0];
+	return in->mTokens.empty() ? _T("") : (LPCTSTR)in->mTokens[0];
 }
 
 LPCTSTR PartialMatchPattern::GetWholeString()

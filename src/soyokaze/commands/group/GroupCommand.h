@@ -39,7 +39,7 @@ public:
 	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
 	virtual bool CreateNewInstanceFrom(launcherapp::core::CommandEditor* editor, Command** newCmd) override;
 
-	static CString GroupCommand::GetType();
+	static CString GetType();
 	static CString TypeDisplayName();
 
 	static bool NewDialog(Parameter* param);

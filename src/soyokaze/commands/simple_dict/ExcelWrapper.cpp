@@ -50,7 +50,7 @@ static bool CreateExcelApplication(DispWrapper& excelApp)
 			return false;
 		}
 
-		HWND hwndApp = (HWND)excelApp.GetPropertyInt64(L"Hwnd");
+		HWND hwndApp = (HWND)excelApp.GetPropertyInt64((LPOLESTR)L"Hwnd");
 		if (IsWindow(hwndApp)) {
 			DWORD pid;
 			GetWindowThreadProcessId(hwndApp, &pid);

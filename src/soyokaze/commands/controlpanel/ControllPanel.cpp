@@ -31,7 +31,7 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 		mPanelItems.clear();
 	}
 
-	void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& out);
+	void EnumItems(std::vector<ControlPanelCommand*>& out);
 
 
 	void OnAppFirstBoot() override {}

@@ -202,6 +202,15 @@ static void MakeErrMsg(char** errMsg, const std::string& msgstr)
 	memcpy(*errMsg, msgstr.data(), msgstr.size() + 1);
 }
 
+static void MakeErrMsg(char** errMsg, const std::u8string& msgstr)
+{
+	if (errMsg == nullptr) {
+		return;
+	}
+	*errMsg = new char[msgstr.size() + 1];
+	memcpy(*errMsg, msgstr.data(), msgstr.size() + 1);
+}
+
 
 static void FetchErrMsg(char** errMsg)
 {

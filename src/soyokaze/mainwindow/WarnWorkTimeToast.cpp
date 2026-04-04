@@ -12,6 +12,7 @@
 using namespace winrt;
 using namespace winrt::Windows::UI::Notifications;
 using namespace winrt::Windows::Data::Xml::Dom;
+using ToastNotificationManager = winrt::Windows::UI::Notifications::ToastNotificationManager;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,8 +71,7 @@ void Toast::Show()
 	doc.SelectSingleNode(L"//text[2]").InnerText(_T("健康のため、適宜休憩を入れるが吉"));
 
 	winrt::Windows::UI::Notifications::ToastNotification notif(doc);
-	winrt::Windows::UI::Notifications::ToastNotificationManager toastManager{};
-	ToastNotifier toastNotifier(toastManager.CreateToastNotifier(LAUNCHER_APPID));
+	ToastNotifier toastNotifier(ToastNotificationManager::CreateToastNotifier(LAUNCHER_APPID));
 	notif.Group(L"healthnotify");
 	toastNotifier.Show(notif);
 
@@ -83,8 +83,7 @@ void Toast::Clear()
 {
 	// このクラスによって生成したトースト通知を消す
 	try {
-		winrt::Windows::UI::Notifications::ToastNotificationManager toastManager{};
-		toastManager.History().RemoveGroup(L"healthnotify", LAUNCHER_APPID);
+		ToastNotificationManager::History().RemoveGroup(L"healthnotify", LAUNCHER_APPID);
 	}
 	catch (...) {
 	}

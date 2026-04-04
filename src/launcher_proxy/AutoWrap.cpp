@@ -35,10 +35,10 @@ HRESULT AutoWrap(
 	va_start(marker, cArgs);
 
 	std::wstring name(ptName);
-	LPOLESTR name_ptr = name.data();
+	LPCOLESTR name_ptr = name.data();
 
 	DISPID dispID;
-	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, &name_ptr, 1, LOCALE_USER_DEFAULT, &dispID);
+	HRESULT hr = pDisp->GetIDsOfNames(IID_NULL, (LPOLESTR*)&name_ptr, 1, LOCALE_USER_DEFAULT, &dispID);
 	if (FAILED(hr)) {
 		return hr;
 	}
@@ -97,7 +97,7 @@ DispWrapper::operator IDispatch*()
 }
 
 
-void DispWrapper::GetPropertyVariant(LPOLESTR name, VARIANT& value)
+void DispWrapper::GetPropertyVariant(LPCOLESTR name, VARIANT& value)
 {
 	if (mDispPtr == nullptr) {
 		return ;
@@ -108,7 +108,7 @@ void DispWrapper::GetPropertyVariant(LPOLESTR name, VARIANT& value)
 }
 
 int DispWrapper::GetPropertyInt(
-		LPOLESTR name
+		LPCOLESTR name
 )
 {
 	if (mDispPtr == nullptr) {
@@ -123,7 +123,7 @@ int DispWrapper::GetPropertyInt(
 }
 
 int64_t DispWrapper::GetPropertyInt64(
-		LPOLESTR name
+		LPCOLESTR name
 )
 {
 	if (mDispPtr == nullptr) {
@@ -137,7 +137,7 @@ int64_t DispWrapper::GetPropertyInt64(
 	return result.llVal;
 }
 
-std::wstring DispWrapper::GetPropertyString(LPOLESTR name)
+std::wstring DispWrapper::GetPropertyString(LPCOLESTR name)
 {
 	if (mDispPtr == nullptr) {
 		return _T("");
@@ -150,7 +150,7 @@ std::wstring DispWrapper::GetPropertyString(LPOLESTR name)
 	return std::wstring(result.bstrVal);
 }
 
-std::wstring DispWrapper::GetPropertyString(LPOLESTR name, int index)
+std::wstring DispWrapper::GetPropertyString(LPCOLESTR name, int index)
 {
 	if (mDispPtr == nullptr) {
 		return _T("");
@@ -169,7 +169,7 @@ std::wstring DispWrapper::GetPropertyString(LPOLESTR name, int index)
 }
 
 
-bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
+bool DispWrapper::GetPropertyObject(LPCOLESTR name, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -187,7 +187,7 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, DispWrapper& object)
 	return true;
 }
 
-bool DispWrapper::GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& object)
+bool DispWrapper::GetPropertyObject(LPCOLESTR name, int16_t index, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -207,7 +207,7 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, int16_t index, DispWrapper& o
 	return true;
 }
 
-bool DispWrapper::GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& object)
+bool DispWrapper::GetPropertyObject(LPCOLESTR name, int32_t index, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -227,7 +227,7 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, int32_t index, DispWrapper& o
 	return true;
 }
 
-bool DispWrapper::GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper& object)
+bool DispWrapper::GetPropertyObject(LPCOLESTR name, LPCOLESTR argName, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -250,7 +250,7 @@ bool DispWrapper::GetPropertyObject(LPOLESTR name, LPOLESTR argName, DispWrapper
 }
 
 
-int DispWrapper::CallIntMethod(LPOLESTR methodName, int defValue)
+int DispWrapper::CallIntMethod(LPCOLESTR methodName, int defValue)
 {
 	if (mDispPtr == nullptr) {
 		return defValue;
@@ -268,7 +268,7 @@ int DispWrapper::CallIntMethod(LPOLESTR methodName, int defValue)
 	return result.intVal;
 }
 
-bool DispWrapper::CallBooleanMethod(LPOLESTR methodName, bool defValue)
+bool DispWrapper::CallBooleanMethod(LPCOLESTR methodName, bool defValue)
 {
 	if (mDispPtr == nullptr) {
 		return defValue;
@@ -286,7 +286,7 @@ bool DispWrapper::CallBooleanMethod(LPOLESTR methodName, bool defValue)
 	return result.boolVal;
 }
 
-std::wstring DispWrapper::CallStringMethod(LPOLESTR methodName, const std::wstring& defValue)
+std::wstring DispWrapper::CallStringMethod(LPCOLESTR methodName, const std::wstring& defValue)
 {
 	if (mDispPtr == nullptr) {
 		return defValue;
@@ -307,7 +307,7 @@ std::wstring DispWrapper::CallStringMethod(LPOLESTR methodName, const std::wstri
 	return std::wstring(bstrVal);
 }
 
-bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
+bool DispWrapper::CallObjectMethod(LPCOLESTR methodName, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -323,7 +323,7 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& object)
 	return  (result.pdispVal != nullptr);
 }
 
-bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, DispWrapper& object)
+bool DispWrapper::CallObjectMethod(LPCOLESTR methodName, DispWrapper& param1, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -344,7 +344,7 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, DispWrapper& param1, Dis
 	return  (result.pdispVal != nullptr);
 }
 
-bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWrapper& object)
+bool DispWrapper::CallObjectMethod(LPCOLESTR methodName, LPCOLESTR param1, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -366,7 +366,7 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, LPOLESTR param1, DispWra
 	return  (result.pdispVal != nullptr);
 }
 
-bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrapper& object)
+bool DispWrapper::CallObjectMethod(LPCOLESTR methodName, int32_t param1, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -387,7 +387,7 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int32_t param1, DispWrap
 	return  (result.pdispVal != nullptr);
 }
 
-bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrapper& object)
+bool DispWrapper::CallObjectMethod(LPCOLESTR methodName, int16_t param1, DispWrapper& object)
 {
 	if (mDispPtr == nullptr) {
 		return false;
@@ -408,7 +408,7 @@ bool DispWrapper::CallObjectMethod(LPOLESTR methodName, int16_t param1, DispWrap
 	return  (result.pdispVal != nullptr);
 }
 
-void DispWrapper::CallVoidMethod(LPOLESTR methodName)
+void DispWrapper::CallVoidMethod(LPCOLESTR methodName)
 {
 	if (mDispPtr == nullptr) {
 		return;
@@ -419,7 +419,7 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName)
 	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 0);
 }
 
-void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
+void DispWrapper::CallVoidMethod(LPCOLESTR methodName, IDispatch* param1)
 {
 	if (mDispPtr == nullptr) {
 		return;
@@ -437,7 +437,7 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName, IDispatch* param1)
 	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
 }
 
-void DispWrapper::CallVoidMethod(LPOLESTR methodName, int16_t param1)
+void DispWrapper::CallVoidMethod(LPCOLESTR methodName, int16_t param1)
 {
 	if (mDispPtr == nullptr) {
 		return ;
@@ -455,7 +455,7 @@ void DispWrapper::CallVoidMethod(LPOLESTR methodName, int16_t param1)
 	AutoWrap(DISPATCH_METHOD, &result, mDispPtr, methodName, 1, &arg1);
 }
 
-void DispWrapper::CallVoidMethod(LPOLESTR methodName, bool param1)
+void DispWrapper::CallVoidMethod(LPCOLESTR methodName, bool param1)
 {
 	if (mDispPtr == nullptr) {
 		return;

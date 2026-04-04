@@ -285,7 +285,7 @@ uint32_t LocalDirectoryWatcher::Register(LPCTSTR pathToDir, LPCALLBACKFUNC func,
 	}
 
 	auto id = in->mNextId++;
-	auto elem = new Element{ path, fileName, h, {0, 0, {}, hEvent}, func, param };
+	auto elem = new Element{ (LPCTSTR)path, fileName, h, {0, 0, {}, hEvent}, func, param };
 	in->mIdToElementMap[id] = std::unique_ptr<Element>(elem);
 	return id;
 }
