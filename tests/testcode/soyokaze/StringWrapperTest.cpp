@@ -13,7 +13,7 @@ TEST(StringTest, ConstructFromWchar) {
     const wchar_t* ws = L"こんにちは";
     String str(ws);
     // UTF-8で"こんにちは"は15バイト
-    EXPECT_EQ(str, u8"こんにちは");
+    EXPECT_EQ(str, (const char*)u8"こんにちは");
 }
 
 TEST(StringTest, MakeLower) {

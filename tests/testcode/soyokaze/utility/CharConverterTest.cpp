@@ -107,7 +107,7 @@ TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_ValidInput) {
         utf8Output = CharConverter::UTF2UTF(utf16Input);
     });
 
-    EXPECT_EQ(utf8Output, u8"テスト");
+    EXPECT_EQ(utf8Output, (const char*)u8"テスト");
 }
 
 TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithDst_ValidInput) {
@@ -118,7 +118,7 @@ TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithDst_ValidInput) {
         CharConverter::UTF2UTF(utf16Input, utf8Output);
     });
 
-    EXPECT_EQ(utf8Output, u8"テスト");
+    EXPECT_EQ(utf8Output, (const char*)u8"テスト");
 }
 
 TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithWString_ValidInput) {
@@ -129,11 +129,11 @@ TEST_F(CharConverterTest, UTF16ToUTF8_StaticMethod_WithWString_ValidInput) {
         CharConverter::UTF2UTF(utf16Input, utf8Output);
     });
 
-    EXPECT_EQ(utf8Output, u8"テスト");
+    EXPECT_EQ(utf8Output, (const char*)u8"テスト");
 }
 
 TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_ValidInput) {
-    std::string utf8Input = u8"テスト";
+    std::string utf8Input = (const char*)u8"テスト";
     CStringW utf16Output;
 
     EXPECT_NO_THROW({
@@ -144,7 +144,7 @@ TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_ValidInput) {
 }
 
 TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_WithDst_ValidInput) {
-    std::string utf8Input = u8"テスト";
+    std::string utf8Input = (const char*)u8"テスト";
     CStringW utf16Output;
 
     EXPECT_NO_THROW({
@@ -155,7 +155,7 @@ TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_WithDst_ValidInput) {
 }
 
 TEST_F(CharConverterTest, UTF8ToUTF16_StaticMethod_WithWString_ValidInput) {
-    std::string utf8Input = u8"テスト";
+    std::string utf8Input = (const char*)u8"テスト";
     std::wstring utf16Output;
 
     EXPECT_NO_THROW({
