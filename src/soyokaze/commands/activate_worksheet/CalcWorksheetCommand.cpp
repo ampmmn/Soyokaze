@@ -33,7 +33,7 @@ CalcWorksheetCommand::CalcWorksheetCommand(
 	in->mCalcWorksheet = sheet;
 	sheet->AddRef();
 
-	this->mName = fmt::format(_T("{} ({})"), sheet->GetSheetName(), PathFindFileName(sheet->GetWorkbookName().c_str())).c_str();
+	this->mName = std::format(_T("{} ({})"), sheet->GetSheetName(), PathFindFileName(sheet->GetWorkbookName().c_str())).c_str();
 	this->mDescription = sheet->GetSheetName().c_str();
 }
 

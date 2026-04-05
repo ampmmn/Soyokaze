@@ -361,7 +361,7 @@ static std::string fromControlIdToString(int typeId)
 	case UIA_SemanticZoomControlTypeId: return "UIA_SemanticZoomControlTypeId";
 	case UIA_AppBarControlTypeId: return "UIA_AppBarControlTypeId";
 	default:
-		return fmt::format("Unknown type({})", typeId);
+		return std::format("Unknown type({})", typeId);
 	}
 }
 

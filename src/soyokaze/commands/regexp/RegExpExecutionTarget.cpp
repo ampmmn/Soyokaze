@@ -95,11 +95,11 @@ bool RegExpExecutionTarget::GetRegex(tregex& regexObject)
 			return true;
 		}
 		if (mMatchLevel == Pattern::FrontMatch) {
-			regexObject = tregex(fmt::format(_T("{}.*$"), (LPCTSTR)mParam.mPatternStr));
+			regexObject = tregex(std::format(_T("{}.*$"), (LPCTSTR)mParam.mPatternStr));
 			return true;
 		}
 		if (mMatchLevel == Pattern::PartialMatch) {
-			regexObject = tregex(fmt::format(_T("^.*{}.*$"), (LPCTSTR)mParam.mPatternStr));
+			regexObject = tregex(std::format(_T("^.*{}.*$"), (LPCTSTR)mParam.mPatternStr));
 			return true;
 		}
 		return false;

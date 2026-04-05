@@ -228,7 +228,7 @@ void SettingPageEnv::OnButtonAdd()
 	// 重複チェック
 	auto it = in->mEnviron.find(newName);
 	if (it != in->mEnviron.end()) {
-		auto msg = fmt::format(_T("{} はすでに登録されています。値を置き換えますか?"), (LPCTSTR)newName);
+		auto msg = std::format(_T("{} はすでに登録されています。値を置き換えますか?"), (LPCTSTR)newName);
 		int yesno = AfxMessageBox(msg.c_str(), MB_YESNO | MB_ICONQUESTION);
 		if (yesno != IDYES) {
 			// 更新しない

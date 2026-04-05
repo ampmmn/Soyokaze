@@ -62,7 +62,7 @@ bool SecondProcessProxy::RegisterPath(const String& pathStr)
 
 	// 空白を置換
 	name.Replace(' ', '_');
-	return SendCommandString(fmt::format("new \"{0}\" \"{1}\"", ret, pathStr), false);
+	return SendCommandString(std::format("new \"{0}\" \"{1}\"", ret, pathStr.c_str()), false);
 }
 
 bool SecondProcessProxy::ChangeDirectory(const String& pathStr)

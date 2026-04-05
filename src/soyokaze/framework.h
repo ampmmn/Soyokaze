@@ -56,7 +56,6 @@ constexpr int MAX_PATH_NTFS = (32767+1);
 
 #include <regex>
 #include <string>
-#include <fmt/core.h>
 
 #ifdef _UNICODE
 using tregex = std::wregex;

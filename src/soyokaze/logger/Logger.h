@@ -15,6 +15,7 @@
 
 #pragma warning( push )
 #pragma warning( disable : 26495 26437 26450 26498 26800 6285 6385)
+#define SPDLOG_USE_STD_FORMAT
 #include "spdlog/spdlog.h"
 #include "spdlog/stopwatch.h"
 #pragma warning( pop )

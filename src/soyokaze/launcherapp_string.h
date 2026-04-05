@@ -111,3 +111,11 @@ public:
 
 };
 
+template <> 
+struct std::formatter<String, char> : std::formatter<std::string_view, char>
+{
+	auto format(const String& s, auto& ctx) const {
+		std::string_view sv{ s.data(), s.size() };
+		return std::formatter<std::string_view, char>::format(sv, ctx);
+	}
+};

@@ -162,7 +162,7 @@ bool ActiveCalcSheetProxyCommand::Execute(json& json_req, json& json_res)
 	// アプリのウインドウを全面に出す
 	if (IsWindow(hwndApp) == FALSE) {
 		json_res["result"] = false;
-		json_res["reason"] = fmt::format("App window does not found. {0}", json_req["workbook"].get<std::string>());
+		json_res["reason"] = std::format("App window does not found. {0}", json_req["workbook"].get<std::string>());
 		return true;
 	}
 

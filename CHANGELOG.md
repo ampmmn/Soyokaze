@@ -5,6 +5,7 @@
 ### Changed
 
 - プロジェクトのC++バージョンをC++20に変更
+- fmt::formatをstd::formatに置き換え / spdlogもstd::formatを使う形に変更
 
 ### Fixed
 

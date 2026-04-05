@@ -138,7 +138,7 @@ bool KeySplitterCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** actio
 		if (command == nullptr) {
 			if (errMsg) {
 				std::string tmp;
-				*errMsg = fmt::format("コマンドが見つかりません {}", UTF2UTF(item.mCommandName, tmp));
+				*errMsg = std::format("コマンドが見つかりません {}", UTF2UTF(item.mCommandName, tmp));
 			}
 			return false;
 		}

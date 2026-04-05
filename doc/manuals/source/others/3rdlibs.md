@@ -1,9 +1,6 @@
 # Third Party Libraries
 
 ```{only} soyokaze
-- [fmt](https://github.com/fmtlib/fmt)
-  - 文字列フォーマット用
-
 - [nlohmann-json](https://github.com/nlohmann/json)
   - jsonファイルをパースするために使用している
 

@@ -81,7 +81,7 @@ bool EjectVolumeCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** actio
 		if (EjectVolume(param.mDriveLetter, nullptr, nullptr) == false) {
 			spdlog::warn(_T("Failed to eject volume. {0} {1}:"), (LPCTSTR)param.mName, param.mDriveLetter);
 			if (errMsg) {
-				*errMsg = fmt::format("ドライブの取り外しに失敗しました err:{}", GetLastError());
+				*errMsg = std::format("ドライブの取り外しに失敗しました err:{}", GetLastError());
 			}
 			return false;
 		}

@@ -214,7 +214,7 @@ void PreviewWindow::SetPreviewText(const CString& text, uint64_t date)
 	auto s = tm.Format(_T("%c"));
 
 	std::locale loc("en_US.UTF-8");
-	auto sizeStr = fmt::format(loc, _T("{:L}"), text.GetLength());
+	auto sizeStr = std::format(loc, _T("{}"), text.GetLength());
 	in->mWindow.mInfoText.Format(_T("%s %s byte"), (LPCTSTR)s, sizeStr.c_str());
 	in->mWindow.mPreviewText = text;
 

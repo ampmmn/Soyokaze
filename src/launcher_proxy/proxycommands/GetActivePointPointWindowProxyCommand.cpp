@@ -6,7 +6,6 @@
 #include <atlbase.h>
 #include <regex>
 #include <spdlog/spdlog.h>
-#include <fmt/core.h>
 
 using json = nlohmann::json;
 

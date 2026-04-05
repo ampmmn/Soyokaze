@@ -177,7 +177,7 @@ bool AlignWindowCommand::AlignTarget(HWND& prevForegroundHwnd, String* errMsg)
 
 	if (in->mParam.mIsNotifyIfWindowNotFound && missingTitles.empty() == false ) {
 		if (errMsg) {
-			*errMsg = fmt::format("以下のウインドウは見つかりませんでした。\n{0}", missingTitles);
+			*errMsg = std::format("以下のウインドウは見つかりませんでした。\n{0}", missingTitles);
 		}
 		return false;
 	}

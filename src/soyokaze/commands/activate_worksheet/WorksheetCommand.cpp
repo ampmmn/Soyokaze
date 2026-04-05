@@ -34,7 +34,7 @@ WorksheetCommand::WorksheetCommand(
 	in->mWorksheet = sheet;
 	sheet->AddRef();
 
-	this->mName = fmt::format(_T("{} ({})"), sheet->GetSheetName(), sheet->GetWorkbookName()).c_str();
+	this->mName = std::format(_T("{} ({})"), sheet->GetSheetName(), sheet->GetWorkbookName()).c_str();
 	this->mDescription = sheet->GetSheetName().c_str();
 
 }
