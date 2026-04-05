@@ -25,6 +25,7 @@ BEGIN_ERR_MESSAGE_MAP()
 	DECLARE_ERR_MESSAGE(ActivateWindow_ClassIsInvalid, _T("ウインドウクラスの指定パターンが正しくありません"))
 	DECLARE_ERR_MESSAGE(Alias_TextIsEmpty, _T("テキストを入力してください"))
 	DECLARE_ERR_MESSAGE(PyExtension_ScriptIsEmpty, _T("スクリプトを入力してください"))
+	DECLARE_ERR_MESSAGE(PlaceInRegion_RectIsEmpty, _T("幅と高さは0より大きい値を指定してください"))
 END_ERR_MESSGAGE_MAP()
 
 CommandParamError::CommandParamError() : mErrCode(0)
