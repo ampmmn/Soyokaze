@@ -307,6 +307,9 @@
     <Filter Include="commands\win32menu">
       <UniqueIdentifier>{d0372a63-b59f-475c-9724-6c1d1b0554f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\place_window_in_region">
+      <UniqueIdentifier>{a36d72ca-252b-40f4-9786-63788c4d51f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1899,6 +1902,27 @@
     <ClInclude Include="commands\win32menu\Win32MenuAdhocCommand.h">
       <Filter>commands\win32menu</Filter>
     </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommand.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionParameter.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionProvider.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\place_window_in_region\RegionIndicatorWindow.h">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3349,6 +3373,27 @@
     </ClCompile>
     <ClCompile Include="commands\win32menu\Win32MenuAdhocCommand.cpp">
       <Filter>commands\win32menu</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommand.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionParameter.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionProvider.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.cpp">
+      <Filter>commands\place_window_in_region</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\place_window_in_region\RegionIndicatorWindow.cpp">
+      <Filter>commands\place_window_in_region</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

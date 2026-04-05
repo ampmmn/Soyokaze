@@ -10,10 +10,12 @@ public:
 	static ActivateIndicatorWindow* GetInstance();
 
 	void Cover(HWND hwnd);
+	void Cover(RECT rc);
 	void Uncover();
 
 protected:
 	HWND Create();
+	void Draw();
 
 	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 private:

@@ -24,6 +24,9 @@ enum CommandParamErrorCode
 	Alias_TextIsEmpty,
 	// [py_extension] スクリプトが空
 	PyExtension_ScriptIsEmpty,
+	// [place_in_region] 幅と高さが無効
+	PlaceInRegion_RectIsEmpty,
+
 };
 
 

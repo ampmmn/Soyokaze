@@ -542,6 +542,13 @@
     <ClInclude Include="commands\pathconvert\Icon.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\pathfind\PathURLCommand.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommand.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionParameter.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionProvider.h" />
+    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.h" />
+    <ClInclude Include="commands\place_window_in_region\RegionIndicatorWindow.h" />
     <ClInclude Include="commands\py_extension\PyEvalAction.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommand.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommandEditDialog.h" />
@@ -1071,6 +1078,13 @@
     <ClCompile Include="commands\outlook\OutlookProxy.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\pathfind\PathURLCommand.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommand.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionParameter.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionProvider.cpp" />
+    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.cpp" />
+    <ClCompile Include="commands\place_window_in_region\RegionIndicatorWindow.cpp" />
     <ClCompile Include="commands\py_extension\PyEvalAction.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommand.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommandEditDialog.cpp" />
