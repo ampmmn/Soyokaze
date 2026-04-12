@@ -427,9 +427,8 @@
     <ClInclude Include="app\SecondProcessProxyIF.h" />
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h" />
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h" />
-    <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h" />
-    <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h" />
-    <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h" />
+    <ClInclude Include="commands\activate_window\RegionIndicatorWindow.h" />
+    <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h" />
     <ClInclude Include="commands\activate_window\WindowActivateCommandEditor.h" />
     <ClInclude Include="commands\activate_window\WindowList.h" />
     <ClInclude Include="commands\activate_worksheet\ActivateWorksheetProvider.h" />
@@ -542,13 +541,6 @@
     <ClInclude Include="commands\pathconvert\Icon.h" />
     <ClInclude Include="commands\pathfind\ExcludePathList.h" />
     <ClInclude Include="commands\pathfind\PathURLCommand.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommand.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionParameter.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionProvider.h" />
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.h" />
-    <ClInclude Include="commands\place_window_in_region\RegionIndicatorWindow.h" />
     <ClInclude Include="commands\py_extension\PyEvalAction.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommand.h" />
     <ClInclude Include="commands\py_extension\PyExtensionCommandEditDialog.h" />
@@ -691,7 +683,6 @@
     <ClInclude Include="mainwindow/CandidateListListenerIF.h" />
     <ClInclude Include="hotkey/CommandHotKeyMappings.h" />
     <ClInclude Include="commands\activate_window\ActivateWindowProvider.h" />
-    <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h" />
     <ClInclude Include="commands\activate_window\WindowActivateCommand.h" />
     <ClInclude Include="commands\activate_window\WindowActivateCommandParam.h" />
     <ClInclude Include="commands\activate_window\WindowActivateSettingDialog.h" />
@@ -963,9 +954,8 @@
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp" />
-    <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp" />
-    <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp" />
-    <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp" />
+    <ClCompile Include="commands\activate_window\RegionIndicatorWindow.cpp" />
+    <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateCommandEditor.cpp" />
     <ClCompile Include="commands\activate_window\WindowList.cpp" />
     <ClCompile Include="commands\activate_worksheet\ActivateWorksheetProvider.cpp" />
@@ -1078,13 +1068,6 @@
     <ClCompile Include="commands\outlook\OutlookProxy.cpp" />
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp" />
     <ClCompile Include="commands\pathfind\PathURLCommand.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommand.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionParameter.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionProvider.cpp" />
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.cpp" />
-    <ClCompile Include="commands\place_window_in_region\RegionIndicatorWindow.cpp" />
     <ClCompile Include="commands\py_extension\PyEvalAction.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommand.cpp" />
     <ClCompile Include="commands\py_extension\PyExtensionCommandEditDialog.cpp" />
@@ -1217,7 +1200,6 @@
     <ClCompile Include="mainwindow/CandidateList.cpp" />
     <ClCompile Include="hotkey/CommandHotKeyMappings.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowProvider.cpp" />
-    <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateCommand.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateCommandParam.cpp" />
     <ClCompile Include="commands\activate_window\WindowActivateSettingDialog.cpp" />

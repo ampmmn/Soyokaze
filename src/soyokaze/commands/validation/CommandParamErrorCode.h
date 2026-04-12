@@ -20,6 +20,8 @@ enum CommandParamErrorCode
 	ActivateWindow_CaptionIsInvalid,
 	// [activate_window] ウインドウクラスの指定が不正
 	ActivateWindow_ClassIsInvalid,
+	// [activate_window] アクションが設定されていない
+	ActivateWindow_ActionMustBeSet,
 	// [alias] テキストが空
 	Alias_TextIsEmpty,
 	// [py_extension] スクリプトが空

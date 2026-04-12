@@ -307,9 +307,6 @@
     <Filter Include="commands\win32menu">
       <UniqueIdentifier>{d0372a63-b59f-475c-9724-6c1d1b0554f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands\place_window_in_region">
-      <UniqueIdentifier>{a36d72ca-252b-40f4-9786-63788c4d51f9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -533,9 +530,6 @@
     </ClInclude>
     <ClInclude Include="utility\Sound.h">
       <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h">
-      <Filter>commands\activate_window</Filter>
     </ClInclude>
     <ClInclude Include="commands\activate_window\WindowActivateCommandParam.h">
       <Filter>commands\activate_window</Filter>
@@ -1353,9 +1347,6 @@
     <ClInclude Include="commands\activate_worksheet\WorksheetCommand.h">
       <Filter>commands\activate_worksheet</Filter>
     </ClInclude>
-    <ClInclude Include="commands\activate_window\WindowActivateAdhocNameDialog.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
     <ClInclude Include="app\SecondProcessProxy.h">
       <Filter>app</Filter>
     </ClInclude>
@@ -1686,12 +1677,6 @@
     <ClInclude Include="actions\activate_window\MinimizeWindowAction.h">
       <Filter>actions\activate_window</Filter>
     </ClInclude>
-    <ClInclude Include="commands\activate_window\TemporaryWindowNameAction.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\activate_window\CloseWindowActionWrapper.h">
-      <Filter>commands\activate_window</Filter>
-    </ClInclude>
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
@@ -1902,26 +1887,11 @@
     <ClInclude Include="commands\win32menu\Win32MenuAdhocCommand.h">
       <Filter>commands\win32menu</Filter>
     </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommand.h">
-      <Filter>commands\place_window_in_region</Filter>
+    <ClInclude Include="commands\activate_window\RegionIndicatorWindow.h">
+      <Filter>commands\activate_window</Filter>
     </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionParameter.h">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionProvider.h">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.h">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.h">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.h">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClInclude>
-    <ClInclude Include="commands\place_window_in_region\RegionIndicatorWindow.h">
-      <Filter>commands\place_window_in_region</Filter>
+    <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h">
+      <Filter>commands\activate_window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2134,9 +2104,6 @@
     </ClCompile>
     <ClCompile Include="utility\Sound.cpp">
       <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp">
-      <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateCommandParam.cpp">
       <Filter>commands\activate_window</Filter>
@@ -2870,9 +2837,6 @@
     <ClCompile Include="commands\activate_worksheet\WorksheetCommand.cpp">
       <Filter>commands\activate_worksheet</Filter>
     </ClCompile>
-    <ClCompile Include="commands\activate_window\WindowActivateAdhocNameDialog.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
     <ClCompile Include="app\SecondProcessProxy.cpp">
       <Filter>app</Filter>
     </ClCompile>
@@ -3161,12 +3125,6 @@
     <ClCompile Include="actions\activate_window\MinimizeWindowAction.cpp">
       <Filter>actions\activate_window</Filter>
     </ClCompile>
-    <ClCompile Include="commands\activate_window\TemporaryWindowNameAction.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\activate_window\CloseWindowActionWrapper.cpp">
-      <Filter>commands\activate_window</Filter>
-    </ClCompile>
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
@@ -3374,26 +3332,11 @@
     <ClCompile Include="commands\win32menu\Win32MenuAdhocCommand.cpp">
       <Filter>commands\win32menu</Filter>
     </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommand.cpp">
-      <Filter>commands\place_window_in_region</Filter>
+    <ClCompile Include="commands\activate_window\RegionIndicatorWindow.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionParameter.cpp">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionProvider.cpp">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionCommandEditor.cpp">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionSettingDialog.cpp">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\PlaceWindowInRegionAdhocCommand.cpp">
-      <Filter>commands\place_window_in_region</Filter>
-    </ClCompile>
-    <ClCompile Include="commands\place_window_in_region\RegionIndicatorWindow.cpp">
-      <Filter>commands\place_window_in_region</Filter>
+    <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp">
+      <Filter>commands\activate_window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/common/UserCommandBase.h"
+#include "commands/core/ExtraCandidateSourceIF.h"
 #include <memory>
 
 class CommandFile;
@@ -12,13 +13,16 @@ namespace activate_window {
 class CommandParam;
 
 class WindowActivateCommand : 
-	virtual public launcherapp::commands::common::UserCommandBase
+	virtual public launcherapp::commands::common::UserCommandBase,
+	virtual public launcherapp::commands::core::ExtraCandidateSource
 {
 public:
 	WindowActivateCommand();
 	virtual ~WindowActivateCommand();
 
 	void SetParam(const CommandParam& param);
+
+	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;
 
 // Command
 	CString GetName() override;
@@ -43,6 +47,11 @@ public:
 	bool Apply(launcherapp::core::CommandEditor* editor) override;
 	// ダイアログ上での編集結果に基づき、新しいコマンドを作成(複製)する
 	bool CreateNewInstanceFrom(launcherapp::core::CommandEditor*editor, Command** newCmd) override;
+
+// ExtraCandidateSource
+	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
+	void ClearCache() override;
+
 
 
 	static CString GetType();

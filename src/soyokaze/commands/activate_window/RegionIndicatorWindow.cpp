@@ -2,7 +2,7 @@
 #include "RegionIndicatorWindow.h"
 #include "SharedHwnd.h"
 
-namespace launcherapp { namespace commands { namespace place_window_in_region {
+namespace launcherapp { namespace commands { namespace activate_window {
 
 constexpr UINT TIMERID_WATCHWINDOW = 1;
 
@@ -141,6 +141,7 @@ LRESULT CALLBACK RegionIndicatorWindow::OnWindowProc(HWND hwnd, UINT msg, WPARAM
 			auto thisPtr = (RegionIndicatorWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
 			if (thisPtr->mIsIndependent == false) {
+				spdlog::info("RegionIndicatorWindow hide.");
 				thisPtr->Uncover();
 			}
 		}
@@ -176,4 +177,4 @@ HWND RegionIndicatorWindow::Create()
 	return hwnd;
 }
 
-}}} // end of namespace launcherapp::commands::place_window_in_region
+}}} // end of namespace launcherapp::commands::activate_window

@@ -13,9 +13,13 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mName(rhs.mName),
 	mDescription(rhs.mDescription),
 	mHotKeyAttr(rhs.mHotKeyAttr),
+	mStragegy(rhs.mStragegy),
 	mCaptionStr(rhs.mCaptionStr),
 	mClassStr(rhs.mClassStr),
+	mPlacement(rhs.mPlacement),
 	mIsUseRegExp(rhs.mIsUseRegExp),
+	mShouldArrangeWindow(rhs.mShouldArrangeWindow),
+	mShouldActivateWindow(rhs.mShouldActivateWindow),
 	mIsNotifyIfWindowNotFound(rhs.mIsNotifyIfWindowNotFound),
 	mIsAllowAutoExecute(rhs.mIsAllowAutoExecute),
 	mIsHotKeyOnly(rhs.mIsHotKeyOnly)
@@ -36,9 +40,13 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mName = rhs.mName;
 		mDescription = rhs.mDescription;
 		mHotKeyAttr = rhs.mHotKeyAttr;
+		mStragegy = rhs.mStragegy;
 		mCaptionStr = rhs.mCaptionStr;
 		mClassStr = rhs.mClassStr;
+		mPlacement = rhs.mPlacement;
 		mIsUseRegExp = rhs.mIsUseRegExp;
+		mShouldArrangeWindow = rhs.mShouldArrangeWindow;
+		mShouldActivateWindow = rhs.mShouldActivateWindow;
 		mIsNotifyIfWindowNotFound = rhs.mIsNotifyIfWindowNotFound;
 		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
 		mIsHotKeyOnly = rhs.mIsHotKeyOnly;
@@ -59,23 +67,31 @@ bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 		return false;
 	}
 
-	// 
-	if (mCaptionStr.IsEmpty() && mClassStr.IsEmpty()) {
-		*errCode = CommandParamErrorCode::ActivateWindow_CaptionAndClassBothEmpty;
+	// 「ウインドウをアクティブにする」と「位置とサイズを変更する」はどちらか一方が有効である必要あり
+	if (mShouldArrangeWindow == false && mShouldActivateWindow == false) {
+		*errCode = CommandParamErrorCode::ActivateWindow_ActionMustBeSet;
 		return false;
 	}
 
-	if (mIsUseRegExp) {
-		tregex regExp;
-		CString msg;
-		if (TryBuildCaptionRegExp(regExp, &msg)  == false) {
-			*errCode = CommandParamErrorCode::ActivateWindow_CaptionIsInvalid;
+	// 
+	if (mStragegy == ByClassAndCaption) {
+		if (mCaptionStr.IsEmpty() && mClassStr.IsEmpty()) {
+			*errCode = CommandParamErrorCode::ActivateWindow_CaptionAndClassBothEmpty;
 			return false;
 		}
 
-		if (TryBuildClassRegExp(regExp, &msg)  == false) {
-			*errCode = CommandParamErrorCode::ActivateWindow_ClassIsInvalid;
-			return false;
+		if (mIsUseRegExp) {
+			tregex regExp;
+			CString msg;
+			if (TryBuildCaptionRegExp(regExp, &msg)  == false) {
+				*errCode = CommandParamErrorCode::ActivateWindow_CaptionIsInvalid;
+				return false;
+			}
+
+			if (TryBuildClassRegExp(regExp, &msg)  == false) {
+				*errCode = CommandParamErrorCode::ActivateWindow_ClassIsInvalid;
+				return false;
+			}
 		}
 	}
 
@@ -87,10 +103,16 @@ bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 bool CommandParam::Save(CommandEntryIF* entry) const
 {
 	entry->Set(_T("description"), mDescription);
+	entry->Set(_T("WindowSelectionStrategy"), (int)mStragegy);
 
 	entry->Set(_T("CaptionStr"), mCaptionStr);
 	entry->Set(_T("ClassStr"), mClassStr);
+
+	entry->SetBytes(_T("Placement"), (const uint8_t*)&mPlacement, sizeof(mPlacement));
+
 	entry->Set(_T("IsUseRegExp"), mIsUseRegExp);
+	entry->Set(_T("ShouldArrangeWindow"), mShouldArrangeWindow);
+	entry->Set(_T("ShouldActivateWindow"), mShouldActivateWindow);
 	entry->Set(_T("IsNotifyIfWindowNotExist"), mIsNotifyIfWindowNotFound);
 	entry->Set(_T("IsAllowAutoExecute"), mIsAllowAutoExecute);
 	entry->Set(_T("IsHotKeyOnly"), mIsHotKeyOnly);
@@ -103,21 +125,21 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	CString name = entry->GetName();
 	CString descriptionStr = entry->Get(_T("description"), _T(""));
 
-	CString captionStr = entry->Get(_T("CaptionStr"), _T(""));
-	CString classStr = entry->Get(_T("ClassStr"), _T(""));
-	bool isUseRegExp = entry->Get(_T("IsUseRegExp"), false);
-	bool isNotify = entry->Get(_T("IsNotifyIfWindowNotExist"), false);
-	bool isAutoExec = entry->Get(_T("IsAllowAutoExecute"), false);
-	bool isHotKeyOnly = entry->Get(_T("IsHotKeyOnly"), false);
+	mStragegy = (WindowSelectionStrategy)entry->Get(_T("WindowSelectionStrategy"), (int)ByClassAndCaption);
+
+	entry->GetBytes(_T("Placement"), (uint8_t*)&mPlacement, sizeof(WINDOWPLACEMENT));
+
 
 	mName = name;
 	mDescription = descriptionStr;
-	mCaptionStr = captionStr;
-	mClassStr = classStr;
-	mIsUseRegExp = isUseRegExp;
-	mIsNotifyIfWindowNotFound = isNotify;
-	mIsAllowAutoExecute = isAutoExec;
-	mIsHotKeyOnly = isHotKeyOnly;
+	mCaptionStr = entry->Get(_T("CaptionStr"), _T(""));
+	mClassStr = entry->Get(_T("ClassStr"), _T(""));
+	mIsUseRegExp = entry->Get(_T("IsUseRegExp"), false);
+	mShouldArrangeWindow = entry->Get(_T("ShouldArrangeWindow"), false);
+	mShouldActivateWindow = entry->Get(_T("ShouldActivateWindow"), true);
+	mIsNotifyIfWindowNotFound = entry->Get(_T("IsNotifyIfWindowNotExist"), false);
+	mIsAllowAutoExecute = entry->Get(_T("IsAllowAutoExecute"), false);
+	mIsHotKeyOnly = entry->Get(_T("IsHotKeyOnly"), false);
 
 	if (BuildRegExp() == false) {
 		return false;
@@ -200,6 +222,11 @@ bool CommandParam::TryBuildRegExp(CString* errMsg) const
 
 bool CommandParam::BuildCaptionRegExp(CString* errMsg)
 {
+	if (mStragegy != ByClassAndCaption) {
+		// 対象ウインドウの決定方法が「クラス名とキャプションから選択する」でなければ処理不要
+		return true;
+	}
+
 	auto regExp = std::make_unique<tregex>();
 	if (TryBuildCaptionRegExp(*regExp.get(), errMsg) == false) {
 		return false;
@@ -238,6 +265,11 @@ bool CommandParam::TryBuildCaptionRegExp(tregex& regExp, CString* errMsg) const
 
 bool CommandParam::BuildClassRegExp(CString* errMsg)
 {
+	if (mStragegy != ByClassAndCaption) {
+		// 対象ウインドウの決定方法が「クラス名とキャプションから選択する」でなければ処理不要
+		return true;
+	}
+
 	auto regExp = std::make_unique<tregex>();
 	if (TryBuildClassRegExp(*regExp.get(), errMsg) == false) {
 		return false;

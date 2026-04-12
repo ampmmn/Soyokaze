@@ -1,6 +1,6 @@
 #pragma once
 
-namespace launcherapp { namespace commands { namespace place_window_in_region {
+namespace launcherapp { namespace commands { namespace activate_window {
 
 class RegionIndicatorWindow
 {
@@ -28,6 +28,6 @@ private:
 
 
 
-}}} // end of namespace launcherapp::commands::place_window_in_region
+}}} // end of namespace launcherapp::commands::activate_window
 
 

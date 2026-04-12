@@ -1,13 +1,18 @@
 #include "pch.h"
 #include "WindowActivateCommand.h"
+#include "commands/activate_window/WindowActivateAdhocCommand.h"
 #include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateCommandEditor.h"
 #include "commands/activate_window/ActivateWindowFindTarget.h"
+#include "commands/activate_window/WindowList.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/activate_window/MaximizeWindowAction.h"
 #include "actions/activate_window/RestoreWindowAction.h"
+#include "actions/mainwindow/MainWindowSetTextAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "core/IFIDDefine.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "setting/AppPreference.h"
@@ -20,16 +25,51 @@
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::activate_window;
+using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 namespace launcherapp {
 namespace commands {
 namespace activate_window {
 
+struct TARGET
+{
+public:
+	HWND mHwnd;
+	CString mName;
+};
+
+
 struct WindowActivateCommand::PImpl
 {
+	void EnumTargets();
+
 	CommandParam mParam;
 	ActivateWindowFindTarget mTarget;
+	std::vector<TARGET> mTargets;
 };
+
+void WindowActivateCommand::PImpl::EnumTargets()
+{
+	std::vector<HWND> handles;
+	WindowList windowList;
+	windowList.EnumWindowHandles(handles);
+
+	std::vector<TARGET> targets;
+	for (auto& hwnd : handles) {
+		TCHAR caption[256];
+		::GetWindowText(hwnd, caption, 256);
+		targets.push_back(TARGET{hwnd, caption});
+	}
+	mTargets.swap(targets);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 CString WindowActivateCommand::GetType() { return _T("WindowActivate"); }
 
@@ -66,6 +106,20 @@ void WindowActivateCommand::SetParam(const CommandParam& param)
 	}
 }
 
+bool WindowActivateCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
+{
+	if (UserCommandBase::QueryInterface(ifid, cmd)) {
+		return true;
+	}
+	if (ifid == IFID_EXTRACANDIDATESOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
+	}
+	return false;
+}
+
+
 CString WindowActivateCommand::GetName()
 {
 	return in->mParam.mName;
@@ -84,38 +138,93 @@ CString WindowActivateCommand::GetTypeDisplayName()
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool WindowActivateCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	UNREFERENCED_PARAMETER(action);
+	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ByClassAndCaption) {
 
-	auto modifierFlags = hotkeyAttr.GetModifiers();
+		auto modifierFlags = hotkeyAttr.GetModifiers();
 
-	if (modifierFlags == MOD_CONTROL) {
-		auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
-		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
-		*action = action_;
-		return true;
+		bool shouldArrangeWindow = in->mParam.mShouldArrangeWindow;
+
+		if (shouldArrangeWindow == false && modifierFlags == MOD_CONTROL) {
+			auto action_ = new MaximizeWindowAction(in->mTarget.Clone());
+			action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+			*action = action_;
+			return true;
+		}
+		else if (modifierFlags == 0) {
+			if (shouldArrangeWindow == false) {
+				auto action_ = new RestoreWindowAction(in->mTarget.Clone());
+				action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
+				*action = action_;
+				return true;
+			}
+			else {
+				*action = new CallbackAction(_T("ウインドウを配置する"), [&](Parameter*,String*) -> bool {
+
+					ScopeAttachThreadInput scope;
+					auto& wp = in->mParam.mPlacement;
+					auto hwnd = in->mTarget.GetHandle();
+					SetWindowPlacement(hwnd, &wp);
+					// Zオーダーを前面に移動
+					if (in->mParam.mShouldActivateWindow) {
+						SetForegroundWindow(hwnd);
+					}
+					return true;
+				});
+			}
+		}
+		return false;
 	}
-	else if (modifierFlags == 0) {
-		auto action_ = new RestoreWindowAction(in->mTarget.Clone());
-		action_->SetSilent(in->mParam.IsNotifyIfWindowNotFound() == false);
-		*action = action_;
-		return true;
+	else {
+		if (hotkeyAttr.GetModifiers() == 0) {
+			// コマンド名単体(後続のパラメータなし)で実行したときはウインドウ候補一覧を列挙させる
+			LPCTSTR guideStr = _T("キーワード入力すると候補を絞り込むことができます");
+			*action = new SetTextAction(guideStr, GetName() + _T(" "));
+			return true;
+		}
+		return false;
 	}
-	return false;
 }
 
 HICON WindowActivateCommand::GetIcon()
 {
-	return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.GetHandle());
+	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ByClassAndCaption) {
+		return IconLoader::Get()->LoadIconFromHwnd(in->mTarget.GetHandle());
+	}
+	else {
+		return IconLoader::Get()->GetShell32Icon(-16757);
+	}
 }
 
 int WindowActivateCommand::Match(Pattern* pattern)
 {
-	if (pattern->shouldWholeMatch() == false && in->mParam.mIsHotKeyOnly) {
-		// ホットキーからの実行専用の場合は候補に表示させない
+	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ByClassAndCaption) {
+		if (pattern->shouldWholeMatch() == false && in->mParam.mIsHotKeyOnly) {
+			// ホットキーからの実行専用の場合は候補に表示させない
+			return Pattern::Mismatch;
+		}
+
+		return pattern->Match(GetName());
+	}
+	else {
+		if (pattern->shouldWholeMatch() && pattern->Match(GetName()) == Pattern::WholeMatch) {
+			// 内部のコマンド名マッチング用の判定
+			return Pattern::WholeMatch;
+		}
+		else if (pattern->shouldWholeMatch() == false) {
+			int level = pattern->Match(GetName());
+			if (level == Pattern::FrontMatch || level == Pattern::PartialMatch) {
+				return level;
+			}
+
+			if (level == Pattern::WholeMatch) {
+				// 後続のキーワードが存在する場合は非表示
+				return (pattern->GetWordCount() == 1) ? Pattern::WholeMatch : Pattern::HiddenMatch;
+			}
+		}
+
+		// 通常はこちら
 		return Pattern::Mismatch;
 	}
-
-	return pattern->Match(GetName());
 }
 
 bool WindowActivateCommand::IsAllowAutoExecute()
@@ -284,6 +393,66 @@ bool WindowActivateCommand::CreateNewInstanceFrom(launcherapp::core::CommandEdit
 	}
 	return true;
 }
+
+/**
+ 	検索処理(コマンド名が入力していなければ候補を表示しない)
+ 	@return        true: 検索結果あり   false:検索結果なし
+ 	@param[in]     pattern  検索パターン
+ 	@param[out]    commands 検索して見つかった候補を入れる入れ物
+ 	@param[in]     tm       タイムアウト判定用
+*/
+bool WindowActivateCommand::QueryCandidates(Pattern* pattern, CommandQueryItemList& commands)
+{
+	if (in->mParam.mStragegy != CommandParam::WindowSelectionStrategy::SelectFromList) {
+		return false;
+	}
+
+	if (in->mParam.mName.CompareNoCase(pattern->GetFirstWord()) != 0) {
+		// コマンド名が一致しない場合は検索対象外
+		return false;
+	}
+
+	if (in->mTargets.size() == 0) {
+		// ウインドウを列挙する
+		in->EnumTargets();
+	}
+
+	bool hasCandidate = false;
+
+	auto it = in->mTargets.begin();
+	while (it != in->mTargets.end()) {
+		const auto& name = it->mName;
+		int level = pattern->Match(name, 1);
+		if (level == Pattern::Mismatch) {
+			it++;
+			continue;
+		}
+
+		// コマンド名が一致しているので最低でも前方一致扱いとする
+		if (level == Pattern::PartialMatch) {
+			level = Pattern::FrontMatch;
+		}
+
+		auto hwnd = it->mHwnd;
+		if (IsWindow(hwnd) == FALSE) {
+			it = in->mTargets.erase(it);
+			continue;
+		}
+
+		auto cmd = new WindowActivateAdhocCommand(hwnd, in->mParam);
+		commands.Add(CommandQueryItem(level, cmd));
+		it++;
+		hasCandidate = true;
+	}
+
+	return hasCandidate;
+}
+
+void WindowActivateCommand::ClearCache()
+{
+	in->mTargets.clear();
+}
+
 
 } // end of namespace activate_window
 } // end of namespace commands

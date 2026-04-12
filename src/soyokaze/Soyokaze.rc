@@ -322,36 +322,56 @@ BEGIN
     LTEXT           "(意味が分からない場合はチェックなし)",IDC_STATIC,32,226,147,8
 END
 
-IDD_WINDOWACTIVATEEDIT DIALOGEX 0, 0, 359, 267
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+IDD_WINDOWACTIVATEEDIT DIALOGEX 0, 0, 405, 365
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "ウインドウ切替コマンドの設定"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "コマンドの名前(&N):",IDC_STATIC,34,46,65,8
-    EDITTEXT        IDC_EDIT_NAME,125,43,206,14,ES_AUTOHSCROLL
-    LTEXT           "コマンドの説明(&D):",IDC_STATIC,34,66,65,8
-    EDITTEXT        IDC_EDIT_DESCRIPTION,125,63,206,14,ES_AUTOHSCROLL
-    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,34,109,87,8
-    EDITTEXT        IDC_EDIT_CAPTION,125,106,206,14,ES_AUTOHSCROLL
-    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,34,128,65,8
-    EDITTEXT        IDC_EDIT_CLASS,125,125,206,14,ES_AUTOHSCROLL
-    CONTROL         "正規表現を使用する(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,149,93,10
-    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,276,149,55,14
-    CONTROL         "条件に合致するウインドウが見つからなかった場合に通知する(&N)",IDC_CHECK_NOTIFYIFNOTEXIST,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,180,230,10
-    CONTROL         "キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する(&T)",IDC_CHECK_ALLOWAUTOEXEC,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,196,267,10
-    LTEXT           "ホットキー(K):",IDC_STATIC,34,216,43,8
-    EDITTEXT        IDC_EDIT_HOTKEY,125,213,124,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,250,213,21,14
-    CONTROL         "ホットキーからの実行専用にする(&H)",IDC_CHECK_HOTKEYONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,230,194,9
-    DEFPUSHBUTTON   "OK",IDOK,248,246,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,302,246,50,14
-    LTEXT           "指定したタイトル／クラスに合致するウインドウをアクティブにします",IDC_STATIC_PARAMHELP,34,93,295,12
-    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,7,7,21,20
-    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,148,8,204,8
-    GROUPBOX        "検索条件",IDC_STATIC,14,81,327,90
-    LTEXT           "左のアイコンをドラッグして切り替えたいウインドウにドラッグするか、検索条件欄に条件を入力します",IDC_STATIC,34,28,318,12
+    LTEXT           "コマンドの名前(&N):",IDC_STATIC,16,24,65,8
+    EDITTEXT        IDC_EDIT_NAME,21,38,80,14,ES_AUTOHSCROLL
+    LTEXT           "コマンドの説明(&D):",IDC_STATIC,109,24,65,8
+    EDITTEXT        IDC_EDIT_DESCRIPTION,113,38,201,14,ES_AUTOHSCROLL
+    CONTROL         "クラス名とキャプションから選択する(&B)",IDC_RADIO_BYCLASSANDCAPTION,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,24,70,131,10
+    CONTROL         "キーワード入力時にウインドウ一覧を列挙して選択する(&E)",IDC_RADIO_SELECTFROMLIST,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,24,190,196,10
+    GROUPBOX        "対象ウインドウに対するアクション",IDC_STATIC,14,239,384,81
+    LTEXT           "ウインドウタイトル(&C):",IDC_STATIC,34,108,87,8
+    EDITTEXT        IDC_EDIT_CAPTION,125,105,116,14,ES_AUTOHSCROLL
+    LTEXT           "ウインドウクラス(&L):",IDC_STATIC,34,127,65,8
+    EDITTEXT        IDC_EDIT_CLASS,125,124,116,14,ES_AUTOHSCROLL
+    CONTROL         "正規表現を使用する(&R)",IDC_CHECK_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,141,93,10
+    CONTROL         "条件に合致するウインドウが見つからなかった場合に通知する(&O)",IDC_CHECK_NOTIFYIFNOTEXIST,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,154,230,10
+    CONTROL         "キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する(&A)",IDC_CHECK_ALLOWAUTOEXEC,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,167,267,10
+    PUSHBUTTON      "テスト(&T)",IDC_BUTTON_TEST,273,140,55,14
+    CONTROL         "ウインドウをアクティブにする(&S)",IDC_CHECK_SHOULDACTIVATEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,24,252,207,10
+    GROUPBOX        "対象ウインドウの決定方法",IDC_STATIC,14,59,384,173
+    CONTROL         "位置とサイズを変更する(&M)",IDC_CHECK_SHOULDARRANGEWINDOW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,24,268,207,10
+    LTEXT           "位置(&X,Y):",IDC_STATIC,26,285,50,8
+    EDITTEXT        IDC_EDIT_X,93,281,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_Y,165,281,58,14,ES_AUTOHSCROLL
+    LTEXT           "サイズ(幅,高さ):",IDC_STATIC,26,302,64,8
+    EDITTEXT        IDC_EDIT_WIDTH,93,299,58,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HEIGHT,165,299,58,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "領域を確認する(&G)",IDC_BUTTON_TEST2,241,299,95,14
+    LTEXT           "ホットキー(K):",IDC_STATIC,20,327,43,8
+    EDITTEXT        IDC_EDIT_HOTKEY,111,324,124,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_BUTTON_HOTKEY,236,324,21,14
+    CONTROL         "ホットキーからの実行専用にする(&H)",IDC_CHECK_HOTKEYONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,341,194,9
+    DEFPUSHBUTTON   "OK",IDOK,292,344,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,348,344,50,14
+    LTEXT           "あらかじめ指定したタイトル／クラスに合致するウインドウをコマンド実行時に探して、\n見つかったウインドウに対しアクションを実行します",IDC_STATIC_PARAMHELP,34,84,354,22
+    CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,245,105,21,20
+    LTEXT           "(メッセージ欄)",IDC_STATIC_STATUSMSG,7,7,391,8
+    LTEXT           "アイコンをドラッグして対象ウインドウにドロップすると、タイトルとクラスを調べることができます",IDC_STATIC,273,105,111,30
+    LTEXT           "キーワードを入力したタイミングで、存在しているウインドウの一覧を列挙して候補として表示します。\n選択したウインドウに対してアクションを実行します。",IDC_STATIC_PARAMHELP2,34,203,343,19
+    LTEXT           ",",IDC_STATIC,155,286,8,8
+    LTEXT           ",",IDC_STATIC,155,304,8,8
+    CONTROL         "",IDC_STATIC_ICON2,"Static",SS_BLACKFRAME | SS_NOTIFY,242,272,21,20
+    LTEXT           "アイコンをドラッグして対象ウインドウにドロップすると、位置とサイズを調べることができます",IDC_STATIC,269,271,125,25
 END
 
 IDD_APPSETTING_EXTRAACTION_FOR_EXPLOREPATH DIALOGEX 0, 0, 344, 291
@@ -1356,23 +1376,19 @@ IDD_APPSETTING_SWITCHWINDOW DIALOGEX 0, 0, 309, 285
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,8,282,143
-    CONTROL         "ウインドウタイトルによる選択を有効にする(&A)",IDC_CHECK_ENABLE_WINDOWTITLE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,21,243,10
-    LTEXT           "プレフィックス(&P):",IDC_STATIC,33,37,51,8
-    EDITTEXT        IDC_EDIT_PREFIX_WINDOWTITLE,88,34,52,14,ES_AUTOHSCROLL
+    GROUPBOX        "アクティブなウインドウの切り替え機能",IDC_STATIC,11,8,282,117
     CONTROL         "ExcelやLibreOffice Calcのシート名による選択を有効にする(&E)",IDC_CHECK_ENABLE_WORKSHEET,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,51,253,10
-    LTEXT           "プレフィックス(&R):",IDC_STATIC,33,67,52,8
-    EDITTEXT        IDC_EDIT_PREFIX_WORKSHEET,87,64,52,14,ES_AUTOHSCROLL
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,26,253,10
+    LTEXT           "プレフィックス(&R):",IDC_STATIC,33,42,52,8
+    EDITTEXT        IDC_EDIT_PREFIX_WORKSHEET,87,39,52,14,ES_AUTOHSCROLL
     CONTROL         "PowerPointのスライドタイトルによる選択を有効にする(&T)",IDC_CHECK_ENABLE_SLIDE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,81,253,10
-    LTEXT           "プレフィックス(&F):",IDC_STATIC,33,97,51,8
-    EDITTEXT        IDC_EDIT_PREFIX_PRESENTATION,87,94,52,14,ES_AUTOHSCROLL
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,56,253,10
+    LTEXT           "プレフィックス(&F):",IDC_STATIC,33,72,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_PRESENTATION,87,69,52,14,ES_AUTOHSCROLL
     CONTROL         "Outlookのフォルダ選択を有効にする(&O)",IDC_CHECK_ENABLE_OUTLOOK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,113,253,10
-    LTEXT           "プレフィックス(&I):",IDC_STATIC,33,129,50,8
-    EDITTEXT        IDC_EDIT_PREFIX_OUTLOOK,87,126,52,14,ES_AUTOHSCROLL
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,88,253,10
+    LTEXT           "プレフィックス(&I):",IDC_STATIC,33,104,50,8
+    EDITTEXT        IDC_EDIT_PREFIX_OUTLOOK,87,101,52,14,ES_AUTOHSCROLL
 END
 
 IDD_SHELLEXEC_ENVLIST DIALOGEX 0, 0, 355, 322
@@ -1812,9 +1828,9 @@ BEGIN
     IDD_WINDOWACTIVATEEDIT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 352
+        RIGHTMARGIN, 398
         TOPMARGIN, 7
-        BOTTOMMARGIN, 260
+        BOTTOMMARGIN, 358
     END
 
     IDD_APPSETTING_EXTRAACTION_FOR_EXPLOREPATH, DIALOG
@@ -2432,10 +2448,18 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
@@ -2444,12 +2468,21 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
     100, 0, 0, 0,
     0, 0, 0, 0,
+    100, 0, 0, 0,
+    0, 0, 100, 0,
+    100, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    100, 0, 0, 0,
+    100, 0, 100, 0
 END
 
 IDD_EXECSETTING AFX_DIALOG_LAYOUT

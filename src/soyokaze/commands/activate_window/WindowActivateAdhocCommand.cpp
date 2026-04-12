@@ -3,13 +3,15 @@
 #include "WindowActivateAdhocCommand.h"
 #include "core/IFIDDefine.h"
 #include "commands/activate_window/ActivateIndicatorWindow.h"
+#include "commands/activate_window/WindowActivateCommandParam.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/activate_window/RestoreWindowAction.h"
 #include "actions/activate_window/MaximizeWindowAction.h"
 #include "actions/activate_window/MinimizeWindowAction.h"
-#include "commands/activate_window/TemporaryWindowNameAction.h"
-#include "commands/activate_window/CloseWindowActionWrapper.h"
+#include "actions/activate_window/CloseWindowAction.h"
+#include "actions/builtin/CallbackAction.h"
+#include "commands/activate_window/RegionIndicatorWindow.h"
 #include "icon/IconLoader.h"
 #include "SharedHwnd.h"
 #include "resource.h"
@@ -25,6 +27,8 @@ namespace activate_window {
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::activate_window;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
+
 
 struct WindowActivateAdhocCommand::PImpl
 {
@@ -32,12 +36,13 @@ struct WindowActivateAdhocCommand::PImpl
 	void Unselect() {
 		// 対象を強調表示
 		ActivateIndicatorWindow::GetInstance()->Uncover();
+		RegionIndicatorWindow::GetInstance()->Uncover();
 	}
 
 
 	HWND mHwnd{nullptr};
-	MenuEventListener* mMenuEventListener{nullptr};
-	CString mPrefix;
+	CString mCaption;
+	CommandParam mParam;
 	bool mIsMinimized{false};
 };
 
@@ -45,16 +50,17 @@ IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(WindowActivateAdhocCommand)
 
 WindowActivateAdhocCommand::WindowActivateAdhocCommand(
 	HWND hwnd,
-	LPCTSTR prefix
+	const CommandParam& param
 ) : in(std::make_unique<PImpl>())
 {
 	in->mHwnd = hwnd;
+	in->mParam = param;
 
 	TCHAR caption[256];
 	GetWindowText(hwnd, caption, 256);
-	this->mName = caption;
+	in->mCaption = caption;
+
 	this->mDescription = caption;
-	in->mPrefix = prefix;
 
 	auto style = GetWindowLongPtr(hwnd, GWL_STYLE);
 	in->mIsMinimized = (style & WS_MINIMIZE) != 0;
@@ -64,18 +70,11 @@ WindowActivateAdhocCommand::~WindowActivateAdhocCommand()
 {
 }
 
-void WindowActivateAdhocCommand::SetListener(MenuEventListener* listener)
-{
-	in->mMenuEventListener = listener;
-}
-
 CString WindowActivateAdhocCommand::GetName()
 {
-	CString name;
-	if (in->mPrefix.IsEmpty() == FALSE) {
-		name = in->mPrefix + _T(" ");
-	}
-	name += __super::GetName();
+	CString name(in->mParam.mName);
+	name += _T(" ");
+	name += in->mCaption;
 
 	if (in->mIsMinimized) {
 		name += _T(" (最小化)");
@@ -109,11 +108,27 @@ bool WindowActivateAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action
 	}
 	else if (isCtrlKeyPressed && isShiftKeyPressed) {
 		// CtrlキーとShiftキーが同時押されていたらウインドウを閉じる
-		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
+		*action = new CloseWindowAction(in->mHwnd);
 		return true;
 	}
 	else if (modifierFlags == 0) {
-		*action = new RestoreWindowAction(in->mHwnd);
+
+		if (in->mParam.mShouldArrangeWindow == false) {
+			*action = new RestoreWindowAction(in->mHwnd);
+		}
+		else {
+			*action = new CallbackAction(_T("ウインドウを配置する"), [&](Parameter*,String*) -> bool {
+
+				ScopeAttachThreadInput scope;
+				auto& wp = in->mParam.mPlacement;
+				SetWindowPlacement(in->mHwnd, &wp);
+				// Zオーダーを前面に移動
+				if (in->mParam.mShouldActivateWindow) {
+					SetForegroundWindow(in->mHwnd);
+				}
+				return true;
+			});
+		}
 		return true;
 	}
 	return false;
@@ -127,8 +142,7 @@ HICON WindowActivateAdhocCommand::GetIcon()
 launcherapp::core::Command*
 WindowActivateAdhocCommand::Clone()
 {
-	auto cmd = new WindowActivateAdhocCommand(in->mHwnd, in->mPrefix);
-	cmd->in->mMenuEventListener = in->mMenuEventListener;
+	auto cmd = new WindowActivateAdhocCommand(in->mHwnd, in->mParam);
 
 	return cmd;
 }
@@ -136,13 +150,13 @@ WindowActivateAdhocCommand::Clone()
 // メニューの項目数を取得する
 int WindowActivateAdhocCommand::GetMenuItemCount()
 {
-	return 5;
+	return 4;
 }
 
 // メニューの表示名を取得する
 bool WindowActivateAdhocCommand::GetMenuItem(int index, Action** action)
 {
-	if (index < 0 || 5 < index) {
+	if (index < 0 || 3 < index) {
 		return false;
 	}
 
@@ -158,12 +172,8 @@ bool WindowActivateAdhocCommand::GetMenuItem(int index, Action** action)
 		*action = new MinimizeWindowAction(in->mHwnd);
 		return true;
 	}
-	else if (index == 3) {
-		*action = new TemporaryWindowNameAction(in->mHwnd, in->mMenuEventListener);
-		return true;
-	}
-	else { // if (index == 4)
-		*action = new CloseWindowActionWrapper(in->mHwnd, in->mMenuEventListener);
+	else { // if (index == 3)
+		*action = new CloseWindowAction(in->mHwnd);
 		return true;
 	}
 }
@@ -197,6 +207,7 @@ void WindowActivateAdhocCommand::OnSelect(Command* prior)
 
 	// 対象を強調表示
 	ActivateIndicatorWindow::GetInstance()->Cover(in->mHwnd);
+	RegionIndicatorWindow::GetInstance()->Cover(in->mParam.mPlacement.rcNormalPosition);
 }
 
 // 選択解除された

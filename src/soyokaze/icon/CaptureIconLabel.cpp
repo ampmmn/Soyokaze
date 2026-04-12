@@ -55,7 +55,7 @@ void CaptureIconLabel::OnLButtonUp(UINT, CPoint point)
 	spdlog::debug("captured windows handle {}", (void*)rootWindow);
 
 	// キャプチャ対象のウインドウハンドルを親に通知
-	GetParent()->PostMessage(WM_APP+6, 0, (LPARAM)rootWindow);
+	GetParent()->PostMessage(WM_APP+6, (WPARAM)GetDlgCtrlID(), (LPARAM)rootWindow);
 
 }
 

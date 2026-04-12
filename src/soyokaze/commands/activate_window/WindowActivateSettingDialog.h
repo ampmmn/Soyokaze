@@ -37,10 +37,16 @@ protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnTimer(UINT_PTR timerId);
+	afx_msg void OnRadioStrategy();
 	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonTest();
+	afx_msg void OnButtonTest2();
 	afx_msg void OnUpdateStatus();
+	afx_msg void OnRadioChecked(UINT id);
 	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageCaptureWindowForClass(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageCaptureWindowForSize(WPARAM wParam, LPARAM lParam);
 
 protected:
 	struct PImpl;

@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ContextMenuSourceIF.h"
 #include "commands/core/SelectionBehavior.h"
+#include "commands/activate_window/WindowActivateCommandParam.h"
 #include "commands/activate_window/WindowActivateMenuEventListener.h"
 #include <memory>
 
@@ -18,10 +19,8 @@ class WindowActivateAdhocCommand :
 
 {
 public:
-	WindowActivateAdhocCommand(HWND hwnd, LPCTSTR prefix);
+	WindowActivateAdhocCommand(HWND hwnd, const CommandParam& param);
 	virtual ~WindowActivateAdhocCommand();
-
-	void SetListener(MenuEventListener* listener);
 
 	CString GetName() override;
 	CString GetTypeDisplayName() override;

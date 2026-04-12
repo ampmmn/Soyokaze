@@ -178,6 +178,7 @@
 #define IDC_EDIT_OTHERPARAM             1009
 #define IDC_EDIT_REGPATTERN             1009
 #define IDC_EDIT_NAME2                  1009
+#define IDC_STATIC_ICON2                1009
 #define IDC_EDIT_REPEATS                1010
 #define IDC_EDIT_PATTERNSTR             1010
 #define IDC_EDIT_FRONT                  1010
@@ -358,6 +359,7 @@
 #define IDC_STATIC_PREFILTERCODEPAGE    1099
 #define IDC_STATIC_PARAMHELP            1100
 #define IDC_CHECK_ENABLECALCULATOR      1101
+#define IDC_STATIC_PARAMHELP2           1101
 #define IDC_BUTTON_BROWSE               1102
 #define IDC_CHECK_ENABLE_WORKSHEET      1103
 #define IDC_BUTTON_BROWSE2              1103
@@ -383,8 +385,10 @@
 #define IDC_CHECK_REGEXP                1116
 #define IDC_CHECK_ENABLE_UWPAPPS2       1116
 #define IDC_CHECK_ENABLE_MMCSNAPINS     1116
+#define IDC_CHECK_SHOULDARRANGEWINDOW   1117
 #define IDC_EDIT_URL                    1118
 #define IDC_CHECK_ENABLE_MSSETTINGS     1118
+#define IDC_CHECK_SHOULDACTIVATEWINDOW  1118
 #define IDC_CHECK_REGEXP2               1119
 #define IDC_EDIT_AUTHUSER               1119
 #define IDC_CHECK_ENABLE_ENVIRONMENT    1119
@@ -411,6 +415,7 @@
 #define IDC_BUTTON_RESETFONT            1127
 #define IDC_EDIT_TEXT                   1128
 #define IDC_BUTTON_RUN                  1128
+#define IDC_BUTTON_TEST2                1128
 #define IDC_BUTTON_UPDATE               1129
 #define IDC_EDIT_X                      1130
 #define IDC_EDIT_Y                      1131
@@ -570,6 +575,9 @@
 #define IDC_CHECK_DEBUGDUMPENABLED      1233
 #define IDC_CHECK_ENABLEMENUITEM3       1234
 #define IDC_CHECK_FINDMENUALL           1234
+#define IDC_RADIO_BYCLASSANDCAPTION     1234
+#define IDC_RADIO_BYCLASSANDCAPTION2    1235
+#define IDC_RADIO_SELECTFROMLIST        1235
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777
@@ -582,7 +590,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1234
+#define _APS_NEXT_CONTROL_VALUE         1235
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
