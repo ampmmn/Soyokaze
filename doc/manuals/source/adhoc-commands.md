@@ -8,7 +8,6 @@
 ---
 maxdepth: 1
 ---
-adhoc-command/activate-window.md
 adhoc-command/base64-decode.md
 adhoc-command/bookmarks.md
 adhoc-command/calclator.md
