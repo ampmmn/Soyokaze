@@ -5,6 +5,7 @@
 #include "commands/activate_window/WindowActivateCommandEditor.h"
 #include "commands/activate_window/ActivateWindowFindTarget.h"
 #include "commands/activate_window/WindowList.h"
+#include "commands/activate_window/RegionIndicatorWindow.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/common/ExecuteHistory.h"
 #include "commands/core/CommandRepository.h"
@@ -114,6 +115,11 @@ bool WindowActivateCommand::QueryInterface(const launcherapp::core::IFID& ifid, 
 	if (ifid == IFID_EXTRACANDIDATESOURCE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidateSource*)this;
+		return true;
+	}
+	if (ifid == IFID_SELECTIONBEHAVIOR) {
+		AddRef();
+		*cmd = (launcherapp::core::SelectionBehavior*)this;
 		return true;
 	}
 	return false;
@@ -451,6 +457,42 @@ bool WindowActivateCommand::QueryCandidates(Pattern* pattern, CommandQueryItemLi
 void WindowActivateCommand::ClearCache()
 {
 	in->mTargets.clear();
+}
+
+// 選択された
+void WindowActivateCommand::OnSelect(Command* prior)
+{
+	UNREFERENCED_PARAMETER(prior);
+
+	//対象の領域を強調表示する
+	RegionIndicatorWindow::GetInstance()->Cover(in->mParam.mPlacement.rcNormalPosition);
+}
+
+// 選択解除された
+void WindowActivateCommand::OnUnselect(Command* next)
+{
+	UNREFERENCED_PARAMETER(next);
+
+	// OnSelectで強調表示したものをもとに戻す
+		RegionIndicatorWindow::GetInstance()->Uncover();
+}
+
+// 実行後のウインドウを閉じる方法を決定する
+launcherapp::core::SelectionBehavior::CloseWindowPolicy
+WindowActivateCommand::GetCloseWindowPolicy(uint32_t modifierFlags)
+{
+	if (modifierFlags == (MOD_CONTROL | MOD_SHIFT)) {
+		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE;
+	}
+	else {
+		return launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC;
+	}
+}
+
+// 選択時に入力欄に設定するキーワードとキャレットを設定する
+bool WindowActivateCommand::CompleteKeyword(CString& , int& , int& )
+{
+	return false;
 }
 
 

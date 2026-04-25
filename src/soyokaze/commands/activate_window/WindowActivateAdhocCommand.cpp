@@ -32,9 +32,8 @@ using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 
 struct WindowActivateAdhocCommand::PImpl
 {
-	// 選択を解除
 	void Unselect() {
-		// 対象を強調表示
+	// 選択を解除
 		ActivateIndicatorWindow::GetInstance()->Uncover();
 		RegionIndicatorWindow::GetInstance()->Uncover();
 	}

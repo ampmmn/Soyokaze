@@ -5,11 +5,15 @@
 #include "utility/Path.h"
 #include "resource.h"
 #include <map>
+#include <gdiplus.h>
+
+#pragma comment(lib, "Gdiplus.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using namespace Gdiplus;
 
 struct IconLabel::PImpl
 {
@@ -33,6 +37,7 @@ IconLabel::~IconLabel()
 }
 
 BEGIN_MESSAGE_MAP(IconLabel, CStatic)
+	ON_WM_ENABLE()
 	ON_WM_PAINT()
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
@@ -120,8 +125,16 @@ void IconLabel::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
 	in->mBackgroundColor = cr;
 }
 
+void IconLabel::OnEnable(BOOL isEnable)
+{
+	InvalidateRect(nullptr);
+}
+
 void IconLabel::OnPaint()
 {
+	CRect rc;
+	GetClientRect(rc);
+
 	CPaintDC dc(this); // device context for painting
 
 	CBitmap& bmp = in->mBuffer;
@@ -129,11 +142,8 @@ void IconLabel::OnPaint()
 		// 初回はデフォルトアイコンを描画
 		DrawIcon(&dc, IconLoader::Get()->LoadDefaultIcon());
 	}
-	else {
-		// 2回目以降は前回のバッファを使って描画
-		CRect rc;
-		GetClientRect(rc);
 
+	if (IsWindowEnabled()) {
 		CDC dcMem;
 		dcMem.CreateCompatibleDC(&dc);
 		ASSERT(dcMem.GetSafeHdc() != NULL);
@@ -141,6 +151,25 @@ void IconLabel::OnPaint()
 		CBitmap* orgBmp = dcMem.SelectObject(&bmp);
 		dc.BitBlt(0,0, rc.Width(), rc.Height(), &dcMem, 0, 0, SRCCOPY);
 		dcMem.SelectObject(orgBmp);
+	}
+	else {
+    Graphics g(dc.m_hDC);
+
+    static ColorMatrix grayMatrix = {
+        0.299f, 0.299f, 0.299f, 0, 0,
+        0.587f, 0.587f, 0.587f, 0, 0,
+        0.114f, 0.114f, 0.114f, 0, 0,
+        0,      0,      0,      1, 0,
+        0,      0,      0,      0, 1
+    };
+
+    ImageAttributes attr;
+    attr.SetColorMatrix(&grayMatrix);
+
+	Bitmap bmp2(bmp, (HPALETTE)NULL); 
+    g.DrawImage(&bmp2, Rect(0, 0, bmp2.GetWidth(), bmp2.GetHeight()),
+                0, 0, bmp2.GetWidth(), bmp2.GetHeight(),
+                UnitPixel, &attr);
 	}
 }
 

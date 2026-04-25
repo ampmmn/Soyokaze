@@ -25,6 +25,7 @@ protected:
 // 実装
 protected:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnEnable(BOOL isEnable);
 	afx_msg void OnPaint();
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 	afx_msg void OnMenuChangeIcon();

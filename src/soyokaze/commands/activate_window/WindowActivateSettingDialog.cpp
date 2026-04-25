@@ -142,9 +142,9 @@ BOOL SettingDialog::OnInitDialog()
 	__super::OnInitDialog();
 
 	in->mIconLabelForClass.SubclassDlgItem(IDC_STATIC_ICON, this);
-	in->mIconLabelForClass.DrawIcon(IconLoader::Get()->LoadWindowIcon());
+	in->mIconLabelForClass.DrawIcon(IconLoader::Get()->LoadWindowSearchIcon());
 	in->mIconLabelForSize.SubclassDlgItem(IDC_STATIC_ICON2, this);
-	in->mIconLabelForSize.DrawIcon(IconLoader::Get()->LoadWindowIcon());
+	in->mIconLabelForSize.DrawIcon(IconLoader::Get()->LoadWindowSearchIcon());
 
 	CRect rc = in->mParam.mPlacement.rcNormalPosition;
 	in->mWidth = rc.Width();
@@ -287,8 +287,11 @@ bool SettingDialog::UpdateStatus()
 
 	// クラス名とキャプションから選択する
 	bool shouldFindClass = in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ByClassAndCaption;
+	GetDlgItem(IDC_STATIC_TITLE)->EnableWindow(shouldFindClass);
 	GetDlgItem(IDC_EDIT_CAPTION)->EnableWindow(shouldFindClass);
+	GetDlgItem(IDC_STATIC_CLASS)->EnableWindow(shouldFindClass);
 	GetDlgItem(IDC_EDIT_CLASS)->EnableWindow(shouldFindClass);
+	GetDlgItem(IDC_STATIC_DRAG1)->EnableWindow(shouldFindClass);
 	GetDlgItem(IDC_STATIC_ICON)->EnableWindow(shouldFindClass);
 	GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(canTest && shouldFindClass);
 	GetDlgItem(IDC_CHECK_REGEXP)->EnableWindow(shouldFindClass);
@@ -299,10 +302,13 @@ bool SettingDialog::UpdateStatus()
 	bool shouldArrangeWindow = in->mParam.mShouldArrangeWindow;
 	bool shouldActivateWindow = in->mParam.mShouldActivateWindow;
 
+	GetDlgItem(IDC_STATIC_XY)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_EDIT_X)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_EDIT_Y)->EnableWindow(shouldArrangeWindow);
+	GetDlgItem(IDC_STATIC_SIZE)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_EDIT_WIDTH)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_EDIT_HEIGHT)->EnableWindow(shouldArrangeWindow);
+	GetDlgItem(IDC_STATIC_DRAG2)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_STATIC_ICON2)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_BUTTON_TEST2)->EnableWindow(shouldArrangeWindow);
 
@@ -373,13 +379,6 @@ SettingDialog::OnUserMessageCaptureWindowForClass(WPARAM wParam, LPARAM lParam)
 	UpdateStatus();
 	UpdateData(FALSE);
 
-	try {
-		CString path = processPath.GetProcessPath();
-		in->mIconLabelForClass.DrawIcon(IconLoader::Get()->GetDefaultIcon(path));
-	}
-	catch (ProcessPath::Exception&) {
-		in->mIconLabelForClass.DrawIcon(IconLoader::Get()->LoadWindowIcon());
-	}
 	return 0;
 }
 

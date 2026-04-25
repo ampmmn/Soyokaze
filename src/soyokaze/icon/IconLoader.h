@@ -67,6 +67,8 @@ public:
 	HICON LoadReloadIcon();
 	// ウインドウを示すアイコンを取得する
 	HICON LoadWindowIcon();
+	// ウインドウを探すアイコンを取得する
+	HICON LoadWindowSearchIcon();
 	// ウインドウ登録を示すアイコンを取得する
 	HICON LoadRegisterWindowIcon();
 	// グループを示すアイコンを取得する

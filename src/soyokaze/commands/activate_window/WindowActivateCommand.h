@@ -2,6 +2,7 @@
 
 #include "commands/common/UserCommandBase.h"
 #include "commands/core/ExtraCandidateSourceIF.h"
+#include "commands/core/SelectionBehavior.h"
 #include <memory>
 
 class CommandFile;
@@ -14,7 +15,9 @@ class CommandParam;
 
 class WindowActivateCommand : 
 	virtual public launcherapp::commands::common::UserCommandBase,
-	virtual public launcherapp::commands::core::ExtraCandidateSource
+	virtual public launcherapp::commands::core::ExtraCandidateSource,
+	virtual public launcherapp::core::SelectionBehavior
+
 {
 public:
 	WindowActivateCommand();
@@ -51,6 +54,16 @@ public:
 // ExtraCandidateSource
 	bool QueryCandidates(Pattern* pattern, CommandQueryItemList& commands) override;
 	void ClearCache() override;
+
+// SelectionBehavior
+	// 選択された
+	void OnSelect(Command* prior) override;
+	// 選択解除された
+	void OnUnselect(Command* next) override;
+	// 実行後のウインドウを閉じる方法を決定する
+	CloseWindowPolicy GetCloseWindowPolicy(uint32_t modifierMask) override;
+	// 選択時に入力欄に設定するキーワードとキャレットを設定する
+	bool CompleteKeyword(CString& keyword, int& startPos, int& endPos) override;
 
 
 

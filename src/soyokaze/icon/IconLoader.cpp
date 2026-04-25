@@ -863,6 +863,11 @@ HICON IconLoader::LoadWindowIcon()
 	return GetImageResIcon(-15);
 }
 
+// ウインドウを探すアイコンを取得する
+HICON IconLoader::LoadWindowSearchIcon()
+{
+	return GetShell32Icon(-281);
+}
 
 HICON IconLoader::LoadRegisterWindowIcon()
 {

@@ -104,50 +104,65 @@ LRESULT CALLBACK RegionIndicatorWindow::OnWindowProc(HWND hwnd, UINT msg, WPARAM
 {
 	if (msg == WM_PAINT) {
 
+		// 描画済みの画面を張り付け
 		auto thisPtr = (RegionIndicatorWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-
-		CRect rc;
-		GetWindowRect(hwnd, &rc);
-		if (rc.left != thisPtr->mRectWindow.left || rc.top != thisPtr->mRectWindow.top) {
-			// 環境により、Coverメソッド内の末尾で変更したウインドウ位置がこの時点で反映されていないケースがみられるため、
-			// その場合はここで位置とサイズ変更を再度行う
-			spdlog::info("[RegionIndicatorWindow] window position reset {0},{1} -> {2},{3}",
-			             rc.left, rc.top, thisPtr->mRectWindow.left, thisPtr->mRectWindow.top);
-			rc = thisPtr->mRectWindow;
-			SetWindowPos(hwnd, nullptr, rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
-			RedrawWindow(hwnd, nullptr, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ALLCHILDREN | RDW_ERASE);
-			return DefWindowProc(hwnd, msg, wp, lp);
-		}
-
-		// Coverメソッド内で作成したビットマップを描画
-		PAINTSTRUCT ps;
-		HDC dc = BeginPaint(hwnd, &ps);
-		HDC memDC = CreateCompatibleDC(dc);
-		auto orgBmp = SelectObject(memDC, thisPtr->mBuffer);
-		BitBlt(dc, 0, 0, rc.Width(), rc.Height(), memDC, 0, 0, SRCCOPY);
-		SelectObject(memDC, orgBmp);
-		DeleteDC(memDC);
-
-		EndPaint(hwnd, &ps);
-		return 0;
+		return thisPtr->OnPaint(hwnd, wp, lp);
 	}
 	else if (msg == WM_TIMER && wp == TIMERID_WATCHWINDOW) {
-		// フォーカスが外れたら非表示にする
-
-		auto h = GetForegroundWindow();
-
-		SharedHwnd mainWnd;
-		if (mainWnd.GetHwnd() != h) {
-			auto thisPtr = (RegionIndicatorWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-
-			if (thisPtr->mIsIndependent == false) {
-				spdlog::info("RegionIndicatorWindow hide.");
-				thisPtr->Uncover();
-			}
-		}
-		return 0;
+		// 一定間隔でフォーカスのチェックをする
+		auto thisPtr = (RegionIndicatorWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		return thisPtr->OnTimer(hwnd, wp, lp);
 	}
 	return DefWindowProc(hwnd, msg, wp, lp);
+}
+
+LRESULT RegionIndicatorWindow::OnPaint(HWND hwnd, WPARAM wp, LPARAM lp)
+{
+	CRect rc;
+	GetWindowRect(hwnd, &rc);
+	if (rc.left != mRectWindow.left || rc.top != mRectWindow.top) {
+
+		// 環境により、Coverメソッド内の末尾で変更したウインドウ位置がこの時点で反映されていないケースがみられるため、
+		// その場合はここで位置とサイズ変更を再度行う
+		spdlog::info("[RegionIndicatorWindow] window position reset {0},{1} -> {2},{3}",
+		             rc.left, rc.top, mRectWindow.left, mRectWindow.top);
+
+		rc = mRectWindow;
+		SetWindowPos(hwnd, nullptr, rc.left, rc.top, rc.Width(), rc.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+		RedrawWindow(hwnd, nullptr, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ALLCHILDREN | RDW_ERASE);
+		return DefWindowProc(hwnd, WM_PAINT, wp, lp);
+	}
+
+	// Coverメソッド内で作成したビットマップを描画
+	PAINTSTRUCT ps;
+	HDC dc = BeginPaint(hwnd, &ps);
+	HDC memDC = CreateCompatibleDC(dc);
+	auto orgBmp = SelectObject(memDC, mBuffer);
+	BitBlt(dc, 0, 0, rc.Width(), rc.Height(), memDC, 0, 0, SRCCOPY);
+	SelectObject(memDC, orgBmp);
+	DeleteDC(memDC);
+
+	EndPaint(hwnd, &ps);
+	return 0;
+}
+
+LRESULT RegionIndicatorWindow::OnTimer(HWND hwnd, WPARAM wp, LPARAM lp)
+{
+	if (mIsIndependent) {
+		// 特定のウインドウと連動しない場合は何もしない
+		return 0;
+	}
+
+	SharedHwnd mainWnd;
+	if (mainWnd.GetHwnd() == GetForegroundWindow()) {
+		return 0;
+	}
+
+	// フォーカスが外れたらウインドウを非表示にする
+
+	spdlog::info("RegionIndicatorWindow hide.");
+	Uncover();
+	return 0;
 }
 
 HWND RegionIndicatorWindow::Create()
