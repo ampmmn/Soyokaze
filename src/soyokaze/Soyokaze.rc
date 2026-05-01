@@ -4721,9 +4721,8 @@ BEGIN
     IDS_VERSION             "バージョン"
     IDS_NOHOTKEY            "なし"
     IDS_NORMALCOMMAND       "通常コマンド"
-    IDS_DESCRIPTION_NORMALCOMMAND "ファイルやURLを開くことのできる普通のコマンドです"
-    IDS_DESCRIPTION_FILTERCOMMAND 
-                            "プログラムの結果でフィルタリングを行い、その選択結果に基づいて別のコマンドを実行します。"
+    IDS_DESCRIPTION_NORMALCOMMAND "ファイル、フォルダ、またはURLを起動します。"
+    IDS_DESCRIPTION_FILTERCOMMAND "外部プログラム等の出力をリスト化し、選択結果を次の処理へ渡します。"
     IDS_BUILTINCOMMAND      "システムコマンド"
     IDS_DESCRIPTION_BUILTINCOMMAND "コマンドの登録・整理などランチャー自体にかかわるコマンドを登録できます"
     IDS_GROUPCOMMAND        "グループ"
@@ -4774,8 +4773,7 @@ BEGIN
     IDS_ERR_VMXLOCKED       "%sはロックされています。"
     IDS_FILTER_SOUND        "mp3ファイル (*.mp3)|*.mp3||"
     IDS_COMMANDNAME_WINDOWACTIVATE "ウインドウ切替コマンド"
-    IDS_DESCRIPTION_WINDOWACTIVATE 
-                            "指定したウインドウテキストに合致するウインドウをアクティブにするコマンドを作成します。"
+    IDS_DESCRIPTION_WINDOWACTIVATE "特定のウインドウを呼び出したり、位置を整えたりします。"
     IDS_COMMANDNAME_WEBSEARCH "Web検索コマンド"
     IDS_DESCRIPTION_WEBSEARCH "Web検索を定義します。"
 END

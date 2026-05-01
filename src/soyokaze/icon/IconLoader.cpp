@@ -770,6 +770,12 @@ HICON IconLoader::LoadWebIcon()
 	return GetDefaultIcon(GetHttpsIconPathFromRegistry());
 }
 
+// 検索を示すアイコンを取得する
+HICON IconLoader::LoadSearchIcon()
+{
+	return GetShell32Icon(-23);
+}
+
 HICON IconLoader::LoadNewIcon()
 {
 	return GetWMPlocIcon(-474);

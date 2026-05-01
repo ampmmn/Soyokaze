@@ -53,7 +53,7 @@ void CommandEditor::SetOriginalName(LPCTSTR name)
 // コマンドを編集するためのダイアログを作成/取得する
 bool CommandEditor::DoModal() 
 {
-	in->mDialog.SetIcon(IconLoader::Get()->LoadWebIcon());
+	in->mDialog.SetIcon(IconLoader::Get()->LoadSearchIcon());
 	return in->mDialog.DoModal() == IDOK;
 }
 

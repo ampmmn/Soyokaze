@@ -41,6 +41,8 @@ public:
 	HICON LoadFolderIcon();
 	// Webを示すアイコンを取得する
 	HICON LoadWebIcon();
+	// 検索を示すアイコンを取得する
+	HICON LoadSearchIcon();
 	// 「新規」を示すアイコンを取得する
 	HICON LoadNewIcon();
 	// 設定を示すアイコンを取得する

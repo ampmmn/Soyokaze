@@ -178,7 +178,7 @@ bool WebSearchCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 HICON WebSearchCommand::GetIcon()
 {
 	if (in->mParam.mIconData.empty()) {
-		return IconLoader::Get()->LoadWebIcon();
+		return IconLoader::Get()->LoadSearchIcon();
 	}
 	else {
 		if (in->mIcon.IsNull()) {

@@ -287,7 +287,7 @@ LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
 	}
 	else {
 		// デフォルトに戻す
-		SetIcon(IconLoader::Get()->LoadWebIcon());
+		SetIcon(IconLoader::Get()->LoadSearchIcon());
 		in->mParam.mIconData.clear();
 	}
 
