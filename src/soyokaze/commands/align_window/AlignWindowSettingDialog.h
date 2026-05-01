@@ -39,7 +39,6 @@ protected:
 	virtual void OnOK();
 	DECLARE_MESSAGE_MAP()
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonAdd();
 	afx_msg void OnButtonEdit();
@@ -48,6 +47,7 @@ protected:
 	afx_msg void OnButtonDown();
 	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

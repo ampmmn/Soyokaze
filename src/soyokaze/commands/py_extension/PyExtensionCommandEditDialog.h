@@ -2,6 +2,7 @@
 
 #include "control/SinglePageDialog.h"
 #include "commands/py_extension/PyExtensionCommandParam.h"
+#include "hotkey/HotKeyControl.h"
 
 #include <memory>
 
@@ -45,7 +46,7 @@ protected:
 	//
 	CString mResultMsg;
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 public:
 	CommandParam mParam;
@@ -57,10 +58,10 @@ protected:
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnScriptChanged();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonSyntaxCheck();
 	afx_msg void OnButtonRun();
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 };
 
 

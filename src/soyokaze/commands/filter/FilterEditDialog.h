@@ -4,6 +4,7 @@
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "hotkey/HotKeyControl.h"
 
 class IconLabel;
 
@@ -52,7 +53,7 @@ public:
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 // 実装
 protected:
@@ -60,10 +61,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnType1MenuBtnClicked();
 	afx_msg void OnType2MenuBtnClicked();
 	afx_msg void OnCheckDisplayName();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 
 	void OnSelectSubProcessFilter();
 	void OnSelectClipboardFilter();

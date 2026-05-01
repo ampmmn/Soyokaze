@@ -43,9 +43,9 @@ protected:
 	afx_msg void OnButtonBrowseFile1Clicked();
 	afx_msg void OnButtonBrowseDir1Clicked();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonResolveAbsolutePath();
 	afx_msg void OnButtonResolveShortcut();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 	afx_msg void OnNotifyLinkOpen(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnPathMenuBtnClicked();

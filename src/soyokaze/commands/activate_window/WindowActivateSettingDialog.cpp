@@ -4,6 +4,7 @@
 #include "commands/common/Message.h"
 #include "commands/activate_window/RegionIndicatorWindow.h"
 #include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/ProcessPath.h"
@@ -38,7 +39,7 @@ struct SettingDialog::PImpl
 	CString mMessage;
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 	int mWidth;
 	int mHeight;
@@ -111,7 +112,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Check(pDX, IDC_CHECK_NOTIFYIFNOTEXIST, in->mParam.mIsNotifyIfWindowNotFound);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, in->mParam.mIsAllowAutoExecute);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 	DDX_Check(pDX, IDC_CHECK_HOTKEYONLY, in->mParam.mIsHotKeyOnly);
 
 	DDX_Text(pDX, IDC_EDIT_X, in->mParam.mPlacement.rcNormalPosition.left);
@@ -121,7 +121,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_TEST, OnButtonTest)
 	ON_COMMAND(IDC_BUTTON_TEST2, OnButtonTest2)
 	ON_COMMAND(IDC_CHECK_SHOULDARRANGEWINDOW, OnUpdateStatus)
@@ -134,12 +133,16 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_REGEXP, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
 	ON_WM_TIMER()
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
 
 	in->mIconLabelForClass.SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelForClass.DrawIcon(IconLoader::Get()->LoadWindowSearchIcon());
@@ -163,31 +166,23 @@ BOOL SettingDialog::OnInitDialog()
 	SetForegroundWindow();
 
 	UpdateStatus();
-
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
-
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 	UpdateData(FALSE);
 
 	return TRUE;
 }
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
-
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 	UpdateStatus();
 
 	UpdateData(FALSE);
+	return 0;
 }
 
 void SettingDialog::OnRadioStrategy()

@@ -11,7 +11,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
-#include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "app/Manual.h"
 #include "resource.h"
 #include <vector>
@@ -53,7 +53,7 @@ struct SettingDialog::PImpl
 	bool mIsTestPassed{false};
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 };
 
@@ -113,7 +113,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_REVERSE, in->mParam.mIsEnableReverse);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYUPDATE, in->mParam.mIsNotifyUpdate);
 	DDX_Check(pDX, IDC_CHECK_EXPANDMACRO, in->mParam.mIsExpandMacro);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
 	DDX_Control(pDX, IDC_BUTTON_TYPE, in->mMenuTypeBtn);
 	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, in->mAfterDetail);
 }
@@ -134,13 +133,12 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_IMPORTFRONT, OnButtonFrontRange)
 	ON_COMMAND(IDC_BUTTON_IMPORTBACK, OnButtonBackRange)
 	ON_COMMAND(IDC_BUTTON_IMPORTVALUE2, OnButtonValue2Range)
-
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpenMacro)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_TEBIKI, OnNotifyLinkOpenTebiki)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE, OnTypeMenuBtnClicked)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 
 END_MESSAGE_MAP()
 
@@ -149,6 +147,9 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
 
 	// 後段の処理の選択肢
 	in->mMenuBtn.CreatePopupMenu();
@@ -174,10 +175,7 @@ BOOL SettingDialog::OnInitDialog()
 
 bool SettingDialog::UpdateStatus()
 {
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 
 	// 後段の処理の設定値
 	auto& param = in->mParam;
@@ -447,16 +445,18 @@ void SettingDialog::OnUpdateStatus()
 	UpdateData(FALSE);
 }
 
-void SettingDialog::OnButtonHotKey()	
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 
 	UpdateStatus();
 	UpdateData(FALSE);
+
+	return 0;
 }
 
 // マニュアル表示

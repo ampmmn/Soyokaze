@@ -4,6 +4,7 @@
 #include <memory>
 #include "commands/group/CommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
+#include "hotkey/HotKeyControl.h"
 
 namespace launcherapp {
 namespace commands {
@@ -46,7 +47,7 @@ public:
 	CommandParam mParam;
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 // 実装
 protected:
@@ -54,7 +55,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdate();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonAdd();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnButtonUp();
@@ -62,6 +62,7 @@ protected:
 	afx_msg void OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyItemClick(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 };
 
 } // end of namespace group

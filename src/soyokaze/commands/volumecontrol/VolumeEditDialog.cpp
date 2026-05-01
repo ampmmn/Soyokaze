@@ -7,6 +7,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "control/DDXWrapper.h"
+#include "hotkey/HotKeyControl.h"
 #include "resource.h"
 
 namespace launcherapp {
@@ -38,7 +39,7 @@ struct SettingDialog::PImpl
 	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
-	CString mHotKey;
+	HotKeyControl mHotKey;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +95,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_VOLUME, in->mParam.mIsSetVolume);
 	DDX_Text(pDX, IDC_EDIT_VOLUME, in->mVolumeStr);
 	DDX_CBIndex(pDX, IDC_COMBO_MUTE, in->mParam.mMuteControl);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
@@ -102,7 +102,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_VOLUME, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_VOLUME, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 
@@ -110,14 +110,12 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
+
 	in->SetIcon(IconLoader::Get()->LoadVolumeIcon(false));
 
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
-
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
 
 	// 音量の設定値に合わせてテキスト文字列作成
 	if (in->mParam.mIsRelative) {
@@ -156,6 +154,7 @@ BOOL SettingDialog::OnInitDialog()
 void SettingDialog::UpdateStatus()
 {
 	in->mMessage.Empty();
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 
 	if (in->mIcon) {
 		in->mIconLabelPtr->DrawIcon(in->mIcon);
@@ -232,19 +231,17 @@ HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
-	}
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 
+	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
 
 

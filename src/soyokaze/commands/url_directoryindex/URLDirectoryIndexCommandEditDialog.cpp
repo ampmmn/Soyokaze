@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "URLDirectoryIndexCommandEditDialog.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
@@ -59,7 +58,6 @@ void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, mParam.mURL);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Text(pDX, IDC_EDIT_AUTHUSER, mParam.mServerUser);
 	DDX_Text(pDX, IDC_EDIT_AUTHPASSWORD, mParam.mServerPassword);
 	DDX_CBIndex(pDX, IDC_COMBO_PROXY, mParam.mProxyType);
@@ -76,8 +74,8 @@ BEGIN_MESSAGE_MAP(URLDirectoryIndexCommandEditDialog, launcherapp::control::Sing
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PROXYHOST, OnUpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_PROXY, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -85,6 +83,9 @@ END_MESSAGE_MAP()
 BOOL URLDirectoryIndexCommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	CString caption;
   GetWindowText(caption);
@@ -103,10 +104,7 @@ BOOL URLDirectoryIndexCommandEditDialog::OnInitDialog()
 
 bool URLDirectoryIndexCommandEditDialog::UpdateStatus()
 {
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	// プロキシ欄の有効/無効
 	BOOL isEnableProxyHost = mParam.mProxyType == 1;  // 直接指定する
@@ -175,15 +173,17 @@ void URLDirectoryIndexCommandEditDialog::OnOK()
 }
 
 
-void URLDirectoryIndexCommandEditDialog::OnButtonHotKey()	
+LRESULT URLDirectoryIndexCommandEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+
+	return 0;
 }
 
 } // end of namespace url_directoryindex

@@ -3,7 +3,7 @@
 #include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
-#include "hotkey/CommandHotKeyAttribute.h"
+#include "hotkey/HotKeyControl.h"
 
 class IconLabel;
 
@@ -42,7 +42,7 @@ public:
 	CommandParam mParam;
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 // 実装
 protected:
@@ -50,7 +50,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnUpdateStatus();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg void OnButtonHotKey();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 };
 
 } // end of namespace url_directoryindex

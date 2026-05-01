@@ -3,6 +3,7 @@
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/validation/CommandEditValidation.h"
+#include "hotkey/HotKeyControl.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -32,7 +33,7 @@ struct SettingDialog::PImpl
 
 	std::unique_ptr<IconLabel> mIconLabelPtr;
 
-	CString mHotKey;
+	HotKeyControl mHotKey;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +88,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_STATIC_DRIVELETTER, in->mDriveLetterMsg);
 	DDX_CBIndex(pDX, IDC_COMBO_DRIVELETTER, in->mDriveLetterIndex);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 }
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
@@ -95,7 +95,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_VOLUME, OnUpdateStatus)
 	ON_CBN_SELCHANGE(IDC_COMBO_DRIVELETTER, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 
@@ -103,12 +103,11 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 
 	in->mDriveLetterIndex = (int)(in->mParam.mDriveLetter - _T('A'));
 
@@ -210,19 +209,17 @@ HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 
 	UpdateData(FALSE);
+	return 0;
 }
 
 

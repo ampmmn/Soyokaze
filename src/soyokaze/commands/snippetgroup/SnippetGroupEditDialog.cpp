@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "SnippetGroupEditDialog.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
@@ -83,7 +82,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	if (mCurItem) {
 		DDX_Text(pDX, IDC_EDIT_NAME2, mCurItem->mName);
 		DDX_Text(pDX, IDC_EDIT_DESCRIPTION2, mCurItem->mDescription);
@@ -98,7 +96,6 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
 	ON_EN_CHANGE(IDC_EDIT_NAME2, OnUpdateListItem)
 	ON_EN_CHANGE(IDC_EDIT_DESCRIPTION2, OnUpdateListItem)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -111,6 +108,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(ID_VIEW_NEXT, OnViewNext)
 	ON_COMMAND(ID_VIEW_UP, OnViewUp)
 	ON_COMMAND(ID_VIEW_DOWN, OnViewDown)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 
 END_MESSAGE_MAP()
 
@@ -119,6 +117,9 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	mCommandListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_ITEMS);
 	ASSERT(mCommandListPtr);
@@ -186,10 +187,7 @@ bool SettingDialog::UpdateStatus()
 	GetDlgItem(IDC_BUTTON_ADD)->EnableWindow(mParam.mItems.size() < 128);
 
 	// ホットキー
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	// ボタンの状態を更新
 	POSITION pos = mCommandListPtr->GetFirstSelectedItemPosition();
@@ -332,15 +330,16 @@ BOOL SettingDialog::PreTranslateMessage(MSG* pMsg)
 }
 
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
 
 void SettingDialog::OnButtonAdd()

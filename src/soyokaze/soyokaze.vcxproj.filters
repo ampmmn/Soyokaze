@@ -1893,6 +1893,9 @@
     <ClInclude Include="commands\activate_window\WindowActivateAdhocCommand.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
+    <ClInclude Include="hotkey\HotKeyControl.h">
+      <Filter>hotkey</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3337,6 +3340,9 @@
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowActivateAdhocCommand.cpp">
       <Filter>commands\activate_window</Filter>
+    </ClCompile>
+    <ClCompile Include="hotkey\HotKeyControl.cpp">
+      <Filter>hotkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -39,14 +39,14 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnTimer(UINT_PTR timerId);
 	afx_msg void OnRadioStrategy();
-	afx_msg void OnButtonHotKey();
 	afx_msg void OnButtonTest();
 	afx_msg void OnButtonTest2();
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnRadioChecked(UINT id);
-	LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
-	LRESULT OnUserMessageCaptureWindowForClass(WPARAM wParam, LPARAM lParam);
-	LRESULT OnUserMessageCaptureWindowForSize(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMessageCaptureWindowForClass(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMessageCaptureWindowForSize(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

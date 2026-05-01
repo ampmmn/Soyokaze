@@ -8,6 +8,7 @@
 #include "icon/IconLabel.h"
 #include "icon/CommandIcon.h"
 #include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"
@@ -41,7 +42,7 @@ struct CommandEditDialog::PImpl
 	std::unique_ptr<IconLabel> mIconLabelPtr{std::make_unique<IconLabel>()};
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 	// アイコン(表示用)
 	CommandIcon mIcon;
@@ -85,7 +86,6 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, param.mIsRunAsAdmin);
 	DDX_Text(pDX, IDC_EDIT_PATH, param.mNormalAttr.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, param.mNormalAttr.mParam);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, in->mHotKey);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, param.mIsUseDescriptionForMatching);
 	DDX_Control(pDX, IDC_BUTTON_MENU, in->mPathMenuBtn);
 	// 以下のパラメータは通常と引数なし版で兼用
@@ -100,10 +100,10 @@ BEGIN_MESSAGE_MAP(CommandEditDialog, SettingPage)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PATH, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_PARAM, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_RESOLVEABSPATH, OnButtonResolveAbsolutePath)
 	ON_COMMAND(IDC_BUTTON_RESOLVESHORTCUT, OnButtonResolveShortcut)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
@@ -116,6 +116,9 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY2, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
 
 	GetDlgItem(IDC_BUTTON_BROWSEDIR3)->SetWindowTextW(L"\U0001F4C2");
 
@@ -141,10 +144,7 @@ bool CommandEditDialog::UpdateStatus()
 {
 	auto& param = in->mParam;
 
-	in->mHotKey = param.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mHotKey.UpdateContent(param.mHotKeyAttr.ToString());
 
 	CString targetPath = param.mNormalAttr.mPath;
 	ExpandMacros(targetPath);
@@ -387,18 +387,6 @@ void CommandEditDialog::OnOK()
 	__super::OnOK();
 }
 
-
-void CommandEditDialog::OnButtonHotKey()
-{
-	UpdateData();
-
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
-	}
-	UpdateStatus();
-	UpdateData(FALSE);
-}
-
 bool CommandEditDialog::ResolvePath(CString& targetPath)
 {
 	LocalPathResolver resolver;
@@ -464,6 +452,19 @@ void CommandEditDialog::OnButtonResolveShortcut()
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+}
+
+// ホットキーを設定する
+LRESULT CommandEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
+{
+	UpdateData();
+
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
+	}
+	UpdateStatus();
+	UpdateData(FALSE);
+	return 0;
 }
 
 LRESULT CommandEditDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)

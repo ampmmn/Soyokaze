@@ -3,7 +3,6 @@
 #include "PyExtensionCommandEditDialog.h"
 #include "commands/py_extension/ScintillaDLLLoader.h"
 #include "commands/py_extension/PyEvalArgument.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "python/PythonDLLLoader.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
@@ -62,7 +61,6 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Text(pDX, IDC_EDIT_RESULT, mResultMsg);
 	DDX_Text(pDX, IDC_EDIT_ARGUMENTS, mArguments);
 }
@@ -73,10 +71,10 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_SCRIPT, OnScriptChanged)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_SYNTAXCHECK, OnButtonSyntaxCheck)
 	ON_COMMAND(IDC_BUTTON_RUN, OnButtonRun)
 	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -84,6 +82,9 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	auto editCtrl = GetDlgItem(IDC_EDIT_SCRIPT);
 
@@ -165,10 +166,7 @@ BOOL CommandEditDialog::PreTranslateMessage(MSG* msg)
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	int errCode;
 	bool isValid = mParam.IsValid(mOrgName, &errCode); 
@@ -234,15 +232,16 @@ void CommandEditDialog::OnOK()
 	__super::OnOK();
 }
 
-void CommandEditDialog::OnButtonHotKey()
+LRESULT CommandEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateDataWrapper();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateDataWrapper(FALSE);
+	return 0;
 }
 
 void CommandEditDialog::UpdateTitle()

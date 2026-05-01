@@ -51,6 +51,7 @@ protected:
 	afx_msg void OnSelectExecOtherCommand();
 	afx_msg void OnSelectSubProcess();
 	afx_msg void OnSelectCopyClipboard();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 };
 
 } // end of namespace simple_dict

@@ -2,7 +2,7 @@
 #include "AlignWindowSettingDialog.h"
 #include "commands/align_window/AlignWindowItemSettingDialog.h"
 #include "commands/common/Message.h"
-#include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "icon/CaptureIconLabel.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/ProcessPath.h"
@@ -34,7 +34,7 @@ struct SettingDialog::PImpl
 	CListCtrl* mListPtr{nullptr};
 
 	// ホットキー(表示用)
-	CString mHotKey;
+	HotKeyControl mHotKey;
 
 	// ウインドウキャプチャ用アイコン
 	//CaptureIconLabel mIconLabel;
@@ -88,7 +88,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, in->mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, in->mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 	DDX_Check(pDX, IDC_CHECK_NOTIFYIFNOTEXIST, in->mParam.mIsNotifyIfWindowNotFound);
 	DDX_Check(pDX, IDC_CHECK_KEEPACTIVEWINDOW, in->mParam.mIsKeepActiveWindow);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, in->mParam.mIsAllowAutoExecute);
@@ -99,7 +98,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -108,6 +106,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnNotifyItemChanged)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNotifyItemDblClk)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -116,6 +115,9 @@ END_MESSAGE_MAP()
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
 
 	in->mListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_COMMANDS);
 	CListCtrl* listWndPtr = in->mListPtr;
@@ -179,10 +181,7 @@ BOOL SettingDialog::OnInitDialog()
 	caption += suffix;
 	SetWindowText(caption);
 
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 
 	ScopeAttachThreadInput scope;
 	SetForegroundWindow();
@@ -194,18 +193,17 @@ BOOL SettingDialog::OnInitDialog()
 	return TRUE;
 }
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName,  in->mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (in->mHotKey.EditHotKey(in->mParam.mName,  in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
 	UpdateData(FALSE);
+
+	return 0;
 }
 
 void SettingDialog::OnOK()

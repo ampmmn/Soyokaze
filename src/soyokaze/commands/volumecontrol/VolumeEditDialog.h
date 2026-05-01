@@ -3,7 +3,6 @@
 #include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/volumecontrol/VolumeCommandParam.h"
-#include "hotkey/CommandHotKeyDialog.h"
 
 namespace launcherapp {
 namespace commands {
@@ -37,6 +36,7 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnUpdateStatus();
 	afx_msg void OnButtonHotKey();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

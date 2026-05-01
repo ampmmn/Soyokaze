@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 #include "AliasCommandEditDialog.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
@@ -60,7 +59,6 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_TEXT, mParam.mText);
 	DDX_CBIndex(pDX, IDC_COMBO_ACTION, mParam.mIsPasteOnly);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
@@ -70,10 +68,10 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CommandEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_TEXT, OnUpdateStatus)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
 	ON_NOTIFY(NM_RETURN, IDC_SYSLINK_MACRO, OnNotifyLinkOpen)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -81,6 +79,9 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	SetIcon(IconLoader::Get()->LoadDefaultIcon(), FALSE);
 
@@ -104,10 +105,7 @@ BOOL CommandEditDialog::OnInitDialog()
 
 bool CommandEditDialog::UpdateStatus()
 {
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	int errCode;
 	bool isValid = mParam.IsValid(mOrgName, &errCode); 
@@ -149,16 +147,19 @@ void CommandEditDialog::OnOK()
 	__super::OnOK();
 }
 
-void CommandEditDialog::OnButtonHotKey()
+// ホットキーを設定する
+LRESULT CommandEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
+
 
 // マニュアル表示
 void CommandEditDialog::OnNotifyLinkOpen(

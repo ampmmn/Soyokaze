@@ -654,6 +654,7 @@
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
     <ClInclude Include="hotkey\ExtraActionHotKeyDialog.h" />
     <ClInclude Include="hotkey\ExtraActionHotKeyHandler.h" />
+    <ClInclude Include="hotkey\HotKeyControl.h" />
     <ClInclude Include="hotkey\KeyInputWatch.h" />
     <ClInclude Include="hotkey\SandSKeyAttribute.h" />
     <ClInclude Include="hotkey\SandSKeyState.h" />
@@ -1177,6 +1178,7 @@
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\ExtraActionHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\ExtraActionHotKeyHandler.cpp" />
+    <ClCompile Include="hotkey\HotKeyControl.cpp" />
     <ClCompile Include="hotkey\KeyInputWatch.cpp" />
     <ClCompile Include="hotkey\SandSKeyAttribute.cpp" />
     <ClCompile Include="hotkey\SandSKeyState.cpp" />

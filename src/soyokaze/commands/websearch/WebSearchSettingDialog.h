@@ -3,7 +3,6 @@
 #include "control/SinglePageDialog.h"
 #include <memory>
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "hotkey/CommandHotKeyAttribute.h"
 
 namespace launcherapp {
 namespace commands {
@@ -38,9 +37,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnUpdateStatus();
-	afx_msg void OnButtonHotKey();
 	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 	afx_msg void OnSiteMenuBtnClicked();
+	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
 
 protected:
 	struct PImpl;

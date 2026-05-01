@@ -5,7 +5,7 @@
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/validation/CommandEditValidation.h"
-#include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
@@ -70,7 +70,7 @@ struct SettingDialog::PImpl
 	CMFCMenuButton mSiteMenuBtn;
 	CMenu mMenuForSiteBtn;
 
-	CString mHotKey;
+	HotKeyControl mHotKey;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,6 @@ void SettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, in->mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, in->mParam.mURL);
 	DDX_Check(pDX, IDC_CHECK_ENABLESHORTCUT, in->mIsEnableShortcut);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY, in->mHotKey);
 	DDX_Control(pDX, IDC_BUTTON_MENU, in->mSiteMenuBtn);
 }
 
@@ -138,15 +137,18 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_URL, OnUpdateStatus)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 	ON_BN_CLICKED(IDC_BUTTON_MENU, OnSiteMenuBtnClicked)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 
 BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	in->mHotKey.SetNotifyId(WM_APP+1);
 
 	in->InitSiteMenu();
 
@@ -156,11 +158,6 @@ BOOL SettingDialog::OnInitDialog()
 	in->mQueryEdit.SubclassDlgItem(IDC_EDIT_URL, this);
 	in->mQueryEdit.SetNotifyKeyEvent(false);
 	in->mQueryEdit.SetPlaceHolder(_T("例:https://www.google.com/search?q=$*"));
-
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
-	}
 
 	CString caption(_T("Web検索コマンドの設定"));
 
@@ -187,6 +184,8 @@ BOOL SettingDialog::OnInitDialog()
 
 void SettingDialog::UpdateStatus()
 {
+	in->mHotKey.UpdateContent(in->mParam.mHotKeyAttr.ToString());
+
 	if (in->mIcon) {
 		in->mIconLabelPtr->DrawIcon(in->mIcon);
 	}
@@ -261,19 +260,17 @@ HBRUSH SettingDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-void SettingDialog::OnButtonHotKey()
+LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
-		return ;
-	}
-	in->mHotKey = in->mParam.mHotKeyAttr.ToString();
-	if (in->mHotKey.IsEmpty()) {
-		in->mHotKey.LoadString(IDS_NOHOTKEY);
+	if (in->mHotKey.EditHotKey(in->mParam.mName, in->mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 
+	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
 
 LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)

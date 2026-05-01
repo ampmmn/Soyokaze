@@ -276,14 +276,3 @@ HBRUSH CommandHotKeyDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return br;
 }
 
-bool CommandHotKeyDialog::ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parentWnd)
-{
-	CommandHotKeyDialog dlg(attr, parentWnd);
-	dlg.SetTargetName(name);
-	if (dlg.DoModal() != IDOK) {
-		return false;
-	}
-	dlg.GetAttribute(attr);
-	return true;
-}
-

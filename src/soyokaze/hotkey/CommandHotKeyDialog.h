@@ -29,8 +29,6 @@ public:
 	//
 	CString mTargetName;
 
-	static bool ShowDialog(const CString& name, CommandHotKeyAttribute& attr, CWnd* parent=nullptr);
-
 private:
 	void UpdateCtrlState(UINT ctrlID, bool isShow, bool isEnable);
 

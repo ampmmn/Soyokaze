@@ -8,6 +8,7 @@
 
 ### Changed
 
+- #240 ホットキーのUI周りを修正
 - プロジェクトのC++バージョンをC++20に変更
 - fmt::formatをstd::formatに置き換え / spdlogもstd::formatを使う形に変更
 

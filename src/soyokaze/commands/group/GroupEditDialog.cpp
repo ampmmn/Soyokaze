@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GroupEditDialog.h"
-#include "hotkey/CommandHotKeyDialog.h"
+#include "hotkey/HotKeyControl.h"
 #include "commands/common/CommandSelectDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
@@ -63,7 +63,6 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_REPEATS, mParam.mRepeats);
 	DDV_MinMaxInt(pDX, mParam.mRepeats, 1, 0x7fffffff);
 	DDX_Check(pDX, IDC_CHECK_CONFIRM, mParam.mIsConfirm);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
@@ -75,7 +74,6 @@ BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_CHECK_REPEAT, OnUpdate)
 	ON_COMMAND(IDC_CHECK_CONFIRM, OnUpdate)
 	ON_COMMAND(IDC_CHECK_PARAM, OnUpdate)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -84,6 +82,7 @@ BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::control::SinglePageDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnNotifyItemChanged)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_COMMANDS, OnNotifyItemClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMMANDS, OnNotifyItemDblClk)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 
 END_MESSAGE_MAP()
 
@@ -92,6 +91,9 @@ END_MESSAGE_MAP()
 BOOL GroupEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	mCommandListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_COMMANDS);
 	ASSERT(mCommandListPtr);
@@ -149,10 +151,7 @@ bool GroupEditDialog::UpdateStatus()
 	// 32を上限とする
 	GetDlgItem(IDC_BUTTON_ADD)->EnableWindow(mParam.mItems.size() < 32);
 
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	// ボタンの状態を更新
 	POSITION pos = mCommandListPtr->GetFirstSelectedItemPosition();
@@ -252,15 +251,16 @@ void GroupEditDialog::OnOK()
 }
 
 
-void GroupEditDialog::OnButtonHotKey()
+LRESULT GroupEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
 
 bool GroupEditDialog::SelectCommand(int index)

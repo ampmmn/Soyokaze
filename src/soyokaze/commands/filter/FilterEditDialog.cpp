@@ -8,7 +8,6 @@
 #include "commands/common/CopyToClipboardDialog.h"
 #include "control/FolderDialog.h"
 #include "icon/IconLabel.h"
-#include "hotkey/CommandHotKeyDialog.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
@@ -82,7 +81,6 @@ void FilterEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_PREFILTERDETAIL, mPreFilterDetail);
 	DDX_Control(pDX, IDC_BUTTON_TYPE2, mPathMenuType2);
 	DDX_Text(pDX, IDC_STATIC_AFTERDETAIL, mAfterDetail);
-	DDX_Text(pDX, IDC_EDIT_HOTKEY2, mHotKey);
 	DDX_Check(pDX, IDC_CHECK_DISPLAYNAME, mParam.mIsReplaceText);
 	DDX_Text(pDX, IDC_EDIT_REGPATTERN, mParam.mReplacePattern);
 	DDX_Text(pDX, IDC_EDIT_REPLACE, mParam.mReplaceText);
@@ -95,9 +93,9 @@ BEGIN_MESSAGE_MAP(FilterEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE1, OnType1MenuBtnClicked)
 	ON_BN_CLICKED(IDC_BUTTON_TYPE2, OnType2MenuBtnClicked)
-	ON_COMMAND(IDC_BUTTON_HOTKEY, OnButtonHotKey)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(IDC_CHECK_DISPLAYNAME, OnUpdateStatus)
+	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -105,6 +103,9 @@ END_MESSAGE_MAP()
 BOOL FilterEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
+	mHotKey.SetNotifyId(WM_APP+1);
 
 	// 候補生成方法の選択肢
 	mMenuForType1Btn.CreatePopupMenu();
@@ -141,10 +142,7 @@ BOOL FilterEditDialog::OnInitDialog()
 
 bool FilterEditDialog::UpdateStatus()
 {
-	mHotKey = mParam.mHotKeyAttr.ToString();
-	if (mHotKey.IsEmpty()) {
-		mHotKey.LoadString(IDS_NOHOTKEY);
-	}
+	mHotKey.UpdateContent(mParam.mHotKeyAttr.ToString());
 
 	bool isOK = true;
 
@@ -282,15 +280,16 @@ void FilterEditDialog::OnOK()
 }
 
 
-void FilterEditDialog::OnButtonHotKey()
+LRESULT FilterEditDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 {
 	UpdateData();
 
-	if (CommandHotKeyDialog::ShowDialog(mParam.mName, mParam.mHotKeyAttr, this) == false) {
-		return ;
+	if (mHotKey.EditHotKey(mParam.mName, mParam.mHotKeyAttr, this) == false) {
+		return 0;
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
 }
 
 void FilterEditDialog::OnType1MenuBtnClicked()
