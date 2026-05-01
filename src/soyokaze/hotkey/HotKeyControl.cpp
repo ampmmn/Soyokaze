@@ -29,14 +29,19 @@ void HotKeyControl::SetNotifyId(UINT notifyId)
 	in->mNotifyId = notifyId; 
 }
 
+UINT HotKeyControl::GetNotifyId()
+{
+	return in->mNotifyId;
+}
+
 void HotKeyControl::UpdateContent(CString text)
 {
 	if (in->mIsCueSet == false) {
 		// 初回呼出し時にキューバナーを設定
-		SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)_T("未設定(クリックしてキーを設定)"));
+		SetCurBanner(_T("未設定(クリックしてキーを設定)"));
 		in->mIsCueSet = true;
 	}
-	SetWindowText(text);
+	SetText(text);
 }
 
 bool HotKeyControl::EditHotKey(const CString& name, CommandHotKeyAttribute& attr, CWnd* parentWnd)
@@ -56,6 +61,21 @@ bool HotKeyControl::EditHotKey(const CString& name, CommandHotKeyAttribute& attr
 	return true;
 }
 
+void HotKeyControl::SetText(const CString& text)
+{
+	SetWindowText(text);
+}
+
+void HotKeyControl::SetCurBanner(const CString& bannerMsg)
+{
+	SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)bannerMsg);
+}
+
+void HotKeyControl::Notify(UINT id)
+{
+	GetParent()->PostMessage(id, 0, 0);
+}
+
 BEGIN_MESSAGE_MAP(HotKeyControl, CEdit)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_SETFOCUS()
@@ -73,7 +93,7 @@ void HotKeyControl::OnSetFocus(CWnd* oldWindow)
 		if (oldWindow == nullptr || oldWindow == in->mDialog) {
 			return;
 		}
-		GetParent()->PostMessage(in->mNotifyId, 0, 0);
+		Notify(in->mNotifyId);
 	}
 }
 
@@ -82,7 +102,7 @@ void HotKeyControl::OnLButtonDown(UINT flags, CPoint pt)
 	UNREFERENCED_PARAMETER(flags);
 	UNREFERENCED_PARAMETER(pt);
 	if (in->mNotifyId != 0) {
-		GetParent()->PostMessage(in->mNotifyId, 0, 0);
+		Notify(in->mNotifyId);
 	}
 }
 

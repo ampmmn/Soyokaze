@@ -14,8 +14,16 @@ public:
 
 	bool EditHotKey(const CString& name, CommandHotKeyAttribute& attr, CWnd* parentWnd);
 
+protected:
+	UINT GetNotifyId();
+
+	virtual void SetText(const CString& text);
+	virtual void SetCurBanner(const CString& bannerMsg);
+	virtual void Notify(UINT id);
+
 public:
 	DECLARE_MESSAGE_MAP()
+public:
 	afx_msg void OnSetFocus(CWnd* oldWindow);
 	afx_msg void OnLButtonDown(UINT flags, CPoint pt);
 	afx_msg void OnKeyDown(UINT,UINT,UINT);

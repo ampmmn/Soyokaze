@@ -53,6 +53,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyControlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\icon\IconLoaderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp" />

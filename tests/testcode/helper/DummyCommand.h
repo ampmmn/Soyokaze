@@ -12,6 +12,9 @@ struct DummyCommand : public launcherapp::core::Command
 	DummyCommand(LPCTSTR p) : mDesc(p)
 	{
 	}
+	~DummyCommand()
+	{
+	}
 
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override
 	{

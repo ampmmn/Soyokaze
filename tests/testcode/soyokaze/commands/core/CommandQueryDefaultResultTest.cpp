@@ -35,10 +35,16 @@ TEST(CommandQueryDefaultResult, AddAndGet)
     EXPECT_TRUE(result->Get(0, &outCmd, &matchLevel));
     EXPECT_STREQ(_T("Cmd1"), outCmd->GetDescription());
     EXPECT_EQ(1, matchLevel);
+    if (outCmd) {
+        outCmd->Release();
+    }
 
     EXPECT_TRUE(result->Get(1, &outCmd, &matchLevel));
     EXPECT_STREQ(_T("Cmd2"), outCmd->GetDescription());
     EXPECT_EQ(2, matchLevel);
+    if (outCmd) {
+        outCmd->Release();
+    }
 
     // 範囲外アクセス
     EXPECT_FALSE(result->Get(2, &outCmd, &matchLevel));
@@ -58,6 +64,9 @@ TEST(CommandQueryDefaultResult, GetItem)
     EXPECT_NE(nullptr, outCmd);
     EXPECT_STREQ(_T("Cmd1"), outCmd->GetDescription());
     EXPECT_EQ(Pattern::WholeMatch, matchLevel);
+    if (outCmd) {
+        outCmd->Release();
+    }
 
     // 範囲外
     EXPECT_EQ(nullptr, result->GetItem(1));
