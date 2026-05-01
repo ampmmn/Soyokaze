@@ -387,12 +387,17 @@ void SettingDialog::OnButtonDelete()
 	mParam.mItems.erase(mParam.mItems.begin() + itemIndex);
 
 	if (itemIndex < mCommandListPtr->GetItemCount()) {
+		mCurItem = &(mParam.mItems[itemIndex]);
 		mCommandListPtr->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
 	}
 	else {
 		itemIndex--;
 		if (0 <= itemIndex && itemIndex < mCommandListPtr->GetItemCount()) {
+			mCurItem = &(mParam.mItems[itemIndex]);
 			mCommandListPtr->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
+		}
+		else {
+			mCurItem = nullptr;
 		}
 	}
 
