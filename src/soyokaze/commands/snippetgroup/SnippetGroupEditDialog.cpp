@@ -26,6 +26,7 @@ SettingDialog::SettingDialog(CWnd* parentWnd) :
 {
 	SetHelpPageId("SnippetGroupEdit");
 
+	LeftBorderLabel::Initialize();
 
 	ACCEL accels[4];
 	accels[0].cmd = ID_VIEW_NEXT;
@@ -118,6 +119,8 @@ BOOL SettingDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
 
+	mLabelSnippet.Attach(GetDlgItem(IDC_STATIC_BORDER)->GetSafeHwnd());
+
 	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
 	mHotKey.SetNotifyId(WM_APP+1);
 
@@ -145,13 +148,13 @@ BOOL SettingDialog::OnInitDialog()
 	CString strHeader;
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 120;
+	lvc.cx = 80;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(0,&lvc);
 
 	strHeader = _T("説明");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 200;
+	lvc.cx = 180;
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(1,&lvc);
 

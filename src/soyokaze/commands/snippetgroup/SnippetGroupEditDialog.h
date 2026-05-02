@@ -5,6 +5,7 @@
 #include "commands/snippetgroup/SnippetGroupParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "hotkey/HotKeyControl.h"
+#include "control/LeftBorderLabel.h"
 
 namespace launcherapp {
 namespace commands {
@@ -45,6 +46,8 @@ protected:
 	bool mIsItemChanging{false};
 
 	HACCEL mAccel{nullptr};
+
+	LeftBorderLabel mLabelSnippet;
 
 public:
 	// 編集対象パラメータ

@@ -635,6 +635,7 @@
     <ClInclude Include="commands\winscp\WinScpCommandParam.h" />
     <ClInclude Include="commands\winscp\WinScpCommandProvider.h" />
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
+    <ClInclude Include="control\LeftBorderLabel.h" />
     <ClInclude Include="control\webbrowser\InternalBrowser.h" />
     <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
@@ -1163,6 +1164,7 @@
     <ClCompile Include="commands\winscp\WinScpCommand.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandParam.cpp" />
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />
+    <ClCompile Include="control\LeftBorderLabel.cpp" />
     <ClCompile Include="control\webbrowser\InternalBrowser.cpp" />
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp" />

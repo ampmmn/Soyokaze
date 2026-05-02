@@ -1896,6 +1896,9 @@
     <ClInclude Include="hotkey\HotKeyControl.h">
       <Filter>hotkey</Filter>
     </ClInclude>
+    <ClInclude Include="control\LeftBorderLabel.h">
+      <Filter>control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3343,6 +3346,9 @@
     </ClCompile>
     <ClCompile Include="hotkey\HotKeyControl.cpp">
       <Filter>hotkey</Filter>
+    </ClCompile>
+    <ClCompile Include="control\LeftBorderLabel.cpp">
+      <Filter>control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -584,6 +584,7 @@
 #define IDC_STATIC_XY                   1239
 #define IDC_STATIC_SIZE                 1240
 #define IDC_STATIC_DRAG2                1241
+#define IDC_STATIC_BORDER               1242
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777
@@ -596,7 +597,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1242
+#define _APS_NEXT_CONTROL_VALUE         1243
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
