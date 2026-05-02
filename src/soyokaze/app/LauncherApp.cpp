@@ -124,6 +124,10 @@ BOOL LauncherApp::InitFirstInstance()
 
 	CWinApp::InitInstance();
 
+	// GDI+初期化
+	ULONG_PTR gdipTok;
+	Gdiplus::GdiplusStartupInput gdipSI;
+	Gdiplus::GdiplusStartup(&gdipTok, &gdipSI, nullptr);
 
 	AfxEnableControlContainer();
 
@@ -152,6 +156,9 @@ BOOL LauncherApp::InitFirstInstance()
 	catch(...) {
 		mTaskTray.reset();
 	}
+
+	// GDI+利用終了
+	Gdiplus::GdiplusShutdown(gdipTok);
 
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();
