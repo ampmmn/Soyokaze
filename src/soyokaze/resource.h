@@ -585,6 +585,8 @@
 #define IDC_STATIC_SIZE                 1240
 #define IDC_STATIC_DRAG2                1241
 #define IDC_STATIC_BORDER               1242
+#define IDC_RADIO_RUN                   1243
+#define IDC_RADIO_PASTE                 1244
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777
@@ -597,7 +599,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1243
+#define _APS_NEXT_CONTROL_VALUE         1244
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

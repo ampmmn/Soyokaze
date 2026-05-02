@@ -58,7 +58,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_TEXT, mParam.mText);
-	DDX_CBIndex(pDX, IDC_COMBO_ACTION, mParam.mIsPasteOnly);
+	DDX_Radio(pDX, IDC_RADIO_RUN, mParam.mIsPasteOnly);
 	DDX_Check(pDX, IDC_CHECK_ALLOWAUTOEXEC, mParam.mIsAllowAutoExecute);
 }
 
@@ -93,6 +93,8 @@ BOOL CommandEditDialog::OnInitDialog()
 
 	caption += suffix;
 	SetWindowText(caption);
+
+	GetDlgItem(IDC_EDIT_TEXT)->SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)_T("(入力・実行する内容)"));
 
 	UpdateStatus();
 	UpdateData(FALSE);
