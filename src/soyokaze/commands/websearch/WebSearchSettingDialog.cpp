@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "WebSearchSettingDialog.h"
 #include "commands/websearch/WebSearchCommandParam.h"
-#include "control/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "icon/IconLoader.h"
 #include "commands/validation/CommandEditValidation.h"
@@ -60,8 +59,6 @@ struct SettingDialog::PImpl
 
 	// メッセージ欄
 	CString mMessage;
-
-	KeywordEdit mQueryEdit;
 
 	HICON mIcon{nullptr};
 	std::unique_ptr<IconLabel> mIconLabelPtr;
@@ -155,9 +152,7 @@ BOOL SettingDialog::OnInitDialog()
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->EnableIconChange();
 
-	in->mQueryEdit.SubclassDlgItem(IDC_EDIT_URL, this);
-	in->mQueryEdit.SetNotifyKeyEvent(false);
-	in->mQueryEdit.SetPlaceHolder(_T("例:https://www.google.com/search?q=$*"));
+	GetDlgItem(IDC_EDIT_URL)->SendMessage(EM_SETCUEBANNER, TRUE, (LPARAM)(LPCTSTR)_T("右にある▼ボタンからプリセットのURLを入力できます"));
 
 	CString caption(_T("Web検索コマンドの設定"));
 
@@ -211,13 +206,6 @@ void SettingDialog::UpdateStatus()
 	}
 	else {
 		in->mMessage.Empty();
-	}
-
-	if (url.Find(_T("$*")) == -1) {
-		GetDlgItem(IDC_CHECK_ENABLESHORTCUT)->ShowWindow(SW_HIDE);
-	}
-	else {
-		GetDlgItem(IDC_CHECK_ENABLESHORTCUT)->ShowWindow(SW_SHOW);
 	}
 
 	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
