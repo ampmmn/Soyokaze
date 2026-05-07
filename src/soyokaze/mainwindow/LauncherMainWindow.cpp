@@ -1919,6 +1919,7 @@ void LauncherMainWindow::OnContextMenu(
 	else if (n == ID_RESETPOS) {
 		// ウインドウ位置をリセット
 		in->mLayout->RestoreWindowPosition(this, true);
+		OnCancel();
 		return;
 	}
 	else if (n == ID_MANUAL) {
