@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v3
@@ -37,7 +37,7 @@ jobs:
         submodules: recursive
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -54,13 +54,13 @@ jobs:
         cmd /c "if not exist build mkdir -p externals\spdlog\build"
         cd externals/spdlog/build
         cmake ..
-        msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
+        cmake --build . --config Release
 
     - name: Build tidy-html5
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd externals/tidy-html5/build/cmake
-        cmake ../.. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=ON -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF
+        cmake ../.. "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIB:BOOL=ON -DUSE_STATIC_RUNTIME=${{env.TIDYLIB_STATICRUNTIME}} -DSUPPORT_CONSOLE_APP=OFF
         cmake --build . --config Release
 
     - name: Patch absl options
