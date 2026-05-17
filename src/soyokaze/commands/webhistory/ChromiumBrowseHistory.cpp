@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ChromiumBrowseHistory.h"
+#include "commands/webhistory/WebHistoryTempDirectory.h"
 #include "matcher/Pattern.h"
 #include "utility/Path.h"
 #include "utility/SQLite3Database.h"
@@ -32,18 +33,12 @@ struct ChromiumBrowseHistory::PImpl
 		CString fileName;
 		fileName.Format(_T("history-%s-%I64x"), (LPCTSTR)mId, GetTickCount64());
 
-		// 退避先のディレクトリを生成しておく
-		Path dbDstPath(Path::APPDIRPERMACHINE, _T("tmp"));
-		if (dbDstPath.IsDirectory() == false) {
-			if (CreateDirectory(dbDstPath, nullptr) == FALSE) {
-				spdlog::warn(_T("Failed to create directory {}"), (LPCTSTR)dbDstPath);
-				return false;
-			}
+		try {
+			path = TempDirectory::GetInstance()->MakePath(fileName);
+			return true;
+		} catch(...) {
+			return false;
 		}
-
-		dbDstPath.Append(fileName);
-		path = dbDstPath;
-		return true;
 	}
 
 	CString mId;
@@ -161,6 +156,7 @@ ChromiumBrowseHistory::ChromiumBrowseHistory() :
 
 ChromiumBrowseHistory::~ChromiumBrowseHistory()
 {
+	Finalize();
 }
 
 bool ChromiumBrowseHistory::Initialize(
@@ -177,6 +173,21 @@ bool ChromiumBrowseHistory::Initialize(
 
 	in->UpdateDatabase();
 
+	return true;
+}
+
+bool ChromiumBrowseHistory::Finalize()
+{
+	// DBを閉じる
+	if (in->mHistoryDB.get()) {
+		in->mHistoryDB->Close();
+		in->mHistoryDB.reset();
+	}
+	// 開いていたDBファイルを消す
+	if (Path::FileExists(in->mDBFilePath)) {
+		DeleteFile(in->mDBFilePath);
+		in->mDBFilePath = _T("");
+	}
 	return true;
 }
 

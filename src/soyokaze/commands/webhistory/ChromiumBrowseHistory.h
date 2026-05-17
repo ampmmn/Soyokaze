@@ -32,6 +32,7 @@ public:
 
 public:
 	bool Initialize(const CString& id, const CString& historyFile, bool isUseURL, bool isUseMigemo);
+	bool Finalize();
 	bool Query(const std::vector<PatternInternal::WORD>& words, int limit, CancellationToken* cancelToken, std::vector<ITEM>& items);
 
 private:

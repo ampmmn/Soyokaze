@@ -620,6 +620,7 @@
     <ClInclude Include="commands\webhistory\WebHistoryCommandParam.h" />
     <ClInclude Include="commands\webhistory\WebHistoryProvider.h" />
     <ClInclude Include="commands\webhistory\WebHistoryQueryCancellationToken.h" />
+    <ClInclude Include="commands\webhistory\WebHistoryTempDirectory.h" />
     <ClInclude Include="commands\websearch\WebSearchAdhocCommand.h" />
     <ClInclude Include="commands\websearch\WebSearchCommandEditor.h" />
     <ClInclude Include="commands\win32menu\UIElementAliasMap.h" />
@@ -637,6 +638,7 @@
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
     <ClInclude Include="control\LeftBorderLabel.h" />
     <ClInclude Include="control\webbrowser\InternalBrowser.h" />
+    <ClInclude Include="core\LauncherProcessContext.h" />
     <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h" />
@@ -1150,6 +1152,7 @@
     <ClCompile Include="commands\webhistory\WebHistoryCommandParam.cpp" />
     <ClCompile Include="commands\webhistory\WebHistoryProvider.cpp" />
     <ClCompile Include="commands\webhistory\WebHistoryQueryCancellationToken.cpp" />
+    <ClCompile Include="commands\webhistory\WebHistoryTempDirectory.cpp" />
     <ClCompile Include="commands\websearch\WebSearchAdhocCommand.cpp" />
     <ClCompile Include="commands\websearch\WebSearchCommandEditor.cpp" />
     <ClCompile Include="commands\win32menu\UIElementAliasMap.cpp" />
@@ -1166,6 +1169,7 @@
     <ClCompile Include="commands\winscp\WinScpCommandProvider.cpp" />
     <ClCompile Include="control\LeftBorderLabel.cpp" />
     <ClCompile Include="control\webbrowser\InternalBrowser.cpp" />
+    <ClCompile Include="core\LauncherProcessContext.cpp" />
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\EdgeEnvironment.cpp" />

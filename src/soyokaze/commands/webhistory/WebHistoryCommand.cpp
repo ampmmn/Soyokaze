@@ -4,6 +4,8 @@
 #include "commands/webhistory/WebHistoryAdhocCommand.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
 #include "commands/webhistory/ChromiumBrowseHistory.h"
+#include "commands/webhistory/WebHistoryTempDirectory.h"
+#include "core/LauncherProcessContext.h"
 #include "externaltool/webbrowser/EdgeEnvironment.h"
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "matcher/PatternInternal.h"
@@ -139,6 +141,12 @@ WebHistoryCommand::~WebHistoryCommand()
 	if (in->mLoadThread.joinable()) {
 		in->mLoadThread.join();
 	}
+
+	if (launcherapp::core::LauncherProcessContext::GetInstance()->IsPrimaryProcess()) {
+		// Web履歴用の一時フォルダを消す
+		TempDirectory::GetInstance()->Clear();
+	}
+
 }
 
 bool WebHistoryCommand::Load()

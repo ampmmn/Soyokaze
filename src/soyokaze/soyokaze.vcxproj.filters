@@ -1899,6 +1899,12 @@
     <ClInclude Include="control\LeftBorderLabel.h">
       <Filter>control</Filter>
     </ClInclude>
+    <ClInclude Include="commands\webhistory\WebHistoryTempDirectory.h">
+      <Filter>commands\webhistory</Filter>
+    </ClInclude>
+    <ClInclude Include="core\LauncherProcessContext.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3349,6 +3355,12 @@
     </ClCompile>
     <ClCompile Include="control\LeftBorderLabel.cpp">
       <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\webhistory\WebHistoryTempDirectory.cpp">
+      <Filter>commands\webhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="core\LauncherProcessContext.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

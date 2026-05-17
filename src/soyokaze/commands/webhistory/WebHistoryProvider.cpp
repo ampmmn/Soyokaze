@@ -42,10 +42,13 @@ struct WebHistoryProvider::PImpl :
 	void OnAppExit() override {}
 
 	void Load() {
-		mInternalCommand.Load();
+		if (mInternalCommand.get() == nullptr) {
+			mInternalCommand.reset(new WebHistoryCommand());
+		}
+		mInternalCommand->Load();
 	}
 
-	WebHistoryCommand mInternalCommand;
+	std::unique_ptr<WebHistoryCommand> mInternalCommand;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +80,10 @@ void WebHistoryProvider::PrepareAdhocCommands()
 // 一時的なコマンドを必要に応じて提供する
 void WebHistoryProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
-	in->mInternalCommand.QueryCandidates(pattern, commands);
+	if (in->mInternalCommand.get() == nullptr) {
+		in->mInternalCommand.reset(new WebHistoryCommand());
+	}
+	in->mInternalCommand->QueryCandidates(pattern, commands);
 }
 
 // Providerが扱うコマンド種別(表示名)を列挙

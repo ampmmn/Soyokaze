@@ -13,6 +13,7 @@
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
 #include "app/LocalDirectoryWatcherService.h"
+#include "core/LauncherProcessContext.h"
 #include "commands/transfer/CommandClipboardTransfer.h"
 #include "commands/core/CommandRepository.h"
 #include "logger/Logger.h"
@@ -98,6 +99,9 @@ BOOL LauncherApp::InitInstance()
 BOOL LauncherApp::InitFirstInstance()
 {
 	SPDLOG_DEBUG("start");
+
+	// 先行プロセスである旨をセット
+	launcherapp::core::LauncherProcessContext::GetInstance()->MarkAsPrimaryProcess();
 
 	if (!AfxOleInit()) {
 		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
