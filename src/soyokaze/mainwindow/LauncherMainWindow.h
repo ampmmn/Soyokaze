@@ -59,7 +59,7 @@ protected:
 
 	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
-	void ClearContent();
+	void ClearContent(bool isForceUpdate=false);
 	void Complement();
 	void QueryAsync();
 	void QueryAsync(const CString& keyword);

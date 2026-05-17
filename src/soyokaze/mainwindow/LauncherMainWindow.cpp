@@ -1145,7 +1145,7 @@ void LauncherMainWindow::SetDescription(const CString& msg)
 	UpdateData(FALSE);
 }
 
-void LauncherMainWindow::ClearContent()
+void LauncherMainWindow::ClearContent(bool isForceUpdate)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -1162,7 +1162,7 @@ void LauncherMainWindow::ClearContent()
 	struct LocalInputStatus : public LauncherInput {
 		virtual bool HasKeyword() { return false; }
 	} status;
-	in->mLayout->UpdateInputStatus(&status, false);
+	in->mLayout->UpdateInputStatus(&status, isForceUpdate);
 
 	UpdateData(FALSE);
 }
@@ -1919,7 +1919,8 @@ void LauncherMainWindow::OnContextMenu(
 	else if (n == ID_RESETPOS) {
 		// ウインドウ位置をリセット
 		in->mLayout->RestoreWindowPosition(this, true);
-		OnCancel();
+		ClearContent(true);
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 		return;
 	}
 	else if (n == ID_MANUAL) {
