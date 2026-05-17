@@ -21,7 +21,7 @@ class FinalizeCaller : public AppPreferenceListenerIF
 void Start()
 {
 	static FinalizeCaller inst;
-	AppPreference::Get()->RegisterListener(&inst);
+	AppPreference::Get()->RegisterListener(&inst, _T("FinalizeCaller"));
 }
 
 } // end of namespace LocalDirectoryWatcherService

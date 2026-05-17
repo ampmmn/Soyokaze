@@ -369,7 +369,7 @@ void CommandRepository::PImpl::Query(QueryRequest* req)
 
 CommandRepository::CommandRepository() : in(std::make_unique<PImpl>())
 {
-	AppPreference::Get()->RegisterListener(this);
+	AppPreference::Get()->RegisterListener(this, _T("CommandRepos"));
 
 	Path path(Path::APPDIR, _T("commands.ini"));
 	in->mCommandFilePath = path;

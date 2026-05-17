@@ -55,6 +55,7 @@ struct AppPreference::PImpl
 
 	// 設定変更時(正確にはSave時)に通知を受け取る
 	std::set<AppPreferenceListenerIF*> mListeners;
+	std::map<AppPreferenceListenerIF*, CString> mListenerNameMap;
 	// 初期フォント設定
 	std::unique_ptr<InitialFont> mInitialFont;
 };
@@ -365,7 +366,16 @@ void AppPreference::OnExit()
 
 	// リスナーへ終了を通知
 	for (auto& listener : cloned) {
+
+		auto name = in->mListenerNameMap[listener];
+
+		SPDLOG_DEBUG(_T("start OnAppExit  {}"), (LPCTSTR)name);
+		spdlog::default_logger()->flush();
+
 		listener->OnAppExit();
+
+		SPDLOG_DEBUG(_T("end OnAppExit  {}"), (LPCTSTR)name);
+		spdlog::default_logger()->flush();
 	}
 }
 
@@ -619,13 +629,15 @@ void AppPreference::GetCommandKeyMappings(
 	keyMap.Swap(tmp);
 }
 
-void AppPreference::RegisterListener(AppPreferenceListenerIF* listener)
+void AppPreference::RegisterListener(AppPreferenceListenerIF* listener, LPCTSTR name)
 {
 	in->mListeners.insert(listener);
+	in->mListenerNameMap[listener] = name;
 }
 
 void AppPreference::UnregisterListener(AppPreferenceListenerIF* listener)
 {
+	in->mListenerNameMap.erase(listener);
 	in->mListeners.erase(listener);
 }
 

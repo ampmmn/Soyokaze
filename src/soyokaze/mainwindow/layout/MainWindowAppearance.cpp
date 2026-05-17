@@ -74,7 +74,7 @@ MainWindowAppearance::MainWindowAppearance(LauncherMainWindowIF* mainWnd) : in(n
 	auto pref = AppPreference::Get();
 
 	// リスナー登録
-	pref->RegisterListener(this);
+	pref->RegisterListener(this, _T("MainWindowAppearance"));
 
 	// 
 	in->UpdateFont();

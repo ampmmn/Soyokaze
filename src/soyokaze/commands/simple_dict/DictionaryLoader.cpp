@@ -4,6 +4,7 @@
 #include "commands/simple_dict/SimpleDictionary.h"
 #include "commands/simple_dict/ExcelWrapper.h"
 #include "commands/common/FileTime.h"
+#include "core/LauncherProcessContext.h"
 #include "utility/TimeoutChecker.h"
 #include "utility/SQLite3Database.h"
 #include "utility/Path.h"
@@ -35,7 +36,7 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("DirectoryLoader"));
 	}
 	virtual ~PImpl()
 	{
@@ -59,9 +60,12 @@ struct DictionaryLoader::PImpl : public AppPreferenceListenerIF
 	void WaitExit() {
 		mExitEvent.WaitFor(3000);
 	}
-	bool IsAbort()
+	bool IsAbort(uint32_t timeout = 0)
 	{
-		return mAbortEvent.WaitFor(0);
+		if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+			return true;
+		}
+		return mAbortEvent.WaitFor(timeout);
 	}
 	void AddWaitingQueue(SimpleDictCommand* cmd)
 	{
@@ -171,7 +175,7 @@ void DictionaryLoader::PImpl::StartWatch()
 	std::vector<CString> keys;
 	std::vector<CString> values;
 	std::vector<CString> values2;
-	while(mAbortEvent.WaitFor(50) == false) {
+	while(IsAbort(50) == false) {
 
 		// 更新されたアイテムがあるまで待機
 		RefPtr<SimpleDictCommand> cmd;

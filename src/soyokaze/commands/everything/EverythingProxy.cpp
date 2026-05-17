@@ -27,7 +27,7 @@ struct EverythingProxy::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("EverythingProxy"));
 		Load();
 		mQueryEvent.Set();
 

@@ -21,7 +21,7 @@ struct MMCSnapins::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("MMCSnapins"));
 	}
 	virtual ~PImpl()
 	{

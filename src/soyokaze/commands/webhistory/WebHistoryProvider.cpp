@@ -25,7 +25,7 @@ struct WebHistoryProvider::PImpl :
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("WebHistory"));
 	}
 	virtual ~PImpl()
 	{

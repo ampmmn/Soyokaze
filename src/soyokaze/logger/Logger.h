@@ -31,6 +31,7 @@ public:
 	CString GetLogDirectory();
 
 	void Initialize();
+	void Finalize();
 
 private:
 	void InitializeDefaultLog();

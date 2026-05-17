@@ -193,6 +193,7 @@ BEGIN_MESSAGE_MAP(InternalBrowser, CWnd)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 	ON_WM_NCDESTROY()
+	ON_WM_QUERYENDSESSION()
 END_MESSAGE_MAP()
 
 void InternalBrowser::PreSubclassWindow()
@@ -280,6 +281,12 @@ void InternalBrowser::OnNcDestroy()
 {
 	Detach();
 	__super::OnNcDestroy();
+}
+
+BOOL InternalBrowser::OnQueryEndSession()
+{
+	PostMessage(WM_CLOSE,0, 0);
+	return TRUE;
 }
 
 LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)

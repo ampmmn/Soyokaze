@@ -24,7 +24,7 @@ struct DefaultCommand::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("DefaultCommand"));
 	}
 	~PImpl()
 	{

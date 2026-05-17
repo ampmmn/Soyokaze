@@ -102,7 +102,7 @@ struct Win32MenuCommandProvider::PImpl :
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("Win32MenuCommand"));
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()

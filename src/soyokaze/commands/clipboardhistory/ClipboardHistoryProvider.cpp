@@ -37,7 +37,7 @@ struct ClipboardHistoryProvider::PImpl :
 	PImpl()
 	{
 		// アプリケーションの設定変更リスナーとして登録
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("ClipboardHistory"));
 	}
 
 	/**

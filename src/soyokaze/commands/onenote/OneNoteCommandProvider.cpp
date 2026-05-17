@@ -30,7 +30,7 @@ struct OneNoteCommandProvider::PImpl :
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("OneNote"));
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()

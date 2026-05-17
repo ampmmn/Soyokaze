@@ -26,7 +26,7 @@ struct Presentations::PImpl : public AppPreferenceListenerIF
 {
 	PImpl() : mExitEvent(true)
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("Presentations"));
 	}
 	virtual ~PImpl()
 	{

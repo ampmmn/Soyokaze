@@ -76,7 +76,7 @@ public:
 	void SetCommandKeyMappings(const CommandHotKeyMappings& keyMap);
 	void GetCommandKeyMappings(CommandHotKeyMappings& keyMap);
 
-	void RegisterListener(AppPreferenceListenerIF* listener);
+	void RegisterListener(AppPreferenceListenerIF* listener, LPCTSTR name = _T(""));
 	void UnregisterListener(AppPreferenceListenerIF* listener);
 
 	bool CreateUserDirectory();

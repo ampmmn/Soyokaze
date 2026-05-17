@@ -29,7 +29,7 @@ AppHotKey::AppHotKey(HWND targetWnd) : in(new PImpl)
 {
 	in->mHotKey = std::make_unique<GlobalHotKey>(targetWnd);
 
-	AppPreference::Get()->RegisterListener(this);
+	AppPreference::Get()->RegisterListener(this, _T("AppHotKey"));
 }
 
 AppHotKey::~AppHotKey()

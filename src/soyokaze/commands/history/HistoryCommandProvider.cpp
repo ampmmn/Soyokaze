@@ -57,7 +57,7 @@ REGISTER_COMMANDPROVIDER(HistoryCommandProvider)
 
 HistoryCommandProvider::HistoryCommandProvider() : in(std::make_unique<PImpl>())
 {
-	AppPreference::Get()->RegisterListener(in.get());
+	AppPreference::Get()->RegisterListener(in.get(), _T("HistoryCommand"));
 }
 
 HistoryCommandProvider::~HistoryCommandProvider()

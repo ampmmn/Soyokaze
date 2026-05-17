@@ -20,7 +20,7 @@ struct VSCodeProvider::PImpl :
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("VSCode"));
 	}
 	virtual ~PImpl()
 	{

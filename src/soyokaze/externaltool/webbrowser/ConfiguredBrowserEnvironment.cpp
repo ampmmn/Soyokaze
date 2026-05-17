@@ -15,7 +15,7 @@ struct ConfiguredBrowserEnvironment::PImpl : public AppPreferenceListenerIF
 {
 	PImpl() {
 		// アプリ設定変更時に更新通知を受け取るための登録
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("ConfigureBrowserEnv"));
 		// 設定項目をロード
 		Load();
 	}

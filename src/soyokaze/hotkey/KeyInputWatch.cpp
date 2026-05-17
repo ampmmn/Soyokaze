@@ -48,7 +48,7 @@ struct KeyInputWatch::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("KeyInputWatch"));
 
 		for (int i = 0; i < sizeof(mPrevStates) / sizeof(mPrevStates[0]); ++i) {
 			mPrevStates[i] = 0;

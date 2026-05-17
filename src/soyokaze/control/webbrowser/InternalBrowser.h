@@ -67,6 +67,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnClose();
 	afx_msg void OnNcDestroy();
+	afx_msg BOOL OnQueryEndSession();
 
 public:
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);

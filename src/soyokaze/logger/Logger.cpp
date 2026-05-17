@@ -16,7 +16,7 @@ struct Logger::PImpl : public AppPreferenceListenerIF
 {
 	PImpl() 
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("Logger"));
 	}
 	virtual ~PImpl() 
 	{
@@ -68,6 +68,11 @@ void Logger::Initialize()
 	InitializeDefaultLog();
 	// 性能計測用ログ
 	InitializePerformanceLog();
+}
+
+void Logger::Finalize()
+{
+	spdlog::default_logger()->flush();
 }
 
 void Logger::InitializeDefaultLog()

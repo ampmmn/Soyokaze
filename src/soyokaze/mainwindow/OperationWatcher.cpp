@@ -16,7 +16,7 @@ struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public Ap
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("OperationWatcher"));
 		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()

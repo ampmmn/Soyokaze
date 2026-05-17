@@ -113,7 +113,7 @@ BOOL TaskTray::Create()
 		return FALSE;
 	}
 
-	AppPreference::Get()->RegisterListener(in.get());
+	AppPreference::Get()->RegisterListener(in.get(), _T("TaskTray"));
 
 	in->mTaskTrayWindow = GetSafeHwnd();
 

@@ -90,6 +90,8 @@ BOOL LauncherApp::InitInstance()
 	CoUninitialize();
 
 	spdlog::info("==== Exit App ====");
+	Logger::Get()->Finalize();
+
 	return FALSE;
 }
 
@@ -102,6 +104,8 @@ BOOL LauncherApp::InitFirstInstance()
 
 	// 先行プロセスである旨をセット
 	launcherapp::core::LauncherProcessContext::GetInstance()->MarkAsPrimaryProcess();
+
+	SetProcessShutdownParameters(0x3FF, 0);
 
 	if (!AfxOleInit()) {
 		AfxMessageBox(_T("Failed to init(AfxOleInit)."));
@@ -167,6 +171,8 @@ BOOL LauncherApp::InitFirstInstance()
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();
 #endif
+
+	SPDLOG_DEBUG("end");
 
 	return FALSE;
 }

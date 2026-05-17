@@ -1,6 +1,7 @@
 // NormalPriviledgeAgent.cpp : 本体が管理者権限で動作している状況において、通常権限でコマンドを実行するための代理実行をする
 #include "pch.h"
 #include "NormalPriviledgeProcessProxy.h"
+#include "core/LauncherProcessContext.h"
 #include "SharedHwnd.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
@@ -212,6 +213,10 @@ bool NormalPriviledgeProcessProxy::PImpl::ReceiveResponse(json& json_res)
 	char buff[512];
 	for(;;) {
 
+		if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+			spdlog::error("shutdown is in progress.");
+			return false;
+		}
 		if (GetTickCount64()-start >= 2000) {
 			spdlog::error("NormalPriviledgeProcessProxy::ReceiveResponse timeout.");
 			return false;

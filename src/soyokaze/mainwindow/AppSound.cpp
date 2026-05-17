@@ -36,7 +36,7 @@ struct AppSound::PImpl : public AppPreferenceListenerIF
 AppSound::AppSound() : in(std::make_unique<PImpl>())
 {
 		auto pref = AppPreference::Get();
-		pref->RegisterListener(in.get());
+		pref->RegisterListener(in.get(), _T("Sound"));
 
 		in->mInputSound = pref->GetInputSoundFile();
 		in->mSelectSound = pref->GetSelectSoundFile();

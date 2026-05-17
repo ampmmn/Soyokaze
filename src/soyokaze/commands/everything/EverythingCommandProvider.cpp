@@ -24,7 +24,7 @@ struct EverythingCommandProvider::PImpl :
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("EverythingCommand"));
 	}
 	virtual ~PImpl()
 	{

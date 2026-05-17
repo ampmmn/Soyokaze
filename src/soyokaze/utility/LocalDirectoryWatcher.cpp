@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "LocalDirectoryWatcher.h"
+#include "core/LauncherProcessContext.h"
 #include "utility/Path.h"
 #include <atomic>
 #include <map>
@@ -45,6 +46,9 @@ struct LocalDirectoryWatcher::PImpl
 	}
 	bool IsAbort()
 	{
+		if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+			return true;
+		}
 		return mIsAbort.load();
 	}
 
@@ -234,6 +238,11 @@ LocalDirectoryWatcher* LocalDirectoryWatcher::GetInstance()
 
 void LocalDirectoryWatcher::Finalize()
 {
+	if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+		// Windwosログオフ進行中の場合は待たない
+		return ;
+	}
+
 	// 終了フラグを立ててスレッド完了を待つ
 	if (in->mWatchThread.joinable()) {
 		in->Abort();

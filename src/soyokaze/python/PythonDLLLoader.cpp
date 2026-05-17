@@ -49,7 +49,7 @@ PythonDLLLoader::PythonDLLLoader() : in(new PImpl)
 	in->mThisPtr = this;
 
 	auto pref = AppPreference::Get();
-	pref->RegisterListener(in.get());
+	pref->RegisterListener(in.get(), _T("PythonDLLLoader"));
 }
 
 PythonDLLLoader::~PythonDLLLoader()

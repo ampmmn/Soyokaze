@@ -2,6 +2,7 @@
 #include "ExcelWrapper.h"
 #include "commands/common/AutoWrap.h"
 #include "commands/common/DispWrapper.h"
+#include "core/LauncherProcessContext.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "utility/TimeoutChecker.h"
 #include <thread>
@@ -280,7 +281,8 @@ void ExcelApplication::Quit()
 	// 2秒まってもプロセスが終了していなかったら強制的に落とす
 	HANDLE h = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, pid);
 	auto th = std::thread([pid, h]() {
-			if (WaitForSingleObject(h, 2000) != WAIT_TIMEOUT) {
+			bool isShutdownInProgress = launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress();
+			if (isShutdownInProgress == false && WaitForSingleObject(h, 2000) != WAIT_TIMEOUT) {
 				return;
 			}
 			spdlog::debug(_T("Excel app terminated PID:{}"), pid);

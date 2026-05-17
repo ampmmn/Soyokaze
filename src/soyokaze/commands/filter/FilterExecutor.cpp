@@ -4,6 +4,7 @@
 #include "matcher/PartialMatchPattern.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/Clipboard.h"
+#include "core/LauncherProcessContext.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/CharConverter.h"
 #include "utility/LastErrorString.h"
@@ -95,12 +96,18 @@ struct FilterExecutor::PImpl
 
 	// 完了指示が出ているかを問い合わせる
 	bool IsAbort() {
+		if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+			return true;
+		}
 		return mIsAbort.load();
 	}
 
 	// スレッド側の終了を待つ
 	void WaitExited() {
 		for(;;) {
+			if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+				break;
+			}
 			Sleep(50);
 			std::lock_guard<std::mutex> lock(mMutex);
 			if (std::count(mAllExited.begin(), mAllExited.end(), TRUE) == (int)mAllExited.size()) {

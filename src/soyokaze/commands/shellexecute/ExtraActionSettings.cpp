@@ -10,7 +10,7 @@ struct ExtraActionSettings::PImpl : public AppPreferenceListenerIF
 	PImpl()
 	{
 		mSettings.Load();
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("ExtraAction"));
 	}
 	virtual ~PImpl()
 	{

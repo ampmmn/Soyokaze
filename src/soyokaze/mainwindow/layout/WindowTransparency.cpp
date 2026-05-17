@@ -11,7 +11,7 @@ WindowTransparency::WindowTransparency() :
 	mIsTopmost(true),
 	mIsHideOnInactive(false)
 {
-	AppPreference::Get()->RegisterListener(this);
+	AppPreference::Get()->RegisterListener(this, _T("WindowTransparency"));
 }
 
 WindowTransparency::~WindowTransparency()

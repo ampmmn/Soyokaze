@@ -21,7 +21,7 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("SpecialFolderFiles"));
 	}
 	virtual ~PImpl()
 	{

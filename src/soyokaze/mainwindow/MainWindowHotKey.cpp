@@ -187,7 +187,7 @@ struct MainWindowHotKey::PImpl
 
 MainWindowHotKey::MainWindowHotKey() : in(new PImpl)
 {
-	AppPreference::Get()->RegisterListener(this);
+	AppPreference::Get()->RegisterListener(this, _T("MainWindowHotKey"));
 }
 
 MainWindowHotKey::~MainWindowHotKey()

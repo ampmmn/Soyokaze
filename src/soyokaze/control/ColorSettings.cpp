@@ -14,7 +14,7 @@ struct ColorSettings::PImpl : public AppPreferenceListenerIF
 {
 	PImpl()
 	{
-		AppPreference::Get()->RegisterListener(this);
+		AppPreference::Get()->RegisterListener(this, _T("ColorSettings"));
 	}
 
 	void OnAppFirstBoot() override {}
