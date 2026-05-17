@@ -31,7 +31,7 @@ struct ChromiumBrowseHistory::PImpl
 	bool MakeTempFilePath(CString& path)
 	{
 		CString fileName;
-		fileName.Format(_T("history-%s-%I64x"), (LPCTSTR)mId, GetTickCount64());
+		fileName.Format(_T("history-%s"), (LPCTSTR)mId);
 
 		try {
 			path = TempDirectory::GetInstance()->MakePath(fileName);
