@@ -22,6 +22,8 @@ enum CommandParamErrorCode
 	ActivateWindow_ClassIsInvalid,
 	// [activate_window] アクションが設定されていない
 	ActivateWindow_ActionMustBeSet,
+	// [activate_window] 「位置とサイズを変更する」が設定されている必要がある
+	ActivateWindow_ArrangeWindowMustBeSet,
 	// [alias] テキストが空
 	Alias_TextIsEmpty,
 	// [py_extension] スクリプトが空

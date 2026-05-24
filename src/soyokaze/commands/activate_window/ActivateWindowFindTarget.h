@@ -13,7 +13,11 @@ public:
 	void SetParam(const CommandParam& param);
 	ActivateWindowFindTarget* Clone();
 
+	// ハンドルを取得する(キャッシュの結果を返す場合がある)
 	HWND GetHandle() override;
+	// ハンドルを取得する(キャッシュを使わない)
+	HWND FetchHandle();
+
 
 	CommandParam mParam;
 	HWND mCachedHwnd;

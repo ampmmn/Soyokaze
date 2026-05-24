@@ -125,7 +125,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_TEST2, OnButtonTest2)
 	ON_COMMAND(IDC_CHECK_SHOULDARRANGEWINDOW, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_SHOULDACTIVATEWINDOW, OnUpdateStatus)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_BYCLASSANDCAPTION, IDC_RADIO_SELECTFROMLIST, OnRadioChecked)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_BYCLASSANDCAPTION, IDC_RADIO_ACTIVEWINDOW, OnRadioChecked)
 	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdateStatus)
 	ON_EN_CHANGE(IDC_EDIT_CAPTION, OnUpdateStatus)
@@ -293,9 +293,17 @@ bool SettingDialog::UpdateStatus()
 	GetDlgItem(IDC_CHECK_NOTIFYIFNOTEXIST)->EnableWindow(shouldFindClass);
 	GetDlgItem(IDC_CHECK_ALLOWAUTOEXEC)->EnableWindow(shouldFindClass);
 
+	// 「ウインドウをアクティブにする」のチェックボックスは対象が「アクティブなウインドウ」の場合は許可しない(意味ないので)
+	bool isAlreadyActive = in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ActiveWindow;
+	GetDlgItem(IDC_CHECK_SHOULDACTIVATEWINDOW)->EnableWindow(isAlreadyActive == false);
+	if (isAlreadyActive) {
+		// 「アクティブなウインドウ」を対象にするということはコマンド実行後の状態はウインドウがアクティブになるので
+		in->mParam.mShouldActivateWindow = true;
+	}
+
+
 	// 位置とサイズを変更する
 	bool shouldArrangeWindow = in->mParam.mShouldArrangeWindow;
-	bool shouldActivateWindow = in->mParam.mShouldActivateWindow;
 
 	GetDlgItem(IDC_STATIC_XY)->EnableWindow(shouldArrangeWindow);
 	GetDlgItem(IDC_EDIT_X)->EnableWindow(shouldArrangeWindow);

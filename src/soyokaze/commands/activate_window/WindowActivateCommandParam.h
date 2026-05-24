@@ -13,7 +13,8 @@ public:
 	// 対象ウインドウの決定方法
 	enum WindowSelectionStrategy {
 		ByClassAndCaption = 0,      // クラス名とキャプションから選択する
-		SelectFromList = 1,        // コマンド実行時に列挙した一覧から選択する
+		SelectFromList = 1,         // コマンド実行時に列挙した一覧から選択する
+		ActiveWindow = 2,           // アクティブなウインドウに対して操作を行う
 	};
 
 public:

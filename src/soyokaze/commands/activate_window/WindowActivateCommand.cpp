@@ -144,7 +144,7 @@ CString WindowActivateCommand::GetTypeDisplayName()
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool WindowActivateCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
-	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::ByClassAndCaption) {
+	if (in->mParam.mStragegy != CommandParam::WindowSelectionStrategy::SelectFromList) {
 
 		auto modifierFlags = hotkeyAttr.GetModifiers();
 
@@ -168,7 +168,9 @@ bool WindowActivateCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** ac
 
 					ScopeAttachThreadInput scope;
 					auto& wp = in->mParam.mPlacement;
-					auto hwnd = in->mTarget.GetHandle();
+					auto hwnd = in->mTarget.FetchHandle();
+					TCHAR text[256];
+					GetWindowText(hwnd, text, 256);
 					SetWindowPlacement(hwnd, &wp);
 					// Zオーダーを前面に移動
 					if (in->mParam.mShouldActivateWindow) {
@@ -176,6 +178,7 @@ bool WindowActivateCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** ac
 					}
 					return true;
 				});
+				return true;
 			}
 		}
 		return false;
@@ -465,7 +468,9 @@ void WindowActivateCommand::OnSelect(Command* prior)
 	UNREFERENCED_PARAMETER(prior);
 
 	//対象の領域を強調表示する
-	RegionIndicatorWindow::GetInstance()->Cover(in->mParam.mPlacement.rcNormalPosition);
+	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::SelectFromList) {
+		RegionIndicatorWindow::GetInstance()->Cover(in->mParam.mPlacement.rcNormalPosition);
+	}
 }
 
 // 選択解除された
@@ -474,7 +479,9 @@ void WindowActivateCommand::OnUnselect(Command* next)
 	UNREFERENCED_PARAMETER(next);
 
 	// OnSelectで強調表示したものをもとに戻す
+	if (in->mParam.mStragegy == CommandParam::WindowSelectionStrategy::SelectFromList) {
 		RegionIndicatorWindow::GetInstance()->Uncover();
+	}
 }
 
 // 実行後のウインドウを閉じる方法を決定する

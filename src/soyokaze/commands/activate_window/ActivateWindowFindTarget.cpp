@@ -31,8 +31,15 @@ ActivateWindowFindTarget* ActivateWindowFindTarget::Clone()
 HWND ActivateWindowFindTarget::GetHandle()
 {
 	if (IsWindow(mCachedHwnd) && GetTickCount64() - mLastUpdate < UPDATE_INTERVAL) {
+		// キャッシュ再利用
 		return mCachedHwnd;
 	}
+	// 新たに取得
+	return FetchHandle();
+}
+
+HWND ActivateWindowFindTarget::FetchHandle()
+{
 	mCachedHwnd = nullptr;
 
 	HWND hwnd = mParam.FindHwnd();

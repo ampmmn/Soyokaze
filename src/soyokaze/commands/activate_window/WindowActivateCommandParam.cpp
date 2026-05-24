@@ -73,6 +73,12 @@ bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 		return false;
 	}
 
+	// 「アクティブなウインドウに対して操作を行う」の場合、「位置とサイズを変更する」が有効である必要あり
+	if (mStragegy == ActiveWindow && mShouldArrangeWindow == false) {
+		*errCode = CommandParamErrorCode::ActivateWindow_ArrangeWindowMustBeSet;
+		return false;
+	}
+
 	// 
 	if (mStragegy == ByClassAndCaption) {
 		if (mCaptionStr.IsEmpty() && mClassStr.IsEmpty()) {
@@ -156,8 +162,90 @@ bool CommandParam::CanFindHwnd() const
 	return mCaptionStr.IsEmpty() == FALSE || mClassStr.IsEmpty() == FALSE;
 }
 
+static bool IsTopLevelWindow(HWND hwnd)
+{
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	LONG_PTR styleRequired = WS_VISIBLE;
+
+	if ((style & styleRequired) != styleRequired) {
+		// 非表示のウインドウは対象外
+		return false;
+	}
+
+	if (style & WS_DISABLED) {
+		// 無効化されているウインドウは除外
+		return false;
+	}
+
+	DWORD pid;
+	GetWindowThreadProcessId(hwnd, &pid);
+	if (pid == GetCurrentProcessId()) {
+		// 自分自身のウインドウは除外
+		return false;
+	}
+
+	TCHAR clsName[32] = {};
+	GetClassName(hwnd, clsName, 32);
+	if (_tcscmp(clsName, _T("Progman")) == 0) {
+		// 特定のウインドウは対象外
+		return false;
+	}
+
+	TCHAR c[4] = {};
+	GetWindowText(hwnd, c, 4);
+	if (c[0] == _T('\0')) {
+		// キャプションが空っぽの場合は除外
+		return false;
+	}
+
+	LONG_PTR styleEx = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+	if (styleEx & (WS_EX_NOACTIVATE)) {
+		return false;
+	}
+
+	CRect rc;
+	GetWindowRect(hwnd, rc);
+	if (rc.Width() == 0 || rc.Height() == 0) {
+		// サイズ的に見えないものは除外
+		return false;
+	}
+
+	// 一部のUWPアプリを除外する
+	BOOL cloaked = FALSE;
+	DwmGetWindowAttribute(hwnd, DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+	if (cloaked) {
+		return false; // 表示されていない
+	}
+
+	return true;
+}
+
+
+
+static HWND GetNextHwnd()
+{
+	HWND hwnd = GetForegroundWindow();
+	do {
+		if (IsTopLevelWindow(hwnd)) {
+			return hwnd;
+		}
+		hwnd = GetNextWindow(hwnd, GW_HWNDNEXT);
+	} while(IsWindow(hwnd));
+	return nullptr;
+}
+
+
 HWND CommandParam::FindHwnd()
 {
+	if (mStragegy == ActiveWindow) {
+		return GetNextHwnd();
+	}
+
+	if (mStragegy == SelectFromList) {
+		// 「コマンド実行時に列挙した一覧から選択する」の場合、このメソッドでは取得するハンドルを判断できない
+		return nullptr;
+	}
+
 	struct local_param {
 		static BOOL CALLBACK callback(HWND h, LPARAM lp) {
 			auto thisPtr = (local_param*)lp;
