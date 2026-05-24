@@ -10,6 +10,7 @@
 #include <thread>
 
 #include <winrt/Windows.Data.Xml.Dom.h>
+#include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
 
 using json = nlohmann::json;
@@ -51,7 +52,7 @@ void OneNoteAppProxy::PImpl::RunWatchThread()
 
 	std::thread th([&]() {
 
-		HRESULT hr = CoInitialize(NULL);
+		winrt::init_apartment(winrt::apartment_type::single_threaded);
 
 		CComPtr<IDispatch> app;
 		if (InitializeApp(app) == false) {
@@ -89,8 +90,6 @@ void OneNoteAppProxy::PImpl::RunWatchThread()
 		}
 
 		SetEvent(mAbortedEvent);
-
-		CoUninitialize();
 	});
 	th.detach();
 }
@@ -131,9 +130,11 @@ bool OneNoteAppProxy::PImpl::CallGetHierarchy(CComPtr<IDispatch>& oneNoteApp, st
 	VARIANT argStartNodeID;
 	VariantInit(&argStartNodeID);
 	argStartNodeID.vt = VT_BSTR;
-	argStartNodeID.bstrVal = nullptr;
+	argStartNodeID.bstrVal = SysAllocString(L"");
 
 	HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, oneNoteApp, L"GetHierarchy", 3, argXmlOutput, argHsScope, argStartNodeID);
+	VariantClear(&argStartNodeID);
+	VariantClear(&result);
 	if (FAILED(hr)) {
 		return false;
 	}
