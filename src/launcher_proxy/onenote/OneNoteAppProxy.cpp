@@ -25,7 +25,7 @@ struct OneNoteAppProxy::PImpl
 	void RunWatchThread();
 
 	bool InitializeApp(CComPtr<IDispatch>& app);
-	bool CallGetHierarchy(CComPtr<IDispatch>& oneNoteApp, std::wstring& hierarchyXml);
+	bool CallGetHierarchy(std::wstring& hierarchyXml);
 	bool ParseHierarchyXML(const std::wstring& xml, json& oneNoteBooks);
 	bool ParseSectionElement(XmlElement& elemSection, json& oneNoteSections);
 
@@ -54,13 +54,6 @@ void OneNoteAppProxy::PImpl::RunWatchThread()
 
 		winrt::init_apartment(winrt::apartment_type::single_threaded);
 
-		CComPtr<IDispatch> app;
-		if (InitializeApp(app) == false) {
-			SetErrorMessage("Failed to Initialize OneNote App.");
-			SetEvent(mAbortedEvent);
-			return;
-		}
-
 		while(WaitForSingleObject(mAbortEvent, 0) == WAIT_TIMEOUT) {
 
 			if (WaitForSingleObject(mRequestEvent, 150) != WAIT_OBJECT_0) {
@@ -70,9 +63,9 @@ void OneNoteAppProxy::PImpl::RunWatchThread()
 
 			// OneNote.Application.GetHierarchyをよぶ
 			std::wstring xml;
-			if (CallGetHierarchy(app, xml) == false) {
+			if (CallGetHierarchy(xml) == false) {
 				SetErrorMessage("Failed to GetHierarchy.");
-				continue;
+				break;
 			}
 
 			// 得られたXMLを解析し、sectionsのリストを生成する
@@ -109,8 +102,14 @@ bool OneNoteAppProxy::PImpl::InitializeApp(CComPtr<IDispatch>& app) {
 }
 
 // OneNote.Application.GetHierarchyをよぶ
-bool OneNoteAppProxy::PImpl::CallGetHierarchy(CComPtr<IDispatch>& oneNoteApp, std::wstring& hierarchyXml)
+bool OneNoteAppProxy::PImpl::CallGetHierarchy(std::wstring& hierarchyXml)
 {
+	CComPtr<IDispatch> oneNoteApp;
+	if (InitializeApp(oneNoteApp) == false) {
+		SetErrorMessage("Failed to Initialize OneNote App.");
+		return false;
+	}
+
 
 	VARIANT result;
 	VariantInit(&result);
