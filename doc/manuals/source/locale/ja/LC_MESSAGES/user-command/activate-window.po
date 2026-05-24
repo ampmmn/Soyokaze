@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../../source/user-command/activate-window.md:1
 msgid "Switch Window Command"
-msgstr "ウインドウ切替コマンド"
+msgstr "ウインドウ操作コマンド"
 
 #: ../../source/user-command/activate-window.md:3
 msgid ""

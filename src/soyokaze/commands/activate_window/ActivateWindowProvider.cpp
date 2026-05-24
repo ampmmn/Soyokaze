@@ -52,8 +52,7 @@ CString ActivateWindowProvider::GetDescription()
 {
 	CString description((LPCTSTR)IDS_DESCRIPTION_WINDOWACTIVATE);
 	description += _T("\n");
-	description += _T("ウインドウ切り替え処理に対して、任意のキーワードを設定したり、\n");
-	description += _T("ホットキーを設定することができます。\n");
+	description += _T("任意のウインドウをアクティブにする、位置・サイズを設定する、などの操作が可能です。");
 	return description;
 }
 
