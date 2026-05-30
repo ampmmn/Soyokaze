@@ -5,8 +5,8 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "ui/mainwindow/LauncherWindowEventDispatcher.h"
+#include "ui/mainwindow/LauncherWindowEventListenerIF.h"
 #include "core/IFIDDefine.h"
 
 #ifdef _DEBUG

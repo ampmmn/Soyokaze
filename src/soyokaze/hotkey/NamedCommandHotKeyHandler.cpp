@@ -4,7 +4,7 @@
 #include "commands/common/Message.h"
 #include "actions/core/Action.h"
 #include "actions/core/ActionParameter.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

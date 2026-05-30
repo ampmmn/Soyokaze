@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "KeySplitterModifierDialog.h"
 #include "commands/common/CommandSelectDialog.h"
-#include "control/DDXWrapper.h"
+#include "ui/control/DDXWrapper.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
 #include <vector>

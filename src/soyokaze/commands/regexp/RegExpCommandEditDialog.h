@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/regexp/RegExpCommandParam.h"
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 
 #include <memory>
 

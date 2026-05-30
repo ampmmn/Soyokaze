@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WatchPathToast.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "commands/common/SubProcess.h"
 #include "actions/core/ActionParameter.h"
 #include "utility/Path.h"

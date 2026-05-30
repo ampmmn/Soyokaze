@@ -17,7 +17,7 @@
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
 #include "icon/IconLoader.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 
 #ifdef _DEBUG

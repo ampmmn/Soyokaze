@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "AppPreference.h"
 #include "setting/InitialFont.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"

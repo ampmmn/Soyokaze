@@ -5,7 +5,7 @@
 #include "commands/common/Clipboard.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/clipboard/CopyClipboardAction.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "utility/StringUtil.h"
 #include "resource.h"

@@ -5,7 +5,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
-#include "control/FolderDialog.h"
+#include "ui/control/FolderDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"

@@ -1,0 +1,41 @@
+#pragma once
+
+#include "ui/settingwindow/AppSettingPageBase.h"
+#include "ui/settingwindow/AppSettingPageRepository.h"
+#include <memory>
+
+class AppSettingPageInput :
+ 	virtual public launcherapp::settingwindow::AppSettingPageBase
+{
+public:
+	AppSettingPageInput();
+	~AppSettingPageInput();
+
+	// ウインドウを作成する
+	bool Create(HWND parentWindow) override;
+	// ウインドウハンドルを取得する
+	HWND GetHwnd() override;
+	// 同じ親の中で表示する順序(低いほど先に表示)
+	int GetOrder() override;
+	// 
+	bool OnEnterSettings() override;
+	// ページがアクティブになるときに呼ばれる
+	bool OnSetActive() override;
+	// ページが非アクティブになるときに呼ばれる
+	bool OnKillActive() override;
+	//
+	void OnOKCall() override;
+
+	// ページに関連付けられたヘルプページIDを取得する
+	bool GetHelpPageId(String& helpPageId) override;
+
+	// インスタンスを複製する
+	AppSettingPageIF* Clone() override { return new AppSettingPageInput(); }
+
+	DECLARE_APPSETTINGPAGE(AppSettingPageInput)
+private:
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
+};
+
+

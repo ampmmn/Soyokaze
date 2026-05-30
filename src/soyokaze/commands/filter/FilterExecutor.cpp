@@ -10,7 +10,7 @@
 #include "utility/LastErrorString.h"
 #include "utility/Pipe.h"
 #include "utility/RefPtr.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include <atomic>
 #include <thread>
 #include <mutex>

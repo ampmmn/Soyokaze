@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include "commands/alias/AliasCommandParam.h"
 #include "hotkey/HotKeyControl.h"
 

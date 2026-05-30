@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CommandClipboardTransfer.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "commands/transfer/CommandJSONEntry.h"
 
 #ifdef _DEBUG

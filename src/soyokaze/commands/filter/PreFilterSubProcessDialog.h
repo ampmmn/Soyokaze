@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include <memory>
 #include "commands/filter/FilterCommandParam.h"
 

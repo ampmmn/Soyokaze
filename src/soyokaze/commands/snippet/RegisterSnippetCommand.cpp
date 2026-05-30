@@ -5,7 +5,7 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/CallbackAction.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

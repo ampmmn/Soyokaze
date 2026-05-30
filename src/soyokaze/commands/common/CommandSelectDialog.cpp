@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "commands/common/CommandSelectDialog.h"
-#include "control/KeywordEdit.h"
+#include "ui/control/KeywordEdit.h"
 #include "icon/IconLabel.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PartialMatchPattern.h"

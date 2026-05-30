@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ConfiguredBrowserEnvironment.h"
-#include "control/webbrowser/InternalBrowser.h"
+#include "ui/control/webbrowser/InternalBrowser.h"
 #include "SharedHwnd.h"
 #include "externaltool/webbrowser/ChromeEnvironment.h"
 #include "setting/AppPreference.h"

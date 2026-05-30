@@ -7,13 +7,13 @@
 #include <thread>
 #include <vector>
 #include <deque>
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "ui/mainwindow/LauncherWindowEventDispatcher.h"
 #include "commands/common/Message.h"
 #include "commands/watchpath/LocalPathTarget.h"
 #include "commands/watchpath/UNCPathTarget.h"
 #include "commands/watchpath/WatchPathToast.h"
 #include "utility/ManualEvent.h"
-#include "settingwindow/ShortcutSettingPage.h"
+#include "ui/settingwindow/ShortcutSettingPage.h"
 
 namespace launcherapp {
 namespace commands {

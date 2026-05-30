@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include "commands/snippet/SnippetCommandParam.h"
 #include "hotkey/HotKeyControl.h"
 

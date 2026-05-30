@@ -1,7 +1,7 @@
 // あ
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 
 // 

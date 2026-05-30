@@ -14,7 +14,7 @@
 #endif
 #include "afxres.h"
 #include "verrsrc.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS

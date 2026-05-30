@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SubProcessDialog.h"
-#include "control/FolderDialog.h"
+#include "ui/control/FolderDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"

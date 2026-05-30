@@ -10,7 +10,7 @@
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "actions/web/OpenURLAction.h"
 #include "actions/builtin/CallbackAction.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "ShellExecEnvValueEditDialog.h"
 #include "app/Manual.h"
-#include "control/FolderDialog.h"
+#include "ui/control/FolderDialog.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "resource.h"

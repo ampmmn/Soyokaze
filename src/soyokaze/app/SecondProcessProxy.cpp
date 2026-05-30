@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "SecondProcessProxy.h"
 #include "resource.h"
-#include "mainwindow/LauncherMainWindow.h"
-#include "mainwindow/interprocess/InterProcessMessageQueue.h"
+#include "ui/mainwindow/LauncherMainWindow.h"
+#include "ui/mainwindow/interprocess/InterProcessMessageQueue.h"
 
 using namespace launcherapp::mainwindow::interprocess;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 
 namespace launcherapp { namespace commands { namespace shellexecute {
 

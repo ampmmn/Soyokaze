@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Clipboard.h"
 #include "utility/GlobalAllocMemory.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 
 namespace launcherapp {
 namespace commands {

@@ -5,7 +5,7 @@
 #include "commands/winscp/WinScpCommandParam.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
-#include "control\DDXWrapper.h"
+#include "ui\control\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 

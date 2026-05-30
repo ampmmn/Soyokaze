@@ -4,7 +4,7 @@
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include <chrono>
 

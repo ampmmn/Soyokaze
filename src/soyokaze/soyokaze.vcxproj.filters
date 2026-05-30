@@ -19,7 +19,10 @@
     <Filter Include="utility">
       <UniqueIdentifier>{b929759c-ac3e-431c-8e00-292b3dbf5119}</UniqueIdentifier>
     </Filter>
-    <Filter Include="control">
+    <Filter Include="ui">
+      <UniqueIdentifier>{c924ca88-43c9-499e-9d8e-779a3c8f16b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\control">
       <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\shellexecute">
@@ -112,13 +115,13 @@
     <Filter Include="icon">
       <UniqueIdentifier>{db647421-9865-4392-9071-53fc2ab5a7b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow">
+    <Filter Include="ui\mainwindow">
       <UniqueIdentifier>{f72a389b-0bfa-4449-8e85-a993b3bd0573}</UniqueIdentifier>
     </Filter>
-    <Filter Include="tasktray">
+    <Filter Include="ui\tasktray">
       <UniqueIdentifier>{bbb178a2-439a-4886-9b26-df027800dba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="settingwindow">
+    <Filter Include="ui\settingwindow">
       <UniqueIdentifier>{8ab7a515-604f-4ce8-818f-8beb9a5c41b3}</UniqueIdentifier>
     </Filter>
     <Filter Include="app">
@@ -193,7 +196,7 @@
     <Filter Include="commands\extracandidate">
       <UniqueIdentifier>{df6b0b9b-124f-4810-a5e8-751fa60ef48a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow\layout">
+    <Filter Include="ui\mainwindow\layout">
       <UniqueIdentifier>{fcc5abc1-3e80-4540-ab8a-02290af3e331}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\snippetgroup">
@@ -202,7 +205,7 @@
     <Filter Include="commands\activate_worksheet">
       <UniqueIdentifier>{e8a0558c-92ee-401b-8a79-fe0b34e43d97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow\interprocess">
+    <Filter Include="ui\mainwindow\interprocess">
       <UniqueIdentifier>{77cad20c-991f-406e-a2e8-a0507db44b19}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\share">
@@ -223,7 +226,7 @@
     <Filter Include="processproxy\share">
       <UniqueIdentifier>{219415d4-bd39-44df-b3b9-98b87491bca4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow\controller">
+    <Filter Include="ui\mainwindow\controller">
       <UniqueIdentifier>{40b0f3be-ef54-425d-a331-fd81d571efe8}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\error">
@@ -232,7 +235,7 @@
     <Filter Include="macros\explorer">
       <UniqueIdentifier>{ff7cee4b-9a5c-43e5-9aab-6c31988b9dc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow\optionbutton">
+    <Filter Include="ui\mainwindow\optionbutton">
       <UniqueIdentifier>{85c5ad05-cfcc-4d64-b2c5-595020563344}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\validation">
@@ -289,13 +292,13 @@
     <Filter Include="commands\outlook">
       <UniqueIdentifier>{2e55f220-41df-4b76-9cc4-df4e3a062291}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mainwindow\guide">
+    <Filter Include="ui\mainwindow\guide">
       <UniqueIdentifier>{9895d479-9167-40a6-8070-d5bf72397331}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\explorepath">
       <UniqueIdentifier>{3ca17de4-3587-4db9-ae50-c0fcbb3944c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="control\webbrowser">
+    <Filter Include="ui\control\webbrowser">
       <UniqueIdentifier>{1015f791-c78d-4000-a878-77f05336d87b}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\transfer">
@@ -327,23 +330,23 @@
     <ClInclude Include="utility/AppProfile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="control/FolderDialog.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control/FolderDialog.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control/KeywordEdit.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control/KeywordEdit.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control/KeywordManagerDialog.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control/KeywordManagerDialog.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control/SelectFilesDialog.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control/SelectFilesDialog.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="utility/IniFile.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="control\SettingPage.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control\SettingPage.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="utility\ProcessPath.h">
       <Filter>utility</Filter>
@@ -462,8 +465,8 @@
     <ClInclude Include="commands\history\HistoryCommandProvider.h">
       <Filter>commands\history</Filter>
     </ClInclude>
-    <ClInclude Include="control\SettingDialogBase.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui\control\SettingDialogBase.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands\shellexecute\ShellExecCommandParam.h">
       <Filter>commands\shellexecute</Filter>
@@ -747,56 +750,56 @@
     <ClInclude Include="icon/IconLoader.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/LauncherMainWindow.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow/LauncherMainWindow.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\CandidateListCtrl.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\CandidateListCtrl.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/LauncherDropTarget.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow/LauncherDropTarget.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands/builtin/AboutDlg.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/CandidateListListenerIF.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow/CandidateListListenerIF.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/CandidateList.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow/CandidateList.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="tasktray/TaskTray.h">
-      <Filter>tasktray</Filter>
+    <ClInclude Include="ui\tasktray/TaskTray.h">
+      <Filter>ui\tasktray</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ViewSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\ViewSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\SoundSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\SoundSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPathPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPathPage.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\BasicSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\BasicSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="icon\CaptureIconLabel.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExecSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\ExecSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="icon/IconLabel.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\InputSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ShortcutSettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\ShortcutSettingPage.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="control/BreadCrumbs.h">
-      <Filter>control</Filter>
+		<ClInclude Include="ui/control/BreadCrumbs.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="hotkey\AppHotKey.h">
       <Filter>hotkey</Filter>
@@ -834,8 +837,8 @@
     <ClInclude Include="app/StartupParam.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExtensionSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\ExtensionSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="matcher/PartialMatchPattern.h">
       <Filter>matcher</Filter>
@@ -867,8 +870,8 @@
     <ClInclude Include="commands/core\CommandQueryItem.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="control\SelectCommandTypeDialog.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\SelectCommandTypeDialog.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands/core/CommandFile.h">
       <Filter>commands\core</Filter>
@@ -876,8 +879,8 @@
     <ClInclude Include="commands/core/CommandMap.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/AppSound.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow/AppSound.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="logger/Logger.h">
       <Filter>logger</Filter>
@@ -888,14 +891,14 @@
     <ClInclude Include="setting/Settings.h">
       <Filter>setting</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputWindowKeySettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\InputWindowKeySettingPage.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowHotKey.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\MainWindowHotKey.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExcludePathPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\ExcludePathPage.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\pathfind\ExcludePathList.h">
       <Filter>commands\pathfind</Filter>
@@ -903,17 +906,17 @@
     <ClInclude Include="commands\watchpath\WatchPathToast.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\LauncherWindowEventDispatcher.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageOther.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageOther.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\OperationWatcher.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\OperationWatcher.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\WarnWorkTimeToast.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\WarnWorkTimeToast.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\builtin\BuiltinEditDialog.h">
       <Filter>commands\builtin</Filter>
@@ -924,8 +927,8 @@
     <ClInclude Include="commands\common\UserCommandBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputHistorySettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\InputHistorySettingPage.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\activate_window\WindowList.h">
       <Filter>commands\activate_window</Filter>
@@ -933,8 +936,8 @@
     <ClInclude Include="app\Manual.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="control\SinglePageDialog.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\SinglePageDialog.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="macros\core\MacroIF.h">
       <Filter>macros\core</Filter>
@@ -963,8 +966,8 @@
     <ClInclude Include="commands\builtin\DisplayOffCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageCommandPriority.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="hotkey\KeyInputWatch.h">
       <Filter>hotkey</Filter>
@@ -1041,8 +1044,8 @@
     <ClInclude Include="commands\everything\EverythingProxy.h">
       <Filter>commands\everything</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowDeactivateBlocker.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\MainWindowDeactivateBlocker.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\filter\FilterAdhocCommand.h">
       <Filter>commands\filter</Filter>
@@ -1065,8 +1068,8 @@
     <ClInclude Include="commands\watchpath\LocalPathTarget.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
-    <ClInclude Include="control\DDXWrapper.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\DDXWrapper.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowCommandParamItem.h">
       <Filter>commands\align_window</Filter>
@@ -1149,29 +1152,29 @@
     <ClInclude Include="commands\keysplitter\KeySplitterCommandProvider.h">
       <Filter>commands\keysplitter</Filter>
     </ClInclude>
-    <ClInclude Include="control\ColorScheme.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\ColorScheme.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control\ColorSettings.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\ColorSettings.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control\SystemColorScheme.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\SystemColorScheme.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageColor.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageColor.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="control\ImageLabel.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\ImageLabel.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
-    <ClInclude Include="control\CustomColorScheme.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\CustomColorScheme.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands\common\UserCommandProviderBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowLayoutIF.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\MainWindowLayoutIF.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\extracandidate\ExtraCandidateProvider.h">
       <Filter>commands\extracandidate</Filter>
@@ -1254,20 +1257,20 @@
     <ClInclude Include="commands\builtin\BuiltinCommandEditor.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\MainWindowLayout.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\MainWindowLayout.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
     <ClInclude Include="utility\HWNDRect.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\ComponentPlacer.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\ComponentPlacer.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\DefaultComponentPlacer.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\MainWindowPlacement.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\MainWindowPlacement.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
     <ClInclude Include="utility\WinHttp.h">
       <Filter>utility</Filter>
@@ -1275,17 +1278,17 @@
     <ClInclude Include="utility\WinHttpHandle.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\WindowAppearanceIF.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\WindowAppearanceIF.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\LauncherInputStatusIF.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\LauncherInputStatusIF.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\LauncherMainWindowIF.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\LauncherMainWindowIF.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowInput.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\MainWindowInput.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="macros\builtin\AppNameMacro.h">
       <Filter>macros\builtin</Filter>
@@ -1356,8 +1359,8 @@
     <ClInclude Include="app\CommandLineProcessor.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\interprocess\InterProcessEventID.h">
-      <Filter>mainwindow\interprocess</Filter>
+    <ClInclude Include="ui\mainwindow\interprocess\InterProcessEventID.h">
+      <Filter>ui\mainwindow\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="commands\filter\PreFilterConstantDialog.h">
       <Filter>commands\filter</Filter>
@@ -1371,8 +1374,8 @@
     <ClInclude Include="utility\DemotedProcessToken.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h">
-      <Filter>mainwindow\interprocess</Filter>
+    <ClInclude Include="ui\mainwindow\interprocess\InterProcessMessageQueue.h">
+      <Filter>ui\mainwindow\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="commands\watchpath\PathWatcherItem.h">
       <Filter>commands\watchpath</Filter>
@@ -1431,20 +1434,20 @@
     <ClInclude Include="commands\common\OtherCommandDialog.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingDialog.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageRepository.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageRepository.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageBase.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageBase.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h">
       <Filter>commands\unitconvert</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageSwitchWindow.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageSwitchWindow.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\env\EnvAppSettings.h">
       <Filter>commands\env</Filter>
@@ -1467,23 +1470,23 @@
     <ClInclude Include="commands\shellexecute\ShellExecEnvBulkAddDialog.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\controller\LauncherMainWindowController.h">
-      <Filter>mainwindow\controller</Filter>
+    <ClInclude Include="ui\mainwindow\controller\LauncherMainWindowController.h">
+      <Filter>ui\mainwindow\controller</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\controller\MainWindowController.h">
-      <Filter>mainwindow\controller</Filter>
+    <ClInclude Include="ui\mainwindow\controller\MainWindowController.h">
+      <Filter>ui\mainwindow\controller</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\controller\MainWindowControllerIF.h">
-      <Filter>mainwindow\controller</Filter>
+    <ClInclude Include="ui\mainwindow\controller\MainWindowControllerIF.h">
+      <Filter>ui\mainwindow\controller</Filter>
     </ClInclude>
     <ClInclude Include="setting\InitialFont.h">
       <Filter>setting</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\WindowTransparency.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\WindowTransparency.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\MainWindowAppearance.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\MainWindowAppearance.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
     <ClInclude Include="commands\builtin\BuiltinCommandProvider.h">
       <Filter>commands\builtin</Filter>
@@ -1491,7 +1494,7 @@
     <ClInclude Include="commands\filter\PreFilterSubProcessDialog.h">
       <Filter>commands\filter</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h">
+    <ClInclude Include="ui\mainwindow/interprocess/CmdReceiveEdit.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="commands\error\ErrorIndicatorCommand.h">
@@ -1515,8 +1518,8 @@
     <ClInclude Include="commands\history\HistoryCommandQueryRequest.h">
       <Filter>commands\history</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\MainWindowCommandQueryRequest.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\MainWindowCommandQueryRequest.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="macros\explorer\ExplorerMacro.h">
       <Filter>macros\explorer</Filter>
@@ -1539,8 +1542,8 @@
     <ClInclude Include="commands\core\CommandQueryItemList.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\optionbutton\MainWindowOptionButton.h">
-      <Filter>mainwindow\optionbutton</Filter>
+    <ClInclude Include="ui\mainwindow\optionbutton\MainWindowOptionButton.h">
+      <Filter>ui\mainwindow\optionbutton</Filter>
     </ClInclude>
     <ClInclude Include="commands\validation\CommandEditValidation.h">
       <Filter>commands\validation</Filter>
@@ -1566,11 +1569,11 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h">
       <Filter>commands\clipboardhistory</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\layout\MainWindowPosition.h">
-      <Filter>mainwindow\layout</Filter>
+    <ClInclude Include="ui\mainwindow\layout\MainWindowPosition.h">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClInclude>
-    <ClInclude Include="control\WindowPosition.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\WindowPosition.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h">
       <Filter>commands\winscp</Filter>
@@ -1626,8 +1629,8 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h">
       <Filter>commands\clipboardhistory</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageExternalTool.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="ui\settingwindow\AppSettingPageExternalTool.h">
+      <Filter>ui\settingwindow</Filter>
     </ClInclude>
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h">
       <Filter>externaltool\webbrowser</Filter>
@@ -1797,8 +1800,8 @@
     <ClInclude Include="commands\outlook\OutlookProxy.h">
       <Filter>commands\outlook</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\guide\GuideCtrl.h">
-      <Filter>mainwindow\guide</Filter>
+    <ClInclude Include="ui\mainwindow\guide\GuideCtrl.h">
+      <Filter>ui\mainwindow\guide</Filter>
     </ClInclude>
     <ClInclude Include="commands\explorepath\ExplorePathCommand.h">
       <Filter>commands\explorepath</Filter>
@@ -1812,8 +1815,8 @@
     <ClInclude Include="commands\shellexecute\ExtraActionSettings.h">
       <Filter>commands\shellexecute</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\CommandActionHandlerRegistry.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="ui\mainwindow\CommandActionHandlerRegistry.h">
+      <Filter>ui\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="commands\explorepath\AppSettingExtraActionForExplorePath.h">
       <Filter>commands\explorepath</Filter>
@@ -1827,8 +1830,8 @@
     <ClInclude Include="hotkey\ExtraActionHotKeyHandler.h">
       <Filter>hotkey</Filter>
     </ClInclude>
-    <ClInclude Include="control\webbrowser\InternalBrowser.h">
-      <Filter>control\webbrowser</Filter>
+    <ClInclude Include="ui\control\webbrowser\InternalBrowser.h">
+      <Filter>ui\control\webbrowser</Filter>
     </ClInclude>
     <ClInclude Include="app\ManualWindow.h">
       <Filter>app</Filter>
@@ -1896,8 +1899,8 @@
     <ClInclude Include="hotkey\HotKeyControl.h">
       <Filter>hotkey</Filter>
     </ClInclude>
-    <ClInclude Include="control\LeftBorderLabel.h">
-      <Filter>control</Filter>
+    <ClInclude Include="ui\control\LeftBorderLabel.h">
+      <Filter>ui\control</Filter>
     </ClInclude>
     <ClInclude Include="commands\webhistory\WebHistoryTempDirectory.h">
       <Filter>commands\webhistory</Filter>
@@ -1913,11 +1916,11 @@
     <ClCompile Include="utility\ShortcutFile.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="control/FolderDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control/FolderDialog.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="control/SelectFilesDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control/SelectFilesDialog.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="utility/AppProfile.cpp">
       <Filter>utility</Filter>
@@ -1925,14 +1928,14 @@
     <ClCompile Include="utility/IniFile.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="control/KeywordEdit.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control/KeywordEdit.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="control/KeywordManagerDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control/KeywordManagerDialog.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="control\SettingPage.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\SettingPage.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="utility\ProcessPath.cpp">
       <Filter>utility</Filter>
@@ -2048,8 +2051,8 @@
     <ClCompile Include="commands\history\HistoryCommandProvider.cpp">
       <Filter>commands\history</Filter>
     </ClCompile>
-    <ClCompile Include="control\SettingDialogBase.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\SettingDialogBase.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands\shellexecute\ShellExecCommandParam.cpp">
       <Filter>commands\shellexecute</Filter>
@@ -2324,44 +2327,44 @@
     <ClCompile Include="icon/IconLoader.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/LauncherMainWindow.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow/LauncherMainWindow.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\CandidateListCtrl.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/LauncherDropTarget.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow/LauncherDropTarget.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands/builtin/AboutDlg.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/CandidateList.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow/CandidateList.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="tasktray/TaskTray.cpp">
-      <Filter>tasktray</Filter>
+    <ClCompile Include="ui\tasktray/TaskTray.cpp">
+      <Filter>ui\tasktray</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\SoundSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\SoundSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ViewSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\ViewSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPathPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPathPage.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\BasicSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\BasicSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExecSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\ExecSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\InputSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ShortcutSettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\ShortcutSettingPage.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="icon/IconLabel.cpp">
       <Filter>icon</Filter>
@@ -2369,8 +2372,8 @@
     <ClCompile Include="icon\CaptureIconLabel.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="control/BreadCrumbs.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control/BreadCrumbs.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\AppHotKey.cpp">
       <Filter>hotkey</Filter>
@@ -2417,8 +2420,8 @@
     <ClCompile Include="matcher/WholeMatchPattern.cpp">
       <Filter>matcher</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExtensionSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\ExtensionSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandRepository.cpp">
       <Filter>commands\core</Filter>
@@ -2429,8 +2432,8 @@
     <ClCompile Include="commands/core\CommandQueryItem.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
-    <ClCompile Include="control\SelectCommandTypeDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\SelectCommandTypeDialog.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandFile.cpp">
       <Filter>commands\core</Filter>
@@ -2438,8 +2441,8 @@
     <ClCompile Include="commands/core/CommandMap.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/AppSound.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow/AppSound.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="logger/Logger.cpp">
       <Filter>logger</Filter>
@@ -2450,14 +2453,14 @@
     <ClCompile Include="setting/Settings.cpp">
       <Filter>setting</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\InputWindowKeySettingPage.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowHotKey.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\MainWindowHotKey.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExcludePathPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\ExcludePathPage.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp">
       <Filter>commands\pathfind</Filter>
@@ -2465,17 +2468,17 @@
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp">
       <Filter>commands\watchpath</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\LauncherWindowEventDispatcher.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageOther.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageOther.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\OperationWatcher.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\OperationWatcher.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\WarnWorkTimeToast.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\BuiltinEditDialog.cpp">
       <Filter>commands\builtin</Filter>
@@ -2486,8 +2489,8 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputHistorySettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\InputHistorySettingPage.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowList.cpp">
       <Filter>commands\activate_window</Filter>
@@ -2495,8 +2498,8 @@
     <ClCompile Include="app\Manual.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="control\SinglePageDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\SinglePageDialog.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="macros\core\MacroRepository.cpp">
       <Filter>macros\core</Filter>
@@ -2519,8 +2522,8 @@
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageCommandPriority.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\KeyInputWatch.cpp">
       <Filter>hotkey</Filter>
@@ -2582,8 +2585,8 @@
     <ClCompile Include="commands\everything\EverythingProxy.cpp">
       <Filter>commands\everything</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\MainWindowDeactivateBlocker.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\everything\EverythingCommandParam.cpp">
       <Filter>commands\everything</Filter>
@@ -2603,8 +2606,8 @@
     <ClCompile Include="commands\watchpath\LocalPathTarget.cpp">
       <Filter>commands\watchpath</Filter>
     </ClCompile>
-    <ClCompile Include="control\DDXWrapper.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\DDXWrapper.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommandParamItem.cpp">
       <Filter>commands\align_window</Filter>
@@ -2687,20 +2690,20 @@
     <ClCompile Include="commands\keysplitter\KeySplitterCommandProvider.cpp">
       <Filter>commands\keysplitter</Filter>
     </ClCompile>
-    <ClCompile Include="control\ColorSettings.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\ColorSettings.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="control\SystemColorScheme.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\SystemColorScheme.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageColor.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageColor.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="control\ImageLabel.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\ImageLabel.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
-    <ClCompile Include="control\CustomColorScheme.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\CustomColorScheme.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp">
       <Filter>commands\common</Filter>
@@ -2777,20 +2780,20 @@
     <ClCompile Include="commands\watchpath\WatchPathCommandParam.cpp">
       <Filter>commands\watchpath</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\MainWindowLayout.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
     <ClCompile Include="utility\HWNDRect.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\DefaultComponentPlacer.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
     <ClCompile Include="utility\WinHttp.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowInput.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\MainWindowInput.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="macros\builtin\AppNameMacro.cpp">
       <Filter>macros\builtin</Filter>
@@ -2864,14 +2867,14 @@
     <ClCompile Include="icon\AppIcon.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\MainWindowPlacement.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
     <ClCompile Include="utility\DemotedProcessToken.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp">
-      <Filter>mainwindow\interprocess</Filter>
+    <ClCompile Include="ui\mainwindow\interprocess\InterProcessMessageQueue.cpp">
+      <Filter>ui\mainwindow\interprocess</Filter>
     </ClCompile>
     <ClCompile Include="commands\watchpath\PathWatcherItem.cpp">
       <Filter>commands\watchpath</Filter>
@@ -2924,20 +2927,20 @@
     <ClCompile Include="commands\common\OtherCommandDialog.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingDialog.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageRepository.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageRepository.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageBase.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageBase.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp">
       <Filter>commands\unitconvert</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageSwitchWindow.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageSwitchWindow.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\env\EnvAppSettings.cpp">
       <Filter>commands\env</Filter>
@@ -2960,25 +2963,25 @@
     <ClCompile Include="commands\shellexecute\ShellExecEnvBulkAddDialog.cpp">
       <Filter>commands\shellexecute</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\controller\LauncherMainWindowController.cpp">
-      <Filter>mainwindow\controller</Filter>
+    <ClCompile Include="ui\mainwindow\controller\LauncherMainWindowController.cpp">
+      <Filter>ui\mainwindow\controller</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\controller\MainWindowController.cpp">
-      <Filter>mainwindow\controller</Filter>
+    <ClCompile Include="ui\mainwindow\controller\MainWindowController.cpp">
+      <Filter>ui\mainwindow\controller</Filter>
     </ClCompile>
     <ClCompile Include="setting\InitialFont.cpp">
       <Filter>setting</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\WindowTransparency.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\WindowTransparency.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\MainWindowAppearance.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\MainWindowAppearance.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
     <ClCompile Include="commands\filter\PreFilterSubProcessDialog.cpp">
       <Filter>commands\filter</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp">
+    <ClCompile Include="ui\mainwindow/interprocess/CmdReceiveEdit.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="commands\error\ErrorIndicatorCommand.cpp">
@@ -3002,8 +3005,8 @@
     <ClCompile Include="commands\history\HistoryCommandQueryRequest.cpp">
       <Filter>commands\history</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\MainWindowCommandQueryRequest.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\MainWindowCommandQueryRequest.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="macros\explorer\ExplorerMacro.cpp">
       <Filter>macros\explorer</Filter>
@@ -3026,8 +3029,8 @@
     <ClCompile Include="commands\alias\AliasCommandParam.cpp">
       <Filter>commands\alias</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp">
-      <Filter>mainwindow\optionbutton</Filter>
+    <ClCompile Include="ui\mainwindow\optionbutton\MainWindowOptionButton.cpp">
+      <Filter>ui\mainwindow\optionbutton</Filter>
     </ClCompile>
     <ClCompile Include="commands\validation\CommandEditValidation.cpp">
       <Filter>commands\validation</Filter>
@@ -3053,11 +3056,11 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp">
       <Filter>commands\clipboardhistory</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\layout\MainWindowPosition.cpp">
-      <Filter>mainwindow\layout</Filter>
+    <ClCompile Include="ui\mainwindow\layout\MainWindowPosition.cpp">
+      <Filter>ui\mainwindow\layout</Filter>
     </ClCompile>
-    <ClCompile Include="control\WindowPosition.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\WindowPosition.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands\winscp\RegistryWinScpSessionStorage.cpp">
       <Filter>commands\winscp</Filter>
@@ -3104,8 +3107,8 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp">
       <Filter>commands\clipboardhistory</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageExternalTool.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="ui\settingwindow\AppSettingPageExternalTool.cpp">
+      <Filter>ui\settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp">
       <Filter>externaltool\webbrowser</Filter>
@@ -3254,8 +3257,8 @@
     <ClCompile Include="commands\outlook\OutlookProxy.cpp">
       <Filter>commands\outlook</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\guide\GuideCtrl.cpp">
-      <Filter>mainwindow\guide</Filter>
+    <ClCompile Include="ui\mainwindow\guide\GuideCtrl.cpp">
+      <Filter>ui\mainwindow\guide</Filter>
     </ClCompile>
     <ClCompile Include="commands\explorepath\ExplorePathCommand.cpp">
       <Filter>commands\explorepath</Filter>
@@ -3269,8 +3272,8 @@
     <ClCompile Include="commands\shellexecute\ExtraActionSettings.cpp">
       <Filter>commands\shellexecute</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\CommandActionHandlerRegistry.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="ui\mainwindow\CommandActionHandlerRegistry.cpp">
+      <Filter>ui\mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="commands\explorepath\AppSettingExtraActionForExplorePath.cpp">
       <Filter>commands\explorepath</Filter>
@@ -3284,8 +3287,8 @@
     <ClCompile Include="hotkey\ExtraActionHotKeyHandler.cpp">
       <Filter>hotkey</Filter>
     </ClCompile>
-    <ClCompile Include="control\webbrowser\InternalBrowser.cpp">
-      <Filter>control\webbrowser</Filter>
+    <ClCompile Include="ui\control\webbrowser\InternalBrowser.cpp">
+      <Filter>ui\control\webbrowser</Filter>
     </ClCompile>
     <ClCompile Include="app\ManualWindow.cpp">
       <Filter>app</Filter>
@@ -3353,8 +3356,8 @@
     <ClCompile Include="hotkey\HotKeyControl.cpp">
       <Filter>hotkey</Filter>
     </ClCompile>
-    <ClCompile Include="control\LeftBorderLabel.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="ui\control\LeftBorderLabel.cpp">
+      <Filter>ui\control</Filter>
     </ClCompile>
     <ClCompile Include="commands\webhistory\WebHistoryTempDirectory.cpp">
       <Filter>commands\webhistory</Filter>

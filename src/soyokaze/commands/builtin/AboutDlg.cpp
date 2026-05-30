@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "framework.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "AboutDlg.h"
 #include "utility/AppProfile.h"
 #include "utility/VersionInfo.h"

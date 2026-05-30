@@ -19,7 +19,7 @@
 #include "commands/common/Message.h" // for PopupMessage
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include <mutex>
 
 using namespace launcherapp::commands::common;

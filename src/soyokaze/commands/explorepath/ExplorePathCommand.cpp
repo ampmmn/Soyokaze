@@ -13,7 +13,7 @@
 #include "actions/builtin/CallbackAction.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MainWindowSetTextAction.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 
 namespace launcherapp { namespace actions { namespace mainwindow {
 

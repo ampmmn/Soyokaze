@@ -1,11 +1,11 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include <memory>
 #include "commands/snippetgroup/SnippetGroupParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "hotkey/HotKeyControl.h"
-#include "control/LeftBorderLabel.h"
+#include "ui/control/LeftBorderLabel.h"
 
 namespace launcherapp {
 namespace commands {

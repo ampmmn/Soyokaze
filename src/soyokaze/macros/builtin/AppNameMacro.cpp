@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AppNameMacro.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "utility/VersionInfo.h"
 
 #ifdef _DEBUG

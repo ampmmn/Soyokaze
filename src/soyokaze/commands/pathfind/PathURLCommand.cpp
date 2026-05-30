@@ -7,7 +7,7 @@
 #include "actions/builtin/CallbackAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

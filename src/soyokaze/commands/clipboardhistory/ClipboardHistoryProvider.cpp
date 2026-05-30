@@ -9,7 +9,7 @@
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "ui/mainwindow/LauncherWindowEventDispatcher.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"

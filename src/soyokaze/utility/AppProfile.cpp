@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppProfile.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "utility/IniFile.h"
 #include "utility/Path.h"
 

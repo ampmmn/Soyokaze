@@ -8,8 +8,8 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "ui/mainwindow/LauncherWindowEventListenerIF.h"
+#include "ui/mainwindow/LauncherWindowEventDispatcher.h"
 #include <mutex>
 #include <thread>
 

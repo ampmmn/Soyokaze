@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SettingPage.h"
+#include "ui/control/SettingPage.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 #include "icon/CaptureIconLabel.h"
 

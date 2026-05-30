@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "RegExpCommandEditDialog.h"
-#include "control/FolderDialog.h"
+#include "ui/control/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"

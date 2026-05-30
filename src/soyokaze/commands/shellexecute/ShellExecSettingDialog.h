@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "control/SettingDialogBase.h"
+#include "ui/control/SettingDialogBase.h"
 #include "commands/shellexecute/ShellExecCommandParam.h"
 
 namespace launcherapp {

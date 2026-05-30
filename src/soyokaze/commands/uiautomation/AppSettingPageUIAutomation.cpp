@@ -4,7 +4,7 @@
 #include "AppSettingPageUIAutomation.h"
 #include "commands/uiautomation/UIAutomationParam.h"
 #include "setting/Settings.h"
-#include "control\DDXWrapper.h"
+#include "ui\control\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 

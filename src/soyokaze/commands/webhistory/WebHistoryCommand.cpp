@@ -12,7 +12,7 @@
 #include "utility/LastErrorString.h"
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "ui/mainwindow/controller/MainWindowController.h"
 #include "resource.h"
 #include <assert.h>
 

@@ -6,7 +6,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
-#include "control/DDXWrapper.h"
+#include "ui/control/DDXWrapper.h"
 #include "hotkey/HotKeyControl.h"
 #include "resource.h"
 

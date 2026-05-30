@@ -6,7 +6,7 @@
 #include "commands/common/SubProcessDialog.h"
 #include "commands/common/OtherCommandDialog.h"
 #include "commands/common/CopyToClipboardDialog.h"
-#include "control/FolderDialog.h"
+#include "ui/control/FolderDialog.h"
 #include "icon/IconLabel.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"

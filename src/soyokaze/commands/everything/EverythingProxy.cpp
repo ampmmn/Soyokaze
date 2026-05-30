@@ -10,7 +10,7 @@
 #include "utility/ManualEvent.h"
 #include "utility/ScopedResetEvent.h"
 #include "utility/MessageExchangeWindow.h"
-#include "mainwindow/MainWindowDeactivateBlocker.h"
+#include "ui/mainwindow/MainWindowDeactivateBlocker.h"
 #include <mutex>
 
 #ifdef _DEBUG

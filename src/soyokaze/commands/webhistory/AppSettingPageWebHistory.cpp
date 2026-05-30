@@ -4,7 +4,7 @@
 #include "AppSettingPageWebHistory.h"
 #include "commands/webhistory/WebHistoryCommandParam.h"
 #include "setting/Settings.h"
-#include "control\DDXWrapper.h"
+#include "ui\control\DDXWrapper.h"
 #include "app/Manual.h"
 #include "resource.h"
 

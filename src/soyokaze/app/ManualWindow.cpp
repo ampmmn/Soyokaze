@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "ManualWindow.h"
-#include "app/AppName.h"
+#include "core/AppName.h"
 #include "icon/IconLoader.h"
-#include "control/webbrowser/InternalBrowser.h"
+#include "ui/control/webbrowser/InternalBrowser.h"
 #include "utility/VersionInfo.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include <thread>

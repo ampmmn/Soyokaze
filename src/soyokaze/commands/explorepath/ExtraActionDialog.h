@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/SinglePageDialog.h"
+#include "ui/control/SinglePageDialog.h"
 #include "commands/explorepath/ExplorePathExtraActionSettings.h"
 
 namespace launcherapp { namespace commands { namespace explorepath {

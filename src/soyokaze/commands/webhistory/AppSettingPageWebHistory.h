@@ -1,7 +1,7 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "ui/settingwindow/AppSettingPageBase.h"
+#include "ui/settingwindow/AppSettingPageRepository.h"
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace webhistory {
