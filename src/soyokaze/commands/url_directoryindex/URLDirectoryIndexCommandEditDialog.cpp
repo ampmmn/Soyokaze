@@ -59,11 +59,11 @@ void URLDirectoryIndexCommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
 	DDX_Text(pDX, IDC_EDIT_URL, mParam.mURL);
 	DDX_Text(pDX, IDC_EDIT_AUTHUSER, mParam.mServerUser);
-	DDX_Text(pDX, IDC_EDIT_AUTHPASSWORD, mParam.mServerPassword);
+	DDX_Text(pDX, IDC_EDIT_AUTHPASSWORD, mServerPassword);
 	DDX_CBIndex(pDX, IDC_COMBO_PROXY, mParam.mProxyType);
 	DDX_Text(pDX, IDC_EDIT_PROXYHOST, mParam.mProxyHost);
 	DDX_Text(pDX, IDC_EDIT_PROXYUSER, mParam.mProxyUser);
-	DDX_Text(pDX, IDC_EDIT_PROXYPASSWORD, mParam.mProxyPassword);
+	DDX_Text(pDX, IDC_EDIT_PROXYPASSWORD, mProxyPassword);
 }
 
 #pragma warning( push )
@@ -83,6 +83,9 @@ END_MESSAGE_MAP()
 BOOL URLDirectoryIndexCommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+
+	mServerPassword = mParam.DecryptServerPassword();
+	mProxyPassword = mParam.DecryptProxyPassword();
 
 	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
 	mHotKey.SetNotifyId(WM_APP+1);
@@ -169,6 +172,10 @@ void URLDirectoryIndexCommandEditDialog::OnOK()
 	if (UpdateStatus() == false) {
 		return ;
 	}
+
+	mParam.SetServerPassword(mServerPassword);
+	mParam.SetProxyPassword(mProxyPassword);
+
 	__super::OnOK();
 }
 

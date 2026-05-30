@@ -38,6 +38,10 @@ protected:
 	// メッセージ欄
 	CString mMessage;
 
+	//
+	CString mServerPassword;
+	CString mProxyPassword;
+
 public:
 	CommandParam mParam;
 

@@ -19,6 +19,11 @@ public:
 	bool Save(CommandEntryIF* entry);
 	bool Load(CommandEntryIF* entry);
 
+	void SetServerPassword(const CString& data);
+	CString DecryptServerPassword();
+	void SetProxyPassword(const CString& data);
+	CString DecryptProxyPassword();
+
 	CString CombineURL(const CString& subPath) const;
 	CString CombineURL(const CString& subPath1, const CString& subPath2) const;
 
@@ -33,12 +38,12 @@ public:
 
 	// サーバ認証のユーザ名とパスワード
 	CString mServerUser;
-	CString mServerPassword;
+	std::vector<uint8_t> mServerPassword;
 	// プロキシ認証のユーザ名とパスワード
 	int mProxyType;
 	CString mProxyHost;
 	CString mProxyUser;
-	CString mProxyPassword;
+	std::vector<uint8_t> mProxyPassword;
 
 	CommandHotKeyAttribute mHotKeyAttr;
 };

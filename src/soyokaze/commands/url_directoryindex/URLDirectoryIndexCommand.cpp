@@ -90,10 +90,10 @@ bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vecto
 {
 	WinHttp http;
 	if (mParam.mServerUser.IsEmpty() == FALSE) {
-		http.SetServerCredential(mParam.mServerUser, mParam.mServerPassword);
+		http.SetServerCredential(mParam.mServerUser, mParam.DecryptServerPassword());
 	}
 	http.SetProxyType(mParam.mProxyType);
-	http.SetProxyCredential(mParam.mProxyHost, mParam.mProxyUser, mParam.mProxyPassword);
+	http.SetProxyCredential(mParam.mProxyHost, mParam.mProxyUser, mParam.DecryptProxyPassword());
 
 	return http.LoadContent(url, content, isHTML);
 }

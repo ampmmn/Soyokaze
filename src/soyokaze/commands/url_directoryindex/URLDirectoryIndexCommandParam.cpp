@@ -60,15 +60,13 @@ bool CommandParam::Save(CommandEntryIF* entry)
 
 	entry->Set(_T("serveruser"), mServerUser);
 	std::vector<uint8_t> buf;
-	auto& stm = Encode(mServerPassword, buf);
-	entry->SetBytes(_T("serverpassword"), stm.data(), stm.size());
+	entry->SetBytes(_T("serverpassword"), mServerPassword.data(), mServerPassword.size());
 
 	entry->Set(_T("proxytype"), mProxyType);
 	entry->Set(_T("proxyhost"), mProxyHost);
 	entry->Set(_T("proxyuser"), mProxyUser);
 
-	auto& stm2 = Encode(mProxyPassword, buf);
-	entry->SetBytes(_T("proxypassword"), stm2.data(), stm2.size());
+	entry->SetBytes(_T("proxypassword"), mProxyPassword.data(), mProxyPassword.size());
 
 	return true;
 }
@@ -85,7 +83,7 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	if (len != CommandEntryIF::NO_ENTRY) {
 		std::vector<uint8_t> buf(len);
 		entry->GetBytes(_T("serverpassword"), buf.data(), len);
-		mServerPassword = Decode(buf);
+		mServerPassword.swap(buf);
 	}
 
 	mProxyType = entry->Get(_T("proxytype"), 0);
@@ -96,10 +94,30 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	if (len != CommandEntryIF::NO_ENTRY) {
 		std::vector<uint8_t> buf(len);
 		entry->GetBytes(_T("proxypassword"), buf.data(), len);
-		mProxyPassword = Decode(buf);
+		mProxyPassword.swap(buf);
 	}
 
 	return true;
+}
+
+void CommandParam::SetServerPassword(const CString& data)
+{
+	Encode(data, mServerPassword);
+}
+
+CString CommandParam::DecryptServerPassword()
+{
+	return Decode(mServerPassword);
+}
+
+void CommandParam::SetProxyPassword(const CString& data)
+{
+	Encode(data, mProxyPassword);
+}
+
+CString CommandParam::DecryptProxyPassword()
+{
+	return Decode(mProxyPassword);
 }
 
 // サブパスを連結
