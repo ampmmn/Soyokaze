@@ -930,6 +930,8 @@
     <ClInclude Include="utility\VersionInfo.h" />
     <ClInclude Include="utility\WinHttp.h" />
     <ClInclude Include="utility\WinHttpHandle.h" />
+    <ClInclude Include="utility\WipingBuffer.h" />
+    <ClInclude Include="utility\WipingString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actions\activate_window\CloseWindowAction.cpp" />
@@ -1446,6 +1448,8 @@
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
     <ClCompile Include="utility\WinHttp.cpp" />
+    <ClCompile Include="utility\WipingBuffer.cpp" />
+    <ClCompile Include="utility\WipingString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc" />

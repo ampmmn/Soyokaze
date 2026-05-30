@@ -4,6 +4,7 @@
 #include <memory>
 #include "commands/url_directoryindex/URLDirectoryIndexCommandParam.h"
 #include "hotkey/HotKeyControl.h"
+#include "utility/WipingString.h"
 
 class IconLabel;
 
@@ -39,8 +40,8 @@ protected:
 	CString mMessage;
 
 	//
-	CString mServerPassword;
-	CString mProxyPassword;
+	WipingString mServerPassword;
+	WipingString mProxyPassword;
 
 public:
 	CommandParam mParam;

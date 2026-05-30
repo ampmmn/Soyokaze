@@ -1905,6 +1905,12 @@
     <ClInclude Include="core\LauncherProcessContext.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="utility\WipingString.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\WipingBuffer.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3361,6 +3367,12 @@
     </ClCompile>
     <ClCompile Include="core\LauncherProcessContext.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\WipingString.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\WipingBuffer.cpp">
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

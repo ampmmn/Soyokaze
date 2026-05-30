@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "WinHttp.h"
 #include <winhttp.h>
+#include "utility/WipingBuffer.h"
+#include "utility/WipingString.h"
 #include "spdlog/stopwatch.h"
 
 #pragma comment (lib, "winhttp.lib")
@@ -48,9 +50,9 @@ struct WinHttp::PImpl
 	int mProxyType{SYSTEMSETTING};
 	CString mProxyHost;
 	CString mProxyUser;
-	CString mProxyPassword;
+	WipingString mProxyPassword;
 	CString mServerUser;
-	CString mServerPassword;
+	WipingString mServerPassword;
 	CStringW mMethod{L"GET"};
 };
 
@@ -130,7 +132,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	WCHAR hostName[1024];
 	std::vector<WCHAR> urlPath(65536);
 	WCHAR user[256];
-	WCHAR password[256];
+	WipingBuffer password(256);
 
 	URL_COMPONENTS cmp={};
 	cmp.dwStructSize = sizeof(cmp);
@@ -140,8 +142,8 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	cmp.dwUrlPathLength = (int)urlPath.size();
 	cmp.lpszUserName = user;
 	cmp.dwUserNameLength = 256;
-	cmp.lpszPassword = password;
-	cmp.dwPasswordLength = 256;
+	cmp.lpszPassword = password.Data();
+	cmp.dwPasswordLength = (DWORD)password.Length();
 
 	if (WinHttpCrackUrl(url, url.GetLength(), 0, &cmp) == FALSE) {
 		spdlog::error(_T("Invalid url. {}"), (LPCTSTR)url);
