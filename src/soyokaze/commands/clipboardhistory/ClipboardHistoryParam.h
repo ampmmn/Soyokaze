@@ -12,6 +12,7 @@ public:
 	{
 		settings.Set(_T("ClipboardHistory:IsEnable"), mIsEnable);
 		settings.Set(_T("ClipboardHistory:Prefix"), mPrefix);
+		settings.Set(_T("ClipboardHistory:MinTriggerLength"), mMinTriggerLength);
 		settings.Set(_T("ClipboardHistory:NumOfResults"), mNumOfResults);
 		settings.Set(_T("ClipboardHistory:SizeLimit"), mSizeLimit);
 		settings.Set(_T("ClipboardHistory:CountLimit"), mCountLimit);
@@ -26,6 +27,7 @@ public:
 	{
 		mIsEnable = settings.Get(_T("ClipboardHistory:IsEnable"), false);
 		mPrefix = settings.Get(_T("ClipboardHistory:Prefix"), _T("cb"));
+		mMinTriggerLength = settings.Get(_T("ClipboardHistory:MinTriggerLength"), 5);
 		mNumOfResults = settings.Get(_T("ClipboardHistory:NumOfResults"), 16);
 		mSizeLimit = settings.Get(_T("ClipboardHistory:SizeLimit"), 4);
 		mCountLimit = settings.Get(_T("ClipboardHistory:CountLimit"), 1024);
@@ -38,6 +40,7 @@ public:
 
 	CString mPrefix{_T("cb")};
 	CString mExcludePattern;
+	int mMinTriggerLength{5};
 	int mNumOfResults{16};
 	int mSizeLimit{4};
 	int mCountLimit{1024};

@@ -3,7 +3,7 @@
 #include <memory>
 #include "commands/core/CommandQueryItemList.h"
 #include "commands/clipboardhistory/ClipboardHistoryEventListener.h"
-#include "matcher/Pattern.h"
+#include "matcher/PatternInternal.h"
 
 namespace launcherapp {
 namespace commands {
@@ -40,7 +40,7 @@ public:
 	bool Unload();
 	void UseRegExpSearch(bool useRegExp);
 	void SetCancellationToken(CancellationToken* token);
-	void Query(Pattern* pattern, ResultList& result);
+	void Query(std::vector<PatternInternal::WORD> words, ResultList& result);
 
 
 	//! クリップボードが更新された

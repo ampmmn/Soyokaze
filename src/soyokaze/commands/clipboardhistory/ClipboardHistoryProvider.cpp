@@ -185,14 +185,46 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	}
 
 	// プレフィックスが一致しない場合は抜ける
+	CString firstWord = pattern->GetFirstWord();
 	const auto& prefix = in->mParam.mPrefix;
-	if (prefix.IsEmpty() == FALSE && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
+	bool hasPrefix = prefix.IsEmpty() == FALSE;
+	if (hasPrefix && prefix.CompareNoCase(firstWord) != 0) {
 		return;
+	}
+	// プレフィックスがない場合、入力文字列が検索開始の最小文字数に達していない場合も抜ける	
+	if (hasPrefix == false && pattern->GetWholeTextLength() < in->mParam.mMinTriggerLength) {
+		return;
+	}
+
+	RefPtr<PatternInternal> pat2;
+	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
+		spdlog::error("failed to get IFID_PATTERNINTERNAL.");
+		return ;
+	}
+
+	// patternから検索ワード一覧を得る
+	std::vector<PatternInternal::WORD> words;
+	pat2->GetWords(words);
+	ASSERT(words.empty() == false);
+
+	std::reverse(words.begin(), words.end());
+
+	if (hasPrefix) {
+		// prefixを除外
+		words.pop_back();
 	}
 
 	// クリップボード履歴をクエリ
 	ClipboardHistoryDB::ResultList result;
-	in->mHistoryDB.Query(pattern, result);
+	in->mHistoryDB.Query(words, result);
+
+	// 優先順位が高い順序にソートする
+	for (auto& item : result) {
+		item.mMatchLevel = pattern->Match(item.mData, 1);
+	}
+	std::stable_sort(result.begin(), result.end(), [](const ClipboardHistoryDB::ITEM& l, const ClipboardHistoryDB::ITEM& r) {
+		return r.mMatchLevel < l.mMatchLevel;
+	});
 
 	if (result.empty()) {
 		// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する

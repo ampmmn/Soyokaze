@@ -2,7 +2,6 @@
 #include "ClipboardHistoryDB.h"
 
 #include "commands/clipboardhistory/ClipboardHistoryCommand.h"
-#include "matcher/PatternInternal.h"
 #include "utility/SQLite3Database.h"
 #include "utility/SHA1.h"
 #include "utility/Path.h"
@@ -320,24 +319,8 @@ void ClipboardHistoryDB::SetCancellationToken(CancellationToken* token)
  * @param pattern パターン
  * @param result 結果を格納するリスト
  */
-void ClipboardHistoryDB::Query(Pattern* pattern, ResultList& result)
+void ClipboardHistoryDB::Query(std::vector<PatternInternal::WORD> words, ResultList& result)
 {
-	RefPtr<PatternInternal> pat2;
-	if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&pat2) == false) {
-		spdlog::error("failed to get IFID_PATTERNINTERNAL.");
-		return ;
-	}
-
-	// patternから検索ワード一覧を得る
-	std::vector<PatternInternal::WORD> words;
-	pat2->GetWords(words);
-	ASSERT(words.empty() == false);
-
-	std::reverse(words.begin(), words.end());
-
-	// prefixを除外
-	words.pop_back();
-
 	if (words.empty()) {
 		// すべて取得
 		in->FetchAll(result);
@@ -345,14 +328,6 @@ void ClipboardHistoryDB::Query(Pattern* pattern, ResultList& result)
 	}
 
 	in->Query(words, result);
-
-	// 優先順位が高い順序にソートする
-	for (auto& item : result) {
-		item.mMatchLevel = pattern->Match(item.mData, 1);
-	}
-	std::stable_sort(result.begin(), result.end(), [](const ITEM& l, const ITEM& r) {
-		return r.mMatchLevel < l.mMatchLevel;
-	});
 }
 
 /**

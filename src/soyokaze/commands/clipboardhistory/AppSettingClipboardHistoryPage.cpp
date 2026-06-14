@@ -50,11 +50,6 @@ bool AppSettingPage::OnKillActive()
 		return true;
 	}
 
-	if (mParam.mPrefix.IsEmpty()) {
-		AfxMessageBox(_T("プレフィックスを入力してください"));
-		return false;
-	}
-
 	// 正規表現として有効化をチェックする
 	if (mParam.mExcludePattern.IsEmpty() == FALSE) {
 		try {
@@ -96,6 +91,8 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Check(pDX, IDC_CHECK_ENABLE, mParam.mIsEnable);
 	DDX_Text(pDX, IDC_EDIT_PREFIX,  mParam.mPrefix);
+	DDX_Text(pDX, IDC_EDIT_MINTRIGGERLENGTH2,  mParam.mMinTriggerLength);
+	DDV_MinMaxInt(pDX,  mParam.mMinTriggerLength, 0, 8);
 	DDX_Text(pDX, IDC_EDIT_NUMOFRESULTS,  mParam.mNumOfResults);
 	DDV_MinMaxInt(pDX,  mParam.mNumOfResults, 1, 128);
 	DDX_Text(pDX, IDC_EDIT_SIZELIMIT,  mParam.mSizeLimit);
@@ -114,6 +111,7 @@ void AppSettingPage::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(AppSettingPage, CDialog)
 	ON_COMMAND(IDC_CHECK_ENABLE, OnUpdateStatus)
+	ON_EN_CHANGE(IDC_EDIT_PREFIX, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 #pragma warning( pop )
@@ -130,7 +128,10 @@ BOOL AppSettingPage::OnInitDialog()
 bool AppSettingPage::UpdateStatus()
 {
 	BOOL isEnable = (mParam.mIsEnable == 1) ? TRUE : FALSE;
+	BOOL hasPrefix = mParam.mPrefix.IsEmpty() == FALSE;
+
 	GetDlgItem(IDC_EDIT_PREFIX)->EnableWindow(isEnable);
+	GetDlgItem(IDC_EDIT_MINTRIGGERLENGTH2)->EnableWindow(isEnable && hasPrefix == FALSE);
 	GetDlgItem(IDC_EDIT_NUMOFRESULTS)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_SIZELIMIT)->EnableWindow(isEnable);
 	GetDlgItem(IDC_EDIT_COUNTLIMIT)->EnableWindow(isEnable);
