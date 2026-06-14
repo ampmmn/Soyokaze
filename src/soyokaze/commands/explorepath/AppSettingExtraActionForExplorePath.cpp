@@ -185,7 +185,7 @@ BOOL ExtraActionSettingDialog::OnInitDialog()
 	lvc.fmt = LVCFMT_LEFT;
 	listActions->InsertColumn(1, &lvc);
 
-	strHeader= _T("ホットキー");
+	strHeader= _T("キー割り当て");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 80;
 	lvc.fmt = LVCFMT_LEFT;
