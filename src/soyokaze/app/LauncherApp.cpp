@@ -17,6 +17,7 @@
 #include "commands/transfer/CommandClipboardTransfer.h"
 #include "commands/core/CommandRepository.h"
 #include "logger/Logger.h"
+#include "logger/ResourceUsageMonitor.h"
 #include <locale.h>
 
 #ifdef _DEBUG
@@ -58,6 +59,7 @@ BOOL LauncherApp::InitInstance()
 
 	// ログ初期化
 	Logger::Get()->Initialize();
+	logger::ResourceUsageMonitor::Get()->Initialize();
 	spdlog::info("==== Start App ====");
 
 	HRESULT hr = CoInitialize(nullptr);
@@ -90,6 +92,7 @@ BOOL LauncherApp::InitInstance()
 	CoUninitialize();
 
 	spdlog::info("==== Exit App ====");
+	logger::ResourceUsageMonitor::Get()->Finalize();
 	Logger::Get()->Finalize();
 
 	return FALSE;

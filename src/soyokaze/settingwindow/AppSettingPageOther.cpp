@@ -51,6 +51,8 @@ protected:
 	int mLogLevel{0};
 	// 性能ログを出力する
 	BOOL mIsEnablePerfLog{FALSE};
+	// リソース使用状況ログを出力する
+	BOOL mIsEnableResLog{FALSE};
 
 	Settings* mSettingsPtr{nullptr};
 };
@@ -87,7 +89,7 @@ void OtherSettingDialog::OnOK()
 	}
 	settingsPtr->Set(_T("Logging:Level"), spdLogLevel);
 	settingsPtr->Set(_T("Logging:UsePerformanceLog"), mIsEnablePerfLog != FALSE);
-
+	settingsPtr->Set(_T("Logging:UseResourceUsageMonitor"), mIsEnableResLog != FALSE);
 	__super::OnOK();
 }
 
@@ -100,6 +102,7 @@ void OtherSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, mTimeToWarnLongOperation, 1, 1440);
 	DDX_CBIndex(pDX, IDC_COMBO_LEVEL, mLogLevel);
 	DDX_Check(pDX, IDC_CHECK_ENABLEPERFLOG, mIsEnablePerfLog);
+	DDX_Check(pDX, IDC_CHECK_ENABLERESLOG, mIsEnableResLog);
 }
 
 BEGIN_MESSAGE_MAP(OtherSettingDialog, CDialog)
@@ -155,6 +158,7 @@ void OtherSettingDialog::OnEnterSettings(Settings* settingsPtr)
 		break;
 	}
 	mIsEnablePerfLog = settingsPtr->Get(_T("Logging:UsePerformanceLog"), false);
+	mIsEnableResLog = settingsPtr->Get(_T("Logging:UseResourceUsageMonitor"), false);
 }
 
 

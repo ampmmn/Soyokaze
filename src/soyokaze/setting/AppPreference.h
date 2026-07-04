@@ -203,6 +203,8 @@ public:
 	int GetLogLevel();
 	// 性能ログを出力するか?
 	bool UsePerformanceLog();
+	// リソース使用状況ログを出力するか?
+	bool UseResourceUsageMonitor();
 
 protected:
 	AppPreference();

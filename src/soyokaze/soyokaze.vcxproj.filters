@@ -1911,6 +1911,9 @@
     <ClInclude Include="utility\WipingBuffer.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="logger\ResourceUsageMonitor.h">
+      <Filter>logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3373,6 +3376,9 @@
     </ClCompile>
     <ClCompile Include="utility\WipingBuffer.cpp">
       <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="logger\ResourceUsageMonitor.cpp">
+      <Filter>logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

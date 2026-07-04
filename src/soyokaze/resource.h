@@ -452,6 +452,7 @@
 #define IDC_EDIT_HOTKEY_MOVE_RIGHT      1150
 #define IDC_COMBO_LEVEL                 1151
 #define IDC_EDIT_HOTKEY_MOVE_LEFT       1152
+#define IDC_CHECK_ENABLERESLOG          1152
 #define IDC_MFCFONTCOMBO_MAIN           1153
 #define IDC_CHECK_DISABLE               1154
 #define IDC_CHECK_ENABLE                1154

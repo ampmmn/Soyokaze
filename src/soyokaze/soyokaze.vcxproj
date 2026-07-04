@@ -666,6 +666,7 @@
     <ClInclude Include="icon\CommandIcon.h" />
     <ClInclude Include="icon\IconLabelForApp.h" />
     <ClInclude Include="launcherapp_string.h" />
+    <ClInclude Include="logger\ResourceUsageMonitor.h" />
     <ClInclude Include="macros\afxw\AfxwMacro.h" />
     <ClInclude Include="macros\builtin\AppNameMacro.h" />
     <ClInclude Include="macros\builtin\BaseNameMacro.h" />
@@ -1194,6 +1195,7 @@
     <ClCompile Include="icon\AppIcon.cpp" />
     <ClCompile Include="icon\CommandIcon.cpp" />
     <ClCompile Include="icon\IconLabelForApp.cpp" />
+    <ClCompile Include="logger\ResourceUsageMonitor.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
     <ClCompile Include="macros\builtin\AppNameMacro.cpp" />
     <ClCompile Include="macros\builtin\BaseNameMacro.cpp" />

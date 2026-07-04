@@ -1050,4 +1050,9 @@ bool AppPreference::UsePerformanceLog()
 	return in->Get(_T("Logging:UsePerformanceLog"), false);
 }
 
+// リソース使用状況ログを出力するか?
+bool AppPreference::UseResourceUsageMonitor()
+{
+	return in->Get(_T("Logging:UseResourceUsageMonitor"), false);
+}
 
