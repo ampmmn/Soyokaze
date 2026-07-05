@@ -79,6 +79,9 @@
     <Filter Include="soyokaze\commands\transfer">
       <UniqueIdentifier>{93a31021-2345-4334-8484-7981981bd248}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\logger">
+      <UniqueIdentifier>{ec6b0cb8-2dfc-4902-b7d9-9e417da45c3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -191,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\transfer\CommandJSONEntryTest.cpp">
       <Filter>soyokaze\commands\transfer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\logger\ResourceUsageMonitorTest.cpp">
+      <Filter>soyokaze\logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

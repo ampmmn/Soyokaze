@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Sound.h"
-#include "SharedHwnd.h"
 #include "utility/Path.h"
 #include "utility/MessageExchangeWindow.h"
 #include <mmsystem.h>

@@ -18,6 +18,10 @@ public:
 
 	bool LogUsage();
 
+	// テスト用
+	void UpdateLastLoggedTimeStamp(uint64_t n);
+	void Enable();
+
 	static bool GetWorkingSet(uint64_t* workingSet, uint64_t* workingSetPeak);
 	static bool GetPrivateBytes(uint64_t* privateBytes);
 	static bool GetThreadUsage(uint32_t* numOfThreads);

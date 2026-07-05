@@ -15,6 +15,10 @@ bool VersionInfo::GetVersionInfo(CString& version)
 bool VersionInfo::GetVersionInfo(const CString& targetPath, CString& version)
 {
 	DWORD size = GetFileVersionInfoSize(targetPath, NULL);
+	if (size == 0) {
+		return false;
+	}
+
 	std::vector<BYTE> versionData(size);
 
 	BYTE* pVersion = &(versionData.front());

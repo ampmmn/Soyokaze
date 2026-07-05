@@ -88,7 +88,7 @@ bool ResourceUsageMonitor::Initialize()
 	in->mHwnd = hwnd;
 	in->mLastLoggedTimeStamp = GetTickCount64();
 
-	return false;
+	return true;
 }
 
 bool ResourceUsageMonitor::Finalize()
@@ -136,9 +136,20 @@ bool ResourceUsageMonitor::LogUsage()
 	fclose(fp);
 
 	// 最終出力時刻を更新
-	in->mLastLoggedTimeStamp = GetTickCount64();
+	UpdateLastLoggedTimeStamp(GetTickCount64());
 
 	return true;
+}
+
+void ResourceUsageMonitor::UpdateLastLoggedTimeStamp(uint64_t n)
+{
+	in->mLastLoggedTimeStamp = n;
+}
+
+// テスト用に強制的に有効にする
+void ResourceUsageMonitor::Enable()
+{
+	in->mIsEnable = true;
 }
 
 bool ResourceUsageMonitor::GetWorkingSet(uint64_t* workingSet, uint64_t* workingSetPeak)
@@ -204,9 +215,13 @@ bool ResourceUsageMonitor::GetThreadUsage(uint32_t* numOfThreads)
 bool ResourceUsageMonitor::GetGdiObjects(uint32_t* numOfObjects)
 {
 	DWORD gdiCount = GetGuiResources( GetCurrentProcess(), GR_GDIOBJECTS);
+
+#ifndef SOYOKAZE_UNITTEST
 	if (gdiCount == 0) {
 		return false;
 	}
+#endif
+
 	if (numOfObjects) {
 		*numOfObjects = gdiCount;
 	}
@@ -216,9 +231,13 @@ bool ResourceUsageMonitor::GetGdiObjects(uint32_t* numOfObjects)
 bool ResourceUsageMonitor::GetUserObjects(uint32_t* numOfObjects)
 {
 	DWORD userObjCount = GetGuiResources( GetCurrentProcess(), GR_USEROBJECTS);
+
+#ifndef SOYOKAZE_UNITTEST
 	if (userObjCount == 0) {
 		return false;
 	}
+#endif
+
 	if (numOfObjects) {
 		*numOfObjects = userObjCount;
 	}
