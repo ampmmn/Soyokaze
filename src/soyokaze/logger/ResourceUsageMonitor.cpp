@@ -118,7 +118,7 @@ bool ResourceUsageMonitor::LogUsage()
 	FILE* fp = nullptr;
 	if (_wfopen_s(&fp, logPath.c_str(), L"a") != 0) {
 		// 出力できない場合は機能を無効化する
-		spdlog::error("Failed to create resource usage log.");
+		spdlog::error(L"Failed to create resource usage log. {}",  logPath);
 		in->mIsEnable = false;
 		return false;
 	}
