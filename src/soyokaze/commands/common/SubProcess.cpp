@@ -15,7 +15,6 @@
 #include <shobjidl_core.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
 
-#pragma comment(lib, "Mpr.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -302,26 +301,8 @@ bool SubProcess::Run(
 
 	auto pref = AppPreference::Get();
 
-	if (PathIsUNC(path) && Path::FileExists(path) == false) {
-		// パスがUNC形式で、かつ、接続できないときは
-		// ネットワーク接続先ホストへの認証が未実施の可能性があるため、認証を試みる
-		spdlog::debug(_T("try WNetAddConnection2 path:{}"), (LPCTSTR)path);
-
-		NETRESOURCE nr = { 0 };
-		nr.dwType = RESOURCETYPE_DISK;
-		CString buf(path);
-		nr.lpRemoteName = buf.GetBuffer();
-		DWORD result = WNetAddConnection2(&nr, NULL, NULL, CONNECT_INTERACTIVE);
-		spdlog::info("WNetAddConnection2 result : {}", result);
-		buf.ReleaseBuffer();
-		if (result == ERROR_CANCELLED) {  // キャンセル以外は続行
-			LastErrorString errStr(result);
-			process = std::move(std::make_unique<SubProcess::Instance>(nullptr));
-			process->SetErrorMessage((LPCTSTR)errStr);
-			spdlog::warn(_T("failed to connection."), (LPCTSTR)path);
-			return false;
-		}
-	}
+    // UNC パスに対する事前接続(WNetAddConnection2)は行わない
+    // 到達できない場合は以降の ShellExecuteEx でエラーとなる
 
 	// ディレクトリの場合はファイラで経由でパスを表示する形に差し替える
 	if (Path::IsDirectory(path)) {
