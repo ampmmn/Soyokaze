@@ -53,6 +53,7 @@ TEST_F(ResourceUsageMonitorTest, LogUsageTest) {
 
 	monitor->Enable();
 	monitor->UpdateLastLoggedTimeStamp(0);
+	Sleep(25);  // 間隔調整
 	EXPECT_TRUE(monitor->LogUsage());  // Should actually log now
 }
 
