@@ -57,6 +57,7 @@
     <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\icon\IconLoaderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\logger\ResourceUsageMonitorTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\logger\ResourceUsageMetricsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\macros\core\TokenTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp" />

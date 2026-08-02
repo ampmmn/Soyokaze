@@ -57,33 +57,13 @@ TEST_F(ResourceUsageMonitorTest, LogUsageTest) {
 	EXPECT_TRUE(monitor->LogUsage());  // Should actually log now
 }
 
-TEST_F(ResourceUsageMonitorTest, ResourceRetrievalTest) {
-	uint64_t workingSet, workingSetPeak;
-	EXPECT_TRUE(ResourceUsageMonitor::GetWorkingSet(&workingSet, &workingSetPeak));
-	EXPECT_GT(workingSet, 0);
-
-	uint64_t privateBytes;
-	EXPECT_TRUE(ResourceUsageMonitor::GetPrivateBytes(&privateBytes));
-	EXPECT_GT(privateBytes, 0);
-
-	uint32_t numOfThreads;
-	EXPECT_TRUE(ResourceUsageMonitor::GetThreadUsage(&numOfThreads));
-	EXPECT_GT(numOfThreads, 0UL);
-
-	uint32_t gdiObjects;
-	EXPECT_TRUE(ResourceUsageMonitor::GetGdiObjects(&gdiObjects));
-
-	uint32_t userObjects;
-	EXPECT_TRUE(ResourceUsageMonitor::GetUserObjects(&userObjects));
-}
-
 TEST_F(ResourceUsageMonitorTest, LogFormattingTest) {
 	std::string header;
-	EXPECT_TRUE(ResourceUsageMonitor::MakeHeader(header));
-	EXPECT_EQ(header, "Time,PID,WorkingSet,PrivateBytes,Threads,GDI Objects, User Objects\n");
+	EXPECT_TRUE(monitor->MakeHeader(header));
+	EXPECT_EQ(header, "Time,PID,WorkingSet,PrivateBytes,Threads,GDI Objects,User Objects\n");
 
 	std::string entry;
-	EXPECT_TRUE(ResourceUsageMonitor::MakeLogEntry(entry));
+	EXPECT_TRUE(monitor->MakeLogEntry(entry));
 	EXPECT_FALSE(entry.empty());
 }
 

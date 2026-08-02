@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "ResourceUsageMonitor.h"
 #include <windows.h>
-#include <psapi.h>
-#include <tlhelp32.h>
 #include <format>
 #include <chrono>
-#include "utility/ScopeExit.h"
+#include <algorithm>
+#include <fstream>
+#include <filesystem>
+#include <vector>
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -16,6 +17,24 @@
 
 namespace {
 	UINT TIMERID_INTERNALWINDOW = 1;
+
+	// CSVの規則に従い、カンマなどを含む値を必要に応じて引用符で囲む。
+	std::string EscapeCsv(const std::string& value)
+	{
+		if (value.find_first_of(",\"\r\n") == std::string::npos) {
+			return value;
+		}
+
+		std::string escaped = "\"";
+		for (char c : value) {
+			escaped += c;
+			if (c == '\"') {
+				escaped += '\"';
+			}
+		}
+		escaped += "\"";
+		return escaped;
+	}
 }
 
 namespace logger {
@@ -45,11 +64,13 @@ struct ResourceUsageMonitor::PImpl : public AppPreferenceListenerIF
 	HWND mHwnd{nullptr};
 
 	// 記録する間隔
-	uint32_t mIntervalInMinutes{20};  // 20分間隔
+	uint32_t mIntervalInMinutes{1};  // 1分間隔
 	// 前回出力した時刻
 	uint64_t mLastLoggedTimeStamp{0};
 	// 出力を有効にするか?
 	bool mIsEnable{false};
+	bool mHasRegistrationError{false};
+	std::vector<IResourceMetrics*> mMetrics;
 };
 
 
@@ -104,8 +125,11 @@ bool ResourceUsageMonitor::LogUsage()
 		// 機能が無効化されている
 		return false;
 	}
+	if (in->mHasRegistrationError) {
+		return false;
+	}
 
-	// 前回の出力から時間が経過していなければ出力しない
+	// 前回の出力から時間が経過していなければ出力しない。
 	if (GetTickCount64() - in->mLastLoggedTimeStamp < in->mIntervalInMinutes * 1000 * 60) {
 		return false;
 	}
@@ -113,23 +137,39 @@ bool ResourceUsageMonitor::LogUsage()
 	std::wstring logPath;
 	GetLogFilePath(logPath);
 
-	BOOL isAlreadExists = Path::FileExists(logPath.c_str());
-
 	FILE* fp = nullptr;
-	if (_wfopen_s(&fp, logPath.c_str(), L"a") != 0) {
+	std::string header;
+	MakeHeader(header);
+	bool rewrite = true;
+	{
+		// 既存ファイルのヘッダーと現在のメトリクス構成を比較する。
+		// 構成が変わっている場合は、過去の列構成へ追記しない。
+		std::ifstream existing(std::filesystem::path(logPath), std::ios::binary);
+		if (existing.is_open()) {
+			std::string currentHeader;
+			std::getline(existing, currentHeader);
+			if (!currentHeader.empty() && currentHeader.back() == '\r') {
+				currentHeader.pop_back();
+			}
+			if (currentHeader == header.substr(0, header.size() - 1)) {
+				rewrite = false;
+			}
+		}
+	}
+
+	if (_wfopen_s(&fp, logPath.c_str(), rewrite ? L"wb" : L"ab") != 0) {
 		// 出力できない場合は機能を無効化する
 		spdlog::error(L"Failed to create resource usage log. {}",  logPath);
 		in->mIsEnable = false;
 		return false;
 	}
-
-	std::string line;
-	if (isAlreadExists == FALSE) {
-		// 初回はヘッダ行を出力
-		MakeHeader(line);
-		fputs(line.c_str(), fp);
+	__assume(fp != nullptr);
+	if (rewrite) {
+		// ファイルがない場合、またはヘッダーが変わった場合は新しいヘッダーを書く。
+		fputs(header.c_str(), fp);
 	}
-	// 1行分の情報を出力
+	// 登録済みメトリクスの現在値を1行分出力する。
+	std::string line;
 	MakeLogEntry(line);
 	fputs(line.c_str(), fp);
 
@@ -152,124 +192,56 @@ void ResourceUsageMonitor::Enable()
 	in->mIsEnable = true;
 }
 
-bool ResourceUsageMonitor::GetWorkingSet(uint64_t* workingSet, uint64_t* workingSetPeak)
+bool ResourceUsageMonitor::RegisterMetrics(IResourceMetrics* metrics)
 {
-	PROCESS_MEMORY_COUNTERS_EX pmc = { sizeof(PROCESS_MEMORY_COUNTERS_EX) };
-
-	BOOL isOK = GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc));
-	if (isOK == FALSE) {
+	if (metrics == nullptr) {
+		spdlog::error("Failed to register resource metrics: null metrics");
+		in->mHasRegistrationError = true;
 		return false;
 	}
-
-	if (workingSet) {
-		*workingSet = pmc.WorkingSetSize;
-	}
-	if (workingSetPeak) {
-		*workingSetPeak = pmc.PeakWorkingSetSize;
-	}
-
-	return true;
-}
-
-bool ResourceUsageMonitor::GetPrivateBytes(uint64_t* privateBytes)
-{
-	PROCESS_MEMORY_COUNTERS_EX pmc = { sizeof(PROCESS_MEMORY_COUNTERS_EX) };
-
-	BOOL isOK = GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc));
-	if (isOK == FALSE) {
+	if (std::any_of(in->mMetrics.begin(), in->mMetrics.end(), [&](auto registered) {
+		return registered->GetOrder() == metrics->GetOrder();
+	})) {
+		// OrderはCSV列順を決めるため、重複した状態では出力構成を確定できない。
+		spdlog::error("Failed to register resource metrics: duplicate order {}", metrics->GetOrder());
+		in->mHasRegistrationError = true;
 		return false;
 	}
-
-	if (privateBytes) {
-		*privateBytes = pmc.PrivateUsage;
-	}
-
-	return true;
-}
-
-bool ResourceUsageMonitor::GetThreadUsage(uint32_t* numOfThreads)
-{
-	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	::utility::ScopeExit guard([&]() { CloseHandle(hSnap); });
-
-	PROCESSENTRY32 pe = { sizeof(pe) };
-	if (Process32First(hSnap, &pe) == FALSE) {
-		return false;
-	}
-
-	auto pid = GetCurrentProcessId();
-	do {
-		if (pe.th32ProcessID != pid) {
-			continue;
-		}
-		if (numOfThreads) {
-			*numOfThreads = pe.cntThreads;
-		}
-		return true;
-
-	} while (Process32Next(hSnap, &pe));
-
-	return false;
-}
-
-bool ResourceUsageMonitor::GetGdiObjects(uint32_t* numOfObjects)
-{
-	DWORD gdiCount = GetGuiResources( GetCurrentProcess(), GR_GDIOBJECTS);
-
-#ifndef SOYOKAZE_UNITTEST
-	if (gdiCount == 0) {
-		return false;
-	}
-#endif
-
-	if (numOfObjects) {
-		*numOfObjects = gdiCount;
-	}
-	return true;
-}
-
-bool ResourceUsageMonitor::GetUserObjects(uint32_t* numOfObjects)
-{
-	DWORD userObjCount = GetGuiResources( GetCurrentProcess(), GR_USEROBJECTS);
-
-#ifndef SOYOKAZE_UNITTEST
-	if (userObjCount == 0) {
-		return false;
-	}
-#endif
-
-	if (numOfObjects) {
-		*numOfObjects = userObjCount;
-	}
+	in->mMetrics.push_back(metrics);
 	return true;
 }
 
 bool ResourceUsageMonitor::MakeLogEntry(std::string& entry)
 {
-	uint64_t workingSet{0};
-	GetWorkingSet(&workingSet, nullptr);
-	uint64_t privateBytes{0};
-	GetPrivateBytes(&privateBytes);
-	uint32_t numOfThreads{0};
-	GetThreadUsage(&numOfThreads);
-	uint32_t gdiObjects{0};
-	GetGdiObjects(&gdiObjects);
-	uint32_t userObjects{0};
-	GetUserObjects(&userObjects);
-
 	auto zt = std::chrono::zoned_time{std::chrono::current_zone(), std::chrono::system_clock::now()};
 	auto timeStr = std::format("{:%Y/%m/%d %H:%M}", zt);
 
-	auto pid = GetCurrentProcessId();
-	entry = std::format("{0},{1},{2},{3},{4},{5},{6}\n",
-	                    timeStr, GetCurrentProcessId(), workingSet, privateBytes, numOfThreads, gdiObjects, userObjects);
+	// 登録順に依存せず、Orderの昇順で列を並べる。
+	std::vector<IResourceMetrics*> metrics = in->mMetrics;
+	std::sort(metrics.begin(), metrics.end(), [](auto left, auto right) {
+		return left->GetOrder() < right->GetOrder();
+	});
+	entry = std::format("{},{}", timeStr, GetCurrentProcessId());
+	for (auto metric : metrics) {
+		entry += "," + EscapeCsv(metric->GetValue());
+	}
+	entry += "\n";
 
 	return true;
 }
 
 bool ResourceUsageMonitor::MakeHeader(std::string& header)
 {
-	header = "Time,PID,WorkingSet,PrivateBytes,Threads,GDI Objects, User Objects\n";
+	// ヘッダーもデータ行と同じ順序でメトリクスを並べる。
+	std::vector<IResourceMetrics*> metrics = in->mMetrics;
+	std::sort(metrics.begin(), metrics.end(), [](auto left, auto right) {
+		return left->GetOrder() < right->GetOrder();
+	});
+	header = "Time,PID";
+	for (auto metric : metrics) {
+		header += "," + EscapeCsv(metric->GetName());
+	}
+	header += "\n";
 	return true;
 }
 

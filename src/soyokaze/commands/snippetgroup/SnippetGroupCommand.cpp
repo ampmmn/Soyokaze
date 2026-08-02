@@ -8,7 +8,6 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "actions/builtin/CallbackAction.h"
-#include "actions/web/OpenURLAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/TimeoutChecker.h"
 #include "icon/IconLoader.h"

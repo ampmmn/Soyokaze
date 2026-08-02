@@ -1914,6 +1914,12 @@
     <ClInclude Include="logger\ResourceUsageMonitor.h">
       <Filter>logger</Filter>
     </ClInclude>
+    <ClInclude Include="logger\IResourceMetrics.h">
+      <Filter>logger</Filter>
+    </ClInclude>
+    <ClInclude Include="logger\ResourceUsageMetrics.h">
+      <Filter>logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3378,6 +3384,9 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="logger\ResourceUsageMonitor.cpp">
+      <Filter>logger</Filter>
+    </ClCompile>
+    <ClCompile Include="logger\ResourceUsageMetrics.cpp">
       <Filter>logger</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include "IResourceMetrics.h"
 
 namespace logger {
 
@@ -16,19 +17,19 @@ public:
 	bool Initialize();
 	bool Finalize();
 
+	// 登録済みメトリクスからCSVを生成し、必要に応じてファイルへ出力する。
 	bool LogUsage();
+	// メトリクスを登録する。Orderが重複する場合は登録に失敗する。
+	bool RegisterMetrics(IResourceMetrics* metrics);
 
 	// テスト用
 	void UpdateLastLoggedTimeStamp(uint64_t n);
 	void Enable();
 
-	static bool GetWorkingSet(uint64_t* workingSet, uint64_t* workingSetPeak);
-	static bool GetPrivateBytes(uint64_t* privateBytes);
-	static bool GetThreadUsage(uint32_t* numOfThreads);
-	static bool GetGdiObjects(uint32_t* numOfObjects);
-	static bool GetUserObjects(uint32_t* numOfObjects);
-	static bool MakeHeader(std::string& header);
-	static bool MakeLogEntry(std::string& entry);
+	// 固定列と登録済みメトリクスからCSVヘッダーを生成する。
+	bool MakeHeader(std::string& header);
+	// 固定列と登録済みメトリクスからCSVデータ行を生成する。
+	bool MakeLogEntry(std::string& entry);
 
 	static bool GetLogFilePath(std::wstring& path);
 
