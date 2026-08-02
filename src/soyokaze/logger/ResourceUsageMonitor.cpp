@@ -102,11 +102,13 @@ bool ResourceUsageMonitor::LogUsage()
 {
 	if (in->mIsEnable == false) {
 		// 機能が無効化されている
+		spdlog::error("debug 1");
 		return false;
 	}
 
 	// 前回の出力から時間が経過していなければ出力しない
 	if (GetTickCount64() - in->mLastLoggedTimeStamp < in->mIntervalInMinutes * 1000 * 60) {
+		spdlog::error("debug 2");
 		return false;
 	}
 
