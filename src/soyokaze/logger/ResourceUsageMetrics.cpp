@@ -135,28 +135,24 @@ std::string UserObjectsMetrics::GetValue() const
 }
 
 namespace {
+	static WorkingSetMetrics workingSetMetrics;
+	static PrivateBytesMetrics privateBytesMetrics;
+	static ThreadMetrics threadMetrics;
+	static GdiObjectsMetrics gdiObjectsMetrics;
+	static UserObjectsMetrics userObjectsMetrics;
 
-static WorkingSetMetrics workingSetMetrics;
-static PrivateBytesMetrics privateBytesMetrics;
-static ThreadMetrics threadMetrics;
-static GdiObjectsMetrics gdiObjectsMetrics;
-static UserObjectsMetrics userObjectsMetrics;
+	bool EnsureDefaultResourceMetrics()
+	{
+		// 基本的なプロセス使用量メトリクスは共通登録処理で登録する。
+		ResourceUsageMonitor::Get()->RegisterMetrics(&workingSetMetrics);
+		ResourceUsageMonitor::Get()->RegisterMetrics(&privateBytesMetrics);
+		ResourceUsageMonitor::Get()->RegisterMetrics(&threadMetrics);
+		ResourceUsageMonitor::Get()->RegisterMetrics(&gdiObjectsMetrics);
+		ResourceUsageMonitor::Get()->RegisterMetrics(&userObjectsMetrics);
+		return true;
+	}
 
-bool EnsureDefaultResourceMetrics()
-{
-	// staticライブラリ使用時に、このファイルのstaticインスタンスを含む
-	// オブジェクトファイルがリンクから除外されることを防ぎ、既定メトリクスを登録する。
-	ResourceUsageMonitor::Get()->RegisterMetrics(&workingSetMetrics);
-	ResourceUsageMonitor::Get()->RegisterMetrics(&privateBytesMetrics);
-	ResourceUsageMonitor::Get()->RegisterMetrics(&threadMetrics);
-	ResourceUsageMonitor::Get()->RegisterMetrics(&gdiObjectsMetrics);
-	ResourceUsageMonitor::Get()->RegisterMetrics(&userObjectsMetrics);
-
-	return true;
-}
-
-static bool metricsRegistered = EnsureDefaultResourceMetrics();
-
+	static bool metricsRegistered = EnsureDefaultResourceMetrics();
 }
 
 }

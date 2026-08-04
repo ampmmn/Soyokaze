@@ -819,6 +819,23 @@ void CommandRepository::EnumCommandDisplayNames(std::vector<CString>& displayNam
 	displayNames.swap(tmpNames);
 }
 
+size_t CommandRepository::GetCommandCount()
+{
+	CSingleLock sl(&in->mCS, TRUE);
+	return in->mCommands.GetSize();
+}
+
+size_t CommandRepository::GetQueryRequestCount()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	return in->mQueryRequestQueue.size();
+}
+
+size_t CommandRepository::GetListenerCount()
+{
+	return in->mListeners.size();
+}
+
 void
 CommandRepository::Query(
 	QueryRequest* newRequest

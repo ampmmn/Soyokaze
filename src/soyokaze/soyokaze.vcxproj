@@ -482,6 +482,10 @@
     <ClInclude Include="commands\core\CommandQueryItemList.h" />
     <ClInclude Include="commands\core\DefaultCommand.h" />
     <ClInclude Include="commands\core\EditableIF.h" />
+    <ClInclude Include="commands\core\metrics\CommandProviderCountMetrics.h" />
+    <ClInclude Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.h" />
+    <ClInclude Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.h" />
+    <ClInclude Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.h" />
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
@@ -665,6 +669,12 @@
     <ClInclude Include="icon\AppIcon.h" />
     <ClInclude Include="icon\CommandIcon.h" />
     <ClInclude Include="icon\IconLabelForApp.h" />
+    <ClInclude Include="icon\metrics\IconLoaderAppIconCacheCountMetrics.h" />
+    <ClInclude Include="icon\metrics\IconLoaderDefaultIconCacheCountMetrics.h" />
+    <ClInclude Include="icon\metrics\IconLoaderFileExtIconCacheCountMetrics.h" />
+    <ClInclude Include="icon\metrics\IconLoaderIconIndexCacheIconCountMetrics.h" />
+    <ClInclude Include="icon\metrics\IconLoaderIconIndexCachePathCountMetrics.h" />
+    <ClInclude Include="icon\metrics\IconLoaderManagedIconCountMetrics.h" />
     <ClInclude Include="launcherapp_string.h" />
     <ClInclude Include="logger\ResourceUsageMonitor.h" />
     <ClInclude Include="logger\IResourceMetrics.h" />
@@ -825,6 +835,9 @@
     <ClInclude Include="mainwindow\MainWindowHotKey.h" />
     <ClInclude Include="mainwindow\MainWindowInput.h" />
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h" />
+    <ClInclude Include="mainwindow\metrics\CandidateListCandidateCountMetrics.h" />
+    <ClInclude Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.h" />
+    <ClInclude Include="mainwindow\metrics\CandidateListListenerCountMetrics.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
     <ClInclude Include="mainwindow\optionbutton\MainWindowOptionButton.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
@@ -1013,6 +1026,10 @@
     <ClCompile Include="commands\core\CommandQueryDefaultResult.cpp" />
     <ClCompile Include="commands\core\CommandQueryItemList.cpp" />
     <ClCompile Include="commands\core\DefaultCommand.cpp" />
+    <ClCompile Include="commands\core\metrics\CommandProviderCountMetrics.cpp" />
+    <ClCompile Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.cpp" />
+    <ClCompile Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.cpp" />
+    <ClCompile Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.cpp" />
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />
@@ -1197,6 +1214,12 @@
     <ClCompile Include="icon\AppIcon.cpp" />
     <ClCompile Include="icon\CommandIcon.cpp" />
     <ClCompile Include="icon\IconLabelForApp.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderAppIconCacheCountMetrics.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderDefaultIconCacheCountMetrics.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderFileExtIconCacheCountMetrics.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderIconIndexCacheIconCountMetrics.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderIconIndexCachePathCountMetrics.cpp" />
+    <ClCompile Include="icon\metrics\IconLoaderManagedIconCountMetrics.cpp" />
     <ClCompile Include="logger\ResourceUsageMonitor.cpp" />
     <ClCompile Include="logger\ResourceUsageMetrics.cpp" />
     <ClCompile Include="macros\afxw\AfxwMacro.cpp" />
@@ -1342,6 +1365,9 @@
     <ClCompile Include="mainwindow\MainWindowDeactivateBlocker.cpp" />
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp" />
     <ClCompile Include="mainwindow\MainWindowInput.cpp" />
+    <ClCompile Include="mainwindow\metrics\CandidateListCandidateCountMetrics.cpp" />
+    <ClCompile Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.cpp" />
+    <ClCompile Include="mainwindow\metrics\CandidateListListenerCountMetrics.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
     <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />

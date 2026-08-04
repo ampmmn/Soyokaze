@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <cstddef>
 
 class IconLoader
 {
@@ -87,6 +88,19 @@ public:
 	HICON LoadCopyIcon();
 	// ヘルプを表すアイコンを取得する
 	HICON LoadHelpIcon();
+
+	struct CacheStatistics
+	{
+		size_t iconIndexCachePathCount{0};
+		size_t iconIndexCacheIconCount{0};
+		size_t defaultIconCacheCount{0};
+		size_t fileExtIconCacheCount{0};
+		size_t appIconCacheCount{0};
+		size_t managedIconCount{0};
+	};
+
+	// アイコンキャッシュの現在の要素数を取得する。
+	CacheStatistics GetCacheStatistics();
 
 	// アイコンファイルのデータ列からアイコンを生成する
 	HICON LoadIconFromStream(const std::vector<uint8_t>& strm);

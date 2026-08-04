@@ -5,6 +5,7 @@
 #include "core/IFIDDefine.h"
 #include <vector>
 #include <set>
+#include <mutex>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,6 +13,11 @@
 
 using Command = launcherapp::core::Command;
 using ErrorIndicatorCommand = launcherapp::commands::error::ErrorIndicatorCommand;
+
+namespace {
+	std::mutex gCandidateListMutex;
+	std::set<CandidateList*> gCandidateLists;
+}
 
 struct CandidateList::PImpl
 {
@@ -54,10 +60,16 @@ struct CandidateList::PImpl
 
 CandidateList::CandidateList() : in(std::make_unique<PImpl>())
 {
+	std::lock_guard<std::mutex> lock(gCandidateListMutex);
+	gCandidateLists.insert(this);
 }
 
 CandidateList::~CandidateList()
 {
+	{
+		std::lock_guard<std::mutex> lock(gCandidateListMutex);
+		gCandidateLists.erase(this);
+	}
 	in->ClearItems();
 }
 
@@ -213,5 +225,30 @@ void CandidateList::RemoveListener(CandidateListListenerIF* listener)
 	if (it != in->mListeners.end()) {
 		in->mListeners.erase(it);
 	}
+}
+
+size_t CandidateList::GetListenerCount()
+{
+	return in->mListeners.size();
+}
+
+bool CandidateList::HasErrorCommand()
+{
+	return in->mErrorCommand.get() != nullptr;
+}
+
+CandidateList::Statistics CandidateList::GetStatistics()
+{
+	std::lock_guard<std::mutex> lock(gCandidateListMutex);
+
+	Statistics statistics;
+	for (auto candidateList : gCandidateLists) {
+		statistics.candidateCount += candidateList->in->mCandidates.size();
+		statistics.listenerCount += candidateList->in->mListeners.size();
+		if (candidateList->in->mErrorCommand.get() != nullptr) {
+			statistics.errorCommandCount++;
+		}
+	}
+	return statistics;
 }
 

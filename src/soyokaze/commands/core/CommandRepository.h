@@ -5,6 +5,7 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include <vector>
 #include <memory>
+#include <cstddef>
 
 class SettingPage;
 
@@ -47,6 +48,12 @@ public:
 
 	void EnumCommands(std::vector<launcherapp::core::Command*>& commands);
 	void EnumCommandDisplayNames(std::vector<CString>& displayNames);
+	// 登録コマンド数を取得する。
+	size_t GetCommandCount();
+	// クエリ要求キューに滞留している要求数を取得する。
+	size_t GetQueryRequestCount();
+	// 登録リスナー数を取得する。
+	size_t GetListenerCount();
 
 	void Query(launcherapp::commands::core::CommandQueryRequest* req);
 	launcherapp::core::Command* QueryAsWholeMatch(const CString& strQueryStr, bool isIncludeAdhocCommand = false);

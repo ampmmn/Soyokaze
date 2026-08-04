@@ -307,6 +307,15 @@
     <Filter Include="commands\win32menu">
       <UniqueIdentifier>{d0372a63-b59f-475c-9724-6c1d1b0554f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="icon\metrics">
+      <UniqueIdentifier>{c08a8dfe-1a2a-47a6-9055-6279835c9c79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\core\metrics">
+      <UniqueIdentifier>{eaf20eea-b779-47c6-b381-64639610e945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mainwindow\metrics">
+      <UniqueIdentifier>{10c727c7-96bd-4c33-9f79-584d74133ec7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1920,6 +1929,45 @@
     <ClInclude Include="logger\ResourceUsageMetrics.h">
       <Filter>logger</Filter>
     </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderAppIconCacheCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderDefaultIconCacheCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderFileExtIconCacheCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderIconIndexCacheIconCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderIconIndexCachePathCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="icon\metrics\IconLoaderManagedIconCountMetrics.h">
+      <Filter>icon\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\metrics\CommandProviderCountMetrics.h">
+      <Filter>commands\core\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.h">
+      <Filter>commands\core\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.h">
+      <Filter>commands\core\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.h">
+      <Filter>commands\core\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\metrics\CandidateListCandidateCountMetrics.h">
+      <Filter>mainwindow\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.h">
+      <Filter>mainwindow\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\metrics\CandidateListListenerCountMetrics.h">
+      <Filter>mainwindow\metrics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3388,6 +3436,54 @@
     </ClCompile>
     <ClCompile Include="logger\ResourceUsageMetrics.cpp">
       <Filter>logger</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\CandidateListCandidateCountMetrics.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\CandidateListListenerCountMetrics.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\CandidateListHasErrorCommandMetrics.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderAppIconCacheCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderDefaultIconCacheCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderFileExtIconCacheCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderIconIndexCacheIconCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderIconIndexCachePathCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="icon\metrics\IconLoaderManagedIconCountMetrics.cpp">
+      <Filter>icon\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\metrics\CommandProviderCountMetrics.cpp">
+      <Filter>commands\core\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.cpp">
+      <Filter>commands\core\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.cpp">
+      <Filter>commands\core\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.cpp">
+      <Filter>commands\core\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\metrics\CandidateListCandidateCountMetrics.cpp">
+      <Filter>mainwindow\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.cpp">
+      <Filter>mainwindow\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\metrics\CandidateListListenerCountMetrics.cpp">
+      <Filter>mainwindow\metrics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

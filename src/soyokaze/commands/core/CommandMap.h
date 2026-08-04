@@ -4,6 +4,7 @@
 #include "commands/core/CommandQueryItemList.h"
 #include <map>
 #include <vector>
+#include <cstddef>
 
 class CommandMap
 {
@@ -45,6 +46,7 @@ public:
 
 	// 配列化する
 	std::vector<launcherapp::core::Command*>& Enumerate(std::vector<launcherapp::core::Command*>& commands);
+	size_t GetSize() const;
 
 protected:
 	std::map<CString, launcherapp::core::Command*> mMap;

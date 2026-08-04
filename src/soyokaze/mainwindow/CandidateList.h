@@ -2,12 +2,20 @@
 
 #include <memory>
 #include <vector>
+#include <cstddef>
 #include "commands/core/CommandIF.h"
 #include "CandidateListListenerIF.h"
 
 class CandidateList
 {
 public:
+	struct Statistics
+	{
+		size_t candidateCount{0};
+		size_t listenerCount{0};
+		size_t errorCommandCount{0};
+	};
+
 	CandidateList();
 	~CandidateList();
 
@@ -30,6 +38,13 @@ public:
 
 	void AddListener(CandidateListListenerIF* listener);
 	void RemoveListener(CandidateListListenerIF* listener);
+
+	// 登録されているリスナー数を取得する。
+	size_t GetListenerCount();
+	// エラー表示用コマンドが生成済みかどうかを取得する。
+	bool HasErrorCommand();
+	// すべてのCandidateListインスタンスの統計値を取得する。
+	static Statistics GetStatistics();
 
 private:
 	struct PImpl;

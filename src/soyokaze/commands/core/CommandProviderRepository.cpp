@@ -55,6 +55,12 @@ void CommandProviderRepository::EnumProviders(std::vector<CommandProvider*>& pro
 	providers = in->mProviders;
 }
 
+size_t CommandProviderRepository::GetProviderCount()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	return in->mProviders.size();
+}
+
 
 }}
 

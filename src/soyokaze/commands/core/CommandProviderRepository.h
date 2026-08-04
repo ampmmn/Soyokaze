@@ -3,6 +3,7 @@
 #include "commands/core/CommandProviderIF.h"
 #include <vector>
 #include <memory>
+#include <cstddef>
 
 namespace launcherapp { namespace core {
 
@@ -24,6 +25,8 @@ public:
 
 	// プロバイダを得る
 	void EnumProviders(std::vector<CommandProvider*>& providers);
+	// 登録されているプロバイダ数を取得する。
+	size_t GetProviderCount();
 
 protected:
 	struct PImpl;

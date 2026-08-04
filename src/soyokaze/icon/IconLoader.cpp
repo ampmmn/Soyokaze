@@ -531,6 +531,22 @@ IconLoader::~IconLoader()
 	}
 }
 
+IconLoader::CacheStatistics IconLoader::GetCacheStatistics()
+{
+	std::lock_guard<std::mutex> lock(in->mAppIconMapMutex);
+
+	CacheStatistics statistics;
+	statistics.iconIndexCachePathCount = in->mIconIndexCache.size();
+	for (const auto& item : in->mIconIndexCache) {
+		statistics.iconIndexCacheIconCount += item.second.size();
+	}
+	statistics.defaultIconCacheCount = in->mDefaultIconCache.size();
+	statistics.fileExtIconCacheCount = in->mFileExtIconCache.size();
+	statistics.appIconCacheCount = in->mAppIconMap.size();
+	statistics.managedIconCount = in->mIconSet.size();
+	return statistics;
+}
+
 IconLoader* IconLoader::Get()
 {
 	static IconLoader instance;
