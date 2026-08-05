@@ -206,6 +206,8 @@ bool SubProcess::PImpl::SetupShellExecuteInfo(CString& path, CString& param, con
 		// ConfiguredBrowserEnvironmentから得たWebブラウザ(外部ツール)のパスを引数pathに戻す
 		path = browserPath;
 		si.lpFile = path.GetBuffer(path.GetLength() + 1);
+		path.ReleaseBuffer();
+		// Note: lpFileにpathの内部バッファを設定しているので、path変数の中身をこの後変えてはいけない..
 
 		si.lpParameters = param;
 
