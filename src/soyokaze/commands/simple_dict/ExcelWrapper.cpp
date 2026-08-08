@@ -283,6 +283,7 @@ void ExcelApplication::Quit()
 	auto th = std::thread([pid, h]() {
 			bool isShutdownInProgress = launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress();
 			if (isShutdownInProgress == false && WaitForSingleObject(h, 2000) != WAIT_TIMEOUT) {
+				CloseHandle(h);
 				return;
 			}
 			spdlog::debug(_T("Excel app terminated PID:{}"), pid);

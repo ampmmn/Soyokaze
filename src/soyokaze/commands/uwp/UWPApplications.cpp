@@ -12,6 +12,7 @@
 #include <mutex>
 #include <thread>
 #include <deque>
+#include <wil/com.h>
 
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "propsys.lib")
@@ -142,7 +143,7 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 			continue;
 		}
 
-		PROPVARIANT value;
+		wil::unique_prop_variant value;
 		hr = propStore->GetValue(tppKey, &value);
 		if (FAILED(hr)) {
 			continue;
@@ -157,12 +158,13 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 		}
 		else {
 			// UWPアプリ
+			wil::unique_prop_variant value2;
 			isUWP = true;
-			hr = propStore->GetValue(modelIdKey, &value);
+			hr = propStore->GetValue(modelIdKey, &value2);
 			if (FAILED(hr)) {
 				continue;
 			}
-			hr = PropVariantToString(value, appId.GetBuffer(1024), 1024);
+			hr = PropVariantToString(value2, appId.GetBuffer(1024), 1024);
 			appId.ReleaseBuffer();
 
 			if (appId.Find(_T("::{"))==0) {
