@@ -64,7 +64,7 @@ struct ResourceUsageMonitor::PImpl : public AppPreferenceListenerIF
 	HWND mHwnd{nullptr};
 
 	// 記録する間隔
-	uint32_t mIntervalInMinutes{1};  // 1分間隔
+	uint32_t mIntervalInMinutes{20};  // 20分間隔
 	// 前回出力した時刻
 	uint64_t mLastLoggedTimeStamp{0};
 	// 出力を有効にするか?
