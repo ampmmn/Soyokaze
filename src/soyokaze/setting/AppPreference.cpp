@@ -3,6 +3,7 @@
 #include "AppPreference.h"
 #include "setting/InitialFont.h"
 #include "app/AppName.h"
+#include "core/LauncherProcessContext.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"
@@ -361,6 +362,12 @@ void AppPreference::Save()
 
 void AppPreference::OnExit()
 {
+	if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+		// Windwosログオフ進行中の場合、すべてのリスナーの終了処理が終わる前に強制終了になってしまうため通知しない
+		SPDLOG_DEBUG("Since the system is shutting down, the app exit notification will be skipped.");
+		return ;
+	}
+
 	// 通知中にリスナー登録解除が呼ばれてもforeachに影響しないよう、複製を作成する
 	auto cloned = in->mListeners;
 

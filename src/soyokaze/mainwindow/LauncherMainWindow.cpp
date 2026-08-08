@@ -17,6 +17,7 @@
 #include "mainwindow/guide/GuideCtrl.h"
 #include "mainwindow/CommandActionHandlerRegistry.h"
 #include "core/IFIDDefine.h"
+#include "core/LauncherProcessContext.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/core/ActionParameter.h"
@@ -256,7 +257,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::DELETEWORD, OnUserMessageDeleteWord)
 	ON_MESSAGE(WM_APP+255, OnUserMessageGuideClicked)
 	ON_WM_CONTEXTMENU()
-	ON_WM_ENDSESSION()
+	ON_WM_QUERYENDSESSION()
 	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP, OnCommandHelp)
 	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
@@ -1989,13 +1990,16 @@ void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 }
 
 // Windowsの終了(ログオフ)通知
-void LauncherMainWindow::OnEndSession(BOOL isEnding)
+BOOL LauncherMainWindow::OnQueryEndSession()
 {
-	SPDLOG_INFO(_T("args isEnding:{}"), (bool)isEnding);
+	SPDLOG_INFO(_T("Launcher app shutdown is in progress."));
 
-	if (isEnding) {
-		PostQuitMessage(0);
-	}
+	launcherapp::core::LauncherProcessContext::GetInstance()->MarkShutdownInProgress();
+
+	DestroyWindow();
+	PostQuitMessage(0);
+
+	return TRUE;
 }
 
 void LauncherMainWindow::OnCommandHelp()
