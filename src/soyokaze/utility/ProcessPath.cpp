@@ -218,12 +218,11 @@ CString ProcessPath::GetCommandLine()
 	CStringW cmdline;
 	LPWSTR buff = cmdline.GetBuffer(len);
 	buff[len-1] = L'\0';
+	cmdline.ReleaseBuffer();
 
 	if(!ReadProcessMemory(hProcess, upp.CommandLine.Buffer, buff, upp.CommandLine.Length, &bytesRead)) {
-		cmdline.ReleaseBuffer();
 		throw Exception(pid);
 	}
-	cmdline.ReleaseBuffer();
 
 	cmdline.Trim();
 
