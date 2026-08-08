@@ -425,6 +425,7 @@
     <ClInclude Include="app\ManualWindow.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
+    <ClInclude Include="app\metrics\SQLiteMemoryUsedMetrics.h" />
     <ClInclude Include="commands\activate_window\ActivateIndicatorWindow.h" />
     <ClInclude Include="commands\activate_window\ActivateWindowFindTarget.h" />
     <ClInclude Include="commands\activate_window\RegionIndicatorWindow.h" />
@@ -486,6 +487,8 @@
     <ClInclude Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.h" />
     <ClInclude Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.h" />
     <ClInclude Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.h" />
+    <ClInclude Include="commands\bookmarks\metrics\BookmarksAltBrowserItemCapacityMetrics.h" />
+    <ClInclude Include="commands\bookmarks\metrics\BookmarksEdgeItemCapacityMetrics.h" />
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
@@ -974,6 +977,7 @@
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\ManualWindow.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
+    <ClCompile Include="app\metrics\SQLiteMemoryUsedMetrics.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />
     <ClCompile Include="commands\activate_window\ActivateWindowFindTarget.cpp" />
     <ClCompile Include="commands\activate_window\RegionIndicatorWindow.cpp" />
@@ -1030,6 +1034,8 @@
     <ClCompile Include="commands\core\metrics\CommandRepositoryCommandCountMetrics.cpp" />
     <ClCompile Include="commands\core\metrics\CommandRepositoryListenerCountMetrics.cpp" />
     <ClCompile Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.cpp" />
+    <ClCompile Include="commands\bookmarks\metrics\BookmarksAltBrowserItemCapacityMetrics.cpp" />
+    <ClCompile Include="commands\bookmarks\metrics\BookmarksEdgeItemCapacityMetrics.cpp" />
     <ClCompile Include="commands\decodestring\DecodeBase64Command.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolume.cpp" />
     <ClCompile Include="commands\ejectvolume\EjectVolumeCommand.cpp" />

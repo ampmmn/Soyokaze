@@ -124,6 +124,9 @@
     <Filter Include="app">
       <UniqueIdentifier>{4bce9125-77c5-4ae2-acb2-0e7cfac89887}</UniqueIdentifier>
     </Filter>
+    <Filter Include="app\metrics">
+      <UniqueIdentifier>{f9bcf58c-f5bf-41be-b3fb-0f9f3a1264f0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="hotkey">
       <UniqueIdentifier>{a2f3c134-5ba0-4fda-88fa-d93a712f3dad}</UniqueIdentifier>
     </Filter>
@@ -315,6 +318,9 @@
     </Filter>
     <Filter Include="mainwindow\metrics">
       <UniqueIdentifier>{10c727c7-96bd-4c33-9f79-584d74133ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\bookmarks\metrics">
+      <UniqueIdentifier>{a9b5e58b-0dc0-4a6c-9e57-5b0f6aa9f4d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1362,6 +1368,9 @@
     <ClInclude Include="app\SecondProcessProxyIF.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="app\metrics\SQLiteMemoryUsedMetrics.h">
+      <Filter>app\metrics</Filter>
+    </ClInclude>
     <ClInclude Include="app\CommandLineProcessor.h">
       <Filter>app</Filter>
     </ClInclude>
@@ -1958,6 +1967,12 @@
     </ClInclude>
     <ClInclude Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.h">
       <Filter>commands\core\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\metrics\BookmarksAltBrowserItemCapacityMetrics.h">
+      <Filter>commands\bookmarks\metrics</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\bookmarks\metrics\BookmarksEdgeItemCapacityMetrics.h">
+      <Filter>commands\bookmarks\metrics</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\metrics\CandidateListCandidateCountMetrics.h">
       <Filter>mainwindow\metrics</Filter>
@@ -2915,6 +2930,9 @@
     <ClCompile Include="app\SecondProcessProxy.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="app\metrics\SQLiteMemoryUsedMetrics.cpp">
+      <Filter>app\metrics</Filter>
+    </ClCompile>
     <ClCompile Include="app\CommandLineProcessor.cpp">
       <Filter>app</Filter>
     </ClCompile>
@@ -3475,6 +3493,12 @@
     </ClCompile>
     <ClCompile Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.cpp">
       <Filter>commands\core\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\metrics\BookmarksAltBrowserItemCapacityMetrics.cpp">
+      <Filter>commands\bookmarks\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\bookmarks\metrics\BookmarksEdgeItemCapacityMetrics.cpp">
+      <Filter>commands\bookmarks\metrics</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\metrics\CandidateListCandidateCountMetrics.cpp">
       <Filter>mainwindow\metrics</Filter>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/core/CommandQueryItemList.h"
+#include <cstddef>
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace bookmarks {
@@ -9,11 +10,18 @@ namespace launcherapp { namespace commands { namespace bookmarks {
 class BookmarkCommand
 {
 public:
+	struct Statistics
+	{
+		std::size_t edgeItemCapacity{0};
+		std::size_t alternativeBookmarkItemCapacity{0};
+	};
+
 	BookmarkCommand();
 	~BookmarkCommand();
 
 	bool Load();
 	bool QueryCandidates(Pattern* pattern, launcherapp::CommandQueryItemList& commands);
+	static Statistics GetStatistics();
 
 protected:
 	struct PImpl;

@@ -183,6 +183,12 @@ void Bookmarks::SetNumOfKeywordShift(uint32_t num)
 	in->mKeywordMask = num;
 }
 
+std::size_t Bookmarks::GetItemCapacity()
+{
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	return in->mItems.capacity();
+}
+
 void Bookmarks::Query(Pattern* pattern, std::vector<Bookmark>& items, bool isUseURL)
 {
 	std::lock_guard<std::mutex> lock(in->mMutex);

@@ -8,6 +8,7 @@
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "setting/AppPreference.h"
 #include "utility/Path.h"
+#include <mutex>
 
 using namespace launcherapp::commands::common;
 using namespace launcherapp::core;
@@ -16,6 +17,22 @@ using EdgeEnvironment = launcherapp::externaltool::webbrowser::EdgeEnvironment;
 using ConfiguredBrowserEnvironment = launcherapp::externaltool::webbrowser::ConfiguredBrowserEnvironment;
 
 namespace launcherapp { namespace commands { namespace bookmarks {
+
+namespace {
+
+std::mutex& GetBookmarkCommandMutex()
+{
+	static std::mutex mutex;
+	return mutex;
+}
+
+BookmarkCommand*& GetBookmarkCommandInstance()
+{
+	static BookmarkCommand* command{nullptr};
+	return command;
+}
+
+}
 
 struct BookmarkCommand::PImpl
 {
@@ -131,6 +148,8 @@ bool BookmarkCommand::PImpl::QueryBookmarks(
 
 BookmarkCommand::BookmarkCommand() : in(std::make_unique<PImpl>())
 {
+	std::lock_guard<std::mutex> lock(GetBookmarkCommandMutex());
+	GetBookmarkCommandInstance() = this;
 }
 
 BookmarkCommand::~BookmarkCommand()
@@ -138,6 +157,11 @@ BookmarkCommand::~BookmarkCommand()
 	// 終了フラグを立ててスレッド完了を待つ
 	if (in->mLoadThread.joinable()) {
 		in->mLoadThread.join();
+	}
+
+	std::lock_guard<std::mutex> lock(GetBookmarkCommandMutex());
+	if (GetBookmarkCommandInstance() == this) {
+		GetBookmarkCommandInstance() = nullptr;
 	}
 }
 
@@ -148,6 +172,21 @@ bool BookmarkCommand::Load()
 
 	in->LoadBookmarks();
 	return true;
+}
+
+BookmarkCommand::Statistics BookmarkCommand::GetStatistics()
+{
+	std::lock_guard<std::mutex> lock(GetBookmarkCommandMutex());
+
+	Statistics statistics;
+	auto command = GetBookmarkCommandInstance();
+	if (command == nullptr) {
+		return statistics;
+	}
+
+	statistics.edgeItemCapacity = command->in->mEdgeBookmarks.GetItemCapacity();
+	statistics.alternativeBookmarkItemCapacity = command->in->mAltBrowserBookmarks.GetItemCapacity();
+	return statistics;
 }
 
 bool BookmarkCommand::QueryCandidates(Pattern* pattern, launcherapp::CommandQueryItemList& commands)

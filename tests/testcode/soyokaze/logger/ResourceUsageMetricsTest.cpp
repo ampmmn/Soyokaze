@@ -1,19 +1,21 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
 #include "logger/ResourceUsageMetrics.h"
-#include "icon/IconLoaderIconIndexCachePathCountMetrics.h"
-#include "icon/IconLoaderIconIndexCacheIconCountMetrics.h"
-#include "icon/IconLoaderDefaultIconCacheCountMetrics.h"
-#include "icon/IconLoaderFileExtIconCacheCountMetrics.h"
-#include "icon/IconLoaderAppIconCacheCountMetrics.h"
-#include "icon/IconLoaderManagedIconCountMetrics.h"
-#include "commands/core/CommandProviderCountMetrics.h"
-#include "commands/core/CommandRepositoryCommandCountMetrics.h"
-#include "commands/core/CommandRepositoryQueryRequestCountMetrics.h"
-#include "commands/core/CommandRepositoryListenerCountMetrics.h"
-#include "mainwindow/CandidateListCandidateCountMetrics.h"
-#include "mainwindow/CandidateListListenerCountMetrics.h"
-#include "mainwindow/CandidateListHasErrorCommandMetrics.h"
+#include "icon/metrics/IconLoaderIconIndexCachePathCountMetrics.h"
+#include "icon/metrics/IconLoaderIconIndexCacheIconCountMetrics.h"
+#include "icon/metrics/IconLoaderDefaultIconCacheCountMetrics.h"
+#include "icon/metrics/IconLoaderFileExtIconCacheCountMetrics.h"
+#include "icon/metrics/IconLoaderAppIconCacheCountMetrics.h"
+#include "icon/metrics/IconLoaderManagedIconCountMetrics.h"
+#include "commands/core/metrics/CommandProviderCountMetrics.h"
+#include "commands/core/metrics/CommandRepositoryCommandCountMetrics.h"
+#include "commands/core/metrics/CommandRepositoryQueryRequestCountMetrics.h"
+#include "commands/core/metrics/CommandRepositoryListenerCountMetrics.h"
+#include "commands/bookmarks/metrics/BookmarksEdgeItemCapacityMetrics.h"
+#include "commands/bookmarks/metrics/BookmarksAltBrowserItemCapacityMetrics.h"
+#include "mainwindow/metrics/CandidateListCandidateCountMetrics.h"
+#include "mainwindow/metrics/CandidateListListenerCountMetrics.h"
+#include "mainwindow/metrics/CandidateListHasErrorCommandMetrics.h"
 
 using namespace logger;
 
@@ -101,6 +103,12 @@ TEST(ResourceUsageMetricsTest, AdditionalMetricsTest)
 
 	CommandRepositoryListenerCountMetrics repositoryListenerMetrics;
 	ExpectMetrics(repositoryListenerMetrics, 320, "CommandRepositoryListenerCount");
+
+	BookmarksEdgeItemCapacityMetrics edgeItemCapacityMetrics;
+	ExpectMetrics(edgeItemCapacityMetrics, 230, "BookmarksEdgeItemCapacity");
+
+	BookmarksAltBrowserItemCapacityMetrics altBrowserItemCapacityMetrics;
+	ExpectMetrics(altBrowserItemCapacityMetrics, 240, "BookmarksAltBrowserItemCapacity");
 
 	CandidateListCandidateCountMetrics candidateMetrics;
 	ExpectMetrics(candidateMetrics, 400, "CandidateListCandidateCount");

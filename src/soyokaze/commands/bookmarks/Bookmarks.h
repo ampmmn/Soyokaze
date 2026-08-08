@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <cstddef>
 #include "commands/bookmarks/BookmarkItem.h"
 #include "matcher/Pattern.h"
 
@@ -15,6 +16,7 @@ public:
 	bool Initialize(LPCTSTR bookmarkPath);
 	void SetNumOfKeywordShift(uint32_t num);
 	void Query(Pattern* pattern, std::vector<Bookmark>& items, bool isUseURL);
+	std::size_t GetItemCapacity();
 
 
 private:
