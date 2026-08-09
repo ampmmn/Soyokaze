@@ -454,12 +454,7 @@ bool MMCSnapins::PImpl::LoadItem(
 			return false;
 		}
 
-		CComBSTR argVal(filePath);
-
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
+		CComVariant arg1(filePath);
 
 		VARIANT_BOOL arg2;
 		hr = pXmlDom->load(arg1, &arg2);

@@ -133,27 +133,13 @@ int ExcelApplication::GetCellText(
 		return -2;
 	}
 
-	VARIANT result;
+	CComVariant result;
 
 	DispWrapper workBook;
 	{
-		VariantInit(&result);
-
-		CComBSTR argVal(wbPath);
-		VARIANT arg1;
-		VariantInit(&arg1);
-		arg1.vt = VT_BSTR;
-		arg1.bstrVal = argVal;
-
-		VARIANT arg2;
-		VariantInit(&arg2);
-		arg2.vt = VT_BOOL;
-		arg2.boolVal = VARIANT_FALSE;
-
-		VARIANT arg3;
-		VariantInit(&arg3);
-		arg3.vt = VT_BOOL;
-		arg3.boolVal = VARIANT_TRUE;
+		CComVariant arg1(wbPath);
+		CComVariant arg2(VARIANT_FALSE);
+		CComVariant arg3(VARIANT_TRUE);
 
 		HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, workBooks, L"Open", 3, &arg3, &arg2, &arg1);
 		if (FAILED(hr)) {
@@ -162,7 +148,6 @@ int ExcelApplication::GetCellText(
 		}
 	}
 	workBook = result.pdispVal;
-	VariantClear(&result);
 
 	struct local_close {
 		local_close(DispWrapper& dispPtr) : mDisp(dispPtr) {}
@@ -219,15 +204,8 @@ int ExcelApplication::GetCellText(
 		for (int col = 1; col <= col_count; ++col) {
 			VariantInit(&result);
 
-			VARIANT arg1;
-			VariantInit(&arg1);
-			arg1.vt = VT_INT;
-			arg1.intVal = row;
-
-			VARIANT arg2;
-			VariantInit(&arg2);
-			arg2.vt = VT_INT;
-			arg2.intVal = col;
+			CComVariant arg1(row, VT_INT);
+			CComVariant arg2(col , VT_INT);
 
 			HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, range, L"Item", 2, &arg2, &arg1);
 			if (FAILED(hr)) {

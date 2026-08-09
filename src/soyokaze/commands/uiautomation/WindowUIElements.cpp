@@ -209,9 +209,7 @@ bool WindowUIElements::FetchElements(UIElementList& items, int findType)
 	auto start = GetTickCount64();
 
 	// 条件を作成する
-	VARIANT varProp;
-	varProp.vt = VT_BOOL;
-	varProp.boolVal = VARIANT_FALSE;
+	CComVariant varProp(VARIANT_FALSE);
 
 	// 画面上に表示されているかどうか
 	CComPtr<IUIAutomationCondition> pOffScreenCondition;
