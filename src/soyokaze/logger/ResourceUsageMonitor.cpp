@@ -69,7 +69,6 @@ struct ResourceUsageMonitor::PImpl : public AppPreferenceListenerIF
 	uint64_t mLastLoggedTimeStamp{0};
 	// 出力を有効にするか?
 	bool mIsEnable{false};
-	bool mHasRegistrationError{false};
 	std::vector<IResourceMetrics*> mMetrics;
 };
 
@@ -123,9 +122,10 @@ bool ResourceUsageMonitor::LogUsage()
 {
 	if (in->mIsEnable == false) {
 		// 機能が無効化されている
-		return false;
-	}
-	if (in->mHasRegistrationError) {
+#ifdef SOYOKAZE_UNITTEST
+		spdlog::info("ResourceUsageMonitor is not enabled.");
+#endif
+
 		return false;
 	}
 
@@ -196,7 +196,6 @@ bool ResourceUsageMonitor::RegisterMetrics(IResourceMetrics* metrics)
 {
 	if (metrics == nullptr) {
 		spdlog::error("Failed to register resource metrics: null metrics");
-		in->mHasRegistrationError = true;
 		return false;
 	}
 	if (std::any_of(in->mMetrics.begin(), in->mMetrics.end(), [&](auto registered) {
@@ -204,7 +203,6 @@ bool ResourceUsageMonitor::RegisterMetrics(IResourceMetrics* metrics)
 	})) {
 		// OrderはCSV列順を決めるため、重複した状態では出力構成を確定できない。
 		spdlog::error("Failed to register resource metrics: duplicate order {}", metrics->GetOrder());
-		in->mHasRegistrationError = true;
 		return false;
 	}
 	in->mMetrics.push_back(metrics);
