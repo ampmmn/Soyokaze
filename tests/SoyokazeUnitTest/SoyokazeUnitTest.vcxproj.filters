@@ -43,6 +43,9 @@
     <Filter Include="soyokaze\commands\decodestring">
       <UniqueIdentifier>{e6438e73-2efd-4e0a-ae70-99505ebb26b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\explorepath">
+      <UniqueIdentifier>{be2d3a4a-5a8a-4f43-b8ed-1b5e9bc5a0e5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\matcher">
       <UniqueIdentifier>{7fe6fbe9-a9a0-42f1-a8e3-632f487d75c0}</UniqueIdentifier>
     </Filter>
@@ -125,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp">
       <Filter>soyokaze\commands\decodestring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\explorepath\ExplorePathFileCacheTest.cpp">
+      <Filter>soyokaze\commands\explorepath</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp">
       <Filter>soyokaze\utility</Filter>

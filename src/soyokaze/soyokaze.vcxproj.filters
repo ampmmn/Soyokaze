@@ -1824,6 +1824,9 @@
     <ClInclude Include="commands\explorepath\ExplorePathCommandProvider.h">
       <Filter>commands\explorepath</Filter>
     </ClInclude>
+    <ClInclude Include="commands\explorepath\ExplorePathFileCache.h">
+      <Filter>commands\explorepath</Filter>
+    </ClInclude>
     <ClInclude Include="commands\explorepath\ExplorePathExtraActionSettings.h">
       <Filter>commands\explorepath</Filter>
     </ClInclude>
@@ -3342,6 +3345,9 @@
       <Filter>commands\explorepath</Filter>
     </ClCompile>
     <ClCompile Include="commands\explorepath\ExplorePathCommandProvider.cpp">
+      <Filter>commands\explorepath</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\explorepath\ExplorePathFileCache.cpp">
       <Filter>commands\explorepath</Filter>
     </ClCompile>
     <ClCompile Include="commands\explorepath\ExplorePathExtraActionSettings.cpp">

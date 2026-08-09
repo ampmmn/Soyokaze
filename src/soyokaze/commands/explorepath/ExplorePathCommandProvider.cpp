@@ -5,8 +5,11 @@
 
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
+#include "commands/explorepath/ExplorePathFileCache.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "mainwindow/LauncherWindowEventListenerIF.h"
 #include "matcher/PartialMatchPattern.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -24,14 +27,18 @@ using namespace launcherapp::commands::common;
 
 using CommandRepository = launcherapp::core::CommandRepository;
 
-struct ExplorePathCommandProvider::PImpl : public AppPreferenceListenerIF
+struct ExplorePathCommandProvider::PImpl :
+	public AppPreferenceListenerIF,
+	public LauncherWindowEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("ExplorePathCommand"));
+		LauncherWindowEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
+		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -41,7 +48,19 @@ struct ExplorePathCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		Load();
 	}
-	void OnAppExit() override {}
+	void OnAppExit() override
+	{
+		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+	}
+
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+	void OnLauncherActivate() override {}
+	void OnLauncherUnactivate() override
+	{
+		mFileCache.Clear();
+	}
 
 	void Load()
 	{
@@ -54,6 +73,7 @@ struct ExplorePathCommandProvider::PImpl : public AppPreferenceListenerIF
 	bool mIsIgnoreUNC{false};
 	bool mIsEnable{true};
 	ExtraActionSettings mExtraActionSettings;
+	ExplorePathFileCache mFileCache;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -190,33 +210,23 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 
 	std::vector<std::tuple<int, ExplorePathCommand*> > fileTargets;   // ファイル要素
 
-	CString findPattern(folderPath + _T("\\*.*"));
-	CFileFind f;
-	BOOL isLoop = f.FindFile(findPattern, 0);
-
-	// フォルダ以下の要素を列挙する
-	while (isLoop) {
-		isLoop = f.FindNextFile();
-		if (f.IsDots()) {
-			continue;
-		}
-
-		CString fileName = f.GetFileName();
-		int level = patTmp->Match(fileName);
+	// フォルダ以下の要素を列挙する。キャッシュ済みの場合はメモリ上の要素を使う。
+	in->mFileCache.ForEach(folderPath, [&](const ExplorePathFileCache::Entry& entry) {
+		int level = patTmp->Match(entry.mName);
 		if (level == Pattern::Mismatch) {
-			continue;
+			return;
 		}
 
-		CString filePath = f.GetFilePath();
+		CString filePath(folderPath + _T("\\") + entry.mName);
 		if (filePath.CompareNoCase(filePart) == 0) {
 			// このループ処理の前にすでに同じパスに対するコマンドを生成済なのでスキップする
-			continue;
+			return;
 		}
 
-		auto newCmd = new ExplorePathCommand(PathFindFileName(filePath), filePath);
+		auto newCmd = new ExplorePathCommand(entry.mName, filePath);
 		newCmd->SetExtraActionSettings(&in->mExtraActionSettings);
 
-		if (f.IsDirectory()) {
+		if (entry.mIsDirectory) {
 			// ディレクトリ要素を先に表示
 			commands.Add(CommandQueryItem(level, newCmd));
 		}
@@ -224,8 +234,7 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 			// ファイルは後ろに表示するため、いったんリストに入れる
 			fileTargets.push_back({level, newCmd});
 		}
-	}
-	f.Close();
+	});
 
 	// ファイル要素を後に表示
 	for (auto elem : fileTargets) {
