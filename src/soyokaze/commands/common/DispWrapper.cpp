@@ -10,9 +10,6 @@ DispWrapper::DispWrapper()
 
 DispWrapper::DispWrapper(IDispatch* disp) : mDispPtr(disp)
 {
-	if (disp) {
-		disp->AddRef();
-	}
 }
 
 DispWrapper::~DispWrapper()
@@ -34,16 +31,6 @@ DispWrapper::operator IDispatch*()
 	return mDispPtr;
 }
 
-
-void DispWrapper::GetPropertyVariant(LPCOLESTR name, VARIANT& value)
-{
-	if (mDispPtr == nullptr) {
-		return ;
-	}
-
-	VariantInit(&value);
-	AutoWrap(DISPATCH_PROPERTYGET, &value, mDispPtr, name, 0);
-}
 
 int DispWrapper::GetPropertyInt(
 		LPCOLESTR name

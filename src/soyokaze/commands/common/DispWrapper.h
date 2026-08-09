@@ -14,8 +14,6 @@ public:
 	IDispatch** operator &();
 	operator IDispatch*();
 
-	void GetPropertyVariant(LPCOLESTR name, VARIANT& value);
-
 	int GetPropertyInt(LPCOLESTR name);
 	int64_t GetPropertyInt64(LPCOLESTR name);
 	CString GetPropertyString(LPCOLESTR name);
