@@ -58,6 +58,7 @@ struct ResourceUsageMonitor::PImpl : public AppPreferenceListenerIF
 	void LoadSettings(){
 		auto pref = AppPreference::Get();
 		mIsEnable = pref->UseResourceUsageMonitor();
+		UNITTESTLOG("mIsEnabel set to true.");
 	}
 
 	// 内部ウインドウ
@@ -122,15 +123,14 @@ bool ResourceUsageMonitor::LogUsage()
 {
 	if (in->mIsEnable == false) {
 		// 機能が無効化されている
-#ifdef SOYOKAZE_UNITTEST
-		spdlog::info("ResourceUsageMonitor is not enabled.");
-#endif
+		UNITTESTLOG("ResourceUsageMonitor is not enabled.");
 
 		return false;
 	}
 
 	// 前回の出力から時間が経過していなければ出力しない。
 	if (GetTickCount64() - in->mLastLoggedTimeStamp < in->mIntervalInMinutes * 1000 * 60) {
+		UNITTESTLOG("Skip: Not enough time has passed since the last run.");
 		return false;
 	}
 
@@ -190,6 +190,7 @@ void ResourceUsageMonitor::UpdateLastLoggedTimeStamp(uint64_t n)
 void ResourceUsageMonitor::Enable()
 {
 	in->mIsEnable = true;
+	UNITTESTLOG("mIsEnabel set to true.");
 }
 
 bool ResourceUsageMonitor::RegisterMetrics(IResourceMetrics* metrics)

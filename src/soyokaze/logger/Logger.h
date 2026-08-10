@@ -44,3 +44,9 @@ private:
 
 #define PERFLOG(fmt, ...) spdlog::get("lancuher_perflog")->info(fmt, __VA_ARGS__)
 
+// ユニットテストでのみ出力するログ
+#ifdef SOYOKAZE_UNITTEST
+#define UNITTESTLOG(fmt, ...) spdlog::info(__VA_ARGS__)
+#else
+#define UNITTESTLOG(fmt, ...)
+#endif
