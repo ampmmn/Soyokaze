@@ -95,7 +95,7 @@ int CFolderDialog::DoModal()
 	IShellItem* psiParent = nullptr;
 
 	if (Path::FileExists(m_pData->szPath)) {
-		IShellItem* psiFolder = nullptr;
+		CComPtr<IShellItem> psiFolder;
 		SHCreateItemFromParsingName(m_pData->szPath, NULL, IID_PPV_ARGS(&psiFolder));
 
 		if (psiFolder) {
