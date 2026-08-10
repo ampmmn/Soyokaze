@@ -62,7 +62,6 @@ struct SQLite3Wrapper::PImpl
 {
 	HMODULE mModule{nullptr};
 	CharConverter mConv;
-	std::unique_ptr<RE2> mRegExp;
 	std::unordered_map<std::string, std::unique_ptr<RE2> > mRegMap;
 };
 
@@ -127,6 +126,7 @@ void SQLite3Wrapper::MatchRegExp(void* ctx, int argc, void** values)
 		return;
 	}
 
+	// RE2のインスタンスを、関数呼び出しの都度生成すると遅いので、1回のExec実行の間は同じ正規表現パターンに対するRE2を使いまわす
 	std::string key(reg);
 	RE2* regexp = nullptr;
 	auto it = in->mRegMap.find(key);
@@ -161,7 +161,10 @@ int SQLite3Wrapper::Open(const CString& filePath, void** ctx, bool isReadOnly)
 
 int SQLite3Wrapper::Exec(void *ctx, const CString& queryStr, void* callback, void * param, char **err)
 {
-	in->mRegExp.reset();
+	// Note : マルチスレッド利用は不可
+
+	// RE2のキャッシュをクリアする
+	in->mRegMap.clear();
 
 	CStringA queryStrA;
 
