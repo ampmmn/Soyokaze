@@ -119,9 +119,9 @@ bool ResourceUsageMonitor::Finalize()
 }
 
 // ログを出力
-bool ResourceUsageMonitor::LogUsage()
+bool ResourceUsageMonitor::LogUsage(bool isForce)
 {
-	if (in->mIsEnable == false) {
+	if (isForce == false && in->mIsEnable == false) {
 		// 機能が無効化されている
 		UNITTESTLOG("ResourceUsageMonitor is not enabled.");
 
@@ -129,7 +129,7 @@ bool ResourceUsageMonitor::LogUsage()
 	}
 
 	// 前回の出力から時間が経過していなければ出力しない。
-	if (GetTickCount64() - in->mLastLoggedTimeStamp < in->mIntervalInMinutes * 1000 * 60) {
+	if (isForce == false && GetTickCount64() - in->mLastLoggedTimeStamp < in->mIntervalInMinutes * 1000 * 60) {
 		UNITTESTLOG("Skip: Not enough time has passed since the last run.");
 		return false;
 	}

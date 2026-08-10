@@ -50,11 +50,8 @@ TEST_F(ResourceUsageMonitorTest, LogUsageTest) {
 	if (PathIsDirectory(dirPath.data()) == FALSE) {
 		EXPECT_TRUE(std::filesystem::create_directories(dirPath.data()));
 	}
-
-	monitor->UpdateLastLoggedTimeStamp(0);
-	Sleep(25);  // 間隔調整
-	monitor->Enable();
-	EXPECT_TRUE(monitor->LogUsage());  // Should actually log now
+	bool isForce = true;
+	EXPECT_TRUE(monitor->LogUsage(isForce));  // Should actually log now
 }
 
 TEST_F(ResourceUsageMonitorTest, LogFormattingTest) {

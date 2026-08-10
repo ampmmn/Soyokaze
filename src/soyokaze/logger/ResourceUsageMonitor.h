@@ -18,7 +18,7 @@ public:
 	bool Finalize();
 
 	// 登録済みメトリクスからCSVを生成し、必要に応じてファイルへ出力する。
-	bool LogUsage();
+	bool LogUsage(bool isForce = false);
 	// メトリクスを登録する。Orderが重複する場合は登録に失敗する。
 	bool RegisterMetrics(IResourceMetrics* metrics);
 
