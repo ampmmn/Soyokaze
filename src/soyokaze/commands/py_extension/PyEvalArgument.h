@@ -52,6 +52,7 @@ public:
 		mArgs = args;
 	}
 
+	// argsの所有権はインスタンスに移る
 	PyEvalArgument(char** args) : mArgs(args)
 	{
 	}

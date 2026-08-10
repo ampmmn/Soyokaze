@@ -202,18 +202,18 @@ int ExcelApplication::GetCellText(
 		}
 		line.Empty();
 		for (int col = 1; col <= col_count; ++col) {
-			VariantInit(&result);
+
+			CComVariant result2;
 
 			CComVariant arg1(row, VT_INT);
 			CComVariant arg2(col , VT_INT);
 
-			HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, range, L"Item", 2, &arg2, &arg1);
+			HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result2, range, L"Item", 2, &arg2, &arg1);
 			if (FAILED(hr)) {
 				SPDLOG_ERROR(_T("Failed to get Item row,col:({0},{1})"), row, col);
 				return -11;
 			}
-			cell = result.pdispVal;
-			VariantClear(&result);
+			cell = result2.pdispVal;
 
 			CString text = cell.GetPropertyString(L"Text");
 

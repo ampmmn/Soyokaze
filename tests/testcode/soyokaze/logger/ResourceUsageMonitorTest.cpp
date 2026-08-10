@@ -51,9 +51,9 @@ TEST_F(ResourceUsageMonitorTest, LogUsageTest) {
 		EXPECT_TRUE(std::filesystem::create_directories(dirPath.data()));
 	}
 
-	monitor->Enable();
 	monitor->UpdateLastLoggedTimeStamp(0);
 	Sleep(25);  // 間隔調整
+	monitor->Enable();
 	EXPECT_TRUE(monitor->LogUsage());  // Should actually log now
 }
 

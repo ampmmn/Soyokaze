@@ -7,6 +7,7 @@
 #include <thread>
 #include <vector>
 #include <deque>
+#include "core/LauncherProcessContext.h"
 #include "mainwindow/LauncherWindowEventDispatcher.h"
 #include "commands/common/Message.h"
 #include "commands/watchpath/LocalPathTarget.h"
@@ -102,6 +103,12 @@ void PathWatcher::PImpl::StartWatch()
 	mTask.reset(new std::thread([&]() {
 
 		do {
+
+			if (launcherapp::core::LauncherProcessContext::GetInstance()->IsShutdownInProgress()) {
+				// Windwosログオフ進行中
+				return ;
+			}
+
 			if (IsLockWorkstation()) {
 				// スクリーンロック中に変更を検知して通知をしても通知を見れないため、ロック中はチェックしない。
 				continue;
