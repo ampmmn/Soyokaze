@@ -34,6 +34,7 @@ struct WinHttp::PImpl
 {
 	bool IsContentHTML(const std::vector<WCHAR>& content);
 	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML);
+	bool ConfigureSystemProxy(HINTERNET session, LPCWSTR url);
 
 	DWORD GetProxyAccessType() {
 		if (mProxyType == DIRECTPROXY) { return WINHTTP_ACCESS_TYPE_NAMED_PROXY; }
@@ -89,6 +90,71 @@ bool WinHttp::PImpl::IsContentHTML(const std::vector<WCHAR>& content)
 
 	spdlog::debug("no Content-Type");
 	return false;
+}
+
+bool WinHttp::PImpl::ConfigureSystemProxy(HINTERNET session, LPCWSTR url)
+{
+	WINHTTP_CURRENT_USER_IE_PROXY_CONFIG ieProxyConfig{};
+	if (WinHttpGetIEProxyConfigForCurrentUser(&ieProxyConfig) == FALSE) {
+		// システム設定を取得できない場合は、呼び出し元で自動プロキシにフォールバックする
+		return false;
+	}
+
+	WINHTTP_PROXY_INFO proxyInfo{};
+	bool hasProxyInfo = false;
+
+	if (ieProxyConfig.lpszProxy != nullptr) {
+		// 手動で指定されたプロキシと、プロキシを使用しない対象を適用する
+		proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NAMED_PROXY;
+		proxyInfo.lpszProxy = ieProxyConfig.lpszProxy;
+		proxyInfo.lpszProxyBypass = ieProxyConfig.lpszProxyBypass;
+		hasProxyInfo = true;
+	}
+	else if (ieProxyConfig.fAutoDetect || ieProxyConfig.lpszAutoConfigUrl != nullptr) {
+		// 自動検出またはPACファイルを使って対象URLのプロキシを解決する
+		WINHTTP_AUTOPROXY_OPTIONS options{};
+		if (ieProxyConfig.fAutoDetect) {
+			options.dwFlags |= WINHTTP_AUTOPROXY_AUTO_DETECT;
+			options.dwAutoDetectFlags = WINHTTP_AUTO_DETECT_TYPE_DHCP | WINHTTP_AUTO_DETECT_TYPE_DNS_A;
+		}
+		if (ieProxyConfig.lpszAutoConfigUrl != nullptr) {
+			options.dwFlags |= WINHTTP_AUTOPROXY_CONFIG_URL;
+			options.lpszAutoConfigUrl = ieProxyConfig.lpszAutoConfigUrl;
+		}
+		options.fAutoLogonIfChallenged = TRUE;
+
+		hasProxyInfo = WinHttpGetProxyForUrl(session, url, &options, &proxyInfo) != FALSE;
+	}
+	else {
+		// システム設定でプロキシが無効になっている場合は直接接続する
+		proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NO_PROXY;
+		hasProxyInfo = true;
+	}
+
+	bool result = false;
+	if (hasProxyInfo) {
+		// 解決したプロキシ設定をセッションに反映する
+		result = WinHttpSetOption(session, WINHTTP_OPTION_PROXY, &proxyInfo, sizeof(proxyInfo)) != FALSE;
+	}
+
+	// WinHTTP APIが確保したプロキシ情報を解放する
+	if (proxyInfo.lpszProxy != nullptr && proxyInfo.lpszProxy != ieProxyConfig.lpszProxy) {
+		GlobalFree(proxyInfo.lpszProxy);
+	}
+	if (proxyInfo.lpszProxyBypass != nullptr && proxyInfo.lpszProxyBypass != ieProxyConfig.lpszProxyBypass) {
+		GlobalFree(proxyInfo.lpszProxyBypass);
+	}
+	if (ieProxyConfig.lpszAutoConfigUrl != nullptr) {
+		GlobalFree(ieProxyConfig.lpszAutoConfigUrl);
+	}
+	if (ieProxyConfig.lpszProxy != nullptr) {
+		GlobalFree(ieProxyConfig.lpszProxy);
+	}
+	if (ieProxyConfig.lpszProxyBypass != nullptr) {
+		GlobalFree(ieProxyConfig.lpszProxyBypass);
+	}
+
+	return result;
 }
 
 
@@ -149,6 +215,12 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 	if (WinHttpCrackUrl(url, url.GetLength(), 0, &cmp) == FALSE) {
 		spdlog::error(_T("Invalid url. {}"), (LPCTSTR)url);
 		return false;
+	}
+
+	if (mProxyType == SYSTEMSETTING) {
+		// WinHTTPはWinINetのシステム設定をすべて自動では引き継がないため、
+		// 現在のユーザーのプロキシ、PAC、バイパス設定を明示的に適用する
+		ConfigureSystemProxy(session, url);
 	}
 
 	spdlog::debug("httpopen {:.6f} s.", sw);
