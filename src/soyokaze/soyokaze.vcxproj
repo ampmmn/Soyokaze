@@ -948,6 +948,7 @@
     <ClInclude Include="matcher/WholeMatchPattern.h" />
     <ClInclude Include="mainwindow\layout\WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
+    <ClInclude Include="utility\FaviconLoader.h" />
     <ClInclude Include="utility\WinHttp.h" />
     <ClInclude Include="utility\WinHttpHandle.h" />
     <ClInclude Include="utility\WipingBuffer.h" />
@@ -1486,6 +1487,7 @@
     <ClCompile Include="utility\StringUtil.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
+    <ClCompile Include="utility\FaviconLoader.cpp" />
     <ClCompile Include="utility\WinHttp.cpp" />
     <ClCompile Include="utility\WipingBuffer.cpp" />
     <ClCompile Include="utility\WipingString.cpp" />

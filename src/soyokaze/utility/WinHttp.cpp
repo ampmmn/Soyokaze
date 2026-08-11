@@ -33,6 +33,7 @@ public:
 struct WinHttp::PImpl
 {
 	bool IsContentHTML(const std::vector<WCHAR>& content);
+	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML);
 
 	DWORD GetProxyAccessType() {
 		if (mProxyType == DIRECTPROXY) { return WINHTTP_ACCESS_TYPE_NAMED_PROXY; }
@@ -123,11 +124,11 @@ static DWORD ChooseAuthScheme(DWORD supportedSchemes)
 	}
 }
 
-bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
+bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML)
 {
 	spdlog::stopwatch sw;
 
- 	WinHttpHandle session(WinHttpOpen(L"WinHttpOpen/1.0", in->GetProxyAccessType(), in->GetProxyName(), WINHTTP_NO_PROXY_BYPASS, 0));
+	WinHttpHandle session(WinHttpOpen(L"WinHttpOpen/1.0", GetProxyAccessType(), GetProxyName(), WINHTTP_NO_PROXY_BYPASS, 0));
 
 	WCHAR hostName[1024];
 	std::vector<WCHAR> urlPath(65536);
@@ -156,7 +157,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 	spdlog::debug("connect {:.6f} s.", sw);
 
-	WinHttpHandle req(WinHttpOpenRequest(connect, in->mMethod, urlPath.data(), nullptr, WINHTTP_NO_REFERER, 
+	WinHttpHandle req(WinHttpOpenRequest(connect, mMethod, urlPath.data(), nullptr, WINHTTP_NO_REFERER,
 				WINHTTP_DEFAULT_ACCEPT_TYPES, (INTERNET_SCHEME_HTTPS == cmp.nScheme) ? WINHTTP_FLAG_SECURE : 0));
 
 	spdlog::debug("openrequest {:.6f} s.", sw);
@@ -164,7 +165,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	DWORD proxyScheme = 0;
 
 	
-	bool isRetryProxyAuth = (in->mProxyType == DIRECTPROXY);
+	bool isRetryProxyAuth = (mProxyType == DIRECTPROXY);
 		// 指摘したプロキシを使う設定の場合だけ、407が返ったら認証情報をセットしてリトライを試みる
 
 	bool hasRetriedHttpAuth = false;
@@ -179,7 +180,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 
 		// プロキシ認証情報はリトライが複数回行われる可能性があるため、ここでセットする
 		if (proxyScheme != 0) {
-			isOK = WinHttpSetCredentials(req, WINHTTP_AUTH_TARGET_PROXY, proxyScheme, in->mProxyUser, in->mProxyPassword, nullptr);
+			isOK = WinHttpSetCredentials(req, WINHTTP_AUTH_TARGET_PROXY, proxyScheme, mProxyUser, mProxyPassword, nullptr);
 		}
 
 		// リクエストを出す
@@ -231,7 +232,7 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 				return false;
 			}
 			// 認証情報を設定
-			isOK = WinHttpSetCredentials(req, target, selectedScheme, in->mServerUser, in->mServerPassword, nullptr);
+			isOK = WinHttpSetCredentials(req, target, selectedScheme, mServerUser, mServerPassword, nullptr);
 
 			hasRetriedHttpAuth = true;
 			continue;
@@ -281,12 +282,16 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	}
 
 	// ヘッダをパースしてコンテンツ種別を得る
-	if (in->IsContentHTML(hdrData) == false) {
+	if (IsContentHTML(hdrData) == false) {
 		// HTMLでなければこのツールでは取り扱わないのでコンテンツを取得せずに抜ける
 		isHTML = false;
-		return false;
+		if (requireHTML) {
+			return false;
+		}
 	}
-	isHTML = true;
+	else {
+		isHTML = true;
+	}
 
 	spdlog::debug("queryheaders {:.6f} s.", sw);
 
@@ -318,6 +323,17 @@ bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& 
 	spdlog::debug("download {:.6f} s.", sw);
 
 	return true;
+}
+
+bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
+{
+	return in->LoadContent(url, content, isHTML, true);
+}
+
+bool WinHttp::LoadBinaryContent(const CString& url, std::vector<BYTE>& content)
+{
+	bool isHTML = false;
+	return in->LoadContent(url, content, isHTML, false);
 }
 
 void WinHttp::SetProxyType(int type)

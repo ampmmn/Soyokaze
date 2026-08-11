@@ -9,6 +9,8 @@ public:
 	virtual ~IconLabel();
 
 	void EnableIconChange();
+	void EnableFaviconDownload(const CString& url);
+	void DisableFaviconDownload();
 
 	void DrawIcon(HICON iconHandle);
 	void DrawDefaultIcon();
@@ -29,6 +31,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 	afx_msg void OnMenuChangeIcon();
+	afx_msg void OnMenuFaviconDownload();
 	afx_msg void OnMenuDefaultIcon();
 };
 

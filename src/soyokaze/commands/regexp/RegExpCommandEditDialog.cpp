@@ -171,6 +171,13 @@ bool CommandEditDialog::UpdateStatus()
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(param.mNormalAttr.mPath)) == 0;
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
+	if (PathIsURL(param.mNormalAttr.mPath)) {
+		in->mIconLabelPtr->EnableFaviconDownload(param.mNormalAttr.mPath);
+	}
+	else {
+		in->mIconLabelPtr->DisableFaviconDownload();
+	}
+
 	if (param.mIconData.empty()) {
 		CString resolvedPath(param.mNormalAttr.mPath);
 		ExpandMacros(resolvedPath);

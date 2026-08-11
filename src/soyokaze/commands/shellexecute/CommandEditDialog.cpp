@@ -165,6 +165,14 @@ bool CommandEditDialog::UpdateStatus()
 
 	BOOL isShortcut = CString(_T(".lnk")).CompareNoCase(PathFindExtension(targetPath)) == 0;
 
+	// 
+	if (PathIsURL(targetPath)) {
+		in->mIconLabelPtr->EnableFaviconDownload(targetPath);
+	}
+	else {
+		in->mIconLabelPtr->DisableFaviconDownload();
+	}
+
 	// $1,2,3... または $*の指定がある場合は、引数必須を選択するチェックを表示
 
 	// パスが有効なファイルだったら編集メニューを表示する

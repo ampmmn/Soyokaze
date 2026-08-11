@@ -3,6 +3,7 @@
 #include "IconLabel.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
+#include "utility/FaviconLoader.h"
 #include "resource.h"
 #include <map>
 #include <gdiplus.h>
@@ -22,7 +23,10 @@ struct IconLabel::PImpl
 	CImageList mIconList;
 	CSize mCtrlSize;
 
+	CString mFaviconURL;
+
 	bool mCanIconChange{false};
+	bool mCanFaviconDownload{false};
 	bool mIsUseBackgroundColor{false};
 	COLORREF mBackgroundColor{RGB(0,0,0)};
 };
@@ -45,6 +49,18 @@ END_MESSAGE_MAP()
 void IconLabel::EnableIconChange()
 {
 	in->mCanIconChange = true;
+}
+
+void IconLabel::EnableFaviconDownload(const CString& url)
+{
+	in->mCanFaviconDownload = true;
+	in->mFaviconURL = url;
+}
+
+void IconLabel::DisableFaviconDownload()
+{
+	in->mCanFaviconDownload = false;
+	in->mFaviconURL.Empty();
 }
 
 void IconLabel::DrawIcon(HICON iconHandle)
@@ -127,6 +143,7 @@ void IconLabel::SetBackgroundColor(bool isUseSystemSetting, COLORREF cr)
 
 void IconLabel::OnEnable(BOOL isEnable)
 {
+	UNREFERENCED_PARAMETER(isEnable);
 	InvalidateRect(nullptr);
 }
 
@@ -185,8 +202,56 @@ void IconLabel::OnMenuChangeIcon()
 		return ;
 	}
 
-	// 親ウインドウに変更後のアイコントとする画像ファイルパスを通知する
+	// 親ウインドウに変更後のアイコンとする画像ファイルパスを通知する
 	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)dlg.GetPathName());
+
+	// IconLabelに対してアイコンを設定するのはクラス利用者側の責務
+
+}
+
+static bool GetTempFilePath(Path& userDataPath)
+{
+	userDataPath.Append(_T("tmp"));
+	if (userDataPath.IsDirectory() == FALSE) {
+		if (CreateDirectory(userDataPath, nullptr) == FALSE) {
+			return false;
+		}
+	}
+	userDataPath.Append(_T("favicon.png"));
+	return true;
+}
+
+
+void IconLabel::OnMenuFaviconDownload()
+{
+	if (in->mFaviconURL.IsEmpty()) {
+		spdlog::warn("Favicon URL is null.");
+		return ;
+	}	
+
+	std::vector<BYTE> image;
+
+	launcherapp::FaviconLoader favloder;
+	if (favloder.Load(in->mFaviconURL, image) == false) {
+		AfxMessageBox(_T("Faviconを取得できませんでした"));
+		spdlog::warn(_T("Failed to get favicon. {}"), (LPCTSTR)in->mFaviconURL);
+		return ;
+	}
+
+	Path faviconPath(Path::APPDIRPERMACHINE);
+	GetTempFilePath(faviconPath);
+
+	try {
+		CFile file(faviconPath, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary);
+		file.Write(image.data(), static_cast<UINT>(image.size()));
+	}
+	catch (CFileException* e) {
+		e->Delete();
+		return;
+	}
+
+	// 親ウインドウに変更後のアイコンとする画像ファイルパスを通知する
+	GetParent()->SendMessage(WM_APP + 11, 1, (LPARAM)(LPCTSTR)faviconPath);
 
 	// IconLabelに対してアイコンを設定するのはクラス利用者側の責務
 
@@ -208,21 +273,30 @@ void IconLabel::OnContextMenu(
 {
 	UNREFERENCED_PARAMETER(pWnd);
 
-	if (in->mCanIconChange == false) {
+	if (in->mCanIconChange == false && in->mCanFaviconDownload == false) {
 		return;
 	}
 
 	const int ID_CHANGEICON = 1;
-	const int ID_DEFAULTICON = 2;
+	const int ID_FAVICONDOWNLOAD = 2;
+	const int ID_DEFAULTICON = 3;
 
 	CMenu menu;
 	menu.CreatePopupMenu();
-	menu.InsertMenu((UINT)-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
+	if (in->mCanIconChange) {
+		menu.InsertMenu((UINT)-1, 0, ID_CHANGEICON, _T("アイコンを変更する"));
+	}
+	if (in->mCanFaviconDownload) {
+		menu.InsertMenu((UINT)-1, 0, ID_FAVICONDOWNLOAD, _T("URLからファビコンを取得する"));
+	}
 	menu.InsertMenu((UINT)-1, 0, ID_DEFAULTICON, _T("アイコンを初期状態に戻す"));
 
 	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
 	if (n == ID_CHANGEICON) {
 		OnMenuChangeIcon();
+	}
+	else if (n == ID_FAVICONDOWNLOAD) {
+		OnMenuFaviconDownload();
 	}
 	else if (n == ID_DEFAULTICON) {
 		OnMenuDefaultIcon();

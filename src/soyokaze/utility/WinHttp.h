@@ -12,6 +12,7 @@ public:
 	~WinHttp();
 
 	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML);
+	bool LoadBinaryContent(const CString& url, std::vector<BYTE>& content);
 
 	enum {
 		SYSTEMSETTING = 0,  // システム設定を使う

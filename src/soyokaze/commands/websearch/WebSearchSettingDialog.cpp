@@ -208,6 +208,10 @@ void SettingDialog::UpdateStatus()
 		in->mMessage.Empty();
 	}
 
+	if (canPressOK) {
+		in->mIconLabelPtr->EnableFaviconDownload(url);
+	}
+
 	GetDlgItem(IDOK)->EnableWindow(canPressOK ? TRUE : FALSE);
 }
 
