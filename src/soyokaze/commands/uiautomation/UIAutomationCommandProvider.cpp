@@ -7,8 +7,8 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
 #include "core/IFIDDefine.h"
 #include "matcher/PartialMatchPattern.h"
 #include "SharedHwnd.h"
@@ -91,16 +91,16 @@ static HWND GetNextHwnd()
 
 struct UIAutomationCommandProvider::PImpl :
  	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("UIAutomation"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -119,7 +119,7 @@ struct UIAutomationCommandProvider::PImpl :
 		mParam.Load(settings);
 	}
 
-// LauncherWindowEventListenerIF
+// LauncherEventListenerIF
 	void OnLockScreenOccurred() override {}
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {}

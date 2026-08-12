@@ -8,7 +8,7 @@
 #include <vector>
 #include <deque>
 #include "core/LauncherProcessContext.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "app/LauncherEventDispatcher.h"
 #include "commands/common/Message.h"
 #include "commands/watchpath/LocalPathTarget.h"
 #include "commands/watchpath/UNCPathTarget.h"
@@ -22,7 +22,7 @@ namespace watchpath {
 
 using ITEM = PathWatcher::ITEM;
 
-struct PathWatcher::PImpl : public LauncherWindowEventListenerIF
+struct PathWatcher::PImpl : public LauncherEventListenerIF
 {
 	// 監視を開始
 	void StartWatch();
@@ -177,12 +177,12 @@ void PathWatcher::PImpl::NotifyPath(
 
 PathWatcher::PathWatcher() : in(new PImpl)
 {
-	LauncherWindowEventDispatcher::Get()->AddListener(in.get());
+	LauncherEventDispatcher::Get()->AddListener(in.get());
 }
 
 PathWatcher::~PathWatcher()
 {
-	LauncherWindowEventDispatcher::Get()->RemoveListener(in.get());
+	LauncherEventDispatcher::Get()->RemoveListener(in.get());
 
 	in->Abort();
 	in->WaitExit();

@@ -32,7 +32,8 @@
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/AppSound.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "utility/ProcessPath.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "mainwindow/MainWindowHotKey.h"
@@ -43,9 +44,6 @@
 #include <algorithm>
 #include <thread>
 #include <map>
-
-#include <wtsapi32.h>
-#pragma comment(lib, "Wtsapi32.lib")
 
 #include <dwmapi.h>
 #pragma comment(lib, "Dwmapi.lib")
@@ -61,9 +59,6 @@ using namespace launcherapp::mainwindow;
 using namespace launcherapp::mainwindow::controller;
 using namespace launcherapp::actions::core;
 using GuideCtrl = launcherapp::mainwindow::guide::GuideCtrl;
-
-// ランチャーのタイマーイベントをリスナーに通知する用のタイマー
-constexpr UINT TIMERID_OPERATION = 2;
 
 struct LauncherMainWindow::PImpl
 {
@@ -256,9 +251,7 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_MESSAGE(LauncherMainWindowMessageID::DELETEWORD, OnUserMessageDeleteWord)
 	ON_MESSAGE(WM_APP+255, OnUserMessageGuideClicked)
 	ON_WM_CONTEXTMENU()
-	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP, OnCommandHelp)
-	ON_MESSAGE(WM_WTSSESSION_CHANGE, OnMessageSessionChange)
 	ON_WM_CTLCOLOR()
 	ON_WM_MEASUREITEM()
 	ON_BN_CLICKED(IDC_BUTTON_OPTION, OnButtonOptionClicked)
@@ -282,7 +275,7 @@ void LauncherMainWindow::ActivateWindow()
 
 void LauncherMainWindow::HideWindow()
 {
-	LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+	LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
 		listener->OnLauncherUnactivate();
 	});
 	in->mLayout->HideWindow();
@@ -364,7 +357,7 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 			in->mKeywordEdit.SetIMEOff();
 		}
 
-		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
+		LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
 			listener->OnLauncherActivate();
 		});
 	}
@@ -996,11 +989,6 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mGuideCtrl.SubclassDlgItem(IDC_STATIC_GUIDE, this);
 	in->mGuideCtrl.SetMainWindow(this);
 	in->mGuideCtrl.SetClickNotifyMessageId(WM_APP + 255);
-
-	// スクリーンロック/アンロックの通知をうけとる
-	WTSRegisterSessionNotification(GetSafeHwnd(), NOTIFY_FOR_ALL_SESSIONS);
-
-	SetTimer(TIMERID_OPERATION, 1000, nullptr);
 
 	in->mOpWatcher.StartWatch(this);
 
@@ -2000,35 +1988,6 @@ void LauncherMainWindow::OnCommandHotKey(UINT id)
 	// ローカルホットキーに関連付けられたコマンドを実行する
 	SPDLOG_DEBUG("args id:{}", id);
 	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
-}
-
-void LauncherMainWindow::OnTimer(UINT_PTR timerId)
-{
-	if (timerId == TIMERID_OPERATION) {
-		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-			listener->OnTimer();
-		});
-	}
-}
-
-LRESULT LauncherMainWindow::OnMessageSessionChange(WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-
-	// ロックされたとき、wpにWTS_SESSION_LOCK(7)、解除されたときは WTS_SESSION_UNLOCK(8)が通知される
-	if (wParam == WTS_SESSION_LOCK) {
-		SPDLOG_INFO(_T("WTS_SESSION_LOCK"));
-		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-				listener->OnLockScreenOccurred();
-		});
-	}
-	else if (wParam == WTS_SESSION_UNLOCK) {
-		SPDLOG_INFO(_T("WTS_SESSION_UNLOCK"));
-		LauncherWindowEventDispatcher::Get()->Dispatch([](LauncherWindowEventListenerIF* listener) {
-				listener->OnUnlockScreenOccurred();
-		});
-	}
-	return 0;
 }
 
 HBRUSH LauncherMainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)

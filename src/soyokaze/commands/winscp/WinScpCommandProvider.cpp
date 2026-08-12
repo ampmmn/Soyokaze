@@ -7,8 +7,8 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
 #include <vector>
 #include <mutex>
 
@@ -22,16 +22,16 @@ namespace launcherapp { namespace commands { namespace winscp {
 
 struct WinScpCommandProvider::PImpl : 
 	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("WinScp"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -44,7 +44,7 @@ struct WinScpCommandProvider::PImpl :
 	}
 	void OnAppExit() override {}
 
-// LauncherWindowEventListenerIF
+// LauncherEventListenerIF
 	void OnLockScreenOccurred() override {}
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {

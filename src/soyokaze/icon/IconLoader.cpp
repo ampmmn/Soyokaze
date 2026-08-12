@@ -2,8 +2,8 @@
 #include "framework.h"
 #include "IconLoader.h"
 #include "icon/AppIcon.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/RegistryKey.h"
 #include "utility/AppProfile.h"
@@ -69,7 +69,7 @@ using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
 using IconIndexMap = std::map<int, ICONITEM>;
 
-struct IconLoader::PImpl : public LauncherWindowEventListenerIF
+struct IconLoader::PImpl : public LauncherEventListenerIF
 {
 	PImpl() : 
 		mVolumeIcon(nullptr),
@@ -98,11 +98,11 @@ struct IconLoader::PImpl : public LauncherWindowEventListenerIF
 		mMSSvpDll.Append(_T("System32\\mssvp.dll"));
 		mMSSvpDll.Shrink();
 
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 	}
 
 	// アイコンを登録する

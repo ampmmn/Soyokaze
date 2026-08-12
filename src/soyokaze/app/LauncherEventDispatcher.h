@@ -1,19 +1,19 @@
 #pragma once
 
-#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "core/LauncherEventListenerIF.h"
 #include <functional>
 
-class LauncherWindowEventDispatcher
+class LauncherEventDispatcher
 {
 public:
-	using Listener = LauncherWindowEventListenerIF;
+	using Listener = LauncherEventListenerIF;
 
 private:
-	LauncherWindowEventDispatcher();
-	~LauncherWindowEventDispatcher();
+	LauncherEventDispatcher();
+	~LauncherEventDispatcher();
 
 public:
-	static LauncherWindowEventDispatcher* Get();
+	static LauncherEventDispatcher* Get();
 
 	void AddListener(Listener* listener);
 	void RemoveListener(Listener* listener);
@@ -23,4 +23,3 @@ private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
-

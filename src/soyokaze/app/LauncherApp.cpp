@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "app/LauncherApp.h"
 #include "app/AppProcess.h"
+#include "app/LauncherSystemEventWindow.h"
 #include "app/LauncherShutdownWindow.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
@@ -160,6 +161,12 @@ BOOL LauncherApp::InitFirstInstance()
 	LauncherShutdownWindow shutdownWindow;
 	if (shutdownWindow.Create() == FALSE) {
 		spdlog::error("Failed to create LauncherShutdownWindow.");
+		return FALSE;
+	}
+
+	LauncherSystemEventWindow systemEventWindow;
+	if (systemEventWindow.Create() == FALSE) {
+		spdlog::error("Failed to create LauncherSystemEventWindow.");
 		return FALSE;
 	}
 

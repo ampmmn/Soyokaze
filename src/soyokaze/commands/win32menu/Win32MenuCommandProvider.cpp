@@ -8,8 +8,8 @@
 #include "commands/activate_window/WindowList.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
 #include "core/IFIDDefine.h"
 #include "matcher/PartialMatchPattern.h"
 #include "SharedHwnd.h"
@@ -98,16 +98,16 @@ namespace launcherapp { namespace commands { namespace win32menu {
 
 struct Win32MenuCommandProvider::PImpl :
  	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("Win32MenuCommand"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -126,7 +126,7 @@ struct Win32MenuCommandProvider::PImpl :
 		mParam.Load(settings);
 	}
 
-// LauncherWindowEventListenerIF
+// LauncherEventListenerIF
 	void OnLockScreenOccurred() override {}
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {}
@@ -281,7 +281,6 @@ void Win32MenuCommandProvider::QueryAdhocCommands(
 
 	int matchCount = 0;
 
-	HWND hwnd{nullptr};
 	Win32MenuElements::Win32MenuElementList elems;
 	in->GetElements(elems);
 	for (auto& elem : elems) {

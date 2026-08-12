@@ -5,8 +5,8 @@
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "core/IFIDDefine.h"
 
 #ifdef _DEBUG
@@ -23,13 +23,13 @@ namespace launcherapp { namespace commands { namespace extracandidate {
 struct ExtraCandidateProvider::PImpl :
  	public AppPreferenceListenerIF,
  	public CommandRepositoryListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("ExtraCandidate"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
@@ -59,7 +59,7 @@ struct ExtraCandidateProvider::PImpl :
 	}
 	void OnAppExit() override
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 
 		auto cmdRepo = launcherapp::core::CommandRepository::GetInstance();
 		cmdRepo->UnregisterListener(this);
@@ -97,7 +97,7 @@ struct ExtraCandidateProvider::PImpl :
 	}
 	void OnPatternReloaded() override {}
 
-// LauncherWindowEventListenerIF
+// LauncherEventListenerIF
 	void OnLockScreenOccurred() override {}
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {}

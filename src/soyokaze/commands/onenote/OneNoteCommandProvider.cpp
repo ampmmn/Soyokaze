@@ -8,8 +8,8 @@
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
 #include <mutex>
 #include <thread>
 
@@ -26,16 +26,16 @@ const uint64_t UPDATE_INTERVAL = 5 * 60 * 1000;  // 5分
 
 struct OneNoteCommandProvider::PImpl : 
 	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("OneNote"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -48,7 +48,7 @@ struct OneNoteCommandProvider::PImpl :
 	}
 	void OnAppExit() override {}
 
-// LauncherWindowEventListenerIF
+// LauncherEventListenerIF
 	void OnLockScreenOccurred() override {}
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {

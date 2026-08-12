@@ -129,7 +129,6 @@ protected:
 	LRESULT OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam);
-	LRESULT OnMessageSessionChange(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageCopyText(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageClearContent(WPARAM wParam, LPARAM lParam);
@@ -149,7 +148,6 @@ public:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 	afx_msg void OnCommandHotKey(UINT id);
 	afx_msg void OnCommandHelp();
-	afx_msg void OnTimer(UINT_PTR timerId);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnMeasureItem(int ctrlId, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 

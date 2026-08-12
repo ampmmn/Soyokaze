@@ -420,7 +420,9 @@
     <ClInclude Include="actions\vmware\RunVMXAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
+    <ClInclude Include="app\LauncherEventDispatcher.h" />
     <ClInclude Include="app\LauncherShutdownWindow.h" />
+    <ClInclude Include="app\LauncherSystemEventWindow.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="app\ManualWindow.h" />
@@ -647,6 +649,7 @@
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h" />
     <ClInclude Include="control\LeftBorderLabel.h" />
     <ClInclude Include="control\webbrowser\InternalBrowser.h" />
+    <ClInclude Include="core\LauncherEventListenerIF.h" />
     <ClInclude Include="core\LauncherProcessContext.h" />
     <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
@@ -828,7 +831,6 @@
     <ClInclude Include="mainwindow\interprocess\InterProcessMessageQueue.h" />
     <ClInclude Include="mainwindow\LauncherInputStatusIF.h" />
     <ClInclude Include="mainwindow\LauncherMainWindowIF.h" />
-    <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h" />
     <ClInclude Include="mainwindow\layout\ComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\DefaultComponentPlacer.h" />
     <ClInclude Include="mainwindow\layout\MainWindowLayout.h" />
@@ -976,7 +978,9 @@
     <ClCompile Include="actions\vmware\RunVMXAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
+    <ClCompile Include="app\LauncherEventDispatcher.cpp" />
     <ClCompile Include="app\LauncherShutdownWindow.cpp" />
+    <ClCompile Include="app\LauncherSystemEventWindow.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\ManualWindow.cpp" />
@@ -1366,7 +1370,6 @@
     <ClCompile Include="mainwindow\controller\MainWindowController.cpp" />
     <ClCompile Include="mainwindow\guide\GuideCtrl.cpp" />
     <ClCompile Include="mainwindow\interprocess\InterProcessMessageQueue.cpp" />
-    <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp" />
     <ClCompile Include="mainwindow\layout\DefaultComponentPlacer.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowLayout.cpp" />
     <ClCompile Include="mainwindow\layout\MainWindowPlacement.cpp" />

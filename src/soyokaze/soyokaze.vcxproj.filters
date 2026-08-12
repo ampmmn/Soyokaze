@@ -918,8 +918,8 @@
     <ClInclude Include="commands\watchpath\WatchPathToast.h">
       <Filter>commands\watchpath</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\LauncherWindowEventDispatcher.h">
-      <Filter>mainwindow</Filter>
+    <ClInclude Include="app\LauncherEventDispatcher.h">
+      <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="settingwindow\AppSettingPageOther.h">
       <Filter>settingwindow</Filter>
@@ -949,6 +949,9 @@
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="app\LauncherShutdownWindow.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\LauncherSystemEventWindow.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="control\SinglePageDialog.h">
@@ -1929,6 +1932,9 @@
     <ClInclude Include="core\LauncherProcessContext.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core\LauncherEventListenerIF.h">
+      <Filter>core</Filter>
+    </ClInclude>
     <ClInclude Include="utility\WipingString.h">
       <Filter>utility</Filter>
     </ClInclude>
@@ -2549,8 +2555,8 @@
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp">
       <Filter>commands\watchpath</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\LauncherWindowEventDispatcher.cpp">
-      <Filter>mainwindow</Filter>
+    <ClCompile Include="app\LauncherEventDispatcher.cpp">
+      <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPageOther.cpp">
       <Filter>settingwindow</Filter>
@@ -2580,6 +2586,9 @@
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="app\LauncherShutdownWindow.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\LauncherSystemEventWindow.cpp">
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="control\SinglePageDialog.cpp">

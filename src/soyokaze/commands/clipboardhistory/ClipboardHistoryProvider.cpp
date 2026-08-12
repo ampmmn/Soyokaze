@@ -9,7 +9,7 @@
 #include "commands/clipboardhistory/ClipboardPreviewWindow.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandFile.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
+#include "app/LauncherEventDispatcher.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "resource.h"
@@ -29,7 +29,7 @@ using CommandRepository = launcherapp::core::CommandRepository;
  */
 struct ClipboardHistoryProvider::PImpl :
 	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	/**
 	 * @brief コンストラクタ
@@ -59,7 +59,7 @@ struct ClipboardHistoryProvider::PImpl :
 	 */
 	void OnAppNormalBoot() override {
 		// ランチャーウィンドウのイベントリスナーとして登録
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 
 	/**

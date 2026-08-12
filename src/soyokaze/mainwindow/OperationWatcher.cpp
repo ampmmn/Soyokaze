@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "OperationWatcher.h"
-#include "LauncherWindowEventListenerIF.h"
+#include "core/LauncherEventListenerIF.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "LauncherWindowEventDispatcher.h"
+#include "app/LauncherEventDispatcher.h"
 #include "setting/AppPreference.h"
 #include "mainwindow/WarnWorkTimeToast.h"
 
@@ -12,16 +12,16 @@
 
 using Toast = launcherapp::mainwindow::Toast;
 
-struct OperationWatcher::PImpl : public LauncherWindowEventListenerIF, public AppPreferenceListenerIF
+struct OperationWatcher::PImpl : public LauncherEventListenerIF, public AppPreferenceListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("OperationWatcher"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 

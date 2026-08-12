@@ -8,8 +8,8 @@
 #include "commands/explorepath/ExplorePathFileCache.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
-#include "mainwindow/LauncherWindowEventDispatcher.h"
-#include "mainwindow/LauncherWindowEventListenerIF.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "matcher/PartialMatchPattern.h"
 #include "utility/Path.h"
 #include "resource.h"
@@ -29,16 +29,16 @@ using CommandRepository = launcherapp::core::CommandRepository;
 
 struct ExplorePathCommandProvider::PImpl :
 	public AppPreferenceListenerIF,
-	public LauncherWindowEventListenerIF
+	public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("ExplorePathCommand"));
-		LauncherWindowEventDispatcher::Get()->AddListener(this);
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
 	}
 
@@ -50,7 +50,7 @@ struct ExplorePathCommandProvider::PImpl :
 	}
 	void OnAppExit() override
 	{
-		LauncherWindowEventDispatcher::Get()->RemoveListener(this);
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 	}
 
 	void OnLockScreenOccurred() override {}
