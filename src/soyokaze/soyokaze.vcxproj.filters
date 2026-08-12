@@ -927,6 +927,9 @@
     <ClInclude Include="mainwindow\OperationWatcher.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\MouseoverActivateWindow.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -2562,6 +2565,9 @@
       <Filter>settingwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\OperationWatcher.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\MouseoverActivateWindow.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp">

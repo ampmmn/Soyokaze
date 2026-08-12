@@ -429,6 +429,11 @@ bool AppPreference::IsHideOnInactive()
 	return in->Get(_T("Soyokaze:IsHideOnInactive"), false);
 }
 
+bool AppPreference::IsMouseoverActivate()
+{
+	return in->Get(_T("Soyokaze:IsMouseoverActivate"), false);
+}
+
 // 入力欄にアイコンを描画するか
 bool AppPreference::IsDrawIcon()
 {

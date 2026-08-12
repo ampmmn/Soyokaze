@@ -846,6 +846,7 @@
     <ClInclude Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.h" />
     <ClInclude Include="mainwindow\metrics\CandidateListListenerCountMetrics.h" />
     <ClInclude Include="mainwindow\OperationWatcher.h" />
+    <ClInclude Include="mainwindow\MouseoverActivateWindow.h" />
     <ClInclude Include="mainwindow\optionbutton\MainWindowOptionButton.h" />
     <ClInclude Include="mainwindow\WarnWorkTimeToast.h" />
     <ClInclude Include="mainwindow\WindowAppearanceIF.h" />
@@ -1383,6 +1384,7 @@
     <ClCompile Include="mainwindow\metrics\CandidateListHasErrorCommandMetrics.cpp" />
     <ClCompile Include="mainwindow\metrics\CandidateListListenerCountMetrics.cpp" />
     <ClCompile Include="mainwindow\OperationWatcher.cpp" />
+    <ClCompile Include="mainwindow\MouseoverActivateWindow.cpp" />
     <ClCompile Include="mainwindow\optionbutton\MainWindowOptionButton.cpp" />
     <ClCompile Include="mainwindow\WarnWorkTimeToast.cpp" />
     <ClCompile Include="matcher\CommandToken.cpp" />

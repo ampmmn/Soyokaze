@@ -331,6 +331,7 @@
 #define IDC_BUTTON_SHORTCUT             1075
 #define IDC_CHECK_KEEPTEXTWHENDLGHIDE   1076
 #define IDC_SYSLINK3                    1077
+#define IDC_CHECK_MOUSEOVERACTIVATE     1077
 #define IDC_SYSLINK_APPDIR              1078
 #define IDC_SYSLINK2                    1079
 #define IDC_CHECK_SENDTO                1080
@@ -602,7 +603,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1247
+#define _APS_NEXT_CONTROL_VALUE         1248
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

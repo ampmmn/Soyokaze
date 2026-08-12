@@ -65,6 +65,8 @@ private:
 	BOOL mIsHideOnInactive{FALSE};
 	// マウスカーソル位置に入力欄を表示する
 	BOOL mIsShowMainWindowOnCursor{FALSE};
+	// カーソル位置によるアクティブ制御
+	BOOL mIsMouseoverActivate{FALSE};
 
 	Settings* mSettingsPtr{nullptr};
 };
@@ -97,6 +99,7 @@ void BasicSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsHideOnRun = settingsPtr->Get(_T("Soyokaze:IsHideOnStartup"), false);
 	mIsTopMost = settingsPtr->Get(_T("Soyokaze:TopMost"), false);
 	mIsHideOnInactive = settingsPtr->Get(_T("Soyokaze:IsHideOnInactive"), false);
+	mIsMouseoverActivate = settingsPtr->Get(_T("Soyokaze:IsMouseoverActivate"), false);
 
 	bool isShowOnCursor = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnCurorPos"), false);
 	bool isShowOnActWin = settingsPtr->Get(_T("Soyokaze:IsShowMainWindowOnActiveWindowCenter"), false);
@@ -143,6 +146,7 @@ void BasicSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsHideOnStartup"), (bool)mIsHideOnRun);
 	settingsPtr->Set(_T("Soyokaze:TopMost"), (bool)mIsTopMost);
 	settingsPtr->Set(_T("Soyokaze:IsHideOnInactive"), (bool)mIsHideOnInactive);
+	settingsPtr->Set(_T("Soyokaze:IsMouseoverActivate"), (bool)mIsMouseoverActivate);
 
 	bool isShowOnCursor = (mShowPositionType == POSTYPE_MOUSECURSOR);
 	settingsPtr->Set(_T("Soyokaze:IsShowMainWindowOnCurorPos"), isShowOnCursor);
@@ -162,6 +166,7 @@ void BasicSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_HIDEONRUN, mIsHideOnRun);
 	DDX_Check(pDX, IDC_CHECK_TOPMOST, mIsTopMost);
 	DDX_Check(pDX, IDC_CHECK_HIDEONINACTIVE, mIsHideOnInactive);
+	DDX_Check(pDX, IDC_CHECK_MOUSEOVERACTIVATE, mIsMouseoverActivate);
 	DDX_CBIndex(pDX, IDC_COMBO_POSITION, mShowPositionType);
 }
 

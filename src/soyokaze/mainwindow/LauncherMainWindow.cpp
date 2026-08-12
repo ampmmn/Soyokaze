@@ -38,6 +38,7 @@
 #include "utility/ScopeAttachThreadInput.h"
 #include "mainwindow/MainWindowHotKey.h"
 #include "mainwindow/OperationWatcher.h"
+#include "mainwindow/MouseoverActivateWindow.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
 #include "mainwindow/CandidateList.h"
@@ -128,6 +129,8 @@ struct LauncherMainWindow::PImpl
 // その他
 	// 稼働状況を監視する(長時間連続稼働を警告する目的)
 	OperationWatcher mOpWatcher;
+	// マウスカーソルの移動によるアクティブ状態を監視する
+	MouseoverActivateWindow mMouseoverActivateWindow;
 
 };
 
@@ -991,6 +994,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	in->mGuideCtrl.SetClickNotifyMessageId(WM_APP + 255);
 
 	in->mOpWatcher.StartWatch(this);
+	in->mMouseoverActivateWindow.Create(this);
 
 	// グローバルホットキーのイベント受け取り先として登録する
 	auto manager = core::CommandHotKeyManager::GetInstance();
