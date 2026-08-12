@@ -22,34 +22,64 @@ struct VSCodeCommand::PImpl
 {
 	bool LoadStorage()
 	{
-		Path dbPath(Path::APPDATA, _T("code/user/globalStorage/state.vscdb"));
-		if (dbPath.FileExists() == false) {
-			// VSCodeはおそらくインストールされていない
+		// 従来のVSCode履歴情報の保存先ファイルパス
+		Path dbPath1(Path::APPDATA, _T("code\\user\\globalStorage\\state.vscdb"));
+		// ある時点から下記のファイルに設定情報が保存されるようになっている
+		Path dbPath2(Path::USERPROFILE, _T(".vscode-shared\\sharedStorage\\state.vscdb"));
+
+		if (dbPath1.FileExists() == false && dbPath2.FileExists() == false) {
+			// どちらも存在しない場合、VSCodeはおそらくインストールされていない
 			return false;
 		}
 
 		if (mParam.mIsEnable == false) {
-			if (mWatchId != 0) {
-				LocalDirectoryWatcher::GetInstance()->Unregister(mWatchId);
-				mWatchId = 0;
+			// 機能が無効ならファイル変更通知を解除し、なにもしない
+			if (mWatchId1 != 0) {
+				LocalDirectoryWatcher::GetInstance()->Unregister(mWatchId1);
+				mWatchId1 = 0;
+			}
+			if (mWatchId2 != 0) {
+				LocalDirectoryWatcher::GetInstance()->Unregister(mWatchId2);
+				mWatchId2 = 0;
 			}
 			return false;
 		}
 
-		// 更新があったら通知を受け取るための登録
-		if (mWatchId == 0) {
+		// ファイルの更新があったら通知を受け取るための登録をする
+		if (mWatchId1 == 0 || mWatchId2 == 0) {
 			// オリジナルの履歴データベースファイルが更新されたら通知をもらうための登録をする
-			mWatchId = LocalDirectoryWatcher::GetInstance()->Register(dbPath, [](void* p) {
+			auto callback = [](void* p) {
 				auto thisPtr = (PImpl*)p;
 				// 更新があったときもリロード
 				thisPtr->LoadStorage();
-			}, this);
+			};
+			if (mWatchId1 == 0) {
+				mWatchId1 = LocalDirectoryWatcher::GetInstance()->Register(dbPath1, callback, this);
+			}
+			if (mWatchId2 == 0) {
+				mWatchId2 = LocalDirectoryWatcher::GetInstance()->Register(dbPath2, callback, this);
+			}
 		}
 
+		std::vector<RefPtr<launcherapp::core::Command> > commands;
+		LoadStorage(dbPath1, commands);
+		LoadStorage(dbPath2, commands);
+
+		std::lock_guard<std::mutex> lock(mMutex);
+		mCommands.swap(commands);
+
+		return true;
+	}
+
+	bool LoadStorage(LPCTSTR dbFilePath, std::vector<RefPtr<launcherapp::core::Command> >& commands)
+	{
+		if (Path::FileExists(dbFilePath) == false) {
+			return false;
+		}
 
 		// state.vscdbから履歴情報を取得する
 		try {
-			SQLite3Database db((LPCTSTR)dbPath, true);
+			SQLite3Database db(dbFilePath, true);
 			LPCTSTR query =_T("SELECT value FROM ItemTable WHERE key = 'history.recentlyOpenedPathsList';"); 
 
 			std::string jsonStr;
@@ -69,7 +99,6 @@ struct VSCodeCommand::PImpl
 // }
 
 		// 上記のJSONを解析してデータを保持する
-			std::vector<RefPtr<launcherapp::core::Command> > commands;
 			json jsonObj = json::parse(jsonStr);
 			auto entries = jsonObj["entries"];
 			for (auto it = entries.begin(); it != entries.end(); ++it) {
@@ -87,23 +116,20 @@ struct VSCodeCommand::PImpl
 					commands.push_back(cmd);
 				}
 			}
-
-			std::lock_guard<std::mutex> lock(mMutex);
-			mCommands.swap(commands);
-		}
-		catch(const json::exception& e) {
+			return true;
+		} catch(const json::exception& e) {
 			CString what;
 			UTF2UTF(e.what(), what);
-			spdlog::warn(_T("failed to parse state.vcsdb:{0}, {1}"), (LPCTSTR)dbPath, (LPCTSTR)what);
+			spdlog::warn(_T("failed to parse state.vcsdb:{0}, {1}"), dbFilePath, (LPCTSTR)what);
 			return false;
 		}
-
-		return true;
+		return false;
 	}
 
 	CommandParam mParam;
 	std::vector<RefPtr<launcherapp::core::Command> > mCommands;
-	uint32_t mWatchId{0};
+	uint32_t mWatchId1{0};
+	uint32_t mWatchId2{0};
 	std::mutex mMutex;
 };
 
@@ -120,9 +146,13 @@ VSCodeCommand::VSCodeCommand() : in(std::make_unique<PImpl>())
 
 VSCodeCommand::~VSCodeCommand()
 {
-	if (in->mWatchId != 0) {
-		LocalDirectoryWatcher::GetInstance()->Unregister(in->mWatchId);
-		in->mWatchId = 0;
+	if (in->mWatchId1 != 0) {
+		LocalDirectoryWatcher::GetInstance()->Unregister(in->mWatchId1);
+		in->mWatchId1 = 0;
+	}
+	if (in->mWatchId2 != 0) {
+		LocalDirectoryWatcher::GetInstance()->Unregister(in->mWatchId2);
+		in->mWatchId2 = 0;
 	}
 }
 
