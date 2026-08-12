@@ -156,6 +156,7 @@ BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
 	ON_WM_PASTE()
 	ON_WM_CONTEXTMENU()
 	ON_WM_MBUTTONUP()
+	ON_MESSAGE(WM_APP+1, OnMessgeSelSel)
 END_MESSAGE_MAP()
 
 
@@ -189,10 +190,17 @@ LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 
 void KeywordEdit::SetCaretToEnd()
 {
+	// たまに全選択状態になってしまうことがあるため、PostMessage経由にして遅延を入れる
+	PostMessage(WM_APP+1, 0, 0);
+}
+
+LRESULT KeywordEdit::OnMessgeSelSel(WPARAM, LPARAM)
+{
 	CString s;
 	GetWindowText(s);
 	int n = s.GetLength();
 	SetSel(n, n, FALSE);
+	return 0;
 }
 
 void KeywordEdit::SetIMEOff()

@@ -38,6 +38,7 @@ protected:
 	afx_msg void OnPaste();
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnMButtonUp(UINT flags, CPoint point);
+	afx_msg LRESULT OnMessgeSelSel(WPARAM wp, LPARAM lp);
 
 	DECLARE_MESSAGE_MAP()
 };
