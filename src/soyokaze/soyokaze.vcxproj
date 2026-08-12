@@ -420,6 +420,7 @@
     <ClInclude Include="actions\vmware\RunVMXAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
+    <ClInclude Include="app\LauncherShutdownWindow.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
     <ClInclude Include="app\Manual.h" />
     <ClInclude Include="app\ManualWindow.h" />
@@ -975,6 +976,7 @@
     <ClCompile Include="actions\vmware\RunVMXAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
+    <ClCompile Include="app\LauncherShutdownWindow.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
     <ClCompile Include="app\Manual.cpp" />
     <ClCompile Include="app\ManualWindow.cpp" />

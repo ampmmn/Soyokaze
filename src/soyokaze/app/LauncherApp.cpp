@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "app/LauncherApp.h"
 #include "app/AppProcess.h"
+#include "app/LauncherShutdownWindow.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
@@ -154,6 +155,13 @@ BOOL LauncherApp::InitFirstInstance()
 
 	// クリップボードによるコマンドのコピペ処理の初期化
 	launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance()->Initialize();
+
+	// システムからのログオンセッション終了の通知を受け取るためのウインドウ
+	LauncherShutdownWindow shutdownWindow;
+	if (shutdownWindow.Create() == FALSE) {
+		spdlog::error("Failed to create LauncherShutdownWindow.");
+		return FALSE;
+	}
 
 	LauncherMainWindow dlg;
 	m_pMainWnd = &dlg;

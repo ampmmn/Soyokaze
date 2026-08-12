@@ -948,6 +948,9 @@
     <ClInclude Include="app\Manual.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="app\LauncherShutdownWindow.h">
+      <Filter>app</Filter>
+    </ClInclude>
     <ClInclude Include="control\SinglePageDialog.h">
       <Filter>control</Filter>
     </ClInclude>
@@ -2574,6 +2577,9 @@
       <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="app\Manual.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\LauncherShutdownWindow.cpp">
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="control\SinglePageDialog.cpp">
