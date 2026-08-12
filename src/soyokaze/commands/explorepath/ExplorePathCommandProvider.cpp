@@ -240,6 +240,11 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 	for (auto elem : fileTargets) {
 			commands.Add(CommandQueryItem(std::get<0>(elem), std::get<1>(elem)));
 	}
+
+	if (fileTargets.empty()) {
+		// 件数0件の場合に、弱一致の候補表示を抑制するためにダミーの項目を追加する
+		commands.Add(CommandQueryItem(Pattern::HiddenMatch, new ExplorePathCommand(_T(""))));
+	}
 }
 
 // Providerが扱うコマンド種別(表示名)を列挙
