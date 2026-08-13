@@ -47,6 +47,9 @@
   - ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している
   - UPX自体はGPLであるが、UPXを使って生成したバイナリはGPLにはならない(認識)
 
+- [simdutf/simdutf](https://github.com/simdutf/simdutf)
+  - Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している
+
 ```
 
 ```{only} not soyokaze
