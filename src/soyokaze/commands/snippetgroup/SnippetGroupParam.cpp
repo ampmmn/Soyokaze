@@ -26,7 +26,8 @@ bool SnippetGroupParam::operator == (const SnippetGroupParam& rhs) const
 	return mName == rhs.mName &&
 		mDescription == rhs.mDescription &&
 		mItems == rhs.mItems &&
-		mHotKeyAttr == rhs.mHotKeyAttr;
+		mHotKeyAttr == rhs.mHotKeyAttr &&
+		mIconData == rhs.mIconData;
 }
 
 bool SnippetGroupParam::Save(CommandEntryIF* entry)
@@ -39,6 +40,7 @@ bool SnippetGroupParam::Save(CommandEntryIF* entry)
 
 	// Note: nameは上位で書き込みを行っているのでここではしない
 	entry->Set(_T("description"), mDescription);
+	entry->SetBytes(_T("IconData"), mIconData.data(), mIconData.size());
 
 	int count = (int)mItems.size();
 	entry->Set(_T("ItemCount"), count);
@@ -62,6 +64,15 @@ bool SnippetGroupParam::Load(CommandEntryIF* entry)
 
 	mName = entry->GetName();
 	mDescription = entry->Get(_T("description"), _T(""));
+	mIconData.clear();
+
+	size_t iconDataLength = entry->GetBytesLength(_T("IconData"));
+	if (iconDataLength != CommandEntryIF::NO_ENTRY && iconDataLength > 0) {
+		mIconData.resize(iconDataLength);
+		if (entry->GetBytes(_T("IconData"), mIconData.data(), iconDataLength) == false) {
+			mIconData.clear();
+		}
+	}
 
 	int count = entry->Get(_T("ItemCount"), 0);
 
@@ -88,6 +99,8 @@ void SnippetGroupParam::swap(SnippetGroupParam& rhs)
 	std::swap(mName, rhs.mName);
 	std::swap(mDescription, rhs.mDescription);
 	mItems.swap(rhs.mItems);
+	std::swap(mHotKeyAttr, rhs.mHotKeyAttr);
+	mIconData.swap(rhs.mIconData);
 }
 
 }

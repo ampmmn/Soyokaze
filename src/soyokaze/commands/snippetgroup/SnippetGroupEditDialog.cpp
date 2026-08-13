@@ -4,6 +4,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "app/Manual.h"
+#include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>
 #include <set>
@@ -110,6 +111,7 @@ BEGIN_MESSAGE_MAP(SettingDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(ID_VIEW_UP, OnViewUp)
 	ON_COMMAND(ID_VIEW_DOWN, OnViewDown)
 	ON_MESSAGE(WM_APP + 1, OnUserMessageHotKeyChange)
+	ON_MESSAGE(WM_APP + 11, OnUserMessageIconChanged)
 
 END_MESSAGE_MAP()
 
@@ -123,6 +125,8 @@ BOOL SettingDialog::OnInitDialog()
 
 	mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY, this);
 	mHotKey.SetNotifyId(WM_APP+1);
+	mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+	mIconLabel.EnableIconChange();
 
 	mCommandListPtr = (CListCtrl*)GetDlgItem(IDC_LIST_ITEMS);
 	ASSERT(mCommandListPtr);
@@ -171,6 +175,15 @@ BOOL SettingDialog::OnInitDialog()
 	}
 
 	UpdateStatus();
+	if (mParam.mIconData.empty()) {
+		mIcon = IconLoader::Get()->GetImageResIcon(-5301);
+	}
+	else {
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+	}
+	if (mIcon) {
+		mIconLabel.DrawIcon(mIcon);
+	}
 	UpdateData(FALSE);
 
 	// 新規でなく、既存コマンドの編集の場合は、リストにフォーカスを当てておく
@@ -342,6 +355,27 @@ LRESULT SettingDialog::OnUserMessageHotKeyChange(WPARAM, LPARAM)
 	}
 	UpdateStatus();
 	UpdateData(FALSE);
+	return 0;
+}
+
+LRESULT SettingDialog::OnUserMessageIconChanged(WPARAM wp, LPARAM lp)
+{
+	if (wp != 0) {
+		LPCTSTR iconPath = (LPCTSTR)lp;
+		if (IconLoader::GetStreamFromPath(iconPath, mParam.mIconData) == false) {
+			AfxMessageBox(_T("指定されたファイルは有効なイメージファイルではありません"));
+			return 0;
+		}
+		mIcon = IconLoader::Get()->LoadIconFromStream(mParam.mIconData);
+	}
+	else {
+		mParam.mIconData.clear();
+		mIcon = IconLoader::Get()->GetImageResIcon(-5301);
+	}
+
+	if (mIcon) {
+		mIconLabel.DrawIcon(mIcon);
+	}
 	return 0;
 }
 

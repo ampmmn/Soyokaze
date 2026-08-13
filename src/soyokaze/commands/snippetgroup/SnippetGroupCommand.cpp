@@ -25,6 +25,7 @@ namespace snippetgroup {
 struct SnippetGroupCommand::PImpl
 {
 	SnippetGroupParam mParam;
+	HICON mIcon{nullptr};
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ bool SnippetGroupCommand::QueryInterface(const launcherapp::core::IFID& ifid, vo
 void SnippetGroupCommand::SetParam(const SnippetGroupParam& param)
 {
 	in->mParam = param;
+	in->mIcon = nullptr;
 }
 
 const SnippetGroupParam& SnippetGroupCommand::GetParam()
@@ -127,8 +129,15 @@ bool SnippetGroupCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** acti
 
 HICON SnippetGroupCommand::GetIcon()
 {
-	// バインダーに矢印みたいなアイコン
-	return IconLoader::Get()->GetImageResIcon(-5301);
+	if (in->mParam.mIconData.empty()) {
+		// バインダーに矢印みたいなアイコン
+		return IconLoader::Get()->GetImageResIcon(-5301);
+	}
+	if (in->mIcon && IconLoader::Get()->HasIcon(in->mIcon)) {
+		return in->mIcon;
+	}
+	in->mIcon = IconLoader::Get()->LoadIconFromStream(in->mParam.mIconData);
+	return in->mIcon;
 }
 
 int SnippetGroupCommand::Match(Pattern* pattern)
@@ -192,6 +201,7 @@ bool SnippetGroupCommand::Load(CommandEntryIF* entry)
 	}
 
 	in->mParam.swap(paramTmp);
+	in->mIcon = nullptr;
 
 	// ホットキー情報の取得
 	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
@@ -258,7 +268,7 @@ bool SnippetGroupCommand::Apply(launcherapp::core::CommandEditor* editor)
 		return false;
 	}
 
-	in->mParam = cmdEditor->GetParam();
+	SetParam(cmdEditor->GetParam());
 	return true;
 }
 
@@ -329,7 +339,7 @@ bool SnippetGroupCommand::QueryCandidates(
 			level = Pattern::FrontMatch;
 		}
 
-		commands.Add(CommandQueryItem(level, new SnippetGroupAdhocCommand(in->mParam, item)));
+		commands.Add(CommandQueryItem(level, new SnippetGroupAdhocCommand(this, item)));
 		if (++hitCount >= limit) {
 			break;
 		}

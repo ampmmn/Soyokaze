@@ -2,6 +2,7 @@
 
 #include "commands/snippetgroup/SnippetGroupItem.h"
 #include "hotkey/CommandHotKeyAttribute.h"
+#include <cstdint>
 #include <vector>
 
 class CommandEntryIF;
@@ -31,6 +32,7 @@ public:
 
 	ItemList mItems;
 	CommandHotKeyAttribute mHotKeyAttr;
+	std::vector<uint8_t> mIconData;
 };
 
 }

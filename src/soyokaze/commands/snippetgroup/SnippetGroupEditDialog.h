@@ -6,6 +6,7 @@
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "hotkey/HotKeyControl.h"
 #include "control/LeftBorderLabel.h"
+#include "icon/IconLabel.h"
 
 namespace launcherapp {
 namespace commands {
@@ -48,6 +49,8 @@ protected:
 	HACCEL mAccel{nullptr};
 
 	LeftBorderLabel mLabelSnippet;
+	IconLabel mIconLabel;
+	HICON mIcon{nullptr};
 
 public:
 	// 編集対象パラメータ
@@ -75,6 +78,7 @@ protected:
 	afx_msg void OnViewUp();
 	afx_msg void OnViewDown();
 	afx_msg LRESULT OnUserMessageHotKeyChange(WPARAM wp, LPARAM lp);
+	afx_msg LRESULT OnUserMessageIconChanged(WPARAM wp, LPARAM lp);
 };
 
 } // end of namespace snippetgroup

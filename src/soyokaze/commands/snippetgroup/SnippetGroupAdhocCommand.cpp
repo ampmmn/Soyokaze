@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "SnippetGroupAdhocCommand.h"
+#include "commands/snippetgroup/SnippetGroupCommand.h"
 #include "commands/snippetgroup/SnippetGroupParam.h"
 #include "commands/common/ExpandFunctions.h"
 #include "actions/clipboard/CopyClipboardAction.h"
-#include "icon/IconLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,7 +19,7 @@ namespace snippetgroup {
 
 struct SnippetGroupAdhocCommand::PImpl
 {
-	SnippetGroupParam mParam;
+	SnippetGroupCommand* mBaseCommand{nullptr};
 	Item mItem;
 };
 
@@ -27,13 +27,13 @@ struct SnippetGroupAdhocCommand::PImpl
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(SnippetGroupAdhocCommand)
 
 SnippetGroupAdhocCommand::SnippetGroupAdhocCommand(
-	const SnippetGroupParam& param,
+	SnippetGroupCommand* baseCommand,
 	const Item& item
 ) : 
 	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
 {
-	in->mParam = param;
+	in->mBaseCommand = baseCommand;
 	in->mItem = item;
 }
 
@@ -43,7 +43,7 @@ SnippetGroupAdhocCommand::~SnippetGroupAdhocCommand()
 
 CString SnippetGroupAdhocCommand::GetName()
 {
-	return in->mParam.mName + _T(" ") + in->mItem.mName;
+	return in->mBaseCommand->GetParam().mName + _T(" ") + in->mItem.mName;
 }
 
 CString SnippetGroupAdhocCommand::GetDescription()
@@ -71,18 +71,18 @@ bool SnippetGroupAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action**
 
 HICON SnippetGroupAdhocCommand::GetIcon()
 {
-	return IconLoader::Get()->GetImageResIcon(-5301);
+	return in->mBaseCommand->GetIcon();
 }
 
 launcherapp::core::Command*
 SnippetGroupAdhocCommand::Clone()
 {
-	return new SnippetGroupAdhocCommand(in->mParam, in->mItem);
+	return new SnippetGroupAdhocCommand(in->mBaseCommand, in->mItem);
 }
 
 CString SnippetGroupAdhocCommand::GetSourceName()
 {
-	return in->mParam.mName;
+	return in->mBaseCommand->GetParam().mName;
 }
 
 bool SnippetGroupAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)

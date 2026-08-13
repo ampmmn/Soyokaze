@@ -8,7 +8,7 @@ namespace launcherapp {
 namespace commands {
 namespace snippetgroup {
 
-class SnippetGroupParam;
+class SnippetGroupCommand;
 class Item;
 
 class SnippetGroupAdhocCommand :
@@ -16,7 +16,7 @@ class SnippetGroupAdhocCommand :
 	virtual public launcherapp::commands::core::ExtraCandidate
 {
 public:
-	SnippetGroupAdhocCommand(const SnippetGroupParam& param, const Item& item);
+	SnippetGroupAdhocCommand(SnippetGroupCommand* baseCommand, const Item& item);
 	virtual ~SnippetGroupAdhocCommand();
 
 	CString GetName() override;
