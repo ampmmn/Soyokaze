@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "PluginProvider.h"
 #include "PluginCommand.h"
+#include "SharedHwnd.h"
+#include "app/LauncherApp.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "utility/Path.h"
@@ -67,6 +69,35 @@ const char* GetWholeString(void* ctx)
 	MatcherContext* context = static_cast<MatcherContext*>(ctx);
 	UTF2UTF(std::wstring(context->mPattern->GetWholeString()), context->mWholeString);
 	return context->mWholeString.c_str();
+}
+
+void InfoLog(const char* message)
+{
+	spdlog::info("{}", message ? message : "");
+}
+
+void WarnLog(const char* message)
+{
+	spdlog::warn("{}", message ? message : "");
+}
+
+void ErrorLog(const char* message)
+{
+	spdlog::error("{}", message ? message : "");
+}
+
+void PopupMessage(const char* message)
+{
+	auto app = static_cast<LauncherApp*>(AfxGetApp());
+	if (app) {
+		app->PopupMessage(message ? message : "");
+	}
+}
+
+HWND GetMainWindowHandle()
+{
+	SharedHwnd sharedHwnd;
+	return sharedHwnd.GetHwnd();
 }
 
 int GetWordCount(void* ctx)
@@ -165,7 +196,14 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 		auto plugin = std::make_shared<PluginModule>();
 		plugin->mModule = handle;
 		plugin->mExportTable = table;
-		if (plugin->mExportTable.Initialize() != 0) {
+		LAUNCHER_FUNCTION_TABLE launcherFunctionTable{
+			&InfoLog,
+			&WarnLog,
+			&ErrorLog,
+			&PopupMessage,
+			&GetMainWindowHandle,
+		};
+		if (plugin->mExportTable.Initialize(&launcherFunctionTable) != 0) {
 			SPDLOG_WARN(_T("Plugin initialization failed: {}"), (LPCTSTR)path);
 			plugin->mModule = nullptr;
 			FreeLibrary(handle);

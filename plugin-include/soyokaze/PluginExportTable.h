@@ -6,141 +6,163 @@
 extern "C" {
 #endif
 
-// $BK\BNB&$O(BLNCRAPP$B$rDj5A$7$F$*$/(B
+// 本体側はLNCRAPPを定義しておく
 #ifdef LNCRAPP
 #define LNCRPLUGIN_API __declspec(dllimport)
 #else
 #define LNCRPLUGIN_API __declspec(dllexport)
 #endif
 
-// $B%W%i%0%$%s$N%P!<%8%g%s!#$3$N%X%C%@$NDj5A$rJQ99$7$?$i!"?tCM$r>e$2$k(B
-// $B%W%i%0%$%sB&$O(BLNCRPLUGIN_Bind$BFb$GA[Dj$9$k%W%i%0%$%s%P!<%8%g%s$+$I$&$+$r%A%'%C%/$7!"BP1~$G$-$J$$>l9g$O%(%i!<$rJV$9(B
-#define PLUGINVERSION 100
+// プラグインのバージョン。このヘッダの定義を変更したら、数値を上げる
+// プラグイン側はLNCRPLUGIN_Bind内で想定するプラグインバージョンかどうかをチェックし、対応できない場合はエラーを返す
+#define PLUGINVERSION 101
 
-// $B%-!<%o!<%I%^%C%A7k2L$rI=$9%O%s%I%k!#%O%s%I%k$N<BBN$O%W%i%0%$%s<BAuB&$,Dj5A$9$kFbIt%G!<%?!#(B
-// $B$3$N$?$a!"(BLNCRPLUGINMATCHHANDLE$B$H$$$&7?$O%W%i%0%$%s4V$G6&DL$H$J$k$,!"0[$J$k%W%i%0%$%s4V$G$N8_49@-$O$J$$!#(B
+// キーワードマッチ結果を表すハンドル。ハンドルの実体はプラグイン実装側が定義する内部データ。
+// このため、LNCRPLUGINMATCHHANDLEという型はプラグイン間で共通となるが、異なるプラグイン間での互換性はない。
 typedef void* LNCRPLUGINMATCHHANDLE;
 
-// $B%-!<%o!<%IHf3S$K4X$9$k4X?t(B
+// ランチャー本体の機能
+typedef void (*LPFUNCPRINTMSG)(const char* msg);
+typedef HWND (*LPFUNCMAINWINDOWHANDLE)(void);
+
+// プラグインからランチャー本体機能にアクセスするための関数テーブル
+// Initializeでこの関数テーブルを渡す。プラグインは渡された関数ポインタを保持して起き、必要に応じて関数を利用する。
+typedef struct _LAUNCHER_FUNCTION_TABLE
+{
+	// Infoログを出力する
+	LPFUNCPRINTMSG InfoLog;
+	// Warningログを出力する
+	LPFUNCPRINTMSG WarnLog;
+	// Errorログを出力する
+	LPFUNCPRINTMSG ErrorLog;
+	// トースト通知メッセージを表示する
+	LPFUNCPRINTMSG PopupMessage;
+	// メインウインドウのハンドルを取得する
+	LPFUNCMAINWINDOWHANDLE GetMainWindowHandle;
+
+} LAUNCHER_FUNCTION_TABLE;
+
+// キーワード比較に関する関数
 typedef int (*LNCRMATCHERFUNC_MATCH)(void* ctx, const char*, int);
 typedef const char* (*LNCRMATCHERFUNC_GETFIRSTWORD)(void* ctx);
 typedef const char* (*LNCRMATCHERFUNC_GETWHOLESTRING)(void* ctx);
 typedef int (*LNCRMATCHERFUNC_GETWORDCOUNT)(void* ctx);
 
-// $B%i%s%A%c!<%"%W%jB&$,Ds6!$9$k%-!<%o!<%IHf3S4X?t(B
-// $B$3$N9=B$BN$O%W%i%0%$%s8F$S=P$785(B($B%"%W%jK\BN(B)$B$,@8@.$7!"%W%i%0%$%sB&$KM?$($k>pJs(B
+// ランチャーアプリ側が提供するキーワード比較関数
+// この構造体はプラグイン呼び出し元(アプリ本体)が生成し、プラグイン側に与える情報
 typedef struct _MATCHER_FUNCTION_TABLE
 {
-	// $B%-!<%o!<%IHf3S$r9T$&4X?t(B
-	// $BBh(B1$B0z?t$O8F$S=P$785$,;H$&FbIt%G!<%?!#Bh(B2$B0z?t$OHf3S%-!<%o!<%I!"Bh(B3$B0z?t$O%*%U%;%C%H(B
-	// (Pattern::Match(LPCTSTR, uint32_t)$BF1$80UL#(B)
+	// キーワード比較を行う関数
+	// 第1引数は呼び出し元が使う内部データ。第2引数は比較キーワード、第3引数はオフセット
+	// (Pattern::Match(LPCTSTR, uint32_t)同じ意味)
 	LNCRMATCHERFUNC_MATCH Match;
 
-	// $BF~NOCf$N:G=i$N%-!<%o!<%I$rF@$k(B
-	// $BBh(B1$B0z?t$O8F$S=P$785$,;H$&FbIt%G!<%?!#(B
-	// $BLa$jCM$G:G=i$N%-!<%o!<%I$rJV$9(B
+	// 入力中の最初のキーワードを得る
+	// 第1引数は呼び出し元が使う内部データ。
+	// 戻り値で最初のキーワードを返す
 	LNCRMATCHERFUNC_GETFIRSTWORD GetFirstWord;
 
-	// $BF~NOCf$NA4BN%-!<%o!<%I$rF@$k(B
-	// $BBh(B1$B0z?t$O8F$S=P$785$,;H$&FbIt%G!<%?!#(B
-	// $BLa$jCM$G:G=i$N%-!<%o!<%IA4BN$rI=$9J8;zNs$rJV$9(B
+	// 入力中の全体キーワードを得る
+	// 第1引数は呼び出し元が使う内部データ。
+	// 戻り値で最初のキーワード全体を表す文字列を返す
 	LNCRMATCHERFUNC_GETWHOLESTRING GetWholeString;
 
-	// $B%H!<%/%s?t$rF@$k(B
-	// $BBh(B1$B0z?t$O8F$S=P$785$,;H$&FbIt%G!<%?!#(B
-	// $BLa$jCM$O%H!<%/%s?t!#(B
+	// トークン数を得る
+	// 第1引数は呼び出し元が使う内部データ。
+	// 戻り値はトークン数。
 	LNCRMATCHERFUNC_GETWORDCOUNT GetWordCount;
 } MATCHER_FUNCTION_TABLE;
 
 ////////////////////////////////////////////////////////////////////////////////
-// $B4X?t7?$NDj5A(B
+// 関数型の定義
 ////////////////////////////////////////////////////////////////////////////////
 
-// $B%W%i%0%$%s=i4|2=(B
-typedef int (*LNCRPLUGINFUNC_INITIALIZE)(void);
+// プラグイン初期化
+// tableのデータは揮発性なので、プラグイン側で構造体データをコピーすること
+typedef int (*LNCRPLUGINFUNC_INITIALIZE)(LAUNCHER_FUNCTION_TABLE* table);
 
-// $B%^%C%A7o?t$rF@$k(B
+// マッチ件数を得る
 typedef int (*LNCRPLUGINFUNC_GETMATCHCOUNT)(LNCRPLUGINMATCHHANDLE h);
 
-// $B8!:w7k2L$4$H$N0lCW%l%Y%k$rF@$k(B
-// 5:$B40A40lCW(B 4:$BA0J}0lCW(B 3:$BItJ,0lCW(B 2:$B<e$$0lCW(B -1$BIT0lCW(B
+// 検索結果ごとの一致レベルを得る
+// 5:完全一致 4:前方一致 3:部分一致 2:弱い一致 -1不一致
 typedef int (*LNCRPLUGINFUNC_GETMATCHLEVEL)(LNCRPLUGINMATCHHANDLE h, int index);
 
-// $BJ8;zNs$r<hF@$9$k4X?t(B
-// $BLa$jCM$O%3%T!<$5$l$?%P%$%H?t!#(Blen$B$,(B0$B$N$H$-$O(B\0$B$b4^$a$?I,MW$J%P%C%U%!D9(B($B%P%$%HC10L(B)$B!"(B-1$B$O%(%i!<(B
-// $B%P%C%U%!D9$O(B\0$B=*C<$r4^$`D9$5!#(B
-// $B%P%C%U%!ITB-;~$OM?$($i$l$?NN0hJ,$@$1%3%T!<$7(B(\0$B=*C<$b$9$k(B)$B!"<B:]$K%3%T!<$7$?%P%$%H?t(B($B$D$^$j(Blen)$B$rJV$9$b$N$H$9$k(B
+// 文字列を取得する関数
+// 戻り値はコピーされたバイト数。lenが0のときは\0も含めた必要なバッファ長(バイト単位)、-1はエラー
+// バッファ長は\0終端を含む長さ。
+// バッファ不足時は与えられた領域分だけコピーし(\0終端もする)、実際にコピーしたバイト数(つまりlen)を返すものとする
 typedef int (*LNCRPLUGINFUNC_GETSTRING)(LNCRPLUGINMATCHHANDLE h, int index, char*, size_t len);
 
-// $B<B9T2DG=$+(B
-// 0:$B<B9TIT2D(B  0$B0J30(B:$B<B9T2DG=(B
+// 実行可能か
+// 0:実行不可  0以外:実行可能
 typedef int (*LNCRPLUGINFUNC_CANEXECUTE)(LNCRPLUGINMATCHHANDLE h, int index);
 
-// $B5!G=$r<B9T$9$k(B
-// $BLa$jCM$O@.8y;~(B0$B!"$=$NB>$O<:GT(B
+// 機能を実行する
+// 戻り値は成功時0、その他は失敗
 typedef int (*LNCRPLUGINFUNC_EXECUTE)(LNCRPLUGINMATCHHANDLE h, int index, int argc, char** argv);
 
-// $B%"%$%3%s$rF@$k(B
-// $B=hM}@.8y;~!"Bh(B2$B0z?t$G%"%$%3%s%O%s%I%k$rJV$9(B
-// $BLa$jCM(B $B@.8y(B:0 $B<:GT(B:1
-// $B$3$N(BAPI$B$,JV$9%"%$%3%s$N=jM-8"$O%W%i%0%$%sB&$,;}$D!#ITMW$K$J$C$?$i%W%i%0%$%sB&$G%j%=!<%9$rGK4~$9$k!#(B
-// $B4pK\E*$K$O(BFinalize$B$GGK4~$9$k$3$H!#(B
+// アイコンを得る
+// 処理成功時、第2引数でアイコンハンドルを返す
+// 戻り値 成功:0 失敗:1
+// このAPIが返すアイコンの所有権はプラグイン側が持つ。不要になったらプラグイン側でリソースを破棄する。
+// 基本的にはFinalizeで破棄すること。
 typedef int (*LNCRPLUGINFUNC_GETICON)(LNCRPLUGINMATCHHANDLE h, int index, HICON*);
 
-// $BHf3S(B($B7k2L0lMw$rFbIt$G:n@.$7!"(BLNCRPLUGINMATCHHANDLE$B$H$7$FJV$9(B)
-// ctx$B$O8!:w>uBV$rI=$90z?t!#8F$S=P$785B&$G@_Dj$9$k!#8F$S=P$785$O>uBV$rJ];}$9$k$?$a$N%Q%i%a!<%?$H$7$F;H$&$3$H$,$G$-$k!#(B
-// ctx$B$O(BMATCHER_FUNCTION_TABLE$B$GDj5A$7$F$$$k3F4X?t$NBh0l0z?t$H$7$F;H$o$l$k!#(B
-// tbl$B$K$O%-!<%o!<%I%^%C%A%s%0$KMxMQ$G$-$k3F4X?t$N%]%$%s%?$,3JG<$5$l$k!#(B
-// $B%W%i%0%$%s<BAuB&$O$3$N4X?t$rDL$8$F%-!<%o!<%I%^%C%A%s%0$r9T$&$3$H$,$G$-$k!#(B
+// 比較(結果一覧を内部で作成し、LNCRPLUGINMATCHHANDLEとして返す)
+// ctxは検索状態を表す引数。呼び出し元側で設定する。呼び出し元は状態を保持するためのパラメータとして使うことができる。
+// ctxはMATCHER_FUNCTION_TABLEで定義している各関数の第一引数として使われる。
+// tblにはキーワードマッチングに利用できる各関数のポインタが格納される。
+// プラグイン実装側はこの関数を通じてキーワードマッチングを行うことができる。
 typedef LNCRPLUGINMATCHHANDLE (*LNCRPLUGINFUNC_MATCH)(void* ctx, MATCHER_FUNCTION_TABLE* tbl);
 
-// LNCRPLUGINFUNC_MATCH$B4X?t$K$h$C$F@8@.$7$?%*%V%8%'%/%H$r2rJ|$9$k(B
+// LNCRPLUGINFUNC_MATCH関数によって生成したオブジェクトを解放する
 typedef void (*LNCRPLUGINFUNC_CLOSEHANDLE)(LNCRPLUGINMATCHHANDLE);
 
-// $B%W%i%0%$%s=*N;=hM}(B
+// プラグイン終了処理
 typedef void (*LNCRPLUGINFUNC_FINALIZE)(void);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// $B4X?t%F!<%V%k(B
+// 関数テーブル
 ////////////////////////////////////////////////////////////////////////////////
 
-// $B$3$N9=B$BN$O%W%i%0%$%sB&$,@8@.$7!"8F$S=P$785$KEO$9>pJs(B
+// この構造体はプラグイン側が生成し、呼び出し元に渡す情報
 typedef struct _LNCRPLUGIN_EXPORTTABLE
 {
-	// $B%W%i%0%$%s$N=i4|2=(B
+	// プラグインの初期化
 	LNCRPLUGINFUNC_INITIALIZE Initialize;
-	// $B%^%C%A%s%0$r9T$&(B
+	// マッチングを行う
 	LNCRPLUGINFUNC_MATCH Query;
-	// $B%^%C%A7o?t$r<hF@$9$k(B
+	// マッチ件数を取得する
 	LNCRPLUGINFUNC_GETMATCHCOUNT GetMatchCount;
-	// $B0lCW%l%Y%k$r<hF@$9$k(B
+	// 一致レベルを取得する
 	LNCRPLUGINFUNC_GETMATCHLEVEL GetMatchLevel;
-	// $B%^%C%A%s%07k2L$rGK4~$9$k(B
+	// マッチング結果を破棄する
 	LNCRPLUGINFUNC_CLOSEHANDLE CloseHandle;
-	// $B%3%^%s%IL>$r<hF@$9$k(B
+	// コマンド名を取得する
 	LNCRPLUGINFUNC_GETSTRING GetName;
-	// $B@bL@$rF@$k(B
+	// 説明を得る
 	LNCRPLUGINFUNC_GETSTRING GetDescription;
-	// $B%,%$%IMs$NJ8;zNs$rF@$k(B
+	// ガイド欄の文字列を得る
 	LNCRPLUGINFUNC_GETSTRING GetGuide;
-	// $B%3%^%s%I<oJL$rF@$k(B
+	// コマンド種別を得る
 	LNCRPLUGINFUNC_GETSTRING GetTypeDisplayName;
-	// $B<B9T2DG=$+$rD4$Y$k(B(0:$BIT2D(B 1:$B2DG=(B)
+	// 実行可能かを調べる(0:不可 1:可能)
 	LNCRPLUGINFUNC_CANEXECUTE CanExecute;
-	// $B<B9T$9$k(B
+	// 実行する
 	LNCRPLUGINFUNC_EXECUTE Execute;
-	// $B%(%i!<H/@8;~$K%(%i!<J8;zNs$r<hF@$9$k(B
+	// エラー発生時にエラー文字列を取得する
 	LNCRPLUGINFUNC_GETSTRING GetErrorString;
-	// $B%"%$%3%s%O%s%I%k$rF@$k(B
+	// アイコンハンドルを得る
 	LNCRPLUGINFUNC_GETICON GetIcon;
-	// $B%W%i%0%$%s$r=*N;$9$k(B
+	// プラグインを終了する
 	LNCRPLUGINFUNC_FINALIZE Finalize;
 
 } LNCRPLUGIN_EXPORTTABLE;
 
-// $B%W%i%0%$%s$rF@$k(B
-// $BLa$jCM(B 0:$B@.8y(B 0$B0J30(B: $B<:GT(B
+// プラグインを得る
+// 戻り値 0:成功 0以外: 失敗
 int LNCRPLUGIN_API
 LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table);
 
