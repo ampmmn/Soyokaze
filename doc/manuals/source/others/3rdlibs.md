@@ -40,12 +40,13 @@
 - [nanobind](https://github.com/wjakob/nanobind)
   - Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。
 
-- [Snintilla,Lexilla](https://www.scintilla.org/)
+- [Scintilla,Lexilla](https://www.scintilla.org/)
   - Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している
 
 - [upx/upx](https://github.com/upx/upx)
   - ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している
-  - UPX自体はGPLであるが、UPXを使って生成したバイナリはGPLにはならない(認識)
+  - UPX自体はGPLであるが、UPXを使って生成したバイナリ(はGPLにはならない(認識)
+    - 未改変UPXおよび未改変stubを使用する場合に限り、UPXの特別例外が適用される
 
 - [simdutf/simdutf](https://github.com/simdutf/simdutf)
   - Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している
