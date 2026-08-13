@@ -540,6 +540,10 @@
     <ClInclude Include="commands\mmc\MMCSnapins.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommand.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommandProvider.h" />
+    <ClInclude Include="commands\plugin\PluginCommand.h" />
+    <ClInclude Include="commands\plugin\PluginModule.h" />
+    <ClInclude Include="commands\plugin\PluginProvider.h" />
+    <ClInclude Include="..\plugins\include\PluginExportTable.h" />
     <ClInclude Include="commands\onenote\AppSettingPageOneNote.h" />
     <ClInclude Include="commands\onenote\OneNoteAppProxy.h" />
     <ClInclude Include="commands\onenote\OneNoteCommand.h" />
@@ -1035,6 +1039,9 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp" />
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
+    <ClCompile Include="commands\plugin\PluginCommand.cpp" />
+    <ClCompile Include="commands\plugin\PluginModule.cpp" />
+    <ClCompile Include="commands\plugin\PluginProvider.cpp" />
     <ClCompile Include="commands\core\CommandProviderRepository.cpp" />
     <ClCompile Include="commands\core\CommandQueryDefaultResult.cpp" />
     <ClCompile Include="commands\core\CommandQueryItemList.cpp" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="ソース ファイル">
@@ -36,6 +36,9 @@
     </Filter>
     <Filter Include="commands\common">
       <UniqueIdentifier>{c85fc57e-50cc-4f8c-8842-c64d13e9df26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\plugin">
+      <UniqueIdentifier>{b1d346b8-a16d-4b26-bf56-6f5588e6e4db}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\filter">
       <UniqueIdentifier>{7933974b-e180-4a4d-bc20-84c7f981992e}</UniqueIdentifier>
@@ -542,6 +545,15 @@
     </ClInclude>
     <ClInclude Include="commands\common\AdhocCommandBase.h">
       <Filter>commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\plugin\PluginCommand.h">
+      <Filter>commands\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\plugin\PluginProvider.h">
+      <Filter>commands\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\plugins\include\PluginExportTable.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="utility\Sound.h">
       <Filter>utility</Filter>
@@ -1998,6 +2010,12 @@
     <ClInclude Include="mainwindow\metrics\CandidateListListenerCountMetrics.h">
       <Filter>mainwindow\metrics</Filter>
     </ClInclude>
+    <ClInclude Include="utility\FaviconLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\plugin\PluginModule.h">
+      <Filter>commands\plugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2206,6 +2224,12 @@
     </ClCompile>
     <ClCompile Include="commands\common\AdhocCommandBase.cpp">
       <Filter>commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\plugin\PluginCommand.cpp">
+      <Filter>commands\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\plugin\PluginProvider.cpp">
+      <Filter>commands\plugin</Filter>
     </ClCompile>
     <ClCompile Include="utility\Sound.cpp">
       <Filter>utility</Filter>
@@ -3482,15 +3506,6 @@
     <ClCompile Include="logger\ResourceUsageMetrics.cpp">
       <Filter>logger</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\CandidateListCandidateCountMetrics.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\CandidateListListenerCountMetrics.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\CandidateListHasErrorCommandMetrics.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="icon\metrics\IconLoaderAppIconCacheCountMetrics.cpp">
       <Filter>icon\metrics</Filter>
     </ClCompile>
@@ -3535,6 +3550,12 @@
     </ClCompile>
     <ClCompile Include="mainwindow\metrics\CandidateListListenerCountMetrics.cpp">
       <Filter>mainwindow\metrics</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\FaviconLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\plugin\PluginModule.cpp">
+      <Filter>commands\plugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
