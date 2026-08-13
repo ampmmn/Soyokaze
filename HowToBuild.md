@@ -49,6 +49,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
   - Python拡張コマンドにおいて、スクリプト編集欄のために利用している
   - ヘッダファイルのみを参照しており、ビルドは不要
 
+- [simdutf/simdutf](https://github.com/simdutf/simdutf)
+  - UTF-8,UTF-16の相互変換とBase64デコードで使用している
+
 ### 外部ライブラリの配置
 
 - nlohmann-json
@@ -72,6 +75,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - scintilla/lexilla
   - https://www.scintilla.org/ からソース一式を取得する
     - リポジトリにヘッダファイルを同梱しているため、作業は不要
+- simdutf/simdutf
+  - https://github.com/simdutf/simdutf からソース一式を取得する
+    - `externals`ディレクトリに`simdutf`を配置する
 
 - `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -94,6 +100,7 @@ soyokaze-src/
     nanobind/
     scintilla/
     lexilla/
+    simdutf/
 ```
 
 ### spdlogのビルド
@@ -234,6 +241,26 @@ cmake --build . --config Release -t nanobind-static
     - 32bit版モジュールのビルドは非サポート
 
 - Scintila/LexillaLは自前でビルドしない。配布サイトからダウンロードしたバイナリ(Scintilla.dll/Lexilla.dll)を使用する。
+
+### simdutfのビルド
+
+配置した`simdutf`を下記コマンドでビルドする。  
+
+```
+cd externals/simdutf
+mkdir -p build
+cd build
+
+cmake ..
+cmake --build . --config Debug
+
+cmake -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL ..
+cmake --build . --config Release
+
+cmake -DCMAKE_RELEASE_POSTFIX=rtst -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
+cmake --build . --config Release
+```
+
 
 ## ソリューション構成
 

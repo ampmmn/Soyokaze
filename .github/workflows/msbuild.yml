@@ -144,6 +144,22 @@ jobs:
         # build(Release)
         cmake --build . --config Release -t nanobind-static
 
+    - name: Build simdutf
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/simdutf
+        # setup build directory
+        cmd /c "if not exist build mkdir -p build"
+        cd build
+        # setup cmakefor Debug configuration.
+        cmake ..
+        # build(Debug)
+        cmake --build . --config Debug
+        # setup cmakefor Release configuration.
+        cmake -DCMAKE_RELEASE_POSTFIX="${{env.STATICLIB_POSTFIX}}" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
+        # build(Release)
+        cmake --build . --config Release
+
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).

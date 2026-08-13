@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "CharConverter.h"
+#include <cstring>
+#include <cwchar>
+#include <simdutf.h>
 
 #ifdef _MBCS
 #error Unicode文字セットでビルドしてください
@@ -30,9 +33,48 @@ CharConverter::~CharConverter()
 {
 }
 
+static bool utf8ToUtf16(const char* src, size_t length, std::wstring& dst)
+{
+	// UTF-16の最大サイズは入力のバイト数で確保できる
+	dst.resize(length);
+	auto result = simdutf::convert_utf8_to_utf16_with_errors(
+		src, length, reinterpret_cast<char16_t*>(dst.data()));
+	if (result.error != simdutf::error_code::SUCCESS) {
+		dst.clear();
+		return false;
+	}
+
+	dst.resize(result.count);
+	return true;
+}
+
+static void utf16ToUtf8(const wchar_t* src, size_t length, std::string& dst)
+{
+	auto requiredLength = simdutf::utf8_length_from_utf16_with_replacement(
+		reinterpret_cast<const char16_t*>(src), length);
+	dst.resize(requiredLength.count);
+	if (dst.empty()) {
+		return;
+	}
+
+	const size_t convertedLength = simdutf::convert_utf16_to_utf8_with_replacement(
+		reinterpret_cast<const char16_t*>(src), length, dst.data());
+	dst.resize(convertedLength);
+}
+
 CString& CharConverter::Convert(const char* src, CString& dst, bool isFailIfInvalidChars)
 {
 	int cp = mCodePage;
+	if (cp == CP_UTF8) {
+		std::wstring converted;
+		if (utf8ToUtf16(src, strlen(src), converted)) {
+			dst.SetString(converted.data(), (int)converted.size());
+			return dst;
+		}
+		if (isFailIfInvalidChars) {
+			throw Exception();
+		}
+	}
 
 	DWORD flags = isFailIfInvalidChars ? MB_ERR_INVALID_CHARS : 0;
 
@@ -50,6 +92,12 @@ CString& CharConverter::Convert(const char* src, CString& dst, bool isFailIfInva
 CStringA& CharConverter::Convert(const CString& src, CStringA& dst)
 {
 	int cp = mCodePage;
+	if (cp == CP_UTF8) {
+		std::string converted;
+		utf16ToUtf8(src, wcslen(src), converted);
+		dst.SetString(converted.data(), (int)converted.size());
+		return dst;
+	}
 
 	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
 
@@ -63,6 +111,10 @@ CStringA& CharConverter::Convert(const CString& src, CStringA& dst)
 std::string& CharConverter::Convert(const CString& src, std::string& dst)
 {
 	int cp = mCodePage;
+	if (cp == CP_UTF8) {
+		utf16ToUtf8(src, wcslen(src), dst);
+		return dst;
+	}
 
 	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
 
@@ -82,12 +134,7 @@ std::string CharConverter::UTF2UTF(const CStringW& src)
 
 static std::string& utf2utf(const wchar_t* src, std::string& dst)
 {
-	int cp = CP_UTF8;
-
-	int requiredLen = WideCharToMultiByte(cp, 0, src, -1, NULL, 0, 0, 0);
-
-	dst.resize(requiredLen - 1);
-	WideCharToMultiByte(cp, 0, src, -1, dst.data(), requiredLen, 0, 0);
+	utf16ToUtf8(src, wcslen(src), dst);
 	return dst;
 }
 
@@ -115,36 +162,23 @@ CStringW CharConverter::UTF2UTF(const std::string& src)
 
 CStringW& CharConverter::UTF2UTF(const std::string& src, CStringW& dst)
 {
-	int cp = CP_UTF8;
-
-	DWORD flags = MB_ERR_INVALID_CHARS;
-
-	int requiredLen = MultiByteToWideChar(cp, flags, src.c_str(), -1, NULL, 0);
-	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
+	std::wstring converted;
+	if (utf8ToUtf16(src.c_str(), strlen(src.c_str()), converted) == false) {
 		dst.Empty();
 		return dst;
 	}
 
-	MultiByteToWideChar(cp, flags, src.c_str(), -1, dst.GetBuffer(requiredLen), requiredLen);
-	dst.ReleaseBuffer();
+	dst.SetString(converted.data(), (int)converted.size());
 
 	return dst;
 }
 
 std::wstring& CharConverter::UTF2UTF(const std::string& src, std::wstring& dst)
 {
-	int cp = CP_UTF8;
-
-	DWORD flags = MB_ERR_INVALID_CHARS;
-
-	int requiredLen = MultiByteToWideChar(cp, flags, src.c_str(), -1, NULL, 0);
-	if (requiredLen == 0 && GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
+	if (utf8ToUtf16(src.c_str(), strlen(src.c_str()), dst) == false) {
 		dst.clear();
 		return dst;
 	}
-
-	dst.resize(requiredLen-1);
-	MultiByteToWideChar(cp, flags, src.c_str(), -1, const_cast<wchar_t*>(dst.data()), requiredLen);
 
 	return dst;
 }

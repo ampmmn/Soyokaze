@@ -16,3 +16,6 @@
 [submodule "externals/nanobind"]
 	path = externals/nanobind
 	url = https://github.com/wjakob/nanobind.git
+[submodule "externals/simdutf"]
+	path = externals/simdutf
+	url = https://github.com/simdutf/simdutf.git

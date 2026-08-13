@@ -166,9 +166,9 @@ HICON FaviconLoader::PImpl::CreateIcon(const std::vector<BYTE>& content) const
 	int width = image.GetWidth();
 	int height = image.GetHeight();
 	if (width > 64 || height > 64) {
-		int size = min(width, height);
-		int newWidth = width > height ? 64 : max(1, width * 64 / size);
-		int newHeight = height > width ? 64 : max(1, height * 64 / size);
+		int size = std::min(width, height);
+		int newWidth = width > height ? 64 : std::max(1, width * 64 / size);
+		int newHeight = height > width ? 64 : std::max(1, height * 64 / size);
 		if (resized.Create(newWidth, newHeight, image.GetBPP()) == FALSE) {
 			return nullptr;
 		}
