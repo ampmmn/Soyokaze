@@ -53,6 +53,12 @@ bool SnippetCommandProvider::NewDialog(Parameter* param)
 	return SnippetCommand::NewDialog(param);
 }
 
+// 非公開コマンドかどうか(新規作成対象にしない)
+bool SnippetCommandProvider::IsPrivate() const
+{
+	return true;
+}
+
 // Provider間の優先順位を表す値を返す。小さいほど優先
 uint32_t SnippetCommandProvider::SnippetCommandProvider::GetOrder() const
 {

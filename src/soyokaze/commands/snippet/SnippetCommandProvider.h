@@ -26,6 +26,9 @@ public:
 	// コマンド新規作成ダイアログ
 	bool NewDialog(Parameter* param) override;
 
+	// 非公開コマンドかどうか(新規作成対象にしない)
+	bool IsPrivate() const override;
+
 	// Provider間の優先順位を表す値を返す。小さいほど優先
 	uint32_t GetOrder() const override;
 	// Providerが扱うコマンド種別(表示名)を列挙

@@ -43,7 +43,7 @@ CString SnippetGroupProvider::GetDisplayName()
 CString SnippetGroupProvider::GetDescription()
 {
 	CString description;
-	description += _T("定型文をグループ化し、キーワードから呼び出してコピーします");
+	description += _T("定型文を定義できます。\nキーワードに関連付けた定型文をクリップボードにコピーできます。");
 	return description;
 }
 
