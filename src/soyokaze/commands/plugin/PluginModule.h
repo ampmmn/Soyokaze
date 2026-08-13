@@ -4,7 +4,7 @@
 #define LNCRAPP
 #endif
 
-#include "../../../plugins/include/PluginExportTable.h"
+#include "../../../../plugin-include/soyokaze/PluginExportTable.h"
 #include <memory>
 
 namespace launcherapp {
