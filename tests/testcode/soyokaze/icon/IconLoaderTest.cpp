@@ -56,6 +56,13 @@ TEST_F(IconLoaderTest, GetStreamFromPathWithInvalidPathReturnsFalse) {
     EXPECT_FALSE(result);
 }
 
+TEST_F(IconLoaderTest, GetStreamFromPathWithInvalidUrlReturnsFalse) {
+    std::vector<uint8_t> strm;
+    CString invalidUrl(_T("http://"));
+    bool result = IconLoader::GetStreamFromPath(invalidUrl, strm);
+    EXPECT_FALSE(result);
+}
+
 TEST_F(IconLoaderTest, TryGetStreamFromIconPathWithInvalidPathReturnsFalse) {
     std::vector<uint8_t> strm;
     CString invalidPath(_T("Z:\\notfound.ico"));

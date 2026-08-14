@@ -10,10 +10,13 @@
 #include "utility/SHA1.h"
 #include "utility/ProcessPath.h"
 #include "utility/Path.h"
+#include "utility/WinHttp.h"
 #include "resource.h"
 #include <map>
 #include <set>
 #include <atlimage.h>
+#include <atlbase.h>
+#include <WinHttp.h>
 #include <mutex>
 #include <thread>
 
@@ -971,6 +974,78 @@ static bool GetTempFilePath(Path& userDataPath)
 }
 
 /**
+  URLがHTTPまたはHTTPSのURLかどうかを判定する
+  @return true:URL  false:URLではない
+  @param[in] path 判定対象の文字列
+*/
+static bool IsHttpUrl(const CString& path)
+{
+	URL_COMPONENTS components = {};
+	components.dwStructSize = sizeof(components);
+	if (WinHttpCrackUrl(path, path.GetLength(), 0, &components) == FALSE) {
+		return false;
+	}
+	return components.nScheme == INTERNET_SCHEME_HTTP ||
+		components.nScheme == INTERNET_SCHEME_HTTPS;
+}
+
+/**
+  バイナリデータがICOファイルの形式かどうかを判定する
+  @return true:ICO形式  false:ICO形式ではない
+  @param[in] data 判定対象のデータ
+*/
+static bool IsIconData(const std::vector<BYTE>& data)
+{
+	if (data.size() < 6) {
+		return false;
+	}
+
+	WORD reserved = 0;
+	WORD type = 0;
+	WORD count = 0;
+	memcpy(&reserved, data.data(), sizeof(reserved));
+	memcpy(&type, data.data() + 2, sizeof(type));
+	memcpy(&count, data.data() + 4, sizeof(count));
+	return reserved == 0 && type == 1 && count != 0;
+}
+
+/**
+  メモリ上の画像データをCImageへ読み込む
+  @return true:成功  false:失敗
+  @param[in] data 画像データ
+  @param[out] image 読み込んだ画像
+*/
+static bool LoadImageFromData(const std::vector<BYTE>& data, ATL::CImage& image)
+{
+	if (data.empty()) {
+		return false;
+	}
+
+	HGLOBAL global = GlobalAlloc(GMEM_MOVEABLE, data.size());
+	if (global == nullptr) {
+		return false;
+	}
+
+	void* buffer = GlobalLock(global);
+	if (buffer == nullptr) {
+		GlobalFree(global);
+		return false;
+	}
+	memcpy(buffer, data.data(), data.size());
+	GlobalUnlock(global);
+
+	IStream* stream = nullptr;
+	if (FAILED(CreateStreamOnHGlobal(global, TRUE, &stream))) {
+		GlobalFree(global);
+		return false;
+	}
+
+	HRESULT hr = image.Load(stream);
+	stream->Release();
+	return SUCCEEDED(hr);
+}
+
+/**
  	データ列からアイコンオブジェクトを生成する
  	@return アイコンハンドル
  	@param[in] strm データ列
@@ -1023,6 +1098,67 @@ bool IconLoader::GetStreamFromPath(
 	std::vector<uint8_t>& strm
 )
 {
+	if (IsHttpUrl(path)) {
+		launcherapp::WinHttp http;
+		std::vector<BYTE> downloaded;
+		if (http.LoadBinaryContent(path, downloaded) == false) {
+			return false;
+		}
+
+		// ICOは複数サイズの情報を保持するため、取得したデータをそのまま使う
+		if (IsIconData(downloaded)) {
+			strm.assign(downloaded.begin(), downloaded.end());
+			return true;
+		}
+
+		// 通常画像はローカルファイルと同じくCImageで読み込んで検証する
+		ATL::CImage image;
+		if (LoadImageFromData(downloaded, image) == false) {
+			return false;
+		}
+
+		CSize size(image.GetWidth(), image.GetHeight());
+		if (size.cx <= 0 || size.cy <= 0) {
+			return false;
+		}
+		if (size.cx < 64 && size.cy < 64) {
+			strm.assign(downloaded.begin(), downloaded.end());
+			return true;
+		}
+
+		ATL::CImage imageResize;
+		int cx = size.cx > size.cy ? 64 : (int)(64 * (size.cx / (double)size.cy));
+		int cy = size.cx < size.cy ? 64 : (int)(64 * (size.cy / (double)size.cx));
+		if (cx < 1) { cx = 1; }
+		if (cy < 1) { cy = 1; }
+		if (imageResize.Create(cx, cy, image.GetBPP()) == FALSE) {
+			return false;
+		}
+
+		image.Draw(imageResize.GetDC(), 0, 0, cx, cy);
+		imageResize.ReleaseDC();
+
+		Path tmpFilePath(Path::APPDIR);
+		if (GetTempFilePath(tmpFilePath) == false || FAILED(imageResize.Save(tmpFilePath))) {
+			return false;
+		}
+
+		HANDLE h = CreateFile(tmpFilePath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+		if (h == INVALID_HANDLE_VALUE) {
+			return false;
+		}
+		DWORD fileSize = GetFileSize(h, nullptr);
+		strm.resize(fileSize);
+		DWORD readBytes = 0;
+		BOOL result = ReadFile(h, strm.data(), fileSize, &readBytes, nullptr);
+		CloseHandle(h);
+		if (result == FALSE || readBytes != fileSize) {
+			strm.clear();
+			return false;
+		}
+		return true;
+	}
+
 	// アイコンの場合はそれをそのまま使う
 	if (TryGetStreamFromIconPath(path, strm)) {
 		return true;
