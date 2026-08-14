@@ -934,6 +934,7 @@
     <ClInclude Include="utility\CharConverter.h" />
     <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
+    <ClInclude Include="utility\ImageConverter.h" />
     <ClInclude Include="utility\LastErrorString.h" />
     <ClInclude Include="utility\LocalDirectoryWatcher.h" />
     <ClInclude Include="utility\LocalPathResolver.h" />
@@ -1483,6 +1484,7 @@
     <ClCompile Include="utility\CharConverter.cpp" />
     <ClCompile Include="utility\DemotedProcessToken.cpp" />
     <ClCompile Include="utility\HWNDRect.cpp" />
+    <ClCompile Include="utility\ImageConverter.cpp" />
     <ClCompile Include="utility\LocalDirectoryWatcher.cpp" />
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\ManualEvent.cpp" />

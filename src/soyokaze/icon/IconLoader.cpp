@@ -10,12 +10,11 @@
 #include "utility/SHA1.h"
 #include "utility/ProcessPath.h"
 #include "utility/Path.h"
+#include "utility/ImageConverter.h"
 #include "utility/WinHttp.h"
 #include "resource.h"
 #include <map>
 #include <set>
-#include <atlimage.h>
-#include <atlbase.h>
 #include <WinHttp.h>
 #include <mutex>
 #include <thread>
@@ -1010,42 +1009,6 @@ static bool IsIconData(const std::vector<BYTE>& data)
 }
 
 /**
-  メモリ上の画像データをCImageへ読み込む
-  @return true:成功  false:失敗
-  @param[in] data 画像データ
-  @param[out] image 読み込んだ画像
-*/
-static bool LoadImageFromData(const std::vector<BYTE>& data, ATL::CImage& image)
-{
-	if (data.empty()) {
-		return false;
-	}
-
-	HGLOBAL global = GlobalAlloc(GMEM_MOVEABLE, data.size());
-	if (global == nullptr) {
-		return false;
-	}
-
-	void* buffer = GlobalLock(global);
-	if (buffer == nullptr) {
-		GlobalFree(global);
-		return false;
-	}
-	memcpy(buffer, data.data(), data.size());
-	GlobalUnlock(global);
-
-	IStream* stream = nullptr;
-	if (FAILED(CreateStreamOnHGlobal(global, TRUE, &stream))) {
-		GlobalFree(global);
-		return false;
-	}
-
-	HRESULT hr = image.Load(stream);
-	stream->Release();
-	return SUCCEEDED(hr);
-}
-
-/**
  	データ列からアイコンオブジェクトを生成する
  	@return アイコンハンドル
  	@param[in] strm データ列
@@ -1111,52 +1074,7 @@ bool IconLoader::GetStreamFromPath(
 			return true;
 		}
 
-		// 通常画像はローカルファイルと同じくCImageで読み込んで検証する
-		ATL::CImage image;
-		if (LoadImageFromData(downloaded, image) == false) {
-			return false;
-		}
-
-		CSize size(image.GetWidth(), image.GetHeight());
-		if (size.cx <= 0 || size.cy <= 0) {
-			return false;
-		}
-		if (size.cx < 64 && size.cy < 64) {
-			strm.assign(downloaded.begin(), downloaded.end());
-			return true;
-		}
-
-		ATL::CImage imageResize;
-		int cx = size.cx > size.cy ? 64 : (int)(64 * (size.cx / (double)size.cy));
-		int cy = size.cx < size.cy ? 64 : (int)(64 * (size.cy / (double)size.cx));
-		if (cx < 1) { cx = 1; }
-		if (cy < 1) { cy = 1; }
-		if (imageResize.Create(cx, cy, image.GetBPP()) == FALSE) {
-			return false;
-		}
-
-		image.Draw(imageResize.GetDC(), 0, 0, cx, cy);
-		imageResize.ReleaseDC();
-
-		Path tmpFilePath(Path::APPDIR);
-		if (GetTempFilePath(tmpFilePath) == false || FAILED(imageResize.Save(tmpFilePath))) {
-			return false;
-		}
-
-		HANDLE h = CreateFile(tmpFilePath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-		if (h == INVALID_HANDLE_VALUE) {
-			return false;
-		}
-		DWORD fileSize = GetFileSize(h, nullptr);
-		strm.resize(fileSize);
-		DWORD readBytes = 0;
-		BOOL result = ReadFile(h, strm.data(), fileSize, &readBytes, nullptr);
-		CloseHandle(h);
-		if (result == FALSE || readBytes != fileSize) {
-			strm.clear();
-			return false;
-		}
-		return true;
+		return launcherapp::utility::ImageConverter::Convert(downloaded, strm);
 	}
 
 	// アイコンの場合はそれをそのまま使う
@@ -1164,60 +1082,21 @@ bool IconLoader::GetStreamFromPath(
 		return true;
 	}
 
-	// 画像ファイルをロードする
-	ATL::CImage image;
-	HRESULT hr = image.Load(path);
-	if (FAILED(hr)) {
-		return false;
-	}
-
-	CSize size(image.GetWidth(), image.GetHeight());
-
-	ATL::CImage imageResize;
-
-	Path tmpFilePath(Path::APPDIR);
-	GetTempFilePath(tmpFilePath);
-	
-	// サイズが大きすぎる場合はリサイズする
-	// (アイコン表示用の画像なので大きいサイズは想定しない)
-	LPCTSTR p = path;
-	if (size.cx >= 64 || size.cy >= 64) {
-
-		// 縦横比を保持したまま縮小サイズを計算する
-		int cx = size.cx > size.cy ? 64 : (int)(64 * (size.cx / (double)size.cy));
-		int cy = size.cx < size.cy ? 64 : (int)(64 * (size.cy / (double)size.cx));
-		if (cx < 0) { cx = 1; }
-		if (cy < 0) { cy = 1; }
-
-		// 縮小画像の生成
-		imageResize.Create(cx, cy, image.GetBPP());
-
-		image.Draw(imageResize.GetDC(), 0, 0, cx, cy);
-		imageResize.ReleaseDC();
-
-		imageResize.Save(tmpFilePath);
-
-		p = tmpFilePath;
-	}
-
-	HANDLE h = CreateFile(p, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	std::vector<uint8_t> imageData;
+	HANDLE h = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (h == INVALID_HANDLE_VALUE) {
 		return false;
 	}
-
-	// アイコンファイルなので大きいファイルサイズは想定しない
 	DWORD fileSize = GetFileSize(h, nullptr);
-
-	strm.resize(fileSize);
-
+	imageData.resize(fileSize);
 	DWORD readBytes = 0;
-	if (ReadFile(h, &strm.front(), fileSize, &readBytes, nullptr) == FALSE) {
-		SPDLOG_ERROR(_T("Failed to ReadFile! err={:x}"), GetLastError());
+	BOOL result = ReadFile(h, imageData.data(), fileSize, &readBytes, nullptr);
+	CloseHandle(h);
+	if (result == FALSE || readBytes != fileSize) {
+		return false;
 	}
 
-	CloseHandle(h);
-
-	return true;
+	return launcherapp::utility::ImageConverter::Convert(imageData, strm);
 }
 
 // アイコンファイルからよみこむ
