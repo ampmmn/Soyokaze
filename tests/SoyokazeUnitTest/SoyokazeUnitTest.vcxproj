@@ -53,6 +53,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\transfer\CommandJSONEntryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\validation\CommandParamErrorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\externaltool\webbrowser\BrowserProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyControlTest.cpp" />

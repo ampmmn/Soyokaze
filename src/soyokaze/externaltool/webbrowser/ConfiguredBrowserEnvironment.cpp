@@ -3,6 +3,7 @@
 #include "control/webbrowser/InternalBrowser.h"
 #include "SharedHwnd.h"
 #include "externaltool/webbrowser/ChromeEnvironment.h"
+#include "externaltool/webbrowser/BrowserProfile.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "utility/Path.h"
@@ -205,7 +206,9 @@ bool ConfiguredBrowserEnvironment::GetBookmarkFilePath(CString& path)
 	}
 
 	Path pathBkm(in->mUserDataDirPath);
-	pathBkm.Append(_T("Default\\Bookmarks"));
+	CString profilePath;
+	profilePath.Format(_T("%s\\Bookmarks"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(in->mUserDataDirPath));
+	pathBkm.Append(profilePath);
 	if (pathBkm.FileExists()) {
 		path = (LPCTSTR)pathBkm;
 		return true;
@@ -238,7 +241,9 @@ bool ConfiguredBrowserEnvironment::GetHistoryFilePath(CString& path)
 
 	// 設定フォルダがDefaultディレクトリの親ディレクトリをさしている場合
 	Path pathHistory(in->mUserDataDirPath);
-	pathHistory.Append(_T("Default\\History"));
+	CString profilePath;
+	profilePath.Format(_T("%s\\History"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(in->mUserDataDirPath));
+	pathHistory.Append(profilePath);
 	if (pathHistory.FileExists()) {
 		path = (LPCTSTR)pathHistory;
 		return true;

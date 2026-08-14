@@ -1,14 +1,13 @@
 #include "pch.h"
 #include "ChromeEnvironment.h"
+#include "BrowserProfile.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"
 
 namespace launcherapp { namespace externaltool { namespace webbrowser {
 
-// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
+// Chromeのユーザーデータディレクトリ
 #define USERDATA_PATH _T("Google\\Chrome\\User Data")
-#define BOOKMARK_PATH _T("\\Default\\Bookmarks")
-#define HISTORY_PATH _T("\\Default\\History")
 
 ChromeEnvironment* ChromeEnvironment::GetInstance()
 {
@@ -47,7 +46,10 @@ bool ChromeEnvironment::GetCommandlineParameter(CString& param)
 // ブックマークデータのパスを取得
 bool ChromeEnvironment::GetBookmarkFilePath(CString& path)
 {
-	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH BOOKMARK_PATH};
+	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH};
+	CString profilePath;
+	profilePath.Format(_T("%s\\Bookmarks"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(bookmarkFilePath));
+	bookmarkFilePath.Append(profilePath);
 	path = (LPCTSTR)bookmarkFilePath;
 	return true;
 }
@@ -55,7 +57,10 @@ bool ChromeEnvironment::GetBookmarkFilePath(CString& path)
 // 履歴ファイルのパスを取得
 bool ChromeEnvironment::GetHistoryFilePath(CString& path)
 {
-	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH HISTORY_PATH};
+	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH};
+	CString profilePath;
+	profilePath.Format(_T("%s\\History"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(bookmarkFilePath));
+	bookmarkFilePath.Append(profilePath);
 	path = (LPCTSTR)bookmarkFilePath;
 	return true;
 }

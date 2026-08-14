@@ -656,6 +656,7 @@
     <ClInclude Include="core\LauncherEventListenerIF.h" />
     <ClInclude Include="core\LauncherProcessContext.h" />
     <ClInclude Include="externaltool\webbrowser\BrowserEnvironment.h" />
+    <ClInclude Include="externaltool\webbrowser\BrowserProfile.h" />
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.h" />
     <ClInclude Include="externaltool\webbrowser\EdgeEnvironment.h" />
@@ -1217,6 +1218,7 @@
     <ClCompile Include="control\webbrowser\InternalBrowser.cpp" />
     <ClCompile Include="core\LauncherProcessContext.cpp" />
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp" />
+    <ClCompile Include="externaltool\webbrowser\BrowserProfile.cpp" />
     <ClCompile Include="externaltool\webbrowser\ConfiguredBrowserEnvironment.cpp" />
     <ClCompile Include="externaltool\webbrowser\EdgeEnvironment.cpp" />
     <ClCompile Include="control\ColorSettings.cpp" />

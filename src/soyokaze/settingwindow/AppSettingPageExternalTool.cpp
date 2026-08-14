@@ -5,6 +5,7 @@
 #include "control/FolderDialog.h"
 #include "control/DDXWrapper.h"
 #include "externaltool/webbrowser/ChromeEnvironment.h"
+#include "externaltool/webbrowser/BrowserProfile.h"
 #include "utility/Path.h"
 #include "utility/Accessibility.h"
 #include "utility/VersionInfo.h"
@@ -15,6 +16,7 @@
 #endif
 
 using ChromeEnvironment = launcherapp::externaltool::webbrowser::ChromeEnvironment;
+using BrowserProfile = launcherapp::externaltool::webbrowser::BrowserProfile;
 
 // 
 class ExternalToolSettingDialog : public CDialog
@@ -284,13 +286,16 @@ bool ExternalToolSettingDialog::IsValidDataFolder(const CString& folderPath)
 	}
 
 	Path path(folderPath);
-	path.Append(_T("Default\\Bookmarks"));
+	CString profilePath;
+	profilePath.Format(_T("%s\\Bookmarks"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(folderPath));
+	path.Append(profilePath);
 	if (path.FileExists() == false) {
 		return false;
 	}
 
 	path = folderPath;
-	path.Append(_T("Default\\History"));
+	profilePath.Format(_T("%s\\History"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(folderPath));
+	path.Append(profilePath);
 	if (path.FileExists() == false) {
 		return false;
 	}

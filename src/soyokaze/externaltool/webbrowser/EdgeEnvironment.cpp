@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "EdgeEnvironment.h"
+#include "BrowserProfile.h"
 #include "utility/Path.h"
 
 namespace launcherapp { namespace externaltool { namespace webbrowser {
 
-// Chrome $USERPROFILE/AppData/Local/Google/Chrome/User Data/Default/Bookmarks
 #define USERDATA_PATH _T("Microsoft\\Edge\\User Data")
-#define BOOKMARK_PATH _T("\\Default\\Bookmarks")
-#define HISTORY_PATH _T("\\Default\\History")
 
 
 EdgeEnvironment* EdgeEnvironment::GetInstance()
@@ -53,7 +51,10 @@ bool EdgeEnvironment::GetCommandlineParameter(CString& param)
 // ブックマークデータのパスを取得
 bool EdgeEnvironment::GetBookmarkFilePath(CString& path)
 {
-	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH BOOKMARK_PATH};
+	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH};
+	CString profilePath;
+	profilePath.Format(_T("%s\\Bookmarks"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(bookmarkFilePath));
+	bookmarkFilePath.Append(profilePath);
 	path = (LPCTSTR)bookmarkFilePath;
 	return true;
 }
@@ -61,7 +62,10 @@ bool EdgeEnvironment::GetBookmarkFilePath(CString& path)
 // 履歴ファイルのパスを取得
 bool EdgeEnvironment::GetHistoryFilePath(CString& path)
 {
-	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH HISTORY_PATH};
+	Path bookmarkFilePath{Path::LOCALAPPDATA, USERDATA_PATH};
+	CString profilePath;
+	profilePath.Format(_T("%s\\History"), (LPCTSTR)BrowserProfile::GetLastUsedProfileName(bookmarkFilePath));
+	bookmarkFilePath.Append(profilePath);
 	path = (LPCTSTR)bookmarkFilePath;
 	return true;
 }
