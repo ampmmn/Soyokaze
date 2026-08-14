@@ -35,6 +35,7 @@ Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる
 ![](../image/websearchcommand-contextmenu.png)
   - `アイコンを変更する`  
 選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。
+    - ローカルパスのほか、URLを直接指定することも可能
     - PNG/JPG/GIF/BMP形式のファイルが利用可能
     - 検索サイトごとにアイコンを変えると視認性が高まるのでおすすめ
   - `URLからファビコンを取得する`    

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -104,7 +104,7 @@ msgid "そのほかに[マクロ](/macros)を利用することが可能"
 msgstr ""
 
 #: ../../source/user-command/regexp.md:32
-msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
+msgid "`作業フォルダ`   実行ファイルを実行するときのカレントディレクトリを指定する"
 msgstr ""
 
 #: ../../source/user-command/regexp.md:35
@@ -125,14 +125,20 @@ msgstr ""
 msgid ""
 "`アイコンを変更する`   "
 "選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   "
-"PNG/JPG/GIF/BMP形式のファイルが利用可能"
+"ローカルパスのほか、URLを直接指定することも可能   PNG/JPG/GIF/BMP形式のファイルが利用可能"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:49
+#: ../../source/user-command/regexp.md:50
+msgid ""
+"`URLからファビコンを取得する`     `実行ファイル・URLなど`にURLが入力されているときのみ表示される。   "
+"選択すると、URLからファビコンを取得し、アイコンとして設定する。"
+msgstr ""
+
+#: ../../source/user-command/regexp.md:53
 msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:52
+#: ../../source/user-command/regexp.md:56
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

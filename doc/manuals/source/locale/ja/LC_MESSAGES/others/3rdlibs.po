@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-26 12:40+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,144 +24,148 @@ msgid "Third Party Libraries"
 msgstr "利用ライブラリ"
 
 #: ../../source/others/3rdlibs.md:4
-msgid "[fmt](https://github.com/fmtlib/fmt)"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:5
-msgid "文字列フォーマット用"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:7
 msgid "[nlohmann-json](https://github.com/nlohmann/json)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:8
+#: ../../source/others/3rdlibs.md:5
 msgid "jsonファイルをパースするために使用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:10
+#: ../../source/others/3rdlibs.md:7
 msgid "[spdlog](https://github.com/gabime/spdlog)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:11
+#: ../../source/others/3rdlibs.md:8
 msgid "実行時ログを出力するためのライブラリとして使用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:13
+#: ../../source/others/3rdlibs.md:10
 msgid "[tidy-html5](https://github.com/htacg/tidy-html5)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:14
+#: ../../source/others/3rdlibs.md:11
 msgid "DirectoryIndexコマンド内において、取得したHTMLを解析するためのライブラリとして使用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:16
+#: ../../source/others/3rdlibs.md:13
 msgid "[C/Migemo](https://github.com/koron/cmigemo)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:17
+#: ../../source/others/3rdlibs.md:14
 msgid "日本語をローマ字検索するためのライブラリとして使用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:19
+#: ../../source/others/3rdlibs.md:16
 msgid ""
 "[yet-another-migemo-dict](https://github.com/oguna/yet-another-migemo-"
 "dict)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:20
+#: ../../source/others/3rdlibs.md:17
 msgid "上記ライブラリから生成したMigemo辞書を本ツールに同梱している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:21
+#: ../../source/others/3rdlibs.md:18
 msgid "アプリ実行時に上記ライブラリを直接利用するものではない"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:23
+#: ../../source/others/3rdlibs.md:20
 msgid "[Python3](https://www.python.org/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:24
+#: ../../source/others/3rdlibs.md:21
 msgid "Python拡張コマンド/簡易電卓機能を実現するために使用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:26
+#: ../../source/others/3rdlibs.md:23
 msgid "[SQLite3](https://www.sqlite.org/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:27
+#: ../../source/others/3rdlibs.md:24
 msgid "Windows標準搭載の`winsqlite3.dll`を利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:29
+#: ../../source/others/3rdlibs.md:26
 msgid "[Everything SDK](https://www.voidtools.com/support/everything/sdk/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:30
+#: ../../source/others/3rdlibs.md:27
 msgid "`Everything`が公開しているSDKのソースコードをそのままランチャー本体に組み込んでいる"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:32
+#: ../../source/others/3rdlibs.md:29
 msgid "[RE2](https://github.com/google/re2)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:33
+#: ../../source/others/3rdlibs.md:30
 msgid "コマンドの絞り込みの際の正規表現エンジンとして利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:35
+#: ../../source/others/3rdlibs.md:32
 msgid "[Abseil](https://github.com/abseil/abseil-cpp)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:36
+#: ../../source/others/3rdlibs.md:33
 msgid "`RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:38
+#: ../../source/others/3rdlibs.md:35
 msgid "[Sphinx](https://www.sphinx-doc.org/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:39
+#: ../../source/others/3rdlibs.md:36
 msgid "マニュアル生成で利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:40
+#: ../../source/others/3rdlibs.md:37
 msgid "[sphinx_rtd_theme](https://github.com/readthedocs/sphinx_rtd_theme)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:41
+#: ../../source/others/3rdlibs.md:38
 msgid "マニュアル生成の際のテーマ"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:43
+#: ../../source/others/3rdlibs.md:40
 msgid "[nanobind](https://github.com/wjakob/nanobind)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:44
+#: ../../source/others/3rdlibs.md:41
 msgid "Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:46
-msgid "[Snintilla,Lexilla](https://www.scintilla.org/)"
+#: ../../source/others/3rdlibs.md:43
+msgid "[Scintilla,Lexilla](https://www.scintilla.org/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:47
+#: ../../source/others/3rdlibs.md:44
 msgid "Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:49
+#: ../../source/others/3rdlibs.md:46
 msgid "[upx/upx](https://github.com/upx/upx)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:50
+#: ../../source/others/3rdlibs.md:47
 msgid "ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:51
-msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリはGPLにはならない(認識)"
+#: ../../source/others/3rdlibs.md:48
+msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリ(はGPLにはならない(認識)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:56
+#: ../../source/others/3rdlibs.md:49
+msgid "未改変UPXおよび未改変stubを使用する場合に限り、UPXの特別例外が適用される"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:51
+msgid "[simdutf/simdutf](https://github.com/simdutf/simdutf)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:52
+msgid "Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:57
 msgid "非開示"
 msgstr ""
 

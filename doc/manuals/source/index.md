@@ -53,6 +53,14 @@ caption: Python Libraries
 ```{toctree}
 ---
 maxdepth: 2
+caption: Plugins
+---
+./plugins.md
+```
+
+```{toctree}
+---
+maxdepth: 2
 caption: Miscellaneous
 ---
 others/advanced-usage.md

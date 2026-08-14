@@ -1,0 +1,630 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.55.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/plugins.md:1
+msgid "Plugins"
+msgstr "プラグイン"
+
+#: ../../source/plugins.md:3
+msgid ""
+"本アプリは専用のプラグインDLLを読み込み、検索候補となるコマンドを追加できます。 "
+"ここでは、C/C++でプラグインを実装するための仕様と実装方法を説明します。"
+msgstr ""
+
+#: ../../source/plugins.md:7
+msgid ""
+"プラグインのAPI定義は、配布物に含まれる `plugin-include/soyokaze/PluginExportTable.h` "
+"が基準です。APIの追加や変更に追従するため、 プラグインのビルドには、使用するSoyokazeと同じバージョンのヘッダを使用してください。"
+msgstr ""
+
+#: ../../source/plugins.md:13
+msgid ""
+"プラグインのAPI定義は、`PluginExportTable.h` が基準です。APIの追加や変更に追従するため、 "
+"プラグインのビルドには、使用するランチャーアプリ本体と同じバージョンのヘッダを使用してください。"
+msgstr ""
+
+#: ../../source/plugins.md:17
+msgid ""
+"本体のバージョンアップにより、`PluginExportTable.h`の定義は変更される場合があります。   "
+"アプリ本体はプラグインの後方互換性を維持しないため、定義が変更になった場合は追従が必要です。"
+msgstr ""
+
+#: ../../source/plugins.md:20
+msgid "動作の概要"
+msgstr ""
+
+#: ../../source/plugins.md:22
+msgid ""
+"プラグインは、{{ project }}が入力中のキーワードを検索するときに呼び出されます。 "
+"プラグインは入力内容を調べ、検索結果をハンドルとして返します。検索結果1件につき1つの{{ project "
+"}}上のコマンドが生成され、ユーザーがそのコマンドを実行するとプラグインの処理が呼び出されます。"
+msgstr ""
+
+#: ../../source/plugins.md:25
+msgid "処理の流れは次のとおりです。"
+msgstr ""
+
+#: ../../source/plugins.md:27
+msgid "{{ project }}がプラグインDLLをロードする"
+msgstr ""
+
+#: ../../source/plugins.md:28
+msgid "`LNCRPLUGIN_Bind`を呼び出して関数テーブルを取得する"
+msgstr ""
+
+#: ../../source/plugins.md:29
+msgid "`Initialize`を呼び出してプラグインを初期化する"
+msgstr ""
+
+#: ../../source/plugins.md:30
+msgid "キーワード入力のたびに`Query`を呼び出す"
+msgstr ""
+
+#: ../../source/plugins.md:31
+msgid "`Query`が返した検索結果を候補として表示する"
+msgstr ""
+
+#: ../../source/plugins.md:32
+msgid "コマンド実行時に`CanExecute`と`Execute`を呼び出す"
+msgstr ""
+
+#: ../../source/plugins.md:33
+msgid "{{ project }}の終了時に`Finalize`を呼び出してDLLをアンロードする"
+msgstr ""
+
+#: ../../source/plugins.md:35
+msgid "DLLはアプリケーションの実行中に一度だけロードされます。プラグインの追加・削除を実行中に反映することはできません。"
+msgstr ""
+
+#: ../../source/plugins.md:37
+msgid "配置とロード"
+msgstr ""
+
+#: ../../source/plugins.md:39
+msgid ""
+"プラグインは、{{ project }}の設定ファイル保存先にある`plugins`ディレクトリへ配置します。 "
+"設定ファイル保存先はユーザーディレクトリ直下です。プラグインごとにサブディレクトリを作成してください。"
+msgstr ""
+
+#: ../../source/plugins.md:51
+msgid "ロード時の規則は次のとおりです。"
+msgstr ""
+
+#: ../../source/plugins.md:53
+msgid "`plugins`ディレクトリ直下のサブディレクトリを走査します"
+msgstr ""
+
+#: ../../source/plugins.md:54
+msgid "各サブディレクトリの直下にある`.dll`をロード対象とします"
+msgstr ""
+
+#: ../../source/plugins.md:55
+msgid "1つのサブディレクトリに複数のDLLを配置できます"
+msgstr ""
+
+#: ../../source/plugins.md:56
+msgid "サブディレクトリをさらに再帰して探索することはありません"
+msgstr ""
+
+#: ../../source/plugins.md:57
+msgid "`plugins`ディレクトリが存在しない場合、プラグインはロードされません"
+msgstr ""
+
+#: ../../source/plugins.md:58
+msgid "`.dll`以外のファイルはロードされません"
+msgstr ""
+
+#: ../../source/plugins.md:59
+msgid "32bit版はサポートしていません。x64版の{{ project }}に対応するx64 DLLを作成してください"
+msgstr ""
+
+#: ../../source/plugins.md:61
+msgid "次のいずれかに該当するDLLはロードに失敗します。"
+msgstr ""
+
+#: ../../source/plugins.md:63
+msgid "DLLをロードできない"
+msgstr ""
+
+#: ../../source/plugins.md:64
+msgid "`LNCRPLUGIN_Bind`を取得できない"
+msgstr ""
+
+#: ../../source/plugins.md:65
+msgid "`LNCRPLUGIN_Bind`がエラーを返す"
+msgstr ""
+
+#: ../../source/plugins.md:66
+msgid "`LNCRPLUGIN_EXPORTTABLE`の関数ポインタに`nullptr`が含まれる"
+msgstr ""
+
+#: ../../source/plugins.md:67
+msgid "`Initialize`がエラーを返す"
+msgstr ""
+
+#: ../../source/plugins.md:69
+msgid "ロードに失敗したDLLは保持されず、ロード済みのDLLも終了時まで再ロードされません。"
+msgstr ""
+
+#: ../../source/plugins.md:71
+msgid "公開するAPI"
+msgstr ""
+
+#: ../../source/plugins.md:73
+msgid "プラグインは`LNCRPLUGIN_Bind`という名前の関数をエクスポートします。 関数の宣言はヘッダに定義されています。"
+msgstr ""
+
+#: ../../source/plugins.md:81
+msgid ""
+"`version`には{{ project "
+"}}が使用するプラグインバージョンが渡されます。プラグイン側では、利用している`PluginExportTable.h`の`PLUGINVERSION`に対応できるか確認してください。バージョンに対応できない場合は0以外を返します。"
+msgstr ""
+
+#: ../../source/plugins.md:83
+msgid ""
+"正常に関数テーブルを設定できた場合は0を返してください。 "
+"`table`には、プラグインが実装した`LNCRPLUGIN_EXPORTTABLE`の各関数ポインタを設定します。現在の実装では、全ての関数ポインタが設定されている必要があります。"
+msgstr ""
+
+#: ../../source/plugins.md:86
+msgid ""
+"`LNCRPLUGIN_Bind`はCリンケージでエクスポートされます。ヘッダをC++からインクルードすれば、宣言に含まれる`extern "
+"\"C\"`が適用されます。関数名を変更したり、C++の名前修飾が付いた状態でエクスポートしたりしないでください。"
+msgstr ""
+
+#: ../../source/plugins.md:88
+msgid "関数テーブル"
+msgstr ""
+
+#: ../../source/plugins.md:90
+msgid "`Initialize`"
+msgstr ""
+
+#: ../../source/plugins.md:96
+msgid "プラグインのロード直後に一度呼び出されます。設定ファイルの読み込み、インデックスの作成、リソースの確保などをここで行います。"
+msgstr ""
+
+#: ../../source/plugins.md:98
+msgid ""
+"`LAUNCHER_FUNCTION_TABLE`は、{{ project }}本体がプラグインへ渡す関数テーブルです。プラグインから{{ "
+"project "
+"}}本体の機能を呼び出すための窓口であり、ログ出力、トースト通知、メインウィンドウのハンドル取得に使用できます。構造体の各メンバーには、本体側の機能を呼び出すための関数ポインタが設定されています。"
+msgstr ""
+
+#: ../../source/plugins.md:100
+msgid ""
+"この関数テーブルはプラグインが作成して{{ project }}へ返すものではありません。{{ project "
+"}}が`Initialize`の呼び出し時に作成し、引数としてプラグインへ渡します。プラグインで本体側APIを使用しない場合でも、`Initialize`の引数を受け取れるようにしてください。"
+msgstr ""
+
+#: ../../source/plugins.md:102
+msgid "`table`が指す`LAUNCHER_FUNCTION_TABLE`のデータは一時的なものです。後で使用する関数ポインタがある場合は、構造体の内容をプラグイン側でコピーして保持してください。"
+msgstr ""
+
+#: ../../source/plugins.md:104
+msgid "成功時は0、初期化に失敗した場合は0以外を返します。失敗したプラグインはロードされません。"
+msgstr ""
+
+#: ../../source/plugins.md:106
+msgid "`Query`"
+msgstr ""
+
+#: ../../source/plugins.md:112
+msgid "入力中のキーワードに対して検索を行い、検索結果を保持するハンドルを返します。検索結果がない場合は`nullptr`を返してください。"
+msgstr ""
+
+#: ../../source/plugins.md:114
+msgid ""
+"`ctx`は{{ project "
+"}}が管理する検索状態です。`MATCHER_FUNCTION_TABLE`の関数を呼び出すとき、必ずこの値を第1引数として渡します。`ctx`の内容をプラグイン側で解釈したり、保持したりしないでください。"
+msgstr ""
+
+#: ../../source/plugins.md:116
+msgid "`table`には、次のキーワード操作関数が設定されています。"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "関数"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "内容"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`Match`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "指定したキーワードと一致するか調べる"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetFirstWord`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "入力中の最初のワードを取得する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetWholeString`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "入力全体を取得する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetWordCount`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "入力中のワード数を取得する"
+msgstr ""
+
+#: ../../source/plugins.md:125
+msgid "`Match`のオフセットは、`Pattern::Match`のオフセットと同じ意味です。例えば、最初のワードをプラグインのコマンド名として扱う場合は、2番目以降のワードを検索するためにオフセット1を指定します。"
+msgstr ""
+
+#: ../../source/plugins.md:127
+msgid "`GetMatchCount` / `GetMatchLevel`"
+msgstr ""
+
+#: ../../source/plugins.md:134
+msgid "`GetMatchCount`は検索結果の件数を返します。`index`は0から始まる検索結果の番号です。"
+msgstr ""
+
+#: ../../source/plugins.md:136
+msgid "`GetMatchLevel`は検索結果の一致レベルを返します。値の意味は次のとおりです。"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "値"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "意味"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "5"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "完全一致"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "4"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "前方一致"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "3"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "部分一致"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "2"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "弱い一致"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "-1"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "不一致"
+msgstr ""
+
+#: ../../source/plugins.md:146
+msgid "`GetName` / `GetDescription` / `GetGuide` / `GetTypeDisplayName`"
+msgstr ""
+
+#: ../../source/plugins.md:159
+msgid "これらの関数は、検索結果ごとの文字列を取得します。"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "画面上での用途"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetName`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "候補の名前"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetDescription`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "候補の説明"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetGuide`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "候補を実行するときのガイド表示"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetTypeDisplayName`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "コマンド種別の表示"
+msgstr ""
+
+#: ../../source/plugins.md:168
+msgid "文字列はUTF-8の`char`配列として返してください。必要なバッファ長を調べるときは`buffer`に`nullptr`、`length`に0を指定します。この場合、終端の`\\0`を含む必要なバイト数を返します。"
+msgstr ""
+
+#: ../../source/plugins.md:170
+msgid "バッファを渡した場合は、文字列を`\\0`で終端してください。バッファが不足する場合も、可能な範囲で終端文字を含めてコピーします。エラー時は-1を返します。"
+msgstr ""
+
+#: ../../source/plugins.md:172
+msgid "`GetGuide`で取得した文字列は、コマンド実行時のアクション表示に使用されます。"
+msgstr ""
+
+#: ../../source/plugins.md:174
+msgid "`CanExecute`"
+msgstr ""
+
+#: ../../source/plugins.md:180
+msgid "検索結果を現在実行できるかどうかを返します。0は実行不可、0以外は実行可能です。"
+msgstr ""
+
+#: ../../source/plugins.md:182
+msgid "実行不可の場合、{{ project }}は`GetErrorString`で理由を取得して表示します。"
+msgstr ""
+
+#: ../../source/plugins.md:184
+msgid "`Execute`"
+msgstr ""
+
+#: ../../source/plugins.md:191
+msgid "検索結果を実行します。成功時は0、失敗時は0以外を返してください。"
+msgstr ""
+
+#: ../../source/plugins.md:193
+msgid "`argv`には実行時引数だけが含まれます。コマンド名は含まれません。"
+msgstr ""
+
+#: ../../source/plugins.md:195
+msgid "例えば、入力が次のような場合を考えます。"
+msgstr ""
+
+#: ../../source/plugins.md:201
+msgid "プラグインに渡される値は次のとおりです。"
+msgstr ""
+
+#: ../../source/plugins.md:209
+msgid "引数がない場合は`argc`が0になります。`argv`は終端の`nullptr`を持つダミー配列として渡されます。"
+msgstr ""
+
+#: ../../source/plugins.md:211
+msgid "`GetErrorString`"
+msgstr ""
+
+#: ../../source/plugins.md:218
+msgid "`CanExecute`または`Execute`が失敗したときに表示するエラー文字列を返します。文字列の取得方法は`GetName`などの文字列取得関数と同じです。"
+msgstr ""
+
+#: ../../source/plugins.md:220
+msgid "`GetIcon`"
+msgstr ""
+
+#: ../../source/plugins.md:226
+msgid "検索結果に表示するアイコンを返します。成功時は0を返し、`icon`にアイコンハンドルを設定します。失敗時は0以外を返してください。"
+msgstr ""
+
+#: ../../source/plugins.md:228
+msgid "返したアイコンの所有権はプラグイン側にあります。不要になったアイコンはプラグイン側で破棄してください。通常は`Finalize`で破棄します。"
+msgstr ""
+
+#: ../../source/plugins.md:230
+msgid "`GetIcon`に失敗した場合、{{ project }}はデフォルトアイコンを使用します。"
+msgstr ""
+
+#: ../../source/plugins.md:232
+msgid "`CloseHandle`"
+msgstr ""
+
+#: ../../source/plugins.md:238
+msgid "`Query`が返した検索ハンドルを破棄します。検索ハンドルに確保したメモリや検索結果の内部データは、この関数で解放してください。"
+msgstr ""
+
+#: ../../source/plugins.md:240
+msgid ""
+"1つの検索ハンドルに複数の検索結果を含めることができます。{{ project "
+"}}は検索結果を表示している間、ハンドルを保持します。`CloseHandle`が呼ばれるまで、ハンドルとその配下の検索結果を有効にしておいてください。"
+msgstr ""
+
+#: ../../source/plugins.md:242
+msgid "`Finalize`"
+msgstr ""
+
+#: ../../source/plugins.md:248
+msgid ""
+"{{ project "
+"}}の終了時に一度呼び出されます。`Initialize`で確保したリソース、`GetIcon`で作成したアイコン、設定ファイルやインデックスなどを解放してください。"
+msgstr ""
+
+#: ../../source/plugins.md:250
+msgid "`Finalize`の後にプラグインDLLがアンロードされます。関数から戻った後に、プラグイン内の関数やデータを参照しないでください。"
+msgstr ""
+
+#: ../../source/plugins.md:252
+msgid "本体側API"
+msgstr ""
+
+#: ../../source/plugins.md:254
+msgid ""
+"`LAUNCHER_FUNCTION_TABLE`には、{{ project "
+"}}本体が提供する次の関数が含まれます。プラグインは`Initialize`で受け取った構造体を保存し、必要なタイミングで各関数ポインタを呼び出します。"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`InfoLog`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "情報ログを出力する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`WarnLog`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "警告ログを出力する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`ErrorLog`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "エラーログを出力する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`PopupMessage`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "トースト通知を表示する"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "`GetMainWindowHandle`"
+msgstr ""
+
+#: ../../source/plugins.md:12
+msgid "メインウィンドウの`HWND`を取得する"
+msgstr ""
+
+#: ../../source/plugins.md:264
+msgid "ログ出力関数と`PopupMessage`は、UTF-8文字列を受け取ります。"
+msgstr ""
+
+#: ../../source/plugins.md:283
+msgid "`GetMainWindowHandle`で得た`HWND`を、Windows APIを呼び出すときの親ウィンドウとして利用できます。"
+msgstr ""
+
+#: ../../source/plugins.md:290
+msgid "最小実装例"
+msgstr ""
+
+#: ../../source/plugins.md:292
+msgid "以下は、入力が`hello`のときに1件の候補を返し、実行時にログを出力する最小構成の例です。実際のDLLでは、検索結果をプラグイン固有の構造体で保持し、`Query`で動的に生成してください。"
+msgstr ""
+
+#: ../../source/plugins.md:294
+msgid "この例では、説明を簡潔にするため、検索ハンドルを1件の検索結果そのものとして扱っています。"
+msgstr ""
+
+#: ../../source/plugins.md:439
+msgid ""
+"この例をDLLとしてビルドするには、{{ project "
+"}}から取得した`PluginExportTable.h`をインクルードし、x64のDLLプロジェクトとしてビルドします。生成したDLLを`plugins`配下のプラグイン用サブディレクトリに配置し、{{"
+" project }}を再起動してください。"
+msgstr ""
+
+#: ../../source/plugins.md:441
+msgid "文字コードとABI"
+msgstr ""
+
+#: ../../source/plugins.md:443
+msgid "`PluginExportTable.h`で定義された`char*`型の文字列はUTF-8です。Windowsのワイド文字列を扱う場合は、プラグイン側でUTF-8との変換を行ってください。"
+msgstr ""
+
+#: ../../source/plugins.md:445
+msgid ""
+"プラグインと{{ project "
+"}}本体は、同じ`PluginExportTable.h`の定義、同じCPUアーキテクチャ、互換性のあるビルド環境で使用してください。32bit "
+"DLLをx64版{{ project }}からロードすることはできません。"
+msgstr ""
+
+#: ../../source/plugins.md:447
+msgid "`LNCRPLUGINMATCHHANDLE`の実体はプラグイン側が定義します。ハンドルはプラグイン間で共通に見えても、異なるプラグインのハンドルを別のプラグインの関数に渡すことはできません。"
+msgstr ""
+
+#: ../../source/plugins.md:449
+msgid "実装時の注意"
+msgstr ""
+
+#: ../../source/plugins.md:451
+msgid "`Initialize`に渡された`LAUNCHER_FUNCTION_TABLE`は、必要に応じてコピーして保持する"
+msgstr ""
+
+#: ../../source/plugins.md:452
+msgid "`Query`が返したハンドルは、`CloseHandle`が呼ばれるまで有効にする"
+msgstr ""
+
+#: ../../source/plugins.md:453
+msgid "`GetMatchCount`が返す件数と、各APIに渡される`index`の範囲を一致させる"
+msgstr ""
+
+#: ../../source/plugins.md:454
+msgid "文字列はUTF-8で返し、必要なバッファ長には終端文字を含める"
+msgstr ""
+
+#: ../../source/plugins.md:455
+msgid "`GetIcon`で返したアイコンはプラグイン側で破棄する"
+msgstr ""
+
+#: ../../source/plugins.md:456
+msgid "`Execute`の戻り値は、成功時だけ0にする"
+msgstr ""
+
+#: ../../source/plugins.md:457
+msgid "`Finalize`から戻った後にプラグインのリソースを参照しない"
+msgstr ""
+
+#: ../../source/plugins.md:458
+msgid "APIのバージョンが合わない場合は`LNCRPLUGIN_Bind`でエラーを返す"
+msgstr ""
+
+#: ../../source/plugins.md:460
+msgid ""
+"プラグインは{{ project "
+"}}のプロセス内で動作します。プラグイン内で発生した未処理例外やアクセス違反は、本体の動作にも影響します。外部ファイルの読み込みやWindows "
+"APIの呼び出しなど、プラグイン固有の処理については適切にエラー処理を行ってください。"
+msgstr ""
+

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -141,7 +141,7 @@ msgstr ""
 msgid "本アプリの実行ファイルが置かれているフォルダをエクスプローラーまたはファイラーで表示する。"
 msgstr ""
 
-#: ../../source/system-commands.md:85 ../../source/system-commands.md:166
+#: ../../source/system-commands.md:85 ../../source/system-commands.md:160
 msgid ""
 "[アプリケーション設定](/window/app-settings.md#comand-execute) "
 "で外部ファイラーを設定している場合は外部ファイラーで開く。   設定していない場合はエクスプローラーで開く。"
@@ -164,156 +164,148 @@ msgid "新規コマンド登録画面を表示する。"
 msgstr ""
 
 #: ../../source/system-commands.md:102
-msgid "newsnippet"
-msgstr ""
-
-#: ../../source/system-commands.md:104
-msgid "現在クリップボードにあるテキストを定型文として登録するための登録画面を表示する。"
-msgstr ""
-
-#: ../../source/system-commands.md:108
 msgid "reboot"
 msgstr ""
 
-#: ../../source/system-commands.md:110
+#: ../../source/system-commands.md:104
 msgid "PCを再起動する。"
 msgstr ""
 
-#: ../../source/system-commands.md:114
+#: ../../source/system-commands.md:108
 msgid "registwin"
 msgstr ""
 
-#: ../../source/system-commands.md:116
+#: ../../source/system-commands.md:110
 msgid "直前にアクティブなウインドウをコマンドとして登録する。"
 msgstr ""
 
-#: ../../source/system-commands.md:121
+#: ../../source/system-commands.md:115
 msgid "reload"
 msgstr ""
 
-#: ../../source/system-commands.md:123
+#: ../../source/system-commands.md:117
 msgid "設定ファイルの再読み込みを行う。   (テキストエディタで直接キーワード編集を行ったときにリロードするためもの)"
 msgstr ""
 
-#: ../../source/system-commands.md:126
+#: ../../source/system-commands.md:120
 msgid "当アプリの初期のバージョンではコマンド編集のためのUIを実装していなかったため、その頃の名残として存在しているものであるが、現在は使う必要はない。"
 msgstr ""
 
-#: ../../source/system-commands.md:130
+#: ../../source/system-commands.md:124
 msgid "restart"
 msgstr ""
 
-#: ../../source/system-commands.md:132
+#: ../../source/system-commands.md:126
 msgid "アプリの再起動を行う。"
 msgstr ""
 
-#: ../../source/system-commands.md:134
+#: ../../source/system-commands.md:128
 msgid "初期状態では無効になっている。キーワードマネージャのコマンド設定画面から有効にすると使用できる。"
 msgstr ""
 
-#: ../../source/system-commands.md:138
+#: ../../source/system-commands.md:132
 msgid "setting"
 msgstr ""
 
-#: ../../source/system-commands.md:140
+#: ../../source/system-commands.md:134
 msgid "アプリケーション設定画面を表示する。"
 msgstr ""
 
-#: ../../source/system-commands.md:144
+#: ../../source/system-commands.md:138
 msgid "shutdown"
 msgstr ""
 
-#: ../../source/system-commands.md:146
+#: ../../source/system-commands.md:140
 msgid "システムをシャットダウンする。"
 msgstr ""
 
-#: ../../source/system-commands.md:150
+#: ../../source/system-commands.md:144
 msgid "standby"
 msgstr ""
 
-#: ../../source/system-commands.md:152
+#: ../../source/system-commands.md:146
 msgid "PCをスタンバイ状態にする。"
 msgstr ""
 
-#: ../../source/system-commands.md:156
+#: ../../source/system-commands.md:150
 msgid "suspend"
 msgstr ""
 
-#: ../../source/system-commands.md:158
+#: ../../source/system-commands.md:152
 msgid "PCをサスペンド状態にする。"
 msgstr ""
 
-#: ../../source/system-commands.md:162
+#: ../../source/system-commands.md:156
 msgid "userdir"
 msgstr ""
 
-#: ../../source/system-commands.md:164
+#: ../../source/system-commands.md:158
 msgid "設定ファイルの保存先フォルダをエクスプローラーまたはファイラーで表示する。"
 msgstr ""
 
-#: ../../source/system-commands.md:169
+#: ../../source/system-commands.md:163
 msgid ""
 "設定ファイルの保存先については [アプリデータの保存フォルダ](/usage/setup.md#configuration-directory) "
 "を参照のこと"
 msgstr ""
 
-#: ../../source/system-commands.md:173
+#: ../../source/system-commands.md:167
 msgid "version"
 msgstr ""
 
-#: ../../source/system-commands.md:175
+#: ../../source/system-commands.md:169
 msgid "バージョン情報ダイアログを表示する"
 msgstr ""
 
-#: ../../source/system-commands.md:178
+#: ../../source/system-commands.md:172
 msgid "Edit System Command"
 msgstr "システムコマンドの編集"
 
-#: ../../source/system-commands.md:180
+#: ../../source/system-commands.md:174
 msgid "一部の[システムコマンド](#)は機能を無効化することができる。   無効化すると、入力欄にコマンド名を入力しても候補として表示されなくなる。"
 msgstr ""
 
-#: ../../source/system-commands.md:183
+#: ../../source/system-commands.md:177
 msgid "キーワードマネージャ上でシステムコマンドを選択し、`編集`ボタンを選択すると下記の画面が表示される。"
 msgstr ""
 
-#: ../../source/system-commands.md:185
+#: ../../source/system-commands.md:179
 msgid "![](image/edit-builtincommand.png)"
 msgstr ""
 
-#: ../../source/system-commands.md:187
+#: ../../source/system-commands.md:181
 msgid "`コマンドの名前`"
 msgstr ""
 
-#: ../../source/system-commands.md:188
+#: ../../source/system-commands.md:182
 msgid "コマンドの名前を変更することができる"
 msgstr ""
 
-#: ../../source/system-commands.md:189
+#: ../../source/system-commands.md:183
 msgid "`コマンドの説明`"
 msgstr ""
 
-#: ../../source/system-commands.md:190
+#: ../../source/system-commands.md:184
 msgid "コマンドの機能を説明するテキスト。読み取り専用。"
 msgstr ""
 
-#: ../../source/system-commands.md:191
+#: ../../source/system-commands.md:185
 msgid "`コマンドを有効にする`"
 msgstr ""
 
-#: ../../source/system-commands.md:192
+#: ../../source/system-commands.md:186
 msgid "チェックを外すと、当該コマンドが候補欄に表示されなくなる(実行もできない)"
 msgstr ""
 
-#: ../../source/system-commands.md:193
+#: ../../source/system-commands.md:187
 msgid "`実行前に確認する`"
 msgstr ""
 
-#: ../../source/system-commands.md:194
+#: ../../source/system-commands.md:188
 msgid "チェックすると、コマンド実行前に確認ダイアログを表示する。"
 msgstr ""
 
-#: ../../source/system-commands.md:195
+#: ../../source/system-commands.md:189
 msgid "誤って実行されるのを防止するための機能"
 msgstr ""
 

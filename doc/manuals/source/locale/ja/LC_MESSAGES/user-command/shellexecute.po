@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-26 12:40+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -103,101 +103,107 @@ msgstr ""
 msgid ""
 "`アイコンを変更する`   "
 "選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   "
-"PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能"
+"ローカルパスのほか、URLを直接指定することも可能   PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:45
+#: ../../source/user-command/shellexecute.md:46
+msgid ""
+"`URLからファビコンを取得する`     `実行ファイル・URLなど`にURLが入力されているときのみ表示される。   "
+"選択すると、URLからファビコンを取得し、アイコンとして設定する。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:49
 msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:48
+#: ../../source/user-command/shellexecute.md:52
 msgid "Environment"
 msgstr "環境変数"
 
-#: ../../source/user-command/shellexecute.md:50
+#: ../../source/user-command/shellexecute.md:54
 msgid "![](../image/shellexec-envlist.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:52
+#: ../../source/user-command/shellexecute.md:56
 msgid "起動するプログラムに対して環境変数を追加定義することができる。   既存の環境変数と同じ名前を定義した場合は値を上書きする。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:55
+#: ../../source/user-command/shellexecute.md:59
 msgid "`追加する環境変数の一覧`     追加する環境変数のリスト"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:57
+#: ../../source/user-command/shellexecute.md:61
 msgid "`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/shellexec-envadd.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:60
+#: ../../source/user-command/shellexecute.md:64
 msgid ""
 "`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/shellexec-"
 "envedit.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:63
+#: ../../source/user-command/shellexecute.md:67
 msgid "`削除`   クリックすると、リスト上で選択している変数を削除する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:65
+#: ../../source/user-command/shellexecute.md:69
 msgid ""
 "`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/shellexec-"
 "envbulkadd.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:69
+#: ../../source/user-command/shellexecute.md:73
 msgid "Others"
 msgstr "その他"
 
-#: ../../source/user-command/shellexecute.md:71
+#: ../../source/user-command/shellexecute.md:75
 msgid "![](../image/edit-detail.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:73
+#: ../../source/user-command/shellexecute.md:77
 msgid ""
 "`実行時引数あり/なしで起動するファイルを分ける`   "
 "入力欄で、コマンド名の後に文字列を入力した場合とそうでない場合とで、実行するファイルを分けるときにチェックする   "
 "【実行時引数なし】直下に、コマンド名のみを入力した場合に実行するファイル(やパラメータ)を指定する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:76
+#: ../../source/user-command/shellexecute.md:80
 msgid "想定する使い方   パラメータがある場合→検索、ない場合→検索サイトのトップページを表示"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:78
+#: ../../source/user-command/shellexecute.md:82
 msgid ""
 "`キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する`   "
 "入力欄に入力したキーワードがコマンド名に完全一致し、他の候補がない場合に、コマンド実行を自動確定(実行)する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:80
+#: ../../source/user-command/shellexecute.md:84
 msgid ""
 "`条件に合致するウインドウが存在する場合にパスを起動せずにウインドウをアクティブにする`   "
 "指定条件(ウインドウクラス名/ウインドウタイトル)に該当するウインドウが存在する場合に、それをアクティブにして、`パス`で設定したファイルを実行しない。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:82
+#: ../../source/user-command/shellexecute.md:86
 msgid "想定用途: アプリを複数起動させずに使いたい場合に用いる。(アプリがすでに起動済の場合は新しいプロセスを起動せずに、既存のウインドウに切り替える)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:83
+#: ../../source/user-command/shellexecute.md:87
 msgid "`ウインドウタイトル`   ウインドウのタイトルを指定する。指定しなかった場合はウインドウクラスのみで判断する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:85
+#: ../../source/user-command/shellexecute.md:89
 msgid "`ウインドウクラス`   ウインドウクラス名を指定する。指定しなかった場合はウインドウタイトルのみで判断する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:87
+#: ../../source/user-command/shellexecute.md:91
 msgid "`正規表現を使用する`   チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:89
+#: ../../source/user-command/shellexecute.md:93
 msgid "`テスト`   指定した条件に該当するウインドウを探す。ウインドウが見つかると、そのプログラムのタスクバージョンのアイコンが点滅する。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:92
+#: ../../source/user-command/shellexecute.md:96
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

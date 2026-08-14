@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.51.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-15 08:51+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -72,49 +72,60 @@ msgstr ""
 msgid "コマンドを実行すると、対応するUI要素をクリックする"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:25
-msgid "Restrictions"
-msgstr "制限事項"
+#: ../../source/adhoc-command/uiautomation.md:24
+msgid "Win32アプリケーションのメニュー項目の表示名のカスタマイズ"
+msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:27
-msgid "UIAutomationElement経由で候補となるUI要素の情報を取得しているが、UIAutomationElementに非対応のコントロールについては取得できない"
+#: ../../source/adhoc-command/uiautomation.md:25
+msgid ""
+"制限事項(次節)に記載している通り、オーナードローのメニュー項目テキストについては取得できない。   該当する項目については`ファイル(F)> "
+"(1)`のような表示になるが、[アプリ設定保存フォルダ](/usage/setup) に生成される`uielement-menu-"
+"alias.json`というファイルをカスタマイズすることにより、任意の文言で表示できる"
 msgstr ""
 
 #: ../../source/adhoc-command/uiautomation.md:28
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/adhoc-command/uiautomation.md:30
+msgid "UIAutomationElement経由で候補となるUI要素の情報を取得しているが、UIAutomationElementに非対応のコントロールについては取得できない"
+msgstr ""
+
+#: ../../source/adhoc-command/uiautomation.md:31
 msgid "アプリが独自のUIAutomationElementを実装していても、実装次第では取れない場合がある"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:29
+#: ../../source/adhoc-command/uiautomation.md:32
 msgid "また、UI要素を列挙する際のタイムアウトを設けているため、複雑な画面構成の場合は取れない場合もある"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:30
+#: ../../source/adhoc-command/uiautomation.md:33
 msgid ""
 "Win32アプリケーションのメニュー項目取得について、オーナードローのメニュー項目のテキストは取得できない。   "
 "このとき、メニュー位置を表すインデックスを表示する"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:32
+#: ../../source/adhoc-command/uiautomation.md:35
 msgid "UIAutomationElement経由でメソッドを呼んでいるだけなので、実行しても所望の結果が得られない場合がある"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:33
+#: ../../source/adhoc-command/uiautomation.md:36
 msgid "クリックされない、フォーカスが設定されない、など"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:35
+#: ../../source/adhoc-command/uiautomation.md:38
 msgid "Settings"
 msgstr "設定"
 
-#: ../../source/adhoc-command/uiautomation.md:37
+#: ../../source/adhoc-command/uiautomation.md:40
 msgid "初期設定で機能は無効になっている。 本機能を使用する場合は、アプリケーション設定の `拡張機能` > `UI要素` から機能を有効化する必要がある。"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:40
+#: ../../source/adhoc-command/uiautomation.md:43
 msgid "![](../image/appsetting/extensions/uiautomation/uiautomation.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/uiautomation.md:42
+#: ../../source/adhoc-command/uiautomation.md:45
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

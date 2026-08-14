@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-14 13:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,133 +24,173 @@ msgid "Switch Window Command"
 msgstr "ウインドウ操作コマンド"
 
 #: ../../source/user-command/activate-window.md:3
-msgid ""
-"任意のウインドウをアクティブにする(前面に出す)ためのコマンド。   "
-"検索条件をあらかじめ設定しておき、それに対してキーワードやホットキーを設定することができる。"
+msgid "指定した条件に基づきウインドウを決定し、操作を適用するためのコマンドです。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:5
+msgid "このコマンドは以下のような用途で使うことができます。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:6
-msgid "よく使うアプリのウインドウを登録しておけば、そのアプリに素早く切り替えることができる。"
+msgid "**特定のウインドウに切り替える**: 決まったアプリやウインドウを呼び出します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:7
+msgid "**一覧から選んで切り替える**: 実行時に表示されているウインドウの一覧から選択します。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:8
-msgid ""
-"タイトルとウインドウクラス名でウインドウを識別する。   "
-"対象とするウインドウのタイトルとウインドウクラス名を手入力するのは難しいので、画面上のアイコンを対象ウインドウにドラッグするのがおすすめ。"
+msgid "**ウインドウを所定の位置に配置する** : 特定の領域に当てはめる形でウインドウを配置します。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:11
-msgid "[ウインドウ選択切替](/adhoc-command/activate-window)という、名前が似た別の機能もある。"
+msgid "**メリット**   Windows標準の `Alt + Tab` や `Win + Tab` による切り替えには以下の課題があります。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:13
-msgid "`ウインドウ切替コマンド`と`ウインドウ選択切替`の違い"
+msgid "開いているウインドウの数や順序によって、目的のウインドウに辿り着くまでの操作回数が変わる。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:14
-msgid "`ウインドウ切替コマンド`   コマンド設定で指定した条件でウインドウに切り替える"
+msgid "ウインドウが多いと探す手間がかかる。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:16
-msgid "目的のウインドウへの切替を行うためのもの"
-msgstr ""
-
-#: ../../source/user-command/activate-window.md:17
-msgid "`ウインドウ選択切替`   そのときに存在しているウインドウの一覧を列挙し、選択したウインドウに切り替える"
+msgid ""
+"このコマンドを使えば、ウインドウがいくつ開いていても **常に同じ操作（1回のホットキーや特定のキーワード）** "
+"で、目的のウインドウを瞬時に呼び出すことができます。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:19
-msgid "`Alt`-`Tab`によるウインドウ切替のようなもの"
-msgstr ""
-
-#: ../../source/user-command/activate-window.md:21
 msgid "Description"
 msgstr "設定画面"
 
-#: ../../source/user-command/activate-window.md:23
+#: ../../source/user-command/activate-window.md:21
 msgid "![](../image/edit-windowactivatecommand.png)"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:25
-msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+#: ../../source/user-command/activate-window.md:23
+msgid "基本設定"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:27
-msgid "`コマンドの説明`   コメント表示欄に記載される文字列。"
+#: ../../source/user-command/activate-window.md:24
+msgid "**コマンドの名前**   入力画面でこのコマンドを呼び出すためのキーワードを入力します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:26
+msgid "**コマンドの説明**   入力画面のコメント欄に表示される説明文です。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:29
-msgid "`ウインドウタイトル`   検索対象とするウインドウのタイトルを指定する。   空欄にした場合は`ウインドウクラス`のみで検索を行う"
+msgid "対象ウインドウの決定方法"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:30
+msgid "操作対象とするウインドウをどのように特定するかを選択します。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:32
-msgid "`ウインドウクラス`   検索対象とするウインドウクラスを指定する。   空欄にした場合は`ウインドウタイトル`のみで検索を行う"
+msgid "特定のウインドウを指定する(クラス名・タイトル)"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:35
-msgid "`ウインドウタイトル`と`ウインドウクラス`のどちらかを指定する必要がある"
+#: ../../source/user-command/activate-window.md:33
+msgid ""
+"特定のアプリや特定のタイトルのウインドウを操作したい場合に使用します。 "
+"右側にある**ウインドウ検索アイコン**を目的のウインドウへドラッグ＆ドロップすると、クラス名とタイトルが自動入力されます。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:36
+msgid "**ウインドウタイトル**   検索対象とするウインドウのタイトルを指定します。空欄の場合は「クラス名」のみで検索します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:38
 msgid ""
-"`正規表現`   チェックした場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列を正規表現として扱う   "
-"チェックしない場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列の完全一致で探す"
+"**ウインドウクラス**   検索対象とするウインドウクラスを指定します。空欄の場合は「タイトル」のみで検索します。   "
+"※「タイトル」か「クラス名」のどちらか一方は入力が必要です。"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:39
+#: ../../source/user-command/activate-window.md:41
+msgid "**正規表現を使用する**   チェックを入れると、タイトルやクラス名を正規表現として扱います。チェックしない場合は完全一致で検索します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:43
 msgid ""
-"`テスト`   `ウインドウタイトル` `ウインドウクラス` `正規表現` に入力した内容に基づいてウインドウを探す。   "
-"該当するウインドウが見つかった場合はタスクバー上にあるアイコンが点滅する。"
+"**条件に合致するウインドウが見つからなかった場合に通知する**   "
+"チェックを入れると、タイトルやクラス名に合致するウインドウが見つからなかった場合にメッセージ通知します。"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:42
-msgid "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
-msgstr ""
-
-#: ../../source/user-command/activate-window.md:44
+#: ../../source/user-command/activate-window.md:45
 msgid ""
-"`ホットキーからの実行専用にする`   チェックした場合、キーワード入力でコマンド名がマッチしてもコマンドを候補欄に表示しない   "
-"(ホットキーを入力した場合のみ実行できるようにする)"
+"**キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する**   "
+"チェックを入れると、キーワードが完全一致し、かつ、他の候補がない時点でコマンドを実行します。(Enterキーを押さなくても確定します)"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:48
-msgid "Example"
-msgstr "例"
+#: ../../source/user-command/activate-window.md:47
+msgid "**見つかるかテスト**   設定した条件でウインドウが見つかるか確認できます。見つかった場合、そのウインドウのタスクバーアイコンが点滅します。"
+msgstr ""
 
 #: ../../source/user-command/activate-window.md:50
-msgid "上の画面の設定でコマンドを作っておくと、下記の操作のいずれかで検索条件に該当するウインドウに切り替えることができる。"
+msgid "実行時にウインドウ一覧から選択する"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:52
-msgid "キーワード`actvim`を実行する"
+#: ../../source/user-command/activate-window.md:51
+msgid "コマンド実行時に、現在開いているウインドウの一覧を候補として表示し、その中から手動で選択します。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:53
-msgid "(入力画面を表示した状態で)`Alt-V`押下"
+msgid "アクティブなウインドウに対して操作を行う"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:55
-msgid "Windows標準のウインドウ切り替えのキー操作である`Alt`-`Tab`や`Win`-`Tab`の場合、以下の問題がある。"
+#: ../../source/user-command/activate-window.md:54
+msgid "コマンド実行時点でアクティブなウインドウに対して、後述の操作を適用します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:56
+msgid "対象ウインドウに対するアクション"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:57
-msgid "その時々のウインドウの表示状態によりキー操作する回数が変わる"
-msgstr ""
-
-#: ../../source/user-command/activate-window.md:58
-msgid "ウインドウの数が増えると目的のウインドウを探すのに時間がかかる"
+msgid ""
+"特定したウインドウに対して行う操作を設定します。 "
+"右側の**ウインドウ検索アイコン**をドラッグ＆ドロップすることで、現在の位置とサイズを取得できます。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:60
-msgid "このコマンドを使うと、画面にあるウインドウ数にかかわらず、定数時間で切り替えることができるのがメリット"
+msgid "**ウインドウをアクティブにする**   対象のウインドウを最前面に表示します。"
 msgstr ""
 
-#: ../../source/user-command/activate-window.md:63
+#: ../../source/user-command/activate-window.md:62
+msgid "**位置とサイズを変更する**   チェックを入れると、指定した座標(X, Y)とサイズ(幅, 高さ)に変更します。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:64
+msgid "**領域をハイライトして確認**   設定した位置とサイズを画面上に約1秒間ハイライト表示して確認できます。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:67
+msgid "呼び出し設定"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:68
+msgid "**ホットキー**   入力画面を開かずに直接コマンドを実行するためのキーバインド（例：`Alt + V`）を設定できます。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:70
+msgid ""
+"**ホットキー実行専用にする**   "
+"チェックを入れると、キーワード入力時の候補一覧には表示されなくなり、ホットキー押下時のみ実行されるようになります。"
+msgstr ""
+
+#: ../../source/user-command/activate-window.md:75
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 
+#: ../../source/user-command/activate-window.md:77
+msgid "検索候補として表示されている際の操作は以下の通りです。"
+msgstr ""
+
 #: ../../source/user-command/activate-window.md
-msgid "押下キー"
+msgid "キー操作"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md
@@ -162,14 +202,14 @@ msgid "`Enter`"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md
-msgid "ウインドウを切り替える"
+msgid "対象のウインドウに切り替えます。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md
-msgid "`Ctrl-Enter`"
+msgid "`Ctrl + Enter`"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md
-msgid "ウインドウを切り替えて最大化する"
+msgid "対象のウインドウに切り替え、同時に最大化します。"
 msgstr ""
 
