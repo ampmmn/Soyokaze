@@ -5,11 +5,11 @@
 入力欄にグループ名を入力すると、そのグループに属する定型文の一覧が候補として表示される。  
 候補を選択すると、その定型文がクリップボードにコピーされる。
 
-![](../image/snipgroup.png)
+![](../image/user-command/snippet-group/overview.png)
 
 ## Description
 
-![](../image/new-snippetgroupcommand.png)
+![](../image/user-command/snippet-group/new-group-command.png)
 
 - `グループの名前`  
 定型文グループに属する定型文の一覧を表示するためのキーワード  

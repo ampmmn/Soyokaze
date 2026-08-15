@@ -23,7 +23,7 @@ Excelファイルをデータソース(データの元になるファイル)に�
 
 ## Description
 
-![](../image/edit-simpledictcommand.png)
+![](../image/user-command/simple-dict/edit-command.png)
 
 - `コマンド名`
   - 入力画面からコマンドを実行するためのキーワード
@@ -85,7 +85,7 @@ Excelファイルをデータソース(データの元になるファイル)に�
 
 ### Post Action :: Run Command
 
-![](../image/edit-simpledictcommand-postfilter-command.png)
+![](../image/user-command/simple-dict/postfilter-command.png)
 
 - `コマンド`
   - 実行するコマンドを選択する
@@ -94,7 +94,7 @@ Excelファイルをデータソース(データの元になるファイル)に�
 
 ### Post Action :: Run Program
 
-![](../image/edit-simpledictcommand-postfilter-subprocess.png)
+![](../image/user-command/simple-dict/postfilter-subprocess.png)
 
 - `実行ファイル`
   - 実行するプログラムのパスを指定する
@@ -108,7 +108,7 @@ Excelファイルをデータソース(データの元になるファイル)に�
 
 ### Post Action :: Copy to Clipboard
 
-![](../image/edit-simpledictcommand-postfilter-clipboard.png)
+![](../image/user-command/simple-dict/postfilter-clipboard.png)
 
 - `パラメータ`
   - クリップボードにコピーするテキストの書式を指定する  
@@ -116,13 +116,13 @@ Excelファイルをデータソース(データの元になるファイル)に�
 ## Setup Guide
 
 1. Excelアプリケーションを起動し、辞書として利用したいワークシートを選択しておく  
-![](../image/simpledict_tebiki_step1.png)
+![](../image/user-command/simple-dict/tutorial-step-1.png)
 1. Excel側でキーとして使うセル範囲を選択する。次に、本アプリ側でキー範囲取得ボタンを押す  
-![](../image/simpledict_tebiki_step2.png)
+![](../image/user-command/simple-dict/tutorial-step-2.png)
 1. Excel側で値として使うセル範囲を選択する。次に、本アプリ側で値範囲取得ボタンを押す  
-![](../image/simpledict_tebiki_step3.png)
+![](../image/user-command/simple-dict/tutorial-step-3.png)
 1. `取得内容確認`ボタンを押下し、取得されるキーと値の内容を確認する  
-![](../image/simpledict_tebiki_step4.png)
+![](../image/user-command/simple-dict/tutorial-step-4.png)
 1. キーと値の内容に問題なければ、`選択後の処理`の設定をして、`OK`ボタンを押下してコマンドを作成する
 
 ## Remarks
@@ -144,11 +144,11 @@ Excelファイルをデータソース(データの元になるファイル)に�
 
  日本の上場企業の会社名をキー、証券コードを値にする  
 
-```{figure} ../image/simple_dict_example.png
+```{figure} ../image/user-command/simple-dict/example.png
 :scale: 75%
 ```
 「せいてつ」というキーワードで会社名での絞り込みを行い、証券コードをクリップボードにコピーする
-![](../image/simple_dict_example2.gif)
+![](../image/user-command/simple-dict/example-2.gif)
 
 
 ## Per-Key Behavior

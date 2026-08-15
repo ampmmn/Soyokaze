@@ -10,7 +10,7 @@
 
 ## Description
 
-![](../image/edit-alignwindowcommand.png)
+![](../image/user-command/align-window/edit-command.png)
 
 - `コマンドの名前`  
 入力画面からコマンドを実行するためのキーワード
@@ -41,7 +41,7 @@
 
 電卓とペイントをあらかじめ決めた位置に並べる
 
-```{figure} ../image/alignwindowsample.gif
+```{figure} ../image/user-command/align-window/example.gif
 :width: 640px
 ```
 
@@ -54,7 +54,7 @@
 
 ### Description
 
-![](../image/edit-alignwindowitemcommand.png)
+![](../image/user-command/align-window/edit-item-command.png)
 
 - `検索条件`  
 整列対象とするウインドウの`ウインドウタイトル`と`ウインドウクラス`を入力する。  

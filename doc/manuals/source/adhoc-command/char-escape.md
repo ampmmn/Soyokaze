@@ -10,5 +10,5 @@
   - `\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044` → ログインしてください
   - `\U000030A2` → ア
 
-![](../image/escapesequence.png)
+![](../image/adhoc-command/char-escape/example.png)
 

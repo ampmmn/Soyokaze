@@ -2,7 +2,7 @@
 
 コマンド設定画面の`ホットキー`設定のコントロールをクリックすると下記の画面が表示される。
 
-![](../image/hotkeyForCommand.png)
+![](../image/common/hotkey-for-command.png)
 
 - `ホットキーを設定する`  
 コマンドに対してキー割り当てを行う場合はチェックする

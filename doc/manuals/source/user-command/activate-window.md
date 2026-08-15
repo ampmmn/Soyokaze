@@ -18,7 +18,7 @@ Windows標準の `Alt + Tab` や `Win + Tab` による切り替えには以下�
 
 ## Description
 
-![](../image/edit-windowactivatecommand.png)
+![](../image/user-command/activate-window/edit-command.png)
 
 ### 基本設定
 - **コマンドの名前**  

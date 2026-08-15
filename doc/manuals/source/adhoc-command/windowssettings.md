@@ -4,9 +4,9 @@ Windowsの設定アプリの各ページ要素を候補として表示し、実�
 
 ## 例: Windows Updateを表示する
 
-![](../image/input-windowsupdate.png)  
+![](../image/adhoc-command/windows-settings/input.png)
 ↓  
-![](../image/windowsupdate.png)
+![](../image/adhoc-command/windows-settings/windows-update.png)
 
 ## 注意
 

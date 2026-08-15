@@ -10,17 +10,17 @@
 ↓  
 選択した結果をもとに後段の処理を実行する
 
-![](../image/filtercommand.svg)
+![](../image/user-command/filter/diagram.svg)
 
 登録したコマンド名を入力欄に入力すると、外部プログラムの実行を行い、得られた出力を候補欄に表示する
 
-![](../image/sample-filtercommand.png)
+![](../image/user-command/filter/example.png)
 
 コマンド名(上の例だと`folderselect`)をタイプした時点で、前段の処理を実行し、候補の一覧を生成・表示する
 
 ## Description
 
-![](../image/edit-filtercommand.png)
+![](../image/user-command/filter/edit-command.png)
 
 - `コマンドの名前`  
 入力画面からコマンドを実行するためのキーワード
@@ -57,13 +57,13 @@
 
 - `ホットキー`  
 [コマンドを呼び出すキー](/window/command-hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。  
-![](../image/hotkeyForCommand.png)
+![](../image/common/hotkey-for-command.png)
 
 ## Candidate Enumeration
 
 ### Run Program
 
-![](../image/edit-filtercommand-prefilter-subprocess.png)
+![](../image/user-command/filter/prefilter-subprocess.png)
 
 - `実行ファイル`  
 実行するプログラムのパスを指定する
@@ -82,7 +82,7 @@
 
 ### Define Items Directly
 
-![](../image/edit-filtercommand-prefilter-constant.png)
+![](../image/user-command/filter/prefilter-constant.png)
 
 - `候補の一覧`
   - 候補として表示する文字列を記述する。  
@@ -92,7 +92,7 @@
 
 ### Run Command
 
-![](../image/edit-filtercommand-postfilter-command.png)
+![](../image/user-command/filter/postfilter-command.png)
 
 - `コマンド`  
 実行するコマンドを選択する
@@ -102,7 +102,7 @@
 
 ### Run Program
 
-![](../image/edit-filtercommand-postfilter-subprocess.png)
+![](../image/user-command/filter/postfilter-subprocess.png)
 
 - `実行ファイル`  
 実行するプログラムのパスを指定する
@@ -117,7 +117,7 @@
 
 ### Copy To Clipboard
 
-![](../image/edit-filtercommand-postfilter-copy.png)
+![](../image/user-command/filter/postfilter-copy.png)
 
 - `パラメータ`  
 クリップボードにコピーするテキストの書式を指定する  

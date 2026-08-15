@@ -2,9 +2,9 @@
 
 WinSCPのサイトマネージャに登録されているセッション一覧を候補として表示する。
 
-![](../image/adhoc-command/winscp-introduction2.png)
+![](../image/adhoc-command/winscp/introduction-2.png)
 
-![](../image/adhoc-command/winscp-introduction.png)
+![](../image/adhoc-command/winscp/introduction.png)
 
 実行すると、WinScpアプリケーションを起動し、接続を開始する。
 
@@ -21,5 +21,5 @@ WinSCPのサイトマネージャに登録されているセッション一覧�
 機能は初期状態で有効になっている。
 機能を使わない場合は、アプリケーション設定の `拡張機能` > `WinSCP` から機能を無効化することができる。  
 
-![](../image/adhoc-command/winscp-appsetting.png)
+![](../image/adhoc-command/winscp/app-settings.png)
 

@@ -10,7 +10,7 @@
 
 ## Description
 
-![](../image/edit-groupcommand.png)
+![](../image/user-command/group/edit-command.png)
 - 上の図の場合、`xxx`→`vim`→`twitter`という順にコマンドを順次実行する、という意味
 - 完了するまで待つにチェックすると、そのコマンドが完了するのを待つ
 

@@ -23,4 +23,4 @@
 アプリ設定でプレビューウインドウの機能を有効にしている場合、
 候補欄で選択したクリップボード履歴のテキスト内容を表示するウインドウが表示される。
 
-![](../image/adhoc-command/clipboardhistory-preview.png)
+![](../image/adhoc-command/clipboard-history/preview.png)

@@ -6,7 +6,7 @@
 
 ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面
 
-![](../../image/hotkeyForApp.png)
+![](../../image/common/hotkey-for-app.png)
 
 - `ホットキーを設定する`  
 修飾キー(`Alt` `Ctrl` `Shift` `Win`) + 任意のキーを同時押しすることによりアプリを表示する

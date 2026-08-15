@@ -11,7 +11,7 @@
 
 ## Description
 
-![](../image/edit-regexpcommand.png)
+![](../image/user-command/regexp/edit-command.png)
 
 - `コマンドの名前`  
 コマンドを識別するための名前。  
@@ -42,7 +42,7 @@
 
 - 左上のアイコン欄  
 アイコン欄を右クリックすると、コンテキストメニューが表示される。  
-![](../image/websearchcommand-contextmenu.png)
+![](../image/common/web-search-command-context-menu.png)
   - `アイコンを変更する`  
 選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。  
 ローカルパスのほか、URLを直接指定することも可能  

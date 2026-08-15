@@ -6,10 +6,10 @@
 例えば、`notepad`と入力すると、その環境のPATHのどこかに`notepad.exe`がある場合、それを実行することができる。
 (一般的には`C:\WINDOWS\system32\notepad.exe`にヒットするはず)
 
-![](../image/pathfind.png)
+![](../image/adhoc-command/pathfind/example.png)
 
 
 また、`http:/...`または`https://...`で始まるURLを入力欄に直接入力して実行すると、通常使うブラウザでURLを開くことができる。
 
-![](../image/adhoc-command/pathfind-url.png)
+![](../image/adhoc-command/pathfind/url.png)
 

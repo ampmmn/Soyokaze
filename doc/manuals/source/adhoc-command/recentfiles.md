@@ -5,6 +5,6 @@
 
 例: 
 
-![](../image/input-recentfiles.png)
+![](../image/adhoc-command/recentfiles/input.png)
 
 

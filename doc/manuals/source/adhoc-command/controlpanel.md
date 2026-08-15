@@ -3,7 +3,7 @@
 コントロールパネルの表示名を候補として表示する。  
 (例: `電源オプション` `インターネットオプション`)
 
-![](../image/input-controlpanel.png)
+![](../image/adhoc-command/controlpanel/input.png)
 
 該当する項目を入力画面から実行すると、対応するコントロールパネル項目を開くことができる。
 

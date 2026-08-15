@@ -7,7 +7,7 @@ CD/DVD等ディスクドライブのトレイを開いたり、USBメモリの�
 
 ## Description
 
-![](../image/edit-ejectvolumecommand.png)
+![](../image/user-command/volume/eject-command.png)
 
 - `コマンドの名前`
   - 入力画面からコマンドを実行するためのキーワード

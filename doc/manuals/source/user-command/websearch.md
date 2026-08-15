@@ -8,7 +8,7 @@ GoogleやTwitterなどの検索に対して名前を付けて、その名前で�
 
 ## Description
 
-![](../image/new-websearchcommand.png)
+![](../image/user-command/web-search/new-command.png)
 
 - `コマンドの名前`  
 入力画面からWeb検索コマンドを実行するためのキーワード
@@ -24,7 +24,7 @@ GoogleやTwitterなどの検索に対して名前を付けて、その名前で�
 Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる
 - `常に検索候補として表示する`  
 チェックすると、コマンド名を入力しなくても、検索ワードを入れるだけで候補として表示されるようになる  
-![](../image/shortcut-search.png)
+![](../image/user-command/web-search/shortcut-search.png)
   - この場合[弱一致](/others/about-matching.md#weak-match)扱いとなる  
   - 検索URLに`$*`を入力したときだけ表示される  
 - `ホットキー`  
@@ -32,7 +32,7 @@ Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる
 設定したキーを押下すると、入力欄が表示され、コマンド名が入力された(キーワードで絞り込みができる）状態になる
 - 左上のアイコン欄  
 アイコン欄を右クリックすると、コンテキストメニューが表示される。  
-![](../image/websearchcommand-contextmenu.png)
+![](../image/common/web-search-command-context-menu.png)
   - `アイコンを変更する`  
 選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。
     - ローカルパスのほか、URLを直接指定することも可能

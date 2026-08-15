@@ -1,7 +1,7 @@
 (extension-winscp)=
 # Extension > WinSCP
 
-![](../../image/adhoc-command/winscp-appsetting.png)
+![](../../image/adhoc-command/winscp/app-settings.png)
 
 - `機能を有効にする`  
 [WinSCPのセッション一覧を表示する](/adhoc-command/winscp)機能を有効にする。

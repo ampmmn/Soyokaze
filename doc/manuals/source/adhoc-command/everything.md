@@ -2,7 +2,7 @@
 
 [Everything](https://www.voidtools.com/)の検索機能を利用して、フォルダやファイルを検索する。
 
-![](../image/adhoc-command/everything-introduction.png)
+![](../image/adhoc-command/everything/introduction.png)
 
 ## Usage
 
@@ -17,7 +17,7 @@
 初期状態は機能は有効になっている。
 機能を使用しない場合はアプリケーション設定の `拡張機能` > `Everything` から無効化できる。
 
-![](../image/adhoc-command/everything-appsetting.png)
+![](../image/adhoc-command/everything/app-settings.png)
 
 ## Restrictions
 

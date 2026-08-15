@@ -5,28 +5,28 @@
 {{project_lower}}.exeを実行するとアプリが起動する。
 起動直後は[入力画面](#open-input-window) が表示される。
 
-![](../image/usage/firstscreen.png)
+![](../image/usage/first-screen/first-screen.png)
 
 また、タスクトレイにアイコンが表示される。
 
-![](../image/tasktray-icon.png)
+![](../image/common/tasktray-icon.png)
 
 ## Exit Application
 
 入力画面で[exit](/system-commands.md#exit)コマンドを実行するか、[タスクトレイ](/window/tasktray)から`終了`を選択する。
 
 - `exit`コマンドを実行  
-![](../image/exit-app1.png)
+![](../image/usage/how-to-use/exit-from-command.png)
 
 - タスクトレイからの終了  
-![](../image/exit-app2.png)
+![](../image/usage/how-to-use/exit-from-tray.png)
 
 
 ## Open Input Window
 
 アプリが起動している状態でランチャー呼び出しキー(デフォルト設定:`Alt`-`Space`)を押下すると、入力画面が表示される。
 
-![](../image/input-window-parts.png)
+![](../image/usage/how-to-use/window-parts.png)
 
 この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。  
 また、Tabキーを押すと、入力中のキーワードを補完することができる。
@@ -57,7 +57,7 @@
 
 入力画面にキーワードを入力して`Enter⏎`キーを押下すると、キーワードに応じてコマンドを実行することができる。
 
-![](../image/usage-run-keyword.png)
+![](../image/usage/how-to-use/run-keyword.png)
 
 ## Register Command
 
@@ -79,13 +79,13 @@
 
 入力画面から`new`コマンドを実行すると、[コマンドの種類](/user-commands)を選択する画面が表示される。  
 
-![](../image/input-new.png)  
+![](../image/usage/how-to-use/new-command.png)
 ↓  
-![](../image/commandtype.png)
+![](../image/common/command-type.png)
 
 コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。  
 ↓※ 通常コマンドのコマンド編集画面  
-![](../image/new-normalcommand.png)  
+![](../image/usage/how-to-use/new-normal-command.png)
 
 コマンド編集画面で新規登録キーワードや紐づけるプログラムへのパスなどの情報を入力し、OKを押すと、コマンドとして登録される。
 
@@ -93,13 +93,13 @@
 
 入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。  
 ↓  
-![](../image/registwin.png)  
+![](../image/usage/how-to-use/register-window.png)
 
 ### Capture Window
 
 入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。  
 ↓  
-![](../image/registringDragDrop.gif)  
+![](../image/usage/how-to-use/register-by-drag-drop.gif)
 
 ### SendTo
 
@@ -107,7 +107,7 @@
 
 登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される  
 ↓  
-![](../image/sendto.png)  
+![](../image/common/send-to.png)
 
 ### Drag&Drop File and Folders.
 

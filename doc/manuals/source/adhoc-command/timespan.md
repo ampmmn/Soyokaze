@@ -5,6 +5,6 @@
 
 例: `13:43-12:50` → `53分`
 
-![](../image/adhoc-command/timespan.png)
+![](../image/adhoc-command/timespan/example.png)
 
 

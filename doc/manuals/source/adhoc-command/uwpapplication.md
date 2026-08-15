@@ -4,5 +4,5 @@
 
 例: 映画＆アプリ
 
-![](../image/input-uwp.png)
+![](../image/adhoc-command/uwp-application/input.png)
 

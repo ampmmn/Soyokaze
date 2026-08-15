@@ -2,16 +2,16 @@
 
 本アプリを起動すると、タスクトレイにアイコンが表示される  
 
-![](../image/tasktray-icon.png)
+![](../image/common/tasktray-icon.png)
 
 
 アイコンを右クリックするか、入力画面のコメント表示欄を右クリックすると、メニューが表示される  
 
 - タスクトレイアイコンを右クリック  
-![](../image/tasktray-menu.png)
+![](../image/window/tasktray/menu.png)
 
 - 入力画面のコメント表示欄を右クリック    
-![](../image/tasktray-menu2.png)
+![](../image/window/tasktray/menu-2.png)
 
 
 - `入力画面を表示`/`入力画面を隠す`  

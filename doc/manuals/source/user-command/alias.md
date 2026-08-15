@@ -7,7 +7,7 @@
 
 ## Description
 
-![](../image/edit-aliascommand.png)
+![](../image/user-command/alias/edit-command.png)
 
 - `コマンドの名前`
   - 入力画面からコマンドを実行するためのキーワード
@@ -29,7 +29,7 @@
 例えば、前セクションの設定画面の場合、`"Windows Update > Windows Update"`という文字列が入力欄に入力・実行される。  
 すると、`Windows Update`の設定画面を表示することができる。([Windowsの設定コマンド](/adhoc-command/windowssettings) を有効にしている必要あり)  
 ↓この画面  
-![](../image/windows11-update.png)
+![](../image/user-command/alias/windows-update.png)
 
 ## Remarks
 

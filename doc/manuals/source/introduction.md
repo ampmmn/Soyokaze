@@ -12,7 +12,7 @@
 
 ```
 
-![](image/introduction.gif)
+![](image/introduction/overview.gif)
 
 ファイルやフォルダ、URLなどをコマンドとして登録して、手軽に開くことができる。  
 

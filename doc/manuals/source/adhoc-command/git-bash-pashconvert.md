@@ -4,11 +4,11 @@
 
 [Git for Windows](https://gitforwindows.org/)をインストールし、git-hashを利用している環境向けの機能。  
 
-![](../image/cygwin-path1.png)
+![](../image/adhoc-command/git-bash-path-converter/path-1.png)
 
 コマンドを実行すると、Windowsローカルパスをクリップボードにコピーする
 
 また、入力欄にWindowsローカルパス表記でファイルパスを入力すると、対応するgit-bash上のパス表記に変換するコマンドを表示する
 
-![](../image/cygwin-path2.png)
+![](../image/adhoc-command/git-bash-path-converter/path-2.png)
 

@@ -3,7 +3,7 @@
 西暦(グレゴリオ暦)と和暦の相互変換機能。  
 変換結果をクリップボードにコピーすることができる。
 
-![](../image/eranamelwjcommand.png)
+![](../image/adhoc-command/eraname-converter/example.png)
 
 令和/平成/昭和/大正/明治までを扱うことができる。
 

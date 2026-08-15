@@ -5,7 +5,7 @@ Base64形式の文字列をデコードして表示する。
 
 例: `44GT44KT44Gr44Gh44Gv77yB` → `こんにちは！`
 
-![](../image/base64-decode-sample.png)
+![](../image/adhoc-command/base64-decode/sample.png)
 
 このコマンドではデコード後のデータをUTF-8形式の文字列として解釈する。
 UTF-8形式の文字列として解釈できないものは表示しない。

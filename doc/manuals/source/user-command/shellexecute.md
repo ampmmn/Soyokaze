@@ -5,7 +5,7 @@
 
 ## General
 
-![](../image/edit.png)
+![](../image/user-command/shell-execute/edit-command.png)
 
 - `コマンドの名前`  
 入力画面からコマンドを実行するためのキーワード
@@ -34,11 +34,11 @@ URL(`http://...` `https://...`)を指定すると、ブラウザでそのURLを�
 `.exe`、`.bat`のときのみ選択可能
 - `ホットキー`  
 [コマンドを呼び出すキー](/window/command-hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。  
-![](../image/hotkeyForCommand.png)
+![](../image/common/hotkey-for-command.png)
 
 - 左上のアイコン欄  
 アイコン欄を右クリックすると、コンテキストメニューが表示される。  
-![](../image/websearchcommand-contextmenu.png)
+![](../image/common/web-search-command-context-menu.png)
   - `アイコンを変更する`  
 選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。  
 ローカルパスのほか、URLを直接指定することも可能  
@@ -51,7 +51,7 @@ PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能
 
 ## Environment
 
-![](../image/shellexec-envlist.png)
+![](../image/user-command/shell-execute/environment-list.png)
 
 起動するプログラムに対して環境変数を追加定義することができる。  
 既存の環境変数と同じ名前を定義した場合は値を上書きする。
@@ -60,19 +60,19 @@ PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能
 追加する環境変数のリスト
 - `追加`  
 クリックすると、変数を追加する画面が表示される  
-![](../image/shellexec-envadd.png)
+![](../image/user-command/shell-execute/environment-add.png)
 - `編集`  
 クリックすると、リスト上で選択している変数を編集する画面が表示される  
-![](../image/shellexec-envedit.png)
+![](../image/user-command/shell-execute/environment-edit.png)
 - `削除`  
 クリックすると、リスト上で選択している変数を削除する
 - `一括追加`  
 クリックすると、環境変数を一括で追加するための画面(下記)を表示する  
-![](../image/shellexec-envbulkadd.png)
+![](../image/user-command/shell-execute/environment-bulk-add.png)
 
 ## Others
 
-![](../image/edit-detail.png)
+![](../image/user-command/shell-execute/edit-detail.png)
 
 - `実行時引数あり/なしで起動するファイルを分ける`  
 入力欄で、コマンド名の後に文字列を入力した場合とそうでない場合とで、実行するファイルを分けるときにチェックする  

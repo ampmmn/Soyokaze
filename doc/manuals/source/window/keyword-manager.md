@@ -12,7 +12,7 @@
 
 #### Description
 
-![](../image/keywordmanager.png)
+![](../image/window/keyword-manager/keyword-manager.png)
 
 - `リスト`  
 登録済のコマンド一覧が表示される
@@ -44,5 +44,5 @@
 
 各コマンドの説明については [登録型のコマンド](/user-commands) を参照のこと
 
-![](../image/commandtype.png)
+![](../image/common/command-type.png)
 

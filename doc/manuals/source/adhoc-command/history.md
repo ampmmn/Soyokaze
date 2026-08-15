@@ -9,7 +9,7 @@
 
 機能を利用するには、[アプリ設定](/window/app-settings/history.md#keyword-input-history)で機能を有効にする必要がある。
 
-![](../image/history.png)
+![](../image/adhoc-command/history/example.png)
 
 なお、この機能は履歴を登録したときの「文字列」を登録するだけなので、
 この機能により、後で実行したときに前回と同じコマンドが実行される保証はない。   

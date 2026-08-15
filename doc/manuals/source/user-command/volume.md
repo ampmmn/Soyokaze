@@ -16,7 +16,7 @@
 
 ## Description
 
-![](../image/edit-volumecommand.png)
+![](../image/user-command/volume/edit-command.png)
 
 - `コマンドの名前`
   - 入力画面からコマンドを実行するためのキーワード

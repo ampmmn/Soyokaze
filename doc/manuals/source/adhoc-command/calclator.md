@@ -5,7 +5,7 @@ Enterキーを押下すると、計算結果をクリップボードにコピー
 
 利用するにはPython(3.12以降)が必要。([設定画面](/window/app-settings/extensions.md#extensions))  
 
-![](../image/adhoc-command/calculator1.png)
+![](../image/adhoc-command/calculator/basic.png)
 
 ## 利用可能な演算子
 
@@ -27,13 +27,13 @@ Enterキーを押下すると、計算結果をクリップボードにコピー
 
 その他、Python標準関数のうち、計算結果が文字列/数値になるものと、[math](https://docs.python.org/ja/3/library/math.html)モジュールの関数を使用することができる。
 
-![](../image/calculator2.png)
+![](../image/adhoc-command/calculator/functions.png)
 
 ## Radix-Based Number Display
 
 計算結果が整数になる場合は、2進数/8進数/10進数/16進数それぞれの結果が表示される。
 
-![](../image/adhoc-command/calculator2.png)
+![](../image/adhoc-command/calculator/radix.png)
 
 - 一つ目の項の基数を優先して表示する。  
 例えば、`0x10+1`という式の場合、16進数の結果(`0x11`)が先に表示される。

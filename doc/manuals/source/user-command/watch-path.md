@@ -5,11 +5,11 @@
 ファイルサーバ上にあるフォルダに何らかの変更があったときに、それを知ることができる。
 
 - 更新通知のイメージ  
-![](../image/notify_watchpath.png)
+![](../image/user-command/watch-path/notification.png)
 
 ## 設定画面
 
-![](../image/edit-watchpathcommand.png)
+![](../image/user-command/watch-path/edit-command.png)
 
 - `コマンドの名前`
   - 入力画面からコマンドを実行するためのキーワード

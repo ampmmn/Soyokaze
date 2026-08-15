@@ -5,9 +5,9 @@
 1. `%環境変数名%`の形式で入力欄に入力する  
 その環境変数の値をコメント表示欄に表示する。  
 また、実行すると、環境変数の値をクリップボードにコピーする。  
-![](../image/envcommand.png)
+![](../image/adhoc-command/env/example.png)
 1. プレフィックスを入力する  
 プレフィックス(デフォルト値:`env`)を入力すると環境変数の一覧が候補欄に表示される。  
-![](../image/envcommand2.png)  
+![](../image/adhoc-command/env/prefix-example.png)
 プレフィックスは[アプリ設定](/window/app-settings/extensions.md#extensions)で変更することができる。
 

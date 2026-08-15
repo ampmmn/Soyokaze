@@ -6,11 +6,11 @@ Directory Index(Webサーバーのインデックスページ)上のディレク
 
 - 例:
   -  ブラウザで表示したときに下記のように表示される階層に対して・・  
-```{figure} ../image/sample-directoryindex2.png
+```{figure} ../image/user-command/directory-index/example-2.png
 :scale: 50%
 ```
   - DirectoryIndexコマンドを使うと下記のような表示をすることができる  
-```{figure} ../image/sample-directoryindex1.png
+```{figure} ../image/user-command/directory-index/example-1.png
 :scale: 50%
 ```
 - ディレクトリを選択すると、そのディレクトリ階層に移動した状態で再度一覧を表示する
@@ -18,7 +18,7 @@ Directory Index(Webサーバーのインデックスページ)上のディレク
 
 ## Description
 
-![](../image/edit-directoryindexcommand.png)
+![](../image/user-command/directory-index/edit-command.png)
 
 
 - `コマンドの名前`  

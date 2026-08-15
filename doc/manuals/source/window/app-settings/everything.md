@@ -1,7 +1,7 @@
 (extension-everything)=
 # Extension > Everything
 
-![](../../image/adhoc-command/everything-appsetting.png)
+![](../../image/adhoc-command/everything/app-settings.png)
 
 - `機能を有効にする`  
 [Everything検索](/adhoc-command/everything)機能が有効にする。

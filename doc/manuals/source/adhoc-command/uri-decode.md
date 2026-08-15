@@ -5,6 +5,6 @@ URIエンコード形式の文字列をデコードして表示する。
 コマンドを実行するとデコード後の文字列をクリップボードにコピーする。
 
 例: `%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF` → `こんにちは`  
-![](../image/decodeuri.png)
+![](../image/adhoc-command/uri-decode/example.png)
 
 

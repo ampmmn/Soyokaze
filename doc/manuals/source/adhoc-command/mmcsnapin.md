@@ -5,7 +5,7 @@ MMC(Microsoft管理コンソール)の要素を候補として表示し、実行
 
 例: ディスクの管理
 
-![](../image/input-mmcsnapin.png)
+![](../image/adhoc-command/mmcsnapin/input.png)
 
-![](../image/window-diskmgr.png)
+![](../image/adhoc-command/mmcsnapin/disk-manager.png)
 

@@ -176,7 +176,7 @@ PCをサスペンド状態にする。
 
 キーワードマネージャ上でシステムコマンドを選択し、`編集`ボタンを選択すると下記の画面が表示される。
 
-![](image/edit-builtincommand.png)
+![](image/system-commands/edit-builtin-command.png)
 
 - `コマンドの名前`
   - コマンドの名前を変更することができる

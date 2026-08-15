@@ -2,7 +2,7 @@
 
 本アプリで作成可能なコマンドについて説明する。
 
-![](image/commandtype.png)
+![](image/common/command-type.png)
 
 ```{toctree}
 ---

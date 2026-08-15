@@ -6,7 +6,7 @@
 
 コマンド設定画面の`ホットキー`設定からキー割り当てを行うことができる。  
 
-![](../image/hotkeyForCommand.png)
+![](../image/common/hotkey-for-command.png)
 
 
 ## Use External Filer
@@ -15,6 +15,6 @@
 アプリケーション設定の`実行`>`フォルダーを開くファイラーを指定`を指定することにより、
 コマンドからフォルダーを開くときに使用するアプリを変更することができる。
 
-![](../image/advanced/use-external-filer.png)
+![](../image/advanced/external-filer/use-external-filer.png)
 
 
