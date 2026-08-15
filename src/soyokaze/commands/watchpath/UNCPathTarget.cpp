@@ -41,7 +41,7 @@ struct DirectoryNode
 		}
 	}
 
-	bool Build(const CString& path, std::unique_ptr<tregex>& excludePat)
+	bool Build(const CString& path, std::unique_ptr<launcherapp::utility::Regex>& excludePat)
 	{
 		// 対象パスが存在しない場合
 		if (Path::IsDirectory(path) == FALSE) {
@@ -99,13 +99,8 @@ struct DirectoryNode
 
 				// ファイル名が除外パターンにマッチする場合はリストに含めない
 				tstring fileName((LPCTSTR)f.GetFileName());
-				try {
-					if (excludePat.get() && std::regex_match(fileName, *excludePat)) {
-						continue;
-					}
-				}
-				catch(std::regex_error&) {
-					spdlog::warn("DirectoryNode::Build regexp is invalid.");
+				if (excludePat.get() && excludePat->FullMatch(CString(fileName.c_str()))) {
+					continue;
 				}
 
 				auto filePath = f.GetFilePath();
@@ -247,7 +242,7 @@ struct UNCPathTarget::PImpl
 	// 最後に通知した時刻
 	uint64_t mLastNotifyTime{0};
 	// 除外パターン
-	std::unique_ptr<tregex> mExcludeRegex;
+	std::unique_ptr<launcherapp::utility::Regex> mExcludeRegex;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@ typedef HWND (*LPFUNCMAINWINDOWHANDLE)(void);
 
 // プラグインからランチャー本体機能にアクセスするための関数テーブル
 // Initializeでこの関数テーブルを渡す。プラグインは渡された関数ポインタを保持して起き、必要に応じて関数を利用する。
+// 関数定義を追加する際は構造体の末尾に追加していくこと。順序の入れ替えは基本しない
 typedef struct _LAUNCHER_FUNCTION_TABLE
 {
 	// Infoログを出力する
@@ -50,6 +51,7 @@ typedef int (*LNCRMATCHERFUNC_GETWORDCOUNT)(void* ctx);
 
 // ランチャーアプリ側が提供するキーワード比較関数
 // この構造体はプラグイン呼び出し元(アプリ本体)が生成し、プラグイン側に与える情報
+// 関数定義を追加する際は構造体の末尾に追加していくこと。順序の入れ替えは基本しない
 typedef struct _MATCHER_FUNCTION_TABLE
 {
 	// キーワード比較を行う関数

@@ -100,13 +100,7 @@ bool ActivateWindowParam::IsMatchCaption(LPCTSTR caption)
 		if (BuildCaptionRegExp(nullptr) == false) {
 			return false;
 		}
-		try {
-			return std::regex_match(tstring(caption), *mRegCaption.get());
-		}
-		catch(std::regex_error&) {
-			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
-			return false;
-		}
+		return mRegCaption->FullMatch(CString(caption));
 	}
 	else {
 		return mCaptionStr == caption;
@@ -119,13 +113,7 @@ bool ActivateWindowParam::IsMatchClass(LPCTSTR clsName)
 		if (BuildClassRegExp(nullptr) == false) {
 			return false;
 		}
-		try {
-			return std::regex_match(tstring(clsName), *mRegClass.get());
-		}
-		catch(std::regex_error&) {
-			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
-			return false;
-		}
+		return mRegClass->FullMatch(CString(clsName));
 	}
 	else {
 		return mClassStr == clsName;
@@ -134,22 +122,16 @@ bool ActivateWindowParam::IsMatchClass(LPCTSTR clsName)
 
 bool ActivateWindowParam::BuildCaptionRegExp(CString* errMsg)
 {
-	try {
-		if (mIsUseRegExp) {
-			auto regExp = std::make_unique<tregex>();
-			*regExp = tregex(tstring(mCaptionStr));
-			mRegCaption.swap(regExp);
-		}
-		return true;
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp) {
+		auto regExp = std::make_unique<launcherapp::utility::Regex>();
+		if (regExp->Compile(mCaptionStr) == false) {
 
 		CString msg;
 		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
 			msg += _T("\n");
 		}
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(regExp->GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mCaptionStr;
@@ -157,29 +139,25 @@ bool ActivateWindowParam::BuildCaptionRegExp(CString* errMsg)
 		if (errMsg) {
 			*errMsg = msg;
 		}
-		return false;
+			return false;
+		}
+		mRegCaption.swap(regExp);
 	}
-	return false;
+	return true;
 }
 
 bool ActivateWindowParam::BuildClassRegExp(CString* errMsg)
 {
-	try {
-		if (mIsUseRegExp) {
-			auto regExp = std::make_unique<tregex>();
-			*regExp = tregex(tstring(mClassStr));
-			mRegClass.swap(regExp);
-		}
-		return true;
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp) {
+		auto regExp = std::make_unique<launcherapp::utility::Regex>();
+		if (regExp->Compile(mClassStr) == false) {
 
 		CString msg;
 		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
 			msg += _T("\n");
 		}
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(regExp->GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mClassStr;
@@ -187,9 +165,11 @@ bool ActivateWindowParam::BuildClassRegExp(CString* errMsg)
 		if (errMsg) {
 			*errMsg = msg;
 		}
-		return false;
+			return false;
+		}
+		mRegClass.swap(regExp);
 	}
-	return false;
+	return true;
 }
 
 bool ActivateWindowParam::Save(CommandEntryIF* entry) const

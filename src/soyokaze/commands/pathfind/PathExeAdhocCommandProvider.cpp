@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PathExeAdhocCommandProvider.h"
+#include "utility/Regex.h"
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/pathfind/PathURLCommand.h"
 #include "commands/pathfind/ExcludePathList.h"
@@ -26,9 +27,9 @@ using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
 static CString EXE_EXT = _T(".exe");
 
-static const tregex& GetURLRegex()
+static const launcherapp::utility::Regex& GetURLRegex()
 {
-	static tregex reg(_T("https?://.+"));
+	static const launcherapp::utility::Regex reg(_T("https?://.+"));
 	return reg;
 }
 
@@ -142,8 +143,8 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	}
 
 	// URLパターンマッチするかを判定
-	const tregex& regURL = GetURLRegex();
-	if (std::regex_search((LPCTSTR)wholeWord, regURL)) {
+	const auto& regURL = GetURLRegex();
+	if (regURL.PartialMatch(wholeWord)) {
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathURLCommand(wholeWord)));
 		return ;
 	}

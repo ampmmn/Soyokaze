@@ -5,6 +5,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
+#include "utility/Regex.h"
 #include "app/Manual.h"
 #include "resource.h"
 #include <vector>
@@ -116,8 +117,8 @@ bool URLDirectoryIndexCommandEditDialog::UpdateStatus()
 	GetDlgItem(IDC_EDIT_PROXYPASSWORD)->EnableWindow(isEnableProxyHost);
 
 	if (isEnableProxyHost) {
-		static tregex reg(_T("^[0-9a-zA-z-.]+:[0-9]+$"));
-		if (std::regex_match(tstring((LPCTSTR)mParam.mProxyHost), reg) == false) {
+		static const launcherapp::utility::Regex reg(_T("^[0-9a-zA-z-.]+:[0-9]+$"));
+		if (reg.FullMatch(mParam.mProxyHost) == false) {
 			mMessage = _T("プロキシを「ホスト名:ポート番号」の形式で指定してください");
 			GetDlgItem(IDOK)->EnableWindow(FALSE);
 			return false;

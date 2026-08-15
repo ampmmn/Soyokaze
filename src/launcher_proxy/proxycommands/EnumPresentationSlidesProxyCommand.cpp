@@ -55,7 +55,7 @@ static std::wstring GetSlideTitle(DispWrapper& slide)
 		// shape名がTitleでなければスキップ
 		static std::wregex pat(_T("^ *Title.*$"));      // 英語版向け
 		static std::wregex pat2(_T("^ *タイトル.*$"));  // 日本語版向け
-		if (std::regex_match(shapeName, pat) == false && 
+		if (std::regex_match(shapeName, pat) == false &&
 				std::regex_match(shapeName, pat2) == false) {
 			continue;
 		}

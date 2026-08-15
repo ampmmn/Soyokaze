@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ColorCommandProvider.h"
+#include "utility/Regex.h"
 #include "commands/color/ColorCommand.h"
 #include "commands/core/CommandRepository.h"
 
@@ -58,8 +59,8 @@ void ColorCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	static tregex regRGB(_T("^ *rgb *\\( *\\d+ *, *\\d+ *, *\\d+ *\\) *$"));
-	static tregex regHSL(_T("^ *hsl *\\( *\\d+ *, *\\d+%? *, *\\d+%? *\\) *$"));
+	static const launcherapp::utility::Regex regRGB(_T("^ *rgb *\\( *\\d+ *, *\\d+ *, *\\d+ *\\) *$"));
+	static const launcherapp::utility::Regex regHSL(_T("^ *hsl *\\( *\\d+ *, *\\d+%? *, *\\d+%? *\\) *$"));
 
 	if (cmdline[0] == _T('#') && cmdline.GetLength() == 7) {   // #rrggbb
 		CString rrggbb = cmdline.Mid(1);
@@ -97,22 +98,25 @@ void ColorCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	tstring cmdline_(cmdline);
-	if (std::regex_match(cmdline_, regRGB)) {
+	if (regRGB.FullMatch(cmdline)) {
 
-		static tregex regParse(_T("^ *rgb *\\( *(\\d+) *, *(\\d+) *, *(\\d+) *\\) *$"));
-
-		tstring rstr = std::regex_replace(cmdline_, regParse, _T("$1"));
-		tstring gstr = std::regex_replace(cmdline_, regParse, _T("$2"));
-		tstring bstr = std::regex_replace(cmdline_, regParse, _T("$3"));
-		
-		if (rstr.size() > 3 || gstr.size() > 3 || bstr.size() > 3) {
+		static const launcherapp::utility::Regex regParse(_T("^ *rgb *\\( *(\\d+) *, *(\\d+) *, *(\\d+) *\\) *$"));
+		std::vector<CString> captures;
+		if (regParse.FullMatch(cmdline, captures) == false || captures.size() < 3) {
 			return;
 		}
 
-		BYTE r = (BYTE)std::stoi(rstr);
-		BYTE g = (BYTE)std::stoi(gstr);
-		BYTE b = (BYTE)std::stoi(bstr);
+		CString rstr = captures[0];
+		CString gstr = captures[1];
+		CString bstr = captures[2];
+		
+		if (rstr.GetLength() > 3 || gstr.GetLength() > 3 || bstr.GetLength() > 3) {
+			return;
+		}
+
+		BYTE r = (BYTE)std::stoi((LPCTSTR)rstr);
+		BYTE g = (BYTE)std::stoi((LPCTSTR)gstr);
+		BYTE b = (BYTE)std::stoi((LPCTSTR)bstr);
 
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_RGB)));
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new ColorCommand(RGB(r, g, b), TYPE_HEX6)));

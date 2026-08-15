@@ -4,6 +4,7 @@
 #include "commands/core/CommandFileEntry.h"
 #include "commands/shellexecute/ShellExecCommand.h"
 #include "utility/Base64.h"
+#include "utility/Regex.h"
 #include <wincrypt.h>
 #include <map>
 #include <set>
@@ -216,8 +217,8 @@ bool CommandFile::Load()
 
 	std::vector<RefPtr<CommandFileEntry> > entries;
 
-	static tregex regInt(_T("^ *-?[0-9]+ *$"));
-	static tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
+	static const launcherapp::utility::Regex regInt(_T("^ *-?[0-9]+ *$"));
+	static const launcherapp::utility::Regex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
 
 	CString strLine;
 	while(file.ReadString(strLine)) {
@@ -270,12 +271,12 @@ bool CommandFile::Load()
 			DecodeBase64(strValue.Mid(7), stm);
 			curEntry->SetBytes(strKey, stm.data(),stm.size());
 		}
-		else if (std::regex_match(pat, regDouble)) {
+		else if (regDouble.FullMatch(pat)) {
 			double value;
 			_stscanf_s(strValue, _T("%lg"), &value);
 			curEntry->Set(strKey, value);
 		}
-		else if (std::regex_match(pat, regInt)) {
+		else if (regInt.FullMatch(pat)) {
 			int value;
 			_stscanf_s(strValue, _T("%d"), &value);
 			curEntry->Set(strKey, value);

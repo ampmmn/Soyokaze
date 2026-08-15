@@ -85,17 +85,12 @@ bool ITEM::BuildRegExp(CString* errMsg)
 
 bool ITEM::BuildCaptionRegExp(CString* errMsg)
 {
-	try {
-		if (mIsUseRegExp) {
-			mRegCaption = tregex(tstring(mCaptionStr));
-		}
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp && mRegCaption.Compile(mCaptionStr) == false) {
 		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
 		msg += _T("\n");
 
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(mRegCaption.GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mCaptionStr;
@@ -110,17 +105,12 @@ bool ITEM::BuildCaptionRegExp(CString* errMsg)
 
 bool ITEM::BuildClassRegExp(CString* errMsg)
 {
-	try {
-		if (mIsUseRegExp) {
-			mRegClass = tregex(tstring(mClassStr));
-		}
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp && mRegClass.Compile(mClassStr) == false) {
 		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
 		msg += _T("\n");
 
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(mRegClass.GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mClassStr;
@@ -139,16 +129,11 @@ bool ITEM::IsMatchCaption(LPCTSTR caption)
 		// 設定値がない場合は無条件で許可
 		return true;
 	}
-	try {
-		if (mIsUseRegExp) {
-			return std::regex_match(tstring(caption), mRegCaption);
-		}
-		else {
-			return mCaptionStr == caption;
-		}
+	if (mIsUseRegExp) {
+		return mRegCaption.FullMatch(CString(caption));
 	}
-	catch(std::regex_error&) {
-		return false;
+	else {
+			return mCaptionStr == caption;
 	}
 }
 
@@ -159,12 +144,7 @@ bool ITEM::IsMatchClass(LPCTSTR className)
 		return true;
 	}
 	if (mIsUseRegExp) {
-		try {
-			return std::regex_match(tstring(className), mRegClass);
-		}
-		catch(std::regex_error&) {
-			return false;
-		}
+		return mRegClass.FullMatch(CString(className));
 	}
 	else {
 		return mClassStr == className;

@@ -25,9 +25,9 @@ CommandParam::CommandParam(const CommandParam& rhs) :
 	mIsHotKeyOnly(rhs.mIsHotKeyOnly)
 {
 	auto regCls = rhs.mRegClass.get();
-	mRegClass.reset(regCls ? new tregex(*regCls) : nullptr);
+	mRegClass.reset(regCls ? new launcherapp::utility::Regex(*regCls) : nullptr);
 	auto regCaption = rhs.mRegCaption.get();
-	mRegCaption.reset(regCaption ? new tregex(*regCaption) : nullptr);
+	mRegCaption.reset(regCaption ? new launcherapp::utility::Regex(*regCaption) : nullptr);
 }
 
 CommandParam::~CommandParam()
@@ -51,9 +51,9 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
 		mIsHotKeyOnly = rhs.mIsHotKeyOnly;
 		auto regCls = rhs.mRegClass.get();
-		mRegClass.reset(regCls ? new tregex(*regCls) : nullptr);
+		mRegClass.reset(regCls ? new launcherapp::utility::Regex(*regCls) : nullptr);
 		auto regCaption = rhs.mRegCaption.get();
-		mRegCaption.reset(regCaption ? new tregex(*regCaption) : nullptr);
+		mRegCaption.reset(regCaption ? new launcherapp::utility::Regex(*regCaption) : nullptr);
 	}
 	return *this;
 }
@@ -87,7 +87,7 @@ bool CommandParam::IsValid(LPCTSTR orgName, int* errCode) const
 		}
 
 		if (mIsUseRegExp) {
-			tregex regExp;
+			launcherapp::utility::Regex regExp;
 			CString msg;
 			if (TryBuildCaptionRegExp(regExp, &msg)  == false) {
 				*errCode = CommandParamErrorCode::ActivateWindow_CaptionIsInvalid;
@@ -298,7 +298,7 @@ bool CommandParam::BuildRegExp(CString* errMsg)
 
 bool CommandParam::TryBuildRegExp(CString* errMsg) const
 {
-	tregex regExp;
+	launcherapp::utility::Regex regExp;
 	if (TryBuildCaptionRegExp(regExp, errMsg) == false) {
 		return false;
 	}
@@ -315,7 +315,7 @@ bool CommandParam::BuildCaptionRegExp(CString* errMsg)
 		return true;
 	}
 
-	auto regExp = std::make_unique<tregex>();
+	auto regExp = std::make_unique<launcherapp::utility::Regex>();
 	if (TryBuildCaptionRegExp(*regExp.get(), errMsg) == false) {
 		return false;
 	}
@@ -324,21 +324,16 @@ bool CommandParam::BuildCaptionRegExp(CString* errMsg)
 	return true;
 }
 
-bool CommandParam::TryBuildCaptionRegExp(tregex& regExp, CString* errMsg) const
+bool CommandParam::TryBuildCaptionRegExp(launcherapp::utility::Regex& regExp, CString* errMsg) const
 {
-	try {
-		if (mIsUseRegExp) {
-			regExp = tregex(tstring(mCaptionStr));
-		}
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp && regExp.Compile(mCaptionStr) == false) {
 
 		CString msg;
 		if (msg.LoadString(IDS_ERR_INVALIDREGEXP) != FALSE) {
 			msg += _T("\n");
 		}
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(regExp.GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mCaptionStr;
@@ -358,7 +353,7 @@ bool CommandParam::BuildClassRegExp(CString* errMsg)
 		return true;
 	}
 
-	auto regExp = std::make_unique<tregex>();
+	auto regExp = std::make_unique<launcherapp::utility::Regex>();
 	if (TryBuildClassRegExp(*regExp.get(), errMsg) == false) {
 		return false;
 	}
@@ -366,19 +361,14 @@ bool CommandParam::BuildClassRegExp(CString* errMsg)
 	return true;
 }
 
-bool CommandParam::TryBuildClassRegExp(tregex& regExp, CString* errMsg) const
+bool CommandParam::TryBuildClassRegExp(launcherapp::utility::Regex& regExp, CString* errMsg) const
 {
-	try {
-		if (mIsUseRegExp) {
-			regExp = tregex(tstring(mClassStr));
-		}
-	}
-	catch(std::regex_error& e) {
+	if (mIsUseRegExp && regExp.Compile(mClassStr) == false) {
 		CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
 		msg += _T("\n");
 
-		CStringA what(e.what());
 		msg += _T("\n");
+		CStringA what(regExp.GetError().c_str());
 		msg += (CString)what;
 		msg += _T("\n");
 		msg += mClassStr;
@@ -399,13 +389,7 @@ bool CommandParam::IsMatchCaption(LPCTSTR caption)
 				return false;
 			}
 		}
-		try {
-			return std::regex_match(tstring(caption), *mRegCaption.get());
-		}
-		catch(std::regex_error&) {
-			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
-			return false;
-		}
+		return mRegCaption->FullMatch(CString(caption));
 	}
 	else {
 		return mCaptionStr == caption;
@@ -420,13 +404,7 @@ bool CommandParam::IsMatchClass(LPCTSTR className)
 				return false;
 			}
 		}
-		try {
-			return std::regex_match(tstring(className), *mRegClass.get());
-		}
-		catch(std::regex_error&) {
-			spdlog::error("CommandParam::IsMatchCaption regexp is invalid.");
-			return false;
-		}
+		return mRegClass->FullMatch(CString(className));
 	}
 	else {
 		return mClassStr == className;

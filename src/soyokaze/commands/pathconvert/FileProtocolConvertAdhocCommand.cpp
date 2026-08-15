@@ -6,6 +6,7 @@
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "utility/Path.h"
+#include "utility/Regex.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
@@ -170,30 +171,34 @@ int FileProtocolConvertAdhocCommand::Match(Pattern* pattern)
 	CString wholeWord = pattern->GetWholeString();
 
 	// file://ではじまるものか判断する
-	static tregex patProtocol(_T("^ *file://.+"));
-	if (std::regex_match(tstring(wholeWord), patProtocol) == false) {
+	static const launcherapp::utility::Regex patProtocol(_T("^ *file://.+"));
+	if (patProtocol.FullMatch(wholeWord) == false) {
 		return Pattern::Mismatch;
 	}
 
 	// file://～ のパスを取り出す(file://を除去する)
-	static tregex patReplace(_T("^ *file://(.+) *$"));
-	auto pathBody = std::regex_replace(tstring(wholeWord), patReplace, _T("$1"));
-
-	static tregex pat1(_T("^//.*"));
-	static tregex pat2(_T("^/[^/].*"));
-	if (std::regex_match(tstring(pathBody), pat1)) {
-		// file:// を除いた後の先頭が//なら、そのまま(UNCパスとして扱う)
-		in->mFullPath = pathBody.c_str();
+	static const launcherapp::utility::Regex patReplace(_T("^ *file://(.+) *$"));
+	std::vector<CString> captures;
+	if (patReplace.FullMatch(wholeWord, captures) == false || captures.empty()) {
+		return Pattern::Mismatch;
 	}
-	else if (std::regex_match(tstring(pathBody), pat2)) {
+	CString pathBody = captures[0];
+
+	static const launcherapp::utility::Regex pat1(_T("^//.*"));
+	static const launcherapp::utility::Regex pat2(_T("^/[^/].*"));
+	if (pat1.FullMatch(pathBody)) {
+		// file:// を除いた後の先頭が//なら、そのまま(UNCパスとして扱う)
+		in->mFullPath = pathBody;
+	}
+	else if (pat2.FullMatch(pathBody)) {
 		// file:// を除いた後の先頭が/なら、(おそらくローカルパスの絶対パス表記なので)先頭の/だけ除外
 		// 先頭一文字を除外
-		in->mFullPath = &(*(pathBody.begin() + 1));
+		in->mFullPath = pathBody.Mid(1);
 	}
 	else {
 		// file:// を除いた後の先頭が/でないなら、(おそらくUNCパスになるので)先頭に\\を付与
 		in->mFullPath = _T("\\\\");
-		in->mFullPath += pathBody.c_str();
+		in->mFullPath += pathBody;
 	}
 
 	// 区切り文字をバックスラッシュに変換する

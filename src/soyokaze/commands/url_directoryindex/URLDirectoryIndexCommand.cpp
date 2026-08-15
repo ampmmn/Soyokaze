@@ -7,6 +7,7 @@
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
 #include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/WinHttp.h"
+#include "utility/Regex.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -98,9 +99,9 @@ bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vecto
 	return http.LoadContent(url, content, isHTML);
 }
 
-static tregex& GetURLRegex()
+static launcherapp::utility::Regex& GetURLRegex()
 {
-	static tregex regURL(_T("https?://.+"));
+	static launcherapp::utility::Regex regURL(_T("https?://.+"));
 	return regURL;
 }
 
@@ -166,8 +167,8 @@ bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 
 				// 遷移先が絶対URLであるものを除外する
 				// (他ドメインに遷移するのを防ぐため)
-				static tregex regURL = GetURLRegex();
-				bool isAbsURL = std::regex_search((LPCTSTR)href, regURL);
+				static launcherapp::utility::Regex& regURL = GetURLRegex();
+				bool isAbsURL = regURL.PartialMatch(href);
 
 				if (isA== false || isSortLink || isAbsURL) {
 					continue ;
@@ -241,8 +242,8 @@ void URLDirectoryIndexCommand::SetSubPath(const CString& subPath)
 {
 	// https?から始まる場合はURLとして扱う
 	// '/'で始まる場合は絶対パスとして扱う
-	static tregex regURL = GetURLRegex();
-	if (subPath.Left(1) == _T('/') || std::regex_search((LPCTSTR)subPath, regURL)) {
+	static launcherapp::utility::Regex& regURL = GetURLRegex();
+	if (subPath.Left(1) == _T('/') || regURL.PartialMatch(subPath)) {
 		in->mSubPath = subPath;
 	}
 	else {

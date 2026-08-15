@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "utility/Regex.h"
 
 namespace launcherapp {
 namespace commands {
@@ -9,7 +10,7 @@ namespace watchpath {
 class PathWatcherItem
 {
 public:
-	bool BuildExcludeFilterRegex(std::unique_ptr<tregex>& reg) const;
+	bool BuildExcludeFilterRegex(std::unique_ptr<launcherapp::utility::Regex>& reg) const;
 	static void WildcardToRegexp(const CString& in, std::wstring& out);
 
 	// 監視対象パス

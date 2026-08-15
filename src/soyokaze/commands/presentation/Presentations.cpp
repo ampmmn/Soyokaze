@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Presentations.h"
+#include "utility/Regex.h"
 #include "commands/common/DispWrapper.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -197,10 +198,10 @@ CString Presentations::PImpl::GetSlideTitle(DispWrapper& slide)
 		CString shapeName = shape.GetPropertyString(L"Name");
 
 		// shape名がTitleでなければスキップ
-		static tregex pat(_T("^ *Title.*$"));      // 英語版向け
-		static tregex pat2(_T("^ *タイトル.*$"));  // 日本語版向け
-		if (std::regex_match(tstring(shapeName), pat) == false && 
-				std::regex_match(tstring(shapeName), pat2) == false) {
+		static const launcherapp::utility::Regex pat(_T("^ *Title.*$"));      // 英語版向け
+		static const launcherapp::utility::Regex pat2(_T("^ *タイトル.*$"));  // 日本語版向け
+		if (pat.FullMatch(shapeName) == false &&
+				pat2.FullMatch(shapeName) == false) {
 			continue;
 		}
 
@@ -314,8 +315,8 @@ CString Presentations::GetFilePath()
 
 bool Presentations::ParseTextAsPageNo(LPCTSTR text, int& pageNo)
 {
-	static tregex pat(_T("^ *[0-9]+ *$"));
-	return std::regex_match(text, pat) == false || _stscanf_s(text, _T("%d"), &pageNo) == -1;
+	static const launcherapp::utility::Regex pat(_T("^ *[0-9]+ *$"));
+	return pat.FullMatch(CString(text)) == false || _stscanf_s(text, _T("%d"), &pageNo) == -1;
 }
 
 

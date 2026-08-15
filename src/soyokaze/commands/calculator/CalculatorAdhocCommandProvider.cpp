@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CalculatorAdhocCommandProvider.h"
+#include "utility/Regex.h"
 #include "commands/calculator/CalculatorCommand.h"
 #include "commands/calculator/Calculator.h"
 #include "commands/core/CommandRepository.h"
@@ -124,8 +125,8 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	// 10進数としての結果を追加
 	in->mDecResultPtr->SetResult(result);
 
-	static tregex regexInt(_T("^-?[0-9]+$"));
-	if (std::regex_match(tstring(result), regexInt) == false) {
+	static const launcherapp::utility::Regex regexInt(_T("^-?[0-9]+$"));
+	if (regexInt.FullMatch(result) == false) {
 		// 評価結果が整数値でない場合は、10進数の結果のみを表示
 		in->mDecResultPtr->AddRef();
 		commands.Add(CommandQueryItem(Pattern::FrontMatch, in->mDecResultPtr));
@@ -139,21 +140,21 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	const int* order = defaultOrder;
 
 	std::wstring cmdline_(cmdline);
-	static tregex regHex(_T("^ *0x"));
-	static tregex regOct(_T("^ *0o"));
-	static tregex regBin(_T("^ *0b"));
+	static const launcherapp::utility::Regex regHex(_T("^ *0x"));
+	static const launcherapp::utility::Regex regOct(_T("^ *0o"));
+	static const launcherapp::utility::Regex regBin(_T("^ *0b"));
 
-	if (std::regex_search(cmdline_, regHex)) {
+	if (regHex.PartialMatch(cmdline_)) {
 		// 16進数を先に表示
 		static const int hexFirstOrder[] = { 16, 10, 8, 2};
 		order = hexFirstOrder;
 	}
-	else if (std::regex_search(cmdline_, regOct) != false) {
+	else if (regOct.PartialMatch(cmdline_)) {
 		// 8進数を先に表示
 		static const int octFirstOrder[] = { 8, 10, 16, 2};
 		order = octFirstOrder;
 	}
-	else if (std::regex_search(cmdline_, regBin) != false) {
+	else if (regBin.PartialMatch(cmdline_)) {
 		// 2進数を先に表示
 		static const int binFirstOrder[] = { 2, 10, 16, 8};
 		order = binFirstOrder;

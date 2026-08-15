@@ -7,6 +7,7 @@
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"
+#include "utility/Regex.h"
 #include "utility/MessageExchangeWindow.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
@@ -94,8 +95,8 @@ void AppPreference::PImpl::Load()
 
 	Settings settings;
 
-	static tregex regInt(_T("^ *-?[0-9]+ *$"));
-	static tregex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
+	static const launcherapp::utility::Regex regInt(_T("^ *-?[0-9]+ *$"));
+	static const launcherapp::utility::Regex regDouble(_T("^ *-?[0-9]+\\.[0-9]+ *$"));
 
 	// ファイルを読む
 	CStdioFile file(fpIn);
@@ -144,12 +145,12 @@ void AppPreference::PImpl::Load()
 		else if (strValue == _T("false")) {
 			settings.Set(key, false);
 		}
-		else if (std::regex_match(pat, regDouble)) {
+		else if (regDouble.FullMatch(pat)) {
 			double value;
 			_stscanf_s(strValue, _T("%lg"), &value);
 			settings.Set(key, value);
 		}
-		else if (std::regex_match(pat, regInt)) {
+		else if (regInt.FullMatch(pat)) {
 			int value;
 			_stscanf_s(strValue, _T("%d"), &value);
 			settings.Set(key, value);

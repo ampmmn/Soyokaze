@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "utility/Regex.h"
 
 namespace launcherapp {
 namespace commands {
@@ -33,8 +34,8 @@ struct ITEM {
 	int mAction;
 	bool mIsUseRegExp;
 	bool mIsApplyAll;
-	tregex mRegClass;
-	tregex mRegCaption;
+	launcherapp::utility::Regex mRegClass;
+	launcherapp::utility::Regex mRegCaption;
 	WINDOWPLACEMENT mPlacement;
 	CString mCaptionStr;
 	CString mClassStr;

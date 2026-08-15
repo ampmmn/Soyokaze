@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandRepository.h"
+#include "utility/Regex.h"
 #include "commands/core/CommandProviderRepository.h"
 #include "commands/core/CommandFileEntry.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
@@ -961,8 +962,8 @@ void CommandRepository::OnAppExit()
 
 CString CommandRepository::IssueClonedCommandName(const CString& baseName)
 {
-	static tregex regex(_T("^.+-コピー$"));
-	if (std::regex_match(tstring(baseName), regex) == false) {
+	static const launcherapp::utility::Regex regex(_T("^.+-コピー$"));
+	if (regex.FullMatch(baseName) == false) {
 		return baseName + _T("-コピー");
 	}
 	return baseName;

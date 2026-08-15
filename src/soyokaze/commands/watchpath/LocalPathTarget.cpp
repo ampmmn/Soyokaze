@@ -117,13 +117,8 @@ struct LocalPathTarget::PImpl
 				fileName.assign(data->FileName, lenInStrCount);
 
 				// 除外パターンにマッチする場合は除外
-				try {
-					if (mExcludePattern.get() && std::regex_match(fileName, *mExcludePattern.get())) {
-							continue;
-					}
-				}
-				catch(std::regex_error&) {
-					spdlog::warn("PrepareInformation regexp is invalid.");
+				if (mExcludePattern.get() && mExcludePattern->FullMatch(CString(fileName.c_str()))) {
+					continue;
 				}
 			
 
@@ -201,7 +196,7 @@ struct LocalPathTarget::PImpl
 	// 最後に通知した時刻
 	uint64_t mLastNotifyTime{0};
 	// 除外パターン
-	std::unique_ptr<tregex> mExcludePattern;
+	std::unique_ptr<launcherapp::utility::Regex> mExcludePattern;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

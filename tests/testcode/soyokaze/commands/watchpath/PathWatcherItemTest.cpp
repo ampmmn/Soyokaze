@@ -17,20 +17,20 @@ protected:
 
 TEST_F(PathWatcherItemTest, BuildExcludeFilterRegex_Success) {
     item.mExcludeFilter = _T("*.txt,*.log");
-    std::unique_ptr<tregex> reg;
+    std::unique_ptr<launcherapp::utility::Regex> reg;
 
     bool result = item.BuildExcludeFilterRegex(reg);
 
     EXPECT_TRUE(result);
     EXPECT_TRUE(reg != nullptr);
-    EXPECT_TRUE(std::regex_match(_T("test.txt"), *reg));
-    EXPECT_TRUE(std::regex_match(_T("test.log"), *reg));
-    EXPECT_FALSE(std::regex_match(_T("test.doc"), *reg));
+    EXPECT_TRUE(reg->FullMatch(_T("test.txt")));
+    EXPECT_TRUE(reg->FullMatch(_T("test.log")));
+    EXPECT_FALSE(reg->FullMatch(_T("test.doc")));
 }
 
 TEST_F(PathWatcherItemTest, BuildExcludeFilterRegex_Success2) {
     item.mExcludeFilter = _T("[*.txt");
-    std::unique_ptr<tregex> reg;
+    std::unique_ptr<launcherapp::utility::Regex> reg;
 
     bool result = item.BuildExcludeFilterRegex(reg);
 
@@ -40,7 +40,7 @@ TEST_F(PathWatcherItemTest, BuildExcludeFilterRegex_Success2) {
 
 TEST_F(PathWatcherItemTest, BuildExcludeFilterRegex_Success3) {
     item.mExcludeFilter = _T("*.txt,~$*");
-    std::unique_ptr<tregex> reg;
+    std::unique_ptr<launcherapp::utility::Regex> reg;
 
     bool result = item.BuildExcludeFilterRegex(reg);
 

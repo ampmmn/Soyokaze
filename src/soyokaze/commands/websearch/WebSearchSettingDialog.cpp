@@ -7,6 +7,7 @@
 #include "hotkey/HotKeyControl.h"
 #include "utility/ScopeAttachThreadInput.h"
 #include "utility/Accessibility.h"
+#include "utility/Regex.h"
 #include "resource.h"
 
 namespace launcherapp {
@@ -185,7 +186,7 @@ void SettingDialog::UpdateStatus()
 		in->mIconLabelPtr->DrawIcon(in->mIcon);
 	}
 
-	static tregex regHttp(_T("^https?://.+$"));
+	static const launcherapp::utility::Regex regHttp(_T("^https?://.+$"));
 
 	CString& url = in->mParam.mURL;
 
@@ -200,7 +201,7 @@ void SettingDialog::UpdateStatus()
 		in->mMessage = _T("URLを入力してください");
 		canPressOK = false;
 	}
-	else if (std::regex_match(tstring(url), regHttp) == false) {
+	else if (regHttp.FullMatch(url) == false) {
 		in->mMessage = _T("URLは http:// か https:// で始まる必要があります");
 		canPressOK = false;
 	}

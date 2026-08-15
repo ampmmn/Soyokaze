@@ -3,6 +3,7 @@
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "commands/core/CommandEntryIF.h"
 #include <memory>
+#include "utility/Regex.h"
 #include <regex>
 #include <map>
 
@@ -39,8 +40,8 @@ public:
 	bool mIsUseRegExp{false};
 
 private:
-	std::unique_ptr<tregex> mRegClass;
-	std::unique_ptr<tregex> mRegCaption;
+	std::unique_ptr<launcherapp::utility::Regex> mRegClass;
+	std::unique_ptr<launcherapp::utility::Regex> mRegCaption;
 };
 
 class CommandParam

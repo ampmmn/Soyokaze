@@ -2,6 +2,7 @@
 #include "ClipboardHistoryEventReceiver.h"
 #include "utility/MessageExchangeWindow.h"
 #include "utility/ScopeExit.h"
+#include "utility/Regex.h"
 #include <set>
 
 #ifdef _DEBUG
@@ -26,7 +27,7 @@ struct ClipboardHistoryEventReceiver::PImpl
 	MessageExchangeWindow mReceiverWindow; ///< クリップボードイベントを受信するウィンドウのハンドル
 	std::set<ClipboardHistoryEventListener*> mListeners; ///< クリップボードイベントリスナーのセット
 	int mInterval{500}; ///< クリップボード更新のインターバル
-	std::unique_ptr<tregex> mExcludePattern; ///< 除外パターンの正規表現
+	std::unique_ptr<launcherapp::utility::Regex> mExcludePattern; ///< 除外パターンの正規表現
 	uint64_t mLastUpdated{0}; ///< 最後に更新された時刻
 	bool mIsUpdating{false}; ///< 更新中かどうかのフラグ
 };
@@ -88,12 +89,8 @@ int ClipboardHistoryEventReceiver::PImpl::OnUpdateClipboard()
 	}
 
 	// 無視するパターンに合致する場合は通知しない
-	try {
-		if (mExcludePattern.get() && std::regex_match(newData, *mExcludePattern.get())) {
+	if (mExcludePattern.get() && mExcludePattern->FullMatch(newData)) {
 			return 0;
-		}
-	} catch(std::regex_error&) {
-		return 0;
 	}
 
 	// リスナーへ通知
@@ -149,20 +146,18 @@ bool ClipboardHistoryEventReceiver::Activate(int interval, const CString& exclud
 	}
 
 	in->mInterval = interval;
-	try {
-		if (excludePattern.IsEmpty() == FALSE) {
-			in->mExcludePattern.reset(new tregex(tstring((LPCTSTR)excludePattern)));
+	if (excludePattern.IsEmpty() == FALSE) {
+		std::unique_ptr<launcherapp::utility::Regex> regex(new launcherapp::utility::Regex());
+		if (regex->Compile(excludePattern) == false) {
+			spdlog::error("Failed to initialize regex");
+			return false;
 		}
-		else {
-			in->mExcludePattern.reset();
-		}
-		return true;
+		in->mExcludePattern.swap(regex);
 	}
-	catch(std::regex_error& e) {
-		spdlog::error(_T("Failed to initialize regex. pattern:{0} cause:{1}"),
-		              (LPCTSTR)excludePattern, (LPCTSTR)e.what());
-		return false;
+	else {
+		in->mExcludePattern.reset();
 	}
+	return true;
 }
 
 /**

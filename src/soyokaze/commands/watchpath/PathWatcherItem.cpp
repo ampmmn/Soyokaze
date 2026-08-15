@@ -12,7 +12,7 @@ namespace watchpath {
  	@param[out] reg 生成された正規表現オブジェクト
 */
 bool PathWatcherItem::BuildExcludeFilterRegex(
-	std::unique_ptr<tregex>& reg
+	std::unique_ptr<launcherapp::utility::Regex>& reg
 ) const
 {
 	tstring wholePattern;
@@ -37,7 +37,11 @@ bool PathWatcherItem::BuildExcludeFilterRegex(
 	}
 
 	try {
-		std::unique_ptr<tregex> tmpReg(new tregex(wholePattern, std::regex_constants::icase));
+		std::unique_ptr<launcherapp::utility::Regex> tmpReg(new launcherapp::utility::Regex());
+		if (tmpReg->Compile(CString(wholePattern.c_str()), false) == false) {
+			spdlog::warn("Failed to build regex");
+			return false;
+		}
 		tmpReg.swap(reg);
 		return true;
 	}

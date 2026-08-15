@@ -70,6 +70,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\RegexTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\ImageConverterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp" />

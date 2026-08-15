@@ -5,6 +5,7 @@
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "utility/Path.h"
+#include "utility/Regex.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,9 +72,13 @@ int LocalToGitBashPathAdhocCommand::Match(Pattern* pattern)
 		return Pattern::Mismatch;
 	}
 
-	static tregex patReplace(_T("^ *([a-zA-Z]):\\\\(.*)$"));
-	auto driveLetter = std::regex_replace(tstring(wholeWord), patReplace, _T("$1"));
-	auto path = std::regex_replace(tstring(wholeWord), patReplace, _T("$2"));
+	static const launcherapp::utility::Regex patReplace(_T("^ *([a-zA-Z]):\\\\(.*)$"));
+	std::vector<CString> captures;
+	if (patReplace.FullMatch(wholeWord, captures) == false || captures.size() < 2) {
+		return Pattern::Mismatch;
+	}
+	auto driveLetter = tstring((LPCTSTR)captures[0]);
+	auto path = tstring((LPCTSTR)captures[1]);
 
 	in->mFullPath.Format(_T("/%s/%s"), driveLetter.c_str(), path.c_str());
 	in->mFullPath.Replace(_T('\\'), _T('/'));
@@ -94,8 +99,8 @@ LocalToGitBashPathAdhocCommand::Clone()
 
 bool LocalToGitBashPathAdhocCommand::IsLocalPath(const CString& path)
 {
-	static tregex pat(_T("^ *[a-zA-Z]:\\\\.*$"));
-	return std::regex_match(tstring(path), pat);
+	static const launcherapp::utility::Regex pat(_T("^ *[a-zA-Z]:\\\\.*$"));
+	return pat.FullMatch(path);
 }
 
 CString LocalToGitBashPathAdhocCommand::TypeDisplayName()

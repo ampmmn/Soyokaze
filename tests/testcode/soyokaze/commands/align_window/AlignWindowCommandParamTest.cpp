@@ -25,7 +25,7 @@ TEST(AlignWindowCommandParamItem, testSizeOf)
 {
 	EXPECT_EQ(44, sizeof(WINDOWPLACEMENT));
 	EXPECT_EQ(88, sizeof(tregex));
-	EXPECT_EQ(248, sizeof(CommandParam::ITEM));
+	EXPECT_EQ(200, sizeof(CommandParam::ITEM));
 }
 
 

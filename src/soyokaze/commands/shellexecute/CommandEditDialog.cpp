@@ -54,9 +54,9 @@ struct CommandEditDialog::PImpl
 	KeywordEdit mPathEdit;
 };
 
-static const tregex& GetRegexForArgument()
+static const launcherapp::utility::Regex& GetRegexForArgument()
 {
-	static tregex reg(_T("\\$[1-9*]"));
+	static const launcherapp::utility::Regex reg(_T("\\$[1-9*]"));
 	return reg;
 }
 

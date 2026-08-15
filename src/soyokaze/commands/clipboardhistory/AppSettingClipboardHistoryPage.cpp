@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "AppSettingClipboardHistoryPage.h"
+#include "utility/Regex.h"
 #include "commands/clipboardhistory/ClipboardHistoryParam.h"
 #include "setting/Settings.h"
 #include "utility/Path.h"
@@ -52,14 +53,12 @@ bool AppSettingPage::OnKillActive()
 
 	// 正規表現として有効化をチェックする
 	if (mParam.mExcludePattern.IsEmpty() == FALSE) {
-		try {
-			tregex regTmp((LPCTSTR)mParam.mExcludePattern);
-		}
-		catch(std::regex_error& e) {
+		launcherapp::utility::Regex regTmp;
+		if (regTmp.Compile(mParam.mExcludePattern) == false) {
 			CString msg((LPCTSTR)IDS_ERR_INVALIDREGEXP);
 			msg += _T("\n");
 
-			CStringA what(e.what());
+			CStringA what(regTmp.GetError().c_str());
 			msg += _T("\n");
 			msg += (CString)what;
 			msg += _T("\n");

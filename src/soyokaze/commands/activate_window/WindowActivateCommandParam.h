@@ -2,6 +2,7 @@
 
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "commands/core/CommandEntryIF.h"
+#include "utility/Regex.h"
 #include <memory>
 #include <regex>
 
@@ -36,9 +37,9 @@ public:
 	bool BuildRegExp(CString* errMsg = nullptr);
 	bool TryBuildRegExp(CString* errMsg = nullptr) const;
 	bool BuildCaptionRegExp(CString* errMsg = nullptr);
-	bool TryBuildCaptionRegExp(tregex& regExp, CString* errMsg = nullptr) const;
+	bool TryBuildCaptionRegExp(launcherapp::utility::Regex& regExp, CString* errMsg = nullptr) const;
 	bool BuildClassRegExp(CString* errMsg = nullptr);
-	bool TryBuildClassRegExp(tregex& regExp, CString* errMsg = nullptr) const;
+	bool TryBuildClassRegExp(launcherapp::utility::Regex& regExp, CString* errMsg = nullptr) const;
 
 	bool IsMatchCaption(LPCTSTR caption);
 	bool IsMatchClass(LPCTSTR clsName);
@@ -86,8 +87,8 @@ public:
 	bool mIsHotKeyOnly{false};
 
 private:
-	std::unique_ptr<tregex> mRegClass;
-	std::unique_ptr<tregex> mRegCaption;
+	std::unique_ptr<launcherapp::utility::Regex> mRegClass;
+	std::unique_ptr<launcherapp::utility::Regex> mRegCaption;
 
 };
 

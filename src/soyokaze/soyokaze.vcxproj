@@ -933,6 +933,7 @@
     <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\Base64.h" />
     <ClInclude Include="utility\CharConverter.h" />
+    <ClInclude Include="utility\Regex.h" />
     <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
     <ClInclude Include="utility\ImageConverter.h" />

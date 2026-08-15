@@ -2,6 +2,7 @@
 #include "CalcWorkSheets.h"
 #include "processproxy/NormalPriviledgeProcessProxy.h"
 #include "utility/Path.h"
+#include "utility/Regex.h"
 #include <mutex>
 #include <thread>
 
@@ -196,8 +197,8 @@ struct CalcWorksheet::PImpl
 
 static std::wstring DecodeURI(const std::wstring& src)
 {
-	static tregex reg(_T("^.*%[0-9a-fA-F][0-9a-fA-F].*$"));
-	if (std::regex_match(src, reg) == false) {
+	static const launcherapp::utility::Regex reg(_T("^.*%[0-9a-fA-F][0-9a-fA-F].*$"));
+	if (reg.FullMatch(src) == false) {
 		// エンコード表現を含まない場合は何もしない
 		return src;
 	}
