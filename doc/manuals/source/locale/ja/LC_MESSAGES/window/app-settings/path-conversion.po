@@ -1,0 +1,44 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/path-conversion.md:1
+msgid "Extension > Path Conversion"
+msgstr "拡張機能＞パス変換"
+
+#: ../../source/window/app-settings/path-conversion.md:3
+msgid "![](../../image/window/app-settings/path-conversion/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/path-conversion.md:5
+msgid "`git-bashパスをローカルパス表記に変換する`"
+msgstr ""
+
+#: ../../source/window/app-settings/path-conversion.md:6
+msgid "[git-bashパス変換](/adhoc-command/git-bash-pashconvert)を有効にする"
+msgstr ""
+
+#: ../../source/window/app-settings/path-conversion.md:7
+msgid "`file://...をローカルパス表記に変換する`"
+msgstr ""
+
+#: ../../source/window/app-settings/path-conversion.md:8
+msgid "[fileプロトコルをローカルパスに変換](/adhoc-command/file-pathconvert)を有効にする"
+msgstr ""

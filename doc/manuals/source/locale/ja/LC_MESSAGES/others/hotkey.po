@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -129,7 +129,7 @@ msgstr ""
 
 #: ../../source/others/hotkey.md
 msgid ""
-"SandSの修飾キーと[ランチャー呼び出しキー](/window/app-settings.md#app-"
+"SandSの修飾キーと[ランチャー呼び出しキー](/window/app-settings/app.md#app-"
 "hotkey)の組み合わせにより、スムーズな運指が実現できる"
 msgstr ""
 
@@ -152,4 +152,9 @@ msgstr ""
 #: ../../source/others/hotkey.md:44
 msgid "なお、`常駐時いつでも有効`で設定した場合でも、本アプリが一般権限で動作している状況において、管理者権限で動作しているアプリが前面にある状況ではホットキーは機能しない。"
 msgstr ""
+
+#~ msgid ""
+#~ "SandSの修飾キーと[ランチャー呼び出しキー](/window/app-settings.md#app-"
+#~ "hotkey)の組み合わせにより、スムーズな運指が実現できる"
+#~ msgstr ""
 

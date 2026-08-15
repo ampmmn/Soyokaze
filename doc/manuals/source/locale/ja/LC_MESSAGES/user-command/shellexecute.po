@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -196,7 +196,10 @@ msgid "`ウインドウクラス`   ウインドウクラス名を指定する�
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:91
-msgid "`正規表現を使用する`   チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う"
+msgid ""
+"`正規表現を使用する`   "
+"チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う。利用できる正規表現の制限については[正規表現の制限](/others"
+"/regular-expression)を参照する。"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:93
@@ -246,4 +249,7 @@ msgstr ""
 #: ../../source/user-command/shellexecute.md
 msgid "管理者権限で実行する"
 msgstr ""
+
+#~ msgid "`正規表現を使用する`   チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う"
+#~ msgstr ""
 

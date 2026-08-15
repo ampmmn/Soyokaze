@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 10:47+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,9 @@ msgid "入力欄に数式を入れると、計算結果をコメント欄に表�
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:6
-msgid "利用するにはPython(3.12以降)が必要。([設定画面](/window/app-settings.md#extensions))"
+msgid ""
+"利用するにはPython(3.12以降)が必要。([設定画面](/window/app-"
+"settings/extensions.md#extensions))"
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:8
@@ -162,4 +164,7 @@ msgstr ""
 #: ../../source/adhoc-command/calclator.md:38
 msgid "一つ目の項の基数を優先して表示する。   例えば、`0x10+1`という式の場合、16進数の結果(`0x11`)が先に表示される。"
 msgstr ""
+
+#~ msgid "利用するにはPython(3.12以降)が必要。([設定画面](/window/app-settings.md#extensions))"
+#~ msgstr ""
 

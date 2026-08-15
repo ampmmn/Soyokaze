@@ -9,5 +9,5 @@
 1. プレフィックスを入力する  
 プレフィックス(デフォルト値:`env`)を入力すると環境変数の一覧が候補欄に表示される。  
 ![](../image/envcommand2.png)  
-プレフィックスは[アプリ設定](/window/app-settings.md#extensions)で変更することができる。
+プレフィックスは[アプリ設定](/window/app-settings/extensions.md#extensions)で変更することができる。
 

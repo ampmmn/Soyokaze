@@ -40,7 +40,7 @@ UI要素をテキストで検索して選択する機能
 初期設定で機能は無効になっている。
 本機能を使用する場合は、アプリケーション設定の `拡張機能` > `UI要素` から機能を有効化する必要がある。
 
-![](../image/appsetting/extensions/uiautomation/uiautomation.png)
+![](../image/window/app-settings/uiautomation/uiautomation.png)
 
 ## Per-Key Behavior
 

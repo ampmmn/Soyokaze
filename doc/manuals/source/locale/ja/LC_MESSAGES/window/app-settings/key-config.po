@@ -1,0 +1,140 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/key-config.md:1
+msgid "Keyword Input > Key Config"
+msgstr "入力＞キー割り当て"
+
+#: ../../source/window/app-settings/key-config.md:3
+msgid ""
+"入力画面の操作に関するキーを設定する画面   独自のキーバインドで上下左右の移動や決定操作を行うアプリケーションがある。(例: "
+"Emacsの`Ctrl-N` `Ctr-P` `Ctrl-M`など）。   それらのアプリの使用感に寄せるための設定"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:7
+msgid "![](../../image/window/app-settings/key-config/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:9
+msgid "`入力画面キーの割り当て`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:10
+msgid "`上へ`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:11
+msgid "候補欄の選択項目を一つ上へ移動するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:12
+msgid "`下へ`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:13
+msgid "候補欄の選択項目を一つ下へ移動するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:14
+msgid "`決定`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:15
+msgid "入力画面での入力内容を確定させるキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:16
+msgid "`補完`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:17
+msgid "入力画面での入力内容を補完するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:18
+msgid "`単語単位削除`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:19
+msgid "入力画面で単語単位の削除をするキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:20
+msgid "`メニュー表示`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:21
+msgid "選択している候補のコンテキストメニューを表示するキーを割り当てる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:22
+msgid "`テキストをコピー`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:23
+msgid "入力欄に入力された文字列をクリップボードにコピーする   コピーした後、入力欄は非表示になる"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:25
+msgid ""
+"`入力画面のウインドウ移動`   入力画面を一時的に上下左右に移動するキーの割り当てを行う(次回表示時は元の位置に戻る)。   "
+"入力画面の後ろにあるテキストをランチャーに手入力するにあたり、入力画面を一時的に移動したい、というケースで使う"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:28
+msgid "`上へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:29
+msgid "入力画面を上方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:30
+msgid "`下へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:31
+msgid "入力画面を下方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:32
+msgid "`左へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:33
+msgid "入力画面を左方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:34
+msgid "`右へ移動`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:35
+msgid "入力画面を右方向に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:38
+msgid "`初期設定に戻す`"
+msgstr ""
+
+#: ../../source/window/app-settings/key-config.md:39
+msgid "上記のキー割り当てをすべて解除する"
+msgstr ""

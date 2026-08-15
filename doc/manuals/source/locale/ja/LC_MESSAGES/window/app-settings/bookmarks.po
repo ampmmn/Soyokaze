@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/bookmarks.md:1
+msgid "Extension > Bookmarks"
+msgstr "拡張機能＞ブックマーク検索"
+
+#: ../../source/window/app-settings/bookmarks.md:3
+msgid "![](../../image/adhoc-command/bookmarks/appsetting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:5
+msgid "`機能を有効にする`   [ブックマーク検索](/adhoc-command/bookmarks)機能を有効にする。"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:7
+msgid "`プレフィックス`   検索を開始するためのキーワードを指定する。   空欄にすると、検索が常に有効になる。"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:10
+msgid "`検索を実行する最小文字数`   その文字数以上のキーワードを入力したときに検索を行う。0を指定すると常に検索を行う。"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:12
+msgid "`Edgeのお気に入りを候補として表示する`   Edgeのお気に入りを検索対象とする"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:14
+msgid ""
+"`Webブラウザ(外部ツール)のブックマークを候補として表示する`   [外部ツール](external-"
+"tool.md#externaltool)で指定したWebブラウザのブックマークを検索対象とする"
+msgstr ""
+
+#: ../../source/window/app-settings/bookmarks.md:16
+msgid "`URL文字列を候補の絞り込みに使う`   URL文字列(とブックマーク名)を候補の絞り込みに使う。選択しない場合はブックマーク名のみで絞り込みする"
+msgstr ""

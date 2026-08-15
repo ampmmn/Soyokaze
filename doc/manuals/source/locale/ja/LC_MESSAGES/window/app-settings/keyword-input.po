@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/keyword-input.md:1
+msgid "Keyword Input"
+msgstr "入力"
+
+#: ../../source/window/app-settings/keyword-input.md:3
+msgid "入力画面のキーワード入力回りの動作に影響する設定を行うための画面"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:5
+msgid "![](../../image/window/app-settings/keyword-input/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:7
+msgid "`入力画面を表示するときにIMEをオフにする`"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:8
+msgid "入力画面を表示したタイミングでIMEをオフにする"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:10
+msgid "`ネットワークパスを無視する`"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:11
+msgid "`\\\\(コンピュータ名)`で始まるパスを本アプリでは開かないようにする"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:12
+msgid "環境によっては、ネットワークパスの情報を参照したときに数十秒ほど応答がなくなる(フリーズする)ことがあるため"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:14
+msgid "`C/Migemoによるローマ字検索を有効にする`"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:15
+msgid ""
+"[C/Migemo](https://www.kaoriya.net/software/cmigemo/) "
+"という外部ライブラリを用いて、ローマ字でのキーワード絞り込みをできるようにする"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:16
+msgid "たとえば、`jikoku`というキーワードで`時刻`や`自国`という文言にマッチするようになる"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:17
+msgid "配布元(上記リンク先)からライブラリを入手し、配置する必要がある"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:18
+msgid "下記のような構成になるように配置する。"
+msgstr ""
+
+#: ../../source/window/app-settings/keyword-input.md:27
+msgid "なお、バージョン{{version}}現在、migemo.dllと辞書データは本アプリに同梱しているため、上記の配置作業は不要。"
+msgstr ""

@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/path.md:1
+msgid "Command Execute > Path"
+msgstr "実行＞パス"
+
+#: ../../source/window/app-settings/path.md:3
+msgid ""
+"[`ファイル名を指定して実行`](/adhoc-command/pathfind) "
+"コマンドにおける、実行ファイルを検索するフォルダを追加で指定することができる。   "
+"検索の優先順位としては環境変数PATHで設定されたフォルダ、次に追加のディレクトリ、の順で検索を行う。   リストの上にある項目が優先される。"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:7
+msgid "![](../../image/window/app-settings/path/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:9
+msgid "`環境変数PATHで設定されたディレクトリ`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:10
+msgid "システムの環境設定で指定されたディレクトリが表示される"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:11
+msgid "このリストは参照専用"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:13
+msgid "`追加のディレクトリ`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:14
+msgid "システム設定で指定されたもの以外に検索したいディレクトリを登録する"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:16
+msgid "`追加`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:17
+msgid "クリックすると、ディレクトリ選択ダイアログが表示される。選択したディレクトリが`追加のディレクトリ`に追加される"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:18
+msgid "`編集`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:19
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目のパスを変更することができる"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:20
+msgid "`削除`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:21
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を削除することができる"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:22
+msgid "`上へ`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:23
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を一つ上に移動する"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:24
+msgid "`下へ`"
+msgstr ""
+
+#: ../../source/window/app-settings/path.md:25
+msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を一つ下に移動する"
+msgstr ""

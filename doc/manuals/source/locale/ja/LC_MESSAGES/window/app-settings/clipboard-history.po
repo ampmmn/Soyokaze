@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/clipboard-history.md:1
+msgid "Extensions > Clipboard History"
+msgstr "拡張機能＞クリップボード履歴"
+
+#: ../../source/window/app-settings/clipboard-history.md:3
+msgid "[クリップボード履歴](/adhoc-command/clipboard-history)機能に関する設定を行う画面"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:5
+msgid "![](../../image/window/app-settings/clipboard-history/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:7
+msgid "`有効にする`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:8
+msgid "[クリップボード履歴](/adhoc-command/clipboard-history)機能を有効にする"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:9
+msgid "`プレフィックス`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:10
+msgid ""
+"クリップボード履歴を候補として表示するためのキーワードを指定する   ![](../../image/window/app-settings"
+"/clipboard-history/prefix.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:12
+msgid "`検索結果表示件数`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:13
+msgid "候補に表示する件数の上限を指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:14
+msgid "`登録時の1件あたり上限サイズ`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:15
+msgid "クリップボードが更新されたとき、テキストのサイズが指定サイズを超過する場合は履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:16
+msgid "`履歴件数の上限`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:17
+msgid "履歴の件数が上限を超過したら、古いものから履歴を削除する"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:18
+msgid "`次の記録を有効にするまでの間隔`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:19
+msgid "前回のクリップボード更新から、指定した時間が経過しないうちに更新が再度行われた場合は履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:20
+msgid "`無視するパターン`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:21
+msgid "指定した正規表現パターンに合致するテキストを履歴に追加しない"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:22
+msgid "利用できる正規表現の制限については[正規表現の制限](/others/regular-expression)を参照"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:23
+msgid "`クリップボード履歴ではC/Migemoを使用しない`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:24
+msgid "クリップボード履歴の候補の絞り込みにおいて、C/Migemoによる正規表現マッチングを使用しない"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:25
+msgid "現状のアプリの実装だと、クリップボード履歴の絞り込みにおいてC/Migemoが生成した正規表現を使ってマッチングをすると、動作が遅くなる場合があるため無効化できるようにする"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:26
+msgid "チェックを外した場合は[入力](/window/app-settings/keyword-input)設定に従う"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:27
+msgid "`プレビューウインドウを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/clipboard-history.md:28
+msgid "候補欄で選択したクリップボード履歴のテキスト内容を確認するためのプレビューウインドウを表示する。"
+msgstr ""

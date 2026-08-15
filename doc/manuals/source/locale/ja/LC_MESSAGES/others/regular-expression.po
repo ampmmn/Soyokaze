@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/others/regular-expression.md:1
+msgid "正規表現の制限"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:3
+msgid "以下の機能で指定する正規表現は、RE2を使用して判定します。"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:5
+msgid "[ウインドウ操作コマンド](../user-command/activate-window.md)"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:6
+msgid "[ウインドウ整列コマンド](../user-command/align-window.md)"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:7
+msgid "[シェル実行コマンド](../user-command/shellexecute.md)のウインドウ判定"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:8
+msgid ""
+"[クリップボード履歴](../window/app-settings/clipboard-history.md#clipboard-"
+"history)の無視するパターン"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:10
+msgid "RE2は、実行時間が入力内容に大きく左右されない正規表現エンジンです。そのため、バックトラッキングを必要とする一部の構文は利用できません。"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:12
+msgid "特に以下の構文には対応していません。"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:14
+msgid "後方参照"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:15
+msgid "先読み・後読み"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:16
+msgid "条件付き表現など、バックトラッキングを必要とする構文"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:18
+msgid "対応していない構文を含むパターンは、正規表現エラーとして扱われます。"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:20
+msgid ""
+"なお、[正規表現コマンド](../user-command/regexp.md)や[フィルターコマンド](../user-"
+"command/filter.md)の置換処理はこの制限の対象外です。これらでは従来の正規表現処理を使用し、キャプチャ文字列の参照方法も従来どおり`$1`、`$2`の形式です。"
+msgstr ""
+
+#: ../../source/others/regular-expression.md:22
+msgid ""
+"Watch "
+"Pathコマンドの`除外フィルタ`は、指定されたワイルドカードから内部で正規表現を生成します。利用者が正規表現を直接指定するものではありません。"
+msgstr ""
+

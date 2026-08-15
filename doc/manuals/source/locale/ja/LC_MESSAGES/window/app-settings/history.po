@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/history.md:1
+msgid "Keyword Input > History"
+msgstr "入力＞履歴"
+
+#: ../../source/window/app-settings/history.md:3
+msgid "![](../../image/window/app-settings/history/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:5
+msgid "`履歴機能を使う`"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:6
+msgid "[履歴](/adhoc-command/history)機能の有無を設定できる"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:7
+msgid "`履歴件数`"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:8
+msgid "履歴として登録する件数の上限を設定する"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:9
+msgid "`履歴の削除`"
+msgstr ""
+
+#: ../../source/window/app-settings/history.md:10
+msgid "ボタンをクリックすると全ての履歴をクリアする"
+msgstr ""

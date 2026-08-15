@@ -4,7 +4,7 @@
 入力キーワードと各コマンド名を比較し、どのように一致するかをみる。
 
 一致度が高いものを優先して表示する。  
-一致度が同じ場合はコマンドの[優先度](/window/app-settings.md#command-execute-priority)に従う。
+一致度が同じ場合はコマンドの[優先度](/window/app-settings/priority.md#command-execute-priority)に従う。
 
 
 スペース区切りで複数キーワード指定された場合、個々のキーワードごとに候補の名前と部分一致比較を行い、すべてマッチするものを対象とする

@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/sound-effects.md:1
+msgid "App > Sound Effects"
+msgstr "基本＞効果音"
+
+#: ../../source/window/app-settings/sound-effects.md:3
+msgid ""
+"画面操作時に効果音を鳴らす設定をするための画面   "
+"もし、音を鳴らせる環境で作業しているのであれば、気分が上がる効果音を設定すると、作業効率がアップするかもしれない。"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:6
+msgid "mp3ファイルのみ指定可能(他の音声ファイルには非対応)"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:8
+msgid "![](../../image/window/app-settings/sound-effects/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:10
+msgid "`入力欄への文字入力`"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:11
+msgid "入力欄に文字を入力したときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:12
+msgid "`候補欄の選択項目変更`"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:13
+msgid "候補欄の選択項目を変更したときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:14
+msgid "`コマンド実行`"
+msgstr ""
+
+#: ../../source/window/app-settings/sound-effects.md:15
+msgid "コマンドを実行するときに再生するmp3ファイルを指定する。空欄の場合は何も再生しない。"
+msgstr ""

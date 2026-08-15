@@ -82,7 +82,7 @@ Windowsからログオフ(サインアウト)する。
 
 本アプリの実行ファイルが置かれているフォルダをエクスプローラーまたはファイラーで表示する。
 
-[アプリケーション設定](/window/app-settings.md#comand-execute) で外部ファイラーを設定している場合は外部ファイラーで開く。  
+[アプリケーション設定](/window/app-settings/command-execute.md#command-execute) で外部ファイラーを設定している場合は外部ファイラーで開く。  
 設定していない場合はエクスプローラーで開く。
 
 -----------
@@ -157,7 +157,7 @@ PCをサスペンド状態にする。
 
 設定ファイルの保存先フォルダをエクスプローラーまたはファイラーで表示する。
 
-[アプリケーション設定](/window/app-settings.md#comand-execute) で外部ファイラーを設定している場合は外部ファイラーで開く。  
+[アプリケーション設定](/window/app-settings/command-execute.md#command-execute) で外部ファイラーを設定している場合は外部ファイラーで開く。  
 設定していない場合はエクスプローラーで開く。
 
 設定ファイルの保存先については [アプリデータの保存フォルダ](/usage/setup.md#configuration-directory) を参照のこと

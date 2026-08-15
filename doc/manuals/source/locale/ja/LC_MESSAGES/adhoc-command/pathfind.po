@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -26,7 +26,8 @@ msgstr "ファイル名を指定して実行"
 #: ../../source/adhoc-command/pathfind.md:3
 msgid ""
 "入力欄に入力したキーワードが、環境変数`PATH`に含まれるフォルダや[アプリで独自に追加したフォルダ](/window/app-"
-"settings.md#comand-execute-path)内の`.exe`ファイルと一致する場合は、 その実行ファイルを起動する。"
+"settings/path.md#command-execute-path)内の`.exe`ファイルと一致する場合は、 "
+"その実行ファイルを起動する。"
 msgstr ""
 
 #: ../../source/adhoc-command/pathfind.md:6
@@ -46,4 +47,10 @@ msgstr ""
 #: ../../source/adhoc-command/pathfind.md:14
 msgid "![](../image/adhoc-command/pathfind-url.png)"
 msgstr ""
+
+#~ msgid ""
+#~ "入力欄に入力したキーワードが、環境変数`PATH`に含まれるフォルダや[アプリで独自に追加したフォルダ](/window/app-"
+#~ "settings.md#comand-execute-path)内の`.exe`ファイルと一致する場合は、 "
+#~ "その実行ファイルを起動する。"
+#~ msgstr ""
 

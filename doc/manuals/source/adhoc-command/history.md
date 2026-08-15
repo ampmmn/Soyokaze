@@ -7,7 +7,7 @@
 
 履歴として登録されたものは、次回以降のキーワード入力の際に部分一致で候補として表示される。
 
-機能を利用するには、[アプリ設定](/window/app-settings.md#keyword-input-history)で機能を有効にする必要がある。
+機能を利用するには、[アプリ設定](/window/app-settings/history.md#keyword-input-history)で機能を有効にする必要がある。
 
 ![](../image/history.png)
 

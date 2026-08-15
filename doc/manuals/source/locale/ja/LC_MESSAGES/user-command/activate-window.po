@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -110,7 +110,10 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:41
-msgid "**正規表現を使用する**   チェックを入れると、タイトルやクラス名を正規表現として扱います。チェックしない場合は完全一致で検索します。"
+msgid ""
+"**正規表現を使用する**   "
+"チェックを入れると、タイトルやクラス名を正規表現として扱います。チェックしない場合は完全一致で検索します。利用できる正規表現の制限については[正規表現の制限](/others"
+"/regular-expression)を参照してください。"
 msgstr ""
 
 #: ../../source/user-command/activate-window.md:43
@@ -212,4 +215,7 @@ msgstr ""
 #: ../../source/user-command/activate-window.md
 msgid "対象のウインドウに切り替え、同時に最大化します。"
 msgstr ""
+
+#~ msgid "**正規表現を使用する**   チェックを入れると、タイトルやクラス名を正規表現として扱います。チェックしない場合は完全一致で検索します。"
+#~ msgstr ""
 

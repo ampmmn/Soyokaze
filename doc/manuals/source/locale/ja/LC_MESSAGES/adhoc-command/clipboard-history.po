@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-16 16:49+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:6
-msgid "![](../image/clipboardhistory-prefix.png)"
+msgid "![](../image/window/app-settings/clipboard-history/prefix.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:8
@@ -51,7 +51,7 @@ msgstr "設定"
 
 #: ../../source/adhoc-command/clipboard-history.md:18
 msgid ""
-"各種設定は[アプリ設定](/window/app-settings.md#extensions-clipboard-"
+"各種設定は[アプリ設定](/window/app-settings/clipboard-history.md#clipboard-"
 "history)から設定することができる。"
 msgstr ""
 
@@ -66,4 +66,12 @@ msgstr ""
 #: ../../source/adhoc-command/clipboard-history.md:26
 msgid "![](../image/adhoc-command/clipboardhistory-preview.png)"
 msgstr ""
+
+#~ msgid "![](../image/clipboardhistory-prefix.png)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "各種設定は[アプリ設定](/window/app-settings.md#extensions-"
+#~ "clipboard-history)から設定することができる。"
+#~ msgstr ""
 

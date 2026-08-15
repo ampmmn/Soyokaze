@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -247,7 +247,7 @@ msgstr "コンテキストメニューの`送る`>`コマンドとして登録�
 
 #: ../../source/usage/how_to_use.md:106
 msgid ""
-"アプリケーション設定の[基本＞ショートカット登録](/window/app-settings.md#app-shortcut) "
+"アプリケーション設定の[基本＞ショートカット登録](/window/app-settings/shortcut.md#app-shortcut) "
 "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
 msgstr ""
 
@@ -274,4 +274,10 @@ msgstr "制限事項"
 #: ../../source/usage/how_to_use.md:119
 msgid "ランチャーが管理者権限で動作している場合に、一般権限で動作しているプロセスのアイコンをこの方法で登録することはできない。"
 msgstr ""
+
+#~ msgid ""
+#~ "アプリケーション設定の[基本＞ショートカット登録](/window/app-settings.md#app-"
+#~ "shortcut) "
+#~ "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
+#~ msgstr ""
 

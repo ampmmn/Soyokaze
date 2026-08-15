@@ -1,0 +1,200 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/appearance.md:1
+msgid "Appearance"
+msgstr "表示"
+
+#: ../../source/window/app-settings/appearance.md:3
+msgid "入力画面の外観にかかわる設定を行う。"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:5
+msgid "![](../../image/window/app-settings/appearance/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:7
+msgid "`入力画面のフォント`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:8
+msgid "入力画面のフォントを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:9
+msgid "初期値は`Noto Sans JP`フォント(利用できない場合は`Tahoma`)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:10
+msgid "`サイズ`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:11
+msgid "入力画面のフォントサイズをポイント単位で指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:12
+msgid "初期値は9"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:13
+msgid "設定できる範囲は6～128"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:14
+msgid "`既定値を使用`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:15
+msgid "入力画面のフォント/フォントサイズを初期値に戻す"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:17
+msgid "`コメント表示欄の初期表示テキスト`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:18
+msgid "入力画面を表示した直後のコメント欄のテキストを設定する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:19
+msgid ""
+"テキストに[マクロ](/macros)を使うことができる   ![](../../image/window/app-"
+"settings/appearance/default-comment.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:21
+msgid "`入力画面のアイコンを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:22
+msgid "入力画面上のアイコン表示欄を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:23
+msgid "アイコン欄"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:24
+msgid "アイコン欄をダブルクリック、または、右クリックからコンテキストメニュー`アイコンを変更する`を選択すると、ファイル選択ダイアログを表示する。ファイルを選択すると、初期表示アイコンを変更することかできる"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:25
+msgid "使用可能なファイル形式は`.ico`のみ"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:26
+msgid "`デフォルトのアイコンに戻す`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:27
+msgid "変更した初期表示アイコンをアプリ本来のアイコンに戻す"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:28
+msgid "`入力画面のプレースホルダーを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:29
+msgid ""
+"入力欄に何も文字を入力していない状態のときにテキストを表示する   ![](../../image/window/app-"
+"settings/appearance/placeholder.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:31
+msgid "`操作ガイド欄を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:32
+msgid ""
+"コメント表示欄の下に操作ガイド欄を表示する   ![](../../image/window/app-settings/appearance"
+"/guide-label.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:34
+msgid "`候補欄にコマンド種別を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:35
+msgid ""
+"コマンドの種別を候補リストに表示する   ![](../../image/window/app-settings/appearance/show-"
+"command-type.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:37
+msgid "`候補欄の背景色を交互に変える`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:38
+msgid ""
+"候補欄の奇数行と偶数行の背景色を変えて表示を行う   ![](../../image/window/app-settings/appearance"
+"/alternate-color.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:40
+msgid "`候補欄の各項目のアイコンを表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:41
+msgid "候補欄の項目ごとにアイコンを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:42
+msgid ""
+"左: アイコンを表示する場合  右:表示しない場合   ![](../../image/window/app-"
+"settings/appearance/show-icon.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:44
+msgid "`入力欄の透過表示`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:45
+msgid "`半透明`   入力画面を半透明にするタイミングの設定。以下の3つから選択する。"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:47
+msgid "`非アクティブなときに半透明`   入力画面がフォーカスを失ったときに半透明表示にする"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:49
+msgid "`いつでも半透明`   フォーカスの有無にかかわらず常に入力画面を半透明表示にする"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:51
+msgid "`半透明にしない`   フォーカスの有無にかかわらず常に入力画面を半透明表示にしない"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:53
+msgid "`透明度`"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:54
+msgid "入力画面を透過表示するときの透明度を0～255の範囲で指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:55
+msgid "0は完全に透明"
+msgstr ""
+
+#: ../../source/window/app-settings/appearance.md:56
+msgid "255は完全に不透明"
+msgstr ""

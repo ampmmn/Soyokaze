@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/extensions.md:1
+msgid "Extensions"
+msgstr "拡張機能"
+
+#: ../../source/window/app-settings/extensions.md:3
+msgid "![](../../image/window/app-settings/extensions/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:5
+msgid "`Pythonを利用する拡張機能の設定`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:6
+msgid ""
+"`Python DLLへのパス`   PCにインストールした`Python3`の本体DLLへのパスを指定する   "
+"(Python3.12以降の`python3.dll`へのパスを指定する)"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:9
+msgid ""
+"`簡易電卓機能を有効にする`   入力画面に入力したテキストを数式として評価して、その計算結果を表示する   "
+"![](../../image/window/app-settings/extensions/calculator.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:12
+msgid "`Enter`キーを押すと、計算結果をクリップボードにコピーする"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:13
+msgid "`システム関連の機能`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:14
+msgid "`コントロールパネル項目を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:15
+msgid ""
+"コントロールパネル項目を候補として表示し、それを実行したら、該当するコントロールパネル項目を開く   ![](../../image/window"
+"/app-settings/extensions/control-panel-command.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:17
+msgid "`スタートメニュー／最近使ったファイルを候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:18
+msgid "ファイルを候補として表示・実行する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:19
+msgid "スタートメニューに登録されたプログラム"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:20
+msgid "Windowsの`最近使ったファイル`に登録されたファイル"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:21
+msgid "`アプリケーション(UWPアプリなど)を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:22
+msgid "実行環境にインストールされているアプリケーション(UWPアプリを含む)を候補として表示・実行する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:23
+msgid "`MMCスナップインを候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:24
+msgid "実行環境にインストールされている[MMCスナップイン](/adhoc-command/mmcsnapin)を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:25
+msgid "`Windowsの設定を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:26
+msgid "[Windows設定](/adhoc-command/windowssettings)の各ページ項目を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:27
+msgid "`環境変数を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:28
+msgid "[環境変数](/adhoc-command/env)の一覧を候補として表示する"
+msgstr ""

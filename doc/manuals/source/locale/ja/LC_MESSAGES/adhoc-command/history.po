@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 12:54+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -41,7 +41,7 @@ msgstr ""
 
 #: ../../source/adhoc-command/history.md:10
 msgid ""
-"機能を利用するには、[アプリ設定](/window/app-settings.md#keyword-input-"
+"機能を利用するには、[アプリ設定](/window/app-settings/history.md#keyword-input-"
 "history)で機能を有効にする必要がある。"
 msgstr ""
 
@@ -54,4 +54,9 @@ msgid ""
 "なお、この機能は履歴を登録したときの「文字列」を登録するだけなので、 この機能により、後で実行したときに前回と同じコマンドが実行される保証はない。"
 "    (実行環境の変化により、「文字列」に対して別のコマンドがマッチする可能性がある）"
 msgstr ""
+
+#~ msgid ""
+#~ "機能を利用するには、[アプリ設定](/window/app-settings.md#keyword-"
+#~ "input-history)で機能を有効にする必要がある。"
+#~ msgstr ""
 

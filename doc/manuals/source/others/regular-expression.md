@@ -5,7 +5,7 @@
 - [ウインドウ操作コマンド](../user-command/activate-window.md)
 - [ウインドウ整列コマンド](../user-command/align-window.md)
 - [シェル実行コマンド](../user-command/shellexecute.md)のウインドウ判定
-- [クリップボード履歴](../window/app-settings.md)の無視するパターン
+- [クリップボード履歴](../window/app-settings/clipboard-history.md#clipboard-history)の無視するパターン
 
 RE2は、実行時間が入力内容に大きく左右されない正規表現エンジンです。そのため、バックトラッキングを必要とする一部の構文は利用できません。
 

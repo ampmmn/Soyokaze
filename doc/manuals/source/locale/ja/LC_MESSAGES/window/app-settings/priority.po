@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/priority.md:1
+msgid "Command Execute > Priority"
+msgstr "実行＞優先度"
+
+#: ../../source/window/app-settings/priority.md:3
+msgid "コマンドの優先度を設定することにより、候補欄に表示されるコマンドの順序を制御するための画面。"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:5
+msgid "![](../../image/window/app-settings/priority/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:7
+msgid "`コマンドの優先度`"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:8
+msgid "コマンドごとの優先度が表示されたリスト"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:9
+msgid "優先度の数値が高いものほど先に表示される。"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:10
+msgid "`フィルター`"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:11
+msgid "リスト上に表示するコマンドの絞り込みを行うことができる"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:12
+msgid "`優先度変更`"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:13
+msgid "`コマンドの優先度`リストで選択した項目の優先度を変更する"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:14
+msgid "`すべてリセット`"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:15
+msgid "`コマンドの優先度`リスト上に表示されたすべての項目の優先度を0にする"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:17
+msgid "Example"
+msgstr "優先度の例"
+
+#: ../../source/window/app-settings/priority.md:19
+msgid ""
+"たとえば、下記の設定がされていた場合、 入力欄に「b」と打った場合に、`bookmark` `blog-hatena` `board` "
+"の順に表示される。"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "コマンド"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "優先度"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "blog-hatena"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "5"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "board"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "0"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "bookmark"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md
+msgid "10"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:29
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/window/app-settings/priority.md:31
+msgid ""
+"利用者が[登録したコマンド](/usage/how_to_use.md#register-"
+"command)に対してのみ、コマンドの優先度を設定することができる"
+msgstr ""
+
+#: ../../source/window/app-settings/priority.md:32
+msgid "[コマンドとして登録していなくても実行できる機能](/adhoc-commands) に由来するコマンドに対して優先度を設定することはできない"
+msgstr ""

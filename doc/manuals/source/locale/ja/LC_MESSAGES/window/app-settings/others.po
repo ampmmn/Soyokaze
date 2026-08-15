@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/others.md:1
+msgid "Others"
+msgstr "その他の設定画面"
+
+#: ../../source/window/app-settings/others.md:3
+msgid "Application HotKey"
+msgstr "アプリ表示用ホットキー"
+
+#: ../../source/window/app-settings/others.md:5
+msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:7
+msgid "![](../../image/hotkeyForApp.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:9
+msgid ""
+"`ホットキーを設定する`   修飾キー(`Alt` `Ctrl` `Shift` `Win`) + "
+"任意のキーを同時押しすることによりアプリを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:11
+msgid "`修飾キー`   修飾キーを選択するためのもの。"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:13
+msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合   Ctrl+A"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:15
+msgid "`キー`   文字を選択する"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:17
+msgid ""
+"`修飾キーの組み合わせ入力`   修飾キー(`Alt` `Ctrl` `Shift` "
+"`Win`)を2つ組み合わせて入力することでアプリを表示する方式   "
+"同じキーを2回押す、あるいは、異なるキーを同時押しすることでアプリを起動することができる   例: "
+"`Ctrl`キーの2回押し、あるいは、`Ctrl`+`Alt`キーの同時押し"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:21
+msgid "`一つ目の入力`   一つ目に入力する修飾キーを選択する"
+msgstr ""
+
+#: ../../source/window/app-settings/others.md:23
+msgid "`二つ目の入力`   二つ目に入力する修飾キーを選択する"
+msgstr ""

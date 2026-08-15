@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -143,7 +143,7 @@ msgstr ""
 
 #: ../../source/system-commands.md:85 ../../source/system-commands.md:160
 msgid ""
-"[アプリケーション設定](/window/app-settings.md#comand-execute) "
+"[アプリケーション設定](/window/app-settings/command-execute.md#command-execute) "
 "で外部ファイラーを設定している場合は外部ファイラーで開く。   設定していない場合はエクスプローラーで開く。"
 msgstr ""
 
@@ -308,4 +308,9 @@ msgstr ""
 #: ../../source/system-commands.md:189
 msgid "誤って実行されるのを防止するための機能"
 msgstr ""
+
+#~ msgid ""
+#~ "[アプリケーション設定](/window/app-settings.md#comand-execute) "
+#~ "で外部ファイラーを設定している場合は外部ファイラーで開く。   設定していない場合はエクスプローラーで開く。"
+#~ msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -146,7 +146,9 @@ msgstr ""
 
 #: ../../source/user-command/align-window.md:69
 msgid ""
-"`正規表現`   チェックした場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列を正規表現として扱う   "
+"`正規表現`   "
+"チェックした場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列を正規表現として扱う。利用できる正規表現の制限については[正規表現の制限](/others"
+"/regular-expression)を参照する。 "
 "チェックしない場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列の完全一致で探す"
 msgstr ""
 
@@ -218,4 +220,9 @@ msgstr ""
 #: ../../source/user-command/align-window.md:44
 msgid "ウインドウの整列を実行する"
 msgstr ""
+
+#~ msgid ""
+#~ "`正規表現`   チェックした場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列を正規表現として扱う   "
+#~ "チェックしない場合、`ウインドウタイトル`と`ウインドウクラス`に入力した文字列の完全一致で探す"
+#~ msgstr ""
 

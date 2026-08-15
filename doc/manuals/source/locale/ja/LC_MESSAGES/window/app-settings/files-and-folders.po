@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/files-and-folders.md:1
+msgid "Command Execute > Files And Folders"
+msgstr "実行＞ファイルとフォルダ"
+
+#: ../../source/window/app-settings/files-and-folders.md:3
+msgid ""
+"コマンド種別`ファイル` `フォルダ`に対して、別のコマンドを関連付けるための設定画面。   コマンドを登録しておくと、選択中の候補が`ファイル`"
+" `フォルダ`の場合に、任意のキー入力からコマンドを実行してファイルを開くことができる。"
+msgstr ""
+
+#: ../../source/window/app-settings/files-and-folders.md:6
+msgid ""
+"![](../../image/window/app-settings/command-execute/files-and-"
+"folders/settings.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/files-and-folders.md:8
+msgid ""
+"上記の場合、`Ctrl-E`で`vim`というコマンド、`Ctrl-S`で`stirling`というコマンドを実行できる。   "
+"コマンド種別`ファイル`または`フォルダ`の候補が選択されている状態で、登録したキー入力をすると、対応するコマンドを実行することができる。"
+msgstr ""
+
+#: ../../source/window/app-settings/files-and-folders.md:11
+msgid ""
+"設定したコマンドは下記の通り、ガイド欄に表示される。   ![](../../image/window/app-settings/command-"
+"execute/files-and-folders/example1.png)"
+msgstr ""

@@ -3,7 +3,7 @@
 クリップボードに保存されたテキストの履歴を候補として表示する機能。  
 候補を選択すると、それをクリップボードに再コピーしたり、コピペしたりなどすることができる。
 
-![](../image/clipboardhistory-prefix.png)
+![](../image/window/app-settings/clipboard-history/prefix.png)
 
 ## Usage
 
@@ -15,7 +15,7 @@
 
 ## Setting
 
-各種設定は[アプリ設定](/window/app-settings.md#extensions-clipboard-history)から設定することができる。
+各種設定は[アプリ設定](/window/app-settings/clipboard-history.md#clipboard-history)から設定することができる。
 
 
 ## Preview
