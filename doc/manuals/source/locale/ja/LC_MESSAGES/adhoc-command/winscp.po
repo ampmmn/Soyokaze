@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-07 07:39+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,11 +28,11 @@ msgid "WinSCPのサイトマネージャに登録されているセッション�
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:5
-msgid "![](../image/adhoc-command/winscp-introduction2.png)"
+msgid "![](../image/adhoc-command/winscp/introduction-2.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:7
-msgid "![](../image/adhoc-command/winscp-introduction.png)"
+msgid "![](../image/adhoc-command/winscp/introduction.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:9
@@ -70,7 +70,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/winscp.md:24
-msgid "![](../image/adhoc-command/winscp-appsetting.png)"
+msgid "![](../image/adhoc-command/winscp/app-settings.png)"
 msgstr ""
 
 

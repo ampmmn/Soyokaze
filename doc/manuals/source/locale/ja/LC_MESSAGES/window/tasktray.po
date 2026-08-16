@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,7 @@ msgid "本アプリを起動すると、タスクトレイにアイコンが表�
 msgstr ""
 
 #: ../../source/window/tasktray.md:5
-msgid "![](../image/tasktray-icon.png)"
+msgid "![](../image/common/tasktray-icon.png)"
 msgstr ""
 
 #: ../../source/window/tasktray.md:8
@@ -36,11 +36,11 @@ msgid "アイコンを右クリックするか、入力画面のコメント表�
 msgstr ""
 
 #: ../../source/window/tasktray.md:10
-msgid "タスクトレイアイコンを右クリック   ![](../image/tasktray-menu.png)"
+msgid "タスクトレイアイコンを右クリック   ![](../image/window/tasktray/menu.png)"
 msgstr ""
 
 #: ../../source/window/tasktray.md:13
-msgid "入力画面のコメント表示欄を右クリック     ![](../image/tasktray-menu2.png)"
+msgid "入力画面のコメント表示欄を右クリック     ![](../image/window/tasktray/menu-2.png)"
 msgstr ""
 
 #: ../../source/window/tasktray.md:17

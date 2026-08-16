@@ -88,6 +88,9 @@
     <Filter Include="commands\getip">
       <UniqueIdentifier>{5f53e1f6-5589-4607-8614-4518ab10497e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\currency">
+      <UniqueIdentifier>{2c58f84b-5bf1-4d12-91aa-9cf25c85ed29}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\snippet">
       <UniqueIdentifier>{8dbb3a70-89ba-43d3-b4cc-98faf416f960}</UniqueIdentifier>
     </Filter>
@@ -629,6 +632,12 @@
     </ClInclude>
     <ClInclude Include="commands\getip\GetIPCommand.h">
       <Filter>commands\getip</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\currency\CurrencyConvesionCommand.h">
+      <Filter>commands\currency</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\currency\CurrencyConvesionProvider.h">
+      <Filter>commands\currency</Filter>
     </ClInclude>
     <ClInclude Include="commands\snippet\SnippetCommand.h">
       <Filter>commands\snippet</Filter>
@@ -2016,6 +2025,21 @@
     <ClInclude Include="commands\plugin\PluginModule.h">
       <Filter>commands\plugin</Filter>
     </ClInclude>
+    <ClInclude Include="externaltool\webbrowser\BrowserProfile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\Regex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\ImageConverter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\currency\CurrencyCommandParam.h">
+      <Filter>commands\currency</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\currency\AppSettingPageCurrency.h">
+      <Filter>commands\currency</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2386,6 +2410,12 @@
     </ClCompile>
     <ClCompile Include="commands\unitconvert\UnitConvertProvider.cpp">
       <Filter>commands\unitconvert</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\currency\CurrencyConvesionCommand.cpp">
+      <Filter>commands\currency</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\currency\CurrencyConvesionProvider.cpp">
+      <Filter>commands\currency</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\EmptyRecycleBinCommand.cpp">
       <Filter>commands\builtin</Filter>
@@ -3556,6 +3586,18 @@
     </ClCompile>
     <ClCompile Include="commands\plugin\PluginModule.cpp">
       <Filter>commands\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="externaltool\webbrowser\BrowserProfile.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\ImageConverter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\currency\CurrencyCommandParam.cpp">
+      <Filter>commands\currency</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\currency\AppSettingPageCurrency.cpp">
+      <Filter>commands\currency</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

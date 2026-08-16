@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-27 22:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/worksheet-jump.md:6
-msgid "![](../image/calc-sheet.gif)"
+msgid "![](../image/adhoc-command/worksheet-jump/example.gif)"
 msgstr ""
 
 #: ../../source/adhoc-command/worksheet-jump.md:8

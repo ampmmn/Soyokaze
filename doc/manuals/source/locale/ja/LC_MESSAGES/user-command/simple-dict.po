@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -84,7 +84,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/simple-dict.md:26
-msgid "![](../image/edit-simpledictcommand.png)"
+msgid "![](../image/user-command/simple-dict/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:28
@@ -290,7 +290,7 @@ msgid "Post Action :: Run Command"
 msgstr "実行する処理 - 他のコマンドを実行する"
 
 #: ../../source/user-command/simple-dict.md:88
-msgid "![](../image/edit-simpledictcommand-postfilter-command.png)"
+msgid "![](../image/user-command/simple-dict/postfilter-command.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:90
@@ -316,7 +316,7 @@ msgid "Post Action :: Run Program"
 msgstr "実行する処理 - プログラムを実行する"
 
 #: ../../source/user-command/simple-dict.md:97
-msgid "![](../image/edit-simpledictcommand-postfilter-subprocess.png)"
+msgid "![](../image/user-command/simple-dict/postfilter-subprocess.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:99
@@ -356,7 +356,7 @@ msgid "Post Action :: Copy to Clipboard"
 msgstr "実行する処理 - クリップボードにコピーする"
 
 #: ../../source/user-command/simple-dict.md:111
-msgid "![](../image/edit-simpledictcommand-postfilter-clipboard.png)"
+msgid "![](../image/user-command/simple-dict/postfilter-clipboard.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:114
@@ -369,26 +369,26 @@ msgstr "設定の手引き"
 
 #: ../../source/user-command/simple-dict.md:118
 msgid ""
-"Excelアプリケーションを起動し、辞書として利用したいワークシートを選択しておく   "
-"![](../image/simpledict_tebiki_step1.png)"
+"Excelアプリケーションを起動し、辞書として利用したいワークシートを選択しておく   ![](../image/user-command"
+"/simple-dict/tutorial-step-1.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:120
 msgid ""
-"Excel側でキーとして使うセル範囲を選択する。次に、本アプリ側でキー範囲取得ボタンを押す   "
-"![](../image/simpledict_tebiki_step2.png)"
+"Excel側でキーとして使うセル範囲を選択する。次に、本アプリ側でキー範囲取得ボタンを押す   ![](../image/user-command"
+"/simple-dict/tutorial-step-2.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:122
 msgid ""
-"Excel側で値として使うセル範囲を選択する。次に、本アプリ側で値範囲取得ボタンを押す   "
-"![](../image/simpledict_tebiki_step3.png)"
+"Excel側で値として使うセル範囲を選択する。次に、本アプリ側で値範囲取得ボタンを押す   ![](../image/user-command"
+"/simple-dict/tutorial-step-3.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:124
 msgid ""
-"`取得内容確認`ボタンを押下し、取得されるキーと値の内容を確認する   "
-"![](../image/simpledict_tebiki_step4.png)"
+"`取得内容確認`ボタンを押下し、取得されるキーと値の内容を確認する   ![](../image/user-command/simple-dict"
+"/tutorial-step-4.png)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:126
@@ -449,8 +449,8 @@ msgstr ""
 
 #: ../../source/user-command/simple-dict.md:150
 msgid ""
-"「せいてつ」というキーワードで会社名での絞り込みを行い、証券コードをクリップボードにコピーする "
-"![](../image/simple_dict_example2.gif)"
+"「せいてつ」というキーワードで会社名での絞り込みを行い、証券コードをクリップボードにコピーする ![](../image/user-command"
+"/simple-dict/example-2.gif)"
 msgstr ""
 
 #: ../../source/user-command/simple-dict.md:154

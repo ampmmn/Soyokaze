@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 13:39+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -38,7 +38,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/websearch.md:11
-msgid "![](../image/new-websearchcommand.png)"
+msgid "![](../image/user-command/web-search/new-command.png)"
 msgstr ""
 
 #: ../../source/user-command/websearch.md:13
@@ -70,7 +70,7 @@ msgstr ""
 #: ../../source/user-command/websearch.md:25
 msgid ""
 "`常に検索候補として表示する`   チェックすると、コマンド名を入力しなくても、検索ワードを入れるだけで候補として表示されるようになる   "
-"![](../image/shortcut-search.png)"
+"![](../image/user-command/web-search/shortcut-search.png)"
 msgstr ""
 
 #: ../../source/user-command/websearch.md:28
@@ -89,8 +89,8 @@ msgstr ""
 
 #: ../../source/user-command/websearch.md:33
 msgid ""
-"左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image"
-"/websearchcommand-contextmenu.png)"
+"左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/common/web-"
+"search-command-context-menu.png)"
 msgstr ""
 
 #: ../../source/user-command/websearch.md:36

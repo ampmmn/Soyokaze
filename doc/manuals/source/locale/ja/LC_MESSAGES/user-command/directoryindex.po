@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-12 09:53+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -51,7 +51,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/directoryindex.md:21
-msgid "![](../image/edit-directoryindexcommand.png)"
+msgid "![](../image/user-command/directory-index/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/directoryindex.md:24

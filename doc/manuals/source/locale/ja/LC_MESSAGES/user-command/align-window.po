@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -43,7 +43,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/align-window.md:13
-msgid "![](../image/edit-alignwindowcommand.png)"
+msgid "![](../image/user-command/align-window/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/align-window.md:15
@@ -121,7 +121,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/align-window.md:57
-msgid "![](../image/edit-alignwindowitemcommand.png)"
+msgid "![](../image/user-command/align-window/edit-item-command.png)"
 msgstr ""
 
 #: ../../source/user-command/align-window.md:59

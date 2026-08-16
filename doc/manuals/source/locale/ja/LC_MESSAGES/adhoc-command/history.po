@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -46,7 +46,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/history.md:12
-msgid "![](../image/history.png)"
+msgid "![](../image/adhoc-command/history/example.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/history.md:14

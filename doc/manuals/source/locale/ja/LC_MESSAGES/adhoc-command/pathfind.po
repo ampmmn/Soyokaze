@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/pathfind.md:9
-msgid "![](../image/pathfind.png)"
+msgid "![](../image/adhoc-command/pathfind/example.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/pathfind.md:12
@@ -45,7 +45,7 @@ msgid "また、`http:/...`または`https://...`で始まるURLを入力欄に�
 msgstr ""
 
 #: ../../source/adhoc-command/pathfind.md:14
-msgid "![](../image/adhoc-command/pathfind-url.png)"
+msgid "![](../image/adhoc-command/pathfind/url.png)"
 msgstr ""
 
 #~ msgid ""

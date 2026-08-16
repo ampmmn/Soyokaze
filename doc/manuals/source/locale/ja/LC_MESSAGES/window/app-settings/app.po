@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,131 +19,131 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/app.md:1
+#: ../../source/window/app-settings/app.md:2
 msgid "App"
 msgstr "基本"
 
-#: ../../source/window/app-settings/app.md:3
+#: ../../source/window/app-settings/app.md:4
 msgid "ランチャーの基本動作に関する設定画面   主に入力画面を表示する際の動作の設定を行う。"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:6
+#: ../../source/window/app-settings/app.md:7
 msgid "![](../../image/window/app-settings/app/setting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:8
+#: ../../source/window/app-settings/app.md:9
 msgid "`ランチャー呼び出しキー`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:9
+#: ../../source/window/app-settings/app.md:10
 msgid "入力画面を表示するためのホットキーを設定することができる"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:10
+#: ../../source/window/app-settings/app.md:11
 msgid "`入力画面を非表示にして起動する`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:11
+#: ../../source/window/app-settings/app.md:12
 msgid "起動直後に入力画面を表示しない"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:12
+#: ../../source/window/app-settings/app.md:13
 msgid "`入力画面を最前面に表示`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:13
+#: ../../source/window/app-settings/app.md:14
 msgid "入力画面を表示するとき、入力画面を他のウインドウより前面に表示するようにする"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:14
+#: ../../source/window/app-settings/app.md:15
 msgid "`入力画面の表示位置`   入力画面を表示するときの位置を以下の3つから選択できる"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:16
+#: ../../source/window/app-settings/app.md:17
 msgid "`前回の表示位置`   前回と同じ位置に入力画面を表示する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:18
+#: ../../source/window/app-settings/app.md:19
 msgid "`マウスカーソル位置`   入力画面を表示するタイミングでのマウスカーソル位置に入力画面を表示する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:20
+#: ../../source/window/app-settings/app.md:21
 msgid ""
 "`アクティブウインドウのモニター中央`   アクティブなウインドウが表示されているモニターの中央位置に入力画面を表示する   "
 "ただし、アクティブなウインドウがない場合は前回と同じ位置に表示する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:23
+#: ../../source/window/app-settings/app.md:24
 msgid "`すでにアクティブなときに呼び出しキーを押したら隠れる`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:24
+#: ../../source/window/app-settings/app.md:25
 msgid "ランチャー呼び出しキーを押すたびに入力画面の表示/非表示が切り替わる"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:25
+#: ../../source/window/app-settings/app.md:26
 msgid "`カーソル位置によるアクティブ切替`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:26
+#: ../../source/window/app-settings/app.md:27
 msgid "入力画面表示中、マウスカーソルが入力画面領域内へ移動した際に入力画面をアクティブ化し、領域外へ移動した際に非アクティブ化する。再度領域内へ移動した場合はアクティブ化する。"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:27
+#: ../../source/window/app-settings/app.md:28
 msgid "非アクティブなときに半透明化する設定と組み合わせることで、入力画面の後ろにある内容を確認できるようにする目的の機能"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:28
+#: ../../source/window/app-settings/app.md:29
 msgid "`フォーカスを失ったらウインドウを隠す`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:29
+#: ../../source/window/app-settings/app.md:30
 msgid "入力画面がフォーカスを失ったときに、入力画面を非表示にする"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:30
+#: ../../source/window/app-settings/app.md:31
 msgid "`隠れるときに入力文字列を消去しない`"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:31
+#: ../../source/window/app-settings/app.md:32
 msgid "コマンドを実行せずに入力画面を非表示にする際に入力文字列を消去しない"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:32
+#: ../../source/window/app-settings/app.md:33
 msgid "入力画面を次回再表示した際に、前回入力していた内容が維持される"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:34
+#: ../../source/window/app-settings/app.md:36
 msgid "App HotKey"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:36
+#: ../../source/window/app-settings/app.md:38
 msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:38
-msgid "![](../../image/hotkeyForApp.png)"
+#: ../../source/window/app-settings/app.md:40
+msgid "![](../../image/common/hotkey-for-app.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:40
+#: ../../source/window/app-settings/app.md:42
 msgid ""
 "`ホットキーを設定する`   修飾キー(`Alt` `Ctrl` `Shift` `Win`) + "
 "任意のキーを同時押しすることによりアプリを表示する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:42
+#: ../../source/window/app-settings/app.md:44
 msgid "`修飾キー`   修飾キーを選択するためのもの。"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:44
+#: ../../source/window/app-settings/app.md:46
 msgid "例: `Ctrl`のみチェックし、キーとして`A`を選択した場合   Ctrl+A"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:46
+#: ../../source/window/app-settings/app.md:48
 msgid "`キー`   文字を選択する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:48
+#: ../../source/window/app-settings/app.md:50
 msgid ""
 "`修飾キーの組み合わせ入力`   修飾キー(`Alt` `Ctrl` `Shift` "
 "`Win`)を二つ組み合わせ入力することによりアプリを表示する方式   "
@@ -151,10 +151,10 @@ msgid ""
 "`Ctrl`キーの2回押し、あるいは、`Ctrl`+`Alt`キーの同時押し"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:52
+#: ../../source/window/app-settings/app.md:54
 msgid "`一つ目の入力`   一つ目に入力する修飾キーを選択する"
 msgstr ""
 
-#: ../../source/window/app-settings/app.md:54
+#: ../../source/window/app-settings/app.md:56
 msgid "`二つ目の入力`   二つ目に入力する修飾キーを選択する"
 msgstr ""

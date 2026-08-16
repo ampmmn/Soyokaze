@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,7 @@ msgid "西暦(グレゴリオ暦)と和暦の相互変換機能。   変換結�
 msgstr ""
 
 #: ../../source/adhoc-command/eraname-converter.md:6
-msgid "![](../image/eranamelwjcommand.png)"
+msgid "![](../image/adhoc-command/eraname-converter/example.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/eraname-converter.md:8

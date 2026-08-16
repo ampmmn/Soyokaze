@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,44 +19,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/everything.md:1
+#: ../../source/window/app-settings/everything.md:2
 msgid "Extension > Everything"
 msgstr "拡張機能＞Everything"
 
-#: ../../source/window/app-settings/everything.md:3
-msgid "![](../../image/adhoc-command/everything-appsetting.png)"
+#: ../../source/window/app-settings/everything.md:4
+msgid "![](../../image/adhoc-command/everything/app-settings.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:5
+#: ../../source/window/app-settings/everything.md:6
 msgid "`機能を有効にする`   [Everything検索](/adhoc-command/everything)機能が有効にする。"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:7
+#: ../../source/window/app-settings/everything.md:8
 msgid "`プレフィックス`   検索を開始するためのキーワードを指定する。   空欄にすると、Everything検索が常に有効になる。"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:10
+#: ../../source/window/app-settings/everything.md:11
 msgid ""
 "`Everythingが起動していなかった場合に起動する`   Everythingのアプリが起動していなかった場合に起動を試みる。   "
 "(Everything検索を行うためにはEverythingのアプリが起動している必要がある)"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:13
+#: ../../source/window/app-settings/everything.md:14
 msgid "`Everything.exeのパス`    アプリを起動する際の実行ファイルのパスを指定する。"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:15
+#: ../../source/window/app-settings/everything.md:16
 msgid "`検索を実行する最小文字数`   その文字数以上のキーワードを入力したときに検索を行う。0を指定すると常に検索を行う。"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:17
+#: ../../source/window/app-settings/everything.md:18
 msgid "少ない文字数で検索を実行したときに以下の問題がある。これを回避するための設定"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:18
+#: ../../source/window/app-settings/everything.md:19
 msgid "たいていの場合ヒット件数が多くなる。結果、他の候補が隠れてしまう"
 msgstr ""
 
-#: ../../source/window/app-settings/everything.md:19
+#: ../../source/window/app-settings/everything.md:20
 msgid "一方で所望の結果が得られる可能性は低い"
 msgstr ""

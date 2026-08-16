@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -32,7 +32,7 @@ msgid "ファイルサーバ上にあるフォルダに何らかの変更があ�
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:7
-msgid "更新通知のイメージ   ![](../image/notify_watchpath.png)"
+msgid "更新通知のイメージ   ![](../image/user-command/watch-path/notification.png)"
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:10
@@ -40,7 +40,7 @@ msgid "設定画面"
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:12
-msgid "![](../image/edit-watchpathcommand.png)"
+msgid "![](../image/user-command/watch-path/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/watch-path.md:14

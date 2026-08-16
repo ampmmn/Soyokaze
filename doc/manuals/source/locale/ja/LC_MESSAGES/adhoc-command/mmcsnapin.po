@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,10 +34,10 @@ msgid "例: ディスクの管理"
 msgstr ""
 
 #: ../../source/adhoc-command/mmcsnapin.md:8
-msgid "![](../image/input-mmcsnapin.png)"
+msgid "![](../image/adhoc-command/mmcsnapin/input.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/mmcsnapin.md:10
-msgid "![](../image/window-diskmgr.png)"
+msgid "![](../image/adhoc-command/mmcsnapin/disk-manager.png)"
 msgstr ""
 

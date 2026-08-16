@@ -46,6 +46,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\explorepath\ExplorePathFileCacheTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\snippetgroup\SnippetGroupParamTest.cpp" />

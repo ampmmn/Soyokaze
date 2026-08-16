@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/filter.md:13
-msgid "![](../image/filtercommand.svg)"
+msgid "![](../image/user-command/filter/diagram.svg)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:15
@@ -42,7 +42,7 @@ msgid "登録したコマンド名を入力欄に入力すると、外部プロ�
 msgstr ""
 
 #: ../../source/user-command/filter.md:17
-msgid "![](../image/sample-filtercommand.png)"
+msgid "![](../image/user-command/filter/example.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:19
@@ -54,7 +54,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/filter.md:23
-msgid "![](../image/edit-filtercommand.png)"
+msgid "![](../image/user-command/filter/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:25
@@ -130,8 +130,8 @@ msgstr ""
 #: ../../source/user-command/filter.md:58
 msgid ""
 "`ホットキー`   [コマンドを呼び出すキー](/window/command-"
-"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   "
-"![](../image/hotkeyForCommand.png)"
+"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   ![](../image/common/hotkey-for-"
+"command.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:62
@@ -144,7 +144,7 @@ msgid "Run Program"
 msgstr "プログラムを実行する"
 
 #: ../../source/user-command/filter.md:66
-msgid "![](../image/edit-filtercommand-prefilter-subprocess.png)"
+msgid "![](../image/user-command/filter/prefilter-subprocess.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:68
@@ -183,7 +183,7 @@ msgid "Define Items Directly"
 msgstr "候補を定義する"
 
 #: ../../source/user-command/filter.md:85
-msgid "![](../image/edit-filtercommand-prefilter-constant.png)"
+msgid "![](../image/user-command/filter/prefilter-constant.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:87
@@ -203,7 +203,7 @@ msgid "Run Command"
 msgstr "他のコマンドを実行する"
 
 #: ../../source/user-command/filter.md:95
-msgid "![](../image/edit-filtercommand-postfilter-command.png)"
+msgid "![](../image/user-command/filter/postfilter-command.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:97
@@ -215,7 +215,7 @@ msgid "`パラメータ`   コマンドに渡すパラメータを指定する  
 msgstr ""
 
 #: ../../source/user-command/filter.md:105
-msgid "![](../image/edit-filtercommand-postfilter-subprocess.png)"
+msgid "![](../image/user-command/filter/postfilter-subprocess.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:109
@@ -235,7 +235,7 @@ msgid "Copy To Clipboard"
 msgstr "クリップボードにコピーする"
 
 #: ../../source/user-command/filter.md:120
-msgid "![](../image/edit-filtercommand-postfilter-copy.png)"
+msgid "![](../image/user-command/filter/postfilter-copy.png)"
 msgstr ""
 
 #: ../../source/user-command/filter.md:122

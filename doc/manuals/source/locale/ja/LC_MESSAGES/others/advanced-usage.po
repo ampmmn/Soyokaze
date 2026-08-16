@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -36,7 +36,7 @@ msgid "コマンド設定画面の`ホットキー`設定からキー割り当�
 msgstr ""
 
 #: ../../source/others/advanced-usage.md:9
-msgid "![](../image/hotkeyForCommand.png)"
+msgid "![](../image/common/hotkey-for-command.png)"
 msgstr ""
 
 #: ../../source/others/advanced-usage.md:12
@@ -51,6 +51,6 @@ msgid ""
 msgstr ""
 
 #: ../../source/others/advanced-usage.md:18
-msgid "![](../image/advanced/use-external-filer.png)"
+msgid "![](../image/advanced/external-filer/use-external-filer.png)"
 msgstr ""
 

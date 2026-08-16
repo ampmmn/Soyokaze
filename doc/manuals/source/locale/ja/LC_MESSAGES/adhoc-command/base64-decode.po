@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -32,7 +32,7 @@ msgid "例: `44GT44KT44Gr44Gh44Gv77yB` → `こんにちは！`"
 msgstr ""
 
 #: ../../source/adhoc-command/base64-decode.md:8
-msgid "![](../image/base64-decode-sample.png)"
+msgid "![](../image/adhoc-command/base64-decode/sample.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/base64-decode.md:10

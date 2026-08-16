@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -64,7 +64,7 @@ msgid "アプリ設定でプレビューウインドウの機能を有効にし�
 msgstr ""
 
 #: ../../source/adhoc-command/clipboard-history.md:26
-msgid "![](../image/adhoc-command/clipboardhistory-preview.png)"
+msgid "![](../image/adhoc-command/clipboard-history/preview.png)"
 msgstr ""
 
 #~ msgid "![](../image/clipboardhistory-prefix.png)"

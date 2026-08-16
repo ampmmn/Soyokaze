@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,7 +34,7 @@ msgid "General"
 msgstr "基本"
 
 #: ../../source/user-command/shellexecute.md:8
-msgid "![](../image/edit.png)"
+msgid "![](../image/user-command/shell-execute/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:10
@@ -89,14 +89,14 @@ msgstr ""
 #: ../../source/user-command/shellexecute.md:35
 msgid ""
 "`ホットキー`   [コマンドを呼び出すキー](/window/command-"
-"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   "
-"![](../image/hotkeyForCommand.png)"
+"hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   ![](../image/common/hotkey-for-"
+"command.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:39
 msgid ""
-"左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image"
-"/websearchcommand-contextmenu.png)"
+"左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/common/web-"
+"search-command-context-menu.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:42
@@ -121,7 +121,7 @@ msgid "Environment"
 msgstr "環境変数"
 
 #: ../../source/user-command/shellexecute.md:54
-msgid "![](../image/shellexec-envlist.png)"
+msgid "![](../image/user-command/shell-execute/environment-list.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:56
@@ -133,13 +133,15 @@ msgid "`追加する環境変数の一覧`     追加する環境変数のリス
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:61
-msgid "`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/shellexec-envadd.png)"
+msgid ""
+"`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/user-command/shell-execute"
+"/environment-add.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:64
 msgid ""
-"`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/shellexec-"
-"envedit.png)"
+"`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/user-command"
+"/shell-execute/environment-edit.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:67
@@ -148,8 +150,8 @@ msgstr ""
 
 #: ../../source/user-command/shellexecute.md:69
 msgid ""
-"`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/shellexec-"
-"envbulkadd.png)"
+"`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/user-command"
+"/shell-execute/environment-bulk-add.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:73
@@ -157,7 +159,7 @@ msgid "Others"
 msgstr "その他"
 
 #: ../../source/user-command/shellexecute.md:75
-msgid "![](../image/edit-detail.png)"
+msgid "![](../image/user-command/shell-execute/edit-detail.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:77

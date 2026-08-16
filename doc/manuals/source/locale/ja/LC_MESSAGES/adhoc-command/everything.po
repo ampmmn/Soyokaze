@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.43.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-07 07:39+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,7 @@ msgid "[Everything](https://www.voidtools.com/)の検索機能を利用して、
 msgstr ""
 
 #: ../../source/adhoc-command/everything.md:5
-msgid "![](../image/adhoc-command/everything-introduction.png)"
+msgid "![](../image/adhoc-command/everything/introduction.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/everything.md:7
@@ -64,7 +64,7 @@ msgid "初期状態は機能は有効になっている。 機能を使用しな
 msgstr ""
 
 #: ../../source/adhoc-command/everything.md:20
-msgid "![](../image/adhoc-command/everything-appsetting.png)"
+msgid "![](../image/adhoc-command/everything/app-settings.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/everything.md:22

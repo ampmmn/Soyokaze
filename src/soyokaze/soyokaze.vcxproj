@@ -492,6 +492,8 @@
     <ClInclude Include="commands\core\metrics\CommandRepositoryQueryRequestCountMetrics.h" />
     <ClInclude Include="commands\bookmarks\metrics\BookmarksAltBrowserItemCapacityMetrics.h" />
     <ClInclude Include="commands\bookmarks\metrics\BookmarksEdgeItemCapacityMetrics.h" />
+    <ClInclude Include="commands\currency\AppSettingPageCurrency.h" />
+    <ClInclude Include="commands\currency\CurrencyCommandParam.h" />
     <ClInclude Include="commands\decodestring\DecodeBase64Command.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolume.h" />
     <ClInclude Include="commands\ejectvolume\EjectVolumeCommand.h" />
@@ -597,6 +599,8 @@
     <ClInclude Include="commands\uiautomation\UIElementIndicatorWindow.h" />
     <ClInclude Include="commands\uiautomation\WindowUIElement.h" />
     <ClInclude Include="commands\uiautomation\WindowUIElements.h" />
+    <ClInclude Include="commands\currency\CurrencyConvesionCommand.h" />
+    <ClInclude Include="commands\currency\CurrencyConvesionProvider.h" />
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexAdhocCommand.h" />
     <ClInclude Include="commands\url_directoryindex\DirectoryIndexQueryResult.h" />
@@ -1042,6 +1046,8 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp" />
     <ClCompile Include="commands\common\UserCommandProviderBase.cpp" />
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
+    <ClCompile Include="commands\currency\AppSettingPageCurrency.cpp" />
+    <ClCompile Include="commands\currency\CurrencyCommandParam.cpp" />
     <ClCompile Include="commands\plugin\PluginCommand.cpp" />
     <ClCompile Include="commands\plugin\PluginModule.cpp" />
     <ClCompile Include="commands\plugin\PluginProvider.cpp" />
@@ -1356,6 +1362,8 @@
     <ClCompile Include="commands\specialfolderfiles\SpecialFolderFilesCommandProvider.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommand.cpp" />
     <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp" />
+    <ClCompile Include="commands\currency\CurrencyConvesionCommand.cpp" />
+    <ClCompile Include="commands\currency\CurrencyConvesionProvider.cpp" />
     <ClCompile Include="commands\unitconvert\InchAdhocCommand.cpp" />
     <ClCompile Include="commands\unitconvert\UnitConvertProvider.cpp" />
     <ClCompile Include="commands\uwp\UWPApplications.cpp" />

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -39,7 +39,7 @@ msgid "Description"
 msgstr "設定画面"
 
 #: ../../source/user-command/alias.md:10
-msgid "![](../image/edit-aliascommand.png)"
+msgid "![](../image/user-command/alias/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/alias.md:12
@@ -97,7 +97,8 @@ msgid ""
 "例えば、前セクションの設定画面の場合、`\"Windows Update > Windows "
 "Update\"`という文字列が入力欄に入力・実行される。   すると、`Windows "
 "Update`の設定画面を表示することができる。([Windowsの設定コマンド](/adhoc-command/windowssettings)"
-" を有効にしている必要あり)   ↓この画面   ![](../image/windows11-update.png)"
+" を有効にしている必要あり)   ↓この画面   ![](../image/user-command/alias/windows-"
+"update.png)"
 msgstr ""
 
 #: ../../source/user-command/alias.md:34

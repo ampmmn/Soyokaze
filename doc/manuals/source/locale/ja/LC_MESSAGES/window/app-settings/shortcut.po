@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,56 +19,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/shortcut.md:1
+#: ../../source/window/app-settings/shortcut.md:2
 msgid "App > Shortcut"
 msgstr "基本＞ショートカット登録"
 
-#: ../../source/window/app-settings/shortcut.md:3
+#: ../../source/window/app-settings/shortcut.md:4
 msgid "各種ショートカット登録をするための画面   いずれもチェックすると登録され、チェックを外すと登録が解除される"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:6
+#: ../../source/window/app-settings/shortcut.md:7
 msgid "![](../../image/window/app-settings/shortcut/setting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:8
+#: ../../source/window/app-settings/shortcut.md:9
 msgid "`「送る」から登録できるようにする`"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:9
+#: ../../source/window/app-settings/shortcut.md:10
 msgid ""
 "本アプリにコマンドを登録するためのメニューが、エクスプローラのコンテキストメニューの「送る」に追加される "
-"![](../../image/sendto.png)"
-msgstr ""
-
-#: ../../source/window/app-settings/shortcut.md:12
-msgid "`スタートメニューに登録する`"
+"![](../../image/common/send-to.png)"
 msgstr ""
 
 #: ../../source/window/app-settings/shortcut.md:13
+msgid "`スタートメニューに登録する`"
+msgstr ""
+
+#: ../../source/window/app-settings/shortcut.md:14
 msgid "本アプリを起動するためのメニューがスタートメニューに登録される"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:15
+#: ../../source/window/app-settings/shortcut.md:16
 msgid "`デスクトップに登録する`"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:16
+#: ../../source/window/app-settings/shortcut.md:17
 msgid "本アプリを起動するためのショートカットがデスクトップに配置される"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:18
+#: ../../source/window/app-settings/shortcut.md:19
 msgid "`スタートアップに登録する`"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:19
+#: ../../source/window/app-settings/shortcut.md:20
 msgid "Windowsにログオン(サインイン)した後に自動で本アプリを起動する"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:21
+#: ../../source/window/app-settings/shortcut.md:22
 msgid "`作成したショートカットをすべて削除する`"
 msgstr ""
 
-#: ../../source/window/app-settings/shortcut.md:22
+#: ../../source/window/app-settings/shortcut.md:23
 msgid "上記で作成したショートカットをすべて削除する"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/winscp.md:1
+#: ../../source/window/app-settings/winscp.md:2
 msgid "Extension > WinSCP"
 msgstr "拡張機能＞WinSCP"
 
-#: ../../source/window/app-settings/winscp.md:3
-msgid "![](../../image/adhoc-command/winscp-appsetting.png)"
+#: ../../source/window/app-settings/winscp.md:4
+msgid "![](../../image/adhoc-command/winscp/app-settings.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/winscp.md:5
+#: ../../source/window/app-settings/winscp.md:6
 msgid "`機能を有効にする`   [WinSCPのセッション一覧を表示する](/adhoc-command/winscp)機能を有効にする。"
 msgstr ""
 
-#: ../../source/window/app-settings/winscp.md:7
+#: ../../source/window/app-settings/winscp.md:8
 msgid ""
 "`ポータブル版のWinSCPを利用する`   インストール版のWinSCPではなく、ポータブル版のWinSCPを使用している場合に使用する設定。"
 "   `WinSCP.exeのパス`欄で指定した実行ファイルを用いる。"
 msgstr ""
 
-#: ../../source/window/app-settings/winscp.md:10
+#: ../../source/window/app-settings/winscp.md:11
 msgid "`WinSCP.exeのパス`   ポータブル版のWinSCPを使用している場合の`WinSCP.exe`のパスを指定する。"
 msgstr ""

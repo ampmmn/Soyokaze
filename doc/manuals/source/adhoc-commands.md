@@ -15,6 +15,7 @@ adhoc-command/char-escape.md
 adhoc-command/clipboard-history.md
 adhoc-command/colorcode-converter.md
 adhoc-command/controlpanel.md
+adhoc-command/currency-converter.md
 adhoc-command/env.md
 adhoc-command/eraname-converter.md
 adhoc-command/everything.md

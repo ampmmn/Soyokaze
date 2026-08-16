@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:8
-msgid "![](../image/adhoc-command/calculator1.png)"
+msgid "![](../image/adhoc-command/calculator/basic.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:10
@@ -146,7 +146,7 @@ msgid "その他、Python標準関数のうち、計算結果が文字列/数値
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:30
-msgid "![](../image/calculator2.png)"
+msgid "![](../image/adhoc-command/calculator/functions.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:32
@@ -158,7 +158,7 @@ msgid "計算結果が整数になる場合は、2進数/8進数/10進数/16進�
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:36
-msgid "![](../image/adhoc-command/calculator2.png)"
+msgid "![](../image/adhoc-command/calculator/radix.png)"
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md:38

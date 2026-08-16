@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-16 12:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:8
-msgid "![](../image/usage/firstscreen.png)"
+msgid "![](../image/usage/first-screen/first-screen.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:10
@@ -42,7 +42,7 @@ msgid "また、タスクトレイにアイコンが表示される。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:12
-msgid "![](../image/tasktray-icon.png)"
+msgid "![](../image/common/tasktray-icon.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:14
@@ -56,11 +56,11 @@ msgid ""
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:18
-msgid "`exit`コマンドを実行   ![](../image/exit-app1.png)"
+msgid "`exit`コマンドを実行   ![](../image/usage/how-to-use/exit-from-command.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:21
-msgid "タスクトレイからの終了   ![](../image/exit-app2.png)"
+msgid "タスクトレイからの終了   ![](../image/usage/how-to-use/exit-from-tray.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:25
@@ -72,7 +72,7 @@ msgid "アプリが起動している状態でランチャー呼び出しキー(
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:29
-msgid "![](../image/input-window-parts.png)"
+msgid "![](../image/usage/how-to-use/window-parts.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:31
@@ -158,7 +158,7 @@ msgid "入力画面にキーワードを入力して`Enter⏎`キーを押下す
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:60
-msgid "![](../image/usage-run-keyword.png)"
+msgid "![](../image/usage/how-to-use/run-keyword.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:62
@@ -208,13 +208,15 @@ msgid "入力画面から`new`コマンドを実行すると、[コマンドの�
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:82
-msgid "![](../image/input-new.png)   ↓   ![](../image/commandtype.png)"
+msgid ""
+"![](../image/usage/how-to-use/new-command.png) ↓   ![](../image/common"
+"/command-type.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:86
 msgid ""
 "コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。   ↓※ 通常コマンドのコマンド編集画面"
-"   ![](../image/new-normalcommand.png)"
+"   ![](../image/usage/how-to-use/new-normal-command.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:90
@@ -228,7 +230,7 @@ msgstr "registerwinコマンドで登録する"
 #: ../../source/usage/how_to_use.md:94
 msgid ""
 "入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。   ↓"
-"   ![](../image/registwin.png)"
+"   ![](../image/usage/how-to-use/register-window.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:98
@@ -238,7 +240,7 @@ msgstr "対象ウインドウをキャプチャして登録する"
 #: ../../source/usage/how_to_use.md:100
 msgid ""
 "入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。   ↓   "
-"![](../image/registringDragDrop.gif)"
+"![](../image/usage/how-to-use/register-by-drag-drop.gif)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:104
@@ -254,7 +256,7 @@ msgstr ""
 #: ../../source/usage/how_to_use.md:108
 msgid ""
 "登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される"
-"   ↓   ![](../image/sendto.png)"
+"   ↓   ![](../image/common/send-to.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:112
