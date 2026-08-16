@@ -6,7 +6,7 @@
 
 ホットキーで入力画面を表示し、キーワードを入力するだけで、登録したコマンドや各種検索結果を候補から実行できます。
 
-![画面](image/introduction.gif)
+![画面](image/introduction/overview.gif)
 
 - ホットキーを押すと入力画面が表示される。キーワードを入力することにより、さまざまな操作をすばやく行うことができる。
 
@@ -81,19 +81,19 @@
 
 ### 入力画面
 
-![](image/input-window.png)
+![](image/window/input-window/input.png)
 
 ### キーワードマネージャ
 
-![](image/keywordmanager.png)
+![](image/window/keyword-manager/keyword-manager.png)
 
 ### コマンド登録・編集画面
 
-![](image/edit.png)
+![](image/user-command/shell-execute/edit-command.png)
 
 ### 設定画面
 
-![](image/setting.png)
+![](image/window/app-settings/app/setting.png)
 
 
 ## 詳しい使い方・マニュアル
