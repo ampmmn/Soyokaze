@@ -51,6 +51,9 @@
 - [simdutf/simdutf](https://github.com/simdutf/simdutf)
   - Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している
 
+- [biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)
+  - YAMLファイルをパースするために利用している
+
 ```
 
 ```{only} not soyokaze

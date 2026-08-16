@@ -19,3 +19,6 @@
 [submodule "externals/simdutf"]
 	path = externals/simdutf
 	url = https://github.com/simdutf/simdutf.git
+[submodule "externals/rapidyaml"]
+	path = externals/rapidyaml
+	url = https://github.com/biojppm/rapidyaml.git

@@ -160,6 +160,14 @@ jobs:
         # build(Release)
         cmake --build . --config Release
 
+    - name: Build rapidyaml
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/rapidyaml
+        # setup build directory
+        cmd /c "if not exist build mkdir -p include\\rapidyaml"
+        python tools/amalgamate.py --c4core --fastfloat --stl include/rapidyaml/rapidyaml.hpp
+
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).

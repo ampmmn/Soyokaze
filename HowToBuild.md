@@ -52,6 +52,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - [simdutf/simdutf](https://github.com/simdutf/simdutf)
   - UTF-8,UTF-16の相互変換とBase64デコードで使用している
 
+- [biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)
+  - YAMLファイルをパースするために利用している
+
 ### 外部ライブラリの配置
 
 - nlohmann-json
@@ -75,9 +78,12 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - scintilla/lexilla
   - https://www.scintilla.org/ からソース一式を取得する
     - リポジトリにヘッダファイルを同梱しているため、作業は不要
-- simdutf/simdutf
+- simdutf
   - https://github.com/simdutf/simdutf からソース一式を取得する
     - `externals`ディレクトリに`simdutf`を配置する
+- rapidyaml/simdutf
+  - https://github.com/biojppm/rapidyaml からソース一式を取得する
+    - `externals`ディレクトリに`rapidyaml`を配置する
 
 - `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -101,6 +107,7 @@ soyokaze-src/
     scintilla/
     lexilla/
     simdutf/
+    rapidyaml/
 ```
 
 ### spdlogのビルド
@@ -261,6 +268,15 @@ cmake -DCMAKE_RELEASE_POSTFIX=rtst -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ..
 cmake --build . --config Release
 ```
 
+### rapidyamlのビルド
+
+配置した`rapidyaml`を下記コマンドを実行してシングルヘッダ版のライブラリを生成する
+
+```
+cd externals/rapidyaml
+mkdir -p include\rapidyaml
+python tools/amalgamate.py --c4core --fastfloat --stl include/rapidyaml/rapidyaml.hpp
+```
 
 ## ソリューション構成
 
