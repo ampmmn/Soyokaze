@@ -38,7 +38,7 @@ msgid "Windows10 64bit"
 msgstr ""
 
 #: ../../source/usage/setup.md:12
-msgid "Doanload"
+msgid "Download"
 msgstr ""
 
 #: ../../source/usage/setup.md:15

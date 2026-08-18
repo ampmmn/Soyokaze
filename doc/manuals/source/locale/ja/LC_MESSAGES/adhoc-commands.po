@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../../source/adhoc-commands.md:1
 msgid "Implicitly Executable Features"
-msgstr "コマンドとして登録していなくても実行できる機能"
+msgstr "登録しなくても使える機能"
 
 #: ../../source/adhoc-commands.md:3
 msgid ""

@@ -115,7 +115,7 @@ msgstr ""
 
 #: ../../source/window/app-settings/app.md:36
 msgid "App HotKey"
-msgstr ""
+msgstr "ランチャー呼び出しキーの設定"
 
 #: ../../source/window/app-settings/app.md:38
 msgid "ランチャーアプリの入力ウインドウを呼び出すためのキー設定画面"
