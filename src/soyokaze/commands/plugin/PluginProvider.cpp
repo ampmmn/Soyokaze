@@ -139,7 +139,17 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 		}
 		mIsLoaded = true;
 
-		Path pluginsPath(Path::APPDIR, _T("plugins"));
+		// 実行ファイル側のプラグインを優先してロードする
+		LoadPlugins(Path(Path::MODULEFILEDIR, _T("plugins")));
+		LoadPlugins(Path(Path::APPDIR, _T("plugins")));
+	}
+
+	/**
+	  指定されたpluginsディレクトリ以下のプラグインをロードする
+	  @param[in] pluginsPath プラグインディレクトリ
+	*/
+	void LoadPlugins(const Path& pluginsPath)
+	{
 		if (pluginsPath.IsDirectory() == false) {
 			SPDLOG_WARN(_T("Plugin directory does not exist: {}"), (LPCTSTR)pluginsPath);
 			return;
