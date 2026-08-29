@@ -30,6 +30,7 @@
 |[pathconvert](./pathconvert)|パス変換系コマンド<br>(file:///...や/c/path/to/file... とローカルパスの相互変換)|
 |[pathfind](./pathfind)|アプリ内の`ファイル名を指定して実行`コマンド。<br>環境変数PATH以下にある`exe`ファイル、またはURLをランチャーから実行するコマンド|
 |[presentation](./presentation)|PowerPointプレゼンテーション上のスライドタイトルでジャンプするコマンド|
+|[plugin](./plugin)|DLLプラグインをAdhoc Commandとして扱う機能|
 |[regexp](./regexp)|正規表現コマンド|
 |[shellexecute](./shellexecute)|通常コマンド|
 |[simple_dict](./simple_dict)|簡易辞書コマンド|
