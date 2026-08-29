@@ -589,13 +589,12 @@ int GetIcon(LNCRPLUGINMATCHHANDLE handle, int index, HICON* icon)
 	const Entry* entry = nullptr;
 	if (!GetEntry(handle, index, entry)) return 1;
 	std::lock_guard<std::mutex> lock(gMutex);
-	if (!entry->icon) {
-		SHFILEINFOW info{};
-		const DWORD attributes = entry->directory ? FILE_ATTRIBUTE_DIRECTORY : 0;
-		SHGetFileInfoW(ToWide(entry->path).c_str(), attributes, &info, sizeof(info),
-			SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
-		const_cast<Entry*>(entry)->icon = info.hIcon;
+	if (entry->icon && gFunctions.HasIcon && gFunctions.HasIcon(entry->icon)) {
+		*icon = entry->icon;
+		return 0;
 	}
+	if (!gFunctions.LoadIconFromPath) return 1;
+	const_cast<Entry*>(entry)->icon = gFunctions.LoadIconFromPath(entry->path.c_str());
 	*icon = entry->icon;
 	return entry->icon ? 0 : 1;
 }
@@ -664,7 +663,7 @@ void FinalizeApi()
 {
 	if (gIndexThread.joinable()) gIndexThread.join();
 	std::lock_guard<std::mutex> lock(gMutex);
-	for (auto& entry : gEntries) if (entry.icon) { DestroyIcon(entry.icon); entry.icon = nullptr; }
+	for (auto& entry : gEntries) entry.icon = nullptr;
 	gEntries.clear(); gWorkspaces.clear(); gFunctions = LAUNCHER_FUNCTION_TABLE();
 	gReady = false; gInitialized = false;
 }
