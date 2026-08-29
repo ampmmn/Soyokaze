@@ -10,6 +10,8 @@ DLLとして実装されたプラグインを、SoyokazeのAdhoc Commandとし�
 |`PluginProvider.h/.cpp`|プラグインDLLのロードと検索結果からのコマンド生成|
 |`PluginCommand.h/.cpp`|プラグインの検索結果1件をSoyokazeのCommandとして扱う|
 |`PluginModule.h/.cpp`|DLLハンドルとエクスポートテーブルの所有および解放|
+|`PluginSettings.h/.cpp`|プラグインごとの有効状態と優先度の管理|
+|`AppSettingPagePlugins.h/.cpp`|プラグイン設定画面の表示と編集|
 
 ## クラス構成
 
@@ -22,6 +24,8 @@ class "PluginProvider::PImpl" as PluginProviderPImpl
 class PluginModule
 class PluginCommand
 class PluginAction
+class PluginSettings
+class AppSettingPagePlugins
 class "AdhocCommandProviderBase" as AdhocCommandProviderBase
 class "AdhocCommandBase" as AdhocCommandBase
 class "LNCRPLUGIN_EXPORTTABLE" as PluginExportTable
@@ -30,6 +34,7 @@ class "LNCRPLUGINMATCHHANDLE" as PluginMatchHandle
 PluginProvider --|> AdhocCommandProviderBase
 PluginProvider *-- PluginProviderPImpl
 PluginProviderPImpl o-- "0..*" PluginModule
+PluginProviderPImpl ..> PluginSettings : 設定参照
 PluginModule *-- PluginExportTable
 PluginProvider ..> PluginCommand : 生成
 PluginCommand --|> AdhocCommandBase
@@ -37,6 +42,8 @@ PluginCommand o-- PluginModule
 PluginCommand o-- PluginMatchHandle
 PluginCommand ..> PluginAction : 生成
 PluginAction ..> PluginExportTable : Execute
+AppSettingPagePlugins ..> PluginSettings : 編集
+AppSettingPagePlugins ..> PluginProvider : プラグイン一覧取得
 
 note right of PluginMatchHandle
 PluginMatchPtrで共有し、
@@ -53,9 +60,24 @@ Adhoc Command Providerとして登録されるクラス。インスタンスは1
 - プラグインDLLをロードし、`LNCRPLUGIN_EXPORTTABLE`を取得する
 - プラグインへSoyokaze側のログ・通知・ウインドウ取得関数を渡す
 - 入力パターンをプラグインへ渡し、検索結果から`PluginCommand`を生成する
+- プラグイン設定に基づいて検索順を並べ替え、無効なプラグインを検索対象から除外する
 - アプリ終了時にプラグインを解放する
 
-`PImpl`は`AppPreferenceListenerIF`を実装しているが、設定変更時のプラグイン再ロードは行わない。
+`PImpl`は`AppPreferenceListenerIF`を実装しており、アプリ設定の変更通知を受けるとプラグイン設定を再読み込みする。
+
+### PluginSettings
+
+プラグインごとの設定を管理するクラス。設定はプラグイン情報の`pluginId`をキーとして管理し、アプリケーションデータディレクトリの`plugin.dat`に保存する。
+
+- `mIsEnabled`でプラグインの有効/無効を管理する。無効なプラグインもDLLはロードするが、コマンド検索からは除外する
+- `mPriority`で検索時の優先度を管理する。0以上の値を指定し、値が大きいプラグインから先に検索する
+- 設定が存在しないプラグインは、有効、優先度0として扱う
+
+### AppSettingPagePlugins
+
+アプリ設定画面からプラグイン設定を編集するためのページ。プラグインの有効状態、表示名、優先度、バージョン、説明を一覧表示する。
+
+優先度変更と有効/無効の切り替えは一時的な設定へ反映し、設定画面でOKを選択したときに`plugin.dat`へ保存する。キャンセルした場合は変更を破棄する。
 
 ### PluginModule
 
@@ -133,6 +155,8 @@ end
 
 `PluginProvider::QueryAdhocCommands`は、Soyokazeの`Pattern`を`MatcherContext`に格納してプラグインへ渡す。
 プラグインは`MATCHER_FUNCTION_TABLE`の関数を通じて、入力文字列の比較や単語情報の取得を行う。
+
+検索前にプラグインを優先度の降順で並べ替える。同じ優先度のプラグインはロード順を維持する。無効に設定されたプラグインには`Query`を呼び出さず、検索結果へ含めない。
 
 プラグインが返した検索ハンドルは、複数の`PluginCommand`で共有できるように`PluginMatchPtr`で管理する。
 最後の`PluginCommand`がハンドルを解放するとき、カスタムデリータからプラグインの`CloseHandle`を呼び出す。

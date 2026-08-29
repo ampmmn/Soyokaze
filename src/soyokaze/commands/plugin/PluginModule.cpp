@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PluginModule.h"
+#include "utility/CharConverter.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -9,6 +10,23 @@
 namespace launcherapp {
 namespace commands {
 namespace plugin {
+
+namespace {
+CString GetInfoString(const nlohmann::json& info, const char* key)
+{
+	if (info.contains(key) == false || info[key].is_string() == false) {
+		return _T("");
+	}
+	CString result;
+	UTF2UTF(info[key].get<std::string>(), result);
+	return result;
+}
+}
+
+CString PluginModule::GetId() const { return GetInfoString(mPluginInfo, "pluginId"); }
+CString PluginModule::GetDisplayName() const { return GetInfoString(mPluginInfo, "displayName"); }
+CString PluginModule::GetVersion() const { return GetInfoString(mPluginInfo, "pluginVersion"); }
+CString PluginModule::GetDescription() const { return GetInfoString(mPluginInfo, "pluginDescription"); }
 
 
 /**

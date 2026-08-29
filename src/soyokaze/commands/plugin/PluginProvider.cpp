@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PluginProvider.h"
 #include "PluginCommand.h"
+#include "PluginSettings.h"
 #include "SharedHwnd.h"
 #include "app/LauncherApp.h"
 #include "icon/IconLoader.h"
@@ -18,6 +19,10 @@
 namespace launcherapp {
 namespace commands {
 namespace plugin {
+
+namespace {
+PluginProvider* gPluginProvider{nullptr};
+}
 
 namespace {
 
@@ -230,6 +235,7 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("PluginProvider"));
+		PluginSettings::GetInstance()->Load();
 	}
 
 	~PImpl() override
@@ -244,8 +250,12 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppFirstBoot() override {}
 	// 通常起動時の処理はない。
 	void OnAppNormalBoot() override {}
-	// 設定変更時の再読み込みは行わない。
-	void OnAppPreferenceUpdated() override {}
+	void OnAppPreferenceUpdated() override
+	{
+		PluginSettings::GetInstance()->Load();
+		std::lock_guard<std::mutex> lock(mMutex);
+		SortPlugins();
+	}
 
 	/**
 	  アプリ終了時にプラグインを解放する
@@ -271,6 +281,15 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 		// 実行ファイル側のプラグインを優先してロードする。
 		LoadPlugins(Path(Path::MODULEFILEDIR, _T("plugins")));
 		LoadPlugins(Path(Path::APPDIR, _T("plugins")));
+		SortPlugins();
+	}
+
+	void SortPlugins()
+	{
+		const PluginSettings* settings = PluginSettings::GetInstance();
+		std::stable_sort(mPlugins.begin(), mPlugins.end(), [settings](const PluginModulePtr& left, const PluginModulePtr& right) {
+			return settings->Get(right->GetId()).mPriority < settings->Get(left->GetId()).mPriority;
+		});
 	}
 
 	/**
@@ -390,6 +409,7 @@ REGISTER_COMMANDPROVIDER(PluginProvider)
 */
 PluginProvider::PluginProvider() : in(std::make_unique<PImpl>())
 {
+	gPluginProvider = this;
 }
 
 /**
@@ -397,6 +417,21 @@ PluginProvider::PluginProvider() : in(std::make_unique<PImpl>())
 */
 PluginProvider::~PluginProvider()
 {
+	if (gPluginProvider == this) {
+		gPluginProvider = nullptr;
+	}
+}
+
+PluginProvider* PluginProvider::GetInstance()
+{
+	return gPluginProvider;
+}
+
+void PluginProvider::EnumPlugins(std::vector<PluginModulePtr>& plugins)
+{
+	in->LoadPlugins();
+	std::lock_guard<std::mutex> lock(in->mMutex);
+	plugins = in->mPlugins;
 }
 
 /**
@@ -432,8 +467,12 @@ void PluginProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& 
 	};
 	MatcherContext context{pattern, {}, {}};
 	std::lock_guard<std::mutex> lock(in->mMutex);
+	in->SortPlugins();
 
 	for (const auto& plugin : in->mPlugins) {
+		if (PluginSettings::GetInstance()->Get(plugin->GetId()).mIsEnabled == false) {
+			continue;
+		}
 		// 検索ハンドルは複数のPluginCommandで共有し、最後にCloseHandleする。
 		LNCRPLUGINMATCHHANDLE handle = plugin->mExportTable.Query(&context, &matcherTable);
 		if (handle == nullptr) {

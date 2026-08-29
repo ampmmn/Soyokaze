@@ -573,6 +573,7 @@
 #define IDC_EDIT_TITLE                  1230
 #define IDD_APPSETTING_CURRENCYCONVERSION 1230
 #define IDC_CHECK_ENABLEMENUITEM        1231
+#define IDD_APPSETTING_PLUGINS          1231
 #define IDC_CHECK_ENABLEMENUITEM2       1232
 #define IDC_CHECK_ENABLEPROPPAGES       1232
 #define IDC_CHECK_ACTIVEWINDOW          1232
@@ -592,6 +593,8 @@
 #define IDC_RADIO_RUN                   1244
 #define IDC_RADIO_PASTE                 1245
 #define IDC_STATIC_PARAMHELP3           1246
+#define IDC_LIST_PLUGINS                1248
+#define IDC_BUTTON_PREFERENCE           1249
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777
@@ -604,7 +607,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1248
+#define _APS_NEXT_CONTROL_VALUE         1250
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

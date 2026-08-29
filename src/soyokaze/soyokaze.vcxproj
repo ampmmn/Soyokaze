@@ -542,8 +542,10 @@
     <ClInclude Include="commands\mmc\MMCSnapins.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommand.h" />
     <ClInclude Include="commands\mssettings\MSSettingsCommandProvider.h" />
+    <ClInclude Include="commands\plugin\AppSettingPagePlugins.h" />
     <ClInclude Include="commands\plugin\PluginCommand.h" />
     <ClInclude Include="commands\plugin\PluginModule.h" />
+    <ClInclude Include="commands\plugin\PluginSettings.h" />
     <ClInclude Include="commands\plugin\PluginProvider.h" />
     <ClInclude Include="..\plugins\include\PluginExportTable.h" />
     <ClInclude Include="commands\onenote\AppSettingPageOneNote.h" />
@@ -1048,6 +1050,8 @@
     <ClCompile Include="commands\core\CommandFileEntry.cpp" />
     <ClCompile Include="commands\currency\AppSettingPageCurrency.cpp" />
     <ClCompile Include="commands\currency\CurrencyCommandParam.cpp" />
+    <ClCompile Include="commands\plugin\AppSettingPagePlugins.cpp" />
+    <ClCompile Include="commands\plugin\PluginSettings.cpp" />
     <ClCompile Include="commands\plugin\PluginCommand.cpp" />
     <ClCompile Include="commands\plugin\PluginModule.cpp" />
     <ClCompile Include="commands\plugin\PluginProvider.cpp" />

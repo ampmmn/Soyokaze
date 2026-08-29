@@ -22,6 +22,11 @@ struct PluginModule
 	HMODULE mModule{nullptr};
 	LNCRPLUGIN_EXPORTTABLE mExportTable{};
 	nlohmann::json mPluginInfo{};
+
+	CString GetId() const;
+	CString GetDisplayName() const;
+	CString GetVersion() const;
+	CString GetDescription() const;
 };
 
 using PluginModulePtr = std::shared_ptr<PluginModule>;

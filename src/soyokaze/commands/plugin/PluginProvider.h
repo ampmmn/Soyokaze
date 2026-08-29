@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandProviderBase.h"
 #include "commands/core/CommandProviderIF.h"
 #include <memory>
+#include "PluginModule.h"
 
 namespace launcherapp {
 namespace commands {
@@ -22,6 +23,7 @@ private:
 	~PluginProvider() override;
 
 public:
+	static PluginProvider* GetInstance();
 	/**
 	  プラグインコマンドプロバイダの名前を取得する
 	  @return プロバイダ名
@@ -43,6 +45,7 @@ public:
 	  @return 列挙した表示名の数
 	*/
 	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
+	void EnumPlugins(std::vector<PluginModulePtr>& plugins);
 
 	DECLARE_COMMANDPROVIDER(PluginProvider)
 

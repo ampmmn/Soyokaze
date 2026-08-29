@@ -2025,6 +2025,9 @@
     <ClInclude Include="commands\plugin\PluginModule.h">
       <Filter>commands\plugin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\plugin\PluginSettings.h">
+      <Filter>commands\plugin</Filter>
+    </ClInclude>
     <ClInclude Include="externaltool\webbrowser\BrowserProfile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -2039,6 +2042,9 @@
     </ClInclude>
     <ClInclude Include="commands\currency\AppSettingPageCurrency.h">
       <Filter>commands\currency</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\plugin\AppSettingPagePlugins.h">
+      <Filter>commands\plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3598,6 +3604,12 @@
     </ClCompile>
     <ClCompile Include="commands\currency\AppSettingPageCurrency.cpp">
       <Filter>commands\currency</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\plugin\AppSettingPagePlugins.cpp">
+      <Filter>commands\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\plugin\PluginSettings.cpp">
+      <Filter>commands\plugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
