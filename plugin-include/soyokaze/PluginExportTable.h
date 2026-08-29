@@ -24,6 +24,9 @@ typedef void* LNCRPLUGINMATCHHANDLE;
 // ランチャー本体の機能
 typedef void (*LPFUNCPRINTMSG)(const char* msg);
 typedef HWND (*LPFUNCMAINWINDOWHANDLE)(void);
+typedef HICON (*LPFUNCLOADICONFROMPATH)(const char* path);
+typedef HICON (*LPFUNCLOADEXTENSIONICON)(const char* file_ext);
+typedef int (*LPFUNCHASICON)(HICON icon);
 
 // プラグインからランチャー本体機能にアクセスするための関数テーブル
 // Initializeでこの関数テーブルを渡す。プラグインは渡された関数ポインタを保持して起き、必要に応じて関数を利用する。
@@ -40,6 +43,12 @@ typedef struct _LAUNCHER_FUNCTION_TABLE
 	LPFUNCPRINTMSG PopupMessage;
 	// メインウインドウのハンドルを取得する
 	LPFUNCMAINWINDOWHANDLE GetMainWindowHandle;
+	// ファイルパスに関連付けられたアイコンを取得する。引数はUTF-8文字列。
+	LPFUNCLOADICONFROMPATH LoadIconFromPath;
+	// ファイル拡張子に関連付けられたアイコンを取得する。引数はUTF-8文字列。
+	LPFUNCLOADEXTENSIONICON LoadExtensionIcon;
+	// 指定したアイコンが本体側で管理されているか確認する。0:false、1:true。
+	LPFUNCHASICON HasIcon;
 
 } LAUNCHER_FUNCTION_TABLE;
 

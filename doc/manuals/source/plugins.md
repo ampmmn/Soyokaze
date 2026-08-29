@@ -267,8 +267,12 @@ void Finalize(void);
 |`ErrorLog`|エラーログを出力する|
 |`PopupMessage`|トースト通知を表示する|
 |`GetMainWindowHandle`|メインウィンドウの`HWND`を取得する|
+|`LoadIconFromPath`|ファイルパスに関連付けられたアイコンを取得する|
+|`LoadExtensionIcon`|ファイル拡張子に関連付けられたアイコンを取得する|
+|`HasIcon`|アイコンが本体側で管理されているか確認する|
 
 ログ出力関数と`PopupMessage`は、UTF-8文字列を受け取ります。
+`LoadIconFromPath`と`LoadExtensionIcon`の引数もUTF-8文字列です。取得したアイコンは本体側が所有するため、プラグイン側で破棄しないでください。
 
 ```cpp
 static LAUNCHER_FUNCTION_TABLE gLauncher{};
@@ -460,6 +464,8 @@ LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table)
 - `GetMatchCount`が返す件数と、各APIに渡される`index`の範囲を一致させる
 - 文字列はUTF-8で返し、必要なバッファ長には終端文字を含める
 - `GetIcon`で返したアイコンはプラグイン側で破棄する
+- `LoadIconFromPath`と`LoadExtensionIcon`で返したアイコンは本体側で管理されるため、プラグイン側で破棄しない
+- `HasIcon`の戻り値は、管理対象の場合が1、管理対象外の場合が0
 - `Execute`の戻り値は、成功時だけ0にする
 - `Finalize`から戻った後にプラグインのリソースを参照しない
 - APIのバージョンが合わない場合は`LNCRPLUGIN_Bind`でエラーを返す

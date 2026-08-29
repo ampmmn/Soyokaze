@@ -3,6 +3,7 @@
 #include "PluginCommand.h"
 #include "SharedHwnd.h"
 #include "app/LauncherApp.h"
+#include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "utility/Path.h"
@@ -176,6 +177,40 @@ HWND GetMainWindowHandle()
 }
 
 /**
+  ファイルパスに関連付けられたアイコンを取得する
+  @param[in] path UTF-8でエンコードされたファイルパス
+  @return アイコンハンドル
+*/
+HICON LoadIconFromPath(const char* path)
+{
+	CString pathString;
+	UTF2UTF(std::string(path ? path : ""), pathString);
+	return IconLoader::Get()->LoadIconFromPath(pathString);
+}
+
+/**
+  ファイル拡張子に関連付けられたアイコンを取得する
+  @param[in] fileExt UTF-8でエンコードされたファイル拡張子
+  @return アイコンハンドル
+*/
+HICON LoadExtensionIcon(const char* fileExt)
+{
+	CString extension;
+	UTF2UTF(std::string(fileExt ? fileExt : ""), extension);
+	return IconLoader::Get()->LoadExtensionIcon(extension);
+}
+
+/**
+  指定したアイコンが本体側で管理されているか確認する
+  @param[in] icon 確認対象のアイコンハンドル
+  @return 1:本体側で管理されている 0:管理されていない
+*/
+int HasIcon(HICON icon)
+{
+	return IconLoader::Get()->HasIcon(icon) ? 1 : 0;
+}
+
+/**
   入力中の単語数を取得する
   @param[in] ctx 検索コンテキスト
   @return 単語数
@@ -312,6 +347,9 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 			&ErrorLog,
 			&PopupMessage,
 			&GetMainWindowHandle,
+			&LoadIconFromPath,
+			&LoadExtensionIcon,
+			&HasIcon,
 		};
 		const char* pluginInfo = nullptr;
 		if (plugin->mExportTable.Initialize(&launcherFunctionTable, &pluginInfo) != 0) {
