@@ -19,10 +19,19 @@ namespace plugin {
 
 namespace {
 
+/**
+  プラグインAPIから取得した文字列をCStringへ変換する
+  @param[in] func 文字列取得関数
+  @param[in] match プラグインの検索結果ハンドル
+  @param[in] index 検索結果内のコマンド番号
+  @param[out] value 取得した文字列
+  @return true:取得成功 false:取得失敗
+*/
 bool GetStringValue(LNCRPLUGINFUNC_GETSTRING func, LNCRPLUGINMATCHHANDLE match,
 	int index, CString& value)
 {
 	value.Empty();
+	// 先に必要なバッファサイズを確認し、その後に文字列本体を取得する。
 	int len = func(match, index, nullptr, 0);
 	if (len < 0) {
 		return false;
@@ -49,6 +58,13 @@ struct MatcherContext
 	std::string mWholeString;
 };
 
+/**
+  プラグインからの文字列比較要求をPatternへ中継する
+  @param[in] ctx 検索コンテキスト
+  @param[in] text 比較対象文字列
+  @param[in] offset 比較開始位置
+  @return Patternによる一致レベル
+*/
 int Match(void* ctx, const char* text, int offset)
 {
 	MatcherContext* context = static_cast<MatcherContext*>(ctx);
@@ -57,6 +73,11 @@ int Match(void* ctx, const char* text, int offset)
 	return context->mPattern->Match(value, static_cast<uint32_t>(offset));
 }
 
+/**
+  入力中の最初の単語をUTF-8文字列として返す
+  @param[in] ctx 検索コンテキスト
+  @return 最初の単語
+*/
 const char* GetFirstWord(void* ctx)
 {
 	MatcherContext* context = static_cast<MatcherContext*>(ctx);
@@ -64,6 +85,11 @@ const char* GetFirstWord(void* ctx)
 	return context->mFirstWord.c_str();
 }
 
+/**
+  入力文字列全体をUTF-8文字列として返す
+  @param[in] ctx 検索コンテキスト
+  @return 入力文字列全体
+*/
 const char* GetWholeString(void* ctx)
 {
 	MatcherContext* context = static_cast<MatcherContext*>(ctx);
@@ -71,21 +97,37 @@ const char* GetWholeString(void* ctx)
 	return context->mWholeString.c_str();
 }
 
+/**
+  情報レベルのログを出力する
+  @param[in] message ログメッセージ
+*/
 void InfoLog(const char* message)
 {
 	spdlog::info("{}", message ? message : "");
 }
 
+/**
+  警告レベルのログを出力する
+  @param[in] message ログメッセージ
+*/
 void WarnLog(const char* message)
 {
 	spdlog::warn("{}", message ? message : "");
 }
 
+/**
+  エラーレベルのログを出力する
+  @param[in] message ログメッセージ
+*/
 void ErrorLog(const char* message)
 {
 	spdlog::error("{}", message ? message : "");
 }
 
+/**
+  アプリケーションのポップアップメッセージを表示する
+  @param[in] message 表示するメッセージ
+*/
 void PopupMessage(const char* message)
 {
 	auto app = static_cast<LauncherApp*>(AfxGetApp());
@@ -94,12 +136,21 @@ void PopupMessage(const char* message)
 	}
 }
 
+/**
+  Soyokazeのメインウインドウハンドルを取得する
+  @return メインウインドウのハンドル
+*/
 HWND GetMainWindowHandle()
 {
 	SharedHwnd sharedHwnd;
 	return sharedHwnd.GetHwnd();
 }
 
+/**
+  入力中の単語数を取得する
+  @param[in] ctx 検索コンテキスト
+  @return 単語数
+*/
 int GetWordCount(void* ctx)
 {
 	return static_cast<MatcherContext*>(ctx)->mPattern->GetWordCount();
@@ -109,6 +160,9 @@ int GetWordCount(void* ctx)
 
 struct PluginProvider::PImpl : public AppPreferenceListenerIF
 {
+	/**
+	  設定変更通知のリスナーとして登録する
+	*/
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("PluginProvider"));
@@ -116,21 +170,32 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 
 	~PImpl() override
 	{
+		// 設定通知を解除してから、保持しているDLLを解放する。
 		AppPreference::Get()->UnregisterListener(this);
 		std::lock_guard<std::mutex> lock(mMutex);
 		mPlugins.clear();
 	}
 
+	// 初回起動時の処理はない。
 	void OnAppFirstBoot() override {}
+	// 通常起動時の処理はない。
 	void OnAppNormalBoot() override {}
+	// 設定変更時の再読み込みは行わない。
 	void OnAppPreferenceUpdated() override {}
 
+	/**
+	  アプリ終了時にプラグインを解放する
+	*/
 	void OnAppExit() override
 	{
+		// アプリ終了時にプラグインモジュールを破棄する。
 		std::lock_guard<std::mutex> lock(mMutex);
 		mPlugins.clear();
 	}
 
+	/**
+	  プラグインディレクトリを一度だけ走査する
+	*/
 	void LoadPlugins()
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -139,7 +204,7 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 		}
 		mIsLoaded = true;
 
-		// 実行ファイル側のプラグインを優先してロードする
+		// 実行ファイル側のプラグインを優先してロードする。
 		LoadPlugins(Path(Path::MODULEFILEDIR, _T("plugins")));
 		LoadPlugins(Path(Path::APPDIR, _T("plugins")));
 	}
@@ -150,6 +215,7 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 	*/
 	void LoadPlugins(const Path& pluginsPath)
 	{
+		// plugins直下の各サブディレクトリからDLLを検索する。
 		if (pluginsPath.IsDirectory() == false) {
 			SPDLOG_WARN(_T("Plugin directory does not exist: {}"), (LPCTSTR)pluginsPath);
 			return;
@@ -180,8 +246,13 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 		directoryFinder.Close();
 	}
 
+	/**
+	  指定されたDLLをプラグインとしてロードする
+	  @param[in] path DLLのパス
+	*/
 	void LoadPlugin(const CString& path)
 	{
+		// DLLをロードし、公開されたエクスポートテーブルを取得する。
 		HMODULE handle = LoadLibrary(path);
 		if (handle == nullptr) {
 			SPDLOG_WARN(_T("Failed to load plugin DLL: {}"), (LPCTSTR)path);
@@ -219,9 +290,15 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 			FreeLibrary(handle);
 			return;
 		}
+		// 初期化に成功したモジュールだけを保持し、DLLの寿命を管理する。
 		mPlugins.push_back(std::move(plugin));
 	}
 
+	/**
+	  プラグインエクスポートテーブルに必要な関数が揃っているか確認する
+	  @param[in] table 検証対象のエクスポートテーブル
+	  @return true:利用可能 false:不完全
+	*/
 	static bool IsValid(const LNCRPLUGIN_EXPORTTABLE& table)
 	{
 		return table.Initialize && table.Query && table.GetMatchCount &&
@@ -238,24 +315,42 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 
 REGISTER_COMMANDPROVIDER(PluginProvider)
 
+/**
+  プラグインプロバイダを生成する
+*/
 PluginProvider::PluginProvider() : in(std::make_unique<PImpl>())
 {
 }
 
+/**
+  プラグインプロバイダを破棄する
+*/
 PluginProvider::~PluginProvider()
 {
 }
 
+/**
+  プラグインプロバイダの名前を取得する
+  @return プロバイダ名
+*/
 CString PluginProvider::GetName()
 {
 	return _T("Plugin");
 }
 
+/**
+  初回のコマンド準備時にプラグインをロードする
+*/
 void PluginProvider::PrepareAdhocCommands()
 {
 	in->LoadPlugins();
 }
 
+/**
+  各プラグインへ入力パターンを渡し、一致したコマンドを生成する
+  @param[in] pattern 検索パターン
+  @param[out] commands 検索結果を追加するリスト
+*/
 void PluginProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
 	if (pattern == nullptr) {
@@ -269,6 +364,7 @@ void PluginProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& 
 	std::lock_guard<std::mutex> lock(in->mMutex);
 
 	for (const auto& plugin : in->mPlugins) {
+		// 検索ハンドルは複数のPluginCommandで共有し、最後にCloseHandleする。
 		LNCRPLUGINMATCHHANDLE handle = plugin->mExportTable.Query(&context, &matcherTable);
 		if (handle == nullptr) {
 			continue;
@@ -302,6 +398,11 @@ void PluginProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& 
 	}
 }
 
+/**
+  プラグインが保存対象のコマンドを持たないことを示す
+  @param[out] displayNames コマンド表示名の格納先
+  @return 常に0
+*/
 uint32_t PluginProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
 	UNREFERENCED_PARAMETER(displayNames);

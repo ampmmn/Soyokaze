@@ -11,9 +11,13 @@ namespace commands {
 namespace plugin {
 
 
+/**
+  プラグインの終了処理を呼び出してDLLをアンロードする
+*/
 PluginModule::~PluginModule()
 {
 	if (mModule) {
+		// DLLをアンロードする前に、プラグインが保持するリソースを解放させる。
 		mExportTable.Finalize();
 		FreeLibrary(mModule);
 		mModule = nullptr;

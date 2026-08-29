@@ -13,6 +13,9 @@ namespace plugin {
 
 struct PluginModule
 {
+	/**
+	  プラグインDLLを終了処理してアンロードする
+	*/
 	~PluginModule();
 
 	HMODULE mModule{nullptr};
