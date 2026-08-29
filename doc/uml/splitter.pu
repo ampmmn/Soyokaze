@@ -1,0 +1,17 @@
+@startuml{splitter.svg}
+
+actor "利用者" as user
+
+card "振り分けコマンド" as splitter
+
+card "コマンド1" as cmd1
+card "コマンド2" as cmd2
+card "コマンド3" as cmd3
+
+user -do-> splitter : 実行
+
+splitter -do-> cmd1 : Enter
+splitter -do-> cmd2 : Ctrl-Enter
+splitter -do-> cmd3 : Alt-Enter
+
+@enduml

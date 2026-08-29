@@ -23,3 +23,7 @@ doc/manuals/source/image/
 *.doctree
 *.pickle
 work/
+doc/manuals/source/conf.ini
+doc/github-markdown.css
+.clangd
+
