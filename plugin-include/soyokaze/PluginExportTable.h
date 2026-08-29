@@ -15,7 +15,7 @@ extern "C" {
 
 // プラグインのバージョン。このヘッダの定義を変更したら、数値を上げる
 // プラグイン側はLNCRPLUGIN_Bind内で想定するプラグインバージョンかどうかをチェックし、対応できない場合はエラーを返す
-#define PLUGINVERSION 101
+#define PLUGINVERSION 102
 
 // キーワードマッチ結果を表すハンドル。ハンドルの実体はプラグイン実装側が定義する内部データ。
 // このため、LNCRPLUGINMATCHHANDLEという型はプラグイン間で共通となるが、異なるプラグイン間での互換性はない。
@@ -81,7 +81,9 @@ typedef struct _MATCHER_FUNCTION_TABLE
 
 // プラグイン初期化
 // tableのデータは揮発性なので、プラグイン側で構造体データをコピーすること
-typedef int (*LNCRPLUGINFUNC_INITIALIZE)(LAUNCHER_FUNCTION_TABLE* table);
+// plugin_infoにはプラグイン情報を表すJSON文字列へのポインタを設定すること
+// JSON文字列の所有権はプラグイン側が持ち、本体側では解放しない
+typedef int (*LNCRPLUGINFUNC_INITIALIZE)(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info);
 
 // マッチ件数を得る
 typedef int (*LNCRPLUGINFUNC_GETMATCHCOUNT)(LNCRPLUGINMATCHHANDLE h);
@@ -134,6 +136,8 @@ typedef struct _LNCRPLUGIN_EXPORTTABLE
 {
 	// プラグインの初期化
 	LNCRPLUGINFUNC_INITIALIZE Initialize;
+	// プラグインを終了する
+	LNCRPLUGINFUNC_FINALIZE Finalize;
 	// マッチングを行う
 	LNCRPLUGINFUNC_MATCH Query;
 	// マッチ件数を取得する
@@ -158,8 +162,6 @@ typedef struct _LNCRPLUGIN_EXPORTTABLE
 	LNCRPLUGINFUNC_GETSTRING GetErrorString;
 	// アイコンハンドルを得る
 	LNCRPLUGINFUNC_GETICON GetIcon;
-	// プラグインを終了する
-	LNCRPLUGINFUNC_FINALIZE Finalize;
 
 } LNCRPLUGIN_EXPORTTABLE;
 

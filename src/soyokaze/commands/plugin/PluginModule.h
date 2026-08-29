@@ -6,6 +6,7 @@
 
 #include "../../../../plugin-include/soyokaze/PluginExportTable.h"
 #include <memory>
+#include <nlohmann/json.hpp>
 
 namespace launcherapp {
 namespace commands {
@@ -20,6 +21,7 @@ struct PluginModule
 
 	HMODULE mModule{nullptr};
 	LNCRPLUGIN_EXPORTTABLE mExportTable{};
+	nlohmann::json mPluginInfo{};
 };
 
 using PluginModulePtr = std::shared_ptr<PluginModule>;

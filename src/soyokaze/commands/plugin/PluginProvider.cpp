@@ -7,6 +7,7 @@
 #include "setting/AppPreferenceListenerIF.h"
 #include "utility/Path.h"
 #include <mutex>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 #ifdef _DEBUG
@@ -18,6 +19,8 @@ namespace commands {
 namespace plugin {
 
 namespace {
+
+using json = nlohmann::json;
 
 /**
   プラグインAPIから取得した文字列をCStringへ変換する
@@ -49,6 +52,32 @@ bool GetStringValue(LNCRPLUGINFUNC_GETSTRING func, LNCRPLUGINMATCHHANDLE match,
 	std::string utf8(buffer.data());
 	UTF2UTF(utf8, value);
 	return true;
+}
+
+/**
+  プラグイン情報をJSONとして解析し、APIバージョンを検証する
+  @param[in] pluginInfo プラグイン情報のJSON文字列
+  @param[out] parsedInfo 解析したプラグイン情報
+  @return true:検証成功 false:検証失敗
+*/
+bool ParsePluginInfo(const char* pluginInfo, json& parsedInfo)
+{
+	if (pluginInfo == nullptr) {
+		return false;
+	}
+
+	try {
+		parsedInfo = json::parse(pluginInfo);
+		if (parsedInfo.is_object() == false ||
+			parsedInfo.contains("pluginApiVersion") == false ||
+			parsedInfo["pluginApiVersion"].is_number_integer() == false) {
+			return false;
+		}
+		return parsedInfo["pluginApiVersion"].get<int>() == PLUGINVERSION;
+	}
+	catch (const json::exception&) {
+		return false;
+	}
 }
 
 struct MatcherContext
@@ -284,10 +313,13 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 			&PopupMessage,
 			&GetMainWindowHandle,
 		};
-		if (plugin->mExportTable.Initialize(&launcherFunctionTable) != 0) {
+		const char* pluginInfo = nullptr;
+		if (plugin->mExportTable.Initialize(&launcherFunctionTable, &pluginInfo) != 0) {
 			SPDLOG_WARN(_T("Plugin initialization failed: {}"), (LPCTSTR)path);
-			plugin->mModule = nullptr;
-			FreeLibrary(handle);
+			return;
+		}
+		if (ParsePluginInfo(pluginInfo, plugin->mPluginInfo) == false) {
+			SPDLOG_WARN(_T("Invalid plugin information: {}"), (LPCTSTR)path);
 			return;
 		}
 		// 初期化に成功したモジュールだけを保持し、DLLの寿命を管理する。

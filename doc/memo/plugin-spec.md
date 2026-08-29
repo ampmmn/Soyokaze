@@ -95,7 +95,32 @@ userdir/
 - LNCRPLUGIN_EXPORTTABLEの構造体データを取得できたら、ProviderはDLLハンドルとLNCRPLUGIN_EXPORTTABLEを保持する。
 
 - PluginProviderはLNCRPLUGIN_EXPORTTABLEを生成したら、プラグインを初期化するメソッドを呼び出す。LNCRPLUGIN_EXPORTTABLE::Initialize。
-  - Initializeがエラーを返したら、そのプラグインDLLはProvider側では保持しない。即座にFreeLibraryとする。
+  - 第2引数でプラグイン情報のJSON文字列を受け取る。
+  - JSONとして解析できない場合、ルートがオブジェクトでない場合、pluginApiVersionが不正な場合はロード失敗とする。
+  - pluginApiVersionがPLUGINVERSIONと異なる場合はロード失敗とする。
+  - ロード失敗時はFinalizeを呼び出した後、DLLをアンロードする。
+  - Initializeがエラーを返したら、そのプラグインDLLはProvider側では保持しない。Finalizeを呼び出した後、DLLをアンロードする。
+
+## プラグイン情報
+
+Initializeの第2引数で、プラグインが所有するconst char*のポインタを受け取る。本体は文字列を解放せず、受け取った内容をJSONとしてコピーして管理する。
+
+JSONには次のキーを指定する。これら以外のキーを追加してもよい。
+
+```json
+{
+  "displayName": "プラグイン表示名",
+  "pluginId": "プラグインを識別する一意な文字列",
+  "pluginVersion": "1.0.0",
+  "pluginApiVersion": 102,
+  "pluginDescription": "プラグインの概要",
+  "pluginDeveloper": "制作者名など",
+  "pluginLicenseName": "プラグインのライセンス",
+  "url": "プラグインに関するURL"
+}
+```
+
+pluginApiVersionは、プラグインのビルド時に使用したPluginExportTable.hのPLUGINVERSIONと一致させる。
 
 ## 検索ハンドルの寿命について
 

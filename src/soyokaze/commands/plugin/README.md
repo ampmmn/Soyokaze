@@ -94,10 +94,13 @@ DLLごとに次の検証を行う。
 2. `LNCRPLUGIN_Bind`を取得する
 3. `PLUGINVERSION`を指定してエクスポートテーブルを取得する
 4. エクスポートテーブルの全関数が設定されていることを確認する
-5. Soyokaze側の関数テーブルを渡して`Initialize`を呼び出す
-6. 初期化に成功したDLLだけを`PluginModule`として保持する
+5. Soyokaze側の関数テーブルとプラグイン情報の格納先を渡して`Initialize`を呼び出す
+6. 返されたプラグイン情報をJSONとして解析し、`pluginApiVersion`が`PLUGINVERSION`と一致することを確認する
+7. 初期化とプラグイン情報の検証に成功したDLLだけを`PluginModule`として保持する
 
 いずれかの処理に失敗した場合、そのDLLは保持せずにアンロードする。
+
+`Initialize`の第2引数で渡されるプラグイン情報の文字列はプラグイン側が所有する。本体は文字列を解放せず、JSONをコピーして`PluginModule`ごとに保持する。
 
 ### コマンド検索
 
