@@ -501,9 +501,9 @@ int Match(void* context, const char* text, int offset)
 	return -1;
 }
 
-int Initialize(LAUNCHER_FUNCTION_TABLE* table)
+int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** pluginInfo)
 {
-	if (table == nullptr) {
+	if (table == nullptr || pluginInfo == nullptr) {
 		return 1;
 	}
 
@@ -511,6 +511,19 @@ int Initialize(LAUNCHER_FUNCTION_TABLE* table)
 		std::lock_guard<std::mutex> lock(gMutex);
 		gLauncherFunctions = *table;
 	}
+
+	// プラグインのメタデータはDLLのアンロードまで有効な静的文字列で返す。
+	static constexpr char info[] = R"json({
+  "displayName": "memogrep-plugin",
+  "pluginId": "F82EB950-7524-4AD4-A945-BA607E83E612",
+  "pluginVersion": "0.1.0",
+  "pluginApiVersion": 102,
+  "pluginDescription": "ChangeLogメモをインクリメンタル検索する",
+  "pluginDeveloper": "ampmmn",
+  "pluginLicenseName": "MIT License",
+  "url": "https://github.com/ampmmn/Soyokaze/tree/main/plugins/memogrep-plugin"
+})json";
+	*pluginInfo = info;
 
 	return memogrep::Initialize() ? 0 : 1;
 }

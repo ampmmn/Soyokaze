@@ -600,13 +600,25 @@ int GetIcon(LNCRPLUGINMATCHHANDLE handle, int index, HICON* icon)
 	return entry->icon ? 0 : 1;
 }
 
-int InitializeApi(LAUNCHER_FUNCTION_TABLE* table)
+int InitializeApi(LAUNCHER_FUNCTION_TABLE* table, const char** pluginInfo)
 {
-	if (!table) return 1;
+	if (!table || !pluginInfo) return 1;
 	{
 		std::lock_guard<std::mutex> lock(gMutex);
 		gFunctions = *table;
 	}
+	// プラグインのメタデータはDLLのアンロードまで有効な静的文字列で返す。
+	static constexpr char info[] = R"json({
+  "displayName": "workspace-plugin",
+  "pluginId": "A555448F-0F0F-429B-B783-CB2D4A6CA2D9",
+  "pluginVersion": "0.1.0",
+  "pluginApiVersion": 102,
+  "pluginDescription": "指定ディレクトリ以下のファイルやディレクトリ要素を検索する",
+  "pluginDeveloper": "ampmmn",
+  "pluginLicenseName": "MIT License",
+  "url": "https://github.com/ampmmn/Soyokaze/tree/main/plugins/workspace-plugin"
+})json";
+	*pluginInfo = info;
 	HMODULE module = nullptr;
 	if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
 		reinterpret_cast<LPCWSTR>(&LNCRPLUGIN_Bind), &module)) return 1;
