@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -30,185 +30,199 @@ msgid ""
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:6
-msgid "General"
-msgstr "基本"
+msgid "例えば、メモ帳を`memo`というキーワードで起動する場合は、`コマンドの名前`に`memo`、`実行ファイル・URLなど`に`notepad.exe`を指定します。登録後に入力画面で`memo`と入力してEnterキーを押すと、メモ帳を起動できます。"
+msgstr ""
 
 #: ../../source/user-command/shellexecute.md:8
-msgid "![](../image/user-command/shell-execute/edit-command.png)"
+msgid "このページには詳細な設定項目も含まれています。まずはコマンド名と実行ファイル・URLなどだけを設定し、必要になったときにパラメータやホットキーなどを追加してください。"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:10
-msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
-msgstr ""
+msgid "General"
+msgstr "基本"
 
 #: ../../source/user-command/shellexecute.md:12
-msgid "`コマンドの説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
+msgid "![](../image/user-command/shell-execute/edit-command.png)"
 msgstr ""
 
 #: ../../source/user-command/shellexecute.md:14
+msgid "`コマンドの名前`   入力画面からコマンドを実行するためのキーワード"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:16
+msgid "`コマンドの説明`   入力画面でのキーワード入力時にコメント表示欄に記載される文字列。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:18
 msgid ""
 "`コメント表示欄のテキストを検索に使用する`   チェックすると、`コマンドの説明`に入力したテキストもコマンドの絞り込みに使用する   "
 "例えば上の図の場合、「起動」と入力した場合にも、コマンドが候補にあがるようになる"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:17
+#: ../../source/user-command/shellexecute.md:21
 msgid ""
 "`実行ファイル・URLなど`   実行ファイル(`*.exe`)を指定すると、その実行ファイルが実行される   URL(`http://...` "
 "`https://...`)を指定すると、ブラウザでそのURLを表示する   "
 "その他の拡張子のファイルを指定した場合、拡張子に関連付けられたプログラムでそのファイルを開く"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:21
+#: ../../source/user-command/shellexecute.md:25
 msgid "`パラメータ`   実行ファイル(.exe)を指定したときに、実行ファイルに渡すパラメータを指定する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:23
+#: ../../source/user-command/shellexecute.md:27
 msgid "`$*` : 入力欄でコマンド名の後にスペース区切りで入力した全ての文字列に置換する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:24
+#: ../../source/user-command/shellexecute.md:28
 msgid "`$1`/`$2`/`$3` ... : 入力欄でコマンド名の後にスペース区切りで入力した1番目/2番目/3番目...の文字列に置換する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:25
+#: ../../source/user-command/shellexecute.md:29
 msgid "そのほかに[マクロ](/macros)を利用することが可能"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:27
+#: ../../source/user-command/shellexecute.md:31
+msgid ""
+"例えば、`browser`というコマンドのパラメータに`$*`を指定すると、入力画面で`browser "
+"https://example.com`と入力したとき、URLがそのまま実行ファイルに渡されます。"
+msgstr ""
+
+#: ../../source/user-command/shellexecute.md:33
 msgid "`作業フォルダ`   実行するときのカレントディレクトリを指定する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:29
+#: ../../source/user-command/shellexecute.md:35
 msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶことができる   起動するプログラムによっては指定が効かないこともある"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:32
+#: ../../source/user-command/shellexecute.md:38
 msgid "`管理者権限で実行`   チェックすると、管理者権限でプロセスを起動する   `.exe`、`.bat`のときのみ選択可能"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:35
+#: ../../source/user-command/shellexecute.md:41
 msgid ""
 "`ホットキー`   [コマンドを呼び出すキー](/window/command-"
 "hotkey)を設定できる。設定したキーを押下すると、コマンドを実行できる。   ![](../image/common/hotkey-for-"
 "command.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:39
+#: ../../source/user-command/shellexecute.md:45
 msgid ""
 "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/common/web-"
 "search-command-context-menu.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:42
+#: ../../source/user-command/shellexecute.md:48
 msgid ""
 "`アイコンを変更する`   "
 "選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   "
 "ローカルパスのほか、URLを直接指定することも可能   PNG/JPG/GIF/BMP/ICO形式のファイルが利用可能"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:46
+#: ../../source/user-command/shellexecute.md:52
 msgid ""
 "`URLからファビコンを取得する`     `実行ファイル・URLなど`にURLが入力されているときのみ表示される。   "
 "選択すると、URLからファビコンを取得し、アイコンとして設定する。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:49
+#: ../../source/user-command/shellexecute.md:55
 msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:52
+#: ../../source/user-command/shellexecute.md:58
 msgid "Environment"
 msgstr "環境変数"
 
-#: ../../source/user-command/shellexecute.md:54
+#: ../../source/user-command/shellexecute.md:60
 msgid "![](../image/user-command/shell-execute/environment-list.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:56
+#: ../../source/user-command/shellexecute.md:62
 msgid "起動するプログラムに対して環境変数を追加定義することができる。   既存の環境変数と同じ名前を定義した場合は値を上書きする。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:59
+#: ../../source/user-command/shellexecute.md:65
 msgid "`追加する環境変数の一覧`     追加する環境変数のリスト"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:61
+#: ../../source/user-command/shellexecute.md:67
 msgid ""
 "`追加`   クリックすると、変数を追加する画面が表示される   ![](../image/user-command/shell-execute"
 "/environment-add.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:64
+#: ../../source/user-command/shellexecute.md:70
 msgid ""
 "`編集`   クリックすると、リスト上で選択している変数を編集する画面が表示される   ![](../image/user-command"
 "/shell-execute/environment-edit.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:67
+#: ../../source/user-command/shellexecute.md:73
 msgid "`削除`   クリックすると、リスト上で選択している変数を削除する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:69
+#: ../../source/user-command/shellexecute.md:75
 msgid ""
 "`一括追加`   クリックすると、環境変数を一括で追加するための画面(下記)を表示する   ![](../image/user-command"
 "/shell-execute/environment-bulk-add.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:73
+#: ../../source/user-command/shellexecute.md:79
 msgid "Others"
 msgstr "その他"
 
-#: ../../source/user-command/shellexecute.md:75
+#: ../../source/user-command/shellexecute.md:81
 msgid "![](../image/user-command/shell-execute/edit-detail.png)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:77
+#: ../../source/user-command/shellexecute.md:83
 msgid ""
 "`実行時引数あり/なしで起動するファイルを分ける`   "
 "入力欄で、コマンド名の後に文字列を入力した場合とそうでない場合とで、実行するファイルを分けるときにチェックする   "
 "【実行時引数なし】直下に、コマンド名のみを入力した場合に実行するファイル(やパラメータ)を指定する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:80
+#: ../../source/user-command/shellexecute.md:86
 msgid "想定する使い方   パラメータがある場合→検索、ない場合→検索サイトのトップページを表示"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:82
+#: ../../source/user-command/shellexecute.md:88
 msgid ""
 "`キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する`   "
 "入力欄に入力したキーワードがコマンド名に完全一致し、他の候補がない場合に、コマンド実行を自動確定(実行)する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:84
+#: ../../source/user-command/shellexecute.md:90
 msgid ""
 "`条件に合致するウインドウが存在する場合にパスを起動せずにウインドウをアクティブにする`   "
 "指定条件(ウインドウクラス名/ウインドウタイトル)に該当するウインドウが存在する場合に、それをアクティブにして、`パス`で設定したファイルを実行しない。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:86
+#: ../../source/user-command/shellexecute.md:92
 msgid "想定用途: アプリを複数起動させずに使いたい場合に用いる。(アプリがすでに起動済の場合は新しいプロセスを起動せずに、既存のウインドウに切り替える)"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:87
+#: ../../source/user-command/shellexecute.md:93
 msgid "`ウインドウタイトル`   ウインドウのタイトルを指定する。指定しなかった場合はウインドウクラスのみで判断する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:89
+#: ../../source/user-command/shellexecute.md:95
 msgid "`ウインドウクラス`   ウインドウクラス名を指定する。指定しなかった場合はウインドウタイトルのみで判断する"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:91
+#: ../../source/user-command/shellexecute.md:97
 msgid ""
 "`正規表現を使用する`   "
 "チェックすると、`ウインドウタイトル`と`ウインドウクラス`の文字列を正規表現パターンとして扱う。利用できる正規表現の制限については[正規表現の制限](/others"
 "/regular-expression)を参照する。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:93
+#: ../../source/user-command/shellexecute.md:99
 msgid "`テスト`   指定した条件に該当するウインドウを探す。ウインドウが見つかると、そのプログラムのタスクバージョンのアイコンが点滅する。"
 msgstr ""
 
-#: ../../source/user-command/shellexecute.md:96
+#: ../../source/user-command/shellexecute.md:102
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

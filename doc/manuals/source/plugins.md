@@ -26,7 +26,7 @@
 
 1. {{ project }}がプラグインDLLをロードする
 2. `LNCRPLUGIN_Bind`を呼び出して関数テーブルを取得する
-3. `Initialize`を呼び出してプラグインを初期化する
+3. `Initialize`を呼び出してプラグインを初期化し、プラグイン情報を取得する
 4. キーワード入力のたびに`Query`を呼び出す
 5. `Query`が返した検索結果を候補として表示する
 6. コマンド実行時に`CanExecute`と`Execute`を呼び出す
@@ -71,6 +71,8 @@ DLLはアプリケーションの実行中に一度だけロードされます�
 - `LNCRPLUGIN_Bind`を取得できない
 - `LNCRPLUGIN_Bind`がエラーを返す
 - `LNCRPLUGIN_EXPORTTABLE`の関数ポインタに`nullptr`が含まれる
+- `Initialize`の第2引数から取得したプラグイン情報をJSONとして解析できない
+- プラグイン情報の`pluginApiVersion`が{{ project }}の`PLUGINVERSION`と一致しない
 - `Initialize`がエラーを返す
 
 ロードに失敗したDLLは保持されず、ロード済みのDLLも終了時まで再ロードされません。
@@ -97,10 +99,12 @@ LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table);
 ### `Initialize`
 
 ```cpp
-int Initialize(LAUNCHER_FUNCTION_TABLE* table);
+int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info);
 ```
 
 プラグインのロード直後に一度呼び出されます。設定ファイルの読み込み、インデックスの作成、リソースの確保などをここで行います。
+
+`plugin_info`には、プラグインの情報を表すJSON文字列へのポインタを設定してください。JSON文字列の所有権はプラグイン側にあり、{{ project }}本体は文字列を解放しません。{{ project }}本体は受け取ったJSONをコピーして管理します。
 
 `LAUNCHER_FUNCTION_TABLE`は、{{ project }}本体がプラグインへ渡す関数テーブルです。プラグインから{{ project }}本体の機能を呼び出すための窓口であり、ログ出力、トースト通知、メインウィンドウのハンドル取得に使用できます。構造体の各メンバーには、本体側の機能を呼び出すための関数ポインタが設定されています。
 
@@ -109,6 +113,25 @@ int Initialize(LAUNCHER_FUNCTION_TABLE* table);
 `table`が指す`LAUNCHER_FUNCTION_TABLE`のデータは一時的なものです。後で使用する関数ポインタがある場合は、構造体の内容をプラグイン側でコピーして保持してください。
 
 成功時は0、初期化に失敗した場合は0以外を返します。失敗したプラグインはロードされません。
+
+#### プラグイン情報
+
+プラグイン情報はJSONオブジェクトで指定します。`pluginApiVersion`は必須で、プラグインのビルドに使用した`PluginExportTable.h`の`PLUGINVERSION`と一致させてください。`pluginId`にはプラグインを識別する一意な文字列を指定してください。その他のキーは表示や管理に使用されます。
+
+```json
+{
+  "displayName": "プラグイン表示名",
+  "pluginId": "プラグインを識別する一意な文字列",
+  "pluginVersion": "1.0.0",
+  "pluginApiVersion": 102,
+  "pluginDescription": "プラグインの概要",
+  "pluginDeveloper": "制作者名など",
+  "pluginLicenseName": "プラグインのライセンス",
+  "url": "プラグインに関するURL"
+}
+```
+
+上記以外のキーを追加することもできます。{{ project }}本体が認識しないキーは無視されます。JSONとして解析できない場合や、`pluginApiVersion`が{{ project }}本体の`PLUGINVERSION`と異なる場合、プラグインはロードされません。
 
 ### `Query`
 
@@ -232,7 +255,7 @@ int GetIcon(LNCRPLUGINMATCHHANDLE handle, int index, HICON* icon);
 
 検索結果に表示するアイコンを返します。成功時は0を返し、`icon`にアイコンハンドルを設定します。失敗時は0以外を返してください。
 
-返したアイコンの所有権はプラグイン側にあります。不要になったアイコンはプラグイン側で破棄してください。通常は`Finalize`で破棄します。
+返したアイコンの所有権はプラグイン側にあります。アプリ側はアイコンハンドルの解放を行わないため、プラグイン側で適切に解放してください。通常は`Finalize`で破棄します。
 
 `GetIcon`に失敗した場合、{{ project }}はデフォルトアイコンを使用します。
 
@@ -271,20 +294,34 @@ void Finalize(void);
 |`LoadExtensionIcon`|ファイル拡張子に関連付けられたアイコンを取得する|
 |`HasIcon`|アイコンが本体側で管理されているか確認する|
 
+アイコン関連の関数の宣言は次のとおりです。
+
+```cpp
+HICON LoadIconFromPath(const char* path);
+HICON LoadExtensionIcon(const char* fileExt);
+int HasIcon(HICON icon);
+```
+
 ログ出力関数と`PopupMessage`は、UTF-8文字列を受け取ります。
 `LoadIconFromPath`と`LoadExtensionIcon`の引数もUTF-8文字列です。取得したアイコンは本体側が所有するため、プラグイン側で破棄しないでください。
+`HasIcon`は、本体側で管理されているアイコンの場合に1、それ以外の場合に0を返します。
 
 ```cpp
 static LAUNCHER_FUNCTION_TABLE gLauncher{};
+static const char* gPluginInfo = R"({
+  "pluginId": "sample-plugin",
+  "pluginApiVersion": 102
+})";
 
-int Initialize(LAUNCHER_FUNCTION_TABLE* table)
+int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info)
 {
-    if (table == nullptr) {
+    if (table == nullptr || plugin_info == nullptr) {
         return 1;
     }
 
     // 関数テーブルは呼び出し後も使用するため、コピーして保持する
     gLauncher = *table;
+    *plugin_info = gPluginInfo;
     gLauncher.InfoLog("sample plugin initialized");
     gLauncher.PopupMessage("Sample plugin is ready");
     return 0;
@@ -313,6 +350,13 @@ MessageBoxW(mainWindow, L"プラグインからのメッセージ", L"Sample", M
 namespace {
 
 LAUNCHER_FUNCTION_TABLE gLauncher{};
+const char* gPluginInfo = R"({
+  "displayName": "Sample Plugin",
+  "pluginId": "sample-plugin",
+  "pluginVersion": "1.0.0",
+  "pluginApiVersion": 102,
+  "pluginDescription": "Sample plugin command"
+})";
 
 struct Match {
     std::string name = "hello";
@@ -334,12 +378,13 @@ int CopyString(const std::string& value, char* buffer, size_t length)
     return static_cast<int>(copied);
 }
 
-int Initialize(LAUNCHER_FUNCTION_TABLE* table)
+int Initialize(LAUNCHER_FUNCTION_TABLE* table, const char** plugin_info)
 {
-    if (table == nullptr) {
+    if (table == nullptr || plugin_info == nullptr) {
         return 1;
     }
     gLauncher = *table;
+    *plugin_info = gPluginInfo;
     return 0;
 }
 
@@ -429,6 +474,7 @@ LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table)
 
     *table = {
         &Initialize,
+        &Finalize,
         &Query,
         &GetMatchCount,
         &GetMatchLevel,
@@ -441,7 +487,6 @@ LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table)
         &Execute,
         &GetErrorString,
         &GetIcon,
-        &Finalize,
     };
     return 0;
 }
@@ -463,7 +508,7 @@ LNCRPLUGIN_Bind(int version, LNCRPLUGIN_EXPORTTABLE* table)
 - `Query`が返したハンドルは、`CloseHandle`が呼ばれるまで有効にする
 - `GetMatchCount`が返す件数と、各APIに渡される`index`の範囲を一致させる
 - 文字列はUTF-8で返し、必要なバッファ長には終端文字を含める
-- `GetIcon`で返したアイコンはプラグイン側で破棄する
+- `GetIcon`で返したアイコンはプラグイン側で適切に解放する
 - `LoadIconFromPath`と`LoadExtensionIcon`で返したアイコンは本体側で管理されるため、プラグイン側で破棄しない
 - `HasIcon`の戻り値は、管理対象の場合が1、管理対象外の場合が0
 - `Execute`の戻り値は、成功時だけ0にする

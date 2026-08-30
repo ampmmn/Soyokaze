@@ -1,0 +1,127 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/plugins.md:2
+msgid "Plugins"
+msgstr "プラグイン"
+
+#: ../../source/window/app-settings/plugins.md:4
+msgid "インストールされているプラグインの有効状態と、コマンド検索時の優先度を設定する画面。"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:6
+msgid "![](../../image/window/app-settings/plugins/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:8
+msgid "プラグイン一覧"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:10
+msgid "プラグインごとに、次の情報を確認することができる。"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:12
+msgid "`有効`"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:13
+msgid "プラグインが有効かどうかを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:14
+msgid "プラグインを選択して右クリックすると、有効と無効を切り替えることができる"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:15
+msgid "`プラグイン名`"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:16
+msgid "プラグインの表示名を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:17
+msgid "`優先度`"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:18
+msgid "コマンド検索時の優先度を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:19
+msgid "数値が大きいプラグインほど先に検索される"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:20
+msgid "`バージョン`"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:21
+msgid "プラグインのバージョンを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:22
+msgid "`説明`"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:23
+msgid "プラグインの説明を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:25
+msgid "優先度の変更"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:27
+msgid "優先度を変更するプラグインを一覧から選択する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:28
+msgid "`優先度変更`を選択する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:29
+msgid "優先度を入力して確定する"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:31
+msgid "![](../../image/window/app-settings/plugins/priority.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:33
+msgid "優先度には`0`から`10000`までの整数を指定できる。値が大きいプラグインから順に検索され、同じ優先度のプラグインはロードされた順序で検索される。"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:35
+msgid "設定の保存"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:37
+msgid "変更内容は、アプリケーション設定画面で`OK`を選択したときに保存される。`キャンセル`を選択した場合、画面を開いてから行った変更は破棄される。"
+msgstr ""
+
+#: ../../source/window/app-settings/plugins.md:39
+msgid ""
+"無効にしたプラグインはDLL自体はロードされるが、コマンド検索の対象から除外される。プラグインの追加や削除を反映するには、{{ project "
+"}}を再起動する必要がある。"
+msgstr ""
+

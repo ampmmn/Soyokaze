@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 13:49+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/usage/setup.md:1 ../../source/usage/setup.md:27
+#: ../../source/usage/setup.md:1 ../../source/usage/setup.md:28
 msgid "Installation"
 msgstr "インストール"
 
@@ -44,96 +44,108 @@ msgid "Download"
 msgstr "ダウンロード"
 
 #: ../../source/usage/setup.md:15
-msgid ""
-"GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/releases/latest)から入手することができる"
-"   Assets欄にある`.7z`形式のファイルが実行ファイル一式をダウンロードする"
+msgid "GitHubの[最新版リリースページ](https://github.com/ampmmn/Soyokaze/releases/latest)からダウンロードします。"
 msgstr ""
 
-#: ../../source/usage/setup.md:20
+#: ../../source/usage/setup.md:17
+msgid "Assets欄にある`.zip`形式のファイルが、実行ファイル一式をまとめたアーカイブです。ダウンロードしたファイルは、7-Zipなどの解凍ソフトで展開してください。"
+msgstr ""
+
+#: ../../source/usage/setup.md:21
 msgid "下記のリポジトリで実行ファイル一式を管理しているので、`git clone`で実行ファイルを取得する"
 msgstr ""
 
-#: ../../source/usage/setup.md:23
+#: ../../source/usage/setup.md:24
 msgid "https://github.com/ampmmn/Soyokaze/releases/latest"
 msgstr ""
 
-#: ../../source/usage/setup.md:30
-msgid "zip(7z)をファイルを展開して任意のフォルダに展開する"
-msgstr ""
-
 #: ../../source/usage/setup.md:31
-msgid "展開先フォルダにある{{ project_lower }}.exeを実行する"
+msgid "ダウンロードした`.zip`ファイルを、任意のフォルダに展開する"
 msgstr ""
 
 #: ../../source/usage/setup.md:32
-msgid ""
-"設定はユーザーフォルダ(たいていは C:/Users/(ユーザー名))直下の .{{ project_lower }} フォルダに保存される   "
-"初回実行時に .{{project_lower}}フォルダを作成する"
+msgid "展開したフォルダを開き、`{{ project_lower }}.exe`を実行する"
+msgstr ""
+
+#: ../../source/usage/setup.md:33
+msgid "初回起動時に、設定ファイルの保存先が自動的に作成される"
+msgstr ""
+
+#: ../../source/usage/setup.md:35
+msgid "本アプリは、展開したフォルダから実行できます。スタートメニューなどから起動したい場合は、必要に応じてショートカットを作成してください。"
 msgstr ""
 
 #: ../../source/usage/setup.md:37
+msgid ""
+"初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の`.{{ project_lower "
+"}}`フォルダに保存されます。"
+msgstr ""
+
+#: ../../source/usage/setup.md:41
 msgid "任意のパスで`git clone`すればインストール完了"
 msgstr ""
 
-#: ../../source/usage/setup.md:42
+#: ../../source/usage/setup.md:46
 msgid "Uninstallation"
 msgstr "アンインストール"
 
-#: ../../source/usage/setup.md:44
+#: ../../source/usage/setup.md:48
 msgid "アンインストーラはないため、以下すべてを手動で行う。"
 msgstr ""
 
-#: ../../source/usage/setup.md:46
-msgid "タスクトレイ上のコンテキストメニュー-`アプリケーションの設定`-`基本`-`ショートカット設定`を表示し、`作成したショートカットをすべてを削除する`を押下する"
+#: ../../source/usage/setup.md:50
+msgid "作成したショートカットがある場合は、タスクトレイのメニューから`アプリケーションの設定`>`基本`>`ショートカット設定`を開き、ショートカットを削除する"
 msgstr ""
 
-#: ../../source/usage/setup.md:47
+#: ../../source/usage/setup.md:51
 msgid "アプリを終了する"
 msgstr ""
 
-#: ../../source/usage/setup.md:48
-msgid "インストール時に展開したフォルダごと削除する"
-msgstr ""
-
-#: ../../source/usage/setup.md:49
-msgid ""
-"[設定フォルダ](#configuration-directory) "
-"(C:/Users/(ユーザー名)/.{{project_lower}})を削除する"
+#: ../../source/usage/setup.md:52
+msgid "インストール時に展開したフォルダを削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:53
-msgid "Update Procedure"
-msgstr "バージョンアップ"
-
-#: ../../source/usage/setup.md:56
-msgid "本アプリを実行している場合は終了する"
+msgid "設定フォルダ（通常は`C:\\Users\\<ユーザー名>\\.{{ project_lower }}`）を削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:57
-msgid "実行ファイルを置いたフォルダ内のファイルをすべて上書きする"
+msgid "Update Procedure"
+msgstr "バージョンアップ"
+
+#: ../../source/usage/setup.md:60
+msgid "新しいバージョンのアーカイブをダウンロードして展開する"
 msgstr ""
 
 #: ../../source/usage/setup.md:61
+msgid "本アプリを実行している場合は終了する"
+msgstr ""
+
+#: ../../source/usage/setup.md:62
+msgid "実行ファイルを置いたフォルダ内のファイルをすべて上書きする"
+msgstr ""
+
+#: ../../source/usage/setup.md:66
 msgid ""
 "アプリを終了して、`git pull`すれば最新版に更新できる。   もし、コンフリクトが生じた場合は、`git fetch` → `git "
 "reset --hard origin:main` でOK"
 msgstr ""
 
-#: ../../source/usage/setup.md:67
+#: ../../source/usage/setup.md:72
 msgid "Configuration Directory"
 msgstr "アプリデータの保存フォルダ"
 
-#: ../../source/usage/setup.md:69
+#: ../../source/usage/setup.md:74
 msgid ""
 "アプリ初回起動時に ユーザーフォルダ直下(通常は `C:\\Users\\<ユーザー名>`)に .{{project_lower}} "
 "フォルダを作成し、このフォルダ内に設定ファイル一式を保存する。"
 msgstr ""
 
-#: ../../source/usage/setup.md:71
+#: ../../source/usage/setup.md:76
 msgid "Portable Mode"
 msgstr "ポータブル版"
 
-#: ../../source/usage/setup.md:73
+#: ../../source/usage/setup.md:78
 msgid ""
 "exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。   "
 "この場合、設定ファイル一式を`profile`フォルダ内に作成する。"

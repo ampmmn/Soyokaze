@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,86 +28,100 @@ msgid "Overview"
 msgstr "概要"
 
 #: ../../source/window/keyword-manager.md:5
-msgid "本アプリに登録したコマンドの管理(追加/編集/削除)をするための画面。"
+msgid "本アプリに登録したコマンドを追加、編集、複製、削除するための画面です。"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:7
-msgid "下記のいずれかの操作を行うと、キーワードマネージャーを表示することができる。"
+msgid "登録したコマンドのキーワードを変更したい場合や、不要になったコマンドを無効にしたい場合も、この画面を使用します。"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:9
-msgid "入力画面で`edit`コマンドを実行する"
-msgstr ""
-
-#: ../../source/window/keyword-manager.md:10
-msgid "入力画面で空欄のままEnterキーを押下する"
+msgid "下記のいずれかの操作を行うと、キーワードマネージャーを表示することができる。"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:11
-msgid "タスクトレイのアイコンを右クリックし、`キーワードマネージャ`を選択する"
+msgid "入力画面で`edit`コマンドを実行する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:12
+msgid "入力画面で空欄のままEnterキーを押下する"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:13
+msgid "タスクトレイのアイコンを右クリックし、`キーワードマネージャ`を選択する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:15
 msgid "Description"
 msgstr "画面の説明"
 
-#: ../../source/window/keyword-manager.md:15
+#: ../../source/window/keyword-manager.md:17
 msgid "![](../image/window/keyword-manager/keyword-manager.png)"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:17
+#: ../../source/window/keyword-manager.md:19
 msgid "`リスト`   登録済のコマンド一覧が表示される"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:19
+#: ../../source/window/keyword-manager.md:21
 msgid "`フィルター`   入力した文字列でリストの表示項目を絞り込める   空白区切りで複数ワードを指定できる(AND検索)"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:22
-msgid ""
-"`新規作成`   コマンドを新規登録する。[コマンドの種別を選択する画面](/window/keyword-manager.md#command-"
-"type)を表示する"
-msgstr ""
-
 #: ../../source/window/keyword-manager.md:24
-msgid "`編集`   リスト上で選択したコマンドを設定を変更する。編集画面が表示される。"
+msgid "`新規作成`   コマンドを新規登録する。コマンドの種別を選択する画面を表示する"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:26
+msgid "`編集`   リスト上で選択したコマンドを設定を変更する。編集画面が表示される。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:28
 msgid "`複製`   リスト上で選択したコマンドを複製する   (選択中のコマンドの設定内容をもとに、別のコマンドを作ることができる)"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:29
+#: ../../source/window/keyword-manager.md:31
 msgid "`削除`   リスト上で選択したコマンドを削除する"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:32
+#: ../../source/window/keyword-manager.md:34
+msgid "新規作成や編集が終わったら、編集画面の`OK`を押して内容を反映します。変更を反映せずに閉じたい場合は`キャンセル`を押します。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:36
+msgid "コマンドが候補に表示されない場合は、リスト上でそのコマンドが無効になっていないか、フィルター欄に不要な文字が残っていないかを確認してください。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:38
 msgid "Copy And Paste"
 msgstr "クリップボードを経由したコマンドのインポートとエクスポート"
 
-#: ../../source/window/keyword-manager.md:34
+#: ../../source/window/keyword-manager.md:40
 msgid "リスト上でコマンドを選択して、`Ctrl-C`でコマンドをクリップボードにコピーし、 `Ctrl-V`で貼り付けることができる。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:37
+#: ../../source/window/keyword-manager.md:43
 msgid ""
 "リモートデスクトップを経由して複数のPC間で本アプリを使用している場合、 "
-"クリップボード経由で一方のアプリ側で定義しているコマンドをもう一方のアプリ側に移すことができる。"
+"クリップボード経由で一方のアプリ側で定義しているコマンドをもう一方のアプリ側に移すことができます。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:40
+#: ../../source/window/keyword-manager.md:46
+msgid "コピーしたコマンドには、実行ファイルのパスやURLなどの設定も含まれます。貼り付け後は、移行先の環境に同じファイルやフォルダが存在するか確認してください。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:48
 msgid "Command Type"
 msgstr "コマンド種類選択"
 
-#: ../../source/window/keyword-manager.md:42
+#: ../../source/window/keyword-manager.md:50
 msgid "作成するコマンドの種類を選択するための画面。   コマンドの種類を選択して、OKボタンを押下すると、選択したコマンドの新規作成画面を表示する。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:45
+#: ../../source/window/keyword-manager.md:53
 msgid "各コマンドの説明については [登録型のコマンド](/user-commands) を参照のこと"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:47
+#: ../../source/window/keyword-manager.md:55
 msgid "![](../image/common/command-type.png)"
 msgstr ""
 

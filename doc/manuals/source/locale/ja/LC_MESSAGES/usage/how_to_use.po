@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,258 +28,338 @@ msgid "Run Application"
 msgstr "アプリを起動する"
 
 #: ../../source/usage/how_to_use.md:5
-msgid ""
-"{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は[入力画面](#open-input-window) "
-"が表示される。"
+msgid "{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は入力画面が表示される。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:8
-msgid "![](../image/usage/first-screen/first-screen.png)"
+msgid "最初は、次の流れで操作すると、アプリケーションを登録して起動できます。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:10
-msgid "また、タスクトレイにアイコンが表示される。"
+msgid "`Alt`+`Space`を押して入力画面を表示する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:11
+msgid "`new`と入力してEnterキーを押す"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:12
-msgid "![](../image/common/tasktray-icon.png)"
+msgid "通常コマンドを選択する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:13
+msgid "キーワードと、起動するアプリケーションのパスを入力して登録する"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:14
-msgid "Exit Application"
-msgstr "アプリを終了する"
+msgid "登録したキーワードを入力してEnterキーを押す"
+msgstr ""
 
 #: ../../source/usage/how_to_use.md:16
-msgid ""
-"入力画面で[exit](/system-"
-"commands.md#exit)コマンドを実行するか、[タスクトレイ](/window/tasktray)から`終了`を選択する。"
+msgid "![](../image/usage/first-screen/first-screen.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:18
+msgid "また、タスクトレイにアイコンが表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:20
+msgid "![](../image/common/tasktray-icon.png)"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:22
+msgid "Exit Application"
+msgstr "アプリを終了する"
+
+#: ../../source/usage/how_to_use.md:24
+msgid "入力画面で`exit`コマンドを実行するか、[タスクトレイ](/window/tasktray)から`終了`を選択する。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:26
 msgid "`exit`コマンドを実行   ![](../image/usage/how-to-use/exit-from-command.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:21
+#: ../../source/usage/how_to_use.md:29
 msgid "タスクトレイからの終了   ![](../image/usage/how-to-use/exit-from-tray.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:25
+#: ../../source/usage/how_to_use.md:33
 msgid "Open Input Window"
 msgstr "入力画面を表示する"
 
-#: ../../source/usage/how_to_use.md:27
+#: ../../source/usage/how_to_use.md:35
 msgid "アプリが起動している状態でランチャー呼び出しキー(デフォルト設定:`Alt`-`Space`)を押下すると、入力画面が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:29
+#: ../../source/usage/how_to_use.md:37
 msgid "![](../image/usage/how-to-use/window-parts.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:31
+#: ../../source/usage/how_to_use.md:39
 msgid ""
 "この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。   "
 "また、Tabキーを押すと、入力中のキーワードを補完することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:34
+#: ../../source/usage/how_to_use.md:42
 msgid "① アイコン表示欄"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:35
+#: ../../source/usage/how_to_use.md:43
 msgid "選択している候補に関連付けられたアイコンを表示する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:36
+#: ../../source/usage/how_to_use.md:44
 msgid "② コメント表示欄"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:37
+#: ../../source/usage/how_to_use.md:45
 msgid "選択している候補の説明を表示する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:38
+#: ../../source/usage/how_to_use.md:46
 msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:39
+#: ../../source/usage/how_to_use.md:47
 msgid "③ 入力欄"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:40
+#: ../../source/usage/how_to_use.md:48
 msgid "ここにキーワード(やパラメータ)を入力する。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:41
+#: ../../source/usage/how_to_use.md:49
 msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:42
+#: ../../source/usage/how_to_use.md:50
 msgid "`Tab`キーを押下するとキーワードを補完する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:43
+#: ../../source/usage/how_to_use.md:51
 msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:45
+#: ../../source/usage/how_to_use.md:53
 msgid "④ 候補リスト"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:46
+#: ../../source/usage/how_to_use.md:54
 msgid "入力欄のキーワードに該当する候補の一覧を表示する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:47
+#: ../../source/usage/how_to_use.md:55
 msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:48
+#: ../../source/usage/how_to_use.md:56
 msgid "入力欄に文字が入力されていると表示される"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:49
+#: ../../source/usage/how_to_use.md:57
 msgid "⑤ ガイド"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:50
+#: ../../source/usage/how_to_use.md:58
 msgid "コマンドを実行したときに実行される動作をキー別に表示する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:52
-msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:56
-msgid "Run Command"
-msgstr "コマンドを実行する"
-
-#: ../../source/usage/how_to_use.md:58
-msgid "入力画面にキーワードを入力して`Enter⏎`キーを押下すると、キーワードに応じてコマンドを実行することができる。"
-msgstr ""
-
 #: ../../source/usage/how_to_use.md:60
-msgid "![](../image/usage/how-to-use/run-keyword.png)"
+msgid "入力画面を閉じるには、入力欄が空の状態で`Esc`キーを押します。入力欄に文字がある状態で`Esc`キーを押すと、まず入力内容が消去されます。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:62
-msgid "Register Command"
-msgstr "コマンドを登録する"
-
-#: ../../source/usage/how_to_use.md:64
-msgid ""
-"セットアップ直後はコマンドが何も登録されていないため、 後述の方法によりコマンドを登録する必要がある。   "
-"なお、[コマンドとして登録していなくても実行できる機能](/adhoc-commands)もある。"
+msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
 msgstr ""
 
+#: ../../source/usage/how_to_use.md:66
+msgid "Run Command"
+msgstr "コマンドを実行する"
+
 #: ../../source/usage/how_to_use.md:68
-msgid "本アプリでは以下の方法でコマンドを登録することができる。"
+msgid "入力画面にキーワードを入力して`Enter⏎`キーを押下すると、キーワードに応じてコマンドを実行することができる。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:70
-msgid "[`new`コマンドで登録する](#use-new-command)"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:71
-msgid "[`registwin`コマンドで登録する](#use-registwin-command)"
+msgid "候補が複数表示された場合は、矢印キーまたはマウスで実行したい候補を選択してからEnterキーを押します。候補が表示されない場合は、キーワードの入力内容、コマンドが有効になっているか、検索対象の設定を確認してください。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:72
-msgid "[対象ウインドウをDrag&Dropする](#capture-window)"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:73
-msgid "[コンテキストメニューの`送る`>`コマンドとして登録する`](#sendto)"
+msgid "![](../image/usage/how-to-use/run-keyword.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:74
-msgid "[エクスプローラのアイコンをDrag&Dropする](#drag-drop-file-and-folders)"
-msgstr ""
+msgid "Register Command"
+msgstr "コマンドを登録する"
 
 #: ../../source/usage/how_to_use.md:76
-msgid "各方法の詳細について後述する。"
+msgid ""
+"セットアップ直後はコマンドが何も登録されていないため、 後述の方法によりコマンドを登録する必要がある。   なお、[登録しなくても使える機能"
+"](/adhoc-commands)もある。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:78
-msgid "Use new Command"
-msgstr "newコマンドで登録する"
-
 #: ../../source/usage/how_to_use.md:80
-msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](/user-commands)を選択する画面が表示される。"
+msgid "本アプリでは以下の方法でコマンドを登録することができる。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:82
+msgid "`new`コマンドで登録する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:83
+msgid "`registwin`コマンドで登録する"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:84
+msgid "対象ウインドウをDrag&Dropする"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:85
+msgid "コンテキストメニューの`送る`>`コマンドとして登録する`"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:86
+msgid "エクスプローラのアイコンをDrag&Dropする"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:88
+msgid "各方法の詳細について後述する。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:90
+msgid "Use new Command"
+msgstr "newコマンドで登録する"
+
+#: ../../source/usage/how_to_use.md:92
+msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](/user-commands)を選択する画面が表示される。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:94
 msgid ""
 "![](../image/usage/how-to-use/new-command.png) ↓   ![](../image/common"
 "/command-type.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:86
+#: ../../source/usage/how_to_use.md:98
 msgid ""
 "コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。   ↓※ 通常コマンドのコマンド編集画面"
 "   ![](../image/usage/how-to-use/new-normal-command.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:90
+#: ../../source/usage/how_to_use.md:102
 msgid "コマンド編集画面で新規登録キーワードや紐づけるプログラムへのパスなどの情報を入力し、OKを押すと、コマンドとして登録される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:92
+#: ../../source/usage/how_to_use.md:104
+msgid "例えば、メモ帳を`memo`というキーワードで起動する場合は、次のように入力します。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:106
+msgid "コマンドの名前: `memo`"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:107
+msgid "実行ファイル・URLなど: `notepad.exe`"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:109
+msgid "登録後に入力画面で`memo`と入力してEnterキーを押すと、メモ帳が起動します。"
+msgstr ""
+
+#: ../../source/usage/how_to_use.md:111
 msgid "Use registwin Command"
 msgstr "registerwinコマンドで登録する"
 
-#: ../../source/usage/how_to_use.md:94
+#: ../../source/usage/how_to_use.md:113
 msgid ""
 "入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。   ↓"
 "   ![](../image/usage/how-to-use/register-window.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:98
+#: ../../source/usage/how_to_use.md:117
 msgid "Capture Window"
 msgstr "対象ウインドウをキャプチャして登録する"
 
-#: ../../source/usage/how_to_use.md:100
+#: ../../source/usage/how_to_use.md:119
 msgid ""
 "入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。   ↓   "
 "![](../image/usage/how-to-use/register-by-drag-drop.gif)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:104
+#: ../../source/usage/how_to_use.md:123
 msgid "SendTo"
 msgstr "コンテキストメニューの`送る`>`コマンドとして登録する`"
 
-#: ../../source/usage/how_to_use.md:106
+#: ../../source/usage/how_to_use.md:125
 msgid ""
-"アプリケーション設定の[基本＞ショートカット登録](/window/app-settings/shortcut.md#app-shortcut) "
-"から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
+"アプリケーション設定の[ショートカット設定](/window/app-"
+"settings/shortcut)から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:108
+#: ../../source/usage/how_to_use.md:127
 msgid ""
 "登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される"
 "   ↓   ![](../image/common/send-to.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:112
+#: ../../source/usage/how_to_use.md:131
 msgid "Drag&Drop File and Folders."
 msgstr "ファイルやフォルダをDrag&Dropして登録する"
 
-#: ../../source/usage/how_to_use.md:114
+#: ../../source/usage/how_to_use.md:133
 msgid ""
 "エクスプローラ上のファイルやフォルダのアイコンをドラッグして、入力画面上にドロップすると、 "
 "該当するファイルやフォルダをコマンドとして登録することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:117
+#: ../../source/usage/how_to_use.md:136
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/usage/how_to_use.md:119
+#: ../../source/usage/how_to_use.md:138
 msgid "ランチャーが管理者権限で動作している場合に、一般権限で動作しているプロセスのアイコンをこの方法で登録することはできない。"
 msgstr ""
 
 #~ msgid ""
 #~ "アプリケーション設定の[基本＞ショートカット登録](/window/app-settings.md#app-"
 #~ "shortcut) "
+#~ "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "{{project_lower}}.exeを実行するとアプリが起動する。 起動直後は[入力画面](#open-"
+#~ "input-window) が表示される。"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "入力画面で[exit](/system-"
+#~ "commands.md#exit)コマンドを実行するか、[タスクトレイ](/window/tasktray)から`終了`を選択する。"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "セットアップ直後はコマンドが何も登録されていないため、 後述の方法によりコマンドを登録する必要がある。   "
+#~ "なお、[コマンドとして登録していなくても実行できる機能](/adhoc-commands)もある。"
+#~ msgstr ""
+
+#~ msgid "[`new`コマンドで登録する](#use-new-command)"
+#~ msgstr ""
+
+#~ msgid "[`registwin`コマンドで登録する](#use-registwin-command)"
+#~ msgstr ""
+
+#~ msgid "[対象ウインドウをDrag&Dropする](#capture-window)"
+#~ msgstr ""
+
+#~ msgid "[コンテキストメニューの`送る`>`コマンドとして登録する`](#sendto)"
+#~ msgstr ""
+
+#~ msgid "[エクスプローラのアイコンをDrag&Dropする](#drag-drop-file-and-folders)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "アプリケーション設定の[基本＞ショートカット登録](/window/app-settings/shortcut.md"
+#~ "#app-shortcut) "
 #~ "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
 #~ msgstr ""
 

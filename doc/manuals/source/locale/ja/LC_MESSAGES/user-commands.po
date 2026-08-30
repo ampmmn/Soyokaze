@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,10 +24,48 @@ msgid "Commands"
 msgstr "登録型のコマンド"
 
 #: ../../source/user-commands.md:3
-msgid "本アプリで作成可能なコマンドについて説明する。"
+msgid "本アプリで作成できる、利用者が登録するコマンドについて説明します。"
 msgstr ""
 
 #: ../../source/user-commands.md:5
+msgid ""
+"コマンドは、入力画面からキーワードを入力して実行する操作です。初めて登録する場合は、まず[通常コマンド](/user-"
+"command/shellexecute)を使ってアプリケーションやWebページを起動する方法を試してください。"
+msgstr ""
+
+#: ../../source/user-commands.md:7
+msgid "目的に応じたコマンドの選び方は次のとおりです。"
+msgstr ""
+
+#: ../../source/user-commands.md:9
+msgid "アプリケーション、ファイル、フォルダ、URLを開く: 通常コマンド"
+msgstr ""
+
+#: ../../source/user-commands.md:10
+msgid "Web検索を行う: Web検索コマンド"
+msgstr ""
+
+#: ../../source/user-commands.md:11
+msgid "定型文を入力する: 定型文グループコマンド"
+msgstr ""
+
+#: ../../source/user-commands.md:12
+msgid "複数のコマンドをまとめて実行する: グループコマンド"
+msgstr ""
+
+#: ../../source/user-commands.md:13
+msgid "入力内容を加工してから実行する: フィルター、正規表現、エイリアス"
+msgstr ""
+
+#: ../../source/user-commands.md:14
+msgid "ウインドウを切り替えたり配置したりする: ウインドウ操作系のコマンド"
+msgstr ""
+
+#: ../../source/user-commands.md:16
+msgid "各コマンドの詳細ページでは、設定項目の意味と利用例を説明しています。すべての種類を理解する必要はありません。目的に合う種類を一つ選んで登録してください。"
+msgstr ""
+
+#: ../../source/user-commands.md:18
 msgid "![](image/common/command-type.png)"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -36,6 +36,22 @@ msgid "![](image/introduction/overview.gif)"
 msgstr ""
 
 #: ../../source/introduction.md:17
-msgid "ファイルやフォルダ、URLなどをコマンドとして登録して、手軽に開くことができる。"
+msgid "{{ project }}は、キーボードからアプリケーションやファイルをすばやく開くためのランチャーです。"
+msgstr ""
+
+#: ../../source/introduction.md:19
+msgid "呼び出しキーを押して入力画面を表示し、目的のキーワードを入力してEnterキーを押すだけで操作できます。"
+msgstr ""
+
+#: ../../source/introduction.md:21
+msgid "例えば、よく使うアプリケーションやWebページに`memo`や`github`のような覚えやすいキーワードを登録しておくと、毎回スタートメニューやブラウザーのお気に入りを探す必要がなくなります。"
+msgstr ""
+
+#: ../../source/introduction.md:23
+msgid "ファイルやフォルダ、URLなどをコマンドとして登録して、手軽に開くことができます。"
+msgstr ""
+
+#: ../../source/introduction.md:25
+msgid "コマンドを登録していない場合でも、ファイルパスやURLを入力して直接開いたり、電卓やクリップボード履歴などの機能を利用したりできます。まずは[基本的な使い方](/usage/how_to_use)を参照してください。"
 msgstr ""
 

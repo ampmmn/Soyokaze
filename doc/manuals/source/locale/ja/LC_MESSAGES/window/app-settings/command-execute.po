@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-08-30 10:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,91 +19,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/command-execute.md:1
+#: ../../source/window/app-settings/command-execute.md:2
 msgid "Command Execute"
 msgstr "実行"
 
-#: ../../source/window/app-settings/command-execute.md:3
+#: ../../source/window/app-settings/command-execute.md:4
 msgid "![](../../image/window/app-settings/command-execute/setting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:5
+#: ../../source/window/app-settings/command-execute.md:6
 msgid "`フォルダを開くファイラーを指定`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:6
+#: ../../source/window/app-settings/command-execute.md:7
 msgid "本アプリからフォルダを開く際に、エクスプローラ以外のファイル管理ソフト(ファイラー)を使いたい場合に指定する"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:7
+#: ../../source/window/app-settings/command-execute.md:8
 msgid "`ファイラーのパス`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:8
+#: ../../source/window/app-settings/command-execute.md:9
 msgid "起動するファイル管理ソフトの実行ファイルのパスを指定する"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:9
+#: ../../source/window/app-settings/command-execute.md:10
 msgid "`パラメータ`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:10
+#: ../../source/window/app-settings/command-execute.md:11
 msgid "`ファイラーのパス`で指定したファイル管理ソフトのを起動するときのパラメータを指定する"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:11
+#: ../../source/window/app-settings/command-execute.md:12
 msgid "`$target`が実際に開かれる対象(ファイルやフォルダ)のパスに置き換えられる"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:13
+#: ../../source/window/app-settings/command-execute.md:14
 msgid "`「ファイル名を指定して実行」機能を使用する`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:14
+#: ../../source/window/app-settings/command-execute.md:15
 msgid "[`ファイル名を指定して実行`](#ファイル名を指定して実行) コマンドを有効にする。"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:16
+#: ../../source/window/app-settings/command-execute.md:17
 msgid ""
-"`未登録キーワード入力時の動作`   コマンドとして登録されていない（かつ、[コマンドとして登録していなくても実行できる機能](/adhoc-"
-"commands) として作用しない） キーワードを入力したときの動作を指定する   以下の4つから選択できる。"
-msgstr ""
-
-#: ../../source/window/app-settings/command-execute.md:19
-msgid "何もしない(入力ウインドウを閉じる)"
+"`未登録キーワード入力時の動作`   コマンドとして登録されていない（かつ、[登録しなくても使える機能](/adhoc-commands) "
+"として作用しない） キーワードを入力したときの動作を指定する   以下の4つから選択できる。"
 msgstr ""
 
 #: ../../source/window/app-settings/command-execute.md:20
-msgid "何もしない(入力ウインドウを閉じない)"
+msgid "何もしない(入力ウインドウを閉じる)"
 msgstr ""
 
 #: ../../source/window/app-settings/command-execute.md:21
-msgid "クリップボードにコピー"
+msgid "何もしない(入力ウインドウを閉じない)"
 msgstr ""
 
 #: ../../source/window/app-settings/command-execute.md:22
+msgid "クリップボードにコピー"
+msgstr ""
+
+#: ../../source/window/app-settings/command-execute.md:23
 msgid "キーワードをコマンド登録"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:24
+#: ../../source/window/app-settings/command-execute.md:25
 msgid "`管理者特権で起動する`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:25
+#: ../../source/window/app-settings/command-execute.md:26
 msgid ""
 "ランチャーアプリを管理者として実行する "
 "管理者権限で実行することにより、他の管理者権限プロセスがアクティブな状況でもランチャーのホットキーが効くようになる。   "
 "(ランチャーを通常ユーザー権限で実行している場合、管理者権限で動作するプロセス(のウインドウ)がアクティブになっている状況においてホットキーが効かない)"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:28
+#: ../../source/window/app-settings/command-execute.md:29
 msgid "`【管理者特権で実行時】コマンドを通常ユーザ権限で起動する`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:29
+#: ../../source/window/app-settings/command-execute.md:30
 msgid "管理者特権でアプリケーションを実行している状況において、ランチャーから起動するコマンドを一般ユーザー権限で実行する"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:30
+#: ../../source/window/app-settings/command-execute.md:31
 msgid "ランチャー自体は管理者権限で実行したいけれど、一方で、(セキュリティ上の理由により)コマンド実行により起動するアプリケーションを管理者権限で動かしたくない場合に使う"
 msgstr ""
