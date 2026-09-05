@@ -293,6 +293,7 @@ void Finalize(void);
 |`LoadIconFromPath`|ファイルパスに関連付けられたアイコンを取得する|
 |`LoadExtensionIcon`|ファイル拡張子に関連付けられたアイコンを取得する|
 |`HasIcon`|アイコンが本体側で管理されているか確認する|
+|`OpenFolder`|設定されたファイラーでフォルダを開く|
 
 アイコン関連の関数の宣言は次のとおりです。
 
@@ -300,11 +301,13 @@ void Finalize(void);
 HICON LoadIconFromPath(const char* path);
 HICON LoadExtensionIcon(const char* fileExt);
 int HasIcon(HICON icon);
+int OpenFolder(const char* path);
 ```
 
 ログ出力関数と`PopupMessage`は、UTF-8文字列を受け取ります。
 `LoadIconFromPath`と`LoadExtensionIcon`の引数もUTF-8文字列です。取得したアイコンは本体側が所有するため、プラグイン側で破棄しないでください。
 `HasIcon`は、本体側で管理されているアイコンの場合に1、それ以外の場合に0を返します。
+`OpenFolder`の引数はUTF-8文字列です。設定されたファイラーが利用できない場合はExplorerでフォルダを開きます。戻り値は成功時に0、失敗時に0以外です。
 
 ```cpp
 static LAUNCHER_FUNCTION_TABLE gLauncher{};

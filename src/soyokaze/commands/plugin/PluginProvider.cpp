@@ -3,6 +3,8 @@
 #include "PluginCommand.h"
 #include "PluginSettings.h"
 #include "SharedHwnd.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/builtin/OpenPathInFilerAction.h"
 #include "app/LauncherApp.h"
 #include "icon/IconLoader.h"
 #include "setting/AppPreference.h"
@@ -157,6 +159,19 @@ void WarnLog(const char* message)
 void ErrorLog(const char* message)
 {
 	spdlog::error("{}", message ? message : "");
+}
+
+/**
+  指定されたフォルダを設定されたファイラーで開く
+  @param[in] path UTF-8でエンコードされたフォルダパス
+  @return 0:成功 1:失敗
+*/
+int OpenFolder(const char* path)
+{
+	CString folderPath;
+	UTF2UTF(std::string(path ? path : ""), folderPath);
+	launcherapp::actions::builtin::OpenPathInFilerAction action(folderPath);
+	return action.Perform(launcherapp::actions::core::ParameterBuilder::EmptyParam(), nullptr) ? 0 : 1;
 }
 
 /**
@@ -369,6 +384,7 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 			&LoadIconFromPath,
 			&LoadExtensionIcon,
 			&HasIcon,
+			&OpenFolder,
 		};
 		const char* pluginInfo = nullptr;
 		if (plugin->mExportTable.Initialize(&launcherFunctionTable, &pluginInfo) != 0) {

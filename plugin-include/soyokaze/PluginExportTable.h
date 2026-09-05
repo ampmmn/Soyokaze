@@ -27,6 +27,7 @@ typedef HWND (*LPFUNCMAINWINDOWHANDLE)(void);
 typedef HICON (*LPFUNCLOADICONFROMPATH)(const char* path);
 typedef HICON (*LPFUNCLOADEXTENSIONICON)(const char* file_ext);
 typedef int (*LPFUNCHASICON)(HICON icon);
+typedef int (*LPFUNCOPENFOLDER)(const char* path);
 
 // プラグインからランチャー本体機能にアクセスするための関数テーブル
 // Initializeでこの関数テーブルを渡す。プラグインは渡された関数ポインタを保持して起き、必要に応じて関数を利用する。
@@ -49,6 +50,8 @@ typedef struct _LAUNCHER_FUNCTION_TABLE
 	LPFUNCLOADEXTENSIONICON LoadExtensionIcon;
 	// 指定したアイコンが本体側で管理されているか確認する。0:false、1:true。
 	LPFUNCHASICON HasIcon;
+	// ファイラーでフォルダを開く
+	LPFUNCOPENFOLDER OpenFolder;
 
 } LAUNCHER_FUNCTION_TABLE;
 
