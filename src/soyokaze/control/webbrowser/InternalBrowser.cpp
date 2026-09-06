@@ -55,7 +55,7 @@ public:
     NavigationStartingHandler() {}
 
     HRESULT STDMETHODCALLTYPE Invoke(
-        ICoreWebView2* sender,
+        ICoreWebView2*,
         ICoreWebView2NavigationStartingEventArgs* args) override
     {
         wil::unique_cotaskmem_string uri;
@@ -206,8 +206,6 @@ void InternalBrowser::InitializeWebview()
 {
 	auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
 
-	auto h = GetSafeHwnd();
-
 	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, options.Get(),
 			Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 				[this](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
@@ -299,7 +297,7 @@ LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 
 			auto& webview = thisPtr->in->mWebView;
 			if (webview) {
-				HRESULT hr = webview->Navigate(url);
+				webview->Navigate(url);
 				thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 			}
 

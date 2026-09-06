@@ -225,7 +225,7 @@ bool GuideCtrl::PImpl::UpdateCursorState(CPoint pos)
 	return true;
 }
 
-bool GuideCtrl::PImpl::RecreateBuffer(CWnd* wnd, CSize size)
+bool GuideCtrl::PImpl::RecreateBuffer(CWnd*, CSize size)
 {
 	// 新しいサイズに合わせてビットマップ作成
 	if (mBuffer.IsNull() == false) {
@@ -342,7 +342,7 @@ void GuideCtrl::OnPaint()
 	in->mBuffer.ReleaseDC();
 }
 
-void GuideCtrl::OnTimer(UINT_PTR timerId)
+void GuideCtrl::OnTimer(UINT_PTR)
 {
 	// キー押下状態を覚えておく(画面描画に反映する)
 	uint32_t modifierFlag = 0;
@@ -368,7 +368,7 @@ void GuideCtrl::OnTimer(UINT_PTR timerId)
 	}
 }
 
-void GuideCtrl::OnSize(UINT type, int cx, int cy)
+void GuideCtrl::OnSize(UINT, int cx, int cy)
 {
 	if (cx == 0 || cy == 0) {
 		return;

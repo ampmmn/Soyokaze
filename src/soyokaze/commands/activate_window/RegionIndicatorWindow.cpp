@@ -146,7 +146,7 @@ LRESULT RegionIndicatorWindow::OnPaint(HWND hwnd, WPARAM wp, LPARAM lp)
 	return 0;
 }
 
-LRESULT RegionIndicatorWindow::OnTimer(HWND hwnd, WPARAM wp, LPARAM lp)
+LRESULT RegionIndicatorWindow::OnTimer(HWND, WPARAM, LPARAM)
 {
 	if (mIsIndependent) {
 		// 特定のウインドウと連動しない場合は何もしない

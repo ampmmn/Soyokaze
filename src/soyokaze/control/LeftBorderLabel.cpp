@@ -161,7 +161,7 @@ void LeftBorderLabel::OnPaint()
 	in->mBuffer.ReleaseDC();
 }
 
-void LeftBorderLabel::OnSize(UINT type, int cx, int cy)
+void LeftBorderLabel::OnSize(UINT, int cx, int cy)
 {
 	if (cx == 0 || cy == 0) {
 		return;
