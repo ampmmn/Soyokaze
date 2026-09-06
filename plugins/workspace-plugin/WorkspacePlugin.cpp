@@ -38,6 +38,7 @@ struct Workspace {
 	int maxDepth{-1};
 	std::string trigger;
 	std::vector<std::string> extensions;
+	std::vector<std::string> includeFiles;
 	std::vector<std::string> excludeFiles;
 	std::vector<std::string> excludeDirectories;
 	Command command;
@@ -431,6 +432,11 @@ bool ReadWorkspace(const ryml::ConstNodeRef& object, const std::filesystem::path
 			"Invalid workspace[%zu].include-ext.", index);
 		return false;
 	}
+	if (!ReadArray(object, "include-file", result.includeFiles, false, true)) {
+		Log(&LAUNCHER_FUNCTION_TABLE::WarnLog,
+			"Invalid workspace[%zu].include-file.", index);
+		return false;
+	}
 	if (!ReadArray(object, "exclude-file", result.excludeFiles, false, true)) {
 		Log(&LAUNCHER_FUNCTION_TABLE::WarnLog,
 			"Invalid workspace[%zu].exclude-file.", index);
@@ -448,6 +454,7 @@ bool ReadWorkspace(const ryml::ConstNodeRef& object, const std::filesystem::path
 		result.excludeDirectories.end());
 	// Windowsのパス比較に合わせて、拡張子と除外パターンを小文字化する。
 	for (auto& extension : result.extensions) extension = Lower(extension);
+	for (auto& pattern : result.includeFiles) pattern = Lower(pattern);
 	for (auto& pattern : result.excludeFiles) pattern = Lower(pattern);
 	for (auto& pattern : result.excludeDirectories) pattern = Lower(pattern);
 	return true;
@@ -510,7 +517,7 @@ bool Excluded(const std::filesystem::path& path, bool directory, const Workspace
 }
 
 /**
-  ファイルの拡張子がインデックス対象か確認する
+  ファイルが拡張子とファイル名の条件に一致するか確認する
   @param[in] path 確認対象パス
   @param[in] workspace 適用するワークスペース設定
   @return インデックス対象の場合はtrue
@@ -518,6 +525,9 @@ bool Excluded(const std::filesystem::path& path, bool directory, const Workspace
 bool Included(const std::filesystem::path& path, const Workspace& workspace)
 {
 	if (workspace.extensions.empty()) return false;
+	// include-fileが指定されている場合は、ファイル名の部分一致で絞り込む。
+	const std::string fileName = Lower(ToUtf8(path.filename().wstring()));
+	if (!workspace.includeFiles.empty() && !Contains(fileName, workspace.includeFiles)) return false;
 	const std::string extension = Lower(ToUtf8(path.extension().wstring()));
 	for (const auto& accepted : workspace.extensions) if (accepted == "*" || accepted == extension) return true;
 	return false;
@@ -640,17 +650,33 @@ int CopyString(const std::string& value, char* buffer, size_t length)
 }
 
 /**
-  コマンド引数内の{path}を対象パスへ置換する
+  コマンド引数内のパス置換文字列を対象パスへ置換する
   @param[in] value 置換対象の文字列
-  @param[in] path 置換後のパス
+  @param[in] path {path}の置換後のパス
+  @param[in] directory {dir}の置換後のパス
   @return 置換後の文字列
 */
-std::string ReplacePath(std::string value, const std::string& path)
+std::string ReplacePath(std::string value, const std::string& path, const std::string& directory)
 {
 	size_t position = 0;
-	while ((position = value.find("{path}", position)) != std::string::npos) {
-		value.replace(position, 6, path);
-		position += path.size();
+	while (true) {
+		// 2種類の置換文字列を検索し、文字列内で先に現れるものを置換する。
+		const size_t pathPosition = value.find("{path}", position);
+		const size_t directoryPosition = value.find("{dir}", position);
+
+		// どちらもなければ処理を抜ける
+		if (pathPosition == std::string::npos && directoryPosition == std::string::npos) break;
+
+		// 片方が見つからない場合も含め、置換対象の種類と位置を決める。
+		const bool replacePath = directoryPosition == std::string::npos || 
+		                         (pathPosition != std::string::npos && pathPosition < directoryPosition);
+		position = replacePath ? pathPosition : directoryPosition;
+		const std::string& replacement = replacePath ? path : directory;
+		const size_t tokenLength = replacePath ? 6 : 5;
+		value.replace(position, tokenLength, replacement);
+
+		// 置換後の値に置換文字列が含まれていても再処理しないよう、検索位置を進める。
+		position += replacement.size();
 	}
 	return value;
 }
@@ -728,11 +754,12 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, int argc, char** argv)
 			return 0;
 		}
 		const auto& arguments = command->second;
+		const std::string directory = ToUtf8(std::filesystem::path(ToWide(entry->path)).parent_path().wstring());
 		std::wstring commandLine;
-		// {path}を置換した各引数を引用符付きで連結してコマンドラインを作る。
+		// {path}および{dir}を置換した各引数を引用符付きで連結してコマンドラインを作る。
 		for (const auto& argument : arguments) {
 			if (!commandLine.empty()) commandLine += L' ';
-			commandLine += Quote(ToWide(ReplacePath(argument, entry->path)));
+			commandLine += Quote(ToWide(ReplacePath(argument, entry->path, directory)));
 		}
 		std::vector<wchar_t> commandLineBuffer(commandLine.begin(), commandLine.end());
 		commandLineBuffer.push_back(L'\0');
@@ -749,10 +776,10 @@ int Execute(LNCRPLUGINMATCHHANDLE handle, int index, int argc, char** argv)
 	}
 	const auto& arguments = entry->command->folder;
 	std::wstring commandLine;
-	// フォルダ用コマンドにも対象フォルダのパスを展開する。
+	// フォルダ用コマンドにも対象フォルダのパスを{path}および{dir}へ展開する。
 	for (const auto& argument : arguments) {
 		if (!commandLine.empty()) commandLine += L' ';
-		commandLine += Quote(ToWide(ReplacePath(argument, entry->path)));
+		commandLine += Quote(ToWide(ReplacePath(argument, entry->path, entry->path)));
 	}
 	std::vector<wchar_t> command(commandLine.begin(), commandLine.end()); command.push_back(L'\0');
 	STARTUPINFOW startup{}; startup.cb = sizeof(startup);
