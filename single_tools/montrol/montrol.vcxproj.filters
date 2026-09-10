@@ -21,7 +21,7 @@
     <ClCompile Include="MonitorUtility.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="monit.cpp">
+    <ClCompile Include="montrol.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

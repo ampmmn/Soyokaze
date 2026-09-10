@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "monit", "monit\monit.vcxproj", "{58A0814F-7CD4-4AA2-84D5-8DB934E2A05E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "montrol", "montrol\montrol.vcxproj", "{58A0814F-7CD4-4AA2-84D5-8DB934E2A05E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

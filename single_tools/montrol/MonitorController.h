@@ -30,6 +30,7 @@ class MonitorSession
 {
 public:
 	MonitorSession() = default;
+	/** 列挙した物理モニターハンドルを解放する */
 	~MonitorSession();
 	MonitorSession(const MonitorSession&) = delete;
 	MonitorSession& operator=(const MonitorSession&) = delete;
@@ -41,6 +42,12 @@ public:
 	 * @return true:成功 false:失敗
 	 */
 	bool Enumerate(std::string& error);
+
+	/**
+	 * 列挙済みのモニター一覧を取得する
+	 *
+	 * @return モニター一覧への読み取り専用参照
+	 */
 	const std::vector<MonitorDevice>& GetDevices() const;
 
 private:

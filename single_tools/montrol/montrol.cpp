@@ -21,6 +21,12 @@ struct QueryOptions
 	bool jsonOutput = false;
 };
 
+/**
+ * UTF-16文字列をコンソール出力用のUTF-8文字列へ変換する
+ *
+ * @param[in] value 変換対象の文字列
+ * @return 変換後の文字列。変換できない場合は空文字列
+ */
 std::string ToUtf8(const std::wstring& value)
 {
 	if (value.empty()) {
@@ -35,6 +41,13 @@ std::string ToUtf8(const std::wstring& value)
 	return result;
 }
 
+/**
+ * 文字列全体を10進整数として解析する
+ *
+ * @param[in] value 解析対象の文字列
+ * @param[out] result 解析結果
+ * @return true:成功 false:不正な文字列
+ */
 bool ParseInteger(const std::string& value, int& result)
 {
 	if (value.empty()) {
@@ -49,9 +62,12 @@ bool ParseInteger(const std::string& value, int& result)
 	return true;
 }
 
+/**
+ * CLI全体のヘルプを表示する
+ */
 void PrintGlobalHelp()
 {
-	std::cout << "usage: monit <command> [options]" << std::endl;
+	std::cout << "usage: montrol <command> [options]" << std::endl;
 	std::cout << "commands:" << std::endl;
 	std::cout << "  query       Display monitor information" << std::endl;
 	std::cout << "  switch      Change monitor input source" << std::endl;
@@ -61,9 +77,12 @@ void PrintGlobalHelp()
 	std::cout << "  -v, --version  Show version" << std::endl;
 }
 
+/**
+ * queryサブコマンドのヘルプを表示する
+ */
 void PrintQueryHelp()
 {
-	std::cout << "usage: monit query <all|index> [options]" << std::endl;
+	std::cout << "usage: montrol query <all|index> [options]" << std::endl;
 	std::cout << "options:" << std::endl;
 	std::cout << "  -s, --source      Show supported input sources" << std::endl;
 	std::cout << "  -b, --brightness  Show current brightness" << std::endl;
@@ -71,18 +90,24 @@ void PrintQueryHelp()
 	std::cout << "  -h, --help        Show help" << std::endl;
 }
 
+/**
+ * switchサブコマンドのヘルプを表示する
+ */
 void PrintSwitchHelp()
 {
-	std::cout << "usage: monit switch <index> <input-source> [<index> <input-source> ...]" << std::endl;
+	std::cout << "usage: montrol switch <index> <input-source> [<index> <input-source> ...]" << std::endl;
 	std::cout << "Change the input source of one or more monitors." << std::endl;
 	std::cout << "input-source may be a VCP value from 0 to 255 or an alias." << std::endl;
 	std::cout << "options:" << std::endl;
 	std::cout << "  -h, --help        Show help" << std::endl;
 }
 
+/**
+ * brightnessサブコマンドのヘルプを表示する
+ */
 void PrintBrightnessHelp()
 {
-	std::cout << "usage: monit brightness <all|index> <value> [<index> <value> ...]" << std::endl;
+	std::cout << "usage: montrol brightness <all|index> <value> [<index> <value> ...]" << std::endl;
 	std::cout << "Change the brightness of one or more monitors." << std::endl;
 	std::cout << "value must be an integer from 0 to 100." << std::endl;
 	std::cout << "options:" << std::endl;
@@ -101,9 +126,18 @@ bool ContainsHelpOption(const std::vector<std::string>& args)
 		std::find(args.begin(), args.end(), "--help") != args.end();
 }
 
+/**
+ * コマンド引数の対象指定を0始まりのインデックスへ変換する
+ *
+ * @param[in] target allまたは1始まりのモニター番号
+ * @param[in] count モニター総数
+ * @param[out] indexes 処理対象のインデックス一覧
+ * @return true:有効な対象 false:不正な対象
+ */
 bool SelectTarget(const std::string& target, std::size_t count, std::vector<std::size_t>& indexes)
 {
 	if (target == "all") {
+		// allは列挙済みの全モニターを処理対象にする。
 		indexes.resize(count);
 		for (std::size_t i = 0; i < count; ++i) {
 			indexes[i] = i;
@@ -118,6 +152,15 @@ bool SelectTarget(const std::string& target, std::size_t count, std::vector<std:
 	return true;
 }
 
+/**
+ * モニター1台分の問い合わせ結果をJSONオブジェクトへ変換する
+ *
+ * @param[in] index モニターの0始まりのインデックス
+ * @param[in] device 対象モニター
+ * @param[in] options 取得する情報の指定
+ * @param[out] failed 取得失敗が発生したかどうか
+ * @return モニター情報のJSONオブジェクト
+ */
 json MakeDeviceJson(std::size_t index, const MonitorDevice& device, const QueryOptions& options, bool& failed)
 {
 	json result;
@@ -127,6 +170,7 @@ json MakeDeviceJson(std::size_t index, const MonitorDevice& device, const QueryO
 	result["inputSources"] = json::array();
 
 	if (options.brightness) {
+		// JSONのbrightnessは、取得対象でない場合と取得失敗時の区別にnullを使う。
 		BrightnessInfo brightness{};
 		if (GetMonitorBrightness(device, brightness)) {
 			result["brightness"] = {brightness.current, brightness.maximum};
@@ -136,6 +180,7 @@ json MakeDeviceJson(std::size_t index, const MonitorDevice& device, const QueryO
 		}
 	}
 	if (options.source) {
+		// 入力ソースの取得に失敗しても、他のモニターの処理は継続する。
 		std::vector<InputSourceInfo> sources;
 		if (GetMonitorInputSources(device, sources)) {
 			for (const auto& source : sources) {
@@ -149,6 +194,12 @@ json MakeDeviceJson(std::size_t index, const MonitorDevice& device, const QueryO
 	return result;
 }
 
+/**
+ * queryサブコマンドを実行する
+ *
+ * @param[in] args query以降のコマンド引数
+ * @return プロセス終了コード
+ */
 int ExecuteQuery(const std::vector<std::string>& args)
 {
 	if (args.empty() || ContainsHelpOption(args)) {
@@ -177,6 +228,7 @@ int ExecuteQuery(const std::vector<std::string>& args)
 		}
 	}
 	if (target != "all" && (!options.source && !options.brightness)) {
+		// 1台指定時は詳細情報を既定値として取得する。
 		options.source = true;
 		options.brightness = true;
 	}
@@ -202,6 +254,7 @@ int ExecuteQuery(const std::vector<std::string>& args)
 	}
 
 	if (options.jsonOutput) {
+		// JSON出力はスクリプトから扱えるよう、整形済みの結果全体を出力する。
 		std::cout << output.dump(4) << std::endl;
 	}
 	else {
@@ -225,6 +278,12 @@ int ExecuteQuery(const std::vector<std::string>& args)
 	return failed ? 1 : 0;
 }
 
+/**
+ * switchサブコマンドを実行する
+ *
+ * @param[in] args switch以降のコマンド引数
+ * @return プロセス終了コード
+ */
 int ExecuteSwitch(const std::vector<std::string>& args)
 {
 	if (ContainsHelpOption(args)) {
@@ -237,6 +296,7 @@ int ExecuteSwitch(const std::vector<std::string>& args)
 	}
 	std::vector<std::pair<std::size_t, unsigned int>> operations;
 	for (std::size_t i = 0; i < args.size(); i += 2) {
+		// 対象番号と入力ソースを1組ずつ解析し、後段でまとめて実行する。
 		int index = 0;
 		unsigned int value = 0;
 		if (!ParseInteger(args[i], index) || index < 1 || !ParseInputSourceValue(args[i + 1], value)) {
@@ -254,6 +314,7 @@ int ExecuteSwitch(const std::vector<std::string>& args)
 	const auto& devices = session.GetDevices();
 	bool failed = false;
 	for (const auto& operation : operations) {
+		// 1台の失敗では処理を中断せず、指定された残りのモニターも処理する。
 		if (operation.first >= devices.size()) {
 			std::cerr << "monitor index out of range: " << operation.first + 1 << std::endl;
 			failed = true;
@@ -267,6 +328,12 @@ int ExecuteSwitch(const std::vector<std::string>& args)
 	return failed ? 1 : 0;
 }
 
+/**
+ * brightnessサブコマンドを実行する
+ *
+ * @param[in] args brightness以降のコマンド引数
+ * @return プロセス終了コード
+ */
 int ExecuteBrightness(const std::vector<std::string>& args)
 {
 	if (ContainsHelpOption(args)) {
@@ -280,6 +347,7 @@ int ExecuteBrightness(const std::vector<std::string>& args)
 	std::vector<std::pair<std::string, int>> operations;
 	bool hasAll = false;
 	for (std::size_t i = 0; i < args.size(); i += 2) {
+		// 輝度値はツール共通の0～100スケールで受け付ける。
 		int value = 0;
 		if (!ParseInteger(args[i + 1], value) || value < 0 || value > 100) {
 			std::cerr << "brightness must be an integer from 0 to 100" << std::endl;
@@ -311,6 +379,7 @@ int ExecuteBrightness(const std::vector<std::string>& args)
 	const auto& devices = session.GetDevices();
 	bool failed = false;
 	for (const auto& operation : operations) {
+		// allはSelectTargetで全件へ展開し、個別指定と同じ流れで処理する。
 		std::vector<std::size_t> indexes;
 		if (!SelectTarget(operation.first, devices.size(), indexes)) {
 			std::cerr << "invalid monitor target: " << operation.first << std::endl;
@@ -331,6 +400,7 @@ int ExecuteBrightness(const std::vector<std::string>& args)
 
 int __cdecl main(int argc, char** argv)
 {
+	// argvをvectorへ移して、サブコマンドごとの解析処理へ渡す。
 	if (argc <= 1) {
 		PrintGlobalHelp();
 		return 0;
@@ -338,7 +408,8 @@ int __cdecl main(int argc, char** argv)
 	std::vector<std::string> arguments(argv + 1, argv + argc);
 	if (std::find(arguments.begin(), arguments.end(), "-v") != arguments.end() ||
 		std::find(arguments.begin(), arguments.end(), "--version") != arguments.end()) {
-		std::cout << "monit " << kVersion << std::endl;
+		// バージョン指定はサブコマンドの解析より優先する。
+		std::cout << "montrol " << kVersion << std::endl;
 		return 0;
 	}
 	if (arguments[0] == "-h" || arguments[0] == "--help") {

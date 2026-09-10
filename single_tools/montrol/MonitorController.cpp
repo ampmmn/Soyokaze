@@ -13,6 +13,12 @@ struct EnumerationContext
 	std::vector<MonitorDevice>* devices;
 };
 
+/**
+ * UTF-16文字列をログ出力用のUTF-8文字列へ変換する
+ *
+ * @param[in] value 変換対象の文字列
+ * @return 変換後の文字列。変換できない場合は空文字列
+ */
 std::string ToUtf8(const std::wstring& value)
 {
 	if (value.empty()) {
@@ -51,7 +57,7 @@ void LogApiFailure(const char* apiName, const MonitorDevice& device, DWORD error
 	}
 
 	std::ostringstream stream;
-	stream << "monit: " << apiName << " failed\n"
+	stream << "montrol: " << apiName << " failed\n"
 		<< "  monitor: " << ToUtf8(device.displayName) << "\n";
 	if (vcpCode.has_value()) {
 		stream << "  vcp: 0x" << std::uppercase << std::hex << std::setw(2) << std::setfill('0')
@@ -66,14 +72,22 @@ void LogApiFailure(const char* apiName, const MonitorDevice& device, DWORD error
 	std::cerr << output << std::endl;
 }
 
+/**
+ * 論理モニターに対応する物理モニターを列挙するコールバック
+ *
+ * @param[in] monitor 列挙中の論理モニター
+ * @param[in] parameter EnumerationContextへのポインター
+ * @return 列挙継続を示すTRUE
+ */
 BOOL CALLBACK EnumerateMonitorCallback(HMONITOR monitor, HDC, LPRECT, LPARAM parameter)
 {
 	auto* context = reinterpret_cast<EnumerationContext*>(parameter);
 	DWORD count = 0;
+	// 論理モニターからDDC/CI操作用の物理モニター数を取得する。
 	const BOOL countResult = GetNumberOfPhysicalMonitorsFromHMONITOR(monitor, &count);
 	const DWORD countError = GetLastError();
 	if (!countResult || count == 0) {
-		std::cerr << "monit: GetNumberOfPhysicalMonitorsFromHMONITOR failed"
+		std::cerr << "montrol: GetNumberOfPhysicalMonitorsFromHMONITOR failed"
 			<< " (result=" << (countResult ? 1 : 0)
 			<< ", count=" << count
 			<< ", error=0x" << std::hex << countError << std::dec << ")" << std::endl;
@@ -81,11 +95,12 @@ BOOL CALLBACK EnumerateMonitorCallback(HMONITOR monitor, HDC, LPRECT, LPARAM par
 		return TRUE;
 	}
 
+	// 取得したハンドルはセッション終了時にDestroyPhysicalMonitorsで解放する。
 	std::vector<PHYSICAL_MONITOR> physicalMonitors(count);
 	const BOOL physicalResult = GetPhysicalMonitorsFromHMONITOR(monitor, count, physicalMonitors.data());
 	const DWORD physicalError = GetLastError();
 	if (!physicalResult) {
-		std::cerr << "monit: GetPhysicalMonitorsFromHMONITOR failed"
+		std::cerr << "montrol: GetPhysicalMonitorsFromHMONITOR failed"
 			<< " (count=" << count
 			<< ", error=0x" << std::hex << physicalError << std::dec << ")" << std::endl;
 		context->devices->push_back({nullptr, {}, false});
@@ -97,6 +112,13 @@ BOOL CALLBACK EnumerateMonitorCallback(HMONITOR monitor, HDC, LPRECT, LPARAM par
 	return TRUE;
 }
 
+/**
+ * モニターのMCCSケイパビリティ文字列を取得する
+ *
+ * @param[in] device 対象モニター
+ * @param[out] capabilities 取得したケイパビリティ文字列
+ * @return true:成功 false:取得失敗または操作不可
+ */
 bool GetCapabilities(const MonitorDevice& device, std::string& capabilities)
 {
 	if (!device.controllable || device.handle == INVALID_HANDLE_VALUE) {
@@ -112,6 +134,7 @@ bool GetCapabilities(const MonitorDevice& device, std::string& capabilities)
 	if (length == 0) {
 		return false;
 	}
+	// APIが返す終端文字を格納できるよう、取得長より1バイト大きく確保する。
 	std::vector<char> buffer(length + 1, '\0');
 	const BOOL capabilitiesResult = CapabilitiesRequestAndCapabilitiesReply(device.handle, buffer.data(), length);
 	const DWORD capabilitiesError = GetLastError();
@@ -127,6 +150,7 @@ bool GetCapabilities(const MonitorDevice& device, std::string& capabilities)
 
 MonitorSession::~MonitorSession()
 {
+	// 列挙中に取得した全物理モニターハンドルをまとめて解放する。
 	std::vector<PHYSICAL_MONITOR> physicalMonitors;
 	for (const auto& device : mDevices) {
 		if (device.handle != nullptr) {
@@ -142,6 +166,7 @@ bool MonitorSession::Enumerate(std::string& error)
 {
 	mDevices.clear();
 	EnumerationContext context{&mDevices};
+	// EnumDisplayMonitorsのコールバックで物理モニターをmDevicesへ追加する。
 	if (!EnumDisplayMonitors(nullptr, nullptr, EnumerateMonitorCallback, reinterpret_cast<LPARAM>(&context))) {
 		error = "EnumDisplayMonitors failed";
 		return false;
@@ -159,6 +184,7 @@ bool GetMonitorBrightness(const MonitorDevice& device, BrightnessInfo& brightnes
 	if (!device.controllable || device.handle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
+	// MCCSのVCPコード0x10は輝度を表す。返却値を0～100へ正規化する。
 	MC_VCP_CODE_TYPE type = MC_SET_PARAMETER;
 	DWORD current = 0;
 	DWORD maximum = 0;
@@ -178,6 +204,7 @@ bool SetMonitorBrightness(const MonitorDevice& device, int value)
 	if (!device.controllable || device.handle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
+	// 現在の最大値を先に取得し、ツールの0～100値をモニター固有の範囲へ変換する。
 	MC_VCP_CODE_TYPE type = MC_SET_PARAMETER;
 	DWORD current = 0;
 	DWORD maximum = 0;
@@ -206,6 +233,7 @@ bool GetMonitorInputSources(const MonitorDevice& device, std::vector<InputSource
 	if (!GetCapabilities(device, capabilities)) {
 		return false;
 	}
+	// VCPコード0x60の値をケイパビリティ文字列から抽出する。
 	sources = ParseInputSources(capabilities);
 	return true;
 }
@@ -215,6 +243,7 @@ bool SetMonitorInputSource(const MonitorDevice& device, unsigned int value)
 	if (!device.controllable || device.handle == INVALID_HANDLE_VALUE || value > 255) {
 		return false;
 	}
+	// MCCSのVCPコード0x60へ入力ソースの値を設定する。
 	const BOOL result = SetVCPFeature(device.handle, 0x60, value);
 	const DWORD error = GetLastError();
 	if (!result) {

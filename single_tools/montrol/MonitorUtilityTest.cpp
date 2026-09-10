@@ -19,6 +19,7 @@ TEST(MonitorUtilityTest, ParsesVendorInputSource)
 
 TEST(MonitorUtilityTest, ParsesCapabilities)
 {
+	// MCCSケイパビリティ文字列では、入力ソース値がVCPコード60の括弧内に16進数で並ぶ。
 	const auto sources = ParseInputSources("(prot(monitor) vcp(10 12 60(0f 11 18 7f) 62))");
 	ASSERT_EQ(sources.size(), 4U);
 	EXPECT_EQ(sources[0].id, 15U);

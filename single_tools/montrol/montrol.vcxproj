@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{58a0814f-7cd4-4aa2-84d5-8db934e2a05e}</ProjectGuid>
-    <RootNamespace>monit</RootNamespace>
+    <RootNamespace>montrol</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -155,7 +155,7 @@
   <ItemGroup>
     <ClCompile Include="MonitorController.cpp" />
     <ClCompile Include="MonitorUtility.cpp" />
-    <ClCompile Include="monit.cpp" />
+    <ClCompile Include="montrol.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

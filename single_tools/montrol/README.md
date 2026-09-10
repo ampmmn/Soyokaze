@@ -12,7 +12,7 @@
 ## 基本書式
 
 ```text
-monit.exe <command> [options]
+montrol.exe <command> [options]
 ```
 
 利用できるサブコマンドは次のとおりです。
@@ -26,18 +26,18 @@ monit.exe <command> [options]
 ## ヘルプとバージョン
 
 ```text
-monit.exe --help
-monit.exe -h
-monit.exe --version
-monit.exe -v
+montrol.exe --help
+montrol.exe -h
+montrol.exe --version
+montrol.exe -v
 ```
 
 サブコマンドごとのヘルプも表示できます。
 
 ```text
-monit.exe query --help
-monit.exe switch --help
-monit.exe brightness --help
+montrol.exe query --help
+montrol.exe switch --help
+montrol.exe brightness --help
 ```
 
 ## query
@@ -47,7 +47,7 @@ monit.exe brightness --help
 ### 書式
 
 ```text
-monit.exe query <all|index> [options]
+montrol.exe query <all|index> [options]
 ```
 
 `<index>` は1から始まるモニター番号です。
@@ -64,13 +64,13 @@ monit.exe query <all|index> [options]
 `all` を指定すると、すべてのモニターを対象にします。
 
 ```text
-monit.exe query all
+montrol.exe query all
 ```
 
 オプションを指定しない場合、`query all` はモニター一覧だけを表示します。
 
 ```text
-monit.exe query 1
+montrol.exe query 1
 ```
 
 モニター番号を指定し、オプションを指定しない場合は、そのモニターの輝度と入力ソースも表示します。
@@ -78,7 +78,7 @@ monit.exe query 1
 入力ソースと輝度は同時に取得できます。
 
 ```text
-monit.exe query all --source --brightness
+montrol.exe query all --source --brightness
 ```
 
 ### 通常出力の例
@@ -107,7 +107,7 @@ Detected Monitor Count: 2
 `--json` を指定すると、結果をJSON形式で表示します。
 
 ```text
-monit.exe query all --source --brightness --json
+montrol.exe query all --source --brightness --json
 ```
 
 出力例:
@@ -151,7 +151,7 @@ JSONでは次の規則で値が出力されます。
 ### 書式
 
 ```text
-monit.exe switch <index> <input-source> [<index> <input-source> ...]
+montrol.exe switch <index> <input-source> [<index> <input-source> ...]
 ```
 
 対象にはモニター番号を指定します。`all` は指定できません。
@@ -159,14 +159,14 @@ monit.exe switch <index> <input-source> [<index> <input-source> ...]
 複数のモニターを指定した場合は、左から右の順に処理します。
 
 ```text
-monit.exe switch 1 HDMI1 2 DisplayPort1
+montrol.exe switch 1 HDMI1 2 DisplayPort1
 ```
 
 入力ソースには、エイリアスまたは0～255のVCP値を指定できます。
 
 ```text
-monit.exe switch 1 HDMI1
-monit.exe switch 1 17
+montrol.exe switch 1 HDMI1
+montrol.exe switch 1 17
 ```
 
 エイリアスは大文字と小文字を区別しません。
@@ -178,25 +178,25 @@ monit.exe switch 1 17
 ### 書式
 
 ```text
-monit.exe brightness <all|index> <value> [<index> <value> ...]
+montrol.exe brightness <all|index> <value> [<index> <value> ...]
 ```
 
 すべてのモニターを同じ輝度にする場合は、`all` を指定します。
 
 ```text
-monit.exe brightness all 20
+montrol.exe brightness all 20
 ```
 
 特定のモニターを変更する場合は、モニター番号を指定します。
 
 ```text
-monit.exe brightness 1 40
+montrol.exe brightness 1 40
 ```
 
 複数のモニターに異なる輝度を設定できます。
 
 ```text
-monit.exe brightness 1 20 2 40
+montrol.exe brightness 1 20 2 40
 ```
 
 `all` とモニター番号の混在はできません。
@@ -219,8 +219,8 @@ monit.exe brightness 1 20 2 40
 標準エイリアスにないモニター固有の入力ソースは、`query` で表示されたVCP値を直接指定できます。値はモニターによって異なるため、まず対応する入力ソースを確認してください。
 
 ```text
-monit.exe query 1 --source
-monit.exe switch 1 <queryで表示されたVCP値>
+montrol.exe query 1 --source
+montrol.exe switch 1 <queryで表示されたVCP値>
 ```
 
 ## 終了コード
@@ -244,7 +244,7 @@ monit.exe switch 1 <queryで表示されたVCP値>
 次のコマンドで現在の列挙順を確認してください。
 
 ```text
-monit.exe query all
+montrol.exe query all
 ```
 
 モニター番号は接続状態やWindowsの列挙順によって変わる場合があります。
@@ -255,7 +255,7 @@ monit.exe query all
 
 ### 輝度の値が期待と異なる
 
-`monit` の輝度値は0～100に正規化された値です。モニター内部の輝度値の範囲とは異なる場合があります。
+`montrol` の輝度値は0～100に正規化された値です。モニター内部の輝度値の範囲とは異なる場合があります。
 
 ## 免責事項
 
