@@ -30,6 +30,7 @@ adhoc-command/onenote.md
 adhoc-command/outlook-folder.md
 adhoc-command/pathfind.md
 adhoc-command/recentfiles.md
+adhoc-command/shelluri.md
 adhoc-command/slide-jump.md
 adhoc-command/startmenu.md
 adhoc-command/timespan.md

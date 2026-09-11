@@ -25,6 +25,9 @@
     <Filter Include="soyokaze\commands\shellexecute">
       <UniqueIdentifier>{548c770a-4503-4831-b7f4-ca6c0be7ce9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\shelluri">
+      <UniqueIdentifier>{d0c4f4c8-1e7a-4d2f-9c05-4a0f2e2e3f35}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\utility">
       <UniqueIdentifier>{0b80e0d7-4fc7-41e3-b7ca-2706bc2e6415}</UniqueIdentifier>
     </Filter>
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
       <Filter>soyokaze\commands\shellexecute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shelluri\ShellUriCommandTest.cpp">
+      <Filter>soyokaze\commands\shelluri</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\snippetgroup\SnippetGroupParamTest.cpp">
       <Filter>soyokaze\commands\snippetgroup</Filter>

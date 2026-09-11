@@ -46,6 +46,9 @@
     <Filter Include="commands\mailto">
       <UniqueIdentifier>{d4b52afc-e65b-4ee9-8542-d07d6f0f750a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\shelluri">
+      <UniqueIdentifier>{dcb6c9a7-3f1d-4cc5-a8c0-18b9866c3fd8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\regexp">
       <UniqueIdentifier>{084cd9a5-4f68-4642-b7bb-679c7495c4ea}</UniqueIdentifier>
     </Filter>
@@ -455,6 +458,12 @@
     </ClInclude>
     <ClInclude Include="commands\mailto\MailToCommandProvider.h">
       <Filter>commands\mailto</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shelluri\ShellUriCommand.h">
+      <Filter>commands\shelluri</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shelluri\ShellUriCommandProvider.h">
+      <Filter>commands\shelluri</Filter>
     </ClInclude>
     <ClInclude Include="utility\ScopeAttachThreadInput.h">
       <Filter>utility</Filter>
@@ -2164,6 +2173,12 @@
     </ClCompile>
     <ClCompile Include="commands\mailto\MailToCommandProvider.cpp">
       <Filter>commands\mailto</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shelluri\ShellUriCommand.cpp">
+      <Filter>commands\shelluri</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shelluri\ShellUriCommandProvider.cpp">
+      <Filter>commands\shelluri</Filter>
     </ClCompile>
     <ClCompile Include="commands\shellexecute\CommandEditDialog.cpp">
       <Filter>commands\shellexecute</Filter>

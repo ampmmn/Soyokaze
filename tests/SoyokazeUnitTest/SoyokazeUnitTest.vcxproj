@@ -52,6 +52,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\explorepath\ExplorePathFileCacheTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\snippetgroup\SnippetGroupParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\shelluri\ShellUriCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\transfer\CommandJSONEntryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\validation\CommandParamErrorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
