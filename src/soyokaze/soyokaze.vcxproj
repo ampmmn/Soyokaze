@@ -405,6 +405,7 @@
     <ClInclude Include="actions\builtin\CallbackAction.h" />
     <ClInclude Include="actions\builtin\ExecuteAction.h" />
     <ClInclude Include="actions\builtin\GroupAction.h" />
+    <ClInclude Include="actions\builtin\GroupItemAction.h" />
     <ClInclude Include="actions\builtin\NullAction.h" />
     <ClInclude Include="actions\builtin\OpenPathInFilerAction.h" />
     <ClInclude Include="actions\builtin\RegisterNewCommandAction.h" />
@@ -773,6 +774,8 @@
     <ClInclude Include="commands\group\GroupCommand.h" />
     <ClInclude Include="commands\group\GroupCommandProvider.h" />
     <ClInclude Include="commands\group\GroupEditDialog.h" />
+    <ClInclude Include="commands\group\GroupPathEditDialog.h" />
+    <ClInclude Include="commands\group\GroupUrlEditDialog.h" />
     <ClInclude Include="commands\history\HistoryCommand.h" />
     <ClInclude Include="commands\history\HistoryCommandProvider.h" />
     <ClInclude Include="commands\mailto\MailToCommand.h" />
@@ -981,6 +984,7 @@
     <ClCompile Include="actions\builtin\CallbackAction.cpp" />
     <ClCompile Include="actions\builtin\ExecuteAction.cpp" />
     <ClCompile Include="actions\builtin\GroupAction.cpp" />
+    <ClCompile Include="actions\builtin\GroupItemAction.cpp" />
     <ClCompile Include="actions\builtin\NullAction.cpp" />
     <ClCompile Include="actions\builtin\OpenPathInFilerAction.cpp" />
     <ClCompile Include="actions\builtin\RegisterNewCommandAction.cpp" />
@@ -1331,6 +1335,8 @@
     <ClCompile Include="commands\group\GroupCommand.cpp" />
     <ClCompile Include="commands\group\GroupCommandProvider.cpp" />
     <ClCompile Include="commands\group\GroupEditDialog.cpp" />
+    <ClCompile Include="commands\group\GroupPathEditDialog.cpp" />
+    <ClCompile Include="commands\group\GroupUrlEditDialog.cpp" />
     <ClCompile Include="commands\history\HistoryCommand.cpp" />
     <ClCompile Include="commands\history\HistoryCommandProvider.cpp" />
     <ClCompile Include="commands\mailto\MailToCommand.cpp" />

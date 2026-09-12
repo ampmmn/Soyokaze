@@ -105,6 +105,8 @@
 #define IDD_APPSETTING_EXCLUDEFILE      200
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  201
 #define IDD_GROUP1                      202
+#define IDD_GROUP_PATH                  261
+#define IDD_GROUP_URL                   262
 #define IDD_SIMPLEDICT                  203
 #define IDS_ERR_TEXTISEMPTY             204
 #define IDD_WATCHPATH                   205
@@ -595,6 +597,14 @@
 #define IDC_STATIC_PARAMHELP3           1246
 #define IDC_LIST_PLUGINS                1248
 #define IDC_BUTTON_PREFERENCE           1249
+#define IDC_EDIT_GROUP_PATH             1300
+#define IDC_EDIT_GROUP_PARAM            1301
+#define IDC_EDIT_GROUP_WORKDIR          1302
+#define IDC_COMBO_GROUP_SHOWTYPE        1303
+#define IDC_EDIT_GROUP_URL              1304
+#define ID_GROUP_ADD_COMMAND            32800
+#define ID_GROUP_ADD_PATH               32801
+#define ID_GROUP_ADD_URL                32802
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777

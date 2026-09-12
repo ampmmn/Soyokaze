@@ -2,10 +2,13 @@
 #include "GroupEditDialog.h"
 #include "hotkey/HotKeyControl.h"
 #include "commands/common/CommandSelectDialog.h"
+#include "commands/group/GroupPathEditDialog.h"
+#include "commands/group/GroupUrlEditDialog.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
 #include "resource.h"
+#include <commctrl.h>
 #include <vector>
 
 #ifdef _DEBUG
@@ -58,7 +61,7 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_STATUSMSG, mMessage);
 	DDX_Text(pDX, IDC_EDIT_NAME, mParam.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, mParam.mDescription);
-	DDX_Check(pDX, IDC_CHECK_PARAM, mParam.mIsPassParam);
+	DDX_Control(pDX, IDC_BUTTON_ADD, mAddMenuButton);
 	DDX_Check(pDX, IDC_CHECK_REPEAT, mParam.mIsRepeat);
 	DDX_Text(pDX, IDC_EDIT_REPEATS, mParam.mRepeats);
 	DDV_MinMaxInt(pDX, mParam.mRepeats, 1, 0x7fffffff);
@@ -71,11 +74,11 @@ void GroupEditDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(GroupEditDialog, launcherapp::control::SinglePageDialog)
 	ON_EN_CHANGE(IDC_EDIT_NAME, OnUpdate)
+	ON_EN_CHANGE(IDC_EDIT_DESCRIPTION, OnUpdate)
 	ON_COMMAND(IDC_CHECK_REPEAT, OnUpdate)
 	ON_COMMAND(IDC_CHECK_CONFIRM, OnUpdate)
-	ON_COMMAND(IDC_CHECK_PARAM, OnUpdate)
 	ON_WM_CTLCOLOR()
-	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
+	ON_BN_CLICKED(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
 	ON_COMMAND(IDC_BUTTON_UP, OnButtonUp)
 	ON_COMMAND(IDC_BUTTON_DOWN, OnButtonDown)
@@ -99,6 +102,15 @@ BOOL GroupEditDialog::OnInitDialog()
 	ASSERT(mCommandListPtr);
 
 	mCommandListPtr->SetExtendedStyle(mCommandListPtr->GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+	CHeaderCtrl* headerCtrl = mCommandListPtr->GetHeaderCtrl();
+	if (headerCtrl != nullptr) {
+		headerCtrl->ModifyStyle(HDS_NOSIZING, 0);
+	}
+	mAddMenu.CreatePopupMenu();
+	mAddMenu.AppendMenu(MF_STRING, ID_GROUP_ADD_COMMAND, _T("コマンド"));
+	mAddMenu.AppendMenu(MF_STRING, ID_GROUP_ADD_PATH, _T("パス指定"));
+	mAddMenu.AppendMenu(MF_STRING, ID_GROUP_ADD_URL, _T("URL指定"));
+	mAddMenuButton.m_hMenu = (HMENU)mAddMenu;
 
 	CString caption;
   GetWindowText(caption);
@@ -117,17 +129,27 @@ BOOL GroupEditDialog::OnInitDialog()
 	lvc.mask = LVCF_TEXT|LVCF_FMT|LVCF_WIDTH;
 
 	CString strHeader;
+	strHeader = _T("種別");
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 60;
+	lvc.fmt = LVCFMT_LEFT;
+	mCommandListPtr->InsertColumn(0,&lvc);
+
 	strHeader.LoadString(IDS_NAME);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 200;
 	lvc.fmt = LVCFMT_LEFT;
-	mCommandListPtr->InsertColumn(0,&lvc);
+	mCommandListPtr->InsertColumn(1,&lvc);
+
+	strHeader = _T("引数");
+	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
+	lvc.cx = 160;
+	mCommandListPtr->InsertColumn(2,&lvc);
 
 	strHeader.LoadString(IDS_ISWAIT);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 150;
-	lvc.fmt = LVCFMT_LEFT;
-	mCommandListPtr->InsertColumn(1,&lvc);
+	lvc.cx = 80;
+	mCommandListPtr->InsertColumn(3,&lvc);
 
 	// 項目を登録
 	int index = 0;
@@ -184,7 +206,7 @@ bool GroupEditDialog::UpdateStatus()
 
 void GroupEditDialog::SwapItem(int srcIndex, int dstIndex)
 {
-	for (int col = 0; col < 2; ++col) {
+	for (int col = 0; col < 4; ++col) {
 		CString srcText = mCommandListPtr->GetItemText(srcIndex, col);
 		CString dstText = mCommandListPtr->GetItemText(dstIndex, col);
 
@@ -207,15 +229,25 @@ void GroupEditDialog::SetItemToList(int index, const GroupItem& item)
 	}
 
 	if (index == mCommandListPtr->GetItemCount()) {
-		mCommandListPtr->InsertItem(index, item.mItemName);
+		mCommandListPtr->InsertItem(index, _T(""));
+	}
+
+
+	CString type;
+	if (item.mType == GroupItemType::Path) {
+		type = _T("パス");
+	}
+	else if (item.mType == GroupItemType::URL) {
+		type = _T("URL");
 	}
 	else {
-		mCommandListPtr->SetItemText(index, 0, item.mItemName);
+		type = _T("コマンド");
 	}
-
-
-	CString checked =item.mIsWait ? _T("\U00002714") : _T("");
-	mCommandListPtr->SetItemText(index, 1, checked);
+	mCommandListPtr->SetItemText(index, 0, type);
+	mCommandListPtr->SetItemText(index, 1, item.mItemName);
+	mCommandListPtr->SetItemText(index, 2, item.mParam);
+	CString checked = item.mIsWait ? _T("○") : _T("");
+	mCommandListPtr->SetItemText(index, 3, checked);
 }
 
 
@@ -243,6 +275,7 @@ HBRUSH GroupEditDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void GroupEditDialog::OnOK()
 {
 	UpdateData();
+	mParam.mIsPassParam = false;
 	if (UpdateStatus() == false) {
 		return ;
 	}
@@ -270,32 +303,100 @@ bool GroupEditDialog::SelectCommand(int index)
 	if (index < mParam.mItems.size()) {
 		// 既存のコマンドを選択した状態でダイアログを表示
 		dlg.SetCommandName(mParam.mItems[index].mItemName);
+		dlg.SetParameter(mParam.mItems[index].mParam);
 	}
+	dlg.SetUseParameter(true);
 	if (dlg.DoModal() != IDOK) {
 		return false;
 	}
 
 	CString cmdName = dlg.GetCommandName();
 
-	CString checked;
-
 	if (index == mParam.mItems.size()) {
 		GroupItem item;
 		item.mItemName = cmdName;
+		item.mParam = dlg.GetParameter();
 		item.mIsWait = true;
 		mParam.mItems.push_back(item);
 	}
 	else {
 		mParam.mItems[index].mItemName = cmdName;
+		mParam.mItems[index].mParam = dlg.GetParameter();
 	}
 	SetItemToList(index, mParam.mItems[index]);
 	return true;
+}
+
+bool GroupEditDialog::SelectPath(int index)
+{
+	GroupPathEditDialog dlg(this);
+	if (index < (int)mParam.mItems.size()) {
+		dlg.SetItem(mParam.mItems[index]);
+	}
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+	if (index == (int)mParam.mItems.size()) {
+		mParam.mItems.push_back(dlg.GetItem());
+	}
+	else {
+		mParam.mItems[index] = dlg.GetItem();
+	}
+	SetItemToList(index, mParam.mItems[index]);
+	return true;
+}
+
+bool GroupEditDialog::SelectURL(int index)
+{
+	GroupUrlEditDialog dlg(this);
+	if (index < (int)mParam.mItems.size()) {
+		dlg.SetItem(mParam.mItems[index]);
+	}
+	if (dlg.DoModal() != IDOK) {
+		return false;
+	}
+	if (index == (int)mParam.mItems.size()) {
+		mParam.mItems.push_back(dlg.GetItem());
+	}
+	else {
+		mParam.mItems[index] = dlg.GetItem();
+	}
+	SetItemToList(index, mParam.mItems[index]);
+	return true;
+}
+
+void GroupEditDialog::OnAddPath()
+{
+	int index = (int)mParam.mItems.size();
+	if (SelectPath(index) == false) {
+		return;
+	}
+	UpdateStatus();
+}
+
+void GroupEditDialog::OnAddURL()
+{
+	int index = (int)mParam.mItems.size();
+	if (SelectURL(index) == false) {
+		return;
+	}
+	UpdateStatus();
 }
 
 
 void GroupEditDialog::OnButtonAdd()
 {
 	ASSERT(mCommandListPtr);
+
+	int action = mAddMenuButton.m_nMenuResult;
+	if (action == ID_GROUP_ADD_PATH) {
+		OnAddPath();
+		return;
+	}
+	if (action == ID_GROUP_ADD_URL) {
+		OnAddURL();
+		return;
+	}
 
 	int nItemCount = mCommandListPtr->GetItemCount();
 
@@ -400,7 +501,10 @@ void GroupEditDialog::OnNotifyItemClick(NMHDR *pNMHDR, LRESULT *pResult)
 
 	auto& item = mParam.mItems[index];
 
-	if (nm->iSubItem == 1) {
+	if (nm->iSubItem == 0 || nm->iSubItem == 1) {
+		return;
+	}
+	if (nm->iSubItem == 3) {
 		item.mIsWait = !item.mIsWait;
 		SetItemToList(index, item);
 	}
@@ -423,8 +527,18 @@ void GroupEditDialog::OnNotifyItemDblClk(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 
-	if (nm->iSubItem == 0) {
-		if (SelectCommand(index) == false) {
+	if (nm->iSubItem == 1) {
+		bool result = false;
+		if (mParam.mItems[index].mType == GroupItemType::Path) {
+			result = SelectPath(index);
+		}
+		else if (mParam.mItems[index].mType == GroupItemType::URL) {
+			result = SelectURL(index);
+		}
+		else {
+			result = SelectCommand(index);
+		}
+		if (result == false) {
 			return;
 		}
 		UpdateStatus();

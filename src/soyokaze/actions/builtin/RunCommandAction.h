@@ -15,6 +15,7 @@ public:
 	~RunCommandAction();
 
 	void EnableWait(bool shouldWait);
+	void SetParameterTemplate(const CString& paramTemplate);
 	
 // Action
 	// アクションの内容を示す名称

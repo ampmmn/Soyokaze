@@ -53,6 +53,8 @@ struct CommandSelectDialog::PImpl
 
 	CString mName;
 	CString mDescription;
+	CString mParameter;
+	bool mUseParameter{false};
 
 	CString mFilterStr;
 
@@ -160,6 +162,21 @@ CString CommandSelectDialog::GetCommandName()
 	return in->mName;
 }
 
+void CommandSelectDialog::SetUseParameter(bool useParameter)
+{
+	in->mUseParameter = useParameter;
+}
+
+void CommandSelectDialog::SetParameter(const CString& parameter)
+{
+	in->mParameter = parameter;
+}
+
+CString CommandSelectDialog::GetParameter() const
+{
+	return in->mParameter;
+}
+
 
 void CommandSelectDialog::DoDataExchange(CDataExchange* pDX)
 {
@@ -167,6 +184,7 @@ void CommandSelectDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_NAME, in->mName);
 	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescription);
 	DDX_Text(pDX, IDC_EDIT_FILTER, in->mFilterStr);
+	DDX_Text(pDX, IDC_EDIT_PARAM, in->mParameter);
 }
 
 #pragma warning( push )
@@ -198,6 +216,8 @@ BOOL CommandSelectDialog::OnInitDialog()
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_FILTER, this);
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadKeywordManagerIcon());
+	GetDlgItem(IDC_STATIC_PARAM)->ShowWindow(in->mUseParameter ? SW_SHOW : SW_HIDE);
+	GetDlgItem(IDC_EDIT_PARAM)->ShowWindow(in->mUseParameter ? SW_SHOW : SW_HIDE);
 
 	// フィルタ欄にプレースホルダーを設定する
 	in->mKeywordEdit.SetPlaceHolder(_T("文字列をここに入力するとリストの絞り込みができます"));
@@ -254,6 +274,7 @@ BOOL CommandSelectDialog::OnInitDialog()
 
 void CommandSelectDialog::OnOK()
 {
+	UpdateData();
 	if (in->mName.IsEmpty()) {
 		return;
 	}

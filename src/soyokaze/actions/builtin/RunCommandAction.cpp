@@ -3,6 +3,7 @@
 #include "commands/common/CommandParameterFunctions.h"
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
+#include "commands/common/ExpandFunctions.h"
 
 using CommandRepository = launcherapp::core::CommandRepository;
 using namespace launcherapp::commands::common;
@@ -16,6 +17,7 @@ struct RunCommandAction::PImpl
 	CString mRunCommandName;
 	HOTKEY_ATTR mHotkeyAttr;
 	bool mShouldWait{false};
+	CString mParameterTemplate;
 
 };
 
@@ -38,6 +40,11 @@ RunCommandAction::~RunCommandAction()
 void RunCommandAction::EnableWait(bool shouldWait)
 {
 	in->mShouldWait = shouldWait;
+}
+
+void RunCommandAction::SetParameterTemplate(const CString& paramTemplate)
+{
+	in->mParameterTemplate = paramTemplate;
 }
 
 // アクションの内容を示す名称
@@ -69,6 +76,11 @@ bool RunCommandAction::Perform(Parameter* param, String* errMsg)
 
 
 	RefPtr<Parameter> paramSub(param->Clone(), false);
+	if (in->mParameterTemplate.IsEmpty() == FALSE) {
+		CString paramString = in->mParameterTemplate;
+		ExpandArguments(paramString, param);
+		paramSub->SetParameterString(paramString);
+	}
 	auto namedParamSub = GetNamedParameter(paramSub);
 	namedParamSub->SetNamedParamString(_T("PARENTS"), parents);
 	namedParamSub->SetNamedParamBool(_T("WAIT"), in->mShouldWait);

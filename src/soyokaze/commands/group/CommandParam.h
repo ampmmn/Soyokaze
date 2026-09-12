@@ -8,9 +8,20 @@ namespace launcherapp {
 namespace commands {
 namespace group {
 
+enum class GroupItemType
+{
+	Command,
+	Path,
+	URL,
+};
+
 struct GroupItem
 {
+	GroupItemType mType{GroupItemType::Command};
 	CString mItemName;
+	CString mParam;
+	int mShowType{SW_SHOW};
+	CString mWorkDir;
 	bool mIsWait{false};
 
 };

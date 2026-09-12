@@ -8,7 +8,7 @@
 #include "commands/core/CommandRepository.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/GroupAction.h"
-#include "actions/builtin/RunCommandAction.h"
+#include "actions/builtin/GroupItemAction.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "hotkey/CommandHotKeyMappings.h"
 #include "setting/AppPreference.h"
@@ -30,7 +30,6 @@ using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ParameterBuilder = launcherapp::actions::core::ParameterBuilder;
 using GroupAction = launcherapp::actions::builtin::GroupAction;
-using RunCommandAction = launcherapp::actions::builtin::RunCommandAction;
 
 // もしグループ実行を止めるような機構をいれる場合は
 // 実行処理の中でこれをthrowする
@@ -94,8 +93,8 @@ bool GroupCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 	groupAction->EnablePassParam(in->mParam.mIsPassParam);
 
 	for (auto& item : in->mParam.mItems) {
-		RefPtr<RunCommandAction> subAction(new RunCommandAction(in->mParam.mName, item.mItemName, hotkeyAttr));
-		subAction->EnableWait(item.mIsWait);
+		RefPtr<launcherapp::actions::builtin::GroupItemAction> subAction(
+			new launcherapp::actions::builtin::GroupItemAction(in->mParam.mName, item, hotkeyAttr));
 		groupAction->AddAction(subAction.get());
 	}
 

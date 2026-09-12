@@ -5,6 +5,7 @@
 #include "commands/group/CommandParam.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include "hotkey/HotKeyControl.h"
+#include <afxbutton.h>
 
 namespace launcherapp {
 namespace commands {
@@ -32,9 +33,13 @@ protected:
 	virtual BOOL OnInitDialog();
 
 	bool SelectCommand(int index);
+	bool SelectPath(int index);
+	bool SelectURL(int index);
 
 	//
 	CListCtrl* mCommandListPtr;
+	CMFCMenuButton mAddMenuButton;
+	CMenu mAddMenu;
 
 	// 編集開始時のコマンド名
 	CString mOrgName;
@@ -56,6 +61,8 @@ protected:
 	afx_msg void OnUpdate();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnButtonAdd();
+	afx_msg void OnAddPath();
+	afx_msg void OnAddURL();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnButtonUp();
 	afx_msg void OnButtonDown();

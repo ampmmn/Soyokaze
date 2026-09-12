@@ -13,6 +13,24 @@ public:
 	void SetCommandName(const CString& name);
 	CString GetCommandName();
 
+	/**
+	  パラメータ入力欄を表示するかどうかを設定する
+	  @param[in] useParameter true:表示する false:表示しない
+	*/
+	void SetUseParameter(bool useParameter);
+
+	/**
+	  パラメータを設定する
+	  @param[in] parameter パラメータ
+	*/
+	void SetParameter(const CString& parameter);
+
+	/**
+	  パラメータを取得する
+	  @return パラメータ
+	*/
+	CString GetParameter() const;
+
 protected:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
