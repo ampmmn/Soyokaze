@@ -65,6 +65,7 @@ bool GroupItemAction::Perform(Parameter* param, String* errMsg)
 		return action.Perform(paramSub, errMsg);
 	}
 
+	// URLはブラウザへの起動要求までしか完了を検知できないため、待機しない
 	CString url = in->mItem.mItemName;
 	ExpandArguments(url, param);
 	ExpandMacros(url);

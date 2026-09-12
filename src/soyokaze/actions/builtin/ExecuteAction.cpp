@@ -143,11 +143,15 @@ bool ExecuteAction::Perform(Parameter* args_, String* errMsg)
 		return false;
 	}
 
-	// もしwaitするようにするのであればここで待つ
+	// 待機指定がある場合は、起動したプロセスの終了を待つ
 	auto namedParam = GetNamedParameter(args_);
 	if (namedParam->GetNamedParamBool(_T("WAIT"))) {
-		const int WAIT_LIMIT = 30 * 1000; // 30 seconds.
-		process->Wait(WAIT_LIMIT);
+		constexpr DWORD WAIT_LIMIT = 30 * 1000;
+		if (process->Wait(WAIT_LIMIT) == false) {
+			// 終了しないプロセスによってグループ全体が停止しないようにする
+			spdlog::warn(_T("プロセスの終了待機がタイムアウトしました: {}"),
+				(LPCTSTR)in->mTarget->GetPath(args_));
+		}
 	}
 
 	return true;

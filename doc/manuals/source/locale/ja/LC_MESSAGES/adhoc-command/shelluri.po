@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.56.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-12 11:37+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/shelluri.md:1
+msgid "Shell URI"
+msgstr "Shell URIスキーム"
+
+#: ../../source/adhoc-command/shelluri.md:3
+msgid "`shell:`で始まるURIを入力欄に入力して実行すると、Windowsが提供するShell URIを開くことができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/shelluri.md:5
+msgid "例えば、`shell:startup`を入力すると、スタートアップフォルダを開くことができる。"
+msgstr ""
+
+#: ../../source/adhoc-command/shelluri.md:7
+msgid "![](../image/adhoc-command/shelluri/input.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/shelluri.md:9
+msgid "入力したURIは、Windowsの関連付けに従って実行される。"
+msgstr ""
+
+#: ../../source/adhoc-command/shelluri.md:11
+msgid "![](../image/adhoc-command/shelluri/startup.png)"
+msgstr ""
+

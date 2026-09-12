@@ -141,14 +141,14 @@ BOOL GroupEditDialog::OnInitDialog()
 	lvc.fmt = LVCFMT_LEFT;
 	mCommandListPtr->InsertColumn(1,&lvc);
 
-	strHeader = _T("引数");
+	strHeader = _T("パラメータ");
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
 	lvc.cx = 160;
 	mCommandListPtr->InsertColumn(2,&lvc);
 
 	strHeader.LoadString(IDS_ISWAIT);
 	lvc.pszText = const_cast<LPTSTR>((LPCTSTR)strHeader);
-	lvc.cx = 80;
+	lvc.cx = 140;
 	mCommandListPtr->InsertColumn(3,&lvc);
 
 	// 項目を登録
@@ -245,8 +245,10 @@ void GroupEditDialog::SetItemToList(int index, const GroupItem& item)
 	}
 	mCommandListPtr->SetItemText(index, 0, type);
 	mCommandListPtr->SetItemText(index, 1, item.mItemName);
-	mCommandListPtr->SetItemText(index, 2, item.mParam);
-	CString checked = item.mIsWait ? _T("○") : _T("");
+	mCommandListPtr->SetItemText(index, 2,
+		item.mType == GroupItemType::URL ? _T("対象外") : (LPCTSTR)item.mParam);
+	bool canWait = item.mType != GroupItemType::URL;
+	CString checked = canWait && item.mIsWait ? _T("○") : _T("");
 	mCommandListPtr->SetItemText(index, 3, checked);
 }
 
@@ -505,6 +507,9 @@ void GroupEditDialog::OnNotifyItemClick(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 	if (nm->iSubItem == 3) {
+		if (item.mType == GroupItemType::URL) {
+			return;
+		}
 		item.mIsWait = !item.mIsWait;
 		SetItemToList(index, item);
 	}

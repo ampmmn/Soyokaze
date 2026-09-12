@@ -105,7 +105,7 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 		_stprintf_s(key, _T("WorkDir%d"), index);
 		entry->Set(key, item.mWorkDir);
 		_stprintf_s(key, _T("IsWait%d"), index);
-		entry->Set(key, item.mIsWait);
+		entry->Set(key, item.mType != GroupItemType::URL && item.mIsWait);
 
 		index++;
 	}
@@ -146,7 +146,7 @@ bool CommandParam::Load(CommandEntryIF* entry)
 		_stprintf_s(key, _T("WorkDir%d"), i);
 		item.mWorkDir = entry->Get(key, _T(""));
 		_stprintf_s(key, _T("IsWait%d"), i);
-		item.mIsWait = entry->Get(key, false);
+		item.mIsWait = item.mType != GroupItemType::URL && entry->Get(key, false);
 
 		items.push_back(item);
 	}

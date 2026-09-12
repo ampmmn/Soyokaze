@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-09-12 11:37+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,7 +24,7 @@ msgid "Group Command"
 msgstr "グループコマンド"
 
 #: ../../source/user-command/group.md:3
-msgid "本アプリに登録済のコマンドを複数まとめて実行するためのコマンド"
+msgid "本アプリに登録済みのコマンド、ファイル・フォルダ、URLを複数まとめて実行するためのコマンド。"
 msgstr ""
 
 #: ../../source/user-command/group.md:5
@@ -32,15 +32,15 @@ msgid "以下のようなケースを想定している。"
 msgstr ""
 
 #: ../../source/user-command/group.md:7
-msgid "複数のWebサイトを一括して開く(例えば、GMailとGoogleカレンダーを同時に開く)"
+msgid "複数のWebサイトを一括して開く(例:GMailとGoogleカレンダーを同時に開く)"
 msgstr ""
 
 #: ../../source/user-command/group.md:8
-msgid "定型作業で毎回実行しているプログラムやWebサイトをコマンド一つですべて実行する"
+msgid "同じキーワードで複数のWebサイトを横断検索する(例:Goolge検索とBing検索を同時にする)"
 msgstr ""
 
 #: ../../source/user-command/group.md:9
-msgid "同じキーワードで複数のWeb検索を実行する"
+msgid "定型作業で毎回実行しているプログラムやWebサイトをコマンド一つですべて実行する"
 msgstr ""
 
 #: ../../source/user-command/group.md:11
@@ -51,12 +51,10 @@ msgstr "設定画面"
 msgid "![](../image/user-command/group/edit-command.png)"
 msgstr ""
 
-#: ../../source/user-command/group.md:14
-msgid "上の図の場合、`xxx`→`vim`→`twitter`という順にコマンドを順次実行する、という意味"
-msgstr ""
-
 #: ../../source/user-command/group.md:15
-msgid "完了するまで待つにチェックすると、そのコマンドが完了するのを待つ"
+msgid ""
+"上の図の場合、URL(X検索) → URL(Google検索) → 登録済コマンド(`vim`) という順に項目を順次実行する。 "
+"`実行対象の終了を待つ`にチェックすると、その項目の実行対象が終了するのを待ってから次の項目を実行する。"
 msgstr ""
 
 #: ../../source/user-command/group.md:18
@@ -64,87 +62,177 @@ msgid "`グループの名前`   入力画面からグループコマンドを�
 msgstr ""
 
 #: ../../source/user-command/group.md:20
-msgid "`説明`   コメント表示欄に記載される文字列。"
+msgid "`説明`   コメント表示欄に記載される文字列"
 msgstr ""
 
-#: ../../source/user-command/group.md:23
-msgid "`グループとして実行するコマンド`   グループに含めるサブコマンドの一覧が表示される"
+#: ../../source/user-command/group.md:22
+msgid "`グループとして実行する項目`   グループに含める項目の一覧。登録できる項目は、通常のコマンド、パス、URL。"
+msgstr ""
+
+#: ../../source/user-command/group.md:24
+msgid "`追加`   メニューから項目の種類を選択して、一覧に項目を追加する。「項目の追加」節を参照。"
 msgstr ""
 
 #: ../../source/user-command/group.md:26
-msgid "`追加`   一覧にサブコマンドを追加する"
+msgid "`削除`   一覧から選択した項目を削除する"
 msgstr ""
 
 #: ../../source/user-command/group.md:28
-msgid "`削除`   一覧からサブコマンドを削除する"
-msgstr ""
-
-#: ../../source/user-command/group.md:30
 msgid "`上へ移動`   一覧で選択した項目を一つ上に移動する"
 msgstr ""
 
-#: ../../source/user-command/group.md:32
+#: ../../source/user-command/group.md:30
 msgid "`下へ移動`   一覧で選択した項目を一つ下に移動する"
 msgstr ""
 
-#: ../../source/user-command/group.md:35
-msgid "`完了するまで待つ`"
+#: ../../source/user-command/group.md:33
+msgid "一覧には、項目の`種別`、`名前`、`パラメータ`、`実行対象の終了を待つ`が表示される。 項目をダブルクリックすると、登録内容を編集できる。"
 msgstr ""
 
 #: ../../source/user-command/group.md:36
-msgid "チェックすると、サブコマンドの実行が完了するまで次のサブコマンドを実行しない"
+msgid "`実行対象の終了を待つ`"
 msgstr ""
 
 #: ../../source/user-command/group.md:37
-msgid "チェックしない場合、サブコマンドを実行したあと、完了を待たずに次のサブコマンドを実行する"
+msgid "チェックすると、実行対象のプロセスが終了するまで次の項目を実行しない"
+msgstr ""
+
+#: ../../source/user-command/group.md:38
+msgid "実行対象が別のプロセスなどに処理を引き継いで終了する場合、引き継ぎ先で行われる処理の完了までは待機できない"
 msgstr ""
 
 #: ../../source/user-command/group.md:39
-msgid ""
-"`全てのコマンドに同じパラメータを渡す`   "
-"サブコマンド実行時に、入力欄にパラメータを指定した場合、そのパラメータをグループ内の各サブコマンドに渡す   "
-"(指定したキーワードで一括検索するようなケースで使う)"
+msgid "URLを指定した項目では利用できない。Webページの読み込みや、その後のWeb上の処理完了を待つことはできない"
 msgstr ""
 
-#: ../../source/user-command/group.md:43
-msgid "`繰り返し実行する`   指定した回数分だけグループ内のサブコマンドを繰り返し実行する"
+#: ../../source/user-command/group.md:40
+msgid "プロセスが30秒以内に終了しない場合は、待機を終了して次の項目を実行する"
+msgstr ""
+
+#: ../../source/user-command/group.md:41
+msgid "チェックしない場合、項目を実行したあと、プロセスの終了を待たずに次の項目を実行する"
+msgstr ""
+
+#: ../../source/user-command/group.md:42
+msgid "`繰り返し実行する`   指定した回数分だけグループ内の項目を繰り返し実行する"
+msgstr ""
+
+#: ../../source/user-command/group.md:44
+msgid "`回数` `繰り返し実行する`をチェックした場合の実行回数"
 msgstr ""
 
 #: ../../source/user-command/group.md:46
 msgid "`実行前に確認ダイアログを出す`   グループコマンド実行時に確認ダイアログを表示する"
 msgstr ""
 
-#: ../../source/user-command/group.md:49
+#: ../../source/user-command/group.md:48
+msgid ""
+"`キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する`   "
+"キーワードが完全一致し、候補が一つだけの場合に、入力を確定しなくてもコマンドを実行する   "
+"この機能が発動すると、グループ内の項目に対してパラメータを渡すことができないのでご注意"
+msgstr ""
+
+#: ../../source/user-command/group.md:52
 msgid ""
 "`ホットキー`   [コマンドを呼び出すキー](/window/command-"
 "hotkey)を設定できる。設定したキーを押下するとコマンドを実行できるようになる。"
 msgstr ""
 
-#: ../../source/user-command/group.md:52
-msgid "Restrictions"
-msgstr "制限事項"
-
-#: ../../source/user-command/group.md:54
-msgid "グループコマンドでは下記のコマンド種別をサブコマンドに含めても正しく動作しない。"
-msgstr ""
-
-#: ../../source/user-command/group.md:56
-msgid "[フィルタコマンド](/user-command/filter)"
-msgstr ""
+#: ../../source/user-command/group.md:55
+msgid "Add Item"
+msgstr "項目の追加"
 
 #: ../../source/user-command/group.md:57
-msgid "[簡易辞書コマンド](/user-command/simple-dict.md)"
+msgid "`追加`ボタンのメニューから、登録する項目の種類を選択する。"
 msgstr ""
 
-#: ../../source/user-command/group.md:58
-msgid "[DirectoryIndexコマンド](/user-command/directoryindex)"
+#: ../../source/user-command/group.md:59
+msgid "`コマンド` 本アプリに登録済みのコマンドを選択する。選択したコマンドに渡すパラメータも指定できる。"
 msgstr ""
 
-#: ../../source/user-command/group.md:60
-msgid "上記のコマンド種別はコマンドを実行したタイミングで追加の入力を要するものであるため、グループコマンドによる一括実行する動作と組みあわせることができない。"
+#: ../../source/user-command/group.md:61
+msgid "`パス指定` 実行ファイルまたはフォルダのパスを指定する。「パスの設定」節を参照。"
 msgstr ""
 
 #: ../../source/user-command/group.md:63
+msgid "`URL指定` ブラウザで開くURLを指定する。「URLの設定」節を参照。"
+msgstr ""
+
+#: ../../source/user-command/group.md:66
+msgid "Path Setting"
+msgstr "パス指定"
+
+#: ../../source/user-command/group.md:68
+msgid "![](../image/user-command/group/edit-path.png)"
+msgstr ""
+
+#: ../../source/user-command/group.md:70
+msgid "`パス` 実行するファイルまたはフォルダのパスを指定する。右側のメニューからファイル選択またはフォルダ選択を行うこともできる。"
+msgstr ""
+
+#: ../../source/user-command/group.md:72
+msgid "`パラメータ` ファイルの実行時に渡すパラメータを指定する。"
+msgstr ""
+
+#: ../../source/user-command/group.md:74
+msgid "`作業フォルダ` ファイルを実行するときの作業フォルダを指定する。右側のボタンからフォルダを選択できる。"
+msgstr ""
+
+#: ../../source/user-command/group.md:76
+msgid "`表示方法` 実行するウインドウの表示方法を、通常、非表示、最小化、最大化から選択する。"
+msgstr ""
+
+#: ../../source/user-command/group.md:79
+msgid "`パス`には存在するファイルまたはフォルダを指定する必要がある。指定したパスが存在しない場合は、エラーメッセージが表示され、登録できない。"
+msgstr ""
+
+#: ../../source/user-command/group.md:81
+msgid "URL Setting"
+msgstr "URL指定"
+
+#: ../../source/user-command/group.md:83
+msgid "![](../image/user-command/group/edit-url.png)"
+msgstr ""
+
+#: ../../source/user-command/group.md:85
+msgid "`URL` ブラウザで開くURLを指定する。`http://`または`https://`で始まるURLを指定する必要がある。"
+msgstr ""
+
+#: ../../source/user-command/group.md:87
+msgid ""
+"`$*` "
+"URLに`$*`を含めると、グループコマンドの実行時に入力したパラメータで置き換えられる。検索サイトのURLなど、入力したキーワードをURLに埋め込みたい場合に使用する。"
+msgstr ""
+
+#: ../../source/user-command/group.md:89
+msgid "`▼`ボタン Google、Bing、DuckDuckGo、X、Amazon、YouTubeの検索URLをプリセットから選択できる。"
+msgstr ""
+
+#: ../../source/user-command/group.md:92
+msgid "Restrictions"
+msgstr "制限事項"
+
+#: ../../source/user-command/group.md:94
+msgid "グループコマンドでは下記のコマンド種別をサブコマンドに含めても正しく動作しない。"
+msgstr ""
+
+#: ../../source/user-command/group.md:96
+msgid "[フィルタコマンド](/user-command/filter)"
+msgstr ""
+
+#: ../../source/user-command/group.md:97
+msgid "[簡易辞書コマンド](/user-command/simple-dict.md)"
+msgstr ""
+
+#: ../../source/user-command/group.md:98
+msgid "[DirectoryIndexコマンド](/user-command/directoryindex)"
+msgstr ""
+
+#: ../../source/user-command/group.md:100
+msgid "上記のコマンド種別はコマンドを実行したタイミングで追加の入力を要するものであるため、グループコマンドによる一括実行する動作と組みあわせることができない。"
+msgstr ""
+
+#: ../../source/user-command/group.md:102
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 
