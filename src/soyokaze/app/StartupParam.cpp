@@ -76,7 +76,7 @@ bool StartupParam::HasPathToRegister(String& pathToRegister)
 
 bool StartupParam::HasHideOption()
 {
-	return in->mArgs.Has("/Hide");
+	return in->mArgs.Has("/Hide") || in->mArgs.Has("--hide");
 }
 
 //
@@ -88,12 +88,16 @@ bool StartupParam::HasPasteOption(String& value)
 	if (in->mArgs.GetBWOptValue("/Paste=", value)) {
 		return true;
 	}
+	if (in->mArgs.GetBWOptValue("--paste=", value)) {
+		return true;
+	}
 	return false;
 }
 
 bool StartupParam::GetSelectRange(int& startPos, int& selLength)
 {
-	if (in->mArgs.Has("/SelStart") == false && in->mArgs.Has("/SelLength") == false) {
+	if (in->mArgs.Has("/SelStart") == false && in->mArgs.Has("/SelLength") == false &&
+		in->mArgs.Has("--sel-start") == false && in->mArgs.Has("--sel-length") == false) {
 		SPDLOG_DEBUG("range is not specified.");
 		return false;
 	}
@@ -102,6 +106,9 @@ bool StartupParam::GetSelectRange(int& startPos, int& selLength)
 
 	String value;
 	if (in->mArgs.GetBWOptValue("/SelStart=", value)) {
+		startPos = std::stoi(value);
+	}
+	if (in->mArgs.GetBWOptValue("--sel-start=", value)) {
 		startPos = std::stoi(value);
 	}
 
@@ -115,6 +122,9 @@ bool StartupParam::GetSelectRange(int& startPos, int& selLength)
 	if (in->mArgs.GetBWOptValue("/SelLength=", value)) {
 		selLength = std::stoi(value);
 	}
+	if (in->mArgs.GetBWOptValue("--sel-length=", value)) {
+		selLength = std::stoi(value);
+	}
 	return true;
 }
 
@@ -125,6 +135,9 @@ bool StartupParam::HasChangeDirectoryOption(String& dirPath)
 		return true;
 	}
 	if (in->mArgs.GetBWOptValue("/ChangeDir=", dirPath)) {
+		return true;
+	}
+	if (in->mArgs.GetBWOptValue("--cd=", dirPath)) {
 		return true;
 	}
 	return false;

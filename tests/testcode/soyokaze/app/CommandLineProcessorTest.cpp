@@ -87,6 +87,18 @@ TEST(CommandLineProcessor, Hide)
 	EXPECT_EQ("H", proxy.mHist);
 }
 
+// --hideオプションを指定された場合はアプリを非表示にする
+TEST(CommandLineProcessor, HideWithHyphen)
+{
+	TestProxy proxy;
+	CommandLineProcessor processor;
+
+	TCHAR* args[] = { (TCHAR*)_T("hoge.exe"), (TCHAR*)_T("--hide") };
+	processor.Run(sizeof(args)/sizeof(TCHAR*), args, &proxy);
+
+	EXPECT_EQ("H", proxy.mHist);
+}
+
 // /Pasteオプションが指定された場合は範囲選択
 TEST(CommandLineProcessor, Paste1)
 {
@@ -108,6 +120,20 @@ TEST(CommandLineProcessor, Paste2)
 	CommandLineProcessor processor;
 
 	TCHAR* args[] = { (TCHAR*)_T("hoge.exe"), (TCHAR*)_T("/Paste=hogehoge") };
+	processor.Run(sizeof(args)/sizeof(TCHAR*), args, &proxy);
+
+	EXPECT_EQ("AS", proxy.mHist);
+	EXPECT_EQ("hogehoge", proxy.mCommandStr);
+	EXPECT_TRUE(proxy.mIsPaste);
+}
+
+// --paste=オプションが指定された場合は範囲選択
+TEST(CommandLineProcessor, PasteWithHyphen)
+{
+	TestProxy proxy;
+	CommandLineProcessor processor;
+
+	TCHAR* args[] = { (TCHAR*)_T("hoge.exe"), (TCHAR*)_T("--paste=hogehoge") };
 	processor.Run(sizeof(args)/sizeof(TCHAR*), args, &proxy);
 
 	EXPECT_EQ("AS", proxy.mHist);
@@ -169,6 +195,33 @@ TEST(CommandLineProcessor, Caret3)
 
 	EXPECT_EQ("ASC", proxy.mHist);
 	EXPECT_EQ(-1, proxy.mStartPos);
+}
+
+// --sel-start=オプションが指定された場合はキャレット位置を指定する
+TEST(CommandLineProcessor, CaretWithHyphen)
+{
+	TestProxy proxy;
+	CommandLineProcessor processor;
+
+	TCHAR* args[] = { (TCHAR*)_T("hoge.exe"), (TCHAR*)_T("--paste=hogehoge"), (TCHAR*)_T("--sel-start=2"), (TCHAR*)_T("--sel-length=2") };
+	processor.Run(sizeof(args)/sizeof(TCHAR*), args, &proxy);
+
+	EXPECT_EQ("ASC", proxy.mHist);
+	EXPECT_EQ(2, proxy.mStartPos);
+	EXPECT_EQ(2, proxy.mLength);
+}
+
+// --cd=オプションが指定された場合はカレントディレクトリを変更する
+TEST(CommandLineProcessor, ChangeDirectoryWithHyphen)
+{
+	TestProxy proxy;
+	CommandLineProcessor processor;
+
+	TCHAR* args[] = { (TCHAR*)_T("hoge.exe"), (TCHAR*)_T("--cd=C:\\windows") };
+	processor.Run(sizeof(args)/sizeof(TCHAR*), args, &proxy);
+
+	EXPECT_EQ("DA", proxy.mHist);
+	EXPECT_EQ("C:\\windows", proxy.mDir);
 }
 
 // コマンド実行

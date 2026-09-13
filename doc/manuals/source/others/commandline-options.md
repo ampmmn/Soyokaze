@@ -1,13 +1,13 @@
 # Command Line Options
 
-- /ChangeDir=_ディレクトリ_
+- /ChangeDir=_ディレクトリ_ または --cd=_ディレクトリ_
   - カレントディレクトリを指定したディレクトリに変更する
 
 - /Runcommand=_コマンド名_ または -c _コマンド名_
   - 指定したコマンドを実行する(複数指定可能)
   - 例: `/Runcommand=chrome` または `-c chrome`
 
-- /Hide
+- /Hide または --hide
   - 起動中(かつ表示中)の入力画面を非表示にする
   - bluewindにはこのオプションの対となる`/Activate`というのがあったが、`/Activate`はとくに実装していない
     - というのも、そもそも何も指定せずにアプリを実行すると`/Activate`相当の動作になるので
@@ -15,16 +15,16 @@
 - _ファイルパス_
   - そのファイルを登録する(コマンド登録画面を表示する)
 
-- /Paste
+- /Paste または --paste=_文字列_
  - 後続のパラメータを入力欄に入力した状態で起動する
-    - 例 : `/Paste c:\`  
+     - 例 : `/Paste c:\` または `--paste=c:\`
 →入力欄に `c:\`という文字列が入力される
 
-- /SelStart=
+- /SelStart=_位置_ または --sel-start=_位置_
   - カーソル位置を指定する。
     -  例 : `/SelStart=2`
   - `/Paste`や`/SelLength`と組み合わせ使う
-- /SelLength=
+- /SelLength=_長さ_ または --sel-length=_長さ_
   - 選択範囲の長さを指定する。
     -  例 : `/SelLength=2`
   - `/Paste`や`/SelStart`と組み合わせ使う
