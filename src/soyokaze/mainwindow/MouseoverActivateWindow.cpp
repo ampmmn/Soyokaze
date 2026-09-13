@@ -60,7 +60,7 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 
 	void UpdateTimer()
 	{
-		if (AppPreference::Get()->IsMouseoverActivate()) {
+		if (mIsSuspended == false && AppPreference::Get()->IsMouseoverActivate()) {
 			StartTimer();
 		}
 		else {
@@ -144,6 +144,18 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 		ResetState();
 	}
 
+	void Suspend()
+	{
+		mIsSuspended = true;
+		StopTimer();
+	}
+
+	void Resume()
+	{
+		mIsSuspended = false;
+		UpdateTimer();
+	}
+
 	void ResetState()
 	{
 		mHasEntered = false;
@@ -155,6 +167,7 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 	UINT_PTR mTimerId{0};
 	bool mHasEntered{false};
 	bool mWasInside{false};
+	bool mIsSuspended{false};
 };
 
 MouseoverActivateWindow::MouseoverActivateWindow() : in(std::make_unique<PImpl>())
@@ -192,6 +205,21 @@ BOOL MouseoverActivateWindow::Create(CWnd* parentWnd)
 	in->UpdateTimer();
 	ShowWindow(SW_HIDE);
 	return TRUE;
+}
+
+void MouseoverActivateWindow::Suspend()
+{
+	in->Suspend();
+}
+
+void MouseoverActivateWindow::Resume()
+{
+	in->Resume();
+}
+
+void MouseoverActivateWindow::ResetState()
+{
+	in->ResetState();
 }
 
 void MouseoverActivateWindow::OnTimer(UINT_PTR timerId)

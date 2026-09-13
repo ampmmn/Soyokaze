@@ -1,4 +1,3 @@
-﻿
 // LauncherMainWindow.h : ヘッダー ファイル
 //
 
@@ -106,6 +105,8 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnActivate(UINT, CWnd* wnd, BOOL bActive);
+	afx_msg void OnEnterSizeMove();
+	afx_msg void OnExitSizeMove();
 	// コンテキストメニューの表示
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult);

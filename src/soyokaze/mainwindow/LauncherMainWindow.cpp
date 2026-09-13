@@ -1,4 +1,3 @@
-﻿
 // LauncherMainWindow.cpp : 実装ファイル
 //
 
@@ -221,6 +220,8 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_WM_NCHITTEST()
 	ON_WM_ACTIVATE()
+	ON_WM_ENTERSIZEMOVE()
+	ON_WM_EXITSIZEMOVE()
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_CANDIDATE, OnNMClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
@@ -1247,6 +1248,10 @@ void LauncherMainWindow::OnEditCommandChanged()
 	bool isReplaced = in->mInput.ReplaceInvisibleChars();
 
 	in->mLastInputStr = in->mInput.GetKeyword();
+	if (in->mInput.HasKeyword() == false) {
+		// 入力欄が空になってウインドウが縮小されても、退出として扱わない。
+		in->mMouseoverActivateWindow.ResetState();
+	}
 
 	// 音を鳴らす
 	AppSound::Get()->PlayInputSound();
@@ -1772,6 +1777,16 @@ void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 	// ダブルクリックで確定
 	OnOK();
+}
+
+void LauncherMainWindow::OnEnterSizeMove()
+{
+	in->mMouseoverActivateWindow.Suspend();
+}
+
+void LauncherMainWindow::OnExitSizeMove()
+{
+	in->mMouseoverActivateWindow.Resume();
 }
 
 void LauncherMainWindow::OnSizing(UINT side, LPRECT rect)
