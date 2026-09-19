@@ -2055,6 +2055,18 @@
     <ClInclude Include="commands\plugin\AppSettingPagePlugins.h">
       <Filter>commands\plugin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\controlpanel\SystemToolCommand.h">
+      <Filter>commands\controllpanel</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\builtin\GroupItemAction.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\GroupPathEditDialog.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\group\GroupUrlEditDialog.h">
+      <Filter>commands\group</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -3625,6 +3637,18 @@
     </ClCompile>
     <ClCompile Include="commands\plugin\PluginSettings.cpp">
       <Filter>commands\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\controlpanel\SystemToolCommand.cpp">
+      <Filter>commands\controllpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\builtin\GroupItemAction.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupPathEditDialog.cpp">
+      <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\group\GroupUrlEditDialog.cpp">
+      <Filter>commands\group</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

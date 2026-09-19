@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "ControllPanel.h"
 #include "commands/controlpanel/ControlPanelCommand.h"
+#include "commands/controlpanel/SystemToolCommand.h"
 #include "utility/RegistryKey.h"
 #include "utility/Path.h"
 #include "commands/core/CommandRepository.h"
+#include "commands/common/ExpandFunctions.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 
@@ -11,9 +13,31 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace launcherapp::commands::common;
+
 namespace launcherapp {
 namespace commands {
 namespace controlpanel {
+
+namespace {
+
+struct SystemToolDefinition
+{
+	LPCTSTR mName;
+	LPCTSTR mDescription;
+	std::vector<CString> mCommandLine;
+};
+
+const SystemToolDefinition SYSTEM_TOOL_DEFINITIONS[] = {
+	{_T("環境変数"), _T("環境変数画面を表示する"), {_T("${env SystemRoot}\\system32\\rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables")}},
+	{_T("システムのプロパティ"), _T("システムのプロパティ画面を表示する"), {_T("${env SystemRoot}\\system32\\rundll32.exe"), _T("shell32.dll,Control_RunDLL"), _T("sysdm.cpl")}},
+	{_T("ネットワーク接続"), _T("ネットワーク接続画面を表示する"), {_T("${env SystemRoot}\\system32\\rundll32.exe"), _T("shell32.dll,Control_RunDLL"), _T("ncpa.cpl")}},
+	{_T("証明書ストア(現在のユーザー)"), _T("証明書ストア(現在のユーザー)画面を表示する"), {_T("${env SystemRoot}\\system32\\certmgr.msc")}},
+	{_T("証明書ストア(ローカルコンピューター)"), _T("証明書ストア(ローカルコンピューター)画面を表示する"), {_T("${env SystemRoot}\\system32\\certlm.msc")}},
+	{_T("ユーザー名およびパスワードの保存"), _T("ユーザー名およびパスワードの保存画面を表示する"), {_T("${env SystemRoot}\\system32\\rundll32.exe"), _T("keymgr.dll,KRShowKeyMgr")}},
+};
+
+}
 
 struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 {
@@ -29,9 +53,14 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 			command->Release();
 		}
 		mPanelItems.clear();
+		for (auto& command : mSystemToolItems) {
+			command->Release();
+		}
+		mSystemToolItems.clear();
 	}
 
 	void EnumItems(std::vector<ControlPanelCommand*>& out);
+	void EnumSystemToolItems(std::vector<SystemToolCommand*>& out);
 
 
 	void OnAppFirstBoot() override {}
@@ -43,12 +72,17 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 
 		if (mIsEnable) {
 			EnumItems(mPanelItems);
+			EnumSystemToolItems(mSystemToolItems);
 		}
 		else {
 			for (auto& command : mPanelItems) {
 				command->Release();
 			}
 			mPanelItems.clear();
+			for (auto& command : mSystemToolItems) {
+				command->Release();
+			}
+			mSystemToolItems.clear();
 		}
 
 	}
@@ -57,6 +91,7 @@ struct ControlPanelProvider::PImpl : public AppPreferenceListenerIF
 	bool mIsEnable{false};
 
 	std::vector<ControlPanelCommand*> mPanelItems;
+	std::vector<SystemToolCommand*> mSystemToolItems;
 };
 
 void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& out)
@@ -110,6 +145,26 @@ void ControlPanelProvider::PImpl::EnumItems(std::vector<ControlPanelCommand*>& o
 	}
 }
 
+void ControlPanelProvider::PImpl::EnumSystemToolItems(std::vector<SystemToolCommand*>& out)
+{
+	std::vector<SystemToolCommand*> tmp;
+	for (const auto& definition : SYSTEM_TOOL_DEFINITIONS) {
+
+		// マクロを展開する
+		auto commandLine = definition.mCommandLine;
+		for (auto& item : commandLine) {
+			ExpandMacros(item);
+		}
+
+		tmp.push_back(new SystemToolCommand(definition.mName, definition.mDescription, commandLine));
+	}
+	out.swap(tmp);
+
+	for (auto& command : tmp) {
+		command->Release();
+	}
+}
+
 
 REGISTER_COMMANDPROVIDER(ControlPanelProvider)
 
@@ -138,6 +193,7 @@ void ControlPanelProvider::PrepareAdhocCommands()
 		return;
 	}
 	in->EnumItems(in->mPanelItems);
+	in->EnumSystemToolItems(in->mSystemToolItems);
 }
 
 // 一時的なコマンドを必要に応じて提供する
@@ -155,6 +211,15 @@ void ControlPanelProvider::QueryAdhocCommands(
 		command->AddRef();
 		commands.Add(CommandQueryItem(level, command));
 	}
+	for (auto& command : in->mSystemToolItems) {
+		int level = command->Match(pattern);
+		if (level == Pattern::Mismatch) {
+			continue;
+		}
+
+		command->AddRef();
+		commands.Add(CommandQueryItem(level, command));
+	}
 
 }
 
@@ -162,7 +227,8 @@ void ControlPanelProvider::QueryAdhocCommands(
 uint32_t ControlPanelProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
 	displayNames.push_back(ControlPanelCommand::TypeDisplayName());
-	return 1;
+	displayNames.push_back(SystemToolCommand::TypeDisplayName());
+	return 2;
 }
 
 

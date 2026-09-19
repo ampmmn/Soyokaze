@@ -91,6 +91,21 @@
     <Filter Include="soyokaze\logger">
       <UniqueIdentifier>{ec6b0cb8-2dfc-4902-b7d9-9e417da45c3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\controlpanel">
+      <UniqueIdentifier>{81f59ce8-6d1b-4c21-886f-574baf9df831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\group">
+      <UniqueIdentifier>{ced17daa-07bb-4b2f-be17-af50c5fcdce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\currency">
+      <UniqueIdentifier>{cfe9d800-1214-4450-bf8e-5c8112b83379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\externaltool">
+      <UniqueIdentifier>{b1bf9d19-63b4-4e22-b74b-13c5ef97dbc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soyokaze\commands\plugin">
+      <UniqueIdentifier>{6cbd7330-58cc-4383-a831-712c2e1202ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -113,9 +128,6 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp">
       <Filter>soyokaze\commands</Filter>
-    </ClCompile>
-    <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp">
-      <Filter>soyokaze</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp">
       <Filter>soyokaze\utility</Filter>
@@ -221,6 +233,30 @@
     </ClCompile>
     <ClCompile Include="LoggerEnvironment.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp">
+      <Filter>soyokaze\commands\controlpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp">
+      <Filter>soyokaze\commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp">
+      <Filter>soyokaze\commands\currency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\RegexTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\externaltool\webbrowser\BrowserProfileTest.cpp">
+      <Filter>soyokaze\externaltool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\plugin\PluginSettingsTest.cpp">
+      <Filter>soyokaze\commands\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\ImageConverterTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp">
+      <Filter>soyokaze\mainwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
