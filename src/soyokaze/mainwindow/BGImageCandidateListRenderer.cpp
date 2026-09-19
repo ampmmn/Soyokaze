@@ -90,24 +90,21 @@ struct BGImageCandidateListRenderer::PImpl
 			return false;
 		}
 
-		HRESULT hr = mImageBuffer.Create(width, height, 32);
-		if (FAILED(hr)) {
-			spdlog::error("Failed to create background image buffer. size:({},{}) HRESULT:0x{:08X}",
-				width, height, static_cast<unsigned long>(hr));
+		BOOL result = mImageBuffer.Create(width, height, 32);
+		if (result == FALSE) {
+			spdlog::error("Failed to create background image buffer. size:({},{})", width, height);
 			DestroyBuffers();
 			return false;
 		}
-		hr = mBackgroundBuffer.Create(width, height, 32);
-		if (FAILED(hr)) {
-			spdlog::error("Failed to create regular background color buffer. size:({},{}) HRESULT:0x{:08X}",
-				width, height, static_cast<unsigned long>(hr));
+		result = mBackgroundBuffer.Create(width, height, 32);
+		if (result == FALSE) {
+			spdlog::error("Failed to create regular background color buffer. size:({},{})", width, height);
 			DestroyBuffers();
 			return false;
 		}
-		hr = mAlternateBackgroundBuffer.Create(width, height, 32);
-		if (FAILED(hr)) {
-			spdlog::error("Failed to create alternate background color buffer. size:({},{}) HRESULT:0x{:08X}",
-				width, height, static_cast<unsigned long>(hr));
+		result = mAlternateBackgroundBuffer.Create(width, height, 32);
+		if (result == FALSE) {
+			spdlog::error("Failed to create alternate background color buffer. size:({},{})", width, height);
 			DestroyBuffers();
 			return false;
 		}
@@ -166,12 +163,11 @@ struct BGImageCandidateListRenderer::PImpl
 			// HALFTONE補間で画像を拡大縮小し、最近傍補間による色の不連続を抑える。
 			SetStretchBltMode(imageDC, HALFTONE);
 			SetBrushOrgEx(imageDC, 0, 0, nullptr);
-			hr = mImage.Draw(imageDC, x, y, drawWidth, drawHeight, 0, 0, imageWidth, imageHeight);
+			result = mImage.Draw(imageDC, x, y, drawWidth, drawHeight, 0, 0, imageWidth, imageHeight);
 		}
 		mImageBuffer.ReleaseDC();
-		if (FAILED(hr)) {
-			spdlog::error("Failed to draw background image. HRESULT:0x{:08X}",
-				static_cast<unsigned long>(hr));
+		if (result == FALSE) {
+			spdlog::error("Failed to draw background image.");
 			DestroyBuffers();
 			return false;
 		}
@@ -346,11 +342,11 @@ void BGImageCandidateListRenderer::SetIsEmpty(bool isEmpty)
 void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT drawItemStruct)
 {
 	CListCtrl* candidateList = static_cast<CListCtrl*>(listWnd);
-	CRect clientRect;
-	candidateList->GetClientRect(&clientRect);
-	if (in->mWidth != clientRect.Width() || in->mHeight != clientRect.Height()) {
-		in->mWidth = clientRect.Width();
-		in->mHeight = clientRect.Height();
+	CRect windowRect;
+	candidateList->GetWindowRect(&windowRect);
+	if (in->mWidth != windowRect.Width() || in->mHeight != windowRect.Height()) {
+		in->mWidth = windowRect.Width();
+		in->mHeight = windowRect.Height();
 		in->mIsReady = false;
 	}
 
@@ -368,11 +364,11 @@ void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT draw
 
 	CDC* pDC = CDC::FromHandle(drawItemStruct->hDC);
 	CRect itemRect = drawItemStruct->rcItem;
-	itemRect.right = clientRect.right;
+	itemRect.right = in->mWidth;
 	if (in->mIsEmpty) {
 		CRect rest = itemRect;
 		int itemId = 0;
-		while (rest.top < clientRect.bottom) {
+		while (rest.top < in->mHeight) {
 			// ダミー項目から始まる空欄を、通常項目と同じ規則で交互に塗る。
 			in->DrawComposite(pDC, rest, in->mIsAlternateColor && (itemId % 2) != 0);
 			rest.OffsetRect(0, rest.Height());
@@ -391,7 +387,7 @@ void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT draw
 		CRect rest = itemRect;
 		rest.OffsetRect(0, rest.Height());
 		int itemId = drawItemStruct->itemID + 1;
-		while (rest.top < clientRect.bottom) {
+		while (rest.top < in->mHeight) {
 			// 最終候補の下に続く余白も、次の行番号から交互色を継続する。
 			in->DrawComposite(pDC, rest, in->mIsAlternateColor && (itemId % 2) != 0);
 			rest.OffsetRect(0, rest.Height());
