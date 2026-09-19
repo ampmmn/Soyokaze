@@ -3,6 +3,7 @@
 #include "CandidateList.h"
 #include "CandidateListRenderer.h"
 #include "StandardCandidateListRenderer.h"
+#include "BGImageCandidateListRenderer.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
 #include "utility/Accessibility.h"
@@ -172,16 +173,23 @@ void CandidateListCtrl::InitColumns()
 		in->mHasCommandTypeColumn = true;
 	}
 
-	// 設定に応じたレンダラーを作り直す。現在は標準描画のみを使用する。
-	auto standardRenderer = std::make_unique<StandardCandidateListRenderer>();
-	standardRenderer->SetCandidateList(in->mCandidates);
-	standardRenderer->SetIsEmpty(in->mIsEmpty);
-	standardRenderer->SetIsAlternateColor(isAlternateColor);
-	standardRenderer->SetIsShowCommandType(isShowCommandType);
-	standardRenderer->SetIsDrawIcon(pref->IsDrawIconOnCandidate());
-	standardRenderer->SetTextMetrics(in->mTextHeight, in->mIconSize);
-	SetImageList(standardRenderer->GetImageList(), LVSIL_SMALL);
-	in->mRenderer = std::move(standardRenderer);
+	// 設定に応じたレンダラーを作り直す。
+	std::unique_ptr<StandardCandidateListRenderer> renderer;
+	bool isUseBGImage = pref->GetSettings().Get(_T("BGImage:Enable"), false);
+	if (isUseBGImage) {
+		renderer = std::make_unique<BGImageCandidateListRenderer>();
+	}
+	else {
+		renderer = std::make_unique<StandardCandidateListRenderer>();
+	}
+	renderer->SetCandidateList(in->mCandidates);
+	renderer->SetIsEmpty(in->mIsEmpty);
+	renderer->SetIsAlternateColor(isAlternateColor);
+	renderer->SetIsShowCommandType(isShowCommandType);
+	renderer->SetIsDrawIcon(pref->IsDrawIconOnCandidate());
+	renderer->SetTextMetrics(in->mTextHeight, in->mIconSize);
+	SetImageList(renderer->GetImageList(), LVSIL_SMALL);
+	in->mRenderer = std::move(renderer);
 
 	in->mShouldReinitColumns = false;
 }

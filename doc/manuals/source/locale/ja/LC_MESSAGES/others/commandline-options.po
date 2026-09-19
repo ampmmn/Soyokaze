@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-09 11:31+0900\n"
+"POT-Creation-Date: 2026-09-19 17:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,7 +24,7 @@ msgid "Command Line Options"
 msgstr "コマンドラインオプション"
 
 #: ../../source/others/commandline-options.md:3
-msgid "/ChangeDir=_ディレクトリ_"
+msgid "/ChangeDir=_ディレクトリ_ または --cd=_ディレクトリ_"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:4
@@ -44,7 +44,7 @@ msgid "例: `/Runcommand=chrome` または `-c chrome`"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:10
-msgid "/Hide"
+msgid "/Hide または --hide"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:11
@@ -68,7 +68,7 @@ msgid "そのファイルを登録する(コマンド登録画面を表示する
 msgstr ""
 
 #: ../../source/others/commandline-options.md:18
-msgid "/Paste"
+msgid "/Paste または --paste=_文字列_"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:19
@@ -76,11 +76,11 @@ msgid "後続のパラメータを入力欄に入力した状態で起動する"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:20
-msgid "例 : `/Paste c:\\`   →入力欄に `c:\\`という文字列が入力される"
+msgid "例 : `/Paste c:\\` または `--paste=c:\\` →入力欄に `c:\\`という文字列が入力される"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:23
-msgid "/SelStart="
+msgid "/SelStart=_位置_ または --sel-start=_位置_"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:24
@@ -96,7 +96,7 @@ msgid "`/Paste`や`/SelLength`と組み合わせ使う"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:27
-msgid "/SelLength="
+msgid "/SelLength=_長さ_ または --sel-length=_長さ_"
 msgstr ""
 
 #: ../../source/others/commandline-options.md:28
@@ -128,4 +128,22 @@ msgid ""
 "なお、上記のコマンドラインオプションによる実行は、事前に本アプリが起動している状態で行う必要がある   "
 "(起動していない状態で実行した場合、単にアプリが起動するだけ)"
 msgstr ""
+
+#~ msgid "/ChangeDir=_ディレクトリ_"
+#~ msgstr ""
+
+#~ msgid "/Hide"
+#~ msgstr ""
+
+#~ msgid "/Paste"
+#~ msgstr ""
+
+#~ msgid "例 : `/Paste c:\\`   →入力欄に `c:\\`という文字列が入力される"
+#~ msgstr ""
+
+#~ msgid "/SelStart="
+#~ msgstr ""
+
+#~ msgid "/SelLength="
+#~ msgstr ""
 

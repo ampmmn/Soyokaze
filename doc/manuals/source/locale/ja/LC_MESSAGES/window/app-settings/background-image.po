@@ -1,0 +1,154 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.57.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-19 17:40+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/background-image.md:2
+msgid "Appearance > Background Image"
+msgstr "表示＞背景画像"
+
+#: ../../source/window/app-settings/background-image.md:4
+msgid "候補欄の背景に画像を表示するための設定を行う。"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:6
+msgid "![](../../image/window/app-settings/background-image/setting.png)"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:8
+msgid "`背景画像を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:9
+msgid "候補欄の背景に画像を表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:10
+msgid "チェックを外すと、候補欄の背景色だけを表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:11
+msgid "`画像ファイル`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:12
+msgid "背景に表示する画像ファイルを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:13
+msgid "`参照`ボタンから画像ファイルを選択できる"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:14
+msgid "対応する画像形式は`.bmp`、`.jpg`、`.jpeg`、`.png`、`.gif`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:15
+msgid "`表示位置`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:16
+msgid "背景画像を候補欄のどこに表示するかを指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:17
+msgid "`左上`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:18
+msgid "画像を候補欄の左上に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:19
+msgid "`右上`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:20
+msgid "画像を候補欄の右上に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:21
+msgid "`中央`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:22
+msgid "画像を候補欄の中央に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:23
+msgid "`左下`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:24
+msgid "画像を候補欄の左下に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:25
+msgid "`右下`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:26
+msgid "画像を候補欄の右下に表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:27
+msgid "`長辺に合わせる`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:28
+msgid "画像の長辺を候補欄の長辺に合わせて表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:29
+#: ../../source/window/app-settings/background-image.md:32
+msgid "画像の縦横比は維持される"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:30
+msgid "`短辺に合わせる`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:31
+msgid "画像の短辺を候補欄の短辺に合わせて表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:33
+msgid "`透過率`"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:34
+msgid "背景画像の透過率を0～100の範囲で指定する"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:35
+msgid "0は完全に不透明、100は完全に透明になる"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:37
+msgid "背景画像を使用している場合も、候補欄の文字、アイコン、選択行の背景色は画像より前面に表示される。"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:39
+msgid "`候補欄の背景色を交互に変える`が有効な場合は、背景画像の下地にも通常の背景色と交互背景色が使用される。"
+msgstr ""
+
+#: ../../source/window/app-settings/background-image.md:41
+msgid "指定した画像を読み込めない場合は、背景画像を表示せずに通常の候補欄描画を行う。"
+msgstr ""
+

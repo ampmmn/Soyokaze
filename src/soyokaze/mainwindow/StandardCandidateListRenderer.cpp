@@ -27,6 +27,7 @@ struct StandardCandidateListRenderer::PImpl
 	bool mIsAlternateColor{false};
 	bool mIsShowCommandType{false};
 	bool mIsDrawIcon{true};
+	bool mIsDrawBackground{true};
 	int mItemsInPage{0};
 	int mTextHeight{16};
 	int mIconSize{16};
@@ -61,6 +62,11 @@ void StandardCandidateListRenderer::SetIsShowCommandType(bool isShowCommandType)
 void StandardCandidateListRenderer::SetIsDrawIcon(bool isDrawIcon)
 {
 	in->mIsDrawIcon = isDrawIcon;
+}
+
+void StandardCandidateListRenderer::SetIsDrawBackground(bool isDrawBackground)
+{
+	in->mIsDrawBackground = isDrawBackground;
 }
 
 void StandardCandidateListRenderer::SetTextMetrics(int textHeight, int iconSize)
@@ -189,6 +195,9 @@ void StandardCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT dra
 	}
 
 	if (in->mIsEmpty) {
+		if (in->mIsDrawBackground == false) {
+			return;
+		}
 		HBRUSH p = brBk2;
 		while (rcItem.top < rcCtrl.Height()) {
 			p = (p == brBk1) ? brBk2 : brBk1;
@@ -198,8 +207,10 @@ void StandardCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT dra
 		return;
 	}
 
-	HBRUSH hbr = (itemId % 2) ? brBk2 : brBk1;
-	pDC->FillRect(rcItem, CBrush::FromHandle(hbr));
+	if (in->mIsDrawBackground) {
+		HBRUSH hbr = (itemId % 2) ? brBk2 : brBk1;
+		pDC->FillRect(rcItem, CBrush::FromHandle(hbr));
+	}
 
 	COLORREF crText = colorScheme->GetListTextColor();
 	if (isSelect) {
@@ -215,7 +226,7 @@ void StandardCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT dra
 	in->DrawItemName(candidateList, pDC, itemId);
 	in->DrawItemCategory(candidateList, pDC, itemId);
 
-	if (itemId == in->mCandidates->GetSize() - 1) {
+	if (in->mIsDrawBackground && itemId == in->mCandidates->GetSize() - 1) {
 		rcItem.OffsetRect(0, rcItem.Height());
 		HBRUSH p = (itemId % 2) ? brBk2 : brBk1;
 		while (rcItem.top < rcCtrl.Height()) {

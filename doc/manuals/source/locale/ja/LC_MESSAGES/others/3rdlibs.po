@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"POT-Creation-Date: 2026-09-19 17:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -142,38 +142,34 @@ msgid "Python拡張コマンドにおいて、スクリプト欄を編集する�
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:46
-msgid "[upx/upx](https://github.com/upx/upx)"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:47
-msgid "ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:48
-msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリ(はGPLにはならない(認識)"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:49
-msgid "未改変UPXおよび未改変stubを使用する場合に限り、UPXの特別例外が適用される"
-msgstr ""
-
-#: ../../source/others/3rdlibs.md:51
 msgid "[simdutf/simdutf](https://github.com/simdutf/simdutf)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:52
+#: ../../source/others/3rdlibs.md:47
 msgid "Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:54
+#: ../../source/others/3rdlibs.md:49
 msgid "[biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:55
+#: ../../source/others/3rdlibs.md:50
 msgid "YAMLファイルをパースするために利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:60
+#: ../../source/others/3rdlibs.md:55
 msgid "非開示"
 msgstr ""
+
+#~ msgid "[upx/upx](https://github.com/upx/upx)"
+#~ msgstr ""
+
+#~ msgid "ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している"
+#~ msgstr ""
+
+#~ msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリ(はGPLにはならない(認識)"
+#~ msgstr ""
+
+#~ msgid "未改変UPXおよび未改変stubを使用する場合に限り、UPXの特別例外が適用される"
+#~ msgstr ""
 

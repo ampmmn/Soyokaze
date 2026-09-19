@@ -801,6 +801,9 @@
     <ClInclude Include="mainwindow\CandidateListRenderer.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\BGImageCandidateListRenderer.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
     <ClInclude Include="mainwindow\StandardCandidateListRenderer.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -2517,6 +2520,9 @@
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\BGImageCandidateListRenderer.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\StandardCandidateListRenderer.cpp">

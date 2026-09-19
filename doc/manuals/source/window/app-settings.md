@@ -25,6 +25,7 @@ app-settings/priority.md
 app-settings/files-and-folders.md
 app-settings/appearance.md
 app-settings/colors.md
+app-settings/background-image.md
 app-settings/external-tool.md
 app-settings/extensions.md
 app-settings/switch-window.md
