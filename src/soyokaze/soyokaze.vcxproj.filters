@@ -798,6 +798,12 @@
     <ClInclude Include="mainwindow\CandidateListCtrl.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\CandidateListRenderer.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\StandardCandidateListRenderer.h">
+      <Filter>mainwindow</Filter>
+    </ClInclude>
     <ClInclude Include="mainwindow/LauncherDropTarget.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
@@ -2067,6 +2073,9 @@
     <ClInclude Include="commands\group\GroupUrlEditDialog.h">
       <Filter>commands\group</Filter>
     </ClInclude>
+    <ClInclude Include="settingwindow\AppSettingPageBGImage.h">
+      <Filter>settingwindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2508,6 +2517,9 @@
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
+      <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\StandardCandidateListRenderer.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp">
@@ -3649,6 +3661,9 @@
     </ClCompile>
     <ClCompile Include="commands\group\GroupUrlEditDialog.cpp">
       <Filter>commands\group</Filter>
+    </ClCompile>
+    <ClCompile Include="settingwindow\AppSettingPageBGImage.cpp">
+      <Filter>settingwindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

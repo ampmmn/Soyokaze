@@ -874,6 +874,7 @@
     <ClInclude Include="setting/AppPreference.h" />
     <ClInclude Include="settingwindow\AppSettingDialog.h" />
     <ClInclude Include="settingwindow\AppSettingPageBase.h" />
+    <ClInclude Include="settingwindow\AppSettingPageBGImage.h" />
     <ClInclude Include="settingwindow\AppSettingPageColor.h" />
     <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h" />
     <ClInclude Include="settingwindow\AppSettingPageExternalTool.h" />
@@ -883,6 +884,8 @@
     <ClInclude Include="settingwindow\AppSettingPathPage.h" />
     <ClInclude Include="settingwindow\BasicSettingDialog.h" />
     <ClInclude Include="mainwindow\CandidateListCtrl.h" />
+    <ClInclude Include="mainwindow\CandidateListRenderer.h" />
+    <ClInclude Include="mainwindow\StandardCandidateListRenderer.h" />
     <ClInclude Include="icon\CaptureIconLabel.h" />
     <ClInclude Include="hotkey\CommandHotKeyDialog.h" />
     <ClInclude Include="settingwindow\ExcludePathPage.h" />
@@ -1434,6 +1437,7 @@
     <ClCompile Include="setting/AppPreference.cpp" />
     <ClCompile Include="settingwindow\AppSettingDialog.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageBase.cpp" />
+    <ClCompile Include="settingwindow\AppSettingPageBGImage.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageColor.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp" />
     <ClCompile Include="settingwindow\AppSettingPageExternalTool.cpp" />
@@ -1443,6 +1447,7 @@
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />
+    <ClCompile Include="mainwindow\StandardCandidateListRenderer.cpp" />
     <ClCompile Include="icon\CaptureIconLabel.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyDialog.cpp" />
     <ClCompile Include="settingwindow\ExcludePathPage.cpp" />

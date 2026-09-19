@@ -105,8 +105,6 @@
 #define IDD_APPSETTING_EXCLUDEFILE      200
 #define IDS_DESCRIPTION_SNIPPETCOMMAND  201
 #define IDD_GROUP1                      202
-#define IDD_GROUP_PATH                  261
-#define IDD_GROUP_URL                   262
 #define IDD_SIMPLEDICT                  203
 #define IDS_ERR_TEXTISEMPTY             204
 #define IDD_WATCHPATH                   205
@@ -165,6 +163,8 @@
 #define IDD_PYEXTENSION_EDIT            258
 #define IDI_ICON2                       259
 #define IDI_ICON_GEAR                   259
+#define IDD_GROUP_PATH                  261
+#define IDD_GROUP_URL                   262
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -579,6 +579,7 @@
 #define IDC_CHECK_ENABLEMENUITEM2       1232
 #define IDC_CHECK_ENABLEPROPPAGES       1232
 #define IDC_CHECK_ACTIVEWINDOW          1232
+#define IDD_APPSETTING_BGIMAGE          1232
 #define IDC_CHECK_DEBUGDUMPENABLED      1233
 #define IDC_CHECK_ENABLEMENUITEM3       1234
 #define IDC_CHECK_FINDMENUALL           1234
@@ -597,19 +598,20 @@
 #define IDC_STATIC_PARAMHELP3           1246
 #define IDC_LIST_PLUGINS                1248
 #define IDC_BUTTON_PREFERENCE           1249
+#define IDC_CHECK_USEBGIMAGE            1250
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
 #define IDC_COMBO_GROUP_SHOWTYPE        1303
 #define IDC_EDIT_GROUP_URL              1304
-#define ID_GROUP_ADD_COMMAND            32800
-#define ID_GROUP_ADD_PATH               32801
-#define ID_GROUP_ADD_URL                32802
 #define ID_VIEW_HELP                    32775
 #define ID_VIEW_NEXT                    32776
 #define ID_VIEW_PREV                    32777
 #define ID_VIEW_UP                      32778
 #define ID_VIEW_DOWN                    32779
+#define ID_GROUP_ADD_COMMAND            32800
+#define ID_GROUP_ADD_PATH               32801
+#define ID_GROUP_ADD_URL                32802
 
 // Next default values for new objects
 // 
@@ -617,7 +619,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1250
+#define _APS_NEXT_CONTROL_VALUE         1251
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
