@@ -23,9 +23,13 @@ typedef void (*MIGEMO_RELEASE)(void*, unsigned char*);
 typedef int (*MIGEMO_PROC_INT2CHAR)(unsigned int, unsigned char*);
 typedef void (*MIGEMO_SETPROC_INT2CHAR)(void* object, MIGEMO_PROC_INT2CHAR proc);
 
+static int int2char(unsigned int in, unsigned char* out);
 
 struct Migemo::PImpl
 {
+	bool OpenMDict(LPCTSTR dictPath);
+	bool OpenSDict(LPCTSTR dictPath);
+
 	void* mMigemoObj{nullptr};
 	bool mIsDictLoaded{false};
 
@@ -41,6 +45,125 @@ struct Migemo::PImpl
 	MIGEMO_SETPROC_INT2CHAR mMigemoSetProcInt2Char{nullptr};
 
 };
+
+bool Migemo::PImpl::OpenMDict(LPCTSTR dictPath)
+{
+	if (Path::FileExists(dictPath) == FALSE) {
+		return false;
+	}
+
+	CharConverter converter(932);    // FIXME: 日本語環境でしか動作しない
+	CStringA dictPathA;
+	converter.Convert(CString(dictPath), dictPathA);
+	mMigemoObj = mMigemoOpen(dictPathA);
+	if (mMigemoObj == nullptr) {
+		return false;
+	}
+
+	// このアプリで扱える正規表現にするためのエスケープ処理を追加
+	mMigemoSetProcInt2Char(mMigemoObj, int2char);
+
+	return true;
+}
+
+bool Migemo::PImpl::OpenSDict(LPCTSTR dictPath)
+{
+	constexpr LPCTSTR sdictFileNames[] = {
+		_T("han2zen.dat"),
+		_T("hira2kata.dat"),
+		_T("roma2hira.dat"),
+		_T("zen2han.dat"),
+	};
+	Path sdictDir(Path::APPDIRPERMACHINE, _T("migemo-sdict"));
+	Path sdictPath(Path::APPDIRPERMACHINE, _T("migemo-sdict\\migemo-sdict"));
+	bool hasSdictFiles = sdictPath.FileExists();
+
+	// 補助辞書の有無を確認(欠けていたら従来辞書からの読み込みからやりなおし)
+	for (auto fileName : sdictFileNames) {
+		Path filePath(sdictDir);
+		filePath.Append(fileName);
+		hasSdictFiles = hasSdictFiles && filePath.FileExists();
+	}
+
+	CharConverter converter(932);    // FIXME: 日本語環境でしか動作しない
+
+	// sdictの読み込みを試みる
+	if (hasSdictFiles) {
+		CStringA sdictPathA;
+		converter.Convert(CString(sdictPath), sdictPathA);
+		mMigemoObj = mMigemoOpenSdict(sdictPathA);
+	}
+
+	// sdictを開けなかった(あるいは補助辞書がなかった)場合は従来の辞書を読み込む
+	if (mMigemoObj == nullptr) {
+		if (Path::FileExists(dictPath) == FALSE) {
+			return false;
+		}
+
+		CStringA dictPathA;
+		converter.Convert(CString(dictPath), dictPathA);
+		mMigemoObj = mMigemoOpen(dictPathA);
+	}
+
+	if (mMigemoObj == nullptr) {
+		// 失敗したのでここで終了
+		return false;
+	}
+
+	// このアプリで扱える正規表現にするためのエスケープ処理を追加
+	mMigemoSetProcInt2Char(mMigemoObj, int2char);
+
+	if (hasSdictFiles) {
+		// sdictからロードしたのであればここで終了
+		return true;
+	}
+
+	// 通常辞書からロードした場合は、辞書をsdictへ変換し、補助ファイルと一緒に次回起動用に保存する
+	if (mMigemoSwitchSdict(mMigemoObj, 1) == 0) {
+		// 変換失敗の場合は保存をあきらめる
+		return true;
+	}
+
+	Path dictDir(dictPath);
+	dictDir.RemoveFileSpec();
+	std::error_code error;
+	std::filesystem::create_directories(std::filesystem::path((LPCTSTR)sdictDir), error);
+	if (error.value() != 0) {
+		// ディレクトリ作成失敗の場合は保存をあきらめる
+		return true;
+	}
+
+	// 補助辞書ファイルのコピーを行う
+	bool copied = true;
+	for (auto fileName : sdictFileNames) {
+		Path sourcePath(dictDir);
+		sourcePath.Append(fileName);
+		Path destinationPath(sdictDir);
+		destinationPath.Append(fileName);
+		if (sourcePath.FileExists() == false) {
+			copied = false;
+			break;
+		}
+		std::filesystem::copy_file(
+				std::filesystem::path((LPCTSTR)sourcePath),
+				std::filesystem::path((LPCTSTR)destinationPath),
+				std::filesystem::copy_options::overwrite_existing,
+				error);
+		if (error.value() != 0) {
+			copied = false;
+			break;
+		}
+	}
+
+	// 最後にsdictを保存
+	if (copied) {
+		CStringA sdictPathA;
+		converter.Convert(CString(sdictPath), sdictPathA);
+		mMigemoSaveSdict(mMigemoObj, sdictPathA);
+	}
+
+	return true;
+}
 
 Migemo::Migemo() : in(std::make_unique<PImpl>())
 {
@@ -120,91 +243,25 @@ static int int2char(unsigned int in, unsigned char* out)
 // 辞書データを読んでMigemoオブジェクトを生成する
 bool Migemo::Open(LPCTSTR dictPath)
 {
+	if (in->mMigemoObj != nullptr) {
+		return true;
+	}
+
 	// DLLからAPIを取得できていなければエラー
 	if (in->mMigemoOpen == nullptr || in->mMigemoLoad == nullptr) {
 		return false;
 	}
 
-	CharConverter converter(932);    // FIXME: 日本語環境でしか動作しない
-	constexpr LPCTSTR sdictFileNames[] = {
-		_T("han2zen.dat"),
-		_T("hira2kata.dat"),
-		_T("roma2hira.dat"),
-		_T("zen2han.dat"),
-	};
-
-	// オブジェクトがなければ作成
-	if (in->mMigemoObj == nullptr) {
-		// sdict対応APIが利用でき、保存済みのsdictが存在する場合は優先して読み込む
-		bool canUseSdict = in->mMigemoOpenSdict != nullptr &&
-			in->mMigemoSwitchSdict != nullptr && in->mMigemoSaveSdict != nullptr;
-		Path sdictDir(Path::APPDIRPERMACHINE, _T("migemo-sdict"));
-		Path sdictPath(Path::APPDIRPERMACHINE, _T("migemo-sdict\\migemo-sdict"));
-		bool hasSdictFiles = canUseSdict && sdictPath.FileExists();
-		for (auto fileName : sdictFileNames) {
-			Path filePath(sdictDir);
-			filePath.Append(fileName);
-			hasSdictFiles = hasSdictFiles && filePath.FileExists();
-		}
-		if (hasSdictFiles) {
-			CStringA sdictPathA;
-			converter.Convert(CString(sdictPath), sdictPathA);
-			in->mMigemoObj = in->mMigemoOpenSdict(sdictPathA);
-		}
-
-		// sdictを開けなかった場合は従来の辞書を読み込む
-		if (in->mMigemoObj == nullptr) {
-			if (Path::FileExists(dictPath) == FALSE) {
-				return false;
-			}
-
-			CStringA dictPathA;
-			converter.Convert(CString(dictPath), dictPathA);
-			in->mMigemoObj = in->mMigemoOpen(dictPathA);
-		}
-
-		if (in->mMigemoObj == nullptr) {
+	// sdict対応APIが利用できる場合はsdict対応の経路を使う
+	bool canUseSdict = in->mMigemoOpenSdict != nullptr &&
+		in->mMigemoSwitchSdict != nullptr && in->mMigemoSaveSdict != nullptr;
+	if (canUseSdict) {
+		if (in->OpenSDict(dictPath) == false) {
 			return false;
 		}
-
-		in->mMigemoSetProcInt2Char(in->mMigemoObj, int2char);
-
-		if (canUseSdict && hasSdictFiles == false) {
-			// 通常辞書をsdictへ変換し、補助ファイルと一緒に次回起動用に保存する
-			if (in->mMigemoSwitchSdict(in->mMigemoObj, 1) != 0) {
-				Path dictDir(dictPath);
-				dictDir.RemoveFileSpec();
-				std::error_code error;
-				std::filesystem::create_directories(std::filesystem::path((LPCTSTR)sdictDir), error);
-				if (error.value() == 0) {
-					bool copied = true;
-					for (auto fileName : sdictFileNames) {
-						Path sourcePath(dictDir);
-						sourcePath.Append(fileName);
-						Path destinationPath(sdictDir);
-						destinationPath.Append(fileName);
-						if (sourcePath.FileExists() == false) {
-							copied = false;
-							break;
-						}
-						std::filesystem::copy_file(
-							std::filesystem::path((LPCTSTR)sourcePath),
-							std::filesystem::path((LPCTSTR)destinationPath),
-							std::filesystem::copy_options::overwrite_existing,
-							error);
-						if (error.value() != 0) {
-							copied = false;
-							break;
-						}
-					}
-
-					if (copied) {
-						CStringA sdictPathA;
-						converter.Convert(CString(sdictPath), sdictPathA);
-						in->mMigemoSaveSdict(in->mMigemoObj, sdictPathA);
-					}
-				}
-			}
+	} else {
+		if (in->OpenMDict(dictPath) == false) {
+			return false;
 		}
 	}
 
