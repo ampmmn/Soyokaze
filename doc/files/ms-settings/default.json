@@ -842,5 +842,37 @@
     "Category": "ユーザー アカウント",
     "Page": "Windows Anywhere",
 		"Enable": false
+  },
+  "ms-windows-store://downloadsandupdates": {
+    "Category": "Microsoft Store",
+    "Page": "更新とダウンロード"
+  },
+  "ms-windows-store://mylibrary": {
+    "Category": "Microsoft Store",
+    "Page": "ライブラリ"
+  },
+  "ms-windows-store://settings": {
+    "Category": "Microsoft Store",
+    "Page": "ストアの設定"
+  },
+  "ms-windows-store://navigatetopage/?Id=Home": {
+    "Category": "Microsoft Store",
+    "Page": "ホーム"
+  },
+  "ms-windows-store://navigatetopage/?Id=Productivity": {
+    "Category": "Microsoft Store",
+    "Page": "アプリ"
+  },
+  "ms-windows-store://navigatetopage/?Id=Gaming": {
+    "Category": "Microsoft Store",
+    "Page": "ゲーム"
+  },
+  "ms-windows-store://navigatetopage/?Id=AIHub": {
+    "Category": "Microsoft Store",
+    "Page": "AI Hub"
+  },
+  "ms-windows-store://themes": {
+    "Category": "Microsoft Store",
+    "Page": "テーマ"
   }
 }
