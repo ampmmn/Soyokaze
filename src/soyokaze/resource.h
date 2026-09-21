@@ -366,6 +366,7 @@
 #define IDC_BUTTON_BROWSE               1102
 #define IDC_CHECK_ENABLE_WORKSHEET      1103
 #define IDC_BUTTON_BROWSE2              1103
+#define IDC_CHECK_USEUNITCONVERTER      1103
 #define IDC_BUTTON_CLEAR                1104
 #define IDC_CHECK_ENABLE_SLIDE          1104
 #define IDC_CHECK_ENABLE_OUTLOOK        1105

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Calculator.h"
 #include "python/PythonDLLLoader.h"
+#include "utility/Path.h"
 #include <regex>
 
 #ifdef _DEBUG
@@ -11,6 +12,9 @@
 namespace launcherapp {
 namespace commands {
 namespace calculator {
+
+using LPMATHYPAD_EVALUATE = char* (*)(const char* expression);
+using LPMATHYPAD_FREE_STRING = void (*)(char* result);
 
 struct Calculator::PImpl
 {
@@ -63,6 +67,130 @@ struct Calculator::PImpl
 	}
 
 	tregex mRegSysFuncs;
+	bool mIsUseStandardEvaluate{false};
+	bool mIsUseMathypadEvaluate{false};
+	bool mIsMathypadInitialized{false};
+	HMODULE mMathypadDll{nullptr};
+	LPMATHYPAD_EVALUATE mMathypadEvaluate{nullptr};
+	LPMATHYPAD_FREE_STRING mMathypadFreeString{nullptr};
+
+	/**
+	  MathyPad DLLを初期化する
+	  @return true:利用可能 false:利用不可
+	*/
+	bool InitializeMathypad()
+	{
+		if (mIsMathypadInitialized) {
+			return mMathypadDll != nullptr;
+		}
+		mIsMathypadInitialized = true;
+
+		Path dllPath(Path::MODULEFILEDIR);
+		dllPath.Append(_T("mathypad.dll"));
+		mMathypadDll = LoadLibrary(dllPath);
+		if (mMathypadDll == nullptr) {
+			return false;
+		}
+
+		mMathypadEvaluate = reinterpret_cast<LPMATHYPAD_EVALUATE>(
+			GetProcAddress(mMathypadDll, "mathypad_evaluate"));
+		mMathypadFreeString = reinterpret_cast<LPMATHYPAD_FREE_STRING>(
+			GetProcAddress(mMathypadDll, "mathypad_free_string"));
+		if (mMathypadEvaluate == nullptr || mMathypadFreeString == nullptr) {
+			FreeLibrary(mMathypadDll);
+			mMathypadDll = nullptr;
+			mMathypadEvaluate = nullptr;
+			mMathypadFreeString = nullptr;
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	  MathyPad DLLを解放する
+	*/
+	void FinalizeMathypad()
+	{
+		mMathypadEvaluate = nullptr;
+		mMathypadFreeString = nullptr;
+		if (mMathypadDll != nullptr) {
+			FreeLibrary(mMathypadDll);
+			mMathypadDll = nullptr;
+		}
+	}
+
+	/**
+	  標準電卓で式を評価する
+	  @return true:成功 false:失敗
+	  @param[in] src_ 評価する式
+	  @param[out] result 評価結果
+	*/
+	bool EvaluateStandard(const CString& src_, CString& result)
+	{
+		if (std::regex_search((LPCTSTR)src_, GetSysFuncRegex())) {
+			return false;
+		}
+
+		CString src(src_);
+		if (src.FindOneOf(_T("'\"")) != -1) {
+			return false;
+		}
+		int sep = src.Find(_T(';'));
+		if (sep != -1) {
+			src = src.Left(sep);
+		}
+
+		src.Replace(_T("quit"), _T(""));
+		src.Replace(_T("exit"), _T(""));
+		src.Replace(_T("copyright"), _T(""));
+		src.Replace(_T("credits"), _T(""));
+		src.Replace(_T("license"), _T(""));
+
+		auto loader = PythonDLLLoader::Get();
+		loader->Initialize();
+		auto pythonLib = loader->GetLibrary();
+		if (pythonLib == nullptr) {
+			return false;
+		}
+
+		std::string tmpSrc;
+		char* tmpResult = nullptr;
+		bool isOK = pythonLib->EvalForCalculate(UTF2UTF(src, tmpSrc).c_str(), &tmpResult);
+		if (tmpResult != nullptr) {
+			UTF2UTF(tmpResult, result);
+			pythonLib->ReleaseBuffer(tmpResult);
+		}
+		else {
+			result.Empty();
+		}
+		return isOK;
+	}
+
+	/**
+	  MathyPadで単位付きの式を評価する
+	  @return true:成功 false:失敗
+	  @param[in] src 評価する式
+	  @param[out] result 評価結果
+	*/
+	bool EvaluateMathypad(const CString& src, CString& result)
+	{
+		if (mIsUseMathypadEvaluate == false || InitializeMathypad() == false) {
+			return false;
+		}
+
+		std::string expression;
+		UTF2UTF(std::wstring(src), expression);
+		char* mathypadResult = mMathypadEvaluate(expression.c_str());
+		if (mathypadResult == nullptr) {
+			return false;
+		}
+
+		std::string resultUtf8(mathypadResult);
+		mMathypadFreeString(mathypadResult);
+		UTF2UTF(resultUtf8, result);
+		return true;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,53 +205,30 @@ Calculator::Calculator() : in(std::make_unique<PImpl>())
 
 Calculator::~Calculator()
 {
+	in->FinalizeMathypad();
 }
 
-bool Calculator::Evaluate(const CString& src_, CString& result)
+void Calculator::UseStandardEvaluate(bool use)
 {
-	// 実行を許可しない組み込み関数を含む場合は評価しない
-	if (std::regex_search((LPCTSTR)src_, in->GetSysFuncRegex())) {
-		return false;
-	}
+	in->mIsUseStandardEvaluate = use;
+}
 
-	CString src(src_);
+bool Calculator::IsUseStandardEvaluate()
+{
+	return in->mIsUseStandardEvaluate;
+}
 
-	// 文字列を含むケースは対象外。ここでチェックしておく
-	if (src.FindOneOf(_T("'\"")) != -1) {
-		return false;
-	}
-	// 複数の文の実行は許可しない。
-	int sep = src.Find(_T(';'));
-	if (sep != -1) {
-		src = src.Left(sep);
-	}
+void Calculator::UseMathypadEvaluate(bool use)
+{
+	in->mIsUseMathypadEvaluate = use;
+}
 
-	// インタープリタ側で拾ってしまうキーワードを無効化する(quit/exit/help)
-	src.Replace(_T("quit"), _T(""));
-	src.Replace(_T("exit"), _T(""));
-	src.Replace(_T("copyright"), _T(""));
-	src.Replace(_T("credits"), _T(""));
-	src.Replace(_T("license"), _T(""));
 
-	auto loader = PythonDLLLoader::Get();
-	loader->Initialize();
-	auto pythonLib = loader->GetLibrary();
-	if (pythonLib == nullptr) {
-		return false;
+bool Calculator::Evaluate(const CString& src, CString& result) {
+	if (in->mIsUseStandardEvaluate && in->EvaluateStandard(src, result)) {
+		return true;
 	}
-
-	std::string tmpSrc;
-	char* tmpResult = nullptr;
-	bool isOK = pythonLib->EvalForCalculate(UTF2UTF(src, tmpSrc).c_str(), &tmpResult);
-
-	if (tmpResult) {
-		UTF2UTF(tmpResult, result);
-		pythonLib->ReleaseBuffer(tmpResult);
-	}
-	else {
-		result.Empty();
-	}
-	return isOK;
+	return in->EvaluateMathypad(src, result);
 }
 
 

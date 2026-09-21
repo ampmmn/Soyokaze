@@ -34,11 +34,11 @@ struct CalculatorAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 	void OnAppPreferenceUpdated() override
 	{
 		auto pref = AppPreference::Get();
-		mIsEnable = pref->IsEnableCalculator();
+		mCalc.UseStandardEvaluate(pref->IsEnableCalculator());
+		mCalc.UseMathypadEvaluate(
+			pref->GetSettings().Get(_T("Calculator:IsUseUnitConverter"), false));
 	}
 	void OnAppExit() override {}
-
-	bool mIsEnable{true};
 
 	//
 	Calculator mCalc;
@@ -63,7 +63,6 @@ REGISTER_COMMANDPROVIDER(CalculatorAdhocCommandProvider)
 
 CalculatorAdhocCommandProvider::CalculatorAdhocCommandProvider() : in(std::make_unique<PImpl>())
 {
-	in->mIsEnable = false;
 	in->mDecResultPtr = new CalculatorCommand();
 	in->mHexResultPtr = new CalculatorCommand(16);
 	in->mOctResultPtr = new CalculatorCommand(8);
@@ -95,7 +94,9 @@ CString CalculatorAdhocCommandProvider::GetName()
 void CalculatorAdhocCommandProvider::PrepareAdhocCommands()
 {
 	auto pref = AppPreference::Get();
-	in->mIsEnable = pref->IsEnableCalculator();
+	in->mCalc.UseStandardEvaluate(pref->IsEnableCalculator());
+	in->mCalc.UseMathypadEvaluate(
+		pref->GetSettings().Get(_T("Calculator:IsUseUnitConverter"), false));
 }
 
 // 一時的なコマンドを必要に応じて提供する
@@ -107,11 +108,6 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	CString cmdline = pattern->GetWholeString();
 
 
-	// 機能が無効なら評価実施しない
-	if (in->mIsEnable == false) {
-		return;
-	}
-	
 	CString result;
 	if (in->mCalc.Evaluate(cmdline, result) == false) {
 		return;
@@ -126,8 +122,8 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	in->mDecResultPtr->SetResult(result);
 
 	static const launcherapp::utility::Regex regexInt(_T("^-?[0-9]+$"));
-	if (regexInt.FullMatch(result) == false) {
-		// 評価結果が整数値でない場合は、10進数の結果のみを表示
+	if (regexInt.FullMatch(result) == false || in->mCalc.IsUseStandardEvaluate() == false) {
+		// 評価結果が整数値でない場合は、出力を加工せずに(10進数の結果のみを)表示
 		in->mDecResultPtr->AddRef();
 		commands.Add(CommandQueryItem(Pattern::FrontMatch, in->mDecResultPtr));
 		return ;

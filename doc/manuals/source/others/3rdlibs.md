@@ -49,6 +49,9 @@
 - [biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)
   - YAMLファイルをパースするために利用している
 
+- [pato/mathypad](https://github.com/pato/mathypad)
+  - 電卓の単位付き計算機能のために利用している
+  - オリジナル版ではC/C++向けのシンボルを公開していないため、利用するためのAPI層を独自追加し、Windows向けにビルドしたものを利用している
 ```
 
 ```{only} not soyokaze
