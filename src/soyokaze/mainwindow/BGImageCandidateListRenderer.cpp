@@ -42,6 +42,7 @@ struct BGImageCandidateListRenderer::PImpl
 	bool LoadImage()
 	{
 		mImage.Destroy();
+		mHasLastWriteTime = false;
 		mFilePath = AppPreference::Get()->GetSettings().Get(_T("BGImage:BGImageFilePath"), _T(""));
 		if (mFilePath.IsEmpty()) {
 			spdlog::warn(_T("Background image file path is not configured."));
@@ -55,9 +56,36 @@ struct BGImageCandidateListRenderer::PImpl
 			return false;
 		}
 
+		WIN32_FILE_ATTRIBUTE_DATA fileData{};
+		if (GetFileAttributesEx(mFilePath, GetFileExInfoStandard, &fileData) != FALSE) {
+			mLastWriteTime = fileData.ftLastWriteTime;
+			mHasLastWriteTime = true;
+		}
+
 		spdlog::debug(_T("Background image loaded. path:{}, size:({},{})"),
 			(LPCTSTR)mFilePath, mImage.GetWidth(), mImage.GetHeight());
 		return true;
+	}
+
+	/**
+	  背景画像ファイルの更新日時が変化している場合は画像を再読み込みする
+	*/
+	void ReloadImageIfUpdated()
+	{
+		if (!mHasLastWriteTime) {
+			return;
+		}
+
+		WIN32_FILE_ATTRIBUTE_DATA fileData{};
+		if (GetFileAttributesEx(mFilePath, GetFileExInfoStandard, &fileData) == FALSE ||
+			CompareFileTime(&mLastWriteTime, &fileData.ftLastWriteTime) == 0) {
+			return;
+		}
+
+		mImage.Destroy();
+		DestroyBuffers();
+		mIsReady = false;
+		LoadImage();
 	}
 
 	/**
@@ -286,11 +314,13 @@ struct BGImageCandidateListRenderer::PImpl
 	ATL::CImage mAlternateBackgroundBuffer;
 	CRect mImageRect;
 	CString mFilePath;
+	FILETIME mLastWriteTime{};
 	int mAlpha{0};
 	int mPosition{POSITION_LEFT_TOP};
 	int mWidth{0};
 	int mHeight{0};
 	bool mIsReady{false};
+	bool mHasLastWriteTime{false};
 	bool mIsEmpty{false};
 	bool mIsAlternateColor{false};
 };
@@ -326,6 +356,7 @@ void BGImageCandidateListRenderer::SetIsAlternateColor(bool isAlternateColor)
 void BGImageCandidateListRenderer::UpdateSize(int cx, int cy)
 {
 	// ウインドウサイズが変わった場合は、次回描画時に画像を再配置・再描画する。
+	in->ReloadImageIfUpdated();
 	StandardCandidateListRenderer::UpdateSize(cx, cy);
 	in->mWidth = cx;
 	in->mHeight = cy;
