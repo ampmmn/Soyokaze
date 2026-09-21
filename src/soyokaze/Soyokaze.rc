@@ -249,23 +249,24 @@ BEGIN
     LTEXT           "Python DLLのパス(&D):",IDC_STATIC,23,23,69,8
     EDITTEXT        IDC_EDIT_PYTHONDLLPATH,99,20,143,14,ES_AUTOHSCROLL
     PUSHBUTTON      "参照(&R)",IDC_BUTTON_BROWSE,245,20,31,14
-    LTEXT           "Python3.12以降のpython3.dllのパスを指定してください\n(DLLのパスを変更した場合は再起動が必要です)",IDC_STATIC,23,40,220,21
-    CONTROL         "簡易電卓機能を有効にする(&C)",IDC_CHECK_ENABLECALCULATOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,68,165,10
-    GROUPBOX        "Pythonを利用する拡張機能の設定",IDC_STATIC,11,7,282,81
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,94,282,137
+    LTEXT           "Python 3.12以降の python3.dll のパスを指定してください。\n※ DLLのパスを変更した場合は再起動が必要です。\n※ Pintを利用する場合は、設定したPython環境にPintライブラリを別途インストールしてください。",IDC_STATIC,23,40,260,35
+    CONTROL         "簡易電卓機能を有効にする(&C)",IDC_CHECK_ENABLECALCULATOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,78,165,10
+    CONTROL         "Pintライブラリを用いた単位変換機能を有効にする(&U)",IDC_CHECK_USEPINT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,92,205,10
+    GROUPBOX        "Pythonを利用する拡張機能の設定",IDC_STATIC,11,7,282,100
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,114,282,137
     CONTROL         "コントロールパネル項目を候補として表示する(&P)",IDC_CHECK_ENABLE_CONTROLPANEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,108,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,128,165,10
     CONTROL         "スタートメニュー／最近使ったファイルを候補として表示する(&F)",IDC_CHECK_ENABLE_SPECIALFOLDER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,124,206,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,144,206,10
     CONTROL         "アプリケーション(UWPアプリなど)を候補として表示する(&W)",IDC_CHECK_ENABLE_UWPAPPS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,140,192,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,160,192,10
     CONTROL         "MMCスナップインを候補として表示する(&S)",IDC_CHECK_ENABLE_MMCSNAPINS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,156,144,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,176,144,10
     CONTROL         "Windowsの設定を候補として表示する(&I)",IDC_CHECK_ENABLE_MSSETTINGS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,172,143,10
-    CONTROL         "環境変数を候補として表示する(&E)",IDC_CHECK_ENABLE_ENVIRONMENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,188,125,10
-    LTEXT           "プレフィックス(&X):",IDC_STATIC,33,204,51,8
-    EDITTEXT        IDC_EDIT_PREFIX_ENVIRONMENT,88,201,52,14,ES_AUTOHSCROLL
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,192,143,10
+    CONTROL         "環境変数を候補として表示する(&E)",IDC_CHECK_ENABLE_ENVIRONMENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,208,125,10
+    LTEXT           "プレフィックス(&X):",IDC_STATIC,33,224,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_ENVIRONMENT,88,221,52,14,ES_AUTOHSCROLL
 END
 
 IDD_SHORTCUTSETTING DIALOGEX 0, 0, 271, 140

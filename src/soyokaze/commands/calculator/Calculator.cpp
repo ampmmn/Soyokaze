@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Calculator.h"
 #include "python/PythonDLLLoader.h"
+#include "setting/AppPreference.h"
+#include "utility/Regex.h"
 #include <regex>
 
 #ifdef _DEBUG
@@ -63,6 +65,122 @@ struct Calculator::PImpl
 	}
 
 	tregex mRegSysFuncs;
+
+	/**
+	  Pintを使わない従来の計算処理を実行する
+	  @return true:成功 false:失敗
+	  @param[in] src 評価する式
+	  @param[out] result 評価結果
+	*/
+	bool EvaluateStandard(const CString& src_, CString& result)
+	{
+		// 実行を許可しない組み込み関数を含む場合は評価しない
+		if (std::regex_search((LPCTSTR)src_, GetSysFuncRegex())) {
+			return false;
+		}
+
+		CString src(src_);
+
+		// 文字列を含むケースは対象外。ここでチェックしておく
+		if (src.FindOneOf(_T("'\"")) != -1) {
+			return false;
+		}
+		// 複数の文の実行は許可しない。
+		int sep = src.Find(_T(';'));
+		if (sep != -1) {
+			src = src.Left(sep);
+		}
+
+		// インタープリタ側で拾ってしまうキーワードを無効化する(quit/exit/help)
+		src.Replace(_T("quit"), _T(""));
+		src.Replace(_T("exit"), _T(""));
+		src.Replace(_T("copyright"), _T(""));
+		src.Replace(_T("credits"), _T(""));
+		src.Replace(_T("license"), _T(""));
+
+		auto loader = PythonDLLLoader::Get();
+		loader->Initialize();
+		auto pythonLib = loader->GetLibrary();
+		if (pythonLib == nullptr) {
+			return false;
+		}
+
+		std::string tmpSrc;
+		char* tmpResult = nullptr;
+		bool isOK = pythonLib->EvalForCalculate(UTF2UTF(src, tmpSrc).c_str(), &tmpResult);
+
+		if (tmpResult) {
+			UTF2UTF(tmpResult, result);
+			pythonLib->ReleaseBuffer(tmpResult);
+		}
+		else {
+			result.Empty();
+		}
+		return isOK;
+	}
+
+	/**
+	  Pintを使って単位付きの式を評価する
+	  @return true:評価結果を採用できる false:従来処理へ移行
+	  @param[in] src 評価する式
+	  @param[out] result 評価結果
+	*/
+	bool EvaluatePint(const CString& src, CString& result)
+	{
+		if (AppPreference::Get()->GetSettings().Get(_T("Calculator:IsUsePint"), false) == false) {
+			return false;
+		}
+
+		static const launcherapp::utility::Regex inputRegex(
+			_T("^[0-9a-zA-Z_\\s.+\\-*/()]+$")
+		);
+		if (inputRegex.FullMatch(src) == false) {
+			return false;
+		}
+
+		CString script;
+		script.Format(
+			_T("if \"__soyokaze_ureg\" not in globals():\n")
+			_T("    from pint import UnitRegistry\n")
+			_T("    __soyokaze_ureg = UnitRegistry()\n")
+			_T("__soyokaze_result = __soyokaze_ureg.parse_expression(\"%s\").to_compact()\n")
+			_T("__soyokaze_result = f\"{__soyokaze_result:~}\""),
+			(LPCTSTR)src
+		);
+
+		auto loader = PythonDLLLoader::Get();
+		loader->Initialize();
+		auto pythonLib = loader->GetLibrary();
+		if (pythonLib == nullptr) {
+			return false;
+		}
+
+		std::string tmpSrc;
+		char* tmpResult = nullptr;
+		bool isOK = pythonLib->EvalScriptForCalculate(
+			UTF2UTF(script, tmpSrc).c_str(),
+			&tmpResult
+		);
+		if (isOK == false || tmpResult == nullptr) {
+			if (tmpResult) {
+				pythonLib->ReleaseBuffer(tmpResult);
+			}
+			return false;
+		}
+
+		CString pintResult;
+		UTF2UTF(tmpResult, pintResult);
+		pythonLib->ReleaseBuffer(tmpResult);
+
+		// 単位を含まない結果は従来の電卓処理で扱う
+		if (pintResult.Find(_T("dimensionless")) != -1) {
+			return false;
+		}
+
+		pintResult.Replace(_T("'"), _T(""));
+		result = pintResult;
+		return true;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,49 +199,10 @@ Calculator::~Calculator()
 
 bool Calculator::Evaluate(const CString& src_, CString& result)
 {
-	// 実行を許可しない組み込み関数を含む場合は評価しない
-	if (std::regex_search((LPCTSTR)src_, in->GetSysFuncRegex())) {
-		return false;
+	if (in->EvaluatePint(src_, result)) {
+		return true;
 	}
-
-	CString src(src_);
-
-	// 文字列を含むケースは対象外。ここでチェックしておく
-	if (src.FindOneOf(_T("'\"")) != -1) {
-		return false;
-	}
-	// 複数の文の実行は許可しない。
-	int sep = src.Find(_T(';'));
-	if (sep != -1) {
-		src = src.Left(sep);
-	}
-
-	// インタープリタ側で拾ってしまうキーワードを無効化する(quit/exit/help)
-	src.Replace(_T("quit"), _T(""));
-	src.Replace(_T("exit"), _T(""));
-	src.Replace(_T("copyright"), _T(""));
-	src.Replace(_T("credits"), _T(""));
-	src.Replace(_T("license"), _T(""));
-
-	auto loader = PythonDLLLoader::Get();
-	loader->Initialize();
-	auto pythonLib = loader->GetLibrary();
-	if (pythonLib == nullptr) {
-		return false;
-	}
-
-	std::string tmpSrc;
-	char* tmpResult = nullptr;
-	bool isOK = pythonLib->EvalForCalculate(UTF2UTF(src, tmpSrc).c_str(), &tmpResult);
-
-	if (tmpResult) {
-		UTF2UTF(tmpResult, result);
-		pythonLib->ReleaseBuffer(tmpResult);
-	}
-	else {
-		result.Empty();
-	}
-	return isOK;
+	return in->EvaluateStandard(src_, result);
 }
 
 

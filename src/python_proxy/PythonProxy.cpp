@@ -69,6 +69,7 @@ struct PythonProxy::PImpl
 	void Finalize();
 
 	bool InitializeForPyCmd(PyObject* globalDict);
+	PyObject* GetGlobalDictForCalculateScript();
 
 	bool IsBusy() {
 		return mIsBusy.load();
@@ -79,6 +80,7 @@ struct PythonProxy::PImpl
 
 	PyObject* mModule{nullptr};
 	PyObject* mGlobalDictForCalc{nullptr};
+	PyObject* mGlobalDictForCalculateScript{nullptr};
 
 	PyThreadState* mThreadStateForPyCmd{nullptr};
 	PyThreadState* mThreadStateForCalc{nullptr};
@@ -149,6 +151,34 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 	return app_module != nullptr && key_module != nullptr && win_module != nullptr;
 }
 
+PyObject* PythonProxy::PImpl::GetGlobalDictForCalculateScript()
+{
+	if (mGlobalDictForCalculateScript != nullptr) {
+		return mGlobalDictForCalculateScript;
+	}
+
+	PyObject* globalDict = PyDict_New();
+	if (globalDict == nullptr) {
+		return nullptr;
+	}
+
+	// スクリプトからimportなどの組み込み機能を利用できるようにする
+	PyObject* builtins = PyEval_GetBuiltins();
+	if (PyDict_SetItemString(globalDict, "__builtins__", builtins) != 0) {
+		Py_DecRef(globalDict);
+		return nullptr;
+	}
+
+	// スクリプトから計算結果を受け取るための変数を初期化する
+	if (PyDict_SetItemString(globalDict, "__soyokaze_result", Py_None) != 0) {
+		Py_DecRef(globalDict);
+		return nullptr;
+	}
+
+	mGlobalDictForCalculateScript = globalDict;
+	return mGlobalDictForCalculateScript;
+}
+
 void PythonProxy::PImpl::Finalize()
 {
 	if (mThreadStateForCalc == nullptr) {
@@ -162,6 +192,7 @@ void PythonProxy::PImpl::Finalize()
 	mThreadStateForPyCmd = nullptr;
 	mThreadStateForCalc = nullptr;
 	mGlobalDictForCalc = nullptr;
+	mGlobalDictForCalculateScript = nullptr;
 	mModule = nullptr;
 }
 
@@ -392,6 +423,63 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 		*result = new char[len];
 		memcpy(*result, s.c_str(), len);
 
+		return true;
+	});
+}
+
+bool PythonProxy::EvalScriptForCalculate(const char* src, char** result)
+{
+	if (result == nullptr || src == nullptr) {
+		return false;
+	}
+	*result = nullptr;
+
+	if (in->IsBusy()) {
+		return false;
+	}
+
+	return ProxyWindow::GetInstance()->RequestCallback([&]() {
+
+		if (in->IsBusy()) {
+			// Py拡張コマンドの方でPython実行中の場合はブロックしない
+			return false;
+		}
+
+		scope_state _scope_state(in.get(), in->mThreadStateForCalc);
+
+		PyObject* globalDict = in->GetGlobalDictForCalculateScript();
+		if (globalDict == nullptr) {
+			return false;
+		}
+
+		// 前回の評価結果を残さないように初期化する
+		if (PyDict_SetItemString(globalDict, "__soyokaze_result", Py_None) != 0) {
+			PyErr_Clear();
+			return false;
+		}
+
+		scope_pyobject codeObj = Py_CompileString(src, "<string>", Py_file_input);
+		if (codeObj == nullptr) {
+			PyErr_Clear();
+			return false;
+		}
+
+		scope_pyobject pyRetObject = PyEval_EvalCode(codeObj, globalDict, globalDict);
+		if (PyErr_Occurred() != nullptr || pyRetObject == nullptr) {
+			PyErr_Clear();
+			return false;
+		}
+
+		// Py_file_inputの評価結果はNoneになるため、専用の結果変数から取得する
+		PyObject* pyObject = PyDict_GetItemString(globalDict, "__soyokaze_result");
+		if (pyObject == nullptr || pyObject == Py_None) {
+			return false;
+		}
+
+		std::string s(py2str(pyObject));
+		size_t len = s.size() + 1;
+		*result = new char[len];
+		memcpy(*result, s.c_str(), len);
 		return true;
 	});
 }

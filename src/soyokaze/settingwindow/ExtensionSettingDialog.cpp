@@ -30,6 +30,7 @@ protected:
 
 public:
 	BOOL mIsEnableCalc{FALSE};
+	BOOL mIsUsePint{FALSE};
 	CString mPythonDLLPath;
 
 	// コントロールパネル選択機能
@@ -57,6 +58,7 @@ void ExtensionSettingDialog::OnOK()
 	auto settingsPtr = mSettingsPtr;
 
 	settingsPtr->Set(_T("Calculator:Enable"), (bool)mIsEnableCalc);
+	settingsPtr->Set(_T("Calculator:IsUsePint"), (bool)mIsUsePint);
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
@@ -73,6 +75,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_ENABLECALCULATOR, mIsEnableCalc);
+	DDX_Check(pDX, IDC_CHECK_USEPINT, mIsUsePint);
 	DDX_Text(pDX, IDC_EDIT_PYTHONDLLPATH, mPythonDLLPath);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
@@ -129,6 +132,7 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mSettingsPtr = settingsPtr;
 
 	mIsEnableCalc = settingsPtr->Get(_T("Calculator:Enable"), false);
+	mIsUsePint = settingsPtr->Get(_T("Calculator:IsUsePint"), false);
 	mPythonDLLPath = settingsPtr->Get(_T("Soyokaze:PythonDLLPath"), _T(""));
 
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
@@ -142,6 +146,7 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 
 bool ExtensionSettingDialog::UpdateStatus()
 {
+	GetDlgItem(IDC_CHECK_USEPINT)->EnableWindow(mIsEnableCalc);
 	GetDlgItem(IDC_EDIT_PREFIX_ENVIRONMENT)->EnableWindow(mIsEnableEnvironment);
 
 	return true;
