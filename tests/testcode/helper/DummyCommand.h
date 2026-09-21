@@ -42,6 +42,21 @@ struct DummyCommand : public launcherapp::core::Command
 		return true;
 	}
 
+	bool CanResolve() override
+	{
+		return false;
+	}
+
+	bool Resolve(CString& value) override
+	{
+		return false;
+	}
+
+	bool IsAcceptArguments() override
+	{
+		return false;
+	}
+
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 	{
 		return true;

@@ -48,6 +48,22 @@ bool AdhocCommandBase::CanExecute(String*)
 	return true;
 }
 
+bool AdhocCommandBase::CanResolve()
+{
+	return false;
+}
+
+bool AdhocCommandBase::Resolve(CString& value)
+{
+	UNREFERENCED_PARAMETER(value);
+	return false;
+}
+
+bool AdhocCommandBase::IsAcceptArguments()
+{
+	return false;
+}
+
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool AdhocCommandBase::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {

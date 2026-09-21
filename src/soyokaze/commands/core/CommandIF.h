@@ -29,6 +29,12 @@ public:
 	virtual CString GetTypeDisplayName() = 0;
 	// コマンドが実行可能かどうかを取得
 	virtual bool CanExecute(String* reasonMsg) = 0;
+	// コマンドが保持するパスなどを展開可能か?
+	virtual bool CanResolve() = 0;
+	// コマンドが保持するパスなどを展開する
+	virtual bool Resolve(CString& value) = 0;
+	// 引数を受け入れるか?
+	virtual bool IsAcceptArguments() = 0;
 
 	// 修飾キー押下状態に対応した実行アクションを取得する
 	virtual bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) = 0;

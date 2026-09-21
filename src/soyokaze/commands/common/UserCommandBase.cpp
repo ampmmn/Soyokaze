@@ -79,6 +79,22 @@ bool UserCommandBase::CanExecute(String*)
 	return true;
 }
 
+bool UserCommandBase::CanResolve()
+{
+	return false;
+}
+
+bool UserCommandBase::Resolve(CString& value)
+{
+	UNREFERENCED_PARAMETER(value);
+	return false;
+}
+
+bool UserCommandBase::IsAcceptArguments()
+{
+	return false;
+}
+
 bool UserCommandBase::IsAllowAutoExecute()
 {
 	return false;

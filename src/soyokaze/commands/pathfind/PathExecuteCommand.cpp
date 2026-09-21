@@ -66,6 +66,11 @@ CString PathExecuteCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
+bool PathExecuteCommand::IsAcceptArguments()
+{
+	return true;
+}
+
 bool PathExecuteCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (PathIsUNC(in->mFullPath) == FALSE && Path::FileExists(in->mFullPath) == FALSE) {

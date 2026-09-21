@@ -22,6 +22,7 @@ public:
 
 	CString GetName() override;
 	CString GetTypeDisplayName() override;
+	bool IsAcceptArguments() override;
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;

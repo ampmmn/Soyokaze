@@ -72,6 +72,22 @@ bool BuiltinCommandBase::CanExecute(String*)
 	return true;
 }
 
+bool BuiltinCommandBase::CanResolve()
+{
+	return false;
+}
+
+bool BuiltinCommandBase::Resolve(CString& value)
+{
+	UNREFERENCED_PARAMETER(value);
+	return false;
+}
+
+bool BuiltinCommandBase::IsAcceptArguments()
+{
+	return false;
+}
+
 BOOL BuiltinCommandBase::Execute(Parameter* param)
 {
 	UNREFERENCED_PARAMETER(param);

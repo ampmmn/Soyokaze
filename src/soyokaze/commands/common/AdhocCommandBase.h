@@ -20,6 +20,9 @@ public:
 	CString GetDescription() override;
 	//CString GetTypeDisplayName() override;
 	bool CanExecute(String*) override;
+	bool CanResolve() override;
+	bool Resolve(CString& value) override;
+	bool IsAcceptArguments() override;
 	// 修飾キー押下状態に対応した実行アクションを取得する
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action);
 	HICON GetIcon() override;

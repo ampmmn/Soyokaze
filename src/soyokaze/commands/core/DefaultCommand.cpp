@@ -98,6 +98,22 @@ bool DefaultCommand::CanExecute(String*)
 	return true;
 }
 
+bool DefaultCommand::CanResolve()
+{
+	return false;
+}
+
+bool DefaultCommand::Resolve(CString& value)
+{
+	UNREFERENCED_PARAMETER(value);
+	return false;
+}
+
+bool DefaultCommand::IsAcceptArguments()
+{
+	return false;
+}
+
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool DefaultCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {

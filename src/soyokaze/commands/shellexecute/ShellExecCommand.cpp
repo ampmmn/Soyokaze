@@ -155,6 +155,50 @@ bool ShellExecCommand::CanExecute(String* reasonMsg)
 	return true;
 }
 
+bool ShellExecCommand::CanResolve()
+{
+	// 引数なし設定がある場合は、どちらのパスを使うか決められない。
+	if (in->GetNormalAttr().mPath.IsEmpty() || in->GetNoParamAttr().mPath.IsEmpty() == FALSE) {
+		return false;
+	}
+	return true;
+}
+
+bool ShellExecCommand::Resolve(CString& value)
+{
+	if (CanResolve() == false) {
+		return false;
+	}
+
+	CString resolvedPath(in->GetNormalAttr().mPath);
+	if (ExpandMacros(resolvedPath) == false) {
+		return false;
+	}
+	if (resolvedPath.IsEmpty()) {
+		return false;
+	}
+
+	value = resolvedPath;
+	return true;
+}
+
+bool ShellExecCommand::IsAcceptArguments()
+{
+	const auto& normalParam = in->GetNormalAttr().mParam;
+	const auto& noParamParam = in->GetNoParamAttr().mParam;
+	auto hasArgumentPlaceholder = [](const CString& value) {
+		for (int i = 0; i < value.GetLength() - 1; ++i) {
+			if (value[i] == _T('$') &&
+				(value[i + 1] == _T('*') ||
+				 ('1' <= value[i + 1] && value[i + 1] <= '9'))) {
+				return true;
+			}
+		}
+		return false;
+	};
+	return hasArgumentPlaceholder(normalParam) || hasArgumentPlaceholder(noParamParam);
+}
+
 bool ShellExecCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	// 条件に合致するウインドウが存在する場合はウインドウ切替を行う

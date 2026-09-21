@@ -106,6 +106,25 @@ CString ExplorePathCommand::GetTypeDisplayName()
 	return TypeDisplayName(Path::IsDirectory(in->mFullPath));
 }
 
+bool ExplorePathCommand::CanResolve()
+{
+	return in->mFullPath.IsEmpty() == FALSE;
+}
+
+bool ExplorePathCommand::Resolve(CString& value)
+{
+	if (CanResolve() == false) {
+		return false;
+	}
+	value = in->mFullPath;
+	return true;
+}
+
+bool ExplorePathCommand::IsAcceptArguments()
+{
+	return Path::FileExists(in->mFullPath) && Path::IsDirectory(in->mFullPath) == false;
+}
+
 bool ExplorePathCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (PathIsUNC(in->mFullPath) == FALSE && Path::FileExists(in->mFullPath) == FALSE) {

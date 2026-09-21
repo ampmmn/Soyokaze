@@ -47,6 +47,20 @@ CString PathURLCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
+bool PathURLCommand::CanResolve()
+{
+	return true;
+}
+
+bool PathURLCommand::Resolve(CString& value)
+{
+	if (in->mURL.IsEmpty()) {
+		return false;
+	}
+	value = in->mURL;
+	return true;
+}
+
 bool PathURLCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (hotkeyAttr.GetModifiers() == 0) {

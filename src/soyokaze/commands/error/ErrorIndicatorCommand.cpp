@@ -64,6 +64,22 @@ bool ErrorIndicatorCommand::CanExecute(String*)
 	return false;
 }
 
+bool ErrorIndicatorCommand::CanResolve()
+{
+	return false;
+}
+
+bool ErrorIndicatorCommand::Resolve(CString& value)
+{
+	UNREFERENCED_PARAMETER(value);
+	return false;
+}
+
+bool ErrorIndicatorCommand::IsAcceptArguments()
+{
+	return false;
+}
+
 // 修飾キー押下状態に対応した実行アクションを取得する
 bool ErrorIndicatorCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {

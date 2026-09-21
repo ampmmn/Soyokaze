@@ -22,6 +22,9 @@ public:
 
 // Command
 	bool CanExecute(String*) override;
+	bool CanResolve() override;
+	bool Resolve(CString& value) override;
+	bool IsAcceptArguments() override;
 	bool IsAllowAutoExecute() override;
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 
