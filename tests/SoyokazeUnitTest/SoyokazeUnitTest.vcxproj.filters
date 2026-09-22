@@ -82,6 +82,9 @@
     <Filter Include="soyokaze\mainwindow\layout">
       <UniqueIdentifier>{d1288620-eb1a-4ebc-8d07-f26473ba54c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\mainwindow\state">
+      <UniqueIdentifier>{3cde1b1f-9823-4d4a-ae11-f1e4ef4a0c6d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\transfer">
       <UniqueIdentifier>{93a31021-2345-4334-8484-7981981bd248}</UniqueIdentifier>
     </Filter>
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp">
       <Filter>soyokaze\mainwindow\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\mainwindow\state\LauncherWindowStateTest.cpp">
+      <Filter>soyokaze\mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp">
       <Filter>soyokaze\utility</Filter>

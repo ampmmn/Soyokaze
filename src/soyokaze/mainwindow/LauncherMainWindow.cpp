@@ -38,6 +38,8 @@
 #include "mainwindow/MainWindowHotKey.h"
 #include "mainwindow/OperationWatcher.h"
 #include "mainwindow/MouseoverActivateWindow.h"
+#include "mainwindow/state/LauncherWindowState.h"
+#include "mainwindow/state/HiddenState.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
 #include "mainwindow/CandidateList.h"
@@ -107,6 +109,8 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<MainWindowAppearance> mAppearance;
 	// 表示を抑制中か
 	bool mIsWindowDisplayBlocked{false};
+	// 現在の入力状態
+	std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> mState;
 
 // ホットキー関連
 	// 入力画面を呼び出すホットキー関連の処理をする
@@ -191,6 +195,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 
 	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
 	in->mActionHandlerRegistry.Initialize(&in->mCandidates);
+	in->mState = std::make_unique<launcherapp::mainwindow::state::HiddenState>(this);
 
 	GuideCtrl::Initialize();
 }
@@ -285,6 +290,54 @@ void LauncherMainWindow::HideWindow()
 	in->mLayout->HideWindow();
 }
 
+void LauncherMainWindow::HideWindowFromState()
+{
+	HideWindow();
+}
+
+void LauncherMainWindow::ClearContent()
+{
+	ClearContentImpl(false);
+}
+
+void LauncherMainWindow::SetFocusToEdit()
+{
+	GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+}
+
+bool LauncherMainWindow::HasKeyword() const
+{
+	return in->mInput.HasKeyword();
+}
+
+bool LauncherMainWindow::IsWindowVisibleFromState() const
+{
+	return ::IsWindowVisible(GetSafeHwnd()) != FALSE;
+}
+
+bool LauncherMainWindow::IsWindowActive() const
+{
+	return GetSafeHwnd() == ::GetActiveWindow();
+}
+
+bool LauncherMainWindow::IsShowToggleEnabled() const
+{
+	return AppPreference::Get()->IsShowToggle();
+}
+
+void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state)
+{
+	if (state == nullptr) {
+		return;
+	}
+
+	if (in->mState) {
+		in->mState->OnExit();
+	}
+	in->mState = std::move(state);
+	in->mState->OnEnter();
+}
+
 
 void LauncherMainWindow::ShowHelpTop()
 {
@@ -326,64 +379,52 @@ static HWND GetTopMostWindowInCurrentThread()
 LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
-
-	bool isShowForce = ((wParam & 0x1) != 0);
-
-	HWND hwnd = GetSafeHwnd();
-	if (isShowForce || ::IsWindowVisible(hwnd) == FALSE) {
-
-		ScopeAttachThreadInput scope;
-
-		// もし外部からメインウインドウの表示が抑制状態である場合は表示しない
-		// (現在、設定画面表示中のみ抑制する)
-		if (in->mIsWindowDisplayBlocked) {
-			auto h = GetTopMostWindowInCurrentThread();
-			::SetForegroundWindow(h);
-			return 0;
-		}
-
-		// 非表示状態なら表示
-
-		// 表示する際の位置を決定(移動)する
-		in->mLayout->RecalcWindowOnActivate(this);
-
-		// プレースホルダー設定
-		AppPreference* pref= AppPreference::Get();
-		LPCTSTR placeholderText = pref->IsDrawPlaceHolder() ? _T("キーワードを入力してください") : _T("");
-		in->mKeywordEdit.SetPlaceHolder(placeholderText);
-
-		// 表示
-		::ShowWindow(hwnd, SW_SHOW);
-		::SetForegroundWindow(hwnd);
-		::BringWindowToTop(hwnd);
-
-		if (pref->IsIMEOffOnActive()) {
-			in->mKeywordEdit.SetIMEOff();
-		}
-
-		LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
-			listener->OnLauncherActivate();
-		});
-	}
-	else {
-		// 表示状態ではあるが、非アクティブならアクティブにする
-		if (hwnd != ::GetActiveWindow()) {
-			ScopeAttachThreadInput scope;
-			::ShowWindow(hwnd, SW_SHOW);
-			::SetForegroundWindow(hwnd);
-			::BringWindowToTop(hwnd);
-			return 0;
-		}
-
-		// 表示状態の場合はアプリ設定に応じて動作を変える
-
-		AppPreference* pref= AppPreference::Get();
-		if (pref->IsShowToggle()) {
-			// トグル表示設定にしている場合は非表示にする
-			HideWindow();
-		}
-	}
+	in->mState->OnActivate((wParam & 0x1) != 0);
 	return 0;
+}
+
+void LauncherMainWindow::ShowWindowFromState()
+{
+	HWND hwnd = GetSafeHwnd();
+	ScopeAttachThreadInput scope;
+
+	// もし外部からメインウインドウの表示が抑制状態である場合は表示しない
+	// (現在、設定画面表示中のみ抑制する)
+	if (in->mIsWindowDisplayBlocked) {
+		auto h = GetTopMostWindowInCurrentThread();
+		::SetForegroundWindow(h);
+		return;
+	}
+
+	// 表示する際の位置を決定(移動)する
+	in->mLayout->RecalcWindowOnActivate(this);
+
+	// プレースホルダー設定
+	AppPreference* pref= AppPreference::Get();
+	LPCTSTR placeholderText = pref->IsDrawPlaceHolder() ? _T("キーワードを入力してください") : _T("");
+	in->mKeywordEdit.SetPlaceHolder(placeholderText);
+
+	// 表示
+	::ShowWindow(hwnd, SW_SHOW);
+	::SetForegroundWindow(hwnd);
+	::BringWindowToTop(hwnd);
+
+	if (pref->IsIMEOffOnActive()) {
+		in->mKeywordEdit.SetIMEOff();
+	}
+
+	LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
+		listener->OnLauncherActivate();
+	});
+}
+
+void LauncherMainWindow::ActivateVisibleWindow()
+{
+	HWND hwnd = GetSafeHwnd();
+	ScopeAttachThreadInput scope;
+	::ShowWindow(hwnd, SW_SHOW);
+	::SetForegroundWindow(hwnd);
+	::BringWindowToTop(hwnd);
 }
 
 /**
@@ -478,9 +519,14 @@ LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(wParam);
+	in->mState->OnQueryCompleted(reinterpret_cast<launcherapp::commands::core::CommandQueryResult*>(lParam));
+	return 0;
+}
 
+
+void LauncherMainWindow::HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
+{
 	in->mIsQueryDoing = false;
-	auto result = (launcherapp::commands::core::CommandQueryResult*)lParam;
 	if (result != nullptr) {
 
 		int matchLevel = Pattern::Mismatch;
@@ -500,7 +546,7 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 		// 自動実行を許可する場合は実行する
 		bool canAutoExecute = commands.size() == 1 && matchLevel == Pattern::WholeMatch;		if (canAutoExecute && commands[0]->IsAllowAutoExecute()) {
 			RunCommand(commands[0]);
-			return 0;
+			return;
 		}
 
 		in->mCandidates.SetItems(commands);
@@ -511,8 +557,6 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 	}
 
 	UpdateCandidates();
-
-	return 0;
 }
 
 LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam)
@@ -562,6 +606,7 @@ LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lPar
 	UNREFERENCED_PARAMETER(lParam);
 
 	ClearContent();
+	in->mState->OnContentCleared();
 	return 0;
 }
 
@@ -836,7 +881,7 @@ LRESULT LauncherMainWindow::OnUserMessageHide(
 
 	SPDLOG_DEBUG(_T("start"));
 
-	HideWindow();
+	in->mState->OnDeactivate();
 	return 0;
 }
 
@@ -1137,7 +1182,7 @@ void LauncherMainWindow::SetDescription(const CString& msg)
 	UpdateData(FALSE);
 }
 
-void LauncherMainWindow::ClearContent(bool isForceUpdate)
+void LauncherMainWindow::ClearContentImpl(bool isForceUpdate)
 {
 	SPDLOG_DEBUG(_T("start"));
 
@@ -1242,6 +1287,11 @@ LauncherMainWindow::GetCurrentCommand()
  * テキスト変更通知
  */
 void LauncherMainWindow::OnEditCommandChanged()
+{
+	in->mState->OnTextChanged();
+}
+
+void LauncherMainWindow::HandleTextChanged()
 {
 	UpdateData();
 
@@ -1445,7 +1495,7 @@ LauncherMainWindow::RunCommand(
 	if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC) {
 		// コマンドの実行を待たずにウインドウを非表示する場合
 		ClearContent();
-		HideWindow();
+		::SendMessage(hwnd, LauncherMainWindowMessageID::HIDEWINDOW, 0, 0);
 	}
 	else if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE) {
 		// ウインドウを閉じない
@@ -1524,6 +1574,11 @@ void LauncherMainWindow::SelectCommandContextMenu(
 
 void LauncherMainWindow::OnOK()
 {
+	in->mState->OnExecuteRequested();
+}
+
+void LauncherMainWindow::ExecuteCurrentCommand()
+{
 	UpdateData();
 
 	// バックグラウンドで実行中の問い合わせを待つ
@@ -1545,14 +1600,7 @@ void LauncherMainWindow::OnOK()
 
 void LauncherMainWindow::OnCancel()
 {
-	// 入力欄に入力中のテキストがあったらクリア、何もなければメインウインドウを非表示にする
-	if (in->mInput.HasKeyword()) {
-		ClearContent();
-		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
-	}
-	else {
-		HideWindow();
-	}
+	in->mState->OnCancel();
 }
 
 LRESULT LauncherMainWindow::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -1609,102 +1657,38 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 )
 {
 	UNREFERENCED_PARAMETER(lParam);
+	return in->mState->OnKeyInput(static_cast<unsigned int>(wParam)) ? 1 : 0;
+}
 
-	// 矢印↑キー押下
-	if (wParam == VK_UP) {
-		if (in->mCandidates.IsEmpty()) {
-			// 候補がなければ何もしない
-			return 0;
-		}
 
-		in->mCandidates.OffsetCurrentSelect(-1, true);
+bool LauncherMainWindow::IsCandidateListEmpty() const
+{
+	return in->mCandidates.IsEmpty();
+}
 
-		auto cmd = GetCurrentCommand();
-		if (cmd == nullptr) {
-			spdlog::debug(_T("command is null vk:{}"), wParam);
-			return 1;
-		}
+void LauncherMainWindow::OffsetCandidateSelection(int offset, bool isLoop)
+{
+	in->mCandidates.OffsetCurrentSelect(offset, isLoop);
+}
 
-		AppSound::Get()->PlaySelectSound();
-
-		int startPos = 0;
-		int endPos = 0;
-		in->UpdateCommandString(cmd, startPos, endPos);
-		UpdateData(FALSE);
-
-		in->mKeywordEdit.SetSel(startPos, endPos);
-
-		return 1;
+void LauncherMainWindow::UpdateCurrentCandidate()
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("command is null"));
+		return;
 	}
-	// 矢印↓キー押下
-	else if (wParam ==VK_DOWN) {
-		if (in->mCandidates.IsEmpty()) {
-			// 候補がなければ何もしない
-			return 0;
-		}
 
-		in->mCandidates.OffsetCurrentSelect(1, true);
+	int startPos = 0;
+	int endPos = 0;
+	in->UpdateCommandString(cmd, startPos, endPos);
+	UpdateData(FALSE);
+	in->mKeywordEdit.SetSel(startPos, endPos);
+}
 
-		auto cmd = GetCurrentCommand();
-		if (cmd == nullptr) {
-			spdlog::debug(_T("command is null vk:{}"), wParam);
-			return 1;
-		}
-
-		AppSound::Get()->PlaySelectSound();
-
-		int startPos = 0;
-		int endPos = 0;
-		in->UpdateCommandString(cmd, startPos, endPos);
-		UpdateData(FALSE);
-
-		in->mKeywordEdit.SetSel(startPos, endPos);
-
-		return 1;
-	}
-	else if (wParam == VK_TAB) {
-
-		if (in->mCandidates.IsEmpty()) {
-			// Tabキーを押すとフォーカスが失われるため、設定しなおす
-			//in->mKeywordEdit.SetFocus();
-			return 1;
-		}
-
-		// 補完
-		Complement();
-		return 1;
-
-	}
-	else if (wParam == VK_RETURN) {
-		if (in->mCandidates.IsEmpty()) {
-			// 候補がなければ何もしない
-			return 0;
-		}
-
-		OnOK();
-		return 1;
-	}
-	else if (wParam == VK_NEXT) {
-		if (in->mCandidates.IsEmpty()) {
-			// 候補がなければ何もしない
-			return 0;
-		}
-
-		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
-		in->mCandidates.OffsetCurrentSelect(itemsInPage, false);
-		return 1;
-	}
-	else if (wParam == VK_PRIOR) {
-		if (in->mCandidates.IsEmpty()) {
-			// 候補がなければ何もしない
-			return 0;
-		}
-
-		int itemsInPage = in->mCandidateListBox.GetItemCountInPage();
-		in->mCandidates.OffsetCurrentSelect(-itemsInPage , false);
-		return 1;
-	}
-	return 0;
+int LauncherMainWindow::GetCandidateCountInPage()
+{
+	return in->mCandidateListBox.GetItemCountInPage();
 }
 
 // クライアント領域をドラッグしてウインドウを移動させるための処理
@@ -1735,12 +1719,16 @@ void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	// 音を鳴らす
+	in->mState->OnCandidateSelectionChanged(nm->iItem);
+}
+
+void LauncherMainWindow::SelectCandidate(int index)
+{
+	// 音を鳴らす
 	AppSound::Get()->PlaySelectSound();
 	// 選択された項目に対応するコマンドを現在のコマンドに変更する
-	in->mCandidates.SetCurrentSelect(nm->iItem);
-
+	in->mCandidates.SetCurrentSelect(index);
 	UpdateData(FALSE);
-
 }
 
 // 候補欄のリストをクリックしたときの処理
@@ -1748,26 +1736,11 @@ void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 void LauncherMainWindow::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = 0;
-	 NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
-	 if (nm->iItem == -1) {
-		 return;
-	 }
-
-	 auto cmd = GetCurrentCommand();
-	 if (cmd == nullptr) {
-		 spdlog::warn(_T("command is null. iItem:{}"), nm->iItem);
-		 return ;
-	 }
-
-	 // 選択したコマンドの情報を入力欄やコメント欄に反映する
-	 int startPos = 0;
-	 int endPos = 0;
-	 in->UpdateCommandString(cmd, startPos, endPos);
-	 UpdateData(FALSE);
-
-	 // 入力欄を選択状態にする
-	 in->mKeywordEdit.SetSel(startPos, endPos);
-	 in->mKeywordEdit.SetFocus();
+	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	if (nm->iItem == -1) {
+		return;
+	}
+	in->mState->OnCandidateClicked();
 }
 
 void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
@@ -1775,8 +1748,26 @@ void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	*pResult = 0;
-	// ダブルクリックで確定
-	OnOK();
+	in->mState->OnCandidateDoubleClicked();
+}
+
+void LauncherMainWindow::ReflectCurrentCandidate()
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("command is null"));
+		return;
+	}
+
+	// 選択したコマンドの情報を入力欄やコメント欄に反映する
+	int startPos = 0;
+	int endPos = 0;
+	in->UpdateCommandString(cmd, startPos, endPos);
+	UpdateData(FALSE);
+
+	// 入力欄を選択状態にする
+	in->mKeywordEdit.SetSel(startPos, endPos);
+	in->mKeywordEdit.SetFocus();
 }
 
 void LauncherMainWindow::OnEnterSizeMove()
@@ -1925,7 +1916,7 @@ void LauncherMainWindow::OnContextMenu(
 	else if (n == ID_RESETPOS) {
 		// ウインドウ位置をリセット
 		in->mLayout->RestoreWindowPosition(this, true);
-		ClearContent(true);
+		ClearContentImpl(true);
 		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
 		return;
 	}
@@ -1940,9 +1931,9 @@ void LauncherMainWindow::OnContextMenu(
 		ExecuteCommand(_T("exit"));
 	}
 
-	// 選択後はウインドウを隠す
+	// 選択後はState経由でウインドウを隠す
 	ClearContent();
-	HideWindow();
+	in->mState->OnDeactivate();
 }
 
 void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst)

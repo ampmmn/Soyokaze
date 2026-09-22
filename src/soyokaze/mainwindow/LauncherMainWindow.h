@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mainwindow/LauncherMainWindowIF.h"
+#include "mainwindow/state/LauncherWindowStateContextIF.h"
 
 #include <vector>
 #include <memory>
@@ -35,7 +36,8 @@ namespace core {
 class LauncherMainWindow :
  	public CDialogEx,
  	public TaskTrayEventListenerIF,
-	public launcherapp::mainwindow::LauncherMainWindowIF
+	public launcherapp::mainwindow::LauncherMainWindowIF,
+	public launcherapp::mainwindow::state::LauncherWindowStateContextIF
 {
 	using CommandRepository = launcherapp::core::CommandRepository;
 	using AppHotKey = launcherapp::core::AppHotKey;
@@ -58,8 +60,9 @@ protected:
 
 	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
-	void ClearContent(bool isForceUpdate=false);
-	void Complement();
+	void ClearContent() override;
+	void ClearContentImpl(bool isForceUpdate);
+	void Complement() override;
 	void QueryAsync();
 	void QueryAsync(const CString& keyword);
 	void QuerySync();
@@ -68,6 +71,25 @@ protected:
 	void RunCommand(launcherapp::core::Command* cmd);
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam, const HOTKEY_ATTR& hotkeyAttr);
+
+	void ShowWindowFromState() override;
+	void ActivateVisibleWindow() override;
+	void HideWindowFromState() override;
+	void SetFocusToEdit() override;
+	void HandleTextChanged() override;
+	void HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) override;
+	bool IsCandidateListEmpty() const override;
+	void OffsetCandidateSelection(int offset, bool isLoop) override;
+	void UpdateCurrentCandidate() override;
+	int GetCandidateCountInPage() override;
+	void ReflectCurrentCandidate() override;
+	void SelectCandidate(int index) override;
+	void ExecuteCurrentCommand() override;
+	bool HasKeyword() const override;
+	bool IsWindowVisibleFromState() const override;
+	bool IsWindowActive() const override;
+	bool IsShowToggleEnabled() const override;
+	void ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state) override;
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);

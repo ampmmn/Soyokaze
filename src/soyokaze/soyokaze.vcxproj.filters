@@ -124,6 +124,9 @@
     <Filter Include="mainwindow">
       <UniqueIdentifier>{f72a389b-0bfa-4449-8e85-a993b3bd0573}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mainwindow\state">
+      <UniqueIdentifier>{a9a1e4b3-84d7-4a84-9e8c-1a5d0c2c5c11}</UniqueIdentifier>
+    </Filter>
     <Filter Include="tasktray">
       <UniqueIdentifier>{bbb178a2-439a-4886-9b26-df027800dba3}</UniqueIdentifier>
     </Filter>
@@ -794,6 +797,21 @@
     </ClInclude>
     <ClInclude Include="mainwindow/LauncherMainWindow.h">
       <Filter>mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\HiddenState.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\InputState.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\LauncherWindowState.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\LauncherWindowStateContextIF.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\ShownState.h">
+      <Filter>mainwindow\state</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\CandidateListCtrl.h">
       <Filter>mainwindow</Filter>
@@ -2518,6 +2536,18 @@
     </ClCompile>
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp">
       <Filter>mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\state\HiddenState.cpp">
+      <Filter>mainwindow\state</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\state\InputState.cpp">
+      <Filter>mainwindow\state</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\state\LauncherWindowState.cpp">
+      <Filter>mainwindow\state</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\state\ShownState.cpp">
+      <Filter>mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
       <Filter>mainwindow</Filter>
