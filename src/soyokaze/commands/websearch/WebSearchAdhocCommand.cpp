@@ -76,11 +76,6 @@ WebSearchAdhocCommand::Clone()
 	return new WebSearchAdhocCommand(in->mBaseCommand, GetName(), in->mURL);
 }
 
-bool WebSearchAdhocCommand::IsAcceptArguments()
-{
-	return true;
-}
-
 // メニューの項目数を取得する
 int WebSearchAdhocCommand::GetMenuItemCount()
 {

@@ -72,6 +72,7 @@
     <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\mainwindow\state\LauncherWindowStateTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\matcher\PartialMatchPatternTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\SharedHwndTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StartupParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\StringWrapperTest.cpp" />

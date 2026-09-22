@@ -76,6 +76,17 @@ CString AliasCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
+bool AliasCommand::CanResolve()
+{
+	return true;
+}
+
+bool AliasCommand::Resolve(CString& value)
+{
+	value = in->mParam.mText;
+	return true;
+}
+
 bool AliasCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (hotkeyAttr.GetModifiers() != 0) {

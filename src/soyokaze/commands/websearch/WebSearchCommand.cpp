@@ -146,11 +146,6 @@ CString WebSearchCommand::GetTypeDisplayName()
 	return TypeDisplayName();
 }
 
-bool WebSearchCommand::IsAcceptArguments()
-{
-	return true;
-}
-
 bool WebSearchCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 {
 	if (hotkeyAttr.GetModifiers() != 0) {

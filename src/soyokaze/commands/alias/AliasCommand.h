@@ -20,6 +20,8 @@ public:
 	CString GetDescription() override;
 	CString GetTypeDisplayName() override;
 
+	bool CanResolve() override;
+	bool Resolve(CString& value) override;
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	int Match(Pattern* pattern) override;

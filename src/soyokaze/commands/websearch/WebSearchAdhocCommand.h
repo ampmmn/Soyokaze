@@ -24,7 +24,6 @@ public:
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;
-	bool IsAcceptArguments() override;
 
 // ContextMenuSource
 	// メニューの項目数を取得する

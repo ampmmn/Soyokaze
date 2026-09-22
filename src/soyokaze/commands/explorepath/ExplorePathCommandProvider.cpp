@@ -150,6 +150,29 @@ void ExplorePathCommandProvider::QueryAdhocCommands(
 	CString wholeWord = pattern->GetWholeString();
 	wholeWord.Trim();
 
+	// コマンド名に続く絶対パスが入力された場合は、パス部分だけを検索対象にする
+	// 例: notepad.exe c:\amd\RyzenPPKG Driver\log.txt のような文字列全体がパス扱いになることを抑止する
+	bool hasCommandPrefix = false;
+	if (PathIsRelative(wholeWord)) {
+		int separatorPos = 0;
+		while ((separatorPos = wholeWord.Find(_T(' '), separatorPos)) != -1) {
+			++separatorPos;
+			while (separatorPos < wholeWord.GetLength() && wholeWord[separatorPos] == _T(' ')) {
+				++separatorPos;
+			}
+			CString pathPart = wholeWord.Mid(separatorPos);
+			if (PathIsRelative(pathPart) == FALSE) {
+				wholeWord = pathPart;
+				hasCommandPrefix = true;
+				break;
+			}
+		}
+	}
+	if (hasCommandPrefix) {
+		// コマンド付き入力では、パスをメイン候補として実行対象にしない
+		return;
+	}
+
 	int len = wholeWord.GetLength();
 
 	// 先頭が "..." のようにダブルクォーテーションで囲われている場合は除去

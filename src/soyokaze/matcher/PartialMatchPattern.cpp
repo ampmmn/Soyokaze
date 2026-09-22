@@ -200,10 +200,11 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 				continue;
 			}
 
-			// 残り部分が一つの絶対パスを表しているなら、連結してひと固まりとして扱う
+			// 残り部分が一つの絶対パスを表しているなら、存在しなくても連結してひと固まりとして扱う
 			CString partLeftAll(wholeText.Mid(start));
-			if (PathIsRelative(partLeftAll) == FALSE && Path::FileExists(partLeftAll)) {
+			if (PathIsRelative(partLeftAll) == FALSE) {
 				tokens.push_back(partLeftAll);
+				start = wholeLen;
 				break;
 			}
 
