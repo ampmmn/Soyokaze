@@ -52,6 +52,7 @@ struct MainWindowAppearance::PImpl
 		// 作りなおしたフォントをウインドウや子ウインドウにセットする
 		mainWnd->SetFont(&mFont);
 		mainWnd->SendMessageToDescendants(WM_SETFONT, (WPARAM)mFont.m_hObject, MAKELONG(FALSE, 0), FALSE);
+		mMainWnd->OnMainWindowFontChanged(&mFont);
 
 		return true;
 	}

@@ -861,6 +861,7 @@
     <ClInclude Include="mainwindow\MainWindowLayoutIF.h" />
     <ClInclude Include="mainwindow\state\MainWindowHiddenState.h" />
     <ClInclude Include="mainwindow\state\MainWindowSearchingState.h" />
+    <ClInclude Include="mainwindow\state\MainWindowParamSearchingState.h" />
     <ClInclude Include="mainwindow\state\LauncherWindowState.h" />
     <ClInclude Include="mainwindow\state\LauncherWindowStateBase.h" />
     <ClInclude Include="mainwindow\state\LauncherWindowStateContextIF.h" />
@@ -916,6 +917,7 @@
     <ClInclude Include="app/Arguments.h" />
     <ClInclude Include="app/LauncherApp.h" />
     <ClInclude Include="mainwindow/LauncherMainWindow.h" />
+    <ClInclude Include="mainwindow/ExtraCandidateListCtrl.h" />
     <ClInclude Include="mainwindow/LauncherDropTarget.h" />
     <ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
@@ -1454,6 +1456,7 @@
     <ClCompile Include="settingwindow\AppSettingPathPage.cpp" />
     <ClCompile Include="settingwindow\BasicSettingDialog.cpp" />
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp" />
+    <ClCompile Include="mainwindow\ExtraCandidateListCtrl.cpp" />
     <ClCompile Include="mainwindow\BGImageCandidateListRenderer.cpp" />
     <ClCompile Include="mainwindow\StandardCandidateListRenderer.cpp" />
     <ClCompile Include="icon\CaptureIconLabel.cpp" />
@@ -1481,6 +1484,7 @@
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowHiddenState.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowSearchingState.cpp" />
+    <ClCompile Include="mainwindow/state/MainWindowParamSearchingState.cpp" />
     <ClCompile Include="mainwindow/state/LauncherWindowStateBase.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowIdleState.cpp" />
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />

@@ -68,6 +68,41 @@ bool CommandToken::GetTrailingString(int endPos, CString& trailingText)
 	return true;
 }
 
+bool CommandToken::GetTokenRange(int position, int& startPos, int& endPos) const
+{
+	if (mTokenPos.empty()) {
+		return false;
+	}
+
+	for (size_t i = 0; i < mTokenPos.size(); ++i) {
+		int start = mTokenPos[i];
+		int end = i + 1 < mTokenPos.size() ? mTokenPos[i + 1] : mCommandStr.GetLength();
+		while (end > start && mCommandStr[end - 1] == _T(' ')) {
+			--end;
+		}
+		if (position >= start && position <= end) {
+			startPos = start;
+			endPos = end;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CommandToken::GetToken(int index, CString& token) const
+{
+	if (index < 0 || index >= static_cast<int>(mTokenPos.size())) {
+		return false;
+	}
+	int start = mTokenPos[index];
+	int end = index + 1 < static_cast<int>(mTokenPos.size()) ? mTokenPos[index + 1] : mCommandStr.GetLength();
+	while (end > start && mCommandStr[end - 1] == _T(' ')) {
+		--end;
+	}
+	token = mCommandStr.Mid(start, end - start);
+	return true;
+}
+
 size_t CommandToken::GetCount() const
 {
 	return mTokenPos.size(); 

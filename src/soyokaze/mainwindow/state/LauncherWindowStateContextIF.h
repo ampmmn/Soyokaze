@@ -55,6 +55,11 @@ public:
 	virtual void HandleTextChanged() = 0;
 
 	/**
+	 入力欄の変更を内部状態へ反映する(候補検索は行わない)
+	*/
+	virtual void UpdateInputState() = 0;
+
+	/**
   検索完了時の既存処理を実行する
 	*/
 	virtual void HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) = 0;
@@ -127,6 +132,20 @@ public:
   @return トグル表示が有効な場合はtrue
 */
 	virtual bool IsShowToggleEnabled() const = 0;
+	/** 現在の入力が追加候補検索を開始できるか確認する */
+	virtual bool CanStartParamSearching() = 0;
+	/** 追加候補検索への遷移をメッセージキューへ登録する */
+	virtual void RequestParamSearching() = 0;
+	/** 追加候補欄を更新して表示する */
+	virtual void UpdateExtraCandidates() = 0;
+	/** 追加候補欄を非表示にする */
+	virtual void HideExtraCandidates() = 0;
+	/** 追加候補の選択位置を移動する */
+	virtual void OffsetExtraCandidateSelection(int offset) = 0;
+	/** 追加候補欄が空か確認する */
+	virtual bool IsExtraCandidateListEmpty() const = 0;
+	/** 選択中の追加候補を入力欄へ反映する */
+	virtual void ResolveExtraCandidate() = 0;
 };
 
 }}}

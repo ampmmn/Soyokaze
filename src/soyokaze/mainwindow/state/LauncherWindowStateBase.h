@@ -49,6 +49,10 @@ protected:
 	void OnCandidateClicked() override;
 	/** 候補ダブルクリックを処理しないState向けの既定処理 */
 	void OnCandidateDoubleClicked() override;
+	void OnSelectionChanged() override;
+	void OnWindowGeometryChanged() override;
+	void OnExtraCandidateSelectionChanged() override;
+	void OnExtraCandidateClicked() override;
 
 private:
 	LauncherWindowStateContextIF* mContext;

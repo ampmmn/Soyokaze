@@ -46,6 +46,14 @@ public:
 	virtual void OnCandidateClicked() = 0;
 	/** 候補がダブルクリックされたときの処理を行う */
 	virtual void OnCandidateDoubleClicked() = 0;
+	/** キャレットや選択範囲が変更されたときの処理を行う */
+	virtual void OnSelectionChanged() = 0;
+	/** メインウインドウの位置・サイズ変更を処理する */
+	virtual void OnWindowGeometryChanged() = 0;
+	/** 追加候補欄の選択位置変更を処理する */
+	virtual void OnExtraCandidateSelectionChanged() = 0;
+	/** 追加候補欄のクリックを処理する */
+	virtual void OnExtraCandidateClicked() = 0;
 };
 
 }}}

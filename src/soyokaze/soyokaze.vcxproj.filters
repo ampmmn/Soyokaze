@@ -2100,6 +2100,12 @@
     <ClInclude Include="settingwindow\AppSettingPageBGImage.h">
       <Filter>settingwindow</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow/ExtraCandidateListCtrl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\state\MainWindowParamSearchingState.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2539,18 +2545,6 @@
     </ClCompile>
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp">
       <Filter>mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\state\MainWindowHiddenState.cpp">
-      <Filter>mainwindow\state</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\state\MainWindowSearchingState.cpp">
-      <Filter>mainwindow\state</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\state\LauncherWindowStateBase.cpp">
-      <Filter>mainwindow\state</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\state\MainWindowIdleState.cpp">
-      <Filter>mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">
       <Filter>mainwindow</Filter>
@@ -3703,6 +3697,24 @@
     </ClCompile>
     <ClCompile Include="settingwindow\AppSettingPageBGImage.cpp">
       <Filter>settingwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ExtraCandidateListCtrl.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/state/MainWindowHiddenState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/state/MainWindowSearchingState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/state/LauncherWindowStateBase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/state/MainWindowIdleState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow/state/MainWindowParamSearchingState.cpp">
+      <Filter>mainwindow\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

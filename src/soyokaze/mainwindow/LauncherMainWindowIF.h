@@ -37,6 +37,8 @@ public:
 	
 	// メインウインドウのフォント
 	virtual CFont* GetMainWindowFont() = 0;
+	// メインウインドウのフォント変更を通知する
+	virtual void OnMainWindowFontChanged(CFont* font) = 0;
 
 };
 

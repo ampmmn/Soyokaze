@@ -122,6 +122,9 @@ struct KeywordEdit::PImpl
 	int mFontSize{16};
 
 	CString mPlaceHolderText;
+	UINT mSelectionNotifyMessage{0};
+	int mLastSelectionStart{-1};
+	int mLastSelectionEnd{-1};
 
 };
 
@@ -167,6 +170,26 @@ void KeywordEdit::Paste()
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 {
+	auto notifySelectionChanged = [this]() {
+		int start = 0;
+		int end = 0;
+		GetSel(start, end);
+		if (start == in->mLastSelectionStart && end == in->mLastSelectionEnd) {
+			return;
+		}
+		in->mLastSelectionStart = start;
+		in->mLastSelectionEnd = end;
+		if (in->mSelectionNotifyMessage != 0) {
+			GetParent()->PostMessage(in->mSelectionNotifyMessage, 0, 0);
+		}
+	};
+
+	if (msg == EM_SETSEL && in->mSelectionNotifyMessage != 0) {
+		LRESULT ret = __super::WindowProc(msg, wp, lp);
+		notifySelectionChanged();
+		return ret;
+	}
+
 	if (msg == WM_IME_NOTIFY && wp == IMN_SETOPENSTATUS) {
 
 		if (in->mIsFocus) {
@@ -184,7 +207,31 @@ LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
 		return ret;
 	}
 
-	return __super::WindowProc(msg, wp, lp);
+	LRESULT ret = __super::WindowProc(msg, wp, lp);
+	bool isSelectionNavigationKey = false;
+	if (msg == WM_KEYUP) {
+		switch (wp) {
+		case VK_LEFT:
+		case VK_RIGHT:
+		case VK_UP:
+		case VK_DOWN:
+		case VK_HOME:
+		case VK_END:
+		case VK_PRIOR:
+		case VK_NEXT:
+			isSelectionNavigationKey = true;
+			break;
+		case 'A':
+			isSelectionNavigationKey = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			break;
+		default:
+			break;
+		}
+	}
+	if (msg == WM_LBUTTONUP || isSelectionNavigationKey) {
+		notifySelectionChanged();
+	}
+	return ret;
 }
 
 
@@ -218,6 +265,11 @@ void KeywordEdit::SetPlaceHolder(const CString& text)
 void KeywordEdit::SetNotifyKeyEvent(bool isNotify)
 {
 	in->mIsNotify = isNotify;
+}
+
+void KeywordEdit::SetSelectionNotifyMessage(UINT messageId)
+{
+	in->mSelectionNotifyMessage = messageId;
 }
 
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)

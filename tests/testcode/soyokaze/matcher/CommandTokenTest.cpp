@@ -49,3 +49,24 @@ TEST(CommandToken, GetTrailingString3)
 	bool result = tok.GetTrailingString(3, text);
 	EXPECT_FALSE(result);
 }
+
+TEST(CommandToken, GetTokenRange)
+{
+	CommandToken tok(_T("hoge param tail"));
+
+	int start = 0;
+	int end = 0;
+	EXPECT_TRUE(tok.GetTokenRange(7, start, end));
+	EXPECT_EQ(5, start);
+	EXPECT_EQ(10, end);
+}
+
+TEST(CommandToken, GetToken)
+{
+	CommandToken tok(_T("hoge \"param value\" tail"));
+
+	CString token;
+	EXPECT_TRUE(tok.GetToken(1, token));
+	EXPECT_EQ(_T("\"param value\""), token);
+	EXPECT_FALSE(tok.GetToken(3, token));
+}

@@ -10,7 +10,7 @@ namespace launcherapp { namespace mainwindow { namespace state {
 class SearchingState : public LauncherWindowStateBase
 {
 public:
-	explicit SearchingState(LauncherWindowStateContextIF* context);
+	explicit SearchingState(LauncherWindowStateContextIF* context, bool allowParamSearching = true);
 
 	/** 表示要求に応じて表示、再アクティブ化、トグル非表示を行う */
 	void OnActivate(bool isShowForce) override;
@@ -36,6 +36,9 @@ public:
 	void OnCandidateClicked() override;
 	/** ダブルクリックされた候補を実行する */
 	void OnCandidateDoubleClicked() override;
+
+private:
+	bool mAllowParamSearching;
 };
 
 }}}

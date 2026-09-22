@@ -14,6 +14,7 @@ public:
 	void SetIMEOff();
 	void SetPlaceHolder(const CString& text);
 	void SetNotifyKeyEvent(bool isNotify);
+	void SetSelectionNotifyMessage(UINT messageId);
 
 protected:
 	struct PImpl;

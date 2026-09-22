@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "mainwindow/state/MainWindowHiddenState.h"
 #include "mainwindow/state/MainWindowSearchingState.h"
+#include "mainwindow/state/MainWindowParamSearchingState.h"
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
 #include "mainwindow/state/MainWindowIdleState.h"
 
@@ -48,6 +49,10 @@ public:
 	}
 
 	void HandleTextChanged() override
+	{
+	}
+
+	void UpdateInputState() override
 	{
 	}
 
@@ -118,11 +123,44 @@ public:
 		return mIsShowToggle;
 	}
 
+	bool CanStartParamSearching() override
+	{
+		return mCanStartParamSearching;
+	}
+
+	void RequestParamSearching() override
+	{
+		mState = std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(this);
+	}
+
+	void UpdateExtraCandidates() override
+	{
+	}
+
+	void HideExtraCandidates() override
+	{
+	}
+
+	void OffsetExtraCandidateSelection(int offset) override
+	{
+		UNREFERENCED_PARAMETER(offset);
+	}
+
+	bool IsExtraCandidateListEmpty() const override
+	{
+		return true;
+	}
+
+	void ResolveExtraCandidate() override
+	{
+	}
+
 	std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> mState;
 	bool mHasKeyword{false};
 	bool mIsWindowVisible{false};
 	bool mIsWindowActive{false};
 	bool mIsShowToggle{false};
+	bool mCanStartParamSearching{false};
 	bool mIsCandidateListEmpty{false};
 	bool mIsLoop{false};
 	int mOffset{0};
@@ -226,6 +264,70 @@ TEST(LauncherWindowStateTest, SearchingState_Cancel_ClearsAndTransitionsToIdleSt
 	EXPECT_EQ(context.mClearCount, 1);
 	EXPECT_EQ(context.mFocusCount, 1);
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::IdleState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_TextChangedWithParameter_RemainsSearchingStateUntilQueryCompletes)
+{
+	DummyContext context;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = true;
+	launcherapp::mainwindow::state::SearchingState state(&context);
+
+	state.OnTextChanged();
+
+	EXPECT_EQ(context.mState, nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_QueryCompletedWithParameter_TransitionsToParamSearchingState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = true;
+	launcherapp::mainwindow::state::SearchingState state(&context);
+
+	state.OnQueryCompleted(nullptr);
+
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ParamSearchingState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_QueryCompletedAfterExtraCandidateResolve_DoesNotTransitionToParamSearchingState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = true;
+	launcherapp::mainwindow::state::SearchingState state(&context, false);
+
+	state.OnQueryCompleted(nullptr);
+
+	EXPECT_EQ(context.mState, nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_TextChangedAfterExtraCandidateResolve_AllowsParamSearchingAgain)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = true;
+	launcherapp::mainwindow::state::SearchingState state(&context, false);
+
+	state.OnTextChanged();
+	state.OnQueryCompleted(nullptr);
+
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ParamSearchingState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_TextChangedWithoutParameterSearch_RemainsSearchingState)
+{
+	DummyContext context;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = false;
+	launcherapp::mainwindow::state::SearchingState state(&context);
+
+	state.OnTextChanged();
+
+	EXPECT_EQ(context.mState, nullptr);
 }
 
 TEST(LauncherWindowStateTest, SearchingState_ExecuteWhenClosed_TransitionsToHiddenState)

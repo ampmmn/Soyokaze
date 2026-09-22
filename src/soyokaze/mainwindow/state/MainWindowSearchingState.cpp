@@ -3,12 +3,14 @@
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
 #include "mainwindow/state/MainWindowHiddenState.h"
 #include "mainwindow/state/MainWindowIdleState.h"
+#include "mainwindow/state/MainWindowParamSearchingState.h"
 #include "mainwindow/AppSound.h"
 
 using namespace launcherapp::mainwindow::state;
 
-SearchingState::SearchingState(LauncherWindowStateContextIF* context) :
-	LauncherWindowStateBase(context)
+SearchingState::SearchingState(LauncherWindowStateContextIF* context, bool allowParamSearching) :
+	LauncherWindowStateBase(context),
+	mAllowParamSearching(allowParamSearching)
 {
 }
 
@@ -72,6 +74,8 @@ void SearchingState::OnContentCleared()
 void SearchingState::OnTextChanged()
 {
 	auto context = GetContext();
+	// 確定直後だけ追加候補検索を抑制し、次の入力から通常動作へ戻す
+	mAllowParamSearching = true;
 	context->HandleTextChanged();
 	if (context->HasKeyword() == false) {
 		// 入力内容がなくなった場合は候補検索を行わない待機中Stateへ戻る
@@ -90,6 +94,10 @@ void SearchingState::OnQueryCompleted(launcherapp::commands::core::CommandQueryR
 	else if (context->HasKeyword() == false) {
 		// 検索完了後に入力がなくなっていれば待機中Stateへ戻る
 		context->ChangeState(std::make_unique<IdleState>(context));
+	}
+	else if (mAllowParamSearching && context->CanStartParamSearching()) {
+		// 先行して通知された選択変更を処理してから追加候補Stateへ遷移する
+		context->RequestParamSearching();
 	}
 }
 

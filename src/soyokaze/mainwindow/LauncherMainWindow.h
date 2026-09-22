@@ -14,6 +14,7 @@
 #include "icon/CaptureIconLabel.h"
 #include "mainwindow/guide/GuideCtrl.h"
 #include "mainwindow/LauncherDropTarget.h"
+#include "mainwindow/ExtraCandidateListCtrl.h"
 
 class HOTKEY_ATTR;
 
@@ -84,6 +85,8 @@ protected:
 	void SetFocusToEdit() override;
 	/** 入力変更に伴う既存処理を実行する */
 	void HandleTextChanged() override;
+	/** 入力欄の変更を内部状態へ反映する(候補検索は行わない) */
+	void UpdateInputState() override;
 	/** 検索結果を候補一覧へ反映する既存処理を実行する */
 	void HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) override;
 	/** 候補一覧が空かどうかを返す */
@@ -110,6 +113,13 @@ protected:
 	bool IsShowToggleEnabled() const override;
 	/** 現在のStateを終了し、指定されたStateへ遷移する */
 	void ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state) override;
+	bool CanStartParamSearching() override;
+	void RequestParamSearching() override;
+	void UpdateExtraCandidates() override;
+	void HideExtraCandidates() override;
+	void OffsetExtraCandidateSelection(int offset) override;
+	bool IsExtraCandidateListEmpty() const override;
+	void ResolveExtraCandidate() override;
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);
 	void SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst);
@@ -133,6 +143,8 @@ protected:
 	KeywordEdit* GetEdit() override;
 	CandidateListCtrl* GetCandidateList() override;
 	CFont* GetMainWindowFont() override;
+	/** メインウインドウのフォント変更を追加候補Popupへ通知する */
+	void OnMainWindowFontChanged(CFont* font) override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;
@@ -151,6 +163,8 @@ protected:
 	afx_msg void OnExitSizeMove();
 	// コンテキストメニューの表示
 	LRESULT OnKeywordEditNotify(WPARAM wParam, LPARAM lParam);
+	LRESULT OnSelectionChangedMessage(WPARAM wParam, LPARAM lParam);
+	LRESULT OnUserMessageRequestParamSearching(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMClick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult);
@@ -158,6 +172,7 @@ protected:
 	afx_msg void OnSize(UINT type, int cx, int cy);
 	afx_msg void OnMove(int x, int y);
 	afx_msg void OnMButtonUp(UINT flags, CPoint point);
+	BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 	LRESULT OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam);
 	LRESULT OnUserMessageSetText(WPARAM wParam, LPARAM lParam);

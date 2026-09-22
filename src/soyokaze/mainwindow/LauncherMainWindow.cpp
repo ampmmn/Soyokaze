@@ -7,6 +7,10 @@
 #include "app/Manual.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
+#include "mainwindow/ExtraCandidateListCtrl.h"
+#include "mainwindow/state/MainWindowParamSearchingState.h"
+#include "commands/history/HistoryCommandQueryRequest.h"
+#include "matcher/CommandToken.h"
 #include "mainwindow/layout/MainWindowLayout.h"
 #include "mainwindow/layout/MainWindowAppearance.h"
 #include "mainwindow/MainWindowInput.h"
@@ -85,6 +89,7 @@ struct LauncherMainWindow::PImpl
 
 // キーワード検索状態
 	bool mIsQueryDoing{false};
+	bool mIsUpdatingExtraCandidate{false};
 
 	// ウインドウハンドル(共有メモリに保存する用)
 	std::unique_ptr<SharedHwnd> mSharedHwnd;
@@ -97,6 +102,8 @@ struct LauncherMainWindow::PImpl
 	CaptureIconLabel mIconLabel;
 	// 候補一覧表示用リストボックス
 	CandidateListCtrl mCandidateListBox;
+	ExtraCandidateListCtrl mExtraCandidateListBox;
+	std::vector<RefPtr<Command>> mExtraCandidates;
 	// オプションボタン
 	MainWindowOptionButton mOptionButton;
 	// ガイド欄
@@ -202,6 +209,7 @@ LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
 
 LauncherMainWindow::~LauncherMainWindow()
 {
+	in->mExtraCandidateListBox.HidePopup();
 	in->mActionHandlerRegistry.Finalize(&in->mCandidates);
 	in->mCandidates.RemoveListener(&in->mCandidateListBox);
 }
@@ -235,6 +243,8 @@ BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
 	ON_WM_MOVE()
 	ON_WM_MBUTTONUP()
 	ON_MESSAGE(LauncherMainWindowMessageID::INPUTKEY, OnKeywordEditNotify)
+	ON_MESSAGE(WM_APP+256, OnSelectionChangedMessage)
+	ON_MESSAGE(WM_APP+257, OnUserMessageRequestParamSearching)
 	ON_MESSAGE(LauncherMainWindowMessageID::ACTIVATEWINDOW, OnUserMessageActiveWindow)
 	ON_MESSAGE(LauncherMainWindowMessageID::RUNCOMMAND, OnUserMessageRunCommand)
 	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
@@ -339,6 +349,151 @@ void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::st
 	}
 	in->mState = std::move(state);
 	in->mState->OnEnter();
+}
+
+bool LauncherMainWindow::CanStartParamSearching()
+{
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	if (tokens.GetCount() < 2 || startPos != endPos) {
+		return false;
+	}
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	if (tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0) {
+		return false;
+	}
+	CString parameter = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (parameter.IsEmpty()) {
+		return false;
+	}
+	if (parameter[0] == _T('"')) {
+		return false;
+	}
+	int selectedIndex = in->mCandidates.GetCurrentSelect();
+	Command* command = in->mCandidates.GetCommand(selectedIndex);
+	if (command == nullptr) {
+		return false;
+	}
+	return command->IsAcceptArguments();
+}
+
+void LauncherMainWindow::RequestParamSearching()
+{
+	PostMessage(WM_APP+257, 0, 0);
+}
+
+void LauncherMainWindow::UpdateExtraCandidates()
+{
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	if (tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0) {
+		HideExtraCandidates();
+		return;
+	}
+	CString keyword = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (keyword.IsEmpty() || keyword[0] == _T('"')) {
+		HideExtraCandidates();
+		return;
+	}
+
+	CString selectedName;
+	if (auto current = in->mExtraCandidateListBox.GetCurrentCommand()) {
+		selectedName = current->GetName();
+	}
+
+	using QueryRequest = launcherapp::commands::history::CommandQueryRequest;
+	using QueryResult = launcherapp::commands::core::CommandQueryResult;
+	RefPtr<QueryRequest> request(new QueryRequest(keyword));
+	GetCommandRepository()->Query(request.get());
+	if (request->WaitComplete(2000) == false) {
+		HideExtraCandidates();
+		return;
+	}
+	RefPtr<QueryResult> result;
+	if (request->GetResult(&result) == false || result.get() == nullptr) {
+		HideExtraCandidates();
+		return;
+	}
+
+	std::vector<RefPtr<Command>> candidates;
+	for (size_t i = 0; i < result->GetCount(); ++i) {
+		RefPtr<Command> command;
+		int matchLevel = Pattern::Mismatch;
+		if (result->Get(i, &command, &matchLevel) && command->CanResolve()) {
+			candidates.push_back(command);
+		}
+	}
+	in->mExtraCandidates = candidates;
+	in->mExtraCandidateListBox.SetCandidates(in->mExtraCandidates);
+	in->mExtraCandidateListBox.SelectByName(selectedName);
+	if (in->mExtraCandidates.empty()) {
+		HideExtraCandidates();
+		return;
+	}
+	CPoint point;
+	::GetCaretPos(&point);
+	in->mKeywordEdit.ClientToScreen(&point);
+	point.y += in->mExtraCandidateListBox.GetRowHeight();
+	in->mExtraCandidateListBox.ShowAt(point);
+}
+
+void LauncherMainWindow::HideExtraCandidates()
+{
+	in->mExtraCandidateListBox.HidePopup();
+	in->mExtraCandidates.clear();
+}
+
+void LauncherMainWindow::OffsetExtraCandidateSelection(int offset)
+{
+	in->mExtraCandidateListBox.OffsetSelection(offset);
+}
+
+bool LauncherMainWindow::IsExtraCandidateListEmpty() const
+{
+	return in->mExtraCandidates.empty();
+}
+
+void LauncherMainWindow::ResolveExtraCandidate()
+{
+	auto command = in->mExtraCandidateListBox.GetCurrentCommand();
+	if (command == nullptr) {
+		return;
+	}
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	if (tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false) {
+		return;
+	}
+	CString value = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (command->Resolve(value) == false) {
+		return;
+	}
+	text = text.Left(tokenStart) + value + text.Mid(tokenEnd);
+	in->mInput.SetKeyword(text);
+	in->mLastInputStr = text;
+	in->mIsUpdatingExtraCandidate = true;
+	in->mKeywordEdit.SetWindowText(text);
+	in->mKeywordEdit.SetSel(tokenStart + value.GetLength(), tokenStart + value.GetLength());
+	in->mIsUpdatingExtraCandidate = false;
+	UpdateData(FALSE);
+	QueryAsync(text);
 }
 
 
@@ -1032,6 +1187,11 @@ CFont* LauncherMainWindow::GetMainWindowFont()
 	return in->mAppearance->GetFont();
 }
 
+void LauncherMainWindow::OnMainWindowFontChanged(CFont* font)
+{
+	in->mExtraCandidateListBox.SetPopupFont(font);
+}
+
 // LauncherMainWindow メッセージ ハンドラー
 
 BOOL LauncherMainWindow::OnInitDialog()
@@ -1056,6 +1216,7 @@ BOOL LauncherMainWindow::OnInitDialog()
 	manager->SetReceiverWindow(GetSafeHwnd());
 
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
+	in->mKeywordEdit.SetSelectionNotifyMessage(WM_APP+256);
 
 	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
 	in->mCmdReceiveEdit.Init();
@@ -1064,6 +1225,8 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
 	in->mCandidateListBox.InitColumns();
+	in->mExtraCandidateListBox.CreatePopup(this);
+	in->mExtraCandidateListBox.SetPopupFont(in->mAppearance->GetFont());
 
 	in->mOptionButton.SubclassDlgItem(IDC_BUTTON_OPTION, this);
 
@@ -1297,11 +1460,23 @@ LauncherMainWindow::GetCurrentCommand()
  */
 void LauncherMainWindow::OnEditCommandChanged()
 {
+	if (in->mIsUpdatingExtraCandidate) {
+		return;
+	}
 	// 入力変更後のState遷移をState側で判断する
 	in->mState->OnTextChanged();
 }
 
 void LauncherMainWindow::HandleTextChanged()
+{
+	UpdateInputState();
+	QueryAsync();
+}
+
+/**
+  入力欄の変更を内部状態へ反映する(候補検索は行わない)
+*/
+void LauncherMainWindow::UpdateInputState()
 {
 	UpdateData();
 
@@ -1326,19 +1501,14 @@ void LauncherMainWindow::HandleTextChanged()
 		in->mInput.RemoveLastWord();
 		in->mLastInputStr = in->mInput.GetKeyword();
 
-		// 検索リクエスト
-		QueryAsync();
-
 		UpdateData(FALSE);
 
 		// キャレット位置も更新する
 		in->mKeywordEdit.SetCaretToEnd();
 	}
-	else {
-		// 検索リクエスト
-		QueryAsync();
-	}
 
+	// 検索結果を待たず、入力状態に応じて候補欄を表示する
+	in->mLayout->UpdateInputStatus(&in->mInput, false);
 }
 
 // 入力キーワードで検索をリクエストを出す(完了をまたない)
@@ -1673,6 +1843,39 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 	return in->mState->OnKeyInput(static_cast<unsigned int>(wParam)) ? 1 : 0;
 }
 
+LRESULT LauncherMainWindow::OnSelectionChangedMessage(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+	in->mState->OnSelectionChanged();
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageRequestParamSearching(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+	if (CanStartParamSearching()) {
+		ChangeState(std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(this));
+	}
+	return 0;
+}
+
+BOOL LauncherMainWindow::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+	NMHDR* hdr = reinterpret_cast<NMHDR*>(lParam);
+	if (hdr && hdr->hwndFrom == in->mExtraCandidateListBox.GetSafeHwnd()) {
+		if (hdr->code == NM_CLICK) {
+			in->mState->OnExtraCandidateClicked();
+		}
+		if (pResult) {
+			*pResult = 0;
+		}
+		return TRUE;
+	}
+	return __super::OnNotify(wParam, lParam, pResult);
+}
+
 
 bool LauncherMainWindow::IsCandidateListEmpty() const
 {
@@ -1814,12 +2017,14 @@ void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
 	if (in->mCandidateListBox.GetSafeHwnd()) {
 		in->mCandidateListBox.UpdateSize(cx, cy);
 	}
+	in->mState->OnWindowGeometryChanged();
 }
 
 void LauncherMainWindow::OnMove(int x, int y)
 {
 	__super::OnMove(x, y);
 	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+	in->mState->OnWindowGeometryChanged();
 }
 
 void LauncherMainWindow::OnMButtonUp(UINT flags, CPoint point)

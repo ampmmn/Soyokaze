@@ -69,6 +69,22 @@ void LauncherWindowStateBase::OnCandidateDoubleClicked()
 {
 }
 
+void LauncherWindowStateBase::OnSelectionChanged()
+{
+}
+
+void LauncherWindowStateBase::OnWindowGeometryChanged()
+{
+}
+
+void LauncherWindowStateBase::OnExtraCandidateSelectionChanged()
+{
+}
+
+void LauncherWindowStateBase::OnExtraCandidateClicked()
+{
+}
+
 LauncherWindowStateContextIF* LauncherWindowStateBase::GetContext() const
 {
 	return mContext;
