@@ -98,7 +98,12 @@ void ExplorePathCommand::SetCompletionText(const CString& completion)
 
 CString ExplorePathCommand::GetName()
 {
-	return in->mWord;
+	if (Path::IsDirectory(in->mFullPath) && in->mWord.Right(1) != _T('\\')) {
+		return in->mWord + _T("\\");
+	}
+	else {
+		return in->mWord;
+	}
 }
 
 CString ExplorePathCommand::GetTypeDisplayName()
@@ -117,6 +122,9 @@ bool ExplorePathCommand::Resolve(CString& value)
 		return false;
 	}
 	value = in->mFullPath;
+	if (Path::IsDirectory(value) && value.Right(1) != _T("\\") && value.Right(1) != _T("/")) {
+		value += _T("\\");
+	}
 	return true;
 }
 
