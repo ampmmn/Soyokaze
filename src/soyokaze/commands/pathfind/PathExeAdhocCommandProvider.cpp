@@ -6,9 +6,12 @@
 #include "commands/pathfind/ExcludePathList.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
+#include "matcher/PatternInternal.h"
+#include "core/IFIDDefine.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
 #include "utility/LocalPathResolver.h"
+#include "utility/Path.h"
 #include "resource.h"
 #include <list>
 
@@ -163,11 +166,20 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 
 	CString word = pattern->GetFirstWord();
 
-	// 相対パスだったら、.exeを補完してパス解決を試みる
+	// 絶対パスの後ろに引数が続く場合は、先頭のパスを実行対象として扱う
 	if (PathIsRelative(word) == FALSE) {
+		std::vector<CString> rawWords;
+		RefPtr<PatternInternal> patternInternal;
+		if (pattern->QueryInterface(IFID_PATTERNINTERNAL, (void**)&patternInternal)) {
+			patternInternal->GetRawWords(rawWords);
+		}
+		if (rawWords.size() > 1 && Path::FileExists(word) && Path::IsDirectory(word) == false) {
+			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(word)));
+		}
 		return;
 	}
 
+	// 相対パスだったら、.exeを補完してパス解決を試みる
 	// ".exe"がなければ付与
 	if (EXE_EXT.CompareNoCase(PathFindExtension(word)) != 0) {
 		word += _T(".exe");
