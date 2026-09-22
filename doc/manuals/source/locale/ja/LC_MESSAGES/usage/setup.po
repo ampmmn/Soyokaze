@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"POT-Creation-Date: 2026-09-23 07:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -64,7 +64,7 @@ msgid "ダウンロードした`.zip`ファイルを、任意のフォルダに�
 msgstr ""
 
 #: ../../source/usage/setup.md:32
-msgid "展開したフォルダを開き、`{{ project_lower }}.exe`を実行する"
+msgid "展開したフォルダを開き、{{ project_lower }}.exe を実行する"
 msgstr ""
 
 #: ../../source/usage/setup.md:33
@@ -77,8 +77,8 @@ msgstr ""
 
 #: ../../source/usage/setup.md:37
 msgid ""
-"初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の`.{{ project_lower "
-"}}`フォルダに保存されます。"
+"初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の .{{ project_lower }} "
+"フォルダに保存されます。"
 msgstr ""
 
 #: ../../source/usage/setup.md:41
@@ -106,7 +106,7 @@ msgid "インストール時に展開したフォルダを削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:53
-msgid "設定フォルダ（通常は`C:\\Users\\<ユーザー名>\\.{{ project_lower }}`）を削除する"
+msgid "設定フォルダ（通常は C:\\Users\\<ユーザー名>\\.{{ project_lower }} ）を削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:57
@@ -150,4 +150,15 @@ msgid ""
 "exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。   "
 "この場合、設定ファイル一式を`profile`フォルダ内に作成する。"
 msgstr ""
+
+#~ msgid "展開したフォルダを開き、`{{ project_lower }}.exe`を実行する"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の`.{{ project_lower"
+#~ " }}`フォルダに保存されます。"
+#~ msgstr ""
+
+#~ msgid "設定フォルダ（通常は`C:\\Users\\<ユーザー名>\\.{{ project_lower }}`）を削除する"
+#~ msgstr ""
 

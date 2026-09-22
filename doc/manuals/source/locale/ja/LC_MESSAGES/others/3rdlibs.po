@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-19 17:40+0900\n"
+"POT-Creation-Date: 2026-09-23 07:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -157,7 +157,19 @@ msgstr ""
 msgid "YAMLファイルをパースするために利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:55
+#: ../../source/others/3rdlibs.md:52
+msgid "[pato/mathypad](https://github.com/pato/mathypad)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:53
+msgid "電卓の単位付き計算機能のために利用している"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:54
+msgid "オリジナル版ではC/C++向けのシンボルを公開していないため、利用するためのAPI層を独自追加し、Windows向けにビルドしたものを利用している"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:58
 msgid "非開示"
 msgstr ""
 

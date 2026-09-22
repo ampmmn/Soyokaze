@@ -1,0 +1,189 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.57.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-23 07:53+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/input-window.md:1
+msgid "Input Window"
+msgstr "入力画面"
+
+#: ../../source/window/input-window.md:3
+msgid "Overview"
+msgstr "概要"
+
+#: ../../source/window/input-window.md:5
+msgid "アプリが起動している状態でランチャー呼び出しキー(デフォルト設定:`Alt`-`Space`)を押下すると、入力画面が表示される。"
+msgstr ""
+
+#: ../../source/window/input-window.md:7
+msgid "入力画面にキーワードを入力してEnterキーを押下すると、キーワードに関連付けた各種操作を実行できる。"
+msgstr ""
+
+#: ../../source/window/input-window.md:9
+msgid "Description"
+msgstr "画面の説明"
+
+#: ../../source/window/input-window.md:11
+msgid "![](../image/usage/how-to-use/window-parts.png)"
+msgstr ""
+
+#: ../../source/window/input-window.md:13
+msgid "① アイコン表示欄"
+msgstr ""
+
+#: ../../source/window/input-window.md:14
+msgid "選択している候補に関連付けられたアイコンを表示する"
+msgstr ""
+
+#: ../../source/window/input-window.md:15
+msgid "② コメント表示欄"
+msgstr ""
+
+#: ../../source/window/input-window.md:16
+msgid "選択している候補の説明を表示する"
+msgstr ""
+
+#: ../../source/window/input-window.md:17
+msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
+msgstr ""
+
+#: ../../source/window/input-window.md:18
+msgid "③ 入力欄"
+msgstr ""
+
+#: ../../source/window/input-window.md:19
+msgid "ここにキーワード(やパラメータ)を入力する。"
+msgstr ""
+
+#: ../../source/window/input-window.md:20
+msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
+msgstr ""
+
+#: ../../source/window/input-window.md:21
+msgid "`Tab`キーを押下するとキーワードを補完する"
+msgstr ""
+
+#: ../../source/window/input-window.md:22
+msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
+msgstr ""
+
+#: ../../source/window/input-window.md:24
+msgid "④ 候補リスト"
+msgstr ""
+
+#: ../../source/window/input-window.md:25
+msgid "入力欄のキーワードに該当する候補の一覧を表示する"
+msgstr ""
+
+#: ../../source/window/input-window.md:26
+msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
+msgstr ""
+
+#: ../../source/window/input-window.md:27
+msgid "入力欄に文字が入力されていると表示される"
+msgstr ""
+
+#: ../../source/window/input-window.md:28
+msgid "⑤ ガイド"
+msgstr ""
+
+#: ../../source/window/input-window.md:29
+msgid "コマンドを実行したときに実行される動作をキー別に表示する"
+msgstr ""
+
+#: ../../source/window/input-window.md:31
+msgid "Parameter Candidate Popup"
+msgstr "パラメータ候補リスト"
+
+#: ../../source/window/input-window.md:33
+msgid "コマンドのパラメータを入力すると、入力欄の下に追加候補のポップアップが表示されることがある。"
+msgstr ""
+
+#: ../../source/window/input-window.md:35
+msgid "![](../image/window/input-window/extra-candidate-list.png)"
+msgstr ""
+
+#: ../../source/window/input-window.md:37
+msgid "入力したパラメータに対応する候補が表示され、候補を確定すると入力中のパラメータが選択した候補に置き換えられる。"
+msgstr ""
+
+#: ../../source/window/input-window.md:39
+msgid "表示された候補は、次の操作で選択・確定できる。"
+msgstr ""
+
+#: ../../source/window/input-window.md:41
+msgid "`↑`/`↓`: 候補を選択する"
+msgstr ""
+
+#: ../../source/window/input-window.md:42
+msgid "`Tab`: 選択中の候補を入力欄へ反映する"
+msgstr ""
+
+#: ../../source/window/input-window.md:43
+msgid "`Enter`: 選択中の候補を確定してコマンドを実行する"
+msgstr ""
+
+#: ../../source/window/input-window.md:44
+msgid "マウスクリック: クリックした候補を確定する"
+msgstr ""
+
+#: ../../source/window/input-window.md:46
+msgid "候補が存在しない場合や、入力画面が非アクティブになった場合は、ポップアップは表示されない。"
+msgstr ""
+
+#: ../../source/window/input-window.md:48
+msgid "Input Operations"
+msgstr "キーワードを入力する"
+
+#: ../../source/window/input-window.md:50
+msgid "入力欄にキーワードを入力し、Enterキーを押下すると、選択中の候補を実行する。"
+msgstr ""
+
+#: ../../source/window/input-window.md:52
+msgid "候補が複数表示された場合は、矢印キーまたはマウスで実行したい候補を選択してからEnterキーを押す。"
+msgstr ""
+
+#: ../../source/window/input-window.md:54
+msgid "入力画面を閉じるには、入力欄が空の状態で`Esc`キーを押す。入力欄に文字がある状態で`Esc`キーを押すと、まず入力内容が消去される。"
+msgstr ""
+
+#: ../../source/window/input-window.md:56
+msgid "Input File Paths"
+msgstr "ファイルを開く"
+
+#: ../../source/window/input-window.md:58
+msgid "ファイルやフォルダの絶対パスを入力すると、パスを直接開くことができる。"
+msgstr ""
+
+#: ../../source/window/input-window.md:60
+msgid "パスに空白が含まれている場合でも、絶対パス全体を1つの入力として扱う。"
+msgstr ""
+
+#: ../../source/window/input-window.md:62
+msgid "例えば、次のように入力する。"
+msgstr ""
+
+#: ../../source/window/input-window.md:68
+msgid "コマンドのパラメータとして絶対パスを入力する場合も、パス全体を1つのパラメータとして扱う。"
+msgstr ""
+
+#: ../../source/window/input-window.md:70
+msgid "この画面が表示されているときに`F1`キーを押すと、マニュアルを開く。"
+msgstr ""
+

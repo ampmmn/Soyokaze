@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.57.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-23 07:53+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/others/extra-popup-list.md:1
+msgid "Extra Popup List"
+msgstr "パラメータ候補リストについて"
+
+#: ../../source/others/extra-popup-list.md:3
+msgid "![](../image/window/input-window/extra-candidate-list.png)"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:6
+msgid "候補表示が行われる条件"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:8
+msgid "以下の条件を満たすときに追加の候補表示が行われる。"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:10
+msgid "現在選択している候補コマンドの種別が下記であること"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:11
+msgid "[通常コマンド](../user-command/shellexecute.md)"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:12
+msgid "[ファイル名を指定して実行](../adhoc-command/pathfind.md)"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:14
+msgid "コマンド設定上、パラメータを受け入れる設定になっていること"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:15
+msgid "`$+` `$1`等が設定されていること"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:17
+msgid "候補として表示されるコマンド種別について"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:19
+msgid "ファイルパス"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:20
+msgid "通常コマンド"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:21
+msgid "候補を選択すると、そのコマンドとして登録したパス/URLに展開される"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:22
+msgid "[エイリアスコマンド](../user-command/alias.md)"
+msgstr ""
+
+#: ../../source/others/extra-popup-list.md:23
+msgid "候補を選択すると、そのコマンドとして登録したテキストに展開される"
+msgstr ""
+

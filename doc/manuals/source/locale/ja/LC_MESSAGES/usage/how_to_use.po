@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"POT-Creation-Date: 2026-09-23 07:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -92,232 +92,162 @@ msgid "アプリが起動している状態でランチャー呼び出しキー(
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:37
-msgid "![](../image/usage/how-to-use/window-parts.png)"
+msgid "![](../image/usage/how-to-use/input-window.png)"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:39
-msgid ""
-"この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。   "
-"また、Tabキーを押すと、入力中のキーワードを補完することができる。"
+msgid "この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。Tabキーを押すと、入力中のキーワードを補完することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:42
-msgid "① アイコン表示欄"
+#: ../../source/usage/how_to_use.md:41
+msgid "入力画面の各部、キー操作、パラメータ入力時に表示される追加候補については、[入力画面](/window/input-window)を参照のこと。"
 msgstr ""
 
 #: ../../source/usage/how_to_use.md:43
-msgid "選択している候補に関連付けられたアイコンを表示する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:44
-msgid "② コメント表示欄"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:45
-msgid "選択している候補の説明を表示する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:46
-msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:47
-msgid "③ 入力欄"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:48
-msgid "ここにキーワード(やパラメータ)を入力する。"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:49
-msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:50
-msgid "`Tab`キーを押下するとキーワードを補完する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:51
-msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:53
-msgid "④ 候補リスト"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:54
-msgid "入力欄のキーワードに該当する候補の一覧を表示する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:55
-msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:56
-msgid "入力欄に文字が入力されていると表示される"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:57
-msgid "⑤ ガイド"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:58
-msgid "コマンドを実行したときに実行される動作をキー別に表示する"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:60
-msgid "入力画面を閉じるには、入力欄が空の状態で`Esc`キーを押します。入力欄に文字がある状態で`Esc`キーを押すと、まず入力内容が消去されます。"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:62
-msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
-msgstr ""
-
-#: ../../source/usage/how_to_use.md:66
 msgid "Run Command"
 msgstr "コマンドを実行する"
 
-#: ../../source/usage/how_to_use.md:68
+#: ../../source/usage/how_to_use.md:45
 msgid "入力画面にキーワードを入力して`Enter⏎`キーを押下すると、キーワードに応じてコマンドを実行することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:70
+#: ../../source/usage/how_to_use.md:47
 msgid "候補が複数表示された場合は、矢印キーまたはマウスで実行したい候補を選択してからEnterキーを押します。候補が表示されない場合は、キーワードの入力内容、コマンドが有効になっているか、検索対象の設定を確認してください。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:72
+#: ../../source/usage/how_to_use.md:49
 msgid "![](../image/usage/how-to-use/run-keyword.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:74
+#: ../../source/usage/how_to_use.md:51
 msgid "Register Command"
 msgstr "コマンドを登録する"
 
-#: ../../source/usage/how_to_use.md:76
+#: ../../source/usage/how_to_use.md:53
 msgid ""
 "セットアップ直後はコマンドが何も登録されていないため、 後述の方法によりコマンドを登録する必要がある。   なお、[登録しなくても使える機能"
 "](/adhoc-commands)もある。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:80
+#: ../../source/usage/how_to_use.md:57
 msgid "本アプリでは以下の方法でコマンドを登録することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:82
+#: ../../source/usage/how_to_use.md:59
 msgid "`new`コマンドで登録する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:83
+#: ../../source/usage/how_to_use.md:60
 msgid "`registwin`コマンドで登録する"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:84
+#: ../../source/usage/how_to_use.md:61
 msgid "対象ウインドウをDrag&Dropする"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:85
+#: ../../source/usage/how_to_use.md:62
 msgid "コンテキストメニューの`送る`>`コマンドとして登録する`"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:86
+#: ../../source/usage/how_to_use.md:63
 msgid "エクスプローラのアイコンをDrag&Dropする"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:88
+#: ../../source/usage/how_to_use.md:65
 msgid "各方法の詳細について後述する。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:90
+#: ../../source/usage/how_to_use.md:67
 msgid "Use new Command"
 msgstr "newコマンドで登録する"
 
-#: ../../source/usage/how_to_use.md:92
+#: ../../source/usage/how_to_use.md:69
 msgid "入力画面から`new`コマンドを実行すると、[コマンドの種類](/user-commands)を選択する画面が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:94
+#: ../../source/usage/how_to_use.md:71
 msgid ""
 "![](../image/usage/how-to-use/new-command.png) ↓   ![](../image/common"
 "/command-type.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:98
+#: ../../source/usage/how_to_use.md:75
 msgid ""
 "コマンド種別を選択し、`OK`ボタンを押下すると、選択した種別に応じたコマンド編集画面が表示される。   ↓※ 通常コマンドのコマンド編集画面"
 "   ![](../image/usage/how-to-use/new-normal-command.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:102
+#: ../../source/usage/how_to_use.md:79
 msgid "コマンド編集画面で新規登録キーワードや紐づけるプログラムへのパスなどの情報を入力し、OKを押すと、コマンドとして登録される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:104
+#: ../../source/usage/how_to_use.md:81
 msgid "例えば、メモ帳を`memo`というキーワードで起動する場合は、次のように入力します。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:106
+#: ../../source/usage/how_to_use.md:83
 msgid "コマンドの名前: `memo`"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:107
+#: ../../source/usage/how_to_use.md:84
 msgid "実行ファイル・URLなど: `notepad.exe`"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:109
+#: ../../source/usage/how_to_use.md:86
 msgid "登録後に入力画面で`memo`と入力してEnterキーを押すと、メモ帳が起動します。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:111
+#: ../../source/usage/how_to_use.md:88
 msgid "Use registwin Command"
 msgstr "registerwinコマンドで登録する"
 
-#: ../../source/usage/how_to_use.md:113
+#: ../../source/usage/how_to_use.md:90
 msgid ""
 "入力画面から`registwin`コマンドを実行すると、直前にアクティブになっていたウインドウの実行プロセスを登録する画面が表示される。   ↓"
 "   ![](../image/usage/how-to-use/register-window.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:117
+#: ../../source/usage/how_to_use.md:94
 msgid "Capture Window"
 msgstr "対象ウインドウをキャプチャして登録する"
 
-#: ../../source/usage/how_to_use.md:119
+#: ../../source/usage/how_to_use.md:96
 msgid ""
 "入力画面のアイコン欄をドラッグして、登録したいウインドウにドロップすると、そのウインドウの実行プロセスを登録する画面が表示される。   ↓   "
 "![](../image/usage/how-to-use/register-by-drag-drop.gif)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:123
+#: ../../source/usage/how_to_use.md:100
 msgid "SendTo"
 msgstr "コンテキストメニューの`送る`>`コマンドとして登録する`"
 
-#: ../../source/usage/how_to_use.md:125
+#: ../../source/usage/how_to_use.md:102
 msgid ""
 "アプリケーション設定の[ショートカット設定](/window/app-"
 "settings/shortcut)から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:127
+#: ../../source/usage/how_to_use.md:104
 msgid ""
 "登録したいファイルをエクスプローラ上で右クリックして、`送る`>`コマンドとして登録する`を選択すると、そのファイルを登録するためのコマンド編集画面が表示される"
 "   ↓   ![](../image/common/send-to.png)"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:131
+#: ../../source/usage/how_to_use.md:108
 msgid "Drag&Drop File and Folders."
 msgstr "ファイルやフォルダをDrag&Dropして登録する"
 
-#: ../../source/usage/how_to_use.md:133
+#: ../../source/usage/how_to_use.md:110
 msgid ""
 "エクスプローラ上のファイルやフォルダのアイコンをドラッグして、入力画面上にドロップすると、 "
 "該当するファイルやフォルダをコマンドとして登録することができる。"
 msgstr ""
 
-#: ../../source/usage/how_to_use.md:136
+#: ../../source/usage/how_to_use.md:113
 msgid "Restrictions"
 msgstr "制限事項"
 
-#: ../../source/usage/how_to_use.md:138
+#: ../../source/usage/how_to_use.md:115
 msgid "ランチャーが管理者権限で動作している場合に、一般権限で動作しているプロセスのアイコンをこの方法で登録することはできない。"
 msgstr ""
 
@@ -361,5 +291,70 @@ msgstr ""
 #~ "アプリケーション設定の[基本＞ショートカット登録](/window/app-settings/shortcut.md"
 #~ "#app-shortcut) "
 #~ "から`「送る」から登録できるようにする`をチェックしている場合、エクスプローラの`送る`に登録用のメニュー項目が表示される。"
+#~ msgstr ""
+
+#~ msgid "![](../image/usage/how-to-use/window-parts.png)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "この画面でキーワードを入力し、Enterキーを押下すると、キーワードに関連付けた各種操作を実行できる。   "
+#~ "また、Tabキーを押すと、入力中のキーワードを補完することができる。"
+#~ msgstr ""
+
+#~ msgid "① アイコン表示欄"
+#~ msgstr ""
+
+#~ msgid "選択している候補に関連付けられたアイコンを表示する"
+#~ msgstr ""
+
+#~ msgid "② コメント表示欄"
+#~ msgstr ""
+
+#~ msgid "選択している候補の説明を表示する"
+#~ msgstr ""
+
+#~ msgid "ここをドラッグしてウインドウ表示位置を変えることができる"
+#~ msgstr ""
+
+#~ msgid "③ 入力欄"
+#~ msgstr ""
+
+#~ msgid "ここにキーワード(やパラメータ)を入力する。"
+#~ msgstr ""
+
+#~ msgid "`Ctrl`+`Backspace`で入力中のキーワードを単語単位で削除する"
+#~ msgstr ""
+
+#~ msgid "`Tab`キーを押下するとキーワードを補完する"
+#~ msgstr ""
+
+#~ msgid "`Esc`キーを押下すると、入力中のキーワードを消去する。   入力中のキーワードが空のときは入力画面を非表示にする。"
+#~ msgstr ""
+
+#~ msgid "④ 候補リスト"
+#~ msgstr ""
+
+#~ msgid "入力欄のキーワードに該当する候補の一覧を表示する"
+#~ msgstr ""
+
+#~ msgid "矢印キー(↑↓）やマウスクリックで候補を変更することができる"
+#~ msgstr ""
+
+#~ msgid "入力欄に文字が入力されていると表示される"
+#~ msgstr ""
+
+#~ msgid "⑤ ガイド"
+#~ msgstr ""
+
+#~ msgid "コマンドを実行したときに実行される動作をキー別に表示する"
+#~ msgstr ""
+
+#~ msgid "入力画面を閉じるには、入力欄が空の状態で`Esc`キーを押します。入力欄に文字がある状態で`Esc`キーを押すと、まず入力内容が消去されます。"
+#~ msgstr ""
+
+#~ msgid "この画面がでているときに`F1`キーを押下すると、マニュアル(このファイル)を開く。"
+#~ msgstr ""
+
+#~ msgid "入力画面の各部やキー操作の詳細については、[入力画面](/window/input-window)を参照のこと。"
 #~ msgstr ""
 

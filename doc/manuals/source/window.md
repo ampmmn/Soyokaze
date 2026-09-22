@@ -4,6 +4,7 @@
 ---
 maxdepth: 1
 ---
+window/input-window.md
 window/keyword-manager.md
 ```
 

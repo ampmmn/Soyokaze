@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-09-23 07:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,21 +24,25 @@ msgid "Calculator"
 msgstr "電卓"
 
 #: ../../source/adhoc-command/calclator.md:3
+msgid "簡易電卓機能"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:5
 msgid "入力欄に数式を入れると、計算結果をコメント欄に表示する。   Enterキーを押下すると、計算結果をクリップボードにコピーできる。"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:6
+#: ../../source/adhoc-command/calclator.md:8
 msgid ""
-"利用するにはPython(3.12以降)が必要。([設定画面](/window/app-"
+"簡易電卓機能を利用するにはPython(3.12以降)が必要。([設定画面](/window/app-"
 "settings/extensions.md#extensions))"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:8
+#: ../../source/adhoc-command/calclator.md:10
 msgid "![](../image/adhoc-command/calculator/basic.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:10
-msgid "利用可能な演算子"
+#: ../../source/adhoc-command/calclator.md:12
+msgid "簡易電卓機能で利用可能な演算子"
 msgstr ""
 
 #: ../../source/adhoc-command/calclator.md
@@ -137,34 +141,164 @@ msgstr ""
 msgid "XOR"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:26
+#: ../../source/adhoc-command/calclator.md:28
 msgid "Function"
 msgstr "関数"
 
-#: ../../source/adhoc-command/calclator.md:28
+#: ../../source/adhoc-command/calclator.md:30
 msgid "その他、Python標準関数のうち、計算結果が文字列/数値になるものと、[math](https://docs.python.org/ja/3/library/math.html)モジュールの関数を使用することができる。"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:30
+#: ../../source/adhoc-command/calclator.md:32
 msgid "![](../image/adhoc-command/calculator/functions.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:32
+#: ../../source/adhoc-command/calclator.md:34
 msgid "Radix-Based Number Display"
 msgstr "基数別表示"
 
-#: ../../source/adhoc-command/calclator.md:34
+#: ../../source/adhoc-command/calclator.md:36
 msgid "計算結果が整数になる場合は、2進数/8進数/10進数/16進数それぞれの結果が表示される。"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:36
+#: ../../source/adhoc-command/calclator.md:38
 msgid "![](../image/adhoc-command/calculator/radix.png)"
 msgstr ""
 
-#: ../../source/adhoc-command/calclator.md:38
+#: ../../source/adhoc-command/calclator.md:40
 msgid "一つ目の項の基数を優先して表示する。   例えば、`0x10+1`という式の場合、16進数の結果(`0x11`)が先に表示される。"
 msgstr ""
 
+#: ../../source/adhoc-command/calclator.md:44
+msgid "単位付き計算機能"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:46
+msgid "単位付きの数値を含む式を入力すると、単位を考慮して計算結果を表示する。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:48
+msgid "![](../image/adhoc-command/calculator/unit-convert-sample.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:51
+msgid "単位付き計算機能では、例えば次のような式を入力できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:53
+msgid "`1 h + 30 min`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:54
+msgid "`1 MB + 512 KB`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:55
+msgid "`10% + 5%`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:57
+msgid "`in xxx`とすると表示単位を明示できる"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:59
+msgid "`1 h + 30 min in seconds`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:60
+msgid "`32MB + 0.5 GB in MB`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:62
+msgid "対応している単位は次のとおり。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:64
+msgid "時間"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:66
+msgid ""
+"`year`, `month`, `week`, `day`, hour`, `min`, `second`, `millisecond`, "
+"`nanosecond`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:67
+msgid "`quarters`(四半期)"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:69
+msgid "ビット単位"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:71
+msgid "`Bit`、`Kb`、`Mb`、`Gb`、`Tb`、`Pb`、`Eb`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:72
+msgid "`Kib`、`Mib`、`Gib`、`Tib`、`Pib`、`Eib`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:74
+msgid "バイト単位"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:76
+msgid "`Byte`、`KB`、`MB`、`GB`、`TB`、`PB`、`EB`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:77
+msgid "`KiB`、`MiB`、`GiB`、`TiB`、`PiB`、`EiB`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:79
+msgid "パーセント"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:81
+msgid "`%`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:83
+msgid "長さ"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:85
+msgid "`km`, `m`, `cm`, `mm`, `um`, `nm`, `pm`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:86
+msgid "`inch`, `points`"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:88
+msgid "速度"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:90
+msgid "長さと時間の組み合わせで速度を表現する。"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:92
+msgid "`km/h`, `m/s` `inch/s` など"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:94
+msgid "単位付き計算機能で利用可能な演算子"
+msgstr ""
+
+#: ../../source/adhoc-command/calclator.md:96
+msgid "「簡易電卓機能」と「単位付き計算機能」は別物であり、使用できる演算子が異なる。"
+msgstr ""
+
 #~ msgid "利用するにはPython(3.12以降)が必要。([設定画面](/window/app-settings.md#extensions))"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "利用するにはPython(3.12以降)が必要。([設定画面](/window/app-"
+#~ "settings/extensions.md#extensions))"
+#~ msgstr ""
+
+#~ msgid "利用可能な演算子"
 #~ msgstr ""
 

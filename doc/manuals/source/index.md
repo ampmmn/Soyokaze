@@ -67,6 +67,7 @@ others/advanced-usage.md
 others/hotkey.md
 others/about-matching.md
 others/regular-expression.md
+others/extra-popup-list.md
 others/commandline-options.md
 others/3rdlibs.md
 ```
