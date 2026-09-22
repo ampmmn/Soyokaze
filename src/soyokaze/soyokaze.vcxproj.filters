@@ -807,6 +807,9 @@
     <ClInclude Include="mainwindow\state\LauncherWindowState.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\state\LauncherWindowStateBase.h">
+      <Filter>mainwindow\state</Filter>
+    </ClInclude>
     <ClInclude Include="mainwindow\state\LauncherWindowStateContextIF.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
@@ -2543,7 +2546,7 @@
     <ClCompile Include="mainwindow\state\MainWindowSearchingState.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\state\LauncherWindowState.cpp">
+    <ClCompile Include="mainwindow\state\LauncherWindowStateBase.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\state\MainWindowIdleState.cpp">

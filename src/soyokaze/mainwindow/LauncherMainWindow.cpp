@@ -292,11 +292,13 @@ void LauncherMainWindow::HideWindow()
 
 void LauncherMainWindow::HideWindowFromState()
 {
+	// Stateからの呼び出しでも、既存の非表示処理とイベント通知を共通化する
 	HideWindow();
 }
 
 void LauncherMainWindow::ClearContent()
 {
+	// Stateからの通常のクリア要求ではレイアウトの強制更新を行わない
 	ClearContentImpl(false);
 }
 
@@ -331,6 +333,7 @@ void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::st
 		return;
 	}
 
+	// 現在のStateを終了してから所有権を移し、新しいStateの開始処理を呼び出す
 	if (in->mState) {
 		in->mState->OnExit();
 	}
@@ -379,6 +382,7 @@ static HWND GetTopMostWindowInCurrentThread()
 LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
+	// 表示要求の詳細な扱いを現在のStateへ委譲する
 	in->mState->OnActivate((wParam & 0x1) != 0);
 	return 0;
 }
@@ -391,6 +395,7 @@ void LauncherMainWindow::ShowWindowFromState()
 	// もし外部からメインウインドウの表示が抑制状態である場合は表示しない
 	// (現在、設定画面表示中のみ抑制する)
 	if (in->mIsWindowDisplayBlocked) {
+		// 設定画面などで表示を抑制中は、対象ウインドウを表示せず前面のウインドウを維持する
 		auto h = GetTopMostWindowInCurrentThread();
 		::SetForegroundWindow(h);
 		return;
@@ -422,6 +427,7 @@ void LauncherMainWindow::ActivateVisibleWindow()
 {
 	HWND hwnd = GetSafeHwnd();
 	ScopeAttachThreadInput scope;
+	// 既に表示中のウインドウは再配置せず、アクティブ化だけを行う
 	::ShowWindow(hwnd, SW_SHOW);
 	::SetForegroundWindow(hwnd);
 	::BringWindowToTop(hwnd);
@@ -519,6 +525,7 @@ LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
 LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(wParam);
+	// 検索結果の処理とState遷移の判断を現在のStateへ委譲する
 	in->mState->OnQueryCompleted(reinterpret_cast<launcherapp::commands::core::CommandQueryResult*>(lParam));
 	return 0;
 }
@@ -526,6 +533,7 @@ LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lPa
 
 void LauncherMainWindow::HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
 {
+	// Stateから呼び出された検索完了処理では、従来の候補更新処理だけを担当する
 	in->mIsQueryDoing = false;
 	if (result != nullptr) {
 
@@ -881,6 +889,7 @@ LRESULT LauncherMainWindow::OnUserMessageHide(
 
 	SPDLOG_DEBUG(_T("start"));
 
+	// 非表示処理とState遷移を現在のStateへ委譲する
 	in->mState->OnDeactivate();
 	return 0;
 }
@@ -1195,7 +1204,7 @@ void LauncherMainWindow::ClearContentImpl(bool isForceUpdate)
 	in->mInput.Clear();
 	in->mCandidates.Clear();
 
-	// 状態変更を通知
+	// 入力欄と候補を空にした状態をレイアウトへ通知し、表示サイズを更新する
 	struct LocalInputStatus : public LauncherInput {
 		virtual bool HasKeyword() { return false; }
 	} status;
@@ -1288,6 +1297,7 @@ LauncherMainWindow::GetCurrentCommand()
  */
 void LauncherMainWindow::OnEditCommandChanged()
 {
+	// 入力変更後のState遷移をState側で判断する
 	in->mState->OnTextChanged();
 }
 
@@ -1574,6 +1584,7 @@ void LauncherMainWindow::SelectCommandContextMenu(
 
 void LauncherMainWindow::OnOK()
 {
+	// 実行可否と実行後のState遷移は現在のStateに判断させる
 	in->mState->OnExecuteRequested();
 }
 
@@ -1600,6 +1611,7 @@ void LauncherMainWindow::ExecuteCurrentCommand()
 
 void LauncherMainWindow::OnCancel()
 {
+	// 入力内容のクリアまたはウインドウ非表示の判断を現在のStateへ委譲する
 	in->mState->OnCancel();
 }
 
@@ -1657,6 +1669,7 @@ LRESULT LauncherMainWindow::OnKeywordEditNotify(
 )
 {
 	UNREFERENCED_PARAMETER(lParam);
+	// キーごとの処理と、メッセージを消費するかどうかの判断をStateへ委譲する
 	return in->mState->OnKeyInput(static_cast<unsigned int>(wParam)) ? 1 : 0;
 }
 
@@ -1668,6 +1681,7 @@ bool LauncherMainWindow::IsCandidateListEmpty() const
 
 void LauncherMainWindow::OffsetCandidateSelection(int offset, bool isLoop)
 {
+	// 候補位置の移動方法はState側で決定し、実際の候補更新だけを行う
 	in->mCandidates.OffsetCurrentSelect(offset, isLoop);
 }
 
@@ -1681,6 +1695,7 @@ void LauncherMainWindow::UpdateCurrentCandidate()
 
 	int startPos = 0;
 	int endPos = 0;
+	// 選択中の候補を入力欄へ反映し、選択範囲を更新する
 	in->UpdateCommandString(cmd, startPos, endPos);
 	UpdateData(FALSE);
 	in->mKeywordEdit.SetSel(startPos, endPos);
@@ -1718,7 +1733,7 @@ void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
 		return;
 	}
 
-	// 音を鳴らす
+	// 候補選択時の音と実データ更新を現在のStateへ委譲する
 	in->mState->OnCandidateSelectionChanged(nm->iItem);
 }
 
@@ -1740,6 +1755,7 @@ void LauncherMainWindow::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 	if (nm->iItem == -1) {
 		return;
 	}
+	// クリック時の候補反映方法を現在のStateへ委譲する
 	in->mState->OnCandidateClicked();
 }
 
@@ -1748,6 +1764,7 @@ void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
 	UNREFERENCED_PARAMETER(pNMHDR);
 
 	*pResult = 0;
+	// ダブルクリック時の実行可否を現在のStateへ委譲する
 	in->mState->OnCandidateDoubleClicked();
 }
 

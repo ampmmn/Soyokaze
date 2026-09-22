@@ -7,36 +7,45 @@ class LauncherWindowStateContextIF;
 namespace launcherapp { namespace commands { namespace core {
 class CommandQueryResult;
 }}}
+
 namespace launcherapp { namespace mainwindow { namespace state {
 
 /**
-  ランチャーウインドウの状態を表す基底クラス
+  ランチャーウインドウのStateが実装するイベントインターフェース
 */
 class LauncherWindowState
 {
 public:
-	explicit LauncherWindowState(LauncherWindowStateContextIF* context);
-	virtual ~LauncherWindowState();
+	virtual ~LauncherWindowState() = default;
 
-	virtual void OnEnter();
-	virtual void OnExit();
-	virtual void OnActivate(bool isShowForce);
-	virtual void OnDeactivate();
-	virtual void OnExecuteRequested();
-	virtual void OnCancel();
-	virtual void OnContentCleared();
-	virtual void OnTextChanged();
-	virtual void OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result);
-	virtual bool OnKeyInput(unsigned int keyCode);
-	virtual void OnCandidateSelectionChanged(int index);
-	virtual void OnCandidateClicked();
-	virtual void OnCandidateDoubleClicked();
-
-protected:
-	LauncherWindowStateContextIF* GetContext() const;
-
-private:
-	LauncherWindowStateContextIF* mContext;
+	/** Stateへの遷移時に実行する処理 */
+	virtual void OnEnter() = 0;
+	/** Stateからの遷移時に実行する処理 */
+	virtual void OnExit() = 0;
+	/** ランチャーウインドウの表示要求を処理する */
+	virtual void OnActivate(bool isShowForce) = 0;
+	/** ランチャーウインドウの非表示要求を処理する */
+	virtual void OnDeactivate() = 0;
+	/** 現在の候補を実行する要求を処理する */
+	virtual void OnExecuteRequested() = 0;
+	/** キャンセル操作を処理する */
+	virtual void OnCancel() = 0;
+	/** 入力内容がクリアされたときの処理を行う */
+	virtual void OnContentCleared() = 0;
+	/** 入力内容が変更されたときの処理を行う */
+	virtual void OnTextChanged() = 0;
+	/** 非同期検索が完了したときの処理を行う */
+	virtual void OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) = 0;
+	/** 入力欄で押されたキーを処理する
+	  @return true:キーを処理した  false:処理対象外
+	*/
+	virtual bool OnKeyInput(unsigned int keyCode) = 0;
+	/** 候補の選択位置が変更されたときの処理を行う */
+	virtual void OnCandidateSelectionChanged(int index) = 0;
+	/** 候補がクリックされたときの処理を行う */
+	virtual void OnCandidateClicked() = 0;
+	/** 候補がダブルクリックされたときの処理を行う */
+	virtual void OnCandidateDoubleClicked() = 0;
 };
 
 }}}

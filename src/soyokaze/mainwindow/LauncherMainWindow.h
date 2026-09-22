@@ -60,7 +60,9 @@ protected:
 
 	CommandRepository* GetCommandRepository();
 	void SetDescription(const CString& msg);
+	/** 通常の入力内容クリア処理を実行する */
 	void ClearContent() override;
+	/** 入力内容をクリアし、必要に応じてレイアウトを強制更新する */
 	void ClearContentImpl(bool isForceUpdate);
 	void Complement() override;
 	void QueryAsync();
@@ -72,23 +74,41 @@ protected:
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam);
 	void RunCommand(launcherapp::core::Command* cmd, launcherapp::actions::core::ParameterBuilder* commandParam, const HOTKEY_ATTR& hotkeyAttr);
 
+	/** Stateからの表示要求を既存の表示処理へ委譲する */
 	void ShowWindowFromState() override;
+	/** 表示中のウインドウを前面へ移動する */
 	void ActivateVisibleWindow() override;
+	/** Stateからの非表示要求を既存の非表示処理へ委譲する */
 	void HideWindowFromState() override;
+	/** キーワード入力欄へフォーカスを設定する */
 	void SetFocusToEdit() override;
+	/** 入力変更に伴う既存処理を実行する */
 	void HandleTextChanged() override;
+	/** 検索結果を候補一覧へ反映する既存処理を実行する */
 	void HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) override;
+	/** 候補一覧が空かどうかを返す */
 	bool IsCandidateListEmpty() const override;
+	/** 候補の選択位置を移動する */
 	void OffsetCandidateSelection(int offset, bool isLoop) override;
+	/** 現在の候補を入力欄へ反映する */
 	void UpdateCurrentCandidate() override;
+	/** 候補一覧を1ページに表示できる件数を返す */
 	int GetCandidateCountInPage() override;
+	/** 現在の候補を入力欄などへ反映する */
 	void ReflectCurrentCandidate() override;
+	/** 候補の選択状態を更新する */
 	void SelectCandidate(int index) override;
+	/** 現在の候補を実行する */
 	void ExecuteCurrentCommand() override;
+	/** 入力欄にキーワードがあるかを返す */
 	bool HasKeyword() const override;
+	/** ウインドウが表示中かどうかを返す */
 	bool IsWindowVisibleFromState() const override;
+	/** ウインドウがアクティブかどうかを返す */
 	bool IsWindowActive() const override;
+	/** ウインドウ表示のトグル設定が有効かどうかを返す */
 	bool IsShowToggleEnabled() const override;
+	/** 現在のStateを終了し、指定されたStateへ遷移する */
 	void ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state) override;
 
 	void SelectCommandContextMenu(launcherapp::core::Command* cmd, int index);

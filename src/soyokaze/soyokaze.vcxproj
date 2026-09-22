@@ -862,6 +862,7 @@
     <ClInclude Include="mainwindow\state\MainWindowHiddenState.h" />
     <ClInclude Include="mainwindow\state\MainWindowSearchingState.h" />
     <ClInclude Include="mainwindow\state\LauncherWindowState.h" />
+    <ClInclude Include="mainwindow\state\LauncherWindowStateBase.h" />
     <ClInclude Include="mainwindow\state\LauncherWindowStateContextIF.h" />
     <ClInclude Include="mainwindow\state\MainWindowIdleState.h" />
     <ClInclude Include="mainwindow\metrics\CandidateListCandidateCountMetrics.h" />
@@ -1480,7 +1481,7 @@
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowHiddenState.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowSearchingState.cpp" />
-    <ClCompile Include="mainwindow/state/LauncherWindowState.cpp" />
+    <ClCompile Include="mainwindow/state/LauncherWindowStateBase.cpp" />
     <ClCompile Include="mainwindow/state/MainWindowIdleState.cpp" />
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />
     <ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp" />
