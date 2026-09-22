@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "mainwindow/state/ShownState.h"
+#include "mainwindow/state/MainWindowIdleState.h"
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
-#include "mainwindow/state/HiddenState.h"
-#include "mainwindow/state/InputState.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
+#include "mainwindow/state/MainWindowSearchingState.h"
 
 using namespace launcherapp::mainwindow::state;
 
-ShownState::ShownState(LauncherWindowStateContextIF* context) :
+IdleState::IdleState(LauncherWindowStateContextIF* context) :
 	LauncherWindowState(context)
 {
 }
 
-void ShownState::OnActivate(bool isShowForce)
+void IdleState::OnActivate(bool isShowForce)
 {
 	auto context = GetContext();
 	if (isShowForce) {
@@ -27,13 +27,13 @@ void ShownState::OnActivate(bool isShowForce)
 	}
 }
 
-void ShownState::OnDeactivate()
+void IdleState::OnDeactivate()
 {
 	auto context = GetContext();
 	context->ChangeState(std::make_unique<HiddenState>(context));
 }
 
-void ShownState::OnExecuteRequested()
+void IdleState::OnExecuteRequested()
 {
 	auto context = GetContext();
 	context->ExecuteCurrentCommand();
@@ -42,7 +42,7 @@ void ShownState::OnExecuteRequested()
 	}
 }
 
-void ShownState::OnCancel()
+void IdleState::OnCancel()
 {
 	auto context = GetContext();
 	if (context->HasKeyword()) {
@@ -55,16 +55,16 @@ void ShownState::OnCancel()
 	}
 }
 
-void ShownState::OnTextChanged()
+void IdleState::OnTextChanged()
 {
 	auto context = GetContext();
 	context->HandleTextChanged();
 	if (context->HasKeyword()) {
-		context->ChangeState(std::make_unique<InputState>(context));
+		context->ChangeState(std::make_unique<SearchingState>(context));
 	}
 }
 
-void ShownState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
+void IdleState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
 {
 	auto context = GetContext();
 	context->HandleQueryCompleted(result);
@@ -72,11 +72,11 @@ void ShownState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResul
 		context->ChangeState(std::make_unique<HiddenState>(context));
 	}
 	else if (context->HasKeyword()) {
-		context->ChangeState(std::make_unique<InputState>(context));
+		context->ChangeState(std::make_unique<SearchingState>(context));
 	}
 }
 
-bool ShownState::OnKeyInput(unsigned int keyCode)
+bool IdleState::OnKeyInput(unsigned int keyCode)
 {
 	if (keyCode == VK_RETURN) {
 		OnExecuteRequested();

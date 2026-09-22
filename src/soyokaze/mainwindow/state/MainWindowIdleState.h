@@ -7,10 +7,10 @@ namespace launcherapp { namespace mainwindow { namespace state {
 /**
   メインウインドウが表示され、入力がない状態
 */
-class ShownState : public LauncherWindowState
+class IdleState : public LauncherWindowState
 {
 public:
-	explicit ShownState(LauncherWindowStateContextIF* context);
+	explicit IdleState(LauncherWindowStateContextIF* context);
 
 	void OnActivate(bool isShowForce) override;
 	void OnDeactivate() override;

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "mainwindow/state/HiddenState.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
-#include "mainwindow/state/InputState.h"
-#include "mainwindow/state/ShownState.h"
+#include "mainwindow/state/MainWindowSearchingState.h"
+#include "mainwindow/state/MainWindowIdleState.h"
 
 using namespace launcherapp::mainwindow::state;
 
@@ -26,10 +26,10 @@ void HiddenState::OnActivate(bool isShowForce)
 	context->ShowWindowFromState();
 	if (context->IsWindowVisibleFromState()) {
 		if (context->HasKeyword()) {
-			context->ChangeState(std::make_unique<InputState>(context));
+			context->ChangeState(std::make_unique<SearchingState>(context));
 		}
 		else {
-			context->ChangeState(std::make_unique<ShownState>(context));
+			context->ChangeState(std::make_unique<IdleState>(context));
 		}
 	}
 }

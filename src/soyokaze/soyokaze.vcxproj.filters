@@ -798,10 +798,10 @@
     <ClInclude Include="mainwindow/LauncherMainWindow.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\state\HiddenState.h">
+    <ClInclude Include="mainwindow\state\MainWindowHiddenState.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\state\InputState.h">
+    <ClInclude Include="mainwindow\state\MainWindowSearchingState.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\state\LauncherWindowState.h">
@@ -810,7 +810,7 @@
     <ClInclude Include="mainwindow\state\LauncherWindowStateContextIF.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\state\ShownState.h">
+    <ClInclude Include="mainwindow\state\MainWindowIdleState.h">
       <Filter>mainwindow\state</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\CandidateListCtrl.h">
@@ -2537,16 +2537,16 @@
     <ClCompile Include="mainwindow/LauncherMainWindow.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\state\HiddenState.cpp">
+    <ClCompile Include="mainwindow\state\MainWindowHiddenState.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\state\InputState.cpp">
+    <ClCompile Include="mainwindow\state\MainWindowSearchingState.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\state\LauncherWindowState.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\state\ShownState.cpp">
+    <ClCompile Include="mainwindow\state\MainWindowIdleState.cpp">
       <Filter>mainwindow\state</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\CandidateListCtrl.cpp">

@@ -7,10 +7,10 @@ namespace launcherapp { namespace mainwindow { namespace state {
 /**
   メインウインドウが表示され、入力中の状態
 */
-class InputState : public LauncherWindowState
+class SearchingState : public LauncherWindowState
 {
 public:
-	explicit InputState(LauncherWindowStateContextIF* context);
+	explicit SearchingState(LauncherWindowStateContextIF* context);
 
 	void OnActivate(bool isShowForce) override;
 	void OnDeactivate() override;

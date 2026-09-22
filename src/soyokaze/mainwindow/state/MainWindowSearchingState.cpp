@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "mainwindow/state/InputState.h"
+#include "mainwindow/state/MainWindowSearchingState.h"
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
-#include "mainwindow/state/HiddenState.h"
-#include "mainwindow/state/ShownState.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
+#include "mainwindow/state/MainWindowIdleState.h"
 #include "mainwindow/AppSound.h"
 
 using namespace launcherapp::mainwindow::state;
 
-InputState::InputState(LauncherWindowStateContextIF* context) :
+SearchingState::SearchingState(LauncherWindowStateContextIF* context) :
 	LauncherWindowState(context)
 {
 }
 
-void InputState::OnActivate(bool isShowForce)
+void SearchingState::OnActivate(bool isShowForce)
 {
 	auto context = GetContext();
 	if (isShowForce) {
@@ -28,13 +28,13 @@ void InputState::OnActivate(bool isShowForce)
 	}
 }
 
-void InputState::OnDeactivate()
+void SearchingState::OnDeactivate()
 {
 	auto context = GetContext();
 	context->ChangeState(std::make_unique<HiddenState>(context));
 }
 
-void InputState::OnExecuteRequested()
+void SearchingState::OnExecuteRequested()
 {
 	auto context = GetContext();
 	context->ExecuteCurrentCommand();
@@ -43,35 +43,35 @@ void InputState::OnExecuteRequested()
 	}
 }
 
-void InputState::OnCancel()
+void SearchingState::OnCancel()
 {
 	auto context = GetContext();
 	context->ClearContent();
 	context->SetFocusToEdit();
-	context->ChangeState(std::make_unique<ShownState>(context));
+	context->ChangeState(std::make_unique<IdleState>(context));
 }
 
-void InputState::OnContentCleared()
+void SearchingState::OnContentCleared()
 {
 	auto context = GetContext();
 	if (context->IsWindowVisibleFromState()) {
-		context->ChangeState(std::make_unique<ShownState>(context));
+		context->ChangeState(std::make_unique<IdleState>(context));
 	}
 	else {
 		context->ChangeState(std::make_unique<HiddenState>(context));
 	}
 }
 
-void InputState::OnTextChanged()
+void SearchingState::OnTextChanged()
 {
 	auto context = GetContext();
 	context->HandleTextChanged();
 	if (context->HasKeyword() == false) {
-		context->ChangeState(std::make_unique<ShownState>(context));
+		context->ChangeState(std::make_unique<IdleState>(context));
 	}
 }
 
-void InputState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
+void SearchingState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
 {
 	auto context = GetContext();
 	context->HandleQueryCompleted(result);
@@ -79,11 +79,11 @@ void InputState::OnQueryCompleted(launcherapp::commands::core::CommandQueryResul
 		context->ChangeState(std::make_unique<HiddenState>(context));
 	}
 	else if (context->HasKeyword() == false) {
-		context->ChangeState(std::make_unique<ShownState>(context));
+		context->ChangeState(std::make_unique<IdleState>(context));
 	}
 }
 
-bool InputState::OnKeyInput(unsigned int keyCode)
+bool SearchingState::OnKeyInput(unsigned int keyCode)
 {
 	auto context = GetContext();
 	if (keyCode == VK_UP || keyCode == VK_DOWN) {
@@ -126,17 +126,17 @@ bool InputState::OnKeyInput(unsigned int keyCode)
 	return false;
 }
 
-void InputState::OnCandidateSelectionChanged(int index)
+void SearchingState::OnCandidateSelectionChanged(int index)
 {
 	GetContext()->SelectCandidate(index);
 }
 
-void InputState::OnCandidateClicked()
+void SearchingState::OnCandidateClicked()
 {
 	GetContext()->ReflectCurrentCandidate();
 }
 
-void InputState::OnCandidateDoubleClicked()
+void SearchingState::OnCandidateDoubleClicked()
 {
 	OnExecuteRequested();
 }

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "mainwindow/state/HiddenState.h"
-#include "mainwindow/state/InputState.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
+#include "mainwindow/state/MainWindowSearchingState.h"
 #include "mainwindow/state/LauncherWindowStateContextIF.h"
-#include "mainwindow/state/ShownState.h"
+#include "mainwindow/state/MainWindowIdleState.h"
 
 namespace {
 
@@ -139,7 +139,7 @@ public:
 
 }
 
-TEST(LauncherWindowStateTest, HiddenState_Activate_TransitionsToShownState)
+TEST(LauncherWindowStateTest, HiddenState_Activate_TransitionsToIdleState)
 {
 	DummyContext context;
 	launcherapp::mainwindow::state::HiddenState state(&context);
@@ -147,7 +147,7 @@ TEST(LauncherWindowStateTest, HiddenState_Activate_TransitionsToShownState)
 	state.OnActivate(false);
 
 	EXPECT_EQ(context.mShowCount, 1);
-	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ShownState*>(context.mState.get()), nullptr);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::IdleState*>(context.mState.get()), nullptr);
 }
 
 TEST(LauncherWindowStateTest, HiddenState_Enter_HidesVisibleWindow)
@@ -162,11 +162,11 @@ TEST(LauncherWindowStateTest, HiddenState_Enter_HidesVisibleWindow)
 	EXPECT_FALSE(context.mIsWindowVisible);
 }
 
-TEST(LauncherWindowStateTest, ShownState_ActivateWhenInactive_ActivatesWindow)
+TEST(LauncherWindowStateTest, IdleState_ActivateWhenInactive_ActivatesWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	state.OnActivate(false);
 
@@ -174,13 +174,13 @@ TEST(LauncherWindowStateTest, ShownState_ActivateWhenInactive_ActivatesWindow)
 	EXPECT_EQ(context.mHideCount, 0);
 }
 
-TEST(LauncherWindowStateTest, ShownState_ActivateWhenActiveAndToggleEnabled_HidesWindow)
+TEST(LauncherWindowStateTest, IdleState_ActivateWhenActiveAndToggleEnabled_HidesWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	context.mIsWindowActive = true;
 	context.mIsShowToggle = true;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	state.OnActivate(false);
 
@@ -188,13 +188,13 @@ TEST(LauncherWindowStateTest, ShownState_ActivateWhenActiveAndToggleEnabled_Hide
 	EXPECT_EQ(context.mHideCount, 1);
 }
 
-TEST(LauncherWindowStateTest, ShownState_ForceActivate_ShowsWindow)
+TEST(LauncherWindowStateTest, IdleState_ForceActivate_ShowsWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	context.mIsWindowActive = true;
 	context.mIsShowToggle = true;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	state.OnActivate(true);
 
@@ -202,38 +202,38 @@ TEST(LauncherWindowStateTest, ShownState_ForceActivate_ShowsWindow)
 	EXPECT_EQ(context.mHideCount, 0);
 }
 
-TEST(LauncherWindowStateTest, ShownState_TextChangedWithKeyword_TransitionsToInputState)
+TEST(LauncherWindowStateTest, IdleState_TextChangedWithKeyword_TransitionsToSearchingState)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	context.mHasKeyword = true;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	state.OnTextChanged();
 
-	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::InputState*>(context.mState.get()), nullptr);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::SearchingState*>(context.mState.get()), nullptr);
 }
 
-TEST(LauncherWindowStateTest, InputState_Cancel_ClearsAndTransitionsToShownState)
+TEST(LauncherWindowStateTest, SearchingState_Cancel_ClearsAndTransitionsToIdleState)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	context.mHasKeyword = true;
-	launcherapp::mainwindow::state::InputState state(&context);
+	launcherapp::mainwindow::state::SearchingState state(&context);
 
 	state.OnCancel();
 
 	EXPECT_EQ(context.mClearCount, 1);
 	EXPECT_EQ(context.mFocusCount, 1);
-	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ShownState*>(context.mState.get()), nullptr);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::IdleState*>(context.mState.get()), nullptr);
 }
 
-TEST(LauncherWindowStateTest, InputState_ExecuteWhenClosed_TransitionsToHiddenState)
+TEST(LauncherWindowStateTest, SearchingState_ExecuteWhenClosed_TransitionsToHiddenState)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	context.mHasKeyword = true;
-	launcherapp::mainwindow::state::InputState state(&context);
+	launcherapp::mainwindow::state::SearchingState state(&context);
 
 	state.OnExecuteRequested();
 
@@ -241,31 +241,31 @@ TEST(LauncherWindowStateTest, InputState_ExecuteWhenClosed_TransitionsToHiddenSt
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
 }
 
-TEST(LauncherWindowStateTest, ShownState_Enter_ExecutesCommand)
+TEST(LauncherWindowStateTest, IdleState_Enter_ExecutesCommand)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	EXPECT_TRUE(state.OnKeyInput(VK_RETURN));
 	EXPECT_EQ(context.mExecuteCount, 1);
 }
 
-TEST(LauncherWindowStateTest, ShownState_DoesNotHandleCandidateKeys)
+TEST(LauncherWindowStateTest, IdleState_DoesNotHandleCandidateKeys)
 {
 	DummyContext context;
-	launcherapp::mainwindow::state::ShownState state(&context);
+	launcherapp::mainwindow::state::IdleState state(&context);
 
 	EXPECT_FALSE(state.OnKeyInput(VK_UP));
 	EXPECT_FALSE(state.OnKeyInput(VK_TAB));
 	EXPECT_FALSE(state.OnKeyInput(VK_NEXT));
 }
 
-TEST(LauncherWindowStateTest, InputState_ArrowKey_UpdatesCandidate)
+TEST(LauncherWindowStateTest, SearchingState_ArrowKey_UpdatesCandidate)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
-	launcherapp::mainwindow::state::InputState state(&context);
+	launcherapp::mainwindow::state::SearchingState state(&context);
 
 	EXPECT_TRUE(state.OnKeyInput(VK_UP));
 	EXPECT_EQ(context.mOffset, -1);
@@ -273,21 +273,21 @@ TEST(LauncherWindowStateTest, InputState_ArrowKey_UpdatesCandidate)
 	EXPECT_EQ(context.mUpdateCandidateCount, 1);
 }
 
-TEST(LauncherWindowStateTest, InputState_Tab_ComplementsKeyword)
+TEST(LauncherWindowStateTest, SearchingState_Tab_ComplementsKeyword)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
-	launcherapp::mainwindow::state::InputState state(&context);
+	launcherapp::mainwindow::state::SearchingState state(&context);
 
 	EXPECT_TRUE(state.OnKeyInput(VK_TAB));
 	EXPECT_EQ(context.mComplementCount, 1);
 }
 
-TEST(LauncherWindowStateTest, InputState_PageKey_OffsetsByPageSize)
+TEST(LauncherWindowStateTest, SearchingState_PageKey_OffsetsByPageSize)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
-	launcherapp::mainwindow::state::InputState state(&context);
+	launcherapp::mainwindow::state::SearchingState state(&context);
 
 	EXPECT_TRUE(state.OnKeyInput(VK_PRIOR));
 	EXPECT_EQ(context.mOffset, -5);

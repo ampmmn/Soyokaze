@@ -39,7 +39,7 @@
 #include "mainwindow/OperationWatcher.h"
 #include "mainwindow/MouseoverActivateWindow.h"
 #include "mainwindow/state/LauncherWindowState.h"
-#include "mainwindow/state/HiddenState.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
 #include "mainwindow/CandidateList.h"
