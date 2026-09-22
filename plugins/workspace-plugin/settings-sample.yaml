@@ -1,0 +1,43 @@
+- directory:
+    # 検索対象パス(複数指定可能)
+    - C:/Users/htmny/source/repos/soyokaze
+  # 検索結果上限
+  search-limit: 8
+  # 検索階層(0でディレクトリ直下のみ。-1で制限なし)
+  max-depth: -1
+  # 検索発動ワード(空文字で無条件反動)
+  search-trigger-word: ""
+  # 検索対象とする拡張子
+  include-ext:
+    - .cpp
+    - .h
+    - .rc
+    - .md
+  include-file:
+    - test
+  # 除外するキーワード(部分一致)
+  exclude-file:
+    - 
+  # 除外するディレクトリ(部分一致)
+  exclude-dir:
+    - .git
+    - externals
+  # コマンド実行時に起動するプログラム
+  execute:
+    # フォルダの場合に起動するプログラム。"{path}"は該当する要素のパスに置き換えられる。
+    folder:
+      - C:/Users/htmny/local/apps/ppw207/PPCW.EXE
+      - -r
+      - "{path}"
+    # ファイルの場合に起動するプログラム。"{path}"は該当する要素のパスに置き換えられる。
+    file:
+        # 共通
+        default:
+          - C:/Users/htmny/local/apps/vim/gvim.exe
+          - --remote-silent
+          - "{path}"
+        # 拡張子.hの場合に起動するプログラム
+        .h:
+          - C:/Users/htmny/local/apps/vim/gvim.exe
+          - --remote-silent
+          - "{path}"

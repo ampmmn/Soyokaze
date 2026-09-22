@@ -1,0 +1,27 @@
+► Title - 
+	On dispacher unhandled exception - Unknown
+♦ [Version] Date/Hour - 
+	[2.38.1] 09/19/2026 20:55:14
+▬ Message - 
+	Window が閉じた後で、表示の設定や、Show、ShowDialog、および WindowInteropHelper.EnsureHandle の呼び出しを行うことはできません。
+○ Type - 
+	System.InvalidOperationException
+▲ Source - 
+	PresentationFramework
+▼ TargetSite - 
+	Void VerifyCanShow()
+♠ StackTrace - 
+   at System.Windows.Window.VerifyCanShow()
+   at System.Windows.Window.Show()
+   at ScreenToGif.ViewModel.ApplicationViewModel.<>c__DisplayClass5_0.<get_OpenRecorder>b__3(Object sender, EventArgs args) in C:\Users\nicke\source\ScreenToGif\ScreenToGif\ViewModel\ApplicationViewModel.cs:line 198
+   at System.Windows.Window.OnClosed(EventArgs e)
+   at System.Windows.Window.WmDestroy()
+   at System.Windows.Window.WindowFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean& handled)
+   at System.Windows.Interop.HwndSource.PublicHooksFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean& handled)
+   at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean& handled)
+   at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+
+----------------------------------
+

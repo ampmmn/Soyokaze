@@ -29,6 +29,13 @@ public:
 	launcherapp::core::Command* GetCurrentCommand() const;
 
 protected:
+	/**
+	  本体候補欄と同じ配色で候補行を描画する
+	  @param[in] pNMHDR カスタムドロー通知情報
+	  @param[out] pResult 通知処理結果
+	*/
+	afx_msg void OnCustomDraw(NMHDR* pNMHDR, LRESULT* pResult);
+
 	DECLARE_MESSAGE_MAP()
 
 private:

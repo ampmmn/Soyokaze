@@ -449,7 +449,7 @@ void LauncherMainWindow::UpdateExtraCandidates()
 	CPoint point;
 	::GetCaretPos(&point);
 	in->mKeywordEdit.ClientToScreen(&point);
-	point.y += in->mExtraCandidateListBox.GetRowHeight();
+	point.y += in->mExtraCandidateListBox.GetRowHeight() + 6;
 	in->mExtraCandidateListBox.ShowAt(point);
 }
 

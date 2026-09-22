@@ -122,7 +122,13 @@ bool SearchingState::OnKeyInput(unsigned int keyCode)
 			return true;
 		}
 
-		// 候補がある場合は現在の候補を使って入力内容を補完する
+		if (context->CanStartParamSearching()) {
+			// パラメータ入力中はコマンド補完ではなく追加候補検索へ戻す
+			context->RequestParamSearching();
+			return true;
+		}
+
+		// コマンド名の入力中は現在の候補を使って入力内容を補完する
 		context->Complement();
 		return true;
 	}

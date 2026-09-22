@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ExtraCandidateListCtrl.h"
+#include "control/ColorSettings.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +35,10 @@ public:
 
 	BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) override
 	{
+		// 子リストが処理する通知を先にリフレクションする
+		if (CWnd::OnNotify(wParam, lParam, result)) {
+			return TRUE;
+		}
 		if (mOwner != nullptr) {
 			*result = mOwner->SendMessage(WM_NOTIFY, wParam, lParam);
 			return TRUE;
@@ -63,7 +68,76 @@ ExtraCandidateListCtrl::~ExtraCandidateListCtrl()
 }
 
 BEGIN_MESSAGE_MAP(ExtraCandidateListCtrl, CListCtrl)
+	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnCustomDraw)
 END_MESSAGE_MAP()
+
+/**
+  本体候補欄と同じ配色で候補行を描画する
+  @param[in] pNMHDR カスタムドロー通知情報
+  @param[out] pResult 通知処理結果
+*/
+void ExtraCandidateListCtrl::OnCustomDraw(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	if (pNMHDR == nullptr || pResult == nullptr) {
+		return;
+	}
+
+	auto* customDraw = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
+	if (customDraw->nmcd.dwDrawStage == CDDS_PREPAINT) {
+		*pResult = CDRF_NOTIFYITEMDRAW;
+		return;
+	}
+	if (customDraw->nmcd.dwDrawStage != CDDS_ITEMPREPAINT) {
+		*pResult = CDRF_DODEFAULT;
+		return;
+	}
+
+	int itemId = static_cast<int>(customDraw->nmcd.dwItemSpec);
+	auto colorScheme = ColorSettings::Get()->GetCurrentScheme();
+	bool isSelected = (GetItemState(itemId, LVIS_SELECTED) & LVIS_SELECTED) != 0;
+	if (isSelected) {
+		customDraw->clrText = colorScheme->GetListHighlightTextColor();
+		customDraw->clrTextBk = colorScheme->GetListHighlightBackgroundColor();
+	}
+	else if ((itemId % 2) != 0) {
+		customDraw->clrText = colorScheme->GetListTextColor();
+		customDraw->clrTextBk = colorScheme->GetListBackgroundAltColor();
+	}
+	else {
+		customDraw->clrText = colorScheme->GetListTextColor();
+		customDraw->clrTextBk = colorScheme->GetListBackgroundColor();
+	}
+
+	CRect itemRect;
+	CRect clientRect;
+	GetItemRect(itemId, &itemRect, LVIR_BOUNDS);
+	GetClientRect(&clientRect);
+	itemRect.right = clientRect.right;
+	CBrush* backgroundBrush = nullptr;
+	if (isSelected) {
+		backgroundBrush = CBrush::FromHandle(colorScheme->GetListHighlightBackgroundBrush());
+	}
+	else if ((itemId % 2) != 0) {
+		backgroundBrush = CBrush::FromHandle(colorScheme->GetListBackgroundAltBrush());
+	}
+	else {
+		backgroundBrush = CBrush::FromHandle(colorScheme->GetListBackgroundBrush());
+	}
+	if (backgroundBrush != nullptr) {
+		CDC* dc = CDC::FromHandle(customDraw->nmcd.hdc);
+		dc->FillRect(itemRect, backgroundBrush);
+
+		CRect textRect = itemRect;
+		textRect.DeflateRect(4, 0);
+		int oldBkMode = dc->SetBkMode(TRANSPARENT);
+		COLORREF oldTextColor = dc->SetTextColor(customDraw->clrText);
+		dc->DrawText(GetItemText(itemId, 0), textRect, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+		dc->SetTextColor(oldTextColor);
+		dc->SetBkMode(oldBkMode);
+	}
+
+	*pResult = CDRF_SKIPDEFAULT;
+}
 
 bool ExtraCandidateListCtrl::CreatePopup(CWnd* owner)
 {

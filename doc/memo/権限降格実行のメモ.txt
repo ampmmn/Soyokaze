@@ -1,0 +1,60 @@
+
+x 「アプリを管理者権限で実行しているときにコマンドを通常権限で起動する」を追加
+  x デフォルトはON
+
+x  現在一般権限で動作しているか管理者権限で動作しているかを設定画面に表示する
+  x 判断するロジックは既に実装済 → SubProcess::IsRunningAsAdmin
+
+d SharedHwndに名前をしていして別名のオブジェクトをつくるAPIを追加する(インデックスでなく)
+
+- SubProcessからNormalPriviledgeProcessProxyを使うしょりをじっそうする
+  - ランチャーが管理者権限による実行中、かつ、これから起動しようとするプロセスが一般権限の場合はNormalPriviledgeProcessProxyに委譲する
+  x ランチャーが管理者権限による実行中、かつ、これから起動しようとするプロセスも管理者権限の場合は普通に実行する(runasつけない)  → もともとそうなってた
+
+- NormalPriviledgeProcessProxyクラスを実装
+  - このクラスが権限降格してsoyokaze.exeを起動したり、そのウインドウとの通信などを担う
+  - 利用者がSubProcessとFilterExecutorと、2ついるので、それぞれのニーズに対応できるようにする
+
+
+d FilterExecutorからNormalPriviledgeProcessProxyを使うしょりをじっそうする
+  d ランチャーが管理者権限による実行中、かつ、これから起動しようとするプロセスが一般権限の場合はNormalPriviledgeProcessProxyに委譲する
+  * FilterExecutorの実行は基本的にその場限りで終わる処理が対象なので、管理者権限でもいいような気がしてきた
+
+x 一般権限で実行するためのエージェントとして動作するモードをsoyokaze本体に追加する
+  - 引数 --run-as-normal-priviledge-agent
+
+  -- Trueのときは専用のウインドウを立ち上げて待つ
+    -- WM_COPYDATA経由でメッセージを受け取り、ShellExecuteEx/CreateProcessでコマンドを実行するだけ
+       プロセスを実行して起動したPIDを返す
+  -- 親プロセスが終了したら、自身も終了する
+
+- ドキュメントこうしん
+
+## プロセス起動している箇所の一覧
+
+### CreateProcessを使用
+
+- commands/common/SubProcess
+  → 権限降格起動
+- commands/filter/FilterExecutor
+  → フィルタコマンドの候補列挙時の処理。パイプ経由で子プロセスのstdoutを取得するため ★
+
+### ShellExecuteExを使用
+
+- commands/common/SubProcess
+  - コマンド実行時にプロセス起動するのはここ ★
+- app/Manual.cpp
+  - file://... から ブラウザを起動する
+- commands/everything/EveryhingProxy
+  - Everythingを起動 (これは後で削除予定)
+- commands/filter/AfterSubProcessDialog  
+  - ダイアログから「編集」メニューを選んだ時に編集画面を表示する。
+- commands/shellexecute/CommandEditDialog  
+  - ダイアログから「編集」メニューを選んだ時に編集画面を表示する。
+
+### ShellExecuteを使用
+
+- settingwindow/InputSettingDialog
+- commands/builtin/AboutDlg
+- comands/everything/EverythingCommandEditDialog
+  - → いずれもハイパーリンクからのブラウザ起動
