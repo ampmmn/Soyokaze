@@ -44,6 +44,7 @@
 #include "mainwindow/MouseoverActivateWindow.h"
 #include "mainwindow/state/LauncherWindowState.h"
 #include "mainwindow/state/MainWindowHiddenState.h"
+#include "mainwindow/state/MainWindowSearchingState.h"
 #include "macros/core/MacroRepository.h"
 #include "matcher/CommandToken.h"
 #include "mainwindow/CandidateList.h"
@@ -379,7 +380,11 @@ bool LauncherMainWindow::CanStartParamSearching()
 	if (command == nullptr) {
 		return false;
 	}
-	return command->IsAcceptArguments();
+	if (command->IsAcceptArguments()) {
+		return true;
+	}
+	// ディレクトリを確定した場合は、直下の候補を続けて表示する
+	return Path::IsDirectory(parameter) != FALSE;
 }
 
 void LauncherMainWindow::RequestParamSearching()
@@ -1857,6 +1862,10 @@ LRESULT LauncherMainWindow::OnUserMessageRequestParamSearching(WPARAM wParam, LP
 	UNREFERENCED_PARAMETER(lParam);
 	if (CanStartParamSearching()) {
 		ChangeState(std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(this));
+		if (IsExtraCandidateListEmpty()) {
+			// 追加候補がなければ通常の検索Stateへ戻す
+			ChangeState(std::make_unique<launcherapp::mainwindow::state::SearchingState>(this, false));
+		}
 	}
 	return 0;
 }
@@ -2201,6 +2210,10 @@ void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFi
 void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
 	spdlog::debug("OnActivate nState {}", nState);
+	if (nState == WA_INACTIVE) {
+		// メインウインドウが非アクティブになったら追加候補Popupを閉じる
+		HideExtraCandidates();
+	}
 	if (in->mAppearance) {
 		in->mAppearance->OnActivate(nState, wnd, bMinimized);
 	}

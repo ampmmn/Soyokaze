@@ -68,7 +68,15 @@ bool ParamSearchingState::OnKeyInput(unsigned int keyCode)
 		if (context->IsExtraCandidateListEmpty()) {
 			return true;
 		}
-		OnExecuteRequested();
+		if (keyCode == VK_TAB) {
+			context->ResolveExtraCandidate();
+			// Tab確定後の検索結果でも追加候補Popupを表示できるようにする
+			context->ChangeState(std::make_unique<SearchingState>(context, true));
+		}
+		else {
+			// Enter確定後は追加候補Popupを再表示せず、通常の実行状態へ戻す
+			OnExecuteRequested();
+		}
 		return true;
 	}
 	return false;
