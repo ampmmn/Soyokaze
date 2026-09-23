@@ -184,14 +184,6 @@ bool CommandEditDialog::UpdateStatus()
 	// .lnkだったらショートカット解決ボタンを表示する
 	GetDlgItem(IDC_BUTTON_RESOLVESHORTCUT)->ShowWindow(isShortcut? SW_SHOW : SW_HIDE);
 
-	// .exe/.batでなければ、管理者権限実行を無効化する
-	BOOL isExecutable = CString(_T(".exe")).CompareNoCase(PathFindExtension(targetPath)) == 0 ||
-	                    CString(_T(".bat")).CompareNoCase(PathFindExtension(targetPath)) == 0;
-	GetDlgItem(IDC_CHECK_RUNASADMIN)->EnableWindow(isExecutable);
-	if (isExecutable == FALSE) {
-		param.mIsRunAsAdmin = FALSE;
-	}
-
 	// 独自のアイコンが設定されていない場合は、登録されたパスからアイコンを取得する
 	if (param.mIconData.empty()) {
 		in->mIcon.LoadFromPath(targetPath);

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-09-23 15:50+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -112,33 +112,33 @@ msgid "`表示方法`   通常表示/最大表示/最小表示 を選ぶこと�
 msgstr ""
 
 #: ../../source/user-command/regexp.md:39
-msgid "`管理者権限で実行`   チェックすると、管理者権限でプロセスを起動する   `.exe`、`.bat`のときのみ選択可能"
+msgid "`管理者権限で実行`   チェックすると、管理者権限でプロセスを起動する"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:43
+#: ../../source/user-command/regexp.md:42
 msgid ""
 "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/common/web-"
 "search-command-context-menu.png)"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:46
+#: ../../source/user-command/regexp.md:45
 msgid ""
 "`アイコンを変更する`   "
 "選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。   "
 "ローカルパスのほか、URLを直接指定することも可能   PNG/JPG/GIF/BMP形式のファイルが利用可能"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:50
+#: ../../source/user-command/regexp.md:49
 msgid ""
 "`URLからファビコンを取得する`     `実行ファイル・URLなど`にURLが入力されているときのみ表示される。   "
 "選択すると、URLからファビコンを取得し、アイコンとして設定する。"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:53
+#: ../../source/user-command/regexp.md:52
 msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
 msgstr ""
 
-#: ../../source/user-command/regexp.md:56
+#: ../../source/user-command/regexp.md:55
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

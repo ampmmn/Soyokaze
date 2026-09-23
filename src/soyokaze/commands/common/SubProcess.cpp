@@ -13,7 +13,10 @@
 #include <map>
 #include <servprov.h>
 #include <shobjidl_core.h>
+#include <shlwapi.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
+
+#pragma comment(lib, "shlwapi.lib")
 
 
 #ifdef _DEBUG
@@ -80,6 +83,12 @@ struct SubProcess::PImpl
 	}
 
 	bool CanRunAsAdmin(const CString& path);
+	bool PrepareRunAsAdminTarget(CString& path, CString& param);
+	bool QueryAssociationString(ASSOCSTR assocStr, const CString& assocKey, CString& value);
+	bool GetAssociationKey(const CString& path, CString& assocKey);
+	bool IsDirectExecutable(const CString& path);
+	bool ParseAssociationCommand(const CString& command, CString& path, CString& param);
+	void ReplaceAssociationParameter(CString& param, LPCTSTR name, const CString& value, bool isUrl);
 
 	bool StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process);
 	bool Start(SHELLEXECUTEINFO si, ProcessPtr& process);
@@ -89,6 +98,7 @@ struct SubProcess::PImpl
 	Parameter* mParam{nullptr};
 	int mShowType{SW_SHOW};
 	bool mIsRunAsAdmin{false};
+	bool mIsRunAsAdminTarget{false};
 	CString mWorkingDir;
 	std::map<tstring, tstring> mAdditionalEnv;
 };
@@ -96,8 +106,157 @@ struct SubProcess::PImpl
 // 管理者権限で実行可能なファイルタイプか?
 bool SubProcess::PImpl::CanRunAsAdmin(const CString& path)
 {
-	CString ext = PathFindExtension(path);
-	return ext.CompareNoCase(_T(".exe")) == 0 || ext.CompareNoCase(_T(".bat")) == 0;
+	return IsDirectExecutable(path);
+}
+
+bool SubProcess::PImpl::GetAssociationKey(const CString& path, CString& assocKey)
+{
+	if (PathIsURL(path)) {
+		int separatorPos = path.Find(_T(":"));
+		if (separatorPos <= 0) {
+			return false;
+		}
+		assocKey = path.Left(separatorPos);
+		return true;
+	}
+
+	assocKey = PathFindExtension(path);
+	return assocKey.IsEmpty() == FALSE;
+}
+
+bool SubProcess::PImpl::QueryAssociationString(ASSOCSTR assocStr, const CString& assocKey, CString& value)
+{
+	DWORD size = 256;
+	std::vector<TCHAR> buffer(size);
+
+	for (;;) {
+		DWORD actualSize = size;
+		HRESULT hr = AssocQueryString(
+			ASSOCF_NONE,
+			assocStr,
+			assocKey,
+			_T("open"),
+			buffer.data(),
+			&actualSize
+		);
+		if (hr == S_FALSE && actualSize > size) {
+			size = actualSize;
+			buffer.resize(size);
+			continue;
+		}
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		value = buffer.data();
+		return value.IsEmpty() == FALSE;
+	}
+}
+
+bool SubProcess::PImpl::IsDirectExecutable(const CString& path)
+{
+	CString assocKey;
+	if (GetAssociationKey(path, assocKey) == false) {
+		return false;
+	}
+
+	CString value;
+	if (QueryAssociationString(ASSOCSTR_EXECUTABLE, assocKey, value)) {
+		value.Trim();
+		if (value == _T("%1") || value == _T("\"%1\"")) {
+			return true;
+		}
+	}
+
+	// Windowsの環境によってASSOCSTR_EXECUTABLEが実行ファイルのパスを返す場合があるため、コマンドも確認する。
+	if (QueryAssociationString(ASSOCSTR_COMMAND, assocKey, value) == false) {
+		return false;
+	}
+	value.Trim();
+	return value == _T("%1") || value == _T("\"%1\"") || value == _T("%1 %*") || value == _T("\"%1\" %*");
+}
+
+void SubProcess::PImpl::ReplaceAssociationParameter(CString& param, LPCTSTR name, const CString& value, bool isUrl)
+{
+	int pos = 0;
+	while ((pos = param.Find(name, pos)) >= 0) {
+		int nameLength = static_cast<int>(_tcslen(name));
+		bool isQuoted = pos > 0 && pos + nameLength < param.GetLength() &&
+			param[pos - 1] == _T('\"') && param[pos + nameLength] == _T('\"');
+		int replacementPos = pos;
+		if (isUrl && isQuoted) {
+			// URLでは関連付けコマンドの引用符も引数に残さない。
+			param.Delete(pos + nameLength, 1);
+			param.Delete(pos - 1, 1);
+			replacementPos--;
+		}
+		CString replacement(value);
+		if (isUrl == false && isQuoted == false && _tcscmp(name, _T("%*")) != 0 && replacement.IsEmpty() == FALSE) {
+			replacement = _T("\"") + replacement + _T("\"");
+		}
+		param.Delete(replacementPos, nameLength);
+		param.Insert(replacementPos, replacement);
+		pos = replacementPos + replacement.GetLength();
+	}
+}
+
+bool SubProcess::PImpl::ParseAssociationCommand(const CString& command, CString& path, CString& param)
+{
+	CString commandLine(command);
+	commandLine.Trim();
+	if (commandLine.IsEmpty()) {
+		return false;
+	}
+
+	if (commandLine[0] == _T('\"')) {
+		int endQuote = commandLine.Find(_T('\"'), 1);
+		if (endQuote < 0) {
+			return false;
+		}
+		path = commandLine.Mid(1, endQuote - 1);
+		param = commandLine.Mid(endQuote + 1);
+	}
+	else {
+		int separator = commandLine.FindOneOf(_T(" \t"));
+		if (separator < 0) {
+			path = commandLine;
+			param.Empty();
+		}
+		else {
+			path = commandLine.Left(separator);
+			param = commandLine.Mid(separator);
+		}
+	}
+	param.TrimLeft();
+	return path.IsEmpty() == FALSE;
+}
+
+bool SubProcess::PImpl::PrepareRunAsAdminTarget(CString& path, CString& param)
+{
+	mIsRunAsAdminTarget = false;
+	if (CanRunAsAdmin(path)) {
+		mIsRunAsAdminTarget = true;
+		return true;
+	}
+
+	CString assocKey;
+	CString command;
+	CString associatedPath;
+	CString associatedParam;
+	if (GetAssociationKey(path, assocKey) == false ||
+		QueryAssociationString(ASSOCSTR_COMMAND, assocKey, command) == false ||
+		ParseAssociationCommand(command, associatedPath, associatedParam) == false) {
+		return false;
+	}
+
+	bool isUrl = PathIsURL(path) != FALSE;
+	ReplaceAssociationParameter(associatedParam, _T("%1"), path, isUrl);
+	ReplaceAssociationParameter(associatedParam, _T("%L"), path, isUrl);
+	ReplaceAssociationParameter(associatedParam, _T("%*"), param, false);
+	path = associatedPath;
+	param = associatedParam;
+	mIsRunAsAdminTarget = true;
+	return true;
 }
 
 bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process)
@@ -160,7 +319,7 @@ bool SubProcess::PImpl::Start(SHELLEXECUTEINFO si, ProcessPtr& process)
 	}
 
 	// 管理者として実行する指定がされているか?
-	bool isRunAsAdminSpecified = mIsRunAsAdmin && CanRunAsAdmin(si.lpFile);
+	bool isRunAsAdminSpecified = mIsRunAsAdmin && mIsRunAsAdminTarget;
 	if (IsRunningAsAdmin() == false && isRunAsAdminSpecified) {
 		si.lpVerb = _T("runas");
 	}
@@ -352,7 +511,10 @@ bool SubProcess::Run(
 	}
 
 	// 管理者として実行する指定がされているか?
-	bool isRunAsAdminSpecified = in->mIsRunAsAdmin && in->CanRunAsAdmin(path);
+	bool isRunAsAdminSpecified = false;
+	if (in->mIsRunAsAdmin) {
+		isRunAsAdminSpecified = in->PrepareRunAsAdminTarget(path, paramStr);
+	}
 
 	SHELLEXECUTEINFO si = {};
 	in->SetupShellExecuteInfo(path, paramStr, workDir, si);
