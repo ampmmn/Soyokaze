@@ -242,70 +242,40 @@ struct BGImageCandidateListRenderer::PImpl
 			return;
 		}
 
-		int imageAlpha = MulDiv(255, 100 - mAlpha, 100);
-		int backgroundAlpha = 255 - imageAlpha;
-		BLENDFUNCTION blend{AC_SRC_OVER, 0, (BYTE)imageAlpha, 0};
-
 		CRect imagePart;
 		imagePart.IntersectRect(rect, mImageRect);
-		if (imageAlpha > 0 && !imagePart.IsRectEmpty()) {
-			HDC sourceDC = mImageBuffer.GetDC();
-			if (sourceDC == nullptr) {
-				spdlog::error("Failed to get the background image source device context.");
-			}
-			else {
-				BOOL result = ::AlphaBlend(
-					targetDC->GetSafeHdc(), imagePart.left, imagePart.top,
-					imagePart.Width(), imagePart.Height(), sourceDC,
-					imagePart.left, imagePart.top,
-					imagePart.Width(), imagePart.Height(), blend
-				);
-				if (result == FALSE) {
-					spdlog::error("Failed to blend background image. error:{}", GetLastError());
-				}
-			}
-			mImageBuffer.ReleaseDC();
+
+		ATL::CImage& backgroundBuffer = isAlternateColor ?  mAlternateBackgroundBuffer : mBackgroundBuffer;
+
+		// リストの描画
+		HDC sourceDC = backgroundBuffer.GetDC();
+		BOOL result = ::BitBlt(targetDC->GetSafeHdc(),
+		                       rect.left, rect.top,
+		                       rect.Width(), rect.Height(), sourceDC,
+		                       rect.left, rect.top, SRCCOPY);
+		if (result == FALSE) {
+			spdlog::error("Failed to blend background color. error:{}", GetLastError());
+		}
+		backgroundBuffer.ReleaseDC();
+
+		// アプリ設定上の透過度(0～100)をALphaBlendの値域(0～255)に正規化する
+		int imageAlpha = MulDiv(255, 100 - mAlpha, 100);
+		if (imageAlpha == 0 || imagePart.IsRectEmpty()) {
+			return;
 		}
 
-		ATL::CImage& backgroundBuffer = isAlternateColor ?
-			mAlternateBackgroundBuffer : mBackgroundBuffer;
-		auto blendBackground = [&](const CRect& backgroundRect, BYTE alpha) {
-			if (backgroundRect.IsRectEmpty() || alpha == 0) {
-				return;
-			}
-			blend.SourceConstantAlpha = alpha;
-			HDC sourceDC = backgroundBuffer.GetDC();
-			if (sourceDC == nullptr) {
-				spdlog::error("Failed to get the background color source device context.");
-			}
-			else {
-				BOOL result = ::AlphaBlend(
-					targetDC->GetSafeHdc(), backgroundRect.left, backgroundRect.top,
-					backgroundRect.Width(), backgroundRect.Height(), sourceDC,
-					backgroundRect.left, backgroundRect.top, backgroundRect.Width(),
-					backgroundRect.Height(), blend
-				);
-				if (result == FALSE) {
-					spdlog::error("Failed to blend background color. error:{}", GetLastError());
-				}
-			}
-			backgroundBuffer.ReleaseDC();
-		};
-
-		if (imagePart.IsRectEmpty()) {
-			blendBackground(rect, 255);
+		// 背景画像の描画
+		sourceDC = mImageBuffer.GetDC();
+		BLENDFUNCTION blend{AC_SRC_OVER, 0, (BYTE)imageAlpha, 0};
+		result = ::AlphaBlend(targetDC->GetSafeHdc(),
+		                      imagePart.left, imagePart.top,
+		                      imagePart.Width(), imagePart.Height(), sourceDC,
+		                      imagePart.left, imagePart.top,
+		                      imagePart.Width(), imagePart.Height(), blend);
+		if (result == FALSE) {
+			spdlog::error("Failed to blend background image. error:{}", GetLastError());
 		}
-		else {
-			CRect top(rect.left, rect.top, rect.right, imagePart.top);
-			CRect bottom(rect.left, imagePart.bottom, rect.right, rect.bottom);
-			CRect left(rect.left, imagePart.top, imagePart.left, imagePart.bottom);
-			CRect right(imagePart.right, imagePart.top, rect.right, imagePart.bottom);
-			blendBackground(top, 255);
-			blendBackground(bottom, 255);
-			blendBackground(left, 255);
-			blendBackground(right, 255);
-			blendBackground(imagePart, (BYTE)backgroundAlpha);
-		}
+		mImageBuffer.ReleaseDC();
 	}
 
 	ATL::CImage mImage;
