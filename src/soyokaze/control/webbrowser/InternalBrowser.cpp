@@ -7,6 +7,8 @@
 #include <wil/com.h>
 #include <mutex>
 #include <deque>
+#include <atomic>
+#include <cstdint>
 #include "WebView2.h"
 #include "WebView2EnvironmentOptions.h"
 
@@ -101,7 +103,17 @@ struct InternalBrowser::PImpl
 			return false;
 		}
 		url = mRequest.back();
+		mRequest.pop_back();
 		return true;
+	}
+	void CloseWebview() {
+		mIsClosing = true;
+		++mGeneration;
+		if (mWebViewCtrl) {
+			mWebViewCtrl->Close();
+		}
+		mWebView.reset();
+		mWebViewCtrl.reset();
 	}
 
 	wil::com_ptr<ICoreWebView2Controller> mWebViewCtrl;
@@ -113,10 +125,12 @@ struct InternalBrowser::PImpl
 	std::mutex mMutex;
 	std::deque<CString> mRequest;
 	std::unique_ptr<WindowPosition> mWindowPositionPtr;
+	std::atomic<std::uint64_t> mGeneration{0};
+	std::atomic_bool mIsClosing{false};
 };
 
 
-InternalBrowser::InternalBrowser() : in(std::make_unique<PImpl>())
+InternalBrowser::InternalBrowser() : in(std::make_shared<PImpl>())
 {
 }
 
@@ -205,29 +219,49 @@ void InternalBrowser::PreSubclassWindow()
 void InternalBrowser::InitializeWebview()
 {
 	auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+	auto state = in;
+	const auto generation = ++state->mGeneration;
+	state->mIsClosing = false;
+	const auto weakState = std::weak_ptr<PImpl>(state);
+	const HWND hwnd = state->mSelfWindow;
 
 	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, options.Get(),
 			Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-				[this](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
+				[weakState, generation, hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
+					auto state = weakState.lock();
+					if (!state || state->mIsClosing || state->mGeneration != generation) {
+						return S_OK;
+					}
 
 				if (FAILED(result)) {
 					return result;
 				}
 
-				env->CreateCoreWebView2Controller(GetSafeHwnd(), Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-							[this](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT {
+					env->CreateCoreWebView2Controller(hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+							[weakState, generation, hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT {
+						auto state = weakState.lock();
+						if (!state || state->mIsClosing || state->mGeneration != generation) {
+							return S_OK;
+						}
 					if (FAILED(result)) {
 						return result;
 					}
+					if (controller == nullptr) {
+						return E_UNEXPECTED;
+					}
 
-					in->mWebViewCtrl = controller;
-					in->mWebViewCtrl->get_CoreWebView2(&in->mWebView);
+					state->mWebViewCtrl = controller;
+					if (FAILED(state->mWebViewCtrl->get_CoreWebView2(&state->mWebView)) || !state->mWebView) {
+						state->mWebViewCtrl->Close();
+						state->mWebViewCtrl.reset();
+						return E_FAIL;
+					}
 
 					RECT bounds;
-					GetClientRect(&bounds);
-					in->mWebViewCtrl->put_Bounds(bounds);
+					::GetClientRect(hwnd, &bounds);
+					state->mWebViewCtrl->put_Bounds(bounds);
 					wil::com_ptr<ICoreWebView2Settings> settings;
-					in->mWebView->get_Settings(&settings);
+					state->mWebView->get_Settings(&settings);
 
 					// FIXME: 現在はヘルプウインドウの用途に限定しているため、下記の設定としているが、
 					// 多用途でこのクラスを使いまわす場合は、機能を適宜整理すること
@@ -241,10 +275,12 @@ void InternalBrowser::InitializeWebview()
 					// 表示するURLを監視する(外部接続を許可しない)
 					EventRegistrationToken token;
 					auto handler = Microsoft::WRL::Make<NavigationStartingHandler>();
-					in->mWebView->add_NavigationStarting(handler.Get(), &token);
+					state->mWebView->add_NavigationStarting(handler.Get(), &token);
 
 					// URL表示のためのキュー処理
-					::PostMessage(in->mSelfWindow, WM_APP+1, 0, 0);
+					if (IsWindow(hwnd)) {
+						::PostMessage(hwnd, WM_APP+1, 0, 0);
+					}
 					return S_OK;
 				}).Get());
 		return S_OK;
@@ -267,6 +303,7 @@ void InternalBrowser::OnSize(UINT nType, int cx, int cy)
 
 void InternalBrowser::OnClose()
 {
+	in->CloseWebview();
 	if (in->mWindowPositionPtr.get()) {
 		in->mWindowPositionPtr->Update(GetSafeHwnd());
 		in->mWindowPositionPtr.reset();
@@ -277,6 +314,7 @@ void InternalBrowser::OnClose()
 
 void InternalBrowser::OnNcDestroy()
 {
+	in->mSelfWindow = nullptr;
 	Detach();
 	__super::OnNcDestroy();
 }
@@ -291,6 +329,9 @@ LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 {
 	if (msg == WM_APP+1) {
 		auto thisPtr = (InternalBrowser*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (thisPtr == nullptr) {
+			return 0;
+		}
 
 		CString url;
 		if (thisPtr->in->PopRequest(url)) {
@@ -298,7 +339,9 @@ LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			auto& webview = thisPtr->in->mWebView;
 			if (webview) {
 				webview->Navigate(url);
-				thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+				if (thisPtr->in->mWebViewCtrl) {
+					thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+				}
 			}
 
 		}
@@ -309,7 +352,9 @@ LRESULT CALLBACK InternalBrowser::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPA
 			// ウインドウがアクティブになったらwebview側にフォーカスを設定する
 			auto thisPtr = (InternalBrowser*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			if (thisPtr) {
-				thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+				if (thisPtr->in->mWebViewCtrl) {
+					thisPtr->in->mWebViewCtrl->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+				}
 			}
 			return 0;
 		}

@@ -36,17 +36,18 @@ static bool RegigsterWindowClass()
 
 
 
-struct ManualWindow::PImpl 
+struct ManualWindow::PImpl
 {
 	void CreateManualWindow();
-	std::unique_ptr<InternalBrowser> mBrowserWindow;
+	std::shared_ptr<InternalBrowser> mBrowserWindow;
 };
 
 void ManualWindow::PImpl::CreateManualWindow()
 {
 	// ヘルプ画面をメインスレッドで作成すると、メインスレッド側でモーダルダイアログを表示しているときに
 	// ヘルプ画面を操作できなくなってしまうため、専用のスレッドでヘルプ画面を作る
-	auto th = std::thread([&]() {
+	auto browserWindow = mBrowserWindow;
+	auto th = std::thread([browserWindow]() {
 
 		// 初回呼び出し時にウインドウクラスを登録する
 		if (sIsWndClassRegistered == false) {
@@ -54,12 +55,12 @@ void ManualWindow::PImpl::CreateManualWindow()
 			sIsWndClassRegistered = true;
 		}
 
-		mBrowserWindow->SetHostWindowClass(L"LauncherManualWindow");
-		mBrowserWindow->EnableSaveWindowPosition(_T("ManualWindow"));
+		browserWindow->SetHostWindowClass(L"LauncherManualWindow");
+		browserWindow->EnableSaveWindowPosition(_T("ManualWindow"));
 
 		CRect rect(0, 0, 800, 600);
 		int style = WS_VISIBLE | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
-		mBrowserWindow->Create(nullptr, style, rect, 0);
+		browserWindow->Create(nullptr, style, rect, 0);
 
 		CString version;
 		VersionInfo::GetVersionInfo(version);
@@ -67,9 +68,9 @@ void ManualWindow::PImpl::CreateManualWindow()
 		CString caption;
 		caption.Format(_T("%s %s マニュアル"), APPNAME, (LPCTSTR)version);
 
-		mBrowserWindow->SetWindowText(caption);
+		browserWindow->SetWindowText(caption);
 
-		HWND h = mBrowserWindow->GetSafeHwnd();
+		HWND h = browserWindow->GetSafeHwnd();
 		while(IsWindow(h)) {
 			MSG msg;
 			::GetMessage(&msg, nullptr, 0, 0);
@@ -105,7 +106,7 @@ void ManualWindow::Open(const CString& url)
 	// ウインドウがなければ作成
 	auto& wndPtr = in->mBrowserWindow;
 	if (wndPtr.get() == nullptr || wndPtr->GetSafeHwnd() == NULL) {
-		wndPtr.reset(new InternalBrowser());
+		wndPtr = std::make_shared<InternalBrowser>();
 		in->CreateManualWindow();
 	}
 	// ウインドウが非表示なら表示

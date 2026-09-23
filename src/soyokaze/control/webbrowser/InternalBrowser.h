@@ -74,7 +74,7 @@ public:
 
 private:
 	struct PImpl;
-	std::unique_ptr<PImpl> in;
+	std::shared_ptr<PImpl> in;
 };
 
 } // namespace webbrowser
