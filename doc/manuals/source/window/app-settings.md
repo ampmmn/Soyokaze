@@ -38,6 +38,7 @@ app-settings/everything.md
 app-settings/uiautomation.md
 app-settings/winscp.md
 app-settings/vscode.md
+app-settings/currency.md
 app-settings/plugins.md
 app-settings/logging.md
 app-settings/others.md
