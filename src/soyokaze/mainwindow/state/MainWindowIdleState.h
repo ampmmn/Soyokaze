@@ -12,19 +12,19 @@ class IdleState : public LauncherWindowStateBase
 public:
 	explicit IdleState(LauncherWindowStateContextIF* context);
 
-	/** 表示要求に応じて表示、再アクティブ化、トグル非表示を行う */
+	/** ウインドウの表示要求を受けたとき、表示・再アクティブ化またはトグル非表示を行う */
 	void OnActivate(bool isShowForce) override;
-	/** 非表示Stateへ遷移する */
+	/** ウインドウの非表示要求を受けたとき、非表示Stateへ遷移する */
 	void OnDeactivate() override;
-	/** 現在の候補を実行し、ウインドウが閉じた場合は非表示Stateへ遷移する */
+	/** 現在の候補の実行要求を受けたとき、実行し、ウインドウが閉じた場合は非表示Stateへ遷移する */
 	void OnExecuteRequested() override;
-	/** 入力内容をクリアするか、ウインドウを非表示にする */
+	/** キャンセル操作を受けたとき、入力内容をクリアするかウインドウを非表示にする */
 	void OnCancel() override;
-	/** 入力開始を検知したら検索中Stateへ遷移する */
+	/** 入力欄の文字変更通知を受けたとき、入力開始なら検索中Stateへ遷移する */
 	void OnTextChanged() override;
-	/** 検索結果を反映し、必要に応じてStateを更新する */
+	/** 非同期検索の完了通知を受けたとき、検索結果を反映して必要に応じてStateを更新する */
 	void OnQueryCompleted(launcherapp::commands::core::CommandQueryResult* result) override;
-	/** 待機中に処理するEnterキーを受け付ける */
+	/** 入力欄でキー入力を受けたとき、待機中に処理するEnterキーを処理する */
 	bool OnKeyInput(unsigned int keyCode) override;
 };
 

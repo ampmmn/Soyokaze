@@ -49,9 +49,13 @@ protected:
 	void OnCandidateClicked() override;
 	/** 候補ダブルクリックを処理しないState向けの既定処理 */
 	void OnCandidateDoubleClicked() override;
+	/** 入力欄のキャレットまたは選択範囲変更通知を処理しない既定動作 */
 	void OnSelectionChanged() override;
+	/** メインウインドウの位置またはサイズ変更通知を処理しない既定動作 */
 	void OnWindowGeometryChanged() override;
+	/** 追加候補一覧の選択位置変更通知を処理しない既定のイベント処理 */
 	void OnExtraCandidateSelectionChanged() override;
+	/** 追加候補一覧のクリック通知を処理しない既定動作 */
 	void OnExtraCandidateClicked() override;
 
 private:
