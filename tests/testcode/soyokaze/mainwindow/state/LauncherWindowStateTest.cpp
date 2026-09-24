@@ -200,6 +200,28 @@ TEST(LauncherWindowStateTest, HiddenState_Enter_HidesVisibleWindow)
 	EXPECT_FALSE(context.mIsWindowVisible);
 }
 
+TEST(LauncherWindowStateTest, HiddenState_Deactivate_HidesVisibleWindow)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	launcherapp::mainwindow::state::HiddenState state(&context);
+
+	state.OnDeactivate();
+
+	EXPECT_EQ(context.mHideCount, 1);
+	EXPECT_FALSE(context.mIsWindowVisible);
+}
+
+TEST(LauncherWindowStateTest, HiddenState_Deactivate_DoesNotHideHiddenWindowAgain)
+{
+	DummyContext context;
+	launcherapp::mainwindow::state::HiddenState state(&context);
+
+	state.OnDeactivate();
+
+	EXPECT_EQ(context.mHideCount, 0);
+}
+
 TEST(LauncherWindowStateTest, IdleState_ActivateWhenInactive_ActivatesWindow)
 {
 	DummyContext context;

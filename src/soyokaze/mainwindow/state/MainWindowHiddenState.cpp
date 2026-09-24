@@ -20,6 +20,14 @@ void HiddenState::OnEnter()
 	}
 }
 
+void HiddenState::OnDeactivate()
+{
+	auto context = GetContext();
+	if (context->IsWindowVisibleFromState()) {
+		context->HideWindowFromState();
+	}
+}
+
 void HiddenState::OnActivate(bool isShowForce)
 {
 	// 非表示Stateでは強制表示の指定にかかわらず、通常の表示処理を行う

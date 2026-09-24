@@ -16,6 +16,8 @@ public:
 	  非表示Stateへの遷移時にウインドウを非表示にする
 	*/
 	void OnEnter() override;
+	/** 非表示要求を受けたとき、表示中であればウインドウを非表示にする */
+	void OnDeactivate() override;
 	/** 表示要求を受けたらウインドウを表示し、入力内容に応じてStateを選択する */
 	void OnActivate(bool isShowForce) override;
 	/** 非表示中の実行要求をContextへ委譲する */
