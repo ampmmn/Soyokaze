@@ -12,8 +12,6 @@ class IdleState : public LauncherWindowStateBase
 public:
 	explicit IdleState(LauncherWindowStateContextIF* context);
 
-	/** ウインドウの表示要求を受けたとき、表示・再アクティブ化またはトグル非表示を行う */
-	void OnActivate(bool isShowForce) override;
 	/** ウインドウの非表示要求を受けたとき、非表示Stateへ遷移する */
 	void OnDeactivate() override;
 	/** 現在の候補の実行要求を受けたとき、実行し、ウインドウが閉じた場合は非表示Stateへ遷移する */

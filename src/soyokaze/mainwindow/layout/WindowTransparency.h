@@ -11,7 +11,7 @@ public:
 
 	void SetWindowHandle(HWND hwnd);
 
-	// ウインドウのアクティブ状態を更新して状態に応じた制御を行う
+	// ウインドウのアクティブ状態に応じた透過制御を行う
 	bool UpdateActiveState(UINT nState);
 
 	// 透過状態を(一時的に)変更する
@@ -38,9 +38,6 @@ protected:
 
 	// 非アクティブのときだけ透明にする
 	bool mIsInactiveOnly;
-
-	// 非アクティブになったらウインドウを隠す
-	bool mIsHideOnInactive;
 
 	// 最上位で表示する
 	bool mIsTopmost;

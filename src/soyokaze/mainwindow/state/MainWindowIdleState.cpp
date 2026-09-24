@@ -11,25 +11,6 @@ IdleState::IdleState(LauncherWindowStateContextIF* context) :
 {
 }
 
-void IdleState::OnActivate(bool isShowForce)
-{
-	auto context = GetContext();
-	if (isShowForce) {
-		// 強制表示要求では、トグル設定に関係なくウインドウを表示する
-		context->ShowWindowFromState();
-	}
-	else if (context->IsWindowActive()) {
-		if (context->IsShowToggleEnabled()) {
-			// アクティブな状態で再度呼び出された場合はトグル設定に従って非表示にする
-			context->HideWindowFromState();
-		}
-	}
-	else {
-		// 表示中だが非アクティブな場合は、ウインドウを再表示せず前面へ移動する
-		context->ActivateVisibleWindow();
-	}
-}
-
 void IdleState::OnDeactivate()
 {
 	auto context = GetContext();

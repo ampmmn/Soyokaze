@@ -301,6 +301,11 @@ void LauncherMainWindow::HideWindow()
 	in->mLayout->HideWindow();
 }
 
+void LauncherMainWindow::DeactivateWindow()
+{
+	in->mState->OnDeactivate();
+}
+
 void LauncherMainWindow::HideWindowFromState()
 {
 	// Stateからの呼び出しでも、既存の非表示処理とイベント通知を共通化する

@@ -209,20 +209,32 @@ bool WindowUIElements::FetchElements(UIElementList& items, int findType)
 	auto start = GetTickCount64();
 
 	// 条件を作成する
-	CComVariant varProp(VARIANT_FALSE);
+	CComVariant varProp(false);
 
 	// 画面上に表示されているかどうか
 	CComPtr<IUIAutomationCondition> pOffScreenCondition;
 	hr = in->mAutomation->CreatePropertyCondition(UIA_IsOffscreenPropertyId, varProp, &pOffScreenCondition);
+	if (FAILED(hr)) {
+		spdlog::error("Failed to create UIA_IsOffscreenPropertyId condition. hr={:x}", static_cast<uint32_t>(hr));
+		return false;
+	}
 
 	// 有効かどうか
 	varProp.boolVal = VARIANT_TRUE;
 	CComPtr<IUIAutomationCondition> pEnableCondition;
 	hr = in->mAutomation->CreatePropertyCondition(UIA_IsEnabledPropertyId, varProp, &pEnableCondition);
+	if (FAILED(hr)) {
+		spdlog::error("Failed to create UIA_IsEnabledPropertyId condition. hr={:x}", static_cast<uint32_t>(hr));
+		return false;
+	}
 
 	// AND
 	CComPtr<IUIAutomationCondition> pAndCondition;
-	in->mAutomation->CreateAndCondition(pEnableCondition, pOffScreenCondition, &pAndCondition);
+	hr = in->mAutomation->CreateAndCondition(pEnableCondition, pOffScreenCondition, &pAndCondition);
+	if (FAILED(hr)) {
+		spdlog::error("Failed to create combined UI Automation condition. hr={:x}", static_cast<uint32_t>(hr));
+		return false;
+	}
 
 	std::list<QUEUE_ITEM> queue;
 	queue.push_back(QUEUE_ITEM{windowElementCached, true});

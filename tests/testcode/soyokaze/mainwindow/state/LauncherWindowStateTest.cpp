@@ -13,7 +13,13 @@ class DummyContext : public launcherapp::mainwindow::state::LauncherWindowStateC
 public:
 	void ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state) override
 	{
+		if (mState) {
+			mState->OnExit();
+		}
 		mState = std::move(state);
+		if (mState) {
+			mState->OnEnter();
+		}
 	}
 
 	void ShowWindowFromState() override
@@ -246,6 +252,29 @@ TEST(LauncherWindowStateTest, IdleState_ActivateWhenActiveAndToggleEnabled_Hides
 
 	EXPECT_EQ(context.mActivateCount, 0);
 	EXPECT_EQ(context.mHideCount, 1);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, IdleState_ActivateWhenWindowIsHidden_ShowsWindow)
+{
+	DummyContext context;
+	launcherapp::mainwindow::state::IdleState state(&context);
+
+	state.OnActivate(false);
+
+	EXPECT_EQ(context.mShowCount, 1);
+	EXPECT_EQ(context.mActivateCount, 0);
+}
+
+TEST(LauncherWindowStateTest, ParamSearchingState_ActivateWhenWindowIsHidden_ShowsWindow)
+{
+	DummyContext context;
+	launcherapp::mainwindow::state::ParamSearchingState state(&context);
+
+	state.OnActivate(false);
+
+	EXPECT_EQ(context.mShowCount, 1);
+	EXPECT_EQ(context.mActivateCount, 0);
 }
 
 TEST(LauncherWindowStateTest, IdleState_ForceActivate_ShowsWindow)

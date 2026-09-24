@@ -10,6 +10,10 @@ namespace launcherapp { namespace mainwindow { namespace state {
 */
 class LauncherWindowStateBase : public LauncherWindowState
 {
+public:
+	/** 表示中Stateでの表示・再アクティブ化・トグル非表示を処理する */
+	void OnActivate(bool isShowForce) override;
+
 protected:
 	/**
 	  Stateから利用するContextを設定する
@@ -25,8 +29,6 @@ protected:
 	void OnEnter() override;
 	/** Stateからの遷移時に何もしない既定処理 */
 	void OnExit() override;
-	/** 表示要求を処理しないState向けの既定処理 */
-	void OnActivate(bool isShowForce) override;
 	/** 非表示要求を処理しないState向けの既定処理 */
 	void OnDeactivate() override;
 	/** 実行要求を処理しないState向けの既定処理 */

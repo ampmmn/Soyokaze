@@ -14,25 +14,6 @@ SearchingState::SearchingState(LauncherWindowStateContextIF* context, bool allow
 {
 }
 
-void SearchingState::OnActivate(bool isShowForce)
-{
-	auto context = GetContext();
-	if (isShowForce) {
-		// 強制表示要求では、トグル設定に関係なくウインドウを表示する
-		context->ShowWindowFromState();
-	}
-	else if (context->IsWindowActive()) {
-		if (context->IsShowToggleEnabled()) {
-			// アクティブな状態で再度呼び出された場合はトグル設定に従って非表示にする
-			context->HideWindowFromState();
-		}
-	}
-	else {
-		// 表示中だが非アクティブな場合は、ウインドウを前面へ移動する
-		context->ActivateVisibleWindow();
-	}
-}
-
 void SearchingState::OnDeactivate()
 {
 	auto context = GetContext();

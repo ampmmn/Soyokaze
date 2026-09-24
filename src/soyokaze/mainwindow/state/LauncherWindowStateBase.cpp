@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "mainwindow/state/LauncherWindowStateBase.h"
+#include "mainwindow/state/LauncherWindowStateContextIF.h"
+#include "mainwindow/state/MainWindowHiddenState.h"
 
 using namespace launcherapp::mainwindow::state;
 
@@ -22,7 +24,18 @@ void LauncherWindowStateBase::OnExit()
 
 void LauncherWindowStateBase::OnActivate(bool isShowForce)
 {
-	UNREFERENCED_PARAMETER(isShowForce);
+	auto context = GetContext();
+	if (isShowForce || context->IsWindowVisibleFromState() == false) {
+		context->ShowWindowFromState();
+	}
+	else if (context->IsWindowActive()) {
+		if (context->IsShowToggleEnabled()) {
+			context->ChangeState(std::make_unique<HiddenState>(context));
+		}
+	}
+	else {
+		context->ActivateVisibleWindow();
+	}
 }
 
 void LauncherWindowStateBase::OnDeactivate()

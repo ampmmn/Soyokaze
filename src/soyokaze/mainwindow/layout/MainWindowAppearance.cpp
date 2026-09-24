@@ -136,6 +136,10 @@ void MainWindowAppearance::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 
 	// メインウインドウがフォーカスを失っても非表示にしない設定であれば透過状態を更新
 	if (in->mIsBlockDeactivateOnUnfocus == false) {
+		auto pref = AppPreference::Get();
+		if (nState == WA_INACTIVE && pref->IsHideOnInactive()) {
+			in->mMainWnd->DeactivateWindow();
+		}
 
 		// 透明度制御
 		if (in->mWindowTransparencyPtr.get() == nullptr) {
