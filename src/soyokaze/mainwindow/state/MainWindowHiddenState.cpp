@@ -20,7 +20,7 @@ void HiddenState::OnEnter()
 	}
 }
 
-void HiddenState::OnDeactivate()
+void HiddenState::OnHideRequested()
 {
 	auto context = GetContext();
 	if (context->IsWindowVisibleFromState()) {
@@ -28,7 +28,7 @@ void HiddenState::OnDeactivate()
 	}
 }
 
-void HiddenState::OnActivate(bool isShowForce)
+void HiddenState::OnShowRequested(bool isShowForce)
 {
 	// 非表示Stateでは強制表示の指定にかかわらず、通常の表示処理を行う
 	UNREFERENCED_PARAMETER(isShowForce);

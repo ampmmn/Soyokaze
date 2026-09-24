@@ -145,6 +145,7 @@ public:
 
 	void HideExtraCandidates() override
 	{
+		mHideExtraCandidatesCount++;
 	}
 
 	void OffsetExtraCandidateSelection(int offset) override
@@ -179,16 +180,17 @@ public:
 	int mClearCount{0};
 	int mFocusCount{0};
 	int mExecuteCount{0};
+	int mHideExtraCandidatesCount{0};
 };
 
 }
 
-TEST(LauncherWindowStateTest, HiddenState_Activate_TransitionsToIdleState)
+TEST(LauncherWindowStateTest, HiddenState_ShowRequested_TransitionsToIdleState)
 {
 	DummyContext context;
 	launcherapp::mainwindow::state::HiddenState state(&context);
 
-	state.OnActivate(false);
+	state.OnShowRequested(false);
 
 	EXPECT_EQ(context.mShowCount, 1);
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::IdleState*>(context.mState.get()), nullptr);
@@ -206,41 +208,91 @@ TEST(LauncherWindowStateTest, HiddenState_Enter_HidesVisibleWindow)
 	EXPECT_FALSE(context.mIsWindowVisible);
 }
 
-TEST(LauncherWindowStateTest, HiddenState_Deactivate_HidesVisibleWindow)
+TEST(LauncherWindowStateTest, HiddenState_HideRequested_HidesVisibleWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	launcherapp::mainwindow::state::HiddenState state(&context);
 
-	state.OnDeactivate();
+	state.OnHideRequested();
 
 	EXPECT_EQ(context.mHideCount, 1);
 	EXPECT_FALSE(context.mIsWindowVisible);
 }
 
-TEST(LauncherWindowStateTest, HiddenState_Deactivate_DoesNotHideHiddenWindowAgain)
+TEST(LauncherWindowStateTest, HiddenState_HideRequested_DoesNotHideHiddenWindowAgain)
 {
 	DummyContext context;
 	launcherapp::mainwindow::state::HiddenState state(&context);
 
-	state.OnDeactivate();
+	state.OnHideRequested();
 
 	EXPECT_EQ(context.mHideCount, 0);
 }
 
-TEST(LauncherWindowStateTest, IdleState_ActivateWhenInactive_ActivatesWindow)
+TEST(LauncherWindowStateTest, IdleState_ShowRequestedWhenInactive_ActivatesWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
 	launcherapp::mainwindow::state::IdleState state(&context);
 
-	state.OnActivate(false);
+	state.OnShowRequested(false);
 
 	EXPECT_EQ(context.mActivateCount, 1);
 	EXPECT_EQ(context.mHideCount, 0);
 }
 
-TEST(LauncherWindowStateTest, IdleState_ActivateWhenActiveAndToggleEnabled_HidesWindow)
+TEST(LauncherWindowStateTest, IdleState_ActivateNotificationDoesNotShowOrHideWindow)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	launcherapp::mainwindow::state::IdleState state(&context);
+
+	state.OnActivate();
+
+	EXPECT_EQ(context.mShowCount, 0);
+	EXPECT_EQ(context.mActivateCount, 0);
+	EXPECT_EQ(context.mHideCount, 0);
+}
+
+TEST(LauncherWindowStateTest, IdleState_HideRequested_TransitionsToHiddenState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mState = std::make_unique<launcherapp::mainwindow::state::IdleState>(&context);
+
+	context.mState->OnHideRequested();
+
+	EXPECT_EQ(context.mHideCount, 1);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, SearchingState_HideRequested_TransitionsToHiddenState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mState = std::make_unique<launcherapp::mainwindow::state::SearchingState>(&context);
+
+	context.mState->OnHideRequested();
+
+	EXPECT_EQ(context.mHideCount, 1);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, ParamSearchingState_HideRequested_TransitionsToHiddenState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mState = std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(&context);
+
+	context.mState->OnHideRequested();
+
+	EXPECT_EQ(context.mHideCount, 1);
+	EXPECT_EQ(context.mHideExtraCandidatesCount, 1);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, IdleState_ShowRequestedWhenActiveAndToggleEnabled_HidesWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
@@ -248,36 +300,36 @@ TEST(LauncherWindowStateTest, IdleState_ActivateWhenActiveAndToggleEnabled_Hides
 	context.mIsShowToggle = true;
 	launcherapp::mainwindow::state::IdleState state(&context);
 
-	state.OnActivate(false);
+	state.OnShowRequested(false);
 
 	EXPECT_EQ(context.mActivateCount, 0);
 	EXPECT_EQ(context.mHideCount, 1);
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::HiddenState*>(context.mState.get()), nullptr);
 }
 
-TEST(LauncherWindowStateTest, IdleState_ActivateWhenWindowIsHidden_ShowsWindow)
+TEST(LauncherWindowStateTest, IdleState_ShowRequestedWhenWindowIsHidden_ShowsWindow)
 {
 	DummyContext context;
 	launcherapp::mainwindow::state::IdleState state(&context);
 
-	state.OnActivate(false);
+	state.OnShowRequested(false);
 
 	EXPECT_EQ(context.mShowCount, 1);
 	EXPECT_EQ(context.mActivateCount, 0);
 }
 
-TEST(LauncherWindowStateTest, ParamSearchingState_ActivateWhenWindowIsHidden_ShowsWindow)
+TEST(LauncherWindowStateTest, ParamSearchingState_ShowRequestedWhenWindowIsHidden_ShowsWindow)
 {
 	DummyContext context;
 	launcherapp::mainwindow::state::ParamSearchingState state(&context);
 
-	state.OnActivate(false);
+	state.OnShowRequested(false);
 
 	EXPECT_EQ(context.mShowCount, 1);
 	EXPECT_EQ(context.mActivateCount, 0);
 }
 
-TEST(LauncherWindowStateTest, IdleState_ForceActivate_ShowsWindow)
+TEST(LauncherWindowStateTest, IdleState_ForceShowRequested_ShowsWindow)
 {
 	DummyContext context;
 	context.mIsWindowVisible = true;
@@ -285,10 +337,21 @@ TEST(LauncherWindowStateTest, IdleState_ForceActivate_ShowsWindow)
 	context.mIsShowToggle = true;
 	launcherapp::mainwindow::state::IdleState state(&context);
 
-	state.OnActivate(true);
+	state.OnShowRequested(true);
 
 	EXPECT_EQ(context.mShowCount, 1);
 	EXPECT_EQ(context.mHideCount, 0);
+}
+
+TEST(LauncherWindowStateTest, ParamSearchingState_Deactivate_HidesExtraCandidatesWithoutChangingState)
+{
+	DummyContext context;
+	context.mState = std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(&context);
+
+	context.mState->OnDeactivate();
+
+	EXPECT_EQ(context.mHideExtraCandidatesCount, 1);
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ParamSearchingState*>(context.mState.get()), nullptr);
 }
 
 TEST(LauncherWindowStateTest, IdleState_TextChangedWithKeyword_TransitionsToSearchingState)

@@ -65,7 +65,6 @@ struct MainWindowAppearance::PImpl
 	// ウインドウの透明度を制御するためのクラス
 	std::unique_ptr<WindowTransparency> mWindowTransparencyPtr;
 
-	bool mIsBlockDeactivateOnUnfocus{ false};
 };
 
 MainWindowAppearance::MainWindowAppearance(LauncherMainWindowIF* mainWnd) : in(new PImpl)
@@ -134,22 +133,14 @@ void MainWindowAppearance::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 	UNREFERENCED_PARAMETER(wnd);
 	UNREFERENCED_PARAMETER(bMinimized);
 
-	// メインウインドウがフォーカスを失っても非表示にしない設定であれば透過状態を更新
-	if (in->mIsBlockDeactivateOnUnfocus == false) {
-		auto pref = AppPreference::Get();
-		if (nState == WA_INACTIVE && pref->IsHideOnInactive()) {
-			in->mMainWnd->DeactivateWindow();
-		}
-
-		// 透明度制御
-		if (in->mWindowTransparencyPtr.get() == nullptr) {
-			HWND hwnd = in->mMainWnd->GetWindowObject()->GetSafeHwnd();
-			in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
-			in->mWindowTransparencyPtr->SetWindowHandle(hwnd);
-		}
-
-		in->mWindowTransparencyPtr->UpdateActiveState(nState);
+	// 透明度制御
+	if (in->mWindowTransparencyPtr.get() == nullptr) {
+		HWND hwnd = in->mMainWnd->GetWindowObject()->GetSafeHwnd();
+		in->mWindowTransparencyPtr = std::make_unique<WindowTransparency>();
+		in->mWindowTransparencyPtr->SetWindowHandle(hwnd);
 	}
+
+	in->mWindowTransparencyPtr->UpdateActiveState(nState);
 }
 
 HBRUSH MainWindowAppearance::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HBRUSH defBr)
@@ -176,12 +167,6 @@ HBRUSH MainWindowAppearance::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HB
 	}
 
 	return defBr;
-}
-
-// メインウインドウがフォーカスを失っても非表示にしないようにする
-void MainWindowAppearance::SetBlockDeactivateOnUnfocus(bool isBlock)
-{
-	in->mIsBlockDeactivateOnUnfocus = isBlock;
 }
 
 void MainWindowAppearance::OnAppFirstBoot()

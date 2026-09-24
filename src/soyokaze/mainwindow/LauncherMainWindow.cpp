@@ -117,6 +117,8 @@ struct LauncherMainWindow::PImpl
 	std::unique_ptr<MainWindowAppearance> mAppearance;
 	// 表示を抑制中か
 	bool mIsWindowDisplayBlocked{false};
+	// フォーカスを失ったときの非表示を一時的に抑制中か
+	bool mIsBlockDeactivateOnUnfocus{false};
 	// 現在の入力状態
 	std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> mState;
 
@@ -299,11 +301,6 @@ void LauncherMainWindow::HideWindow()
 		listener->OnLauncherUnactivate();
 	});
 	in->mLayout->HideWindow();
-}
-
-void LauncherMainWindow::DeactivateWindow()
-{
-	in->mState->OnDeactivate();
 }
 
 void LauncherMainWindow::HideWindowFromState()
@@ -651,7 +648,7 @@ LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lPar
 {
 	UNREFERENCED_PARAMETER(lParam);
 	// 表示要求の詳細な扱いを現在のStateへ委譲する
-	in->mState->OnActivate((wParam & 0x1) != 0);
+	in->mState->OnShowRequested((wParam & 0x1) != 0);
 	return 0;
 }
 
@@ -839,7 +836,7 @@ LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam,
 {
 	UNREFERENCED_PARAMETER(wParam);
 
-	in->mAppearance->SetBlockDeactivateOnUnfocus(lParam != 0);
+	in->mIsBlockDeactivateOnUnfocus = lParam != 0;
 
 	return 0;
 }
@@ -1158,7 +1155,7 @@ LRESULT LauncherMainWindow::OnUserMessageHide(
 	SPDLOG_DEBUG(_T("start"));
 
 	// 非表示処理とState遷移を現在のStateへ委譲する
-	in->mState->OnDeactivate();
+	in->mState->OnHideRequested();
 	return 0;
 }
 
@@ -2272,7 +2269,7 @@ void LauncherMainWindow::OnContextMenu(
 
 	// 選択後はState経由でウインドウを隠す
 	ClearContent();
-	in->mState->OnDeactivate();
+	in->mState->OnHideRequested();
 }
 
 void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst)
@@ -2319,10 +2316,16 @@ void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
 {
 	spdlog::debug("OnActivate nState {}", nState);
 	if (nState == WA_INACTIVE) {
-		// メインウインドウが非アクティブになったら追加候補Popupを閉じる
-		HideExtraCandidates();
+		// 非アクティブ通知と設定に応じた非表示要求をStateへ分けて通知する
+		in->mState->OnDeactivate();
+		if (in->mIsBlockDeactivateOnUnfocus == false && AppPreference::Get()->IsHideOnInactive()) {
+			in->mState->OnHideRequested();
+		}
 	}
-	if (in->mAppearance) {
+	else {
+		in->mState->OnActivate();
+	}
+	if (in->mIsBlockDeactivateOnUnfocus == false && in->mAppearance) {
 		in->mAppearance->OnActivate(nState, wnd, bMinimized);
 	}
 	__super::OnActivate(nState, wnd, bMinimized);

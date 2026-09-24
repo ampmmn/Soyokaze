@@ -11,7 +11,7 @@ IdleState::IdleState(LauncherWindowStateContextIF* context) :
 {
 }
 
-void IdleState::OnDeactivate()
+void IdleState::OnHideRequested()
 {
 	auto context = GetContext();
 	context->ChangeState(std::make_unique<HiddenState>(context));

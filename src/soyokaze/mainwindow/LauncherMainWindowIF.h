@@ -20,9 +20,6 @@ public:
 	//
 	virtual CWnd* GetWindowObject() = 0;
 
-	/** メインウインドウの非表示要求をStateへ通知する */
-	virtual void DeactivateWindow() = 0;
-
 	// アイコンラベルウインドウを取得する
 	virtual IconLabel* GetIconLabel() = 0;
 

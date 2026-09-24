@@ -7,6 +7,10 @@
 - #280 起動時に入力画面を非表示にする設定が有効な場合、初期Stateで非表示要求が無視される問題を修正
 - #277 UI要素コマンドでUI Automationの検索条件を正しく作成できない問題を修正
 
+### Changed
+
+- #281 LauncherMainWindowとLauncherWindowStateのアクティブ状態通知・表示要求の責務を整理
+
 ## 0.58.1 - 2026-09-23
 
 ### Fixed

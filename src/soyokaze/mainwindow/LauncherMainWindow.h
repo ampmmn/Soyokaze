@@ -52,8 +52,6 @@ public:
 	static void ActivateWindow(HWND hwnd);
 	void ActivateWindow();
 	void HideWindow();
-	/** 非アクティブ時などの非表示要求をStateへ通知する */
-	void DeactivateWindow() override;
 	void ShowHelpTop();
 
 	bool ExecuteCommand(const CString& commandStr);

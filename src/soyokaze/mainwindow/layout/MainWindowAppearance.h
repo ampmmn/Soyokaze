@@ -19,7 +19,6 @@ public:
 	void OnShowWindow(BOOL bShow, UINT nStatus) override;
 	void OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized) override;
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor, HBRUSH defBr) override;
-	void SetBlockDeactivateOnUnfocus(bool isBlock) override;
 
 // AppPreferenceListenerIF
 	void OnAppFirstBoot() override;

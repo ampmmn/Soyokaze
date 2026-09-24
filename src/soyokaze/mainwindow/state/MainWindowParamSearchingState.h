@@ -16,8 +16,10 @@ public:
 	void OnEnter() override;
 	/** State遷移によってこのStateを離れるとき、追加候補欄を隠す */
 	void OnExit() override;
-	/** ウインドウの非表示要求を受けたとき、追加候補欄を隠して非表示Stateへ遷移する */
+	/** ウインドウが非アクティブになったとき、追加候補欄を隠す */
 	void OnDeactivate() override;
+	/** ウインドウの非表示要求を受けたとき、非表示Stateへ遷移する */
+	void OnHideRequested() override;
 	/** 現在の追加候補の実行要求を受けたとき、候補を確定して検索中Stateへ遷移する */
 	void OnExecuteRequested() override;
 	/** キャンセル操作を受けたとき、通常の検索中Stateへ戻る */

@@ -14,7 +14,7 @@ SearchingState::SearchingState(LauncherWindowStateContextIF* context, bool allow
 {
 }
 
-void SearchingState::OnDeactivate()
+void SearchingState::OnHideRequested()
 {
 	auto context = GetContext();
 	context->ChangeState(std::make_unique<HiddenState>(context));

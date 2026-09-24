@@ -22,10 +22,14 @@ public:
 	virtual void OnEnter() = 0;
 	/** Stateからの遷移時に実行する処理 */
 	virtual void OnExit() = 0;
-	/** ランチャーウインドウの表示要求を処理する */
-	virtual void OnActivate(bool isShowForce) = 0;
-	/** ランチャーウインドウの非表示要求を処理する */
+	/** ウインドウがアクティブになった通知を処理する */
+	virtual void OnActivate() = 0;
+	/** ウインドウが非アクティブになった通知を処理する */
 	virtual void OnDeactivate() = 0;
+	/** ランチャーウインドウの表示・アクティブ化要求を処理する */
+	virtual void OnShowRequested(bool isShowForce) = 0;
+	/** ランチャーウインドウの非表示要求を処理する */
+	virtual void OnHideRequested() = 0;
 	/** 現在の候補を実行する要求を処理する */
 	virtual void OnExecuteRequested() = 0;
 	/** キャンセル操作を処理する */

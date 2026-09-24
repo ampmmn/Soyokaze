@@ -22,7 +22,15 @@ void LauncherWindowStateBase::OnExit()
 {
 }
 
-void LauncherWindowStateBase::OnActivate(bool isShowForce)
+void LauncherWindowStateBase::OnActivate()
+{
+}
+
+void LauncherWindowStateBase::OnDeactivate()
+{
+}
+
+void LauncherWindowStateBase::OnShowRequested(bool isShowForce)
 {
 	auto context = GetContext();
 	if (isShowForce || context->IsWindowVisibleFromState() == false) {
@@ -38,7 +46,7 @@ void LauncherWindowStateBase::OnActivate(bool isShowForce)
 	}
 }
 
-void LauncherWindowStateBase::OnDeactivate()
+void LauncherWindowStateBase::OnHideRequested()
 {
 }
 

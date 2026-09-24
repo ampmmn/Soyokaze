@@ -23,8 +23,12 @@ void ParamSearchingState::OnExit()
 
 void ParamSearchingState::OnDeactivate()
 {
+	GetContext()->HideExtraCandidates();
+}
+
+void ParamSearchingState::OnHideRequested()
+{
 	auto context = GetContext();
-	context->HideExtraCandidates();
 	context->ChangeState(std::make_unique<HiddenState>(context));
 }
 

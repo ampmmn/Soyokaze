@@ -14,10 +14,10 @@
 |[LauncherDropTarget](./LauncherDropTarget.h)|メインウインドウへのドラッグアンドドロップ処理関係のクラス|
 |[LauncherInput](./LauncherInputStatusIF.h)|キーワード入力状態を得るためのインタフェースクラス|
 |[LauncherMainWindow](./LauncherMainWindow.h)|メインウインドウクラス|
-|[LauncherMainWindowIF](./LauncherMainWindowIF.h)|ランチャーウインドウ上の部品取得とState経由の非表示要求を提供するインタフェースクラス|
+|[LauncherMainWindowIF](./LauncherMainWindowIF.h)|ランチャーウインドウ上の部品を取得するためのインタフェースクラス|
 |[LauncherWindowEventDispatcher](./LauncherWindowEventDispatcher.h)|メインウインドウ関係のイベントをリスナーに通知するクラス|
 |[LauncherWindowEventListenerIF](./LauncherWindowEventListenerIF.h)|メインウインドウ関連のイベントリスナーのインタフェース|
-|[MainWindowAppearance](./layout/MainWindowAppearance.h/)|メインウインドウの外観(色、フォント)と非アクティブ時の表示制御を扱うクラス|
+|[MainWindowAppearance](./layout/MainWindowAppearance.h/)|メインウインドウの外観(色、フォント、透明度)を扱うクラス|
 |[MainWindowDeactivateBlocker](./MainWindowDeactivateBlocker.h)|メインウインドウが(アプリ設定により)フォーカスを失ったときに非表示になることを一時的に阻害するための部品クラス|
 |[MainWindowHotKey](./MainWindowHotKey.h)|メインウインドウ上での操作に対するホットキー処理を扱うクラス|
 |[OperationWatcher](./OperationWatcher.h)|メインウインドウのイベントに応じた内部動作を実装している。<br>LauncherWindowEventListenerIFのリスナーとして動作する|

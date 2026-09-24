@@ -13,7 +13,7 @@ public:
 	explicit IdleState(LauncherWindowStateContextIF* context);
 
 	/** ウインドウの非表示要求を受けたとき、非表示Stateへ遷移する */
-	void OnDeactivate() override;
+	void OnHideRequested() override;
 	/** 現在の候補の実行要求を受けたとき、実行し、ウインドウが閉じた場合は非表示Stateへ遷移する */
 	void OnExecuteRequested() override;
 	/** キャンセル操作を受けたとき、入力内容をクリアするかウインドウを非表示にする */
