@@ -13,6 +13,10 @@
 #include "utility/ImageConverter.h"
 #include "utility/WinHttp.h"
 #include "resource.h"
+#pragma warning(push)
+#pragma warning(disable: 4995)
+#include <absl/container/btree_map.h>
+#pragma warning(pop)
 #include <map>
 #include <set>
 #include <WinHttp.h>
@@ -70,6 +74,7 @@ using ICONITEM = IconLoader::ICONITEM;
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
 using IconIndexMap = std::map<int, ICONITEM>;
+using IconCacheMap = absl::btree_map<CString, ICONITEM>;
 
 struct IconLoader::PImpl : public LauncherEventListenerIF
 {
@@ -137,7 +142,8 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 	// キャッシュをクリアする
 	void ClearCache();
 	// 内部の特定mapのキャッシュをクリアする
-	int ClearCache(std::map<CString, ICONITEM>& indexMap, uint64_t now);
+	template <typename Map>
+	int ClearCache(Map& indexMap, uint64_t now);
 
 	HICON GetAppIcon(const CString& key);
 
@@ -184,11 +190,11 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 	// ファイルがリソースとして保持するアイコンを管理するためのmap
 	std::map<CString, IconIndexMap> mIconIndexCache;
 	// ファイルパスに対するアイコン
-	std::map<CString, ICONITEM> mDefaultIconCache;
+	IconCacheMap mDefaultIconCache;
 	// ファイル拡張子に関連付けられたアイコン
 	std::map<CString, ICONITEM> mFileExtIconCache;
 	// アプリケーションIDに対応するアイコン
-	std::map<CString, ICONITEM> mAppIconMap;
+	IconCacheMap mAppIconMap;
 	// 音量変更アイコン
 	HICON mVolumeIcon;
 	// 音量変更(ミュート)のアイコン
@@ -265,7 +271,8 @@ void IconLoader::PImpl::ClearCache()
 	}
 }
 
-int IconLoader::PImpl::ClearCache(std::map<CString, ICONITEM>& indexMap, uint64_t now)
+template <typename Map>
+int IconLoader::PImpl::ClearCache(Map& indexMap, uint64_t now)
 {
 	int clearedCount = 0;
 	auto it = indexMap.begin();

@@ -30,6 +30,27 @@ TEST_F(IconLoaderTest, LoadDefaultIconReturnsValidHandle) {
     EXPECT_TRUE(loader->HasIcon(icon));
 }
 
+TEST_F(IconLoaderTest, GetDefaultIconReusesCachedHandle) {
+    TCHAR systemDirectory[MAX_PATH] = {};
+    UINT length = GetSystemDirectory(systemDirectory, MAX_PATH);
+    ASSERT_GT(length, 0u);
+    ASSERT_LT(length, static_cast<UINT>(MAX_PATH));
+
+    CString iconPath(systemDirectory);
+    iconPath += _T("\\shell32.dll,0");
+
+    auto statisticsBefore = loader->GetCacheStatistics();
+    HICON firstIcon = loader->GetDefaultIcon(iconPath);
+    ASSERT_NE(firstIcon, nullptr);
+    auto statisticsAfterFirst = loader->GetCacheStatistics();
+    HICON secondIcon = loader->GetDefaultIcon(iconPath);
+    auto statisticsAfterSecond = loader->GetCacheStatistics();
+
+    EXPECT_EQ(firstIcon, secondIcon);
+    EXPECT_EQ(statisticsBefore.defaultIconCacheCount + 1, statisticsAfterFirst.defaultIconCacheCount);
+    EXPECT_EQ(statisticsAfterFirst.defaultIconCacheCount, statisticsAfterSecond.defaultIconCacheCount);
+}
+
 TEST_F(IconLoaderTest, LoadIconFromPathWithInvalidPathReturnsUnknownIcon) {
     CString invalidPath(_T("Z:\\notfound.file"));
     HICON icon = loader->LoadIconFromPath(invalidPath);

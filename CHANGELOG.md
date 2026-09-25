@@ -18,6 +18,7 @@
 
 ### Changed
 
+- コマンド検索とアイコンキャッシュの一部にAbseilのbtree_mapを使用
 - #284 ダイアログリソースIDの命名規則を統一
 - #281 LauncherMainWindowとLauncherWindowStateのアクティブ状態通知・表示要求の責務を整理
 
