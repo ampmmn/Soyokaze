@@ -18,7 +18,7 @@ CommandToken::CommandToken(const CString& commandStr) : mCommandStr(commandStr)
 	bool inQuate = false;
 	int len = mCommandStr.GetLength();
 	for (int i = 0; i < len; ++i) {
-		auto c = mCommandStr[i];
+		auto& c = mCommandStr[i];
 		if (inQuate == false && c == _T('"')) {
 		 	inQuate = true;
 			inToken = true;
@@ -119,9 +119,10 @@ bool CommandToken::GetPathParameterRange(int& startPos, int& endPos) const
 	int commandEnd = -1;
 	if (IsAbsolutePathStart(mCommandStr, 0)) {
 		// 絶対パスで始まる入力では、実在するファイルの後ろに引数があるか確認する
+		CString path;
 		int separatorPos = 0;
 		while ((separatorPos = mCommandStr.Find(_T(' '), separatorPos)) != -1) {
-			CString path = mCommandStr.Left(separatorPos);
+			path = mCommandStr.Left(separatorPos);
 			path.TrimRight();
 			if (Path::FileExists(path) && Path::IsDirectory(path) == false) {
 				commandEnd = separatorPos + 1;
