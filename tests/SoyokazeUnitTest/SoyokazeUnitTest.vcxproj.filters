@@ -120,6 +120,9 @@
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
       <Filter>soyokaze\commands\shellexecute</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandParamTest.cpp">
+      <Filter>soyokaze\commands\shellexecute</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\shelluri\ShellUriCommandTest.cpp">
       <Filter>soyokaze\commands\shelluri</Filter>
     </ClCompile>

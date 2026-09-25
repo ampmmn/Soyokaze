@@ -83,7 +83,7 @@ void InputSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_IMEOFF, mIsIMEOff);
-	DDX_Check(pDX, IDC_CHECK_USEEXTRARACANDIDATE, mIsUseExtraCandidateList);
+	DDX_Check(pDX, IDC_CHECK_USEEXTRACANDIDATE, mIsUseExtraCandidateList);
 	DDX_Check(pDX, IDC_CHECK_IGNOREUNC, mIsIgnoreUNC);
 	DDX_Check(pDX, IDC_CHECK_ENABLEMIGEMO, mIsEnableMigemo);
 }

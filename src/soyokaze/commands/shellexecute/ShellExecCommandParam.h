@@ -83,6 +83,9 @@ public:
 	// 自動実行を許可するか?
 	BOOL mIsAllowAutoExecute;
 
+	// パラメータ候補リストを使用するか?
+	BOOL mIsUseExtraCandidate;
+
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)
 	std::vector<uint8_t> mIconData;
 

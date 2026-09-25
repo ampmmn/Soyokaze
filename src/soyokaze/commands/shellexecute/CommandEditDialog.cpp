@@ -18,6 +18,7 @@
 #include "utility/LocalPathResolver.h"
 #include "icon/IconLoader.h"
 #include "app/Manual.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <vector>
 
@@ -84,6 +85,7 @@ void CommandEditDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NAME, param.mName);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTION, param.mDescription);
 	DDX_Check(pDX, IDC_CHECK_RUNASADMIN, param.mIsRunAsAdmin);
+	DDX_Check(pDX, IDC_CHECK_USEEXTRACANDIDATE, param.mIsUseExtraCandidate);
 	DDX_Text(pDX, IDC_EDIT_PATH, param.mNormalAttr.mPath);
 	DDX_Text(pDX, IDC_EDIT_PARAM, param.mNormalAttr.mParam);
 	DDX_Check(pDX, IDC_CHECK_USEDESCRIPTIONFORMATCHING, param.mIsUseDescriptionForMatching);
@@ -116,6 +118,9 @@ END_MESSAGE_MAP()
 BOOL CommandEditDialog::OnInitDialog()
 {
 	__super::OnInitDialog();
+	if (AppPreference::Get()->IsUseExtraCandidateList() == false) {
+		GetDlgItem(IDC_CHECK_USEEXTRACANDIDATE)->ShowWindow(SW_HIDE);
+	}
 
 	in->mHotKey.SubclassDlgItem(IDC_EDIT_HOTKEY2, this);
 	in->mHotKey.SetNotifyId(WM_APP+1);
@@ -374,6 +379,7 @@ void CommandEditDialog::OnOK()
 	param->mNormalAttr.mParam = paramSrc.mNormalAttr.mParam;
 
 	param->mIsRunAsAdmin = paramSrc.mIsRunAsAdmin;
+	param->mIsUseExtraCandidate = paramSrc.mIsUseExtraCandidate;
 	param->mIsUseDescriptionForMatching = paramSrc.mIsUseDescriptionForMatching;
 	param->mIconData = paramSrc.mIconData;
 	param->mHotKeyAttr = paramSrc.mHotKeyAttr;

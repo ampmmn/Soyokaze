@@ -184,6 +184,10 @@ bool ShellExecCommand::Resolve(CString& value)
 
 bool ShellExecCommand::IsAcceptArguments()
 {
+	if (in->mParam.mIsUseExtraCandidate == FALSE) {
+		return false;
+	}
+
 	const auto& normalParam = in->GetNormalAttr().mParam;
 	const auto& noParamParam = in->GetNoParamAttr().mParam;
 	auto hasArgumentPlaceholder = [](const CString& value) {

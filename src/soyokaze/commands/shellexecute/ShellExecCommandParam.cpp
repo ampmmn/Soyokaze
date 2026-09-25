@@ -206,7 +206,8 @@ CommandParam::CommandParam() :
 	mIsRunAsAdmin(FALSE),
 	mIsUse0(FALSE),
 	mIsUseDescriptionForMatching(FALSE),
-	mIsAllowAutoExecute(FALSE)
+	mIsAllowAutoExecute(FALSE),
+	mIsUseExtraCandidate(TRUE)
 {
 }
 
@@ -224,6 +225,7 @@ CommandParam::CommandParam(const CommandParam& rhs)
 	mEnviron = rhs.mEnviron;
 	mHotKeyAttr = rhs.mHotKeyAttr;
 	mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
+	mIsUseExtraCandidate = rhs.mIsUseExtraCandidate;
 	mActivateWindowParam = rhs.mActivateWindowParam;
 }
 
@@ -245,6 +247,7 @@ CommandParam& CommandParam::operator = (const CommandParam& rhs)
 		mEnviron = rhs.mEnviron;
 		mHotKeyAttr = rhs.mHotKeyAttr;
 		mIsAllowAutoExecute = rhs.mIsAllowAutoExecute;
+		mIsUseExtraCandidate = rhs.mIsUseExtraCandidate;
 		mActivateWindowParam = rhs.mActivateWindowParam;
 	}
 	return *this;
@@ -287,6 +290,7 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 	}
 
 	entry->Set(_T("allow_auto_execute"), mIsAllowAutoExecute ? true : false);
+	entry->Set(_T("use_extracandidate"), mIsUseExtraCandidate ? true : false);
 
 	mActivateWindowParam.Save(entry);
 
@@ -339,6 +343,7 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	mEnviron.swap(envMap);
 
 	mIsAllowAutoExecute = entry->Get(_T("allow_auto_execute"), false) ? TRUE : FALSE;
+	mIsUseExtraCandidate = entry->Get(_T("use_extracandidate"), true) ? TRUE : FALSE;
 
 	mActivateWindowParam.Load(entry);
 

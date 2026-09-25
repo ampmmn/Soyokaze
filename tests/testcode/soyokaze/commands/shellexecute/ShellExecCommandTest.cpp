@@ -41,3 +41,22 @@ TEST(ShellExecCommandTest, AcceptsArgumentsWhenPlaceholderExists)
 	EXPECT_TRUE(command.IsAcceptArguments());
 }
 
+TEST(ShellExecCommandTest, DoesNotAcceptArgumentsWhenExtraCandidateIsDisabled)
+{
+	ShellExecCommand command;
+	CommandParam param;
+	param.mNormalAttr.mParam = _T("$1");
+	param.mIsUseExtraCandidate = FALSE;
+	command.SetParam(param);
+
+	EXPECT_FALSE(command.IsAcceptArguments());
+}
+
+TEST(ShellExecCommandTest, DoesNotAcceptArgumentsWhenPlaceholderDoesNotExist)
+{
+	ShellExecCommand command;
+	command.SetArgument(_T("--fixed-option"));
+
+	EXPECT_FALSE(command.IsAcceptArguments());
+}
+
