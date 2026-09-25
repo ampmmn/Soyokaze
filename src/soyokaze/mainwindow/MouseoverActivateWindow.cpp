@@ -31,6 +31,49 @@ HWND GetNextHwnd()
 
 }
 
+MouseoverActivateState::Action MouseoverActivateState::Update(bool isInside, bool isLeftButtonDown)
+{
+	if (mHasEntered == false) {
+		if (isInside) {
+			// 初回の侵入は状態を記録するだけにする。
+			mHasEntered = true;
+			mWasInside = true;
+		}
+		mWasLeftButtonDown = isLeftButtonDown;
+		return Action::None;
+	}
+
+	if (isLeftButtonDown) {
+		// ドラッグ中は切替を抑止し、ドラッグ開始時の位置を保持する。
+		mWasLeftButtonDown = true;
+		return Action::None;
+	}
+
+	if (mWasLeftButtonDown) {
+		// ボタンを離した直後は、ドラッグ完了後の処理を先に行えるよう1回待つ。
+		mWasLeftButtonDown = false;
+		return Action::None;
+	}
+
+	Action action = Action::None;
+	if (isInside && mWasInside == false) {
+		action = Action::Activate;
+	}
+	else if (isInside == false && mWasInside) {
+		action = Action::Deactivate;
+	}
+
+	mWasInside = isInside;
+	return action;
+}
+
+void MouseoverActivateState::Reset()
+{
+	mHasEntered = false;
+	mWasInside = false;
+	mWasLeftButtonDown = false;
+}
+
 BEGIN_MESSAGE_MAP(MouseoverActivateWindow, CWnd)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
@@ -85,19 +128,12 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 		::ScreenToClient(mParentHandle, &point);
 		bool isInside = clientRect.PtInRect(point) != FALSE;
 
-		if (mHasEntered == false) {
-			if (isInside) {
-				// 初回の侵入は状態を記録するだけにする。
-				mHasEntered = true;
-				mWasInside = true;
-			}
-			return;
-		}
-
-		if (isInside && mWasInside == false) {
+		bool isLeftButtonDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
+		auto action = mMouseoverActivateState.Update(isInside, isLeftButtonDown);
+		if (action == MouseoverActivateState::Action::Activate) {
 			::SetForegroundWindow(mParentHandle);
 		}
-		else if (isInside == false && mWasInside) {
+		else if (action == MouseoverActivateState::Action::Deactivate) {
 			if (::GetForegroundWindow() == mParentHandle) {
 				HWND nextHwnd = GetNextHwnd();
 				if (IsWindow(nextHwnd)) {
@@ -105,8 +141,6 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 				}
 			}
 		}
-
-		mWasInside = isInside;
 	}
 
 	void OnAppPreferenceUpdated() override
@@ -158,15 +192,13 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 
 	void ResetState()
 	{
-		mHasEntered = false;
-		mWasInside = false;
+		mMouseoverActivateState.Reset();
 	}
 
 	HWND mWindowHandle{nullptr};
 	HWND mParentHandle{nullptr};
 	UINT_PTR mTimerId{0};
-	bool mHasEntered{false};
-	bool mWasInside{false};
+	MouseoverActivateState mMouseoverActivateState;
 	bool mIsSuspended{false};
 };
 
