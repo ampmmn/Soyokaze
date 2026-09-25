@@ -203,6 +203,15 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			// 残り部分が一つの絶対パスを表しているなら、存在しなくても連結してひと固まりとして扱う
 			CString partLeftAll(wholeText.Mid(start));
 			if (PathIsRelative(partLeftAll) == FALSE) {
+				if (start == 0) {
+					if (Path::FileExists(part) && Path::IsDirectory(part) == false) {
+						// 入力先頭の実在するファイルはコマンドとして分離する
+						tokens.push_back(part);
+						start = i + 1;
+					}
+					continue;
+				}
+
 				tokens.push_back(partLeftAll);
 				start = wholeLen;
 				break;

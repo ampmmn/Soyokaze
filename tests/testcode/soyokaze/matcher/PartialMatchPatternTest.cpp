@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
 #include "matcher/PartialMatchPattern.h"
+#include "utility/Path.h"
 
 TEST(PartialMatchPattern, KeepsAbsolutePathWithSpacesAsOneToken)
 {
@@ -87,6 +88,25 @@ TEST(PartialMatchPattern, KeepsAbsolutePathWithoutCommandAsOneToken)
 
 	ASSERT_EQ(1u, words.size());
 	EXPECT_EQ(_T("c:\\path with spaces\\"), words[0]);
+
+	pattern->Release();
+}
+
+TEST(PartialMatchPattern, SeparatesAbsoluteExecutableAndArgument)
+{
+	Path executablePath(Path::MODULEFILEPATH);
+	CString executable((LPCTSTR)executablePath);
+	CString input = executable + _T(" C:\\");
+
+	PartialMatchPattern* pattern = PartialMatchPattern::Create();
+	pattern->SetWholeText(input);
+
+	std::vector<CString> words;
+	pattern->GetRawWords(words);
+
+	ASSERT_EQ(2u, words.size());
+	EXPECT_EQ(executable, words[0]);
+	EXPECT_EQ(_T("C:\\"), words[1]);
 
 	pattern->Release();
 }

@@ -21,6 +21,13 @@ public:
 	*/
 	bool GetTokenRange(int position, int& startPos, int& endPos) const;
 	/**
+	  絶対パス形式のパラメータ範囲を取得する
+	  @param[out] startPos  パラメータの開始位置
+	  @param[out] endPos    パラメータの終了位置
+	  @return 範囲を取得できた場合はtrue
+	*/
+	bool GetPathParameterRange(int& startPos, int& endPos) const;
+	/**
 	  指定したトークンの文字列を取得する
 	  @param[in]  index  トークンのインデックス
 	  @param[out] token  トークン文字列

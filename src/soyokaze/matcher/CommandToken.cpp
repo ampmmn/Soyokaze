@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandToken.h"
+#include "utility/Path.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -87,6 +88,97 @@ bool CommandToken::GetTokenRange(int position, int& startPos, int& endPos) const
 		}
 	}
 	return false;
+}
+
+static bool IsAbsolutePathStart(const CString& text, int startPos)
+{
+	int length = text.GetLength();
+	if (startPos < 0 || length <= startPos) {
+		return false;
+	}
+
+	if (startPos + 1 < length && text[startPos] == _T('\\') && text[startPos + 1] == _T('\\')) {
+		return true;
+	}
+	if (startPos + 2 < length &&
+		((text[startPos] >= _T('A') && text[startPos] <= _T('Z')) ||
+		 (text[startPos] >= _T('a') && text[startPos] <= _T('z'))) &&
+		text[startPos + 1] == _T(':') &&
+		(text[startPos + 2] == _T('\\') || text[startPos + 2] == _T('/'))) {
+		return true;
+	}
+	return false;
+}
+
+bool CommandToken::GetPathParameterRange(int& startPos, int& endPos) const
+{
+	if (mCommandStr.IsEmpty() || mCommandStr[0] == _T('"')) {
+		return false;
+	}
+
+	int commandEnd = -1;
+	if (IsAbsolutePathStart(mCommandStr, 0)) {
+		// 絶対パスで始まる入力では、実在するファイルの後ろに引数があるか確認する
+		int separatorPos = 0;
+		while ((separatorPos = mCommandStr.Find(_T(' '), separatorPos)) != -1) {
+			CString path = mCommandStr.Left(separatorPos);
+			path.TrimRight();
+			if (Path::FileExists(path) && Path::IsDirectory(path) == false) {
+				commandEnd = separatorPos + 1;
+				while (commandEnd < mCommandStr.GetLength() && mCommandStr[commandEnd] == _T(' ')) {
+					++commandEnd;
+				}
+				break;
+			}
+			++separatorPos;
+		}
+	}
+
+	startPos = -1;
+	if (commandEnd != -1) {
+		if (IsAbsolutePathStart(mCommandStr, commandEnd)) {
+			startPos = commandEnd;
+		}
+		else {
+			int separatorPos = commandEnd;
+			while ((separatorPos = mCommandStr.Find(_T(' '), separatorPos)) != -1) {
+				++separatorPos;
+				while (separatorPos < mCommandStr.GetLength() && mCommandStr[separatorPos] == _T(' ')) {
+					++separatorPos;
+				}
+				if (IsAbsolutePathStart(mCommandStr, separatorPos)) {
+					startPos = separatorPos;
+					break;
+				}
+			}
+		}
+	}
+	else if (IsAbsolutePathStart(mCommandStr, 0)) {
+		startPos = 0;
+	}
+	else {
+		int separatorPos = 0;
+		while ((separatorPos = mCommandStr.Find(_T(' '), separatorPos)) != -1) {
+			++separatorPos;
+			while (separatorPos < mCommandStr.GetLength() && mCommandStr[separatorPos] == _T(' ')) {
+				++separatorPos;
+			}
+			if (IsAbsolutePathStart(mCommandStr, separatorPos)) {
+				startPos = separatorPos;
+				break;
+			}
+		}
+	}
+
+	if (startPos == -1 || mCommandStr.Find(_T(' '), startPos) == -1) {
+		return false;
+	}
+
+	endPos = mCommandStr.GetLength();
+	while (endPos > startPos && mCommandStr[endPos - 1] == _T(' ')) {
+		--endPos;
+	}
+	return endPos > startPos;
 }
 
 bool CommandToken::GetToken(int index, CString& token) const

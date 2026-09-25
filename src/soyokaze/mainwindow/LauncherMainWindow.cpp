@@ -355,76 +355,6 @@ void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::st
 }
 
 /**
-  指定位置が絶対パスの開始位置か確認する
-  @param[in] text    確認対象の入力文字列
-  @param[in] startPos    絶対パスの開始位置
-  @return 絶対パスの開始位置の場合はtrue
-*/
-static bool IsAbsolutePathStart(const CString& text, int startPos)
-{
-	int length = text.GetLength();
-	if (startPos < 0 || length <= startPos) {
-		return false;
-	}
-
-	if (startPos + 1 < length && text[startPos] == _T('\\') && text[startPos + 1] == _T('\\')) {
-		return true;
-	}
-	if (startPos + 2 < length &&
-		((text[startPos] >= _T('A') && text[startPos] <= _T('Z')) ||
-		 (text[startPos] >= _T('a') && text[startPos] <= _T('z'))) &&
-		text[startPos + 1] == _T(':') &&
-		(text[startPos + 2] == _T('\\') || text[startPos + 2] == _T('/'))) {
-		return true;
-	}
-	return false;
-}
-
-/**
-  入力文字列から追加候補検索の対象となるパラメータ範囲を取得する
-  入力全体、またはコマンド名の後ろにある絶対パスを対象とする
-  @param[in] text    確認対象の入力文字列
-  @param[out] startPos    パラメータの開始位置
-  @param[out] endPos    パラメータの終了位置
-  @return パラメータ範囲を取得できた場合はtrue
-*/
-static bool GetPathParameterRange(const CString& text, int& startPos, int& endPos)
-{
-	if (text.IsEmpty() || text[0] == _T('"')) {
-		return false;
-	}
-
-	startPos = IsAbsolutePathStart(text, 0) ? 0 : -1;
-	if (startPos == -1) {
-		// コマンド名の後ろにある絶対パスの開始位置を探す
-		int separatorPos = 0;
-		while ((separatorPos = text.Find(_T(' '), separatorPos)) != -1) {
-			++separatorPos;
-			while (separatorPos < text.GetLength() && text[separatorPos] == _T(' ')) {
-				++separatorPos;
-			}
-			if (IsAbsolutePathStart(text, separatorPos)) {
-				startPos = separatorPos;
-				break;
-			}
-		}
-	}
-	if (startPos == -1) {
-		return false;
-	}
-
-	if (text.Find(_T(' '), startPos) == -1) {
-		return false;
-	}
-
-	endPos = text.GetLength();
-	while (endPos > startPos && text[endPos - 1] == _T(' ')) {
-		--endPos;
-	}
-	return endPos > startPos;
-}
-
-/**
   現在の入力内容が追加候補検索を開始できる状態か確認する
   コマンドの引数、またはコマンド名の後ろに入力された絶対パスを確認する
   @return 追加候補検索を開始できる場合はtrue
@@ -442,7 +372,7 @@ bool LauncherMainWindow::CanStartParamSearching()
 	}
 	int tokenStart = 0;
 	int tokenEnd = 0;
-	bool isPathParameter = GetPathParameterRange(text, tokenStart, tokenEnd);
+	bool isPathParameter = tokens.GetPathParameterRange(tokenStart, tokenEnd);
 	if (isPathParameter == false) {
 		if (tokens.GetCount() < 2 || tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0) {
 			return false;
@@ -491,7 +421,7 @@ void LauncherMainWindow::UpdateExtraCandidates()
 	launcherapp::matcher::CommandToken tokens(text);
 	int tokenStart = 0;
 	int tokenEnd = 0;
-	if (GetPathParameterRange(text, tokenStart, tokenEnd) == false &&
+	if (tokens.GetPathParameterRange(tokenStart, tokenEnd) == false &&
 		(tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0)) {
 		HideExtraCandidates();
 		return;
@@ -587,7 +517,7 @@ void LauncherMainWindow::ResolveExtraCandidate()
 	launcherapp::matcher::CommandToken tokens(text);
 	int tokenStart = 0;
 	int tokenEnd = 0;
-	if (GetPathParameterRange(text, tokenStart, tokenEnd) == false &&
+	if (tokens.GetPathParameterRange(tokenStart, tokenEnd) == false &&
 		tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false) {
 		return;
 	}
