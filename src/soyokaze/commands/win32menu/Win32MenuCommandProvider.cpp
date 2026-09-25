@@ -183,6 +183,7 @@ struct Win32MenuCommandProvider::PImpl :
 		}
 
 	}
+	void OnMonitorConfigurationChanged() override {}
 
 	void GetElements(Win32MenuElements::Win32MenuElementList& elems)
 	{

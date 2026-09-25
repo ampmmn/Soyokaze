@@ -145,6 +145,8 @@ protected:
 	CFont* GetMainWindowFont() override;
 	/** メインウインドウのフォント変更を追加候補Popupへ通知する */
 	void OnMainWindowFontChanged(CFont* font) override;
+	/** モニター構成変更後、現在の入力内容に応じてレイアウトを更新する */
+	void RefreshLayoutAfterMonitorConfigurationChange() override;
 
 	// 生成された、メッセージ割り当て関数
 	BOOL OnInitDialog() override;

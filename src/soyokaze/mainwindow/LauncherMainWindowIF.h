@@ -39,6 +39,8 @@ public:
 	virtual CFont* GetMainWindowFont() = 0;
 	// メインウインドウのフォント変更を通知する
 	virtual void OnMainWindowFontChanged(CFont* font) = 0;
+	/** モニター構成変更後、現在の入力状態に合わせてレイアウトを更新する */
+	virtual void RefreshLayoutAfterMonitorConfigurationChange() = 0;
 
 };
 

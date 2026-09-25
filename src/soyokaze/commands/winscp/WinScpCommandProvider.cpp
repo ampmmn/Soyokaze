@@ -70,6 +70,9 @@ struct WinScpCommandProvider::PImpl :
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 
 	void Load();

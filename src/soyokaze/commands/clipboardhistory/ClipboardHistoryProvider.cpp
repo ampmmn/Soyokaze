@@ -106,6 +106,9 @@ struct ClipboardHistoryProvider::PImpl :
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 	/**
 	 * @brief 設定をリロードする

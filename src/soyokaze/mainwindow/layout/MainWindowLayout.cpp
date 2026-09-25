@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "MainWindowLayout.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "resource.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
@@ -18,15 +20,37 @@ namespace mainwindow {
 
 using ComponentPlacer = launcherapp::mainwindow::layout::ComponentPlacer;
 
-struct MainWindowLayout::PImpl : public AppPreferenceListenerIF
+struct MainWindowLayout::PImpl : public AppPreferenceListenerIF, public LauncherEventListenerIF
 {
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("MainWindowLayout"));
+		LauncherEventDispatcher::Get()->AddListener(this);
 	}
 	virtual ~PImpl()
 	{
+		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
+	}
+
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+	void OnLauncherActivate() override {}
+	void OnLauncherUnactivate() override {}
+	/** モニター構成に対応するウインドウ位置があれば復元する */
+	void OnMonitorConfigurationChanged() override
+	{
+		if (mWindowPositionPtr == nullptr || mMainWnd == nullptr) {
+			return;
+		}
+
+		HWND hwnd = mMainWnd->GetWindowObject()->GetSafeHwnd();
+		auto result = mWindowPositionPtr->RestoreForMonitorChange(hwnd);
+		if (result != WindowPosition::MonitorChangeResult::Unchanged) {
+			// 保存位置の有無にかかわらず、変更後の構成でレイアウトを同期する
+			mMainWnd->RefreshLayoutAfterMonitorConfigurationChange();
+		}
 	}
 
 	void OnAppFirstBoot() override
@@ -124,6 +148,8 @@ void MainWindowLayout::UpdateInputStatus(LauncherInput* status, bool isForceUpda
 		in->mWindowPositionPtr->SetPositionTemporary(mainWndHandle, rc);
 	}
 	in->mIsPrevHasKeyword = isCurHasKeyword;
+	// ウインドウサイズが変わらず通知されない場合も、入力状態に応じた表示を反映する
+	RecalcControls(mainWndHandle, status);
 }
 
 
@@ -276,6 +302,7 @@ void MainWindowLayout::RestoreWindowPosition(CWnd* wnd, bool isForceReset)
 		// 復元に失敗した場合は中央に表示
 		wnd->SetWindowPos(nullptr, 0, 0, 600, 300, SWP_NOZORDER|SWP_NOMOVE);
 		wnd->CenterWindow();
+		in->mWindowPositionPtr->Update(wnd->GetSafeHwnd());
 	}
 }
 

@@ -95,6 +95,7 @@ struct OneNoteCommandProvider::PImpl :
 	{
 		mIsBackground = true;
 	}
+	void OnMonitorConfigurationChanged() override {}
 
 
 	void Load();

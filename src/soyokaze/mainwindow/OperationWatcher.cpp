@@ -76,6 +76,9 @@ struct OperationWatcher::PImpl : public LauncherEventListenerIF, public AppPrefe
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 
 	void OnAppFirstBoot() override

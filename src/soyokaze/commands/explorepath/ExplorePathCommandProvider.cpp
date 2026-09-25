@@ -61,6 +61,7 @@ struct ExplorePathCommandProvider::PImpl :
 	{
 		mFileCache.Clear();
 	}
+	void OnMonitorConfigurationChanged() override {}
 
 	void Load()
 	{

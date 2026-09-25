@@ -112,6 +112,9 @@ struct ExtraCandidateProvider::PImpl :
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 	std::vector<ExtraCandidateSource*> mSources;
 };

@@ -38,6 +38,10 @@ bool DecodeBase64(const CString& src, std::vector<uint8_t>& stm)
 		spdlog::debug("DecodeBase64 : failed to get size");
 		return false;
 	}
+	if (dstLen == 0) {
+		spdlog::debug("DecodeBase64 : decoded data is empty");
+		return false;
+	}
 
 	std::vector<uint8_t> dst(dstLen);
 	if (CryptStringToBinary( (LPCTSTR)src, src.GetLength(), CRYPT_STRING_BASE64, &dst.front(), &dstLen, nullptr, nullptr)== FALSE) {

@@ -24,17 +24,22 @@ MainWindowPosition::~MainWindowPosition()
 
 bool MainWindowPosition::UpdateExceptHeight(HWND hwnd)
 {
+	if (IsCurrentMonitorConfiguration() == false) {
+		return false;
+	}
+
 	WINDOWPLACEMENT wp;
 	wp.length = sizeof(wp);
 	if (GetWindowPlacement(hwnd, &wp) == false) {
 		return false;
 	}
 
-	int orgHeight = mPosition.rcNormalPosition.bottom - mPosition.rcNormalPosition.top; 
+	WINDOWPLACEMENT position = GetPosition();
+	int orgHeight = position.rcNormalPosition.bottom - position.rcNormalPosition.top;
 
 	wp.rcNormalPosition.bottom = wp.rcNormalPosition.top + orgHeight;
 
-	mPosition = wp;
+	SetPosition(wp);
 	return true;
 }
 
@@ -42,7 +47,7 @@ bool MainWindowPosition::SetPositionTemporary(HWND hwnd, const CRect& rc)
 {
 	spdlog::debug("MainWindowPosition::SetPositionTemporary start");
 
-	auto wp = mPosition;
+	auto wp = GetPosition();
 	wp.rcNormalPosition = rc;
 
 	if (IsZoomed(hwnd) == FALSE && IsIconic(hwnd) == FALSE) {
@@ -55,12 +60,19 @@ bool MainWindowPosition::SyncPosition(HWND hwnd)
 {
 	spdlog::debug("MainWindowPosition::SyncPosition start");
 
-	if (mIsLoaded == false) {
-		GetWindowRect(hwnd, &mPosition.rcNormalPosition);
-		mPosition.rcNormalPosition.bottom = mPosition.rcNormalPosition.top + DEFAULT_HEIGHT;
+	if (IsPositionLoaded() == false) {
+		WINDOWPLACEMENT position = GetPosition();
+		GetWindowRect(hwnd, &position.rcNormalPosition);
+		position.rcNormalPosition.bottom = position.rcNormalPosition.top + DEFAULT_HEIGHT;
+		SetPosition(position);
 
 	}
-	return SetWindowPlacement(hwnd, &mPosition) != FALSE;  // ToDo これの先にClearContent
+	WINDOWPLACEMENT placement = GetPosition();
+	if (IsWindowVisible(hwnd) == FALSE) {
+		// 保存位置のshowCmdで、非表示中のウインドウを表示しない
+		placement.showCmd = SW_HIDE;
+	}
+	return SetWindowPlacement(hwnd, &placement) != FALSE;  // ToDo これの先にClearContent
 }
 
 

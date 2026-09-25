@@ -170,6 +170,9 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 
 	Path mImgResDll;

@@ -10,4 +10,6 @@ public:
 	virtual void OnTimer() = 0;
 	virtual void OnLauncherActivate() = 0;
 	virtual void OnLauncherUnactivate() = 0;
+	/** モニター構成が変化したときに呼び出される */
+	virtual void OnMonitorConfigurationChanged() = 0;
 };

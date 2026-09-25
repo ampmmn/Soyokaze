@@ -39,14 +39,10 @@ SHA1::SHA1() : in(new PImpl)
 
 SHA1::~SHA1()
 {
-	if (in->mHashObj.size()) {
-		BYTE* p = (BYTE*)&in->mHashObj.front();
-		if (p) {
-			auto ret = BCryptDestroyHash(p);
-			if (ret != 0) {
-				SPDLOG_ERROR(_T("Failed to BCryptDestroyHash err:{}"), ret);
-				return ;
-			}
+	if (in->mHashHandle) {
+		auto ret = BCryptDestroyHash(in->mHashHandle);
+		if (ret != 0) {
+			SPDLOG_ERROR(_T("Failed to BCryptDestroyHash err:{}"), ret);
 		}
 	}
 
@@ -61,8 +57,8 @@ SHA1::~SHA1()
 
 void SHA1::Add(const std::vector<uint8_t>& data)
 {
-	if (data.size() > 0) {
-		auto ret = BCryptHashData((BCRYPT_HASH_HANDLE)&in->mHashObj.front(), (BYTE*)&data.front(), (ULONG)data.size(), 0);
+	if (data.size() > 0 && in->mHashHandle) {
+		auto ret = BCryptHashData(in->mHashHandle, (BYTE*)&data.front(), (ULONG)data.size(), 0);
 		if (ret != 0) {
 			SPDLOG_ERROR(_T("Failed to BCryptHashData err:{}"), ret);
 		}
@@ -71,8 +67,8 @@ void SHA1::Add(const std::vector<uint8_t>& data)
 
 void SHA1::Add(const CString& data)
 {
-	if (data.GetLength() > 0) {
-		auto ret = BCryptHashData((BCRYPT_HASH_HANDLE)&in->mHashObj.front(), (BYTE*)(LPCTSTR)data, (ULONG)(data.GetLength() * sizeof(TCHAR)), 0);
+	if (data.GetLength() > 0 && in->mHashHandle) {
+		auto ret = BCryptHashData(in->mHashHandle, (BYTE*)(LPCTSTR)data, (ULONG)(data.GetLength() * sizeof(TCHAR)), 0);
 		if (ret != 0) {
 			SPDLOG_ERROR(_T("Failed to BCryptHashData err:{}"), ret);
 		}
@@ -80,8 +76,12 @@ void SHA1::Add(const CString& data)
 }
 
 
-CString SHA1::Finish()
+CString SHA1::Finish(bool fullDigest)
 {
+	if (in->mHashHandle == nullptr) {
+		return _T("");
+	}
+
 	DWORD data = 0;
 
 	DWORD hashLen = 0;
@@ -93,17 +93,19 @@ CString SHA1::Finish()
 
 	in->mHashData.resize(hashLen);
 
-	ret = BCryptFinishHash((BCRYPT_HASH_HANDLE)&in->mHashObj.front(), &in->mHashData.front(), (ULONG)in->mHashData.size(), 0);
+	ret = BCryptFinishHash(in->mHashHandle, &in->mHashData.front(), (ULONG)in->mHashData.size(), 0);
 	if (ret != 0) {
 		SPDLOG_ERROR(_T("Failed to BCryptFinishHash err:{}"), ret);
 		return _T("");
 	}
 
-	// 先頭4byteをASCII文字列化する
-	auto p = (uint8_t*)&in->mHashData.front();
-
 	CString output;
-	output.Format(_T("%02x%02x%02x%02x"), p[0], p[1], p[2], p[3]);
+	const size_t byteCount = fullDigest ? in->mHashData.size() : (std::min)(size_t(4), in->mHashData.size());
+	for (size_t i = 0; i < byteCount; ++i) {
+		CString byteString;
+		byteString.Format(_T("%02x"), in->mHashData[i]);
+		output += byteString;
+	}
 
 	return output;
 }

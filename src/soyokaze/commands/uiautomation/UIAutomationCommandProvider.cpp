@@ -168,7 +168,11 @@ struct UIAutomationCommandProvider::PImpl :
 	void OnLauncherUnactivate() override
 	{
 	}
-
+	void OnMonitorConfigurationChanged() override
+	{
+		std::lock_guard<std::mutex> lock(mMutex);
+		mElements.clear();
+	}
 
 	void GetUIElements(HWND& hwnd, WindowUIElements::UIElementList& elems)
 	{

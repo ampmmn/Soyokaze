@@ -66,6 +66,9 @@ struct PathWatcher::PImpl : public LauncherEventListenerIF
 	void OnLauncherUnactivate() override
 	{
 	}
+	void OnMonitorConfigurationChanged() override
+	{
+	}
 
 	// 排他制御用
 	std::mutex mMutex;

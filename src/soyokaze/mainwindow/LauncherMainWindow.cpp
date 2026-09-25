@@ -1231,6 +1231,18 @@ CFont* LauncherMainWindow::GetMainWindowFont()
 	return in->mAppearance->GetFont();
 }
 
+/** モニター構成変更後、現在の入力内容に応じてレイアウトを更新する */
+void LauncherMainWindow::RefreshLayoutAfterMonitorConfigurationChange()
+{
+	HWND hwnd = GetSafeHwnd();
+	if (IsWindow(hwnd) == FALSE) {
+		return;
+	}
+
+	// 現在の入力内容を強制反映し、復元後のウインドウサイズを整える
+	in->mLayout->UpdateInputStatus(&in->mInput, true);
+}
+
 void LauncherMainWindow::OnMainWindowFontChanged(CFont* font)
 {
 	in->mExtraCandidateListBox.SetPopupFont(font);
