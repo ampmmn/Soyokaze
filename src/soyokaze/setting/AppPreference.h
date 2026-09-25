@@ -59,6 +59,8 @@ public:
 
 	// 入力履歴機能を使用するか?
 	bool IsUseInputHistory();
+	// パラメータ候補リストを使用するか?
+	bool IsUseExtraCandidateList();
 	// 履歴件数の上限を取得
 	int GetHistoryLimit();
 

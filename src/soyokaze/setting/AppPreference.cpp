@@ -519,6 +519,12 @@ bool AppPreference::IsUseInputHistory()
 	return in->Get(_T("Input:IsUseHistory"), false);
 }
 
+// パラメータ候補リストを使用するか?
+bool AppPreference::IsUseExtraCandidateList()
+{
+	return in->Get(_T("Input:UseExtraCandidateList"), true);
+}
+
 // 履歴件数の上限を取得
 int AppPreference::GetHistoryLimit()
 {

@@ -361,6 +361,10 @@ void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::st
 */
 bool LauncherMainWindow::CanStartParamSearching()
 {
+	if (AppPreference::Get()->IsUseExtraCandidateList() == false) {
+		return false;
+	}
+
 	CString text;
 	in->mKeywordEdit.GetWindowText(text);
 	int startPos = 0;

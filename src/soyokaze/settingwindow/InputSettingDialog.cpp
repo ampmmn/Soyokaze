@@ -27,6 +27,9 @@ public:
 	// 入力画面を表示するときにIMEをオフにする
 	BOOL mIsIMEOff{FALSE};
 
+	// パラメータ候補リストを使用する
+	BOOL mIsUseExtraCandidateList{TRUE};
+
 	// ネットワークパスを無視する
 	BOOL mIsIgnoreUNC{FALSE};
 
@@ -68,6 +71,7 @@ void InputSettingDialog::OnOK()
 {
 	auto settingsPtr = mSettingsPtr;
 	settingsPtr->Set(_T("Soyokaze:IsIMEOffOnActive"), (bool)mIsIMEOff);
+	settingsPtr->Set(_T("Input:UseExtraCandidateList"), (bool)mIsUseExtraCandidateList);
 	settingsPtr->Set(_T("Soyokaze:IsIgnoreUNC"), (bool)mIsIgnoreUNC);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMigemo"), (bool)mIsEnableMigemo);
 
@@ -79,6 +83,7 @@ void InputSettingDialog::DoDataExchange(CDataExchange* pDX)
 	__super::DoDataExchange(pDX);
 
 	DDX_Check(pDX, IDC_CHECK_IMEOFF, mIsIMEOff);
+	DDX_Check(pDX, IDC_CHECK_USEEXTRARACANDIDATE, mIsUseExtraCandidateList);
 	DDX_Check(pDX, IDC_CHECK_IGNOREUNC, mIsIgnoreUNC);
 	DDX_Check(pDX, IDC_CHECK_ENABLEMIGEMO, mIsEnableMigemo);
 }
@@ -121,6 +126,7 @@ void InputSettingDialog::OnEnterSettings(Settings* settingsPtr)
 {
 	mSettingsPtr = settingsPtr;
 	mIsIMEOff = settingsPtr->Get(_T("Soyokaze:IsIMEOffOnActive"), false);
+	mIsUseExtraCandidateList = settingsPtr->Get(_T("Input:UseExtraCandidateList"), true);
 	mIsIgnoreUNC = settingsPtr->Get(_T("Soyokaze:IsIgnoreUNC"), false);
 	mIsEnableMigemo = settingsPtr->Get(_T("Soyokaze:IsEnableMigemo"), true);
 }

@@ -600,6 +600,7 @@
 #define IDC_LIST_PLUGINS                1248
 #define IDC_BUTTON_PREFERENCE           1249
 #define IDC_CHECK_USEBGIMAGE            1250
+#define IDC_CHECK_USEEXTRARACANDIDATE   1251
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -620,7 +621,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        261
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1251
+#define _APS_NEXT_CONTROL_VALUE         1252
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

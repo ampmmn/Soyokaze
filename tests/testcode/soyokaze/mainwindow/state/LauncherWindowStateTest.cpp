@@ -405,6 +405,19 @@ TEST(LauncherWindowStateTest, SearchingState_QueryCompletedWithParameter_Transit
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ParamSearchingState*>(context.mState.get()), nullptr);
 }
 
+TEST(LauncherWindowStateTest, SearchingState_QueryCompletedWithoutParamSearching_DoesNotTransitionToParamSearchingState)
+{
+	DummyContext context;
+	context.mIsWindowVisible = true;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = false;
+	launcherapp::mainwindow::state::SearchingState state(&context);
+
+	state.OnQueryCompleted(nullptr);
+
+	EXPECT_EQ(context.mState, nullptr);
+}
+
 TEST(LauncherWindowStateTest, SearchingState_QueryCompletedAfterExtraCandidateResolve_DoesNotTransitionToParamSearchingState)
 {
 	DummyContext context;
