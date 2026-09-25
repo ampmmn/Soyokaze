@@ -50,6 +50,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\everything\EverythingAdhocCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\plugin\PluginSettingsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\decodestring\EscapedCharCommandTest.cpp" />

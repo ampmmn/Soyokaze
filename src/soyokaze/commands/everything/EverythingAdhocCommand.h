@@ -2,6 +2,7 @@
 
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/ExtraCandidateIF.h"
+#include "commands/core/ContextMenuSourceIF.h"
 #include <memory>
 
 namespace launcherapp {
@@ -13,7 +14,8 @@ class EverythingResult;
 
 class EverythingAdhocCommand :
 	virtual public launcherapp::commands::common::AdhocCommandBase,
-	virtual public launcherapp::commands::core::ExtraCandidate
+	virtual public launcherapp::commands::core::ExtraCandidate,
+	virtual public launcherapp::commands::core::ContextMenuSource
 {
 public:
 	EverythingAdhocCommand();
@@ -29,6 +31,10 @@ public:
 
 // ExtraCandidate
 	CString GetSourceName() override;
+
+// ContextMenuSource
+	int GetMenuItemCount() override;
+	bool GetMenuItem(int index, Action** action) override;
 
 // UnknownIF
 	bool QueryInterface(const launcherapp::core::IFID& ifid, void** cmd) override;

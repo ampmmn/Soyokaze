@@ -78,13 +78,20 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 		args.push_back(args_->GetParam(i));
 	}
 
+	// ファイルを対象にした場合は、設定済みファイラーにも親フォルダーを渡す
+	CString targetPath = in->mTarget->GetPath(args_);
+	if (Path::IsDirectory(targetPath) == false) {
+		PathRemoveFileSpec(targetPath.GetBuffer(MAX_PATH_NTFS));
+		targetPath.ReleaseBuffer();
+	}
+
 	bool isFilerAvailable = false;
 
 	auto pref = AppPreference::Get();
 	if (pref->IsUseFiler()) {
 		// 外部ファイラを使う場合はファイラ経由でパスを表示する形に差し替える
 		param = pref->GetFilerParam();
-		param.Replace(_T("$target"), in->mTarget->GetPath(args_));
+		param.Replace(_T("$target"), targetPath);
 
 		auto filerPath = pref->GetFilerPath();
 		ExpandArguments(filerPath, args);
@@ -102,11 +109,7 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 
 	// 登録されたファイラーがない、または、利用できない場合はエクスプローラで開く
 	if (isFilerAvailable == false) {
-		path = in->mTarget->GetPath(args_);
-		if (Path::IsDirectory(path) == false) {
-			PathRemoveFileSpec(path.GetBuffer(MAX_PATH_NTFS));
-			path.ReleaseBuffer();
-		}
+		path = targetPath;
 		param = _T("open");
 	}
 

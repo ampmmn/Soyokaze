@@ -9,9 +9,11 @@
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/builtin/OpenPathInFilerAction.h"
 #include "actions/builtin/ShowPropertiesAction.h"
+#include "actions/builtin/CallbackAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
+#include <shobjidl.h>
 #include <vector>
 
 #ifdef _DEBUG
@@ -23,6 +25,7 @@ using namespace launcherapp::commands::common;
 using CommandRepository = launcherapp::core::CommandRepository;
 using ExecuteAction = launcherapp::actions::builtin::ExecuteAction;
 using OpenPathInFilerAction = launcherapp::actions::builtin::OpenPathInFilerAction;
+using CallbackAction = launcherapp::actions::builtin::CallbackAction;
 using CopyTextAction = launcherapp::actions::clipboard::CopyTextAction;
 using ShowPropertiesAction = launcherapp::actions::builtin::ShowPropertiesAction;
 
@@ -128,6 +131,64 @@ CString EverythingAdhocCommand::GetSourceName()
 	return in->mParam.mPrefix;
 }
 
+/**
+  コンテキストメニューの項目数を取得する
+  @return メニュー項目数
+*/
+int EverythingAdhocCommand::GetMenuItemCount()
+{
+	return 5;
+}
+
+/**
+  指定されたインデックスに対応するメニューアクションを取得する
+  @param[in] index メニュー項目のインデックス
+  @param[out] action 生成したアクション
+  @return true:成功 false:失敗
+*/
+bool EverythingAdhocCommand::GetMenuItem(int index, Action** action)
+{
+	if (index < 0 || GetMenuItemCount() <= index) {
+		return false;
+	}
+
+	if (index == 0) {
+		*action = new ExecuteAction(in->mResult.mFullPath);
+		return true;
+	}
+	else if (index == 1) {
+		*action = new OpenPathInFilerAction(in->mResult.mFullPath);
+		return true;
+	}
+	else if (index == 2) {
+		// 別スレッド上でWindows標準のアプリ選択ダイアログを表示する
+		auto path = in->mResult.mFullPath;
+		*action = new CallbackAction(_T("プログラムから開く"), [path](Parameter*, String*) -> bool {
+			HRESULT initResult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+			if (FAILED(initResult)) {
+				return false;
+			}
+
+			OPENASINFO info{};
+			info.pcszFile = path;
+			// OAIF_EXECを指定しないと、既定アプリの変更に関する案内画面が表示される
+			info.oaifInFlags = OAIF_EXEC;
+			HRESULT result = SHOpenWithDialog(nullptr, &info);
+			CoUninitialize();
+			return SUCCEEDED(result);
+		});
+		return true;
+	}
+	else if (index == 3) {
+		*action = new CopyTextAction(in->mResult.mFullPath);
+		return true;
+	}
+	else {
+		*action = new ShowPropertiesAction(in->mResult.mFullPath);
+		return true;
+	}
+}
+
 bool EverythingAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (AdhocCommandBase::QueryInterface(ifid, cmd)) {
@@ -137,6 +198,11 @@ bool EverythingAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid,
 	if (ifid == IFID_EXTRACANDIDATE) {
 		AddRef();
 		*cmd = (launcherapp::commands::core::ExtraCandidate*)this;
+		return true;
+	}
+	if (ifid == IFID_CONTEXTMENUSOURCE) {
+		AddRef();
+		*cmd = (launcherapp::commands::core::ContextMenuSource*)this;
 		return true;
 	}
 	return false;
