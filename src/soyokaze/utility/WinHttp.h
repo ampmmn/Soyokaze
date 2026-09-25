@@ -24,6 +24,11 @@ public:
 	void SetProxyCredential(const CString& host, const CString& user, const CString& password);
 	void SetServerCredential(const CString& user, const CString& password);
 	void SetMethod(LPCWSTR method);
+	/**
+	  通信タイムアウト時間を設定する
+	  @param[in] timeoutMilliseconds タイムアウト時間(ミリ秒)。-1の場合はWinHTTPの既定値を使用する
+	*/
+	void SetTimeout(int timeoutMilliseconds);
 
 
 private:

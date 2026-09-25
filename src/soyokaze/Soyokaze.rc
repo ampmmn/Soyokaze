@@ -82,26 +82,30 @@ IDR_MAINFRAME           ICON                    "res\\icon.ico"
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 213, 160
+IDD_ABOUTBOX DIALOGEX 0, 0, 213, 211
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "$APPNAMEのバージョン情報"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "$APPNAMEはbluewindを参考にして作成しています。",IDC_STATIC_HEADER,42,10,150,8,SS_NOPREFIX
     LTEXT           "$APPNAME",IDC_STATIC_APPNAME,42,29,114,8,SS_NOPREFIX
-    CTEXT           "Copyright (C) 2023 ymgw",IDC_STATIC,50,124,114,8
-    DEFPUSHBUTTON   "OK",IDOK,81,138,50,14,WS_GROUP
+    LTEXT           "バージョン: ",IDC_STATIC,42,48,34,8,SS_NOPREFIX
     LTEXT           "(version)",IDC_STATIC_VERSION,80,48,79,8,SS_NOPREFIX
+    LTEXT           "ビルド日時: ",IDC_STATIC,42,67,34,8,SS_NOPREFIX
+    LTEXT           "(build date)",IDC_STATIC_BUILDDATE,80,67,79,8,SS_NOPREFIX
     LTEXT           "リポジトリ:",IDC_STATIC,42,86,34,8,SS_NOPREFIX
     CONTROL         "<A HREF=""https://github.com/ampmmn/Soyokaze"">https://github.com/ampmmn/Soyokaze</A>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,80,86,126,14
-    LTEXT           "(build date)",IDC_STATIC_BUILDDATE,80,67,79,8,SS_NOPREFIX
-    LTEXT           "$APPNAMEはbluewindを参考にして作成しています。",IDC_STATIC_HEADER,42,10,150,8,SS_NOPREFIX
     LTEXT           "ライセンス: ",IDC_STATIC,42,105,34,8,SS_NOPREFIX
     CONTROL         "<A HREF=""https://github.com/ampmmn/Soyokaze/blob/main/LICENSE"">MITライセンス</A>",IDC_SYSLINK2,
                     "SysLink",WS_TABSTOP,80,105,126,14
-    LTEXT           "バージョン: ",IDC_STATIC,42,48,34,8,SS_NOPREFIX
-    LTEXT           "ビルド日時: ",IDC_STATIC,42,67,34,8,SS_NOPREFIX
+    PUSHBUTTON      "更新を確認する(&U)",IDC_BUTTON_CHECKUPDATE,74,120,67,14,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC_UPDATEMSG,44,137,157,8,SS_NOPREFIX | NOT WS_VISIBLE
+    CONTROL         "<A HREF=""https://github.com/ampmmn/Soyokaze"">https://github.com/ampmmn/Soyokaze</A>",IDC_SYSLINK1_UPDATE,
+                    "SysLink",NOT WS_VISIBLE | WS_TABSTOP,42,149,162,14
+    CTEXT           "Copyright (C) 2023 ymgw",IDC_STATIC,47,174,114,8
+    DEFPUSHBUTTON   "OK",IDOK,81,189,50,14,WS_GROUP
 END
 
 IDD_APPSETTING DIALOGEX 0, 0, 441, 324
@@ -1770,7 +1774,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 206
         TOPMARGIN, 7
-        BOTTOMMARGIN, 152
+        BOTTOMMARGIN, 203
     END
 
     IDD_APPSETTING, DIALOG

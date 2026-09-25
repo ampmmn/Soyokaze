@@ -91,6 +91,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\UpdateInfoTest.cpp" />
     <ClCompile Include="LoggerEnvironment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>

@@ -980,6 +980,7 @@
     <ClInclude Include="utility\SQLite3Wrapper.h" />
     <ClInclude Include="utility\StringUtil.h" />
     <ClInclude Include="utility\TopMostMask.h" />
+    <ClInclude Include="utility\UpdateInfo.h" />
     <ClInclude Include="matcher/WholeMatchPattern.h" />
     <ClInclude Include="mainwindow\layout\WindowTransparency.h" />
     <ClInclude Include="utility\VersionInfo.h" />
@@ -1550,6 +1551,7 @@
     <ClCompile Include="mainwindow\layout\WindowTransparency.cpp" />
     <ClCompile Include="utility\StringUtil.cpp" />
     <ClCompile Include="utility\TopMostMask.cpp" />
+    <ClCompile Include="utility\UpdateInfo.cpp" />
     <ClCompile Include="utility\VersionInfo.cpp" />
     <ClCompile Include="utility\FaviconLoader.cpp" />
     <ClCompile Include="utility\WinHttp.cpp" />

@@ -50,6 +50,7 @@ struct WinHttp::PImpl
 	}
 
 	int mProxyType{SYSTEMSETTING};
+	int mTimeoutMilliseconds{-1};
 	CString mProxyHost;
 	CString mProxyUser;
 	WipingString mProxyPassword;
@@ -195,6 +196,10 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 	spdlog::stopwatch sw;
 
 	WinHttpHandle session(WinHttpOpen(L"WinHttpOpen/1.0", GetProxyAccessType(), GetProxyName(), WINHTTP_NO_PROXY_BYPASS, 0));
+	if (WinHttpSetTimeouts(session, mTimeoutMilliseconds, mTimeoutMilliseconds, mTimeoutMilliseconds, mTimeoutMilliseconds) == FALSE) {
+		spdlog::debug(_T("Failed to WinHttpSetTimeouts"));
+		return false;
+	}
 
 	WCHAR hostName[1024];
 	std::vector<WCHAR> urlPath(65536);
@@ -428,6 +433,11 @@ void WinHttp::SetServerCredential(const CString& user, const CString& password)
 void WinHttp::SetMethod(LPCWSTR method)
 {
 	in->mMethod = method;
+}
+
+void WinHttp::SetTimeout(int timeoutMilliseconds)
+{
+	in->mTimeoutMilliseconds = timeoutMilliseconds;
 }
 
 } // end of namespace launcherapp
