@@ -250,7 +250,6 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 	PImpl()
 	{
 		AppPreference::Get()->RegisterListener(this, _T("PluginProvider"));
-		PluginSettings::GetInstance()->Load();
 	}
 
 	~PImpl() override
@@ -292,6 +291,8 @@ struct PluginProvider::PImpl : public AppPreferenceListenerIF
 			return;
 		}
 		mIsLoaded = true;
+
+		PluginSettings::GetInstance()->Load();
 
 		// 実行ファイル側のプラグインを優先してロードする。
 		LoadPlugins(Path(Path::MODULEFILEDIR, _T("plugins")));

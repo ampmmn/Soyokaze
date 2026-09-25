@@ -26,44 +26,128 @@ enum PROFILE_TYPE {
 };
 static PROFILE_TYPE sProfileType{PROFILE_UNINITIALIZED};
 
-
-static void GetProfileDirRoot(TCHAR* path, size_t len, bool& isPortable)
+/**
+  実行ファイルの隣にあるポータブル用プロファイルのパスを取得する
+  @param[out] path パス文字列を受け取るバッファ
+  @param[in] len バッファの長さ
+*/
+static void GetPortableProfileDir(TCHAR* path, size_t len)
 {
 	GetModuleFileName(NULL, path, (DWORD)len);
 	PathRemoveFileSpec(path);
 	PathAppend(path, _T("profile"));
+}
+
+/**
+  ユーザーフォルダにある通常用プロファイルのパスを取得する
+  @return true:パスを取得した  false:ユーザーフォルダを取得できなかった
+  @param[out] path パス文字列を受け取るバッファ
+  @param[in] len バッファの長さ
+*/
+static bool GetNormalProfileDir(TCHAR* path, size_t len)
+{
+	size_t buflen = MAX_PATH_NTFS;
+	std::vector<TCHAR> buff(buflen);
+	if (_tgetenv_s(&buflen, buff.data(), buff.size(), _T("USERPROFILE")) != 0 || buff.front() == _T('\0')) {
+		path[0] = _T('\0');
+		return false;
+	}
+
+	if (_tcscpy_s(path, len, buff.data()) != 0) {
+		path[0] = _T('\0');
+		return false;
+	}
+	PathAppend(path, APP_PROFILE_DIRNAME);
+	return true;
+}
+
+static bool GetProfileDirRoot(TCHAR* path, size_t len);
+
+/**
+  既存の保存先に基づいて動作モードを決定する
+  @return true:既存の保存先を検出した  false:初回起動のため未決定
+*/
+bool CAppProfile::InitializeProfileMode()
+{
+	if (sProfileType != PROFILE_UNINITIALIZED) {
+		return true;
+	}
+
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	GetPortableProfileDir(path.data(), path.size());
+	if (Path::IsDirectory(path.data())) {
+		// 従来の判定と同様、実行ファイル隣のprofileを優先する
+		sProfileType = PROFILE_PORTABLE;
+		return true;
+	}
+
+	if (GetNormalProfileDir(path.data(), path.size()) && Path::IsDirectory(path.data())) {
+		sProfileType = PROFILE_NORMAL;
+		return true;
+	}
+
+	return false;
+}
+
+/**
+  初回起動時に選択された動作モードを設定する
+	@param[in] isPortable ポータブルモードで動作するか
+*/
+void CAppProfile::SetRunAsPortable(bool isPortable)
+{
+	sProfileType = isPortable ? PROFILE_PORTABLE : PROFILE_NORMAL;
+}
+
+/**
+  選択されたプロファイル保存先のルートディレクトリを作成する
+  @return true:成功  false:保存先を作成できなかった
+*/
+bool CAppProfile::EnsureProfileRoot()
+{
+	std::vector<TCHAR> path(MAX_PATH_NTFS);
+	GetProfileDirRoot(path.data(), path.size());
+	if (path.front() == _T('\0')) {
+		return false;
+	}
+
+	if (Path::IsDirectory(path.data()) == FALSE && CreateDirectory(path.data(), NULL) == FALSE) {
+		return GetLastError() == ERROR_ALREADY_EXISTS && Path::IsDirectory(path.data());
+	}
+	return true;
+}
+
+
+/**
+  保存先ルートのパスとポータブルモードの状態を取得する
+  @return true:ポータブルモード  false:通常モード
+  @param[out] path パス文字列を受け取るバッファ
+  @param[in] len バッファの長さ
+*/
+static bool GetProfileDirRoot(TCHAR* path, size_t len)
+{
+	GetPortableProfileDir(path, len);
 
 	// 一度(通常版orポータブル版)を判定したら、以降の呼び出しでは判断を変えない
 	bool hasProfileDir = (sProfileType == PROFILE_UNINITIALIZED && Path::IsDirectory(path)) ||
 	                      sProfileType == PROFILE_PORTABLE;
 	if (hasProfileDir) {
 		// exeと同じディレクトリにprofileフォルダが存在する場合は、ポータブル版として動作する
-		isPortable = true;
 		sProfileType = PROFILE_PORTABLE;
-		return;
+		return true;
 	}
 	else {
 		// profileフォルダがなければ、非ポータブル版として動作する
-		size_t buflen = MAX_PATH_NTFS;
+		// ユーザのホームディレクトリ直下のAPP_PROFILE_DIRNAMEフォルダをユーザ設定ディレクトリとする
+		GetNormalProfileDir(path, len);
 
-		// ユーザのホームディレクトリ直下のAPP_PROFILE_DIRNAMEフォルダをユーザ設定ディレクトとする
-		std::vector<TCHAR> buff(buflen);
-		_tgetenv_s(&buflen, &buff.front(), buff.size(), _T("USERPROFILE"));
-
-		_tcscpy_s(path, len, &buff.front());
-
-		PathAppend(path, APP_PROFILE_DIRNAME);
-
-		isPortable = false;
 		sProfileType = PROFILE_NORMAL;
-		return;
+		return false;
 	}
 }
 
 static void GetIntermadiateDirPath(TCHAR* path, size_t len)
 {
-	bool isPortable{false};
-	GetProfileDirRoot(path, len, isPortable);
+	GetProfileDirRoot(path, len);
 	PathAppend(path, INTERMADIATE_DIRNAME);
 }
 
@@ -82,8 +166,7 @@ const TCHAR* CAppProfile::GetDirPath(TCHAR* path, size_t len, bool isPerMachine)
 	GetComputerName(pcName, &bufLen);
 
 	if (isPerMachine == false) {
-		bool isPortable = false;
-		GetProfileDirRoot(path, len, isPortable);
+		GetProfileDirRoot(path, len);
 		return path;
 	}
 	else {
@@ -141,8 +224,7 @@ bool CAppProfile::InitializeProfileDir(bool* isNewCreated)
 	LPTSTR path = pathBuf.data();
 
 	// ユーザ設定ディレクトリを作成する
-	bool is_portable = false;
-	GetProfileDirRoot(path, MAX_PATH_NTFS, is_portable);
+	bool is_portable = GetProfileDirRoot(path, MAX_PATH_NTFS);
 	if (Path::IsDirectory(path) == FALSE) {
 		// Note: 現状、Logger::InitializeDefaultLog内でログファイルを初期化する際にディレクトリが作成されてしまうため、
 		//       ここに到達することはない

@@ -421,6 +421,7 @@
     <ClInclude Include="actions\vmware\RunVMXAction.h" />
     <ClInclude Include="app\AppProcess.h" />
     <ClInclude Include="app\CommandLineProcessor.h" />
+    <ClInclude Include="app\FirstStartDialog.h" />
     <ClInclude Include="app\LauncherEventDispatcher.h" />
     <ClInclude Include="app\LauncherShutdownWindow.h" />
     <ClInclude Include="app\LauncherSystemEventWindow.h" />
@@ -1012,6 +1013,7 @@
     <ClCompile Include="actions\vmware\RunVMXAction.cpp" />
     <ClCompile Include="app\AppProcess.cpp" />
     <ClCompile Include="app\CommandLineProcessor.cpp" />
+    <ClCompile Include="app\FirstStartDialog.cpp" />
     <ClCompile Include="app\LauncherEventDispatcher.cpp" />
     <ClCompile Include="app\LauncherShutdownWindow.cpp" />
     <ClCompile Include="app\LauncherSystemEventWindow.cpp" />

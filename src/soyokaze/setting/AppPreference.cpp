@@ -668,12 +668,6 @@ bool AppPreference::CreateUserDirectory()
 	}
 	if (isDirectoryEmpty) {
 		// ディレクトリが空の場合は初回起動とみなす
-		Path path(Path::APPDIR);
-
-		CString msg;
-		msg.Format(_T("【初回起動】\n設定ファイルは以下の場所に保存されます。\n%s"), (LPCTSTR)path);
-		AfxMessageBox(msg, MB_ICONINFORMATION);
-
 		// 初回起動によりユーザディレクトリが作成されたことをユーザに通知する
 		for (auto& listener : in->mListeners) {
 			listener->OnAppFirstBoot();

@@ -19,6 +19,12 @@ public:
 	static const TCHAR* GetDirPath(TCHAR* path, size_t len, bool isPerMachine);
 	//! ファイルパスを取得
 	static const TCHAR* GetFilePath(TCHAR* path, size_t len, bool isPerMachine);
+	//! 既存のプロファイル保存先から動作モードを判定する
+	static bool InitializeProfileMode();
+	//! 初回起動時に選択された動作モードを設定する
+	static void SetRunAsPortable(bool isPortable);
+	//! 選択されたプロファイル保存先のルートディレクトリを作成する
+	static bool EnsureProfileRoot();
 	//! 設定フォルダの初期化
 	static bool InitializeProfileDir(bool* isNewCreated);
 

@@ -5,9 +5,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "app/LauncherApp.h"
+#include "app/AppName.h"
 #include "app/AppProcess.h"
 #include "app/LauncherSystemEventWindow.h"
 #include "app/LauncherShutdownWindow.h"
+#include "app/FirstStartDialog.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
@@ -15,6 +17,7 @@
 #include "app/CommandLineProcessor.h"
 #include "app/SecondProcessProxy.h"
 #include "app/LocalDirectoryWatcherService.h"
+#include "utility/AppProfile.h"
 #include "core/LauncherProcessContext.h"
 #include "commands/transfer/CommandClipboardTransfer.h"
 #include "commands/core/CommandRepository.h"
@@ -59,11 +62,6 @@ BOOL LauncherApp::InitInstance()
 {
 	AppPreference::Get()->Init();
 
-	// ログ初期化
-	Logger::Get()->Initialize();
-	logger::ResourceUsageMonitor::Get()->Initialize();
-	spdlog::info("==== Start App ====");
-
 	HRESULT hr = CoInitialize(nullptr);
 	if (FAILED(hr)) {
 		SPDLOG_ERROR("Failed to CoInitialize!");
@@ -71,8 +69,50 @@ BOOL LauncherApp::InitInstance()
 
 	try {
 		AppProcess appProcess;
-		if (appProcess.Exists() == false) {
+		bool isSecondInstance = appProcess.Exists();
+		if (isSecondInstance == false) {
+			if (CWinApp::InitInstance() == FALSE) {
+				CoUninitialize();
+				return FALSE;
+			}
 
+			// 初回起動ダイアログで標準コントロールを使えるようにする
+			INITCOMMONCONTROLSEX InitCtrls;
+			InitCtrls.dwSize = sizeof(InitCtrls);
+			InitCtrls.dwICC = ICC_WIN95_CLASSES;
+			InitCommonControlsEx(&InitCtrls);
+
+			if (CAppProfile::InitializeProfileMode() == false) {
+				FirstStartDialog dialog;
+				if (dialog.DoModal() != IDOK) {
+					AppPreference::Get()->OnExit();
+					CoUninitialize();
+					return FALSE;
+				}
+
+				CAppProfile::SetRunAsPortable(dialog.IsRunAsPortable());
+				if (CAppProfile::EnsureProfileRoot() == false) {
+					AfxMessageBox(_T("設定の保存先フォルダを作成できませんでした。書き込み可能な場所を選択してください。"), MB_ICONERROR);
+					AppPreference::Get()->OnExit();
+					CoUninitialize();
+					return FALSE;
+				}
+			}
+		}
+		else if (CAppProfile::InitializeProfileMode() == false) {
+			// 初回起動の選択中に別プロセスが起動した場合、誤った保存先を使わない
+			::MessageBox(nullptr, _T("初回起動の設定が完了してから、もう一度実行してください。"), APPNAME, MB_ICONINFORMATION);
+			AppPreference::Get()->OnExit();
+			CoUninitialize();
+			return FALSE;
+		}
+
+		// 保存先を確定してから、設定やログを読み込む
+		Logger::Get()->Initialize();
+		logger::ResourceUsageMonitor::Get()->Initialize();
+		spdlog::info("==== Start App ====");
+
+		if (isSecondInstance == false) {
 			// 管理者権限として起動する場合は再起動
 			if (appProcess.RebootAsAdminIfNeeded() == false) {
 				// 管理者権限として起動しない場合は通常の起動(初回起動)
@@ -124,18 +164,6 @@ BOOL LauncherApp::InitFirstInstance()
 		spdlog::error("Warning: Failed to init profile folder.");
 	}
 
-
-	// アプリケーション マニフェストが visual スタイルを有効にするために、
-	// ComCtl32.dll Version 6 以降の使用を指定する場合は、
-	// Windows XP に InitCommonControlsEx() が必要です。さもなければ、ウィンドウ作成はすべて失敗します。
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-	// アプリケーションで使用するすべてのコモン コントロール クラスを含めるには、
-	// これを設定します。
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
-
-	CWinApp::InitInstance();
 
 	// GDI+初期化
 	ULONG_PTR gdipTok;

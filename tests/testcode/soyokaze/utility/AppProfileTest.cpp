@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "utility/AppProfile.h"
 #include "utility/IniFile.h"
+#include "utility/Path.h"
 #include <atlstr.h>
 #include <regex>
 
@@ -48,6 +49,21 @@ TEST_F(AppProfileTest, GetFilePath)
 	std::wregex re(LR"(^.:\\Users\\.+?\\\.soyokaze\\settings.ini)");
 
 	EXPECT_TRUE(std::regex_match(path, re));
+}
+
+TEST_F(AppProfileTest, SetRunAsPortable)
+{
+	CAppProfile::SetRunAsPortable(true);
+
+	TCHAR path[1024];
+	CAppProfile::GetDirPath(path, 1024, false);
+	Path portablePath(Path::MODULEFILEDIR, _T("profile"));
+	EXPECT_STREQ(path, (LPCTSTR)portablePath);
+
+	CAppProfile::SetRunAsPortable(false);
+	CAppProfile::GetDirPath(path, 1024, false);
+	std::wregex normalPathRe(LR"(^.:\\Users\\.+?\\\.soyokaze$)");
+	EXPECT_TRUE(std::regex_match(path, normalPathRe));
 }
 
 TEST_F(AppProfileTest, InitializeProfileDir) {

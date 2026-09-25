@@ -161,6 +161,7 @@
 #define IDI_ICON_GEAR                   259
 #define IDD_COMMAND_GROUP_PATH          261
 #define IDD_COMMAND_GROUP_URL           262
+#define IDD_FIRSTSTART                  263
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -599,6 +600,9 @@
 #define IDC_BUTTON_PREFERENCE           1249
 #define IDC_CHECK_USEBGIMAGE            1250
 #define IDC_CHECK_USEEXTRACANDIDATE     1251
+#define IDC_RADIO_SAVETOUSERPROFILE     1252
+#define IDC_RADIO_SAVENEXTTOAPP         1253
+#define IDC_STATIC_SAVEPATH             1254
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -617,9 +621,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        261
+#define _APS_NEXT_RESOURCE_VALUE        265
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1252
+#define _APS_NEXT_CONTROL_VALUE         1255
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
