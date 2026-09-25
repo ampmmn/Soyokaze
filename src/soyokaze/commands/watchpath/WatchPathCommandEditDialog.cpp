@@ -21,7 +21,7 @@ namespace watchpath {
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_WATCHPATH, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_WATCHPATH, parentWnd)
 {
 	SetHelpPageId("WatchPathEdit");
 }

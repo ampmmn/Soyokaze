@@ -16,6 +16,7 @@
 
 ### Changed
 
+- #284 ダイアログリソースIDの命名規則を統一
 - #281 LauncherMainWindowとLauncherWindowStateのアクティブ状態通知・表示要求の責務を整理
 
 ## 0.58.1 - 2026-09-23

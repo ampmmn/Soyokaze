@@ -409,7 +409,7 @@ AppSettingPageView::~AppSettingPageView()
 // ウインドウを作成する
 bool AppSettingPageView::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_VIEWSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_VIEW, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

@@ -28,7 +28,7 @@ struct SettingPageEnv::PImpl
 
 
 SettingPageEnv::SettingPageEnv(CWnd* parentWnd) : 
-	SettingPage(_T("環境変数"), IDD_SHELLEXEC_ENVLIST, parentWnd),
+	SettingPage(_T("環境変数"), IDD_COMMAND_SHELLEXECUTE_ENVLIST, parentWnd),
 	in(new PImpl)
 {
 }

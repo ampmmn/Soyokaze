@@ -17,7 +17,7 @@ enum {
 };
 
 CommandHotKeyDialog::CommandHotKeyDialog(const CommandHotKeyAttribute& attr, CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_COMMAND_HOTKEY, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_HOTKEY_COMMAND, parentWnd),
 	mHotKeyType(TYPE_LOCAL), mHotKeyAttr(attr)
 {
 	SetHelpPageId("HotKey");

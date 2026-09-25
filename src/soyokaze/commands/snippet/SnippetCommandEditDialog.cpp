@@ -20,7 +20,7 @@ namespace snippet {
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_SNIPPET_EDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_SNIPPET, parentWnd)
 {
 	SetHelpPageId("SnippetEdit");
 }

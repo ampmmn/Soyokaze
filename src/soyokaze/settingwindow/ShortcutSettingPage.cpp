@@ -88,7 +88,7 @@ bool AppSettingPageShortcut::IsStartMenuExists()
 // ウインドウを作成する
 bool AppSettingPageShortcut::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_SHORTCUTSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_SHORTCUT, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

@@ -15,7 +15,7 @@ namespace commands {
 namespace keysplitter {
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_KEYSPLITTER, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_KEYSPLITTER, parentWnd),
 	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("KeySplitterEdit");

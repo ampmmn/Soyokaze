@@ -43,7 +43,7 @@ BuiltinEditDialog::BuiltinEditDialog(
 	bool canEditConfirm,
 	CWnd* parentWnd
 ) : 
-	launcherapp::control::SinglePageDialog(IDD_BUILTINEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_BUILTIN, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("BuiltinCommandEdit");

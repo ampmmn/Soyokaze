@@ -78,7 +78,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_WEBSEARCHEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_WEBSEARCH, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("WebSearchSetting");

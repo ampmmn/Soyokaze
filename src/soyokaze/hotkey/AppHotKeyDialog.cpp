@@ -11,7 +11,7 @@
 
 
 AppHotKeyDialog::AppHotKeyDialog(const HOTKEY_ATTR& attr, CWnd* parent) : 
-	launcherapp::control::SinglePageDialog(IDD_LAUNCHER_HOTKEY, parent),
+	launcherapp::control::SinglePageDialog(IDD_HOTKEY_APP, parent),
 	mHotKeyAttr(attr),
 	mIsEnableHotKey(TRUE),
 	mIsEnableModifieHotKey(FALSE),

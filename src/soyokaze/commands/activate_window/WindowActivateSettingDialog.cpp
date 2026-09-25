@@ -58,7 +58,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_WINDOWACTIVATEEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_WINDOWACTIVATE, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("ActivateWindowSetting");

@@ -86,7 +86,7 @@ HTREEITEM AppSettingDialog::PImpl::AddPage(
 
 
 AppSettingDialog::AppSettingDialog(CWnd* parentWnd) : 
-	CDialogEx(IDD_SETTING, parentWnd), 
+	CDialogEx(IDD_APPSETTING, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	ACCEL accels[1];

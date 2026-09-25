@@ -59,7 +59,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_SIMPLEDICT, parentWnd), in(new PImpl)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_SIMPLEDICT, parentWnd), in(new PImpl)
 {
 	SetHelpPageId("SimpleDictEdit");
 	in->mIsTestPassed = false;

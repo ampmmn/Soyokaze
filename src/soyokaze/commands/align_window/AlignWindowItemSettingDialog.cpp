@@ -38,7 +38,7 @@ struct ItemDialog::PImpl
 ////////////////////////////////////////////////////////////////////////////////
 
 ItemDialog::ItemDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_ALIGNWINDOWITEMEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_ALIGNWINDOW_ITEM, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	UNREFERENCED_PARAMETER(parentWnd);

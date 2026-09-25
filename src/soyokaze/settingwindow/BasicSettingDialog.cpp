@@ -252,7 +252,7 @@ AppSettingPageBasic::~AppSettingPageBasic()
 // ウインドウを作成する
 bool AppSettingPageBasic::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_BASICSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_BASIC, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

@@ -229,7 +229,7 @@ AppSettingPageExec::~AppSettingPageExec()
 // ウインドウを作成する
 bool AppSettingPageExec::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_EXECSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_EXECUTE, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

@@ -55,7 +55,7 @@ struct SettingDialogBase::PImpl
 /**
 	コンストラクタ
 */
- SettingDialogBase::SettingDialogBase(CWnd* parentWnd) :  CDialogEx(IDD_SETTING, parentWnd),
+ SettingDialogBase::SettingDialogBase(CWnd* parentWnd) :  CDialogEx(IDD_APPSETTING, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	ACCEL accels[1];

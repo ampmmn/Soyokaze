@@ -36,7 +36,7 @@ constexpr int ID_POSTFILTER_SUBPROCESS = POSTFILTER_SUBPROCESS + 1;
 constexpr int ID_POSTFILTER_CLIPBOARD = POSTFILTER_CLIPBOARD + 1;
 
 FilterEditDialog::FilterEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_FILTEREDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_FILTER, parentWnd),
 	mIconLabelPtr(std::make_unique<IconLabel>())
 {
 	SetHelpPageId("FilterEdit");

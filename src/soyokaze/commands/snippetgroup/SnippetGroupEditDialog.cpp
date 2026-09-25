@@ -22,7 +22,7 @@ namespace snippetgroup {
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_SNIPPETGROUP, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_SNIPPETGROUP, parentWnd),
 	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("SnippetGroupEdit");

@@ -25,7 +25,7 @@ namespace group {
 
 
 GroupEditDialog::GroupEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_GROUP, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_GROUP, parentWnd),
 	mCommandListPtr(nullptr)
 {
 	SetHelpPageId("GroupEdit");

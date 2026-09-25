@@ -26,7 +26,7 @@ using namespace launcherapp::commands::validation;
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_PYEXTENSION_EDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_PYEXTENSION, parentWnd)
 {
 	SetHelpPageId("PyExtensionEdit");
 }

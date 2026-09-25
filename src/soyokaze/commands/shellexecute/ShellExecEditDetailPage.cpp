@@ -21,7 +21,7 @@
 using namespace launcherapp::commands::common;
 
 ShellExecEditDetailPage::ShellExecEditDetailPage(CWnd* parentWnd) : 
-	SettingPage(_T("その他"), IDD_SHELLEXECUTECOMMAND2, parentWnd)
+	SettingPage(_T("その他"), IDD_COMMAND_SHELLEXECUTE_OTHER, parentWnd)
 {
 }
 

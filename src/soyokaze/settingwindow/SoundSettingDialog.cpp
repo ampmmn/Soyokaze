@@ -163,7 +163,7 @@ AppSettingPageSound::~AppSettingPageSound()
 // ウインドウを作成する
 bool AppSettingPageSound::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_SOUNDSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_SOUND, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

@@ -22,7 +22,7 @@ using namespace launcherapp::commands::validation;
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_ALIAS_EDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_ALIAS, parentWnd)
 {
 	SetHelpPageId("AliasEdit");
 }

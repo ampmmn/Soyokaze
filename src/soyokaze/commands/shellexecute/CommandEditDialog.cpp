@@ -63,7 +63,7 @@ static const launcherapp::utility::Regex& GetRegexForArgument()
 
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	SettingPage(_T("基本"), IDD_NEWCOMMAND, parentWnd),
+	SettingPage(_T("基本"), IDD_COMMAND_SHELLEXECUTE_BASIC, parentWnd),
 	in(new PImpl)
 {
 }

@@ -177,7 +177,7 @@ AppSettingPageInput::~AppSettingPageInput()
 // ウインドウを作成する
 bool AppSettingPageInput::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_INPUTSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_INPUT, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する

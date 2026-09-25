@@ -8,7 +8,7 @@
 namespace launcherapp { namespace commands { namespace group {
 
 GroupPathEditDialog::GroupPathEditDialog(CWnd* parentWnd) :
-	launcherapp::control::SinglePageDialog(IDD_GROUP_PATH, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_GROUP_PATH, parentWnd)
 {
 	mItem.mType = GroupItemType::Path;
 	SetHelpPageId("GroupEdit");

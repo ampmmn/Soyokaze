@@ -46,7 +46,7 @@ struct CommandEditDialog::PImpl
 };
 
 CommandEditDialog::CommandEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_REGEXPCOMMAND, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_REGEXP, parentWnd),
 	in(new PImpl)
 {
 	SetHelpPageId("RegExpEdit");

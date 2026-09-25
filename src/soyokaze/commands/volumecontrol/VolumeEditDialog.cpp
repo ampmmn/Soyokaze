@@ -49,7 +49,7 @@ struct SettingDialog::PImpl
 
 
 SettingDialog::SettingDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_VOLUMEEDIT, parentWnd),
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_VOLUME, parentWnd),
 	in(std::make_unique<PImpl>())
 {
 	SetHelpPageId("VolumeSetting");

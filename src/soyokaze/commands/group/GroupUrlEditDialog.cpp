@@ -27,7 +27,7 @@ const std::vector<SITE_ITEM> SITE_TEMPLATE = {
 }
 
 GroupUrlEditDialog::GroupUrlEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_GROUP_URL, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_GROUP_URL, parentWnd)
 {
 	mItem.mType = GroupItemType::URL;
 	SetHelpPageId("GroupEdit");

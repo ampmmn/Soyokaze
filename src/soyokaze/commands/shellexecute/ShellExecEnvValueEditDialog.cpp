@@ -14,7 +14,7 @@
 namespace launcherapp { namespace commands { namespace shellexecute {
 
 ValueEditDialog::ValueEditDialog(CWnd* parentWnd) : 
-	launcherapp::control::SinglePageDialog(IDD_SHELLEXEC_ENVEDIT, parentWnd)
+	launcherapp::control::SinglePageDialog(IDD_COMMAND_SHELLEXECUTE_ENVEDIT, parentWnd)
 {
 	SetHelpPageId("ShellExecEnvEdit");
 }

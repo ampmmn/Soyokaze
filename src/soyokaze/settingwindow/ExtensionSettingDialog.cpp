@@ -197,7 +197,7 @@ AppSettingPageExtension::~AppSettingPageExtension()
 // ウインドウを作成する
 bool AppSettingPageExtension::Create(HWND parentWindow)
 {
-	return in->mWindow.Create(IDD_EXTENSIONSETTING, CWnd::FromHandle(parentWindow)) != FALSE;
+	return in->mWindow.Create(IDD_APPSETTING_EXTENSION, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する
