@@ -155,7 +155,7 @@ public:
 
 	bool IsExtraCandidateListEmpty() const override
 	{
-		return true;
+		return mIsExtraCandidateListEmpty;
 	}
 
 	void ResolveExtraCandidate() override
@@ -181,6 +181,7 @@ public:
 	int mFocusCount{0};
 	int mExecuteCount{0};
 	int mHideExtraCandidatesCount{0};
+	bool mIsExtraCandidateListEmpty{true};
 };
 
 }
@@ -352,6 +353,19 @@ TEST(LauncherWindowStateTest, ParamSearchingState_Deactivate_HidesExtraCandidate
 
 	EXPECT_EQ(context.mHideExtraCandidatesCount, 1);
 	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::ParamSearchingState*>(context.mState.get()), nullptr);
+}
+
+TEST(LauncherWindowStateTest, ParamSearchingState_TextChangedWithoutExtraCandidates_TransitionsToSearchingState)
+{
+	DummyContext context;
+	context.mHasKeyword = true;
+	context.mCanStartParamSearching = true;
+	context.mIsExtraCandidateListEmpty = true;
+	context.mState = std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(&context);
+
+	context.mState->OnTextChanged();
+
+	EXPECT_NE(dynamic_cast<launcherapp::mainwindow::state::SearchingState*>(context.mState.get()), nullptr);
 }
 
 TEST(LauncherWindowStateTest, IdleState_TextChangedWithKeyword_TransitionsToSearchingState)

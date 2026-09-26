@@ -54,6 +54,10 @@ void ParamSearchingState::OnTextChanged()
 	}
 	else {
 		context->UpdateExtraCandidates();
+		if (context->IsExtraCandidateListEmpty()) {
+			// 追加候補がなくなった場合は、通常のコマンド実行を受け付けるStateへ戻る
+			context->ChangeState(std::make_unique<SearchingState>(context, false));
+		}
 	}
 }
 
