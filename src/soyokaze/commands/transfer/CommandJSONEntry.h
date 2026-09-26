@@ -1,7 +1,9 @@
 #pragma once
 
 #include "commands/core/CommandEntryIF.h"
+#include "utility/RefPtr.h"
 #include <memory>
+#include <vector>
 
 namespace launcherapp {
 namespace commands {
@@ -13,6 +15,22 @@ public:
     CommandJSONEntry(LPCTSTR name);
     CommandJSONEntry(std::vector<uint8_t>& data);
     ~CommandJSONEntry();
+
+    /**
+      複数のコマンドエントリをクリップボード用データに変換する
+      @param[in] entries コマンドエントリの一覧
+      @param[out] data 変換後のデータ
+      @return true:成功 false:失敗
+    */
+    static bool PackEntries(const std::vector<CommandEntryIF*>& entries, std::vector<uint8_t>& data);
+
+    /**
+      クリップボード用データから複数のコマンドエントリを生成する
+      @param[in] data クリップボード用データ
+      @param[out] entries 生成したコマンドエントリの一覧
+      @return true:成功 false:失敗
+    */
+    static bool UnpackEntries(const std::vector<uint8_t>& data, std::vector<RefPtr<CommandEntryIF>>& entries);
 
     /**
      * @brief オブジェクトを初期化する

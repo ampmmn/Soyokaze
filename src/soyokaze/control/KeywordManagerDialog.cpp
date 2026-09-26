@@ -6,6 +6,7 @@
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
+#include "commands/core/CommandFile.h"
 #include "commands/core/UserCommandProvider.h"
 #include "commands/core/EditableIF.h"
 #include "commands/core/CommandProviderRepository.h"
@@ -51,6 +52,8 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 {
 	void SortCommands();
 	void SelectItem(Command* command, bool isRedrawRequired);
+	void SelectItems(const std::vector<Command*>& commands, bool isRedrawRequired);
+	std::vector<Command*> GetSelectedCommands();
 
 	Command* GetItem(int index) {
 		ASSERT(0 <= index && index < mShowCommands.size()); 
@@ -59,6 +62,8 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 
 	bool IsEditable();
 	bool IsDeletable();
+	bool IsDeletable(Command* command);
+	bool IsUserCommand(Command* command);
 
 // CommandRepositoryListenerIF
 	void OnBeforeLoad() override {}
@@ -145,25 +150,53 @@ void KeywordManagerDialog::PImpl::SortCommands()
 // 選択状態の更新
 void KeywordManagerDialog::PImpl::SelectItem(Command* command, bool isRedrawRequired)
 {
-	int selItemIndex = -1;
+	std::vector<Command*> commands;
+	if (command != nullptr) {
+		commands.push_back(command);
+	}
+	SelectItems(commands, isRedrawRequired);
+}
+
+void KeywordManagerDialog::PImpl::SelectItems(const std::vector<Command*>& commands, bool isRedrawRequired)
+{
+	int firstSelectedIndex = -1;
 
 	int itemIndex = 0;
 	for (auto& cmd : mShowCommands) {
-
-		bool isSelItem = cmd == command;
+		bool isSelItem = std::find(commands.begin(), commands.end(), cmd) != commands.end();
+		bool isFocusedItem = isSelItem && firstSelectedIndex == -1;
 		if (isSelItem) {
-			selItemIndex = itemIndex;
+			if (firstSelectedIndex == -1) {
+				firstSelectedIndex = itemIndex;
+			}
 		}
-		mListCtrl.SetItemState(itemIndex, isSelItem ? LVIS_SELECTED | LVIS_FOCUSED : 0, LVIS_SELECTED | LVIS_FOCUSED);
+		UINT state = isSelItem ? LVIS_SELECTED : 0;
+		if (isFocusedItem) {
+			state |= LVIS_FOCUSED;
+		}
+		mListCtrl.SetItemState(itemIndex, state, LVIS_SELECTED | LVIS_FOCUSED);
 		itemIndex++;
 	}
-	if (selItemIndex != -1) {
-		mListCtrl.EnsureVisible(selItemIndex, FALSE);
+	if (firstSelectedIndex != -1) {
+		mListCtrl.EnsureVisible(firstSelectedIndex, FALSE);
 	}
 
 	if (isRedrawRequired) {
 		mListCtrl.Invalidate();
 	}
+}
+
+std::vector<Command*> KeywordManagerDialog::PImpl::GetSelectedCommands()
+{
+	std::vector<Command*> commands;
+	POSITION pos = mListCtrl.GetFirstSelectedItemPosition();
+	while (pos != nullptr) {
+		int index = mListCtrl.GetNextSelectedItem(pos);
+		if (0 <= index && index < (int)mShowCommands.size()) {
+			commands.push_back(mShowCommands[index]);
+		}
+	}
+	return commands;
 }
 
 bool KeywordManagerDialog::PImpl::IsEditable()
@@ -184,18 +217,29 @@ bool KeywordManagerDialog::PImpl::IsEditable()
 
 bool KeywordManagerDialog::PImpl::IsDeletable()
 {
-	if (mSelCommand == nullptr) {
+	return IsDeletable(mSelCommand);
+}
+
+
+bool KeywordManagerDialog::PImpl::IsDeletable(Command* command)
+{
+	if (command == nullptr) {
 		return false;
 	}
-
 	RefPtr<Editable> editable;
-	if (mSelCommand->QueryInterface(IFID_EDITABLE, (void**)&editable) == false) {
+	if (command->QueryInterface(IFID_EDITABLE, (void**)&editable) == false) {
 		return false;
 	}
 	if (editable->IsDeletable() == false) {
 		return false;
 	}
 	return true;
+}
+
+bool KeywordManagerDialog::PImpl::IsUserCommand(Command* command)
+{
+	// ユーザーコマンドは削除可能、組み込みコマンドは削除不可として扱う
+	return IsDeletable(command);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -251,6 +295,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_CLONE, OnButtonClone)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
+	ON_COMMAND(IDC_BUTTON_EXPORT, OnButtonExport)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_COMMANDS, OnLvnItemChange)
@@ -274,6 +319,7 @@ BOOL KeywordManagerDialog::OnInitDialog()
 	SetIcon(IconLoader::Get()->LoadKeywordManagerIcon(), FALSE);
 
 	in->mListCtrl.SubclassDlgItem(IDC_LIST_COMMANDS, this);
+	in->mListCtrl.ModifyStyle(LVS_SINGLESEL, 0);
 	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_FILTER, this);
 	in->mIconLabelPtr->SubclassDlgItem(IDC_STATIC_ICON, this);
 	in->mIconLabelPtr->DrawIcon(IconLoader::Get()->LoadKeywordManagerIcon());
@@ -341,6 +387,9 @@ void KeywordManagerDialog::OnCancel()
 
 void KeywordManagerDialog::ResetContents()
 {
+	auto selectedCommands = in->GetSelectedCommands();
+	in->SelectItems({}, false);
+
 	// 以前のアイテムを解放
 	for (auto& cmd : in->mCommands) {
 		cmd->Release();
@@ -359,31 +408,30 @@ void KeywordManagerDialog::ResetContents()
 	in->SortCommands();
 
 	UpdateListItems();
+	in->SelectItems(selectedCommands, true);
 }
 
 bool KeywordManagerDialog::UpdateStatus()
 {
-	POSITION pos = in->mListCtrl.GetFirstSelectedItemPosition();
-	if (pos) {
-		int selItemIndex = in->mListCtrl.GetNextSelectedItem(pos);
-		in->mSelCommand = in->mShowCommands[selItemIndex];
-	}
-	else {
-		in->mSelCommand = nullptr;
-	}
+	auto selectedCommands = in->GetSelectedCommands();
+	in->mSelCommand = selectedCommands.empty() ? nullptr : selectedCommands.front();
 
 	in->mName.Empty();
 	in->mDescription.Empty();
 
+	CWnd* btnNew = GetDlgItem(IDC_BUTTON_NEW);
 	CWnd* btnEdit = GetDlgItem(IDC_BUTTON_EDIT);
 	CWnd* btnClone = GetDlgItem(IDC_BUTTON_CLONE);
 	CWnd* btnDel = GetDlgItem(IDC_BUTTON_DELETE);
-	ASSERT(btnEdit && btnClone && btnDel);
+	CWnd* btnExport = GetDlgItem(IDC_BUTTON_EXPORT);
+	ASSERT(btnNew && btnEdit && btnClone && btnDel && btnExport);
+	btnNew->EnableWindow(TRUE);
 
-	if (in->mSelCommand == nullptr) {
+	if (selectedCommands.empty()) {
 		btnEdit->EnableWindow(FALSE);
 		btnClone->EnableWindow(FALSE);
 		btnDel->EnableWindow(FALSE);
+		btnExport->EnableWindow(FALSE);
 		return false;
 	}
 
@@ -393,18 +441,27 @@ bool KeywordManagerDialog::UpdateStatus()
 	in->mName = name;
 	in->mDescription = in->mSelCommand->GetDescription();
 
-	bool isEditable = in->IsEditable();
-	btnEdit->EnableWindow(isEditable ? TRUE : FALSE);
+	bool isSingleSelection = selectedCommands.size() == 1;
+	btnEdit->EnableWindow(isSingleSelection && in->IsEditable() ? TRUE : FALSE);
+	btnClone->EnableWindow(isSingleSelection && in->IsDeletable() ? TRUE : FALSE);
 
-	bool isDeletable = in->IsDeletable();
-	btnClone->EnableWindow(isDeletable ? TRUE : FALSE);
-	btnDel->EnableWindow(isDeletable ? TRUE : FALSE);
+	bool hasDeletableCommand = std::any_of(selectedCommands.begin(), selectedCommands.end(), [&](Command* command) {
+		return in->IsDeletable(command);
+	});
+	btnDel->EnableWindow(hasDeletableCommand ? TRUE : FALSE);
+
+	bool hasUserCommand = std::any_of(selectedCommands.begin(), selectedCommands.end(), [&](Command* command) {
+		return in->IsUserCommand(command);
+	});
+	btnExport->EnableWindow(hasUserCommand ? TRUE : FALSE);
 
 	return true;
 }
 
 void KeywordManagerDialog::UpdateListItems()
 {
+	auto selectedCommands = in->GetSelectedCommands();
+
 	// フィルタ欄が空でない場合は絞り込みを行う
 	if (in->mFilterStr.IsEmpty() == FALSE) {
 		RefPtr<Pattern> pattern(PartialMatchPattern::Create());
@@ -435,8 +492,8 @@ void KeywordManagerDialog::UpdateListItems()
 	int visibleItems = (int)(in->mShowCommands.size());
 	in->mListCtrl.SetItemCountEx(visibleItems);
 
-	// 選択状態の更新
-	in->SelectItem(in->mSelCommand, true);
+	// 並び替えや絞り込み後も、表示対象に残っている選択を復元する
+	in->SelectItems(selectedCommands, true);
 }
 
 void KeywordManagerDialog::OnEditFilterChanged()
@@ -472,6 +529,10 @@ void KeywordManagerDialog::OnButtonNew()
 
 void KeywordManagerDialog::OnButtonEdit()
 {
+	if (in->GetSelectedCommands().size() != 1) {
+		return;
+	}
+
 	// 編集不可ならしない
 	if (in->IsEditable() == false) {
 		return;
@@ -488,6 +549,10 @@ void KeywordManagerDialog::OnButtonEdit()
 
 void KeywordManagerDialog::OnButtonClone()
 {
+	if (in->GetSelectedCommands().size() != 1) {
+		return;
+	}
+
 	// 削除不可ならしない(削除できないコマンドは複製させない)
 	if (in->IsDeletable() == false) {
 		return;
@@ -504,55 +569,119 @@ void KeywordManagerDialog::OnButtonClone()
 
 void KeywordManagerDialog::OnButtonDelete()
 {
-	// 削除不可なら許可しない
-	if (in->IsDeletable() == false) {
+	auto selectedCommands = in->GetSelectedCommands();
+	if (selectedCommands.empty()) {
 		return;
 	}
 
-	CString name = in->mSelCommand->GetName();
+	std::vector<Command*> commandsToDelete;
+	std::vector<Command*> commandsToKeepSelected;
+	for (auto command : selectedCommands) {
+		if (in->IsDeletable(command)) {
+			commandsToDelete.push_back(command);
+		}
+		else {
+			commandsToKeepSelected.push_back(command);
+		}
+	}
+	if (commandsToDelete.empty()) {
+		return;
+	}
 
 	CString confirmMsg((LPCTSTR)IDS_CONFIRM_DELETE);
 	confirmMsg += _T("\n");
 	confirmMsg += _T("\n");
-	confirmMsg += name;
+	for (auto command : commandsToDelete) {
+		confirmMsg += command->GetName();
+		confirmMsg += _T("\n");
+	}
 
 	int sel = AfxMessageBox(confirmMsg, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
 	if (sel != IDYES) {
 		return ;
 	}
 
+	in->SelectItems({}, false);
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	cmdRepoPtr->UnregisterCommand(in->mSelCommand);
+	for (auto command : commandsToDelete) {
+		cmdRepoPtr->UnregisterCommand(command);
+	}
 
 	ResetContents();
+	in->SelectItems(commandsToKeepSelected, true);
 	UpdateStatus();
 	UpdateData(FALSE);
 }
 
+void KeywordManagerDialog::OnButtonExport()
+{
+	auto selectedCommands = in->GetSelectedCommands();
+	selectedCommands.erase(std::remove_if(selectedCommands.begin(), selectedCommands.end(), [&](Command* command) {
+		return in->IsUserCommand(command) == false;
+	}), selectedCommands.end());
+	if (selectedCommands.empty()) {
+		return;
+	}
+
+	CFileDialog dlg(FALSE, _T("ini"), nullptr, OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST,
+	                _T("INIファイル (*.ini)|*.ini||"), this);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	CommandFile commandFile;
+	commandFile.SetFilePath(dlg.GetPathName());
+	for (auto command : selectedCommands) {
+		auto entry = commandFile.NewEntry(command->GetName());
+		if (command->Save(entry) == false) {
+			spdlog::error(_T("Failed to save command for export. name:{}"), (LPCTSTR)command->GetName());
+			CString message;
+			message.Format(_T("コマンド %s の保存に失敗しました。"), (LPCTSTR)command->GetName());
+			AfxMessageBox(message, MB_OK | MB_ICONERROR);
+			return;
+		}
+	}
+
+	if (commandFile.Save() == false) {
+		spdlog::error(_T("Failed to save exported command file. path:{}"), (LPCTSTR)dlg.GetPathName());
+		AfxMessageBox(_T("ファイルの保存に失敗しました。"), MB_OK | MB_ICONERROR);
+	}
+}
+
 void KeywordManagerDialog::OnEditCopy()
 {
-	auto cmd = in->mSelCommand;
-	if (cmd == nullptr) {
-		// 何も選択されていなければ何もしない
+	std::vector<RefPtr<CommandEntryIF>> commandEntries;
+	for (auto command : in->GetSelectedCommands()) {
+		if (in->IsUserCommand(command) == false) {
+			continue;
+		}
+
+		auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
+		RefPtr<CommandEntryIF> entry(transfer->NewEntry(command->GetName()));
+		if (command->Save(entry.get()) == false) {
+			spdlog::error(_T("Failed to save command.{}"), (LPCTSTR)command->GetName());
+			return;
+		}
+		commandEntries.push_back(std::move(entry));
+	}
+	if (commandEntries.empty()) {
 		return;
 	}
 
 	auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
-	auto entry = transfer->NewEntry(cmd->GetName());
-	if (cmd->Save(entry) == false) {
-		spdlog::error(_T("Failed to save command.{}"), (LPCTSTR)cmd->GetName());
-		entry->Release();
-		return ;
+	std::vector<CommandEntryIF*> entries;
+	for (auto& entry : commandEntries) {
+		entries.push_back(entry.get());
 	}
-	transfer->SendEntry(entry);
+	transfer->SendEntries(entries);
 }
 
 void KeywordManagerDialog::OnEditPaste()
 {
 	auto transfer = launcherapp::commands::transfer::CommandClipboardTransfer::GetInstance();
 
-	RefPtr<CommandEntryIF> entry;
-	if (transfer->ReceiveEntry(&entry) == false) {
+	std::vector<RefPtr<CommandEntryIF>> entries;
+	if (transfer->ReceiveEntries(entries) == false || entries.empty()) {
 		return;
 	}
 
@@ -562,14 +691,23 @@ void KeywordManagerDialog::OnEditPaste()
 	providerRepos->EnumProviders(providers);
 
 	auto cmdRepoPtr = launcherapp::core::CommandRepository::GetInstance();
-	for (auto provider : providers) {
-		RefPtr<launcherapp::core::UserCommandProvider> userCmdProvider;
-		if (provider->QueryInterface(IFID_USERCOMMANDPROVIDER, (void**)&userCmdProvider) == false) {
-			continue;
-		}
+	for (auto& entry : entries) {
 		RefPtr<Command> newCmd;
-		if (userCmdProvider->LoadFrom(entry.get(), &newCmd) == false) {
-			continue;
+		bool isLoaded = false;
+		for (auto provider : providers) {
+			RefPtr<launcherapp::core::UserCommandProvider> userCmdProvider;
+			if (provider->QueryInterface(IFID_USERCOMMANDPROVIDER, (void**)&userCmdProvider) == false) {
+				continue;
+			}
+			if (userCmdProvider->LoadFrom(entry.get(), &newCmd)) {
+				isLoaded = true;
+				break;
+			}
+			newCmd.reset();
+		}
+		if (isLoaded == false || newCmd.get() == nullptr) {
+			spdlog::error(_T("Failed to load copied command.{}"), (LPCTSTR)entry->GetName());
+			return;
 		}
 
 		RefPtr<Command> orgCmd(cmdRepoPtr->QueryAsWholeMatch(newCmd->GetName()));
@@ -600,7 +738,8 @@ void KeywordManagerDialog::OnEditPaste()
 		// インポートしたコマンドを選択状態にする
 		in->mSelCommand = newCmd.get();
 		in->SelectItem(newCmd.get(), false);
-		break;
+		UpdateStatus();
+		UpdateData(FALSE);
 	}
 }
 

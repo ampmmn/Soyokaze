@@ -265,7 +265,9 @@
 #define IDC_BUTTON_DELETE               1038
 #define IDC_BUTTON_EDIT4                1039
 #define IDC_BUTTON_BULKADD              1039
+#define IDC_BUTTON_EXPORT               1039
 #define IDC_CHECK_USEFILER              1040
+#define IDC_BUTTON_IMPORT               1040
 #define IDC_BUTTON_UP                   1041
 #define IDC_CHECK_TOPMOST               1043
 #define IDC_CHECK_ENABLEPATHFIND        1043

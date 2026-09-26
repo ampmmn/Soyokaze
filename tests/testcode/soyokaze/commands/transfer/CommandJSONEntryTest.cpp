@@ -118,3 +118,23 @@ TEST(CommandJSONEntryTest, DumpRawData)
     ASSERT_EQ("testString", parsedJson["testCommand"]["stringKey"]["value"].get<std::string>());
 }
 
+TEST(CommandJSONEntryTest, PackAndUnpackMultipleEntries)
+{
+    CommandJSONEntry first(_T("firstCommand"));
+    first.Set(_T("value"), 1);
+    CommandJSONEntry second(_T("secondCommand"));
+    second.Set(_T("value"), 2);
+
+    std::vector<CommandEntryIF*> sourceEntries{ &first, &second };
+    std::vector<uint8_t> data;
+    ASSERT_TRUE(CommandJSONEntry::PackEntries(sourceEntries, data));
+
+    std::vector<RefPtr<CommandEntryIF>> entries;
+    ASSERT_TRUE(CommandJSONEntry::UnpackEntries(data, entries));
+    ASSERT_EQ(2u, entries.size());
+    ASSERT_STREQ(_T("firstCommand"), entries[0]->GetName());
+    ASSERT_EQ(1, entries[0]->Get(_T("value"), 0));
+    ASSERT_STREQ(_T("secondCommand"), entries[1]->GetName());
+    ASSERT_EQ(2, entries[1]->Get(_T("value"), 0));
+}
+

@@ -67,6 +67,120 @@ CommandJSONEntry::CommandJSONEntry(std::vector<uint8_t>& data) : in(std::make_un
 	}
 }
 
+bool CommandJSONEntry::PackEntries(const std::vector<CommandEntryIF*>& entries, std::vector<uint8_t>& data)
+{
+	data.clear();
+	if (entries.empty()) {
+		spdlog::error("Cannot serialize an empty command entry list.");
+		return false;
+	}
+
+	try {
+		json packed = json::array();
+		for (size_t index = 0; index < entries.size(); ++index) {
+			auto entry = entries[index];
+			if (entry == nullptr) {
+				spdlog::error("Cannot serialize null command entry. index:{}", index);
+				return false;
+			}
+
+			std::vector<uint8_t> rawData;
+			if (entry->DumpRawData(rawData) == false) {
+				spdlog::error(_T("Failed to dump command entry. index:{} name:{}"), index, (LPCTSTR)entry->GetName());
+				return false;
+			}
+
+			std::string text(rawData.begin(), rawData.end());
+			auto nullPos = text.find('\0');
+			if (nullPos != std::string::npos) {
+				text.resize(nullPos);
+			}
+
+			auto item = json::parse(text);
+			if (item.is_object() == false || item.size() != 1) {
+				spdlog::error("Command entry has an invalid serialized format. index:{}", index);
+				return false;
+			}
+			packed.push_back(std::move(item));
+		}
+
+		std::string text = packed.dump();
+		data.assign(text.begin(), text.end());
+		data.push_back(0);
+		return true;
+	}
+	catch (const json::exception& e) {
+		spdlog::error("Failed to serialize command entries: {}", e.what());
+		data.clear();
+		return false;
+	}
+}
+
+bool CommandJSONEntry::UnpackEntries(const std::vector<uint8_t>& data, std::vector<RefPtr<CommandEntryIF>>& entries)
+{
+	entries.clear();
+	if (data.empty()) {
+		spdlog::error("Cannot deserialize command entries from empty data.");
+		return false;
+	}
+
+	try {
+		std::string text(data.begin(), data.end());
+		auto nullPos = text.find('\0');
+		if (nullPos != std::string::npos) {
+			text.resize(nullPos);
+		}
+
+		auto parsed = json::parse(text);
+		std::vector<json> serializedEntries;
+		if (parsed.is_array()) {
+			for (size_t index = 0; index < parsed.size(); ++index) {
+				auto& item = parsed[index];
+				if (item.is_object() == false || item.size() != 1 || item.begin().value().is_object() == false) {
+					spdlog::error("Serialized command entry has an invalid format. index:{}", index);
+					return false;
+				}
+				serializedEntries.push_back(item);
+			}
+		}
+		else if (parsed.is_object()) {
+			for (auto it = parsed.begin(); it != parsed.end(); ++it) {
+				if (it.value().is_object() == false) {
+					spdlog::error("Serialized command entry data is not an object. name:{}", it.key());
+					return false;
+				}
+				json item = json::object();
+				item[it.key()] = it.value();
+				serializedEntries.push_back(std::move(item));
+			}
+		}
+		else {
+			spdlog::error("Serialized command entries must be a JSON array or object.");
+			return false;
+		}
+
+		if (serializedEntries.empty()) {
+			spdlog::error("No command entries were found in serialized data.");
+			return false;
+		}
+
+		std::vector<RefPtr<CommandEntryIF>> unpackedEntries;
+		for (auto& item : serializedEntries) {
+			std::string serialized = item.dump();
+			std::vector<uint8_t> itemData(serialized.begin(), serialized.end());
+			itemData.push_back(0);
+			unpackedEntries.emplace_back(new CommandJSONEntry(itemData));
+		}
+
+		entries.swap(unpackedEntries);
+		return true;
+	}
+	catch (const json::exception& e) {
+		spdlog::error("Failed to deserialize command entries: {}", e.what());
+		return false;
+	}
+}
+
 CommandJSONEntry::~CommandJSONEntry()
 {
 }
