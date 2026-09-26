@@ -203,11 +203,11 @@ bool ActivateWindowParam::Load(CommandEntryIF* entry)
 
 
 CommandParam::CommandParam() :
-	mIsRunAsAdmin(FALSE),
-	mIsUse0(FALSE),
-	mIsUseDescriptionForMatching(FALSE),
-	mIsAllowAutoExecute(FALSE),
-	mIsUseExtraCandidate(TRUE)
+	mIsRunAsAdmin(false),
+	mIsUse0(false),
+	mIsUseDescriptionForMatching(false),
+	mIsAllowAutoExecute(false),
+	mIsUseExtraCandidate(false)
 {
 }
 
@@ -289,8 +289,8 @@ bool CommandParam::Save(CommandEntryIF* entry) const
 		index++;
 	}
 
-	entry->Set(_T("allow_auto_execute"), mIsAllowAutoExecute ? true : false);
-	entry->Set(_T("use_extracandidate"), mIsUseExtraCandidate ? true : false);
+	entry->Set(_T("allow_auto_execute"), mIsAllowAutoExecute);
+	entry->Set(_T("use_extracandidate"), mIsUseExtraCandidate);
 
 	mActivateWindowParam.Save(entry);
 
@@ -326,7 +326,7 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	}
 
 	// 環境変数
-	std::map<CString, CString> envMap;
+	absl::btree_map<CString, CString> envMap;
 	CString key;
 	CString envName;
 	CString envValue;
@@ -342,8 +342,8 @@ bool CommandParam::Load(CommandEntryIF* entry)
 	}
 	mEnviron.swap(envMap);
 
-	mIsAllowAutoExecute = entry->Get(_T("allow_auto_execute"), false) ? TRUE : FALSE;
-	mIsUseExtraCandidate = entry->Get(_T("use_extracandidate"), true) ? TRUE : FALSE;
+	mIsAllowAutoExecute = entry->Get(_T("allow_auto_execute"), false);
+	mIsUseExtraCandidate = entry->Get(_T("use_extracandidate"), true);
 
 	mActivateWindowParam.Load(entry);
 

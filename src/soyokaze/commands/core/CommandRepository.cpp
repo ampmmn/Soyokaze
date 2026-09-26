@@ -91,8 +91,9 @@ struct CommandRepository::PImpl
 
 		int count = hotKeyMap.GetItemCount();
 		SPDLOG_DEBUG(_T("hotKeyMap number of items:{}"), count);
+		CString name;
 		for (int i = 0; i < count; ++i) {
-			auto name = hotKeyMap.GetName(i);
+			name = hotKeyMap.GetName(i);
 			CommandHotKeyAttribute attr;
 			hotKeyMap.GetHotKeyAttr(i, attr);
 

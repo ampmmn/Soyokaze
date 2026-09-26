@@ -18,7 +18,7 @@ CommandToken::CommandToken(const CString& commandStr) : mCommandStr(commandStr)
 	bool inQuate = false;
 	int len = mCommandStr.GetLength();
 	for (int i = 0; i < len; ++i) {
-		auto& c = mCommandStr[i];
+		auto c = mCommandStr[i];
 		if (inQuate == false && c == _T('"')) {
 		 	inQuate = true;
 			inToken = true;

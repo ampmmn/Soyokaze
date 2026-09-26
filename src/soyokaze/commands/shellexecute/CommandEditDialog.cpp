@@ -12,6 +12,7 @@
 #include "commands/validation/CommandEditValidation.h"
 #include "commands/common/ExpandFunctions.h"
 #include "commands/common/ExecutablePath.h"
+#include "control/DDXWrapper.h"
 #include "utility/ShortcutFile.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"

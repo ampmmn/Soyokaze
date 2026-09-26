@@ -5,7 +5,10 @@
 #include <memory>
 #include "utility/Regex.h"
 #include <regex>
-#include <map>
+#pragma warning(push)
+#pragma warning(disable: 4324 4995 6001 6385 6386 26439 26495 26815)
+#include <absl/container/btree_map.h>
+#pragma warning(pop)
 
 namespace launcherapp { namespace commands { namespace shellexecute {
 
@@ -72,25 +75,25 @@ public:
 	ActivateWindowParam mActivateWindowParam;
 
 	// 管理者権限で実行
-	BOOL mIsRunAsAdmin;
+	bool mIsRunAsAdmin;
 
 	// 引数なし版を使うか?
-	BOOL mIsUse0;
+	bool mIsUse0;
 
 	// 説明欄の文字列をマッチングに利用するか?
-	BOOL mIsUseDescriptionForMatching;
+	bool mIsUseDescriptionForMatching;
 
 	// 自動実行を許可するか?
-	BOOL mIsAllowAutoExecute;
+	bool mIsAllowAutoExecute;
 
 	// パラメータ候補リストを使用するか?
-	BOOL mIsUseExtraCandidate;
+	bool mIsUseExtraCandidate;
 
 	// アイコンデータ(空の場合はデフォルトアイコンを使用)
 	std::vector<uint8_t> mIconData;
 
 	// 環境変数
-	std::map<CString, CString> mEnviron;
+	absl::btree_map<CString, CString> mEnviron;
 
 	// ホットキー
 	CommandHotKeyAttribute mHotKeyAttr;

@@ -157,12 +157,15 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 	// 与えられたテキストを空白で区切ったリスト
 	std::vector<CString> tokens;
+	tokens.reserve(32);
 
 	int start = 0;
 
 	int wholeLen = wholeText.GetLength();
 
 	// tokensの構築
+	CString part;
+	CString partLeftAll;
 	bool isQuote = false;
 	for (int i = 0; i < wholeLen; ++i) {
 
@@ -181,7 +184,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 			// "..." のなかのテキストを取得する
 			int count = i - start;
-			CString part = wholeText.Mid(start, count);
+			part = wholeText.Mid(start, count);
 
 			tokens.push_back(part);
 			start = i + 1;
@@ -193,7 +196,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 			int count = i-start;
 
-			CString part = wholeText.Mid(start, count);
+			part = wholeText.Mid(start, count);
 			part.Trim();
 			if (part.IsEmpty()) {
 				start=i+1;
@@ -201,7 +204,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			}
 
 			// 残り部分が一つの絶対パスを表しているなら、存在しなくても連結してひと固まりとして扱う
-			CString partLeftAll(wholeText.Mid(start));
+			partLeftAll = wholeText.Mid(start);
 			if (PathIsRelative(partLeftAll) == FALSE) {
 				if (start == 0) {
 					if (Path::FileExists(part) && Path::IsDirectory(part) == false) {
@@ -226,7 +229,7 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 
 	// 終端に達した際の末尾にあったキーワードをtokensに追加する
 	int count = wholeLen-start;
-	CString part = wholeText.Mid(start, count);
+	part = wholeText.Mid(start, count);
 	part.Trim();
 	if (part.IsEmpty() == FALSE) {
 		tokens.push_back(part);
@@ -244,6 +247,9 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 	options.set_case_sensitive(false);
 
 	// tokensに分解したキーワードをregexに変換してpatternsに入れる
+	std::string tmp;
+	CString migemoExpr;
+	std::wstring escapedPat;
 	for (size_t i = 0; i < in->mTokens.size(); ++i) {
 
 		auto& token = in->mTokens[i];
@@ -253,11 +259,10 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 			continue;
 		}
 
-		std::string tmp;
 
 		if (in->shouldUseMigemo(token) == false) {
 			if (token.IsEmpty() == FALSE) {
-				std::wstring escapedPat((LPCWSTR)StripEscapeChars(token));
+				escapedPat = (LPCWSTR)StripEscapeChars(token);
 				patterns.push_back(new RE2(UTF2UTF(escapedPat, tmp), options));
 				patternsForFM.push_back(new RE2(UTF2UTF(_T("^") + escapedPat, tmp), options));
 			}
@@ -266,7 +271,6 @@ void PartialMatchPattern::SetWholeText(LPCTSTR text)
 		}
 
 		// Migemoを使う設定の場合、先頭ワードのみMigemo正規表現に置き換える
-		CString migemoExpr;
 		in->mMigemo.Query(token, migemoExpr);
 		patterns.push_back(new RE2(UTF2UTF(migemoExpr, tmp), options));
 

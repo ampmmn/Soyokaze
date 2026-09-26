@@ -15,10 +15,10 @@
 #include "resource.h"
 #pragma warning(push)
 #pragma warning(disable: 4995)
+#pragma warning(disable: 4324)
 #include <absl/container/btree_map.h>
+#include <absl/container/btree_set.h>
 #pragma warning(pop)
-#include <map>
-#include <set>
 #include <WinHttp.h>
 #include <mutex>
 #include <thread>
@@ -73,7 +73,7 @@ using ICONITEM = IconLoader::ICONITEM;
 
 using LocalPathResolver = launcherapp::utility::LocalPathResolver;
 
-using IconIndexMap = std::map<int, ICONITEM>;
+using IconIndexMap = absl::btree_map<int, ICONITEM>;
 using IconCacheMap = absl::btree_map<CString, ICONITEM>;
 
 struct IconLoader::PImpl : public LauncherEventListenerIF
@@ -188,11 +188,11 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 	Path mMSSvpDll;
 
 	// ファイルがリソースとして保持するアイコンを管理するためのmap
-	std::map<CString, IconIndexMap> mIconIndexCache;
+	absl::btree_map<CString, IconIndexMap> mIconIndexCache;
 	// ファイルパスに対するアイコン
 	IconCacheMap mDefaultIconCache;
 	// ファイル拡張子に関連付けられたアイコン
-	std::map<CString, ICONITEM> mFileExtIconCache;
+	absl::btree_map<CString, ICONITEM> mFileExtIconCache;
 	// アプリケーションIDに対応するアイコン
 	IconCacheMap mAppIconMap;
 	// 音量変更アイコン
@@ -201,7 +201,7 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 	HICON mVolumeMuteIcon;
 
 	//
-	std::set<HICON> mIconSet;
+	absl::btree_set<HICON> mIconSet;
 
 	LocalPathResolver mResolver;
 

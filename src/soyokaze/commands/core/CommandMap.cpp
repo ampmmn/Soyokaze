@@ -3,24 +3,33 @@
 #include "CommandMap.h"
 #include "commands/core/CommandFile.h"
 #include <set>
+#pragma warning(push)
+#pragma warning(disable: 4995)
+#pragma warning(disable: 4324)
+#include <absl/container/btree_map.h>
+#pragma warning(pop)
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+struct CommandMap::PImpl
+{
+	absl::btree_map<CString, launcherapp::core::Command*> mMap;
+};
 
-CommandMap::CommandMap()
+CommandMap::CommandMap() : in(new PImpl)
 {
 }
 
 // コピーコンストラクタ
 // 複製はするがコマンドオブジェクトは同じものを参照する
 // 参照カウントは+1する
-CommandMap::CommandMap(const CommandMap& rhs)
+CommandMap::CommandMap(const CommandMap& rhs) : in(new PImpl)
 {
-	for (auto& item : rhs.mMap) {
+	for (auto& item : rhs.in->mMap) {
 		auto cmd = item.second;
-		mMap[item.first] = cmd;
+		in->mMap[item.first] = cmd;
 		cmd->AddRef();
 	}
 }
@@ -32,7 +41,7 @@ CommandMap::~CommandMap()
 
 void CommandMap::LoadSettings(Settings& settings)
 {
-	for (auto& item : mMap) {
+	for (auto& item : in->mMap) {
 		auto cmd = item.second;
 		settings.Add(cmd);
 	}
@@ -41,7 +50,7 @@ void CommandMap::LoadSettings(Settings& settings)
 void CommandMap::RestoreSettings(Settings& settings)
 {
 	std::set<CString> eraseTargets;
-	for (auto& item : mMap) {
+	for (auto& item : in->mMap) {
 		auto cmd = item.second;
 		if (settings.Restore(cmd) == false) {
 			// リストアできなかったものは、リストア用データ作成時点で存在していなかった
@@ -57,17 +66,17 @@ void CommandMap::RestoreSettings(Settings& settings)
 
 void CommandMap::Clear()
 {
-	for (auto& item : mMap) {
+	for (auto& item : in->mMap) {
 		item.second->Release();
 	}
-	mMap.clear();
+	in->mMap.clear();
 }
 
 // コマンドオブジェクトに紐づけられた名前を問い合わせる
 bool CommandMap::QueryRegisteredNameFor(launcherapp::core::Command* targetCmd, CString& registeredName)
 {
-	auto it = mMap.begin();
-	for (;it != mMap.end(); ++it) {
+	auto it = in->mMap.begin();
+	for (;it != in->mMap.end(); ++it) {
 		auto& name = it->first;
 		auto& cmd = it->second;
 
@@ -86,14 +95,14 @@ bool CommandMap::QueryRegisteredNameFor(launcherapp::core::Command* targetCmd, C
 
 bool CommandMap::Has(const CString& name) const
 {
-	return mMap.find(name) != mMap.end();
+	return in->mMap.find(name) != in->mMap.end();
 }
 
 launcherapp::core::Command*
 CommandMap::Get(const CString& name)
 {
-	auto itFind = mMap.find(name);
-	if (itFind == mMap.end()) {
+	auto itFind = in->mMap.find(name);
+	if (itFind == in->mMap.end()) {
 		return nullptr;
 	}
 
@@ -103,7 +112,7 @@ CommandMap::Get(const CString& name)
 
 void CommandMap::Register(launcherapp::core::Command* cmd)
 {
-	mMap[cmd->GetName()] = cmd;
+	in->mMap[cmd->GetName()] = cmd;
 }
 
 bool CommandMap::Unregister(launcherapp::core::Command* cmd)
@@ -113,13 +122,13 @@ bool CommandMap::Unregister(launcherapp::core::Command* cmd)
 
 bool CommandMap::Unregister(const CString& name)
 {
-	auto itFind = mMap.find(name);
-	if (itFind == mMap.end()) {
+	auto itFind = in->mMap.find(name);
+	if (itFind == in->mMap.end()) {
 		return false;
 	}
 
 	itFind->second->Release();
-	mMap.erase(itFind);
+	in->mMap.erase(itFind);
 	return true;
 }
 
@@ -129,8 +138,8 @@ bool CommandMap::Reregister(launcherapp::core::Command* targetCmd)
 	// 変更後の名前
 	CString newName = targetCmd->GetName();
 
-	auto it = mMap.begin();
-	for (;it != mMap.end(); ++it) {
+	auto it = in->mMap.begin();
+	for (;it != in->mMap.end(); ++it) {
 		auto& name = it->first;
 		auto& cmd = it->second;
 
@@ -145,8 +154,8 @@ bool CommandMap::Reregister(launcherapp::core::Command* targetCmd)
 		}
 		
 		// 変更処理
-		mMap.erase(it);
-		mMap[newName] = targetCmd;
+		in->mMap.erase(it);
+		in->mMap[newName] = targetCmd;
 		return true;
 	}
 
@@ -156,7 +165,7 @@ bool CommandMap::Reregister(launcherapp::core::Command* targetCmd)
 
 void CommandMap::Swap(CommandMap& rhs)
 {
-	mMap.swap(rhs.mMap);
+	in->mMap.swap(rhs.in->mMap);
 }
 
 void CommandMap::Query(
@@ -164,7 +173,7 @@ void CommandMap::Query(
 	CommandQueryItemList& commands
 )
 {
-	for (auto& item : mMap) {
+	for (auto& item : in->mMap) {
 
 		auto& command = item.second;
 
@@ -181,7 +190,7 @@ void CommandMap::Query(
 launcherapp::core::Command*
 CommandMap::FindOne(Pattern* pattern)
 {
-	for (auto& item : mMap) {
+	for (auto& item : in->mMap) {
 
 		auto& command = item.second;
 		if (command->Match(pattern) == Pattern::Mismatch) {
@@ -196,8 +205,8 @@ CommandMap::FindOne(Pattern* pattern)
 std::vector<launcherapp::core::Command*>&
 CommandMap::Enumerate(std::vector<launcherapp::core::Command*>& commands)
 {
-	commands.reserve(commands.size() + mMap.size());
-	for (auto& item : mMap) {
+	commands.reserve(commands.size() + in->mMap.size());
+	for (auto& item : in->mMap) {
 		item.second->AddRef();
 		commands.push_back(item.second);
 	}
@@ -206,7 +215,7 @@ CommandMap::Enumerate(std::vector<launcherapp::core::Command*>& commands)
 
 size_t CommandMap::GetSize() const
 {
-	return mMap.size();
+	return in->mMap.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +225,7 @@ size_t CommandMap::GetSize() const
 struct CommandMap::Settings::PImpl
 {
 	CommandFile mCommandFile;
-	std::map<launcherapp::core::Command*, CommandEntryIF*> mEntryMap;
+	absl::btree_map<launcherapp::core::Command*, CommandEntryIF*> mEntryMap;
 };
 
 CommandMap::Settings::Settings() : in(new PImpl)

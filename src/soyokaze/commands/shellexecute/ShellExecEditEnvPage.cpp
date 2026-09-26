@@ -23,7 +23,7 @@ struct SettingPageEnv::PImpl
 {
 	// メッセージ欄
 	CString mMessage;
-	std::map<CString, CString> mEnviron;
+	absl::btree_map<CString, CString> mEnviron;
 };
 
 

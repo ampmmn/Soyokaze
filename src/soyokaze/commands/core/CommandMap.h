@@ -2,11 +2,6 @@
 
 #include "commands/core/CommandIF.h"
 #include "commands/core/CommandQueryItemList.h"
-#pragma warning(push)
-#pragma warning(disable: 4995)
-#include <absl/container/btree_map.h>
-#pragma warning(pop)
-#include <map>
 #include <vector>
 #include <cstddef>
 
@@ -53,7 +48,8 @@ public:
 	size_t GetSize() const;
 
 protected:
-	absl::btree_map<CString, launcherapp::core::Command*> mMap;
+	struct PImpl;
+	std::unique_ptr<PImpl> in;
 };
 
 
