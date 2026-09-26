@@ -207,7 +207,7 @@ CommandParam::CommandParam() :
 	mIsUse0(false),
 	mIsUseDescriptionForMatching(false),
 	mIsAllowAutoExecute(false),
-	mIsUseExtraCandidate(false)
+	mIsUseExtraCandidate(true)
 {
 }
 
