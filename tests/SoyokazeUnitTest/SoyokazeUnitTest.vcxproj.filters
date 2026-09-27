@@ -25,6 +25,9 @@
     <Filter Include="soyokaze\control">
       <UniqueIdentifier>{3E5890C2-2F02-4CC4-97B9-81A13F55B023}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\features\keywordmanager">
+      <UniqueIdentifier>{e39d97f2-b559-4366-8c6a-1ec7ce62213b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\shellexecute">
       <UniqueIdentifier>{548c770a-4503-4831-b7f4-ca6c0be7ce9a}</UniqueIdentifier>
     </Filter>
@@ -122,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\control\CommandListCtrlTest.cpp">
       <Filter>soyokaze\control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp">
+      <Filter>soyokaze\features\keywordmanager</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
       <Filter>soyokaze\commands\shellexecute</Filter>

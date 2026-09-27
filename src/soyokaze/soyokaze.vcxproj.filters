@@ -966,6 +966,9 @@
     <ClInclude Include="features\keywordmanager\CommandImportNameResolver.h">
       <Filter>features\keywordmanager</Filter>
     </ClInclude>
+    <ClInclude Include="features\keywordmanager\CommandImportExport.h">
+      <Filter>features\keywordmanager</Filter>
+    </ClInclude>
     <ClInclude Include="commands/core/CommandMap.h">
       <Filter>commands\core</Filter>
     </ClInclude>
@@ -2691,6 +2694,9 @@
       <Filter>commands\core</Filter>
     </ClCompile>
     <ClCompile Include="features\keywordmanager\CommandImportNameResolver.cpp">
+      <Filter>features\keywordmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="features\keywordmanager\CommandImportExport.cpp">
       <Filter>features\keywordmanager</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandMap.cpp">

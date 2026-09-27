@@ -50,6 +50,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandMapTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\CommandImportNameResolverTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\ImportCommandsDialogTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\CommandListCtrlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />

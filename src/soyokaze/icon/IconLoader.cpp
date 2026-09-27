@@ -14,8 +14,7 @@
 #include "utility/WinHttp.h"
 #include "resource.h"
 #pragma warning(push)
-#pragma warning(disable: 4995)
-#pragma warning(disable: 4324)
+#pragma warning(disable: 4324 4995 26815)
 #include <absl/container/btree_map.h>
 #include <absl/container/btree_set.h>
 #pragma warning(pop)

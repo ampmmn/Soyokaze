@@ -924,6 +924,7 @@
     <ClInclude Include="features\main\interprocess\CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
     <ClInclude Include="features\keywordmanager\CommandImportNameResolver.h" />
+    <ClInclude Include="features\keywordmanager\CommandImportExport.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
     <ClInclude Include="commands/core/CommandRepository.h" />
@@ -1498,6 +1499,7 @@
     <ClCompile Include="features\main\interprocess\CmdReceiveEdit.cpp" />
     <ClCompile Include="commands/core/CommandFile.cpp" />
     <ClCompile Include="features\keywordmanager\CommandImportNameResolver.cpp" />
+    <ClCompile Include="features\keywordmanager\CommandImportExport.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
     <ClCompile Include="commands\builtin\EditCommand.cpp" />

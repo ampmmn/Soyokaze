@@ -7,9 +7,7 @@
 #include "core/IFIDDefine.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
-#include "commands/core/CommandFile.h"
-#include "commands/core/CommandFileEntry.h"
-#include "features/keywordmanager/CommandImportNameResolver.h"
+#include "features/keywordmanager/CommandImportExport.h"
 #include "commands/core/UserCommandProvider.h"
 #include "commands/core/EditableIF.h"
 #include "commands/core/CommandProviderRepository.h"
@@ -18,7 +16,6 @@
 #include "utility/RefPtr.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
-#include "setting/AppPreference.h"
 #include "resource.h"
 #include <algorithm>
 
@@ -409,55 +406,14 @@ void KeywordManagerDialog::OnButtonImport()
 		return;
 	}
 
-	CommandFile commandFile;
-	commandFile.SetFilePath(dlg.GetPathName());
-	if (commandFile.Load() == false) {
+	CommandImportExport commandImportExport;
+	if (commandImportExport.LoadCommands(dlg.GetPathName()) == false) {
 		spdlog::error(_T("Failed to load command import file. path:{}"), (LPCTSTR)dlg.GetPathName());
 		AfxMessageBox(_T("ファイルを読み込めませんでした。"), MB_OK | MB_ICONERROR);
 		return;
 	}
 
-	struct ImportCandidate {
-		RefPtr<Command> mCommand;
-		RefPtr<UserCommandProvider> mProvider;
-		int mEntryIndex{0};
-	};
-
-	auto providerRepository = CommandProviderRepository::GetInstance();
-	std::vector<CommandProvider*> providers;
-	providerRepository->EnumProviders(providers);
-
-	std::vector<ImportCandidate> candidates;
-	std::vector<CString> skippedEntryNames;
-	for (int entryIndex = 0; entryIndex < commandFile.GetEntryCount(); ++entryIndex) {
-		auto entry = commandFile.GetEntry(entryIndex);
-		ImportCandidate candidate;
-		candidate.mEntryIndex = entryIndex;
-
-		for (auto provider : providers) {
-			RefPtr<UserCommandProvider> userProvider;
-			if (provider->QueryInterface(IFID_USERCOMMANDPROVIDER, (void**)&userProvider) == false) {
-				continue;
-			}
-
-			RefPtr<Command> command;
-			if (userProvider->LoadFrom(entry, &command) == false || command.get() == nullptr) {
-				command.reset();
-				continue;
-			}
-
-			candidate.mCommand.swap(command);
-			candidate.mProvider.swap(userProvider);
-			commandFile.MarkAsUsed(entry);
-			break;
-		}
-
-		if (candidate.mCommand.get() == nullptr) {
-			skippedEntryNames.push_back(commandFile.GetName(entry));
-			continue;
-		}
-		candidates.push_back(std::move(candidate));
-	}
+	const auto& skippedEntryNames = commandImportExport.GetSkippedEntryNames();
 
 	if (skippedEntryNames.empty() == false) {
 		CString warning;
@@ -469,17 +425,12 @@ void KeywordManagerDialog::OnButtonImport()
 		AfxMessageBox(warning, MB_OK | MB_ICONWARNING);
 	}
 
-	if (candidates.empty()) {
+	const auto& candidateCommands = commandImportExport.GetImportCandidates();
+	if (candidateCommands.empty()) {
 		if (skippedEntryNames.empty()) {
 			AfxMessageBox(_T("インポートできるコマンドがありません。"), MB_OK | MB_ICONWARNING);
 		}
 		return;
-	}
-
-	std::vector<Command*> candidateCommands;
-	candidateCommands.reserve(candidates.size());
-	for (auto& candidate : candidates) {
-		candidateCommands.push_back(candidate.mCommand.get());
 	}
 
 	ImportCommandsDialog importDialog;
@@ -489,79 +440,7 @@ void KeywordManagerDialog::OnButtonImport()
 	}
 
 	auto cmdRepoPtr = CommandRepository::GetInstance();
-	auto hotKeyManager = CommandHotKeyManager::GetInstance();
-	std::vector<CString> importedNames;
-	for (auto candidateIndex : importDialog.GetSelectedIndices()) {
-		if (candidateIndex < 0 || candidateIndex >= (int)candidates.size()) {
-			continue;
-		}
-
-		auto& candidate = candidates[candidateIndex];
-		RefPtr<Command> command(candidate.mCommand);
-		CString commandName = command->GetName();
-		RefPtr<Command> existingCommand(cmdRepoPtr->QueryAsWholeMatch(commandName));
-
-		if (existingCommand.get() != nullptr && importDialog.IsOverwriteSelected()) {
-			CString existingName = existingCommand->GetName();
-			CommandHotKeyMappings previousMappings;
-			hotKeyManager->GetMappings(previousMappings);
-
-			CommandHotKeyAttribute previousHotKey;
-			bool hasPreviousHotKey = false;
-			for (int index = 0; index < previousMappings.GetItemCount(); ++index) {
-				if (previousMappings.GetName(index) != existingName) {
-					continue;
-				}
-				previousMappings.GetHotKeyAttr(index, previousHotKey);
-				hasPreviousHotKey = true;
-				break;
-			}
-
-			cmdRepoPtr->UnregisterCommand(existingCommand.get());
-			command->AddRef();
-			cmdRepoPtr->RegisterCommand(command.get());
-
-			CommandHotKeyMappings currentMappings;
-			hotKeyManager->GetMappings(currentMappings);
-			bool hasChanged = currentMappings.RemoveItem(commandName);
-			if (hasPreviousHotKey) {
-				currentMappings.AddItem(commandName, previousHotKey);
-				hasChanged = true;
-			}
-			if (hasChanged) {
-				auto preference = AppPreference::Get();
-				preference->SetCommandKeyMappings(currentMappings);
-				preference->Save();
-			}
-		}
-		else {
-			if (existingCommand.get() != nullptr) {
-				CString uniqueName = launcherapp::core::CommandImportNameResolver::GetUniqueName(commandName, [&](const CString& name) {
-					RefPtr<Command> existing(cmdRepoPtr->QueryAsWholeMatch(name));
-					return existing.get() != nullptr;
-				});
-
-				auto entry = static_cast<CommandFileEntry*>(commandFile.GetEntry(candidate.mEntryIndex));
-				entry->SetName(uniqueName);
-				RefPtr<Command> renamedCommand;
-				if (candidate.mProvider->LoadFrom(entry, &renamedCommand) == false || renamedCommand.get() == nullptr) {
-					spdlog::error(_T("Failed to reload command with an import name. name:{}"), (LPCTSTR)uniqueName);
-					continue;
-				}
-				command.swap(renamedCommand);
-				commandName = command->GetName();
-			}
-
-			command->AddRef();
-			cmdRepoPtr->RegisterCommand(command.get());
-		}
-
-		if (std::none_of(importedNames.begin(), importedNames.end(), [&](const CString& name) {
-			return name.CompareNoCase(commandName) == 0;
-		})) {
-			importedNames.push_back(commandName);
-		}
-	}
+	auto importedNames = commandImportExport.ImportCommands(importDialog.GetSelectedIndices(), importDialog.IsOverwriteSelected());
 
 	if (importedNames.empty()) {
 		return;
@@ -599,20 +478,15 @@ void KeywordManagerDialog::OnButtonExport()
 		return;
 	}
 
-	CommandFile commandFile;
-	commandFile.SetFilePath(dlg.GetPathName());
-	for (auto command : selectedCommands) {
-		auto entry = commandFile.NewEntry(command->GetName());
-		if (command->Save(entry) == false) {
-			spdlog::error(_T("Failed to save command for export. name:{}"), (LPCTSTR)command->GetName());
-			CString message;
-			message.Format(_T("コマンド %s の保存に失敗しました。"), (LPCTSTR)command->GetName());
-			AfxMessageBox(message, MB_OK | MB_ICONERROR);
-			return;
-		}
+	CommandImportExport commandImportExport;
+	auto result = commandImportExport.ExportCommands(selectedCommands, dlg.GetPathName());
+	if (result.mError == CommandImportExport::ExportError::CommandSaveFailed) {
+		spdlog::error(_T("Failed to save command for export. name:{}"), (LPCTSTR)result.mCommandName);
+		CString message;
+		message.Format(_T("コマンド %s の保存に失敗しました。"), (LPCTSTR)result.mCommandName);
+		AfxMessageBox(message, MB_OK | MB_ICONERROR);
 	}
-
-	if (commandFile.Save() == false) {
+	else if (result.mError == CommandImportExport::ExportError::FileSaveFailed) {
 		spdlog::error(_T("Failed to save exported command file. path:{}"), (LPCTSTR)dlg.GetPathName());
 		AfxMessageBox(_T("ファイルの保存に失敗しました。"), MB_OK | MB_ICONERROR);
 	}
