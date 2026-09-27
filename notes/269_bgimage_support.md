@@ -9,12 +9,12 @@
 
 ## 関連ファイル
 
-- `src/soyokaze/mainwindow/CandidateListRenderer.h`
-- `src/soyokaze/mainwindow/StandardCandidateListRenderer.h`
-- `src/soyokaze/mainwindow/StandardCandidateListRenderer.cpp`
-- `src/soyokaze/mainwindow/BGImageCandidateListRenderer.h`
-- `src/soyokaze/mainwindow/BGImageCandidateListRenderer.cpp`
-- `src/soyokaze/mainwindow/CandidateListCtrl.cpp`
+- `src/soyokaze/features/main/CandidateListRenderer.h`
+- `src/soyokaze/features/main/StandardCandidateListRenderer.h`
+- `src/soyokaze/features/main/StandardCandidateListRenderer.cpp`
+- `src/soyokaze/features/main/BGImageCandidateListRenderer.h`
+- `src/soyokaze/features/main/BGImageCandidateListRenderer.cpp`
+- `src/soyokaze/features/main/CandidateListCtrl.cpp`
 - `src/soyokaze/settingwindow/AppSettingPageBGImage.cpp`
 
 ## クラス構成

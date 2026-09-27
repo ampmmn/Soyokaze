@@ -10,7 +10,7 @@
 #include "hotkey/CommandHotKeyManager.h"
 #include "setting/AppPreference.h"
 #include "commands/core/CommandFile.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "features/main/controller/MainWindowController.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 

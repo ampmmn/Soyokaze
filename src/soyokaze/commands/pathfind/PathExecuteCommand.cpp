@@ -12,7 +12,7 @@
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "features/main/controller/MainWindowController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -1,0 +1,2308 @@
+// LauncherMainWindow.cpp : 実装ファイル
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "app/LauncherApp.h"
+#include "features/manual/Manual.h"
+#include "features/main/LauncherMainWindow.h"
+#include "features/main/CandidateListCtrl.h"
+#include "features/main/ExtraCandidateListCtrl.h"
+#include "features/main/state/MainWindowParamSearchingState.h"
+#include "commands/history/HistoryCommandQueryRequest.h"
+#include "matcher/CommandToken.h"
+#include "features/main/layout/MainWindowLayout.h"
+#include "features/main/layout/MainWindowAppearance.h"
+#include "features/main/MainWindowInput.h"
+#include "features/main/controller/LauncherMainWindowController.h"
+#include "features/main/MainWindowCommandQueryRequest.h"
+#include "features/main/optionbutton/MainWindowOptionButton.h"
+#include "features/main/guide/GuideCtrl.h"
+#include "features/main/CommandActionHandlerRegistry.h"
+#include "core/IFIDDefine.h"
+#include "commands/core/CommandRepository.h"
+#include "actions/core/ActionParameter.h"
+#include "actions/core/ActionParameter.h"
+#include "commands/core/ContextMenuSourceIF.h"
+#include "commands/core/SelectionBehavior.h"
+#include "commands/common/Clipboard.h"
+#include "afxdialogex.h"
+#include "utility/Path.h"
+#include "SharedHwnd.h"
+#include "hotkey/AppHotKey.h"
+#include "hotkey/CommandHotKeyManager.h"
+#include "hotkey/KeyInputWatch.h"
+#include "icon/IconLoader.h"
+#include "setting/AppPreference.h"
+#include "features/main/AppSound.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
+#include "utility/ProcessPath.h"
+#include "utility/ScopeAttachThreadInput.h"
+#include "features/main/MainWindowHotKey.h"
+#include "features/main/OperationWatcher.h"
+#include "features/main/MouseoverActivateWindow.h"
+#include "features/main/state/LauncherWindowState.h"
+#include "features/main/state/MainWindowHiddenState.h"
+#include "features/main/state/MainWindowSearchingState.h"
+#include "macros/core/MacroRepository.h"
+#include "matcher/CommandToken.h"
+#include "features/main/CandidateList.h"
+#include <algorithm>
+#include <thread>
+#include <map>
+
+#include <dwmapi.h>
+#pragma comment(lib, "Dwmapi.lib")
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+using Command = launcherapp::core::Command;
+
+using namespace launcherapp;
+using namespace launcherapp::mainwindow;
+using namespace launcherapp::mainwindow::controller;
+using namespace launcherapp::actions::core;
+using GuideCtrl = launcherapp::mainwindow::guide::GuideCtrl;
+
+struct LauncherMainWindow::PImpl
+{
+	PImpl(LauncherMainWindow* thisPtr) : 
+		mDropTargetDialog(thisPtr),
+		mDropTargetEdit(thisPtr)
+	{
+	}
+
+	void UpdateCommandString(Command* cmd, int& startPos, int& endPos);
+	void UpdateGuideString(Command* cmd);
+
+// 入力データ
+	// 入力欄のテキスト情報
+	MainWindowInput mInput;
+	// 最後に外部からの入力によって更新された時点での文字列
+	CString mLastInputStr;
+	// 現在選択中のコマンドの説明
+	CString mDescriptionStr;
+	// 現在の候補一覧(選択中の項目もここが管理する)
+	CandidateList mCandidates;
+
+// キーワード検索状態
+	bool mIsQueryDoing{false};
+	bool mIsUpdatingExtraCandidate{false};
+
+	// ウインドウハンドル(共有メモリに保存する用)
+	std::unique_ptr<SharedHwnd> mSharedHwnd;
+	   // 後で起動したプロセスから有効化するために共有メモリに保存している
+
+// ウインドウ上に配置する部品
+	// キーワード入力エディットボックス
+	KeywordEdit mKeywordEdit;
+	// アイコン描画用ラベル
+	CaptureIconLabel mIconLabel;
+	// 候補一覧表示用リストボックス
+	CandidateListCtrl mCandidateListBox;
+	ExtraCandidateListCtrl mExtraCandidateListBox;
+	std::vector<RefPtr<Command>> mExtraCandidates;
+	// オプションボタン
+	MainWindowOptionButton mOptionButton;
+	// ガイド欄
+	GuideCtrl mGuideCtrl;
+
+// ウインドウ状態管理
+	// 位置・サイズ・コンポーネントの配置を管理するクラス
+	std::unique_ptr<MainWindowLayout> mLayout;
+	// 外観(色、フォント)などを管理するクラス
+	std::unique_ptr<MainWindowAppearance> mAppearance;
+	// 表示を抑制中か
+	bool mIsWindowDisplayBlocked{false};
+	// フォーカスを失ったときの非表示を一時的に抑制中か
+	bool mIsBlockDeactivateOnUnfocus{false};
+	// 現在の入力状態
+	std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> mState;
+
+// ホットキー関連
+	// 入力画面を呼び出すホットキー関連の処理をする
+	std::unique_ptr<AppHotKey> mHotKeyPtr;
+	std::unique_ptr<MainWindowHotKey> mMainWindowHotKeyPtr;
+	// 現在選択中のコマンドに対する追加アクションについてのホットキーを管理する
+	CommandActionHandlerRegistry mActionHandlerRegistry;
+
+	// キー入力監視(修飾キー入力によるホットキー機能用)
+	KeyInputWatch mKeyInputWatch;
+
+// 外部との連携用
+	// 外部からのコマンド受付用エディットボックス
+	CmdReceiveEdit mCmdReceiveEdit;
+	// ドロップターゲット
+	LauncherDropTarget mDropTargetDialog;
+	LauncherDropTarget mDropTargetEdit;
+
+// その他
+	// 稼働状況を監視する(長時間連続稼働を警告する目的)
+	OperationWatcher mOpWatcher;
+	// マウスカーソルの移動によるアクティブ状態を監視する
+	MouseoverActivateWindow mMouseoverActivateWindow;
+
+};
+
+// 候補欄の選択変更により、新しく選択されたコマンドの名前で選択欄のテキストを置き換える
+void LauncherMainWindow::PImpl::UpdateCommandString(Command* cmd, int& startPos, int& endPos)
+{
+	spdlog::debug("UpdateCommandString");
+
+	// コマンド名
+	auto cmdName = cmd->GetName();
+
+	// コマンド名が前回の入力ワードと前方一致し、文字列が増えていたら
+	if (cmdName.Find(mLastInputStr) == 0 && cmdName.GetLength() > mLastInputStr.GetLength()) {
+		// 
+		mInput.SetKeyword(cmdName);
+		// 追記部分を選択した状態にする
+		startPos = mLastInputStr.GetLength();
+		endPos = cmdName.GetLength();
+	}
+	else {
+		// 上記に該当しない場合は、前回の状態から変更しない
+		mInput.SetKeyword(mLastInputStr);
+		// (キャレット選択もしない)
+		startPos = mInput.GetLength();
+		endPos = mInput.GetLength();
+	}
+
+	// 説明の更新
+	mDescriptionStr = cmd->GetDescription();
+	if (mDescriptionStr.IsEmpty()) {
+		mDescriptionStr = cmd->GetName();
+	}
+
+	// ガイド文字列の更新
+	UpdateGuideString(cmd);
+
+	// アイコン更新
+	mIconLabel.DrawIcon(cmd->GetIcon());
+}
+
+// ガイド欄に表示する文字列を生成する
+void LauncherMainWindow::PImpl::UpdateGuideString(Command* cmd)
+{
+	mGuideCtrl.Draw(cmd);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+// LauncherMainWindow ダイアログ
+
+LauncherMainWindow::LauncherMainWindow(CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_MAIN, pParent),
+	in(std::make_unique<PImpl>(this))
+{
+	in->mLayout = std::make_unique<MainWindowLayout>(this);
+
+	in->mCandidateListBox.SetCandidateList(&in->mCandidates);
+	in->mActionHandlerRegistry.Initialize(&in->mCandidates);
+	in->mState = std::make_unique<launcherapp::mainwindow::state::HiddenState>(this);
+
+	GuideCtrl::Initialize();
+}
+
+LauncherMainWindow::~LauncherMainWindow()
+{
+	in->mExtraCandidateListBox.HidePopup();
+	in->mActionHandlerRegistry.Finalize(&in->mCandidates);
+	in->mCandidates.RemoveListener(&in->mCandidateListBox);
+}
+
+void LauncherMainWindow::DoDataExchange(CDataExchange* pDX)
+{
+	auto& commandStr = in->mInput.CommandStr();
+
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_COMMAND, commandStr);
+	DDX_Text(pDX, IDC_STATIC_DESCRIPTION, in->mDescriptionStr);
+}
+
+#pragma warning( push )
+#pragma warning( disable : 26454 )
+
+BEGIN_MESSAGE_MAP(LauncherMainWindow, CDialogEx)
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_EN_CHANGE(IDC_EDIT_COMMAND, OnEditCommandChanged)
+	ON_WM_SHOWWINDOW()
+	ON_WM_NCHITTEST()
+	ON_WM_ACTIVATE()
+	ON_WM_ENTERSIZEMOVE()
+	ON_WM_EXITSIZEMOVE()
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CANDIDATE, OnLvnItemChange)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_CANDIDATE, OnNMClick)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CANDIDATE, OnNMDblclk)
+	ON_WM_SIZING()
+	ON_WM_SIZE()
+	ON_WM_MOVE()
+	ON_WM_MBUTTONUP()
+	ON_MESSAGE(LauncherMainWindowMessageID::INPUTKEY, OnKeywordEditNotify)
+	ON_MESSAGE(WM_APP+256, OnSelectionChangedMessage)
+	ON_MESSAGE(WM_APP+257, OnUserMessageRequestParamSearching)
+	ON_MESSAGE(LauncherMainWindowMessageID::ACTIVATEWINDOW, OnUserMessageActiveWindow)
+	ON_MESSAGE(LauncherMainWindowMessageID::RUNCOMMAND, OnUserMessageRunCommand)
+	ON_MESSAGE(WM_APP+4, OnUserMessageDragOverObject)
+	ON_MESSAGE(WM_APP+5, OnUserMessageDropObject)
+	ON_MESSAGE(WM_APP+6, OnUserMessageCaptureWindow)
+	ON_MESSAGE(LauncherMainWindowMessageID::HIDEWINDOW, OnUserMessageHide)
+	ON_MESSAGE(LauncherMainWindowMessageID::QUITAPPLICATION, OnUserMessageAppQuit)
+	ON_MESSAGE(LauncherMainWindowMessageID::SETCLIPBOARDSTRING, OnUserMessageSetClipboardString)
+	ON_MESSAGE(LauncherMainWindowMessageID::GETCLIPBOARDSTRING, OnUserMessageGetClipboardString)
+	ON_MESSAGE(LauncherMainWindowMessageID::SETTEXT, OnUserMessageSetText)
+	ON_MESSAGE(WM_APP+12, OnUserMessageSetSel)
+	ON_MESSAGE(WM_APP+13, OnUserMessageQueryComplete)
+	ON_MESSAGE(LauncherMainWindowMessageID::BLOCKDEACTIVATE, OnUserMessageBlockDeactivateOnUnfocus)
+	ON_MESSAGE(LauncherMainWindowMessageID::UPDATECANDIDATE, OnUserMessageUpdateCandidate)
+	ON_MESSAGE(LauncherMainWindowMessageID::COPYINPUTTEXT, OnUserMessageCopyText)
+	ON_MESSAGE(LauncherMainWindowMessageID::REQUESTCALLBACK, OnUserMessageRequestCallback)
+	ON_MESSAGE(WM_APP+18, OnUserMessageClearContent)
+	ON_MESSAGE(LauncherMainWindowMessageID::MOVETEMPORARY, OnUserMessageMoveTemporary)
+	ON_MESSAGE(LauncherMainWindowMessageID::BLOCKWINDOWDIAPLAY, OnUserMessageBlockWindowDiaplay)
+	ON_MESSAGE(LauncherMainWindowMessageID::POPUPMESSAGE, OnUserMessagePopupMessage)
+	ON_MESSAGE(LauncherMainWindowMessageID::EXPANDMACRO, OnUserMessageExpandMacro)
+	ON_MESSAGE(LauncherMainWindowMessageID::RELEASEMACROSTR, OnUserMessageReleaseMacroStr)
+	ON_MESSAGE(LauncherMainWindowMessageID::DELETEWORD, OnUserMessageDeleteWord)
+	ON_MESSAGE(WM_APP+255, OnUserMessageGuideClicked)
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_HELP, OnCommandHelp)
+	ON_WM_CTLCOLOR()
+	ON_WM_MEASUREITEM()
+	ON_BN_CLICKED(IDC_BUTTON_OPTION, OnButtonOptionClicked)
+	ON_COMMAND_RANGE(core::CommandHotKeyManager::ID_LOCAL_START, 
+	                 core::CommandHotKeyManager::ID_LOCAL_END, OnCommandHotKey)
+END_MESSAGE_MAP()
+
+#pragma warning( pop )
+
+void LauncherMainWindow::ActivateWindow(HWND hwnd)
+{
+	::PostMessage(hwnd, WM_APP+2, 0, 0);
+}
+
+void LauncherMainWindow::ActivateWindow()
+{
+	if (IsWindow(GetSafeHwnd())) {
+		LauncherMainWindow::ActivateWindow(GetSafeHwnd());
+	}
+}
+
+void LauncherMainWindow::HideWindow()
+{
+	LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
+		listener->OnLauncherUnactivate();
+	});
+	in->mLayout->HideWindow();
+}
+
+void LauncherMainWindow::HideWindowFromState()
+{
+	// Stateからの呼び出しでも、既存の非表示処理とイベント通知を共通化する
+	HideWindow();
+}
+
+void LauncherMainWindow::ClearContent()
+{
+	// Stateからの通常のクリア要求ではレイアウトの強制更新を行わない
+	ClearContentImpl(false);
+}
+
+void LauncherMainWindow::SetFocusToEdit()
+{
+	GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+}
+
+bool LauncherMainWindow::HasKeyword() const
+{
+	return in->mInput.HasKeyword();
+}
+
+bool LauncherMainWindow::IsWindowVisibleFromState() const
+{
+	return ::IsWindowVisible(GetSafeHwnd()) != FALSE;
+}
+
+bool LauncherMainWindow::IsWindowActive() const
+{
+	return GetSafeHwnd() == ::GetActiveWindow();
+}
+
+bool LauncherMainWindow::IsShowToggleEnabled() const
+{
+	return AppPreference::Get()->IsShowToggle();
+}
+
+void LauncherMainWindow::ChangeState(std::unique_ptr<launcherapp::mainwindow::state::LauncherWindowState> state)
+{
+	if (state == nullptr) {
+		return;
+	}
+
+	// 現在のStateを終了してから所有権を移し、新しいStateの開始処理を呼び出す
+	if (in->mState) {
+		in->mState->OnExit();
+	}
+	in->mState = std::move(state);
+	in->mState->OnEnter();
+}
+
+/**
+  現在の入力内容が追加候補検索を開始できる状態か確認する
+  コマンドの引数、またはコマンド名の後ろに入力された絶対パスを確認する
+  @return 追加候補検索を開始できる場合はtrue
+*/
+bool LauncherMainWindow::CanStartParamSearching()
+{
+	if (AppPreference::Get()->IsUseExtraCandidateList() == false) {
+		return false;
+	}
+
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	if (startPos != endPos) {
+		return false;
+	}
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	bool isPathParameter = tokens.GetPathParameterRange(tokenStart, tokenEnd);
+	if (isPathParameter == false) {
+		if (tokens.GetCount() < 2 || tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0) {
+			return false;
+		}
+	}
+	CString parameter = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (parameter.IsEmpty()) {
+		return false;
+	}
+	if (parameter[0] == _T('"')) {
+		return false;
+	}
+	int selectedIndex = in->mCandidates.GetCurrentSelect();
+	Command* command = in->mCandidates.GetCommand(selectedIndex);
+	if (command == nullptr) {
+		return false;
+	}
+	if (command->IsAcceptArguments()) {
+		return true;
+	}
+	return false;
+	//// ディレクトリを確定した場合は、直下の候補を続けて表示する
+	//bool result = Path::IsDirectory(parameter) != FALSE || isPathParameter;
+	//return result;
+}
+
+/**
+  追加候補検索の要求をメッセージキューへ登録する
+*/
+void LauncherMainWindow::RequestParamSearching()
+{
+	PostMessage(WM_APP+257, 0, 0);
+}
+
+/**
+  入力中のパラメータを検索し、追加候補一覧を更新して表示する
+  パラメータを検索できない場合や候補が存在しない場合は一覧を非表示にする
+*/
+void LauncherMainWindow::UpdateExtraCandidates()
+{
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	if (tokens.GetPathParameterRange(tokenStart, tokenEnd) == false &&
+		(tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false || tokenStart == 0)) {
+		HideExtraCandidates();
+		return;
+	}
+	CString keyword = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (keyword.IsEmpty() || keyword[0] == _T('"')) {
+		HideExtraCandidates();
+		return;
+	}
+	CString selectedName;
+	if (auto current = in->mExtraCandidateListBox.GetCurrentCommand()) {
+		selectedName = current->GetName();
+	}
+
+	using QueryRequest = launcherapp::commands::history::CommandQueryRequest;
+	using QueryResult = launcherapp::commands::core::CommandQueryResult;
+	RefPtr<QueryRequest> request(new QueryRequest(keyword));
+	GetCommandRepository()->Query(request.get());
+	if (request->WaitComplete(2000) == false) {
+		HideExtraCandidates();
+		return;
+	}
+	RefPtr<QueryResult> result;
+	if (request->GetResult(&result) == false || result.get() == nullptr) {
+		HideExtraCandidates();
+		return;
+	}
+
+	std::vector<RefPtr<Command>> candidates;
+	for (size_t i = 0; i < result->GetCount(); ++i) {
+		RefPtr<Command> command;
+		int matchLevel = Pattern::Mismatch;
+		if (result->Get(i, &command, &matchLevel) && command->CanResolve()) {
+			candidates.push_back(command);
+		}
+	}
+	in->mExtraCandidates = candidates;
+	in->mExtraCandidateListBox.SetCandidates(in->mExtraCandidates);
+	in->mExtraCandidateListBox.SelectByName(selectedName);
+	if (in->mExtraCandidates.empty()) {
+		HideExtraCandidates();
+		return;
+	}
+	CPoint point;
+	::GetCaretPos(&point);
+	in->mKeywordEdit.ClientToScreen(&point);
+	point.y += in->mExtraCandidateListBox.GetRowHeight() + 6;
+	in->mExtraCandidateListBox.ShowAt(point);
+}
+
+/**
+  追加候補一覧を非表示にし、保持している候補を破棄する
+*/
+void LauncherMainWindow::HideExtraCandidates()
+{
+	in->mExtraCandidateListBox.HidePopup();
+	in->mExtraCandidates.clear();
+}
+
+/**
+  追加候補一覧の選択位置を指定された件数だけ移動する
+  @param[in] offset    選択位置の移動量
+*/
+void LauncherMainWindow::OffsetExtraCandidateSelection(int offset)
+{
+	in->mExtraCandidateListBox.OffsetSelection(offset);
+}
+
+/**
+  追加候補一覧が空か確認する
+  @return 追加候補が存在しない場合はtrue
+*/
+bool LauncherMainWindow::IsExtraCandidateListEmpty() const
+{
+	return in->mExtraCandidates.empty();
+}
+
+/**
+  選択中の追加候補を解決し、入力欄のパラメータへ反映する
+  解決に成功した場合は入力内容を更新して通常の候補検索を再実行する
+*/
+void LauncherMainWindow::ResolveExtraCandidate()
+{
+	auto command = in->mExtraCandidateListBox.GetCurrentCommand();
+	if (command == nullptr) {
+		return;
+	}
+	CString text;
+	in->mKeywordEdit.GetWindowText(text);
+	int startPos = 0;
+	int endPos = 0;
+	in->mKeywordEdit.GetSel(startPos, endPos);
+	launcherapp::matcher::CommandToken tokens(text);
+	int tokenStart = 0;
+	int tokenEnd = 0;
+	if (tokens.GetPathParameterRange(tokenStart, tokenEnd) == false &&
+		tokens.GetTokenRange(endPos, tokenStart, tokenEnd) == false) {
+		return;
+	}
+	CString value = text.Mid(tokenStart, tokenEnd - tokenStart);
+	if (command->Resolve(value) == false) {
+		return;
+	}
+	text = text.Left(tokenStart) + value + text.Mid(tokenEnd);
+	in->mInput.SetKeyword(text);
+	in->mLastInputStr = text;
+	in->mIsUpdatingExtraCandidate = true;
+	in->mKeywordEdit.SetWindowText(text);
+	in->mKeywordEdit.SetSel(tokenStart + value.GetLength(), tokenStart + value.GetLength());
+	in->mIsUpdatingExtraCandidate = false;
+	UpdateData(FALSE);
+	QueryAsync(text);
+}
+
+
+void LauncherMainWindow::ShowHelpTop()
+{
+	SPDLOG_DEBUG("start");
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate("Top");
+}
+
+
+// 現在のスレッドのウインドウで最も前面にあるウインドウハンドルを取得する
+static HWND GetTopMostWindowInCurrentThread()
+{
+	HWND hTopMost = nullptr;
+	EnumThreadWindows(GetCurrentThreadId(), [](HWND h, LPARAM param) -> BOOL {
+		if (IsWindowVisible(h) == FALSE) {
+			return TRUE;
+		}
+
+		HWND* pTopMost = reinterpret_cast<HWND*>(param);
+		if (*pTopMost == nullptr) {
+			// 初回はとりあえず拾っておく
+			*pTopMost = h;
+			return TRUE;
+		}
+	 	if (GetWindow(h, GW_HWNDPREV) == nullptr) {
+			*pTopMost = h;
+			return FALSE; // 最前面が見つかったので列挙終了
+		}
+		return TRUE;
+	}, reinterpret_cast<LPARAM>(&hTopMost));
+
+	return hTopMost;
+}
+
+/**
+ * ActiveWindow経由の処理
+ * (後続プロセスから処理できるようにするためウインドウメッセージ経由で処理している)
+ */
+LRESULT LauncherMainWindow::OnUserMessageActiveWindow(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	// 表示要求の詳細な扱いを現在のStateへ委譲する
+	in->mState->OnShowRequested((wParam & 0x1) != 0);
+	return 0;
+}
+
+void LauncherMainWindow::ShowWindowFromState()
+{
+	HWND hwnd = GetSafeHwnd();
+	ScopeAttachThreadInput scope;
+
+	// もし外部からメインウインドウの表示が抑制状態である場合は表示しない
+	// (現在、設定画面表示中のみ抑制する)
+	if (in->mIsWindowDisplayBlocked) {
+		// 設定画面などで表示を抑制中は、対象ウインドウを表示せず前面のウインドウを維持する
+		auto h = GetTopMostWindowInCurrentThread();
+		::SetForegroundWindow(h);
+		return;
+	}
+
+	// 表示する際の位置を決定(移動)する
+	in->mLayout->RecalcWindowOnActivate(this);
+
+	// プレースホルダー設定
+	AppPreference* pref= AppPreference::Get();
+	LPCTSTR placeholderText = pref->IsDrawPlaceHolder() ? _T("キーワードを入力してください") : _T("");
+	in->mKeywordEdit.SetPlaceHolder(placeholderText);
+
+	// 表示
+	::ShowWindow(hwnd, SW_SHOW);
+	::SetForegroundWindow(hwnd);
+	::BringWindowToTop(hwnd);
+
+	if (pref->IsIMEOffOnActive()) {
+		in->mKeywordEdit.SetIMEOff();
+	}
+
+	LauncherEventDispatcher::Get()->Dispatch([](LauncherEventListenerIF* listener) {
+		listener->OnLauncherActivate();
+	});
+}
+
+void LauncherMainWindow::ActivateVisibleWindow()
+{
+	HWND hwnd = GetSafeHwnd();
+	ScopeAttachThreadInput scope;
+	// 既に表示中のウインドウは再配置せず、アクティブ化だけを行う
+	::ShowWindow(hwnd, SW_SHOW);
+	::SetForegroundWindow(hwnd);
+	::BringWindowToTop(hwnd);
+}
+
+/**
+ * 後続プロセスから "-c <文字列>" 経由でコマンド実行指示を受け取ったときの処理
+ */
+LRESULT LauncherMainWindow::OnUserMessageRunCommand(WPARAM wParam, LPARAM lParam)
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	bool isWaitSync = (wParam == 1);
+
+	if(isWaitSync) {
+		// 入力欄にテキストを入力して、検索をまって、先頭の候補を実行する
+		OnUserMessageSetText(0, lParam);
+		OnOK();
+		return 0;
+	}
+	else {
+		// 単にテキストに合致するコマンドを実行するだけ
+		LPCTSTR text = (LPCTSTR)lParam;
+		if (text == nullptr) {
+			SPDLOG_WARN(_T("text is null"));
+			return 0;
+		}
+		ExecuteCommand(text);
+		return 0;
+	}
+}
+
+/**
+ * 入力欄にテキストをセットする処理
+ */
+LRESULT LauncherMainWindow::OnUserMessageSetText(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	LPCTSTR text = (LPCTSTR)lParam;
+	if (text == nullptr) {
+		SPDLOG_WARN(_T("text is null"));
+		return 0;
+	}
+	SPDLOG_DEBUG(_T("text:{}"), text);
+
+	in->mInput.SetKeyword(text);
+	in->mLastInputStr = text;
+	in->mKeywordEdit.SetWindowText(text);
+	in->mKeywordEdit.SetCaretToEnd();
+
+	QuerySync();
+
+	return 0;
+}
+
+/**
+ * 入力欄の選択範囲を設定する
+ */
+LRESULT LauncherMainWindow::OnUserMessageSetSel(WPARAM wParam, LPARAM lParam)
+{
+	SPDLOG_DEBUG(_T("args wp:{0} lp:{1}"), wParam, lParam);
+
+	int startChar = (int)wParam;
+
+	int endChar = startChar;
+	int lp = (int)lParam;
+	if(startChar == -1) {
+		// startChar=-1は選択解除として扱う
+	}
+	else if (lp >= 0) {
+		endChar = startChar + lp;
+	}
+	else {
+		// lParamが負の値の場合、逆方向からの選択として扱う(bluewindの挙動に合わせる)
+		CString str;
+		in->mKeywordEdit.GetWindowText(str);
+
+		if (startChar == 0) {
+			startChar = str.GetLength();
+		}
+
+		startChar = startChar + lp;
+		endChar = startChar - lp;
+		SPDLOG_DEBUG(_T("text:{0} length:{1} startChar:{2} endChar:{3}"), 
+		             (LPCTSTR)str, str.GetLength(), startChar, endChar);
+	}
+
+	in->mKeywordEdit.SetSel(startChar, endChar);
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageQueryComplete(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	// 検索結果の処理とState遷移の判断を現在のStateへ委譲する
+	in->mState->OnQueryCompleted(reinterpret_cast<launcherapp::commands::core::CommandQueryResult*>(lParam));
+	return 0;
+}
+
+
+void LauncherMainWindow::HandleQueryCompleted(launcherapp::commands::core::CommandQueryResult* result)
+{
+	// Stateから呼び出された検索完了処理では、従来の候補更新処理だけを担当する
+	in->mIsQueryDoing = false;
+	if (result != nullptr) {
+
+		int matchLevel = Pattern::Mismatch;
+
+		std::vector<RefPtr<Command> > commands;
+		size_t count = result->GetCount();
+		for (size_t i = 0; i < count; ++i) {
+			matchLevel = Pattern::Mismatch;
+			RefPtr<Command> cmd;
+			if (result->Get(i, &cmd, &matchLevel) == false) {
+				continue;
+			}
+			commands.push_back(cmd);
+		}
+		result->Release();
+
+		// 自動実行を許可する場合は実行する
+		bool canAutoExecute = commands.size() == 1 && matchLevel == Pattern::WholeMatch;		if (canAutoExecute && commands[0]->IsAllowAutoExecute()) {
+			RunCommand(commands[0]);
+			return;
+		}
+
+		in->mCandidates.SetItems(commands);
+
+	}
+	else {
+		in->mCandidates.Clear();
+	}
+
+	UpdateCandidates();
+}
+
+LRESULT LauncherMainWindow::OnUserMessageBlockDeactivateOnUnfocus(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	in->mIsBlockDeactivateOnUnfocus = lParam != 0;
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageUpdateCandidate(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	if (::IsWindowVisible(GetSafeHwnd()) == FALSE) {
+		// ウインドウを表示していない場合は更新しない
+		return 0;
+	}
+
+	// 候補欄を更新するため、再度検索リクエストを出す
+	QueryAsync(in->mLastInputStr);
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageCopyText(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	// 入力欄のテキストをコピー
+	launcherapp::commands::common::Clipboard::Copy(in->mInput.GetKeyword());
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageRequestCallback(WPARAM wParam, LPARAM lParam)
+{
+	typedef LRESULT(*LAUNCHERWINDOWCALLBACK)(LPARAM lp);
+	LAUNCHERWINDOWCALLBACK callbackFunc = (LAUNCHERWINDOWCALLBACK)wParam;
+	return callbackFunc(lParam);
+}
+
+LRESULT LauncherMainWindow::OnUserMessageClearContent(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	ClearContent();
+	in->mState->OnContentCleared();
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageMoveTemporary(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+
+	// VK_UP/DOWN/LEFT/RIGHTを移動の方向として使う(手抜き)
+	int vk = (int)wParam;
+	return in->mLayout->MoveTemporary(vk) ? 0 : 1;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageBlockWindowDiaplay(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	bool isBlock = wParam != 0;
+	in->mIsWindowDisplayBlocked = isBlock;
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessagePopupMessage(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	// utf-8文字列
+	LPCSTR msg = (LPCSTR)lParam;
+
+	CString msgW;
+	UTF2UTF(msg, msgW);
+
+	auto app = (LauncherApp*)AfxGetApp();
+	app->PopupMessage(msgW);
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageExpandMacro(WPARAM wParam, LPARAM lParam)
+{
+	auto input = (const wchar_t*)wParam;
+	if (input == nullptr) {
+		return 1;
+	}
+
+	// マクロを展開
+	CString buff(input);
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(buff);
+
+	wchar_t** result = (wchar_t**)lParam;
+	if (result == nullptr) {
+		return 1;
+	}
+
+	// バッファを割り当てて呼び出し元に返す
+	// (使い終わったものはOnUserMessageReleaseMacroStrで解放する)
+	size_t bufLen = buff.GetLength()+1;
+	auto p = new wchar_t[bufLen];
+	memcpy(p, (LPCTSTR)buff, sizeof(wchar_t) * bufLen);
+
+	*result = p;
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageReleaseMacroStr(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	wchar_t* p = (wchar_t*)lParam;
+	delete [] p;
+
+	return 0;
+}
+
+// 単語単位削除
+LRESULT LauncherMainWindow::OnUserMessageDeleteWord(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	// 音を鳴らす
+	AppSound::Get()->PlayInputSound();
+
+	in->mInput.RemoveLastWord();
+	in->mLastInputStr = in->mInput.GetKeyword();
+
+	// 検索リクエスト
+	QueryAsync();
+
+	UpdateData(FALSE);
+
+	// キャレット位置も更新する
+	in->mKeywordEdit.SetCaretToEnd();
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageGuideClicked(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	uint32_t modifier = (uint32_t)wParam;
+
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("Comlement: bommand is null"));
+		return 0;
+	}
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	RunCommand(cmd, ParameterBuilder::Create(), HOTKEY_ATTR(modifier, VK_RETURN));
+	return 0;
+}
+
+void LauncherMainWindow::OnButtonOptionClicked()
+{
+	ExecuteCommand(_T("setting"));
+}
+
+LRESULT 
+LauncherMainWindow::OnUserMessageDragOverObject(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	CWnd* wnd = (CWnd*)lParam;
+	if (wnd == this) {
+		SetDescription(CString((LPCTSTR)IDS_NEWREGISTER));
+	}
+	else if (wnd == &in->mKeywordEdit) {
+		SetDescription(CString((LPCTSTR)IDS_PASTE));
+	}
+	return 0;
+}
+
+LRESULT 
+LauncherMainWindow::OnUserMessageDropObject(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	COleDataObject* dataObj = (COleDataObject*)wParam;
+	CWnd* wnd = (CWnd*)lParam;
+
+	if (dataObj->IsDataAvailable(CF_HDROP)) {
+		std::vector<CString> files;
+
+		STGMEDIUM st;
+		if (dataObj->GetData(CF_HDROP, &st) ) {
+			HDROP dropInfo = static_cast<HDROP>(st.hGlobal);
+
+			int fileCount = (int)DragQueryFile( dropInfo, (UINT)-1, NULL, 0 );
+			files.reserve(fileCount);
+
+			Path filePath;
+			for (int i = 0; i < fileCount; ++i) {
+				DragQueryFile(dropInfo, i, filePath, (UINT)filePath.size());
+				files.push_back((LPCTSTR)filePath);
+			}
+		}
+
+		ASSERT(files.size() > 0);
+
+		if (wnd == this) {
+			// ファイル登録
+			GetCommandRepository()->RegisterCommandFromFiles(files);
+		}
+		else if (wnd == &in->mKeywordEdit) {
+			// キーワードのEdit欄にドロップされた場合はパスをコピー
+			for (auto& str : files) {
+				in->mInput.AddArgument(str);
+			}
+			UpdateData(FALSE);
+		}
+		return 0;
+	}
+
+	UINT urlFormatId = RegisterClipboardFormat(CFSTR_INETURL);
+	if (dataObj->IsDataAvailable((CLIPFORMAT)urlFormatId)) {
+
+		STGMEDIUM st;
+		if (dataObj->GetData((CLIPFORMAT)urlFormatId, &st) ) {
+			CString urlString((LPCTSTR)GlobalLock(st.hGlobal));
+			GlobalUnlock(st.hGlobal);
+
+			if (wnd == this) {
+				// URL登録
+				auto param = launcherapp::actions::core::ParameterBuilder::Create();
+				param->SetNamedParamString(_T("TYPE"), _T("ShellExecCommand"));
+				param->SetNamedParamString(_T("PATH"), urlString);
+
+				GetCommandRepository()->NewCommandDialog(param);
+
+				param->Release();
+			}
+			else if (wnd == &in->mKeywordEdit) {
+				in->mInput.AddArgument(urlString);
+				UpdateData(FALSE);
+			}
+
+			return 0;
+		}
+	}
+	return 0;
+}
+
+/**
+ 	アイコン欄をドラッグして他ウインドウをキャプチャしたときに実行されるハンドラ
+ 	@return 0
+ 	@param[in] wParam  0
+ 	@param[in] lParam  キャプチャ対象ウインドウハンドル
+*/
+LRESULT
+LauncherMainWindow::OnUserMessageCaptureWindow(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	HWND hTargetWnd = (HWND)lParam;
+	if (IsWindow(hTargetWnd) == FALSE) {
+		return 0;
+	}
+
+	ProcessPath processPath(hTargetWnd);
+
+	// 自プロセスのウインドウなら何もしない
+	if (GetCurrentProcessId() == processPath.GetProcessId()) {
+		return 0;
+	}
+
+	// 
+	try {
+		auto param = launcherapp::actions::core::ParameterBuilder::Create();
+		param->SetNamedParamString(_T("TYPE"), _T("ShellExecuteCommand"));
+		param->SetNamedParamString(_T("COMMAND"), processPath.GetProcessName());
+		param->SetNamedParamString(_T("PATH"), processPath.GetProcessPath());
+		param->SetNamedParamString(_T("DESCRIPTION"), processPath.GetCaption());
+		param->SetNamedParamString(_T("ARGUMENT"), processPath.GetCommandLine());
+
+		GetCommandRepository()->NewCommandDialog(param);
+
+		param->Release();
+		return 0;
+	}
+	catch(ProcessPath::Exception& e) {
+		CString errMsg((LPCTSTR)IDS_ERR_QUERYPROCESSINFO);
+		CString pid;
+		pid.Format(_T(" (PID:%d)"), e.GetPID());
+		errMsg += pid;
+
+		AfxMessageBox(errMsg);
+		SPDLOG_ERROR((LPCTSTR)errMsg);
+		return 0;
+	}
+}
+
+
+LRESULT LauncherMainWindow::OnUserMessageHide(
+	WPARAM wParam,
+	LPARAM lParam
+)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	// 非表示処理とState遷移を現在のStateへ委譲する
+	in->mState->OnHideRequested();
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageAppQuit(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	PostQuitMessage(0);
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageSetClipboardString(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	BOOL* isSetPtr = (BOOL*)wParam;
+	HGLOBAL hMem = (HGLOBAL)lParam;
+
+	::OpenClipboard(GetSafeHwnd());
+
+	EmptyClipboard();
+
+	UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
+	SetClipboardData(type, hMem);
+	CloseClipboard();
+
+	if (isSetPtr) {
+		*isSetPtr = TRUE;
+	}
+
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageGetClipboardString(
+	WPARAM wParam,
+ 	LPARAM lParam
+)
+{
+	UNREFERENCED_PARAMETER(wParam);
+
+	SPDLOG_DEBUG(_T("start"));
+
+	CString* strPtr = (CString*)lParam;
+
+	if (::OpenClipboard(GetSafeHwnd()) == FALSE) {
+		SPDLOG_ERROR(_T("Failed to open clipboard."));
+		return 0;
+	}
+
+	UINT type = sizeof(TCHAR) == 2 ? CF_UNICODETEXT : CF_TEXT;
+	HANDLE hMem = GetClipboardData(type);
+	if (hMem == NULL) {
+		CloseClipboard();
+		SPDLOG_WARN(_T("Clipboard is empty."));
+		return 0;
+	}
+
+	LPTSTR p = (LPTSTR)GlobalLock(hMem);
+	*strPtr = p;
+	GlobalUnlock(hMem);
+
+	CloseClipboard();
+
+	return 0;
+}
+
+bool LauncherMainWindow::ExecuteCommand(const CString& str)
+{
+	SPDLOG_DEBUG(_T("args str:{}"), (LPCTSTR)str);
+
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
+
+	auto cmd = GetCommandRepository()->QueryAsWholeMatch(actionParam->GetCommandString(), true);
+	if (cmd == nullptr) {
+		SPDLOG_ERROR(_T("Command does not exist. name:{}"), (LPCTSTR)actionParam->GetCommandString());
+		return false;
+	}
+
+	RunCommand(cmd, actionParam.release());
+	return true;
+}
+
+// タスクトレイのダブルクリック時通知
+LRESULT LauncherMainWindow::OnTaskTrayLButtonDblclk()
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	ActivateWindow();
+	return 0;
+}
+
+// タスクトレイからのコンテキストメニュー表示依頼
+LRESULT LauncherMainWindow::OnTaskTrayContextMenu(CWnd* wnd, CPoint point)
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	OnContextMenu(wnd, point);
+	return 0;
+}
+
+CWnd* LauncherMainWindow::GetWindowObject()
+{
+	return this;
+}
+
+IconLabel* LauncherMainWindow::GetIconLabel()
+{
+	return &in->mIconLabel;
+}
+
+CStatic* LauncherMainWindow::GetDescriptionLabel()
+{
+	return (CStatic*)GetDlgItem(IDC_STATIC_DESCRIPTION);
+}
+
+GuideCtrl* LauncherMainWindow::GetGuideLabel()
+{
+	return &in->mGuideCtrl;
+}
+
+KeywordEdit* LauncherMainWindow::GetEdit()
+{
+	return &in->mKeywordEdit;
+}
+
+CandidateListCtrl* LauncherMainWindow::GetCandidateList()
+{
+	return &in->mCandidateListBox;
+}
+
+CFont* LauncherMainWindow::GetMainWindowFont()
+{
+	return in->mAppearance->GetFont();
+}
+
+/** モニター構成変更後、現在の入力内容に応じてレイアウトを更新する */
+void LauncherMainWindow::RefreshLayoutAfterMonitorConfigurationChange()
+{
+	HWND hwnd = GetSafeHwnd();
+	if (IsWindow(hwnd) == FALSE) {
+		return;
+	}
+
+	// 現在の入力内容を強制反映し、復元後のウインドウサイズを整える
+	in->mLayout->UpdateInputStatus(&in->mInput, true);
+}
+
+void LauncherMainWindow::OnMainWindowFontChanged(CFont* font)
+{
+	in->mExtraCandidateListBox.SetPopupFont(font);
+}
+
+// LauncherMainWindow メッセージ ハンドラー
+
+BOOL LauncherMainWindow::OnInitDialog()
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	CDialogEx::OnInitDialog();
+	spdlog::debug("main thread TID:{}", GetCurrentThreadId());
+
+	in->mAppearance = std::make_unique<MainWindowAppearance>(this);
+	in->mKeyInputWatch.Create();
+
+	in->mGuideCtrl.SubclassDlgItem(IDC_STATIC_GUIDE, this);
+	in->mGuideCtrl.SetMainWindow(this);
+	in->mGuideCtrl.SetClickNotifyMessageId(WM_APP + 255);
+
+	in->mOpWatcher.StartWatch(this);
+	in->mMouseoverActivateWindow.Create(this);
+
+	// グローバルホットキーのイベント受け取り先として登録する
+	auto manager = core::CommandHotKeyManager::GetInstance();
+	manager->SetReceiverWindow(GetSafeHwnd());
+
+	in->mKeywordEdit.SubclassDlgItem(IDC_EDIT_COMMAND, this);
+	in->mKeywordEdit.SetSelectionNotifyMessage(WM_APP+256);
+
+	in->mCmdReceiveEdit.SubclassDlgItem(IDC_EDIT_COMMAND2, this);
+	in->mCmdReceiveEdit.Init();
+
+	in->mIconLabel.SubclassDlgItem(IDC_STATIC_ICON, this);
+
+	in->mCandidateListBox.SubclassDlgItem(IDC_LIST_CANDIDATE, this);
+	in->mCandidateListBox.InitColumns();
+	in->mExtraCandidateListBox.CreatePopup(this);
+	in->mExtraCandidateListBox.SetPopupFont(in->mAppearance->GetFont());
+
+	in->mOptionButton.SubclassDlgItem(IDC_BUTTON_OPTION, this);
+
+	// "バージョン情報..." メニューをシステム メニューに追加します。
+
+	// IDM_ABOUTBOX は、システム コマンドの範囲内になければなりません。
+	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
+	ASSERT(IDM_ABOUTBOX < 0xF000);
+
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	if (pSysMenu != nullptr)
+	{
+		BOOL bNameValid;
+		CString strAboutMenu;
+		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
+		ASSERT(bNameValid);
+		if (!strAboutMenu.IsEmpty())
+		{
+			pSysMenu->AppendMenu(MF_SEPARATOR);
+			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+		}
+	}
+
+
+	// このダイアログのアイコンを設定します。アプリケーションのメイン ウィンドウがダイアログでない場合、
+	//  Framework は、この設定を自動的に行います。
+	HICON icon = IconLoader::Get()->LoadDefaultIcon();
+	SetIcon(icon, TRUE);			// 大きいアイコンの設定
+	SetIcon(icon, FALSE);		// 小さいアイコンの設定
+
+	in->mSharedHwnd = std::make_unique<SharedHwnd>(GetSafeHwnd());
+
+	auto pref = AppPreference::Get();
+	in->mDescriptionStr = pref->GetDefaultComment();
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
+
+	// ウインドウ位置の復元
+	in->mLayout->RestoreWindowPosition(this, false);
+
+	// ホットキー登録
+	in->mHotKeyPtr = std::make_unique<AppHotKey>(GetSafeHwnd());
+	if (in->mHotKeyPtr->Register() == false) {
+		CString msg(_T("ホットキーを登録できませんでした。\n他のアプリケーションで使用されている可能性があります。\n"));
+		msg += in->mHotKeyPtr->ToString();
+
+		// この時点ではメインウインドウのサイズが未計算状態なので、ここでメッセージボックスを出すと
+		// メインウインドウがおかしなサイズで表示されてしまう。
+		// それを回避するため、メッセージボックスを出している間はメインウインドウを隠す
+		ShowWindow(SW_HIDE);
+		AfxMessageBox(msg);
+		ShowWindow(SW_SHOW);
+		SPDLOG_ERROR(_T("Failed to restiser app hot key!"));
+	}
+	in->mMainWindowHotKeyPtr = std::make_unique<MainWindowHotKey>();
+	in->mMainWindowHotKeyPtr->Register();
+	
+	// 設定値の読み込み
+	GetCommandRepository()->Load();
+
+	UpdateData(FALSE);
+
+	in->mDropTargetDialog.Register(this);
+	in->mDropTargetEdit.Register(&in->mKeywordEdit);
+
+	if (pref->IsHideOnStartup()) {
+		// 「起動直後に非表示」の場合はウインドウを隠す
+		PostMessage(WM_APP+7, 0, 0);
+	}
+	else {
+		// そうでない場合はアクティブにする
+		PostMessage(WM_APP+2, 1, 0);
+	}
+	ClearContent();
+
+	spdlog::info(_T("MainWindow initialized."));
+
+	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
+}
+
+// ダイアログに最小化ボタンを追加する場合、アイコンを描画するための
+//  下のコードが必要です。ドキュメント/ビュー モデルを使う MFC アプリケーションの場合、
+//  これは、Framework によって自動的に設定されます。
+
+void LauncherMainWindow::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 描画のデバイス コンテキスト
+
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+
+		// クライアントの四角形領域内の中央
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+
+		// アイコンの描画
+		dc.DrawIcon(x, y, IconLoader::Get()->LoadDefaultIcon());
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+	}
+}
+
+// ユーザーが最小化したウィンドウをドラッグしているときに表示するカーソルを取得するために、
+//  システムがこの関数を呼び出します。
+HCURSOR LauncherMainWindow::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(IconLoader::Get()->LoadDefaultIcon());
+}
+
+LauncherMainWindow::CommandRepository*
+LauncherMainWindow::GetCommandRepository()
+{
+	return CommandRepository::GetInstance();
+}
+
+void LauncherMainWindow::SetDescription(const CString& msg)
+{
+	in->mDescriptionStr = msg;
+	UpdateData(FALSE);
+}
+
+void LauncherMainWindow::ClearContentImpl(bool isForceUpdate)
+{
+	SPDLOG_DEBUG(_T("start"));
+
+	AppPreference* pref= AppPreference::Get();
+	in->mDescriptionStr = pref->GetDefaultComment();
+	launcherapp::macros::core::MacroRepository::GetInstance()->Evaluate(in->mDescriptionStr);
+	in->mGuideCtrl.Draw(nullptr);
+
+	in->mIconLabel.DrawDefaultIcon();
+	in->mInput.Clear();
+	in->mCandidates.Clear();
+
+	// 入力欄と候補を空にした状態をレイアウトへ通知し、表示サイズを更新する
+	struct LocalInputStatus : public LauncherInput {
+		virtual bool HasKeyword() { return false; }
+	} status;
+	in->mLayout->UpdateInputStatus(&status, isForceUpdate);
+
+	UpdateData(FALSE);
+}
+
+// 補完
+void LauncherMainWindow::Complement()
+{
+	WaitQueryRequest();
+
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("Comlement: command is null"));
+		return ;
+	}
+
+	CString trailing;
+	bool hasTrailing = false;
+
+	bool hasCommmandCompletion = false;
+
+	int startPos;
+	int endPos;
+	CString keyword = in->mInput.GetKeyword();
+	// コマンドが独自の補完を実装している場合はそれを使う
+	RefPtr<launcherapp::core::SelectionBehavior> behavior;
+	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
+		hasCommmandCompletion = behavior->CompleteKeyword(keyword, startPos, endPos);
+		// 末尾にキャレットを設定する
+		startPos = keyword.GetLength();
+		endPos = keyword.GetLength();
+	}
+
+	if (hasCommmandCompletion) {
+		in->mLastInputStr = keyword;
+		in->mInput.SetKeyword(keyword, false);
+		SPDLOG_DEBUG(_T("caret pos (start,end)=({0},{1})"), startPos, endPos);
+
+		UpdateData(FALSE);
+		QuerySync();
+
+		// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
+		cmd = GetCurrentCommand();
+		if (cmd) {
+			in->mKeywordEdit.SetSel(startPos, endPos);
+		}
+	}
+	else {
+		// コマンドが独自の補完を実装していない場合は既定の補完処理を行う
+
+		in->mKeywordEdit.GetSel(startPos, endPos);   // 現在のキャレット位置を取得
+
+		launcherapp::matcher::CommandToken tok(in->mInput.GetKeyword());
+		// 現在のキャレット末尾より後ろにある文字を取得
+		hasTrailing = tok.GetTrailingString(endPos, trailing);
+
+		bool withSpace = true;
+		in->mInput.SetKeyword(cmd->GetName(), withSpace);
+		if (hasTrailing) {
+			in->mInput.AddArgument(trailing);
+		}
+
+		UpdateData(FALSE);
+
+		QuerySync();
+
+		// 直前のQuerySyncの結果、選択中のコマンドが変化するため、取り直す
+		cmd = GetCurrentCommand();
+		if (cmd) {
+			// コマンド名 + " " の位置にキャレットを設定する
+			int caretPos = cmd->GetName().GetLength() + 1;
+			in->mKeywordEdit.SetSel(caretPos, caretPos);
+		}
+	}
+}
+
+
+// 現在選択中のコマンドを取得
+Command*
+LauncherMainWindow::GetCurrentCommand()
+{
+	return in->mCandidates.GetCurrentCommand();
+}
+
+/**
+ * テキスト変更通知
+ */
+void LauncherMainWindow::OnEditCommandChanged()
+{
+	if (in->mIsUpdatingExtraCandidate) {
+		return;
+	}
+	// 入力変更後のState遷移をState側で判断する
+	in->mState->OnTextChanged();
+}
+
+void LauncherMainWindow::HandleTextChanged()
+{
+	UpdateInputState();
+	QueryAsync();
+}
+
+/**
+  入力欄の変更を内部状態へ反映する(候補検索は行わない)
+*/
+void LauncherMainWindow::UpdateInputState()
+{
+	UpdateData();
+
+	bool isReplaced = in->mInput.ReplaceInvisibleChars();
+
+	in->mLastInputStr = in->mInput.GetKeyword();
+	if (in->mInput.HasKeyword() == false) {
+		// 入力欄が空になってウインドウが縮小されても、退出として扱わない。
+		in->mMouseoverActivateWindow.ResetState();
+	}
+
+	// 音を鳴らす
+	AppSound::Get()->PlayInputSound();
+
+	// キー入力でCtrl-Backspaceを入力したとき、不可視文字(0x7E→Backspace)が入力される
+	// (Editコントロールの通常の挙動)
+	// このアプリはCtrl-Backspaceで入力文字列を単語単位削除をするが、一方で、上記挙動により
+	// 単語単位削除した後、0x7Eが挿入されるという謎挙動になるので、ここで0x7Fを明示的に消している
+	if (isReplaced) {
+
+		// FIXME: 0x7Fが含まれていたらCtrl-Backspace入力とみなす、という、ここの処理は変なので直したい
+		in->mInput.RemoveLastWord();
+		in->mLastInputStr = in->mInput.GetKeyword();
+
+		UpdateData(FALSE);
+
+		// キャレット位置も更新する
+		in->mKeywordEdit.SetCaretToEnd();
+	}
+
+	// 検索結果を待たず、入力状態に応じて候補欄を表示する
+	in->mLayout->UpdateInputStatus(&in->mInput, false);
+}
+
+// 入力キーワードで検索をリクエストを出す(完了をまたない)
+void LauncherMainWindow::QueryAsync()
+{
+	QueryAsync(in->mInput.GetKeyword());
+}
+
+void LauncherMainWindow::QueryAsync(const CString& keyword)
+{
+	PERFLOG("QueryAsync Start");
+	spdlog::stopwatch sw;
+
+	// 検索リクエスト
+	in->mIsQueryDoing = true;
+	auto req = new MainWindowCommandQueryRequest(keyword, GetSafeHwnd(), WM_APP+13);
+	GetCommandRepository()->Query(req);
+	req->Release();
+
+	PERFLOG("QueryAsync End {0:.6f} s.", sw);
+}
+
+
+// 入力キーワードで検索をリクエストを出し、完了を待つ
+void LauncherMainWindow::QuerySync()
+{
+	// キーワードによる絞り込みを実施
+	in->mIsQueryDoing = true;
+	auto req = new MainWindowCommandQueryRequest(in->mInput.GetKeyword(), GetSafeHwnd(), WM_APP+13);
+	GetCommandRepository()->Query(req);
+	req->Release();
+
+	WaitQueryRequest();
+}
+
+// 候補欄を更新
+void LauncherMainWindow::UpdateCandidates()
+{
+	spdlog::debug("LauncherMainWindow::UpdateCandidates start");
+
+	// 入力テキストが空文字列の場合はデフォルト表示に戻す
+	if (in->mInput.HasKeyword() == false) {
+		ClearContent();
+		return;
+	}
+	// 状態変更を通知
+	in->mLayout->UpdateInputStatus(&in->mInput, false);
+
+	auto pCmd = GetCurrentCommand();
+	if (pCmd == nullptr) {
+		// 候補なし
+		CString strMisMatch;
+		strMisMatch.LoadString(ID_STRING_MISMATCH);
+		in->mGuideCtrl.Draw(nullptr);
+		SetDescription(strMisMatch);
+		in->mIconLabel.DrawIcon(IconLoader::Get()->LoadUnknownIcon());
+		in->mCandidateListBox.Invalidate(TRUE);
+		return;
+	}
+	else {
+		// サムネイルの更新		
+		in->mIconLabel.DrawIcon(pCmd->GetIcon());
+
+		// ガイド欄
+		in->UpdateGuideString(pCmd);
+
+		// 説明欄の更新
+		CString descriptionStr = in->mCandidates.GetCurrentCommandDescription();
+		SetDescription(descriptionStr);
+	}
+
+	in->mCandidateListBox.Invalidate(TRUE);
+}
+
+void LauncherMainWindow::WaitQueryRequest()
+{
+	while(in->mIsQueryDoing) {
+		MSG msg;
+		GetMessage(&msg, 0, NULL, NULL);
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
+void
+LauncherMainWindow::RunCommand(
+	Command* cmd,
+	ParameterBuilder* actionParam
+)
+{
+	// 修飾キーの押下状態に応じてビットマスクを作成
+	UINT modifierMask = 0;
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+		modifierMask |= MOD_CONTROL;
+	}
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
+		modifierMask |= MOD_SHIFT;
+	}
+	if (GetAsyncKeyState(VK_LWIN) & 0x8000) {
+		modifierMask |= MOD_WIN;
+	}
+	if (GetAsyncKeyState(VK_MENU) & 0x8000) {
+		modifierMask |= MOD_ALT;
+	}
+
+	RunCommand(cmd, actionParam, HOTKEY_ATTR(modifierMask, VK_RETURN));
+}
+
+void
+LauncherMainWindow::RunCommand(
+	Command* cmd,
+	ParameterBuilder* actionParam,
+	const HOTKEY_ATTR& hotkeyAttr
+)
+{
+	// コマンド実行後のクローズ方法
+	auto closePolicy = launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC;
+	// コマンド実行後のクローズ方法を取得する
+	RefPtr<launcherapp::core::SelectionBehavior> behavior;
+	if (cmd->QueryInterface(IFID_SELECTIONBEHAVIOR, (void**)&behavior)) {
+		closePolicy = behavior->GetCloseWindowPolicy(hotkeyAttr.GetModifiers());
+	}
+	spdlog::debug("closePolicy: {}", (int)closePolicy);
+
+	auto hwnd = GetSafeHwnd();
+
+	auto th = std::thread([cmd, hotkeyAttr, actionParam, hwnd, closePolicy]() {
+
+		RefPtr<Action> action;
+		cmd->GetAction(hotkeyAttr, &action);
+		if (action.get() == nullptr) {
+			// 取得できなかった場合は修飾子なしのアクションを取得する
+			cmd->GetAction(HOTKEY_ATTR(0, VK_RETURN), &action);
+			if (action.get() == nullptr) {
+				spdlog::error(_T("(GetAction未実装 : {0})"), (LPCTSTR)cmd->GetName());
+			}
+		}
+
+		if (action.get()) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				spdlog::debug(_T("command {} Action::Perform returned false."), (LPCTSTR)cmd->GetName());
+				if (errMsg.IsEmpty() == FALSE) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
+			}
+		}
+		actionParam->Release();
+
+		// コマンドの参照カウントを下げる
+		cmd->Release();
+
+		if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_SYNC) {
+			// コマンドの実行を待ってウインドウを非表示する場合
+			::SendMessage(hwnd, WM_APP+18, 0, 0);   // ClearContent
+			::SendMessage(hwnd, LauncherMainWindowMessageID::HIDEWINDOW, 0, 0);
+		}
+
+	});
+	th.detach();
+
+	if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_ASYNC) {
+		// コマンドの実行を待たずにウインドウを非表示する場合
+		ClearContent();
+		::SendMessage(hwnd, LauncherMainWindowMessageID::HIDEWINDOW, 0, 0);
+	}
+	else if (closePolicy == launcherapp::core::SelectionBehavior::CLOSEWINDOW_NOCLOSE) {
+		// ウインドウを閉じない
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+	}
+}
+
+/**
+ 	コマンドを実行する
+ 	@param[in] cmd 実行対象のコマンドオブジェクト
+*/
+void LauncherMainWindow::RunCommand(
+	Command* cmd
+)
+{
+	// 実行時の音声を再生する
+	AppSound::Get()->PlayExecuteSound();
+
+	// 別スレッドで処理するのでコピーを生成する
+	CString str = in->mInput.GetKeyword();
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	// 実行
+	RefPtr<ParameterBuilder> actionParam(ParameterBuilder::Create(str));
+	RunCommand(cmd, actionParam.release());
+}
+
+/**
+ 	コマンドが持つコンテキストメニューを実行する
+ 	@param[in] cmd 実行対象のコマンドオブジェクト
+ 	@param[in] index メニューのインデックス
+*/
+void LauncherMainWindow::SelectCommandContextMenu(
+	Command* cmd,
+	int index
+)
+{
+	// 実行時の音声を再生する
+	//AppSound::Get()->PlayExecuteSound();
+
+	// 別スレッドで処理するのでコピーを生成する
+	CString str = in->mInput.GetKeyword();
+
+	// コマンドの参照カウントを上げる(実行完了時に下げる)
+	cmd->AddRef();
+
+	auto th = std::thread([cmd, index, str]() {
+
+		RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+		if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+			cmd->Release();
+			return;
+		}
+
+		auto actionParam = launcherapp::actions::core::ParameterBuilder::Create(str);
+
+		RefPtr<Action> action;
+		if (menuSrc->GetMenuItem(index, &action)) {
+			String errMsg;
+			if (action->Perform(actionParam, &errMsg) == false) {
+				if (errMsg.empty() == false) {
+					CString tmp;
+					auto app = (LauncherApp*)AfxGetApp();
+					app->PopupMessage(UTF2UTF(errMsg, tmp));
+				}
+			}
+		}
+		actionParam->Release();
+		cmd->Release();
+	});
+	th.detach();
+}
+
+
+void LauncherMainWindow::OnOK()
+{
+	// 実行可否と実行後のState遷移は現在のStateに判断させる
+	in->mState->OnExecuteRequested();
+}
+
+void LauncherMainWindow::ExecuteCurrentCommand()
+{
+	UpdateData();
+
+	// バックグラウンドで実行中の問い合わせを待つ
+	WaitQueryRequest();
+
+	// 問い合わせの結果として得られた選択中の候補を取得する
+	auto cmd = GetCurrentCommand();
+	if (cmd) {
+		// コマンドを実行する
+		RunCommand(cmd);
+	}
+	else {
+		// 空文字状態でEnterキーから実行したときはキーワードマネージャを表示
+		if (in->mInput.HasKeyword() == false) {
+			ExecuteCommand(_T("manager"));
+		}
+	}
+}
+
+void LauncherMainWindow::OnCancel()
+{
+	// 入力内容のクリアまたはウインドウ非表示の判断を現在のStateへ委譲する
+	in->mState->OnCancel();
+}
+
+LRESULT LauncherMainWindow::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
+{
+	if (msg == WM_HOTKEY) {
+		// ホットキー押下からの表示状態変更
+		if (in->mHotKeyPtr->IsSameKey(lp)) {
+			// アプリ呼び出しホットキー
+			ActivateWindow(GetSafeHwnd());
+		}
+		else {
+			// コマンド実行ホットキー
+			auto manager = core::CommandHotKeyManager::GetInstance();
+			manager->InvokeGlobalHandler(lp);
+		}
+		return 0;
+	}
+	return CDialogEx::WindowProc(msg, wp, lp);
+}
+
+BOOL LauncherMainWindow::PreTranslateMessage(MSG* pMsg)
+{
+	// メッセージの内容に応じてホットキーハンドラを呼ぶ
+	if (core::CommandHotKeyManager::GetInstance()->TryCallLocalHotKeyHander(pMsg)) {
+		return TRUE;
+	}
+	return __super::PreTranslateMessage(pMsg);
+}
+
+void LauncherMainWindow::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	in->mAppearance->OnShowWindow(bShow, nStatus);
+
+	if (bShow) {
+		// 表示するタイミングで入力欄にフォーカスを設定する
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+	}
+	else {
+		// 「隠れるときに入力文字列を消去しない」設定に応じてテキストを消す
+		AppPreference* pref = AppPreference::Get();
+		if (pref->IsKeepTextWhenDlgHide() == false) {
+			ClearContent();
+		}
+	}
+}
+
+
+/**
+ *
+ */
+LRESULT LauncherMainWindow::OnKeywordEditNotify(
+	WPARAM wParam,
+	LPARAM lParam
+)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	// キーごとの処理と、メッセージを消費するかどうかの判断をStateへ委譲する
+	return in->mState->OnKeyInput(static_cast<unsigned int>(wParam)) ? 1 : 0;
+}
+
+LRESULT LauncherMainWindow::OnSelectionChangedMessage(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+	in->mState->OnSelectionChanged();
+	return 0;
+}
+
+LRESULT LauncherMainWindow::OnUserMessageRequestParamSearching(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+	if (CanStartParamSearching()) {
+		ChangeState(std::make_unique<launcherapp::mainwindow::state::ParamSearchingState>(this));
+		if (IsExtraCandidateListEmpty()) {
+			// 追加候補がなければ通常の検索Stateへ戻す
+			ChangeState(std::make_unique<launcherapp::mainwindow::state::SearchingState>(this, false));
+		}
+	}
+	return 0;
+}
+
+BOOL LauncherMainWindow::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+	NMHDR* hdr = reinterpret_cast<NMHDR*>(lParam);
+	if (hdr && hdr->hwndFrom == in->mExtraCandidateListBox.GetSafeHwnd()) {
+		if (hdr->code == NM_CLICK) {
+			in->mState->OnExtraCandidateClicked();
+		}
+		if (pResult) {
+			*pResult = 0;
+		}
+		return TRUE;
+	}
+	return __super::OnNotify(wParam, lParam, pResult);
+}
+
+
+bool LauncherMainWindow::IsCandidateListEmpty() const
+{
+	return in->mCandidates.IsEmpty();
+}
+
+void LauncherMainWindow::OffsetCandidateSelection(int offset, bool isLoop)
+{
+	// 候補位置の移動方法はState側で決定し、実際の候補更新だけを行う
+	in->mCandidates.OffsetCurrentSelect(offset, isLoop);
+}
+
+void LauncherMainWindow::UpdateCurrentCandidate()
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("command is null"));
+		return;
+	}
+
+	int startPos = 0;
+	int endPos = 0;
+	// 選択中の候補を入力欄へ反映し、選択範囲を更新する
+	in->UpdateCommandString(cmd, startPos, endPos);
+	UpdateData(FALSE);
+	in->mKeywordEdit.SetSel(startPos, endPos);
+}
+
+int LauncherMainWindow::GetCandidateCountInPage()
+{
+	return in->mCandidateListBox.GetItemCountInPage();
+}
+
+// クライアント領域をドラッグしてウインドウを移動させるための処理
+LRESULT LauncherMainWindow::OnNcHitTest(
+	CPoint point
+)
+{
+	RECT rect;
+	GetClientRect (&rect);
+
+	CPoint ptClient(point);
+	ScreenToClient(&ptClient);
+
+	if (PtInRect(&rect, ptClient) && (GetAsyncKeyState( VK_LBUTTON ) & 0x8000) )
+	{
+		return HTCAPTION;
+	}
+	return __super::OnNcHitTest(point);
+}
+
+// SetItemStateで状態設定されると、この通知が呼ばれる
+void LauncherMainWindow::OnLvnItemChange(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	*pResult = 0;
+	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	if (nm->iItem == -1) {
+		return;
+	}
+
+	// 候補選択時の音と実データ更新を現在のStateへ委譲する
+	in->mState->OnCandidateSelectionChanged(nm->iItem);
+}
+
+void LauncherMainWindow::SelectCandidate(int index)
+{
+	// 音を鳴らす
+	AppSound::Get()->PlaySelectSound();
+	// 選択された項目に対応するコマンドを現在のコマンドに変更する
+	in->mCandidates.SetCurrentSelect(index);
+	UpdateData(FALSE);
+}
+
+// 候補欄のリストをクリックしたときの処理
+// 選択した要素の情報を入力欄やコメント欄に反映する
+void LauncherMainWindow::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	*pResult = 0;
+	NMLISTVIEW* nm = (NMLISTVIEW*)pNMHDR;
+	if (nm->iItem == -1) {
+		return;
+	}
+	// クリック時の候補反映方法を現在のStateへ委譲する
+	in->mState->OnCandidateClicked();
+}
+
+void LauncherMainWindow::OnNMDblclk(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	UNREFERENCED_PARAMETER(pNMHDR);
+
+	*pResult = 0;
+	// ダブルクリック時の実行可否を現在のStateへ委譲する
+	in->mState->OnCandidateDoubleClicked();
+}
+
+void LauncherMainWindow::ReflectCurrentCandidate()
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		spdlog::warn(_T("command is null"));
+		return;
+	}
+
+	// 選択したコマンドの情報を入力欄やコメント欄に反映する
+	int startPos = 0;
+	int endPos = 0;
+	in->UpdateCommandString(cmd, startPos, endPos);
+	UpdateData(FALSE);
+
+	// 入力欄を選択状態にする
+	in->mKeywordEdit.SetSel(startPos, endPos);
+	in->mKeywordEdit.SetFocus();
+}
+
+void LauncherMainWindow::OnEnterSizeMove()
+{
+	in->mMouseoverActivateWindow.Suspend();
+}
+
+void LauncherMainWindow::OnExitSizeMove()
+{
+	in->mMouseoverActivateWindow.Resume();
+}
+
+void LauncherMainWindow::OnSizing(UINT side, LPRECT rect)
+{
+	__super::OnSizing(side, rect);
+
+	in->mLayout->RecalcWindowSize(GetSafeHwnd(), &in->mInput, side, rect);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+}
+
+void LauncherMainWindow::OnSize(UINT type, int cx, int cy)
+{
+	__super::OnSize(type, cx, cy);
+
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+
+	if (in->mCandidateListBox.GetSafeHwnd()) {
+		in->mCandidateListBox.UpdateSize(cx, cy);
+	}
+	in->mState->OnWindowGeometryChanged();
+}
+
+void LauncherMainWindow::OnMove(int x, int y)
+{
+	__super::OnMove(x, y);
+	in->mLayout->RecalcControls(GetSafeHwnd(), &in->mInput);
+	in->mState->OnWindowGeometryChanged();
+}
+
+void LauncherMainWindow::OnMButtonUp(UINT flags, CPoint point)
+{
+	__super::OnMButtonUp(flags, point);
+	in->mKeywordEdit.Paste();
+}
+
+/**
+ * コンテキストメニューの表示
+ */
+void LauncherMainWindow::OnContextMenu(
+	CWnd* pWnd,
+	CPoint point
+)
+{
+	UNREFERENCED_PARAMETER(pWnd);
+
+	SPDLOG_DEBUG(_T("args point:({0},{1})"), point.x, point.y);
+
+	if (point == CPoint(-1, -1)) {
+		// リストの要素が選択されていたら、その領域付近にメニューを表示する
+		auto listCtrl = GetCandidateList();
+		ASSERT(listCtrl);
+		CRect rc;
+		if (listCtrl->GetCurrentItemRect(&rc)) {
+			point.x = rc.left;
+			point.y = rc.bottom;
+			listCtrl->ClientToScreen(&point);
+		}
+		else {
+			GetCursorPos(&point);
+		}
+	}
+
+	CMenu menu;
+	menu.CreatePopupMenu();
+
+	const UINT ID_COMMAND_TOP = 1;
+
+	// コマンド固有のメニューがあったら取得する
+	SetupCurrentCommandMenuItems(menu, ID_COMMAND_TOP);
+
+	const UINT ID_COMMAND_LAST = 1000;
+	const UINT ID_SHOW = 1001;
+	const UINT ID_HIDE = 1002;
+	const UINT ID_NEW = 1003;
+	const UINT ID_MANAGER = 1004;
+	const UINT ID_APPSETTING = 1005;
+	const UINT ID_USERDIR = 1006;
+	const UINT ID_RESETPOS = 1007;
+	const UINT ID_MANUAL = 1008;
+	const UINT ID_VERSIONINFO = 1009;
+	const UINT ID_EXIT = 1019;
+
+
+	BOOL isVisible = IsWindowVisible();
+	CString textToggleVisible(isVisible ? (LPCTSTR)IDS_MENUTEXT_HIDE : (LPCTSTR)IDS_MENUTEXT_SHOW);
+	menu.InsertMenu((UINT)-1, 0, isVisible ? ID_HIDE : ID_SHOW, textToggleVisible);
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_APPSETTING, _T("アプリケーションの設定(&S)"));
+	menu.InsertMenu((UINT)-1, 0, ID_NEW, _T("新規作成(&N)"));
+	menu.InsertMenu((UINT)-1, 0, ID_MANAGER, _T("キーワードマネージャ(&K)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_USERDIR, _T("設定フォルダを開く(&D)"));
+	menu.InsertMenu((UINT)-1, 0, ID_RESETPOS, _T("ウインドウ位置をリセット(&R)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_MANUAL, _T("ヘルプ(&H)"));
+	menu.InsertMenu((UINT)-1, 0, ID_VERSIONINFO, _T("バージョン情報(&V)"));
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+	menu.InsertMenu((UINT)-1, 0, ID_EXIT, _T("終了"));
+
+	spdlog::info(_T("Show context menu."));
+
+	// TrackPopupMenuをよぶ時点でSetForegroundWindowでウインドウをアクティブにしておかないと
+	// ポップアップメニュー以外の領域をクリックしたときにメニューが閉じないので、ここで呼んでおく
+	SetForegroundWindow();
+
+	auto cmd = GetCurrentCommand();
+
+	int n = menu.TrackPopupMenu(TPM_RETURNCMD, point.x, point.y, this);
+	spdlog::debug(_T("selected menu id:{}"), n);
+	if (n == 0) {
+		// キャンセル
+		return;
+	}
+
+	if (n <= ID_COMMAND_LAST) {
+		int index = n - ID_COMMAND_TOP;
+		SelectCommandContextMenu(cmd, index);
+	}
+	else if (n == ID_SHOW) {
+		ActivateWindow();
+		return;
+	}
+	else if (n == ID_HIDE) {
+		// Note: 後方の処理でウインドウを消すのでここでは何もしない
+	}
+	else if (n == ID_NEW) {
+		ExecuteCommand(_T("new"));
+	}
+	else if (n == ID_MANAGER) {
+		ExecuteCommand(_T("manager"));
+	}
+	else if (n == ID_APPSETTING) {
+		ExecuteCommand(_T("setting"));
+	}
+	else if (n == ID_USERDIR) {
+		ExecuteCommand(_T("userdir"));
+	}
+	else if (n == ID_RESETPOS) {
+		// ウインドウ位置をリセット
+		in->mLayout->RestoreWindowPosition(this, true);
+		ClearContentImpl(true);
+		GetDlgItem(IDC_EDIT_COMMAND)->SetFocus();
+		return;
+	}
+	else if (n == ID_MANUAL) {
+		// ヘルプ表示
+		ShowHelpTop();
+	}
+	else if (n == ID_VERSIONINFO) {
+		ExecuteCommand(_T("version"));
+	}
+	else if (n == ID_EXIT) {
+		ExecuteCommand(_T("exit"));
+	}
+
+	// 選択後はState経由でウインドウを隠す
+	ClearContent();
+	in->mState->OnHideRequested();
+}
+
+void LauncherMainWindow::SetupCurrentCommandMenuItems(CMenu& menu, UINT menuIDFirst)
+{
+	auto cmd = GetCurrentCommand();
+	if (cmd == nullptr) {
+		return;
+	}
+
+	RefPtr<launcherapp::commands::core::ContextMenuSource> menuSrc;
+	if (cmd->QueryInterface(IFID_CONTEXTMENUSOURCE, (void**)&menuSrc) == false) {
+		// コマンドは固有のメニューを実装していない
+		return;
+	}
+	int count = menuSrc->GetMenuItemCount();
+	if (count == 0) {
+		// コマンド固有のメニュー項目なし
+		return;
+	}
+
+	CString postFix;
+	int index = 1;
+	for (int i = 0; i < count; ++i) {
+
+		// メニュー項目に対応するアクションを得る
+		RefPtr<Action> action;
+		bool isOK = menuSrc->GetMenuItem(i, &action);
+		if (isOK == false) {
+			menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+			continue;
+		}
+
+		postFix.Format(_T("(&%d)"), index++);
+
+		auto menuText = action->GetDisplayName();
+		menuText += postFix;
+
+		menu.InsertMenu((UINT)-1, 0, menuIDFirst + i, menuText);
+	}
+	menu.InsertMenu((UINT)-1, MF_SEPARATOR, 0, _T(""));
+}
+
+void LauncherMainWindow::OnActivate(UINT nState, CWnd* wnd, BOOL bMinimized)
+{
+	spdlog::debug("OnActivate nState {}", nState);
+	if (nState == WA_INACTIVE) {
+		// 非アクティブ通知と設定に応じた非表示要求をStateへ分けて通知する
+		in->mState->OnDeactivate();
+		if (in->mIsBlockDeactivateOnUnfocus == false && AppPreference::Get()->IsHideOnInactive()) {
+			in->mState->OnHideRequested();
+		}
+	}
+	else {
+		in->mState->OnActivate();
+	}
+	if (in->mIsBlockDeactivateOnUnfocus == false && in->mAppearance) {
+		in->mAppearance->OnActivate(nState, wnd, bMinimized);
+	}
+	__super::OnActivate(nState, wnd, bMinimized);
+}
+
+void LauncherMainWindow::OnCommandHelp()
+{
+	// 入力ウインドウのヘルプ表示
+	SPDLOG_DEBUG("start");
+	auto manual = launcherapp::app::Manual::GetInstance();
+	manual->Navigate("InputWindow");
+}
+
+void LauncherMainWindow::OnCommandHotKey(UINT id)
+{
+	// ローカルホットキーに関連付けられたコマンドを実行する
+	SPDLOG_DEBUG("args id:{}", id);
+	core::CommandHotKeyManager::GetInstance()->InvokeLocalHandler(id);
+}
+
+HBRUSH LauncherMainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH defBr = __super::OnCtlColor(pDC, pWnd, nCtlColor);
+	return in->mAppearance->OnCtlColor(pDC, pWnd, nCtlColor, defBr);
+}
+
+void LauncherMainWindow::OnMeasureItem(int ctrlId, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+{
+	if (ctrlId == IDC_LIST_CANDIDATE) {
+		// 候補欄コントロールクラス側で行の高さを計算し、決定する
+		in->mCandidateListBox.OnMeasureItem(lpMeasureItemStruct);
+	}
+}
+

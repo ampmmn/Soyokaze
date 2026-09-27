@@ -13,7 +13,7 @@
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include "hotkey/CommandHotKeyManager.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "features/main/controller/MainWindowController.h"
 
 using namespace launcherapp::commands::common;
 using SetTextAction = launcherapp::actions::mainwindow::SetTextAction;

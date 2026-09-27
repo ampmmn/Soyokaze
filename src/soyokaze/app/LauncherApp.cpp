@@ -10,7 +10,7 @@
 #include "app/LauncherSystemEventWindow.h"
 #include "app/LauncherShutdownWindow.h"
 #include "app/FirstStartDialog.h"
-#include "mainwindow/LauncherMainWindow.h"
+#include "features/main/LauncherMainWindow.h"
 #include "features/tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
 #include "app/StartupParam.h"

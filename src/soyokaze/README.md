@@ -12,10 +12,10 @@
 |[hotkey](hotkey)|ホットキー回りの処理|
 |[icon](icon)|アイコンリソースのロード処理など|
 |[logger](logger)|ロガー|
-|[mainwindow](mainwindow)|入力欄ウインドウまわり|
 |[matcher](matcher)|入力キーワードのマッチングを行うための処理|
 |[res](res)|リソース置き場(.ico/.cur)など|
 |[setting](setting)|設定情報の保存・読み込み|
+|[features/main](features/main)|メインウインドウまわり|
 |[features/appsettings](features/appsettings)|アプリ設定画面|
 |[features/manual](features/manual)|マニュアル表示|
 |[features/tasktray](features/tasktray)|タスクトレイ登録処理など|

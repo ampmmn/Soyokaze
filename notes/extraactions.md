@@ -108,7 +108,7 @@ AppSettingExtraActionForExplorePath .up.> ExplorePathExtraActionSettings : 設�
 ## 現在選択中の候補が持つ追加アクションをホットキー登録する処理の追加
 
 現在選択中の候補が持つ追加アクションをホットキーの登録と解除をする責務を持つクラスとしてCommandActionHandlerRegistryクラスを新設した。  
-(mainwindow/CommandActionHandlerRegistry)
+(features/main/CommandActionHandlerRegistry)
 
 候補欄で選択されたコマンドが追加アクションを持つ(=ExtraActionHotKeySettingsを実装している)場合、
 そのコマンドからホットキー設定情報を取得し、CommandHotKeyManagerクラスに対してハンドラを登録する。  

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "mainwindow/state/MainWindowHiddenState.h"
-#include "mainwindow/state/MainWindowSearchingState.h"
-#include "mainwindow/state/MainWindowParamSearchingState.h"
-#include "mainwindow/state/LauncherWindowStateContextIF.h"
-#include "mainwindow/state/MainWindowIdleState.h"
+#include "features/main/state/MainWindowHiddenState.h"
+#include "features/main/state/MainWindowSearchingState.h"
+#include "features/main/state/MainWindowParamSearchingState.h"
+#include "features/main/state/LauncherWindowStateContextIF.h"
+#include "features/main/state/MainWindowIdleState.h"
 
 namespace {
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordEdit.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "features/main/controller/MainWindowController.h"
 #include "control/ColorSettings.h"
 #include <imm.h>
 

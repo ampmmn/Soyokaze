@@ -3,7 +3,7 @@
 #include "hotkey/AppHotKey.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
-#include "mainwindow/controller/MainWindowController.h"
+#include "features/main/controller/MainWindowController.h"
 #include "utility/MessageExchangeWindow.h"
 #include <vector>
 

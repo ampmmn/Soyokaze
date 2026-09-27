@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "mainwindow/layout/MainWindowPosition.h"
+#include "features/main/layout/MainWindowPosition.h"
 #include "utility/Base64.h"
 
 TEST(MainWindowPositionTest, Constructor_Default)

@@ -10,10 +10,10 @@
 
 ## 関連ファイル
 
-- `src/soyokaze/mainwindow/MouseoverActivateWindow.h`
-- `src/soyokaze/mainwindow/MouseoverActivateWindow.cpp`
-- `src/soyokaze/mainwindow/LauncherMainWindow.h`
-- `src/soyokaze/mainwindow/LauncherMainWindow.cpp`
+- `src/soyokaze/features/main/MouseoverActivateWindow.h`
+- `src/soyokaze/features/main/MouseoverActivateWindow.cpp`
+- `src/soyokaze/features/main/LauncherMainWindow.h`
+- `src/soyokaze/features/main/LauncherMainWindow.cpp`
 - `src/soyokaze/setting/AppPreference.h`
 - `src/soyokaze/setting/AppPreference.cpp`
 - `src/soyokaze/settingwindow/BasicSettingDialog.cpp`

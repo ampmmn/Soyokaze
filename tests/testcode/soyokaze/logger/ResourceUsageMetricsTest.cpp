@@ -13,9 +13,9 @@
 #include "commands/core/metrics/CommandRepositoryListenerCountMetrics.h"
 #include "commands/bookmarks/metrics/BookmarksEdgeItemCapacityMetrics.h"
 #include "commands/bookmarks/metrics/BookmarksAltBrowserItemCapacityMetrics.h"
-#include "mainwindow/metrics/CandidateListCandidateCountMetrics.h"
-#include "mainwindow/metrics/CandidateListListenerCountMetrics.h"
-#include "mainwindow/metrics/CandidateListHasErrorCommandMetrics.h"
+#include "features/main/metrics/CandidateListCandidateCountMetrics.h"
+#include "features/main/metrics/CandidateListListenerCountMetrics.h"
+#include "features/main/metrics/CandidateListHasErrorCommandMetrics.h"
 
 using namespace logger;
 

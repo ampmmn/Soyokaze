@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "mainwindow/MouseoverActivateWindow.h"
+#include "features/main/MouseoverActivateWindow.h"
 
 TEST(MouseoverActivateWindowTest, CursorEnteringAndLeavingActivatesAndDeactivates)
 {

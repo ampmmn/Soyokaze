@@ -11,13 +11,13 @@
 
 - `src/soyokaze/control/WindowPosition.h`
 - `src/soyokaze/control/WindowPosition.cpp`
-- `src/soyokaze/mainwindow/layout/MainWindowPosition.h`
-- `src/soyokaze/mainwindow/layout/MainWindowPosition.cpp`
-- `src/soyokaze/mainwindow/layout/MainWindowLayout.h`
-- `src/soyokaze/mainwindow/layout/MainWindowLayout.cpp`
+- `src/soyokaze/features/main/layout/MainWindowPosition.h`
+- `src/soyokaze/features/main/layout/MainWindowPosition.cpp`
+- `src/soyokaze/features/main/layout/MainWindowLayout.h`
+- `src/soyokaze/features/main/layout/MainWindowLayout.cpp`
 - `src/soyokaze/app/LauncherSystemEventWindow.cpp`
 - `src/soyokaze/core/LauncherEventListenerIF.h`
-- `src/soyokaze/mainwindow/LauncherMainWindow.cpp`
+- `src/soyokaze/features/main/LauncherMainWindow.cpp`
 - `src/soyokaze/utility/Base64.cpp`
 - `src/soyokaze/utility/SHA1.cpp`
 - `tests/testcode/soyokaze/mainwindow/layout/MainWindowPositionTest.cpp`
