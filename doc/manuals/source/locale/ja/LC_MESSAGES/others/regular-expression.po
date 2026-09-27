@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-09-27 09:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -76,8 +76,5 @@ msgid ""
 msgstr ""
 
 #: ../../source/others/regular-expression.md:22
-msgid ""
-"Watch "
-"Pathコマンドの`除外フィルタ`は、指定されたワイルドカードから内部で正規表現を生成します。利用者が正規表現を直接指定するものではありません。"
+msgid "フォルダ更新検知コマンドの`除外フィルタ`は、指定されたワイルドカードから内部で正規表現を生成します。利用者が正規表現を直接指定するものではありません。"
 msgstr ""
-

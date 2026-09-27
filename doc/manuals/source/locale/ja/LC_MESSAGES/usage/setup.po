@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 07:19+0900\n"
+"POT-Creation-Date: 2026-09-27 09:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -68,7 +68,7 @@ msgid "展開したフォルダを開き、{{ project_lower }}.exe を実行す�
 msgstr ""
 
 #: ../../source/usage/setup.md:33
-msgid "初回起動時に、設定ファイルの保存先が自動的に作成される"
+msgid "初回起動時に表示される画面で、設定ファイルの保存先を選択する"
 msgstr ""
 
 #: ../../source/usage/setup.md:35
@@ -76,9 +76,7 @@ msgid "本アプリは、展開したフォルダから実行できます。ス�
 msgstr ""
 
 #: ../../source/usage/setup.md:37
-msgid ""
-"初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の .{{ project_lower }} "
-"フォルダに保存されます。"
+msgid "設定ファイルは、初回起動時に選択した保存先に保存されます。"
 msgstr ""
 
 #: ../../source/usage/setup.md:41
@@ -106,7 +104,7 @@ msgid "インストール時に展開したフォルダを削除する"
 msgstr ""
 
 #: ../../source/usage/setup.md:53
-msgid "設定フォルダ（通常は C:\\Users\\<ユーザー名>\\.{{ project_lower }} ）を削除する"
+msgid "設定フォルダがインストール先とは別に存在する場合は削除する（通常モードではユーザーフォルダ直下の .{{project_lower}} フォルダ）"
 msgstr ""
 
 #: ../../source/usage/setup.md:57
@@ -137,28 +135,35 @@ msgstr "アプリデータの保存フォルダ"
 
 #: ../../source/usage/setup.md:74
 msgid ""
-"アプリ初回起動時に ユーザーフォルダ直下(通常は `C:\\Users\\<ユーザー名>`)に .{{project_lower}} "
-"フォルダを作成し、このフォルダ内に設定ファイル一式を保存する。"
+"初回起動時に通常モードとポータブルモードのどちらで設定を保存するか選択する。選択画面は、ユーザーフォルダ直下の "
+".{{project_lower}} フォルダと、実行ファイルと同じフォルダの `profile` フォルダがどちらも存在しない場合に表示される。"
 msgstr ""
 
 #: ../../source/usage/setup.md:76
-msgid "Portable Mode"
-msgstr "ポータブル版"
+msgid "![](../image/usage/first-start/first-start.png)"
+msgstr ""
 
 #: ../../source/usage/setup.md:78
 msgid ""
-"exeと同じフォルダ階層に`profile`というフォルダが存在する場合、ポータブル版として動作する。   "
-"この場合、設定ファイル一式を`profile`フォルダ内に作成する。"
+"`このPCに設定を保存`: ユーザーフォルダ直下(通常は `C:\\Users\\<ユーザー名>`)の .{{project_lower}} "
+"フォルダに保存する。"
 msgstr ""
 
-#~ msgid "展開したフォルダを開き、`{{ project_lower }}.exe`を実行する"
-#~ msgstr ""
+#: ../../source/usage/setup.md:79
+msgid "`アプリと同じフォルダに設定を保存`: 実行ファイルと同じフォルダに `profile` フォルダを作成し、その中に保存する。"
+msgstr ""
 
-#~ msgid ""
-#~ "初期状態では、設定はユーザーフォルダ（通常は`C:\\Users\\<ユーザー名>`）直下の`.{{ project_lower"
-#~ " }}`フォルダに保存されます。"
-#~ msgstr ""
+#: ../../source/usage/setup.md:81
+msgid "選択画面でキャンセルすると、アプリは起動しない。"
+msgstr ""
 
-#~ msgid "設定フォルダ（通常は`C:\\Users\\<ユーザー名>\\.{{ project_lower }}`）を削除する"
-#~ msgstr ""
+#: ../../source/usage/setup.md:83
+msgid "Portable Mode"
+msgstr "ポータブル版"
+
+#: ../../source/usage/setup.md:85
+msgid ""
+"実行ファイルと同じフォルダに`profile`フォルダが存在する場合、ポータブルモードとして動作する。通常モードとポータブルモードの保存先が両方存在する場合は、ポータブルモードを優先する。"
+" 既存の保存先がある場合、初回起動時の選択画面は表示せず、その保存先を引き継ぐ。"
+msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"POT-Creation-Date: 2026-09-27 09:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -83,45 +83,109 @@ msgstr ""
 msgid "`削除`   リスト上で選択したコマンドを削除する"
 msgstr ""
 
+#: ../../source/window/keyword-manager.md:33
+msgid "`インポート`"
+msgstr ""
+
 #: ../../source/window/keyword-manager.md:34
-msgid "新規作成や編集が終わったら、編集画面の`OK`を押して内容を反映します。変更を反映せずに閉じたい場合は`キャンセル`を押します。"
+msgid "ファイルからコマンドを読み込み、追加するコマンドを選択して登録する"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:35
+msgid "`エクスポート`"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:36
-msgid "コマンドが候補に表示されない場合は、リスト上でそのコマンドが無効になっていないか、フィルター欄に不要な文字が残っていないかを確認してください。"
+msgid "リスト上で選択したユーザーコマンドをファイルに保存する"
 msgstr ""
 
 #: ../../source/window/keyword-manager.md:38
+msgid "新規作成や編集が終わったら、編集画面の`OK`を押して内容を反映します。変更を反映せずに閉じたい場合は`キャンセル`を押します。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:40
+msgid "コマンドが候補に表示されない場合は、リスト上でそのコマンドが無効になっていないか、フィルター欄に不要な文字が残っていないかを確認してください。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:42
+msgid "Import And Export"
+msgstr "インポートとエクスポート"
+
+#: ../../source/window/keyword-manager.md:44
+msgid "Export"
+msgstr "エクスポート"
+
+#: ../../source/window/keyword-manager.md:46
+msgid "エクスポートしたいユーザーコマンドをリスト上で選択し、`エクスポート`を押します。保存先を指定すると、選択したコマンドをファイルに保存します。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:48
+msgid "Import"
+msgstr "インポート"
+
+#: ../../source/window/keyword-manager.md:50
+msgid "`インポート`を押して、コマンドが保存されたファイルを選択します。読み込み可能なコマンドが一覧に表示されます。インポート対象の選択画面では、最初はすべてのコマンドが選択されています。必要に応じて選択を変更し、`OK`を押してください。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:52
+msgid "![](../image/window/keyword-manager/import-command-selection.png)"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:54
+msgid "同じ名前のコマンドがすでに登録されている場合の処理は、選択画面でまとめて指定します。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:56
+msgid "`上書きする`"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:57
+msgid "登録済みコマンドをインポートした内容で置き換えます。既存コマンドのホットキー設定は維持されます。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:58
+msgid "`名前を変更して追加する`"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:59
+msgid "インポートしたコマンドを追加します。名前が重複する場合は、`-1`、`-2`のような番号を付け、未使用の名前で登録します。初期設定はこちらです。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:61
+msgid "読み込みに対応していないコマンドはインポート対象から除外され、除外した項目がある場合は通知されます。"
+msgstr ""
+
+#: ../../source/window/keyword-manager.md:63
 msgid "Copy And Paste"
 msgstr "クリップボードを経由したコマンドのインポートとエクスポート"
 
-#: ../../source/window/keyword-manager.md:40
+#: ../../source/window/keyword-manager.md:65
 msgid "リスト上でコマンドを選択して、`Ctrl-C`でコマンドをクリップボードにコピーし、 `Ctrl-V`で貼り付けることができる。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:43
+#: ../../source/window/keyword-manager.md:68
 msgid ""
 "リモートデスクトップを経由して複数のPC間で本アプリを使用している場合、 "
 "クリップボード経由で一方のアプリ側で定義しているコマンドをもう一方のアプリ側に移すことができます。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:46
+#: ../../source/window/keyword-manager.md:71
 msgid "コピーしたコマンドには、実行ファイルのパスやURLなどの設定も含まれます。貼り付け後は、移行先の環境に同じファイルやフォルダが存在するか確認してください。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:48
+#: ../../source/window/keyword-manager.md:73
 msgid "Command Type"
 msgstr "コマンド種類選択"
 
-#: ../../source/window/keyword-manager.md:50
+#: ../../source/window/keyword-manager.md:75
 msgid "作成するコマンドの種類を選択するための画面。   コマンドの種類を選択して、OKボタンを押下すると、選択したコマンドの新規作成画面を表示する。"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:53
+#: ../../source/window/keyword-manager.md:78
 msgid "各コマンドの説明については [登録型のコマンド](/user-commands) を参照のこと"
 msgstr ""
 
-#: ../../source/window/keyword-manager.md:55
+#: ../../source/window/keyword-manager.md:80
 msgid "![](../image/common/command-type.png)"
 msgstr ""
 

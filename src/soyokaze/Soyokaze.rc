@@ -1409,8 +1409,8 @@ BEGIN
     LTEXT           "テキスト(&T): ",IDC_STATIC,13,51,282,8
     EDITTEXT        IDC_EDIT_TEXT,13,63,281,14,ES_AUTOHSCROLL | ES_WANTRETURN
     GROUPBOX        "動作設定",IDC_STATIC,6,86,287,75
-    CONTROL         "テキストに記述した内容を実行する(&R)",IDC_RADIO_RUN,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,23,97,135,10
-    CONTROL         "テキストに記述した内容を入力欄に張り付ける(&P)",IDC_RADIO_PASTE,"Button",BS_AUTORADIOBUTTON,21,123,169,10
+    CONTROL         "テキストに記述した内容を実行する(&R)",IDC_RADIO_RUN,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,23,97,135,10
+    CONTROL         "テキストに記述した内容を入力欄に張り付ける(&P)",IDC_RADIO_PASTE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,21,123,169,10
     CONTROL         "キーワードが完全一致し、かつ、候補が一つのときに自動でコマンドを実行する(&A)",IDC_CHECK_ALLOWAUTOEXEC,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,169,267,10
     LTEXT           "ホットキー(&K):",IDC_STATIC,13,190,43,8
@@ -1736,6 +1736,20 @@ BEGIN
     LTEXT           "透過率(&A):",IDC_STATIC,19,71,38,8
     EDITTEXT        IDC_EDIT_ALPHA,112,68,39,14,ES_AUTOHSCROLL
     LTEXT           "0～100",IDC_STATIC,159,72,25,8
+END
+
+IDD_IMPORT_COMMANDS DIALOGEX 0, 0, 478, 278
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "コマンドのインポート"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "インポートするコマンドを選択してください(&I):",IDC_STATIC,7,8,250,8
+    CONTROL         "",IDC_LIST_IMPORT_COMMANDS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,21,464,177
+    GROUPBOX        "名前が重複した場合",IDC_STATIC,7,204,464,39
+    CONTROL         "上書きする(&O)",IDC_RADIO_OVERWRITE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,18,220,100,10
+    CONTROL         "名前を変更して追加する(&R)",IDC_RADIO_RENAME,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,139,220,152,10
+    DEFPUSHBUTTON   "OK",IDOK,360,255,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,421,255,50,14
 END
 
 
@@ -2411,6 +2425,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 284
     END
+
+    IDD_IMPORT_COMMANDS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 471
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 269
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2661,7 +2683,7 @@ IDD_COMMAND_FILTER AFX_DIALOG_LAYOUT
 BEGIN
     0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
@@ -3187,6 +3209,7 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0
 END

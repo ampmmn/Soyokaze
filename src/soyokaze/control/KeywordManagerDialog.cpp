@@ -7,14 +7,18 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/core/CommandRepositoryListenerIF.h"
 #include "commands/core/CommandFile.h"
+#include "commands/core/CommandFileEntry.h"
+#include "commands/common/CommandImportNameResolver.h"
 #include "commands/core/UserCommandProvider.h"
 #include "commands/core/EditableIF.h"
 #include "commands/core/CommandProviderRepository.h"
 #include "commands/transfer/CommandClipboardTransfer.h"
+#include "control/ImportCommandsDialog.h"
 #include "matcher/PartialMatchPattern.h"
 #include "utility/RefPtr.h"
 #include "hotkey/CommandHotKeyManager.h"
 #include "icon/IconLoader.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
 #include <algorithm>
 
@@ -295,6 +299,7 @@ BEGIN_MESSAGE_MAP(KeywordManagerDialog, launcherapp::control::SinglePageDialog)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_CLONE, OnButtonClone)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
+	ON_COMMAND(IDC_BUTTON_IMPORT, OnButtonImport)
 	ON_COMMAND(IDC_BUTTON_EXPORT, OnButtonExport)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
@@ -609,6 +614,188 @@ void KeywordManagerDialog::OnButtonDelete()
 
 	ResetContents();
 	in->SelectItems(commandsToKeepSelected, true);
+	UpdateStatus();
+	UpdateData(FALSE);
+}
+
+void KeywordManagerDialog::OnButtonImport()
+{
+	CFileDialog dlg(TRUE, _T("ini"), nullptr, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+	                _T("INIファイル (*.ini)|*.ini||"), this);
+	if (dlg.DoModal() != IDOK) {
+		return;
+	}
+
+	CommandFile commandFile;
+	commandFile.SetFilePath(dlg.GetPathName());
+	if (commandFile.Load() == false) {
+		spdlog::error(_T("Failed to load command import file. path:{}"), (LPCTSTR)dlg.GetPathName());
+		AfxMessageBox(_T("ファイルを読み込めませんでした。"), MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	struct ImportCandidate {
+		RefPtr<Command> mCommand;
+		RefPtr<UserCommandProvider> mProvider;
+		int mEntryIndex{0};
+	};
+
+	auto providerRepository = CommandProviderRepository::GetInstance();
+	std::vector<CommandProvider*> providers;
+	providerRepository->EnumProviders(providers);
+
+	std::vector<ImportCandidate> candidates;
+	std::vector<CString> skippedEntryNames;
+	for (int entryIndex = 0; entryIndex < commandFile.GetEntryCount(); ++entryIndex) {
+		auto entry = commandFile.GetEntry(entryIndex);
+		ImportCandidate candidate;
+		candidate.mEntryIndex = entryIndex;
+
+		for (auto provider : providers) {
+			RefPtr<UserCommandProvider> userProvider;
+			if (provider->QueryInterface(IFID_USERCOMMANDPROVIDER, (void**)&userProvider) == false) {
+				continue;
+			}
+
+			RefPtr<Command> command;
+			if (userProvider->LoadFrom(entry, &command) == false || command.get() == nullptr) {
+				command.reset();
+				continue;
+			}
+
+			candidate.mCommand.swap(command);
+			candidate.mProvider.swap(userProvider);
+			commandFile.MarkAsUsed(entry);
+			break;
+		}
+
+		if (candidate.mCommand.get() == nullptr) {
+			skippedEntryNames.push_back(commandFile.GetName(entry));
+			continue;
+		}
+		candidates.push_back(std::move(candidate));
+	}
+
+	if (skippedEntryNames.empty() == false) {
+		CString warning;
+		warning.Format(_T("読み込めない、または未対応のエントリを %d 件除外しました。\n\n"), (int)skippedEntryNames.size());
+		for (auto& name : skippedEntryNames) {
+			warning += name;
+			warning += _T("\n");
+		}
+		AfxMessageBox(warning, MB_OK | MB_ICONWARNING);
+	}
+
+	if (candidates.empty()) {
+		if (skippedEntryNames.empty()) {
+			AfxMessageBox(_T("インポートできるコマンドがありません。"), MB_OK | MB_ICONWARNING);
+		}
+		return;
+	}
+
+	std::vector<Command*> candidateCommands;
+	candidateCommands.reserve(candidates.size());
+	for (auto& candidate : candidates) {
+		candidateCommands.push_back(candidate.mCommand.get());
+	}
+
+	ImportCommandsDialog importDialog;
+	importDialog.SetCommands(candidateCommands);
+	if (importDialog.DoModal() != IDOK) {
+		return;
+	}
+
+	auto cmdRepoPtr = CommandRepository::GetInstance();
+	auto hotKeyManager = CommandHotKeyManager::GetInstance();
+	std::vector<CString> importedNames;
+	for (auto candidateIndex : importDialog.GetSelectedIndices()) {
+		if (candidateIndex < 0 || candidateIndex >= (int)candidates.size()) {
+			continue;
+		}
+
+		auto& candidate = candidates[candidateIndex];
+		RefPtr<Command> command(candidate.mCommand);
+		CString commandName = command->GetName();
+		RefPtr<Command> existingCommand(cmdRepoPtr->QueryAsWholeMatch(commandName));
+
+		if (existingCommand.get() != nullptr && importDialog.IsOverwriteSelected()) {
+			CString existingName = existingCommand->GetName();
+			CommandHotKeyMappings previousMappings;
+			hotKeyManager->GetMappings(previousMappings);
+
+			CommandHotKeyAttribute previousHotKey;
+			bool hasPreviousHotKey = false;
+			for (int index = 0; index < previousMappings.GetItemCount(); ++index) {
+				if (previousMappings.GetName(index) != existingName) {
+					continue;
+				}
+				previousMappings.GetHotKeyAttr(index, previousHotKey);
+				hasPreviousHotKey = true;
+				break;
+			}
+
+			cmdRepoPtr->UnregisterCommand(existingCommand.get());
+			command->AddRef();
+			cmdRepoPtr->RegisterCommand(command.get());
+
+			CommandHotKeyMappings currentMappings;
+			hotKeyManager->GetMappings(currentMappings);
+			bool hasChanged = currentMappings.RemoveItem(commandName);
+			if (hasPreviousHotKey) {
+				currentMappings.AddItem(commandName, previousHotKey);
+				hasChanged = true;
+			}
+			if (hasChanged) {
+				auto preference = AppPreference::Get();
+				preference->SetCommandKeyMappings(currentMappings);
+				preference->Save();
+			}
+		}
+		else {
+			if (existingCommand.get() != nullptr) {
+				CString uniqueName = launcherapp::core::CommandImportNameResolver::GetUniqueName(commandName, [&](const CString& name) {
+					RefPtr<Command> existing(cmdRepoPtr->QueryAsWholeMatch(name));
+					return existing.get() != nullptr;
+				});
+
+				auto entry = static_cast<CommandFileEntry*>(commandFile.GetEntry(candidate.mEntryIndex));
+				entry->SetName(uniqueName);
+				RefPtr<Command> renamedCommand;
+				if (candidate.mProvider->LoadFrom(entry, &renamedCommand) == false || renamedCommand.get() == nullptr) {
+					spdlog::error(_T("Failed to reload command with an import name. name:{}"), (LPCTSTR)uniqueName);
+					continue;
+				}
+				command.swap(renamedCommand);
+				commandName = command->GetName();
+			}
+
+			command->AddRef();
+			cmdRepoPtr->RegisterCommand(command.get());
+		}
+
+		if (std::none_of(importedNames.begin(), importedNames.end(), [&](const CString& name) {
+			return name.CompareNoCase(commandName) == 0;
+		})) {
+			importedNames.push_back(commandName);
+		}
+	}
+
+	if (importedNames.empty()) {
+		return;
+	}
+
+	ResetContents();
+	std::vector<Command*> importedCommands;
+	std::vector<RefPtr<Command>> importedCommandRefs;
+	for (auto& name : importedNames) {
+		RefPtr<Command> command(cmdRepoPtr->QueryAsWholeMatch(name));
+		if (command.get() == nullptr) {
+			continue;
+		}
+		importedCommands.push_back(command.get());
+		importedCommandRefs.push_back(std::move(command));
+	}
+	in->SelectItems(importedCommands, true);
 	UpdateStatus();
 	UpdateData(FALSE);
 }

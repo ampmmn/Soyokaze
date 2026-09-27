@@ -903,6 +903,7 @@
     <ClInclude Include="settingwindow\InputHistorySettingPage.h" />
     <ClInclude Include="settingwindow\InputSettingDialog.h" />
     <ClInclude Include="control\SelectCommandTypeDialog.h" />
+    <ClInclude Include="control\ImportCommandsDialog.h" />
     <ClInclude Include="control\SettingDialogBase.h" />
     <ClInclude Include="control\SettingPage.h" />
     <ClInclude Include="settingwindow\InputWindowKeySettingPage.h" />
@@ -922,6 +923,7 @@
     <ClInclude Include="mainwindow/LauncherDropTarget.h" />
     <ClInclude Include="mainwindow/interprocess/CmdReceiveEdit.h" />
     <ClInclude Include="commands/core/CommandFile.h" />
+    <ClInclude Include="commands/common/CommandImportNameResolver.h" />
     <ClInclude Include="commands/core/CommandIF.h" />
     <ClInclude Include="commands/core/CommandMap.h" />
     <ClInclude Include="commands/core/CommandRepository.h" />
@@ -1470,6 +1472,7 @@
     <ClCompile Include="settingwindow\InputHistorySettingPage.cpp" />
     <ClCompile Include="settingwindow\InputSettingDialog.cpp" />
     <ClCompile Include="control\SelectCommandTypeDialog.cpp" />
+    <ClCompile Include="control\ImportCommandsDialog.cpp" />
     <ClCompile Include="control\SettingDialogBase.cpp" />
     <ClCompile Include="control\SettingPage.cpp" />
     <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp" />
@@ -1493,6 +1496,7 @@
     <ClCompile Include="mainwindow/LauncherDropTarget.cpp" />
     <ClCompile Include="mainwindow/interprocess/CmdReceiveEdit.cpp" />
     <ClCompile Include="commands/core/CommandFile.cpp" />
+    <ClCompile Include="commands/common/CommandImportNameResolver.cpp" />
     <ClCompile Include="commands/core/CommandMap.cpp" />
     <ClCompile Include="commands/core/CommandRepository.cpp" />
     <ClCompile Include="commands\builtin\EditCommand.cpp" />

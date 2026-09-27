@@ -945,8 +945,14 @@
     <ClInclude Include="control\SelectCommandTypeDialog.h">
       <Filter>control</Filter>
     </ClInclude>
+    <ClInclude Include="control\ImportCommandsDialog.h">
+      <Filter>control</Filter>
+    </ClInclude>
     <ClInclude Include="commands/core/CommandFile.h">
       <Filter>commands\core</Filter>
+    </ClInclude>
+    <ClInclude Include="commands/common/CommandImportNameResolver.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
     <ClInclude Include="commands/core/CommandMap.h">
       <Filter>commands\core</Filter>
@@ -2663,8 +2669,14 @@
     <ClCompile Include="control\SelectCommandTypeDialog.cpp">
       <Filter>control</Filter>
     </ClCompile>
+    <ClCompile Include="control\ImportCommandsDialog.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
     <ClCompile Include="commands/core/CommandFile.cpp">
       <Filter>commands\core</Filter>
+    </ClCompile>
+    <ClCompile Include="commands/common/CommandImportNameResolver.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandMap.cpp">
       <Filter>commands\core</Filter>

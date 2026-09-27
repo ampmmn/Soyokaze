@@ -31,6 +31,7 @@ protected:
 	afx_msg void OnButtonEdit();
 	afx_msg void OnButtonClone();
 	afx_msg void OnButtonDelete();
+	afx_msg void OnButtonImport();
 	afx_msg void OnButtonExport();
 	afx_msg void OnLbnDblClkCommands();
 	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);

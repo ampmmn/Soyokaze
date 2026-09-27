@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 07:19+0900\n"
+"POT-Creation-Date: 2026-09-27 09:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -106,82 +106,74 @@ msgid "[Abseil](https://github.com/abseil/abseil-cpp)"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:33
-msgid "`RE2`がライブラリに依存しているライブラリ。本アプリは直接利用していない。"
+msgid "`RE2`がライブラリに依存しているライブラリ。"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:35
-msgid "[Sphinx](https://www.sphinx-doc.org/)"
+#: ../../source/others/3rdlibs.md:34
+msgid "ライブラリが提供するコンテナをアプリでも利用している"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:36
-msgid "マニュアル生成で利用している"
+msgid "[Sphinx](https://www.sphinx-doc.org/)"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:37
-msgid "[sphinx_rtd_theme](https://github.com/readthedocs/sphinx_rtd_theme)"
+msgid "マニュアル生成で利用している"
 msgstr ""
 
 #: ../../source/others/3rdlibs.md:38
+msgid "[sphinx_rtd_theme](https://github.com/readthedocs/sphinx_rtd_theme)"
+msgstr ""
+
+#: ../../source/others/3rdlibs.md:39
 msgid "マニュアル生成の際のテーマ"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:40
+#: ../../source/others/3rdlibs.md:41
 msgid "[nanobind](https://github.com/wjakob/nanobind)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:41
+#: ../../source/others/3rdlibs.md:42
 msgid "Python拡張コマンドにおいて、Pythonスクリプトから本体側の機能を利用できるようにするためのバインディングで使用している。"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:43
+#: ../../source/others/3rdlibs.md:44
 msgid "[Scintilla,Lexilla](https://www.scintilla.org/)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:44
+#: ../../source/others/3rdlibs.md:45
 msgid "Python拡張コマンドにおいて、スクリプト欄を編集するコントロールとして利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:46
+#: ../../source/others/3rdlibs.md:47
 msgid "[simdutf/simdutf](https://github.com/simdutf/simdutf)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:47
+#: ../../source/others/3rdlibs.md:48
 msgid "Base64のデコード、UTF-16とUTF-8の相互変換の用途で利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:49
+#: ../../source/others/3rdlibs.md:50
 msgid "[biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:50
+#: ../../source/others/3rdlibs.md:51
 msgid "YAMLファイルをパースするために利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:52
+#: ../../source/others/3rdlibs.md:53
 msgid "[pato/mathypad](https://github.com/pato/mathypad)"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:53
+#: ../../source/others/3rdlibs.md:54
 msgid "電卓の単位付き計算機能のために利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:54
+#: ../../source/others/3rdlibs.md:55
 msgid "オリジナル版ではC/C++向けのシンボルを公開していないため、利用するためのAPI層を独自追加し、Windows向けにビルドしたものを利用している"
 msgstr ""
 
-#: ../../source/others/3rdlibs.md:58
+#: ../../source/others/3rdlibs.md:59
 msgid "非開示"
 msgstr ""
-
-#~ msgid "[upx/upx](https://github.com/upx/upx)"
-#~ msgstr ""
-
-#~ msgid "ビルド生成物(exe/dll)を圧縮してサイズ削減するツールとしてUPXを利用している"
-#~ msgstr ""
-
-#~ msgid "UPX自体はGPLであるが、UPXを使って生成したバイナリ(はGPLにはならない(認識)"
-#~ msgstr ""
-
-#~ msgid "未改変UPXおよび未改変stubを使用する場合に限り、UPXの特別例外が適用される"
-#~ msgstr ""
 
