@@ -366,6 +366,9 @@
     <ClInclude Include="control/FolderDialog.h">
       <Filter>control</Filter>
     </ClInclude>
+    <ClInclude Include="control\CommandListCtrl.h">
+      <Filter>control</Filter>
+    </ClInclude>
     <ClInclude Include="control/KeywordEdit.h">
       <Filter>control</Filter>
     </ClInclude>
@@ -2136,6 +2139,9 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="control/FolderDialog.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\CommandListCtrl.cpp">
       <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="control/SelectFilesDialog.cpp">

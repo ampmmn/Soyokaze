@@ -36,9 +36,6 @@ protected:
 	afx_msg void OnLbnDblClkCommands();
 	afx_msg void OnLvnItemChange(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnHeaderClicked(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnFindCommand(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnEditCopy();
 	afx_msg void OnEditPaste();
 	afx_msg void OnTimer(UINT_PTR timerId);
