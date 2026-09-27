@@ -17,7 +17,7 @@
 #include "commands/core/CommandProviderIF.h"
 #include "commands/core/CommandFile.h"
 #include "commands/shellexecute/ShellExecCommand.h"
-#include "control/KeywordManagerDialog.h"
+#include "features/keywordmanager/KeywordManagerDialog.h"
 #include "control/SelectFilesDialog.h"
 #include "control/SelectCommandTypeDialog.h"
 #include "hotkey/CommandHotKeyManager.h"

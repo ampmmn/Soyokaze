@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "commands/common/CommandImportNameResolver.h"
+#include "features/keywordmanager/CommandImportNameResolver.h"
 
 using launcherapp::core::CommandImportNameResolver;
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "control/ImportCommandsDialog.h"
+#include "features/keywordmanager/ImportCommandsDialog.h"
 #include "commands/core/CommandIF.h"
 #include "resource.h"
 

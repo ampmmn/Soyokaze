@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "control/ImportCommandsDialog.h"
+#include "features/keywordmanager/ImportCommandsDialog.h"
 
 TEST(ImportCommandsDialogTest, ImportIsDisabledWhenNothingIsSelected)
 {

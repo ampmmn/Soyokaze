@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "commands/common/CommandImportNameResolver.h"
+#include "features/keywordmanager/CommandImportNameResolver.h"
 
 CString launcherapp::core::CommandImportNameResolver::GetUniqueName(
 	const CString& originalName,

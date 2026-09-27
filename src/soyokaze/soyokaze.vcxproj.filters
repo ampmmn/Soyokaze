@@ -22,6 +22,12 @@
     <Filter Include="control">
       <UniqueIdentifier>{87c70347-a3df-4acc-be69-799f58ac34f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="features">
+      <UniqueIdentifier>{43a1c5d7-6e8f-4a20-9b3c-1d5e7f9a2b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features\keywordmanager">
+      <UniqueIdentifier>{5c2e8a1b-7d4f-4b93-a6e0-2f8c1d5b9a73}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\shellexecute">
       <UniqueIdentifier>{b6de4d04-4dc2-46af-aa21-fa35db0ffc15}</UniqueIdentifier>
     </Filter>
@@ -360,8 +366,8 @@
     <ClInclude Include="control/KeywordEdit.h">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="control/KeywordManagerDialog.h">
-      <Filter>control</Filter>
+    <ClInclude Include="features/keywordmanager/KeywordManagerDialog.h">
+      <Filter>features\keywordmanager</Filter>
     </ClInclude>
     <ClInclude Include="control/SelectFilesDialog.h">
       <Filter>control</Filter>
@@ -945,14 +951,14 @@
     <ClInclude Include="control\SelectCommandTypeDialog.h">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="control\ImportCommandsDialog.h">
-      <Filter>control</Filter>
+    <ClInclude Include="features\keywordmanager\ImportCommandsDialog.h">
+      <Filter>features\keywordmanager</Filter>
     </ClInclude>
     <ClInclude Include="commands/core/CommandFile.h">
       <Filter>commands\core</Filter>
     </ClInclude>
-    <ClInclude Include="commands/common/CommandImportNameResolver.h">
-      <Filter>commands\common</Filter>
+    <ClInclude Include="features\keywordmanager\CommandImportNameResolver.h">
+      <Filter>features\keywordmanager</Filter>
     </ClInclude>
     <ClInclude Include="commands/core/CommandMap.h">
       <Filter>commands\core</Filter>
@@ -2141,8 +2147,8 @@
     <ClCompile Include="control/KeywordEdit.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="control/KeywordManagerDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="features/keywordmanager/KeywordManagerDialog.cpp">
+      <Filter>features\keywordmanager</Filter>
     </ClCompile>
     <ClCompile Include="control\SettingPage.cpp">
       <Filter>control</Filter>
@@ -2669,14 +2675,14 @@
     <ClCompile Include="control\SelectCommandTypeDialog.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="control\ImportCommandsDialog.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="features\keywordmanager\ImportCommandsDialog.cpp">
+      <Filter>features\keywordmanager</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandFile.cpp">
       <Filter>commands\core</Filter>
     </ClCompile>
-    <ClCompile Include="commands/common/CommandImportNameResolver.cpp">
-      <Filter>commands\common</Filter>
+    <ClCompile Include="features\keywordmanager\CommandImportNameResolver.cpp">
+      <Filter>features\keywordmanager</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandMap.cpp">
       <Filter>commands\core</Filter>
