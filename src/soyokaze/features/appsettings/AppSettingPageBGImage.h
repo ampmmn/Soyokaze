@@ -1,15 +1,15 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageBase.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
-class AppSettingPageSwitchWindow :
- 	virtual public launcherapp::settingwindow::AppSettingPageBase
+class AppSettingPageBGImage :
+	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingPageSwitchWindow();
-	~AppSettingPageSwitchWindow();
+	AppSettingPageBGImage();
+	~AppSettingPageBGImage();
 
 	// ウインドウを作成する
 	bool Create(HWND parentWindow) override;
@@ -17,25 +17,23 @@ public:
 	HWND GetHwnd() override;
 	// 同じ親の中で表示する順序(低いほど先に表示)
 	int GetOrder() override;
-	// 
+	// 設定値を読み込む
 	bool OnEnterSettings() override;
 	// ページがアクティブになるときに呼ばれる
 	bool OnSetActive() override;
 	// ページが非アクティブになるときに呼ばれる
 	bool OnKillActive() override;
-	//
+	// 設定値を保存する
 	void OnOKCall() override;
 
 	// ページに関連付けられたヘルプページIDを取得する
 	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
-	AppSettingPageIF* Clone() override { return new AppSettingPageSwitchWindow(); }
+	AppSettingPageIF* Clone() override { return new AppSettingPageBGImage(); }
 
-	DECLARE_APPSETTINGPAGE(AppSettingPageSwitchWindow)
+	DECLARE_APPSETTINGPAGE(AppSettingPageBGImage)
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
-
-

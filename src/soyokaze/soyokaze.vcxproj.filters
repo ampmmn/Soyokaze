@@ -136,8 +136,8 @@
     <Filter Include="tasktray">
       <UniqueIdentifier>{bbb178a2-439a-4886-9b26-df027800dba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="settingwindow">
-      <UniqueIdentifier>{8ab7a515-604f-4ce8-818f-8beb9a5c41b3}</UniqueIdentifier>
+    <Filter Include="features\appsettings">
+      <UniqueIdentifier>{31d46a83-3197-48c2-ab22-570b8624d051}</UniqueIdentifier>
     </Filter>
     <Filter Include="app">
       <UniqueIdentifier>{4bce9125-77c5-4ae2-acb2-0e7cfac89887}</UniqueIdentifier>
@@ -849,35 +849,35 @@
     <ClInclude Include="tasktray/TaskTray.h">
       <Filter>tasktray</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ViewSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\ViewSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\SoundSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\SoundSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPathPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPathPage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\BasicSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\BasicSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="icon\CaptureIconLabel.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExecSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\ExecSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="icon/IconLabel.h">
       <Filter>icon</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\InputSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ShortcutSettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\ShortcutSettingPage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="control/BreadCrumbs.h">
-      <Filter>control</Filter>
+    <ClInclude Include="features\appsettings\BreadCrumbs.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="hotkey\AppHotKey.h">
       <Filter>hotkey</Filter>
@@ -915,8 +915,8 @@
     <ClInclude Include="app/StartupParam.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExtensionSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\ExtensionSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="matcher/PartialMatchPattern.h">
       <Filter>matcher</Filter>
@@ -975,14 +975,14 @@
     <ClInclude Include="setting/Settings.h">
       <Filter>setting</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputWindowKeySettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\InputWindowKeySettingPage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\MainWindowHotKey.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\ExcludePathPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\ExcludePathPage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="commands\pathfind\ExcludePathList.h">
       <Filter>commands\pathfind</Filter>
@@ -993,8 +993,8 @@
     <ClInclude Include="app\LauncherEventDispatcher.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageOther.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageOther.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\OperationWatcher.h">
       <Filter>mainwindow</Filter>
@@ -1014,8 +1014,8 @@
     <ClInclude Include="commands\common\UserCommandBase.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\InputHistorySettingPage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\InputHistorySettingPage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="commands\activate_window\WindowList.h">
       <Filter>commands\activate_window</Filter>
@@ -1059,8 +1059,8 @@
     <ClInclude Include="commands\builtin\DisplayOffCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageCommandPriority.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageCommandPriority.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="hotkey\KeyInputWatch.h">
       <Filter>hotkey</Filter>
@@ -1254,8 +1254,8 @@
     <ClInclude Include="control\SystemColorScheme.h">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageColor.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageColor.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="control\ImageLabel.h">
       <Filter>control</Filter>
@@ -1530,20 +1530,20 @@
     <ClInclude Include="commands\common\OtherCommandDialog.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingDialog.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingDialog.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageRepository.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageRepository.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageBase.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageBase.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="commands\unitconvert\EraNameWJCommand.h">
       <Filter>commands\unitconvert</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageSwitchWindow.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageSwitchWindow.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="commands\env\EnvAppSettings.h">
       <Filter>commands\env</Filter>
@@ -1725,8 +1725,8 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.h">
       <Filter>commands\clipboardhistory</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageExternalTool.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageExternalTool.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="externaltool\webbrowser\ChromeEnvironment.h">
       <Filter>externaltool\webbrowser</Filter>
@@ -2109,8 +2109,8 @@
     <ClInclude Include="commands\group\GroupUrlEditDialog.h">
       <Filter>commands\group</Filter>
     </ClInclude>
-    <ClInclude Include="settingwindow\AppSettingPageBGImage.h">
-      <Filter>settingwindow</Filter>
+    <ClInclude Include="features\appsettings\AppSettingPageBGImage.h">
+      <Filter>features\appsettings</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow/ExtraCandidateListCtrl.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -2585,26 +2585,26 @@
     <ClCompile Include="tasktray/TaskTray.cpp">
       <Filter>tasktray</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\SoundSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\SoundSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ViewSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\ViewSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPathPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPathPage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\BasicSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\BasicSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExecSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\ExecSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\InputSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ShortcutSettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\ShortcutSettingPage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="icon/IconLabel.cpp">
       <Filter>icon</Filter>
@@ -2612,8 +2612,8 @@
     <ClCompile Include="icon\CaptureIconLabel.cpp">
       <Filter>icon</Filter>
     </ClCompile>
-    <ClCompile Include="control/BreadCrumbs.cpp">
-      <Filter>control</Filter>
+    <ClCompile Include="features\appsettings\BreadCrumbs.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\AppHotKey.cpp">
       <Filter>hotkey</Filter>
@@ -2660,8 +2660,8 @@
     <ClCompile Include="matcher/WholeMatchPattern.cpp">
       <Filter>matcher</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExtensionSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\ExtensionSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="commands/core/CommandRepository.cpp">
       <Filter>commands\core</Filter>
@@ -2699,14 +2699,14 @@
     <ClCompile Include="setting/Settings.cpp">
       <Filter>setting</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputWindowKeySettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\InputWindowKeySettingPage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\MainWindowHotKey.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\ExcludePathPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\ExcludePathPage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="commands\pathfind\ExcludePathList.cpp">
       <Filter>commands\pathfind</Filter>
@@ -2717,8 +2717,8 @@
     <ClCompile Include="app\LauncherEventDispatcher.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageOther.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageOther.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\OperationWatcher.cpp">
       <Filter>mainwindow</Filter>
@@ -2738,8 +2738,8 @@
     <ClCompile Include="commands\common\UserCommandBase.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\InputHistorySettingPage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\InputHistorySettingPage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="commands\activate_window\WindowList.cpp">
       <Filter>commands\activate_window</Filter>
@@ -2777,8 +2777,8 @@
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageCommandPriority.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageCommandPriority.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="hotkey\KeyInputWatch.cpp">
       <Filter>hotkey</Filter>
@@ -2951,8 +2951,8 @@
     <ClCompile Include="control\SystemColorScheme.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageColor.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageColor.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="control\ImageLabel.cpp">
       <Filter>control</Filter>
@@ -3185,20 +3185,20 @@
     <ClCompile Include="commands\common\OtherCommandDialog.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingDialog.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingDialog.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageRepository.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageRepository.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageBase.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageBase.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="commands\unitconvert\EraNameWJCommand.cpp">
       <Filter>commands\unitconvert</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageSwitchWindow.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageSwitchWindow.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="commands\env\EnvAppSettings.cpp">
       <Filter>commands\env</Filter>
@@ -3365,8 +3365,8 @@
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryQueryCancellationToken.cpp">
       <Filter>commands\clipboardhistory</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageExternalTool.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageExternalTool.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="externaltool\webbrowser\ChromeEnvironment.cpp">
       <Filter>externaltool\webbrowser</Filter>
@@ -3719,8 +3719,8 @@
     <ClCompile Include="commands\group\GroupUrlEditDialog.cpp">
       <Filter>commands\group</Filter>
     </ClCompile>
-    <ClCompile Include="settingwindow\AppSettingPageBGImage.cpp">
-      <Filter>settingwindow</Filter>
+    <ClCompile Include="features\appsettings\AppSettingPageBGImage.cpp">
+      <Filter>features\appsettings</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\ExtraCandidateListCtrl.cpp">
       <Filter>ソース ファイル</Filter>

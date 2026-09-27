@@ -11,7 +11,7 @@
 
 ### Changed
 
-- #290 キーワードマネージャー関連ファイルを `features/keywordmanager` に整理
+- #290 #291 キーワードマネージャー・アプリケーション設定関連ファイルを `features` 配下に整理
 
 ### Fixed
 

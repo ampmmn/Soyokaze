@@ -1,18 +1,15 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageBase.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
-class AppSettingPageShortcut :
+class AppSettingPageExec :
  	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
-	class SettingPage;
 public:
-	AppSettingPageShortcut();
-	~AppSettingPageShortcut();
-
-	static bool IsStartMenuExists();
+	AppSettingPageExec();
+	~AppSettingPageExec();
 
 	// ウインドウを作成する
 	bool Create(HWND parentWindow) override;
@@ -33,12 +30,11 @@ public:
 	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
-	AppSettingPageIF* Clone() override { return new AppSettingPageShortcut(); }
+	AppSettingPageIF* Clone() override { return new AppSettingPageExec(); }
 
-	DECLARE_APPSETTINGPAGE(AppSettingPageShortcut)
+	DECLARE_APPSETTINGPAGE(AppSettingPageExec)
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
-
 

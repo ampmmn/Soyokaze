@@ -1,7 +1,7 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageBase.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
 namespace launcherapp { namespace commands { namespace bookmarks {

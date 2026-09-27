@@ -1,15 +1,15 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageBase.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
-class AppSettingPageExec :
+class AppSettingPageOther :
  	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingPageExec();
-	~AppSettingPageExec();
+	AppSettingPageOther();
+	~AppSettingPageOther();
 
 	// ウインドウを作成する
 	bool Create(HWND parentWindow) override;
@@ -30,11 +30,12 @@ public:
 	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
-	AppSettingPageIF* Clone() override { return new AppSettingPageExec(); }
+	AppSettingPageIF* Clone() override { return new AppSettingPageOther(); }
 
-	DECLARE_APPSETTINGPAGE(AppSettingPageExec)
+	DECLARE_APPSETTINGPAGE(AppSettingPageOther)
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
+
 

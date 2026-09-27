@@ -1,6 +1,6 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageIF.h"
+#include "features/appsettings/AppSettingPageIF.h"
 
 namespace launcherapp {
 namespace settingwindow {

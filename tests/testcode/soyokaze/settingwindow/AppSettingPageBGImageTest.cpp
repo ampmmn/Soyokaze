@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gtest/gtest.h"
-#include "settingwindow/AppSettingPageBGImage.h"
+#include "features/appsettings/AppSettingPageBGImage.h"
 
 TEST(AppSettingPageBGImage, HasExpectedPageInformation)
 {

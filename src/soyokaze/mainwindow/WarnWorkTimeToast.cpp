@@ -2,7 +2,7 @@
 #include "WarnWorkTimeToast.h"
 #include "app/LauncherApp.h"
 #include "app/AppName.h"
-#include "settingwindow/ShortcutSettingPage.h"
+#include "features/appsettings/ShortcutSettingPage.h"
 
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.UI.Notifications.h>

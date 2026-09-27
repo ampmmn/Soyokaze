@@ -14,7 +14,7 @@
 #include "commands/watchpath/UNCPathTarget.h"
 #include "commands/watchpath/WatchPathToast.h"
 #include "utility/ManualEvent.h"
-#include "settingwindow/ShortcutSettingPage.h"
+#include "features/appsettings/ShortcutSettingPage.h"
 
 namespace launcherapp {
 namespace commands {

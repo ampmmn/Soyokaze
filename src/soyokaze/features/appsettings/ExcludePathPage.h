@@ -1,15 +1,15 @@
 #pragma once
 
-#include "settingwindow/AppSettingPageBase.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageBase.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
-class AppSettingPageColor :
+class AppSettingPageExcludePath :
  	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingPageColor();
-	~AppSettingPageColor();
+	AppSettingPageExcludePath();
+	~AppSettingPageExcludePath();
 
 	// ウインドウを作成する
 	bool Create(HWND parentWindow) override;
@@ -30,10 +30,12 @@ public:
 	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
-	AppSettingPageIF* Clone() override { return new AppSettingPageColor(); }
+	AppSettingPageIF* Clone() override { return new AppSettingPageExcludePath(); }
 
-	DECLARE_APPSETTINGPAGE(AppSettingPageColor)
+	DECLARE_APPSETTINGPAGE(AppSettingPageExcludePath)
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;
 };
+
+

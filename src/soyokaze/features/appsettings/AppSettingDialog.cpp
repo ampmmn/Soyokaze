@@ -2,11 +2,11 @@
 #include "framework.h"
 #include "AppSettingDialog.h"
 #include "commands/core/CommandRepository.h"
-#include "settingwindow/AppSettingPageRepository.h"
+#include "features/appsettings/AppSettingPageRepository.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
 #include "app/Manual.h"
-#include "control/BreadCrumbs.h"
+#include "features/appsettings/BreadCrumbs.h"
 #include "resource.h"
 #include <algorithm>
 #include <vector>

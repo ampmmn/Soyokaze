@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingCommand.h"
-#include "settingwindow/AppSettingDialog.h"
+#include "features/appsettings/AppSettingDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
 #include "mainwindow/controller/MainWindowController.h"
