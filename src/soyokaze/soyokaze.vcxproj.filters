@@ -133,14 +133,14 @@
     <Filter Include="mainwindow\state">
       <UniqueIdentifier>{a9a1e4b3-84d7-4a84-9e8c-1a5d0c2c5c11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="tasktray">
-      <UniqueIdentifier>{bbb178a2-439a-4886-9b26-df027800dba3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="features\appsettings">
       <UniqueIdentifier>{31d46a83-3197-48c2-ab22-570b8624d051}</UniqueIdentifier>
     </Filter>
     <Filter Include="features\manual">
       <UniqueIdentifier>{b4f7a8c2-2d91-4a6e-9c35-71e0d8f24a63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features\tasktray">
+      <UniqueIdentifier>{A7D2C4E1-6B9F-4D38-8A20-5C1E7B3F9D64}</UniqueIdentifier>
     </Filter>
     <Filter Include="app">
       <UniqueIdentifier>{4bce9125-77c5-4ae2-acb2-0e7cfac89887}</UniqueIdentifier>
@@ -849,8 +849,8 @@
     <ClInclude Include="mainwindow/CandidateList.h">
       <Filter>mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="tasktray/TaskTray.h">
-      <Filter>tasktray</Filter>
+    <ClInclude Include="features\tasktray\TaskTray.h">
+      <Filter>features\tasktray</Filter>
     </ClInclude>
     <ClInclude Include="features\appsettings\ViewSettingDialog.h">
       <Filter>features\appsettings</Filter>
@@ -2585,8 +2585,8 @@
     <ClCompile Include="mainwindow/CandidateList.cpp">
       <Filter>mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="tasktray/TaskTray.cpp">
-      <Filter>tasktray</Filter>
+    <ClCompile Include="features\tasktray\TaskTray.cpp">
+      <Filter>features\tasktray</Filter>
     </ClCompile>
     <ClCompile Include="features\appsettings\SoundSettingDialog.cpp">
       <Filter>features\appsettings</Filter>

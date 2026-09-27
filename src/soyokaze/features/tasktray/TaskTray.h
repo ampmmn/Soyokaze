@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tasktray/TaskTrayEventListenerIF.h"
+#include "features/tasktray/TaskTrayEventListenerIF.h"
 #include <memory>
 
 class TaskTray : public CWnd

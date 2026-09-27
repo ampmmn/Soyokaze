@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <memory>
-#include "tasktray/TaskTrayEventListenerIF.h"
+#include "features/tasktray/TaskTrayEventListenerIF.h"
 #include "control/KeywordEdit.h"
 #include "mainwindow/interprocess/CmdReceiveEdit.h"
 #include "icon/CaptureIconLabel.h"

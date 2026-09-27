@@ -955,7 +955,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="control/SelectFilesDialog.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="tasktray/TaskTray.h" />
+    <ClInclude Include="features/tasktray/TaskTray.h" />
     <ClInclude Include="utility\Accessibility.h" />
     <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\Base64.h" />
@@ -1532,7 +1532,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="control/SelectFilesDialog.cpp" />
-    <ClCompile Include="tasktray/TaskTray.cpp" />
+    <ClCompile Include="features/tasktray/TaskTray.cpp" />
     <ClCompile Include="utility\Accessibility.cpp" />
     <ClCompile Include="utility\AES.cpp" />
     <ClCompile Include="utility\Base64.cpp" />

@@ -11,7 +11,7 @@
 #include "app/LauncherShutdownWindow.h"
 #include "app/FirstStartDialog.h"
 #include "mainwindow/LauncherMainWindow.h"
-#include "tasktray/TaskTray.h"
+#include "features/tasktray/TaskTray.h"
 #include "setting/AppPreference.h"
 #include "app/StartupParam.h"
 #include "app/CommandLineProcessor.h"
