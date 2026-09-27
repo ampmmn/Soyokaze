@@ -103,11 +103,13 @@ BOOL CAboutDlg::OnInitDialog()
 	parts->SetWindowText(str);
 
 	// リソースの初期状態によらず、表示状態はコードから明示的に設定する
+#ifndef DISABLE_FEATURE_VERSIONCHECK
 	GetDlgItem(IDC_BUTTON_CHECKUPDATE)->ShowWindow(SW_SHOW);
 	GetDlgItem(IDC_STATIC_UPDATEMSG)->ShowWindow(SW_SHOW);
 	CWnd* updateLink = GetDlgItem(IDC_SYSLINK1_UPDATE);
 	updateLink->SetWindowText(_T(""));
 	updateLink->ShowWindow(SW_SHOW);
+#endif
 
 	// バージョン情報を取得
 	VersionInfo::GetVersionInfo(mVersionStr);
