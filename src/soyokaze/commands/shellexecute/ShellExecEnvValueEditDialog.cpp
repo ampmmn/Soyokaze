@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ShellExecEnvValueEditDialog.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "control/FolderDialog.h"
 #include "utility/Accessibility.h"
 #include "utility/Path.h"

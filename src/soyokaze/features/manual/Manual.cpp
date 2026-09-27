@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Manual.h"
-#include "app/ManualWindow.h"
+#include "ManualWindow.h"
 #include "utility/Path.h"
 #include "SharedHwnd.h"
 #include "resource.h"

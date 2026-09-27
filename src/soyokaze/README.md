@@ -17,6 +17,7 @@
 |[res](res)|リソース置き場(.ico/.cur)など|
 |[setting](setting)|設定情報の保存・読み込み|
 |[features/appsettings](features/appsettings)|アプリ設定画面|
+|[features/manual](features/manual)|マニュアル表示|
 |[tasktray](tasktray)|タスクトレイ登録処理など|
 |[utility](utility)|細かい部品|
 

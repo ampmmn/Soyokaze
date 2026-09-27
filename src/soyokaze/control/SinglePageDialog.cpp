@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SinglePageDialog.h"
 #include "resource.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

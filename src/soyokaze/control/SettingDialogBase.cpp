@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "SettingDialogBase.h"
 #include "SettingPage.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "features/appsettings/BreadCrumbs.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"

@@ -3,7 +3,7 @@
 #include "OtherCommandDialog.h"
 #include "commands/common/CommandSelectDialog.h"
 #include "utility/Accessibility.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 

@@ -1,6 +1,6 @@
 # app
 
-アプリケーションの起動、コマンドライン、二重起動連携、OSイベント、マニュアル表示に関する処理を置くディレクトリ。
+アプリケーションの起動、コマンドライン、二重起動連携、OSイベントに関する処理を置くディレクトリ。
 
 ## クラス
 
@@ -17,8 +17,8 @@
 |[LauncherEventDispatcher](./LauncherEventDispatcher.h)|イベントリスナーを管理し、タイマー、セッション、モニター構成、ランチャーのアクティブ状態などの通知を配信する。|
 |[LauncherSystemEventWindow](./LauncherSystemEventWindow.h)|セッションロック／解除、定期タイマー、ディスプレイ構成変更を受け取り、イベントディスパッチャーへ通知する不可視ウインドウ。|
 |[LauncherShutdownWindow](./LauncherShutdownWindow.h)|Windowsの終了セッション通知を受け取り、終了処理を開始する不可視ウインドウ。|
-|[Manual](./Manual.h)|マニュアルのページIDをローカルHTMLの場所に対応付け、ページ表示を依頼するシングルトン。|
-|[ManualWindow](./ManualWindow.h)|内部ブラウザーを専用スレッド上に作成し、マニュアルを表示するシングルトン。|
+|[Manual](../features/manual/Manual.h)|マニュアルのページIDをローカルHTMLの場所に対応付け、ページ表示を依頼するシングルトン。|
+|[ManualWindow](../features/manual/ManualWindow.h)|内部ブラウザーを専用スレッド上に作成し、マニュアルを表示するシングルトン。|
 |[SQLiteMemoryUsedMetrics](./metrics/SQLiteMemoryUsedMetrics.h)|SQLiteのメモリ使用量をリソースメトリクスとして提供する。|
 
 `AppProcess::exception`は、単一起動用ミューテックスの初期化失敗を伝える例外型。PImplを持つクラスは、実装詳細を各`.cpp`側に隠蔽する。

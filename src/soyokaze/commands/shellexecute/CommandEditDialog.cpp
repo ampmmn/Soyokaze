@@ -18,7 +18,7 @@
 #include "utility/Path.h"
 #include "utility/LocalPathResolver.h"
 #include "icon/IconLoader.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "setting/AppPreference.h"
 #include "resource.h"
 #include <vector>

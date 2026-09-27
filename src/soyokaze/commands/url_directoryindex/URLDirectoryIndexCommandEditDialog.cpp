@@ -6,7 +6,7 @@
 #include "commands/common/ExpandFunctions.h"
 #include "utility/Accessibility.h"
 #include "utility/Regex.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 

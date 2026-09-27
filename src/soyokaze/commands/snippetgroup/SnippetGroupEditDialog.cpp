@@ -3,7 +3,7 @@
 #include "commands/core/CommandRepository.h"
 #include "commands/validation/CommandEditValidation.h"
 #include "utility/Accessibility.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
 #include <vector>

@@ -11,7 +11,7 @@
 #include "utility/Accessibility.h"
 #include "icon/IconLoader.h"
 #include "icon/CommandIcon.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 

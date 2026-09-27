@@ -5,7 +5,7 @@
 #include "features/appsettings/AppSettingPageRepository.h"
 #include "utility/TopMostMask.h"
 #include "utility/Accessibility.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "features/appsettings/BreadCrumbs.h"
 #include "resource.h"
 #include <algorithm>

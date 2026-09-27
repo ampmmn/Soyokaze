@@ -10,7 +10,7 @@
 #include "utility/Path.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 #include "Scintilla.h"

@@ -3,7 +3,7 @@
 #include "ViewSettingDialog.h"
 #include "setting/Settings.h"
 #include "setting/InitialFont.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "icon/IconLoader.h"
 #include "icon/IconLabelForApp.h"
 #include "icon/AppIcon.h"

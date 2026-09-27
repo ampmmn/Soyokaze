@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "CopyToClipboardDialog.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 

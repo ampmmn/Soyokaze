@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "app/LauncherApp.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "mainwindow/LauncherMainWindow.h"
 #include "mainwindow/CandidateListCtrl.h"
 #include "mainwindow/ExtraCandidateListCtrl.h"

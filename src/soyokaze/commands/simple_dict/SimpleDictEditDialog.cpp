@@ -12,7 +12,7 @@
 #include "utility/Accessibility.h"
 #include "utility/Path.h"
 #include "hotkey/HotKeyControl.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 #include <vector>
 

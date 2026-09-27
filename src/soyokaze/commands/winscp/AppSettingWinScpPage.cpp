@@ -6,7 +6,7 @@
 #include "setting/Settings.h"
 #include "utility/Path.h"
 #include "control\DDXWrapper.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 
 #ifdef _DEBUG

@@ -426,8 +426,8 @@
     <ClInclude Include="app\LauncherShutdownWindow.h" />
     <ClInclude Include="app\LauncherSystemEventWindow.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
-    <ClInclude Include="app\Manual.h" />
-    <ClInclude Include="app\ManualWindow.h" />
+    <ClInclude Include="features\manual\Manual.h" />
+    <ClInclude Include="features\manual\ManualWindow.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
     <ClInclude Include="app\SecondProcessProxyIF.h" />
     <ClInclude Include="app\metrics\SQLiteMemoryUsedMetrics.h" />
@@ -1020,8 +1020,8 @@
     <ClCompile Include="app\LauncherShutdownWindow.cpp" />
     <ClCompile Include="app\LauncherSystemEventWindow.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
-    <ClCompile Include="app\Manual.cpp" />
-    <ClCompile Include="app\ManualWindow.cpp" />
+    <ClCompile Include="features\manual\Manual.cpp" />
+    <ClCompile Include="features\manual\ManualWindow.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />
     <ClCompile Include="app\metrics\SQLiteMemoryUsedMetrics.cpp" />
     <ClCompile Include="commands\activate_window\ActivateIndicatorWindow.cpp" />

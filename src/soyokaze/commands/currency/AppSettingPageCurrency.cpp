@@ -5,7 +5,7 @@
 #include "commands/currency/CurrencyCommandParam.h"
 #include "setting/Settings.h"
 #include "control\DDXWrapper.h"
-#include "app/Manual.h"
+#include "features/manual/Manual.h"
 #include "resource.h"
 
 #ifdef _DEBUG

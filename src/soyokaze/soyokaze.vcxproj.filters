@@ -139,6 +139,9 @@
     <Filter Include="features\appsettings">
       <UniqueIdentifier>{31d46a83-3197-48c2-ab22-570b8624d051}</UniqueIdentifier>
     </Filter>
+    <Filter Include="features\manual">
+      <UniqueIdentifier>{b4f7a8c2-2d91-4a6e-9c35-71e0d8f24a63}</UniqueIdentifier>
+    </Filter>
     <Filter Include="app">
       <UniqueIdentifier>{4bce9125-77c5-4ae2-acb2-0e7cfac89887}</UniqueIdentifier>
     </Filter>
@@ -1020,8 +1023,8 @@
     <ClInclude Include="commands\activate_window\WindowList.h">
       <Filter>commands\activate_window</Filter>
     </ClInclude>
-    <ClInclude Include="app\Manual.h">
-      <Filter>app</Filter>
+    <ClInclude Include="features\manual\Manual.h">
+      <Filter>features\manual</Filter>
     </ClInclude>
     <ClInclude Include="app\LauncherShutdownWindow.h">
       <Filter>app</Filter>
@@ -1932,8 +1935,8 @@
     <ClInclude Include="control\webbrowser\InternalBrowser.h">
       <Filter>control\webbrowser</Filter>
     </ClInclude>
-    <ClInclude Include="app\ManualWindow.h">
-      <Filter>app</Filter>
+    <ClInclude Include="features\manual\ManualWindow.h">
+      <Filter>features\manual</Filter>
     </ClInclude>
     <ClInclude Include="commands\transfer\CommandJSONEntry.h">
       <Filter>commands\transfer</Filter>
@@ -2744,8 +2747,8 @@
     <ClCompile Include="commands\activate_window\WindowList.cpp">
       <Filter>commands\activate_window</Filter>
     </ClCompile>
-    <ClCompile Include="app\Manual.cpp">
-      <Filter>app</Filter>
+    <ClCompile Include="features\manual\Manual.cpp">
+      <Filter>features\manual</Filter>
     </ClCompile>
     <ClCompile Include="app\LauncherShutdownWindow.cpp">
       <Filter>app</Filter>
@@ -3551,8 +3554,8 @@
     <ClCompile Include="control\webbrowser\InternalBrowser.cpp">
       <Filter>control\webbrowser</Filter>
     </ClCompile>
-    <ClCompile Include="app\ManualWindow.cpp">
-      <Filter>app</Filter>
+    <ClCompile Include="features\manual\ManualWindow.cpp">
+      <Filter>features\manual</Filter>
     </ClCompile>
     <ClCompile Include="commands\transfer\CommandJSONEntry.cpp">
       <Filter>commands\transfer</Filter>
