@@ -117,6 +117,11 @@ WebSearchCommand::~WebSearchCommand()
 {
 }
 
+bool WebSearchCommand::HasRawDescription()
+{
+	return in->mParam.mDescription.IsEmpty() == FALSE;
+}
+
 bool WebSearchCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
 {
 	if (UserCommandBase::QueryInterface(ifid, cmd)) {
@@ -138,7 +143,12 @@ CString WebSearchCommand::GetName()
 
 CString WebSearchCommand::GetDescription()
 {
-	return in->mParam.mDescription;
+	if (HasRawDescription()) {
+		return in->mParam.mDescription;
+	}
+	else {
+		return in->mParam.mURL;
+	}
 }
 
 CString WebSearchCommand::GetTypeDisplayName()

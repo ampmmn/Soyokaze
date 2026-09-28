@@ -133,7 +133,12 @@ CString ShellExecCommand::GetName()
 
 CString ShellExecCommand::GetDescription()
 {
-	return in->mParam.mDescription;
+	if (in->mParam.mDescription.IsEmpty() == FALSE) {
+		return in->mParam.mDescription;
+	}
+	else {
+		return in->GetNormalAttr().mPath;
+	}
 }
 
 CString ShellExecCommand::GetTypeDisplayName()

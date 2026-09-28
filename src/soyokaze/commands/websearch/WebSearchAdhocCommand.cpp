@@ -33,7 +33,7 @@ WebSearchAdhocCommand::WebSearchAdhocCommand(
  	const CString& displayName,
  	const CString& showUrl
 ) : 
-	AdhocCommandBase(displayName, baseCommand->GetDescription()),
+	AdhocCommandBase(displayName, baseCommand->HasRawDescription() ? baseCommand->GetDescription() : showUrl),
 	in(std::make_unique<PImpl>())
 {
 	in->mBaseCommand = baseCommand;

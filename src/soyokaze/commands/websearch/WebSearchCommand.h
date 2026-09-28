@@ -16,6 +16,8 @@ public:
 	WebSearchCommand();
 	virtual ~WebSearchCommand();
 
+	bool HasRawDescription();
+
 // Comand
 	CString GetName() override;
 	CString GetDescription() override;
