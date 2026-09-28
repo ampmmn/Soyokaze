@@ -9,6 +9,7 @@ namespace {
 
 bool isPrimaryProcess = false;
 bool isShutdownInProgress = false;
+bool isRestartRequired = false;
 
 }
 
@@ -41,6 +42,12 @@ void LauncherProcessContext::MarkShutdownInProgress()
 	isShutdownInProgress = true;
 }
 
+// アプリの再起動が必要である旨をセット
+void LauncherProcessContext::MarkRestartRequired()
+{
+	isRestartRequired = true;
+}
+
 // 先行プロセスか?
 bool LauncherProcessContext::IsPrimaryProcess()
 {
@@ -51,6 +58,12 @@ bool LauncherProcessContext::IsPrimaryProcess()
 bool LauncherProcessContext::IsShutdownInProgress()
 {
 	return isShutdownInProgress;
+}
+
+// アプリの再起動が必要か?
+bool LauncherProcessContext::IsRestartRequired()
+{
+	return isRestartRequired;
 }
 
 

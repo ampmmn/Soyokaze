@@ -75,7 +75,9 @@ BOOL RestartCommand::Execute(Parameter* param)
 		exec.SetRunAsAdmin();
 	}
 
-	exec.Run((LPCTSTR)proxyPath, _T("restart"), process);
+	if (exec.Run((LPCTSTR)proxyPath, _T("restart"), process) == false) {
+		return FALSE;
+	}
 
 	return TRUE;
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ViewSettingDialog.h"
+#include "core/LauncherProcessContext.h"
 #include "setting/Settings.h"
 #include "setting/InitialFont.h"
 #include "features/manual/Manual.h"
@@ -66,6 +67,8 @@ protected:
 
 	// 候補欄の項目を二行で表示するか
 	BOOL mIsTwoLine{FALSE};
+	// 設定画面を開いた時点の二行表示設定
+	BOOL mOriginalIsTwoLine{FALSE};
 
 	// オプションボタンを表示するか
 	BOOL mIsShowOptionButton{FALSE};
@@ -115,6 +118,10 @@ void ViewSettingDialog::OnOK()
 	}
 
 	auto settingsPtr = mSettingsPtr;
+	if (mIsTwoLine != mOriginalIsTwoLine) {
+		launcherapp::core::LauncherProcessContext::GetInstance()->MarkRestartRequired();
+	}
+
 	settingsPtr->Set(_T("ViewSetting:IsDrawIcon"), (bool)mIsDrawIcon);
 	settingsPtr->Set(_T("ViewSetting:IsDrawPlaceHolder"), (bool)mIsDrawPlaceHolder);
 
@@ -196,6 +203,7 @@ BEGIN_MESSAGE_MAP(ViewSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_RESETICON, OnButtonResetIcon)
 	ON_COMMAND(IDC_BUTTON_RESETFONT, OnButtonResetFont)
 	ON_COMMAND(IDC_CHECK_DRAWICON, OnUpdateStatus)
+	ON_BN_CLICKED(IDC_CHECK_TWOLINE, OnUpdateStatus)
 	ON_CBN_KILLFOCUS(IDC_COMBO_FONTSIZE, OnCbnKillfocusFontSize)
 END_MESSAGE_MAP()
 
@@ -237,6 +245,19 @@ void ViewSettingDialog::SetIconPath(const CString& appIconPath)
 bool ViewSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_ALPHA)->EnableWindow(mTransparencyType != 2);
+
+	bool isTwoLineChanged = mIsTwoLine != mOriginalIsTwoLine;
+	CWnd* needRebootLabel = GetDlgItem(IDC_STATIC_NEEDREBOOT);
+	if (needRebootLabel) {
+		if (isTwoLineChanged) {
+			needRebootLabel->SetWindowText(_T("設定を反映するため、アプリを再起動します。"));
+			needRebootLabel->ShowWindow(SW_SHOW);
+		}
+		else {
+			needRebootLabel->SetWindowText(_T(""));
+			needRebootLabel->ShowWindow(SW_HIDE);
+		}
+	}
 
 	// フォントサイズの有効範囲を超えていたら範囲内に丸める
 	if (mFontSize < 6) { mFontSize = 6; }
@@ -293,6 +314,7 @@ void ViewSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
 	mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
 	mIsTwoLine = settingsPtr->Get(_T("ViewSetting:TwoLine"), false);
+	mOriginalIsTwoLine = mIsTwoLine;
 	mIsShowOptionButton = settingsPtr->Get(_T("ViewSetting:IsShowOptionButton"), false);
 
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "SettingCommand.h"
+#include "commands/builtin/RestartCommand.h"
+#include "core/LauncherProcessContext.h"
 #include "features/appsettings/AppSettingDialog.h"
 #include "setting/AppPreference.h"
 #include "icon/IconLoader.h"
@@ -94,6 +96,20 @@ LRESULT SettingCommand::OnCallbackExecute()
 		// 設定変更を反映する
 		pref->SetSettings(dlg.GetSettings());
 		pref->Save();
+
+		auto processContext = launcherapp::core::LauncherProcessContext::GetInstance();
+		if (processContext->IsRestartRequired()) {
+			// 再起動に備えて入力画面を閉じ、設定変更による一時的な表示崩れを防ぐ。
+			mainWnd->ClearContent();
+			mainWnd->HideWindow();
+
+			launcherapp::commands::builtin::RestartCommand restartCommand;
+			if (restartCommand.Execute(nullptr) != FALSE) {
+				return 0;
+			}
+
+			AfxMessageBox(_T("アプリを再起動できませんでした。手動で再起動してください。"), MB_ICONWARNING);
+		}
 	}
 
 	// 状態クリア
