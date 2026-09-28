@@ -18,6 +18,20 @@
 using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::web;
 
+namespace {
+
+
+CString DecodeUri(const CString& src)
+{
+	TCHAR buf[512];
+	DWORD len = _countof(buf);
+	_tcsncpy_s(buf, len, src, _TRUNCATE);
+	UrlUnescape(buf, nullptr, &len, URL_UNESCAPE_INPLACE | URL_UNESCAPE_AS_UTF8);
+	return CString(buf);
+}
+
+}
+
 namespace launcherapp {
 namespace commands {
 namespace webhistory {
@@ -35,7 +49,7 @@ WebHistoryAdhocCommand::WebHistoryAdhocCommand(
 	const CString& name, 
 	const HISTORY& item
 ) : 
-	AdhocCommandBase(_T(""), item.mDisplayName),
+	AdhocCommandBase(_T(""), DecodeUri(item.mUrl)),
 	in(std::make_unique<PImpl>())
 {
 	in->mName = name;
@@ -49,7 +63,12 @@ WebHistoryAdhocCommand::~WebHistoryAdhocCommand()
 
 CString WebHistoryAdhocCommand::GetName()
 {
-	return in->mName + _T(" ") + in->mHistory.mDisplayName;
+	if (in->mName.IsEmpty() == FALSE) {
+		return in->mName + _T(" ") + in->mHistory.mDisplayName;
+	}
+	else {
+		return in->mHistory.mDisplayName;
+	}
 }
 
 CString WebHistoryAdhocCommand::GetTypeDisplayName()

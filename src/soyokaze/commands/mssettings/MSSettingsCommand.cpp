@@ -30,12 +30,10 @@ MSSettingsCommand::MSSettingsCommand(
 	const CString& scheme,
 	const CString& category,
 	const CString& pageTitle
-) : AdhocCommandBase(_T(""), _T("")),
+) : AdhocCommandBase(pageTitle, _T("")),
 	in(std::make_unique<PImpl>())
 {
-
-	this->mName.Format(_T("%s > %s"), (LPCTSTR)category, (LPCTSTR)pageTitle);
-	this->mDescription= this->mName;
+	this->mDescription.Format(_T("%s > %s"), (LPCTSTR)category, (LPCTSTR)pageTitle);
 
 	in->mScheme = scheme;
 	in->mCategory = category;
@@ -49,6 +47,15 @@ MSSettingsCommand::~MSSettingsCommand()
 CString MSSettingsCommand::GetTypeDisplayName()
 {
 	return TypeDisplayName();
+}
+
+int MSSettingsCommand::Match(Pattern* pattern)
+{
+	int level = pattern->Match(this->mName);
+	if (level != Pattern::Mismatch) {
+		return level;
+	}
+	return pattern->Match(this->mDescription);
 }
 
 bool MSSettingsCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)

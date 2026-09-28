@@ -17,6 +17,7 @@ public:
 	virtual ~MSSettingsCommand();
 
 	CString GetTypeDisplayName() override;
+	int Match(Pattern* pattern) override;
 	bool GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action) override;
 	HICON GetIcon() override;
 	launcherapp::core::Command* Clone() override;

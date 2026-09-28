@@ -66,15 +66,14 @@ EverythingAdhocCommand::~EverythingAdhocCommand()
 
 CString EverythingAdhocCommand::GetName()
 {
-	return in->mResult.mFullPath;
+	CString str;
+	str.Format(_T("%s"), (LPCTSTR)PathFindFileName(in->mResult.mFullPath));
+	return str;
 }
 
 CString EverythingAdhocCommand::GetDescription()
 {
-	CString str;
-	str.Format(_T("%s"), (LPCTSTR)PathFindFileName(in->mResult.mFullPath));
-	return str;
-
+	return in->mResult.mFullPath;
 }
 
 CString EverythingAdhocCommand::GetTypeDisplayName()

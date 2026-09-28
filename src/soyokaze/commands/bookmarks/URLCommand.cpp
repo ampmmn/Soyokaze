@@ -35,7 +35,7 @@ URLCommand::URLCommand(
 	const Bookmark& item,
 	BrowserEnvironment* brwsEnv
 ) : 
-	AdhocCommandBase(item.mName, item.mName),
+	AdhocCommandBase(item.mName, _T("")),
 	in(std::make_unique<PImpl>())
 {
 	in->mBookmarkItem = item;
@@ -48,7 +48,15 @@ URLCommand::~URLCommand()
 
 CString URLCommand::GetDescription()
 {
-	return in->mBookmarkItem.mFolderPath;
+	const auto& suffix = in->mBookmarkItem.mName;;
+	const auto& str = in->mBookmarkItem.mFolderPath;
+	if (str.Right(suffix.GetLength()) == suffix && str.GetLength() > suffix.GetLength()) {
+		// 末尾のパスをカットし、フォルダパスのみを返す
+		return str.Left((str.GetLength() - suffix.GetLength()) - 1);
+	}
+	else {
+		return str;
+	}
 }
 
 CString URLCommand::GetTypeDisplayName()

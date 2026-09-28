@@ -47,6 +47,7 @@ struct EraNameWJCommand::PImpl
 	std::map<tstring, int> mMapJ2W;
 	std::map<int, tstring> mMapW2J;
 	CString mName;
+	tstring mOrgWord;
 	int mVal{0};
 };
 
@@ -66,6 +67,13 @@ EraNameWJCommand::~EraNameWJCommand()
 CString EraNameWJCommand::GetName()
 {
 	return in->mName;
+}
+
+CString EraNameWJCommand::GetDescription()
+{
+	CString str;
+	str.Format(_T("%s <-> %s"), in->mOrgWord.c_str(), (LPCTSTR)in->mName);
+	return str;
 }
 
 CString EraNameWJCommand::GetTypeDisplayName()
@@ -135,6 +143,7 @@ int EraNameWJCommand::Match(Pattern* pattern)
 
 		in->mVal = it->second + val;
 		in->mName.Format(_T("%d年"), in->mVal);
+		in->mOrgWord = wholeWord;
 		return Pattern::FrontMatch;
 	}
 	else if (std::regex_match(wholeWord, patEraW)) {
@@ -159,6 +168,7 @@ int EraNameWJCommand::Match(Pattern* pattern)
 			else {
 				in->mName.Format(_T("%s%d年"), eraName.c_str(), in->mVal);
 			}
+			in->mOrgWord = wholeWord;
 			return Pattern::FrontMatch;
 		}
 		return Pattern::Mismatch;
