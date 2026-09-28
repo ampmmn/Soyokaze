@@ -121,19 +121,19 @@ struct BGImageCandidateListRenderer::PImpl
 			return false;
 		}
 
-		BOOL result = mImageBuffer.Create(width, height, 32);
+		BOOL result = mImageBuffer.Create(width, height, 24);
 		if (result == FALSE) {
 			spdlog::error("Failed to create background image buffer. size:({},{})", width, height);
 			DestroyBuffers();
 			return false;
 		}
-		result = mBackgroundBuffer.Create(width, height, 32);
+		result = mBackgroundBuffer.Create(width, height, 24);
 		if (result == FALSE) {
 			spdlog::error("Failed to create regular background color buffer. size:({},{})", width, height);
 			DestroyBuffers();
 			return false;
 		}
-		result = mAlternateBackgroundBuffer.Create(width, height, 32);
+		result = mAlternateBackgroundBuffer.Create(width, height, 24);
 		if (result == FALSE) {
 			spdlog::error("Failed to create alternate background color buffer. size:({},{})", width, height);
 			DestroyBuffers();

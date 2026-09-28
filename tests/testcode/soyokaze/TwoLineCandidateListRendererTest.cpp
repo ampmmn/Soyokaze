@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-TEST(TwoLineCandidateListRenderer, UsesCompactLineSpacing)
+TEST(TwoLineCandidateListRenderer, UsesTwoLineItemHeightWhileStandardUsesOneLine)
 {
 	StandardCandidateListRenderer standardRenderer;
 	TwoLineCandidateListRenderer twoLineRenderer;

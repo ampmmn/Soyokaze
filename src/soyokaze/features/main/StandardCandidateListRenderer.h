@@ -27,17 +27,41 @@ public:
 	void SetIsEmpty(bool isEmpty) override;
 	int GetItemCountInPage() const override;
 	/**
-	  表示形式に応じた候補項目の高さを取得する
+	  一行表示での候補項目の高さを取得する
 	  @return 候補項目の高さ
 	*/
 	int GetItemHeight() const override;
 
 protected:
 	/**
-	  項目名を二行表示するかどうかを設定する
-	  @param[in] isTwoLine 二行表示する場合はtrue
+	  項目名を描画する
+	  @param[in] listWnd 候補欄
+	  @param[in] pDC 描画先デバイスコンテキスト
+	  @param[in] itemId 項目番号
 	*/
-	void SetIsTwoLine(bool isTwoLine);
+	virtual void DrawItemName(CListCtrl* listWnd, CDC* pDC, int itemId);
+	/**
+	  コマンド種別を描画する
+	  @param[in] listWnd 候補欄
+	  @param[in] pDC 描画先デバイスコンテキスト
+	  @param[in] itemId 項目番号
+	*/
+	virtual void DrawItemCategory(CListCtrl* listWnd, CDC* pDC, int itemId);
+	/**
+	  描画対象の候補リストを取得する
+	  @return 候補リスト
+	*/
+	CandidateList* GetCandidateList() const;
+	/**
+	  テキストの高さを取得する
+	  @return テキストの高さ
+	*/
+	int GetTextHeight() const;
+	/**
+	  コマンド種別を表示する設定かどうかを取得する
+	  @return 表示する場合はtrue
+	*/
+	bool IsShowCommandType() const;
 
 private:
 	struct PImpl;
