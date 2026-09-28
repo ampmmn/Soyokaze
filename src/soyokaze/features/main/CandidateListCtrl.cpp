@@ -3,6 +3,7 @@
 #include "CandidateList.h"
 #include "CandidateListRenderer.h"
 #include "StandardCandidateListRenderer.h"
+#include "TwoLineCandidateListRenderer.h"
 #include "BGImageCandidateListRenderer.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreference.h"
@@ -30,6 +31,7 @@ struct CandidateListCtrl::PImpl
 
 	bool mIsEmpty{false};
 	int mTextHeight{16};
+	int mTextLineHeight{16};
 	int mIconSize{16};
 };
 
@@ -50,7 +52,23 @@ CandidateListCtrl::~CandidateListCtrl()
 }
 
 BEGIN_MESSAGE_MAP(CandidateListCtrl, CListCtrl)
+	ON_WM_SETFONT()
 END_MESSAGE_MAP()
+
+void CandidateListCtrl::OnSetFont(CFont* font, BOOL redraw)
+{
+	UNREFERENCED_PARAMETER(font);
+	UNREFERENCED_PARAMETER(redraw);
+	Default();
+	if (in->mRenderer == nullptr) {
+		return;
+	}
+
+	// 新しいフォントを反映した後に寸法を測り直し、レンダラーを再生成する。
+	in->mShouldReinitColumns = true;
+	InitColumns();
+	Invalidate();
+}
 
 // 現在選択中のアイテムの領域を取得
 bool CandidateListCtrl::GetCurrentItemRect(RECT* rect)
@@ -82,12 +100,18 @@ void CandidateListCtrl::SetCandidateList(CandidateList* candidates)
 }
 
 /**
- 	コマンド種別の列サイズを決定する
- 	@param[in]  hwnd         CListCtrlウインドウハンドル
- 	@param[out] typeColWidth コマンド種別列の幅(pixel)
- 	@param[out] textHeight   テキストの高さ(pixel)
+  コマンド種別の列サイズとテキスト寸法を決定する
+  @param[in]  hwnd         CListCtrlウインドウハンドル
+  @param[out] typeColWidth コマンド種別列の幅(pixel)
+  @param[out] textHeight   テキストの高さ(pixel)
+  @param[out] textLineHeight 行送りを含むテキストの高さ(pixel)
 */
-static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
+static void GetTypeColumnSize(
+	HWND hwnd,
+	int& typeColWidth,
+	int& textHeight,
+	int& textLineHeight
+)
 {
 	HFONT hf = (HFONT)SendMessage(hwnd, WM_GETFONT, 0, 0);
 	CClientDC dc(CWnd::FromHandle(hwnd));
@@ -115,6 +139,7 @@ static void GetTypeColumnSize(HWND hwnd, int& typeColWidth, int& textHeight)
 
 	typeColWidth = maxWidth;
 	textHeight = tm.tmHeight;
+	textLineHeight = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
 }
 
 
@@ -129,9 +154,8 @@ void CandidateListCtrl::InitColumns()
 
 	// 列幅、高さを計算する
 	int typeColWidth = 140;
-	GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mIconSize);
-	in->mTextHeight = in->mIconSize;
-	in->mIconSize += ITEM_MARGIN;
+	GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight, in->mTextLineHeight);
+	in->mIconSize = in->mTextHeight + ITEM_MARGIN;
 
 	ModifyStyle(0, LVS_OWNERDATA);
 	SetExtendedStyle(GetExtendedStyle()|LVS_EX_FULLROWSELECT| LVS_EX_DOUBLEBUFFER);
@@ -174,22 +198,29 @@ void CandidateListCtrl::InitColumns()
 	}
 
 	// 設定に応じたレンダラーを作り直す。
-	std::unique_ptr<StandardCandidateListRenderer> renderer;
-	bool isUseBGImage = pref->GetSettings().Get(_T("BGImage:Enable"), false);
-	if (isUseBGImage) {
-		renderer = std::make_unique<BGImageCandidateListRenderer>();
+	const auto& appSettings = pref->GetSettings();
+	bool isTwoLine = appSettings.Get(_T("ViewSetting:TwoLine"), false);
+	std::unique_ptr<CandidateListRenderer> renderer;
+	if (isTwoLine) {
+		renderer = std::make_unique<TwoLineCandidateListRenderer>();
 	}
 	else {
 		renderer = std::make_unique<StandardCandidateListRenderer>();
+	}
+	bool isUseBGImage = appSettings.Get(_T("BGImage:Enable"), false);
+	if (isUseBGImage) {
+		renderer = std::make_unique<BGImageCandidateListRenderer>(std::move(renderer));
 	}
 	renderer->SetCandidateList(in->mCandidates);
 	renderer->SetIsEmpty(in->mIsEmpty);
 	renderer->SetIsAlternateColor(isAlternateColor);
 	renderer->SetIsShowCommandType(isShowCommandType);
 	renderer->SetIsDrawIcon(pref->IsDrawIconOnCandidate());
-	renderer->SetTextMetrics(in->mTextHeight, in->mIconSize);
-	SetImageList(renderer->GetImageList(), LVSIL_SMALL);
+	renderer->SetTextMetrics(in->mTextHeight, in->mTextLineHeight, in->mIconSize);
+	auto oldRenderer = std::move(in->mRenderer);
 	in->mRenderer = std::move(renderer);
+	SetImageList(in->mRenderer->GetImageList(), LVSIL_SMALL);
+	oldRenderer.reset();
 
 	in->mShouldReinitColumns = false;
 }
@@ -220,7 +251,7 @@ void CandidateListCtrl::UpdateSize(int cx, int cy)
 
 		// コマンド種別の列幅を得る
 		int typeColWidth = 140;
-		GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight);
+		GetTypeColumnSize(GetSafeHwnd(), typeColWidth, in->mTextHeight, in->mTextLineHeight);
 
 		int nameColWidth = width - (typeColWidth + SCROLLBAR_WIDTH);
 		if (nameColWidth < typeColWidth) {
@@ -243,7 +274,8 @@ int CandidateListCtrl::GetItemCountInPage()
 
 void CandidateListCtrl::OnMeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
-	lpMeasureItemStruct->itemHeight = in->mTextHeight + ITEM_MARGIN;
+	lpMeasureItemStruct->itemHeight = in->mRenderer ?
+		in->mRenderer->GetItemHeight() : in->mTextHeight + ITEM_MARGIN;
 }
 
 void CandidateListCtrl::OnUpdateSelect(void* sender)

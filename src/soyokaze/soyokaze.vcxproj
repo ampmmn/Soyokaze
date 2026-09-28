@@ -895,6 +895,7 @@
     <ClInclude Include="features\main\CandidateListRenderer.h" />
     <ClInclude Include="features\main\BGImageCandidateListRenderer.h" />
     <ClInclude Include="features\main\StandardCandidateListRenderer.h" />
+    <ClInclude Include="features\main\TwoLineCandidateListRenderer.h" />
     <ClInclude Include="icon\CaptureIconLabel.h" />
     <ClInclude Include="hotkey\CommandHotKeyDialog.h" />
     <ClInclude Include="features\appsettings\ExcludePathPage.h" />
@@ -1466,6 +1467,7 @@
     <ClCompile Include="features\main\ExtraCandidateListCtrl.cpp" />
     <ClCompile Include="features\main\BGImageCandidateListRenderer.cpp" />
     <ClCompile Include="features\main\StandardCandidateListRenderer.cpp" />
+    <ClCompile Include="features\main\TwoLineCandidateListRenderer.cpp" />
     <ClCompile Include="icon\CaptureIconLabel.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyDialog.cpp" />
     <ClCompile Include="features\appsettings\ExcludePathPage.cpp" />

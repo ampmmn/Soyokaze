@@ -279,6 +279,9 @@
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp">
       <Filter>soyokaze\mainwindow</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\TwoLineCandidateListRendererTest.cpp">
+      <Filter>soyokaze</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\settingwindow\AppSettingPageBGImageTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>

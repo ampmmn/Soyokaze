@@ -35,6 +35,9 @@ int ClampAlpha(int alpha)
 
 struct BGImageCandidateListRenderer::PImpl
 {
+	std::unique_ptr<CandidateListRenderer> mRenderer;
+	bool mIsDrawBackground{true};
+
 	/**
 	  設定された背景画像を読み込む
 	  @return true:成功 false:失敗
@@ -295,8 +298,13 @@ struct BGImageCandidateListRenderer::PImpl
 	bool mIsAlternateColor{false};
 };
 
-BGImageCandidateListRenderer::BGImageCandidateListRenderer() : in(new PImpl)
+BGImageCandidateListRenderer::BGImageCandidateListRenderer(
+	std::unique_ptr<CandidateListRenderer> renderer
+) : in(new PImpl)
 {
+	in->mRenderer = std::move(renderer);
+	ASSERT(in->mRenderer != nullptr);
+
 	const auto& settings = AppPreference::Get()->GetSettings();
 	in->mAlpha = ClampAlpha(settings.Get(_T("BGImage:Alpha"), 0));
 	in->mPosition = settings.Get(_T("BGImage:Position"), POSITION_LEFT_TOP);
@@ -306,11 +314,20 @@ BGImageCandidateListRenderer::BGImageCandidateListRenderer() : in(new PImpl)
 	}
 	spdlog::debug("Background image settings initialized. alpha:{}, position:{}", in->mAlpha, in->mPosition);
 	in->LoadImage();
-	SetIsDrawBackground(false);
+	in->mRenderer->SetIsDrawBackground(false);
 }
 
 BGImageCandidateListRenderer::~BGImageCandidateListRenderer()
 {
+}
+
+/**
+  描画対象の候補リストを内部レンダラーへ設定する
+  @param[in] candidates 候補リスト
+*/
+void BGImageCandidateListRenderer::SetCandidateList(CandidateList* candidates)
+{
+	in->mRenderer->SetCandidateList(candidates);
 }
 
 /**
@@ -319,25 +336,94 @@ BGImageCandidateListRenderer::~BGImageCandidateListRenderer()
 */
 void BGImageCandidateListRenderer::SetIsAlternateColor(bool isAlternateColor)
 {
-	StandardCandidateListRenderer::SetIsAlternateColor(isAlternateColor);
+	in->mRenderer->SetIsAlternateColor(isAlternateColor);
 	in->mIsAlternateColor = isAlternateColor;
+}
+
+/**
+  コマンド種別を表示するかどうかを内部レンダラーへ設定する
+  @param[in] isShowCommandType 表示する場合はtrue
+*/
+void BGImageCandidateListRenderer::SetIsShowCommandType(bool isShowCommandType)
+{
+	in->mRenderer->SetIsShowCommandType(isShowCommandType);
+}
+
+/**
+  アイコンを描画するかどうかを内部レンダラーへ設定する
+  @param[in] isDrawIcon 描画する場合はtrue
+*/
+void BGImageCandidateListRenderer::SetIsDrawIcon(bool isDrawIcon)
+{
+	in->mRenderer->SetIsDrawIcon(isDrawIcon);
+}
+
+/**
+  背景画像が利用できない場合に背景色を描画するかどうかを設定する
+  @param[in] isDrawBackground 描画する場合はtrue
+*/
+void BGImageCandidateListRenderer::SetIsDrawBackground(bool isDrawBackground)
+{
+	in->mIsDrawBackground = isDrawBackground;
+}
+
+/**
+  テキスト寸法とアイコンサイズを内部レンダラーへ設定する
+  @param[in] textHeight テキストの高さ
+  @param[in] textLineHeight 行送りを含むテキストの高さ
+  @param[in] iconSize アイコンのサイズ
+*/
+void BGImageCandidateListRenderer::SetTextMetrics(int textHeight, int textLineHeight, int iconSize)
+{
+	in->mRenderer->SetTextMetrics(textHeight, textLineHeight, iconSize);
+}
+
+/**
+  内部レンダラーが使用する画像リストを取得する
+  @return 描画に使用する画像リスト
+*/
+CImageList* BGImageCandidateListRenderer::GetImageList()
+{
+	return in->mRenderer->GetImageList();
 }
 
 void BGImageCandidateListRenderer::UpdateSize(int cx, int cy)
 {
 	// ウインドウサイズが変わった場合は、次回描画時に画像を再配置・再描画する。
 	in->ReloadImageIfUpdated();
-	StandardCandidateListRenderer::UpdateSize(cx, cy);
+	in->mRenderer->UpdateSize(cx, cy);
 	in->mWidth = cx;
 	in->mHeight = cy;
 	in->mIsReady = false;
 }
 
+/**
+  候補欄が空かどうかを内部レンダラーへ通知する
+  @param[in] isEmpty 候補欄が空の場合はtrue
+*/
 void BGImageCandidateListRenderer::SetIsEmpty(bool isEmpty)
 {
 	// 候補項目がない場合も、背景画像と交互背景色だけは描画する。
 	in->mIsEmpty = isEmpty;
-	StandardCandidateListRenderer::SetIsEmpty(isEmpty);
+	in->mRenderer->SetIsEmpty(isEmpty);
+}
+
+/**
+  1ページ内に表示できる項目数を取得する
+  @return ページ内の項目数
+*/
+int BGImageCandidateListRenderer::GetItemCountInPage() const
+{
+	return in->mRenderer->GetItemCountInPage();
+}
+
+/**
+  内部レンダラーが必要とする候補項目の高さを取得する
+  @return 候補項目の高さ
+*/
+int BGImageCandidateListRenderer::GetItemHeight() const
+{
+	return in->mRenderer->GetItemHeight();
 }
 
 void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT drawItemStruct)
@@ -356,10 +442,9 @@ void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT draw
 	}
 
 	if (!in->mIsReady) {
-		// 背景画像を利用できない場合は、既存の標準描画へ戻す。
-		SetIsDrawBackground(true);
-		StandardCandidateListRenderer::DrawItem(listWnd, drawItemStruct);
-		SetIsDrawBackground(false);
+		// 背景画像を利用できない場合は、内部レンダラーの背景付き描画へ戻す。
+		in->mRenderer->SetIsDrawBackground(in->mIsDrawBackground);
+		in->mRenderer->DrawItem(listWnd, drawItemStruct);
 		return;
 	}
 
@@ -377,12 +462,13 @@ void BGImageCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT draw
 		}
 	}
 	else {
-		// 背景画像を先に合成し、その後に標準レンダラーで文字や選択状態を描画する。
+		// 背景画像を先に合成し、その後に内部レンダラーで文字や選択状態を描画する。
 		in->DrawComposite(pDC, itemRect,
 			in->mIsAlternateColor && (drawItemStruct->itemID % 2) != 0);
 	}
 
-	StandardCandidateListRenderer::DrawItem(listWnd, drawItemStruct);
+	in->mRenderer->SetIsDrawBackground(false);
+	in->mRenderer->DrawItem(listWnd, drawItemStruct);
 
 	if (!in->mIsEmpty && drawItemStruct->itemID == (UINT)candidateList->GetItemCount() - 1) {
 		CRect rest = itemRect;

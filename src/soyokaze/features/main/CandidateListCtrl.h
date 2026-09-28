@@ -35,6 +35,7 @@ public:
 	void OnAppExit() override;
 public:
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+	afx_msg void OnSetFont(CFont* font, BOOL redraw);
 
 	DECLARE_MESSAGE_MAP()
 private:

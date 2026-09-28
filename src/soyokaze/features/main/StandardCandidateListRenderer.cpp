@@ -15,6 +15,8 @@
 using CommandRepository = launcherapp::core::CommandRepository;
 
 constexpr int ITEM_MARGIN = 4;
+// 二行表示の描画領域を少し重ねて、項目の高さを抑える。
+constexpr int TWO_LINE_OVERLAP = 2;
 
 struct StandardCandidateListRenderer::PImpl
 {
@@ -28,12 +30,15 @@ struct StandardCandidateListRenderer::PImpl
 	bool mIsShowCommandType{false};
 	bool mIsDrawIcon{true};
 	bool mIsDrawBackground{true};
+	bool mIsTwoLine{false};
 	int mItemsInPage{0};
 	int mTextHeight{16};
 	int mIconSize{16};
 	std::unique_ptr<CImageList> mIconList;
 	CImageList mIconListDummy;
 	std::map<HICON, int> mIconIndexMap;
+	CFont mDescriptionFont;
+	HFONT mDescriptionFontSource{nullptr};
 };
 
 StandardCandidateListRenderer::StandardCandidateListRenderer() : in(new PImpl)
@@ -69,9 +74,19 @@ void StandardCandidateListRenderer::SetIsDrawBackground(bool isDrawBackground)
 	in->mIsDrawBackground = isDrawBackground;
 }
 
-void StandardCandidateListRenderer::SetTextMetrics(int textHeight, int iconSize)
+/**
+  項目名を二行表示するかどうかを設定する
+  @param[in] isTwoLine 二行表示する場合はtrue
+*/
+void StandardCandidateListRenderer::SetIsTwoLine(bool isTwoLine)
+{
+	in->mIsTwoLine = isTwoLine;
+}
+
+void StandardCandidateListRenderer::SetTextMetrics(int textHeight, int textLineHeight, int iconSize)
 {
 	in->mTextHeight = textHeight;
+	UNREFERENCED_PARAMETER(textLineHeight);
 	in->mIconSize = iconSize;
 
 	if (in->mIconListDummy.m_hImageList == nullptr) {
@@ -103,6 +118,21 @@ int StandardCandidateListRenderer::GetItemCountInPage() const
 	return in->mItemsInPage;
 }
 
+/**
+  表示形式に応じた候補項目の高さを取得する
+  @return 候補項目の高さ
+*/
+int StandardCandidateListRenderer::GetItemHeight() const
+{
+	int textHeight = (std::max)(1, in->mTextHeight);
+	if (in->mIsTwoLine == false) {
+		return textHeight + ITEM_MARGIN;
+	}
+
+	int linePitch = (std::max)(1, textHeight - TWO_LINE_OVERLAP);
+	return textHeight + linePitch + ITEM_MARGIN;
+}
+
 void StandardCandidateListRenderer::PImpl::DrawItemIcon(
 	CListCtrl* listWnd,
 	CDC* pDC,
@@ -115,6 +145,8 @@ void StandardCandidateListRenderer::PImpl::DrawItemIcon(
 
 	CRect rcIcon;
 	listWnd->GetSubItemRect(itemId, 0, LVIR_ICON, rcIcon);
+	CRect rcItem;
+	listWnd->GetItemRect(itemId, &rcItem, LVIR_BOUNDS);
 
 	auto cmd = mCandidates->GetCommand(itemId);
 	if (cmd == nullptr) {
@@ -133,7 +165,8 @@ void StandardCandidateListRenderer::PImpl::DrawItemIcon(
 	}
 
 	if (index != -1) {
-		mIconList->DrawEx(pDC, index, rcIcon.TopLeft(), CSize(mIconSize, mIconSize),
+		int iconTop = rcItem.top + (rcItem.Height() - mIconSize) / 2;
+		mIconList->DrawEx(pDC, index, CPoint(rcIcon.left, iconTop), CSize(mIconSize, mIconSize),
 		                  CLR_NONE, CLR_DEFAULT, ILD_NORMAL);
 	}
 }
@@ -153,7 +186,54 @@ void StandardCandidateListRenderer::PImpl::DrawItemName(
 	name.Replace(_T("\n"), _T("\\n"));
 	name.Replace(_T("\t"), _T("  "));
 
-	pDC->DrawText(name, rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP);
+	if (mIsTwoLine == false) {
+		pDC->DrawText(name, rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP);
+		return;
+	}
+
+	int lineHeight = (std::max)(1, mTextHeight);
+	int linePitch = (std::max)(1, lineHeight - TWO_LINE_OVERLAP);
+	int textBlockHeight = lineHeight + linePitch;
+	int top = rcItem.top + (rcItem.Height() - textBlockHeight) / 2;
+	CRect rcName(rcItem.left, top, rcItem.right, top + lineHeight);
+	CRect rcDescription(rcItem.left, top + linePitch, rcItem.right, top + linePitch + lineHeight);
+	if (mIsShowCommandType) {
+		CRect rcTypeColumn;
+		listWnd->GetSubItemRect(itemId, 1, LVIR_LABEL, rcTypeColumn);
+		rcDescription.right = rcTypeColumn.right;
+	}
+	pDC->DrawText(name, rcName, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP);
+
+	CString description = cmd->GetDescription();
+	description.Replace(_T("\r\n"), _T(" "));
+	description.Replace(_T("\r"), _T(" "));
+	description.Replace(_T("\n"), _T(" "));
+	description.Replace(_T("\t"), _T("  "));
+
+	HFONT currentFont = static_cast<HFONT>(::GetCurrentObject(pDC->GetSafeHdc(), OBJ_FONT));
+	if (mDescriptionFontSource != currentFont || mDescriptionFont.m_hObject == nullptr) {
+		mDescriptionFont.DeleteObject();
+		mDescriptionFontSource = nullptr;
+
+		LOGFONT logFont{};
+		if (currentFont != nullptr && ::GetObject(currentFont, sizeof(logFont), &logFont) > 0) {
+			logFont.lfHeight = MulDiv(logFont.lfHeight, 85, 100);
+			if (mDescriptionFont.CreateFontIndirect(&logFont)) {
+				mDescriptionFontSource = currentFont;
+			}
+		}
+	}
+
+	if (mDescriptionFont.m_hObject != nullptr) {
+		ScopedDCState dcState(pDC);
+		pDC->SelectObject(&mDescriptionFont);
+		pDC->DrawText(description, rcDescription,
+		              DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX);
+	}
+	else {
+		pDC->DrawText(description, rcDescription,
+		              DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX);
+	}
 }
 
 void StandardCandidateListRenderer::PImpl::DrawItemCategory(
@@ -169,7 +249,18 @@ void StandardCandidateListRenderer::PImpl::DrawItemCategory(
 	CRect rcItem;
 	listWnd->GetSubItemRect(itemId, 1, LVIR_LABEL, rcItem);
 	auto cmd = mCandidates->GetCommand(itemId);
-	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP);
+	UINT format = DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP;
+	if (mIsTwoLine) {
+		CRect rcBounds;
+		listWnd->GetItemRect(itemId, &rcBounds, LVIR_BOUNDS);
+		int lineHeight = (std::max)(1, mTextHeight);
+		int linePitch = (std::max)(1, lineHeight - TWO_LINE_OVERLAP);
+		int textBlockHeight = lineHeight + linePitch;
+		rcItem.top = rcBounds.top + (rcBounds.Height() - textBlockHeight) / 2;
+		rcItem.bottom = rcItem.top + lineHeight;
+		format = DT_LEFT | DT_TOP | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP;
+	}
+	pDC->DrawText(cmd->GetTypeDisplayName(), rcItem, format);
 }
 
 void StandardCandidateListRenderer::DrawItem(CWnd* listWnd, LPDRAWITEMSTRUCT drawItemStruct)
