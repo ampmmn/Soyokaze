@@ -27,10 +27,89 @@
 |[MainWindowDeactivateBlocker](./MainWindowDeactivateBlocker.h)|一時的に非アクティブ時の非表示を抑制する|
 |[CandidateList](./CandidateList.h)|通常の候補一覧を保持する|
 |[CandidateListCtrl](./CandidateListCtrl.h)|通常の候補一覧を表示するリストコントロール|
+|[CandidateListRenderer](./CandidateListRenderer.h)|候補欄の描画と項目寸法を提供するインターフェース|
+|[StandardCandidateListRenderer](./StandardCandidateListRenderer.h)|候補欄の1行表示と共通描画処理を行う|
+|[TwoLineCandidateListRenderer](./TwoLineCandidateListRenderer.h)|コマンド名と説明を2行で表示する|
+|[BGImageCandidateListRenderer](./BGImageCandidateListRenderer.h)|内部レンダラーの描画に背景画像を合成する|
 |[LauncherWindowEventDispatcher](./LauncherWindowEventDispatcher.h)|メインウインドウ関連のイベントをリスナーへ通知する|
 |[LauncherWindowEventListenerIF](./LauncherWindowEventListenerIF.h)|メインウインドウ関連イベントのリスナーインターフェース|
 |[WindowAppearnce](./WindowAppearanceIF.h)|ウインドウ外観を制御するインターフェース|
 |[WarnWorkTimeToast](./WarnWorkTimeToast.h)|長時間稼働時に警告を表示するトースト|
+
+### CandidateListCtrlのクラス図
+
+```mermaid
+classDiagram
+    class CListCtrl {
+        <<MFC>>
+    }
+    class CandidateListListenerIF {
+        <<interface>>
+    }
+    class AppPreferenceListenerIF {
+        <<interface>>
+    }
+    class CandidateListCtrl {
+        -unique_ptr~PImpl~ in
+        +SetCandidateList(candidates)
+        +InitColumns()
+        +UpdateSize(cx, cy)
+        +DrawItem(drawItemStruct)
+        +OnUpdateSelect(sender)
+        +OnUpdateItems(sender)
+    }
+
+    class CandidateListRenderer {
+        <<interface>>
+    }
+    class CandidateList
+    class ExtraCandidateListCtrl
+
+    CListCtrl <|-- CandidateListCtrl
+    CandidateListListenerIF <|.. CandidateListCtrl
+    AppPreferenceListenerIF <|.. CandidateListCtrl
+
+    CandidateListCtrl --> CandidateList : 参照・更新通知を受信
+    CandidateListCtrl *--> CandidateListRenderer : PImplが所有
+
+    CListCtrl <|-- ExtraCandidateListCtrl
+
+    note for CandidateListCtrl "現時点で直接の派生クラスはありません。"
+    note for ExtraCandidateListCtrl "CandidateListCtrlの派生ではなく、CListCtrlの別の派生クラスです。"
+```
+
+## 候補欄の描画
+
+`CandidateListCtrl`は表示設定に応じて、1行表示には`StandardCandidateListRenderer`、2行表示には`TwoLineCandidateListRenderer`を選択する。背景画像が有効な場合は、選択したレンダラーを`BGImageCandidateListRenderer`で包み、背景画像の描画を追加する。
+
+|クラス|責務|
+|---|---|
+|`CandidateListRenderer`|候補欄の描画と項目寸法を提供するインターフェース|
+|`StandardCandidateListRenderer`|1行表示を行い、背景・選択状態・アイコンなどの共通描画処理を提供する|
+|`TwoLineCandidateListRenderer`|コマンド名と説明を2行で表示する。項目高、名前・説明・種別の配置など、2行表示固有の処理を行う|
+|`BGImageCandidateListRenderer`|内部レンダラーの描画に背景画像を合成するデコレーター。表示行数や文字配置の判断は行わない|
+
+`StandardCandidateListRenderer`の描画処理は、名前とコマンド種別の描画を仮想メソッドへ委譲する。`TwoLineCandidateListRenderer`はこれらの描画処理と項目高をオーバーライドし、共通の背景・選択状態・アイコン描画は基底クラスの機能を利用する。
+
+表示形式に固有の処理は対応するレンダラーに置き、`StandardCandidateListRenderer`に表示形式を切り替えるフラグや分岐を追加しない。項目高の差は`TwoLineCandidateListRendererTest.cpp`で確認する。
+
+### CandidateListRendererのクラス図
+
+```mermaid
+classDiagram
+    class CandidateListRenderer {
+        <<interface>>
+    }
+    class StandardCandidateListRenderer
+    class TwoLineCandidateListRenderer
+    class BGImageCandidateListRenderer
+
+    CandidateListRenderer <|.. StandardCandidateListRenderer
+    StandardCandidateListRenderer <|-- TwoLineCandidateListRenderer
+    CandidateListRenderer <|.. BGImageCandidateListRenderer
+
+    BGImageCandidateListRenderer *--> CandidateListRenderer : 内部レンダラーを所有して描画を委譲
+```
 
 ## ウインドウとStateの役割
 
