@@ -152,13 +152,15 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		return ;
 	}
 
-	// ホスト名っぽいものやIPv4アドレスだったら、https://... で開けるようにする
+	// ホスト名にはhttps://、IPv4アドレスにはhttp://を付けて開けるようにする
 	static const launcherapp::utility::Regex regHostName(_T("^(localhost|([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,})$"));
 	static const launcherapp::utility::Regex regIPv4(_T("^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$"));
-	if (regHostName.PartialMatch(wholeWord) || regIPv4.PartialMatch(wholeWord)) {
+	const bool isIPv4 = regIPv4.PartialMatch(wholeWord);
+	if (regHostName.PartialMatch(wholeWord) || isIPv4) {
 		static const launcherapp::utility::Regex regExe(_T("exe$"));
 		if (regExe.PartialMatch(wholeWord) == false) {
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathURLCommand(CString(_T("https://") + wholeWord))));
+			const CString scheme = isIPv4 ? _T("http://") : _T("https://");
+			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathURLCommand(CString(scheme + wholeWord))));
 			return ;
 		}
 	}
