@@ -843,6 +843,9 @@
     <ClInclude Include="features\main\TwoLineCandidateListRenderer.h">
       <Filter>features\main</Filter>
     </ClInclude>
+    <ClInclude Include="features\main\DescriptionCtrl.h">
+      <Filter>features\main</Filter>
+    </ClInclude>
     <ClInclude Include="features\main\LauncherDropTarget.h">
       <Filter>features\main</Filter>
     </ClInclude>
@@ -2589,6 +2592,9 @@
       <Filter>features\main</Filter>
     </ClCompile>
     <ClCompile Include="features\main\TwoLineCandidateListRenderer.cpp">
+      <Filter>features\main</Filter>
+    </ClCompile>
+    <ClCompile Include="features\main\DescriptionCtrl.cpp">
       <Filter>features\main</Filter>
     </ClCompile>
     <ClCompile Include="features\main\LauncherDropTarget.cpp">

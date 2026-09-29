@@ -42,6 +42,7 @@
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\core\LauncherProcessContextTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\TwoLineCandidateListRendererTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\DescriptionCtrlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\settingwindow\AppSettingPageBGImageTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp" />

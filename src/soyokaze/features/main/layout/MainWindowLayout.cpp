@@ -481,6 +481,5 @@ void MainWindowLayout::RecalcControls(HWND hwnd, LauncherInput* status)
 	}
 }
 
-
 }
 }

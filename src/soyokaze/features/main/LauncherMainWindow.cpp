@@ -6,6 +6,7 @@
 #include "app/LauncherApp.h"
 #include "features/manual/Manual.h"
 #include "features/main/LauncherMainWindow.h"
+#include "features/main/DescriptionCtrl.h"
 #include "features/main/CandidateListCtrl.h"
 #include "features/main/ExtraCandidateListCtrl.h"
 #include "features/main/state/MainWindowParamSearchingState.h"
@@ -109,6 +110,8 @@ struct LauncherMainWindow::PImpl
 	MainWindowOptionButton mOptionButton;
 	// ガイド欄
 	GuideCtrl mGuideCtrl;
+	// 説明欄
+	DescriptionCtrl mDescriptionCtrl;
 
 // ウインドウ状態管理
 	// 位置・サイズ・コンポーネントの配置を管理するクラス
@@ -1208,7 +1211,7 @@ IconLabel* LauncherMainWindow::GetIconLabel()
 
 CStatic* LauncherMainWindow::GetDescriptionLabel()
 {
-	return (CStatic*)GetDlgItem(IDC_STATIC_DESCRIPTION);
+	return &in->mDescriptionCtrl;
 }
 
 GuideCtrl* LauncherMainWindow::GetGuideLabel()
@@ -1259,6 +1262,8 @@ BOOL LauncherMainWindow::OnInitDialog()
 
 	in->mAppearance = std::make_unique<MainWindowAppearance>(this);
 	in->mKeyInputWatch.Create();
+
+	in->mDescriptionCtrl.SubclassDlgItem(IDC_STATIC_DESCRIPTION, this);
 
 	in->mGuideCtrl.SubclassDlgItem(IDC_STATIC_GUIDE, this);
 	in->mGuideCtrl.SetMainWindow(this);
