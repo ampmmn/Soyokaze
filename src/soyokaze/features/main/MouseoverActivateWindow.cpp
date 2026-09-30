@@ -10,7 +10,32 @@
 namespace {
 
 constexpr UINT_PTR TIMERID_MOUSEOVER = 1;
-constexpr UINT TIMER_INTERVAL = 100;
+constexpr UINT TIMER_INTERVAL = 200;
+constexpr int BASE_DPI = 96;
+constexpr int MOUSEOVER_MARGIN_DIP = 12;
+
+/**
+  指定したウインドウのDPIを取得する
+  @return ウインドウのDPI。取得できない場合は96
+  @param[in]  hwnd 対象ウインドウ
+*/
+UINT GetWindowDpi(HWND hwnd)
+{
+	using GetDpiForWindowFunction = UINT(WINAPI*)(HWND);
+	HMODULE user32Module = ::GetModuleHandle(_T("user32.dll"));
+	if (user32Module == nullptr) {
+		return BASE_DPI;
+	}
+
+	auto getDpiForWindow = reinterpret_cast<GetDpiForWindowFunction>(
+		::GetProcAddress(user32Module, "GetDpiForWindow"));
+	if (getDpiForWindow == nullptr) {
+		return BASE_DPI;
+	}
+
+	UINT dpi = getDpiForWindow(hwnd);
+	return dpi == 0 ? BASE_DPI : dpi;
+}
 
 HWND GetNextHwnd()
 {
@@ -29,6 +54,14 @@ HWND GetNextHwnd()
 	return hwnd;
 }
 
+}
+
+int MouseoverActivateState::GetMouseoverActivateMarginForDpi(UINT dpi)
+{
+	if (dpi == 0) {
+		dpi = BASE_DPI;
+	}
+	return ::MulDiv(MOUSEOVER_MARGIN_DIP, static_cast<int>(dpi), BASE_DPI);
 }
 
 MouseoverActivateState::Action MouseoverActivateState::Update(bool isInside, bool isLeftButtonDown)
@@ -126,6 +159,9 @@ struct MouseoverActivateWindow::PImpl : public AppPreferenceListenerIF
 		CRect clientRect;
 		::GetClientRect(mParentHandle, &clientRect);
 		::ScreenToClient(mParentHandle, &point);
+		// サイズ変更枠を考慮して、判定領域に12 DIPの余白を持たせる。
+		int margin = MouseoverActivateState::GetMouseoverActivateMarginForDpi(GetWindowDpi(mParentHandle));
+		clientRect.InflateRect(margin, margin);
 		bool isInside = clientRect.PtInRect(point) != FALSE;
 
 		bool isLeftButtonDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;

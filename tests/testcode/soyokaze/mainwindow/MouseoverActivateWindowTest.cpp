@@ -2,6 +2,15 @@
 #include "gtest/gtest.h"
 #include "features/main/MouseoverActivateWindow.h"
 
+TEST(MouseoverActivateWindowTest, MarginScalesWithDpi)
+{
+	EXPECT_EQ(MouseoverActivateState::GetMouseoverActivateMarginForDpi(96), 12);
+	EXPECT_EQ(MouseoverActivateState::GetMouseoverActivateMarginForDpi(120), 15);
+	EXPECT_EQ(MouseoverActivateState::GetMouseoverActivateMarginForDpi(144), 18);
+	EXPECT_EQ(MouseoverActivateState::GetMouseoverActivateMarginForDpi(192), 24);
+	EXPECT_EQ(MouseoverActivateState::GetMouseoverActivateMarginForDpi(0), 12);
+}
+
 TEST(MouseoverActivateWindowTest, CursorEnteringAndLeavingActivatesAndDeactivates)
 {
 	MouseoverActivateState state;

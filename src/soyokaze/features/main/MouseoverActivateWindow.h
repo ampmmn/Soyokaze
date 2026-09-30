@@ -16,6 +16,13 @@ public:
 	};
 
 	/**
+	  DPIに応じたカーソル判定領域の余白を取得する
+	  @return 余白の幅(pixel)
+	  @param[in]  dpi ウインドウのDPI
+	*/
+	static int GetMouseoverActivateMarginForDpi(UINT dpi);
+
+	/**
 	  カーソル位置とマウスボタン状態に基づき、実行する切替処理を返す
 	  @return 実行する切替処理
 	  @param[in]  isInside ウインドウ内にカーソルがあるか
