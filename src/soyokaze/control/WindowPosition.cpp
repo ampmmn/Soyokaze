@@ -1,15 +1,12 @@
 #include "pch.h"
 #include "WindowPosition.h"
+#include "WindowPlacementYaml.h"
 #include "utility/AppProfile.h"
 #include "utility/Path.h"
-#include "utility/Base64.h"
 #include "utility/SHA1.h"
 #include "app/AppName.h"
-#define RYML_SINGLE_HDR_DEFINE_NOW
-#include <rapidyaml/rapidyaml.hpp>
 #include <algorithm>
 #include <map>
-#include <stdexcept>
 #include <string>
 
 #ifdef _DEBUG
@@ -18,9 +15,7 @@
 
 namespace {
 
-constexpr size_t MAX_WINDOWPLACEMENT_YAML_SIZE = 1024 * 1024;
-
-using PlacementMap = std::map<std::wstring, WINDOWPLACEMENT>;
+using PlacementMap = WindowPlacementYaml::PlacementMap;
 
 struct MonitorEnumerationData
 {
@@ -78,40 +73,13 @@ CString GetWindowPlacementFilePath()
 	return CString((LPCTSTR)filePath);
 }
 
-std::wstring ToWideAscii(const ryml::csubstr& value)
-{
-	std::wstring result;
-	result.reserve(value.len);
-	for (size_t i = 0; i < value.len; ++i) {
-		if (static_cast<unsigned char>(value.str[i]) > 0x7f) {
-			return std::wstring();
-		}
-		result.push_back(static_cast<wchar_t>(value.str[i]));
-	}
-	return result;
-}
-
-CString ToCStringAscii(const ryml::csubstr& value)
-{
-	CString result;
-	for (size_t i = 0; i < value.len; ++i) {
-		if (static_cast<unsigned char>(value.str[i]) > 0x7f) {
-			return CString();
-		}
-		result.AppendChar(static_cast<TCHAR>(value.str[i]));
-	}
-	return result;
-}
-
-void OnYamlParseError(ryml::csubstr message, ryml::ErrorDataParse const& errorData, void* userData)
-{
-	UNREFERENCED_PARAMETER(message);
-	UNREFERENCED_PARAMETER(errorData);
-	UNREFERENCED_PARAMETER(userData);
-	throw std::runtime_error("Invalid window placement YAML");
-}
-
-bool ReadPlacementYaml(LPCTSTR filePath, PlacementMap& placements)
+/**
+  位置情報ファイルを読み込み、ウインドウ種別ごとの位置情報を取得する
+  @return true:読み込んだ false:読み込めなかった
+  @param[in] filePath 位置情報ファイルのパス
+  @param[out] placements 読み込んだ位置情報
+*/
+bool ReadPlacementYaml(LPCTSTR filePath, WindowPlacementYaml::WindowPlacementMap& placements)
 {
 	try {
 		CFile file;
@@ -120,7 +88,7 @@ bool ReadPlacementYaml(LPCTSTR filePath, PlacementMap& placements)
 		}
 
 		ULONGLONG fileSize = file.GetLength();
-		if (fileSize == 0 || fileSize > MAX_WINDOWPLACEMENT_YAML_SIZE) {
+		if (fileSize == 0) {
 			return false;
 		}
 
@@ -129,47 +97,7 @@ bool ReadPlacementYaml(LPCTSTR filePath, PlacementMap& placements)
 			return false;
 		}
 
-		ryml::Callbacks callbacks;
-		callbacks.set_error_parse(OnYamlParseError);
-		ryml::Tree tree(callbacks);
-		ryml::EventHandlerTree handler(&tree, tree.root_id());
-		ryml::Parser parser(&handler);
-		ryml::parse_in_arena(&parser, ryml::to_csubstr(yaml), &tree, tree.root_id());
-
-		auto root = tree.rootref();
-		if (root.is_map() == false) {
-			return false;
-		}
-
-		PlacementMap parsedPlacements;
-		for (auto child = root.first_child(); child.readable(); child = child.next_sibling()) {
-			if (child.is_keyval() == false) {
-				continue;
-			}
-
-			auto key = ToWideAscii(child.key());
-			if (key.empty() || key == L"default") {
-				continue;
-			}
-
-			auto encodedPlacement = ToCStringAscii(child.val());
-			if (encodedPlacement.IsEmpty()) {
-				continue;
-			}
-
-			std::vector<uint8_t> bytes;
-			if (utility::base64::DecodeBase64(encodedPlacement, bytes) == false) {
-				continue;
-			}
-
-			WINDOWPLACEMENT placement{};
-			if (WindowPosition::IsValidWindowPlacementData(bytes, placement)) {
-				parsedPlacements[key] = placement;
-			}
-		}
-
-		placements.swap(parsedPlacements);
-		return true;
+		return WindowPlacementYaml::Parse(yaml, placements);
 	}
 	catch (...) {
 		placements.clear();
@@ -177,48 +105,20 @@ bool ReadPlacementYaml(LPCTSTR filePath, PlacementMap& placements)
 	}
 }
 
-bool WritePlacementYaml(LPCTSTR filePath, const PlacementMap& placements)
+/**
+  ウインドウ種別ごとの位置情報をファイルへ書き込む
+  @return true:書き込んだ false:書き込めなかった
+  @param[in] filePath 位置情報ファイルのパス
+  @param[in] placements 書き込む位置情報
+*/
+bool WritePlacementYaml(LPCTSTR filePath, const WindowPlacementYaml::WindowPlacementMap& placements)
 {
 	try {
-		ryml::Tree tree;
-		tree.rootref().set_map();
-
-		std::vector<std::string> keys;
-		std::vector<std::string> values;
-		keys.reserve(placements.size());
-		values.reserve(placements.size());
-		for (const auto& entry : placements) {
-			if (entry.first == L"default") {
-				continue;
-			}
-
-			std::string key;
-			key.reserve(entry.first.size());
-			for (wchar_t ch : entry.first) {
-				if (ch > 0x7f) {
-					return false;
-				}
-				key.push_back(static_cast<char>(ch));
-			}
-
-			std::vector<uint8_t> bytes(sizeof(WINDOWPLACEMENT));
-			memcpy(bytes.data(), &entry.second, sizeof(WINDOWPLACEMENT));
-			CString encoded = utility::base64::EncodeBase64(bytes);
-			std::string value;
-			value.reserve(encoded.GetLength());
-			for (int i = 0; i < encoded.GetLength(); ++i) {
-				value.push_back(static_cast<char>(encoded[i]));
-			}
-
-			keys.push_back(std::move(key));
-			values.push_back(std::move(value));
+		auto yaml = WindowPlacementYaml::Emit(placements);
+		if (yaml.empty()) {
+			return false;
 		}
 
-		for (size_t i = 0; i < keys.size(); ++i) {
-			tree.rootref()[ryml::to_csubstr(keys[i])].set_val(ryml::to_csubstr(values[i]), ryml::VAL_DQUO);
-		}
-
-		std::string yaml = ryml::emitrs_yaml<std::string>(tree);
 		CFile file(filePath, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary);
 		file.Write(yaml.data(), static_cast<UINT>(yaml.size()));
 		return true;
@@ -280,7 +180,7 @@ bool ApplyPlacement(HWND hwnd, const WINDOWPLACEMENT& placement)
 
 struct WindowPosition::PImpl
 {
-	CString mName;
+	std::wstring mName;
 	WINDOWPLACEMENT mPosition{};
 	bool mIsLoaded{false};
 	PlacementMap mPlacements;
@@ -289,7 +189,7 @@ struct WindowPosition::PImpl
 
 WindowPosition::WindowPosition() : in(std::make_unique<PImpl>())
 {
-	in->mName = _T("Window");
+	in->mName = WindowPlacementYaml::GetMainWindowName();
 	in->mPosition.length = sizeof(WINDOWPLACEMENT);
 	in->mPosition.showCmd = SW_SHOWNORMAL;
 }
@@ -325,22 +225,28 @@ bool WindowPosition::Restore(HWND hwnd)
 	EnumDisplayMonitors(nullptr, nullptr, EnumerateMonitorRectangles, reinterpret_cast<LPARAM>(&data));
 	in->mCurrentMonitorConfiguration = (LPCTSTR)CreateMonitorConfigurationIdentifier(rects);
 
-	CString yamlPath = GetWindowPlacementFilePath();
-	if (Path::FileExists((LPCWSTR)yamlPath)) {
-		if (ReadPlacementYaml(yamlPath, in->mPlacements)) {
-			auto current = in->mPlacements.find(in->mCurrentMonitorConfiguration);
-			if (current != in->mPlacements.end() && ApplyPlacement(hwnd, current->second)) {
-				in->mPosition = current->second;
-				in->mIsLoaded = true;
-				return true;
-			}
-
-			return false;
+	// 位置情報ファイルを読み込み、自分に該当するウインドウ種別の位置情報を抽出する
+	// (他のウインドウ種別の位置情報はここでは読み込まない)
+	WindowPlacementYaml::WindowPlacementMap allPlacements;
+	if (ReadPlacementYaml(GetWindowPlacementFilePath(), allPlacements)) {
+		auto windowEntry = allPlacements.find(in->mName);
+		if (windowEntry != allPlacements.end()) {
+			in->mPlacements = windowEntry->second;
 		}
+
+		auto current = in->mPlacements.find(in->mCurrentMonitorConfiguration);
+		if (current != in->mPlacements.end() && ApplyPlacement(hwnd, current->second)) {
+			in->mPosition = current->second;
+			in->mIsLoaded = true;
+			return true;
+		}
+
+		return false;
 	}
 
+	// 位置情報ファイルがない(または読み込みに失敗した)場合は、旧形式のファイルから復元する
 	Path legacyPath;
-	GetFilePath(in->mName, legacyPath);
+	GetFilePath((LPCTSTR)in->mName.c_str(), legacyPath);
 	WINDOWPLACEMENT legacyPlacement{};
 	if (ReadLegacyPlacement(legacyPath, legacyPlacement) == false) {
 		GetFilePath(APPNAME, legacyPath);
@@ -423,6 +329,7 @@ bool WindowPosition::Update(HWND hwnd)
 
 /**
   保持しているウインドウ位置をYAML形式で保存する
+  他のウインドウ種別の位置情報を失わないよう、保存直前にファイルを読み直して統合する
   @return true:保存した false:保存しなかった
 */
 bool WindowPosition::Save()
@@ -432,6 +339,11 @@ bool WindowPosition::Save()
 	}
 
 	try {
+		if (WindowPlacementYaml::IsValidWindowName(in->mName) == false) {
+			// ウインドウ名をキーとして表現できない場合は保存しない
+			return false;
+		}
+
 		if (in->mCurrentMonitorConfiguration.empty()) {
 			std::vector<RECT> rects;
 			MonitorEnumerationData data{&rects};
@@ -440,7 +352,13 @@ bool WindowPosition::Save()
 		}
 		in->mPosition.length = sizeof(WINDOWPLACEMENT);
 		in->mPlacements[in->mCurrentMonitorConfiguration] = in->mPosition;
-		return WritePlacementYaml(GetWindowPlacementFilePath(), in->mPlacements);
+
+		// 他ウインドウ種別の位置情報を保つため、ファイルを読み直した上で自分の分だけ差し替える
+		WindowPlacementYaml::WindowPlacementMap allPlacements;
+		ReadPlacementYaml(GetWindowPlacementFilePath(), allPlacements);
+		allPlacements[in->mName] = in->mPlacements;
+
+		return WritePlacementYaml(GetWindowPlacementFilePath(), allPlacements);
 	}
 	catch (...) {
 		return false;

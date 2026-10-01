@@ -1686,6 +1686,9 @@
     <ClInclude Include="control\WindowPosition.h">
       <Filter>control</Filter>
     </ClInclude>
+    <ClInclude Include="control\WindowPlacementYaml.h">
+      <Filter>control</Filter>
+    </ClInclude>
     <ClInclude Include="commands\winscp\WinScpSessionStorage.h">
       <Filter>commands\winscp</Filter>
     </ClInclude>
@@ -3345,6 +3348,9 @@
       <Filter>features\main\layout</Filter>
     </ClCompile>
     <ClCompile Include="control\WindowPosition.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\WindowPlacementYaml.cpp">
       <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="commands\winscp\RegistryWinScpSessionStorage.cpp">

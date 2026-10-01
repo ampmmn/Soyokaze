@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "InternalBrowser.h"
 #include "control/WindowPosition.h"
+#include "core/LauncherEventListenerIF.h"
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include <winrt/base.h>
 #include <wrl.h>
@@ -88,7 +89,7 @@ public:
 
 IMPLEMENT_DYNAMIC(InternalBrowser, CWnd)
 
-struct InternalBrowser::PImpl 
+struct InternalBrowser::PImpl : public LauncherEventListenerIF 
 {
 	void AddOpenRequest(const CString& url) {
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -114,6 +115,20 @@ struct InternalBrowser::PImpl
 		}
 		mWebView.reset();
 		mWebViewCtrl.reset();
+	}
+
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+	void OnLauncherActivate() override {}
+	void OnLauncherUnactivate() override {}
+	/** モニター構成に対応するウインドウ位置があれば復元する */
+	void OnMonitorConfigurationChanged() override
+	{
+		if (mWindowPositionPtr.get() == nullptr) {
+			return;
+		}
+		mWindowPositionPtr->Restore(mSelfWindow);
 	}
 
 	wil::com_ptr<ICoreWebView2Controller> mWebViewCtrl;

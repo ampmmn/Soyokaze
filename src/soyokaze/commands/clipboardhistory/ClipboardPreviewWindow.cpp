@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ClipboardPreviewWindow.h"
+#include "app/LauncherEventDispatcher.h"
+#include "core/LauncherEventListenerIF.h"
 #include "SharedHwnd.h"
 #include "control/WindowPosition.h"
 #include "resource.h"
@@ -121,11 +123,34 @@ END_MESSAGE_MAP()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-struct PreviewWindow::PImpl
+struct PreviewWindow::PImpl : public LauncherEventListenerIF
 {
+	PImpl()
+	{
+		LauncherEventDispatcher::Get()->AddListener(this);
+	}
+	~PImpl()
+	{
+		LauncherEventDispatcher::Get()->RemoveListener(this);
+	}
+
 	bool Create();
 
 	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+
+	void OnLockScreenOccurred() override {}
+	void OnUnlockScreenOccurred() override {}
+	void OnTimer() override {}
+	void OnLauncherActivate() override {}
+	void OnLauncherUnactivate() override {}
+	/** モニター構成に対応するウインドウ位置があれば復元する */
+	void OnMonitorConfigurationChanged() override
+	{
+		if (mWindowPos.get() == nullptr) {
+			return;
+		}
+		mWindowPos->Restore(mWindow.GetSafeHwnd());
+	}
 
 	PreviewDialog mWindow;
 	std::unique_ptr<WindowPosition> mWindowPos;

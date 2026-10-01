@@ -14,7 +14,6 @@
 #endif
 #include "afxres.h"
 #include "verrsrc.h"
-#include "app/AppName.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -55,10 +54,10 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
     "LANGUAGE 17, 1\r\n"
-    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
-    "#include ""l.JPN\\afxres.rc""      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ\n"
+    "#include ""res\\Soyokaze.rc2""  // Microsoft Visual C++ 鬯ｮ・｣雎郁ｲｻ・ｽ・ｼ陞滂ｽｲ繝ｻ・ｽ繝ｻ・ｽ郢晢ｽｻ繝ｻ・･鬯ｮ・ｯ隶灘･・ｽｽ・ｻ髦ｮ蜊搾ｽｧ鬩搾ｽｵ繝ｻ・ｲ髯晢ｽｶ隴擾ｽｴ繝ｻ繝ｻ・ｹ譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｨ鬯ｯ・ｯ繝ｻ・ｮ郢晢ｽｻ繝ｻ・ｮ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ驛｢譎｢・ｽ・ｻ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ郢晢ｽｻ繝ｻ・ｧ鬮ｯ貅ｷ萓帙・・ｨ繝ｻ・ｯ鬮ｯ讖ｸ・ｽ・ｺ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include ""l.JPN\\afxres.rc""      // 鬯ｮ・ｫ繝ｻ・ｶ髴難ｽ｣陋滂ｽ｡繝ｻ・ｶ隲帷ｿｫ繝ｻ郢晢ｽｻ繝ｻ・ｺ鬮ｫ・ｰ髮具ｽｻ繝ｻ・ｽ繝ｻ・ｶ鬩搾ｽｵ繝ｻ・ｺ髫ｲ・ｷ陋ｹ繝ｻ・ｽ・ｽ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ繝ｻ・ｺ繝ｻ・｢鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ鬯ｩ蟷｢・ｽ・｢髫ｴ蜿厄ｽｨ雋ｻ・ｽ・ｺ郢ｧ謇假ｽｽ・ｾ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ蟷｢・ｽ・｢髫ｴ謫ｾ・ｽ・ｴ驛｢譎｢・ｽ・ｻ\n"
     "#if !defined(_AFXDLL)\r\n"
-    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ\r\n"
+    "#include  ""l.JPN\\afxribbon.rc""   // MFC 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ鬲・ｽｵ郢晢ｽｻ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ謳ｾ・ｽ・ｵ郢晢ｽｻ繝ｻ・ｺ鬯ｩ諤憺●繝ｻ・ｽ繝ｻ・ｫ驛｢譎｢・ｽ・ｻ鬮｢・ｧ繝ｻ・ｲ郢晢ｽｻ繝ｻ・ｸ郢晢ｽｻ繝ｻ・ｺ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ荳ｻ繝ｻ隶捺ｺ倥・陷ｿ蜴・ｽｽ・ｺ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｫ 鬯ｩ蟷｢・ｽ・｢髫ｴ蟇ゅ・郢晢ｽｻ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ\r\n"
     "#endif\r\n"
     "#endif\r\n"
     "\0"
@@ -122,17 +121,17 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,193,92,43,14
 END
 
-IDD_APPSETTING DIALOGEX 0, 0, 441, 324
+IDD_APPSETTING DIALOGEX 0, 0, 623, 397
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "アプリケーション設定"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,327,303,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,384,303,50,14
-    CONTROL         "",IDC_TREE_PAGES,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,20,100,275
+    DEFPUSHBUTTON   "OK",IDOK,511,376,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,566,376,50,14
+    CONTROL         "",IDC_TREE_PAGES,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,20,113,353
     LTEXT           "設定項目(&S):",IDC_STATIC,7,7,45,8
-    LTEXT           "パンくずリスト",IDC_STATIC_BREADCRUMBS,110,7,324,11,SS_CENTERIMAGE
-    LTEXT           "スタティック",IDC_STATIC_PAGEAREA,111,21,323,275,NOT WS_VISIBLE | WS_BORDER
+    LTEXT           "パンくずリスト",IDC_STATIC_BREADCRUMBS,125,7,463,11,SS_CENTERIMAGE
+    LTEXT           "スタティック",IDC_STATIC_PAGEAREA,125,21,491,352,NOT WS_VISIBLE | WS_BORDER
 END
 
 IDD_COMMAND_SHELLEXECUTE_BASIC DIALOGEX 0, 0, 335, 274
@@ -651,7 +650,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     EDITTEXT        IDC_EDIT_COMMAND,1,24,120,12,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | NOT WS_BORDER
     CONTROL         "",IDC_LIST_CANDIDATE,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER | WS_TABSTOP,1,39,120,15
-    CTEXT           APPNAME_,IDC_STATIC_DESCRIPTION,26,2,93,9,SS_NOPREFIX
+    CTEXT           "Soyokaze",IDC_STATIC_DESCRIPTION,26,2,93,9,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,3,24,6,14,NOT WS_VISIBLE
     PUSHBUTTON      "キャンセル",IDCANCEL,5,24,6,14,NOT WS_VISIBLE
     CONTROL         "",IDC_STATIC_ICON,"Static",SS_BLACKFRAME | SS_NOTIFY,4,2,21,21
@@ -854,7 +853,7 @@ BEGIN
     LTEXT           "カンマ(,)区切り、ワイルドカード(*, ?)指定が可能",IDC_STATIC,105,137,179,8
 END
 
-IDD_APPSETTING_KEY DIALOGEX 0, 0, 275, 233
+IDD_APPSETTING_KEY DIALOGEX 0, 0, 351, 263
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -888,12 +887,12 @@ BEGIN
     EDITTEXT        IDC_EDIT_HOTKEY_COMPL,107,72,66,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_HOTKEY_CONTEXTMENU,107,107,66,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_HOTKEY_COPY,107,124,66,14,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "入力画面のキー割り当て",IDC_STATIC,15,7,322,134
-    LTEXT           "入力画面の位置を一時的に移動するキーを設定できます。\n\n入力画面を再表示したとき\n元の位置に戻ります。",IDC_STATIC,208,159,111,53
-    GROUPBOX        "入力画面のウインドウ移動",IDC_STATIC,15,145,322,89
+    GROUPBOX        "入力画面のキー割り当て",IDC_STATIC,11,7,308,134
+    LTEXT           "入力画面の位置を一時的に移動するキーを設定できます。\n\n入力画面を再表示したとき\n元の位置に戻ります。",IDC_STATIC,205,159,108,53
+    GROUPBOX        "入力画面のウインドウ移動",IDC_STATIC,11,145,308,89
     EDITTEXT        IDC_EDIT_HOTKEY_MOVE_UP,107,159,66,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_HOTKEY_MOVE_DOWN,107,177,66,14,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "標準キー設定に加えて、\n追加のキーを設定できます。\n\n標準キー設定\n上へ:↑\n下へ:↓\n決定:Enter\n補完:Tab\n単語削除:Ctrl+BS",IDC_STATIC,201,16,104,90
+    LTEXT           "標準キー設定に加えて、\n追加のキーを設定できます。\n\n標準キー設定\n上へ:↑\n下へ:↓\n決定:Enter\n補完:Tab\n単語削除:Ctrl+BS",IDC_STATIC,205,20,100,90
     EDITTEXT        IDC_EDIT_HOTKEY_MOVE_RIGHT,107,212,66,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_HOTKEY_MOVE_LEFT,107,194,66,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_HOTKEY_DELWORD,107,89,66,14,ES_AUTOHSCROLL | ES_READONLY
@@ -959,18 +958,17 @@ BEGIN
     PUSHBUTTON      "履歴の削除(&D)",IDC_BUTTON_CLEAR,17,46,60,14
 END
 
-IDD_APPSETTING_COMMANDPRIORITY DIALOGEX 0, 0, 344, 291
+IDD_APPSETTING_COMMANDPRIORITY DIALOGEX 0, 0, 344, 348
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "フィルター(&F):",IDC_STATIC,123,12,42,8
-    EDITTEXT        IDC_EDIT_FILTER,170,10,123,14,ES_AUTOHSCROLL
-    LTEXT           "コマンドの優先度(&P):",IDC_STATIC,14,12,67,8
-    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,11,27,219,216
+    CONTROL         "",IDC_LIST_COMMANDS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,11,27,219,275
+    LTEXT           "フィルター(&F):",IDC_STATIC,13,6,42,8
+    EDITTEXT        IDC_EDIT_FILTER,60,4,171,14,ES_AUTOHSCROLL
     PUSHBUTTON      "優先度変更(&E)",IDC_BUTTON_EDIT,235,27,58,14
     PUSHBUTTON      "すべてリセット(&R)",IDC_BUTTON_RESET,235,48,58,14
-    LTEXT           "一致の度合いにより、候補欄の表示順序を変えています。\n一致度の区分: 完全一致 / 前方一致 / 部分一致\n一致度が同じ場合、コマンドの優先度が高いものを先に表示します。",IDC_STATIC,15,247,256,29
+    LTEXT           "一致の度合いにより、候補欄の表示順序を変えています。\n一致度の区分: 完全一致 / 前方一致 / 部分一致\n一致度が同じ場合、コマンドの優先度が高いものを先に表示します。",IDC_STATIC,15,310,256,29
 END
 
 IDD_PRIORITY DIALOGEX 0, 0, 141, 47
@@ -1777,12 +1775,12 @@ BEGIN
     BEGIN
         BLOCK "041104b0"
         BEGIN
-            VALUE "FileDescription", APPNAME_
+            VALUE "FileDescription", "Soyokaze"
             VALUE "FileVersion", "0.60.0.1"
-            VALUE "InternalName", APP_EXENAME_
-            VALUE "LegalCopyright", COPYRIGHT_STR
-            VALUE "OriginalFilename", APP_EXENAME_
-            VALUE "ProductName", APPNAME_
+            VALUE "InternalName", "soyokaze.exe"
+            VALUE "LegalCopyright", "ymgw.  All rights reserved."
+            VALUE "OriginalFilename", "soyokaze.exe"
+            VALUE "ProductName", "Soyokaze"
             VALUE "ProductVersion", "0.60.0.1"
         END
     END
@@ -1820,9 +1818,9 @@ BEGIN
     IDD_APPSETTING, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 434
+        RIGHTMARGIN, 616
         TOPMARGIN, 7
-        BOTTOMMARGIN, 317
+        BOTTOMMARGIN, 390
     END
 
     IDD_COMMAND_SHELLEXECUTE_BASIC, DIALOG
@@ -2059,8 +2057,10 @@ BEGIN
 
     IDD_APPSETTING_KEY, DIALOG
     BEGIN
-        LEFTMARGIN, 7
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 342
         TOPMARGIN, 7
+        BOTTOMMARGIN, 256
     END
 
     IDD_APPSETTING_EXCLUDEFILE, DIALOG
@@ -2100,7 +2100,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 337
         TOPMARGIN, 7
-        BOTTOMMARGIN, 284
+        BOTTOMMARGIN, 341
     END
 
     IDD_PRIORITY, DIALOG
@@ -5054,14 +5054,12 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE 17, 1
-#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬮｣豈費ｽｼ螟ｲ・ｽ・ｽ繝ｻ・･鬮ｯ讓奇ｽｻ阮卍ｧ驍ｵ・ｲ陝ｶ譏ｴ・・ｹ晢ｽｻ繝ｻ・ｨ鬯ｯ・ｮ繝ｻ・ｮ驛｢譎｢・ｽ・ｻ郢晢ｽｻ郢晢ｽｻ繝ｻ・ｹ繝ｻ・ｧ髯溷供・ｨ・ｯ髯橸ｽｺ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
-#include "l.JPN\afxres.rc"      // 鬮ｫ・ｶ霓｣蛟｡・ｶ諛翫・繝ｻ・ｺ髫ｰ雋ｻ・ｽ・ｶ驍ｵ・ｺ隲ｷ蛹・ｽｽ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴弱・・ｺ・｢驛｢譎｢・ｽ・ｻ鬩幢ｽ｢隴取ｨ費ｽｺ繧托ｽｾ雜｣・ｽ・ｦ鬩幢ｽ｢隴擾ｽｴ郢晢ｽｻ
+#include "res\Soyokaze.rc2"  // Microsoft Visual C++ 鬯ｮ・｣雎郁ｲｻ・ｽ・ｼ陞滂ｽｲ繝ｻ・ｽ繝ｻ・ｽ郢晢ｽｻ繝ｻ・･鬯ｮ・ｯ隶灘･・ｽｽ・ｻ髦ｮ蜊搾ｽｧ鬩搾ｽｵ繝ｻ・ｲ髯晢ｽｶ隴擾ｽｴ繝ｻ繝ｻ・ｹ譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｨ鬯ｯ・ｯ繝ｻ・ｮ郢晢ｽｻ繝ｻ・ｮ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ驛｢譎｢・ｽ・ｻ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ郢晢ｽｻ繝ｻ・ｧ鬮ｯ貅ｷ萓帙・・ｨ繝ｻ・ｯ鬮ｯ讖ｸ・ｽ・ｺ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ
+#include "l.JPN\afxres.rc"      // 鬯ｮ・ｫ繝ｻ・ｶ髴難ｽ｣陋滂ｽ｡繝ｻ・ｶ隲帷ｿｫ繝ｻ郢晢ｽｻ繝ｻ・ｺ鬮ｫ・ｰ髮具ｽｻ繝ｻ・ｽ繝ｻ・ｶ鬩搾ｽｵ繝ｻ・ｺ髫ｲ・ｷ陋ｹ繝ｻ・ｽ・ｽ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ繝ｻ・ｺ繝ｻ・｢鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ鬯ｩ蟷｢・ｽ・｢髫ｴ蜿厄ｽｨ雋ｻ・ｽ・ｺ郢ｧ謇假ｽｽ・ｾ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ蟷｢・ｽ・｢髫ｴ謫ｾ・ｽ・ｴ驛｢譎｢・ｽ・ｻ
 #if !defined(_AFXDLL)
-#include  "l.JPN\afxribbon.rc"   // MFC 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢隴弱・魃ｵ繝ｻ雜｣・ｽ・ｦ鬩搾ｽｵ繝ｻ・ｺ鬩怜遜・ｽ・ｫ郢晢ｽｻ髢ｧ・ｲ繝ｻ・ｸ繝ｻ・ｺ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｳ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｳ鬩幢ｽ｢隴主・讓溘・蜿厄ｽｺ・ｽ繝ｻ・ｹ隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｫ 鬩幢ｽ｢隴寂・繝ｻ驛｢譎｢・ｽ・ｻ 鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｪ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｽ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｼ鬩幢ｽ｢繝ｻ・ｧ郢晢ｽｻ繝ｻ・ｹ
+#include  "l.JPN\afxribbon.rc"   // MFC 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢髫ｴ蠑ｱ繝ｻ鬲・ｽｵ郢晢ｽｻ髮懶ｽ｣繝ｻ・ｽ繝ｻ・ｦ鬯ｩ謳ｾ・ｽ・ｵ郢晢ｽｻ繝ｻ・ｺ鬯ｩ諤憺●繝ｻ・ｽ繝ｻ・ｫ驛｢譎｢・ｽ・ｻ鬮｢・ｧ繝ｻ・ｲ郢晢ｽｻ繝ｻ・ｸ郢晢ｽｻ繝ｻ・ｺ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｳ鬯ｩ蟷｢・ｽ・｢髫ｴ荳ｻ繝ｻ隶捺ｺ倥・陷ｿ蜴・ｽｽ・ｺ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｹ髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｫ 鬯ｩ蟷｢・ｽ・｢髫ｴ蟇ゅ・郢晢ｽｻ鬩幢ｽ｢隴趣ｽ｢繝ｻ・ｽ繝ｻ・ｻ 鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｪ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｽ鬯ｩ蟷｢・ｽ・｢髫ｴ雜｣・ｽ・｢郢晢ｽｻ繝ｻ・ｽ郢晢ｽｻ繝ｻ・ｼ鬯ｩ蟷｢・ｽ・｢郢晢ｽｻ繝ｻ・ｧ驛｢譎｢・ｽ・ｻ郢晢ｽｻ繝ｻ・ｹ
 #endif
 #endif
-
-#include "override.rc"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

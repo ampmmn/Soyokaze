@@ -126,6 +126,9 @@
     <ClCompile Include="..\testcode\soyokaze\control\CommandListCtrlTest.cpp">
       <Filter>soyokaze\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp">
+      <Filter>soyokaze\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp">
       <Filter>soyokaze\features\keywordmanager</Filter>
     </ClCompile>

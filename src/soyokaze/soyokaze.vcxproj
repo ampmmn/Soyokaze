@@ -678,6 +678,7 @@
     <ClInclude Include="control\SinglePageDialog.h" />
     <ClInclude Include="control\SystemColorScheme.h" />
     <ClInclude Include="control\WindowPosition.h" />
+    <ClInclude Include="control\WindowPlacementYaml.h" />
     <ClInclude Include="hotkey\AppHotKeyDialog.h" />
     <ClInclude Include="hotkey\CommandHotKeyAttribute.h" />
     <ClInclude Include="hotkey\ExtraActionHotKeyDialog.h" />
@@ -1267,6 +1268,7 @@
     <ClCompile Include="control\SinglePageDialog.cpp" />
     <ClCompile Include="control\SystemColorScheme.cpp" />
     <ClCompile Include="control\WindowPosition.cpp" />
+    <ClCompile Include="control\WindowPlacementYaml.cpp" />
     <ClCompile Include="hotkey\AppHotKeyDialog.cpp" />
     <ClCompile Include="hotkey\CommandHotKeyAttribute.cpp" />
     <ClCompile Include="hotkey\ExtraActionHotKeyDialog.cpp" />
