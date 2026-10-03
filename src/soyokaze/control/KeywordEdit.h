@@ -9,6 +9,8 @@ public:
 	virtual ~KeywordEdit();
 
 	void Paste();
+	/** 入力欄のUndo履歴を現在の文字列で初期化する */
+	void ClearUndoHistory();
 
 	void SetCaretToEnd();
 	void SetIMEOff();
@@ -26,6 +28,8 @@ protected:
 // 実装
 protected:
 	LRESULT WindowProc(UINT msg, WPARAM wp, LPARAM lp) override;
+	/** EN_CHANGE通知を履歴へ記録し、親ウインドウにも通知する */
+	afx_msg BOOL OnEditChanged();
 	
 	afx_msg void OnPaint();
 	afx_msg void OnKeyDown(UINT,UINT,UINT);

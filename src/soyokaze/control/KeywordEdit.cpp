@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "KeywordEdit.h"
+#include "KeywordEditUndoHistory.h"
 #include "features/main/controller/MainWindowController.h"
 #include "control/ColorSettings.h"
 #include <imm.h>
@@ -125,6 +126,9 @@ struct KeywordEdit::PImpl
 	UINT mSelectionNotifyMessage{0};
 	int mLastSelectionStart{-1};
 	int mLastSelectionEnd{-1};
+	KeywordEditUndoHistory mUndoHistory;
+	bool mIsRestoringUndo{false};
+	bool mIsFirstFocus{true};
 
 };
 
@@ -147,6 +151,7 @@ KeywordEdit::~KeywordEdit()
 }
 
 BEGIN_MESSAGE_MAP(KeywordEdit, CEdit)
+	ON_CONTROL_REFLECT_EX(EN_CHANGE, OnEditChanged)
 	ON_WM_PAINT()
 	ON_WM_KEYDOWN()
 	ON_WM_SYSKEYDOWN()
@@ -166,6 +171,24 @@ END_MESSAGE_MAP()
 void KeywordEdit::Paste()
 {
 	PostMessage(WM_PASTE, 0, 0);
+}
+
+void KeywordEdit::ClearUndoHistory()
+{
+	CString text;
+	GetWindowText(text);
+	in->mUndoHistory.Reset(text);
+}
+
+BOOL KeywordEdit::OnEditChanged()
+{
+	if (in->mIsRestoringUndo == false) {
+		CString text;
+		GetWindowText(text);
+		in->mUndoHistory.RecordChange(text);
+	}
+	// 親ウインドウ側のEN_CHANGE処理も継続させる
+	return FALSE;
 }
 
 LRESULT KeywordEdit::WindowProc(UINT msg, WPARAM wp, LPARAM lp)
@@ -274,6 +297,18 @@ void KeywordEdit::SetSelectionNotifyMessage(UINT messageId)
 
 void KeywordEdit::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 {
+	if (nChar == 'Z' && (GetKeyState(VK_CONTROL) & 0x8000) != 0) {
+		CString text;
+		if (in->mUndoHistory.Undo(text)) {
+			// 復元によるEN_CHANGEは親へ通知するが、Undo履歴には追加しない
+			in->mIsRestoringUndo = true;
+			SetWindowText(text);
+			in->mIsRestoringUndo = false;
+			SetSel(text.GetLength(), text.GetLength());
+		}
+		return;
+	}
+
 	if (in->mIsNotify) {
 		// 親ウインドウ(LauncherMainWindow)にキー入力を通知
 		if (GetParent()->SendMessage(WM_APP + 1, nChar, 0) != 0) {
@@ -314,6 +349,12 @@ UINT KeywordEdit::OnGetDlgCode()
 void KeywordEdit::OnSetFocus(CWnd* oldWindow)
 {
 	__super::OnSetFocus(oldWindow);
+	if (in->mIsFirstFocus) {
+		CString text;
+		GetWindowText(text);
+		in->mUndoHistory.Reset(text);
+		in->mIsFirstFocus = false;
+	}
 	::CreateCaret(GetSafeHwnd(), in->GetCurrentCaretBitmap(this), 0, 0);
 	ShowCaret();
 	in->mIsFocus = true;

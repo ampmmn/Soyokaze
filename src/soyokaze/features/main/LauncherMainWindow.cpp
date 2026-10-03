@@ -1433,8 +1433,8 @@ void LauncherMainWindow::ClearContentImpl(bool isForceUpdate)
 		virtual bool HasKeyword() { return false; }
 	} status;
 	in->mLayout->UpdateInputStatus(&status, isForceUpdate);
-
 	UpdateData(FALSE);
+	in->mKeywordEdit.ClearUndoHistory();
 }
 
 // 補完

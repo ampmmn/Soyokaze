@@ -952,6 +952,7 @@
     <ClInclude Include="icon/IconLoader.h" />
     <ClInclude Include="utility/IniFile.h" />
     <ClInclude Include="control/KeywordEdit.h" />
+    <ClInclude Include="control/KeywordEditUndoHistory.h" />
     <ClInclude Include="features/keywordmanager/KeywordManagerDialog.h" />
     <ClInclude Include="logger/Logger.h" />
     <ClInclude Include="matcher/PartialMatchPattern.h" />
@@ -1527,6 +1528,7 @@
     <ClCompile Include="icon/IconLoader.cpp" />
     <ClCompile Include="utility/IniFile.cpp" />
     <ClCompile Include="control/KeywordEdit.cpp" />
+    <ClCompile Include="control/KeywordEditUndoHistory.cpp" />
     <ClCompile Include="features/keywordmanager/KeywordManagerDialog.cpp" />
     <ClCompile Include="logger/Logger.cpp" />
     <ClCompile Include="matcher/PartialMatchPattern.cpp" />
