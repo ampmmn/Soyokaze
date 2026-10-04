@@ -81,11 +81,14 @@ void SpecialFolderFileFind::PImpl::UpdateRecentItems()
 	if (mIsEnableRecent == false) {
 		return;
 	}
+
+	spdlog::info("[SpecialFolderFile]UpdateRecentItems start");
 	std::vector<ITEM> items;
 	GetLnkFiles(items, mRecentPath, TYPE_RECENT);
 
 	std::lock_guard<std::mutex> lock(mMutex);
 	mRecentItems.swap(items);
+	spdlog::info("[SpecialFolderFile]UpdateRecentItems end. items={}", items.size());
 }
 
 void SpecialFolderFileFind::PImpl::UpdateStartMenuItems()
@@ -93,11 +96,13 @@ void SpecialFolderFileFind::PImpl::UpdateStartMenuItems()
 	if (mIsEnableStartMenu == false) {
 		return;
 	}
+	spdlog::info("[SpecialFolderFile]UpdateStartMenuItems start");
 	std::vector<ITEM> items;
 	GetLnkFiles(items, mStartMenuPath, TYPE_STARTMENU);
 
 	std::lock_guard<std::mutex> lock(mMutex);
 	mStartMenuItems.swap(items);
+	spdlog::info("[SpecialFolderFile]UpdateStartMenuItems end. items={}", items.size());
 }
 
 void SpecialFolderFileFind::PImpl::UpdateCommonStartMenuItems()
@@ -105,11 +110,13 @@ void SpecialFolderFileFind::PImpl::UpdateCommonStartMenuItems()
 	if (mIsEnableStartMenu == false) {
 		return;
 	}
+	spdlog::info("[SpecialFolderFile]UpdateCommonStartMenuItems start");
 	std::vector<ITEM> items;
 	GetLnkFiles(items, mCommonStartMenuPath, TYPE_STARTMENU);
 
 	std::lock_guard<std::mutex> lock(mMutex);
 	mCommonStartMenuItems.swap(items);
+	spdlog::info("[SpecialFolderFile]UpdateCommonStartMenuItems end. items={}", items.size());
 }
 
 void SpecialFolderFileFind::PImpl::GetLnkFiles(std::vector<ITEM>& items, const CString& directoryPath, int type)
@@ -254,15 +261,20 @@ bool SpecialFolderFileFind::FindShortcutFiles(std::vector<ITEM>& items)
 	}
 
 	if (in->mIsFirstCall) {
+		spdlog::info("[SpecialFolderFile] IsFirstCall = true");
 
 		// 変更通知を受け取るための登録
 		in->RegisterWatcher();
 
 		// 初回はショートカット一覧を直接取得する。以降は変更通知経由で更新する
 		auto th = std::thread([&](){
+			spdlog::info("[SpecialFolderFile] First load start.");
+			HRESULT hr = CoInitialize(NULL);
 			in->UpdateRecentItems();
 			in->UpdateStartMenuItems();
 			in->UpdateCommonStartMenuItems();
+			CoUninitialize();
+			spdlog::info("[SpecialFolderFile] First load end.");
 		});
 		th.detach();
 		in->mIsFirstCall = false;
