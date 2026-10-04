@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 11:19+0900\n"
+"POT-Creation-Date: 2026-10-04 11:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -19,46 +19,85 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../source/window/app-settings/exclude-files.md:1
-msgid "Command Execute > Exclude Files"
-msgstr "実行＞除外するファイル"
+#: ../../source/window/app-settings/exclude-files.md:2
+msgid "Command Execute > Exclude Items"
+msgstr "実行＞除外する項目"
 
-#: ../../source/window/app-settings/exclude-files.md:3
-msgid "[`ファイル名を指定して実行`](/adhoc-command/pathfind) コマンドにおいて、対象外とするファイルを指定することができる。"
+#: ../../source/window/app-settings/exclude-files.md:4
+msgid ""
+"[`ファイル名を指定して実行`](/adhoc-command/pathfind) "
+"やアプリ、スタートメニューの候補から、表示したくない項目を除外できる。"
 msgstr ""
 
-#: ../../source/window/app-settings/exclude-files.md:6
+#: ../../source/window/app-settings/exclude-files.md:7
 msgid "![](../../image/window/app-settings/exclude-files/setting.png)"
 msgstr ""
 
-#: ../../source/window/app-settings/exclude-files.md:8
-msgid "`除外するファイル`"
-msgstr ""
-
 #: ../../source/window/app-settings/exclude-files.md:9
-msgid "ここで登録したファイルが候補としてマッチした場合でも、候補に表示しないようにする。"
+msgid "`除外するファイルパス`"
 msgstr ""
 
-#: ../../source/window/app-settings/exclude-files.md:11
-msgid "`追加`"
+#: ../../source/window/app-settings/exclude-files.md:10
+msgid "登録したパスに一致するファイルを候補に表示しない。"
 msgstr ""
 
 #: ../../source/window/app-settings/exclude-files.md:12
-msgid "クリックすると、ファイル選択ダイアログが表示される。選択したファイルが`除外するファイル`に追加される"
+msgid "`追加`"
 msgstr ""
 
 #: ../../source/window/app-settings/exclude-files.md:13
-msgid "`編集`"
+msgid "クリックすると、ファイル選択ダイアログが表示される。選択したファイルが`除外するファイルパス`に追加される。"
 msgstr ""
 
 #: ../../source/window/app-settings/exclude-files.md:14
-msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目のパスを変更することができる"
+msgid "`編集`"
 msgstr ""
 
 #: ../../source/window/app-settings/exclude-files.md:15
-msgid "`削除`"
+msgid "選択したファイルパスを変更する。"
 msgstr ""
 
 #: ../../source/window/app-settings/exclude-files.md:16
-msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を削除することができる"
+msgid "`削除`"
 msgstr ""
+
+#: ../../source/window/app-settings/exclude-files.md:17
+msgid "選択したファイルパスを削除する。"
+msgstr ""
+
+#: ../../source/window/app-settings/exclude-files.md:18
+msgid "`項目名の除外パターン`"
+msgstr ""
+
+#: ../../source/window/app-settings/exclude-files.md:19
+msgid "項目の表示名に対して、登録したパターンを大文字・小文字を区別せず部分一致で照合する。一致した項目は候補に表示しない。"
+msgstr ""
+
+#: ../../source/window/app-settings/exclude-files.md:20
+msgid "正規表現を使用できる。たとえば `^Copilot$` は、表示名が `Copilot` と一致する項目を除外する。"
+msgstr ""
+
+#: ../../source/window/app-settings/exclude-files.md:21
+msgid "無効な正規表現は追加・編集時に登録できない。"
+msgstr ""
+
+#~ msgid ""
+#~ "[`ファイル名を指定して実行`](/adhoc-command/pathfind) "
+#~ "コマンドにおいて、対象外とするファイルを指定することができる。"
+#~ msgstr ""
+
+#~ msgid "`除外するファイル`"
+#~ msgstr ""
+
+#~ msgid "ここで登録したファイルが候補としてマッチした場合でも、候補に表示しないようにする。"
+#~ msgstr ""
+
+#~ msgid "クリックすると、ファイル選択ダイアログが表示される。選択したファイルが`除外するファイル`に追加される"
+#~ msgstr ""
+
+#~ msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目のパスを変更することができる"
+#~ msgstr ""
+
+#~ msgid "クリックすると、`追加のディレクトリ`リスト上の選択項目を削除することができる"
+#~ msgstr ""
+

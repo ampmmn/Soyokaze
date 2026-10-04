@@ -996,11 +996,11 @@
     <ClInclude Include="features\main\MainWindowHotKey.h">
       <Filter>features\main</Filter>
     </ClInclude>
-    <ClInclude Include="features\appsettings\ExcludePathPage.h">
+    <ClInclude Include="features\appsettings\ExcludeTargetPage.h">
       <Filter>features\appsettings</Filter>
     </ClInclude>
-    <ClInclude Include="commands\pathfind\ExcludePathList.h">
-      <Filter>commands\pathfind</Filter>
+    <ClInclude Include="commands\common\CandidateExclusionList.h">
+      <Filter>commands\common</Filter>
     </ClInclude>
     <ClInclude Include="commands\watchpath\WatchPathToast.h">
       <Filter>commands\watchpath</Filter>
@@ -2735,11 +2735,11 @@
     <ClCompile Include="features\main\MainWindowHotKey.cpp">
       <Filter>features\main</Filter>
     </ClCompile>
-    <ClCompile Include="features\appsettings\ExcludePathPage.cpp">
+    <ClCompile Include="features\appsettings\ExcludeTargetPage.cpp">
       <Filter>features\appsettings</Filter>
     </ClCompile>
-    <ClCompile Include="commands\pathfind\ExcludePathList.cpp">
-      <Filter>commands\pathfind</Filter>
+    <ClCompile Include="commands\common\CandidateExclusionList.cpp">
+      <Filter>commands\common</Filter>
     </ClCompile>
     <ClCompile Include="commands\watchpath\WatchPathToast.cpp">
       <Filter>commands\watchpath</Filter>

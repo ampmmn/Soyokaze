@@ -612,6 +612,7 @@
 #define IDC_RADIO_RENAME                1256
 #define IDC_LIST_IMPORT_COMMANDS        1257
 #define IDC_STATIC_NEEDREBOOT           1258
+#define IDC_VSLISTBOX_DISPLAYNAMEPATTERN 1259
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -630,9 +631,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        265
+#define _APS_NEXT_RESOURCE_VALUE        266
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1259
+#define _APS_NEXT_CONTROL_VALUE         1260
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

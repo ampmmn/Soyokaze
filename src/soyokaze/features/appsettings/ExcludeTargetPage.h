@@ -4,12 +4,12 @@
 #include "features/appsettings/AppSettingPageRepository.h"
 #include <memory>
 
-class AppSettingPageExcludePath :
- 	virtual public launcherapp::settingwindow::AppSettingPageBase
+class AppSettingPageExcludeTarget :
+	virtual public launcherapp::settingwindow::AppSettingPageBase
 {
 public:
-	AppSettingPageExcludePath();
-	~AppSettingPageExcludePath();
+	AppSettingPageExcludeTarget();
+	~AppSettingPageExcludeTarget();
 
 	// ウインドウを作成する
 	bool Create(HWND parentWindow) override;
@@ -30,9 +30,9 @@ public:
 	bool GetHelpPageId(String& helpPageId) override;
 
 	// インスタンスを複製する
-	AppSettingPageIF* Clone() override { return new AppSettingPageExcludePath(); }
+	AppSettingPageIF* Clone() override { return new AppSettingPageExcludeTarget(); }
 
-	DECLARE_APPSETTINGPAGE(AppSettingPageExcludePath)
+	DECLARE_APPSETTINGPAGE(AppSettingPageExcludeTarget)
 private:
 	struct PImpl;
 	std::unique_ptr<PImpl> in;

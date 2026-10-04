@@ -8,9 +8,6 @@ namespace launcherapp {
 namespace commands {
 namespace pathfind {
 
-class ExcludePathList;
-
-
 class PathExecuteCommand :
  	virtual public launcherapp::commands::common::AdhocCommandBase,
 	virtual public launcherapp::commands::core::ContextMenuSource

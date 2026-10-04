@@ -1,18 +1,53 @@
 #include "pch.h"
 #include "framework.h"
-#include "ExcludePathPage.h"
+#include "ExcludeTargetPage.h"
 #include "control/FolderDialog.h"
 #include "setting/Settings.h"
+#include "utility/Regex.h"
 #include "utility/LocalPathResolver.h"
 #include "utility/Path.h"
 #include "resource.h"
+#include <afxvslistbox.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-// 
-class ExcludePathPage : public CDialog
+class DisplayNamePatternListBox : public CVSListBox
+{
+protected:
+	/**
+	  編集後のパターンを検証し、無効な値の確定を取り消す
+	  @param[in] label 編集されたパターン
+	*/
+	void OnEndEditLabel(LPCTSTR label) override;
+};
+
+void DisplayNamePatternListBox::OnEndEditLabel(LPCTSTR label)
+{
+	if (label == nullptr || *label == _T('\0')) {
+		CVSListBox::OnEndEditLabel(label);
+		return;
+	}
+
+	launcherapp::utility::Regex regex;
+	if (regex.Compile(label, false) == false) {
+		CString message((LPCTSTR)IDS_ERR_INVALIDREGEXP);
+		message += _T("\n");
+		CStringA error(regex.GetError().c_str());
+		message += (CString)error;
+		message += _T("\n");
+		message += label;
+		AfxMessageBox(message);
+
+		CVSListBox::OnEndEditLabel(nullptr);
+		return;
+	}
+
+	CVSListBox::OnEndEditLabel(label);
+}
+
+class ExcludeTargetPage : public CDialog
 {
 public:
 
@@ -43,12 +78,13 @@ protected:
 
 public:
 	CListCtrl* mListPath{nullptr};
+	DisplayNamePatternListBox mDisplayNamePatternList;
 	std::vector<CString> mExcludePaths;
 
 	Settings* mSettingsPtr{nullptr};
 };
 
-void ExcludePathPage::SwapItem(int srcIndex, int dstIndex)
+void ExcludeTargetPage::SwapItem(int srcIndex, int dstIndex)
 {
 	auto listPath = GetPathListWnd();
 
@@ -64,7 +100,7 @@ void ExcludePathPage::SwapItem(int srcIndex, int dstIndex)
 	std::swap(mExcludePaths[srcIndex], mExcludePaths[dstIndex]);
 }
 
-bool ExcludePathPage::OnKillActive()
+bool ExcludeTargetPage::OnKillActive()
 {
 	if (UpdateData() == FALSE) {
 		return false;
@@ -72,14 +108,14 @@ bool ExcludePathPage::OnKillActive()
 	return true;
 }
 
-bool ExcludePathPage::OnSetActive()
+bool ExcludeTargetPage::OnSetActive()
 {
 	UpdateStatus();
 	UpdateData(FALSE);
 	return true;
 }
 
-void ExcludePathPage::OnOK()
+void ExcludeTargetPage::OnOK()
 {
 	auto settingsPtr = mSettingsPtr;
 
@@ -93,18 +129,25 @@ void ExcludePathPage::OnOK()
 		settingsPtr->Set(key, path);
 	}
 
+	settingsPtr->Set(_T("ExcludeTarget:PatternCount"), mDisplayNamePatternList.GetCount());
+	for (int index = 0; index < mDisplayNamePatternList.GetCount(); ++index) {
+		_stprintf_s(key, _T("ExcludeTarget:Pattern%d"), index);
+		settingsPtr->Set(key, mDisplayNamePatternList.GetItemText(index));
+	}
+
 	__super::OnOK();
 }
 
-void ExcludePathPage::DoDataExchange(CDataExchange* pDX)
+void ExcludeTargetPage::DoDataExchange(CDataExchange* pDX)
 {
 	__super::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_VSLISTBOX_DISPLAYNAMEPATTERN, mDisplayNamePatternList);
 }
 
 #pragma warning( push )
 #pragma warning( disable : 26454 )
 
-BEGIN_MESSAGE_MAP(ExcludePathPage, CDialog)
+BEGIN_MESSAGE_MAP(ExcludeTargetPage, CDialog)
 	ON_COMMAND(IDC_BUTTON_ADD, OnButtonAdd)
 	ON_COMMAND(IDC_BUTTON_EDIT, OnButtonEdit)
 	ON_COMMAND(IDC_BUTTON_DELETE, OnButtonDelete)
@@ -114,7 +157,7 @@ END_MESSAGE_MAP()
 
 #pragma warning( pop )
 
-BOOL ExcludePathPage::OnInitDialog()
+BOOL ExcludeTargetPage::OnInitDialog()
 {
 	__super::OnInitDialog();
 
@@ -141,7 +184,7 @@ BOOL ExcludePathPage::OnInitDialog()
 	return TRUE;
 }
 
-bool ExcludePathPage::UpdateStatus()
+bool ExcludeTargetPage::UpdateStatus()
 {
 	auto listPath = GetPathListWnd();
 
@@ -154,12 +197,15 @@ bool ExcludePathPage::UpdateStatus()
 	return true;
 }
 
-void ExcludePathPage::OnEnterSettings(Settings* settingsPtr)
+void ExcludeTargetPage::OnEnterSettings(Settings* settingsPtr)
 {
 	mSettingsPtr = settingsPtr;
 
 	auto listPath = GetPathListWnd();
 	listPath->DeleteAllItems();
+	while (mDisplayNamePatternList.GetCount() > 0) {
+		mDisplayNamePatternList.RemoveItem(0);
+	}
 
 	std::vector<CString> paths;
 
@@ -173,12 +219,18 @@ void ExcludePathPage::OnEnterSettings(Settings* settingsPtr)
 		listPath->InsertItem(index, path);
 	}
 
+	n = settingsPtr->Get(_T("ExcludeTarget:PatternCount"), 0);
+	for (int index = 0; index < n; ++index) {
+		_stprintf_s(key, _T("ExcludeTarget:Pattern%d"), index);
+		mDisplayNamePatternList.AddItem(settingsPtr->Get(key, _T("")));
+	}
+
 	mExcludePaths.swap(paths);
 
 
 }
 
-void ExcludePathPage::OnButtonAdd()
+void ExcludeTargetPage::OnButtonAdd()
 {
 	Path path(Path::MODULEFILEPATH);
 	CFileDialog dlg(TRUE, NULL, path, OFN_FILEMUSTEXIST, _T("All files|*.*||"), this);
@@ -191,7 +243,7 @@ void ExcludePathPage::OnButtonAdd()
 	listPath->InsertItem(listPath->GetItemCount(), dlg.GetPathName());
 }
 
-void ExcludePathPage::OnButtonEdit()
+void ExcludeTargetPage::OnButtonEdit()
 {
 	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
@@ -209,7 +261,7 @@ void ExcludePathPage::OnButtonEdit()
 	listPath->SetItemText(itemIndex, 0, path);
 }
 
-void ExcludePathPage::OnButtonDelete()
+void ExcludeTargetPage::OnButtonDelete()
 {
 	auto listPath = GetPathListWnd();
 	POSITION pos = listPath->GetFirstSelectedItemPosition();
@@ -235,7 +287,7 @@ void ExcludePathPage::OnButtonDelete()
 	UpdateData(FALSE);
 }
 
-void ExcludePathPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
+void ExcludeTargetPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	UNREFERENCED_PARAMETER(pNMHDR);
 
@@ -244,7 +296,7 @@ void ExcludePathPage::OnNotifyItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-void ExcludePathPage::OnNotifyItemDblClk(
+void ExcludeTargetPage::OnNotifyItemDblClk(
 		NMHDR *pNMHDR,
 	 	LRESULT *pResult
 )
@@ -276,66 +328,66 @@ void ExcludePathPage::OnNotifyItemDblClk(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-struct AppSettingPageExcludePath::PImpl
+struct AppSettingPageExcludeTarget::PImpl
 {
-	ExcludePathPage mWindow;
+	ExcludeTargetPage mWindow;
 };
 
-REGISTER_APPSETTINGPAGE(AppSettingPageExcludePath)
+REGISTER_APPSETTINGPAGE(AppSettingPageExcludeTarget)
 
-AppSettingPageExcludePath::AppSettingPageExcludePath() : 
-	AppSettingPageBase(_T("実行"), _T("除外するファイル")),
+AppSettingPageExcludeTarget::AppSettingPageExcludeTarget() :
+	AppSettingPageBase(_T("実行"), _T("除外する項目")),
 	in(new PImpl)
 {
 }
 
-AppSettingPageExcludePath::~AppSettingPageExcludePath()
+AppSettingPageExcludeTarget::~AppSettingPageExcludeTarget()
 {
 }
 
 // ウインドウを作成する
-bool AppSettingPageExcludePath::Create(HWND parentWindow)
+bool AppSettingPageExcludeTarget::Create(HWND parentWindow)
 {
 	return in->mWindow.Create(IDD_APPSETTING_EXCLUDEFILE, CWnd::FromHandle(parentWindow)) != FALSE;
 }
 
 // ウインドウハンドルを取得する
-HWND AppSettingPageExcludePath::GetHwnd()
+HWND AppSettingPageExcludeTarget::GetHwnd()
 {
 	return in->mWindow.GetSafeHwnd();
 }
 
 // 同じ親の中で表示する順序(低いほど先に表示)
-int AppSettingPageExcludePath::GetOrder()
+int AppSettingPageExcludeTarget::GetOrder()
 {
 	return 30;
 }
 // 
-bool AppSettingPageExcludePath::OnEnterSettings()
+bool AppSettingPageExcludeTarget::OnEnterSettings()
 {
 	in->mWindow.OnEnterSettings((Settings*)GetParam());
 	return true;
 }
 
 // ページがアクティブになるときに呼ばれる
-bool AppSettingPageExcludePath::OnSetActive()
+bool AppSettingPageExcludeTarget::OnSetActive()
 {
 	return in->mWindow.OnSetActive();
 }
 
 // ページが非アクティブになるときに呼ばれる
-bool AppSettingPageExcludePath::OnKillActive()
+bool AppSettingPageExcludeTarget::OnKillActive()
 {
 	return in->mWindow.OnKillActive();
 }
 //
-void AppSettingPageExcludePath::OnOKCall()
+void AppSettingPageExcludeTarget::OnOKCall()
 {
 	in->mWindow.OnOK();
 }
 
 // ページに関連付けられたヘルプページIDを取得する
-bool AppSettingPageExcludePath::GetHelpPageId(String& id)
+bool AppSettingPageExcludeTarget::GetHelpPageId(String& id)
 {
 	id = "ExcludeFileSetting";
 	return true;

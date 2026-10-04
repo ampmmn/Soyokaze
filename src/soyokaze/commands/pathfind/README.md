@@ -6,28 +6,32 @@
 
 ```plantuml
 
-class AppPrerefence
+class AppPreference
 class ExecuteHistory
+
+namespace common {
+
+class CandidateExclusionList
+
+}
 
 namespace pathfind {
 
 class PathExeAdhocCommandProvider
 class PathExecuteCommand
-class ExcludePathList
 class LocalPathResolver
 
 PathExeAdhocCommandProvider o.. PathExecuteCommand : 生成
-PathExeAdhocCommandProvider "1" o.. "1" ExcludePathList : 生成
+PathExeAdhocCommandProvider "1" o.. "1" common.CandidateExclusionList : 生成
 
-PathExecuteCommand ..> ExcludePathList : 参照
 
 }
 
-pathfind.PathExecuteCommand ..> AppPrerefence : 設定読み込み
+pathfind.PathExecuteCommand ..> AppPreference : 設定読み込み
 pathfind.PathExecuteCommand ..> LocalPathResolver : パス解決
 
-pathfind.ExcludePathList ..> AppPrerefence : 設定読み込み
-pathfind.PathExeAdhocCommandProvider ..> AppPrerefence : 設定読み込み
+common.CandidateExclusionList ..> AppPrerefence : 設定読み込み
+pathfind.PathExeAdhocCommandProvider ..> AppPreference : 設定読み込み
 
 pathfind.PathExeAdhocCommandProvider ..> ExecuteHistory : 履歴登録/参照
 
@@ -45,7 +49,7 @@ pathfind.PathExeAdhocCommandProvider ..> ExecuteHistory : 履歴登録/参照
 - 一時コマンド問い合わせメソッド`QueryAdhocCommands`の初回呼び出し時に設定を読む
 - 入力キーワードが履歴に合致するかどうかは`PathExeAdhocCommandProvider`内で行っている
 
-- 過去に追加された履歴情報が、除外対象に含まれるかどうかを`ExcludePathList`に問い合わせる
+- パス検索結果が除外対象に含まれるかどうかを`CandidateExclusionList`に問い合わせる
 
 
 ```plantuml
@@ -77,10 +81,12 @@ AdhocCommandProviderBase -up-|> CommandProvider
 
 1/2/3いずれも該当しない場合はMismatchとする
 
-### ExcludePathList
+### CandidateExclusionList
 
-除外するexeファイルのパスを保持するリスト。  
+除外するファイルパスと、候補の表示名に照合するパターンを保持するリスト。
 
-アプリ設定画面の`実行>除外するファイル`で設定したパスを`AppReference`から取得し、リストとして保持する。
+アプリ設定画面の`実行>除外する項目`で設定したパスと表示名パターンを`AppPreference`から取得し、リストとして保持する。
+
+表示名パターンは大文字・小文字を区別せず部分一致で照合する。正規表現として無効な設定値はログを出力して読み飛ばす。
 
 

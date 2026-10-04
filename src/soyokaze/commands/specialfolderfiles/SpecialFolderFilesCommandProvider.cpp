@@ -2,6 +2,7 @@
 #include "SpecialFolderFilesCommandProvider.h"
 #include "commands/specialfolderfiles/SpecialFolderFileCommand.h"
 #include "commands/specialfolderfiles/SpecialFolderFileFind.h"
+#include "commands/common/CandidateExclusionList.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -42,10 +43,12 @@ struct SpecialFolderFilesCommandProvider::PImpl : public AppPreferenceListenerIF
 		bool isEnable = pref->IsEnableSpecialFolder();
 		mFileFind.EnableStartMenu(isEnable);
 		mFileFind.EnableRecent(isEnable);
+		mExclusionList.Load();
 	}
 
 	// 一覧
 	SpecialFolderFileFind mFileFind;
+	launcherapp::commands::common::CandidateExclusionList mExclusionList;
 
 };
 
@@ -87,6 +90,10 @@ void SpecialFolderFilesCommandProvider::QueryAdhocCommands(
 	}
 
 	for (auto& item : recentFileItems) {
+		if (in->mExclusionList.IsExcludedPath(item.mFullPath) ||
+		    in->mExclusionList.IsExcludedDisplayName(item.mName)) {
+			continue;
+		}
 
 		int level = pattern->Match(item.mName);
 		if (level == Pattern::Mismatch) {

@@ -3,6 +3,7 @@
 #include "commands/uwp/UWPApplicationItem.h"
 #include "commands/uwp/UWPCommand.h"
 #include "commands/uwp/UWPApplications.h"
+#include "commands/common/CandidateExclusionList.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -41,9 +42,11 @@ struct UWPCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsEnable = pref->IsEnableUWP();
+		mExclusionList.Load();
 	}
 
 	bool mIsEnable{true};
+	launcherapp::commands::common::CandidateExclusionList mExclusionList;
 	std::vector<ItemPtr> mItems;
 	UWPApplications mUWPApps;
 
@@ -89,6 +92,10 @@ void UWPCommandProvider::QueryAdhocCommands(
 	in->mUWPApps.GetApplications(in->mItems);
 
 	for (auto& item : in->mItems) {
+		if (in->mExclusionList.IsExcludedDisplayName(item->mName) ||
+			(item->mIsUWP == false && in->mExclusionList.IsExcludedPath(item->mAppID))) {
+			continue;
+		}
 
 		int level = pattern->Match(item->mName);
 		if (level == Pattern::Mismatch) {

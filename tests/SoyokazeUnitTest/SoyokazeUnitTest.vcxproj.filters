@@ -123,6 +123,9 @@
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp">
       <Filter>soyokaze\commands\common</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\common\CandidateExclusionListTest.cpp">
+      <Filter>soyokaze\commands\common</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\control\CommandListCtrlTest.cpp">
       <Filter>soyokaze\control</Filter>
     </ClCompile>

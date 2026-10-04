@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-10-04 11:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -46,80 +46,80 @@ msgid "`コマンドの名前`   入力画面からWeb検索コマンドを実�
 msgstr ""
 
 #: ../../source/user-command/websearch.md:15
-msgid "`説明`   コメント表示欄に記載される文字列。"
+msgid "`説明`   コメント表示欄に記載される文字列。   空欄にした場合、`検索URL`の内容がコメント表示欄に記載される。"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:17
+#: ../../source/user-command/websearch.md:18
 msgid "`検索URL`   検索するためのURLを指定する。   `$*`を含めると、その部分が検索キーワードに置き換えられる。"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:20
+#: ../../source/user-command/websearch.md:21
 msgid "Google検索を行う場合は、`https://www.google.com/search?q=$*`と指定すればよい"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:21
+#: ../../source/user-command/websearch.md:22
 msgid "例えば「Soccer」というキーワードを指定した場合、 `https://www.google.com/search?q=Soccer` となる"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:22
+#: ../../source/user-command/websearch.md:23
 msgid ""
 "`▼`   主要な検索エンジンのURLを選択して、入力することができる   "
 "Google/Bing/DuckDuckGo/X/Amazon/Youtube が選択できる"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:25
+#: ../../source/user-command/websearch.md:26
 msgid ""
 "`常に検索候補として表示する`   チェックすると、コマンド名を入力しなくても、検索ワードを入れるだけで候補として表示されるようになる   "
 "![](../image/user-command/web-search/shortcut-search.png)"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:28
+#: ../../source/user-command/websearch.md:29
 msgid "この場合[弱一致](/others/about-matching.md#weak-match)扱いとなる"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:29
+#: ../../source/user-command/websearch.md:30
 msgid "検索URLに`$*`を入力したときだけ表示される"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:30
+#: ../../source/user-command/websearch.md:31
 msgid ""
 "`ホットキー`   コマンドを呼び出すキーバインドを設定できる。   "
 "設定したキーを押下すると、入力欄が表示され、コマンド名が入力された(キーワードで絞り込みができる）状態になる"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:33
+#: ../../source/user-command/websearch.md:34
 msgid ""
 "左上のアイコン欄   アイコン欄を右クリックすると、コンテキストメニューが表示される。   ![](../image/common/web-"
 "search-command-context-menu.png)"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:36
+#: ../../source/user-command/websearch.md:37
 msgid ""
 "`アイコンを変更する`   "
 "選択すると、ファイルを選択するダイアログが表示される。画像ファイルを選択すると、その画像をアイコンとして使用することができる。"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:38
+#: ../../source/user-command/websearch.md:39
 msgid "ローカルパスのほか、URLを直接指定することも可能"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:39
+#: ../../source/user-command/websearch.md:40
 msgid "PNG/JPG/GIF/BMP形式のファイルが利用可能"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:40
+#: ../../source/user-command/websearch.md:41
 msgid "検索サイトごとにアイコンを変えると視認性が高まるのでおすすめ"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:41
+#: ../../source/user-command/websearch.md:42
 msgid "`URLからファビコンを取得する`     選択すると、`検索URL`のファビコンを取得し、アイコンとして設定する。"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:43
+#: ../../source/user-command/websearch.md:44
 msgid "`アイコンを初期状態に戻す`   選択すると、変更したアイコンを元に戻すことができる"
 msgstr ""
 
-#: ../../source/user-command/websearch.md:46
+#: ../../source/user-command/websearch.md:47
 msgid "Per-Key Behavior"
 msgstr "実行時の動作"
 

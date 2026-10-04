@@ -3,7 +3,7 @@
 #include "utility/Regex.h"
 #include "commands/pathfind/PathExecuteCommand.h"
 #include "commands/pathfind/PathURLCommand.h"
-#include "commands/pathfind/ExcludePathList.h"
+#include "commands/common/CandidateExclusionList.h"
 #include "commands/core/CommandRepository.h"
 #include "commands/common/ExecutablePath.h"
 #include "matcher/PatternInternal.h"
@@ -61,7 +61,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 		auto pref = AppPreference::Get();
 		mIsIgnoreUNC = pref->IsIgnoreUNC();
 		mIsEnable = pref->IsEnablePathFind();
-		mExcludeFiles.Load();
+		mExclusionList.Load();
 		mResolver.ResetPath();
 
 		// 追加パスを登録
@@ -73,7 +73,7 @@ struct PathExeAdhocCommandProvider::PImpl : public AppPreferenceListenerIF
 		}
 	}
 
-	ExcludePathList mExcludeFiles;
+	CandidateExclusionList mExclusionList;
 	LocalPathResolver mResolver;
 	//
 	bool mIsIgnoreUNC{false};
@@ -176,7 +176,11 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 			patternInternal->GetRawWords(rawWords);
 		}
 		if (rawWords.size() > 1 && Path::FileExists(word) && Path::IsDirectory(word) == false) {
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(word)));
+			CString displayName = PathFindFileName(word);
+			if (in->mExclusionList.IsExcludedPath(word) == false &&
+			    in->mExclusionList.IsExcludedDisplayName(displayName) == false) {
+				commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(word)));
+			}
 		}
 		return;
 	}
@@ -192,7 +196,9 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 	if (in->mResolver.Resolve(word, resolvedPath)) {
 
 		// 除外対象に含まれなければ
-		if (in->mExcludeFiles.Contains(resolvedPath) == false) {
+		CString displayName = PathFindFileName(resolvedPath);
+		if (in->mExclusionList.IsExcludedPath(resolvedPath) == false &&
+		    in->mExclusionList.IsExcludedDisplayName(displayName) == false) {
 			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathExecuteCommand(word, resolvedPath)));
 		}
 	}
