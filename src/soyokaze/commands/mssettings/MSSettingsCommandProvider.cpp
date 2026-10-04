@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MSSettingsCommandProvider.h"
 #include "commands/mssettings/MSSettingsCommand.h"
+#include "commands/common/CandidateExclusionList.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -49,6 +50,7 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsEnable = pref->IsEnableMSSettings();
+		mExclusionList.Load();
 
 		if (mIsEnable) {
 			EnumItems(mItems);
@@ -62,6 +64,7 @@ struct MSSettingsCommandProvider::PImpl : public AppPreferenceListenerIF
 	}
 
 	bool mIsEnable{false};
+	launcherapp::commands::common::CandidateExclusionList mExclusionList;
 
 	std::vector<MSSettingsCommand*> mItems;
 };
@@ -155,6 +158,10 @@ void MSSettingsCommandProvider::QueryAdhocCommands(
 )
 {
 	for (auto& command : in->mItems) {
+		if (in->mExclusionList.IsExcludedDisplayName(command->GetName())) {
+			continue;
+		}
+
 		int level = command->Match(pattern);
 		if (level == Pattern::Mismatch) {
 			continue;

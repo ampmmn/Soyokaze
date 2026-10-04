@@ -199,7 +199,7 @@ void CandidateListCtrl::InitColumns()
 
 	// 設定に応じたレンダラーを作り直す。
 	const auto& appSettings = pref->GetSettings();
-	bool isTwoLine = appSettings.Get(_T("ViewSetting:TwoLine"), false);
+	bool isTwoLine = appSettings.Get(_T("ViewSetting:TwoLine"), true);
 	std::unique_ptr<CandidateListRenderer> renderer;
 	if (isTwoLine) {
 		renderer = std::make_unique<TwoLineCandidateListRenderer>();

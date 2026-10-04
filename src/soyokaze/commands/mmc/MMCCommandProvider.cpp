@@ -2,6 +2,7 @@
 #include "MMCCommandProvider.h"
 #include "commands/mmc/MMCCommand.h"
 #include "commands/mmc/MMCSnapins.h"
+#include "commands/common/CandidateExclusionList.h"
 #include "commands/core/CommandRepository.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
@@ -40,9 +41,11 @@ struct MMCCommandProvider::PImpl : public AppPreferenceListenerIF
 	{
 		auto pref = AppPreference::Get();
 		mIsEnable = pref->IsEnableMMCSnapin();
+		mExclusionList.Load();
 	}
 
 	bool mIsEnable{true};
+	launcherapp::commands::common::CandidateExclusionList mExclusionList;
 	std::vector<MMCSnapin> mItems;
 	MMCSnapins mSnapins;
 
@@ -87,6 +90,9 @@ void MMCCommandProvider::QueryAdhocCommands(
 
 	in->mSnapins.GetSnapins(in->mItems);
 	for (auto& item : in->mItems) {
+		if (in->mExclusionList.IsExcludedDisplayName(item.mDisplayName)) {
+			continue;
+		}
 
 		int level = pattern->Match(item.mDisplayName);
 		if (level == Pattern::Mismatch) {

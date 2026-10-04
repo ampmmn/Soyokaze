@@ -66,7 +66,7 @@ protected:
 	BOOL mIsDrawIconOnCandidate{TRUE};
 
 	// 候補欄の項目を二行で表示するか
-	BOOL mIsTwoLine{FALSE};
+	BOOL mIsTwoLine{TRUE};
 	// 設定画面を開いた時点の二行表示設定
 	BOOL mOriginalIsTwoLine{FALSE};
 
@@ -313,7 +313,7 @@ void ViewSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsShowGuide = settingsPtr->Get(_T("Soyokaze:IsShowGuide"), true);
 	mIsAlternateColor = settingsPtr->Get(_T("Soyokaze:IsAlternateColor"), true);
 	mIsDrawIconOnCandidate = settingsPtr->Get(_T("Soyokaze:IsDrawIconOnCandidate"), true);
-	mIsTwoLine = settingsPtr->Get(_T("ViewSetting:TwoLine"), false);
+	mIsTwoLine = settingsPtr->Get(_T("ViewSetting:TwoLine"), true);
 	mOriginalIsTwoLine = mIsTwoLine;
 	mIsShowOptionButton = settingsPtr->Get(_T("ViewSetting:IsShowOptionButton"), false);
 
