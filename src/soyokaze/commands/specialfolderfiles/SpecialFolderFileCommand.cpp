@@ -39,7 +39,7 @@ struct SpecialFolderFileCommand::PImpl
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(SpecialFolderFileCommand)
 
 SpecialFolderFileCommand::SpecialFolderFileCommand(const ITEM& item) : 
-	AdhocCommandBase(item.mName, item.mDescription),
+	AdhocCommandBase(item.mName, item.mDescription.IsEmpty() ? item.mFullPath : item.mDescription),
 	in(std::make_unique<PImpl>())
 {
 	in->mItem = item;

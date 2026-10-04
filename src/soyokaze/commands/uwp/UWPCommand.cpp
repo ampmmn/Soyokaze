@@ -27,7 +27,7 @@ struct UWPCommand::PImpl
 IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(UWPCommand)
 
 UWPCommand::UWPCommand(ItemPtr& item) : 
-	AdhocCommandBase(item->mName, item->mName),
+	AdhocCommandBase(item->mName, item->mIsUWP == false && Path::FileExists(item->mAppID) ? item->mAppID : item->mName),
 	in(std::make_unique<PImpl>())
 {
 	in->mItem = item;

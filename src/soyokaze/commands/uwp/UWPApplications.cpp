@@ -153,7 +153,7 @@ void UWPApplications::PImpl::EnumApplications(std::vector<ItemPtr>& items)
 		bool isUWP = false;
 		CString appId;
 		if (value.vt != VT_EMPTY) {
-			// 非UWPアプリ
+			// 非UWPアプリ(大抵の場合、パスが入っている)
 			appId = value.bstrVal;
 		}
 		else {
