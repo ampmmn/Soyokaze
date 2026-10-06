@@ -252,6 +252,9 @@
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\FilerParameterTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\transfer\CommandJSONEntryTest.cpp">
       <Filter>soyokaze\commands\transfer</Filter>
     </ClCompile>

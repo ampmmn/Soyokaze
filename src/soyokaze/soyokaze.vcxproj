@@ -975,6 +975,7 @@
     <ClInclude Include="utility\LocalPathResolver.h" />
     <ClInclude Include="utility\ManualEvent.h" />
     <ClInclude Include="utility\MessageExchangeWindow.h" />
+    <ClInclude Include="utility\FilerParameter.h" />
     <ClInclude Include="utility\Path.h" />
     <ClInclude Include="utility\Pipe.h" />
     <ClInclude Include="utility\ProcessPath.h" />
@@ -1556,6 +1557,7 @@
     <ClCompile Include="utility\LocalPathResolver.cpp" />
     <ClCompile Include="utility\ManualEvent.cpp" />
     <ClCompile Include="utility\MessageExchangeWindow.cpp" />
+    <ClCompile Include="utility\FilerParameter.cpp" />
     <ClCompile Include="utility\Path.cpp" />
     <ClCompile Include="utility\Pipe.cpp" />
     <ClCompile Include="utility\ProcessPath.cpp" />

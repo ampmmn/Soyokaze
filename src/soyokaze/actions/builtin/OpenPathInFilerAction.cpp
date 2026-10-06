@@ -4,6 +4,7 @@
 #include "commands/common/SubProcess.h"
 #include "commands/common/ExpandFunctions.h"
 #include "actions/core/ActionParameter.h"
+#include "utility/FilerParameter.h"
 #include "utility/Path.h"
 
 namespace launcherapp { namespace actions { namespace builtin {
@@ -91,7 +92,7 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 	if (pref->IsUseFiler()) {
 		// 外部ファイラを使う場合はファイラ経由でパスを表示する形に差し替える
 		param = pref->GetFilerParam();
-		param.Replace(_T("$target"), targetPath);
+		launcherapp::utility::ExpandFilerParameter(param, targetPath);
 
 		auto filerPath = pref->GetFilerPath();
 		ExpandArguments(filerPath, args);

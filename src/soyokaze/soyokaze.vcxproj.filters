@@ -1212,6 +1212,9 @@
     <ClInclude Include="utility\Path.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="utility\FilerParameter.h">
+      <Filter>utility</Filter>
+    </ClInclude>
     <ClInclude Include="commands\builtin\CopyClipboardCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
@@ -2148,6 +2151,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="utility\ShortcutFile.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\FilerParameter.cpp">
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="control/FolderDialog.cpp">

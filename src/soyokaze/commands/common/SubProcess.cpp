@@ -7,6 +7,7 @@
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
 #include "actions/core/ActionParameter.h"
 #include "utility/LastErrorString.h"
+#include "utility/FilerParameter.h"
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
 #include "setting/AppPreference.h"
@@ -473,7 +474,7 @@ bool SubProcess::Run(
 		if (pref->IsUseFiler()) {
 			// ファイラ経由でパスを表示する形に差し替える
 			paramStr = pref->GetFilerParam();
-			paramStr.Replace(_T("$target"), path);
+			launcherapp::utility::ExpandFilerParameter(paramStr, path);
 
 			auto filerPath = pref->GetFilerPath();
 			ExpandArguments(filerPath, args);
