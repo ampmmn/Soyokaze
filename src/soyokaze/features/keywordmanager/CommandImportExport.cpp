@@ -7,8 +7,6 @@
 #include "commands/core/UserCommandProvider.h"
 #include "core/IFIDDefine.h"
 #include "features/keywordmanager/CommandImportNameResolver.h"
-#include "hotkey/CommandHotKeyManager.h"
-#include "setting/AppPreference.h"
 #include "utility/RefPtr.h"
 #include <algorithm>
 
@@ -99,6 +97,13 @@ const std::vector<CString>& CommandImportExport::GetSkippedEntryNames() const
 	return in->mSkippedEntryNames;
 }
 
+/**
+  選択されたコマンドを一括で登録する
+  上書き指定時は既存コマンドを解除対象に含め、登録と解除をまとめて RegisterCommands に渡す
+  @param[in] selectedIndices     取り込み対象の候補インデックス
+  @param[in] isOverwriteSelected 同名コマンドを上書きするか
+  @return 取り込んだコマンド名の一覧
+*/
 std::vector<CString> CommandImportExport::ImportCommands(const std::vector<int>& selectedIndices, bool isOverwriteSelected)
 {
 	std::vector<CString> importedNames;
@@ -107,7 +112,12 @@ std::vector<CString> CommandImportExport::ImportCommands(const std::vector<int>&
 	}
 
 	auto cmdRepoPtr = CommandRepository::GetInstance();
-	auto hotKeyManager = CommandHotKeyManager::GetInstance();
+	std::vector<Command*> commandsToRegister;
+	std::vector<Command*> commandsToUnregister;
+	std::vector<RefPtr<Command>> commandRefs;
+	std::vector<RefPtr<Command>> existingCommandRefs;
+
+	// 選択された候補を順に確認し、登録対象と解除対象に振り分ける
 	for (auto candidateIndex : selectedIndices) {
 		if (candidateIndex < 0 || candidateIndex >= (int)in->mCandidates.size()) {
 			continue;
@@ -116,46 +126,30 @@ std::vector<CString> CommandImportExport::ImportCommands(const std::vector<int>&
 		auto& candidate = in->mCandidates[candidateIndex];
 		RefPtr<Command> command(candidate.mCommand);
 		CString commandName = command->GetName();
+
+		// 同一インポート内で同名の候補が既にあるかを確認する
+		auto stagedCommandIt = std::find_if(commandsToRegister.begin(), commandsToRegister.end(), [&](Command* stagedCommand) {
+			return stagedCommand->GetName().CompareNoCase(commandName) == 0;
+		});
+		bool hasStagedCommand = stagedCommandIt != commandsToRegister.end();
 		RefPtr<Command> existingCommand(cmdRepoPtr->QueryAsWholeMatch(commandName));
 
-		if (existingCommand.get() != nullptr && isOverwriteSelected) {
-			CString existingName = existingCommand->GetName();
-			CommandHotKeyMappings previousMappings;
-			hotKeyManager->GetMappings(previousMappings);
-
-			CommandHotKeyAttribute previousHotKey;
-			bool hasPreviousHotKey = false;
-			for (int index = 0; index < previousMappings.GetItemCount(); ++index) {
-				if (previousMappings.GetName(index) != existingName) {
-					continue;
-				}
-				previousMappings.GetHotKeyAttr(index, previousHotKey);
-				hasPreviousHotKey = true;
-				break;
-			}
-
-			cmdRepoPtr->UnregisterCommand(existingCommand.get());
-			command->AddRef();
-			cmdRepoPtr->RegisterCommand(command.get());
-
-			CommandHotKeyMappings currentMappings;
-			hotKeyManager->GetMappings(currentMappings);
-			bool hasChanged = currentMappings.RemoveItem(commandName);
-			if (hasPreviousHotKey) {
-				currentMappings.AddItem(commandName, previousHotKey);
-				hasChanged = true;
-			}
-			if (hasChanged) {
-				auto preference = AppPreference::Get();
-				preference->SetCommandKeyMappings(currentMappings);
-				preference->Save();
-			}
+		// 既存コマンドを上書きする場合は解除対象に加える
+		if (existingCommand.get() != nullptr && isOverwriteSelected && hasStagedCommand == false) {
+			commandsToUnregister.push_back(existingCommand.get());
+			existingCommandRefs.push_back(existingCommand);
 		}
-		else {
-			if (existingCommand.get() != nullptr) {
+		else if (isOverwriteSelected == false) {
+			if (existingCommand.get() != nullptr || hasStagedCommand) {
+				// 同名を避けるため、一意な名前で読み直す
 				CString uniqueName = CommandImportNameResolver::GetUniqueName(commandName, [&](const CString& name) {
 					RefPtr<Command> existing(cmdRepoPtr->QueryAsWholeMatch(name));
-					return existing.get() != nullptr;
+					if (existing.get() != nullptr) {
+						return true;
+					}
+					return std::any_of(commandsToRegister.begin(), commandsToRegister.end(), [&](Command* stagedCommand) {
+						return stagedCommand->GetName().CompareNoCase(name) == 0;
+					});
 				});
 
 				auto entry = static_cast<CommandFileEntry*>(in->mCommandFile->GetEntry(candidate.mEntryIndex));
@@ -168,9 +162,16 @@ std::vector<CString> CommandImportExport::ImportCommands(const std::vector<int>&
 				command.swap(renamedCommand);
 				commandName = command->GetName();
 			}
+		}
 
-			command->AddRef();
-			cmdRepoPtr->RegisterCommand(command.get());
+		// 同一インポート内で同名の候補が既にあれば、後から読んだもので置き換える
+		if (hasStagedCommand && isOverwriteSelected) {
+			*stagedCommandIt = command.get();
+			commandRefs[stagedCommandIt - commandsToRegister.begin()] = command;
+		}
+		else {
+			commandRefs.push_back(command);
+			commandsToRegister.push_back(command.get());
 		}
 
 		if (std::none_of(importedNames.begin(), importedNames.end(), [&](const CString& name) {
@@ -179,6 +180,12 @@ std::vector<CString> CommandImportExport::ImportCommands(const std::vector<int>&
 			importedNames.push_back(commandName);
 		}
 	}
+
+	// 登録する分の参照カウントを増やし、登録と解除をまとめて反映する
+	for (auto command : commandsToRegister) {
+		command->AddRef();
+	}
+	cmdRepoPtr->RegisterCommands(commandsToRegister, commandsToUnregister);
 
 	return importedNames;
 }

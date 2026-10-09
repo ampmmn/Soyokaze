@@ -2,6 +2,7 @@
 #include "hotkey/CommandHotKeyMappings.h"
 #include "hotkey/CommandHotKeyAttribute.h"
 #include <vector>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,7 +77,7 @@ bool CommandHotKeyMappings::RemoveItem(const CString& name)
 	return false;
 }
 
-// $B%3%^%s%IL>$+$i3d$jEv$F%-!<$NI=<(MQJ8;zNs$r<hF@$9$k(B
+// コマンド名から割り当てキーの表示用文字列を取得する
 CString CommandHotKeyMappings::FindKeyMappingString(const CString& name) const
 {
 	for(const auto& item : in->mItems) {
@@ -91,6 +92,39 @@ CString CommandHotKeyMappings::FindKeyMappingString(const CString& name) const
 void CommandHotKeyMappings::Swap(CommandHotKeyMappings& rhs)
 {
 	in->mItems.swap(rhs.in->mItems);
+}
+
+/**
+  名前と属性の組み合わせが同一かどうかを比較する
+  項目の並び順は無視し、同じ名前の項目が同じホットキー属性を持つかで判定する
+  @param[in] rhs 比較対象
+  @return true:同一  false:同一ではない
+*/
+bool CommandHotKeyMappings::operator == (const CommandHotKeyMappings& rhs) const
+{
+	// 件数が異なる場合は同一ではない
+	if (in->mItems.size() != rhs.in->mItems.size()) {
+		return false;
+	}
+
+	// 自身の各項目について、同じ名前の項目が相手にあり、属性も一致するかを確認する
+	for (const auto& item : in->mItems) {
+		auto itFind = std::find_if(rhs.in->mItems.begin(), rhs.in->mItems.end(), [&](const PImpl::ITEM& rhsItem) {
+			return rhsItem.mName == item.mName;
+		});
+		if (itFind == rhs.in->mItems.end()) {
+			return false;
+		}
+		if (itFind->mAttr != item.mAttr) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool CommandHotKeyMappings::operator != (const CommandHotKeyMappings& rhs) const
+{
+	return (*this == rhs) == false;
 }
 
 

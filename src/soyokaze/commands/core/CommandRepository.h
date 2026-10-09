@@ -28,6 +28,13 @@ public:
 
 	// コマンドを登録
 	int RegisterCommand(Command* command);
+	/**
+	  複数のコマンドを登録し、設定保存と通知をまとめて行う
+	  @param[in] commands 登録するコマンド
+	  @param[in] commandsToUnregister 登録前に解除するコマンド
+	  @return 0:成功
+	*/
+	int RegisterCommands(const std::vector<Command*>& commands, const std::vector<Command*>& commandsToUnregister = {});
 	// コマンドの登録を解除
 	int UnregisterCommand(Command* command);
 	// 名前変更による登録しなおし

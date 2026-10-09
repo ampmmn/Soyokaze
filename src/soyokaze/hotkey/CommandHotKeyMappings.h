@@ -22,6 +22,10 @@ public:
 
 	void Swap(CommandHotKeyMappings& rhs);
 
+	// 名前と属性の組み合わせが同一かどうかを比較する(項目の並び順は無視する)
+	bool operator == (const CommandHotKeyMappings& rhs) const;
+	bool operator != (const CommandHotKeyMappings& rhs) const;
+
 
 private:
 	struct PImpl;

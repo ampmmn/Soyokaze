@@ -28,8 +28,10 @@
 #include "spdlog/stopwatch.h"
 #include <vector>
 #include <algorithm>
+#include <set>
 #include <mutex>
 #include <thread>
+#include <utility>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -385,16 +387,131 @@ CommandRepository::~CommandRepository()
 // このコマンドは参照カウントを+1しない
 int CommandRepository::RegisterCommand(Command* command)
 {
-	CSingleLock sl(&in->mCS, TRUE);
-	in->mCommands.Register(command);
+	return RegisterCommands({command});
+}
 
-	// コマンドが登録されたことをリスナーに通知
-	for (auto& listener : in->mListeners) {
-		listener->OnNewCommand(command);
+/**
+  複数のコマンドを登録し、設定保存と通知をまとめて行う
+  @param[in] commands 登録するコマンド
+  @param[in] commandsToUnregister 登録前に解除するコマンド
+  @return 0:成功
+*/
+int CommandRepository::RegisterCommands(
+	const std::vector<Command*>& commands,
+	const std::vector<Command*>& commandsToUnregister
+)
+{
+	CSingleLock sl(&in->mCS, TRUE);
+
+	// 解除と登録が同名の場合は、従来のインポート処理と同様にホットキー設定を引き継ぐ
+	std::set<CString> replacementNames;
+	std::set<CString> unregisterNames;
+	for (auto command : commandsToUnregister) {
+		unregisterNames.insert(command->GetName());
+	}
+	for (auto command : commands) {
+		auto name = command->GetName();
+		if (unregisterNames.find(name) != unregisterNames.end()) {
+			replacementNames.insert(name);
+		}
 	}
 
-	// ホットキーの登録
-	RegisterHotKey(command);
+	CommandHotKeyMappings hotKeyMap;
+	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
+	hotKeyManager->GetMappings(hotKeyMap);
+
+	// 既存のホットキー設定に登録されているコマンド名を集める
+	std::set<CString> existingHotKeyNames;
+	for (int index = 0; index < hotKeyMap.GetItemCount(); ++index) {
+		existingHotKeyNames.insert(hotKeyMap.GetName(index));
+	}
+
+	// ホットキーのロード前でも保存が必要かどうか
+	// (既存のホットキー設定を解除・置き換えする場合、または有効なホットキーで置き換える場合)
+	bool shouldForceSave = false;
+	for (auto name : unregisterNames) {
+		if (existingHotKeyNames.find(name) != existingHotKeyNames.end()) {
+			shouldForceSave = true;
+			break;
+		}
+	}
+
+	std::vector<std::pair<CString, CommandHotKeyAttribute>> hotKeyRegistrations;
+	std::set<CString> hotKeyNamesToUpdate;
+	for (auto command : commands) {
+		CommandHotKeyAttribute hotKeyAttr;
+		if (command->GetHotKeyAttribute(hotKeyAttr) == false) {
+			continue;
+		}
+
+		auto name = command->GetName();
+		hotKeyRegistrations.emplace_back(name, hotKeyAttr);
+		if (replacementNames.find(name) == replacementNames.end()) {
+			hotKeyNamesToUpdate.insert(name);
+		}
+		else if (hotKeyAttr.IsValid() || hotKeyAttr.IsValidSandS()) {
+			shouldForceSave = true;
+		}
+	}
+
+	for (auto command : commandsToUnregister) {
+		// コマンドが削除されようとしていることをリスナーに通知
+		for (auto& listener : in->mListeners) {
+			listener->OnDeleteCommand(command);
+		}
+
+		CommandRanking::GetInstance()->Delete(command);
+		in->mCommands.Unregister(command);
+	}
+
+	for (auto command : commands) {
+		in->mCommands.Register(command);
+
+		// コマンドが登録されたことをリスナーに通知
+		for (auto& listener : in->mListeners) {
+			listener->OnNewCommand(command);
+		}
+	}
+
+	// 既存のホットキー設定から、解除されて置き換えられないものと更新対象を除いた一覧を作る
+	CommandHotKeyMappings updatedHotKeyMap;
+	for (int index = 0; index < hotKeyMap.GetItemCount(); ++index) {
+		auto name = hotKeyMap.GetName(index);
+		bool isUnregistered = unregisterNames.find(name) != unregisterNames.end();
+		bool isReplacement = replacementNames.find(name) != replacementNames.end();
+		if (isUnregistered && isReplacement == false) {
+			continue;
+		}
+		if (hotKeyNamesToUpdate.find(name) != hotKeyNamesToUpdate.end()) {
+			continue;
+		}
+
+		CommandHotKeyAttribute hotKeyAttr;
+		hotKeyMap.GetHotKeyAttr(index, hotKeyAttr);
+		updatedHotKeyMap.AddItem(name, hotKeyAttr);
+	}
+	// 登録されるコマンドの有効なホットキーを追加する
+	for (const auto& registration : hotKeyRegistrations) {
+		if (replacementNames.find(registration.first) != replacementNames.end()) {
+			continue;
+		}
+		const auto& hotKeyAttr = registration.second;
+		if (hotKeyAttr.IsValid() || hotKeyAttr.IsValidSandS()) {
+			updatedHotKeyMap.AddItem(registration.first, hotKeyAttr);
+		}
+	}
+
+	auto pref = AppPreference::Get();
+	pref->SetCommandKeyMappings(updatedHotKeyMap);
+
+	// ホットキー設定に変化があった場合のみ保存する
+	if (hotKeyMap == updatedHotKeyMap) {
+		return 0;
+	}
+	if (in->mIsCommandLoaded || shouldForceSave) {
+		// 保存通知を通じてパターンとホットキーを一度だけ再読み込みする
+		pref->Save();
+	}
 
 	return 0;
 }
@@ -438,33 +555,7 @@ void CommandRepository::RegisterHotKey(Command* command)
 // コマンドの登録を解除
 int CommandRepository::UnregisterCommand(Command* command)
 {
-	CSingleLock sl(&in->mCS, TRUE);
-
-	// コマンドが削除されようとしていることをリスナーに通知
-	for (auto& listener : in->mListeners) {
-		listener->OnDeleteCommand(command);
-	}
-
-	auto name = command->GetName();
-
-	// ホットキーの登録解除
-	auto hotKeyManager = launcherapp::core::CommandHotKeyManager::GetInstance();
-
-	CommandHotKeyMappings hotKeyMap;
-	hotKeyManager->GetMappings(hotKeyMap);
-	bool isRemoved = hotKeyMap.RemoveItem(name);
-
-	if (isRemoved) {
-		auto pref = AppPreference::Get();
-		pref->SetCommandKeyMappings(hotKeyMap);
-
-		// Note: 保存時の通知を通じて、CommandRepository::ReloadPatternObject内でホットキーのリロードを行う
-		pref->Save();
-	}
-
-	CommandRanking::GetInstance()->Delete(command);
-	in->mCommands.Unregister(command);
-	return 0;
+	return RegisterCommands({}, {command});
 }
 
 // 名前変更による登録しなおし

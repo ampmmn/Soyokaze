@@ -52,6 +52,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandMapTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandRepositoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\CommandImportNameResolverTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\ImportCommandsDialogTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp" />
@@ -75,6 +76,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\watchpath\PathWatcherItemTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\externaltool\webbrowser\BrowserProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyAttributeTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyMappingsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyAttributeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\hotkey\HotKeyControlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\icon\AppIconTest.cpp" />

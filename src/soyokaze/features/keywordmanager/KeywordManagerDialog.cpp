@@ -34,16 +34,13 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 	bool IsDeletable();
 	bool IsDeletable(Command* command);
 	bool IsUserCommand(Command* command);
+	void ScheduleContentsReset(const std::vector<CString>& commandNames = {});
 
 // CommandRepositoryListenerIF
 	void OnBeforeLoad() override {}
 	void OnNewCommand(Command*) override {}
 	void OnDeleteCommand(Command*) override {}
-	void OnPatternReloaded()
-	{
-		// ウインドウメッセージ経由で設定をリロードする
-		::PostMessage(mHwnd, WM_APP+2, 0, 0);
-	}
+	void OnPatternReloaded() override;
 
 
 	CString mName;
@@ -60,10 +57,44 @@ struct KeywordManagerDialog::PImpl : public CommandRepositoryListenerIF
 
 	HWND mHwnd{nullptr};
 	HACCEL mAccel{nullptr};
+	bool mIsContentsResetPending{false};
+	std::vector<CString> mPendingCommandNames;
 
 	// フィルター更新タイマーID
 	UINT_PTR mUpdateTimerId{0};
 };
+
+/**
+  キーワードマネージャーの一覧更新を予約する
+  未処理の更新がある間は WM_APP+2 を追加で投稿せず、選択対象のコマンド名だけを最新の要求で置き換える
+  @param[in] commandNames 更新後に選択するコマンド名(空の場合は選択対象を変更しない)
+*/
+void KeywordManagerDialog::PImpl::ScheduleContentsReset(const std::vector<CString>& commandNames)
+{
+	// 選択対象は最新の要求で置き換える
+	if (commandNames.empty() == false) {
+		mPendingCommandNames = commandNames;
+	}
+
+	// 未処理の更新があれば、新たに投稿せず次の処理に任せる
+	if (mIsContentsResetPending) {
+		return;
+	}
+
+	// 投稿に成功したときだけ予約済みとする
+	if (::PostMessage(mHwnd, WM_APP+2, 0, 0)) {
+		mIsContentsResetPending = true;
+	}
+}
+
+/**
+  リポジトリのパターン再読み込みを受け取り、一覧更新を予約する
+*/
+void KeywordManagerDialog::PImpl::OnPatternReloaded()
+{
+	// ウインドウメッセージ経由で一覧更新を予約する
+	ScheduleContentsReset();
+}
 
 bool KeywordManagerDialog::PImpl::IsEditable()
 {
@@ -439,27 +470,13 @@ void KeywordManagerDialog::OnButtonImport()
 		return;
 	}
 
-	auto cmdRepoPtr = CommandRepository::GetInstance();
 	auto importedNames = commandImportExport.ImportCommands(importDialog.GetSelectedIndices(), importDialog.IsOverwriteSelected());
 
 	if (importedNames.empty()) {
 		return;
 	}
 
-	ResetContents();
-	std::vector<Command*> importedCommands;
-	std::vector<RefPtr<Command>> importedCommandRefs;
-	for (auto& name : importedNames) {
-		RefPtr<Command> command(cmdRepoPtr->QueryAsWholeMatch(name));
-		if (command.get() == nullptr) {
-			continue;
-		}
-		importedCommands.push_back(command.get());
-		importedCommandRefs.push_back(std::move(command));
-	}
-	in->mListCtrl.SelectCommands(importedCommands, true);
-	UpdateStatus();
-	UpdateData(FALSE);
+	in->ScheduleContentsReset(importedNames);
 }
 
 void KeywordManagerDialog::OnButtonExport()
@@ -636,12 +653,45 @@ LRESULT KeywordManagerDialog::OnUserMessageKeywrodEditKeyDown(WPARAM wParam, LPA
 	return 0;
 }
 
+/**
+  予約された一覧更新を処理する(WM_APP+2)
+  予約フラグと保留中の選択対象を解除して一覧を再構築し、インポートしたコマンドがあれば選択する
+  @param[in] wParam 未使用
+  @param[in] lParam 未使用
+  @return 常に 0
+*/
 LRESULT KeywordManagerDialog::OnUserMessageResetContent(WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
+	// 次の更新を受け付けられるように予約状態を解除する
+	in->mIsContentsResetPending = false;
+
+	// 保留中の選択対象を取り出し、以降の要求と分けて扱う
+	auto pendingCommandNames = std::move(in->mPendingCommandNames);
+	in->mPendingCommandNames.clear();
+
+	// リポジトリから一覧を取り直す
 	ResetContents();
+	if (pendingCommandNames.empty() == false) {
+		std::vector<Command*> importedCommands;
+		std::vector<RefPtr<Command>> importedCommandRefs;
+		auto cmdRepoPtr = CommandRepository::GetInstance();
+
+		// インポートしたコマンドを検索し、選択状態にする
+		for (auto& name : pendingCommandNames) {
+			RefPtr<Command> command(cmdRepoPtr->QueryAsWholeMatch(name));
+			if (command.get() == nullptr) {
+				continue;
+			}
+			importedCommands.push_back(command.get());
+			importedCommandRefs.push_back(std::move(command));
+		}
+		in->mListCtrl.SelectCommands(importedCommands, true);
+		UpdateStatus();
+		UpdateData(FALSE);
+	}
 	spdlog::info("KeywordManager content updated.");
 
 	return 0;
