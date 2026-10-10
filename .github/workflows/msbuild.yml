@@ -35,6 +35,31 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+        fetch-depth: 1
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Appium
+      run: npm install -g appium
+
+    - name: Install Windows Driver
+      run: appium driver install windows
+
+    - name: Install WinAppDriver
+      run: choco install winappdriver -y
+
+    - name: Start WinAppDriver
+      shell: powershell
+      run: |
+        Start-Process `
+          "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+
+    - name: Start Appium
+      shell: powershell
+      run: |
+        Start-Process appium
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
