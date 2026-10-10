@@ -243,6 +243,9 @@
     <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\WinHttpTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp">
       <Filter>python_module\key</Filter>
     </ClCompile>

@@ -32,9 +32,24 @@ public:
 
 struct WinHttp::PImpl
 {
+	// 内部で扱うレスポンス情報
+	struct RawResponse {
+		DWORD statusCode{0};
+		bool isHTML{false};
+		CString contentType;
+		std::vector<BYTE> body;
+	};
+
 	bool IsContentHTML(const std::vector<WCHAR>& content);
 	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML);
 	bool ConfigureSystemProxy(HINTERNET session, LPCWSTR url);
+
+	// 送受信の共通処理。requestBodyがnullptrのときはLoadContent用、それ以外はRequest用の動作となる
+	bool Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw);
+	// 送信ヘッダ(Name: Value\r\n の連結)を組み立てる。ヘッダが無い場合は空文字列を返す
+	std::wstring BuildAdditionalHeaders();
+	// 追加ヘッダを設定する。同名のヘッダは上書きし、valueが空の場合は削除する
+	void SetHeader(LPCWSTR name, LPCWSTR value);
 
 	DWORD GetProxyAccessType() {
 		if (mProxyType == DIRECTPROXY) { return WINHTTP_ACCESS_TYPE_NAMED_PROXY; }
@@ -57,6 +72,8 @@ struct WinHttp::PImpl
 	CString mServerUser;
 	WipingString mServerPassword;
 	CStringW mMethod{L"GET"};
+	// Request()で送信する追加ヘッダ(名前, 値)の一覧
+	std::vector<std::pair<CStringW, CStringW>> mHeaders;
 };
 
 bool WinHttp::PImpl::IsContentHTML(const std::vector<WCHAR>& content)
@@ -191,8 +208,33 @@ static DWORD ChooseAuthScheme(DWORD supportedSchemes)
 	}
 }
 
-bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML)
+/**
+  Content-Typeヘッダの値を取得する
+  @return Content-Typeの値。ヘッダが無い場合は空文字列
+*/
+static CString QueryContentType(HINTERNET req)
 {
+	// 必要なバッファサイズを先に取得する(サイズはバイト単位)
+	DWORD size = 0;
+	WinHttpQueryHeaders(req, WINHTTP_QUERY_CONTENT_TYPE, WINHTTP_HEADER_NAME_BY_INDEX, WINHTTP_NO_OUTPUT_BUFFER, &size, WINHTTP_NO_HEADER_INDEX);
+	if (size == 0) {
+		return CString();
+	}
+
+	// 終端のNUL分を含めて確保する
+	std::vector<WCHAR> buf(size / sizeof(WCHAR) + 1);
+	DWORD bytes = size;
+	if (WinHttpQueryHeaders(req, WINHTTP_QUERY_CONTENT_TYPE, WINHTTP_HEADER_NAME_BY_INDEX, buf.data(), &bytes, WINHTTP_NO_HEADER_INDEX) == FALSE) {
+		return CString();
+	}
+	return CString(buf.data());
+}
+
+bool WinHttp::PImpl::Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw)
+{
+	// requestBodyが指定されている場合はRequest()用の動作にする
+	const bool isGeneric = (requestBody != nullptr);
+
 	spdlog::stopwatch sw;
 
 	WinHttpHandle session(WinHttpOpen(L"WinHttpOpen/1.0", GetProxyAccessType(), GetProxyName(), WINHTTP_NO_PROXY_BYPASS, 0));
@@ -250,6 +292,27 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 
 	DWORD stsCode = 0;
 
+	// Request()用の追加ヘッダとボディを準備する。LoadContent系は従来どおり何も付けない
+	std::wstring headerText;
+	if (isGeneric) {
+		headerText = BuildAdditionalHeaders();
+	}
+	LPCWSTR headerPtr = WINHTTP_NO_ADDITIONAL_HEADERS;
+	DWORD headerLen = 0;
+	if (headerText.empty() == false) {
+		// 長さに-1を指定してNUL終端まで送る
+		headerPtr = headerText.c_str();
+		headerLen = (DWORD)-1;
+	}
+
+	// ボディは保持したバッファから送るため、リトライ時も同じデータを送信できる
+	LPVOID dataPtr = WINHTTP_NO_REQUEST_DATA;
+	DWORD dataLen = 0;
+	if (isGeneric && requestBody->empty() == false) {
+		dataPtr = const_cast<char*>(requestBody->data());
+		dataLen = (DWORD)requestBody->size();
+	}
+
 	bool isIncomplete = true;
 	while(isIncomplete) {
 
@@ -261,7 +324,12 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 		}
 
 		// リクエストを出す
-		isOK = WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, WINHTTP_IGNORE_REQUEST_TOTAL_LENGTH, 0);
+		if (isGeneric) {
+			isOK = WinHttpSendRequest(req, headerPtr, headerLen, dataPtr, dataLen, dataLen, 0);
+		}
+		else {
+			isOK = WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, WINHTTP_IGNORE_REQUEST_TOTAL_LENGTH, 0);
+		}
 		if (isOK == FALSE) {
 			spdlog::debug(_T("Failed to WinHttpSendRequest"));
 			return false;
@@ -291,6 +359,10 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 		if (stsCode == 401) {
 
 			if (hasRetriedHttpAuth) {
+				// Request()の場合は401もレスポンスとして返す
+				if (isGeneric) {
+					break;
+				}
 				// リトライ済の場合はあきらめる
 				spdlog::error("401 : authentication failed.");
 				return false;
@@ -338,7 +410,8 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 			continue;
 		}
 
-		if (stsCode != HTTP_STATUS_OK) {
+		// Request()の場合は200以外もレスポンスとして扱う
+		if (stsCode != HTTP_STATUS_OK && isGeneric == false) {
 			spdlog::debug(_T("status is not HTTP_STATUS_OK"));
 			return false;
 		}
@@ -358,16 +431,17 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 		return false;
 	}
 
+	raw.statusCode = stsCode;
+
 	// ヘッダをパースしてコンテンツ種別を得る
-	if (IsContentHTML(hdrData) == false) {
-		// HTMLでなければこのツールでは取り扱わないのでコンテンツを取得せずに抜ける
-		isHTML = false;
-		if (requireHTML) {
-			return false;
-		}
+	raw.isHTML = IsContentHTML(hdrData);
+	if (isGeneric) {
+		// Request()の場合はContent-Typeの値をそのまま返す
+		raw.contentType = QueryContentType(req);
 	}
-	else {
-		isHTML = true;
+	else if (raw.isHTML == false && requireHTML) {
+		// HTMLでなければこのツールでは取り扱わないのでコンテンツを取得せずに抜ける
+		return false;
 	}
 
 	spdlog::debug("queryheaders {:.6f} s.", sw);
@@ -394,12 +468,60 @@ bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content,
 		offset += availableData;
 	}
 
-	content.swap(buff);
+	raw.body.swap(buff);
 
 	spdlog::debug(_T("URL : {}"), (LPCTSTR)url);
 	spdlog::debug("download {:.6f} s.", sw);
 
 	return true;
+}
+
+bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML)
+{
+	// LoadContent系は従来どおりボディを送らず、ヘッダも付けない
+	RawResponse raw;
+	if (Execute(url, nullptr, requireHTML, raw) == false) {
+		return false;
+	}
+
+	content.swap(raw.body);
+	isHTML = raw.isHTML;
+	return true;
+}
+
+std::wstring WinHttp::PImpl::BuildAdditionalHeaders()
+{
+	// 「Name: Value\r\n」の形式で連結する
+	std::wstring text;
+	for (const auto& header : mHeaders) {
+		text += (LPCWSTR)header.first;
+		text += L": ";
+		text += (LPCWSTR)header.second;
+		text += L"\r\n";
+	}
+	return text;
+}
+
+void WinHttp::PImpl::SetHeader(LPCWSTR name, LPCWSTR value)
+{
+	// 同名のヘッダを探す(大文字小文字は区別しない)
+	for (auto it = mHeaders.begin(); it != mHeaders.end(); ++it) {
+		if (it->first.CompareNoCase(name) == 0) {
+			if (value == nullptr || value[0] == L'\0') {
+				// 値が空の場合は削除する
+				mHeaders.erase(it);
+			}
+			else {
+				it->second = value;
+			}
+			return;
+		}
+	}
+
+	if (value == nullptr || value[0] == L'\0') {
+		return;
+	}
+	mHeaders.emplace_back(CStringW(name), CStringW(value));
 }
 
 bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
@@ -411,6 +533,21 @@ bool WinHttp::LoadBinaryContent(const CString& url, std::vector<BYTE>& content)
 {
 	bool isHTML = false;
 	return in->LoadContent(url, content, isHTML, false);
+}
+
+bool WinHttp::Request(const CString& url, const std::string& requestBody, HttpResponse& response)
+{
+	PImpl::RawResponse raw;
+	if (in->Execute(url, &requestBody, false, raw) == false) {
+		// 接続失敗などの通信レベルの失敗のみfalseを返す
+		return false;
+	}
+
+	// 非200を含め、レスポンスを受信できた場合は呼び出し側でステータスコードを判定する
+	response.statusCode = (int)raw.statusCode;
+	response.contentType = raw.contentType;
+	response.body.assign(reinterpret_cast<const char*>(raw.body.data()), raw.body.size());
+	return true;
 }
 
 void WinHttp::SetProxyType(int type)
@@ -433,6 +570,12 @@ void WinHttp::SetServerCredential(const CString& user, const CString& password)
 void WinHttp::SetMethod(LPCWSTR method)
 {
 	in->mMethod = method;
+}
+
+void WinHttp::SetContentType(LPCWSTR contentType)
+{
+	// Content-Typeは追加ヘッダとして保持する
+	in->SetHeader(L"Content-Type", contentType);
 }
 
 void WinHttp::SetTimeout(int timeoutMilliseconds)
