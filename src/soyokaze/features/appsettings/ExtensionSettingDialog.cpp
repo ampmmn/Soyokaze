@@ -49,6 +49,10 @@ public:
 	BOOL mIsEnableEnvironment{FALSE};
 	// 環境変数のプレフィックス
 	CString mPrefixEnvironment;
+	// 日時候補機能
+	BOOL mIsEnableDateTime{FALSE};
+	// 日時候補機能のプレフィックス
+	CString mPrefixDateTime;
 
 	Settings* mSettingsPtr{nullptr};
 };
@@ -70,6 +74,8 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:IsEnableMSSettings"), (bool)mIsEnableMSSettings);
 	settingsPtr->Set(_T("Environment:IsEnable"), (bool)mIsEnableEnvironment);
 	settingsPtr->Set(_T("Environment:Prefix"), mPrefixEnvironment);
+	settingsPtr->Set(_T("Soyokaze:IsEnableDateTime"), (bool)mIsEnableDateTime);
+	settingsPtr->Set(_T("Soyokaze:PrefixDateTime"), mPrefixDateTime);
 
 	__super::OnOK();
 }
@@ -88,12 +94,15 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MSSETTINGS, mIsEnableMSSettings);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_ENVIRONMENT, mIsEnableEnvironment);
 	DDX_Text(pDX, IDC_EDIT_PREFIX_ENVIRONMENT, mPrefixEnvironment);
+	DDX_Check(pDX, IDC_CHECK_ENABLE_DATETIME, mIsEnableDateTime);
+	DDX_Text(pDX, IDC_EDIT_PREFIX_DATETIME, mPrefixDateTime);
 }
 
 BEGIN_MESSAGE_MAP(ExtensionSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_BROWSE, OnBrowsePyhonDLLPath)
 	ON_COMMAND(IDC_CHECK_ENABLECALCULATOR, OnUpdateStatus)
 	ON_COMMAND(IDC_CHECK_ENABLE_ENVIRONMENT, OnUpdateStatus)
+	ON_COMMAND(IDC_CHECK_ENABLE_DATETIME, OnUpdateStatus)
 END_MESSAGE_MAP()
 
 
@@ -118,6 +127,11 @@ bool ExtensionSettingDialog::OnKillActive()
 	}
 	if (mPrefixEnvironment.IsEmpty()) {
 		AfxMessageBox(_T("環境変数のプレフィックスを入力してください"));
+		return false;
+	}
+	// 日時候補が有効な場合のみプレフィックスの入力を必須にする
+	if (mIsEnableDateTime && mPrefixDateTime.IsEmpty()) {
+		AfxMessageBox(_T("日時のプレフィックスを入力してください"));
 		return false;
 	}
 
@@ -147,11 +161,15 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mIsEnableMSSettings = settingsPtr->Get(_T("Soyokaze:IsEnableMSSettings"), true);
 	mIsEnableEnvironment = settingsPtr->Get(_T("Environment:IsEnable"), true);
 	mPrefixEnvironment = settingsPtr->Get(_T("Environment:Prefix"), _T("env"));
+
+	mIsEnableDateTime = settingsPtr->Get(_T("Soyokaze:IsEnableDateTime"), true);
+	mPrefixDateTime = settingsPtr->Get(_T("Soyokaze:PrefixDateTime"), _T("date"));
 }
 
 bool ExtensionSettingDialog::UpdateStatus()
 {
 	GetDlgItem(IDC_EDIT_PREFIX_ENVIRONMENT)->EnableWindow(mIsEnableEnvironment);
+	GetDlgItem(IDC_EDIT_PREFIX_DATETIME)->EnableWindow(mIsEnableDateTime);
 
 	return true;
 }

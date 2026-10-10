@@ -106,8 +106,8 @@
     <Filter Include="commands\snippet">
       <UniqueIdentifier>{8dbb3a70-89ba-43d3-b4cc-98faf416f960}</UniqueIdentifier>
     </Filter>
-    <Filter Include="commands\timespan">
-      <UniqueIdentifier>{4f0e7da9-2870-403c-afab-c7d502a15d22}</UniqueIdentifier>
+    <Filter Include="commands\datetime">
+      <UniqueIdentifier>{a7c3e1d2-5b4f-4e8a-9c61-2d7f0b3e8a14}</UniqueIdentifier>
     </Filter>
     <Filter Include="commands\align_window">
       <UniqueIdentifier>{6134530a-48d6-45c8-88bf-a094eabbfe66}</UniqueIdentifier>
@@ -681,11 +681,14 @@
     <ClInclude Include="commands\common\Message.h">
       <Filter>commands\common</Filter>
     </ClInclude>
-    <ClInclude Include="commands\timespan\TimespanCommand.h">
-      <Filter>commands\timespan</Filter>
+    <ClInclude Include="commands\datetime\DateTimeCommand.h">
+      <Filter>commands\datetime</Filter>
     </ClInclude>
-    <ClInclude Include="commands\timespan\TimespanCommandProvider.h">
-      <Filter>commands\timespan</Filter>
+    <ClInclude Include="commands\datetime\DateTimeCommandProvider.h">
+      <Filter>commands\datetime</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\datetime\DateTimeValueCommand.h">
+      <Filter>commands\datetime</Filter>
     </ClInclude>
     <ClInclude Include="commands\align_window\AlignWindowCommand.h">
       <Filter>commands\align_window</Filter>
@@ -2471,11 +2474,14 @@
     <ClCompile Include="commands\common\Message.cpp">
       <Filter>commands\common</Filter>
     </ClCompile>
-    <ClCompile Include="commands\timespan\TimespanCommand.cpp">
-      <Filter>commands\timespan</Filter>
+    <ClCompile Include="commands\datetime\DateTimeCommand.cpp">
+      <Filter>commands\datetime</Filter>
     </ClCompile>
-    <ClCompile Include="commands\timespan\TimespanCommandProvider.cpp">
-      <Filter>commands\timespan</Filter>
+    <ClCompile Include="commands\datetime\DateTimeCommandProvider.cpp">
+      <Filter>commands\datetime</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\datetime\DateTimeValueCommand.cpp">
+      <Filter>commands\datetime</Filter>
     </ClCompile>
     <ClCompile Include="commands\align_window\AlignWindowCommand.cpp">
       <Filter>commands\align_window</Filter>

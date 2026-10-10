@@ -205,6 +205,11 @@ public:
 	CString GetClipboardHistoryExcludePattern();
 	bool IsDisableMigemoForClipboardHistory();
 
+	// 日時候補機能を使用するか
+	bool IsEnableDateTime();
+	// 日時候補機能のプレフィックス
+	CString GetDateTimePrefix();
+
 	// ログレベル
 	int GetLogLevel();
 	// 性能ログを出力するか?

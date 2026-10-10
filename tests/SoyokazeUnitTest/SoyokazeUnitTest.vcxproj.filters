@@ -270,6 +270,9 @@
     <ClCompile Include="LoggerEnvironment.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="UserProfileIsolationEnvironment.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp">
       <Filter>soyokaze\commands\controlpanel</Filter>
     </ClCompile>
@@ -304,6 +307,9 @@
       <Filter>soyokaze</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\everything\EverythingAdhocCommandTest.cpp">

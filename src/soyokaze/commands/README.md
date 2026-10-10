@@ -37,7 +37,7 @@
 |[snippet](./snippet)|定型文コマンド|
 |[snippetgroup](./snippetgroup)|定型文グループコマンド|
 |[specialfolderfiles](./specialfolderfiles)|特殊フォルダの項目を実行できるようにするためのコマンド<br>(最近使ったファイル、スタートメニューなど)|
-|[timespan](./timespan)|経過時間を計算して表示するコマンド|
+|[datetime](./datetime)|時間差の計算、日時の表示を行うコマンド|
 |[unitconvert](./unitconvert)|単位変換系コマンド|
 |[uwp](./uwp)|UWPアプリを実行できるようにするためのコマンド|
 |[vmware](./vmware)|VMWare(Player)の実行履歴からVMを実行できるようにするためのコマンド|

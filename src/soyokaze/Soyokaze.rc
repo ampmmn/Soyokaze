@@ -287,9 +287,12 @@ BEGIN
     LTEXT           "プレフィックス(&X):",IDC_STATIC,33,268,51,8
     EDITTEXT        IDC_EDIT_PREFIX_ENVIRONMENT,88,265,52,14,ES_AUTOHSCROLL
     GROUPBOX        "Pythonを利用する拡張機能の設定",IDC_STATIC,11,7,282,57
-    GROUPBOX        "システム関連の機能",IDC_STATIC,11,130,282,164
+    GROUPBOX        "システム関連の機能",IDC_STATIC,11,130,282,186
     GROUPBOX        "電卓関連機能",IDC_STATIC,11,69,282,57
     LTEXT           "※ Python DLLが必要です",IDC_STATIC,163,84,98,12
+    CONTROL         "時刻と日付(&D)", IDC_CHECK_ENABLE_DATETIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,284,63,10
+    LTEXT           "プレフィックス(&X):",IDC_STATIC,33,298,51,8
+    EDITTEXT        IDC_EDIT_PREFIX_DATETIME,88,295,52,14,ES_AUTOHSCROLL
 END
 
 IDD_APPSETTING_SHORTCUT DIALOGEX 0, 0, 271, 140
@@ -5001,9 +5004,9 @@ BEGIN
     IDS_PATH                "パス"
     IDS_COMMANDTYPE         "種別"
     IDS_COMMAND_COLOR       "カラー"
-    IDS_COMMAND_OFFICEFAVORITES "お気に入り(%s)"
     IDS_X                   "X座標値"
     IDS_DESCRIPTION_GROUPCOMMAND "他のコマンド,ファイル,フォルダ,URLなどをまとめて実行することができます。"
+    IDS_COMMAND_OFFICEFAVORITES "お気に入り(%s)"
 END
 
 STRINGTABLE

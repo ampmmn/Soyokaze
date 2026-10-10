@@ -87,6 +87,10 @@ msbuild /m /p:Configuration=ReleaseStatic /p:Platform=x64 src\Soyokaze.sln
   - ReleaseStatic
   - Debug
 
+## やってはいけないこと
+
+- 通常版のアプリ設定保存ディレクトリのファイルを書き換えないこと(~/.soyokaze/)
+  - 権限の確認もしないこと(誤って許可する可能性があるため)
 
 ## crlf-normalizer
 

@@ -60,6 +60,7 @@
     <ClCompile Include="..\testcode\soyokaze\control\KeywordEditUndoHistoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\office_favorites\OfficeFavoritesTest.cpp" />
@@ -107,6 +108,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\FilerParameterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\UpdateInfoTest.cpp" />
     <ClCompile Include="LoggerEnvironment.cpp" />
+    <ClCompile Include="UserProfileIsolationEnvironment.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">Create</PrecompiledHeader>

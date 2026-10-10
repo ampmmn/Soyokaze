@@ -20,14 +20,23 @@ protected:
 };
 
 
+// テスト中に差し替えたUSERPROFILE(一時フォルダ)配下の .soyokaze のパスを取得する
+static CString GetExpectedNormalDir()
+{
+	TCHAR buf[MAX_PATH_NTFS] = {};
+	size_t len = 0;
+	_tgetenv_s(&len, buf, _countof(buf), _T("USERPROFILE"));
+	CString dir(buf);
+	dir += _T("\\.soyokaze");
+	return dir;
+}
+
 TEST_F(AppProfileTest, GetDirPath)
 {
 	TCHAR path[1024];
 	CAppProfile::GetDirPath(path, 1024, false);
 
-	std::wregex re(LR"(^.:\\Users\\.+?\\\.soyokaze)");
-
-	EXPECT_TRUE(std::regex_match(path, re));
+	EXPECT_STREQ((LPCTSTR)GetExpectedNormalDir(), path);
 }
 
 TEST_F(AppProfileTest, GetDirPath2)
@@ -35,9 +44,9 @@ TEST_F(AppProfileTest, GetDirPath2)
 	TCHAR path[1024];
 	CAppProfile::GetDirPath(path, 1024, true);
 
-	std::wregex re(LR"(^.:\\Users\\.+?\\\.soyokaze\\per_machine\\.+?)");
-
-	EXPECT_TRUE(std::regex_match(path, re));
+	// PC別ディレクトリは .soyokaze\per_machine\<PC名> の下になる
+	CString prefix = GetExpectedNormalDir() + _T("\\per_machine\\");
+	EXPECT_EQ(0, _tcsnicmp(path, prefix, prefix.GetLength()));
 }
 
 
@@ -46,9 +55,8 @@ TEST_F(AppProfileTest, GetFilePath)
 	TCHAR path[1024];
 	CAppProfile::GetFilePath(path, 1024, false);
 
-	std::wregex re(LR"(^.:\\Users\\.+?\\\.soyokaze\\settings.ini)");
-
-	EXPECT_TRUE(std::regex_match(path, re));
+	CString expected = GetExpectedNormalDir() + _T("\\settings.ini");
+	EXPECT_STREQ((LPCTSTR)expected, path);
 }
 
 TEST_F(AppProfileTest, SetRunAsPortable)
@@ -62,8 +70,7 @@ TEST_F(AppProfileTest, SetRunAsPortable)
 
 	CAppProfile::SetRunAsPortable(false);
 	CAppProfile::GetDirPath(path, 1024, false);
-	std::wregex normalPathRe(LR"(^.:\\Users\\.+?\\\.soyokaze$)");
-	EXPECT_TRUE(std::regex_match(path, normalPathRe));
+	EXPECT_STREQ((LPCTSTR)GetExpectedNormalDir(), path);
 }
 
 TEST_F(AppProfileTest, InitializeProfileDir) {

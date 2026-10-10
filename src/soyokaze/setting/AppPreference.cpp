@@ -1019,6 +1019,18 @@ CString AppPreference::GetClipboardHistoryPrefix()
 	return in->Get(_T("ClipboardHistory:Prefix"), _T("cb"));
 }
 
+// 日時候補機能を使用するか(既定値: 有効)
+bool AppPreference::IsEnableDateTime()
+{
+	return in->Get(_T("Soyokaze:IsEnableDateTime"), true);
+}
+
+// 日時候補機能のプレフィックス(既定値: date)
+CString AppPreference::GetDateTimePrefix()
+{
+	return in->Get(_T("Soyokaze:PrefixDateTime"), _T("date"));
+}
+
 int AppPreference::GetClipboardHistoryNumberOfResults()
 {
 	return in->Get(_T("ClipboardHistory:NumOfResults"), 16);

@@ -179,6 +179,13 @@ struct Calculator::PImpl
 			return false;
 		}
 
+		// "N days later" "N days ago" 形式は日時候補の機能で扱うため、電卓の結果としては除外する
+		CString lower(src);
+		lower.MakeLower();
+		if (lower.Find(_T("later")) >= 0 || lower.Find(_T("ago")) >= 0) {
+			return false;
+		}
+
 		std::string expression;
 		UTF2UTF(std::wstring(src), expression);
 		char* mathypadResult = mMathypadEvaluate(expression.c_str());
