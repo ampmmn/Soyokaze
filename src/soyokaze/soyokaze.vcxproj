@@ -761,6 +761,9 @@
     <ClInclude Include="commands\controlpanel\ControllPanel.h" />
     <ClInclude Include="commands\controlpanel\ControlPanelCommand.h" />
     <ClInclude Include="commands\controlpanel\SystemToolCommand.h" />
+    <ClInclude Include="commands\office_favorites\OfficeFavorites.h" />
+    <ClInclude Include="commands\office_favorites\OfficeFavoritesCommand.h" />
+    <ClInclude Include="commands\office_favorites\OfficeFavoritesProvider.h" />
     <ClInclude Include="commands\decodestring\DecodeStringCommandProvider.h" />
     <ClInclude Include="commands\decodestring\DecodeUriCommand.h" />
     <ClInclude Include="commands\decodestring\EscapedCharCommand.h" />
@@ -1346,6 +1349,9 @@
     <ClCompile Include="commands\controlpanel\ControllPanel.cpp" />
     <ClCompile Include="commands\controlpanel\ControlPanelCommand.cpp" />
     <ClCompile Include="commands\controlpanel\SystemToolCommand.cpp" />
+    <ClCompile Include="commands\office_favorites\OfficeFavorites.cpp" />
+    <ClCompile Include="commands\office_favorites\OfficeFavoritesCommand.cpp" />
+    <ClCompile Include="commands\office_favorites\OfficeFavoritesProvider.cpp" />
     <ClCompile Include="commands\decodestring\DecodeStringCommandProvider.cpp" />
     <ClCompile Include="commands\decodestring\DecodeUriCommand.cpp" />
     <ClCompile Include="commands\decodestring\EscapedCharCommand.cpp" />

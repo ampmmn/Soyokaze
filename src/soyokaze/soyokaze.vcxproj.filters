@@ -73,6 +73,9 @@
     <Filter Include="commands\controllpanel">
       <UniqueIdentifier>{18d63481-0ef5-40b7-bfbf-c6836f6277b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\office_favorites">
+      <UniqueIdentifier>{93611029-652c-475c-aecb-3a9befb0dc16}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\env">
       <UniqueIdentifier>{6b091184-744b-4a48-b402-3715cfb1e6c8}</UniqueIdentifier>
     </Filter>
@@ -2121,6 +2124,15 @@
     <ClInclude Include="commands\controlpanel\SystemToolCommand.h">
       <Filter>commands\controllpanel</Filter>
     </ClInclude>
+    <ClInclude Include="commands\office_favorites\OfficeFavorites.h">
+      <Filter>commands\office_favorites</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\office_favorites\OfficeFavoritesCommand.h">
+      <Filter>commands\office_favorites</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\office_favorites\OfficeFavoritesProvider.h">
+      <Filter>commands\office_favorites</Filter>
+    </ClInclude>
     <ClInclude Include="actions\builtin\GroupItemAction.h">
       <Filter>commands\group</Filter>
     </ClInclude>
@@ -3748,6 +3760,15 @@
     </ClCompile>
     <ClCompile Include="commands\controlpanel\SystemToolCommand.cpp">
       <Filter>commands\controllpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\office_favorites\OfficeFavorites.cpp">
+      <Filter>commands\office_favorites</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\office_favorites\OfficeFavoritesCommand.cpp">
+      <Filter>commands\office_favorites</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\office_favorites\OfficeFavoritesProvider.cpp">
+      <Filter>commands\office_favorites</Filter>
     </ClCompile>
     <ClCompile Include="actions\builtin\GroupItemAction.cpp">
       <Filter>commands\group</Filter>

@@ -137,6 +137,9 @@ public:
 	// スタートメニュー/最近使ったファイルのアイテム検索を使用するか
 	bool IsEnableSpecialFolder();
 
+	// Word/Excel/PowerPointのお気に入り(ピン止め)検索を使用するか
+	bool IsEnableOfficeFavorites();
+
 	// UWPアプリの検索を使用するか
 	bool IsEnableUWP();
 	// MMCスナップインの検索を使用するか

@@ -37,6 +37,8 @@ public:
 	BOOL mIsEnableControlPanel{FALSE};
 	// スタートメニュー/最近使ったファイル選択機能
 	BOOL mIsEnableSpecialFolder{FALSE};
+	// Word/Excel/PowerPointのお気に入り選択機能
+	BOOL mIsEnableOfficeFavorites{FALSE};
 	// UWPアプリ選択機能
 	BOOL mIsEnableUWP{FALSE};
 	// MMCスナップイン選択機能
@@ -62,6 +64,7 @@ void ExtensionSettingDialog::OnOK()
 	settingsPtr->Set(_T("Soyokaze:PythonDLLPath"), mPythonDLLPath);
 	settingsPtr->Set(_T("Soyokaze:IsEnableControlPanel"), (bool)mIsEnableControlPanel);
 	settingsPtr->Set(_T("Soyokaze:IsEnableSpecialFolder"), (bool)mIsEnableSpecialFolder);
+	settingsPtr->Set(_T("Soyokaze:IsEnableOfficeFavorites"), (bool)mIsEnableOfficeFavorites);
 	settingsPtr->Set(_T("Soyokaze:IsEnableUWP"), (bool)mIsEnableUWP);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMMCSnapin"), (bool)mIsEnableMMCSnapin);
 	settingsPtr->Set(_T("Soyokaze:IsEnableMSSettings"), (bool)mIsEnableMSSettings);
@@ -79,6 +82,7 @@ void ExtensionSettingDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PYTHONDLLPATH, mPythonDLLPath);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_CONTROLPANEL, mIsEnableControlPanel);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_SPECIALFOLDER, mIsEnableSpecialFolder);
+	DDX_Check(pDX, IDC_CHECK_OFFICEFAV, mIsEnableOfficeFavorites);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_UWPAPPS, mIsEnableUWP);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MMCSNAPINS, mIsEnableMMCSnapin);
 	DDX_Check(pDX, IDC_CHECK_ENABLE_MSSETTINGS, mIsEnableMSSettings);
@@ -137,6 +141,7 @@ void ExtensionSettingDialog::OnEnterSettings(Settings* settingsPtr)
 
 	mIsEnableControlPanel = settingsPtr->Get(_T("Soyokaze:IsEnableControlPanel"), true);
 	mIsEnableSpecialFolder = settingsPtr->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
+	mIsEnableOfficeFavorites = settingsPtr->Get(_T("Soyokaze:IsEnableOfficeFavorites"), true);
 	mIsEnableUWP = settingsPtr->Get(_T("Soyokaze:IsEnableUWP"), true);
 	mIsEnableMMCSnapin = settingsPtr->Get(_T("Soyokaze:IsEnableMMCSnapin"), true);
 	mIsEnableMSSettings = settingsPtr->Get(_T("Soyokaze:IsEnableMSSettings"), true);

@@ -103,6 +103,9 @@
     <Filter Include="soyokaze\commands\controlpanel">
       <UniqueIdentifier>{81f59ce8-6d1b-4c21-886f-574baf9df831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\office_favorites">
+      <UniqueIdentifier>{4f0c2a7e-9b1d-4e3a-8c55-2d7e6a1b9f40}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\group">
       <UniqueIdentifier>{ced17daa-07bb-4b2f-be17-af50c5fcdce7}</UniqueIdentifier>
     </Filter>
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp">
       <Filter>soyokaze\commands\controlpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\office_favorites\OfficeFavoritesTest.cpp">
+      <Filter>soyokaze\commands\office_favorites</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp">
       <Filter>soyokaze\commands\group</Filter>

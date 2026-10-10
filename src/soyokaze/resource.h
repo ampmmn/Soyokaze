@@ -132,6 +132,7 @@
 #define IDS_COMMANDTYPE                 231
 #define IDD_APPSETTING_INPUT            232
 #define IDS_COMMAND_COLOR               233
+#define IDS_COMMAND_OFFICEFAVORITES     239
 #define IDD_MAIN                        234
 #define IDD_APPSETTING_PATHCONVERT      235
 #define IDS_X                           236
@@ -401,6 +402,7 @@
 #define IDC_CHECK_ENABLE_ENVIRONMENT    1119
 #define IDC_CHECK_NOTIFYIFNOTEXIST      1120
 #define IDC_EDIT_AUTHPASSWORD           1120
+#define IDC_CHECK_OFFICEFAV             1120
 #define IDC_CHECK_ENABLE_CONTROLPANEL2  1121
 #define IDC_EDIT_PROXYUSER              1121
 #define IDC_CHECK_HOTKEYONLY            1121

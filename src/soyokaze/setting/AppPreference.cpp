@@ -827,6 +827,12 @@ bool AppPreference::IsEnableSpecialFolder()
 	return in->Get(_T("Soyokaze:IsEnableSpecialFolder"), true);
 }
 
+// Word/Excel/PowerPointのお気に入り(ピン止め)検索を使用するか
+bool AppPreference::IsEnableOfficeFavorites()
+{
+	return in->Get(_T("Soyokaze:IsEnableOfficeFavorites"), true);
+}
+
 // UWPアプリの検索を使用するか
 bool AppPreference::IsEnableUWP()
 {

@@ -21,9 +21,54 @@ RegistryKey::RegistryKey(HKEY hKey) : mKey(hKey)
 }
 
 /**
+ * @brief ムーブコンストラクタ
+ * @param rhs ムーブ元。ハンドルの所有権を移し、ムーブ元は nullptr になる
+ */
+RegistryKey::RegistryKey(RegistryKey&& rhs) noexcept : mKey(rhs.mKey)
+{
+	rhs.mKey = nullptr;
+}
+
+/**
+ * @brief ムーブ代入演算子
+ * @param rhs ムーブ元。既存のハンドルは閉じてから所有権を移す
+ * @return 自身への参照
+ */
+RegistryKey& RegistryKey::operator=(RegistryKey&& rhs) noexcept
+{
+	if (this == &rhs) {
+		return *this;
+	}
+
+	// 既存のハンドルを解放してから移す
+	Close();
+	mKey = rhs.mKey;
+	rhs.mKey = nullptr;
+	return *this;
+}
+
+/**
+ * @brief 保持しているハンドルを取得する
+ * @return レジストリキーのハンドル(未設定の場合は nullptr)
+ */
+HKEY RegistryKey::GetHandle() const
+{
+	return mKey;
+}
+
+/**
  * @brief デストラクタ
  */
 RegistryKey::~RegistryKey()
+{
+	Close();
+}
+
+/**
+ * @brief 保持しているハンドルを閉じる
+ * @note HKEY_LOCAL_MACHINE, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER は閉じない
+ */
+void RegistryKey::Close()
 {
 	if (mKey == nullptr) {
 		return;
@@ -36,8 +81,8 @@ RegistryKey::~RegistryKey()
 	if (isHKLM == false && isHKCR == false && isHKCU == false) {
 		// 他の定義済みキーは今のところ使ってないので見ない
 		RegCloseKey(mKey);
-		mKey = nullptr;
 	}
+	mKey = nullptr;
 }
 
 /**
