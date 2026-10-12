@@ -1,0 +1,11 @@
+# powerstatusプラグインの設定ファイル
+# このファイルは設定例。利用する場合はDLLと同じディレクトリに powerstatus.yaml としてコピーすること
+
+# 上側しきい値。残量がこの値を上回ったら通知する
+upper-threshold: 80
+
+# 下側しきい値。残量がこの値を下回ったら通知する
+lower-threshold: 20
+
+# 監視間隔(秒)。省略した場合は10秒
+interval-seconds: 10

@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "memogrep-plugin", "memogrep
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "workspace-plugin", "workspace-plugin\workspace-plugin.vcxproj", "{438B4CE9-B5E5-4531-9631-30070C99C9BE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "powerstatus-plugin", "powerstatus-plugin\powerstatus-plugin.vcxproj", "{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{438B4CE9-B5E5-4531-9631-30070C99C9BE}.Release|x64.Build.0 = Release|x64
 		{438B4CE9-B5E5-4531-9631-30070C99C9BE}.Release|x86.ActiveCfg = Release|Win32
 		{438B4CE9-B5E5-4531-9631-30070C99C9BE}.Release|x86.Build.0 = Release|Win32
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Debug|x64.ActiveCfg = Debug|x64
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Debug|x64.Build.0 = Debug|x64
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Debug|x86.ActiveCfg = Debug|Win32
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Debug|x86.Build.0 = Debug|Win32
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Release|x64.ActiveCfg = Release|x64
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Release|x64.Build.0 = Release|x64
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Release|x86.ActiveCfg = Release|Win32
+		{5999C3CD-D95E-498B-B0F4-8711B6FFEB3E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
