@@ -21,9 +21,6 @@ typedef unsigned char* (*MIGEMO_QUERY)(void*, const unsigned char* query);
 typedef void (*MIGEMO_RELEASE)(void*, unsigned char*);
 
 typedef int (*MIGEMO_PROC_INT2CHAR)(unsigned int, unsigned char*);
-typedef void (*MIGEMO_SETPROC_INT2CHAR)(void* object, MIGEMO_PROC_INT2CHAR proc);
-
-static int int2char(unsigned int in, unsigned char* out);
 
 struct Migemo::PImpl
 {
@@ -42,7 +39,6 @@ struct Migemo::PImpl
 	MIGEMO_CLOSE mMigemoClose{nullptr};
 	MIGEMO_QUERY mMigemoQuery{nullptr};
 	MIGEMO_RELEASE mMigemoRelease{nullptr};
-	MIGEMO_SETPROC_INT2CHAR mMigemoSetProcInt2Char{nullptr};
 
 };
 
@@ -60,8 +56,6 @@ bool Migemo::PImpl::OpenMDict(LPCTSTR dictPath)
 		return false;
 	}
 
-	// このアプリで扱える正規表現にするためのエスケープ処理を追加
-	mMigemoSetProcInt2Char(mMigemoObj, int2char);
 
 	return true;
 }
@@ -109,9 +103,6 @@ bool Migemo::PImpl::OpenSDict(LPCTSTR dictPath)
 		// 失敗したのでここで終了
 		return false;
 	}
-
-	// このアプリで扱える正規表現にするためのエスケープ処理を追加
-	mMigemoSetProcInt2Char(mMigemoObj, int2char);
 
 	if (hasSdictFiles) {
 		// sdictからロードしたのであればここで終了
@@ -183,7 +174,6 @@ Migemo::Migemo() : in(std::make_unique<PImpl>())
 		in->mMigemoClose = (MIGEMO_CLOSE)GetProcAddress(dll, "migemo_close");
 		in->mMigemoQuery = (MIGEMO_QUERY)GetProcAddress(dll, "migemo_query");
 		in->mMigemoRelease = (MIGEMO_RELEASE)GetProcAddress(dll, "migemo_release");
-		in->mMigemoSetProcInt2Char = (MIGEMO_SETPROC_INT2CHAR)GetProcAddress(dll, "migemo_setproc_int2char");
 	}
 }
 
@@ -209,35 +199,6 @@ Migemo::~Migemo()
 bool Migemo::IsInitialized()
 {
 	return in->mIsDictLoaded;
-}
-
-static int int2char(unsigned int in, unsigned char* out)
-{
-	switch (in) {
-	case '\\':
-	case '?':
-	case '.':
- 	case '*':
- 	case '+':
- 	case '^':
- 	case '[':
- 	case ']':
- 	case '(':
- 	case ')':
- 	case '{':
- 	case '}':
- 	case '!':
- 	case '&':
- 	case '$':
- 	case '|':
-		if (out) {
-			out[0] = '\\';
-			out[1] = (unsigned char)(in & 0xFF);
-		}
-		return 2;
-	default:
-		return CharConverter::ScalarToUTF8(in, (char*)out);
-	}
 }
 
 // 辞書データを読んでMigemoオブジェクトを生成する
