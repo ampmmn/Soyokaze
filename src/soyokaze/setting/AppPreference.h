@@ -139,6 +139,8 @@ public:
 
 	// Word/Excel/PowerPointのお気に入り(ピン止め)検索を使用するか
 	bool IsEnableOfficeFavorites();
+	// ジャンプリストのピン留め項目検索を使用するか
+	bool IsUseShellDestinations();
 
 	// UWPアプリの検索を使用するか
 	bool IsEnableUWP();

@@ -346,6 +346,9 @@
     <Filter Include="commands\bookmarks\metrics">
       <UniqueIdentifier>{a9b5e58b-0dc0-4a6c-9e57-5b0f6aa9f4d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\shell_destinations">
+      <UniqueIdentifier>{97f82eca-8c46-4f20-a072-acf3d42b3835}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -863,9 +866,6 @@
     </ClInclude>
     <ClInclude Include="features\main\CandidateList.h">
       <Filter>features\main</Filter>
-    </ClInclude>
-    <ClInclude Include="features\tasktray\TaskTray.h">
-      <Filter>features\tasktray</Filter>
     </ClInclude>
     <ClInclude Include="features\appsettings\ViewSettingDialog.h">
       <Filter>features\appsettings</Filter>
@@ -2160,6 +2160,24 @@
     <ClInclude Include="app\FirstStartDialog.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="control/KeywordEditUndoHistory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="features/tasktray/TaskTray.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shell_destinations\AutomaticDestinationsFile.h">
+      <Filter>commands\shell_destinations</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shell_destinations\OleCfFile.h">
+      <Filter>commands\shell_destinations</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shell_destinations\ShellDestinationCommand.h">
+      <Filter>commands\shell_destinations</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\shell_destinations\ShellDestinationCommandProvider.h">
+      <Filter>commands\shell_destinations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2632,9 +2650,6 @@
     </ClCompile>
     <ClCompile Include="features\main\CandidateList.cpp">
       <Filter>features\main</Filter>
-    </ClCompile>
-    <ClCompile Include="features\tasktray\TaskTray.cpp">
-      <Filter>features\tasktray</Filter>
     </ClCompile>
     <ClCompile Include="features\appsettings\SoundSettingDialog.cpp">
       <Filter>features\appsettings</Filter>
@@ -3811,6 +3826,24 @@
     </ClCompile>
     <ClCompile Include="app\FirstStartDialog.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="control/KeywordEditUndoHistory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="features/tasktray/TaskTray.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shell_destinations\AutomaticDestinationsFile.cpp">
+      <Filter>commands\shell_destinations</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shell_destinations\OleCfFile.cpp">
+      <Filter>commands\shell_destinations</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shell_destinations\ShellDestinationCommand.cpp">
+      <Filter>commands\shell_destinations</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\shell_destinations\ShellDestinationCommandProvider.cpp">
+      <Filter>commands\shell_destinations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

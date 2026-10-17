@@ -426,6 +426,10 @@
     <ClInclude Include="app\LauncherShutdownWindow.h" />
     <ClInclude Include="app\LauncherSystemEventWindow.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
+    <ClInclude Include="commands\shell_destinations\AutomaticDestinationsFile.h" />
+    <ClInclude Include="commands\shell_destinations\OleCfFile.h" />
+    <ClInclude Include="commands\shell_destinations\ShellDestinationCommand.h" />
+    <ClInclude Include="commands\shell_destinations\ShellDestinationCommandProvider.h" />
     <ClInclude Include="features\manual\Manual.h" />
     <ClInclude Include="features\manual\ManualWindow.h" />
     <ClInclude Include="app\SecondProcessProxy.h" />
@@ -1031,6 +1035,10 @@
     <ClCompile Include="app\LauncherShutdownWindow.cpp" />
     <ClCompile Include="app\LauncherSystemEventWindow.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
+    <ClCompile Include="commands\shell_destinations\AutomaticDestinationsFile.cpp" />
+    <ClCompile Include="commands\shell_destinations\OleCfFile.cpp" />
+    <ClCompile Include="commands\shell_destinations\ShellDestinationCommand.cpp" />
+    <ClCompile Include="commands\shell_destinations\ShellDestinationCommandProvider.cpp" />
     <ClCompile Include="features\manual\Manual.cpp" />
     <ClCompile Include="features\manual\ManualWindow.cpp" />
     <ClCompile Include="app\SecondProcessProxy.cpp" />

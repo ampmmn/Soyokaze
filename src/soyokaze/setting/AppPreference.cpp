@@ -833,6 +833,12 @@ bool AppPreference::IsEnableOfficeFavorites()
 	return in->Get(_T("Soyokaze:IsEnableOfficeFavorites"), true);
 }
 
+// ジャンプリストのピン留め項目検索を使用するか
+bool AppPreference::IsUseShellDestinations()
+{
+	return in->Get(_T("Soyokaze:UseShellDestinations"), true);
+}
+
 // UWPアプリの検索を使用するか
 bool AppPreference::IsEnableUWP()
 {
