@@ -19,16 +19,24 @@ namespace
 {
   constexpr std::size_t HeaderSize = 512;
   constexpr std::size_t DirectoryEntrySize = 128;
+  // FILETIMEで表現できる最大日時（9999年12月31日23時59分59.9999999秒）の値
   constexpr std::uint64_t MaximumFileTime = 2650467743999999999ULL;
+  // FILETIMEの基準日時（1601年1月1日）から365日分の100ナノ秒単位。これ未満の日時は未設定として扱う
   constexpr std::uint64_t TicksInYear1601 = 3153600000000000ULL;
 
+  /**
+    指定範囲がファイルデータ内に収まることを確認する
+    @param[in] bytes 検査対象のデータ
+    @param[in] offset 範囲の開始位置
+    @param[in] count 範囲の長さ
+    @param[in] field 解析中のフィールド名
+  */
   void EnsureRange(const std::vector<std::uint8_t>& bytes, std::uint64_t offset, std::uint64_t count,
     const char* field)
   {
     if (offset > bytes.size() || count > bytes.size() - offset)
     {
-      throw OleCfParseException(std::string("Read outside the file while parsing ") + field,
-        static_cast<std::int64_t>(offset), field);
+      throw OleCfParseException(std::string("Read outside the file while parsing ") + field);
     }
   }
 
@@ -116,6 +124,11 @@ namespace
     HANDLE Value;
   };
 
+  /**
+    ファイル全体をバイト列として読み込む
+    @param[in] filePath 読み込むファイルのパス
+    @return ファイルの内容
+  */
   std::vector<std::uint8_t> ReadFileBytes(const wchar_t* filePath)
   {
     if (filePath == nullptr)
@@ -171,19 +184,9 @@ namespace
   }
 }
 
-OleCfParseException::OleCfParseException(const std::string& message, std::int64_t offset, std::string field)
-  : std::runtime_error(message), offset_(offset), field_(std::move(field))
+OleCfParseException::OleCfParseException(const std::string& message)
+  : std::runtime_error(message)
 {
-}
-
-std::int64_t OleCfParseException::Offset() const noexcept
-{
-  return offset_;
-}
-
-const std::string& OleCfParseException::Field() const noexcept
-{
-  return field_;
 }
 
 std::int64_t OleCfHeader::SectorOffset(std::int32_t sectorId) const noexcept
@@ -212,6 +215,7 @@ struct OleCfFile::PImpl
   std::wstring mSourceFile;
   std::vector<std::string> mParseErrors;
 
+  /** 複合ファイルの各テーブルとディレクトリを順に解析する */
   void Parse()
   {
     if (mRawBytes.size() < HeaderSize)
@@ -220,9 +224,10 @@ struct OleCfFile::PImpl
       message << "The file length (" << mRawBytes.size()
         << ") is less than the length of an OLESS header (512 bytes) - this file ("
         << WideToUtf8(mSourceFile) << ") is either not an OLE structured storage document or is corrupt.";
-      throw OleCfParseException(message.str(), 0, "Header");
+      throw OleCfParseException(message.str());
     }
 
+    // ヘッダーからセクター構成を読み、後続のテーブル解析に必要な情報を確定する
     std::vector<std::uint8_t> headerBytes(mRawBytes.begin(), mRawBytes.begin() + HeaderSize);
     ReadHeader(headerBytes);
 
@@ -231,6 +236,7 @@ struct OleCfFile::PImpl
       ReadMsatSectors();
     }
 
+    // MSATから得たセクター位置を使ってSATを構築する
     ReadSat();
 
     if (mHeader.SSATFirstSectorId >= 0)
@@ -249,6 +255,7 @@ struct OleCfFile::PImpl
       }
     }
 
+    // ディレクトリストリームを解析し、ストリーム名と配置情報を取得する
     ReadDirectory();
 
     auto root = std::find_if(mDirectory.begin(), mDirectory.end(), [](const auto& entry)
@@ -268,6 +275,7 @@ struct OleCfFile::PImpl
       });
     }
 
+    // Root Storageの領域を読み込み、短いストリームの参照先を準備する
     if (root != mDirectory.end() && root->DirectorySize > 0)
     {
       bool miniTruncated = false;
@@ -283,12 +291,13 @@ struct OleCfFile::PImpl
     }
   }
 
+  /** ヘッダーの形式とセクター配置情報を検証して読み込む */
   void ReadHeader(const std::vector<std::uint8_t>& bytes)
   {
     constexpr std::array<std::uint8_t, 8> signature = { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 };
     if (!std::equal(signature.begin(), signature.end(), bytes.begin()))
     {
-      throw OleCfParseException("Invalid signature!", 0, "Signature");
+      throw OleCfParseException("Invalid signature!");
     }
 
     std::copy_n(bytes.begin() + 8, mHeader.ClassIdBytes.size(), mHeader.ClassIdBytes.begin());
@@ -297,20 +306,18 @@ struct OleCfFile::PImpl
     mHeader.IsLittleEndian = ReadUInt16(bytes, 28) == 0xfffe;
     if (!mHeader.IsLittleEndian)
     {
-      throw OleCfParseException("Big endian compound files are not supported", 28, "ByteOrder");
+      throw OleCfParseException("Big endian compound files are not supported");
     }
 
     mHeader.SectorSize = ReadInt16(bytes, 30);
     mHeader.ShortSectorSize = ReadInt16(bytes, 32);
     if (mHeader.SectorSize < 7 || mHeader.SectorSize > 16)
     {
-      throw OleCfParseException("Invalid sector size shift " + std::to_string(mHeader.SectorSize), 30,
-        "SectorSize");
+      throw OleCfParseException("Invalid sector size shift " + std::to_string(mHeader.SectorSize));
     }
     if (mHeader.ShortSectorSize < 1 || mHeader.ShortSectorSize >= mHeader.SectorSize)
     {
-      throw OleCfParseException("Invalid short sector size shift " + std::to_string(mHeader.ShortSectorSize), 32,
-        "ShortSectorSize");
+      throw OleCfParseException("Invalid short sector size shift " + std::to_string(mHeader.ShortSectorSize));
     }
 
     mHeader.SectorSizeAsBytes = 1 << mHeader.SectorSize;
@@ -327,9 +334,10 @@ struct OleCfFile::PImpl
     if (mHeader.TotalSATSectors < 0 || static_cast<std::uint64_t>(mHeader.TotalSATSectors) > maximumSatSectors)
     {
       throw OleCfParseException("Invalid number of SAT sectors (" + std::to_string(mHeader.TotalSATSectors) +
-        ") - is this file corrupt?", 44, "TotalSATSectors");
+        ") - is this file corrupt?");
     }
 
+    // ヘッダー内に格納された先頭109個のSATセクターIDを読み取る
     mHeader.SATSectors.resize(static_cast<std::size_t>(mHeader.TotalSATSectors));
     mHeader.SectorIds.reserve(109);
     for (std::int32_t i = 0; i < 109; ++i)
@@ -343,7 +351,7 @@ struct OleCfFile::PImpl
           message << "The current sector (" << i
             << ") was larger than the total number of sectors expected from the header data ("
             << mHeader.TotalSATSectors << ") - is this file corrupt?";
-          throw OleCfParseException(message.str(), 76 + i * 4, "MSAT");
+          throw OleCfParseException(message.str());
         }
         mHeader.SATSectors[static_cast<std::size_t>(i)] = mHeader.SectorOffset(satAddress);
       }
@@ -351,6 +359,7 @@ struct OleCfFile::PImpl
     }
   }
 
+  /** ヘッダーに収まらない追加のSATセクターIDをMSATから読み込む */
   void ReadMsatSectors()
   {
     const auto sectorSize = static_cast<std::size_t>(mHeader.SectorSizeAsBytes);
@@ -369,7 +378,7 @@ struct OleCfFile::PImpl
         std::ostringstream message;
         message << "MSAT sector " << msatSector << " is invalid, repeated or past the end of the file, with "
           << remaining << " SAT sector ids still to read - is this file corrupt?";
-        throw OleCfParseException(message.str(), offset, "MSAT");
+        throw OleCfParseException(message.str());
       }
 
       const auto count = std::min<std::int32_t>(remaining, static_cast<std::int32_t>(idsPerSector));
@@ -390,6 +399,7 @@ struct OleCfFile::PImpl
     }
   }
 
+  /** SATセクターを読み、セクター連鎖をたどるための表を作成する */
   void ReadSat()
   {
     const auto sectorSize = static_cast<std::size_t>(mHeader.SectorSizeAsBytes);
@@ -424,6 +434,7 @@ struct OleCfFile::PImpl
     }
   }
 
+  /** 128バイトのディレクトリレコードを構造体に変換する */
   OleCfDirectoryEntry ReadDirectoryEntry(const std::uint8_t* bytes, std::int32_t id)
   {
     OleCfDirectoryEntry entry;
@@ -464,6 +475,7 @@ struct OleCfFile::PImpl
     return entry;
   }
 
+  /** ディレクトリレコードのFILETIMEを検証して読み取る */
   std::optional<std::int64_t> ReadDirectoryTime(const std::uint8_t* bytes, std::size_t offset,
     const char* field, std::vector<std::string>& errors)
   {
@@ -491,6 +503,7 @@ struct OleCfFile::PImpl
     return value;
   }
 
+  /** ディレクトリストリームをレコード単位で解析する */
   void ReadDirectory()
   {
     bool directoryTruncated = false;
@@ -520,6 +533,7 @@ struct OleCfFile::PImpl
     }
   }
 
+  /** SATのセクター連鎖から通常ストリームのデータを取り出す */
   std::vector<std::uint8_t> GetDataFromSat(std::int32_t sectorNumber, const std::string& name, bool& truncated)
   {
     const auto sectorSize = static_cast<std::size_t>(mHeader.SectorSizeAsBytes);
@@ -554,6 +568,7 @@ struct OleCfFile::PImpl
     return result;
   }
 
+  /** SSATのセクター連鎖からミニストリームのデータを取り出す */
   std::vector<std::uint8_t> GetDataFromSSat(std::int32_t sectorNumber, const std::string& name)
   {
     const auto sectorSize = static_cast<std::size_t>(mHeader.ShortSectorSizeAsBytes);
@@ -584,6 +599,14 @@ struct OleCfFile::PImpl
     return result;
   }
 
+  /**
+    割り当て表をたどり、循環や範囲外参照を検出しながらセクター列を得る
+    @param[in] table セクター連鎖を定義する割り当て表
+    @param[in] first 先頭セクターID
+    @param[in] name 対象ストリーム名
+    @param[in] tableName 使用する割り当て表の名前
+    @return 連鎖を構成するセクターID一覧
+  */
   static std::vector<std::int32_t> FollowChain(const std::vector<std::int32_t>& table, std::int32_t first,
     const std::string& name, const char* tableName)
   {
@@ -594,14 +617,14 @@ struct OleCfFile::PImpl
     {
       if (static_cast<std::size_t>(sector) >= table.size())
       {
-        throw OleCfParseException(MakeSectorError(sector, name, tableName, table.size()), -1, name);
+        throw OleCfParseException(MakeSectorError(sector, name, tableName, table.size()));
       }
       if (!visited.insert(sector).second)
       {
         std::ostringstream message;
         message << "The " << tableName << " chain of '" << name << "' loops back to sector " << sector
           << " - is this file corrupt?";
-        throw OleCfParseException(message.str(), -1, name);
+        throw OleCfParseException(message.str());
       }
       chain.push_back(sector);
       sector = table[static_cast<std::size_t>(sector)];
@@ -609,20 +632,26 @@ struct OleCfFile::PImpl
 
     if (chain.empty())
     {
-      throw OleCfParseException("'" + name + "' starts at invalid sector " + std::to_string(first), -1, name);
+      throw OleCfParseException("'" + name + "' starts at invalid sector " + std::to_string(first));
     }
     return chain;
   }
 
+  /**
+    ディレクトリエントリから通常／ミニストリームを読み分けてペイロードを取得する
+    @param[in] directory ペイロードを取得するディレクトリエントリ
+    @return ペイロード。データを取得できない場合は空
+  */
   std::optional<std::vector<std::uint8_t>> GetPayloadForDirectory(const OleCfDirectoryEntry& directory)
   {
     if (directory.DirectorySize < 0)
     {
       throw OleCfParseException("Invalid size (" + std::to_string(directory.DirectorySize) + ") for directory (" +
-        directory.DirectoryName + ")", -1, "DirectorySize");
+        directory.DirectoryName + ")");
     }
 
     std::vector<std::uint8_t> bytes;
+    // MinimumStandardStreamSizeを境に、SATまたはSSATの読み出し経路を選ぶ
     if (static_cast<std::uint32_t>(directory.DirectorySize) >= mHeader.MinimumStandardStreamSize)
     {
       bool ignoredTruncation = false;
@@ -677,39 +706,9 @@ OleCfFile::OleCfFile(OleCfFile&& other) noexcept = default;
 
 OleCfFile& OleCfFile::operator=(OleCfFile&& other) noexcept = default;
 
-const OleCfHeader& OleCfFile::Header() const noexcept
-{
-  return in_->mHeader;
-}
-
 const std::vector<OleCfDirectoryEntry>& OleCfFile::Directory() const noexcept
 {
   return in_->mDirectory;
-}
-
-const std::vector<std::int32_t>& OleCfFile::Sat() const noexcept
-{
-  return in_->mSat;
-}
-
-const std::optional<std::vector<std::int32_t>>& OleCfFile::SSat() const noexcept
-{
-  return in_->mSSat;
-}
-
-const std::wstring& OleCfFile::SourceFile() const noexcept
-{
-  return in_->mSourceFile;
-}
-
-const std::vector<std::string>& OleCfFile::ParseErrors() const noexcept
-{
-  return in_->mParseErrors;
-}
-
-bool OleCfFile::ParsingError() const noexcept
-{
-  return !in_->mParseErrors.empty();
 }
 
 std::optional<std::vector<std::uint8_t>> OleCfFile::GetPayloadForDirectory(

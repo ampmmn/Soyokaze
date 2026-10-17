@@ -99,6 +99,11 @@ namespace
     std::vector<DestListEntry> Entries;
   };
 
+  /**
+    DestListストリームを解析し、項目情報を取り出す
+    @param[in] bytes DestListストリームの内容
+    @return 解析したDestList
+  */
   ParsedDestList ParseDestList(const std::vector<std::uint8_t>& bytes)
   {
     if (bytes.size() < DestListHeaderSize)
@@ -208,6 +213,12 @@ namespace
     return streamName.str();
   }
 
+  /**
+    名前が一致するストリームのディレクトリエントリを検索する
+    @param[in] file 検索対象の複合ファイル
+    @param[in] streamName 検索するストリーム名
+    @return 見つかったエントリ。存在しない場合はnullptr
+  */
   const OleCfDirectoryEntry* FindStream(const OleCfFile& file, const std::string& streamName)
   {
     for (const auto& directory : file.Directory())
@@ -221,6 +232,11 @@ namespace
     return nullptr;
   }
 
+  /**
+    DestListストリームのディレクトリエントリを検索する
+    @param[in] file 検索対象の複合ファイル
+    @return 見つかったエントリ。存在しない場合はnullptr
+  */
   const OleCfDirectoryEntry* FindDestListStream(const OleCfFile& file)
   {
     for (const auto& directory : file.Directory())
@@ -337,6 +353,11 @@ namespace
     return true;
   }
 
+  /**
+    Shell LinkのSystem.Titleまたは説明文字列を取得する
+    @param[in] bytes Shell Linkのバイナリデータ
+    @return 取得した表示文字列。取得できない場合は空文字列
+  */
   std::wstring ReadShellLinkNameString(const std::vector<std::uint8_t>& bytes)
   {
     if (bytes.size() > (std::numeric_limits<ULONG>::max)())
@@ -344,6 +365,7 @@ namespace
       return {};
     }
 
+    // Shell LinkをCOMオブジェクトとして復元し、プロパティを参照する
     Microsoft::WRL::ComPtr<IShellLinkW> shellLink;
     if (FAILED(CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER,
       IID_PPV_ARGS(shellLink.GetAddressOf()))))
@@ -408,6 +430,12 @@ namespace
     return buffer.data();
   }
 
+  /**
+    Shell LinkとDestListから候補に表示する名前を決定する
+    @param[in] entry DestListの項目
+    @param[in] linkBytes Shell Linkのバイナリデータ
+    @return 表示に使用する名前
+  */
   std::wstring GetDisplayPath(const DestListEntry& entry, const std::vector<std::uint8_t>& linkBytes)
   {
     std::wstring value = ReadShellLinkNameString(linkBytes);
@@ -419,11 +447,19 @@ namespace
     return TryGetKnownFolderDisplayName(value, shellDisplayName) ? shellDisplayName : value;
   }
 
+  /**
+    DestList項目に対応するShell Linkからピン留め項目を作成する
+    @param[in] file AutomaticDestinationsファイル
+    @param[in] destListEntry DestListの項目
+    @param[out] entry 作成した項目
+    @return true:作成成功 false:ストリームがない、または内容が不正
+  */
   bool TryCreatePinnedEntry(
     OleCfFile& file,
     const DestListEntry& destListEntry,
     AutomaticDestinationEntry& entry)
   {
+    // DestListの項目番号からShell Linkストリームを特定する
     const std::string streamName = EntryNumberToStreamName(destListEntry.EntryNumber);
     const OleCfDirectoryEntry* stream = FindStream(file, streamName);
     if (stream == nullptr)
@@ -459,6 +495,7 @@ AutomaticDestinationsFile::~AutomaticDestinationsFile() = default;
 
 bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
 {
+  // 前回の読み込み結果を破棄し、失敗時に古い項目が残らないようにする
   in->mPinnedEntries.clear();
   if (filePath == nullptr)
   {
@@ -468,6 +505,8 @@ bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
   try
   {
     OleCfFile file(filePath);
+
+    // DestListストリームからピン留め状態と項目番号を取得する
     const OleCfDirectoryEntry* destListStream = FindDestListStream(file);
     if (destListStream == nullptr)
     {
@@ -489,6 +528,7 @@ bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
     std::vector<AutomaticDestinationEntry> pinnedEntries;
     for (const auto& destListEntry : destList.Entries)
     {
+      // PinStatusが-1の項目はピン留めされていないため除外する
       if (destListEntry.PinStatus == -1)
       {
         continue;
@@ -497,6 +537,8 @@ bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
       try
       {
         AutomaticDestinationEntry entry{};
+
+        // COMを利用できる場合はShell Linkの表示名なども解決する
         if (comApartment.IsAvailable() && TryCreatePinnedEntry(file, destListEntry, entry))
         {
           pinnedEntries.push_back(std::move(entry));
@@ -505,6 +547,7 @@ bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
 
         if (!comApartment.IsAvailable())
         {
+          // COMを初期化できない場合も、DestListのパスを使って項目を読み込む
           const std::string streamName = EntryNumberToStreamName(destListEntry.EntryNumber);
           const OleCfDirectoryEntry* stream = FindStream(file, streamName);
           if (stream == nullptr)
@@ -528,6 +571,7 @@ bool AutomaticDestinationsFile::Open(const wchar_t* filePath)
       }
     }
 
+    // 全項目の読み込み後に結果を置き換え、途中失敗で部分一覧にならないようにする
     in->mPinnedEntries = std::move(pinnedEntries);
     return true;
   }

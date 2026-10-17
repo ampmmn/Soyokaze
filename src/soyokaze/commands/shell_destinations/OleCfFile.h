@@ -14,14 +14,10 @@ namespace launcherapp { namespace commands { namespace shell_destinations {
 class OleCfParseException : public std::runtime_error
 {
 public:
-  OleCfParseException(const std::string& message, std::int64_t offset = -1, std::string field = {});
-
-  std::int64_t Offset() const noexcept;
-  const std::string& Field() const noexcept;
-
-private:
-  std::int64_t offset_;
-  std::string field_;
+  /** 解析エラーの内容を保持する例外を作成する
+    @param[in] message エラーメッセージ
+  */
+  explicit OleCfParseException(const std::string& message);
 };
 
 struct OleCfHeader
@@ -44,6 +40,11 @@ struct OleCfHeader
   std::vector<std::int64_t> SATSectors;
   std::vector<std::int32_t> SectorIds;
 
+  /**
+    セクターIDからファイル内のオフセットを計算する
+    @param[in] sectorId セクターID
+    @return ファイル内のオフセット。不正なIDの場合は0
+  */
   std::int64_t SectorOffset(std::int32_t sectorId) const noexcept;
 };
 
@@ -84,24 +85,49 @@ struct OleCfDirectoryEntry
 class OleCfFile
 {
 public:
+  /**
+    ファイルパスを指定して複合ファイルを開く
+    @param[in] filePath 読み込むファイルのパス
+  */
   explicit OleCfFile(const wchar_t* filePath);
+
+  /**
+    メモリ上のバイト列から複合ファイルを開く
+    @param[in] rawBytes ファイルの内容
+    @param[in] sourceFile エラー表示に使用するファイル名
+  */
   OleCfFile(std::vector<std::uint8_t> rawBytes, std::wstring sourceFile = {});
+
+  /** 複合ファイルの解析データを破棄する */
   ~OleCfFile();
 
+  /**
+    解析データの所有権を移動する
+    @param[in] other 移動元
+  */
   OleCfFile(OleCfFile&& other) noexcept;
+
+  /**
+    解析データの所有権を移動代入する
+    @param[in] other 移動元
+    @return *this
+  */
   OleCfFile& operator=(OleCfFile&& other) noexcept;
 
   OleCfFile(const OleCfFile&) = delete;
   OleCfFile& operator=(const OleCfFile&) = delete;
 
-  const OleCfHeader& Header() const noexcept;
+  /**
+    解析したディレクトリエントリ一覧を取得する
+    @return ディレクトリエントリ一覧
+  */
   const std::vector<OleCfDirectoryEntry>& Directory() const noexcept;
-  const std::vector<std::int32_t>& Sat() const noexcept;
-  const std::optional<std::vector<std::int32_t>>& SSat() const noexcept;
-  const std::wstring& SourceFile() const noexcept;
-  const std::vector<std::string>& ParseErrors() const noexcept;
-  bool ParsingError() const noexcept;
 
+  /**
+    指定したストリームのペイロードを取得する
+    @param[in] directory ペイロードを取得するディレクトリエントリ
+    @return ペイロード。取得できない場合は空
+  */
   std::optional<std::vector<std::uint8_t>> GetPayloadForDirectory(const OleCfDirectoryEntry& directory);
 
 private:
