@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.61.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-17 16:49+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/shell_destinations.md:1
+msgid "Jump List Pinned Items"
+msgstr "ピン留めされた項目"
+
+#: ../../source/adhoc-command/shell_destinations.md:3
+msgid "Windowsのジャンプリストにピン留めされた項目を検索候補として表示する。候補を実行すると、Windowsの関連付けに従って項目を開く。"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:5
+msgid "![](../image/adhoc-command/shell-destinations/input.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:7
+msgid "Usage"
+msgstr "使い方"
+
+#: ../../source/adhoc-command/shell_destinations.md:9
+msgid "入力欄にキーワードを入力すると、そのキーワードを含むピン留め項目を表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:11
+msgid "![](../image/adhoc-command/shell-destinations/example.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:13
+msgid "Settings"
+msgstr "設定方法"
+
+#: ../../source/adhoc-command/shell_destinations.md:15
+msgid "この機能は初期状態で有効になっている。アプリケーション設定の `拡張機能` にある `ピン留めした項目を表示する` で切り替える。"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:17
+msgid "![](../image/adhoc-command/shell-destinations/setting.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md:19
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "項目を開く"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "フォルダーを開く(ローカルパス項目のみ)"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "`Alt-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/shell_destinations.md
+msgid "プロパティを開く(ローカルパス項目のみ)"
+msgstr ""
+

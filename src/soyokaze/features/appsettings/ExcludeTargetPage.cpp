@@ -130,7 +130,7 @@ void ExcludeTargetPage::OnOK()
 	}
 
 	settingsPtr->Set(_T("ExcludeTarget:PatternCount"), mDisplayNamePatternList.GetCount());
-	for (int index = 0; index < mDisplayNamePatternList.GetCount(); ++index) {
+	for (index = 0; index < mDisplayNamePatternList.GetCount(); ++index) {
 		_stprintf_s(key, _T("ExcludeTarget:Pattern%d"), index);
 		settingsPtr->Set(key, mDisplayNamePatternList.GetItemText(index));
 	}

@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.61.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-17 16:49+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/office_favorites.md:1
+msgid "Office Favorites"
+msgstr "Officeのお気に入り項目"
+
+#: ../../source/adhoc-command/office_favorites.md:3
+msgid "Word、Excel、PowerPointでお気に入り登録(ピン留めした)ファイルを検索候補として表示する。ローカルに保存されたファイルのほか、SharePointやOneDrive上のファイルも対象になる。"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:5
+msgid "![](../image/adhoc-command/office-favorites/input.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:7
+msgid "候補はアプリごとに「お気に入り(Word)」「お気に入り(Excel)」「お気に入り(PowerPoint)」として表示される。名前を入力して候補を絞り込み、対象のファイルを実行できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:9
+msgid "Usage"
+msgstr "使い方"
+
+#: ../../source/adhoc-command/office_favorites.md:11
+msgid "Officeでピン留めしたファイル名を入力して候補を検索する"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:13
+msgid "![](../image/adhoc-command/office-favorites/example.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:15
+msgid "ファイル名は、取得できる場合はOfficeに保存された表示名を使い、それ以外はファイル名を使う。"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:17
+msgid "Settings"
+msgstr "設定方法"
+
+#: ../../source/adhoc-command/office_favorites.md:19
+msgid ""
+"この機能は初期状態で有効になっている。アプリケーション設定の `拡張機能` > `システム関連の機能` にある "
+"`Word/Excel/PowerPointのお気に入りを表示する` で切り替える。"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:21
+msgid "![](../image/adhoc-command/office-favorites/setting.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:23
+msgid "Notes"
+msgstr "備考"
+
+#: ../../source/adhoc-command/office_favorites.md:25
+msgid "ローカルファイルは、ファイルが存在する項目だけが候補に表示される"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:26
+msgid "SharePoint／OneDrive上のピン留め項目は、Office側の同期状況によって候補への反映に時間がかかる場合がある"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md:28
+msgid "Per-Key Behavior"
+msgstr "実行時の動作"
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "押下キー"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "動作"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "`Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "ファイルを開く"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "`Ctrl-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "ファイルのあるフォルダを開く(ローカルファイルのみ)"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "`Alt-Enter`"
+msgstr ""
+
+#: ../../source/adhoc-command/office_favorites.md
+msgid "ファイルのプロパティを開く(ローカルファイルのみ)"
+msgstr ""
+

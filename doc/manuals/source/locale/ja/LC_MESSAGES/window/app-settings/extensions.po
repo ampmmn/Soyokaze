@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 07:19+0900\n"
+"POT-Creation-Date: 2026-10-17 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -106,10 +106,40 @@ msgid "[Windows設定](/adhoc-command/windowssettings)の各ページ項目を�
 msgstr ""
 
 #: ../../source/window/app-settings/extensions.md:29
-msgid "`環境変数を候補として表示する`"
+msgid "`Word/Excel/PowerPointのお気に入りを候補として表示する`"
 msgstr ""
 
 #: ../../source/window/app-settings/extensions.md:30
+msgid "Word/Excel/PowerPointでピン止め(お気に入り登録)したファイルを候補として表示・実行する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:31
+msgid "`ピン留めした項目を表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:32
+msgid ""
+"アプリによっては、最近使った項目に対するタスクバー上でピン留めできるものがある。これを表示・実行する   "
+"(アプリそのものに対するピン留めではないので注意)"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:34
+msgid "`環境変数を候補として表示する`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:35
 msgid "[環境変数](/adhoc-command/env)の一覧を候補として表示する"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:36
+msgid "`時刻と日付`"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:37
+msgid "現在の日時や日数オフセットによる日時を候補として表示する。詳細は[時間差・日時](/adhoc-command/timespan)を参照"
+msgstr ""
+
+#: ../../source/window/app-settings/extensions.md:38
+msgid "`プレフィックス`: 現在の日時を表示するためのプレフィックス(既定値は`date`)"
 msgstr ""
 

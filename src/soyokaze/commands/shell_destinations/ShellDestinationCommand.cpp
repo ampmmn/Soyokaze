@@ -70,7 +70,7 @@ bool IsLocalPath(const CString& path)
 */
 bool WriteTemporaryLink(const std::vector<unsigned char>& linkData, CString& path)
 {
-	TCHAR tempDirectory[MAX_PATH_NTFS]{};
+	TCHAR tempDirectory[MAX_PATH]{};  // GetTempPathでMAX_PATHを超えるケースは通常ない
 	DWORD directoryLength = GetTempPath(_countof(tempDirectory), tempDirectory);
 	if (directoryLength == 0 || directoryLength >= _countof(tempDirectory)) {
 		return false;
@@ -204,6 +204,11 @@ bool ShellDestinationCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** 
 
 HICON ShellDestinationCommand::GetIcon()
 {
+	HICON linkIcon = IconLoader::Get()->LoadLnkIcon(in->mEntry.lnk);
+	if (linkIcon != nullptr) {
+		return linkIcon;
+	}
+
 	if (in->mEntry.isDirectory) {
 		return IconLoader::Get()->LoadFolderIcon();
 	}

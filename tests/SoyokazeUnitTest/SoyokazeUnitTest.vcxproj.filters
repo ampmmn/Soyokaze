@@ -25,9 +25,6 @@
     <Filter Include="soyokaze\control">
       <UniqueIdentifier>{3E5890C2-2F02-4CC4-97B9-81A13F55B023}</UniqueIdentifier>
     </Filter>
-    <Filter Include="soyokaze\features\keywordmanager">
-      <UniqueIdentifier>{e39d97f2-b559-4366-8c6a-1ec7ce62213b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="soyokaze\commands\shellexecute">
       <UniqueIdentifier>{548c770a-4503-4831-b7f4-ca6c0be7ce9a}</UniqueIdentifier>
     </Filter>
@@ -106,6 +103,9 @@
     <Filter Include="soyokaze\commands\office_favorites">
       <UniqueIdentifier>{4f0c2a7e-9b1d-4e3a-8c55-2d7e6a1b9f40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\commands\shell_destinations">
+      <UniqueIdentifier>{4370a88f-3f65-4cb3-a465-96a44f8aef37}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\group">
       <UniqueIdentifier>{ced17daa-07bb-4b2f-be17-af50c5fcdce7}</UniqueIdentifier>
     </Filter>
@@ -135,9 +135,6 @@
     <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp">
       <Filter>soyokaze\control</Filter>
     </ClCompile>
-    <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp">
-      <Filter>soyokaze\features\keywordmanager</Filter>
-    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\shellexecute\ShellExecCommandTest.cpp">
       <Filter>soyokaze\commands\shellexecute</Filter>
     </ClCompile>
@@ -146,6 +143,15 @@
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\shelluri\ShellUriCommandTest.cpp">
       <Filter>soyokaze\commands\shelluri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\AutomaticDestinationsFileTest.cpp">
+      <Filter>soyokaze\commands\shell_destinations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandTest.cpp">
+      <Filter>soyokaze\commands\shell_destinations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandProviderTest.cpp">
+      <Filter>soyokaze\commands\shell_destinations</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\snippetgroup\SnippetGroupParamTest.cpp">
       <Filter>soyokaze\commands\snippetgroup</Filter>
@@ -322,6 +328,33 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\matcher\PartialMatchPatternTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\core\LauncherProcessContextTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandMapTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\core\CommandRepositoryTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\common\CommandImportNameResolverTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\control\ImportCommandsDialogTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\features\keywordmanager\CommandImportExportTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\control\KeywordEditUndoHistoryTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\hotkey\CommandHotKeyMappingsTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\UpdateInfoTest.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

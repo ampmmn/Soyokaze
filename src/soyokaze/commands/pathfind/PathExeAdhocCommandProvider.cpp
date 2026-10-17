@@ -160,7 +160,7 @@ void PathExeAdhocCommandProvider::QueryAdhocCommands(
 		static const launcherapp::utility::Regex regExe(_T("exe$"));
 		if (regExe.PartialMatch(wholeWord) == false) {
 			const CString scheme = isIPv4 ? _T("http://") : _T("https://");
-			commands.Add(CommandQueryItem(Pattern::WholeMatch, new PathURLCommand(CString(scheme + wholeWord))));
+			commands.Add(CommandQueryItem(Pattern::PartialMatch, new PathURLCommand(CString(scheme + wholeWord))));
 			return ;
 		}
 	}

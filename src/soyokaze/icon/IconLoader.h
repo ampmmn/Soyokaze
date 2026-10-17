@@ -22,6 +22,10 @@ public:
 	// イメージファイルからアイコンを取得
 	HICON LoadIconFromImageFile(const CString& imageFilePath, bool isShared);
 
+  // .lnkからアイコンを取得
+  HICON LoadLnkIcon(std::vector<uint8_t>& lnkData);
+
+
 	// 指定したアイコンはIconLoaderが管理しているものか?
 	bool HasIcon(HICON icon);
 

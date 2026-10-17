@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.56.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 10:31+0900\n"
+"POT-Creation-Date: 2026-10-17 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -55,55 +55,61 @@ msgstr ""
 msgid "`$target`が実際に開かれる対象(ファイルやフォルダ)のパスに置き換えられる"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:14
-msgid "`「ファイル名を指定して実行」機能を使用する`"
+#: ../../source/window/app-settings/command-execute.md:13
+#, python-brace-format
+msgid "`${target:s}`を指定した場合、パス区切り文字を`/'にしたうえで置き換える"
 msgstr ""
 
 #: ../../source/window/app-settings/command-execute.md:15
+msgid "`「ファイル名を指定して実行」機能を使用する`"
+msgstr ""
+
+#: ../../source/window/app-settings/command-execute.md:16
 msgid "[`ファイル名を指定して実行`](#ファイル名を指定して実行) コマンドを有効にする。"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:17
+#: ../../source/window/app-settings/command-execute.md:18
 msgid ""
 "`未登録キーワード入力時の動作`   コマンドとして登録されていない（かつ、[登録しなくても使える機能](/adhoc-commands) "
 "として作用しない） キーワードを入力したときの動作を指定する   以下の4つから選択できる。"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:20
+#: ../../source/window/app-settings/command-execute.md:21
 msgid "何もしない(入力ウインドウを閉じる)"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:21
+#: ../../source/window/app-settings/command-execute.md:22
 msgid "何もしない(入力ウインドウを閉じない)"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:22
+#: ../../source/window/app-settings/command-execute.md:23
 msgid "クリップボードにコピー"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:23
+#: ../../source/window/app-settings/command-execute.md:24
 msgid "キーワードをコマンド登録"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:25
+#: ../../source/window/app-settings/command-execute.md:26
 msgid "`管理者特権で起動する`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:26
+#: ../../source/window/app-settings/command-execute.md:27
 msgid ""
 "ランチャーアプリを管理者として実行する "
 "管理者権限で実行することにより、他の管理者権限プロセスがアクティブな状況でもランチャーのホットキーが効くようになる。   "
 "(ランチャーを通常ユーザー権限で実行している場合、管理者権限で動作するプロセス(のウインドウ)がアクティブになっている状況においてホットキーが効かない)"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:29
+#: ../../source/window/app-settings/command-execute.md:30
 msgid "`【管理者特権で実行時】コマンドを通常ユーザ権限で起動する`"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:30
+#: ../../source/window/app-settings/command-execute.md:31
 msgid "管理者特権でアプリケーションを実行している状況において、ランチャーから起動するコマンドを一般ユーザー権限で実行する"
 msgstr ""
 
-#: ../../source/window/app-settings/command-execute.md:31
+#: ../../source/window/app-settings/command-execute.md:32
 msgid "ランチャー自体は管理者権限で実行したいけれど、一方で、(セキュリティ上の理由により)コマンド実行により起動するアプリケーションを管理者権限で動かしたくない場合に使う"
 msgstr ""
+

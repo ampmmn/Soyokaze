@@ -64,6 +64,9 @@
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\office_favorites\OfficeFavoritesTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\AutomaticDestinationsFileTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\shell_destinations\ShellDestinationCommandProviderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\everything\EverythingAdhocCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\group\GroupCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\plugin\PluginSettingsTest.cpp" />

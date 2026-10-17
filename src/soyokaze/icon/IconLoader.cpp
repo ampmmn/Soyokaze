@@ -19,8 +19,12 @@
 #include <absl/container/btree_set.h>
 #pragma warning(pop)
 #include <WinHttp.h>
+#include <limits>
 #include <mutex>
 #include <thread>
+#include <objbase.h>
+#include <shobjidl.h>
+#include <wrl/client.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -113,14 +117,6 @@ struct IconLoader::PImpl : public LauncherEventListenerIF
 
 	// アイコンを登録する
 	void RegisterIcon(const CString& path, HICON icon);
-
-	// shell32.dllのアイコンをロードする
-	HICON GetShell32Icon(int index)
-	{
-		HICON icon[1];
-		UINT n = ExtractIconEx(mShell32Dll, index, icon, NULL, 1);
-		return (n == 1) ? icon[0]: NULL;
-	}
 
 	IconIndexMap& GetIconIndexMap(const CString& path)
 	{
@@ -756,6 +752,72 @@ HICON IconLoader::LoadIconFromImageFile(
 	}
 	return iconHandle;
 }
+
+/**
+  .lnkデータに設定されたアイコンを既存のキャッシュ経由で取得する
+  @return アイコンハンドル。取得できない場合はnullptr
+  @param[in] lnkData Shell Linkのバイナリデータ
+*/
+HICON IconLoader::LoadLnkIcon(std::vector<uint8_t>& lnkData)
+{
+	if (lnkData.empty() || lnkData.size() > (std::numeric_limits<ULONG>::max)()) {
+		return nullptr;
+	}
+
+	const HRESULT comResult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+	if (FAILED(comResult) && comResult != RPC_E_CHANGED_MODE) {
+		return nullptr;
+	}
+	struct ComUninitializer
+	{
+		bool mShouldUninitialize;
+		~ComUninitializer()
+		{
+			if (mShouldUninitialize) {
+				CoUninitialize();
+			}
+		}
+	} comUninitializer{ SUCCEEDED(comResult) };
+
+	Microsoft::WRL::ComPtr<IShellLinkW> shellLink;
+	if (FAILED(CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(shellLink.GetAddressOf())))) {
+		return nullptr;
+	}
+
+	Microsoft::WRL::ComPtr<IPersistStream> persistStream;
+	if (FAILED(shellLink.As(&persistStream))) {
+		return nullptr;
+	}
+
+	Microsoft::WRL::ComPtr<IStream> stream;
+	if (FAILED(CreateStreamOnHGlobal(nullptr, TRUE, stream.GetAddressOf()))) {
+		return nullptr;
+	}
+
+	ULONG bytesWritten = 0;
+	if (FAILED(stream->Write(lnkData.data(), static_cast<ULONG>(lnkData.size()), &bytesWritten)) ||
+		bytesWritten != lnkData.size()) {
+		return nullptr;
+	}
+
+	LARGE_INTEGER streamStart{};
+	if (FAILED(stream->Seek(streamStart, STREAM_SEEK_SET, nullptr)) ||
+		FAILED(persistStream->Load(stream.Get()))) {
+		return nullptr;
+	}
+
+	std::vector<wchar_t> iconPathBuffer(32768, L'\0');
+	int iconIndex = 0;
+	if (FAILED(shellLink->GetIconLocation(iconPathBuffer.data(),
+		static_cast<int>(iconPathBuffer.size()), &iconIndex)) || iconPathBuffer[0] == L'\0') {
+		return nullptr;
+	}
+
+	// 既存のパス・インデックス別キャッシュ経由でラージアイコンを取得する
+	return LoadIconResource(CString(iconPathBuffer.data()), iconIndex);
+}
+
 
 // 指定したアイコンはIconLoaderが管理しているものか?
 bool IconLoader::HasIcon(HICON icon)

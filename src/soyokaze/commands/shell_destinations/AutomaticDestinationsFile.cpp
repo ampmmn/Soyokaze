@@ -4,6 +4,9 @@
 
 #define NOMINMAX
 #include <objbase.h>
+#include <propsys.h>
+#include <propvarutil.h>
+#include <shlobj.h>
 #include <shobjidl.h>
 
 #include <wrl/client.h>
@@ -13,6 +16,7 @@
 #include <bit>
 #include <cctype>
 #include <cstdint>
+#include <cwctype>
 #include <limits>
 #include <memory>
 #include <sstream>
@@ -271,6 +275,68 @@ namespace
     return std::equal(shellLinkClassId.begin(), shellLinkClassId.end(), bytes.begin() + 4);
   }
 
+  struct CoTaskMemDeleter
+  {
+    void operator()(void* memory) const noexcept
+    {
+      CoTaskMemFree(memory);
+    }
+  };
+
+  struct PidlDeleter
+  {
+    using pointer = PIDLIST_ABSOLUTE;
+
+    void operator()(pointer pidl) const noexcept
+    {
+      ILFree(pidl);
+    }
+  };
+
+  /**
+    knownfolder形式の解析名をShell上の表示名に変換する
+    @param[in] value 変換対象の解析名
+    @param[out] displayName 取得した表示名
+    @return true:変換成功 false:対象外または変換失敗
+  */
+  bool TryGetKnownFolderDisplayName(const std::wstring& value, std::wstring& displayName)
+  {
+    constexpr wchar_t prefix[] = L"knownfolder:";
+    constexpr std::size_t prefixLength = std::size(prefix) - 1;
+
+    std::wstring parsingName(value);
+    while (!parsingName.empty() && std::iswspace(parsingName.back()) != 0) {
+      parsingName.pop_back();
+    }
+    if (parsingName.size() <= prefixLength ||
+      CompareStringOrdinal(parsingName.data(), static_cast<int>(prefixLength),
+        prefix, static_cast<int>(prefixLength), TRUE) != CSTR_EQUAL) {
+      return false;
+    }
+
+    CLSID knownFolderId{};
+    if (FAILED(CLSIDFromString(parsingName.c_str() + prefixLength, &knownFolderId))) {
+      return false;
+    }
+
+    PIDLIST_ABSOLUTE pidl = nullptr;
+    const HRESULT parseResult = SHParseDisplayName(parsingName.c_str(), nullptr, &pidl, 0, nullptr);
+    std::unique_ptr<ITEMIDLIST, PidlDeleter> pidlOwner(pidl);
+    if (FAILED(parseResult) || pidlOwner == nullptr) {
+      return false;
+    }
+
+    PWSTR shellDisplayName = nullptr;
+    const HRESULT nameResult = SHGetNameFromIDList(pidlOwner.get(), SIGDN_NORMALDISPLAY, &shellDisplayName);
+    std::unique_ptr<wchar_t, CoTaskMemDeleter> displayNameOwner(shellDisplayName);
+    if (FAILED(nameResult) || displayNameOwner == nullptr || displayNameOwner.get()[0] == L'\0') {
+      return false;
+    }
+
+    displayName.assign(displayNameOwner.get());
+    return true;
+  }
+
   std::wstring ReadShellLinkNameString(const std::vector<std::uint8_t>& bytes)
   {
     if (bytes.size() > (std::numeric_limits<ULONG>::max)())
@@ -312,6 +378,29 @@ namespace
     }
 
     std::vector<wchar_t> buffer(32768, L'\0');
+
+    // System.Titleを優先し、取得できない場合は従来の説明文字列を使う
+    PROPERTYKEY titleKey{};
+    if (SUCCEEDED(PSGetPropertyKeyFromName(L"System.Title", &titleKey)))
+    {
+      Microsoft::WRL::ComPtr<IPropertyStore> propertyStore;
+      if (SUCCEEDED(shellLink.As(&propertyStore)))
+      {
+        PROPVARIANT titleValue{};
+        if (SUCCEEDED(propertyStore->GetValue(titleKey, &titleValue)))
+        {
+          const HRESULT convertResult = PropVariantToString(
+            titleValue, buffer.data(), static_cast<UINT>(buffer.size()));
+          PropVariantClear(&titleValue);
+          if (SUCCEEDED(convertResult) && buffer[0] != L'\0')
+          {
+            return buffer.data();
+          }
+        }
+      }
+    }
+
+    std::fill(buffer.begin(), buffer.end(), L'\0');
     if (FAILED(shellLink->GetDescription(buffer.data(), static_cast<int>(buffer.size()))))
     {
       return {};
@@ -322,7 +411,12 @@ namespace
   std::wstring GetDisplayPath(const DestListEntry& entry, const std::vector<std::uint8_t>& linkBytes)
   {
     std::wstring value = ReadShellLinkNameString(linkBytes);
-    return value.empty() ? entry.Path : value;
+    if (value.empty()) {
+      value = entry.Path;
+    }
+
+    std::wstring shellDisplayName;
+    return TryGetKnownFolderDisplayName(value, shellDisplayName) ? shellDisplayName : value;
   }
 
   bool TryCreatePinnedEntry(
@@ -466,4 +560,3 @@ bool AutomaticDestinationsFile::GetPinnedEntry(size_t index, AutomaticDestinatio
 }
 
 }}}
-

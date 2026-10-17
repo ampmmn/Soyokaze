@@ -2,6 +2,87 @@
 #include "gtest/gtest.h"
 #include "icon/IconLoader.h"
 
+#include <cstdint>
+#include <limits>
+#include <objbase.h>
+#include <shobjidl.h>
+#include <vector>
+#include <wrl/client.h>
+
+namespace
+{
+    class ComApartment
+    {
+    public:
+        ComApartment()
+            : mResult(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED))
+        {
+        }
+
+        ~ComApartment()
+        {
+            if (SUCCEEDED(mResult)) {
+                CoUninitialize();
+            }
+        }
+
+        bool IsAvailable() const
+        {
+            return SUCCEEDED(mResult) || mResult == RPC_E_CHANGED_MODE;
+        }
+
+    private:
+        HRESULT mResult;
+    };
+
+    /**
+      テスト用に指定アイコン場所を持つShell Linkデータを作成する
+      @param[in] iconPath アイコンファイルのパス
+      @param[in] iconIndex アイコンのインデックス
+      @param[out] linkData 作成したShell Linkデータ
+      @return true:成功 false:失敗
+    */
+    bool CreateShellLinkData(const CString& iconPath, int iconIndex, std::vector<uint8_t>& linkData)
+    {
+        Microsoft::WRL::ComPtr<IShellLinkW> shellLink;
+        if (FAILED(CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER,
+            IID_PPV_ARGS(shellLink.GetAddressOf())))) {
+            return false;
+        }
+        if (FAILED(shellLink->SetPath(L"C:\\test.exe")) ||
+            FAILED(shellLink->SetIconLocation(iconPath, iconIndex))) {
+            return false;
+        }
+
+        Microsoft::WRL::ComPtr<IPersistStream> persistStream;
+        if (FAILED(shellLink.As(&persistStream))) {
+            return false;
+        }
+
+        Microsoft::WRL::ComPtr<IStream> stream;
+        if (FAILED(CreateStreamOnHGlobal(nullptr, TRUE, stream.GetAddressOf())) ||
+            FAILED(persistStream->Save(stream.Get(), TRUE))) {
+            return false;
+        }
+
+        STATSTG stat{};
+        if (FAILED(stream->Stat(&stat, STATFLAG_NONAME)) ||
+            stat.cbSize.QuadPart > (std::numeric_limits<ULONG>::max)()) {
+            return false;
+        }
+
+        linkData.resize(static_cast<std::size_t>(stat.cbSize.QuadPart));
+        LARGE_INTEGER streamStart{};
+        if (FAILED(stream->Seek(streamStart, STREAM_SEEK_SET, nullptr))) {
+            return false;
+        }
+
+        ULONG bytesRead = 0;
+        return SUCCEEDED(stream->Read(linkData.data(), static_cast<ULONG>(linkData.size()), &bytesRead)) &&
+            bytesRead == linkData.size();
+    }
+}
+
 class IconLoaderTest : public ::testing::Test {
 protected:
     IconLoader* loader;
@@ -68,6 +149,40 @@ TEST_F(IconLoaderTest, LoadIconResourceWithInvalidDllReturnsNull) {
     CString invalidDll(_T("Z:\\notfound.dll"));
     HICON icon = loader->LoadIconResource(invalidDll, 0);
     EXPECT_EQ(icon, nullptr);
+}
+
+TEST_F(IconLoaderTest, LoadLnkIconReturnsCachedLargeIcon)
+{
+    ComApartment comApartment;
+    ASSERT_TRUE(comApartment.IsAvailable());
+
+    TCHAR systemDirectory[MAX_PATH] = {};
+    UINT length = GetSystemDirectory(systemDirectory, MAX_PATH);
+    ASSERT_GT(length, 0u);
+    ASSERT_LT(length, static_cast<UINT>(MAX_PATH));
+
+    CString iconPath(systemDirectory);
+    iconPath += _T("\\shell32.dll");
+
+    std::vector<uint8_t> linkData;
+    ASSERT_TRUE(CreateShellLinkData(iconPath, 0, linkData));
+
+    HICON firstIcon = loader->LoadLnkIcon(linkData);
+    ASSERT_NE(firstIcon, nullptr);
+    EXPECT_TRUE(loader->HasIcon(firstIcon));
+
+    auto statisticsAfterFirst = loader->GetCacheStatistics();
+    HICON secondIcon = loader->LoadLnkIcon(linkData);
+    auto statisticsAfterSecond = loader->GetCacheStatistics();
+
+    EXPECT_EQ(firstIcon, secondIcon);
+    EXPECT_EQ(statisticsAfterFirst.iconIndexCacheIconCount, statisticsAfterSecond.iconIndexCacheIconCount);
+}
+
+TEST_F(IconLoaderTest, LoadLnkIconReturnsNullForInvalidData)
+{
+    std::vector<uint8_t> invalidData;
+    EXPECT_EQ(nullptr, loader->LoadLnkIcon(invalidData));
 }
 
 TEST_F(IconLoaderTest, GetStreamFromPathWithInvalidPathReturnsFalse) {

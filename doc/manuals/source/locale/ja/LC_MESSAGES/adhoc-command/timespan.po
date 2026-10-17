@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 12:08+0900\n"
+"POT-Creation-Date: 2026-10-17 16:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -24,14 +24,65 @@ msgid "Timespan"
 msgstr "簡易時間計算"
 
 #: ../../source/adhoc-command/timespan.md:3
+msgid "時間差"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:4
 msgid "`HH:MM-HH:MM`の型式で入力すると、時間間隔を分単位で表示する。   コマンドを実行すると時間をクリップボードにコピーする。"
 msgstr ""
 
-#: ../../source/adhoc-command/timespan.md:6
+#: ../../source/adhoc-command/timespan.md:7
 msgid "例: `13:43-12:50` → `53分`"
 msgstr ""
 
-#: ../../source/adhoc-command/timespan.md:8
+#: ../../source/adhoc-command/timespan.md:9
 msgid "![](../image/adhoc-command/timespan/example.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:11
+msgid "日時"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:13
+msgid "「拡張機能」の`時刻と日付`が有効な場合に利用できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:15
+msgid "`date`(プレフィックス)のみを入力すると、以下を候補として表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:16
+msgid "日時: `2026/10/10 14:17`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:17
+msgid "日付: `2026/10/10`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:18
+msgid "時刻: `14:17`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:19
+msgid "曜日: `土曜日`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:20
+msgid ""
+"`N day(s) later`/`N day(s) "
+"ago`、`N日後`/`N日前`を入力すると、現在時刻を起点に`N`日後/前の日付を基準として、プレフィックス入力時と同じ4候補(日時・日付・時刻・曜日)を表示する"
+"   プレフィックスは不要。例: `3 days later`、`1日前`。日数の上限は36500日(約100年)"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:22
+msgid "時刻は現在の時刻のまま。日付・曜日のみが`N`日分ずれる"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:23
+msgid "候補を実行すると、表示した文字列をクリップボードにコピーする"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:24
+msgid "プレフィックスは「拡張機能」の設定で変更できる。同じプレフィックスを他のコマンドと設定した場合は、両方の候補が表示される"
 msgstr ""
 
