@@ -53,6 +53,9 @@
 - [pato/mathypad](https://github.com/pato/mathypad)
   - 電卓の単位付き計算機能のために利用している
   - オリジナル版ではC/C++向けのシンボルを公開していないため、利用するためのAPI層を独自追加し、Windows向けにビルドしたものを利用している
+
+- [EricZimmerman/OleCf](https://github.com/EricZimmerman/OleCf)
+  - ピン留された項目(automaticDestinations-ms)の情報を解析するにあたり、OLECF形式データの解析処理の参考とした
 ```
 
 ```{only} not soyokaze
