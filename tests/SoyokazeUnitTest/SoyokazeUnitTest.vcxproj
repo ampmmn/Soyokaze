@@ -36,6 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp" />
+    <ClCompile Include="..\testcode\launcher_proxy\NormalPriviledgeRequestBufferTest.cpp">
+      <AdditionalIncludeDirectories>$(SolutionDir)launcher_proxy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\..\src\launcher_proxy\NormalPriviledgeRequestBuffer.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\app\AppProcessTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />

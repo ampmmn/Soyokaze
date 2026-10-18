@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 class NormalPriviledgeAgent
 {
@@ -11,8 +12,7 @@ public:
 	int Run(HINSTANCE hInst);
 
 private:
-	static LRESULT CALLBACK OnWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
-	void ProcRequest();
+	void ProcRequest(const std::string& request);
 
 private:
 	struct PImpl;

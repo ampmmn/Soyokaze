@@ -21,9 +21,6 @@ using json = nlohmann::json;
 constexpr LPCTSTR PIPE_PATH = _T("\\\\.\\pipe\\LauncherAppNormalPriviledgePipe");
 constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer");
 
-// 親の生存チェック用タイマー
-constexpr int TIMERID_HEARTBEAT = 1;
-
 namespace launcherapp { namespace processproxy {
 
 struct NormalPriviledgeProcessProxy::PImpl
@@ -32,6 +29,7 @@ struct NormalPriviledgeProcessProxy::PImpl
 	bool StartAgentProcessIfNeeded();
 	bool StartAgentProcess();
 	bool GetServerHwnd(HWND& hwnd);
+	bool IsServerAvailable(HWND hwnd);
 
 	bool SendRequest(json& json);
 	bool ReceiveResponse(json& json);
@@ -117,6 +115,10 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 		}
 	}
 
+	if (IsServerAvailable(hwndServer) == false) {
+		spdlog::info("Normal privilege agent is busy or not responding.");
+		return false;
+	}
 	return true;
 }
 
@@ -179,6 +181,18 @@ bool NormalPriviledgeProcessProxy::PImpl::GetServerHwnd(HWND& hwnd)
 	}
 	hwnd = hwndProxy;
 	return true;
+}
+
+/**
+  サーバウィンドウにビジー状態を問い合わせる
+  @param[in] hwnd サーバウィンドウのハンドル
+  @return true:受付可能 false:ビジーまたは問い合わせ失敗
+*/
+bool NormalPriviledgeProcessProxy::PImpl::IsServerAvailable(HWND hwnd)
+{
+	DWORD_PTR result = 1;
+	LRESULT sendResult = SendMessageTimeout(hwnd, WM_APP + 1, 0, 0, SMTO_ABORTIFHUNG, 100, &result);
+	return sendResult != 0 && result == 0;
 }
 
 bool NormalPriviledgeProcessProxy::PImpl::SendRequest(json& json_req)

@@ -13,6 +13,7 @@
 
 - #313 インポート時のコマンド登録と更新通知を一括化する
 - #318 Migemo メタ文字のエスケープをやめる
+- #320 NormalPriviledgeProcessProxy::PImpl::SendRequest パイプ書き込み中にブロックすることがある
 
 ## 0.61.0 - 2026-10-04
 

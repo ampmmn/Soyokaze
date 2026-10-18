@@ -118,6 +118,9 @@
     <Filter Include="soyokaze\commands\plugin">
       <UniqueIdentifier>{6cbd7330-58cc-4383-a831-712c2e1202ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="launcher_proxy">
+      <UniqueIdentifier>{46b6495c-da65-41db-8bd1-d143493fe58e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -254,6 +257,12 @@
     </ClCompile>
     <ClCompile Include="..\testcode\python_modules\key\VKScannerTest.cpp">
       <Filter>python_module\key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\launcher_proxy\NormalPriviledgeRequestBufferTest.cpp">
+      <Filter>launcher_proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\launcher_proxy\NormalPriviledgeRequestBuffer.cpp">
+      <Filter>launcher_proxy</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\mainwindow\layout\MainWindowPositionTest.cpp">
       <Filter>soyokaze\mainwindow\layout</Filter>

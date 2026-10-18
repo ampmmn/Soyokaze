@@ -1974,8 +1974,10 @@
     <ClInclude Include="AutoWrap.h" />
     <ClInclude Include="ExplorerFunctions.h" />
     <ClInclude Include="launcher_proxy.h" />
+    <ClInclude Include="LncrNormalProviledgeProcessProxyWindow.h" />
     <ClInclude Include="logger\Logger.h" />
     <ClInclude Include="NormalPriviledgeAgent.h" />
+    <ClInclude Include="NormalPriviledgeRequestBuffer.h" />
     <ClInclude Include="onenote\OneNoteAppProxy.h" />
     <ClInclude Include="ProxyCommand.h" />
     <ClInclude Include="ProxyCommandRepository.h" />
@@ -2007,8 +2009,10 @@
     <ClCompile Include="AutoWrap.cpp" />
     <ClCompile Include="ExplorerFunctions.cpp" />
     <ClCompile Include="launcher_proxy.cpp" />
+    <ClCompile Include="LncrNormalProviledgeProcessProxyWindow.cpp" />
     <ClCompile Include="logger\Logger.cpp" />
     <ClCompile Include="NormalPriviledgeAgent.cpp" />
+    <ClCompile Include="NormalPriviledgeRequestBuffer.cpp" />
     <ClCompile Include="onenote\OneNoteAppProxy.cpp" />
     <ClCompile Include="ProxyCommandRepository.cpp" />
     <ClCompile Include="proxycommands\ActiveCalcSheetProxyCommand.cpp" />
