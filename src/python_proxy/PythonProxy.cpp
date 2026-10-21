@@ -20,6 +20,9 @@
 // Python拡張コマンドでの実行時間のタイムアウト
 constexpr uint64_t TIMEOUT_IN_MSEC = 10 * 1000; // 10秒
 
+// 電卓機能での評価のタイムアウト
+constexpr uint64_t CALC_TIMEOUT_IN_MSEC = 3 * 1000; // 3秒
+
 using CStringA = ATL::CStringA;
 using CStringW = ATL::CStringW;
 using CString = ATL::CString;
@@ -77,37 +80,87 @@ struct PythonProxy::PImpl
 		mIsBusy = busy;
 	}
 
-	PyObject* mModule{nullptr};
 	PyObject* mGlobalDictForCalc{nullptr};
 
 	PyThreadState* mThreadStateForPyCmd{nullptr};
-	PyThreadState* mThreadStateForCalc{nullptr};
 	void* mInterpreter{nullptr};
 	std::atomic<bool> mIsBusy{false};
 };
 
 using scope_state = PythonProxy::PImpl::scope_state;
 
+// 電卓機能で使用を許可する組み込み関数の一覧
+static const char* const CALC_ALLOWED_BUILTINS[] = {
+	"abs", "bin", "float", "hex", "int", "max", "min", "oct", "round"
+};
+
+/**
+  電卓機能用のグローバル辞書を作成する
+  mathモジュールの関数・定数と、電卓機能で使用する組み込み関数のみを登録する
+  それ以外の組み込み関数は使用できないようにするため、
+  辞書の__(builtins__)は空の辞書に置き換える
+  @return 作成した辞書
+*/
+static PyObject* CreateCalcGlobalDict()
+{
+	PyObject* globals = PyDict_New();
+	if (globals == nullptr) {
+		return nullptr;
+	}
+
+	// mathモジュールの関数・定数を登録する
+	// (__(name__)などのモジュール属性は登録しない)
+	scope_pyobject mathModule = PyImport_ImportModule("math");
+	if (mathModule != nullptr) {
+		PyObject* mathDict = PyModule_GetDict(mathModule);
+		PyObject* key = nullptr;
+		PyObject* value = nullptr;
+		Py_ssize_t pos = 0;
+		while (PyDict_Next(mathDict, &pos, &key, &value)) {
+			if (PyUnicode_Check(key) == false) {
+				continue;
+			}
+			Py_ssize_t nameLen = 0;
+			const char* name = PyUnicode_AsUTF8AndSize(key, &nameLen);
+			if (name == nullptr || nameLen == 0 || name[0] == '_') {
+				continue;
+			}
+			PyDict_SetItemString(globals, name, value);
+		}
+		// math.xxx() の形式でも参照できるようにモジュール自身を登録する
+		PyDict_SetItemString(globals, "math", mathModule);
+	}
+
+	// 電卓機能で使用する組み込み関数のみを登録する
+	PyObject* builtins = PyEval_GetBuiltins();
+	if (builtins != nullptr) {
+		for (auto name : CALC_ALLOWED_BUILTINS) {
+			PyObject* func = PyDict_GetItemString(builtins, name);
+			if (func != nullptr) {
+				PyDict_SetItemString(globals, name, func);
+			}
+		}
+	}
+
+	// 組み込み関数を呼び出せないようにする
+	// (グローバル辞書に__(builtins__)がない場合、インタープリタ側の組み込み関数が使用される)
+	scope_pyobject emptyBuiltins = PyDict_New();
+	if (emptyBuiltins != nullptr) {
+		PyDict_SetItemString(globals, "__builtins__", emptyBuiltins);
+	}
+
+	return globals;
+}
+
 bool PythonProxy::PImpl::Initialize()
 {
 	// 初期化
 	Py_Initialize();
 
-	// 辞書生成
-	mModule = PyImport_AddModule("__main__");
-	mGlobalDictForCalc = PyModule_GetDict(mModule);
-
-// 電卓機能向けの初期化
-	PyObject* pyMathModule = PyImport_ImportModule("math");
-	PyObject* matchDict = PyModule_GetDict(pyMathModule);
-	PyDict_Merge(mGlobalDictForCalc, matchDict, 1);
-
-	Py_DecRef(pyMathModule);
+	// 電卓機能向けのグローバル辞書を作成する
+	mGlobalDictForCalc = CreateCalcGlobalDict();
 
 	mThreadStateForPyCmd = PyThreadState_Get();
-
-	// サブインタープリターを作成する
-	mThreadStateForCalc = Py_NewInterpreter();
 
 	// GILを解放し、threadstateをnullにしておく
 	PyEval_SaveThread();
@@ -151,18 +204,20 @@ bool PythonProxy::PImpl::InitializeForPyCmd(PyObject* globalDict)
 
 void PythonProxy::PImpl::Finalize()
 {
-	if (mThreadStateForCalc == nullptr) {
+	if (mThreadStateForPyCmd == nullptr) {
 		return;
 	}
 
-	PyEval_RestoreThread(mThreadStateForCalc);
-	// Initializeの取り消し(Initializeで作成したサブインタープリタも破棄する)
+	PyEval_RestoreThread(mThreadStateForPyCmd);
+
+	// 電卓機能用のグローバル辞書を解放する
+	Py_XDECREF(mGlobalDictForCalc);
+	mGlobalDictForCalc = nullptr;
+
+	// Initializeの取り消し
 	Py_Finalize();
 
 	mThreadStateForPyCmd = nullptr;
-	mThreadStateForCalc = nullptr;
-	mGlobalDictForCalc = nullptr;
-	mModule = nullptr;
 }
 
 
@@ -186,11 +241,37 @@ void PythonProxy::Finalize()
 	});
 }
 
+/**
+  Pythonオブジェクトの文字列表現を取得する
+  文字列表現を取得できない場合(例: 桁数の多い整数)は空文字列を返す
+  @return 文字列表現
+  @param[in] obj 対象のオブジェクト
+*/
 static std::string py2str(PyObject* obj)
 {
+	if (obj == nullptr) {
+		return std::string();
+	}
+
 	scope_pyobject repr = PyObject_Repr(obj);
+	if ((PyObject*)repr == nullptr) {
+		// 文字列表現の取得に失敗した場合
+		PyErr_Clear();
+		return std::string();
+	}
+
 	scope_pyobject str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-	return std::string(PyBytes_AsString(str));
+	if ((PyObject*)str == nullptr) {
+		PyErr_Clear();
+		return std::string();
+	}
+
+	const char* raw = PyBytes_AsString(str);
+	if (raw == nullptr) {
+		PyErr_Clear();
+		return std::string();
+	}
+	return std::string(raw);
 }
 
 static void MakeErrMsg(char** errMsg, const std::string& msgstr)
@@ -277,22 +358,32 @@ bool PythonProxy::Evaluate(const char* src, const char** args, char** errMsg)
 		std::thread th([&isTimeout, window, eval_event]() {
 
 			// 一定時間待ってもスクリプト評価が完了しない場合は強制終了させる
+			// (カーネルで待機することで、スクリプト終了と同時に監視が解除される)
 			auto s = GetTickCount64();
-			while(GetTickCount64() - s < TIMEOUT_IN_MSEC && window->IsAbort() == false) {
+			while (true) {
 
-				Sleep(50);
-
-				if (WaitForSingleObject(eval_event, 0) == WAIT_OBJECT_0) {
+				// 10ms単位で分割して待機する
+				// (アプリの中止要求を定期的に確認するため)
+				if (WaitForSingleObject(eval_event, 10) == WAIT_OBJECT_0) {
 					// スクリプト側の評価が終わったので監視をやめる
 					return;
 				}
-			}
 
-			// 中止するために例外を発行する
-			PyErr_SetInterrupt();
+				if (window->IsAbort()) {
+					// 中止するために例外を発行する
+					PyErr_SetInterrupt();
+					return;
+				}
 
-			if (window->IsAbort() == false) {
-				isTimeout = true;
+				if (GetTickCount64() - s >= TIMEOUT_IN_MSEC) {
+					// 中止するために例外を発行する
+					PyErr_SetInterrupt();
+
+					if (window->IsAbort() == false) {
+						isTimeout = true;
+					}
+					return;
+				}
 			}
 		});
 
@@ -366,7 +457,7 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 			return false;
 		}
 
-		scope_state _scope_state(in.get(), in->mThreadStateForCalc);
+		scope_state _scope_state(in.get(), in->mThreadStateForPyCmd);
 
 		scope_pyobject codeObj = Py_CompileString((LPCSTR)src, "<string>", Py_eval_input);
 		if (codeObj == nullptr) {
@@ -374,7 +465,32 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 			return false;
 		}
 
+		// タイムアウト監視スレッド側で評価の完了を検知するためのイベント
+		HANDLE eval_event = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+
+		// 一定時間経っても評価が完了しない場合は中断する
+		// (カーネルで待機することで、評価終了と同時に監視が解除される)
+		std::thread th([eval_event]() {
+
+			if (WaitForSingleObject(eval_event, CALC_TIMEOUT_IN_MSEC) == WAIT_TIMEOUT) {
+
+				// 評価が終わった直後だった場合は中断しない
+				if (WaitForSingleObject(eval_event, 0) == WAIT_OBJECT_0) {
+					return;
+				}
+
+				// 中止するために例外を発行する
+				PyErr_SetInterrupt();
+			}
+		});
+
 		scope_pyobject pyObject = PyEval_EvalCode(codeObj, in->mGlobalDictForCalc, in->mGlobalDictForCalc);
+
+		SetEvent(eval_event);
+
+		// タイムアウト監視スレッドの完了を待つ
+		th.join();
+		CloseHandle(eval_event);
 
 		// 文をインタープリタ側で評価した結果エラーだった場合
 		if (PyErr_Occurred() != nullptr) {
@@ -386,7 +502,18 @@ bool PythonProxy::EvalForCalculate(const char* src, char** result)
 			return false;
 		}
 
+		// 数値(または文字列)以外の結果が返された場合は採用しない
+		if (PyLong_Check(pyObject) == 0 &&
+			PyFloat_Check(pyObject) == 0 &&
+			PyUnicode_Check(pyObject) == 0) {
+			return false;
+		}
+
 		std::string s(py2str(pyObject));
+		if (s.empty()) {
+			// 文字列表現を取得できない場合は採用しない
+			return false;
+		}
 
 		size_t len = s.size() + 1;
 		*result = new char[len];
