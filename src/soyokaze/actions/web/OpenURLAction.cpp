@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "OpenURLAction.h"
 #include "commands/common/SubProcess.h"
+#include "commands/common/ExpandFunctions.h"
 #include "externaltool/webbrowser/ConfiguredBrowserEnvironment.h"
+#include "utility/CommandLineArgument.h"
 #include "utility/Path.h"
 
 using namespace launcherapp::commands::common;
@@ -54,16 +56,19 @@ bool OpenURLAction::Perform(Parameter* param, String*)
 		return ConfiguredBrowserEnvironment::GetInstance()->OpenURL(mURL);
 	}
 
-	// パスに空白を含む場合はダブルクォーテーションで囲む
+	// URLを展開する
+	// (展開済みの値は再度解釈されてはならないため、ここでのみ展開する)
 	CString url(mURL);
-	if (url.Find(_T(" ")) != -1) {
-		url = _T("\"") + url + _T("\"");
-	}
+	ExpandArgumentsAndMacros(url, param, ArgumentQuoting::None, true);
+
+	// URLはコマンドラインとして渡すため、引用符を付けて渡す
 	CStringW params(parameter);
-	params.Replace(_T("$target"), url);
+	launcherapp::utility::ReplaceQuotedPlaceholder(params, _T("$target"), url);
 
 	SubProcess::ProcessPtr process;
 	SubProcess exec(param);
+	// パラメータは既に展開済みのため、実行時に再度展開しない
+	exec.SetExpanded(true);
 	exec.Run(browserPath, params, process);
 
 	return true;

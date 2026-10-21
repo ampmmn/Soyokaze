@@ -80,7 +80,9 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 	}
 
 	// ファイルを対象にした場合は、設定済みファイラーにも親フォルダーを渡す
+	// (展開済みの値は再度解釈されてはならないため、ここでのみ展開する)
 	CString targetPath = in->mTarget->GetPath(args_);
+	ExpandArgumentsAndMacros(targetPath, args, ArgumentQuoting::None, true);
 	if (Path::IsDirectory(targetPath) == false) {
 		PathRemoveFileSpec(targetPath.GetBuffer(MAX_PATH_NTFS));
 		targetPath.ReleaseBuffer();
@@ -95,8 +97,7 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 		launcherapp::utility::ExpandFilerParameter(param, targetPath);
 
 		auto filerPath = pref->GetFilerPath();
-		ExpandArguments(filerPath, args);
-		ExpandMacros(filerPath);
+		ExpandArgumentsAndMacros(filerPath, args, ArgumentQuoting::None, true);
 
 		isFilerAvailable = Path::FileExists(filerPath);
 		if (isFilerAvailable) {
@@ -115,6 +116,8 @@ bool OpenPathInFilerAction::Perform(Parameter* args_, String* errMsg)
 	}
 
 	SubProcess exec(ParameterBuilder::EmptyParam());
+	// パス・パラメータは既に展開済みのため、実行時に再度展開しない
+	exec.SetExpanded(true);
 	SubProcess::ProcessPtr process;
 	if (exec.Run(path, param, process) == false) {
 		if (errMsg) {

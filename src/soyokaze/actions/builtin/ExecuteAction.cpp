@@ -47,6 +47,7 @@ struct ExecuteAction::PImpl
 	std::unique_ptr<ExecutionTarget> mTarget;
 	bool mShouldRunAsAdmin{false};
 	int mHistoryPolicy{ExecuteAction::HISTORY_NONE};
+	bool mIsExpandMacros{true};
 	std::map<CString, CString> mEnvMap;
 };
 
@@ -95,6 +96,11 @@ void ExecuteAction::SetHistoryPolicy(int policy)
 	in->mHistoryPolicy = policy; 
 }
 
+void ExecuteAction::SetExpandMacros(bool expandMacros)
+{
+	in->mIsExpandMacros = expandMacros;
+}
+
 
 // Action
 // アクションの内容を示す名称
@@ -129,9 +135,14 @@ bool ExecuteAction::Perform(Parameter* args_, String* errMsg)
 		exec.SetWorkDirectory(workDir);
 	}
 
+	// マクロを展開するかどうか
+	exec.SetExpandMacros(in->mIsExpandMacros);
+
 	// 追加の環境変数
 	for (auto& item : in->mEnvMap) {
-		exec.SetAdditionalEnvironment(item.first, item.second);
+		if (exec.SetAdditionalEnvironment(item.first, item.second) == false) {
+			spdlog::warn(_T("Failed to set the environment variable. {}"), (LPCTSTR)item.first);
+		}
 	}
 
 	// プロセスを起動

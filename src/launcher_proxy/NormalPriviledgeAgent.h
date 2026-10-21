@@ -9,7 +9,7 @@ public:
 	NormalPriviledgeAgent();
 	~NormalPriviledgeAgent();
 
-	int Run(HINSTANCE hInst);
+	int Run(HINSTANCE hInst, LPCWSTR pipeName);
 
 private:
 	void ProcRequest(const std::string& request);

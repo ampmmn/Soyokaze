@@ -26,6 +26,8 @@ public:
 	void SetRunAsAdmin();
 	bool SetAdditionalEnvironment(const CString& name, const CString& value);
 	void SetHistoryPolicy(int policy);
+	// マクロを展開するかどうかを設定する
+	void SetExpandMacros(bool expandMacros);
 
 // Action
 	// アクションの内容を示す名称

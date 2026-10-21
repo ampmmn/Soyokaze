@@ -1,8 +1,5 @@
 #include "pch.h"
 #include "ShellExecTarget.h"
-#include "commands/common/ExpandFunctions.h"
-
-using namespace launcherapp::commands::common;
 
 namespace launcherapp { namespace commands { namespace shellexecute {
 
@@ -10,31 +7,24 @@ ShellExecTarget::ShellExecTarget(const CommandParam& param): mParam(param)
 {
 }
 
+// 実行時引数・マクロの展開は、実行時にSubProcessが行う
+// (ここで展開すると、展開済みの値が再度展開される可能性がある)
 CString ShellExecTarget::GetPath(Parameter* args)
 {
 	const auto& attr = SelectAttr(args);
-	auto path = attr.mPath;
-	ExpandArguments(path, args);
-	ExpandMacros(path);
-	return path;
+	return attr.mPath;
 }
 
 CString ShellExecTarget::GetParameter(Parameter* args)
 {
 	const auto& attr = SelectAttr(args);
-	auto param = attr.mParam;
-	ExpandArguments(param, args);
-	ExpandMacros(param);
-	return param;
+	return attr.mParam;
 }
 
 CString ShellExecTarget::GetWorkDir(Parameter* args)
 {
 	const auto& attr = SelectAttr(args);
-	auto workDir = attr.mDir;
-	ExpandArguments(workDir, args);
-	ExpandMacros(workDir);
-	return workDir;
+	return attr.mDir;
 }
 
 int ShellExecTarget::GetShowType(Parameter* args)

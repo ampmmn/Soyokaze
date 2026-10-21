@@ -19,8 +19,6 @@
 
 using json = nlohmann::json;
 
-constexpr LPCTSTR PIPE_PATH = _T("\\\\.\\pipe\\LauncherAppNormalPriviledgePipe");
-
 
 /**
  * @brief NormalPriviledgeAgent の内部実装クラス
@@ -175,12 +173,18 @@ NormalPriviledgeAgent::~NormalPriviledgeAgent()
 /**
  * @brief 通常権限で起動するための待ち受けサーバを起動する
  * @param hInst インスタンスハンドル
+ * @param pipeName 通信用の名前付きパイプ名
  * @return 実行結果
  */
-int NormalPriviledgeAgent::Run(HINSTANCE hInst)
+int NormalPriviledgeAgent::Run(HINSTANCE hInst, LPCWSTR pipeName)
 {
+	if (pipeName == nullptr || *pipeName == L'\0') {
+		MessageBox(nullptr, L"pipe name is not specified.", L"", 0);
+		return 1;
+	}
+
 	// 親プロセスとの通信用の名前付きパイプを開く
-	HANDLE pipeHandle = CreateFile(PIPE_PATH, GENERIC_READ|GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
+	HANDLE pipeHandle = CreateFile(pipeName, GENERIC_READ|GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
 	if (pipeHandle == INVALID_HANDLE_VALUE) {
 		auto err = GetLastError();
 		wchar_t msg[256];

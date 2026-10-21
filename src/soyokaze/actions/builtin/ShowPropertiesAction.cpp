@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShowPropertiesAction.h"
 #include "commands/common/Clipboard.h"
+#include "commands/common/ExpandFunctions.h"
 #include "actions/core/ActionParameter.h"
 #include "commands/core/CommandRepository.h"
 #include "utility/Path.h"
@@ -8,6 +9,7 @@
 
 namespace launcherapp { namespace actions { namespace builtin {
 
+using namespace launcherapp::commands::common;
 using namespace launcherapp::actions::core;
 
 class ShowpropertiesTarget : public ExecutionTarget
@@ -61,10 +63,12 @@ bool ShowPropertiesAction::Perform(Parameter* param, String* errMsg)
 	UNREFERENCED_PARAMETER(param);
 
 	auto path = in->mTarget->GetPath(param);
+	// パスの判定には展開済みのパスを使う
+	ExpandArgumentsAndMacros(path, param, ArgumentQuoting::None, true);
 	if (PathIsURL(path) || Path::FileExists(path) == false) {
 		return false;
 	}
-	
+
 	if (SHObjectProperties(nullptr, SHOP_FILEPATH, path, nullptr) == FALSE) {
 		if (errMsg) {
 			LastErrorString msg(GetLastError());
@@ -77,4 +81,3 @@ bool ShowPropertiesAction::Perform(Parameter* param, String* errMsg)
 }
 
 }}}
-

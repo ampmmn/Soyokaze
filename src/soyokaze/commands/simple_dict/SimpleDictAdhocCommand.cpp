@@ -134,12 +134,14 @@ bool SimpleDictAdhocCommand::CreateAction(Action** action)
 	argSub.Replace(_T("$key"), in->mRecord.mKey);
 	argSub.Replace(_T("$value2"), in->mRecord.mValue2);
 	argSub.Replace(_T("$value"), in->mRecord.mValue);
-	if (in->mParam->mIsExpandMacro) {
-		ExpandMacros(argSub);
-	}
 
 	int actionType = in->mParam->mActionType;
 	if (actionType == 0) {
+
+		// 実行時引数として渡すため、ここではマクロを展開する
+		if (in->mParam->mIsExpandMacro) {
+			ExpandMacros(argSub);
+		}
 
 		// 他のコマンドを実行
 		*action = new CallbackAction(_T("実行"), [&, argSub](Parameter*, String* errMsg) -> bool {
@@ -175,15 +177,15 @@ bool SimpleDictAdhocCommand::CreateAction(Action** action)
 	else if (actionType == 1) {
 		
 		// 他のファイルを実行/URLを開く
+		// (実行時引数・マクロの展開は、実行時にSubProcessが行う)
 		CString path = in->mParam->mAfterFilePath;
 		path.Replace(_T("$key"), in->mRecord.mKey);
 		path.Replace(_T("$value2"), in->mRecord.mValue2);
 		path.Replace(_T("$value"), in->mRecord.mValue);
-		if (in->mParam->mIsExpandMacro) {
-			ExpandMacros(path);
-		}
 
-		*action = new ExecuteAction(path, argSub, in->mParam->mAfterDir, in->mParam->GetAfterShowType());
+		auto execAction = new ExecuteAction(path, argSub, in->mParam->mAfterDir, in->mParam->GetAfterShowType());
+		execAction->SetExpandMacros(in->mParam->mIsExpandMacro);
+		*action = execAction;
 		return true;
 
 	}

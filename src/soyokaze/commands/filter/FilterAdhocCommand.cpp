@@ -10,6 +10,7 @@
 #include "actions/builtin/ExecuteAction.h"
 #include "actions/clipboard/CopyClipboardAction.h"
 #include "icon/IconLoader.h"
+#include "utility/CommandLineArgument.h"
 #include "utility/RefPtr.h"
 #include "resource.h"
 #include <vector>
@@ -97,19 +98,18 @@ bool FilterAdhocCommand::CreatePostFilterSubprocessAction(const HOTKEY_ATTR& hot
 		return false;
 	}
 	// コマンド実行時に起動するファイルパス上の"$select"を選択値に置換
+	// (実行時引数・マクロの展開は、実行時にSubProcessが行う)
 	CString path = in->mParam.mAfterFilePath;
 	path.Replace(_T("$select"), in->mResult.mDisplayName);
-	ExpandMacros(path);
 
 	// コマンドパラメータ上の"$select"を選択値に置換
+	// (パラメータはコマンドラインとして渡されるため、引用符を付けて渡す)
 	CString param = in->mParam.mAfterCommandParam;
-	param.Replace(_T("$select"), in->mResult.mDisplayName);
-	ExpandMacros(param);
+	launcherapp::utility::ReplaceQuotedPlaceholder(param, _T("$select"), in->mResult.mDisplayName);
 
 	// コマンド実行時のカレントディレクトリも同様に置換
 	CString workDir = in->mParam.mAfterDir;
 	workDir.Replace(_T("$select"), in->mResult.mDisplayName);
-	ExpandMacros(workDir);
 
 	// 他のファイルを実行/URLを開く
 	*action = new ExecuteAction(path, param, workDir, in->mParam.GetAfterShowType());

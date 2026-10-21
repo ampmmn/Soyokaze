@@ -974,6 +974,7 @@
     <ClInclude Include="utility\AES.h" />
     <ClInclude Include="utility\Base64.h" />
     <ClInclude Include="utility\CharConverter.h" />
+    <ClInclude Include="utility\CommandLineArgument.h" />
     <ClInclude Include="utility\Regex.h" />
     <ClInclude Include="utility\DemotedProcessToken.h" />
     <ClInclude Include="utility\HWNDRect.h" />
@@ -1566,6 +1567,7 @@
     <ClCompile Include="utility\AES.cpp" />
     <ClCompile Include="utility\Base64.cpp" />
     <ClCompile Include="utility\CharConverter.cpp" />
+    <ClCompile Include="utility\CommandLineArgument.cpp" />
     <ClCompile Include="utility\DemotedProcessToken.cpp" />
     <ClCompile Include="utility\HWNDRect.cpp" />
     <ClCompile Include="utility\ImageConverter.cpp" />

@@ -78,7 +78,9 @@ bool RunCommandAction::Perform(Parameter* param, String* errMsg)
 	RefPtr<Parameter> paramSub(param->Clone(), false);
 	if (in->mParameterTemplate.IsEmpty() == FALSE) {
 		CString paramString = in->mParameterTemplate;
-		ExpandArguments(paramString, param);
+		// この文字列は実行時引数として渡されるため、コマンドラインとしては
+		// クォートしない(クォートは展開時に行われる)
+		ExpandArguments(paramString, param, ArgumentQuoting::None);
 		paramSub->SetParameterString(paramString);
 	}
 	auto namedParamSub = GetNamedParameter(paramSub);

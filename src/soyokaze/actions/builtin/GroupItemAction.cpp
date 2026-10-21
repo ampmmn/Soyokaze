@@ -2,7 +2,6 @@
 #include "GroupItemAction.h"
 #include "RunCommandAction.h"
 #include "ExecuteAction.h"
-#include "commands/common/ExpandFunctions.h"
 #include "commands/common/CommandParameterFunctions.h"
 #include "actions/web/OpenURLAction.h"
 #include "actions/core/ActionParameter.h"
@@ -48,15 +47,10 @@ bool GroupItemAction::Perform(Parameter* param, String* errMsg)
 	}
 
 	if (in->mItem.mType == GroupItemType::Path) {
+		// 実行時引数・マクロの展開は、実行時にSubProcessが行う
 		CString path = in->mItem.mItemName;
 		CString arguments = in->mItem.mParam;
 		CString workDir = in->mItem.mWorkDir;
-		ExpandArguments(path, param);
-		ExpandArguments(arguments, param);
-		ExpandArguments(workDir, param);
-		ExpandMacros(path);
-		ExpandMacros(arguments);
-		ExpandMacros(workDir);
 
 		ExecuteAction action(path, arguments, workDir, in->mItem.mShowType);
 		RefPtr<Parameter> paramSub(param->Clone(), false);
@@ -66,9 +60,8 @@ bool GroupItemAction::Perform(Parameter* param, String* errMsg)
 	}
 
 	// URLはブラウザへの起動要求までしか完了を検知できないため、待機しない
+	// (実行時引数・マクロの展開は、実行時にOpenURLActionが行う)
 	CString url = in->mItem.mItemName;
-	ExpandArguments(url, param);
-	ExpandMacros(url);
 	launcherapp::actions::web::OpenURLAction action(url);
 	return action.Perform(param, errMsg);
 }

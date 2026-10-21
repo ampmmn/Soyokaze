@@ -9,6 +9,7 @@
 #include "utility/LastErrorString.h"
 #include "utility/FilerParameter.h"
 #include "utility/Path.h"
+#include "utility/CommandLineArgument.h"
 #include "utility/DemotedProcessToken.h"
 #include "setting/AppPreference.h"
 #include <map>
@@ -69,6 +70,28 @@ namespace launcherapp {
 namespace commands {
 namespace common {
 
+namespace {
+
+// 環境変数名として 사용할ことができる文字か?
+bool IsValidEnvironmentVariableName(const CString& name)
+{
+	if (name.IsEmpty()) {
+		return false;
+	}
+
+	for (int i = 0; i < name.GetLength(); ++i) {
+		TCHAR c = name[i];
+		if (c < 0x20 || c == _T('=') || c == _T(' ') || c == _T('\t') ||
+			c == _T('\r') || c == _T('\n') || c == _T('"') || c == _T('\'')) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+} // namespace
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +113,7 @@ struct SubProcess::PImpl
 	bool IsDirectExecutable(const CString& path);
 	bool ParseAssociationCommand(const CString& command, CString& path, CString& param);
 	void ReplaceAssociationParameter(CString& param, LPCTSTR name, const CString& value, bool isUrl);
+	bool IsCmdExecuted(const CString& path);
 
 	bool StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPtr& process);
 	bool Start(SHELLEXECUTEINFO si, ProcessPtr& process);
@@ -100,6 +124,8 @@ struct SubProcess::PImpl
 	int mShowType{SW_SHOW};
 	bool mIsRunAsAdmin{false};
 	bool mIsRunAsAdminTarget{false};
+	bool mIsExpanded{false};
+	bool mIsExpandMacros{true};
 	CString mWorkingDir;
 	std::map<tstring, tstring> mAdditionalEnv;
 };
@@ -140,7 +166,11 @@ bool SubProcess::PImpl::QueryAssociationString(ASSOCSTR assocStr, const CString&
 			buffer.data(),
 			&actualSize
 		);
-		if (hr == S_FALSE && actualSize > size) {
+		if (hr == S_FALSE) {
+			// バッファが小さい場合は、必要なサイズまで拡張して再試行する
+			if (actualSize <= size) {
+				return false;
+			}
 			size = actualSize;
 			buffer.resize(size);
 			continue;
@@ -191,14 +221,48 @@ void SubProcess::PImpl::ReplaceAssociationParameter(CString& param, LPCTSTR name
 			param.Delete(pos - 1, 1);
 			replacementPos--;
 		}
-		CString replacement(value);
-		if (isUrl == false && isQuoted == false && _tcscmp(name, _T("%*")) != 0 && replacement.IsEmpty() == FALSE) {
-			replacement = _T("\"") + replacement + _T("\"");
+
+		// 値をコマンドラインに組み込むため、引用符やバックスラッシュをエスケープする
+		CString replacement;
+		if (isUrl) {
+			// URLは関連付けコマンドの引用符の内側にそのまま渡す
+			replacement = launcherapp::utility::EscapeArgumentValue(value);
 		}
+		else if (isQuoted) {
+			// 既に引用符が付いている場合は内側だけエスケープする
+			replacement = launcherapp::utility::EscapeArgumentValue(value);
+		}
+		else if (_tcscmp(name, _T("%*")) != 0 && value.IsEmpty() == FALSE) {
+			// 引用符が付いていない場合は、引用符を付けて値を渡す
+			replacement = launcherapp::utility::QuoteArgument(value);
+		}
+		else {
+			replacement = value;
+		}
+
 		param.Delete(replacementPos, nameLength);
 		param.Insert(replacementPos, replacement);
 		pos = replacementPos + replacement.GetLength();
 	}
+}
+
+// cmd.exe経由で実行されるか?
+bool SubProcess::PImpl::IsCmdExecuted(const CString& path)
+{
+	// 拡張子がバッチファイルの場合は、関連付け処理においてcmd.exe経由で実行される
+	CString ext = PathFindExtension(path);
+	ext.MakeLower();
+	if (ext == _T(".bat") || ext == _T(".cmd") || ext == _T(".btm")) {
+		return true;
+	}
+
+	// 実行ファイルがcmd.exeの場合も、cmd.exe経由で実行される
+	CString filename = PathFindFileName(path);
+	if (filename.CompareNoCase(_T("cmd.exe")) == 0) {
+		return true;
+	}
+
+	return false;
 }
 
 bool SubProcess::PImpl::ParseAssociationCommand(const CString& command, CString& path, CString& param)
@@ -251,9 +315,36 @@ bool SubProcess::PImpl::PrepareRunAsAdminTarget(CString& path, CString& param)
 	}
 
 	bool isUrl = PathIsURL(path) != FALSE;
+
+	// 関連付けコマンドの実行ファイルが対象ファイル自身("%1")を指している場合は、
+	// 対象ファイルに対して管理者権限での実行を要求する
+	// (バッチファイルのように"cmd.exe /c "%1""ではなく""%1" %*"という
+	//  関連付けになっている場合に対応する)
+	if (associatedPath == _T("%1") || associatedPath == _T("%L")) {
+		ReplaceAssociationParameter(associatedParam, _T("%*"), param, false);
+		param = associatedParam;
+		mIsRunAsAdminTarget = true;
+		return true;
+	}
+
+	// 関連付けコマンドの実行ファイル部分にも%1が含まれる場合を考慮して置換する
+	ReplaceAssociationParameter(associatedPath, _T("%1"), path, false);
+	ReplaceAssociationParameter(associatedPath, _T("%L"), path, false);
+
+	// 関連付けコマンドの引数部分を置換する
+	bool hasAllParameter = associatedParam.Find(_T("%*")) >= 0;
 	ReplaceAssociationParameter(associatedParam, _T("%1"), path, isUrl);
 	ReplaceAssociationParameter(associatedParam, _T("%L"), path, isUrl);
 	ReplaceAssociationParameter(associatedParam, _T("%*"), param, false);
+
+	// 関連付けコマンドに%*が含まれない場合は、実行時引数を末尾に追加する
+	if (hasAllParameter == false && param.IsEmpty() == FALSE) {
+		if (associatedParam.IsEmpty() == FALSE) {
+			associatedParam += _T(" ");
+		}
+		associatedParam += param;
+	}
+
 	path = associatedPath;
 	param = associatedParam;
 	mIsRunAsAdminTarget = true;
@@ -303,7 +394,12 @@ bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPt
 	}
 
 	int pid = json_res["pid"];
-	si.hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+	si.hProcess = OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, FALSE, (DWORD)pid);
+	if (si.hProcess == nullptr) {
+		spdlog::error("Failed to open the process. err:{}", GetLastError());
+		process = std::move(std::make_unique<Instance>(nullptr));
+		return false;
+	}
 	process = std::move(std::make_unique<Instance>(si.hProcess));
 
 	return true;
@@ -350,14 +446,10 @@ bool SubProcess::PImpl::SetupShellExecuteInfo(CString& path, CString& param, con
 			return false;
 		}
 
-		// パスに空白を含む場合はダブルクォーテーションで囲む
-		if (url.Find(_T(" ")) != -1) {
-			url = _T("\"") + url + _T("\"");
-		}
-
 		// 置換後のパラメータを引数paramに書き戻す
+		// (URLはコマンドラインとして渡すため、引用符を付けて渡す)
 		param = parameter;
-		param.Replace(_T("$target"), url);
+		launcherapp::utility::ReplaceQuotedPlaceholder(param, _T("$target"), url);
 
 		si.cbSize = sizeof(si);
 		si.nShow = mShowType;
@@ -420,11 +512,21 @@ void SubProcess::SetWorkDirectory(const CString& dir)
 	in->mWorkingDir = dir;
 }
 
+void SubProcess::SetExpanded(bool expanded)
+{
+	in->mIsExpanded = expanded;
+}
+
+void SubProcess::SetExpandMacros(bool expandMacros)
+{
+	in->mIsExpandMacros = expandMacros;
+}
+
 // 追加登録する環境変数
 bool SubProcess::SetAdditionalEnvironment(const CString& name, const CString& value)
 {
-	if (name.FindOneOf(_T(" =")) != -1) {
-		spdlog::warn(_T("Invali env name {}"), (LPCTSTR)name);
+	if (IsValidEnvironmentVariableName(name) == false) {
+		spdlog::warn(_T("Invalid env name {}"), (LPCTSTR)name);
 		return false;
 	}
 	in->mAdditionalEnv[tstring(name)] = tstring(value);
@@ -443,8 +545,17 @@ bool SubProcess::Run(
 )
 {
 	if (path_.IsEmpty()) {
+		process = std::make_unique<SubProcess::Instance>(nullptr);
 		return false;
 	}
+	if (in->mParam == nullptr) {
+		spdlog::error("Parameter is not set.");
+		process = std::make_unique<SubProcess::Instance>(nullptr);
+		return false;
+	}
+
+	// 失敗時にエラーメッセージを返せるようにしておく
+	process = std::make_unique<SubProcess::Instance>(nullptr);
 
 	CString path = path_;
 	CString paramStr = paramStr_;
@@ -457,9 +568,17 @@ bool SubProcess::Run(
 		args.push_back(in->mParam->GetParam(i));
 	}
 
-	// 変数を展開(パス)
-	ExpandArguments(path, args);
-	ExpandMacros(path);
+	// 変数を展開(パス・パラメータ・作業ディレクトリ)
+	// (既に展開済みの場合は何もしない。
+	//  展開済みの値には$nなどが含まれる可能性があるため、二重に展開してはいけない)
+	CString workDir = in->mWorkingDir;
+	if (in->mIsExpanded == false) {
+		// パスおよび作業ディレクトリはパスであるためクォートしない
+		ExpandArgumentsAndMacros(path, args, ArgumentQuoting::None, in->mIsExpandMacros);
+		ExpandArgumentsAndMacros(workDir, args, ArgumentQuoting::None, in->mIsExpandMacros);
+		// パラメータはコマンドラインであるため、常にクォートして展開する
+		ExpandArgumentsAndMacros(paramStr, args, ArgumentQuoting::Always, in->mIsExpandMacros);
+	}
 
 	auto pref = AppPreference::Get();
 
@@ -477,8 +596,9 @@ bool SubProcess::Run(
 			launcherapp::utility::ExpandFilerParameter(paramStr, path);
 
 			auto filerPath = pref->GetFilerPath();
-			ExpandArguments(filerPath, args);
-			ExpandMacros(filerPath);
+			if (in->mIsExpanded == false) {
+				ExpandArgumentsAndMacros(filerPath, args, ArgumentQuoting::None, in->mIsExpandMacros);
+			}
 
 			isFilerAvailable = Path::FileExists(filerPath);
 			if (isFilerAvailable) {
@@ -495,19 +615,10 @@ bool SubProcess::Run(
 			paramStr = _T("open");
 		}
 	}
-	else { 
-		// 変数置換(パラメータ)
-		ExpandArguments(paramStr, args);
-		ExpandMacros(paramStr);
-	}
 
 	SPDLOG_DEBUG(_T("path:{} param:{}"), (LPCTSTR)path, (LPCTSTR)paramStr);
 
-	// 作業ディレクトリ
-	CString workDir = in->mWorkingDir;
 	if (workDir.IsEmpty() == FALSE) {
-		ExpandArguments(workDir, args);
-		ExpandMacros(workDir);
 		StripDoubleQuate(workDir);
 	}
 
@@ -517,8 +628,20 @@ bool SubProcess::Run(
 		isRunAsAdminSpecified = in->PrepareRunAsAdminTarget(path, paramStr);
 	}
 
+	// cmd.exe経由で実行される場合、%NAME%形式の環境変数参照が含まれていると
+	// 環境変数の展開によって別のコマンドが実行される可能性があるため、起動しない
+	if (in->IsCmdExecuted(path) && launcherapp::utility::ContainsExpandableEnvReference(paramStr)) {
+		spdlog::error(_T("The parameter contains an environment variable reference. {}"), (LPCTSTR)paramStr);
+		process->SetErrorMessage(_T("環境変数を参照する引数は、バッチファイル経由で実行できません。"));
+		return false;
+	}
+
 	SHELLEXECUTEINFO si = {};
-	in->SetupShellExecuteInfo(path, paramStr, workDir, si);
+	if (in->SetupShellExecuteInfo(path, paramStr, workDir, si) == false) {
+		spdlog::error(_T("Failed to setup the shell execute info."));
+		process->SetErrorMessage(_T("外部ツール(ブラウザ)の設定が不正です。"));
+		return false;
+	}
 
 	bool isRun = false;
 	if (IsRunningAsAdmin() && isRunAsAdminSpecified == false && pref->ShouldDemotePriviledge()) {

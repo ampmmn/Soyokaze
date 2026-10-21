@@ -53,6 +53,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\activate_window\WindowActivateCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\common\SubProcessTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\CandidateExclusionListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemListTest.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\AESTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\AppProfileTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\CharConverterTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\CommandLineArgumentTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\RegexTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\GlobalAllocMemoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\ImageConverterTest.cpp" />

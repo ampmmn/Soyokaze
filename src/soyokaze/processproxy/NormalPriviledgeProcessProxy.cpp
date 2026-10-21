@@ -6,11 +6,12 @@
 #include "utility/Path.h"
 #include "utility/DemotedProcessToken.h"
 #include <mutex>
+#include <sddl.h>
+#include <vector>
 #pragma warning( push )
 #pragma warning( disable : 26800 26819 )
 #include <nlohmann/json.hpp>
 #pragma warning( pop )
-#include <sddl.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,10 +19,109 @@
 
 using json = nlohmann::json;
 
-constexpr LPCTSTR PIPE_PATH = _T("\\\\.\\pipe\\LauncherAppNormalPriviledgePipe");
+constexpr LPCTSTR PIPE_NAME_PREFIX = _T("LauncherAppNormalPriviledgePipe-");
 constexpr LPCTSTR NAME_NORMALPRIV_SERVER = _T("LauncherAppNormalPriviledgeServer");
 
 namespace launcherapp { namespace processproxy {
+
+namespace {
+
+// パイプ名をランダムに生成する
+// (固定名では他のプロセスから接続され、悪用される可能性があるため)
+CString GeneratePipeName()
+{
+	GUID guid;
+	CoCreateGuid(&guid);
+
+	CString name;
+	name.Format(_T("\\\\.\\pipe\\%s%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X"),
+		PIPE_NAME_PREFIX,
+		guid.Data1, guid.Data2, guid.Data3,
+		guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
+		guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+	return name;
+}
+
+// トークンからユーザーのSIDを取得する
+bool GetUserSid(HANDLE token, CString& sid)
+{
+	DWORD size = 0;
+	if (GetTokenInformation(token, TokenUser, nullptr, 0, &size) == FALSE) {
+		return false;
+	}
+	if (size == 0) {
+		return false;
+	}
+
+	std::vector<BYTE> buffer(size);
+	if (GetTokenInformation(token, TokenUser, buffer.data(), size, &size) == FALSE) {
+		return false;
+	}
+
+	auto tokenUser = reinterpret_cast<TOKEN_USER*>(buffer.data());
+	LPWSTR sidString = nullptr;
+	if (ConvertSidToStringSidW(tokenUser->User.Sid, &sidString) == FALSE) {
+		return false;
+	}
+
+	sid = sidString;
+	LocalFree(sidString);
+	return true;
+}
+
+// パイプのセキュリティ記述子を作成する
+// (実行ユーザーと、通常権限で動作するエージェントのユーザーのみをアクセス可能とする)
+std::unique_ptr<SECURITY_ATTRIBUTES> CreatePipeSecurityAttributes()
+{
+	std::vector<CString> sids;
+
+	// 実行中のユーザーのSID
+	HANDLE token = nullptr;
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token) != FALSE) {
+		CString sid;
+		if (GetUserSid(token, sid)) {
+			sids.push_back(sid);
+		}
+		CloseHandle(token);
+	}
+
+	// 降格した権限で動作するエージェントのユーザーのSID
+	DemotedProcessToken demotedToken;
+	HANDLE primaryToken = demotedToken.FetchPrimaryToken();
+	if (primaryToken != nullptr) {
+		CString sid;
+		if (GetUserSid(primaryToken, sid)) {
+			sids.push_back(sid);
+		}
+	}
+
+	if (sids.empty()) {
+		return nullptr;
+	}
+
+	CString sddl(_T("D:"));
+	for (auto& sid : sids) {
+		sddl += _T("(A;;GA;;;");
+		sddl += sid;
+		sddl += _T(")");
+	}
+	// SYSTEMも許可する
+	sddl += _T("(A;;GA;;;SY)");
+
+	std::unique_ptr<SECURITY_ATTRIBUTES> sa;
+	sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
+	sa->bInheritHandle = TRUE;
+
+	if (ConvertStringSecurityDescriptorToSecurityDescriptorW(
+			sddl, SDDL_REVISION_1, &(sa->lpSecurityDescriptor), nullptr) == FALSE) {
+		spdlog::error("Failed to create securitydescriptor.");
+		return nullptr;
+	}
+
+	return sa;
+}
+
+} // namespace
 
 struct NormalPriviledgeProcessProxy::PImpl
 {
@@ -36,6 +136,8 @@ struct NormalPriviledgeProcessProxy::PImpl
 
 	std::mutex mMutex;
 	HANDLE mPipeHandle{nullptr};
+	CString mPipeName;
+	bool mIsAgentStarted{false};
 };
 
 // proxyと通信用のパイプを作成する
@@ -48,6 +150,11 @@ bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
 		mPipeHandle = nullptr;
 	}
 
+	// パイプ名はランダムに生成し、他のプロセスから接続できないようにする
+	if (mPipeName.IsEmpty()) {
+		mPipeName = GeneratePipeName();
+	}
+
 	std::unique_ptr<SECURITY_ATTRIBUTES> sa;
 
 	if (DemotedProcessToken::IsRunningAsAdmin()) {
@@ -55,23 +162,17 @@ bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
 		// 管理者権限で実行している場合は、
 		// 通常権限で動作する子プロセスからパイプにアクセスできるようにするため、
 		// セキュリティ記述子を設定する
+		// (実行ユーザーのみをアクセス可能とし、他のユーザーが
+		//  管理者権限で動作しているランチャーを悪用できるようにしない)
 
-		sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
-		sa->bInheritHandle = TRUE;
-
-		// セキュリティ記述子を設定
-		if (!ConvertStringSecurityDescriptorToSecurityDescriptor(
-					L"D:(A;;GA;;;WD)",  // ワールドアクセス許可
-					SDDL_REVISION_1,
-					&(sa->lpSecurityDescriptor),
-					nullptr)) {
-
+		sa = CreatePipeSecurityAttributes();
+		if (sa == nullptr) {
 			spdlog::error("Failed to create securitydescriptor.");
 			return false;
 		}
 	}
 
-	auto pipe = CreateNamedPipe(PIPE_PATH, PIPE_ACCESS_DUPLEX, 
+	auto pipe = CreateNamedPipe(mPipeName, PIPE_ACCESS_DUPLEX, 
 			                        PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
 			                        PIPE_UNLIMITED_INSTANCES, 512, 512, 0, sa.get());
 	if (pipe == INVALID_HANDLE_VALUE) {
@@ -89,15 +190,25 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 {
 	// 接続を待つ
 	HWND hwndServer{nullptr};
-	if (GetServerHwnd(hwndServer) == false) {
 
-		// ウインドウがないということはパイプの接続がないはずなのでパイプの接続状態を初期化する
-		ReopenPipe();
+	if (mIsAgentStarted == false) {
+		// 以前起動したエージェントのウィンドウを覚えておく
+		// (以前のエージェントが動作中の場合にも、新しいエージェントの
+		//  ウィンドウを待つようにするため)
+		HWND hwndOldAgent{nullptr};
+		GetServerHwnd(hwndOldAgent);
+
+		// パイプ名はランダムに生成しているため、エージェントは毎回起動し直す
+		// (パイプの接続状態を初期化する)
+		if (ReopenPipe() == false) {
+			return false;
+		}
 
 		// 通常権限で起動するためのエージェントプロセスを起動する
 		if (StartAgentProcess() == false) {
 			return false;
 		}
+		mIsAgentStarted = true;
 
 		// ウインドウがつくられるまで最大1秒待つ
 		auto start = GetTickCount64();
@@ -106,11 +217,21 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 			if (GetServerHwnd(hwndServer) == false) {
 				continue;
 			}
+			// 以前のエージェントのウィンドウであれば待ち続ける
+			if (hwndOldAgent != nullptr && hwndServer == hwndOldAgent) {
+				continue;
+			}
 			break;
 		}
 
 		if (hwndServer == nullptr) {
 			SPDLOG_ERROR("Failed to get server window handle (timeout).");
+			return false;
+		}
+	}
+	else {
+		if (GetServerHwnd(hwndServer) == false) {
+			SPDLOG_ERROR("Failed to get server window handle.");
 			return false;
 		}
 	}
@@ -135,7 +256,8 @@ bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcess()
 
 	PROCESS_INFORMATION pi = {};
 
-	CString cmdline(_T("launcher_proxy.exe run-normal-priviledge-agent"));
+	CString cmdline;
+	cmdline.Format(_T("launcher_proxy.exe run-normal-priviledge-agent \"%s\""), (LPCTSTR)mPipeName);
 
 	bool isRun = false;
 	if (DemotedProcessToken::IsRunningAsAdmin()) {

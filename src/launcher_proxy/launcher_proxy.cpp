@@ -23,7 +23,9 @@ int wmain(int argc, wchar_t* argv[]) {
 	}
 	else if (command_name == L"run-normal-priviledge-agent") {
 		NormalPriviledgeAgent agent;
-		return agent.Run(GetModuleHandle(nullptr));
+		// パイプ名は親プロセスから引き渡される
+		// (固定名では他のプロセスから接続され、悪用される可能性があるため)
+		return agent.Run(GetModuleHandle(nullptr), argc > 2 ? argv[2] : nullptr);
 	}
 
 	// Unknown command

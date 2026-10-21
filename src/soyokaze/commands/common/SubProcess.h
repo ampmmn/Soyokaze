@@ -24,6 +24,13 @@ public:
 	void SetWorkDirectory(const CString& dir);
 	bool SetAdditionalEnvironment(const CString& name, const CString& value);
 
+	// パス・パラメータが既に展開済みかどうかを設定する
+	// (展開済みの場合は、実行時に再度展開しない)
+	void SetExpanded(bool expanded);
+
+	// マクロを展開するかどうかを設定する
+	void SetExpandMacros(bool expandMacros);
+
 	bool Run(const CString& path, ProcessPtr& process);
 	bool Run(const CString& path, const CString& paramStr, ProcessPtr& process);
 

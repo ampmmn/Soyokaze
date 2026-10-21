@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MacroRepository.h"
 #include "macros/core/Token.h"
+#include "utility/CommandLineArgument.h"
 #include <map>
 
 #ifdef _DEBUG
@@ -10,6 +11,32 @@
 namespace launcherapp {
 namespace macros {
 namespace core {
+
+namespace {
+
+// マクロの展開結果は必要に応じてクォートして返す
+// @param[in] text 解析対象の文字列
+// @param[in] startPos マクロの記述の開始位置
+// @param[in] endPos マクロの記述の終了位置の次
+// @param[in] value マクロの展開結果
+// @param[in] quoteValues クォートするかどうか
+// @return 必要に応じてクォートされた文字列
+CString FormatMacroValue(const CString& text, int startPos, int endPos, const CString& value, bool quoteValues)
+{
+	if (quoteValues == false || value.IsEmpty()) {
+		return value;
+	}
+
+	// マクロの記述がダブルクォートで囲まれている場合は内側だけエスケープする
+	bool isQuoted = (startPos > 0) && (endPos < text.GetLength()) &&
+		(text[startPos - 1] == _T('"')) && (text[endPos] == _T('"'));
+	if (isQuoted) {
+		return launcherapp::utility::EscapeArgumentValue(value);
+	}
+	return launcherapp::utility::QuoteArgument(value);
+}
+
+} // namespace
 
 struct MacroRepository::PImpl
 {
@@ -93,7 +120,7 @@ bool MacroRepository::UnregisterMacro(MacroIF* macro)
 }
 
 // 文字列を解析して置換する
-bool MacroRepository::Evaluate(CString& text)
+bool MacroRepository::Evaluate(CString& text, bool quoteValues)
 {
 	try {
 		CString output;
@@ -128,6 +155,9 @@ bool MacroRepository::Evaluate(CString& text)
 
 			// 以後、マクロ記述の処理
 
+			// マクロの記述の開始位置(クォート済みかどうかを判定するために使う)
+			int macroStartPos = token.GetPos();
+
 			token.Next();   // $をスキップ
 
 			if (token.Get() != _T('{')) {
@@ -150,7 +180,7 @@ bool MacroRepository::Evaluate(CString& text)
 				std::vector<CString> emptyArg;
 				macro->Evaluate(emptyArg, macroValue);
 
-				output += macroValue;
+				output += FormatMacroValue(text, macroStartPos, token.GetPos(), macroValue, quoteValues);
 				continue;
 			}
 
@@ -191,7 +221,7 @@ bool MacroRepository::Evaluate(CString& text)
 			CString macroValue;
 			macro->Evaluate(args, macroValue);
 
-			output += macroValue;
+			output += FormatMacroValue(text, macroStartPos, token.GetPos(), macroValue, quoteValues);
 		}
 
 		text = output;

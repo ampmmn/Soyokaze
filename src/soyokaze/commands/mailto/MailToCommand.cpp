@@ -3,6 +3,7 @@
 #include "commands/common/SubProcess.h"
 #include "actions/core/ActionParameter.h"
 #include "actions/builtin/CallbackAction.h"
+#include "utility/CommandLineArgument.h"
 #include "utility/Path.h"
 #include "icon/IconLoader.h"
 #include "resource.h"
@@ -59,8 +60,11 @@ bool MailToCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
 		SubProcess::ProcessPtr process;
 		SubProcess exec(ParameterBuilder::EmptyParam());
 
-
-		CString arg = _T("/c start \"\" mailto:" + recipient);
+		// cmd.exe経由で実行するため、あて先文字列は引用符で囲んで渡す
+		// (引用符で囲まない場合、あて先文字列に含まれる&などが
+		//  コマンド区切りとして解釈される可能性があるため)
+		CString url(_T("mailto:") + recipient);
+		CString arg = _T("/c start \"\" ") + launcherapp::utility::QuoteArgument(url);
 		exec.SetShowType(SW_HIDE);
 		exec.Run((LPCTSTR)cmdExePath, arg, process);
 		return true;

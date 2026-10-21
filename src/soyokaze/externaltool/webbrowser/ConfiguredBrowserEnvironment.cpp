@@ -6,6 +6,7 @@
 #include "externaltool/webbrowser/BrowserProfile.h"
 #include "setting/AppPreference.h"
 #include "setting/AppPreferenceListenerIF.h"
+#include "utility/CommandLineArgument.h"
 #include "utility/Path.h"
 #include "utility/VersionInfo.h"
 
@@ -321,13 +322,10 @@ bool ConfiguredBrowserEnvironment::OpenURLWithExternalBrowser(LPCWSTR url_)
 		return false;
 	}
 
-	// パスに空白を含む場合はダブルクォーテーションで囲む
+	// URLはコマンドラインとして渡すため、引用符を付けて渡す
 	CString url(url_);
-	if (url.Find(_T(" ")) != -1) {
-		url = _T("\"") + url + _T("\"");
-	}
-	CStringW params(parameter);
-	params.Replace(_T("$target"), url);
+	CString params(parameter);
+	launcherapp::utility::ReplaceQuotedPlaceholder(params, _T("$target"), url);
 
 	SHELLEXECUTEINFOW si = {};
 	si.cbSize = sizeof(si);

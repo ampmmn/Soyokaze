@@ -549,6 +549,9 @@
     <ClInclude Include="utility\CharConverter.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="utility\CommandLineArgument.h">
+      <Filter>utility</Filter>
+    </ClInclude>
     <ClInclude Include="commands\controlpanel\ControllPanel.h">
       <Filter>commands\controllpanel</Filter>
     </ClInclude>
@@ -2367,6 +2370,9 @@
       <Filter>commands\activate_window</Filter>
     </ClCompile>
     <ClCompile Include="utility\CharConverter.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\CommandLineArgument.cpp">
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="commands\controlpanel\ControllPanel.cpp">

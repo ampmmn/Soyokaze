@@ -22,7 +22,10 @@ public:
 	bool UnregisterMacro(MacroIF* macro);
 
 	// 文字列を解析して置換する
-	bool Evaluate(CString& text);
+	// @param[in,out] text 解析する文字列
+	// @param[in] quoteValues マクロの展開結果をクォートするかどうか
+	// @return 置換に成功した場合true
+	bool Evaluate(CString& text, bool quoteValues = false);
 
 protected:
 	struct PImpl;
