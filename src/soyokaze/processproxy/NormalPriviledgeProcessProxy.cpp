@@ -47,7 +47,11 @@ bool GetUserSid(HANDLE token, CString& sid)
 {
 	DWORD size = 0;
 	if (GetTokenInformation(token, TokenUser, nullptr, 0, &size) == FALSE) {
-		return false;
+		// サイズ照会ではバッファ不足が正常な結果となる
+		DWORD error = GetLastError();
+		if (error != ERROR_INSUFFICIENT_BUFFER) {
+			return false;
+		}
 	}
 	if (size == 0) {
 		return false;
