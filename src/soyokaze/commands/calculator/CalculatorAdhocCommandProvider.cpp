@@ -178,7 +178,7 @@ void CalculatorAdhocCommandProvider::QueryAdhocCommands(
 	fmtStr.Format(_T("bin(%s)"), (LPCTSTR)numStr);
 	if (in->mCalc.Evaluate(fmtStr, result)) {
 		result.Replace(_T("'"), _T(""));
-		in->mBinResultPtr->SetResult(result);
+		in->mBinResultPtr->SetResult(Calculator::FormatBinaryResult(result));
 	}
 
 	// orderの順序に従って結果を格納する

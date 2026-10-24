@@ -13,6 +13,23 @@ TEST(CalculatorTest, DoesNotEvaluateWhenBothFeaturesAreDisabled)
 	EXPECT_FALSE(calculator.Evaluate(_T("1 + 1"), result));
 }
 
+TEST(CalculatorTest, FormatsBinaryResult)
+{
+	EXPECT_EQ(
+		_T("0b 11 10010010 11111010 (bit=17,16,15,12,9,7,6,5,4,3,1)"),
+		Calculator::FormatBinaryResult(_T("0b111001001011111010")));
+	EXPECT_EQ(
+		_T("-0b 11 10010010 11111010 (bit=17,16,15,12,9,7,6,5,4,3,1)"),
+		Calculator::FormatBinaryResult(_T("-0b111001001011111010")));
+	EXPECT_EQ(_T("0b 0"), Calculator::FormatBinaryResult(_T("0b0")));
+	EXPECT_EQ(
+		_T("0b 10000000 00000000 00000000 00000001 (bit=31,0)"),
+		Calculator::FormatBinaryResult(_T("0b10000000000000000000000000000001")));
+	EXPECT_EQ(
+		_T("0b 11111111 (bit=7,6,5,4,3,2,1,0)"),
+		Calculator::FormatBinaryResult(_T("0b11111111")));
+}
+
 // 電卓機能として評価してよい式
 TEST(CalculatorTest, AcceptsArithmeticExpression)
 {

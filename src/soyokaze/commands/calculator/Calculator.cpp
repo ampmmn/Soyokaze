@@ -591,6 +591,68 @@ bool Calculator::IsValidExpression(const CString& src)
 	return PImpl::ValidateExpression(src);
 }
 
+CString Calculator::FormatBinaryResult(const CString& src)
+{
+	int prefixPos = 0;
+	bool isNegative = false;
+	if (src.GetLength() > 0 && src[0] == _T('-')) {
+		isNegative = true;
+		prefixPos = 1;
+	}
+
+	if (src.GetLength() < prefixPos + 3 || src[prefixPos] != _T('0') || src[prefixPos + 1] != _T('b')) {
+		return src;
+	}
+
+	CString digits = src.Mid(prefixPos + 2);
+	if (digits.IsEmpty()) {
+		return src;
+	}
+	for (int i = 0; i < digits.GetLength(); ++i) {
+		if (digits[i] != _T('0') && digits[i] != _T('1')) {
+			return src;
+		}
+	}
+
+	CString formatted = isNegative ? _T("-0b ") : _T("0b ");
+	int firstGroupLength = digits.GetLength() % 8;
+	if (firstGroupLength == 0) {
+		firstGroupLength = 8;
+	}
+
+	int pos = 0;
+	while (pos < digits.GetLength()) {
+		if (pos > 0) {
+			formatted += _T(" ");
+		}
+		int groupLength = pos == 0 ? firstGroupLength : 8;
+		formatted += digits.Mid(pos, groupLength);
+		pos += groupLength;
+	}
+
+	// 0には1になっているbitがないため、一覧を付けない
+	if (digits != _T("0")) {
+		CString bitPositions;
+		for (int i = 0; i < digits.GetLength(); ++i) {
+			if (digits[i] != _T('1')) {
+				continue;
+			}
+			if (bitPositions.IsEmpty() == false) {
+				bitPositions += _T(",");
+			}
+			CString bitPosition;
+			bitPosition.Format(_T("%d"), digits.GetLength() - i - 1);
+			bitPositions += bitPosition;
+		}
+
+		formatted += _T(" (bit=");
+		formatted += bitPositions;
+		formatted += _T(")");
+	}
+
+	return formatted;
+}
+
 
 }
 }

@@ -25,6 +25,13 @@ public:
 	static bool IsValidExpression(const CString& src);
 
 	/**
+	  bin関数の結果を表示用に整形する
+	  @return 8桁区切りと1になっているbit位置を加えた文字列
+	  @param[in] src bin関数が返した文字列
+	*/
+	static CString FormatBinaryResult(const CString& src);
+
+	/**
 	  標準電卓機能の有効状態を設定する
 	  @param[in] use 有効にする場合はtrue
 	*/
