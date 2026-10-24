@@ -5,7 +5,7 @@
 ## 基本書式
 
 ```text
-contextmenu.exe [--position=<x位置>,<y位置>] <path> [<path> ...]
+contextmenu.exe [--nowait] [--position=<x位置>,<y位置>] <path> [<path> ...]
 ```
 
 ## 使用例
@@ -43,6 +43,16 @@ contextmenu.exe --position=100,200 "C:\work\sample.txt"
 座標は複数枚のモニターを含む仮想デスクトップ上のスクリーン座標です。負の値を指定すると、負の方向のモニターに対して表示できます。
 
 メニューが画面からはみ出す場合は、Windowsが自動的に画面内へ移動します。
+
+## `--nowait`
+
+`--nowait` を指定すると、コンテキストメニューを表示する後続プロセスを起動し、呼び出し元のプロセスはメニューの表示を待たずに終了します。
+
+```text
+contextmenu.exe --nowait "C:\work\sample.txt"
+```
+
+後続プロセスは、メニューを閉じて選択した項目の処理が完了するまで動作します。
 
 ## 複数パスの動作
 

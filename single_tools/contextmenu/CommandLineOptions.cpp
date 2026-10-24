@@ -6,6 +6,7 @@
 namespace {
 
 const wchar_t POSITION_OPTION_PREFIX[] = L"--position=";
+const wchar_t NOWAIT_OPTION[] = L"--nowait";
 
 /**
   文字列を10進整数として解析する
@@ -78,6 +79,7 @@ bool ParsePosition(const std::wstring& text, POINT& position)
 struct CommandLineOptions::PImpl
 {
 	std::vector<std::wstring> paths;
+	bool nowait = false;
 	bool hasPosition = false;
 	POINT position{ 0, 0 };
 };
@@ -92,6 +94,7 @@ CommandLineOptions::~CommandLineOptions() = default;
 void CommandLineOptions::Parse(int argc, LPWSTR* argv)
 {
 	in->paths.clear();
+	in->nowait = false;
 	in->hasPosition = false;
 	in->position = POINT{ 0, 0 };
 
@@ -102,6 +105,10 @@ void CommandLineOptions::Parse(int argc, LPWSTR* argv)
 		}
 		const std::wstring argument(argv[i]);
 		if (argument.empty()) {
+			continue;
+		}
+		if (argument == NOWAIT_OPTION) {
+			in->nowait = true;
 			continue;
 		}
 
@@ -118,6 +125,11 @@ void CommandLineOptions::Parse(int argc, LPWSTR* argv)
 		// --position 以外の引数は対象パスとして扱う
 		in->paths.push_back(argument);
 	}
+}
+
+bool CommandLineOptions::HasNowait() const
+{
+	return in->nowait;
 }
 
 const std::vector<std::wstring>& CommandLineOptions::GetPaths() const

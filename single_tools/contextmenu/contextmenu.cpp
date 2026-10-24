@@ -59,6 +59,100 @@ bool PathExists(const std::wstring& path)
 	return attributes != INVALID_FILE_ATTRIBUTES;
 }
 
+/**
+  コマンドライン引数を引用符付きの形式へ変換する
+  @param[in] argument 変換対象の引数
+  @return 変換後の引数
+*/
+std::wstring QuoteCommandLineArgument(const std::wstring& argument)
+{
+	std::wstring result(L"\"");
+	size_t backslashCount = 0;
+	for (const wchar_t character : argument) {
+		if (character == L'\\') {
+			++backslashCount;
+			continue;
+		}
+
+		if (character == L'\"') {
+			result.append(backslashCount * 2 + 1, L'\\');
+			result.push_back(character);
+		}
+		else {
+			result.append(backslashCount, L'\\');
+			result.push_back(character);
+		}
+		backslashCount = 0;
+	}
+	result.append(backslashCount * 2, L'\\');
+	result.push_back(L'\"');
+	return result;
+}
+
+/**
+  コンテキストメニュー表示用の後続プロセスを起動する
+  @param[in] paths   対象のパス
+  @param[in] options コマンドラインオプション
+  @return true:起動成功 false:起動失敗
+*/
+bool LaunchContextMenuProcess(const std::vector<std::wstring>& paths, const CommandLineOptions& options)
+{
+	std::vector<wchar_t> modulePathBuffer(MAX_PATH);
+	DWORD modulePathLength = 0;
+	for (;;) {
+		modulePathLength = GetModuleFileNameW(nullptr, modulePathBuffer.data(), static_cast<DWORD>(modulePathBuffer.size()));
+		if (modulePathLength == 0) {
+			return false;
+		}
+		if (modulePathLength < modulePathBuffer.size() - 1) {
+			break;
+		}
+		if (modulePathBuffer.size() >= 32768) {
+			return false;
+		}
+		modulePathBuffer.resize(modulePathBuffer.size() * 2);
+	}
+
+	const std::wstring modulePath(modulePathBuffer.data(), modulePathLength);
+	std::wstring commandLine = QuoteCommandLineArgument(modulePath);
+	if (options.HasPosition()) {
+		const POINT position = options.GetPosition();
+		commandLine += L" --position=";
+		commandLine += std::to_wstring(position.x);
+		commandLine.push_back(L',');
+		commandLine += std::to_wstring(position.y);
+	}
+	for (const std::wstring& path : paths) {
+		commandLine.push_back(L' ');
+		commandLine += QuoteCommandLineArgument(path);
+	}
+
+	std::vector<wchar_t> commandLineBuffer(commandLine.begin(), commandLine.end());
+	commandLineBuffer.push_back(L'\0');
+
+	STARTUPINFOW startupInfo{};
+	startupInfo.cb = sizeof(startupInfo);
+	PROCESS_INFORMATION processInformation{};
+	const BOOL result = CreateProcessW(
+		nullptr,
+		commandLineBuffer.data(),
+		nullptr,
+		nullptr,
+		FALSE,
+		CREATE_NEW_PROCESS_GROUP,
+		nullptr,
+		nullptr,
+		&startupInfo,
+		&processInformation);
+	if (result == FALSE) {
+		return false;
+	}
+
+	CloseHandle(processInformation.hThread);
+	CloseHandle(processInformation.hProcess);
+	return true;
+}
+
 } // 名前空間
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -71,15 +165,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
-	// シェルのコンテキストメニューを扱うためCOMを初期化する
-	const HRESULT comResult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
 	int argumentCount = 0;
 	LPWSTR* arguments = CommandLineToArgvW(GetCommandLineW(), &argumentCount);
 	if (arguments == nullptr) {
-		if (SUCCEEDED(comResult)) {
-			CoUninitialize();
-		}
 		return 1;
 	}
 
@@ -109,22 +197,31 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	if (paths.empty() == false) {
-		// 表示位置を確定する
-		POINT position{ 0, 0 };
-		if (options.HasPosition()) {
-			position = options.GetPosition();
+		if (options.HasNowait()) {
+			// メニュー表示は後続プロセスに任せ、呼び出し元は待たずに終了する
+			LaunchContextMenuProcess(paths, options);
 		}
 		else {
-			// 指定がない場合はマウスカーソルの位置を使う
-			GetCursorPos(&position);
+			// シェルのコンテキストメニューを扱うためCOMを初期化する
+			const HRESULT comResult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+			// 表示位置を確定する
+			POINT position{ 0, 0 };
+			if (options.HasPosition()) {
+				position = options.GetPosition();
+			}
+			else {
+				// 指定がない場合はマウスカーソルの位置を使う
+				GetCursorPos(&position);
+			}
+
+			ShellContextMenu contextMenu;
+			contextMenu.Show(paths, position);
+
+			if (SUCCEEDED(comResult)) {
+				CoUninitialize();
+			}
 		}
-
-		ShellContextMenu contextMenu;
-		contextMenu.Show(paths, position);
-	}
-
-	if (SUCCEEDED(comResult)) {
-		CoUninitialize();
 	}
 	return 0;
 }

@@ -34,7 +34,34 @@ TEST(CommandLineOptionsTest, ParsesPaths)
 	ASSERT_EQ(options.GetPaths().size(), 2U);
 	EXPECT_EQ(options.GetPaths()[0], std::wstring(L"C:\\work\\a.txt"));
 	EXPECT_EQ(options.GetPaths()[1], std::wstring(L"C:\\work\\b.txt"));
+	EXPECT_FALSE(options.HasNowait());
 	EXPECT_FALSE(options.HasPosition());
+}
+
+TEST(CommandLineOptionsTest, ParsesNowait)
+{
+	CommandLineOptions options;
+	std::vector<std::wstring> arguments = { L"--nowait", L"C:\\work\\a.txt" };
+	const std::vector<LPWSTR> argv = MakeArguments(arguments);
+	options.Parse(static_cast<int>(argv.size()), argv.data());
+
+	EXPECT_TRUE(options.HasNowait());
+	ASSERT_EQ(options.GetPaths().size(), 1U);
+	EXPECT_EQ(options.GetPaths()[0], std::wstring(L"C:\\work\\a.txt"));
+}
+
+TEST(CommandLineOptionsTest, ClearsNowaitWhenParsingAgain)
+{
+	CommandLineOptions options;
+	std::vector<std::wstring> firstArguments = { L"--nowait" };
+	const std::vector<LPWSTR> firstArgv = MakeArguments(firstArguments);
+	options.Parse(static_cast<int>(firstArgv.size()), firstArgv.data());
+
+	std::vector<std::wstring> secondArguments = { L"C:\\work\\a.txt" };
+	const std::vector<LPWSTR> secondArgv = MakeArguments(secondArguments);
+	options.Parse(static_cast<int>(secondArgv.size()), secondArgv.data());
+
+	EXPECT_FALSE(options.HasNowait());
 }
 
 TEST(CommandLineOptionsTest, ParsesPosition)

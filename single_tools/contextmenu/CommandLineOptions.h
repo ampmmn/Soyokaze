@@ -26,6 +26,12 @@ public:
 	void Parse(int argc, LPWSTR* argv);
 
 	/**
+	  --nowait が指定されているかを取得する
+	  @return true:指定あり false:指定なし
+	*/
+	bool HasNowait() const;
+
+	/**
 	  解析された対象パスの一覧を取得する
 	  @return 対象パスの一覧
 	*/
