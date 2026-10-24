@@ -68,7 +68,7 @@ CString UIAutomationAdhocCommand::GetName()
 
 CString UIAutomationAdhocCommand::GetTypeDisplayName()
 {
-	return _T("UI要素");
+  return TypeDisplayName();
 }
 
 static void DoMouseOperation(CPoint point, bool isRight, bool isDblClk)
@@ -200,6 +200,11 @@ bool UIAutomationAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifi
 		return true;
 	}
 	return false;
+}
+
+CString UIAutomationAdhocCommand::TypeDisplayName()
+{
+	return _T("UI要素");
 }
 
 }}} // end of namespace launcherapp::commands::uiautomation

@@ -161,6 +161,13 @@ void ExtraCandidateProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryIt
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t ExtraCandidateProvider::EnumCommandDisplayNames(std::vector<CString>&)
+{
+  return 0;
+}
+
+
 
 }}} // end of namespace launcherapp::commands::extracandidate
 

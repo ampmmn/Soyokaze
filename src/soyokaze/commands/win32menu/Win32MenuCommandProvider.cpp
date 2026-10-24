@@ -306,6 +306,14 @@ void Win32MenuCommandProvider::QueryAdhocCommands(
 	}
 }
 
+// Providerが扱うコマンド種別(表示名)を列挙
+uint32_t Win32MenuCommandProvider::EnumCommandDisplayNames(std::vector<CString>& displayNames)
+{
+	displayNames.push_back(Win32MenuAdhocCommand::TypeDisplayName());
+	return 1;
+}
+
+
 
 
 }}} // end of namespace launcherapp::commands::win32menu

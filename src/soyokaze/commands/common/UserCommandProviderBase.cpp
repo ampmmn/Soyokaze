@@ -85,7 +85,7 @@ void UserCommandProviderBase::QueryAdhocCommands(Pattern* pattern, CommandQueryI
 uint32_t UserCommandProviderBase::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
 	UNREFERENCED_PARAMETER(displayNames);
-	spdlog::error("A provider implementation class must implement EnumCommandDisplayNames method!");
+	spdlog::error(_T("A provider implementation class must implement EnumCommandDisplayNames method! {}"), (LPCTSTR)GetName());
 	return 0;
 }
 

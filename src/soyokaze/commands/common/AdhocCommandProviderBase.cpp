@@ -89,7 +89,7 @@ uint32_t AdhocCommandProviderBase::AdhocCommandProviderBase::GetOrder() const
 uint32_t AdhocCommandProviderBase::EnumCommandDisplayNames(std::vector<CString>& displayNames)
 {
 	UNREFERENCED_PARAMETER(displayNames);
-	spdlog::error("A provider implementation class must implement EnumCommandDisplayNames method!");
+	spdlog::error(_T("A provider implementation class must implement EnumCommandDisplayNames method! {}"), (LPCTSTR)GetName());
 	return 0;
 }
 

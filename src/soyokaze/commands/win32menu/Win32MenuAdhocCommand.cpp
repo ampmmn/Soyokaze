@@ -62,7 +62,7 @@ CString Win32MenuAdhocCommand::GetName()
 
 CString Win32MenuAdhocCommand::GetTypeDisplayName()
 {
-	return _T("UI要素");
+  return TypeDisplayName();
 }
 
 bool Win32MenuAdhocCommand::GetAction(const HOTKEY_ATTR& hotkeyAttr, Action** action)
@@ -165,6 +165,11 @@ bool Win32MenuAdhocCommand::QueryInterface(const launcherapp::core::IFID& ifid, 
 		return true;
 	}
 	return false;
+}
+
+CString Win32MenuAdhocCommand::TypeDisplayName()
+{
+	return _T("UI要素");
 }
 
 }}} // end of namespace launcherapp::commands::win32menu
