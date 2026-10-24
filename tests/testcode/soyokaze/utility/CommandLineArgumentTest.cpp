@@ -47,6 +47,45 @@ std::vector<CString> ParseArgument(const CString& value)
 	return args;
 }
 
+// クォートした値をcmd.exeのechoに渡して終了コードを取得する
+bool RunCmdWithQuotedArgument(const CString& value, DWORD& exitCode)
+{
+	CString commandLine = _T("cmd.exe /d /c echo ") + QuoteArgument(value);
+	STARTUPINFO startupInfo{};
+	startupInfo.cb = sizeof(startupInfo);
+	startupInfo.dwFlags = STARTF_USESHOWWINDOW;
+	startupInfo.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION processInfo{};
+
+	BOOL started = CreateProcess(
+		nullptr,
+		commandLine.GetBuffer(),
+		nullptr,
+		nullptr,
+		FALSE,
+		CREATE_NO_WINDOW,
+		nullptr,
+		nullptr,
+		&startupInfo,
+		&processInfo
+	);
+	commandLine.ReleaseBuffer();
+	if (started == FALSE) {
+		return false;
+	}
+
+	DWORD waitResult = WaitForSingleObject(processInfo.hProcess, 5000);
+	if (waitResult != WAIT_OBJECT_0) {
+		TerminateProcess(processInfo.hProcess, 1);
+		WaitForSingleObject(processInfo.hProcess, INFINITE);
+	}
+
+	BOOL gotExitCode = GetExitCodeProcess(processInfo.hProcess, &exitCode);
+	CloseHandle(processInfo.hThread);
+	CloseHandle(processInfo.hProcess);
+	return waitResult == WAIT_OBJECT_0 && gotExitCode != FALSE;
+}
+
 } // namespace
 
 TEST(CommandLineArgumentTest, QuoteArgumentAlwaysQuotesValue)
@@ -153,4 +192,20 @@ TEST(CommandLineArgumentTest, ReplaceQuotedPlaceholderDoesNotDoubleQuoteWhenAlre
 	ReplaceQuotedPlaceholder(text, _T("$target"), _T("http://example.com/"));
 
 	EXPECT_STREQ(_T("--target=\"http://example.com/\""), (LPCTSTR)text);
+}
+
+TEST(CommandLineArgumentTest, QuotedValuesDoNotBreakCmdCommandParsing)
+{
+	// 引用符やコマンド区切り文字を含む値がcmd.exeで別コマンドとして実行されない
+	std::vector<CString> values = {
+		_T("safe & exit /b 17 & rem "),
+		_T("safe\" & exit /b 17 & rem \""),
+		_T("safe | exit /b 17 & rem "),
+	};
+
+	for (const auto& value : values) {
+		DWORD exitCode = 1;
+		ASSERT_TRUE(RunCmdWithQuotedArgument(value, exitCode));
+		EXPECT_EQ(0u, exitCode);
+	}
 }

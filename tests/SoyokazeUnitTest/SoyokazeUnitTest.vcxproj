@@ -54,6 +54,7 @@
     <ClCompile Include="..\testcode\soyokaze\commands\align_window\AlignWindowCommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\ExpandFunctionsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\SubProcessTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\processproxy\NormalPriviledgeProcessProxyTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\common\CandidateExclusionListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryDefaultResultTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\core\CommandQueryItemListTest.cpp" />

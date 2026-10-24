@@ -19,6 +19,9 @@
     <Filter Include="soyokaze\commands">
       <UniqueIdentifier>{4a4aaa7f-a8f0-46e4-8d7d-c6a9e246ea7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="soyokaze\processproxy">
+      <UniqueIdentifier>{c82c29bc-6ff5-4a11-b52e-8ccf5ad1cd02}</UniqueIdentifier>
+    </Filter>
     <Filter Include="soyokaze\commands\common">
       <UniqueIdentifier>{75afd043-9710-4557-8b71-f3b76a1ccc3a}</UniqueIdentifier>
     </Filter>
@@ -260,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="..\testcode\launcher_proxy\NormalPriviledgeRequestBufferTest.cpp">
       <Filter>launcher_proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\processproxy\NormalPriviledgeProcessProxyTest.cpp">
+      <Filter>soyokaze\processproxy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\launcher_proxy\NormalPriviledgeRequestBuffer.cpp">
       <Filter>launcher_proxy</Filter>

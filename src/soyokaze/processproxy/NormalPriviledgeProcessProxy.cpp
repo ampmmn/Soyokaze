@@ -26,6 +26,24 @@ namespace launcherapp { namespace processproxy {
 
 namespace {
 
+struct SecurityAttributesDeleter {
+	void operator()(SECURITY_ATTRIBUTES* attributes) const
+	{
+		if (attributes == nullptr) {
+			return;
+		}
+		if (attributes->lpSecurityDescriptor != nullptr) {
+			LocalFree(attributes->lpSecurityDescriptor);
+		}
+		delete attributes;
+	}
+};
+
+using SecurityAttributesPtr = std::unique_ptr<SECURITY_ATTRIBUTES, SecurityAttributesDeleter>;
+using launcherapp::processproxy::detail::NormalPriviledgeAgentAction;
+using launcherapp::processproxy::detail::NormalPriviledgeAgentConnectionState;
+using launcherapp::processproxy::detail::NormalPriviledgeAgentStatus;
+
 // パイプ名をランダムに生成する
 // (固定名では他のプロセスから接続され、悪用される可能性があるため)
 CString GeneratePipeName()
@@ -75,7 +93,7 @@ bool GetUserSid(HANDLE token, CString& sid)
 
 // パイプのセキュリティ記述子を作成する
 // (実行ユーザーと、通常権限で動作するエージェントのユーザーのみをアクセス可能とする)
-std::unique_ptr<SECURITY_ATTRIBUTES> CreatePipeSecurityAttributes()
+SecurityAttributesPtr CreatePipeSecurityAttributes()
 {
 	std::vector<CString> sids;
 
@@ -112,8 +130,7 @@ std::unique_ptr<SECURITY_ATTRIBUTES> CreatePipeSecurityAttributes()
 	// SYSTEMも許可する
 	sddl += _T("(A;;GA;;;SY)");
 
-	std::unique_ptr<SECURITY_ATTRIBUTES> sa;
-	sa.reset(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
+	SecurityAttributesPtr sa(new SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES)});
 	sa->bInheritHandle = TRUE;
 
 	if (ConvertStringSecurityDescriptorToSecurityDescriptorW(
@@ -130,10 +147,11 @@ std::unique_ptr<SECURITY_ATTRIBUTES> CreatePipeSecurityAttributes()
 struct NormalPriviledgeProcessProxy::PImpl
 {
 	bool ReopenPipe();
+	void ResetAgentConnection();
 	bool StartAgentProcessIfNeeded();
 	bool StartAgentProcess();
 	bool GetServerHwnd(HWND& hwnd);
-	bool IsServerAvailable(HWND hwnd);
+	NormalPriviledgeAgentStatus GetServerStatus(HWND hwnd);
 
 	bool SendRequest(json& json);
 	bool ReceiveResponse(json& json);
@@ -141,7 +159,7 @@ struct NormalPriviledgeProcessProxy::PImpl
 	std::mutex mMutex;
 	HANDLE mPipeHandle{nullptr};
 	CString mPipeName;
-	bool mIsAgentStarted{false};
+	NormalPriviledgeAgentConnectionState mAgentConnectionState;
 };
 
 // proxyと通信用のパイプを作成する
@@ -154,12 +172,10 @@ bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
 		mPipeHandle = nullptr;
 	}
 
-	// パイプ名はランダムに生成し、他のプロセスから接続できないようにする
-	if (mPipeName.IsEmpty()) {
-		mPipeName = GeneratePipeName();
-	}
+	// 再接続時にも別のパイプ名を使い、終了したエージェントとの接続を再利用しない
+	mPipeName = GeneratePipeName();
 
-	std::unique_ptr<SECURITY_ATTRIBUTES> sa;
+	SecurityAttributesPtr sa;
 
 	if (DemotedProcessToken::IsRunningAsAdmin()) {
 
@@ -189,59 +205,85 @@ bool NormalPriviledgeProcessProxy::PImpl::ReopenPipe()
 	return true;
 }
 
+/**
+  エージェントとのパイプ接続状態を破棄し、次回要求で再起動できる状態にする
+*/
+void NormalPriviledgeProcessProxy::PImpl::ResetAgentConnection()
+{
+	mAgentConnectionState.Reset();
+	if (mPipeHandle != nullptr) {
+		DisconnectNamedPipe(mPipeHandle);
+		CloseHandle(mPipeHandle);
+		mPipeHandle = nullptr;
+	}
+	mPipeName.Empty();
+}
+
 // 通常権限で起動するためのプロセスが実行されていなかったら起動する
 bool NormalPriviledgeProcessProxy::PImpl::StartAgentProcessIfNeeded()
 {
-	// 接続を待つ
 	HWND hwndServer{nullptr};
 
-	if (mIsAgentStarted == false) {
-		// 以前起動したエージェントのウィンドウを覚えておく
-		// (以前のエージェントが動作中の場合にも、新しいエージェントの
-		//  ウィンドウを待つようにするため)
-		HWND hwndOldAgent{nullptr};
-		GetServerHwnd(hwndOldAgent);
-
-		// パイプ名はランダムに生成しているため、エージェントは毎回起動し直す
-		// (パイプの接続状態を初期化する)
-		if (ReopenPipe() == false) {
+	if (mAgentConnectionState.IsStarted()) {
+		bool hasServerWindow = GetServerHwnd(hwndServer);
+		NormalPriviledgeAgentStatus status = hasServerWindow ?
+			GetServerStatus(hwndServer) : NormalPriviledgeAgentStatus::NotResponding;
+		NormalPriviledgeAgentAction action = mAgentConnectionState.Evaluate(hasServerWindow, status);
+		if (action == NormalPriviledgeAgentAction::Reuse) {
+			return true;
+		}
+		if (action == NormalPriviledgeAgentAction::Wait) {
+			spdlog::info("Normal privilege agent is busy.");
 			return false;
 		}
-
-		// 通常権限で起動するためのエージェントプロセスを起動する
-		if (StartAgentProcess() == false) {
-			return false;
-		}
-		mIsAgentStarted = true;
-
-		// ウインドウがつくられるまで最大1秒待つ
-		auto start = GetTickCount64();
-		while(GetTickCount64() - start < 1000) {
-			Sleep(50);
-			if (GetServerHwnd(hwndServer) == false) {
-				continue;
-			}
-			// 以前のエージェントのウィンドウであれば待ち続ける
-			if (hwndOldAgent != nullptr && hwndServer == hwndOldAgent) {
-				continue;
-			}
-			break;
-		}
-
-		if (hwndServer == nullptr) {
-			SPDLOG_ERROR("Failed to get server window handle (timeout).");
-			return false;
-		}
-	}
-	else {
-		if (GetServerHwnd(hwndServer) == false) {
-			SPDLOG_ERROR("Failed to get server window handle.");
-			return false;
-		}
+		// ウィンドウ消失または応答停止時は、次の起動を試みる
+		ResetAgentConnection();
 	}
 
-	if (IsServerAvailable(hwndServer) == false) {
-		spdlog::info("Normal privilege agent is busy or not responding.");
+	// 以前起動したエージェントのウィンドウを覚えておく
+	// (以前のエージェントが動作中の場合にも、新しいエージェントの
+	//  ウィンドウを待つようにするため)
+	HWND hwndOldAgent{nullptr};
+	GetServerHwnd(hwndOldAgent);
+
+	// パイプ名を更新して接続を作り直す
+	if (ReopenPipe() == false) {
+		ResetAgentConnection();
+		return false;
+	}
+
+	// 通常権限で起動するためのエージェントプロセスを起動する
+	if (StartAgentProcess() == false) {
+		ResetAgentConnection();
+		return false;
+	}
+
+	// 新しいエージェントのウィンドウが作られるまで最大1秒待つ
+	auto start = GetTickCount64();
+	while (GetTickCount64() - start < 1000) {
+		Sleep(50);
+		hwndServer = nullptr;
+		if (GetServerHwnd(hwndServer) == false || hwndServer == hwndOldAgent) {
+			continue;
+		}
+		break;
+	}
+
+	if (hwndServer == nullptr) {
+		SPDLOG_ERROR("Failed to get server window handle (timeout).");
+		ResetAgentConnection();
+		return false;
+	}
+
+	mAgentConnectionState.MarkStarted();
+	NormalPriviledgeAgentStatus status = GetServerStatus(hwndServer);
+	NormalPriviledgeAgentAction action = mAgentConnectionState.Evaluate(true, status);
+	if (action == NormalPriviledgeAgentAction::Start) {
+		ResetAgentConnection();
+		return false;
+	}
+	if (action == NormalPriviledgeAgentAction::Wait) {
+		spdlog::info("Normal privilege agent is busy.");
 		return false;
 	}
 	return true;
@@ -312,13 +354,16 @@ bool NormalPriviledgeProcessProxy::PImpl::GetServerHwnd(HWND& hwnd)
 /**
   サーバウィンドウにビジー状態を問い合わせる
   @param[in] hwnd サーバウィンドウのハンドル
-  @return true:受付可能 false:ビジーまたは問い合わせ失敗
+  @return サーバーの応答状態
 */
-bool NormalPriviledgeProcessProxy::PImpl::IsServerAvailable(HWND hwnd)
+NormalPriviledgeAgentStatus NormalPriviledgeProcessProxy::PImpl::GetServerStatus(HWND hwnd)
 {
 	DWORD_PTR result = 1;
 	LRESULT sendResult = SendMessageTimeout(hwnd, WM_APP + 1, 0, 0, SMTO_ABORTIFHUNG, 100, &result);
-	return sendResult != 0 && result == 0;
+	if (sendResult == 0) {
+		return NormalPriviledgeAgentStatus::NotResponding;
+	}
+	return result == 0 ? NormalPriviledgeAgentStatus::Available : NormalPriviledgeAgentStatus::Busy;
 }
 
 bool NormalPriviledgeProcessProxy::PImpl::SendRequest(json& json_req)
@@ -338,6 +383,7 @@ bool NormalPriviledgeProcessProxy::PImpl::SendRequest(json& json_req)
 		if (WriteFile(mPipeHandle, request_str.c_str() + totalWrittenBytes, (DWORD)(len - totalWrittenBytes), 
 		              &written, nullptr) == FALSE) {
 			spdlog::error("Failed to write err:{}", GetLastError());
+			ResetAgentConnection();
 			return false;
 		}
 		totalWrittenBytes += written;
@@ -401,10 +447,7 @@ NormalPriviledgeProcessProxy::NormalPriviledgeProcessProxy() : in(new PImpl)
 
 NormalPriviledgeProcessProxy::~NormalPriviledgeProcessProxy()
 {
-	if (in->mPipeHandle) {
-		CloseHandle(in->mPipeHandle);
-		in->mPipeHandle = nullptr;
-	}
+	in->ResetAgentConnection();
 }
 
 NormalPriviledgeProcessProxy* NormalPriviledgeProcessProxy::GetInstance()
@@ -425,6 +468,7 @@ bool NormalPriviledgeProcessProxy::SendRequest(nlohmann::json& json_req, nlohman
 
 		// 応答を待つ
 		if (in->ReceiveResponse(json_res) == false) {
+			in->ResetAgentConnection();
 			return false;
 		}
 
