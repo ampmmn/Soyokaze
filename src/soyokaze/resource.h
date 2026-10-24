@@ -163,6 +163,7 @@
 #define IDD_COMMAND_GROUP_PATH          261
 #define IDD_COMMAND_GROUP_URL           262
 #define IDD_FIRSTSTART                  263
+#define IDS_FILTER_COMMAND_ICONIMAGEFILES 264
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002

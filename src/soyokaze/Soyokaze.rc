@@ -5069,6 +5069,8 @@ BEGIN
     IDS_HEIGHT              "高さ"
     IDS_FILTER_ICONIMAGEFILES 
                             "画像ファイル(*.png,*.jpg,*.bmp,*.gif,*.tiff, *.ico)|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tif;*.tiff;*.ico||"
+    IDS_FILTER_COMMAND_ICONIMAGEFILES
+                            "画像ファイル(*.png,*.jpg,*.bmp,*.gif,*.tiff,*.ico,*.svg)|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tif;*.tiff;*.ico;*.svg||"
 END
 
 #endif    // 日本語 (日本) resources

@@ -103,6 +103,19 @@ bool CreateTestImage(std::vector<uint8_t>& output)
     return SavePng(bitmap, output);
 }
 
+/**
+  透過領域を含むテスト用SVGを作成する
+  @param[out] output 作成したSVGデータ
+*/
+void CreateTestSvg(std::vector<uint8_t>& output)
+{
+    static constexpr char svg[] =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"64\" viewBox=\"0 0 128 64\">"
+        "<rect x=\"32\" y=\"16\" width=\"64\" height=\"32\" fill=\"#ff0000\"/>"
+        "</svg>";
+    output.assign(svg, svg + sizeof(svg) - 1);
+}
+
 class GdiplusTest : public ::testing::Test
 {
 protected:
@@ -173,6 +186,53 @@ TEST_F(GdiplusTest, ConvertSmallImageStillReturnsPng)
     EXPECT_EQ('P', output[1]);
     EXPECT_EQ('N', output[2]);
     EXPECT_EQ('G', output[3]);
+}
+
+TEST_F(GdiplusTest, ConvertSvgResizesImageAndKeepsTransparency)
+{
+    std::vector<uint8_t> input;
+    CreateTestSvg(input);
+
+    std::vector<uint8_t> output;
+    ASSERT_TRUE(launcherapp::utility::ImageConverter::Convert(input, output));
+
+    IStream* stream = nullptr;
+    ASSERT_EQ(S_OK, CreateStreamOnHGlobal(nullptr, TRUE, &stream));
+    ULONG writtenBytes = 0;
+    ASSERT_EQ(S_OK, stream->Write(output.data(), static_cast<ULONG>(output.size()), &writtenBytes));
+    ASSERT_EQ(output.size(), writtenBytes);
+
+    LARGE_INTEGER position{};
+    ASSERT_EQ(S_OK, stream->Seek(position, STREAM_SEEK_SET, nullptr));
+    std::unique_ptr<Gdiplus::Bitmap> result(Gdiplus::Bitmap::FromStream(stream));
+    ASSERT_NE(nullptr, result);
+    ASSERT_EQ(Gdiplus::Ok, result->GetLastStatus());
+    EXPECT_EQ(64u, result->GetWidth());
+    EXPECT_EQ(64u, result->GetHeight());
+
+    Gdiplus::Color transparent;
+    Gdiplus::Color padded;
+    Gdiplus::Color filled;
+    ASSERT_EQ(Gdiplus::Ok, result->GetPixel(0, 0, &transparent));
+    ASSERT_EQ(Gdiplus::Ok, result->GetPixel(32, 0, &padded));
+    ASSERT_EQ(Gdiplus::Ok, result->GetPixel(32, 32, &filled));
+    EXPECT_EQ(0, transparent.GetA());
+    EXPECT_EQ(0, padded.GetA());
+    EXPECT_EQ(255, filled.GetR());
+    EXPECT_GT(filled.GetA(), 0);
+
+    result.reset();
+    stream->Release();
+}
+
+TEST_F(GdiplusTest, ConvertInvalidSvgReturnsFalse)
+{
+    static constexpr char svg[] = "<svg>";
+    std::vector<uint8_t> input(svg, svg + sizeof(svg) - 1);
+    std::vector<uint8_t> output{ 1, 2, 3 };
+
+    EXPECT_FALSE(launcherapp::utility::ImageConverter::Convert(input, output));
+    EXPECT_TRUE(output.empty());
 }
 
 TEST_F(GdiplusTest, ConvertInvalidDataReturnsFalse)

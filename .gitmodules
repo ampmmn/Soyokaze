@@ -22,3 +22,6 @@
 [submodule "externals/rapidyaml"]
 	path = externals/rapidyaml
 	url = https://github.com/biojppm/rapidyaml.git
+[submodule "externals/lunasvg"]
+	path = externals/lunasvg
+	url = https://github.com/sammycage/lunasvg.git

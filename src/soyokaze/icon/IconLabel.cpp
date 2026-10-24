@@ -99,7 +99,7 @@ void IconLabel::DrawIcon(CDC* pDC, HICON iconHandle)
 	CBitmap* orgBmp = dcMem.SelectObject(&memBmp);
 	if (iconList.m_hImageList == nullptr || ctrlSize != rc.Size()) {
 		iconList.DeleteImageList();
-		iconList.Create(rc.Width(), rc.Height(), ILC_COLOR24 | ILC_MASK, 0, 0);
+		iconList.Create(rc.Width(), rc.Height(), ILC_COLOR32 | ILC_MASK, 0, 0);
 		iconList.SetBkColor(crBr);
 		ctrlSize = rc.Size();
 		iconIndexMap.clear();
@@ -192,7 +192,7 @@ void IconLabel::OnPaint()
 
 void IconLabel::OnMenuChangeIcon()
 {
-	CString filterStr((LPCTSTR)IDS_FILTER_ICONIMAGEFILES);
+	CString filterStr((LPCTSTR)IDS_FILTER_COMMAND_ICONIMAGEFILES);
 
 	Path iconPath(Path::MODULEFILEPATH);
 	iconPath.Shrink();

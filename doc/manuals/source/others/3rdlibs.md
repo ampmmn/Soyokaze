@@ -54,6 +54,12 @@
   - 電卓の単位付き計算機能のために利用している
   - オリジナル版ではC/C++向けのシンボルを公開していないため、利用するためのAPI層を独自追加し、Windows向けにビルドしたものを利用している
 
+- [sammycage/lunasvg](https://github.com/sammycage/lunasvg)
+  - コマンドアイコン用のSVG画像を解析し、PNGへ変換するために使用している
+
+- [sammycage/plutovg](https://github.com/sammycage/plutovg)
+  - LunaSVGがSVG画像を描画するためのベクターグラフィックスエンジンとして使用している
+
 - [EricZimmerman/OleCf](https://github.com/EricZimmerman/OleCf)
   - ピン留された項目(automaticDestinations-ms)の情報を解析するにあたり、OLECF形式データの解析処理の参考とした
 ```

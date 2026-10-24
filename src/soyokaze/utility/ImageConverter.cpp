@@ -3,6 +3,9 @@
 #include "ImageConverter.h"
 
 #include <gdiplus.h>
+#define LUNASVG_BUILD_STATIC
+#include <lunasvg.h>
+#include <cmath>
 #include <memory>
 
 #pragma comment(lib, "Gdiplus.lib")
@@ -146,6 +149,75 @@ bool SavePng(Gdiplus::Bitmap& bitmap, std::vector<uint8_t>& output)
     return true;
 }
 
+/**
+  SVGデータを指定サイズ以内のPNGデータへ変換する
+  @return true:成功  false:失敗
+  @param[in] input 変換元のSVGデータ
+  @param[out] output 変換後のPNGデータ
+  @param[in] maxSize 画像の長辺の最大サイズ
+*/
+bool ConvertSvg(
+    const std::vector<uint8_t>& input,
+    std::vector<uint8_t>& output,
+    int maxSize
+)
+{
+    auto document = lunasvg::Document::loadFromData(
+        reinterpret_cast<const char*>(input.data()),
+        input.size());
+    if (document == nullptr) {
+        return false;
+    }
+
+    double sourceWidth = document->width();
+    double sourceHeight = document->height();
+    if (std::isfinite(sourceWidth) == false || std::isfinite(sourceHeight) == false ||
+        sourceWidth <= 0.0 || sourceHeight <= 0.0) {
+        return false;
+    }
+
+    double scale = 1.0;
+    if (sourceWidth > maxSize || sourceHeight > maxSize) {
+        double longestSide = sourceWidth >= sourceHeight ? sourceWidth : sourceHeight;
+        scale = maxSize / longestSide;
+    }
+
+    int width = static_cast<int>(std::round(sourceWidth * scale));
+    int height = static_cast<int>(std::round(sourceHeight * scale));
+    if (width < 1) {
+        width = 1;
+    }
+    if (height < 1) {
+        height = 1;
+    }
+
+    // 長辺に合わせた正方形の描画先を作り、SVG本体を中央に配置する
+    int canvasSize = width >= height ? width : height;
+    lunasvg::Bitmap svgBitmap(canvasSize, canvasSize);
+    if (svgBitmap.isNull()) {
+        return false;
+    }
+
+    float scaleX = width / static_cast<float>(sourceWidth);
+    float scaleY = height / static_cast<float>(sourceHeight);
+    float offsetX = (canvasSize - width) / 2.0f;
+    float offsetY = (canvasSize - height) / 2.0f;
+    document->render(svgBitmap, lunasvg::Matrix(scaleX, 0.0f, 0.0f, scaleY, offsetX, offsetY));
+
+    // LunaSVGのARGB32 premultiplied形式をGDI+の対応形式としてPNGへ保存する
+    Gdiplus::Bitmap result(
+        svgBitmap.width(),
+        svgBitmap.height(),
+        svgBitmap.stride(),
+        PixelFormat32bppPARGB,
+        svgBitmap.data());
+    if (result.GetLastStatus() != Gdiplus::Ok) {
+        return false;
+    }
+
+    return SavePng(result, output);
+}
+
 } // namespace
 
 bool ImageConverter::Convert(
@@ -162,7 +234,7 @@ bool ImageConverter::Convert(
     StreamPtr sourceStream;
     auto source = LoadBitmap(input, sourceStream);
     if (source == nullptr) {
-        return false;
+        return ConvertSvg(input, output, maxSize);
     }
 
     UINT sourceWidth = source->GetWidth();

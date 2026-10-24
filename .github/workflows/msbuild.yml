@@ -193,6 +193,21 @@ jobs:
         cmd /c "if not exist build mkdir -p include\\rapidyaml"
         python tools/amalgamate.py --c4core --fastfloat --stl include/rapidyaml/rapidyaml.hpp
 
+    - name: Build lunasvg
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/lunasvg
+        cmake -B build
+        cmake --build build --config Debug
+        cmake --build build --config Release
+
+    - name: Build lunasvg for ReleaseStatic
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd externals/lunasvg
+        cmake -B build-static -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+        cmake --build build-static --config Release
+
     - name: Build Release
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
