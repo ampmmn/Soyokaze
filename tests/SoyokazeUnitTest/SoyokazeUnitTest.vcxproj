@@ -69,6 +69,7 @@
     <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\controlpanel\SystemToolCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\office_favorites\OfficeFavoritesTest.cpp" />

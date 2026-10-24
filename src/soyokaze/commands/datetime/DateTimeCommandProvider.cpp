@@ -20,6 +20,105 @@ using CommandRepository = launcherapp::core::CommandRepository;
 // 日数オフセットの上限(約100年)
 static const int MAX_OFFSET_DAYS = 36500;
 
+namespace {
+
+/**
+  指定された年月日と時刻をCTimeに変換する
+	@return true:変換成功  false:日付または時刻が範囲外
+	@param[in]  year   年
+	@param[in]  month  月
+	@param[in]  day    日
+	@param[in]  hour   時
+	@param[in]  minute 分
+	@param[out] result 変換後の日時
+*/
+bool MakeDateTime(int year, int month, int day, int hour, int minute, CTime& result)
+{
+	// CTimeで扱える年と時刻の範囲を確認する
+	if (year < 1970 || year > 3000 || hour < 0 || hour >= 24 || minute < 0 || minute >= 60) {
+		return false;
+	}
+	if (month < 1 || month > 12 || day < 1) {
+		return false;
+	}
+
+	static const int MONTH_DAYS[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	int maxDay = MONTH_DAYS[month - 1];
+	bool isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+	if (month == 2 && isLeapYear) {
+		maxDay = 29;
+	}
+	// 平年の2/29は3/1として扱う
+	if (month == 2 && day == 29 && isLeapYear == false) {
+		month = 3;
+		day = 1;
+		maxDay = 31;
+	}
+	if (day > maxDay) {
+		return false;
+	}
+
+	result = CTime(year, month, day, hour, minute, 0);
+	return true;
+}
+
+/**
+  時間差の片側を日時として解析する
+	@return true:解析成功  false:形式が一致しない、または日時の範囲外
+	@param[in]  text     入力文字列
+	@param[in]  baseTime 現在日時および年省略時の基準日時
+	@param[in]  prefix   nowの別名として扱う設定プレフィックス
+	@param[out] result   解析した日時
+*/
+bool ParseDateTimeOperand(const CString& text, const CTime& baseTime, const CString& prefix, CTime& result)
+{
+	CString operand(text);
+	operand.Trim();
+	if (operand.CompareNoCase(_T("now")) == 0 || (prefix.IsEmpty() == false && operand.CompareNoCase(prefix) == 0)) {
+		result = baseTime;
+		return true;
+	}
+
+	tstring str(operand);
+	std::match_results<tstring::const_iterator> m;
+	static tregex regDateTimeHyphen(_T("^([0-9]{4})-([0-9]{2})-([0-9]{2}) +([0-2][0-9]):([0-5][0-9])$"));
+	static tregex regDateTimeSlash(_T("^([0-9]{4})/([0-9]{2})/([0-9]{2}) +([0-2][0-9]):([0-5][0-9])$"));
+	static tregex regDateTimeNoYear(_T("^([0-9]{1,2})/([0-9]{1,2}) +([0-2][0-9]):([0-5][0-9])$"));
+	static tregex regTime(_T("^([0-2][0-9]):([0-5][0-9])$"));
+
+	int year = baseTime.GetYear();
+	int month = 0;
+	int day = 0;
+	int hour = 0;
+	int minute = 0;
+	if (std::regex_match(str, m, regDateTimeHyphen) || std::regex_match(str, m, regDateTimeSlash)) {
+		year = std::stoi(m[1].str());
+		month = std::stoi(m[2].str());
+		day = std::stoi(m[3].str());
+		hour = std::stoi(m[4].str());
+		minute = std::stoi(m[5].str());
+	}
+	else if (std::regex_match(str, m, regDateTimeNoYear)) {
+		month = std::stoi(m[1].str());
+		day = std::stoi(m[2].str());
+		hour = std::stoi(m[3].str());
+		minute = std::stoi(m[4].str());
+	}
+	else if (std::regex_match(str, m, regTime)) {
+		month = baseTime.GetMonth();
+		day = baseTime.GetDay();
+		hour = std::stoi(m[1].str());
+		minute = std::stoi(m[2].str());
+	}
+	else {
+		return false;
+	}
+
+	return MakeDateTime(year, month, day, hour, minute, result);
+}
+
+} // namespace
+
 struct DateTimeCommandProvider::PImpl :
 	public AppPreferenceListenerIF
 {
@@ -84,37 +183,47 @@ void DateTimeCommandProvider::PrepareAdhocCommands()
 }
 
 /**
-  時間差の入力(HH:MM-HH:MM)を解析する
-	@return true:解析成功  false:形式が一致しない、または時刻の範囲外
+  時間差の入力を解析する
+	@return true:解析成功  false:形式が一致しない、または日時の範囲外
 	@param[in]  text   入力文字列
-	@param[out] result 時間差(開始時刻 - 終了時刻)
+	@param[out] result 時間差(左辺 - 右辺)
 */
 bool DateTimeCommandProvider::ParseTimeSpan(const CString& text, CTimeSpan& result)
 {
-	tstring str(text);
+	return ParseTimeSpan(text, result, CTime::GetCurrentTime(), CString());
+}
 
-	// HH:MM-HH:MM の形式に一致するか確認する
-	static tregex regTime1(_T("^ *([0-2][0-9]):([0-5][0-9]) *- *([0-2][0-9]):([0-5][0-9]) *$"));
-	std::match_results<tstring::const_iterator> m;
-	if (std::regex_match(str, m, regTime1) == false) {
-		return false;
+bool DateTimeCommandProvider::ParseTimeSpan(const CString& text, CTimeSpan& result, const CTime& baseTime, const CString& prefix)
+{
+	CString expression(text);
+	expression.Trim();
+	// 日付中のハイフンと演算子を区別するため、全てのハイフン位置を候補として解析する
+	for (int index = 0; index < expression.GetLength(); ++index) {
+		if (expression[index] != _T('-')) {
+			continue;
+		}
+
+		CString leftText = expression.Left(index);
+		CString rightText = expression.Mid(index + 1);
+		leftText.Trim();
+		rightText.Trim();
+
+		CTime leftTime;
+		CTime rightTime;
+		if (ParseDateTimeOperand(leftText, baseTime, prefix, leftTime) == false ||
+		    ParseDateTimeOperand(rightText, baseTime, prefix, rightTime) == false) {
+			continue;
+		}
+
+    if (leftTime == rightTime) {
+      // 左右が同じ時刻の場合、結果を表示しても有益でなさそうなので省く
+      return false;
+    }
+
+		result = leftTime - rightTime;
+		return true;
 	}
-
-	// 時・分を取り出す
-	int h1 = std::stoi(m[1].str());
-	int m1 = std::stoi(m[2].str());
-	int h2 = std::stoi(m[3].str());
-	int m2 = std::stoi(m[4].str());
-
-	// 24時以上は無効とする
-	if (h1 >= 24 || h2 >= 24) {
-		return false;
-	}
-
-	CTimeSpan ts1(0, h1, m1, 0);
-	CTimeSpan ts2(0, h2, m2, 0);
-	result = ts1 - ts2;
-	return true;
+	return false;
 }
 
 /**
@@ -233,9 +342,12 @@ void DateTimeCommandProvider::QueryAdhocCommands(
 		return;
 	}
 
-	// 時間差(HH:MM-HH:MM)の入力: プレフィックス不要
+	// 時間差の入力: プレフィックス不要
 	CTimeSpan result;
-	if (ParseTimeSpan(cmdline, result)) {
+	if (ParseTimeSpan(cmdline, result, CTime::GetCurrentTime(), in->mPrefix)) {
+		if (result.GetTotalSeconds() > 24 * 60 * 60 || result.GetTotalSeconds() < -24 * 60 * 60) {
+			commands.Add(CommandQueryItem(Pattern::WholeMatch, new DateTimeCommand(result, TYPE_DAY)));
+		}
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new DateTimeCommand(result, TYPE_HOUR)));
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new DateTimeCommand(result, TYPE_MINUTE)));
 		commands.Add(CommandQueryItem(Pattern::WholeMatch, new DateTimeCommand(result, TYPE_SECOND)));

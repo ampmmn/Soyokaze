@@ -48,6 +48,10 @@ DateTimeCommand::DateTimeCommand(CTimeSpan ts, int unitType) : in(std::make_uniq
 		in->mNum.Format(_T("%d"), (int)ts.GetTotalSeconds());
 		in->mUnit = _T("秒");
 	}
+	else if (unitType == TYPE_DAY) {
+		in->mNum.Format(_T("%.2f"), ts.GetTotalSeconds() / (24.0 * 60.0 * 60.0));
+		in->mUnit = _T("日");
+	}
 	// 候補名と説明は「数値 単位」の形式にする
 	this->mName = in->mNum + _T(" ") + in->mUnit;
 	this->mDescription = this->mName;

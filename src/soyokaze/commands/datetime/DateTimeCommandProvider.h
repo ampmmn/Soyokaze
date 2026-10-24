@@ -18,7 +18,7 @@ enum class DateTimeKind {
 
 /**
   日時に関するコマンドを提供するProvider
-	- 時間差(HH:MM-HH:MM)の計算
+	- 時刻・日時の差の計算
 	- 日数オフセット(N day(s) later|ago, N日前|後)による日時の計算
 	- プレフィックス入力時の現在日時の表示
 	の機能を持つ。有効/無効は設定(拡張機能)に従う。
@@ -41,12 +41,21 @@ public:
 	uint32_t EnumCommandDisplayNames(std::vector<CString>& displayNames) override;
 
 	/**
-	  時間差の入力(HH:MM-HH:MM)を解析する
-		@return true:解析成功  false:形式が一致しない、または時刻の範囲外
+	  時間差の入力を解析する
+		@return true:解析成功  false:形式が一致しない、または日時の範囲外
 		@param[in]  text   入力文字列
-		@param[out] result 時間差(開始時刻 - 終了時刻)
+		@param[out] result 時間差(左辺 - 右辺)
 	*/
 	static bool ParseTimeSpan(const CString& text, CTimeSpan& result);
+	/**
+	  基準日時とプレフィックスを指定して時間差の入力を解析する
+		@return true:解析成功  false:形式が一致しない、または日時の範囲外
+		@param[in]  text      入力文字列
+		@param[out] result    時間差(左辺 - 右辺)
+		@param[in]  baseTime  nowおよび年省略時の基準日時
+		@param[in]  prefix    nowの別名として扱う設定プレフィックス
+	*/
+	static bool ParseTimeSpan(const CString& text, CTimeSpan& result, const CTime& baseTime, const CString& prefix);
 
 	/**
 	  日数オフセットの入力(N day(s) later|ago, N日前|後)を解析する

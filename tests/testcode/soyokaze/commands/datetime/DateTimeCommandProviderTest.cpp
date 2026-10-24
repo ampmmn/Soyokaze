@@ -12,6 +12,51 @@ TEST(DateTimeCommandProviderTest, ParseTimeSpanAcceptsValidInput)
 	EXPECT_EQ(53, (int)result.GetTotalMinutes());
 }
 
+// 年月日付き、年省略、時刻のみの差を解析できること
+TEST(DateTimeCommandProviderTest, ParseTimeSpanAcceptsDateAndTimeInputs)
+{
+	CTime baseTime(2026, 10, 10, 14, 17, 0);
+	CTimeSpan result;
+
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("2026-10-30 15:00 - now"), result, baseTime, _T("current")));
+	EXPECT_EQ(20 * 24 * 60 * 60 + 43 * 60, result.GetTotalSeconds());
+
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("now - 2026/09/01 12:00"), result, baseTime, _T("current")));
+	EXPECT_EQ((baseTime - CTime(2026, 9, 1, 12, 0, 0)).GetTotalSeconds(), result.GetTotalSeconds());
+
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("10/30 15:00 - current"), result, baseTime, _T("current")));
+	EXPECT_EQ(20 * 24 * 60 * 60 + 43 * 60, result.GetTotalSeconds());
+
+	// 年省略の日付が過去でも実行年のまま計算する
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("10/01 12:00 - now"), result, baseTime, _T("current")));
+	EXPECT_EQ(-(9 * 24 * 60 * 60 + 2 * 60 * 60 + 17 * 60), result.GetTotalSeconds());
+
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("15:00 - 14:00"), result, baseTime, _T("current")));
+	EXPECT_EQ(60 * 60, result.GetTotalSeconds());
+}
+
+// 平年の2/29を3/1として扱い、うるう年では2/29として扱うこと
+TEST(DateTimeCommandProviderTest, ParseTimeSpanNormalizesLeapDay)
+{
+	CTimeSpan result;
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(
+		_T("2025/02/29 10:00 - now"), result, CTime(2025, 2, 28, 10, 0, 0), CString()));
+	EXPECT_EQ(24 * 60 * 60, result.GetTotalSeconds());
+
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(
+		_T("2024/02/29 10:00 - now"), result, CTime(2024, 2, 28, 10, 0, 0), CString()));
+	EXPECT_EQ(24 * 60 * 60, result.GetTotalSeconds());
+}
+
+// 設定プレフィックスはnowと同じ現在日時として解析されること
+TEST(DateTimeCommandProviderTest, ParseTimeSpanAcceptsConfiguredPrefixAsNow)
+{
+	CTime baseTime(2026, 10, 10, 14, 17, 0);
+	CTimeSpan result;
+	EXPECT_TRUE(DateTimeCommandProvider::ParseTimeSpan(_T("2026/10/30 15:00 - launch"), result, baseTime, _T("launch")));
+	EXPECT_EQ(20 * 24 * 60 * 60 + 43 * 60, result.GetTotalSeconds());
+}
+
 // 形式が不正、または24時以上の入力は解析されないこと
 TEST(DateTimeCommandProviderTest, ParseTimeSpanRejectsInvalidInput)
 {
@@ -20,6 +65,10 @@ TEST(DateTimeCommandProviderTest, ParseTimeSpanRejectsInvalidInput)
 	EXPECT_FALSE(DateTimeCommandProvider::ParseTimeSpan(_T("25:00-12:00"), result));
 	EXPECT_FALSE(DateTimeCommandProvider::ParseTimeSpan(_T("12:00-25:00"), result));
 	EXPECT_FALSE(DateTimeCommandProvider::ParseTimeSpan(_T("abc"), result));
+	EXPECT_FALSE(DateTimeCommandProvider::ParseTimeSpan(
+		_T("2026/02/30 10:00 - now"), result, CTime(2026, 2, 1, 0, 0, 0), CString()));
+	EXPECT_FALSE(DateTimeCommandProvider::ParseTimeSpan(
+		_T("2026/10/10 - now"), result, CTime(2026, 10, 10, 0, 0, 0), CString()));
 }
 
 // 英語形式の日数オフセット(later は正、ago は負)が解析できること

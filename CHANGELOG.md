@@ -9,6 +9,7 @@
 ## Changed
 
 - #323 電卓機能 2進数表示の拡張
+- #325 DateTimeCommandの拡張
 
 ## Fixed
 

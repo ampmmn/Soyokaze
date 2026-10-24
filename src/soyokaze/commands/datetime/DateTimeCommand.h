@@ -13,11 +13,12 @@ enum {
 	TYPE_HOUR,
 	TYPE_MINUTE,
 	TYPE_SECOND,
+	TYPE_DAY,
 };
 
 /**
-  時間差(HH:MM-HH:MM)の計算結果を候補として表示するコマンド
-	@note 単位ごと(時間/分/秒)に1つのインスタンスを生成する
+  時間差の計算結果を候補として表示するコマンド
+	@note 単位ごと(時間/分/秒/日)に1つのインスタンスを生成する
 */
 class DateTimeCommand : public launcherapp::commands::common::AdhocCommandBase
 {
@@ -27,7 +28,7 @@ public:
 	/**
 	  コンストラクタ
 	  @param[in] ts       時間差
-	  @param[in] unitType 表示単位(TYPE_HOUR/TYPE_MINUTE/TYPE_SECOND)
+	  @param[in] unitType 表示単位(TYPE_HOUR/TYPE_MINUTE/TYPE_SECOND/TYPE_DAY)
 	*/
 	DateTimeCommand(CTimeSpan ts, int unitType);
 	virtual ~DateTimeCommand();
