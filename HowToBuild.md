@@ -8,11 +8,14 @@
 
 ユニットテストフレームワークとしてgoogletest(1.13.0)を用いている。
 
-## ソースコードを取得する
+## アプリ本体のソースコードを取得する
 
 ```
 git clone --recursive https://github.com/ampmmn/Soyokaze.git
 ```
+
+`--recursive`を指定することにより、後述の外部ライブラリのソースもまとめて取得される。
+
 
 ## ビルド時に必要な外部ライブラリ
 
@@ -54,7 +57,10 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - [biojppm/rapidyaml](https://github.com/biojppm/rapidyaml)
   - YAMLファイルをパースするために利用している
 
-### 外部ライブラリの配置
+- [sammycage/lunasvg](https://github.com/sammycage/lunasvg)
+  - SVG形式のファイルをPNG変換する用途で利用している
+
+## 外部ライブラリの配置
 
 - nlohmann-json
   - https://github.com/nlohmann/json からソース一式を取得する
@@ -80,9 +86,11 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - simdutf
   - https://github.com/simdutf/simdutf からソース一式を取得する
     - `externals`ディレクトリに`simdutf`を配置する
-- rapidyaml/simdutf
+- rapidyaml
   - https://github.com/biojppm/rapidyaml からソース一式を取得する
     - `externals`ディレクトリに`rapidyaml`を配置する
+- lunasvg
+  - https://github.com/sammycage/lunasvg からソース一式を取得する
 
 - `Soyokaze`のプロジェクト設定にて、`externals`ディレクトリに`json` `spdlog`というフォルダがあることを想定している  
 以下のように置く  
@@ -108,12 +116,17 @@ soyokaze-src/
     lexilla/
     simdutf/
     rapidyaml/
+    lunasvg/
 ```
+
+## 外部ライブラリ
+
+基本的にはcmakeを使ってビルドする。  
+cmakeはVisualStudioに付属のものを使う想定。`vcvarsall.bat amd64`を実行すればパスが通るはず
 
 ### spdlogのビルド
 
 配置した`spdlog`を下記コマンドでビルドする。  
-cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
 cd externals/spdlog
@@ -126,7 +139,7 @@ msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln
 ### Lexborのビルド
 
 配置した`lexbor`を下記コマンドでビルドする。
-cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定。通常構成とReleaseStatic構成では使用するランタイムが異なるため、別々にビルドする。
+通常構成とReleaseStatic構成では使用するランタイムが異なるため、別々にビルドする。
 
 ```
 cmake -S externals/lexbor -B externals/lexbor/build -A x64 -DLEXBOR_BUILD_SHARED=OFF -DLEXBOR_BUILD_STATIC=ON
@@ -140,7 +153,6 @@ cmake --build externals/lexbor/build-static --config Release
 ### abseilのビルド
 
 配置した`abseil-cpp`を下記コマンドでビルドする。  
-cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
 cd externals/abseil-cpp
@@ -178,7 +190,6 @@ lib.exe /out:absl_all_d.lib *_d.lib
 ### re2のビルド
 
 配置した`re2`を下記コマンドでビルドする。  
-cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
 
 ```
 cd externals/re2
@@ -220,29 +231,7 @@ cmake --build . --config Debug -t nanobind-static
 # ランチャー側の「ReleaseStatic」構成で利用するモジュールのビルド
 cmake -DCMAKE_CXX_FLAGS="/DPy_LIMITED_API=0x030c0000" -DCMAKE_RELEASE_POSTFIX=rtst ..
 cmake --build . --config Release -t nanobind-static
-
-## ビルド方法
-
-- 環境変数`pythonLocation`を設定しておく
-  - 値はPythonがインストールされているディレクトリへのパス  
-例: `C:\Users\(ユーザ名)\AppData\Local\Programs\Python\Python313`
-
-- VisualStudioでソリューションファイル`src/Soyokaze.sln`を開く
-  - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
-
-- プロジェクト設定の下記項目を変更する必要があるのでビルド環境にあわせて設定する
-  - `構成プロパティ`→`全般`→`Windows SDKバージョン`
-  - `構成プロパティ`→`全般`→`プラットフォームツールセット`
-
-- ビルドを実行する
-  - メニューの `ビルド`→`ソリューションのビルド`
-
-- ビルドが完了すると下記の場所にモジュールがてきる
-  - `dist`/`x64`/(`Debug` or `Release` or `ReleaseStatic`)
-    - 64bit版モジュールの場合
-    - 32bit版モジュールのビルドは非サポート
-
-- Scintila/LexillaLは自前でビルドしない。配布サイトからダウンロードしたバイナリ(Scintilla.dll/Lexilla.dll)を使用する。
+```
 
 ### simdutfのビルド
 
@@ -272,6 +261,46 @@ cd externals/rapidyaml
 mkdir -p include\rapidyaml
 python tools/amalgamate.py --c4core --fastfloat --stl include/rapidyaml/rapidyaml.hpp
 ```
+
+### lunasvgのビルド
+
+配置した`lunasvg`を下記コマンドでビルドする。  
+
+```
+cd externals/lunasvg
+
+cmake -B build
+cmake --build build --config Debug
+cmake --build build --config Release
+
+cmake -B build-static -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+cmake --build build-static --config Release
+```
+
+## アプリ本体のビルド方法
+
+- 事前に前述のライブラリのビルドを済ませておく
+
+- VisualStudio起動前に環境変数`pythonLocation`を設定しておく
+  - 値はPythonがインストールされているディレクトリへのパス  
+例: `C:\Users\(ユーザ名)\AppData\Local\Programs\Python\Python313`
+
+- VisualStudioでソリューションファイル`src/Soyokaze.sln`を開く
+  - メニューの `ファイル`→`開く`→`プロジェクト/ソリューション`
+
+- プロジェクト設定の下記項目を変更する必要があるのでビルド環境にあわせて設定する
+  - `構成プロパティ`→`全般`→`Windows SDKバージョン`
+  - `構成プロパティ`→`全般`→`プラットフォームツールセット`
+
+- ビルドを実行する
+  - メニューの `ビルド`→`ソリューションのビルド`
+
+- ビルドが完了すると下記の場所にモジュールがてきる
+  - `dist`/`x64`/(`Debug` or `Release` or `ReleaseStatic`)
+    - 64bit版モジュールの場合
+    - 32bit版モジュールのビルドは非サポート
+
+- Scintila/LexillaLは自前でビルドしない。配布サイトからダウンロードしたバイナリ(Scintilla.dll/Lexilla.dll)を使用する。
 
 ## ソリューション構成
 
