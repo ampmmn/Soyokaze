@@ -90,7 +90,7 @@ jobs:
     - name: Build Lexbor for static runtime
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cmake -S externals/lexbor -B externals/lexbor/build-static -A x64 -DLEXBOR_BUILD_SHARED=OFF -DLEXBOR_BUILD_STATIC=ON "-DCMAKE_C_FLAGS_RELEASE=/MT /O2 /Ob2 /DNDEBUG"
+        cmake -S externals/lexbor -B externals/lexbor/build-static -A x64 -DLEXBOR_BUILD_SHARED=OFF -DLEXBOR_BUILD_STATIC=ON -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
         cmake --build externals/lexbor/build-static --config Release
 
     - name: Patch absl options
