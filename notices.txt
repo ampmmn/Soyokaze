@@ -118,59 +118,26 @@ and users must comply to its license: https://raw.githubusercontent.com/fmtlib/f
 
 --------------------------------------------------------------------------------
 
-htacg/tidy-html5
-https://github.com/htacg/tidy-html5
+lexbor/lexbor
+https://github.com/lexbor/lexbor
 
-# HTML Tidy
+Copyright (C) 2020-2025 Alexander Borisov
 
-## HTML parser and pretty printer
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Copyright (c) 1998-2016 World Wide Web Consortium
-(Massachusetts Institute of Technology, European Research 
-Consortium for Informatics and Mathematics, Keio University).
-All Rights Reserved.
+    https://www.apache.org/licenses/LICENSE-2.0
 
-Additional contributions (c) 2001-2016 University of Toronto, Terry Teague, 
-@geoffmcl, HTACG, and others.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-### Contributing Author(s):
-
-  Dave Raggett <dsr@w3.org>
-
-The contributing author(s) would like to thank all those who
-helped with testing, bug fixes and suggestions for improvements. 
-This wouldn't have been possible without your help.
-
-## COPYRIGHT NOTICE:
-
-This software and documentation is provided "as is," and
-the copyright holders and contributing author(s) make no
-representations or warranties, express or implied, including
-but not limited to, warranties of merchantability or fitness
-for any particular purpose or that the use of the software or
-documentation will not infringe any third party patents,
-copyrights, trademarks or other rights. 
-
-The copyright holders and contributing author(s) will not be held
-liable for any direct, indirect, special or consequential damages
-arising out of any use of the software or documentation, even if
-advised of the possibility of such damage.
-
-Permission is hereby granted to use, copy, modify, and distribute
-this source code, or portions hereof, documentation and executables,
-for any purpose, without fee, subject to the following restrictions:
-
-1. The origin of this source code must not be misrepresented.
-2. Altered versions must be plainly marked as such and must
-not be misrepresented as being the original source.
-3. This Copyright notice may not be removed or altered from any
-source or altered source distribution.
-
-The copyright holders and contributing author(s) specifically
-permit, without fee, and encourage the use of this source code
-as a component for supporting the Hypertext Markup Language in
-commercial products. If you use this source code in a product,
-acknowledgement is not required but would be appreciated.
+Lexbor includes subcomponents with separate license terms. Their copyright
+notices and license terms, including the BSD 2-Clause license for portions
+based on the NGINX NJS project, are available in externals/lexbor/LICENSE.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------

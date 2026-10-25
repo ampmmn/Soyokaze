@@ -23,6 +23,15 @@ public:
 	~WinHttp();
 
 	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML);
+	/**
+	  HTTPコンテンツを取得し、リダイレクト後の最終URLも返す
+	  @param[in]  url         リクエスト先URL
+	  @param[out] content     取得したコンテンツ
+	  @param[out] isHTML      HTMLかどうか
+	  @param[out] finalURL    リダイレクト後の最終URL
+	  @return true:取得成功  false:取得失敗
+	*/
+	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, CString& finalURL);
 	bool LoadBinaryContent(const CString& url, std::vector<BYTE>& content);
 
 	/**
@@ -65,6 +74,19 @@ private:
 	std::unique_ptr<PImpl> in;
 
 };
+
+namespace utility {
+
+/**
+  2つのURLが同一オリジンか判定する
+  相対URLは基準URLと同一オリジンとして扱う
+  @param[in] baseURL   基準となる絶対URL
+  @param[in] targetURL 判定対象URL
+  @return true:同一オリジン  false:異なるオリジンまたは不正なURL
+*/
+bool IsSameOriginURL(const CString& baseURL, const CString& targetURL);
+
+}
 
 } // end of namespace launcherapp
 

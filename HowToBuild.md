@@ -28,10 +28,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
   - ログ出力ライブラリ
   - 要ビルド
 
-- [tidy-html5](https://github.com/htacg/tidy-html5)
-  - HTML文書を修正するためのライブラリであるが、HTMLをパースしてノードの情報を取得することもできるので、その用途で利用している
-  - ライブラリ部(libtidy)を利用している
-  - 要ビルド
+- [Lexbor](https://github.com/lexbor/lexbor)
+  - DirectoryIndexコマンドでHTMLをパースし、CSSセレクターでリンクを抽出するために利用している
+  - 静的ライブラリのビルドが必要
 
 - [re2](https://github.com/google/re2)
   - 正規表現ライブラリ。コマンド名のマッチングの用途で使用している
@@ -63,9 +62,9 @@ git clone --recursive https://github.com/ampmmn/Soyokaze.git
 - spdlog
   - https://github.com/gabime/spdlog からソース一式を取得する
     - `externals`ディレクトリに`spdlog`を配置する
-- tidy-html5
-  - https://github.com/htacg/tidy-html5 からソース一式を取得する
-    - `externals`ディレクトリに`tidy-html5`を配置する
+- Lexbor
+  - https://github.com/lexbor/lexbor からソース一式を取得する
+    - `externals/lexbor`に配置する
 - re2
   - https://github.com/google/re2 からソース一式を取得する
     - `externals`ディレクトリに`re2`を配置する
@@ -99,8 +98,9 @@ soyokaze-src/
           json.hpp
     spdlog/
       include/
-    tidy-html5/
-      include/
+    lexbor/
+      source/
+        lexbor/
     re2/
     abseil-cpp/
     nanobind/
@@ -123,23 +123,18 @@ cmake ..
 msbuild /m /p:Configuration=Release /p:Platform=x64 spdlog.sln 
 ```
 
-### tidy-html5(libtidy)のビルド
+### Lexborのビルド
 
-配置した`tidy-html5`を下記コマンドでビルドする。  
-cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定  
+配置した`lexbor`を下記コマンドでビルドする。
+cmakeは`vcvarsall.bat amd64`を実行すればパスが通る想定。通常構成とReleaseStatic構成では使用するランタイムが異なるため、別々にビルドする。
 
 ```
-cd externals/tidy-html5/build/cmake
+cmake -S externals/lexbor -B externals/lexbor/build -A x64 -DLEXBOR_BUILD_SHARED=OFF -DLEXBOR_BUILD_STATIC=ON
+cmake --build externals/lexbor/build --config Debug
+cmake --build externals/lexbor/build --config Release
 
-# ランチャー側の「Debug」「Release」「UnitTest」構成で利用するモジュールのビルド
-cmake ../.. -DCMAKE_BUILD_TYPE=Release -A x64
-cmake --build . --config Release
-
-# ランチャー側の「ReleaseStatic」構成で利用するモジュールのビルド
-del CMakeCache.txt
-cmake ../.. -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_RUNTIME=ON -DCMAKE_RELEASE_POSTFIX=rtst -A x64
-cmake --build . --config Release
-
+cmake -S externals/lexbor -B externals/lexbor/build-static -A x64 -DLEXBOR_BUILD_SHARED=OFF -DLEXBOR_BUILD_STATIC=ON "-DCMAKE_C_FLAGS_RELEASE=/MT /O2 /Ob2 /DNDEBUG"
+cmake --build externals/lexbor/build-static --config Release
 ```
 
 ### abseilのビルド

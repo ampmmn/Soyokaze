@@ -37,15 +37,16 @@ struct WinHttp::PImpl
 		DWORD statusCode{0};
 		bool isHTML{false};
 		CString contentType;
+		CString finalURL;
 		std::vector<BYTE> body;
 	};
 
 	bool IsContentHTML(const std::vector<WCHAR>& content);
-	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML);
+	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML, CString* finalURL);
 	bool ConfigureSystemProxy(HINTERNET session, LPCWSTR url);
 
 	// 送受信の共通処理。requestBodyがnullptrのときはLoadContent用、それ以外はRequest用の動作となる
-	bool Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw);
+	bool Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw, bool queryFinalURL = false);
 	// 送信ヘッダ(Name: Value\r\n の連結)を組み立てる。ヘッダが無い場合は空文字列を返す
 	std::wstring BuildAdditionalHeaders();
 	// 追加ヘッダを設定する。同名のヘッダは上書きし、valueが空の場合は削除する
@@ -230,7 +231,7 @@ static CString QueryContentType(HINTERNET req)
 	return CString(buf.data());
 }
 
-bool WinHttp::PImpl::Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw)
+bool WinHttp::PImpl::Execute(const CString& url, const std::string* requestBody, bool requireHTML, RawResponse& raw, bool queryFinalURL)
 {
 	// requestBodyが指定されている場合はRequest()用の動作にする
 	const bool isGeneric = (requestBody != nullptr);
@@ -419,6 +420,23 @@ bool WinHttp::PImpl::Execute(const CString& url, const std::string* requestBody,
 		break;
 	}
 
+	if (queryFinalURL) {
+		// WinHTTPがリダイレクトを追跡した後のURLを取得する
+		DWORD finalURLSize = 0;
+		WinHttpQueryOption(req, WINHTTP_OPTION_URL, nullptr, &finalURLSize);
+		if (GetLastError() != ERROR_INSUFFICIENT_BUFFER || finalURLSize == 0) {
+			spdlog::debug(_T("Failed to query final URL"));
+			return false;
+		}
+
+		std::vector<WCHAR> finalURLBuffer(finalURLSize / sizeof(WCHAR) + 1, L'\0');
+		if (WinHttpQueryOption(req, WINHTTP_OPTION_URL, finalURLBuffer.data(), &finalURLSize) == FALSE) {
+			spdlog::debug(_T("Failed to get final URL"));
+			return false;
+		}
+		raw.finalURL = finalURLBuffer.data();
+	}
+
 	// データのサイズを得る
 	DWORD hdrSize = 0;
 	BOOL isOK = WinHttpQueryHeaders(req, WINHTTP_QUERY_RAW_HEADERS_CRLF, WINHTTP_HEADER_NAME_BY_INDEX, WINHTTP_NO_OUTPUT_BUFFER, &hdrSize, WINHTTP_NO_HEADER_INDEX);
@@ -476,16 +494,19 @@ bool WinHttp::PImpl::Execute(const CString& url, const std::string* requestBody,
 	return true;
 }
 
-bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML)
+bool WinHttp::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, bool requireHTML, CString* finalURL)
 {
 	// LoadContent系は従来どおりボディを送らず、ヘッダも付けない
 	RawResponse raw;
-	if (Execute(url, nullptr, requireHTML, raw) == false) {
+	if (Execute(url, nullptr, requireHTML, raw, finalURL != nullptr) == false) {
 		return false;
 	}
 
 	content.swap(raw.body);
 	isHTML = raw.isHTML;
+	if (finalURL) {
+		*finalURL = raw.finalURL;
+	}
 	return true;
 }
 
@@ -526,13 +547,18 @@ void WinHttp::PImpl::SetHeader(LPCWSTR name, LPCWSTR value)
 
 bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
 {
-	return in->LoadContent(url, content, isHTML, true);
+	return in->LoadContent(url, content, isHTML, true, nullptr);
+}
+
+bool WinHttp::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, CString& finalURL)
+{
+	return in->LoadContent(url, content, isHTML, true, &finalURL);
 }
 
 bool WinHttp::LoadBinaryContent(const CString& url, std::vector<BYTE>& content)
 {
 	bool isHTML = false;
-	return in->LoadContent(url, content, isHTML, false);
+	return in->LoadContent(url, content, isHTML, false, nullptr);
 }
 
 bool WinHttp::Request(const CString& url, const std::string& requestBody, HttpResponse& response)
@@ -581,6 +607,109 @@ void WinHttp::SetContentType(LPCWSTR contentType)
 void WinHttp::SetTimeout(int timeoutMilliseconds)
 {
 	in->mTimeoutMilliseconds = timeoutMilliseconds;
+}
+
+namespace utility {
+
+namespace {
+
+/**
+  URLにスキーム指定が含まれるか確認する
+  @param[in] url 確認対象URL
+  @return true:スキームあり  false:スキームなし
+*/
+bool HasURLScheme(const CString& url)
+{
+	int colonPos = url.Find(_T(':'));
+	if (colonPos <= 0 || _istalpha(url[0]) == 0) {
+		return false;
+	}
+
+	for (int i = 1; i < colonPos; ++i) {
+		TCHAR ch = url[i];
+		if (_istalnum(ch) == 0 && ch != _T('+') && ch != _T('-') && ch != _T('.')) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+  URLを解析し、ホスト名とURL構成要素を取得する
+  @param[in] url URL文字列
+  @param[out] components 解析結果
+  @param[out] hostName ホスト名を格納する領域
+  @param[in] hostNameSize ホスト名領域の要素数
+  @return true:解析成功  false:解析失敗
+*/
+bool CrackURL(const CString& url, URL_COMPONENTS& components, WCHAR* hostName, DWORD hostNameSize)
+{
+	components = {};
+	components.dwStructSize = sizeof(components);
+	components.lpszHostName = hostName;
+	components.dwHostNameLength = hostNameSize;
+	return WinHttpCrackUrl(url, url.GetLength(), 0, &components) != FALSE;
+}
+
+/**
+  URLの既定ポートを含む実効ポートを取得する
+  @param[in] components 解析済みURL
+  @return ポート番号
+*/
+INTERNET_PORT GetEffectivePort(const URL_COMPONENTS& components)
+{
+	if (components.nPort != 0) {
+		return components.nPort;
+	}
+	if (components.nScheme == INTERNET_SCHEME_HTTP) {
+		return INTERNET_DEFAULT_HTTP_PORT;
+	}
+	if (components.nScheme == INTERNET_SCHEME_HTTPS) {
+		return INTERNET_DEFAULT_HTTPS_PORT;
+	}
+	return 0;
+}
+
+}
+
+bool IsSameOriginURL(const CString& baseURL, const CString& targetURL)
+{
+	WCHAR baseHostName[2048] = {};
+	URL_COMPONENTS baseComponents = {};
+	if (CrackURL(baseURL, baseComponents, baseHostName, _countof(baseHostName)) == false) {
+		return false;
+	}
+	if (baseComponents.nScheme != INTERNET_SCHEME_HTTP && baseComponents.nScheme != INTERNET_SCHEME_HTTPS) {
+		return false;
+	}
+
+	CString normalizedTarget(targetURL);
+	normalizedTarget.Trim();
+	if (normalizedTarget.Left(2) == _T("//")) {
+		CString prefix = (baseComponents.nScheme == INTERNET_SCHEME_HTTPS) ? _T("https:") : _T("http:");
+		normalizedTarget = prefix + normalizedTarget;
+	}
+	else if (HasURLScheme(normalizedTarget) == false) {
+		// 相対URLは基準URLと同一オリジンとして扱う
+		return true;
+	}
+
+	WCHAR targetHostName[2048] = {};
+	URL_COMPONENTS targetComponents = {};
+	if (CrackURL(normalizedTarget, targetComponents, targetHostName, _countof(targetHostName)) == false) {
+		return false;
+	}
+	if (targetComponents.nScheme != INTERNET_SCHEME_HTTP && targetComponents.nScheme != INTERNET_SCHEME_HTTPS) {
+		return false;
+	}
+
+	CString baseHost(baseHostName, baseComponents.dwHostNameLength);
+	CString targetHost(targetHostName, targetComponents.dwHostNameLength);
+	return baseComponents.nScheme == targetComponents.nScheme &&
+	       baseHost.CompareNoCase(targetHost) == 0 &&
+	       GetEffectivePort(baseComponents) == GetEffectivePort(targetComponents);
+}
+
 }
 
 } // end of namespace launcherapp

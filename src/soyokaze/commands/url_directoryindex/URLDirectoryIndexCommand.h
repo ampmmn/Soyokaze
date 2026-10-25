@@ -4,6 +4,8 @@
 #include "commands/core/ExtraCandidateSourceIF.h"
 #include "commands/url_directoryindex/DirectoryIndexQueryResult.h"
 #include <memory>
+#include <utility>
+#include <vector>
 
 class CommandFile;
 
@@ -54,6 +56,15 @@ public:
 
 	static CString GetType();
 	static CString TypeDisplayName();
+	/**
+	  HTMLから同一オリジンのリンク候補を抽出する
+	  @param[in] content  UTF-8形式のHTML
+	  @param[in] finalURL リダイレクト後の最終URL
+	  @param[out] links   URLと表示名の一覧
+	  @return true:抽出成功  false:HTML解析失敗
+	*/
+	static bool ExtractHTMLLinks(const std::vector<BYTE>& content, const CString& finalURL,
+	                             std::vector<std::pair<CString, CString>>& links);
 
 	static bool NewDialog(Parameter* param, URLDirectoryIndexCommand** newCmd);
 	

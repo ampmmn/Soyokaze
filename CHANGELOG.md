@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-なし
+## Changed
+
+- #326 tidy-html5からlexborへの移行
 
 ## 0.63.0 - 2026-10-24
 

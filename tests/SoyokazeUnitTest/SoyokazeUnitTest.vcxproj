@@ -120,6 +120,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\FilerParameterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\WinHttpTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\URLDirectoryIndexCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\UpdateInfoTest.cpp" />
     <ClCompile Include="LoggerEnvironment.cpp" />
     <ClCompile Include="UserProfileIsolationEnvironment.cpp" />
@@ -375,7 +376,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SOYOKAZE_UNITTEST;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/tidy-html5/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/rapidyaml/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)soyokaze;$(SolutionDir)python_modules/key;$(ProjectDir)../googletest/googletest/include;$(ProjectDir)../googletest/googlemock/include;$(ProjectDir)../testcode;$(SolutionDir)../externals/json/include;$(SolutionDir)../externals/spdlog/include;$(SolutionDir)../externals/fmt/include;$(SolutionDir)../externals/re2/build/install/include;$(SolutionDir)../externals/abseil-cpp/build/install/include;$(SolutionDir)../externals/scintilla/include;$(SolutionDir)../externals/lexilla/include;$(SolutionDir)../externals/rapidyaml/include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -383,8 +384,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/tidy-html5/build\cmake\Release;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Debug;$(SolutionDir)../externals/lunasvg/build/Debug;$(SolutionDir)../externals/lunasvg/build/plutovg/Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;key.lib;googletest.lib;spdlog.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputPath);%(AdditionalLibraryDirectories);$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build/Debug;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Debug;$(SolutionDir)../externals/lunasvg/build/Debug;$(SolutionDir)../externals/lunasvg/build/plutovg/Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>runtimeobject.lib;soyokaze.lib;key.lib;googletest.lib;spdlog.lib;lexbor_static.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

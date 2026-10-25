@@ -14,6 +14,7 @@
 
 using launcherapp::WinHttp;
 using launcherapp::HttpResponse;
+using launcherapp::utility::IsSameOriginURL;
 
 namespace {
 
@@ -416,5 +417,43 @@ TEST(WinHttpTest, LoadBinaryContent_IgnoresContentType)
 	std::vector<BYTE> content;
 	EXPECT_TRUE(http.LoadBinaryContent(MakeUrl(server.Port(), "/"), content));
 	EXPECT_FALSE(ContainsIgnoreCase(server.LastRequest(), "content-type:"));
+}
+
+// リダイレクト先の最終URLを取得できること
+TEST(WinHttpTest, LoadContent_ReturnsFinalURLAfterRedirect)
+{
+	TestHttpServer server;
+	ASSERT_TRUE(server.Start([&server](const std::string& request) {
+		if (request.find("GET /redirect ") == 0) {
+			std::string location = "http://127.0.0.1:" + std::to_string(server.Port()) + "/final";
+			return MakeResponse("302 Found", "Location: " + location + "\r\n", "");
+		}
+		return MakeResponse("200 OK", "Content-Type: text/html\r\n", "<html><body>ok</body></html>");
+	}));
+
+	WinHttp http;
+	http.SetProxyType(WinHttp::NOPROXY);
+
+	std::vector<BYTE> content;
+	bool isHTML = false;
+	CString finalURL;
+	ASSERT_TRUE(http.LoadContent(MakeUrl(server.Port(), "/redirect"), content, isHTML, finalURL));
+	EXPECT_TRUE(isHTML);
+	CString expectedURL = MakeUrl(server.Port(), "/final");
+	EXPECT_STREQ((LPCTSTR)expectedURL, (LPCTSTR)finalURL);
+}
+
+// same-origin判定ではスキーム、ホスト名、ポートを比較すること
+TEST(WinHttpTest, IsSameOriginURL_ComparesSchemeHostAndPort)
+{
+	EXPECT_TRUE(IsSameOriginURL(_T("http://example.test/path"), _T("http://EXAMPLE.test:80/other")));
+	EXPECT_TRUE(IsSameOriginURL(_T("https://example.test/path"), _T("https://example.test:443/other")));
+	EXPECT_TRUE(IsSameOriginURL(_T("https://example.test/path"), _T("//EXAMPLE.test/other")));
+	EXPECT_TRUE(IsSameOriginURL(_T("http://example.test/path"), _T("relative/path")));
+	EXPECT_FALSE(IsSameOriginURL(_T("http://example.test/path"), _T("https://example.test/path")));
+	EXPECT_FALSE(IsSameOriginURL(_T("http://example.test/path"), _T("http://example.test:8080/path")));
+	EXPECT_FALSE(IsSameOriginURL(_T("http://example.test/path"), _T("http://other.test/path")));
+	EXPECT_FALSE(IsSameOriginURL(_T("https://example.test/path"), _T("//example.test:444/path")));
+	EXPECT_FALSE(IsSameOriginURL(_T("http://example.test/path"), _T("ftp://example.test/file")));
 }
 

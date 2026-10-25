@@ -7,7 +7,6 @@
 #include "commands/url_directoryindex/URLDirectoryIndexCommandEditor.h"
 #include "actions/mainwindow/MainWindowSetTextAction.h"
 #include "utility/WinHttp.h"
-#include "utility/Regex.h"
 #include "commands/core/CommandRepository.h"
 #include "matcher/PatternInternal.h"
 #include "hotkey/CommandHotKeyManager.h"
@@ -17,16 +16,19 @@
 #include "icon/IconLoader.h"
 #include "features/main/controller/MainWindowController.h"
 #include "resource.h"
+#include <lexbor/html/html.h>
+#include <lexbor/css/css.h>
+#include <lexbor/selectors/selectors.h>
+#include <shlwapi.h>
 
-#include <deque>
 #include <map>
-#include <tidy.h>
-#include <tidybuffio.h>
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+#pragma comment(lib, "shlwapi.lib")
 
 using namespace launcherapp::commands::common;
 
@@ -37,6 +39,93 @@ namespace commands {
 namespace url_directoryindex {
 
 using LinkItems = std::vector<std::pair<CString, CString> >;
+
+struct LinkExtractContext
+{
+	const CString& mFinalURL;
+	LinkItems& mItems;
+	bool mFailed{false};
+};
+
+/**
+  CSSセレクターで見つかったアンカーからリンク候補を作成する
+  @param[in] node      見つかったDOMノード
+  @param[in] specificity セレクターの詳細度
+  @param[in] contextPtr リンク抽出コンテキスト
+  @return LXB_STATUS_OK:継続  その他:抽出失敗
+*/
+static lxb_status_t OnAnchorFound(lxb_dom_node_t* node, lxb_css_selector_specificity_t specificity, void* contextPtr)
+{
+	(void)specificity;
+	auto& context = *static_cast<LinkExtractContext*>(contextPtr);
+	try {
+		auto element = lxb_dom_interface_element(node);
+		auto hrefAttr = lxb_dom_element_attr_by_name(element, (const lxb_char_t*)"href", 4);
+		if (hrefAttr == nullptr) {
+			return LXB_STATUS_OK;
+		}
+
+		size_t hrefLength = 0;
+		const lxb_char_t* hrefText = lxb_dom_attr_value(hrefAttr, &hrefLength);
+		CString href;
+		if (hrefText != nullptr && hrefLength > 0) {
+			UTF2UTF(std::string((const char*)hrefText, hrefLength), href);
+		}
+
+		// Apache Directory Indexのソート用リンクは候補に含めない
+		if (href.Find(_T("?C=")) == 0) {
+			return LXB_STATUS_OK;
+		}
+
+		// 絶対URLは最終ページと同一オリジンのものだけを候補にする
+		if (launcherapp::utility::IsSameOriginURL(context.mFinalURL, href) == false) {
+			return LXB_STATUS_OK;
+		}
+
+		CString absoluteHref;
+		if (href.Left(2) == _T("//")) {
+			CString scheme = context.mFinalURL.Left(context.mFinalURL.Find(_T(':')));
+			absoluteHref = scheme + _T(":") + href;
+		}
+		else if (href.Left(7).CompareNoCase(_T("http://")) == 0 || href.Left(8).CompareNoCase(_T("https://")) == 0) {
+			absoluteHref = href;
+		}
+		else {
+			// リダイレクト後のURLを基準に相対リンクを絶対URLへ変換する
+			std::vector<TCHAR> combinedURL(32768);
+			DWORD combinedURLLength = static_cast<DWORD>(combinedURL.size());
+			if (UrlCombine(context.mFinalURL, href, combinedURL.data(), &combinedURLLength, 0) != S_OK) {
+				return LXB_STATUS_OK;
+			}
+			absoluteHref = combinedURL.data();
+		}
+
+		if (absoluteHref.IsEmpty()) {
+			return LXB_STATUS_OK;
+		}
+
+		size_t textLength = 0;
+		lxb_char_t* text = lxb_dom_node_text_content(node, &textLength);
+		CString displayName;
+		if (text != nullptr && textLength > 0) {
+			UTF2UTF(std::string((const char*)text, textLength), displayName);
+		}
+		displayName.Trim();
+
+		// 表示テキストが"Parent Directory"なら親ディレクトリ表記に置き換える
+		if (displayName.CompareNoCase(_T("Parent Directory")) == 0) {
+			displayName = _T("..");
+		}
+
+		context.mItems.emplace_back(absoluteHref, displayName);
+
+		return LXB_STATUS_OK;
+	}
+	catch (...) {
+		context.mFailed = true;
+		return LXB_STATUS_ERROR;
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +140,8 @@ struct URLDirectoryIndexCommand::PImpl
 	~PImpl()
 	{
 	}
-	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML);
-	bool ExtractCandidates(const std::vector<BYTE>& content, LinkItems& items);
+	bool LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, CString& finalURL);
+	bool ExtractCandidates(const std::vector<BYTE>& content, const CString& finalURL, LinkItems& items);
 
 	bool IsLoaded()
 	{
@@ -87,7 +176,7 @@ struct URLDirectoryIndexCommand::PImpl
 };
 
 // 候補一覧の生成を開始する
-bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML)
+bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vector<BYTE>& content, bool& isHTML, CString& finalURL)
 {
 	WinHttp http;
 	if (mParam.mServerUser.IsEmpty() == FALSE) {
@@ -96,117 +185,82 @@ bool URLDirectoryIndexCommand::PImpl::LoadContent(const CString& url, std::vecto
 	http.SetProxyType(mParam.mProxyType);
 	http.SetProxyCredential(mParam.mProxyHost, mParam.mProxyUser, mParam.DecryptProxyPassword());
 
-	return http.LoadContent(url, content, isHTML);
-}
-
-static launcherapp::utility::Regex& GetURLRegex()
-{
-	static launcherapp::utility::Regex regURL(_T("https?://.+"));
-	return regURL;
+	return http.LoadContent(url, content, isHTML, finalURL);
 }
 
 
 // HTMLからリンク一覧を生成する
 bool URLDirectoryIndexCommand::PImpl::ExtractCandidates(
 	const std::vector<BYTE>& content,
+	const CString& finalURL,
 	LinkItems& items
 )
 {
- 	TidyDoc doc = tidyCreate();
-	tidyOptSetBool(doc, TidyForceOutput, yes);
+	return URLDirectoryIndexCommand::ExtractHTMLLinks(content, finalURL, items);
+}
 
-	int err = tidyParseString(doc, (LPCSTR)content.data());
-	if (err < 0) {
-		mIsLoadOK = false;
-		mIsLoaded = true;
-		tidyRelease(doc);
+bool URLDirectoryIndexCommand::ExtractHTMLLinks(
+	const std::vector<BYTE>& content,
+	const CString& finalURL,
+	LinkItems& items
+)
+{
+	auto documentDeleter = [](lxb_html_document_t* document) {
+		if (document) {
+			lxb_html_document_destroy(document);
+		}
+	};
+	std::unique_ptr<lxb_html_document_t, decltype(documentDeleter)> document(lxb_html_document_create(), documentDeleter);
+	if (document == nullptr || lxb_html_document_parse(document.get(), content.data(), content.size()) != LXB_STATUS_OK) {
 		return false;
 	}
 
-	err = tidyCleanAndRepair(doc);
-	err = tidyRunDiagnostics(doc);
-
-	auto rootNode = tidyGetRoot(doc);
-
-	if (rootNode == nullptr) {
-		spdlog::debug(_T("tidyGetRoot returned nullptr."));
+	auto parserDeleter = [](lxb_css_parser_t* parser) {
+		if (parser) {
+			lxb_css_parser_destroy(parser, true);
+		}
+	};
+	std::unique_ptr<lxb_css_parser_t, decltype(parserDeleter)> parser(lxb_css_parser_create(), parserDeleter);
+	if (parser == nullptr || lxb_css_parser_init(parser.get(), nullptr) != LXB_STATUS_OK) {
+		return false;
 	}
 
-	std::deque<TidyNode> stk;
-	stk.push_back(rootNode);
+	static const lxb_char_t selectorText[] = "a[href]";
+	auto selectorList = lxb_css_selectors_parse(parser.get(), selectorText, sizeof(selectorText) - 1);
+	if (selectorList == nullptr || parser->status != LXB_STATUS_OK) {
+		if (selectorList) {
+			lxb_css_selector_list_destroy_memory(selectorList);
+		}
+		return false;
+	}
+
+	auto selectorListDeleter = [](lxb_css_selector_list_t* list) {
+		if (list) {
+			lxb_css_selector_list_destroy_memory(list);
+		}
+	};
+	std::unique_ptr<lxb_css_selector_list_t, decltype(selectorListDeleter)> selectorListGuard(selectorList, selectorListDeleter);
+
+	auto selectorsDeleter = [](lxb_selectors_t* selectors) {
+		if (selectors) {
+			lxb_selectors_destroy(selectors, true);
+		}
+	};
+	std::unique_ptr<lxb_selectors_t, decltype(selectorsDeleter)> selectors(lxb_selectors_create(), selectorsDeleter);
+	if (selectors == nullptr || lxb_selectors_init(selectors.get()) != LXB_STATUS_OK) {
+		return false;
+	}
 
 	LinkItems links;
-
-	while(stk.empty() == false) {
-		auto curNode = stk.front();
-		stk.pop_front();
-
-		auto curName = tidyNodeGetName(curNode);
-
-
-		for (TidyNode childNode = tidyGetChild(curNode); childNode != nullptr;
-		     childNode = tidyGetNext(childNode)) {
-
-			auto name = tidyNodeGetName(childNode);
-			if(name) {				
-
-				CString href;
-				bool isA = stricmp(name, "a") == 0;
-
-				for(auto attr = tidyAttrFirst(childNode); attr; attr = tidyAttrNext(attr) ) {
-					auto attrName = tidyAttrName(attr);
-					auto attrValue = tidyAttrValue(attr);
-					if (isA && stricmp(attrName, "href") == 0) {
-						UTF2UTF(attrValue, href);
-					}
-				}
-				stk.push_back(childNode);
-
-				// apacheのDirectory IndexのName/Last modified/Size/Descriptionのソートは出さないことにする
-				bool isSortLink = (href.Find(_T("?C=")) == 0);
-
-				// 遷移先が絶対URLであるものを除外する
-				// (他ドメインに遷移するのを防ぐため)
-				static launcherapp::utility::Regex& regURL = GetURLRegex();
-				bool isAbsURL = regURL.PartialMatch(href);
-
-				if (isA== false || isSortLink || isAbsURL) {
-					continue ;
-				}
-
-				auto textNode = tidyGetChild(childNode);
-
-				if (textNode == nullptr) {
-					continue;
-				}
-
-				TidyBuffer buf;
-				tidyBufInit(&buf);
-				tidyNodeGetText(doc, textNode, &buf);
-
-				CString displayName;
-				UTF2UTF((const char*)buf.bp, displayName);
-				if (isA) {
-					displayName.Trim();
-
-					// 表示テキストが"Parent Directory"だったら、".."に置き換える
-					if (displayName.CompareNoCase(_T("Parent Directory")) == 0) {
-						displayName = _T("..");
-					}
-
-					links.push_back(std::pair<CString, CString>(href, displayName));
-				}
-				tidyBufFree(&buf);
-			}
-			stk.push_back(childNode);
-		}
+	LinkExtractContext context{finalURL, links};
+	if (lxb_selectors_find(selectors.get(), lxb_dom_interface_node(document.get()), selectorList,
+	                       OnAnchorFound, &context) != LXB_STATUS_OK || context.mFailed) {
+		return false;
 	}
- 
-	tidyRelease(doc);
 
 	items.swap(links);
-
 	return true;
+
 }
 
 bool URLDirectoryIndexCommand::QueryInterface(const launcherapp::core::IFID& ifid, void** cmd)
@@ -242,8 +296,7 @@ void URLDirectoryIndexCommand::SetSubPath(const CString& subPath)
 {
 	// https?から始まる場合はURLとして扱う
 	// '/'で始まる場合は絶対パスとして扱う
-	static launcherapp::utility::Regex& regURL = GetURLRegex();
-	if (subPath.Left(1) == _T('/') || regURL.PartialMatch(subPath)) {
+	if (subPath.Left(1) == _T('/') || subPath.Left(7).CompareNoCase(_T("http://")) == 0 || subPath.Left(8).CompareNoCase(_T("https://")) == 0) {
 		in->mSubPath = subPath;
 	}
 	else {
@@ -275,13 +328,14 @@ void URLDirectoryIndexCommand::LoadCanidates(bool& isHTML)
 	else {
 		// なければダウンロード
 		std::vector<BYTE> content;
-		if (in->LoadContent(url, content, isHTML) == false) {
+		CString finalURL;
+		if (in->LoadContent(url, content, isHTML, finalURL) == false) {
 			return;
 		}
 		// 取得したテキストを解析
 		spdlog::debug("extract candidates");
 		LinkItems items;
-		if (in->ExtractCandidates(content, items) == false) {
+		if (in->ExtractCandidates(content, finalURL, items) == false) {
 			return;
 		}
 

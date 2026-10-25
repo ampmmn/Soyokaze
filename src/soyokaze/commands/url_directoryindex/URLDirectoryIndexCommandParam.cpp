@@ -138,8 +138,7 @@ CString CommandParam::CombineURL2(const CString& urlPart, const CString& subPath
 	CString url(urlPart);
 
 	// 絶対表記の場合はそのまま返す
-	static tregex regURL(_T("https?://.+"));
-	if (std::regex_search((LPCTSTR)subPath, regURL)) {
+	if (subPath.Left(7).CompareNoCase(_T("http://")) == 0 || subPath.Left(8).CompareNoCase(_T("https://")) == 0) {
 		url = subPath;
 		SimplifyURL(url);
 
