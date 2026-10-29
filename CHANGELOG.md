@@ -5,6 +5,7 @@
 ## Changed
 
 - #326 tidy-html5からlexborへの移行
+- #327 時間がかかるPrepareAdhocCommandsの呼び出しをバックグラウンド化する
 
 ## 0.63.0 - 2026-10-24
 

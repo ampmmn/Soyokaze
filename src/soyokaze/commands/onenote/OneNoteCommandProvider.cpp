@@ -10,6 +10,7 @@
 #include "setting/AppPreference.h"
 #include "core/LauncherEventListenerIF.h"
 #include "app/LauncherEventDispatcher.h"
+#include <atomic>
 #include <mutex>
 #include <thread>
 
@@ -35,8 +36,10 @@ struct OneNoteCommandProvider::PImpl :
 	}
 	virtual ~PImpl()
 	{
+		mIsStopping = true;
 		LauncherEventDispatcher::Get()->RemoveListener(this);
 		AppPreference::Get()->UnregisterListener(this);
+		WaitForLoad();
 	}
 
 // AppPreferenceListenerIF
@@ -53,7 +56,8 @@ struct OneNoteCommandProvider::PImpl :
 	void OnUnlockScreenOccurred() override {}
 	void OnTimer() override {
 
-		if (mParam.mIsEnable == false) {
+		CommandParam param = GetParam();
+		if (param.mIsEnable == false) {
 			// 機能を利用しない
 			return;
 		}
@@ -70,21 +74,7 @@ struct OneNoteCommandProvider::PImpl :
 			return;
 		}
 
-		// 前回のロードが実行中のばあいは完了を待つ
-		if (mLoadThread.joinable()) {
-			mLoadThread.join();
-		}
-
-		// 別スレッドでノートブックのロードを実行する
-		spdlog::info("Reload Onenote Notebook.");
-		auto th = std::thread([&]() {
-			HRESULT hr = CoInitialize(nullptr);
-			if (SUCCEEDED(hr)) {
-				LoadNotebooks();
-			}
-			CoUninitialize();
-		});
-		mLoadThread.swap(th);
+		StartLoad();
 	}
 
 	void OnLauncherActivate() override
@@ -99,6 +89,57 @@ struct OneNoteCommandProvider::PImpl :
 
 
 	void Load();
+	/**
+	  設定をコピーして取得する
+	  @return 設定情報
+	*/
+	CommandParam GetParam()
+	{
+		std::lock_guard<std::mutex> lock(mParamMutex);
+		return mParam;
+	}
+	/**
+	  OneNoteのノートブック一覧をバックグラウンドで読み込む
+	*/
+	void StartLoad()
+	{
+		if (mIsStopping) {
+			return;
+		}
+		if (mIsLoading.exchange(true)) {
+			return;
+		}
+
+		std::lock_guard<std::mutex> lock(mLoadThreadMutex);
+		if (mIsStopping) {
+			mIsLoading = false;
+			return;
+		}
+		if (mLoadThread.joinable()) {
+			mLoadThread.join();
+		}
+
+		// OneNoteへの接続を検索スレッドから分離する
+		spdlog::info("Reload Onenote Notebook.");
+		mLoadThread = std::thread([this]() {
+			HRESULT hr = CoInitialize(nullptr);
+			if (SUCCEEDED(hr)) {
+				LoadNotebooks();
+				CoUninitialize();
+			}
+			mIsLoading = false;
+		});
+	}
+	/**
+	  ノートブック読み込みスレッドの終了を待つ
+	*/
+	void WaitForLoad()
+	{
+		std::lock_guard<std::mutex> lock(mLoadThreadMutex);
+		if (mLoadThread.joinable()) {
+			mLoadThread.join();
+		}
+	}
 	void LoadNotebooks() {
 		std::vector<OneNoteBook> books;
 		OneNoteAppProxy app;
@@ -109,13 +150,19 @@ struct OneNoteCommandProvider::PImpl :
 		std::lock_guard<std::mutex> lock(mMutex); 
 		std::swap(mBooks, books);
 		mLastLoadTime = GetTickCount64();
+		mIsReady = true;
 	}
 
 	CommandParam mParam;
+	std::mutex mParamMutex;
 	std::vector<OneNoteBook> mBooks;
 	std::mutex mMutex;
+	bool mIsReady{false};
 	bool mIsBackground{false};
-	uint64_t mLastLoadTime{0};
+	std::atomic<uint64_t> mLastLoadTime{0};
+	std::atomic<bool> mIsLoading{false};
+	std::atomic<bool> mIsStopping{false};
+	std::mutex mLoadThreadMutex;
 	// ブックマーク読み込みスレッド
 	std::thread mLoadThread;
 };
@@ -126,6 +173,7 @@ struct OneNoteCommandProvider::PImpl :
 void OneNoteCommandProvider::PImpl::Load()
 {
 	auto pref = AppPreference::Get();
+	std::lock_guard<std::mutex> lock(mParamMutex);
 	mParam.Load((Settings&)pref->GetSettings());
 }
 
@@ -140,12 +188,7 @@ OneNoteCommandProvider::OneNoteCommandProvider() : in(std::make_unique<PImpl>())
 {
 }
 
-OneNoteCommandProvider::~OneNoteCommandProvider()
-{
-	if (in->mLoadThread.joinable()) {
-		in->mLoadThread.join();
-	}
-}
+OneNoteCommandProvider::~OneNoteCommandProvider() = default;
 
 CString OneNoteCommandProvider::GetName()
 {
@@ -157,9 +200,8 @@ void OneNoteCommandProvider::PrepareAdhocCommands()
 {
 	// 設定情報を読む
 	in->Load();
-	//
-	if (in->mParam.mIsEnable) {
-		in->LoadNotebooks();
+	if (in->GetParam().mIsEnable) {
+		in->StartLoad();
 	}
 }
 
@@ -170,19 +212,20 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 )
 {
 	// 機能を利用しない場合は抜ける
-	if (in->mParam.mIsEnable == false) {
+	auto param = in->GetParam();
+	if (param.mIsEnable == false) {
 		return;
 	}
 
 	// プレフィックスが一致しない場合は抜ける
-	const auto& prefix = in->mParam.mPrefix;
+	const auto& prefix = param.mPrefix;
 	bool hasPrefix = prefix.IsEmpty() == FALSE;
 	if (hasPrefix && prefix.CompareNoCase(pattern->GetFirstWord()) != 0) {
 		return;
 	}
 
 	// 問い合わせ文字列の長さが閾値を下回る場合は機能を発動しない
-	if (pattern->GetWholeTextLength() < in->mParam.mMinTriggerLength) {
+	if (pattern->GetWholeTextLength() < param.mMinTriggerLength) {
 		return;
 	}
 
@@ -194,6 +237,9 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 	CString pathStr;
 
 	std::lock_guard<std::mutex> lock(in->mMutex); 
+	if (in->mIsReady == false) {
+		return;
+	}
 	for (auto& book : in->mBooks) {
 
 		for (auto& section : book.mSections) {
@@ -222,7 +268,7 @@ void OneNoteCommandProvider::QueryAdhocCommands(
 					level = Pattern::FrontMatch;
 				}
 
-				commands.Add(CommandQueryItem(level, new OneNoteCommand(&in->mParam, book, section, page)));
+				commands.Add(CommandQueryItem(level, new OneNoteCommand(&param, book, section, page)));
 				matchCount++;
 			}
 		}

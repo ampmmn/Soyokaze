@@ -9,6 +9,7 @@
 #include "utility/RefPtr.h"
 
 #include <mutex>
+#include <thread>
 
 #pragma warning(push)
 #pragma warning(disable: 4995)
@@ -108,6 +109,7 @@ struct ShellDestinationCommandProvider::PImpl : public AppPreferenceListenerIF
 	~PImpl() override
 	{
 		AppPreference::Get()->UnregisterListener(this);
+		std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
 		Stop();
 	}
 
@@ -121,6 +123,7 @@ struct ShellDestinationCommandProvider::PImpl : public AppPreferenceListenerIF
 
 	void SetEnable(bool enable)
 	{
+		std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
 		{
 			std::lock_guard<std::mutex> lock(mMutex);
 			if (mIsEnable == enable) {
@@ -161,7 +164,9 @@ struct ShellDestinationCommandProvider::PImpl : public AppPreferenceListenerIF
 				LocalDirectoryWatcher::GetInstance()->Unregister(id);
 			}
 		}
-		Reload();
+		mLoadThread = std::thread([this]() {
+			Reload();
+		});
 	}
 
 	void Stop()
@@ -169,17 +174,24 @@ struct ShellDestinationCommandProvider::PImpl : public AppPreferenceListenerIF
 		uint32_t watchId = 0;
 		{
 			std::lock_guard<std::mutex> lock(mMutex);
+			mIsEnable = false;
 			watchId = mWatchId;
 			mWatchId = 0;
-			mEntries.clear();
 		}
 		if (watchId != 0) {
 			LocalDirectoryWatcher::GetInstance()->Unregister(watchId);
 		}
+		if (mLoadThread.joinable()) {
+			mLoadThread.join();
+		}
+		std::lock_guard<std::mutex> reloadLock(mReloadMutex);
+		std::lock_guard<std::mutex> lock(mMutex);
+		mEntries.clear();
 	}
 
 	void Reload()
 	{
+		std::lock_guard<std::mutex> reloadLock(mReloadMutex);
 		{
 			std::lock_guard<std::mutex> lock(mMutex);
 			if (mIsEnable == false) {
@@ -197,10 +209,13 @@ struct ShellDestinationCommandProvider::PImpl : public AppPreferenceListenerIF
 		}
 	}
 
+	std::mutex mLifecycleMutex;
+	std::mutex mReloadMutex;
 	std::mutex mMutex;
 	bool mIsEnable{false};
 	uint32_t mWatchId{0};
 	EntryMap mEntries;
+	std::thread mLoadThread;
 };
 
 REGISTER_COMMANDPROVIDER(ShellDestinationCommandProvider)
@@ -223,11 +238,10 @@ void ShellDestinationCommandProvider::PrepareAdhocCommands()
 
 void ShellDestinationCommandProvider::QueryAdhocCommands(Pattern* pattern, CommandQueryItemList& commands)
 {
+  std::lock_guard<std::mutex> lock(in->mMutex);
   if (in->mIsEnable == false) {
     return;
   }
-
-  std::lock_guard<std::mutex> lock(in->mMutex);
 
   CString name;
 

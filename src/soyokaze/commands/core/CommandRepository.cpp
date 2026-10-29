@@ -160,7 +160,10 @@ struct CommandRepository::PImpl
 
 		PERFLOG("PrepareAdhocCommands start.");
 		for (auto& provider : providers) {
+			PERFLOG(_T("{} PrepareAdhocCommands start."), (LPCTSTR)provider->GetName());
+			spdlog::stopwatch sw;
 			provider->PrepareAdhocCommands();
+			PERFLOG("PrepareAdhocCommands end. elapsed:{0:.6f}", sw);
 		}
 		PERFLOG("PrepareAdhocCommands end.");
 

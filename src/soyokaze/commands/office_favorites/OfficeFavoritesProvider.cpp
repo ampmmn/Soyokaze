@@ -10,6 +10,9 @@
 #include "core/LauncherEventListenerIF.h"
 #include "setting/AppPreferenceListenerIF.h"
 #include "setting/AppPreference.h"
+#include <atomic>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 #ifdef _DEBUG
@@ -72,16 +75,25 @@ struct OfficeFavoritesProvider::PImpl :
 		AppPreference::Get()->UnregisterListener(this);
 
 		// 監視を止めてから保持データを破棄する
-		Stop();
+		SetEnable(false);
 	}
 
 	// 有効/無効に応じて開始・停止する
 	void SetEnable(bool isEnable)
 	{
+		std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
 		if (isEnable) {
+			if (mIsEnable) {
+				return;
+			}
+			mIsEnable = true;
 			Start();
 		}
 		else {
+			if (mIsEnable == false) {
+				return;
+			}
+			mIsEnable = false;
 			Stop();
 		}
 	}
@@ -89,25 +101,64 @@ struct OfficeFavoritesProvider::PImpl :
 	// 情報の読み込みと監視の開始(既に開始している場合は何もしない)
 	void Start()
 	{
-		if (mIsEnable) {
-			return;
-		}
-		mIsEnable = true;
-
-		mFavorites->ReloadRegistry();
-		mFavorites->ReloadJson();
 		StartRegistryWatch();
-		StartJsonWatch();
+		mLoadThread = std::thread([this]() {
+			ReloadInitialData();
+		});
 	}
 
 	// 監視の停止と保持データの破棄
 	void Stop()
 	{
-		mIsEnable = false;
-
 		StopJsonWatch();
 		mRegistryWatches.clear();
+		if (mLoadThread.joinable()) {
+			mLoadThread.join();
+		}
+		std::lock_guard<std::mutex> reloadLock(mReloadMutex);
 		mFavorites->Clear();
+	}
+
+	/**
+	  初期データをバックグラウンドで読み込み、変更監視を開始する
+	*/
+	void ReloadInitialData()
+	{
+		if (mIsEnable == false) {
+			return;
+		}
+		// 初期データの読み込み中に発生した変更を監視できるよう先に登録する
+		StartJsonWatch();
+		{
+			std::lock_guard<std::mutex> lock(mReloadMutex);
+			if (mIsEnable == false) {
+				return;
+			}
+			mFavorites->ReloadRegistry();
+			if (mIsEnable) {
+				mFavorites->ReloadJson();
+			}
+		}
+	}
+	/**
+	  レジストリの変更内容を読み直す
+	*/
+	void ReloadRegistry()
+	{
+		std::lock_guard<std::mutex> lock(mReloadMutex);
+		if (mIsEnable) {
+			mFavorites->ReloadRegistry();
+		}
+	}
+	/**
+	  JSONの変更内容を読み直す
+	*/
+	void ReloadJson()
+	{
+		std::lock_guard<std::mutex> lock(mReloadMutex);
+		if (mIsEnable) {
+			mFavorites->ReloadJson();
+		}
 	}
 
 	// レジストリの変更監視を開始する
@@ -135,12 +186,16 @@ struct OfficeFavoritesProvider::PImpl :
 	void OnLauncherUnactivate() override {}
 	void OnMonitorConfigurationChanged() override {}
 
-	bool mIsEnable{false};
+	std::atomic<bool> mIsEnable{false};
+	std::mutex mLifecycleMutex;
+	std::mutex mReloadMutex;
+	std::thread mLoadThread;
 
 	// お気に入りの保持
 	std::unique_ptr<OfficeFavorites> mFavorites;
 	// レジストリの監視一覧
 	std::vector<RegistryWatch> mRegistryWatches;
+	std::mutex mJsonWatchMutex;
 	// JSONファイルの監視ID(LocalDirectoryWatcherの登録ID)
 	std::vector<uint32_t> mJsonWatchIds;
 };
@@ -181,6 +236,9 @@ void OfficeFavoritesProvider::PImpl::StartRegistryWatch()
 void OfficeFavoritesProvider::PImpl::StartJsonWatch()
 {
 	StopJsonWatch();
+	if (mIsEnable == false) {
+		return;
+	}
 
 	auto watcher = LocalDirectoryWatcher::GetInstance();
 
@@ -192,11 +250,23 @@ void OfficeFavoritesProvider::PImpl::StartJsonWatch()
 				spdlog::info("office favorites json updated.");
 				// 通知を受けて即ロードするとファイルアクセスに失敗するので少し間を置く
 				Sleep(JSON_RELOAD_DELAY_MSEC);
-				auto favorites = static_cast<OfficeFavorites*>(p);
-				favorites->ReloadJson();
-			}, mFavorites.get());
+				auto self = static_cast<PImpl*>(p);
+				self->ReloadJson();
+			}, this);
 		if (id != 0) {
-			mJsonWatchIds.push_back(id);
+			bool shouldUnregister = false;
+			{
+				std::lock_guard<std::mutex> lock(mJsonWatchMutex);
+				if (mIsEnable) {
+					mJsonWatchIds.push_back(id);
+				}
+				else {
+					shouldUnregister = true;
+				}
+			}
+			if (shouldUnregister) {
+				watcher->Unregister(id);
+			}
 		}
 	}
 }
@@ -205,36 +275,42 @@ void OfficeFavoritesProvider::PImpl::StartJsonWatch()
 void OfficeFavoritesProvider::PImpl::StopJsonWatch()
 {
 	auto watcher = LocalDirectoryWatcher::GetInstance();
-	for (auto id : mJsonWatchIds) {
+	std::vector<uint32_t> watchIds;
+	{
+		std::lock_guard<std::mutex> lock(mJsonWatchMutex);
+		watchIds.swap(mJsonWatchIds);
+	}
+	for (auto id : watchIds) {
 		watcher->Unregister(id);
 	}
-	mJsonWatchIds.clear();
 }
 
 // レジストリの変更通知を確認し、変更があれば読み直す
 void OfficeFavoritesProvider::PImpl::OnTimer()
 {
-	if (mIsEnable == false) {
-		return;
-	}
-
 	bool isChanged = false;
-	for (auto& watch : mRegistryWatches) {
-		// 非ブロッキングで通知の有無を確認する
-		if (WaitForSingleObject(watch.mEvent.get(), 0) != WAIT_OBJECT_0) {
-			continue;
+	{
+		std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
+		if (mIsEnable == false) {
+			return;
 		}
+		for (auto& watch : mRegistryWatches) {
+			// 非ブロッキングで通知の有無を確認する
+			if (WaitForSingleObject(watch.mEvent.get(), 0) != WAIT_OBJECT_0) {
+				continue;
+			}
 
-		// 通知を消費してから再登録する(再登録後に読み直すことで変更を取りこぼさない)
-		ResetEvent(watch.mEvent.get());
-		if (ArmRegistryWatch(watch) == false) {
-			spdlog::warn(_T("failed to re-register registry watch."));
+			// 通知を消費してから再登録する(再登録後に読み直すことで変更を取りこぼさない)
+			ResetEvent(watch.mEvent.get());
+			if (ArmRegistryWatch(watch) == false) {
+				spdlog::warn(_T("failed to re-register registry watch."));
+			}
+			isChanged = true;
 		}
-		isChanged = true;
 	}
 
 	if (isChanged) {
-		mFavorites->ReloadRegistry();
+		ReloadRegistry();
 	}
 }
 
