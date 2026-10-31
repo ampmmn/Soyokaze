@@ -204,6 +204,9 @@
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp">
       <Filter>soyokaze\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\utility\ProcessPathTest.cpp">
+      <Filter>soyokaze\utility</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\matcher\CommandTokenTest.cpp">
       <Filter>soyokaze\matcher</Filter>
     </ClCompile>
@@ -346,6 +349,9 @@
       <Filter>soyokaze</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\builtin\KillTaskCommandTest.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp">

@@ -141,89 +141,7 @@ DWORD ProcessPath::GetProcessId()
 
 CString ProcessPath::GetCommandLine()
 {
-	// https://espresso3389.hatenablog.com/entry/20080723/1216815501
-
-	struct RTL_USER_PROCESS_PARAMETERS_I {
-		BYTE Reserved1[16];
-		PVOID Reserved2[10];
-		UNICODE_STRING ImagePathName;
-		UNICODE_STRING CommandLine;
-	};
-
-	struct PEB_INTERNAL {
-		BYTE Reserved1[2];
-		BYTE BeingDebugged;
-		BYTE Reserved2[1];
-		PVOID Reserved3[2];
-		struct PEB_LDR_DATA* Ldr;
-		RTL_USER_PROCESS_PARAMETERS_I* ProcessParameters;
-		BYTE Reserved4[104];
-		PVOID Reserved5[52];
-		struct PS_POST_PROCESS_INIT_ROUTINE* PostProcessInitRoutine;
-		BYTE Reserved6[128];
-		PVOID Reserved7[1];
-		ULONG SessionId;
-	};
-
-	typedef NTSTATUS (NTAPI* NtQueryInformationProcessPtr)(
-			IN HANDLE ProcessHandle,
-			IN PROCESSINFOCLASS ProcessInformationClass,
-			OUT PVOID ProcessInformation,
-			IN ULONG ProcessInformationLength,
-			OUT PULONG ReturnLength OPTIONAL);
-
-	typedef ULONG (NTAPI* RtlNtStatusToDosErrorPtr)(NTSTATUS Status);
-
-	// ウインドウハンドルが属するプロセスIDを取得する
-	DWORD pid;
-	GetWindowThreadProcessId(mHwnd, &pid);
-	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
-	if (hProcess == nullptr) {
-		throw Exception(pid);
-	}
-	::utility::ScopeExit guard([hProcess]() { CloseHandle(hProcess); });
-
-	HINSTANCE hNtDll = GetModuleHandleW(L"ntdll.dll");
-	if (hNtDll == nullptr) {
-		throw Exception(pid);
-	}
-
-	NtQueryInformationProcessPtr NtQueryInformationProcess = 
-		(NtQueryInformationProcessPtr)GetProcAddress(hNtDll, "NtQueryInformationProcess");
-
-	if(!NtQueryInformationProcess) {
-		throw Exception(pid);
-	}
-
-	PROCESS_BASIC_INFORMATION pbi = {};
-	ULONG len;
-	NTSTATUS status = NtQueryInformationProcess(hProcess, ProcessBasicInformation, &pbi, sizeof(pbi), &len);
-	if (NT_ERROR(status) || !pbi.PebBaseAddress) {
-		throw Exception(pid);
-	}
-
-	PEB_INTERNAL peb;
-	size_t bytesRead = 0;
-	if(!ReadProcessMemory(hProcess, pbi.PebBaseAddress, &peb, sizeof(peb), &bytesRead)) {
-		throw Exception(pid);
-	}
-
-	RTL_USER_PROCESS_PARAMETERS_I upp;
-	if(!ReadProcessMemory(hProcess, peb.ProcessParameters, &upp, sizeof(upp), &bytesRead)) {
-		throw Exception(pid);
-	}
-
-	// Check the buffer size
-	len = (ULONG)upp.CommandLine.Length / sizeof(wchar_t) + 1;
-	CStringW cmdline;
-	LPWSTR buff = cmdline.GetBuffer(len);
-	buff[len-1] = L'\0';
-	cmdline.ReleaseBuffer();
-
-	if(!ReadProcessMemory(hProcess, upp.CommandLine.Buffer, buff, upp.CommandLine.Length, &bytesRead)) {
-		throw Exception(pid);
-	}
-
+	CString cmdline = GetFullCommandLine(GetProcessId());
 	cmdline.Trim();
 
 	if (cmdline.IsEmpty()) {
@@ -233,15 +151,242 @@ CString ProcessPath::GetCommandLine()
 	if (cmdline[0] == _T('"')) {
 		int n = cmdline.Find(_T('"'), 1);
 		if (n == -1) {
-			return CString(cmdline);
+			return cmdline;
 		}
-		return CString(cmdline.Mid(n+1));
+		return cmdline.Mid(n + 1);
+	}
+
+	int n = cmdline.Find(_T(' '), 0);
+	if (n == -1) {
+		return cmdline;
+	}
+	return cmdline.Mid(n + 1);
+}
+
+/** PIDで指定したプロセスの実行ファイルを含むコマンドラインを取得する */
+CString ProcessPath::GetFullCommandLine(DWORD processId)
+{
+	struct PEB32_INTERNAL {
+		BYTE Reserved1[2];
+		BYTE BeingDebugged;
+		BYTE Reserved2[1];
+		ULONG Reserved3[2];
+		ULONG Ldr;
+		ULONG ProcessParameters;
+	};
+	struct PEB64_INTERNAL {
+		BYTE Reserved1[2];
+		BYTE BeingDebugged;
+		BYTE Reserved2[1];
+		ULONG64 Reserved3[2];
+		ULONG64 Ldr;
+		ULONG64 ProcessParameters;
+	};
+	struct UNICODE_STRING32_INTERNAL {
+		USHORT Length;
+		USHORT MaximumLength;
+		ULONG Buffer;
+	};
+	struct UNICODE_STRING64_INTERNAL {
+		USHORT Length;
+		USHORT MaximumLength;
+		ULONG Padding;
+		ULONG64 Buffer;
+	};
+	struct PROCESS_PARAMETERS32_INTERNAL {
+		BYTE Reserved1[16];
+		ULONG Reserved2[10];
+		UNICODE_STRING32_INTERNAL ImagePathName;
+		UNICODE_STRING32_INTERNAL CommandLine;
+	};
+	struct PROCESS_PARAMETERS64_INTERNAL {
+		BYTE Reserved1[16];
+		ULONG64 Reserved2[10];
+		UNICODE_STRING64_INTERNAL ImagePathName;
+		UNICODE_STRING64_INTERNAL CommandLine;
+	};
+	struct PROCESS_BASIC_INFORMATION64_INTERNAL {
+		LONG ExitStatus;
+		ULONG Padding;
+		ULONG64 PebBaseAddress;
+		ULONG64 AffinityMask;
+		LONG BasePriority;
+		ULONG Padding2;
+		ULONG64 UniqueProcessId;
+		ULONG64 InheritedFromUniqueProcessId;
+	};
+	typedef NTSTATUS (NTAPI* NtQueryInformationProcessPtr)(
+		HANDLE ProcessHandle,
+		PROCESSINFOCLASS ProcessInformationClass,
+		PVOID ProcessInformation,
+		ULONG ProcessInformationLength,
+		PULONG ReturnLength);
+	typedef NTSTATUS (NTAPI* NtWow64QueryInformationProcess64Ptr)(
+		HANDLE ProcessHandle,
+		PROCESSINFOCLASS ProcessInformationClass,
+		PVOID ProcessInformation,
+		ULONG ProcessInformationLength,
+		PULONG ReturnLength);
+	typedef NTSTATUS (NTAPI* NtWow64ReadVirtualMemory64Ptr)(
+		HANDLE ProcessHandle,
+		ULONG64 BaseAddress,
+		PVOID Buffer,
+		ULONG64 BufferSize,
+		PULONG64 NumberOfBytesRead);
+	typedef BOOL (WINAPI* IsWow64Process2Ptr)(HANDLE Process, USHORT* ProcessMachine, USHORT* NativeMachine);
+
+	if (processId == 0) {
+		throw Exception(processId);
+	}
+
+	HANDLE process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processId);
+	if (process == nullptr) {
+		throw Exception(processId);
+	}
+	::utility::ScopeExit processGuard([process]() { CloseHandle(process); });
+
+	HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+	if (ntdll == nullptr) {
+		throw Exception(processId);
+	}
+	auto queryInformationProcess = reinterpret_cast<NtQueryInformationProcessPtr>(
+		GetProcAddress(ntdll, "NtQueryInformationProcess"));
+	if (queryInformationProcess == nullptr) {
+		throw Exception(processId);
+	}
+
+	bool targetIs32Bit = false;
+	auto isWow64Process2 = reinterpret_cast<IsWow64Process2Ptr>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "IsWow64Process2"));
+	if (isWow64Process2 != nullptr) {
+		USHORT processMachine = IMAGE_FILE_MACHINE_UNKNOWN;
+		USHORT nativeMachine = IMAGE_FILE_MACHINE_UNKNOWN;
+		if (isWow64Process2(process, &processMachine, &nativeMachine) == FALSE) {
+			throw Exception(processId);
+		}
+		targetIs32Bit = processMachine == IMAGE_FILE_MACHINE_I386 || processMachine == IMAGE_FILE_MACHINE_ARMNT;
 	}
 	else {
-		int n = cmdline.Find(_T(' '), 0);
-		if (n == -1) {
-			return CString(cmdline);
+		BOOL targetIsWow64 = FALSE;
+		BOOL currentIsWow64 = FALSE;
+		if (IsWow64Process(process, &targetIsWow64) == FALSE ||
+			IsWow64Process(GetCurrentProcess(), &currentIsWow64) == FALSE) {
+			throw Exception(processId);
 		}
-		return CString(cmdline.Mid(n+1));
+		targetIs32Bit = targetIsWow64 != FALSE || (sizeof(void*) == 4 && currentIsWow64 == FALSE);
 	}
+
+	ULONG64 pebAddress = 0;
+	ULONG returnLength = 0;
+	if (targetIs32Bit && sizeof(void*) == 8) {
+		ULONG_PTR wow64PebAddress = 0;
+		constexpr PROCESSINFOCLASS processWow64Information = static_cast<PROCESSINFOCLASS>(26);
+		NTSTATUS status = queryInformationProcess(
+			process,
+			processWow64Information,
+			&wow64PebAddress,
+			sizeof(wow64PebAddress),
+			&returnLength);
+		if (status < 0 || wow64PebAddress == 0) {
+			throw Exception(processId);
+		}
+		pebAddress = wow64PebAddress;
+	}
+	else if (targetIs32Bit == false && sizeof(void*) == 4) {
+		auto queryInformationProcess64 = reinterpret_cast<NtWow64QueryInformationProcess64Ptr>(
+			GetProcAddress(ntdll, "NtWow64QueryInformationProcess64"));
+		if (queryInformationProcess64 == nullptr) {
+			throw Exception(processId);
+		}
+		PROCESS_BASIC_INFORMATION64_INTERNAL processInfo{};
+		NTSTATUS status = queryInformationProcess64(
+			process,
+			ProcessBasicInformation,
+			&processInfo,
+			sizeof(processInfo),
+			&returnLength);
+		if (status < 0 || processInfo.PebBaseAddress == 0) {
+			throw Exception(processId);
+		}
+		pebAddress = processInfo.PebBaseAddress;
+	}
+	else {
+		PROCESS_BASIC_INFORMATION processInfo{};
+		NTSTATUS status = queryInformationProcess(
+			process,
+			ProcessBasicInformation,
+			&processInfo,
+			sizeof(processInfo),
+			&returnLength);
+		if (status < 0 || processInfo.PebBaseAddress == nullptr) {
+			throw Exception(processId);
+		}
+		pebAddress = reinterpret_cast<ULONG_PTR>(processInfo.PebBaseAddress);
+	}
+
+	auto readMemory = [&](ULONG64 address, PVOID buffer, SIZE_T size) -> bool {
+		if (targetIs32Bit == false && sizeof(void*) == 4) {
+			auto readVirtualMemory64 = reinterpret_cast<NtWow64ReadVirtualMemory64Ptr>(
+				GetProcAddress(ntdll, "NtWow64ReadVirtualMemory64"));
+			if (readVirtualMemory64 == nullptr) {
+				return false;
+			}
+			ULONG64 bytesRead = 0;
+			NTSTATUS status = readVirtualMemory64(process, address, buffer, size, &bytesRead);
+			return status >= 0 && bytesRead == size;
+		}
+
+		SIZE_T bytesRead = 0;
+		BOOL result = ReadProcessMemory(
+			process,
+			reinterpret_cast<LPCVOID>(static_cast<ULONG_PTR>(address)),
+			buffer,
+			size,
+			&bytesRead);
+		return result != FALSE && bytesRead == size;
+	};
+
+	ULONG64 commandLineAddress = 0;
+	USHORT commandLineLength = 0;
+	if (targetIs32Bit) {
+		PEB32_INTERNAL peb{};
+		if (readMemory(pebAddress, &peb, sizeof(peb)) == false || peb.ProcessParameters == 0) {
+			throw Exception(processId);
+		}
+		PROCESS_PARAMETERS32_INTERNAL parameters{};
+		if (readMemory(peb.ProcessParameters, &parameters, sizeof(parameters)) == false) {
+			throw Exception(processId);
+		}
+		commandLineAddress = parameters.CommandLine.Buffer;
+		commandLineLength = parameters.CommandLine.Length;
+	}
+	else {
+		PEB64_INTERNAL peb{};
+		if (readMemory(pebAddress, &peb, sizeof(peb)) == false || peb.ProcessParameters == 0) {
+			throw Exception(processId);
+		}
+		PROCESS_PARAMETERS64_INTERNAL parameters{};
+		if (readMemory(peb.ProcessParameters, &parameters, sizeof(parameters)) == false) {
+			throw Exception(processId);
+		}
+		commandLineAddress = parameters.CommandLine.Buffer;
+		commandLineLength = parameters.CommandLine.Length;
+	}
+
+	if (commandLineLength == 0) {
+		return _T("");
+	}
+	if (commandLineAddress == 0 || commandLineLength % sizeof(wchar_t) != 0) {
+		throw Exception(processId);
+	}
+
+	int characterCount = commandLineLength / sizeof(wchar_t);
+	CStringW commandLine;
+	LPWSTR buffer = commandLine.GetBuffer(characterCount + 1);
+	if (readMemory(commandLineAddress, buffer, commandLineLength) == false) {
+		commandLine.ReleaseBuffer(0);
+		throw Exception(processId);
+	}
+	buffer[characterCount] = L'\0';
+	commandLine.ReleaseBuffer(characterCount);
+	return CString(commandLine);
 }

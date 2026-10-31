@@ -464,6 +464,7 @@
     <ClInclude Include="commands\builtin\DeleteCandidateCommand.h" />
     <ClInclude Include="commands\builtin\DisplayOffCommand.h" />
     <ClInclude Include="commands\builtin\EditCandidateCommand.h" />
+    <ClInclude Include="commands\builtin\KillTaskCandidateCommand.h" />
     <ClInclude Include="commands\builtin\RestartCommand.h" />
     <ClInclude Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.h" />
     <ClInclude Include="commands\clipboardhistory\ClipboardHistoryCommand.h" />
@@ -744,6 +745,7 @@
     <ClInclude Include="commands\builtin\ChangeDirectoryCommand.h" />
     <ClInclude Include="commands\builtin\DeleteCommand.h" />
     <ClInclude Include="commands\builtin\EmptyRecycleBinCommand.h" />
+    <ClInclude Include="commands\builtin\KillTaskCommand.h" />
     <ClInclude Include="commands\builtin\LockScreenCommand.h" />
     <ClInclude Include="commands\builtin\LogOffCommand.h" />
     <ClInclude Include="commands\builtin\RebootCommand.h" />
@@ -1076,6 +1078,7 @@
     <ClCompile Include="commands\builtin\DeleteCandidateCommand.cpp" />
     <ClCompile Include="commands\builtin\DisplayOffCommand.cpp" />
     <ClCompile Include="commands\builtin\EditCandidateCommand.cpp" />
+    <ClCompile Include="commands\builtin\KillTaskCandidateCommand.cpp" />
     <ClCompile Include="commands\builtin\RestartCommand.cpp" />
     <ClCompile Include="commands\clipboardhistory\AppSettingClipboardHistoryPage.cpp" />
     <ClCompile Include="commands\clipboardhistory\ClipboardHistoryCommand.cpp" />
@@ -1341,6 +1344,7 @@
     <ClCompile Include="commands\builtin\ChangeDirectoryCommand.cpp" />
     <ClCompile Include="commands\builtin\DeleteCommand.cpp" />
     <ClCompile Include="commands\builtin\EmptyRecycleBinCommand.cpp" />
+    <ClCompile Include="commands\builtin\KillTaskCommand.cpp" />
     <ClCompile Include="commands\builtin\LockScreenCommand.cpp" />
     <ClCompile Include="commands\builtin\LogOffCommand.cpp" />
     <ClCompile Include="commands\builtin\RebootCommand.cpp" />

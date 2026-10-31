@@ -73,6 +73,7 @@
     <ClCompile Include="..\testcode\soyokaze\control\KeywordEditUndoHistoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\builtin\KillTaskCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\currency\CommandParamTest.cpp" />
@@ -121,6 +122,7 @@
     <ClCompile Include="..\testcode\soyokaze\utility\ImageConverterTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\ManualResetTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\PathTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\utility\ProcessPathTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\RefPtrTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\SHA1Test.cpp" />
     <ClCompile Include="..\testcode\soyokaze\utility\StringUtilTest.cpp" />

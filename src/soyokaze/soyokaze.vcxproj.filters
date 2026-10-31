@@ -1320,6 +1320,12 @@
     <ClInclude Include="commands\builtin\DeleteCandidateCommand.h">
       <Filter>commands\builtin</Filter>
     </ClInclude>
+    <ClInclude Include="commands\builtin\KillTaskCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\builtin\KillTaskCandidateCommand.h">
+      <Filter>commands\builtin</Filter>
+    </ClInclude>
     <ClInclude Include="app\AppProcess.h">
       <Filter>app</Filter>
     </ClInclude>
@@ -3066,6 +3072,12 @@
       <Filter>commands\builtin</Filter>
     </ClCompile>
     <ClCompile Include="commands\builtin\DeleteCandidateCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\KillTaskCommand.cpp">
+      <Filter>commands\builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\builtin\KillTaskCandidateCommand.cpp">
       <Filter>commands\builtin</Filter>
     </ClCompile>
     <ClCompile Include="app\AppProcess.cpp">
