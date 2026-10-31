@@ -164,6 +164,7 @@
 #define IDD_COMMAND_GROUP_URL           262
 #define IDD_FIRSTSTART                  263
 #define IDS_FILTER_COMMAND_ICONIMAGEFILES 264
+#define IDI_QRCODE                      268
 #define IDC_EDIT_COMMAND                1000
 #define IDC_STATIC_DESCRIPTION          1001
 #define IDC_STATIC_VERSION              1002
@@ -591,9 +592,11 @@
 #define IDD_APPSETTING_BGIMAGE          1232
 #define IDC_CHECK_DEBUGDUMPENABLED      1233
 #define IDD_IMPORT_COMMANDS             1233
+#define IDD_APPSETTING_BGIMAGE2         1233
 #define IDC_CHECK_ENABLEMENUITEM3       1234
 #define IDC_CHECK_FINDMENUALL           1234
 #define IDC_RADIO_BYCLASSANDCAPTION     1234
+#define IDD_APPSETTING_BGIMAGE1         1234
 #define IDC_RADIO_SELECTFROMLIST        1235
 #define IDC_RADIO_ACTIVEWINDOW          1236
 #define IDC_STATIC_TITLE                1237
@@ -619,6 +622,12 @@
 #define IDC_STATIC_NEEDREBOOT           1258
 #define IDC_VSLISTBOX_DISPLAYNAMEPATTERN 1259
 #define IDC_CHECK_USESHELLDESTINATIONS  1260
+#define IDC_COMBO_ERRORLEVEL            1261
+#define IDC_QRCODE_ENABLE               1265
+#define IDD_APPSETTING_SHORTCUT1        1265
+#define IDD_APPSETTING_QRCODE           1265
+#define IDC_QRCODE_PREFIX               1266
+#define IDC_QRCODE_ERROR_LEVEL          1267
 #define IDC_EDIT_GROUP_PATH             1300
 #define IDC_EDIT_GROUP_PARAM            1301
 #define IDC_EDIT_GROUP_WORKDIR          1302
@@ -639,9 +648,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        266
+#define _APS_NEXT_RESOURCE_VALUE        269
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1261
+#define _APS_NEXT_CONTROL_VALUE         1268
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

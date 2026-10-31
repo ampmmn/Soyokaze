@@ -73,6 +73,7 @@
     <ClCompile Include="..\testcode\soyokaze\control\KeywordEditUndoHistoryTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\WindowPlacementYamlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\calculator\CalculatorTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\qrcode\QRCodeGeneratorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\builtin\KillTaskCommandTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandProviderTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\commands\datetime\DateTimeCommandTest.cpp" />

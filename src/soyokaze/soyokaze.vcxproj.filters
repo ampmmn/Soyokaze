@@ -64,6 +64,9 @@
     <Filter Include="commands\calculator">
       <UniqueIdentifier>{2fbf06ef-bc8b-4f4e-9afa-050c791778af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\qrcode">
+      <UniqueIdentifier>{4dd6c7ca-97c6-44d0-9aa6-3a85f48d04e3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="commands\bookmarks">
       <UniqueIdentifier>{4c65bc41-4606-44d6-a1af-f371b5f81325}</UniqueIdentifier>
     </Filter>
@@ -352,6 +355,9 @@
     <Filter Include="commands\shell_destinations">
       <UniqueIdentifier>{97f82eca-8c46-4f20-a072-acf3d42b3835}</UniqueIdentifier>
     </Filter>
+    <Filter Include="commands\qrcode\QR-Code-Generator-1.8.0">
+      <UniqueIdentifier>{8bca4fbb-409e-4907-865c-a8bbe409d050}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -536,6 +542,21 @@
     </ClInclude>
     <ClInclude Include="commands\calculator\CalculatorCommand.h">
       <Filter>commands\calculator</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\qrcode\AppSettingQRCode.h">
+      <Filter>commands\qrcode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\qrcode\QRCodeCommand.h">
+      <Filter>commands\qrcode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\qrcode\QRCodeCommandProvider.h">
+      <Filter>commands\qrcode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\qrcode\QRCodeGenerator.h">
+      <Filter>commands\qrcode</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\qrcode\QRCodePreviewWindow.h">
+      <Filter>commands\qrcode</Filter>
     </ClInclude>
     <ClInclude Include="commands\bookmarks\BookmarkCommandProvider.h">
       <Filter>commands\bookmarks</Filter>
@@ -2202,6 +2223,9 @@
     <ClInclude Include="commands\shell_destinations\ShellDestinationCommandProvider.h">
       <Filter>commands\shell_destinations</Filter>
     </ClInclude>
+    <ClInclude Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.hpp">
+      <Filter>commands\qrcode\QR-Code-Generator-1.8.0</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -2377,6 +2401,21 @@
     </ClCompile>
     <ClCompile Include="commands\calculator\CalculatorCommand.cpp">
       <Filter>commands\calculator</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\qrcode\AppSettingQRCode.cpp">
+      <Filter>commands\qrcode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\qrcode\QRCodeCommand.cpp">
+      <Filter>commands\qrcode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\qrcode\QRCodeCommandProvider.cpp">
+      <Filter>commands\qrcode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\qrcode\QRCodeGenerator.cpp">
+      <Filter>commands\qrcode</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\qrcode\QRCodePreviewWindow.cpp">
+      <Filter>commands\qrcode</Filter>
     </ClCompile>
     <ClCompile Include="commands\bookmarks\BookmarkCommandProvider.cpp">
       <Filter>commands\bookmarks</Filter>
@@ -3881,6 +3920,9 @@
     <ClCompile Include="commands\shell_destinations\ShellDestinationCommandProvider.cpp">
       <Filter>commands\shell_destinations</Filter>
     </ClCompile>
+    <ClCompile Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.cpp">
+      <Filter>commands\qrcode\QR-Code-Generator-1.8.0</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Soyokaze.rc">
@@ -3902,6 +3944,9 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="res\icon2.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\qrcode.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

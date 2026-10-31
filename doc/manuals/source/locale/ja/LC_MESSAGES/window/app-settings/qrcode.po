@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.63.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 06:32+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/window/app-settings/qrcode.md:2
+msgid "Extension > QR Code Generation"
+msgstr "拡張機能＞QRコード生成"
+
+#: ../../source/window/app-settings/qrcode.md:4
+msgid "`拡張機能` > `QRコード生成` で QR コード生成機能を設定する。"
+msgstr ""
+
+#: ../../source/window/app-settings/qrcode.md:6
+msgid "`機能を有効にする` で機能を有効／無効にする。"
+msgstr ""
+
+#: ../../source/window/app-settings/qrcode.md:7
+msgid "`発動キーワード` に入力した文字列が起動キーワードとなる。初期値は `qrcode`。"
+msgstr ""
+
+#: ../../source/window/app-settings/qrcode.md:8
+msgid "`誤り訂正レベル` は L、M、Q、H から選択する。レベルを上げると破損に強くなる一方、格納できる文字数は少なくなる。"
+msgstr ""
+
+#: ../../source/window/app-settings/qrcode.md:10
+msgid "詳細は[QRコード生成](../../adhoc-command/qrcode.md)を参照。"
+msgstr ""
+

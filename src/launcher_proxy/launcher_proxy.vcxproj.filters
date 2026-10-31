@@ -120,6 +120,9 @@
     <ClInclude Include="onenote\OneNoteAppProxy.h">
       <Filter>onenote</Filter>
     </ClInclude>
+    <ClInclude Include="NormalPriviledgeRequestBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="launcher_proxy.cpp">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="onenote\OneNoteAppProxy.cpp">
       <Filter>onenote</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalPriviledgeRequestBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

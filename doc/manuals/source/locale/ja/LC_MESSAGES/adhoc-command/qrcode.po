@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023,ymgw
+# This file is distributed under the same license as the Soyokaze package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Soyokaze 0.63.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 06:32+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/adhoc-command/qrcode.md:1
+msgid "QR Code Generation"
+msgstr "QRコード生成"
+
+#: ../../source/adhoc-command/qrcode.md:3
+msgid "入力した文字列から QR コードを生成する。"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:5
+msgid "QRコードのプレビュー"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:9
+msgid "使い方"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:11
+msgid "入力画面で `qrcode` に続けて QR コードにしたい文字列を入力する。候補のプレビューに QR コードが表示される。"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:13
+msgid "Enter: QR コード画像をクリップボードにコピー"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:14
+msgid "Ctrl+Enter: 画像形式または SVG 形式を選択してファイルへ保存"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:16
+msgid "入力文字列は UTF-8 として QR コードに格納される。選択した誤り訂正レベルで格納できる文字数を超えた場合は、生成時にエラーとなる。"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:18
+msgid "設定"
+msgstr ""
+
+#: ../../source/adhoc-command/qrcode.md:20
+msgid "アプリケーション設定の `拡張機能` > `QRコード生成` で機能の有効／無効、発動キーワード、誤り訂正レベルを設定できる。"
+msgstr ""
+

@@ -76,6 +76,7 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\icon.ico"
 
+IDI_QRCODE              ICON                    "res\\qrcode.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1767,6 +1768,18 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,421,255,50,14
 END
 
+IDD_APPSETTING_QRCODE DIALOGEX 0, 0, 303, 140
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "機能を有効にする(&E)",IDC_QRCODE_ENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,12,120,10
+    LTEXT           "発動キーワード(&P):",IDC_STATIC,21,31,85,8
+    EDITTEXT        IDC_QRCODE_PREFIX,106,28,45,14,ES_AUTOHSCROLL
+    LTEXT           "誤り訂正レベル(&L):",IDC_STATIC,21,50,85,8
+    COMBOBOX        IDC_QRCODE_ERROR_LEVEL,106,48,46,60,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2449,6 +2462,14 @@ BEGIN
         RIGHTMARGIN, 471
         TOPMARGIN, 7
         BOTTOMMARGIN, 269
+    END
+
+    IDD_APPSETTING_QRCODE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 296
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3421,6 +3442,11 @@ BEGIN
 END
 
 IDD_FIRSTSTART AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_APPSETTING_QRCODE AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

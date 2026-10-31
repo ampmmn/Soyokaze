@@ -62,7 +62,9 @@
 
 - [EricZimmerman/OleCf](https://github.com/EricZimmerman/OleCf)
   - ピン留された項目(automaticDestinations-ms)の情報を解析するにあたり、OLECF形式データの解析処理の参考とした
-```
+
+- [nayuki/QR-Code-generator](https://github.com/nayuki/QR-Code-generator)
+  - QRコード生成機能で使用しているライブラリ
 
 ```{only} not soyokaze
 非開示

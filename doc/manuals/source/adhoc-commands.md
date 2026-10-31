@@ -30,6 +30,7 @@ adhoc-command/onenote.md
 adhoc-command/office_favorites.md
 adhoc-command/outlook-folder.md
 adhoc-command/pathfind.md
+adhoc-command/qrcode.md
 adhoc-command/recentfiles.md
 adhoc-command/shell_destinations.md
 adhoc-command/shelluri.md

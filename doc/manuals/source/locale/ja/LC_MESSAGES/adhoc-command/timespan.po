@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Soyokaze 0.42.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17 16:49+0900\n"
+"POT-Creation-Date: 2026-11-01 06:32+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -28,7 +28,7 @@ msgid "時間差"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:4
-msgid "`HH:MM-HH:MM`の型式で入力すると、時間間隔を分単位で表示する。   コマンドを実行すると時間をクリップボードにコピーする。"
+msgid "`HH:MM-HH:MM`の形式で入力すると、時間間隔を表示する。 コマンドを実行すると時間をクリップボードにコピーする。"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:7
@@ -36,53 +36,101 @@ msgid "例: `13:43-12:50` → `53分`"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:9
-msgid "![](../image/adhoc-command/timespan/example.png)"
+msgid "年月日を含む日時同士の差も計算できる。左右の日時は`-`で区切る。"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:11
-msgid "日時"
+msgid "`YYYY-MM-DD hh:mm`または`YYYY/MM/DD hh:mm`で年月日と時刻を指定する"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:12
+msgid "`MM/DD hh:mm`は実行年の日付として扱う。指定日が過去でも翌年には繰り越さない"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:13
-msgid "「拡張機能」の`時刻と日付`が有効な場合に利用できる。"
+msgid "`hh:mm`は実行日当日の時刻として扱う"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:14
+msgid "`now`または「拡張機能」で設定した日時プレフィックスは、実行時の現在日時として扱う"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:15
-msgid "`date`(プレフィックス)のみを入力すると、以下を候補として表示する"
-msgstr ""
-
-#: ../../source/adhoc-command/timespan.md:16
-msgid "日時: `2026/10/10 14:17`"
+msgid "平年に指定した`2/29`は`3/1`として扱う"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:17
-msgid "日付: `2026/10/10`"
-msgstr ""
-
-#: ../../source/adhoc-command/timespan.md:18
-msgid "時刻: `14:17`"
+msgid "例:"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:19
-msgid "曜日: `土曜日`"
+msgid "`2026/10/30 15:00 - now`"
 msgstr ""
 
 #: ../../source/adhoc-command/timespan.md:20
+msgid "`now - 2026/09/01 12:00`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:21
+msgid "`2026-10-30 15:00 - 10/10 14:17`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:23
+msgid "時間・分・秒の候補を表示する。差の絶対値が24時間を超える場合は、日数を小数2桁で表示する候補も追加する。たとえば25時間は`1.04 日`となる。"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:25
+msgid "![](../image/adhoc-command/timespan/example.png)"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:27
+msgid "日時"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:29
+msgid "「拡張機能」の`時刻と日付`が有効な場合に利用できる。"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:31
+msgid "設定したプレフィックス(既定値: `date`)のみを入力すると、以下を候補として表示する"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:32
+msgid "日時: `2026/10/10 14:17`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:33
+msgid "日付: `2026/10/10`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:34
+msgid "時刻: `14:17`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:35
+msgid "曜日: `土曜日`"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:36
 msgid ""
 "`N day(s) later`/`N day(s) "
 "ago`、`N日後`/`N日前`を入力すると、現在時刻を起点に`N`日後/前の日付を基準として、プレフィックス入力時と同じ4候補(日時・日付・時刻・曜日)を表示する"
 "   プレフィックスは不要。例: `3 days later`、`1日前`。日数の上限は36500日(約100年)"
 msgstr ""
 
-#: ../../source/adhoc-command/timespan.md:22
+#: ../../source/adhoc-command/timespan.md:38
 msgid "時刻は現在の時刻のまま。日付・曜日のみが`N`日分ずれる"
 msgstr ""
 
-#: ../../source/adhoc-command/timespan.md:23
+#: ../../source/adhoc-command/timespan.md:39
 msgid "候補を実行すると、表示した文字列をクリップボードにコピーする"
 msgstr ""
 
-#: ../../source/adhoc-command/timespan.md:24
-msgid "プレフィックスは「拡張機能」の設定で変更できる。同じプレフィックスを他のコマンドと設定した場合は、両方の候補が表示される"
+#: ../../source/adhoc-command/timespan.md:40
+msgid "プレフィックスは「拡張機能」の設定で変更できる。時間差の入力では、設定したプレフィックスと`now`のどちらも現在日時の別名として使える。同じプレフィックスを他のコマンドと設定した場合は、両方の候補が表示される"
+msgstr ""
+
+#: ../../source/adhoc-command/timespan.md:43
+msgid "![](../image/adhoc-command/timespan/example2.png)"
 msgstr ""
 

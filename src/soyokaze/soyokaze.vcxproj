@@ -231,7 +231,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)../externals/spdlog/build/Release;$(SolutionDir)../externals/lexbor/build/Debug;$(SolutionDir)../externals/re2/build/install/lib;$(SolutionDir)../externals/abseil-cpp/build/install/lib;$(SolutionDir)../externals/simdutf/build/src/Debug;$(SolutionDir)../externals/lunasvg/build/$(Configuration);$(SolutionDir)../externals/lunasvg/build/plutovg/$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>spdlog.lib;lexbor_static.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;spdlog.lib;lexbor_static.lib;re2_d.lib;absl_all_d.lib;simdutf.lib;lunasvg.lib;plutovg.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -426,6 +426,7 @@
     <ClInclude Include="app\LauncherShutdownWindow.h" />
     <ClInclude Include="app\LauncherSystemEventWindow.h" />
     <ClInclude Include="app\LocalDirectoryWatcherService.h" />
+    <ClInclude Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.hpp" />
     <ClInclude Include="commands\shell_destinations\AutomaticDestinationsFile.h" />
     <ClInclude Include="commands\shell_destinations\OleCfFile.h" />
     <ClInclude Include="commands\shell_destinations\ShellDestinationCommand.h" />
@@ -755,6 +756,11 @@
     <ClInclude Include="commands\calculator\Calculator.h" />
     <ClInclude Include="commands\calculator\CalculatorAdhocCommandProvider.h" />
     <ClInclude Include="commands\calculator\CalculatorCommand.h" />
+    <ClInclude Include="commands\qrcode\AppSettingQRCode.h" />
+    <ClInclude Include="commands\qrcode\QRCodeCommand.h" />
+    <ClInclude Include="commands\qrcode\QRCodeCommandProvider.h" />
+    <ClInclude Include="commands\qrcode\QRCodeGenerator.h" />
+    <ClInclude Include="commands\qrcode\QRCodePreviewWindow.h" />
     <ClInclude Include="commands\color\ColorCommand.h" />
     <ClInclude Include="commands\color\ColorCommandProvider.h" />
     <ClInclude Include="commands\color\HSL.h" />
@@ -1042,6 +1048,12 @@
     <ClCompile Include="app\LauncherShutdownWindow.cpp" />
     <ClCompile Include="app\LauncherSystemEventWindow.cpp" />
     <ClCompile Include="app\LocalDirectoryWatcherService.cpp" />
+    <ClCompile Include="commands\qrcode\QR-Code-generator-1.8.0\cpp\qrcodegen.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="commands\shell_destinations\AutomaticDestinationsFile.cpp" />
     <ClCompile Include="commands\shell_destinations\OleCfFile.cpp" />
     <ClCompile Include="commands\shell_destinations\ShellDestinationCommand.cpp" />
@@ -1354,6 +1366,11 @@
     <ClCompile Include="commands\calculator\Calculator.cpp" />
     <ClCompile Include="commands\calculator\CalculatorAdhocCommandProvider.cpp" />
     <ClCompile Include="commands\calculator\CalculatorCommand.cpp" />
+    <ClCompile Include="commands\qrcode\AppSettingQRCode.cpp" />
+    <ClCompile Include="commands\qrcode\QRCodeCommand.cpp" />
+    <ClCompile Include="commands\qrcode\QRCodeCommandProvider.cpp" />
+    <ClCompile Include="commands\qrcode\QRCodeGenerator.cpp" />
+    <ClCompile Include="commands\qrcode\QRCodePreviewWindow.cpp" />
     <ClCompile Include="commands\color\ColorCommand.cpp" />
     <ClCompile Include="commands\color\ColorCommandProvider.cpp" />
     <ClCompile Include="commands\color\HSL.cpp" />
@@ -1617,6 +1634,7 @@
   <ItemGroup>
     <Image Include="res\icon.ico" />
     <Image Include="res\icon2.ico" />
+    <Image Include="res\qrcode.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
