@@ -96,8 +96,26 @@ COLORREF SystemColorScheme::GetListTextColor()
 	return GetSysColor(COLOR_WINDOWTEXT);
 }
 
+/**
+  候補欄の2行目のテキスト色を取得する
+  @return システム設定のグレー文字色
+*/
+COLORREF SystemColorScheme::GetListText2Color()
+{
+	return GetSysColor(COLOR_GRAYTEXT);
+}
+
 // 選択項目のテキストの色
 COLORREF SystemColorScheme::GetListHighlightTextColor() 
+{
+	return GetSysColor(COLOR_HIGHLIGHTTEXT);
+}
+
+/**
+  選択項目の2行目のテキスト色を取得する
+  @return システム設定の選択文字色
+*/
+COLORREF SystemColorScheme::GetListHighlightText2Color()
 {
 	return GetSysColor(COLOR_HIGHLIGHTTEXT);
 }

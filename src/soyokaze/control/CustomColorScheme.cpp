@@ -25,9 +25,11 @@ struct CustomColorScheme::PImpl
 
 	// リスト
 	COLORREF mListTextColor{0};
+	COLORREF mListText2Color{0};
 	COLORREF mListBackgroundColor{0};
 	COLORREF mListBackgroundAltColor{0};
 	COLORREF mListTextHighlightColor{0};
+	COLORREF mListTextHighlight2Color{0};
 	COLORREF mListBackgroundHighlightColor{0};
 };
 
@@ -60,9 +62,11 @@ void CustomColorScheme::Reload()
 
 	// リスト
 	in->mListTextColor = pref->GetListTextColor();
+	in->mListText2Color = pref->GetListText2Color();
 	in->mListBackgroundColor = pref->GetListBackgroundColor();
 	in->mListBackgroundAltColor = pref->GetListBackgroundAltColor();
 	in->mListTextHighlightColor = pref->GetListTextHighlightColor();
+	in->mListTextHighlight2Color = pref->GetListTextHighlight2Color();
 	in->mListBackgroundHighlightColor = pref->GetListBackgroundHighlightColor();
 }
 
@@ -124,10 +128,28 @@ COLORREF CustomColorScheme::GetListTextColor()
 	return in->mListTextColor;
 }
 
+/**
+  候補欄の2行目のテキスト色を取得する
+  @return 設定された2行目のテキスト色
+*/
+COLORREF CustomColorScheme::GetListText2Color()
+{
+	return in->mListText2Color;
+}
+
 // 選択項目のテキストの色
 COLORREF CustomColorScheme::GetListHighlightTextColor() 
 {
 	return in->mListTextHighlightColor;
+}
+
+/**
+  選択項目の2行目のテキスト色を取得する
+  @return 設定された選択項目の2行目のテキスト色
+*/
+COLORREF CustomColorScheme::GetListHighlightText2Color()
+{
+	return in->mListTextHighlight2Color;
 }
 
 // 背景色

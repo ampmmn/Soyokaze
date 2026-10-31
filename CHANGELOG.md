@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## Added
+
+- #328 候補欄2行目のテキスト色を設定できるようにする
+
 ## Changed
 
 - #326 tidy-html5からlexborへの移行

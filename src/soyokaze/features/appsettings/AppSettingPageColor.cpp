@@ -28,9 +28,13 @@ public:
 	COLORREF GetEditTextColor();
 	COLORREF GetEditBkColor();
 	COLORREF GetListTextColor();
+	/** 2行目の文字色を取得する */
+	COLORREF GetListText2Color();
 	COLORREF GetListBkColor();
 	COLORREF GetListBkAltColor();
 	COLORREF GetListTextHLColor();
+	/** 選択行の2行目の文字色を取得する */
+	COLORREF GetListTextHL2Color();
 	COLORREF GetListBkHLColor();
 
 	void DisableAllControls();
@@ -53,9 +57,13 @@ protected:
 	void OnButtonEditTextColor();
 	void OnButtonEditBkColor();
 	void OnButtonListTextColor();
+	/** 2行目テキスト色ボタンの変更を処理する */
+	void OnButtonListText2Color();
 	void OnButtonListBkColor();
 	void OnButtonListBkAltColor();
 	void OnButtonListTextHLColor();
+	/** 選択行の2行目テキスト色ボタンの変更を処理する */
+	void OnButtonListTextHL2Color();
 	void OnButtonListBkHLColor();
 	void OnUndo();
 
@@ -66,9 +74,11 @@ protected:
 	CMFCColorButton* mEditTextColorButton{nullptr};
 	CMFCColorButton* mEditBkColorButton{nullptr};
 	CMFCColorButton* mListTextColorButton{nullptr};
+	CMFCColorButton* mListText2ColorButton{nullptr};
 	CMFCColorButton* mListBkColorButton{nullptr};
 	CMFCColorButton* mListBkAltColorButton{nullptr};
 	CMFCColorButton* mListTextHLColorButton{nullptr};
+	CMFCColorButton* mListTextHL2ColorButton{nullptr};
 	CMFCColorButton* mListBkHLColorButton{nullptr};
 
 	ImageLabel mPreview;
@@ -106,6 +116,15 @@ COLORREF ColorSettingDialog::GetListTextColor()
 	return mIsUseSystemSettings ? mSysScheme.GetListTextColor() : mListTextColorButton->GetColor();
 }
 
+/**
+  2行目の文字色を取得する
+  @return 現在の表示設定に対応した2行目の文字色
+*/
+COLORREF ColorSettingDialog::GetListText2Color()
+{
+	return mIsUseSystemSettings ? mSysScheme.GetListText2Color() : mListText2ColorButton->GetColor();
+}
+
 COLORREF ColorSettingDialog::GetListBkColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListBackgroundColor() : mListBkColorButton->GetColor();
@@ -119,6 +138,15 @@ COLORREF ColorSettingDialog::GetListBkAltColor()
 COLORREF ColorSettingDialog::GetListTextHLColor()
 {
 	return mIsUseSystemSettings ? mSysScheme.GetListHighlightTextColor() : mListTextHLColorButton->GetColor();
+}
+
+/**
+  選択行の2行目の文字色を取得する
+  @return 現在の表示設定に対応した選択行の2行目の文字色
+*/
+COLORREF ColorSettingDialog::GetListTextHL2Color()
+{
+	return mIsUseSystemSettings ? mSysScheme.GetListHighlightText2Color() : mListTextHL2ColorButton->GetColor();
 }
 
 COLORREF ColorSettingDialog::GetListBkHLColor()
@@ -153,9 +181,11 @@ void ColorSettingDialog::OnOK()
 	settingsPtr->Set(_T("CurrentColor:EditText"), (int)mEditTextColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:EditBackground"), (int)mEditBkColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:ListText"), (int)mListTextColorButton->GetColor());
+	settingsPtr->Set(_T("CurrentColor:ListText2"), (int)mListText2ColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:ListBackground"), (int)mListBkColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:ListBackgroundAlt"), (int)mListBkAltColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:ListHighlightText"), (int)mListTextHLColorButton->GetColor());
+	settingsPtr->Set(_T("CurrentColor:ListHighlightText2"), (int)mListTextHL2ColorButton->GetColor());
 	settingsPtr->Set(_T("CurrentColor:ListHighlightBackground"), (int)mListBkHLColorButton->GetColor());
 
 	UpdateData(FALSE);
@@ -191,9 +221,11 @@ BEGIN_MESSAGE_MAP(ColorSettingDialog, CDialog)
 	ON_COMMAND(IDC_BUTTON_EDITTEXT, OnButtonEditTextColor)
 	ON_COMMAND(IDC_BUTTON_EDITBACKGROUND, OnButtonEditBkColor)
 	ON_COMMAND(IDC_BUTTON_LISTTEXT, OnButtonListTextColor)
+	ON_COMMAND(IDC_BUTTON_LISTTEXT2, OnButtonListText2Color)
 	ON_COMMAND(IDC_BUTTON_LISTBACKGROUND, OnButtonListBkColor)
 	ON_COMMAND(IDC_BUTTON_LISTBACKGROUNDALT, OnButtonListBkAltColor)
 	ON_COMMAND(IDC_BUTTON_LISTTEXTHIGHLIGHT, OnButtonListTextHLColor)
+	ON_COMMAND(IDC_BUTTON_LISTTEXTHIGHLIGHT2, OnButtonListTextHL2Color)
 	ON_COMMAND(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT, OnButtonListBkHLColor)
 END_MESSAGE_MAP()
 
@@ -209,9 +241,11 @@ BOOL ColorSettingDialog::OnInitDialog()
 	mEditTextColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITTEXT);
 	mEditBkColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_EDITBACKGROUND);
 	mListTextColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT);
+	mListText2ColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXT2);
 	mListBkColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUND);
 	mListBkAltColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDALT);
 	mListTextHLColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT);
+	mListTextHL2ColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTTEXTHIGHLIGHT2);
 	mListBkHLColorButton = (CMFCColorButton*)GetDlgItem(IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT);
 
 	if (::utility::IsHighContrastMode()) {
@@ -228,16 +262,18 @@ void ColorSettingDialog::DisableAllControls()
 {
 	::ShowWindow(GetDlgItem(IDC_STATIC_WARNING)->GetSafeHwnd(), SW_SHOW);
 
-	std::array<UINT, 11> ids{
+	std::array<UINT, 13> ids{
 		IDC_CHECK_USEDEFAULT,
 		IDC_BUTTON_WINDOWTEXT,
 		IDC_BUTTON_WINDOWBACKGROUND,
 		IDC_BUTTON_EDITTEXT,
 		IDC_BUTTON_EDITBACKGROUND,
 		IDC_BUTTON_LISTTEXT,
+		IDC_BUTTON_LISTTEXT2,
 		IDC_BUTTON_LISTBACKGROUND,
 		IDC_BUTTON_LISTBACKGROUNDALT,
 		IDC_BUTTON_LISTTEXTHIGHLIGHT,
+		IDC_BUTTON_LISTTEXTHIGHLIGHT2,
 		IDC_BUTTON_LISTBACKGROUNDHIGHLIGHT,
 		IDC_STATIC_PREVIEW,
 	};
@@ -259,9 +295,11 @@ bool ColorSettingDialog::UpdateStatus()
 	mEditTextColorButton->EnableWindow(isEnableColor);
 	mEditBkColorButton->EnableWindow(isEnableColor);
 	mListTextColorButton->EnableWindow(isEnableColor);
+	mListText2ColorButton->EnableWindow(isEnableColor);
 	mListBkColorButton->EnableWindow(isEnableColor);
 	mListBkAltColorButton->EnableWindow(isEnableColor);
 	mListTextHLColorButton->EnableWindow(isEnableColor);
+	mListTextHL2ColorButton->EnableWindow(isEnableColor);
 	mListBkHLColorButton->EnableWindow(isEnableColor);
 
 	//
@@ -271,9 +309,11 @@ bool ColorSettingDialog::UpdateStatus()
 	lstColors.AddTail(mEditTextColorButton->GetColor());
 	lstColors.AddTail(mEditBkColorButton->GetColor());
 	lstColors.AddTail(mListTextColorButton->GetColor());
+	lstColors.AddTail(mListText2ColorButton->GetColor());
 	lstColors.AddTail(mListBkColorButton->GetColor());
 	lstColors.AddTail(mListBkAltColorButton->GetColor());
 	lstColors.AddTail(mListTextHLColorButton->GetColor());
+	lstColors.AddTail(mListTextHL2ColorButton->GetColor());
 	lstColors.AddTail(mListBkHLColorButton->GetColor());
 
 	LPCTSTR label = _T("部品別");
@@ -282,9 +322,11 @@ bool ColorSettingDialog::UpdateStatus()
 	mEditTextColorButton->SetDocumentColors(label, lstColors);
 	mEditBkColorButton->SetDocumentColors(label, lstColors);
 	mListTextColorButton->SetDocumentColors(label, lstColors);
+	mListText2ColorButton->SetDocumentColors(label, lstColors);
 	mListBkColorButton->SetDocumentColors(label, lstColors);
 	mListBkAltColorButton->SetDocumentColors(label, lstColors);
 	mListTextHLColorButton->SetDocumentColors(label, lstColors);
+	mListTextHL2ColorButton->SetDocumentColors(label, lstColors);
 	mListBkHLColorButton->SetDocumentColors(label, lstColors);
 
 	// プレビューを更新
@@ -325,6 +367,7 @@ void ColorSettingDialog::DrawPreview()
 	auto orgFont = dcMem.SelectObject(&font);
 
 	int itemHeight = 24;
+	int listItemHeight = 34;
 
 	int offset = 0;
 	dcMem.PatBlt(0, offset, rc.Width(), itemHeight, PATCOPY);
@@ -372,14 +415,18 @@ void ColorSettingDialog::DrawPreview()
 			dcMem.SetBkColor((i % 2) ? GetListBkAltColor() : GetListBkColor());
 			dcMem.SetTextColor(GetListTextColor());
 		}
-		dcMem.PatBlt(0, offset, rc.Width(), itemHeight, PATCOPY);
+		dcMem.PatBlt(0, offset, rc.Width(), listItemHeight, PATCOPY);
 
-		// テキスト描画
+		// 項目名と説明を別々の色で描画
 		labelText.Format(_T("候補%d"), i + 1);
-		rcItem = CRect(CPoint(8, offset + 8), CSize(rc.Width(), itemHeight));
-		dcMem.DrawText(labelText, rcItem, DT_LEFT);
+		rcItem = CRect(CPoint(8, offset), CSize(rc.Width(), listItemHeight / 2));
+		dcMem.DrawText(labelText, rcItem, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+		dcMem.SetTextColor(i == 0 ? GetListTextHL2Color() : GetListText2Color());
+		labelText.Format(_T("候補の説明%d"), i + 1);
+		rcItem = CRect(CPoint(8, offset + listItemHeight / 2), CSize(rc.Width(), listItemHeight / 2));
+		dcMem.DrawText(labelText, rcItem, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
 		
-		offset += itemHeight;
+		offset += listItemHeight;
 		i++;
 	}
 
@@ -410,9 +457,13 @@ void ColorSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mEditTextColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:EditText"), (int)sysColor.GetEditTextColor()));
 	mEditBkColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:EditBackground"), (int)sysColor.GetEditBackgroundColor()));
 	mListTextColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListText"), (int)sysColor.GetListTextColor()));
+	int defaultListText2Color = mIsUseSystemSettings ? sysColor.GetListText2Color() : settingsPtr->Get(_T("CurrentColor:ListText"), (int)sysColor.GetListTextColor());
+	mListText2ColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListText2"), (int)defaultListText2Color));
 	mListBkColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListBackground"), (int)sysColor.GetListBackgroundColor()));
 	mListBkAltColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListBackgroundAlt"), (int)sysColor.GetListBackgroundAltColor()));
 	mListTextHLColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListHighlightText"), (int)sysColor.GetListHighlightTextColor()));
+	int defaultListTextHL2Color = mIsUseSystemSettings ? sysColor.GetListHighlightText2Color() : settingsPtr->Get(_T("CurrentColor:ListHighlightText"), (int)sysColor.GetListHighlightTextColor());
+	mListTextHL2ColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListHighlightText2"), (int)defaultListTextHL2Color));
 	mListBkHLColorButton->SetColor(settingsPtr->Get(_T("CurrentColor:ListHighlightBackground"), (int)sysColor.GetListHighlightBackgroundColor()));
 
 	// Undo用に色を覚えておく
@@ -421,9 +472,11 @@ void ColorSettingDialog::OnEnterSettings(Settings* settingsPtr)
 	mCurrentColorMap[mEditTextColorButton] = mEditTextColorButton->GetColor();
 	mCurrentColorMap[mEditBkColorButton] = mEditBkColorButton->GetColor();
 	mCurrentColorMap[mListTextColorButton] = mListTextColorButton->GetColor();
+	mCurrentColorMap[mListText2ColorButton] = mListText2ColorButton->GetColor();
 	mCurrentColorMap[mListBkColorButton] = mListBkColorButton->GetColor();
 	mCurrentColorMap[mListBkAltColorButton] = mListBkAltColorButton->GetColor();
 	mCurrentColorMap[mListTextHLColorButton] = mListTextHLColorButton->GetColor();
+	mCurrentColorMap[mListTextHL2ColorButton] = mListTextHL2ColorButton->GetColor();
 	mCurrentColorMap[mListBkHLColorButton] = mListBkHLColorButton->GetColor();
 	mUndo.clear();
 
@@ -440,9 +493,11 @@ void ColorSettingDialog::OnButtonRestore()
 	mEditTextColorButton->SetColor(mSysScheme.GetEditTextColor());
 	mEditBkColorButton->SetColor(mSysScheme.GetEditBackgroundColor());
 	mListTextColorButton->SetColor(mSysScheme.GetListTextColor());
+	mListText2ColorButton->SetColor(mSysScheme.GetListText2Color());
 	mListBkColorButton->SetColor(mSysScheme.GetListBackgroundColor());
 	mListBkAltColorButton->SetColor(mSysScheme.GetListBackgroundAltColor());
 	mListTextHLColorButton->SetColor(mSysScheme.GetListHighlightTextColor());
+	mListTextHL2ColorButton->SetColor(mSysScheme.GetListHighlightText2Color());
 	mListBkHLColorButton->SetColor(mSysScheme.GetListHighlightBackgroundColor());
 
 	UpdateStatus();
@@ -485,6 +540,13 @@ void ColorSettingDialog::OnButtonListTextColor()
 	UpdateStatus();
 }
 
+/** 2行目テキスト色の変更をUndo履歴に登録してプレビューを更新する */
+void ColorSettingDialog::OnButtonListText2Color()
+{
+	AppendUndo(mListText2ColorButton);
+	UpdateStatus();
+}
+
 void ColorSettingDialog::OnButtonListBkColor()
 {
 	AppendUndo(mListBkColorButton);
@@ -500,6 +562,13 @@ void ColorSettingDialog::OnButtonListBkAltColor()
 void ColorSettingDialog::OnButtonListTextHLColor()
 {
 	AppendUndo(mListTextHLColorButton);
+	UpdateStatus();
+}
+
+/** 選択行の2行目テキスト色の変更をUndo履歴に登録してプレビューを更新する */
+void ColorSettingDialog::OnButtonListTextHL2Color()
+{
+	AppendUndo(mListTextHL2ColorButton);
 	UpdateStatus();
 }
 

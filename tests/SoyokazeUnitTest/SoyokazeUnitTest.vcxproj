@@ -46,6 +46,8 @@
     <ClCompile Include="..\testcode\soyokaze\app\CommandLineProcessorTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\BreadCrumbsTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\control\CustomColorSchemeTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\control\SystemColorSchemeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\core\LauncherProcessContextTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\TwoLineCandidateListRendererTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\DescriptionCtrlTest.cpp" />

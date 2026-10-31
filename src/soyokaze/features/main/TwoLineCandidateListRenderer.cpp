@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TwoLineCandidateListRenderer.h"
 #include "CandidateList.h"
+#include "control/ColorSettings.h"
 #include "utility/ScopedDCState.h"
 
 #ifdef _DEBUG
@@ -24,9 +25,13 @@ struct TwoLineCandidateListRenderer::PImpl
 	  @param[in] pDC 描画先デバイスコンテキスト
 	  @param[in] description 説明文
 	  @param[in] rect 描画領域
+	  @param[in] textColor 説明文の文字色
 	*/
-	void DrawDescription(CDC* pDC, const CString& description, CRect rect)
+	void DrawDescription(CDC* pDC, const CString& description, CRect rect, COLORREF textColor)
 	{
+		ScopedDCState dcState(pDC);
+		pDC->SetTextColor(textColor);
+
 		HFONT currentFont = static_cast<HFONT>(::GetCurrentObject(pDC->GetSafeHdc(), OBJ_FONT));
 		if (mDescriptionFontSource != currentFont || mDescriptionFont.m_hObject == nullptr) {
 			mDescriptionFont.DeleteObject();
@@ -42,7 +47,6 @@ struct TwoLineCandidateListRenderer::PImpl
 		}
 
 		if (mDescriptionFont.m_hObject != nullptr) {
-			ScopedDCState dcState(pDC);
 			pDC->SelectObject(&mDescriptionFont);
 			pDC->DrawText(description, rect,
 			              DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX);
@@ -107,7 +111,10 @@ void TwoLineCandidateListRenderer::DrawItemName(CListCtrl* listWnd, CDC* pDC, in
 		description.Replace(_T("\r"), _T(" "));
 		description.Replace(_T("\n"), _T(" "));
 		description.Replace(_T("\t"), _T("  "));
-		in->DrawDescription(pDC, description, rcDescription);
+		auto colorScheme = ColorSettings::Get()->GetCurrentScheme();
+		bool isSelected = (listWnd->GetItemState(itemId, LVIS_SELECTED) & LVIS_SELECTED) != 0;
+		COLORREF textColor = isSelected ? colorScheme->GetListHighlightText2Color() : colorScheme->GetListText2Color();
+		in->DrawDescription(pDC, description, rcDescription, textColor);
 	}
 }
 

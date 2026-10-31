@@ -30,8 +30,18 @@ public:
 // 候補欄
 	// テキストの色
 	COLORREF GetListTextColor() override;
+	/**
+	  候補欄の2行目のテキスト色を取得する
+	  @return システム設定のグレー文字色
+	*/
+	COLORREF GetListText2Color() override;
 	// 選択項目のテキストの色
 	COLORREF GetListHighlightTextColor() override;
+	/**
+	  選択項目の2行目のテキスト色を取得する
+	  @return システム設定の選択文字色
+	*/
+	COLORREF GetListHighlightText2Color() override;
 	// 背景色
 	HBRUSH GetListBackgroundBrush() override;
 	COLORREF GetListBackgroundColor() override;

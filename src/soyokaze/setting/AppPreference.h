@@ -192,9 +192,19 @@ public:
 	COLORREF GetEditTextColor();
 	COLORREF GetEditBackgroundColor();
 	COLORREF GetListTextColor();
+	/**
+	  候補欄の2行目の文字色を取得する
+	  @return 2行目の文字色。未設定の場合は1行目の文字色
+	*/
+	COLORREF GetListText2Color();
 	COLORREF GetListBackgroundColor();
 	COLORREF GetListBackgroundAltColor();
 	COLORREF GetListTextHighlightColor();
+	/**
+	  候補欄の選択行における2行目の文字色を取得する
+	  @return 選択行の2行目の文字色。未設定の場合は選択行の1行目の文字色
+	*/
+	COLORREF GetListTextHighlight2Color();
 	COLORREF GetListBackgroundHighlightColor();
 
 	// クリップボード履歴

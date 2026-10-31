@@ -995,6 +995,15 @@ COLORREF AppPreference::GetListTextColor()
 	return (COLORREF)in->Get(_T("CurrentColor:ListText"), 0);
 }
 
+/**
+  候補欄の2行目の文字色を取得する
+  @return 2行目の文字色。未設定の場合は1行目の文字色
+*/
+COLORREF AppPreference::GetListText2Color()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListText2"), (int)GetListTextColor());
+}
+
 COLORREF AppPreference::GetListBackgroundColor()
 {
 	return (COLORREF)in->Get(_T("CurrentColor:ListBackground"), 0);
@@ -1008,6 +1017,15 @@ COLORREF AppPreference::GetListBackgroundAltColor()
 COLORREF AppPreference::GetListTextHighlightColor()
 {
 	return (COLORREF)in->Get(_T("CurrentColor:ListHighlightText"), 0);
+}
+
+/**
+  候補欄の選択行における2行目の文字色を取得する
+  @return 選択行の2行目の文字色。未設定の場合は選択行の1行目の文字色
+*/
+COLORREF AppPreference::GetListTextHighlight2Color()
+{
+	return (COLORREF)in->Get(_T("CurrentColor:ListHighlightText2"), (int)GetListTextHighlightColor());
 }
 
 COLORREF AppPreference::GetListBackgroundHighlightColor()

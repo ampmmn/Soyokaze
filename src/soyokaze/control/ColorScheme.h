@@ -26,8 +26,18 @@ public:
 // 候補欄
 	// テキストの色
 	virtual COLORREF GetListTextColor() = 0;
+	/**
+	  候補欄の2行目のテキスト色を取得する
+	  @return 2行目のテキスト色
+	*/
+	virtual COLORREF GetListText2Color() = 0;
 	// 選択項目のテキストの色
 	virtual COLORREF GetListHighlightTextColor() = 0;
+	/**
+	  選択項目の2行目のテキスト色を取得する
+	  @return 選択項目の2行目のテキスト色
+	*/
+	virtual COLORREF GetListHighlightText2Color() = 0;
 	// 背景色
 	virtual HBRUSH GetListBackgroundBrush() = 0;
 	virtual COLORREF GetListBackgroundColor() = 0;
