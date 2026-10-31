@@ -191,6 +191,9 @@ bool SimpleDictAdhocCommand::CreateAction(Action** action)
 	}
 	else {
 		// クリップボードにコピー
+		if (in->mParam->mIsExpandMacro) {
+			ExpandMacros(argSub);
+		}
 		*action = new CopyTextAction(argSub);
 		return true;
 	}
