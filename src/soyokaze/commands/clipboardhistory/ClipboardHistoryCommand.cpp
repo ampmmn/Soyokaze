@@ -32,6 +32,7 @@ struct ClipboardHistoryCommand::PImpl
 	uint64_t mAppendDate{0};
 	CString mPrefix;
 	CString mData;
+	std::vector<CString> mKeywords;
 };
 
 
@@ -40,7 +41,8 @@ IMPLEMENT_ADHOCCOMMAND_UNKNOWNIF(ClipboardHistoryCommand)
 ClipboardHistoryCommand::ClipboardHistoryCommand(
  	const CString& prefix,
 	uint64_t appendDate,
- 	const CString& data
+	const CString& data,
+	const std::vector<CString>& keywords
 ) : 
 	AdhocCommandBase(_T(""), _T("")),
 	in(std::make_unique<PImpl>())
@@ -48,6 +50,7 @@ ClipboardHistoryCommand::ClipboardHistoryCommand(
 	in->mAppendDate = appendDate;
 	in->mPrefix = prefix;
 	in->mData = data;
+	in->mKeywords = keywords;
 
 	FILETIME sysFt;
 	sysFt.dwHighDateTime = appendDate >> 32;
@@ -112,7 +115,7 @@ HICON ClipboardHistoryCommand::GetIcon()
 launcherapp::core::Command*
 ClipboardHistoryCommand::Clone()
 {
-	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData);
+	return new ClipboardHistoryCommand(in->mPrefix, in->mAppendDate, in->mData, in->mKeywords);
 }
 
 launcherapp::mainwindow::preview::PreviewWindow* ClipboardHistoryCommand::FetchPreviewWindow()
@@ -121,7 +124,7 @@ launcherapp::mainwindow::preview::PreviewWindow* ClipboardHistoryCommand::FetchP
 	if (previewWindow->IsEnable() == false) {
 		return nullptr;
 	}
-	previewWindow->SetPreviewText(in->mData, in->mAppendDate);
+	previewWindow->SetPreviewText(in->mData, in->mAppendDate, in->mKeywords);
 	return previewWindow;
 }
 

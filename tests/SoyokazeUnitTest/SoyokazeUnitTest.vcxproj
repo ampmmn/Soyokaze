@@ -48,6 +48,10 @@
     <ClCompile Include="..\testcode\soyokaze\CandidateListTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\CandidateListCtrlTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\mainwindow\PreviewLayoutTest.cpp" />
+    <ClCompile Include="..\testcode\soyokaze\commands\clipboardhistory\ClipboardPreviewHighlighterTest.cpp" />
+    <ClCompile Include="..\..\src\soyokaze\commands\clipboardhistory\ClipboardPreviewHighlighter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnitTest|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\control\CustomColorSchemeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\control\SystemColorSchemeTest.cpp" />
     <ClCompile Include="..\testcode\soyokaze\core\LauncherProcessContextTest.cpp" />

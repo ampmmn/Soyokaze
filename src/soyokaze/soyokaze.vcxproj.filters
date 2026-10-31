@@ -1734,6 +1734,9 @@
     <ClInclude Include="commands\clipboardhistory\ClipboardPreviewWindow.h">
       <Filter>commands\clipboardhistory</Filter>
     </ClInclude>
+    <ClInclude Include="commands\clipboardhistory\ClipboardPreviewHighlighter.h">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClInclude>
     <ClInclude Include="features\main\layout\MainWindowPosition.h">
       <Filter>features\main\layout</Filter>
     </ClInclude>
@@ -3456,6 +3459,9 @@
       <Filter>commands\winscp</Filter>
     </ClCompile>
     <ClCompile Include="commands\clipboardhistory\ClipboardPreviewWindow.cpp">
+      <Filter>commands\clipboardhistory</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\clipboardhistory\ClipboardPreviewHighlighter.cpp">
       <Filter>commands\clipboardhistory</Filter>
     </ClCompile>
     <ClCompile Include="features\main\layout\MainWindowPosition.cpp">

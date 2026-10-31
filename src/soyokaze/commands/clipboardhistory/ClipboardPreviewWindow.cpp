@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "ClipboardPreviewWindow.h"
 #include "SharedHwnd.h"
+#include "commands/clipboardhistory/ClipboardPreviewHighlighter.h"
+#include "commands/py_extension/ScintillaDLLLoader.h"
+#include "setting/AppPreference.h"
 #include "resource.h"
+#include "Scintilla.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,7 +27,6 @@ public:
 	{
 		__super::DoDataExchange(pDX);
 		DDX_Text(pDX, IDC_STATIC_INFO, mInfoText);
-		DDX_Text(pDX, IDC_EDIT_PREVIEW, mPreviewText);
 	}
 	BOOL OnInitDialog() override
 	{
@@ -56,56 +59,86 @@ public:
 		                   mInfoRect.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
 		edit->SetWindowPos(nullptr, mPreviewRect.left, mPreviewRect.top, mPreviewRect.Width() + deltaWidth,
 		                   mPreviewRect.Height() + deltaHeight, SWP_NOZORDER | SWP_NOACTIVATE);
-		UpdateScrollbar();
 	}
 
 
 
 public:
-	void UpdateScrollbar()
+	void UpdateStyle()
 	{
 		CWnd* edit = GetDlgItem(IDC_EDIT_PREVIEW);
+		edit->SendMessage(SCI_SETCODEPAGE, SC_CP_UTF8, 0);
+		edit->SendMessage(SCI_SETWRAPMODE, SC_WRAP_CHAR, 0);
+		edit->SendMessage(SCI_SETHSCROLLBAR, FALSE, 0);
+		edit->SendMessage(SCI_SETVSCROLLBAR, TRUE, 0);
 
-		CRect rc;
-		edit->GetClientRect(&rc);
-		int clientHeight = rc.Height();
+		auto pref = AppPreference::Get();
+		CString fontName;
+		pref->GetMainWindowFontName(fontName);
+		std::string fontNameUtf8;
+		UTF2UTF(std::wstring(fontName), fontNameUtf8);
+		edit->SendMessage(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)fontNameUtf8.c_str());
+		edit->SendMessage(SCI_STYLESETSIZE, STYLE_DEFAULT, pref->GetMainWindowFontSize());
+		edit->SendMessage(SCI_STYLESETFORE, STYLE_DEFAULT, RGB(0, 0, 0));
+		edit->SendMessage(SCI_STYLESETBACK, STYLE_DEFAULT, GetSysColor(COLOR_WINDOW));
+		edit->SendMessage(SCI_STYLECLEARALL, 0, 0);
 
-		int lineCount = (int)edit->SendMessage(EM_GETLINECOUNT, 0, 0);
+		edit->SendMessage(SCI_SETMARGINTYPEN, 0, SC_MARGIN_NUMBER);
+		edit->SendMessage(SCI_STYLESETFORE, STYLE_LINENUMBER, GetSysColor(COLOR_GRAYTEXT));
+		edit->SendMessage(SCI_STYLESETBACK, STYLE_LINENUMBER, GetSysColor(COLOR_BTNFACE));
+		edit->SendMessage(SCI_SETMARGINWIDTHN, 0, 40);
 
-		CClientDC dc(edit);
-		CFont* pFont = edit->GetFont();
-		CFont* pOldFont = dc.SelectObject(pFont);
+		edit->SendMessage(SCI_INDICSETSTYLE, INDICATOR_CONTAINER, INDIC_ROUNDBOX);
+		edit->SendMessage(SCI_INDICSETFORE, INDICATOR_CONTAINER, RGB(255, 196, 0));
+		edit->SendMessage(SCI_INDICSETALPHA, INDICATOR_CONTAINER, 120);
+		edit->SendMessage(SCI_SETREADONLY, TRUE, 0);
+	}
 
-		TEXTMETRIC tm;
-		dc.GetTextMetrics(&tm);
+	void UpdateLineNumberMargin()
+	{
+		CWnd* edit = GetDlgItem(IDC_EDIT_PREVIEW);
+		auto lineCount = static_cast<int>(edit->SendMessage(SCI_GETLINECOUNT, 0, 0));
+		auto lineCountText = std::to_string((std::max)(lineCount, 1));
+		std::string lineNumber(lineCountText.length(), '9');
+		auto textWidth = static_cast<int>(edit->SendMessage(SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)lineNumber.c_str()));
+		edit->SendMessage(SCI_SETMARGINWIDTHN, 0, textWidth + 10);
+	}
 
-		dc.SelectObject(pOldFont);
+	void SetText(const CString& text, const std::vector<CString>& keywords)
+	{
+		CWnd* edit = GetDlgItem(IDC_EDIT_PREVIEW);
+		CString previewText(text);
+		previewText.Replace(_T("\t"), _T("    "));
 
-		int lineHeight = tm.tmHeight;
-
-		int totalTextHeight = lineCount * lineHeight;
-
-		auto hEdit = edit->GetSafeHwnd();
-
-		LONG style = ::GetWindowLong(hEdit, GWL_STYLE);
-
-		bool needsScroll = totalTextHeight > clientHeight;
-		if (needsScroll && !(style & WS_VSCROLL)) {
-			// スクロールバーを表示する
-			::SetWindowLong(hEdit, GWL_STYLE, style | WS_VSCROLL);
-			::SetWindowPos(hEdit, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-		} else if (!needsScroll && (style & WS_VSCROLL)) {
-			// スクロールバーを非表示にする
-			::SetWindowLong(hEdit, GWL_STYLE, style & ~WS_VSCROLL);
-			::SetWindowPos(hEdit, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		std::string textUtf8;
+		UTF2UTF(std::wstring(previewText), textUtf8);
+		std::vector<std::string> keywordsUtf8;
+		keywordsUtf8.reserve(keywords.size());
+		for (const auto& keyword : keywords) {
+			std::string keywordUtf8;
+			UTF2UTF(std::wstring(keyword), keywordUtf8);
+			keywordsUtf8.push_back(std::move(keywordUtf8));
 		}
+
+		edit->SendMessage(SCI_SETREADONLY, FALSE, 0);
+		edit->SendMessage(SCI_SETTEXT, 0, (LPARAM)textUtf8.c_str());
+		edit->SendMessage(SCI_SETINDICATORCURRENT, INDICATOR_CONTAINER, 0);
+		edit->SendMessage(SCI_INDICATORCLEARRANGE, 0, edit->SendMessage(SCI_GETLENGTH, 0, 0));
+		auto ranges = FindClipboardPreviewMatchRanges(textUtf8, keywordsUtf8);
+		for (const auto& range : ranges) {
+			edit->SendMessage(SCI_INDICATORFILLRANGE, range.mStart, range.mLength);
+		}
+		edit->SendMessage(SCI_GOTOPOS, 0, 0);
+		edit->SendMessage(SCI_SETREADONLY, TRUE, 0);
+		UpdateLineNumberMargin();
 	}
 
 public:
 	// 日付、サイズなど
 	CString mInfoText;
-	// クリップボードのテキスト
+	// クリップボードのプレビュー内容
 	CString mPreviewText;
+	std::vector<CString> mKeywords;
 	CRect mInitialClientRect;
 	CRect mInfoRect;
 	CRect mPreviewRect;
@@ -131,11 +164,18 @@ struct PreviewWindow::PImpl
 
 bool PreviewWindow::PImpl::Create()
 {
+	if (launcherapp::commands::py_extension::ScintillaDLLLoader::GetInstance()->Initialize() == false) {
+		return false;
+	}
+
 	SharedHwnd mainWnd;
 	HWND priorFocus = ::GetFocus();
 	if (mWindow.Create(IDD_CLIPBOARD_PREVIEW, CWnd::FromHandle(mainWnd.GetHwnd())) == FALSE) {
 		return false;
 	}
+	mWindow.UpdateStyle();
+	mWindow.SetText(mWindow.mPreviewText, mWindow.mKeywords);
+	mWindow.UpdateData(FALSE);
 	if (IsWindow(priorFocus)) {
 		::SetFocus(priorFocus);
 	}
@@ -195,7 +235,7 @@ HWND PreviewWindow::GetHwnd()
 	return in->mWindow.GetSafeHwnd();
 }
 
-void PreviewWindow::SetPreviewText(const CString& text, uint64_t date)
+void PreviewWindow::SetPreviewText(const CString& text, uint64_t date, const std::vector<CString>& keywords)
 {
 	CTime tm(FILETIME{date & 0xFFFFFFFF, (date >> 32)});
 	auto s = tm.Format(_T("%c"));
@@ -204,13 +244,11 @@ void PreviewWindow::SetPreviewText(const CString& text, uint64_t date)
 	auto sizeStr = std::format(loc, _T("{}"), text.GetLength());
 	in->mWindow.mInfoText.Format(_T("%s %s byte"), (LPCTSTR)s, sizeStr.c_str());
 	in->mWindow.mPreviewText = text;
-
-	// タブサイズ8は大きいので、4にみせかける
-	in->mWindow.mPreviewText.Replace(_T("\t"), _T("    "));
-
+	in->mWindow.mKeywords = keywords;
 	if (in->mWindow.GetSafeHwnd()) {
+		in->mWindow.UpdateStyle();
+		in->mWindow.SetText(in->mWindow.mPreviewText, in->mWindow.mKeywords);
 		in->mWindow.UpdateData(FALSE);
-		in->mWindow.UpdateScrollbar();
 		in->mWindow.UpdateWindow();
 	}
 }

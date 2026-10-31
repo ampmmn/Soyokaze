@@ -48,6 +48,11 @@ ScintillaDLLLoader* ScintillaDLLLoader::GetInstance()
 
 bool ScintillaDLLLoader::Initialize()
 {
+	if (in->mScintillaDLL != nullptr && in->mLexillaDLL != nullptr) {
+		return true;
+	}
+	Finalize();
+
 	Path lexillaDllPath(Path::MODULEFILEDIR, _T("Lexilla.dll"));
 	in->mLexillaDLL = LoadLibrary((LPCTSTR)lexillaDllPath);
 	Path scintillaDllPath(Path::MODULEFILEDIR, _T("Scintilla.dll"));

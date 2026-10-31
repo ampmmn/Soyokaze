@@ -3,6 +3,7 @@
 #include "commands/common/AdhocCommandBase.h"
 #include "commands/core/PreviewProvider.h"
 #include <memory>
+#include <vector>
 
 namespace launcherapp {
 namespace commands {
@@ -13,7 +14,7 @@ class ClipboardHistoryCommand :
 	virtual public launcherapp::core::PreviewProvider
 {
 public:
-	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data);
+	ClipboardHistoryCommand(const CString& prefix, uint64_t appendData, const CString& data, const std::vector<CString>& keywords = {});
 	virtual ~ClipboardHistoryCommand();
 
 	CString GetName() override;

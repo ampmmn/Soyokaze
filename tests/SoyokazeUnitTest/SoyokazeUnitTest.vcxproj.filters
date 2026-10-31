@@ -342,6 +342,12 @@
     <ClCompile Include="..\testcode\soyokaze\mainwindow\PreviewLayoutTest.cpp">
       <Filter>soyokaze\mainwindow</Filter>
     </ClCompile>
+    <ClCompile Include="..\testcode\soyokaze\commands\clipboardhistory\ClipboardPreviewHighlighterTest.cpp">
+      <Filter>soyokaze\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\soyokaze\commands\clipboardhistory\ClipboardPreviewHighlighter.cpp">
+      <Filter>soyokaze\commands</Filter>
+    </ClCompile>
     <ClCompile Include="..\testcode\soyokaze\TwoLineCandidateListRendererTest.cpp">
       <Filter>soyokaze</Filter>
     </ClCompile>

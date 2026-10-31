@@ -2,6 +2,7 @@
 
 #include "features/main/preview/PreviewWindow.h"
 #include <memory>
+#include <vector>
 
 namespace launcherapp { namespace commands { namespace clipboardhistory {
 
@@ -18,7 +19,7 @@ public:
 	void Enter() override;
 	void Leave() override;
 	HWND GetHwnd() override;
-	void SetPreviewText(const CString& text, uint64_t date);
+	void SetPreviewText(const CString& text, uint64_t date, const std::vector<CString>& keywords);
 	void Destroy();
 
 	void SetEnable(bool isEnable);

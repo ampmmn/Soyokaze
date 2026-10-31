@@ -209,12 +209,17 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	std::vector<PatternInternal::WORD> words;
 	pat2->GetWords(words);
 	ASSERT(words.empty() == false);
+	std::vector<CString> keywords;
+	pat2->GetRawWords(keywords);
 
 	std::reverse(words.begin(), words.end());
 
 	if (hasPrefix) {
 		// prefixを除外
 		words.pop_back();
+		if (keywords.empty() == false) {
+			keywords.erase(keywords.begin());
+		}
 	}
 
 	// クリップボード履歴をクエリ
@@ -232,7 +237,7 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	if (result.empty()) {
 		// 件数0件の場合でも、弱一致の候補表示を抑制するためにダミーの項目を追加する
 		commands.Add(CommandQueryItem(Pattern::HiddenMatch, 
-					new ClipboardHistoryCommand(prefix, 0, _T(""))));
+					new ClipboardHistoryCommand(prefix, 0, _T(""), keywords)));
 		return;
 	}
 
@@ -240,7 +245,7 @@ void ClipboardHistoryProvider::QueryAdhocCommands(
 	for (auto& item : result) {
 		// 最低でも前方一致扱いとする
 		int level = (std::max)(item.mMatchLevel, (int)Pattern::FrontMatch);
-		commands.Add(CommandQueryItem(level, new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData)));
+		commands.Add(CommandQueryItem(level, new ClipboardHistoryCommand(prefix, item.mAppendTime, item.mData, keywords)));
 	}
 }
 
