@@ -43,3 +43,10 @@ TEST(SubProcessTest, RunRejectsEnvReferenceForBatchFile)
 	EXPECT_TRUE(process != nullptr);
 	EXPECT_FALSE(process->GetErrorMessage().IsEmpty());
 }
+
+TEST(SubProcessTest, InstanceWithoutProcessHandleCannotWait)
+{
+	SubProcess::Instance process(nullptr);
+
+	EXPECT_FALSE(process.Wait(0));
+}

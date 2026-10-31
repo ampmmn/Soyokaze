@@ -393,8 +393,14 @@ bool SubProcess::PImpl::StartWithLowerPermissions(SHELLEXECUTEINFO si, ProcessPt
 		return false;
 	}
 
-	int pid = json_res["pid"];
-	si.hProcess = OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, FALSE, (DWORD)pid);
+	DWORD pid = static_cast<DWORD>(json_res["pid"].get<int>());
+	if (pid == 0xFFFFFFFF) {
+		// 起動は成功しているがプロセスハンドルを取得できなかった場合は、待機なしで成功とする
+		process = std::move(std::make_unique<Instance>(nullptr));
+		return true;
+	}
+
+	si.hProcess = OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
 	if (si.hProcess == nullptr) {
 		spdlog::error("Failed to open the process. err:{}", GetLastError());
 		process = std::move(std::make_unique<Instance>(nullptr));

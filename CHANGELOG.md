@@ -11,6 +11,10 @@
 - #326 tidy-html5からlexborへの移行
 - #327 時間がかかるPrepareAdhocCommandsの呼び出しをバックグラウンド化する
 
+## Fixed
+
+- #329 通常権限で `ms-settings:` URI を実行すると、起動後に「パラメータが間違っています」と表示される
+
 ## 0.63.0 - 2026-10-24
 
 ## Added
